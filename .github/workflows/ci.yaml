@@ -1,0 +1,23 @@
+name: Build & Test Main
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    name: Build and Test the Marketplace Interface
+    runs-on: marketplace
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "17"
+          cache: "npm"
+      - run: npm ci --only=production
+      - run: npm run test
+      - run: npm run build
