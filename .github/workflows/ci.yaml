@@ -11,7 +11,7 @@ on:
 jobs:
   build-and-test:
     name: Build and Test the Marketplace Interface
-    runs-on: marketplace
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
