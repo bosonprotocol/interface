@@ -1,6 +1,7 @@
+import App from "lib/components/app";
 import React from "react";
 import { createRoot } from "react-dom/client";
-import App from "lib/components/app";
+
 import reportWebVitals from "./reportWebVitals";
 
 const rootElement = document.getElementById("root");

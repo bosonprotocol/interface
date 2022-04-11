@@ -4,7 +4,11 @@
     "ecmaVersion": 2021,
     "sourceType": "module"
   },
-  "plugins": ["react", "@typescript-eslint", "react-hooks"],
+  "plugins": ["react", "@typescript-eslint", "react-hooks", "simple-import-sort"],
+  "rules": {
+    "simple-import-sort/exports": "error",
+    "simple-import-sort/imports": "error"
+  },
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
