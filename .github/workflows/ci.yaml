@@ -1,4 +1,4 @@
-name: Build & Test Main
+name: Build, Test and Deploy the Marketplace Interface
 
 on:
   push:
@@ -9,8 +9,8 @@ on:
       - main
 
 jobs:
-  build-and-test:
-    name: Build and Test the Marketplace Interface
+  build-test-deploy:
+    name: Build, Test and Deploy the Marketplace Interface
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -23,3 +23,11 @@ jobs:
       - run: npm run lint
       - run: npm run build
       - run: npm run test
+      - name: Deploy via fleek
+        id: deploy
+        uses: fleekhq/action-deploy@v1
+        with:
+          apiKey: ${{ secrets.FLEEK_API_KEY }}
+          workDir: ./packages/widgets
+      - name: Get the output url
+        run: echo "Deploy url is ${{ steps.deploy.outputs.deployUrl }}"
