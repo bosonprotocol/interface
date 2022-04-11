@@ -19,7 +19,6 @@ jobs:
           node-version: "17"
           cache: "npm"
       - run: npm ci
-      - run: 
       - run: npm run prettier
       - run: npm run lint
       - run: npm run build
