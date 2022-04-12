@@ -8,7 +8,7 @@
   },
   "build": {
     "baseDir": "",
-    "publicDir": "public",
+    "publicDir": "build",
     "command": "npm run build",
     "rootDir": ""
   }
