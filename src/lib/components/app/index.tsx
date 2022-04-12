@@ -2,7 +2,7 @@ import Landing from "lib/pages/Landing";
 import { createGlobalStyle } from "styled-components";
 const GlobalStyle = createGlobalStyle`
   html, body {
-    font-family: 'Barlow', sans-serif;
+    font-family: 'Manrope', sans-serif;
     font-weight: 400;
     margin: 0;
     display:flex;

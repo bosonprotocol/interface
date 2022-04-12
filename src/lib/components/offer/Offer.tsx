@@ -1,34 +1,40 @@
+import placeholerSellerAvatar from "lib/placeholder-seller.svg";
 import styled from "styled-components";
 
+import { colors } from "../../colours";
+
 const Card = styled.div`
-  background: #fff;
-  color: black;
   border-radius: 12px;
-  height: 250px;
   display: inline-block;
-  padding: 10px;
-  margin: 1rem;
   position: relative;
   width: 250px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0 16px;
 `;
 
 const ProfileImg = styled.img`
   border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  padding: 5px;
+  width: 35px;
+  height: 35px;
 `;
 
 const ImgContainer = styled.div`
   display: flex;
   justify-content: center;
+  margin: 16px 16px;
+`;
+
+const Image = styled.img`
+  height: 250px;
+  width: 250px;
+  border-radius: 24px;
 `;
 
 const BasicInfoContainer = styled.div`
   display: flex;
-  margin-top: 10px;
+  flex-direction: column;
+  gap: 4px;
+  margin: 18px 0px;
 `;
 
 const SellerInfo = styled.div`
@@ -36,11 +42,29 @@ const SellerInfo = styled.div`
   flex-direction: row;
   width: 100%;
   align-items: center;
+  margin: 18px 0px;
+`;
+
+const Title = styled.span`
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+`;
+
+const Price = styled.span`
+  font-size: 16px;
+  font-weight: 600;
 `;
 
 const CommitBtnContainer = styled.div`
   display: flex;
-  justify-content: right;
+`;
+
+const Commit = styled.button`
+  all: unset;
+  color: ${colors.green};
+  font-size: 16px;
+  font-weight: 600;
 `;
 
 interface Props {
@@ -49,7 +73,7 @@ interface Props {
   title: string;
   sellerImg: string;
   sellerName: string;
-  priceInEth: string;
+  priceInEth: number;
 }
 
 export default function Offer({
@@ -61,23 +85,19 @@ export default function Offer({
 }: Props) {
   return (
     <Card>
+      <SellerInfo>
+        <ProfileImg src={placeholerSellerAvatar} />
+      </SellerInfo>
       <ImgContainer>
-        <img src={offerImg} />
+        <Image src={offerImg} />
       </ImgContainer>
       <BasicInfoContainer>
-        <SellerInfo>
-          <ProfileImg src={sellerImg} />
-          <div>
-            <div>{title}</div>
-            <div>{sellerName}</div>
-          </div>
-        </SellerInfo>
+        <Title>{title}</Title>
+        <Price>{priceInEth.toFixed(4)} ETH</Price>
         <CommitBtnContainer>
-          <button>Commit</button>
+          <Commit>Commit now</Commit>
         </CommitBtnContainer>
       </BasicInfoContainer>
-      <hr />
-      Price {priceInEth} ETH
     </Card>
   );
 }
