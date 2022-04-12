@@ -1,9 +1,5 @@
-import styled from "styled-components";
-
-const Root = styled.div`
-  color: blue;
-`;
+import Landing from "lib/pages/Landing";
 
 export default function App() {
-  return <Root>Boson Protocol Marketplace</Root>;
+  return <Landing />;
 }
