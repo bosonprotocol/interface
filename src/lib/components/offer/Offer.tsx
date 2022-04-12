@@ -1,15 +1,6 @@
 import { Row } from "lib/styles/layout";
 import styled from "styled-components";
 
-type Props = {
-  id: string;
-  offerImg: string;
-  title: string;
-  sellerImg: string;
-  sellerName: string;
-  priceInEth: string;
-};
-
 const Card = styled.div`
   background: #fff;
   border-radius: 2px;
@@ -21,6 +12,15 @@ const Card = styled.div`
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 `;
+
+interface Props {
+  id: string;
+  offerImg: string;
+  title: string;
+  sellerImg: string;
+  sellerName: string;
+  priceInEth: string;
+}
 
 export default function Offer({
   offerImg,
