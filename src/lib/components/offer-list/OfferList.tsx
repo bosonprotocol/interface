@@ -15,9 +15,11 @@ const Heading = styled.h2`
 
 const OfferContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, 300px);
+  grid-template-columns: repeat(auto-fit, 250px);
   grid-row-gap: 20px;
   grid-column-gap: 10px;
+  justify-content: space-between;
+  padding-bottom: 24px;
 `;
 
 const shortenAddress = (address: string): string => {

@@ -25,7 +25,7 @@ const PageContainer = styled.div`
 const Footer = styled.footer`
   background-color: #3a364f;
   height: 100px;
-  padding: 10px;
+  padding: 20px 0;
   position: absolute;
   bottom: 0;
   width: 100%;
@@ -46,7 +46,7 @@ export default function App() {
           src="https://assets.website-files.com/6058b6a3587b6e155196ebbb/6058b6a3587b6e3e4e96ec24_logo.png"
           alt="Boson Protocol"
           height={80}
-        ></img>
+        />
       </Footer>
     </Container>
   );

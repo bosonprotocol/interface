@@ -45,12 +45,13 @@ const SellerInfo = styled.div`
 `;
 
 const SellerName = styled.span`
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 600;
   margin-left: 8px;
   color: #276c55;
   overflow-wrap: break-word;
   width: 80%;
+  font-family: "Roboto Mono", monospace;
 `;
 
 const Title = styled.span`
@@ -72,14 +73,15 @@ const Commit = styled.button`
   all: unset;
   font-weight: 600;
   font-size: 15px;
-  background: ${colors.cgBlue};
+  color: ${colors.green};
   border-radius: 11px;
-  padding: 10px 25px;
-  color: #ffffff;
   display: inline-block;
   text-align: center;
   transition: all 0.5s;
   cursor: pointer;
+  border: 1px solid ${colors.green};
+  padding: 6px 12px;
+  margin-top: 8px;
 `;
 
 const Sold = styled.p`
@@ -119,7 +121,7 @@ export default function Offer({
       </ImgContainer>
       <BasicInfoContainer>
         <Title>{title}</Title>
-        <Price>Price: {parseFloat(priceInEth)} ETH</Price>
+        <Price>{parseFloat(priceInEth)} ETH</Price>
         <CommitBtnContainer>
           {isSold ? <Sold>Sold</Sold> : <Commit>Commit now</Commit>}
         </CommitBtnContainer>
