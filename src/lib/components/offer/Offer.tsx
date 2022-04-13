@@ -68,9 +68,16 @@ const CommitBtnContainer = styled.div`
 
 const Commit = styled.button`
   all: unset;
-  color: ${colors.green};
-  font-size: 16px;
   font-weight: 600;
+  font-size: 15px;
+  background: ${colors.cgBlue};
+  border-radius: 11px;
+  padding: 10px 25px;
+  color: #ffffff;
+  display: inline-block;
+  text-align: center;
+  transition: all 0.5s;
+  cursor: pointer;
 `;
 
 const Sold = styled.p`
@@ -109,7 +116,7 @@ export default function Offer({
       <BasicInfoContainer>
         <Title>{title}</Title>
         <SellerName>{sellerName}</SellerName>
-        <Price>{priceInEth.toFixed(4)} ETH</Price>
+        <Price>Price: {priceInEth.toFixed(4)} ETH</Price>
         <CommitBtnContainer>
           {isSold ? <Sold>Sold</Sold> : <Commit>Commit now</Commit>}
         </CommitBtnContainer>
