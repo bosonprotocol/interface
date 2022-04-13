@@ -119,7 +119,7 @@ export default function Offer({
       </ImgContainer>
       <BasicInfoContainer>
         <Title>{title}</Title>
-        <Price>Price: {Number(priceInEth).toFixed(4)} ETH</Price>
+        <Price>Price: {parseFloat(priceInEth)} ETH</Price>
         <CommitBtnContainer>
           {isSold ? <Sold>Sold</Sold> : <Commit>Commit now</Commit>}
         </CommitBtnContainer>
