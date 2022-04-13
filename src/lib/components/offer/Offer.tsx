@@ -44,6 +44,13 @@ const SellerInfo = styled.div`
   margin: 18px 0px;
 `;
 
+const SellerName = styled.span`
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #276c55;
+`;
+
 const Title = styled.span`
   font-size: 18px;
   font-weight: 600;
@@ -66,6 +73,13 @@ const Commit = styled.button`
   font-weight: 600;
 `;
 
+const Sold = styled.p`
+  all: unset;
+  color: ${colors.grey};
+  font-size: 16px;
+  font-weight: 600;
+`;
+
 interface Props {
   id: string;
   offerImg: string;
@@ -73,6 +87,7 @@ interface Props {
   sellerImg: string;
   sellerName: string;
   priceInEth: number;
+  isSold: boolean;
 }
 
 export default function Offer({
@@ -80,7 +95,8 @@ export default function Offer({
   title,
   sellerImg,
   sellerName,
-  priceInEth
+  priceInEth,
+  isSold
 }: Props) {
   return (
     <Card>
@@ -92,9 +108,10 @@ export default function Offer({
       </ImgContainer>
       <BasicInfoContainer>
         <Title>{title}</Title>
+        <SellerName>{sellerName}</SellerName>
         <Price>{priceInEth.toFixed(4)} ETH</Price>
         <CommitBtnContainer>
-          <Commit>Commit now</Commit>
+          {isSold ? <Sold>Sold</Sold> : <Commit>Commit now</Commit>}
         </CommitBtnContainer>
       </BasicInfoContainer>
     </Card>

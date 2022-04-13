@@ -25,6 +25,7 @@ const OfferContainer = styled.div`
   grid-row-gap: 20px;
   grid-column-gap: 10px;
 `;
+const sellers = ["Marcus", "Jonathan", "Laura", "Andrew", "Simon"];
 
 // TODO: get this data from somewhere else
 const offersDataList = Array(12)
@@ -35,8 +36,9 @@ const offersDataList = Array(12)
       images[idx] || images[idx * 2] || `https://picsum.photos/22${idx}`,
     title: `Hermès Birkin ${idx}`,
     sellerImg: placeholerSellerAvatar,
-    sellerName: `seller name ${idx}`,
-    priceInEth: Math.random() * 10
+    sellerName: sellers[idx % sellers.length],
+    priceInEth: Math.random() * 10,
+    isSold: Math.random() > 0.5
   }));
 
 export default function OfferList() {
@@ -44,17 +46,20 @@ export default function OfferList() {
     <Root>
       <Heading>Featured Offers</Heading>
       <OfferContainer>
-        {offersDataList.map((offerData) => (
-          <Offer
-            key={offerData.id}
-            id={offerData.id}
-            offerImg={offerData.offerImg}
-            title={offerData.title}
-            sellerImg={offerData.sellerImg}
-            sellerName={offerData.sellerName}
-            priceInEth={offerData.priceInEth}
-          />
-        ))}
+        {offersDataList.length
+          ? offersDataList.map((offerData) => (
+              <Offer
+                key={offerData.id}
+                id={offerData.id}
+                offerImg={offerData.offerImg}
+                title={offerData.title}
+                sellerImg={offerData.sellerImg}
+                sellerName={offerData.sellerName}
+                priceInEth={offerData.priceInEth}
+                isSold={offerData.isSold}
+              />
+            ))
+          : "There are no offers at the moment"}
       </OfferContainer>
     </Root>
   );
