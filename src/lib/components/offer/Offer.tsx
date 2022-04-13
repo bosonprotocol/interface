@@ -47,8 +47,10 @@ const SellerInfo = styled.div`
 const SellerName = styled.span`
   font-size: 18px;
   font-weight: 600;
-  margin-bottom: 8px;
+  margin-left: 8px;
   color: #276c55;
+  overflow-wrap: break-word;
+  width: 80%;
 `;
 
 const Title = styled.span`
@@ -93,7 +95,8 @@ interface Props {
   title: string;
   sellerImg: string;
   sellerName: string;
-  priceInEth: number;
+  priceInEth: string;
+  priceSymbol: string;
   isSold: boolean;
 }
 
@@ -109,14 +112,14 @@ export default function Offer({
     <Card>
       <SellerInfo>
         <ProfileImg src={sellerImg} />
+        <SellerName>{sellerName}</SellerName>
       </SellerInfo>
       <ImgContainer>
         <Image src={offerImg} />
       </ImgContainer>
       <BasicInfoContainer>
         <Title>{title}</Title>
-        <SellerName>{sellerName}</SellerName>
-        <Price>Price: {priceInEth.toFixed(4)} ETH</Price>
+        <Price>Price: {Number(priceInEth).toFixed(4)} ETH</Price>
         <CommitBtnContainer>
           {isSold ? <Sold>Sold</Sold> : <Commit>Commit now</Commit>}
         </CommitBtnContainer>
