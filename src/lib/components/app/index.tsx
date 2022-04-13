@@ -13,10 +13,22 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
+const Container = styled.div`
+  position: relative;
+  min-height: 100vh;
+`;
+
+const PageContainer = styled.div`
+  padding-bottom: 150px; // a bit more than footer height
+`;
+
 const Footer = styled.footer`
   background-color: #3a364f;
-  margin-top: 30px;
+  height: 100px;
   padding: 10px;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: end;
@@ -24,9 +36,11 @@ const Footer = styled.footer`
 
 export default function App() {
   return (
-    <>
+    <Container>
       <GlobalStyle />
-      <Landing />
+      <PageContainer>
+        <Landing />
+      </PageContainer>
       <Footer>
         <img
           src="https://assets.website-files.com/6058b6a3587b6e155196ebbb/6058b6a3587b6e3e4e96ec24_logo.png"
@@ -34,6 +48,6 @@ export default function App() {
           height={80}
         ></img>
       </Footer>
-    </>
+    </Container>
   );
 }
