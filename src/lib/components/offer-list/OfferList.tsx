@@ -1,3 +1,4 @@
+import placeholerSellerAvatar from "lib/placeholder-seller.svg";
 import styled from "styled-components";
 
 import Offer from "../offer/Offer";
@@ -33,7 +34,7 @@ const offersDataList = Array(12)
     offerImg:
       images[idx] || images[idx * 2] || `https://picsum.photos/22${idx}`,
     title: `Hermès Birkin ${idx}`,
-    sellerImg: "https://picsum.photos/20",
+    sellerImg: placeholerSellerAvatar,
     sellerName: `seller name ${idx}`,
     priceInEth: Math.random() * 10
   }));

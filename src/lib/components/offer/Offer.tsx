@@ -1,4 +1,3 @@
-import placeholerSellerAvatar from "lib/placeholder-seller.svg";
 import styled from "styled-components";
 
 import { colors } from "../../colours";
@@ -86,7 +85,7 @@ export default function Offer({
   return (
     <Card>
       <SellerInfo>
-        <ProfileImg src={placeholerSellerAvatar} />
+        <ProfileImg src={sellerImg} />
       </SellerInfo>
       <ImgContainer>
         <Image src={offerImg} />
