@@ -1,6 +1,5 @@
 import FeaturedOffers from "lib/components/offer-list/OfferList";
 import logo from "lib/logo.png";
-import { CenteredRow, Row } from "lib/styles/layout";
 import styled from "styled-components";
 
 import { colors } from "../colours";
@@ -25,7 +24,12 @@ const LandingContainer = styled.div`
 
 const Hero = styled.div`
   display: flex;
+  flex-direction: column-reverse;
   margin-bottom: 64px;
+
+  @media (min-width: 981px) {
+    flex-direction: row;
+  }
 `;
 
 const LogoImg = styled.img`
@@ -42,6 +46,16 @@ const TitleContainer = styled.div`
 
 const Title = styled.h1`
   font-size: 48px;
+`;
+
+const InputGo = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
+const ExploreContainer = styled.div`
+  display: flex;
+  justify-content: center;
 `;
 
 const Input = styled.input`
@@ -74,12 +88,17 @@ const ExploreButton = styled.button`
 
 const MainImgContainer = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   flex-basis: 70%;
+
+  @media (min-width: 981px) {
+    justify-content: flex-end;
+  }
 `;
 
 const MainImg = styled.img`
   width: 600px;
+  max-width: 100%;
 `;
 
 export default function Landing() {
@@ -89,13 +108,13 @@ export default function Landing() {
       <Hero>
         <TitleContainer>
           <Title>Boson dApp</Title>
-          <CenteredRow>
+          <InputGo>
             <Input placeholder="Search by Brand" />
             <GoButton>Go</GoButton>
-          </CenteredRow>
-          <CenteredRow>
+          </InputGo>
+          <ExploreContainer>
             <ExploreButton>Explore All Offers</ExploreButton>
-          </CenteredRow>
+          </ExploreContainer>
         </TitleContainer>
         <MainImgContainer>
           <MainImg src="https://assets.website-files.com/6058b6a3587b6e155196ebbb/619622087290b57d6707693d_items-min.png" />
