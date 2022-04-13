@@ -19,16 +19,19 @@ const Heading = styled.h2`
 `;
 
 const OfferContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 300px);
+  grid-row-gap: 20px;
+  grid-column-gap: 10px;
 `;
 
 // TODO: get this data from somewhere else
-const offersDataList = Array(4)
+const offersDataList = Array(12)
   .fill(0)
   .map((_v, idx) => ({
     id: `${idx}`,
-    offerImg: images[idx] || images[idx * 2] || images[0],
+    offerImg:
+      images[idx] || images[idx * 2] || `https://picsum.photos/22${idx}`,
     title: `Hermès Birkin ${idx}`,
     sellerImg: "https://picsum.photos/20",
     sellerName: `seller name ${idx}`,
