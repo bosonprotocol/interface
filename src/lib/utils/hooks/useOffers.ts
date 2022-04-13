@@ -1,15 +1,19 @@
 import { Offer } from "lib/components/types/offer";
 import { fetchSubgraph } from "lib/utils/core-components/subgraph";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-export const useOffers = (): [
-  Offer[],
-  React.Dispatch<React.SetStateAction<Offer[]>>
-] => {
+interface UseOffers {
+  offers: Offer[];
+  loading: boolean;
+}
+
+export const useOffers = (): UseOffers => {
   const [offers, setOffers] = useState<Offer[]>([]);
-  useEffect(() => {
-    const fetchOffers = async () => {
-      return fetchSubgraph<{ offers: Offer[] }>(
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const fetchOffers = useCallback(async () => {
+    try {
+      const { offers } = await fetchSubgraph<{ offers: Offer[] }>(
         `https://api.thegraph.com/subgraphs/name/dohaki/bosonccropsten`,
         `{
           offers {
@@ -30,15 +34,17 @@ export const useOffers = (): [
           }
         }`
       );
-    };
-    fetchOffers()
-      .then(({ offers }) => {
-        setOffers(offers);
-      })
-      .catch((error) => {
-        setOffers([]);
-        console.error(error);
-      });
+      setOffers(offers);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   }, []);
-  return [offers, setOffers];
+
+  useEffect(() => {
+    fetchOffers();
+  }, []);
+
+  return { offers, loading };
 };

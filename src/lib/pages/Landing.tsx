@@ -1,4 +1,4 @@
-import FeaturedOffers from "lib/components/offer-list/OfferList";
+import FeaturedOffers from "lib/components/featured-offers/FeaturedOffers";
 import logo from "lib/logo.png";
 import styled from "styled-components";
 
