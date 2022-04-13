@@ -5,9 +5,12 @@ import styled from "styled-components";
 import { colors } from "../colours";
 
 const LandingContainer = styled.div`
-  max-width: 1500px;
+  max-width: 100%;
   margin: 0 auto;
   padding: 0px 16px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
 
   @media (min-width: 578px) {
     padding: 0px 24px;
@@ -19,6 +22,11 @@ const LandingContainer = styled.div`
 
   @media (min-width: 981px) {
     padding: 0px 32px;
+  }
+
+  @media (min-width: 1500px) {
+    padding: 0px 32px;
+    max-width: 80%;
   }
 `;
 
@@ -33,6 +41,7 @@ const Hero = styled.div`
 `;
 
 const LogoImg = styled.img`
+  width: 227px;
   height: 50px;
   padding-top: 24px;
 `;
