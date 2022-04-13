@@ -20,6 +20,15 @@ const OfferContainer = styled.div`
   grid-column-gap: 10px;
 `;
 
+const shortenAddress = (address: string): string => {
+  if (!address) {
+    return address;
+  }
+  return `${address.substring(0, 6)}...${address.substring(
+    address.length - 4
+  )}`;
+};
+
 export default function OfferList() {
   const [offers] = useOffers();
   return (
@@ -34,7 +43,7 @@ export default function OfferList() {
                 offerImg={`https://picsum.photos/22${idx}`}
                 title={offer.metadata?.title}
                 sellerImg={placeholerSellerAvatar}
-                sellerName={offer.seller?.address}
+                sellerName={shortenAddress(offer.seller?.address)}
                 priceInEth={offer.price}
                 priceSymbol={offer.exchangeToken?.symbol}
                 isSold={false}
