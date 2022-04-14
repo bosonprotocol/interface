@@ -4,10 +4,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "dev": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
+    "eject": "react-app-rewired eject",
     "lint": "eslint --ignore-path ./.gitignore --ext .js,.ts,.tsx . --quiet --fix",
     "prettier": "prettier --write 'src/**/*.{ts,tsx}'",
     "prepare": "husky install"
@@ -33,6 +33,7 @@
     "@types/styled-components": "^5.1.25",
     "@typescript-eslint/eslint-plugin": "^5.18.0",
     "@typescript-eslint/parser": "^5.18.0",
+    "customize-cra": "^1.0.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-import-resolver-typescript": "^2.7.1",
     "eslint-plugin-import": "^2.26.0",
@@ -43,6 +44,7 @@
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "husky": "^7.0.0",
     "prettier": "^2.6.2",
+    "react-app-rewired": "^2.2.1",
     "styled-components": "^5.3.5",
     "typescript": "^4.6.3"
   },
