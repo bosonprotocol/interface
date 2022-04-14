@@ -6,7 +6,7 @@ import OfferItem from "../offer/Offer";
 
 const OfferContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, 250px);
+  grid-template-columns: repeat(auto-fit, minmax(250px, 285px));
   grid-row-gap: 20px;
   grid-column-gap: 10px;
   justify-content: space-between;
