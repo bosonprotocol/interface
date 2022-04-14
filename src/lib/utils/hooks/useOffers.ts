@@ -34,7 +34,8 @@ export const useOffers = (): UseOffers => {
           }
         }`
       );
-      setOffers(offers);
+      const offers1 = offers.slice(0, 10);
+      setOffers(offers1);
     } catch (error) {
       console.error(error);
     } finally {

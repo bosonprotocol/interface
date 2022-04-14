@@ -5,12 +5,13 @@ import styled from "styled-components";
 import { colors } from "../colours";
 
 const LandingContainer = styled.div`
-  max-width: 100%;
-  margin: 0 auto;
-  padding: 0px 16px;
+  max-width: 1500px;
+  padding: 0 16px;
   display: flex;
   justify-content: center;
   flex-direction: column;
+  margin: 0 auto 64px auto;
+  overflow: hidden;
 
   @media (min-width: 578px) {
     padding: 0px 24px;
@@ -26,7 +27,6 @@ const LandingContainer = styled.div`
 
   @media (min-width: 1500px) {
     padding: 0px 32px;
-    max-width: 80%;
   }
 `;
 
