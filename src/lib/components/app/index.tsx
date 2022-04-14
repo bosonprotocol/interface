@@ -1,5 +1,3 @@
-import "react-loading-skeleton/dist/skeleton.css";
-
 import Landing from "lib/pages/Landing";
 import styled, { createGlobalStyle } from "styled-components";
 
