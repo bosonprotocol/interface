@@ -7,6 +7,9 @@ interface UseOffers {
   loading: boolean;
 }
 
+const offersGraphqlEndpoint = process.env
+  .REACT_APP_SUBGRAPH_OFFERS_GRAPHQL_ENDPOINT as string;
+
 export const useOffers = (): UseOffers => {
   const [offers, setOffers] = useState<Offer[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -14,7 +17,7 @@ export const useOffers = (): UseOffers => {
   const fetchOffers = useCallback(async () => {
     try {
       const { offers } = await fetchSubgraph<{ offers: Offer[] }>(
-        `https://api.thegraph.com/subgraphs/name/dohaki/bosonccropsten`,
+        offersGraphqlEndpoint,
         `{
           offers {
             id
