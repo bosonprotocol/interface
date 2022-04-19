@@ -113,7 +113,7 @@ const MainImg = styled.img`
 export default function Landing() {
   return (
     <LandingContainer>
-      <LogoImg src={logo} />
+      <LogoImg data-testId="logo" src={logo} />
       <Hero>
         <TitleContainer>
           <Title>Boson dApp</Title>

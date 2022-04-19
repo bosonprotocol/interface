@@ -113,17 +113,21 @@ export default function Offer({
   return (
     <Card data-testId="offer">
       <SellerInfo>
-        <ProfileImg src={sellerImg} />
-        <SellerName>{sellerName}</SellerName>
+        <ProfileImg data-testId="profileImg" src={sellerImg} />
+        <SellerName data-testId="sellerName">{sellerName}</SellerName>
       </SellerInfo>
       <ImgContainer>
-        <Image src={offerImg} />
+        <Image data-testId="image" src={offerImg} />
       </ImgContainer>
       <BasicInfoContainer>
         <Title data-testId="title">{title || "Untitled"}</Title>
-        <Price>{parseFloat(priceInEth)} ETH</Price>
+        <Price data-testId="price">{parseFloat(priceInEth)} ETH</Price>
         <CommitBtnContainer>
-          {isSold ? <Sold>Sold</Sold> : <Commit>Commit now</Commit>}
+          {isSold ? (
+            <Sold>Sold</Sold>
+          ) : (
+            <Commit data-testId="commit">Commit now</Commit>
+          )}
         </CommitBtnContainer>
       </BasicInfoContainer>
     </Card>

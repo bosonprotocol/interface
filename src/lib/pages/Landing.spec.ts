@@ -5,19 +5,63 @@ test.describe("Landing page", () => {
     await offersApi(page);
     await page.goto("/");
   });
-  test("should have a h1 Boson dApp", async ({ page }) => {
+  test("should have an h1 'Boson dApp'", async ({ page }) => {
     const h1 = await page.locator("h1");
 
     await expect(h1).toHaveText("Boson dApp");
   });
-  test("should display the first 10 offers", async ({ page }) => {
-    const offers = await page.locator("[data-testid=offer]");
+  test("should have a logo", async ({ page }) => {
+    const logoImg = await page.locator("[data-testid=logo]");
 
-    for (let i = 0; i < 10; i++) {
-      const offer = offers.nth(i);
-      const title = await offer.locator("[data-testid=title]");
-      await expect(title).toHaveText(allOffers[i].metadata?.title || "");
-    }
+    await expect(logoImg.getAttribute("src")).toBeTruthy();
+  });
+  test.describe("Featured Offers", () => {
+    test.beforeEach(async ({ page }) => {
+      await page.goto("/");
+    });
+    test("should have an h2 'Featured Offers'", async ({ page }) => {
+      const h2 = await page.locator("h2");
+
+      await expect(h2).toHaveText("Featured Offers");
+    });
+    test("should display the first 10 offers", async ({ page }) => {
+      const shortenAddress = (address: string): string => {
+        if (!address) {
+          return address;
+        }
+        return `${address.substring(0, 6)}...${address.substring(
+          address.length - 4
+        )}`;
+      };
+      const offers = await page.locator("[data-testid=offer]");
+
+      for (let i = 0; i < 10; i++) {
+        const offer = offers.nth(i);
+        const title = await offer.locator("[data-testid=title]");
+        await expect(title).toHaveText(allOffers[i].metadata?.title || "");
+
+        const sellerName = await offer.locator("[data-testid=sellerName]");
+        const expectedSellerName = shortenAddress(
+          allOffers[i].seller?.address || ""
+        );
+
+        await expect(sellerName).toHaveText(expectedSellerName);
+
+        const price = await offer.locator("[data-testid=price]");
+        const expectedPrice = parseFloat(allOffers[i].price) + " ETH";
+
+        await expect(price).toHaveText(expectedPrice);
+
+        const commit = await offer.locator("[data-testid=commit]");
+        await expect(commit).toHaveText("Commit now");
+
+        const image = await offer.locator("[data-testid=image]");
+        await expect(image.getAttribute("src")).toBeTruthy();
+
+        const profileImg = await offer.locator("[data-testid=profileImg]");
+        await expect(profileImg.getAttribute("src")).toBeTruthy();
+      }
+    });
   });
 });
 
