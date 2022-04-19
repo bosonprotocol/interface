@@ -10,7 +10,11 @@
     "eject": "react-app-rewired eject",
     "lint": "eslint --ignore-path ./.gitignore --ext .js,.ts,.tsx . --quiet --fix",
     "prettier": "prettier --write 'src/**/*.{ts,tsx}'",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "e2e": "playwright test",
+    "e2e:debug:chromium": "PWDEBUG=console playwright test --project=chromium",
+    "e2e:chromium": "playwright test --project=chromium",
+    "e2e:report": "playwright show-report"
   },
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.4",
@@ -28,6 +32,7 @@
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
+    "@playwright/test": "^1.21.1",
     "@testing-library/react": "^13.0.0",
     "@types/react-dom": "^18.0.0",
     "@types/styled-components": "^5.1.25",

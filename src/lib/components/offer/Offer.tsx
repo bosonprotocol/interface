@@ -111,7 +111,7 @@ export default function Offer({
   isSold
 }: Props) {
   return (
-    <Card>
+    <Card data-testId="offer">
       <SellerInfo>
         <ProfileImg src={sellerImg} />
         <SellerName>{sellerName}</SellerName>
@@ -120,7 +120,7 @@ export default function Offer({
         <Image src={offerImg} />
       </ImgContainer>
       <BasicInfoContainer>
-        <Title>{title || "Untitled"}</Title>
+        <Title data-testId="title">{title || "Untitled"}</Title>
         <Price>{parseFloat(priceInEth)} ETH</Price>
         <CommitBtnContainer>
           {isSold ? <Sold>Sold</Sold> : <Commit>Commit now</Commit>}

@@ -37,8 +37,8 @@ export const useOffers = (): UseOffers => {
           }
         }`
       );
-      const offers1 = offers.slice(0, 10);
-      setOffers(offers1);
+      const slicedOffers = offers.slice(0, 10);
+      setOffers(slicedOffers);
     } catch (error) {
       console.error(error);
     } finally {
