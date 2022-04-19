@@ -19,8 +19,6 @@ jobs:
           node-version: "17"
           cache: "npm"
       - run: npm ci
-      - name: Install Playwright
-        run: npx playwright install --with-deps
       - run: npm run prettier
       - run: npm run lint
       - run: npm run build
