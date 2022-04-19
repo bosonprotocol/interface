@@ -37,7 +37,6 @@ export const useOffers = (): UseOffers => {
           }
         }`
       );
-      console.log("all offers mocked?", offers);
       const slicedOffers = offers.slice(0, 10);
       setOffers(slicedOffers);
     } catch (error) {
