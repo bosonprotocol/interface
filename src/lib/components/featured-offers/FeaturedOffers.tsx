@@ -14,6 +14,7 @@ const Heading = styled.h2`
 
 export default function FeaturedOffers() {
   const { offers, loading } = useOffers();
+  console.log("FeaturedOffers offers", offers);
   return (
     <Root>
       <Heading>Featured Offers</Heading>
