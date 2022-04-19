@@ -37,10 +37,12 @@ jobs:
           name: playwright-report
           path: playwright-report/
       - name: Deploy via fleek
+        if: ${{ github.event_name == 'push' }}
         id: deploy
         uses: fleekhq/action-deploy@v1
         with:
           apiKey: ${{ secrets.FLEEK_API_KEY }}
           workDir: ./public
       - name: Get the output url
+        if: ${{ github.event_name == 'push' }}
         run: echo "Deploy url is ${{ steps.deploy.outputs.deployUrl }}"
