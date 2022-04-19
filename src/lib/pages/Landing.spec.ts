@@ -2,7 +2,6 @@ import { expect, Page, test } from "@playwright/test";
 
 test.describe("Landing page", () => {
   test.beforeEach(async ({ page }) => {
-    await offersApi(page);
     await page.goto("/");
   });
   test("should have a h1 Boson dApp", async ({ page }) => {
@@ -11,6 +10,12 @@ test.describe("Landing page", () => {
     await expect(h1).toHaveText("Boson dApp");
   });
   test("should have an offer with title 'first offer'", async ({ page }) => {
+    console.log({
+      REACT_APP_SUBGRAPH_OFFERS_GRAPHQL_ENDPOINT:
+        process.env.REACT_APP_SUBGRAPH_OFFERS_GRAPHQL_ENDPOINT,
+      PLAYWRIGHT_TEST_BASE_URL: process.env.PLAYWRIGHT_TEST_BASE_URL
+    });
+    await offersApi(page);
     const offers = await page.locator("[data-testid=offer]");
     const firstOffer = offers.first();
     const title = await firstOffer.locator("[data-testid=title]");
