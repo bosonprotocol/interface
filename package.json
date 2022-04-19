@@ -11,9 +11,8 @@
     "lint": "eslint --ignore-path ./.gitignore --ext .js,.ts,.tsx . --quiet --fix",
     "prettier": "prettier --write 'src/**/*.{ts,tsx}'",
     "prepare": "husky install",
-    "e2e": "CI=true playwright test",
-    "e2e:debug:chromium": "PWDEBUG=console playwright test --project=chromium",
-    "e2e:chromium": "playwright test --project=chromium",
+    "e2e": "CI=true playwright test --project=chromium",
+    "e2e:debug": "PWDEBUG=console playwright test --project=chromium",
     "e2e:report": "playwright show-report"
   },
   "dependencies": {
