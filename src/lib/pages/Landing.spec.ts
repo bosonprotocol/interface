@@ -1,11 +1,10 @@
 import { expect, Page, test } from "@playwright/test";
 
-test.beforeEach(async ({ page }) => {
-  await offersApi(page);
-  await page.goto("/");
-});
-
 test.describe("Landing page", () => {
+  test.beforeEach(async ({ page }) => {
+    await offersApi(page);
+    await page.goto("/");
+  });
   test("should have a h1 Boson dApp", async ({ page }) => {
     const h1 = await page.locator("h1");
 
