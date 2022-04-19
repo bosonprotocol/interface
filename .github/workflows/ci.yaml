@@ -39,3 +39,9 @@ jobs:
           workDir: ./public
       - name: Get the output url
         run: echo "Deploy url is ${{ steps.deploy.outputs.deployUrl }}"
+      - run: ls
+      - run: ls playwright-report
+      - uses: actions/upload-artifact@v3
+        with:
+          name: playwright-report
+          path: playwright-report/
