@@ -13,7 +13,7 @@ test.describe("Landing page", () => {
   test("should display the first 10 offers", async ({ page }) => {
     const offers = await page.locator("[data-testid=offer]");
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 11; i++) {
       const offer = offers.nth(i);
       const title = await offer.locator("[data-testid=title]");
       await expect(title).toHaveText(allOffers[i].metadata?.title || "");
