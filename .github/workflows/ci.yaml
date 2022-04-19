@@ -18,6 +18,11 @@ jobs:
         with:
           node-version: "17"
           cache: "npm"
+      - name: Create env file
+        run: |
+          touch .env
+          echo REACT_APP_SUBGRAPH_OFFERS_GRAPHQL_ENDPOINT=${{ secrets.REACT_APP_SUBGRAPH_OFFERS_GRAPHQL_ENDPOINT } >> .env
+          cat .env
       - run: npm ci
       - name: Install Playwright
         run: npx playwright install --with-deps
