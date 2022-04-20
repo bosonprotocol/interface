@@ -3,12 +3,27 @@
   "homepage": ".",
   "version": "0.1.0",
   "private": true,
+  "scripts": {
+    "dev": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test --testPathIgnorePatterns .spec.ts",
+    "eject": "react-app-rewired eject",
+    "lint": "eslint --ignore-path ./.gitignore --ext .js,.ts,.tsx . --quiet --fix",
+    "prettier": "prettier --write 'src/**/*.{ts,tsx}'",
+    "prepare": "husky install",
+    "e2e": "playwright test --project=chromium",
+    "e2e:ci": "CI=true playwright test --project=chromium",
+    "e2e:debug": "PWDEBUG=console playwright test --project=chromium",
+    "e2e:report": "playwright show-report"
+  },
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.4.1",
     "@types/node": "^16.11.26",
     "@types/react": "^17.0.44",
+    "cross-fetch": "^3.1.5",
+    "fetch": "^1.1.0",
     "husky": "^7.0.4",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
@@ -16,28 +31,8 @@
     "react-scripts": "5.0.0",
     "web-vitals": "^2.1.4"
   },
-  "scripts": {
-    "start": "react-app-rewired start",
-    "build": "react-app-rewired build",
-    "test": "react-app-rewired test",
-    "eject": "react-app-rewired eject",
-    "lint": "eslint --ignore-path ./.gitignore --ext .js,.ts,.tsx . --quiet --fix",
-    "prettier": "prettier --write 'src/**/*.{ts,tsx}'",
-    "prepare": "husky install"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
   "devDependencies": {
+    "@playwright/test": "^1.21.1",
     "@testing-library/react": "^13.0.0",
     "@types/react-dom": "^18.0.0",
     "@types/styled-components": "^5.1.25",
@@ -57,5 +52,17 @@
     "react-app-rewired": "^2.2.1",
     "styled-components": "^5.3.5",
     "typescript": "^4.6.3"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

@@ -12,6 +12,8 @@ jobs:
   build-test-deploy:
     name: Build, Test and Deploy the Marketplace Interface
     runs-on: ubuntu-latest
+    env:
+      REACT_APP_SUBGRAPH_OFFERS_GRAPHQL_ENDPOINT: https://api.thegraph.com/subgraphs/name/dohaki/bosonccropsten
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
@@ -19,15 +21,25 @@ jobs:
           node-version: "17"
           cache: "npm"
       - run: npm ci
+      - name: Install Playwright
+        run: npx playwright install --with-deps
       - run: npm run prettier
       - run: npm run lint
       - run: npm run build
       - run: npm run test
+      - run: npm run e2e:ci
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
       - name: Deploy via fleek
+        if: ${{ github.event_name == 'push' }}
         id: deploy
         uses: fleekhq/action-deploy@v1
         with:
           apiKey: ${{ secrets.FLEEK_API_KEY }}
           workDir: ./public
       - name: Get the output url
+        if: ${{ github.event_name == 'push' }}
         run: echo "Deploy url is ${{ steps.deploy.outputs.deployUrl }}"
