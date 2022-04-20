@@ -105,7 +105,9 @@ export default function Landing() {
               value={brand}
               placeholder="Search by Brand"
             />
-            <GoButton onClick={() => navigate(BosonRoutes.Search)}>Go</GoButton>
+            <GoButton onClick={() => navigate(BosonRoutes.Explore)}>
+              Go
+            </GoButton>
           </InputGo>
           <ExploreContainer>
             <ExploreButton>Explore All Offers</ExploreButton>

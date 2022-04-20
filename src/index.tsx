@@ -13,7 +13,7 @@ import reportWebVitals from "./reportWebVitals";
 const rootElement = document.getElementById("root");
 if (!rootElement) throw new Error("Unable to find the root element");
 
-const Search = React.lazy(() => import("pages/Search"));
+const Search = React.lazy(() => import("pages/Explore"));
 const FallBack = <>Loading...</>;
 const queryClient = new QueryClient();
 const root = createRoot(rootElement);
@@ -25,7 +25,7 @@ root.render(
           <Route path="/" element={<App />}>
             <Route path={BosonRoutes.Root} element={<Landing />} />
             <Route
-              path={BosonRoutes.Search}
+              path={BosonRoutes.Explore}
               element={
                 <React.Suspense fallback={FallBack}>
                   <Search />
