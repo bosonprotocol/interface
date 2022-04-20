@@ -28,7 +28,11 @@ interface Props {
 
 export default function OfferList({ offers }: Props) {
   if (offers.length === 0) {
-    return <OfferContainer>There are no offers at the moment</OfferContainer>;
+    return (
+      <OfferContainer data-testId="noOffers">
+        There are no offers at the moment
+      </OfferContainer>
+    );
   }
 
   return (

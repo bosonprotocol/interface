@@ -1,8 +1,7 @@
 import { expect, Page, test } from "@playwright/test";
 
-test.describe("Landing page", () => {
+test.describe("Root page (Landing page)", () => {
   test.beforeEach(async ({ page }) => {
-    await offersApi(page);
     await page.goto("/");
   });
   test("should have an h1 'Boson dApp'", async ({ page }) => {
@@ -15,15 +14,17 @@ test.describe("Landing page", () => {
 
     await expect(logoImg.getAttribute("src")).toBeTruthy();
   });
-  test.describe("Featured Offers", () => {
-    test.beforeEach(async ({ page }) => {
-      await page.goto("/");
-    });
-    test("should have an h2 'Featured Offers'", async ({ page }) => {
-      const h2 = await page.locator("h2");
+  test("should have an h2 'Featured Offers'", async ({ page }) => {
+    const h2 = await page.locator("h2");
 
-      await expect(h2).toHaveText("Featured Offers");
-    });
+    await expect(h2).toHaveText("Featured Offers");
+  });
+  test("should have a footer", async ({ page }) => {
+    const footer = await page.locator("footer");
+
+    await expect(footer).toBeDefined();
+  });
+  test.describe("Offers list", () => {
     test("should display the first 10 offers", async ({ page }) => {
       const shortenAddress = (address: string): string => {
         if (!address) {
@@ -33,6 +34,8 @@ test.describe("Landing page", () => {
           address.length - 4
         )}`;
       };
+      await mockOffersApi(page, { withOffers: true });
+      await page.goto("/");
       const offers = await page.locator("[data-testid=offer]");
 
       for (let i = 0; i < 10; i++) {
@@ -61,6 +64,14 @@ test.describe("Landing page", () => {
         const profileImg = await offer.locator("[data-testid=profileImg]");
         await expect(profileImg.getAttribute("src")).toBeTruthy();
       }
+    });
+    test("should display there are no offers at the moment", async ({
+      page
+    }) => {
+      await mockOffersApi(page, { withOffers: false });
+      await page.goto("/");
+      const noOffers = await page.locator("[data-testid=noOffers]");
+      await expect(noOffers).toHaveText("There are no offers at the moment");
     });
   });
 });
@@ -1042,7 +1053,7 @@ const allOffers = [
   }
 ];
 
-const offersApi = (page: Page) =>
+const mockOffersApi = (page: Page, { withOffers }: { withOffers: boolean }) =>
   page.route(
     "**//api.thegraph.com/subgraphs/name/dohaki/bosonccropsten",
     (route) => {
@@ -1050,7 +1061,7 @@ const offersApi = (page: Page) =>
         status: 200,
         body: JSON.stringify({
           data: {
-            offers: allOffers
+            offers: withOffers ? allOffers : []
           }
         })
       });
