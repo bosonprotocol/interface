@@ -113,7 +113,7 @@ const MainImg = styled.img`
 export default function Landing() {
   return (
     <LandingContainer>
-      <LogoImg data-testId="logo" src={logo} />
+      <LogoImg data-testid="logo" src={logo} />
 
       <Hero>
         <TitleContainer>
