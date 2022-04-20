@@ -12,17 +12,14 @@ jobs:
   build-test-deploy:
     name: Build, Test and Deploy the Marketplace Interface
     runs-on: ubuntu-latest
+    env:
+      REACT_APP_SUBGRAPH_OFFERS_GRAPHQL_ENDPOINT: https://api.thegraph.com/subgraphs/name/dohaki/bosonccropsten
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
           node-version: "17"
           cache: "npm"
-      - name: Create env file
-        run: |
-          touch .env
-          echo REACT_APP_SUBGRAPH_OFFERS_GRAPHQL_ENDPOINT=${{ secrets.REACT_APP_SUBGRAPH_OFFERS_GRAPHQL_ENDPOINT }} >> .env
-          cat .env
       - run: npm ci
       - name: Install Playwright
         run: npx playwright install --with-deps
