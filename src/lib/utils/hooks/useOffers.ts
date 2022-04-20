@@ -31,7 +31,7 @@ const getOfferById = async (id: string) => {
     offersGraphqlEndpoint,
     gql`
       {
-        offers(id: ${id}) 
+        offer(id: ${id}) 
         ${offerGraphQL}
       }
     `
