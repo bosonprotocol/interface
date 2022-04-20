@@ -1,4 +1,6 @@
 export const BosonRoutes = {
   Root: "/",
-  Search: "/search"
+  Search: "/search",
+  CreateOffer: "/create-offer",
+  ManageOffers: "/manage-offers"
 };

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { colors } from "../../colours";
+import { colours } from "../../lib/colours";
 
 const Card = styled.div`
   border-radius: 12px;
@@ -48,7 +48,7 @@ const SellerName = styled.span`
   font-size: 14px;
   font-weight: 600;
   margin-left: 8px;
-  color: ${colors.darkGreen};
+  color: ${colours.darkGreen};
   overflow-wrap: break-word;
   width: 80%;
   font-family: "Roboto Mono", monospace;
@@ -73,20 +73,20 @@ const Commit = styled.button`
   all: unset;
   font-weight: 600;
   font-size: 15px;
-  color: ${colors.green};
+  color: ${colours.green};
   border-radius: 11px;
   display: inline-block;
   text-align: center;
   transition: all 0.5s;
   cursor: pointer;
-  border: 1px solid ${colors.green};
+  border: 1px solid ${colours.green};
   padding: 6px 12px;
   margin-top: 8px;
 `;
 
 const Sold = styled.p`
   all: unset;
-  color: ${colors.grey};
+  color: ${colours.grey};
   font-size: 16px;
   font-weight: 600;
 `;

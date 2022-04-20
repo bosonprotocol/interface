@@ -1,8 +1,8 @@
-import { colors } from "lib/colours";
-import logo from "lib/logo.png";
-import { BosonRoutes } from "lib/routes";
-import { Outlet, useNavigate } from "react-router-dom";
+import { colours } from "lib/colours";
+import { Outlet } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
+
+import Header from "../Header";
 
 const GlobalStyle = createGlobalStyle`
   html, body {
@@ -11,7 +11,7 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     display:flex;
     flex-direction:column;
-    background-color: ${colors.navy};
+    background-color: ${colours.navy};
     z-index: -2;
     color: white;
   }
@@ -22,19 +22,12 @@ const Container = styled.div`
   min-height: 100vh;
 `;
 
-const LogoImg = styled.img`
-  width: 227px;
-  height: 50px;
-  padding-top: 24px;
-  cursor: pointer;
-`;
-
 const PageContainer = styled.div`
   padding-bottom: 150px; // a bit more than footer height
 `;
 
 const Footer = styled.footer`
-  background-color: ${colors.arsenic};
+  background-color: ${colours.arsenic};
   height: 100px;
   padding: 20px 0;
   position: absolute;
@@ -46,16 +39,10 @@ const Footer = styled.footer`
 `;
 
 export default function App() {
-  const navigate = useNavigate();
-
   return (
     <Container>
       <GlobalStyle />
-      <LogoImg
-        data-testid="logo"
-        src={logo}
-        onClick={() => navigate(BosonRoutes.Root)}
-      />
+      <Header />
       <PageContainer>
         <Outlet />
       </PageContainer>

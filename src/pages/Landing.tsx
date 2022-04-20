@@ -1,35 +1,18 @@
-import FeaturedOffers from "lib/components/featured-offers/FeaturedOffers";
+import FeaturedOffers from "components/featured-offers/FeaturedOffers";
 import { BosonRoutes } from "lib/routes";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-import { colors } from "../colours";
+import { Layout } from "../components/Layout";
+import { colours } from "../lib/colours";
 
-const LandingContainer = styled.div`
-  max-width: 1500px;
-  padding: 0 16px;
+const LandingContainer = styled(Layout)`
   display: flex;
   justify-content: center;
   flex-direction: column;
   margin: 0 auto 64px auto;
   overflow: hidden;
-
-  @media (min-width: 578px) {
-    padding: 0px 24px;
-  }
-
-  @media (min-width: 768px) {
-    padding: 0px 28px;
-  }
-
-  @media (min-width: 981px) {
-    padding: 0px 32px;
-  }
-
-  @media (min-width: 1500px) {
-    padding: 0px 32px;
-  }
 `;
 
 const Hero = styled.div`
@@ -73,8 +56,8 @@ const Input = styled.input`
 
 const GoButton = styled.button`
   width: 100px;
-  background-color: ${colors.green};
-  color: ${colors.navy};
+  background-color: ${colours.green};
+  color: ${colours.navy};
   border-radius: 5px;
   font-size: 16px;
   font-weight: 600;
@@ -84,8 +67,8 @@ const GoButton = styled.button`
 const ExploreButton = styled.button`
   margin-top: 10px;
   width: 100%;
-  background-color: ${colors.green};
-  color: ${colors.navy};
+  background-color: ${colours.green};
+  color: ${colours.navy};
   border-radius: 5px;
   padding: 10px;
   font-size: 16px;

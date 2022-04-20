@@ -25,7 +25,6 @@ const offerGraphQL = `
   }
   `;
 
-// TODO: cannot filter by id yet
 const getOfferById = async (id: string) => {
   const { offers } = await fetchSubgraph<{ offers: Offer[] }>(
     offersGraphqlEndpoint,
