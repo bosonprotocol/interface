@@ -49,6 +49,7 @@ export const useOffer = (offerId: string) => {
 interface Props {
   brand: string;
 }
+// TODO: use brand to filter once it's supported
 export const useOffers = ({ brand: _brand }: Props) => {
   return useQuery("offers", async () => {
     const { offers } = await fetchSubgraph<{ offers: Offer[] }>(
