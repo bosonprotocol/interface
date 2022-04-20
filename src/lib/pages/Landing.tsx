@@ -1,5 +1,6 @@
 import FeaturedOffers from "lib/components/featured-offers/FeaturedOffers";
-import logo from "lib/logo.png";
+import { BosonRoutes } from "lib/routes";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import { colors } from "../colours";
@@ -40,12 +41,6 @@ const Hero = styled.div`
   }
 `;
 
-const LogoImg = styled.img`
-  width: 227px;
-  height: 50px;
-  padding-top: 24px;
-`;
-
 const TitleContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -82,6 +77,7 @@ const GoButton = styled.button`
   border-radius: 5px;
   font-size: 16px;
   font-weight: 600;
+  cursor: pointer;
 `;
 
 const ExploreButton = styled.button`
@@ -93,6 +89,7 @@ const ExploreButton = styled.button`
   padding: 10px;
   font-size: 16px;
   font-weight: 600;
+  cursor: pointer;
 `;
 
 const MainImgContainer = styled.div`
@@ -111,16 +108,15 @@ const MainImg = styled.img`
 `;
 
 export default function Landing() {
+  const navigate = useNavigate();
   return (
     <LandingContainer>
-      <LogoImg data-testId="logo" src={logo} />
-
       <Hero>
         <TitleContainer>
           <Title>Boson dApp</Title>
           <InputGo>
             <Input placeholder="Search by Brand" />
-            <GoButton>Go</GoButton>
+            <GoButton onClick={() => navigate(BosonRoutes.Search)}>Go</GoButton>
           </InputGo>
           <ExploreContainer>
             <ExploreButton>Explore All Offers</ExploreButton>

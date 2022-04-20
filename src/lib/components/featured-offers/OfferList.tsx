@@ -1,4 +1,4 @@
-import { Offer } from "lib/components/types/offer";
+import { Offer } from "lib/types/offer";
 import styled from "styled-components";
 
 import placeholderSellerAvatar from "../../placeholder-seller.svg";
@@ -29,7 +29,7 @@ interface Props {
 export default function OfferList({ offers }: Props) {
   if (offers.length === 0) {
     return (
-      <OfferContainer data-testId="noOffers">
+      <OfferContainer data-testid="noOffers">
         There are no offers at the moment
       </OfferContainer>
     );

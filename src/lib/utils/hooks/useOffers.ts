@@ -1,4 +1,4 @@
-import { Offer } from "lib/components/types/offer";
+import { Offer } from "lib/types/offer";
 import { fetchSubgraph } from "lib/utils/core-components/subgraph";
 import { useCallback, useEffect, useState } from "react";
 
