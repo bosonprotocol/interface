@@ -1,54 +1,65 @@
+import { gql } from "graphql-request";
 import { Offer } from "lib/types/offer";
 import { fetchSubgraph } from "lib/utils/core-components/subgraph";
-import { useCallback, useEffect, useState } from "react";
-
-interface UseOffers {
-  offers: Offer[];
-  loading: boolean;
-}
+import { useQuery } from "react-query";
 
 const offersGraphqlEndpoint = process.env
   .REACT_APP_SUBGRAPH_OFFERS_GRAPHQL_ENDPOINT as string;
 
-export const useOffers = (): UseOffers => {
-  const [offers, setOffers] = useState<Offer[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-
-  const fetchOffers = useCallback(async () => {
-    try {
-      const { offers } = await fetchSubgraph<{ offers: Offer[] }>(
-        offersGraphqlEndpoint,
-        `{
-          offers {
-            id
-            price
-            seller {
-              id
-              address
-            }
-            exchangeToken {
-              symbol
-            }
-            metadata {
-              title
-              description
-              additionalProperties
-            }
-          }
-        }`
-      );
-      const slicedOffers = offers.slice(0, 10);
-      setOffers(slicedOffers);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
+const offerGraphQL = `
+  {
+    id
+    price
+    seller {
+      id
+      address
     }
-  }, []);
+    exchangeToken {
+      symbol
+    }
+    metadata {
+      title
+      description
+      additionalProperties
+    }
+  }
+  `;
 
-  useEffect(() => {
-    fetchOffers();
-  }, []);
+// TODO: cannot filter by id yet
+const getOfferById = async (id: string) => {
+  const { offers } = await fetchSubgraph<{ offers: Offer[] }>(
+    offersGraphqlEndpoint,
+    gql`
+      {
+        offers(id: ${id}) 
+        ${offerGraphQL}
+      }
+    `
+  );
+  return offers;
+};
 
-  return { offers, loading };
+// TODO: to be used in details page
+export const useOffer = (offerId: string) => {
+  return useQuery(["offer", offerId], () => getOfferById(offerId), {
+    enabled: !!offerId
+  });
+};
+
+interface Props {
+  brand: string;
+}
+export const useOffers = ({ brand: _brand }: Props) => {
+  return useQuery("offers", async () => {
+    const { offers } = await fetchSubgraph<{ offers: Offer[] }>(
+      offersGraphqlEndpoint,
+      gql`
+        {
+          offers(first: 10) 
+          ${offerGraphQL}
+        }
+      `
+    );
+    return offers;
+  });
 };

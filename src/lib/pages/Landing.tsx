@@ -1,5 +1,6 @@
 import FeaturedOffers from "lib/components/featured-offers/FeaturedOffers";
 import { BosonRoutes } from "lib/routes";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
@@ -109,13 +110,18 @@ const MainImg = styled.img`
 
 export default function Landing() {
   const navigate = useNavigate();
+  const [brand, setBrand] = useState("");
   return (
     <LandingContainer>
       <Hero>
         <TitleContainer>
           <Title>Boson dApp</Title>
           <InputGo>
-            <Input placeholder="Search by Brand" />
+            <Input
+              onChange={(e) => setBrand(e.target.value)}
+              value={brand}
+              placeholder="Search by Brand"
+            />
             <GoButton onClick={() => navigate(BosonRoutes.Search)}>Go</GoButton>
           </InputGo>
           <ExploreContainer>
@@ -127,7 +133,7 @@ export default function Landing() {
         </MainImgContainer>
       </Hero>
 
-      <FeaturedOffers />
+      <FeaturedOffers brand={brand} />
     </LandingContainer>
   );
 }
