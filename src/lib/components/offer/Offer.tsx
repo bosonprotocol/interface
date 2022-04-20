@@ -48,7 +48,7 @@ const SellerName = styled.span`
   font-size: 14px;
   font-weight: 600;
   margin-left: 8px;
-  color: #276c55;
+  color: ${colors.darkGreen};
   overflow-wrap: break-word;
   width: 80%;
   font-family: "Roboto Mono", monospace;

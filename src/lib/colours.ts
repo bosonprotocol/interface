@@ -1,6 +1,8 @@
 export const colors = {
   navy: "#222539",
-  green: "#63F2C1",
+  green: "#0ffbad",
   cgBlue: "#247BA0",
-  grey: "grey"
+  grey: "grey",
+  arsenic: "#3a364f",
+  darkGreen: "#276c55"
 };

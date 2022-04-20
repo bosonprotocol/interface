@@ -1,3 +1,4 @@
+import { colors } from "lib/colours";
 import Landing from "lib/pages/Landing";
 import styled, { createGlobalStyle } from "styled-components";
 
@@ -8,7 +9,7 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     display:flex;
     flex-direction:column;
-    background-color: #222539;
+    background-color: ${colors.navy};
     z-index: -2;
     color: white;
   }
@@ -24,7 +25,7 @@ const PageContainer = styled.div`
 `;
 
 const Footer = styled.footer`
-  background-color: #3a364f;
+  background-color: ${colors.arsenic};
   height: 100px;
   padding: 20px 0;
   position: absolute;
