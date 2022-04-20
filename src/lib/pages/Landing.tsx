@@ -114,6 +114,7 @@ export default function Landing() {
   return (
     <LandingContainer>
       <LogoImg data-testId="logo" src={logo} />
+
       <Hero>
         <TitleContainer>
           <Title>Boson dApp</Title>
