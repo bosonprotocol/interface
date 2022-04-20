@@ -50,7 +50,8 @@ interface Props {
   brand: string;
 }
 // TODO: use brand to filter once it's supported
-export const useOffers = ({ brand: _brand }: Props) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const useOffers = ({ brand }: Props) => {
   return useQuery("offers", async () => {
     const { offers } = await fetchSubgraph<{ offers: Offer[] }>(
       offersGraphqlEndpoint,
