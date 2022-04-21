@@ -27,7 +27,7 @@ const offerGraphQL = `
 
 // TODO: cannot filter by id yet
 const getOfferById = async (id: string) => {
-  const { offers } = await fetchSubgraph<{ offers: Offer[] }>(
+  const result = await fetchSubgraph<{ offer: Offer[] }>(
     offersGraphqlEndpoint,
     gql`
       {
@@ -36,7 +36,7 @@ const getOfferById = async (id: string) => {
       }
     `
   );
-  return offers;
+  return result?.offer;
 };
 
 // TODO: to be used in details page
@@ -53,7 +53,7 @@ interface Props {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const useOffers = ({ brand }: Props) => {
   return useQuery("offers", async () => {
-    const { offers } = await fetchSubgraph<{ offers: Offer[] }>(
+    const result = await fetchSubgraph<{ offers: Offer[] }>(
       offersGraphqlEndpoint,
       gql`
         {
@@ -62,6 +62,6 @@ export const useOffers = ({ brand }: Props) => {
         }
       `
     );
-    return offers;
+    return result?.offers;
   });
 };
