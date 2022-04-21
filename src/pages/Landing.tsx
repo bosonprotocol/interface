@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import { Layout } from "../components/Layout";
-import { colours } from "../lib/colours";
+import { colors } from "../lib/colors";
 
 const LandingContainer = styled(Layout)`
   display: flex;
@@ -56,8 +56,8 @@ const Input = styled.input`
 
 const GoButton = styled.button`
   width: 100px;
-  background-color: ${colours.green};
-  color: ${colours.navy};
+  background-color: ${colors.green};
+  color: ${colors.navy};
   border-radius: 5px;
   font-size: 16px;
   font-weight: 600;
@@ -67,8 +67,8 @@ const GoButton = styled.button`
 const ExploreButton = styled.button`
   margin-top: 10px;
   width: 100%;
-  background-color: ${colours.green};
-  color: ${colours.navy};
+  background-color: ${colors.green};
+  color: ${colors.navy};
   border-radius: 5px;
   padding: 10px;
   font-size: 16px;

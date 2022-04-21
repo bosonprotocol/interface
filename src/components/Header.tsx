@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-import { colours } from "../lib/colours";
+import { colors } from "../lib/colors";
 import logo from "../lib/logo.png";
 import { BosonRoutes } from "../lib/routes";
 import { Layout } from "./Layout";
@@ -23,7 +23,7 @@ const NavigationLinks = styled.nav`
     cursor: pointer;
   }
   a:hover {
-    color: ${colours.green};
+    color: ${colors.green};
   }
 `;
 

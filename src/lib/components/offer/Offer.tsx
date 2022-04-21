@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { colors } from "../../lib/colors";
+import { colors } from "../../colors";
 
 const Card = styled.div`
   border-radius: 12px;

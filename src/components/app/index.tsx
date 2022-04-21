@@ -1,4 +1,4 @@
-import { colours } from "lib/colours";
+import { colors } from "lib/colors";
 import { Outlet } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
 
@@ -11,7 +11,7 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     display:flex;
     flex-direction:column;
-    background-color: ${colours.navy};
+    background-color: ${colors.navy};
     z-index: -2;
     color: white;
   }
@@ -27,7 +27,7 @@ const PageContainer = styled.div`
 `;
 
 const Footer = styled.footer`
-  background-color: ${colours.arsenic};
+  background-color: ${colors.arsenic};
   height: 100px;
   padding: 20px 0;
   position: absolute;

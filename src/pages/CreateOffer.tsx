@@ -2,7 +2,7 @@ import { useFormik } from "formik";
 import styled from "styled-components";
 
 import { Layout } from "../components/Layout";
-import { colours } from "../lib/colours";
+import { colors } from "../lib/colors";
 
 const CreateOfferContainer = styled(Layout)`
   display: flex;
@@ -37,11 +37,11 @@ const Button = styled.button`
   border-radius: 6px;
   font-weight: bold;
   width: 100%;
-  background-color: ${colours.green};
+  background-color: ${colors.green};
   padding: 10px 0;
   font-size: 16px;
   text-transform: uppercase;
-  color: ${colours.navy};
+  color: ${colors.navy};
 `;
 
 const FormElementsContainer = styled.div`
