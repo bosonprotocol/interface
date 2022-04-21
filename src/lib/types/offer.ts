@@ -1,3 +1,7 @@
+import { offers as offersApi } from "@bosonprotocol/core-sdk";
+
+export type RawOffer = offersApi.RawOfferFromSubgraph;
+
 export interface Offer {
   id: string;
   price: string;

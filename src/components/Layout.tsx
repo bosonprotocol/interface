@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 import styled from "styled-components";
 
 const Root = styled.div`
@@ -22,7 +23,7 @@ const Root = styled.div`
 `;
 
 interface IProps {
-  children: JSX.Element | JSX.Element[];
+  children: ReactNode;
 }
 
 export function Layout({ children, ...props }: IProps) {

@@ -7,7 +7,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import CreateOffer from "./pages/CreateOffer";
-import ManageOffers from "./pages/ManageOffers";
+import ManageOffer from "./pages/manage-offer";
 import reportWebVitals from "./reportWebVitals";
 
 const rootElement = document.getElementById("root");
@@ -33,7 +33,7 @@ root.render(
               }
             />
             <Route path={BosonRoutes.CreateOffer} element={<CreateOffer />} />
-            <Route path={BosonRoutes.ManageOffers} element={<ManageOffers />} />
+            <Route path={BosonRoutes.ManageOffers} element={<ManageOffer />} />
             <Route
               path="*"
               element={

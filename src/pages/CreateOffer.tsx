@@ -1,8 +1,14 @@
+import { MetadataType } from "@bosonprotocol/common";
+import { IpfsMetadata } from "@bosonprotocol/ipfs-storage";
+import { createOffer } from "@bosonprotocol/widgets-sdk";
+import { parseEther } from "@ethersproject/units";
 import { useFormik } from "formik";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 import { Layout } from "../components/Layout";
 import { colors } from "../lib/colors";
+import { CONFIG } from "../lib/config";
 
 const CreateOfferContainer = styled(Layout)`
   display: flex;
@@ -26,6 +32,7 @@ const FormLabel = styled.label`
 `;
 
 const FormControl = styled.input`
+  font-family: "Manrope", sans-serif;
   padding: 10px;
   border-radius: 6px;
 `;
@@ -61,6 +68,44 @@ const dayInMs = 1000 * 60 * 60 * 24;
 const minuteInMS = 1000 * 60;
 
 export default function CreateOffer() {
+  const [values, setValues] = useState<any>();
+
+  async function create() {
+    const storage = new IpfsMetadata({
+      url: CONFIG.ipfsMetadataUrl
+    });
+
+    console.log("storage", storage);
+
+    const metadataHash = await storage.storeMetadata({
+      name: values.name,
+      description: values.description,
+      externalUrl: values.externalUrl,
+      schemaUrl: values.schemaUrl,
+      type: MetadataType.BASE
+    });
+    const metadataUri = `${CONFIG.metadataBaseUrl}/${metadataHash}`;
+
+    console.log(metadataUri);
+
+    createOffer(
+      {
+        ...values,
+        price: parseEther(values.price).toString(),
+        deposit: parseEther(values.deposit).toString(),
+        penalty: parseEther(values.penalty).toString(),
+        metadataHash,
+        metadataUri
+      },
+      CONFIG
+    );
+  }
+
+  useEffect(() => {
+    if (!values) return;
+    create();
+  }, [values]);
+
   const formik = useFormik({
     initialValues: {
       name: "Baggy jeans",
@@ -79,7 +124,11 @@ export default function CreateOffer() {
       voucherValidDurationInMS: dayInMs.toString()
     },
     onSubmit: async (values) => {
-      console.log(values);
+      try {
+        setValues(values);
+      } catch (error) {
+        console.log(error);
+      }
     }
   });
 
