@@ -78,6 +78,38 @@ test.describe("Root page (Landing page)", () => {
       const noOffers = await page.locator("[data-testid=noOffers]");
       await expect(noOffers).toHaveText("There are no offers at the moment");
     });
+    test("should display there are no offers at the moment if we get a 400 error", async ({
+      page
+    }) => {
+      await mockOffersApi(page, {
+        response: {
+          status: 400,
+          body: JSON.stringify({
+            data: {}
+          }),
+          contentType: "application/json"
+        }
+      });
+      await page.goto("/");
+      const noOffers = await page.locator("[data-testid=noOffers]");
+      await expect(noOffers).toHaveText("There are no offers at the moment");
+    });
+  });
+  test("should display there are no offers at the moment if we get a 500 error", async ({
+    page
+  }) => {
+    await mockOffersApi(page, {
+      response: {
+        status: 500,
+        body: JSON.stringify({
+          data: {}
+        }),
+        contentType: "application/json"
+      }
+    });
+    await page.goto("/");
+    const noOffers = await page.locator("[data-testid=noOffers]");
+    await expect(noOffers).toHaveText("There are no offers at the moment");
   });
 });
 
@@ -1058,7 +1090,13 @@ const allOffers = [
   }
 ];
 
-const mockOffersApi = (page: Page, { withOffers }: { withOffers: boolean }) =>
+const mockOffersApi = (
+  page: Page,
+  {
+    withOffers,
+    response
+  }: { withOffers?: boolean; response?: Record<string, unknown> }
+) =>
   page.route(
     "**/api.thegraph.com/subgraphs/name/dohaki/bosonccropsten",
     (route) => {
@@ -1069,7 +1107,8 @@ const mockOffersApi = (page: Page, { withOffers }: { withOffers: boolean }) =>
             offers: withOffers ? allOffers : []
           }
         }),
-        contentType: "application/json"
+        contentType: "application/json",
+        ...response
       });
     }
   );
