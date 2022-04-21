@@ -5,6 +5,14 @@ export async function fetchSubgraph<T>(
   query: string,
   variables?: Record<string, unknown>
 ): Promise<T> {
-  const data = await request(subgraphUrl, query, variables);
-  return data as T;
+  try {
+    const data = await request(subgraphUrl, query, variables, {
+      Accept: "application/json",
+      "Content-Type": "application/json"
+    });
+    return data as T;
+  } catch (err) {
+    console.error(err);
+  }
+  return null as unknown as T;
 }
