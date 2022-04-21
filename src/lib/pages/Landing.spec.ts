@@ -1,28 +1,30 @@
 import { expect, Page, test } from "@playwright/test";
 
 test.describe("Root page (Landing page)", () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto("/");
-  });
-  test("should have an h1 'Boson dApp'", async ({ page }) => {
-    const h1 = await page.locator("h1");
+  test.describe("Container", () => {
+    test.beforeEach(async ({ page }) => {
+      await page.goto("/");
+    });
+    test("should have an h1 'Boson dApp'", async ({ page }) => {
+      const h1 = await page.locator("h1");
 
-    await expect(h1).toHaveText("Boson dApp");
-  });
-  test("should have a logo", async ({ page }) => {
-    const logoImg = await page.locator("[data-testid=logo]");
+      await expect(h1).toHaveText("Boson dApp");
+    });
+    test("should have a logo", async ({ page }) => {
+      const logoImg = await page.locator("[data-testid=logo]");
 
-    await expect(logoImg.getAttribute("src")).toBeTruthy();
-  });
-  test("should have an h2 'Featured Offers'", async ({ page }) => {
-    const h2 = await page.locator("h2");
+      await expect(logoImg.getAttribute("src")).toBeTruthy();
+    });
+    test("should have an h2 'Featured Offers'", async ({ page }) => {
+      const h2 = await page.locator("h2");
 
-    await expect(h2).toHaveText("Featured Offers");
-  });
-  test("should have a footer", async ({ page }) => {
-    const footer = await page.locator("footer");
+      await expect(h2).toHaveText("Featured Offers");
+    });
+    test("should have a footer", async ({ page }) => {
+      const footer = await page.locator("footer");
 
-    await expect(footer).toBeDefined();
+      await expect(footer).toBeDefined();
+    });
   });
   test.describe("Offers list", () => {
     test("should display the first 10 offers", async ({ page }) => {
@@ -36,12 +38,15 @@ test.describe("Root page (Landing page)", () => {
       };
       await mockOffersApi(page, { withOffers: true });
       await page.goto("/");
+
       const offers = await page.locator("[data-testid=offer]");
 
       for (let i = 0; i < 10; i++) {
         const offer = offers.nth(i);
         const title = await offer.locator("[data-testid=title]");
-        await expect(title).toHaveText(allOffers[i].metadata?.title || "");
+        await expect(title).toHaveText(
+          allOffers[i].metadata?.title || "expected title"
+        );
 
         const sellerName = await offer.locator("[data-testid=sellerName]");
         const expectedSellerName = shortenAddress(
@@ -73,6 +78,38 @@ test.describe("Root page (Landing page)", () => {
       const noOffers = await page.locator("[data-testid=noOffers]");
       await expect(noOffers).toHaveText("There are no offers at the moment");
     });
+    test("should display there are no offers at the moment if we get a 400 error", async ({
+      page
+    }) => {
+      await mockOffersApi(page, {
+        response: {
+          status: 400,
+          body: JSON.stringify({
+            data: {}
+          }),
+          contentType: "application/json"
+        }
+      });
+      await page.goto("/");
+      const noOffers = await page.locator("[data-testid=noOffers]");
+      await expect(noOffers).toHaveText("There are no offers at the moment");
+    });
+  });
+  test("should display there are no offers at the moment if we get a 500 error", async ({
+    page
+  }) => {
+    await mockOffersApi(page, {
+      response: {
+        status: 500,
+        body: JSON.stringify({
+          data: {}
+        }),
+        contentType: "application/json"
+      }
+    });
+    await page.goto("/");
+    const noOffers = await page.locator("[data-testid=noOffers]");
+    await expect(noOffers).toHaveText("There are no offers at the moment");
   });
 });
 
@@ -1053,9 +1090,15 @@ const allOffers = [
   }
 ];
 
-const mockOffersApi = (page: Page, { withOffers }: { withOffers: boolean }) =>
+const mockOffersApi = (
+  page: Page,
+  {
+    withOffers,
+    response
+  }: { withOffers?: boolean; response?: Record<string, unknown> }
+) =>
   page.route(
-    "**//api.thegraph.com/subgraphs/name/dohaki/bosonccropsten",
+    "**/api.thegraph.com/subgraphs/name/dohaki/bosonccropsten",
     (route) => {
       route.fulfill({
         status: 200,
@@ -1063,7 +1106,9 @@ const mockOffersApi = (page: Page, { withOffers }: { withOffers: boolean }) =>
           data: {
             offers: withOffers ? allOffers : []
           }
-        })
+        }),
+        contentType: "application/json",
+        ...response
       });
     }
   );

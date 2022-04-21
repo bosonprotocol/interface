@@ -23,11 +23,11 @@ const shortenAddress = (address: string): string => {
 };
 
 interface Props {
-  offers: Array<Offer>;
+  offers?: Array<Offer>;
 }
 
 export default function OfferList({ offers }: Props) {
-  if (offers.length === 0) {
+  if (!offers || offers.length === 0) {
     return (
       <OfferContainer data-testid="noOffers">
         There are no offers at the moment
