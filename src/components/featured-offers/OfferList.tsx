@@ -19,7 +19,7 @@ const shortenAddress = (address: string): string => {
   if (!address) {
     return address;
   }
-  return `${address.substring(0, 6)}...${address.substring(
+  return `${address.substring(0, 5)}...${address.substring(
     address.length - 4
   )}`;
 };
@@ -45,8 +45,8 @@ export default function OfferList({ offers }: Props) {
           id={offer.id}
           offerImg={`https://picsum.photos/22${idx}`}
           name={offer.metadata?.name || "Untitled"}
-          sellerImg={placeholderSellerAvatar}
-          sellerName={shortenAddress(offer.seller?.address)}
+          sellerFullAdress={offer.seller?.address}
+          sellerShortAddress={shortenAddress(offer.seller?.address)}
           price={formatUnits(
             BigNumber.from(offer.price),
             offer.exchangeToken?.decimals

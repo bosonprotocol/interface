@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 import { colors } from "../../lib/colors";
+import { AddressImg } from "./AddressImg";
 
 const Card = styled.div`
   border-radius: 12px;
@@ -9,12 +10,6 @@ const Card = styled.div`
   width: 250px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 0 16px;
-`;
-
-const ProfileImg = styled.img`
-  border-radius: 50%;
-  width: 35px;
-  height: 35px;
 `;
 
 const ImgContainer = styled.div`
@@ -95,8 +90,8 @@ interface Props {
   id: string;
   offerImg: string;
   name: string;
-  sellerImg: string;
-  sellerName: string;
+  sellerFullAdress: string;
+  sellerShortAddress: string;
   price: string;
   priceSymbol: string;
   isSold: boolean;
@@ -105,8 +100,8 @@ interface Props {
 export default function Offer({
   offerImg,
   name,
-  sellerImg,
-  sellerName,
+  sellerFullAdress,
+  sellerShortAddress,
   price,
   priceSymbol,
   isSold
@@ -114,8 +109,8 @@ export default function Offer({
   return (
     <Card data-testid="offer">
       <SellerInfo>
-        <ProfileImg data-testid="profileImg" src={sellerImg} />
-        <SellerName data-testid="sellerName">{sellerName}</SellerName>
+        <AddressImg address={sellerFullAdress} />
+        <SellerName data-testid="sellerAdress">{sellerShortAddress}</SellerName>
       </SellerInfo>
       <ImgContainer>
         <Image data-testid="image" src={offerImg} />

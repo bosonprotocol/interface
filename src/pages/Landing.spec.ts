@@ -29,12 +29,12 @@ test.describe("Root page (Landing page)", () => {
     });
   });
   test.describe("Offers list", () => {
-    test("should display the first 10 offers", async ({ page }) => {
+    test.only("should display the first 10 offers", async ({ page }) => {
       const shortenAddress = (address: string): string => {
         if (!address) {
           return address;
         }
-        return `${address.substring(0, 6)}...${address.substring(
+        return `${address.substring(0, 5)}...${address.substring(
           address.length - 4
         )}`;
       };
@@ -51,12 +51,12 @@ test.describe("Root page (Landing page)", () => {
           expectedOffer.metadata?.name || "expected name"
         );
 
-        const sellerName = await offer.locator("[data-testid=sellerName]");
-        const expectedSellerName = shortenAddress(
+        const sellerAdress = await offer.locator("[data-testid=sellerAdress]");
+        const expectedSellerAddress = shortenAddress(
           expectedOffer.seller?.address || ""
         );
 
-        await expect(sellerName).toHaveText(expectedSellerName);
+        await expect(sellerAdress).toHaveText(expectedSellerAddress);
 
         const price = await offer.locator("[data-testid=price]");
         const expectedPrice = `${formatUnits(
@@ -73,7 +73,8 @@ test.describe("Root page (Landing page)", () => {
         await expect(image.getAttribute("src")).toBeTruthy();
 
         const profileImg = await offer.locator("[data-testid=profileImg]");
-        await expect(profileImg.getAttribute("src")).toBeTruthy();
+        const svg = await profileImg.locator("svg");
+        await expect(svg).toBeDefined();
       }
     });
     test("should display there are no offers at the moment", async ({
