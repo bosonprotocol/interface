@@ -54,7 +54,7 @@ const SellerName = styled.span`
   font-family: "Roboto Mono", monospace;
 `;
 
-const Title = styled.span`
+const Name = styled.span`
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 8px;
@@ -94,20 +94,21 @@ const Sold = styled.p`
 interface Props {
   id: string;
   offerImg: string;
-  title: string;
+  name: string;
   sellerImg: string;
   sellerName: string;
-  priceInEth: string;
+  price: string;
   priceSymbol: string;
   isSold: boolean;
 }
 
 export default function Offer({
   offerImg,
-  title,
+  name,
   sellerImg,
   sellerName,
-  priceInEth,
+  price,
+  priceSymbol,
   isSold
 }: Props) {
   return (
@@ -120,8 +121,10 @@ export default function Offer({
         <Image data-testid="image" src={offerImg} />
       </ImgContainer>
       <BasicInfoContainer>
-        <Title data-testid="title">{title || "Untitled"}</Title>
-        <Price data-testid="price">{parseFloat(priceInEth)} ETH</Price>
+        <Name data-testid="name">{name || "Untitled"}</Name>
+        <Price data-testid="price">
+          {price} {priceSymbol}
+        </Price>
         <CommitBtnContainer>
           {isSold ? (
             <Sold>Sold</Sold>

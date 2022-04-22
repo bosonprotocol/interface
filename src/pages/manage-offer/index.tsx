@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import styled from "styled-components";
 
 import { Layout } from "../../components/Layout";
-import { RawOffer } from "../../lib/types/offer";
+import { Offer } from "../../lib/types/offer";
 import OfferSelect from "./OfferSelect";
 
 const WidgetContainer = styled.div`
@@ -55,7 +55,7 @@ const FormControl = styled.input`
 `;
 
 export default function ManageOffer() {
-  const [offer, setOffer] = useState<RawOffer | undefined>();
+  const [offer, setOffer] = useState<Offer | undefined>();
   const widgetRef = useRef<HTMLDivElement>(null);
 
   return (

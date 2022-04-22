@@ -1,3 +1,5 @@
+import { formatUnits } from "@ethersproject/units";
+import { BigNumber } from "ethers";
 import { Offer } from "lib/types/offer";
 import styled from "styled-components";
 
@@ -42,10 +44,13 @@ export default function OfferList({ offers }: Props) {
           key={offer.id}
           id={offer.id}
           offerImg={`https://picsum.photos/22${idx}`}
-          title={offer.metadata?.title}
+          name={offer.metadata?.name || "Untitled"}
           sellerImg={placeholderSellerAvatar}
           sellerName={shortenAddress(offer.seller?.address)}
-          priceInEth={offer.price}
+          price={formatUnits(
+            BigNumber.from(offer.price),
+            offer.exchangeToken?.decimals
+          )}
           priceSymbol={offer.exchangeToken?.symbol}
           isSold={false}
         />
