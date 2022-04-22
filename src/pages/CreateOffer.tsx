@@ -49,6 +49,7 @@ const Button = styled.button`
   font-size: 16px;
   text-transform: uppercase;
   color: ${colors.navy};
+  cursor: pointer;
 `;
 
 const FormElementsContainer = styled.div`

@@ -47,6 +47,10 @@ const FormLabel = styled.label`
 const FormControl = styled.input`
   padding: 10px;
   border-radius: 6px;
+
+  :disabled {
+    cursor: not-allowed;
+  }
 `;
 
 export default function ManageOffer() {

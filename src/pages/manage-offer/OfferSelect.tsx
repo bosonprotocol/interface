@@ -30,6 +30,10 @@ const FormControl = styled.input`
 const Select = styled.select`
   padding: 10px;
   border-radius: 6px;
+
+  :enabled {
+    cursor: pointer;
+  }
 `;
 
 interface Props {
