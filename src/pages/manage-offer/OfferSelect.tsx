@@ -34,6 +34,9 @@ const Select = styled.select`
   :enabled {
     cursor: pointer;
   }
+  :disabled {
+    cursor: not-allowed;
+  }
 `;
 
 interface Props {

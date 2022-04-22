@@ -50,6 +50,7 @@ const FormControl = styled.input`
 
   :disabled {
     cursor: not-allowed;
+    color: lightgrey;
   }
 `;
 
