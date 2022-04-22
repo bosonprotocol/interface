@@ -3,7 +3,6 @@ import { BigNumber } from "ethers";
 import { Offer } from "lib/types/offer";
 import styled from "styled-components";
 
-import placeholderSellerAvatar from "../../lib/placeholder-seller.svg";
 import OfferItem from "../offer/Offer";
 
 const OfferContainer = styled.div`

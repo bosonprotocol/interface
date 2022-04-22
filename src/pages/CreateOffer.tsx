@@ -65,13 +65,33 @@ const FormElementsContainer = styled.div`
   }
 `;
 
+interface FormValues {
+  name: string;
+  description: string;
+  externalUrl: string;
+  schemaUrl: string;
+  price: string;
+  deposit: string;
+  penalty: string;
+  quantity: string;
+  exchangeToken: string;
+  redeemableDateInMS: string;
+  validFromDateInMS: string;
+  validUntilDateInMS: string;
+  fulfillmentPeriodDurationInMS: string;
+  voucherValidDurationInMS: string;
+}
+
 const dayInMs = 1000 * 60 * 60 * 24;
 const minuteInMS = 1000 * 60;
 
 export default function CreateOffer() {
-  const [values, setValues] = useState<any>();
+  const [values, setValues] = useState<FormValues>();
 
   async function create() {
+    if (!values) {
+      return;
+    }
     const storage = new IpfsMetadata({
       url: CONFIG.ipfsMetadataUrl
     });
@@ -123,12 +143,12 @@ export default function CreateOffer() {
       validUntilDateInMS: (Date.now() + dayInMs).toString(),
       fulfillmentPeriodDurationInMS: dayInMs.toString(),
       voucherValidDurationInMS: dayInMs.toString()
-    },
+    } as FormValues,
     onSubmit: async (values) => {
       try {
         setValues(values);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     }
   });
