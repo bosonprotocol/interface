@@ -8,7 +8,6 @@ import { Layout } from "./Layout";
 
 const HeaderContainer = styled(Layout)`
   display: flex;
-  width: 100%;
   justify-content: space-between;
   align-items: center;
   margin: 0px auto 20px auto;
@@ -17,6 +16,8 @@ const HeaderContainer = styled(Layout)`
 const NavigationLinks = styled.nav`
   display: flex;
   gap: 16px;
+  width: 100%;
+  justify-content: flex-end;
 
   a {
     all: unset;
