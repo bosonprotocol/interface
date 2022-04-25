@@ -1,4 +1,7 @@
-import { useRef, useState } from "react";
+import { manageOffer } from "@bosonprotocol/widgets-sdk";
+import { CONFIG } from "lib/config";
+import { assert } from "lib/utils/assert";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
 import { Layout } from "../../components/Layout";
@@ -57,6 +60,20 @@ const FormControl = styled.input`
 export default function ManageOffer() {
   const [offer, setOffer] = useState<Offer | undefined>();
   const widgetRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    assert(widgetRef.current);
+
+    if (offer) {
+      const el = document.createElement("div");
+      widgetRef.current.appendChild(el);
+      manageOffer(offer.id, CONFIG, el);
+
+      return () => el.remove();
+    }
+
+    return;
+  }, [offer]);
 
   return (
     <Root>
