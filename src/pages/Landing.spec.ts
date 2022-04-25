@@ -29,7 +29,7 @@ test.describe("Root page (Landing page)", () => {
     });
   });
   test.describe("Offers list", () => {
-    test.only("should display the first 10 offers", async ({ page }) => {
+    test("should display the first 10 offers", async ({ page }) => {
       const shortenAddress = (address: string): string => {
         if (!address) {
           return address;
