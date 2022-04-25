@@ -9,23 +9,38 @@ const offersGraphqlEndpoint = process.env
 const offerGraphQL = `
   {
     id
+    createdAt
     price
+    deposit
+    penalty
+    quantity
+    validFromDate
+    validUntilDate
+    redeemableDate
+    fulfillmentPeriodDuration
+    voucherValidDuration
+    metadataUri
+    metadataHash
+    voidedAt
     seller {
-      id
       address
     }
     exchangeToken {
+      address
+      decimals
+      name
       symbol
     }
     metadata {
-      title
+      name 
       description
-      additionalProperties
+      externalUrl
+      schemaUrl
+      type
     }
   }
   `;
 
-// TODO: cannot filter by id yet
 const getOfferById = async (id: string) => {
   const result = await fetchSubgraph<{ offer: Offer[] }>(
     offersGraphqlEndpoint,

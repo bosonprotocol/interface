@@ -1,35 +1,18 @@
-import FeaturedOffers from "lib/components/featured-offers/FeaturedOffers";
+import FeaturedOffers from "components/featured-offers/FeaturedOffers";
 import { BosonRoutes } from "lib/routes";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-import { colors } from "../colours";
+import { Layout } from "../components/Layout";
+import { colors } from "../lib/colors";
 
-const LandingContainer = styled.div`
-  max-width: 1500px;
-  padding: 0 16px;
+const LandingContainer = styled(Layout)`
   display: flex;
   justify-content: center;
   flex-direction: column;
   margin: 0 auto 64px auto;
   overflow: hidden;
-
-  @media (min-width: 578px) {
-    padding: 0px 24px;
-  }
-
-  @media (min-width: 768px) {
-    padding: 0px 28px;
-  }
-
-  @media (min-width: 981px) {
-    padding: 0px 32px;
-  }
-
-  @media (min-width: 1500px) {
-    padding: 0px 32px;
-  }
 `;
 
 const Hero = styled.div`
@@ -122,7 +105,9 @@ export default function Landing() {
               value={brand}
               placeholder="Search by Brand"
             />
-            <GoButton onClick={() => navigate(BosonRoutes.Search)}>Go</GoButton>
+            <GoButton onClick={() => navigate(BosonRoutes.Explore)}>
+              Go
+            </GoButton>
           </InputGo>
           <ExploreContainer>
             <ExploreButton>Explore All Offers</ExploreButton>

@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
-import { colors } from "../../colours";
+import { colors } from "../../lib/colors";
+import { AddressImg } from "./AddressImg";
 
 const Card = styled.div`
   border-radius: 12px;
@@ -9,12 +10,6 @@ const Card = styled.div`
   width: 250px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 0 16px;
-`;
-
-const ProfileImg = styled.img`
-  border-radius: 50%;
-  width: 35px;
-  height: 35px;
 `;
 
 const ImgContainer = styled.div`
@@ -54,7 +49,7 @@ const SellerName = styled.span`
   font-family: "Roboto Mono", monospace;
 `;
 
-const Title = styled.span`
+const Name = styled.span`
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 8px;
@@ -94,34 +89,37 @@ const Sold = styled.p`
 interface Props {
   id: string;
   offerImg: string;
-  title: string;
-  sellerImg: string;
-  sellerName: string;
-  priceInEth: string;
+  name: string;
+  sellerFullAdress: string;
+  sellerShortAddress: string;
+  price: string;
   priceSymbol: string;
   isSold: boolean;
 }
 
 export default function Offer({
   offerImg,
-  title,
-  sellerImg,
-  sellerName,
-  priceInEth,
+  name,
+  sellerFullAdress,
+  sellerShortAddress,
+  price,
+  priceSymbol,
   isSold
 }: Props) {
   return (
     <Card data-testid="offer">
       <SellerInfo>
-        <ProfileImg data-testid="profileImg" src={sellerImg} />
-        <SellerName data-testid="sellerName">{sellerName}</SellerName>
+        <AddressImg address={sellerFullAdress} />
+        <SellerName data-testid="sellerAdress">{sellerShortAddress}</SellerName>
       </SellerInfo>
       <ImgContainer>
         <Image data-testid="image" src={offerImg} />
       </ImgContainer>
       <BasicInfoContainer>
-        <Title data-testid="title">{title || "Untitled"}</Title>
-        <Price data-testid="price">{parseFloat(priceInEth)} ETH</Price>
+        <Name data-testid="name">{name || "Untitled"}</Name>
+        <Price data-testid="price">
+          {price} {priceSymbol}
+        </Price>
         <CommitBtnContainer>
           {isSold ? (
             <Sold>Sold</Sold>

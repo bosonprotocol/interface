@@ -1,7 +1,8 @@
+import { formatUnits } from "@ethersproject/units";
+import { BigNumber } from "ethers";
 import { Offer } from "lib/types/offer";
 import styled from "styled-components";
 
-import placeholderSellerAvatar from "../../placeholder-seller.svg";
 import OfferItem from "../offer/Offer";
 
 const OfferContainer = styled.div`
@@ -17,7 +18,7 @@ const shortenAddress = (address: string): string => {
   if (!address) {
     return address;
   }
-  return `${address.substring(0, 6)}...${address.substring(
+  return `${address.substring(0, 5)}...${address.substring(
     address.length - 4
   )}`;
 };
@@ -42,10 +43,13 @@ export default function OfferList({ offers }: Props) {
           key={offer.id}
           id={offer.id}
           offerImg={`https://picsum.photos/22${idx}`}
-          title={offer.metadata?.title}
-          sellerImg={placeholderSellerAvatar}
-          sellerName={shortenAddress(offer.seller?.address)}
-          priceInEth={offer.price}
+          name={offer.metadata?.name || "Untitled"}
+          sellerFullAdress={offer.seller?.address}
+          sellerShortAddress={shortenAddress(offer.seller?.address)}
+          price={formatUnits(
+            BigNumber.from(offer.price),
+            offer.exchangeToken?.decimals
+          )}
           priceSymbol={offer.exchangeToken?.symbol}
           isSold={false}
         />
