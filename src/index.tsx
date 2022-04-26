@@ -3,7 +3,7 @@ import { BosonRoutes } from "lib/routes";
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { HashRouter, Route, Routes } from "react-router-dom";
 
 import CreateOffer from "./pages/CreateOffer";
 import Landing from "./pages/Landing";
@@ -20,7 +20,7 @@ const root = createRoot(rootElement);
 root.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
+      <HashRouter>
         <Routes>
           <Route path="/" element={<App />}>
             <Route path={BosonRoutes.Root} element={<Landing />} />
@@ -44,7 +44,7 @@ root.render(
             />
           </Route>
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     </QueryClientProvider>
   </React.StrictMode>
 );
