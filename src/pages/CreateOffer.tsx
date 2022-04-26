@@ -3,7 +3,7 @@ import { IpfsMetadata } from "@bosonprotocol/ipfs-storage";
 import { createOffer } from "@bosonprotocol/widgets-sdk";
 import { parseEther } from "@ethersproject/units";
 import { useFormik } from "formik";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 
 import { Layout } from "../components/Layout";
@@ -65,6 +65,10 @@ const FormElementsContainer = styled.div`
   }
 `;
 
+const ErrorMsg = styled.div`
+  color: ${colors.red};
+`;
+
 interface FormValues {
   name: string;
   description: string;
@@ -86,47 +90,7 @@ const dayInMs = 1000 * 60 * 60 * 24;
 const minuteInMS = 1000 * 60;
 
 export default function CreateOffer() {
-  const [values, setValues] = useState<FormValues>();
-
-  async function create() {
-    if (!values) {
-      return;
-    }
-    const storage = new IpfsMetadata({
-      url: CONFIG.ipfsMetadataUrl
-    });
-
-    console.log("storage", storage);
-
-    const metadataHash = await storage.storeMetadata({
-      name: values.name,
-      description: values.description,
-      externalUrl: values.externalUrl,
-      schemaUrl: values.schemaUrl,
-      type: MetadataType.BASE
-    });
-    const metadataUri = `${CONFIG.metadataBaseUrl}/${metadataHash}`;
-
-    console.log(metadataUri);
-
-    createOffer(
-      {
-        ...values,
-        price: parseEther(values.price).toString(),
-        deposit: parseEther(values.deposit).toString(),
-        penalty: parseEther(values.penalty).toString(),
-        metadataHash,
-        metadataUri
-      },
-      CONFIG
-    );
-  }
-
-  useEffect(() => {
-    if (!values) return;
-    create();
-  }, [values]);
-
+  const [errorMsg, setErrorMsg] = useState<string>("");
   const formik = useFormik({
     initialValues: {
       name: "Baggy jeans",
@@ -146,8 +110,39 @@ export default function CreateOffer() {
     } as FormValues,
     onSubmit: async (values) => {
       try {
-        setValues(values);
+        if (!values) {
+          return;
+        }
+        const storage = new IpfsMetadata({
+          url: CONFIG.ipfsMetadataUrl
+        });
+
+        const metadataHash = await storage.storeMetadata({
+          name: values.name,
+          description: values.description,
+          externalUrl: values.externalUrl,
+          schemaUrl: values.schemaUrl,
+          type: MetadataType.BASE
+        });
+        const metadataUri = `${CONFIG.metadataBaseUrl}/${metadataHash}`;
+
+        createOffer(
+          {
+            ...values,
+            price: parseEther(values.price).toString(),
+            deposit: parseEther(values.deposit).toString(),
+            penalty: parseEther(values.penalty).toString(),
+            metadataHash,
+            metadataUri
+          },
+          CONFIG
+        );
+        setErrorMsg("");
       } catch (error) {
+        setErrorMsg(
+          (error as { message: string })?.message ||
+            "There has been an error, please try again"
+        );
         console.error(error);
       }
     }
@@ -302,6 +297,7 @@ export default function CreateOffer() {
           </FormElement>
         </FormElementsContainer>
         <Button type="submit">Submit</Button>
+        {errorMsg && <ErrorMsg data-testid="error">{errorMsg}</ErrorMsg>}
       </StyledForm>
     </CreateOfferContainer>
   );
