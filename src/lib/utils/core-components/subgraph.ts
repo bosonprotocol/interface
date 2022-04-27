@@ -23,6 +23,6 @@ export async function fetchSubgraph<T>(
     return data as T;
   } catch (err) {
     console.error(err);
+    throw err;
   }
-  return null as unknown as T;
 }

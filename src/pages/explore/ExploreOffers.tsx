@@ -17,8 +17,11 @@ export default function ExploreOffers({
   name,
   exchangeTokenAddress
 }: Props) {
-  console.log("ExploreOffers", { name });
-  const { data: offers, isLoading } = useOffers({
+  const {
+    data: offers,
+    isLoading,
+    isError
+  } = useOffers({
     brand,
     name,
     voided: false,
@@ -29,7 +32,7 @@ export default function ExploreOffers({
   return (
     <Container>
       <h1>Explore</h1>
-      {isLoading ? "Loading..." : <OfferList offers={offers} />}
+      <OfferList offers={offers} isError={isError} isLoading={isLoading} />
     </Container>
   );
 }

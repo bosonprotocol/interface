@@ -25,9 +25,21 @@ const shortenAddress = (address: string): string => {
 
 interface Props {
   offers?: Array<Offer>;
+  isError: boolean;
+  isLoading: boolean;
 }
 
-export default function OfferList({ offers }: Props) {
+export default function OfferList({ offers, isLoading, isError }: Props) {
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  if (isError) {
+    return (
+      <div data-testid="errorOffers">
+        There has been an error, please try again later...
+      </div>
+    );
+  }
   if (!offers || offers.length === 0) {
     return (
       <OfferContainer data-testid="noOffers">No offers found</OfferContainer>

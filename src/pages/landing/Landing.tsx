@@ -126,7 +126,7 @@ export default function Landing() {
         </MainImgContainer>
       </Hero>
 
-      <FeaturedOffers name={name} />
+      <FeaturedOffers />
     </LandingContainer>
   );
 }

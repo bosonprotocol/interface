@@ -1,10 +1,9 @@
 import { formatUnits } from "@ethersproject/units";
 import { expect, Page, test } from "@playwright/test";
 import { BigNumber } from "ethers";
+import { graphqlEndpoint } from "lib/utils/test/environment";
 
 const exploreUrl = "/#/explore";
-const graphqlEndpoint =
-  "**/api.thegraph.com/subgraphs/name/dohaki/bosonccropsten";
 
 test.describe("Explore page", () => {
   test.describe("Container", () => {
@@ -39,9 +38,6 @@ test.describe("Explore page", () => {
     });
   });
   test.describe("Offers list", () => {
-    test.afterEach(async ({ page }) => {
-      await page.unroute(graphqlEndpoint);
-    });
     const shortenAddress = (address: string): string => {
       if (!address) {
         return address;
@@ -53,11 +49,6 @@ test.describe("Explore page", () => {
     test("should display the first 10 offers, without filters", async ({
       page
     }) => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      console.log("without filters page", page);
-      await page.unroute("*");
-
       await mockSubgraph(page, { withOffers: true });
       await page.goto(exploreUrl);
 
@@ -99,21 +90,17 @@ test.describe("Explore page", () => {
     });
     test("should display offers filtered by name=OfferV1", async ({ page }) => {
       const name = "OfferV1";
-      await page.unroute("*");
-
       await mockSubgraph(page, { name });
       await page.goto(exploreUrl);
-      await page.pause();
 
       const input = await page.locator("input");
-      await page.pause();
+
       await input.type(name, { delay: 100 });
       const filteredOffers = allOffers
         .filter((offer) => offer?.metadata.name.includes(name))
         .map((offer) => ({
           offer
         }));
-      await page.pause();
 
       const offers = await page.locator("[data-testid=offer]");
       const num = await offers.count();
@@ -154,10 +141,12 @@ test.describe("Explore page", () => {
     test("should display No offers found", async ({ page }) => {
       await mockSubgraph(page, { withOffers: false });
       await page.goto("/");
-      const noOffers = await page.locator("[data-testid=noOffers]");
+      const errorOffersSelector = "[data-testid=noOffers]";
+      await page.waitForSelector(errorOffersSelector);
+      const noOffers = await page.locator(errorOffersSelector);
       await expect(noOffers).toHaveText("No offers found");
     });
-    test("should display No offers found if we get a 400 error", async ({
+    test("should display 'There has been an error, please try again later...' if we get a 400 error", async ({
       page
     }) => {
       await mockSubgraph(page, {
@@ -170,11 +159,15 @@ test.describe("Explore page", () => {
         }
       });
       await page.goto("/");
-      const noOffers = await page.locator("[data-testid=noOffers]");
-      await expect(noOffers).toHaveText("No offers found");
+      const errorOffersSelector = "[data-testid=errorOffers]";
+      await page.waitForSelector(errorOffersSelector);
+      const noOffers = await page.locator(errorOffersSelector);
+      await expect(noOffers).toHaveText(
+        "There has been an error, please try again later..."
+      );
     });
   });
-  test("should display No offers found if we get a 500 error", async ({
+  test("should display 'There has been an error, please try again later...' if we get a 500 error", async ({
     page
   }) => {
     await mockSubgraph(page, {
@@ -187,8 +180,12 @@ test.describe("Explore page", () => {
       }
     });
     await page.goto("/");
-    const noOffers = await page.locator("[data-testid=noOffers]");
-    await expect(noOffers).toHaveText("No offers found");
+    const errorOffersSelector = "[data-testid=errorOffers]";
+    await page.waitForSelector(errorOffersSelector);
+    const noOffers = await page.locator(errorOffersSelector);
+    await expect(noOffers).toHaveText(
+      "There has been an error, please try again later..."
+    );
   });
 });
 
@@ -414,9 +411,9 @@ const mockSubgraph = (
           baseMetadataEntities: offers
             ? offers
             : withOffers
-            ? allOffers.map((offer) => {
-                offer;
-              })
+            ? allOffers.map((offer) => ({
+                offer
+              }))
             : filterByName
             ? filteredOffers
             : []

@@ -1,6 +1,7 @@
 import { formatUnits } from "@ethersproject/units";
 import { expect, Page, test } from "@playwright/test";
 import { BigNumber } from "ethers";
+import { graphqlEndpoint } from "lib/utils/test/environment";
 
 test.describe("Root page (Landing page)", () => {
   test.describe("Container", () => {
@@ -40,7 +41,7 @@ test.describe("Root page (Landing page)", () => {
       };
       await mockOffersApi(page, { withOffers: true });
       await page.goto("/");
-
+      await page.pause();
       const offers = await page.locator("[data-testid=offer]");
 
       for (let i = 0; i < 10; i++) {
@@ -77,13 +78,15 @@ test.describe("Root page (Landing page)", () => {
         await expect(svg).toBeDefined();
       }
     });
-    test("should display No offers found", async ({ page }) => {
+    test("should display 'No offers found'", async ({ page }) => {
       await mockOffersApi(page, { withOffers: false });
       await page.goto("/");
-      const noOffers = await page.locator("[data-testid=noOffers]");
+      const errorOffersSelector = "[data-testid=noOffers]";
+      await page.waitForSelector(errorOffersSelector);
+      const noOffers = await page.locator(errorOffersSelector);
       await expect(noOffers).toHaveText("No offers found");
     });
-    test("should display No offers found if we get a 400 error", async ({
+    test("should display 'There has been an error, please try again later...' if we get a 400 error", async ({
       page
     }) => {
       await mockOffersApi(page, {
@@ -96,10 +99,14 @@ test.describe("Root page (Landing page)", () => {
         }
       });
       await page.goto("/");
-      const noOffers = await page.locator("[data-testid=noOffers]");
-      await expect(noOffers).toHaveText("No offers found");
+      const errorOffersSelector = "[data-testid=errorOffers]";
+      await page.waitForSelector(errorOffersSelector);
+      const noOffers = await page.locator(errorOffersSelector);
+      await expect(noOffers).toHaveText(
+        "There has been an error, please try again later..."
+      );
     });
-    test("should display No offers found if we get a 500 error", async ({
+    test("should display 'There has been an error, please try again later...' if we get a 500 error", async ({
       page
     }) => {
       await mockOffersApi(page, {
@@ -112,8 +119,12 @@ test.describe("Root page (Landing page)", () => {
         }
       });
       await page.goto("/");
-      const noOffers = await page.locator("[data-testid=noOffers]");
-      await expect(noOffers).toHaveText("No offers found");
+      const errorOffersSelector = "[data-testid=errorOffers]";
+      await page.waitForSelector(errorOffersSelector);
+      const noOffers = await page.locator(errorOffersSelector);
+      await expect(noOffers).toHaveText(
+        "There has been an error, please try again later..."
+      );
     });
   });
 });
@@ -283,18 +294,19 @@ const mockOffersApi = (
     response
   }: { withOffers?: boolean; response?: Record<string, unknown> }
 ) =>
-  page.route(
-    "**/api.thegraph.com/subgraphs/name/dohaki/bosonccropsten",
-    (route) => {
-      route.fulfill({
-        status: 200,
-        body: JSON.stringify({
-          data: {
-            offers: withOffers ? allOffers : []
-          }
-        }),
-        contentType: "application/json",
-        ...response
-      });
-    }
-  );
+  page.route(graphqlEndpoint, (route) => {
+    route.fulfill({
+      status: 200,
+      body: JSON.stringify({
+        data: {
+          baseMetadataEntities: withOffers
+            ? allOffers.map((offer) => ({
+                offer
+              }))
+            : []
+        }
+      }),
+      contentType: "application/json",
+      ...response
+    });
+  });

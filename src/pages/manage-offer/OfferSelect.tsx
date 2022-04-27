@@ -47,7 +47,7 @@ export default function OfferSelect({ onOfferSelect, onReset }: Props) {
     offersApi.subgraph
       .getAllOffersOfSeller(subgraphUrl, sellerAddress)
       .then(setOffers)
-      .catch(console.log);
+      .catch(console.error);
   }
 
   function onSellerAddressChange(address: string) {
