@@ -1,10 +1,10 @@
 import { useOffers } from "lib/utils/hooks/useOffers";
 import styled from "styled-components";
 
-import OfferList from "./OfferList";
+import OfferList from "../../components/offers/OfferList";
 
 interface Props {
-  brand: string;
+  name: string;
 }
 
 const Root = styled.div`
@@ -16,8 +16,12 @@ const Heading = styled.h2`
   font-size: 28px;
 `;
 
-export default function FeaturedOffers({ brand }: Props) {
-  const { data: offers, isLoading } = useOffers({ brand });
+export default function FeaturedOffers({ name }: Props) {
+  const { data: offers, isLoading } = useOffers({
+    name,
+    voided: false,
+    valid: true
+  });
   return (
     <Root>
       <Heading>Featured Offers</Heading>

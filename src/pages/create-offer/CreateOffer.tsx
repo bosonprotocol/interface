@@ -6,9 +6,9 @@ import { useFormik } from "formik";
 import { useState } from "react";
 import styled from "styled-components";
 
-import { Layout } from "../components/Layout";
-import { colors } from "../lib/colors";
-import { CONFIG } from "../lib/config";
+import { Layout } from "../../components/Layout";
+import { CONFIG } from "../../lib/config";
+import { colors } from "../../lib/styles/colors";
 
 const CreateOfferContainer = styled(Layout)`
   display: flex;
@@ -95,7 +95,7 @@ export default function CreateOffer() {
     initialValues: {
       name: "Baggy jeans",
       description: "Lore ipsum",
-      externalUrl: "https://external-url.com",
+      externalUrl: window.location.origin,
       schemaUrl: "https://schema.org/schema",
       price: "1",
       deposit: "2",
@@ -215,7 +215,7 @@ export default function CreateOffer() {
             />
           </FormElement>
           <FormElement>
-            <FormLabel>penalty</FormLabel>
+            <FormLabel>Penalty</FormLabel>
             <FormControl
               value={formik.values.penalty}
               onChange={formik.handleChange}

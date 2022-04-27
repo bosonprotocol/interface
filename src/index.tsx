@@ -1,19 +1,19 @@
 import App from "components/app";
-import { BosonRoutes } from "lib/routes";
+import { BosonRoutes } from "lib/routing/routes";
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { HashRouter, Route, Routes } from "react-router-dom";
 
-import CreateOffer from "./pages/CreateOffer";
-import Landing from "./pages/Landing";
+import CreateOffer from "./pages/create-offer/CreateOffer";
+import Landing from "./pages/landing/Landing";
 import ManageOffer from "./pages/manage-offer";
 import reportWebVitals from "./reportWebVitals";
 
 const rootElement = document.getElementById("root");
 if (!rootElement) throw new Error("Unable to find the root element");
 
-const Search = React.lazy(() => import("pages/Explore"));
+const Search = React.lazy(() => import("pages/explore/Explore"));
 const FallBack = <>Loading...</>;
 const queryClient = new QueryClient();
 const root = createRoot(rootElement);

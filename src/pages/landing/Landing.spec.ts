@@ -77,15 +77,13 @@ test.describe("Root page (Landing page)", () => {
         await expect(svg).toBeDefined();
       }
     });
-    test("should display there are no offers at the moment", async ({
-      page
-    }) => {
+    test("should display No offers found", async ({ page }) => {
       await mockOffersApi(page, { withOffers: false });
       await page.goto("/");
       const noOffers = await page.locator("[data-testid=noOffers]");
-      await expect(noOffers).toHaveText("There are no offers at the moment");
+      await expect(noOffers).toHaveText("No offers found");
     });
-    test("should display there are no offers at the moment if we get a 400 error", async ({
+    test("should display No offers found if we get a 400 error", async ({
       page
     }) => {
       await mockOffersApi(page, {
@@ -99,24 +97,24 @@ test.describe("Root page (Landing page)", () => {
       });
       await page.goto("/");
       const noOffers = await page.locator("[data-testid=noOffers]");
-      await expect(noOffers).toHaveText("There are no offers at the moment");
+      await expect(noOffers).toHaveText("No offers found");
     });
-  });
-  test("should display there are no offers at the moment if we get a 500 error", async ({
-    page
-  }) => {
-    await mockOffersApi(page, {
-      response: {
-        status: 500,
-        body: JSON.stringify({
-          data: {}
-        }),
-        contentType: "application/json"
-      }
+    test("should display No offers found if we get a 500 error", async ({
+      page
+    }) => {
+      await mockOffersApi(page, {
+        response: {
+          status: 500,
+          body: JSON.stringify({
+            data: {}
+          }),
+          contentType: "application/json"
+        }
+      });
+      await page.goto("/");
+      const noOffers = await page.locator("[data-testid=noOffers]");
+      await expect(noOffers).toHaveText("No offers found");
     });
-    await page.goto("/");
-    const noOffers = await page.locator("[data-testid=noOffers]");
-    await expect(noOffers).toHaveText("There are no offers at the moment");
   });
 });
 

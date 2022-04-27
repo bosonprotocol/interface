@@ -1,9 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-import { colors } from "../lib/colors";
-import logo from "../lib/logo.png";
-import { BosonRoutes } from "../lib/routes";
+import logo from "../assets/logo.png";
+import { BosonRoutes } from "../lib/routing/routes";
+import { colors } from "../lib/styles/colors";
 import { Layout } from "./Layout";
 
 const HeaderContainer = styled(Layout)`

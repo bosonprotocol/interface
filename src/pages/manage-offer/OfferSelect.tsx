@@ -4,6 +4,7 @@ import { useState } from "react";
 import styled from "styled-components";
 
 import { CONFIG } from "../../lib/config";
+import { Select } from "../../lib/styles/base";
 
 const OfferSelection = styled.div`
   display: flex;
@@ -25,18 +26,6 @@ const FormLabel = styled.label`
 const FormControl = styled.input`
   padding: 10px;
   border-radius: 6px;
-`;
-
-const Select = styled.select`
-  padding: 10px;
-  border-radius: 6px;
-
-  :enabled {
-    cursor: pointer;
-  }
-  :disabled {
-    cursor: not-allowed;
-  }
 `;
 
 interface Props {
@@ -89,7 +78,7 @@ export default function OfferSelect({ onOfferSelect, onReset }: Props) {
           onChange={(e) => onSellerAddressChange(e.target.value)}
           name="title"
           type="text"
-          placeholder="0x000000000000000000000000"
+          placeholder="0x0000000000000000000000000000000000000000"
         />
       </InputContainer>
       <InputContainer>

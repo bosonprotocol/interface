@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { colors } from "../../lib/colors";
+import { colors } from "../../lib/styles/colors";
 import { AddressImg } from "./AddressImg";
 
 const Card = styled.div`

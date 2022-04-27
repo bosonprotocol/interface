@@ -16,10 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       REACT_APP_SUBGRAPH_OFFERS_GRAPHQL_ENDPOINT: https://api.thegraph.com/subgraphs/name/dohaki/bosonccropsten
-<<<<<<< HEAD
-=======
       REACT_APP_WIDGETS_URL: https://boson-widgets-test.surge.sh
->>>>>>> main
       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
       - uses: actions/checkout@v3
