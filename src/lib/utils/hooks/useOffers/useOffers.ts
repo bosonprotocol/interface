@@ -53,9 +53,10 @@ interface UseOfferProps extends UseOffersProps {
 }
 
 const buildOrderBy = () => {
+  // TODO: change to createdAt
   return `
     orderBy: name,
-    orderDirection: asc
+    orderDirection: desc
   `;
 };
 
@@ -94,10 +95,11 @@ const buildWhere = ({
 
 const getOfferById = async (id: string, props: UseOffersProps) => {
   const where = buildWhere(props);
+  const orderBy = buildOrderBy();
   const result = await fetchSubgraph<{ offer: Offer }>(
     gql`
       {
-        baseMetadataEntity(id: ${id}, where: ${where}, ${buildOrderBy()}) {
+        baseMetadataEntity(id: ${id}, where: ${where}, ${orderBy}) {
           offer ${offerGraphQL}
         }
       }
@@ -125,13 +127,14 @@ export const useOffer = ({ offerId, ...restProps }: UseOfferProps) => {
 
 export const useOffers = (props: UseOffersProps) => {
   const where = buildWhere(props);
+  const orderBy = buildOrderBy();
   return useQuery(JSON.stringify(props), async () => {
     const result = await fetchSubgraph<{
       baseMetadataEntities: { offer: Offer }[];
     }>(
       gql`
         {
-          baseMetadataEntities(first: 10, where: ${where}, ${buildOrderBy()}) {
+          baseMetadataEntities(first: 10, where: ${where}, ${orderBy}) {
             offer ${offerGraphQL}
           }
           

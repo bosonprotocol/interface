@@ -1,5 +1,6 @@
 import { QueryParams } from "lib/routing/query-params";
 import { Select } from "lib/styles/base";
+import { colors } from "lib/styles/colors";
 import { useBrands } from "lib/utils/hooks/useBrands";
 import { useTokens } from "lib/utils/hooks/useTokens";
 import React, { useState } from "react";
@@ -19,7 +20,6 @@ const ExploreContainer = styled(Layout)`
 
 const Input = styled.input`
   max-width: 100%;
-  width: 100%;
   padding: 10px 8px;
   border-radius: 5px;
   font-size: 16px;
@@ -41,21 +41,35 @@ const TopContainer = styled.div`
 
 const FiltersContainer = styled.div``;
 
-const CustomSelect = styled(Select)`
+const BrandSelect = styled(Select)`
   max-width: 100%;
   @media (min-width: 981px) {
     width: 500px;
   }
 `;
 
-const TokenSelect = styled(CustomSelect)`
+const TokenSelect = styled(BrandSelect)`
   margin-top: 10px;
 `;
 
-const InputContainer = styled.div``;
+const GoButton = styled.button`
+  width: 100px;
+  background-color: ${colors.green};
+  color: ${colors.navy};
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+`;
+
+const SearchContainer = styled.div``;
+
+const InputContainer = styled.div`
+  display: flex;
+`;
 
 export default function Explore() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const nameQueryParam = searchParams.get(QueryParams.name) || "";
 
   const [brandInput, setBrandInput] = useState<string>(nameQueryParam);
@@ -66,58 +80,67 @@ export default function Explore() {
   const [selectedToken, setSelectedToken] = useState<string>();
   const { data: brands } = useBrands();
 
-  const onChangeName = (newBrand: string) => {
-    setNameToSearch(newBrand);
-    // TODO: should we update the url query param?
+  const onChangeName = (name: string) => {
+    setNameToSearch(name);
+    setSearchParams({ name: name });
   };
   return (
     <ExploreContainer>
       <TopContainer>
-        <FiltersContainer>
+        <div>
           <h2>Filter</h2>
-          <CustomSelect
-            disabled
-            value={brandSelect}
-            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-              setBrandSelect(e.target.value);
-              // onChangeBrand(e.target.value);
-            }}
-          >
-            <option value="">Brand</option>
-            {brands &&
-              brands.map((brand) => (
-                <option key={brand} value={brand}>
-                  {brand}
-                </option>
-              ))}
-          </CustomSelect>
+          <FiltersContainer>
+            <BrandSelect
+              disabled
+              value={brandSelect}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                setBrandSelect(e.target.value);
+                // onChangeBrand(e.target.value);
+              }}
+            >
+              <option value="">Brand</option>
+              {brands &&
+                brands.map((brand) => (
+                  <option key={brand} value={brand}>
+                    {brand}
+                  </option>
+                ))}
+            </BrandSelect>
 
-          <TokenSelect
-            value={selectedToken}
-            onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-              setSelectedToken(e.target.value)
-            }
-          >
-            <option value="">Currency</option>
-            {tokens &&
-              tokens.map((token) => (
-                <option key={token.symbol} value={token.address}>
-                  {token.symbol}
-                </option>
-              ))}
-          </TokenSelect>
-        </FiltersContainer>
-        <InputContainer>
+            <TokenSelect
+              value={selectedToken}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                setSelectedToken(e.target.value)
+              }
+            >
+              <option value="">Currency</option>
+              {tokens &&
+                tokens.map((token) => (
+                  <option key={token.symbol} value={token.address}>
+                    {token.symbol}
+                  </option>
+                ))}
+            </TokenSelect>
+          </FiltersContainer>
+        </div>
+        <SearchContainer>
           <h2>Search</h2>
-          <Input
-            onChange={(e) => {
-              setBrandInput(e.target.value);
-              onChangeName(e.target.value);
-            }}
-            value={brandInput}
-            placeholder="Search by Name"
-          />
-        </InputContainer>
+          <InputContainer>
+            <Input
+              onChange={(e) => {
+                setBrandInput(e.target.value);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  onChangeName(brandInput);
+                }
+              }}
+              value={brandInput}
+              placeholder="Search by Name"
+            />
+            <GoButton onClick={() => onChangeName(brandInput)}>Go</GoButton>
+          </InputContainer>
+        </SearchContainer>
       </TopContainer>
       <ExploreOffers
         // brand={nameToSearch}

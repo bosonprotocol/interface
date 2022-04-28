@@ -124,7 +124,7 @@ export default function Offer({
           {isSold ? (
             <Sold>Sold</Sold>
           ) : (
-            <Commit data-testid="commit">Commit now</Commit>
+            <Commit data-testid="commit">Commit</Commit>
           )}
         </CommitBtnContainer>
       </BasicInfoContainer>
