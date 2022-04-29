@@ -41,7 +41,7 @@ test.describe("Root page (Landing page)", () => {
       };
       await mockOffersApi(page, { withOffers: true });
       await page.goto("/");
-      await page.pause();
+
       const offers = await page.locator("[data-testid=offer]");
 
       for (let i = 0; i < 10; i++) {
