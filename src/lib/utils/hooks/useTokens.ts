@@ -11,7 +11,7 @@ export const useTokens = () => {
     }>(
       gql`
         {
-          exchangeTokens {
+          exchangeTokens(orderBy: "symbol", orderDirection: asc) {
             address
             symbol
           }

@@ -19,7 +19,8 @@ export default function FeaturedOffers() {
     isError
   } = useOffers({
     voided: false,
-    valid: true
+    valid: true,
+    filterOutWrongMetadata: true
   });
   return (
     <Root>

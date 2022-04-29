@@ -8,7 +8,7 @@ export function useQueryParameter(
 
   const setSearchParameterForKey = useCallback(
     (value: string) => {
-      setSearchParameter({ key: value });
+      setSearchParameter({ [key]: value });
     },
     [key]
   );

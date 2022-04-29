@@ -46,7 +46,38 @@ test.describe("Explore page", () => {
         address.length - 4
       )}`;
     };
-    test("should display the first 10 offers, without filters", async ({
+    test("should filter out invalid offers", async ({ page }) => {
+      const mockedOffers = [
+        { offer: { ...allOffers[0] } },
+        {
+          offer: {
+            id: "9999",
+            price: "1",
+            seller: {
+              address: "0x57fafe1fb7c682216fce44e50946c5249192b9d5"
+            },
+            exchangeToken: {
+              symbol: "ETH",
+              decimals: "18"
+            },
+            metadata: {
+              name: "first offer",
+              externalUrl: "invalid offer",
+              type: "BASE"
+              // missing description among other fields
+            }
+          }
+        }
+      ];
+      await mockSubgraph(page, {
+        offers: mockedOffers
+      });
+      await page.goto(exploreUrl);
+      const offers = await page.locator("[data-testid=offer]");
+      const num = await offers.count();
+      await expect(num).toStrictEqual(mockedOffers.length - 1); // 1 invalid offer
+    });
+    test("should display the first 10 offers ordered by name ASC, without filters", async ({
       page
     }) => {
       await mockSubgraph(page, { withOffers: true });
@@ -90,14 +121,29 @@ test.describe("Explore page", () => {
         await expect(svg).toBeDefined();
       }
     });
-    test("should display offers filtered by name=OfferV1", async ({ page }) => {
+    test("should display offers filtered by name=OfferV1 & update 'name' query param", async ({
+      page
+    }) => {
       const name = "OfferV1";
-      await mockSubgraph(page, { name });
+      await mockSubgraph(page, {
+        filterBy: {
+          condition: "name_contains_nocase",
+          property: name
+        }
+      });
       await page.goto(exploreUrl);
 
       const input = await page.locator("input");
       await input.type(name, { delay: 100 });
       await input.press("Enter");
+
+      // Check 'name' query param
+      const url = await page.url();
+      const { hash } = new URL(url);
+      const paramsObj = Object.fromEntries(
+        new URLSearchParams(hash.substring(hash.indexOf("?")))
+      );
+      await expect(paramsObj.name).toStrictEqual(name);
 
       const filteredOffers = allOffers
         .filter((offer) => offer?.metadata.name.includes(name))
@@ -108,7 +154,7 @@ test.describe("Explore page", () => {
       const offers = await page.locator("[data-testid=offer]");
 
       const num = await offers.count();
-      await expect(num).toBe(filteredOffers.length);
+      await expect(num).toStrictEqual(filteredOffers.length);
       for (let i = 0; i < num; i++) {
         const offer = offers.nth(i);
         const expectedOffer = filteredOffers[i].offer;
@@ -173,26 +219,26 @@ test.describe("Explore page", () => {
         "There has been an error, please try again later..."
       );
     });
-  });
-  test("should display 'There has been an error, please try again later...' if we get a 500 error", async ({
-    page
-  }) => {
-    await mockSubgraph(page, {
-      response: {
-        status: 500,
-        body: JSON.stringify({
-          data: {}
-        }),
-        contentType: "application/json"
-      }
+    test("should display 'There has been an error, please try again later...' if we get a 500 error", async ({
+      page
+    }) => {
+      await mockSubgraph(page, {
+        response: {
+          status: 500,
+          body: JSON.stringify({
+            data: {}
+          }),
+          contentType: "application/json"
+        }
+      });
+      await page.goto("/");
+      const errorOffersSelector = "[data-testid=errorOffers]";
+      await page.waitForSelector(errorOffersSelector);
+      const noOffers = await page.locator(errorOffersSelector);
+      await expect(noOffers).toHaveText(
+        "There has been an error, please try again later..."
+      );
     });
-    await page.goto("/");
-    const errorOffersSelector = "[data-testid=errorOffers]";
-    await page.waitForSelector(errorOffersSelector);
-    const noOffers = await page.locator(errorOffersSelector);
-    await expect(noOffers).toHaveText(
-      "There has been an error, please try again later..."
-    );
   });
 });
 
@@ -210,7 +256,9 @@ const allOffers = [
     metadata: {
       name: "first offer",
       description: "Description",
-      type: "BASE"
+      type: "BASE",
+      externalUrl: "externalUrl",
+      schemaUrl: "schemaUrl"
     }
   },
   {
@@ -225,7 +273,10 @@ const allOffers = [
     },
     metadata: {
       name: "OfferV1 with id 1", // dont change, used in a test
-      description: "Description"
+      description: "Description",
+      externalUrl: "externalUrl",
+      schemaUrl: "schemaUrl",
+      type: "BASE"
     }
   },
   {
@@ -240,7 +291,9 @@ const allOffers = [
     metadata: {
       name: "Offer with id 10",
       description: "Description",
-      type: "BASE"
+      type: "BASE",
+      externalUrl: "externalUrl",
+      schemaUrl: "schemaUrl"
     }
   },
   {
@@ -254,7 +307,10 @@ const allOffers = [
     },
     metadata: {
       name: "offer with id 11",
-      description: ""
+      description: "",
+      externalUrl: "externalUrl",
+      schemaUrl: "schemaUrl",
+      type: "BASE"
     }
   },
   {
@@ -268,7 +324,10 @@ const allOffers = [
     },
     metadata: {
       name: "offer with id 12",
-      description: ""
+      description: "",
+      externalUrl: "externalUrl",
+      schemaUrl: "schemaUrl",
+      type: "BASE"
     }
   },
   {
@@ -282,7 +341,10 @@ const allOffers = [
     },
     metadata: {
       name: "offer with id 13",
-      description: ""
+      description: "",
+      externalUrl: "externalUrl",
+      schemaUrl: "schemaUrl",
+      type: "BASE"
     }
   },
   {
@@ -296,7 +358,10 @@ const allOffers = [
     },
     metadata: {
       name: "offer with id 14",
-      description: ""
+      description: "",
+      externalUrl: "externalUrl",
+      schemaUrl: "schemaUrl",
+      type: "BASE"
     }
   },
   {
@@ -310,7 +375,10 @@ const allOffers = [
     },
     metadata: {
       name: "offer with id 15",
-      description: ""
+      description: "",
+      externalUrl: "externalUrl",
+      schemaUrl: "schemaUrl",
+      type: "BASE"
     }
   },
   {
@@ -324,7 +392,10 @@ const allOffers = [
     },
     metadata: {
       name: "offer with id 16",
-      description: ""
+      description: "",
+      externalUrl: "externalUrl",
+      schemaUrl: "schemaUrl",
+      type: "BASE"
     }
   },
   {
@@ -337,7 +408,11 @@ const allOffers = [
       symbol: "ETH"
     },
     metadata: {
-      name: "offer with id 17"
+      name: "offer with id 17",
+      description: "",
+      externalUrl: "externalUrl",
+      schemaUrl: "schemaUrl",
+      type: "BASE"
     }
   },
   {
@@ -351,7 +426,10 @@ const allOffers = [
     },
     metadata: {
       name: "Baggy jeans",
-      description: ""
+      description: "",
+      externalUrl: "externalUrl",
+      schemaUrl: "schemaUrl",
+      type: "BASE"
     }
   }
 ];
@@ -362,20 +440,32 @@ const mockSubgraph = (
     withOffers,
     offers,
     response,
-    name
+    orderBy,
+    filterBy
   }: {
     withOffers?: boolean;
     offers?: Record<string, unknown>[];
     response?: Record<string, unknown>;
-    name?: string;
+    orderBy?: {
+      property: string;
+      order: "asc" | "desc";
+    };
+    filterBy?: {
+      property: string;
+      condition: string;
+    };
   }
 ): Promise<void> =>
-  page.route(graphqlEndpoint, (route) => {
+  page.route(graphqlEndpoint, async (route) => {
     const postData = route.request().postData();
     const isBrandsReq = postData?.includes("productV1MetadataEntities");
     const isExchangeTokensReq = postData?.includes("exchangeTokens");
     const isOffersReq = postData?.includes("offers(");
     const isBaseEntitiesReq = postData?.includes("baseMetadataEntities(");
+    const filterByName =
+      filterBy?.condition === "name_contains_nocase" &&
+      postData?.includes(filterBy.condition);
+
     let body;
     if (isBrandsReq) {
       body = {
@@ -407,28 +497,43 @@ const mockSubgraph = (
         }
       };
     } else if (isBaseEntitiesReq) {
-      const filterByName = postData?.includes("name_contains_nocase");
-      const filteredOffers = allOffers
-        .filter((offer) => offer?.metadata.name.includes(name!))
-        .map((offer) => ({
+      let offersToReturn: unknown[] = [];
+      if (offers) {
+        offersToReturn = offers;
+      } else if (withOffers) {
+        offersToReturn = allOffers.map((offer) => ({
           offer
         }));
+      } else if (filterBy) {
+        if (filterByName) {
+          const name = filterBy.property;
+          offersToReturn = allOffers
+            .filter((offer) => offer?.metadata.name.includes(name))
+            .map((offer) => ({
+              offer
+            }));
+        }
+      }
+
+      if (orderBy) {
+        const { property, order } = orderBy;
+        // Check we actually ask the results to be ordered
+
+        await expect(postData?.includes(`orderBy: ${property}`)).toBeTruthy();
+
+        await expect(
+          postData?.includes(`orderDirection: ${order}`)
+        ).toBeTruthy();
+      }
+
       body = {
         data: {
-          baseMetadataEntities: offers
-            ? offers
-            : withOffers
-            ? allOffers.map((offer) => ({
-                offer
-              }))
-            : filterByName
-            ? filteredOffers
-            : []
+          baseMetadataEntities: offersToReturn
         }
       };
     } else {
       const error =
-        "This request has not been mocked, plesease check your e2e test";
+        "This request has not been mocked, please check your e2e test";
       // reject(error);
       return route.abort(error);
     }

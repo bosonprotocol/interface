@@ -10,7 +10,7 @@ export const useBrands = (): UseQueryResult<string[], unknown> => {
     }>(
       gql`
         {
-          productV1MetadataEntities {
+          productV1MetadataEntities(orderBy: "brandName", orderDirection: asc) {
             brandName
           }
         }

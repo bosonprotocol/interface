@@ -26,7 +26,8 @@ export default function ExploreOffers({
     name,
     voided: false,
     valid: true,
-    exchangeTokenAddress
+    exchangeTokenAddress,
+    filterOutWrongMetadata: true
   });
 
   return (

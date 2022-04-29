@@ -13,14 +13,14 @@ export function checkOfferMetadata(offer: Offer): boolean {
 }
 
 function isOfferMetadataValid(offer: Offer): boolean {
-  const baseMetadataFields = new Set([
+  const baseMetadataFields = [
     "name",
     "description",
     "externalUrl",
     "schemaUrl",
     "type"
-  ]);
-  const productV1MetadataFields = new Set(["images", "tags", "brandName"]);
+  ];
+  const productV1MetadataFields = ["images", "tags", "brandName"];
 
   if (!offer) {
     return false;
@@ -32,14 +32,10 @@ function isOfferMetadataValid(offer: Offer): boolean {
 
   switch (metadata.type) {
     case "BASE":
-      return Object.keys(metadata).every((metadataKey) =>
-        baseMetadataFields.has(metadataKey)
-      );
+      return baseMetadataFields.every((field) => field in metadata);
     case "PRODUCT_V1":
-      return Object.keys(metadata).every(
-        (metadataKey) =>
-          baseMetadataFields.has(metadataKey) ||
-          productV1MetadataFields.has(metadataKey)
+      return [...baseMetadataFields, ...productV1MetadataFields].every(
+        (field) => field in metadata
       );
   }
   return false;

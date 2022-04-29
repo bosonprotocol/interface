@@ -30,15 +30,15 @@ test.describe("Root page (Landing page)", () => {
     });
   });
   test.describe("Offers list", () => {
+    const shortenAddress = (address: string): string => {
+      if (!address) {
+        return address;
+      }
+      return `${address.substring(0, 5)}...${address.substring(
+        address.length - 4
+      )}`;
+    };
     test("should display the first 10 offers", async ({ page }) => {
-      const shortenAddress = (address: string): string => {
-        if (!address) {
-          return address;
-        }
-        return `${address.substring(0, 5)}...${address.substring(
-          address.length - 4
-        )}`;
-      };
       await mockOffersApi(page, { withOffers: true });
       await page.goto("/");
 
@@ -79,6 +79,37 @@ test.describe("Root page (Landing page)", () => {
         const svg = await profileImg.locator("svg");
         await expect(svg).toBeDefined();
       }
+    });
+    test("should filter out invalid offers", async ({ page }) => {
+      const mockedOffers = [
+        { offer: { ...allOffers[0] } },
+        {
+          offer: {
+            id: "9999",
+            price: "1",
+            seller: {
+              address: "0x57fafe1fb7c682216fce44e50946c5249192b9d5"
+            },
+            exchangeToken: {
+              symbol: "ETH",
+              decimals: "18"
+            },
+            metadata: {
+              name: "first offer",
+              externalUrl: "invalid offer",
+              type: "BASE"
+              // missing description among other fields
+            }
+          }
+        }
+      ];
+      await mockOffersApi(page, {
+        offers: mockedOffers
+      });
+      await page.goto("/");
+      const offers = await page.locator("[data-testid=offer]");
+      const num = await offers.count();
+      await expect(num).toStrictEqual(mockedOffers.length - 1); // 1 invalid offer
     });
     test("should display 'No offers found'", async ({ page }) => {
       await mockOffersApi(page, { withOffers: false });
@@ -144,7 +175,10 @@ const allOffers = [
     },
     metadata: {
       name: "first offer",
-      description: "Description"
+      description: "Description",
+      externalUrl: "externalUrl",
+      schemaUrl: "schemaUrl",
+      type: "BASE"
     }
   },
   {
@@ -159,7 +193,10 @@ const allOffers = [
     },
     metadata: {
       name: "offer with id 1",
-      description: "Description"
+      description: "Description",
+      externalUrl: "externalUrl",
+      schemaUrl: "schemaUrl",
+      type: "BASE"
     }
   },
   {
@@ -173,7 +210,10 @@ const allOffers = [
     },
     metadata: {
       name: "offer with id 10",
-      description: ""
+      description: "",
+      externalUrl: "externalUrl",
+      schemaUrl: "schemaUrl",
+      type: "BASE"
     }
   },
   {
@@ -187,7 +227,10 @@ const allOffers = [
     },
     metadata: {
       name: "offer with id 11",
-      description: ""
+      description: "",
+      externalUrl: "externalUrl",
+      schemaUrl: "schemaUrl",
+      type: "BASE"
     }
   },
   {
@@ -201,7 +244,10 @@ const allOffers = [
     },
     metadata: {
       name: "offer with id 12",
-      description: ""
+      description: "",
+      externalUrl: "externalUrl",
+      schemaUrl: "schemaUrl",
+      type: "BASE"
     }
   },
   {
@@ -215,7 +261,10 @@ const allOffers = [
     },
     metadata: {
       name: "offer with id 13",
-      description: ""
+      description: "",
+      externalUrl: "externalUrl",
+      schemaUrl: "schemaUrl",
+      type: "BASE"
     }
   },
   {
@@ -229,7 +278,10 @@ const allOffers = [
     },
     metadata: {
       name: "offer with id 14",
-      description: ""
+      description: "",
+      externalUrl: "externalUrl",
+      schemaUrl: "schemaUrl",
+      type: "BASE"
     }
   },
   {
@@ -243,7 +295,10 @@ const allOffers = [
     },
     metadata: {
       name: "offer with id 15",
-      description: ""
+      description: "",
+      externalUrl: "externalUrl",
+      schemaUrl: "schemaUrl",
+      type: "BASE"
     }
   },
   {
@@ -257,7 +312,10 @@ const allOffers = [
     },
     metadata: {
       name: "offer with id 16",
-      description: ""
+      description: "",
+      externalUrl: "externalUrl",
+      schemaUrl: "schemaUrl",
+      type: "BASE"
     }
   },
   {
@@ -270,7 +328,11 @@ const allOffers = [
       symbol: "ETH"
     },
     metadata: {
-      name: "offer with id 17"
+      name: "offer with id 17",
+      description: "",
+      externalUrl: "externalUrl",
+      schemaUrl: "schemaUrl",
+      type: "BASE"
     }
   },
   {
@@ -284,7 +346,10 @@ const allOffers = [
     },
     metadata: {
       name: "Baggy jeans",
-      description: ""
+      description: "",
+      externalUrl: "externalUrl",
+      schemaUrl: "schemaUrl",
+      type: "BASE"
     }
   }
 ];
@@ -293,15 +358,22 @@ const mockOffersApi = (
   page: Page,
   {
     withOffers,
+    offers,
     response
-  }: { withOffers?: boolean; response?: Record<string, unknown> }
+  }: {
+    withOffers?: boolean;
+    offers?: Record<string, unknown>[];
+    response?: Record<string, unknown>;
+  }
 ) =>
   page.route(graphqlEndpoint, (route) => {
     route.fulfill({
       status: 200,
       body: JSON.stringify({
         data: {
-          baseMetadataEntities: withOffers
+          baseMetadataEntities: offers
+            ? offers
+            : withOffers
             ? allOffers.map((offer) => ({
                 offer
               }))
