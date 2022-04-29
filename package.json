@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "REACT_APP_ENV=staging react-app-rewired start",
+    "dev": "REACT_APP_ENV=development react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test --testPathIgnorePatterns .spec.ts",
     "eject": "react-app-rewired eject",
