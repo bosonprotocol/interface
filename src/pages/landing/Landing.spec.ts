@@ -68,7 +68,7 @@ test.describe("Root page (Landing page)", () => {
         await expect(price).toHaveText(expectedPrice);
 
         const commit = await offer.locator("[data-testid=commit]");
-        await expect(commit).toHaveText("Commit now");
+        await expect(commit).toHaveText("Commit");
 
         const image = await offer.locator("[data-testid=image]");
         await expect(image.getAttribute("src")).toBeTruthy();

@@ -63,6 +63,7 @@ const buildOrderBy = () => {
 // TODO: use brand to filter once it's supported
 const buildWhere = ({
   name,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   brand,
   voided,
   valid,

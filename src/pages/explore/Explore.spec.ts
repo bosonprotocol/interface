@@ -78,7 +78,7 @@ test.describe("Explore page", () => {
         await expect(price).toHaveText(expectedPrice);
 
         const commit = await offer.locator("[data-testid=commit]");
-        await expect(commit).toHaveText("Commit now");
+        await expect(commit).toHaveText("Commit");
 
         const image = await offer.locator("[data-testid=image]");
         await expect(image.getAttribute("src")).toBeTruthy();
@@ -94,8 +94,9 @@ test.describe("Explore page", () => {
       await page.goto(exploreUrl);
 
       const input = await page.locator("input");
-
       await input.type(name, { delay: 100 });
+      await input.press("Enter");
+
       const filteredOffers = allOffers
         .filter((offer) => offer?.metadata.name.includes(name))
         .map((offer) => ({
@@ -103,7 +104,9 @@ test.describe("Explore page", () => {
         }));
 
       const offers = await page.locator("[data-testid=offer]");
+
       const num = await offers.count();
+      await expect(num).toBe(filteredOffers.length);
       for (let i = 0; i < num; i++) {
         const offer = offers.nth(i);
         const expectedOffer = filteredOffers[i].offer;
@@ -128,7 +131,7 @@ test.describe("Explore page", () => {
         await expect(price).toHaveText(expectedPrice);
 
         const commit = await offer.locator("[data-testid=commit]");
-        await expect(commit).toHaveText("Commit now");
+        await expect(commit).toHaveText("Commit");
 
         const image = await offer.locator("[data-testid=image]");
         await expect(image.getAttribute("src")).toBeTruthy();
