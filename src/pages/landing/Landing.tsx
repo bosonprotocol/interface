@@ -1,4 +1,4 @@
-import { QueryParams } from "lib/routing/query-params";
+import { QueryParameters } from "lib/routing/query-parameters";
 import { BosonRoutes } from "lib/routing/routes";
 import FeaturedOffers from "pages/landing/FeaturedOffers";
 import { useState } from "react";
@@ -96,7 +96,7 @@ export default function Landing() {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const navigateToExplore = () =>
-    navigate(`${BosonRoutes.Explore}?${QueryParams.name}=${name}`);
+    navigate(`${BosonRoutes.Explore}?${QueryParameters.name}=${name}`);
   return (
     <LandingContainer>
       <Hero>

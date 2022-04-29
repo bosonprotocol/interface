@@ -1,13 +1,13 @@
-import { QueryParams } from "lib/routing/query-params";
+import { Layout } from "components/Layout";
+import { QueryParameters } from "lib/routing/query-parameters";
+import { useQueryParameter } from "lib/routing/useQueryParameter";
 import { Select } from "lib/styles/base";
 import { colors } from "lib/styles/colors";
 import { useBrands } from "lib/utils/hooks/useBrands";
 import { useTokens } from "lib/utils/hooks/useTokens";
-import React, { useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import React, { useCallback, useState } from "react";
 import styled from "styled-components";
 
-import { Layout } from "../../components/Layout";
 import ExploreOffers from "./ExploreOffers";
 
 const ExploreContainer = styled(Layout)`
@@ -69,21 +69,23 @@ const InputContainer = styled.div`
 `;
 
 export default function Explore() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const nameQueryParam = searchParams.get(QueryParams.name) || "";
+  const [nameQueryParameter, setNameQueryParameter] = useQueryParameter(
+    QueryParameters.name
+  );
 
-  const [brandInput, setBrandInput] = useState<string>(nameQueryParam);
+  const [brandInput, setBrandInput] = useState<string>(nameQueryParameter);
   const [brandSelect, setBrandSelect] = useState<string>("");
-  const [nameToSearch, setNameToSearch] = useState<string>(nameQueryParam);
+  const [nameToSearch, setNameToSearch] = useState<string>(nameQueryParameter);
 
   const { data: tokens } = useTokens();
   const [selectedToken, setSelectedToken] = useState<string>();
   const { data: brands } = useBrands();
 
-  const onChangeName = (name: string) => {
+  const onChangeName = useCallback((name: string) => {
     setNameToSearch(name);
-    setSearchParams({ name: name });
-  };
+    setNameQueryParameter(name);
+  }, []);
+
   return (
     <ExploreContainer>
       <TopContainer>
@@ -142,11 +144,7 @@ export default function Explore() {
           </InputContainer>
         </SearchContainer>
       </TopContainer>
-      <ExploreOffers
-        // brand={nameToSearch}
-        name={nameToSearch}
-        exchangeTokenAddress={selectedToken}
-      />
+      <ExploreOffers name={nameToSearch} exchangeTokenAddress={selectedToken} />
     </ExploreContainer>
   );
 }

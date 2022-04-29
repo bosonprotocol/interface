@@ -90,8 +90,8 @@ const dayInMs = 1000 * 60 * 60 * 24;
 const minuteInMS = 1000 * 60;
 
 export default function CreateOffer() {
-  const [errorMsg, setErrorMsg] = useState<string>("");
-  const formik = useFormik({
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const { values, handleChange, handleSubmit } = useFormik({
     initialValues: {
       name: "Baggy jeans",
       description: "Lore ipsum",
@@ -108,7 +108,7 @@ export default function CreateOffer() {
       fulfillmentPeriodDurationInMS: dayInMs.toString(),
       voucherValidDurationInMS: dayInMs.toString()
     } as FormValues,
-    onSubmit: async (values) => {
+    onSubmit: async (values: FormValues) => {
       try {
         if (!values) {
           return;
@@ -137,9 +137,9 @@ export default function CreateOffer() {
           },
           CONFIG
         );
-        setErrorMsg("");
+        setErrorMessage("");
       } catch (error) {
-        setErrorMsg(
+        setErrorMessage(
           (error as { message: string })?.message ||
             "There has been an error, please try again"
         );
@@ -151,13 +151,13 @@ export default function CreateOffer() {
   return (
     <CreateOfferContainer>
       <h1>Create Offer</h1>
-      <StyledForm onSubmit={formik.handleSubmit}>
+      <StyledForm onSubmit={handleSubmit}>
         <FormElementsContainer>
           <FormElement>
             <FormLabel>Name</FormLabel>
             <FormControl
-              value={formik.values.name}
-              onChange={formik.handleChange}
+              value={values.name}
+              onChange={handleChange}
               name="name"
               type="text"
               placeholder="..."
@@ -167,8 +167,8 @@ export default function CreateOffer() {
             <FormLabel>Description</FormLabel>
             <FormControl
               rows={1}
-              value={formik.values.description}
-              onChange={formik.handleChange}
+              value={values.description}
+              onChange={handleChange}
               name="description"
               as="textarea"
               placeholder="..."
@@ -177,8 +177,8 @@ export default function CreateOffer() {
           <FormElement>
             <FormLabel>External Url</FormLabel>
             <FormControl
-              value={formik.values.externalUrl}
-              onChange={formik.handleChange}
+              value={values.externalUrl}
+              onChange={handleChange}
               name="externalUrl"
               type="text"
               placeholder="..."
@@ -187,8 +187,8 @@ export default function CreateOffer() {
           <FormElement>
             <FormLabel>Schema Url</FormLabel>
             <FormControl
-              value={formik.values.schemaUrl}
-              onChange={formik.handleChange}
+              value={values.schemaUrl}
+              onChange={handleChange}
               name="schemaUrl"
               type="text"
               placeholder="..."
@@ -197,8 +197,8 @@ export default function CreateOffer() {
           <FormElement>
             <FormLabel>Price</FormLabel>
             <FormControl
-              value={formik.values.price}
-              onChange={formik.handleChange}
+              value={values.price}
+              onChange={handleChange}
               name="price"
               type="text"
               placeholder="..."
@@ -207,8 +207,8 @@ export default function CreateOffer() {
           <FormElement>
             <FormLabel>Deposit</FormLabel>
             <FormControl
-              value={formik.values.deposit}
-              onChange={formik.handleChange}
+              value={values.deposit}
+              onChange={handleChange}
               name="deposit"
               type="text"
               placeholder="..."
@@ -217,8 +217,8 @@ export default function CreateOffer() {
           <FormElement>
             <FormLabel>Penalty</FormLabel>
             <FormControl
-              value={formik.values.penalty}
-              onChange={formik.handleChange}
+              value={values.penalty}
+              onChange={handleChange}
               name="penalty"
               type="text"
               placeholder="..."
@@ -227,8 +227,8 @@ export default function CreateOffer() {
           <FormElement>
             <FormLabel>Quantity</FormLabel>
             <FormControl
-              value={formik.values.quantity}
-              onChange={formik.handleChange}
+              value={values.quantity}
+              onChange={handleChange}
               name="quantity"
               type="text"
               placeholder="..."
@@ -237,8 +237,8 @@ export default function CreateOffer() {
           <FormElement>
             <FormLabel>Voucher Valid Duration (ms)</FormLabel>
             <FormControl
-              value={formik.values.voucherValidDurationInMS}
-              onChange={formik.handleChange}
+              value={values.voucherValidDurationInMS}
+              onChange={handleChange}
               name="voucherValidDurationInMS"
               type="text"
               placeholder="..."
@@ -247,8 +247,8 @@ export default function CreateOffer() {
           <FormElement>
             <FormLabel>Exchange Token</FormLabel>
             <FormControl
-              value={formik.values.exchangeToken}
-              onChange={formik.handleChange}
+              value={values.exchangeToken}
+              onChange={handleChange}
               name="exchangeToken"
               type="text"
               placeholder="..."
@@ -258,8 +258,8 @@ export default function CreateOffer() {
           <FormElement>
             <FormLabel>Valid From Date (ms)</FormLabel>
             <FormControl
-              value={formik.values.validFromDateInMS}
-              onChange={formik.handleChange}
+              value={values.validFromDateInMS}
+              onChange={handleChange}
               name="validFromDateInMS"
               type="text"
               placeholder="..."
@@ -268,8 +268,8 @@ export default function CreateOffer() {
           <FormElement>
             <FormLabel>Valid Until Date (ms)</FormLabel>
             <FormControl
-              value={formik.values.validUntilDateInMS}
-              onChange={formik.handleChange}
+              value={values.validUntilDateInMS}
+              onChange={handleChange}
               name="validUntilDateInMS"
               type="text"
               placeholder="..."
@@ -278,8 +278,8 @@ export default function CreateOffer() {
           <FormElement>
             <FormLabel>Redeemable Date (ms)</FormLabel>
             <FormControl
-              value={formik.values.redeemableDateInMS}
-              onChange={formik.handleChange}
+              value={values.redeemableDateInMS}
+              onChange={handleChange}
               name="redeemableDateInMS"
               type="text"
               placeholder="..."
@@ -288,8 +288,8 @@ export default function CreateOffer() {
           <FormElement>
             <FormLabel>Fulfillment Period Duration (ms)</FormLabel>
             <FormControl
-              value={formik.values.fulfillmentPeriodDurationInMS}
-              onChange={formik.handleChange}
+              value={values.fulfillmentPeriodDurationInMS}
+              onChange={handleChange}
               name="fulfillmentPeriodDurationInMS"
               type="text"
               placeholder="..."
@@ -297,7 +297,9 @@ export default function CreateOffer() {
           </FormElement>
         </FormElementsContainer>
         <Button type="submit">Submit</Button>
-        {errorMsg && <ErrorMsg data-testid="error">{errorMsg}</ErrorMsg>}
+        {errorMessage && (
+          <ErrorMsg data-testid="error">{errorMessage}</ErrorMsg>
+        )}
       </StyledForm>
     </CreateOfferContainer>
   );

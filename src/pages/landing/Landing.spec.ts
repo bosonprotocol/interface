@@ -52,12 +52,14 @@ test.describe("Root page (Landing page)", () => {
           expectedOffer.metadata?.name || "expected name"
         );
 
-        const sellerAdress = await offer.locator("[data-testid=sellerAdress]");
+        const sellerAddress = await offer.locator(
+          "[data-testid=sellerAddress]"
+        );
         const expectedSellerAddress = shortenAddress(
           expectedOffer.seller?.address || ""
         );
 
-        await expect(sellerAdress).toHaveText(expectedSellerAddress);
+        await expect(sellerAddress).toHaveText(expectedSellerAddress);
 
         const price = await offer.locator("[data-testid=price]");
         const expectedPrice = `${formatUnits(

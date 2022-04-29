@@ -14,15 +14,6 @@ const OfferContainer = styled.div`
   padding-bottom: 24px;
 `;
 
-const shortenAddress = (address: string): string => {
-  if (!address) {
-    return address;
-  }
-  return `${address.substring(0, 5)}...${address.substring(
-    address.length - 4
-  )}`;
-};
-
 interface Props {
   offers?: Array<Offer>;
   isError: boolean;
@@ -33,6 +24,7 @@ export default function OfferList({ offers, isLoading, isError }: Props) {
   if (isLoading) {
     return <div>Loading...</div>;
   }
+
   if (isError) {
     return (
       <div data-testid="errorOffers">
@@ -40,6 +32,7 @@ export default function OfferList({ offers, isLoading, isError }: Props) {
       </div>
     );
   }
+
   if (!offers || offers.length === 0) {
     return (
       <OfferContainer data-testid="noOffers">No offers found</OfferContainer>
@@ -62,8 +55,7 @@ export default function OfferList({ offers, isLoading, isError }: Props) {
             id={offer.id}
             offerImg={offerImg}
             name={offer.metadata?.name || "Untitled"}
-            sellerFullAdress={offer.seller?.address}
-            sellerShortAddress={shortenAddress(offer.seller?.address)}
+            sellerAddress={offer.seller?.address}
             price={formatUnits(
               BigNumber.from(offer.price),
               offer.exchangeToken?.decimals
