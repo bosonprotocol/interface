@@ -77,7 +77,7 @@ test.describe("Explore page", () => {
         }
       });
       await page.goto(exploreUrl);
-      await page.waitForTimeout(1000);
+      await page.waitForTimeout(500);
       const offers = await page.locator("[data-testid=offer]");
       const num = await offers.count();
       await expect(num).toStrictEqual(mockedOffers.length - 1); // 1 invalid offer
@@ -106,7 +106,7 @@ test.describe("Explore page", () => {
       });
 
       await page.goto(exploreUrl);
-
+      await page.waitForTimeout(500);
       const offers = await page.locator("[data-testid=offer]");
       const num = await offers.count();
       await expect(num).toStrictEqual(first10Offers.length);

@@ -57,6 +57,7 @@ test.describe("Root page (Landing page)", () => {
       });
 
       await page.goto("/");
+      await page.waitForTimeout(500);
       const offers = await page.locator("[data-testid=offer]");
       const num = await offers.count();
 
@@ -105,7 +106,7 @@ test.describe("Root page (Landing page)", () => {
         }
       });
       await page.goto("/");
-
+      await page.waitForTimeout(500);
       const offers = await page.locator("[data-testid=offer]");
       const offerCount = await offers.count();
       await expect(offerCount).toStrictEqual(mockedOffers.length - 1);
