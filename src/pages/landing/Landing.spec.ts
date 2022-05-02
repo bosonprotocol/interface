@@ -22,7 +22,7 @@ test.describe("Root page (Landing page)", () => {
     test("should have a logo", async ({ page }) => {
       const logoImg = await page.locator("[data-testid=logo]");
 
-      await expect(logoImg.getAttribute("src")).toBeTruthy();
+      await expect(await logoImg.getAttribute("src")).toBeTruthy();
     });
     test("should have an h2 'Featured Offers'", async ({ page }) => {
       const h2 = await page.locator("h2");

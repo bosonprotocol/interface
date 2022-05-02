@@ -23,7 +23,7 @@ test.describe("Explore page", () => {
     test("should have a logo", async ({ page }) => {
       const logoImg = await page.locator("[data-testid=logo]");
 
-      await expect(logoImg.getAttribute("src")).toBeTruthy();
+      await expect(await logoImg.getAttribute("src")).toBeTruthy();
     });
     test("should have an h2 'Filter'", async ({ page }) => {
       const h2 = await page.locator("h2", { hasText: "Filter" });
@@ -77,7 +77,7 @@ test.describe("Explore page", () => {
         }
       });
       await page.goto(exploreUrl);
-      await page.pause();
+      await page.waitForTimeout(1000);
       const offers = await page.locator("[data-testid=offer]");
       const num = await offers.count();
       await expect(num).toStrictEqual(mockedOffers.length - 1); // 1 invalid offer
