@@ -14,7 +14,6 @@ const rootElement = document.getElementById("root");
 if (!rootElement) throw new Error("Unable to find the root element");
 
 const Search = React.lazy(() => import("pages/explore/Explore"));
-const FallBack = <>Loading...</>;
 const queryClient = new QueryClient();
 const root = createRoot(rootElement);
 root.render(
@@ -24,14 +23,7 @@ root.render(
         <Routes>
           <Route path="/" element={<App />}>
             <Route path={BosonRoutes.Root} element={<Landing />} />
-            <Route
-              path={BosonRoutes.Explore}
-              element={
-                <React.Suspense fallback={FallBack}>
-                  <Search />
-                </React.Suspense>
-              }
-            />
+            <Route path={BosonRoutes.Explore} element={<Search />} />
             <Route path={BosonRoutes.CreateOffer} element={<CreateOffer />} />
             <Route path={BosonRoutes.ManageOffers} element={<ManageOffer />} />
             <Route
