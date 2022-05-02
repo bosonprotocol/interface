@@ -75,11 +75,11 @@ interface FormValues {
   externalUrl: string;
   schemaUrl: string;
   price: string;
-  deposit: string;
-  penalty: string;
-  quantity: string;
+  sellerDeposit: string;
+  buyerCancelPenalty: string;
+  quantityAvailable: string;
   exchangeToken: string;
-  redeemableDateInMS: string;
+  redeemableFromDateInMS: string;
   validFromDateInMS: string;
   validUntilDateInMS: string;
   fulfillmentPeriodDurationInMS: string;
@@ -98,11 +98,11 @@ export default function CreateOffer() {
       externalUrl: window.location.origin,
       schemaUrl: "https://schema.org/schema",
       price: "1",
-      deposit: "2",
-      penalty: "3",
-      quantity: "10",
+      sellerDeposit: "2",
+      buyerCancelPenalty: "1",
+      quantityAvailable: "10",
       exchangeToken: "0xf47E4fd9d2eBd6182F597eE12E487CcA37FC524c", // ropsten boson address
-      redeemableDateInMS: (Date.now() + minuteInMS).toString(),
+      redeemableFromDateInMS: (Date.now() + minuteInMS).toString(),
       validFromDateInMS: (Date.now() + minuteInMS).toString(),
       validUntilDateInMS: (Date.now() + dayInMs).toString(),
       fulfillmentPeriodDurationInMS: dayInMs.toString(),
@@ -124,15 +124,17 @@ export default function CreateOffer() {
           schemaUrl: values.schemaUrl,
           type: MetadataType.BASE
         });
-        const metadataUri = `${CONFIG.metadataBaseUrl}/${metadataHash}`;
+        const metadataUri = `ipfs://${metadataHash}`;
 
         createOffer(
           {
             ...values,
             price: parseEther(values.price).toString(),
-            deposit: parseEther(values.deposit).toString(),
-            penalty: parseEther(values.penalty).toString(),
-            metadataHash,
+            sellerDeposit: parseEther(values.sellerDeposit).toString(),
+            buyerCancelPenalty: parseEther(
+              values.buyerCancelPenalty
+            ).toString(),
+            offerChecksum: metadataHash, // TODO: use correct checksum
             metadataUri
           },
           CONFIG
@@ -205,9 +207,9 @@ export default function CreateOffer() {
             />
           </FormElement>
           <FormElement>
-            <FormLabel>Deposit</FormLabel>
+            <FormLabel>SellerDeposit</FormLabel>
             <FormControl
-              value={values.deposit}
+              value={values.sellerDeposit}
               onChange={handleChange}
               name="deposit"
               type="text"
@@ -215,9 +217,9 @@ export default function CreateOffer() {
             />
           </FormElement>
           <FormElement>
-            <FormLabel>Penalty</FormLabel>
+            <FormLabel>BuyerCancelPenalty</FormLabel>
             <FormControl
-              value={values.penalty}
+              value={values.buyerCancelPenalty}
               onChange={handleChange}
               name="penalty"
               type="text"
@@ -227,7 +229,7 @@ export default function CreateOffer() {
           <FormElement>
             <FormLabel>Quantity</FormLabel>
             <FormControl
-              value={values.quantity}
+              value={values.quantityAvailable}
               onChange={handleChange}
               name="quantity"
               type="text"
@@ -278,7 +280,7 @@ export default function CreateOffer() {
           <FormElement>
             <FormLabel>Redeemable Date (ms)</FormLabel>
             <FormControl
-              value={values.redeemableDateInMS}
+              value={values.redeemableFromDateInMS}
               onChange={handleChange}
               name="redeemableDateInMS"
               type="text"

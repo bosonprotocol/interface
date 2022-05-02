@@ -20,7 +20,7 @@ export async function assertOffer(offer: Locator, expectedOffer: Offer) {
 
   const sellerAddress = await offer.locator("[data-testid=sellerAddress]");
   const expectedSellerAddress = shortenAddress(
-    expectedOffer.seller?.address || ""
+    expectedOffer.seller?.admin || ""
   );
 
   await expect(sellerAddress).toHaveText(expectedSellerAddress);

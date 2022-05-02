@@ -55,7 +55,7 @@ export default function OfferList({ offers, isLoading, isError }: Props) {
             id={offer.id}
             offerImg={offerImg}
             name={offer.metadata?.name || "Untitled"}
-            sellerAddress={offer.seller?.address}
+            sellerAddress={offer.seller?.admin}
             price={formatUnits(
               BigNumber.from(offer.price),
               offer.exchangeToken?.decimals

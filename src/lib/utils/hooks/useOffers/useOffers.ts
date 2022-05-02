@@ -10,19 +10,24 @@ const offerGraphQL = `
     id
     createdAt
     price
-    deposit
-    penalty
-    quantity
+    offerChecksum
+    sellerDeposit
+    fulfillmentPeriodDuration
+    metadataUri
+    buyerCancelPenalty
+    quantityAvailable
+    redeemableFromDate
     validFromDate
     validUntilDate
-    redeemableDate
-    fulfillmentPeriodDuration
-    voucherValidDuration
-    metadataUri
-    metadataHash
     voidedAt
+    voucherValidDuration
     seller {
-      address
+      id
+      admin
+      clerk
+      treasury
+      operator
+      active
     }
     exchangeToken {
       address
