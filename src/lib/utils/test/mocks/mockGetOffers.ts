@@ -1,37 +1,48 @@
-import { expect } from "@playwright/test";
+import { Offer } from "lib/types/offer";
 
-import { MockProps } from "../../../../pages/explore/Explore.spec";
-import { graphqlEndpoint } from "../environment";
+import { sortOffersBy } from "../utils/sort";
 import { defaultMockOffers } from "./defaultMockOffers";
+import { CustomResponse } from "./mockGetBase";
 
+export interface MockProps {
+  postData: string | null;
+  options?: {
+    offers?: Offer[];
+    response?: Partial<CustomResponse>;
+    orderBy?: {
+      value: string;
+      property: string;
+    };
+  };
+}
 export async function mockGetOffers({
-  page,
-  options: { offers = defaultMockOffers, response, filterBy } = {}
+  postData,
+  options: { offers = defaultMockOffers, response } = {}
 }: MockProps) {
-  await page.route(graphqlEndpoint, async (route) => {
-    const postData = route.request().postData();
-    const isBaseEntitiesRequest = postData?.includes("baseMetadataEntities(");
-    if (!isBaseEntitiesRequest) return;
+  let baseMetadataEntities = null;
 
-    if (filterBy) {
-      await expect(
-        postData?.includes(`${filterBy.property}:${filterBy.value}`)
-      ).toBeTruthy();
-    }
-
-    const formattedOffers = offers.map((offer) => ({
+  if (!response) {
+    baseMetadataEntities = offers.map((offer) => ({
       offer
     }));
+    const orderByName = !!postData?.includes(`orderBy: name`);
+    const orderDirectionAsc = !!postData?.includes(`orderDirection: asc`);
 
-    const options = {
-      status: 200,
-      body: JSON.stringify({
-        data: { baseMetadataEntities: formattedOffers }
-      }),
-      contentType: "application/json",
-      ...response
-    };
+    if (orderByName) {
+      baseMetadataEntities = baseMetadataEntities.sort(
+        sortOffersBy({ property: "name", asc: orderDirectionAsc })
+      );
+    }
+  }
 
-    await route.fulfill(options);
-  });
+  const options = {
+    status: 200,
+    body: JSON.stringify({
+      data: { baseMetadataEntities: baseMetadataEntities }
+    }),
+    contentType: "application/json",
+    ...response
+  };
+
+  return options;
 }

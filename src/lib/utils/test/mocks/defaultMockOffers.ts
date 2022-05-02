@@ -1,13 +1,29 @@
-export const defaultMockOffers = [
+import { Offer } from "lib/types/offer";
+
+export const defaultMockOffers: Offer[] = [
   {
     id: "0",
     price: "1",
+    createdAt: "",
+    deposit: "",
+    fulfillmentPeriodDuration: "",
+    metadataHash: "",
+    metadataUri: "",
+    penalty: "",
+    quantity: "",
+    redeemableDate: "",
+    validFromDate: "",
+    validUntilDate: "",
+    voidedAt: null,
+    voucherValidDuration: "",
     seller: {
       address: "0x57fafe1fb7c682216fce44e50946c5249192b9d5"
     },
     exchangeToken: {
       symbol: "ETH",
-      decimals: "18"
+      decimals: "18",
+      address: "0x0",
+      name: "name"
     },
     metadata: {
       name: "first offer",
@@ -20,12 +36,26 @@ export const defaultMockOffers = [
   {
     id: "1",
     price: "1",
+    createdAt: "",
+    deposit: "",
+    fulfillmentPeriodDuration: "",
+    metadataHash: "",
+    metadataUri: "",
+    penalty: "",
+    quantity: "",
+    redeemableDate: "",
+    validFromDate: "",
+    validUntilDate: "",
+    voidedAt: null,
+    voucherValidDuration: "",
     seller: {
       address: "0x0000000000000000000000000000000000000000"
     },
     exchangeToken: {
       symbol: "BOSON",
-      decimals: "2"
+      decimals: "2",
+      address: "0x0",
+      name: "name"
     },
     metadata: {
       name: "OfferV1 with id 1", // dont change, used in a test
@@ -38,11 +68,26 @@ export const defaultMockOffers = [
   {
     id: "10",
     price: "1",
+    createdAt: "",
+    deposit: "",
+    fulfillmentPeriodDuration: "",
+    metadataHash: "",
+    metadataUri: "",
+    penalty: "",
+    quantity: "",
+    redeemableDate: "",
+    validFromDate: "",
+    validUntilDate: "",
+    voidedAt: null,
+    voucherValidDuration: "",
     seller: {
       address: "0xe16955e95d088bd30746c7fb7d76cda436b86f63"
     },
     exchangeToken: {
-      symbol: "ETH"
+      symbol: "ETH",
+      decimals: "2",
+      address: "0x0",
+      name: "name"
     },
     metadata: {
       name: "Offer with id 10",
@@ -55,11 +100,26 @@ export const defaultMockOffers = [
   {
     id: "11",
     price: "1",
+    createdAt: "",
+    deposit: "",
+    fulfillmentPeriodDuration: "",
+    metadataHash: "",
+    metadataUri: "",
+    penalty: "",
+    quantity: "",
+    redeemableDate: "",
+    validFromDate: "",
+    validUntilDate: "",
+    voidedAt: null,
+    voucherValidDuration: "",
     seller: {
       address: "0xe16955e95d088bd30746c7fb7d76cda436b86f63"
     },
     exchangeToken: {
-      symbol: "ETH"
+      symbol: "ETH",
+      decimals: "2",
+      address: "0x0",
+      name: "name"
     },
     metadata: {
       name: "offer with id 11",
@@ -72,11 +132,26 @@ export const defaultMockOffers = [
   {
     id: "12",
     price: "1",
+    createdAt: "",
+    deposit: "",
+    fulfillmentPeriodDuration: "",
+    metadataHash: "",
+    metadataUri: "",
+    penalty: "",
+    quantity: "",
+    redeemableDate: "",
+    validFromDate: "",
+    validUntilDate: "",
+    voidedAt: null,
+    voucherValidDuration: "",
     seller: {
       address: "0x57fafe1fb7c682216fce44e50946c5249192b9d5"
     },
     exchangeToken: {
-      symbol: "ETH"
+      symbol: "ETH",
+      decimals: "2",
+      address: "0x0",
+      name: "name"
     },
     metadata: {
       name: "offer with id 12",
@@ -89,11 +164,26 @@ export const defaultMockOffers = [
   {
     id: "13",
     price: "1",
+    createdAt: "",
+    deposit: "",
+    fulfillmentPeriodDuration: "",
+    metadataHash: "",
+    metadataUri: "",
+    penalty: "",
+    quantity: "",
+    redeemableDate: "",
+    validFromDate: "",
+    validUntilDate: "",
+    voidedAt: null,
+    voucherValidDuration: "",
     seller: {
       address: "0xd8bb0e340f1cb59909a4fb9de585cb203be37b8a"
     },
     exchangeToken: {
-      symbol: "ETH"
+      symbol: "ETH",
+      decimals: "2",
+      address: "0x0",
+      name: "name"
     },
     metadata: {
       name: "offer with id 13",
@@ -106,11 +196,26 @@ export const defaultMockOffers = [
   {
     id: "14",
     price: "1",
+    createdAt: "",
+    deposit: "",
+    fulfillmentPeriodDuration: "",
+    metadataHash: "",
+    metadataUri: "",
+    penalty: "",
+    quantity: "",
+    redeemableDate: "",
+    validFromDate: "",
+    validUntilDate: "",
+    voidedAt: null,
+    voucherValidDuration: "",
     seller: {
       address: "0xd8bb0e340f1cb59909a4fb9de585cb203be37b8a"
     },
     exchangeToken: {
-      symbol: "ETH"
+      symbol: "ETH",
+      decimals: "2",
+      address: "0x0",
+      name: "name"
     },
     metadata: {
       name: "offer with id 14",
@@ -123,11 +228,26 @@ export const defaultMockOffers = [
   {
     id: "15",
     price: "100000000000000000",
+    createdAt: "",
+    deposit: "",
+    fulfillmentPeriodDuration: "",
+    metadataHash: "",
+    metadataUri: "",
+    penalty: "",
+    quantity: "",
+    redeemableDate: "",
+    validFromDate: "",
+    validUntilDate: "",
+    voidedAt: null,
+    voucherValidDuration: "",
     seller: {
       address: "0xe16955e95d088bd30746c7fb7d76cda436b86f63"
     },
     exchangeToken: {
-      symbol: "ETH"
+      symbol: "ETH",
+      decimals: "2",
+      address: "0x0",
+      name: "name"
     },
     metadata: {
       name: "offer with id 15",
@@ -140,11 +260,26 @@ export const defaultMockOffers = [
   {
     id: "16",
     price: "1000000000000000000",
+    createdAt: "",
+    deposit: "",
+    fulfillmentPeriodDuration: "",
+    metadataHash: "",
+    metadataUri: "",
+    penalty: "",
+    quantity: "",
+    redeemableDate: "",
+    validFromDate: "",
+    validUntilDate: "",
+    voidedAt: null,
+    voucherValidDuration: "",
     seller: {
       address: "0xe16955e95d088bd30746c7fb7d76cda436b86f63"
     },
     exchangeToken: {
-      symbol: "ETH"
+      symbol: "ETH",
+      decimals: "2",
+      address: "0x0",
+      name: "name"
     },
     metadata: {
       name: "offer with id 16",
@@ -157,11 +292,26 @@ export const defaultMockOffers = [
   {
     id: "17",
     price: "1000000000000000000",
+    createdAt: "",
+    deposit: "",
+    fulfillmentPeriodDuration: "",
+    metadataHash: "",
+    metadataUri: "",
+    penalty: "",
+    quantity: "",
+    redeemableDate: "",
+    validFromDate: "",
+    validUntilDate: "",
+    voidedAt: null,
+    voucherValidDuration: "",
     seller: {
       address: "0xe16955e95d088bd30746c7fb7d76cda436b86f63"
     },
     exchangeToken: {
-      symbol: "ETH"
+      symbol: "ETH",
+      decimals: "2",
+      address: "0x0",
+      name: "name"
     },
     metadata: {
       name: "offer with id 17",
@@ -174,11 +324,26 @@ export const defaultMockOffers = [
   {
     id: "18",
     price: "1000000000000000000",
+    createdAt: "",
+    deposit: "",
+    fulfillmentPeriodDuration: "",
+    metadataHash: "",
+    metadataUri: "",
+    penalty: "",
+    quantity: "",
+    redeemableDate: "",
+    validFromDate: "",
+    validUntilDate: "",
+    voidedAt: null,
+    voucherValidDuration: "",
     seller: {
       address: "0xe16955e95d088bd30746c7fb7d76cda436b86f63"
     },
     exchangeToken: {
-      symbol: "ETH"
+      symbol: "ETH",
+      decimals: "2",
+      address: "0x0",
+      name: "name"
     },
     metadata: {
       name: "Baggy jeans",

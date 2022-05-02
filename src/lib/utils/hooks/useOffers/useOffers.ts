@@ -56,7 +56,7 @@ const buildOrderBy = () => {
   // TODO: change to createdAt
   return `
     orderBy: name,
-    orderDirection: desc
+    orderDirection: asc
   `;
 };
 

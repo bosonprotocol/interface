@@ -1,18 +1,17 @@
-import { offers } from "@bosonprotocol/core-sdk";
-import { formatUnits } from "@ethersproject/units";
-import { expect, Page, test } from "@playwright/test";
-import { BigNumber } from "ethers";
-import { graphqlEndpoint } from "lib/utils/test/environment";
+import { expect, test } from "@playwright/test";
+import { Offer } from "lib/types/offer";
+import { mockSubgraph } from "lib/utils/test/mocks/mockGetBase";
+import { sortOffersBy } from "lib/utils/test/utils/sort";
 
 import { assertOffer } from "../../lib/utils/test/assert/offer";
 import { defaultMockOffers } from "../../lib/utils/test/mocks/defaultMockOffers";
-import { mockGetBrands } from "../../lib/utils/test/mocks/mockGetBrands";
-import { mockGetOffers } from "../../lib/utils/test/mocks/mockGetOffers";
-import { mockGetTokens } from "../../lib/utils/test/mocks/mockGetTokens";
 
 test.describe("Root page (Landing page)", () => {
   test.describe("Container", () => {
     test.beforeEach(async ({ page }) => {
+      await mockSubgraph({
+        page
+      });
       await page.goto("/");
     });
     test("should have an h1 'Boson dApp'", async ({ page }) => {
@@ -39,20 +38,39 @@ test.describe("Root page (Landing page)", () => {
 
   test.describe("Offers list", () => {
     test("should display the first 10 offers", async ({ page }) => {
-      await mockGetOffers({ page });
+      const nOffers = 10;
+      const first10Offers = defaultMockOffers
+        .map((offer) => ({ offer: { ...offer } }))
+        .slice(0, nOffers)
+        .sort(sortOffersBy({ property: "name", asc: true }));
+      await mockSubgraph({
+        page,
+        options: {
+          mockGetOffers: {
+            response: {
+              body: JSON.stringify({
+                data: { baseMetadataEntities: first10Offers }
+              })
+            }
+          }
+        }
+      });
 
       await page.goto("/");
-
       const offers = await page.locator("[data-testid=offer]");
+      const num = await offers.count();
 
-      for (let i = 0; i < 10; i++) {
+      await expect(num).toStrictEqual(nOffers);
+      for (let i = 0; i < nOffers; i++) {
         const offer = offers.nth(i);
-        const expectedOffer = defaultMockOffers[i];
+        const expectedOffer = first10Offers[i].offer;
+        await page.pause();
+
         await assertOffer(offer, expectedOffer);
       }
     });
 
-    test.skip("should filter out invalid offers", async ({ page }) => {
+    test("should filter out invalid offers", async ({ page }) => {
       const mockedOffers = [
         { ...defaultMockOffers[0] },
         {
@@ -72,9 +90,20 @@ test.describe("Root page (Landing page)", () => {
             // missing description among other fields
           }
         }
-      ];
+      ].map((offer) => ({ offer })) as unknown as Offer[];
 
-      await mockGetOffers({ page, options: { offers: mockedOffers } });
+      await mockSubgraph({
+        page,
+        options: {
+          mockGetOffers: {
+            response: {
+              body: JSON.stringify({
+                data: { baseMetadataEntities: mockedOffers }
+              })
+            }
+          }
+        }
+      });
       await page.goto("/");
 
       const offers = await page.locator("[data-testid=offer]");
@@ -83,7 +112,7 @@ test.describe("Root page (Landing page)", () => {
     });
 
     test("should display 'No offers found'", async ({ page }) => {
-      await mockGetOffers({ page, options: { offers: [] } });
+      await mockSubgraph({ page, options: { mockGetOffers: { offers: [] } } });
       await page.goto("/");
       const errorOffersSelector = "[data-testid=noOffers]";
       await page.waitForSelector(errorOffersSelector);
@@ -101,7 +130,7 @@ test.describe("Root page (Landing page)", () => {
         }),
         contentType: "application/json"
       };
-      await mockGetOffers({ page, options: { response } });
+      await mockSubgraph({ page, options: { mockGetOffers: { response } } });
 
       await page.goto("/");
       const errorOffersSelector = "[data-testid=errorOffers]";
@@ -123,12 +152,7 @@ test.describe("Root page (Landing page)", () => {
         contentType: "application/json"
       };
 
-      await mockGetOffers({
-        page,
-        options: {
-          response
-        }
-      });
+      await mockSubgraph({ page, options: { mockGetOffers: { response } } });
 
       await page.goto("/");
       const errorOffersSelector = "[data-testid=errorOffers]";

@@ -1,32 +1,34 @@
-import { Page, Route } from "@playwright/test";
+import { CustomResponse } from "./mockGetBase";
 
-import { graphqlEndpoint } from "../environment";
-
-export async function mockGetBrands(page: Page) {
-  await page.route(graphqlEndpoint, async (route: Route) => {
-    const postData = route.request().postData();
-    const isBrandsRequest = postData?.includes("productV1MetadataEntities");
-    if (!isBrandsRequest) return;
-
-    const brands = {
-      data: {
-        productV1MetadataEntities: [
-          {
-            brandName: "brand1"
-          },
-          {
-            brandName: "brand2"
-          }
-        ]
-      }
+export interface MockProps {
+  postData: string | null;
+  options?: {
+    response?: CustomResponse;
+    filterBy?: {
+      value: string;
+      property: string;
     };
+  };
+}
 
-    const options = {
-      status: 200,
-      body: JSON.stringify(brands),
-      contentType: "application/json"
-    };
+export async function mockGetBrands({ postData }: MockProps) {
+  const brands = {
+    data: {
+      productV1MetadataEntities: [
+        {
+          brandName: "brand1"
+        },
+        {
+          brandName: "brand2"
+        }
+      ]
+    }
+  };
 
-    await route.fulfill(options);
-  });
+  const options = {
+    status: 200,
+    body: JSON.stringify(brands),
+    contentType: "application/json"
+  };
+  return options;
 }

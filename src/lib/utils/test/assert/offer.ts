@@ -1,6 +1,7 @@
 import { formatUnits } from "@ethersproject/units";
 import { expect, Locator } from "@playwright/test";
 import { BigNumber } from "ethers";
+import { Offer } from "lib/types/offer";
 
 const shortenAddress = (address: string): string => {
   if (!address) {
@@ -11,10 +12,7 @@ const shortenAddress = (address: string): string => {
   )}`;
 };
 
-export async function assertOffer(
-  offer: Locator,
-  expectedOffer: Record<string, any>
-) {
+export async function assertOffer(offer: Locator, expectedOffer: Offer) {
   const name = await offer.locator("[data-testid=name]");
   await expect(name).toHaveText(
     expectedOffer.metadata?.name || "expected name"
