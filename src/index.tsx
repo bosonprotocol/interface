@@ -1,19 +1,20 @@
 import App from "components/app";
-import { BosonRoutes } from "lib/routing/routes";
+import { BosonRoutes, OffersRoutes } from "lib/routing/routes";
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { HashRouter, Route, Routes } from "react-router-dom";
 
 import CreateOffer from "./pages/create-offer/CreateOffer";
+import Explore from "./pages/explore/Explore";
 import Landing from "./pages/landing/Landing";
 import ManageOffer from "./pages/manage-offer";
+import OfferDetail from "./pages/offers/OfferDetail";
 import reportWebVitals from "./reportWebVitals";
 
 const rootElement = document.getElementById("root");
 if (!rootElement) throw new Error("Unable to find the root element");
 
-const Search = React.lazy(() => import("pages/explore/Explore"));
 const queryClient = new QueryClient();
 const root = createRoot(rootElement);
 root.render(
@@ -23,9 +24,11 @@ root.render(
         <Routes>
           <Route path="/" element={<App />}>
             <Route path={BosonRoutes.Root} element={<Landing />} />
-            <Route path={BosonRoutes.Explore} element={<Search />} />
+            <Route path={BosonRoutes.Explore} element={<Explore />} />
             <Route path={BosonRoutes.CreateOffer} element={<CreateOffer />} />
             <Route path={BosonRoutes.ManageOffers} element={<ManageOffer />} />
+            <Route path={OffersRoutes.Root} element={<Explore />} />
+            <Route path={OffersRoutes.OfferDetail} element={<OfferDetail />} />
             <Route
               path="*"
               element={

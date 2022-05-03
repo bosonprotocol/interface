@@ -72,8 +72,9 @@ const buildWhere = ({
   brand,
   voided,
   valid,
-  exchangeTokenAddress
-}: UseOffersProps) => {
+  exchangeTokenAddress,
+  offerId
+}: Partial<UseOfferProps>) => {
   const now = Math.floor(Date.now() / 1000);
   const validFromDate = now;
   const validUntilDate = now;
@@ -81,8 +82,9 @@ const buildWhere = ({
     ? `validFromDate_lte:${validFromDate},validUntilDate_gte:${validUntilDate}`
     : "";
 
-  const voidedWhere = `voided:${voided}`;
+  const voidedWhere = voided === undefined ? "" : `voided:${voided}`;
   const nameWhere = name ? `name_contains_nocase:"${name}"` : "";
+  const offerIdWhere = offerId ? `offer:"${offerId}"` : "";
 
   const exchangeTokenAddressWhere = exchangeTokenAddress
     ? `exchangeToken:"${exchangeTokenAddress}"`
@@ -91,6 +93,7 @@ const buildWhere = ({
     validWhere,
     voidedWhere,
     nameWhere,
+    offerIdWhere,
     // brandWhere,
     exchangeTokenAddressWhere
   ]
@@ -100,21 +103,22 @@ const buildWhere = ({
 };
 
 const getOfferById = async (id: string, props: UseOffersProps) => {
-  const where = buildWhere(props);
+  const where = buildWhere({ ...props, offerId: id });
   const orderBy = buildOrderBy();
-  const result = await fetchSubgraph<{ offer: Offer }>(
+  const result = await fetchSubgraph<{
+    baseMetadataEntities: [{ offer: Offer }];
+  }>(
     gql`
       {
-        baseMetadataEntity(id: ${id}, where: ${where}, ${orderBy}) {
+        baseMetadataEntities(where: ${where}, ${orderBy}) {
           offer ${offerGraphQL}
         }
       }
     `
   );
-  return result?.offer;
+  return result.baseMetadataEntities[0]?.offer;
 };
 
-// TODO: to be used in details page
 export const useOffer = ({ offerId, ...restProps }: UseOfferProps) => {
   return useQuery(
     ["offer", offerId],

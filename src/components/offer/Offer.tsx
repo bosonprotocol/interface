@@ -1,5 +1,7 @@
+import { OffersRoutes } from "lib/routing/routes";
 import { colors } from "lib/styles/colors";
 import { formatAddress } from "lib/utils/address";
+import { generatePath, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import AddressImage from "./AddressImage";
@@ -11,6 +13,7 @@ const Card = styled.div`
   width: 250px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 0 16px;
+  cursor: pointer;
 `;
 
 const ImageContainer = styled.div`
@@ -98,6 +101,7 @@ interface Props {
 }
 
 export default function Offer({
+  id,
   offerImg,
   name,
   sellerAddress,
@@ -105,8 +109,12 @@ export default function Offer({
   priceSymbol,
   isSold
 }: Props) {
+  const navigate = useNavigate();
   return (
-    <Card data-testid="offer">
+    <Card
+      data-testid="offer"
+      onClick={() => navigate(generatePath(OffersRoutes.OfferDetail, { id }))}
+    >
       <SellerInfo>
         <AddressImage address={sellerAddress} />
         <SellerName data-testid="sellerAddress">
