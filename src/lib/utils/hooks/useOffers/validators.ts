@@ -1,3 +1,5 @@
+import { AnyMetadata } from "@bosonprotocol/common";
+import { validation } from "@bosonprotocol/ipfs-storage";
 import { Offer } from "lib/types/offer";
 
 export function checkOfferMetadata(offer: Offer): boolean {
@@ -13,30 +15,13 @@ export function checkOfferMetadata(offer: Offer): boolean {
 }
 
 function isOfferMetadataValid(offer: Offer): boolean {
-  const baseMetadataFields = [
-    "name",
-    "description",
-    "externalUrl",
-    "schemaUrl",
-    "type"
-  ];
-  const productV1MetadataFields = ["images", "tags", "brandName"];
-
-  if (!offer) {
+  if (!offer.metadata) {
     return false;
   }
-  const { metadata } = offer;
-  if (!metadata || !metadata.type) {
-    return false;
-  }
-
-  switch (metadata.type) {
-    case "BASE":
-      return baseMetadataFields.every((field) => field in metadata);
-    case "PRODUCT_V1":
-      return [...baseMetadataFields, ...productV1MetadataFields].every(
-        (field) => field in metadata
-      );
+  try {
+    return validation.validateMetadata(offer.metadata as AnyMetadata);
+  } catch (error) {
+    console.error(error);
   }
   return false;
 }
