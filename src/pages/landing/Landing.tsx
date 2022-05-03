@@ -1,11 +1,12 @@
-import FeaturedOffers from "components/featured-offers/FeaturedOffers";
-import { BosonRoutes } from "lib/routes";
+import { QueryParameters } from "lib/routing/query-parameters";
+import { BosonRoutes } from "lib/routing/routes";
+import FeaturedOffers from "pages/landing/FeaturedOffers";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-import { Layout } from "../components/Layout";
-import { colors } from "../lib/colors";
+import { Layout } from "../../components/Layout";
+import { colors } from "../../lib/styles/colors";
 
 const LandingContainer = styled(Layout)`
   display: flex;
@@ -93,7 +94,9 @@ const MainImg = styled.img`
 
 export default function Landing() {
   const navigate = useNavigate();
-  const [brand, setBrand] = useState("");
+  const [name, setName] = useState("");
+  const navigateToExplore = () =>
+    navigate(`${BosonRoutes.Explore}?${QueryParameters.name}=${name}`);
   return (
     <LandingContainer>
       <Hero>
@@ -101,16 +104,21 @@ export default function Landing() {
           <Title>Boson dApp</Title>
           <InputGo>
             <Input
-              onChange={(e) => setBrand(e.target.value)}
-              value={brand}
-              placeholder="Search by Brand"
+              onChange={(e) => setName(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  navigateToExplore();
+                }
+              }}
+              value={name}
+              placeholder="Search by Name"
             />
-            <GoButton onClick={() => navigate(BosonRoutes.Explore)}>
-              Go
-            </GoButton>
+            <GoButton onClick={() => navigateToExplore()}>Go</GoButton>
           </InputGo>
           <ExploreContainer>
-            <ExploreButton>Explore All Offers</ExploreButton>
+            <ExploreButton onClick={() => navigateToExplore()}>
+              Explore All Offers
+            </ExploreButton>
           </ExploreContainer>
         </TitleContainer>
         <MainImgContainer>
@@ -118,7 +126,7 @@ export default function Landing() {
         </MainImgContainer>
       </Hero>
 
-      <FeaturedOffers brand={brand} />
+      <FeaturedOffers />
     </LandingContainer>
   );
 }

@@ -2,8 +2,8 @@
 
 | Env          | Network   | Endpoint                                                        |
 | ------------ | --------- | --------------------------------------------------------------- |
-| `testing`    | `ropsten` | `https://interface-test.on.fleek.co/`                           |
-| `staging`    | `ropsten` | `https://interface-staging.on.fleek.co/`                        |
+| `testing`    | `ropsten` | https://interface-test.on.fleek.co/                             |
+| `staging`    | `ropsten` | https://interface-staging.on.fleek.co/                          |
 | `production` | `mainnet` | `TBD`                                                           |
 
 ## Local development
