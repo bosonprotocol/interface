@@ -1,8 +1,13 @@
-import { REACT_APP_WIDGETS_URL } from "./constants";
+import { getDefaultConfig } from "@bosonprotocol/common";
+
+const REACT_APP_CHAIN_ID = parseInt(process.env.REACT_APP_CHAIN_ID || "3");
+
+const config = getDefaultConfig({ chainId: REACT_APP_CHAIN_ID });
 
 export const CONFIG = {
-  widgetsUrl: REACT_APP_WIDGETS_URL || "http://localhost:3000",
-  chainId: parseInt(process.env.REACT_APP_CHAIN_ID || "3"),
+  widgetsUrl: process.env.REACT_APP_WIDGETS_URL || config.widgetsUrl,
+  chainId: REACT_APP_CHAIN_ID,
   ipfsMetadataUrl:
-    process.env.REACT_APP_IPFS_METADATA_URL || "https://ipfs.infura.io:5001"
+    process.env.REACT_APP_IPFS_METADATA_URL || "https://ipfs.infura.io:5001",
+  subgraphUrl: config.subgraphUrl
 };

@@ -1,7 +1,6 @@
 import { request } from "graphql-request";
 
-const offersGraphqlEndpoint = process.env
-  .REACT_APP_SUBGRAPH_OFFERS_GRAPHQL_ENDPOINT as string;
+import { CONFIG } from "../../config";
 
 export async function fetchSubgraph<T>(
   query: string,
@@ -12,7 +11,7 @@ export async function fetchSubgraph<T>(
 ): Promise<T> {
   try {
     const data = await request(
-      options?.subgraphUrl || offersGraphqlEndpoint,
+      options?.subgraphUrl || CONFIG.subgraphUrl,
       query,
       variables,
       {

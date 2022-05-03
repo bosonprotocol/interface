@@ -1,4 +1,4 @@
-import { getDefaultConfig, offers as offersApi } from "@bosonprotocol/core-sdk";
+import { offers as offersApi } from "@bosonprotocol/core-sdk";
 import { isAddress } from "@ethersproject/address";
 import { useState } from "react";
 import styled from "styled-components";
@@ -40,12 +40,8 @@ export default function OfferSelect({ onOfferSelect, onReset }: Props) {
   function retrieveOffers(sellerAddress: string) {
     if (!sellerAddress) return;
 
-    const { subgraphUrl } = getDefaultConfig({
-      chainId: CONFIG.chainId
-    });
-
     offersApi.subgraph
-      .getAllOffersOfOperator(subgraphUrl, sellerAddress)
+      .getAllOffersOfOperator(CONFIG.subgraphUrl, sellerAddress)
       .then(setOffers)
       .catch(console.log);
   }

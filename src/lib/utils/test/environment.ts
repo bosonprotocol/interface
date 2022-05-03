@@ -1,4 +1,4 @@
-const subgraphEndpoint = process.env
-  .REACT_APP_SUBGRAPH_OFFERS_GRAPHQL_ENDPOINT as string;
+import { CONFIG } from "lib/config";
+
 export const graphqlEndpoint =
-  "**/" + subgraphEndpoint.substring("https://".length);
+  "**/" + CONFIG.subgraphUrl.substring("https://".length);

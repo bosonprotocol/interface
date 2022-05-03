@@ -8,8 +8,6 @@ import dotenv from "dotenv";
  */
 dotenv.config();
 
-process.env.REACT_APP_ENV = "development";
-
 /**
  * See https://playwright.dev/docs/test-configuration.
  */

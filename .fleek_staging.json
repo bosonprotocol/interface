@@ -9,7 +9,7 @@
   "build": {
     "baseDir": "",
     "publicDir": "build",
-    "command": "REACT_APP_ENV=staging npm run build",
+    "command": "npm run build",
     "rootDir": ""
   }
 }
