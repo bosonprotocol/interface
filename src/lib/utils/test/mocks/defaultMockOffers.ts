@@ -143,7 +143,7 @@ export const defaultMockOffers: Offer[] = [
     },
     metadata: {
       name: "offer with id 11",
-      description: "",
+      description: "description",
       externalUrl: "externalUrl",
       schemaUrl: "schemaUrl",
       type: "BASE"
@@ -180,7 +180,7 @@ export const defaultMockOffers: Offer[] = [
     },
     metadata: {
       name: "offer with id 12",
-      description: "",
+      description: "description",
       externalUrl: "externalUrl",
       schemaUrl: "schemaUrl",
       type: "BASE"
@@ -217,7 +217,7 @@ export const defaultMockOffers: Offer[] = [
     },
     metadata: {
       name: "offer with id 13",
-      description: "",
+      description: "description",
       externalUrl: "externalUrl",
       schemaUrl: "schemaUrl",
       type: "BASE"
@@ -254,7 +254,7 @@ export const defaultMockOffers: Offer[] = [
     },
     metadata: {
       name: "offer with id 14",
-      description: "",
+      description: "description",
       externalUrl: "externalUrl",
       schemaUrl: "schemaUrl",
       type: "BASE"
@@ -291,7 +291,7 @@ export const defaultMockOffers: Offer[] = [
     },
     metadata: {
       name: "offer with id 15",
-      description: "",
+      description: "description",
       externalUrl: "externalUrl",
       schemaUrl: "schemaUrl",
       type: "BASE"
@@ -328,7 +328,7 @@ export const defaultMockOffers: Offer[] = [
     },
     metadata: {
       name: "offer with id 16",
-      description: "",
+      description: "description",
       externalUrl: "externalUrl",
       schemaUrl: "schemaUrl",
       type: "BASE"
@@ -365,7 +365,7 @@ export const defaultMockOffers: Offer[] = [
     },
     metadata: {
       name: "offer with id 17",
-      description: "",
+      description: "description",
       externalUrl: "externalUrl",
       schemaUrl: "schemaUrl",
       type: "BASE"
@@ -402,7 +402,7 @@ export const defaultMockOffers: Offer[] = [
     },
     metadata: {
       name: "Baggy jeans",
-      description: "",
+      description: "description",
       externalUrl: "externalUrl",
       schemaUrl: "schemaUrl",
       type: "BASE"
