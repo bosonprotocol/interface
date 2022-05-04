@@ -52,9 +52,6 @@ test.describe("OfferDetail", () => {
     const image = await page.locator("[data-testid=image]");
     await expect(image.getAttribute("src")).toBeTruthy();
 
-    const brand = await page.locator("[data-testid=brand]");
-    await expect(brand).toHaveText("Not defined");
-
     const description = await page.locator("[data-testid=description]");
     await expect(description).toHaveText(
       expectedOffer.metadata?.description || "Unexpected description"

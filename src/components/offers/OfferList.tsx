@@ -39,9 +39,9 @@ export default function OfferList({ offers, isLoading, isError }: Props) {
 
   return (
     <OfferContainer>
-      {offers.map((offer: Offer) => {
-        return <OfferItem key={offer.id} offer={offer} />;
-      })}
+      {offers.map((offer: Offer) => (
+        <OfferItem key={offer.id} offer={offer} />
+      ))}
     </OfferContainer>
   );
 }

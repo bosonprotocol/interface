@@ -54,6 +54,11 @@ const CommitButtonContainer = styled.div`
   display: flex;
 `;
 
+const Price = styled(OfferPrice)`
+  font-size: 16px;
+  font-weight: bold;
+`;
+
 const Commit = styled.button`
   all: unset;
   font-weight: 600;
@@ -93,7 +98,7 @@ export default function ({ offer }: Props) {
       </ImageContainer>
       <BasicInfoContainer>
         <Name data-testid="name">{name || "Untitled"}</Name>
-        <OfferPrice offer={offer} />
+        <Price offer={offer} />
         <CommitButtonContainer>
           <Commit
             data-testid="commit"
