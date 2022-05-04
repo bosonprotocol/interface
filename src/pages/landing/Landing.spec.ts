@@ -164,5 +164,34 @@ test.describe("Root page (Landing page)", () => {
         "There has been an error, please try again later..."
       );
     });
+
+    test("should go to the offers detail page when clicking on the commit button", async ({
+      page
+    }) => {
+      const expectedOffer = { ...defaultMockOffers[0] };
+      await mockSubgraph({
+        page,
+        options: {
+          mockGetOffers: {
+            offers: [expectedOffer]
+          }
+        }
+      });
+
+      await page.goto("/");
+
+      await page.waitForTimeout(500);
+      const offers = await page.locator("[data-testid=offer]");
+      const num = await offers.count();
+
+      await expect(num).toStrictEqual(1);
+      const offer = offers.nth(0);
+      const commit = await offer.locator("[data-testid=commit]");
+      await commit.click();
+
+      const url = await page.url();
+      const { hash } = new URL(url);
+      expect(hash).toStrictEqual(`#/offers/${expectedOffer.id}`);
+    });
   });
 });

@@ -55,7 +55,7 @@ const WidgetContainer = styled.div`
 export default () => {
   const { [UrlParameters.offerId]: offerId } = useParams();
   if (!offerId) {
-    return <p>Offer id not defined</p>;
+    return null;
   }
   const {
     data: offer,
@@ -85,27 +85,27 @@ export default () => {
   const description = offer.metadata?.description || "";
   return (
     <>
-      <h1>{name}</h1>
+      <h1 data-testid="name">{name}</h1>
       <ImageContainer>
         <Image data-testid="image" src={offerImg} />
       </ImageContainer>
       <Content>
         <section>
           <SubHeading>Brand</SubHeading>
-          <p>Not defined</p>
+          <p data-testid="brand">Not defined</p>
 
           <SubHeading>Description</SubHeading>
-          <p>{description}</p>
+          <p data-testid="description">{description}</p>
 
           <SubHeading>Delivery Info</SubHeading>
-          <p>Not defined</p>
+          <p data-testid="delivery-info">Not defined</p>
 
           <AddressContainer>
             <AddressImage address={sellerAddress} />
-            <SubHeading>{sellerAddress}</SubHeading>
+            <SubHeading data-testid="address">{sellerAddress}</SubHeading>
           </AddressContainer>
           <SubHeading>Seller description</SubHeading>
-          <p>Not defined</p>
+          <p data-testid="seller-description">Not defined</p>
         </section>
         <ChildrenContainer>
           <WidgetContainer>widget</WidgetContainer>
