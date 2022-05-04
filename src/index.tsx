@@ -1,4 +1,5 @@
 import App from "components/app";
+import { Layout } from "components/Layout";
 import { BosonRoutes, OffersRoutes } from "lib/routing/routes";
 import React from "react";
 import { createRoot } from "react-dom/client";
@@ -9,16 +10,22 @@ import reportWebVitals from "./reportWebVitals";
 
 const rootElement = document.getElementById("root");
 if (!rootElement) throw new Error("Unable to find the root element");
-
 const queryClient = new QueryClient();
+
 const CreateOffer = React.lazy(
   () => import("./pages/create-offer/CreateOffer")
 );
 const Explore = React.lazy(() => import("./pages/explore/Explore"));
 const ManageOffer = React.lazy(() => import("./pages/manage-offer"));
-const OfferDetail = React.lazy(() => import("./pages/offers/OfferDetail"));
 const Landing = React.lazy(() => import("./pages/landing/Landing"));
-const Loading = () => <p>Loading...</p>;
+const OfferDetail = React.lazy(() => import("./pages/offers/OfferDetail"));
+
+const Loading = () => (
+  <Layout>
+    <p>Loading...</p>
+  </Layout>
+);
+
 const root = createRoot(rootElement);
 root.render(
   <React.StrictMode>
