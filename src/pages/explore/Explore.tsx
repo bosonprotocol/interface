@@ -1,4 +1,3 @@
-import { Layout } from "components/Layout";
 import { QueryParameters } from "lib/routing/query-parameters";
 import { useQueryParameter } from "lib/routing/useQueryParameter";
 import { Select } from "lib/styles/base";
@@ -10,7 +9,7 @@ import styled from "styled-components";
 
 import ExploreOffers from "./ExploreOffers";
 
-const ExploreContainer = styled(Layout)`
+const ExploreContainer = styled.div`
   display: flex;
   justify-content: center;
   flex-direction: column;

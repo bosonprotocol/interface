@@ -1,10 +1,12 @@
 import { OffersRoutes } from "lib/routing/routes";
 import { colors } from "lib/styles/colors";
-import { formatAddress } from "lib/utils/address";
+import { Offer } from "lib/types/offer";
 import { generatePath, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import AddressImage from "./AddressImage";
+import AddressText from "./AddressText";
+import OfferPrice from "./OfferPrice";
 
 const Card = styled.div`
   border-radius: 12px;
@@ -13,7 +15,6 @@ const Card = styled.div`
   width: 250px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 0 16px;
-  cursor: pointer;
 `;
 
 const ImageContainer = styled.div`
@@ -43,25 +44,10 @@ const SellerInfo = styled.div`
   margin: 18px 0px;
 `;
 
-const SellerName = styled.span`
-  font-size: 14px;
-  font-weight: 600;
-  margin-left: 8px;
-  color: ${colors.darkGreen};
-  overflow-wrap: break-word;
-  width: 80%;
-  font-family: "Roboto Mono", monospace;
-`;
-
 const Name = styled.span`
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 8px;
-`;
-
-const Price = styled.span`
-  font-size: 16px;
-  font-weight: 600;
 `;
 
 const CommitButtonContainer = styled.div`
@@ -83,58 +69,40 @@ const Commit = styled.button`
   margin-top: 8px;
 `;
 
-const Sold = styled.p`
-  all: unset;
-  color: ${colors.grey};
-  font-size: 16px;
-  font-weight: 600;
-`;
-
 interface Props {
-  id: string;
-  offerImg: string;
-  name: string;
-  sellerAddress: string;
-  price: string;
-  priceSymbol: string;
-  isSold: boolean;
+  offer: Offer;
 }
 
-export default function Offer({
-  id,
-  offerImg,
-  name,
-  sellerAddress,
-  price,
-  priceSymbol,
-  isSold
-}: Props) {
+export default function ({ offer }: Props) {
+  const id = offer.id;
+
+  const offerImg = `https://picsum.photos/seed/${id}/700`;
+  const name = offer.metadata?.name || "Untitled";
+  const sellerAddress = offer.seller?.admin;
+
   const navigate = useNavigate();
+
   return (
-    <Card
-      data-testid="offer"
-      onClick={() => navigate(generatePath(OffersRoutes.OfferDetail, { id }))}
-    >
+    <Card data-testid="offer">
       <SellerInfo>
         <AddressImage address={sellerAddress} />
-        <SellerName data-testid="sellerAddress">
-          {formatAddress(sellerAddress)}
-        </SellerName>
+        <AddressText address={sellerAddress} />
       </SellerInfo>
       <ImageContainer>
         <Image data-testid="image" src={offerImg} />
       </ImageContainer>
       <BasicInfoContainer>
         <Name data-testid="name">{name || "Untitled"}</Name>
-        <Price data-testid="price">
-          {price} {priceSymbol}
-        </Price>
+        <OfferPrice offer={offer} />
         <CommitButtonContainer>
-          {isSold ? (
-            <Sold>Sold</Sold>
-          ) : (
-            <Commit data-testid="commit">Commit</Commit>
-          )}
+          <Commit
+            data-testid="commit"
+            onClick={() =>
+              navigate(generatePath(OffersRoutes.OfferDetail, { id }))
+            }
+          >
+            Commit
+          </Commit>
         </CommitButtonContainer>
       </BasicInfoContainer>
     </Card>

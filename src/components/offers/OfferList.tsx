@@ -1,9 +1,7 @@
-import { formatUnits } from "@ethersproject/units";
-import { BigNumber } from "ethers";
 import { Offer } from "lib/types/offer";
 import styled from "styled-components";
 
-import OfferItem from "../offer/Offer";
+import OfferItem from "../offer/OfferCard";
 
 const OfferContainer = styled.div`
   display: grid;
@@ -41,29 +39,8 @@ export default function OfferList({ offers, isLoading, isError }: Props) {
 
   return (
     <OfferContainer>
-      {offers.map((offer: Offer, idx: number) => {
-        // TODO: remove this @ts-ignore once the Offer is of productv1 type and therefore has an array of images
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        const images = offer.metadata?.images;
-        const offerImg = images?.length
-          ? images?.[0]
-          : `https://picsum.photos/22${idx}`;
-        return (
-          <OfferItem
-            key={offer.id}
-            id={offer.id}
-            offerImg={offerImg}
-            name={offer.metadata?.name || "Untitled"}
-            sellerAddress={offer.seller?.admin}
-            price={formatUnits(
-              BigNumber.from(offer.price),
-              offer.exchangeToken?.decimals
-            )}
-            priceSymbol={offer.exchangeToken?.symbol}
-            isSold={false}
-          />
-        );
+      {offers.map((offer: Offer) => {
+        return <OfferItem key={offer.id} offer={offer} />;
       })}
     </OfferContainer>
   );

@@ -18,7 +18,7 @@ export async function assertOffer(offer: Locator, expectedOffer: Offer) {
     expectedOffer.metadata?.name || "expected name"
   );
 
-  const sellerAddress = await offer.locator("[data-testid=sellerAddress]");
+  const sellerAddress = await offer.locator("[data-testid=address]");
   const expectedSellerAddress = shortenAddress(
     expectedOffer.seller?.admin || ""
   );

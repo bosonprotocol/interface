@@ -1,14 +1,13 @@
-import { QueryParameters } from "lib/routing/query-parameters";
-import { BosonRoutes } from "lib/routing/routes";
 import FeaturedOffers from "pages/landing/FeaturedOffers";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-import { Layout } from "../../components/Layout";
+import { QueryParameters } from "../../lib/routing/query-parameters";
+import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 
-const LandingContainer = styled(Layout)`
+const LandingContainer = styled.div`
   display: flex;
   justify-content: center;
   flex-direction: column;
