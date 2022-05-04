@@ -1,6 +1,7 @@
 import { Offer } from "lib/types/offer";
 
 export interface UseOffersProps {
+  count?: number;
   name?: string; // TODO: to delete once brand is supported
   brand?: string; // TODO: not supported yet
   voided?: boolean;

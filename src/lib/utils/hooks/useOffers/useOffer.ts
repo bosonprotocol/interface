@@ -1,26 +1,23 @@
-import { gql } from "graphql-request";
 import { Offer } from "lib/types/offer";
 import { fetchSubgraph } from "lib/utils/core-components/subgraph";
 import { useQuery } from "react-query";
 
-import { buildOrderBy, buildWhere, offerGraphQL } from "./graphql";
+import { GET_OFFERS_QUERY } from "./graphql";
 import { UseOfferProps, UseOffersProps } from "./types";
 import { checkOfferMetadata } from "./validators";
 
 const getOfferById = async (id: string, props: UseOffersProps) => {
-  const where = buildWhere({ ...props, offerId: id });
-  const orderBy = buildOrderBy();
+  const now = Math.floor(Date.now() / 1000);
+
   const result = await fetchSubgraph<{
-    baseMetadataEntities: [{ offer: Offer }];
-  }>(
-    gql`
-      {
-        baseMetadataEntities(where: ${where}, ${orderBy}) {
-          offer ${offerGraphQL}
-        }
-      }
-    `
-  );
+    baseMetadataEntities: { offer: Offer }[];
+  }>(GET_OFFERS_QUERY, {
+    offer: id,
+    validFromDate_lte: now + "",
+    validUntilDate_gte: now + "",
+    name_contains_nocase: props.name || "",
+    exchangeToken: props.exchangeTokenAddress
+  });
   return result.baseMetadataEntities[0]?.offer;
 };
 
