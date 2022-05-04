@@ -5,11 +5,6 @@ import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { HashRouter, Route, Routes } from "react-router-dom";
 
-// import CreateOffer from "./pages/create-offer/CreateOffer";
-// import Explore from "./pages/explore/Explore";
-// import Landing from "./pages/landing/Landing";
-// import ManageOffer from "./pages/manage-offer";
-// import OfferDetail from "./pages/offers/OfferDetail";
 import reportWebVitals from "./reportWebVitals";
 
 const rootElement = document.getElementById("root");
