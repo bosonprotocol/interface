@@ -1,4 +1,5 @@
 import App from "components/app";
+import { Layout } from "components/Layout";
 import { BosonRoutes } from "lib/routing/routes";
 import React from "react";
 import { createRoot } from "react-dom/client";
@@ -16,7 +17,11 @@ const CreateOffer = React.lazy(
 const Explore = React.lazy(() => import("./pages/explore/Explore"));
 const ManageOffer = React.lazy(() => import("./pages/manage-offer"));
 const Landing = React.lazy(() => import("./pages/landing/Landing"));
-const Loading = () => <p>Loading...</p>;
+const Loading = () => (
+  <Layout>
+    <p>Loading...</p>
+  </Layout>
+);
 
 const queryClient = new QueryClient();
 const root = createRoot(rootElement);
