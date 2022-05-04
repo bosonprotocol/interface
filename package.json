@@ -9,11 +9,11 @@
     "test": "react-app-rewired test --testPathIgnorePatterns .spec.ts",
     "eject": "react-app-rewired eject",
     "lint": "eslint --ignore-path ./.gitignore --ext .js,.ts,.tsx . --quiet --fix",
-    "prettier": "prettier --write 'src/**/*.{ts,tsx}'",
+    "prettier": "prettier --write \"src/**/*.{ts,tsx}\"",
     "prepare": "husky install",
     "e2e": "playwright test --project=chromium",
-    "e2e:ci": "CI=true playwright test --project=chromium",
-    "e2e:debug": "PWDEBUG=console playwright test --project=chromium",
+    "e2e:ci": "cross-env CI=true playwright test --project=chromium",
+    "e2e:debug": "cross-env PWDEBUG=console playwright test --project=chromium",
     "e2e:report": "playwright show-report"
   },
   "dependencies": {
@@ -49,6 +49,7 @@
     "@types/styled-components": "^5.1.25",
     "@typescript-eslint/eslint-plugin": "^5.18.0",
     "@typescript-eslint/parser": "^5.18.0",
+    "cross-env": "^7.0.3",
     "customize-cra": "^1.0.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-import-resolver-typescript": "^2.7.1",

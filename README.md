@@ -15,3 +15,18 @@ The required steps to develop and test the dApp interface locally are as follows
 3. Copy the `.env.example` file to `.env` and fill out any necessary values.
 4. Start the application: i.e. Run `npm run dev`
 5. Navigate to `http://localhost:3000/` in a browser.
+
+## e2e tests
+
+### Prerequisites
+
+Playwright browsers need to be installed on your system
+```
+npx playwright install
+```
+
+### Run e2e tests
+
+```
+npm run e2e
+```
