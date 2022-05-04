@@ -3,12 +3,12 @@ import { IpfsMetadata } from "@bosonprotocol/ipfs-storage";
 import { createOffer } from "@bosonprotocol/widgets-sdk";
 import { parseEther } from "@ethersproject/units";
 import { useFormik } from "formik";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 
-import { Layout } from "../components/Layout";
-import { colors } from "../lib/colors";
-import { CONFIG } from "../lib/config";
+import { Layout } from "../../components/Layout";
+import { CONFIG } from "../../lib/config";
+import { colors } from "../../lib/styles/colors";
 
 const CreateOfferContainer = styled(Layout)`
   display: flex;
@@ -65,17 +65,21 @@ const FormElementsContainer = styled.div`
   }
 `;
 
+const ErrorMsg = styled.div`
+  color: ${colors.red};
+`;
+
 interface FormValues {
   name: string;
   description: string;
   externalUrl: string;
   schemaUrl: string;
   price: string;
-  deposit: string;
-  penalty: string;
-  quantity: string;
+  sellerDeposit: string;
+  buyerCancelPenalty: string;
+  quantityAvailable: string;
   exchangeToken: string;
-  redeemableDateInMS: string;
+  redeemableFromDateInMS: string;
   validFromDateInMS: string;
   validUntilDateInMS: string;
   fulfillmentPeriodDurationInMS: string;
@@ -86,68 +90,62 @@ const dayInMs = 1000 * 60 * 60 * 24;
 const minuteInMS = 1000 * 60;
 
 export default function CreateOffer() {
-  const [values, setValues] = useState<FormValues>();
-
-  async function create() {
-    if (!values) {
-      return;
-    }
-    const storage = new IpfsMetadata({
-      url: CONFIG.ipfsMetadataUrl
-    });
-
-    console.log("storage", storage);
-
-    const metadataHash = await storage.storeMetadata({
-      name: values.name,
-      description: values.description,
-      externalUrl: values.externalUrl,
-      schemaUrl: values.schemaUrl,
-      type: MetadataType.BASE
-    });
-    const metadataUri = `${CONFIG.metadataBaseUrl}/${metadataHash}`;
-
-    console.log(metadataUri);
-
-    createOffer(
-      {
-        ...values,
-        price: parseEther(values.price).toString(),
-        deposit: parseEther(values.deposit).toString(),
-        penalty: parseEther(values.penalty).toString(),
-        metadataHash,
-        metadataUri
-      },
-      CONFIG
-    );
-  }
-
-  useEffect(() => {
-    if (!values) return;
-    create();
-  }, [values]);
-
-  const formik = useFormik({
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const { values, handleChange, handleSubmit } = useFormik({
     initialValues: {
       name: "Baggy jeans",
       description: "Lore ipsum",
-      externalUrl: "https://external-url.com",
+      externalUrl: window.location.origin,
       schemaUrl: "https://schema.org/schema",
       price: "1",
-      deposit: "2",
-      penalty: "3",
-      quantity: "10",
-      exchangeToken: "0xf47E4fd9d2eBd6182F597eE12E487CcA37FC524c", // ropsten boson address
-      redeemableDateInMS: (Date.now() + minuteInMS).toString(),
+      sellerDeposit: "2",
+      buyerCancelPenalty: "1",
+      quantityAvailable: "10",
+      // exchangeToken: "0xf47E4fd9d2eBd6182F597eE12E487CcA37FC524c", // ropsten boson address
+      exchangeToken: "0x0000000000000000000000000000000000000000",
+      redeemableFromDateInMS: (Date.now() + minuteInMS).toString(),
       validFromDateInMS: (Date.now() + minuteInMS).toString(),
       validUntilDateInMS: (Date.now() + dayInMs).toString(),
       fulfillmentPeriodDurationInMS: dayInMs.toString(),
       voucherValidDurationInMS: dayInMs.toString()
     } as FormValues,
-    onSubmit: async (values) => {
+    onSubmit: async (values: FormValues) => {
       try {
-        setValues(values);
+        if (!values) {
+          return;
+        }
+        const storage = new IpfsMetadata({
+          url: CONFIG.ipfsMetadataUrl
+        });
+
+        const metadataHash = await storage.storeMetadata({
+          name: values.name,
+          description: values.description,
+          externalUrl: values.externalUrl,
+          schemaUrl: values.schemaUrl,
+          type: MetadataType.BASE
+        });
+        const metadataUri = `ipfs://${metadataHash}`;
+
+        createOffer(
+          {
+            ...values,
+            price: parseEther(values.price).toString(),
+            sellerDeposit: parseEther(values.sellerDeposit).toString(),
+            buyerCancelPenalty: parseEther(
+              values.buyerCancelPenalty
+            ).toString(),
+            offerChecksum: metadataHash, // TODO: use correct checksum
+            metadataUri
+          },
+          CONFIG
+        );
+        setErrorMessage("");
       } catch (error) {
+        setErrorMessage(
+          (error as { message: string })?.message ||
+            "There has been an error, please try again"
+        );
         console.error(error);
       }
     }
@@ -156,13 +154,13 @@ export default function CreateOffer() {
   return (
     <CreateOfferContainer>
       <h1>Create Offer</h1>
-      <StyledForm onSubmit={formik.handleSubmit}>
+      <StyledForm onSubmit={handleSubmit}>
         <FormElementsContainer>
           <FormElement>
             <FormLabel>Name</FormLabel>
             <FormControl
-              value={formik.values.name}
-              onChange={formik.handleChange}
+              value={values.name}
+              onChange={handleChange}
               name="name"
               type="text"
               placeholder="..."
@@ -172,8 +170,8 @@ export default function CreateOffer() {
             <FormLabel>Description</FormLabel>
             <FormControl
               rows={1}
-              value={formik.values.description}
-              onChange={formik.handleChange}
+              value={values.description}
+              onChange={handleChange}
               name="description"
               as="textarea"
               placeholder="..."
@@ -182,8 +180,8 @@ export default function CreateOffer() {
           <FormElement>
             <FormLabel>External Url</FormLabel>
             <FormControl
-              value={formik.values.externalUrl}
-              onChange={formik.handleChange}
+              value={values.externalUrl}
+              onChange={handleChange}
               name="externalUrl"
               type="text"
               placeholder="..."
@@ -192,8 +190,8 @@ export default function CreateOffer() {
           <FormElement>
             <FormLabel>Schema Url</FormLabel>
             <FormControl
-              value={formik.values.schemaUrl}
-              onChange={formik.handleChange}
+              value={values.schemaUrl}
+              onChange={handleChange}
               name="schemaUrl"
               type="text"
               placeholder="..."
@@ -202,28 +200,28 @@ export default function CreateOffer() {
           <FormElement>
             <FormLabel>Price</FormLabel>
             <FormControl
-              value={formik.values.price}
-              onChange={formik.handleChange}
+              value={values.price}
+              onChange={handleChange}
               name="price"
               type="text"
               placeholder="..."
             />
           </FormElement>
           <FormElement>
-            <FormLabel>Deposit</FormLabel>
+            <FormLabel>SellerDeposit</FormLabel>
             <FormControl
-              value={formik.values.deposit}
-              onChange={formik.handleChange}
+              value={values.sellerDeposit}
+              onChange={handleChange}
               name="deposit"
               type="text"
               placeholder="..."
             />
           </FormElement>
           <FormElement>
-            <FormLabel>penalty</FormLabel>
+            <FormLabel>BuyerCancelPenalty</FormLabel>
             <FormControl
-              value={formik.values.penalty}
-              onChange={formik.handleChange}
+              value={values.buyerCancelPenalty}
+              onChange={handleChange}
               name="penalty"
               type="text"
               placeholder="..."
@@ -232,8 +230,8 @@ export default function CreateOffer() {
           <FormElement>
             <FormLabel>Quantity</FormLabel>
             <FormControl
-              value={formik.values.quantity}
-              onChange={formik.handleChange}
+              value={values.quantityAvailable}
+              onChange={handleChange}
               name="quantity"
               type="text"
               placeholder="..."
@@ -242,8 +240,8 @@ export default function CreateOffer() {
           <FormElement>
             <FormLabel>Voucher Valid Duration (ms)</FormLabel>
             <FormControl
-              value={formik.values.voucherValidDurationInMS}
-              onChange={formik.handleChange}
+              value={values.voucherValidDurationInMS}
+              onChange={handleChange}
               name="voucherValidDurationInMS"
               type="text"
               placeholder="..."
@@ -252,8 +250,8 @@ export default function CreateOffer() {
           <FormElement>
             <FormLabel>Exchange Token</FormLabel>
             <FormControl
-              value={formik.values.exchangeToken}
-              onChange={formik.handleChange}
+              value={values.exchangeToken}
+              onChange={handleChange}
               name="exchangeToken"
               type="text"
               placeholder="..."
@@ -263,8 +261,8 @@ export default function CreateOffer() {
           <FormElement>
             <FormLabel>Valid From Date (ms)</FormLabel>
             <FormControl
-              value={formik.values.validFromDateInMS}
-              onChange={formik.handleChange}
+              value={values.validFromDateInMS}
+              onChange={handleChange}
               name="validFromDateInMS"
               type="text"
               placeholder="..."
@@ -273,8 +271,8 @@ export default function CreateOffer() {
           <FormElement>
             <FormLabel>Valid Until Date (ms)</FormLabel>
             <FormControl
-              value={formik.values.validUntilDateInMS}
-              onChange={formik.handleChange}
+              value={values.validUntilDateInMS}
+              onChange={handleChange}
               name="validUntilDateInMS"
               type="text"
               placeholder="..."
@@ -283,8 +281,8 @@ export default function CreateOffer() {
           <FormElement>
             <FormLabel>Redeemable Date (ms)</FormLabel>
             <FormControl
-              value={formik.values.redeemableDateInMS}
-              onChange={formik.handleChange}
+              value={values.redeemableFromDateInMS}
+              onChange={handleChange}
               name="redeemableDateInMS"
               type="text"
               placeholder="..."
@@ -293,8 +291,8 @@ export default function CreateOffer() {
           <FormElement>
             <FormLabel>Fulfillment Period Duration (ms)</FormLabel>
             <FormControl
-              value={formik.values.fulfillmentPeriodDurationInMS}
-              onChange={formik.handleChange}
+              value={values.fulfillmentPeriodDurationInMS}
+              onChange={handleChange}
               name="fulfillmentPeriodDurationInMS"
               type="text"
               placeholder="..."
@@ -302,6 +300,9 @@ export default function CreateOffer() {
           </FormElement>
         </FormElementsContainer>
         <Button type="submit">Submit</Button>
+        {errorMessage && (
+          <ErrorMsg data-testid="error">{errorMessage}</ErrorMsg>
+        )}
       </StyledForm>
     </CreateOfferContainer>
   );

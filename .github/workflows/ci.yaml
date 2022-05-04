@@ -1,4 +1,4 @@
-name: Build, Test and Deploy the Marketplace Interface
+name: Call reusable workflow - Interface
 
 on:
   push:
@@ -11,43 +11,32 @@ on:
       - main
 
 jobs:
-  build-test-deploy:
-    name: Build, Test and Deploy the Marketplace Interface
-    runs-on: ubuntu-latest
-    env:
-      REACT_APP_SUBGRAPH_OFFERS_GRAPHQL_ENDPOINT: https://api.thegraph.com/subgraphs/name/dohaki/bosonccropsten
-      REACT_APP_WIDGETS_URL: https://boson-widgets-test.surge.sh
-      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: "17"
-          registry-url: "https://registry.npmjs.org"
-          cache: "npm"
-      - run: npm ci
-      - name: Install Playwright
-        run: npx playwright install --with-deps
-      - run: npm run prettier
-      - run: npm run lint
-      - run: npm run build
-      - run: npm run test
-      - run: npm run e2e:ci
-      - name: Copy contents from .fleek_staging.json to .fleek.json
-        if: github.event_name == 'release' && github.event.action == 'created'
-        run: mv .fleek_staging.json .fleek.json
-      - uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: playwright-report
-          path: playwright-report/
-      - name: Deploy via fleek
-        if: github.event_name == 'push' || (github.event_name == 'release' && github.event.action == 'created')
-        id: deploy
-        uses: fleekhq/action-deploy@v1
-        with:
-          apiKey: ${{ secrets.FLEEK_API_KEY }}
-          workDir: ./public
-      - name: Get the output url
-        if: github.event_name == 'push' || (github.event_name == 'release' && github.event.action == 'created')
-        run: echo "Deploy url is ${{ steps.deploy.outputs.deployUrl }}"
+  call-reusable-workflow-PR:
+    uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
+    if: github.event_name == 'pull_request'
+    with:
+      REACT_APP_CHAIN_ID: '1234'
+      DEPLOY_TO_FLEEK: false
+      ENV_NAME: 'testing'
+    secrets:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+  call-reusable-workflow-testing:
+    uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
+    if: github.event_name == 'push'
+    with:
+      REACT_APP_CHAIN_ID: '1234'
+      DEPLOY_TO_FLEEK: true
+      ENV_NAME: 'testing'
+    secrets:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
+  call-reusable-workflow-staging:
+    uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
+    if: github.event_name == 'release' && github.event.action == 'created'
+    with:
+      REACT_APP_CHAIN_ID: '3'
+      DEPLOY_TO_FLEEK: true
+      ENV_NAME: 'staging'
+    secrets:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}

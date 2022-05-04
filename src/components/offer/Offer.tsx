@@ -1,7 +1,8 @@
+import { colors } from "lib/styles/colors";
+import { formatAddress } from "lib/utils/address";
 import styled from "styled-components";
 
-import { colors } from "../../lib/colors";
-import { AddressImg } from "./AddressImg";
+import AddressImage from "./AddressImage";
 
 const Card = styled.div`
   border-radius: 12px;
@@ -12,7 +13,7 @@ const Card = styled.div`
   padding: 0 16px;
 `;
 
-const ImgContainer = styled.div`
+const ImageContainer = styled.div`
   display: flex;
   justify-content: center;
   margin: 16px 16px;
@@ -60,7 +61,7 @@ const Price = styled.span`
   font-weight: 600;
 `;
 
-const CommitBtnContainer = styled.div`
+const CommitButtonContainer = styled.div`
   display: flex;
 `;
 
@@ -90,8 +91,7 @@ interface Props {
   id: string;
   offerImg: string;
   name: string;
-  sellerFullAdress: string;
-  sellerShortAddress: string;
+  sellerAddress: string;
   price: string;
   priceSymbol: string;
   isSold: boolean;
@@ -100,8 +100,7 @@ interface Props {
 export default function Offer({
   offerImg,
   name,
-  sellerFullAdress,
-  sellerShortAddress,
+  sellerAddress,
   price,
   priceSymbol,
   isSold
@@ -109,24 +108,26 @@ export default function Offer({
   return (
     <Card data-testid="offer">
       <SellerInfo>
-        <AddressImg address={sellerFullAdress} />
-        <SellerName data-testid="sellerAdress">{sellerShortAddress}</SellerName>
+        <AddressImage address={sellerAddress} />
+        <SellerName data-testid="sellerAddress">
+          {formatAddress(sellerAddress)}
+        </SellerName>
       </SellerInfo>
-      <ImgContainer>
+      <ImageContainer>
         <Image data-testid="image" src={offerImg} />
-      </ImgContainer>
+      </ImageContainer>
       <BasicInfoContainer>
         <Name data-testid="name">{name || "Untitled"}</Name>
         <Price data-testid="price">
           {price} {priceSymbol}
         </Price>
-        <CommitBtnContainer>
+        <CommitButtonContainer>
           {isSold ? (
             <Sold>Sold</Sold>
           ) : (
-            <Commit data-testid="commit">Commit now</Commit>
+            <Commit data-testid="commit">Commit</Commit>
           )}
-        </CommitBtnContainer>
+        </CommitButtonContainer>
       </BasicInfoContainer>
     </Card>
   );

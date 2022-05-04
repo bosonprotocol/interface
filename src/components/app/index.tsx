@@ -1,4 +1,4 @@
-import { colors } from "lib/colors";
+import { colors } from "lib/styles/colors";
 import { Outlet } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
 

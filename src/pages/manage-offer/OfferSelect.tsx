@@ -1,9 +1,10 @@
-import { getDefaultConfig, offers as offersApi } from "@bosonprotocol/core-sdk";
+import { offers as offersApi } from "@bosonprotocol/core-sdk";
 import { isAddress } from "@ethersproject/address";
 import { useState } from "react";
 import styled from "styled-components";
 
 import { CONFIG } from "../../lib/config";
+import { Select } from "../../lib/styles/base";
 
 const OfferSelection = styled.div`
   display: flex;
@@ -27,18 +28,6 @@ const FormControl = styled.input`
   border-radius: 6px;
 `;
 
-const Select = styled.select`
-  padding: 10px;
-  border-radius: 6px;
-
-  :enabled {
-    cursor: pointer;
-  }
-  :disabled {
-    cursor: not-allowed;
-  }
-`;
-
 interface Props {
   onOfferSelect(offer: offersApi.RawOfferFromSubgraph): void;
   onReset(): void;
@@ -51,12 +40,8 @@ export default function OfferSelect({ onOfferSelect, onReset }: Props) {
   function retrieveOffers(sellerAddress: string) {
     if (!sellerAddress) return;
 
-    const { subgraphUrl } = getDefaultConfig({
-      chainId: CONFIG.chainId
-    });
-
     offersApi.subgraph
-      .getAllOffersOfSeller(subgraphUrl, sellerAddress)
+      .getAllOffersOfOperator(CONFIG.subgraphUrl, sellerAddress)
       .then(setOffers)
       .catch(console.log);
   }
@@ -89,7 +74,7 @@ export default function OfferSelect({ onOfferSelect, onReset }: Props) {
           onChange={(e) => onSellerAddressChange(e.target.value)}
           name="title"
           type="text"
-          placeholder="0x000000000000000000000000"
+          placeholder="0x0000000000000000000000000000000000000000"
         />
       </InputContainer>
       <InputContainer>

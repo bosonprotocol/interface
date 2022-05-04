@@ -1,11 +1,11 @@
 import { manageOffer } from "@bosonprotocol/widgets-sdk";
+import { Layout } from "components/Layout";
 import { CONFIG } from "lib/config";
+import { Offer } from "lib/types/offer";
 import { assert } from "lib/utils/assert";
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
-import { Layout } from "../../components/Layout";
-import { Offer } from "../../lib/types/offer";
 import OfferSelect from "./OfferSelect";
 
 const WidgetContainer = styled.div`
@@ -65,11 +65,11 @@ export default function ManageOffer() {
     assert(widgetRef.current);
 
     if (offer) {
-      const el = document.createElement("div");
-      widgetRef.current.appendChild(el);
-      manageOffer(offer.id, CONFIG, el);
+      const widgetContainer = document.createElement("div");
+      widgetRef.current.appendChild(widgetContainer);
+      manageOffer(offer.id, CONFIG, widgetContainer);
 
-      return () => el.remove();
+      return () => widgetContainer.remove();
     }
 
     return;
