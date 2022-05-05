@@ -3,6 +3,7 @@ import { IpfsMetadata } from "@bosonprotocol/ipfs-storage";
 import { createOffer } from "@bosonprotocol/widgets-sdk";
 import { parseEther } from "@ethersproject/units";
 import { useFormik } from "formik";
+import { DEFAULT_EXCHANGE_TOKEN } from "lib/utils/hooks/useOffers/defaults";
 import { useState } from "react";
 import styled from "styled-components";
 
@@ -102,7 +103,7 @@ export default function CreateOffer() {
       buyerCancelPenalty: "1",
       quantityAvailable: "10",
       // exchangeToken: "0xf47E4fd9d2eBd6182F597eE12E487CcA37FC524c", // ropsten boson address
-      exchangeToken: "0x0000000000000000000000000000000000000000",
+      exchangeToken: DEFAULT_EXCHANGE_TOKEN,
       redeemableFromDateInMS: (Date.now() + minuteInMS).toString(),
       validFromDateInMS: (Date.now() + minuteInMS).toString(),
       validUntilDateInMS: (Date.now() + dayInMs).toString(),

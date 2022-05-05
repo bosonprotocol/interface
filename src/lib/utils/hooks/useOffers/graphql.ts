@@ -4,6 +4,7 @@ export const GET_OFFERS_QUERY = gql`
   query GetOffers(
     $first: Int
     $validFromDate_lte: String
+    $validUntilDate_gte: String
     $name_contains_nocase: String
     $exchangeToken: String
     $orderBy: String
@@ -12,11 +13,15 @@ export const GET_OFFERS_QUERY = gql`
   ) {
     baseMetadataEntities(
       first: $first
-      validFromDate_lte: $validFromDate_lte
-      name_contains_nocase: $name_contains_nocase
-      exchangeToken: $exchangeToken
       orderBy: $orderBy
+      orderDirection: $orderDirection
       offer: $offer
+      where: {
+        validFromDate_lte: $validFromDate_lte
+        validUntilDate_gte: $validUntilDate_gte
+        exchangeToken: $exchangeToken
+        name_contains_nocase: $name_contains_nocase
+      }
     ) {
       offer {
         id

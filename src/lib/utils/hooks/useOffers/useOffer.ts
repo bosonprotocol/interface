@@ -2,6 +2,7 @@ import { Offer } from "lib/types/offer";
 import { fetchSubgraph } from "lib/utils/core-components/subgraph";
 import { useQuery } from "react-query";
 
+import { DEFAULT_EXCHANGE_TOKEN } from "./defaults";
 import { GET_OFFERS_QUERY } from "./graphql";
 import { UseOfferProps, UseOffersProps } from "./types";
 import { checkOfferMetadata } from "./validators";
@@ -16,7 +17,7 @@ const getOfferById = async (id: string, props: UseOffersProps) => {
     validFromDate_lte: now + "",
     validUntilDate_gte: now + "",
     name_contains_nocase: props.name || "",
-    exchangeToken: props.exchangeTokenAddress
+    exchangeToken: props.exchangeTokenAddress || DEFAULT_EXCHANGE_TOKEN
   });
   return result.baseMetadataEntities[0]?.offer;
 };
