@@ -1,10 +1,10 @@
 import AddressImage from "components/offer/AddressImage";
+import RootPrice from "components/Price";
 import { UrlParameters } from "lib/routing/query-parameters";
 import { useOffer } from "lib/utils/hooks/useOffers/useOffer";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
-import OfferPrice from "../../components/offer/OfferPrice";
 import { lg } from "../../lib/screen-sizes";
 import { colors } from "../../lib/styles/colors";
 import { formatAddress } from "../../lib/utils/address";
@@ -12,7 +12,7 @@ import { formatAddress } from "../../lib/utils/address";
 const Root = styled.div`
   display: flex;
   flex-direction: column;
-  margin-top: 42px;
+  margin-top: 64px;
   gap: 42px;
   margin-bottom: 42px;
 
@@ -48,9 +48,14 @@ const Title = styled.h1`
 `;
 
 const SubHeading = styled.p`
-  font-size: medium;
-  font-weight: bold;
+  font-size: 14px;
+  font-weight: 500;
   margin: 0 0 4px 0;
+  color: ${colors.grey};
+`;
+
+const Information = styled.span`
+  font-weight: bold;
 `;
 
 const AddressContainer = styled.div`
@@ -87,12 +92,13 @@ const Box = styled.div`
   border: 1px solid ${colors.grey};
   display: flex;
   flex-direction: column;
-  padding: 6px 12px;
+  padding: 16px 12px;
   border-radius: 6px;
   gap: 4px;
+  margin-bottom: 10px;
 `;
 
-const Price = styled(OfferPrice)`
+const Price = styled(RootPrice)`
   font-weight: bold;
   font-size: 24px;
 `;
@@ -136,10 +142,21 @@ export default () => {
           <ImageContainer>
             <Image data-testid="image" src={offerImg} />
           </ImageContainer>
-          <Box>
-            <SubHeading>Description</SubHeading>
-            <span data-testid="description">{description}</span>
-          </Box>
+          <div>
+            <Box>
+              <SubHeading>Description</SubHeading>
+              <Information data-testid="description">{description}</Information>
+            </Box>
+            <Box>
+              <SubHeading>Seller Description</SubHeading>
+              <span data-testid="seller-description">Not defined</span>
+            </Box>
+
+            <Box>
+              <SubHeading>Delivery Information</SubHeading>
+              <span data-testid="delivery-info">Not defined</span>
+            </Box>
+          </div>
         </ImageAndDescription>
         <Content>
           <AddressContainer>
@@ -152,22 +169,15 @@ export default () => {
           <Title data-testid="name">{name}</Title>
 
           <Box>
-            <span>Price</span>
-            <Price offer={offer} />
+            <SubHeading>Price</SubHeading>
+            <Price
+              currencySymbol={offer.exchangeToken.symbol}
+              weiValue={offer.price}
+            />
           </Box>
           <ChildrenContainer>
             <WidgetContainer>widget</WidgetContainer>
           </ChildrenContainer>
-
-          <Box>
-            <SubHeading>Seller Description</SubHeading>
-            <span data-testid="seller-description">Not defined</span>
-          </Box>
-
-          <Box>
-            <SubHeading>Delivery Information</SubHeading>
-            <span data-testid="delivery-info">Not defined</span>
-          </Box>
         </Content>
       </Root>
     </>
