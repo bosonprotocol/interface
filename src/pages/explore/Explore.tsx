@@ -71,7 +71,9 @@ export default function Explore() {
   const [nameQueryParameter, setNameQueryParameter] = useQueryParameter(
     QueryParameters.name
   );
-
+  const [, setCurrencyQueryParameter] = useQueryParameter(
+    QueryParameters.currency
+  );
   const [brandInput, setBrandInput] = useState<string>(nameQueryParameter);
   const [brandSelect, setBrandSelect] = useState<string>("");
   const [nameToSearch, setNameToSearch] = useState<string>(nameQueryParameter);
@@ -110,9 +112,10 @@ export default function Explore() {
 
             <TokenSelect
               value={selectedToken}
-              onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                setSelectedToken(e.target.value)
-              }
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                setSelectedToken(e.target.value);
+                setCurrencyQueryParameter(e.target.value);
+              }}
             >
               <option value="">Currency</option>
               {tokens &&

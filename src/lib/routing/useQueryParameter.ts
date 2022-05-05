@@ -8,7 +8,8 @@ export function useQueryParameter(
 
   const setSearchParameterForKey = useCallback(
     (value: string) => {
-      setSearchParameter({ [key]: value });
+      const queryObj = Object.fromEntries(searchParameter.entries());
+      setSearchParameter({ ...queryObj, [key]: value });
     },
     [key]
   );

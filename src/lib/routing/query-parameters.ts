@@ -1,6 +1,7 @@
 export const QueryParameters = {
   name: "name",
-  seller: "seller"
+  seller: "seller",
+  currency: "currency"
 };
 
 export const UrlParameters = {
