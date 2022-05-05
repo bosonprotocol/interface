@@ -1,6 +1,7 @@
 import AddressImage from "components/offer/AddressImage";
 import RootPrice from "components/Price";
-import { UrlParameters } from "lib/routing/query-parameters";
+import { QueryParameters, UrlParameters } from "lib/routing/query-parameters";
+import { useQueryParameter } from "lib/routing/useQueryParameter";
 import { useOffer } from "lib/utils/hooks/useOffers/useOffer";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
@@ -105,16 +106,22 @@ const Price = styled(RootPrice)`
 
 export default () => {
   const { [UrlParameters.offerId]: offerId } = useParams();
+  const [seller] = useQueryParameter(QueryParameters.seller);
+  const isSeller = seller === "true";
+
   if (!offerId) {
     return null;
   }
+
   const {
     data: offer,
     isError,
     isLoading
   } = useOffer({
-    offerId
+    offerId,
+    valid: !isSeller
   });
+
   if (isLoading) {
     return <div>Loading...</div>;
   }

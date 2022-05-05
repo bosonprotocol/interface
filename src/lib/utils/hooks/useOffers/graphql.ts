@@ -1,12 +1,20 @@
 import { gql } from "graphql-request";
 
-export const GET_OFFERS_QUERY = gql`
+export const getOffersQuery = ({
+  exchangeToken,
+  validFromDate_lte,
+  validUntilDate_gte
+}: {
+  exchangeToken: boolean;
+  validFromDate_lte: boolean;
+  validUntilDate_gte: boolean;
+}) => gql`
   query GetOffers(
     $first: Int
-    $validFromDate_lte: String
-    $validUntilDate_gte: String
+    ${validFromDate_lte ? "$validFromDate_lte: String" : ""}
+    ${validUntilDate_gte ? "$validUntilDate_gte: String" : ""}
     $name_contains_nocase: String
-    $exchangeToken: String
+    ${exchangeToken ? "$exchangeToken: String" : ""}
     $orderBy: String
     $orderDirection: String
     $offer: String
@@ -17,9 +25,9 @@ export const GET_OFFERS_QUERY = gql`
       orderDirection: $orderDirection
       offer: $offer
       where: {
-        validFromDate_lte: $validFromDate_lte
-        validUntilDate_gte: $validUntilDate_gte
-        exchangeToken: $exchangeToken
+        ${validFromDate_lte ? "validFromDate_lte : $validFromDate_lte" : ""}
+        ${validUntilDate_gte ? "validUntilDate_gte : $validUntilDate_gte" : ""}
+        ${exchangeToken ? "exchangeToken : $exchangeToken" : ""}
         name_contains_nocase: $name_contains_nocase
       }
     ) {
