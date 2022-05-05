@@ -115,6 +115,7 @@ export default function Explore() {
 
             <TokenSelect
               value={selectedToken}
+              data-testid="currency"
               onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                 setSelectedToken(e.target.value);
                 setCurrencyQueryParameter(e.target.value);
@@ -134,6 +135,7 @@ export default function Explore() {
           <h2>Search</h2>
           <InputContainer>
             <Input
+              data-testid="name"
               onChange={(e) => {
                 setBrandInput(e.target.value);
               }}

@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, Page, test } from "@playwright/test";
 import { mockSubgraph } from "lib/utils/test/mocks/mockGetBase";
 import { sortOffersBy } from "lib/utils/test/utils/sort";
 
@@ -40,7 +40,128 @@ test.describe("Explore page", () => {
 
       await expect(footer).toBeDefined();
     });
+    test.describe("Query params", () => {
+      const queryParams = {
+        name: "name",
+        currency: "currency"
+      } as const;
+      const assertUrlToEqualQueryParam =
+        (page: Page) =>
+        async (queryParam: keyof typeof queryParams, value: string) => {
+          const url = await page.url();
+          const { hash } = new URL(url);
+          const paramsObj = Object.fromEntries(
+            new URLSearchParams(hash.substring(hash.indexOf("?")))
+          );
+          await expect(paramsObj[queryParam]).toStrictEqual(value);
+        };
+      test("query param 'name' should update when changing input", async ({
+        page
+      }) => {
+        const name = "name1";
+
+        const input = await page.locator("input[data-testid=name]");
+
+        await input.type(name, { delay: 100 });
+        await input.press("Enter");
+
+        await assertUrlToEqualQueryParam(page)("name", name);
+      });
+      test("query param 'currency' should update when changing select", async ({
+        page
+      }) => {
+        const currencySelect = await page.locator(
+          "select[data-testid=currency]"
+        );
+        const currency = "BOSON";
+        await currencySelect.selectOption(currency);
+
+        await assertUrlToEqualQueryParam(page)("currency", currency);
+      });
+      test("query param 'name' & 'currency' should update when changing input and then select", async ({
+        page
+      }) => {
+        const name = "name1";
+
+        const input = await page.locator("input[data-testid=name]");
+
+        await input.type(name, { delay: 100 });
+        await input.press("Enter");
+
+        await assertUrlToEqualQueryParam(page)("name", name);
+
+        const currencySelect = await page.locator(
+          "select[data-testid=currency]"
+        );
+        const currency = "BOSON";
+        await currencySelect.selectOption(currency);
+
+        await assertUrlToEqualQueryParam(page)("currency", currency);
+      });
+      test("query param 'currency' & 'name' should update when changing select and then input", async ({
+        page
+      }) => {
+        const currencySelect = await page.locator(
+          "select[data-testid=currency]"
+        );
+        const currency = "BOSON";
+        await currencySelect.selectOption(currency);
+
+        await assertUrlToEqualQueryParam(page)("currency", currency);
+
+        const name = "name1";
+
+        const input = await page.locator("input[data-testid=name]");
+
+        await input.type(name, { delay: 100 });
+        await input.press("Enter");
+
+        await assertUrlToEqualQueryParam(page)("name", name);
+      });
+      test("query param 'name' should update when changing input and clearing it again", async ({
+        page
+      }) => {
+        const name = "name1";
+
+        const input = await page.locator("input[data-testid=name]");
+
+        await input.type(name, { delay: 100 });
+        await input.press("Enter");
+
+        await assertUrlToEqualQueryParam(page)("name", name);
+
+        for (let i = 0; i < name.length; i++) {
+          await input.press("Backspace");
+        }
+        await input.press("Enter");
+        await assertUrlToEqualQueryParam(page)("name", "");
+      });
+      test("input and select should change when we navigate to Explore with their query params", async ({
+        page
+      }) => {
+        const name = "name1";
+        const currency = "BOSON";
+
+        await page.goto(
+          `${exploreUrl}?${queryParams.name}=${name}&${queryParams.currency}=${currency}`
+        );
+        await page.goto(
+          `${exploreUrl}?${queryParams.name}=${name}&${queryParams.currency}=${currency}`
+        );
+
+        const input = await page.locator("input[data-testid=name]");
+        const value = await input.inputValue();
+        await expect(value).toStrictEqual(name);
+
+        const currencySelect = await page.locator(
+          "select[data-testid=currency]"
+        );
+        const valueSelect = await currencySelect.inputValue();
+        await expect(valueSelect).toStrictEqual(currency);
+      });
+    });
   });
+
   test.describe("Offers list", () => {
     test("should filter out invalid offers", async ({ page }) => {
       const invalidOffer = {
@@ -116,28 +237,6 @@ test.describe("Explore page", () => {
         const expectedOffer = first10Offers[i].offer;
         await assertOffer(offer, expectedOffer);
       }
-    });
-
-    test("should update 'name' query param to name=OfferV1 when typing 'OfferV1' in the search input", async ({
-      page
-    }) => {
-      const name = "OfferV1";
-      await mockSubgraph({
-        page
-      });
-      await page.goto(exploreUrl);
-
-      const input = await page.locator("input");
-      await input.type(name, { delay: 100 });
-      await input.press("Enter");
-
-      // Check 'name' query param
-      const url = await page.url();
-      const { hash } = new URL(url);
-      const paramsObj = Object.fromEntries(
-        new URLSearchParams(hash.substring(hash.indexOf("?")))
-      );
-      await expect(paramsObj.name).toStrictEqual(name);
     });
 
     test("should display No offers found", async ({ page }) => {

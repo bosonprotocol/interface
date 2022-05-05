@@ -1,16 +1,25 @@
 import { Page } from "@playwright/test";
 
 import { graphqlEndpoint } from "../environment";
-import { mockGetBrands } from "./mockGetBrands";
-import { mockGetOffers, MockProps } from "./mockGetOffers";
-import { mockGetTokens } from "./mockGetTokens";
+import {
+  mockGetBrands,
+  MockProps as mockGetBrandsProps
+} from "./mockGetBrands";
+import {
+  mockGetOffers,
+  MockProps as mockGetOffersProps
+} from "./mockGetOffers";
+import {
+  mockGetTokens,
+  MockProps as mockGetTokensProps
+} from "./mockGetTokens";
 
 interface MockSubgraphProps {
   page: Page;
   options?: Partial<{
-    mockGetOffers?: MockProps["options"];
-    mockGetBrands?: any;
-    mockGetTokens?: any;
+    mockGetOffers?: mockGetOffersProps["options"];
+    mockGetBrands?: mockGetBrandsProps["options"];
+    mockGetTokens?: mockGetTokensProps["options"];
   }>;
 }
 
