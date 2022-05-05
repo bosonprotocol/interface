@@ -12,34 +12,34 @@ import { defaultMockOffers } from "../../lib/utils/test/mocks/defaultMockOffers"
 const exploreUrl = "/#/explore";
 
 test.describe("Explore page", () => {
-  test.describe("Container", () => {
+  test.describe("Header & footer", () => {
     test.beforeEach(async ({ page }) => {
       await mockSubgraph({
         page
       });
       await page.goto(exploreUrl);
     });
-    test("should have an h1 'Explore'", async ({ page }) => {
+    test("should display the title", async ({ page }) => {
       const h1 = await page.locator("h1", { hasText: "Explore" });
 
       await expect(h1).toBeDefined();
     });
-    test("should have a logo", async ({ page }) => {
+    test("should display the logo", async ({ page }) => {
       const logoImg = await page.locator("[data-testid=logo]");
 
       await expect(await logoImg.getAttribute("src")).toBeTruthy();
     });
-    test("should have an h2 'Filter'", async ({ page }) => {
+    test("should display the filter subheading", async ({ page }) => {
       const h2 = await page.locator("h2", { hasText: "Filter" });
 
       await expect(h2).toBeDefined();
     });
-    test("should have an h2 'Search'", async ({ page }) => {
+    test("should display the search subheading", async ({ page }) => {
       const h2 = await page.locator("h2", { hasText: "Search" });
 
       await expect(h2).toBeDefined();
     });
-    test("should have a footer", async ({ page }) => {
+    test("should display the footer", async ({ page }) => {
       const footer = await page.locator("footer");
 
       await expect(footer).toBeDefined();
@@ -190,17 +190,17 @@ test.describe("Explore page", () => {
       await page.goto(exploreUrl);
       await page.waitForTimeout(500);
       const offers = await page.locator("[data-testid=offer]");
-      const num = await offers.count();
-      await expect(num).toStrictEqual(mockedOffers.length - 1); // 1 invalid offer
+      const offerCount = await offers.count();
+      await expect(offerCount).toStrictEqual(mockedOffers.length - 1); // 1 invalid offer
     });
 
     test("should display the first 10 offers ordered by name ASC, without filters", async ({
       page
     }) => {
-      const nOffers = 10;
+      const numberOfOffers = 10;
       const first10Offers = defaultMockOffers
         .map((offer) => ({ offer: { ...offer } }))
-        .slice(0, nOffers)
+        .slice(0, numberOfOffers)
         .sort(sortOffersBy({ property: "name", asc: true }));
 
       await mockSubgraph({
@@ -219,10 +219,10 @@ test.describe("Explore page", () => {
       await page.goto(exploreUrl);
       await page.waitForTimeout(500);
       const offers = await page.locator("[data-testid=offer]");
-      const num = await offers.count();
-      await expect(num).toStrictEqual(first10Offers.length);
+      const offerCount = await offers.count();
+      await expect(offerCount).toStrictEqual(first10Offers.length);
 
-      for (let i = 0; i < num; i++) {
+      for (let i = 0; i < offerCount; i++) {
         const offer = offers.nth(i);
         const expectedOffer = first10Offers[i].offer;
         await assertOffer(offer, expectedOffer);
@@ -241,7 +241,7 @@ test.describe("Explore page", () => {
       await expect(noOffers).toHaveText("No offers found");
     });
 
-    test("should display 'There has been an error, please try again later...' if we get a 400 error", async ({
+    test("should display error message when subgraph returns HTTP 400 error", async ({
       page
     }) => {
       await mockSubgraph({
@@ -267,7 +267,7 @@ test.describe("Explore page", () => {
       );
     });
 
-    test("should display 'There has been an error, please try again later...' if we get a 500 error", async ({
+    test("should display error message when subgraph returns HTTP 500 error", async ({
       page
     }) => {
       await mockSubgraph({

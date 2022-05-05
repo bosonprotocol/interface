@@ -94,8 +94,10 @@ const MainImg = styled.img`
 export default function Landing() {
   const navigate = useNavigate();
   const [name, setName] = useState("");
+
   const navigateToExplore = () =>
     navigate(`${BosonRoutes.Explore}?${QueryParameters.name}=${name}`);
+
   return (
     <LandingContainer>
       <Hero>

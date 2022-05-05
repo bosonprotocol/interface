@@ -137,6 +137,7 @@ export default () => {
   if (!offer) {
     return <div data-testid="notFound">This offer does not exist</div>;
   }
+
   const name = offer.metadata?.name || "Untitled";
   const offerImg = `https://picsum.photos/seed/${offerId}/700`;
   const sellerAddress = offer.seller?.admin;

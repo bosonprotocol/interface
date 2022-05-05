@@ -101,12 +101,11 @@ export default function Explore() {
               value={brandSelect}
               onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                 setBrandSelect(e.target.value);
-                // onChangeBrand(e.target.value);
               }}
             >
               <option value="">Brand</option>
               {brands &&
-                brands.map((brand) => (
+                brands.map((brand: string) => (
                   <option key={brand} value={brand}>
                     {brand}
                   </option>
