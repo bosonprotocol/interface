@@ -4,7 +4,7 @@ import { Select } from "lib/styles/base";
 import { colors } from "lib/styles/colors";
 import { useBrands } from "lib/utils/hooks/useBrands";
 import { useTokens } from "lib/utils/hooks/useTokens";
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 import ExploreOffers from "./ExploreOffers";
@@ -71,21 +71,24 @@ export default function Explore() {
   const [nameQueryParameter, setNameQueryParameter] = useQueryParameter(
     QueryParameters.name
   );
-  const [, setCurrencyQueryParameter] = useQueryParameter(
+  const [currencyQueryParameter, setCurrencyQueryParameter] = useQueryParameter(
     QueryParameters.currency
   );
+
   const [brandInput, setBrandInput] = useState<string>(nameQueryParameter);
   const [brandSelect, setBrandSelect] = useState<string>("");
   const [nameToSearch, setNameToSearch] = useState<string>(nameQueryParameter);
 
   const { data: tokens } = useTokens();
-  const [selectedToken, setSelectedToken] = useState<string>();
+  const [selectedToken, setSelectedToken] = useState<string>(
+    currencyQueryParameter
+  );
   const { data: brands } = useBrands();
 
-  const onChangeName = useCallback((name: string) => {
+  const onChangeName = (name: string) => {
     setNameToSearch(name);
     setNameQueryParameter(name);
-  }, []);
+  };
 
   return (
     <ExploreContainer>
