@@ -1,7 +1,7 @@
 import { Offer } from "@lib/types/offer";
 import styled from "styled-components";
 
-import OfferItem from "../offer/OfferCard";
+import OfferCard from "../offer/OfferCard";
 
 const OfferContainer = styled.div`
   display: grid;
@@ -40,7 +40,7 @@ export default function OfferList({ offers, isLoading, isError }: Props) {
   return (
     <OfferContainer>
       {offers.map((offer: Offer) => (
-        <OfferItem key={offer.id} offer={offer} />
+        <OfferCard key={offer.id} offer={offer} />
       ))}
     </OfferContainer>
   );
