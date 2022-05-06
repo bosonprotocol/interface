@@ -16,17 +16,24 @@ The required steps to develop and test the dApp interface locally are as follows
 4. Start the application: i.e. Run `npm run dev`
 5. Navigate to `http://localhost:3000/` in a browser.
 
-## e2e tests
+## Running the tests
 
-### Prerequisites
+### E2E
 
-Playwright browsers need to be installed on your system
-```
+Ensure Playwright browsers need to be installed on your system: 
+
+```bash
 npx playwright install
 ```
 
-### Run e2e tests
-
+Run the tests:
+```bash
+npm run test:e2e
 ```
-npm run e2e
+
+### Unit & Integration
+
+Run the tests:
+```bash
+npm run test
 ```
