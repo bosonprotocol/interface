@@ -1,10 +1,8 @@
-import AddressImage from "@components/offer/AddressImage";
 import RootPrice from "@components/price";
 import { QueryParameters, UrlParameters } from "@lib/routing/query-parameters";
 import { useQueryParameter } from "@lib/routing/useQueryParameter";
 import { lg } from "@lib/screen-sizes";
 import { colors } from "@lib/styles/colors";
-import { formatAddress } from "@lib/utils/address";
 import { useOffer } from "@lib/utils/hooks/useOffers/useOffer";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
@@ -139,7 +137,7 @@ export default function OfferDetail() {
 
   const name = offer.metadata?.name || "Untitled";
   const offerImg = `https://picsum.photos/seed/${offerId}/700`;
-  const sellerAddress = offer.seller?.admin;
+  const sellerId = offer.seller?.id;
   const description = offer.metadata?.description || "";
 
   return (
@@ -166,12 +164,7 @@ export default function OfferDetail() {
           </div>
         </ImageAndDescription>
         <Content>
-          <AddressContainer>
-            <AddressImage address={sellerAddress} />
-            <SubHeading data-testid="address">
-              {formatAddress(sellerAddress)}
-            </SubHeading>
-          </AddressContainer>
+          <AddressContainer>ID: {sellerId}</AddressContainer>
 
           <Title data-testid="name">{name}</Title>
 

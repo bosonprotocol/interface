@@ -5,9 +5,6 @@ import { Offer } from "@lib/types/offer";
 import { generatePath, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-import AddressImage from "./AddressImage";
-import AddressText from "./AddressText";
-
 const Card = styled.div`
   border-radius: 12px;
   display: inline-block;
@@ -83,16 +80,13 @@ export default function OfferCard({ offer }: Props) {
 
   const offerImg = `https://picsum.photos/seed/${id}/700`;
   const name = offer.metadata?.name || "Untitled";
-  const sellerAddress = offer.seller?.admin;
+  const sellerId = offer.seller?.id;
 
   const navigate = useNavigate();
 
   return (
     <Card data-testid="offer">
-      <SellerInfo>
-        <AddressImage address={sellerAddress} />
-        <AddressText address={sellerAddress} />
-      </SellerInfo>
+      <SellerInfo>ID: {sellerId}</SellerInfo>
       <ImageContainer>
         <Image data-testid="image" src={offerImg} />
       </ImageContainer>
