@@ -26,23 +26,36 @@ interface IProps {
   currencySymbol: string;
 }
 
-const Price = ({ weiValue, currencySymbol, ...rest }: IProps) => {
-  const currencyImages: Record<string, string> = {
-    DAI: daiIcon,
-    BOSON: bosonIcon,
-    ETH: ethIcon
-  };
+const currencyImages = {
+  DAI: daiIcon,
+  BOSON: bosonIcon,
+  ETH: ethIcon
+};
 
-  const symbolUpperCase = currencySymbol.toUpperCase();
-  const formattedValue = utils.formatEther(weiValue);
+const Price = ({ weiValue, currencySymbol, ...rest }: IProps) => {
+  const symbolUpperCase =
+    currencySymbol.toUpperCase() as keyof typeof currencyImages;
+
+  let formattedValue = "";
+  try {
+    formattedValue = utils.formatEther(weiValue);
+  } catch (error) {
+    console.error(error);
+  }
   const [integer, fractions] = formattedValue.split(".");
 
   return (
     <Root {...rest}>
-      <EthIcon>
-        <Image src={currencyImages[symbolUpperCase]} alt="currency icon" />
-      </EthIcon>
-      <span>{fractions === "0" ? integer : `${integer}.${fractions}`}</span>{" "}
+      {currencyImages[symbolUpperCase] && (
+        <EthIcon>
+          <Image src={currencyImages[symbolUpperCase]} alt="currency icon" />
+        </EthIcon>
+      )}
+      {formattedValue ? (
+        <span>{fractions === "0" ? integer : `${integer}.${fractions}`}</span>
+      ) : (
+        "-"
+      )}
       <span>{symbolUpperCase}</span>
     </Root>
   );

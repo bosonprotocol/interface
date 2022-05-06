@@ -1,5 +1,5 @@
 import AddressImage from "components/offer/AddressImage";
-import RootPrice from "components/Price";
+import RootPrice from "components/price";
 import { QueryParameters, UrlParameters } from "lib/routing/query-parameters";
 import { useQueryParameter } from "lib/routing/useQueryParameter";
 import { useOffer } from "lib/utils/hooks/useOffers/useOffer";
