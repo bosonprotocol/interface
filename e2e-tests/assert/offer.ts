@@ -26,10 +26,15 @@ export async function assertOffer(offer: Locator, expectedOffer: Offer) {
   await expect(sellerAddress).toHaveText(expectedSellerAddress);
 
   const price = await offer.locator("[data-testid=price]");
-  const expectedPrice = `${formatUnits(
+  const value = formatUnits(
     BigNumber.from(expectedOffer.price),
     expectedOffer.exchangeToken?.decimals
-  )} ${expectedOffer.exchangeToken?.symbol || ""}`;
+  );
+  const [integer, fractions] = value.split(".");
+  const stringPrice = fractions === "0" ? integer : `${integer}.${fractions}`;
+  const expectedPrice = `${stringPrice} ${
+    expectedOffer.exchangeToken?.symbol || ""
+  }`;
 
   await expect(price).toHaveText(expectedPrice);
 
