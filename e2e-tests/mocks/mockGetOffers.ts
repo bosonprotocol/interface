@@ -1,5 +1,5 @@
 import { Offer } from "../../src/lib/types/offer";
-import { sortOffersBy } from "../../src/lib/utils/sort";
+import { sortOffersBy } from "../utils/sort";
 import { defaultMockOffers } from "./defaultMockOffers";
 import { CustomResponse } from "./mockGetBase";
 
