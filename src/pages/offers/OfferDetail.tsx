@@ -1,9 +1,11 @@
+import { manageOffer } from "@bosonprotocol/widgets-sdk";
 import RootPrice from "@components/price";
+import { CONFIG } from "@lib/config";
 import { QueryParameters, UrlParameters } from "@lib/routing/query-parameters";
 import { useQueryParameter } from "@lib/routing/useQueryParameter";
-import { lg } from "@lib/screen-sizes";
 import { colors } from "@lib/styles/colors";
 import { useOffer } from "@lib/utils/hooks/useOffers/useOffer";
+import { useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
@@ -14,7 +16,7 @@ const Root = styled.div`
   gap: 42px;
   margin-bottom: 42px;
 
-  ${lg} {
+  @media (min-width: 1200px) {
     flex-direction: row;
   }
 `;
@@ -25,6 +27,14 @@ const ImageAndDescription = styled.div`
   justify-content: start;
   flex-basis: 50%;
   gap: 20px;
+
+  @media (min-width: 981px) {
+    flex-direction: row;
+  }
+
+  @media (min-width: 1200px) {
+    flex-direction: column;
+  }
 `;
 
 const ImageContainer = styled.div`
@@ -36,6 +46,8 @@ const ImageContainer = styled.div`
 const Image = styled.img`
   height: auto;
   width: 100%;
+  margin: 0 auto;
+  max-width: 500px;
   border-radius: 22px;
   object-fit: contain;
 `;
@@ -86,6 +98,10 @@ const WidgetContainer = styled.div`
   margin: 0 auto;
 `;
 
+const Info = styled.div`
+  width: 100%;
+`;
+
 const Box = styled.div`
   border: 1px solid ${colors.grey};
   display: flex;
@@ -104,6 +120,8 @@ const Price = styled(RootPrice)`
 export default function OfferDetail() {
   const { [UrlParameters.offerId]: offerId } = useParams();
   const [seller] = useQueryParameter(QueryParameters.seller);
+  const widgetRef = useRef<HTMLDivElement>(null);
+
   const isSeller = seller === "true";
 
   if (!offerId) {
@@ -118,6 +136,17 @@ export default function OfferDetail() {
     offerId,
     valid: !isSeller
   });
+  useEffect(() => {
+    if (offer && widgetRef.current) {
+      const widgetContainer = document.createElement("div");
+      widgetRef.current.appendChild(widgetContainer);
+      manageOffer(offer.id, CONFIG, widgetContainer);
+
+      return () => widgetContainer.remove();
+    }
+
+    return;
+  }, [offer]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -147,7 +176,7 @@ export default function OfferDetail() {
           <ImageContainer>
             <Image data-testid="image" src={offerImg} />
           </ImageContainer>
-          <div>
+          <Info>
             <Box>
               <SubHeading>Description</SubHeading>
               <Information data-testid="description">{description}</Information>
@@ -161,7 +190,7 @@ export default function OfferDetail() {
               <SubHeading>Delivery Information</SubHeading>
               <span data-testid="delivery-info">Not defined</span>
             </Box>
-          </div>
+          </Info>
         </ImageAndDescription>
         <Content>
           <AddressContainer data-testid="seller-id">
@@ -179,7 +208,7 @@ export default function OfferDetail() {
             />
           </Box>
           <ChildrenContainer>
-            <WidgetContainer>widget</WidgetContainer>
+            <WidgetContainer ref={widgetRef}></WidgetContainer>
           </ChildrenContainer>
         </Content>
       </Root>
