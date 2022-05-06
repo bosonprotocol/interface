@@ -4,7 +4,7 @@ import { colors } from "@lib/styles/colors";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-import { Layout } from "./Layout";
+import Layout from "./Layout";
 
 const HeaderContainer = styled(Layout)`
   display: flex;

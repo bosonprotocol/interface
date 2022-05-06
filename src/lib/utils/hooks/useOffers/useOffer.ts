@@ -6,7 +6,7 @@ import { getOffersQuery } from "./graphql";
 import { UseOfferProps, UseOffersProps } from "./types";
 import { checkOfferMetadata } from "./validators";
 
-export const useOffer = ({ offerId, ...restProps }: UseOfferProps) => {
+export function useOffer({ offerId, ...restProps }: UseOfferProps) {
   return useQuery(
     ["offer", offerId],
     async () => {
@@ -20,9 +20,9 @@ export const useOffer = ({ offerId, ...restProps }: UseOfferProps) => {
       enabled: !!offerId
     }
   );
-};
+}
 
-const getOfferById = async (id: string, props: UseOffersProps) => {
+async function getOfferById(id: string, props: UseOffersProps) {
   const now = Math.floor(Date.now() / 1000);
   const validFromDate_lte = props.valid ? now + "" : null;
   const validUntilDate_gte = props.valid ? now + "" : null;
@@ -45,4 +45,4 @@ const getOfferById = async (id: string, props: UseOffersProps) => {
     }
   );
   return result.baseMetadataEntities[0]?.offer;
-};
+}

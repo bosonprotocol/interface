@@ -1,5 +1,5 @@
 import App from "@components/app";
-import { Layout } from "@components/Layout";
+import Layout from "@components/Layout";
 import { BosonRoutes, OffersRoutes } from "@lib/routing/routes";
 import React from "react";
 import { createRoot } from "react-dom/client";

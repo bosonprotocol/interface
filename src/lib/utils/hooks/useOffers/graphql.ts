@@ -1,6 +1,6 @@
 import { gql } from "graphql-request";
 
-export const getOffersQuery = ({
+export function getOffersQuery({
   exchangeToken,
   validFromDate_lte,
   validUntilDate_gte,
@@ -10,7 +10,8 @@ export const getOffersQuery = ({
   validFromDate_lte: boolean;
   validUntilDate_gte: boolean;
   offer: boolean;
-}) => gql`
+}) {
+  return gql`
   query GetOffers(
     $first: Int
     ${validFromDate_lte ? "$validFromDate_lte: String" : ""}
@@ -73,3 +74,4 @@ export const getOffersQuery = ({
     }
   }
 `;
+}

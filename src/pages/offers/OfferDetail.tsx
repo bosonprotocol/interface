@@ -103,7 +103,7 @@ const Price = styled(RootPrice)`
   font-size: 24px;
 `;
 
-export default () => {
+export default function OfferDetail() {
   const { [UrlParameters.offerId]: offerId } = useParams();
   const [seller] = useQueryParameter(QueryParameters.seller);
   const isSeller = seller === "true";
@@ -190,4 +190,4 @@ export default () => {
       </Root>
     </>
   );
-};
+}

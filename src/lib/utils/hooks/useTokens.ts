@@ -4,7 +4,7 @@ import { useQuery } from "react-query";
 
 import { fetchSubgraph } from "../core-components/subgraph";
 
-export const useTokens = () => {
+export function useTokens() {
   return useQuery("tokens", async () => {
     const result = await fetchSubgraph<{
       exchangeTokens: Pick<Offer["exchangeToken"], "address" | "symbol">[];
@@ -20,4 +20,4 @@ export const useTokens = () => {
     );
     return result?.exchangeTokens ?? [];
   });
-};
+}

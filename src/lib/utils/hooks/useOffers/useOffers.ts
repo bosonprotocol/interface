@@ -6,7 +6,7 @@ import { getOffersQuery } from "./graphql";
 import { UseOffersProps } from "./types";
 import { checkOfferMetadata } from "./validators";
 
-export const useOffers = (props: UseOffersProps) => {
+export function useOffers(props: UseOffersProps) {
   const now = Math.floor(Date.now() / 1000);
   const validFromDate_lte = props.valid ? now + "" : null;
   const validUntilDate_gte = props.valid ? now + "" : null;
@@ -39,4 +39,4 @@ export const useOffers = (props: UseOffersProps) => {
       )
       .map((base) => base.offer);
   });
-};
+}

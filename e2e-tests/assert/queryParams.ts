@@ -6,9 +6,8 @@ export const queryParams = {
   currency: "currency"
 } as const;
 
-export const assertUrlToEqualQueryParam =
-  (page: Page) =>
-  async (queryParam: keyof typeof queryParams, value: string) => {
+export function assertUrlToEqualQueryParam(page: Page) {
+  return async (queryParam: keyof typeof queryParams, value: string) => {
     const url = await page.url();
     const { hash } = new URL(url);
     const paramsObj = Object.fromEntries(
@@ -16,3 +15,4 @@ export const assertUrlToEqualQueryParam =
     );
     await expect(paramsObj[queryParam]).toStrictEqual(value);
   };
+}

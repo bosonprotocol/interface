@@ -27,6 +27,6 @@ interface IProps {
   children: ReactNode;
 }
 
-export function Layout({ children, ...props }: IProps) {
+export default function Layout({ children, ...props }: IProps) {
   return <Root {...props}>{children}</Root>;
 }

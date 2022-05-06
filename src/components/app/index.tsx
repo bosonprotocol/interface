@@ -1,4 +1,4 @@
-import { Layout } from "@components/Layout";
+import Layout from "@components/Layout";
 import { colors } from "@lib/styles/colors";
 import { Outlet } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";

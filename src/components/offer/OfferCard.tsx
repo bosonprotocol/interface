@@ -78,7 +78,7 @@ interface Props {
   offer: Offer;
 }
 
-export default function ({ offer }: Props) {
+export default function OfferCard({ offer }: Props) {
   const id = offer.id;
 
   const offerImg = `https://picsum.photos/seed/${id}/700`;
