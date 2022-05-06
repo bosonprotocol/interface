@@ -18,12 +18,9 @@ export async function assertOffer(offer: Locator, expectedOffer: Offer) {
     expectedOffer.metadata?.name || "expected name"
   );
 
-  const sellerAddress = await offer.locator("[data-testid=address]");
-  const expectedSellerAddress = shortenAddress(
-    expectedOffer.seller?.admin || ""
-  );
-
-  await expect(sellerAddress).toHaveText(expectedSellerAddress);
+  const sellerId = await offer.locator("[data-testid=seller-id]");
+  const expectedSellerId = "ID: " + expectedOffer.seller?.id || "Unexpected id";
+  await expect(sellerId).toHaveText(expectedSellerId);
 
   const price = await offer.locator("[data-testid=price]");
   const value = formatUnits(

@@ -64,9 +64,10 @@ test.describe("OfferDetail", () => {
     const svg = await profileImg.locator("svg");
     await expect(svg).toBeDefined();
 
-    const sellerAddress = await page.locator("[data-testid=address]");
-    const expectedSellerAddress = expectedOffer.seller?.admin || "";
-    await expect(sellerAddress).toHaveText(expectedSellerAddress);
+    const sellerId = await page.locator("[data-testid=seller-id]");
+    const expectedSellerId =
+      "ID: " + expectedOffer.seller?.id || "Unexpected id";
+    await expect(sellerId).toHaveText(expectedSellerId);
 
     const sellerDescription = await page.locator(
       "[data-testid=seller-description]"

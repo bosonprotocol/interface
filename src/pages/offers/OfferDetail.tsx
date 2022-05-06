@@ -164,7 +164,9 @@ export default function OfferDetail() {
           </div>
         </ImageAndDescription>
         <Content>
-          <AddressContainer>ID: {sellerId}</AddressContainer>
+          <AddressContainer data-testid="seller-id">
+            ID: {sellerId}
+          </AddressContainer>
 
           <Title data-testid="name">{name}</Title>
 
