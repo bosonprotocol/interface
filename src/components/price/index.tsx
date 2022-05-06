@@ -1,4 +1,4 @@
-import { utils } from "ethers";
+import { BigNumber, utils } from "ethers";
 import styled from "styled-components";
 
 import bosonIcon from "./images/boson.svg";
@@ -22,7 +22,8 @@ const Image = styled.img`
 `;
 
 interface IProps {
-  weiValue: string;
+  value: string;
+  decimals: string;
   currencySymbol: string;
 }
 
@@ -32,20 +33,25 @@ const currencyImages = {
   ETH: ethIcon
 };
 
-const Price = ({ weiValue, currencySymbol, ...rest }: IProps) => {
+export default function Price({
+  value,
+  decimals,
+  currencySymbol,
+  ...rest
+}: IProps) {
   const symbolUpperCase =
     currencySymbol.toUpperCase() as keyof typeof currencyImages;
 
   let formattedValue = "";
   try {
-    formattedValue = utils.formatEther(weiValue);
+    formattedValue = utils.formatUnits(BigNumber.from(value), Number(decimals));
   } catch (error) {
     console.error(error);
   }
   const [integer, fractions] = formattedValue.split(".");
 
   return (
-    <Root {...rest}>
+    <Root {...rest} data-testid="price">
       {currencyImages[symbolUpperCase] && (
         <EthIcon>
           <Image src={currencyImages[symbolUpperCase]} alt="currency icon" />
@@ -55,10 +61,8 @@ const Price = ({ weiValue, currencySymbol, ...rest }: IProps) => {
         <span>{fractions === "0" ? integer : `${integer}.${fractions}`}</span>
       ) : (
         "-"
-      )}
+      )}{" "}
       <span>{symbolUpperCase}</span>
     </Root>
   );
-};
-
-export default Price;
+}

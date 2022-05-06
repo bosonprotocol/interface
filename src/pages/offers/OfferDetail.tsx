@@ -179,7 +179,8 @@ export default () => {
             <SubHeading>Price</SubHeading>
             <Price
               currencySymbol={offer.exchangeToken.symbol}
-              weiValue={offer.price}
+              value={offer.price}
+              decimals={offer.exchangeToken.decimals}
             />
           </Box>
           <ChildrenContainer>

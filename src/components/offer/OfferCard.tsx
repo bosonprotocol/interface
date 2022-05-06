@@ -1,3 +1,4 @@
+import RootPrice from "@components/price";
 import { OffersRoutes } from "@lib/routing/routes";
 import { colors } from "@lib/styles/colors";
 import { Offer } from "@lib/types/offer";
@@ -6,7 +7,6 @@ import styled from "styled-components";
 
 import AddressImage from "./AddressImage";
 import AddressText from "./AddressText";
-import OfferPrice from "./OfferPrice";
 
 const Card = styled.div`
   border-radius: 12px;
@@ -54,7 +54,7 @@ const CommitButtonContainer = styled.div`
   display: flex;
 `;
 
-const Price = styled(OfferPrice)`
+const Price = styled(RootPrice)`
   font-size: 16px;
   font-weight: bold;
 `;
@@ -98,7 +98,11 @@ export default function ({ offer }: Props) {
       </ImageContainer>
       <BasicInfoContainer>
         <Name data-testid="name">{name || "Untitled"}</Name>
-        <Price offer={offer} />
+        <Price
+          currencySymbol={offer.exchangeToken.symbol}
+          value={offer.price}
+          decimals={offer.exchangeToken.decimals}
+        />
         <CommitButtonContainer>
           <Commit
             data-testid="commit"
