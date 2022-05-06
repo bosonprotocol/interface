@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
-import { mockSubgraph } from "lib/utils/test/mocks/mockGetBase";
 
-import { defaultMockOffers } from "../../lib/utils/test/mocks/defaultMockOffers";
+import { defaultMockOffers } from "./mocks/defaultMockOffers";
+import { mockSubgraph } from "./mocks/mockGetBase";
 
 test.describe("OfferDetail", () => {
   test("should display 'There has been an error, please try again later...' if we get a 500 error", async ({
