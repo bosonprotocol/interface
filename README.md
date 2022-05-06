@@ -18,6 +18,11 @@ The required steps to develop and test the dApp interface locally are as follows
 
 ## Running the tests
 
+Playwright browsers need to be installed on your system
+```
+npx playwright install
+```
+
 Run the unit / integration tests:
 
 ```bash
