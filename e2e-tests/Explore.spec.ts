@@ -1,13 +1,10 @@
 import { expect, test } from "@playwright/test";
-import {
-  assertUrlToEqualQueryParam,
-  queryParams
-} from "lib/utils/test/assert/queryParams";
-import { mockSubgraph } from "lib/utils/test/mocks/mockGetBase";
-import { sortOffersBy } from "lib/utils/test/utils/sort";
 
-import { assertOffer } from "../../lib/utils/test/assert/offer";
-import { defaultMockOffers } from "../../lib/utils/test/mocks/defaultMockOffers";
+import { assertOffer } from "./assert/offer";
+import { assertUrlToEqualQueryParam, queryParams } from "./assert/queryParams";
+import { defaultMockOffers } from "./mocks/defaultMockOffers";
+import { mockSubgraph } from "./mocks/mockGetBase";
+import { sortOffersBy } from "./utils/sort";
 
 const exploreUrl = "/#/explore";
 

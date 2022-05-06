@@ -1,10 +1,10 @@
 import { expect, test } from "@playwright/test";
-import { Offer } from "lib/types/offer";
-import { mockSubgraph } from "lib/utils/test/mocks/mockGetBase";
-import { sortOffersBy } from "lib/utils/test/utils/sort";
 
-import { assertOffer } from "../../lib/utils/test/assert/offer";
-import { defaultMockOffers } from "../../lib/utils/test/mocks/defaultMockOffers";
+import { Offer } from "../src/lib/types/offer";
+import { assertOffer } from "./assert/offer";
+import { defaultMockOffers } from "./mocks/defaultMockOffers";
+import { mockSubgraph } from "./mocks/mockGetBase";
+import { sortOffersBy } from "./utils/sort";
 
 test.describe("Root page (Landing page)", () => {
   test.describe("Header & footer", () => {

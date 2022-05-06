@@ -1,7 +1,8 @@
 import { formatUnits } from "@ethersproject/units";
 import { expect, Locator } from "@playwright/test";
 import { BigNumber } from "ethers";
-import { Offer } from "lib/types/offer";
+
+import { Offer } from "../../src/lib/types/offer";
 
 const shortenAddress = (address: string): string => {
   if (!address) {

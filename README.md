@@ -15,3 +15,17 @@ The required steps to develop and test the dApp interface locally are as follows
 3. Copy the `.env.example` file to `.env` and fill out any necessary values.
 4. Start the application: i.e. Run `npm run dev`
 5. Navigate to `http://localhost:3000/` in a browser.
+
+## Running the tests
+
+Run the unit / integration tests:
+
+```bash
+npm run test
+```
+
+Run the end-to-end tests:
+
+```bash
+npm run test:e2e
+```

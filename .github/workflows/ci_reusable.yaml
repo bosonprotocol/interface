@@ -39,7 +39,7 @@ jobs:
       - run: npm run lint
       - run: npm run build
       - run: npm run test
-      - run: npm run e2e:ci
+      - run: npm run test:e2e:ci
       - name: Copy contents from .fleek_staging.json to .fleek.json
         if: ${{ inputs.ENV_NAME == 'staging' }}
         run: mv .fleek_staging.json .fleek.json
