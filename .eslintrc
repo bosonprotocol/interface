@@ -7,7 +7,13 @@
   "plugins": ["react", "@typescript-eslint", "react-hooks", "simple-import-sort"],
   "rules": {
     "simple-import-sort/exports": "error",
-    "simple-import-sort/imports": "error"
+    "simple-import-sort/imports": "error",
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto"
+      }
+    ]
   },
   "extends": [
     "eslint:recommended",
