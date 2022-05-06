@@ -1,4 +1,4 @@
-import { Offer } from "lib/types/offer";
+import { Offer } from "@lib/types/offer";
 import styled from "styled-components";
 
 import OfferItem from "../offer/OfferCard";

@@ -1,5 +1,5 @@
-import { colors } from "lib/styles/colors";
-import { formatAddress } from "lib/utils/address";
+import { colors } from "@lib/styles/colors";
+import { formatAddress } from "@lib/utils/address";
 import styled from "styled-components";
 
 const Name = styled.span`

@@ -1,9 +1,9 @@
-import { QueryParameters } from "lib/routing/query-parameters";
-import { useQueryParameter } from "lib/routing/useQueryParameter";
-import { Select } from "lib/styles/base";
-import { colors } from "lib/styles/colors";
-import { useBrands } from "lib/utils/hooks/useBrands";
-import { useTokens } from "lib/utils/hooks/useTokens";
+import { QueryParameters } from "@lib/routing/query-parameters";
+import { useQueryParameter } from "@lib/routing/useQueryParameter";
+import { Select } from "@lib/styles/base";
+import { colors } from "@lib/styles/colors";
+import { useBrands } from "@lib/utils/hooks/useBrands";
+import { useTokens } from "@lib/utils/hooks/useTokens";
 import React, { useState } from "react";
 import styled from "styled-components";
 

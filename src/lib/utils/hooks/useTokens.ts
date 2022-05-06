@@ -1,5 +1,5 @@
+import { Offer } from "@lib/types/offer";
 import { gql } from "graphql-request";
-import { Offer } from "lib/types/offer";
 import { useQuery } from "react-query";
 
 import { fetchSubgraph } from "../core-components/subgraph";

@@ -1,10 +1,9 @@
 import { offers as offersApi } from "@bosonprotocol/core-sdk";
 import { isAddress } from "@ethersproject/address";
+import { CONFIG } from "@lib/config";
+import { Select } from "@lib/styles/base";
 import { useState } from "react";
 import styled from "styled-components";
-
-import { CONFIG } from "../../lib/config";
-import { Select } from "../../lib/styles/base";
 
 const OfferSelection = styled.div`
   display: flex;

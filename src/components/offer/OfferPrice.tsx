@@ -1,6 +1,6 @@
 import { formatUnits } from "@ethersproject/units";
+import { Offer } from "@lib/types/offer";
 import { BigNumber } from "ethers";
-import { Offer } from "lib/types/offer";
 
 interface Props {
   offer: Offer;

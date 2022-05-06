@@ -1,6 +1,6 @@
-import { OffersRoutes } from "lib/routing/routes";
-import { colors } from "lib/styles/colors";
-import { Offer } from "lib/types/offer";
+import { OffersRoutes } from "@lib/routing/routes";
+import { colors } from "@lib/styles/colors";
+import { Offer } from "@lib/types/offer";
 import { generatePath, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 

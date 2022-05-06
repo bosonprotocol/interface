@@ -1,4 +1,4 @@
-import { Offer } from "lib/types/offer";
+import { Offer } from "@lib/types/offer";
 
 export interface UseOffersProps {
   count?: number;

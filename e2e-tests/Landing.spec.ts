@@ -1,6 +1,6 @@
+import { Offer } from "@lib/types/offer";
 import { expect, test } from "@playwright/test";
 
-import { Offer } from "../src/lib/types/offer";
 import { assertOffer } from "./assert/offer";
 import { defaultMockOffers } from "./mocks/defaultMockOffers";
 import { mockSubgraph } from "./mocks/mockGetBase";
