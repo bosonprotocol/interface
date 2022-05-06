@@ -27,7 +27,8 @@ export const useOffers = (props: UseOffersProps) => {
       getOffersQuery({
         exchangeToken: !!props.exchangeTokenAddress,
         validFromDate_lte: !!validFromDate_lte,
-        validUntilDate_gte: !!validUntilDate_gte
+        validUntilDate_gte: !!validUntilDate_gte,
+        offer: false
       }),
       variables
     );

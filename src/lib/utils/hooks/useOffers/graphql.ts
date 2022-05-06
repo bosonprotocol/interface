@@ -3,11 +3,13 @@ import { gql } from "graphql-request";
 export const getOffersQuery = ({
   exchangeToken,
   validFromDate_lte,
-  validUntilDate_gte
+  validUntilDate_gte,
+  offer
 }: {
   exchangeToken: boolean;
   validFromDate_lte: boolean;
   validUntilDate_gte: boolean;
+  offer: boolean;
 }) => gql`
   query GetOffers(
     $first: Int
@@ -17,14 +19,14 @@ export const getOffersQuery = ({
     ${exchangeToken ? "$exchangeToken: String" : ""}
     $orderBy: String
     $orderDirection: String
-    $offer: String
+    ${offer ? "$offer: String" : ""}
   ) {
     baseMetadataEntities(
       first: $first
       orderBy: $orderBy
       orderDirection: $orderDirection
-      offer: $offer
       where: {
+        ${offer ? "offer : $offer" : ""}
         ${validFromDate_lte ? "validFromDate_lte : $validFromDate_lte" : ""}
         ${validUntilDate_gte ? "validUntilDate_gte : $validUntilDate_gte" : ""}
         ${exchangeToken ? "exchangeToken : $exchangeToken" : ""}

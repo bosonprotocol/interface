@@ -1,5 +1,6 @@
 import { Offer } from "@lib/types/offer";
 import { fetchSubgraph } from "@lib/utils/core-components/subgraph";
+import assert from "assert";
 import { useQuery } from "react-query";
 
 import { getOffersQuery } from "./graphql";
@@ -33,7 +34,8 @@ const getOfferById = async (id: string, props: UseOffersProps) => {
     getOffersQuery({
       exchangeToken: !!props.exchangeTokenAddress,
       validFromDate_lte: !!validFromDate_lte,
-      validUntilDate_gte: !!validUntilDate_gte
+      validUntilDate_gte: !!validUntilDate_gte,
+      offer: true
     }),
     {
       offer: id,
