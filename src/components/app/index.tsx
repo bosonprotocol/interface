@@ -1,4 +1,5 @@
-import { colors } from "lib/styles/colors";
+import Layout from "@components/Layout";
+import { colors } from "@lib/styles/colors";
 import { Outlet } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
 
@@ -22,7 +23,7 @@ const Container = styled.div`
   min-height: 100vh;
 `;
 
-const PageContainer = styled.div`
+const PageContainer = styled(Layout)`
   padding-bottom: 150px; // a bit more than footer height
 `;
 

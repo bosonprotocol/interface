@@ -1,6 +1,6 @@
 import { AnyMetadata } from "@bosonprotocol/common";
 import { validation } from "@bosonprotocol/ipfs-storage";
-import { Offer } from "lib/types/offer";
+import { Offer } from "@lib/types/offer";
 
 export function checkOfferMetadata(offer: Offer): boolean {
   const isValid = isOfferMetadataValid(offer);

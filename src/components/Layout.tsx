@@ -4,6 +4,7 @@ import styled from "styled-components";
 const Root = styled.div`
   max-width: 1500px;
   padding: 0 16px;
+  margin: 0 auto;
 
   @media (min-width: 578px) {
     padding: 0px 24px;
@@ -26,6 +27,6 @@ interface IProps {
   children: ReactNode;
 }
 
-export function Layout({ children, ...props }: IProps) {
+export default function Layout({ children, ...props }: IProps) {
   return <Root {...props}>{children}</Root>;
 }

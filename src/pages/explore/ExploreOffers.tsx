@@ -1,6 +1,6 @@
-import OfferList from "components/offers/OfferList";
-import { Offer } from "lib/types/offer";
-import { useOffers } from "lib/utils/hooks/useOffers/";
+import OfferList from "@components/offers/OfferList";
+import { Offer } from "@lib/types/offer";
+import { useOffers } from "@lib/utils/hooks/useOffers/";
 import styled from "styled-components";
 
 const Container = styled.div`

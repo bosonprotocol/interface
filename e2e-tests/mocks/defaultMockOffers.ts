@@ -1,4 +1,4 @@
-import { Offer } from "lib/types/offer";
+import { Offer } from "@lib/types/offer";
 
 export const defaultMockOffers: Offer[] = [
   {
