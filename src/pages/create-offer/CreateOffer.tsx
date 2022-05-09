@@ -211,7 +211,7 @@ export default function CreateOffer() {
             <FormControl
               value={values.sellerDeposit}
               onChange={handleChange}
-              name="deposit"
+              name="sellerDeposit"
               type="text"
               placeholder="..."
             />
@@ -221,7 +221,7 @@ export default function CreateOffer() {
             <FormControl
               value={values.buyerCancelPenalty}
               onChange={handleChange}
-              name="penalty"
+              name="buyerCancelPenalty"
               type="text"
               placeholder="..."
             />
@@ -231,7 +231,7 @@ export default function CreateOffer() {
             <FormControl
               value={values.quantityAvailable}
               onChange={handleChange}
-              name="quantity"
+              name="quantityAvailable"
               type="text"
               placeholder="..."
             />
@@ -282,7 +282,7 @@ export default function CreateOffer() {
             <FormControl
               value={values.redeemableFromDateInMS}
               onChange={handleChange}
-              name="redeemableDateInMS"
+              name="redeemableFromDateInMS"
               type="text"
               placeholder="..."
             />
