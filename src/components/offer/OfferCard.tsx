@@ -1,4 +1,5 @@
 import RootPrice from "@components/price";
+import { UrlParameters } from "@lib/routing/query-parameters";
 import { OffersRoutes } from "@lib/routing/routes";
 import { colors } from "@lib/styles/colors";
 import { Offer } from "@lib/types/offer";
@@ -101,7 +102,11 @@ export default function OfferCard({ offer }: Props) {
           <Commit
             data-testid="commit"
             onClick={() =>
-              navigate(generatePath(OffersRoutes.OfferDetail, { id }))
+              navigate(
+                generatePath(OffersRoutes.OfferDetail, {
+                  [UrlParameters.offerId]: id
+                })
+              )
             }
           >
             Commit

@@ -34,6 +34,7 @@ async function getOfferById(id: string, props: UseOffersProps) {
       exchangeToken: !!props.exchangeTokenAddress,
       validFromDate_lte: !!validFromDate_lte,
       validUntilDate_gte: !!validUntilDate_gte,
+      skip: !!props.skip,
       offer: true
     }),
     {

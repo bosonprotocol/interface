@@ -5,5 +5,6 @@ export const QueryParameters = {
 };
 
 export const UrlParameters = {
-  offerId: "id"
+  offerId: "id",
+  page: "page"
 };

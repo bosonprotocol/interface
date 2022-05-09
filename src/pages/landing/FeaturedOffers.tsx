@@ -20,7 +20,7 @@ export default function FeaturedOffers() {
     voided: false,
     valid: true,
     filterOutWrongMetadata: true,
-    count: 10
+    first: 10
   });
   return (
     <Root>

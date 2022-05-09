@@ -4,16 +4,19 @@ export function getOffersQuery({
   exchangeToken,
   validFromDate_lte,
   validUntilDate_gte,
+  skip,
   offer
 }: {
   exchangeToken: boolean;
   validFromDate_lte: boolean;
   validUntilDate_gte: boolean;
+  skip: boolean;
   offer: boolean;
 }) {
   return gql`
   query GetOffers(
     $first: Int
+    ${skip ? "$skip: Int" : ""}
     ${validFromDate_lte ? "$validFromDate_lte: String" : ""}
     ${validUntilDate_gte ? "$validUntilDate_gte: String" : ""}
     $name_contains_nocase: String
@@ -24,6 +27,7 @@ export function getOffersQuery({
   ) {
     baseMetadataEntities(
       first: $first
+      ${skip ? "skip : $skip" : ""}
       orderBy: $orderBy
       orderDirection: $orderDirection
       where: {
