@@ -47,7 +47,6 @@ const Image = styled.img`
   height: auto;
   width: 100%;
   margin: 0 auto;
-  max-width: 500px;
   border-radius: 22px;
   object-fit: contain;
 `;
@@ -83,13 +82,12 @@ const Content = styled.div`
 `;
 
 const ChildrenContainer = styled.div`
-  margin: 10px;
+  iframe {
+    width: 100%;
+  }
 `;
 
 const WidgetContainer = styled.div`
-  background: grey;
-  width: 500px;
-  height: 500px;
   max-width: 100%;
   border-radius: 6px;
   display: flex;
@@ -100,6 +98,10 @@ const WidgetContainer = styled.div`
 
 const Info = styled.div`
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
 `;
 
 const Box = styled.div`
@@ -109,7 +111,6 @@ const Box = styled.div`
   padding: 16px 12px;
   border-radius: 6px;
   gap: 4px;
-  margin-bottom: 10px;
 `;
 
 const Price = styled(RootPrice)`
@@ -139,9 +140,9 @@ export default function OfferDetail() {
   useEffect(() => {
     if (offer && widgetRef.current) {
       const widgetContainer = document.createElement("div");
+      widgetContainer.style.width = "100%";
       widgetRef.current.appendChild(widgetContainer);
       manageOffer(offer.id, CONFIG, widgetContainer);
-
       return () => widgetContainer.remove();
     }
 
