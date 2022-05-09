@@ -66,7 +66,7 @@ test.describe("OfferDetail", () => {
 
     const sellerId = await page.locator("[data-testid=seller-id]");
     const expectedSellerId =
-      "ID: " + expectedOffer.seller?.id || "Unexpected id";
+      "Seller ID: " + expectedOffer.seller?.id || "Unexpected id";
     await expect(sellerId).toHaveText(expectedSellerId);
 
     const sellerDescription = await page.locator(

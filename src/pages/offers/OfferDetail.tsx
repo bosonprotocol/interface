@@ -178,6 +178,10 @@ export default function OfferDetail() {
           </ImageContainer>
           <Info>
             <Box>
+              <SubHeading>Brand</SubHeading>
+              <span data-testid="brand">Not defined</span>
+            </Box>
+            <Box>
               <SubHeading>Description</SubHeading>
               <Information data-testid="description">{description}</Information>
             </Box>
@@ -194,7 +198,7 @@ export default function OfferDetail() {
         </ImageAndDescription>
         <Content>
           <AddressContainer data-testid="seller-id">
-            ID: {sellerId}
+            Seller ID: {sellerId}
           </AddressContainer>
 
           <Title data-testid="name">{name}</Title>

@@ -19,7 +19,8 @@ export async function assertOffer(offer: Locator, expectedOffer: Offer) {
   );
 
   const sellerId = await offer.locator("[data-testid=seller-id]");
-  const expectedSellerId = "ID: " + expectedOffer.seller?.id || "Unexpected id";
+  const expectedSellerId =
+    "Seller ID: " + expectedOffer.seller?.id || "Unexpected id";
   await expect(sellerId).toHaveText(expectedSellerId);
 
   const price = await offer.locator("[data-testid=price]");
