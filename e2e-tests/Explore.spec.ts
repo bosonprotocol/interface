@@ -206,6 +206,7 @@ test.describe("Explore page", () => {
           }
         });
         await page.goto(currentUrl);
+        await page.waitForTimeout(500);
         const uiOffers = await page.locator("[data-testid=offer]");
         const offerCount = await uiOffers.count();
         await expect(offerCount).toStrictEqual(offers1stPage.length);
@@ -241,6 +242,8 @@ test.describe("Explore page", () => {
           }
         });
         await page.goto(currentUrl);
+        await page.waitForTimeout(500);
+
         const uiOffers = await page.locator("[data-testid=offer]");
         const offerCount = await uiOffers.count();
         await expect(offerCount).toStrictEqual(offers2ndPage.length);
@@ -275,6 +278,8 @@ test.describe("Explore page", () => {
         }
       });
       await page.goto(exploreUrl);
+      await page.waitForTimeout(500);
+
       const nextButton = await page.locator("[data-testid=next]");
 
       await nextButton.click();
