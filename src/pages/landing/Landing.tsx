@@ -1,14 +1,12 @@
-import { QueryParameters } from "lib/routing/query-parameters";
-import { BosonRoutes } from "lib/routing/routes";
-import FeaturedOffers from "pages/landing/FeaturedOffers";
+import { QueryParameters } from "@lib/routing/query-parameters";
+import { BosonRoutes } from "@lib/routing/routes";
+import { colors } from "@lib/styles/colors";
+import FeaturedOffers from "@pages/landing/FeaturedOffers";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-import { Layout } from "../../components/Layout";
-import { colors } from "../../lib/styles/colors";
-
-const LandingContainer = styled(Layout)`
+const LandingContainer = styled.div`
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -95,8 +93,10 @@ const MainImg = styled.img`
 export default function Landing() {
   const navigate = useNavigate();
   const [name, setName] = useState("");
+
   const navigateToExplore = () =>
     navigate(`${BosonRoutes.Explore}?${QueryParameters.name}=${name}`);
+
   return (
     <LandingContainer>
       <Hero>

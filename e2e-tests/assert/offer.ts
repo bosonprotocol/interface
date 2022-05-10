@@ -1,7 +1,7 @@
 import { formatUnits } from "@ethersproject/units";
+import { Offer } from "@lib/types/offer";
 import { expect, Locator } from "@playwright/test";
 import { BigNumber } from "ethers";
-import { Offer } from "lib/types/offer";
 
 const shortenAddress = (address: string): string => {
   if (!address) {
@@ -18,18 +18,21 @@ export async function assertOffer(offer: Locator, expectedOffer: Offer) {
     expectedOffer.metadata?.name || "expected name"
   );
 
-  const sellerAddress = await offer.locator("[data-testid=sellerAddress]");
-  const expectedSellerAddress = shortenAddress(
-    expectedOffer.seller?.admin || ""
-  );
-
-  await expect(sellerAddress).toHaveText(expectedSellerAddress);
+  const sellerId = await offer.locator("[data-testid=seller-id]");
+  const expectedSellerId =
+    "Seller ID: " + expectedOffer.seller?.id || "Unexpected id";
+  await expect(sellerId).toHaveText(expectedSellerId);
 
   const price = await offer.locator("[data-testid=price]");
-  const expectedPrice = `${formatUnits(
+  const value = formatUnits(
     BigNumber.from(expectedOffer.price),
     expectedOffer.exchangeToken?.decimals
-  )} ${expectedOffer.exchangeToken?.symbol || ""}`;
+  );
+  const [integer, fractions] = value.split(".");
+  const stringPrice = fractions === "0" ? integer : `${integer}.${fractions}`;
+  const expectedPrice = `${stringPrice} ${
+    expectedOffer.exchangeToken?.symbol || ""
+  }`;
 
   await expect(price).toHaveText(expectedPrice);
 

@@ -1,3 +1,10 @@
 export const QueryParameters = {
-  name: "name"
+  name: "name",
+  seller: "seller",
+  currency: "currency"
+};
+
+export const UrlParameters = {
+  offerId: "id",
+  page: "page"
 };

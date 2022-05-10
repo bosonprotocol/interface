@@ -1,16 +1,15 @@
-import { Layout } from "components/Layout";
-import { QueryParameters } from "lib/routing/query-parameters";
-import { useQueryParameter } from "lib/routing/useQueryParameter";
-import { Select } from "lib/styles/base";
-import { colors } from "lib/styles/colors";
-import { useBrands } from "lib/utils/hooks/useBrands";
-import { useTokens } from "lib/utils/hooks/useTokens";
-import React, { useCallback, useState } from "react";
+import { QueryParameters } from "@lib/routing/query-parameters";
+import { useQueryParameter } from "@lib/routing/useQueryParameter";
+import { Select } from "@lib/styles/base";
+import { colors } from "@lib/styles/colors";
+import { useBrands } from "@lib/utils/hooks/useBrands";
+import { useTokens } from "@lib/utils/hooks/useTokens";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 import ExploreOffers from "./ExploreOffers";
 
-const ExploreContainer = styled(Layout)`
+const ExploreContainer = styled.div`
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -72,19 +71,24 @@ export default function Explore() {
   const [nameQueryParameter, setNameQueryParameter] = useQueryParameter(
     QueryParameters.name
   );
+  const [currencyQueryParameter, setCurrencyQueryParameter] = useQueryParameter(
+    QueryParameters.currency
+  );
 
   const [brandInput, setBrandInput] = useState<string>(nameQueryParameter);
   const [brandSelect, setBrandSelect] = useState<string>("");
   const [nameToSearch, setNameToSearch] = useState<string>(nameQueryParameter);
 
   const { data: tokens } = useTokens();
-  const [selectedToken, setSelectedToken] = useState<string>();
+  const [selectedToken, setSelectedToken] = useState<string>(
+    currencyQueryParameter
+  );
   const { data: brands } = useBrands();
 
-  const onChangeName = useCallback((name: string) => {
+  const onChangeName = (name: string) => {
     setNameToSearch(name);
     setNameQueryParameter(name);
-  }, []);
+  };
 
   return (
     <ExploreContainer>
@@ -97,12 +101,11 @@ export default function Explore() {
               value={brandSelect}
               onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                 setBrandSelect(e.target.value);
-                // onChangeBrand(e.target.value);
               }}
             >
               <option value="">Brand</option>
               {brands &&
-                brands.map((brand) => (
+                brands.map((brand: string) => (
                   <option key={brand} value={brand}>
                     {brand}
                   </option>
@@ -111,9 +114,11 @@ export default function Explore() {
 
             <TokenSelect
               value={selectedToken}
-              onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                setSelectedToken(e.target.value)
-              }
+              data-testid="currency"
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                setSelectedToken(e.target.value);
+                setCurrencyQueryParameter(e.target.value);
+              }}
             >
               <option value="">Currency</option>
               {tokens &&
@@ -129,6 +134,7 @@ export default function Explore() {
           <h2>Search</h2>
           <InputContainer>
             <Input
+              data-testid="name"
               onChange={(e) => {
                 setBrandInput(e.target.value);
               }}

@@ -1,7 +1,6 @@
-import { useOffers } from "lib/utils/hooks/useOffers";
+import OfferList from "@components/offers/OfferList";
+import { useOffers } from "@lib/utils/hooks/useOffers";
 import styled from "styled-components";
-
-import OfferList from "../../components/offers/OfferList";
 
 const Root = styled.div`
   display: flex;
@@ -20,7 +19,8 @@ export default function FeaturedOffers() {
   } = useOffers({
     voided: false,
     valid: true,
-    filterOutWrongMetadata: true
+    filterOutWrongMetadata: true,
+    first: 10
   });
   return (
     <Root>

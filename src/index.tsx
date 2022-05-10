@@ -1,6 +1,6 @@
-import App from "components/app";
-import { Layout } from "components/Layout";
-import { BosonRoutes } from "lib/routing/routes";
+import App from "@components/app";
+import Layout from "@components/Layout";
+import { BosonRoutes, OffersRoutes } from "@lib/routing/routes";
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -10,6 +10,7 @@ import reportWebVitals from "./reportWebVitals";
 
 const rootElement = document.getElementById("root");
 if (!rootElement) throw new Error("Unable to find the root element");
+const queryClient = new QueryClient();
 
 const CreateOffer = React.lazy(
   () => import("./pages/create-offer/CreateOffer")
@@ -17,13 +18,14 @@ const CreateOffer = React.lazy(
 const Explore = React.lazy(() => import("./pages/explore/Explore"));
 const ManageOffer = React.lazy(() => import("./pages/manage-offer"));
 const Landing = React.lazy(() => import("./pages/landing/Landing"));
+const OfferDetail = React.lazy(() => import("./pages/offers/OfferDetail"));
+
 const Loading = () => (
   <Layout>
     <p>Loading...</p>
   </Layout>
 );
 
-const queryClient = new QueryClient();
 const root = createRoot(rootElement);
 root.render(
   <React.StrictMode>
@@ -39,14 +41,22 @@ root.render(
                 </React.Suspense>
               }
             />
-            <Route
-              path={BosonRoutes.Explore}
-              element={
-                <React.Suspense fallback={<Loading />}>
-                  <Explore />
-                </React.Suspense>
-              }
-            />
+            {[
+              BosonRoutes.Explore,
+              BosonRoutes.ExplorePage,
+              BosonRoutes.ExplorePagePage
+            ].map((route) => (
+              <Route
+                key={route}
+                path={route}
+                element={
+                  <React.Suspense fallback={<Loading />}>
+                    <Explore />
+                  </React.Suspense>
+                }
+              />
+            ))}
+
             <Route
               path={BosonRoutes.CreateOffer}
               element={
@@ -60,6 +70,22 @@ root.render(
               element={
                 <React.Suspense fallback={<Loading />}>
                   <ManageOffer />
+                </React.Suspense>
+              }
+            />
+            <Route
+              path={OffersRoutes.Root}
+              element={
+                <React.Suspense fallback={<Loading />}>
+                  <Explore />
+                </React.Suspense>
+              }
+            />
+            <Route
+              path={OffersRoutes.OfferDetail}
+              element={
+                <React.Suspense fallback={<Loading />}>
+                  <OfferDetail />
                 </React.Suspense>
               }
             />

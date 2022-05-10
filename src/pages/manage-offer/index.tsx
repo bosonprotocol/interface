@@ -1,8 +1,8 @@
 import { manageOffer } from "@bosonprotocol/widgets-sdk";
-import { Layout } from "components/Layout";
-import { CONFIG } from "lib/config";
-import { Offer } from "lib/types/offer";
-import { assert } from "lib/utils/assert";
+import Layout from "@components/Layout";
+import { CONFIG } from "@lib/config";
+import { Offer } from "@lib/types/offer";
+import { assert } from "@lib/utils/assert";
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 

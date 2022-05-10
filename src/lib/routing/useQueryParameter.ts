@@ -1,4 +1,3 @@
-import { useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 
 export function useQueryParameter(
@@ -6,12 +5,10 @@ export function useQueryParameter(
 ): [string, (value: string) => void] {
   const [searchParameter, setSearchParameter] = useSearchParams();
 
-  const setSearchParameterForKey = useCallback(
-    (value: string) => {
-      setSearchParameter({ [key]: value });
-    },
-    [key]
-  );
+  const setSearchParameterForKey = (value: string) => {
+    searchParameter.set(key, value);
+    setSearchParameter(searchParameter);
+  };
 
   return [searchParameter.get(key) || "", setSearchParameterForKey];
 }

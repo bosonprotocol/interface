@@ -1,14 +1,13 @@
 import { MetadataType } from "@bosonprotocol/common";
 import { IpfsMetadata } from "@bosonprotocol/ipfs-storage";
 import { createOffer } from "@bosonprotocol/widgets-sdk";
+import Layout from "@components/Layout";
 import { parseEther } from "@ethersproject/units";
+import { CONFIG } from "@lib/config";
+import { colors } from "@lib/styles/colors";
 import { useFormik } from "formik";
 import { useState } from "react";
 import styled from "styled-components";
-
-import { Layout } from "../../components/Layout";
-import { CONFIG } from "../../lib/config";
-import { colors } from "../../lib/styles/colors";
 
 const CreateOfferContainer = styled(Layout)`
   display: flex;
@@ -212,7 +211,7 @@ export default function CreateOffer() {
             <FormControl
               value={values.sellerDeposit}
               onChange={handleChange}
-              name="deposit"
+              name="sellerDeposit"
               type="text"
               placeholder="..."
             />
@@ -222,7 +221,7 @@ export default function CreateOffer() {
             <FormControl
               value={values.buyerCancelPenalty}
               onChange={handleChange}
-              name="penalty"
+              name="buyerCancelPenalty"
               type="text"
               placeholder="..."
             />
@@ -232,7 +231,7 @@ export default function CreateOffer() {
             <FormControl
               value={values.quantityAvailable}
               onChange={handleChange}
-              name="quantity"
+              name="quantityAvailable"
               type="text"
               placeholder="..."
             />
@@ -283,7 +282,7 @@ export default function CreateOffer() {
             <FormControl
               value={values.redeemableFromDateInMS}
               onChange={handleChange}
-              name="redeemableDateInMS"
+              name="redeemableFromDateInMS"
               type="text"
               placeholder="..."
             />

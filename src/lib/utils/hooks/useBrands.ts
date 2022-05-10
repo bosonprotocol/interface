@@ -3,7 +3,7 @@ import { useQuery, UseQueryResult } from "react-query";
 
 import { fetchSubgraph } from "../core-components/subgraph";
 
-export const useBrands = (): UseQueryResult<string[], unknown> => {
+export function useBrands(): UseQueryResult<string[], unknown> {
   return useQuery("brands", async () => {
     const result = await fetchSubgraph<{
       productV1MetadataEntities: { brandName: string }[];
@@ -26,4 +26,4 @@ export const useBrands = (): UseQueryResult<string[], unknown> => {
       )
     ];
   });
-};
+}

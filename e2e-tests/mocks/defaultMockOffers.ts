@@ -1,4 +1,4 @@
-import { Offer } from "lib/types/offer";
+import { Offer } from "@lib/types/offer";
 
 export const defaultMockOffers: Offer[] = [
   {
@@ -17,12 +17,12 @@ export const defaultMockOffers: Offer[] = [
     voidedAt: null,
     voucherValidDuration: "",
     seller: {
-      id: "0x57fafe1fb7c682216fce44e50946c5249192b9d5",
+      id: "0",
       active: true,
-      admin: "",
-      clerk: "",
-      operator: "",
-      treasury: ""
+      admin: "0x57fafe1fb7c682216fce44e50946c5249192b9d5",
+      clerk: "0x57fafe1fb7c682216fce44e50946c5249192b9d5",
+      operator: "0x57fafe1fb7c682216fce44e50946c5249192b9d5",
+      treasury: "0x57fafe1fb7c682216fce44e50946c5249192b9d5"
     },
     exchangeToken: {
       symbol: "ETH",
@@ -54,12 +54,12 @@ export const defaultMockOffers: Offer[] = [
     voidedAt: null,
     voucherValidDuration: "",
     seller: {
-      id: "0x0000000000000000000000000000000000000000",
+      id: "1",
       active: true,
-      admin: "",
-      clerk: "",
-      operator: "",
-      treasury: ""
+      admin: "0x0000000000000000000000000000000000000000",
+      clerk: "0x0000000000000000000000000000000000000000",
+      operator: "0x0000000000000000000000000000000000000000",
+      treasury: "0x0000000000000000000000000000000000000000"
     },
     exchangeToken: {
       symbol: "BOSON",
@@ -91,12 +91,12 @@ export const defaultMockOffers: Offer[] = [
     voidedAt: null,
     voucherValidDuration: "",
     seller: {
-      id: "0xe16955e95d088bd30746c7fb7d76cda436b86f63",
+      id: "10",
       active: true,
-      admin: "",
-      clerk: "",
-      operator: "",
-      treasury: ""
+      admin: "0xe16955e95d088bd30746c7fb7d76cda436b86f63",
+      clerk: "0xe16955e95d088bd30746c7fb7d76cda436b86f63",
+      operator: "0xe16955e95d088bd30746c7fb7d76cda436b86f63",
+      treasury: "0xe16955e95d088bd30746c7fb7d76cda436b86f63"
     },
     exchangeToken: {
       symbol: "ETH",
@@ -128,12 +128,12 @@ export const defaultMockOffers: Offer[] = [
     voidedAt: null,
     voucherValidDuration: "",
     seller: {
-      id: "0xe16955e95d088bd30746c7fb7d76cda436b86f63",
+      id: "11",
       active: true,
-      admin: "",
-      clerk: "",
-      operator: "",
-      treasury: ""
+      admin: "0xe16955e95d088bd30746c7fb7d76cda436b86f63",
+      clerk: "0xe16955e95d088bd30746c7fb7d76cda436b86f63",
+      operator: "0xe16955e95d088bd30746c7fb7d76cda436b86f63",
+      treasury: "0xe16955e95d088bd30746c7fb7d76cda436b86f63"
     },
     exchangeToken: {
       symbol: "ETH",
@@ -165,12 +165,12 @@ export const defaultMockOffers: Offer[] = [
     voidedAt: null,
     voucherValidDuration: "",
     seller: {
-      id: "0x57fafe1fb7c682216fce44e50946c5249192b9d5",
+      id: "12",
       active: true,
-      admin: "",
-      clerk: "",
-      operator: "",
-      treasury: ""
+      admin: "0x57fafe1fb7c682216fce44e50946c5249192b9d5",
+      clerk: "0x57fafe1fb7c682216fce44e50946c5249192b9d5",
+      operator: "0x57fafe1fb7c682216fce44e50946c5249192b9d5",
+      treasury: "0x57fafe1fb7c682216fce44e50946c5249192b9d5"
     },
     exchangeToken: {
       symbol: "ETH",
@@ -202,12 +202,12 @@ export const defaultMockOffers: Offer[] = [
     voidedAt: null,
     voucherValidDuration: "",
     seller: {
-      id: "0xd8bb0e340f1cb59909a4fb9de585cb203be37b8a",
+      id: "13",
       active: true,
-      admin: "",
-      clerk: "",
-      operator: "",
-      treasury: ""
+      admin: "0xd8bb0e340f1cb59909a4fb9de585cb203be37b8a",
+      clerk: "0xd8bb0e340f1cb59909a4fb9de585cb203be37b8a",
+      operator: "0xd8bb0e340f1cb59909a4fb9de585cb203be37b8a",
+      treasury: "0xd8bb0e340f1cb59909a4fb9de585cb203be37b8a"
     },
     exchangeToken: {
       symbol: "ETH",
@@ -239,12 +239,12 @@ export const defaultMockOffers: Offer[] = [
     voidedAt: null,
     voucherValidDuration: "",
     seller: {
-      id: "0xd8bb0e340f1cb59909a4fb9de585cb203be37b8a",
+      id: "14",
       active: true,
-      admin: "",
-      clerk: "",
-      operator: "",
-      treasury: ""
+      admin: "0xd8bb0e340f1cb59909a4fb9de585cb203be37b8a",
+      clerk: "0xd8bb0e340f1cb59909a4fb9de585cb203be37b8a",
+      operator: "0xd8bb0e340f1cb59909a4fb9de585cb203be37b8a",
+      treasury: "0xd8bb0e340f1cb59909a4fb9de585cb203be37b8a"
     },
     exchangeToken: {
       symbol: "ETH",
@@ -276,12 +276,12 @@ export const defaultMockOffers: Offer[] = [
     voidedAt: null,
     voucherValidDuration: "",
     seller: {
-      id: "0xe16955e95d088bd30746c7fb7d76cda436b86f63",
+      id: "15",
       active: true,
-      admin: "",
-      clerk: "",
-      operator: "",
-      treasury: ""
+      admin: "0xe16955e95d088bd30746c7fb7d76cda436b86f63",
+      clerk: "0xe16955e95d088bd30746c7fb7d76cda436b86f63",
+      operator: "0xe16955e95d088bd30746c7fb7d76cda436b86f63",
+      treasury: "0xe16955e95d088bd30746c7fb7d76cda436b86f63"
     },
     exchangeToken: {
       symbol: "ETH",
@@ -313,12 +313,12 @@ export const defaultMockOffers: Offer[] = [
     voidedAt: null,
     voucherValidDuration: "",
     seller: {
-      id: "0xe16955e95d088bd30746c7fb7d76cda436b86f63",
+      id: "16",
       active: true,
-      admin: "",
-      clerk: "",
-      operator: "",
-      treasury: ""
+      admin: "0xe16955e95d088bd30746c7fb7d76cda436b86f63",
+      clerk: "0xe16955e95d088bd30746c7fb7d76cda436b86f63",
+      operator: "0xe16955e95d088bd30746c7fb7d76cda436b86f63",
+      treasury: "0xe16955e95d088bd30746c7fb7d76cda436b86f63"
     },
     exchangeToken: {
       symbol: "ETH",
@@ -350,12 +350,12 @@ export const defaultMockOffers: Offer[] = [
     voidedAt: null,
     voucherValidDuration: "",
     seller: {
-      id: "0xe16955e95d088bd30746c7fb7d76cda436b86f63",
+      id: "17",
       active: true,
-      admin: "",
-      clerk: "",
-      operator: "",
-      treasury: ""
+      admin: "0xe16955e95d088bd30746c7fb7d76cda436b86f63",
+      clerk: "0xe16955e95d088bd30746c7fb7d76cda436b86f63",
+      operator: "0xe16955e95d088bd30746c7fb7d76cda436b86f63",
+      treasury: "0xe16955e95d088bd30746c7fb7d76cda436b86f63"
     },
     exchangeToken: {
       symbol: "ETH",
@@ -387,12 +387,12 @@ export const defaultMockOffers: Offer[] = [
     voidedAt: null,
     voucherValidDuration: "",
     seller: {
-      id: "0xe16955e95d088bd30746c7fb7d76cda436b86f63",
+      id: "18",
       active: true,
-      admin: "",
-      clerk: "",
-      operator: "",
-      treasury: ""
+      admin: "0xe16955e95d088bd30746c7fb7d76cda436b86f63",
+      clerk: "0xe16955e95d088bd30746c7fb7d76cda436b86f63",
+      operator: "0xe16955e95d088bd30746c7fb7d76cda436b86f63",
+      treasury: "0xe16955e95d088bd30746c7fb7d76cda436b86f63"
     },
     exchangeToken: {
       symbol: "ETH",
