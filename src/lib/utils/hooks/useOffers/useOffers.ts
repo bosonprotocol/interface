@@ -13,7 +13,8 @@ export function useOffers(props: UseOffersProps) {
 
   return useQuery(JSON.stringify(props), async () => {
     const variables = {
-      first: props.count,
+      first: props.first,
+      skip: props.skip,
       validFromDate_lte: validFromDate_lte,
       validUntilDate_gte: validUntilDate_gte,
       name_contains_nocase: props.name || "",
@@ -28,6 +29,7 @@ export function useOffers(props: UseOffersProps) {
         exchangeToken: !!props.exchangeTokenAddress,
         validFromDate_lte: !!validFromDate_lte,
         validUntilDate_gte: !!validUntilDate_gte,
+        skip: !!props.skip,
         offer: false
       }),
       variables

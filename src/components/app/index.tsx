@@ -1,5 +1,6 @@
 import Layout from "@components/Layout";
 import { colors } from "@lib/styles/colors";
+import { footerHeight } from "@lib/styles/layout";
 import { Outlet } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
 
@@ -24,12 +25,12 @@ const Container = styled.div`
 `;
 
 const PageContainer = styled(Layout)`
-  padding-bottom: 150px; // a bit more than footer height
+  padding-bottom: calc(${footerHeight} + 70px); // a bit more than footer height
 `;
 
 const Footer = styled.footer`
   background-color: ${colors.arsenic};
-  height: 100px;
+  height: ${footerHeight};
   padding: 20px 0;
   position: absolute;
   bottom: 0;

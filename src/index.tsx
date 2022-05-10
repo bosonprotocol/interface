@@ -41,14 +41,22 @@ root.render(
                 </React.Suspense>
               }
             />
-            <Route
-              path={BosonRoutes.Explore}
-              element={
-                <React.Suspense fallback={<Loading />}>
-                  <Explore />
-                </React.Suspense>
-              }
-            />
+            {[
+              BosonRoutes.Explore,
+              BosonRoutes.ExplorePage,
+              BosonRoutes.ExplorePagePage
+            ].map((route) => (
+              <Route
+                key={route}
+                path={route}
+                element={
+                  <React.Suspense fallback={<Loading />}>
+                    <Explore />
+                  </React.Suspense>
+                }
+              />
+            ))}
+
             <Route
               path={BosonRoutes.CreateOffer}
               element={

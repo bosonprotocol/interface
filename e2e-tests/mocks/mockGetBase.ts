@@ -36,9 +36,10 @@ export async function mockSubgraph({ page, options }: MockSubgraphProps) {
     const isBaseEntitiesRequest = postData?.includes("baseMetadataEntities(");
     const isBrandsRequest = postData?.includes("productV1MetadataEntities");
     const isExchangeTokensRequest = postData?.includes("exchangeTokens");
+    const isGetSingleBaseEntity = postData?.includes("GetOfferById("); // iframe widget makes this request
 
     let mockResponse;
-    if (isBaseEntitiesRequest) {
+    if (isBaseEntitiesRequest || isGetSingleBaseEntity) {
       mockResponse = await mockGetOffers({
         postData,
         options: options?.mockGetOffers || {}
