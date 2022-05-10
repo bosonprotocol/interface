@@ -13,7 +13,7 @@ const Root = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: 64px;
-  gap: 42px;
+  gap: 130px;
   margin-bottom: 42px;
 
   @media (min-width: 1200px) {
