@@ -13,20 +13,35 @@ export interface MockProps {
       value: string;
       property: string;
     };
+    offersPerPage?: Offer[][];
+    countOffersPerPage?: number;
   };
 }
 export async function mockGetOffers({
   postData,
-  options: { offers = defaultMockOffers, response } = {}
+  options: {
+    offers = defaultMockOffers,
+    response,
+    offersPerPage,
+    countOffersPerPage
+  } = {}
 }: MockProps) {
   let baseMetadataEntities = null;
 
-  if (!response) {
+  if (!response && postData) {
+    let idx = 0;
+    const { variables } = JSON.parse(postData);
+    if (variables.skip !== undefined && countOffersPerPage && offersPerPage) {
+      const skip = variables.skip || 0;
+      idx = skip / countOffersPerPage;
+      offers = offersPerPage[idx];
+    }
     baseMetadataEntities = offers.map((offer) => ({
       offer
     }));
-    const orderByName = !!postData?.includes(`orderBy: name`);
-    const orderDirectionAsc = !!postData?.includes(`orderDirection: asc`);
+
+    const orderByName = !!postData.includes(`orderBy: name`);
+    const orderDirectionAsc = !!postData.includes(`orderDirection: asc`);
 
     if (orderByName) {
       baseMetadataEntities = baseMetadataEntities.sort(
