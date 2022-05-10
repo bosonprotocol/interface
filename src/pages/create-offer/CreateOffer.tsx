@@ -93,7 +93,8 @@ export default function CreateOffer() {
   const { values, handleChange, handleSubmit } = useFormik({
     initialValues: {
       name: "Baggy jeans",
-      description: "Lore ipsum",
+      description:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent in facilisis purus, nec egestas eros. Aliquam dignissim tellus sit amet sem auctor, non commodo eros eleifend. Sed in tellus porttitor, placerat leo et, faucibus tortor. Nunc efficitur nibh id libero blandit, vel ornare erat vehicula.",
       externalUrl: window.location.origin,
       schemaUrl: "https://schema.org/schema",
       price: "1",

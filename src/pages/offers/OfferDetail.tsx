@@ -1,4 +1,5 @@
 import { manageOffer } from "@bosonprotocol/widgets-sdk";
+import AddressImage from "@components/offer/AddressImage";
 import RootPrice from "@components/price";
 import { CONFIG } from "@lib/config";
 import { QueryParameters, UrlParameters } from "@lib/routing/query-parameters";
@@ -168,6 +169,7 @@ export default function OfferDetail() {
   const name = offer.metadata?.name || "Untitled";
   const offerImg = `https://picsum.photos/seed/${offerId}/700`;
   const sellerId = offer.seller?.id;
+  const sellerAddress = offer.seller?.admin;
   const description = offer.metadata?.description || "";
 
   return (
@@ -187,21 +189,19 @@ export default function OfferDetail() {
               <Information data-testid="description">{description}</Information>
             </Box>
             <Box>
-              <SubHeading>Seller Description</SubHeading>
-              <span data-testid="seller-description">Not defined</span>
-            </Box>
-
-            <Box>
               <SubHeading>Delivery Information</SubHeading>
               <span data-testid="delivery-info">Not defined</span>
+            </Box>
+            <Box>
+              <SubHeading> Seller</SubHeading>
+              <AddressContainer>
+                <AddressImage address={sellerAddress} />
+                <div data-testid="seller-id">ID: {sellerId}</div>
+              </AddressContainer>
             </Box>
           </Info>
         </ImageAndDescription>
         <Content>
-          <AddressContainer data-testid="seller-id">
-            Seller ID: {sellerId}
-          </AddressContainer>
-
           <Title data-testid="name">{name}</Title>
 
           <Box>
