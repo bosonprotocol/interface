@@ -4,7 +4,7 @@ import { BosonRoutes } from "@lib/routing/routes";
 import { footerHeight } from "@lib/styles/layout";
 import { Offer } from "@lib/types/offer";
 import { useOffers } from "@lib/utils/hooks/useOffers/";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { generatePath, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 
