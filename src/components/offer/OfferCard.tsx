@@ -10,10 +10,10 @@ import styled from "styled-components";
 
 const Card = styled.div`
   border-radius: 12px;
+  box-shadow: inset -3px -3px 3px #0e0f17, inset 3px 3px 3px #363b5b;
   display: inline-block;
   position: relative;
   width: 250px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 0 16px;
 `;
 

@@ -103,12 +103,12 @@ const Info = styled.div`
 `;
 
 const Box = styled.div`
-  border: 1px solid ${colors.grey};
   display: flex;
   flex-direction: column;
   padding: 16px 12px;
   border-radius: 6px;
   gap: 4px;
+  box-shadow: inset -3px -3px 3px #0e0f17, inset 3px 3px 3px #363b5b;
 `;
 
 const Toggle = styled.div`
