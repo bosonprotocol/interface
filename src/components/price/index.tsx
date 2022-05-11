@@ -11,7 +11,7 @@ const Root = styled.div`
   align-items: center;
 `;
 
-const EthIcon = styled.div`
+const CurrencyIcon = styled.div`
   height: 25px;
   width: 25px;
 `;
@@ -53,9 +53,9 @@ export default function Price({
   return (
     <Root {...rest} data-testid="price">
       {currencyImages[symbolUpperCase] && (
-        <EthIcon>
+        <CurrencyIcon>
           <Image src={currencyImages[symbolUpperCase]} alt="currency icon" />
-        </EthIcon>
+        </CurrencyIcon>
       )}
       {formattedValue ? (
         <span>{fractions === "0" ? integer : `${integer}.${fractions}`}</span>

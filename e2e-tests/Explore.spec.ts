@@ -9,6 +9,7 @@ import { mockSubgraph } from "./mocks/mockGetBase";
 import { sortOffersBy } from "./utils/sort";
 
 const exploreUrl = "/#/explore";
+const offersPerPage = 10;
 
 const getFirstNOffers = async (numberOfOffers: number): Promise<Offer[]> => {
   let maxOfferId = 0;
@@ -132,6 +133,16 @@ test.describe("Explore page", () => {
 
         await assertUrlToEqualQueryParam(page)("name", name);
       });
+      test("query param 'seller' should update when changing seller select", async ({
+        page
+      }) => {
+        const sellerSelect = await page.locator("select[data-testid=seller]");
+        const sellerId = "1";
+        await page.pause();
+        await sellerSelect.selectOption(sellerId);
+
+        await assertUrlToEqualQueryParam(page)("seller", sellerId);
+      });
       test("query param 'name' should update when changing input and clearing it again", async ({
         page
       }) => {
@@ -183,11 +194,10 @@ test.describe("Explore page", () => {
       `${exploreUrl}/page/0`,
       `${exploreUrl}/page/1`
     ].map((currentUrl) => {
-      test(`check that we see the first 15 offers if we go to ${currentUrl} (first page)`, async ({
+      test(`check that we see the first ${offersPerPage} offers if we go to ${currentUrl} (first page)`, async ({
         page
       }) => {
         const numberOfOffers = 17;
-        const offersPerPage = 15;
 
         const offers: Offer[] = await getFirstNOffers(numberOfOffers);
 
@@ -223,7 +233,6 @@ test.describe("Explore page", () => {
         page
       }) => {
         const numberOfOffers = 17;
-        const offersPerPage = 15;
 
         const offers: Offer[] = await getFirstNOffers(numberOfOffers);
 
@@ -259,7 +268,6 @@ test.describe("Explore page", () => {
       page
     }) => {
       const numberOfOffers = 17;
-      const offersPerPage = 15;
 
       const offers: Offer[] = await getFirstNOffers(numberOfOffers);
 
@@ -363,13 +371,10 @@ test.describe("Explore page", () => {
         await assertOffer(offer, expectedOffer);
       }
     });
-
-    test("should display 15 offers in the 1st page and 2 in the 2nd page", async ({
-      page
-    }) => {
-      const numberOfOffers = 17;
-      const offersPerPage = 15;
-
+    const numberOfOffers = 17;
+    test(`should display ${offersPerPage} offers in the 1st page and ${
+      numberOfOffers - offersPerPage
+    } in the 2nd page`, async ({ page }) => {
       const offers: Offer[] = await getFirstNOffers(numberOfOffers);
 
       const offers1stPage = offers.slice(0, offersPerPage);
@@ -406,7 +411,7 @@ test.describe("Explore page", () => {
       const nextButton = await page.locator("[data-testid=next]");
 
       await nextButton.click();
-
+      await page.waitForTimeout(500);
       uiOffers = await page.locator("[data-testid=offer]");
 
       offerCount = await uiOffers.count();

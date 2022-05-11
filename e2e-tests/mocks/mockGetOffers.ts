@@ -1,4 +1,5 @@
 import { Offer } from "@lib/types/offer";
+import { expect } from "@playwright/test";
 
 import { sortOffersBy } from "../utils/sort";
 import { defaultMockOffers } from "./defaultMockOffers";
@@ -35,6 +36,7 @@ export async function mockGetOffers({
       const skip = variables.skip || 0;
       idx = skip / countOffersPerPage;
       offers = offersPerPage[idx];
+      await expect(offers).toBeDefined();
     }
     baseMetadataEntities = offers.map((offer) => ({
       offer

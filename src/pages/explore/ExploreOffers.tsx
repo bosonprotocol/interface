@@ -28,7 +28,7 @@ interface Props {
   sellerId?: Offer["seller"]["id"];
 }
 
-const OFFERS_PER_PAGE = 15;
+const OFFERS_PER_PAGE = 10;
 const DEFAULT_PAGE = 0;
 
 export default function ExploreOffers({

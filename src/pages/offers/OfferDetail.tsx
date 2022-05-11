@@ -7,9 +7,11 @@ import { QueryParameters, UrlParameters } from "@lib/routing/query-parameters";
 import { useQueryParameter } from "@lib/routing/useQueryParameter";
 import { colors } from "@lib/styles/colors";
 import { useOffer } from "@lib/utils/hooks/useOffers/useOffer";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
+
+import { ReactComponent as InfoSvg } from "./images/info.svg";
 
 const Root = styled.div`
   display: flex;
@@ -109,9 +111,64 @@ const Box = styled.div`
   gap: 4px;
 `;
 
+const Toggle = styled.div`
+  border: 1px solid ${colors.bosonSkyBlue};
+  color: ${colors.bosonSkyBlue};
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 12px;
+  border-radius: 6px;
+  gap: 4px;
+`;
+
+const InfoIconTextWrapper = styled.div`
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 1px;
+`;
+
+const Tabs = styled.div`
+  display: flex;
+  flex-direction: row;
+  max-width: 30%;
+`;
+
+const Tab = styled("button")<{ $isLeft: boolean; $isSelected: boolean }>`
+  all: unset;
+  cursor: pointer;
+  border: 1px solid ${colors.bosonSkyBlue};
+  border-radius: ${(props) =>
+    props.$isLeft ? "30px 0 0 30px" : "0 30px 30px 0"};
+  background-color: ${(props) =>
+    props.$isSelected ? colors.bosonSkyBlue : colors.navy};
+  ${(props) =>
+    props.$isSelected
+      ? "box-shadow: inset 1px 2px 5px #777;"
+      : `box-shadow: 0px 2px 9px -3px ${colors.bosonSkyBlue};`}
+  /* box-shadow: 0px 0px 3px 2px inset; */
+  padding: 7px;
+  font-size: 14px;
+  color: ${(props) => (props.$isSelected ? colors.black : colors.bosonSkyBlue)};
+  width: 200px;
+  max-width: 100%;
+  text-align: center;
+`;
+
 const Price = styled(RootPrice)`
   font-weight: bold;
   font-size: 24px;
+`;
+
+const InfoIcon = styled(InfoSvg).attrs({
+  height: "32px",
+  width: "32px",
+  fill: colors.bosonSkyBlue
+})`
+  position: relative;
+  right: 2px;
 `;
 
 export default function OfferDetail() {
@@ -120,6 +177,7 @@ export default function OfferDetail() {
   const widgetRef = useRef<HTMLDivElement>(null);
 
   const isSeller = seller === "true";
+  const [isTabSellerSelected, setTabSellerSelected] = useState(false);
 
   if (!offerId) {
     return null;
@@ -207,6 +265,30 @@ export default function OfferDetail() {
               decimals={offer.exchangeToken.decimals}
             />
           </Box>
+          {isSeller && (
+            <Toggle>
+              <InfoIconTextWrapper>
+                <InfoIcon />
+                <span>You are the owner of this offer. Toggle view:</span>
+              </InfoIconTextWrapper>
+              <Tabs>
+                <Tab
+                  $isLeft
+                  $isSelected={!isTabSellerSelected}
+                  onClick={() => setTabSellerSelected(false)}
+                >
+                  Buyer
+                </Tab>
+                <Tab
+                  $isLeft={false}
+                  $isSelected={isTabSellerSelected}
+                  onClick={() => setTabSellerSelected(true)}
+                >
+                  Seller
+                </Tab>
+              </Tabs>
+            </Toggle>
+          )}
           <ChildrenContainer>
             <WidgetContainer ref={widgetRef}></WidgetContainer>
           </ChildrenContainer>

@@ -13,8 +13,8 @@ export function useSellers() {
       >[];
     }>(
       gql`
-        {
-          sellers(orderBy: "id", orderDirection: asc) {
+        query GetSellers($orderBy: String, $orderDirection: String) {
+          sellers(orderBy: $orderBy, orderDirection: $orderDirection) {
             id
             operator
             admin
@@ -23,7 +23,11 @@ export function useSellers() {
             active
           }
         }
-      `
+      `,
+      {
+        orderBy: "id",
+        orderDirection: "asc"
+      }
     );
     return result?.sellers ?? [];
   });
