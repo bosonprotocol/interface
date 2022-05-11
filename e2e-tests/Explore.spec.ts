@@ -138,7 +138,7 @@ test.describe("Explore page", () => {
       }) => {
         const sellerSelect = await page.locator("select[data-testid=seller]");
         const sellerId = "1";
-        await page.pause();
+
         await sellerSelect.selectOption(sellerId);
 
         await assertUrlToEqualQueryParam(page)("seller", sellerId);
