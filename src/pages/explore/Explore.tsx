@@ -3,6 +3,7 @@ import { useQueryParameter } from "@lib/routing/useQueryParameter";
 import { Select } from "@lib/styles/base";
 import { colors } from "@lib/styles/colors";
 import { useBrands } from "@lib/utils/hooks/useBrands";
+import { useSellers } from "@lib/utils/hooks/useSellers";
 import { useTokens } from "@lib/utils/hooks/useTokens";
 import React, { useState } from "react";
 import styled from "styled-components";
@@ -47,7 +48,7 @@ const BrandSelect = styled(Select)`
   }
 `;
 
-const TokenSelect = styled(BrandSelect)`
+const CurrencyOrSellerSelect = styled(BrandSelect)`
   margin-top: 10px;
 `;
 
@@ -74,6 +75,9 @@ export default function Explore() {
   const [currencyQueryParameter, setCurrencyQueryParameter] = useQueryParameter(
     QueryParameters.currency
   );
+  const [sellerQueryParameter, setSellerQueryParameter] = useQueryParameter(
+    QueryParameters.seller
+  );
 
   const [brandInput, setBrandInput] = useState<string>(nameQueryParameter);
   const [brandSelect, setBrandSelect] = useState<string>("");
@@ -84,6 +88,9 @@ export default function Explore() {
     currencyQueryParameter
   );
   const { data: brands } = useBrands();
+  const { data: sellers } = useSellers();
+  const [selectedSeller, setSelectedSeller] =
+    useState<string>(sellerQueryParameter);
 
   const onChangeName = (name: string) => {
     setNameToSearch(name);
@@ -112,7 +119,7 @@ export default function Explore() {
                 ))}
             </BrandSelect>
 
-            <TokenSelect
+            <CurrencyOrSellerSelect
               value={selectedToken}
               data-testid="currency"
               onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -127,7 +134,24 @@ export default function Explore() {
                     {token.symbol}
                   </option>
                 ))}
-            </TokenSelect>
+            </CurrencyOrSellerSelect>
+
+            <CurrencyOrSellerSelect
+              value={selectedSeller}
+              data-testid="seller"
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                setSelectedSeller(e.target.value);
+                setSellerQueryParameter(e.target.value);
+              }}
+            >
+              <option value="">Seller</option>
+              {sellers &&
+                sellers.map((seller) => (
+                  <option key={seller.id} value={seller.id}>
+                    ID: {seller.id}
+                  </option>
+                ))}
+            </CurrencyOrSellerSelect>
           </FiltersContainer>
         </div>
         <SearchContainer>
@@ -150,7 +174,11 @@ export default function Explore() {
           </InputContainer>
         </SearchContainer>
       </TopContainer>
-      <ExploreOffers name={nameToSearch} exchangeTokenAddress={selectedToken} />
+      <ExploreOffers
+        name={nameToSearch}
+        exchangeTokenAddress={selectedToken}
+        sellerId={selectedSeller}
+      />
     </ExploreContainer>
   );
 }

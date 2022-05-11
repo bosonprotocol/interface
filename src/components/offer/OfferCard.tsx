@@ -1,3 +1,5 @@
+import AddressContainer from "@components/offer/AddressContainer";
+import AddressImage from "@components/offer/AddressImage";
 import RootPrice from "@components/price";
 import { UrlParameters } from "@lib/routing/query-parameters";
 import { OffersRoutes } from "@lib/routing/routes";
@@ -82,12 +84,16 @@ export default function OfferCard({ offer }: Props) {
   const offerImg = `https://picsum.photos/seed/${id}/700`;
   const name = offer.metadata?.name || "Untitled";
   const sellerId = offer.seller?.id;
+  const sellerAddress = offer.seller?.admin;
 
   const navigate = useNavigate();
 
   return (
     <Card data-testid="offer">
-      <SellerInfo data-testid="seller-id">Seller ID: {sellerId}</SellerInfo>
+      <AddressContainer>
+        <AddressImage address={sellerAddress} />
+        <SellerInfo data-testid="seller-id">Seller ID: {sellerId}</SellerInfo>
+      </AddressContainer>
       <ImageContainer>
         <Image data-testid="image" src={offerImg} />
       </ImageContainer>

@@ -1,4 +1,5 @@
 import { manageOffer } from "@bosonprotocol/widgets-sdk";
+import AddressContainer from "@components/offer/AddressContainer";
 import AddressImage from "@components/offer/AddressImage";
 import RootPrice from "@components/price";
 import { CONFIG } from "@lib/config";
@@ -66,12 +67,6 @@ const SubHeading = styled.p`
 
 const Information = styled.span`
   font-weight: bold;
-`;
-
-const AddressContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
 `;
 
 const Content = styled.div`

@@ -2,12 +2,14 @@ import { gql } from "graphql-request";
 
 export function getOffersQuery({
   exchangeToken,
+  sellerId,
   validFromDate_lte,
   validUntilDate_gte,
   skip,
   offer
 }: {
   exchangeToken: boolean;
+  sellerId: boolean;
   validFromDate_lte: boolean;
   validUntilDate_gte: boolean;
   skip: boolean;
@@ -21,6 +23,7 @@ export function getOffersQuery({
     ${validUntilDate_gte ? "$validUntilDate_gte: String" : ""}
     $name_contains_nocase: String
     ${exchangeToken ? "$exchangeToken: String" : ""}
+    ${sellerId ? "$seller: String" : ""}
     $orderBy: String
     $orderDirection: String
     ${offer ? "$offer: String" : ""}
@@ -31,10 +34,11 @@ export function getOffersQuery({
       orderBy: $orderBy
       orderDirection: $orderDirection
       where: {
-        ${offer ? "offer : $offer" : ""}
-        ${validFromDate_lte ? "validFromDate_lte : $validFromDate_lte" : ""}
-        ${validUntilDate_gte ? "validUntilDate_gte : $validUntilDate_gte" : ""}
-        ${exchangeToken ? "exchangeToken : $exchangeToken" : ""}
+        ${offer ? "offer: $offer" : ""}
+        ${validFromDate_lte ? "validFromDate_lte: $validFromDate_lte" : ""}
+        ${validUntilDate_gte ? "validUntilDate_gte: $validUntilDate_gte" : ""}
+        ${exchangeToken ? "exchangeToken: $exchangeToken" : ""}
+        ${sellerId ? "seller: $seller" : ""}
         name_contains_nocase: $name_contains_nocase
       }
     ) {

@@ -6,6 +6,7 @@ export interface UseOffersProps {
   voided?: boolean;
   valid?: boolean;
   exchangeTokenAddress?: Offer["exchangeToken"]["address"];
+  sellerId?: Offer["seller"]["id"];
   filterOutWrongMetadata?: boolean;
   first?: number;
   skip?: number;

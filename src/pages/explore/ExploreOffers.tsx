@@ -25,6 +25,7 @@ interface Props {
   name?: string;
   brand?: string;
   exchangeTokenAddress?: Offer["exchangeToken"]["address"];
+  sellerId?: Offer["seller"]["id"];
 }
 
 const OFFERS_PER_PAGE = 15;
@@ -33,7 +34,8 @@ const DEFAULT_PAGE = 0;
 export default function ExploreOffers({
   brand,
   name,
-  exchangeTokenAddress
+  exchangeTokenAddress,
+  sellerId
 }: Props) {
   const params = useParams();
   const navigate = useNavigate();
@@ -55,6 +57,7 @@ export default function ExploreOffers({
     voided: false,
     valid: true,
     exchangeTokenAddress,
+    sellerId,
     filterOutWrongMetadata: true,
     first: OFFERS_PER_PAGE,
     skip: OFFERS_PER_PAGE * pageIndex
@@ -78,7 +81,7 @@ export default function ExploreOffers({
               navigate(generatePath(BosonRoutes.Explore));
             } else {
               navigate(
-                generatePath(BosonRoutes.ExplorePagePage, {
+                generatePath(BosonRoutes.ExplorePageByIndex, {
                   [UrlParameters.page]: index + 1 + ""
                 })
               );

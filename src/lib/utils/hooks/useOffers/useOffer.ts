@@ -32,6 +32,7 @@ async function getOfferById(id: string, props: UseOffersProps) {
   }>(
     getOffersQuery({
       exchangeToken: !!props.exchangeTokenAddress,
+      sellerId: !!props.sellerId,
       validFromDate_lte: !!validFromDate_lte,
       validUntilDate_gte: !!validUntilDate_gte,
       skip: !!props.skip,
@@ -42,7 +43,8 @@ async function getOfferById(id: string, props: UseOffersProps) {
       validFromDate_lte: validFromDate_lte,
       validUntilDate_gte: validUntilDate_gte,
       name_contains_nocase: props.name || "",
-      exchangeToken: props.exchangeTokenAddress
+      exchangeToken: props.exchangeTokenAddress,
+      sellerId: props.sellerId
     }
   );
   return result.baseMetadataEntities[0]?.offer;

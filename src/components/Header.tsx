@@ -48,7 +48,6 @@ export default function Header() {
         <Link to={BosonRoutes.Root}>Home</Link>
         <Link to={BosonRoutes.Explore}>Explore</Link>
         <Link to={BosonRoutes.CreateOffer}>Create Offer</Link>
-        <Link to={BosonRoutes.ManageOffers}>Manage Offers</Link>
       </NavigationLinks>
     </HeaderContainer>
   );
