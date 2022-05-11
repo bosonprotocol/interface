@@ -66,12 +66,7 @@ test.describe("OfferDetail", () => {
 
     const sellerId = await page.locator("[data-testid=seller-id]");
     const expectedSellerId =
-      "Seller ID: " + expectedOffer.seller?.id || "Unexpected id";
+      "ID: " + expectedOffer.seller?.id || "Unexpected id";
     await expect(sellerId).toHaveText(expectedSellerId);
-
-    const sellerDescription = await page.locator(
-      "[data-testid=seller-description]"
-    );
-    await expect(sellerDescription).toHaveText("Not defined");
   });
 });
