@@ -7,17 +7,12 @@ import { UrlParameters } from "@lib/routing/query-parameters";
 import { colors } from "@lib/styles/colors";
 import { Offer } from "@lib/types/offer";
 import { useOffer } from "@lib/utils/hooks/useOffers/useOffer";
-import { initializeConnector } from "@web3-react/core";
-import { MetaMask } from "@web3-react/metamask";
+import { hooks } from "@lib/utils/metamask";
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
 import { ReactComponent as InfoSvg } from "./images/info.svg";
-
-export const [metaMask, hooks] = initializeConnector<MetaMask>(
-  (actions) => new MetaMask(actions, true)
-);
 
 const Root = styled.div`
   display: flex;
