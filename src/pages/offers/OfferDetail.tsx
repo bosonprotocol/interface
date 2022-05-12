@@ -220,7 +220,7 @@ export default function OfferDetail() {
     function handleMessageFromIframe(e: MessageEvent) {
       const { target, message, wallet } = e.data || {};
 
-      if (target === "boson" && message === "wallet-changed" && wallet) {
+      if (target === "boson" && message === "wallet-changed") {
         setAccount(wallet);
       }
     }
