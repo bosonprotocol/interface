@@ -3,7 +3,8 @@ import { expect } from "@playwright/test";
 
 export const queryParams = {
   name: "name",
-  currency: "currency"
+  currency: "currency",
+  seller: "seller"
 } as const;
 
 export function assertUrlToEqualQueryParam(page: Page) {

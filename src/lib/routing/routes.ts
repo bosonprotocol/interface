@@ -4,9 +4,8 @@ export const BosonRoutes = {
   Root: "/",
   Explore: "/explore",
   ExplorePage: "/explore/page",
-  ExplorePagePage: `/explore/page/:${UrlParameters.page}`,
-  CreateOffer: "/create-offer",
-  ManageOffers: "/manage-offers"
+  ExplorePageByIndex: `/explore/page/:${UrlParameters.page}`,
+  CreateOffer: "/create-offer"
 };
 
 export const OffersRoutes = {

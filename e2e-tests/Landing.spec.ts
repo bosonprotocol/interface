@@ -67,7 +67,6 @@ test.describe("Root page (Landing page)", () => {
       for (let i = 0; i < numberOfOffers; i++) {
         const offer = offers.nth(i);
         const expectedOffer = firstTenOffers[i].offer;
-        await page.pause();
 
         await assertOffer(offer, expectedOffer);
       }

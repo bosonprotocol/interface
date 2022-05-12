@@ -16,7 +16,6 @@ const CreateOffer = React.lazy(
   () => import("./pages/create-offer/CreateOffer")
 );
 const Explore = React.lazy(() => import("./pages/explore/Explore"));
-const ManageOffer = React.lazy(() => import("./pages/manage-offer"));
 const Landing = React.lazy(() => import("./pages/landing/Landing"));
 const OfferDetail = React.lazy(() => import("./pages/offers/OfferDetail"));
 
@@ -44,7 +43,7 @@ root.render(
             {[
               BosonRoutes.Explore,
               BosonRoutes.ExplorePage,
-              BosonRoutes.ExplorePagePage
+              BosonRoutes.ExplorePageByIndex
             ].map((route) => (
               <Route
                 key={route}
@@ -62,14 +61,6 @@ root.render(
               element={
                 <React.Suspense fallback={<Loading />}>
                   <CreateOffer />
-                </React.Suspense>
-              }
-            />
-            <Route
-              path={BosonRoutes.ManageOffers}
-              element={
-                <React.Suspense fallback={<Loading />}>
-                  <ManageOffer />
                 </React.Suspense>
               }
             />

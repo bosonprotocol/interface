@@ -10,6 +10,10 @@ import {
   MockProps as mockGetOffersProps
 } from "./mockGetOffers";
 import {
+  mockGetSellers,
+  MockProps as mockGetSellersProps
+} from "./mockGetSellers";
+import {
   mockGetTokens,
   MockProps as mockGetTokensProps
 } from "./mockGetTokens";
@@ -20,6 +24,7 @@ interface MockSubgraphProps {
     mockGetOffers?: mockGetOffersProps["options"];
     mockGetBrands?: mockGetBrandsProps["options"];
     mockGetTokens?: mockGetTokensProps["options"];
+    mockGetSellers?: mockGetSellersProps["options"];
   }>;
 }
 
@@ -37,6 +42,7 @@ export async function mockSubgraph({ page, options }: MockSubgraphProps) {
     const isBrandsRequest = postData?.includes("productV1MetadataEntities");
     const isExchangeTokensRequest = postData?.includes("exchangeTokens");
     const isGetSingleBaseEntity = postData?.includes("GetOfferById("); // iframe widget makes this request
+    const isGetSellersReq = postData?.includes("GetSellers");
 
     let mockResponse;
     if (isBaseEntitiesRequest || isGetSingleBaseEntity) {
@@ -53,6 +59,11 @@ export async function mockSubgraph({ page, options }: MockSubgraphProps) {
       mockResponse = await mockGetTokens({
         postData,
         options: options?.mockGetTokens || {}
+      });
+    } else if (isGetSellersReq) {
+      mockResponse = await mockGetSellers({
+        postData,
+        options: options?.mockGetSellers || {}
       });
     } else {
       throw new Error(

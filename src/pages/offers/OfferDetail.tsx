@@ -1,14 +1,18 @@
 import { manageOffer } from "@bosonprotocol/widgets-sdk";
+import AddressContainer from "@components/offer/AddressContainer";
 import AddressImage from "@components/offer/AddressImage";
 import RootPrice from "@components/price";
 import { CONFIG } from "@lib/config";
-import { QueryParameters, UrlParameters } from "@lib/routing/query-parameters";
-import { useQueryParameter } from "@lib/routing/useQueryParameter";
+import { UrlParameters } from "@lib/routing/query-parameters";
 import { colors } from "@lib/styles/colors";
+import { Offer } from "@lib/types/offer";
 import { useOffer } from "@lib/utils/hooks/useOffers/useOffer";
-import { useEffect, useRef } from "react";
+import { hooks } from "@lib/utils/metamask";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
+
+import { ReactComponent as InfoSvg } from "./images/info.svg";
 
 const Root = styled.div`
   display: flex;
@@ -68,12 +72,6 @@ const Information = styled.span`
   font-weight: bold;
 `;
 
-const AddressContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-`;
-
 const Content = styled.div`
   display: flex;
   flex-direction: column;
@@ -106,12 +104,57 @@ const Info = styled.div`
 `;
 
 const Box = styled.div`
-  border: 1px solid ${colors.grey};
   display: flex;
   flex-direction: column;
   padding: 16px 12px;
   border-radius: 6px;
   gap: 4px;
+  box-shadow: inset -3px -3px 3px #0e0f17, inset 3px 3px 3px #363b5b;
+`;
+
+const Toggle = styled.div`
+  border: 1px solid ${colors.bosonSkyBlue};
+  color: ${colors.bosonSkyBlue};
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 12px;
+  border-radius: 6px;
+  gap: 4px;
+`;
+
+const InfoIconTextWrapper = styled.div`
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 1px;
+`;
+
+const Tabs = styled.div`
+  display: flex;
+  flex-direction: row;
+  max-width: 30%;
+`;
+
+const Tab = styled("button")<{ $isLeft: boolean; $isSelected: boolean }>`
+  all: unset;
+  cursor: pointer;
+  border: 1px solid ${colors.bosonSkyBlue};
+  border-radius: ${(props) =>
+    props.$isLeft ? "30px 0 0 30px" : "0 30px 30px 0"};
+  background-color: ${(props) =>
+    props.$isSelected ? colors.bosonSkyBlue : colors.navy};
+  ${(props) =>
+    props.$isSelected
+      ? "box-shadow: inset 1px 2px 5px #777;"
+      : `box-shadow: 0px 2px 9px -3px ${colors.bosonSkyBlue};`}
+  padding: 7px;
+  font-size: 14px;
+  color: ${(props) => (props.$isSelected ? colors.black : colors.bosonSkyBlue)};
+  width: 200px;
+  max-width: 100%;
+  text-align: center;
 `;
 
 const Price = styled(RootPrice)`
@@ -119,12 +162,34 @@ const Price = styled(RootPrice)`
   font-size: 24px;
 `;
 
+const InfoIcon = styled(InfoSvg).attrs({
+  height: "32px",
+  width: "32px",
+  fill: colors.bosonSkyBlue
+})`
+  position: relative;
+  right: 2px;
+`;
+
+function isAccountSeller(offer: Offer, account: string): boolean {
+  if (offer.seller.clerk.toLowerCase() === account.toLowerCase()) return true;
+  if (offer.seller.operator.toLowerCase() === account.toLowerCase())
+    return true;
+  return false;
+}
+
+function getIsOfferValid(offer: Offer | undefined | null): boolean {
+  const now = Date.now() / 1000;
+  const isValid =
+    Number(offer?.validFromDate) <= now && now <= Number(offer?.validUntilDate);
+  return isValid;
+}
+
 export default function OfferDetail() {
   const { [UrlParameters.offerId]: offerId } = useParams();
-  const [seller] = useQueryParameter(QueryParameters.seller);
   const widgetRef = useRef<HTMLDivElement>(null);
-
-  const isSeller = seller === "true";
+  const account = hooks.useAccount();
+  const [isTabSellerSelected, setTabSellerSelected] = useState(false);
 
   if (!offerId) {
     return null;
@@ -135,20 +200,22 @@ export default function OfferDetail() {
     isError,
     isLoading
   } = useOffer({
-    offerId,
-    valid: !isSeller
+    offerId
   });
+
   useEffect(() => {
     if (offer && widgetRef.current) {
       const widgetContainer = document.createElement("div");
       widgetContainer.style.width = "100%";
       widgetRef.current.appendChild(widgetContainer);
-      manageOffer(offer.id, CONFIG, widgetContainer);
+      manageOffer(offer.id, CONFIG, widgetContainer, {
+        forceBuyerView: !isTabSellerSelected
+      });
       return () => widgetContainer.remove();
     }
 
     return;
-  }, [offer]);
+  }, [offer, isTabSellerSelected]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -162,10 +229,11 @@ export default function OfferDetail() {
     );
   }
 
-  if (!offer) {
+  const isOfferValid = getIsOfferValid(offer);
+  if (!offer || !isOfferValid) {
     return <div data-testid="notFound">This offer does not exist</div>;
   }
-
+  const isSeller = isAccountSeller(offer, account ?? "");
   const name = offer.metadata?.name || "Untitled";
   const offerImg = `https://picsum.photos/seed/${offerId}/700`;
   const sellerId = offer.seller?.id;
@@ -212,6 +280,30 @@ export default function OfferDetail() {
               decimals={offer.exchangeToken.decimals}
             />
           </Box>
+          {isSeller && (
+            <Toggle>
+              <InfoIconTextWrapper>
+                <InfoIcon />
+                <span>You are the owner of this offer. Toggle view:</span>
+              </InfoIconTextWrapper>
+              <Tabs>
+                <Tab
+                  $isLeft
+                  $isSelected={!isTabSellerSelected}
+                  onClick={() => setTabSellerSelected(false)}
+                >
+                  Buyer
+                </Tab>
+                <Tab
+                  $isLeft={false}
+                  $isSelected={isTabSellerSelected}
+                  onClick={() => setTabSellerSelected(true)}
+                >
+                  Seller
+                </Tab>
+              </Tabs>
+            </Toggle>
+          )}
           <ChildrenContainer>
             <WidgetContainer ref={widgetRef}></WidgetContainer>
           </ChildrenContainer>

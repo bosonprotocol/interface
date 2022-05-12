@@ -19,6 +19,7 @@ export function useOffers(props: UseOffersProps) {
       validUntilDate_gte: validUntilDate_gte,
       name_contains_nocase: props.name || "",
       exchangeToken: props.exchangeTokenAddress,
+      seller: props.sellerId,
       orderBy: "name",
       orderDirection: "asc"
     };
@@ -27,6 +28,7 @@ export function useOffers(props: UseOffersProps) {
     }>(
       getOffersQuery({
         exchangeToken: !!props.exchangeTokenAddress,
+        sellerId: !!props.sellerId,
         validFromDate_lte: !!validFromDate_lte,
         validUntilDate_gte: !!validUntilDate_gte,
         skip: !!props.skip,
