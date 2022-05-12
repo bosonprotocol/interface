@@ -196,12 +196,14 @@ export default function OfferDetail() {
       const widgetContainer = document.createElement("div");
       widgetContainer.style.width = "100%";
       widgetRef.current.appendChild(widgetContainer);
-      manageOffer(offer.id, CONFIG, widgetContainer);
+      manageOffer(offer.id, CONFIG, widgetContainer, {
+        forceBuyerView: !isTabSellerSelected
+      });
       return () => widgetContainer.remove();
     }
 
     return;
-  }, [offer]);
+  }, [offer, isTabSellerSelected]);
 
   if (isLoading) {
     return <div>Loading...</div>;
