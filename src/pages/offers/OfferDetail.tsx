@@ -7,7 +7,6 @@ import { UrlParameters } from "@lib/routing/query-parameters";
 import { colors } from "@lib/styles/colors";
 import { Offer } from "@lib/types/offer";
 import { useOffer } from "@lib/utils/hooks/useOffers/useOffer";
-import { hooks } from "@lib/utils/metamask";
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
@@ -188,8 +187,8 @@ function getIsOfferValid(offer: Offer | undefined | null): boolean {
 export default function OfferDetail() {
   const { [UrlParameters.offerId]: offerId } = useParams();
   const widgetRef = useRef<HTMLDivElement>(null);
-  const account = hooks.useAccount();
   const [isTabSellerSelected, setTabSellerSelected] = useState(false);
+  const [account, setAccount] = useState("");
 
   if (!offerId) {
     return null;
@@ -216,6 +215,18 @@ export default function OfferDetail() {
 
     return;
   }, [offer, isTabSellerSelected]);
+
+  useEffect(() => {
+    function handleMessageFromIframe(e: MessageEvent) {
+      const { target, message, wallet } = e.data || {};
+
+      if (target === "boson" && message === "wallet-changed" && wallet) {
+        setAccount(wallet);
+      }
+    }
+    window.addEventListener("message", handleMessageFromIframe);
+    return () => window.removeEventListener("message", handleMessageFromIframe);
+  }, []);
 
   if (isLoading) {
     return <div>Loading...</div>;
