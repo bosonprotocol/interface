@@ -55,7 +55,7 @@ jobs:
           cmd: jq -n env
       - name: Get job outputs
         env:
-          OUTPUTS: ${{ toJSON(needs) }}
+          OUTPUTS: ${{ needs }}
         run: |
           succededJobOutput="$(
             ${{ env.OUTPUTS }} | jq '.[] | select(.result | startswith("success")) | .outputs'
