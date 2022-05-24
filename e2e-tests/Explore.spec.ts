@@ -184,6 +184,46 @@ test.describe("Explore page", () => {
         const valueSelect = await currencySelect.inputValue();
         await expect(valueSelect).toStrictEqual(currency);
       });
+      test("should display the first 10 offers ordered by name ASC, without filters", async ({
+        page
+      }) => {
+        const mockOffers = defaultMockOffers.map((offer) => ({
+          ...offer
+        }));
+        const first10Offers = mockOffers.slice(0, 10);
+        const second10Offers = mockOffers.slice(0, 10);
+
+        await mockSubgraph({
+          page,
+          options: {
+            mockGetOffers: {
+              offersPerPage: [first10Offers, second10Offers]
+            }
+          }
+        });
+
+        await page.goto(exploreUrl);
+        await page.waitForTimeout(500);
+        const name = "name1";
+
+        const input = await page.locator("input[data-testid=name]");
+        await input.type(name, { delay: 100 });
+        await input.press("Enter", { delay: 100 });
+
+        await assertUrlHashToEqual(page, `#/explore?name=${name}`);
+
+        const nextButton = await page.locator("[data-testid=next]");
+
+        await nextButton.click();
+
+        await assertUrlHashToEqual(page, `#/explore/page/2?name=${name}`);
+
+        const previousButton = await page.locator("[data-testid=previous]");
+
+        await previousButton.click();
+
+        await assertUrlHashToEqual(page, `#/explore?name=${name}`);
+      });
     });
   });
   test.describe("Url params", () => {

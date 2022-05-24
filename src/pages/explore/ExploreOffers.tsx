@@ -1,10 +1,10 @@
 import OfferList from "@components/offers/OfferList";
-import { UrlParameters } from "@lib/routing/query-parameters";
+import { QueryParameters, UrlParameters } from "@lib/routing/query-parameters";
 import { BosonRoutes } from "@lib/routing/routes";
 import { footerHeight } from "@lib/styles/layout";
 import { Offer } from "@lib/types/offer";
 import { useOffers } from "@lib/utils/hooks/useOffers/";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { generatePath, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 
@@ -28,6 +28,26 @@ interface Props {
   sellerId?: Offer["seller"]["id"];
 }
 
+const updatePageIndexInUrl =
+  (navigate: ReturnType<typeof useNavigate>) =>
+  (
+    index: number,
+    queryParams: { [x in keyof typeof QueryParameters]: string }
+  ): void => {
+    const queryParamsUrl = new URLSearchParams(
+      Object.entries(queryParams).filter(([, value]) => value !== "")
+    ).toString();
+    if (index === 0) {
+      navigate(generatePath(`${BosonRoutes.Explore}?${queryParamsUrl}`));
+    } else {
+      navigate(
+        generatePath(`${BosonRoutes.ExplorePageByIndex}?${queryParamsUrl}`, {
+          [UrlParameters.page]: index + 1 + ""
+        })
+      );
+    }
+  };
+
 const OFFERS_PER_PAGE = 10;
 const DEFAULT_PAGE = 0;
 
@@ -39,6 +59,12 @@ export default function ExploreOffers({
 }: Props) {
   const params = useParams();
   const navigate = useNavigate();
+  const updateUrl = (index: number) =>
+    updatePageIndexInUrl(navigate)(index, {
+      name: name ?? "",
+      currency: exchangeTokenAddress ?? "",
+      seller: sellerId ?? ""
+    });
   const initialPageIndex = Math.max(
     0,
     params[UrlParameters.page]
@@ -46,6 +72,11 @@ export default function ExploreOffers({
       : DEFAULT_PAGE
   );
   const [pageIndex, setPageIndex] = useState(initialPageIndex);
+
+  useEffect(() => {
+    setPageIndex(DEFAULT_PAGE);
+    updateUrl(DEFAULT_PAGE);
+  }, [brand, name, exchangeTokenAddress, sellerId]);
 
   const {
     data: offers,
@@ -77,15 +108,7 @@ export default function ExploreOffers({
           onChangeIndex={(index) => {
             setPageIndex(index);
 
-            if (index === 0) {
-              navigate(generatePath(BosonRoutes.Explore));
-            } else {
-              navigate(
-                generatePath(BosonRoutes.ExplorePageByIndex, {
-                  [UrlParameters.page]: index + 1 + ""
-                })
-              );
-            }
+            updateUrl(index);
           }}
         />
       </PaginationWrapper>

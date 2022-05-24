@@ -1,5 +1,5 @@
 import { colors } from "@lib/styles/colors";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -62,6 +62,10 @@ export default function Pagination({
     setPageIndex(newIndex);
     onChangeIndex(newIndex);
   };
+  useEffect(() => {
+    setPageIndex(defaultPage);
+  }, [defaultPage]);
+
   return (
     <Container>
       <PaginationButton
