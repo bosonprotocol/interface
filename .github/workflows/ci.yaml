@@ -40,3 +40,48 @@ jobs:
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
+
+
+  job-sumary:
+    name: Create Job Summary
+    runs-on: ubuntu-latest
+    if: ${{ always() && contains(join(needs.*.result, ','), 'success') }}
+    needs: [call-reusable-workflow-PR, call-reusable-workflow-testing, call-reusable-workflow-staging]
+    steps:
+      - name: Hello World
+        env:
+          NEEDS: ${{ toJSON(needs) }}
+        run: |
+          echo "$NEEDS"
+    # env:
+    #   JOB_LINT: ${{ needs.build-test-deploy.outputs.JOB_LINT }}
+    #   JOB_TEST: ${{ needs.build-test-deploy.outputs.JOB_TEST }}
+    #   JOB_BUILD: ${{ needs.build-test-deploy.outputs.JOB_BUILD }}
+    #   JOB_COVERAGE: ${{ needs.lint-build-test.outputs.JOB_COVERAGE }}
+    #   DEPLOYED_URL: ${{ inputs.DEPLOYED_URL }}
+    # steps:
+    #   - uses: actions/checkout@v3
+    #   - name: Adding Job Summary
+    #     run: |
+    #       echo "| Command | Status |" >> $GITHUB_STEP_SUMMARY
+    #       echo "| ---- | ---- |" >> $GITHUB_STEP_SUMMARY
+    #       if [ ${{ env.JOB_LINT }} == success ]; then
+    #         echo "| Lint | ✅ |" >> $GITHUB_STEP_SUMMARY
+    #       else
+    #         echo "| Lint | ❌ |" >> $GITHUB_STEP_SUMMARY
+    #       fi
+    #       if [ ${{ env.JOB_TEST }} == success ]; then
+    #         echo "| Test | ✅ |" >> $GITHUB_STEP_SUMMARY
+    #       else
+    #         echo "| Test | ❌ |" >> $GITHUB_STEP_SUMMARY
+    #       fi
+    #       if [ ${{ env.JOB_BUILD }} == success ]; then
+    #         echo "| Build | ✅ |" >> $GITHUB_STEP_SUMMARY
+    #       else
+    #         echo "| Build | ❌ |" >> $GITHUB_STEP_SUMMARY
+    #       fi
+    #       if [ ${{ env.JOB_COVERAGE }} == success ]; then
+    #         echo "| Coverage | ✅ |" >> $GITHUB_STEP_SUMMARY
+    #       else
+    #         echo "| Coverage | ❌ |" >> $GITHUB_STEP_SUMMARY
+    #       fi
