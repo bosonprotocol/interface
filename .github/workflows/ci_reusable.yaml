@@ -35,10 +35,10 @@ jobs:
       REACT_APP_CHAIN_ID: ${{ inputs.REACT_APP_CHAIN_ID }}
       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
     outputs:
-      JOB_LINT: ${{ steps.lint.outcome }}
-      JOB_TEST: ${{ steps.test.outcome }}
-      JOB_BUILD: ${{ steps.build.outcome }}
-      JOB_COVERAGE: ${{ steps.coverage.outcome }}
+      JOB_LINT: ${{ steps.lint.outputs.pass }}
+      JOB_TEST: ${{ steps.test.outputs.pass }}
+      JOB_BUILD: ${{ steps.build.outputs.pass }}
+      JOB_COVERAGE: ${{ steps.coverage.outputs.pass }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -56,17 +56,20 @@ jobs:
       - name: Install Playwright
         run: npx playwright install --with-deps chromium
       - run: npm run prettier
+      - run: npm run lint
       - id: lint
-        run: npm run lint
+        run: echo "::set-output name=pass::success"
+      - run: npm run build
       - id: build
-        run: npm run build
-      - id: test
-        run: |
+        run: echo "::set-output name=pass::success"
+      - run: |
           npm run test
           npm run test:e2e:ci
+      - id: test
+        run: echo "::set-output name=pass::success"
+      - run: npm run badge
       - id: coverage
-        run: |
-          npm run badge
+        run: echo "::set-output name=pass::success"
       # - name: Commit files
       #   run: |
       #     git config --local user.email "bapp-ci-bot@users.noreply.github.com"
