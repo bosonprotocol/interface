@@ -47,14 +47,12 @@ const Page = styled.p`
 
 interface Props {
   defaultPage: number;
-  itemsPerPage: number;
-  itemsLength: number;
+  hasMoreItems: boolean;
   onChangeIndex: (index: number) => void;
 }
 export default function Pagination({
   defaultPage,
-  itemsPerPage,
-  itemsLength,
+  hasMoreItems,
   onChangeIndex
 }: Props) {
   const [pageIndex, setPageIndex] = useState(defaultPage || 0);
@@ -82,7 +80,7 @@ export default function Pagination({
       <PaginationButton
         data-testid="next"
         $isBack={false}
-        disabled={itemsLength < itemsPerPage}
+        disabled={!hasMoreItems}
         onClick={onClick(pageIndex + 1)}
       >
         &#10140;
