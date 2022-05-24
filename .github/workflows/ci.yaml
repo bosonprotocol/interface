@@ -58,7 +58,7 @@ jobs:
           OUTPUTS: ${{ needs }}
         run: |
           succededJobOutput="$(
-            ${{ env.OUTPUTS }} | jq '.[] | select(.result | startswith("success")) | .outputs'
+            echo ${{ env.OUTPUTS }} | jq '.[] | select(.result | startswith("success")) | .outputs'
           )"
 
           echo 'JOB_OUTPUT='$succededJobOutput >> $GITHUB_ENV
