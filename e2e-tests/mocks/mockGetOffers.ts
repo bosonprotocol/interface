@@ -34,9 +34,8 @@ export async function mockGetOffers({
     const { variables } = JSON.parse(postData);
     if (variables.skip !== undefined && countOffersPerPage && offersPerPage) {
       const skip = variables.skip || 0;
-      idx = skip / countOffersPerPage;
-      offers = offersPerPage[idx];
-      await expect(offers).toBeDefined();
+      idx = Math.ceil(skip / countOffersPerPage);
+      offers = offersPerPage[idx] || [];
     }
     baseMetadataEntities = offers.map((offer) => ({
       offer

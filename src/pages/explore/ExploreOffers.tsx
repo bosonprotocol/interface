@@ -72,10 +72,14 @@ export default function ExploreOffers({
       : DEFAULT_PAGE
   );
   const [pageIndex, setPageIndex] = useState(initialPageIndex);
+  const [count, setCount] = useState(0);
 
   useEffect(() => {
-    setPageIndex(DEFAULT_PAGE);
-    updateUrl(DEFAULT_PAGE);
+    if (count >= 1) {
+      setPageIndex(DEFAULT_PAGE);
+      updateUrl(DEFAULT_PAGE);
+    }
+    count === 0 && setCount(count + 1);
   }, [brand, name, exchangeTokenAddress, sellerId]);
 
   const {
@@ -105,7 +109,7 @@ export default function ExploreOffers({
         <Pagination
           defaultPage={pageIndex}
           hasMoreItems={
-            (offersWithOneExtra?.length || 0) === OFFERS_PER_PAGE + 1
+            (offersWithOneExtra?.length || 0) >= OFFERS_PER_PAGE + 1
           }
           onChangeIndex={(index) => {
             setPageIndex(index);

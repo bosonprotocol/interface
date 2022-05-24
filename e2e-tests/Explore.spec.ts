@@ -9,7 +9,8 @@ import { mockSubgraph } from "./mocks/mockGetBase";
 import { sortOffersBy } from "./utils/sort";
 
 const exploreUrl = "/#/explore";
-const offersPerPage = 10;
+const offersPerPage = 11;
+const visibleOffersPerPage = offersPerPage - 1;
 
 const getFirstNOffers = async (numberOfOffers: number): Promise<Offer[]> => {
   let maxOfferId = 0;
@@ -159,7 +160,8 @@ test.describe("Explore page", () => {
           await input.press("Backspace");
         }
         await input.press("Enter");
-        await assertUrlToEqualQueryParam(page)("name", "");
+
+        await assertUrlToEqualQueryParam(page)("name", undefined);
       });
       test("input and select should change when we navigate to Explore with their query params", async ({
         page
@@ -303,7 +305,7 @@ test.describe("Explore page", () => {
         await page.waitForTimeout(500);
         const uiOffers = await page.locator("[data-testid=offer]");
         const offerCount = await uiOffers.count();
-        await expect(offerCount).toStrictEqual(offers1stPage.length);
+        await expect(offerCount).toStrictEqual(visibleOffersPerPage);
 
         for (let i = 0; i < offerCount; i++) {
           const offer = uiOffers.nth(i);
@@ -319,7 +321,6 @@ test.describe("Explore page", () => {
         const numberOfOffers = 17;
 
         const offers: Offer[] = await getFirstNOffers(numberOfOffers);
-
         const offers1stPage = offers.slice(0, offersPerPage);
         const offers2ndPage = offers.slice(offersPerPage);
         await expect(offers2ndPage.length).toStrictEqual(
@@ -456,8 +457,8 @@ test.describe("Explore page", () => {
       }
     });
     const numberOfOffers = 17;
-    test(`should display ${offersPerPage} offers in the 1st page and ${
-      numberOfOffers - offersPerPage
+    test(`should display ${visibleOffersPerPage} offers in the 1st page and ${
+      numberOfOffers - visibleOffersPerPage
     } in the 2nd page`, async ({ page }) => {
       const offers: Offer[] = await getFirstNOffers(numberOfOffers);
 
@@ -483,7 +484,7 @@ test.describe("Explore page", () => {
       let uiOffers = await page.locator("[data-testid=offer]");
 
       let offerCount = await uiOffers.count();
-      await expect(offerCount).toStrictEqual(offersPerPage);
+      await expect(offerCount).toStrictEqual(visibleOffersPerPage);
 
       for (let i = 0; i < offerCount; i++) {
         const offer = uiOffers.nth(i);
