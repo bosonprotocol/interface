@@ -20,6 +20,11 @@ jobs:
       ENV_NAME: 'testing'
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+    outputs:
+      JOB_LINT: ${{ steps.lint.outcome }}
+      JOB_TEST: ${{ steps.test.outcome }}
+      JOB_BUILD: ${{ steps.build.outcome }}
+      JOB_COVERAGE: ${{ steps.coverage.outcome }}
   call-reusable-workflow-testing:
     uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
     if: github.event_name == 'push'
@@ -30,6 +35,11 @@ jobs:
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
+    outputs:
+      JOB_LINT: ${{ steps.lint.outcome }}
+      JOB_TEST: ${{ steps.test.outcome }}
+      JOB_BUILD: ${{ steps.build.outcome }}
+      JOB_COVERAGE: ${{ steps.coverage.outcome }}
   call-reusable-workflow-staging:
     uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
     if: github.event_name == 'release' && github.event.action == 'created'
@@ -40,7 +50,11 @@ jobs:
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
-
+    outputs:
+      JOB_LINT: ${{ steps.lint.outcome }}
+      JOB_TEST: ${{ steps.test.outcome }}
+      JOB_BUILD: ${{ steps.build.outcome }}
+      JOB_COVERAGE: ${{ steps.coverage.outcome }}
 
   job-sumary:
     name: Create Job Summary
