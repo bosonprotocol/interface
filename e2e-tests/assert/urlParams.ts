@@ -1,5 +1,5 @@
 import { Page } from "@playwright/test";
-import { expect } from "@playwright/test";
+import { expect } from "playwright-test-coverage";
 
 export async function assertUrlHashToEqual(page: Page, expectedHash: string) {
   const url = await page.url();

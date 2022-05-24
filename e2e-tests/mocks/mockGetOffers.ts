@@ -1,5 +1,5 @@
 import { Offer } from "@lib/types/offer";
-import { expect } from "@playwright/test";
+import { expect } from "playwright-test-coverage";
 
 import { sortOffersBy } from "../utils/sort";
 import { defaultMockOffers } from "./defaultMockOffers";

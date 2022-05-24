@@ -1,5 +1,5 @@
 import { Offer } from "@lib/types/offer";
-import { expect, test } from "@playwright/test";
+import { expect, test } from "playwright-test-coverage";
 
 import { assertOffer } from "./assert/offer";
 import { defaultMockOffers } from "./mocks/defaultMockOffers";

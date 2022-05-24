@@ -25,6 +25,10 @@ jobs:
     env:
       REACT_APP_CHAIN_ID: ${{ inputs.REACT_APP_CHAIN_ID }}
       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+    outputs:
+      JOB_LINT: ${{ steps.lint.outputs.pass }}
+      JOB_TEST: ${{ steps.test.outputs.pass }}
+      JOB_BUILD: ${{ steps.build.outputs.pass }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -43,9 +47,15 @@ jobs:
         run: npx playwright install --with-deps chromium
       - run: npm run prettier
       - run: npm run lint
+      - id: lint
+        run: echo "::set-output name=pass::true"
       - run: npm run build
+      - id: build
+        run: echo "::set-output name=pass::true"
       - run: npm run test
       - run: npm run test:e2e:ci
+      - id: test
+        run: echo "::set-output name=pass::true"
       - name: Copy contents from .fleek_staging.json to .fleek.json
         if: ${{ inputs.ENV_NAME == 'staging' }}
         run: mv .fleek_staging.json .fleek.json
@@ -64,3 +74,25 @@ jobs:
       - name: Get the output url
         if: ${{ inputs.DEPLOY_TO_FLEEK }}
         run: echo "Deploy url is ${{ steps.deploy.outputs.deployUrl }}"
+
+  job-sumary:
+    name: Create Job Summary
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [build-test-deploy]
+    env:
+      JOB_LINT: ${{ needs.build-test-deploy.outputs.JOB_LINT }}
+      JOB_TEST: ${{ needs.build-test-deploy.outputs.JOB_TEST }}
+      JOB_BUILD: ${{ needs.build-test-deploy.outputs.JOB_BUILD }}
+      DEPLOYED_URL: ${{ inputs.DEPLOYED_URL }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Adding Job Summary
+        run: |
+          echo "# Status of build summary" >> $GITHUB_STEP_SUMMARY
+          echo "| Command | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
+          echo "| Lint | ✅ VS ❌ |" >> $GITHUB_STEP_SUMMARY
+          echo "| Test | ✅ VS ❌ |" >> $GITHUB_STEP_SUMMARY
+          echo "| Build | ✅ VS ❌ |" >> $GITHUB_STEP_SUMMARY
+          echo "| Deployment URL | {{ env.DEPLOYED_URL }} |" >> $GITHUB_STEP_SUMMARY

@@ -1,5 +1,5 @@
 import { Page } from "@playwright/test";
-import { expect } from "@playwright/test";
+import { expect } from "playwright-test-coverage";
 
 export const queryParams = {
   name: "name",
