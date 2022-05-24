@@ -26,9 +26,10 @@ jobs:
       REACT_APP_CHAIN_ID: ${{ inputs.REACT_APP_CHAIN_ID }}
       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
     outputs:
-      JOB_LINT: ${{ steps.lint.outputs.pass }}
-      JOB_TEST: ${{ steps.test.outputs.pass }}
-      JOB_BUILD: ${{ steps.build.outputs.pass }}
+      JOB_LINT: ${{ steps.lint.outcome }}
+      JOB_TEST: ${{ steps.test.outcome }}
+      JOB_BUILD: ${{ steps.build.outcome }}
+      JOB_COVERAGE: ${{ steps.coverage.outcome }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -46,16 +47,25 @@ jobs:
       - name: Install Playwright
         run: npx playwright install --with-deps chromium
       - run: npm run prettier
-      - run: npm run lint
       - id: lint
-        run: echo "::set-output name=pass::true"
-      - run: npm run build
+        run: npm run lint
       - id: build
-        run: echo "::set-output name=pass::true"
-      - run: npm run test
-      - run: npm run test:e2e:ci
+        run: npm run build
       - id: test
-        run: echo "::set-output name=pass::true"
+        run: |
+          npm run test
+          npm run test:e2e:ci
+      - id: coverage
+        run: |
+          npm run badge
+      # - name: Commit files
+      #   run: |
+      #     git config --local user.email "bapp-ci-bot@users.noreply.github.com"
+      #     git config --local user.name "@bapp-ci-bot"
+      #     git commit -am "Update badges"
+      # - name: Update badges
+      #   run: |
+      #     git push
       - name: Copy contents from .fleek_staging.json to .fleek.json
         if: ${{ inputs.ENV_NAME == 'staging' }}
         run: mv .fleek_staging.json .fleek.json
@@ -84,15 +94,31 @@ jobs:
       JOB_LINT: ${{ needs.build-test-deploy.outputs.JOB_LINT }}
       JOB_TEST: ${{ needs.build-test-deploy.outputs.JOB_TEST }}
       JOB_BUILD: ${{ needs.build-test-deploy.outputs.JOB_BUILD }}
+      JOB_COVERAGE: ${{ needs.lint-build-test.outputs.JOB_COVERAGE }}
       DEPLOYED_URL: ${{ inputs.DEPLOYED_URL }}
     steps:
       - uses: actions/checkout@v3
       - name: Adding Job Summary
         run: |
-          echo "# Status of build summary" >> $GITHUB_STEP_SUMMARY
           echo "| Command | Status |" >> $GITHUB_STEP_SUMMARY
-          echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
-          echo "| Lint | ✅ VS ❌ |" >> $GITHUB_STEP_SUMMARY
-          echo "| Test | ✅ VS ❌ |" >> $GITHUB_STEP_SUMMARY
-          echo "| Build | ✅ VS ❌ |" >> $GITHUB_STEP_SUMMARY
-          echo "| Deployment URL | {{ env.DEPLOYED_URL }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| ---- | ---- |" >> $GITHUB_STEP_SUMMARY
+          if [ ${{ env.JOB_LINT }} == success ]; then
+            echo "| Lint | ✅ |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Lint | ❌ |" >> $GITHUB_STEP_SUMMARY
+          fi
+          if [ ${{ env.JOB_TEST }} == success ]; then
+            echo "| Test | ✅ |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Test | ❌ |" >> $GITHUB_STEP_SUMMARY
+          fi
+          if [ ${{ env.JOB_BUILD }} == success ]; then
+            echo "| Build | ✅ |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Build | ❌ |" >> $GITHUB_STEP_SUMMARY
+          fi
+          if [ ${{ env.JOB_COVERAGE }} == success ]; then
+            echo "| Coverage | ✅ |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Coverage | ❌ |" >> $GITHUB_STEP_SUMMARY
+          fi

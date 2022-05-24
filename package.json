@@ -21,9 +21,7 @@
     "test:e2e:report": "playwright show-report",
     "coverage:unit": "npm run test -- --silent --watchAll=false --coverage --coverageReporters 'json-summary'",
     "coverage:e2e": "npm run test:e2e:ci",
-    "coverage:nyc": "istanbul-merge --out .nyc_output test-results.json ./coverage coverage-summary.json",
-    "badge": "npm run coverage:unit && npm run coverage:e2e && coverage-badge-creator",
-    "badge:test": "coverage-badge-creator"
+    "badge": "npm run coverage:unit && npm run coverage:e2e && coverage-badge-creator"
   },
   "dependencies": {
     "@bosonprotocol/common": "^1.5.0-alpha.1",
