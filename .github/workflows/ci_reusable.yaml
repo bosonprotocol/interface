@@ -17,6 +17,15 @@ on:
         required: true
       FLEEK_API_KEY:
         required: false
+    outputs:
+      JOB_LINT:
+        value: ${{ jobs.build-test-deploy.outputs.JOB_LINT }}
+      JOB_TEST:
+        value: ${{ jobs.build-test-deploy.outputs.JOB_TEST }}
+      JOB_BUILD:
+        value: ${{ jobs.build-test-deploy.outputs.JOB_BUILD }}
+      JOB_COVERAGE:
+        value: ${{ jobs.build-test-deploy.outputs.JOB_COVERAGE }}
 
 jobs:
   build-test-deploy:

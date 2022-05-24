@@ -48,40 +48,47 @@ jobs:
     if: ${{ always() && contains(join(needs.*.result, ','), 'success') }}
     needs: [call-reusable-workflow-PR, call-reusable-workflow-testing, call-reusable-workflow-staging]
     steps:
-      - name: Hello World
+      - uses: actions/checkout@v3
+      - name: Install JQ
+        uses: sergeysova/jq-action@v2
+        with:
+          cmd: jq -n env
+      - name: Get job outputs
         env:
-          NEEDS: ${{ toJSON(needs) }}
+          OUTPUTS: ${{ toJSON(needs) }}
         run: |
-          echo "$NEEDS"
-    # env:
-    #   JOB_LINT: ${{ needs.build-test-deploy.outputs.JOB_LINT }}
-    #   JOB_TEST: ${{ needs.build-test-deploy.outputs.JOB_TEST }}
-    #   JOB_BUILD: ${{ needs.build-test-deploy.outputs.JOB_BUILD }}
-    #   JOB_COVERAGE: ${{ needs.lint-build-test.outputs.JOB_COVERAGE }}
-    #   DEPLOYED_URL: ${{ inputs.DEPLOYED_URL }}
-    # steps:
-    #   - uses: actions/checkout@v3
-    #   - name: Adding Job Summary
-    #     run: |
-    #       echo "| Command | Status |" >> $GITHUB_STEP_SUMMARY
-    #       echo "| ---- | ---- |" >> $GITHUB_STEP_SUMMARY
-    #       if [ ${{ env.JOB_LINT }} == success ]; then
-    #         echo "| Lint | ✅ |" >> $GITHUB_STEP_SUMMARY
-    #       else
-    #         echo "| Lint | ❌ |" >> $GITHUB_STEP_SUMMARY
-    #       fi
-    #       if [ ${{ env.JOB_TEST }} == success ]; then
-    #         echo "| Test | ✅ |" >> $GITHUB_STEP_SUMMARY
-    #       else
-    #         echo "| Test | ❌ |" >> $GITHUB_STEP_SUMMARY
-    #       fi
-    #       if [ ${{ env.JOB_BUILD }} == success ]; then
-    #         echo "| Build | ✅ |" >> $GITHUB_STEP_SUMMARY
-    #       else
-    #         echo "| Build | ❌ |" >> $GITHUB_STEP_SUMMARY
-    #       fi
-    #       if [ ${{ env.JOB_COVERAGE }} == success ]; then
-    #         echo "| Coverage | ✅ |" >> $GITHUB_STEP_SUMMARY
-    #       else
-    #         echo "| Coverage | ❌ |" >> $GITHUB_STEP_SUMMARY
-    #       fi
+          succededJobOutput="$(
+            jq '.[] | select(.result=="success") | .outputs' $OUTPUTS
+          )"
+
+          echo 'JOB_OUTPUT='$succededJobOutput >> $GITHUB_ENV
+      - name: Adding Job Summary
+        env:
+          JOB_LINT: ${{ env.JOB_OUTPUT.JOB_LINT }}
+          JOB_TEST: ${{ env.JOB_OUTPUT.JOB_TEST }}
+          JOB_BUILD: ${{ env.JOB_OUTPUT.JOB_BUILD }}
+          JOB_COVERAGE: ${{ env.JOB_OUTPUT.JOB_COVERAGE }}
+          DEPLOYED_URL: ${{ inputs.DEPLOYED_URL }}
+        run: |
+          echo "| Command | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "| ---- | ---- |" >> $GITHUB_STEP_SUMMARY
+          if [ ${{ env.JOB_LINT }} == success ]; then
+            echo "| Lint | ✅ |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Lint | ❌ |" >> $GITHUB_STEP_SUMMARY
+          fi
+          if [ ${{ env.JOB_TEST }} == success ]; then
+            echo "| Test | ✅ |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Test | ❌ |" >> $GITHUB_STEP_SUMMARY
+          fi
+          if [ ${{ env.JOB_BUILD }} == success ]; then
+            echo "| Build | ✅ |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Build | ❌ |" >> $GITHUB_STEP_SUMMARY
+          fi
+          if [ ${{ env.JOB_COVERAGE }} == success ]; then
+            echo "| Coverage | ✅ |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Coverage | ❌ |" >> $GITHUB_STEP_SUMMARY
+          fi
