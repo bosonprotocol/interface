@@ -67,7 +67,7 @@ jobs:
           JOB_TEST: ${{ env.JOB_OUTPUT.JOB_TEST }}
           JOB_BUILD: ${{ env.JOB_OUTPUT.JOB_BUILD }}
           JOB_COVERAGE: ${{ env.JOB_OUTPUT.JOB_COVERAGE }}
-          DEPLOYED_URL: ${{ inputs.DEPLOYED_URL }}
+          DEPLOY_URL: ${{ env.JOB_OUTPUT.DEPLOY_URL }}
         run: |
           echo "| Command | Status |" >> $GITHUB_STEP_SUMMARY
           echo "| ---- | ---- |" >> $GITHUB_STEP_SUMMARY
@@ -91,3 +91,4 @@ jobs:
           else
             echo "| Coverage | ❌ |" >> $GITHUB_STEP_SUMMARY
           fi
+          "| URL | ${{ env.DEPLOY_URL }} |" >> $GITHUB_STEP_SUMMARY
