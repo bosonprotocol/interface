@@ -63,11 +63,11 @@ jobs:
           echo 'JOB_OUTPUT='$succededJobOutput >> $GITHUB_ENV
       - name: Adding Job Summary
         env:
-          JOB_LINT: ${{ env.JOB_OUTPUT.JOB_LINT || "failed" }}
-          JOB_TEST: ${{ env.JOB_OUTPUT.JOB_TEST || "failed" }}
-          JOB_BUILD: ${{ env.JOB_OUTPUT.JOB_BUILD || "failed" }}
-          JOB_COVERAGE: ${{ env.JOB_OUTPUT.JOB_COVERAGE || "failed" }}
-          DEPLOY_URL: ${{ env.JOB_OUTPUT.DEPLOY_URL || "empty" }}
+          JOB_LINT: ${{ env.JOB_OUTPUT.JOB_LINT }}
+          JOB_TEST: ${{ env.JOB_OUTPUT.JOB_TEST }}
+          JOB_BUILD: ${{ env.JOB_OUTPUT.JOB_BUILD }}
+          JOB_COVERAGE: ${{ env.JOB_OUTPUT.JOB_COVERAGE }}
+          DEPLOY_URL: ${{ env.JOB_OUTPUT.DEPLOY_URL }}
         run: |
           echo "| Command | Status |" >> $GITHUB_STEP_SUMMARY
           echo "| ---- | ---- |" >> $GITHUB_STEP_SUMMARY
