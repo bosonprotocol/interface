@@ -12,7 +12,7 @@ on:
 
 jobs:
   call-reusable-workflow-PR:
-    uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
+    uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml
     if: github.event_name == 'pull_request'
     with:
       REACT_APP_CHAIN_ID: '1234'
