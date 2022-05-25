@@ -4,7 +4,7 @@ import { BosonRoutes } from "@lib/routing/routes";
 import { footerHeight } from "@lib/styles/layout";
 import { Offer } from "@lib/types/offer";
 import { useOffers } from "@lib/utils/hooks/useOffers/";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
 import { generatePath, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 
@@ -72,14 +72,14 @@ export default function ExploreOffers({
       : DEFAULT_PAGE
   );
   const [pageIndex, setPageIndex] = useState(initialPageIndex);
-  const [count, setCount] = useState(0);
+  const [isPageLoaded, setIsPageLoaded] = useReducer(() => true, false);
 
   useEffect(() => {
-    if (count >= 1) {
+    if (isPageLoaded) {
       setPageIndex(DEFAULT_PAGE);
       updateUrl(DEFAULT_PAGE);
     }
-    count === 0 && setCount(count + 1);
+    !isPageLoaded && setIsPageLoaded();
   }, [brand, name, exchangeTokenAddress, sellerId]);
 
   const {
