@@ -25,10 +25,10 @@ export function useSellers() {
         }
       `,
       {
-        orderBy: "id",
+        orderBy: "sellerId",
         orderDirection: "asc"
       }
     );
-    return result?.sellers?.sort((a, b) => Number(a) - Number(b)) ?? [];
+    return result?.sellers ?? [];
   });
 }
