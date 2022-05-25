@@ -82,11 +82,7 @@ export default function ExploreOffers({
     !isPageLoaded && setIsPageLoaded();
   }, [brand, name, exchangeTokenAddress, sellerId]);
 
-  const {
-    data: offersWithOneExtra,
-    isLoading,
-    isError
-  } = useOffers({
+  const useOffersPayload = {
     brand,
     name,
     voided: false,
@@ -96,7 +92,24 @@ export default function ExploreOffers({
     filterOutWrongMetadata: true,
     first: OFFERS_PER_PAGE + 1,
     skip: OFFERS_PER_PAGE * pageIndex
-  });
+  };
+
+  const {
+    data: offersWithOneExtra,
+    isLoading,
+    isError
+  } = useOffers(useOffersPayload);
+
+  const { data: firstPageOffers } = useOffers(
+    {
+      ...useOffersPayload,
+      first: 1,
+      skip: 0
+    },
+    {
+      enabled: pageIndex > 0 && !offersWithOneExtra?.length
+    }
+  );
   const offers = offersWithOneExtra?.slice(0, OFFERS_PER_PAGE);
 
   const ref = useRef<HTMLDivElement>(null);
@@ -108,9 +121,10 @@ export default function ExploreOffers({
       <PaginationWrapper>
         <Pagination
           defaultPage={pageIndex}
-          hasMoreItems={
+          isNextEnabled={
             (offersWithOneExtra?.length || 0) >= OFFERS_PER_PAGE + 1
           }
+          isPreviousEnabled={(firstPageOffers?.length || 0) > 0}
           onChangeIndex={(index) => {
             setPageIndex(index);
             updateUrl(index);
