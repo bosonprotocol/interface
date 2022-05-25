@@ -29,6 +29,6 @@ export function useSellers() {
         orderDirection: "asc"
       }
     );
-    return result?.sellers ?? [];
+    return result?.sellers?.sort((a, b) => Number(a) - Number(b)) ?? [];
   });
 }
