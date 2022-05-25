@@ -46,12 +46,18 @@ export async function mockGetOffers({
       offer
     }));
 
-    const orderByName = !!postData.includes(`orderBy: name`);
-    const orderDirectionAsc = !!postData.includes(`orderDirection: asc`);
-
-    if (orderByName) {
+    if (
+      variables.orderBy !== undefined &&
+      variables.orderDirection !== undefined
+    ) {
+      const { orderBy, orderDirection } = variables;
+      if (!["asc", "desc"].includes(orderDirection)) {
+        throw new Error(
+          `unsupported order direction=${orderDirection}. It should be either 'asc' or 'desc'`
+        );
+      }
       baseMetadataEntities = baseMetadataEntities.sort(
-        sortOffersBy({ property: "name", asc: orderDirectionAsc })
+        sortOffersBy({ property: orderBy, asc: orderDirection === "asc" })
       );
     }
   }

@@ -32,7 +32,9 @@ const getFirstNOffers = async (numberOfOffers: number): Promise<Offer[]> => {
           }
         };
       })
-  ].slice(0, numberOfOffers);
+  ]
+    .slice(0, numberOfOffers)
+    .sort(sortOffersBy({ property: "name", asc: true }));
   await expect(offers.length).toStrictEqual(numberOfOffers);
   return offers;
 };
