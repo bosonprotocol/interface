@@ -116,4 +116,6 @@ jobs:
           else
             echo "| Coverage | ❌ |" >> $GITHUB_STEP_SUMMARY
           fi
-          "| URL | ${{ env.DEPLOY_URL }} |" >> $GITHUB_STEP_SUMMARY
+      - name: Adding Job Summary Deploy Url
+        if: ${{ env.DEPLOY_URL }}
+        run: echo "| URL | ${{ env.DEPLOY_URL }} |" >> $GITHUB_STEP_SUMMARY
