@@ -73,14 +73,14 @@ jobs:
       - run: npm run badge
       - id: coverage
         run: echo "::set-output name=pass::success"
-      # - name: Commit files
-      #   run: |
-      #     git config --local user.email "bapp-ci-bot@users.noreply.github.com"
-      #     git config --local user.name "@bapp-ci-bot"
-      #     git commit -am "Update badges"
-      # - name: Update badges
-      #   run: |
-      #     git push
+      - name: Commit files
+        run: |
+          git config --local user.email "bapp-ci-bot@users.noreply.github.com"
+          git config --local user.name "@bapp-ci-bot"
+          git commit -am "Update badges"
+      - name: Update badges
+        run: |
+          git push
       - name: Copy contents from .fleek_staging.json to .fleek.json
         if: ${{ inputs.ENV_NAME == 'staging' }}
         run: mv .fleek_staging.json .fleek.json
