@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
@@ -48,14 +48,14 @@ const Page = styled.p`
 
 interface Props {
   defaultPage: number;
-  itemsPerPage: number;
-  itemsLength: number;
+  isNextEnabled: boolean;
+  isPreviousEnabled: boolean;
   onChangeIndex: (index: number) => void;
 }
 export default function Pagination({
   defaultPage,
-  itemsPerPage,
-  itemsLength,
+  isNextEnabled,
+  isPreviousEnabled,
   onChangeIndex
 }: Props) {
   const [pageIndex, setPageIndex] = useState(defaultPage || 0);
@@ -63,11 +63,15 @@ export default function Pagination({
     setPageIndex(newIndex);
     onChangeIndex(newIndex);
   };
+  useEffect(() => {
+    setPageIndex(defaultPage);
+  }, [defaultPage]);
+
   return (
     <Container>
       <PaginationButton
         data-testid="previous"
-        disabled={pageIndex < 1}
+        disabled={pageIndex < 1 || !isPreviousEnabled}
         $isBack
         onClick={onClick(pageIndex - 1)}
       >
@@ -79,7 +83,7 @@ export default function Pagination({
       <PaginationButton
         data-testid="next"
         $isBack={false}
-        disabled={itemsLength < itemsPerPage}
+        disabled={!isNextEnabled}
         onClick={onClick(pageIndex + 1)}
       >
         &#10140;

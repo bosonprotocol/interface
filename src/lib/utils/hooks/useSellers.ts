@@ -25,7 +25,7 @@ export function useSellers() {
         }
       `,
       {
-        orderBy: "id",
+        orderBy: "sellerId",
         orderDirection: "asc"
       }
     );

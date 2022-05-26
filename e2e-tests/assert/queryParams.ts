@@ -10,7 +10,10 @@ export const queryParams = {
 } as const;
 
 export function assertUrlToEqualQueryParam(page: Page) {
-  return async (queryParam: keyof typeof queryParams, value: string) => {
+  return async (
+    queryParam: keyof typeof queryParams,
+    value: string | undefined
+  ) => {
     const url = await page.url();
     const { hash } = new URL(url);
     const paramsObj = Object.fromEntries(

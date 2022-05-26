@@ -28,26 +28,36 @@ export async function mockGetOffers({
   } = {}
 }: MockProps) {
   let baseMetadataEntities = null;
-
   if (!response && postData) {
     let idx = 0;
     const { variables } = JSON.parse(postData);
+
     if (variables.skip !== undefined && countOffersPerPage && offersPerPage) {
       const skip = variables.skip || 0;
-      idx = skip / countOffersPerPage;
-      offers = offersPerPage[idx];
-      await expect(offers).toBeDefined();
+      idx = Math.ceil(skip / countOffersPerPage);
+      offers = offersPerPage[idx] || [];
     }
+
+    if (variables.first !== undefined) {
+      offers = offers.slice(0, variables.first);
+    }
+
     baseMetadataEntities = offers.map((offer) => ({
       offer
     }));
 
-    const orderByName = !!postData.includes(`orderBy: name`);
-    const orderDirectionAsc = !!postData.includes(`orderDirection: asc`);
-
-    if (orderByName) {
+    if (
+      variables.orderBy !== undefined &&
+      variables.orderDirection !== undefined
+    ) {
+      const { orderBy, orderDirection } = variables;
+      if (!["asc", "desc"].includes(orderDirection)) {
+        throw new Error(
+          `unsupported order direction=${orderDirection}. It should be either 'asc' or 'desc'`
+        );
+      }
       baseMetadataEntities = baseMetadataEntities.sort(
-        sortOffersBy({ property: "name", asc: orderDirectionAsc })
+        sortOffersBy({ property: orderBy, asc: orderDirection === "asc" })
       );
     }
   }
