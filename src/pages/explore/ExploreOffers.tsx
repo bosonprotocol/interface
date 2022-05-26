@@ -77,8 +77,8 @@ export default function ExploreOffers({
   useEffect(() => {
     if (isPageLoaded) {
       setPageIndex(DEFAULT_PAGE);
-      updateUrl(DEFAULT_PAGE);
     }
+    updateUrl(DEFAULT_PAGE);
     !isPageLoaded && setIsPageLoaded();
   }, [brand, name, exchangeTokenAddress, sellerId]);
 

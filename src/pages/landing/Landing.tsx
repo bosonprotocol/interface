@@ -95,7 +95,9 @@ export default function Landing() {
   const [name, setName] = useState("");
 
   const navigateToExplore = () =>
-    navigate(`${BosonRoutes.Explore}?${QueryParameters.name}=${name}`);
+    navigate(
+      `${BosonRoutes.Explore}${name ? `?${QueryParameters.name}=${name}` : ""}`
+    );
 
   return (
     <LandingContainer>
