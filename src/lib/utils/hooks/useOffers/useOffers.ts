@@ -18,7 +18,6 @@ export function useOffers(
   return useQuery(
     ["offers", props],
     async () => {
-      console.log("request offers is made", props);
       const variables = {
         first: props.first,
         skip: props.skip,
