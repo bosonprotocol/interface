@@ -1,5 +1,4 @@
-import { Offer } from "@lib/types/offer";
-
+import { Offer } from "../../src/lib/types/offer";
 // import { expect } from "@playwright/test";
 import { expect } from "../baseFixtures";
 import { sortOffersBy } from "../utils/sort";

@@ -1,13 +1,13 @@
-import OfferList from "@components/offers/OfferList";
-import { UrlParameters } from "@lib/routing/query-parameters";
-import { BosonRoutes } from "@lib/routing/routes";
-import { footerHeight } from "@lib/styles/layout";
-import { Offer } from "@lib/types/offer";
-import { useOffers } from "@lib/utils/hooks/useOffers/";
 import { useRef, useState } from "react";
 import { generatePath, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 
+import OfferList from "../../components/offers/OfferList";
+import { UrlParameters } from "../../lib/routing/query-parameters";
+import { BosonRoutes } from "../../lib/routing/routes";
+import { footerHeight } from "../../lib/styles/layout";
+import { Offer } from "../../lib/types/offer";
+import { useOffers } from "../../lib/utils/hooks/useOffers/";
 import Pagination from "./Pagination";
 
 const Container = styled.div`

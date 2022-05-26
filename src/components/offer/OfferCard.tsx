@@ -1,12 +1,13 @@
-import AddressContainer from "@components/offer/AddressContainer";
-import AddressImage from "@components/offer/AddressImage";
-import RootPrice from "@components/price";
-import { UrlParameters } from "@lib/routing/query-parameters";
-import { OffersRoutes } from "@lib/routing/routes";
-import { colors } from "@lib/styles/colors";
-import { Offer } from "@lib/types/offer";
 import { generatePath, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+
+import AddressContainer from "../../components/offer/AddressContainer";
+import AddressImage from "../../components/offer/AddressImage";
+import RootPrice from "../../components/price";
+import { UrlParameters } from "../../lib/routing/query-parameters";
+import { OffersRoutes } from "../../lib/routing/routes";
+import { colors } from "../../lib/styles/colors";
+import { Offer } from "../../lib/types/offer";
 
 const Card = styled.div`
   border-radius: 12px;

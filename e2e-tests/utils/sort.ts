@@ -1,4 +1,4 @@
-import { Offer } from "@lib/types/offer";
+import { Offer } from "../../src/lib/types/offer";
 
 export function sortOffersBy(by: { property: "name"; asc: boolean }) {
   return (

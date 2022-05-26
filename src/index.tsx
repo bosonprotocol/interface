@@ -1,11 +1,11 @@
-import App from "@components/app";
-import Layout from "@components/Layout";
-import { BosonRoutes, OffersRoutes } from "@lib/routing/routes";
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { HashRouter, Route, Routes } from "react-router-dom";
 
+import App from "./components/app";
+import Layout from "./components/Layout";
+import { BosonRoutes, OffersRoutes } from "./lib/routing/routes";
 import reportWebVitals from "./reportWebVitals";
 
 const rootElement = document.getElementById("root");

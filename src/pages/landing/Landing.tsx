@@ -1,10 +1,11 @@
-import { QueryParameters } from "@lib/routing/query-parameters";
-import { BosonRoutes } from "@lib/routing/routes";
-import { colors } from "@lib/styles/colors";
-import FeaturedOffers from "@pages/landing/FeaturedOffers";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+
+import { QueryParameters } from "../../lib/routing/query-parameters";
+import { BosonRoutes } from "../../lib/routing/routes";
+import { colors } from "../../lib/styles/colors";
+import FeaturedOffers from "../../pages/landing/FeaturedOffers";
 
 const LandingContainer = styled.div`
   display: flex;

@@ -1,16 +1,16 @@
 import { manageOffer } from "@bosonprotocol/widgets-sdk";
-import AddressContainer from "@components/offer/AddressContainer";
-import AddressImage from "@components/offer/AddressImage";
-import RootPrice from "@components/price";
-import { CONFIG } from "@lib/config";
-import { UrlParameters } from "@lib/routing/query-parameters";
-import { colors } from "@lib/styles/colors";
-import { Offer } from "@lib/types/offer";
-import { useOffer } from "@lib/utils/hooks/useOffers/useOffer";
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
+import AddressContainer from "./../../components/offer/AddressContainer";
+import AddressImage from "./../../components/offer/AddressImage";
+import RootPrice from "./../../components/price";
+import { CONFIG } from "./../../lib/config";
+import { UrlParameters } from "./../../lib/routing/query-parameters";
+import { colors } from "./../../lib/styles/colors";
+import { Offer } from "./../../lib/types/offer";
+import { useOffer } from "./../../lib/utils/hooks/useOffers/useOffer";
 import { ReactComponent as InfoSvg } from "./images/info.svg";
 
 const Root = styled.div`
