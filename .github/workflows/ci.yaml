@@ -59,15 +59,40 @@ jobs:
           succededJobOutput="$(
             echo '${{ env.OUTPUTS }}' | jq '.[] | select(.result | startswith("success")) | .outputs'
           )"
-
           echo 'JOB_OUTPUT='$succededJobOutput >> $GITHUB_ENV
+      - name: Get job vars
+        run: |
+          jobLint="$(
+            echo '${{ env.JOB_OUTPUT }}' |
+            jq '.JOB_LINT'
+          )"
+          echo 'JOB_LINT='$jobLint >> $GITHUB_ENV
+
+          jobTest="$(
+            echo '${{ env.JOB_OUTPUT }}' |
+            jq '.JOB_TEST'
+          )"
+          echo 'JOB_TEST='$jobTest >> $GITHUB_ENV
+
+          jobBuild="$(
+            echo '${{ env.JOB_OUTPUT }}' |
+            jq '.JOB_BUILD'
+          )"
+          echo 'JOB_BUILD='$jobBuild >> $GITHUB_ENV
+
+          jobCoverage="$(
+            echo '${{ env.JOB_OUTPUT }}' |
+            jq '.JOB_COVERAGE'
+          )"
+          echo 'JOB_COVERAGE='$jobCoverage >> $GITHUB_ENV
+
+          deployUrl="$(
+            echo '${{ env.JOB_OUTPUT }}' |
+            jq '.DEPLOY_URL'
+          )"
+          echo 'DEPLOY_URL='$deployUrl >> $GITHUB_ENV
+
       - name: Adding Job Summary
-        env:
-          JOB_LINT: ${{ env.JOB_OUTPUT.JOB_LINT }}
-          JOB_TEST: ${{ env.JOB_OUTPUT.JOB_TEST }}
-          JOB_BUILD: ${{ env.JOB_OUTPUT.JOB_BUILD }}
-          JOB_COVERAGE: ${{ env.JOB_OUTPUT.JOB_COVERAGE }}
-          DEPLOY_URL: ${{ env.JOB_OUTPUT.DEPLOY_URL }}
         run: |
           echo "| Command | Status |" >> $GITHUB_STEP_SUMMARY
           echo "| ---- | ---- |" >> $GITHUB_STEP_SUMMARY

@@ -1,8 +1,10 @@
 # Boson Protocol dApp
 
-<a href="https://github.com/bosonprotocol/interface/actions/workflows/ci.yaml">[![Build Status](https://github.com/bosonprotocol/interface/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/bosonprotocol/interface/actions/workflows/ci.yaml)</a>
-![](https://img.shields.io/badge/Coverage-9%25-733B27.svg?prefix=$coverage$)
+| Statements                  | Branches                | Functions                 | Lines             |
+| --------------------------- | ----------------------- | ------------------------- | ----------------- |
+| ![Statements](https://img.shields.io/badge/statements-12.19%25-red.svg?style=flat) | ![Branches](https://img.shields.io/badge/branches-5.69%25-red.svg?style=flat) | ![Functions](https://img.shields.io/badge/functions-6.09%25-red.svg?style=flat) | ![Lines](https://img.shields.io/badge/lines-12.5%25-red.svg?style=flat) |
 
+<a href="https://github.com/bosonprotocol/interface/actions/workflows/ci.yaml">[![Build Status](https://github.com/bosonprotocol/interface/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/bosonprotocol/interface/actions/workflows/ci.yaml)</a>
 
 | Env          | Network   | Endpoint                                                        |
 | ------------ | --------- | --------------------------------------------------------------- |

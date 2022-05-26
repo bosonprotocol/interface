@@ -1,5 +1,7 @@
+// import { expect, Page } from "@playwright/test";
 import { Page } from "@playwright/test";
-import { expect } from "playwright-test-coverage";
+
+import { expect } from "../baseFixtures";
 
 export const queryParams = {
   name: "name",
