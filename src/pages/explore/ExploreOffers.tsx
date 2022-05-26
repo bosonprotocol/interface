@@ -1,10 +1,10 @@
 import OfferList from "@components/offers/OfferList";
-import { UrlParameters } from "@lib/routing/query-parameters";
+import { QueryParameters, UrlParameters } from "@lib/routing/query-parameters";
 import { BosonRoutes } from "@lib/routing/routes";
 import { footerHeight } from "@lib/styles/layout";
 import { Offer } from "@lib/types/offer";
 import { useOffers } from "@lib/utils/hooks/useOffers/";
-import { useRef, useState } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
 import { generatePath, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 
@@ -28,6 +28,26 @@ interface Props {
   sellerId?: Offer["seller"]["id"];
 }
 
+const updatePageIndexInUrl =
+  (navigate: ReturnType<typeof useNavigate>) =>
+  (
+    index: number,
+    queryParams: { [x in keyof typeof QueryParameters]: string }
+  ): void => {
+    const queryParamsUrl = new URLSearchParams(
+      Object.entries(queryParams).filter(([, value]) => value !== "")
+    ).toString();
+    if (index === 0) {
+      navigate(generatePath(`${BosonRoutes.Explore}?${queryParamsUrl}`));
+    } else {
+      navigate(
+        generatePath(`${BosonRoutes.ExplorePageByIndex}?${queryParamsUrl}`, {
+          [UrlParameters.page]: index + 1 + ""
+        })
+      );
+    }
+  };
+
 const OFFERS_PER_PAGE = 10;
 const DEFAULT_PAGE = 0;
 
@@ -39,6 +59,12 @@ export default function ExploreOffers({
 }: Props) {
   const params = useParams();
   const navigate = useNavigate();
+  const updateUrl = (index: number) =>
+    updatePageIndexInUrl(navigate)(index, {
+      name: name ?? "",
+      currency: exchangeTokenAddress ?? "",
+      seller: sellerId ?? ""
+    });
   const initialPageIndex = Math.max(
     0,
     params[UrlParameters.page]
@@ -46,12 +72,17 @@ export default function ExploreOffers({
       : DEFAULT_PAGE
   );
   const [pageIndex, setPageIndex] = useState(initialPageIndex);
+  const [isPageLoaded, setIsPageLoaded] = useReducer(() => true, false);
 
-  const {
-    data: offers,
-    isLoading,
-    isError
-  } = useOffers({
+  useEffect(() => {
+    if (isPageLoaded) {
+      setPageIndex(DEFAULT_PAGE);
+    }
+    updateUrl(DEFAULT_PAGE);
+    !isPageLoaded && setIsPageLoaded();
+  }, [brand, name, exchangeTokenAddress, sellerId]);
+
+  const useOffersPayload = {
     brand,
     name,
     voided: false,
@@ -59,9 +90,27 @@ export default function ExploreOffers({
     exchangeTokenAddress,
     sellerId,
     filterOutWrongMetadata: true,
-    first: OFFERS_PER_PAGE,
+    first: OFFERS_PER_PAGE + 1,
     skip: OFFERS_PER_PAGE * pageIndex
-  });
+  };
+
+  const {
+    data: offersWithOneExtra,
+    isLoading,
+    isError
+  } = useOffers(useOffersPayload);
+
+  const { data: firstPageOffers } = useOffers(
+    {
+      ...useOffersPayload,
+      first: 1,
+      skip: 0
+    },
+    {
+      enabled: pageIndex > 0 && !offersWithOneExtra?.length
+    }
+  );
+  const offers = offersWithOneExtra?.slice(0, OFFERS_PER_PAGE);
 
   const ref = useRef<HTMLDivElement>(null);
 
@@ -72,20 +121,13 @@ export default function ExploreOffers({
       <PaginationWrapper>
         <Pagination
           defaultPage={pageIndex}
-          itemsLength={offers?.length || 0}
-          itemsPerPage={OFFERS_PER_PAGE}
+          isNextEnabled={
+            (offersWithOneExtra?.length || 0) >= OFFERS_PER_PAGE + 1
+          }
+          isPreviousEnabled={(firstPageOffers?.length || 0) > 0}
           onChangeIndex={(index) => {
             setPageIndex(index);
-
-            if (index === 0) {
-              navigate(generatePath(BosonRoutes.Explore));
-            } else {
-              navigate(
-                generatePath(BosonRoutes.ExplorePageByIndex, {
-                  [UrlParameters.page]: index + 1 + ""
-                })
-              );
-            }
+            updateUrl(index);
           }}
         />
       </PaginationWrapper>
