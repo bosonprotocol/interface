@@ -103,7 +103,7 @@ const config: PlaywrightTestConfig = {
     port: 3000,
     timeout: 120 * 1000,
     env: {
-      USE_BABEL_PLUGIN_ISTANBUL: process.env.CI ? true : false
+      USE_BABEL_PLUGIN_ISTANBUL: process.env.CI ? "1" : ""
     },
     reuseExistingServer: !process.env.CI
   }
