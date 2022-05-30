@@ -111,7 +111,7 @@ export default function OfferCard({ offer }: Props) {
               navigate(
                 generatePath(OffersRoutes.OfferDetail, {
                   [UrlParameters.offerId]: id
-                }) + "?test=hola"
+                })
               )
             }
           >

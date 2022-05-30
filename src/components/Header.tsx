@@ -134,6 +134,7 @@ export default function Header() {
 
         <SettingsSvgIcon
           height="22px"
+          data-testid="settings"
           ref={setReferenceElement}
           onClick={() => toggleDropdownVisibility()}
         />
@@ -142,6 +143,7 @@ export default function Header() {
           style={styles.popper}
           {...attributes.popper}
           hidden={!isDropdownVisible}
+          data-testid="header-dropdown"
         >
           <div>
             Sentry Tracing Endpoint:{" "}
@@ -157,7 +159,7 @@ export default function Header() {
               Save
             </SaveButton>
           </div>
-          <Error>{sentryError}</Error>
+          <Error data-testid="error">{sentryError}</Error>
           <div ref={setArrowElement} style={styles.arrow} />
         </DropdownItem>
       </NavigationLinks>

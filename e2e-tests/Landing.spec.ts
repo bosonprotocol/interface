@@ -34,6 +34,70 @@ test.describe("Root page (Landing page)", () => {
 
       await expect(footer).toBeDefined();
     });
+    test.describe("tracing dropdown", () => {
+      test("should display tracing dropdown when clicking on the settings icon", async ({
+        page
+      }) => {
+        const settings = await page.locator("[data-testid=settings]");
+
+        await expect(settings).toBeDefined();
+
+        await settings.click();
+
+        const headerDropdown = await page.locator(
+          "[data-testid=header-dropdown]"
+        );
+
+        await expect(headerDropdown).toBeDefined();
+      });
+      test("should close opened tracing dropdown when clicking on the settings icon", async ({
+        page
+      }) => {
+        const settings = await page.locator("[data-testid=settings]");
+
+        await expect(settings).toBeVisible();
+
+        await settings.click();
+
+        const headerDropdown = await page.locator(
+          "[data-testid=header-dropdown]"
+        );
+
+        await expect(headerDropdown).toBeVisible();
+
+        await settings.click();
+
+        await expect(headerDropdown).not.toBeVisible();
+      });
+      test("should display an error when typing a wrong url into the tracing url dropdown", async ({
+        page
+      }) => {
+        const settings = await page.locator("[data-testid=settings]");
+
+        await expect(settings).toBeVisible();
+
+        await settings.click();
+
+        const headerDropdown = await page.locator(
+          "[data-testid=header-dropdown]"
+        );
+
+        await expect(headerDropdown).toBeVisible();
+
+        const input = await headerDropdown.locator("input");
+
+        const wrongUrl = "blabla";
+        await input.type(wrongUrl, { delay: 100 });
+
+        const saveButton = await headerDropdown.locator("button");
+
+        await saveButton.click();
+
+        const errorDiv = await headerDropdown.locator("[data-testid=error]");
+
+        await expect(errorDiv).toHaveText(`Invalid Sentry Dsn: ${wrongUrl}`);
+      });
+    });
   });
 
   test.describe("Offers list", () => {
