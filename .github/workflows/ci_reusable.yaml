@@ -9,6 +9,9 @@ on:
       DEPLOY_TO_FLEEK:
         required: true
         type: boolean
+      UPDATE_COVERAGE:
+        required: true
+        type: boolean
       ENV_NAME:
         required: true
         type: string
@@ -17,6 +20,17 @@ on:
         required: true
       FLEEK_API_KEY:
         required: false
+      CODECOV_TOKEN:
+        required: true
+    outputs:
+      JOB_LINT:
+        value: ${{ jobs.build-test-deploy.outputs.jobLint }}
+      JOB_BUILD:
+        value: ${{ jobs.build-test-deploy.outputs.jobBuild }}
+      JOB_COVERAGE:
+        value: ${{ jobs.build-test-deploy.outputs.jobCoverage }}
+      DEPLOY_URL:
+        value: ${{ jobs.build-test-deploy.outputs.deployUrl }}
 
 jobs:
   build-test-deploy:
@@ -25,8 +39,15 @@ jobs:
     env:
       REACT_APP_CHAIN_ID: ${{ inputs.REACT_APP_CHAIN_ID }}
       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+    outputs:
+      jobLint: ${{ steps.lint.outputs.pass }}
+      jobBuild: ${{ steps.build.outputs.pass }}
+      jobCoverage: ${{ steps.coverage.outputs.pass }}
+      deployUrl: ${{ steps.deploy.outputs.deployUrl }}
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
       - uses: actions/setup-node@v3
         with:
           node-version: "17"
@@ -43,9 +64,20 @@ jobs:
         run: npx playwright install --with-deps chromium
       - run: npm run prettier
       - run: npm run lint
+      - id: lint
+        run: echo "::set-output name=pass::success"
       - run: npm run build
-      - run: npm run test
-      - run: npm run test:e2e:ci
+      - id: build
+        run: echo "::set-output name=pass::success"
+      - name: Run Tests & Generate coverage report
+        run: npm run coverage:report
+      - name: Upload coverage to Codecov
+        if: ${{ inputs.UPDATE_COVERAGE }}
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
+          verbose: true
       - name: Copy contents from .fleek_staging.json to .fleek.json
         if: ${{ inputs.ENV_NAME == 'staging' }}
         run: mv .fleek_staging.json .fleek.json
