@@ -44,6 +44,8 @@ jobs:
       deployUrl: ${{ steps.deploy.outputs.deployUrl }}
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
       - uses: actions/setup-node@v3
         with:
           node-version: "17"
