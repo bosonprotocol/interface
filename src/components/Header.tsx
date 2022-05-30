@@ -78,10 +78,15 @@ const SaveButton = styled.button`
   cursor: pointer;
 `;
 
+const Error = styled.span`
+  color: ${colors.darkred};
+`;
+
 export default function Header() {
   const navigate = useNavigate();
   const [sentryTracingUrl, setSentryTracingUrl] = useState<string>("");
   const [tracingUrl, setTracingUrl] = useState<string>("");
+  const [sentryError, setSentryError] = useState<string>("");
 
   const [referenceElement, setReferenceElement] =
     useState<SVGSVGElement | null>(null);
@@ -99,15 +104,20 @@ export default function Header() {
   );
 
   useEffect(() => {
-    Sentry.init({
-      dsn: sentryTracingUrl,
-      integrations: [
-        new BrowserTracing({
-          routingInstrumentation: reactRouterV6Instrumentation(routes, true)
-        })
-      ],
-      tracesSampleRate: 1.0
-    });
+    try {
+      Sentry.init({
+        dsn: sentryTracingUrl,
+        integrations: [
+          new BrowserTracing({
+            routingInstrumentation: reactRouterV6Instrumentation(routes, true)
+          })
+        ],
+        tracesSampleRate: 1.0
+      });
+      setSentryError("");
+    } catch (err) {
+      setSentryError((err as { message: string }).message || "Invalid url");
+    }
   }, [sentryTracingUrl]);
 
   return (
@@ -133,18 +143,21 @@ export default function Header() {
           {...attributes.popper}
           hidden={!isDropdownVisible}
         >
-          Sentry Tracing Endpoint:{" "}
-          <Input
-            type="text"
-            placeholder="https://XXX@YYY.ingest.sentry.io/AAA"
-            value={tracingUrl}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setTracingUrl(e.target.value)
-            }
-          />
-          <SaveButton onClick={() => setSentryTracingUrl(tracingUrl)}>
-            Save
-          </SaveButton>
+          <div>
+            Sentry Tracing Endpoint:{" "}
+            <Input
+              type="text"
+              placeholder="https://XXX@YYY.ingest.sentry.io/AAA"
+              value={tracingUrl}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setTracingUrl(e.target.value)
+              }
+            />
+            <SaveButton onClick={() => setSentryTracingUrl(tracingUrl)}>
+              Save
+            </SaveButton>
+          </div>
+          <Error>{sentryError}</Error>
           <div ref={setArrowElement} style={styles.arrow} />
         </DropdownItem>
       </NavigationLinks>
