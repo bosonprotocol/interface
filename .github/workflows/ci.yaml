@@ -21,6 +21,7 @@ jobs:
       UPDATE_COVERAGE: false
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
   call-reusable-workflow-testing:
     uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
     if: github.event_name == 'push'
@@ -32,6 +33,7 @@ jobs:
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
   call-reusable-workflow-staging:
     uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
     if: github.event_name == 'release' && github.event.action == 'created'
@@ -43,3 +45,4 @@ jobs:
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
