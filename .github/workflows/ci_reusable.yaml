@@ -17,6 +17,8 @@ on:
         required: true
       FLEEK_API_KEY:
         required: false
+      CODECOV_TOKEN:
+        required: false
     outputs:
       JOB_LINT:
         value: ${{ jobs.build-test-deploy.outputs.jobLint }}
