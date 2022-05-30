@@ -1,6 +1,6 @@
 | Statements                  | Branches                | Functions                 | Lines             |
 | --------------------------- | ----------------------- | ------------------------- | ----------------- |
-| ![Statements](#statements#) | ![Branches](#branches#) | ![Functions](#functions#) | ![Lines](#lines#) |
+| ![Statements](https://img.shields.io/badge/statements-87.32%25-yellow.svg?style=flat) | ![Branches](https://img.shields.io/badge/branches-71.75%25-red.svg?style=flat) | ![Functions](https://img.shields.io/badge/functions-76.4%25-red.svg?style=flat) | ![Lines](https://img.shields.io/badge/lines-87.87%25-yellow.svg?style=flat) |
 
 <a href="https://github.com/bosonprotocol/interface/actions/workflows/ci.yaml">[![Build Status](https://github.com/bosonprotocol/interface/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/bosonprotocol/interface/actions/workflows/ci.yaml)</a>
 
