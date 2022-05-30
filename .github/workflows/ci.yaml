@@ -18,6 +18,7 @@ jobs:
       REACT_APP_CHAIN_ID: '1234'
       DEPLOY_TO_FLEEK: false
       ENV_NAME: 'testing'
+      UPDATE_COVERAGE: false
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
   call-reusable-workflow-testing:
@@ -27,6 +28,7 @@ jobs:
       REACT_APP_CHAIN_ID: '1234'
       DEPLOY_TO_FLEEK: true
       ENV_NAME: 'testing'
+      UPDATE_COVERAGE: true
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
@@ -37,6 +39,7 @@ jobs:
       REACT_APP_CHAIN_ID: '3'
       DEPLOY_TO_FLEEK: true
       ENV_NAME: 'staging'
+      UPDATE_COVERAGE: false
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
