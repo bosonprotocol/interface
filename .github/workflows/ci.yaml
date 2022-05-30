@@ -34,7 +34,7 @@ jobs:
     with:
       REACT_APP_CHAIN_ID: '1234'
       DEPLOY_TO_FLEEK: true
-      UPDATE_COVERAGE: true
+      # UPDATE_COVERAGE: true
       ENV_NAME: 'testing'
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -46,7 +46,7 @@ jobs:
     with:
       REACT_APP_CHAIN_ID: '3'
       DEPLOY_TO_FLEEK: true
-      UPDATE_COVERAGE: true
+      # UPDATE_COVERAGE: true
       ENV_NAME: 'staging'
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
