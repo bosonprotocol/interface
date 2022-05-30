@@ -51,7 +51,7 @@ const SettingsSvgIcon = styled(SettingsSvg)`
 `;
 
 const DropdownItem = styled.div`
-  background: ${colors.grey};
+  background: ${colors.navy};
   margin-top: 10px;
   color: ${colors.white};
   padding: 15px;
@@ -68,8 +68,8 @@ const Input = styled.input`
 `;
 
 const SaveButton = styled.button`
-  width: 100px;
-  padding: 10px 8px;
+  width: 50px;
+  padding: 10px 2px;
   background: ${colors.green};
   color: ${colors.black};
   border-radius: 5px;
@@ -146,7 +146,7 @@ export default function Header() {
           data-testid="header-dropdown"
         >
           <div>
-            Sentry Tracing Endpoint:{" "}
+            Tracing Endpoint:{" "}
             <Input
               type="text"
               placeholder="https://XXX@YYY.ingest.sentry.io/123"
