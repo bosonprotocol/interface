@@ -74,12 +74,6 @@ jobs:
           )"
           echo 'JOB_BUILD='$jobBuild >> $GITHUB_ENV
 
-          jobCoverage="$(
-            echo '${{ env.JOB_OUTPUT }}' |
-            jq '.JOB_COVERAGE'
-          )"
-          echo 'JOB_COVERAGE='$jobCoverage >> $GITHUB_ENV
-
           deployUrl="$(
             echo '${{ env.JOB_OUTPUT }}' |
             jq '.DEPLOY_URL'
@@ -99,11 +93,6 @@ jobs:
             echo "| Build | ✅ |" >> $GITHUB_STEP_SUMMARY
           else
             echo "| Build | ❌ |" >> $GITHUB_STEP_SUMMARY
-          fi
-          if [ ${{ env.JOB_COVERAGE }} == success ]; then
-            echo "| Coverage | ✅ |" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "| Coverage | ❌ |" >> $GITHUB_STEP_SUMMARY
           fi
       - name: Adding Job Summary Deploy Url
         if: ${{ env.DEPLOY_URL }}

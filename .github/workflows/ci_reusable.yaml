@@ -62,17 +62,18 @@ jobs:
       - run: npm run build
       - id: build
         run: echo "::set-output name=pass::success"
-      - run: npm run badge
-      - id: coverage
-        run: echo "::set-output name=pass::success"
-      - name: Commit files
-        run: |
-          git config --local user.email "bapp-ci-bot@users.noreply.github.com"
-          git config --local user.name "@bapp-ci-bot"
-          git commit -am "Update badges"
-      - name: Update badges
-        run: |
-          git push
+      - name: Generate coverage report
+        run: npm run coverage:report
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: ./coverage
+          fail_ci_if_error: true
+          files: ./coverage-final_merged.json
+          flags: unittests,e2etests
+          path_to_write_report: ./coverage/codecov_report.txt
+          verbose: true
       - name: Copy contents from .fleek_staging.json to .fleek.json
         if: ${{ inputs.ENV_NAME == 'staging' }}
         run: mv .fleek_staging.json .fleek.json
