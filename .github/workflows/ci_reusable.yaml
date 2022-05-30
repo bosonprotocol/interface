@@ -69,15 +69,15 @@ jobs:
       - run: npm run build
       - id: build
         run: echo "::set-output name=pass::success"
-      - name: Run Tests & Generate coverage report
-        run: npm run coverage:report
-      - name: Upload coverage to Codecov
-        if: ${{ inputs.UPDATE_COVERAGE }}
-        uses: codecov/codecov-action@v2
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          fail_ci_if_error: true
-          verbose: true
+      # - name: Run Tests & Generate coverage report
+      #   run: npm run coverage:report
+      # - name: Upload coverage to Codecov
+      #   if: ${{ inputs.UPDATE_COVERAGE }}
+      #   uses: codecov/codecov-action@v2
+      #   with:
+      #     token: ${{ secrets.CODECOV_TOKEN }}
+      #     fail_ci_if_error: true
+      #     verbose: true
       - name: Copy contents from .fleek_staging.json to .fleek.json
         if: ${{ inputs.ENV_NAME == 'staging' }}
         run: mv .fleek_staging.json .fleek.json
