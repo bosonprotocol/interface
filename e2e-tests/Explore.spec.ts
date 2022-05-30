@@ -1,5 +1,4 @@
 import { Offer } from "../src/lib/types/offer";
-// import { expect } from "@playwright/test";
 import { assertOffer } from "./assert/offer";
 import { assertUrlToEqualQueryParam, queryParams } from "./assert/queryParams";
 import { assertUrlHashToEqual } from "./assert/urlParams";

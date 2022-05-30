@@ -1,5 +1,4 @@
 import { Offer } from "../src/lib/types/offer";
-// import { expect } from "@playwright/test";
 import { assertOffer } from "./assert/offer";
 import { expect, test } from "./baseFixtures";
 import { defaultMockOffers } from "./mocks/defaultMockOffers";
