@@ -16,8 +16,7 @@ on:
 
 jobs:
   call-reusable-workflow-PR:
-    # TODO: change that part
-    uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@BP226-process-improvement-task-coverage-ok
+    uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
     if: github.event_name == 'pull_request'
     with:
       REACT_APP_CHAIN_ID: '1234'
@@ -34,24 +33,24 @@ jobs:
     with:
       REACT_APP_CHAIN_ID: '1234'
       DEPLOY_TO_FLEEK: true
-      # UPDATE_COVERAGE: true
+      UPDATE_COVERAGE: true
       ENV_NAME: 'testing'
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
-      # CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
   call-reusable-workflow-staging:
     uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
     if: github.event_name == 'release' && github.event.action == 'created'
     with:
       REACT_APP_CHAIN_ID: '3'
       DEPLOY_TO_FLEEK: true
-      # UPDATE_COVERAGE: true
+      UPDATE_COVERAGE: true
       ENV_NAME: 'staging'
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
-      # CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   job-sumary:
     name: Create Job Summary
