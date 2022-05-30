@@ -21,7 +21,8 @@
     "test:e2e:report": "playwright show-report",
     "coverage:unit": "npm run test -- --silent --watchAll=false --coverage --coverageReporters 'json' && mv coverage/coverage-final.json coverage/coverage-unit.json",
     "coverage:e2e": "cross-env CI=true npx playwright test --project=chromium && npx nyc report --reporter=json && mv coverage/coverage-final.json coverage/coverage-e2e.json",
-    "badge": "npm run coverage:unit && npm run coverage:e2e && nyc merge coverage coverage/coverage-final_merged.json && istanbul report --include coverage/coverage-final_merged.json --dir coverage json-summary && istanbul-badges-readme"
+    "badge": "npm run coverage:unit && npm run coverage:e2e && nyc merge coverage coverage/coverage-final_merged.json && istanbul report --include coverage/coverage-final_merged.json --dir coverage json-summary && istanbul-badges-readme",
+    "postinstall": "npx playwright install"
   },
   "dependencies": {
     "@bosonprotocol/common": "^1.5.0-alpha.3",
