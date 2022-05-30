@@ -21,8 +21,7 @@ jobs:
     with:
       REACT_APP_CHAIN_ID: '1234'
       DEPLOY_TO_FLEEK: false
-      # TODO: change that part
-      UPDATE_COVERAGE: true
+      UPDATE_COVERAGE: false
       ENV_NAME: 'testing'
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
