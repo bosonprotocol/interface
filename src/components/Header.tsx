@@ -1,10 +1,16 @@
 import logo from "@assets/logo.png";
-import { BosonRoutes } from "@lib/routing/routes";
+import { BosonRoutes, routes } from "@lib/routing/routes";
 import { colors } from "@lib/styles/colors";
+import * as Sentry from "@sentry/react";
+import { BrowserTracing } from "@sentry/tracing";
+import React, { useEffect, useReducer, useState } from "react";
+import { usePopper } from "react-popper";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import Layout from "./Layout";
+import { reactRouterV6Instrumentation } from "./SentryReactRouterV6RouterInstrumentation";
+import { ReactComponent as SettingsSvg } from "./settings.svg";
 
 const HeaderContainer = styled(Layout)`
   display: flex;
@@ -35,8 +41,75 @@ const LogoImg = styled.img`
   cursor: pointer;
 `;
 
+const SettingsSvgIcon = styled(SettingsSvg)`
+  :hover * {
+    stroke: ${colors.green};
+  }
+  :hover {
+    cursor: pointer;
+  }
+`;
+
+const DropdownItem = styled.div`
+  background: ${colors.grey};
+  margin-top: 10px;
+  color: ${colors.white};
+  padding: 15px;
+  border: 1px solid ${colors.lightgrey};
+`;
+
+const Input = styled.input`
+  padding: 10px 8px;
+  border-radius: 5px;
+  font-size: 16px;
+  margin: 0 5px;
+  min-width: 280px;
+  max-width: 100%;
+`;
+
+const SaveButton = styled.button`
+  width: 100px;
+  padding: 10px 8px;
+  background: ${colors.green};
+  color: ${colors.black};
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+`;
+
 export default function Header() {
   const navigate = useNavigate();
+  const [sentryTracingUrl, setSentryTracingUrl] = useState<string>("");
+  const [tracingUrl, setTracingUrl] = useState<string>("");
+
+  const [referenceElement, setReferenceElement] =
+    useState<SVGSVGElement | null>(null);
+  const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(
+    null
+  );
+  const [arrowElement, setArrowElement] = useState<HTMLDivElement | null>(null);
+  const { styles, attributes } = usePopper(referenceElement, popperElement, {
+    placement: "bottom-start",
+    modifiers: [{ name: "arrow", options: { element: arrowElement } }]
+  });
+  const [isDropdownVisible, toggleDropdownVisibility] = useReducer(
+    (state) => !state,
+    false
+  );
+
+  useEffect(() => {
+    Sentry.init({
+      dsn: sentryTracingUrl,
+      integrations: [
+        new BrowserTracing({
+          routingInstrumentation: reactRouterV6Instrumentation(routes, true)
+        })
+      ],
+      tracesSampleRate: 1.0
+    });
+  }, [sentryTracingUrl]);
+
   return (
     <HeaderContainer>
       <LogoImg
@@ -48,6 +121,32 @@ export default function Header() {
         <Link to={BosonRoutes.Root}>Home</Link>
         <Link to={BosonRoutes.Explore}>Explore</Link>
         <Link to={BosonRoutes.CreateOffer}>Create Offer</Link>
+
+        <SettingsSvgIcon
+          height="22px"
+          ref={setReferenceElement}
+          onClick={() => toggleDropdownVisibility()}
+        />
+        <DropdownItem
+          ref={setPopperElement}
+          style={styles.popper}
+          {...attributes.popper}
+          hidden={!isDropdownVisible}
+        >
+          Sentry Tracing Endpoint:{" "}
+          <Input
+            type="text"
+            placeholder="https://XXX@YYY.ingest.sentry.io/AAA"
+            value={tracingUrl}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setTracingUrl(e.target.value)
+            }
+          />
+          <SaveButton onClick={() => setSentryTracingUrl(tracingUrl)}>
+            Save
+          </SaveButton>
+          <div ref={setArrowElement} style={styles.arrow} />
+        </DropdownItem>
       </NavigationLinks>
     </HeaderContainer>
   );
