@@ -68,10 +68,7 @@ jobs:
         uses: codecov/codecov-action@v2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          directory: ./coverage
           fail_ci_if_error: true
-          files: ./coverage-final_merged.json
-          flags: unittests,e2etests
           verbose: true
       - name: Copy contents from .fleek_staging.json to .fleek.json
         if: ${{ inputs.ENV_NAME == 'staging' }}
