@@ -72,7 +72,6 @@ jobs:
           fail_ci_if_error: true
           files: ./coverage-final_merged.json
           flags: unittests,e2etests
-          path_to_write_report: ./coverage/codecov_report.txt
           verbose: true
       - name: Copy contents from .fleek_staging.json to .fleek.json
         if: ${{ inputs.ENV_NAME == 'staging' }}
