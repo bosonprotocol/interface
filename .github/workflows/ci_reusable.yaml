@@ -9,6 +9,9 @@ on:
       DEPLOY_TO_FLEEK:
         required: true
         type: boolean
+      UPDATE_COVERAGE:
+        required: true
+        type: boolean
       ENV_NAME:
         required: true
         type: string
@@ -64,9 +67,10 @@ jobs:
       - run: npm run build
       - id: build
         run: echo "::set-output name=pass::success"
-      - name: Generate coverage report
+      - name: Run Tests & Generate coverage report
         run: npm run coverage:report
       - name: Upload coverage to Codecov
+        if: ${{ inputs.UPDATE_COVERAGE }}
         uses: codecov/codecov-action@v2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}

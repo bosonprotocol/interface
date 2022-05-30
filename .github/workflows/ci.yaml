@@ -1,6 +1,10 @@
 name: Call reusable workflow - Interface
 
 on:
+  workflow_call:
+    secrets:
+      CODECOV_TOKEN:
+        required: true
   push:
     branches:
       - main
@@ -12,11 +16,14 @@ on:
 
 jobs:
   call-reusable-workflow-PR:
+    # TODO: change that part
     uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@BP226-process-improvement-task-coverage-ok
     if: github.event_name == 'pull_request'
     with:
       REACT_APP_CHAIN_ID: '1234'
       DEPLOY_TO_FLEEK: false
+      # TODO: change that part
+      UPDATE_COVERAGE: true
       ENV_NAME: 'testing'
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -27,6 +34,7 @@ jobs:
     with:
       REACT_APP_CHAIN_ID: '1234'
       DEPLOY_TO_FLEEK: true
+      UPDATE_COVERAGE: true
       ENV_NAME: 'testing'
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -38,6 +46,7 @@ jobs:
     with:
       REACT_APP_CHAIN_ID: '3'
       DEPLOY_TO_FLEEK: true
+      UPDATE_COVERAGE: true
       ENV_NAME: 'staging'
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
