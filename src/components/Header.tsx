@@ -149,7 +149,7 @@ export default function Header() {
             Sentry Tracing Endpoint:{" "}
             <Input
               type="text"
-              placeholder="https://XXX@YYY.ingest.sentry.io/AAA"
+              placeholder="https://XXX@YYY.ingest.sentry.io/123"
               value={tracingUrl}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setTracingUrl(e.target.value)

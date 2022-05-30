@@ -34,72 +34,159 @@ test.describe("Root page (Landing page)", () => {
 
       await expect(footer).toBeDefined();
     });
-    test.describe("tracing dropdown", () => {
-      test("should display tracing dropdown when clicking on the settings icon", async ({
+  });
+  test.describe("tracing dropdown", () => {
+    test("should display tracing dropdown when clicking on the settings icon", async ({
+      page
+    }) => {
+      await mockSubgraph({
         page
-      }) => {
-        const settings = await page.locator("[data-testid=settings]");
-
-        await expect(settings).toBeDefined();
-
-        await settings.click();
-
-        const headerDropdown = await page.locator(
-          "[data-testid=header-dropdown]"
-        );
-
-        await expect(headerDropdown).toBeDefined();
       });
-      test("should close opened tracing dropdown when clicking on the settings icon", async ({
+      await page.goto("/");
+      const settings = await page.locator("[data-testid=settings]");
+
+      await expect(settings).toBeDefined();
+
+      await settings.click();
+
+      const headerDropdown = await page.locator(
+        "[data-testid=header-dropdown]"
+      );
+
+      await expect(headerDropdown).toBeDefined();
+    });
+    test("should close opened tracing dropdown when clicking on the settings icon", async ({
+      page
+    }) => {
+      await mockSubgraph({
         page
-      }) => {
-        const settings = await page.locator("[data-testid=settings]");
-
-        await expect(settings).toBeVisible();
-
-        await settings.click();
-
-        const headerDropdown = await page.locator(
-          "[data-testid=header-dropdown]"
-        );
-
-        await expect(headerDropdown).toBeVisible();
-
-        await settings.click();
-
-        await expect(headerDropdown).not.toBeVisible();
       });
-      test("should display an error when typing a wrong url into the tracing url dropdown", async ({
+      await page.goto("/");
+      const settings = await page.locator("[data-testid=settings]");
+
+      await expect(settings).toBeVisible();
+
+      await settings.click();
+
+      const headerDropdown = await page.locator(
+        "[data-testid=header-dropdown]"
+      );
+
+      await expect(headerDropdown).toBeVisible();
+
+      await settings.click();
+
+      await expect(headerDropdown).not.toBeVisible();
+    });
+    test("should display an error when typing a wrong url into the tracing url dropdown", async ({
+      page
+    }) => {
+      await mockSubgraph({
         page
-      }) => {
-        const settings = await page.locator("[data-testid=settings]");
-
-        await expect(settings).toBeVisible();
-
-        await settings.click();
-
-        const headerDropdown = await page.locator(
-          "[data-testid=header-dropdown]"
-        );
-
-        await expect(headerDropdown).toBeVisible();
-
-        const input = await headerDropdown.locator("input");
-
-        const wrongUrl = "blabla";
-        await input.type(wrongUrl, { delay: 100 });
-
-        const saveButton = await headerDropdown.locator("button");
-
-        await saveButton.click();
-
-        const errorDiv = await headerDropdown.locator("[data-testid=error]");
-
-        await expect(errorDiv).toHaveText(`Invalid Sentry Dsn: ${wrongUrl}`);
       });
+      await page.goto("/");
+      const settings = await page.locator("[data-testid=settings]");
+
+      await expect(settings).toBeVisible();
+
+      await settings.click();
+
+      const headerDropdown = await page.locator(
+        "[data-testid=header-dropdown]"
+      );
+
+      await expect(headerDropdown).toBeVisible();
+
+      const input = await headerDropdown.locator("input");
+
+      const wrongUrl = "blabla";
+      await input.type(wrongUrl, { delay: 100 });
+
+      const saveButton = await headerDropdown.locator("button");
+
+      await saveButton.click();
+
+      const errorDiv = await headerDropdown.locator("[data-testid=error]");
+
+      await expect(errorDiv).toHaveText(`Invalid Sentry Dsn: ${wrongUrl}`);
+    });
+    test("should send the offer url to sentry once the tracing url is set and you click on the offer commit button", async ({
+      page
+    }) => {
+      const numberOfOffers = 10;
+      const queryParam = "?test=hello";
+
+      const firstTenOffers = defaultMockOffers
+        .map((offer) => ({
+          offer: {
+            ...offer
+          }
+        }))
+        .slice(0, numberOfOffers)
+        .sort(sortOffersBy({ property: "name", asc: true }));
+
+      firstTenOffers[0].offer.id = firstTenOffers[0].offer.id + queryParam;
+
+      await mockSubgraph({
+        page,
+        options: {
+          mockGetOffers: {
+            response: {
+              body: JSON.stringify({
+                data: { baseMetadataEntities: firstTenOffers }
+              })
+            }
+          }
+        }
+      });
+
+      await page.route(
+        "https://yyy.ingest.sentry.io/api/123/envelope/?sentry_key=XXX&sentry_version=7",
+        async (route) => {
+          const postData = route.request().postData();
+          const data = postData?.split("\n");
+          const jsonWithPathname = JSON.parse(data?.at(-1) || "");
+          await expect(jsonWithPathname.transaction).toBe(
+            `/offers/0${queryParam}`
+          );
+        }
+      );
+      await page.goto("/");
+      await page.waitForTimeout(500);
+
+      const settings = await page.locator("[data-testid=settings]");
+
+      await expect(settings).toBeVisible();
+
+      await settings.click();
+
+      const headerDropdown = await page.locator(
+        "[data-testid=header-dropdown]"
+      );
+
+      await expect(headerDropdown).toBeVisible();
+
+      const input = await headerDropdown.locator("input");
+
+      const correctUrl = "https://XXX@YYY.ingest.sentry.io/123";
+      await input.type(correctUrl, { delay: 100 });
+
+      const saveButton = await headerDropdown.locator("button");
+
+      await saveButton.click();
+
+      const errorDiv = await headerDropdown.locator("[data-testid=error]");
+      await expect(errorDiv).not.toBeDisabled();
+
+      const offers = await page.locator("[data-testid=offer]");
+      const firstOffer = await offers.nth(0);
+
+      const commitButton = await firstOffer.locator('[data-testid="commit"]');
+      await commitButton.click();
+
+      await page.waitForTimeout(1000); // wait until the sentry expect is executed
     });
   });
-
   test.describe("Offers list", () => {
     test("should display the first 10 offers", async ({ page }) => {
       const numberOfOffers = 10;
