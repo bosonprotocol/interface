@@ -20,8 +20,6 @@ on:
     outputs:
       JOB_LINT:
         value: ${{ jobs.build-test-deploy.outputs.jobLint }}
-      JOB_TEST:
-        value: ${{ jobs.build-test-deploy.outputs.jobTest }}
       JOB_BUILD:
         value: ${{ jobs.build-test-deploy.outputs.jobBuild }}
       JOB_COVERAGE:
@@ -38,7 +36,6 @@ jobs:
       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
     outputs:
       jobLint: ${{ steps.lint.outputs.pass }}
-      jobTest: ${{ steps.test.outputs.pass }}
       jobBuild: ${{ steps.build.outputs.pass }}
       jobCoverage: ${{ steps.coverage.outputs.pass }}
       deployUrl: ${{ steps.deploy.outputs.deployUrl }}
@@ -64,11 +61,6 @@ jobs:
         run: echo "::set-output name=pass::success"
       - run: npm run build
       - id: build
-        run: echo "::set-output name=pass::success"
-      - run: |
-          npm run test
-          npm run test:e2e:ci
-      - id: test
         run: echo "::set-output name=pass::success"
       - run: npm run badge
       - id: coverage

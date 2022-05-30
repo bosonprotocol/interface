@@ -68,12 +68,6 @@ jobs:
           )"
           echo 'JOB_LINT='$jobLint >> $GITHUB_ENV
 
-          jobTest="$(
-            echo '${{ env.JOB_OUTPUT }}' |
-            jq '.JOB_TEST'
-          )"
-          echo 'JOB_TEST='$jobTest >> $GITHUB_ENV
-
           jobBuild="$(
             echo '${{ env.JOB_OUTPUT }}' |
             jq '.JOB_BUILD'
@@ -100,11 +94,6 @@ jobs:
             echo "| Lint | ✅ |" >> $GITHUB_STEP_SUMMARY
           else
             echo "| Lint | ❌ |" >> $GITHUB_STEP_SUMMARY
-          fi
-          if [ ${{ env.JOB_TEST }} == success ]; then
-            echo "| Test | ✅ |" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "| Test | ❌ |" >> $GITHUB_STEP_SUMMARY
           fi
           if [ ${{ env.JOB_BUILD }} == success ]; then
             echo "| Build | ✅ |" >> $GITHUB_STEP_SUMMARY
