@@ -35,7 +35,7 @@ const getFirstNOffers = async (numberOfOffers: number): Promise<Offer[]> => {
   ]
     .slice(0, numberOfOffers)
     .sort(sortOffersBy({ property: "name", asc: true }));
-  await expect(offers.length).toStrictEqual(numberOfOffers);
+  expect(offers.length).toStrictEqual(numberOfOffers);
   return offers;
 };
 
@@ -48,29 +48,29 @@ test.describe("Explore page", () => {
       await page.goto(exploreUrl);
     });
     test("should display the title", async ({ page }) => {
-      const h1 = await page.locator("h1", { hasText: "Explore" });
+      const h1 = page.locator("h1", { hasText: "Explore" });
 
-      await expect(h1).toBeDefined();
+      expect(h1).toBeDefined();
     });
     test("should display the logo", async ({ page }) => {
-      const logoImg = await page.locator("[data-testid=logo]");
+      const logoImg = page.locator("[data-testid=logo]");
 
-      await expect(await logoImg.getAttribute("src")).toBeTruthy();
+      expect(await logoImg.getAttribute("src")).toBeTruthy();
     });
     test("should display the filter subheading", async ({ page }) => {
-      const h2 = await page.locator("h2", { hasText: "Filter" });
+      const h2 = page.locator("h2", { hasText: "Filter" });
 
-      await expect(h2).toBeDefined();
+      expect(h2).toBeDefined();
     });
     test("should display the search subheading", async ({ page }) => {
-      const h2 = await page.locator("h2", { hasText: "Search" });
+      const h2 = page.locator("h2", { hasText: "Search" });
 
-      await expect(h2).toBeDefined();
+      expect(h2).toBeDefined();
     });
     test("should display the footer", async ({ page }) => {
-      const footer = await page.locator("footer");
+      const footer = page.locator("footer");
 
-      await expect(footer).toBeDefined();
+      expect(footer).toBeDefined();
     });
     test.describe("Query params", () => {
       test("query param 'name' should update when changing input", async ({
@@ -78,92 +78,86 @@ test.describe("Explore page", () => {
       }) => {
         const name = "name1";
 
-        const input = await page.locator("input[data-testid=name]");
+        const input = page.locator("input[data-testid=name]");
 
         await input.type(name, { delay: 100 });
         await input.press("Enter");
 
-        await assertUrlToEqualQueryParam(page)("name", name);
+        assertUrlToEqualQueryParam(page)("name", name);
       });
       test("query param 'currency' should update when changing select", async ({
         page
       }) => {
-        const currencySelect = await page.locator(
-          "select[data-testid=currency]"
-        );
+        const currencySelect = page.locator("select[data-testid=currency]");
         const currency = "BOSON";
         await currencySelect.selectOption(currency);
 
-        await assertUrlToEqualQueryParam(page)("currency", currency);
+        assertUrlToEqualQueryParam(page)("currency", currency);
       });
       test("query param 'name' & 'currency' should update when changing input and then select", async ({
         page
       }) => {
         const name = "name1";
 
-        const input = await page.locator("input[data-testid=name]");
+        const input = page.locator("input[data-testid=name]");
 
         await input.type(name, { delay: 100 });
         await input.press("Enter");
 
-        await assertUrlToEqualQueryParam(page)("name", name);
+        assertUrlToEqualQueryParam(page)("name", name);
 
-        const currencySelect = await page.locator(
-          "select[data-testid=currency]"
-        );
+        const currencySelect = page.locator("select[data-testid=currency]");
         const currency = "BOSON";
         await currencySelect.selectOption(currency);
 
-        await assertUrlToEqualQueryParam(page)("currency", currency);
+        assertUrlToEqualQueryParam(page)("currency", currency);
       });
       test("query param 'currency' & 'name' should update when changing select and then input", async ({
         page
       }) => {
-        const currencySelect = await page.locator(
-          "select[data-testid=currency]"
-        );
+        const currencySelect = page.locator("select[data-testid=currency]");
         const currency = "BOSON";
         await currencySelect.selectOption(currency);
 
-        await assertUrlToEqualQueryParam(page)("currency", currency);
+        assertUrlToEqualQueryParam(page)("currency", currency);
 
         const name = "name1";
 
-        const input = await page.locator("input[data-testid=name]");
+        const input = page.locator("input[data-testid=name]");
 
         await input.type(name, { delay: 100 });
         await input.press("Enter");
 
-        await assertUrlToEqualQueryParam(page)("name", name);
+        assertUrlToEqualQueryParam(page)("name", name);
       });
       test("query param 'seller' should update when changing seller select", async ({
         page
       }) => {
-        const sellerSelect = await page.locator("select[data-testid=seller]");
+        const sellerSelect = page.locator("select[data-testid=seller]");
         const sellerId = "1";
 
         await sellerSelect.selectOption(sellerId);
 
-        await assertUrlToEqualQueryParam(page)("seller", sellerId);
+        assertUrlToEqualQueryParam(page)("seller", sellerId);
       });
       test("query param 'name' should update when changing input and clearing it again", async ({
         page
       }) => {
         const name = "name1";
 
-        const input = await page.locator("input[data-testid=name]");
+        const input = page.locator("input[data-testid=name]");
 
         await input.type(name, { delay: 100 });
         await input.press("Enter");
 
-        await assertUrlToEqualQueryParam(page)("name", name);
+        assertUrlToEqualQueryParam(page)("name", name);
 
         for (let i = 0; i < name.length; i++) {
           await input.press("Backspace");
         }
         await input.press("Enter");
 
-        await assertUrlToEqualQueryParam(page)("name", undefined);
+        assertUrlToEqualQueryParam(page)("name", undefined);
       });
       test("input and select should change when we navigate to Explore with their query params", async ({
         page
@@ -178,15 +172,13 @@ test.describe("Explore page", () => {
           `${exploreUrl}?${queryParams.name}=${name}&${queryParams.currency}=${currency}`
         );
 
-        const input = await page.locator("input[data-testid=name]");
+        const input = page.locator("input[data-testid=name]");
         const value = await input.inputValue();
-        await expect(value).toStrictEqual(name);
+        expect(value).toStrictEqual(name);
 
-        const currencySelect = await page.locator(
-          "select[data-testid=currency]"
-        );
+        const currencySelect = page.locator("select[data-testid=currency]");
         const valueSelect = await currencySelect.inputValue();
-        await expect(valueSelect).toStrictEqual(currency);
+        expect(valueSelect).toStrictEqual(currency);
       });
       test("that query params are kept when navigating between pages", async ({
         page
@@ -210,19 +202,19 @@ test.describe("Explore page", () => {
         await page.waitForTimeout(500);
         const name = "name1";
 
-        const input = await page.locator("input[data-testid=name]");
+        const input = page.locator("input[data-testid=name]");
         await input.type(name, { delay: 100 });
         await input.press("Enter", { delay: 100 });
 
         await assertUrlHashToEqual(page, `#/explore?name=${name}`);
 
-        const nextButton = await page.locator("[data-testid=next]");
+        const nextButton = page.locator("[data-testid=next]");
 
         await nextButton.click();
 
         await assertUrlHashToEqual(page, `#/explore/page/2?name=${name}`);
 
-        const previousButton = await page.locator("[data-testid=previous]");
+        const previousButton = page.locator("[data-testid=previous]");
 
         await previousButton.click();
 
@@ -250,13 +242,13 @@ test.describe("Explore page", () => {
         await page.waitForTimeout(500);
         let name = "name1";
 
-        const input = await page.locator("input[data-testid=name]");
+        const input = page.locator("input[data-testid=name]");
         await input.type(name, { delay: 100 });
         await input.press("Enter", { delay: 100 });
 
         await assertUrlHashToEqual(page, `#/explore?name=${name}`);
 
-        const nextButton = await page.locator("[data-testid=next]");
+        const nextButton = page.locator("[data-testid=next]");
 
         await nextButton.click();
 
@@ -291,7 +283,7 @@ test.describe("Explore page", () => {
 
         const offers1stPage = offers.slice(0, offersPerPage);
         const offers2ndPage = offers.slice(offersPerPage);
-        await expect(offers2ndPage.length).toStrictEqual(
+        expect(offers2ndPage.length).toStrictEqual(
           numberOfOffers - offersPerPage
         );
         await mockSubgraph({
@@ -305,9 +297,9 @@ test.describe("Explore page", () => {
         });
         await page.goto(currentUrl);
         await page.waitForTimeout(500);
-        const uiOffers = await page.locator("[data-testid=offer]");
+        const uiOffers = page.locator("[data-testid=offer]");
         const offerCount = await uiOffers.count();
-        await expect(offerCount).toStrictEqual(visibleOffersPerPage);
+        expect(offerCount).toStrictEqual(visibleOffersPerPage);
 
         for (let i = 0; i < offerCount; i++) {
           const offer = uiOffers.nth(i);
@@ -325,7 +317,7 @@ test.describe("Explore page", () => {
         const offers: Offer[] = await getFirstNOffers(numberOfOffers);
         const offers1stPage = offers.slice(0, offersPerPage);
         const offers2ndPage = offers.slice(offersPerPage);
-        await expect(offers2ndPage.length).toStrictEqual(
+        expect(offers2ndPage.length).toStrictEqual(
           numberOfOffers - offersPerPage
         );
         await mockSubgraph({
@@ -340,9 +332,9 @@ test.describe("Explore page", () => {
         await page.goto(currentUrl);
         await page.waitForTimeout(500);
 
-        const uiOffers = await page.locator("[data-testid=offer]");
+        const uiOffers = page.locator("[data-testid=offer]");
         const offerCount = await uiOffers.count();
-        await expect(offerCount).toStrictEqual(offers2ndPage.length);
+        expect(offerCount).toStrictEqual(offers2ndPage.length);
 
         for (let i = 0; i < offerCount; i++) {
           const offer = uiOffers.nth(i);
@@ -360,7 +352,7 @@ test.describe("Explore page", () => {
 
       const offers1stPage = offers.slice(0, offersPerPage);
       const offers2ndPage = offers.slice(offersPerPage);
-      await expect(offers2ndPage.length).toStrictEqual(
+      expect(offers2ndPage.length).toStrictEqual(
         numberOfOffers - offersPerPage
       );
       await mockSubgraph({
@@ -375,7 +367,7 @@ test.describe("Explore page", () => {
       await page.goto(exploreUrl);
       await page.waitForTimeout(500);
 
-      const nextButton = await page.locator("[data-testid=next]");
+      const nextButton = page.locator("[data-testid=next]");
 
       await nextButton.click();
 
@@ -419,9 +411,9 @@ test.describe("Explore page", () => {
       });
       await page.goto(exploreUrl);
       await page.waitForTimeout(500);
-      const offers = await page.locator("[data-testid=offer]");
+      const offers = page.locator("[data-testid=offer]");
       const offerCount = await offers.count();
-      await expect(offerCount).toStrictEqual(mockedOffers.length - 1); // 1 invalid offer
+      expect(offerCount).toStrictEqual(mockedOffers.length - 1); // 1 invalid offer
     });
 
     test("should display the first 10 offers ordered by name ASC, without filters", async ({
@@ -448,9 +440,9 @@ test.describe("Explore page", () => {
 
       await page.goto(exploreUrl);
       await page.waitForTimeout(500);
-      const offers = await page.locator("[data-testid=offer]");
+      const offers = page.locator("[data-testid=offer]");
       const offerCount = await offers.count();
-      await expect(offerCount).toStrictEqual(first10Offers.length);
+      expect(offerCount).toStrictEqual(first10Offers.length);
 
       for (let i = 0; i < offerCount; i++) {
         const offer = offers.nth(i);
@@ -466,7 +458,7 @@ test.describe("Explore page", () => {
 
       const offers1stPage = offers.slice(0, offersPerPage);
       const offers2ndPage = offers.slice(offersPerPage);
-      await expect(offers2ndPage.length).toStrictEqual(
+      expect(offers2ndPage.length).toStrictEqual(
         numberOfOffers - offersPerPage
       );
 
@@ -483,10 +475,10 @@ test.describe("Explore page", () => {
       await page.goto(exploreUrl);
       await page.waitForTimeout(500);
 
-      let uiOffers = await page.locator("[data-testid=offer]");
+      let uiOffers = page.locator("[data-testid=offer]");
 
       let offerCount = await uiOffers.count();
-      await expect(offerCount).toStrictEqual(visibleOffersPerPage);
+      expect(offerCount).toStrictEqual(visibleOffersPerPage);
 
       for (let i = 0; i < offerCount; i++) {
         const offer = uiOffers.nth(i);
@@ -494,15 +486,15 @@ test.describe("Explore page", () => {
         await assertOffer(offer, expectedOffer);
       }
 
-      await page.locator("[data-testid=previous]");
-      const nextButton = await page.locator("[data-testid=next]");
+      page.locator("[data-testid=previous]");
+      const nextButton = page.locator("[data-testid=next]");
 
       await nextButton.click();
       await page.waitForTimeout(500);
-      uiOffers = await page.locator("[data-testid=offer]");
+      uiOffers = page.locator("[data-testid=offer]");
 
       offerCount = await uiOffers.count();
-      await expect(offerCount).toStrictEqual(offers.length - offersPerPage);
+      expect(offerCount).toStrictEqual(offers.length - offersPerPage);
 
       for (let i = 0; i < offerCount; i++) {
         const offer = uiOffers.nth(i);
@@ -521,7 +513,7 @@ test.describe("Explore page", () => {
       await page.goto(exploreUrl);
       const errorOffersSelector = "[data-testid=noOffers]";
       await page.waitForSelector(errorOffersSelector);
-      const noOffers = await page.locator(errorOffersSelector);
+      const noOffers = page.locator(errorOffersSelector);
       await expect(noOffers).toHaveText("No offers found");
     });
 
@@ -535,7 +527,7 @@ test.describe("Explore page", () => {
       await page.goto(`${exploreUrl}/page/23324234`);
       const errorOffersSelector = "[data-testid=noOffers]";
       await page.waitForSelector(errorOffersSelector);
-      const noOffers = await page.locator(errorOffersSelector);
+      const noOffers = page.locator(errorOffersSelector);
       await expect(noOffers).toHaveText("No offers found");
     });
 
@@ -559,7 +551,7 @@ test.describe("Explore page", () => {
       await page.goto(exploreUrl);
       const errorOffersSelector = "[data-testid=errorOffers]";
       await page.waitForSelector(errorOffersSelector);
-      const noOffers = await page.locator(errorOffersSelector);
+      const noOffers = page.locator(errorOffersSelector);
       await expect(noOffers).toHaveText(
         "There has been an error, please try again later..."
       );
@@ -585,7 +577,7 @@ test.describe("Explore page", () => {
       await page.goto(exploreUrl);
       const errorOffersSelector = "[data-testid=errorOffers]";
       await page.waitForSelector(errorOffersSelector);
-      const noOffers = await page.locator(errorOffersSelector);
+      const noOffers = page.locator(errorOffersSelector);
       await expect(noOffers).toHaveText(
         "There has been an error, please try again later..."
       );

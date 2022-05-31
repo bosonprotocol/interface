@@ -15,24 +15,24 @@ test.describe("Root page (Landing page)", () => {
       await page.goto("/");
     });
     test("should display the title", async ({ page }) => {
-      const h1 = await page.locator("h1");
+      const h1 = page.locator("h1");
 
       await expect(h1).toHaveText("Boson dApp");
     });
     test("should display the logo", async ({ page }) => {
-      const logoImg = await page.locator("[data-testid=logo]");
+      const logoImg = page.locator("[data-testid=logo]");
 
-      await expect(await logoImg.getAttribute("src")).toBeTruthy();
+      expect(await logoImg.getAttribute("src")).toBeTruthy();
     });
     test("should display the featured offers title", async ({ page }) => {
-      const h2 = await page.locator("h2");
+      const h2 = page.locator("h2");
 
       await expect(h2).toHaveText("Featured Offers");
     });
     test("should display the footer", async ({ page }) => {
-      const footer = await page.locator("footer");
+      const footer = page.locator("footer");
 
-      await expect(footer).toBeDefined();
+      expect(footer).toBeDefined();
     });
   });
   test.describe("tracing dropdown", () => {
@@ -43,17 +43,15 @@ test.describe("Root page (Landing page)", () => {
         page
       });
       await page.goto("/");
-      const settings = await page.locator("[data-testid=settings]");
+      const settings = page.locator("[data-testid=settings]");
 
-      await expect(settings).toBeDefined();
+      expect(settings).toBeDefined();
 
       await settings.click();
 
-      const headerDropdown = await page.locator(
-        "[data-testid=header-dropdown]"
-      );
+      const headerDropdown = page.locator("[data-testid=header-dropdown]");
 
-      await expect(headerDropdown).toBeDefined();
+      expect(headerDropdown).toBeDefined();
     });
     test("should close opened tracing dropdown when clicking on the settings icon", async ({
       page
@@ -62,15 +60,13 @@ test.describe("Root page (Landing page)", () => {
         page
       });
       await page.goto("/");
-      const settings = await page.locator("[data-testid=settings]");
+      const settings = page.locator("[data-testid=settings]");
 
       await expect(settings).toBeVisible();
 
       await settings.click();
 
-      const headerDropdown = await page.locator(
-        "[data-testid=header-dropdown]"
-      );
+      const headerDropdown = page.locator("[data-testid=header-dropdown]");
 
       await expect(headerDropdown).toBeVisible();
 
@@ -85,15 +81,13 @@ test.describe("Root page (Landing page)", () => {
         page
       });
       await page.goto("/");
-      const settings = await page.locator("[data-testid=settings]");
+      const settings = page.locator("[data-testid=settings]");
 
       await expect(settings).toBeVisible();
 
       await settings.click();
 
-      const headerDropdown = await page.locator(
-        "[data-testid=header-dropdown]"
-      );
+      const headerDropdown = page.locator("[data-testid=header-dropdown]");
 
       await expect(headerDropdown).toBeVisible();
 
@@ -102,11 +96,11 @@ test.describe("Root page (Landing page)", () => {
       const wrongUrl = "blabla";
       await input.type(wrongUrl, { delay: 100 });
 
-      const saveButton = await headerDropdown.locator("button");
+      const saveButton = headerDropdown.locator("[data-testid=save]");
 
       await saveButton.click();
 
-      const errorDiv = await headerDropdown.locator("[data-testid=error]");
+      const errorDiv = headerDropdown.locator("[data-testid=error]");
 
       await expect(errorDiv).toHaveText(`Invalid Sentry Dsn: ${wrongUrl}`);
     });
@@ -114,7 +108,6 @@ test.describe("Root page (Landing page)", () => {
       page
     }) => {
       const numberOfOffers = 10;
-      const queryParam = "?test=hello";
 
       const firstTenOffers = defaultMockOffers
         .map((offer) => ({
@@ -124,8 +117,6 @@ test.describe("Root page (Landing page)", () => {
         }))
         .slice(0, numberOfOffers)
         .sort(sortOffersBy({ property: "name", asc: true }));
-
-      firstTenOffers[0].offer.id = firstTenOffers[0].offer.id + queryParam;
 
       await mockSubgraph({
         page,
@@ -140,48 +131,52 @@ test.describe("Root page (Landing page)", () => {
         }
       });
 
+      let pageNavigationCounter = 0;
       await page.route(
         "https://yyy.ingest.sentry.io/api/123/envelope/?sentry_key=XXX&sentry_version=7",
         async (route) => {
           const postData = route.request().postData();
           const data = postData?.split("\n");
           const jsonWithPathname = JSON.parse(data?.at(-1) || "");
-          await expect(jsonWithPathname.transaction).toBe(
-            `/offers/0${queryParam}`
-          );
+          if (pageNavigationCounter === 0) {
+            expect(jsonWithPathname.transaction).toBe(`/`);
+          } else if (pageNavigationCounter === 1) {
+            expect(jsonWithPathname.transaction).toBe(`/offers/:id`);
+          } else {
+            throw new Error("Unhandled navigation");
+          }
+          pageNavigationCounter++;
         }
       );
       await page.goto("/");
       await page.waitForTimeout(500);
 
-      const settings = await page.locator("[data-testid=settings]");
+      const settings = page.locator("[data-testid=settings]");
 
       await expect(settings).toBeVisible();
 
       await settings.click();
 
-      const headerDropdown = await page.locator(
-        "[data-testid=header-dropdown]"
-      );
+      const headerDropdown = page.locator("[data-testid=header-dropdown]");
 
       await expect(headerDropdown).toBeVisible();
 
-      const input = await headerDropdown.locator("input");
+      const input = headerDropdown.locator("input");
 
       const correctUrl = "https://XXX@YYY.ingest.sentry.io/123";
       await input.type(correctUrl, { delay: 100 });
 
-      const saveButton = await headerDropdown.locator("button");
+      const saveButton = headerDropdown.locator("[data-testid=save]");
 
       await saveButton.click();
 
-      const errorDiv = await headerDropdown.locator("[data-testid=error]");
+      const errorDiv = headerDropdown.locator("[data-testid=error]");
       await expect(errorDiv).not.toBeDisabled();
 
-      const offers = await page.locator("[data-testid=offer]");
-      const firstOffer = await offers.nth(0);
+      const offers = page.locator("[data-testid=offer]");
+      const firstOffer = offers.nth(0);
 
-      const commitButton = await firstOffer.locator('[data-testid="commit"]');
+      const commitButton = firstOffer.locator('[data-testid="commit"]');
       await commitButton.click();
 
       await page.waitForTimeout(1000); // wait until the sentry expect is executed
@@ -211,10 +206,10 @@ test.describe("Root page (Landing page)", () => {
       await page.goto("/");
 
       await page.waitForTimeout(500);
-      const offers = await page.locator("[data-testid=offer]");
+      const offers = page.locator("[data-testid=offer]");
       const offersCount = await offers.count();
 
-      await expect(offersCount).toStrictEqual(numberOfOffers);
+      expect(offersCount).toStrictEqual(numberOfOffers);
       for (let i = 0; i < numberOfOffers; i++) {
         const offer = offers.nth(i);
         const expectedOffer = firstTenOffers[i].offer;
@@ -262,7 +257,7 @@ test.describe("Root page (Landing page)", () => {
       await page.waitForTimeout(500);
       const offers = await page.locator("[data-testid=offer]");
       const offerCount = await offers.count();
-      await expect(offerCount).toStrictEqual(mockedOffers.length - 1);
+      expect(offerCount).toStrictEqual(mockedOffers.length - 1);
     });
 
     test("should display error message when no available offers", async ({
@@ -291,7 +286,7 @@ test.describe("Root page (Landing page)", () => {
       await page.goto("/");
       const errorOffersSelector = "[data-testid=errorOffers]";
       await page.waitForSelector(errorOffersSelector);
-      const noOffers = await page.locator(errorOffersSelector);
+      const noOffers = page.locator(errorOffersSelector);
       await expect(noOffers).toHaveText(
         "There has been an error, please try again later..."
       );
@@ -335,12 +330,12 @@ test.describe("Root page (Landing page)", () => {
       await page.goto("/");
 
       await page.waitForTimeout(500);
-      const offers = await page.locator("[data-testid=offer]");
+      const offers = page.locator("[data-testid=offer]");
       const offerCount = await offers.count();
 
-      await expect(offerCount).toStrictEqual(1);
+      expect(offerCount).toStrictEqual(1);
       const offer = offers.nth(0);
-      const commit = await offer.locator("[data-testid=commit]");
+      const commit = offer.locator("[data-testid=commit]");
       await commit.click();
 
       const url = await page.url();

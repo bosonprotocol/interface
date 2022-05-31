@@ -1,6 +1,6 @@
 import logo from "@assets/logo.png";
 import { CONFIG } from "@lib/config";
-import { BosonRoutes, routes } from "@lib/routing/routes";
+import { BosonRoutes } from "@lib/routing/routes";
 import { colors } from "@lib/styles/colors";
 import { useLocalStorage } from "@lib/utils/hooks/useLocalStorage";
 import * as Sentry from "@sentry/react";
@@ -8,11 +8,16 @@ import { BrowserTracing } from "@sentry/tracing";
 import React, { useEffect, useReducer, useState } from "react";
 import { usePopper } from "react-popper";
 import { Link, useNavigate } from "react-router-dom";
+import {
+  createRoutesFromChildren,
+  matchRoutes,
+  useLocation,
+  useNavigationType
+} from "react-router-dom";
 import styled from "styled-components";
 
 import Layout from "./Layout";
 import { ReactComponent as SaveIcon } from "./save.svg";
-import { reactRouterV6Instrumentation } from "./SentryReactRouterV6RouterInstrumentation";
 import { ReactComponent as SettingsSvg } from "./settings.svg";
 
 const HeaderContainer = styled(Layout)`
@@ -159,15 +164,21 @@ export default function Header() {
     (state) => !state,
     false
   );
-
   useEffect(() => {
     try {
       Sentry.init({
+        debug: true,
         dsn: sentryTracingUrl,
         enabled: !!sentryTracingUrl,
         integrations: [
           new BrowserTracing({
-            routingInstrumentation: reactRouterV6Instrumentation(routes, true)
+            routingInstrumentation: Sentry.reactRouterV6Instrumentation(
+              React.useEffect,
+              useLocation,
+              useNavigationType,
+              createRoutesFromChildren,
+              matchRoutes
+            )
           })
         ],
         environment: CONFIG.envName,
@@ -221,6 +232,7 @@ export default function Header() {
             <SaveButton
               ref={setSaveButtonReference}
               onClick={() => setSentryTracingUrl(tracingUrl)}
+              data-testid="save"
             ></SaveButton>
             <SaveButtonTooltip
               ref={setSaveButtonPopper}
