@@ -1,13 +1,14 @@
 import { MetadataType } from "@bosonprotocol/common";
 import { IpfsMetadata } from "@bosonprotocol/ipfs-storage";
 import { createOffer } from "@bosonprotocol/widgets-sdk";
-import Layout from "@components/Layout";
 import { parseEther } from "@ethersproject/units";
-import { CONFIG } from "@lib/config";
-import { colors } from "@lib/styles/colors";
 import { useFormik } from "formik";
 import { useState } from "react";
 import styled from "styled-components";
+
+import Layout from "../../components/Layout";
+import { CONFIG } from "../../lib/config";
+import { colors } from "../../lib/styles/colors";
 
 const CreateOfferContainer = styled(Layout)`
   display: flex;

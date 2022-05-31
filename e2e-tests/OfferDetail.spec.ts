@@ -1,6 +1,7 @@
-import { Offer } from "@lib/types/offer";
-import { expect, Page, test } from "@playwright/test";
+import { Page } from "@playwright/test";
 
+import { Offer } from "../src/lib/types/offer";
+import { expect, test } from "./baseFixtures";
 import { defaultMockOffers } from "./mocks/defaultMockOffers";
 import { mockSubgraph } from "./mocks/mockGetBase";
 

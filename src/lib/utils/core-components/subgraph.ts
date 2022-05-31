@@ -1,5 +1,6 @@
-import { CONFIG } from "@lib/config";
 import { request } from "graphql-request";
+
+import { CONFIG } from "../../../lib/config";
 
 export async function fetchSubgraph<T>(
   query: string,

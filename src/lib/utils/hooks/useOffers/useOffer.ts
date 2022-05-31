@@ -1,7 +1,7 @@
-import { Offer } from "@lib/types/offer";
-import { fetchSubgraph } from "@lib/utils/core-components/subgraph";
 import { useQuery } from "react-query";
 
+import { Offer } from "../../../types/offer";
+import { fetchSubgraph } from "../../../utils/core-components/subgraph";
 import { getOffersQuery } from "./graphql";
 import { UseOfferProps, UseOffersProps } from "./types";
 import { checkOfferMetadata } from "./validators";

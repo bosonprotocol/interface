@@ -1,6 +1,10 @@
 name: Call reusable workflow - Interface
 
 on:
+  workflow_call:
+    secrets:
+      CODECOV_TOKEN:
+        required: true
   push:
     branches:
       - main
@@ -46,3 +50,60 @@ jobs:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+  job-sumary:
+    name: Create Job Summary
+    runs-on: ubuntu-latest
+    if: ${{ always() && contains(join(needs.*.result, ','), 'success') }}
+    needs: [call-reusable-workflow-PR, call-reusable-workflow-testing, call-reusable-workflow-staging]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install JQ
+        uses: sergeysova/jq-action@v2
+        with:
+          cmd: jq -n env
+      - name: Get job outputs
+        env:
+          OUTPUTS: ${{ toJSON(needs) }}
+        run: |
+          succededJobOutput="$(
+            echo '${{ env.OUTPUTS }}' | jq '.[] | select(.result | startswith("success")) | .outputs'
+          )"
+          echo 'JOB_OUTPUT='$succededJobOutput >> $GITHUB_ENV
+      - name: Get job vars
+        run: |
+          jobLint="$(
+            echo '${{ env.JOB_OUTPUT }}' |
+            jq '.JOB_LINT'
+          )"
+          echo 'JOB_LINT='$jobLint >> $GITHUB_ENV
+
+          jobBuild="$(
+            echo '${{ env.JOB_OUTPUT }}' |
+            jq '.JOB_BUILD'
+          )"
+          echo 'JOB_BUILD='$jobBuild >> $GITHUB_ENV
+
+          deployUrl="$(
+            echo '${{ env.JOB_OUTPUT }}' |
+            jq '.DEPLOY_URL'
+          )"
+          echo 'DEPLOY_URL='$deployUrl >> $GITHUB_ENV
+
+      - name: Adding Job Summary
+        run: |
+          echo "| Command | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "| ---- | ---- |" >> $GITHUB_STEP_SUMMARY
+          if [ ${{ env.JOB_LINT }} == success ]; then
+            echo "| Lint | ✅ |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Lint | ❌ |" >> $GITHUB_STEP_SUMMARY
+          fi
+          if [ ${{ env.JOB_BUILD }} == success ]; then
+            echo "| Build | ✅ |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Build | ❌ |" >> $GITHUB_STEP_SUMMARY
+          fi
+      - name: Adding Job Summary Deploy Url
+        if: ${{ env.DEPLOY_URL }}
+        run: echo "| URL | ${{ env.DEPLOY_URL }} |" >> $GITHUB_STEP_SUMMARY
