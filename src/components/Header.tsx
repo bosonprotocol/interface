@@ -1,6 +1,8 @@
 import logo from "@assets/logo.png";
+import { CONFIG } from "@lib/config";
 import { BosonRoutes, routes } from "@lib/routing/routes";
 import { colors } from "@lib/styles/colors";
+import { useLocalStorage } from "@lib/utils/hooks/useLocalStorage";
 import * as Sentry from "@sentry/react";
 import { BrowserTracing } from "@sentry/tracing";
 import React, { useEffect, useReducer, useState } from "react";
@@ -9,6 +11,7 @@ import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import Layout from "./Layout";
+import { ReactComponent as SaveIcon } from "./save.svg";
 import { reactRouterV6Instrumentation } from "./SentryReactRouterV6RouterInstrumentation";
 import { ReactComponent as SettingsSvg } from "./settings.svg";
 
@@ -56,6 +59,12 @@ const DropdownItem = styled.div`
   color: ${colors.white};
   padding: 15px;
   border: 1px solid ${colors.lightgrey};
+  box-shadow: 1px 3px 5px ${colors.lightgrey};
+`;
+
+const TracingInfo = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 const Input = styled.input`
@@ -67,25 +76,60 @@ const Input = styled.input`
   max-width: 100%;
 `;
 
-const SaveButton = styled.button`
-  width: 50px;
-  padding: 10px 2px;
+const SaveButton = styled(SaveIcon)`
+  width: 25px;
+  height: 20px;
+  padding: 10px;
   background: ${colors.green};
   color: ${colors.black};
   border-radius: 5px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
+
+  :hover + [data-testid="tooltip"] {
+    visibility: initial;
+  }
 `;
 
 const Error = styled.span`
   color: ${colors.darkred};
 `;
 
+const SaveButtonTooltip = styled.div`
+  color: ${colors.black};
+  background: ${colors.white};
+  padding: 10px;
+  border-radius: 4px;
+  visibility: hidden;
+  margin-top: 2px;
+  max-width: 200px;
+`;
+
+const TooltipArrow = styled.div`
+  ::before {
+    content: " ";
+    width: 10px;
+    height: 10px;
+    background: white;
+    position: relative;
+    transform: rotate(45deg);
+    top: -10px;
+    display: inline-block;
+  }
+  position: relative;
+  top: 0;
+  width: 10px;
+  height: 10px;
+`;
+
 export default function Header() {
   const navigate = useNavigate();
-  const [sentryTracingUrl, setSentryTracingUrl] = useState<string>("");
-  const [tracingUrl, setTracingUrl] = useState<string>("");
+  const [sentryTracingUrl, setSentryTracingUrl] = useLocalStorage<string>(
+    "tracing-url",
+    ""
+  );
+  const [tracingUrl, setTracingUrl] = useState<string>(sentryTracingUrl);
   const [sentryError, setSentryError] = useState<string>("");
 
   const [referenceElement, setReferenceElement] =
@@ -93,10 +137,23 @@ export default function Header() {
   const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(
     null
   );
-  const [arrowElement, setArrowElement] = useState<HTMLDivElement | null>(null);
   const { styles, attributes } = usePopper(referenceElement, popperElement, {
+    placement: "bottom-start"
+  });
+  const [saveButtonReference, setSaveButtonReference] =
+    useState<SVGSVGElement | null>(null);
+  const [saveButtonPopper, setSaveButtonPopper] =
+    useState<HTMLDivElement | null>(null);
+  const [saveButtonArrow, setSaveButtonArrow] = useState<HTMLDivElement | null>(
+    null
+  );
+  const {
+    styles: saveButtonStyles,
+    attributes: saveButtonAttributes,
+    update: saveButtonUpdate
+  } = usePopper(saveButtonReference, saveButtonPopper, {
     placement: "bottom-start",
-    modifiers: [{ name: "arrow", options: { element: arrowElement } }]
+    modifiers: [{ name: "arrow", options: { element: saveButtonArrow } }]
   });
   const [isDropdownVisible, toggleDropdownVisibility] = useReducer(
     (state) => !state,
@@ -107,11 +164,13 @@ export default function Header() {
     try {
       Sentry.init({
         dsn: sentryTracingUrl,
+        enabled: !!sentryTracingUrl,
         integrations: [
           new BrowserTracing({
             routingInstrumentation: reactRouterV6Instrumentation(routes, true)
           })
         ],
+        environment: CONFIG.envName,
         tracesSampleRate: 1.0
       });
       setSentryError("");
@@ -136,7 +195,11 @@ export default function Header() {
           height="22px"
           data-testid="settings"
           ref={setReferenceElement}
-          onClick={() => toggleDropdownVisibility()}
+          onClick={() => {
+            toggleDropdownVisibility();
+            // tell popper to recalculate the position as the dropdown wasn't rendered
+            saveButtonUpdate?.();
+          }}
         />
         <DropdownItem
           ref={setPopperElement}
@@ -145,7 +208,7 @@ export default function Header() {
           hidden={!isDropdownVisible}
           data-testid="header-dropdown"
         >
-          <div>
+          <TracingInfo>
             Tracing Endpoint:{" "}
             <Input
               type="text"
@@ -155,12 +218,27 @@ export default function Header() {
                 setTracingUrl(e.target.value)
               }
             />
-            <SaveButton onClick={() => setSentryTracingUrl(tracingUrl)}>
-              Save
-            </SaveButton>
-          </div>
+            <SaveButton
+              ref={setSaveButtonReference}
+              onClick={() => setSentryTracingUrl(tracingUrl)}
+            ></SaveButton>
+            <SaveButtonTooltip
+              ref={setSaveButtonPopper}
+              style={saveButtonStyles.popper}
+              {...saveButtonAttributes.popper}
+              data-testid="tooltip"
+            >
+              <span>
+                This will save the updated endpoint to your browser's local
+                storage.
+              </span>
+              <TooltipArrow
+                ref={setSaveButtonArrow}
+                style={saveButtonStyles.arrow}
+              />
+            </SaveButtonTooltip>
+          </TracingInfo>
           <Error data-testid="error">{sentryError}</Error>
-          <div ref={setArrowElement} style={styles.arrow} />
         </DropdownItem>
       </NavigationLinks>
     </HeaderContainer>
