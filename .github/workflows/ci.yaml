@@ -21,8 +21,8 @@ jobs:
     with:
       REACT_APP_CHAIN_ID: '1234'
       DEPLOY_TO_FLEEK: false
-      UPDATE_COVERAGE: false
       ENV_NAME: 'testing'
+      UPDATE_COVERAGE: true
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -32,8 +32,8 @@ jobs:
     with:
       REACT_APP_CHAIN_ID: '1234'
       DEPLOY_TO_FLEEK: true
-      UPDATE_COVERAGE: true
       ENV_NAME: 'testing'
+      UPDATE_COVERAGE: true
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
@@ -44,8 +44,8 @@ jobs:
     with:
       REACT_APP_CHAIN_ID: '3'
       DEPLOY_TO_FLEEK: true
-      UPDATE_COVERAGE: true
       ENV_NAME: 'staging'
+      UPDATE_COVERAGE: false
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
