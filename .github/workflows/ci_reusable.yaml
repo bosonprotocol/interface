@@ -67,7 +67,7 @@ jobs:
       - run: npm run build
       - id: build
         run: echo "::set-output name=pass::success"
-      - name: Run Tests & Generate coverage report
+      - name: Run Tests & Generate coverage reports
         run: npm run coverage:report
       - name: Upload Unit Coverage to Codecov
         if: ${{ inputs.UPDATE_COVERAGE }}
