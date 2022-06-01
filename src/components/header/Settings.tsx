@@ -1,6 +1,6 @@
 import * as Sentry from "@sentry/react";
 import { BrowserTracing } from "@sentry/tracing";
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { IoIosSave, IoMdSettings } from "react-icons/io";
 import { usePopper } from "react-popper";
 import {
@@ -107,7 +107,8 @@ export default function Settings() {
   );
   const [tracingUrl, setTracingUrl] = useState<string>(sentryTracingUrl);
   const [sentryError, setSentryError] = useState<string>("");
-
+  const dropRef = useRef<HTMLDivElement | null>(null);
+  const settingsRef = useRef<HTMLButtonElement | null>(null);
   const [referenceElement, setReferenceElement] =
     useState<HTMLButtonElement | null>(null);
   const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(
@@ -131,10 +132,12 @@ export default function Settings() {
     placement: "bottom",
     modifiers: [{ name: "arrow", options: { element: saveButtonArrow } }]
   });
-  const [isDropdownVisible, toggleDropdownVisibility] = useReducer(
-    (state) => !state,
-    false
-  );
+  const [isDropdownVisible, setDropdownVisibility] = useState<boolean>(false);
+  const toggleDropdown = () => {
+    setDropdownVisibility(!isDropdownVisible);
+    // tell popper to recalculate the position as the dropdown wasn't rendered
+    saveButtonUpdate?.();
+  };
   useEffect(() => {
     try {
       Sentry.init({
@@ -161,21 +164,44 @@ export default function Settings() {
     }
   }, [sentryTracingUrl]);
 
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      const isClickingOnDropdown =
+        dropRef.current && dropRef?.current.contains(event.target as Node);
+      const isClickingOnSettingsButton =
+        settingsRef.current &&
+        settingsRef?.current.contains(event.target as Node);
+      if (
+        isDropdownVisible &&
+        !isClickingOnDropdown &&
+        !isClickingOnSettingsButton
+      ) {
+        setDropdownVisibility(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [dropRef, isDropdownVisible]);
+
   return (
     <>
       <SettingsSvgIcon
         data-testid="settings"
-        ref={setReferenceElement}
-        onClick={() => {
-          toggleDropdownVisibility();
-          // tell popper to recalculate the position as the dropdown wasn't rendered
-          saveButtonUpdate?.();
+        ref={(ref) => {
+          settingsRef.current = ref;
+          setReferenceElement(ref);
         }}
+        onClick={toggleDropdown}
       >
         <SettingsIcon />
       </SettingsSvgIcon>
       <DropdownItem
-        ref={setPopperElement}
+        ref={(ref) => {
+          dropRef.current = ref;
+          setPopperElement(ref);
+        }}
         style={styles.popper}
         {...attributes.popper}
         hidden={!isDropdownVisible}
