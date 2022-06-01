@@ -11,6 +11,6 @@ export const colors = {
   orange: "orange",
   arsenic: "#3a364f",
   darkGreen: "#276c55",
-  lightgrey: "lightgrey",
-  darkred: "darkred"
+  lightGrey: "lightgrey",
+  darkRed: "darkred"
 };

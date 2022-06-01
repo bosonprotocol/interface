@@ -63,8 +63,8 @@ const DropdownItem = styled.div`
   margin-top: 10px;
   color: ${colors.white};
   padding: 15px;
-  border: 1px solid ${colors.lightgrey};
-  box-shadow: 1px 3px 5px ${colors.lightgrey};
+  border: 1px solid ${colors.lightGrey};
+  box-shadow: 1px 3px 5px ${colors.lightGrey};
 `;
 
 const TracingInfo = styled.div`
@@ -98,7 +98,7 @@ const SaveButton = styled(SaveIcon)`
 `;
 
 const Error = styled.span`
-  color: ${colors.darkred};
+  color: ${colors.darkRed};
 `;
 
 const SaveButtonTooltip = styled.div`
