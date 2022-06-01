@@ -1,8 +1,3 @@
-import logo from "@assets/logo.png";
-import { CONFIG } from "@lib/config";
-import { BosonRoutes } from "@lib/routing/routes";
-import { colors } from "@lib/styles/colors";
-import { useLocalStorage } from "@lib/utils/hooks/useLocalStorage";
 import * as Sentry from "@sentry/react";
 import { BrowserTracing } from "@sentry/tracing";
 import React, { useEffect, useReducer, useState } from "react";
@@ -16,6 +11,11 @@ import {
 } from "react-router-dom";
 import styled from "styled-components";
 
+import logo from "../../src/assets/logo.png";
+import { CONFIG } from "../lib/config";
+import { BosonRoutes } from "../lib/routing/routes";
+import { colors } from "../lib/styles/colors";
+import { useLocalStorage } from "../lib/utils/hooks/useLocalStorage";
 import Layout from "./Layout";
 import { ReactComponent as SaveIcon } from "./save.svg";
 import { ReactComponent as SettingsSvg } from "./settings.svg";

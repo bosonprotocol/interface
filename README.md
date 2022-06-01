@@ -1,4 +1,7 @@
-# Boson Protocol dApp
+[![codecov](https://codecov.io/gh/bosonprotocol/interface/branch/main/graph/badge.svg?token=X52bEA3Bf6)](https://codecov.io/gh/bosonprotocol/interface)
+
+
+<a href="https://github.com/bosonprotocol/interface/actions/workflows/ci.yaml">[![Build Status](https://github.com/bosonprotocol/interface/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/bosonprotocol/interface/actions/workflows/ci.yaml)</a>
 
 | Env          | Network   | Endpoint                                                        |
 | ------------ | --------- | --------------------------------------------------------------- |
@@ -11,7 +14,7 @@
 The required steps to develop and test the dApp interface locally are as follows:
 
 1. Clone the repository: i.e. Run `git clone git@github.com:bosonprotocol/interface.git`
-2. Navigate into the directory & install dependencies: i.e. Run `cd interface && npm ci` 
+2. Navigate into the directory & install dependencies: i.e. Run `cd interface && npm ci`
 3. Copy the `.env.example` file to `.env` and fill out any necessary values.
 4. Start the application: i.e. Run `npm run dev`
 5. Navigate to `http://localhost:3000/` in a browser.
@@ -20,7 +23,7 @@ The required steps to develop and test the dApp interface locally are as follows
 
 ### E2E
 
-Ensure Playwright browsers need to be installed on your system: 
+Ensure Playwright browsers need to be installed on your system:
 
 ```bash
 npx playwright install

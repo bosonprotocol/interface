@@ -24,7 +24,10 @@ yarn-debug.log*
 yarn-error.log*
 
 .env
+.nyc_output
 test-results/
 playwright-report/
+test-results.json
 
 .vscode
+codecov

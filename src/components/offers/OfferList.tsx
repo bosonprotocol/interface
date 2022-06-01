@@ -1,6 +1,6 @@
-import { Offer } from "@lib/types/offer";
 import styled from "styled-components";
 
+import { Offer } from "../../lib/types/offer";
 import OfferCard from "../offer/OfferCard";
 
 const OfferContainer = styled.div`

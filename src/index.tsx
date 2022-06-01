@@ -1,4 +1,3 @@
-import { CONFIG } from "@lib/config";
 import * as Sentry from "@sentry/react";
 import { BrowserTracing } from "@sentry/tracing";
 import React from "react";
@@ -16,6 +15,7 @@ import {
 
 import App from "./components/app";
 import Layout from "./components/Layout";
+import { CONFIG } from "./lib/config";
 import { BosonRoutes, OffersRoutes } from "./lib/routing/routes";
 import reportWebVitals from "./reportWebVitals";
 const rootElement = document.getElementById("root");

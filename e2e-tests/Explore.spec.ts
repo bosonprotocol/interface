@@ -1,9 +1,8 @@
-import { Offer } from "@lib/types/offer";
-import { expect, test } from "@playwright/test";
-
+import { Offer } from "../src/lib/types/offer";
 import { assertOffer } from "./assert/offer";
 import { assertUrlToEqualQueryParam, queryParams } from "./assert/queryParams";
 import { assertUrlHashToEqual } from "./assert/urlParams";
+import { expect, test } from "./baseFixtures";
 import { defaultMockOffers } from "./mocks/defaultMockOffers";
 import { mockSubgraph } from "./mocks/mockGetBase";
 import { sortOffersBy } from "./utils/sort";

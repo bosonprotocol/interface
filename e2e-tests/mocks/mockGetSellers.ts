@@ -1,5 +1,4 @@
-import { Offer } from "@lib/types/offer";
-
+import { Offer } from "../../src/lib/types/offer";
 import { CustomResponse } from "./mockGetBase";
 
 export interface MockProps {

@@ -1,9 +1,9 @@
-import Layout from "@components/Layout";
-import { colors } from "@lib/styles/colors";
-import { footerHeight } from "@lib/styles/layout";
 import { Outlet } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
 
+import Layout from "../../components/Layout";
+import { colors } from "../../lib/styles/colors";
+import { footerHeight } from "../../lib/styles/layout";
 import Header from "../Header";
 
 const GlobalStyle = createGlobalStyle`

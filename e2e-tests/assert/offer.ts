@@ -1,7 +1,9 @@
 import { formatUnits } from "@ethersproject/units";
-import { Offer } from "@lib/types/offer";
-import { expect, Locator } from "@playwright/test";
+import { Locator } from "@playwright/test";
 import { BigNumber } from "ethers";
+
+import { Offer } from "../../src/lib/types/offer";
+import { expect } from "../baseFixtures";
 
 export async function assertOffer(offer: Locator, expectedOffer: Offer) {
   const name = offer.locator("[data-testid=name]");
