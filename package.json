@@ -51,7 +51,6 @@
     "react-popper": "^2.3.0",
     "react-query": "^3.38.1",
     "react-router-dom": "^6.3.0",
-    "react-router-v6-instrumentation": "^2.0.2",
     "react-scripts": "^5.0.1",
     "web-vitals": "^2.1.4"
   },
