@@ -9,5 +9,6 @@ export const CONFIG = {
   chainId: REACT_APP_CHAIN_ID,
   ipfsMetadataUrl:
     process.env.REACT_APP_IPFS_METADATA_URL || "https://ipfs.infura.io:5001",
-  subgraphUrl: config.subgraphUrl
+  subgraphUrl: config.subgraphUrl,
+  envName: config.envName
 };

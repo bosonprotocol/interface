@@ -9,15 +9,12 @@ export const queryParams = {
 } as const;
 
 export function assertUrlToEqualQueryParam(page: Page) {
-  return async (
-    queryParam: keyof typeof queryParams,
-    value: string | undefined
-  ) => {
-    const url = await page.url();
+  return (queryParam: keyof typeof queryParams, value: string | undefined) => {
+    const url = page.url();
     const { hash } = new URL(url);
     const paramsObj = Object.fromEntries(
       new URLSearchParams(hash.substring(hash.indexOf("?")))
     );
-    await expect(paramsObj[queryParam]).toStrictEqual(value);
+    expect(paramsObj[queryParam]).toStrictEqual(value);
   };
 }

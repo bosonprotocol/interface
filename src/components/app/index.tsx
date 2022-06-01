@@ -4,7 +4,7 @@ import styled, { createGlobalStyle } from "styled-components";
 import Layout from "../../components/Layout";
 import { colors } from "../../lib/styles/colors";
 import { footerHeight } from "../../lib/styles/layout";
-import Header from "../Header";
+import Header from "../header/Header";
 
 const GlobalStyle = createGlobalStyle`
   html, body {

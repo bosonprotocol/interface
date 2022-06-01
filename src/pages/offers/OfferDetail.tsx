@@ -1,5 +1,6 @@
 import { manageOffer } from "@bosonprotocol/widgets-sdk";
 import { useEffect, useRef, useState } from "react";
+import { IoIosInformationCircleOutline } from "react-icons/io";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
@@ -11,7 +12,6 @@ import { UrlParameters } from "./../../lib/routing/query-parameters";
 import { colors } from "./../../lib/styles/colors";
 import { Offer } from "./../../lib/types/offer";
 import { useOffer } from "./../../lib/utils/hooks/useOffers/useOffer";
-import { ReactComponent as InfoSvg } from "./images/info.svg";
 
 const Root = styled.div`
   display: flex;
@@ -161,13 +161,12 @@ const Price = styled(RootPrice)`
   font-size: 24px;
 `;
 
-const InfoIcon = styled(InfoSvg).attrs({
-  height: "32px",
-  width: "32px",
+const InfoIcon = styled(IoIosInformationCircleOutline).attrs({
   fill: colors.bosonSkyBlue
 })`
   position: relative;
   right: 2px;
+  font-size: 27px;
 `;
 
 function isAccountSeller(offer: Offer, account: string): boolean {

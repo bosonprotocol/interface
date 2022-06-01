@@ -10,5 +10,7 @@ export const colors = {
   white: "white",
   orange: "orange",
   arsenic: "#3a364f",
-  darkGreen: "#276c55"
+  darkGreen: "#276c55",
+  lightGrey: "lightgrey",
+  darkRed: "darkred"
 };

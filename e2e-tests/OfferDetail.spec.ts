@@ -8,27 +8,27 @@ import { mockSubgraph } from "./mocks/mockGetBase";
 const offersUrl = "/#/offers/";
 
 const assertOfferDetail = async (expectedOffer: Offer, page: Page) => {
-  const name = await page.locator("[data-testid=name]");
+  const name = page.locator("[data-testid=name]");
   await expect(name).toHaveText(
     expectedOffer.metadata?.name || "expected name"
   );
 
-  const image = await page.locator("[data-testid=image]");
-  await expect(image.getAttribute("src")).toBeTruthy();
+  const image = page.locator("[data-testid=image]");
+  expect(await image.getAttribute("src")).toBeTruthy();
 
-  const description = await page.locator("[data-testid=description]");
+  const description = page.locator("[data-testid=description]");
   await expect(description).toHaveText(
     expectedOffer.metadata?.description || "Unexpected description"
   );
 
-  const deliveryInfo = await page.locator("[data-testid=delivery-info]");
+  const deliveryInfo = page.locator("[data-testid=delivery-info]");
   await expect(deliveryInfo).toHaveText("Not defined");
 
-  const profileImg = await page.locator("[data-testid=profileImg]");
-  const svg = await profileImg.locator("svg");
-  await expect(svg).toBeDefined();
+  const profileImg = page.locator("[data-testid=profileImg]");
+  const svg = profileImg.locator("svg");
+  expect(svg).toBeDefined();
 
-  const sellerId = await page.locator("[data-testid=seller-id]");
+  const sellerId = page.locator("[data-testid=seller-id]");
   const expectedSellerId = "ID: " + expectedOffer.seller?.id || "Unexpected id";
   await expect(sellerId).toHaveText(expectedSellerId);
 };
@@ -50,7 +50,7 @@ test.describe("OfferDetail", () => {
     await page.goto(`${offersUrl}6`);
     const errorOfferSelector = "[data-testid=errorOffer]";
     await page.waitForSelector(errorOfferSelector);
-    const noOffers = await page.locator(errorOfferSelector);
+    const noOffers = page.locator(errorOfferSelector);
     await expect(noOffers).toHaveText(
       "There has been an error, please try again later..."
     );
@@ -63,7 +63,7 @@ test.describe("OfferDetail", () => {
     await page.goto(`${offersUrl}6`);
     const notFoundSelector = "[data-testid=notFound]";
     await page.waitForSelector(notFoundSelector);
-    const noOffers = await page.locator(notFoundSelector);
+    const noOffers = page.locator(notFoundSelector);
     await expect(noOffers).toHaveText("This offer does not exist");
   });
   test("should display an error if the offer does exist but is not valid", async ({
@@ -82,7 +82,7 @@ test.describe("OfferDetail", () => {
     await page.goto(`${offersUrl}6`);
     const notFoundSelector = "[data-testid=notFound]";
     await page.waitForSelector(notFoundSelector);
-    const noOffers = await page.locator(notFoundSelector);
+    const noOffers = page.locator(notFoundSelector);
     await expect(noOffers).toHaveText("This offer does not exist");
   });
   test("should display the offer if it does exist and it's valid", async ({
