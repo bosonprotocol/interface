@@ -2,7 +2,6 @@ import * as Sentry from "@sentry/react";
 import { BrowserTracing } from "@sentry/tracing";
 import React, { useEffect, useReducer, useState } from "react";
 import { usePopper } from "react-popper";
-import { Link, useNavigate } from "react-router-dom";
 import {
   createRoutesFromChildren,
   matchRoutes,
@@ -11,43 +10,11 @@ import {
 } from "react-router-dom";
 import styled from "styled-components";
 
-import logo from "../../src/assets/logo.png";
-import { CONFIG } from "../lib/config";
-import { BosonRoutes } from "../lib/routing/routes";
-import { colors } from "../lib/styles/colors";
-import { useLocalStorage } from "../lib/utils/hooks/useLocalStorage";
-import Layout from "./Layout";
+import { CONFIG } from "../../lib/config";
+import { colors } from "../../lib/styles/colors";
+import { useLocalStorage } from "../../lib/utils/hooks/useLocalStorage";
 import { ReactComponent as SaveIcon } from "./save.svg";
 import { ReactComponent as SettingsSvg } from "./settings.svg";
-
-const HeaderContainer = styled(Layout)`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 0px auto 20px auto;
-`;
-
-const NavigationLinks = styled.nav`
-  display: flex;
-  gap: 16px;
-  width: 100%;
-  justify-content: flex-end;
-
-  a {
-    all: unset;
-    cursor: pointer;
-  }
-  a:hover {
-    color: ${colors.green};
-  }
-`;
-
-const LogoImg = styled.img`
-  width: 227px;
-  height: 50px;
-  padding-top: 24px;
-  cursor: pointer;
-`;
 
 const SettingsSvgIcon = styled(SettingsSvg)`
   :hover * {
@@ -127,9 +94,7 @@ const TooltipArrow = styled.div`
   width: 10px;
   height: 10px;
 `;
-
-export default function Header() {
-  const navigate = useNavigate();
+export default function Settings() {
   const [sentryTracingUrl, setSentryTracingUrl] = useLocalStorage<string>(
     "tracing-url",
     ""
@@ -143,7 +108,7 @@ export default function Header() {
     null
   );
   const { styles, attributes } = usePopper(referenceElement, popperElement, {
-    placement: "bottom-start"
+    placement: "bottom-end"
   });
   const [saveButtonReference, setSaveButtonReference] =
     useState<SVGSVGElement | null>(null);
@@ -157,7 +122,7 @@ export default function Header() {
     attributes: saveButtonAttributes,
     update: saveButtonUpdate
   } = usePopper(saveButtonReference, saveButtonPopper, {
-    placement: "bottom-start",
+    placement: "bottom",
     modifiers: [{ name: "arrow", options: { element: saveButtonArrow } }]
   });
   const [isDropdownVisible, toggleDropdownVisibility] = useReducer(
@@ -191,68 +156,57 @@ export default function Header() {
   }, [sentryTracingUrl]);
 
   return (
-    <HeaderContainer>
-      <LogoImg
-        data-testid="logo"
-        src={logo}
-        onClick={() => navigate(BosonRoutes.Root)}
+    <>
+      <SettingsSvgIcon
+        height="22px"
+        data-testid="settings"
+        ref={setReferenceElement}
+        onClick={() => {
+          toggleDropdownVisibility();
+          // tell popper to recalculate the position as the dropdown wasn't rendered
+          saveButtonUpdate?.();
+        }}
       />
-      <NavigationLinks>
-        <Link to={BosonRoutes.Root}>Home</Link>
-        <Link to={BosonRoutes.Explore}>Explore</Link>
-        <Link to={BosonRoutes.CreateOffer}>Create Offer</Link>
-
-        <SettingsSvgIcon
-          height="22px"
-          data-testid="settings"
-          ref={setReferenceElement}
-          onClick={() => {
-            toggleDropdownVisibility();
-            // tell popper to recalculate the position as the dropdown wasn't rendered
-            saveButtonUpdate?.();
-          }}
-        />
-        <DropdownItem
-          ref={setPopperElement}
-          style={styles.popper}
-          {...attributes.popper}
-          hidden={!isDropdownVisible}
-          data-testid="header-dropdown"
-        >
-          <TracingInfo>
-            Tracing Endpoint:{" "}
-            <Input
-              type="text"
-              placeholder="https://XXX@YYY.ingest.sentry.io/123"
-              value={tracingUrl}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setTracingUrl(e.target.value)
-              }
+      <DropdownItem
+        ref={setPopperElement}
+        style={styles.popper}
+        {...attributes.popper}
+        hidden={!isDropdownVisible}
+        data-testid="header-dropdown"
+      >
+        <TracingInfo>
+          Tracing Endpoint:{" "}
+          <Input
+            type="text"
+            placeholder="https://XXX@YYY.ingest.sentry.io/123"
+            value={tracingUrl}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setTracingUrl(e.target.value)
+            }
+          />
+          <SaveButton
+            ref={setSaveButtonReference}
+            onClick={() => setSentryTracingUrl(tracingUrl)}
+            data-testid="save"
+          ></SaveButton>
+          <SaveButtonTooltip
+            ref={setSaveButtonPopper}
+            style={saveButtonStyles.popper}
+            {...saveButtonAttributes.popper}
+            data-testid="tooltip"
+          >
+            <span>
+              This will save the updated endpoint to your browser's local
+              storage.
+            </span>
+            <TooltipArrow
+              ref={setSaveButtonArrow}
+              style={saveButtonStyles.arrow}
             />
-            <SaveButton
-              ref={setSaveButtonReference}
-              onClick={() => setSentryTracingUrl(tracingUrl)}
-              data-testid="save"
-            ></SaveButton>
-            <SaveButtonTooltip
-              ref={setSaveButtonPopper}
-              style={saveButtonStyles.popper}
-              {...saveButtonAttributes.popper}
-              data-testid="tooltip"
-            >
-              <span>
-                This will save the updated endpoint to your browser's local
-                storage.
-              </span>
-              <TooltipArrow
-                ref={setSaveButtonArrow}
-                style={saveButtonStyles.arrow}
-              />
-            </SaveButtonTooltip>
-          </TracingInfo>
-          <Error data-testid="error">{sentryError}</Error>
-        </DropdownItem>
-      </NavigationLinks>
-    </HeaderContainer>
+          </SaveButtonTooltip>
+        </TracingInfo>
+        <Error data-testid="error">{sentryError}</Error>
+      </DropdownItem>
+    </>
   );
 }
