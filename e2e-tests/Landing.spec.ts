@@ -73,6 +73,28 @@ test.describe("Root page (Landing page)", () => {
 
       await expect(headerDropdown).not.toBeVisible();
     });
+    test("should close opened tracing dropdown when clicking away", async ({
+      page
+    }) => {
+      await mockSubgraph({
+        page
+      });
+      await page.goto("/");
+      const settings = page.locator("[data-testid=settings]");
+
+      await expect(settings).toBeVisible();
+
+      await settings.click();
+
+      const headerDropdown = page.locator("[data-testid=header-dropdown]");
+
+      await expect(headerDropdown).toBeVisible();
+      await page.pause();
+      const h2 = page.locator("h2");
+      await h2.click();
+
+      await expect(headerDropdown).not.toBeVisible();
+    });
     test("should display an error when typing a wrong url into the tracing url dropdown", async ({
       page
     }) => {
