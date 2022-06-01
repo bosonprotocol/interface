@@ -1,6 +1,7 @@
 import * as Sentry from "@sentry/react";
 import { BrowserTracing } from "@sentry/tracing";
 import React, { useEffect, useReducer, useState } from "react";
+import { IoIosSave, IoMdSettings } from "react-icons/io";
 import { usePopper } from "react-popper";
 import {
   createRoutesFromChildren,
@@ -13,12 +14,11 @@ import styled from "styled-components";
 import { CONFIG } from "../../lib/config";
 import { colors } from "../../lib/styles/colors";
 import { useLocalStorage } from "../../lib/utils/hooks/useLocalStorage";
-import { ReactComponent as SaveIcon } from "./save.svg";
-import { ReactComponent as SettingsSvg } from "./settings.svg";
 
-const SettingsSvgIcon = styled(SettingsSvg)`
+const SettingsSvgIcon = styled.button`
+  all: unset;
   :hover * {
-    stroke: ${colors.green};
+    fill: ${colors.green};
   }
   :hover {
     cursor: pointer;
@@ -48,10 +48,8 @@ const Input = styled.input`
   max-width: 100%;
 `;
 
-const SaveButton = styled(SaveIcon)`
-  width: 25px;
-  height: 20px;
-  padding: 10px;
+const SaveButton = styled.button`
+  padding: 8px;
   background: ${colors.green};
   color: ${colors.black};
   border-radius: 5px;
@@ -62,6 +60,14 @@ const SaveButton = styled(SaveIcon)`
   :hover + [data-testid="tooltip"] {
     visibility: initial;
   }
+`;
+
+const SettingsIcon = styled(IoMdSettings)`
+  font-size: 20px;
+`;
+
+const SaveIcon = styled(IoIosSave)`
+  font-size: 20px;
 `;
 
 const Error = styled.span`
@@ -103,7 +109,7 @@ export default function Settings() {
   const [sentryError, setSentryError] = useState<string>("");
 
   const [referenceElement, setReferenceElement] =
-    useState<SVGSVGElement | null>(null);
+    useState<HTMLButtonElement | null>(null);
   const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(
     null
   );
@@ -111,7 +117,7 @@ export default function Settings() {
     placement: "bottom-end"
   });
   const [saveButtonReference, setSaveButtonReference] =
-    useState<SVGSVGElement | null>(null);
+    useState<HTMLButtonElement | null>(null);
   const [saveButtonPopper, setSaveButtonPopper] =
     useState<HTMLDivElement | null>(null);
   const [saveButtonArrow, setSaveButtonArrow] = useState<HTMLDivElement | null>(
@@ -158,7 +164,6 @@ export default function Settings() {
   return (
     <>
       <SettingsSvgIcon
-        height="22px"
         data-testid="settings"
         ref={setReferenceElement}
         onClick={() => {
@@ -166,7 +171,9 @@ export default function Settings() {
           // tell popper to recalculate the position as the dropdown wasn't rendered
           saveButtonUpdate?.();
         }}
-      />
+      >
+        <SettingsIcon />
+      </SettingsSvgIcon>
       <DropdownItem
         ref={setPopperElement}
         style={styles.popper}
@@ -188,7 +195,9 @@ export default function Settings() {
             ref={setSaveButtonReference}
             onClick={() => setSentryTracingUrl(tracingUrl)}
             data-testid="save"
-          ></SaveButton>
+          >
+            <SaveIcon width="20px" height="20px" />
+          </SaveButton>
           <SaveButtonTooltip
             ref={setSaveButtonPopper}
             style={saveButtonStyles.popper}
