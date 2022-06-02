@@ -1,5 +1,6 @@
 import styled from "styled-components";
 
+import OfferCard from "../../components/offer/OfferCard";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 
 const DisputesContainer = styled.div`
@@ -11,21 +12,12 @@ const DisputesContainer = styled.div`
   padding-bottom: 24px;
 `;
 
-const Card = styled.div`
-  border-radius: 12px;
-  box-shadow: inset -3px -3px 3px #0e0f17, inset 3px 3px 3px #363b5b;
-  display: inline-block;
-  position: relative;
-  width: 250px;
-  padding: 0 16px;
-`;
-
 export default function MyDisputes() {
   const {
     data: exchanges,
     isLoading,
     isError
-  } = useExchanges({ disputed: true });
+  } = useExchanges({ disputed: true, sellerId: "4" });
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -45,12 +37,11 @@ export default function MyDisputes() {
   return (
     <DisputesContainer>
       {exchanges?.map((exchange) => (
-        <Card key={exchange.id}>
-          <p>CommittedDate: {exchange.committedDate}</p>
-          <p>Expired: {exchange.expired + ""}</p>
-          <p>Offer id: {exchange.offer.id}</p>
-          <p>Buyer id: {exchange.buyer.id}</p>
-        </Card>
+        <OfferCard
+          key={exchange.id}
+          offer={exchange.offer}
+          dataTestId="dispute"
+        />
       ))}
     </DisputesContainer>
   );

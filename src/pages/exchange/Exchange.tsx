@@ -183,7 +183,7 @@ function getIsOfferValid(offer: Offer | undefined | null): boolean {
   return isValid;
 }
 
-export default function OfferDetail() {
+export default function Exchange() {
   const { [UrlParameters.offerId]: offerId } = useParams();
   const widgetRef = useRef<HTMLDivElement>(null);
   const [isTabSellerSelected, setTabSellerSelected] = useState(false);

@@ -51,7 +51,7 @@ const Name = styled.span`
   margin-bottom: 8px;
 `;
 
-const CommitButtonContainer = styled.div`
+const ButtonContainer = styled.div`
   display: flex;
 `;
 
@@ -60,7 +60,7 @@ const Price = styled(RootPrice)`
   font-weight: bold;
 `;
 
-const Commit = styled.button`
+const Button = styled.button`
   all: unset;
   font-weight: 600;
   font-size: 15px;
@@ -75,12 +75,63 @@ const Commit = styled.button`
   margin-top: 8px;
 `;
 
+const CTA = ({
+  id,
+  action
+}: {
+  id: Props["offer"]["id"];
+  action: Props["action"];
+}) => {
+  const navigate = useNavigate();
+  if (action === "commit") {
+    return (
+      <Button
+        data-testid="commit"
+        onClick={() =>
+          navigate(
+            generatePath(OffersRoutes.OfferDetail, {
+              [UrlParameters.offerId]: id
+            })
+          )
+        }
+      >
+        Commit
+      </Button>
+    );
+  } else if (action === "exchange") {
+    return (
+      <Button
+        data-testid="redeem"
+        onClick={() =>
+          navigate(
+            generatePath(BosonRoutes.Exchange, {
+              [UrlParameters.offerId]: id
+            })
+          )
+        }
+      >
+        Redeem
+      </Button>
+    );
+  }
+  return null;
+};
 interface Props {
   offer: Offer;
   showSeller?: boolean;
+  action?: "commit" | "exchange";
+  dataTestId: string;
 }
 
-export default function OfferCard({ offer, showSeller }: Props) {
+export default function OfferCard({
+  offer,
+  showSeller,
+  action,
+  dataTestId
+}: Props) {
+  if (!offer) {
+    return null;
+  }
   const id = offer.id;
   const isSellerVisible = showSeller === undefined ? true : showSeller;
   const offerImg = `https://picsum.photos/seed/${id}/700`;
@@ -91,8 +142,8 @@ export default function OfferCard({ offer, showSeller }: Props) {
   const navigate = useNavigate();
 
   return (
-    <Card data-testid="offer">
-      {isSellerVisible && (
+    <Card data-testid={dataTestId}>
+      {isSellerVisible && sellerAddress && (
         <AddressContainer
           onClick={() =>
             navigate(
@@ -111,25 +162,16 @@ export default function OfferCard({ offer, showSeller }: Props) {
       </ImageContainer>
       <BasicInfoContainer>
         <Name data-testid="name">{name || "Untitled"}</Name>
-        <Price
-          currencySymbol={offer.exchangeToken.symbol}
-          value={offer.price}
-          decimals={offer.exchangeToken.decimals}
-        />
-        <CommitButtonContainer>
-          <Commit
-            data-testid="commit"
-            onClick={() =>
-              navigate(
-                generatePath(OffersRoutes.OfferDetail, {
-                  [UrlParameters.offerId]: id
-                })
-              )
-            }
-          >
-            Commit
-          </Commit>
-        </CommitButtonContainer>
+        {offer.exchangeToken && (
+          <Price
+            currencySymbol={offer.exchangeToken.symbol}
+            value={offer.price}
+            decimals={offer.exchangeToken.decimals}
+          />
+        )}
+        <ButtonContainer>
+          <CTA id={id} action={action} />
+        </ButtonContainer>
       </BasicInfoContainer>
     </Card>
   );
