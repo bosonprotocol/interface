@@ -5,7 +5,7 @@ import AddressContainer from "../../components/offer/AddressContainer";
 import AddressImage from "../../components/offer/AddressImage";
 import RootPrice from "../../components/price";
 import { UrlParameters } from "../../lib/routing/query-parameters";
-import { OffersRoutes } from "../../lib/routing/routes";
+import { BosonRoutes, OffersRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 
@@ -77,11 +77,12 @@ const Commit = styled.button`
 
 interface Props {
   offer: Offer;
+  showSeller?: boolean;
 }
 
-export default function OfferCard({ offer }: Props) {
+export default function OfferCard({ offer, showSeller }: Props) {
   const id = offer.id;
-
+  const isSellerVisible = showSeller === undefined ? true : showSeller;
   const offerImg = `https://picsum.photos/seed/${id}/700`;
   const name = offer.metadata?.name || "Untitled";
   const sellerId = offer.seller?.id;
@@ -91,10 +92,20 @@ export default function OfferCard({ offer }: Props) {
 
   return (
     <Card data-testid="offer">
-      <AddressContainer>
-        <AddressImage address={sellerAddress} size={30} />
-        <SellerInfo data-testid="seller-id">Seller ID: {sellerId}</SellerInfo>
-      </AddressContainer>
+      {isSellerVisible && (
+        <AddressContainer
+          onClick={() =>
+            navigate(
+              generatePath(BosonRoutes.Account, {
+                [UrlParameters.accountId]: sellerAddress
+              })
+            )
+          }
+        >
+          <AddressImage address={sellerAddress} size={30} />
+          <SellerInfo data-testid="seller-id">Seller ID: {sellerId}</SellerInfo>
+        </AddressContainer>
+      )}
       <ImageContainer>
         <Image data-testid="image" src={offerImg} />
       </ImageContainer>

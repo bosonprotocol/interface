@@ -18,13 +18,15 @@ interface Props {
   isError: boolean;
   isLoading?: boolean;
   loadingComponent?: ReactElement;
+  showSeller?: boolean;
 }
 
 export default function OfferList({
   offers,
   isLoading,
   isError,
-  loadingComponent
+  loadingComponent,
+  showSeller
 }: Props) {
   if (isLoading) {
     return loadingComponent || <div>Loading...</div>;
@@ -47,7 +49,7 @@ export default function OfferList({
   return (
     <OfferContainer>
       {offers.map((offer: Offer) => (
-        <OfferCard key={offer.id} offer={offer} />
+        <OfferCard key={offer.id} offer={offer} showSeller={showSeller} />
       ))}
     </OfferContainer>
   );

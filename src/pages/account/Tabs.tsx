@@ -2,6 +2,8 @@ import { useState } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
+import MyDisputes from "./MyDisputes";
+import MyExchanges from "./MyExchanges";
 import MyOffers from "./MyOffers";
 
 const TabsContainer = styled.div`
@@ -33,20 +35,20 @@ const TabTitle = styled.div<{ $isActive: boolean }>`
 
 const tabsData = [
   {
-    title: "My Offers",
+    title: "Offers",
     content: <MyOffers />
   },
   {
-    title: "My Exchanges",
-    content: <div>Exchanges</div>
+    title: "Exchanges",
+    content: <MyExchanges />
   },
   {
-    title: "My Disputes",
-    content: <div>Disputes</div>
+    title: "Disputes",
+    content: <MyDisputes />
   }
 ];
 const exchangesTabIndex = tabsData.findIndex(
-  (value) => value.title === "My Exchanges"
+  (value) => value.title === "Exchanges"
 );
 
 export default function Tabs() {

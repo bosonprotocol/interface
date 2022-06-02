@@ -58,7 +58,7 @@ export default function MyOffers() {
 
   return (
     <>
-      <OfferList offers={allOffers} isError={isError} />
+      <OfferList offers={allOffers} isError={isError} showSeller={false} />
       <div ref={intersect}></div>
     </>
   );
