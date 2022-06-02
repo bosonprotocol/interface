@@ -4,15 +4,14 @@ import { IoIosInformationCircleOutline } from "react-icons/io";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
-import { useConnectedWallet } from "../../lib/utils/hooks/useConnectedWallet";
-import AddressContainer from "./../../components/offer/AddressContainer";
-import AddressImage from "./../../components/offer/AddressImage";
-import RootPrice from "./../../components/price";
-import { CONFIG } from "./../../lib/config";
-import { UrlParameters } from "./../../lib/routing/query-parameters";
-import { colors } from "./../../lib/styles/colors";
-import { Offer } from "./../../lib/types/offer";
-import { useOffer } from "./../../lib/utils/hooks/useOffers/useOffer";
+import AddressContainer from "../../components/offer/AddressContainer";
+import AddressImage from "../../components/offer/AddressImage";
+import RootPrice from "../../components/price";
+import { CONFIG } from "../../lib/config";
+import { UrlParameters } from "../../lib/routing/query-parameters";
+import { colors } from "../../lib/styles/colors";
+import { Offer } from "../../lib/types/offer";
+import { useOffer } from "../../lib/utils/hooks/useOffers/useOffer";
 
 const Root = styled.div`
   display: flex;
@@ -188,7 +187,7 @@ export default function OfferDetail() {
   const { [UrlParameters.offerId]: offerId } = useParams();
   const widgetRef = useRef<HTMLDivElement>(null);
   const [isTabSellerSelected, setTabSellerSelected] = useState(false);
-  const account = useConnectedWallet();
+  const [account, setAccount] = useState("");
 
   if (!offerId) {
     return null;
@@ -215,6 +214,18 @@ export default function OfferDetail() {
 
     return;
   }, [offer, isTabSellerSelected]);
+
+  useEffect(() => {
+    function handleMessageFromIframe(e: MessageEvent) {
+      const { target, message, wallet } = e.data || {};
+
+      if (target === "boson" && message === "wallet-changed") {
+        setAccount(wallet);
+      }
+    }
+    window.addEventListener("message", handleMessageFromIframe);
+    return () => window.removeEventListener("message", handleMessageFromIframe);
+  }, []);
 
   if (isLoading) {
     return <div>Loading...</div>;

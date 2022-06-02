@@ -1,9 +1,7 @@
 import { BigNumber, utils } from "ethers";
 import styled from "styled-components";
 
-import bosonIcon from "./images/boson.svg";
-import daiIcon from "./images/dai.svg";
-import ethIcon from "./images/eth-icon.svg";
+import CryptoCurrency from "./CryptoCurrency";
 
 const Root = styled.div`
   display: flex;
@@ -12,13 +10,10 @@ const Root = styled.div`
 `;
 
 const CurrencyIcon = styled.div`
-  height: 25px;
-  width: 25px;
-`;
-
-const Image = styled.img`
-  height: 25px;
-  width: 25px;
+  img {
+    height: 25px;
+    width: 25px;
+  }
 `;
 
 interface IProps {
@@ -27,21 +22,13 @@ interface IProps {
   currencySymbol: string;
 }
 
-const currencyImages = {
-  DAI: daiIcon,
-  BOSON: bosonIcon,
-  ETH: ethIcon
-};
-
 export default function Price({
   value,
   decimals,
   currencySymbol,
   ...rest
 }: IProps) {
-  const symbolUpperCase =
-    currencySymbol.toUpperCase() as keyof typeof currencyImages;
-
+  const symbolUpperCase = currencySymbol.toUpperCase();
   let formattedValue = "";
   try {
     formattedValue = utils.formatUnits(BigNumber.from(value), Number(decimals));
@@ -52,11 +39,9 @@ export default function Price({
 
   return (
     <Root {...rest} data-testid="price">
-      {currencyImages[symbolUpperCase] && (
-        <CurrencyIcon>
-          <Image src={currencyImages[symbolUpperCase]} alt="currency icon" />
-        </CurrencyIcon>
-      )}
+      <CurrencyIcon>
+        <CryptoCurrency currencySymbol={currencySymbol} />
+      </CurrencyIcon>
       {formattedValue ? (
         <span>{fractions === "0" ? integer : `${integer}.${fractions}`}</span>
       ) : (

@@ -1,3 +1,4 @@
+import { ReactElement } from "react";
 import styled from "styled-components";
 
 import { Offer } from "../../lib/types/offer";
@@ -15,12 +16,18 @@ const OfferContainer = styled.div`
 interface Props {
   offers?: Array<Offer>;
   isError: boolean;
-  isLoading: boolean;
+  isLoading?: boolean;
+  loadingComponent?: ReactElement;
 }
 
-export default function OfferList({ offers, isLoading, isError }: Props) {
+export default function OfferList({
+  offers,
+  isLoading,
+  isError,
+  loadingComponent
+}: Props) {
   if (isLoading) {
-    return <div>Loading...</div>;
+    return loadingComponent || <div>Loading...</div>;
   }
 
   if (isError) {

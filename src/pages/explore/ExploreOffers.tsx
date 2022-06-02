@@ -115,10 +115,8 @@ export default function ExploreOffers({
   );
   const offers = offersWithOneExtra?.slice(0, OFFERS_PER_PAGE);
 
-  const ref = useRef<HTMLDivElement>(null);
-
   return (
-    <Container ref={ref}>
+    <Container>
       <h1>Explore</h1>
       <OfferList offers={offers} isError={isError} isLoading={isLoading} />
       <PaginationWrapper>

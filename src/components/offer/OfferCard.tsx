@@ -92,7 +92,7 @@ export default function OfferCard({ offer }: Props) {
   return (
     <Card data-testid="offer">
       <AddressContainer>
-        <AddressImage address={sellerAddress} />
+        <AddressImage address={sellerAddress} size={30} />
         <SellerInfo data-testid="seller-id">Seller ID: {sellerId}</SellerInfo>
       </AddressContainer>
       <ImageContainer>

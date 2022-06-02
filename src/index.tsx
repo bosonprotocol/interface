@@ -30,6 +30,8 @@ const CreateOffer = React.lazy(
 const Explore = React.lazy(() => import("./pages/explore/Explore"));
 const Landing = React.lazy(() => import("./pages/landing/Landing"));
 const OfferDetail = React.lazy(() => import("./pages/offers/OfferDetail"));
+const Exchange = React.lazy(() => import("./pages/exchange/Exchange"));
+const MyAccount = React.lazy(() => import("./pages/account/MyAccount"));
 
 const Loading = () => (
   <Layout>
@@ -45,7 +47,7 @@ const routingInstrumentationFn = Sentry.reactRouterV6Instrumentation(
 );
 routingInstrumentationFn(() => undefined, true, true);
 Sentry.init({
-  debug: true,
+  debug: ["local", "testing"].includes(CONFIG.envName),
   dsn: "",
   enabled: true,
   integrations: [
@@ -109,6 +111,22 @@ root.render(
               element={
                 <React.Suspense fallback={<Loading />}>
                   <OfferDetail />
+                </React.Suspense>
+              }
+            />
+            <Route
+              path={BosonRoutes.Exchange}
+              element={
+                <React.Suspense fallback={<Loading />}>
+                  <Exchange />
+                </React.Suspense>
+              }
+            />
+            <Route
+              path={BosonRoutes.Account}
+              element={
+                <React.Suspense fallback={<Loading />}>
+                  <MyAccount />
                 </React.Suspense>
               }
             />
