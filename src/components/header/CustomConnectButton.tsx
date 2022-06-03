@@ -2,6 +2,7 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
+import Account from "./Account";
 
 const GreenButton = styled.button`
   background: ${colors.green};
@@ -90,6 +91,8 @@ export default function CustomConnectButton() {
                       ? ` (${account.displayBalance})`
                       : ""}
                   </GreenButton>
+
+                  <Account />
                 </div>
               );
             })()}

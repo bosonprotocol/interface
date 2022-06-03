@@ -1,7 +1,7 @@
 import { manageOffer } from "@bosonprotocol/widgets-sdk";
 import { useEffect, useRef, useState } from "react";
 import { IoIosInformationCircleOutline } from "react-icons/io";
-import { useParams } from "react-router-dom";
+import { generatePath, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 
 import AddressContainer from "../../components/offer/AddressContainer";
@@ -9,6 +9,7 @@ import AddressImage from "../../components/offer/AddressImage";
 import RootPrice from "../../components/price";
 import { CONFIG } from "../../lib/config";
 import { UrlParameters } from "../../lib/routing/query-parameters";
+import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { useOffer } from "../../lib/utils/hooks/useOffers/useOffer";
@@ -188,7 +189,7 @@ export default function Exchange() {
   const widgetRef = useRef<HTMLDivElement>(null);
   const [isTabSellerSelected, setTabSellerSelected] = useState(false);
   const [account, setAccount] = useState("");
-
+  const navigate = useNavigate();
   if (!offerId) {
     return null;
   }
@@ -272,7 +273,15 @@ export default function Exchange() {
             </Box>
             <Box>
               <SubHeading> Seller</SubHeading>
-              <AddressContainer>
+              <AddressContainer
+                onClick={() =>
+                  navigate(
+                    generatePath(BosonRoutes.Account, {
+                      [UrlParameters.accountId]: sellerAddress
+                    })
+                  )
+                }
+              >
                 <AddressImage address={sellerAddress} size={30} />
                 <div data-testid="seller-id">ID: {sellerId}</div>
               </AddressContainer>

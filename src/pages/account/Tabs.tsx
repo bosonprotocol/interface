@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
-import MyDisputes from "./MyDisputes";
-import MyExchanges from "./MyExchanges";
-import MyOffers from "./MyOffers";
+import { useBuyers } from "../../lib/utils/hooks/useBuyers";
+import { useSellers } from "../../lib/utils/hooks/useSellers";
+import Disputes from "./Disputes";
+import Exchanges from "./Exchanges";
+import Offers from "./Offers";
 
 const TabsContainer = styled.div`
   font-size: 1.3rem;
@@ -33,29 +35,37 @@ const TabTitle = styled.div<{ $isActive: boolean }>`
   }
 `;
 
-const tabsData: {
-  title: "Offers" | "Exchanges" | "Disputes";
-  content: JSX.Element;
-}[] = [
-  {
-    title: "Offers",
-    content: <MyOffers />
-  },
-  {
-    title: "Exchanges",
-    content: <MyExchanges />
-  },
-  {
-    title: "Disputes",
-    content: <MyDisputes />
-  }
-];
-const exchangesTabIndex = tabsData.findIndex(
-  (value) => value.title === "Exchanges"
-);
+interface Props {
+  isPrivateProfile: boolean;
+  address: string;
+}
+export default function Tabs({ isPrivateProfile, address }: Props) {
+  const { data: sellers } = useSellers({ admin: address });
+  const { data: buyers } = useBuyers({ wallet: address });
+  const sellerId = sellers?.[0]?.id || "";
+  const buyerId = buyers?.[0]?.id || "";
+  const tabsData = useMemo(() => {
+    const tabsData: {
+      title: string;
+      content: JSX.Element;
+    }[] = [
+      {
+        title: isPrivateProfile ? "My Offers" : "Offers",
+        content: <Offers sellerId={sellerId} />
+      },
+      {
+        title: isPrivateProfile ? "My Exchanges" : "Exchanges",
+        content: <Exchanges sellerId={sellerId} buyerId={buyerId} />
+      },
+      {
+        title: isPrivateProfile ? "My Disputes" : "Disputes",
+        content: <Disputes sellerId={sellerId} buyerId={buyerId} />
+      }
+    ];
+    return tabsData;
+  }, [sellerId, buyerId]);
 
-export default function Tabs() {
-  const [indexActiveTab, setIndexActiveTab] = useState(exchangesTabIndex || 1);
+  const [indexActiveTab, setIndexActiveTab] = useState(1);
   const handleActive = (index: number) => () => {
     setIndexActiveTab(index);
   };

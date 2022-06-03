@@ -6,19 +6,21 @@ import { offerGraphQl } from "./useOffers/graphql";
 
 interface Props {
   disputed: boolean | null;
-  sellerId: string;
+  sellerId?: string;
+  buyerId?: string;
 }
 
 export function useExchanges(props: Props) {
-  const { disputed, sellerId } = props;
+  const { disputed, sellerId, buyerId } = props;
   return useQuery(["exchanges", props], async () => {
     const result = await fetchSubgraph<{
       exchanges: Record<string, any>[]; // TODO: improve type
     }>(
       gql`
-        query GetExchanges($disputed: Boolean, $sellerId: String) {
+        query GetExchanges($disputed: Boolean, $sellerId: String, $buyerId: String) {
           exchanges(where: { 
             seller: $sellerId
+            buyer: $buyerId
             ${
               [true, false].includes(disputed as boolean)
                 ? "disputed: $disputed"
@@ -33,6 +35,9 @@ export function useExchanges(props: Props) {
             redeemedDate
             state
             validUntilDate
+            seller {
+              id
+            }
             buyer {
               id
             }
@@ -42,7 +47,8 @@ export function useExchanges(props: Props) {
       `,
       {
         disputed,
-        sellerId
+        sellerId,
+        buyerId
       }
     );
     return result?.exchanges ?? [];

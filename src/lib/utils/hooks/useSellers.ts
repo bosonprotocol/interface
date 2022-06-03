@@ -4,8 +4,11 @@ import { useQuery } from "react-query";
 import { Offer } from "../../../lib/types/offer";
 import { fetchSubgraph } from "../core-components/subgraph";
 
-export function useSellers() {
-  return useQuery("sellers", async () => {
+interface Props {
+  admin?: string;
+}
+export function useSellers(props: Props = {}) {
+  return useQuery(["sellers", props], async () => {
     const result = await fetchSubgraph<{
       sellers: Pick<
         Offer["seller"],
@@ -13,8 +16,16 @@ export function useSellers() {
       >[];
     }>(
       gql`
-        query GetSellers($orderBy: String, $orderDirection: String) {
-          sellers(orderBy: $orderBy, orderDirection: $orderDirection) {
+        query GetSellers(
+          $orderBy: String
+          $orderDirection: String
+          $admin: String
+        ) {
+          sellers(
+            orderBy: $orderBy
+            orderDirection: $orderDirection
+            where: { admin: $admin }
+          ) {
             id
             operator
             admin
@@ -26,7 +37,8 @@ export function useSellers() {
       `,
       {
         orderBy: "sellerId",
-        orderDirection: "asc"
+        orderDirection: "asc",
+        ...(props.admin && { admin: props.admin })
       }
     );
     return result?.sellers ?? [];

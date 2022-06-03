@@ -23,7 +23,12 @@ const Explore = React.lazy(() => import("./pages/explore/Explore"));
 const Landing = React.lazy(() => import("./pages/landing/Landing"));
 const OfferDetail = React.lazy(() => import("./pages/offers/OfferDetail"));
 const Exchange = React.lazy(() => import("./pages/exchange/Exchange"));
-const MyAccount = React.lazy(() => import("./pages/account/MyAccount"));
+const PrivateAccount = React.lazy(
+  () => import("./pages/account/private/PrivateAccount")
+);
+const PublicAccount = React.lazy(
+  () => import("./pages/account/public/PublicAccount")
+);
 
 const Loading = () => (
   <Layout>
@@ -95,10 +100,18 @@ root.render(
                 }
               />
               <Route
+                path={BosonRoutes.YourAccount}
+                element={
+                  <React.Suspense fallback={<Loading />}>
+                    <PrivateAccount />
+                  </React.Suspense>
+                }
+              />
+              <Route
                 path={BosonRoutes.Account}
                 element={
                   <React.Suspense fallback={<Loading />}>
-                    <MyAccount />
+                    <PublicAccount />
                   </React.Suspense>
                 }
               />

@@ -1,16 +1,15 @@
 import { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
 
 import OfferList from "../../components/offers/OfferList";
-import { UrlParameters } from "../../lib/routing/query-parameters";
 import { Offer } from "../../lib/types/offer";
 import { useOffers } from "../../lib/utils/hooks/useOffers";
 
 const OFFERS_PER_PAGE = 10;
 
-export default function MyOffers() {
-  const { [UrlParameters.accountId]: account } = useParams();
-
+interface Props {
+  sellerId: string;
+}
+export default function Offers({ sellerId }: Props) {
   const [pageIndex, setPageIndex] = useState(0);
   const intersect = useRef(null);
   const [allOffers, setAllOffers] = useState<Offer[]>([]);
@@ -21,7 +20,7 @@ export default function MyOffers() {
   } = useOffers({
     voided: false,
     valid: false,
-    sellerId: "4",
+    sellerId,
     filterOutWrongMetadata: false,
     first: OFFERS_PER_PAGE + 1,
     skip: OFFERS_PER_PAGE * pageIndex

@@ -1,13 +1,13 @@
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
-import AddressImage from "../../components/offer/AddressImage";
-import AddressText from "../../components/offer/AddressText";
-import CryptoCurrency from "../../components/price/CryptoCurrency";
-import { UrlParameters } from "../../lib/routing/query-parameters";
-import { colors } from "../../lib/styles/colors";
-import { useEnsName } from "../../lib/utils/hooks/useEnsName";
-import Tabs from "./Tabs";
+import AddressImage from "../../../components/offer/AddressImage";
+import AddressText from "../../../components/offer/AddressText";
+import CryptoCurrency from "../../../components/price/CryptoCurrency";
+import { UrlParameters } from "../../../lib/routing/query-parameters";
+import { colors } from "../../../lib/styles/colors";
+import { useEnsName } from "../../../lib/utils/hooks/useEnsName";
+import Tabs from "../Tabs";
 
 const BasicInfo = styled.section`
   display: flex;
@@ -43,23 +43,30 @@ const AddressContainer = styled.div`
   }
 `;
 
-export default function MyAccount() {
+export default function PublicAccount() {
   const { [UrlParameters.accountId]: account } = useParams();
-  const ensName = useEnsName(account || "") || "test ens"; // TODO: remove test ens
+  const address = account || "";
+  const ensName = useEnsName(address) || "test ens"; // TODO: remove test ens
+
+  if (!address) {
+    return <div>There has been an error</div>;
+  }
 
   return (
     <>
       <BasicInfo>
         <AddressImageContainer>
-          {account && <AddressImage address={account} size={200} />}
+          <AddressImage address={address} size={200} />
         </AddressImageContainer>
+
         <EnsName>{ensName}</EnsName>
+
         <AddressContainer>
           <CryptoCurrency currencySymbol="ETH" />
-          <AddressText address={account || ""} />
+          <AddressText address={address || ""} />
         </AddressContainer>
       </BasicInfo>
-      <Tabs />
+      <Tabs isPrivateProfile={false} address={address} />
     </>
   );
 }

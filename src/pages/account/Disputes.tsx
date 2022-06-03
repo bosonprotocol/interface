@@ -11,18 +11,28 @@ const DisputesContainer = styled.div`
   justify-content: space-between;
   padding-bottom: 24px;
 `;
-
-export default function MyDisputes() {
+interface Props {
+  sellerId: string;
+  buyerId: string;
+}
+export default function Disputes({ sellerId, buyerId }: Props) {
   const {
-    data: exchanges,
-    isLoading,
-    isError
-  } = useExchanges({ disputed: true, sellerId: "4" });
-  if (isLoading) {
+    data: exchangesSeller,
+    isLoading: isLoadingSeller,
+    isError: isErrorSeller
+  } = useExchanges({ disputed: true, sellerId });
+
+  const {
+    data: exchangesBuyer,
+    isLoading: isLoadingBuyer,
+    isError: isErrorBuyer
+  } = useExchanges({ disputed: true, buyerId });
+
+  if (isLoadingSeller || isLoadingBuyer) {
     return <div>Loading...</div>;
   }
 
-  if (isError) {
+  if (isErrorSeller || isErrorBuyer) {
     return (
       <div data-testid="errorExchanges">
         There has been an error, please try again later...
@@ -30,10 +40,11 @@ export default function MyDisputes() {
     );
   }
 
-  if (!exchanges?.length) {
+  if (!exchangesSeller?.length && !exchangesBuyer?.length) {
     return <div>There are no disputes</div>;
   }
 
+  const exchanges = [...(exchangesSeller || []), ...(exchangesBuyer || [])];
   return (
     <DisputesContainer>
       {exchanges?.map((exchange) => (

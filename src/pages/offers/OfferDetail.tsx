@@ -1,9 +1,10 @@
 import { manageOffer } from "@bosonprotocol/widgets-sdk";
 import { useEffect, useRef, useState } from "react";
 import { IoIosInformationCircleOutline } from "react-icons/io";
-import { useParams } from "react-router-dom";
+import { generatePath, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 
+import { BosonRoutes } from "../../lib/routing/routes";
 import { useConnectedWallet } from "../../lib/utils/hooks/useConnectedWallet";
 import AddressContainer from "./../../components/offer/AddressContainer";
 import AddressImage from "./../../components/offer/AddressImage";
@@ -189,7 +190,7 @@ export default function OfferDetail() {
   const widgetRef = useRef<HTMLDivElement>(null);
   const [isTabSellerSelected, setTabSellerSelected] = useState(false);
   const account = useConnectedWallet();
-
+  const navigate = useNavigate();
   if (!offerId) {
     return null;
   }
@@ -261,7 +262,15 @@ export default function OfferDetail() {
             </Box>
             <Box>
               <SubHeading> Seller</SubHeading>
-              <AddressContainer>
+              <AddressContainer
+                onClick={() =>
+                  navigate(
+                    generatePath(BosonRoutes.Account, {
+                      [UrlParameters.accountId]: sellerAddress
+                    })
+                  )
+                }
+              >
                 <AddressImage address={sellerAddress} size={30} />
                 <div data-testid="seller-id">ID: {sellerId}</div>
               </AddressContainer>
