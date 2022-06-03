@@ -2,6 +2,7 @@ import "@rainbow-me/rainbowkit/styles.css";
 
 import {
   Chain,
+  darkTheme,
   getDefaultWallets,
   RainbowKitProvider
 } from "@rainbow-me/rainbowkit";
@@ -58,7 +59,9 @@ interface Props {
 export default function InitRainbowkit({ children }: Props) {
   return (
     <WagmiConfig client={wagmiClient}>
-      <RainbowKitProvider chains={chains}>{children}</RainbowKitProvider>
+      <RainbowKitProvider chains={chains} theme={darkTheme()}>
+        {children}
+      </RainbowKitProvider>
     </WagmiConfig>
   );
 }
