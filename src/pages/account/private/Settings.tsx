@@ -11,9 +11,9 @@ import {
 } from "react-router-dom";
 import styled from "styled-components";
 
-import { CONFIG } from "../../lib/config";
-import { colors } from "../../lib/styles/colors";
-import { useLocalStorage } from "../../lib/utils/hooks/useLocalStorage";
+import { CONFIG } from "../../../lib/config";
+import { colors } from "../../../lib/styles/colors";
+import { useLocalStorage } from "../../../lib/utils/hooks/useLocalStorage";
 
 const SettingsSvgIcon = styled.button`
   all: unset;

@@ -1,18 +1,33 @@
 import styled from "styled-components";
-import { useAccount } from "wagmi";
+import { useAccount, useEnsName } from "wagmi";
 
 import AddressImage from "../../../components/offer/AddressImage";
 import AddressText from "../../../components/offer/AddressText";
 import CryptoCurrency from "../../../components/price/CryptoCurrency";
 import { colors } from "../../../lib/styles/colors";
-import { useEnsName } from "../../../lib/utils/hooks/useEnsName";
+// import { useEnsName as useEnsNameCustom } from "../../../lib/utils/hooks/useEnsName";
 import Tabs from "../Tabs";
+import Settings from "./Settings";
 
-const BasicInfo = styled.section`
+const AddressWrapper = styled.div`
   display: flex;
-  flex-direction: column;
   justify-content: center;
+`;
+
+const BasicInfo = styled.div`
+  display: flex;
   align-items: center;
+  flex-direction: row;
+  justify-content: space-evenly;
+  margin: 0 0 40px 0;
+`;
+
+const EnsAndAddress = styled.div`
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  position: relative;
+  left: 30%;
 `;
 
 const AddressImageContainer = styled.div`
@@ -24,14 +39,14 @@ const AddressImageContainer = styled.div`
 
 const EnsName = styled.div`
   font-size: 1.5rem;
+  margin-top: 5px;
+  margin-bottom: 20px;
 `;
 
 const AddressContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 5px;
-  margin-bottom: 20px;
   * {
     font-size: 1rem;
   }
@@ -42,11 +57,18 @@ const AddressContainer = styled.div`
   }
 `;
 
+const SettingsWrapper = styled.div`
+  display: flex;
+  justify-content: end;
+  flex-basis: 200px;
+`;
+
 export default function PrivateAccount() {
   const { data: account, isLoading, isFetching, isError } = useAccount();
   const address = account?.address || "";
-  const ensName = useEnsName(address) || "test ens"; // TODO: remove test ens
-
+  const { data: ensName } = useEnsName({
+    address: address
+  });
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -65,17 +87,25 @@ export default function PrivateAccount() {
 
   return (
     <>
-      <BasicInfo>
+      <AddressWrapper>
         <AddressImageContainer>
           <AddressImage address={address} size={200} />
         </AddressImageContainer>
+      </AddressWrapper>
+      <BasicInfo>
+        <EnsAndAddress>
+          <EnsName>{ensName}</EnsName>
 
-        <EnsName>{ensName}</EnsName>
-
-        <AddressContainer>
-          <CryptoCurrency currencySymbol="ETH" />
-          <AddressText address={address || ""} />
-        </AddressContainer>
+          <AddressContainer>
+            <CryptoCurrency currencySymbol="ETH" />
+            <AddressText address={address || ""} />
+          </AddressContainer>
+        </EnsAndAddress>
+        <div></div>
+        <div></div>
+        <SettingsWrapper>
+          <Settings />
+        </SettingsWrapper>
       </BasicInfo>
       <Tabs isPrivateProfile={true} address={address} />
     </>

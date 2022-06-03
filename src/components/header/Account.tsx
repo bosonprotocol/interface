@@ -7,6 +7,8 @@ import { colors } from "../../lib/styles/colors";
 
 const AccountSvgIcon = styled.button`
   all: unset;
+  display: flex;
+  align-items: center;
   :hover * {
     fill: ${colors.green};
   }
@@ -16,14 +18,21 @@ const AccountSvgIcon = styled.button`
 `;
 
 const AccountIcon = styled(IoIosContact)`
-  font-size: 20px;
+  font-size: 30px;
 `;
-export default function Account() {
+
+interface Props {
+  onClick: () => void;
+}
+export default function Account({ onClick }: Props) {
   const navigate = useNavigate();
   return (
     <AccountSvgIcon
       data-testid="account"
-      onClick={() => navigate(BosonRoutes.YourAccount)}
+      onClick={() => {
+        onClick();
+        navigate(BosonRoutes.YourAccount);
+      }}
     >
       <AccountIcon />
     </AccountSvgIcon>

@@ -26,8 +26,8 @@ const Exchange = React.lazy(() => import("./pages/exchange/Exchange"));
 const PrivateAccount = React.lazy(
   () => import("./pages/account/private/PrivateAccount")
 );
-const PublicAccount = React.lazy(
-  () => import("./pages/account/public/PublicAccount")
+const PublicOrPrivateAccount = React.lazy(
+  () => import("./pages/account/public/PublicOrPrivateAccount")
 );
 
 const Loading = () => (
@@ -111,7 +111,7 @@ root.render(
                 path={BosonRoutes.Account}
                 element={
                   <React.Suspense fallback={<Loading />}>
-                    <PublicAccount />
+                    <PublicOrPrivateAccount />
                   </React.Suspense>
                 }
               />

@@ -1,12 +1,14 @@
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
+import { useEnsName } from "wagmi";
 
+// import { useAccount } from "wagmi";
 import AddressImage from "../../../components/offer/AddressImage";
 import AddressText from "../../../components/offer/AddressText";
 import CryptoCurrency from "../../../components/price/CryptoCurrency";
 import { UrlParameters } from "../../../lib/routing/query-parameters";
 import { colors } from "../../../lib/styles/colors";
-import { useEnsName } from "../../../lib/utils/hooks/useEnsName";
+// import PrivateAccount from "../private/PrivateAccount";
 import Tabs from "../Tabs";
 
 const BasicInfo = styled.section`
@@ -44,9 +46,11 @@ const AddressContainer = styled.div`
 `;
 
 export default function PublicAccount() {
-  const { [UrlParameters.accountId]: account } = useParams();
-  const address = account || "";
-  const ensName = useEnsName(address) || "test ens"; // TODO: remove test ens
+  const { [UrlParameters.accountId]: accountParameter } = useParams();
+  const address = accountParameter || "";
+  const { data: ensName } = useEnsName({
+    address: address
+  });
 
   if (!address) {
     return <div>There has been an error</div>;
