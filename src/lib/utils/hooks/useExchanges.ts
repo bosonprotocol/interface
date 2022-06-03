@@ -9,8 +9,9 @@ interface Props {
   sellerId: string;
 }
 
-export function useExchanges({ disputed, sellerId }: Props) {
-  return useQuery("exchanges", async () => {
+export function useExchanges(props: Props) {
+  const { disputed, sellerId } = props;
+  return useQuery(["exchanges", props], async () => {
     const result = await fetchSubgraph<{
       exchanges: Record<string, any>[]; // TODO: improve type
     }>(

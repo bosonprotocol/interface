@@ -41,6 +41,7 @@ export default function MyDisputes() {
           key={exchange.id}
           offer={exchange.offer}
           dataTestId="dispute"
+          showSeller={false}
         />
       ))}
     </DisputesContainer>

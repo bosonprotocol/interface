@@ -1,4 +1,3 @@
-import { useRef } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
@@ -21,23 +20,25 @@ const AddressImageContainer = styled.div`
   border: 6px solid ${colors.cgBlue};
   border-radius: 50%;
   background-color: ${colors.cgBlue};
+  margin-bottom: 5px;
 `;
 
 const EnsName = styled.div`
-  font-size: 2rem;
+  font-size: 1.5rem;
 `;
 
 const AddressContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 20px;
+  margin-top: 5px;
+  margin-bottom: 20px;
   * {
-    font-size: 1.3rem;
+    font-size: 1rem;
   }
 
   img {
-    width: 20px;
+    width: 15px;
     margin-right: 5px;
   }
 `;

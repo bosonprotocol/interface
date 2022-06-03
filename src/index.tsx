@@ -1,23 +1,15 @@
-import * as Sentry from "@sentry/react";
-import { BrowserTracing } from "@sentry/tracing";
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "react-query";
-import {
-  createRoutesFromChildren,
-  HashRouter,
-  matchRoutes,
-  Route,
-  Routes,
-  useLocation,
-  useNavigationType
-} from "react-router-dom";
+import { HashRouter, Route } from "react-router-dom";
 
 import App from "./components/app";
 import Layout from "./components/Layout";
-import { CONFIG } from "./lib/config";
+import InitRainbowkit from "./initRainbowkit";
+import InitSentry from "./initSentry";
 import { BosonRoutes, OffersRoutes } from "./lib/routing/routes";
 import reportWebVitals from "./reportWebVitals";
+
 const rootElement = document.getElementById("root");
 if (!rootElement) throw new Error("Unable to find the root element");
 const queryClient = new QueryClient();
@@ -38,110 +30,91 @@ const Loading = () => (
     <p>Loading...</p>
   </Layout>
 );
-const routingInstrumentationFn = Sentry.reactRouterV6Instrumentation(
-  React.useEffect,
-  useLocation,
-  useNavigationType,
-  createRoutesFromChildren,
-  matchRoutes
-);
-routingInstrumentationFn(() => undefined, true, true);
-Sentry.init({
-  debug: ["local", "testing"].includes(CONFIG.envName),
-  dsn: "",
-  enabled: true,
-  integrations: [
-    new BrowserTracing({
-      routingInstrumentation: routingInstrumentationFn
-    })
-  ],
-  environment: CONFIG.envName,
-  tracesSampleRate: 1.0
-});
-const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes);
 
 root.render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <HashRouter>
-        <SentryRoutes>
-          <Route path="/" element={<App />}>
-            <Route
-              path={BosonRoutes.Root}
-              element={
-                <React.Suspense fallback={<Loading />}>
-                  <Landing />
-                </React.Suspense>
-              }
-            />
-            {[
-              BosonRoutes.Explore,
-              BosonRoutes.ExplorePage,
-              BosonRoutes.ExplorePageByIndex
-            ].map((route) => (
+    <InitRainbowkit>
+      <QueryClientProvider client={queryClient}>
+        <HashRouter>
+          <InitSentry>
+            <Route path="/" element={<App />}>
               <Route
-                key={route}
-                path={route}
+                path={BosonRoutes.Root}
+                element={
+                  <React.Suspense fallback={<Loading />}>
+                    <Landing />
+                  </React.Suspense>
+                }
+              />
+              {[
+                BosonRoutes.Explore,
+                BosonRoutes.ExplorePage,
+                BosonRoutes.ExplorePageByIndex
+              ].map((route) => (
+                <Route
+                  key={route}
+                  path={route}
+                  element={
+                    <React.Suspense fallback={<Loading />}>
+                      <Explore />
+                    </React.Suspense>
+                  }
+                />
+              ))}
+
+              <Route
+                path={BosonRoutes.CreateOffer}
+                element={
+                  <React.Suspense fallback={<Loading />}>
+                    <CreateOffer />
+                  </React.Suspense>
+                }
+              />
+              <Route
+                path={OffersRoutes.Root}
                 element={
                   <React.Suspense fallback={<Loading />}>
                     <Explore />
                   </React.Suspense>
                 }
               />
-            ))}
-
-            <Route
-              path={BosonRoutes.CreateOffer}
-              element={
-                <React.Suspense fallback={<Loading />}>
-                  <CreateOffer />
-                </React.Suspense>
-              }
-            />
-            <Route
-              path={OffersRoutes.Root}
-              element={
-                <React.Suspense fallback={<Loading />}>
-                  <Explore />
-                </React.Suspense>
-              }
-            />
-            <Route
-              path={OffersRoutes.OfferDetail}
-              element={
-                <React.Suspense fallback={<Loading />}>
-                  <OfferDetail />
-                </React.Suspense>
-              }
-            />
-            <Route
-              path={BosonRoutes.Exchange}
-              element={
-                <React.Suspense fallback={<Loading />}>
-                  <Exchange />
-                </React.Suspense>
-              }
-            />
-            <Route
-              path={BosonRoutes.Account}
-              element={
-                <React.Suspense fallback={<Loading />}>
-                  <MyAccount />
-                </React.Suspense>
-              }
-            />
-            <Route
-              path="*"
-              element={
-                <main style={{ padding: "1rem" }}>
-                  <p>Page not found</p>
-                </main>
-              }
-            />
-          </Route>
-        </SentryRoutes>
-      </HashRouter>
-    </QueryClientProvider>
+              <Route
+                path={OffersRoutes.OfferDetail}
+                element={
+                  <React.Suspense fallback={<Loading />}>
+                    <OfferDetail />
+                  </React.Suspense>
+                }
+              />
+              <Route
+                path={BosonRoutes.Exchange}
+                element={
+                  <React.Suspense fallback={<Loading />}>
+                    <Exchange />
+                  </React.Suspense>
+                }
+              />
+              <Route
+                path={BosonRoutes.Account}
+                element={
+                  <React.Suspense fallback={<Loading />}>
+                    <MyAccount />
+                  </React.Suspense>
+                }
+              />
+              <Route
+                path="*"
+                element={
+                  <main style={{ padding: "1rem" }}>
+                    <p>Page not found</p>
+                  </main>
+                }
+              />
+            </Route>
+          </InitSentry>
+        </HashRouter>
+      </QueryClientProvider>
+    </InitRainbowkit>
   </React.StrictMode>
 );
 

@@ -7,7 +7,6 @@ import MyExchanges from "./MyExchanges";
 import MyOffers from "./MyOffers";
 
 const TabsContainer = styled.div`
-  margin-top: 10px;
   font-size: 1.3rem;
   display: flex;
   flex-direction: column;
@@ -17,7 +16,7 @@ const Headers = styled.div`
   justify-content: space-evenly;
 `;
 const Content = styled.div`
-  margin: 20px 10% 0 10%;
+  margin: 30px 10% 0 10%;
 `;
 const Tab = styled.div`
   display: flex;
@@ -26,14 +25,18 @@ const Tab = styled.div`
 const TabTitle = styled.div<{ $isActive: boolean }>`
   cursor: pointer;
   span {
+    font-size: 2rem;
     border-bottom: 3px solid;
     border-color: ${({ $isActive }) =>
-      $isActive ? colors.tomato : "transparent"};
-    color: ${({ $isActive }) => ($isActive ? colors.tomato : colors.white)};
+      $isActive ? colors.green : "transparent"};
+    color: ${({ $isActive }) => ($isActive ? colors.green : colors.white)};
   }
 `;
 
-const tabsData = [
+const tabsData: {
+  title: "Offers" | "Exchanges" | "Disputes";
+  content: JSX.Element;
+}[] = [
   {
     title: "Offers",
     content: <MyOffers />

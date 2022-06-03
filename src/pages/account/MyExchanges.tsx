@@ -42,6 +42,7 @@ export default function MyExchanges() {
           offer={exchange.offer}
           action="exchange"
           dataTestId="exchange"
+          showSeller={false}
         />
       ))}
     </ExchangesContainer>

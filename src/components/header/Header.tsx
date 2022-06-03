@@ -5,6 +5,7 @@ import logo from "../../../src/assets/logo.png";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import Layout from "../Layout";
+import CustomConnectButton from "./CustomConnectButton";
 import Settings from "./Settings";
 
 const HeaderContainer = styled(Layout)`
@@ -18,6 +19,7 @@ const NavigationLinks = styled.nav`
   display: flex;
   gap: 16px;
   width: 100%;
+  align-items: center;
   justify-content: flex-end;
 
   a {
@@ -50,6 +52,7 @@ export default function Header() {
         <Link to={BosonRoutes.Root}>Home</Link>
         <Link to={BosonRoutes.Explore}>Explore</Link>
         <Link to={BosonRoutes.CreateOffer}>Create Offer</Link>
+        <CustomConnectButton />
         <Settings />
       </NavigationLinks>
     </HeaderContainer>
