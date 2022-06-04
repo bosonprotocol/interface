@@ -19,7 +19,7 @@ const chainToShow: Chain = existingChain
   ? existingChain
   : ({
       id: CONFIG.chainId,
-      name: "Boson PoA",
+      name: "Boson Test Network (PoA)",
       network: "boson",
       iconUrl: undefined,
       iconBackground: "#fff",

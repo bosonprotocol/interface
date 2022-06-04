@@ -45,7 +45,7 @@ interface Props {
   address: string;
 }
 export default function Tabs({ isPrivateProfile, address }: Props) {
-  const [indexActiveTab, setIndexActiveTab] = useState(1);
+  const [indexActiveTab, setIndexActiveTab] = useState(0);
   const { data: sellers, isError: isErrorSellers } = useSellers({
     admin: address
   });

@@ -13,8 +13,8 @@ const GreenButton = styled.button`
   cursor: pointer;
 `;
 
-const RedButton = styled(GreenButton)`
-  background: ${colors.darkRed};
+const OrangeButton = styled(GreenButton)`
+  background: ${colors.orange};
 `;
 
 const Wallet = styled(IoMdWallet)`
@@ -57,9 +57,9 @@ export default function CustomConnectButton() {
 
                 if (chain.unsupported) {
                   return (
-                    <RedButton onClick={openChainModal} type="button">
+                    <OrangeButton onClick={openChainModal} type="button">
                       Wrong network
-                    </RedButton>
+                    </OrangeButton>
                   );
                 }
 

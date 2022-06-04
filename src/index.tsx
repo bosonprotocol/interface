@@ -5,8 +5,8 @@ import { HashRouter, Route } from "react-router-dom";
 
 import App from "./components/app";
 import Layout from "./components/Layout";
-import InitRainbowkit from "./InitRainbowkit";
-import InitSentry from "./InitSentry";
+import InitRainbowkit from "./initRainbowkit";
+import InitSentry from "./initSentry";
 import { BosonRoutes, OffersRoutes } from "./lib/routing/routes";
 import reportWebVitals from "./reportWebVitals";
 
