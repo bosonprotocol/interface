@@ -19,6 +19,11 @@
 
 </div>
 
+## Environments
+
+Each deployment is hosted on IPFS with a custom domain.
+
+For ease of use, each environment has a DNS name that always points to the latest IPFS hash: 
 
 | Env          | Network   | Endpoint                                                        |
 | ------------ | --------- | --------------------------------------------------------------- |
