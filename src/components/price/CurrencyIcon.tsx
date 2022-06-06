@@ -7,12 +7,15 @@ const currencyImages = {
   BOSON: bosonIcon,
   ETH: ethIcon
 };
-interface IProps {
+
+interface Props {
   currencySymbol: string;
 }
-export default function CryptoCurrency({ currencySymbol }: IProps) {
+
+export default function CurrencyIcon({ currencySymbol }: Props) {
   const symbolUpperCase =
     currencySymbol.toUpperCase() as keyof typeof currencyImages;
+
   if (!currencyImages[symbolUpperCase]) {
     return null;
   }

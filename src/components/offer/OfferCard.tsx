@@ -1,8 +1,8 @@
+import { Image as AccountImage } from "@davatar/react";
 import { generatePath, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import AddressContainer from "../../components/offer/AddressContainer";
-import AddressImage from "../../components/offer/AddressImage";
 import RootPrice from "../../components/price";
 import { UrlParameters } from "../../lib/routing/query-parameters";
 import { BosonRoutes, OffersRoutes } from "../../lib/routing/routes";
@@ -154,7 +154,9 @@ export default function OfferCard({
             )
           }
         >
-          <AddressImage address={sellerAddress} size={30} />
+          <div>
+            <AccountImage size={30} address={sellerAddress} />
+          </div>
           <SellerInfo data-testid="seller-id">Seller ID: {sellerId}</SellerInfo>
         </AddressContainer>
       )}

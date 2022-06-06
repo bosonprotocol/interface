@@ -1,19 +1,19 @@
 import { manageOffer } from "@bosonprotocol/widgets-sdk";
+import { Image as AccountImage } from "@davatar/react";
 import { useEffect, useRef, useState } from "react";
 import { IoIosInformationCircleOutline } from "react-icons/io";
 import { generatePath, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 
+import { CONFIG } from "../../lib/config";
+import { UrlParameters } from "../../lib/routing/query-parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
+import { colors } from "../../lib/styles/colors";
+import { Offer } from "../../lib/types/offer";
 import { useConnectedWallet } from "../../lib/utils/hooks/useConnectedWallet";
+import { useOffer } from "../../lib/utils/hooks/useOffers/useOffer";
 import AddressContainer from "./../../components/offer/AddressContainer";
-import AddressImage from "./../../components/offer/AddressImage";
 import RootPrice from "./../../components/price";
-import { CONFIG } from "./../../lib/config";
-import { UrlParameters } from "./../../lib/routing/query-parameters";
-import { colors } from "./../../lib/styles/colors";
-import { Offer } from "./../../lib/types/offer";
-import { useOffer } from "./../../lib/utils/hooks/useOffers/useOffer";
 
 const Root = styled.div`
   display: flex;
@@ -269,7 +269,7 @@ export default function OfferDetail() {
                   )
                 }
               >
-                <AddressImage address={sellerAddress} size={30} />
+                <AccountImage size={30} address={sellerAddress} />
                 <div data-testid="seller-id">ID: {sellerId}</div>
               </AddressContainer>
             </Box>

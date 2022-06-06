@@ -1,11 +1,11 @@
 import { manageOffer } from "@bosonprotocol/widgets-sdk";
+import { Image as AccountImage } from "@davatar/react";
 import { useEffect, useRef, useState } from "react";
 import { IoIosInformationCircleOutline } from "react-icons/io";
 import { generatePath, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 
 import AddressContainer from "../../components/offer/AddressContainer";
-import AddressImage from "../../components/offer/AddressImage";
 import RootPrice from "../../components/price";
 import { CONFIG } from "../../lib/config";
 import { UrlParameters } from "../../lib/routing/query-parameters";
@@ -282,7 +282,7 @@ export default function Exchange() {
                   )
                 }
               >
-                <AddressImage address={sellerAddress} size={30} />
+                <AccountImage size={30} address={sellerAddress} />
                 <div data-testid="seller-id">ID: {sellerId}</div>
               </AddressContainer>
             </Box>

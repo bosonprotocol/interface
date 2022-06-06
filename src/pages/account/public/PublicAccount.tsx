@@ -1,14 +1,13 @@
+import { Image as AccountImage } from "@davatar/react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { useEnsName } from "wagmi";
 
 // import { useAccount } from "wagmi";
-import AddressImage from "../../../components/offer/AddressImage";
 import AddressText from "../../../components/offer/AddressText";
-import CryptoCurrency from "../../../components/price/CryptoCurrency";
+import CurrencyIcon from "../../../components/price/CurrencyIcon";
 import { UrlParameters } from "../../../lib/routing/query-parameters";
 import { colors } from "../../../lib/styles/colors";
-// import PrivateAccount from "../private/PrivateAccount";
 import Tabs from "../Tabs";
 
 const BasicInfo = styled.section`
@@ -60,13 +59,13 @@ export default function PublicAccount() {
     <>
       <BasicInfo>
         <AddressImageContainer>
-          <AddressImage address={address} size={200} />
+          <AccountImage size={200} address={address} />
         </AddressImageContainer>
 
         <EnsName>{ensName}</EnsName>
 
         <AddressContainer>
-          <CryptoCurrency currencySymbol="ETH" />
+          <CurrencyIcon currencySymbol="ETH" />
           <AddressText address={address || ""} />
         </AddressContainer>
       </BasicInfo>

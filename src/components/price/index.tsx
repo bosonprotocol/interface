@@ -1,7 +1,7 @@
 import { BigNumber, utils } from "ethers";
 import styled from "styled-components";
 
-import CryptoCurrency from "./CryptoCurrency";
+import CurrencyIcon from "./CurrencyIcon";
 
 const Root = styled.div`
   display: flex;
@@ -9,7 +9,7 @@ const Root = styled.div`
   align-items: center;
 `;
 
-const CurrencyIcon = styled.div`
+const CurrencyIconContainer = styled.div`
   img {
     height: 25px;
     width: 25px;
@@ -39,9 +39,9 @@ export default function Price({
 
   return (
     <Root {...rest} data-testid="price">
-      <CurrencyIcon>
-        <CryptoCurrency currencySymbol={currencySymbol} />
-      </CurrencyIcon>
+      <CurrencyIconContainer>
+        <CurrencyIcon currencySymbol={currencySymbol} />
+      </CurrencyIconContainer>
       {formattedValue ? (
         <span>{fractions === "0" ? integer : `${integer}.${fractions}`}</span>
       ) : (

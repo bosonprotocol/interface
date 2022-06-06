@@ -26,7 +26,7 @@ export default function PublicOrPrivateAccount() {
     return <div>Fetching...</div>;
   }
 
-  if (!address || isError) {
+  if (isError) {
     return <div>There has been an error</div>;
   }
 

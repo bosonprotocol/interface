@@ -1,11 +1,10 @@
+import { Image as AccountImage } from "@davatar/react";
 import styled from "styled-components";
 import { useAccount, useEnsName } from "wagmi";
 
-import AddressImage from "../../../components/offer/AddressImage";
 import AddressText from "../../../components/offer/AddressText";
-import CryptoCurrency from "../../../components/price/CryptoCurrency";
+import CurrencyIcon from "../../../components/price/CurrencyIcon";
 import { colors } from "../../../lib/styles/colors";
-// import { useEnsName as useEnsNameCustom } from "../../../lib/utils/hooks/useEnsName";
 import Tabs from "../Tabs";
 import Settings from "./Settings";
 
@@ -89,7 +88,7 @@ export default function PrivateAccount() {
     <>
       <AddressWrapper>
         <AddressImageContainer>
-          <AddressImage address={address} size={200} />
+          <AccountImage size={200} address={address} />
         </AddressImageContainer>
       </AddressWrapper>
       <BasicInfo>
@@ -97,7 +96,7 @@ export default function PrivateAccount() {
           <EnsName>{ensName}</EnsName>
 
           <AddressContainer>
-            <CryptoCurrency currencySymbol="ETH" />
+            <CurrencyIcon currencySymbol="ETH" />
             <AddressText address={address || ""} />
           </AddressContainer>
         </EnsAndAddress>
