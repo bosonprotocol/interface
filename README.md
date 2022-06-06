@@ -1,3 +1,17 @@
+[![banner](docs/assets/banner.png)](https://bosonprotocol.io)
+
+<h2 align="center">Boson Protocol dApp</h2>
+
+<a href="">![](https://img.shields.io/badge/license-Apache--2.0-brightgreen?style=flat-square)</a>
+<a href="https://discord.com/invite/QSdtKRaap6">![](https://img.shields.io/badge/Chat%20on-Discord-%235766f2?style=flat-square)</a>
+<a href="https://twitter.com/BosonProtocol">![](https://img.shields.io/twitter/follow/BosonProtocol?style=social)</a>
+
+</div align="center">
+
+<div align="center">
+
+🛠️ ** The official dApp built on top of [Boson Protocol](https://bosonprotocol.io).**
+
 [![codecov](https://codecov.io/gh/bosonprotocol/interface/branch/main/graph/badge.svg?token=X52bEA3Bf6)](https://codecov.io/gh/bosonprotocol/interface)
 
 
