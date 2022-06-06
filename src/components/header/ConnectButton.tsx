@@ -74,7 +74,11 @@ export default function ConnectButton() {
             >
               {(() => {
                 if (!mounted || !account || !chain) {
-                  return <Wallet onClick={openConnectModal} />;
+                  return (
+                    <GreenButton onClick={openConnectModal} type="button">
+                      Connect Wallet
+                    </GreenButton>
+                  );
                 }
 
                 if (chain.unsupported) {

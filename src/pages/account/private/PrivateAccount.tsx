@@ -62,33 +62,16 @@ const SettingsWrapper = styled.div`
   flex-basis: 200px;
 `;
 
-export default function PrivateAccount() {
-  const { data: account, isLoading, isFetching, isError } = useAccount();
-  const address = account?.address || "";
+export default function PrivateAccount({ account }: { account: string }) {
   const { data: ensName } = useEnsName({
-    address: address
+    address: account
   });
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (isFetching) {
-    return <div>Fetching...</div>;
-  }
-
-  if (isError) {
-    return <div>There has been an error...</div>;
-  }
-
-  if (!address) {
-    return <div>Please connect your wallet</div>;
-  }
 
   return (
     <>
       <AddressWrapper>
         <AddressImageContainer>
-          <AccountImage size={200} address={address} />
+          <AccountImage size={200} address={account} />
         </AddressImageContainer>
       </AddressWrapper>
       <BasicInfo>
@@ -97,7 +80,7 @@ export default function PrivateAccount() {
 
           <AddressContainer>
             <CurrencyIcon currencySymbol="ETH" />
-            <AddressText address={address || ""} />
+            <AddressText address={account} />
           </AddressContainer>
         </EnsAndAddress>
         <div></div>
@@ -106,7 +89,7 @@ export default function PrivateAccount() {
           <Settings />
         </SettingsWrapper>
       </BasicInfo>
-      <Tabs isPrivateProfile={true} address={address} />
+      <Tabs isPrivateProfile={true} address={account} />
     </>
   );
 }

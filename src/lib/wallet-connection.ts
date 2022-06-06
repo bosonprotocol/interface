@@ -8,15 +8,16 @@ import merge from "lodash.merge";
 import { chain, configureChains, createClient } from "wagmi";
 
 import { jsonRpcProvider } from "../wagmi-core-providers-jsonRpc.esm";
+import ethIcon from "./assets/ethereum-chain-icon.svg";
 import { CONFIG } from "./config";
 import { colors } from "./styles/colors";
 
 function getBosonTestNetworkChainConfig(): Chain {
   return {
     id: CONFIG.chainId,
-    name: "Boson Test Network (PoA)",
+    name: "Boson Test (PoA)",
     network: "boson",
-    iconUrl: undefined,
+    iconUrl: ethIcon,
     iconBackground: "#fff",
     nativeCurrency: {
       decimals: 18,

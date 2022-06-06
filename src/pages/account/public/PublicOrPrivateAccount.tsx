@@ -9,13 +9,8 @@ export default function PublicOrPrivateAccount() {
   const { [UrlParameters.accountId]: accountParameter } = useParams();
   const address = accountParameter || "";
 
-  const {
-    data: account,
-    isLoading,
-    isFetching,
-    isError,
-    isFetched
-  } = useAccount();
+  const { data: account, isLoading, isFetching, isError } = useAccount();
+
   const connectedAddress = account?.address || "";
 
   if (isLoading) {
@@ -30,10 +25,9 @@ export default function PublicOrPrivateAccount() {
     return <div>There has been an error</div>;
   }
 
-  // TODO: comment out and check if there is an infinite loop
-  // if (isFetched && connectedAddress.toLowerCase() === address.toLowerCase()) {
-  //   return <PrivateAccount />;
-  // }
+  if (connectedAddress.toLowerCase() === address.toLowerCase()) {
+    return <PrivateAccount account={address} />;
+  }
 
   return <PublicAccount />;
 }

@@ -24,7 +24,7 @@ const Landing = React.lazy(() => import("./pages/landing/Landing"));
 const OfferDetail = React.lazy(() => import("./pages/offers/OfferDetail"));
 const Exchange = React.lazy(() => import("./pages/exchange/Exchange"));
 const PrivateAccount = React.lazy(
-  () => import("./pages/account/private/PrivateAccount")
+  () => import("./pages/account/private/PrivateAccountContainer")
 );
 const PublicOrPrivateAccount = React.lazy(
   () => import("./pages/account/public/PublicOrPrivateAccount")
