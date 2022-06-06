@@ -9,6 +9,7 @@ const OFFERS_PER_PAGE = 10;
 interface Props {
   sellerId: string;
 }
+
 export default function Offers({ sellerId }: Props) {
   const [pageIndex, setPageIndex] = useState(0);
   const intersect = useRef(null);

@@ -1,20 +1,43 @@
+import { Image as AccountImage } from "@davatar/react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { BsChevronDown } from "react-icons/bs";
 import { IoMdWallet } from "react-icons/io";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
-import Account from "./Account";
 
-const GreenButton = styled.button`
-  background: ${colors.green};
-  padding: 10px;
+const BaseButton = styled.button`
+  all: unset;
+  padding: 6px 8px;
   border-radius: 10px;
   font-size: 15px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 `;
 
-const OrangeButton = styled(GreenButton)`
+const OutlineButton = styled(BaseButton)`
+  background-color: #34495b;
+
+  :hover {
+    background-color: #4b627c;
+  }
+`;
+
+const GreenButton = styled(BaseButton)`
+  background: ${colors.green};
+  color: ${colors.navy};
+`;
+
+const OrangeButton = styled(BaseButton)`
   background: ${colors.orange};
+`;
+
+const ENSAvatar = styled.img`
+  height: 20px;
+  width: 20px;
+  border-radius: 100%;
 `;
 
 const Wallet = styled(IoMdWallet)`
@@ -38,7 +61,6 @@ export default function CustomConnectButton() {
       }) => {
         return (
           <div style={{ display: "flex", gap: 12 }}>
-            <Account onClick={openConnectModal} />
             <div
               {...(!mounted && {
                 "aria-hidden": true,
@@ -59,14 +81,27 @@ export default function CustomConnectButton() {
                   return (
                     <OrangeButton onClick={openChainModal} type="button">
                       Wrong network
+                      <BsChevronDown size={12} />
                     </OrangeButton>
                   );
                 }
 
                 return (
                   <div style={{ display: "flex", gap: 12 }}>
+                    <OutlineButton onClick={openChainModal}>
+                      {chain.hasIcon && <ENSAvatar src={chain.iconUrl} />}
+                      {chain.name}
+                      <BsChevronDown size={12} />
+                    </OutlineButton>
+
                     <GreenButton onClick={openAccountModal} type="button">
+                      {account.ensAvatar ? (
+                        <ENSAvatar src={account.ensAvatar} />
+                      ) : (
+                        <AccountImage size={18} address={account.address} />
+                      )}
                       {account.displayName}
+                      <BsChevronDown size={12} />
                     </GreenButton>
                   </div>
                 );

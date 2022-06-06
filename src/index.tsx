@@ -5,8 +5,8 @@ import { HashRouter, Route } from "react-router-dom";
 
 import App from "./components/app";
 import Layout from "./components/Layout";
-import InitRainbowkit from "./initRainbowkit";
-import InitSentry from "./initSentry";
+import SentryProvider from "./components/SentryProvider";
+import WalletConnectionProvider from "./components/WalletConnectionProvider";
 import { BosonRoutes, OffersRoutes } from "./lib/routing/routes";
 import reportWebVitals from "./reportWebVitals";
 
@@ -38,10 +38,10 @@ const Loading = () => (
 
 root.render(
   <React.StrictMode>
-    <InitRainbowkit>
+    <WalletConnectionProvider>
       <QueryClientProvider client={queryClient}>
         <HashRouter>
-          <InitSentry>
+          <SentryProvider>
             <Route path="/" element={<App />}>
               <Route
                 path={BosonRoutes.Root}
@@ -124,10 +124,10 @@ root.render(
                 }
               />
             </Route>
-          </InitSentry>
+          </SentryProvider>
         </HashRouter>
       </QueryClientProvider>
-    </InitRainbowkit>
+    </WalletConnectionProvider>
   </React.StrictMode>
 );
 

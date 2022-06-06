@@ -6,13 +6,13 @@ import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import Layout from "../Layout";
 import CustomConnectButton from "./CustomConnectButton";
-import Settings from "./Settings";
 
 const HeaderContainer = styled(Layout)`
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin: 0px auto 20px auto;
+  padding-top: 24px;
 `;
 
 const NavigationLinks = styled.nav`
@@ -32,9 +32,8 @@ const NavigationLinks = styled.nav`
 `;
 
 const LogoImg = styled.img`
-  width: 227px;
-  height: 50px;
-  padding-top: 24px;
+  height: 30px;
+
   cursor: pointer;
 `;
 

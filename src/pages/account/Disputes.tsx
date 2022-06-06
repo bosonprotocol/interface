@@ -11,10 +11,12 @@ const DisputesContainer = styled.div`
   justify-content: space-between;
   padding-bottom: 24px;
 `;
+
 interface Props {
   sellerId: string;
   buyerId: string;
 }
+
 export default function Disputes({ sellerId, buyerId }: Props) {
   const {
     data: exchangesSeller,

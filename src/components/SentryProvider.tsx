@@ -9,7 +9,7 @@ import {
   useNavigationType
 } from "react-router-dom";
 
-import { CONFIG } from "./lib/config";
+import { CONFIG } from "../lib/config";
 
 const routingInstrumentationFn = Sentry.reactRouterV6Instrumentation(
   React.useEffect,
@@ -36,6 +36,6 @@ const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes);
 interface Props {
   children: JSX.Element;
 }
-export default function InitSentry({ children }: Props) {
+export default function SentryProvider({ children }: Props) {
   return <SentryRoutes>{children}</SentryRoutes>;
 }
