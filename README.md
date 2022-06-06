@@ -14,7 +14,9 @@
 </div>
 
 <div align="center">
+
 🛠️ **The official dApp built on top of [Boson Protocol](https://bosonprotocol.io).**
+
 </div>
 
 
