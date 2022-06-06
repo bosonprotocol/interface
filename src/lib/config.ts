@@ -1,6 +1,9 @@
 import { getDefaultConfig } from "@bosonprotocol/common";
+import { chain } from "wagmi";
 
-const REACT_APP_CHAIN_ID = parseInt(process.env.REACT_APP_CHAIN_ID || "3");
+const REACT_APP_CHAIN_ID = process.env.REACT_APP_CHAIN_ID
+  ? parseInt(process.env.REACT_APP_CHAIN_ID)
+  : chain.ropsten.id;
 
 const config = getDefaultConfig({ chainId: REACT_APP_CHAIN_ID });
 

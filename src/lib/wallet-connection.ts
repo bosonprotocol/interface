@@ -12,6 +12,11 @@ import ethIcon from "./assets/ethereum-chain-icon.svg";
 import { CONFIG } from "./config";
 import { colors } from "./styles/colors";
 
+const supportedChains: Readonly<Array<number>> = [
+  chain.ropsten.id,
+  chain.mainnet.id
+] as const;
+
 function getBosonTestNetworkChainConfig(): Chain {
   return {
     id: CONFIG.chainId,
@@ -38,11 +43,15 @@ function getBosonTestNetworkChainConfig(): Chain {
 }
 
 function getChainForEnvironment(): Array<Chain> {
+  if (!supportedChains.includes(CONFIG.chainId)) {
+    return [getBosonTestNetworkChainConfig()];
+  }
+
   const existingChain = Object.values(chain).find(
     (value: Chain) => value.id === CONFIG.chainId
   );
 
-  return [existingChain ? existingChain : getBosonTestNetworkChainConfig()];
+  return [existingChain ?? chain.ropsten];
 }
 
 export const { provider, chains } = configureChains(getChainForEnvironment(), [
