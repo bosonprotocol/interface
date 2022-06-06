@@ -173,16 +173,14 @@ const InfoIcon = styled(IoIosInformationCircleOutline).attrs({
 
 function isAccountSeller(offer: Offer, account: string): boolean {
   if (offer.seller.clerk.toLowerCase() === account.toLowerCase()) return true;
-  if (offer.seller.operator.toLowerCase() === account.toLowerCase())
-    return true;
-  return false;
+  return offer.seller.operator.toLowerCase() === account.toLowerCase();
 }
 
 function getIsOfferValid(offer: Offer | undefined | null): boolean {
   const now = Date.now() / 1000;
-  const isValid =
-    Number(offer?.validFromDate) <= now && now <= Number(offer?.validUntilDate);
-  return isValid;
+  return (
+    Number(offer?.validFromDate) <= now && now <= Number(offer?.validUntilDate)
+  );
 }
 
 export default function OfferDetail() {

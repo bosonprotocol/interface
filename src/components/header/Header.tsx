@@ -5,7 +5,7 @@ import logo from "../../../src/assets/logo.png";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import Layout from "../Layout";
-import CustomConnectButton from "./CustomConnectButton";
+import ConnectButton from "./ConnectButton";
 
 const HeaderContainer = styled(Layout)`
   display: flex;
@@ -51,7 +51,7 @@ export default function Header() {
         <Link to={BosonRoutes.Root}>Home</Link>
         <Link to={BosonRoutes.Explore}>Explore</Link>
         <Link to={BosonRoutes.CreateOffer}>Create</Link>
-        <CustomConnectButton />
+        <ConnectButton />
       </NavigationLinks>
     </HeaderContainer>
   );

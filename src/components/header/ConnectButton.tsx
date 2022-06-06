@@ -1,5 +1,5 @@
 import { Image as AccountImage } from "@davatar/react";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { ConnectButton as RainbowConnectButton } from "@rainbow-me/rainbowkit";
 import { BsChevronDown } from "react-icons/bs";
 import { IoMdWallet } from "react-icons/io";
 import styled from "styled-components";
@@ -48,9 +48,9 @@ const Wallet = styled(IoMdWallet)`
   }
 `;
 
-export default function CustomConnectButton() {
+export default function ConnectButton() {
   return (
-    <ConnectButton.Custom>
+    <RainbowConnectButton.Custom>
       {({
         account,
         chain,
@@ -110,6 +110,6 @@ export default function CustomConnectButton() {
           </div>
         );
       }}
-    </ConnectButton.Custom>
+    </RainbowConnectButton.Custom>
   );
 }

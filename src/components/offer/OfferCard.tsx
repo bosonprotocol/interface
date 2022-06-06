@@ -116,6 +116,7 @@ const CTA = ({
   }
   return null;
 };
+
 interface Props {
   offer: Offer;
   showSeller?: boolean;

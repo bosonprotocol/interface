@@ -22,7 +22,6 @@ export default function WalletConnectionProvider({ children }: Props) {
         chains={chains}
         theme={walletConnectionTheme}
         avatar={CustomAvatar}
-        showRecentTransactions={true}
         appInfo={{ appName: "Boson dApp" }}
       >
         {children}
@@ -35,6 +34,7 @@ const CustomAvatar: AvatarComponent = ({ address, ensImage, size }) => {
   return ensImage ? (
     <img
       src={ensImage}
+      alt="Avatar"
       width={size}
       height={size}
       style={{ borderRadius: 999 }}
