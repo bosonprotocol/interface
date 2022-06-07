@@ -5,7 +5,6 @@ import Avatar from "../../../components/avatar";
 import AddressText from "../../../components/offer/AddressText";
 import CurrencyIcon from "../../../components/price/CurrencyIcon";
 import Tabs from "../Tabs";
-import Settings from "./Settings";
 
 const AddressWrapper = styled.div`
   display: flex;
@@ -24,8 +23,6 @@ const EnsAndAddress = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
-  position: relative;
-  left: 30%;
 `;
 
 const EnsName = styled.div`
@@ -48,12 +45,6 @@ const AddressContainer = styled.div`
   }
 `;
 
-const SettingsWrapper = styled.div`
-  display: flex;
-  justify-content: end;
-  flex-basis: 200px;
-`;
-
 export default function PrivateAccount({ account }: { account: string }) {
   const { data: ensName } = useEnsName({
     address: account
@@ -73,11 +64,6 @@ export default function PrivateAccount({ account }: { account: string }) {
             <AddressText address={account} />
           </AddressContainer>
         </EnsAndAddress>
-        <div></div>
-        <div></div>
-        <SettingsWrapper>
-          <Settings />
-        </SettingsWrapper>
       </BasicInfo>
       <Tabs isPrivateProfile={true} address={account} />
     </>
