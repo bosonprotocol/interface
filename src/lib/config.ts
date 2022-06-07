@@ -12,5 +12,6 @@ export const CONFIG = {
   widgetsUrl: process.env.REACT_APP_WIDGETS_URL || config.widgetsUrl,
   chainId: REACT_APP_CHAIN_ID,
   ipfsMetadataUrl:
-    process.env.REACT_APP_IPFS_METADATA_URL || "https://ipfs.infura.io:5001"
+    process.env.REACT_APP_IPFS_METADATA_URL || "https://ipfs.infura.io:5001",
+  sentryDSNUrl: process.env.SENTRY_DSN || ""
 };
