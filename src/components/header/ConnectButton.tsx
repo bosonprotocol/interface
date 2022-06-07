@@ -1,10 +1,10 @@
-import { Image as AccountImage } from "@davatar/react";
 import { ConnectButton as RainbowConnectButton } from "@rainbow-me/rainbowkit";
 import { BsChevronDown } from "react-icons/bs";
 import { IoMdWallet } from "react-icons/io";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
+import FallbackAvatar from "../avatar/fallback-avatar";
 
 const BaseButton = styled.button`
   all: unset;
@@ -102,7 +102,7 @@ export default function ConnectButton() {
                       {account.ensAvatar ? (
                         <ENSAvatar src={account.ensAvatar} />
                       ) : (
-                        <AccountImage size={18} address={account.address} />
+                        <FallbackAvatar address={account.address} size={18} />
                       )}
                       {account.displayName}
                       <BsChevronDown size={12} />
