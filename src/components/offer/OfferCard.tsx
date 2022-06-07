@@ -1,5 +1,5 @@
 import { Image as AccountImage } from "@davatar/react";
-import { generatePath, useNavigate } from "react-router-dom";
+import { generatePath, useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import AddressContainer from "../../components/offer/AddressContainer";
@@ -16,6 +16,7 @@ const Card = styled.div`
   position: relative;
   width: 250px;
   padding: 0 16px;
+  cursor: pointer;
 `;
 
 const ImageContainer = styled.div`
@@ -75,41 +76,36 @@ const Button = styled.button`
   margin-top: 8px;
 `;
 
+const getCTAPath = (
+  action: Props["action"],
+  { id }: { id: Props["offer"]["id"] }
+) => {
+  if (action === "exchange") {
+    return generatePath(BosonRoutes.Exchange, {
+      [UrlParameters.offerId]: id
+    });
+  }
+  return generatePath(OffersRoutes.OfferDetail, {
+    [UrlParameters.offerId]: id
+  });
+};
+
 const CTA = ({
-  id,
-  action
+  action,
+  onClick
 }: {
-  id: Props["offer"]["id"];
   action: Props["action"];
+  onClick: React.MouseEventHandler<HTMLButtonElement>;
 }) => {
-  const navigate = useNavigate();
   if (action === "commit") {
     return (
-      <Button
-        data-testid="commit"
-        onClick={() =>
-          navigate(
-            generatePath(OffersRoutes.OfferDetail, {
-              [UrlParameters.offerId]: id
-            })
-          )
-        }
-      >
+      <Button data-testid="commit" onClick={onClick}>
         Commit
       </Button>
     );
   } else if (action === "exchange") {
     return (
-      <Button
-        data-testid="redeem"
-        onClick={() =>
-          navigate(
-            generatePath(BosonRoutes.Exchange, {
-              [UrlParameters.offerId]: id
-            })
-          )
-        }
-      >
+      <Button data-testid="redeem" onClick={onClick}>
         Redeem
       </Button>
     );
@@ -117,10 +113,12 @@ const CTA = ({
   return null;
 };
 
+export type Action = "commit" | "exchange" | null;
+
 interface Props {
   offer: Offer;
   showSeller?: boolean;
-  action?: "commit" | "exchange";
+  action?: Action;
   dataTestId: string;
 }
 
@@ -140,19 +138,33 @@ export default function OfferCard({
   const sellerId = offer.seller?.id;
   const sellerAddress = offer.seller?.admin;
 
+  const location = useLocation();
   const navigate = useNavigate();
+  const path = getCTAPath(action, { id });
+
+  const isClickable = !!path;
+  const onClick: React.MouseEventHandler<unknown> = (e) => {
+    e.stopPropagation();
+    isClickable &&
+      navigate(path, {
+        state: {
+          from: location.pathname
+        }
+      });
+  };
 
   return (
-    <Card data-testid={dataTestId}>
+    <Card data-testid={dataTestId} onClick={onClick}>
       {isSellerVisible && sellerAddress && (
         <AddressContainer
-          onClick={() =>
+          onClick={(e) => {
+            e.stopPropagation();
             navigate(
               generatePath(BosonRoutes.Account, {
                 [UrlParameters.accountId]: sellerAddress
               })
-            )
-          }
+            );
+          }}
         >
           <div>
             <AccountImage size={30} address={sellerAddress} />
@@ -173,7 +185,7 @@ export default function OfferCard({
           />
         )}
         <ButtonContainer>
-          <CTA id={id} action={action} />
+          <CTA onClick={onClick} action={action} />
         </ButtonContainer>
       </BasicInfoContainer>
     </Card>

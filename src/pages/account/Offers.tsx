@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
+import { Action } from "../../components/offer/OfferCard";
 import OfferList from "../../components/offers/OfferList";
 import { Offer } from "../../lib/types/offer";
 import { useOffers } from "../../lib/utils/hooks/useOffers";
@@ -8,9 +9,10 @@ const OFFERS_PER_PAGE = 10;
 
 interface Props {
   sellerId: string;
+  action: Action;
 }
 
-export default function Offers({ sellerId }: Props) {
+export default function Offers({ sellerId, action }: Props) {
   const [pageIndex, setPageIndex] = useState(0);
   const intersect = useRef(null);
   const [allOffers, setAllOffers] = useState<Offer[]>([]);
@@ -58,7 +60,12 @@ export default function Offers({ sellerId }: Props) {
 
   return (
     <>
-      <OfferList offers={allOffers} isError={isError} showSeller={false} />
+      <OfferList
+        offers={allOffers}
+        isError={isError}
+        showSeller={false}
+        action={action}
+      />
       <div ref={intersect}></div>
     </>
   );

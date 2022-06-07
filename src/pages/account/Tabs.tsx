@@ -61,7 +61,12 @@ export default function Tabs({ isPrivateProfile, address }: Props) {
     }[] = [
       {
         title: isPrivateProfile ? "My Offers" : "Offers",
-        content: <Offers sellerId={sellerId} />
+        content: (
+          <Offers
+            sellerId={sellerId}
+            action={isPrivateProfile ? null : "commit"}
+          />
+        )
       },
       {
         title: isPrivateProfile ? "My Exchanges" : "Exchanges",

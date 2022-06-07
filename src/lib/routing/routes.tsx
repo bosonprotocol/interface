@@ -9,9 +9,9 @@ export const BosonRoutes = {
   Exchange: `/exchange/:${UrlParameters.offerId}`,
   YourAccount: `/account`,
   Account: `/account/:${UrlParameters.accountId}`
-};
+} as const;
 
 export const OffersRoutes = {
   Root: "/offers",
   OfferDetail: `/offers/:${UrlParameters.offerId}`
-};
+} as const;

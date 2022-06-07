@@ -2,7 +2,7 @@ import { ReactElement } from "react";
 import styled from "styled-components";
 
 import { Offer } from "../../lib/types/offer";
-import OfferCard from "../offer/OfferCard";
+import OfferCard, { Action } from "../offer/OfferCard";
 
 const OfferContainer = styled.div`
   display: grid;
@@ -19,6 +19,7 @@ interface Props {
   isLoading?: boolean;
   loadingComponent?: ReactElement;
   showSeller?: boolean;
+  action: Action;
 }
 
 export default function OfferList({
@@ -26,7 +27,8 @@ export default function OfferList({
   isLoading,
   isError,
   loadingComponent,
-  showSeller
+  showSeller,
+  action
 }: Props) {
   if (isLoading) {
     return loadingComponent || <div>Loading...</div>;
@@ -53,7 +55,7 @@ export default function OfferList({
           key={offer.id}
           offer={offer}
           showSeller={showSeller}
-          action="commit"
+          action={action}
           dataTestId="offer"
         />
       ))}

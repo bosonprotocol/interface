@@ -2,7 +2,12 @@ import { manageOffer } from "@bosonprotocol/widgets-sdk";
 import { Image as AccountImage } from "@davatar/react";
 import { useEffect, useRef, useState } from "react";
 import { IoIosInformationCircleOutline } from "react-icons/io";
-import { generatePath, useNavigate, useParams } from "react-router-dom";
+import {
+  generatePath,
+  useLocation,
+  useNavigate,
+  useParams
+} from "react-router-dom";
 import styled from "styled-components";
 
 import AddressContainer from "../../components/offer/AddressContainer";
@@ -187,7 +192,10 @@ function getIsOfferValid(offer: Offer | undefined | null): boolean {
 export default function Exchange() {
   const { [UrlParameters.offerId]: offerId } = useParams();
   const widgetRef = useRef<HTMLDivElement>(null);
-  const [isTabSellerSelected, setTabSellerSelected] = useState(false);
+  const location = useLocation();
+  const fromAccountPage =
+    (location.state as { from: string })?.from === BosonRoutes.YourAccount;
+  const [isTabSellerSelected, setTabSellerSelected] = useState(fromAccountPage);
   const [account, setAccount] = useState("");
   const navigate = useNavigate();
   if (!offerId) {

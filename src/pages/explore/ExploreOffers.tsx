@@ -118,7 +118,12 @@ export default function ExploreOffers({
   return (
     <Container>
       <h1>Explore</h1>
-      <OfferList offers={offers} isError={isError} isLoading={isLoading} />
+      <OfferList
+        offers={offers}
+        isError={isError}
+        isLoading={isLoading}
+        action="commit"
+      />
       <PaginationWrapper>
         <Pagination
           defaultPage={pageIndex}

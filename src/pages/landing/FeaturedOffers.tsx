@@ -26,7 +26,12 @@ export default function FeaturedOffers() {
   return (
     <Root>
       <Heading>Featured Offers</Heading>
-      <OfferList offers={offers} isError={isError} isLoading={isLoading} />
+      <OfferList
+        offers={offers}
+        isError={isError}
+        isLoading={isLoading}
+        action="commit"
+      />
     </Root>
   );
 }
