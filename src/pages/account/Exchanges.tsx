@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import OfferCard from "../../components/offer/OfferCard";
+import OfferCard, { Action } from "../../components/offer/OfferCard";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 
 const ExchangesContainer = styled.div`
@@ -15,9 +15,10 @@ const ExchangesContainer = styled.div`
 interface Props {
   sellerId: string;
   buyerId: string;
+  action: Action;
 }
 
-export default function Exchanges({ sellerId, buyerId }: Props) {
+export default function Exchanges({ sellerId, buyerId, action }: Props) {
   const {
     data: exchangesSeller,
     isLoading: isLoadingSeller,
@@ -53,7 +54,7 @@ export default function Exchanges({ sellerId, buyerId }: Props) {
         <OfferCard
           key={exchange.id}
           offer={exchange.offer}
-          action="exchange"
+          action={action}
           dataTestId="exchange"
           showSeller={false}
         />

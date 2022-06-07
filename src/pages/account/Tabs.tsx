@@ -70,7 +70,13 @@ export default function Tabs({ isPrivateProfile, address }: Props) {
       },
       {
         title: isPrivateProfile ? "My Exchanges" : "Exchanges",
-        content: <Exchanges sellerId={sellerId} buyerId={buyerId} />
+        content: (
+          <Exchanges
+            sellerId={sellerId}
+            buyerId={buyerId}
+            action={isPrivateProfile ? null : "redeem"}
+          />
+        )
       },
       {
         title: isPrivateProfile ? "My Disputes" : "Disputes",

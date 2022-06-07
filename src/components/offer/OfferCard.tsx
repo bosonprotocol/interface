@@ -80,7 +80,7 @@ const getCTAPath = (
   action: Props["action"],
   { id }: { id: Props["offer"]["id"] }
 ) => {
-  if (action === "exchange") {
+  if (action === "redeem") {
     return generatePath(BosonRoutes.Exchange, {
       [UrlParameters.offerId]: id
     });
@@ -103,7 +103,7 @@ const CTA = ({
         Commit
       </Button>
     );
-  } else if (action === "exchange") {
+  } else if (action === "redeem") {
     return (
       <Button data-testid="redeem" onClick={onClick}>
         Redeem
@@ -113,7 +113,7 @@ const CTA = ({
   return null;
 };
 
-export type Action = "commit" | "exchange" | null;
+export type Action = "commit" | "redeem" | null;
 
 interface Props {
   offer: Offer;

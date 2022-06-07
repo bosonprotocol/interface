@@ -19,8 +19,8 @@ export function useExchanges(props: Props) {
       gql`
         query GetExchanges($disputed: Boolean, $sellerId: String, $buyerId: String) {
           exchanges(where: { 
-            seller: $sellerId
-            buyer: $buyerId
+            ${sellerId ? "seller: $sellerId" : ""}
+            ${buyerId ? "buyer: $buyerId" : ""}
             ${
               [true, false].includes(disputed as boolean)
                 ? "disputed: $disputed"
