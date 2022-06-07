@@ -1,10 +1,9 @@
-import { Image as AccountImage } from "@davatar/react";
 import styled from "styled-components";
-import { useAccount, useEnsName } from "wagmi";
+import { useEnsName } from "wagmi";
 
+import Avatar from "../../../components/avatar";
 import AddressText from "../../../components/offer/AddressText";
 import CurrencyIcon from "../../../components/price/CurrencyIcon";
-import { colors } from "../../../lib/styles/colors";
 import Tabs from "../Tabs";
 import Settings from "./Settings";
 
@@ -27,13 +26,6 @@ const EnsAndAddress = styled.div`
   flex-direction: column;
   position: relative;
   left: 30%;
-`;
-
-const AddressImageContainer = styled.div`
-  border: 6px solid ${colors.cgBlue};
-  border-radius: 50%;
-  background-color: ${colors.cgBlue};
-  margin-bottom: 5px;
 `;
 
 const EnsName = styled.div`
@@ -70,9 +62,7 @@ export default function PrivateAccount({ account }: { account: string }) {
   return (
     <>
       <AddressWrapper>
-        <AddressImageContainer>
-          <AccountImage size={200} address={account} />
-        </AddressImageContainer>
+        <Avatar address={account} size={200} />
       </AddressWrapper>
       <BasicInfo>
         <EnsAndAddress>

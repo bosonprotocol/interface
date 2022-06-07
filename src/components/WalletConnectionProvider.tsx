@@ -1,6 +1,5 @@
 import "@rainbow-me/rainbowkit/styles.css";
 
-import { Image as AccountImage } from "@davatar/react";
 import { AvatarComponent, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { ReactNode } from "react";
 import { WagmiConfig } from "wagmi";
@@ -10,6 +9,7 @@ import {
   wagmiClient,
   walletConnectionTheme
 } from "../lib/wallet-connection";
+import FallbackAvatar from "./avatar/fallback-avatar";
 
 interface Props {
   children: ReactNode;
@@ -40,6 +40,6 @@ const CustomAvatar: AvatarComponent = ({ address, ensImage, size }) => {
       style={{ borderRadius: 999 }}
     />
   ) : (
-    <AccountImage size={50} address={address} />
+    <FallbackAvatar address={address} size={50} />
   );
 };
