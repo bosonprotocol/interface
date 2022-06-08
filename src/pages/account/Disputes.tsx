@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import styled from "styled-components";
 
 import OfferCard from "../../components/offer/OfferCard";
@@ -30,6 +31,27 @@ export default function Disputes({ sellerId, buyerId }: Props) {
     isError: isErrorBuyer
   } = useExchanges({ disputed: true, buyerId });
 
+  const exchanges = useMemo(() => {
+    const allExchanges = [
+      ...(exchangesSeller || []),
+      ...(exchangesBuyer || [])
+    ];
+    const uniqueIds: string[] = [];
+
+    const uniqueExchanges = allExchanges.filter((exchange) => {
+      const isDuplicate = uniqueIds.includes(exchange.id);
+
+      if (!isDuplicate) {
+        uniqueIds.push(exchange.id);
+
+        return true;
+      }
+
+      return false;
+    });
+    return uniqueExchanges;
+  }, [exchangesSeller, exchangesBuyer]);
+
   if (isLoadingSeller || isLoadingBuyer) {
     return <div>Loading...</div>;
   }
@@ -42,11 +64,10 @@ export default function Disputes({ sellerId, buyerId }: Props) {
     );
   }
 
-  if (!exchangesSeller?.length && !exchangesBuyer?.length) {
+  if (!exchanges?.length) {
     return <div>There are no disputes</div>;
   }
 
-  const exchanges = [...(exchangesSeller || []), ...(exchangesBuyer || [])];
   return (
     <DisputesContainer>
       {exchanges?.map((exchange) => (
