@@ -77,13 +77,21 @@ export default function ExploreOffers({
   );
   const [pageIndex, setPageIndex] = useState(initialPageIndex);
   const [isPageLoaded, setIsPageLoaded] = useReducer(() => true, false);
-  console.log({ initialPageIndex });
+
+  useEffect(() => {
+    setPageIndex(DEFAULT_PAGE);
+    updateUrl(DEFAULT_PAGE);
+    setIsPageLoaded();
+  }, []);
+
+  /**
+   * if you go directly to a page different from the first one, you'll be redirected to the first page
+   */
   useEffect(() => {
     if (isPageLoaded) {
-      setPageIndex(initialPageIndex);
+      setPageIndex(DEFAULT_PAGE);
+      updateUrl(DEFAULT_PAGE);
     }
-    updateUrl(initialPageIndex);
-    !isPageLoaded && setIsPageLoaded();
   }, [brand, name, exchangeTokenAddress, sellerId]);
 
   const useOffersPayload = {

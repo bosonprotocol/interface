@@ -36,8 +36,21 @@ const Loading = () => (
   </Layout>
 );
 
+const StrictMode = ({
+  enable,
+  children
+}: {
+  enable: boolean;
+  children: JSX.Element;
+}) => {
+  if (enable) {
+    return <React.StrictMode>{children}</React.StrictMode>;
+  }
+  return <>{children}</>;
+};
+
 root.render(
-  <React.StrictMode>
+  <StrictMode enable={false}>
     <WalletConnectionProvider>
       <QueryClientProvider client={queryClient}>
         <HashRouter>
@@ -128,7 +141,7 @@ root.render(
         </HashRouter>
       </QueryClientProvider>
     </WalletConnectionProvider>
-  </React.StrictMode>
+  </StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function
