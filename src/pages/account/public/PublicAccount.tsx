@@ -1,13 +1,12 @@
-import { Image as AccountImage } from "@davatar/react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { useEnsName } from "wagmi";
 
+import Avatar from "../../../components/avatar";
 // import { useAccount } from "wagmi";
 import AddressText from "../../../components/offer/AddressText";
 import CurrencyIcon from "../../../components/price/CurrencyIcon";
 import { UrlParameters } from "../../../lib/routing/query-parameters";
-import { colors } from "../../../lib/styles/colors";
 import Tabs from "../Tabs";
 
 const BasicInfo = styled.section`
@@ -15,13 +14,6 @@ const BasicInfo = styled.section`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-`;
-
-const AddressImageContainer = styled.div`
-  border: 6px solid ${colors.cgBlue};
-  border-radius: 50%;
-  background-color: ${colors.cgBlue};
-  margin-bottom: 5px;
 `;
 
 const EnsName = styled.div`
@@ -58,9 +50,7 @@ export default function PublicAccount() {
   return (
     <>
       <BasicInfo>
-        <AddressImageContainer>
-          <AccountImage size={200} address={address} />
-        </AddressImageContainer>
+        <Avatar address={address} size={200} />
 
         <EnsName>{ensName}</EnsName>
 
