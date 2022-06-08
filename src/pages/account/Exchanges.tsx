@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import styled from "styled-components";
 
 import OfferCard, { Action } from "../../components/offer/OfferCard";
@@ -31,6 +32,27 @@ export default function Exchanges({ sellerId, buyerId, action }: Props) {
     isError: isErrorBuyer
   } = useExchanges({ disputed: null, buyerId });
 
+  const exchanges = useMemo(() => {
+    const allExchanges = [
+      ...(exchangesSeller || []),
+      ...(exchangesBuyer || [])
+    ];
+    const uniqueIds: string[] = [];
+
+    const uniqueExchanges = allExchanges.filter((exchange) => {
+      const isDuplicate = uniqueIds.includes(exchange.id);
+
+      if (!isDuplicate) {
+        uniqueIds.push(exchange.id);
+
+        return true;
+      }
+
+      return false;
+    });
+    return uniqueExchanges;
+  }, [exchangesSeller, exchangesBuyer]);
+
   if (isLoadingSeller || isLoadingBuyer) {
     return <div>Loading...</div>;
   }
@@ -43,11 +65,10 @@ export default function Exchanges({ sellerId, buyerId, action }: Props) {
     );
   }
 
-  if (!exchangesSeller?.length && !exchangesBuyer?.length) {
+  if (!exchanges?.length) {
     return <div>There are no exchanges</div>;
   }
 
-  const exchanges = [...(exchangesSeller || []), ...(exchangesBuyer || [])];
   return (
     <ExchangesContainer>
       {exchanges?.map((exchange) => (

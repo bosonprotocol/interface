@@ -40,6 +40,7 @@ const updatePageIndexInUrl =
     const queryParamsUrl = new URLSearchParams(
       Object.entries(queryParams).filter(([, value]) => value !== "")
     ).toString();
+    console.log({ index });
     if (index === 0) {
       navigate(generatePath(`${BosonRoutes.Explore}?${queryParamsUrl}`));
     } else {
@@ -76,12 +77,12 @@ export default function ExploreOffers({
   );
   const [pageIndex, setPageIndex] = useState(initialPageIndex);
   const [isPageLoaded, setIsPageLoaded] = useReducer(() => true, false);
-
+  console.log({ initialPageIndex });
   useEffect(() => {
     if (isPageLoaded) {
-      setPageIndex(DEFAULT_PAGE);
+      setPageIndex(initialPageIndex);
     }
-    updateUrl(DEFAULT_PAGE);
+    updateUrl(initialPageIndex);
     !isPageLoaded && setIsPageLoaded();
   }, [brand, name, exchangeTokenAddress, sellerId]);
 
