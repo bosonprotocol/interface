@@ -24,7 +24,7 @@ export function useSellers(props: Props = {}) {
           sellers(
             orderBy: $orderBy
             orderDirection: $orderDirection
-            where: { admin: $admin }
+            ${props.admin ? "where: { admin: $admin }" : ""}
           ) {
             id
             operator
