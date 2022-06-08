@@ -34,7 +34,7 @@ export function useOffers(
       }>(
         getOffersQuery({
           exchangeToken: !!props.exchangeTokenAddress,
-          sellerId: props.sellerId !== undefined,
+          sellerId: !!props.sellerId,
           validFromDate_lte: !!validFromDate_lte,
           validUntilDate_gte: !!validUntilDate_gte,
           skip: !!props.skip,
