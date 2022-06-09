@@ -77,22 +77,6 @@ export default function ExploreOffers({
   const [pageIndex, setPageIndex] = useState(initialPageIndex);
   const [isPageLoaded, setIsPageLoaded] = useReducer(() => true, false);
 
-  useEffect(() => {
-    setPageIndex(DEFAULT_PAGE);
-    updateUrl(DEFAULT_PAGE);
-    setIsPageLoaded();
-  }, []);
-
-  /**
-   * if you go directly to a page different from the first one, you'll be redirected to the first page
-   */
-  useEffect(() => {
-    if (isPageLoaded) {
-      setPageIndex(DEFAULT_PAGE);
-      updateUrl(DEFAULT_PAGE);
-    }
-  }, [brand, name, exchangeTokenAddress, sellerId]);
-
   const useOffersPayload = {
     brand,
     name,
@@ -100,28 +84,53 @@ export default function ExploreOffers({
     valid: true,
     exchangeTokenAddress,
     sellerId,
-    filterOutWrongMetadata: true,
     first: OFFERS_PER_PAGE + 1,
     skip: OFFERS_PER_PAGE * pageIndex
   };
-
   const {
     data: offersWithOneExtra,
     isLoading,
-    isError
+    isError,
+    isFetched
   } = useOffers(useOffersPayload);
 
+  useEffect(() => {
+    /**
+     * if you go directly to a page without any offers,
+     * you'll be redirected to the first page
+     */
+    if (!isPageLoaded && isFetched && !offersWithOneExtra?.length) {
+      setPageIndex(DEFAULT_PAGE);
+      updateUrl(DEFAULT_PAGE);
+      setIsPageLoaded();
+    }
+  }, [offersWithOneExtra, isPageLoaded, isFetched]);
+
+  useEffect(() => {
+    if (isPageLoaded) {
+      setPageIndex(DEFAULT_PAGE);
+      updateUrl(DEFAULT_PAGE);
+    }
+  }, [brand, name, exchangeTokenAddress, sellerId]);
   const { data: firstPageOffers } = useOffers(
     {
-      ...useOffersPayload,
-      first: 1,
-      skip: 0
+      ...useOffersPayload
+      // TODO: 1 offer should be enough once we can request offers with valid metadata directly
+      // first: 1,
+      // skip: 0
     },
     {
       enabled: pageIndex > 0 && !offersWithOneExtra?.length
     }
   );
   const offers = offersWithOneExtra?.slice(0, OFFERS_PER_PAGE);
+
+  // TODO: remove this call once we can request offers with valid metadata directly
+  const { data: nextPageOffers } = useOffers({
+    ...useOffersPayload,
+    first: OFFERS_PER_PAGE,
+    skip: OFFERS_PER_PAGE * (pageIndex + 1)
+  });
 
   return (
     <Container>
@@ -136,7 +145,9 @@ export default function ExploreOffers({
         <Pagination
           defaultPage={pageIndex}
           isNextEnabled={
-            (offersWithOneExtra?.length || 0) >= OFFERS_PER_PAGE + 1
+            // TODO: comment out this code once we can request offers with valid metadata directly
+            // (offersWithOneExtra?.length || 0) >= OFFERS_PER_PAGE + 1
+            !!nextPageOffers?.length
           }
           isPreviousEnabled={(firstPageOffers?.length || 0) > 0}
           onChangeIndex={(index) => {

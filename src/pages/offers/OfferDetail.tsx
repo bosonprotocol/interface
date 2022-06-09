@@ -204,12 +204,13 @@ export default function OfferDetail() {
     return null;
   }
 
-  const { data, isError, isLoading } = useOffer({
-    offerId,
-    filterOutWrongMetadata: false
+  const {
+    data: offer,
+    isError,
+    isLoading
+  } = useOffer({
+    offerId
   });
-
-  const { offer, isMetadataValid } = data || {};
 
   useEffect(() => {
     if (offer && widgetRef.current) {
@@ -241,7 +242,7 @@ export default function OfferDetail() {
     return <div data-testid="notFound">This offer does not exist</div>;
   }
 
-  if (!isMetadataValid) {
+  if (!offer.isValid) {
     return (
       <div data-testid="invalidMetadata">
         This offer does not match the expected metadata standard this

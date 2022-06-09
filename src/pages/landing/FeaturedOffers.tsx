@@ -20,7 +20,6 @@ export default function FeaturedOffers() {
   } = useOffers({
     voided: false,
     valid: true,
-    filterOutWrongMetadata: true,
     first: 10
   });
   return (

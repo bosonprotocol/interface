@@ -50,16 +50,19 @@ export default function OfferList({
 
   return (
     <OfferContainer>
-      {offers.map((offer: Offer) => (
-        <OfferCard
-          key={offer.id}
-          offer={offer}
-          showSeller={showSeller}
-          action={action}
-          showCTA
-          dataTestId="offer"
-        />
-      ))}
+      {offers.map(
+        (offer: Offer) =>
+          offer.isValid && (
+            <OfferCard
+              key={offer.id}
+              offer={offer}
+              showSeller={showSeller}
+              action={action}
+              showCTA
+              dataTestId="offer"
+            />
+          )
+      )}
     </OfferContainer>
   );
 }

@@ -42,12 +42,13 @@ export function useOffers(
         }),
         variables
       );
-      const { filterOutWrongMetadata } = props;
-      return result?.baseMetadataEntities
-        ?.filter((base) =>
-          filterOutWrongMetadata ? checkOfferMetadata(base.offer) : true
-        )
-        .map((base) => base.offer);
+      return result?.baseMetadataEntities?.map((base) => {
+        const isValid = checkOfferMetadata(base.offer);
+        return {
+          ...base.offer,
+          isValid
+        };
+      });
     },
     {
       ...options

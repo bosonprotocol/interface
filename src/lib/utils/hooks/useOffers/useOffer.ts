@@ -7,17 +7,14 @@ import { UseOfferProps, UseOffersProps } from "./types";
 import { checkOfferMetadata } from "./validators";
 
 export function useOffer({ offerId, ...restProps }: UseOfferProps) {
-  const { filterOutWrongMetadata } = restProps;
   return useQuery(
     ["offer", offerId],
     async () => {
       const offer = await getOfferById(offerId, restProps);
-      const isMetadataValid = checkOfferMetadata(offer);
-      if (
-        offer &&
-        ((filterOutWrongMetadata && isMetadataValid) || !filterOutWrongMetadata)
-      ) {
-        return { offer, isMetadataValid };
+      if (offer) {
+        const isMetadataValid = checkOfferMetadata(offer);
+        offer.isValid = isMetadataValid;
+        return offer;
       }
       return null;
     },

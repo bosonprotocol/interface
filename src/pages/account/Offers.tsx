@@ -24,7 +24,6 @@ export default function Offers({ sellerId, action }: Props) {
     voided: false,
     valid: false,
     sellerId,
-    filterOutWrongMetadata: false,
     first: OFFERS_PER_PAGE + 1,
     skip: OFFERS_PER_PAGE * pageIndex
   });
