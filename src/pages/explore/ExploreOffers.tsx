@@ -84,11 +84,13 @@ export default function ExploreOffers({
     valid: true,
     exchangeTokenAddress,
     sellerId,
-    first: OFFERS_PER_PAGE + 1,
+    // TODO: comment this out once we can request offers with valid metadata directly as requesting 1 extra offer should be enough
+    // first: OFFERS_PER_PAGE + 1,
+    first: OFFERS_PER_PAGE * 2,
     skip: OFFERS_PER_PAGE * pageIndex
   };
   const {
-    data: offersWithOneExtra,
+    data: currentAndNextPageOffers,
     isLoading,
     isError,
     isFetched
@@ -99,12 +101,12 @@ export default function ExploreOffers({
      * if you go directly to a page without any offers,
      * you'll be redirected to the first page
      */
-    if (!isPageLoaded && isFetched && !offersWithOneExtra?.length) {
+    if (!isPageLoaded && isFetched && !currentAndNextPageOffers?.length) {
       setPageIndex(DEFAULT_PAGE);
       updateUrl(DEFAULT_PAGE);
       setIsPageLoaded();
     }
-  }, [offersWithOneExtra, isPageLoaded, isFetched]);
+  }, [currentAndNextPageOffers, isPageLoaded, isFetched]);
 
   useEffect(() => {
     if (isPageLoaded) {
@@ -120,17 +122,10 @@ export default function ExploreOffers({
       // skip: 0
     },
     {
-      enabled: pageIndex > 0 && !offersWithOneExtra?.length
+      enabled: pageIndex > 0 && !currentAndNextPageOffers?.length
     }
   );
-  const offers = offersWithOneExtra?.slice(0, OFFERS_PER_PAGE);
-
-  // TODO: remove this call once we can request offers with valid metadata directly
-  const { data: nextPageOffers } = useOffers({
-    ...useOffersPayload,
-    first: OFFERS_PER_PAGE,
-    skip: OFFERS_PER_PAGE * (pageIndex + 1)
-  });
+  const offers = currentAndNextPageOffers?.slice(0, OFFERS_PER_PAGE);
 
   return (
     <Container>
@@ -145,9 +140,7 @@ export default function ExploreOffers({
         <Pagination
           defaultPage={pageIndex}
           isNextEnabled={
-            // TODO: comment out this code once we can request offers with valid metadata directly
-            // (offersWithOneExtra?.length || 0) >= OFFERS_PER_PAGE + 1
-            !!nextPageOffers?.length
+            (currentAndNextPageOffers?.length || 0) >= OFFERS_PER_PAGE + 1
           }
           isPreviousEnabled={(firstPageOffers?.length || 0) > 0}
           onChangeIndex={(index) => {
