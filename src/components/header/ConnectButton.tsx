@@ -1,6 +1,5 @@
 import { ConnectButton as RainbowConnectButton } from "@rainbow-me/rainbowkit";
 import { BsChevronDown } from "react-icons/bs";
-import { IoMdWallet } from "react-icons/io";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";

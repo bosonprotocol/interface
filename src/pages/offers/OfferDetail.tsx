@@ -181,12 +181,13 @@ function isAccountSeller(offer: Offer, account: string): boolean {
   return offer.seller.operator.toLowerCase() === account.toLowerCase();
 }
 
-function getIsOfferValid(offer: Offer | undefined | null): boolean {
-  const now = Date.now() / 1000;
-  return (
-    Number(offer?.validFromDate) <= now && now <= Number(offer?.validUntilDate)
-  );
-}
+// TODO: to be used in the future
+// function getIsOfferValid(offer: Offer | undefined | null): boolean {
+//   const now = Date.now() / 1000;
+//   return (
+//     Number(offer?.validFromDate) <= now && now <= Number(offer?.validUntilDate)
+//   );
+// }
 
 export default function OfferDetail() {
   const { [UrlParameters.offerId]: offerId } = useParams();
