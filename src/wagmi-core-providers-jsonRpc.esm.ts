@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// TODO: remove this file once this PR has been merged https://github.com/rainbow-me/rainbowkit/pull/483
 import { providers } from "ethers";
 
 export function jsonRpcProvider({

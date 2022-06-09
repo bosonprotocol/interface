@@ -56,6 +56,7 @@ export default function OfferList({
           offer={offer}
           showSeller={showSeller}
           action={action}
+          showCTA
           dataTestId="offer"
         />
       ))}

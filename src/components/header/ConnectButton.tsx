@@ -40,14 +40,6 @@ const ENSAvatar = styled.img`
   border-radius: 100%;
 `;
 
-const Wallet = styled(IoMdWallet)`
-  cursor: pointer;
-  font-size: 30px;
-  :hover {
-    fill: ${colors.green};
-  }
-`;
-
 export default function ConnectButton() {
   return (
     <RainbowConnectButton.Custom>

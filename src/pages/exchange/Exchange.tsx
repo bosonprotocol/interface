@@ -9,6 +9,7 @@ import {
   useParams
 } from "react-router-dom";
 import styled from "styled-components";
+import { useAccount } from "wagmi";
 
 import AddressContainer from "../../components/offer/AddressContainer";
 import RootPrice from "../../components/price";
@@ -17,7 +18,7 @@ import { UrlParameters } from "../../lib/routing/query-parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
-import { useOffer } from "../../lib/utils/hooks/useOffers/useOffer";
+import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 
 const Root = styled.div`
   display: flex;
@@ -182,33 +183,31 @@ function isAccountSeller(offer: Offer, account: string): boolean {
   return false;
 }
 
-function getIsOfferValid(offer: Offer | undefined | null): boolean {
-  const now = Date.now() / 1000;
-  const isValid =
-    Number(offer?.validFromDate) <= now && now <= Number(offer?.validUntilDate);
-  return isValid;
-}
-
 export default function Exchange() {
-  const { [UrlParameters.offerId]: offerId } = useParams();
+  const { [UrlParameters.exchangeId]: exchangeId } = useParams();
   const widgetRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
   const fromAccountPage =
     (location.state as { from: string })?.from === BosonRoutes.YourAccount;
   const [isTabSellerSelected, setTabSellerSelected] = useState(fromAccountPage);
-  const [account, setAccount] = useState("");
+  const { data: account } = useAccount();
+  const address = account?.address || "";
+
   const navigate = useNavigate();
-  if (!offerId) {
+  if (!exchangeId) {
     return null;
   }
 
   const {
-    data: offer,
+    data: exchanges,
     isError,
     isLoading
-  } = useOffer({
-    offerId
+  } = useExchanges({
+    id: exchangeId,
+    disputed: null
   });
+  const offer = exchanges?.[0]?.offer;
+  const offerId = offer?.id;
 
   useEffect(() => {
     if (offer && widgetRef.current) {
@@ -216,25 +215,14 @@ export default function Exchange() {
       widgetContainer.style.width = "100%";
       widgetRef.current.appendChild(widgetContainer);
       manageOffer(offer.id, CONFIG, widgetContainer, {
-        forceBuyerView: !isTabSellerSelected
+        forceBuyerView: !isTabSellerSelected,
+        exchangeId
       });
       return () => widgetContainer.remove();
     }
 
     return;
-  }, [offer, isTabSellerSelected]);
-
-  useEffect(() => {
-    function handleMessageFromIframe(e: MessageEvent) {
-      const { target, message, wallet } = e.data || {};
-
-      if (target === "boson" && message === "wallet-changed") {
-        setAccount(wallet);
-      }
-    }
-    window.addEventListener("message", handleMessageFromIframe);
-    return () => window.removeEventListener("message", handleMessageFromIframe);
-  }, []);
+  }, [offer, isTabSellerSelected, exchangeId]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -242,21 +230,20 @@ export default function Exchange() {
 
   if (isError) {
     return (
-      <div data-testid="errorOffer">
+      <div data-testid="errorExchange">
         There has been an error, please try again later...
       </div>
     );
   }
 
-  const isOfferValid = getIsOfferValid(offer);
-  if (!offer || !isOfferValid) {
-    return <div data-testid="notFound">This offer does not exist</div>;
+  if (!offer) {
+    return <div data-testid="notFound">This exchange does not exist</div>;
   }
-  const isSeller = isAccountSeller(offer, account ?? "");
+  const isSeller = isAccountSeller(offer, address);
   const name = offer.metadata?.name || "Untitled";
   const offerImg = `https://picsum.photos/seed/${offerId}/700`;
   const sellerId = offer.seller?.id;
-  const sellerAddress = offer.seller?.admin;
+  const sellerAddress = offer.seller?.operator;
   const description = offer.metadata?.description || "";
 
   return (
@@ -311,7 +298,7 @@ export default function Exchange() {
             <Toggle>
               <InfoIconTextWrapper>
                 <InfoIcon />
-                <span>You are the owner of this offer. Toggle view:</span>
+                <span>You are the owner of this exchange. Toggle view:</span>
               </InfoIconTextWrapper>
               <Tabs>
                 <Tab

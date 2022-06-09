@@ -6,6 +6,7 @@ export const QueryParameters = {
 
 export const UrlParameters = {
   offerId: "id",
+  exchangeId: "id",
   accountId: "id",
   page: "page"
 } as const;

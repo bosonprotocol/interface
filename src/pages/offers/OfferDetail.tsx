@@ -9,13 +9,13 @@ import {
   useParams
 } from "react-router-dom";
 import styled from "styled-components";
+import { useAccount } from "wagmi";
 
 import { CONFIG } from "../../lib/config";
 import { UrlParameters } from "../../lib/routing/query-parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
-import { useConnectedWallet } from "../../lib/utils/hooks/useConnectedWallet";
 import { useOffer } from "../../lib/utils/hooks/useOffers/useOffer";
 import AddressContainer from "./../../components/offer/AddressContainer";
 import RootPrice from "./../../components/price";
@@ -195,20 +195,20 @@ export default function OfferDetail() {
   const fromAccountPage =
     (location.state as { from: string })?.from === BosonRoutes.YourAccount;
   const [isTabSellerSelected, setTabSellerSelected] = useState(fromAccountPage);
-  const account = useConnectedWallet();
+  const { data: account } = useAccount();
+  const address = account?.address || "";
   const navigate = useNavigate();
 
   if (!offerId) {
     return null;
   }
 
-  const {
-    data: offer,
-    isError,
-    isLoading
-  } = useOffer({
-    offerId
+  const { data, isError, isLoading } = useOffer({
+    offerId,
+    filterOutWrongMetadata: false
   });
+
+  const { offer, isMetadataValid } = data || {};
 
   useEffect(() => {
     if (offer && widgetRef.current) {
@@ -222,7 +222,7 @@ export default function OfferDetail() {
     }
 
     return;
-  }, [offer, isTabSellerSelected]);
+  }, [offer, isTabSellerSelected, address]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -236,16 +236,26 @@ export default function OfferDetail() {
     );
   }
 
-  const isOfferValid = getIsOfferValid(offer);
-  if (!offer || !isOfferValid) {
+  if (!offer) {
     return <div data-testid="notFound">This offer does not exist</div>;
   }
-  const isSeller = isAccountSeller(offer, account ?? "");
+
+  if (!isMetadataValid) {
+    return (
+      <div data-testid="invalidMetadata">
+        This offer does not match the expected metadata standard this
+        application enforces
+      </div>
+    );
+  }
+
   const name = offer.metadata?.name || "Untitled";
   const offerImg = `https://picsum.photos/seed/${offerId}/700`;
   const sellerId = offer.seller?.id;
-  const sellerAddress = offer.seller?.admin;
+  const sellerAddress = offer.seller?.operator;
   const description = offer.metadata?.description || "";
+  // const isOfferValid = getIsOfferValid(offer);
+  const isSeller = isAccountSeller(offer, address);
 
   return (
     <>

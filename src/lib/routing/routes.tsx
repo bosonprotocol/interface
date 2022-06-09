@@ -6,7 +6,7 @@ export const BosonRoutes = {
   ExplorePage: "/explore/page",
   ExplorePageByIndex: `/explore/page/:${UrlParameters.page}`,
   CreateOffer: "/create-offer",
-  Exchange: `/exchange/:${UrlParameters.offerId}`,
+  Exchange: `/exchange/:${UrlParameters.exchangeId}`,
   YourAccount: `/account`,
   Account: `/account/:${UrlParameters.accountId}`
 } as const;

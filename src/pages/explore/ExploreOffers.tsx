@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useRef, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { generatePath, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 
@@ -40,7 +40,6 @@ const updatePageIndexInUrl =
     const queryParamsUrl = new URLSearchParams(
       Object.entries(queryParams).filter(([, value]) => value !== "")
     ).toString();
-    console.log({ index });
     if (index === 0) {
       navigate(generatePath(`${BosonRoutes.Explore}?${queryParamsUrl}`));
     } else {

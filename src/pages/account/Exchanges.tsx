@@ -17,9 +17,15 @@ interface Props {
   sellerId: string;
   buyerId: string;
   action: Action;
+  showCTA: boolean;
 }
 
-export default function Exchanges({ sellerId, buyerId, action }: Props) {
+export default function Exchanges({
+  sellerId,
+  buyerId,
+  action,
+  showCTA
+}: Props) {
   const {
     data: exchangesSeller,
     isLoading: isLoadingSeller,
@@ -75,9 +81,11 @@ export default function Exchanges({ sellerId, buyerId, action }: Props) {
         <OfferCard
           key={exchange.id}
           offer={exchange.offer}
+          exchangeId={exchange.id}
           action={action}
           dataTestId="exchange"
           showSeller={false}
+          showCTA={showCTA}
         />
       ))}
     </ExchangesContainer>

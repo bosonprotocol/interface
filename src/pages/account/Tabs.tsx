@@ -74,7 +74,8 @@ export default function Tabs({ isPrivateProfile, address }: Props) {
           <Exchanges
             sellerId={sellerId}
             buyerId={buyerId}
-            action={isPrivateProfile ? null : "redeem"}
+            action="redeem"
+            showCTA={!isPrivateProfile}
           />
         )
       },
