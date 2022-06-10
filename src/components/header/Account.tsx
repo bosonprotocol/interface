@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { IoIosContact } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
@@ -22,16 +23,25 @@ const AccountIcon = styled(IoIosContact)`
 `;
 
 interface Props {
-  onClick: () => void;
+  connect: () => void;
+  isConnected: boolean;
 }
-export default function Account({ onClick }: Props) {
+export default function Account({ connect, isConnected }: Props) {
   const navigate = useNavigate();
+  useEffect(() => {
+    if (isConnected) {
+      navigate(BosonRoutes.YourAccount);
+    }
+  }, [isConnected]);
   return (
     <AccountSvgIcon
       data-testid="account"
       onClick={() => {
-        onClick();
-        navigate(BosonRoutes.YourAccount);
+        if (isConnected) {
+          navigate(BosonRoutes.YourAccount);
+        } else {
+          connect();
+        }
       }}
     >
       <AccountIcon />

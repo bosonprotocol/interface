@@ -53,7 +53,7 @@ export default function ConnectButton() {
       }) => {
         return (
           <div style={{ display: "flex", gap: 12 }}>
-            <Account onClick={openConnectModal} />
+            <Account connect={openConnectModal} isConnected={!!account} />
 
             <div
               {...(!mounted && {
