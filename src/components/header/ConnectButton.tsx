@@ -4,6 +4,7 @@ import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
 import FallbackAvatar from "../avatar/fallback-avatar";
+import Account from "./Account";
 
 const BaseButton = styled.button`
   all: unset;
@@ -52,6 +53,8 @@ export default function ConnectButton() {
       }) => {
         return (
           <div style={{ display: "flex", gap: 12 }}>
+            <Account onClick={openConnectModal} />
+
             <div
               {...(!mounted && {
                 "aria-hidden": true,
