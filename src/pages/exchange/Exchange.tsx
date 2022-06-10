@@ -215,8 +215,8 @@ export default function Exchange() {
       widgetContainer.style.width = "100%";
       widgetRef.current.appendChild(widgetContainer);
       manageOffer(offer.id, CONFIG, widgetContainer, {
-        forceBuyerView: !isTabSellerSelected
-        // exchangeId
+        forceBuyerView: !isTabSellerSelected,
+        exchangeId
       });
       return () => widgetContainer.remove();
     }

@@ -1,5 +1,5 @@
 import { MetadataType } from "@bosonprotocol/common";
-import { IpfsMetadata } from "@bosonprotocol/ipfs-storage";
+import { IpfsMetadataStorage } from "@bosonprotocol/ipfs-storage";
 import { createOffer } from "@bosonprotocol/widgets-sdk";
 import { parseEther } from "@ethersproject/units";
 import { useFormik } from "formik";
@@ -115,7 +115,7 @@ export default function CreateOffer() {
         if (!values) {
           return;
         }
-        const storage = new IpfsMetadata({
+        const storage = new IpfsMetadataStorage({
           url: CONFIG.ipfsMetadataUrl
         });
 

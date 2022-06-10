@@ -1,4 +1,3 @@
-import React from "react";
 import { IoMdSettings } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
