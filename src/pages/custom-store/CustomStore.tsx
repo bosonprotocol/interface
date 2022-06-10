@@ -1,7 +1,11 @@
+import { BaseIpfsStorage } from "@bosonprotocol/ipfs-storage";
 import { useFormik } from "formik";
+import { useState } from "react";
 import styled from "styled-components";
 
 import Layout from "../../components/Layout";
+import { CONFIG } from "../../lib/config";
+import { colors } from "../../lib/styles/colors";
 import {
   Button,
   FormControl,
@@ -10,6 +14,7 @@ import {
   FormLabel,
   StyledForm
 } from "../create-offer/CreateOffer";
+import { StoreFields } from "./store-fields";
 
 const Root = styled(Layout)`
   display: flex;
@@ -19,23 +24,50 @@ const Root = styled(Layout)`
   overflow: hidden;
 `;
 
-interface FormValues {
-  storeName: string;
-  logoUrl: string;
-  primaryColor: string;
-  secondaryColor: string;
-}
+const UrlBox = styled.a`
+  background-color: ${colors.lightGrey};
+  padding: 10px;
+  margin-top: 24px;
+  border-radius: 10px;
+  display: block;
+`;
 
 export default function CustomStore() {
-  const { values, handleChange, handleSubmit } = useFormik<FormValues>({
+  const [ipfsUrl, setIpfsUrl] = useState<string>("");
+  const { values, handleChange, handleSubmit } = useFormik<StoreFields>({
     initialValues: {
       storeName: "",
       logoUrl: "",
       primaryColor: "",
-      secondaryColor: ""
+      secondaryColor: "",
+      accentColor: ""
     },
-    onSubmit: async (values: FormValues) => {
-      console.log(values);
+    onSubmit: async (values: StoreFields) => {
+      const storage = new BaseIpfsStorage({
+        url: CONFIG.ipfsMetadataUrl
+      });
+
+      const queryParams = new URLSearchParams(
+        Object.entries(values)
+      ).toString();
+      const html = `<!DOCTYPE html>
+      <html lang="en">
+      <head>
+          <meta charset="UTF-8">
+          <meta http-equiv="X-UA-Compatible" content="IE=edge">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Boson Protocol</title>
+      </head>
+      <body>
+          <script>
+              window.location.href = '${window.location.origin}/#/?${queryParams}';
+          </script>
+      </body>
+      </html>`;
+
+      const cid = await storage.add(html);
+
+      setIpfsUrl(`https://ipfs.io/ipfs/${cid}`);
       return;
     }
   });
@@ -71,22 +103,36 @@ export default function CustomStore() {
               value={values.primaryColor}
               onChange={handleChange}
               name="primaryColor"
-              type="text"
+              type="color"
               placeholder="..."
             />
+            {values.primaryColor}
           </FormElement>
           <FormElement>
-            <FormLabel>Primary Colour</FormLabel>
+            <FormLabel>Secondary Colour</FormLabel>
             <FormControl
               value={values.secondaryColor}
               onChange={handleChange}
               name="secondaryColor"
-              type="text"
+              type="color"
               placeholder="..."
             />
+            {values.secondaryColor}
+          </FormElement>
+          <FormElement>
+            <FormLabel>Accent Colour</FormLabel>
+            <FormControl
+              value={values.accentColor}
+              onChange={handleChange}
+              name="accentColor"
+              type="color"
+              placeholder="..."
+            />
+            {values.accentColor}
           </FormElement>
         </FormElementsContainer>
         <Button>Create Store</Button>
+        {ipfsUrl && <UrlBox href={ipfsUrl}>{ipfsUrl}</UrlBox>}
       </StyledForm>
     </Root>
   );

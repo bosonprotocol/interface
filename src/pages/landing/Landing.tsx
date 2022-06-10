@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import { QueryParameters } from "../../lib/routing/query-parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
+import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import FeaturedOffers from "../../pages/landing/FeaturedOffers";
+import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
 
 const LandingContainer = styled.div`
   display: flex;
@@ -34,6 +35,7 @@ const TitleContainer = styled.div`
 
 const Title = styled.h1`
   font-size: 48px;
+  color: var(--accent);
 `;
 
 const InputGo = styled.div`
@@ -56,7 +58,7 @@ const Input = styled.input`
 
 const GoButton = styled.button`
   width: 100px;
-  background-color: ${colors.green};
+  background-color: var(--secondary);
   color: ${colors.navy};
   border-radius: 5px;
   font-size: 16px;
@@ -67,7 +69,7 @@ const GoButton = styled.button`
 const ExploreButton = styled.button`
   margin-top: 10px;
   width: 100%;
-  background-color: ${colors.green};
+  background-color: var(--secondary);
   color: ${colors.navy};
   border-radius: 5px;
   padding: 10px;
@@ -92,19 +94,21 @@ const MainImg = styled.img`
 `;
 
 export default function Landing() {
-  const navigate = useNavigate();
+  const navigate = useKeepQueryParamsNavigate();
   const [name, setName] = useState("");
+  const storeName = useCustomStoreQueryParameter("storeName");
 
   const navigateToExplore = () =>
-    navigate(
-      `${BosonRoutes.Explore}${name ? `?${QueryParameters.name}=${name}` : ""}`
-    );
+    navigate({
+      pathname: BosonRoutes.Explore,
+      search: name ? `${QueryParameters.name}=${name}` : ""
+    });
 
   return (
     <LandingContainer>
       <Hero>
         <TitleContainer>
-          <Title>Boson dApp</Title>
+          <Title>{storeName || "Boson dApp"} </Title>
           <InputGo>
             <Input
               onChange={(e) => setName(e.target.value)}

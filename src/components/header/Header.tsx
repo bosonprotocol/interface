@@ -1,10 +1,13 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import logo from "../../../src/assets/logo.png";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
+import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import Layout from "../Layout";
+import { LinkWithQuery } from "../linkStoreFields/LinkStoreFields";
 import ConnectButton from "./ConnectButton";
 
 const HeaderContainer = styled(Layout)`
@@ -32,25 +35,25 @@ const NavigationLinks = styled.nav`
 `;
 
 const LogoImg = styled.img`
-  height: 30px;
-
+  height: 50px;
   cursor: pointer;
 `;
 
 export default function Header() {
-  const navigate = useNavigate();
+  const navigate = useKeepQueryParamsNavigate();
+  const logoUrl = useCustomStoreQueryParameter("logoUrl");
 
   return (
     <HeaderContainer>
       <LogoImg
         data-testid="logo"
-        src={logo}
-        onClick={() => navigate(BosonRoutes.Root)}
+        src={logoUrl || logo}
+        onClick={() => navigate({ pathname: BosonRoutes.Root })}
       />
       <NavigationLinks>
-        <Link to={BosonRoutes.Root}>Home</Link>
-        <Link to={BosonRoutes.Explore}>Explore</Link>
-        <Link to={BosonRoutes.CreateOffer}>Create</Link>
+        <LinkWithQuery to={BosonRoutes.Root}>Home</LinkWithQuery>
+        <LinkWithQuery to={BosonRoutes.Explore}>Explore</LinkWithQuery>
+        <LinkWithQuery to={BosonRoutes.CreateOffer}>Create</LinkWithQuery>
         <ConnectButton />
       </NavigationLinks>
     </HeaderContainer>

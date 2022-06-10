@@ -1,12 +1,12 @@
-import { useNavigate } from "react-router-dom";
 import { useAccount } from "wagmi";
 
 import { BosonRoutes } from "../../../lib/routing/routes";
+import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import PrivateAccount from "./PrivateAccount";
 
 export default function PrivateAccountContainer() {
   const { data: account, isLoading, isFetching, isError } = useAccount();
-  const navigate = useNavigate();
+  const navigate = useKeepQueryParamsNavigate();
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -20,7 +20,7 @@ export default function PrivateAccountContainer() {
   }
 
   if (!account?.address) {
-    navigate(BosonRoutes.Root);
+    navigate({ pathname: BosonRoutes.Root });
     return <div>Please connect your wallet</div>;
   }
 

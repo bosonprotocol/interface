@@ -4,16 +4,30 @@ import styled, { createGlobalStyle } from "styled-components";
 import Layout from "../../components/Layout";
 import { colors } from "../../lib/styles/colors";
 import { footerHeight } from "../../lib/styles/layout";
+import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import Header from "../header/Header";
 
-const GlobalStyle = createGlobalStyle`
+const GlobalStyle = createGlobalStyle<{
+  $primaryColor: string;
+  $secondaryColor: string;
+  $accentColor: string;
+}>`
+  :root {
+    --primary: ${(props) =>
+      props.$primaryColor ? props.$primaryColor : colors.navy};
+    --secondary: ${(props) =>
+      props.$secondaryColor ? props.$secondaryColor : colors.green};
+    --accent: ${(props) =>
+      props.$accentColor ? props.$accentColor : colors.arsenic};
+  }
+
   html, body {
     font-family: 'Manrope', sans-serif;
     font-weight: 400;
     margin: 0;
     display:flex;
     flex-direction:column;
-    background-color: ${colors.navy};
+    background-color: var(--primary);
     z-index: -2;
     color: white;
   }
@@ -29,7 +43,7 @@ const PageContainer = styled(Layout)`
 `;
 
 const Footer = styled.footer`
-  background-color: ${colors.arsenic};
+  background-color: var(--accent);
   height: ${footerHeight};
   padding: 20px 0;
   position: absolute;
@@ -41,9 +55,17 @@ const Footer = styled.footer`
 `;
 
 export default function App() {
+  const primaryColor = useCustomStoreQueryParameter("primaryColor");
+  const secondaryColor = useCustomStoreQueryParameter("secondaryColor");
+  const accentColor = useCustomStoreQueryParameter("accentColor");
+
   return (
     <Container>
-      <GlobalStyle />
+      <GlobalStyle
+        $primaryColor={primaryColor}
+        $secondaryColor={secondaryColor}
+        $accentColor={accentColor}
+      />
       <Header />
       <PageContainer>
         <Outlet />

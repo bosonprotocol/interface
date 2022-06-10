@@ -1,13 +1,13 @@
 import { Image as AccountImage } from "@davatar/react";
-import { generatePath, useLocation, useNavigate } from "react-router-dom";
+import { generatePath, useLocation } from "react-router-dom";
 import styled from "styled-components";
 
 import AddressContainer from "../../components/offer/AddressContainer";
 import RootPrice from "../../components/price";
 import { UrlParameters } from "../../lib/routing/query-parameters";
 import { BosonRoutes, OffersRoutes } from "../../lib/routing/routes";
-import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
+import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 
 const Card = styled.div`
   border-radius: 12px;
@@ -65,13 +65,13 @@ const Button = styled.button`
   all: unset;
   font-weight: 600;
   font-size: 15px;
-  color: ${colors.green};
+  color: var(--secondary);
   border-radius: 11px;
   display: inline-block;
   text-align: center;
   transition: all 0.5s;
   cursor: pointer;
-  border: 1px solid ${colors.green};
+  border: 1px solid var(--secondary);
   padding: 6px 12px;
   margin-top: 8px;
 `;
@@ -146,18 +146,21 @@ export default function OfferCard({
   const sellerAddress = offer.seller?.operator;
 
   const location = useLocation();
-  const navigate = useNavigate();
+  const navigate = useKeepQueryParamsNavigate();
   const path = getCTAPath(action, { offerId, exchangeId });
 
   const isClickable = !!path;
   const onClick: React.MouseEventHandler<unknown> = (e) => {
     e.stopPropagation();
     isClickable &&
-      navigate(path, {
-        state: {
-          from: location.pathname
+      navigate(
+        { pathname: path },
+        {
+          state: {
+            from: location.pathname
+          }
         }
-      });
+      );
   };
 
   return (
@@ -166,11 +169,11 @@ export default function OfferCard({
         <AddressContainer
           onClick={(e) => {
             e.stopPropagation();
-            navigate(
-              generatePath(BosonRoutes.Account, {
+            navigate({
+              pathname: generatePath(BosonRoutes.Account, {
                 [UrlParameters.accountId]: sellerAddress
               })
-            );
+            });
           }}
         >
           <div>

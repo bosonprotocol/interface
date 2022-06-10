@@ -1,9 +1,9 @@
 import { IoMdSettings } from "react-icons/io";
-import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import { BosonRoutes } from "../lib/routing/routes";
 import { colors } from "../lib/styles/colors";
+import { useKeepQueryParamsNavigate } from "../lib/utils/hooks/useKeepQueryParamsNavigate";
 
 const SettingsSvgIcon = styled.button`
   all: unset;
@@ -20,13 +20,13 @@ const SettingsIcon = styled(IoMdSettings)`
 `;
 
 export default function Settings() {
-  const navigate = useNavigate();
+  const navigate = useKeepQueryParamsNavigate();
 
   return (
     <>
       <SettingsSvgIcon
         data-testid="settings"
-        onClick={() => navigate(BosonRoutes.CreateStorefront)}
+        onClick={() => navigate({ pathname: BosonRoutes.CreateStorefront })}
       >
         <SettingsIcon />
       </SettingsSvgIcon>

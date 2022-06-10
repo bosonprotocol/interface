@@ -2,12 +2,7 @@ import { manageOffer } from "@bosonprotocol/widgets-sdk";
 import { Image as AccountImage } from "@davatar/react";
 import { useEffect, useRef, useState } from "react";
 import { IoIosInformationCircleOutline } from "react-icons/io";
-import {
-  generatePath,
-  useLocation,
-  useNavigate,
-  useParams
-} from "react-router-dom";
+import { generatePath, useLocation, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
@@ -19,6 +14,7 @@ import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
+import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 
 const Root = styled.div`
   display: flex;
@@ -193,7 +189,7 @@ export default function Exchange() {
   const { data: account } = useAccount();
   const address = account?.address || "";
 
-  const navigate = useNavigate();
+  const navigate = useKeepQueryParamsNavigate();
   if (!exchangeId) {
     return null;
   }
@@ -270,11 +266,11 @@ export default function Exchange() {
               <SubHeading> Seller</SubHeading>
               <AddressContainer
                 onClick={() =>
-                  navigate(
-                    generatePath(BosonRoutes.Account, {
+                  navigate({
+                    pathname: generatePath(BosonRoutes.Account, {
                       [UrlParameters.accountId]: sellerAddress
                     })
-                  )
+                  })
                 }
               >
                 <AccountImage size={30} address={sellerAddress} />
