@@ -4,6 +4,7 @@ import { useEnsName } from "wagmi";
 import Avatar from "../../../components/avatar";
 import AddressText from "../../../components/offer/AddressText";
 import CurrencyIcon from "../../../components/price/CurrencyIcon";
+import Settings from "../../../components/settings";
 import Tabs from "../Tabs";
 
 const BasicInfo = styled.section`
@@ -33,6 +34,12 @@ const AddressContainer = styled.div`
   }
 `;
 
+const SettingsWrapper = styled.div`
+  display: flex;
+  justify-content: end;
+  flex-basis: 200px;
+`;
+
 export default function PrivateAccount({ account }: { account: string }) {
   const { data: ensName } = useEnsName({
     address: account
@@ -49,6 +56,9 @@ export default function PrivateAccount({ account }: { account: string }) {
           <CurrencyIcon currencySymbol="ETH" />
           <AddressText address={account} />
         </AddressContainer>
+        <SettingsWrapper>
+          <Settings />
+        </SettingsWrapper>
       </BasicInfo>
       <Tabs isPrivateProfile={true} address={account} />
     </>

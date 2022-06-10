@@ -29,6 +29,9 @@ const PrivateAccount = React.lazy(
 const PublicOrPrivateAccount = React.lazy(
   () => import("./pages/account/public/PublicOrPrivateAccount")
 );
+const CustomStore = React.lazy(
+  () => import("./pages/custom-store/CustomStore")
+);
 
 const Loading = () => (
   <Layout>
@@ -128,6 +131,15 @@ root.render(
                   </React.Suspense>
                 }
               />
+              <Route
+                path={BosonRoutes.CreateStorefront}
+                element={
+                  <React.Suspense fallback={<Loading />}>
+                    <CustomStore />
+                  </React.Suspense>
+                }
+              />
+
               <Route
                 path="*"
                 element={

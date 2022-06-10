@@ -8,7 +8,8 @@ export const BosonRoutes = {
   CreateOffer: "/create-offer",
   Exchange: `/exchange/:${UrlParameters.exchangeId}`,
   YourAccount: `/account`,
-  Account: `/account/:${UrlParameters.accountId}`
+  Account: `/account/:${UrlParameters.accountId}`,
+  CreateStorefront: "/custom-store"
 } as const;
 
 export const OffersRoutes = {
