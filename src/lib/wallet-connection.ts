@@ -1,16 +1,9 @@
-import {
-  Chain,
-  darkTheme,
-  getDefaultWallets,
-  Theme
-} from "@rainbow-me/rainbowkit";
-import merge from "lodash.merge";
+import { Chain, getDefaultWallets } from "@rainbow-me/rainbowkit";
 import { chain, configureChains, createClient } from "wagmi";
 
 import { jsonRpcProvider } from "../wagmi-core-providers-jsonRpc.esm";
 import ethIcon from "./assets/ethereum-chain-icon.svg";
 import { CONFIG } from "./config";
-import { colors } from "./styles/colors";
 
 const supportedChains: Readonly<Array<number>> = [
   chain.ropsten.id,
