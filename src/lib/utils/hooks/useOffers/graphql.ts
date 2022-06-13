@@ -11,7 +11,6 @@ export const offerGraphQl = gql`
     metadataUri
     buyerCancelPenalty
     quantityAvailable
-    redeemableFromDate
     validFromDate
     validUntilDate
     voidedAt

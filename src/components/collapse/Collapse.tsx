@@ -35,7 +35,7 @@ export default function Collapse({ title, children }: Props) {
           <Title>{title}</Title>
 
           <ArrowContainer>
-            {isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
+            {isOpen ? <IoIosArrowUp /> : <IoIosArrowDown />}
           </ArrowContainer>
         </>
       </CollapsibleButton>
