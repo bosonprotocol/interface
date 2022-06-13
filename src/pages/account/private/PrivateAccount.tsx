@@ -24,9 +24,7 @@ const AddressContainer = styled.div`
   align-items: center;
   margin-top: 5px;
   margin-bottom: 20px;
-  * {
-    font-size: 1rem;
-  }
+  font-size: 1rem;
 
   img {
     width: 15px;
