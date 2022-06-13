@@ -21,10 +21,12 @@ interface Props {
 
 export default function WalletConnectionProvider({ children }: Props) {
   const secondaryColor = useCSSVariable("--secondary");
+  const accentColor = useCSSVariable("--accent");
+
   const walletConnectionTheme = merge(darkTheme({ borderRadius: "medium" }), {
     colors: {
       accentColor: secondaryColor,
-      accentColorForeground: colors.navy,
+      accentColorForeground: accentColor,
       closeButtonBackground: colors.navy,
       actionButtonBorder: colors.navy,
       profileForeground: colors.navy,
