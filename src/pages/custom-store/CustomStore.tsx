@@ -1,11 +1,11 @@
 import { BaseIpfsStorage } from "@bosonprotocol/ipfs-storage";
 import { useFormik } from "formik";
-import { useState } from "react";
+import { useReducer, useState } from "react";
 import styled from "styled-components";
 
+import Collapse from "../../components/collapse/Collapse";
 import Layout from "../../components/Layout";
 import { CONFIG } from "../../lib/config";
-import { colors } from "../../lib/styles/colors";
 import {
   Button,
   FormControl,
@@ -14,6 +14,7 @@ import {
   FormLabel,
   StyledForm
 } from "../create-offer/CreateOffer";
+import CustomStoreModal from "./CustomStoreModal";
 import { StoreFields } from "./store-fields";
 
 const Root = styled(Layout)`
@@ -24,16 +25,13 @@ const Root = styled(Layout)`
   overflow: hidden;
 `;
 
-const UrlBox = styled.a`
-  background-color: ${colors.lightGrey};
-  padding: 10px;
-  margin-top: 24px;
-  border-radius: 10px;
-  display: block;
+const PreviewContainer = styled.div`
+  margin: 20px 0;
 `;
 
 export default function CustomStore() {
-  const [ipfsUrl, setIpfsUrl] = useState<string>("");
+  const [isModalOpened, toggleModal] = useReducer((state) => !state, false);
+  const [ipfsUrl, setIpfsUrl] = useState<string>("test");
   const { values, handleChange, handleSubmit } = useFormik<StoreFields>({
     initialValues: {
       storeName: "",
@@ -68,10 +66,12 @@ export default function CustomStore() {
       const cid = await storage.add(html);
 
       setIpfsUrl(`https://ipfs.io/ipfs/${cid}`);
+      toggleModal();
       return;
     }
   });
 
+  const queryParams = new URLSearchParams(Object.entries(values)).toString();
   return (
     <Root>
       <h1>Create Custom Store</h1>
@@ -99,40 +99,80 @@ export default function CustomStore() {
           </FormElement>
           <FormElement>
             <FormLabel>Primary Colour</FormLabel>
-            <FormControl
-              value={values.primaryColor}
-              onChange={handleChange}
-              name="primaryColor"
-              type="color"
-              placeholder="..."
-            />
-            {values.primaryColor}
+            <div>
+              <FormControl
+                value={values.primaryColor}
+                onChange={handleChange}
+                name="primaryColor"
+                type="color"
+                placeholder="..."
+              />
+              <span
+                style={{
+                  color: values.primaryColor
+                }}
+              >
+                {values.primaryColor}
+              </span>
+            </div>
           </FormElement>
           <FormElement>
             <FormLabel>Secondary Colour</FormLabel>
-            <FormControl
-              value={values.secondaryColor}
-              onChange={handleChange}
-              name="secondaryColor"
-              type="color"
-              placeholder="..."
-            />
-            {values.secondaryColor}
+            <div>
+              <FormControl
+                value={values.secondaryColor}
+                onChange={handleChange}
+                name="secondaryColor"
+                type="color"
+                placeholder="..."
+              />
+              <span
+                style={{
+                  color: values.secondaryColor
+                }}
+              >
+                {values.secondaryColor}
+              </span>
+            </div>
           </FormElement>
           <FormElement>
             <FormLabel>Accent Colour</FormLabel>
-            <FormControl
-              value={values.accentColor}
-              onChange={handleChange}
-              name="accentColor"
-              type="color"
-              placeholder="..."
-            />
-            {values.accentColor}
+            <div>
+              <FormControl
+                value={values.accentColor}
+                onChange={handleChange}
+                name="accentColor"
+                type="color"
+                placeholder="..."
+              />
+              <span
+                style={{
+                  color: values.accentColor
+                }}
+              >
+                {values.accentColor}
+              </span>
+            </div>
           </FormElement>
         </FormElementsContainer>
+
+        <PreviewContainer>
+          <Collapse title={<p>Preview</p>}>
+            <iframe
+              src={`http://localhost:3000/#/?${queryParams}`}
+              width="100%"
+              height="500px"
+            ></iframe>
+          </Collapse>
+        </PreviewContainer>
+
         <Button>Create Store</Button>
-        {ipfsUrl && <UrlBox href={ipfsUrl}>{ipfsUrl}</UrlBox>}
+
+        <CustomStoreModal
+          isOpen={isModalOpened}
+          onClose={toggleModal}
+          ipfsUrl={ipfsUrl}
+        />
       </StyledForm>
     </Root>
   );

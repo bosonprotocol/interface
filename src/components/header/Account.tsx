@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { IoIosContact } from "react-icons/io";
 import styled from "styled-components";
 
@@ -27,11 +27,12 @@ interface Props {
 }
 export default function Account({ connect, isConnected }: Props) {
   const navigate = useKeepQueryParamsNavigate();
+  const [isClicked, setIsClicked] = useState(false);
   useEffect(() => {
-    if (isConnected) {
+    if (isConnected && isClicked) {
       navigate({ pathname: BosonRoutes.YourAccount });
     }
-  }, [isConnected]);
+  }, [isConnected, isClicked]);
   return (
     <AccountSvgIcon
       data-testid="account"
@@ -40,6 +41,7 @@ export default function Account({ connect, isConnected }: Props) {
           navigate({ pathname: BosonRoutes.YourAccount });
         } else {
           connect();
+          setIsClicked(true);
         }
       }}
     >
