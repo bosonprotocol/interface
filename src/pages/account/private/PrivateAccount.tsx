@@ -25,7 +25,8 @@ const AddressContainer = styled.div`
   margin-top: 5px;
   margin-bottom: 20px;
   font-size: 1rem;
-
+  position: relative;
+  left: 30%;
   img {
     width: 15px;
     margin-right: 5px;
@@ -54,6 +55,8 @@ export default function PrivateAccount({ account }: { account: string }) {
           <CurrencyIcon currencySymbol="ETH" />
           <AddressText address={account} />
         </AddressContainer>
+        <div></div>
+        <div></div>
         <SettingsWrapper>
           <Settings />
         </SettingsWrapper>

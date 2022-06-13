@@ -24,8 +24,13 @@ const UrlContainer = styled.div`
   gap: 20px;
 `;
 
-const UrlBox = styled.a`
-  background-color: ${colors.lightGrey};
+const CyanLink = styled.a`
+  color: ${colors.cyan};
+`;
+
+const UrlBox = styled(CyanLink)`
+  background-color: ${colors.navy};
+  outline: 1px solid grey;
   padding: 10px;
   flex: 1 1;
   border-radius: 10px;
@@ -44,10 +49,6 @@ const CollapsibleContainer = styled.div`
 const Steps = styled.div`
   display: flex;
   justify-content: center;
-`;
-
-const CyanLink = styled.a`
-  color: ${colors.cyan};
 `;
 
 interface Props {
