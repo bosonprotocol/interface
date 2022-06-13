@@ -22,7 +22,6 @@ interface Props {
 export default function WalletConnectionProvider({ children }: Props) {
   const secondaryColor = useCSSVariable("--secondary");
   const accentColor = useCSSVariable("--accent");
-
   const walletConnectionTheme = merge(darkTheme({ borderRadius: "medium" }), {
     colors: {
       accentColor: secondaryColor,
