@@ -46,6 +46,10 @@ const Steps = styled.div`
   justify-content: center;
 `;
 
+const CyanLink = styled.a`
+  color: ${colors.cyan};
+`;
+
 interface Props {
   isOpen: boolean;
   onClose: () => void;
@@ -75,9 +79,9 @@ export default function CustomStoreModal({ isOpen, onClose, ipfsUrl }: Props) {
                 <ol>
                   <li>
                     Navigate to{" "}
-                    <a href="https://app.ens.domains/" target="_blank">
+                    <CyanLink href="https://app.ens.domains/" target="_blank">
                       https://app.ens.domains/
-                    </a>{" "}
+                    </CyanLink>{" "}
                     -{">"} My Account{" "}
                   </li>
                   <li>Select your ENS domain & click "Add/Edit Record" </li>
@@ -100,9 +104,12 @@ export default function CustomStoreModal({ isOpen, onClose, ipfsUrl }: Props) {
                         Add a ".link" suffix to the ENS domain
                         <br />
                         i. e.g.{" "}
-                        <a href="https://ensDomain.eth.link" target="_blank">
+                        <CyanLink
+                          href="https://ensDomain.eth.link"
+                          target="_blank"
+                        >
                           https://ensDomain.eth.link
-                        </a>
+                        </CyanLink>
                       </li>
                     </ol>
                   </li>
