@@ -29,7 +29,7 @@ const GlobalStyle = createGlobalStyle<{
     flex-direction:column;
     background-color: var(--primary);
     z-index: -2;
-    color: white;
+    color: var(--accent);
   }
 `;
 

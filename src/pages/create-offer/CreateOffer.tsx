@@ -44,7 +44,7 @@ export const Button = styled.button`
   border-radius: 6px;
   font-weight: bold;
   width: 100%;
-  background-color: ${colors.green};
+  background-color: var(--secondary);
   padding: 10px 0;
   font-size: 16px;
   text-transform: uppercase;

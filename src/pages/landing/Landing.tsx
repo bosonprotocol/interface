@@ -35,7 +35,6 @@ const TitleContainer = styled.div`
 
 const Title = styled.h1`
   font-size: 48px;
-  color: var(--accent);
 `;
 
 const InputGo = styled.div`
