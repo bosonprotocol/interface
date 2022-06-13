@@ -70,26 +70,3 @@ export const wagmiClient = createClient({
   connectors,
   provider
 });
-
-export const walletConnectionTheme = merge(
-  darkTheme({ borderRadius: "medium" }),
-  {
-    colors: {
-      accentColor: colors.green,
-      accentColorForeground: colors.navy,
-      closeButtonBackground: colors.navy,
-      actionButtonBorder: colors.navy,
-      profileForeground: colors.navy,
-      modalBackground: colors.navy,
-      modalBorder: colors.navy,
-      modalText: colors.white,
-      modalTextSecondary: colors.lightGrey
-    },
-    shadows: {
-      connectButton: "none"
-    },
-    fonts: {
-      body: "Manrope, sans-serif"
-    }
-  } as Theme
-);

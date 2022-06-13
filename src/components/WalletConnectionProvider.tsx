@@ -1,14 +1,18 @@
 import "@rainbow-me/rainbowkit/styles.css";
 
-import { AvatarComponent, RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import {
+  AvatarComponent,
+  darkTheme,
+  RainbowKitProvider,
+  Theme
+} from "@rainbow-me/rainbowkit";
+import merge from "lodash.merge";
 import { ReactNode } from "react";
 import { WagmiConfig } from "wagmi";
 
-import {
-  chains,
-  wagmiClient,
-  walletConnectionTheme
-} from "../lib/wallet-connection";
+import { colors } from "../lib/styles/colors";
+import { useCSSVariable } from "../lib/utils/hooks/useCSSVariable";
+import { chains, wagmiClient } from "../lib/wallet-connection";
 import FallbackAvatar from "./avatar/fallback-avatar";
 
 interface Props {
@@ -16,6 +20,27 @@ interface Props {
 }
 
 export default function WalletConnectionProvider({ children }: Props) {
+  const secondaryColor = useCSSVariable("--secondary");
+  const walletConnectionTheme = merge(darkTheme({ borderRadius: "medium" }), {
+    colors: {
+      accentColor: secondaryColor,
+      accentColorForeground: colors.navy,
+      closeButtonBackground: colors.navy,
+      actionButtonBorder: colors.navy,
+      profileForeground: colors.navy,
+      modalBackground: colors.navy,
+      modalBorder: colors.navy,
+      modalText: colors.white,
+      modalTextSecondary: colors.lightGrey
+    },
+    shadows: {
+      connectButton: "none"
+    },
+    fonts: {
+      body: "Manrope, sans-serif"
+    }
+  } as Theme);
+
   return (
     <WagmiConfig client={wagmiClient}>
       <RainbowKitProvider

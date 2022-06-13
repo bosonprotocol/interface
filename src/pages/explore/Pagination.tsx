@@ -13,11 +13,11 @@ const PaginationButton = styled("button").attrs({
 })<{ $isBack: boolean }>`
   all: unset;
   font-weight: 600;
-  color: ${colors.green};
+  color: var(--secondary);
   border-radius: 11px;
   text-align: center;
   cursor: pointer;
-  border: 1px solid ${colors.green};
+  border: 1px solid var(--secondary);
   width: 100px;
 
   transform: ${(props) => {
