@@ -1,9 +1,7 @@
-import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import logo from "../../../src/assets/logo.png";
 import { BosonRoutes } from "../../lib/routing/routes";
-import { colors } from "../../lib/styles/colors";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import Layout from "../Layout";
@@ -30,7 +28,7 @@ const NavigationLinks = styled.nav`
     cursor: pointer;
   }
   a:hover {
-    color: ${colors.green};
+    color: var(--secondary);
   }
 `;
 

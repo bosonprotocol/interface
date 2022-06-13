@@ -3,7 +3,6 @@ import { IoIosContact } from "react-icons/io";
 import styled from "styled-components";
 
 import { BosonRoutes } from "../../lib/routing/routes";
-import { colors } from "../../lib/styles/colors";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 
 const AccountSvgIcon = styled.button`
@@ -11,7 +10,7 @@ const AccountSvgIcon = styled.button`
   display: flex;
   align-items: center;
   :hover * {
-    fill: ${colors.green};
+    fill: var(--secondary);
   }
   :hover {
     cursor: pointer;
