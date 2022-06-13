@@ -18,6 +18,8 @@ const GlobalStyle = createGlobalStyle<{
     --secondary: ${(props) =>
       props.$secondaryColor ? props.$secondaryColor : colors.green};
     --accent: ${(props) =>
+      props.$accentColor ? props.$accentColor : colors.white};
+    --accentFooter: ${(props) =>
       props.$accentColor ? props.$accentColor : colors.arsenic};
   }
 
@@ -43,7 +45,7 @@ const PageContainer = styled(Layout)`
 `;
 
 const Footer = styled.footer`
-  background-color: var(--accent);
+  background-color: var(--accentFooter);
   height: ${footerHeight};
   padding: 20px 0;
   position: absolute;
