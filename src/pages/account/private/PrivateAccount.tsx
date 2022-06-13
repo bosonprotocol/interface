@@ -18,15 +18,19 @@ const EnsName = styled.div`
   font-size: 1.5rem;
 `;
 
+const AddressAndSettings = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+`;
+
 const AddressContainer = styled.div`
   display: flex;
   justify-content: center;
-  align-items: center;
   margin-top: 5px;
   margin-bottom: 20px;
   font-size: 1rem;
-  position: relative;
-  left: 30%;
+  flex-basis: 33%;
   img {
     width: 15px;
     margin-right: 5px;
@@ -35,8 +39,8 @@ const AddressContainer = styled.div`
 
 const SettingsWrapper = styled.div`
   display: flex;
-  justify-content: end;
-  flex-basis: 200px;
+  justify-content: center;
+  flex-basis: 33%;
 `;
 
 export default function PrivateAccount({ account }: { account: string }) {
@@ -50,16 +54,16 @@ export default function PrivateAccount({ account }: { account: string }) {
         <Avatar address={account} size={200} />
 
         <EnsName>{ensName}</EnsName>
-
-        <AddressContainer>
-          <CurrencyIcon currencySymbol="ETH" />
-          <AddressText address={account} />
-        </AddressContainer>
-        <div></div>
-        <div></div>
-        <SettingsWrapper>
-          <Settings />
-        </SettingsWrapper>
+        <AddressAndSettings>
+          <div style={{ flexBasis: "33%" }}></div>
+          <AddressContainer>
+            <CurrencyIcon currencySymbol="ETH" />
+            <AddressText address={account} />
+          </AddressContainer>
+          <SettingsWrapper>
+            <Settings />
+          </SettingsWrapper>
+        </AddressAndSettings>
       </BasicInfo>
       <Tabs isPrivateProfile={true} address={account} />
     </>
