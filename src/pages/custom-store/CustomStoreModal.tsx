@@ -80,7 +80,7 @@ export default function CustomStoreModal({ isOpen, onClose, ipfsUrl }: Props) {
                     </a>{" "}
                     -{">"} My Account{" "}
                   </li>
-                  <li>Select your ENS domain \& click "Add/Edit Record" </li>
+                  <li>Select your ENS domain & click "Add/Edit Record" </li>
                   <li>
                     Set the "Content" value to "ipfs://
                     {`CID`}"
