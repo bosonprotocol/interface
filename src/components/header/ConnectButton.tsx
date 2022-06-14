@@ -60,11 +60,6 @@ export default function ConnectButton() {
         openConnectModal,
         mounted
       }) => {
-        console.log(
-          "🚀 ~ file: ConnectButton.tsx ~ line 62 ~ ConnectButton ~ account",
-          account
-        );
-
         account && Sentry.setTag("wallet_address", account?.address);
 
         return (
