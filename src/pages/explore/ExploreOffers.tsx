@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { generatePath, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 
