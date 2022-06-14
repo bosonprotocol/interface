@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
 import { generatePath, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 
@@ -11,6 +11,7 @@ import { BosonRoutes } from "../../lib/routing/routes";
 import { footerHeight } from "../../lib/styles/layout";
 import { Offer } from "../../lib/types/offer";
 import { useOffers } from "../../lib/utils/hooks/useOffers/";
+import { usePrevious } from "../../lib/utils/hooks/usePrevious";
 import Pagination from "./Pagination";
 
 const Container = styled.div`
@@ -54,12 +55,8 @@ const updatePageIndexInUrl =
 const OFFERS_PER_PAGE = 10;
 const DEFAULT_PAGE = 0;
 
-export default function ExploreOffers({
-  brand,
-  name,
-  exchangeTokenAddress,
-  sellerId
-}: Props) {
+export default function ExploreOffers(props: Props) {
+  const { brand, name, exchangeTokenAddress, sellerId } = props;
   const params = useParams();
   const navigate = useNavigate();
   const updateUrl = (index: number) =>
@@ -96,22 +93,30 @@ export default function ExploreOffers({
     isFetched
   } = useOffers(useOffersPayload);
 
+  const prevProps = usePrevious(props);
+
   useEffect(() => {
-    /**
-     * if you go directly to a page without any offers,
-     * you'll be redirected to the first page
-     */
     if (!isPageLoaded && isFetched && !currentAndNextPageOffers?.length) {
+      /**
+       * if you go directly to a page without any offers,
+       * you'll be redirected to the first page
+       */
       setPageIndex(DEFAULT_PAGE);
       updateUrl(DEFAULT_PAGE);
+      setIsPageLoaded();
+    } else if (!isPageLoaded && isFetched && currentAndNextPageOffers?.length) {
       setIsPageLoaded();
     }
   }, [currentAndNextPageOffers, isPageLoaded, isFetched]);
 
   useEffect(() => {
-    if (isPageLoaded) {
+    /**
+     * if the filters change, you should be redirected to the first page
+     */
+    if (prevProps) {
       setPageIndex(DEFAULT_PAGE);
       updateUrl(DEFAULT_PAGE);
+      setIsPageLoaded();
     }
   }, [brand, name, exchangeTokenAddress, sellerId]);
   const { data: firstPageOffers } = useOffers(

@@ -66,7 +66,7 @@ test.describe("OfferDetail", () => {
     const noOffers = page.locator(notFoundSelector);
     await expect(noOffers).toHaveText("This offer does not exist");
   });
-  test("should display an error if the offer does exist but is not valid", async ({
+  test.skip("should display an error if the offer does exist but is not valid", async ({
     page
   }) => {
     const expectedOffer: Offer = {
