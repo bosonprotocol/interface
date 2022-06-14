@@ -1,4 +1,5 @@
 import { ConnectButton as RainbowConnectButton } from "@rainbow-me/rainbowkit";
+import * as Sentry from "@sentry/browser";
 import { BsChevronDown } from "react-icons/bs";
 import styled from "styled-components";
 
@@ -51,6 +52,8 @@ export default function ConnectButton() {
         openConnectModal,
         mounted
       }) => {
+        account && Sentry.setTag("wallet_address", account?.address);
+
         return (
           <div style={{ display: "flex", gap: 12 }}>
             <Account connect={openConnectModal} isConnected={!!account} />
@@ -68,6 +71,8 @@ export default function ConnectButton() {
             >
               {(() => {
                 if (!mounted || !account || !chain) {
+                  // reset the tag o undefined
+                  Sentry.setTag("wallet_address", undefined);
                   return (
                     <GreenButton onClick={openConnectModal} type="button">
                       Connect Wallet
