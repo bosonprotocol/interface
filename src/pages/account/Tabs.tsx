@@ -100,7 +100,11 @@ export default function Tabs({ isPrivateProfile, address }: Props) {
           const isActive = indexActiveTab === index;
           return (
             <HeaderTab key={tab.title}>
-              <TabTitle $isActive={isActive} onClick={handleActive(index)}>
+              <TabTitle
+                $isActive={isActive}
+                data-testid={`tab-${tab.title}`}
+                onClick={handleActive(index)}
+              >
                 <span>{tab.title}</span>
               </TabTitle>
             </HeaderTab>

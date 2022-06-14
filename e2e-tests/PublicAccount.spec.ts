@@ -1,37 +1,91 @@
 import { Offer } from "../src/lib/types/offer";
-import { assertOffer } from "./assert/offer";
+import { assertOfferInPublicAccountPage } from "./assert/offer";
 import { expect, test } from "./baseFixtures";
 import { defaultMockOffers } from "./mocks/defaultMockOffers";
 import { mockSubgraph } from "./mocks/mockGetBase";
+import { formatAddress } from "./utils/address";
 import { sortOffersBy } from "./utils/sort";
 
-test.describe("Root page (Landing page)", () => {
-  test.describe("Header & footer", () => {
+const publicAccountUrl = "/#/account";
+const anyAccountAddress = "0x9c2925a41d6FB1c6C8f53351634446B0b2E65e44";
+const publicAccountUrl1 = `${publicAccountUrl}/${anyAccountAddress}`;
+
+test.describe("Public Account page", () => {
+  test.describe("Default info when no data", () => {
     test.beforeEach(async ({ page }) => {
       await mockSubgraph({
-        page
+        page,
+        options: {
+          mockGetOffers: {
+            offers: []
+          },
+          mockGetExchanges: {
+            response: {
+              body: JSON.stringify({
+                data: { exchanges: [] }
+              })
+            }
+          }
+        }
       });
-      await page.goto("/");
+      await page.goto(publicAccountUrl1);
     });
-    test("should display the title", async ({ page }) => {
-      const h1 = page.locator("h1");
-
-      await expect(h1).toHaveText("Boson dApp");
+    test("should display the profile avatar", async ({ page }) => {
+      const profileImgContainer = page.locator("[data-testid=avatar]");
+      const profileEnsImg = page.locator("[data-testid=ens-avatar]");
+      if (await profileEnsImg.isVisible()) {
+        expect(await profileEnsImg.getAttribute("src")).toBeTruthy();
+      } else {
+        const svg = profileImgContainer.locator("svg");
+        const rects = svg.locator("rect");
+        await page.waitForTimeout(200);
+        expect(await rects.count()).toBe(3);
+      }
     });
-    test("should display the logo", async ({ page }) => {
-      const logoImg = page.locator("[data-testid=logo]");
-
-      expect(await logoImg.getAttribute("src")).toBeTruthy();
+    test("should display the address shortened", async ({ page }) => {
+      const addressNode = page.locator("[data-testid=address]");
+      const addressUI = await addressNode.textContent();
+      await expect(addressUI).toBe(formatAddress(anyAccountAddress));
     });
-    test("should display the featured offers title", async ({ page }) => {
-      const h2 = page.locator("h2");
-
-      await expect(h2).toHaveText("Featured Offers");
+    test.describe("offers tab", () => {
+      test("should display the Offers tab", async ({ page }) => {
+        const tab = page.locator("[data-testid=tab-Offers]");
+        await expect(tab).toHaveText("Offers");
+      });
+      test("should display 'No offers found' as offers is the default selected tab", async ({
+        page
+      }) => {
+        const noOffersText = page.locator("text=No offers found");
+        await expect(noOffersText).toBeVisible();
+      });
     });
-    test("should display the footer", async ({ page }) => {
-      const footer = page.locator("footer");
-
-      expect(footer).toBeDefined();
+    test.describe("exchanges tab", () => {
+      test("should display the Exchanges tab", async ({ page }) => {
+        const tab = page.locator("[data-testid=tab-Exchanges]");
+        await expect(tab).toHaveText("Exchanges");
+      });
+      test("should display 'There are no exchanges' after clicking on the Exchanges tab", async ({
+        page
+      }) => {
+        const tab = page.locator("[data-testid=tab-Exchanges]");
+        await tab.click();
+        const noExchangesText = page.locator("text=There are no exchanges");
+        await expect(noExchangesText).toBeVisible();
+      });
+    });
+    test.describe("disputes tab", () => {
+      test("should display the Disputes tab", async ({ page }) => {
+        const tab = page.locator("[data-testid=tab-Disputes]");
+        await expect(tab).toHaveText("Disputes");
+      });
+      test("should display 'There are no disputes' after clicking on the Disputes tab", async ({
+        page
+      }) => {
+        const tab = page.locator("[data-testid=tab-Disputes]");
+        await tab.click();
+        const noDisputesText = page.locator("text=There are no disputes");
+        await expect(noDisputesText).toBeVisible();
+      });
     });
   });
   test.describe("Offers list", () => {
@@ -55,7 +109,7 @@ test.describe("Root page (Landing page)", () => {
         }
       });
 
-      await page.goto("/");
+      await page.goto(publicAccountUrl1);
 
       await page.waitForTimeout(500);
       const offers = page.locator("[data-testid=offer]");
@@ -65,12 +119,17 @@ test.describe("Root page (Landing page)", () => {
       for (let i = 0; i < numberOfOffers; i++) {
         const offer = offers.nth(i);
         const expectedOffer = firstTenOffers[i].offer;
-
-        await assertOffer(offer, expectedOffer);
+        await assertOfferInPublicAccountPage(offer, expectedOffer);
       }
     });
 
-    test("should filter out invalid offers", async ({ page }) => {
+    test.skip("test that when you click on Offers and scroll, more offers are lazy loaded (via infinite scrolling)", async () => {
+      throw new Error("TODO");
+    });
+
+    test.skip("should include/or filter out? invalid offers", async ({
+      page
+    }) => {
       const invalidOffer = {
         id: "9999",
         price: "1",
@@ -82,15 +141,16 @@ test.describe("Root page (Landing page)", () => {
           decimals: "18"
         },
         metadata: {
-          name: "first offer",
+          name: "invalid offer",
           externalUrl: "invalid offer",
           type: "BASE"
           // missing description among other fields
         }
       };
-      const mockedOffers = [{ ...defaultMockOffers[0] }, invalidOffer].map(
-        (offer) => ({ offer })
-      ) as unknown as Offer[];
+      const mockedOffers = [
+        invalidOffer,
+        ...defaultMockOffers.slice(0, 10)
+      ].map((offer) => ({ offer })) as unknown as Offer[];
 
       await mockSubgraph({
         page,
@@ -105,22 +165,12 @@ test.describe("Root page (Landing page)", () => {
         }
       });
 
-      await page.goto("/");
+      await page.goto(publicAccountUrl1);
       await page.waitForTimeout(500);
       const offers = await page.locator("[data-testid=offer]");
       const offerCount = await offers.count();
+      await page.pause();
       expect(offerCount).toStrictEqual(mockedOffers.length - 1);
-    });
-
-    test("should display error message when no available offers", async ({
-      page
-    }) => {
-      await mockSubgraph({ page, options: { mockGetOffers: { offers: [] } } });
-      await page.goto("/");
-      const errorOffersSelector = "[data-testid=noOffers]";
-      await page.waitForSelector(errorOffersSelector);
-      const noOffers = await page.locator(errorOffersSelector);
-      await expect(noOffers).toHaveText("No offers found");
     });
 
     test("should navigate to the offer detail page when clicking on the commit button", async ({
@@ -136,7 +186,7 @@ test.describe("Root page (Landing page)", () => {
         }
       });
 
-      await page.goto("/");
+      await page.goto(publicAccountUrl1);
 
       await page.waitForTimeout(500);
       const offers = page.locator("[data-testid=offer]");
@@ -152,35 +202,6 @@ test.describe("Root page (Landing page)", () => {
       expect(hash).toStrictEqual(`#/offers/${expectedOffer.id}`);
     });
 
-    test("should navigate to the seller account page when clicking on the seller section", async ({
-      page
-    }) => {
-      const expectedOffer = { ...defaultMockOffers[0] };
-      await mockSubgraph({
-        page,
-        options: {
-          mockGetOffers: {
-            offers: [expectedOffer]
-          }
-        }
-      });
-
-      await page.goto("/");
-
-      await page.waitForTimeout(500);
-      const offers = page.locator("[data-testid=offer]");
-      const offerCount = await offers.count();
-      expect(offerCount).toStrictEqual(1);
-
-      const offer = offers.nth(0);
-      const sellerSection = offer.locator("[data-testid=seller-id]");
-      await sellerSection.click();
-
-      const url = await page.url();
-      const { hash } = new URL(url);
-      expect(hash).toStrictEqual(`#/account/${expectedOffer.seller.operator}`);
-    });
-
     test("should navigate to the offer detail page when clicking on the offer image", async ({
       page
     }) => {
@@ -194,7 +215,7 @@ test.describe("Root page (Landing page)", () => {
         }
       });
 
-      await page.goto("/");
+      await page.goto(publicAccountUrl1);
 
       await page.waitForTimeout(500);
       const offers = page.locator("[data-testid=offer]");
@@ -223,7 +244,7 @@ test.describe("Root page (Landing page)", () => {
         };
         await mockSubgraph({ page, options: { mockGetOffers: { response } } });
 
-        await page.goto("/");
+        await page.goto(publicAccountUrl1);
         const errorOffersSelector = "[data-testid=errorOffers]";
         await page.waitForSelector(errorOffersSelector);
         const noOffers = page.locator(errorOffersSelector);
@@ -245,7 +266,7 @@ test.describe("Root page (Landing page)", () => {
 
         await mockSubgraph({ page, options: { mockGetOffers: { response } } });
 
-        await page.goto("/");
+        await page.goto(publicAccountUrl1);
         const errorOffersSelector = "[data-testid=errorOffers]";
         await page.waitForSelector(errorOffersSelector);
         const noOffers = await page.locator(errorOffersSelector);

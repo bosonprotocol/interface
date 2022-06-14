@@ -14,11 +14,16 @@ const AddressImageContainer = styled.div<{ avatarSize: number }>`
 interface Props {
   address: string;
   size: number;
+  dataTestId?: string;
 }
 
-export default function FallbackAvatar({ address, size }: Props) {
+export default function FallbackAvatar({
+  address,
+  size,
+  dataTestId = "avatar"
+}: Props) {
   return (
-    <AddressImageContainer avatarSize={size}>
+    <AddressImageContainer avatarSize={size} data-testid={dataTestId}>
       <AccountImage address={address} size={size} />
     </AddressImageContainer>
   );
