@@ -72,7 +72,6 @@ export default function ExploreOffers(props: Props) {
       : DEFAULT_PAGE
   );
   const [pageIndex, setPageIndex] = useState(initialPageIndex);
-  const [isPageLoaded, setIsPageLoaded] = useReducer(() => true, false);
 
   const useOffersPayload = {
     brand,
@@ -96,18 +95,15 @@ export default function ExploreOffers(props: Props) {
   const prevProps = usePrevious(props);
 
   useEffect(() => {
-    if (!isPageLoaded && isFetched && !currentAndNextPageOffers?.length) {
+    if (isFetched && !currentAndNextPageOffers?.length) {
       /**
        * if you go directly to a page without any offers,
        * you'll be redirected to the first page
        */
       setPageIndex(DEFAULT_PAGE);
       updateUrl(DEFAULT_PAGE);
-      setIsPageLoaded();
-    } else if (!isPageLoaded && isFetched && currentAndNextPageOffers?.length) {
-      setIsPageLoaded();
     }
-  }, [currentAndNextPageOffers, isPageLoaded, isFetched]);
+  }, [currentAndNextPageOffers, isFetched]);
 
   useEffect(() => {
     /**
@@ -116,7 +112,6 @@ export default function ExploreOffers(props: Props) {
     if (prevProps) {
       setPageIndex(DEFAULT_PAGE);
       updateUrl(DEFAULT_PAGE);
-      setIsPageLoaded();
     }
   }, [brand, name, exchangeTokenAddress, sellerId]);
   const { data: firstPageOffers } = useOffers(

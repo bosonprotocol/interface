@@ -256,7 +256,7 @@ test.describe("Explore page", () => {
         for (let i = 0; i < name.length; i++) {
           await input.press("Delete");
         }
-        await page.pause();
+
         name = "hello";
         await input.type(name, { delay: 100 });
         await input.press("Enter", { delay: 100 });
@@ -330,7 +330,7 @@ test.describe("Explore page", () => {
         });
         await page.goto(currentUrl);
         await page.waitForTimeout(500);
-        await page.pause();
+
         const uiOffers = page.locator("[data-testid=offer]");
         const offerCount = await uiOffers.count();
         expect(offerCount).toStrictEqual(offers2ndPage.length);
