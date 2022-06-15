@@ -15,7 +15,7 @@ jest.mock("@bosonprotocol/ipfs-storage", () => {
       message: storeMetadataErrorMsg
     });
   return {
-    IpfsMetadata: IpfsMetadataMock
+    IpfsMetadataStorage: IpfsMetadataMock
   };
 });
 test("renders CreateOffer and expects an error to be displayed if IpfsMetadata.storeMetadata fails", async () => {
