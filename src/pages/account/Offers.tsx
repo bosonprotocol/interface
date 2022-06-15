@@ -20,13 +20,18 @@ export default function Offers({ sellerId, action }: Props) {
     data: offersWithOneExtra,
     isError,
     isLoading
-  } = useOffers({
-    voided: false,
-    valid: false,
-    sellerId,
-    first: OFFERS_PER_PAGE + 1,
-    skip: OFFERS_PER_PAGE * pageIndex
-  });
+  } = useOffers(
+    {
+      voided: false,
+      valid: false,
+      sellerId,
+      first: OFFERS_PER_PAGE + 1,
+      skip: OFFERS_PER_PAGE * pageIndex
+    },
+    {
+      enabled: !!sellerId
+    }
+  );
   const thereAreMoreOffers =
     (offersWithOneExtra?.length || 0) >= OFFERS_PER_PAGE + 1;
 

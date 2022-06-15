@@ -69,23 +69,6 @@ const ErrorMsg = styled.div`
   color: ${colors.red};
 `;
 
-interface FormValues {
-  name: string;
-  description: string;
-  externalUrl: string;
-  schemaUrl: string;
-  price: string;
-  sellerDeposit: string;
-  buyerCancelPenalty: string;
-  quantityAvailable: string;
-  exchangeToken: string;
-  redeemableFromDateInMS: string;
-  validFromDateInMS: string;
-  validUntilDateInMS: string;
-  fulfillmentPeriodDurationInMS: string;
-  voucherValidDurationInMS: string;
-}
-
 const dayInMs = 1000 * 60 * 60 * 24;
 const minuteInMS = 1000 * 60;
 
@@ -94,23 +77,24 @@ export default function CreateOffer() {
   const { values, handleChange, handleSubmit } = useFormik({
     initialValues: {
       name: "Baggy jeans",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent in facilisis purus, nec egestas eros. Aliquam dignissim tellus sit amet sem auctor, non commodo eros eleifend. Sed in tellus porttitor, placerat leo et, faucibus tortor. Nunc efficitur nibh id libero blandit, vel ornare erat vehicula.",
+      description: "Lore ipsum",
       externalUrl: window.location.origin,
       schemaUrl: "https://schema.org/schema",
-      price: "1",
+      disputeResolverId: "1",
+      price: "2",
       sellerDeposit: "2",
+      protocolFee: "1",
       buyerCancelPenalty: "1",
       quantityAvailable: "10",
-      // exchangeToken: "0xf47E4fd9d2eBd6182F597eE12E487CcA37FC524c", // ropsten boson address
       exchangeToken: "0x0000000000000000000000000000000000000000",
-      redeemableFromDateInMS: (Date.now() + minuteInMS).toString(),
+      voucherRedeemableFromDateInMS: (Date.now() + minuteInMS).toString(),
+      voucherRedeemableUntilDateInMS: (Date.now() + 2 * dayInMs).toString(),
       validFromDateInMS: (Date.now() + minuteInMS).toString(),
       validUntilDateInMS: (Date.now() + dayInMs).toString(),
       fulfillmentPeriodDurationInMS: dayInMs.toString(),
-      voucherValidDurationInMS: dayInMs.toString()
-    } as FormValues,
-    onSubmit: async (values: FormValues) => {
+      resolutionPeriodDurationInMS: dayInMs.toString()
+    },
+    onSubmit: async (values) => {
       try {
         if (!values) {
           return;
@@ -136,6 +120,7 @@ export default function CreateOffer() {
             buyerCancelPenalty: parseEther(
               values.buyerCancelPenalty
             ).toString(),
+            protocolFee: parseEther(values.protocolFee).toString(),
             offerChecksum: metadataHash, // TODO: use correct checksum
             metadataUri
           },
@@ -229,6 +214,16 @@ export default function CreateOffer() {
             />
           </FormElement>
           <FormElement>
+            <FormLabel>ProtocolFee</FormLabel>
+            <FormControl
+              value={values.protocolFee}
+              onChange={handleChange}
+              name="protocolFee"
+              type="text"
+              placeholder="..."
+            />
+          </FormElement>
+          <FormElement>
             <FormLabel>Quantity</FormLabel>
             <FormControl
               value={values.quantityAvailable}
@@ -239,11 +234,11 @@ export default function CreateOffer() {
             />
           </FormElement>
           <FormElement>
-            <FormLabel>Voucher Valid Duration (ms)</FormLabel>
+            <FormLabel>DisputeResolverId</FormLabel>
             <FormControl
-              value={values.voucherValidDurationInMS}
+              value={values.disputeResolverId}
               onChange={handleChange}
-              name="voucherValidDurationInMS"
+              name="disputeResolverId"
               type="text"
               placeholder="..."
             />
@@ -280,11 +275,21 @@ export default function CreateOffer() {
             />
           </FormElement>
           <FormElement>
-            <FormLabel>Redeemable Date (ms)</FormLabel>
+            <FormLabel>voucherRedeemableFromDateInMS</FormLabel>
             <FormControl
-              value={values.redeemableFromDateInMS}
+              value={values.voucherRedeemableFromDateInMS}
               onChange={handleChange}
-              name="redeemableFromDateInMS"
+              name="voucherRedeemableFromDateInMS"
+              type="text"
+              placeholder="..."
+            />
+          </FormElement>
+          <FormElement>
+            <FormLabel>voucherRedeemableUntilDateInMS</FormLabel>
+            <FormControl
+              value={values.voucherRedeemableUntilDateInMS}
+              onChange={handleChange}
+              name="voucherRedeemableUntilDateInMS"
               type="text"
               placeholder="..."
             />

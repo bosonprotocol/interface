@@ -12,29 +12,36 @@ interface Props {
   id?: string;
 }
 
-export function useExchanges(props: Props) {
+export function useExchanges(
+  props: Props,
+  options: {
+    enabled?: boolean;
+  } = {}
+) {
   const { disputed, sellerId, buyerId, id } = props;
-  return useQuery(["exchanges", props], async () => {
-    const result = await fetchSubgraph<{
-      exchanges: {
-        id: string;
-        committedDate: string;
-        disputed: boolean;
-        expired: boolean;
-        finalizedDate: string;
-        redeemedDate: string;
-        state: string;
-        validUntilDate: string;
-        seller: {
+  return useQuery(
+    ["exchanges", props],
+    async () => {
+      const result = await fetchSubgraph<{
+        exchanges: {
           id: string;
-        };
-        buyer: {
-          id: string;
-        };
-        offer: Offer;
-      }[];
-    }>(
-      gql`
+          committedDate: string;
+          disputed: boolean;
+          expired: boolean;
+          finalizedDate: string;
+          redeemedDate: string;
+          state: string;
+          validUntilDate: string;
+          seller: {
+            id: string;
+          };
+          buyer: {
+            id: string;
+          };
+          offer: Offer;
+        }[];
+      }>(
+        gql`
         query GetExchanges($disputed: Boolean, $sellerId: String, $buyerId: String) {
           exchanges(where: { 
             ${id ? `id: "${id}"` : ""}
@@ -64,12 +71,16 @@ export function useExchanges(props: Props) {
           }
         }
       `,
-      {
-        disputed,
-        sellerId,
-        buyerId
-      }
-    );
-    return result?.exchanges ?? [];
-  });
+        {
+          disputed,
+          sellerId,
+          buyerId
+        }
+      );
+      return result?.exchanges ?? [];
+    },
+    {
+      ...options
+    }
+  );
 }

@@ -23,13 +23,13 @@ export default function Disputes({ sellerId, buyerId }: Props) {
     data: exchangesSeller,
     isLoading: isLoadingSeller,
     isError: isErrorSeller
-  } = useExchanges({ disputed: true, sellerId });
+  } = useExchanges({ disputed: true, sellerId }, { enabled: !!sellerId });
 
   const {
     data: exchangesBuyer,
     isLoading: isLoadingBuyer,
     isError: isErrorBuyer
-  } = useExchanges({ disputed: true, buyerId });
+  } = useExchanges({ disputed: true, buyerId }, { enabled: !!buyerId });
 
   const exchanges = useMemo(() => {
     const allExchanges = [

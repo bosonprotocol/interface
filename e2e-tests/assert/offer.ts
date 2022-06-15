@@ -39,3 +39,32 @@ export async function assertOffer(offer: Locator, expectedOffer: Offer) {
   const svg = profileImg.locator("svg");
   expect(svg).toBeDefined();
 }
+
+export async function assertOfferInPublicAccountPage(
+  offer: Locator,
+  expectedOffer: Offer
+) {
+  const name = offer.locator("[data-testid=name]");
+  await expect(name).toHaveText(
+    expectedOffer.metadata?.name || "expected name"
+  );
+
+  const price = offer.locator("[data-testid=price]");
+  const value = formatUnits(
+    BigNumber.from(expectedOffer.price),
+    expectedOffer.exchangeToken?.decimals
+  );
+  const [integer, fractions] = value.split(".");
+  const stringPrice = fractions === "0" ? integer : `${integer}.${fractions}`;
+  const expectedPrice = `${stringPrice} ${
+    expectedOffer.exchangeToken?.symbol || ""
+  }`;
+
+  await expect(price).toHaveText(expectedPrice);
+
+  const commit = offer.locator("[data-testid=commit]");
+  await expect(commit).toHaveText("Commit");
+
+  const image = offer.locator("[data-testid=image]");
+  expect(await image.getAttribute("src")).toBeTruthy();
+}

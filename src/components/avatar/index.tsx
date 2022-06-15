@@ -32,7 +32,7 @@ export default function Avatar({ address, size }: Props) {
   }
 
   if (isSuccess && data) {
-    return <ENSAvatar size={size} src={data} />;
+    return <ENSAvatar size={size} src={data} data-testid="env-avatar" />;
   }
 
   return <FallbackAvatar address={address} size={size} />;

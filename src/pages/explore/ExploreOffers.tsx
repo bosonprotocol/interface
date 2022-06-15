@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useState } from "react";
 import { generatePath, useParams } from "react-router-dom";
 import styled from "styled-components";
 
@@ -12,6 +12,7 @@ import { footerHeight } from "../../lib/styles/layout";
 import { Offer } from "../../lib/types/offer";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useOffers } from "../../lib/utils/hooks/useOffers/";
+import { usePrevious } from "../../lib/utils/hooks/usePrevious";
 import Pagination from "./Pagination";
 
 const Container = styled.div`
@@ -59,12 +60,8 @@ const updatePageIndexInUrl =
 const OFFERS_PER_PAGE = 10;
 const DEFAULT_PAGE = 0;
 
-export default function ExploreOffers({
-  brand,
-  name,
-  exchangeTokenAddress,
-  sellerId
-}: Props) {
+export default function ExploreOffers(props: Props) {
+  const { brand, name, exchangeTokenAddress, sellerId } = props;
   const params = useParams();
   const navigate = useKeepQueryParamsNavigate();
   const updateUrl = (index: number) =>
@@ -80,7 +77,6 @@ export default function ExploreOffers({
       : DEFAULT_PAGE
   );
   const [pageIndex, setPageIndex] = useState(initialPageIndex);
-  const [isPageLoaded, setIsPageLoaded] = useReducer(() => true, false);
 
   const useOffersPayload = {
     brand,
@@ -101,20 +97,24 @@ export default function ExploreOffers({
     isFetched
   } = useOffers(useOffersPayload);
 
-  useEffect(() => {
-    /**
-     * if you go directly to a page without any offers,
-     * you'll be redirected to the first page
-     */
-    if (!isPageLoaded && isFetched && !currentAndNextPageOffers?.length) {
-      setPageIndex(DEFAULT_PAGE);
-      updateUrl(DEFAULT_PAGE);
-      setIsPageLoaded();
-    }
-  }, [currentAndNextPageOffers, isPageLoaded, isFetched]);
+  const prevProps = usePrevious(props);
 
   useEffect(() => {
-    if (isPageLoaded) {
+    if (isFetched && !currentAndNextPageOffers?.length) {
+      /**
+       * if you go directly to a page without any offers,
+       * you'll be redirected to the first page
+       */
+      setPageIndex(DEFAULT_PAGE);
+      updateUrl(DEFAULT_PAGE);
+    }
+  }, [currentAndNextPageOffers, isFetched]);
+
+  useEffect(() => {
+    /**
+     * if the filters change, you should be redirected to the first page
+     */
+    if (prevProps) {
       setPageIndex(DEFAULT_PAGE);
       updateUrl(DEFAULT_PAGE);
     }

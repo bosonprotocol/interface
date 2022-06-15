@@ -30,13 +30,13 @@ export default function Exchanges({
     data: exchangesSeller,
     isLoading: isLoadingSeller,
     isError: isErrorSeller
-  } = useExchanges({ disputed: null, sellerId });
+  } = useExchanges({ disputed: null, sellerId }, { enabled: !!sellerId });
 
   const {
     data: exchangesBuyer,
     isLoading: isLoadingBuyer,
     isError: isErrorBuyer
-  } = useExchanges({ disputed: null, buyerId });
+  } = useExchanges({ disputed: null, buyerId }, { enabled: !!buyerId });
 
   const exchanges = useMemo(() => {
     const allExchanges = [
