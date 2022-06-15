@@ -6,6 +6,7 @@ import styled from "styled-components";
 import Collapse from "../../components/collapse/Collapse";
 import Layout from "../../components/Layout";
 import { CONFIG } from "../../lib/config";
+import { useCSSVariable } from "../../lib/utils/hooks/useCSSVariable";
 import {
   Button,
   FormControl,
@@ -32,6 +33,8 @@ const PreviewContainer = styled.div`
 export default function CustomStore() {
   const [isModalOpened, toggleModal] = useReducer((state) => !state, false);
   const [ipfsUrl, setIpfsUrl] = useState<string>("test");
+  const primaryColor = useCSSVariable("--primary");
+
   const { values, handleChange, handleSubmit } = useFormik<StoreFields>({
     initialValues: {
       storeName: "",
@@ -55,13 +58,19 @@ export default function CustomStore() {
           <meta http-equiv="X-UA-Compatible" content="IE=edge">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <title>${values.storeName || "Boson Protocol"}</title>
+          ${values.logoUrl ? `<link rel="icon" href="${values.logoUrl}">` : ""}
       </head>
       <body>
             <style>
               html, body {
                 margin: 0;
+                padding: 0;
                 height: 100vh;
+                background-color:${values.primaryColor || primaryColor};
               }
+              iframe {
+                border: none;
+              } 
             </style>
             <iframe
               src="${window.location.origin}/#/?${queryParams}"
