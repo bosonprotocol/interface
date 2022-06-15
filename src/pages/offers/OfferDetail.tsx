@@ -11,6 +11,7 @@ import {
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
+import OfferStatuses from "../../components/offer/OfferStatuses";
 import { CONFIG } from "../../lib/config";
 import { UrlParameters } from "../../lib/routing/query-parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
@@ -53,14 +54,26 @@ const ImageContainer = styled.div`
   justify-content: left;
   height: auto;
   max-height: 700px;
+  position: relative;
+
+  [data-testid="statuses"] {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    justify-content: center;
+  }
 `;
 
 const Image = styled.img`
   height: auto;
-  width: 100%;
+
   margin: 0 auto;
   border-radius: 22px;
   object-fit: contain;
+
+  @media (min-width: 981px) {
+    width: 100%;
+  }
 `;
 
 const ImagePlaceholder = styled.div`
@@ -205,14 +218,6 @@ function isAccountSeller(offer: Offer, account: string): boolean {
   return offer.seller.operator.toLowerCase() === account.toLowerCase();
 }
 
-// TODO: to be used in the future
-// function getIsOfferValid(offer: Offer | undefined | null): boolean {
-//   const now = Date.now() / 1000;
-//   return (
-//     Number(offer?.validFromDate) <= now && now <= Number(offer?.validUntilDate)
-//   );
-// }
-
 export default function OfferDetail() {
   const { [UrlParameters.offerId]: offerId } = useParams();
   const widgetRef = useRef<HTMLDivElement>(null);
@@ -279,7 +284,6 @@ export default function OfferDetail() {
   const sellerId = offer.seller?.id;
   const sellerAddress = offer.seller?.operator;
   const description = offer.metadata?.description || "";
-  // const isOfferValid = getIsOfferValid(offer);
   const isSeller = isAccountSeller(offer, address);
 
   return (
@@ -287,6 +291,7 @@ export default function OfferDetail() {
       <Root>
         <ImageAndDescription>
           <ImageContainer>
+            {isSeller && <OfferStatuses offer={offer} />}
             {offerImg ? (
               <Image data-testid="image" src={offerImg} />
             ) : (

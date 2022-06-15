@@ -21,6 +21,7 @@ interface Props {
   showSeller?: boolean;
   action: Action;
   showInvalidOffers: boolean;
+  address?: string;
 }
 
 export default function OfferList({
@@ -30,7 +31,8 @@ export default function OfferList({
   loadingComponent,
   showSeller,
   action,
-  showInvalidOffers
+  showInvalidOffers,
+  address
 }: Props) {
   if (isLoading) {
     return loadingComponent || <div>Loading...</div>;
@@ -51,8 +53,8 @@ export default function OfferList({
   }
   return (
     <OfferContainer>
-      {offers.map(
-        (offer: Offer) =>
+      {offers.map((offer: Offer) => {
+        return (
           (offer.isValid || (showInvalidOffers && !offer.isValid)) && (
             <OfferCard
               key={offer.id}
@@ -61,9 +63,11 @@ export default function OfferList({
               action={action}
               showCTA
               dataTestId="offer"
+              address={address}
             />
           )
-      )}
+        );
+      })}
     </OfferContainer>
   );
 }

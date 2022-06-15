@@ -9,6 +9,7 @@ import { UrlParameters } from "../../lib/routing/query-parameters";
 import { BosonRoutes, OffersRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
+import OfferStatuses from "./OfferStatuses";
 
 const Card = styled.div`
   border-radius: 12px;
@@ -23,7 +24,15 @@ const Card = styled.div`
 const ImageContainer = styled.div`
   display: flex;
   justify-content: center;
-  margin: 16px 16px;
+  margin: 16px 0;
+  position: relative;
+
+  [data-testid="statuses"] {
+    position: absolute;
+    top: 2px;
+    right: 7px;
+    justify-content: flex-end;
+  }
 `;
 
 const Image = styled.img`
@@ -139,6 +148,12 @@ const CTA = ({
   return null;
 };
 
+function isAccountSeller(offer: Offer, account: string | undefined): boolean {
+  if (!account) return false;
+  if (offer.seller.clerk.toLowerCase() === account.toLowerCase()) return true;
+  return offer.seller.operator.toLowerCase() === account.toLowerCase();
+}
+
 export type Action = "commit" | "redeem" | null;
 
 interface Props {
@@ -148,6 +163,7 @@ interface Props {
   showCTA?: boolean;
   action?: Action;
   dataTestId: string;
+  address?: string;
 }
 
 export default function OfferCard({
@@ -156,7 +172,8 @@ export default function OfferCard({
   showSeller,
   showCTA,
   action,
-  dataTestId
+  dataTestId,
+  address
 }: Props) {
   if (!offer) {
     return null;
@@ -182,6 +199,7 @@ export default function OfferCard({
         }
       });
   };
+  const isSeller = isAccountSeller(offer, address);
 
   return (
     <Card data-testid={dataTestId} onClick={onClick}>
@@ -203,6 +221,7 @@ export default function OfferCard({
         </AddressContainer>
       )}
       <ImageContainer>
+        {isSeller && <OfferStatuses offer={offer} />}
         {offerImg ? (
           <Image data-testid="image" src={offerImg} />
         ) : (

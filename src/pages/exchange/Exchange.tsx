@@ -12,6 +12,7 @@ import styled from "styled-components";
 import { useAccount } from "wagmi";
 
 import AddressContainer from "../../components/offer/AddressContainer";
+import OfferStatuses from "../../components/offer/OfferStatuses";
 import RootPrice from "../../components/price";
 import { CONFIG } from "../../lib/config";
 import { UrlParameters } from "../../lib/routing/query-parameters";
@@ -52,6 +53,14 @@ const ImageContainer = styled.div`
   display: flex;
   justify-content: left;
   height: auto;
+  position: relative;
+
+  [data-testid="statuses"] {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    justify-content: center;
+  }
 `;
 
 const Image = styled.img`
@@ -275,6 +284,7 @@ export default function Exchange() {
       <Root>
         <ImageAndDescription>
           <ImageContainer>
+            {isSeller && <OfferStatuses offer={offer} />}
             {offerImg ? (
               <Image data-testid="image" src={offerImg} />
             ) : (
