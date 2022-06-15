@@ -14,7 +14,13 @@ export function useOffer({ offerId, ...restProps }: UseOfferProps) {
       if (offer) {
         const isMetadataValid = checkOfferMetadata(offer);
         offer.isValid = isMetadataValid;
-        return offer;
+        return {
+          ...offer,
+          metadata: {
+            ...offer.metadata,
+            imageUrl: `https://picsum.photos/seed/${offer.id}/700`
+          }
+        };
       }
       return null;
     },

@@ -46,8 +46,12 @@ export function useOffers(
         const isValid = checkOfferMetadata(base.offer);
         return {
           ...base.offer,
+          metadata: {
+            ...base.offer.metadata,
+            imageUrl: `https://picsum.photos/seed/${base.offer.id}/700`
+          },
           isValid
-        };
+        } as Offer;
       });
     },
     {

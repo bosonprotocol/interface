@@ -1,4 +1,5 @@
 import { Image as AccountImage } from "@davatar/react";
+import { IoIosImage } from "react-icons/io";
 import { generatePath, useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
@@ -29,6 +30,28 @@ const Image = styled.img`
   height: 250px;
   width: 250px;
   border-radius: 24px;
+`;
+
+const ImagePlaceholder = styled.div`
+  height: 250px;
+  width: 250px;
+  background-color: ${colors.grey};
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 21px;
+  border-radius: 24px;
+
+  span {
+    padding: 10px;
+    text-align: center;
+    color: lightgrey;
+  }
+`;
+
+const ImageNotAvailable = styled(IoIosImage)`
+  font-size: 50px;
 `;
 
 const BasicInfoContainer = styled.div`
@@ -140,7 +163,7 @@ export default function OfferCard({
   }
   const offerId = offer.id;
   const isSellerVisible = showSeller === undefined ? true : showSeller;
-  const offerImg = `https://picsum.photos/seed/${offerId}/700`;
+  const offerImg = offer.metadata.imageUrl;
   const name = offer.metadata?.name || "Untitled";
   const sellerId = offer.seller?.id;
   const sellerAddress = offer.seller?.operator;
@@ -180,7 +203,14 @@ export default function OfferCard({
         </AddressContainer>
       )}
       <ImageContainer>
-        <Image data-testid="image" src={offerImg} />
+        {offerImg ? (
+          <Image data-testid="image" src={offerImg} />
+        ) : (
+          <ImagePlaceholder>
+            <ImageNotAvailable />
+            <span>IMAGE NOT AVAILABLE</span>
+          </ImagePlaceholder>
+        )}
       </ImageContainer>
       <BasicInfoContainer>
         <Name data-testid="name">{name || "Untitled"}</Name>

@@ -1,7 +1,7 @@
 import { manageOffer } from "@bosonprotocol/widgets-sdk";
 import { Image as AccountImage } from "@davatar/react";
 import { useEffect, useRef, useState } from "react";
-import { IoIosInformationCircleOutline } from "react-icons/io";
+import { IoIosImage, IoIosInformationCircleOutline } from "react-icons/io";
 import {
   generatePath,
   useLocation,
@@ -60,6 +60,30 @@ const Image = styled.img`
   margin: 0 auto;
   border-radius: 22px;
   object-fit: contain;
+  max-height: 700px;
+`;
+
+const ImagePlaceholder = styled.div`
+  width: 100%;
+  min-width: 500px;
+  height: 500px;
+  background-color: ${colors.grey};
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 21px;
+  border-radius: 24px;
+
+  span {
+    padding: 10px;
+    text-align: center;
+    color: lightgrey;
+  }
+`;
+
+const ImageNotAvailable = styled(IoIosImage)`
+  font-size: 50px;
 `;
 
 const Title = styled.h1`
@@ -207,7 +231,6 @@ export default function Exchange() {
     disputed: null
   });
   const offer = exchanges?.[0]?.offer;
-  const offerId = offer?.id;
 
   useEffect(() => {
     if (offer && widgetRef.current) {
@@ -241,9 +264,10 @@ export default function Exchange() {
   }
   const isSeller = isAccountSeller(offer, address);
   const name = offer.metadata?.name || "Untitled";
-  const offerImg = `https://picsum.photos/seed/${offerId}/700`;
+  const offerImg = offer.metadata.imageUrl;
   const sellerId = offer.seller?.id;
   const sellerAddress = offer.seller?.operator;
+  // const isOfferValid = getIsOfferValid(offer);
   const description = offer.metadata?.description || "";
 
   return (
@@ -251,7 +275,14 @@ export default function Exchange() {
       <Root>
         <ImageAndDescription>
           <ImageContainer>
-            <Image data-testid="image" src={offerImg} />
+            {offerImg ? (
+              <Image data-testid="image" src={offerImg} />
+            ) : (
+              <ImagePlaceholder>
+                <ImageNotAvailable />
+                <span>IMAGE NOT AVAILABLE</span>
+              </ImagePlaceholder>
+            )}
           </ImageContainer>
           <Info>
             <Box>
@@ -260,7 +291,9 @@ export default function Exchange() {
             </Box>
             <Box>
               <SubHeading>Description</SubHeading>
-              <Information data-testid="description">{description}</Information>
+              <Information data-testid="description">
+                {description || "Not defined"}
+              </Information>
             </Box>
             <Box>
               <SubHeading>Delivery Information</SubHeading>
@@ -284,7 +317,7 @@ export default function Exchange() {
           </Info>
         </ImageAndDescription>
         <Content>
-          <Title data-testid="name">{name}</Title>
+          <Title data-testid="name">{name || "Untitled"}</Title>
 
           <Box>
             <SubHeading>Price</SubHeading>
