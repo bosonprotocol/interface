@@ -1,6 +1,6 @@
-import { offers as offersApi } from "@bosonprotocol/core-sdk";
+import { OfferFieldsFragment } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
 
-export type Offer = offersApi.RawOfferFromSubgraph & {
+export type Offer = OfferFieldsFragment & {
   isValid?: boolean;
   metadata: {
     imageUrl: string;

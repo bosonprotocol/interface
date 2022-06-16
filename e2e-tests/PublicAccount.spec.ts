@@ -39,7 +39,7 @@ test.describe("Public Account page", () => {
       } else {
         const svg = profileImgContainer.locator("svg");
         const rects = svg.locator("rect");
-        await page.waitForTimeout(200);
+        await page.waitForTimeout(DEFAULT_TIMEOUT);
         expect(await rects.count()).toBe(3);
       }
     });

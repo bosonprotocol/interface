@@ -1,4 +1,4 @@
-import { manageOffer } from "@bosonprotocol/widgets-sdk";
+import { manageExchange } from "@bosonprotocol/widgets-sdk";
 import { Image as AccountImage } from "@davatar/react";
 import { useEffect, useRef, useState } from "react";
 import { IoIosImage, IoIosInformationCircleOutline } from "react-icons/io";
@@ -248,9 +248,8 @@ export default function Exchange() {
       const widgetContainer = document.createElement("div");
       widgetContainer.style.width = "100%";
       widgetRef.current.appendChild(widgetContainer);
-      manageOffer(offer.id, CONFIG, widgetContainer, {
-        forceBuyerView: !isTabSellerSelected,
-        exchangeId
+      manageExchange(exchangeId, CONFIG, widgetContainer, {
+        forceBuyerView: !isTabSellerSelected
       });
       return () => widgetContainer.remove();
     }
