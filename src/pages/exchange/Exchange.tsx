@@ -19,7 +19,6 @@ import { UrlParameters } from "../../lib/routing/query-parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
-import { getIsOfferExpired } from "../../lib/utils/getIsOfferExpired";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 
 const Root = styled.div`
@@ -288,11 +287,6 @@ export default function Exchange() {
     );
   }
   const isSeller = isAccountSeller(offer, address);
-  const isExpired = getIsOfferExpired(offer);
-  if (!isSeller && isExpired) {
-    return <div data-testid="expiredOffer">This offer has expired</div>;
-  }
-
   const name = offer.metadata?.name || "Untitled";
   const offerImg = offer.metadata.imageUrl;
   const sellerId = offer.seller?.id;
