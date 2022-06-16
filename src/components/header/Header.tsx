@@ -5,19 +5,21 @@ import logo from "../../../src/assets/logo.png";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import Layout from "../Layout";
-import Settings from "./Settings";
+import ConnectButton from "./ConnectButton";
 
 const HeaderContainer = styled(Layout)`
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin: 0px auto 20px auto;
+  padding-top: 24px;
 `;
 
 const NavigationLinks = styled.nav`
   display: flex;
   gap: 16px;
   width: 100%;
+  align-items: center;
   justify-content: flex-end;
 
   a {
@@ -30,9 +32,8 @@ const NavigationLinks = styled.nav`
 `;
 
 const LogoImg = styled.img`
-  width: 227px;
-  height: 50px;
-  padding-top: 24px;
+  height: 30px;
+
   cursor: pointer;
 `;
 
@@ -49,8 +50,8 @@ export default function Header() {
       <NavigationLinks>
         <Link to={BosonRoutes.Root}>Home</Link>
         <Link to={BosonRoutes.Explore}>Explore</Link>
-        <Link to={BosonRoutes.CreateOffer}>Create Offer</Link>
-        <Settings />
+        <Link to={BosonRoutes.CreateOffer}>Create</Link>
+        <ConnectButton />
       </NavigationLinks>
     </HeaderContainer>
   );

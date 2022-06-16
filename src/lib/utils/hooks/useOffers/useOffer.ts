@@ -11,8 +11,16 @@ export function useOffer({ offerId, ...restProps }: UseOfferProps) {
     ["offer", offerId],
     async () => {
       const offer = await getOfferById(offerId, restProps);
-      if (offer && checkOfferMetadata(offer)) {
-        return offer;
+      if (offer) {
+        const isMetadataValid = checkOfferMetadata(offer);
+        offer.isValid = isMetadataValid;
+        return {
+          ...offer,
+          metadata: {
+            ...offer.metadata,
+            imageUrl: `https://picsum.photos/seed/${offer.id}/700`
+          }
+        };
       }
       return null;
     },

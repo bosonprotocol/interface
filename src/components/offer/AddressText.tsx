@@ -1,15 +1,11 @@
 import styled from "styled-components";
 
-import { colors } from "../../lib/styles/colors";
 import { formatAddress } from "../../lib/utils/address";
 
-const Name = styled.span`
+const Name = styled.div`
   font-size: 14px;
   font-weight: 600;
-  margin-left: 8px;
-  color: ${colors.darkGreen};
   overflow-wrap: break-word;
-  width: 80%;
   font-family: "Roboto Mono", monospace;
 `;
 

@@ -1,5 +1,44 @@
 import { gql } from "graphql-request";
 
+export const offerGraphQl = gql`
+  {
+    id
+    createdAt
+    price
+    offerChecksum
+    sellerDeposit
+    fulfillmentPeriodDuration
+    metadataUri
+    buyerCancelPenalty
+    quantityAvailable
+    validFromDate
+    validUntilDate
+    voidedAt
+    voucherValidDuration
+    seller {
+      id
+      admin
+      clerk
+      treasury
+      operator
+      active
+    }
+    exchangeToken {
+      address
+      decimals
+      name
+      symbol
+    }
+    metadata {
+      name
+      description
+      externalUrl
+      schemaUrl
+      type
+    }
+  }
+`;
+
 export function getOffersQuery({
   exchangeToken,
   sellerId,
@@ -42,43 +81,7 @@ export function getOffersQuery({
         name_contains_nocase: $name_contains_nocase
       }
     ) {
-      offer {
-        id
-        createdAt
-        price
-        offerChecksum
-        sellerDeposit
-        fulfillmentPeriodDuration
-        metadataUri
-        buyerCancelPenalty
-        quantityAvailable
-        redeemableFromDate
-        validFromDate
-        validUntilDate
-        voidedAt
-        voucherValidDuration
-        seller {
-          id
-          admin
-          clerk
-          treasury
-          operator
-          active
-        }
-        exchangeToken {
-          address
-          decimals
-          name
-          symbol
-        }
-        metadata {
-          name
-          description
-          externalUrl
-          schemaUrl
-          type
-        }
-      }
+      offer ${offerGraphQl}
     }
   }
 `;

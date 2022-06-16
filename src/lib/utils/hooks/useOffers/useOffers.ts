@@ -42,12 +42,17 @@ export function useOffers(
         }),
         variables
       );
-      const { filterOutWrongMetadata } = props;
-      return result?.baseMetadataEntities
-        ?.filter((base) =>
-          filterOutWrongMetadata ? checkOfferMetadata(base.offer) : true
-        )
-        .map((base) => base.offer);
+      return result?.baseMetadataEntities?.map((base) => {
+        const isValid = checkOfferMetadata(base.offer);
+        return {
+          ...base.offer,
+          metadata: {
+            ...base.offer.metadata,
+            imageUrl: `https://picsum.photos/seed/${base.offer.id}/700`
+          },
+          isValid
+        } as Offer;
+      });
     },
     {
       ...options

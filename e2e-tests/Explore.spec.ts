@@ -6,6 +6,7 @@ import { expect, test } from "./baseFixtures";
 import { defaultMockOffers } from "./mocks/defaultMockOffers";
 import { mockSubgraph } from "./mocks/mockGetBase";
 import { sortOffersBy } from "./utils/sort";
+import { DEFAULT_TIMEOUT } from "./utils/timeouts";
 
 const exploreUrl = "/#/explore";
 const offersPerPage = 11;
@@ -21,7 +22,7 @@ const getFirstNOffers = async (numberOfOffers: number): Promise<Offer[]> => {
     ...Array(Math.max(0, numberOfOffers - defaultMockOffers.length))
       .fill(0)
       .map((_v, idx) => {
-        const id = `${maxOfferId + idx}`;
+        const id = `${maxOfferId + idx + 1}`;
         return {
           ...defaultMockOffers[0],
           id,
@@ -198,7 +199,7 @@ test.describe("Explore page", () => {
         });
 
         await page.goto(exploreUrl);
-        await page.waitForTimeout(500);
+        await page.waitForTimeout(DEFAULT_TIMEOUT);
         const name = "name1";
 
         const input = page.locator("input[data-testid=name]");
@@ -238,7 +239,7 @@ test.describe("Explore page", () => {
         });
 
         await page.goto(exploreUrl);
-        await page.waitForTimeout(500);
+        await page.waitForTimeout(DEFAULT_TIMEOUT);
         let name = "name1";
 
         const input = page.locator("input[data-testid=name]");
@@ -295,7 +296,7 @@ test.describe("Explore page", () => {
           }
         });
         await page.goto(currentUrl);
-        await page.waitForTimeout(500);
+        await page.waitForTimeout(DEFAULT_TIMEOUT);
         const uiOffers = page.locator("[data-testid=offer]");
         const offerCount = await uiOffers.count();
         expect(offerCount).toStrictEqual(visibleOffersPerPage);
@@ -329,7 +330,7 @@ test.describe("Explore page", () => {
           }
         });
         await page.goto(currentUrl);
-        await page.waitForTimeout(500);
+        await page.waitForTimeout(DEFAULT_TIMEOUT);
 
         const uiOffers = page.locator("[data-testid=offer]");
         const offerCount = await uiOffers.count();
@@ -364,7 +365,7 @@ test.describe("Explore page", () => {
         }
       });
       await page.goto(exploreUrl);
-      await page.waitForTimeout(500);
+      await page.waitForTimeout(DEFAULT_TIMEOUT);
 
       const nextButton = page.locator("[data-testid=next]");
 
@@ -409,7 +410,7 @@ test.describe("Explore page", () => {
         }
       });
       await page.goto(exploreUrl);
-      await page.waitForTimeout(500);
+      await page.waitForTimeout(DEFAULT_TIMEOUT);
       const offers = page.locator("[data-testid=offer]");
       const offerCount = await offers.count();
       expect(offerCount).toStrictEqual(mockedOffers.length - 1); // 1 invalid offer
@@ -438,7 +439,7 @@ test.describe("Explore page", () => {
       });
 
       await page.goto(exploreUrl);
-      await page.waitForTimeout(500);
+      await page.waitForTimeout(DEFAULT_TIMEOUT);
       const offers = page.locator("[data-testid=offer]");
       const offerCount = await offers.count();
       expect(offerCount).toStrictEqual(first10Offers.length);
@@ -472,10 +473,10 @@ test.describe("Explore page", () => {
       });
 
       await page.goto(exploreUrl);
-      await page.waitForTimeout(500);
+      await page.waitForTimeout(DEFAULT_TIMEOUT);
 
       let uiOffers = page.locator("[data-testid=offer]");
-
+      await page.pause();
       let offerCount = await uiOffers.count();
       expect(offerCount).toStrictEqual(visibleOffersPerPage);
 
@@ -489,7 +490,7 @@ test.describe("Explore page", () => {
       const nextButton = page.locator("[data-testid=next]");
 
       await nextButton.click();
-      await page.waitForTimeout(500);
+      await page.waitForTimeout(DEFAULT_TIMEOUT);
       uiOffers = page.locator("[data-testid=offer]");
 
       offerCount = await uiOffers.count();

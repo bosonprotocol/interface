@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { generatePath, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 
@@ -11,6 +11,7 @@ import { BosonRoutes } from "../../lib/routing/routes";
 import { footerHeight } from "../../lib/styles/layout";
 import { Offer } from "../../lib/types/offer";
 import { useOffers } from "../../lib/utils/hooks/useOffers/";
+import { usePrevious } from "../../lib/utils/hooks/usePrevious";
 import Pagination from "./Pagination";
 
 const Container = styled.div`
@@ -54,12 +55,8 @@ const updatePageIndexInUrl =
 const OFFERS_PER_PAGE = 10;
 const DEFAULT_PAGE = 0;
 
-export default function ExploreOffers({
-  brand,
-  name,
-  exchangeTokenAddress,
-  sellerId
-}: Props) {
+export default function ExploreOffers(props: Props) {
+  const { brand, name, exchangeTokenAddress, sellerId } = props;
   const params = useParams();
   const navigate = useNavigate();
   const updateUrl = (index: number) =>
@@ -75,15 +72,6 @@ export default function ExploreOffers({
       : DEFAULT_PAGE
   );
   const [pageIndex, setPageIndex] = useState(initialPageIndex);
-  const [isPageLoaded, setIsPageLoaded] = useReducer(() => true, false);
-
-  useEffect(() => {
-    if (isPageLoaded) {
-      setPageIndex(DEFAULT_PAGE);
-    }
-    updateUrl(DEFAULT_PAGE);
-    !isPageLoaded && setIsPageLoaded();
-  }, [brand, name, exchangeTokenAddress, sellerId]);
 
   const useOffersPayload = {
     brand,
@@ -92,40 +80,68 @@ export default function ExploreOffers({
     valid: true,
     exchangeTokenAddress,
     sellerId,
-    filterOutWrongMetadata: true,
-    first: OFFERS_PER_PAGE + 1,
+    // TODO: comment this out once we can request offers with valid metadata directly as requesting 1 extra offer should be enough
+    // first: OFFERS_PER_PAGE + 1,
+    first: OFFERS_PER_PAGE * 2,
     skip: OFFERS_PER_PAGE * pageIndex
   };
-
   const {
-    data: offersWithOneExtra,
+    data: currentAndNextPageOffers,
     isLoading,
-    isError
+    isError,
+    isFetched
   } = useOffers(useOffersPayload);
 
+  const prevProps = usePrevious(props);
+
+  useEffect(() => {
+    if (isFetched && !currentAndNextPageOffers?.length) {
+      /**
+       * if you go directly to a page without any offers,
+       * you'll be redirected to the first page
+       */
+      setPageIndex(DEFAULT_PAGE);
+      updateUrl(DEFAULT_PAGE);
+    }
+  }, [currentAndNextPageOffers, isFetched]);
+
+  useEffect(() => {
+    /**
+     * if the filters change, you should be redirected to the first page
+     */
+    if (prevProps) {
+      setPageIndex(DEFAULT_PAGE);
+      updateUrl(DEFAULT_PAGE);
+    }
+  }, [brand, name, exchangeTokenAddress, sellerId]);
   const { data: firstPageOffers } = useOffers(
     {
-      ...useOffersPayload,
-      first: 1,
-      skip: 0
+      ...useOffersPayload
+      // TODO: 1 offer should be enough once we can request offers with valid metadata directly
+      // first: 1,
+      // skip: 0
     },
     {
-      enabled: pageIndex > 0 && !offersWithOneExtra?.length
+      enabled: pageIndex > 0 && !currentAndNextPageOffers?.length
     }
   );
-  const offers = offersWithOneExtra?.slice(0, OFFERS_PER_PAGE);
-
-  const ref = useRef<HTMLDivElement>(null);
+  const offers = currentAndNextPageOffers?.slice(0, OFFERS_PER_PAGE);
 
   return (
-    <Container ref={ref}>
+    <Container>
       <h1>Explore</h1>
-      <OfferList offers={offers} isError={isError} isLoading={isLoading} />
+      <OfferList
+        offers={offers}
+        isError={isError}
+        isLoading={isLoading}
+        action="commit"
+        showInvalidOffers={false}
+      />
       <PaginationWrapper>
         <Pagination
           defaultPage={pageIndex}
           isNextEnabled={
-            (offersWithOneExtra?.length || 0) >= OFFERS_PER_PAGE + 1
+            (currentAndNextPageOffers?.length || 0) >= OFFERS_PER_PAGE + 1
           }
           isPreviousEnabled={(firstPageOffers?.length || 0) > 0}
           onChangeIndex={(index) => {

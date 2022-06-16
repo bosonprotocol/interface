@@ -1,7 +1,8 @@
+import { ReactElement } from "react";
 import styled from "styled-components";
 
 import { Offer } from "../../lib/types/offer";
-import OfferCard from "../offer/OfferCard";
+import OfferCard, { Action } from "../offer/OfferCard";
 
 const OfferContainer = styled.div`
   display: grid;
@@ -15,12 +16,26 @@ const OfferContainer = styled.div`
 interface Props {
   offers?: Array<Offer>;
   isError: boolean;
-  isLoading: boolean;
+  isLoading?: boolean;
+  loadingComponent?: ReactElement;
+  showSeller?: boolean;
+  action: Action;
+  showInvalidOffers: boolean;
+  address?: string;
 }
 
-export default function OfferList({ offers, isLoading, isError }: Props) {
+export default function OfferList({
+  offers,
+  isLoading,
+  isError,
+  loadingComponent,
+  showSeller,
+  action,
+  showInvalidOffers,
+  address
+}: Props) {
   if (isLoading) {
-    return <div>Loading...</div>;
+    return loadingComponent || <div>Loading...</div>;
   }
 
   if (isError) {
@@ -36,12 +51,23 @@ export default function OfferList({ offers, isLoading, isError }: Props) {
       <OfferContainer data-testid="noOffers">No offers found</OfferContainer>
     );
   }
-
   return (
     <OfferContainer>
-      {offers.map((offer: Offer) => (
-        <OfferCard key={offer.id} offer={offer} />
-      ))}
+      {offers.map((offer: Offer) => {
+        return (
+          (offer.isValid || (showInvalidOffers && !offer.isValid)) && (
+            <OfferCard
+              key={offer.id}
+              offer={offer}
+              showSeller={showSeller}
+              action={action}
+              showCTA
+              dataTestId="offer"
+              address={address}
+            />
+          )
+        );
+      })}
     </OfferContainer>
   );
 }

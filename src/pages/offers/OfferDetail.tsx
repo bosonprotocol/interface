@@ -1,17 +1,25 @@
 import { manageOffer } from "@bosonprotocol/widgets-sdk";
+import { Image as AccountImage } from "@davatar/react";
 import { useEffect, useRef, useState } from "react";
-import { IoIosInformationCircleOutline } from "react-icons/io";
-import { useParams } from "react-router-dom";
+import { IoIosImage, IoIosInformationCircleOutline } from "react-icons/io";
+import {
+  generatePath,
+  useLocation,
+  useNavigate,
+  useParams
+} from "react-router-dom";
 import styled from "styled-components";
+import { useAccount } from "wagmi";
 
+import OfferStatuses from "../../components/offer/OfferStatuses";
+import { CONFIG } from "../../lib/config";
+import { UrlParameters } from "../../lib/routing/query-parameters";
+import { BosonRoutes } from "../../lib/routing/routes";
+import { colors } from "../../lib/styles/colors";
+import { Offer } from "../../lib/types/offer";
+import { useOffer } from "../../lib/utils/hooks/useOffers/useOffer";
 import AddressContainer from "./../../components/offer/AddressContainer";
-import AddressImage from "./../../components/offer/AddressImage";
 import RootPrice from "./../../components/price";
-import { CONFIG } from "./../../lib/config";
-import { UrlParameters } from "./../../lib/routing/query-parameters";
-import { colors } from "./../../lib/styles/colors";
-import { Offer } from "./../../lib/types/offer";
-import { useOffer } from "./../../lib/utils/hooks/useOffers/useOffer";
 
 const Root = styled.div`
   display: flex;
@@ -45,14 +53,50 @@ const ImageContainer = styled.div`
   display: flex;
   justify-content: left;
   height: auto;
+  max-height: 700px;
+  position: relative;
+
+  [data-testid="statuses"] {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    justify-content: center;
+  }
 `;
 
 const Image = styled.img`
   height: auto;
-  width: 100%;
+
   margin: 0 auto;
   border-radius: 22px;
   object-fit: contain;
+
+  @media (min-width: 981px) {
+    width: 100%;
+  }
+`;
+
+const ImagePlaceholder = styled.div`
+  width: 100%;
+  min-width: 500px;
+  height: 500px;
+  background-color: ${colors.grey};
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 21px;
+  border-radius: 24px;
+
+  span {
+    padding: 10px;
+    text-align: center;
+    color: lightgrey;
+  }
+`;
+
+const ImageNotAvailable = styled(IoIosImage)`
+  font-size: 50px;
 `;
 
 const Title = styled.h1`
@@ -171,23 +215,19 @@ const InfoIcon = styled(IoIosInformationCircleOutline).attrs({
 
 function isAccountSeller(offer: Offer, account: string): boolean {
   if (offer.seller.clerk.toLowerCase() === account.toLowerCase()) return true;
-  if (offer.seller.operator.toLowerCase() === account.toLowerCase())
-    return true;
-  return false;
-}
-
-function getIsOfferValid(offer: Offer | undefined | null): boolean {
-  const now = Date.now() / 1000;
-  const isValid =
-    Number(offer?.validFromDate) <= now && now <= Number(offer?.validUntilDate);
-  return isValid;
+  return offer.seller.operator.toLowerCase() === account.toLowerCase();
 }
 
 export default function OfferDetail() {
   const { [UrlParameters.offerId]: offerId } = useParams();
   const widgetRef = useRef<HTMLDivElement>(null);
-  const [isTabSellerSelected, setTabSellerSelected] = useState(false);
-  const [account, setAccount] = useState("");
+  const location = useLocation();
+  const fromAccountPage =
+    (location.state as { from: string })?.from === BosonRoutes.YourAccount;
+  const [isTabSellerSelected, setTabSellerSelected] = useState(fromAccountPage);
+  const { data: account } = useAccount();
+  const address = account?.address || "";
+  const navigate = useNavigate();
 
   if (!offerId) {
     return null;
@@ -202,6 +242,12 @@ export default function OfferDetail() {
   });
 
   useEffect(() => {
+    if (!address) {
+      setTabSellerSelected(false);
+    }
+  }, [address]);
+
+  useEffect(() => {
     if (offer && widgetRef.current) {
       const widgetContainer = document.createElement("div");
       widgetContainer.style.width = "100%";
@@ -213,19 +259,7 @@ export default function OfferDetail() {
     }
 
     return;
-  }, [offer, isTabSellerSelected]);
-
-  useEffect(() => {
-    function handleMessageFromIframe(e: MessageEvent) {
-      const { target, message, wallet } = e.data || {};
-
-      if (target === "boson" && message === "wallet-changed") {
-        setAccount(wallet);
-      }
-    }
-    window.addEventListener("message", handleMessageFromIframe);
-    return () => window.removeEventListener("message", handleMessageFromIframe);
-  }, []);
+  }, [offer, isTabSellerSelected, address]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -239,15 +273,24 @@ export default function OfferDetail() {
     );
   }
 
-  const isOfferValid = getIsOfferValid(offer);
-  if (!offer || !isOfferValid) {
+  if (!offer) {
     return <div data-testid="notFound">This offer does not exist</div>;
   }
-  const isSeller = isAccountSeller(offer, account ?? "");
+
+  if (!offer.isValid) {
+    return (
+      <div data-testid="invalidMetadata">
+        This offer does not match the expected metadata standard this
+        application enforces
+      </div>
+    );
+  }
+  const isSeller = isAccountSeller(offer, address);
+
   const name = offer.metadata?.name || "Untitled";
-  const offerImg = `https://picsum.photos/seed/${offerId}/700`;
+  const offerImg = offer.metadata.imageUrl;
   const sellerId = offer.seller?.id;
-  const sellerAddress = offer.seller?.admin;
+  const sellerAddress = offer.seller?.operator;
   const description = offer.metadata?.description || "";
 
   return (
@@ -255,7 +298,15 @@ export default function OfferDetail() {
       <Root>
         <ImageAndDescription>
           <ImageContainer>
-            <Image data-testid="image" src={offerImg} />
+            {isSeller && <OfferStatuses offer={offer} />}
+            {offerImg ? (
+              <Image data-testid="image" src={offerImg} />
+            ) : (
+              <ImagePlaceholder>
+                <ImageNotAvailable />
+                <span>IMAGE NOT AVAILABLE</span>
+              </ImagePlaceholder>
+            )}
           </ImageContainer>
           <Info>
             <Box>
@@ -264,7 +315,9 @@ export default function OfferDetail() {
             </Box>
             <Box>
               <SubHeading>Description</SubHeading>
-              <Information data-testid="description">{description}</Information>
+              <Information data-testid="description">
+                {description || "Not defined"}
+              </Information>
             </Box>
             <Box>
               <SubHeading>Delivery Information</SubHeading>
@@ -272,15 +325,23 @@ export default function OfferDetail() {
             </Box>
             <Box>
               <SubHeading> Seller</SubHeading>
-              <AddressContainer>
-                <AddressImage address={sellerAddress} />
+              <AddressContainer
+                onClick={() =>
+                  navigate(
+                    generatePath(BosonRoutes.Account, {
+                      [UrlParameters.accountId]: sellerAddress
+                    })
+                  )
+                }
+              >
+                <AccountImage size={30} address={sellerAddress} />
                 <div data-testid="seller-id">ID: {sellerId}</div>
               </AddressContainer>
             </Box>
           </Info>
         </ImageAndDescription>
         <Content>
-          <Title data-testid="name">{name}</Title>
+          <Title data-testid="name">{name || "Untitled"}</Title>
 
           <Box>
             <SubHeading>Price</SubHeading>

@@ -63,7 +63,7 @@ const SaveButton = styled.button`
 `;
 
 const SettingsIcon = styled(IoMdSettings)`
-  font-size: 20px;
+  font-size: 30px;
 `;
 
 const SaveIcon = styled(IoIosSave)`
