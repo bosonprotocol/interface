@@ -19,6 +19,7 @@ import { UrlParameters } from "../../lib/routing/query-parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
+import { getIsOfferExpired } from "../../lib/utils/getIsOfferExpired";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 
 const Root = styled.div`
@@ -242,6 +243,12 @@ export default function Exchange() {
   const offer = exchanges?.[0]?.offer;
 
   useEffect(() => {
+    if (!address) {
+      setTabSellerSelected(false);
+    }
+  }, [address]);
+
+  useEffect(() => {
     if (offer && widgetRef.current) {
       const widgetContainer = document.createElement("div");
       widgetContainer.style.width = "100%";
@@ -271,7 +278,21 @@ export default function Exchange() {
   if (!offer) {
     return <div data-testid="notFound">This exchange does not exist</div>;
   }
+
+  if (!offer.isValid) {
+    return (
+      <div data-testid="invalidMetadata">
+        This offer does not match the expected metadata standard this
+        application enforces
+      </div>
+    );
+  }
   const isSeller = isAccountSeller(offer, address);
+  const isExpired = getIsOfferExpired(offer);
+  if (!isSeller && isExpired) {
+    return <div data-testid="expiredOffer">This offer has expired</div>;
+  }
+
   const name = offer.metadata?.name || "Untitled";
   const offerImg = offer.metadata.imageUrl;
   const sellerId = offer.seller?.id;
@@ -310,7 +331,7 @@ export default function Exchange() {
               <span data-testid="delivery-info">Not defined</span>
             </Box>
             <Box>
-              <SubHeading> Seller</SubHeading>
+              <SubHeading>Seller</SubHeading>
               <AddressContainer
                 onClick={() =>
                   navigate(

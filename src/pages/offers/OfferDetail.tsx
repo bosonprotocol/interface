@@ -17,6 +17,7 @@ import { UrlParameters } from "../../lib/routing/query-parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
+import { getIsOfferExpired } from "../../lib/utils/getIsOfferExpired";
 import { useOffer } from "../../lib/utils/hooks/useOffers/useOffer";
 import AddressContainer from "./../../components/offer/AddressContainer";
 import RootPrice from "./../../components/price";
@@ -242,6 +243,12 @@ export default function OfferDetail() {
   });
 
   useEffect(() => {
+    if (!address) {
+      setTabSellerSelected(false);
+    }
+  }, [address]);
+
+  useEffect(() => {
     if (offer && widgetRef.current) {
       const widgetContainer = document.createElement("div");
       widgetContainer.style.width = "100%";
@@ -279,12 +286,17 @@ export default function OfferDetail() {
       </div>
     );
   }
+  const isSeller = isAccountSeller(offer, address);
+  const isExpired = getIsOfferExpired(offer);
+  if (!isSeller && isExpired) {
+    return <div data-testid="expiredOffer">This offer has expired</div>;
+  }
+
   const name = offer.metadata?.name || "Untitled";
   const offerImg = offer.metadata.imageUrl;
   const sellerId = offer.seller?.id;
   const sellerAddress = offer.seller?.operator;
   const description = offer.metadata?.description || "";
-  const isSeller = isAccountSeller(offer, address);
 
   return (
     <>
