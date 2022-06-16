@@ -1,5 +1,6 @@
 import { Offer } from "../src/lib/types/offer";
 import { assertOffer } from "./assert/offer";
+import { assertUrlHashToEqual } from "./assert/urlParams";
 import { expect, test } from "./baseFixtures";
 import { mockSubgraph } from "./mocks/mockGetBase";
 import { getFirstNOffers } from "./utils/getFirstNOffers";
@@ -33,6 +34,44 @@ test.describe("Root page (Landing page)", () => {
       const footer = page.locator("footer");
 
       expect(footer).toBeDefined();
+    });
+
+    test("should type something in the input to search offers, press Enter and go to Explore", async ({
+      page
+    }) => {
+      const name = "hello";
+      const input = page.locator("input[data-testid=search-by-name-input]");
+      await input.type(name, { delay: 100 });
+      await input.press("Enter");
+
+      await assertUrlHashToEqual(page, `#/explore?name=${name}`);
+    });
+
+    test("should type nothing in the input to search offers, press Enter and go to Explore", async ({
+      page
+    }) => {
+      const input = page.locator("input[data-testid=search-by-name-input]");
+      await input.press("Enter");
+
+      await assertUrlHashToEqual(page, `#/explore`);
+    });
+
+    test("should click on the Go button and go to Explore", async ({
+      page
+    }) => {
+      const goButton = page.locator("button[data-testid=go-button]");
+      await goButton.click();
+
+      await assertUrlHashToEqual(page, `#/explore`);
+    });
+
+    test("should click on the Explore all offers button and go to Explore", async ({
+      page
+    }) => {
+      const goButton = page.locator("button[data-testid=explore-all-offers]");
+      await goButton.click();
+
+      await assertUrlHashToEqual(page, `#/explore`);
     });
   });
   test.describe("Offers list", () => {

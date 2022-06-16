@@ -110,6 +110,7 @@ export default function Landing() {
           <Title>{storeName || "Boson dApp"} </Title>
           <InputGo>
             <Input
+              data-testid="search-by-name-input"
               onChange={(e) => setName(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
@@ -119,10 +120,18 @@ export default function Landing() {
               value={name}
               placeholder="Search by Name"
             />
-            <GoButton onClick={() => navigateToExplore()}>Go</GoButton>
+            <GoButton
+              onClick={() => navigateToExplore()}
+              data-testid="go-button"
+            >
+              Go
+            </GoButton>
           </InputGo>
           <ExploreContainer>
-            <ExploreButton onClick={() => navigateToExplore()}>
+            <ExploreButton
+              onClick={() => navigateToExplore()}
+              data-testid="explore-all-offers"
+            >
               Explore All Offers
             </ExploreButton>
           </ExploreContainer>
