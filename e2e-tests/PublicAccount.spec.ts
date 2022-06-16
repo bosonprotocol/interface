@@ -1,15 +1,18 @@
 import { Offer } from "../src/lib/types/offer";
 import { assertOfferInPublicAccountPage } from "./assert/offer";
 import { expect, test } from "./baseFixtures";
-import { defaultMockOffers } from "./mocks/defaultMockOffers";
 import { mockSubgraph } from "./mocks/mockGetBase";
 import { formatAddress } from "./utils/address";
+import { getFirstNOffers } from "./utils/getFirstNOffers";
+import { scrollDown } from "./utils/scroll";
 import { sortOffersBy } from "./utils/sort";
 import { DEFAULT_TIMEOUT } from "./utils/timeouts";
 
 const publicAccountUrl = "/#/account";
 const anyAccountAddress = "0x9c2925a41d6FB1c6C8f53351634446B0b2E65e44";
 const publicAccountUrl1 = `${publicAccountUrl}/${anyAccountAddress}`;
+const offersPerPage = 11;
+const visibleOffersPerPage = offersPerPage - 1;
 
 test.describe("Public Account page", () => {
   test.describe("Default info when no data", () => {
@@ -92,9 +95,8 @@ test.describe("Public Account page", () => {
   test.describe("Offers list", () => {
     test("should display the first 10 offers", async ({ page }) => {
       const numberOfOffers = 10;
-      const firstTenOffers = defaultMockOffers
+      const firstTenOffers = getFirstNOffers(numberOfOffers)
         .map((offer) => ({ offer: { ...offer } }))
-        .slice(0, numberOfOffers)
         .sort(sortOffersBy({ property: "name", asc: true }));
 
       await mockSubgraph({
@@ -124,13 +126,40 @@ test.describe("Public Account page", () => {
       }
     });
 
-    test.skip("test that when you click on Offers and scroll, more offers are lazy loaded (via infinite scrolling)", async () => {
-      throw new Error("TODO");
-    });
-
-    test.skip("should include/or filter out? invalid offers", async ({
+    test("test that when you click on Offers and scroll, more offers are lazy loaded (via infinite scrolling)", async ({
       page
     }) => {
+      const allOffers = getFirstNOffers(offersPerPage + 5);
+      const firstPageOffers = allOffers.slice(0, offersPerPage);
+      const secondPageOffers = allOffers.slice(
+        offersPerPage,
+        offersPerPage + 5
+      );
+      await mockSubgraph({
+        page,
+        options: {
+          mockGetOffers: {
+            offersPerPage: {
+              offersList: [firstPageOffers, secondPageOffers],
+              countOffersPerPage: offersPerPage
+            }
+          }
+        }
+      });
+
+      await page.goto(publicAccountUrl1);
+      await page.waitForTimeout(DEFAULT_TIMEOUT);
+      const offers = await page.locator("[data-testid=offer]");
+      let offerCount = await offers.count();
+      expect(offerCount).toStrictEqual(visibleOffersPerPage);
+      await scrollDown(page);
+      offerCount = await offers.count();
+      expect(offerCount).toStrictEqual(
+        visibleOffersPerPage + secondPageOffers.length
+      );
+    });
+
+    test("should filter out invalid offers", async ({ page }) => {
       const invalidOffer = {
         id: "9999",
         price: "1",
@@ -150,17 +179,16 @@ test.describe("Public Account page", () => {
       };
       const mockedOffers = [
         invalidOffer,
-        ...defaultMockOffers.slice(0, 10)
-      ].map((offer) => ({ offer })) as unknown as Offer[];
+        ...getFirstNOffers(10)
+      ] as unknown as Offer[];
 
       await mockSubgraph({
         page,
         options: {
           mockGetOffers: {
-            response: {
-              body: JSON.stringify({
-                data: { baseMetadataEntities: mockedOffers }
-              })
+            offersPerPage: {
+              offersList: [mockedOffers],
+              countOffersPerPage: offersPerPage
             }
           }
         }
@@ -170,13 +198,13 @@ test.describe("Public Account page", () => {
       await page.waitForTimeout(DEFAULT_TIMEOUT);
       const offers = await page.locator("[data-testid=offer]");
       const offerCount = await offers.count();
-      expect(offerCount).toStrictEqual(mockedOffers.length - 1);
+      expect(offerCount).toStrictEqual(visibleOffersPerPage - 1);
     });
 
     test("should navigate to the offer detail page when clicking on the commit button", async ({
       page
     }) => {
-      const expectedOffer = { ...defaultMockOffers[0] };
+      const expectedOffer = { ...getFirstNOffers(1)[0] };
       await mockSubgraph({
         page,
         options: {
@@ -205,7 +233,7 @@ test.describe("Public Account page", () => {
     test("should navigate to the offer detail page when clicking on the offer image", async ({
       page
     }) => {
-      const expectedOffer = { ...defaultMockOffers[0] };
+      const expectedOffer = { ...getFirstNOffers(1)[0] };
       await mockSubgraph({
         page,
         options: {

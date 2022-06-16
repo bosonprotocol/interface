@@ -1,8 +1,8 @@
 import { Offer } from "../src/lib/types/offer";
 import { assertOffer } from "./assert/offer";
 import { expect, test } from "./baseFixtures";
-import { defaultMockOffers } from "./mocks/defaultMockOffers";
 import { mockSubgraph } from "./mocks/mockGetBase";
+import { getFirstNOffers } from "./utils/getFirstNOffers";
 import { sortOffersBy } from "./utils/sort";
 import { DEFAULT_TIMEOUT } from "./utils/timeouts";
 
@@ -38,9 +38,8 @@ test.describe("Root page (Landing page)", () => {
   test.describe("Offers list", () => {
     test("should display the first 10 offers", async ({ page }) => {
       const numberOfOffers = 10;
-      const firstTenOffers = defaultMockOffers
+      const firstTenOffers = getFirstNOffers(numberOfOffers)
         .map((offer) => ({ offer: { ...offer } }))
-        .slice(0, numberOfOffers)
         .sort(sortOffersBy({ property: "name", asc: true }));
 
       await mockSubgraph({
@@ -89,7 +88,7 @@ test.describe("Root page (Landing page)", () => {
           // missing description among other fields
         }
       };
-      const mockedOffers = [{ ...defaultMockOffers[0] }, invalidOffer].map(
+      const mockedOffers = [{ ...getFirstNOffers(1)[0] }, invalidOffer].map(
         (offer) => ({ offer })
       ) as unknown as Offer[];
 
@@ -127,7 +126,7 @@ test.describe("Root page (Landing page)", () => {
     test("should navigate to the offer detail page when clicking on the commit button", async ({
       page
     }) => {
-      const expectedOffer = { ...defaultMockOffers[0] };
+      const expectedOffer = { ...getFirstNOffers(1)[0] };
       await mockSubgraph({
         page,
         options: {
@@ -156,7 +155,7 @@ test.describe("Root page (Landing page)", () => {
     test("should navigate to the seller account page when clicking on the seller section", async ({
       page
     }) => {
-      const expectedOffer = { ...defaultMockOffers[0] };
+      const expectedOffer = { ...getFirstNOffers(1)[0] };
       await mockSubgraph({
         page,
         options: {
@@ -185,7 +184,7 @@ test.describe("Root page (Landing page)", () => {
     test("should navigate to the offer detail page when clicking on the offer image", async ({
       page
     }) => {
-      const expectedOffer = { ...defaultMockOffers[0] };
+      const expectedOffer = { ...getFirstNOffers(1)[0] };
       await mockSubgraph({
         page,
         options: {
