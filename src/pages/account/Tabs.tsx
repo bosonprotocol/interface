@@ -65,6 +65,8 @@ export default function Tabs({ isPrivateProfile, address }: Props) {
           <Offers
             sellerId={sellerId}
             action={isPrivateProfile ? null : "commit"}
+            showInvalidOffers={isPrivateProfile}
+            address={address}
           />
         )
       },

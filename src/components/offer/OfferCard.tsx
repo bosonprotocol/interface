@@ -1,4 +1,5 @@
 import { Image as AccountImage } from "@davatar/react";
+import { IoIosImage } from "react-icons/io";
 import { generatePath, useLocation } from "react-router-dom";
 import styled from "styled-components";
 
@@ -6,8 +7,10 @@ import AddressContainer from "../../components/offer/AddressContainer";
 import RootPrice from "../../components/price";
 import { UrlParameters } from "../../lib/routing/query-parameters";
 import { BosonRoutes, OffersRoutes } from "../../lib/routing/routes";
+import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import OfferStatuses from "./OfferStatuses";
 
 const Card = styled.div`
   border-radius: 12px;
@@ -22,13 +25,43 @@ const Card = styled.div`
 const ImageContainer = styled.div`
   display: flex;
   justify-content: center;
-  margin: 16px 16px;
+  margin: 16px 0;
+  position: relative;
+
+  [data-testid="statuses"] {
+    position: absolute;
+    top: 2px;
+    right: 7px;
+    justify-content: flex-end;
+  }
 `;
 
 const Image = styled.img`
   height: 250px;
   width: 250px;
   border-radius: 24px;
+`;
+
+const ImagePlaceholder = styled.div`
+  height: 250px;
+  width: 250px;
+  background-color: ${colors.grey};
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 21px;
+  border-radius: 24px;
+
+  span {
+    padding: 10px;
+    text-align: center;
+    color: lightgrey;
+  }
+`;
+
+const ImageNotAvailable = styled(IoIosImage)`
+  font-size: 50px;
 `;
 
 const BasicInfoContainer = styled.div`
@@ -116,6 +149,12 @@ const CTA = ({
   return null;
 };
 
+function isAccountSeller(offer: Offer, account: string | undefined): boolean {
+  if (!account) return false;
+  if (offer.seller.clerk.toLowerCase() === account.toLowerCase()) return true;
+  return offer.seller.operator.toLowerCase() === account.toLowerCase();
+}
+
 export type Action = "commit" | "redeem" | null;
 
 interface Props {
@@ -125,6 +164,7 @@ interface Props {
   showCTA?: boolean;
   action?: Action;
   dataTestId: string;
+  address?: string;
 }
 
 export default function OfferCard({
@@ -133,14 +173,15 @@ export default function OfferCard({
   showSeller,
   showCTA,
   action,
-  dataTestId
+  dataTestId,
+  address
 }: Props) {
   if (!offer) {
     return null;
   }
   const offerId = offer.id;
   const isSellerVisible = showSeller === undefined ? true : showSeller;
-  const offerImg = `https://picsum.photos/seed/${offerId}/700`;
+  const offerImg = offer.metadata.imageUrl;
   const name = offer.metadata?.name || "Untitled";
   const sellerId = offer.seller?.id;
   const sellerAddress = offer.seller?.operator;
@@ -162,6 +203,7 @@ export default function OfferCard({
         }
       );
   };
+  const isSeller = isAccountSeller(offer, address);
 
   return (
     <Card data-testid={dataTestId} onClick={onClick}>
@@ -183,7 +225,15 @@ export default function OfferCard({
         </AddressContainer>
       )}
       <ImageContainer>
-        <Image data-testid="image" src={offerImg} />
+        {isSeller && <OfferStatuses offer={offer} />}
+        {offerImg ? (
+          <Image data-testid="image" src={offerImg} />
+        ) : (
+          <ImagePlaceholder>
+            <ImageNotAvailable />
+            <span>IMAGE NOT AVAILABLE</span>
+          </ImagePlaceholder>
+        )}
       </ImageContainer>
       <BasicInfoContainer>
         <Name data-testid="name">{name || "Untitled"}</Name>

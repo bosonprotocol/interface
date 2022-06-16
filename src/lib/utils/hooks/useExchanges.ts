@@ -77,7 +77,21 @@ export function useExchanges(
           buyerId
         }
       );
-      return result?.exchanges ?? [];
+      return (
+        result?.exchanges.map((exchange, idx) => {
+          return {
+            ...exchange,
+            offer: {
+              ...exchange.offer,
+              metadata: {
+                ...exchange.offer.metadata,
+                imageUrl: `https://picsum.photos/seed/${exchange.offer.id}/700`
+              },
+              isValid: idx === 0 ? false : true
+            } as Offer
+          };
+        }) ?? []
+      );
     },
     {
       ...options

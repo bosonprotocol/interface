@@ -4,6 +4,7 @@ import { expect, test } from "./baseFixtures";
 import { defaultMockOffers } from "./mocks/defaultMockOffers";
 import { mockSubgraph } from "./mocks/mockGetBase";
 import { sortOffersBy } from "./utils/sort";
+import { DEFAULT_TIMEOUT } from "./utils/timeouts";
 
 test.describe("Root page (Landing page)", () => {
   test.describe("Header & footer", () => {
@@ -57,7 +58,7 @@ test.describe("Root page (Landing page)", () => {
 
       await page.goto("/");
 
-      await page.waitForTimeout(500);
+      await page.waitForTimeout(DEFAULT_TIMEOUT);
       const offers = page.locator("[data-testid=offer]");
       const offersCount = await offers.count();
 
@@ -106,7 +107,7 @@ test.describe("Root page (Landing page)", () => {
       });
 
       await page.goto("/");
-      await page.waitForTimeout(500);
+      await page.waitForTimeout(DEFAULT_TIMEOUT);
       const offers = await page.locator("[data-testid=offer]");
       const offerCount = await offers.count();
       expect(offerCount).toStrictEqual(mockedOffers.length - 1);
@@ -138,7 +139,7 @@ test.describe("Root page (Landing page)", () => {
 
       await page.goto("/");
 
-      await page.waitForTimeout(500);
+      await page.waitForTimeout(DEFAULT_TIMEOUT);
       const offers = page.locator("[data-testid=offer]");
       const offerCount = await offers.count();
       expect(offerCount).toStrictEqual(1);
@@ -167,7 +168,7 @@ test.describe("Root page (Landing page)", () => {
 
       await page.goto("/");
 
-      await page.waitForTimeout(500);
+      await page.waitForTimeout(DEFAULT_TIMEOUT);
       const offers = page.locator("[data-testid=offer]");
       const offerCount = await offers.count();
       expect(offerCount).toStrictEqual(1);
@@ -196,7 +197,7 @@ test.describe("Root page (Landing page)", () => {
 
       await page.goto("/");
 
-      await page.waitForTimeout(500);
+      await page.waitForTimeout(DEFAULT_TIMEOUT);
       const offers = page.locator("[data-testid=offer]");
       const offerCount = await offers.count();
       expect(offerCount).toStrictEqual(1);

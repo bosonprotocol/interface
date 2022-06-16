@@ -30,6 +30,7 @@ export default function FeaturedOffers() {
         isError={isError}
         isLoading={isLoading}
         action="commit"
+        showInvalidOffers={false}
       />
     </Root>
   );

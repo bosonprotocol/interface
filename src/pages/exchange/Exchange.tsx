@@ -1,12 +1,13 @@
 import { manageOffer } from "@bosonprotocol/widgets-sdk";
 import { Image as AccountImage } from "@davatar/react";
 import { useEffect, useRef, useState } from "react";
-import { IoIosInformationCircleOutline } from "react-icons/io";
+import { IoIosImage, IoIosInformationCircleOutline } from "react-icons/io";
 import { generatePath, useLocation, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
 import AddressContainer from "../../components/offer/AddressContainer";
+import OfferStatuses from "../../components/offer/OfferStatuses";
 import RootPrice from "../../components/price";
 import { CONFIG } from "../../lib/config";
 import { UrlParameters } from "../../lib/routing/query-parameters";
@@ -48,6 +49,14 @@ const ImageContainer = styled.div`
   display: flex;
   justify-content: left;
   height: auto;
+  position: relative;
+
+  [data-testid="statuses"] {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    justify-content: center;
+  }
 `;
 
 const Image = styled.img`
@@ -56,6 +65,30 @@ const Image = styled.img`
   margin: 0 auto;
   border-radius: 22px;
   object-fit: contain;
+  max-height: 700px;
+`;
+
+const ImagePlaceholder = styled.div`
+  width: 100%;
+  min-width: 500px;
+  height: 500px;
+  background-color: ${colors.grey};
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 21px;
+  border-radius: 24px;
+
+  span {
+    padding: 10px;
+    text-align: center;
+    color: lightgrey;
+  }
+`;
+
+const ImageNotAvailable = styled(IoIosImage)`
+  font-size: 50px;
 `;
 
 const Title = styled.h1`
@@ -203,7 +236,12 @@ export default function Exchange() {
     disputed: null
   });
   const offer = exchanges?.[0]?.offer;
-  const offerId = offer?.id;
+
+  useEffect(() => {
+    if (!address) {
+      setTabSellerSelected(false);
+    }
+  }, [address]);
 
   useEffect(() => {
     if (offer && widgetRef.current) {
@@ -235,11 +273,21 @@ export default function Exchange() {
   if (!offer) {
     return <div data-testid="notFound">This exchange does not exist</div>;
   }
+
+  if (!offer.isValid) {
+    return (
+      <div data-testid="invalidMetadata">
+        This offer does not match the expected metadata standard this
+        application enforces
+      </div>
+    );
+  }
   const isSeller = isAccountSeller(offer, address);
   const name = offer.metadata?.name || "Untitled";
-  const offerImg = `https://picsum.photos/seed/${offerId}/700`;
+  const offerImg = offer.metadata.imageUrl;
   const sellerId = offer.seller?.id;
   const sellerAddress = offer.seller?.operator;
+  // const isOfferValid = getIsOfferValid(offer);
   const description = offer.metadata?.description || "";
 
   return (
@@ -247,7 +295,15 @@ export default function Exchange() {
       <Root>
         <ImageAndDescription>
           <ImageContainer>
-            <Image data-testid="image" src={offerImg} />
+            {isSeller && <OfferStatuses offer={offer} />}
+            {offerImg ? (
+              <Image data-testid="image" src={offerImg} />
+            ) : (
+              <ImagePlaceholder>
+                <ImageNotAvailable />
+                <span>IMAGE NOT AVAILABLE</span>
+              </ImagePlaceholder>
+            )}
           </ImageContainer>
           <Info>
             <Box>
@@ -256,14 +312,16 @@ export default function Exchange() {
             </Box>
             <Box>
               <SubHeading>Description</SubHeading>
-              <Information data-testid="description">{description}</Information>
+              <Information data-testid="description">
+                {description || "Not defined"}
+              </Information>
             </Box>
             <Box>
               <SubHeading>Delivery Information</SubHeading>
               <span data-testid="delivery-info">Not defined</span>
             </Box>
             <Box>
-              <SubHeading> Seller</SubHeading>
+              <SubHeading>Seller</SubHeading>
               <AddressContainer
                 onClick={() =>
                   navigate({
@@ -280,7 +338,7 @@ export default function Exchange() {
           </Info>
         </ImageAndDescription>
         <Content>
-          <Title data-testid="name">{name}</Title>
+          <Title data-testid="name">{name || "Untitled"}</Title>
 
           <Box>
             <SubHeading>Price</SubHeading>

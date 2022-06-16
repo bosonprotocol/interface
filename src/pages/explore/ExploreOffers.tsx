@@ -140,6 +140,7 @@ export default function ExploreOffers(props: Props) {
         isError={isError}
         isLoading={isLoading}
         action="commit"
+        showInvalidOffers={false}
       />
       <PaginationWrapper>
         <Pagination

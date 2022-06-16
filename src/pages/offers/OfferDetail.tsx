@@ -1,11 +1,12 @@
 import { manageOffer } from "@bosonprotocol/widgets-sdk";
 import { Image as AccountImage } from "@davatar/react";
 import { useEffect, useRef, useState } from "react";
-import { IoIosInformationCircleOutline } from "react-icons/io";
+import { IoIosImage, IoIosInformationCircleOutline } from "react-icons/io";
 import { generatePath, useLocation, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
+import OfferStatuses from "../../components/offer/OfferStatuses";
 import { CONFIG } from "../../lib/config";
 import { UrlParameters } from "../../lib/routing/query-parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
@@ -48,14 +49,50 @@ const ImageContainer = styled.div`
   display: flex;
   justify-content: left;
   height: auto;
+  max-height: 700px;
+  position: relative;
+
+  [data-testid="statuses"] {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    justify-content: center;
+  }
 `;
 
 const Image = styled.img`
   height: auto;
-  width: 100%;
+
   margin: 0 auto;
   border-radius: 22px;
   object-fit: contain;
+
+  @media (min-width: 981px) {
+    width: 100%;
+  }
+`;
+
+const ImagePlaceholder = styled.div`
+  width: 100%;
+  min-width: 500px;
+  height: 500px;
+  background-color: ${colors.grey};
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 21px;
+  border-radius: 24px;
+
+  span {
+    padding: 10px;
+    text-align: center;
+    color: lightgrey;
+  }
+`;
+
+const ImageNotAvailable = styled(IoIosImage)`
+  font-size: 50px;
 `;
 
 const Title = styled.h1`
@@ -177,14 +214,6 @@ function isAccountSeller(offer: Offer, account: string): boolean {
   return offer.seller.operator.toLowerCase() === account.toLowerCase();
 }
 
-// TODO: to be used in the future
-// function getIsOfferValid(offer: Offer | undefined | null): boolean {
-//   const now = Date.now() / 1000;
-//   return (
-//     Number(offer?.validFromDate) <= now && now <= Number(offer?.validUntilDate)
-//   );
-// }
-
 export default function OfferDetail() {
   const { [UrlParameters.offerId]: offerId } = useParams();
   const widgetRef = useRef<HTMLDivElement>(null);
@@ -207,6 +236,12 @@ export default function OfferDetail() {
   } = useOffer({
     offerId
   });
+
+  useEffect(() => {
+    if (!address) {
+      setTabSellerSelected(false);
+    }
+  }, [address]);
 
   useEffect(() => {
     if (offer && widgetRef.current) {
@@ -246,21 +281,28 @@ export default function OfferDetail() {
       </div>
     );
   }
+  const isSeller = isAccountSeller(offer, address);
 
   const name = offer.metadata?.name || "Untitled";
-  const offerImg = `https://picsum.photos/seed/${offerId}/700`;
+  const offerImg = offer.metadata.imageUrl;
   const sellerId = offer.seller?.id;
   const sellerAddress = offer.seller?.operator;
   const description = offer.metadata?.description || "";
-  // const isOfferValid = getIsOfferValid(offer);
-  const isSeller = isAccountSeller(offer, address);
 
   return (
     <>
       <Root>
         <ImageAndDescription>
           <ImageContainer>
-            <Image data-testid="image" src={offerImg} />
+            {isSeller && <OfferStatuses offer={offer} />}
+            {offerImg ? (
+              <Image data-testid="image" src={offerImg} />
+            ) : (
+              <ImagePlaceholder>
+                <ImageNotAvailable />
+                <span>IMAGE NOT AVAILABLE</span>
+              </ImagePlaceholder>
+            )}
           </ImageContainer>
           <Info>
             <Box>
@@ -269,7 +311,9 @@ export default function OfferDetail() {
             </Box>
             <Box>
               <SubHeading>Description</SubHeading>
-              <Information data-testid="description">{description}</Information>
+              <Information data-testid="description">
+                {description || "Not defined"}
+              </Information>
             </Box>
             <Box>
               <SubHeading>Delivery Information</SubHeading>
@@ -293,7 +337,7 @@ export default function OfferDetail() {
           </Info>
         </ImageAndDescription>
         <Content>
-          <Title data-testid="name">{name}</Title>
+          <Title data-testid="name">{name || "Untitled"}</Title>
 
           <Box>
             <SubHeading>Price</SubHeading>

@@ -10,9 +10,16 @@ const OFFERS_PER_PAGE = 10;
 interface Props {
   sellerId: string;
   action: Action;
+  showInvalidOffers: boolean;
+  address: string;
 }
 
-export default function Offers({ sellerId, action }: Props) {
+export default function Offers({
+  sellerId,
+  action,
+  showInvalidOffers,
+  address
+}: Props) {
   const [pageIndex, setPageIndex] = useState(0);
   const intersect = useRef(null);
   const [allOffers, setAllOffers] = useState<Offer[]>([]);
@@ -23,7 +30,7 @@ export default function Offers({ sellerId, action }: Props) {
   } = useOffers(
     {
       voided: false,
-      valid: false,
+      valid: !showInvalidOffers,
       sellerId,
       first: OFFERS_PER_PAGE + 1,
       skip: OFFERS_PER_PAGE * pageIndex
@@ -69,6 +76,8 @@ export default function Offers({ sellerId, action }: Props) {
         isError={isError}
         showSeller={false}
         action={action}
+        showInvalidOffers={showInvalidOffers}
+        address={address}
       />
       <div ref={intersect}></div>
     </>
