@@ -21,7 +21,7 @@ const getFirstNOffers = async (numberOfOffers: number): Promise<Offer[]> => {
     ...Array(Math.max(0, numberOfOffers - defaultMockOffers.length))
       .fill(0)
       .map((_v, idx) => {
-        const id = `${maxOfferId + idx}`;
+        const id = `${maxOfferId + idx + 1}`;
         return {
           ...defaultMockOffers[0],
           id,
@@ -475,7 +475,7 @@ test.describe("Explore page", () => {
       await page.waitForTimeout(500);
 
       let uiOffers = page.locator("[data-testid=offer]");
-
+      await page.pause();
       let offerCount = await uiOffers.count();
       expect(offerCount).toStrictEqual(visibleOffersPerPage);
 
