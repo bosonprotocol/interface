@@ -68,6 +68,7 @@ root.render(
                 }
               />
               {[
+                OffersRoutes.Root,
                 BosonRoutes.Explore,
                 BosonRoutes.ExplorePage,
                 BosonRoutes.ExplorePageByIndex
@@ -88,14 +89,6 @@ root.render(
                 element={
                   <React.Suspense fallback={<Loading />}>
                     <CreateOffer />
-                  </React.Suspense>
-                }
-              />
-              <Route
-                path={OffersRoutes.Root}
-                element={
-                  <React.Suspense fallback={<Loading />}>
-                    <Landing />
                   </React.Suspense>
                 }
               />
