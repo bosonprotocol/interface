@@ -15,10 +15,10 @@ const Root = styled.div`
   background-color: #0004;
 `;
 
-const Content = styled.div`
+const Content = styled.div<{ $styles: Props["$styles"] }>`
   margin: 24px;
   color: var(--accent);
-  width: 60%;
+  width: ${(props) => props.$styles?.width || "60%"};
   border-radius: 8px;
   padding: 16px;
   background-color: var(--primary);
@@ -43,10 +43,13 @@ const CloseButton = styled(IoIosClose)`
 interface Props {
   children: ReactNode;
   isOpen: boolean;
+  $styles?: {
+    width: string;
+  };
   onClose?: () => void;
 }
 
-export function Modal({ children, isOpen, onClose }: Props) {
+export function Modal({ children, isOpen, onClose, $styles }: Props) {
   if (!isOpen) {
     return null;
   }
@@ -56,6 +59,7 @@ export function Modal({ children, isOpen, onClose }: Props) {
   return createPortal(
     <Root onClick={onCloseModal}>
       <Content
+        $styles={$styles}
         onClick={(e) => {
           e.stopPropagation();
         }}

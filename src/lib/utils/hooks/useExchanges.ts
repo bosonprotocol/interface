@@ -3,6 +3,7 @@ import { useQuery } from "react-query";
 
 import { Offer } from "../../types/offer";
 import { fetchSubgraph } from "../core-components/subgraph";
+import { checkOfferMetadata } from "../validators";
 import { offerGraphQl } from "./useOffers/graphql";
 
 interface Props {
@@ -78,7 +79,8 @@ export function useExchanges(
         }
       );
       return (
-        result?.exchanges.map((exchange, idx) => {
+        result?.exchanges.map((exchange) => {
+          const isValid = checkOfferMetadata(exchange.offer);
           return {
             ...exchange,
             offer: {
@@ -87,7 +89,7 @@ export function useExchanges(
                 ...exchange.offer.metadata,
                 imageUrl: `https://picsum.photos/seed/${exchange.offer.id}/700`
               },
-              isValid: idx === 0 ? false : true
+              isValid
             } as Offer
           };
         }) ?? []

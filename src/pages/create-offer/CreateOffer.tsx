@@ -72,28 +72,31 @@ const ErrorMsg = styled.div`
 const dayInMs = 1000 * 60 * 60 * 24;
 const minuteInMS = 1000 * 60;
 
+const initialValues = {
+  name: `Baggy jeans ${Math.ceil(Math.random() * 1000)}`,
+  description: "Lore ipsum",
+  externalUrl: window.location.origin,
+  schemaUrl: "https://schema.org/schema",
+  disputeResolverId: "1",
+  price: "0.00002",
+  sellerDeposit: "0.00002",
+  protocolFee: "0.00001",
+  buyerCancelPenalty: "0.00001",
+  quantityAvailable: "10",
+  exchangeToken: "0x0000000000000000000000000000000000000000",
+  voucherRedeemableFromDateInMS: (Date.now() + 3 * minuteInMS).toString(),
+  voucherRedeemableUntilDateInMS: (Date.now() + 20 * dayInMs).toString(),
+  validFromDateInMS: (Date.now() + 3 * minuteInMS).toString(),
+  validUntilDateInMS: (Date.now() + dayInMs).toString(),
+  fulfillmentPeriodDurationInMS: dayInMs.toString(),
+  resolutionPeriodDurationInMS: dayInMs.toString()
+};
+
 export default function CreateOffer() {
   const [errorMessage, setErrorMessage] = useState<string>("");
+
   const { values, handleChange, handleSubmit } = useFormik({
-    initialValues: {
-      name: "Baggy jeans",
-      description: "Lore ipsum",
-      externalUrl: window.location.origin,
-      schemaUrl: "https://schema.org/schema",
-      disputeResolverId: "1",
-      price: "2",
-      sellerDeposit: "2",
-      protocolFee: "1",
-      buyerCancelPenalty: "1",
-      quantityAvailable: "10",
-      exchangeToken: "0x0000000000000000000000000000000000000000",
-      voucherRedeemableFromDateInMS: (Date.now() + minuteInMS).toString(),
-      voucherRedeemableUntilDateInMS: (Date.now() + 2 * dayInMs).toString(),
-      validFromDateInMS: (Date.now() + minuteInMS).toString(),
-      validUntilDateInMS: (Date.now() + dayInMs).toString(),
-      fulfillmentPeriodDurationInMS: dayInMs.toString(),
-      resolutionPeriodDurationInMS: dayInMs.toString()
-    },
+    initialValues,
     onSubmit: async (values) => {
       try {
         if (!values) {
