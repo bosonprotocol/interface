@@ -95,7 +95,7 @@ root.render(
                 path={OffersRoutes.Root}
                 element={
                   <React.Suspense fallback={<Loading />}>
-                    <Explore />
+                    <Landing />
                   </React.Suspense>
                 }
               />
