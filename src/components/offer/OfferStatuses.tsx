@@ -6,7 +6,6 @@ import { Offer } from "../../lib/types/offer";
 
 const Statuses = styled.div`
   display: flex;
-  width: 100%;
   gap: 2px;
 `;
 

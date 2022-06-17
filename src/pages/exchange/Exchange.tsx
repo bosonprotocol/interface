@@ -45,6 +45,22 @@ const ImageAndDescription = styled.div`
   }
 `;
 
+const StatusContainer = styled.div`
+  width: 100%;
+  position: absolute;
+`;
+
+const StatusSubContainer = styled.div`
+  max-width: 700px;
+  width: 700px;
+  position: relative;
+  margin: 0 auto;
+
+  @media (min-width: 981px) {
+    width: initial;
+  }
+`;
+
 const ImageContainer = styled.div`
   display: flex;
   justify-content: left;
@@ -53,8 +69,9 @@ const ImageContainer = styled.div`
 
   [data-testid="statuses"] {
     position: absolute;
-    top: 2px;
-    right: 2px;
+    right: 5px;
+    top: 5px;
+    margin: 0 auto;
     justify-content: center;
   }
 `;
@@ -294,7 +311,13 @@ export default function Exchange() {
       <Root>
         <ImageAndDescription>
           <ImageContainer>
-            {isSeller && <OfferStatuses offer={offer} />}
+            {isSeller && (
+              <StatusContainer>
+                <StatusSubContainer>
+                  <OfferStatuses offer={offer} />
+                </StatusSubContainer>
+              </StatusContainer>
+            )}
             {offerImg ? (
               <Image data-testid="image" src={offerImg} />
             ) : (

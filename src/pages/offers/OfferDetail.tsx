@@ -1,6 +1,6 @@
 import { manageOffer } from "@bosonprotocol/widgets-sdk";
 import { Image as AccountImage } from "@davatar/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
 import { IoIosImage, IoIosInformationCircleOutline } from "react-icons/io";
 import { generatePath, useLocation, useParams } from "react-router-dom";
 import styled from "styled-components";
@@ -16,6 +16,7 @@ import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryPa
 import { useOffer } from "../../lib/utils/hooks/useOffers/useOffer";
 import AddressContainer from "./../../components/offer/AddressContainer";
 import RootPrice from "./../../components/price";
+import CreatedExchangeModal from "./CreatedExchangeModal";
 
 const Root = styled.div`
   display: flex;
@@ -45,6 +46,22 @@ const ImageAndDescription = styled.div`
   }
 `;
 
+const StatusContainer = styled.div`
+  width: 100%;
+  position: absolute;
+`;
+
+const StatusSubContainer = styled.div`
+  max-width: 700px;
+  width: 700px;
+  position: relative;
+  margin: 0 auto;
+
+  @media (min-width: 981px) {
+    width: initial;
+  }
+`;
+
 const ImageContainer = styled.div`
   display: flex;
   justify-content: left;
@@ -54,8 +71,9 @@ const ImageContainer = styled.div`
 
   [data-testid="statuses"] {
     position: absolute;
-    top: 2px;
-    right: 2px;
+    right: 5px;
+    top: 5px;
+    margin: 0 auto;
     justify-content: center;
   }
 `;
@@ -220,7 +238,13 @@ export default function OfferDetail() {
   const location = useLocation();
   const fromAccountPage =
     (location.state as { from: string })?.from === BosonRoutes.YourAccount;
-  const [isTabSellerSelected, setTabSellerSelected] = useState(fromAccountPage);
+  const [isTabSellerSelected, setTabSellerSelected] =
+    useState<boolean>(fromAccountPage);
+  const [createdExchangeId, setCreatedExchangeId] = useState<string>("");
+  const [isCreatedExchangeModalOpen, toggleCreatedExchangeModal] = useReducer(
+    (state) => !state,
+    false
+  );
   const { data: account } = useAccount();
   const address = account?.address || "";
   const navigate = useKeepQueryParamsNavigate();
@@ -256,6 +280,20 @@ export default function OfferDetail() {
 
     return;
   }, [offer, isTabSellerSelected, address]);
+
+  useEffect(() => {
+    function handleMessageFromIframe(e: MessageEvent) {
+      const { target, message, exchangeId } = e.data || {};
+
+      if (target === "boson" && message === "created-exchange") {
+        setCreatedExchangeId(exchangeId);
+        toggleCreatedExchangeModal();
+      }
+    }
+
+    window.addEventListener("message", handleMessageFromIframe);
+    return () => window.removeEventListener("message", handleMessageFromIframe);
+  }, []);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -294,7 +332,13 @@ export default function OfferDetail() {
       <Root>
         <ImageAndDescription>
           <ImageContainer>
-            {isSeller && <OfferStatuses offer={offer} />}
+            {isSeller && (
+              <StatusContainer>
+                <StatusSubContainer>
+                  <OfferStatuses offer={offer} />
+                </StatusSubContainer>
+              </StatusContainer>
+            )}
             {offerImg ? (
               <Image data-testid="image" src={offerImg} />
             ) : (
@@ -374,6 +418,11 @@ export default function OfferDetail() {
           <ChildrenContainer>
             <WidgetContainer ref={widgetRef}></WidgetContainer>
           </ChildrenContainer>
+          <CreatedExchangeModal
+            isOpen={isCreatedExchangeModalOpen}
+            onClose={() => toggleCreatedExchangeModal()}
+            exchangeId={createdExchangeId}
+          />
         </Content>
       </Root>
     </>
