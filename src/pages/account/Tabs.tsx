@@ -36,7 +36,7 @@ const TabTitle = styled.div<{ $isActive: boolean }>`
     border-bottom: 3px solid;
     border-color: ${({ $isActive }) =>
       $isActive ? colors.green : "transparent"};
-    color: ${({ $isActive }) => ($isActive ? colors.green : colors.white)};
+    color: ${({ $isActive }) => ($isActive ? colors.green : "inherit")};
   }
 `;
 

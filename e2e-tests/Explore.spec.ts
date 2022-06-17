@@ -3,41 +3,14 @@ import { assertOffer } from "./assert/offer";
 import { assertUrlToEqualQueryParam, queryParams } from "./assert/queryParams";
 import { assertUrlHashToEqual } from "./assert/urlParams";
 import { expect, test } from "./baseFixtures";
-import { defaultMockOffers } from "./mocks/defaultMockOffers";
 import { mockSubgraph } from "./mocks/mockGetBase";
+import { getFirstNOffers } from "./utils/getFirstNOffers";
 import { sortOffersBy } from "./utils/sort";
 import { DEFAULT_TIMEOUT } from "./utils/timeouts";
 
 const exploreUrl = "/#/explore";
 const offersPerPage = 11;
 const visibleOffersPerPage = offersPerPage - 1;
-
-const getFirstNOffers = async (numberOfOffers: number): Promise<Offer[]> => {
-  let maxOfferId = 0;
-  const offers: Offer[] = [
-    ...defaultMockOffers.map((offer) => {
-      maxOfferId = Math.max(maxOfferId, Number(offer.id));
-      return { ...offer };
-    }),
-    ...Array(Math.max(0, numberOfOffers - defaultMockOffers.length))
-      .fill(0)
-      .map((_v, idx) => {
-        const id = `${maxOfferId + idx + 1}`;
-        return {
-          ...defaultMockOffers[0],
-          id,
-          seller: {
-            ...defaultMockOffers[0].seller,
-            id
-          }
-        };
-      })
-  ]
-    .slice(0, numberOfOffers)
-    .sort(sortOffersBy({ property: "name", asc: true }));
-  expect(offers.length).toStrictEqual(numberOfOffers);
-  return offers;
-};
 
 test.describe("Explore page", () => {
   test.describe("Header & footer", () => {
@@ -183,17 +156,20 @@ test.describe("Explore page", () => {
       test("that query params are kept when navigating between pages", async ({
         page
       }) => {
-        const mockOffers = defaultMockOffers.map((offer) => ({
+        const mockOffers = getFirstNOffers(20).map((offer) => ({
           ...offer
         }));
-        const first10Offers = mockOffers.slice(0, 10);
-        const second10Offers = mockOffers.slice(0, 10);
+        const first10Offers = mockOffers.slice(0, offersPerPage);
+        const second10Offers = mockOffers.slice(offersPerPage);
 
         await mockSubgraph({
           page,
           options: {
             mockGetOffers: {
-              offersPerPage: [first10Offers, second10Offers]
+              offersPerPage: {
+                offersList: [first10Offers, second10Offers],
+                countOffersPerPage: offersPerPage
+              }
             }
           }
         });
@@ -223,17 +199,20 @@ test.describe("Explore page", () => {
       test("that applying a filter reverts the user to page 1", async ({
         page
       }) => {
-        const mockOffers = defaultMockOffers.map((offer) => ({
+        const mockOffers = getFirstNOffers(20).map((offer) => ({
           ...offer
         }));
-        const first10Offers = mockOffers.slice(0, 10);
-        const second10Offers = mockOffers.slice(0, 10);
+        const first10Offers = mockOffers.slice(0, offersPerPage);
+        const second10Offers = mockOffers.slice(offersPerPage);
 
         await mockSubgraph({
           page,
           options: {
             mockGetOffers: {
-              offersPerPage: [first10Offers, second10Offers]
+              offersPerPage: {
+                offersList: [first10Offers, second10Offers],
+                countOffersPerPage: offersPerPage
+              }
             }
           }
         });
@@ -290,8 +269,10 @@ test.describe("Explore page", () => {
           page,
           options: {
             mockGetOffers: {
-              offersPerPage: [offers1stPage, offers2ndPage],
-              countOffersPerPage: offersPerPage
+              offersPerPage: {
+                offersList: [offers1stPage, offers2ndPage],
+                countOffersPerPage: offersPerPage
+              }
             }
           }
         });
@@ -324,8 +305,10 @@ test.describe("Explore page", () => {
           page,
           options: {
             mockGetOffers: {
-              offersPerPage: [offers1stPage, offers2ndPage],
-              countOffersPerPage: offersPerPage
+              offersPerPage: {
+                offersList: [offers1stPage, offers2ndPage],
+                countOffersPerPage: offersPerPage
+              }
             }
           }
         });
@@ -359,8 +342,10 @@ test.describe("Explore page", () => {
         page,
         options: {
           mockGetOffers: {
-            offersPerPage: [offers1stPage, offers2ndPage],
-            countOffersPerPage: offersPerPage
+            offersPerPage: {
+              offersList: [offers1stPage, offers2ndPage],
+              countOffersPerPage: offersPerPage
+            }
           }
         }
       });
@@ -393,7 +378,7 @@ test.describe("Explore page", () => {
           // missing description among other fields
         }
       };
-      const mockedOffers = [{ ...defaultMockOffers[0] }, invalidOffer].map(
+      const mockedOffers = [{ ...getFirstNOffers(1)[0] }, invalidOffer].map(
         (offer) => ({ offer })
       );
 
@@ -420,9 +405,8 @@ test.describe("Explore page", () => {
       page
     }) => {
       const numberOfOffers = 10;
-      const first10Offers = defaultMockOffers
+      const first10Offers = getFirstNOffers(numberOfOffers)
         .map((offer) => ({ offer: { ...offer } }))
-        .slice(0, numberOfOffers)
         .sort(sortOffersBy({ property: "name", asc: true }));
 
       await mockSubgraph({
@@ -466,8 +450,10 @@ test.describe("Explore page", () => {
         page,
         options: {
           mockGetOffers: {
-            offersPerPage: [offers1stPage, offers2ndPage],
-            countOffersPerPage: offersPerPage
+            offersPerPage: {
+              offersList: [offers1stPage, offers2ndPage],
+              countOffersPerPage: offersPerPage
+            }
           }
         }
       });
@@ -476,7 +462,6 @@ test.describe("Explore page", () => {
       await page.waitForTimeout(DEFAULT_TIMEOUT);
 
       let uiOffers = page.locator("[data-testid=offer]");
-      await page.pause();
       let offerCount = await uiOffers.count();
       expect(offerCount).toStrictEqual(visibleOffersPerPage);
 

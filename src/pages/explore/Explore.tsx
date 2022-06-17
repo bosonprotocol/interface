@@ -54,7 +54,7 @@ const CurrencyOrSellerSelect = styled(BrandSelect)`
 
 const GoButton = styled.button`
   width: 100px;
-  background: ${colors.green};
+  background: var(--secondary);
   color: ${colors.navy};
   border-radius: 5px;
   font-size: 16px;

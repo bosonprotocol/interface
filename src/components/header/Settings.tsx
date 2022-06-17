@@ -50,7 +50,7 @@ const Input = styled.input`
 
 const SaveButton = styled.button`
   padding: 8px;
-  background: ${colors.green};
+  background: var(--secondary);
   color: ${colors.black};
   border-radius: 5px;
   font-size: 16px;

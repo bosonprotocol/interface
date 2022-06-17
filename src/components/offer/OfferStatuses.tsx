@@ -1,8 +1,8 @@
+import { offers } from "@bosonprotocol/core-sdk";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
-import { getIsOfferExpired } from "../../lib/utils/getIsOfferExpired";
 
 const Statuses = styled.div`
   display: flex;
@@ -22,7 +22,8 @@ interface Props {
 }
 
 export default function OfferStatuses({ offer }: Props) {
-  const isExpired = getIsOfferExpired(offer);
+  const status = offers.getOfferStatus(offer);
+  const isExpired = status === offers.OfferState.EXPIRED;
   const isMetadataValid = offer.isValid;
 
   return (

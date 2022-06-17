@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { generatePath, useNavigate, useParams } from "react-router-dom";
+import { generatePath, useParams } from "react-router-dom";
 import styled from "styled-components";
 
 import OfferList from "../../components/offers/OfferList";
@@ -10,6 +10,7 @@ import {
 import { BosonRoutes } from "../../lib/routing/routes";
 import { footerHeight } from "../../lib/styles/layout";
 import { Offer } from "../../lib/types/offer";
+import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useOffers } from "../../lib/utils/hooks/useOffers/";
 import { usePrevious } from "../../lib/utils/hooks/usePrevious";
 import Pagination from "./Pagination";
@@ -33,7 +34,7 @@ interface Props {
 }
 
 const updatePageIndexInUrl =
-  (navigate: ReturnType<typeof useNavigate>) =>
+  (navigate: ReturnType<typeof useKeepQueryParamsNavigate>) =>
   (
     index: number,
     queryParams: { [x in keyof typeof QueryParameters]: string }
@@ -42,13 +43,17 @@ const updatePageIndexInUrl =
       Object.entries(queryParams).filter(([, value]) => value !== "")
     ).toString();
     if (index === 0) {
-      navigate(generatePath(`${BosonRoutes.Explore}?${queryParamsUrl}`));
+      navigate({
+        pathname: BosonRoutes.Explore,
+        search: queryParamsUrl
+      });
     } else {
-      navigate(
-        generatePath(`${BosonRoutes.ExplorePageByIndex}?${queryParamsUrl}`, {
+      navigate({
+        pathname: generatePath(BosonRoutes.ExplorePageByIndex, {
           [UrlParameters.page]: index + 1 + ""
-        })
-      );
+        }),
+        search: queryParamsUrl
+      });
     }
   };
 
@@ -58,7 +63,7 @@ const DEFAULT_PAGE = 0;
 export default function ExploreOffers(props: Props) {
   const { brand, name, exchangeTokenAddress, sellerId } = props;
   const params = useParams();
-  const navigate = useNavigate();
+  const navigate = useKeepQueryParamsNavigate();
   const updateUrl = (index: number) =>
     updatePageIndexInUrl(navigate)(index, {
       name: name ?? "",

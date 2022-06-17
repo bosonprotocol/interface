@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
 import { IoIosContact } from "react-icons/io";
-import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import { BosonRoutes } from "../../lib/routing/routes";
-import { colors } from "../../lib/styles/colors";
+import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 
 const AccountSvgIcon = styled.button`
   all: unset;
   display: flex;
   align-items: center;
   :hover * {
-    fill: ${colors.green};
+    fill: var(--secondary);
   }
   :hover {
     cursor: pointer;
@@ -27,11 +26,11 @@ interface Props {
   isConnected: boolean;
 }
 export default function Account({ connect, isConnected }: Props) {
-  const navigate = useNavigate();
+  const navigate = useKeepQueryParamsNavigate();
   const [isClicked, setIsClicked] = useState(false);
   useEffect(() => {
     if (isConnected && isClicked) {
-      navigate(BosonRoutes.YourAccount);
+      navigate({ pathname: BosonRoutes.YourAccount });
     }
   }, [isConnected, isClicked]);
   return (
@@ -39,7 +38,7 @@ export default function Account({ connect, isConnected }: Props) {
       data-testid="account"
       onClick={() => {
         if (isConnected) {
-          navigate(BosonRoutes.YourAccount);
+          navigate({ pathname: BosonRoutes.YourAccount });
         } else {
           connect();
           setIsClicked(true);

@@ -1,16 +1,28 @@
-import bosonIcon from "./images/boson.svg";
-import daiIcon from "./images/dai.svg";
-import ethIcon from "./images/eth-icon.svg";
+import styled from "styled-components";
+
+import { ReactComponent as bosonIcon } from "./images/boson.svg";
+import { ReactComponent as daiIcon } from "./images/dai.svg";
+import { ReactComponent as ethIcon } from "./images/eth-icon.svg";
 
 const currencyImages = {
   DAI: daiIcon,
   BOSON: bosonIcon,
   ETH: ethIcon
-};
+} as const;
 
 interface Props {
   currencySymbol: string;
 }
+
+const IconContainer = styled.div`
+  display: flex;
+  align-items: center;
+  transform: scale(1.5);
+  margin-right: 2px;
+  path {
+    fill: var(--accent);
+  }
+`;
 
 export default function CurrencyIcon({ currencySymbol }: Props) {
   const symbolUpperCase =
@@ -19,5 +31,10 @@ export default function CurrencyIcon({ currencySymbol }: Props) {
   if (!currencyImages[symbolUpperCase]) {
     return null;
   }
-  return <img src={currencyImages[symbolUpperCase]} alt="currency icon" />;
+  const Icon = currencyImages["ETH"];
+  return (
+    <IconContainer>
+      <Icon />
+    </IconContainer>
+  );
 }

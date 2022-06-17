@@ -12,28 +12,25 @@ export interface MockProps {
       value: string;
       property: string;
     };
-    offersPerPage?: Offer[][];
-    countOffersPerPage?: number;
+    offersPerPage?: {
+      offersList: Offer[][];
+      countOffersPerPage: number;
+    };
   };
 }
 export async function mockGetOffers({
   postData,
-  options: {
-    offers = defaultMockOffers,
-    response,
-    offersPerPage,
-    countOffersPerPage
-  } = {}
+  options: { offers = defaultMockOffers, response, offersPerPage } = {}
 }: MockProps) {
   let baseMetadataEntities = null;
   if (!response && postData) {
     let idx = 0;
     const { variables } = JSON.parse(postData);
 
-    if (variables.skip !== undefined && countOffersPerPage && offersPerPage) {
+    if (variables.skip !== undefined && offersPerPage) {
       const skip = variables.skip || 0;
-      idx = Math.ceil(skip / countOffersPerPage);
-      offers = offersPerPage[idx] || [];
+      idx = Math.ceil(skip / offersPerPage.countOffersPerPage);
+      offers = offersPerPage.offersList[idx] || [];
     }
 
     if (variables.first !== undefined) {

@@ -18,33 +18,33 @@ const CreateOfferContainer = styled(Layout)`
   overflow: hidden;
 `;
 
-const StyledForm = styled.form`
+export const StyledForm = styled.form`
   width: 100%;
 `;
 
-const FormElement = styled.div`
+export const FormElement = styled.div`
   display: flex;
   flex-direction: column;
 `;
 
-const FormLabel = styled.label`
+export const FormLabel = styled.label`
   margin-bottom: 6px;
 `;
 
-const FormControl = styled.input`
+export const FormControl = styled.input`
   font-family: "Manrope", sans-serif;
   padding: 10px;
   border-radius: 6px;
 `;
 
-const Button = styled.button`
+export const Button = styled.button`
   all: unset;
   display: flex;
   justify-content: center;
   border-radius: 6px;
   font-weight: bold;
   width: 100%;
-  background-color: ${colors.green};
+  background-color: var(--secondary);
   padding: 10px 0;
   font-size: 16px;
   text-transform: uppercase;
@@ -52,7 +52,7 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
-const FormElementsContainer = styled.div`
+export const FormElementsContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr;
   grid-row-gap: 20px;

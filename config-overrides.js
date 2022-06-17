@@ -4,23 +4,6 @@
 const { override, addBabelPlugins } = require("customize-cra");
 
 // module.exports = override(addBabelPlugins("babel-plugin-styled-components"));
-// module.exports = override(
-//   process.env.USE_BABEL_PLUGIN_ISTANBUL &&
-//     addBabelPlugins("babel-plugin-istanbul"),
-//   function override(config) {
-//     console.log(
-//       "🚀 ~ file: config-overrides.js ~ line 9 ~ override ~ config",
-//       config
-//     );
-
-//     let loaders = config.resolve;
-//     loaders.fallback = {
-//       util: require.resolve("util/")
-//     };
-
-//     return config;
-//   }
-// );
 
 // // eslint-disable-next-line @typescript-eslint/no-var-requires
 // const { alias, aliasJest, configPaths } = require("react-app-rewire-alias");

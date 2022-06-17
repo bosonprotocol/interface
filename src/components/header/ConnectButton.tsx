@@ -27,7 +27,7 @@ const OutlineButton = styled(BaseButton)`
 `;
 
 const GreenButton = styled(BaseButton)`
-  background: ${colors.green};
+  background: var(--secondary);
   color: ${colors.navy};
 `;
 

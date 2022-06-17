@@ -1,16 +1,9 @@
-import {
-  Chain,
-  darkTheme,
-  getDefaultWallets,
-  Theme
-} from "@rainbow-me/rainbowkit";
-import merge from "lodash.merge";
+import { Chain, getDefaultWallets } from "@rainbow-me/rainbowkit";
 import { chain, configureChains, createClient } from "wagmi";
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 
 import ethIcon from "./assets/ethereum-chain-icon.svg";
 import { CONFIG } from "./config";
-import { colors } from "./styles/colors";
 
 const supportedChains: Readonly<Array<number>> = [
   chain.ropsten.id,
@@ -70,26 +63,3 @@ export const wagmiClient = createClient({
   connectors,
   provider
 });
-
-export const walletConnectionTheme = merge(
-  darkTheme({ borderRadius: "medium" }),
-  {
-    colors: {
-      accentColor: colors.green,
-      accentColorForeground: colors.navy,
-      closeButtonBackground: colors.navy,
-      actionButtonBorder: colors.navy,
-      profileForeground: colors.navy,
-      modalBackground: colors.navy,
-      modalBorder: colors.navy,
-      modalText: colors.white,
-      modalTextSecondary: colors.lightGrey
-    },
-    shadows: {
-      connectButton: "none"
-    },
-    fonts: {
-      body: "Manrope, sans-serif"
-    }
-  } as Theme
-);
