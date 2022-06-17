@@ -54,7 +54,7 @@ export default function PublicAccount() {
 
         <AddressContainer>
           <CurrencyIcon currencySymbol="ETH" />
-          <AddressText address={address || ""} />
+          <AddressText address={address} />
         </AddressContainer>
       </BasicInfo>
       <Tabs isPrivateProfile={false} address={address} />
