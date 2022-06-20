@@ -222,6 +222,19 @@ const InfoIcon = styled(IoIosInformationCircleOutline).attrs({
   font-size: 27px;
 `;
 
+const ChatWithButton = styled.button.attrs({
+  type: "button"
+})`
+  border-radius: 15px;
+  padding: 5px 0;
+  background-color: var(--secondary);
+  cursor: pointer;
+
+  :hover {
+    background-color: var(--accent);
+  }
+`;
+
 function isAccountSeller(offer: Offer, account: string): boolean {
   if (offer.seller.clerk.toLowerCase() === account.toLowerCase()) return true;
   if (offer.seller.operator.toLowerCase() === account.toLowerCase())
@@ -305,7 +318,10 @@ export default function Exchange() {
   const sellerAddress = offer.seller?.operator;
   // const isOfferValid = getIsOfferValid(offer);
   const description = offer.metadata?.description || "";
-
+  const buyerAddress = exchanges.find((exchange) => exchange.id === exchangeId)
+    ?.buyer.wallet;
+  const chatWithAddress = isSeller ? buyerAddress : sellerAddress;
+  const isBuyer = buyerAddress?.toLowerCase() === address?.toLowerCase();
   return (
     <>
       <Root>
@@ -397,6 +413,24 @@ export default function Exchange() {
           <ChildrenContainer>
             <WidgetContainer ref={widgetRef}></WidgetContainer>
           </ChildrenContainer>
+          {(isSeller || isBuyer) && (
+            <ChatWithButton
+              onClick={() =>
+                navigate({
+                  pathname: generatePath(BosonRoutes.ChatWith, {
+                    [UrlParameters.address]: chatWithAddress
+                  })
+                })
+              }
+            >
+              Chat with{" "}
+              {isSeller && !isBuyer
+                ? "the buyer"
+                : isBuyer && !isSeller
+                ? "the seller"
+                : "yourself"}
+            </ChatWithButton>
+          )}
         </Content>
       </Root>
     </>

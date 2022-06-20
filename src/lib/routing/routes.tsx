@@ -9,7 +9,9 @@ export const BosonRoutes = {
   Exchange: `/exchange/:${UrlParameters.exchangeId}`,
   YourAccount: `/account`,
   Account: `/account/:${UrlParameters.accountId}`,
-  CreateStorefront: "/custom-store"
+  CreateStorefront: "/custom-store",
+  Chat: "/chat",
+  ChatWith: `/chat/:${UrlParameters.address}`
 } as const;
 
 export const OffersRoutes = {

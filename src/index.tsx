@@ -32,6 +32,7 @@ const PublicOrPrivateAccount = React.lazy(
 const CustomStore = React.lazy(
   () => import("./pages/custom-store/CustomStore")
 );
+const ChatContainer = React.lazy(() => import("./pages/chat/ChatContainer"));
 
 const Loading = () => (
   <Layout>
@@ -132,7 +133,16 @@ root.render(
                   </React.Suspense>
                 }
               />
-
+              {[BosonRoutes.Chat, BosonRoutes.ChatWith].map((route) => (
+                <Route
+                  path={route}
+                  element={
+                    <React.Suspense fallback={<Loading />}>
+                      <ChatContainer />
+                    </React.Suspense>
+                  }
+                />
+              ))}
               <Route
                 path="*"
                 element={

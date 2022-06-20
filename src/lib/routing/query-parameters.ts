@@ -8,5 +8,6 @@ export const UrlParameters = {
   offerId: "id",
   exchangeId: "id",
   accountId: "id",
+  address: "address",
   page: "page"
 } as const;

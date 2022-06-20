@@ -38,6 +38,7 @@ export function useExchanges(
           };
           buyer: {
             id: string;
+            wallet: string;
           };
           offer: Offer;
         }[];
@@ -67,6 +68,7 @@ export function useExchanges(
             }
             buyer {
               id
+              wallet
             }
             offer ${offerGraphQl}
           }
