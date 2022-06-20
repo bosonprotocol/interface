@@ -22,6 +22,8 @@ module.exports = {
       let loaders = config.resolve;
       loaders.fallback = {
         util: require.resolve("util/")
+        // assert: require.resolve("assert/"),
+        // stream: require.resolve("stream-browserify")
       };
 
       return config;

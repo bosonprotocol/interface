@@ -82,7 +82,9 @@ export default function Settings() {
         <p onClick={() => navigate({ pathname: BosonRoutes.CreateStorefront })}>
           Custom storefront
         </p>
-        <p onClick={() => navigate({ pathname: BosonRoutes.Chat })}>Chat</p>
+        <p onClick={() => navigate({ pathname: BosonRoutes.Chat })}>
+          Chat overview
+        </p>
       </DropdownItem>
     </>
   );

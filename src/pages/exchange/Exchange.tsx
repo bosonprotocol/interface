@@ -1,6 +1,6 @@
 import { manageExchange } from "@bosonprotocol/widgets-sdk";
 import { Image as AccountImage } from "@davatar/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
 import { IoIosImage, IoIosInformationCircleOutline } from "react-icons/io";
 import { generatePath, useLocation, useParams } from "react-router-dom";
 import styled from "styled-components";
@@ -16,6 +16,7 @@ import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import DeliveryInfoModal from "./DeliveryInfoModal";
 
 const Root = styled.div`
   display: flex;
@@ -249,6 +250,7 @@ export default function Exchange() {
   const fromAccountPage =
     (location.state as { from: string })?.from === BosonRoutes.YourAccount;
   const [isTabSellerSelected, setTabSellerSelected] = useState(fromAccountPage);
+  const [isModalOpen, toggleModal] = useReducer((state) => !state, false);
   const { data: account } = useAccount();
   const address = account?.address || "";
 
@@ -287,6 +289,19 @@ export default function Exchange() {
     return;
   }, [offer, isTabSellerSelected, exchangeId]);
 
+  useEffect(() => {
+    function handleMessageFromIframe(e: MessageEvent) {
+      const { target, message } = e.data || {};
+
+      if (target === "boson" && message === "redeemed-voucher") {
+        toggleModal();
+      }
+    }
+
+    window.addEventListener("message", handleMessageFromIframe);
+    return () => window.removeEventListener("message", handleMessageFromIframe);
+  }, []);
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -322,6 +337,26 @@ export default function Exchange() {
     ?.buyer.wallet;
   const chatWithAddress = isSeller ? buyerAddress : sellerAddress;
   const isBuyer = buyerAddress?.toLowerCase() === address?.toLowerCase();
+
+  const ChatComponent =
+    isSeller || isBuyer ? (
+      <ChatWithButton
+        onClick={() =>
+          navigate({
+            pathname: generatePath(BosonRoutes.ChatWith, {
+              [UrlParameters.address]: chatWithAddress
+            })
+          })
+        }
+      >
+        Chat with{" "}
+        {isSeller && !isBuyer
+          ? "the buyer"
+          : isBuyer && !isSeller
+          ? "the seller"
+          : "yourself"}
+      </ChatWithButton>
+    ) : null;
   return (
     <>
       <Root>
@@ -413,24 +448,13 @@ export default function Exchange() {
           <ChildrenContainer>
             <WidgetContainer ref={widgetRef}></WidgetContainer>
           </ChildrenContainer>
-          {(isSeller || isBuyer) && (
-            <ChatWithButton
-              onClick={() =>
-                navigate({
-                  pathname: generatePath(BosonRoutes.ChatWith, {
-                    [UrlParameters.address]: chatWithAddress
-                  })
-                })
-              }
-            >
-              Chat with{" "}
-              {isSeller && !isBuyer
-                ? "the buyer"
-                : isBuyer && !isSeller
-                ? "the seller"
-                : "yourself"}
-            </ChatWithButton>
-          )}
+          {ChatComponent}
+          <DeliveryInfoModal
+            isOpen={isModalOpen}
+            onClose={() => toggleModal()}
+            exchangeId={exchangeId}
+            ChatComponent={ChatComponent}
+          />
         </Content>
       </Root>
     </>
