@@ -175,7 +175,7 @@ export default function CustomStore() {
         <PreviewContainer>
           <Collapse title={<p>Preview</p>}>
             <iframe
-              src={`http://localhost:3000/#/?${queryParams}`}
+              src={`${window.location.origin}/#/?${queryParams}`}
               width="100%"
               height="500px"
             ></iframe>
