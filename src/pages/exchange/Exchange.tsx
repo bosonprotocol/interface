@@ -338,25 +338,13 @@ export default function Exchange() {
   const chatWithAddress = isSeller ? buyerAddress : sellerAddress;
   const isBuyer = buyerAddress?.toLowerCase() === address?.toLowerCase();
 
-  const ChatComponent =
-    isSeller || isBuyer ? (
-      <ChatWithButton
-        onClick={() =>
-          navigate({
-            pathname: generatePath(BosonRoutes.ChatWith, {
-              [UrlParameters.address]: chatWithAddress
-            })
-          })
-        }
-      >
-        Chat with{" "}
-        {isSeller && !isBuyer
-          ? "the buyer"
-          : isBuyer && !isSeller
-          ? "the seller"
-          : "yourself"}
-      </ChatWithButton>
-    ) : null;
+  const onClickToChat = () =>
+    navigate({
+      pathname: generatePath(BosonRoutes.ChatWith, {
+        [UrlParameters.address]: chatWithAddress
+      })
+    });
+
   return (
     <>
       <Root>
@@ -448,12 +436,21 @@ export default function Exchange() {
           <ChildrenContainer>
             <WidgetContainer ref={widgetRef}></WidgetContainer>
           </ChildrenContainer>
-          {ChatComponent}
+          {(isSeller || isBuyer) && (
+            <ChatWithButton onClick={onClickToChat}>
+              Chat with{" "}
+              {isSeller && !isBuyer
+                ? "the buyer"
+                : isBuyer && !isSeller
+                ? "the seller"
+                : "yourself"}
+            </ChatWithButton>
+          )}
           <DeliveryInfoModal
             isOpen={isModalOpen}
             onClose={() => toggleModal()}
             exchangeId={exchangeId}
-            ChatComponent={ChatComponent}
+            onClickToChat={onClickToChat}
           />
         </Content>
       </Root>

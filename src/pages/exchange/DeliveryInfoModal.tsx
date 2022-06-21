@@ -1,10 +1,10 @@
-import { ethers, utils } from "ethers";
+import { ethers } from "ethers";
 import { useFormik } from "formik";
 import { useMemo, useState } from "react";
 import styled from "styled-components";
 
+import CopyBadge from "../../components/copyBadge/CopyBadge";
 import { Modal } from "../../components/modal/Modal";
-import { CONFIG } from "../../lib/config";
 import {
   FormControl,
   FormElement,
@@ -35,6 +35,15 @@ const Buttons = styled.div`
   gap: 10px;
 `;
 
+const EncryptedDeliveryInfo = styled.pre`
+  all: unset;
+  display: block;
+  position: relative;
+  code {
+    overflow-wrap: break-word;
+  }
+`;
+
 const CTA = styled.button`
   background-color: var(--secondary);
   color: var(--accentDark);
@@ -45,11 +54,13 @@ const CTA = styled.button`
   cursor: pointer;
 `;
 
+const BackButton = styled(CTA)``;
+
 interface Props {
   isOpen: boolean;
   onClose: () => void;
   exchangeId: string;
-  ChatComponent: JSX.Element | null;
+  onClickToChat: () => void;
 }
 
 interface DeliveryInfoFields {
@@ -66,8 +77,9 @@ export default function DeliveryInfoModal({
   isOpen,
   onClose,
   exchangeId,
-  ChatComponent
+  onClickToChat
 }: Props) {
+  const [isFirstPage, setIsFirstPage] = useState<boolean>(true);
   const [encryptedDeliveryInfo, setEncryptedDeliveryInfo] = useState<string>();
   const styles = useMemo(
     () => ({
@@ -106,110 +118,126 @@ export default function DeliveryInfoModal({
       email: ""
     },
     onSubmit: async (values: DeliveryInfoFields) => {
-      console.log(values);
       const publicKey = await requestPublicKey();
 
-      console.log({ publicKey });
+      // TODO: encrypt 'values' with the seller's public key
+      setEncryptedDeliveryInfo(encryptData(publicKey, JSON.stringify(values)));
 
-      // TODO: comment out
-      // setEncryptedDeliveryInfo(encryptData(publicKey, JSON.stringify(values)));
-      // encrypt 'values' with our public key (temporarily)
+      setIsFirstPage(false);
     }
   });
+
   return (
     <Modal isOpen={isOpen} onClose={() => onClose()} $styles={styles}>
       <ModalContent>
         {exchangeId ? (
           <>
             <Title>Redeem your item</Title>
-            <p>Input your address</p>
-            <StyledForm onSubmit={handleSubmit}>
-              <FormElementsContainer>
-                <FormElement>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl
-                    value={values.name}
-                    onChange={handleChange}
-                    name="name"
-                    type="text"
-                    placeholder="..."
-                  />
-                </FormElement>
-                <FormElement>
-                  <FormLabel>Street Name and Number</FormLabel>
-                  <FormControl
-                    value={values.streetNameAndNumber}
-                    onChange={handleChange}
-                    name="streetNameAndNumber"
-                    type="text"
-                    placeholder="..."
-                  />
-                </FormElement>
-                <FormElement>
-                  <FormLabel>City</FormLabel>
-                  <FormControl
-                    value={values.city}
-                    onChange={handleChange}
-                    name="city"
-                    type="text"
-                    placeholder="..."
-                  />
-                </FormElement>
-                <FormElement>
-                  <FormLabel>State</FormLabel>
+            {isFirstPage ? (
+              <>
+                <p>Input your address</p>
+                <StyledForm onSubmit={handleSubmit}>
+                  <FormElementsContainer>
+                    <FormElement>
+                      <FormLabel>Name</FormLabel>
+                      <FormControl
+                        value={values.name}
+                        onChange={handleChange}
+                        name="name"
+                        type="text"
+                        placeholder="..."
+                      />
+                    </FormElement>
+                    <FormElement>
+                      <FormLabel>Street Name and Number</FormLabel>
+                      <FormControl
+                        value={values.streetNameAndNumber}
+                        onChange={handleChange}
+                        name="streetNameAndNumber"
+                        type="text"
+                        placeholder="..."
+                      />
+                    </FormElement>
+                    <FormElement>
+                      <FormLabel>City</FormLabel>
+                      <FormControl
+                        value={values.city}
+                        onChange={handleChange}
+                        name="city"
+                        type="text"
+                        placeholder="..."
+                      />
+                    </FormElement>
+                    <FormElement>
+                      <FormLabel>State</FormLabel>
 
-                  <FormControl
-                    value={values.state}
-                    onChange={handleChange}
-                    name="state"
-                    type="text"
-                    placeholder="..."
-                  />
-                </FormElement>
-                <FormElement>
-                  <FormLabel>ZIP</FormLabel>
-                  <FormControl
-                    value={values.zip}
-                    onChange={handleChange}
-                    name="zip"
-                    type="text"
-                    placeholder="..."
-                  />
-                </FormElement>
-                <FormElement>
-                  <FormLabel>Country</FormLabel>
-                  <FormControl
-                    value={values.country}
-                    onChange={handleChange}
-                    name="country"
-                    type="text"
-                    placeholder="..."
-                  />
-                </FormElement>
-                <FormElement>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl
-                    value={values.email}
-                    onChange={handleChange}
-                    name="email"
-                    type="email"
-                    placeholder="..."
-                  />
-                </FormElement>
-              </FormElementsContainer>
-              <Buttons>
-                <CTA type="submit">Continue</CTA>
-              </Buttons>
-            </StyledForm>
-            {encryptedDeliveryInfo && (
+                      <FormControl
+                        value={values.state}
+                        onChange={handleChange}
+                        name="state"
+                        type="text"
+                        placeholder="..."
+                      />
+                    </FormElement>
+                    <FormElement>
+                      <FormLabel>ZIP</FormLabel>
+                      <FormControl
+                        value={values.zip}
+                        onChange={handleChange}
+                        name="zip"
+                        type="text"
+                        placeholder="..."
+                      />
+                    </FormElement>
+                    <FormElement>
+                      <FormLabel>Country</FormLabel>
+                      <FormControl
+                        value={values.country}
+                        onChange={handleChange}
+                        name="country"
+                        type="text"
+                        placeholder="..."
+                      />
+                    </FormElement>
+                    <FormElement>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl
+                        value={values.email}
+                        onChange={handleChange}
+                        name="email"
+                        type="email"
+                        placeholder="..."
+                      />
+                    </FormElement>
+                  </FormElementsContainer>
+                  <Buttons>
+                    <CTA type="submit">Continue</CTA>
+                  </Buttons>
+                </StyledForm>
+              </>
+            ) : (
               <>
                 <p>Your delivery info has been encrypted:</p>
-                <p>{encryptedDeliveryInfo}</p>
+                <EncryptedDeliveryInfo>
+                  <CopyBadge textToCopy={encryptedDeliveryInfo || ""} />
+                  <code>{encryptedDeliveryInfo}</code>
+                </EncryptedDeliveryInfo>
+
                 <p>
                   Please copy it and click on the following button to open a
                   conversation with the seller and paste it there
                 </p>
-                {ChatComponent}
+                <Buttons>
+                  <BackButton
+                    type="button"
+                    onClick={() => setIsFirstPage(true)}
+                  >
+                    Back
+                  </BackButton>
+                  <BackButton type="button" onClick={() => onClickToChat()}>
+                    Continue
+                  </BackButton>
+                </Buttons>
               </>
             )}
           </>

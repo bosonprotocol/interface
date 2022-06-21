@@ -1,8 +1,8 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 // INFO about this file in https://github.com/timarney/react-app-rewired
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { override, addBabelPlugins } = require("customize-cra");
-
+const webpack = require("webpack");
 // module.exports = override(addBabelPlugins("babel-plugin-styled-components"));
 
 // // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -21,11 +21,16 @@ module.exports = {
     function override(config) {
       let loaders = config.resolve;
       loaders.fallback = {
-        util: require.resolve("util/")
+        util: require.resolve("util/"),
+        buffer: require.resolve("buffer/"),
         // assert: require.resolve("assert/"),
-        // stream: require.resolve("stream-browserify")
+        stream: require.resolve("stream-browserify")
       };
-
+      config.plugins.push(
+        new webpack.ProvidePlugin({
+          Buffer: ["buffer", "Buffer"]
+        })
+      );
       return config;
     }
   ),
