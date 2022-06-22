@@ -18,13 +18,17 @@ interface Props {
   buyerId: string;
   action: Action;
   showCTA: boolean;
+  address: string;
+  isPrivateProfile: boolean;
 }
 
 export default function Exchanges({
   sellerId,
   buyerId,
   action,
-  showCTA
+  showCTA,
+  address,
+  isPrivateProfile
 }: Props) {
   const {
     data: exchangesSeller,
@@ -86,6 +90,8 @@ export default function Exchanges({
           dataTestId="exchange"
           showSeller={false}
           showCTA={showCTA}
+          address={address}
+          isPrivateProfile={isPrivateProfile}
         />
       ))}
     </ExchangesContainer>

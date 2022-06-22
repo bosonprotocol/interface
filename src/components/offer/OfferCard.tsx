@@ -165,6 +165,7 @@ interface Props {
   action?: Action;
   dataTestId: string;
   address?: string;
+  isPrivateProfile?: boolean;
 }
 
 export default function OfferCard({
@@ -174,7 +175,8 @@ export default function OfferCard({
   showCTA,
   action,
   dataTestId,
-  address
+  address,
+  isPrivateProfile
 }: Props) {
   const offerId = offer.id;
   const isSellerVisible = showSeller === undefined ? true : showSeller;
@@ -204,7 +206,6 @@ export default function OfferCard({
         }
       );
   };
-  const isSeller = isAccountSeller(offer, address);
 
   return (
     <Card data-testid={dataTestId} onClick={onClick}>
@@ -226,7 +227,7 @@ export default function OfferCard({
         </AddressContainer>
       )}
       <ImageContainer>
-        {isSeller && <OfferStatuses offer={offer} />}
+        {isPrivateProfile && <OfferStatuses offer={offer} />}
         {offerImg ? (
           <Image data-testid="image" src={offerImg} />
         ) : (
