@@ -101,6 +101,12 @@ export default function ExploreOffers(props: Props) {
   } = useOffers(useOffersPayload);
 
   const prevProps = usePrevious(props);
+  const {
+    brand: prevBrand,
+    name: prevName,
+    exchangeTokenAddress: prevExchangeTokenAddress,
+    sellerId: prevSellerId
+  } = prevProps || {};
 
   useEffect(() => {
     if (isFetched && !currentAndNextPageOffers?.length) {
@@ -117,11 +123,26 @@ export default function ExploreOffers(props: Props) {
     /**
      * if the filters change, you should be redirected to the first page
      */
-    if (prevProps) {
+    if (
+      brand !== prevBrand ||
+      name !== prevName ||
+      exchangeTokenAddress !== prevExchangeTokenAddress ||
+      sellerId !== prevSellerId
+    ) {
       setPageIndex(DEFAULT_PAGE);
       updateUrl(DEFAULT_PAGE);
     }
-  }, [brand, name, exchangeTokenAddress, sellerId, prevProps, updateUrl]);
+  }, [
+    brand,
+    name,
+    exchangeTokenAddress,
+    sellerId,
+    prevBrand,
+    prevName,
+    prevExchangeTokenAddress,
+    prevSellerId,
+    updateUrl
+  ]);
   const { data: firstPageOffers } = useOffers(
     {
       ...useOffersPayload
