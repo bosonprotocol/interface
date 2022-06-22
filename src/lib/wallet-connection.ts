@@ -1,4 +1,4 @@
-import { Chain, getDefaultWallets } from "@rainbow-me/rainbowkit";
+import { Chain, connectorsForWallets, wallet } from "@rainbow-me/rainbowkit";
 import { chain, configureChains, createClient } from "wagmi";
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 
@@ -53,10 +53,16 @@ export const { provider, chains } = configureChains(getChainForEnvironment(), [
   })
 ]);
 
-const { connectors } = getDefaultWallets({
-  appName: "Boson dApp",
-  chains
-});
+const connectors = connectorsForWallets([
+  {
+    groupName: "Popular",
+    wallets: [
+      wallet.rainbow({ chains }),
+      wallet.metaMask({ chains }),
+      wallet.walletConnect({ chains })
+    ]
+  }
+]);
 
 export const wagmiClient = createClient({
   autoConnect: true,
