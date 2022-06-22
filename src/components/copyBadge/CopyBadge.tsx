@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { IoIosCheckbox, IoIosCopy } from "react-icons/io";
 import styled from "styled-components";
 
