@@ -60,8 +60,18 @@ const updatePageIndexInUrl =
 const OFFERS_PER_PAGE = 10;
 const DEFAULT_PAGE = 0;
 
+const extractFiltersWithDefaults = (props: Props): Props => {
+  return {
+    brand: props.brand || "",
+    name: props.name || "",
+    exchangeTokenAddress: props.exchangeTokenAddress || "",
+    sellerId: props.sellerId || ""
+  };
+};
+
 export default function ExploreOffers(props: Props) {
-  const { brand, name, exchangeTokenAddress, sellerId } = props;
+  const { brand, name, exchangeTokenAddress, sellerId } =
+    extractFiltersWithDefaults(props);
   const params = useParams();
   const navigate = useKeepQueryParamsNavigate();
   const updateUrl = useCallback(
@@ -106,7 +116,7 @@ export default function ExploreOffers(props: Props) {
     name: prevName,
     exchangeTokenAddress: prevExchangeTokenAddress,
     sellerId: prevSellerId
-  } = prevProps || {};
+  } = extractFiltersWithDefaults(prevProps || {});
 
   useEffect(() => {
     if (isFetched && !currentAndNextPageOffers?.length) {
