@@ -149,12 +149,6 @@ const CTA = ({
   return null;
 };
 
-function isAccountSeller(offer: Offer, account: string | undefined): boolean {
-  if (!account) return false;
-  if (offer.seller.clerk.toLowerCase() === account.toLowerCase()) return true;
-  return offer.seller.operator.toLowerCase() === account.toLowerCase();
-}
-
 export type Action = "commit" | "redeem" | null;
 
 interface Props {
@@ -164,7 +158,6 @@ interface Props {
   showCTA?: boolean;
   action?: Action;
   dataTestId: string;
-  address?: string;
   isPrivateProfile?: boolean;
 }
 
@@ -175,7 +168,6 @@ export default function OfferCard({
   showCTA,
   action,
   dataTestId,
-  address,
   isPrivateProfile
 }: Props) {
   const offerId = offer.id;

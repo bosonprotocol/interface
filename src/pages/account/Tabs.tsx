@@ -66,7 +66,6 @@ export default function Tabs({ isPrivateProfile, address }: Props) {
             sellerId={sellerId}
             action={isPrivateProfile ? null : "commit"}
             showInvalidOffers={isPrivateProfile}
-            address={address}
             isPrivateProfile={isPrivateProfile}
           />
         )
@@ -78,7 +77,6 @@ export default function Tabs({ isPrivateProfile, address }: Props) {
             sellerId={sellerId}
             buyerId={buyerId}
             action="redeem"
-            address={address}
             showCTA={!isPrivateProfile}
             isPrivateProfile={isPrivateProfile}
           />
@@ -90,14 +88,13 @@ export default function Tabs({ isPrivateProfile, address }: Props) {
           <Disputes
             sellerId={sellerId}
             buyerId={buyerId}
-            address={address}
             isPrivateProfile={isPrivateProfile}
           />
         )
       }
     ];
     return tabsData;
-  }, [sellerId, buyerId, address, isPrivateProfile]);
+  }, [sellerId, buyerId, isPrivateProfile]);
 
   if (isErrorSellers || isErrorBuyers) {
     return <div>There has been an error...</div>;

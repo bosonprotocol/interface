@@ -11,7 +11,6 @@ interface Props {
   sellerId: string;
   action: Action;
   showInvalidOffers: boolean;
-  address: string;
   isPrivateProfile: boolean;
 }
 
@@ -19,7 +18,6 @@ export default function Offers({
   sellerId,
   action,
   showInvalidOffers,
-  address,
   isPrivateProfile
 }: Props) {
   const [pageIndex, setPageIndex] = useState(0);
@@ -80,7 +78,6 @@ export default function Offers({
         showSeller={false}
         action={action}
         showInvalidOffers={showInvalidOffers}
-        address={address}
         isPrivateProfile={isPrivateProfile}
       />
       <div ref={intersect}></div>

@@ -16,15 +16,13 @@ const DisputesContainer = styled.div`
 interface Props {
   sellerId: string;
   buyerId: string;
-  address: string;
   isPrivateProfile: boolean;
 }
 
 export default function Disputes({
   sellerId,
   buyerId,
-  isPrivateProfile,
-  address
+  isPrivateProfile
 }: Props) {
   const {
     data: exchangesSeller,
@@ -83,7 +81,6 @@ export default function Disputes({
           offer={exchange.offer}
           dataTestId="dispute"
           showSeller={false}
-          address={address}
           isPrivateProfile={isPrivateProfile}
         />
       ))}

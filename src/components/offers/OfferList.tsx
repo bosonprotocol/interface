@@ -21,7 +21,6 @@ interface Props {
   showSeller?: boolean;
   action: Action;
   showInvalidOffers: boolean;
-  address?: string;
   isPrivateProfile?: boolean;
 }
 
@@ -33,7 +32,6 @@ export default function OfferList({
   showSeller,
   action,
   showInvalidOffers,
-  address,
   isPrivateProfile
 }: Props) {
   if (isLoading) {
@@ -65,7 +63,6 @@ export default function OfferList({
               action={action}
               showCTA
               dataTestId="offer"
-              address={address}
               isPrivateProfile={isPrivateProfile}
             />
           )
