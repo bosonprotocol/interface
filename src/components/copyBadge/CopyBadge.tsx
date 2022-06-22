@@ -45,27 +45,20 @@ interface Props {
 }
 
 export default function CopyBadge({ textToCopy }: Props) {
-  const [hasBeenSaved, setSaved] = useState<boolean>(false);
   const [isSaving, setIsSaving] = useState<boolean>(false);
-  useEffect(() => {
-    if (hasBeenSaved && !isSaving) {
-      setIsSaving(true);
-      setTimeout(() => {
-        setSaved(false);
-        setIsSaving(false);
-      }, 2000);
-    }
-  }, [hasBeenSaved, isSaving]);
   return (
     <Container
       $isSaving={isSaving}
       onClick={() => {
         navigator.clipboard.writeText(textToCopy);
-        setSaved(true);
+        setIsSaving(true);
+        setTimeout(() => {
+          setIsSaving(false);
+        }, 2000);
       }}
     >
       <CodeBadgeText>Copy</CodeBadgeText>
-      {hasBeenSaved ? <CheckIcon /> : <CopyIcon />}
+      {isSaving ? <CheckIcon /> : <CopyIcon />}
     </Container>
   );
 }
