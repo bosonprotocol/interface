@@ -48,7 +48,7 @@ export default function Offers({
 
       setAllOffers([...allOffers, ...offers]);
     }
-  }, [offersWithOneExtra]);
+  }, [offersWithOneExtra, allOffers]);
 
   useEffect(() => {
     if (isLoading || !thereAreMoreOffers) {
@@ -67,7 +67,7 @@ export default function Offers({
     }, option);
     if (intersect.current) observer.observe(intersect.current);
     return () => observer.disconnect();
-  }, [isLoading, thereAreMoreOffers]);
+  }, [isLoading, thereAreMoreOffers, pageIndex]);
 
   return (
     <>

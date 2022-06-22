@@ -6,7 +6,12 @@ import { checkOfferMetadata } from "../../validators";
 import { getOffersQuery } from "./graphql";
 import { UseOfferProps, UseOffersProps } from "./types";
 
-export function useOffer({ offerId, ...restProps }: UseOfferProps) {
+export function useOffer(
+  { offerId, ...restProps }: UseOfferProps,
+  options: {
+    enabled?: boolean;
+  } = {}
+) {
   return useQuery(
     ["offer", offerId],
     async () => {
@@ -25,7 +30,7 @@ export function useOffer({ offerId, ...restProps }: UseOfferProps) {
       return null;
     },
     {
-      enabled: !!offerId
+      ...options
     }
   );
 }

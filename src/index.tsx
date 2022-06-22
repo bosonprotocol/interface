@@ -53,7 +53,7 @@ const StrictMode = ({
 };
 
 root.render(
-  <StrictMode enable={false}>
+  <StrictMode enable={true}>
     <WalletConnectionProvider>
       <QueryClientProvider client={queryClient}>
         <HashRouter>

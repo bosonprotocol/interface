@@ -240,18 +240,20 @@ export default function Exchange() {
   const address = account?.address || "";
 
   const navigate = useKeepQueryParamsNavigate();
-  if (!exchangeId) {
-    return null;
-  }
 
   const {
     data: exchanges,
     isError,
     isLoading
-  } = useExchanges({
-    id: exchangeId,
-    disputed: null
-  });
+  } = useExchanges(
+    {
+      id: exchangeId,
+      disputed: null
+    },
+    {
+      enabled: !!exchangeId
+    }
+  );
   const offer = exchanges?.[0]?.offer;
 
   useEffect(() => {
@@ -261,7 +263,7 @@ export default function Exchange() {
   }, [address]);
 
   useEffect(() => {
-    if (offer && widgetRef.current) {
+    if (offer && widgetRef.current && exchangeId) {
       const widgetContainer = document.createElement("div");
       widgetContainer.style.width = "100%";
       widgetRef.current.appendChild(widgetContainer);
@@ -273,6 +275,10 @@ export default function Exchange() {
 
     return;
   }, [offer, isTabSellerSelected, exchangeId]);
+
+  if (!exchangeId) {
+    return null;
+  }
 
   if (isLoading) {
     return <div>Loading...</div>;

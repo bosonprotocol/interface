@@ -176,9 +176,6 @@ export default function OfferCard({
   dataTestId,
   address
 }: Props) {
-  if (!offer) {
-    return null;
-  }
   const offerId = offer.id;
   const isSellerVisible = showSeller === undefined ? true : showSeller;
   const offerImg = offer.metadata.imageUrl;
@@ -188,6 +185,10 @@ export default function OfferCard({
 
   const location = useLocation();
   const navigate = useKeepQueryParamsNavigate();
+
+  if (!offer) {
+    return null;
+  }
   const path = getCTAPath(action, { offerId, exchangeId });
 
   const isClickable = !!path;

@@ -249,17 +249,16 @@ export default function OfferDetail() {
   const address = account?.address || "";
   const navigate = useKeepQueryParamsNavigate();
 
-  if (!offerId) {
-    return null;
-  }
-
   const {
     data: offer,
     isError,
     isLoading
-  } = useOffer({
-    offerId
-  });
+  } = useOffer(
+    {
+      offerId: offerId || ""
+    },
+    { enabled: !!offerId }
+  );
 
   useEffect(() => {
     if (!address) {
@@ -294,6 +293,10 @@ export default function OfferDetail() {
     window.addEventListener("message", handleMessageFromIframe);
     return () => window.removeEventListener("message", handleMessageFromIframe);
   }, []);
+
+  if (!offerId) {
+    return null;
+  }
 
   if (isLoading) {
     return <div>Loading...</div>;

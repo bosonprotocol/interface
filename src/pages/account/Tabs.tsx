@@ -87,7 +87,7 @@ export default function Tabs({ isPrivateProfile, address }: Props) {
       }
     ];
     return tabsData;
-  }, [sellerId, buyerId]);
+  }, [sellerId, buyerId, address, isPrivateProfile]);
 
   if (isErrorSellers || isErrorBuyers) {
     return <div>There has been an error...</div>;

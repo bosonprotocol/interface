@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { generatePath, useParams } from "react-router-dom";
 import styled from "styled-components";
 
@@ -64,12 +64,15 @@ export default function ExploreOffers(props: Props) {
   const { brand, name, exchangeTokenAddress, sellerId } = props;
   const params = useParams();
   const navigate = useKeepQueryParamsNavigate();
-  const updateUrl = (index: number) =>
-    updatePageIndexInUrl(navigate)(index, {
-      name: name ?? "",
-      currency: exchangeTokenAddress ?? "",
-      seller: sellerId ?? ""
-    });
+  const updateUrl = useCallback(
+    (index: number) =>
+      updatePageIndexInUrl(navigate)(index, {
+        name: name ?? "",
+        currency: exchangeTokenAddress ?? "",
+        seller: sellerId ?? ""
+      }),
+    [navigate, name, exchangeTokenAddress, sellerId]
+  );
   const initialPageIndex = Math.max(
     0,
     params[UrlParameters.page]
@@ -108,7 +111,7 @@ export default function ExploreOffers(props: Props) {
       setPageIndex(DEFAULT_PAGE);
       updateUrl(DEFAULT_PAGE);
     }
-  }, [currentAndNextPageOffers, isFetched]);
+  }, [currentAndNextPageOffers, isFetched, updateUrl]);
 
   useEffect(() => {
     /**
@@ -118,7 +121,7 @@ export default function ExploreOffers(props: Props) {
       setPageIndex(DEFAULT_PAGE);
       updateUrl(DEFAULT_PAGE);
     }
-  }, [brand, name, exchangeTokenAddress, sellerId]);
+  }, [brand, name, exchangeTokenAddress, sellerId, prevProps, updateUrl]);
   const { data: firstPageOffers } = useOffers(
     {
       ...useOffersPayload
