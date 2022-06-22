@@ -1,7 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
 
-import { QueryParameters } from "../../lib/routing/query-parameters";
+import { ExploreQueryParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
@@ -100,7 +100,7 @@ export default function Landing() {
   const navigateToExplore = () =>
     navigate({
       pathname: BosonRoutes.Explore,
-      search: name ? `${QueryParameters.name}=${name}` : ""
+      search: name ? `${ExploreQueryParameters.name}=${name}` : ""
     });
 
   return (

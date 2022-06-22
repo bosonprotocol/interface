@@ -3,7 +3,7 @@ import { generatePath } from "react-router-dom";
 import styled from "styled-components";
 
 import { Modal } from "../../components/modal/Modal";
-import { UrlParameters } from "../../lib/routing/query-parameters";
+import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";

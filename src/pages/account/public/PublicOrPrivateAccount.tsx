@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useAccount } from "wagmi";
 
-import { UrlParameters } from "../../../lib/routing/query-parameters";
+import { UrlParameters } from "../../../lib/routing/parameters";
 import PrivateAccount from "../private/PrivateAccount";
 import PublicAccount from "./PublicAccount";
 

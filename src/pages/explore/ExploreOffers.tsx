@@ -4,9 +4,9 @@ import styled from "styled-components";
 
 import OfferList from "../../components/offers/OfferList";
 import {
-  QueryParameters,
+  ExploreQueryParameters,
   UrlParameters
-} from "../../lib/routing/query-parameters";
+} from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { footerHeight } from "../../lib/styles/layout";
 import { Offer } from "../../lib/types/offer";
@@ -37,7 +37,7 @@ const updatePageIndexInUrl =
   (navigate: ReturnType<typeof useKeepQueryParamsNavigate>) =>
   (
     index: number,
-    queryParams: { [x in keyof typeof QueryParameters]: string }
+    queryParams: { [x in keyof typeof ExploreQueryParameters]: string }
   ): void => {
     const queryParamsUrl = new URLSearchParams(
       Object.entries(queryParams).filter(([, value]) => value !== "")

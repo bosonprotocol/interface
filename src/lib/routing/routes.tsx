@@ -1,4 +1,4 @@
-import { UrlParameters } from "./query-parameters";
+import { UrlParameters } from "./parameters";
 
 export const BosonRoutes = {
   Root: "/",

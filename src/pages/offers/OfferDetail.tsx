@@ -8,7 +8,7 @@ import { useAccount } from "wagmi";
 
 import OfferStatuses from "../../components/offer/OfferStatuses";
 import { CONFIG } from "../../lib/config";
-import { UrlParameters } from "../../lib/routing/query-parameters";
+import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
