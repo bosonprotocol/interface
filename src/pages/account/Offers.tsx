@@ -11,14 +11,14 @@ interface Props {
   sellerId: string;
   action: Action;
   showInvalidOffers: boolean;
-  address: string;
+  isPrivateProfile: boolean;
 }
 
 export default function Offers({
   sellerId,
   action,
   showInvalidOffers,
-  address
+  isPrivateProfile
 }: Props) {
   const [pageIndex, setPageIndex] = useState(0);
   const intersect = useRef(null);
@@ -44,11 +44,12 @@ export default function Offers({
 
   useEffect(() => {
     if (offersWithOneExtra) {
-      const offers = offersWithOneExtra?.slice(0, OFFERS_PER_PAGE);
+      const offers = offersWithOneExtra.slice(0, OFFERS_PER_PAGE);
 
       setAllOffers([...allOffers, ...offers]);
     }
-  }, [offersWithOneExtra, allOffers]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [offersWithOneExtra]);
 
   useEffect(() => {
     if (isLoading || !thereAreMoreOffers) {
@@ -77,7 +78,7 @@ export default function Offers({
         showSeller={false}
         action={action}
         showInvalidOffers={showInvalidOffers}
-        address={address}
+        isPrivateProfile={isPrivateProfile}
       />
       <div ref={intersect}></div>
     </>
