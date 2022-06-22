@@ -35,6 +35,7 @@ const UrlBox = styled(CyanLink)`
   flex: 1 1;
   border-radius: 10px;
   text-align: center;
+  overflow-wrap: anywhere;
 `;
 
 const Heading = styled.p`
