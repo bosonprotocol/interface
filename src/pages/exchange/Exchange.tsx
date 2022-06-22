@@ -254,7 +254,8 @@ export default function Exchange() {
       enabled: !!exchangeId
     }
   );
-  const offer = exchanges?.[0]?.offer;
+  const exchange = exchanges?.[0];
+  const offer = exchange?.offer;
 
   useEffect(() => {
     if (!address) {
@@ -311,7 +312,8 @@ export default function Exchange() {
   const sellerAddress = offer.seller?.operator;
   // const isOfferValid = getIsOfferValid(offer);
   const description = offer.metadata?.description || "";
-
+  const buyerAddress = exchange.buyer.wallet;
+  const isBuyer = buyerAddress.toLowerCase() === address.toLowerCase();
   return (
     <>
       <Root>
@@ -376,7 +378,7 @@ export default function Exchange() {
               decimals={offer.exchangeToken.decimals}
             />
           </Box>
-          {isSeller && (
+          {isSeller && isBuyer && (
             <Toggle>
               <InfoIconTextWrapper>
                 <InfoIcon />
