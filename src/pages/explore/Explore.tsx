@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { ExploreQueryParameters } from "../../lib/routing/parameters";
 import { useQueryParameter } from "../../lib/routing/useQueryParameter";
 import { Select } from "../../lib/styles/base";
+import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { useBrands } from "../../lib/utils/hooks/useBrands";
 import { useSellers } from "../../lib/utils/hooks/useSellers";
@@ -24,7 +25,7 @@ const Input = styled.input`
   border-radius: 5px;
   font-size: 16px;
 
-  @media (min-width: 981px) {
+  ${breakpoint.m} {
     width: 500px;
   }
 `;
@@ -34,7 +35,7 @@ const TopContainer = styled.div`
   flex-direction: column;
   justify-content: space-between;
 
-  @media (min-width: 981px) {
+  ${breakpoint.m} {
     flex-direction: row;
   }
 `;
@@ -43,7 +44,7 @@ const FiltersContainer = styled.div``;
 
 const BrandSelect = styled(Select)`
   max-width: 100%;
-  @media (min-width: 981px) {
+  ${breakpoint.m} {
     width: 500px;
   }
 `;

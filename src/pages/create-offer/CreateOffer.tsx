@@ -8,6 +8,7 @@ import styled from "styled-components";
 
 import Layout from "../../components/Layout";
 import { CONFIG } from "../../lib/config";
+import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 
 const CreateOfferContainer = styled(Layout)`
@@ -60,7 +61,7 @@ export const FormElementsContainer = styled.div`
   justify-content: space-between;
   padding-bottom: 24px;
 
-  @media (min-width: 768px) {
+  ${breakpoint.s} {
     grid-template-columns: 1fr 1fr;
   }
 `;

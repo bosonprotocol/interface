@@ -1,24 +1,26 @@
 import { ReactNode } from "react";
 import styled from "styled-components";
 
+import { breakpoint } from "../lib/styles/breakpoint";
+
 const Root = styled.div`
   max-width: 1500px;
   padding: 0 16px;
   margin: 0 auto;
 
-  @media (min-width: 578px) {
+  ${breakpoint.xs} {
     padding: 0px 24px;
   }
 
-  @media (min-width: 768px) {
+  ${breakpoint.s} {
     padding: 0px 28px;
   }
 
-  @media (min-width: 981px) {
+  ${breakpoint.m} {
     padding: 0px 32px;
   }
 
-  @media (min-width: 1500px) {
+  ${breakpoint.xl} {
     padding: 0px 32px;
   }
 `;

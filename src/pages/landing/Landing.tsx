@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 import { ExploreQueryParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
+import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import FeaturedOffers from "../../pages/landing/FeaturedOffers";
@@ -21,7 +22,7 @@ const Hero = styled.div`
   flex-direction: column-reverse;
   margin-bottom: 64px;
 
-  @media (min-width: 981px) {
+  ${breakpoint.m} {
     flex-direction: row;
   }
 `;
@@ -82,7 +83,7 @@ const MainImgContainer = styled.div`
   justify-content: center;
   flex-basis: 70%;
 
-  @media (min-width: 981px) {
+  ${breakpoint.m} {
     justify-content: flex-end;
   }
 `;

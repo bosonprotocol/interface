@@ -12,8 +12,7 @@ const HeaderContainer = styled(Layout)`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 0px auto 20px auto;
-  padding-top: 24px;
+  margin: 24px auto 20px auto;
 `;
 
 const NavigationLinks = styled.nav`
