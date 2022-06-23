@@ -16,6 +16,7 @@ import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { isAccountSeller } from "../../lib/utils/isAccountSeller";
 
 const Root = styled.div`
   display: flex;
@@ -221,13 +222,6 @@ const InfoIcon = styled(IoIosInformationCircleOutline).attrs({
   right: 2px;
   font-size: 27px;
 `;
-
-function isAccountSeller(offer: Offer, account: string): boolean {
-  if (offer.seller.clerk.toLowerCase() === account.toLowerCase()) return true;
-  if (offer.seller.operator.toLowerCase() === account.toLowerCase())
-    return true;
-  return false;
-}
 
 export default function Exchange() {
   const { [UrlParameters.exchangeId]: exchangeId } = useParams();
