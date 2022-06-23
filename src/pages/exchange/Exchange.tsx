@@ -7,7 +7,7 @@ import styled from "styled-components";
 import { useAccount } from "wagmi";
 
 import AddressContainer from "../../components/offer/AddressContainer";
-import OfferStatuses from "../../components/offer/OfferStatuses";
+import ExchangeStatuses from "../../components/offer/ExchangeStatuses";
 import RootPrice from "../../components/price";
 import { CONFIG } from "../../lib/config";
 import { UrlParameters } from "../../lib/routing/parameters";
@@ -319,13 +319,15 @@ export default function Exchange() {
       <Root>
         <ImageAndDescription>
           <ImageContainer>
-            {isSeller && (
-              <StatusContainer>
-                <StatusSubContainer>
-                  <OfferStatuses offer={offer} />
-                </StatusSubContainer>
-              </StatusContainer>
-            )}
+            <StatusContainer>
+              <StatusSubContainer>
+                <ExchangeStatuses
+                  offer={offer}
+                  exchange={exchange as NonNullable<Offer["exchanges"]>[number]}
+                />
+              </StatusSubContainer>
+            </StatusContainer>
+
             {offerImg ? (
               <Image data-testid="image" src={offerImg} />
             ) : (

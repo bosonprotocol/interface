@@ -335,13 +335,12 @@ export default function OfferDetail() {
       <Root>
         <ImageAndDescription>
           <ImageContainer>
-            {isSeller && (
-              <StatusContainer>
-                <StatusSubContainer>
-                  <OfferStatuses offer={offer} />
-                </StatusSubContainer>
-              </StatusContainer>
-            )}
+            <StatusContainer>
+              <StatusSubContainer>
+                <OfferStatuses offer={offer} />
+              </StatusSubContainer>
+            </StatusContainer>
+
             {offerImg ? (
               <Image data-testid="image" src={offerImg} />
             ) : (
