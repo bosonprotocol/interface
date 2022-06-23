@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 import OfferList from "../../components/offers/OfferList";
-import { useOffers } from "../../lib/utils/hooks/useOffers";
+import { useOffers } from "../../lib/utils/hooks/offers";
 
 const Root = styled.div`
   display: flex;

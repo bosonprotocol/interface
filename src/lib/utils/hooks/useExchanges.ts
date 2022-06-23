@@ -4,7 +4,7 @@ import { useQuery } from "react-query";
 import { Offer } from "../../types/offer";
 import { fetchSubgraph } from "../core-components/subgraph";
 import { checkOfferMetadata } from "../validators";
-import { offerGraphQl } from "./useOffers/graphql";
+import { offerGraphQl } from "./offers/graphql";
 
 interface Props {
   disputed: boolean | null;

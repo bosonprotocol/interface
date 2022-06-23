@@ -10,8 +10,8 @@ import {
 import { BosonRoutes } from "../../lib/routing/routes";
 import { footerHeight } from "../../lib/styles/layout";
 import { Offer } from "../../lib/types/offer";
+import { useOffers } from "../../lib/utils/hooks/offers";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import { useOffers } from "../../lib/utils/hooks/useOffers/";
 import { usePrevious } from "../../lib/utils/hooks/usePrevious";
 import Pagination from "./Pagination";
 

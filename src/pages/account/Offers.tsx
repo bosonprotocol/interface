@@ -2,8 +2,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { Action } from "../../components/offer/OfferCard";
 import OfferList from "../../components/offers/OfferList";
-import { Offer } from "../../lib/types/offer";
-import { useOffers } from "../../lib/utils/hooks/useOffers";
+import { useInfiniteOffers } from "../../lib/utils/hooks/offers/useInfiniteOffers";
 
 const OFFERS_PER_PAGE = 10;
 
@@ -22,37 +21,34 @@ export default function Offers({
 }: Props) {
   const [pageIndex, setPageIndex] = useState(0);
   const intersect = useRef(null);
-  const [allOffers, setAllOffers] = useState<Offer[]>([]);
-  const {
-    data: offersWithOneExtra,
-    isError,
-    isLoading
-  } = useOffers(
-    {
-      voided: false,
-      valid: !showInvalidOffers,
-      sellerId,
-      first: OFFERS_PER_PAGE + 1,
-      skip: OFFERS_PER_PAGE * pageIndex
-    },
-    {
-      enabled: !!sellerId
-    }
-  );
+  const { data, isError, isLoading, isFetchingNextPage, fetchNextPage } =
+    useInfiniteOffers(
+      {
+        voided: false,
+        valid: !showInvalidOffers,
+        sellerId,
+        first: OFFERS_PER_PAGE + 1
+      },
+      {
+        enabled: !!sellerId,
+        keepPreviousData: true
+      }
+    );
+
+  const offersWithOneExtra = data?.pages[data.pages.length - 1];
+  const allOffers =
+    data?.pages.flatMap((page) => {
+      const allButLast =
+        page.length === OFFERS_PER_PAGE + 1
+          ? page.slice(0, page.length - 1)
+          : page;
+      return allButLast;
+    }) || [];
   const thereAreMoreOffers =
     (offersWithOneExtra?.length || 0) >= OFFERS_PER_PAGE + 1;
 
   useEffect(() => {
-    if (offersWithOneExtra) {
-      const offers = offersWithOneExtra.slice(0, OFFERS_PER_PAGE);
-
-      setAllOffers([...allOffers, ...offers]);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [offersWithOneExtra]);
-
-  useEffect(() => {
-    if (isLoading || !thereAreMoreOffers) {
+    if (isLoading || !thereAreMoreOffers || isFetchingNextPage) {
       return;
     }
     const option = {
@@ -63,12 +59,20 @@ export default function Offers({
     const observer = new IntersectionObserver((entries) => {
       const target = entries[0];
       if (target.isIntersecting) {
-        setPageIndex(pageIndex + 1);
+        const nextPageIndex = pageIndex + 1;
+        setPageIndex(nextPageIndex);
+        fetchNextPage({ pageParam: nextPageIndex * OFFERS_PER_PAGE });
       }
     }, option);
     if (intersect.current) observer.observe(intersect.current);
     return () => observer.disconnect();
-  }, [isLoading, thereAreMoreOffers, pageIndex]);
+  }, [
+    isLoading,
+    thereAreMoreOffers,
+    fetchNextPage,
+    pageIndex,
+    isFetchingNextPage
+  ]);
 
   return (
     <>

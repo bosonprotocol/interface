@@ -1,4 +1,4 @@
-import { Offer } from "../../../../lib/types/offer";
+import { Offer } from "../../../types/offer";
 
 export interface UseOffersProps {
   name?: string; // TODO: to delete once brand is supported
