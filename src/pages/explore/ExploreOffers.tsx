@@ -20,10 +20,10 @@ const Container = styled.div`
 `;
 
 const PaginationWrapper = styled.div`
-  position: absolute;
-  bottom: calc(${footerHeight} + 80px);
-  left: 50%;
-  transform: translate(-50%, 0);
+  // position: absolute;
+  // bottom: calc(${footerHeight} + 80px);
+  // left: 50%;
+  // transform: translate(-50%, 0);
 `;
 
 interface Props {

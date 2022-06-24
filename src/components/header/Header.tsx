@@ -1,23 +1,38 @@
 import styled from "styled-components";
 
-import logo from "../../../src/assets/logo.png";
+import logo from "../../../src/assets/logo.svg";
 import { BosonRoutes } from "../../lib/routing/routes";
+import { colors } from "../../lib/styles/colors";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import Layout from "../Layout";
 import { LinkWithQuery } from "../linkStoreFields/LinkStoreFields";
 import ConnectButton from "./ConnectButton";
+// import Logo from '../ui/Logo';
+
+const Header = styled.header`
+  position: fixed;
+  width: 100%;
+
+  padding: 10px 0 10px 0;
+  background-color: ${colors.white};
+  border-bottom: 1px solid ${colors.border};
+  color: ${colors.darkGrey};
+  z-index: 1000;
+  + * {
+    padding-top: 95px;
+  }
+`;
 
 const HeaderContainer = styled(Layout)`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 24px auto 20px auto;
 `;
 
 const NavigationLinks = styled.nav`
   display: flex;
-  gap: 16px;
+  gap: 32px;
   width: 100%;
   align-items: center;
   justify-content: flex-end;
@@ -25,34 +40,41 @@ const NavigationLinks = styled.nav`
   a {
     all: unset;
     cursor: pointer;
+    font-family: "Plus Jakarta Sans";
+    font-style: normal;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 150%;
   }
   a:hover {
-    color: var(--secondary);
+    color: ${colors.secondary};
   }
 `;
 
 const LogoImg = styled.img`
-  height: 50px;
+  height: 24px;
   cursor: pointer;
 `;
 
-export default function Header() {
+export default function HeaderComponent() {
   const navigate = useKeepQueryParamsNavigate();
   const logoUrl = useCustomStoreQueryParameter("logoUrl");
 
   return (
-    <HeaderContainer>
-      <LogoImg
-        data-testid="logo"
-        src={logoUrl || logo}
-        onClick={() => navigate({ pathname: BosonRoutes.Root })}
-      />
-      <NavigationLinks>
-        <LinkWithQuery to={BosonRoutes.Root}>Home</LinkWithQuery>
-        <LinkWithQuery to={BosonRoutes.Explore}>Explore</LinkWithQuery>
-        <LinkWithQuery to={BosonRoutes.CreateOffer}>Create</LinkWithQuery>
-        <ConnectButton />
-      </NavigationLinks>
-    </HeaderContainer>
+    <Header>
+      <HeaderContainer>
+        <LogoImg
+          data-testid="logo"
+          src={logoUrl || logo}
+          onClick={() => navigate({ pathname: BosonRoutes.Root })}
+        />
+        <NavigationLinks>
+          <LinkWithQuery to={BosonRoutes.Root}>Home</LinkWithQuery>
+          <LinkWithQuery to={BosonRoutes.Explore}>Explore</LinkWithQuery>
+          <LinkWithQuery to={BosonRoutes.CreateOffer}>Create</LinkWithQuery>
+          <ConnectButton />
+        </NavigationLinks>
+      </HeaderContainer>
+    </Header>
   );
 }

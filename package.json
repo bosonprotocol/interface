@@ -25,6 +25,11 @@
     "coverage:report": "npm run coverage:unit && npm run coverage:e2e",
     "postinstall": "npx playwright install --with-deps chromium"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run prettier && npm run lint"
+    }
+  },
   "dependencies": {
     "@bosonprotocol/common": "^1.6.0-alpha.11",
     "@bosonprotocol/core-sdk": "^1.6.0-alpha.11",
@@ -79,7 +84,7 @@
     "eslint-plugin-react-hooks": "^4.5.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "eslint-plugin-unused-imports": "^2.0.0",
-    "husky": "^7.0.4",
+    "husky": "^8.0.0",
     "istanbul": "^0.4.5",
     "nyc": "^15.1.0",
     "prettier": "^2.6.2",
