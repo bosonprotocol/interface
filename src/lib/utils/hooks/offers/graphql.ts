@@ -1,5 +1,5 @@
 import { gql } from "graphql-request";
-
+// TODO: this file needs to be fixed
 export const offerGraphQl = gql`
   {
     id
