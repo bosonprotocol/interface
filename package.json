@@ -60,6 +60,7 @@
     "react-icons": "^4.4.0",
     "react-popper": "^2.3.0",
     "react-query": "^3.38.1",
+    "react-responsive": "^9.0.0-beta.10",
     "react-router-dom": "^6.3.0",
     "react-scripts": "^5.0.1",
     "util": "^0.12.4",

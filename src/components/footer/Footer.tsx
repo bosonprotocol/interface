@@ -13,9 +13,11 @@ import Typography from "../ui/Typography";
 import { SOCIALS } from "./socials";
 
 const Footer = styled.footer`
-  padding: 50px 65px;
+  width: 100%;
   background-color: ${colors.black};
   color: ${colors.white};
+
+  padding: 2rem 1rem;
 `;
 
 interface INavigationLinks {

@@ -3,19 +3,18 @@ import styled from "styled-components";
 
 import Layout from "../../components/Layout";
 import GlobalStyle from "../../lib/styles/GlobalStyle";
-import { footerHeight } from "../../lib/styles/layout";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import Footer from "../footer/Footer";
 import Header from "../header/Header";
 
 const Container = styled.div`
-  position: relative;
+  width: 100%;
   min-height: 100vh;
+  position: relative;
+  z-index: -1;
 `;
 
-const PageContainer = styled(Layout)`
-  padding-bottom: calc(${footerHeight} + 70px); // a bit more than footer height
-`;
+const PageContainer = styled(Layout)``;
 
 export default function App() {
   const primaryColor = useCustomStoreQueryParameter("primaryColor");

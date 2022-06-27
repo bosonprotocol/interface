@@ -1,5 +1,6 @@
 import { createGlobalStyle } from "styled-components";
 
+import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 
 const GlobalStyle = createGlobalStyle<{
@@ -7,7 +8,10 @@ const GlobalStyle = createGlobalStyle<{
   $secondaryColor: string;
   $accentColor: string;
 }>`
-  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap');
+
+  * {
+    box-sizing: border-box
+  }
   // TODO: match with colors from lib
   :root {
     --primary: ${(props) =>
@@ -18,6 +22,23 @@ const GlobalStyle = createGlobalStyle<{
       props.$accentColor ? props.$accentColor : colors.white};
     --accentDark: ${(props) =>
       props.$accentColor ? props.$accentColor : colors.arsenic};
+
+    font-size: 12px;
+    ${breakpoint.xs} {
+      font-size: 12px;
+    }
+    ${breakpoint.s} {
+      font-size: 14px;
+    }
+    ${breakpoint.m} {
+      font-size: 14px;
+    }
+    ${breakpoint.l} {
+      font-size: 16px;
+    }
+    ${breakpoint.xl} {
+      font-size: 16px;
+    }
   }
 
   html, body {
@@ -27,40 +48,59 @@ const GlobalStyle = createGlobalStyle<{
 
     margin: 0;
     padding: 0;
-    display :flex;
-    flex-direction: column;
-    background-color: ${colors.white}
-    z-index: -2;
-    color: ${colors.black}
-  }
-  // TYPOGRAPHY
-  h1, h2, h3, h4, h5, h6, p, a, span, div {
+
+    background-color: ${colors.white};
+    color: ${colors.black};
+
     font-family: "Plus Jakarta Sans";
     font-style: normal;
-    font-weight: 600;
   }
+  html, body {
+    overflow-x: hidden;
+  }
+
+  a,
+  button,
+  input,
+  select,
+  textarea {
+    &:focus,
+    &:hover {
+      outline: none;
+    }
+    cursor: pointer;
+  }
+
+  input,
+  select {
+    -webkit-appearance: none;
+  }
+
   h1 {
-    font-size: 56px;
-    line-height: 120%;
+    font-size: 3.5rem;
+    font-weight: 600;
+    line-height: 1.2;
   }
   h2 {
-    font-size: 32px;
-    line-height: 120%;
+    font-size: 2rem
+    font-weight: 600;
+    line-height: 1.2;
   }
   h3 {
-    font-size: 24px;
-    line-height: 150%;
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.5;
   }
   h4, h5, h6 {
-    font-size: 20px;
-    line-height: 150%;
-    margin: 0 0 1rem 0;
+    font-size: 1.25rem;
     font-weight: 400;
+    line-height: 1.5;
+    margin: 0 0 1rem 0;
   }
   a, p, span, div {
-    font-size: 16px;
-    line-height: 24px;
+    font-size: 1rem;
     font-weight: 400;
+    line-height: 1.5;
   }
 `;
 export default GlobalStyle;
