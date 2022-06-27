@@ -3,17 +3,20 @@ import styled from "styled-components";
 import logo from "../../../src/assets/logo.svg";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
+import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import Layout from "../Layout";
 import { LinkWithQuery } from "../linkStoreFields/LinkStoreFields";
 import ConnectButton from "./ConnectButton";
-// import Logo from '../ui/Logo';
 
 const Header = styled.header`
   position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
   + * {
-    padding-top: 95px;
+    padding-top: 7rem;
   }
 
   width: 100%;
@@ -57,6 +60,7 @@ const LogoImg = styled.img`
 `;
 
 export default function HeaderComponent() {
+  const { isPhone } = useBreakpoints();
   const navigate = useKeepQueryParamsNavigate();
   const logoUrl = useCustomStoreQueryParameter("logoUrl");
 
@@ -68,11 +72,15 @@ export default function HeaderComponent() {
           src={logoUrl || logo}
           onClick={() => navigate({ pathname: BosonRoutes.Root })}
         />
-        <NavigationLinks>
-          <LinkWithQuery to={BosonRoutes.Explore}>Explore</LinkWithQuery>
-          <LinkWithQuery to={BosonRoutes.CreateOffer}>Create</LinkWithQuery>
-          <ConnectButton />
-        </NavigationLinks>
+        {isPhone ? (
+          <div>burger</div>
+        ) : (
+          <NavigationLinks>
+            <LinkWithQuery to={BosonRoutes.Explore}>Explore</LinkWithQuery>
+            <LinkWithQuery to={BosonRoutes.CreateOffer}>Create</LinkWithQuery>
+            <ConnectButton />
+          </NavigationLinks>
+        )}
       </HeaderContainer>
     </Header>
   );

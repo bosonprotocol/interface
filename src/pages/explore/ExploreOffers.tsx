@@ -8,7 +8,6 @@ import {
   UrlParameters
 } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
-import { footerHeight } from "../../lib/styles/layout";
 import { Offer } from "../../lib/types/offer";
 import { useOffers } from "../../lib/utils/hooks/offers";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
@@ -19,12 +18,7 @@ const Container = styled.div`
   margin-top: 10px;
 `;
 
-const PaginationWrapper = styled.div`
-  // position: absolute;
-  // bottom: calc(${footerHeight} + 80px);
-  // left: 50%;
-  // transform: translate(-50%, 0);
-`;
+const PaginationWrapper = styled.div``;
 
 interface Props {
   name?: string;

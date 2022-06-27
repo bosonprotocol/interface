@@ -101,11 +101,12 @@ const Button: React.FC<IButton> = ({
   onClick,
   size = "regular",
   theme = "primary",
-  type = "button"
+  type = "button",
+  ...rest
 }) => {
   return (
     <ThemeProvider theme={allThemes[theme as keyof typeof allThemes]}>
-      <BaseButton onClick={onClick} type={type} size={size}>
+      <BaseButton onClick={onClick} type={type} size={size} {...rest}>
         <ChildWrapperButton>{children}</ChildWrapperButton>
       </BaseButton>
     </ThemeProvider>

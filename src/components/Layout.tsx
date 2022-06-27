@@ -5,21 +5,18 @@ import { breakpoint } from "../lib/styles/breakpoint";
 
 const Root = styled.div`
   max-width: 1500px;
-  padding: 0 16px;
   margin: 0 auto;
 
+  padding: 0 16px;
   ${breakpoint.xs} {
     padding: 0px 24px;
   }
-
   ${breakpoint.s} {
     padding: 0px 28px;
   }
-
   ${breakpoint.m} {
     padding: 0px 32px;
   }
-
   ${breakpoint.xl} {
     padding: 0px 36px;
   }

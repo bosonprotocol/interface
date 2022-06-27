@@ -2,20 +2,26 @@ import { useState } from "react";
 import styled from "styled-components";
 
 import placeholder from "../../assets/placeholder/product-carousel-2x.png";
-import Layout from "../../components/Layout";
 import Button from "../../components/ui/Button";
 import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
 import { ExploreQueryParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
+import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import FeaturedOffers from "../../pages/landing/FeaturedOffers";
 import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
 import Step from "./Step";
 
-const LandingPage = styled(Layout)`
-  margin: 4rem 2rem;
+const LandingPage = styled.div`
+  padding: 1rem 0.5rem;
+  ${breakpoint.m} {
+    padding: 2rem 1rem;
+  }
+  ${breakpoint.xl} {
+    padding: 4rem 2rem;
+  }
 `;
 
 const ExploreContainer = styled.div`
@@ -27,6 +33,7 @@ const MainImgContainer = styled.div`
   justify-content: center;
   flex-basis: 70%;
 
+  ${breakpoint.m} {
   ${breakpoint.m} {
     justify-content: flex-end;
   }
@@ -43,8 +50,9 @@ const StepWrapper = styled(Grid)`
 `;
 
 export default function Landing() {
+  const { isPhone, isTablet } = useBreakpoints();
   const navigate = useKeepQueryParamsNavigate();
-  const [name, setName] = useState("");
+  const [name] = useState("");
   const storeName = useCustomStoreQueryParameter("storeName");
 
   const navigateToExplore = () =>
@@ -55,7 +63,11 @@ export default function Landing() {
 
   return (
     <LandingPage>
-      <Grid flexBasis="50%">
+      <Grid
+        flexBasis="50%"
+        flexDirection={isPhone || isTablet ? "column-reverse" : "row"}
+        gap="2.5rem"
+      >
         <Grid alignItems="flex-start" flexDirection="column">
           {storeName ? (
             <Typography tag="h1">{storeName}</Typography>
@@ -68,29 +80,10 @@ export default function Landing() {
           <Typography tag="h4">
             The first decentralized marketplace built on Boson Protocol
           </Typography>
-          {/* <InputGo>
-            <Input
-              data-testid="search-by-name-input"
-              onChange={(e) => setName(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  navigateToExplore();
-                }
-              }}
-              value={name}
-              placeholder="Search by Name"
-            />
-            <GoButton
-              onClick={() => navigateToExplore()}
-              data-testid="go-button"
-            >
-              Go
-            </GoButton>
-          </InputGo> */}
           <ExploreContainer>
             <Button
-              onClick={() => navigateToExplore()}
               data-testid="explore-all-offers"
+              onClick={() => navigateToExplore()}
               theme="secondary"
             >
               Explore products
@@ -101,7 +94,10 @@ export default function Landing() {
           <MainImg src={placeholder} />
         </MainImgContainer>
       </Grid>
-      <StepWrapper alignItems="flex-start">
+      <StepWrapper
+        alignItems="flex-start"
+        flexDirection={isPhone || isTablet ? "column" : "row"}
+      >
         <Step number={1} title="Commit">
           Commit to an Offer to receive a Redeemable NFT (rNFT) that can be
           exchanged for the real-world item it represents

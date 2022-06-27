@@ -7,7 +7,7 @@ type JustifyContent =
   | "space-between"
   | "space-around";
 type AlignItems = "flex-start" | "center" | "flex-end";
-type FlexDirection = "row" | "column";
+type FlexDirection = "row" | "column" | "row-reverse" | "column-reverse";
 interface IGrid {
   alignItems?: AlignItems;
   flexBasis?: string;
@@ -18,6 +18,7 @@ interface IGrid {
 }
 
 const Container = styled.div<IGrid>`
+  width: 100%;
   display: flex;
   align-items: ${({ alignItems }) => alignItems || "center"};
   flex-basis: ${({ flexBasis }) => flexBasis || "auto"};
