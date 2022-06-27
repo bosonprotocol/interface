@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-import { QueryParameters } from "../../lib/routing/query-parameters";
+import { ExploreQueryParameters } from "../../lib/routing/parameters";
 import { useQueryParameter } from "../../lib/routing/useQueryParameter";
 import { Select } from "../../lib/styles/base";
 import { colors } from "../../lib/styles/colors";
@@ -70,13 +70,13 @@ const InputContainer = styled.div`
 
 export default function Explore() {
   const [nameQueryParameter, setNameQueryParameter] = useQueryParameter(
-    QueryParameters.name
+    ExploreQueryParameters.name
   );
   const [currencyQueryParameter, setCurrencyQueryParameter] = useQueryParameter(
-    QueryParameters.currency
+    ExploreQueryParameters.currency
   );
   const [sellerQueryParameter, setSellerQueryParameter] = useQueryParameter(
-    QueryParameters.seller
+    ExploreQueryParameters.seller
   );
 
   const [brandInput, setBrandInput] = useState<string>(nameQueryParameter);

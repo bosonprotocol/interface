@@ -5,11 +5,12 @@ import styled from "styled-components";
 
 import AddressContainer from "../../components/offer/AddressContainer";
 import RootPrice from "../../components/price";
-import { UrlParameters } from "../../lib/routing/query-parameters";
+import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes, OffersRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import ExchangeStatuses from "./ExchangeStatuses";
 import OfferStatuses from "./OfferStatuses";
 
 const Card = styled.div`
@@ -149,36 +150,27 @@ const CTA = ({
   return null;
 };
 
-function isAccountSeller(offer: Offer, account: string | undefined): boolean {
-  if (!account) return false;
-  if (offer.seller.clerk.toLowerCase() === account.toLowerCase()) return true;
-  return offer.seller.operator.toLowerCase() === account.toLowerCase();
-}
-
 export type Action = "commit" | "redeem" | null;
 
 interface Props {
   offer: Offer;
-  exchangeId?: string;
+  exchange?: NonNullable<Offer["exchanges"]>[number];
   showSeller?: boolean;
   showCTA?: boolean;
   action?: Action;
   dataTestId: string;
-  address?: string;
+  isPrivateProfile?: boolean;
 }
 
 export default function OfferCard({
   offer,
-  exchangeId,
+  exchange,
   showSeller,
   showCTA,
   action,
   dataTestId,
-  address
+  isPrivateProfile
 }: Props) {
-  if (!offer) {
-    return null;
-  }
   const offerId = offer.id;
   const isSellerVisible = showSeller === undefined ? true : showSeller;
   const offerImg = offer.metadata.imageUrl;
@@ -188,7 +180,11 @@ export default function OfferCard({
 
   const location = useLocation();
   const navigate = useKeepQueryParamsNavigate();
-  const path = getCTAPath(action, { offerId, exchangeId });
+
+  if (!offer) {
+    return null;
+  }
+  const path = getCTAPath(action, { offerId, exchangeId: exchange?.id });
 
   const isClickable = !!path;
   const onClick: React.MouseEventHandler<unknown> = (e) => {
@@ -203,7 +199,16 @@ export default function OfferCard({
         }
       );
   };
-  const isSeller = isAccountSeller(offer, address);
+
+  const Status = isPrivateProfile ? (
+    exchange ? (
+      <ExchangeStatuses offer={offer} exchange={exchange} />
+    ) : (
+      <OfferStatuses offer={offer} />
+    )
+  ) : (
+    <></>
+  );
 
   return (
     <Card data-testid={dataTestId} onClick={onClick}>
@@ -225,7 +230,7 @@ export default function OfferCard({
         </AddressContainer>
       )}
       <ImageContainer>
-        {isSeller && <OfferStatuses offer={offer} />}
+        {Status}
         {offerImg ? (
           <Image data-testid="image" src={offerImg} />
         ) : (

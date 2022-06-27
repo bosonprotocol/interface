@@ -8,12 +8,12 @@ import { useAccount } from "wagmi";
 
 import OfferStatuses from "../../components/offer/OfferStatuses";
 import { CONFIG } from "../../lib/config";
-import { UrlParameters } from "../../lib/routing/query-parameters";
+import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
-import { Offer } from "../../lib/types/offer";
+import { useOffer } from "../../lib/utils/hooks/offers/useOffer";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import { useOffer } from "../../lib/utils/hooks/useOffers/useOffer";
+import { isAccountSeller } from "../../lib/utils/isAccountSeller";
 import AddressContainer from "./../../components/offer/AddressContainer";
 import RootPrice from "./../../components/price";
 import CreatedExchangeModal from "./CreatedExchangeModal";
@@ -227,11 +227,6 @@ const InfoIcon = styled(IoIosInformationCircleOutline).attrs({
   font-size: 27px;
 `;
 
-function isAccountSeller(offer: Offer, account: string): boolean {
-  if (offer.seller.clerk.toLowerCase() === account.toLowerCase()) return true;
-  return offer.seller.operator.toLowerCase() === account.toLowerCase();
-}
-
 export default function OfferDetail() {
   const { [UrlParameters.offerId]: offerId } = useParams();
   const widgetRef = useRef<HTMLDivElement>(null);
@@ -249,17 +244,16 @@ export default function OfferDetail() {
   const address = account?.address || "";
   const navigate = useKeepQueryParamsNavigate();
 
-  if (!offerId) {
-    return null;
-  }
-
   const {
     data: offer,
     isError,
     isLoading
-  } = useOffer({
-    offerId
-  });
+  } = useOffer(
+    {
+      offerId: offerId || ""
+    },
+    { enabled: !!offerId }
+  );
 
   useEffect(() => {
     if (!address) {
@@ -294,6 +288,10 @@ export default function OfferDetail() {
     window.addEventListener("message", handleMessageFromIframe);
     return () => window.removeEventListener("message", handleMessageFromIframe);
   }, []);
+
+  if (!offerId) {
+    return null;
+  }
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -332,13 +330,12 @@ export default function OfferDetail() {
       <Root>
         <ImageAndDescription>
           <ImageContainer>
-            {isSeller && (
-              <StatusContainer>
-                <StatusSubContainer>
-                  <OfferStatuses offer={offer} />
-                </StatusSubContainer>
-              </StatusContainer>
-            )}
+            <StatusContainer>
+              <StatusSubContainer>
+                <OfferStatuses offer={offer} />
+              </StatusSubContainer>
+            </StatusContainer>
+
             {offerImg ? (
               <Image data-testid="image" src={offerImg} />
             ) : (

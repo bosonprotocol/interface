@@ -6,7 +6,7 @@ import Avatar from "../../../components/avatar";
 // import { useAccount } from "wagmi";
 import AddressText from "../../../components/offer/AddressText";
 import CurrencyIcon from "../../../components/price/CurrencyIcon";
-import { UrlParameters } from "../../../lib/routing/query-parameters";
+import { UrlParameters } from "../../../lib/routing/parameters";
 import Tabs from "../Tabs";
 
 const BasicInfo = styled.section`

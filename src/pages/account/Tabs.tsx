@@ -1,6 +1,8 @@
 import { useMemo, useState } from "react";
 import styled from "styled-components";
 
+import { AccountQueryParameters } from "../../lib/routing/parameters";
+import { useQueryParameter } from "../../lib/routing/useQueryParameter";
 import { colors } from "../../lib/styles/colors";
 import { useBuyers } from "../../lib/utils/hooks/useBuyers";
 import { useSellers } from "../../lib/utils/hooks/useSellers";
@@ -40,12 +42,18 @@ const TabTitle = styled.div<{ $isActive: boolean }>`
   }
 `;
 
+type TabsData = {
+  id: string;
+  title: string;
+  content: JSX.Element;
+};
+const tabIdentifier = "id" as const;
+
 interface Props {
   isPrivateProfile: boolean;
   address: string;
 }
 export default function Tabs({ isPrivateProfile, address }: Props) {
-  const [indexActiveTab, setIndexActiveTab] = useState(0);
   const { data: sellers, isError: isErrorSellers } = useSellers({
     admin: address
   });
@@ -55,22 +63,21 @@ export default function Tabs({ isPrivateProfile, address }: Props) {
   const sellerId = sellers?.[0]?.id || "";
   const buyerId = buyers?.[0]?.id || "";
   const tabsData = useMemo(() => {
-    const tabsData: {
-      title: string;
-      content: JSX.Element;
-    }[] = [
+    const tabsData: TabsData[] = [
       {
+        id: "offers",
         title: isPrivateProfile ? "My Offers" : "Offers",
         content: (
           <Offers
             sellerId={sellerId}
             action={isPrivateProfile ? null : "commit"}
             showInvalidOffers={isPrivateProfile}
-            address={address}
+            isPrivateProfile={isPrivateProfile}
           />
         )
       },
       {
+        id: "exchanges",
         title: isPrivateProfile ? "My Exchanges" : "Exchanges",
         content: (
           <Exchanges
@@ -78,22 +85,37 @@ export default function Tabs({ isPrivateProfile, address }: Props) {
             buyerId={buyerId}
             action="redeem"
             showCTA={!isPrivateProfile}
+            isPrivateProfile={isPrivateProfile}
           />
         )
       },
       {
+        id: "disputes",
         title: isPrivateProfile ? "My Disputes" : "Disputes",
-        content: <Disputes sellerId={sellerId} buyerId={buyerId} />
+        content: (
+          <Disputes
+            sellerId={sellerId}
+            buyerId={buyerId}
+            isPrivateProfile={isPrivateProfile}
+          />
+        )
       }
     ];
     return tabsData;
-  }, [sellerId, buyerId]);
-
+  }, [sellerId, buyerId, isPrivateProfile]);
+  const [currentTab, setCurrentTab] = useQueryParameter(
+    AccountQueryParameters.tab
+  );
+  const tabIndex = tabsData.findIndex(
+    (tab) => tab[tabIdentifier] === currentTab
+  );
+  const [indexActiveTab, setIndexActiveTab] = useState(Math.max(tabIndex, 0)); // 0 is the offers tab
   if (isErrorSellers || isErrorBuyers) {
     return <div>There has been an error...</div>;
   }
-  const handleActive = (index: number) => () => {
+  const handleActive = (index: number, tab: TabsData) => () => {
     setIndexActiveTab(index);
+    setCurrentTab(tab[tabIdentifier]);
   };
   return (
     <TabsContainer>
@@ -101,11 +123,11 @@ export default function Tabs({ isPrivateProfile, address }: Props) {
         {tabsData.map((tab, index) => {
           const isActive = indexActiveTab === index;
           return (
-            <HeaderTab key={tab.title}>
+            <HeaderTab key={tab.id}>
               <TabTitle
                 $isActive={isActive}
                 data-testid={`tab-${tab.title}`}
-                onClick={handleActive(index)}
+                onClick={handleActive(index, tab)}
               >
                 <span>{tab.title}</span>
               </TabTitle>

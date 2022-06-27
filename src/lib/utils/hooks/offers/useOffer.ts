@@ -1,12 +1,17 @@
 import { useQuery } from "react-query";
 
 import { Offer } from "../../../types/offer";
-import { fetchSubgraph } from "../../../utils/core-components/subgraph";
+import { fetchSubgraph } from "../../core-components/subgraph";
 import { checkOfferMetadata } from "../../validators";
 import { getOffersQuery } from "./graphql";
 import { UseOfferProps, UseOffersProps } from "./types";
 
-export function useOffer({ offerId, ...restProps }: UseOfferProps) {
+export function useOffer(
+  { offerId, ...restProps }: UseOfferProps,
+  options: {
+    enabled?: boolean;
+  } = {}
+) {
   return useQuery(
     ["offer", offerId],
     async () => {
@@ -25,7 +30,7 @@ export function useOffer({ offerId, ...restProps }: UseOfferProps) {
       return null;
     },
     {
-      enabled: !!offerId
+      ...options
     }
   );
 }

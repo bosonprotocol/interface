@@ -4,7 +4,7 @@ import { IoIosClose } from "react-icons/io";
 import styled from "styled-components";
 
 const Root = styled.div`
-  position: absolute;
+  position: fixed;
   top: 0;
   bottom: 0;
   left: 0;

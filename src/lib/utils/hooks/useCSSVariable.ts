@@ -9,6 +9,6 @@ export const useCSSVariable = (
     setValue(
       getComputedStyle(document.documentElement).getPropertyValue(variableName)
     );
-  }, [document.documentElement]);
+  }, [variableName]);
   return value;
 };

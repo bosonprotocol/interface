@@ -1,17 +1,17 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { generatePath, useParams } from "react-router-dom";
 import styled from "styled-components";
 
 import OfferList from "../../components/offers/OfferList";
 import {
-  QueryParameters,
+  ExploreQueryParameters,
   UrlParameters
-} from "../../lib/routing/query-parameters";
+} from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { footerHeight } from "../../lib/styles/layout";
 import { Offer } from "../../lib/types/offer";
+import { useOffers } from "../../lib/utils/hooks/offers";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import { useOffers } from "../../lib/utils/hooks/useOffers/";
 import { usePrevious } from "../../lib/utils/hooks/usePrevious";
 import Pagination from "./Pagination";
 
@@ -37,7 +37,7 @@ const updatePageIndexInUrl =
   (navigate: ReturnType<typeof useKeepQueryParamsNavigate>) =>
   (
     index: number,
-    queryParams: { [x in keyof typeof QueryParameters]: string }
+    queryParams: { [x in keyof typeof ExploreQueryParameters]: string }
   ): void => {
     const queryParamsUrl = new URLSearchParams(
       Object.entries(queryParams).filter(([, value]) => value !== "")
@@ -60,16 +60,29 @@ const updatePageIndexInUrl =
 const OFFERS_PER_PAGE = 10;
 const DEFAULT_PAGE = 0;
 
+const extractFiltersWithDefaults = (props: Props): Props => {
+  return {
+    brand: props.brand || "",
+    name: props.name || "",
+    exchangeTokenAddress: props.exchangeTokenAddress || "",
+    sellerId: props.sellerId || ""
+  };
+};
+
 export default function ExploreOffers(props: Props) {
-  const { brand, name, exchangeTokenAddress, sellerId } = props;
+  const { brand, name, exchangeTokenAddress, sellerId } =
+    extractFiltersWithDefaults(props);
   const params = useParams();
   const navigate = useKeepQueryParamsNavigate();
-  const updateUrl = (index: number) =>
-    updatePageIndexInUrl(navigate)(index, {
-      name: name ?? "",
-      currency: exchangeTokenAddress ?? "",
-      seller: sellerId ?? ""
-    });
+  const updateUrl = useCallback(
+    (index: number) =>
+      updatePageIndexInUrl(navigate)(index, {
+        name: name ?? "",
+        currency: exchangeTokenAddress ?? "",
+        seller: sellerId ?? ""
+      }),
+    [navigate, name, exchangeTokenAddress, sellerId]
+  );
   const initialPageIndex = Math.max(
     0,
     params[UrlParameters.page]
@@ -98,6 +111,12 @@ export default function ExploreOffers(props: Props) {
   } = useOffers(useOffersPayload);
 
   const prevProps = usePrevious(props);
+  const {
+    brand: prevBrand,
+    name: prevName,
+    exchangeTokenAddress: prevExchangeTokenAddress,
+    sellerId: prevSellerId
+  } = extractFiltersWithDefaults(prevProps || {});
 
   useEffect(() => {
     if (isFetched && !currentAndNextPageOffers?.length) {
@@ -108,17 +127,32 @@ export default function ExploreOffers(props: Props) {
       setPageIndex(DEFAULT_PAGE);
       updateUrl(DEFAULT_PAGE);
     }
-  }, [currentAndNextPageOffers, isFetched]);
+  }, [currentAndNextPageOffers, isFetched, updateUrl]);
 
   useEffect(() => {
     /**
      * if the filters change, you should be redirected to the first page
      */
-    if (prevProps) {
+    if (
+      brand !== prevBrand ||
+      name !== prevName ||
+      exchangeTokenAddress !== prevExchangeTokenAddress ||
+      sellerId !== prevSellerId
+    ) {
       setPageIndex(DEFAULT_PAGE);
       updateUrl(DEFAULT_PAGE);
     }
-  }, [brand, name, exchangeTokenAddress, sellerId]);
+  }, [
+    brand,
+    name,
+    exchangeTokenAddress,
+    sellerId,
+    prevBrand,
+    prevName,
+    prevExchangeTokenAddress,
+    prevSellerId,
+    updateUrl
+  ]);
   const { data: firstPageOffers } = useOffers(
     {
       ...useOffersPayload

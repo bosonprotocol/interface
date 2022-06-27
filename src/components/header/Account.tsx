@@ -32,7 +32,7 @@ export default function Account({ connect, isConnected }: Props) {
     if (isConnected && isClicked) {
       navigate({ pathname: BosonRoutes.YourAccount });
     }
-  }, [isConnected, isClicked]);
+  }, [isConnected, isClicked, navigate]);
   return (
     <AccountSvgIcon
       data-testid="account"

@@ -7,15 +7,16 @@ import styled from "styled-components";
 import { useAccount } from "wagmi";
 
 import AddressContainer from "../../components/offer/AddressContainer";
-import OfferStatuses from "../../components/offer/OfferStatuses";
+import ExchangeStatuses from "../../components/offer/ExchangeStatuses";
 import RootPrice from "../../components/price";
 import { CONFIG } from "../../lib/config";
-import { UrlParameters } from "../../lib/routing/query-parameters";
+import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { isAccountSeller } from "../../lib/utils/isAccountSeller";
 
 const Root = styled.div`
   display: flex;
@@ -222,13 +223,6 @@ const InfoIcon = styled(IoIosInformationCircleOutline).attrs({
   font-size: 27px;
 `;
 
-function isAccountSeller(offer: Offer, account: string): boolean {
-  if (offer.seller.clerk.toLowerCase() === account.toLowerCase()) return true;
-  if (offer.seller.operator.toLowerCase() === account.toLowerCase())
-    return true;
-  return false;
-}
-
 export default function Exchange() {
   const { [UrlParameters.exchangeId]: exchangeId } = useParams();
   const widgetRef = useRef<HTMLDivElement>(null);
@@ -240,19 +234,22 @@ export default function Exchange() {
   const address = account?.address || "";
 
   const navigate = useKeepQueryParamsNavigate();
-  if (!exchangeId) {
-    return null;
-  }
 
   const {
     data: exchanges,
     isError,
     isLoading
-  } = useExchanges({
-    id: exchangeId,
-    disputed: null
-  });
-  const offer = exchanges?.[0]?.offer;
+  } = useExchanges(
+    {
+      id: exchangeId,
+      disputed: null
+    },
+    {
+      enabled: !!exchangeId
+    }
+  );
+  const exchange = exchanges?.[0];
+  const offer = exchange?.offer;
 
   useEffect(() => {
     if (!address) {
@@ -261,7 +258,7 @@ export default function Exchange() {
   }, [address]);
 
   useEffect(() => {
-    if (offer && widgetRef.current) {
+    if (offer && widgetRef.current && exchangeId) {
       const widgetContainer = document.createElement("div");
       widgetContainer.style.width = "100%";
       widgetRef.current.appendChild(widgetContainer);
@@ -273,6 +270,10 @@ export default function Exchange() {
 
     return;
   }, [offer, isTabSellerSelected, exchangeId]);
+
+  if (!exchangeId) {
+    return null;
+  }
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -305,19 +306,22 @@ export default function Exchange() {
   const sellerAddress = offer.seller?.operator;
   // const isOfferValid = getIsOfferValid(offer);
   const description = offer.metadata?.description || "";
-
+  const buyerAddress = exchange.buyer.wallet;
+  const isBuyer = buyerAddress.toLowerCase() === address.toLowerCase();
   return (
     <>
       <Root>
         <ImageAndDescription>
           <ImageContainer>
-            {isSeller && (
-              <StatusContainer>
-                <StatusSubContainer>
-                  <OfferStatuses offer={offer} />
-                </StatusSubContainer>
-              </StatusContainer>
-            )}
+            <StatusContainer>
+              <StatusSubContainer>
+                <ExchangeStatuses
+                  offer={offer}
+                  exchange={exchange as NonNullable<Offer["exchanges"]>[number]}
+                />
+              </StatusSubContainer>
+            </StatusContainer>
+
             {offerImg ? (
               <Image data-testid="image" src={offerImg} />
             ) : (
@@ -370,7 +374,7 @@ export default function Exchange() {
               decimals={offer.exchangeToken.decimals}
             />
           </Box>
-          {isSeller && (
+          {isSeller && isBuyer && (
             <Toggle>
               <InfoIconTextWrapper>
                 <InfoIcon />
