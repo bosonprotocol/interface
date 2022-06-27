@@ -28,7 +28,6 @@ export default function Price({
   currencySymbol,
   ...rest
 }: IProps) {
-  const symbolUpperCase = currencySymbol.toUpperCase();
   let formattedValue = "";
   try {
     formattedValue = utils.formatUnits(BigNumber.from(value), Number(decimals));
@@ -47,7 +46,6 @@ export default function Price({
       ) : (
         "-"
       )}{" "}
-      <span>{symbolUpperCase}</span>
     </Root>
   );
 }

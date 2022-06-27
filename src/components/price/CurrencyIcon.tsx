@@ -31,7 +31,7 @@ export default function CurrencyIcon({ currencySymbol }: Props) {
   if (!currencyImages[symbolUpperCase]) {
     return null;
   }
-  const Icon = currencyImages["ETH"];
+  const Icon = currencyImages[symbolUpperCase];
   return (
     <IconContainer>
       <Icon />

@@ -108,6 +108,10 @@ const Price = styled(RootPrice)`
   font-size: 16px;
   font-weight: bold;
   stroke: black;
+
+  svg {
+    width: 9px;
+  }
 `;
 
 const PriceText = styled(Typography)`
