@@ -8,6 +8,7 @@ import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryPa
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import Layout from "../Layout";
 import { LinkWithQuery } from "../linkStoreFields/LinkStoreFields";
+import Button from "../ui/Button";
 import ConnectButton from "./ConnectButton";
 
 const Header = styled.header`
@@ -26,6 +27,8 @@ const Header = styled.header`
   color: ${colors.darkGrey};
   z-index: 1000;
 `;
+
+const BurgerButton = styled(Button)``;
 
 const HeaderContainer = styled(Layout)`
   display: flex;
@@ -73,7 +76,11 @@ export default function HeaderComponent() {
           onClick={() => navigate({ pathname: BosonRoutes.Root })}
         />
         {isPhone ? (
-          <div>burger</div>
+          <BurgerButton theme="blank">
+            <div />
+            <div />
+            <div />
+          </BurgerButton>
         ) : (
           <NavigationLinks>
             <LinkWithQuery to={BosonRoutes.Explore}>Explore</LinkWithQuery>

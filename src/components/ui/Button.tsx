@@ -66,6 +66,10 @@ const allThemes = {
       background: colors.border
     }
   },
+  blank: {
+    text: colors.black,
+    borderWidth: 0
+  },
   warning: {
     color: colors.black,
     borderColor: colors.orange,
