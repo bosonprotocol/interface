@@ -125,7 +125,7 @@ export default function CreateOffer() {
               values.buyerCancelPenalty
             ).toString(),
             protocolFee: parseEther(values.protocolFee).toString(),
-            offerChecksum: metadataHash, // TODO: use correct checksum
+            metadataHash,
             metadataUri
           },
           CONFIG
