@@ -11,7 +11,6 @@ import { breakpoint } from "../../lib/styles/breakpoint";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import FeaturedOffers from "../../pages/landing/FeaturedOffers";
-import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
 import Step from "./Step";
 
 const LandingPage = styled.div`
@@ -34,7 +33,6 @@ const MainImgContainer = styled.div`
   flex-basis: 70%;
 
   ${breakpoint.m} {
-  ${breakpoint.m} {
     justify-content: flex-end;
   }
 `;
@@ -53,7 +51,6 @@ export default function Landing() {
   const { isPhone, isTablet } = useBreakpoints();
   const navigate = useKeepQueryParamsNavigate();
   const [name] = useState("");
-  const storeName = useCustomStoreQueryParameter("storeName");
 
   const navigateToExplore = () =>
     navigate({
@@ -69,14 +66,10 @@ export default function Landing() {
         gap="2.5rem"
       >
         <Grid alignItems="flex-start" flexDirection="column">
-          {storeName ? (
-            <Typography tag="h1">{storeName}</Typography>
-          ) : (
-            <Typography tag="h1">
-              Tokenize, transfer and trade&nbsp;any physical asset
-              as&nbsp;an&nbsp;NFT
-            </Typography>
-          )}
+          <Typography tag="h1">
+            Tokenize, transfer and trade&nbsp;any physical asset
+            as&nbsp;an&nbsp;NFT
+          </Typography>
           <Typography tag="h4">
             The first decentralized marketplace built on Boson Protocol
           </Typography>
