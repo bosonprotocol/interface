@@ -37,6 +37,11 @@ const MainImg = styled.img`
   max-width: 100%;
 `;
 
+const StepWrapper = styled(Grid)`
+  gap: 50px;
+  margin: 5rem 0;
+`;
+
 export default function Landing() {
   const navigate = useKeepQueryParamsNavigate();
   const [name, setName] = useState("");
@@ -96,7 +101,7 @@ export default function Landing() {
           <MainImg src={placeholder} />
         </MainImgContainer>
       </Grid>
-      <Grid>
+      <StepWrapper alignItems="flex-start">
         <Step number={1} title="Commit">
           Commit to an Offer to receive a Redeemable NFT (rNFT) that can be
           exchanged for the real-world item it represents
@@ -109,7 +114,7 @@ export default function Landing() {
           Redeem your rNFT to receive the underlying item. The rNFT will be
           destroyed in the process.
         </Step>
-      </Grid>
+      </StepWrapper>
       <Grid padding="5rem 0 0 0">
         <FeaturedOffers />
       </Grid>

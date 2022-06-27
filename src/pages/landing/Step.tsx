@@ -1,9 +1,35 @@
 import styled from "styled-components";
 
-import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
+import { colors } from "../../lib/styles/colors";
 
-const StepWrapper = styled(Grid)``;
+const StepWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+  h1 {
+    position: relative;
+    color: ${colors.secondary};
+    &:after {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      width: 100%;
+      height: 50%;
+      top: 50%;
+      left: 0%;
+      background: ${colors.primary};
+    }
+  }
+  h1,
+  h3,
+  p {
+    text-align: center;
+    margin: 0;
+  }
+`;
 
 interface IStep {
   children: string | React.ReactNode;
@@ -13,8 +39,8 @@ interface IStep {
 
 const Step: React.FC<IStep> = ({ children, number, title }) => {
   return (
-    <StepWrapper flexDirection="column">
-      <Typography tag="h1">{number}</Typography>
+    <StepWrapper>
+      <Typography tag="h1">0{number}</Typography>
       <Typography tag="h3">{title}</Typography>
       <Typography tag="p">{children}</Typography>
     </StepWrapper>

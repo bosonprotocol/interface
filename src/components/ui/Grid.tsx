@@ -13,6 +13,7 @@ interface IGrid {
   flexBasis?: string;
   flexDirection?: FlexDirection;
   justifyContent?: JustifyContent;
+  gap?: string;
   padding?: string;
 }
 
@@ -22,6 +23,7 @@ const Container = styled.div<IGrid>`
   flex-basis: ${({ flexBasis }) => flexBasis || "auto"};
   flex-direction: ${({ flexDirection }) => flexDirection || "row"};
   justify-content: ${({ justifyContent }) => justifyContent || "space-between"};
+  gap: ${({ gap }) => gap || "initial"};
   ${({ padding }) => (padding ? `padding:${padding};` : "")}
 `;
 
