@@ -5,7 +5,7 @@ export const offerGraphQl = gql`
     id
     createdAt
     price
-    offerChecksum
+    metadataHash
     sellerDeposit
     fulfillmentPeriodDuration
     metadataUri
