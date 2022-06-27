@@ -52,7 +52,7 @@ const HeaderContainer = styled(Layout)`
   align-items: center;
 `;
 
-const NavigationLinks = styled.nav<{ $isMobile: boolean; $isOpen: boolean }>`
+const NavigationLinks = styled.nav`
   display: flex;
   gap: 5rem;
   width: 100%;
@@ -97,7 +97,7 @@ export default function HeaderComponent() {
           src={logoUrl || logo}
           onClick={() => navigate({ pathname: BosonRoutes.Root })}
         />
-        {isPhone && (
+        {isPhone ? (
           <>
             <ConnectButton />
             <BurgerButton theme="blank" onClick={toggleMenu}>
@@ -106,16 +106,19 @@ export default function HeaderComponent() {
               <div />
             </BurgerButton>
           </>
+        ) : (
+          <NavigationLinks>
+            <LinkWithQuery to={BosonRoutes.Explore}>
+              Explore Products
+            </LinkWithQuery>
+            {account && (
+              <LinkWithQuery to={BosonRoutes.YourAccount}>
+                My Items
+              </LinkWithQuery>
+            )}
+            {!isPhone && <ConnectButton />}
+          </NavigationLinks>
         )}
-        <NavigationLinks $isMobile={isPhone} $isOpen={!isPhone ? true : open}>
-          <LinkWithQuery to={BosonRoutes.Explore}>
-            Explore Products
-          </LinkWithQuery>
-          {account && (
-            <LinkWithQuery to={BosonRoutes.YourAccount}>My Items</LinkWithQuery>
-          )}
-          {!isPhone && <ConnectButton />}
-        </NavigationLinks>
       </HeaderContainer>
     </Header>
   );
