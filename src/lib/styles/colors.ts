@@ -8,6 +8,7 @@ export const colors = {
   yellow: "yellow",
   arsenic: "#3a364f",
   darkGreen: "#276c55",
+  darkOrange: "darkorange",
   darkRed: "darkred",
   cyan: "#00FFFF",
 

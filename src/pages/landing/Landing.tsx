@@ -53,8 +53,14 @@ export default function Landing() {
       <Grid flexBasis="50%">
         <Grid alignItems="flex-start" flexDirection="column">
           <Typography tag="h1">
-            Tokenize, transfer and trade&nbsp;any physical asset
-            as&nbsp;an&nbsp;NFT
+            {storeName || (
+              <div
+                dangerouslySetInnerHTML={{
+                  __html:
+                    "Tokenize, transfer and trade&nbsp;any physical asset as&nbsp;an&nbsp;NFT"
+                }}
+              />
+            )}
           </Typography>
           <Typography tag="h4">
             The first decentralized marketplace built on Boson Protocol

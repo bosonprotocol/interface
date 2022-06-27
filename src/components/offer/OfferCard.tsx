@@ -10,6 +10,7 @@ import { BosonRoutes, OffersRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import ExchangeStatuses from "./ExchangeStatuses";
 import OfferStatuses from "./OfferStatuses";
 
 const Card = styled.div`
@@ -153,7 +154,7 @@ export type Action = "commit" | "redeem" | null;
 
 interface Props {
   offer: Offer;
-  exchangeId?: string;
+  exchange?: NonNullable<Offer["exchanges"]>[number];
   showSeller?: boolean;
   showCTA?: boolean;
   action?: Action;
@@ -163,7 +164,7 @@ interface Props {
 
 export default function OfferCard({
   offer,
-  exchangeId,
+  exchange,
   showSeller,
   showCTA,
   action,
@@ -183,7 +184,7 @@ export default function OfferCard({
   if (!offer) {
     return null;
   }
-  const path = getCTAPath(action, { offerId, exchangeId });
+  const path = getCTAPath(action, { offerId, exchangeId: exchange?.id });
 
   const isClickable = !!path;
   const onClick: React.MouseEventHandler<unknown> = (e) => {
@@ -198,6 +199,16 @@ export default function OfferCard({
         }
       );
   };
+
+  const Status = isPrivateProfile ? (
+    exchange ? (
+      <ExchangeStatuses offer={offer} exchange={exchange} />
+    ) : (
+      <OfferStatuses offer={offer} />
+    )
+  ) : (
+    <></>
+  );
 
   return (
     <Card data-testid={dataTestId} onClick={onClick}>
@@ -219,7 +230,7 @@ export default function OfferCard({
         </AddressContainer>
       )}
       <ImageContainer>
-        {isPrivateProfile && <OfferStatuses offer={offer} />}
+        {Status}
         {offerImg ? (
           <Image data-testid="image" src={offerImg} />
         ) : (

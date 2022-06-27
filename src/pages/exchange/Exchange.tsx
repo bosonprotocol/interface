@@ -7,7 +7,7 @@ import styled from "styled-components";
 import { useAccount } from "wagmi";
 
 import AddressContainer from "../../components/offer/AddressContainer";
-import OfferStatuses from "../../components/offer/OfferStatuses";
+import ExchangeStatuses from "../../components/offer/ExchangeStatuses";
 import RootPrice from "../../components/price";
 import { CONFIG } from "../../lib/config";
 import { UrlParameters } from "../../lib/routing/parameters";
@@ -17,6 +17,7 @@ import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { isAccountSeller } from "../../lib/utils/isAccountSeller";
 
 const Root = styled.div`
   display: flex;
@@ -223,13 +224,6 @@ const InfoIcon = styled(IoIosInformationCircleOutline).attrs({
   font-size: 27px;
 `;
 
-function isAccountSeller(offer: Offer, account: string): boolean {
-  if (offer.seller.clerk.toLowerCase() === account.toLowerCase()) return true;
-  if (offer.seller.operator.toLowerCase() === account.toLowerCase())
-    return true;
-  return false;
-}
-
 export default function Exchange() {
   const { [UrlParameters.exchangeId]: exchangeId } = useParams();
   const widgetRef = useRef<HTMLDivElement>(null);
@@ -320,13 +314,15 @@ export default function Exchange() {
       <Root>
         <ImageAndDescription>
           <ImageContainer>
-            {isSeller && (
-              <StatusContainer>
-                <StatusSubContainer>
-                  <OfferStatuses offer={offer} />
-                </StatusSubContainer>
-              </StatusContainer>
-            )}
+            <StatusContainer>
+              <StatusSubContainer>
+                <ExchangeStatuses
+                  offer={offer}
+                  exchange={exchange as NonNullable<Offer["exchanges"]>[number]}
+                />
+              </StatusSubContainer>
+            </StatusContainer>
+
             {offerImg ? (
               <Image data-testid="image" src={offerImg} />
             ) : (

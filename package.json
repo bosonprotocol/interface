@@ -31,10 +31,10 @@
     }
   },
   "dependencies": {
-    "@bosonprotocol/common": "^1.6.0-alpha.11",
-    "@bosonprotocol/core-sdk": "^1.6.0-alpha.11",
-    "@bosonprotocol/ipfs-storage": "^1.5.0-alpha.11",
-    "@bosonprotocol/widgets-sdk": "^1.6.0-alpha.11",
+    "@bosonprotocol/common": "^1.6.0",
+    "@bosonprotocol/core-sdk": "^1.7.1-alpha.0",
+    "@bosonprotocol/ipfs-storage": "^1.5.0",
+    "@bosonprotocol/widgets-sdk": "^1.6.0",
     "@davatar/react": "^1.10.3",
     "@ethersproject/address": "^5.6.0",
     "@ethersproject/units": "^5.6.0",
@@ -84,7 +84,7 @@
     "eslint-plugin-react-hooks": "^4.5.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "eslint-plugin-unused-imports": "^2.0.0",
-    "husky": "^8.0.0",
+    "husky": "^7.0.4",
     "istanbul": "^0.4.5",
     "nyc": "^15.1.0",
     "prettier": "^2.6.2",

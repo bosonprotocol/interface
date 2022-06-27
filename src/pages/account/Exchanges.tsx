@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import styled from "styled-components";
 
 import OfferCard, { Action } from "../../components/offer/OfferCard";
+import { Offer } from "../../lib/types/offer";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 
 const ExchangesContainer = styled.div`
@@ -83,7 +84,7 @@ export default function Exchanges({
         <OfferCard
           key={exchange.id}
           offer={exchange.offer}
-          exchangeId={exchange.id}
+          exchange={exchange as NonNullable<Offer["exchanges"]>[number]}
           action={action}
           dataTestId="exchange"
           showSeller={false}
