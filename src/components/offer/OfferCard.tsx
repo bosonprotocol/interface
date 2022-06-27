@@ -3,30 +3,28 @@ import { IoIosImage } from "react-icons/io";
 import { generatePath, useLocation } from "react-router-dom";
 import styled from "styled-components";
 
-import AddressContainer from "../../components/offer/AddressContainer";
 import RootPrice from "../../components/price";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes, OffersRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import Typography from "../ui/Typography";
 import ExchangeStatuses from "./ExchangeStatuses";
 import OfferStatuses from "./OfferStatuses";
 
 const Card = styled.div`
-  border-radius: 12px;
-  box-shadow: inset -3px -3px 3px #0e0f17, inset 3px 3px 3px #363b5b;
   display: inline-block;
   position: relative;
-  width: 250px;
-  padding: 0 16px;
+  width: 323px;
+  min-height: 500px;
   cursor: pointer;
+  border: 1px solid ${colors.darkGrey}99;
 `;
 
 const ImageContainer = styled.div`
   display: flex;
   justify-content: center;
-  margin: 16px 0;
   position: relative;
 
   [data-testid="statuses"] {
@@ -37,10 +35,13 @@ const ImageContainer = styled.div`
   }
 `;
 
+const Content = styled.div`
+  margin: 16px 24.5px;
+`;
+
 const Image = styled.img`
-  height: 250px;
-  width: 250px;
-  border-radius: 24px;
+  height: 390px;
+  width: 100%;
 `;
 
 const ImagePlaceholder = styled.div`
@@ -67,9 +68,26 @@ const ImageNotAvailable = styled(IoIosImage)`
 
 const BasicInfoContainer = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: space-between;
   gap: 4px;
-  margin: 18px 0px;
+  margin: 4px 0 8px 0;
+`;
+
+const SellerContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+`;
+
+const AddressContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  cursor: pointer;
+  margin: 0 0 4px 0;
 `;
 
 const SellerInfo = styled.div`
@@ -77,37 +95,23 @@ const SellerInfo = styled.div`
   flex-direction: row;
   width: 100%;
   align-items: center;
-  margin: 18px 0px;
+  color: ${colors.secondary};
+  font-weight: 600;
 `;
 
 const Name = styled.span`
   font-size: 18px;
   font-weight: 600;
-  margin-bottom: 8px;
-`;
-
-const ButtonContainer = styled.div`
-  display: flex;
 `;
 
 const Price = styled(RootPrice)`
   font-size: 16px;
   font-weight: bold;
+  stroke: black;
 `;
 
-const Button = styled.button`
-  all: unset;
-  font-weight: 600;
-  font-size: 15px;
-  color: var(--secondary);
-  border-radius: 11px;
-  display: inline-block;
-  text-align: center;
-  transition: all 0.5s;
-  cursor: pointer;
-  border: 1px solid var(--secondary);
-  padding: 6px 12px;
-  margin-top: 8px;
+const PriceText = styled(Typography)`
+  color: #556072;
 `;
 
 const getCTAPath = (
@@ -127,36 +131,12 @@ const getCTAPath = (
   });
 };
 
-const CTA = ({
-  action,
-  onClick
-}: {
-  action: Props["action"];
-  onClick: React.MouseEventHandler<HTMLButtonElement>;
-}) => {
-  if (action === "commit") {
-    return (
-      <Button data-testid="commit" onClick={onClick}>
-        Commit
-      </Button>
-    );
-  } else if (action === "redeem") {
-    return (
-      <Button data-testid="redeem" onClick={onClick}>
-        Redeem
-      </Button>
-    );
-  }
-  return null;
-};
-
 export type Action = "commit" | "redeem" | null;
 
 interface Props {
   offer: Offer;
   exchange?: NonNullable<Offer["exchanges"]>[number];
   showSeller?: boolean;
-  showCTA?: boolean;
   action?: Action;
   dataTestId: string;
   isPrivateProfile?: boolean;
@@ -166,7 +146,6 @@ export default function OfferCard({
   offer,
   exchange,
   showSeller,
-  showCTA,
   action,
   dataTestId,
   isPrivateProfile
@@ -212,23 +191,6 @@ export default function OfferCard({
 
   return (
     <Card data-testid={dataTestId} onClick={onClick}>
-      {isSellerVisible && sellerAddress && (
-        <AddressContainer
-          onClick={(e) => {
-            e.stopPropagation();
-            navigate({
-              pathname: generatePath(BosonRoutes.Account, {
-                [UrlParameters.accountId]: sellerAddress
-              })
-            });
-          }}
-        >
-          <div>
-            <AccountImage size={30} address={sellerAddress} />
-          </div>
-          <SellerInfo data-testid="seller-id">Seller ID: {sellerId}</SellerInfo>
-        </AddressContainer>
-      )}
       <ImageContainer>
         {Status}
         {offerImg ? (
@@ -236,25 +198,48 @@ export default function OfferCard({
         ) : (
           <ImagePlaceholder>
             <ImageNotAvailable />
-            <span>IMAGE NOT AVAILABLE</span>
+            <Typography tag="span">IMAGE NOT AVAILABLE</Typography>
           </ImagePlaceholder>
         )}
       </ImageContainer>
-      <BasicInfoContainer>
-        <Name data-testid="name">{name || "Untitled"}</Name>
-        {offer.exchangeToken && (
-          <Price
-            currencySymbol={offer.exchangeToken.symbol}
-            value={offer.price}
-            decimals={offer.exchangeToken.decimals}
-          />
+      <Content>
+        {isSellerVisible && sellerAddress && (
+          <AddressContainer
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate({
+                pathname: generatePath(BosonRoutes.Account, {
+                  [UrlParameters.accountId]: sellerAddress
+                })
+              });
+            }}
+          >
+            <SellerContainer>
+              <div>
+                <AccountImage size={17} address={sellerAddress} />
+              </div>
+              <SellerInfo data-testid="seller-id">
+                Seller ID: {sellerId}
+              </SellerInfo>
+            </SellerContainer>
+            <PriceText>Price</PriceText>
+          </AddressContainer>
         )}
-        {showCTA && (
-          <ButtonContainer>
-            <CTA onClick={onClick} action={action} />
-          </ButtonContainer>
+
+        <BasicInfoContainer>
+          <Name data-testid="name">{name || "Untitled"}</Name>
+          {offer.exchangeToken && (
+            <Price
+              currencySymbol={offer.exchangeToken.symbol}
+              value={offer.price}
+              decimals={offer.exchangeToken.decimals}
+            />
+          )}
+        </BasicInfoContainer>
+        {!exchange && (
+          <Typography>Redeemable until 30 days after commit</Typography>
         )}
-      </BasicInfoContainer>
+      </Content>
     </Card>
   );
 }
