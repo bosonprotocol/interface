@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
+import { useAccount } from "wagmi";
 
 import logo from "../../../src/assets/logo.svg";
 import { BosonRoutes } from "../../lib/routing/routes";
@@ -80,6 +81,7 @@ const LogoImg = styled.img`
 export default function HeaderComponent() {
   const { isPhone } = useBreakpoints();
   const [open, setOpen] = useState(false);
+  const { data: account } = useAccount();
   const navigate = useKeepQueryParamsNavigate();
   const logoUrl = useCustomStoreQueryParameter("logoUrl");
 
@@ -106,8 +108,12 @@ export default function HeaderComponent() {
           </>
         )}
         <NavigationLinks $isMobile={isPhone} $isOpen={!isPhone ? true : open}>
-          <LinkWithQuery to={BosonRoutes.Explore}>Explore</LinkWithQuery>
-          <LinkWithQuery to={BosonRoutes.CreateOffer}>Create</LinkWithQuery>
+          <LinkWithQuery to={BosonRoutes.Explore}>
+            Explore Products
+          </LinkWithQuery>
+          {account && (
+            <LinkWithQuery to={BosonRoutes.YourAccount}>My Items</LinkWithQuery>
+          )}
           {!isPhone && <ConnectButton />}
         </NavigationLinks>
       </HeaderContainer>
