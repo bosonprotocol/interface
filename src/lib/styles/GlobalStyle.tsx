@@ -8,7 +8,6 @@ const GlobalStyle = createGlobalStyle<{
   $secondaryColor: string;
   $accentColor: string;
 }>`
-
   * {
     box-sizing: border-box
   }
