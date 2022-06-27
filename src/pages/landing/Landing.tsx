@@ -11,7 +11,6 @@ import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import FeaturedOffers from "../../pages/landing/FeaturedOffers";
-import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
 import Step from "./Step";
 
 const LandingPage = styled(Layout)`
@@ -40,7 +39,6 @@ const MainImg = styled.img`
 export default function Landing() {
   const navigate = useKeepQueryParamsNavigate();
   const [name, setName] = useState("");
-  const storeName = useCustomStoreQueryParameter("storeName");
 
   const navigateToExplore = () =>
     navigate({
@@ -53,14 +51,7 @@ export default function Landing() {
       <Grid flexBasis="50%">
         <Grid alignItems="flex-start" flexDirection="column">
           <Typography tag="h1">
-            {storeName || (
-              <div
-                dangerouslySetInnerHTML={{
-                  __html:
-                    "Tokenize, transfer and trade&nbsp;any physical asset as&nbsp;an&nbsp;NFT"
-                }}
-              />
-            )}
+            Tokenize, transfer and trade any physical asset as&nbsp;an&nbsp;NFT
           </Typography>
           <Typography tag="h4">
             The first decentralized marketplace built on Boson Protocol
