@@ -6,6 +6,7 @@ import OfferList from "../../components/offers/OfferList";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { useOffers } from "../../lib/utils/hooks/offers";
+import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 
 const Root = styled.div`
   display: flex;
@@ -37,6 +38,8 @@ const Heading = styled.h2`
 `;
 
 export default function FeaturedOffers() {
+  const { isS, isM } = useBreakpoints();
+
   const {
     data: offers,
     isLoading,
@@ -44,7 +47,7 @@ export default function FeaturedOffers() {
   } = useOffers({
     voided: false,
     valid: true,
-    first: 3
+    first: isS || isM ? 4 : 3
   });
   return (
     <Root>
