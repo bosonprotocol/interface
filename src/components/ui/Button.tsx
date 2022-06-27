@@ -18,10 +18,8 @@ const BaseButton = styled.button<{
   ${(props) =>
     props.theme.hover &&
     `
-    &:before {
-      background-color: ${props.theme.hover.background};
-    }
     &:hover {
+      background-color: ${props.theme.hover.background};
       ${
         props.theme.hover.color
           ? `color: ${props.theme.hover.color} !important;`
@@ -45,17 +43,15 @@ const allThemes = {
     borderColor: colors.secondary,
     borderWidth: 2,
     hover: {
-      background: colors.secondary,
-      color: colors.white
+      background: colors.secondaryHover
     }
   },
   secondary: {
     color: colors.black,
     background: colors.primary,
-    borderColor: colors.primary,
-    borderWidth: 2,
     hover: {
-      background: colors.white
+      background: colors.black,
+      color: colors.white
     }
   },
   outline: {
@@ -67,8 +63,10 @@ const allThemes = {
     }
   },
   blank: {
-    text: colors.black,
-    borderWidth: 0
+    color: colors.secondary,
+    hover: {
+      color: colors.black
+    }
   },
   warning: {
     color: colors.black,

@@ -8,24 +8,7 @@ export const button = css`
   position: relative;
   overflow: hidden;
 
-  transition: all 300ms ease-in-out;
-  &:before {
-    transition: all 300ms ease-in-out;
-    content: "";
-    position: absolute;
-    width: 0;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) rotate(-45deg);
-    z-index: 0;
-    height: 280px;
-  }
-  &:hover {
-    &:before {
-      width: 100%;
-      transform: translate(-50%, -50%) rotate(-90deg);
-    }
-  }
+  transition: all 150ms ease-in-out;
 `;
 export const buttonText = css`
   display: flex;

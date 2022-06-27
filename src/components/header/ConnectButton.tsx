@@ -6,7 +6,6 @@ import styled from "styled-components";
 import metamaskLogo from "../../../src/assets/metamask-logo.svg";
 import Button from "../../components/ui/Button";
 import FallbackAvatar from "../avatar/fallback-avatar";
-import Account from "./Account";
 
 const MetaMasgLogo = styled.img`
   height: 15px;
@@ -34,7 +33,7 @@ export default function ConnectButton() {
 
         return (
           <div style={{ display: "flex", gap: 12 }}>
-            <Account connect={openConnectModal} isConnected={!!account} />
+            {/* <Account connect={openConnectModal} isConnected={!!account} /> */}
             {(() => {
               <div
                 {...(!mounted && {
@@ -69,11 +68,11 @@ export default function ConnectButton() {
 
               return (
                 <div style={{ display: "flex", gap: 12 }}>
-                  <Button onClick={openChainModal} theme="outline">
+                  {/* <Button onClick={openChainModal} theme="outline">
                     {chain.hasIcon && <ENSAvatar src={chain.iconUrl} />}
                     {chain.name}
                     <BsChevronDown size={12} />
-                  </Button>
+                  </Button> */}
                   <Button onClick={openAccountModal} theme="outline">
                     {account.ensAvatar ? (
                       <ENSAvatar src={account.ensAvatar} />

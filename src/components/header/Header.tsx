@@ -1,3 +1,4 @@
+import { useState } from "react";
 import styled from "styled-components";
 
 import logo from "../../../src/assets/logo.svg";
@@ -8,7 +9,6 @@ import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryPa
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import Layout from "../Layout";
 import { LinkWithQuery } from "../linkStoreFields/LinkStoreFields";
-import Button from "../ui/Button";
 import ConnectButton from "./ConnectButton";
 
 const Header = styled.header`
@@ -28,7 +28,22 @@ const Header = styled.header`
   z-index: 1000;
 `;
 
-const BurgerButton = styled(Button)``;
+const BurgerButton = styled.button`
+  all: unset;
+  cursor: pointer;
+
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  > div {
+    width: 2rem;
+    height: 3px;
+    border-radius: 5px;
+    background: ${colors.secondary};
+  }
+`;
 
 const HeaderContainer = styled(Layout)`
   display: flex;
@@ -36,7 +51,7 @@ const HeaderContainer = styled(Layout)`
   align-items: center;
 `;
 
-const NavigationLinks = styled.nav`
+const NavigationLinks = styled.nav<{ $isMobile: boolean; $isOpen: boolean }>`
   display: flex;
   gap: 5rem;
   width: 100%;
@@ -64,8 +79,13 @@ const LogoImg = styled.img`
 
 export default function HeaderComponent() {
   const { isPhone } = useBreakpoints();
+  const [open, setOpen] = useState(false);
   const navigate = useKeepQueryParamsNavigate();
   const logoUrl = useCustomStoreQueryParameter("logoUrl");
+
+  const toggleMenu = () => {
+    setOpen(!open);
+  };
 
   return (
     <Header>
@@ -75,19 +95,21 @@ export default function HeaderComponent() {
           src={logoUrl || logo}
           onClick={() => navigate({ pathname: BosonRoutes.Root })}
         />
-        {isPhone ? (
-          <BurgerButton theme="blank">
-            <div />
-            <div />
-            <div />
-          </BurgerButton>
-        ) : (
-          <NavigationLinks>
-            <LinkWithQuery to={BosonRoutes.Explore}>Explore</LinkWithQuery>
-            <LinkWithQuery to={BosonRoutes.CreateOffer}>Create</LinkWithQuery>
+        {isPhone && (
+          <>
             <ConnectButton />
-          </NavigationLinks>
+            <BurgerButton theme="blank" onClick={toggleMenu}>
+              <div />
+              <div />
+              <div />
+            </BurgerButton>
+          </>
         )}
+        <NavigationLinks $isMobile={isPhone} $isOpen={!isPhone ? true : open}>
+          <LinkWithQuery to={BosonRoutes.Explore}>Explore</LinkWithQuery>
+          <LinkWithQuery to={BosonRoutes.CreateOffer}>Create</LinkWithQuery>
+          {!isPhone && <ConnectButton />}
+        </NavigationLinks>
       </HeaderContainer>
     </Header>
   );

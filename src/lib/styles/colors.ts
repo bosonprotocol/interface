@@ -19,6 +19,7 @@ export const colors = {
   // Main
   primary: "#02F3A2",
   secondary: "#7829F9",
+  secondaryHover: "rgba(120,41,249,0.06)",
   // Second
   torquise: "#06F7D5",
   orange: "#FC6838",

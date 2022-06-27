@@ -6,9 +6,9 @@ import {
   TbBrandYoutube
 } from "react-icons/tb";
 
-import { SocialRoutes } from "../../lib/routing/routes";
+import { BosonRoutes, SocialRoutes } from "../../lib/routing/routes";
 
-export const SOCIALS = [
+export const SOCIAL_ROUTES = [
   {
     name: "twitter",
     logo: TbBrandTwitter,
@@ -33,5 +33,35 @@ export const SOCIALS = [
     name: "github",
     logo: TbBrandGithub,
     url: SocialRoutes.Github
+  }
+];
+
+export const PRODUCT_ROUTES = [
+  {
+    name: "Explore",
+    url: BosonRoutes.Explore
+  },
+  {
+    name: "Create",
+    url: BosonRoutes.CreateOffer
+  }
+];
+
+export const NAVIGATION_ROUTES = [
+  {
+    name: "Explore",
+    url: BosonRoutes.Explore
+  },
+  {
+    name: "Create",
+    url: BosonRoutes.CreateOffer
+  },
+  {
+    name: "Profile",
+    url: BosonRoutes.YourAccount
+  },
+  {
+    name: "Custom Storefront",
+    url: BosonRoutes.CreateStorefront
   }
 ];

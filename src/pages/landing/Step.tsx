@@ -9,6 +9,7 @@ const StepWrapper = styled.div`
   align-items: center;
   gap: 1rem;
   flex: 1;
+  width: 100%;
   h1 {
     position: relative;
     color: ${colors.secondary};
