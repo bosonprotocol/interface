@@ -8,7 +8,6 @@ import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import Layout from "../Layout";
 import { LinkWithQuery } from "../linkStoreFields/LinkStoreFields";
-import Button from "../ui/Button";
 import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
 import { NAVIGATION_ROUTES, PRODUCT_ROUTES, SOCIAL_ROUTES } from "./routes";
@@ -47,70 +46,14 @@ const LogoImg = styled.img`
   cursor: pointer;
 `;
 
-const TitleWrapper = styled(Grid)`
-  flex: 1;
-`;
-const InputWrapper = styled(Grid)`
-  flex: 1;
-  background: white;
-  padding: 1rem;
-  gap: 1rem;
-`;
-const Input = styled.input`
-  width: 100%;
-  font-size: 16px;
-  border: 0px solid ${colors.border};
-
-  font-family: "Plus Jakarta Sans";
-  font-style: normal;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 24px;
-
-  // transition: all 300ms ease-in-out;
-  &:focus {
-    outline: none;
-    // box-shadow: inset 0px 0px 0px 2px ${colors.secondary};
-  }
-`;
-
 export default function FooterComponent() {
-  const { isPhone, isTablet } = useBreakpoints();
+  const { isPhone } = useBreakpoints();
   const [year] = useState<number>(new Date().getFullYear());
   const logoUrl = useCustomStoreQueryParameter("logoUrl");
 
   return (
     <Footer>
       <Layout>
-        <Grid
-          padding="0 0 50px 0"
-          flexDirection={isPhone || isTablet ? "column" : "row"}
-        >
-          <TitleWrapper alignItems="flex-start" flexDirection="column">
-            <Typography tag="h2" style={{ margin: "10px 0" }}>
-              Sign up for updates
-            </Typography>
-            <Typography tag="p">
-              We'll send you fresh news about our platform, including
-              <br />
-              new features and opportunities for the community.
-            </Typography>
-          </TitleWrapper>
-          <InputWrapper>
-            <Input
-              data-testid="sign-up-to-newsletter"
-              placeholder="Input your email address"
-            />
-            <Button
-              onClick={() => {
-                console.log("test");
-              }}
-              size="small"
-            >
-              Sign up
-            </Button>
-          </InputWrapper>
-        </Grid>
         <Grid alignItems="flex-start" padding="0 0 50px 0">
           <LogoImg data-testid="logo" src={logoUrl || logo} />
           <div>
