@@ -12,16 +12,16 @@ import ConnectButton from "./ConnectButton";
 
 const Header = styled.header`
   position: fixed;
-  width: 100%;
-
-  padding: 10px 0 10px 0;
-  background-color: ${colors.white};
-  border-bottom: 1px solid ${colors.border};
-  color: ${colors.darkGrey};
-  z-index: 1000;
   + * {
     padding-top: 95px;
   }
+
+  width: 100%;
+  padding: 10px 0;
+  background-color: ${colors.white};
+  border-bottom: 2px solid ${colors.border};
+  color: ${colors.darkGrey};
+  z-index: 1000;
 `;
 
 const HeaderContainer = styled(Layout)`
@@ -32,7 +32,7 @@ const HeaderContainer = styled(Layout)`
 
 const NavigationLinks = styled.nav`
   display: flex;
-  gap: 32px;
+  gap: 5rem;
   width: 100%;
   align-items: center;
   justify-content: flex-end;
@@ -69,7 +69,6 @@ export default function HeaderComponent() {
           onClick={() => navigate({ pathname: BosonRoutes.Root })}
         />
         <NavigationLinks>
-          <LinkWithQuery to={BosonRoutes.Root}>Home</LinkWithQuery>
           <LinkWithQuery to={BosonRoutes.Explore}>Explore</LinkWithQuery>
           <LinkWithQuery to={BosonRoutes.CreateOffer}>Create</LinkWithQuery>
           <ConnectButton />

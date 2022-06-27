@@ -8,6 +8,7 @@ const GlobalStyle = createGlobalStyle<{
   $accentColor: string;
 }>`
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap');
+  // TODO: match with colors from lib
   :root {
     --primary: ${(props) =>
       props.$primaryColor ? props.$primaryColor : colors.navy};
@@ -28,10 +29,9 @@ const GlobalStyle = createGlobalStyle<{
     padding: 0;
     display :flex;
     flex-direction: column;
-    // background-color: var(--white); // TODO: change to white
-    background-color: var(--primary);
+    background-color: ${colors.white}
     z-index: -2;
-    color: var(--accent);
+    color: ${colors.black}
   }
   // TYPOGRAPHY
   h1, h2, h3, h4, h5, h6, p, a, span, div {
@@ -55,10 +55,12 @@ const GlobalStyle = createGlobalStyle<{
     font-size: 20px;
     line-height: 150%;
     margin: 0 0 1rem 0;
+    font-weight: 400;
   }
   a, p, span, div {
     font-size: 16px;
     line-height: 24px;
+    font-weight: 400;
   }
 `;
 export default GlobalStyle;

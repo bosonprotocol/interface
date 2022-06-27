@@ -1,81 +1,25 @@
 import { useState } from "react";
 import styled from "styled-components";
 
+import placeholder from "../../assets/placeholder/product-carousel-2x.png";
+import Layout from "../../components/Layout";
+import Button from "../../components/ui/Button";
+import Grid from "../../components/ui/Grid";
+import Typography from "../../components/ui/Typography";
 import { ExploreQueryParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
-import { colors } from "../../lib/styles/colors";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import FeaturedOffers from "../../pages/landing/FeaturedOffers";
 import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
+import Step from "./Step";
 
-const LandingContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  margin: 0 auto 64px auto;
-  overflow: hidden;
-`;
-
-const Hero = styled.div`
-  display: flex;
-  flex-direction: column-reverse;
-  margin-bottom: 64px;
-
-  ${breakpoint.m} {
-    flex-direction: row;
-  }
-`;
-
-const TitleContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  flex-basis: 30%;
-`;
-
-const Title = styled.h1`
-  font-size: 48px;
-`;
-
-const InputGo = styled.div`
-  display: flex;
-  justify-content: center;
+const LandingPage = styled(Layout)`
+  margin: 4rem 2rem;
 `;
 
 const ExploreContainer = styled.div`
-  display: flex;
-  justify-content: center;
-`;
-
-const Input = styled.input`
-  width: 100%;
-  padding: 10px 8px;
-  border-radius: 5px;
-  margin-right: 10px;
-  font-size: 16px;
-`;
-
-const GoButton = styled.button`
-  width: 100px;
-  background-color: var(--secondary);
-  color: ${colors.navy};
-  border-radius: 5px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-`;
-
-const ExploreButton = styled.button`
-  margin-top: 10px;
-  width: 100%;
-  background-color: var(--secondary);
-  color: ${colors.navy};
-  border-radius: 5px;
-  padding: 10px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
+  margin-top: 2rem;
 `;
 
 const MainImgContainer = styled.div`
@@ -105,11 +49,17 @@ export default function Landing() {
     });
 
   return (
-    <LandingContainer>
-      <Hero>
-        <TitleContainer>
-          <Title>{storeName || "Boson dApp"} </Title>
-          <InputGo>
+    <LandingPage>
+      <Grid flexBasis="50%">
+        <Grid alignItems="flex-start" flexDirection="column">
+          <Typography tag="h1">
+            Tokenize, transfer and trade&nbsp;any physical asset
+            as&nbsp;an&nbsp;NFT
+          </Typography>
+          <Typography tag="h4">
+            The first decentralized marketplace built on Boson Protocol
+          </Typography>
+          {/* <InputGo>
             <Input
               data-testid="search-by-name-input"
               onChange={(e) => setName(e.target.value)}
@@ -127,22 +77,38 @@ export default function Landing() {
             >
               Go
             </GoButton>
-          </InputGo>
+          </InputGo> */}
           <ExploreContainer>
-            <ExploreButton
+            <Button
               onClick={() => navigateToExplore()}
               data-testid="explore-all-offers"
+              theme="secondary"
             >
-              Explore All Offers
-            </ExploreButton>
+              Explore products
+            </Button>
           </ExploreContainer>
-        </TitleContainer>
+        </Grid>
         <MainImgContainer>
-          <MainImg src="https://assets.website-files.com/6058b6a3587b6e155196ebbb/619622087290b57d6707693d_items-min.png" />
+          <MainImg src={placeholder} />
         </MainImgContainer>
-      </Hero>
-
-      <FeaturedOffers />
-    </LandingContainer>
+      </Grid>
+      <Grid>
+        <Step number={1} title="Commit">
+          Commit to an Offer to receive a Redeemable NFT (rNFT) that can be
+          exchanged for the real-world item it represents
+        </Step>
+        <Step number={2} title="Hold, Trade or Transfer ">
+          You can hold, transfer or easily trade your rNFT on the secondary
+          market
+        </Step>
+        <Step number={3} title="Redeem">
+          Redeem your rNFT to receive the underlying item. The rNFT will be
+          destroyed in the process.
+        </Step>
+      </Grid>
+      <Grid padding="5rem 0 0 0">
+        <FeaturedOffers />
+      </Grid>
+    </LandingPage>
   );
 }

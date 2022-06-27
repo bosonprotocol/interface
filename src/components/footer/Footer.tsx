@@ -13,7 +13,7 @@ import Typography from "../ui/Typography";
 import { SOCIALS } from "./socials";
 
 const Footer = styled.footer`
-  padding: 50px 0 50px 0;
+  padding: 50px 65px;
   background-color: ${colors.black};
   color: ${colors.white};
 `;
@@ -44,13 +44,28 @@ const LogoImg = styled.img`
   cursor: pointer;
 `;
 
-const InputWrapper = styled(Grid)``;
+const InputWrapper = styled(Grid)`
+  background: white;
+  padding: 1rem;
+  gap: 1rem;
+`;
 const Input = styled.input`
   width: 100%;
-  padding: 11px 10px;
-  margin-right: 10px;
+  min-width: 25rem;
   font-size: 16px;
-  border: 1px solid ${colors.border};
+  border: 0px solid ${colors.border};
+
+  font-family: "Plus Jakarta Sans";
+  font-style: normal;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+
+  // transition: all 300ms ease-in-out;
+  &:focus {
+    outline: none;
+    // box-shadow: inset 0px 0px 0px 2px ${colors.secondary};
+  }
 `;
 
 export default function FooterComponent() {
@@ -62,10 +77,13 @@ export default function FooterComponent() {
       <Layout>
         <Grid padding="0 0 50px 0">
           <div>
-            <Typography tag="h2">Sign up for updates</Typography>
+            <Typography tag="h2" style={{ margin: "10px 0" }}>
+              Sign up for updates
+            </Typography>
             <Typography tag="p">
-              We'll send you fresh news about our platform, including new
-              features and opportunities for the community.
+              We'll send you fresh news about our platform, including
+              <br />
+              new features and opportunities for the community.
             </Typography>
           </div>
           <InputWrapper>
@@ -77,6 +95,7 @@ export default function FooterComponent() {
               onClick={() => {
                 console.log("test");
               }}
+              size="small"
             >
               Sign up
             </Button>

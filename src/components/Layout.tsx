@@ -21,7 +21,7 @@ const Root = styled.div`
   }
 
   ${breakpoint.xl} {
-    padding: 0px 32px;
+    padding: 0px 36px;
   }
 `;
 

@@ -1,39 +1,25 @@
 import styled, { ThemeProvider } from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
+import * as Styles from "./styles";
 
-const BaseButton = styled.button`
-  min-width: fit-content;
-  all: unset;
-  cursor: pointer;
-  padding: 0.5rem 1.5rem;
-  display: block;
+const BaseButton = styled.button<{
+  size: IButton["size"];
+}>`
+  ${() => Styles.button};
+  ${(props) => Styles[props.size as keyof typeof Styles]}
+  min-width: min-content;
   border-style: solid;
   border-color: ${(props) => props.theme.borderColor || "transparent"};
   border-width: ${(props) => props.theme.borderWidth || 0}px;
   color: ${(props) => props.theme.color || "#000000"};
   background-color: ${(props) => props.theme.background || "transparent"};
 
-  position: relative;
-  overflow: hidden;
-
-  transition: all 300ms ease-in-out;
-  &:before {
-    transition: all 300ms ease-in-out;
-  }
   ${(props) =>
     props.theme.hover &&
     `
     &:before {
-      content: "";
-      position: absolute;
-      width: 0;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) rotate(-45deg);
-      z-index: 0;
       background-color: ${props.theme.hover.background};
-      height: 280px;
     }
     &:hover {
       ${
@@ -41,26 +27,15 @@ const BaseButton = styled.button`
           ? `color: ${props.theme.hover.color} !important;`
           : ""
       }
-      &:before {
-        width: 100%;
-        transform: translate(-50%, -50%) rotate(-90deg);
-      }
     }
   `}
 `;
 
 const ChildWrapperButton = styled.div`
+  ${() => Styles.buttonText};
   position: relative;
   z-index: 1;
-  display: flex;
-  align-items: center;
-  gap: 6px;
 
-  font-family: "Plus Jakarta Sans";
-  font-style: normal;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 24px;
   white-space: pre;
 `;
 
@@ -115,19 +90,22 @@ const allThemes = {
 interface IButton {
   children?: string | React.ReactNode;
   onClick: () => void;
+  size?: "small" | "regular" | "large";
   theme?: keyof typeof allThemes;
   type?: "button" | "submit" | "reset" | undefined;
+  [x: string]: unknown;
 }
 
 const Button: React.FC<IButton> = ({
   children,
   onClick,
+  size = "regular",
   theme = "primary",
   type = "button"
 }) => {
   return (
     <ThemeProvider theme={allThemes[theme as keyof typeof allThemes]}>
-      <BaseButton onClick={onClick} type={type}>
+      <BaseButton onClick={onClick} type={type} size={size}>
         <ChildWrapperButton>{children}</ChildWrapperButton>
       </BaseButton>
     </ThemeProvider>

@@ -17,11 +17,13 @@ export const OffersRoutes = {
   OfferDetail: `/offers/:${UrlParameters.offerId}`
 } as const;
 
+// TODO: update social routes
 export const ExternalRoutes = {
   TermsOfUse: "https://google.com",
   PrivacyPolicy: "https://google.com"
 } as const;
 
+// TODO: update social routes
 export const SocialRoutes = {
   Discord: "https://discord.com",
   Github: "https://github.com",
