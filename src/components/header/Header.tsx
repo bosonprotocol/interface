@@ -79,7 +79,7 @@ const LogoImg = styled.img`
 `;
 
 export default function HeaderComponent() {
-  const { isPhone } = useBreakpoints();
+  const { isXXS } = useBreakpoints();
   const [open, setOpen] = useState(false);
   const { data: account } = useAccount();
   const navigate = useKeepQueryParamsNavigate();
@@ -97,7 +97,7 @@ export default function HeaderComponent() {
           src={logoUrl || logo}
           onClick={() => navigate({ pathname: BosonRoutes.Root })}
         />
-        {isPhone ? (
+        {isXXS ? (
           <>
             <ConnectButton />
             <BurgerButton theme="blank" onClick={toggleMenu}>
@@ -116,7 +116,7 @@ export default function HeaderComponent() {
                 My Items
               </LinkWithQuery>
             )}
-            {!isPhone && <ConnectButton />}
+            {!isXXS && <ConnectButton />}
           </NavigationLinks>
         )}
       </HeaderContainer>

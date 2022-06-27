@@ -48,7 +48,7 @@ const StepWrapper = styled(Grid)`
 `;
 
 export default function Landing() {
-  const { isPhone, isTablet } = useBreakpoints();
+  const { isXXS, isS } = useBreakpoints();
   const navigate = useKeepQueryParamsNavigate();
   const [name] = useState("");
 
@@ -62,7 +62,7 @@ export default function Landing() {
     <LandingPage>
       <Grid
         flexBasis="50%"
-        flexDirection={isPhone || isTablet ? "column-reverse" : "row"}
+        flexDirection={isXXS || isS ? "column-reverse" : "row"}
         gap="2.5rem"
       >
         <Grid alignItems="flex-start" flexDirection="column">
@@ -89,7 +89,7 @@ export default function Landing() {
       </Grid>
       <StepWrapper
         alignItems="flex-start"
-        flexDirection={isPhone || isTablet ? "column" : "row"}
+        flexDirection={isXXS || isS ? "column" : "row"}
       >
         <Step number={1} title="Commit">
           Commit to an Offer to receive a Redeemable NFT (rNFT) that can be
@@ -104,9 +104,8 @@ export default function Landing() {
           destroyed in the process.
         </Step>
       </StepWrapper>
-      <Grid padding="5rem 0 0 0">
-        <FeaturedOffers />
-      </Grid>
+
+      <FeaturedOffers />
     </LandingPage>
   );
 }

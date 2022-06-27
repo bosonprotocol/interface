@@ -6,7 +6,7 @@ import OfferCard, { Action } from "../offer/OfferCard";
 
 const OfferContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 285px));
+  grid-template-columns: repeat(auto-fill, minmax(323px, 345px));
   grid-row-gap: 20px;
   grid-column-gap: 10px;
   justify-content: space-between;

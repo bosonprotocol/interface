@@ -47,7 +47,7 @@ const LogoImg = styled.img`
 `;
 
 export default function FooterComponent() {
-  const { isPhone } = useBreakpoints();
+  const { isXXS } = useBreakpoints();
   const [year] = useState<number>(new Date().getFullYear());
   const logoUrl = useCustomStoreQueryParameter("logoUrl");
 
@@ -79,7 +79,7 @@ export default function FooterComponent() {
         </Grid>
         <Grid padding="50px 0 0">
           <Typography tag="p">© {year} Boson Protocol</Typography>
-          {!isPhone && (
+          {!isXXS && (
             <NavigationLinks gap="32px">
               {SOCIAL_ROUTES.map(({ name, url, logo: Logo }) => (
                 <a

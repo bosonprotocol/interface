@@ -16,7 +16,7 @@ import OfferStatuses from "./OfferStatuses";
 const Card = styled.div`
   display: inline-block;
   position: relative;
-  width: 323px;
+  width: 100%;
   min-height: 500px;
   cursor: pointer;
   border: 1px solid ${colors.darkGrey}99;
