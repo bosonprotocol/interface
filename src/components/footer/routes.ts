@@ -49,14 +49,6 @@ export const PRODUCT_ROUTES = [
 
 export const NAVIGATION_ROUTES = [
   {
-    name: "Explore",
-    url: BosonRoutes.Explore
-  },
-  {
-    name: "Create",
-    url: BosonRoutes.CreateOffer
-  },
-  {
     name: "Profile",
     url: BosonRoutes.YourAccount
   },
