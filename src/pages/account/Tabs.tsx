@@ -84,7 +84,6 @@ export default function Tabs({ isPrivateProfile, address }: Props) {
             sellerId={sellerId}
             buyerId={buyerId}
             action="redeem"
-            showCTA={!isPrivateProfile}
             isPrivateProfile={isPrivateProfile}
           />
         )
