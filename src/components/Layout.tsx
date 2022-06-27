@@ -9,16 +9,16 @@ const Root = styled.div`
 
   padding: 0 16px;
   ${breakpoint.xs} {
-    padding: 0px 24px;
+    padding: 0 24px;
   }
   ${breakpoint.s} {
-    padding: 0px 28px;
+    padding: 0 28px;
   }
   ${breakpoint.m} {
-    padding: 0px 32px;
+    padding: 0 32px;
   }
   ${breakpoint.xl} {
-    padding: 0px 36px;
+    padding: 0 36px;
   }
 `;
 
