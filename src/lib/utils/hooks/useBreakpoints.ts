@@ -28,12 +28,11 @@ export function useBreakpoints() {
   });
   const isPortrait = useMediaQuery({ query: "(orientation: portrait)" });
   const isLandscape = useMediaQuery({ query: "(orientation: landscape)" });
-  const isRetina = useMediaQuery({ query: "(min-resolution: 2dppx)" });
-  const isLandscapePhone = useMediaQuery({
-    maxWidth: breakpointNumbers.m,
-    maxHeight: breakpointNumbers.s
-  });
-
+  const isLteXS = isXXS || isXS;
+  const isLteS = isLteXS || isS;
+  const isLteM = isLteS || isM;
+  const isLteL = isLteM || isL;
+  const isLteXL = isLteL || isXL;
   return {
     isXXS,
     isXS,
@@ -41,9 +40,12 @@ export function useBreakpoints() {
     isM,
     isL,
     isXL,
+    isLteXS,
+    isLteS,
+    isLteM,
+    isLteL,
+    isLteXL,
     isPortrait,
-    isLandscape,
-    isLandscapePhone,
-    isRetina
+    isLandscape
   };
 }

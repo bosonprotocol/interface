@@ -79,7 +79,7 @@ const LogoImg = styled.img`
 `;
 
 export default function HeaderComponent() {
-  const { isXXS } = useBreakpoints();
+  const { isLteXS } = useBreakpoints();
   const [open, setOpen] = useState(false);
   const { data: account } = useAccount();
   const navigate = useKeepQueryParamsNavigate();
@@ -97,7 +97,7 @@ export default function HeaderComponent() {
           src={logoUrl || logo}
           onClick={() => navigate({ pathname: BosonRoutes.Root })}
         />
-        {isXXS ? (
+        {isLteXS ? (
           <>
             <ConnectButton />
             <BurgerButton theme="blank" onClick={toggleMenu}>
@@ -116,7 +116,7 @@ export default function HeaderComponent() {
                 My Items
               </LinkWithQuery>
             )}
-            {!isXXS && <ConnectButton />}
+            {!isLteXS && <ConnectButton />}
           </NavigationLinks>
         )}
       </HeaderContainer>
