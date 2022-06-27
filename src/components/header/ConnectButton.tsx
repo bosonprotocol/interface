@@ -32,7 +32,7 @@ export default function ConnectButton() {
         account && Sentry.setTag("wallet_address", account?.address);
 
         return (
-          <div style={{ display: "flex", gap: 12 }}>
+          <div style={{ display: "flex", gap: 12, padding: "10px 0" }}>
             {/* <Account connect={openConnectModal} isConnected={!!account} /> */}
             {(() => {
               <div

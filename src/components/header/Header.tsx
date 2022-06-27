@@ -22,7 +22,6 @@ const Header = styled.header`
   }
 
   width: 100%;
-  padding: 10px 0;
   background-color: ${colors.white};
   border-bottom: 2px solid ${colors.border};
   color: ${colors.darkGrey};
@@ -52,24 +51,31 @@ const HeaderContainer = styled(Layout)`
   align-items: center;
 `;
 
-const NavigationLinks = styled.nav`
+const HeaderItems = styled.nav`
   display: flex;
   gap: 5rem;
+`;
+
+const NavigationLinks = styled.div`
+  display: flex;
   width: 100%;
-  align-items: center;
+  align-items: stretch;
   justify-content: flex-end;
 
   a {
     all: unset;
+    display: flex;
+    align-items: center;
     cursor: pointer;
     font-family: "Plus Jakarta Sans";
     font-style: normal;
     font-size: 16px;
     font-weight: 600;
     line-height: 150%;
+    padding: 15px;
   }
   a:hover {
-    color: ${colors.secondary};
+    background-color: ${colors.border};
   }
 `;
 
@@ -107,17 +113,19 @@ export default function HeaderComponent() {
             </BurgerButton>
           </>
         ) : (
-          <NavigationLinks>
-            <LinkWithQuery to={BosonRoutes.Explore}>
-              Explore Products
-            </LinkWithQuery>
-            {account && (
-              <LinkWithQuery to={BosonRoutes.YourAccount}>
-                My Items
+          <HeaderItems>
+            <NavigationLinks>
+              <LinkWithQuery to={BosonRoutes.Explore}>
+                Explore Products
               </LinkWithQuery>
-            )}
+              {account && (
+                <LinkWithQuery to={BosonRoutes.YourAccount}>
+                  My Items
+                </LinkWithQuery>
+              )}
+            </NavigationLinks>
             {!isLteXS && <ConnectButton />}
-          </NavigationLinks>
+          </HeaderItems>
         )}
       </HeaderContainer>
     </Header>
