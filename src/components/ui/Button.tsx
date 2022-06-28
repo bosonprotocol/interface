@@ -1,6 +1,7 @@
 import styled, { ThemeProvider } from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
+import { zIndex } from "../../lib/styles/zIndex";
 import * as Styles from "./styles";
 
 const BaseButton = styled.button<{
@@ -34,7 +35,7 @@ const ChildWrapperButton = styled.div`
   align-items: center;
   gap: 12px;
   position: relative;
-  z-index: 1;
+  z-index: ${zIndex.Button};
 
   ${() => Styles.buttonText};
   white-space: pre;

@@ -7,6 +7,7 @@ import RootPrice from "../../components/price";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes, OffersRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
+import { zIndex } from "../../lib/styles/zIndex";
 import { Offer } from "../../lib/types/offer";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import Typography from "../ui/Typography";
@@ -34,7 +35,7 @@ const Card = styled.div`
 const ImageContainer = styled.div`
   overflow: hidden;
   position: relative;
-  z-index: 2;
+  z-index: ${zIndex.OfferCard};
   height: 0;
   padding-top: 100%;
   > img {

@@ -6,6 +6,7 @@ import styled from "styled-components";
 
 import OfferCard from "../../components/offer/OfferCard";
 import { colors } from "../../lib/styles/colors";
+import { zIndex } from "../../lib/styles/zIndex";
 import { Offer } from "../../lib/types/offer";
 import { useOffers } from "../../lib/utils/hooks/offers";
 
@@ -82,6 +83,7 @@ const CarouselCell = styled.div<{
       position: absolute;
       width: 100%;
       height: 100%;
+      z-index: ${zIndex.Carousel};
       top: 0;
       background: ${(props) =>
         props.$isPrevious

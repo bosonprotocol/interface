@@ -5,6 +5,7 @@ import { useAccount } from "wagmi";
 import logo from "../../../src/assets/logo.svg";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
+import { zIndex } from "../../lib/styles/zIndex";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import Layout from "../Layout";
@@ -25,7 +26,7 @@ const Header = styled.header`
   background-color: ${colors.white};
   border-bottom: 2px solid ${colors.border};
   color: ${colors.darkGrey};
-  z-index: 1000;
+  z-index: ${zIndex.Header};
 `;
 
 const BurgerButton = styled.button`
