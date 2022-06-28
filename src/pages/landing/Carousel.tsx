@@ -1,6 +1,6 @@
 // inspired by https://3dtransforms.desandro.com/carousel
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { IoChevronBackOutline } from "react-icons/io5";
 import styled from "styled-components";
 
@@ -10,6 +10,11 @@ import { zIndex } from "../../lib/styles/zIndex";
 import { Offer } from "../../lib/types/offer";
 import { useOffers } from "../../lib/utils/hooks/offers";
 
+const cellSize = 290;
+const numCells = 8; // or number of offers
+const tz = Math.round(cellSize / 2 / Math.tan(Math.PI / numCells));
+const translateZValue = `${tz}px`;
+
 const Container = styled.div`
   position: relative;
   width: 100%;
@@ -18,7 +23,6 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
 `;
-const cellSize = 290;
 
 const Scene = styled.div`
   width: ${cellSize}px;
@@ -34,11 +38,8 @@ const CarouselContainer = styled.div`
   position: absolute;
   transform-style: preserve-3d;
   transition: all 300ms ease-in;
+  transform: translateZ(-${translateZValue});
 `;
-
-const numCells = 8; // or number of offers
-const tz = Math.round(cellSize / 2 / Math.tan(Math.PI / numCells));
-const translateZValue = `${tz}px`;
 
 const nthChilds = new Array(numCells)
   .fill(0)
@@ -65,7 +66,7 @@ const CarouselCell = styled.div<{
   transition: all 300ms ease-in;
 
   ${nthChilds}
-  > * {
+  > div {
     border-color: ${(props) =>
       props.$isPrevious
         ? "transparent"
@@ -132,9 +133,7 @@ export default function Carousel() {
     valid: true,
     first: numCells
   });
-  useEffect(() => {
-    rotateCarousel(0);
-  }, []);
+
   const numOffers = offers?.length || numCells;
   const onPreviousClick = () => {
     const newIndex = selectedIndex - 1 < 0 ? numOffers - 1 : selectedIndex - 1;
@@ -162,7 +161,7 @@ export default function Carousel() {
   return (
     <Container>
       <Scene>
-        <CarouselContainer ref={carouselRef}>
+        <CarouselContainer ref={carouselRef} data-testid="carousel">
           {offers?.map((offer: Offer, idx: number) => {
             const previousCell =
               selectedIndex - 1 < 0
