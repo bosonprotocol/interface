@@ -63,6 +63,7 @@ const GlobalStyle = createGlobalStyle<{
   input,
   select,
   textarea {
+    text-decoration: none;
     &:focus,
     &:hover {
       outline: none;

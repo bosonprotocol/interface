@@ -6,7 +6,6 @@ import logo from "../../../src/assets/logo.svg";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
-import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import Layout from "../Layout";
 import { LinkWithQuery } from "../linkStoreFields/LinkStoreFields";
@@ -51,32 +50,78 @@ const HeaderContainer = styled(Layout)`
   align-items: center;
 `;
 
-const HeaderItems = styled.nav`
+const HeaderItems = styled.nav<{ isMobile: boolean }>`
   display: flex;
+  align-items: ${({ isMobile }) => (isMobile ? "center" : "stretch")};
   gap: 5rem;
 `;
+const NavigationLinks = styled.div<{ isMobile: boolean; isOpen: boolean }>`
+  ${({ isMobile, isOpen }) =>
+    isMobile
+      ? `
+    position: absolute;
+    top: 67px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 100vh;
+    background: white;
+    transform: ${isOpen ? "translateX(0%)" : "translateX(100%)"};
 
-const NavigationLinks = styled.div`
-  display: flex;
-  width: 100%;
-  align-items: stretch;
-  justify-content: flex-end;
+    > a {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      font-family: "Plus Jakarta Sans";
+      font-style: normal;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 150%;
+      padding: 2rem;
+      color: ${colors.black};
+      background-color: ${colors.lightGrey};
+      border-bottom: 2px solid ${colors.border};
+      position: relative;
+      &:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background-color: ${colors.border};
+        transition: 150ms linear ease-in-out;
+      }
 
-  a {
-    all: unset;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    font-family: "Plus Jakarta Sans";
-    font-style: normal;
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 150%;
-    padding: 15px;
-  }
-  a:hover {
-    background-color: ${colors.border};
-  }
+      &:hover {
+        color: ${colors.secondary};
+        &:before {
+          height: 100%;
+        }
+      }
+    }
+  `
+      : `
+      display: flex;
+      width: 100%;
+      align-items: stretch;
+      justify-content: flex-end;
+      a {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        font-family: "Plus Jakarta Sans";
+        font-style: normal;
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 150%;
+        padding: 1rem;
+        color: ${colors.black};
+      }
+      a:hover {
+        background-color: ${colors.border};
+        color: ${colors.secondary};
+      }
+  `};
 `;
 
 const LogoImg = styled.img`
@@ -88,7 +133,6 @@ export default function HeaderComponent() {
   const { isLteXS } = useBreakpoints();
   const [open, setOpen] = useState(false);
   const { data: account } = useAccount();
-  const navigate = useKeepQueryParamsNavigate();
   const logoUrl = useCustomStoreQueryParameter("logoUrl");
 
   const toggleMenu = () => {
@@ -98,35 +142,32 @@ export default function HeaderComponent() {
   return (
     <Header>
       <HeaderContainer>
-        <LogoImg
-          data-testid="logo"
-          src={logoUrl || logo}
-          onClick={() => navigate({ pathname: BosonRoutes.Root })}
-        />
-        {isLteXS ? (
-          <>
-            <ConnectButton />
-            <BurgerButton theme="blank" onClick={toggleMenu}>
-              <div />
-              <div />
-              <div />
-            </BurgerButton>
-          </>
-        ) : (
-          <HeaderItems>
-            <NavigationLinks>
-              <LinkWithQuery to={BosonRoutes.Explore}>
-                Explore Products
+        <LinkWithQuery to={BosonRoutes.Root} data-testid="logo">
+          <LogoImg src={logoUrl || logo} alt="Boson Protocol" />
+        </LinkWithQuery>
+        <HeaderItems isMobile={isLteXS}>
+          {isLteXS && (
+            <>
+              <ConnectButton />
+              <BurgerButton theme="blank" onClick={toggleMenu}>
+                <div />
+                <div />
+                <div />
+              </BurgerButton>
+            </>
+          )}
+          <NavigationLinks isMobile={isLteXS} isOpen={open}>
+            <LinkWithQuery to={BosonRoutes.Explore}>
+              Explore Products
+            </LinkWithQuery>
+            {account && (
+              <LinkWithQuery to={BosonRoutes.YourAccount}>
+                My Items
               </LinkWithQuery>
-              {account && (
-                <LinkWithQuery to={BosonRoutes.YourAccount}>
-                  My Items
-                </LinkWithQuery>
-              )}
-            </NavigationLinks>
-            {!isLteXS && <ConnectButton />}
-          </HeaderItems>
-        )}
+            )}
+          </NavigationLinks>
+          {!isLteXS && <ConnectButton />}
+        </HeaderItems>
       </HeaderContainer>
     </Header>
   );
