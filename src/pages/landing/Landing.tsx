@@ -1,7 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
 
-import placeholder from "../../assets/placeholder/product-carousel-2x.png";
 import Layout from "../../components/Layout";
 import Button from "../../components/ui/Button";
 import Grid from "../../components/ui/Grid";
@@ -13,6 +12,7 @@ import { colors } from "../../lib/styles/colors";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import FeaturedOffers from "../../pages/landing/FeaturedOffers";
+import Carousel from "./Carousel";
 import Step from "./Step";
 
 const LandingPage = styled.div`
@@ -29,19 +29,15 @@ const ExploreContainer = styled.div`
   margin-top: 2rem;
 `;
 
-const MainImgContainer = styled.div`
+const CarouselContainer = styled.div`
   display: flex;
-  justify-content: center;
-  flex-basis: 70%;
+  align-items: center;
+  flex-direction: column;
+  flex-basis: 90%;
 
-  ${breakpoint.m} {
+  /* ${breakpoint.m} {
     justify-content: flex-end;
-  }
-`;
-
-const MainImg = styled.img`
-  width: 600px;
-  max-width: 100%;
+  } */
 `;
 
 const StepWrapper = styled(Grid)`
@@ -95,9 +91,9 @@ export default function Landing() {
             </Button>
           </ExploreContainer>
         </Grid>
-        <MainImgContainer>
-          <MainImg src={placeholder} />
-        </MainImgContainer>
+        <CarouselContainer>
+          <Carousel />
+        </CarouselContainer>
       </Grid>
       <StepWrapper
         alignItems="flex-start"
