@@ -12,6 +12,8 @@ const Container = styled.div`
   min-height: 100vh;
   position: relative;
   z-index: 0;
+  display: flex;
+  flex-direction: column;
 `;
 
 const PageContainer = styled(Layout)``;

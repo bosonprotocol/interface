@@ -18,6 +18,7 @@ const Footer = styled.footer`
   color: ${colors.white};
 
   padding: 2rem 1rem;
+  margin-top: auto;
 `;
 
 interface INavigationLinks {
