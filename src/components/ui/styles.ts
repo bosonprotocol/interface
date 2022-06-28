@@ -11,10 +11,6 @@ export const button = css`
   transition: all 150ms ease-in-out;
 `;
 export const buttonText = css`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-
   font-family: "Plus Jakarta Sans";
   font-style: normal;
   font-size: 16px;

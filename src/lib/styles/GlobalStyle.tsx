@@ -82,7 +82,7 @@ const GlobalStyle = createGlobalStyle<{
     line-height: 1.2;
   }
   h2 {
-    font-size: 2rem
+    font-size: 2rem;
     font-weight: 600;
     line-height: 1.2;
   }

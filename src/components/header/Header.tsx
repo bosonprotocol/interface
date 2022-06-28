@@ -90,7 +90,7 @@ const NavigationLinks = styled.div<{ isMobile: boolean; isOpen: boolean }>`
         left: 0;
         width: 100%;
         background-color: ${colors.border};
-        transition: 150ms linear ease-in-out;
+        transition: all 150ms ease-in-out;
       }
 
       &:hover {

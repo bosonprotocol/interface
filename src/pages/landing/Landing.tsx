@@ -57,6 +57,7 @@ const DarkerBackground = styled.div`
   right: 50%;
   margin-left: -50vw;
   margin-right: -50vw;
+  padding: 4rem 0;
 `;
 
 export default function Landing() {
@@ -119,7 +120,8 @@ export default function Landing() {
 
       <DarkerBackground>
         <Layout>
-          <FeaturedOffers />
+          <FeaturedOffers type="featured" title="Featured Offers" />
+          <FeaturedOffers type="hot" title="Hot Offers" />
         </Layout>
       </DarkerBackground>
     </LandingPage>
