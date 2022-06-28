@@ -57,8 +57,7 @@ interface IFeaturedOffers {
 }
 
 const FeaturedOffers: React.FC<IFeaturedOffers> = ({
-  title = "Explore Offers",
-  type = "featured"
+  title = "Explore Offers"
 }) => {
   const { isXXS } = useBreakpoints();
 
