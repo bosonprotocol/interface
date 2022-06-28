@@ -27,5 +27,6 @@ export const ExternalRoutes = {
 export const SocialRoutes = {
   Discord: "https://www.bosonprotocol.io/",
   Github: "https://www.bosonprotocol.io/",
-  Twitter: "https://www.bosonprotocol.io/"
+  Twitter: "https://www.bosonprotocol.io/",
+  Youtube: "https://www.bosonprotocol.io/"
 } as const;
