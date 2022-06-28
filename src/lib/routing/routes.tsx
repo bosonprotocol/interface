@@ -9,7 +9,8 @@ export const BosonRoutes = {
   Exchange: `/exchange/:${UrlParameters.exchangeId}`,
   YourAccount: `/account`,
   Account: `/account/:${UrlParameters.accountId}`,
-  CreateStorefront: "/custom-store"
+  CreateStorefront: "/custom-store",
+  TermsOfUse: "/terms-of-use" // TODO: add page to handle this route
 } as const;
 
 export const OffersRoutes = {
@@ -17,10 +18,8 @@ export const OffersRoutes = {
   OfferDetail: `/offers/:${UrlParameters.offerId}`
 } as const;
 
-// TODO: update social routes
 export const ExternalRoutes = {
-  TermsOfUse: "https://www.bosonprotocol.io/privacy-policy",
-  PrivacyPolicy: "https://www.bosonprotocol.io/privacy-policy"
+  TermsOfUse: BosonRoutes.TermsOfUse
 } as const;
 
 export const SocialRoutes = {
