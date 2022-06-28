@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 import { ExploreQueryParameters } from "../../lib/routing/parameters";
@@ -83,6 +83,11 @@ export default function Explore() {
   const [brandInput, setBrandInput] = useState<string>(nameQueryParameter);
   const [brandSelect, setBrandSelect] = useState<string>("");
   const [nameToSearch, setNameToSearch] = useState<string>(nameQueryParameter);
+
+  useEffect(() => {
+    setBrandInput(nameQueryParameter);
+    setNameToSearch(nameQueryParameter);
+  }, [nameQueryParameter]);
 
   const { data: tokens } = useTokens();
   const [selectedToken, setSelectedToken] = useState<string>(
