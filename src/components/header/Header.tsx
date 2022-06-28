@@ -10,6 +10,7 @@ import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustom
 import Layout from "../Layout";
 import { LinkWithQuery } from "../linkStoreFields/LinkStoreFields";
 import ConnectButton from "./ConnectButton";
+import Search from "./Search";
 
 const Header = styled.header`
   position: fixed;
@@ -146,6 +147,7 @@ export default function HeaderComponent() {
           <LogoImg src={logoUrl || logo} alt="Boson Protocol" />
         </LinkWithQuery>
         <HeaderItems isMobile={isLteXS}>
+          {!isLteXS && <Search />}
           {isLteXS && (
             <>
               <ConnectButton />
