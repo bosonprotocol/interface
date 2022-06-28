@@ -19,15 +19,15 @@ export const OffersRoutes = {
 
 // TODO: update social routes
 export const ExternalRoutes = {
-  TermsOfUse: "https://www.bosonprotocol.io/",
-  PrivacyPolicy: "https://www.bosonprotocol.io/"
+  TermsOfUse: "https://www.bosonprotocol.io/privacy-policy",
+  PrivacyPolicy: "https://www.bosonprotocol.io/privacy-policy"
 } as const;
 
-// TODO: update social routes
 export const SocialRoutes = {
-  Discord: "https://www.bosonprotocol.io/",
-  Github: "https://www.bosonprotocol.io/",
-  Twitter: "https://www.bosonprotocol.io/",
-  Youtube: "https://www.bosonprotocol.io/",
-  Medium: "https://www.bosonprotocol.io/"
+  Discord: "https://discord.com/invite/QSdtKRaap6",
+  Github: "https://github.com/bosonprotocol",
+  Twitter: "https://twitter.com/BosonProtocol",
+  Youtube:
+    "https://www.youtube.com/channel/UCcxilOavX03XF2d5Q9LbMwA/featured?view_as=subscriber",
+  Medium: "https://medium.com/bosonprotocol"
 } as const;
