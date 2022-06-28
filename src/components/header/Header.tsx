@@ -10,6 +10,7 @@ import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustom
 import Layout from "../Layout";
 import { LinkWithQuery } from "../linkStoreFields/LinkStoreFields";
 import ConnectButton from "./ConnectButton";
+import Search from "./Search";
 
 const Header = styled.header`
   position: fixed;
@@ -89,7 +90,7 @@ const NavigationLinks = styled.div<{ isMobile: boolean; isOpen: boolean }>`
         left: 0;
         width: 100%;
         background-color: ${colors.border};
-        transition: 150ms linear ease-in-out;
+        transition: all 150ms ease-in-out;
       }
 
       &:hover {
@@ -146,6 +147,7 @@ export default function HeaderComponent() {
           <LogoImg src={logoUrl || logo} alt="Boson Protocol" />
         </LinkWithQuery>
         <HeaderItems isMobile={isLteXS}>
+          {!isLteXS && <Search />}
           {isLteXS && (
             <>
               <ConnectButton />

@@ -3,7 +3,10 @@ import styled from "styled-components";
 
 import { LinkWithQuery } from "../../components/linkStoreFields/LinkStoreFields";
 import OfferList from "../../components/offers/OfferList";
+import { buttonText } from "../../components/ui/styles";
+import Typography from "../../components/ui/Typography";
 import { BosonRoutes } from "../../lib/routing/routes";
+import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { useOffers } from "../../lib/utils/hooks/offers";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
@@ -11,6 +14,13 @@ import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 const Root = styled.div`
   display: flex;
   flex-direction: column;
+  padding: 2rem 2.5rem;
+  ${breakpoint.m} {
+    padding: 2rem 5rem;
+  }
+  ${breakpoint.l} {
+    padding: 2rem 10rem;
+  }
 `;
 
 const TopContainer = styled.div`
@@ -24,21 +34,33 @@ const ViewMore = styled(LinkWithQuery)`
   display: flex;
   align-items: center;
   cursor: pointer;
-  font-family: "Plus Jakarta Sans";
-  font-style: normal;
-  font-weight: 600;
-  font-size: 16px;
-  line-height: 150%;
+  ${() => buttonText};
   color: ${colors.secondary};
-  transform: translateX(12px);
+
+  transition: all 150ms ease-in-out;
+  > svg {
+    transition: all 150ms ease-in-out;
+    transform: translateX(0);
+  }
+  &:hover {
+    color: ${colors.black};
+    > svg {
+      transform: translateX(5px);
+      fill: ${colors.black};
+    }
+  }
 `;
 
-const Heading = styled.h2`
-  font-size: 28px;
-`;
+interface IFeaturedOffers {
+  title?: string;
+  type?: "featured" | "hot" | undefined;
+}
 
-export default function FeaturedOffers() {
-  const { isS, isM } = useBreakpoints();
+const FeaturedOffers: React.FC<IFeaturedOffers> = ({
+  title = "Explore Offers",
+  type = "featured"
+}) => {
+  const { isXXS, isXS } = useBreakpoints();
 
   const {
     data: offers,
@@ -47,16 +69,17 @@ export default function FeaturedOffers() {
   } = useOffers({
     voided: false,
     valid: true,
-    first: isS || isM ? 4 : 3
+    first: isXXS || isXS ? 4 : 3
   });
+
   return (
     <Root>
       <TopContainer>
-        <Heading>Featured Offers</Heading>
+        <Typography tag="h2">{title}</Typography>
         <ViewMore to={BosonRoutes.Explore}>
           <>
             View more
-            <BsArrowRightShort size={50} />
+            <BsArrowRightShort size={32} />
           </>
         </ViewMore>
       </TopContainer>
@@ -69,4 +92,6 @@ export default function FeaturedOffers() {
       />
     </Root>
   );
-}
+};
+
+export default FeaturedOffers;

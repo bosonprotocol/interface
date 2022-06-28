@@ -30,10 +30,13 @@ const BaseButton = styled.button<{
 `;
 
 const ChildWrapperButton = styled.div`
-  ${() => Styles.buttonText};
+  display: flex;
+  align-items: center;
+  gap: 12px;
   position: relative;
   z-index: 1;
 
+  ${() => Styles.buttonText};
   white-space: pre;
 `;
 

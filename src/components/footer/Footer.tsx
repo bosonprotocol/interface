@@ -55,7 +55,9 @@ export default function FooterComponent() {
     <Footer>
       <Layout>
         <Grid alignItems="flex-start" padding="0 0 50px 0">
-          <LogoImg data-testid="logo" src={logoUrl || logo} />
+          <LinkWithQuery to={BosonRoutes.Root} data-testid="logo">
+            <LogoImg src={logoUrl || logo} alt="Boson Protocol" />
+          </LinkWithQuery>
           <div>
             <Typography tag="h5">Product</Typography>
             <NavigationLinks flexDirection="column">

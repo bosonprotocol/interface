@@ -18,15 +18,32 @@ const Card = styled.div`
   background-color: ${colors.white};
   position: relative;
   width: 100%;
-  min-height: 500px;
   cursor: pointer;
-  border: 1px solid ${colors.darkGrey}99;
+  transition: all 300ms ease-in-out;
+  transition: box-shadow 300ms;
+  border: 1px solid ${colors.black}20;
+
+  &:hover {
+    box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.5);
+    img {
+      transform: translate(-50%, -50%) scale(1.05);
+    }
+  }
 `;
 
 const ImageContainer = styled.div`
-  display: flex;
-  justify-content: center;
+  overflow: hidden;
   position: relative;
+  z-index: 2;
+  height: 0;
+  padding-top: 100%;
+  > img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 300ms ease-in-out;
+  }
 
   [data-testid="statuses"] {
     position: absolute;
@@ -37,12 +54,11 @@ const ImageContainer = styled.div`
 `;
 
 const Content = styled.div`
-  margin: 16px 24.5px;
+  margin: 1rem 1.5rem;
 `;
 
 const Image = styled.img`
-  height: 390px;
-  width: 100%;
+  height: 100%;
 `;
 
 const ImagePlaceholder = styled.div`

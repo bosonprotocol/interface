@@ -1,7 +1,7 @@
 import {
   TbBrandDiscord,
   TbBrandGithub,
-  TbBrandTelegram,
+  TbBrandMedium,
   TbBrandTwitter,
   TbBrandYoutube
 } from "react-icons/tb";
@@ -20,9 +20,9 @@ export const SOCIAL_ROUTES = [
     url: SocialRoutes.Discord
   },
   {
-    name: "telegram",
-    logo: TbBrandTelegram,
-    url: SocialRoutes.Telegram
+    name: "medium",
+    logo: TbBrandMedium,
+    url: SocialRoutes.Medium
   },
   {
     name: "youtube",

@@ -3,14 +3,18 @@ import styled from "styled-components";
 
 import { Offer } from "../../lib/types/offer";
 import OfferCard, { Action } from "../offer/OfferCard";
+import Grid from "../ui/Grid";
+import Typography from "../ui/Typography";
 
-const OfferContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(323px, 345px));
-  grid-row-gap: 20px;
-  grid-column-gap: 10px;
-  justify-content: space-between;
-  padding-bottom: 24px;
+const OfferContainer = styled(Grid)`
+  gap: 2rem;
+  flex-wrap: wrap;
+  > div {
+    flex: 1 0 26%;
+    &:last-child {
+      max-width: 50%;
+    }
+  }
 `;
 
 interface Props {
@@ -40,19 +44,24 @@ export default function OfferList({
 
   if (isError) {
     return (
-      <div data-testid="errorOffers">
-        There has been an error, please try again later...
-      </div>
+      <OfferContainer data-testid="errorOffers" justifyContent="center">
+        <Typography tag="h3">
+          There has been an error, please try again later...
+        </Typography>
+      </OfferContainer>
     );
   }
 
   if (!offers || offers.length === 0) {
     return (
-      <OfferContainer data-testid="noOffers">No offers found</OfferContainer>
+      <OfferContainer data-testid="noOffers" justifyContent="center">
+        <Typography tag="h3">No offers found</Typography>
+      </OfferContainer>
     );
   }
+
   return (
-    <OfferContainer>
+    <OfferContainer justifyContent="center">
       {offers.map((offer: Offer) => {
         return (
           (offer.isValid || (showInvalidOffers && !offer.isValid)) && (
