@@ -1,10 +1,4 @@
-import {
-  TbBrandDiscord,
-  TbBrandGithub,
-  TbBrandTelegram,
-  TbBrandTwitter,
-  TbBrandYoutube
-} from "react-icons/tb";
+import { TbBrandDiscord, TbBrandGithub, TbBrandTwitter } from "react-icons/tb";
 
 import { BosonRoutes, SocialRoutes } from "../../lib/routing/routes";
 
@@ -18,16 +12,6 @@ export const SOCIAL_ROUTES = [
     name: "discord",
     logo: TbBrandDiscord,
     url: SocialRoutes.Discord
-  },
-  {
-    name: "telegram",
-    logo: TbBrandTelegram,
-    url: SocialRoutes.Telegram
-  },
-  {
-    name: "youtube",
-    logo: TbBrandYoutube,
-    url: SocialRoutes.Youtube
   },
   {
     name: "github",
