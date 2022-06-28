@@ -60,7 +60,7 @@ const FeaturedOffers: React.FC<IFeaturedOffers> = ({
   title = "Explore Offers",
   type = "featured"
 }) => {
-  const { isXXS, isXS } = useBreakpoints();
+  const { isXXS } = useBreakpoints();
 
   const {
     data: offers,
@@ -69,7 +69,7 @@ const FeaturedOffers: React.FC<IFeaturedOffers> = ({
   } = useOffers({
     voided: false,
     valid: true,
-    first: isXXS || isXS ? 4 : 3
+    first: isXXS ? 2 : 3
   });
 
   return (

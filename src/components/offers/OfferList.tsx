@@ -1,6 +1,7 @@
 import { ReactElement } from "react";
 import styled from "styled-components";
 
+import { breakpoint } from "../../lib/styles/breakpoint";
 import { Offer } from "../../lib/types/offer";
 import OfferCard, { Action } from "../offer/OfferCard";
 import Grid from "../ui/Grid";
@@ -10,9 +11,11 @@ const OfferContainer = styled(Grid)`
   gap: 2rem;
   flex-wrap: wrap;
   > div {
-    flex: 1 0 26%;
-    &:last-child {
-      max-width: 50%;
+    flex: 1 0 46%;
+    max-width: 100%;
+    ${breakpoint.xs} {
+      flex: 1 0 21%;
+      max-width: 30%;
     }
   }
 `;
@@ -61,7 +64,7 @@ export default function OfferList({
   }
 
   return (
-    <OfferContainer justifyContent="center">
+    <OfferContainer justifyContent="flex-start">
       {offers.map((offer: Offer) => {
         return (
           (offer.isValid || (showInvalidOffers && !offer.isValid)) && (
