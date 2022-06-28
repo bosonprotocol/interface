@@ -74,7 +74,12 @@ const CarouselCell = styled.div<{
         ? "transparent"
         : "initial"};
 
-    ${(props) => (props.$isPrevious || props.$isNext ? `opacity: 0.5;` : "")};
+    ${(props) =>
+      props.$isPrevious || props.$isNext
+        ? `
+        opacity: 0.5;
+        pointer-events: none;`
+        : ""};
 
     img {
       height: 300px;
