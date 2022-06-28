@@ -1,6 +1,7 @@
 import {
   TbBrandDiscord,
   TbBrandGithub,
+  TbBrandMedium,
   TbBrandTwitter,
   TbBrandYoutube
 } from "react-icons/tb";
@@ -17,6 +18,11 @@ export const SOCIAL_ROUTES = [
     name: "discord",
     logo: TbBrandDiscord,
     url: SocialRoutes.Discord
+  },
+  {
+    name: "medium",
+    logo: TbBrandMedium,
+    url: SocialRoutes.Medium
   },
   {
     name: "youtube",
