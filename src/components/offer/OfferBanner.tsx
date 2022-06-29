@@ -1,4 +1,7 @@
-import moment from "moment";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+dayjs.extend(utc);
+
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
@@ -14,6 +17,10 @@ const BannerContainer = styled.div`
 
   background: ${colors.white};
   padding: 0.5rem;
+
+  font-size: 12px;
+  font-weight: 600;
+  padding: 0.688rem 1.5rem;
 `;
 
 interface Props {
@@ -23,9 +30,9 @@ interface Props {
 
 export default function OfferBanner({ offer, type }: Props) {
   const handleDate = (offer: Offer) => {
-    const current = moment();
-    const release = moment(Number(offer?.validFromDate) * 1000);
-    const expiry = moment(Number(offer?.validUntilDate) * 1000);
+    const current = dayjs();
+    const release = dayjs(Number(offer?.validFromDate) * 1000);
+    const expiry = dayjs(Number(offer?.validUntilDate) * 1000);
 
     return {
       current,
@@ -34,7 +41,7 @@ export default function OfferBanner({ offer, type }: Props) {
         diff: {
           days: release.diff(current, "days"),
           hours: release.diff(current, "hours"),
-          left: moment.utc(release.diff(current)).format("mm:ss")
+          left: dayjs.utc(release.diff(current)).format("mm:ss")
         }
       },
       expiry: {
@@ -42,7 +49,7 @@ export default function OfferBanner({ offer, type }: Props) {
         diff: {
           days: expiry.diff(current, "days"),
           hours: expiry.diff(current, "hours"),
-          left: moment.utc(expiry.diff(current)).format("mm:ss")
+          left: dayjs.utc(expiry.diff(current)).format("mm:ss")
         }
       }
     };

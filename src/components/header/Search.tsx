@@ -4,35 +4,31 @@ import styled from "styled-components";
 
 import { ExploreQueryParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
-import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
-import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import Button from "../ui/Button";
 import Grid from "../ui/Grid";
 
-const InputWrapper = styled(Grid)`
+const InputWrapper = styled(Grid)<{ isMobile: boolean }>`
   flex: 1;
   gap: 1rem;
-  max-width: 100%;
+
   padding: 1.5rem 1.75rem;
   border-bottom: 2px solid ${colors.border};
   background: ${colors.white};
 
   margin: 0rem;
-  ${breakpoint.s} {
-    border-bottom: none;
+
+  ${({ isMobile }) =>
+    isMobile
+      ? ""
+      : `
+      max-width: 487px;
+      border-bottom: none;
     margin: 1.25rem;
     padding: 0.25rem 1rem;
     min-width: 20vw;
-    background: ${colors.lightGrey};
-  }
-  ${breakpoint.l} {
-    min-width: 35vw;
-  }
-  ${breakpoint.xl} {
-    min-width: 45vw;
-  }
+    background: ${colors.lightGrey};`}
 `;
 
 const Input = styled.input`
@@ -52,8 +48,11 @@ const Input = styled.input`
   }
 `;
 
-export default function Search() {
-  const { isLteXS } = useBreakpoints();
+interface Props {
+  isMobile: boolean;
+}
+
+export default function Search({ isMobile }: Props) {
   const navigate = useKeepQueryParamsNavigate();
   const [name, setName] = useState<string>("");
 
@@ -75,8 +74,8 @@ export default function Search() {
   }, [navigate, name]);
 
   return (
-    <InputWrapper>
-      <BsSearch size={24} />
+    <InputWrapper isMobile={isMobile}>
+      {!isMobile && <BsSearch size={24} />}
       <Input
         data-testid="search-by-name-input"
         onChange={handleChange}
@@ -84,7 +83,7 @@ export default function Search() {
         value={name}
         placeholder="Search"
       />
-      {isLteXS && (
+      {isMobile && (
         <Button onClick={navigateToExplore} theme="secondary">
           <BsSearch size={16} />
         </Button>

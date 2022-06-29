@@ -5,7 +5,7 @@ export const BosonRoutes = {
   Explore: "/explore",
   ExplorePage: "/explore/page",
   ExplorePageByIndex: `/explore/page/:${UrlParameters.page}`,
-  CreateOffer: "/create-offer",
+  Sell: "/sell",
   Exchange: `/exchange/:${UrlParameters.exchangeId}`,
   YourAccount: `/account`,
   Account: `/account/:${UrlParameters.accountId}`,

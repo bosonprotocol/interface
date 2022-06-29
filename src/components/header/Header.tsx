@@ -68,6 +68,8 @@ const HeaderContainer = styled(Layout)`
 const HeaderItems = styled.nav<{ isMobile: boolean }>`
   display: flex;
   align-items: ${({ isMobile }) => (isMobile ? "center" : "stretch")};
+  justify-content: end;
+  width: 100%;
 `;
 
 const NavigationLinks = styled.div<{ isMobile: boolean; isOpen: boolean }>`
@@ -87,7 +89,7 @@ const NavigationLinks = styled.div<{ isMobile: boolean; isOpen: boolean }>`
     background: white;
     transform: ${isOpen ? "translateX(0%)" : "translateX(100%)"};
 
-    > a {
+     a {
       display: flex;
       align-items: center;
       cursor: pointer;
@@ -125,10 +127,11 @@ const NavigationLinks = styled.div<{ isMobile: boolean; isOpen: boolean }>`
       display: flex;
       width: 100%;
       align-items: stretch;
-      justify-content: flex-end;
+      justify-content: space-between;
       a {
         display: flex;
         align-items: center;
+        justify-content: center;
         cursor: pointer;
         font-family: "Plus Jakarta Sans";
         font-style: normal;
@@ -146,6 +149,12 @@ const NavigationLinks = styled.div<{ isMobile: boolean; isOpen: boolean }>`
   `};
 `;
 
+const Links = styled.div<{ isMobile: boolean }>`
+  display: flex;
+  justify-content: end;
+  flex-direction: ${({ isMobile }) => (isMobile ? "column" : "row")};
+`;
+
 const LogoImg = styled.img`
   height: 24px;
   cursor: pointer;
@@ -153,7 +162,7 @@ const LogoImg = styled.img`
 
 export default function HeaderComponent() {
   const { pathname, search } = useLocation();
-  const { isLteXS } = useBreakpoints();
+  const { isLteXS, isLteS, isLteM } = useBreakpoints();
   const [open, setOpen] = useState(false);
   const { data: account } = useAccount();
   const logoUrl = useCustomStoreQueryParameter("logoUrl");
@@ -165,15 +174,15 @@ export default function HeaderComponent() {
   const toggleMenu = () => {
     setOpen(!open);
   };
-
+  const burgerMenuBreakpoint = isLteM;
   return (
     <Header>
       <HeaderContainer>
         <LinkWithQuery to={BosonRoutes.Root} data-testid="logo">
           <LogoImg src={logoUrl || logo} alt="Boson Protocol" />
         </LinkWithQuery>
-        <HeaderItems isMobile={isLteXS}>
-          {isLteXS && (
+        <HeaderItems isMobile={burgerMenuBreakpoint}>
+          {burgerMenuBreakpoint && (
             <>
               <ConnectButton />
               <BurgerButton theme="blank" onClick={toggleMenu}>
@@ -183,18 +192,21 @@ export default function HeaderComponent() {
               </BurgerButton>
             </>
           )}
-          <NavigationLinks isMobile={isLteXS} isOpen={open}>
-            <Search />
-            <LinkWithQuery to={BosonRoutes.Explore}>
-              Explore Products
-            </LinkWithQuery>
-            {account && (
-              <LinkWithQuery to={BosonRoutes.YourAccount}>
-                My Items
+          <NavigationLinks isMobile={burgerMenuBreakpoint} isOpen={open}>
+            <Search isMobile={burgerMenuBreakpoint} />
+            <Links isMobile={burgerMenuBreakpoint}>
+              <LinkWithQuery to={BosonRoutes.Sell}>Sell</LinkWithQuery>
+              <LinkWithQuery to={BosonRoutes.Explore}>
+                Explore Products
               </LinkWithQuery>
-            )}
+              {account && (
+                <LinkWithQuery to={BosonRoutes.YourAccount}>
+                  My Items
+                </LinkWithQuery>
+              )}
+            </Links>
           </NavigationLinks>
-          {!isLteXS && <ConnectButton />}
+          {!burgerMenuBreakpoint && <ConnectButton />}
         </HeaderItems>
       </HeaderContainer>
     </Header>

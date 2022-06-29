@@ -91,6 +91,9 @@ export default function CustomStore() {
   return (
     <Root>
       <h1>Create Custom Store</h1>
+      <p style={{ color: "red" }}>
+        This page will be changed drastically, ignore it
+      </p>
       <StyledForm onSubmit={handleSubmit}>
         <FormElementsContainer>
           <FormElement>

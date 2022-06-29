@@ -42,8 +42,8 @@ export const PRODUCT_ROUTES = [
     url: BosonRoutes.Explore
   },
   {
-    name: "Create",
-    url: BosonRoutes.CreateOffer
+    name: "Sell",
+    url: BosonRoutes.Sell
   }
 ];
 
