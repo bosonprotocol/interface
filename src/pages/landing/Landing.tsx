@@ -9,6 +9,7 @@ import { ExploreQueryParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
+import { zIndex } from "../../lib/styles/zIndex";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import FeaturedOffers from "../../pages/landing/FeaturedOffers";
@@ -23,6 +24,10 @@ const LandingPage = styled.div`
   ${breakpoint.xl} {
     padding: 0 4rem 0 4rem;
   }
+`;
+
+const GridWithZindex = styled(Grid)`
+  z-index: ${zIndex.LandingTitle};
 `;
 
 const Title = styled(Typography)`
@@ -94,7 +99,7 @@ export default function Landing() {
         flexDirection={isLteS ? "column-reverse" : "row"}
         gap="2.5rem"
       >
-        <Grid alignItems="flex-start" flexDirection="column">
+        <GridWithZindex alignItems="flex-start" flexDirection="column">
           <Title tag="h1">
             Tokenize, transfer and trade any physical asset as&nbsp;an&nbsp;NFT
           </Title>
@@ -110,7 +115,7 @@ export default function Landing() {
               Explore products
             </Button>
           </ExploreContainer>
-        </Grid>
+        </GridWithZindex>
         <CarouselContainer>
           <Carousel />
         </CarouselContainer>
