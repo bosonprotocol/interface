@@ -1,6 +1,6 @@
 // inspired by https://3dtransforms.desandro.com/carousel
 
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { RiArrowLeftSLine } from "react-icons/ri";
 import styled from "styled-components";
 
@@ -10,7 +10,7 @@ import { Offer } from "../../lib/types/offer";
 import { useOffers } from "../../lib/utils/hooks/offers";
 
 const cellSize = 380;
-const numCells = 8; // or number of offers
+const numCells = 8; // or number of max offers
 const tz = Math.round(cellSize / 2 / Math.tan(Math.PI / numCells));
 const translateZValue = `${tz}px`;
 
@@ -121,15 +121,29 @@ export default function Carousel() {
     valid: true,
     first: numCells
   });
+  const uiOffers = useMemo(() => {
+    if (offers) {
+      const numOffersToAdd = numCells - offers.length;
 
-  const numOffers = offers?.length || numCells;
+      const uiOffers = [...offers];
+      let offerIdx = 0;
+      for (let index = 0; index < numOffersToAdd; index++) {
+        const offerIdxToAdd = offerIdx % offers.length;
+        uiOffers.push(offers[offerIdxToAdd]);
+
+        offerIdx++;
+      }
+      return uiOffers;
+    }
+    return [];
+  }, [offers]);
   const onPreviousClick = () => {
-    const newIndex = selectedIndex - 1 < 0 ? numOffers - 1 : selectedIndex - 1;
+    const newIndex = selectedIndex - 1; // < 0 ? numCells - 1 : selectedIndex - 1;
     setSelectedIndex(newIndex);
     rotateCarousel(newIndex);
   };
   const onNextClick = () => {
-    const newIndex = selectedIndex + 1 > numOffers - 1 ? 0 : selectedIndex + 1;
+    const newIndex = selectedIndex + 1; // > numCells - 1 ? 0 : selectedIndex + 1;
     setSelectedIndex(newIndex);
     rotateCarousel(newIndex);
   };
@@ -146,19 +160,22 @@ export default function Carousel() {
         "translateZ(" + -radius + "px) " + rotateFn + "(" + angle + "deg)";
     }
   }
+
   return (
     <Container>
       <Scene>
         <CarouselContainer ref={carouselRef} data-testid="carousel">
-          {offers?.map((offer: Offer, idx: number) => {
+          {uiOffers?.map((offer: Offer, idx: number) => {
+            const clampedSelectedIndex =
+              ((selectedIndex % numCells) + numCells) % numCells;
             const previousCell =
-              selectedIndex - 1 < 0
+              clampedSelectedIndex - 1 < 0
                 ? numCells - 1 === idx
-                : idx === selectedIndex - 1;
-            const currentCell = idx === selectedIndex;
+                : idx === clampedSelectedIndex - 1;
+            const currentCell = idx === clampedSelectedIndex;
             const nextCell =
-              idx === selectedIndex + 1 ||
-              (selectedIndex + 1 === numCells && idx === 0);
+              idx === clampedSelectedIndex + 1 ||
+              (clampedSelectedIndex + 1 === numCells && idx === 0);
             const visibleCell = previousCell || currentCell || nextCell;
             return (
               <CarouselCell
