@@ -100,7 +100,7 @@ const CarouselCell = styled.div<{
 const PreviousButton = styled(RiArrowLeftSLine)`
   cursor: pointer;
   position: absolute;
-  top: 50%;
+  top: calc(50% - 48px / 2);
   left: 0;
   font-size: 3rem;
   margin: 0 3rem;
