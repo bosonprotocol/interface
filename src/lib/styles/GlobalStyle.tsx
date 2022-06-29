@@ -14,9 +14,9 @@ const GlobalStyle = createGlobalStyle<{
   // TODO: match with colors from lib
   :root {
     --primary: ${(props) =>
-      props.$primaryColor ? props.$primaryColor : colors.navy};
+      props.$primaryColor ? props.$primaryColor : colors.primary};
     --secondary: ${(props) =>
-      props.$secondaryColor ? props.$secondaryColor : colors.green};
+      props.$secondaryColor ? props.$secondaryColor : colors.secondary};
     --accent: ${(props) =>
       props.$accentColor ? props.$accentColor : colors.white};
     --accentDark: ${(props) =>

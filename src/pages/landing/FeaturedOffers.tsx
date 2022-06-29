@@ -42,7 +42,7 @@ const ViewMore = styled(LinkWithQuery)`
   align-items: center;
   cursor: pointer;
   ${() => buttonText};
-  color: ${colors.secondary};
+  color: var(--secondary);
 
   transition: all 150ms ease-in-out;
   > svg {

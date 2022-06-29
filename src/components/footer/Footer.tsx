@@ -78,7 +78,7 @@ const NavigationLinks = styled.nav<INavigationLinks>`
     color: ${colors.white};
   }
   a:hover {
-    color: ${colors.primary};
+    color: var(--primary);
   }
 `;
 const LogoImg = styled.img`

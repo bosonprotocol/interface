@@ -22,7 +22,8 @@ const Header = styled.header`
   left: 0;
   right: 0;
   + * {
-    padding-top: 7rem;
+    padding-top: calc(${HEADER_HEIGHT} + 2rem) !important;
+    padding-bottom: 4rem;
   }
 
   width: 100%;
@@ -55,7 +56,7 @@ const BurgerButton = styled.button`
     width: 1.25rem;
     height: 2px;
     border-radius: 5px;
-    background: ${colors.secondary};
+    background: var(--secondary);
   }
 `;
 
@@ -112,7 +113,7 @@ const NavigationLinks = styled.div<{ isMobile: boolean; isOpen: boolean }>`
       }
 
       &:hover {
-        color: ${colors.secondary};
+        color:var(--secondary);
         &:before {
           height: 100%;
         }
@@ -140,7 +141,7 @@ const NavigationLinks = styled.div<{ isMobile: boolean; isOpen: boolean }>`
       }
       a:hover {
         background-color: ${colors.border};
-        color: ${colors.secondary};
+        color: var(--secondary);
       }
   `};
 `;

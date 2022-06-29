@@ -2,7 +2,6 @@ import styled from "styled-components";
 
 import Typography from "../../components/ui/Typography";
 import { breakpoint } from "../../lib/styles/breakpoint";
-import { colors } from "../../lib/styles/colors";
 
 const StepWrapper = styled.div`
   display: flex;
@@ -16,7 +15,7 @@ const StepWrapper = styled.div`
   width: 100%;
   h1 {
     position: relative;
-    color: ${colors.secondary};
+    color: var(--secondary);
     margin-bottom: 0.5rem !important;
     &:after {
       content: "";
@@ -26,7 +25,7 @@ const StepWrapper = styled.div`
       height: 50%;
       top: 50%;
       left: 0%;
-      background: ${colors.primary};
+      background: var(--primary);
     }
   }
   h1,

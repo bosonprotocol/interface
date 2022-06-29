@@ -126,7 +126,7 @@ const SellerInfo = styled.div`
   flex-direction: row;
   width: 100%;
   align-items: center;
-  color: ${colors.secondary};
+  color: var(--secondary);
   font-weight: 600;
 `;
 

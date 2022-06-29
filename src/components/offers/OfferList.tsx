@@ -4,22 +4,21 @@ import styled from "styled-components";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { Offer } from "../../lib/types/offer";
 import OfferCard, { Action } from "../offer/OfferCard";
-import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
 
-const OfferContainer = styled(Grid)`
-  gap: 2rem;
-  flex-wrap: wrap;
-  > div {
-    flex: 1 0 46%;
-    max-width: 100%;
-    ${breakpoint.xs} {
-      flex: 1 0 20.1%;
-      max-width: 50%;
-    }
-    ${breakpoint.m} {
-      max-width: 33%;
-    }
+const OfferContainer = styled.div`
+  display: grid;
+  grid-column-gap: 2rem;
+  grid-row-gap: 2rem;
+
+  ${breakpoint.xxs} {
+    grid-template-columns: repeat(1, 1fr);
+  }
+  ${breakpoint.xs} {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  ${breakpoint.s} {
+    grid-template-columns: repeat(3, 1fr);
   }
 `;
 
@@ -50,7 +49,7 @@ export default function OfferList({
 
   if (isError) {
     return (
-      <OfferContainer data-testid="errorOffers" justifyContent="center">
+      <OfferContainer data-testid="errorOffers">
         <Typography tag="h3">
           There has been an error, please try again later...
         </Typography>
@@ -60,14 +59,14 @@ export default function OfferList({
 
   if (!offers || offers.length === 0) {
     return (
-      <OfferContainer data-testid="noOffers" justifyContent="center">
+      <OfferContainer data-testid="noOffers">
         <Typography tag="h3">No offers found</Typography>
       </OfferContainer>
     );
   }
 
   return (
-    <OfferContainer justifyContent="flex-start">
+    <OfferContainer>
       {offers.map((offer: Offer) => {
         return (
           (offer.isValid || (showInvalidOffers && !offer.isValid)) && (

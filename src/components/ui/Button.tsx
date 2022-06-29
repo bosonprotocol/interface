@@ -43,8 +43,8 @@ const ChildWrapperButton = styled.div`
 
 const allThemes = {
   primary: {
-    color: colors.secondary,
-    borderColor: colors.secondary,
+    color: "var(--secondary)",
+    borderColor: "var(--secondary)",
     borderWidth: 2,
     hover: {
       background: colors.secondaryHover
@@ -52,7 +52,7 @@ const allThemes = {
   },
   secondary: {
     color: colors.black,
-    background: colors.primary,
+    background: "var(--primary)",
     hover: {
       background: colors.black,
       color: colors.white
@@ -67,7 +67,7 @@ const allThemes = {
     }
   },
   blank: {
-    color: colors.secondary,
+    color: "var(--secondary)",
     hover: {
       color: colors.black
     }
@@ -95,7 +95,7 @@ const allThemes = {
 
 interface IButton {
   children?: string | React.ReactNode;
-  onClick: () => void;
+  onClick?: () => void;
   size?: "small" | "regular" | "large";
   theme?: keyof typeof allThemes;
   type?: "button" | "submit" | "reset" | undefined;
