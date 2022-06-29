@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
+import Button from "../../components/ui/Button";
 import { ExploreQueryParameters } from "../../lib/routing/parameters";
 import { useQueryParameter } from "../../lib/routing/useQueryParameter";
 import { Select } from "../../lib/styles/base";
 import { breakpoint } from "../../lib/styles/breakpoint";
-import { colors } from "../../lib/styles/colors";
 import { useBrands } from "../../lib/utils/hooks/useBrands";
 import { useSellers } from "../../lib/utils/hooks/useSellers";
 import { useTokens } from "../../lib/utils/hooks/useTokens";
@@ -51,16 +51,6 @@ const BrandSelect = styled(Select)`
 
 const CurrencyOrSellerSelect = styled(BrandSelect)`
   margin-top: 10px;
-`;
-
-const GoButton = styled.button`
-  width: 100px;
-  background: var(--secondary);
-  color: ${colors.navy};
-  border-radius: 5px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
 `;
 
 const SearchContainer = styled.div``;
@@ -176,7 +166,9 @@ export default function Explore() {
               value={brandInput}
               placeholder="Search by Name"
             />
-            <GoButton onClick={() => onChangeName(brandInput)}>Go</GoButton>
+            <Button onClick={() => onChangeName(brandInput)} theme="secondary">
+              Go
+            </Button>
           </InputContainer>
         </SearchContainer>
       </TopContainer>
