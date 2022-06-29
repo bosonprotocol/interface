@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 import Typography from "../../components/ui/Typography";
+import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 
 const StepWrapper = styled.div`
@@ -8,6 +9,9 @@ const StepWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 0.75rem;
+  ${breakpoint.xxs} {
+    gap: 1.5rem;
+  }
   flex: 1;
   width: 100%;
   h1 {

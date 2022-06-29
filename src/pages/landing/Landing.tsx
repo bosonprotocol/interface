@@ -25,6 +25,20 @@ const LandingPage = styled.div`
   }
 `;
 
+const Title = styled(Typography)`
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+
+  font-size: 2.5rem;
+  line-height: 1.3;
+  ${breakpoint.s} {
+    font-size: 3.5rem;
+    line-height: 1.2;
+  }
+`;
+const SubTitle = styled(Typography)`
+  margin-bottom: 0.5rem;
+`;
 const ExploreContainer = styled.div`
   margin-top: 2rem;
 `;
@@ -81,16 +95,12 @@ export default function Landing() {
         gap="2.5rem"
       >
         <Grid alignItems="flex-start" flexDirection="column">
-          <Typography
-            tag="h1"
-            style={{ marginBottom: "1rem", marginTop: "1rem" }}
-          >
-            Tokenize, transfer and trade&nbsp;any physical asset
-            as&nbsp;an&nbsp;NFT
-          </Typography>
-          <Typography tag="h4" style={{ marginBottom: "0.5rem" }}>
+          <Title tag="h1">
+            Tokenize, transfer and trade any physical asset as&nbsp;an&nbsp;NFT
+          </Title>
+          <SubTitle tag="h4">
             The first decentralized marketplace built on Boson Protocol
-          </Typography>
+          </SubTitle>
           <ExploreContainer>
             <Button
               data-testid="explore-all-offers"

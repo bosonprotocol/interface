@@ -5,6 +5,7 @@ import styled from "styled-components";
 
 import metamaskLogo from "../../../src/assets/metamask-logo.svg";
 import Button from "../../components/ui/Button";
+import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import FallbackAvatar from "../avatar/fallback-avatar";
 
 const MetaMasgLogo = styled.img`
@@ -19,6 +20,8 @@ const ENSAvatar = styled.img`
 `;
 
 export default function ConnectButton() {
+  const { isLteXS } = useBreakpoints();
+
   return (
     <RainbowConnectButton.Custom>
       {({
@@ -50,16 +53,23 @@ export default function ConnectButton() {
                 // reset the tag o undefined
                 Sentry.setTag("wallet_address", undefined);
                 return (
-                  <Button onClick={openConnectModal}>
+                  <Button
+                    onClick={openConnectModal}
+                    size={isLteXS ? "small" : "regular"}
+                  >
                     Connect Wallet
-                    <MetaMasgLogo src={metamaskLogo} />
+                    {!isLteXS && <MetaMasgLogo src={metamaskLogo} />}
                   </Button>
                 );
               }
 
               if (chain.unsupported) {
                 return (
-                  <Button onClick={openChainModal} theme="warning">
+                  <Button
+                    onClick={openChainModal}
+                    theme="warning"
+                    size={isLteXS ? "small" : "regular"}
+                  >
                     Wrong network
                     <BsChevronDown size={12} />
                   </Button>
@@ -73,7 +83,11 @@ export default function ConnectButton() {
                     {chain.name}
                     <BsChevronDown size={12} />
                   </Button> */}
-                  <Button onClick={openAccountModal} theme="outline">
+                  <Button
+                    onClick={openAccountModal}
+                    theme="outline"
+                    size={isLteXS ? "small" : "regular"}
+                  >
                     {account.ensAvatar ? (
                       <ENSAvatar src={account.ensAvatar} />
                     ) : (

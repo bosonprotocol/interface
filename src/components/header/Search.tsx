@@ -22,16 +22,16 @@ const InputWrapper = styled(Grid)`
 
   ${breakpoint.s} {
     border-bottom: none;
-    margin: 0.75rem;
-    padding: 0.25rem 0.75rem;
-    min-width: 10rem;
+    margin: 1rem;
+    padding: 0.25rem 1rem;
+    min-width: 15vw;
     background: ${colors.lightGrey};
   }
   ${breakpoint.l} {
-    min-width: 20rem;
+    min-width: 30vw;
   }
   ${breakpoint.xl} {
-    min-width: 30rem;
+    min-width: 40vw;
   }
 `;
 

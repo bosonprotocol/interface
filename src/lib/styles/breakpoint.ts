@@ -8,6 +8,7 @@ export const breakpointNumbers = {
 };
 
 export const breakpoint = {
+  xxs: `@media (max-width: ${breakpointNumbers.xs - 1}px)`,
   xs: `@media (min-width: ${breakpointNumbers.xs}px)`,
   s: `@media (min-width: ${breakpointNumbers.s}px)`,
   m: `@media (min-width: ${breakpointNumbers.m}px)`,

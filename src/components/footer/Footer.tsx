@@ -27,7 +27,9 @@ const LogoGrid = styled(Grid)`
   > a {
     margin-bottom: 4rem;
   }
+  margin-top: 4rem;
   ${breakpoint.xs} {
+    margin-top: 0;
     > a {
       margin-bottom: 0rem;
     }
@@ -84,14 +86,32 @@ const LogoImg = styled.img`
   cursor: pointer;
 `;
 
+function Socials() {
+  const { isXXS, isLteS } = useBreakpoints();
+  return (
+    <NavigationLinks gap={isLteS && !isXXS ? "16px" : "32px"}>
+      {SOCIAL_ROUTES.map(({ name, url, logo: Logo }) => (
+        <a href={url} target="_blank" rel="noopener" key={`social_nav_${name}`}>
+          <Logo size={isLteS && !isXXS ? 20 : 32} />
+        </a>
+      ))}
+    </NavigationLinks>
+  );
+}
+
 export default function FooterComponent() {
-  const { isLteS } = useBreakpoints();
+  const { isXXS } = useBreakpoints();
   const [year] = useState<number>(new Date().getFullYear());
   const logoUrl = useCustomStoreQueryParameter("logoUrl");
 
   return (
     <Footer>
       <Layout>
+        {isXXS && (
+          <Grid justifyContent="center">
+            <Socials />
+          </Grid>
+        )}
         <LogoGrid alignItems="flex-start" padding="0 0 2rem 0">
           <LinkWithQuery to={BosonRoutes.Root} data-testid="logo">
             <LogoImg src={logoUrl || logo} alt="Boson Protocol" />
@@ -121,20 +141,7 @@ export default function FooterComponent() {
         </LogoGrid>
         <Grid padding="2rem 0 0 0">
           <Typography tag="p">© {year} Boson Protocol</Typography>
-          {!isLteS && (
-            <NavigationLinks gap="32px">
-              {SOCIAL_ROUTES.map(({ name, url, logo: Logo }) => (
-                <a
-                  href={url}
-                  target="_blank"
-                  rel="noopener"
-                  key={`social_nav_${name}`}
-                >
-                  <Logo size={32} />
-                </a>
-              ))}
-            </NavigationLinks>
-          )}
+          {!isXXS && <Socials />}
           <NavigationLinks>
             <LinkWithQuery to={BosonRoutes.Root}>Home</LinkWithQuery>
             <LinkWithQuery to={BosonRoutes.Explore}>Explore</LinkWithQuery>

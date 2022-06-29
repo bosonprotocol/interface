@@ -1,5 +1,7 @@
 import { css } from "styled-components";
 
+import { breakpoint } from "../../lib/styles/breakpoint";
+
 export const button = css`
   all: unset;
   cursor: pointer;
@@ -11,6 +13,7 @@ export const button = css`
   transition: all 150ms ease-in-out;
 `;
 export const buttonText = css`
+  letter-spacing: 0.5px;
   font-family: "Plus Jakarta Sans";
   font-style: normal;
   font-size: 16px;
@@ -21,18 +24,28 @@ export const buttonText = css`
 export const small = css`
   padding: 0.25rem 1rem;
   > * {
-    font-size: 14px;
+    font-size: 12px !important;
   }
 `;
 export const regular = css`
   padding: 0.75rem 2rem;
   > * {
-    font-size: 16px;
+    font-size: 16px !important;
+  }
+  ${breakpoint.xxs} {
+    > * {
+      font-size: 14px !important;
+    }
   }
 `;
 export const large = css`
   padding: 1.25rem 2rem;
   > * {
-    font-size: 18px;
+    font-size: 18px !important;
+  }
+  ${breakpoint.xxs} {
+    > * {
+      font-size: 16px !important;
+    }
   }
 `;

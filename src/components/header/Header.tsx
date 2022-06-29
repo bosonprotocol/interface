@@ -5,7 +5,6 @@ import { useAccount } from "wagmi";
 
 import logo from "../../../src/assets/logo.svg";
 import { BosonRoutes } from "../../lib/routing/routes";
-import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
@@ -14,6 +13,8 @@ import Layout from "../Layout";
 import { LinkWithQuery } from "../linkStoreFields/LinkStoreFields";
 import ConnectButton from "./ConnectButton";
 import Search from "./Search";
+
+const HEADER_HEIGHT = "5.4rem";
 
 const Header = styled.header`
   position: fixed;
@@ -29,6 +30,14 @@ const Header = styled.header`
   border-bottom: 2px solid ${colors.border};
   color: ${colors.darkGrey};
   z-index: ${zIndex.Header};
+  > div {
+    height: ${HEADER_HEIGHT};
+    > * {
+      height: ${HEADER_HEIGHT};
+      display: flex;
+      align-items: center;
+    }
+  }
 `;
 
 const BurgerButton = styled.button`
@@ -39,10 +48,12 @@ const BurgerButton = styled.button`
 
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 3px;
+  margin: 0.5rem;
+  padding: 0.5rem;
   > div {
-    width: 2rem;
-    height: 3px;
+    width: 1.25rem;
+    height: 2px;
     border-radius: 5px;
     background: ${colors.secondary};
   }
@@ -57,18 +68,18 @@ const HeaderContainer = styled(Layout)`
 const HeaderItems = styled.nav<{ isMobile: boolean }>`
   display: flex;
   align-items: ${({ isMobile }) => (isMobile ? "center" : "stretch")};
-  gap: 2rem;
-  ${breakpoint.m} {
-    gap: 5rem;
-  }
 `;
 
 const NavigationLinks = styled.div<{ isMobile: boolean; isOpen: boolean }>`
+  > * {
+    flex: 1;
+  }
+  height: 100%;
   ${({ isMobile, isOpen }) =>
     isMobile
       ? `
     position: absolute;
-    top: 67px;
+    top: calc(${HEADER_HEIGHT} + 2px);
     left: 0;
     right: 0;
     bottom: 0;
@@ -109,6 +120,7 @@ const NavigationLinks = styled.div<{ isMobile: boolean; isOpen: boolean }>`
     }
   `
       : `
+      margin: 0 1rem;
       display: flex;
       width: 100%;
       align-items: stretch;
@@ -123,6 +135,7 @@ const NavigationLinks = styled.div<{ isMobile: boolean; isOpen: boolean }>`
         font-weight: 600;
         line-height: 150%;
         padding: 1rem;
+        height: 100%;
         color: ${colors.black};
       }
       a:hover {

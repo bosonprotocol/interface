@@ -15,25 +15,17 @@ const Root = styled.div`
   display: flex;
   flex-direction: column;
 
-  &:not(:last-of-type) {
-    margin-bottom: 2rem;
-  }
+  margin-bottom: 2rem;
   &:last-of-type {
-    margin-bottom: 3rem;
+    margin-bottom: 0rem;
   }
 
   padding: 0rem 3rem;
   ${breakpoint.m} {
     padding: 0rem 6rem;
-    &:not(:last-of-type) {
-      margin-bottom: 4rem;
-    }
   }
   ${breakpoint.l} {
     padding: 0rem 12rem;
-    &:not(:last-of-type) {
-      margin-bottom: 6rem;
-    }
   }
 `;
 
