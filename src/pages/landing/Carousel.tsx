@@ -1,16 +1,15 @@
 // inspired by https://3dtransforms.desandro.com/carousel
 
 import { useRef, useState } from "react";
-import { IoChevronBackOutline } from "react-icons/io5";
+import { RiArrowLeftSLine } from "react-icons/ri";
 import styled from "styled-components";
 
 import OfferCard from "../../components/offer/OfferCard";
-import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import { Offer } from "../../lib/types/offer";
 import { useOffers } from "../../lib/utils/hooks/offers";
 
-const cellSize = 290;
+const cellSize = 380;
 const numCells = 8; // or number of offers
 const tz = Math.round(cellSize / 2 / Math.tan(Math.PI / numCells));
 const translateZValue = `${tz}px`;
@@ -26,7 +25,7 @@ const Container = styled.div`
 
 const Scene = styled.div`
   width: ${cellSize}px;
-  height: 420px;
+  height: 550px;
 
   position: relative;
   perspective: 1000px;
@@ -81,9 +80,6 @@ const CarouselCell = styled.div<{
         pointer-events: none;`
         : ""};
 
-    img {
-      height: 300px;
-    }
     ::after {
       content: "";
       position: absolute;
@@ -97,36 +93,23 @@ const CarouselCell = styled.div<{
           : props.$isNext
           ? "linear-gradient(-90deg,rgba(255,255,255,1) 50%,  transparent  100%);"
           : "initial"};
-      ${(props) =>
-        props.$isPrevious
-          ? `border-width: 0;
-      border-right: 1px solid;
-      border-image: ${colors.darkGrey}99 3 100%;
-`
-          : props.$isNext
-          ? `border-width: 0;
-      border-left: 1px solid;
-      border-image: ${colors.darkGrey}99 3 100%;`
-          : ""};
     }
-    min-height: 300px;
   }
 `;
 
-const arrowSpace = "80px";
-
-const PreviousButton = styled(IoChevronBackOutline)`
-  position: absolute;
-  left: ${arrowSpace};
+const PreviousButton = styled(RiArrowLeftSLine)`
   cursor: pointer;
-  font-size: 30px;
+  position: absolute;
   top: 50%;
+  left: 0;
+  font-size: 3rem;
+  margin: 0 3rem;
 `;
 
 const NextButton = styled(PreviousButton)`
   transform: rotate(180deg);
-  right: ${arrowSpace};
   left: initial;
+  right: 0;
 `;
 
 const theta = 360 / numCells;
@@ -191,6 +174,7 @@ export default function Carousel() {
                   showSeller
                   dataTestId="offer"
                   isPrivateProfile={false}
+                  isCarousel
                 />
               </CarouselCell>
             );

@@ -16,12 +16,12 @@ import Carousel from "./Carousel";
 import Step from "./Step";
 
 const LandingPage = styled.div`
-  padding: 1rem 0.5rem 0 0.5rem;
+  padding: 0 0.5rem 0 0.5rem;
   ${breakpoint.m} {
-    padding: 2rem 1rem 0 1rem;
+    padding: 0 2rem 0 2rem;
   }
   ${breakpoint.xl} {
-    padding: 4rem 2rem 0 2rem;
+    padding: 0 4rem 0 4rem;
   }
 `;
 
@@ -40,6 +40,12 @@ const CarouselContainer = styled.div`
   } */
 `;
 
+const HeroWrapper = styled(Grid)`
+  padding: 1rem 0 1rem 0;
+  ${breakpoint.m} {
+    padding: 3rem 0 3rem 0;
+  }
+`;
 const StepWrapper = styled(Grid)`
   gap: 50px;
   margin: 5rem 0;
@@ -69,17 +75,20 @@ export default function Landing() {
 
   return (
     <LandingPage>
-      <Grid
+      <HeroWrapper
         flexBasis="50%"
         flexDirection={isLteS ? "column-reverse" : "row"}
         gap="2.5rem"
       >
         <Grid alignItems="flex-start" flexDirection="column">
-          <Typography tag="h1">
+          <Typography
+            tag="h1"
+            style={{ marginBottom: "1rem", marginTop: "1rem" }}
+          >
             Tokenize, transfer and trade&nbsp;any physical asset
             as&nbsp;an&nbsp;NFT
           </Typography>
-          <Typography tag="h4">
+          <Typography tag="h4" style={{ marginBottom: "0.5rem" }}>
             The first decentralized marketplace built on Boson Protocol
           </Typography>
           <ExploreContainer>
@@ -95,7 +104,7 @@ export default function Landing() {
         <CarouselContainer>
           <Carousel />
         </CarouselContainer>
-      </Grid>
+      </HeroWrapper>
       <StepWrapper
         alignItems="flex-start"
         flexDirection={isLteS ? "column" : "row"}
@@ -118,6 +127,7 @@ export default function Landing() {
         <Layout>
           <FeaturedOffers type="featured" title="Featured Offers" />
           <FeaturedOffers type="hot" title="Hot Offers" />
+          <FeaturedOffers type="soon" title="Coming soon" />
         </Layout>
       </DarkerBackground>
     </LandingPage>

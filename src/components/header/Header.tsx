@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
 import logo from "../../../src/assets/logo.svg";
 import { BosonRoutes } from "../../lib/routing/routes";
+import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
@@ -55,8 +57,12 @@ const HeaderContainer = styled(Layout)`
 const HeaderItems = styled.nav<{ isMobile: boolean }>`
   display: flex;
   align-items: ${({ isMobile }) => (isMobile ? "center" : "stretch")};
-  gap: 5rem;
+  gap: 2rem;
+  ${breakpoint.m} {
+    gap: 5rem;
+  }
 `;
+
 const NavigationLinks = styled.div<{ isMobile: boolean; isOpen: boolean }>`
   ${({ isMobile, isOpen }) =>
     isMobile
@@ -132,10 +138,15 @@ const LogoImg = styled.img`
 `;
 
 export default function HeaderComponent() {
+  const { pathname, search } = useLocation();
   const { isLteXS } = useBreakpoints();
   const [open, setOpen] = useState(false);
   const { data: account } = useAccount();
   const logoUrl = useCustomStoreQueryParameter("logoUrl");
+
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname, search]);
 
   const toggleMenu = () => {
     setOpen(!open);
@@ -148,7 +159,6 @@ export default function HeaderComponent() {
           <LogoImg src={logoUrl || logo} alt="Boson Protocol" />
         </LinkWithQuery>
         <HeaderItems isMobile={isLteXS}>
-          {!isLteXS && <Search />}
           {isLteXS && (
             <>
               <ConnectButton />
@@ -160,6 +170,7 @@ export default function HeaderComponent() {
             </>
           )}
           <NavigationLinks isMobile={isLteXS} isOpen={open}>
+            <Search />
             <LinkWithQuery to={BosonRoutes.Explore}>
               Explore Products
             </LinkWithQuery>

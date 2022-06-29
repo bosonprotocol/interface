@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 import logo from "../../../src/assets/logo-white.svg";
 import { BosonRoutes, ExternalRoutes } from "../../lib/routing/routes";
+import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
@@ -17,8 +18,44 @@ const Footer = styled.footer`
   background-color: ${colors.black};
   color: ${colors.white};
 
-  padding: 2rem 1rem;
+  padding: 4rem 1rem 2rem 1rem;
   margin-top: auto;
+`;
+
+const LogoGrid = styled(Grid)`
+  flex-direction: column;
+  > a {
+    margin-bottom: 4rem;
+  }
+  ${breakpoint.xs} {
+    > a {
+      margin-bottom: 0rem;
+    }
+    flex-direction: row;
+  }
+`;
+const NavigationGrid = styled(Grid)`
+  gap: 5rem;
+  padding: 0 2rem 2rem 0;
+
+  justify-content: flex-start;
+  ${breakpoint.xs} {
+    gap: 5rem;
+    padding: 0 0rem 2rem 0;
+    justify-content: flex-end;
+  }
+  ${breakpoint.m} {
+    gap: 10rem;
+    padding: 0 6rem 2rem 0;
+  }
+  ${breakpoint.l} {
+    gap: 15rem;
+    padding: 0 8rem 2rem 0;
+  }
+  ${breakpoint.xl} {
+    gap: 15rem;
+    padding: 0 10rem 2rem 0;
+  }
 `;
 
 interface INavigationLinks {
@@ -55,32 +92,34 @@ export default function FooterComponent() {
   return (
     <Footer>
       <Layout>
-        <Grid alignItems="flex-start" padding="0 0 50px 0">
+        <LogoGrid alignItems="flex-start" padding="0 0 2rem 0">
           <LinkWithQuery to={BosonRoutes.Root} data-testid="logo">
             <LogoImg src={logoUrl || logo} alt="Boson Protocol" />
           </LinkWithQuery>
-          <div>
-            <Typography tag="h5">Product</Typography>
-            <NavigationLinks flexDirection="column">
-              {PRODUCT_ROUTES.map(({ name, url }) => (
-                <LinkWithQuery to={url} key={`product_nav_${name}`}>
-                  {name}
-                </LinkWithQuery>
-              ))}
-            </NavigationLinks>
-          </div>
-          <div>
-            <Typography tag="h5">Navigation</Typography>
-            <NavigationLinks flexDirection="column">
-              {NAVIGATION_ROUTES.map(({ name, url }) => (
-                <LinkWithQuery to={url} key={`navigation_nav_${name}`}>
-                  {name}
-                </LinkWithQuery>
-              ))}
-            </NavigationLinks>
-          </div>
-        </Grid>
-        <Grid padding="50px 0 0">
+          <NavigationGrid>
+            <div>
+              <Typography tag="h5">Product</Typography>
+              <NavigationLinks flexDirection="column">
+                {PRODUCT_ROUTES.map(({ name, url }) => (
+                  <LinkWithQuery to={url} key={`product_nav_${name}`}>
+                    {name}
+                  </LinkWithQuery>
+                ))}
+              </NavigationLinks>
+            </div>
+            <div>
+              <Typography tag="h5">Navigation</Typography>
+              <NavigationLinks flexDirection="column">
+                {NAVIGATION_ROUTES.map(({ name, url }) => (
+                  <LinkWithQuery to={url} key={`navigation_nav_${name}`}>
+                    {name}
+                  </LinkWithQuery>
+                ))}
+              </NavigationLinks>
+            </div>
+          </NavigationGrid>
+        </LogoGrid>
+        <Grid padding="2rem 0 0 0">
           <Typography tag="p">© {year} Boson Protocol</Typography>
           {!isLteS && (
             <NavigationLinks gap="32px">

@@ -7,12 +7,13 @@ const StepWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: 0.75rem;
   flex: 1;
   width: 100%;
   h1 {
     position: relative;
     color: ${colors.secondary};
+    margin-bottom: 0.5rem !important;
     &:after {
       content: "";
       position: absolute;

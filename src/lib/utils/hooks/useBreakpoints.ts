@@ -5,23 +5,23 @@ import { breakpointNumbers } from "../../../lib/styles/breakpoint";
 export function useBreakpoints() {
   const isXXS = useMediaQuery({
     minWidth: breakpointNumbers.xxs,
-    maxWidth: breakpointNumbers.xs
+    maxWidth: breakpointNumbers.xs - 1
   });
   const isXS = useMediaQuery({
     minWidth: breakpointNumbers.xs,
-    maxWidth: breakpointNumbers.s
+    maxWidth: breakpointNumbers.s - 1
   });
   const isS = useMediaQuery({
     minWidth: breakpointNumbers.s,
-    maxWidth: breakpointNumbers.m
+    maxWidth: breakpointNumbers.m - 1
   });
   const isM = useMediaQuery({
     minWidth: breakpointNumbers.m,
-    maxWidth: breakpointNumbers.l
+    maxWidth: breakpointNumbers.l - 1
   });
   const isL = useMediaQuery({
     minWidth: breakpointNumbers.l,
-    maxWidth: breakpointNumbers.xl
+    maxWidth: breakpointNumbers.xl - 1
   });
   const isXL = useMediaQuery({
     minWidth: breakpointNumbers.xl

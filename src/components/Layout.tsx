@@ -4,12 +4,13 @@ import styled from "styled-components";
 import { breakpoint } from "../lib/styles/breakpoint";
 
 const Root = styled.div`
-  max-width: 1500px;
   margin: 0 auto;
-
   padding: 0 16px;
+
+  max-width: 100vw;
   ${breakpoint.xs} {
     padding: 0 24px;
+    max-width: 1500px;
   }
   ${breakpoint.s} {
     padding: 0 28px;

@@ -4,6 +4,7 @@ import { generatePath, useLocation } from "react-router-dom";
 import styled from "styled-components";
 
 import RootPrice from "../../components/price";
+import { buttonText } from "../../components/ui/styles";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes, OffersRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
@@ -14,22 +15,27 @@ import Typography from "../ui/Typography";
 import ExchangeStatuses from "./ExchangeStatuses";
 import OfferStatuses from "./OfferStatuses";
 
-const Card = styled.div`
+const Card = styled.div<{ isCarousel: boolean }>`
   display: inline-block;
   background-color: ${colors.white};
   position: relative;
   width: 100%;
   cursor: pointer;
-  transition: all 300ms ease-in-out;
-  transition: box-shadow 300ms;
-  border: 1px solid ${colors.black}20;
 
-  &:hover {
-    box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.5);
-    img {
-      transform: translate(-50%, -50%) scale(1.05);
+  ${({ isCarousel }) =>
+    !isCarousel
+      ? `
+    transition: all 300ms ease-in-out;
+    transition: box-shadow 300ms;
+
+    &:hover {
+      box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.5);
+      img {
+        transform: translate(-50%, -50%) scale(1.05);
+      }
     }
-  }
+  `
+      : ""}
 `;
 
 const ImageContainer = styled.div`
@@ -37,8 +43,9 @@ const ImageContainer = styled.div`
   position: relative;
   z-index: ${zIndex.OfferCard};
   height: 0;
-  padding-top: 100%;
-  > img {
+  padding-top: 120%;
+  > img,
+  > div {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -55,7 +62,10 @@ const ImageContainer = styled.div`
 `;
 
 const Content = styled.div`
-  margin: 1rem 1.5rem;
+  padding: 1rem 1.5rem;
+  border-left: 1px solid ${colors.black}20;
+  border-right: 1px solid ${colors.black}20;
+  border-bottom: 1px solid ${colors.black}20;
 `;
 
 const Image = styled.img`
@@ -63,20 +73,23 @@ const Image = styled.img`
 `;
 
 const ImagePlaceholder = styled.div`
-  height: 250px;
-  width: 250px;
-  background-color: ${colors.grey};
+  height: 100%;
+  width: 100%;
+  background-color: ${colors.darkGrey};
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  font-size: 21px;
-  border-radius: 24px;
+
+  svg {
+    fill: ${colors.white};
+  }
 
   span {
-    padding: 10px;
+    ${buttonText}
+    color: ${colors.white};
+    padding: 1rem;
     text-align: center;
-    color: lightgrey;
   }
 `;
 
@@ -126,10 +139,6 @@ const Price = styled(RootPrice)`
   font-size: 16px;
   font-weight: bold;
   stroke: black;
-
-  svg {
-    width: 9px;
-  }
 `;
 
 const PriceText = styled(Typography)`
@@ -162,6 +171,7 @@ interface Props {
   action?: Action;
   dataTestId: string;
   isPrivateProfile?: boolean;
+  isCarousel?: boolean;
 }
 
 export default function OfferCard({
@@ -170,7 +180,8 @@ export default function OfferCard({
   showSeller,
   action,
   dataTestId,
-  isPrivateProfile
+  isPrivateProfile,
+  isCarousel = false
 }: Props) {
   const offerId = offer.id;
   const isSellerVisible = showSeller === undefined ? true : showSeller;
@@ -212,7 +223,7 @@ export default function OfferCard({
   );
 
   return (
-    <Card data-testid={dataTestId} onClick={onClick}>
+    <Card data-testid={dataTestId} onClick={onClick} isCarousel={isCarousel}>
       <ImageContainer>
         {Status}
         {offerImg ? (

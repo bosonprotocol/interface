@@ -14,8 +14,11 @@ const OfferContainer = styled(Grid)`
     flex: 1 0 46%;
     max-width: 100%;
     ${breakpoint.xs} {
-      flex: 1 0 21%;
-      max-width: 30%;
+      flex: 1 0 20.1%;
+      max-width: 50%;
+    }
+    ${breakpoint.m} {
+      max-width: 33%;
     }
   }
 `;

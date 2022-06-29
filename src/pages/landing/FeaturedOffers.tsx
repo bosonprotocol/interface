@@ -14,12 +14,26 @@ import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 const Root = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 2rem 2.5rem;
+
+  &:not(:last-of-type) {
+    margin-bottom: 2rem;
+  }
+  &:last-of-type {
+    margin-bottom: 3rem;
+  }
+
+  padding: 0rem 3rem;
   ${breakpoint.m} {
-    padding: 2rem 5rem;
+    padding: 0rem 6rem;
+    &:not(:last-of-type) {
+      margin-bottom: 4rem;
+    }
   }
   ${breakpoint.l} {
-    padding: 2rem 10rem;
+    padding: 0rem 12rem;
+    &:not(:last-of-type) {
+      margin-bottom: 6rem;
+    }
   }
 `;
 
@@ -27,6 +41,7 @@ const TopContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin: 1rem 0 2rem 0;
 `;
 
 const ViewMore = styled(LinkWithQuery)`
@@ -53,13 +68,13 @@ const ViewMore = styled(LinkWithQuery)`
 
 interface IFeaturedOffers {
   title?: string;
-  type?: "featured" | "hot" | undefined;
+  type?: "featured" | "hot" | "soon" | undefined;
 }
 
 const FeaturedOffers: React.FC<IFeaturedOffers> = ({
   title = "Explore Offers"
 }) => {
-  const { isXXS } = useBreakpoints();
+  const { isLteXS } = useBreakpoints();
 
   const {
     data: offers,
@@ -68,13 +83,15 @@ const FeaturedOffers: React.FC<IFeaturedOffers> = ({
   } = useOffers({
     voided: false,
     valid: true,
-    first: isXXS ? 2 : 3
+    first: isLteXS ? 2 : 3
   });
 
   return (
     <Root>
       <TopContainer>
-        <Typography tag="h2">{title}</Typography>
+        <Typography tag="h2" style={{ margin: "0" }}>
+          {title}
+        </Typography>
         <ViewMore to={BosonRoutes.Explore}>
           <>
             View more

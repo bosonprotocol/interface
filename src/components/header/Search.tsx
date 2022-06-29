@@ -4,17 +4,35 @@ import styled from "styled-components";
 
 import { ExploreQueryParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
+import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
+import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import Button from "../ui/Button";
 import Grid from "../ui/Grid";
 
 const InputWrapper = styled(Grid)`
   flex: 1;
-  background: ${colors.lightGrey};
-  margin: 0.75rem;
-  padding: 0.25rem 0.75rem;
   gap: 1rem;
-  min-width: 20rem;
+  max-width: 100%;
+  margin: 0rem;
+  padding: 1.5rem 1.75rem;
+  border-bottom: 2px solid ${colors.border};
+  background: ${colors.white};
+
+  ${breakpoint.s} {
+    border-bottom: none;
+    margin: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    min-width: 10rem;
+    background: ${colors.lightGrey};
+  }
+  ${breakpoint.l} {
+    min-width: 20rem;
+  }
+  ${breakpoint.xl} {
+    min-width: 30rem;
+  }
 `;
 
 const Input = styled.input`
@@ -35,6 +53,7 @@ const Input = styled.input`
 `;
 
 export default function Search() {
+  const { isLteXS } = useBreakpoints();
   const navigate = useKeepQueryParamsNavigate();
   const [name, setName] = useState<string>("");
 
@@ -65,6 +84,11 @@ export default function Search() {
         value={name}
         placeholder="Search"
       />
+      {isLteXS && (
+        <Button onClick={navigateToExplore} theme="secondary">
+          <BsSearch size={16} />
+        </Button>
+      )}
     </InputWrapper>
   );
 }
