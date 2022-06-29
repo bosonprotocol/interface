@@ -15,23 +15,23 @@ const InputWrapper = styled(Grid)`
   flex: 1;
   gap: 1rem;
   max-width: 100%;
-  margin: 0rem;
   padding: 1.5rem 1.75rem;
   border-bottom: 2px solid ${colors.border};
   background: ${colors.white};
 
+  margin: 0rem;
   ${breakpoint.s} {
     border-bottom: none;
-    margin: 1rem;
+    margin: 1.25rem;
     padding: 0.25rem 1rem;
-    min-width: 15vw;
+    min-width: 20vw;
     background: ${colors.lightGrey};
   }
   ${breakpoint.l} {
-    min-width: 30vw;
+    min-width: 35vw;
   }
   ${breakpoint.xl} {
-    min-width: 40vw;
+    min-width: 45vw;
   }
 `;
 

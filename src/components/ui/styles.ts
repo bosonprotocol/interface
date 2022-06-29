@@ -12,6 +12,22 @@ export const button = css`
 
   transition: all 150ms ease-in-out;
 `;
+export const clamp = css`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  -webkit-box-orient: vertical;
+`;
+export const text = css`
+  letter-spacing: 0.5px;
+  font-family: "Plus Jakarta Sans";
+  font-style: normal;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 24px;
+`;
 export const buttonText = css`
   letter-spacing: 0.5px;
   font-family: "Plus Jakarta Sans";

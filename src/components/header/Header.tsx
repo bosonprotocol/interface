@@ -23,7 +23,6 @@ const Header = styled.header`
   right: 0;
   + * {
     padding-top: calc(${HEADER_HEIGHT} + 2rem) !important;
-    padding-bottom: 4rem;
   }
 
   width: 100%;
@@ -102,6 +101,7 @@ const NavigationLinks = styled.div<{ isMobile: boolean; isOpen: boolean }>`
       background-color: ${colors.lightGrey};
       border-bottom: 2px solid ${colors.border};
       position: relative;
+      white-space: pre;
       &:before {
         content: "";
         position: absolute;

@@ -4,7 +4,7 @@ import { generatePath, useLocation } from "react-router-dom";
 import styled from "styled-components";
 
 import RootPrice from "../../components/price";
-import { buttonText } from "../../components/ui/styles";
+import { buttonText, clamp } from "../../components/ui/styles";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes, OffersRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
@@ -13,6 +13,7 @@ import { Offer } from "../../lib/types/offer";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import Typography from "../ui/Typography";
 import ExchangeStatuses from "./ExchangeStatuses";
+import OfferBanner from "./OfferBanner";
 import OfferStatuses from "./OfferStatuses";
 
 const Card = styled.div<{ isCarousel: boolean }>`
@@ -45,7 +46,7 @@ const ImageContainer = styled.div`
   height: 0;
   padding-top: 120%;
   > img,
-  > div {
+  > div:not([data-banner]) {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -59,6 +60,15 @@ const ImageContainer = styled.div`
     right: 7px;
     justify-content: flex-end;
   }
+`;
+
+const BannerContainer = styled.div`
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  background: ${colors.white};
 `;
 
 const Content = styled.div`
@@ -131,8 +141,8 @@ const SellerInfo = styled.div`
 `;
 
 const Name = styled.span`
-  font-size: 18px;
-  font-weight: 600;
+  ${buttonText}
+  ${clamp}
 `;
 
 const Price = styled(RootPrice)`
@@ -143,6 +153,9 @@ const Price = styled(RootPrice)`
 
 const PriceText = styled(Typography)`
   color: #556072;
+`;
+const TextBelow = styled(Typography)`
+  font-size: 12px;
 `;
 
 const getCTAPath = (
@@ -164,6 +177,10 @@ const getCTAPath = (
 
 export type Action = "commit" | "redeem" | null;
 
+interface IBanner {
+  offer: Offer;
+  type?: "featured" | "hot" | "soon" | undefined;
+}
 interface Props {
   offer: Offer;
   exchange?: NonNullable<Offer["exchanges"]>[number];
@@ -172,7 +189,50 @@ interface Props {
   dataTestId: string;
   isPrivateProfile?: boolean;
   isCarousel?: boolean;
+  type?: "featured" | "hot" | "soon" | undefined;
 }
+
+const Banner = ({ type, offer }: IBanner) => {
+  const formatNumber = (number: number) => {
+    number.toLocaleString("en-US", {
+      minimumIntegerDigits: 2,
+      useGrouping: false
+    });
+  };
+  const handleDate = (offer: Offer) => {
+    const current = new Date();
+    const from = new Date(Number(offer?.validFromDate) * 1000);
+    const until = new Date(Number(offer?.validUntilDate) * 1000);
+
+    const untilDay = formatNumber(Number(until.getDate()));
+    const untilMonth = formatNumber(Number(until.getMonth() + 1));
+    const untilYear = formatNumber(Number(until.getFullYear()));
+
+    const expiryDate = `${untilDay}/${untilMonth}/${untilYear}`;
+
+    return {
+      expiryDate
+    };
+  };
+
+  const handleText = () => {
+    const { expiryDate } = handleDate(offer);
+    const days = 11;
+
+    switch (type) {
+      case "featured":
+        return "featured";
+      case "hot":
+        return "hot";
+      case "soon":
+        return "soon";
+      default:
+        return days <= 10 ? `Expires in ${1} days` : `Expires on ${expiryDate}`;
+    }
+  };
+
+  return <BannerContainer>{handleText()}</BannerContainer>;
+};
 
 export default function OfferCard({
   offer,
@@ -181,7 +241,8 @@ export default function OfferCard({
   action,
   dataTestId,
   isPrivateProfile,
-  isCarousel = false
+  isCarousel = false,
+  type
 }: Props) {
   const offerId = offer.id;
   const isSellerVisible = showSeller === undefined ? true : showSeller;
@@ -234,6 +295,7 @@ export default function OfferCard({
             <Typography tag="span">IMAGE NOT AVAILABLE</Typography>
           </ImagePlaceholder>
         )}
+        {!isCarousel && <OfferBanner type={type} offer={offer} />}
       </ImageContainer>
       <Content>
         {isSellerVisible && sellerAddress && (
@@ -270,7 +332,7 @@ export default function OfferCard({
           )}
         </BasicInfoContainer>
         {!exchange && (
-          <Typography>Redeemable until 30 days after commit</Typography>
+          <TextBelow>Redeemable until 30 days after commit</TextBelow>
         )}
       </Content>
     </Card>

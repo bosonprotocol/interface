@@ -47,7 +47,7 @@ const allThemes = {
     borderColor: "var(--secondary)",
     borderWidth: 2,
     hover: {
-      background: colors.secondaryHover
+      background: "var(--secondary)"
     }
   },
   secondary: {

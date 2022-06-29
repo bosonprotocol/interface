@@ -31,6 +31,7 @@ interface Props {
   action: Action;
   showInvalidOffers: boolean;
   isPrivateProfile?: boolean;
+  type?: "featured" | "hot" | "soon" | undefined;
 }
 
 export default function OfferList({
@@ -41,7 +42,8 @@ export default function OfferList({
   showSeller,
   action,
   showInvalidOffers,
-  isPrivateProfile
+  isPrivateProfile,
+  type
 }: Props) {
   if (isLoading) {
     return loadingComponent || <div>Loading...</div>;
@@ -77,6 +79,7 @@ export default function OfferList({
               action={action}
               dataTestId="offer"
               isPrivateProfile={isPrivateProfile}
+              type={type}
             />
           )
         );

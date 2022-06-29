@@ -64,7 +64,8 @@ interface IFeaturedOffers {
 }
 
 const FeaturedOffers: React.FC<IFeaturedOffers> = ({
-  title = "Explore Offers"
+  title = "Explore Offers",
+  type
 }) => {
   const { isLteXS } = useBreakpoints();
 
@@ -97,6 +98,7 @@ const FeaturedOffers: React.FC<IFeaturedOffers> = ({
         isLoading={isLoading}
         action="commit"
         showInvalidOffers={false}
+        type={type}
       />
     </Root>
   );
