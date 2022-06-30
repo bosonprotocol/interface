@@ -73,7 +73,7 @@ export default function CreatedExchangeModal({
     []
   );
   return (
-    <Modal isOpen onClose={() => onClose()} $styles={styles}>
+    <Modal isOpen={isOpen} onClose={() => onClose()} $styles={styles}>
       <ModalContent>
         <Title> {exchangeId ? "Commit Successful" : "Error"}</Title>
         <Body>
