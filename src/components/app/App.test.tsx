@@ -21,6 +21,6 @@ test("renders App and expects logo to be displayed", () => {
       </WagmiConfig>
     </MemoryRouter>
   );
-  const logo = screen.getByTestId("logo");
-  expect(logo).toBeInTheDocument();
+  const logo = screen.getAllByTestId("logo");
+  expect(logo.length).toBe(2);
 });
