@@ -1,6 +1,6 @@
 // inspired by https://3dtransforms.desandro.com/carousel
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { RiArrowLeftSLine } from "react-icons/ri";
 import styled from "styled-components";
 
@@ -21,7 +21,7 @@ const ANIMATION_TIME_MS = 500;
 
 const Scene = styled.div`
   min-width: 50%;
-  height: 65vh;
+  height: 40rem;
 
   perspective: ${VIEWER_DISTANCE}px;
   display: flex;
@@ -62,13 +62,12 @@ const CarouselContainer = styled.div`
 
   width: ${ITEM_WIDTH}px;
   transform-style: preserve-3d;
-  transition: all ${ANIMATION_TIME_MS}ms ease-in-out;
+  transition: transform ${ANIMATION_TIME_MS}ms;
 
   > div {
     width: 100%;
     box-sizing: border-box;
     padding: 0 calc(${ITEM_PADDING}px / 2);
-    transition: all ${ANIMATION_TIME_MS}ms ease-in-out;
   }
 `;
 const CarouselNav = styled.div`
@@ -149,16 +148,20 @@ export default function Carousel() {
     }
     return [];
   }, [offers]);
+
+  useEffect(() => {
+    rotateCarousel(selectedIndex);
+  }, [selectedIndex]);
+
   const onPreviousClick = () => {
     const newIndex = selectedIndex - 1; // < 0 ? numCells - 1 : selectedIndex - 1;
     setSelectedIndex(newIndex);
-    rotateCarousel(newIndex);
   };
   const onNextClick = () => {
     const newIndex = selectedIndex + 1; // > numCells - 1 ? 0 : selectedIndex + 1;
     setSelectedIndex(newIndex);
-    rotateCarousel(newIndex);
   };
+
   function rotateCarousel(newIndex: number) {
     const angle = theta * newIndex * -1;
     if (carouselRef.current) {
