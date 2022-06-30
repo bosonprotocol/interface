@@ -44,6 +44,8 @@ export const FormControl = styled.input`
   font-family: "Manrope", sans-serif;
   padding: 10px;
   border-radius: 6px;
+  border-width: 2px;
+  border-color: black;
 `;
 
 export const FormElementsContainer = styled.div`

@@ -3,6 +3,8 @@ import { createPortal } from "react-dom";
 import { IoIosClose } from "react-icons/io";
 import styled from "styled-components";
 
+import { colors } from "../../lib/styles/colors";
+
 const Root = styled.div`
   position: fixed;
   top: 0;
@@ -17,12 +19,12 @@ const Root = styled.div`
 
 const Content = styled.div<{ $styles: Props["$styles"] }>`
   margin: 24px;
-  color: var(--accent);
+  color: ${colors.white}; //var(--secondary);
   width: ${(props) => props.$styles?.width || "60%"};
   border-radius: 8px;
   padding: 16px;
-  background-color: var(--primary);
-  border: 2px solid var(--accent);
+  background-color: rgb(67, 70, 79); //var(--primaryBgColor);
+  border: 2px solid ${colors.white}; //var(--secondary);
 `;
 
 const CloseButtonContainer = styled.div`
@@ -32,8 +34,8 @@ const CloseButtonContainer = styled.div`
 
 const CloseButton = styled(IoIosClose)`
   all: unset;
-  stroke: white;
-  fill: white;
+  stroke: ${colors.white}; //var(--secondary);
+  fill: ${colors.white}; //var(--secondary);
   font-size: 2rem;
   :hover {
     cursor: pointer;

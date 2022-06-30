@@ -30,9 +30,9 @@ const Buttons = styled.div`
 `;
 
 const CloseButton = styled.button.attrs({ type: "button" })`
-  border-color: var(--secondary);
+  border-color: white; //${colors.green}; //var(--secondary);
   background: transparent;
-  color: var(--accent);
+  color: white; //${colors.green}; //var(--secondary);
   border-radius: 5px;
   font-size: 16px;
   font-weight: 600;
@@ -41,7 +41,7 @@ const CloseButton = styled.button.attrs({ type: "button" })`
 `;
 
 const ViewExchangeButton = styled.button.attrs({ type: "button" })`
-  background-color: var(--secondary);
+  background-color: ${colors.green}; //var(--secondary);
   color: var(--accentDark);
   border-radius: 5px;
   font-size: 16px;
@@ -73,7 +73,7 @@ export default function CreatedExchangeModal({
     []
   );
   return (
-    <Modal isOpen={isOpen} onClose={() => onClose()} $styles={styles}>
+    <Modal isOpen onClose={() => onClose()} $styles={styles}>
       <ModalContent>
         <Title> {exchangeId ? "Commit Successful" : "Error"}</Title>
         <Body>
