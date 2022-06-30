@@ -9,35 +9,74 @@ import { zIndex } from "../../lib/styles/zIndex";
 import { Offer } from "../../lib/types/offer";
 import { useOffers } from "../../lib/utils/hooks/offers";
 
-const cellSize = 380;
+const cellSize = 360;
 const numCells = 8; // or number of max offers
 const tz = Math.round(cellSize / 2 / Math.tan(Math.PI / numCells));
 const translateZValue = `${tz}px`;
 
-const Container = styled.div`
-  position: relative;
-  width: 100%;
-  height: 550px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
+const VIEWER_DISTANCE = 1000;
+const ITEM_WIDTH = cellSize;
+const ITEM_PADDING = cellSize / 10;
+const ANIMATION_TIME_MS = 500;
 
 const Scene = styled.div`
-  width: ${cellSize}px;
-  height: 550px;
+  min-width: 50%;
+  height: 65vh;
 
-  position: relative;
-  perspective: 1000px;
+  perspective: ${VIEWER_DISTANCE}px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  > * {
+    flex: 0 0 auto;
+  }
+
+  &:after,
+  &:before {
+    content: "";
+    position: absolute;
+    width: 75%;
+    height: 100%;
+    z-index: ${zIndex.Carousel};
+    top: 0;
+  }
+  &:after {
+    right: -50%;
+    background: linear-gradient(
+      -90deg,
+      rgba(255, 255, 255, 1) 50%,
+      transparent 100%
+    );
+  }
+  &:before {
+    left: -50%;
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 1) 50%,
+      transparent 100%
+    );
+  }
 `;
-
 const CarouselContainer = styled.div`
-  width: 100%;
-  height: 100%;
-  position: absolute;
+  margin: 0;
+
+  width: ${ITEM_WIDTH}px;
   transform-style: preserve-3d;
-  transition: all 300ms ease-in;
-  transform: translateZ(-${translateZValue});
+  transition: transform ${ANIMATION_TIME_MS}ms;
+
+  > div {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 calc(${ITEM_PADDING}px / 2);
+  }
+`;
+const CarouselNav = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  z-index: ${zIndex.Carousel + 2};
 `;
 
 const nthChilds = new Array(numCells)
@@ -47,7 +86,7 @@ const nthChilds = new Array(numCells)
       :nth-child(${idx + 1}) {
         transform: rotateY(${
           (360 / numCells) * idx
-        }deg) translateZ(${translateZValue});
+        }deg) translateZ(${translateZValue}) translateY(50px);
       }
     `;
   })
@@ -59,42 +98,15 @@ const CarouselCell = styled.div<{
   $isCurrent: boolean;
 }>`
   position: absolute;
-  height: ${(props) => (props.$isCurrent ? "150px" : "120px")};
-  left: 10px;
+  pointer-events: ${(props) => (props.$isCurrent ? "all" : "none")};
+  left: 0;
   top: 0;
-  transition: all 300ms ease-in;
+  transition: opacity ${ANIMATION_TIME_MS}ms;
+
+  opacity: ${({ $isCurrent, $isPrevious, $isNext }) =>
+    !$isCurrent && !$isPrevious && !$isNext ? "0" : "1"};
 
   ${nthChilds}
-  > div {
-    border-color: ${(props) =>
-      props.$isPrevious
-        ? "transparent"
-        : props.$isNext
-        ? "transparent"
-        : "initial"};
-
-    ${(props) =>
-      props.$isPrevious || props.$isNext
-        ? `
-        opacity: 0.5;
-        pointer-events: none;`
-        : ""};
-
-    ::after {
-      content: "";
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      z-index: ${zIndex.Carousel};
-      top: 0;
-      background: ${(props) =>
-        props.$isPrevious
-          ? "linear-gradient(90deg,rgba(255,255,255,1) 50%,  transparent  100%);"
-          : props.$isNext
-          ? "linear-gradient(-90deg,rgba(255,255,255,1) 50%,  transparent  100%);"
-          : "initial"};
-    }
-  }
 `;
 
 const PreviousButton = styled(RiArrowLeftSLine)`
@@ -103,7 +115,6 @@ const PreviousButton = styled(RiArrowLeftSLine)`
   top: calc(50% - 48px / 2);
   left: 0;
   font-size: 3rem;
-  margin: 0 3rem;
 `;
 
 const NextButton = styled(PreviousButton)`
@@ -162,44 +173,42 @@ export default function Carousel() {
   }
 
   return (
-    <Container>
-      <Scene>
-        <CarouselContainer ref={carouselRef} data-testid="carousel">
-          {uiOffers?.map((offer: Offer, idx: number) => {
-            const clampedSelectedIndex =
-              ((selectedIndex % numCells) + numCells) % numCells;
-            const previousCell =
-              clampedSelectedIndex - 1 < 0
-                ? numCells - 1 === idx
-                : idx === clampedSelectedIndex - 1;
-            const currentCell = idx === clampedSelectedIndex;
-            const nextCell =
-              idx === clampedSelectedIndex + 1 ||
-              (clampedSelectedIndex + 1 === numCells && idx === 0);
-            const visibleCell = previousCell || currentCell || nextCell;
-            return (
-              <CarouselCell
-                key={idx}
-                hidden={!visibleCell}
-                $isCurrent={currentCell}
-                $isPrevious={previousCell}
-                $isNext={nextCell}
-              >
-                <OfferCard
-                  key={offer.id}
-                  offer={offer}
-                  showSeller
-                  dataTestId="offer"
-                  isPrivateProfile={false}
-                  isCarousel
-                />
-              </CarouselCell>
-            );
-          })}
-        </CarouselContainer>
-      </Scene>
-      <PreviousButton onClick={onPreviousClick}></PreviousButton>
-      <NextButton onClick={onNextClick}></NextButton>
-    </Container>
+    <Scene>
+      <CarouselContainer ref={carouselRef} data-testid="carousel">
+        {uiOffers?.map((offer: Offer, idx: number) => {
+          const clampedSelectedIndex =
+            ((selectedIndex % numCells) + numCells) % numCells;
+          const previousCell =
+            clampedSelectedIndex - 1 < 0
+              ? numCells - 1 === idx
+              : idx === clampedSelectedIndex - 1;
+          const currentCell = idx === clampedSelectedIndex;
+          const nextCell =
+            idx === clampedSelectedIndex + 1 ||
+            (clampedSelectedIndex + 1 === numCells && idx === 0);
+          return (
+            <CarouselCell
+              key={idx}
+              $isCurrent={currentCell}
+              $isPrevious={previousCell}
+              $isNext={nextCell}
+            >
+              <OfferCard
+                key={offer.id}
+                offer={offer}
+                showSeller
+                dataTestId="offer"
+                isPrivateProfile={false}
+                isCarousel
+              />
+            </CarouselCell>
+          );
+        })}
+      </CarouselContainer>
+      <CarouselNav>
+        <PreviousButton onClick={onPreviousClick}></PreviousButton>
+        <NextButton onClick={onNextClick}></NextButton>
+      </CarouselNav>
+    </Scene>
   );
 }

@@ -48,17 +48,6 @@ const ExploreContainer = styled.div`
   margin-top: 2rem;
 `;
 
-const CarouselContainer = styled.div`
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  flex-basis: 90%;
-
-  /* ${breakpoint.m} {
-    justify-content: flex-end;
-  } */
-`;
-
 const HeroWrapper = styled(Grid)`
   padding: 1rem 0 1rem 0;
   ${breakpoint.m} {
@@ -116,9 +105,7 @@ export default function Landing() {
             </Button>
           </ExploreContainer>
         </GridWithZindex>
-        <CarouselContainer>
-          <Carousel />
-        </CarouselContainer>
+        <Carousel />
       </HeroWrapper>
       <StepWrapper
         alignItems="flex-start"

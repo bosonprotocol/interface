@@ -140,9 +140,10 @@ const SellerInfo = styled.div`
   font-weight: 600;
 `;
 
-const Name = styled.span`
-  ${buttonText}
+const Name = styled(Typography)`
   ${clamp}
+  font-weight: 600;
+  margin: 0;
 `;
 
 const Price = styled(RootPrice)`
@@ -322,7 +323,9 @@ export default function OfferCard({
         )}
 
         <BasicInfoContainer>
-          <Name data-testid="name">{name || "Untitled"}</Name>
+          <Name tag="h4" data-testid="name">
+            {name || "Untitled"}
+          </Name>
           {offer.exchangeToken && (
             <Price
               currencySymbol={offer.exchangeToken.symbol}
