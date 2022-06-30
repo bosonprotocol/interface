@@ -42,7 +42,7 @@ async function getOfferById(id: string, props: UseOffersProps) {
   const validFromDate_gte = props.type !== "soon" ? now + "" : null;
   const validUntilDate_gte =
     props.type !== "soon" && props.valid ? now + "" : null;
-  const quantityAvailable_lte = props.type === "hot" ? 8 : null;
+  const quantityAvailable_lte = props.type === "hot" ? 10 : null;
 
   const result = await fetchSubgraph<{
     baseMetadataEntities: { offer: Offer }[];
