@@ -15,8 +15,7 @@ const BannerContainer = styled.div`
   left: 0px;
   right: 0px;
   bottom: 0px;
-  border: 1px solid ${colors.black}20;
-  border-bottom-width: 2px;
+  border-bottom: 2px solid ${colors.black}20;
 
   background: ${colors.white};
   padding: 0.5rem;

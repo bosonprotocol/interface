@@ -44,7 +44,7 @@ const Scene = styled.div`
     right: -50%;
     background: linear-gradient(
       -90deg,
-      rgba(255, 255, 255, 1) 50%,
+      var(--primaryBgColor) 50%,
       transparent 100%
     );
   }
@@ -52,7 +52,7 @@ const Scene = styled.div`
     left: -50%;
     background: linear-gradient(
       90deg,
-      rgba(255, 255, 255, 1) 50%,
+      var(--primaryBgColor) 50%,
       transparent 100%
     );
   }

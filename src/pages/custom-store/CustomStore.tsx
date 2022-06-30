@@ -41,7 +41,8 @@ export default function CustomStore() {
       logoUrl: "",
       primaryColor: "",
       secondaryColor: "",
-      accentColor: ""
+      accentColor: "",
+      primaryBgColor: ""
     },
     onSubmit: async (values: StoreFields) => {
       const storage = new BaseIpfsStorage({
@@ -170,6 +171,25 @@ export default function CustomStore() {
                 }}
               >
                 {values.accentColor}
+              </span>
+            </div>
+          </FormElement>
+          <FormElement>
+            <FormLabel>Primary Background Colour</FormLabel>
+            <div>
+              <FormControl
+                value={values.primaryBgColor}
+                onChange={handleChange}
+                name="primaryBgColor"
+                type="color"
+                placeholder="..."
+              />
+              <span
+                style={{
+                  color: values.primaryBgColor
+                }}
+              >
+                {values.primaryBgColor}
               </span>
             </div>
           </FormElement>

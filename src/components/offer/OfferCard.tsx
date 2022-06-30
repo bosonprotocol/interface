@@ -22,6 +22,7 @@ const Card = styled.div<{ isCarousel: boolean }>`
   position: relative;
   width: 100%;
   cursor: pointer;
+  border: 1px solid ${colors.black}20;
 
   ${({ isCarousel }) =>
     !isCarousel
@@ -73,9 +74,6 @@ const BannerContainer = styled.div`
 
 const Content = styled.div`
   padding: 1rem 1.5rem;
-  border-left: 1px solid ${colors.black}20;
-  border-right: 1px solid ${colors.black}20;
-  border-bottom: 1px solid ${colors.black}20;
 `;
 
 const Image = styled.img`
@@ -111,8 +109,10 @@ const BasicInfoContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
   gap: 4px;
   margin: 4px 0 8px 0;
+  min-height: 4rem;
 `;
 
 const SellerContainer = styled.div`
@@ -141,7 +141,7 @@ const SellerInfo = styled.div`
 `;
 
 const Name = styled(Typography)`
-  /* ${clamp} */
+  ${clamp}
   font-weight: 600;
   margin: 0;
 `;

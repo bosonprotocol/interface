@@ -4,6 +4,7 @@ export type StoreFields = {
   primaryColor: string;
   secondaryColor: string;
   accentColor: string;
+  primaryBgColor: string;
 };
 
 export const storeFields: StoreFields = {
@@ -11,5 +12,6 @@ export const storeFields: StoreFields = {
   logoUrl: "logoUrl",
   primaryColor: "primaryColor",
   secondaryColor: "secondaryColor",
-  accentColor: "accentColor"
+  accentColor: "accentColor",
+  primaryBgColor: "primaryBgColor"
 } as const;

@@ -30,5 +30,6 @@ export const colors = {
   darkGrey: "#556072",
   lightGrey: "#F1F3F9",
   border: "rgba(85,96,114,0.06)",
-  white: "#FFFFFF"
+  white: "#FFFFFF",
+  primaryBgColor: "#FFFFFF"
 };

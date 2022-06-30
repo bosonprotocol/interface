@@ -7,12 +7,13 @@ const GlobalStyle = createGlobalStyle<{
   $primaryColor: string;
   $secondaryColor: string;
   $accentColor: string;
+  $primaryBgColor: string;
 }>`
   * {
     box-sizing: border-box
   }
-  // TODO: match with colors from lib
   :root {
+    --l: 50%;
     --primary: ${(props) =>
       props.$primaryColor ? props.$primaryColor : colors.primary};
     --secondary: ${(props) =>
@@ -21,6 +22,8 @@ const GlobalStyle = createGlobalStyle<{
       props.$accentColor ? props.$accentColor : colors.white};
     --accentDark: ${(props) =>
       props.$accentColor ? props.$accentColor : colors.arsenic};
+    --primaryBgColor: ${(props) =>
+      props.$primaryBgColor ? props.$primaryBgColor : colors.primaryBgColor};
 
     font-size: 12px;
     ${breakpoint.xs} {
@@ -48,7 +51,7 @@ const GlobalStyle = createGlobalStyle<{
     margin: 0;
     padding: 0;
 
-    background-color: ${colors.white};
+    background-color: var(--primaryBgColor);
     color: ${colors.black};
 
     font-family: "Plus Jakarta Sans";

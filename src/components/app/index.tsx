@@ -22,6 +22,7 @@ export default function App() {
   const primaryColor = useCustomStoreQueryParameter("primaryColor");
   const secondaryColor = useCustomStoreQueryParameter("secondaryColor");
   const accentColor = useCustomStoreQueryParameter("accentColor");
+  const primaryBgColor = useCustomStoreQueryParameter("primaryBgColor");
 
   return (
     <Container>
@@ -29,6 +30,7 @@ export default function App() {
         $primaryColor={primaryColor}
         $secondaryColor={secondaryColor}
         $accentColor={accentColor}
+        $primaryBgColor={primaryBgColor}
       />
       <Header />
       <PageContainer>
