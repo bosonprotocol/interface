@@ -7,6 +7,7 @@ import { colors } from "../../lib/styles/colors";
 const Container = styled.div`
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 1rem;
   margin: 2rem 0;
 `;
@@ -23,7 +24,6 @@ const PaginationButton = styled(Button).attrs({
   }
 
   :disabled {
-    /* border: 1px solid ${colors.grey}; */
     color: ${colors.grey};
     cursor: not-allowed;
   }
@@ -31,10 +31,11 @@ const PaginationButton = styled(Button).attrs({
 
 const Page = styled.p`
   font-weight: 600;
-  color: ${colors.green};
-  border: 1px solid ${colors.green};
+  color: var(--secondary);
+  border: 1px solid var(--secondary);
   border-radius: 50%;
-  min-width: 25px;
+  min-width: 3rem;
+  font-size: 2rem;
   text-align: center;
 `;
 
