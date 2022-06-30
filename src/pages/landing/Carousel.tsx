@@ -40,7 +40,7 @@ const Scene = styled.div`
   ${breakpoint.xl} {
     min-width: 50%;
   }
-  min-height: 600px;
+  min-height: 650px;
 
   perspective: ${VIEWER_DISTANCE}px;
   display: flex;
