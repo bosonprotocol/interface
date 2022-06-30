@@ -42,6 +42,7 @@ async function getOfferById(id: string, props: UseOffersProps) {
   const validFromDate_gte = props.type !== "soon" ? now + "" : null;
   const validUntilDate_gte =
     props.type !== "soon" && props.valid ? now + "" : null;
+  const quantityAvailable_lte = props.type === "hot" ? 8 : null;
 
   const result = await fetchSubgraph<{
     baseMetadataEntities: { offer: Offer }[];
@@ -52,6 +53,7 @@ async function getOfferById(id: string, props: UseOffersProps) {
       validFromDate_lte: !!validFromDate_lte,
       validFromDate_gte: !!validFromDate_gte,
       validUntilDate_gte: !!validUntilDate_gte,
+      quantityAvailable_lte: !!quantityAvailable_lte,
       skip: !!props.skip,
       offer: true
     }),
@@ -60,6 +62,7 @@ async function getOfferById(id: string, props: UseOffersProps) {
       validFromDate_lte: validFromDate_lte,
       validFromDate_gte: validFromDate_gte,
       validUntilDate_gte: validUntilDate_gte,
+      quantityAvailable_lte: quantityAvailable_lte,
       name_contains_nocase: props.name || "",
       exchangeToken: props.exchangeTokenAddress,
       sellerId: props.sellerId

@@ -5,6 +5,7 @@ import { RiArrowLeftSLine } from "react-icons/ri";
 import styled from "styled-components";
 
 import OfferCard from "../../components/offer/OfferCard";
+import { breakpoint } from "../../lib/styles/breakpoint";
 import { zIndex } from "../../lib/styles/zIndex";
 import { Offer } from "../../lib/types/offer";
 import { useOffers } from "../../lib/utils/hooks/offers";
@@ -20,8 +21,26 @@ const ITEM_PADDING = cellSize / 10;
 const ANIMATION_TIME_MS = 500;
 
 const Scene = styled.div`
-  min-width: 50%;
-  height: 40rem;
+  overflow: hidden;
+  transform: scale(0.8);
+  min-width: 150%;
+  ${breakpoint.xs} {
+    min-width: 120%;
+    transform: scale(1);
+  }
+  ${breakpoint.xs} {
+    min-width: 100%;
+  }
+  ${breakpoint.m} {
+    min-width: 60%;
+  }
+  ${breakpoint.l} {
+    min-width: 50%;
+  }
+  ${breakpoint.xl} {
+    min-width: 50%;
+  }
+  min-height: 600px;
 
   perspective: ${VIEWER_DISTANCE}px;
   display: flex;
@@ -35,13 +54,22 @@ const Scene = styled.div`
   &:before {
     content: "";
     position: absolute;
-    width: 75%;
+    width: 20vw;
+    ${breakpoint.s} {
+      width: 15vw;
+    }
+    ${breakpoint.l} {
+      width: 12vw;
+    }
     height: 100%;
     z-index: ${zIndex.Carousel};
     top: 0;
   }
   &:after {
-    right: -50%;
+    right: -1vw;
+    ${breakpoint.m} {
+      right: -5vw;
+    }
     background: linear-gradient(
       -90deg,
       var(--primaryBgColor) 50%,
@@ -49,7 +77,10 @@ const Scene = styled.div`
     );
   }
   &:before {
-    left: -50%;
+    left: -1vw;
+    ${breakpoint.m} {
+      left: -5vw;
+    }
     background: linear-gradient(
       90deg,
       var(--primaryBgColor) 50%,
@@ -77,7 +108,7 @@ const CarouselNav = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 100%;
+  width: 90%;
   z-index: ${zIndex.Carousel + 2};
 `;
 
@@ -126,14 +157,20 @@ const PreviousButton = styled(RiArrowLeftSLine)`
   cursor: pointer;
   position: absolute;
   top: calc(50% - 48px / 2);
-  left: 0;
+  left: 1rem;
+  ${breakpoint.s} {
+    left: 0;
+  }
   font-size: 3rem;
 `;
 
 const NextButton = styled(PreviousButton)`
   transform: rotate(180deg);
   left: initial;
-  right: 0;
+  right: 1rem;
+  ${breakpoint.s} {
+    right: 0;
+  }
 `;
 
 const theta = 360 / numCells;

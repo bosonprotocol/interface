@@ -12,6 +12,7 @@ export const getOffers = async (props: UseOffersProps) => {
   const validFromDate_gte = props.type === "soon" ? now + "" : null;
   const validUntilDate_gte =
     props.type !== "soon" && props.valid ? now + "" : null;
+  const quantityAvailable_lte = props.type === "hot" ? 8 : null;
 
   const variables = {
     first: props.first,
@@ -19,6 +20,7 @@ export const getOffers = async (props: UseOffersProps) => {
     validFromDate_lte: validFromDate_lte,
     validFromDate_gte: validFromDate_gte,
     validUntilDate_gte: validUntilDate_gte,
+    quantityAvailable_lte: quantityAvailable_lte,
     name_contains_nocase: props.name || "",
     exchangeToken: props.exchangeTokenAddress,
     seller: props.sellerId,
@@ -35,6 +37,7 @@ export const getOffers = async (props: UseOffersProps) => {
       validFromDate_lte: !!validFromDate_lte,
       validFromDate_gte: !!validFromDate_gte,
       validUntilDate_gte: !!validUntilDate_gte,
+      quantityAvailable_lte: !!quantityAvailable_lte,
       skip: !!props.skip,
       offer: false
     }),
