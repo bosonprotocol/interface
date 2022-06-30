@@ -95,5 +95,9 @@ export default function OfferBanner({ offer }: Props) {
     }
   };
 
-  return <BannerContainer data-banner>{handleText()}</BannerContainer>;
+  return (
+    <BannerContainer data-banner data-testid="offer-banner">
+      {handleText()}
+    </BannerContainer>
+  );
 }

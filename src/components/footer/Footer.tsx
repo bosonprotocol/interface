@@ -113,8 +113,12 @@ export default function FooterComponent() {
           </Grid>
         )}
         <LogoGrid alignItems="flex-start" padding="0 0 2rem 0">
-          <LinkWithQuery to={BosonRoutes.Root} data-testid="logo">
-            <LogoImg src={logoUrl || logo} alt="Boson Protocol" />
+          <LinkWithQuery to={BosonRoutes.Root}>
+            <LogoImg
+              src={logoUrl || logo}
+              alt="Boson Protocol"
+              data-testid="logo"
+            />
           </LinkWithQuery>
           <NavigationGrid>
             <div>

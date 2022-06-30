@@ -162,7 +162,7 @@ const LogoImg = styled.img`
 
 export default function HeaderComponent() {
   const { pathname, search } = useLocation();
-  const { isLteXS, isLteS, isLteM } = useBreakpoints();
+  const { isLteM } = useBreakpoints();
   const [open, setOpen] = useState(false);
   const { data: account } = useAccount();
   const logoUrl = useCustomStoreQueryParameter("logoUrl");
@@ -178,8 +178,12 @@ export default function HeaderComponent() {
   return (
     <Header>
       <HeaderContainer>
-        <LinkWithQuery to={BosonRoutes.Root} data-testid="logo">
-          <LogoImg src={logoUrl || logo} alt="Boson Protocol" />
+        <LinkWithQuery to={BosonRoutes.Root}>
+          <LogoImg
+            src={logoUrl || logo}
+            alt="Boson Protocol"
+            data-testid="logo"
+          />
         </LinkWithQuery>
         <HeaderItems isMobile={burgerMenuBreakpoint}>
           {burgerMenuBreakpoint && (

@@ -36,6 +36,12 @@ const TopContainer = styled.div`
   margin: 1rem 0 2rem 0;
 `;
 
+const Title = styled(Typography)`
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1.2;
+`;
+
 const ViewMore = styled(LinkWithQuery)`
   all: unset;
   display: flex;
@@ -81,11 +87,11 @@ const FeaturedOffers: React.FC<IFeaturedOffers> = ({
   });
 
   return (
-    <Root>
+    <Root data-testid={type}>
       <TopContainer>
-        <Typography tag="h2" style={{ margin: "0" }}>
+        <Title tag="h3" style={{ margin: "0" }}>
           {title}
-        </Typography>
+        </Title>
         <ViewMore to={BosonRoutes.Explore}>
           <>
             {isLteXS ? "" : "View more"}

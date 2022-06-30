@@ -187,7 +187,7 @@ export default function Carousel() {
     first: numCells
   });
   const uiOffers = useMemo(() => {
-    if (offers) {
+    if (offers?.length) {
       const numOffersToAdd = numCells - offers.length;
 
       const uiOffers = [...offers];
@@ -248,6 +248,7 @@ export default function Carousel() {
               $isCurrent={currentCell}
               $isPrevious={previousCell}
               $isNext={nextCell}
+              {...(currentCell && { "data-current": true })}
             >
               <OfferCard
                 key={offer.id}
@@ -262,8 +263,14 @@ export default function Carousel() {
         })}
       </CarouselContainer>
       <CarouselNav>
-        <PreviousButton onClick={onPreviousClick}></PreviousButton>
-        <NextButton onClick={onNextClick}></NextButton>
+        <PreviousButton
+          data-testid="carousel-previous"
+          onClick={onPreviousClick}
+        ></PreviousButton>
+        <NextButton
+          data-testid="carousel-next"
+          onClick={onNextClick}
+        ></NextButton>
       </CarouselNav>
     </Scene>
   );

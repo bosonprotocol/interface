@@ -13,7 +13,10 @@ const StepWrapper = styled.div`
   }
   flex: 1;
   width: 100%;
-  h1 {
+  [data-testid="number"] {
+    font-size: 3.5rem;
+    font-weight: 600;
+    line-height: 1.2;
     position: relative;
     color: var(--secondary);
     margin-bottom: 0.5rem !important;
@@ -28,8 +31,14 @@ const StepWrapper = styled.div`
       background: var(--primary);
     }
   }
-  h1,
-  h3,
+  [data-testid="step-title"] {
+    all: unset;
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+  [data-testid="number"],
+  [data-testid="step-title"],
   p {
     text-align: center;
     margin: 0;
@@ -45,8 +54,12 @@ interface IStep {
 const Step: React.FC<IStep> = ({ children, number, title }) => {
   return (
     <StepWrapper>
-      <Typography tag="h1">0{number}</Typography>
-      <Typography tag="h3">{title}</Typography>
+      <Typography tag="div" data-testid="number">
+        0{number}
+      </Typography>
+      <Typography tag="h2" data-testid="step-title">
+        {title}
+      </Typography>
       <Typography tag="p">{children}</Typography>
     </StepWrapper>
   );
