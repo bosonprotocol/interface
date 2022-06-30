@@ -62,12 +62,13 @@ const CarouselContainer = styled.div`
 
   width: ${ITEM_WIDTH}px;
   transform-style: preserve-3d;
-  transition: transform ${ANIMATION_TIME_MS}ms;
+  transition: all ${ANIMATION_TIME_MS}ms ease-in-out;
 
   > div {
     width: 100%;
     box-sizing: border-box;
     padding: 0 calc(${ITEM_PADDING}px / 2);
+    transition: all ${ANIMATION_TIME_MS}ms ease-in-out;
   }
 `;
 const CarouselNav = styled.div`

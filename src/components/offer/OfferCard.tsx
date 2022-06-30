@@ -141,7 +141,7 @@ const SellerInfo = styled.div`
 `;
 
 const Name = styled(Typography)`
-  ${clamp}
+  /* ${clamp} */
   font-weight: 600;
   margin: 0;
 `;

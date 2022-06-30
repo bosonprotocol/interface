@@ -169,6 +169,13 @@ export default function ExploreOffers(props: Props) {
         isLoading={isLoading}
         action="commit"
         showInvalidOffers={false}
+        itemsPerRow={{
+          xs: 1,
+          s: 2,
+          m: 4,
+          l: 4,
+          xl: 4
+        }}
       />
       <PaginationWrapper>
         <Pagination

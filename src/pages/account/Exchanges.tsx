@@ -1,18 +1,9 @@
 import { useMemo } from "react";
-import styled from "styled-components";
 
 import OfferCard, { Action } from "../../components/offer/OfferCard";
+import GridContainer from "../../components/ui/GridContainer";
 import { Offer } from "../../lib/types/offer";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
-
-const ExchangesContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 285px));
-  grid-row-gap: 20px;
-  grid-column-gap: 10px;
-  justify-content: space-between;
-  padding-bottom: 24px;
-`;
 
 interface Props {
   sellerId: string;
@@ -77,7 +68,15 @@ export default function Exchanges({
   }
 
   return (
-    <ExchangesContainer>
+    <GridContainer
+      itemsPerRow={{
+        xs: 1,
+        s: 2,
+        m: 4,
+        l: 4,
+        xl: 4
+      }}
+    >
       {exchanges?.map((exchange) => (
         <OfferCard
           key={exchange.id}
@@ -89,6 +88,6 @@ export default function Exchanges({
           isPrivateProfile={isPrivateProfile}
         />
       ))}
-    </ExchangesContainer>
+    </GridContainer>
   );
 }

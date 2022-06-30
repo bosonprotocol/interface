@@ -1,26 +1,10 @@
 import { ReactElement } from "react";
-import styled from "styled-components";
 
-import { breakpoint } from "../../lib/styles/breakpoint";
 import { Offer } from "../../lib/types/offer";
 import OfferCard, { Action } from "../offer/OfferCard";
+import Grid from "../ui/Grid";
+import GridContainer, { ItemsPerRow } from "../ui/GridContainer";
 import Typography from "../ui/Typography";
-
-const OfferContainer = styled.div`
-  display: grid;
-  grid-column-gap: 2rem;
-  grid-row-gap: 2rem;
-
-  ${breakpoint.xxs} {
-    grid-template-columns: repeat(1, 1fr);
-  }
-  ${breakpoint.xs} {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  ${breakpoint.s} {
-    grid-template-columns: repeat(3, 1fr);
-  }
-`;
 
 interface Props {
   offers?: Array<Offer>;
@@ -32,6 +16,7 @@ interface Props {
   showInvalidOffers: boolean;
   isPrivateProfile?: boolean;
   type?: "featured" | "hot" | "soon" | undefined;
+  itemsPerRow?: Partial<ItemsPerRow>;
 }
 
 export default function OfferList({
@@ -43,7 +28,8 @@ export default function OfferList({
   action,
   showInvalidOffers,
   isPrivateProfile,
-  type
+  type,
+  itemsPerRow
 }: Props) {
   if (isLoading) {
     return loadingComponent || <div>Loading...</div>;
@@ -51,24 +37,24 @@ export default function OfferList({
 
   if (isError) {
     return (
-      <OfferContainer data-testid="errorOffers">
+      <Grid data-testid="errorOffers">
         <Typography tag="h3">
           There has been an error, please try again later...
         </Typography>
-      </OfferContainer>
+      </Grid>
     );
   }
 
   if (!offers || offers.length === 0) {
     return (
-      <OfferContainer data-testid="noOffers">
+      <Grid data-testid="noOffers">
         <Typography tag="h3">No offers found</Typography>
-      </OfferContainer>
+      </Grid>
     );
   }
 
   return (
-    <OfferContainer>
+    <GridContainer itemsPerRow={itemsPerRow}>
       {offers.map((offer: Offer) => {
         return (
           (offer.isValid || (showInvalidOffers && !offer.isValid)) && (
@@ -84,6 +70,6 @@ export default function OfferList({
           )
         );
       })}
-    </OfferContainer>
+    </GridContainer>
   );
 }
