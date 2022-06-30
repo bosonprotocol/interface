@@ -88,7 +88,7 @@ const FeaturedOffers: React.FC<IFeaturedOffers> = ({
         </Typography>
         <ViewMore to={BosonRoutes.Explore}>
           <>
-            View more
+            {isLteXS ? "" : "View more"}
             <BsArrowRightShort size={32} />
           </>
         </ViewMore>

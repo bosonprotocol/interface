@@ -21,10 +21,15 @@ const ITEM_PADDING = cellSize / 10;
 const ANIMATION_TIME_MS = 500;
 
 const Scene = styled.div`
-  overflow: hidden;
   transform: scale(0.8);
   min-width: 150%;
+  min-height: 540px;
+  margin-top: -4rem;
+
   ${breakpoint.xs} {
+    margin-top: 0;
+    overflow: hidden;
+    min-height: 650px;
     min-width: 120%;
     transform: scale(1);
   }
@@ -40,7 +45,6 @@ const Scene = styled.div`
   ${breakpoint.xl} {
     min-width: 50%;
   }
-  min-height: 650px;
 
   perspective: ${VIEWER_DISTANCE}px;
   display: flex;
