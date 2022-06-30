@@ -105,8 +105,19 @@ const CarouselCell = styled.div<{
 
   opacity: ${({ $isCurrent, $isPrevious, $isNext }) =>
     !$isCurrent && !$isPrevious && !$isNext ? "0" : "1"};
+  > div {
+    transition: transform ${ANIMATION_TIME_MS}ms;
+  }
 
   ${nthChilds}
+  ${(props) =>
+    props.$isCurrent
+      ? `
+  > div {
+    transform: scale(1.1);
+  }
+  `
+      : ""};
 `;
 
 const PreviousButton = styled(RiArrowLeftSLine)`
