@@ -46,7 +46,6 @@ export function getOffersQuery({
   validFromDate_lte,
   validFromDate_gte,
   validUntilDate_gte,
-  quantityAvailable_lte,
   skip,
   offer
 }: {
@@ -55,7 +54,6 @@ export function getOffersQuery({
   validFromDate_lte: boolean;
   validFromDate_gte: boolean;
   validUntilDate_gte: boolean;
-  quantityAvailable_lte: boolean;
   skip: boolean;
   offer: boolean;
 }) {
@@ -71,7 +69,6 @@ export function getOffersQuery({
     ${sellerId ? "$seller: String" : ""}
     $orderBy: String
     $orderDirection: String
-    ${quantityAvailable_lte ? "$quantityAvailable_lte: Int" : ""}
     ${offer ? "$offer: String" : ""}
   ) {
     baseMetadataEntities(
@@ -84,11 +81,6 @@ export function getOffersQuery({
         ${validFromDate_lte ? "validFromDate_lte: $validFromDate_lte" : ""}
         ${validFromDate_gte ? "validFromDate_gte: $validFromDate_gte" : ""}
         ${validUntilDate_gte ? "validUntilDate_gte: $validUntilDate_gte" : ""}
-        ${
-          quantityAvailable_lte
-            ? "quantityAvailable_lte: $quantityAvailable_lte"
-            : ""
-        }
         ${exchangeToken ? "exchangeToken: $exchangeToken" : ""}
         ${sellerId ? "seller: $seller" : ""}
         name_contains_nocase: $name_contains_nocase

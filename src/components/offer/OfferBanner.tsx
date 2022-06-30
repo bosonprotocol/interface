@@ -30,7 +30,7 @@ interface Props {
   type?: "featured" | "hot" | "soon" | undefined;
 }
 
-export default function OfferBanner({ offer, type }: Props) {
+export default function OfferBanner({ offer }: Props) {
   const handleDate = (offer: Offer) => {
     const current = dayjs();
     const release = dayjs(Number(offer?.validFromDate) * 1000);
@@ -70,7 +70,7 @@ export default function OfferBanner({ offer, type }: Props) {
     const utcValue =
       utcOffset === 0 ? "" : utcOffset < 0 ? `-${utcOffset}` : `+${utcOffset}`;
 
-    if (optionQuantity || type === "hot") {
+    if (optionQuantity) {
       return `Only ${offer?.quantityAvailable}/${offer?.quantityInitial} left`;
     } else if (optionRelease) {
       return release.diff.days <= 10
