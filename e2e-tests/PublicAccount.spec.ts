@@ -201,35 +201,6 @@ test.describe("Public Account page", () => {
       expect(offerCount).toStrictEqual(visibleOffersPerPage - 1);
     });
 
-    test("should navigate to the offer detail page when clicking on the commit button", async ({
-      page
-    }) => {
-      const expectedOffer = { ...getFirstNOffers(1)[0] };
-      await mockSubgraph({
-        page,
-        options: {
-          mockGetOffers: {
-            offers: [expectedOffer]
-          }
-        }
-      });
-
-      await page.goto(publicAccountUrl1);
-
-      await page.waitForTimeout(DEFAULT_TIMEOUT);
-      const offers = page.locator("[data-testid=offer]");
-      const offerCount = await offers.count();
-      expect(offerCount).toStrictEqual(1);
-
-      const offer = offers.nth(0);
-      const commit = offer.locator("[data-testid=commit]");
-      await commit.click();
-
-      const url = await page.url();
-      const { hash } = new URL(url);
-      expect(hash).toStrictEqual(`#/offers/${expectedOffer.id}`);
-    });
-
     test("should navigate to the offer detail page when clicking on the offer image", async ({
       page
     }) => {

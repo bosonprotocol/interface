@@ -25,11 +25,6 @@ test.describe("Explore page", () => {
 
       expect(h1).toBeDefined();
     });
-    test("should display the logo", async ({ page }) => {
-      const logoImg = page.locator("[data-testid=logo]");
-
-      expect(await logoImg.getAttribute("src")).toBeTruthy();
-    });
     test("should display the filter subheading", async ({ page }) => {
       const h2 = page.locator("h2", { hasText: "Filter" });
 
@@ -39,11 +34,6 @@ test.describe("Explore page", () => {
       const h2 = page.locator("h2", { hasText: "Search" });
 
       expect(h2).toBeDefined();
-    });
-    test("should display the footer", async ({ page }) => {
-      const footer = page.locator("footer");
-
-      expect(footer).toBeDefined();
     });
     test.describe("Query params", () => {
       test("query param 'name' should update when changing input", async ({

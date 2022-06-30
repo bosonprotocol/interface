@@ -51,15 +51,9 @@ export async function assertOfferInPublicAccountPage(
     expectedOffer.exchangeToken?.decimals
   );
   const [integer, fractions] = value.split(".");
-  const stringPrice = fractions === "0" ? integer : `${integer}.${fractions}`;
-  const expectedPrice = `${stringPrice} ${
-    expectedOffer.exchangeToken?.symbol || ""
-  }`;
+  const expectedPrice = fractions === "0" ? integer : `${integer}.${fractions}`;
 
   await expect(price).toHaveText(expectedPrice);
-
-  const commit = offer.locator("[data-testid=commit]");
-  await expect(commit).toHaveText("Commit");
 
   const image = offer.locator("[data-testid=image]");
   expect(await image.getAttribute("src")).toBeTruthy();
