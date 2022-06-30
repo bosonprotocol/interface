@@ -9,7 +9,6 @@ const BaseButton = styled.button<{
 }>`
   ${() => Styles.button};
   ${(props) => Styles[props.size as keyof typeof Styles]}
-  min-width: min-content;
   border-style: solid;
   border-color: ${(props) => props.theme.borderColor || "transparent"};
   border-width: ${(props) => props.theme.borderWidth || 0}px;
@@ -19,11 +18,16 @@ const BaseButton = styled.button<{
   ${(props) =>
     props.theme.hover &&
     `
-    &:hover {
+    &:hover:not(:disabled) {
       background-color: ${props.theme.hover.background};
       ${
         props.theme.hover.color
-          ? `color: ${props.theme.hover.color} !important;`
+          ? `
+          color: ${props.theme.hover.color} !important;
+          svg {
+            fill: ${props.theme.hover.color} !important;
+          }
+          `
           : ""
       }
     }
@@ -47,7 +51,8 @@ const allThemes = {
     borderColor: "var(--secondary)",
     borderWidth: 2,
     hover: {
-      background: "var(--secondary)"
+      background: "var(--secondary)",
+      color: colors.white
     }
   },
   secondary: {
@@ -63,7 +68,8 @@ const allThemes = {
     borderColor: colors.border,
     borderWidth: 1,
     hover: {
-      background: colors.border
+      background: colors.border,
+      color: "var(--secondary)"
     }
   },
   blank: {

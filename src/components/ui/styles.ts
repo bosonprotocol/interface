@@ -3,7 +3,7 @@ import { css } from "styled-components";
 import { breakpoint } from "../../lib/styles/breakpoint";
 
 export const button = css`
-  all: unset;
+  box-sizing: border-box;
   cursor: pointer;
   display: block;
 

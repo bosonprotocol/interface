@@ -7,6 +7,7 @@ import { useState } from "react";
 import styled from "styled-components";
 
 import Layout from "../../components/Layout";
+import Button from "../../components/ui/Button";
 import { CONFIG } from "../../lib/config";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
@@ -17,6 +18,13 @@ const CreateOfferContainer = styled(Layout)`
   flex-direction: column;
   margin: 0 auto 64px auto;
   overflow: hidden;
+`;
+
+const SubmitButton = styled(Button)`
+  width: 100%;
+  > div {
+    justify-content: center;
+  }
 `;
 
 export const StyledForm = styled.form`
@@ -36,21 +44,6 @@ export const FormControl = styled.input`
   font-family: "Manrope", sans-serif;
   padding: 10px;
   border-radius: 6px;
-`;
-
-export const Button = styled.button`
-  all: unset;
-  display: flex;
-  justify-content: center;
-  border-radius: 6px;
-  font-weight: bold;
-  width: 100%;
-  background-color: var(--secondary);
-  padding: 10px 0;
-  font-size: 16px;
-  text-transform: uppercase;
-  color: ${colors.navy};
-  cursor: pointer;
 `;
 
 export const FormElementsContainer = styled.div`
@@ -309,7 +302,9 @@ export default function CreateOffer() {
             />
           </FormElement>
         </FormElementsContainer>
-        <Button type="submit">Submit</Button>
+        <SubmitButton type="submit" theme="secondary">
+          Submit
+        </SubmitButton>
         {errorMessage && (
           <ErrorMsg data-testid="error">{errorMessage}</ErrorMsg>
         )}

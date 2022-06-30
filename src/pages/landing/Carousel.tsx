@@ -1,6 +1,6 @@
 // inspired by https://3dtransforms.desandro.com/carousel
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { RiArrowLeftSLine } from "react-icons/ri";
 import styled from "styled-components";
 
@@ -63,6 +63,8 @@ const CarouselContainer = styled.div`
   width: ${ITEM_WIDTH}px;
   transform-style: preserve-3d;
   transition: transform ${ANIMATION_TIME_MS}ms;
+
+  transform: translateZ(-${translateZValue}) rotateY(0deg);
 
   > div {
     width: 100%;
@@ -160,17 +162,15 @@ export default function Carousel() {
     return [];
   }, [offers]);
 
-  useEffect(() => {
-    rotateCarousel(selectedIndex);
-  }, [selectedIndex]);
-
   const onPreviousClick = () => {
-    const newIndex = selectedIndex - 1; // < 0 ? numCells - 1 : selectedIndex - 1;
+    const newIndex = selectedIndex - 1;
     setSelectedIndex(newIndex);
+    rotateCarousel(newIndex);
   };
   const onNextClick = () => {
-    const newIndex = selectedIndex + 1; // > numCells - 1 ? 0 : selectedIndex + 1;
+    const newIndex = selectedIndex + 1;
     setSelectedIndex(newIndex);
+    rotateCarousel(newIndex);
   };
 
   function rotateCarousel(newIndex: number) {

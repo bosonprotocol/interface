@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
 import styled from "styled-components";
 
 import Button from "../../components/ui/Button";
@@ -15,14 +16,6 @@ const Container = styled.div`
 const PaginationButton = styled(Button).attrs({
   type: "button"
 })<{ $isBack: boolean }>`
-  transform: ${(props) => {
-    return props.$isBack ? "rotate(180deg)" : "initial";
-  }};
-
-  :hover:enabled {
-    background: ${colors.black};
-  }
-
   :disabled {
     color: ${colors.grey};
     cursor: not-allowed;
@@ -69,7 +62,7 @@ export default function Pagination({
         onClick={onClick(pageIndex - 1)}
         theme="outline"
       >
-        &#10140;
+        <BsArrowLeft size={24} />
       </PaginationButton>
 
       <Page>{pageIndex + 1}</Page>
@@ -81,7 +74,7 @@ export default function Pagination({
         onClick={onClick(pageIndex + 1)}
         theme="outline"
       >
-        &#10140;
+        <BsArrowRight size={24} />
       </PaginationButton>
     </Container>
   );
