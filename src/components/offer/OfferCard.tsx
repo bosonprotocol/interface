@@ -63,15 +63,6 @@ const ImageContainer = styled.div`
   }
 `;
 
-const BannerContainer = styled.div`
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-
-  background: ${colors.white};
-`;
-
 const Content = styled.div`
   padding: 1rem 1.5rem;
 `;
@@ -178,10 +169,6 @@ const getCTAPath = (
 
 export type Action = "commit" | "redeem" | null;
 
-interface IBanner {
-  offer: Offer;
-  type?: "featured" | "hot" | "soon" | undefined;
-}
 interface Props {
   offer: Offer;
   exchange?: NonNullable<Offer["exchanges"]>[number];
@@ -192,49 +179,6 @@ interface Props {
   isCarousel?: boolean;
   type?: "featured" | "hot" | "soon" | undefined;
 }
-
-const Banner = ({ type, offer }: IBanner) => {
-  const formatNumber = (number: number) => {
-    number.toLocaleString("en-US", {
-      minimumIntegerDigits: 2,
-      useGrouping: false
-    });
-  };
-  const handleDate = (offer: Offer) => {
-    const current = new Date();
-    const from = new Date(Number(offer?.validFromDate) * 1000);
-    const until = new Date(Number(offer?.validUntilDate) * 1000);
-
-    const untilDay = formatNumber(Number(until.getDate()));
-    const untilMonth = formatNumber(Number(until.getMonth() + 1));
-    const untilYear = formatNumber(Number(until.getFullYear()));
-
-    const expiryDate = `${untilDay}/${untilMonth}/${untilYear}`;
-
-    return {
-      expiryDate
-    };
-  };
-
-  const handleText = () => {
-    const { expiryDate } = handleDate(offer);
-    const days = 11;
-
-    switch (type) {
-      case "featured":
-        return "featured";
-      case "hot":
-        return "hot";
-      case "soon":
-        return "soon";
-      default:
-        return days <= 10 ? `Expires in ${1} days` : `Expires on ${expiryDate}`;
-    }
-  };
-
-  return <BannerContainer>{handleText()}</BannerContainer>;
-};
-
 export default function OfferCard({
   offer,
   exchange,

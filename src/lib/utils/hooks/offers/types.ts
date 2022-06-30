@@ -9,7 +9,7 @@ export interface UseOffersProps {
   sellerId?: Offer["seller"]["id"];
   first?: number;
   skip?: number;
-  validFromDate_gte?: number;
+  type?: "featured" | "hot" | "soon" | undefined;
 }
 export interface UseOfferProps extends UseOffersProps {
   offerId: string;

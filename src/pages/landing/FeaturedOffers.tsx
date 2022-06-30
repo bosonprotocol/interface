@@ -76,7 +76,8 @@ const FeaturedOffers: React.FC<IFeaturedOffers> = ({
   } = useOffers({
     voided: false,
     valid: true,
-    first: isLteXS ? 2 : 3
+    first: isLteXS ? 2 : 3,
+    type
   });
 
   return (

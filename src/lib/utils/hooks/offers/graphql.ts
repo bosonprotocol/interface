@@ -44,6 +44,7 @@ export function getOffersQuery({
   exchangeToken,
   sellerId,
   validFromDate_lte,
+  validFromDate_gte,
   validUntilDate_gte,
   skip,
   offer
@@ -51,6 +52,7 @@ export function getOffersQuery({
   exchangeToken: boolean;
   sellerId: boolean;
   validFromDate_lte: boolean;
+  validFromDate_gte: boolean;
   validUntilDate_gte: boolean;
   skip: boolean;
   offer: boolean;
@@ -60,6 +62,7 @@ export function getOffersQuery({
     $first: Int
     ${skip ? "$skip: Int" : ""}
     ${validFromDate_lte ? "$validFromDate_lte: String" : ""}
+    ${validFromDate_gte ? "$validFromDate_gte: String" : ""}
     ${validUntilDate_gte ? "$validUntilDate_gte: String" : ""}
     $name_contains_nocase: String
     ${exchangeToken ? "$exchangeToken: String" : ""}
@@ -76,6 +79,7 @@ export function getOffersQuery({
       where: {
         ${offer ? "offer: $offer" : ""}
         ${validFromDate_lte ? "validFromDate_lte: $validFromDate_lte" : ""}
+        ${validFromDate_gte ? "validFromDate_gte: $validFromDate_gte" : ""}
         ${validUntilDate_gte ? "validUntilDate_gte: $validUntilDate_gte" : ""}
         ${exchangeToken ? "exchangeToken: $exchangeToken" : ""}
         ${sellerId ? "seller: $seller" : ""}
