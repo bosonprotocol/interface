@@ -8,6 +8,7 @@ import { useBuyers } from "../../lib/utils/hooks/useBuyers";
 import { useSellers } from "../../lib/utils/hooks/useSellers";
 import Disputes from "./Disputes";
 import Exchanges from "./Exchanges";
+import Funds from "./funds/Funds";
 import Offers from "./Offers";
 
 const TabsContainer = styled.div`
@@ -99,6 +100,11 @@ export default function Tabs({ isPrivateProfile, address }: Props) {
             isPrivateProfile={isPrivateProfile}
           />
         )
+      },
+      {
+        id: "funds",
+        title: "My Funds",
+        content: <Funds sellerId={sellerId} buyerId={buyerId} />
       }
     ];
     return tabsData;

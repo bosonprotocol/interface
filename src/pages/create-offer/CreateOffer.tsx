@@ -124,6 +124,8 @@ export default function CreateOffer() {
               values.buyerCancelPenalty
             ).toString(),
             protocolFee: parseEther(values.protocolFee).toString(),
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
             offerChecksum: metadataHash, // TODO: use correct checksum
             metadataUri
           },
