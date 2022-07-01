@@ -1,19 +1,15 @@
 export const colors = {
   navy: "#222539",
-  // red: "red",
   green: "#02F3A2",
-  cgBlue: "#247BA0",
   bosonSkyBlue: "#51BEFA",
   grey: "grey",
-  yellow: "yellow",
   arsenic: "#3a364f",
-  darkGreen: "#276c55",
   darkOrange: "darkorange",
   darkRed: "darkred",
   cyan: "#00FFFF",
 
   /*
-    TODO: Remove what's above when refactor is done
+    TODO: Remove what's above when refactor/redesign of all pages is done
     COLORS: Based on the Figma designs
   */
   // Main
