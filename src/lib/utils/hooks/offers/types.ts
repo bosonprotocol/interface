@@ -9,11 +9,12 @@ interface CommonProps {
   sellerId?: Offer["seller"]["id"];
   first?: number;
   skip?: number;
-  quantityAvailable_lte?: number | null | undefined;
 }
 
 export interface UseOffersProps extends CommonProps {
-  type?: "featured" | "hot" | "soon" | undefined;
+  type?: "gone" | "hot" | "soon" | undefined;
+  validUntilDate_lte?: number;
+  quantityAvailable_lte?: number | null | undefined;
 }
 export interface UseOfferProps extends CommonProps {
   offerId: string;

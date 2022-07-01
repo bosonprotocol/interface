@@ -66,7 +66,7 @@ const ViewMore = styled(LinkWithQuery)`
 
 interface IFeaturedOffers {
   title?: string;
-  type?: "featured" | "hot" | "soon" | undefined;
+  type: "gone" | "hot" | "soon";
 }
 
 const FeaturedOffers: React.FC<IFeaturedOffers> = ({
@@ -83,7 +83,7 @@ const FeaturedOffers: React.FC<IFeaturedOffers> = ({
     voided: false,
     valid: true,
     first: isLteXS ? 2 : 3,
-    quantityAvailable_lte: type === "hot" ? 10 : null,
+    quantityAvailable_lte: ["hot", "gone"].includes(type) ? 10 : null,
     type
   });
 

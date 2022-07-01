@@ -127,9 +127,9 @@ export default function Landing() {
 
       <DarkerBackground>
         <Layout>
-          <FeaturedOffers type="featured" title="Featured Offers" />
-          <FeaturedOffers type="hot" title="Hot Offers" />
-          <FeaturedOffers type="soon" title="Coming soon" />
+          <FeaturedOffers type="hot" title="Hot products" />
+          <FeaturedOffers type="gone" title="Almost gone" />
+          <FeaturedOffers type="soon" title="Coming soon..." />
         </Layout>
       </DarkerBackground>
     </LandingPage>

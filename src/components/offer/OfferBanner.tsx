@@ -27,7 +27,7 @@ const BannerContainer = styled.div`
 
 interface Props {
   offer: Offer;
-  type?: "featured" | "hot" | "soon" | undefined;
+  type?: "gone" | "hot" | "soon" | undefined;
 }
 
 export default function OfferBanner({ offer }: Props) {

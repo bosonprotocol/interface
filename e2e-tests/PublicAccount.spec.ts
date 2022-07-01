@@ -56,10 +56,10 @@ test.describe("Public Account page", () => {
         const tab = page.locator("[data-testid=tab-Offers]");
         await expect(tab).toHaveText("Offers");
       });
-      test("should display 'No offers found' as offers is the default selected tab", async ({
+      test("should display 'No products found' as offers is the default selected tab", async ({
         page
       }) => {
-        const noOffersText = page.locator("text=No offers found");
+        const noOffersText = page.locator("text=No products found");
         await expect(noOffersText).toBeVisible();
       });
     });

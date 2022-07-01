@@ -181,7 +181,7 @@ interface Props {
   dataTestId: string;
   isPrivateProfile?: boolean;
   isCarousel?: boolean;
-  type?: "featured" | "hot" | "soon" | undefined;
+  type?: "gone" | "hot" | "soon" | undefined;
 }
 export default function OfferCard({
   offer,

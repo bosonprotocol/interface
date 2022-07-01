@@ -233,7 +233,7 @@ test.describe("Root page (Landing page)", () => {
         const errorOffersSelector = `[data-testid=${offersType}] [data-testid=noOffers]`;
         await page.waitForSelector(errorOffersSelector);
         const noOffers = await page.locator(errorOffersSelector);
-        await expect(noOffers).toHaveText("No offers found");
+        await expect(noOffers).toHaveText("No products found");
       });
       test(`should navigate to the seller account page when clicking on the seller section (${offersType} offers)`, async ({
         page

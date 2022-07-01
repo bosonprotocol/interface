@@ -15,7 +15,7 @@ interface Props {
   action: Action;
   showInvalidOffers: boolean;
   isPrivateProfile?: boolean;
-  type?: "featured" | "hot" | "soon" | undefined;
+  type?: "gone" | "hot" | "soon" | undefined;
   itemsPerRow?: Partial<ItemsPerRow>;
 }
 
@@ -48,7 +48,7 @@ export default function OfferList({
   if (!offers || offers.length === 0) {
     return (
       <Grid data-testid="noOffers">
-        <Typography tag="h3">No offers found</Typography>
+        <Typography tag="h3">No products found</Typography>
       </Grid>
     );
   }

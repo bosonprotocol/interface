@@ -489,7 +489,7 @@ test.describe("Explore page", () => {
       const errorOffersSelector = "[data-testid=noOffers]";
       await page.waitForSelector(errorOffersSelector);
       const noOffers = page.locator(errorOffersSelector);
-      await expect(noOffers).toHaveText("No offers found");
+      await expect(noOffers).toHaveText("No products found");
     });
 
     test("should display there are no offers if we go to a random page with no offers", async ({
@@ -503,7 +503,7 @@ test.describe("Explore page", () => {
       const errorOffersSelector = "[data-testid=noOffers]";
       await page.waitForSelector(errorOffersSelector);
       const noOffers = page.locator(errorOffersSelector);
-      await expect(noOffers).toHaveText("No offers found");
+      await expect(noOffers).toHaveText("No products found");
     });
 
     test("should display error message when subgraph returns HTTP 400 error", async ({
