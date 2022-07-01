@@ -51,7 +51,7 @@ const ImageContainer = styled.div`
   height: 0;
   padding-top: 120%;
   > img,
-  > div:not([data-banner]) {
+  > div[data-testid="image"] {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -61,8 +61,9 @@ const ImageContainer = styled.div`
 
   [data-testid="statuses"] {
     position: absolute;
-    top: 2px;
-    right: 7px;
+    z-index: ${zIndex.OfferStatus};
+    top: 5px;
+    right: 5px;
     justify-content: flex-end;
   }
 `;
