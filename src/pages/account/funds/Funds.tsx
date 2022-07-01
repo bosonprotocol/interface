@@ -14,20 +14,24 @@ interface Props {
 }
 
 export default function Funds({ sellerId, buyerId }: Props) {
-  const funds = useFunds();
+  const funds = useFunds(sellerId ?? buyerId);
 
   return (
     <Root>
       <h1>Funds</h1>
       <div>
-        {funds.map((fund) => {
-          return (
-            <div>
-              <p>{fund.token.name}</p>
-              <p>{fund.availableAmount}</p>
-            </div>
-          );
-        })}
+        {funds.length > 0 ? (
+          funds.map((fund) => {
+            return (
+              <div>
+                <p>{fund.token.name}</p>
+                <p>{fund.availableAmount}</p>
+              </div>
+            );
+          })
+        ) : (
+          <p>No funds for connected wallet.</p>
+        )}
       </div>
     </Root>
   );
