@@ -83,6 +83,13 @@ export default function Offers({
         action={action}
         showInvalidOffers={showInvalidOffers}
         isPrivateProfile={isPrivateProfile}
+        itemsPerRow={{
+          xs: 1,
+          s: 2,
+          m: 4,
+          l: 4,
+          xl: 4
+        }}
       />
       <div ref={intersect}></div>
     </>

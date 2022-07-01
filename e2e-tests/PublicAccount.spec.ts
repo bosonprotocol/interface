@@ -56,10 +56,10 @@ test.describe("Public Account page", () => {
         const tab = page.locator("[data-testid=tab-Offers]");
         await expect(tab).toHaveText("Offers");
       });
-      test("should display 'No offers found' as offers is the default selected tab", async ({
+      test("should display 'No products found' as offers is the default selected tab", async ({
         page
       }) => {
-        const noOffersText = page.locator("text=No offers found");
+        const noOffersText = page.locator("text=No products found");
         await expect(noOffersText).toBeVisible();
       });
     });
@@ -199,35 +199,6 @@ test.describe("Public Account page", () => {
       const offers = await page.locator("[data-testid=offer]");
       const offerCount = await offers.count();
       expect(offerCount).toStrictEqual(visibleOffersPerPage - 1);
-    });
-
-    test("should navigate to the offer detail page when clicking on the commit button", async ({
-      page
-    }) => {
-      const expectedOffer = { ...getFirstNOffers(1)[0] };
-      await mockSubgraph({
-        page,
-        options: {
-          mockGetOffers: {
-            offers: [expectedOffer]
-          }
-        }
-      });
-
-      await page.goto(publicAccountUrl1);
-
-      await page.waitForTimeout(DEFAULT_TIMEOUT);
-      const offers = page.locator("[data-testid=offer]");
-      const offerCount = await offers.count();
-      expect(offerCount).toStrictEqual(1);
-
-      const offer = offers.nth(0);
-      const commit = offer.locator("[data-testid=commit]");
-      await commit.click();
-
-      const url = await page.url();
-      const { hash } = new URL(url);
-      expect(hash).toStrictEqual(`#/offers/${expectedOffer.id}`);
     });
 
     test("should navigate to the offer detail page when clicking on the offer image", async ({

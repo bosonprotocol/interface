@@ -1,17 +1,8 @@
 import { useMemo } from "react";
-import styled from "styled-components";
 
 import OfferCard from "../../components/offer/OfferCard";
+import GridContainer from "../../components/ui/GridContainer";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
-
-const DisputesContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 285px));
-  grid-row-gap: 20px;
-  grid-column-gap: 10px;
-  justify-content: space-between;
-  padding-bottom: 24px;
-`;
 
 interface Props {
   sellerId: string;
@@ -74,7 +65,15 @@ export default function Disputes({
   }
 
   return (
-    <DisputesContainer>
+    <GridContainer
+      itemsPerRow={{
+        xs: 1,
+        s: 2,
+        m: 4,
+        l: 4,
+        xl: 4
+      }}
+    >
       {exchanges?.map((exchange) => (
         <OfferCard
           key={exchange.id}
@@ -84,6 +83,6 @@ export default function Disputes({
           isPrivateProfile={isPrivateProfile}
         />
       ))}
-    </DisputesContainer>
+    </GridContainer>
   );
 }

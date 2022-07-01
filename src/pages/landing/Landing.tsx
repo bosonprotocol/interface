@@ -1,101 +1,79 @@
 import { useState } from "react";
 import styled from "styled-components";
 
+import Layout from "../../components/Layout";
+import Button from "../../components/ui/Button";
+import Grid from "../../components/ui/Grid";
+import Typography from "../../components/ui/Typography";
 import { ExploreQueryParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
+import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
+import { zIndex } from "../../lib/styles/zIndex";
+import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import FeaturedOffers from "../../pages/landing/FeaturedOffers";
-import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
+import Carousel from "./Carousel";
+import Step from "./Step";
 
-const LandingContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  margin: 0 auto 64px auto;
-  overflow: hidden;
-`;
-
-const Hero = styled.div`
-  display: flex;
-  flex-direction: column-reverse;
-  margin-bottom: 64px;
-
-  @media (min-width: 981px) {
-    flex-direction: row;
+const LandingPage = styled.div`
+  padding: 0 0.5rem 0 0.5rem;
+  ${breakpoint.m} {
+    padding: 0 2rem 0 2rem;
+  }
+  ${breakpoint.xl} {
+    padding: 0 4rem 0 4rem;
   }
 `;
 
-const TitleContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  flex-basis: 30%;
+const GridWithZindex = styled(Grid)`
+  z-index: ${zIndex.LandingTitle};
 `;
 
-const Title = styled.h1`
-  font-size: 48px;
-`;
+const Title = styled(Typography)`
+  margin-bottom: 1rem;
+  margin-top: 1rem;
 
-const InputGo = styled.div`
-  display: flex;
-  justify-content: center;
+  font-size: 2.5rem;
+  line-height: 1.3;
+  ${breakpoint.s} {
+    font-size: 3.5rem;
+    line-height: 1.2;
+  }
 `;
-
+const SubTitle = styled(Typography)`
+  margin-bottom: 0.5rem;
+`;
 const ExploreContainer = styled.div`
-  display: flex;
-  justify-content: center;
+  margin-top: 2rem;
 `;
 
-const Input = styled.input`
-  width: 100%;
-  padding: 10px 8px;
-  border-radius: 5px;
-  margin-right: 10px;
-  font-size: 16px;
-`;
-
-const GoButton = styled.button`
-  width: 100px;
-  background-color: var(--secondary);
-  color: ${colors.navy};
-  border-radius: 5px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-`;
-
-const ExploreButton = styled.button`
-  margin-top: 10px;
-  width: 100%;
-  background-color: var(--secondary);
-  color: ${colors.navy};
-  border-radius: 5px;
-  padding: 10px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-`;
-
-const MainImgContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  flex-basis: 70%;
-
-  @media (min-width: 981px) {
-    justify-content: flex-end;
+const HeroWrapper = styled(Grid)`
+  padding: 1rem 0 1rem 0;
+  ${breakpoint.m} {
+    padding: 3rem 0 3rem 0;
   }
 `;
+const StepWrapper = styled(Grid)`
+  gap: 50px;
+  margin: 5rem 0;
+`;
 
-const MainImg = styled.img`
-  width: 600px;
-  max-width: 100%;
+const DarkerBackground = styled.div`
+  background-color: ${colors.lightGrey};
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  padding: 4rem 0;
 `;
 
 export default function Landing() {
+  const { isLteS } = useBreakpoints();
   const navigate = useKeepQueryParamsNavigate();
-  const [name, setName] = useState("");
-  const storeName = useCustomStoreQueryParameter("storeName");
+  const [name] = useState("");
 
   const navigateToExplore = () =>
     navigate({
@@ -104,44 +82,56 @@ export default function Landing() {
     });
 
   return (
-    <LandingContainer>
-      <Hero>
-        <TitleContainer>
-          <Title>{storeName || "Boson dApp"} </Title>
-          <InputGo>
-            <Input
-              data-testid="search-by-name-input"
-              onChange={(e) => setName(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  navigateToExplore();
-                }
-              }}
-              value={name}
-              placeholder="Search by Name"
-            />
-            <GoButton
-              onClick={() => navigateToExplore()}
-              data-testid="go-button"
-            >
-              Go
-            </GoButton>
-          </InputGo>
+    <LandingPage>
+      <HeroWrapper
+        flexBasis="50%"
+        flexDirection={isLteS ? "column-reverse" : "row"}
+        gap="2.5rem"
+      >
+        <GridWithZindex alignItems="flex-start" flexDirection="column">
+          <Title tag="h1">
+            Tokenize, transfer and trade any physical asset as&nbsp;an&nbsp;NFT
+          </Title>
+          <SubTitle tag="h4">
+            The first decentralized marketplace built on Boson Protocol
+          </SubTitle>
           <ExploreContainer>
-            <ExploreButton
-              onClick={() => navigateToExplore()}
+            <Button
               data-testid="explore-all-offers"
+              onClick={() => navigateToExplore()}
+              theme="secondary"
             >
-              Explore All Offers
-            </ExploreButton>
+              Explore products
+            </Button>
           </ExploreContainer>
-        </TitleContainer>
-        <MainImgContainer>
-          <MainImg src="https://assets.website-files.com/6058b6a3587b6e155196ebbb/619622087290b57d6707693d_items-min.png" />
-        </MainImgContainer>
-      </Hero>
+        </GridWithZindex>
+        <Carousel />
+      </HeroWrapper>
+      <StepWrapper
+        alignItems="flex-start"
+        flexDirection={isLteS ? "column" : "row"}
+      >
+        <Step number={1} title="Commit">
+          Commit to an Offer to receive a Redeemable NFT (rNFT) that can be
+          exchanged for the real-world item it represents
+        </Step>
+        <Step number={2} title="Hold, Trade or Transfer ">
+          You can hold, transfer or easily trade your rNFT on the secondary
+          market
+        </Step>
+        <Step number={3} title="Redeem">
+          Redeem your rNFT to receive the underlying item. The rNFT will be
+          destroyed in the process.
+        </Step>
+      </StepWrapper>
 
-      <FeaturedOffers />
-    </LandingContainer>
+      <DarkerBackground>
+        <Layout>
+          <FeaturedOffers type="hot" title="Hot products" />
+          <FeaturedOffers type="gone" title="Almost gone" />
+          <FeaturedOffers type="soon" title="Coming soon..." />
+        </Layout>
+      </DarkerBackground>
+    </LandingPage>
   );
 }

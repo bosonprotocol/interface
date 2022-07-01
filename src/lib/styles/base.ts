@@ -1,5 +1,7 @@
 import styled from "styled-components";
 
+import { breakpoint } from "../../lib/styles/breakpoint";
+
 export const Select = styled.select`
   padding: 10px;
   border-radius: 6px;
@@ -12,7 +14,7 @@ export const Select = styled.select`
     cursor: not-allowed;
   }
 
-  @media (min-width: 981px) {
+  ${breakpoint.m} {
     width: unset;
   }
 `;

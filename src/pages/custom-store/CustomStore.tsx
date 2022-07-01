@@ -5,10 +5,10 @@ import styled from "styled-components";
 
 import Collapse from "../../components/collapse/Collapse";
 import Layout from "../../components/Layout";
+import Button from "../../components/ui/Button";
 import { CONFIG } from "../../lib/config";
 import { useCSSVariable } from "../../lib/utils/hooks/useCSSVariable";
 import {
-  Button,
   FormControl,
   FormElement,
   FormElementsContainer,
@@ -41,7 +41,8 @@ export default function CustomStore() {
       logoUrl: "",
       primaryColor: "",
       secondaryColor: "",
-      accentColor: ""
+      accentColor: "",
+      primaryBgColor: ""
     },
     onSubmit: async (values: StoreFields) => {
       const storage = new BaseIpfsStorage({
@@ -70,7 +71,7 @@ export default function CustomStore() {
               }
               iframe {
                 border: none;
-              } 
+              }
             </style>
             <iframe
               src="${window.location.origin}/#/?${queryParams}"
@@ -91,6 +92,9 @@ export default function CustomStore() {
   return (
     <Root>
       <h1>Create Custom Store</h1>
+      <p style={{ color: "red" }}>
+        This page will be changed drastically, ignore it
+      </p>
       <StyledForm onSubmit={handleSubmit}>
         <FormElementsContainer>
           <FormElement>
@@ -170,6 +174,25 @@ export default function CustomStore() {
               </span>
             </div>
           </FormElement>
+          <FormElement>
+            <FormLabel>Primary Background Colour</FormLabel>
+            <div>
+              <FormControl
+                value={values.primaryBgColor}
+                onChange={handleChange}
+                name="primaryBgColor"
+                type="color"
+                placeholder="..."
+              />
+              <span
+                style={{
+                  color: values.primaryBgColor
+                }}
+              >
+                {values.primaryBgColor}
+              </span>
+            </div>
+          </FormElement>
         </FormElementsContainer>
 
         <PreviewContainer>
@@ -182,7 +205,7 @@ export default function CustomStore() {
           </Collapse>
         </PreviewContainer>
 
-        <Button>Create Store</Button>
+        <Button type="submit">Create Store</Button>
 
         <CustomStoreModal
           isOpen={isModalOpened}

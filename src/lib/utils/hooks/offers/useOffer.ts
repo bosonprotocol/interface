@@ -4,7 +4,7 @@ import { Offer } from "../../../types/offer";
 import { fetchSubgraph } from "../../core-components/subgraph";
 import { checkOfferMetadata } from "../../validators";
 import { getOffersQuery } from "./graphql";
-import { UseOfferProps, UseOffersProps } from "./types";
+import { UseOfferProps } from "./types";
 
 export function useOffer(
   { offerId, ...restProps }: UseOfferProps,
@@ -35,7 +35,7 @@ export function useOffer(
   );
 }
 
-async function getOfferById(id: string, props: UseOffersProps) {
+async function getOfferById(id: string, props: Omit<UseOfferProps, "offerId">) {
   const now = Math.floor(Date.now() / 1000);
   const validFromDate_lte = props.valid ? now + "" : null;
   const validUntilDate_gte = props.valid ? now + "" : null;
@@ -47,8 +47,11 @@ async function getOfferById(id: string, props: UseOffersProps) {
       exchangeToken: !!props.exchangeTokenAddress,
       sellerId: !!props.sellerId,
       validFromDate_lte: !!validFromDate_lte,
+      validFromDate_gte: false,
+      validUntilDate_lte: false,
       validUntilDate_gte: !!validUntilDate_gte,
       skip: !!props.skip,
+      quantityAvailable_lte: false,
       offer: true
     }),
     {

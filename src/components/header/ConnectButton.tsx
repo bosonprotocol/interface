@@ -3,36 +3,14 @@ import * as Sentry from "@sentry/browser";
 import { BsChevronDown } from "react-icons/bs";
 import styled from "styled-components";
 
-import { colors } from "../../lib/styles/colors";
+import metamaskLogo from "../../../src/assets/metamask-logo.svg";
+import Button from "../../components/ui/Button";
+import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import FallbackAvatar from "../avatar/fallback-avatar";
-import Account from "./Account";
 
-const BaseButton = styled.button`
-  all: unset;
-  padding: 6px 8px;
-  border-radius: 10px;
-  font-size: 15px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-`;
-
-const OutlineButton = styled(BaseButton)`
-  background-color: #34495b;
-
-  :hover {
-    background-color: #4b627c;
-  }
-`;
-
-const GreenButton = styled(BaseButton)`
-  background: var(--secondary);
-  color: ${colors.navy};
-`;
-
-const OrangeButton = styled(BaseButton)`
-  background: ${colors.orange};
+const MetaMaskLogo = styled.img`
+  height: 15px;
+  width: 16px;
 `;
 
 const ENSAvatar = styled.img`
@@ -42,6 +20,8 @@ const ENSAvatar = styled.img`
 `;
 
 export default function ConnectButton() {
+  const { isLteXS } = useBreakpoints();
+
   return (
     <RainbowConnectButton.Custom>
       {({
@@ -55,61 +35,64 @@ export default function ConnectButton() {
         account && Sentry.setTag("wallet_address", account?.address);
 
         return (
-          <div style={{ display: "flex", gap: 12 }}>
-            <Account connect={openConnectModal} isConnected={!!account} />
-
-            <div
-              {...(!mounted && {
-                "aria-hidden": true,
-                style: {
-                  opacity: 0,
-                  pointerEvents: "none",
-                  userSelect: "none"
-                }
-              })}
-              style={{ display: "flex" }}
-            >
-              {(() => {
-                if (!mounted || !account || !chain) {
-                  // reset the tag o undefined
-                  Sentry.setTag("wallet_address", undefined);
-                  return (
-                    <GreenButton onClick={openConnectModal} type="button">
-                      Connect Wallet
-                    </GreenButton>
-                  );
-                }
-
-                if (chain.unsupported) {
-                  return (
-                    <OrangeButton onClick={openChainModal} type="button">
-                      Wrong network
-                      <BsChevronDown size={12} />
-                    </OrangeButton>
-                  );
-                }
-
+          <div style={{ display: "flex", gap: 12, padding: "10px 0" }}>
+            {(() => {
+              <div
+                {...(!mounted && {
+                  "aria-hidden": true,
+                  style: {
+                    opacity: 0,
+                    pointerEvents: "none",
+                    userSelect: "none"
+                  }
+                })}
+                style={{ display: "flex" }}
+              ></div>;
+              if (!mounted || !account || !chain) {
+                // reset the tag o undefined
+                Sentry.setTag("wallet_address", undefined);
                 return (
-                  <div style={{ display: "flex", gap: 12 }}>
-                    <OutlineButton onClick={openChainModal}>
-                      {chain.hasIcon && <ENSAvatar src={chain.iconUrl} />}
-                      {chain.name}
-                      <BsChevronDown size={12} />
-                    </OutlineButton>
-
-                    <GreenButton onClick={openAccountModal} type="button">
-                      {account.ensAvatar ? (
-                        <ENSAvatar src={account.ensAvatar} />
-                      ) : (
-                        <FallbackAvatar address={account.address} size={18} />
-                      )}
-                      {account.displayName}
-                      <BsChevronDown size={12} />
-                    </GreenButton>
-                  </div>
+                  <Button
+                    onClick={openConnectModal}
+                    size={isLteXS ? "small" : "regular"}
+                  >
+                    Connect Wallet
+                    {!isLteXS && <MetaMaskLogo src={metamaskLogo} />}
+                  </Button>
                 );
-              })()}
-            </div>
+              }
+
+              if (chain.unsupported) {
+                return (
+                  <Button
+                    onClick={openChainModal}
+                    theme="warning"
+                    size={isLteXS ? "small" : "regular"}
+                  >
+                    Wrong network
+                    <BsChevronDown size={12} />
+                  </Button>
+                );
+              }
+
+              return (
+                <div style={{ display: "flex", gap: 12 }}>
+                  <Button
+                    onClick={openAccountModal}
+                    theme="outline"
+                    size={isLteXS ? "small" : "regular"}
+                  >
+                    {account.ensAvatar ? (
+                      <ENSAvatar src={account.ensAvatar} />
+                    ) : (
+                      <FallbackAvatar address={account.address} size={18} />
+                    )}
+                    {account.displayName}
+                    <BsChevronDown size={12} />
+                  </Button>
+                </div>
+              );
+            })()}
           </div>
         );
       }}

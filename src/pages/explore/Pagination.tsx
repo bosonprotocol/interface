@@ -1,48 +1,34 @@
 import { useEffect, useState } from "react";
+import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
 import styled from "styled-components";
 
+import Button from "../../components/ui/Button";
 import { colors } from "../../lib/styles/colors";
 
 const Container = styled.div`
   display: flex;
   justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin: 2rem 0;
 `;
 
-const PaginationButton = styled("button").attrs({
+const PaginationButton = styled(Button).attrs({
   type: "button"
 })<{ $isBack: boolean }>`
-  all: unset;
-  font-weight: 600;
-  color: var(--secondary);
-  border-radius: 11px;
-  text-align: center;
-  cursor: pointer;
-  border: 1px solid var(--secondary);
-  width: 100px;
-
-  transform: ${(props) => {
-    return props.$isBack ? "rotate(180deg)" : "initial";
-  }};
-
-  :hover:enabled {
-    background: ${colors.black};
-  }
-
   :disabled {
-    border: 1px solid ${colors.grey};
     color: ${colors.grey};
     cursor: not-allowed;
   }
 `;
 
 const Page = styled.p`
-  padding: 10px;
   font-weight: 600;
-  border: 1px solid ${colors.green};
-  color: ${colors.green};
+  color: var(--secondary);
+  border: 1px solid var(--secondary);
   border-radius: 50%;
-  margin: 0 20px;
-  min-width: 25px;
+  min-width: 3rem;
+  font-size: 2rem;
   text-align: center;
 `;
 
@@ -74,8 +60,9 @@ export default function Pagination({
         disabled={pageIndex < 1 || !isPreviousEnabled}
         $isBack
         onClick={onClick(pageIndex - 1)}
+        theme="outline"
       >
-        &#10140;
+        <BsArrowLeft size={24} />
       </PaginationButton>
 
       <Page>{pageIndex + 1}</Page>
@@ -85,8 +72,9 @@ export default function Pagination({
         $isBack={false}
         disabled={!isNextEnabled}
         onClick={onClick(pageIndex + 1)}
+        theme="outline"
       >
-        &#10140;
+        <BsArrowRight size={24} />
       </PaginationButton>
     </Container>
   );
