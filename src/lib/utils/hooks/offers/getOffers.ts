@@ -12,7 +12,6 @@ export const getOffers = async (props: UseOffersProps) => {
   const validFromDate_gte = props.type === "soon" ? now + "" : null;
   const validUntilDate_gte =
     props.type !== "soon" && props.valid ? now + "" : null;
-  // TODO: make changes to display hot offers
 
   const variables = {
     first: props.first,
@@ -24,7 +23,8 @@ export const getOffers = async (props: UseOffersProps) => {
     exchangeToken: props.exchangeTokenAddress,
     seller: props.sellerId,
     orderBy: "name",
-    orderDirection: "asc"
+    orderDirection: "asc",
+    quantityAvailable_lte: props.quantityAvailable_lte
   };
 
   const result = await fetchSubgraph<{
@@ -37,6 +37,9 @@ export const getOffers = async (props: UseOffersProps) => {
       validFromDate_gte: !!validFromDate_gte,
       validUntilDate_gte: !!validUntilDate_gte,
       skip: !!props.skip,
+      quantityAvailable_lte: ![null, undefined].includes(
+        props.quantityAvailable_lte as null
+      ),
       offer: false
     }),
     variables

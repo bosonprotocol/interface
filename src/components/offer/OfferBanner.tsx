@@ -61,10 +61,9 @@ export default function OfferBanner({ offer }: Props) {
 
   const handleText = () => {
     const { release, expiry } = handleDate(offer);
-    const aspectRatio = 1 / 2;
     const optionQuantity =
-      Number(offer?.quantityAvailable) / Number(offer?.quantityInitial) <
-      aspectRatio;
+      Number(offer?.quantityAvailable) < Number(offer?.quantityInitial) &&
+      Number(offer?.quantityAvailable) <= 10;
     const optionRelease = release.diff.days >= 0 && expiry.diff.days !== 0;
     const utcOffset = -(new Date().getTimezoneOffset() / 60);
     const utcValue =

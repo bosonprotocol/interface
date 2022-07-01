@@ -47,7 +47,8 @@ export function getOffersQuery({
   validFromDate_gte,
   validUntilDate_gte,
   skip,
-  offer
+  offer,
+  quantityAvailable_lte
 }: {
   exchangeToken: boolean;
   sellerId: boolean;
@@ -56,6 +57,7 @@ export function getOffersQuery({
   validUntilDate_gte: boolean;
   skip: boolean;
   offer: boolean;
+  quantityAvailable_lte: boolean;
 }) {
   return gql`
   query GetOffers(
@@ -70,6 +72,7 @@ export function getOffersQuery({
     $orderBy: String
     $orderDirection: String
     ${offer ? "$offer: String" : ""}
+    ${quantityAvailable_lte ? "$quantityAvailable_lte: Int" : ""}
   ) {
     baseMetadataEntities(
       first: $first
@@ -83,6 +86,11 @@ export function getOffersQuery({
         ${validUntilDate_gte ? "validUntilDate_gte: $validUntilDate_gte" : ""}
         ${exchangeToken ? "exchangeToken: $exchangeToken" : ""}
         ${sellerId ? "seller: $seller" : ""}
+        ${
+          quantityAvailable_lte
+            ? "quantityAvailable_lte: $quantityAvailable_lte"
+            : ""
+        }
         name_contains_nocase: $name_contains_nocase
       }
     ) {

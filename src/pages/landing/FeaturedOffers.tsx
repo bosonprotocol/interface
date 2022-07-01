@@ -83,6 +83,7 @@ const FeaturedOffers: React.FC<IFeaturedOffers> = ({
     voided: false,
     valid: true,
     first: isLteXS ? 2 : 3,
+    quantityAvailable_lte: type === "hot" ? 10 : null,
     type
   });
 

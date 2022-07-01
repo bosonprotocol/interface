@@ -4,7 +4,7 @@ import { Offer } from "../../../types/offer";
 import { fetchSubgraph } from "../../core-components/subgraph";
 import { checkOfferMetadata } from "../../validators";
 import { getOffersQuery } from "./graphql";
-import { UseOfferProps, UseOffersProps } from "./types";
+import { UseOfferProps } from "./types";
 
 export function useOffer(
   { offerId, ...restProps }: UseOfferProps,
@@ -35,10 +35,9 @@ export function useOffer(
   );
 }
 
-async function getOfferById(id: string, props: UseOffersProps) {
+async function getOfferById(id: string, props: Omit<UseOfferProps, "offerId">) {
   const now = Math.floor(Date.now() / 1000);
   const validFromDate_lte = props.valid ? now + "" : null;
-  const validFromDate_gte = props.type === "soon" ? now + "" : null;
   const validUntilDate_gte = props.valid ? now + "" : null;
 
   const result = await fetchSubgraph<{
@@ -48,19 +47,22 @@ async function getOfferById(id: string, props: UseOffersProps) {
       exchangeToken: !!props.exchangeTokenAddress,
       sellerId: !!props.sellerId,
       validFromDate_lte: !!validFromDate_lte,
-      validFromDate_gte: !!validFromDate_gte,
+      validFromDate_gte: false,
       validUntilDate_gte: !!validUntilDate_gte,
       skip: !!props.skip,
+      quantityAvailable_lte: ![null, undefined].includes(
+        props.quantityAvailable_lte as null
+      ),
       offer: true
     }),
     {
       offer: id,
       validFromDate_lte: validFromDate_lte,
-      validFromDate_gte: validFromDate_gte,
       validUntilDate_gte: validUntilDate_gte,
       name_contains_nocase: props.name || "",
       exchangeToken: props.exchangeTokenAddress,
-      sellerId: props.sellerId
+      sellerId: props.sellerId,
+      quantityAvailable_lte: props.quantityAvailable_lte
     }
   );
   return result.baseMetadataEntities[0]?.offer;
