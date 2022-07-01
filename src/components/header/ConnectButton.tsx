@@ -8,7 +8,7 @@ import Button from "../../components/ui/Button";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import FallbackAvatar from "../avatar/fallback-avatar";
 
-const MetaMasgLogo = styled.img`
+const MetaMaskLogo = styled.img`
   height: 15px;
   width: 16px;
 `;
@@ -58,7 +58,7 @@ export default function ConnectButton() {
                     size={isLteXS ? "small" : "regular"}
                   >
                     Connect Wallet
-                    {!isLteXS && <MetaMasgLogo src={metamaskLogo} />}
+                    {!isLteXS && <MetaMaskLogo src={metamaskLogo} />}
                   </Button>
                 );
               }
