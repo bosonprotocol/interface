@@ -30,8 +30,6 @@ interface Props {
   type?: "featured" | "hot" | "soon" | undefined;
 }
 
-const numOffersToBeHot = 10;
-
 export default function OfferBanner({ offer }: Props) {
   const handleDate = (offer: Offer) => {
     const current = dayjs();
@@ -63,9 +61,10 @@ export default function OfferBanner({ offer }: Props) {
 
   const handleText = () => {
     const { release, expiry } = handleDate(offer);
+    const aspectRatio = 1 / 2;
     const optionQuantity =
-      Number(offer?.quantityAvailable) < Number(offer?.quantityInitial) &&
-      Number(offer?.quantityAvailable) <= numOffersToBeHot;
+      Number(offer?.quantityAvailable) / Number(offer?.quantityInitial) <
+      aspectRatio;
     const optionRelease = release.diff.days >= 0 && expiry.diff.days !== 0;
     const utcOffset = -(new Date().getTimezoneOffset() / 60);
     const utcValue =
