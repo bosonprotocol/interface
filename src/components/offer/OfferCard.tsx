@@ -106,7 +106,7 @@ const BasicInfoContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   gap: 4px;
-  margin: 4px 0 8px 0;
+  margin: 4px 0;
   min-height: 4rem;
 `;
 
