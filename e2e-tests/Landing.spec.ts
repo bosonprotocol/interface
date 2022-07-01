@@ -51,14 +51,14 @@ test.describe("Root page (Landing page)", () => {
         );
       });
 
-      test("should display the 'Featured offers', 'Hot Offers' and 'Coming soon'", async ({
+      test("should display the 'Hot products', 'Almost gone' and 'Coming soon...'", async ({
         page
       }) => {
         const h3 = page.locator("h3");
 
-        await expect(h3.nth(0)).toHaveText("Featured Offers");
-        await expect(h3.nth(1)).toHaveText("Hot Offers");
-        await expect(h3.nth(2)).toHaveText("Coming soon");
+        await expect(h3.nth(0)).toHaveText("Hot products");
+        await expect(h3.nth(1)).toHaveText("Almost gone");
+        await expect(h3.nth(2)).toHaveText("Coming soon...");
       });
       test("should click on the Explore all offers button and go to Explore", async ({
         page
@@ -176,7 +176,7 @@ test.describe("Root page (Landing page)", () => {
       expect(selectedOfferName).toBe(previousSelectedOfferName);
     });
 
-    ["featured", "hot", "soon"].forEach((offersType) => {
+    ["hot", "gone", "soon"].forEach((offersType) => {
       test(`should filter out invalid offers (${offersType} offers)`, async ({
         page
       }) => {
