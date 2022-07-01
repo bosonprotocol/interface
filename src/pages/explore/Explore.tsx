@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
+import Button from "../../components/ui/Button";
 import { ExploreQueryParameters } from "../../lib/routing/parameters";
 import { useQueryParameter } from "../../lib/routing/useQueryParameter";
 import { Select } from "../../lib/styles/base";
-import { colors } from "../../lib/styles/colors";
+import { breakpoint } from "../../lib/styles/breakpoint";
 import { useBrands } from "../../lib/utils/hooks/useBrands";
 import { useSellers } from "../../lib/utils/hooks/useSellers";
 import { useTokens } from "../../lib/utils/hooks/useTokens";
@@ -24,7 +25,7 @@ const Input = styled.input`
   border-radius: 5px;
   font-size: 16px;
 
-  @media (min-width: 981px) {
+  ${breakpoint.m} {
     width: 500px;
   }
 `;
@@ -34,7 +35,7 @@ const TopContainer = styled.div`
   flex-direction: column;
   justify-content: space-between;
 
-  @media (min-width: 981px) {
+  ${breakpoint.m} {
     flex-direction: row;
   }
 `;
@@ -43,23 +44,13 @@ const FiltersContainer = styled.div``;
 
 const BrandSelect = styled(Select)`
   max-width: 100%;
-  @media (min-width: 981px) {
+  ${breakpoint.m} {
     width: 500px;
   }
 `;
 
 const CurrencyOrSellerSelect = styled(BrandSelect)`
   margin-top: 10px;
-`;
-
-const GoButton = styled.button`
-  width: 100px;
-  background: var(--secondary);
-  color: ${colors.navy};
-  border-radius: 5px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
 `;
 
 const SearchContainer = styled.div``;
@@ -82,6 +73,11 @@ export default function Explore() {
   const [brandInput, setBrandInput] = useState<string>(nameQueryParameter);
   const [brandSelect, setBrandSelect] = useState<string>("");
   const [nameToSearch, setNameToSearch] = useState<string>(nameQueryParameter);
+
+  useEffect(() => {
+    setBrandInput(nameQueryParameter);
+    setNameToSearch(nameQueryParameter);
+  }, [nameQueryParameter]);
 
   const { data: tokens } = useTokens();
   const [selectedToken, setSelectedToken] = useState<string>(
@@ -170,7 +166,9 @@ export default function Explore() {
               value={brandInput}
               placeholder="Search by Name"
             />
-            <GoButton onClick={() => onChangeName(brandInput)}>Go</GoButton>
+            <Button onClick={() => onChangeName(brandInput)} theme="secondary">
+              Go
+            </Button>
           </InputContainer>
         </SearchContainer>
       </TopContainer>

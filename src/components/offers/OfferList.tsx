@@ -1,17 +1,10 @@
 import { ReactElement } from "react";
-import styled from "styled-components";
 
 import { Offer } from "../../lib/types/offer";
 import OfferCard, { Action } from "../offer/OfferCard";
-
-const OfferContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 285px));
-  grid-row-gap: 20px;
-  grid-column-gap: 10px;
-  justify-content: space-between;
-  padding-bottom: 24px;
-`;
+import Grid from "../ui/Grid";
+import GridContainer, { ItemsPerRow } from "../ui/GridContainer";
+import Typography from "../ui/Typography";
 
 interface Props {
   offers?: Array<Offer>;
@@ -22,6 +15,8 @@ interface Props {
   action: Action;
   showInvalidOffers: boolean;
   isPrivateProfile?: boolean;
+  type?: "gone" | "hot" | "soon" | undefined;
+  itemsPerRow?: Partial<ItemsPerRow>;
 }
 
 export default function OfferList({
@@ -32,7 +27,9 @@ export default function OfferList({
   showSeller,
   action,
   showInvalidOffers,
-  isPrivateProfile
+  isPrivateProfile,
+  type,
+  itemsPerRow
 }: Props) {
   if (isLoading) {
     return loadingComponent || <div>Loading...</div>;
@@ -40,19 +37,24 @@ export default function OfferList({
 
   if (isError) {
     return (
-      <div data-testid="errorOffers">
-        There has been an error, please try again later...
-      </div>
+      <Grid data-testid="errorOffers">
+        <Typography tag="h3">
+          There has been an error, please try again later...
+        </Typography>
+      </Grid>
     );
   }
 
   if (!offers || offers.length === 0) {
     return (
-      <OfferContainer data-testid="noOffers">No offers found</OfferContainer>
+      <Grid data-testid="noOffers">
+        <Typography tag="h3">No products found</Typography>
+      </Grid>
     );
   }
+
   return (
-    <OfferContainer>
+    <GridContainer itemsPerRow={itemsPerRow}>
       {offers.map((offer: Offer) => {
         return (
           (offer.isValid || (showInvalidOffers && !offer.isValid)) && (
@@ -61,13 +63,13 @@ export default function OfferList({
               offer={offer}
               showSeller={showSeller}
               action={action}
-              showCTA
               dataTestId="offer"
               isPrivateProfile={isPrivateProfile}
+              type={type}
             />
           )
         );
       })}
-    </OfferContainer>
+    </GridContainer>
   );
 }

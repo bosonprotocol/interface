@@ -85,7 +85,7 @@ root.render(
               ))}
 
               <Route
-                path={BosonRoutes.CreateOffer}
+                path={BosonRoutes.Sell}
                 element={
                   <React.Suspense fallback={<Loading />}>
                     <CreateOffer />

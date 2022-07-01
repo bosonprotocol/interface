@@ -12,7 +12,13 @@ export const LinkWithQuery = ({ children, to, ...props }: Props) => {
   // TODO: doesnt currently support passing query params in the 'to' parameter
   const search = getKeepStoreFieldsQueryParams(location, null);
   return (
-    <Link to={`${to}?${search}`} {...props}>
+    <Link
+      to={{
+        pathname: to,
+        search
+      }}
+      {...props}
+    >
       {children}
     </Link>
   );

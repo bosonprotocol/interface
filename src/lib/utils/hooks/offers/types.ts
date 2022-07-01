@@ -1,6 +1,6 @@
 import { Offer } from "../../../types/offer";
 
-export interface UseOffersProps {
+interface CommonProps {
   name?: string; // TODO: to delete once brand is supported
   brand?: string; // TODO: not supported yet
   voided?: boolean;
@@ -10,6 +10,12 @@ export interface UseOffersProps {
   first?: number;
   skip?: number;
 }
-export interface UseOfferProps extends UseOffersProps {
+
+export interface UseOffersProps extends CommonProps {
+  type?: "gone" | "hot" | "soon" | undefined;
+  validUntilDate_lte?: number;
+  quantityAvailable_lte?: number | null | undefined;
+}
+export interface UseOfferProps extends CommonProps {
   offerId: string;
 }

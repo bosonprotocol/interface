@@ -25,11 +25,6 @@ test.describe("Explore page", () => {
 
       expect(h1).toBeDefined();
     });
-    test("should display the logo", async ({ page }) => {
-      const logoImg = page.locator("[data-testid=logo]");
-
-      expect(await logoImg.getAttribute("src")).toBeTruthy();
-    });
     test("should display the filter subheading", async ({ page }) => {
       const h2 = page.locator("h2", { hasText: "Filter" });
 
@@ -39,11 +34,6 @@ test.describe("Explore page", () => {
       const h2 = page.locator("h2", { hasText: "Search" });
 
       expect(h2).toBeDefined();
-    });
-    test("should display the footer", async ({ page }) => {
-      const footer = page.locator("footer");
-
-      expect(footer).toBeDefined();
     });
     test.describe("Query params", () => {
       test("query param 'name' should update when changing input", async ({
@@ -499,7 +489,7 @@ test.describe("Explore page", () => {
       const errorOffersSelector = "[data-testid=noOffers]";
       await page.waitForSelector(errorOffersSelector);
       const noOffers = page.locator(errorOffersSelector);
-      await expect(noOffers).toHaveText("No offers found");
+      await expect(noOffers).toHaveText("No products found");
     });
 
     test("should display there are no offers if we go to a random page with no offers", async ({
@@ -513,7 +503,7 @@ test.describe("Explore page", () => {
       const errorOffersSelector = "[data-testid=noOffers]";
       await page.waitForSelector(errorOffersSelector);
       const noOffers = page.locator(errorOffersSelector);
-      await expect(noOffers).toHaveText("No offers found");
+      await expect(noOffers).toHaveText("No products found");
     });
 
     test("should display error message when subgraph returns HTTP 400 error", async ({

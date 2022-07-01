@@ -1,6 +1,7 @@
 import { BigNumber, utils } from "ethers";
 import styled from "styled-components";
 
+import Typography from "../ui/Typography";
 import CurrencyIcon from "./CurrencyIcon";
 
 const Root = styled.div`
@@ -28,7 +29,6 @@ export default function Price({
   currencySymbol,
   ...rest
 }: IProps) {
-  const symbolUpperCase = currencySymbol.toUpperCase();
   let formattedValue = "";
   try {
     formattedValue = utils.formatUnits(BigNumber.from(value), Number(decimals));
@@ -43,11 +43,15 @@ export default function Price({
         <CurrencyIcon currencySymbol={currencySymbol} />
       </CurrencyIconContainer>
       {formattedValue ? (
-        <span>{fractions === "0" ? integer : `${integer}.${fractions}`}</span>
+        <Typography
+          tag="h4"
+          style={{ margin: "0", fontWeight: "600", letterSpacing: "-1px" }}
+        >
+          {fractions === "0" ? integer : `${integer}.${fractions}`}
+        </Typography>
       ) : (
         "-"
       )}{" "}
-      <span>{symbolUpperCase}</span>
     </Root>
   );
 }

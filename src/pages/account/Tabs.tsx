@@ -18,14 +18,30 @@ const Headers = styled.div`
   display: flex;
   justify-content: space-evenly;
 `;
-const Content = styled.div`
-  margin: 30px 10% 0 10%;
+const Content = styled.div<{ isPrivateProfile: boolean }>`
+  margin: ${({ isPrivateProfile }) =>
+    isPrivateProfile ? "2rem 10%" : "2rem 0%"};
 `;
-const HeaderTab = styled.div`
+const HeaderTab = styled.div<{ isPrivateProfile: boolean }>`
   display: flex;
   flex-direction: column;
   flex: 1 1;
   align-items: center;
+  ${({ isPrivateProfile }) =>
+    isPrivateProfile
+      ? ""
+      : `
+      :first-child {
+        > div {
+          align-self: flex-start;
+        }
+      }
+      :last-child {
+        > div {
+          align-self: flex-end;
+        }
+      }
+    `};
 `;
 const ContentTab = styled.div`
   display: flex;
@@ -84,7 +100,6 @@ export default function Tabs({ isPrivateProfile, address }: Props) {
             sellerId={sellerId}
             buyerId={buyerId}
             action="redeem"
-            showCTA={!isPrivateProfile}
             isPrivateProfile={isPrivateProfile}
           />
         )
@@ -123,7 +138,7 @@ export default function Tabs({ isPrivateProfile, address }: Props) {
         {tabsData.map((tab, index) => {
           const isActive = indexActiveTab === index;
           return (
-            <HeaderTab key={tab.id}>
+            <HeaderTab key={tab.id} isPrivateProfile={isPrivateProfile}>
               <TabTitle
                 $isActive={isActive}
                 data-testid={`tab-${tab.title}`}
@@ -135,7 +150,7 @@ export default function Tabs({ isPrivateProfile, address }: Props) {
           );
         })}
       </Headers>
-      <Content>
+      <Content isPrivateProfile={isPrivateProfile}>
         {tabsData.map((tab, index) => {
           const isActive = indexActiveTab === index;
           return (

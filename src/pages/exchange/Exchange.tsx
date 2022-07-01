@@ -12,6 +12,7 @@ import RootPrice from "../../components/price";
 import { CONFIG } from "../../lib/config";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
+import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
@@ -25,7 +26,7 @@ const Root = styled.div`
   gap: 130px;
   margin-bottom: 42px;
 
-  @media (min-width: 1200px) {
+  ${breakpoint.l} {
     flex-direction: row;
   }
 `;
@@ -37,11 +38,11 @@ const ImageAndDescription = styled.div`
   flex-basis: 50%;
   gap: 20px;
 
-  @media (min-width: 981px) {
+  ${breakpoint.m} {
     flex-direction: row;
   }
 
-  @media (min-width: 1200px) {
+  ${breakpoint.l} {
     flex-direction: column;
   }
 `;
@@ -57,7 +58,7 @@ const StatusSubContainer = styled.div`
   position: relative;
   margin: 0 auto;
 
-  @media (min-width: 981px) {
+  ${breakpoint.m} {
     width: initial;
   }
 `;
@@ -230,8 +231,8 @@ export default function Exchange() {
   const fromAccountPage =
     (location.state as { from: string })?.from === BosonRoutes.YourAccount;
   const [isTabSellerSelected, setTabSellerSelected] = useState(fromAccountPage);
-  const { data: account } = useAccount();
-  const address = account?.address || "";
+  const { address: account } = useAccount();
+  const address = account || "";
 
   const navigate = useKeepQueryParamsNavigate();
 

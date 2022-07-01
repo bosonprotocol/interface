@@ -17,10 +17,9 @@ interface Props {
 const IconContainer = styled.div`
   display: flex;
   align-items: center;
-  transform: scale(1.5);
-  margin-right: 2px;
+  transform: scale(1.2);
   path {
-    fill: var(--accent);
+    stroke-width: 0px;
   }
 `;
 
@@ -31,7 +30,7 @@ export default function CurrencyIcon({ currencySymbol }: Props) {
   if (!currencyImages[symbolUpperCase]) {
     return null;
   }
-  const Icon = currencyImages["ETH"];
+  const Icon = currencyImages[symbolUpperCase];
   return (
     <IconContainer>
       <Icon />

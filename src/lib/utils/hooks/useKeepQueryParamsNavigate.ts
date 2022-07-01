@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 import {
   NavigateOptions,
   Path,
@@ -49,10 +49,13 @@ export const getKeepStoreFieldsQueryParams = (
 export function useKeepQueryParamsNavigate() {
   const navigate = useNavigate();
   const location = useLocation();
-
+  const locationRef = useRef(location);
   return useCallback(
     (to: Partial<Path>, options?: NavigateOptions) => {
-      const search = getKeepStoreFieldsQueryParams(location, to.search);
+      const search = getKeepStoreFieldsQueryParams(
+        locationRef.current,
+        to.search
+      );
       navigate(
         {
           ...to,
@@ -61,6 +64,6 @@ export function useKeepQueryParamsNavigate() {
         options
       );
     },
-    [location, navigate]
+    [locationRef, navigate]
   );
 }
