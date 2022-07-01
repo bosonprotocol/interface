@@ -1,5 +1,6 @@
 import styled from "styled-components";
 
+import FundItem from "./FundItem";
 import useFunds from "./useFunds";
 
 const Root = styled.div`
@@ -14,21 +15,15 @@ interface Props {
 }
 
 export default function Funds({ sellerId, buyerId }: Props) {
-  const funds = useFunds(sellerId ?? buyerId);
+  const accountId = sellerId ?? buyerId;
+  const funds = useFunds(accountId);
 
   return (
     <Root>
       <h1>Funds</h1>
       <div>
         {funds.length > 0 ? (
-          funds.map((fund) => {
-            return (
-              <div>
-                <p>{fund.token.name}</p>
-                <p>{fund.availableAmount}</p>
-              </div>
-            );
-          })
+          funds.map((fund) => <FundItem accountId={accountId} fund={fund} />)
         ) : (
           <p>No funds for connected wallet.</p>
         )}
