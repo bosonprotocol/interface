@@ -5,24 +5,17 @@ import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQuer
 import PrivateAccount from "./PrivateAccount";
 
 export default function PrivateAccountContainer() {
-  const { data: account, isLoading, isFetching, isError } = useAccount();
+  const { address, isConnecting, isReconnecting, isDisconnected } =
+    useAccount();
   const navigate = useKeepQueryParamsNavigate();
-  if (isLoading) {
+  if (isConnecting || isReconnecting) {
     return <div>Loading...</div>;
   }
 
-  if (isFetching) {
-    return <div>Fetching...</div>;
-  }
-
-  if (isError) {
-    return <div>There has been an error</div>;
-  }
-
-  if (!account?.address) {
+  if (!address || isDisconnected) {
     navigate({ pathname: BosonRoutes.Root });
     return <div>Please connect your wallet</div>;
   }
 
-  return <PrivateAccount account={account.address} />;
+  return <PrivateAccount account={address} />;
 }

@@ -231,8 +231,8 @@ export default function Exchange() {
   const fromAccountPage =
     (location.state as { from: string })?.from === BosonRoutes.YourAccount;
   const [isTabSellerSelected, setTabSellerSelected] = useState(fromAccountPage);
-  const { data: account } = useAccount();
-  const address = account?.address || "";
+  const { address: account } = useAccount();
+  const address = account || "";
 
   const navigate = useKeepQueryParamsNavigate();
 

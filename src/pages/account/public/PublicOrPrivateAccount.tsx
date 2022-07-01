@@ -9,20 +9,21 @@ export default function PublicOrPrivateAccount() {
   const { [UrlParameters.accountId]: accountParameter } = useParams();
   const address = accountParameter || "";
 
-  const { data: account, isLoading, isFetching, isError } = useAccount();
+  const {
+    address: account,
+    isConnecting,
+    isReconnecting,
+    isDisconnected
+  } = useAccount();
 
-  const connectedAddress = account?.address || "";
+  const connectedAddress = account || "";
 
-  if (isLoading) {
+  if (isConnecting || isReconnecting) {
     return <div>Loading...</div>;
   }
 
-  if (isFetching) {
-    return <div>Fetching...</div>;
-  }
-
-  if (isError) {
-    return <div>There has been an error</div>;
+  if (isDisconnected) {
+    return <div>Please connect your wallet</div>;
   }
 
   if (connectedAddress.toLowerCase() === address.toLowerCase()) {

@@ -241,8 +241,8 @@ export default function OfferDetail() {
     (state) => !state,
     false
   );
-  const { data: account } = useAccount();
-  const address = account?.address || "";
+  const { address: account } = useAccount();
+  const address = account || "";
   const navigate = useKeepQueryParamsNavigate();
 
   const {

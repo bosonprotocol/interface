@@ -164,7 +164,7 @@ export default function HeaderComponent() {
   const { pathname, search } = useLocation();
   const { isLteM } = useBreakpoints();
   const [open, setOpen] = useState(false);
-  const { data: account } = useAccount();
+  const { address } = useAccount();
   const logoUrl = useCustomStoreQueryParameter("logoUrl");
 
   useEffect(() => {
@@ -203,7 +203,7 @@ export default function HeaderComponent() {
               <LinkWithQuery to={BosonRoutes.Explore}>
                 Explore Products
               </LinkWithQuery>
-              {account && (
+              {address && (
                 <LinkWithQuery to={BosonRoutes.YourAccount}>
                   My Items
                 </LinkWithQuery>
