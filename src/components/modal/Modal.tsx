@@ -16,7 +16,7 @@ const Root = styled.div`
   justify-content: center;
   background-color: #0004;
 `;
-
+// TODO: refactor colors to use css vars or theme
 const Content = styled.div<{ $styles: Props["$styles"] }>`
   margin: 24px;
   color: ${colors.white}; //var(--secondary);

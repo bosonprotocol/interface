@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
-import { useAccount } from "wagmi";
 
 import logo from "../../../src/assets/logo.svg";
 import { BosonRoutes } from "../../lib/routing/routes";
@@ -12,9 +11,7 @@ import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustom
 import Layout from "../Layout";
 import { LinkWithQuery } from "../linkStoreFields/LinkStoreFields";
 import ConnectButton from "./ConnectButton";
-import Search from "./Search";
-
-const HEADER_HEIGHT = "5.4rem";
+import HeaderLinks, { HEADER_HEIGHT } from "./HeaderLinks";
 
 const Header = styled.header`
   position: fixed;
@@ -72,89 +69,6 @@ const HeaderItems = styled.nav<{ isMobile: boolean }>`
   width: 100%;
 `;
 
-const NavigationLinks = styled.div<{ isMobile: boolean; isOpen: boolean }>`
-  > * {
-    flex: 1;
-  }
-  height: 100%;
-  ${({ isMobile, isOpen }) =>
-    isMobile
-      ? `
-    position: absolute;
-    top: calc(${HEADER_HEIGHT} + 2px);
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 100vh;
-    background: white;
-    transform: ${isOpen ? "translateX(0%)" : "translateX(100%)"};
-
-     a {
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      font-family: "Plus Jakarta Sans";
-      font-style: normal;
-      font-size: 16px;
-      font-weight: 600;
-      line-height: 150%;
-      padding: 2rem;
-      color: ${colors.black};
-      background-color: ${colors.lightGrey};
-      border-bottom: 2px solid ${colors.border};
-      position: relative;
-      white-space: pre;
-      &:before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        background-color: ${colors.border};
-        transition: all 150ms ease-in-out;
-      }
-
-      &:hover {
-        color:var(--secondary);
-        &:before {
-          height: 100%;
-        }
-      }
-    }
-  `
-      : `
-      margin: 0 1rem;
-      display: flex;
-      width: 100%;
-      align-items: stretch;
-      justify-content: space-between;
-      a {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        font-family: "Plus Jakarta Sans";
-        font-style: normal;
-        font-size: 16px;
-        font-weight: 600;
-        line-height: 150%;
-        padding: 1rem;
-        height: 100%;
-        color: ${colors.black};
-      }
-      a:hover {
-        background-color: ${colors.border};
-        color: var(--secondary);
-      }
-  `};
-`;
-
-const Links = styled.div<{ isMobile: boolean }>`
-  display: flex;
-  justify-content: end;
-  flex-direction: ${({ isMobile }) => (isMobile ? "column" : "row")};
-`;
-
 const LogoImg = styled.img`
   height: 24px;
   cursor: pointer;
@@ -163,8 +77,7 @@ const LogoImg = styled.img`
 export default function HeaderComponent() {
   const { pathname, search } = useLocation();
   const { isLteM } = useBreakpoints();
-  const [open, setOpen] = useState(false);
-  const { address } = useAccount();
+  const [isOpen, setOpen] = useState(false);
   const logoUrl = useCustomStoreQueryParameter("logoUrl");
 
   useEffect(() => {
@@ -172,7 +85,7 @@ export default function HeaderComponent() {
   }, [pathname, search]);
 
   const toggleMenu = () => {
-    setOpen(!open);
+    setOpen(!isOpen);
   };
   const burgerMenuBreakpoint = isLteM;
   return (
@@ -196,20 +109,7 @@ export default function HeaderComponent() {
               </BurgerButton>
             </>
           )}
-          <NavigationLinks isMobile={burgerMenuBreakpoint} isOpen={open}>
-            <Search isMobile={burgerMenuBreakpoint} />
-            <Links isMobile={burgerMenuBreakpoint}>
-              <LinkWithQuery to={BosonRoutes.Sell}>Sell</LinkWithQuery>
-              <LinkWithQuery to={BosonRoutes.Explore}>
-                Explore Products
-              </LinkWithQuery>
-              {address && (
-                <LinkWithQuery to={BosonRoutes.YourAccount}>
-                  My Items
-                </LinkWithQuery>
-              )}
-            </Links>
-          </NavigationLinks>
+          <HeaderLinks isMobile={burgerMenuBreakpoint} isOpen={isOpen} />
           {!burgerMenuBreakpoint && <ConnectButton />}
         </HeaderItems>
       </HeaderContainer>

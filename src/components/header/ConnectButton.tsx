@@ -36,7 +36,6 @@ export default function ConnectButton() {
 
         return (
           <div style={{ display: "flex", gap: 12, padding: "10px 0" }}>
-            {/* <Account connect={openConnectModal} isConnected={!!account} /> */}
             {(() => {
               <div
                 {...(!mounted && {
@@ -78,11 +77,6 @@ export default function ConnectButton() {
 
               return (
                 <div style={{ display: "flex", gap: 12 }}>
-                  {/* <Button onClick={openChainModal} theme="outline">
-                    {chain.hasIcon && <ENSAvatar src={chain.iconUrl} />}
-                    {chain.name}
-                    <BsChevronDown size={12} />
-                  </Button> */}
                   <Button
                     onClick={openAccountModal}
                     theme="outline"
