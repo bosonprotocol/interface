@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { useEnsName } from "wagmi";
 
 import Avatar from "../../../components/avatar";
-// import { useAccount } from "wagmi";
 import AddressText from "../../../components/offer/AddressText";
 import CurrencyIcon from "../../../components/price/CurrencyIcon";
 import { UrlParameters } from "../../../lib/routing/parameters";
