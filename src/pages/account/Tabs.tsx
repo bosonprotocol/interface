@@ -69,8 +69,13 @@ const tabIdentifier = "id" as const;
 interface Props {
   isPrivateProfile: boolean;
   address: string;
+  children?: JSX.Element;
 }
-export default function Tabs({ isPrivateProfile, address }: Props) {
+export default function Tabs({
+  isPrivateProfile,
+  address,
+  children: SellerBuyerToggle
+}: Props) {
   const { data: sellers, isError: isErrorSellers } = useSellers({
     admin: address
   });
@@ -115,13 +120,15 @@ export default function Tabs({ isPrivateProfile, address }: Props) {
             isPrivateProfile={isPrivateProfile}
           />
         )
-      },
-      {
+      }
+    ];
+    if (isPrivateProfile) {
+      tabsData.push({
         id: "funds",
         title: "My Funds",
         content: <Funds sellerId={sellerId} buyerId={buyerId} />
-      }
-    ];
+      });
+    }
     return tabsData;
   }, [sellerId, buyerId, isPrivateProfile]);
   const [currentTab, setCurrentTab] = useQueryParameter(
@@ -138,6 +145,7 @@ export default function Tabs({ isPrivateProfile, address }: Props) {
     setIndexActiveTab(index);
     setCurrentTab(tab[tabIdentifier]);
   };
+  const isMyOffersSelected = indexActiveTab === 0;
   return (
     <TabsContainer>
       <Headers>
@@ -156,6 +164,7 @@ export default function Tabs({ isPrivateProfile, address }: Props) {
           );
         })}
       </Headers>
+      {!isMyOffersSelected && isPrivateProfile && SellerBuyerToggle}
       <Content isPrivateProfile={isPrivateProfile}>
         {tabsData.map((tab, index) => {
           const isActive = indexActiveTab === index;

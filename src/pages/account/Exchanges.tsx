@@ -1,9 +1,8 @@
-import { useMemo } from "react";
-
 import OfferCard, { Action } from "../../components/offer/OfferCard";
 import GridContainer from "../../components/ui/GridContainer";
 import { Offer } from "../../lib/types/offer";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
+import { useSellerToggle } from "./private/Toogle/SellerToggleContext";
 
 interface Props {
   sellerId: string;
@@ -18,6 +17,7 @@ export default function Exchanges({
   action,
   isPrivateProfile
 }: Props) {
+  const { isTabSellerSelected } = useSellerToggle();
   const {
     data: exchangesSeller,
     isLoading: isLoadingSeller,
@@ -30,26 +30,7 @@ export default function Exchanges({
     isError: isErrorBuyer
   } = useExchanges({ disputed: null, buyerId }, { enabled: !!buyerId });
 
-  const exchanges = useMemo(() => {
-    const allExchanges = [
-      ...(exchangesSeller || []),
-      ...(exchangesBuyer || [])
-    ];
-    const uniqueIds: string[] = [];
-
-    const uniqueExchanges = allExchanges.filter((exchange) => {
-      const isDuplicate = uniqueIds.includes(exchange.id);
-
-      if (!isDuplicate) {
-        uniqueIds.push(exchange.id);
-
-        return true;
-      }
-
-      return false;
-    });
-    return uniqueExchanges;
-  }, [exchangesSeller, exchangesBuyer]);
+  const exchanges = isTabSellerSelected ? exchangesSeller : exchangesBuyer;
 
   if (isLoadingSeller || isLoadingBuyer) {
     return <div>Loading...</div>;

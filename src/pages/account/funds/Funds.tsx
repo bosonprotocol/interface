@@ -1,5 +1,6 @@
 import styled from "styled-components";
 
+import { useSellerToggle } from "../private/Toogle/SellerToggleContext";
 import FundItem from "./FundItem";
 import useFunds from "./useFunds";
 
@@ -15,7 +16,8 @@ interface Props {
 }
 
 export default function Funds({ sellerId, buyerId }: Props) {
-  const accountId = sellerId ?? buyerId;
+  const { isTabSellerSelected } = useSellerToggle();
+  const accountId = isTabSellerSelected ? sellerId : buyerId;
   const funds = useFunds(accountId);
 
   return (

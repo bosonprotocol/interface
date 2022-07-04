@@ -1,3 +1,4 @@
+import { useState } from "react";
 import styled from "styled-components";
 import { useEnsName } from "wagmi";
 
@@ -6,6 +7,8 @@ import AddressText from "../../../components/offer/AddressText";
 import CurrencyIcon from "../../../components/price/CurrencyIcon";
 import Settings from "../../../components/settings";
 import Tabs from "../Tabs";
+import { SellerToggleContext } from "./Toogle/SellerToggleContext";
+import Toggle from "./Toogle/Toogle";
 
 const BasicInfo = styled.section`
   display: flex;
@@ -30,7 +33,7 @@ const AddressContainer = styled.div`
   margin-top: 5px;
   margin-bottom: 20px;
   font-size: 1rem;
-  flex-basis: 33%;
+  flex-basis: 50%;
   img {
     width: 15px;
     margin-right: 5px;
@@ -40,13 +43,14 @@ const AddressContainer = styled.div`
 const SettingsWrapper = styled.div`
   display: flex;
   justify-content: center;
-  flex-basis: 33%;
+  flex-basis: 25%;
 `;
 
 export default function PrivateAccount({ account }: { account: string }) {
   const { data: ensName } = useEnsName({
     address: account
   });
+  const [isTabSellerSelected, setTabSellerSelected] = useState<boolean>(false);
 
   return (
     <>
@@ -55,7 +59,7 @@ export default function PrivateAccount({ account }: { account: string }) {
 
         <EnsName>{ensName}</EnsName>
         <AddressAndSettings>
-          <div style={{ flexBasis: "33%" }}></div>
+          <div style={{ flexBasis: "25%" }}></div>
           <AddressContainer>
             <CurrencyIcon currencySymbol="ETH" />
             <AddressText address={account} />
@@ -65,7 +69,14 @@ export default function PrivateAccount({ account }: { account: string }) {
           </SettingsWrapper>
         </AddressAndSettings>
       </BasicInfo>
-      <Tabs isPrivateProfile={true} address={account} />
+      <SellerToggleContext.Provider value={{ isTabSellerSelected }}>
+        <Tabs isPrivateProfile={true} address={account}>
+          <Toggle
+            isTabSellerSelected={isTabSellerSelected}
+            setTabSellerSelected={setTabSellerSelected}
+          />
+        </Tabs>
+      </SellerToggleContext.Provider>
     </>
   );
 }

@@ -7,15 +7,22 @@ import { fetchSubgraph } from "../core-components/subgraph";
 interface Props {
   admin?: string;
 }
-export function useSellers(props: Props = {}) {
-  return useQuery(["sellers", props], async () => {
-    const result = await fetchSubgraph<{
-      sellers: Pick<
-        Offer["seller"],
-        "id" | "operator" | "admin" | "clerk" | "treasury" | "active"
-      >[];
-    }>(
-      gql`
+export function useSellers(
+  props: Props = {},
+  options: {
+    enabled?: boolean;
+  } = {}
+) {
+  return useQuery(
+    ["sellers", props],
+    async () => {
+      const result = await fetchSubgraph<{
+        sellers: Pick<
+          Offer["seller"],
+          "id" | "operator" | "admin" | "clerk" | "treasury" | "active"
+        >[];
+      }>(
+        gql`
         query GetSellers(
           $orderBy: String
           $orderDirection: String
@@ -35,12 +42,16 @@ export function useSellers(props: Props = {}) {
           }
         }
       `,
-      {
-        orderBy: "sellerId",
-        orderDirection: "asc",
-        ...(props.admin && { admin: props.admin })
-      }
-    );
-    return result?.sellers ?? [];
-  });
+        {
+          orderBy: "sellerId",
+          orderDirection: "asc",
+          ...(props.admin && { admin: props.admin })
+        }
+      );
+      return result?.sellers ?? [];
+    },
+    {
+      ...options
+    }
+  );
 }
