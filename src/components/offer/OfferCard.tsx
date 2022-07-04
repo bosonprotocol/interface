@@ -1,16 +1,15 @@
-import { Image as AccountImage } from "@davatar/react";
-import { IoIosImage } from "react-icons/io";
 import { generatePath, useLocation } from "react-router-dom";
 import styled from "styled-components";
 
 import RootPrice from "../../components/price";
-import { buttonText, clamp } from "../../components/ui/styles";
+import { clamp } from "../../components/ui/styles";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes, OffersRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
-import { zIndex } from "../../lib/styles/zIndex";
 import { Offer } from "../../lib/types/offer";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import Image from "../ui/Image";
+import SellerID from "../ui/SellerID";
 import Typography from "../ui/Typography";
 import ExchangeStatuses from "./ExchangeStatuses";
 import OfferBanner from "./OfferBanner";
@@ -44,61 +43,8 @@ const Card = styled.div<{ isCarousel: boolean }>`
       : ""}
 `;
 
-const ImageContainer = styled.div`
-  overflow: hidden;
-  position: relative;
-  z-index: ${zIndex.OfferCard};
-  height: 0;
-  padding-top: 120%;
-  > img,
-  > div[data-testid="image"] {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    transition: all 300ms ease-in-out;
-  }
-
-  [data-testid="statuses"] {
-    position: absolute;
-    z-index: ${zIndex.OfferStatus};
-    top: 5px;
-    right: 5px;
-    justify-content: flex-end;
-  }
-`;
-
 const Content = styled.div`
   padding: 1rem 1.5rem;
-`;
-
-const Image = styled.img`
-  height: 100%;
-`;
-
-const ImagePlaceholder = styled.div`
-  height: 100%;
-  width: 100%;
-  background-color: ${colors.darkGrey};
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-
-  svg {
-    fill: ${colors.white};
-  }
-
-  span {
-    ${buttonText}
-    color: ${colors.white};
-    padding: 1rem;
-    text-align: center;
-  }
-`;
-
-const ImageNotAvailable = styled(IoIosImage)`
-  font-size: 50px;
 `;
 
 const BasicInfoContainer = styled.div`
@@ -109,31 +55,6 @@ const BasicInfoContainer = styled.div`
   gap: 4px;
   margin: 4px 0;
   min-height: 4rem;
-`;
-
-const SellerContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-`;
-
-const AddressContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  cursor: pointer;
-  margin: 0 0 4px 0;
-`;
-
-const SellerInfo = styled.div`
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  align-items: center;
-  color: var(--secondary);
-  font-weight: 600;
 `;
 
 const Name = styled(Typography)`
@@ -198,7 +119,6 @@ export default function OfferCard({
   const isSellerVisible = showSeller === undefined ? true : showSeller;
   const offerImg = offer.metadata.imageUrl;
   const name = offer.metadata?.name || "Untitled";
-  const sellerId = offer.seller?.id;
   const sellerAddress = offer.seller?.operator;
 
   const location = useLocation();
@@ -235,40 +155,15 @@ export default function OfferCard({
 
   return (
     <Card data-testid={dataTestId} onClick={onClick} isCarousel={isCarousel}>
-      <ImageContainer>
+      <Image src={offerImg}>
         {Status}
-        {offerImg ? (
-          <Image data-testid="image" src={offerImg} />
-        ) : (
-          <ImagePlaceholder>
-            <ImageNotAvailable />
-            <Typography tag="span">IMAGE NOT AVAILABLE</Typography>
-          </ImagePlaceholder>
-        )}
         {!isCarousel && <OfferBanner type={type} offer={offer} />}
-      </ImageContainer>
+      </Image>
       <Content>
         {isSellerVisible && sellerAddress && (
-          <AddressContainer
-            onClick={(e) => {
-              e.stopPropagation();
-              navigate({
-                pathname: generatePath(BosonRoutes.Account, {
-                  [UrlParameters.accountId]: sellerAddress
-                })
-              });
-            }}
-          >
-            <SellerContainer>
-              <div>
-                <AccountImage size={17} address={sellerAddress} />
-              </div>
-              <SellerInfo data-testid="seller-id">
-                Seller ID: {sellerId}
-              </SellerInfo>
-            </SellerContainer>
+          <SellerID seller={offer?.seller}>
             <PriceText>Price</PriceText>
-          </AddressContainer>
+          </SellerID>
         )}
 
         <BasicInfoContainer>

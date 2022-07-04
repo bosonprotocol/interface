@@ -1,32 +1,28 @@
-import { manageExchange } from "@bosonprotocol/widgets-sdk";
+// TODO: Remove this after refactor
+import { manageOffer } from "@bosonprotocol/widgets-sdk";
 import { Image as AccountImage } from "@davatar/react";
-import { useEffect, useRef, useState } from "react";
-import { IoIosInformationCircleOutline } from "react-icons/io";
+import { useEffect, useReducer, useRef, useState } from "react";
+import { IoIosImage, IoIosInformationCircleOutline } from "react-icons/io";
 import { generatePath, useLocation, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
-import AddressContainer from "../../components/offer/AddressContainer";
-import ExchangeStatuses from "../../components/offer/ExchangeStatuses";
-import RootPrice from "../../components/price";
-import Image from "../../components/ui/Image";
+import OfferStatuses from "../../components/offer/OfferStatuses";
 import { CONFIG } from "../../lib/config";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
-import { Offer } from "../../lib/types/offer";
-import { useExchanges } from "../../lib/utils/hooks/useExchanges";
+import { useOffer } from "../../lib/utils/hooks/offers/useOffer";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { isAccountSeller } from "../../lib/utils/isAccountSeller";
+import AddressContainer from "./../../components/offer/AddressContainer";
+import RootPrice from "./../../components/price";
+import CreatedExchangeModal from "./CreatedExchangeModal";
 
 const Root = styled.div`
   display: flex;
   flex-direction: column;
-  margin-top: 64px;
-  gap: 130px;
-  margin-bottom: 42px;
-
   ${breakpoint.l} {
     flex-direction: row;
   }
@@ -68,6 +64,7 @@ const ImageContainer = styled.div`
   display: flex;
   justify-content: left;
   height: auto;
+  max-height: 700px;
   position: relative;
 
   [data-testid="statuses"] {
@@ -77,6 +74,41 @@ const ImageContainer = styled.div`
     margin: 0 auto;
     justify-content: center;
   }
+`;
+
+const Image = styled.img`
+  height: auto;
+
+  margin: 0 auto;
+  border-radius: 22px;
+  object-fit: contain;
+
+  ${breakpoint.m} {
+    width: 100%;
+  }
+`;
+
+const ImagePlaceholder = styled.div`
+  width: 100%;
+  min-width: 500px;
+  height: 500px;
+  background-color: ${colors.grey};
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 21px;
+  border-radius: 24px;
+
+  span {
+    padding: 10px;
+    text-align: center;
+    color: lightgrey;
+  }
+`;
+
+const ImageNotAvailable = styled(IoIosImage)`
+  font-size: 50px;
 `;
 
 const Title = styled.h1`
@@ -193,33 +225,33 @@ const InfoIcon = styled(IoIosInformationCircleOutline).attrs({
   font-size: 27px;
 `;
 
-export default function Exchange() {
-  const { [UrlParameters.exchangeId]: exchangeId } = useParams();
+export default function OfferDetail() {
+  const { [UrlParameters.offerId]: offerId } = useParams();
   const widgetRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
   const fromAccountPage =
     (location.state as { from: string })?.from === BosonRoutes.YourAccount;
-  const [isTabSellerSelected, setTabSellerSelected] = useState(fromAccountPage);
+  const [isTabSellerSelected, setTabSellerSelected] =
+    useState<boolean>(fromAccountPage);
+  const [createdExchangeId, setCreatedExchangeId] = useState<string>("");
+  const [isCreatedExchangeModalOpen, toggleCreatedExchangeModal] = useReducer(
+    (state) => !state,
+    false
+  );
   const { address: account } = useAccount();
   const address = account || "";
-
   const navigate = useKeepQueryParamsNavigate();
 
   const {
-    data: exchanges,
+    data: offer,
     isError,
     isLoading
-  } = useExchanges(
+  } = useOffer(
     {
-      id: exchangeId,
-      disputed: null
+      offerId: offerId || ""
     },
-    {
-      enabled: !!exchangeId
-    }
+    { enabled: !!offerId }
   );
-  const exchange = exchanges?.[0];
-  const offer = exchange?.offer;
 
   useEffect(() => {
     if (!address) {
@@ -228,20 +260,34 @@ export default function Exchange() {
   }, [address]);
 
   useEffect(() => {
-    if (offer && widgetRef.current && exchangeId) {
+    if (offer && widgetRef.current) {
       const widgetContainer = document.createElement("div");
       widgetContainer.style.width = "100%";
       widgetRef.current.appendChild(widgetContainer);
-      manageExchange(exchangeId, CONFIG, widgetContainer, {
+      manageOffer(offer.id, CONFIG, widgetContainer, {
         forceBuyerView: !isTabSellerSelected
       });
       return () => widgetContainer.remove();
     }
 
     return;
-  }, [offer, isTabSellerSelected, exchangeId]);
+  }, [offer, isTabSellerSelected, address]);
 
-  if (!exchangeId) {
+  useEffect(() => {
+    function handleMessageFromIframe(e: MessageEvent) {
+      const { target, message, exchangeId } = e.data || {};
+
+      if (target === "boson" && message === "created-exchange") {
+        setCreatedExchangeId(exchangeId);
+        toggleCreatedExchangeModal();
+      }
+    }
+
+    window.addEventListener("message", handleMessageFromIframe);
+    return () => window.removeEventListener("message", handleMessageFromIframe);
+  }, []);
+
+  if (!offerId) {
     return null;
   }
 
@@ -251,14 +297,14 @@ export default function Exchange() {
 
   if (isError) {
     return (
-      <div data-testid="errorExchange">
+      <div data-testid="errorOffer">
         There has been an error, please try again later...
       </div>
     );
   }
 
   if (!offer) {
-    return <div data-testid="notFound">This exchange does not exist</div>;
+    return <div data-testid="notFound">This offer does not exist</div>;
   }
 
   if (!offer.isValid) {
@@ -270,14 +316,13 @@ export default function Exchange() {
     );
   }
   const isSeller = isAccountSeller(offer, address);
+
   const name = offer.metadata?.name || "Untitled";
   const offerImg = offer.metadata.imageUrl;
   const sellerId = offer.seller?.id;
   const sellerAddress = offer.seller?.operator;
-  // const isOfferValid = getIsOfferValid(offer);
   const description = offer.metadata?.description || "";
-  const buyerAddress = exchange.buyer.wallet;
-  const isBuyer = buyerAddress.toLowerCase() === address.toLowerCase();
+
   return (
     <>
       <Root>
@@ -285,10 +330,7 @@ export default function Exchange() {
           <ImageContainer>
             <StatusContainer>
               <StatusSubContainer>
-                <ExchangeStatuses
-                  offer={offer}
-                  exchange={exchange as NonNullable<Offer["exchanges"]>[number]}
-                />
+                <OfferStatuses offer={offer} />
               </StatusSubContainer>
             </StatusContainer>
             <Image src={offerImg} />
@@ -309,7 +351,7 @@ export default function Exchange() {
               <span data-testid="delivery-info">Not defined</span>
             </Box>
             <Box>
-              <SubHeading>Seller</SubHeading>
+              <SubHeading> Seller</SubHeading>
               <AddressContainer
                 onClick={() =>
                   navigate({
@@ -336,11 +378,11 @@ export default function Exchange() {
               decimals={offer.exchangeToken.decimals}
             />
           </Box>
-          {isSeller && isBuyer && (
+          {isSeller && (
             <Toggle>
               <InfoIconTextWrapper>
                 <InfoIcon />
-                <span>You are the owner of this exchange. Toggle view:</span>
+                <span>You are the owner of this offer. Toggle view:</span>
               </InfoIconTextWrapper>
               <Tabs>
                 <Tab
@@ -363,6 +405,11 @@ export default function Exchange() {
           <ChildrenContainer>
             <WidgetContainer ref={widgetRef}></WidgetContainer>
           </ChildrenContainer>
+          <CreatedExchangeModal
+            isOpen={isCreatedExchangeModalOpen}
+            onClose={() => toggleCreatedExchangeModal()}
+            exchangeId={createdExchangeId}
+          />
         </Content>
       </Root>
     </>

@@ -8,12 +8,13 @@ type JustifyContent =
   | "space-around";
 type AlignItems = "flex-start" | "center" | "flex-end";
 type FlexDirection = "row" | "column" | "row-reverse" | "column-reverse";
-interface IGrid {
+export interface IGrid {
   alignItems?: AlignItems;
   flexBasis?: string;
   flexDirection?: FlexDirection;
   justifyContent?: JustifyContent;
   gap?: string;
+  flex?: string;
   padding?: string;
 }
 
@@ -26,6 +27,7 @@ const Container = styled.div<IGrid>`
   justify-content: ${({ justifyContent }) => justifyContent || "space-between"};
 
   ${({ gap }) => (gap ? `gap:${gap};` : "")}
+  ${({ flex }) => (flex ? `> * { flex: ${flex}; }` : "")}
   ${({ padding }) => (padding ? `padding:${padding};` : "")}
 `;
 
