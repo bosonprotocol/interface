@@ -23,6 +23,7 @@ import {
   StatusContainer,
   StatusSubContainer
 } from "./OfferDetail.style";
+import OfferDetailTable from "./OfferDetailTable";
 import OfferDetailWidget from "./OfferDetailWidget";
 
 export default function OfferDetail() {
@@ -152,6 +153,7 @@ export default function OfferDetail() {
             <Typography tag="p" style={{ color: colors.darkGrey }}>
               {MOCK.description}
             </Typography>
+            <OfferDetailTable data={MOCK.table} />
           </div>
           <div>
             <Typography tag="h3">About the artist</Typography>
