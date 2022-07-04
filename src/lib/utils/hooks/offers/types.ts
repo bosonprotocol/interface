@@ -9,6 +9,9 @@ interface CommonProps {
   sellerId?: Offer["seller"]["id"];
   first?: number;
   skip?: number;
+  sellerWhitelist?: string[];
+  offerWhitelist?: string[];
+  enableWhitelists?: boolean;
 }
 
 export interface UseOffersProps extends CommonProps {

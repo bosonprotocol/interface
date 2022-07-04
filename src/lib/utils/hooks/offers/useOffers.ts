@@ -1,5 +1,6 @@
 import { useQuery } from "react-query";
 
+import { CONFIG } from "../../../config";
 import { getOffers } from "./getOffers";
 import { UseOffersProps } from "./types";
 
@@ -9,6 +10,12 @@ export function useOffers(
     enabled?: boolean;
   } = {}
 ) {
+  props = {
+    sellerWhitelist: CONFIG.sellerWhitelist,
+    offerWhitelist: CONFIG.offerWhitelist,
+    enableWhitelists: CONFIG.enableWhitelists,
+    ...props
+  };
   return useQuery(
     ["offers", props],
     async () => {
