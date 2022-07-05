@@ -1,14 +1,15 @@
 import dayjs from "dayjs";
 
-import { Offer } from "../../../types/offer";
 import { fetchSubgraph } from "../../core-components/subgraph";
-import { checkOfferMetadata } from "../../validators";
 import { buildGetOffersQuery } from "./graphql";
-import { UseOfferProps, UseOffersProps } from "./types";
+import { memoMergeAndSortOffers } from "./memo";
+import {
+  UseOfferProps,
+  UseOffersProps,
+  WhitelistGetOffersResult
+} from "./types";
 
-type WhitelistGetOffersResult = {
-  baseMetadataEntities: { offer: Offer }[];
-};
+const memoizedMergeAndSortOffers = memoMergeAndSortOffers();
 
 export const getOffers = async (props: UseOffersProps) => {
   const dateNow = Date.now();
@@ -27,8 +28,6 @@ export const getOffers = async (props: UseOffersProps) => {
     : null;
 
   const variables = {
-    first: props.first,
-    skip: props.skip,
     validFromDate_lte: validFromDate_lte,
     validFromDate_gte: validFromDate_gte,
     validUntilDate_lte: validUntilDate_lte,
@@ -87,7 +86,7 @@ export async function getOfferById(
     validFromDate_gte: false,
     validUntilDate_lte: false,
     validUntilDate_gte: !!validUntilDate_gte,
-    skip: !!props.skip,
+    skip: false,
     quantityAvailable_lte: false,
     offer: true
   };
@@ -133,45 +132,16 @@ async function fetchWhitelistOffers(
     )
   ]);
 
-  const offers = await mergeAndSortWhitelistResults(
+  const offers = memoizedMergeAndSortOffers(
+    getMergedAndSortedCacheKey(props),
     sellerWhitelistResult,
     offerWhitelistResult
   );
 
-  // TODO: find proper way to paginate
-  return offers.slice(0, props.first);
+  return offers.slice(props.skip, (props.first || 0) + (props.skip || 0));
 }
 
-function mergeAndSortWhitelistResults(
-  sellerWhitelistResult: WhitelistGetOffersResult,
-  offerWhitelistResult: WhitelistGetOffersResult
-): Offer[] {
-  const sellerWhitelistOffers =
-    sellerWhitelistResult?.baseMetadataEntities || [];
-  const offerWhitelistOffers = offerWhitelistResult?.baseMetadataEntities || [];
-
-  const mergedOffers = [...sellerWhitelistOffers, ...offerWhitelistOffers].map(
-    (base) => {
-      const isValid = checkOfferMetadata(base.offer);
-      return {
-        ...base.offer,
-        metadata: {
-          ...base.offer.metadata,
-          imageUrl: `https://picsum.photos/seed/${base.offer.id}/700`
-        },
-        isValid
-      } as Offer;
-    }
-  );
-  const ids = mergedOffers.map((offer) => Number(offer.id));
-  const uniqueOffers = mergedOffers.filter(
-    (offer, index) => !ids.includes(Number(offer.id), index + 1)
-  );
-  const sortedOffers = uniqueOffers.sort((a, b) => {
-    if (a.metadata.name && b.metadata.name) {
-      return a.metadata.name.localeCompare(b.metadata.name);
-    }
-    return 0;
-  });
-  return sortedOffers;
+function getMergedAndSortedCacheKey(props: UseOffersProps) {
+  const { first, skip, ...rest } = props;
+  return JSON.stringify(rest);
 }

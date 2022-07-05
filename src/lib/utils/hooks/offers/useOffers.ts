@@ -11,15 +11,17 @@ export function useOffers(
   } = {}
 ) {
   props = {
+    ...props,
     sellerWhitelist: CONFIG.sellerWhitelist,
     offerWhitelist: CONFIG.offerWhitelist,
-    enableWhitelists: CONFIG.enableWhitelists,
-    ...props
+    enableWhitelists: CONFIG.enableWhitelists
   };
   return useQuery(
     ["offers", props],
     async () => {
-      return getOffers(props);
+      return getOffers({
+        ...props
+      });
     },
     {
       ...options
