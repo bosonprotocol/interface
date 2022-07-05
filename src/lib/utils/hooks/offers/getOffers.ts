@@ -142,6 +142,7 @@ async function fetchWhitelistOffers(
 }
 
 function getMergedAndSortedCacheKey(props: UseOffersProps) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { first, skip, ...rest } = props;
   return JSON.stringify(rest);
 }
