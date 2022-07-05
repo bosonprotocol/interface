@@ -1,6 +1,5 @@
 import styled from "styled-components";
 
-import Grid from "../../components/ui/Grid";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
@@ -17,15 +16,36 @@ const ImageContainer = styled.div`
   }
 `;
 
-const OfferWrapper = styled(Grid)`
-  margin-bottom: 2rem;
-  padding: 0 2rem;
-  ${breakpoint.l} {
-    padding: 0 12rem;
+const OfferWrapper = styled.div`
+  padding: 0;
+  ${breakpoint.s} {
+    padding: 0 2rem;
   }
+  ${breakpoint.l} {
+    padding: 0 6rem;
+  }
+  ${breakpoint.xl} {
+    padding: 0 8rem;
+  }
+  > div:not(:last-child) {
+    margin-bottom: 4rem;
+  }
+  > div:last-child {
+    padding-bottom: 4rem;
+  }
+`;
 
+const OfferGrid = styled.div`
+  display: grid;
+  grid-column-gap: 2rem;
+  grid-row-gap: 2rem;
+
+  grid-template-columns: repeat(1, 1fr);
+  ${breakpoint.s} {
+    grid-template-columns: repeat(2, 1fr);
+  }
   > div {
-    flex: 1 0 50%;
+    max-width: 100%;
   }
 `;
 
@@ -46,6 +66,7 @@ const StatusSubContainer = styled.div`
 `;
 
 const DarkerBackground = styled.div`
+  max-width: 100%;
   background-color: ${colors.lightGrey};
   position: relative;
 
@@ -57,6 +78,7 @@ const DarkerBackground = styled.div`
     bottom: 0;
     position: absolute;
     background-color: ${colors.lightGrey};
+    z-index: -1;
   }
   &:before {
     right: -100rem;
@@ -65,11 +87,29 @@ const DarkerBackground = styled.div`
     left: -100rem;
   }
 `;
+const LightBackground = styled.div`
+  max-width: 100%;
+  background-color: ${colors.white};
+  position: relative;
+`;
+const WidgetContainer = styled.div`
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  iframe {
+    max-width: 100%;
+  }
+`;
 
 export {
   DarkerBackground,
   ImageContainer,
+  LightBackground,
+  OfferGrid,
   OfferWrapper,
   StatusContainer,
-  StatusSubContainer
+  StatusSubContainer,
+  WidgetContainer
 };

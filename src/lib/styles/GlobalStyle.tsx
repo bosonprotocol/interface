@@ -9,6 +9,7 @@ const GlobalStyle = createGlobalStyle<{
   $accentColor: string;
   $primaryBgColor: string;
 }>`
+
   * {
     box-sizing: border-box
   }
@@ -24,6 +25,10 @@ const GlobalStyle = createGlobalStyle<{
       props.$accentColor ? props.$accentColor : colors.arsenic};
     --primaryBgColor: ${(props) =>
       props.$primaryBgColor ? props.$primaryBgColor : colors.primaryBgColor};
+    --scrollbarThumb: ${(props) =>
+      props.$primaryColor ? props.$primaryColor : colors.primary};
+    --scrollbarBg: ${colors.black};
+    --scrollbarWidth: 4px;
 
     font-size: 12px;
     ${breakpoint.xs} {
@@ -107,6 +112,30 @@ const GlobalStyle = createGlobalStyle<{
   }
   img, svg, input {
     user-select: none;
+  }
+
+
+  html,
+  body {
+    ::-webkit-scrollbar-track {
+      -webkit-box-shadow: inset 0 0 var(--scrollbarWidth) var(--scrollbarBg);
+      box-shadow: inset 0 0 var(--scrollbarWidth) var(--scrollbarBg);
+      border-radius: 0;
+      background-color: var(--scrollbarBg);
+    }
+
+    ::-webkit-scrollbar {
+      width: var(--scrollbarWidth);
+      height: 0;
+      background-color: var(--scrollbarBg);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      border-radius: 0;
+      -webkit-box-shadow: inset 0 0 var(--scrollbarWidth) var(--scrollbarThumb);
+      box-shadow: inset 0 0 var(--scrollbarWidth) var(--scrollbarThumb);
+      background-color: var(--scrollbarThumb);
+    }
   }
 `;
 export default GlobalStyle;

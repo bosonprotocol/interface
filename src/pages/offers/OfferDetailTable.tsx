@@ -29,6 +29,7 @@ const Table = styled.table`
       }
       &:last-child {
         font-weight: 400;
+        text-align: right;
       }
     }
     &:not(:last-child) {
@@ -40,12 +41,11 @@ const Table = styled.table`
 `;
 
 const OfferDetailTable: React.FC<IOfferDetailTable> = ({ data }) => {
-  console.log(data);
   return (
     <Table>
       <tbody>
-        {data.map((d: Props) => (
-          <tr>
+        {data?.map((d: Props, index: number) => (
+          <tr key={`tr_${index}`}>
             <td>{d.name}</td>
             <td>{d.value}</td>
           </tr>

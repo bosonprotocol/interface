@@ -1,3 +1,6 @@
+import image1 from "./image1.jpg";
+import image3 from "./image3.jpg";
+
 export const MOCK = {
   description:
     "🎵by Fewocious Every minted asset in this open edition comes with a physical collector edition sneaker. RTFKT.com/fewoshoe Redemption for physicals will be open in 6 weeks. Once redeemed expect a 8-12 week delivery, worldwide free shipping.",
@@ -15,6 +18,31 @@ export const MOCK = {
     {
       name: "Size",
       value: "EU 43 / UK 8"
+    }
+  ],
+  images: [image1, image3, image1, image3, image1, image3],
+  shipping:
+    "Once redeemed expect a 2-4 week delivery worldwide free shipping. Taxes & import duties are included in the price.",
+  shippingTable: [
+    {
+      name: "EU",
+      value: "7 days"
+    },
+    {
+      name: "US",
+      value: "10 days"
+    },
+    {
+      name: "UK",
+      value: "5 days"
+    },
+    {
+      name: "Asia",
+      value: "14 days"
+    },
+    {
+      name: "South America",
+      value: "No delivery"
     }
   ]
 };

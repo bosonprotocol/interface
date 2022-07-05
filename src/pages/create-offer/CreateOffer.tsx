@@ -41,7 +41,7 @@ export const FormLabel = styled.label`
 `;
 
 export const FormControl = styled.input`
-  font-family: "Manrope", sans-serif;
+  font-family: "Plus Jakarta Sans", sans-serif;
   padding: 10px;
   border-radius: 6px;
   border-width: 2px;

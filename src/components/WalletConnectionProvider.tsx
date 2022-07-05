@@ -38,7 +38,7 @@ export default function WalletConnectionProvider({ children }: Props) {
       connectButton: "none"
     },
     fonts: {
-      body: "Manrope, sans-serif"
+      body: "Plus Jakarta Sans, sans-serif"
     }
   } as Theme);
 

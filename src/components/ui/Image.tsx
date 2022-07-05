@@ -32,7 +32,8 @@ const ImageWrapper = styled.div`
 `;
 
 const ImageContainer = styled.img`
-  height: 100%;
+  min-width: 100%;
+  height: auto;
 `;
 
 const ImagePlaceholder = styled.div`
@@ -60,12 +61,14 @@ const ImageNotAvailable = styled(IoIosImage)`
   font-size: 50px;
 `;
 
-const Image: React.FC<{
-  src: string;
-  children?: React.ReactNode;
-}> = ({ src, children }) => {
+const Image: React.FC<
+  {
+    src: string;
+    children?: React.ReactNode;
+  } & React.HTMLAttributes<HTMLDivElement>
+> = ({ src, children, ...rest }) => {
   return (
-    <ImageWrapper>
+    <ImageWrapper {...rest}>
       {children || ""}
       {src ? (
         <ImageContainer data-testid="image" src={src} />

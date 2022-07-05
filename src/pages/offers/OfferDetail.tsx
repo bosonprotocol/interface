@@ -1,10 +1,11 @@
 import { manageOffer } from "@bosonprotocol/widgets-sdk";
 import { useEffect, useReducer, useRef, useState } from "react";
+import { IoIosInformationCircleOutline } from "react-icons/io";
 import { useLocation, useParams } from "react-router-dom";
+import styled from "styled-components";
 import { useAccount } from "wagmi";
 
 import OfferStatuses from "../../components/offer/OfferStatuses";
-import Grid from "../../components/ui/Grid";
 import Image from "../../components/ui/Image";
 import SellerID from "../../components/ui/SellerID";
 import Typography from "../../components/ui/Typography";
@@ -13,23 +14,76 @@ import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { useOffer } from "../../lib/utils/hooks/offers/useOffer";
-import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { isAccountSeller } from "../../lib/utils/isAccountSeller";
-import { MOCK } from "./mock";
+import CreatedExchangeModal from "./CreatedExchangeModal";
+import { MOCK } from "./mock/mock";
 import {
   DarkerBackground,
   ImageContainer,
+  LightBackground,
+  OfferGrid,
   OfferWrapper,
   StatusContainer,
-  StatusSubContainer
+  StatusSubContainer,
+  WidgetContainer
 } from "./OfferDetail.style";
+import OfferDetailChart from "./OfferDetailChart";
+import OfferDetailSlider from "./OfferDetailSlider";
 import OfferDetailTable from "./OfferDetailTable";
-import OfferDetailWidget from "./OfferDetailWidget";
+
+const Toggle = styled.div`
+  border: 1px solid ${colors.bosonSkyBlue};
+  color: ${colors.bosonSkyBlue};
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0.75rem;
+  gap: 0.25rem;
+  margin-bottom: 2rem;
+`;
+
+const InfoIconTextWrapper = styled.div`
+  display: flex;
+  justify-content: start;
+  align-items: center;
+`;
+const Tabs = styled.div`
+  display: flex;
+  flex-direction: row;
+  max-width: 30%;
+`;
+
+const Tab = styled("button")<{ $isSelected: boolean }>`
+  all: unset;
+  cursor: pointer;
+  background-color: ${(props) =>
+    props.$isSelected ? colors.blue : colors.lightGrey};
+  padding: 0.5rem;
+  font-family: "Plus Jakarta Sans";
+  font-style: normal;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  color: ${(props) => (props.$isSelected ? colors.white : colors.black)};
+  width: 200px;
+  max-width: 100%;
+  text-align: center;
+`;
+const InfoIcon = styled(IoIosInformationCircleOutline).attrs({
+  fill: colors.bosonSkyBlue
+})`
+  position: relative;
+  right: 2px;
+  font-size: 27px;
+`;
 
 export default function OfferDetail() {
   const { [UrlParameters.offerId]: offerId } = useParams();
   const widgetRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
+  const { isXXS } = useBreakpoints();
   const fromAccountPage =
     (location.state as { from: string })?.from === BosonRoutes.YourAccount;
   const [isTabSellerSelected, setTabSellerSelected] =
@@ -41,7 +95,6 @@ export default function OfferDetail() {
   );
   const { address: account } = useAccount();
   const address = account || "";
-  const navigate = useKeepQueryParamsNavigate();
 
   const {
     data: offer,
@@ -120,38 +173,61 @@ export default function OfferDetail() {
 
   const name = offer.metadata?.name || "Untitled";
   const offerImg = offer.metadata.imageUrl;
-  const sellerId = offer.seller?.id;
-  const sellerAddress = offer.seller?.operator;
   const description = offer.metadata?.description || "";
 
   return (
-    <>
-      <OfferWrapper alignItems="flex-start" gap="50px">
-        <div>
-          <ImageContainer>
-            <StatusContainer>
-              <StatusSubContainer>
-                <OfferStatuses offer={offer} />
-              </StatusSubContainer>
-            </StatusContainer>
-            <Image src={offerImg} />
-          </ImageContainer>
-        </div>
-        <div>
-          <SellerID seller={offer?.seller} justifyContent="flex-start">
-            <div>Hot</div>
-          </SellerID>
-          <Typography tag="h2">{name}</Typography>
-          <OfferDetailWidget />
-        </div>
-      </OfferWrapper>
+    <OfferWrapper>
+      <LightBackground>
+        {isSeller && (
+          <Toggle>
+            <InfoIconTextWrapper>
+              <InfoIcon />
+              <span>You are the owner of this offer. Toggle view:</span>
+            </InfoIconTextWrapper>
+            <Tabs>
+              <Tab
+                $isSelected={!isTabSellerSelected}
+                onClick={() => setTabSellerSelected(false)}
+              >
+                Buyer
+              </Tab>
+              <Tab
+                $isSelected={isTabSellerSelected}
+                onClick={() => setTabSellerSelected(true)}
+              >
+                Seller
+              </Tab>
+            </Tabs>
+          </Toggle>
+        )}
+        <OfferGrid>
+          <div>
+            <ImageContainer>
+              <StatusContainer>
+                <StatusSubContainer>
+                  <OfferStatuses offer={offer} />
+                </StatusSubContainer>
+              </StatusContainer>
+              <Image src={offerImg} />
+            </ImageContainer>
+          </div>
+          <div>
+            <SellerID seller={offer?.seller} justifyContent="flex-start">
+              <div>Hot</div>
+            </SellerID>
+            <Typography tag="h2">{name}</Typography>
+            {/* <OfferDetailWidget /> */}
+            <WidgetContainer ref={widgetRef}></WidgetContainer>
+          </div>
+        </OfferGrid>
+      </LightBackground>
       {/* TODO: Remove mocks */}
       <DarkerBackground>
-        <Grid gap="5rem" flex="1" padding="2.5rem 5rem" alignItems="flex-start">
+        <OfferGrid>
           <div>
             <Typography tag="h3">Product data</Typography>
             <Typography tag="p" style={{ color: colors.darkGrey }}>
-              {MOCK.description}
+              {description || MOCK.description}
             </Typography>
             <OfferDetailTable data={MOCK.table} />
           </div>
@@ -161,8 +237,27 @@ export default function OfferDetail() {
               {MOCK.aboutArtist}
             </Typography>
           </div>
-        </Grid>
+        </OfferGrid>
+        <OfferDetailSlider images={MOCK.images} />
+        <OfferGrid>
+          <div>
+            <Typography tag="h3">Inventory graph</Typography>
+            <OfferDetailChart />
+          </div>
+          <div>
+            <Typography tag="h3">Shipping information</Typography>
+            <Typography tag="p" style={{ color: colors.darkGrey }}>
+              {MOCK.shipping}
+            </Typography>
+            <OfferDetailTable data={MOCK.shippingTable} />
+          </div>
+        </OfferGrid>
       </DarkerBackground>
-    </>
+      <CreatedExchangeModal
+        isOpen={isCreatedExchangeModalOpen}
+        onClose={() => toggleCreatedExchangeModal()}
+        exchangeId={createdExchangeId}
+      />
+    </OfferWrapper>
   );
 }

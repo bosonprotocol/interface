@@ -5,6 +5,7 @@ import { HashRouter, Route } from "react-router-dom";
 
 import App from "./components/app";
 import Layout from "./components/Layout";
+import ScrollToTop from "./components/ScrollToTop";
 import SentryProvider from "./components/SentryProvider";
 import WalletConnectionProvider from "./components/WalletConnectionProvider";
 import { BosonRoutes, OffersRoutes } from "./lib/routing/routes";
@@ -57,6 +58,7 @@ root.render(
     <WalletConnectionProvider>
       <QueryClientProvider client={queryClient}>
         <HashRouter>
+          <ScrollToTop />
           <SentryProvider>
             <Route path="/" element={<App />}>
               <Route

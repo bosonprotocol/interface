@@ -32,6 +32,12 @@ const BaseButton = styled.button<{
       }
     }
   `}
+  ${(props) =>
+    props.theme.padding
+      ? `
+    padding: ${props.theme.padding} !important;
+    `
+      : ""}
 `;
 
 const ChildWrapperButton = styled.div`
@@ -73,7 +79,8 @@ const allThemes = {
     }
   },
   blank: {
-    color: "var(--secondary)",
+    color: `${colors.black}4d`,
+    padding: "0.75rem 0.5rem",
     hover: {
       color: colors.black
     }
