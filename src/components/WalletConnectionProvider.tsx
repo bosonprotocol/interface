@@ -1,22 +1,47 @@
 import "@rainbow-me/rainbowkit/styles.css";
 
+import { EthersAdapter } from "@bosonprotocol/ethers-sdk";
 import {
   AvatarComponent,
   darkTheme,
   RainbowKitProvider,
   Theme
 } from "@rainbow-me/rainbowkit";
+import { providers } from "ethers";
 import merge from "lodash.merge";
-import { ReactNode } from "react";
-import { WagmiConfig } from "wagmi";
+import { ReactNode, useMemo } from "react";
+import { useSigner, WagmiConfig } from "wagmi";
 
 import { colors } from "../lib/styles/colors";
 import { useCSSVariable } from "../lib/utils/hooks/useCSSVariable";
 import { chains, wagmiClient } from "../lib/wallet-connection";
 import FallbackAvatar from "./avatar/fallback-avatar";
+import { EthersAdapterContext } from "./EthersAdapterContext";
 
 interface Props {
   children: ReactNode;
+}
+
+function EthersAdapterProvider({ children }: Props) {
+  const { data: signer } = useSigner();
+
+  const ethersAdapter = useMemo(() => {
+    if (!signer || !signer.provider) {
+      return;
+    }
+
+    const adapter = new EthersAdapter(
+      signer.provider as providers.Web3Provider
+    );
+
+    return adapter;
+  }, [signer]);
+
+  return (
+    <EthersAdapterContext.Provider value={ethersAdapter}>
+      {children}
+    </EthersAdapterContext.Provider>
+  );
 }
 
 export default function WalletConnectionProvider({ children }: Props) {
@@ -50,7 +75,7 @@ export default function WalletConnectionProvider({ children }: Props) {
         avatar={CustomAvatar}
         appInfo={{ appName: "Boson dApp" }}
       >
-        {children}
+        <EthersAdapterProvider>{children}</EthersAdapterProvider>
       </RainbowKitProvider>
     </WagmiConfig>
   );

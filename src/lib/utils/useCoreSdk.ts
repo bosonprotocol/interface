@@ -1,22 +1,23 @@
 import { CoreSDK } from "@bosonprotocol/core-sdk";
 import { EthersAdapter } from "@bosonprotocol/ethers-sdk";
 import { IpfsMetadataStorage } from "@bosonprotocol/ipfs-storage";
-import { providers } from "ethers";
+import { useMemo } from "react";
 
+import { useEthersAdapterFromContext } from "../../components/EthersAdapterContext";
 import { Config, coreSdkConfig } from "../config";
 
 export function useCoreSDK() {
-  const defaultProvider = getDefaultProvider(coreSdkConfig.jsonRpcUrl);
-  return initCoreSDK(defaultProvider, coreSdkConfig);
+  const ethersAdapter = useEthersAdapterFromContext();
+  return useMemo(() => {
+    if (!ethersAdapter) return null;
+    const core = initCoreSDK(coreSdkConfig, ethersAdapter);
+    return core;
+  }, [ethersAdapter]);
 }
 
-function getDefaultProvider(jsonRpcUrl: string) {
-  return new providers.JsonRpcProvider(jsonRpcUrl);
-}
-
-function initCoreSDK(provider: providers.JsonRpcProvider, config: Config) {
+function initCoreSDK(config: Config, ethersAdapter: EthersAdapter) {
   return new CoreSDK({
-    web3Lib: new EthersAdapter(provider),
+    web3Lib: ethersAdapter,
     protocolDiamond: config.protocolDiamond,
     subgraphUrl: config.subgraphUrl,
     theGraphStorage: IpfsMetadataStorage.fromTheGraphIpfsUrl(

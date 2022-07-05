@@ -20,7 +20,7 @@ export default function useWithdrawFunds({
   const coreSdk = useCoreSDK();
 
   return useCallback(() => {
-    return coreSdk.withdrawFunds(
+    return coreSdk?.withdrawFunds(
       accountId,
       tokensToWithdraw.map((t) => t.address),
       tokensToWithdraw.map((t) => t.amount)
