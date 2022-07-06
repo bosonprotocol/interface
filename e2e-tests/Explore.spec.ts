@@ -286,7 +286,6 @@ test.describe("Explore page", () => {
         const numberOfOffers = 17;
 
         const offers: Offer[] = await getFirstNOffers(numberOfOffers);
-        const offers1stPage = offers.slice(0, offersPerPage);
         const offers2ndPage = offers.slice(offersPerPage);
         expect(offers2ndPage.length).toStrictEqual(
           numberOfOffers - offersPerPage
@@ -296,7 +295,7 @@ test.describe("Explore page", () => {
           options: {
             mockGetOffers: {
               offersPerPage: {
-                offersList: [offers1stPage, offers2ndPage],
+                offersList: [offers2ndPage],
                 countOffersPerPage: offersPerPage
               }
             }
@@ -432,9 +431,6 @@ test.describe("Explore page", () => {
 
       const offers1stPage = offers.slice(0, offersPerPage);
       const offers2ndPage = offers.slice(offersPerPage);
-      expect(offers2ndPage.length).toStrictEqual(
-        numberOfOffers - offersPerPage
-      );
 
       await mockSubgraph({
         page,
@@ -469,11 +465,11 @@ test.describe("Explore page", () => {
       uiOffers = page.locator("[data-testid=offer]");
 
       offerCount = await uiOffers.count();
-      expect(offerCount).toStrictEqual(offers.length - offersPerPage);
+      expect(offerCount).toStrictEqual(offers.length - visibleOffersPerPage);
 
       for (let i = 0; i < offerCount; i++) {
         const offer = uiOffers.nth(i);
-        const expectedOffer = offers[offersPerPage + i];
+        const expectedOffer = offers[visibleOffersPerPage + i];
         await assertOffer(offer, expectedOffer);
       }
     });

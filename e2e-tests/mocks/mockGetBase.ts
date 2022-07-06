@@ -10,6 +10,10 @@ import {
   MockProps as mockGetExchangesProps
 } from "./mockGetExchanges";
 import {
+  mockGetOfferById,
+  MockProps as mockGetOfferByIdProps
+} from "./mockGetOfferById";
+import {
   mockGetOffers,
   MockProps as mockGetOffersProps
 } from "./mockGetOffers";
@@ -26,6 +30,7 @@ interface MockSubgraphProps {
   page: Page;
   options?: Partial<{
     mockGetOffers?: mockGetOffersProps["options"];
+    mockGetOfferById?: mockGetOfferByIdProps["options"];
     mockGetBrands?: mockGetBrandsProps["options"];
     mockGetTokens?: mockGetTokensProps["options"];
     mockGetSellers?: mockGetSellersProps["options"];
@@ -46,15 +51,21 @@ export async function mockSubgraph({ page, options }: MockSubgraphProps) {
     const isBaseEntitiesRequest = postData?.includes("baseMetadataEntities(");
     const isBrandsRequest = postData?.includes("productV1MetadataEntities");
     const isExchangeTokensRequest = postData?.includes("exchangeTokens");
-    const isGetSingleBaseEntity = postData?.includes("GetOfferById("); // iframe widget makes this request
-    const isGetSellersReq = postData?.includes("GetSellers");
+    const isGetOfferByIdReq = postData?.includes("getOfferByIdQuery"); // iframe widget makes this request
+    const isGetSellersReq =
+      postData?.includes("getSellersQuery") || postData?.includes("GetSellers");
     const isGetExchangesReq = postData?.includes("GetExchanges");
 
     let mockResponse;
-    if (isBaseEntitiesRequest || isGetSingleBaseEntity) {
+    if (isBaseEntitiesRequest) {
       mockResponse = await mockGetOffers({
         postData,
         options: options?.mockGetOffers || {}
+      });
+    } else if (isGetOfferByIdReq) {
+      mockResponse = await mockGetOfferById({
+        postData,
+        options: options?.mockGetOfferById || {}
       });
     } else if (isBrandsRequest) {
       mockResponse = await mockGetBrands({
