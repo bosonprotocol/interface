@@ -10,7 +10,7 @@ import { zIndex } from "../../lib/styles/zIndex";
 import { Offer } from "../../lib/types/offer";
 import { useOffers } from "../../lib/utils/hooks/offers";
 
-const cellSize = 360;
+const cellSize = 300;
 const numCells = 8; // or number of max offers
 const tz = Math.round(cellSize / 2 / Math.tan(Math.PI / numCells));
 const translateZValue = `${tz}px`;
