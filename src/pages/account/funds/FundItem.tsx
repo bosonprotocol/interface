@@ -76,7 +76,14 @@ export const Input = styled.input<{ $hasError?: boolean }>`
   font-weight: 500;
   line-height: 1.5rem;
 
-  ${({ $hasError }) => $hasError && `border: 0.0625rem solid ${colors.red};`}
+  ${({ $hasError }) =>
+    $hasError &&
+    `
+    border: 0.0625rem solid ${colors.red};
+    animation: shake 0.1s; 
+    `}
+
+  ${shakeKeyframes}
 `;
 
 export const CustomButton = styled(Button)`
@@ -86,7 +93,7 @@ export const CustomButton = styled(Button)`
   display: flex;
 `;
 
-const InputMaxWrapper = styled.div`
+const InputMaxWrapper = styled.div<{ $hasError?: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -94,6 +101,12 @@ const InputMaxWrapper = styled.div`
   height: 100%;
   border-radius: ${fundsBorderRadius};
   border: 0.0625rem solid ${colors.darkGrey};
+  ${({ $hasError }) =>
+    $hasError &&
+    `
+    border: 0.0625rem solid ${colors.red};
+    animation: shake 0.1s; 
+    `}
 
   input {
     border: none;
@@ -154,7 +167,9 @@ export default function FundItem({
   reload
 }: Props) {
   const [isBeingWithdrawn, setIsBeingWithdrawn] = useState<boolean>(false);
+  const [hasWithdrawError, setHasWithdrawError] = useState<boolean>(false);
   const [isBeingDeposit, setIsBeingDeposit] = useState<boolean>(false);
+  const [hasDepositError, setHasDepositError] = useState<boolean>(false);
   const formattedTotalFunds = utils.formatUnits(
     BigNumber.from(fund.availableAmount),
     Number(fund.token.decimals)
@@ -200,7 +215,7 @@ export default function FundItem({
         )}
       </Cell>
       <Cell $hasBorder={false} $flexBasis={flexBasisCells[2]}>
-        <InputMaxWrapper>
+        <InputMaxWrapper $hasError={hasWithdrawError}>
           {amountToWithdraw === "0" && (
             <MaxButton
               onClick={() => {
@@ -227,11 +242,13 @@ export default function FundItem({
         <CustomButton
           onClick={async () => {
             try {
+              setHasWithdrawError(false);
               setIsBeingWithdrawn(true);
               const tx = await withdrawFunds();
               await tx?.wait();
             } catch (error) {
               console.error(error);
+              setHasWithdrawError(true);
             } finally {
               setIsBeingWithdrawn(false);
               reload();
@@ -254,15 +271,18 @@ export default function FundItem({
               setAmountToDeposit(e.target.value);
             }}
             value={amountToDeposit}
+            $hasError={hasDepositError}
           ></Input>
           <CustomButton
             onClick={async () => {
               try {
+                setHasDepositError(false);
                 setIsBeingDeposit(true);
                 const tx = await depositFunds();
                 await tx?.wait();
               } catch (error) {
                 console.error(error);
+                setHasDepositError(true);
               } finally {
                 setIsBeingDeposit(false);
                 reload();

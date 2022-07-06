@@ -6,12 +6,7 @@ import Button from "../../../components/ui/Button";
 import { colors } from "../../../lib/styles/colors";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 import { useSellerToggle } from "../private/Toogle/SellerToggleContext";
-import FundItem, {
-  Cell,
-  fundsBorderRadius,
-  Input,
-  shakeKeyframes
-} from "./FundItem";
+import FundItem, { Cell, fundsBorderRadius, Input } from "./FundItem";
 import useFunds from "./useFunds";
 
 const Root = styled.div`
@@ -51,13 +46,6 @@ const ButtonCell = styled(Cell)`
 
 const TokenInput = styled(Input)`
   width: 100%;
-  ${({ $hasError }) =>
-    $hasError &&
-    `
-    animation: shake 0.1s; 
-    `}
-
-  ${shakeKeyframes}
 `;
 
 const CustomButton = styled(Button)`
