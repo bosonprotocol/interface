@@ -86,6 +86,30 @@ export const CustomButton = styled(Button)`
   display: flex;
 `;
 
+const InputMaxWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  border-radius: ${fundsBorderRadius};
+  border: 0.0625rem solid ${colors.darkGrey};
+
+  input {
+    border: none;
+    flex: 1 1 100%;
+  }
+`;
+
+const MaxButton = styled.button.attrs({
+  type: "button"
+})`
+  all: unset;
+  cursor: pointer;
+  padding-left: 0.625rem;
+  text-decoration: underline;
+`;
+
 const Spinner = styled(ImSpinner2)`
   animation: spin 2s infinite linear;
   @keyframes spin {
@@ -135,21 +159,11 @@ export default function FundItem({
     BigNumber.from(fund.availableAmount),
     Number(fund.token.decimals)
   );
-  const [amountToWithdraw, setAmountToWithdraw] =
-    useState<string>(formattedTotalFunds);
-  // const withdrawAmount = getNumberWithoutDecimals(
-  //   amountToWithdraw,
-  //   fund.token.decimals
-  // );
-
+  const [amountToWithdraw, setAmountToWithdraw] = useState<string>("0");
   const withdrawNoDecimals = getNumberWithoutDecimals(
     amountToWithdraw,
     fund.token.decimals
   );
-  // const formattedToWithdraw = utils.formatUnits(
-  //   BigNumber.from(withdrawNoDecimals + ""),
-  //   Number(fund.token.decimals)
-  // );
   const [amountToDeposit, setAmountToDeposit] = useState<string>("0");
 
   const withdrawFunds = useWithdrawFunds({
@@ -186,19 +200,30 @@ export default function FundItem({
         )}
       </Cell>
       <Cell $hasBorder={false} $flexBasis={flexBasisCells[2]}>
-        <Input
-          type="number"
-          onChange={(e) => {
-            const v = Math.min(
-              Number(e.target.value),
-              getNumberWithDecimals(fund.availableAmount, fund.token.decimals)
-            );
-            setAmountToWithdraw(v + "");
-          }}
-          value={amountToWithdraw}
-          step={tokenStep}
-          min={0}
-        ></Input>
+        <InputMaxWrapper>
+          {amountToWithdraw === "0" && (
+            <MaxButton
+              onClick={() => {
+                setAmountToWithdraw(formattedTotalFunds);
+              }}
+            >
+              max
+            </MaxButton>
+          )}
+          <Input
+            type="number"
+            onChange={(e) => {
+              const v = Math.min(
+                Number(e.target.value),
+                getNumberWithDecimals(fund.availableAmount, fund.token.decimals)
+              );
+              setAmountToWithdraw(v + "");
+            }}
+            value={amountToWithdraw}
+            step={tokenStep}
+            min={0}
+          ></Input>
+        </InputMaxWrapper>
         <CustomButton
           onClick={async () => {
             try {

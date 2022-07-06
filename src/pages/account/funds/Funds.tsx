@@ -42,6 +42,7 @@ const HeaderCell = styled(Cell)`
 const ButtonCell = styled(Cell)`
   button {
     width: 100%;
+    height: 1.875rem;
     div {
       justify-content: center;
     }
@@ -60,7 +61,12 @@ const TokenInput = styled(Input)`
 `;
 
 const CustomButton = styled(Button)`
+  padding: 0;
   border-radius: ${fundsBorderRadius};
+  * {
+    height: 100%;
+    border-radius: ${fundsBorderRadius};
+  }
 `;
 
 interface Props {
