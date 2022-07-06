@@ -76,6 +76,10 @@ export const Input = styled.input<{ $hasError?: boolean }>`
   font-weight: 500;
   line-height: 1.5rem;
 
+  :disabled {
+    cursor: not-allowed;
+  }
+
   ${({ $hasError }) =>
     $hasError &&
     `
@@ -235,6 +239,7 @@ export default function FundItem({
               setAmountToWithdraw(v + "");
             }}
             value={amountToWithdraw}
+            disabled={isBeingWithdrawn}
             step={tokenStep}
             min={0}
           ></Input>
@@ -246,6 +251,7 @@ export default function FundItem({
               setIsBeingWithdrawn(true);
               const tx = await withdrawFunds();
               await tx?.wait();
+              setAmountToWithdraw("0");
             } catch (error) {
               console.error(error);
               setHasWithdrawError(true);
@@ -272,6 +278,7 @@ export default function FundItem({
             }}
             value={amountToDeposit}
             $hasError={hasDepositError}
+            disabled={isBeingDeposit}
           ></Input>
           <CustomButton
             onClick={async () => {
@@ -280,6 +287,7 @@ export default function FundItem({
                 setIsBeingDeposit(true);
                 const tx = await depositFunds();
                 await tx?.wait();
+                setAmountToDeposit("0");
               } catch (error) {
                 console.error(error);
                 setHasDepositError(true);
