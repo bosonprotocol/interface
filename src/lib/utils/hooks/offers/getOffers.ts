@@ -39,8 +39,8 @@ export const getOffers = async (props: UseOffersProps) => {
     orderDirection: "asc",
     quantityAvailable_lte: props.quantityAvailable_lte,
     type: props.type,
-    sellerWhitelist: props.sellerWhitelist,
-    offerWhitelist: props.offerWhitelist,
+    sellerWhitelist: props.sellerWhitelist || [],
+    offerWhitelist: props.offerWhitelist || [],
     first: props.first,
     skip: props.skip
   };
@@ -77,8 +77,8 @@ export async function getOfferById(
     name_contains_nocase: props.name || "",
     exchangeToken: props.exchangeTokenAddress,
     sellerId: props.sellerId,
-    sellerWhitelist: props.sellerWhitelist,
-    offerWhitelist: props.offerWhitelist
+    sellerWhitelist: props.sellerWhitelist || [],
+    offerWhitelist: props.offerWhitelist || []
   };
 
   const getOffersQueryArgs = {
@@ -109,8 +109,12 @@ async function fetchWhitelistOffers(
   >,
   queryVars: Record<string, unknown>
 ) {
-  const sellerWhitelist = props.enableWhitelists ? props.sellerWhitelist : null;
-  const offerWhitelist = props.enableWhitelists ? props.offerWhitelist : null;
+  const sellerWhitelist = props.enableWhitelists
+    ? props.sellerWhitelist || []
+    : null;
+  const offerWhitelist = props.enableWhitelists
+    ? props.offerWhitelist || []
+    : null;
 
   const getSellerWhitelistOffersQuery = buildGetOffersQuery({
     ...getOffersQueryArgs,

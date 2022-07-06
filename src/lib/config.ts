@@ -23,7 +23,7 @@ export const CONFIG = {
 
 function stringToBoolean(value?: string) {
   if (typeof value === "string") {
-    return ["1", "true"].includes(value) ? true : false;
+    return ["1", "true"].includes(value);
   }
 
   return Boolean(value);

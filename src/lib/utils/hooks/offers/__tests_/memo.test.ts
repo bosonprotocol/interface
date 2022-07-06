@@ -37,8 +37,9 @@ describe("#makeMemoizedMergeAndSortOffers()", () => {
     // remove duplicates
     expect(mergedAndSortedOffers.length).toBe(10);
     // correct order
-    expect(mergedAndSortedOffers[0].id).toBe("000");
-    expect(mergedAndSortedOffers.at(-1)?.id).toBe("009");
+    for (let i = 0; i < 10; i++) {
+      expect(mergedAndSortedOffers[i].id).toBe(`00${i}`);
+    }
   });
 
   test("memoize previous results", () => {
