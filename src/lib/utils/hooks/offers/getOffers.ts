@@ -140,10 +140,19 @@ async function fetchWhitelistOffers(
     offerWhitelistResult
   );
 
-  return offers.slice(
-    props.skip,
-    props.first && props.skip ? props.first + props.skip : undefined
-  );
+  return offers.slice(props.skip, getOffersSliceEnd(props.skip, props.first));
+}
+
+function getOffersSliceEnd(skip?: number, first?: number) {
+  if (skip && first) {
+    return skip + first;
+  }
+
+  if (!skip && first) {
+    return first;
+  }
+
+  return undefined;
 }
 
 function getMergedAndSortedCacheKey(props: UseOffersProps) {
