@@ -9,26 +9,28 @@ import { colors } from "../../../lib/styles/colors";
 import useDepositFunds from "./useDepositFunds";
 import useWithdrawFunds from "./useWithdrawFunds";
 
+export const fundsBorderRadius = "0.3125rem";
+
 export const shakeKeyframes = `
-@keyframes shake {
-  0% { transform: translate(1px, 1px) rotate(0deg); }
-  10% { transform: translate(-1px, -2px) rotate(-1deg); }
-  20% { transform: translate(-3px, 0px) rotate(1deg); }
-  30% { transform: translate(3px, 2px) rotate(0deg); }
-  40% { transform: translate(1px, -1px) rotate(1deg); }
-  50% { transform: translate(-1px, 2px) rotate(-1deg); }
-  60% { transform: translate(-3px, 1px) rotate(0deg); }
-  70% { transform: translate(3px, 1px) rotate(-1deg); }
-  80% { transform: translate(-1px, -1px) rotate(1deg); }
-  90% { transform: translate(1px, 2px) rotate(0deg); }
-  100% { transform: translate(1px, -2px) rotate(-1deg); }
-}
+  @keyframes shake {
+    0% { transform: translate(0.0625rem, 0.0625rem) rotate(0deg); }
+    10% { transform: translate(-0.0625rem, -0.125rem) rotate(-1deg); }
+    20% { transform: translate(-0.1875rem, 0) rotate(1deg); }
+    30% { transform: translate(0.1875rem, 0.125rem) rotate(0deg); }
+    40% { transform: translate(0.0625rem, -0.0625rem) rotate(1deg); }
+    50% { transform: translate(-0.0625rem, 0.125rem) rotate(-1deg); }
+    60% { transform: translate(-0.1875rem, 0.0625rem) rotate(0deg); }
+    70% { transform: translate(0.1875rem, 0.0625rem) rotate(-1deg); }
+    80% { transform: translate(-0.0625rem, -0.0625rem) rotate(1deg); }
+    90% { transform: translate(0.0625rem, 0.125rem) rotate(0deg); }
+    100% { transform: translate(0.0625rem, -0.125rem) rotate(-1deg); }
+  }
 `;
 
 const Table = styled.div<{ $isHighlighted: boolean }>`
   display: flex;
   justify-content: space-between;
-  gap: 5px;
+  gap: 0.3125rem;
   ${({ $isHighlighted }) =>
     $isHighlighted &&
     `* {
@@ -41,9 +43,14 @@ export const Cell = styled.div<{
   $hasBorder?: boolean;
   $flexBasis: number;
 }>`
-  ${({ $hasBorder }) => $hasBorder && "border: 1px solid black;"}
-  border-radius: 10px;
-  gap: 2px;
+  ${({ $hasBorder }) =>
+    $hasBorder &&
+    `
+    border: 0.0625rem solid black;
+    border-radius: ${fundsBorderRadius};
+    `}
+
+  gap: 0.125rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -51,28 +58,32 @@ export const Cell = styled.div<{
   flex-grow: 0;
   flex-shrink: 1;
   overflow: hidden;
-  padding: 0 1px;
+  padding: 0 0.0625rem;
 `;
 
 export const Input = styled.input<{ $hasError?: boolean }>`
   width: 50%;
-  font-size: 16px;
+  height: 100%;
+  font-size: 1rem;
   background: transparent;
-  border-radius: 5px;
-  padding: 0 10px;
-  border: 1px solid ${colors.darkGrey};
+  border-radius: ${fundsBorderRadius};
+  padding: 0 0.625rem;
+  border: 0.0625rem solid ${colors.darkGrey};
 
   font-family: "Plus Jakarta Sans";
   font-style: normal;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 500;
-  line-height: 24px;
+  line-height: 1.5rem;
 
-  ${({ $hasError }) => $hasError && `border: 1px solid ${colors.red};`}
+  ${({ $hasError }) => $hasError && `border: 0.0625rem solid ${colors.red};`}
 `;
 
 export const CustomButton = styled(Button)`
-  border-radius: 10px;
+  border-radius: ${fundsBorderRadius};
+  width: 50%;
+  justify-content: center;
+  display: flex;
 `;
 
 const Spinner = styled(ImSpinner2)`
@@ -94,8 +105,10 @@ interface Props {
   fund: FundsEntityFieldsFragment;
   isHighlighted: boolean;
   isAllFundsBeingWithdrawn: boolean;
-  flexBasisCells: [number, number, number, number];
+  sellerFlexBasisCells: [number, number, number, number];
+  buyerFlexBasisCells: [number, number, number];
   reload: () => void;
+  isTabSellerSelected: boolean;
 }
 
 const getNumberWithoutDecimals = (value: string, decimals: string) => {
@@ -109,7 +122,9 @@ const getNumberWithDecimals = (value: string, decimals: string) => {
 export default function FundItem({
   accountId,
   fund,
-  flexBasisCells,
+  buyerFlexBasisCells,
+  isTabSellerSelected,
+  sellerFlexBasisCells,
   isHighlighted,
   isAllFundsBeingWithdrawn,
   reload
@@ -156,6 +171,9 @@ export default function FundItem({
     tokenAddress: fund.token.address
   });
   const tokenStep = 10 ** -Number(fund.token.decimals);
+  const flexBasisCells = isTabSellerSelected
+    ? sellerFlexBasisCells
+    : buyerFlexBasisCells;
   return (
     <Table $isHighlighted={isHighlighted}>
       <Cell $hasBorder $flexBasis={flexBasisCells[0]}>
@@ -182,7 +200,6 @@ export default function FundItem({
           min={0}
         ></Input>
         <CustomButton
-          style={{ width: "50%", justifyContent: "center", display: "flex" }}
           onClick={async () => {
             try {
               setIsBeingWithdrawn(true);
@@ -202,37 +219,38 @@ export default function FundItem({
           Withdraw
         </CustomButton>
       </Cell>
-      <Cell $hasBorder={false} $flexBasis={flexBasisCells[3]}>
-        <Input
-          type="number"
-          step={tokenStep}
-          min={0}
-          onChange={(e) => {
-            setAmountToDeposit(e.target.value);
-          }}
-          value={amountToDeposit}
-        ></Input>
-        <CustomButton
-          style={{ width: "50%", justifyContent: "center", display: "flex" }}
-          onClick={async () => {
-            try {
-              setIsBeingDeposit(true);
-              const tx = await depositFunds();
-              await tx?.wait();
-            } catch (error) {
-              console.error(error);
-            } finally {
-              setIsBeingDeposit(false);
-              reload();
-            }
-          }}
-          theme="secondary"
-          size="small"
-          disabled={isBeingDeposit}
-        >
-          Deposit
-        </CustomButton>
-      </Cell>
+      {isTabSellerSelected && (
+        <Cell $hasBorder={false} $flexBasis={sellerFlexBasisCells[3]}>
+          <Input
+            type="number"
+            step={tokenStep}
+            min={0}
+            onChange={(e) => {
+              setAmountToDeposit(e.target.value);
+            }}
+            value={amountToDeposit}
+          ></Input>
+          <CustomButton
+            onClick={async () => {
+              try {
+                setIsBeingDeposit(true);
+                const tx = await depositFunds();
+                await tx?.wait();
+              } catch (error) {
+                console.error(error);
+              } finally {
+                setIsBeingDeposit(false);
+                reload();
+              }
+            }}
+            theme="secondary"
+            size="small"
+            disabled={isBeingDeposit}
+          >
+            Deposit
+          </CustomButton>
+        </Cell>
+      )}
     </Table>
   );
 }

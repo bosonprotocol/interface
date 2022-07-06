@@ -21,7 +21,7 @@ const Headers = styled.div`
 `;
 const Content = styled.div<{ isPrivateProfile: boolean }>`
   margin: ${({ isPrivateProfile }) =>
-    isPrivateProfile ? "2rem 10%" : "2rem 0%"};
+    isPrivateProfile ? "2rem 7%" : "2rem 0%"};
 `;
 const HeaderTab = styled.div<{ isPrivateProfile: boolean }>`
   display: flex;
@@ -55,7 +55,6 @@ const TabTitle = styled.div<{ $isActive: boolean }>`
     border-bottom: 3px solid;
     border-color: ${({ $isActive }) =>
       $isActive ? colors.green : "transparent"};
-    color: ${({ $isActive }) => ($isActive ? colors.green : "inherit")};
   }
 `;
 

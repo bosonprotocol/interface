@@ -8,9 +8,9 @@ const Container = styled.div`
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  padding: 16px 12px;
-  border-radius: 6px;
-  gap: 4px;
+  padding: 1rem 0.75rem;
+  border-radius: 0.375rem;
+  gap: 0.25rem;
 `;
 
 const ToggleTabs = styled.div`
@@ -19,22 +19,28 @@ const ToggleTabs = styled.div`
   max-width: 30%;
 `;
 
-const ToggleTab = styled("button")<{ $isLeft: boolean; $isSelected: boolean }>`
+const ToggleTab = styled("button")<{
+  $isSelected: boolean;
+}>`
   all: unset;
   cursor: pointer;
-  border: 1px solid ${colors.primary};
-  border-radius: ${(props) =>
-    props.$isLeft ? "30px 0 0 30px" : "0 30px 30px 0"};
+  border: 0.0625rem solid ${colors.bosonSkyBlue};
+  :first-child {
+    border-radius: 1.875rem 0 0 1.875rem;
+  }
+  :last-child {
+    border-radius: 0 1.875rem 1.875rem 0;
+  }
   background-color: ${(props) =>
-    props.$isSelected ? colors.primary : colors.primaryBgColor};
+    props.$isSelected ? colors.bosonSkyBlue : colors.navy};
   ${(props) =>
     props.$isSelected
-      ? "box-shadow: inset 1px 2px 5px #777;"
-      : `box-shadow: 0px 2px 9px -3px ${colors.primary};`}
-  padding: 7px;
-  font-size: 14px;
-  color: ${(props) => (props.$isSelected ? colors.black : colors.primary)};
-  width: 200px;
+      ? "box-shadow: inset 0.0625rem 0.125rem 0.3125rem #777;"
+      : `box-shadow: 0 0.125rem 0.5625rem -0.1875rem ${colors.bosonSkyBlue};`}
+  padding: 0.4375rem;
+  font-size: 0.875rem;
+  color: ${(props) => (props.$isSelected ? colors.black : colors.bosonSkyBlue)};
+  width: 12.5rem;
   max-width: 100%;
   text-align: center;
 `;
@@ -42,23 +48,25 @@ const ToggleTab = styled("button")<{ $isLeft: boolean; $isSelected: boolean }>`
 interface Props {
   isTabSellerSelected: boolean;
   setTabSellerSelected: (selected: boolean) => void;
+  $toggleTabStyles?: React.CSSProperties;
 }
 export default function Toggle({
   isTabSellerSelected,
-  setTabSellerSelected
+  setTabSellerSelected,
+  $toggleTabStyles
 }: Props) {
   return (
     <Container>
       <ToggleTabs>
         <ToggleTab
-          $isLeft
+          style={$toggleTabStyles}
           $isSelected={!isTabSellerSelected}
           onClick={() => setTabSellerSelected(false)}
         >
           Buyer
         </ToggleTab>
         <ToggleTab
-          $isLeft={false}
+          style={$toggleTabStyles}
           $isSelected={isTabSellerSelected}
           onClick={() => setTabSellerSelected(true)}
         >

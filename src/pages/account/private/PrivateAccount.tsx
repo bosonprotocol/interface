@@ -74,6 +74,9 @@ export default function PrivateAccount({ account }: { account: string }) {
           <Toggle
             isTabSellerSelected={isTabSellerSelected}
             setTabSellerSelected={setTabSellerSelected}
+            $toggleTabStyles={{
+              width: "5.8125rem"
+            }}
           />
         </Tabs>
       </SellerToggleContext.Provider>

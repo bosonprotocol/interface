@@ -6,20 +6,29 @@ import styled from "styled-components";
 import Button from "../../../components/ui/Button";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 import { useSellerToggle } from "../private/Toogle/SellerToggleContext";
-import FundItem, { Cell, Input, shakeKeyframes } from "./FundItem";
+import FundItem, {
+  Cell,
+  fundsBorderRadius,
+  Input,
+  shakeKeyframes
+} from "./FundItem";
 import useFunds from "./useFunds";
 
 const Root = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 5px;
+  gap: 0.3125rem;
 `;
 
 const Row = styled.div`
   display: flex;
   justify-content: center;
-  gap: 5px;
+  gap: 0.3125rem;
+`;
+
+const HeaderCell = styled(Cell)`
+  font-size: 1.125rem;
 `;
 
 const ButtonCell = styled(Cell)`
@@ -41,12 +50,18 @@ const TokenInput = styled(Input)`
 
   ${shakeKeyframes}
 `;
+
+const CustomButton = styled(Button)`
+  border-radius: ${fundsBorderRadius};
+`;
+
 interface Props {
   sellerId: string;
   buyerId: string;
 }
 
-const flexBasisCells: [number, number, number, number] = [15, 25, 30, 30];
+const buyerFlexBasisCells: [number, number, number] = [15, 42.5, 42.5];
+const sellerFlexBasisCells: [number, number, number, number] = [15, 25, 30, 30];
 
 export default function Funds({ sellerId, buyerId }: Props) {
   const { isTabSellerSelected } = useSellerToggle();
@@ -59,6 +74,7 @@ export default function Funds({ sellerId, buyerId }: Props) {
   const core = useCoreSDK() || ({} as CoreSDK);
 
   const accountId = isTabSellerSelected ? sellerId : buyerId;
+
   const { funds, reload } = useFunds(accountId);
   const [uiFunds, setUiFunds] = useState<FundsEntityFieldsFragment[]>(funds);
   const highlightToken = (tokenName: string) => {
@@ -120,18 +136,30 @@ export default function Funds({ sellerId, buyerId }: Props) {
   return (
     <Root>
       {uiFunds.length ? (
-        <Row>
-          <Cell $flexBasis={flexBasisCells[0]} $hasBorder={false} />
-          <Cell $flexBasis={flexBasisCells[1]} $hasBorder>
-            Protocol Balance
-          </Cell>
-          <Cell $flexBasis={flexBasisCells[2]} $hasBorder>
-            Withdraw Funds
-          </Cell>
-          <Cell $flexBasis={flexBasisCells[3]} $hasBorder>
-            Deposit Funds
-          </Cell>
-        </Row>
+        isTabSellerSelected ? (
+          <Row>
+            <Cell $flexBasis={sellerFlexBasisCells[0]} $hasBorder={false} />
+            <HeaderCell $flexBasis={sellerFlexBasisCells[1]} $hasBorder>
+              Protocol Balance
+            </HeaderCell>
+            <HeaderCell $flexBasis={sellerFlexBasisCells[2]} $hasBorder>
+              Withdraw Funds
+            </HeaderCell>
+            <HeaderCell $flexBasis={sellerFlexBasisCells[3]} $hasBorder>
+              Deposit Funds
+            </HeaderCell>
+          </Row>
+        ) : (
+          <Row>
+            <Cell $flexBasis={buyerFlexBasisCells[0]} $hasBorder={false} />
+            <HeaderCell $flexBasis={buyerFlexBasisCells[1]} $hasBorder>
+              Protocol Balance
+            </HeaderCell>
+            <HeaderCell $flexBasis={buyerFlexBasisCells[2]} $hasBorder>
+              Withdraw Funds
+            </HeaderCell>
+          </Row>
+        )
       ) : (
         <></>
       )}
@@ -144,18 +172,24 @@ export default function Funds({ sellerId, buyerId }: Props) {
             isHighlighted={highlightedToken === fund.token.address}
             accountId={accountId}
             fund={fund}
-            flexBasisCells={flexBasisCells}
+            sellerFlexBasisCells={sellerFlexBasisCells}
+            buyerFlexBasisCells={buyerFlexBasisCells}
+            isTabSellerSelected={isTabSellerSelected}
           />
         ))
       ) : (
         <p>No funds for connected wallet.</p>
       )}
       <Row>
-        <Cell $flexBasis={flexBasisCells[0]} $hasBorder>
+        <Cell $flexBasis={sellerFlexBasisCells[0]} $hasBorder>
           Add new +
         </Cell>
         <Cell
-          $flexBasis={flexBasisCells[1] + flexBasisCells[2]}
+          $flexBasis={
+            isTabSellerSelected
+              ? sellerFlexBasisCells[1] + sellerFlexBasisCells[2]
+              : buyerFlexBasisCells[1]
+          }
           $hasBorder={false}
         >
           <TokenInput
@@ -168,28 +202,54 @@ export default function Funds({ sellerId, buyerId }: Props) {
             $hasError={hasErrorTokenInput}
           />
         </Cell>
-        <ButtonCell $flexBasis={flexBasisCells[3]}>
-          <Button
+        <ButtonCell
+          $flexBasis={
+            isTabSellerSelected
+              ? sellerFlexBasisCells[3]
+              : buyerFlexBasisCells[2]
+          }
+        >
+          <CustomButton
             onClick={addNew}
             theme="secondary"
             size="small"
             disabled={!newTokenAddress.length}
           >
             Add
-          </Button>
+          </CustomButton>
         </ButtonCell>
       </Row>
       {uiFunds.length ? (
-        <Row>
-          <Cell $flexBasis={flexBasisCells[0]} />
-          <Cell $flexBasis={flexBasisCells[1]} />
-          <ButtonCell $flexBasis={flexBasisCells[2]}>
-            <Button onClick={withdrawAll} theme="secondary" size="small">
-              Withdraw all funds
-            </Button>
-          </ButtonCell>
-          <Cell $flexBasis={flexBasisCells[3]} />
-        </Row>
+        isTabSellerSelected ? (
+          <Row>
+            <Cell $flexBasis={sellerFlexBasisCells[0]} />
+            <Cell $flexBasis={sellerFlexBasisCells[1]} />
+            <ButtonCell $flexBasis={sellerFlexBasisCells[2]}>
+              <CustomButton
+                onClick={withdrawAll}
+                theme="secondary"
+                size="small"
+              >
+                Withdraw all funds
+              </CustomButton>
+            </ButtonCell>
+            <Cell $flexBasis={sellerFlexBasisCells[3]} />
+          </Row>
+        ) : (
+          <Row>
+            <Cell $flexBasis={buyerFlexBasisCells[0]} />
+            <Cell $flexBasis={buyerFlexBasisCells[1]} />
+            <ButtonCell $flexBasis={buyerFlexBasisCells[2]}>
+              <CustomButton
+                onClick={withdrawAll}
+                theme="secondary"
+                size="small"
+              >
+                Withdraw all funds
+              </CustomButton>
+            </ButtonCell>
+          </Row>
+        )
       ) : (
         <></>
       )}
