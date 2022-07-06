@@ -17,9 +17,8 @@ export function useInfiniteOffers(
     offerWhitelist: CONFIG.offerWhitelist,
     enableWhitelists: CONFIG.enableWhitelists
   };
-  const queryKey = ["offers", props];
   return useInfiniteQuery(
-    queryKey,
+    ["offers", "infinite", props.sellerId],
     async (context) => {
       const skip = context.pageParam || 0;
       return getOffers({
@@ -28,7 +27,9 @@ export function useInfiniteOffers(
       });
     },
     {
-      ...options
+      ...options,
+      refetchOnWindowFocus: false,
+      refetchOnMount: false
     }
   );
 }
