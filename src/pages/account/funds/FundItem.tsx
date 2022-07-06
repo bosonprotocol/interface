@@ -171,8 +171,10 @@ export default function FundItem({
   reload
 }: Props) {
   const [isBeingWithdrawn, setIsBeingWithdrawn] = useState<boolean>(false);
+  const [isWithdrawInvalid, setIsWithdrawInvalid] = useState<boolean>(false);
   const [hasWithdrawError, setHasWithdrawError] = useState<boolean>(false);
   const [isBeingDeposit, setIsBeingDeposit] = useState<boolean>(false);
+  const [isDepositInvalid, setIsDepositInvalid] = useState<boolean>(false);
   const [hasDepositError, setHasDepositError] = useState<boolean>(false);
   const formattedTotalFunds = utils.formatUnits(
     BigNumber.from(fund.availableAmount),
@@ -190,7 +192,10 @@ export default function FundItem({
     tokensToWithdraw: [
       {
         address: fund.token.address,
-        amount: BigNumber.from(withdrawNoDecimals + "")
+        amount:
+          isWithdrawInvalid || !Number(amountToWithdraw)
+            ? BigNumber.from("0")
+            : BigNumber.from(withdrawNoDecimals + "")
       }
     ]
   });
@@ -219,8 +224,8 @@ export default function FundItem({
         )}
       </Cell>
       <Cell $hasBorder={false} $flexBasis={flexBasisCells[2]}>
-        <InputMaxWrapper $hasError={hasWithdrawError}>
-          {amountToWithdraw === "0" && (
+        <InputMaxWrapper $hasError={hasWithdrawError || isWithdrawInvalid}>
+          {!Number(amountToWithdraw) && (
             <MaxButton
               onClick={() => {
                 setAmountToWithdraw(formattedTotalFunds);
@@ -232,10 +237,14 @@ export default function FundItem({
           <Input
             type="number"
             onChange={(e) => {
+              setIsWithdrawInvalid(false);
               const v = Math.min(
-                Number(e.target.value),
+                e.target.valueAsNumber,
                 getNumberWithDecimals(fund.availableAmount, fund.token.decimals)
               );
+              if (v < tokenStep) {
+                setIsWithdrawInvalid(true);
+              }
               setAmountToWithdraw(v + "");
             }}
             value={amountToWithdraw}
@@ -262,7 +271,7 @@ export default function FundItem({
           }}
           theme="secondary"
           size="small"
-          disabled={isBeingWithdrawn}
+          disabled={isBeingWithdrawn || isWithdrawInvalid}
         >
           Withdraw
         </CustomButton>
@@ -274,10 +283,16 @@ export default function FundItem({
             step={tokenStep}
             min={0}
             onChange={(e) => {
-              setAmountToDeposit(e.target.value);
+              const v = e.target.valueAsNumber;
+              setIsDepositInvalid(false);
+
+              if (v < tokenStep) {
+                setIsDepositInvalid(true);
+              }
+              setAmountToDeposit(v + "");
             }}
             value={amountToDeposit}
-            $hasError={hasDepositError}
+            $hasError={hasDepositError || isDepositInvalid}
             disabled={isBeingDeposit}
           ></Input>
           <CustomButton
@@ -298,7 +313,7 @@ export default function FundItem({
             }}
             theme="secondary"
             size="small"
-            disabled={isBeingDeposit}
+            disabled={isBeingDeposit || isDepositInvalid}
           >
             Deposit
           </CustomButton>

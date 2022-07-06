@@ -159,7 +159,7 @@ export default function Funds({ sellerId, buyerId }: Props) {
           <Row>
             <Cell $flexBasis={buyerFlexBasisCells[0]} $hasBorder={false} />
             <HeaderCell $flexBasis={buyerFlexBasisCells[1]} $hasBorder>
-              Protocol Balance
+              Withdrawable Escrow
             </HeaderCell>
             <HeaderCell $flexBasis={buyerFlexBasisCells[2]} $hasBorder>
               Withdraw Funds
@@ -173,7 +173,7 @@ export default function Funds({ sellerId, buyerId }: Props) {
         uiFunds.map((fund) => (
           <FundItem
             isAllFundsBeingWithdrawn={isAllFundsBeingWithdrawn}
-            key={fund.token.address}
+            key={fund.token.address + "-" + accountId}
             reload={reload}
             isHighlighted={highlightedToken === fund.token.address}
             accountId={accountId}
