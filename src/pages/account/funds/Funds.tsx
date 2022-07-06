@@ -194,7 +194,7 @@ export default function Funds({ sellerId, buyerId }: Props) {
       )}
       <Row $hasShade>
         <Cell $flexBasis={sellerFlexBasisCells[0]} $hasBorder>
-          Add new +
+          Add New +
         </Cell>
         <Cell
           $flexBasis={
@@ -242,7 +242,7 @@ export default function Funds({ sellerId, buyerId }: Props) {
                 theme="secondary"
                 size="small"
               >
-                Withdraw all funds
+                Withdraw All Funds
               </CustomButton>
             </ButtonCell>
             <Cell $flexBasis={sellerFlexBasisCells[3]} />
@@ -257,7 +257,7 @@ export default function Funds({ sellerId, buyerId }: Props) {
                 theme="secondary"
                 size="small"
               >
-                Withdraw all funds
+                Withdraw All Funds
               </CustomButton>
             </ButtonCell>
           </Row>
