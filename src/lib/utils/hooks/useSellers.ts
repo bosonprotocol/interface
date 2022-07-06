@@ -12,7 +12,7 @@ export function useSellers(props: Props = {}) {
     return accounts.subgraph.getSellers(CONFIG.subgraphUrl, {
       sellersFilter: {
         admin: props.admin,
-        id_in: CONFIG.enableWhitelists ? CONFIG.sellerWhitelist : null
+        id_in: CONFIG.enableWhitelists ? CONFIG.sellerWhitelist : undefined
       },
       sellersOrderBy: subgraph.Seller_OrderBy.SellerId,
       sellersOrderDirection: subgraph.OrderDirection.Asc
