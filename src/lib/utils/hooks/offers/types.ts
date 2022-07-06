@@ -1,5 +1,9 @@
 import { Offer } from "../../../types/offer";
 
+export type WhitelistGetOffersResult = {
+  baseMetadataEntities: { offer: Offer }[];
+};
+
 interface CommonProps {
   name?: string; // TODO: to delete once brand is supported
   brand?: string; // TODO: not supported yet
@@ -9,6 +13,9 @@ interface CommonProps {
   sellerId?: Offer["seller"]["id"];
   first?: number;
   skip?: number;
+  sellerWhitelist?: string[];
+  offerWhitelist?: string[];
+  enableWhitelists?: boolean;
 }
 
 export interface UseOffersProps extends CommonProps {

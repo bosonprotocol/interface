@@ -14,7 +14,11 @@ export const CONFIG = {
   ipfsMetadataUrl:
     process.env.REACT_APP_IPFS_METADATA_URL || "https://ipfs.infura.io:5001",
   sentryDSNUrl:
-    "https://ff9c04ed823a4658bc5de78945961937@o992661.ingest.sentry.io/6455090"
+    "https://ff9c04ed823a4658bc5de78945961937@o992661.ingest.sentry.io/6455090",
+  metaTransactionsApiKey: process.env.REACT_APP_META_TX_API_KEY,
+  sellerWhitelist: parseWhitelist(process.env.REACT_APP_SELLER_WHITELIST),
+  offerWhitelist: parseWhitelist(process.env.REACT_APP_OFFER_WHITELIST),
+  enableWhitelists: stringToBoolean(process.env.REACT_APP_ENABLE_WHITELISTS)
 };
 
 export const coreSdkConfig: Config = {
@@ -33,3 +37,18 @@ export type Config = {
   theGraphIpfsUrl?: string;
   ipfsMetadataUrl: string;
 };
+function stringToBoolean(value?: string) {
+  if (typeof value === "string") {
+    return ["1", "true"].includes(value);
+  }
+
+  return Boolean(value);
+}
+
+function parseWhitelist(value?: string): string[] | undefined {
+  if (value) {
+    return value.split(",");
+  }
+
+  return undefined;
+}

@@ -154,9 +154,7 @@ test.describe("Public Account page", () => {
       expect(offerCount).toStrictEqual(visibleOffersPerPage);
       await scrollDown(page);
       offerCount = await offers.count();
-      expect(offerCount).toStrictEqual(
-        visibleOffersPerPage + secondPageOffers.length
-      );
+      expect(offerCount).toStrictEqual(allOffers.length);
     });
 
     test("should filter out invalid offers", async ({ page }) => {

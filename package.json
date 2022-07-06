@@ -25,10 +25,13 @@
     "coverage:report": "npm run coverage:unit && npm run coverage:e2e",
     "postinstall": "npx playwright install --with-deps chromium"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run prettier && npm run lint"
-    }
+  "lint-staged": {
+    "src/**/*.+(js|json|ts|tsx)": [
+      "npm run lint"
+    ],
+    "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "@bosonprotocol/common": "^1.8.0",
@@ -89,6 +92,7 @@
     "eslint-plugin-unused-imports": "^2.0.0",
     "husky": "^8.0.1",
     "istanbul": "^0.4.5",
+    "lint-staged": "^13.0.3",
     "nyc": "^15.1.0",
     "prettier": "^2.7.1",
     "react-app-rewire-alias": "^1.1.7",

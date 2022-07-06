@@ -1,10 +1,15 @@
 import dayjs from "dayjs";
 
-import { Offer } from "../../../types/offer";
 import { fetchSubgraph } from "../../core-components/subgraph";
-import { checkOfferMetadata } from "../../validators";
-import { getOffersQuery } from "./graphql";
-import { UseOffersProps } from "./types";
+import { buildGetOffersQuery } from "./graphql";
+import { memoMergeAndSortOffers } from "./memo";
+import {
+  UseOfferProps,
+  UseOffersProps,
+  WhitelistGetOffersResult
+} from "./types";
+
+const memoizedMergeAndSortOffers = memoMergeAndSortOffers();
 
 export const getOffers = async (props: UseOffersProps) => {
   const dateNow = Date.now();
@@ -23,8 +28,6 @@ export const getOffers = async (props: UseOffersProps) => {
     : null;
 
   const variables = {
-    first: props.first,
-    skip: props.skip,
     validFromDate_lte: validFromDate_lte,
     validFromDate_gte: validFromDate_gte,
     validUntilDate_lte: validUntilDate_lte,
@@ -35,36 +38,129 @@ export const getOffers = async (props: UseOffersProps) => {
     orderBy: "name",
     orderDirection: "asc",
     quantityAvailable_lte: props.quantityAvailable_lte,
-    type: props.type
+    type: props.type,
+    sellerWhitelist: props.sellerWhitelist || [],
+    offerWhitelist: props.offerWhitelist || [],
+    first: props.first,
+    skip: props.skip
   };
 
-  const result = await fetchSubgraph<{
-    baseMetadataEntities: { offer: Offer }[];
-  }>(
-    getOffersQuery({
-      exchangeToken: !!props.exchangeTokenAddress,
-      sellerId: !!props.sellerId,
-      validFromDate_lte: !!validFromDate_lte,
-      validFromDate_gte: !!validFromDate_gte,
-      validUntilDate_lte: !!validUntilDate_lte,
-      validUntilDate_gte: !!validUntilDate_gte,
-      skip: !!props.skip,
-      quantityAvailable_lte: ![null, undefined].includes(
-        props.quantityAvailable_lte as null
-      ),
-      offer: false
-    }),
+  const getOffersQueryArgs = {
+    exchangeToken: !!props.exchangeTokenAddress,
+    sellerId: !!props.sellerId,
+    validFromDate_lte: !!validFromDate_lte,
+    validFromDate_gte: !!validFromDate_gte,
+    validUntilDate_lte: !!validUntilDate_lte,
+    validUntilDate_gte: !!validUntilDate_gte,
+    skip: !!props.skip,
+    quantityAvailable_lte: ![null, undefined].includes(
+      props.quantityAvailable_lte as null
+    ),
+    offer: false
+  };
+
+  return fetchWhitelistOffers(props, getOffersQueryArgs, variables);
+};
+
+export async function getOfferById(
+  id: string,
+  props: Omit<UseOfferProps, "offerId">
+) {
+  const now = Math.floor(Date.now() / 1000);
+  const validFromDate_lte = props.valid ? now + "" : null;
+  const validUntilDate_gte = props.valid ? now + "" : null;
+
+  const variables = {
+    offer: id,
+    validFromDate_lte: validFromDate_lte,
+    validUntilDate_gte: validUntilDate_gte,
+    name_contains_nocase: props.name || "",
+    exchangeToken: props.exchangeTokenAddress,
+    sellerId: props.sellerId,
+    sellerWhitelist: props.sellerWhitelist || [],
+    offerWhitelist: props.offerWhitelist || []
+  };
+
+  const getOffersQueryArgs = {
+    exchangeToken: !!props.exchangeTokenAddress,
+    sellerId: !!props.sellerId,
+    validFromDate_lte: !!validFromDate_lte,
+    validFromDate_gte: false,
+    validUntilDate_lte: false,
+    validUntilDate_gte: !!validUntilDate_gte,
+    skip: false,
+    quantityAvailable_lte: false,
+    offer: true
+  };
+
+  const [offer] = await fetchWhitelistOffers(
+    props,
+    getOffersQueryArgs,
     variables
   );
-  return result?.baseMetadataEntities?.map((base) => {
-    const isValid = checkOfferMetadata(base.offer);
-    return {
-      ...base.offer,
-      metadata: {
-        ...base.offer.metadata,
-        imageUrl: `https://picsum.photos/seed/${base.offer.id}/700`
-      },
-      isValid
-    } as Offer;
+  return offer;
+}
+
+async function fetchWhitelistOffers(
+  props: UseOffersProps,
+  getOffersQueryArgs: Omit<
+    Parameters<typeof buildGetOffersQuery>[0],
+    "sellerWhitelist" | "offerWhitelist"
+  >,
+  queryVars: Record<string, unknown>
+) {
+  const sellerWhitelist = props.enableWhitelists
+    ? props.sellerWhitelist || []
+    : null;
+  const offerWhitelist = props.enableWhitelists
+    ? props.offerWhitelist || []
+    : null;
+
+  const getSellerWhitelistOffersQuery = buildGetOffersQuery({
+    ...getOffersQueryArgs,
+    sellerWhitelist: !!sellerWhitelist,
+    offerWhitelist: false
   });
-};
+  const getOfferWhitelistOffersQuery = buildGetOffersQuery({
+    ...getOffersQueryArgs,
+    sellerWhitelist: false,
+    offerWhitelist: !!offerWhitelist
+  });
+
+  const [sellerWhitelistResult, offerWhitelistResult] = await Promise.all([
+    fetchSubgraph<WhitelistGetOffersResult>(
+      getSellerWhitelistOffersQuery,
+      queryVars
+    ),
+    fetchSubgraph<WhitelistGetOffersResult>(
+      getOfferWhitelistOffersQuery,
+      queryVars
+    )
+  ]);
+
+  const offers = memoizedMergeAndSortOffers(
+    getMergedAndSortedCacheKey(props),
+    sellerWhitelistResult,
+    offerWhitelistResult
+  );
+
+  return offers.slice(props.skip, getOffersSliceEnd(props.skip, props.first));
+}
+
+function getOffersSliceEnd(skip?: number, first?: number) {
+  if (skip && first) {
+    return skip + first;
+  }
+
+  if (!skip && first) {
+    return first;
+  }
+
+  return undefined;
+}
+
+function getMergedAndSortedCacheKey(props: UseOffersProps) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { first, skip, ...rest } = props;
+  return JSON.stringify(rest);
+}
