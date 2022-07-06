@@ -149,7 +149,7 @@ export default function Funds({ sellerId, buyerId }: Props) {
               Protocol Balance
             </HeaderCell>
             <HeaderCell $flexBasis={sellerFlexBasisCells[2]} $hasBorder>
-              Withdraw Funds
+              Funds available for withdrawal
             </HeaderCell>
             <HeaderCell $flexBasis={sellerFlexBasisCells[3]} $hasBorder>
               Deposit Funds
@@ -162,7 +162,7 @@ export default function Funds({ sellerId, buyerId }: Props) {
               Withdrawable Escrow
             </HeaderCell>
             <HeaderCell $flexBasis={buyerFlexBasisCells[2]} $hasBorder>
-              Withdraw Funds
+              Funds available for withdrawal
             </HeaderCell>
           </Row>
         )
@@ -186,45 +186,47 @@ export default function Funds({ sellerId, buyerId }: Props) {
       ) : (
         <p style={{ marginTop: 0 }}>No funds for connected wallet.</p>
       )}
-      <Row $hasShade>
-        <Cell $flexBasis={sellerFlexBasisCells[0]} $hasBorder>
-          Add New +
-        </Cell>
-        <Cell
-          $flexBasis={
-            isTabSellerSelected
-              ? sellerFlexBasisCells[1] + sellerFlexBasisCells[2]
-              : buyerFlexBasisCells[1]
-          }
-          $hasBorder={false}
-        >
-          <TokenInput
-            placeholder="Enter Token Contract Address"
-            onChange={(e) => {
-              setErrorTokenInput(false);
-              setNewTokenAddress(e.target.value);
-            }}
-            value={newTokenAddress}
-            $hasError={hasErrorTokenInput}
-          />
-        </Cell>
-        <ButtonCell
-          $flexBasis={
-            isTabSellerSelected
-              ? sellerFlexBasisCells[3]
-              : buyerFlexBasisCells[2]
-          }
-        >
-          <CustomButton
-            onClick={addNew}
-            theme="secondary"
-            size="small"
-            disabled={!newTokenAddress.length}
+      {isTabSellerSelected && (
+        <Row $hasShade>
+          <Cell $flexBasis={sellerFlexBasisCells[0]} $hasBorder>
+            Add New +
+          </Cell>
+          <Cell
+            $flexBasis={
+              isTabSellerSelected
+                ? sellerFlexBasisCells[1] + sellerFlexBasisCells[2]
+                : buyerFlexBasisCells[1]
+            }
+            $hasBorder={false}
           >
-            Add
-          </CustomButton>
-        </ButtonCell>
-      </Row>
+            <TokenInput
+              placeholder="Enter Token Contract Address"
+              onChange={(e) => {
+                setErrorTokenInput(false);
+                setNewTokenAddress(e.target.value);
+              }}
+              value={newTokenAddress}
+              $hasError={hasErrorTokenInput}
+            />
+          </Cell>
+          <ButtonCell
+            $flexBasis={
+              isTabSellerSelected
+                ? sellerFlexBasisCells[3]
+                : buyerFlexBasisCells[2]
+            }
+          >
+            <CustomButton
+              onClick={addNew}
+              theme="secondary"
+              size="small"
+              disabled={!newTokenAddress.length}
+            >
+              Add
+            </CustomButton>
+          </ButtonCell>
+        </Row>
+      )}
       {uiFunds.length ? (
         isTabSellerSelected ? (
           <Row>

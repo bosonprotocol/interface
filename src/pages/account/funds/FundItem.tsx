@@ -152,11 +152,17 @@ interface Props {
   isTabSellerSelected: boolean;
 }
 
-const getNumberWithoutDecimals = (value: string, decimals: string) => {
-  return Number(value) * 10 ** Number(decimals);
+const getNumberWithoutDecimals = (value: string, decimals: string): string => {
+  const valueAsNumber = Number(value);
+  if (!Number.isInteger(valueAsNumber)) {
+    return (valueAsNumber * 10 ** Number(decimals)).toString();
+  }
+  return BigNumber.from(value)
+    .mul(BigNumber.from(10).pow(BigNumber.from(decimals)))
+    .toString();
 };
 
-const getNumberWithDecimals = (value: string, decimals: string) => {
+const getNumberWithDecimals = (value: string, decimals: string): number => {
   return Number(value) * 10 ** -Number(decimals);
 };
 
@@ -176,17 +182,8 @@ export default function FundItem({
   const [isBeingDeposit, setIsBeingDeposit] = useState<boolean>(false);
   const [isDepositInvalid, setIsDepositInvalid] = useState<boolean>(false);
   const [hasDepositError, setHasDepositError] = useState<boolean>(false);
-  const formattedTotalFunds = utils.formatUnits(
-    BigNumber.from(fund.availableAmount),
-    Number(fund.token.decimals)
-  );
   const [amountToWithdraw, setAmountToWithdraw] = useState<string>("0");
-  const withdrawNoDecimals = getNumberWithoutDecimals(
-    amountToWithdraw,
-    fund.token.decimals
-  );
   const [amountToDeposit, setAmountToDeposit] = useState<string>("0");
-
   const withdrawFunds = useWithdrawFunds({
     accountId,
     tokensToWithdraw: [
@@ -195,23 +192,34 @@ export default function FundItem({
         amount:
           isWithdrawInvalid || !Number(amountToWithdraw)
             ? BigNumber.from("0")
-            : BigNumber.from(withdrawNoDecimals + "")
+            : BigNumber.from(
+                getNumberWithoutDecimals(amountToWithdraw, fund.token.decimals)
+              )
       }
     ]
   });
-  const depositAmount = getNumberWithoutDecimals(
-    amountToDeposit,
-    fund.token.decimals
-  );
   const depositFunds = useDepositFunds({
     accountId,
-    amount: BigNumber.from(depositAmount + ""),
+    amount:
+      isDepositInvalid || !Number(amountToDeposit)
+        ? BigNumber.from("0")
+        : BigNumber.from(
+            getNumberWithoutDecimals(amountToDeposit, fund.token.decimals)
+          ),
     tokenAddress: fund.token.address
   });
+
   const tokenStep = 10 ** -Number(fund.token.decimals);
+
   const flexBasisCells = isTabSellerSelected
     ? sellerFlexBasisCells
     : buyerFlexBasisCells;
+
+  const formattedTotalFunds = utils.formatUnits(
+    BigNumber.from(fund.availableAmount),
+    Number(fund.token.decimals)
+  );
+
   return (
     <Table $isHighlighted={isHighlighted}>
       <Cell $hasBorder $flexBasis={flexBasisCells[0]}>
@@ -229,6 +237,7 @@ export default function FundItem({
             <MaxButton
               onClick={() => {
                 setAmountToWithdraw(formattedTotalFunds);
+                setIsWithdrawInvalid(false);
               }}
             >
               max
@@ -237,15 +246,20 @@ export default function FundItem({
           <Input
             type="number"
             onChange={(e) => {
+              const valueStr = e.target.value;
+              const value = e.target.valueAsNumber || 0;
               setIsWithdrawInvalid(false);
-              const v = Math.min(
-                e.target.valueAsNumber,
-                getNumberWithDecimals(fund.availableAmount, fund.token.decimals)
+
+              const availableFundsBig = getNumberWithDecimals(
+                fund.availableAmount,
+                fund.token.decimals
               );
-              if (v < tokenStep) {
+
+              if (value < tokenStep || value > availableFundsBig) {
                 setIsWithdrawInvalid(true);
               }
-              setAmountToWithdraw(v + "");
+
+              setAmountToWithdraw(valueStr);
             }}
             value={amountToWithdraw}
             disabled={isBeingWithdrawn}
@@ -283,13 +297,14 @@ export default function FundItem({
             step={tokenStep}
             min={0}
             onChange={(e) => {
-              const v = e.target.valueAsNumber;
+              const valueStr = e.target.value;
+              const value = e.target.valueAsNumber || 0;
               setIsDepositInvalid(false);
 
-              if (v < tokenStep) {
+              if (value < tokenStep || value > Number.MAX_SAFE_INTEGER) {
                 setIsDepositInvalid(true);
               }
-              setAmountToDeposit(v + "");
+              setAmountToDeposit(valueStr);
             }}
             value={amountToDeposit}
             $hasError={hasDepositError || isDepositInvalid}
