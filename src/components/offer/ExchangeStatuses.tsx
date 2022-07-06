@@ -16,9 +16,12 @@ const Statuses = styled.div`
 const Status = styled.div<{ $background: string; $color: string }>`
   background: ${(props) => props.$background};
   color: ${(props) => props.$color};
-  padding: 2px 10px;
-  border-radius: 50px;
-  font-weight: 800;
+  padding: 0.5rem 1rem;
+  font-family: "Plus Jakarta Sans";
+  font-style: normal;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
 `;
 
 interface Props {

@@ -72,8 +72,8 @@ const ImageContainer = styled.div`
 
   [data-testid="statuses"] {
     position: absolute;
-    right: 5px;
-    top: 5px;
+    top: 1rem;
+    right: -1rem;
     margin: 0 auto;
     justify-content: center;
   }

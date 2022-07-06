@@ -8,11 +8,12 @@ const ImageContainer = styled.div`
   position: relative;
   [data-testid="statuses"] {
     position: absolute;
-    right: 0.25rem;
-    top: 0.35rem;
+    top: 1rem;
+    right: -1rem;
     margin: 0 auto;
     justify-content: center;
     z-index: ${zIndex.OfferStatus};
+    border-radius: 0;
   }
 `;
 
@@ -21,7 +22,7 @@ const OfferWrapper = styled.div`
   ${breakpoint.s} {
     padding: 0 2rem;
   }
-  ${breakpoint.l} {
+  ${breakpoint.m} {
     padding: 0 6rem;
   }
   ${breakpoint.xl} {
@@ -36,6 +37,7 @@ const OfferWrapper = styled.div`
 `;
 
 const OfferGrid = styled.div`
+  position: relative;
   display: grid;
   grid-column-gap: 2rem;
   grid-row-gap: 2rem;
@@ -52,17 +54,6 @@ const OfferGrid = styled.div`
 const StatusContainer = styled.div`
   width: 100%;
   position: absolute;
-`;
-
-const StatusSubContainer = styled.div`
-  max-width: 700px;
-  width: 700px;
-  position: relative;
-  margin: 0 auto;
-
-  ${breakpoint.m} {
-    width: initial;
-  }
 `;
 
 const DarkerBackground = styled.div`
@@ -110,6 +101,5 @@ export {
   OfferGrid,
   OfferWrapper,
   StatusContainer,
-  StatusSubContainer,
   WidgetContainer
 };

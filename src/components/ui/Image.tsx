@@ -25,8 +25,9 @@ const ImageWrapper = styled.div`
   [data-testid="statuses"] {
     position: absolute;
     z-index: ${zIndex.OfferStatus};
-    top: 5px;
-    right: 5px;
+    top: 1rem;
+    right: -1rem;
+    margin: 0 auto;
     justify-content: flex-end;
   }
 `;

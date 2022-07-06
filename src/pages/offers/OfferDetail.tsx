@@ -5,6 +5,11 @@ import { useLocation, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
+import OfferDetailChart from "../../components/offer/OfferDetailChart";
+import OfferDetailShare from "../../components/offer/OfferDetailShare";
+import OfferDetailSlider from "../../components/offer/OfferDetailSlider";
+import OfferDetailTable from "../../components/offer/OfferDetailTable";
+import OfferLabel from "../../components/offer/OfferLabel";
 import OfferStatuses from "../../components/offer/OfferStatuses";
 import Image from "../../components/ui/Image";
 import SellerID from "../../components/ui/SellerID";
@@ -25,12 +30,8 @@ import {
   OfferGrid,
   OfferWrapper,
   StatusContainer,
-  StatusSubContainer,
   WidgetContainer
 } from "./OfferDetail.style";
-import OfferDetailChart from "./OfferDetailChart";
-import OfferDetailSlider from "./OfferDetailSlider";
-import OfferDetailTable from "./OfferDetailTable";
 
 const Toggle = styled.div`
   border: 1px solid ${colors.bosonSkyBlue};
@@ -204,21 +205,20 @@ export default function OfferDetail() {
           <div>
             <ImageContainer>
               <StatusContainer>
-                <StatusSubContainer>
-                  <OfferStatuses offer={offer} />
-                </StatusSubContainer>
+                <OfferStatuses offer={offer} />
               </StatusContainer>
               <Image src={offerImg} />
             </ImageContainer>
           </div>
           <div>
             <SellerID seller={offer?.seller} justifyContent="flex-start">
-              <div>Hot</div>
+              <OfferLabel offer={offer} />
             </SellerID>
             <Typography tag="h2">{name}</Typography>
             {/* <OfferDetailWidget /> */}
             <WidgetContainer ref={widgetRef}></WidgetContainer>
           </div>
+          <OfferDetailShare />
         </OfferGrid>
       </LightBackground>
       {/* TODO: Remove mocks */}
