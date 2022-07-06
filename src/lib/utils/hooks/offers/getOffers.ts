@@ -40,7 +40,9 @@ export const getOffers = async (props: UseOffersProps) => {
     quantityAvailable_lte: props.quantityAvailable_lte,
     type: props.type,
     sellerWhitelist: props.sellerWhitelist,
-    offerWhitelist: props.offerWhitelist
+    offerWhitelist: props.offerWhitelist,
+    first: props.first,
+    skip: props.skip
   };
 
   const getOffersQueryArgs = {

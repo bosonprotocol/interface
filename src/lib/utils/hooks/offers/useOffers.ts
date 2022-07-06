@@ -19,12 +19,8 @@ export function useOffers(
   return useQuery(
     ["offers", props],
     async () => {
-      return getOffers({
-        ...props
-      });
+      return getOffers(props);
     },
-    {
-      ...options
-    }
+    options
   );
 }

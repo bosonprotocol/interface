@@ -16,7 +16,7 @@ export function memoMergeAndSortOffers() {
     const offerWhitelistOffers =
       offerWhitelistResult?.baseMetadataEntities || [];
 
-    const mergedOffers = [
+    const mergedWhitelistOffers = [
       ...sellerWhitelistOffers,
       ...offerWhitelistOffers
     ].map((base) => {
@@ -30,13 +30,12 @@ export function memoMergeAndSortOffers() {
         isValid
       } as Offer;
     });
-    const ids = [...cachedOffers, ...mergedOffers].map((offer) =>
-      Number(offer.id)
-    );
+    const mergedOffers = [...cachedOffers, ...mergedWhitelistOffers];
+    const ids = mergedOffers.map((offer) => Number(offer.id));
     const uniqueOffers = mergedOffers.filter(
       (offer, index) => !ids.includes(Number(offer.id), index + 1)
     );
-    const sortedOffers = [...cachedOffers, ...uniqueOffers].sort((a, b) => {
+    const sortedOffers = uniqueOffers.sort((a, b) => {
       if (a.metadata.name && b.metadata.name) {
         return a.metadata.name.localeCompare(b.metadata.name);
       }
