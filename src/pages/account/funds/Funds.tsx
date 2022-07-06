@@ -1,9 +1,9 @@
-import { CoreSDK } from "@bosonprotocol/core-sdk";
 import { FundsEntityFieldsFragment } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 import Button from "../../../components/ui/Button";
+import { colors } from "../../../lib/styles/colors";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 import { useSellerToggle } from "../private/Toogle/SellerToggleContext";
 import FundItem, {
@@ -21,10 +21,18 @@ const Root = styled.div`
   gap: 0.3125rem;
 `;
 
-const Row = styled.div`
+const Row = styled.div<{ $hasShade?: boolean }>`
   display: flex;
   justify-content: center;
   gap: 0.3125rem;
+
+  ${({ $hasShade }) =>
+    $hasShade &&
+    `
+    * {
+      box-shadow: 0 0.125rem 0.5625rem -0.1875rem ${colors.grey};
+    }
+  `}
 `;
 
 const HeaderCell = styled(Cell)`
@@ -71,7 +79,7 @@ export default function Funds({ sellerId, buyerId }: Props) {
   const [isAllFundsBeingWithdrawn, setIsAllFundsBeingWithdrawn] =
     useState<boolean>(false);
 
-  const core = useCoreSDK() || ({} as CoreSDK);
+  const core = useCoreSDK();
 
   const accountId = isTabSellerSelected ? sellerId : buyerId;
 
@@ -84,6 +92,10 @@ export default function Funds({ sellerId, buyerId }: Props) {
   useEffect(() => {
     setUiFunds(funds);
   }, [funds]);
+
+  if (!core) {
+    return <div>Connect your wallet</div>;
+  }
 
   const addNew = async () => {
     setErrorTokenInput(false);
@@ -178,9 +190,9 @@ export default function Funds({ sellerId, buyerId }: Props) {
           />
         ))
       ) : (
-        <p>No funds for connected wallet.</p>
+        <p style={{ marginTop: 0 }}>No funds for connected wallet.</p>
       )}
-      <Row>
+      <Row $hasShade>
         <Cell $flexBasis={sellerFlexBasisCells[0]} $hasBorder>
           Add new +
         </Cell>

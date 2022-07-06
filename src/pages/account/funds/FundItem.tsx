@@ -62,7 +62,7 @@ export const Cell = styled.div<{
 `;
 
 export const Input = styled.input<{ $hasError?: boolean }>`
-  width: 50%;
+  width: 75%;
   height: 100%;
   font-size: 1rem;
   background: transparent;
@@ -81,7 +81,7 @@ export const Input = styled.input<{ $hasError?: boolean }>`
 
 export const CustomButton = styled(Button)`
   border-radius: ${fundsBorderRadius};
-  width: 50%;
+  width: 25%;
   justify-content: center;
   display: flex;
 `;
@@ -177,7 +177,7 @@ export default function FundItem({
   return (
     <Table $isHighlighted={isHighlighted}>
       <Cell $hasBorder $flexBasis={flexBasisCells[0]}>
-        {fund.token.name}
+        {fund.token.symbol}
       </Cell>
       <Cell $hasBorder $flexBasis={flexBasisCells[1]}>
         {formattedTotalFunds}

@@ -74,6 +74,10 @@ export default function PrivateAccount({ account }: { account: string }) {
           <Toggle
             isTabSellerSelected={isTabSellerSelected}
             setTabSellerSelected={setTabSellerSelected}
+            $containerStyles={{
+              paddingTop: 0,
+              paddingBottom: "2rem"
+            }}
             $toggleTabStyles={{
               width: "5.8125rem"
             }}

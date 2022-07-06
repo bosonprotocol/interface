@@ -54,7 +54,7 @@ const TabTitle = styled.div<{ $isActive: boolean }>`
     font-size: 2rem;
     border-bottom: 3px solid;
     border-color: ${({ $isActive }) =>
-      $isActive ? colors.green : "transparent"};
+      $isActive ? colors.black : "transparent"};
   }
 `;
 
@@ -163,12 +163,19 @@ export default function Tabs({
           );
         })}
       </Headers>
-      {!isMyOffersSelected && isPrivateProfile && SellerBuyerToggle}
+
       <Content isPrivateProfile={isPrivateProfile}>
         {tabsData.map((tab, index) => {
           const isActive = indexActiveTab === index;
           return (
-            <ContentTab key={tab.title}>{isActive && tab.content}</ContentTab>
+            <ContentTab key={tab.title}>
+              {isActive && (
+                <>
+                  {!isMyOffersSelected && isPrivateProfile && SellerBuyerToggle}
+                  {tab.content}
+                </>
+              )}
+            </ContentTab>
           );
         })}
       </Content>

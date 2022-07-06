@@ -48,15 +48,17 @@ const ToggleTab = styled("button")<{
 interface Props {
   isTabSellerSelected: boolean;
   setTabSellerSelected: (selected: boolean) => void;
+  $containerStyles?: React.CSSProperties;
   $toggleTabStyles?: React.CSSProperties;
 }
 export default function Toggle({
   isTabSellerSelected,
   setTabSellerSelected,
+  $containerStyles,
   $toggleTabStyles
 }: Props) {
   return (
-    <Container>
+    <Container style={$containerStyles}>
       <ToggleTabs>
         <ToggleTab
           style={$toggleTabStyles}
