@@ -84,6 +84,13 @@ const GlobalStyle = createGlobalStyle<{
     -webkit-appearance: none;
   }
 
+  * > small {
+    font-size: 65%;
+    font-weight: 400;
+    margin: 0 0.5rem;
+    opacity: 0.75;
+  }
+
   h1 {
     font-size: 3.5rem;
     font-weight: 600;

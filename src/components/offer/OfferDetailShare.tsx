@@ -59,7 +59,7 @@ const OfferDetailShare: React.FC = () => {
         </Button>
       </ShareWrapper>
       <SimpleSmallModal $show={show}>
-        <Typography tag="p">Url has been copied to clipboard</Typography>
+        <Typography tag="p">URL has been copied to clipboard</Typography>
       </SimpleSmallModal>
     </>
   );

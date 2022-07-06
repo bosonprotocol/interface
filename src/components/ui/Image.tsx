@@ -6,12 +6,21 @@ import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import Typography from "./Typography";
 
-const ImageWrapper = styled.div`
+const ImageWrapper = styled.div<{ fillHeight: boolean }>`
   overflow: hidden;
   position: relative;
   z-index: ${zIndex.OfferCard};
-  height: 0;
-  padding-top: 120%;
+  ${({ fillHeight }) =>
+    fillHeight
+      ? `
+        height: 100%;
+        min-height: 30rem;
+      `
+      : `
+        height: 0;
+        padding-top: 120%;
+      `};
+
   > img,
   > div[data-testid="image"] {
     position: absolute;
@@ -62,14 +71,20 @@ const ImageNotAvailable = styled(IoIosImage)`
   font-size: 50px;
 `;
 
-const Image: React.FC<
-  {
-    src: string;
-    children?: React.ReactNode;
-  } & React.HTMLAttributes<HTMLDivElement>
-> = ({ src, children, ...rest }) => {
+interface IImage {
+  src: string;
+  children?: React.ReactNode;
+  fillHeight?: boolean;
+}
+
+const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
+  src,
+  children,
+  fillHeight = false,
+  ...rest
+}) => {
   return (
-    <ImageWrapper {...rest}>
+    <ImageWrapper fillHeight={fillHeight} {...rest}>
       {children || ""}
       {src ? (
         <ImageContainer data-testid="image" src={src} />

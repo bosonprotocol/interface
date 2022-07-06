@@ -9,6 +9,8 @@ const config = getDefaultConfig({ chainId: REACT_APP_CHAIN_ID });
 
 export const CONFIG = {
   ...config,
+  dateFormat: process.env.DATE_FORMAT || "YYYY/MM/DD",
+  defaultCurrency: process.env.DEFAULT_CURRENCY || "USD",
   widgetsUrl: process.env.REACT_APP_WIDGETS_URL || config.widgetsUrl,
   chainId: REACT_APP_CHAIN_ID,
   ipfsMetadataUrl:

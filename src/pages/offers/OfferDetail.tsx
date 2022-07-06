@@ -9,8 +9,8 @@ import OfferDetailChart from "../../components/offer/OfferDetailChart";
 import OfferDetailShare from "../../components/offer/OfferDetailShare";
 import OfferDetailSlider from "../../components/offer/OfferDetailSlider";
 import OfferDetailTable from "../../components/offer/OfferDetailTable";
+import OfferDetailWidget from "../../components/offer/OfferDetailWidget";
 import OfferLabel from "../../components/offer/OfferLabel";
-import OfferStatuses from "../../components/offer/OfferStatuses";
 import Image from "../../components/ui/Image";
 import SellerID from "../../components/ui/SellerID";
 import Typography from "../../components/ui/Typography";
@@ -25,12 +25,10 @@ import CreatedExchangeModal from "./CreatedExchangeModal";
 import { MOCK } from "./mock/mock";
 import {
   DarkerBackground,
-  ImageContainer,
   LightBackground,
   OfferGrid,
-  OfferWrapper,
-  StatusContainer,
-  WidgetContainer
+  OfferWrapper
+  // WidgetContainer
 } from "./OfferDetail.style";
 
 const Toggle = styled.div`
@@ -203,24 +201,19 @@ export default function OfferDetail() {
         )}
         <OfferGrid>
           <div>
-            <ImageContainer>
-              <StatusContainer>
-                <OfferStatuses offer={offer} />
-              </StatusContainer>
-              <Image src={offerImg} />
-            </ImageContainer>
+            <Image src={offerImg} fillHeight />
           </div>
           <div>
             <SellerID seller={offer?.seller} justifyContent="flex-start">
               <OfferLabel offer={offer} />
             </SellerID>
             <Typography tag="h2">{name}</Typography>
-            {/* <OfferDetailWidget /> */}
-            <WidgetContainer ref={widgetRef}></WidgetContainer>
+            <OfferDetailWidget offer={offer} />
           </div>
           <OfferDetailShare />
         </OfferGrid>
       </LightBackground>
+      {/* <WidgetContainer ref={widgetRef}></WidgetContainer> */}
       {/* TODO: Remove mocks */}
       <DarkerBackground>
         <OfferGrid>
@@ -242,7 +235,7 @@ export default function OfferDetail() {
         <OfferGrid>
           <div>
             <Typography tag="h3">Inventory graph</Typography>
-            <OfferDetailChart />
+            <OfferDetailChart offer={offer} />
           </div>
           <div>
             <Typography tag="h3">Shipping information</Typography>

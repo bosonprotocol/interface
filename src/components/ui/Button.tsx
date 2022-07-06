@@ -3,9 +3,11 @@ import styled, { ThemeProvider } from "styled-components";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import * as Styles from "./styles";
+import Typography from "./Typography";
 
 const BaseButton = styled.button<{
   size: IButton["size"];
+  fill: IButton["fill"];
 }>`
   ${() => Styles.button};
   ${(props) => Styles[props.size as keyof typeof Styles]}
@@ -14,6 +16,7 @@ const BaseButton = styled.button<{
   border-width: ${(props) => props.theme.borderWidth || 0}px;
   color: ${(props) => props.theme.color || "#000000"};
   background-color: ${(props) => props.theme.background || "transparent"};
+  ${(props) => (props.fill ? "width: 100%;" : "")};
 
   ${(props) =>
     props.theme.hover &&
@@ -38,6 +41,10 @@ const BaseButton = styled.button<{
     padding: ${props.theme.padding} !important;
     `
       : ""}
+
+  :disabled {
+    cursor: not-allowed;
+  }
 `;
 
 const ChildWrapperButton = styled.div`
@@ -112,6 +119,8 @@ interface IButton {
   size?: "small" | "regular" | "large";
   theme?: keyof typeof allThemes;
   type?: "button" | "submit" | "reset" | undefined;
+  fill?: boolean;
+  step?: number;
   [x: string]: unknown;
 }
 
@@ -121,12 +130,27 @@ const Button: React.FC<IButton> = ({
   size = "regular",
   theme = "primary",
   type = "button",
+  step = 0,
+  fill = false,
   ...rest
 }) => {
   return (
     <ThemeProvider theme={allThemes[theme as keyof typeof allThemes]}>
-      <BaseButton onClick={onClick} type={type} size={size} {...rest}>
-        <ChildWrapperButton>{children}</ChildWrapperButton>
+      <BaseButton
+        onClick={onClick}
+        type={type}
+        size={size}
+        fill={fill}
+        {...rest}
+      >
+        <ChildWrapperButton>
+          {children}
+          {step !== 0 && (
+            <Typography>
+              <small>Step {step}</small>
+            </Typography>
+          )}
+        </ChildWrapperButton>
       </BaseButton>
     </ThemeProvider>
   );

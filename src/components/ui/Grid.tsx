@@ -5,7 +5,8 @@ type JustifyContent =
   | "center"
   | "flex-end"
   | "space-between"
-  | "space-around";
+  | "space-around"
+  | "stretch";
 type AlignItems = "flex-start" | "center" | "flex-end";
 type FlexDirection = "row" | "column" | "row-reverse" | "column-reverse";
 export interface IGrid {
@@ -13,6 +14,7 @@ export interface IGrid {
   flexBasis?: string;
   flexDirection?: FlexDirection;
   justifyContent?: JustifyContent;
+  flexGrow?: string;
   gap?: string;
   flex?: string;
   padding?: string;
@@ -24,6 +26,7 @@ const Container = styled.div<IGrid>`
   align-items: ${({ alignItems }) => alignItems || "center"};
   flex-basis: ${({ flexBasis }) => flexBasis || "auto"};
   flex-direction: ${({ flexDirection }) => flexDirection || "row"};
+  flex-frow: ${({ flexGrow }) => flexGrow || "0"};
   justify-content: ${({ justifyContent }) => justifyContent || "space-between"};
 
   ${({ gap }) => (gap ? `gap:${gap};` : "")}

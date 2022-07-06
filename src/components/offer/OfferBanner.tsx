@@ -7,8 +7,10 @@ dayjs.tz.setDefault("Europe/Greenwich");
 
 import styled from "styled-components";
 
+import { CONFIG } from "../../lib/config";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
+import { getDateTimestamp } from "../../lib/utils/getDateTimestamp";
 
 const BannerContainer = styled.div`
   position: absolute;
@@ -31,13 +33,13 @@ interface Props {
 export default function OfferBanner({ offer }: Props) {
   const handleDate = (offer: Offer) => {
     const current = dayjs();
-    const release = dayjs(Number(offer?.validFromDate) * 1000);
-    const expiry = dayjs(Number(offer?.validUntilDate) * 1000);
+    const release = dayjs(getDateTimestamp(offer?.validFromDate));
+    const expiry = dayjs(getDateTimestamp(offer?.validUntilDate));
 
     return {
       current,
       release: {
-        date: release.format("DD/MM/YYYY"),
+        date: release.format(CONFIG.dateFormat),
         diff: {
           days: release.diff(current, "days"),
           isToday: release.isSame(current, "day"),
@@ -46,7 +48,7 @@ export default function OfferBanner({ offer }: Props) {
         }
       },
       expiry: {
-        date: expiry.format("DD/MM/YYYY"),
+        date: expiry.format(CONFIG.dateFormat),
         diff: {
           days: expiry.diff(current, "days"),
           isToday: expiry.isSame(current, "day"),

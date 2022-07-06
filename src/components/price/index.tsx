@@ -1,12 +1,14 @@
-import { BigNumber, utils } from "ethers";
+import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 
+import { CONFIG } from "../../lib/config";
+import { convertPrice } from "../../lib/utils/convertPrice";
 import Typography from "../ui/Typography";
 import CurrencyIcon from "./CurrencyIcon";
 
 const Root = styled.div`
   display: flex;
-  gap: 5px;
+  gap: 0.25rem;
   align-items: center;
 `;
 
@@ -21,37 +23,61 @@ interface IProps {
   value: string;
   decimals: string;
   currencySymbol: string;
+  convert?: boolean;
+  tag?: keyof JSX.IntrinsicElements;
 }
 
 export default function Price({
   value,
   decimals,
   currencySymbol,
+  convert = false,
+  tag = "h4",
   ...rest
 }: IProps) {
-  let formattedValue = "";
-  try {
-    formattedValue = utils.formatUnits(BigNumber.from(value), Number(decimals));
-  } catch (error) {
-    console.error(error);
-  }
-  const [integer, fractions] = formattedValue.split(".");
+  const [price, setPrice] = useState<any>(null);
+
+  const getConvertedPrice = useCallback(async () => {
+    const newPrice = await convertPrice(
+      value,
+      decimals,
+      CONFIG.defaultCurrency
+    );
+    console.log(newPrice);
+    setPrice(newPrice);
+  }, [value, decimals]);
+
+  useEffect(() => {
+    getConvertedPrice();
+    const interval = setInterval(() => {
+      getConvertedPrice();
+    }, 1000 * 60); // It will update USD price every minute;
+    return () => clearInterval(interval);
+  }, [getConvertedPrice]);
 
   return (
     <Root {...rest} data-testid="price">
       <CurrencyIconContainer>
         <CurrencyIcon currencySymbol={currencySymbol} />
       </CurrencyIconContainer>
-      {formattedValue ? (
+      {price ? (
         <Typography
-          tag="h4"
+          tag={tag}
           style={{ margin: "0", fontWeight: "600", letterSpacing: "-1px" }}
         >
-          {fractions === "0" ? integer : `${integer}.${fractions}`}
+          {price.fractions === "0"
+            ? price.integer
+            : `${price.integer}.${price.fractions}`}
+          {convert && (
+            <small>
+              {" "}
+              {price.converted} {CONFIG.defaultCurrency}
+            </small>
+          )}
         </Typography>
       ) : (
         "-"
-      )}{" "}
+      )}
     </Root>
   );
 }

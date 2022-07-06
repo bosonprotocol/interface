@@ -51,6 +51,8 @@ const Slider = styled.div<ISlider>`
       props.current !== 0 ? 2.5 * props.current : 0
     }rem))`;
   }};
+  width: 100%;
+  min-height: 20rem;
 `;
 const Slide = styled.div``;
 

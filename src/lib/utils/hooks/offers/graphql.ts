@@ -16,6 +16,10 @@ export const offerGraphQl = gql`
     validUntilDate
     voidedAt
     voucherValidDuration
+    exchanges {
+      committedDate
+      redeemedDate
+    }
     seller {
       id
       admin
