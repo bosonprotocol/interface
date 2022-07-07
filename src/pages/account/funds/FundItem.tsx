@@ -1,5 +1,6 @@
+import { CoreSDK } from "@bosonprotocol/core-sdk";
 import { FundsEntityFieldsFragment } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
-import { BigNumber, utils } from "ethers";
+import { BigNumber, constants, utils } from "ethers";
 import { useState } from "react";
 import { ImSpinner2 } from "react-icons/im";
 import styled from "styled-components";
@@ -150,6 +151,7 @@ interface Props {
   buyerFlexBasisCells: [number, number, number];
   reload: () => void;
   isTabSellerSelected: boolean;
+  coreSDK: CoreSDK;
 }
 
 const getNumberWithoutDecimals = (value: string, decimals: string): string => {
@@ -176,8 +178,11 @@ export default function FundItem({
   sellerFlexBasisCells,
   isHighlighted,
   isAllFundsBeingWithdrawn,
+  coreSDK,
   reload
 }: Props) {
+  const exchangeToken = fund.token.address;
+
   const [isBeingWithdrawn, setIsBeingWithdrawn] = useState<boolean>(false);
   const [isWithdrawInvalid, setIsWithdrawInvalid] = useState<boolean>(true);
   const [withdrawError, setWithdrawError] = useState<unknown>(null);
@@ -190,7 +195,7 @@ export default function FundItem({
     accountId,
     tokensToWithdraw: [
       {
-        address: fund.token.address,
+        address: exchangeToken,
         amount:
           isWithdrawInvalid || !Number(amountToWithdraw)
             ? BigNumber.from("0")
@@ -208,8 +213,24 @@ export default function FundItem({
         : BigNumber.from(
             getNumberWithoutDecimals(amountToDeposit, fund.token.decimals)
           ),
-    tokenAddress: fund.token.address
+    tokenAddress: exchangeToken
   });
+
+  const approveToken = async (value: string) => {
+    const isNativeCoin = constants.AddressZero === exchangeToken;
+    if (isNativeCoin) {
+      return;
+    }
+    const allowance = await coreSDK.getExchangeTokenAllowance(exchangeToken);
+
+    if (Number(allowance) < Number(value)) {
+      const tx = await coreSDK.approveExchangeToken(
+        exchangeToken,
+        constants.MaxInt256
+      );
+      await tx.wait();
+    }
+  };
 
   const flexBasisCells = isTabSellerSelected
     ? sellerFlexBasisCells
@@ -316,6 +337,7 @@ export default function FundItem({
               try {
                 setDepositError(null);
                 setIsBeingDeposit(true);
+                await approveToken(amountToDeposit);
                 const tx = await depositFunds();
                 await tx?.wait();
                 setAmountToDeposit("0");

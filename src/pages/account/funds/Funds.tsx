@@ -181,6 +181,7 @@ export default function Funds({ sellerId, buyerId }: Props) {
             sellerFlexBasisCells={sellerFlexBasisCells}
             buyerFlexBasisCells={buyerFlexBasisCells}
             isTabSellerSelected={isTabSellerSelected}
+            coreSDK={core}
           />
         ))
       ) : (
