@@ -28,7 +28,7 @@ export default function CurrencyIcon({ currencySymbol }: Props) {
     currencySymbol.toUpperCase() as keyof typeof currencyImages;
 
   if (!currencyImages[symbolUpperCase]) {
-    return null;
+    return <>{symbolUpperCase}</>;
   }
   const Icon = currencyImages[symbolUpperCase];
   return (
