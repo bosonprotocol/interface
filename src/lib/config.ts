@@ -5,7 +5,7 @@ const REACT_APP_CHAIN_ID = process.env.REACT_APP_CHAIN_ID
   ? parseInt(process.env.REACT_APP_CHAIN_ID)
   : chain.ropsten.id;
 
-const config = getDefaultConfig({ chainId: REACT_APP_CHAIN_ID });
+export const config = getDefaultConfig({ chainId: REACT_APP_CHAIN_ID });
 
 export const CONFIG = {
   ...config,
@@ -21,6 +21,22 @@ export const CONFIG = {
   enableWhitelists: stringToBoolean(process.env.REACT_APP_ENABLE_WHITELISTS)
 };
 
+export const coreSdkConfig: Config = {
+  ...config,
+  chainId: REACT_APP_CHAIN_ID,
+  ipfsMetadataUrl:
+    process.env.REACT_APP_IPFS_METADATA_URL || "https://ipfs.infura.io:5001",
+  protocolDiamond: config.contracts.protocolDiamond
+};
+
+export type Config = {
+  chainId: number;
+  protocolDiamond: string;
+  subgraphUrl: string;
+  jsonRpcUrl: string;
+  theGraphIpfsUrl?: string;
+  ipfsMetadataUrl: string;
+};
 function stringToBoolean(value?: string) {
   if (typeof value === "string") {
     return ["1", "true"].includes(value);

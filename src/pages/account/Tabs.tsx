@@ -8,6 +8,7 @@ import { useBuyers } from "../../lib/utils/hooks/useBuyers";
 import { useSellers } from "../../lib/utils/hooks/useSellers";
 import Disputes from "./Disputes";
 import Exchanges from "./Exchanges";
+import Funds from "./funds/Funds";
 import Offers from "./Offers";
 
 const TabsContainer = styled.div`
@@ -20,7 +21,7 @@ const Headers = styled.div`
 `;
 const Content = styled.div<{ isPrivateProfile: boolean }>`
   margin: ${({ isPrivateProfile }) =>
-    isPrivateProfile ? "2rem 10%" : "2rem 0%"};
+    isPrivateProfile ? "2rem 7%" : "2rem 0%"};
 `;
 const HeaderTab = styled.div<{ isPrivateProfile: boolean }>`
   display: flex;
@@ -53,8 +54,7 @@ const TabTitle = styled.div<{ $isActive: boolean }>`
     font-size: 2rem;
     border-bottom: 3px solid;
     border-color: ${({ $isActive }) =>
-      $isActive ? colors.green : "transparent"};
-    color: ${({ $isActive }) => ($isActive ? colors.green : "inherit")};
+      $isActive ? colors.black : "transparent"};
   }
 `;
 
@@ -68,8 +68,13 @@ const tabIdentifier = "id" as const;
 interface Props {
   isPrivateProfile: boolean;
   address: string;
+  children?: JSX.Element;
 }
-export default function Tabs({ isPrivateProfile, address }: Props) {
+export default function Tabs({
+  isPrivateProfile,
+  address,
+  children: SellerBuyerToggle
+}: Props) {
   const { data: sellers, isError: isErrorSellers } = useSellers({
     admin: address
   });
@@ -116,6 +121,13 @@ export default function Tabs({ isPrivateProfile, address }: Props) {
         )
       }
     ];
+    if (isPrivateProfile) {
+      tabsData.push({
+        id: "funds",
+        title: "My Funds",
+        content: <Funds sellerId={sellerId} buyerId={buyerId} />
+      });
+    }
     return tabsData;
   }, [sellerId, buyerId, isPrivateProfile]);
   const [currentTab, setCurrentTab] = useQueryParameter(
@@ -132,6 +144,7 @@ export default function Tabs({ isPrivateProfile, address }: Props) {
     setIndexActiveTab(index);
     setCurrentTab(tab[tabIdentifier]);
   };
+  const isMyOffersSelected = indexActiveTab === 0;
   return (
     <TabsContainer>
       <Headers>
@@ -150,11 +163,19 @@ export default function Tabs({ isPrivateProfile, address }: Props) {
           );
         })}
       </Headers>
+
       <Content isPrivateProfile={isPrivateProfile}>
         {tabsData.map((tab, index) => {
           const isActive = indexActiveTab === index;
           return (
-            <ContentTab key={tab.title}>{isActive && tab.content}</ContentTab>
+            <ContentTab key={tab.title}>
+              {isActive && (
+                <>
+                  {!isMyOffersSelected && isPrivateProfile && SellerBuyerToggle}
+                  {tab.content}
+                </>
+              )}
+            </ContentTab>
           );
         })}
       </Content>
