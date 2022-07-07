@@ -166,6 +166,8 @@ const getNumberWithDecimals = (value: string, decimals: string): number => {
   return Number(value) * 10 ** -Number(decimals);
 };
 
+const tokenStep = 0.01;
+
 export default function FundItem({
   accountId,
   fund,
@@ -177,10 +179,10 @@ export default function FundItem({
   reload
 }: Props) {
   const [isBeingWithdrawn, setIsBeingWithdrawn] = useState<boolean>(false);
-  const [isWithdrawInvalid, setIsWithdrawInvalid] = useState<boolean>(false);
+  const [isWithdrawInvalid, setIsWithdrawInvalid] = useState<boolean>(true);
   const [hasWithdrawError, setHasWithdrawError] = useState<boolean>(false);
   const [isBeingDeposit, setIsBeingDeposit] = useState<boolean>(false);
-  const [isDepositInvalid, setIsDepositInvalid] = useState<boolean>(false);
+  const [isDepositInvalid, setIsDepositInvalid] = useState<boolean>(true);
   const [hasDepositError, setHasDepositError] = useState<boolean>(false);
   const [amountToWithdraw, setAmountToWithdraw] = useState<string>("0");
   const [amountToDeposit, setAmountToDeposit] = useState<string>("0");
@@ -208,8 +210,6 @@ export default function FundItem({
           ),
     tokenAddress: fund.token.address
   });
-
-  const tokenStep = 10 ** -Number(fund.token.decimals);
 
   const flexBasisCells = isTabSellerSelected
     ? sellerFlexBasisCells
@@ -255,7 +255,7 @@ export default function FundItem({
                 fund.token.decimals
               );
 
-              if (value < tokenStep || value > availableFundsBig) {
+              if (value < tokenStep || value > availableFundsBig || !value) {
                 setIsWithdrawInvalid(true);
               }
 
