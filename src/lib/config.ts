@@ -1,6 +1,8 @@
 import { getDefaultConfig } from "@bosonprotocol/common";
 import { chain } from "wagmi";
 
+import { parseWhitelist } from "./utils/whitelist";
+
 const REACT_APP_CHAIN_ID = process.env.REACT_APP_CHAIN_ID
   ? parseInt(process.env.REACT_APP_CHAIN_ID)
   : chain.ropsten.id;
@@ -43,12 +45,4 @@ function stringToBoolean(value?: string) {
   }
 
   return Boolean(value);
-}
-
-function parseWhitelist(value?: string): string[] | undefined {
-  if (value) {
-    return value.split(",");
-  }
-
-  return undefined;
 }
