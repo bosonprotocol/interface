@@ -1,13 +1,27 @@
 import { CoreSDK } from "@bosonprotocol/core-sdk";
 import { EthersAdapter } from "@bosonprotocol/ethers-sdk";
 import { IpfsMetadataStorage } from "@bosonprotocol/ipfs-storage";
+import { providers } from "ethers";
 import { useMemo } from "react";
+import { useSigner } from "wagmi";
 
-import { useEthersAdapterFromContext } from "../../components/EthersAdapterContext";
 import { Config, coreSdkConfig } from "../config";
 
 export function useCoreSDK() {
-  const ethersAdapter = useEthersAdapterFromContext();
+  const { data: signer } = useSigner();
+
+  const ethersAdapter = useMemo(() => {
+    if (!signer || !signer.provider) {
+      return;
+    }
+
+    const adapter = new EthersAdapter(
+      signer.provider as providers.Web3Provider
+    );
+
+    return adapter;
+  }, [signer]);
+
   return useMemo(() => {
     if (!ethersAdapter) return null;
     const core = initCoreSDK(coreSdkConfig, ethersAdapter);
