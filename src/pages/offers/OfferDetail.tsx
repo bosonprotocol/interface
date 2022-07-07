@@ -15,6 +15,7 @@ import { colors } from "../../lib/styles/colors";
 import { useOffer } from "../../lib/utils/hooks/offers/useOffer";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { isAccountSeller } from "../../lib/utils/isAccountSeller";
+import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
 import AddressContainer from "./../../components/offer/AddressContainer";
 import RootPrice from "./../../components/price";
 import CreatedExchangeModal from "./CreatedExchangeModal";
@@ -244,6 +245,9 @@ export default function OfferDetail() {
   const { address: account } = useAccount();
   const address = account || "";
   const navigate = useKeepQueryParamsNavigate();
+  const customMetaTransactionsApiKey = useCustomStoreQueryParameter(
+    "metaTransactionsApiKey"
+  );
 
   const {
     data: offer,
@@ -267,14 +271,22 @@ export default function OfferDetail() {
       const widgetContainer = document.createElement("div");
       widgetContainer.style.width = "100%";
       widgetRef.current.appendChild(widgetContainer);
-      manageOffer(offer.id, CONFIG, widgetContainer, {
-        forceBuyerView: !isTabSellerSelected
-      });
+      manageOffer(
+        offer.id,
+        {
+          ...CONFIG,
+          metaTransactionsApiKey: customMetaTransactionsApiKey
+        },
+        widgetContainer,
+        {
+          forceBuyerView: !isTabSellerSelected
+        }
+      );
       return () => widgetContainer.remove();
     }
 
     return;
-  }, [offer, isTabSellerSelected, address]);
+  }, [offer, isTabSellerSelected, address, customMetaTransactionsApiKey]);
 
   useEffect(() => {
     function handleMessageFromIframe(e: MessageEvent) {

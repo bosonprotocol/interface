@@ -1,6 +1,6 @@
 import { useInfiniteQuery } from "react-query";
 
-import { CONFIG } from "../../../config";
+import { useWhitelists } from "../useWhitelists";
 import { getOffers } from "./getOffers";
 import { UseOffersProps } from "./types";
 
@@ -11,11 +11,11 @@ export function useInfiniteOffers(
     keepPreviousData?: boolean;
   } = {}
 ) {
+  const whitelists = useWhitelists();
+
   props = {
     ...props,
-    sellerWhitelist: CONFIG.sellerWhitelist,
-    offerWhitelist: CONFIG.offerWhitelist,
-    enableWhitelists: CONFIG.enableWhitelists
+    ...whitelists
   };
   return useInfiniteQuery(
     ["offers", "infinite", props.sellerId],
