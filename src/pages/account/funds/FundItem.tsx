@@ -180,10 +180,10 @@ export default function FundItem({
 }: Props) {
   const [isBeingWithdrawn, setIsBeingWithdrawn] = useState<boolean>(false);
   const [isWithdrawInvalid, setIsWithdrawInvalid] = useState<boolean>(true);
-  const [hasWithdrawError, setHasWithdrawError] = useState<boolean>(false);
+  const [withdrawError, setWithdrawError] = useState<unknown>(null);
   const [isBeingDeposit, setIsBeingDeposit] = useState<boolean>(false);
   const [isDepositInvalid, setIsDepositInvalid] = useState<boolean>(true);
-  const [hasDepositError, setHasDepositError] = useState<boolean>(false);
+  const [depositError, setDepositError] = useState<unknown>(null);
   const [amountToWithdraw, setAmountToWithdraw] = useState<string>("0");
   const [amountToDeposit, setAmountToDeposit] = useState<string>("0");
   const withdrawFunds = useWithdrawFunds({
@@ -232,7 +232,7 @@ export default function FundItem({
         )}
       </Cell>
       <Cell $hasBorder={false} $flexBasis={flexBasisCells[2]}>
-        <InputMaxWrapper $hasError={hasWithdrawError || isWithdrawInvalid}>
+        <InputMaxWrapper $hasError={!!withdrawError || isWithdrawInvalid}>
           {!Number(amountToWithdraw) && (
             <MaxButton
               onClick={() => {
@@ -270,14 +270,14 @@ export default function FundItem({
         <CustomButton
           onClick={async () => {
             try {
-              setHasWithdrawError(false);
+              setWithdrawError(null);
               setIsBeingWithdrawn(true);
               const tx = await withdrawFunds();
               await tx?.wait();
               setAmountToWithdraw("0");
             } catch (error) {
               console.error(error);
-              setHasWithdrawError(true);
+              setWithdrawError(error);
             } finally {
               setIsBeingWithdrawn(false);
               reload();
@@ -307,20 +307,20 @@ export default function FundItem({
               setAmountToDeposit(valueStr);
             }}
             value={amountToDeposit}
-            $hasError={hasDepositError || isDepositInvalid}
+            $hasError={!!depositError || isDepositInvalid}
             disabled={isBeingDeposit}
           ></Input>
           <CustomButton
             onClick={async () => {
               try {
-                setHasDepositError(false);
+                setDepositError(null);
                 setIsBeingDeposit(true);
                 const tx = await depositFunds();
                 await tx?.wait();
                 setAmountToDeposit("0");
               } catch (error) {
                 console.error(error);
-                setHasDepositError(true);
+                setDepositError(error);
               } finally {
                 setIsBeingDeposit(false);
                 reload();
