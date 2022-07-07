@@ -275,6 +275,7 @@ export default function FundItem({
               const tx = await withdrawFunds();
               await tx?.wait();
               setAmountToWithdraw("0");
+              setIsWithdrawInvalid(true);
             } catch (error) {
               console.error(error);
               setWithdrawError(error);
@@ -318,6 +319,7 @@ export default function FundItem({
                 const tx = await depositFunds();
                 await tx?.wait();
                 setAmountToDeposit("0");
+                setIsDepositInvalid(true);
               } catch (error) {
                 console.error(error);
                 setDepositError(error);
