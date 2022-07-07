@@ -155,7 +155,7 @@ interface Props {
 const getNumberWithoutDecimals = (value: string, decimals: string): string => {
   const valueAsNumber = Number(value);
   if (!Number.isInteger(valueAsNumber)) {
-    return (valueAsNumber * 10 ** Number(decimals)).toString();
+    return Math.floor(valueAsNumber * 10 ** Number(decimals)).toString();
   }
   return BigNumber.from(value)
     .mul(BigNumber.from(10).pow(BigNumber.from(decimals)))
@@ -166,7 +166,7 @@ const getNumberWithDecimals = (value: string, decimals: string): number => {
   return Number(value) * 10 ** -Number(decimals);
 };
 
-const tokenStep = 0.01;
+const step = 0.01;
 
 export default function FundItem({
   accountId,
@@ -219,7 +219,7 @@ export default function FundItem({
     BigNumber.from(fund.availableAmount),
     Number(fund.token.decimals)
   );
-
+  const tokenStep = 10 ** -Number(fund.token.decimals);
   return (
     <Table $isHighlighted={isHighlighted}>
       <Cell $hasBorder $flexBasis={flexBasisCells[0]}>
@@ -263,7 +263,7 @@ export default function FundItem({
             }}
             value={amountToWithdraw}
             disabled={isBeingWithdrawn}
-            step={tokenStep}
+            step={step}
             min={0}
           ></Input>
         </InputMaxWrapper>
@@ -294,7 +294,7 @@ export default function FundItem({
         <Cell $hasBorder={false} $flexBasis={sellerFlexBasisCells[3]}>
           <Input
             type="number"
-            step={tokenStep}
+            step={step}
             min={0}
             onChange={(e) => {
               const valueStr = e.target.value;
