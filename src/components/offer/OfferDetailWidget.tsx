@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { AiOutlineCheck } from "react-icons/ai";
 import styled from "styled-components";
 
@@ -5,6 +6,7 @@ import portalLogo from "../../assets/portal.svg";
 import { ExternalRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
+import { isOfferHot } from "../../lib/utils/getOfferLabel";
 import { LinkWithQuery } from "../linkStoreFields/LinkStoreFields";
 import Price from "../price/index";
 import Button from "../ui/Button";
@@ -54,12 +56,15 @@ const Break = styled.span`
 `;
 
 const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({ offer }) => {
-  console.log(offer);
+  const isHotOffer = useMemo(
+    () => isOfferHot(offer?.quantityAvailable, offer?.quantityInitial),
+    [offer?.quantityAvailable, offer?.quantityInitial]
+  );
 
   return (
     <Widget>
       <div>
-        <Grid>
+        <Grid style={{ paddingBottom: "1rem" }}>
           <Price
             currencySymbol={offer.exchangeToken.symbol}
             value={offer.price}
@@ -67,9 +72,11 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({ offer }) => {
             tag="h3"
             convert
           />
-          <Typography tag="p" style={{ color: colors.orange }}>
-            Only {offer.quantityAvailable} items left!
-          </Typography>
+          {isHotOffer && (
+            <Typography tag="p" style={{ color: colors.orange, margin: 0 }}>
+              Only {offer.quantityAvailable} items left!
+            </Typography>
+          )}
         </Grid>
       </div>
       <div>

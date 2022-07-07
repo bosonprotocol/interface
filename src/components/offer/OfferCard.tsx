@@ -155,8 +155,8 @@ export default function OfferCard({
 
   return (
     <Card data-testid={dataTestId} onClick={onClick} isCarousel={isCarousel}>
+      {Status}
       <Image src={offerImg}>
-        {Status}
         {!isCarousel && <OfferBanner type={type} offer={offer} />}
       </Image>
       <Content>

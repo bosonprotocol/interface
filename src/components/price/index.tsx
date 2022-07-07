@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 
 import { CONFIG } from "../../lib/config";
-import { convertPrice } from "../../lib/utils/convertPrice";
+import { convertPrice, IPrice } from "../../lib/utils/convertPrice";
 import Typography from "../ui/Typography";
 import CurrencyIcon from "./CurrencyIcon";
 
@@ -35,7 +35,7 @@ export default function Price({
   tag = "h4",
   ...rest
 }: IProps) {
-  const [price, setPrice] = useState<any>(null);
+  const [price, setPrice] = useState<IPrice | null>(null);
 
   const getConvertedPrice = useCallback(async () => {
     const newPrice = await convertPrice(
@@ -43,7 +43,6 @@ export default function Price({
       decimals,
       CONFIG.defaultCurrency
     );
-    console.log(newPrice);
     setPrice(newPrice);
   }, [value, decimals]);
 

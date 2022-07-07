@@ -1,3 +1,4 @@
+// import BuyerActions from "@bosonprotocol/widgets/src/views/manage-offer/BuyerActions";
 import { manageOffer } from "@bosonprotocol/widgets-sdk";
 import { useEffect, useReducer, useRef, useState } from "react";
 import { IoIosInformationCircleOutline } from "react-icons/io";
@@ -27,8 +28,8 @@ import {
   DarkerBackground,
   LightBackground,
   OfferGrid,
-  OfferWrapper
-  // WidgetContainer
+  OfferWrapper,
+  WidgetContainer
 } from "./OfferDetail.style";
 
 const Toggle = styled.div`
@@ -213,8 +214,9 @@ export default function OfferDetail() {
           <OfferDetailShare />
         </OfferGrid>
       </LightBackground>
-      {/* <WidgetContainer ref={widgetRef}></WidgetContainer> */}
+      {/* <BuyerActions offer={offer} reloadOfferData={() => {}} /> */}
       {/* TODO: Remove mocks */}
+      <WidgetContainer ref={widgetRef}></WidgetContainer>
       <DarkerBackground>
         <OfferGrid>
           <div>
@@ -233,10 +235,7 @@ export default function OfferDetail() {
         </OfferGrid>
         <OfferDetailSlider images={MOCK.images} />
         <OfferGrid>
-          <div>
-            <Typography tag="h3">Inventory graph</Typography>
-            <OfferDetailChart offer={offer} />
-          </div>
+          <OfferDetailChart offer={offer} />
           <div>
             <Typography tag="h3">Shipping information</Typography>
             <Typography tag="p" style={{ color: colors.darkGrey }}>

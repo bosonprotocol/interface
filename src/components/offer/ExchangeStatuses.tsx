@@ -6,11 +6,16 @@ import {
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
+import { zIndex } from "../../lib/styles/zIndex";
 import { Offer } from "../../lib/types/offer";
 
 const Statuses = styled.div`
+  position: absolute;
+  right: -1rem;
+  top: 1rem;
   display: flex;
   gap: 2px;
+  z-index: ${zIndex.OfferStatus};
 `;
 
 const Status = styled.div<{ $background: string; $color: string }>`

@@ -36,15 +36,20 @@ export const OFFER_LABEL_TYPES = {
   }
 };
 
+export const isOfferHot = (available: string, initial: string) => {
+  const ASPECT_RATIO = 1 / 2;
+  return Number(available) / Number(initial) < ASPECT_RATIO;
+};
+
 export const getOfferLabel = (offer: Offer) => {
   const current = dayjs();
   const release = dayjs(getDateTimestamp(offer?.validFromDate));
   const expiry = dayjs(getDateTimestamp(offer?.validUntilDate));
 
-  const aspectRatio = 1 / 2;
-  const optionQuantity =
-    Number(offer?.quantityAvailable) / Number(offer?.quantityInitial) <
-    aspectRatio;
+  const optionQuantity = isOfferHot(
+    offer?.quantityAvailable,
+    offer?.quantityInitial
+  );
   const optionRelease =
     release.diff(current, "days") >= 0 && expiry.diff(current, "days") <= 0;
   const optionExpiring = expiry.diff(current, "days") > 0;

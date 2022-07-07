@@ -10,6 +10,7 @@ const config = getDefaultConfig({ chainId: REACT_APP_CHAIN_ID });
 export const CONFIG = {
   ...config,
   dateFormat: process.env.DATE_FORMAT || "YYYY/MM/DD",
+  fullDateFormat: process.env.FULL_DATE_FORMAT || "YYYY-MM-DDTHH:mm:ssZ[Z]",
   defaultCurrency: process.env.DEFAULT_CURRENCY || "USD",
   widgetsUrl: process.env.REACT_APP_WIDGETS_URL || config.widgetsUrl,
   chainId: REACT_APP_CHAIN_ID,
