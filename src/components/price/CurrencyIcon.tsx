@@ -26,6 +26,8 @@ const IconContainer = styled.div`
   }
 `;
 
+const chain = "polygon";
+
 export default function CurrencyIcon({ currencySymbol, address }: Props) {
   const [error, setError] = useState<boolean>(false);
   const symbolUpperCase =
@@ -46,8 +48,8 @@ export default function CurrencyIcon({ currencySymbol, address }: Props) {
 
   const url =
     address === ethers.constants.AddressZero
-      ? "https://raw.githubusercontent.com/trustwallet/assets/8d1c9e051c8b9999cc58ae7e17bac1541dd483a3/blockchains/ethereum/info/logo.png"
-      : `https://raw.githubusercontent.com/trustwallet/assets/8d1c9e051c8b9999cc58ae7e17bac1541dd483a3/blockchains/ethereum/assets/${address}/logo.png`;
+      ? `https://raw.githubusercontent.com/trustwallet/assets/8d1c9e051c8b9999cc58ae7e17bac1541dd483a3/blockchains/${chain}/info/logo.png`
+      : `https://raw.githubusercontent.com/trustwallet/assets/8d1c9e051c8b9999cc58ae7e17bac1541dd483a3/blockchains/${chain}/assets/${address}/logo.png`;
 
   return (
     <img
