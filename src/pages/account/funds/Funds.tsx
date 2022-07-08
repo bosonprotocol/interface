@@ -139,6 +139,9 @@ export default function Funds({ sellerId, buyerId }: Props) {
       setIsAllFundsBeingWithdrawn(false);
     }
   };
+  if (!accountId) {
+    return <p>You have to interact with the protocol before adding funds</p>;
+  }
   return (
     <Root>
       {uiFunds.length ? (
@@ -181,6 +184,7 @@ export default function Funds({ sellerId, buyerId }: Props) {
             sellerFlexBasisCells={sellerFlexBasisCells}
             buyerFlexBasisCells={buyerFlexBasisCells}
             isTabSellerSelected={isTabSellerSelected}
+            coreSDK={core}
           />
         ))
       ) : (
