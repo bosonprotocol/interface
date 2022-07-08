@@ -370,6 +370,7 @@ export default function Exchange() {
           <Box>
             <SubHeading>Price</SubHeading>
             <Price
+              address={offer.exchangeToken.address}
               currencySymbol={offer.exchangeToken.symbol}
               value={offer.price}
               decimals={offer.exchangeToken.decimals}

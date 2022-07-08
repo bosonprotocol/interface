@@ -1,3 +1,5 @@
+import { ethers } from "ethers";
+import { useState } from "react";
 import styled from "styled-components";
 
 import { ReactComponent as bosonIcon } from "./images/boson.svg";
@@ -12,6 +14,7 @@ const currencyImages = {
 
 interface Props {
   currencySymbol: string;
+  address?: string;
 }
 
 const IconContainer = styled.div`
@@ -23,17 +26,35 @@ const IconContainer = styled.div`
   }
 `;
 
-export default function CurrencyIcon({ currencySymbol }: Props) {
+export default function CurrencyIcon({ currencySymbol, address }: Props) {
+  const [error, setError] = useState<boolean>(false);
   const symbolUpperCase =
     currencySymbol.toUpperCase() as keyof typeof currencyImages;
 
-  if (!currencyImages[symbolUpperCase]) {
+  if (currencyImages[symbolUpperCase]) {
+    const Icon = currencyImages[symbolUpperCase];
+    return (
+      <IconContainer>
+        <Icon />
+      </IconContainer>
+    );
+  }
+
+  if (error) {
     return <>{symbolUpperCase}</>;
   }
-  const Icon = currencyImages[symbolUpperCase];
+
+  const url =
+    address === ethers.constants.AddressZero
+      ? "https://raw.githubusercontent.com/trustwallet/assets/8d1c9e051c8b9999cc58ae7e17bac1541dd483a3/blockchains/ethereum/info/logo.png"
+      : `https://raw.githubusercontent.com/trustwallet/assets/8d1c9e051c8b9999cc58ae7e17bac1541dd483a3/blockchains/ethereum/assets/${address}/logo.png`;
+
   return (
-    <IconContainer>
-      <Icon />
-    </IconContainer>
+    <img
+      src={url}
+      onError={() => {
+        setError(true);
+      }}
+    />
   );
 }
