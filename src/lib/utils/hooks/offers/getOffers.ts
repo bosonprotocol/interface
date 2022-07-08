@@ -17,15 +17,31 @@ export const getOffers = async (props: UseOffersProps) => {
   const in10days =
     dayjs(dateNow).add(10, "day").startOf("day").toDate().getTime() / 1000;
 
-  const validFromDate_lte =
-    props.type !== "soon" && props.valid ? now + "" : null;
-  const validFromDate_gte = props.type === "soon" ? now + "" : null;
-  const validUntilDate_lte = props.type === "hot" ? in10days + "" : null;
-  const validUntilDate_gte = validUntilDate_lte
-    ? null
-    : props.type !== "soon" && props.valid
-    ? now + ""
-    : null;
+  let validFromDate_lte: string | null = null;
+  let validFromDate_gte: string | null = null;
+  let validUntilDate_lte: string | null = null;
+  let validUntilDate_gte: string | null = null;
+
+  if (props.type) {
+    if (props.type === "hot") {
+      validFromDate_gte = now + "";
+      validUntilDate_lte = in10days + "";
+    } else if (props.type === "gone") {
+      validFromDate_lte = now + "";
+      validUntilDate_gte = now + "";
+    } else if (props.type === "soon") {
+      validFromDate_gte = now + "";
+    } else {
+      throw new Error(`type not supported=${props.type}`);
+    }
+  } else {
+    if (props.valid) {
+      validFromDate_lte = now + "";
+      validUntilDate_gte = now + "";
+    } else {
+      // TODO: is there a use case for this?
+    }
+  }
 
   const variables = {
     validFromDate_lte: validFromDate_lte,
