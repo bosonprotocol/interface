@@ -1,7 +1,7 @@
 import { getDefaultConfig } from "@bosonprotocol/common";
 import { chain } from "wagmi";
 
-import { parseWhitelist } from "./utils/whitelist";
+import { parseCurationList } from "./utils/curationList";
 
 const REACT_APP_CHAIN_ID = process.env.REACT_APP_CHAIN_ID
   ? parseInt(process.env.REACT_APP_CHAIN_ID)
@@ -18,9 +18,15 @@ export const CONFIG = {
   sentryDSNUrl:
     "https://ff9c04ed823a4658bc5de78945961937@o992661.ingest.sentry.io/6455090",
   metaTransactionsApiKey: process.env.REACT_APP_META_TX_API_KEY,
-  sellerWhitelist: parseWhitelist(process.env.REACT_APP_SELLER_WHITELIST),
-  offerWhitelist: parseWhitelist(process.env.REACT_APP_OFFER_WHITELIST),
-  enableWhitelists: stringToBoolean(process.env.REACT_APP_ENABLE_WHITELISTS)
+  sellerCurationList: parseCurationList(
+    process.env.REACT_APP_SELLER_CURATION_LIST
+  ),
+  offerCurationList: parseCurationList(
+    process.env.REACT_APP_OFFER_CURATION_LIST
+  ),
+  enableCurationLists: stringToBoolean(
+    process.env.REACT_APP_ENABLE_CURATION_LISTS
+  )
 };
 
 export const coreSdkConfig: Config = {

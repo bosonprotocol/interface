@@ -4,9 +4,9 @@ import { fetchSubgraph } from "../../core-components/subgraph";
 import { buildGetOffersQuery } from "./graphql";
 import { memoMergeAndSortOffers } from "./memo";
 import {
+  CurationListGetOffersResult,
   UseOfferProps,
-  UseOffersProps,
-  WhitelistGetOffersResult
+  UseOffersProps
 } from "./types";
 
 const memoizedMergeAndSortOffers = memoMergeAndSortOffers();
@@ -39,8 +39,8 @@ export const getOffers = async (props: UseOffersProps) => {
     orderDirection: "asc",
     quantityAvailable_lte: props.quantityAvailable_lte,
     type: props.type,
-    sellerWhitelist: props.sellerWhitelist || [],
-    offerWhitelist: props.offerWhitelist || [],
+    sellerCurationList: props.sellerCurationList || [],
+    offerCurationList: props.offerCurationList || [],
     first: props.first,
     skip: props.skip
   };
@@ -59,7 +59,7 @@ export const getOffers = async (props: UseOffersProps) => {
     offer: false
   };
 
-  return fetchWhitelistOffers(props, getOffersQueryArgs, variables);
+  return fetchCurationListOffers(props, getOffersQueryArgs, variables);
 };
 
 export async function getOfferById(
@@ -77,8 +77,8 @@ export async function getOfferById(
     name_contains_nocase: props.name || "",
     exchangeToken: props.exchangeTokenAddress,
     sellerId: props.sellerId,
-    sellerWhitelist: props.sellerWhitelist || [],
-    offerWhitelist: props.offerWhitelist || []
+    sellerCurationList: props.sellerCurationList || [],
+    offerCurationList: props.offerCurationList || []
   };
 
   const getOffersQueryArgs = {
@@ -93,7 +93,7 @@ export async function getOfferById(
     offer: true
   };
 
-  const [offer] = await fetchWhitelistOffers(
+  const [offer] = await fetchCurationListOffers(
     props,
     getOffersQueryArgs,
     variables
@@ -101,47 +101,49 @@ export async function getOfferById(
   return offer;
 }
 
-async function fetchWhitelistOffers(
+async function fetchCurationListOffers(
   props: UseOffersProps,
   getOffersQueryArgs: Omit<
     Parameters<typeof buildGetOffersQuery>[0],
-    "sellerWhitelist" | "offerWhitelist"
+    "sellerCurationList" | "offerCurationList"
   >,
   queryVars: Record<string, unknown>
 ) {
-  const sellerWhitelist = props.enableWhitelists
-    ? props.sellerWhitelist || []
+  const sellerCurationList = props.enableCurationLists
+    ? props.sellerCurationList || []
     : null;
-  const offerWhitelist = props.enableWhitelists
-    ? props.offerWhitelist || []
+  const offerCurationList = props.enableCurationLists
+    ? props.offerCurationList || []
     : null;
 
-  const getSellerWhitelistOffersQuery = buildGetOffersQuery({
+  const getSellerCurationListOffersQuery = buildGetOffersQuery({
     ...getOffersQueryArgs,
-    sellerWhitelist: !!sellerWhitelist,
-    offerWhitelist: false
+    sellerCurationList: !!sellerCurationList,
+    offerCurationList: false
   });
-  const getOfferWhitelistOffersQuery = buildGetOffersQuery({
+  const getOfferCurationListOffersQuery = buildGetOffersQuery({
     ...getOffersQueryArgs,
-    sellerWhitelist: false,
-    offerWhitelist: !!offerWhitelist
+    sellerCurationList: false,
+    offerCurationList: !!offerCurationList
   });
 
-  const [sellerWhitelistResult, offerWhitelistResult] = await Promise.all([
-    fetchSubgraph<WhitelistGetOffersResult>(
-      getSellerWhitelistOffersQuery,
-      queryVars
-    ),
-    fetchSubgraph<WhitelistGetOffersResult>(
-      getOfferWhitelistOffersQuery,
-      queryVars
-    )
-  ]);
+  const [sellerCurationListResult, offerCurationListResult] = await Promise.all(
+    [
+      fetchSubgraph<CurationListGetOffersResult>(
+        getSellerCurationListOffersQuery,
+        queryVars
+      ),
+      fetchSubgraph<CurationListGetOffersResult>(
+        getOfferCurationListOffersQuery,
+        queryVars
+      )
+    ]
+  );
 
   const offers = memoizedMergeAndSortOffers(
     getMergedAndSortedCacheKey(props),
-    sellerWhitelistResult,
-    offerWhitelistResult
+    sellerCurationListResult,
+    offerCurationListResult
   );
 
   return offers.slice(props.skip, getOffersSliceEnd(props.skip, props.first));

@@ -14,9 +14,9 @@ export function useOffer(
     ["offer", offerId],
     async () => {
       restProps = {
-        sellerWhitelist: CONFIG.sellerWhitelist,
-        offerWhitelist: CONFIG.offerWhitelist,
-        enableWhitelists: CONFIG.enableWhitelists,
+        sellerCurationList: CONFIG.sellerCurationList,
+        offerCurationList: CONFIG.offerCurationList,
+        enableCurationLists: CONFIG.enableCurationLists,
         ...restProps
       };
       const offer = await getOfferById(offerId, {

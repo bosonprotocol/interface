@@ -12,16 +12,16 @@ jest.mock("@bosonprotocol/ipfs-storage", () => {
 describe("#makeMemoizedMergeAndSortOffers()", () => {
   test("merge and sort offers correctly", () => {
     // offers with ids 000 - 009
-    const sellerWhitelistOffers = getFirstNOffers(10);
-    const sellerWhitelistResult = {
-      baseMetadataEntities: sellerWhitelistOffers.map((offer) => ({
+    const sellerCurationListOffers = getFirstNOffers(10);
+    const sellerCurationListResult = {
+      baseMetadataEntities: sellerCurationListOffers.map((offer) => ({
         offer
       }))
     };
     // offers with ids 000 - 004
-    const offerWhitelistOffers = getFirstNOffers(5);
-    const offerWhitelistResult = {
-      baseMetadataEntities: offerWhitelistOffers.map((offer) => ({
+    const offerCurationListOffers = getFirstNOffers(5);
+    const offerCurationListResult = {
+      baseMetadataEntities: offerCurationListOffers.map((offer) => ({
         offer
       }))
     };
@@ -30,8 +30,8 @@ describe("#makeMemoizedMergeAndSortOffers()", () => {
 
     const mergedAndSortedOffers = memoizedMergeAndSortOffers(
       "key",
-      sellerWhitelistResult,
-      offerWhitelistResult
+      sellerCurationListResult,
+      offerCurationListResult
     );
 
     // remove duplicates
@@ -46,13 +46,13 @@ describe("#makeMemoizedMergeAndSortOffers()", () => {
     const offers = getFirstNOffers(10);
 
     // offers with ids 000 - 004
-    const sellerWhitelistResult = {
+    const sellerCurationListResult = {
       baseMetadataEntities: offers.slice(0, 5).map((offer) => ({
         offer
       }))
     };
     // offers with ids 004 - 009
-    const offerWhitelistResult = {
+    const offerCurationListResult = {
       baseMetadataEntities: offers.slice(5).map((offer) => ({
         offer
       }))
@@ -62,8 +62,8 @@ describe("#makeMemoizedMergeAndSortOffers()", () => {
 
     const firstMergedAndSortedOffers = memoizedMergeAndSortOffers(
       "firstKey",
-      sellerWhitelistResult,
-      offerWhitelistResult
+      sellerCurationListResult,
+      offerCurationListResult
     );
     const secondMergedAndSortedOffers = memoizedMergeAndSortOffers(
       "firstKey",

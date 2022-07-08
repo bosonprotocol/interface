@@ -50,8 +50,8 @@ export function buildGetOffersQuery({
   skip,
   offer,
   quantityAvailable_lte,
-  sellerWhitelist,
-  offerWhitelist
+  sellerCurationList,
+  offerCurationList
 }: {
   exchangeToken: boolean;
   sellerId: boolean;
@@ -62,8 +62,8 @@ export function buildGetOffersQuery({
   skip: boolean;
   offer: boolean;
   quantityAvailable_lte: boolean;
-  sellerWhitelist: boolean;
-  offerWhitelist: boolean;
+  sellerCurationList: boolean;
+  offerCurationList: boolean;
 }) {
   return gql`
   query GetOffers(
@@ -80,8 +80,8 @@ export function buildGetOffersQuery({
     $orderDirection: String
     ${offer ? "$offer: String" : ""}
     ${quantityAvailable_lte ? "$quantityAvailable_lte: Int" : ""}
-    ${sellerWhitelist ? "$sellerWhitelist: [String!]" : ""}
-    ${offerWhitelist ? "$offerWhitelist: [String!]" : ""}
+    ${sellerCurationList ? "$sellerCurationList: [String!]" : ""}
+    ${offerCurationList ? "$offerCurationList: [String!]" : ""}
   ) {
     baseMetadataEntities(
       first: $first
@@ -101,8 +101,8 @@ export function buildGetOffersQuery({
             ? "quantityAvailable_lte: $quantityAvailable_lte"
             : ""
         }
-        ${sellerWhitelist ? "seller_in: $sellerWhitelist" : ""}
-        ${offerWhitelist ? "offer_in: $offerWhitelist" : ""}
+        ${sellerCurationList ? "seller_in: $sellerCurationList" : ""}
+        ${offerCurationList ? "offer_in: $offerCurationList" : ""}
         name_contains_nocase: $name_contains_nocase
       }
     ) {

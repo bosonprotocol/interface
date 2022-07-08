@@ -1,6 +1,6 @@
 import { useQuery } from "react-query";
 
-import { useWhitelists } from "../useWhitelists";
+import { useCurationLists } from "../useCurationLists";
 import { getOffers } from "./getOffers";
 import { UseOffersProps } from "./types";
 
@@ -10,11 +10,11 @@ export function useOffers(
     enabled?: boolean;
   } = {}
 ) {
-  const whitelists = useWhitelists();
+  const curationLists = useCurationLists();
 
   props = {
     ...props,
-    ...whitelists
+    ...curationLists
   };
   return useQuery(
     ["offers", props],
