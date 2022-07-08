@@ -1,6 +1,6 @@
 import { Offer } from "../../../types/offer";
 
-export type WhitelistGetOffersResult = {
+export type CurationListGetOffersResult = {
   baseMetadataEntities: { offer: Offer }[];
 };
 
@@ -13,9 +13,9 @@ interface CommonProps {
   sellerId?: Offer["seller"]["id"];
   first?: number;
   skip?: number;
-  sellerWhitelist?: string[];
-  offerWhitelist?: string[];
-  enableWhitelists?: boolean;
+  sellerCurationList?: string[];
+  offerCurationList?: string[];
+  enableCurationLists?: boolean;
 }
 
 export interface UseOffersProps extends CommonProps {

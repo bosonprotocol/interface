@@ -275,7 +275,8 @@ export default function OfferDetail() {
         offer.id,
         {
           ...CONFIG,
-          metaTransactionsApiKey: customMetaTransactionsApiKey
+          metaTransactionsApiKey:
+            customMetaTransactionsApiKey || CONFIG.metaTransactionsApiKey
         },
         widgetContainer,
         {

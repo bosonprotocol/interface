@@ -43,8 +43,8 @@ export default function CustomStore() {
       secondaryColor: "",
       accentColor: "",
       primaryBgColor: "",
-      sellerWhitelist: "",
-      offerWhitelist: "",
+      sellerCurationList: "",
+      offerCurationList: "",
       metaTransactionsApiKey: ""
     },
     onSubmit: async (values: StoreFields) => {
@@ -197,21 +197,21 @@ export default function CustomStore() {
             </div>
           </FormElement>
           <FormElement>
-            <FormLabel>Seller Whitelist</FormLabel>
+            <FormLabel>Seller CurationList</FormLabel>
             <FormControl
-              value={values.sellerWhitelist}
+              value={values.sellerCurationList}
               onChange={handleChange}
-              name="sellerWhitelist"
+              name="sellerCurationList"
               type="text"
               placeholder="Comma-separated list of seller IDs"
             />
           </FormElement>
           <FormElement>
-            <FormLabel>Offer Whitelist</FormLabel>
+            <FormLabel>Offer CurationList</FormLabel>
             <FormControl
-              value={values.offerWhitelist}
+              value={values.offerCurationList}
               onChange={handleChange}
-              name="offerWhitelist"
+              name="offerCurationList"
               type="text"
               placeholder="Comma-separated list of offer IDs"
             />

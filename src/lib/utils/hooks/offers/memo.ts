@@ -1,24 +1,24 @@
 import { Offer } from "../../../types/offer";
 import { checkOfferMetadata } from "../../validators";
-import { WhitelistGetOffersResult } from "./types";
+import { CurationListGetOffersResult } from "./types";
 
 export function memoMergeAndSortOffers() {
   const cache: Record<string, Offer[]> = {};
 
-  function mergeAndSortWhitelistResults(
+  function mergeAndSortCurationListResults(
     cacheKey: string,
-    sellerWhitelistResult: WhitelistGetOffersResult,
-    offerWhitelistResult: WhitelistGetOffersResult
+    sellerCurationListResult: CurationListGetOffersResult,
+    offerCurationListResult: CurationListGetOffersResult
   ): Offer[] {
     const cachedOffers = cache[cacheKey] || [];
-    const sellerWhitelistOffers =
-      sellerWhitelistResult?.baseMetadataEntities || [];
-    const offerWhitelistOffers =
-      offerWhitelistResult?.baseMetadataEntities || [];
+    const sellerCurationListOffers =
+      sellerCurationListResult?.baseMetadataEntities || [];
+    const offerCurationListOffers =
+      offerCurationListResult?.baseMetadataEntities || [];
 
-    const mergedWhitelistOffers = [
-      ...sellerWhitelistOffers,
-      ...offerWhitelistOffers
+    const mergedCurationListOffers = [
+      ...sellerCurationListOffers,
+      ...offerCurationListOffers
     ].map((base) => {
       const isValid = checkOfferMetadata(base.offer);
       return {
@@ -30,7 +30,7 @@ export function memoMergeAndSortOffers() {
         isValid
       } as Offer;
     });
-    const mergedOffers = [...cachedOffers, ...mergedWhitelistOffers];
+    const mergedOffers = [...cachedOffers, ...mergedCurationListOffers];
     const ids = mergedOffers.map((offer) => Number(offer.id));
     const uniqueOffers = mergedOffers.filter(
       (offer, index) => !ids.includes(Number(offer.id), index + 1)
@@ -47,5 +47,5 @@ export function memoMergeAndSortOffers() {
     return sortedOffers;
   }
 
-  return mergeAndSortWhitelistResults;
+  return mergeAndSortCurationListResults;
 }
