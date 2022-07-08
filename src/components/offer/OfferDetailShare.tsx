@@ -40,7 +40,6 @@ const SimpleSmallModal = styled.div<{ $show: boolean }>`
 `;
 const OfferDetailShare: React.FC = () => {
   const [show, setShow] = useState<boolean>(false);
-  const numberOfShares = 52; // TODO: Replace this MOCK with real value
 
   const handleShare = () => {
     copyToClipboard(window.location.href).then(() => {
@@ -55,7 +54,6 @@ const OfferDetailShare: React.FC = () => {
       <ShareWrapper>
         <Button onClick={handleShare} theme="blank">
           <AiOutlineShareAlt size={24} />
-          {numberOfShares}
         </Button>
       </ShareWrapper>
       <SimpleSmallModal $show={show}>

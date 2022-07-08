@@ -41,7 +41,7 @@ export default function Price({
     const newPrice = await convertPrice(
       value,
       decimals,
-      CONFIG.defaultCurrency
+      CONFIG.defaultCurrency.ticker
     );
     setPrice(newPrice);
   }, [value, decimals]);
@@ -70,7 +70,7 @@ export default function Price({
           {convert && (
             <small>
               {" "}
-              {price.converted} {CONFIG.defaultCurrency}
+              {CONFIG.defaultCurrency.symbol} {price.converted}
             </small>
           )}
         </Typography>

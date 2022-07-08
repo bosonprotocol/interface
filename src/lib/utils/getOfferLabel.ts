@@ -16,8 +16,8 @@ export const OFFER_LABEL_TYPES = {
     color: colors.darkGrey,
     background: colors.lightGrey
   },
-  COOMING_SOON: {
-    name: "COOMING_SOON",
+  COMING_SOON: {
+    name: "COMING_SOON",
     emoji: "⏱️",
     color: colors.darkGrey,
     background: colors.lightGrey
@@ -57,7 +57,7 @@ export const getOfferLabel = (offer: Offer) => {
   if (optionQuantity) {
     return OFFER_LABEL_TYPES.HOT.name;
   } else if (optionRelease) {
-    return OFFER_LABEL_TYPES.COOMING_SOON.name;
+    return OFFER_LABEL_TYPES.COMING_SOON.name;
   } else if (optionExpiring) {
     return OFFER_LABEL_TYPES.EXPIRING_SOON.name;
   } else {

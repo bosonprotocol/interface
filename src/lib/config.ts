@@ -11,7 +11,10 @@ export const CONFIG = {
   ...config,
   dateFormat: process.env.DATE_FORMAT || "YYYY/MM/DD",
   fullDateFormat: process.env.FULL_DATE_FORMAT || "YYYY-MM-DDTHH:mm:ssZ[Z]",
-  defaultCurrency: process.env.DEFAULT_CURRENCY || "USD",
+  defaultCurrency: {
+    ticker: process.env.DEFAULT_CURRENCY || "USD",
+    symbol: process.env.DEFAULT_CURRENCY_SYMBOL || "$"
+  },
   widgetsUrl: process.env.REACT_APP_WIDGETS_URL || config.widgetsUrl,
   chainId: REACT_APP_CHAIN_ID,
   ipfsMetadataUrl:
