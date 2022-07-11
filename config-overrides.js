@@ -1,8 +1,12 @@
 // INFO about this file in https://github.com/timarney/react-app-rewired
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { override, addBabelPlugins } = require("customize-cra");
-
+/* eslint @typescript-eslint/no-var-requires: "off" */
+const {
+  override,
+  addBabelPlugins,
+  addWebpackPlugin,
+  addWebpackResolve
+} = require("customize-cra");
+const webpack = require("webpack");
 // module.exports = override(addBabelPlugins("babel-plugin-styled-components"));
 
 // // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -25,7 +29,19 @@ module.exports = {
       };
 
       return config;
-    }
+    },
+    addWebpackResolve({
+      fallback: {
+        buffer: require.resolve("buffer"),
+        stream: require.resolve("stream-browserify"),
+        assert: require.resolve("assert/")
+      }
+    }),
+    addWebpackPlugin(
+      new webpack.ProvidePlugin({
+        Buffer: ["buffer", "Buffer"]
+      })
+    )
   ),
   // The Jest config to use when running your jest tests - note that the normal rewires do not
   // work here.

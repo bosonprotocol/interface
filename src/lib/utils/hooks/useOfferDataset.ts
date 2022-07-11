@@ -1,3 +1,4 @@
+/* eslint @typescript-eslint/no-explicit-any: "off" */
 import dayjs from "dayjs";
 import minMax from "dayjs/plugin/minMax";
 
@@ -8,128 +9,6 @@ import { colors } from "./../../styles/colors";
 import { Offer } from "./../../types/offer";
 import { getDateTimestamp } from "./../getDateTimestamp";
 
-const MOCK_TIMESTAMP = [
-  {
-    // 2022-07-07
-    committedDate: "1657175417",
-    redeemedDate: null
-  },
-  {
-    // 2022-07-07
-    committedDate: "1657175417",
-    redeemedDate: "1657175417"
-  },
-  {
-    // 2022-07-06
-    committedDate: "1657089017",
-    redeemedDate: null
-  },
-  {
-    // 2022-07-06
-    committedDate: "1657089017",
-    redeemedDate: "1657089017"
-  },
-  {
-    // 2022-07-05
-    committedDate: "1657002617",
-    redeemedDate: null
-  },
-  {
-    // 2022-07-05
-    committedDate: "1657002617",
-    redeemedDate: "1657002617"
-  },
-  {
-    // 2022-07-04
-    committedDate: "1656916217",
-    redeemedDate: null
-  },
-  {
-    // 2022-07-04
-    committedDate: "1656916217",
-    redeemedDate: "1656916217"
-  },
-  {
-    // 2022-07-04
-    committedDate: "1656916217",
-    redeemedDate: null
-  },
-  {
-    // 2022-07-04
-    committedDate: "1656916217",
-    redeemedDate: "1656916217"
-  },
-  {
-    // 2022-07-04
-    committedDate: "1656916217",
-    redeemedDate: null
-  },
-  {
-    // 2022-07-04
-    committedDate: "1656916217",
-    redeemedDate: "1656916217"
-  },
-  {
-    // 2022-07-04
-    committedDate: "1656916217",
-    redeemedDate: null
-  },
-  {
-    // 2022-07-04
-    committedDate: "1656916217",
-    redeemedDate: "1656916217"
-  },
-  {
-    // 2022-07-04
-    committedDate: "1656916217",
-    redeemedDate: null
-  },
-  {
-    // 2022-07-04
-    committedDate: "1656916217",
-    redeemedDate: "1656916217"
-  },
-  {
-    // 2022-07-04
-    committedDate: "1656916217",
-    redeemedDate: null
-  },
-  {
-    // 2022-07-04
-    committedDate: "1656916217",
-    redeemedDate: "1656916217"
-  },
-  {
-    // 2022-07-03
-    committedDate: "1656829817",
-    redeemedDate: null
-  },
-  {
-    // 2022-07-03
-    committedDate: "1656829817",
-    redeemedDate: null
-  },
-  {
-    // 2022-07-03
-    committedDate: "1656829817",
-    redeemedDate: null
-  },
-  {
-    // 2022-07-03
-    committedDate: "1656829817",
-    redeemedDate: "1656829817"
-  },
-  {
-    // 2022-07-02
-    committedDate: "1656743417",
-    redeemedDate: null
-  },
-  {
-    // 2022-07-02
-    committedDate: "1656743417",
-    redeemedDate: "1656743417"
-  }
-];
 const SAME_TYPES_OPTIONS = {
   animations: {
     y: {
@@ -139,17 +18,23 @@ const SAME_TYPES_OPTIONS = {
   }
 };
 
-function groupBy(xs: Array<any>, key: string) {
+interface IGroupBy {
+  committed: number;
+  redeemed: number;
+}
+type GroupByTypes = keyof IGroupBy;
+function groupBy(xs: Array<IGroupBy>, key: GroupByTypes): Array<number> {
   return xs
-    .reduce((rv, x) => {
+    .reduce((rv: Array<any>, x: IGroupBy) => {
       if (x[key] !== null) (rv[x[key]] = rv[x[key]] || []).push(x[key]);
       return rv;
     }, [])
-    .filter((n: any) => n)
+    .filter((n: Array<number>) => n)
     .flat();
 }
-function accumulate(arr: Array<any>) {
-  return arr.reduce((r, i, k) => {
+
+function accumulate(arr: Array<number>): Array<number> {
+  return arr.reduce((r: Array<number>, i: number, k: number) => {
     const newValue = k > 0 ? i + r[k - 1] : i;
     return [...r, newValue];
   }, []);
@@ -160,9 +45,9 @@ function uniq(a: Array<string>) {
 function formatDate(timestamp: string) {
   return dayjs(getDateTimestamp(timestamp));
 }
-function getOccurrence(array: any, value: any) {
+function getOccurrence(array: Array<string>, value: string): number {
   let count = 0;
-  array.forEach((v: any) => v === value && count++);
+  array.forEach((v: string) => v === value && count++);
   return count;
 }
 

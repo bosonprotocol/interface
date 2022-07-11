@@ -20,8 +20,6 @@ import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { useOffer } from "../../lib/utils/hooks/offers/useOffer";
-import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
-import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { isAccountSeller } from "../../lib/utils/isAccountSeller";
 import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
 import CreatedExchangeModal from "./CreatedExchangeModal";
@@ -91,7 +89,6 @@ export default function OfferDetail() {
   const { [UrlParameters.offerId]: offerId } = useParams();
   const widgetRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
-  const { isXXS } = useBreakpoints();
   const fromAccountPage =
     (location.state as { from: string })?.from === BosonRoutes.YourAccount;
   const [isTabSellerSelected, setTabSellerSelected] =
@@ -103,7 +100,6 @@ export default function OfferDetail() {
   );
   const { address: account } = useAccount();
   const address = account || "";
-  const navigate = useKeepQueryParamsNavigate();
   const customMetaTransactionsApiKey = useCustomStoreQueryParameter(
     "metaTransactionsApiKey"
   );
@@ -245,7 +241,6 @@ export default function OfferDetail() {
           <OfferDetailShare />
         </OfferGrid>
       </LightBackground>
-      <WidgetContainer ref={widgetRef}></WidgetContainer>
       <DarkerBackground>
         <OfferGrid>
           <div>

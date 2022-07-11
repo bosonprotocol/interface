@@ -1,3 +1,4 @@
+// import { CommitButton } from "@bosonprotocol/react-kit";
 import { useMemo, useState } from "react";
 import { AiOutlineCheck } from "react-icons/ai";
 import styled from "styled-components";
@@ -97,10 +98,11 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
       </div>
       <div>
         <Grid flexGrow="1" gap="1rem">
-          <Button fill theme="secondary" size="large" step={1}>
+          {/* <CommitButton variant="secondary" size="large" /> */}
+          <Button theme="secondary" size="large" step={1}>
             Commit
           </Button>
-          <Button fill theme="outline" size="large" step={2} disabled>
+          <Button theme="outline" size="large" step={2} disabled>
             Redeem
           </Button>
         </Grid>
