@@ -14,8 +14,6 @@ import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
 import OfferDetailTable from "./OfferDetailTable";
 
-const UnstyledCommitButton = styled(CommitButton)``;
-
 interface IOfferDetailWidget {
   offer: Offer;
   handleModal: () => void;
@@ -104,19 +102,17 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
           <CommitButton
             offerId={offer.id}
             chainId={CONFIG.chainId}
-            onError={(args: any) => console.error("onError", args)}
-            onPendingTransactionConfirmation={(args: any) =>
-              console.log("onPendingTransactionConfirmation", args)
-            }
-            onPendingUserConfirmation={(args: any) =>
+            onPendingTransactionConfirmation={() => null}
+            onError={(args) => console.error("onError", args)}
+            onPendingUserConfirmation={(args) =>
               console.log("onPendingUserConfirmation", args)
             }
-            onSuccess={(args: any) => console.log("onSuccess", args)}
+            onSuccess={(args) => {
+              //TODO: remove all these callbacks if they are not used
+              console.log("onSuccess", args);
+            }}
             extraInfo="Step 1"
           />
-          {/* <Button theme="secondary" size="large" step={1}>
-            Commit
-          </Button> */}
           <Button theme="outline" size="large" step={2} disabled>
             Redeem
           </Button>
