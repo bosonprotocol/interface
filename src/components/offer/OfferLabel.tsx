@@ -33,6 +33,9 @@ interface Props {
 
 export default function OfferLabel({ offer }: Props) {
   const label = getOfferLabel(offer);
+  if (label === false) {
+    return null;
+  }
   const type = OFFER_LABEL_TYPES[`${label as keyof typeof OFFER_LABEL_TYPES}`];
 
   return (

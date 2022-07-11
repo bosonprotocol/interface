@@ -10,11 +10,11 @@ import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryPa
 
 const AddressContainer = styled(Grid)`
   gap: 10px;
-  cursor: pointer;
   margin: 0;
 `;
 
 const SellerContainer = styled.div`
+  cursor: pointer;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -47,18 +47,17 @@ const SellerID: React.FC<
   const sellerAddress = seller?.operator;
 
   return (
-    <AddressContainer
-      onClick={(e) => {
-        e.stopPropagation();
-        navigate({
-          pathname: generatePath(BosonRoutes.Account, {
-            [UrlParameters.accountId]: sellerAddress
-          })
-        });
-      }}
-      {...rest}
-    >
-      <SellerContainer>
+    <AddressContainer {...rest}>
+      <SellerContainer
+        onClick={(e) => {
+          e.stopPropagation();
+          navigate({
+            pathname: generatePath(BosonRoutes.Account, {
+              [UrlParameters.accountId]: sellerAddress
+            })
+          });
+        }}
+      >
         <div>
           <AccountImage size={17} address={sellerAddress} />
         </div>

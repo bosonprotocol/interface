@@ -11,28 +11,39 @@ import { getDateTimestamp } from "./getDateTimestamp";
 
 export const OFFER_LABEL_TYPES = {
   HOT: {
+    display: true,
     name: "HOT",
     emoji: "🔥",
     color: colors.darkGrey,
     background: colors.lightGrey
   },
   COMING_SOON: {
+    display: true,
     name: "COMING_SOON",
     emoji: "⏱️",
     color: colors.darkGrey,
     background: colors.lightGrey
   },
   EXPIRING_SOON: {
+    display: true,
     name: "EXPIRING_SOON",
     emoji: "⏱️",
     color: colors.darkGrey,
     background: colors.lightGrey
   },
   EXPIRED: {
+    display: true,
     name: "EXPIRED",
     emoji: "✖️",
     color: colors.white,
     background: colors.red
+  },
+  NORMAL: {
+    display: false,
+    name: "NORMAL",
+    emoji: "",
+    color: colors.white,
+    background: colors.black
   }
 };
 
@@ -50,9 +61,10 @@ export const getOfferLabel = (offer: Offer) => {
     offer?.quantityAvailable,
     offer?.quantityInitial
   );
-  const optionRelease =
-    release.diff(current, "days") >= 0 && expiry.diff(current, "days") <= 0;
-  const optionExpiring = expiry.diff(current, "days") > 0;
+  const optionRelease = release.isAfter(current);
+  const optionExpiring =
+    expiry.isAfter(current) && expiry.diff(current, "hours") <= 24;
+  const expired = expiry.isBefore(current);
 
   if (optionQuantity) {
     return OFFER_LABEL_TYPES.HOT.name;
@@ -60,7 +72,9 @@ export const getOfferLabel = (offer: Offer) => {
     return OFFER_LABEL_TYPES.COMING_SOON.name;
   } else if (optionExpiring) {
     return OFFER_LABEL_TYPES.EXPIRING_SOON.name;
-  } else {
+  } else if (expired) {
     return OFFER_LABEL_TYPES.EXPIRED.name;
   }
+
+  return false;
 };

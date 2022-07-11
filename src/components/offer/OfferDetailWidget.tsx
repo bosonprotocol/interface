@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { AiOutlineCheck } from "react-icons/ai";
 import styled from "styled-components";
 
@@ -56,6 +56,7 @@ const Break = styled.span`
 `;
 
 const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({ offer }) => {
+  const [quantity] = useState<number>(Number(offer?.quantityAvailable));
   const isHotOffer = useMemo(
     () => isOfferHot(offer?.quantityAvailable, offer?.quantityInitial),
     [offer?.quantityAvailable, offer?.quantityInitial]
@@ -74,7 +75,9 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({ offer }) => {
           />
           {isHotOffer && (
             <Typography tag="p" style={{ color: colors.orange, margin: 0 }}>
-              Only {offer.quantityAvailable} items left!
+              {quantity === 0 && "No items available!"}
+              {quantity > 0 &&
+                `Only ${quantity} ${quantity === 1 ? "item" : "items"} left!`}
             </Typography>
           )}
         </Grid>
