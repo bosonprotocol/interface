@@ -93,19 +93,11 @@ export function buildGetOffersQuery({
       orderDirection: $orderDirection
       where: {
         ${offer ? "offer: $offer" : ""}
-        ${
-          validFromDate_lte ? "validFromDate_lte: $validFromDate_lte" : ""
-        } # metadata filter
-        ${
-          validFromDate_gte ? "validFromDate_gte: $validFromDate_gte" : ""
-        } # metadata filter
-        ${
-          validUntilDate_lte ? "validUntilDate_lte: $validUntilDate_lte" : ""
-        } # metadata filter
-        ${
-          validUntilDate_gte ? "validUntilDate_gte: $validUntilDate_gte" : ""
-        } # metadata filter
-        ${exchangeToken ? "exchangeToken: $exchangeToken" : ""}# metadata filter
+        ${validFromDate_lte ? "validFromDate_lte: $validFromDate_lte" : ""}
+        ${validFromDate_gte ? "validFromDate_gte: $validFromDate_gte" : ""}
+        ${validUntilDate_lte ? "validUntilDate_lte: $validUntilDate_lte" : ""}
+        ${validUntilDate_gte ? "validUntilDate_gte: $validUntilDate_gte" : ""}
+        ${exchangeToken ? "exchangeToken: $exchangeToken" : ""}
         ${sellerId ? "seller: $seller" : ""}
         ${
           quantityAvailable_lte
