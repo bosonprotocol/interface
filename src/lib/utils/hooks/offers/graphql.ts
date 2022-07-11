@@ -50,6 +50,7 @@ export function buildGetOffersQuery({
   skip,
   offer,
   quantityAvailable_lte,
+  quantityAvailable_gte,
   sellerCurationList,
   offerCurationList
 }: {
@@ -62,6 +63,7 @@ export function buildGetOffersQuery({
   skip: boolean;
   offer: boolean;
   quantityAvailable_lte: boolean;
+  quantityAvailable_gte: boolean;
   sellerCurationList: boolean;
   offerCurationList: boolean;
 }) {
@@ -80,6 +82,7 @@ export function buildGetOffersQuery({
     $orderDirection: String
     ${offer ? "$offer: String" : ""}
     ${quantityAvailable_lte ? "$quantityAvailable_lte: Int" : ""}
+    ${quantityAvailable_gte ? "$quantityAvailable_gte: Int" : ""}
     ${sellerCurationList ? "$sellerCurationList: [String!]" : ""}
     ${offerCurationList ? "$offerCurationList: [String!]" : ""}
   ) {
@@ -90,15 +93,28 @@ export function buildGetOffersQuery({
       orderDirection: $orderDirection
       where: {
         ${offer ? "offer: $offer" : ""}
-        ${validFromDate_lte ? "validFromDate_lte: $validFromDate_lte" : ""}
-        ${validFromDate_gte ? "validFromDate_gte: $validFromDate_gte" : ""}
-        ${validUntilDate_lte ? "validUntilDate_lte: $validUntilDate_lte" : ""}
-        ${validUntilDate_gte ? "validUntilDate_gte: $validUntilDate_gte" : ""}
-        ${exchangeToken ? "exchangeToken: $exchangeToken" : ""}
+        ${
+          validFromDate_lte ? "validFromDate_lte: $validFromDate_lte" : ""
+        } # metadata filter
+        ${
+          validFromDate_gte ? "validFromDate_gte: $validFromDate_gte" : ""
+        } # metadata filter
+        ${
+          validUntilDate_lte ? "validUntilDate_lte: $validUntilDate_lte" : ""
+        } # metadata filter
+        ${
+          validUntilDate_gte ? "validUntilDate_gte: $validUntilDate_gte" : ""
+        } # metadata filter
+        ${exchangeToken ? "exchangeToken: $exchangeToken" : ""}# metadata filter
         ${sellerId ? "seller: $seller" : ""}
         ${
           quantityAvailable_lte
             ? "quantityAvailable_lte: $quantityAvailable_lte"
+            : ""
+        }
+        ${
+          quantityAvailable_gte
+            ? "quantityAvailable_gte: $quantityAvailable_gte"
             : ""
         }
         ${sellerCurationList ? "seller_in: $sellerCurationList" : ""}
