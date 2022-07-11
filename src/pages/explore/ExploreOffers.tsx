@@ -91,6 +91,7 @@ export default function ExploreOffers(props: Props) {
     voided: false,
     valid: true,
     exchangeTokenAddress,
+    quantityAvailable_gte: 1,
     sellerId,
     // TODO: comment this out once we can request offers with valid metadata directly as requesting 1 extra offer should be enough
     // first: OFFERS_PER_PAGE + 1,
