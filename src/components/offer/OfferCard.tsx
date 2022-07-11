@@ -35,7 +35,7 @@ const Card = styled.div<{ isCarousel: boolean }>`
       8px 8px 8px rgba(0, 0, 0, 0.05),
       16px 16px 16px rgba(0, 0, 0, 0.05);
 
-      img {
+      img[data-testid=image] {
         transform: translate(-50%, -50%) scale(1.05);
       }
     }
@@ -172,6 +172,7 @@ export default function OfferCard({
           </Name>
           {offer.exchangeToken && (
             <Price
+              address={offer.exchangeToken.address}
               currencySymbol={offer.exchangeToken.symbol}
               value={offer.price}
               decimals={offer.exchangeToken.decimals}

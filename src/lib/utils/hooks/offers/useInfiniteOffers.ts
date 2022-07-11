@@ -1,5 +1,6 @@
 import { useInfiniteQuery } from "react-query";
 
+import { useCurationLists } from "../useCurationLists";
 import { getOffers } from "./getOffers";
 import { UseOffersProps } from "./types";
 
@@ -10,15 +11,25 @@ export function useInfiniteOffers(
     keepPreviousData?: boolean;
   } = {}
 ) {
-  const queryKey = ["offers", props];
+  const curationLists = useCurationLists();
+
+  props = {
+    ...props,
+    ...curationLists
+  };
   return useInfiniteQuery(
-    queryKey,
+    ["offers", "infinite", props.sellerId],
     async (context) => {
       const skip = context.pageParam || 0;
-      return getOffers({ ...props, skip });
+      return getOffers({
+        ...props,
+        skip
+      });
     },
     {
-      ...options
+      ...options,
+      refetchOnWindowFocus: false,
+      refetchOnMount: false
     }
   );
 }

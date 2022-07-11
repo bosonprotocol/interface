@@ -35,6 +35,7 @@ const BaseButton = styled.button<{
       }
     }
   `}
+
   ${(props) =>
     props.theme.padding
       ? `
@@ -43,6 +44,8 @@ const BaseButton = styled.button<{
       : ""}
 
   :disabled {
+    background-color: ${colors.darkGrey};
+    opacity: 0.5;
     cursor: not-allowed;
   }
 `;
@@ -115,7 +118,7 @@ const allThemes = {
 
 interface IButton {
   children?: string | React.ReactNode;
-  onClick?: () => void;
+  onClick?: React.MouseEventHandler<HTMLButtonElement> | undefined;
   size?: "small" | "regular" | "large";
   theme?: keyof typeof allThemes;
   type?: "button" | "submit" | "reset" | undefined;

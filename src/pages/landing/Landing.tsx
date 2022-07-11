@@ -37,7 +37,7 @@ const Title = styled(Typography)`
   font-size: 2.5rem;
   line-height: 1.3;
   ${breakpoint.s} {
-    font-size: 3.5rem;
+    font-size: 3.15rem;
     line-height: 1.2;
   }
 `;
@@ -48,12 +48,7 @@ const ExploreContainer = styled.div`
   margin-top: 2rem;
 `;
 
-const HeroWrapper = styled(Grid)`
-  padding: 1rem 0 1rem 0;
-  ${breakpoint.m} {
-    padding: 3rem 0 3rem 0;
-  }
-`;
+const HeroWrapper = styled(Grid)``;
 const StepWrapper = styled(Grid)`
   gap: 50px;
   margin: 5rem 0;

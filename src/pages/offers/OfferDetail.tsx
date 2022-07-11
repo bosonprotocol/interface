@@ -21,7 +21,9 @@ import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { useOffer } from "../../lib/utils/hooks/offers/useOffer";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
+import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { isAccountSeller } from "../../lib/utils/isAccountSeller";
+import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
 import CreatedExchangeModal from "./CreatedExchangeModal";
 import { MOCK } from "./mock/mock";
 import {
@@ -95,6 +97,10 @@ export default function OfferDetail() {
   );
   const { address: account } = useAccount();
   const address = account || "";
+  const navigate = useKeepQueryParamsNavigate();
+  const customMetaTransactionsApiKey = useCustomStoreQueryParameter(
+    "metaTransactionsApiKey"
+  );
 
   const {
     data: offer,
@@ -118,14 +124,23 @@ export default function OfferDetail() {
       const widgetContainer = document.createElement("div");
       widgetContainer.style.width = "100%";
       widgetRef.current.appendChild(widgetContainer);
-      manageOffer(offer.id, CONFIG, widgetContainer, {
-        forceBuyerView: !isTabSellerSelected
-      });
+      manageOffer(
+        offer.id,
+        {
+          ...CONFIG,
+          metaTransactionsApiKey:
+            customMetaTransactionsApiKey || CONFIG.metaTransactionsApiKey
+        },
+        widgetContainer,
+        {
+          forceBuyerView: !isTabSellerSelected
+        }
+      );
       return () => widgetContainer.remove();
     }
 
     return;
-  }, [offer, isTabSellerSelected, address]);
+  }, [offer, isTabSellerSelected, address, customMetaTransactionsApiKey]);
 
   useEffect(() => {
     function handleMessageFromIframe(e: MessageEvent) {

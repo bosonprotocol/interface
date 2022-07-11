@@ -67,6 +67,7 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({ offer }) => {
       <div>
         <Grid style={{ paddingBottom: "1rem" }}>
           <Price
+            address={offer.exchangeToken.address}
             currencySymbol={offer.exchangeToken.symbol}
             value={offer.price}
             decimals={offer.exchangeToken.decimals}

@@ -44,7 +44,7 @@ export const offerGraphQl = gql`
   }
 `;
 
-export function getOffersQuery({
+export function buildGetOffersQuery({
   exchangeToken,
   sellerId,
   validFromDate_lte,
@@ -53,7 +53,9 @@ export function getOffersQuery({
   validUntilDate_gte,
   skip,
   offer,
-  quantityAvailable_lte
+  quantityAvailable_lte,
+  sellerCurationList,
+  offerCurationList
 }: {
   exchangeToken: boolean;
   sellerId: boolean;
@@ -64,6 +66,8 @@ export function getOffersQuery({
   skip: boolean;
   offer: boolean;
   quantityAvailable_lte: boolean;
+  sellerCurationList: boolean;
+  offerCurationList: boolean;
 }) {
   return gql`
   query GetOffers(
@@ -80,6 +84,8 @@ export function getOffersQuery({
     $orderDirection: String
     ${offer ? "$offer: String" : ""}
     ${quantityAvailable_lte ? "$quantityAvailable_lte: Int" : ""}
+    ${sellerCurationList ? "$sellerCurationList: [String!]" : ""}
+    ${offerCurationList ? "$offerCurationList: [String!]" : ""}
   ) {
     baseMetadataEntities(
       first: $first
@@ -99,6 +105,8 @@ export function getOffersQuery({
             ? "quantityAvailable_lte: $quantityAvailable_lte"
             : ""
         }
+        ${sellerCurationList ? "seller_in: $sellerCurationList" : ""}
+        ${offerCurationList ? "offer_in: $offerCurationList" : ""}
         name_contains_nocase: $name_contains_nocase
       }
     ) {

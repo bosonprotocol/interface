@@ -1,46 +1,26 @@
-import { gql } from "graphql-request";
+import { accounts, subgraph } from "@bosonprotocol/core-sdk";
 import { useQuery } from "react-query";
 
-import { Offer } from "../../../lib/types/offer";
-import { fetchSubgraph } from "../core-components/subgraph";
+import { CONFIG } from "../../../lib/config";
+import { useCurationLists } from "./useCurationLists";
 
 interface Props {
   admin?: string;
 }
+
 export function useSellers(props: Props = {}) {
+  const curationLists = useCurationLists();
+
   return useQuery(["sellers", props], async () => {
-    const result = await fetchSubgraph<{
-      sellers: Pick<
-        Offer["seller"],
-        "id" | "operator" | "admin" | "clerk" | "treasury" | "active"
-      >[];
-    }>(
-      gql`
-        query GetSellers(
-          $orderBy: String
-          $orderDirection: String
-          $admin: String
-        ) {
-          sellers(
-            orderBy: $orderBy
-            orderDirection: $orderDirection
-            ${props.admin ? "where: { admin: $admin }" : ""}
-          ) {
-            id
-            operator
-            admin
-            clerk
-            treasury
-            active
-          }
-        }
-      `,
-      {
-        orderBy: "sellerId",
-        orderDirection: "asc",
-        ...(props.admin && { admin: props.admin })
-      }
-    );
-    return result?.sellers ?? [];
+    return accounts.subgraph.getSellers(CONFIG.subgraphUrl, {
+      sellersFilter: {
+        admin: props.admin,
+        id_in: curationLists.enableCurationLists
+          ? curationLists.sellerCurationList
+          : undefined
+      },
+      sellersOrderBy: subgraph.Seller_OrderBy.SellerId,
+      sellersOrderDirection: subgraph.OrderDirection.Asc
+    });
   });
 }

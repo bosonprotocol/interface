@@ -5,6 +5,9 @@ export type StoreFields = {
   secondaryColor: string;
   accentColor: string;
   primaryBgColor: string;
+  sellerCurationList?: string;
+  offerCurationList?: string;
+  metaTransactionsApiKey?: string;
 };
 
 export const storeFields: StoreFields = {
@@ -13,5 +16,8 @@ export const storeFields: StoreFields = {
   primaryColor: "primaryColor",
   secondaryColor: "secondaryColor",
   accentColor: "accentColor",
-  primaryBgColor: "primaryBgColor"
+  primaryBgColor: "primaryBgColor",
+  sellerCurationList: "sellerCurationList",
+  offerCurationList: "offerCurationList",
+  metaTransactionsApiKey: "metaTransactionsApiKey"
 } as const;

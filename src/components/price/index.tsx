@@ -13,6 +13,9 @@ const Root = styled.div`
 `;
 
 const CurrencyIconContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   img {
     height: 25px;
     width: 25px;
@@ -25,6 +28,7 @@ interface IProps {
   currencySymbol: string;
   convert?: boolean;
   tag?: keyof JSX.IntrinsicElements;
+  address: string;
 }
 
 export default function Price({
@@ -33,6 +37,7 @@ export default function Price({
   currencySymbol,
   convert = false,
   tag = "h4",
+  address,
   ...rest
 }: IProps) {
   const [price, setPrice] = useState<IPrice | null>(null);
@@ -57,7 +62,7 @@ export default function Price({
   return (
     <Root {...rest} data-testid="price">
       <CurrencyIconContainer>
-        <CurrencyIcon currencySymbol={currencySymbol} />
+        <CurrencyIcon currencySymbol={currencySymbol} address={address} />
       </CurrencyIconContainer>
       {price ? (
         <Typography

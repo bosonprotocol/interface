@@ -25,16 +25,20 @@
     "coverage:report": "npm run coverage:unit && npm run coverage:e2e",
     "postinstall": "npx playwright install --with-deps chromium"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run prettier && npm run lint"
-    }
+  "lint-staged": {
+    "src/**/*.+(js|json|ts|tsx)": [
+      "npm run lint"
+    ],
+    "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
+      "prettier --write"
+    ]
   },
   "dependencies": {
-    "@bosonprotocol/common": "^1.7.0",
-    "@bosonprotocol/core-sdk": "^1.8.0",
+    "@bosonprotocol/common": "^1.8.0",
+    "@bosonprotocol/core-sdk": "^1.9.1-alpha.1",
+    "@bosonprotocol/ethers-sdk": "^1.4.1",
     "@bosonprotocol/ipfs-storage": "^1.5.0",
-    "@bosonprotocol/widgets-sdk": "^1.7.0",
+    "@bosonprotocol/widgets-sdk": "^1.8.0",
     "@davatar/react": "^1.10.4",
     "@ethersproject/address": "^5.6.1",
     "@ethersproject/units": "^5.6.1",
@@ -91,6 +95,7 @@
     "eslint-plugin-unused-imports": "^2.0.0",
     "husky": "^8.0.1",
     "istanbul": "^0.4.5",
+    "lint-staged": "^13.0.3",
     "nyc": "^15.1.0",
     "prettier": "^2.7.1",
     "react-app-rewire-alias": "^1.1.7",

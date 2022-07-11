@@ -1,9 +1,12 @@
 import { AnyMetadata } from "@bosonprotocol/common";
+import { subgraph } from "@bosonprotocol/core-sdk";
 import { validation } from "@bosonprotocol/ipfs-storage";
 
 import { Offer } from "../types/offer";
 
-export function checkOfferMetadata(offer: Offer): boolean {
+export function checkOfferMetadata(
+  offer: Offer | subgraph.OfferFieldsFragment
+): boolean {
   const isValid = isOfferMetadataValid(offer);
 
   if (!isValid) {
@@ -15,7 +18,9 @@ export function checkOfferMetadata(offer: Offer): boolean {
   return isValid;
 }
 
-function isOfferMetadataValid(offer: Offer): boolean {
+function isOfferMetadataValid(
+  offer: Offer | subgraph.OfferFieldsFragment
+): boolean {
   if (!offer.metadata) {
     return false;
   }

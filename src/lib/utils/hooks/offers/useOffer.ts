@@ -1,9 +1,7 @@
 import { useQuery } from "react-query";
 
-import { Offer } from "../../../types/offer";
-import { fetchSubgraph } from "../../core-components/subgraph";
-import { checkOfferMetadata } from "../../validators";
-import { getOffersQuery } from "./graphql";
+import { CONFIG } from "../../../config";
+import { getOfferById } from "./getOffers";
 import { UseOfferProps } from "./types";
 
 export function useOffer(
@@ -15,53 +13,20 @@ export function useOffer(
   return useQuery(
     ["offer", offerId],
     async () => {
-      const offer = await getOfferById(offerId, restProps);
-      if (offer) {
-        const isMetadataValid = checkOfferMetadata(offer);
-        offer.isValid = isMetadataValid;
-        return {
-          ...offer,
-          metadata: {
-            ...offer.metadata,
-            imageUrl: `https://picsum.photos/seed/${offer.id}/700`
-          }
-        };
-      }
-      return null;
+      restProps = {
+        sellerCurationList: CONFIG.sellerCurationList,
+        offerCurationList: CONFIG.offerCurationList,
+        enableCurationLists: CONFIG.enableCurationLists,
+        ...restProps
+      };
+      const offer = await getOfferById(offerId, {
+        ...restProps
+      });
+
+      return offer;
     },
     {
       ...options
     }
   );
-}
-
-async function getOfferById(id: string, props: Omit<UseOfferProps, "offerId">) {
-  const now = Math.floor(Date.now() / 1000);
-  const validFromDate_lte = props.valid ? now + "" : null;
-  const validUntilDate_gte = props.valid ? now + "" : null;
-
-  const result = await fetchSubgraph<{
-    baseMetadataEntities: { offer: Offer }[];
-  }>(
-    getOffersQuery({
-      exchangeToken: !!props.exchangeTokenAddress,
-      sellerId: !!props.sellerId,
-      validFromDate_lte: !!validFromDate_lte,
-      validFromDate_gte: false,
-      validUntilDate_lte: false,
-      validUntilDate_gte: !!validUntilDate_gte,
-      skip: !!props.skip,
-      quantityAvailable_lte: false,
-      offer: true
-    }),
-    {
-      offer: id,
-      validFromDate_lte: validFromDate_lte,
-      validUntilDate_gte: validUntilDate_gte,
-      name_contains_nocase: props.name || "",
-      exchangeToken: props.exchangeTokenAddress,
-      sellerId: props.sellerId
-    }
-  );
-  return result.baseMetadataEntities[0]?.offer;
 }

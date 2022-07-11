@@ -42,7 +42,10 @@ export default function CustomStore() {
       primaryColor: "",
       secondaryColor: "",
       accentColor: "",
-      primaryBgColor: ""
+      primaryBgColor: "",
+      sellerCurationList: "",
+      offerCurationList: "",
+      metaTransactionsApiKey: ""
     },
     onSubmit: async (values: StoreFields) => {
       const storage = new BaseIpfsStorage({
@@ -192,6 +195,36 @@ export default function CustomStore() {
                 {values.primaryBgColor}
               </span>
             </div>
+          </FormElement>
+          <FormElement>
+            <FormLabel>Seller CurationList</FormLabel>
+            <FormControl
+              value={values.sellerCurationList}
+              onChange={handleChange}
+              name="sellerCurationList"
+              type="text"
+              placeholder="Comma-separated list of seller IDs"
+            />
+          </FormElement>
+          <FormElement>
+            <FormLabel>Offer CurationList</FormLabel>
+            <FormControl
+              value={values.offerCurationList}
+              onChange={handleChange}
+              name="offerCurationList"
+              type="text"
+              placeholder="Comma-separated list of offer IDs"
+            />
+          </FormElement>
+          <FormElement>
+            <FormLabel>Meta Transactions API Key</FormLabel>
+            <FormControl
+              value={values.metaTransactionsApiKey}
+              onChange={handleChange}
+              name="metaTransactionsApiKey"
+              type="text"
+              placeholder="Biconomy API Key"
+            />
           </FormElement>
         </FormElementsContainer>
 
