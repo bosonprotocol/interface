@@ -3,8 +3,6 @@ import { createPortal } from "react-dom";
 import { IoIosClose } from "react-icons/io";
 import styled from "styled-components";
 
-import { colors } from "../../lib/styles/colors";
-
 const Root = styled.div`
   position: fixed;
   top: 0;
@@ -19,12 +17,35 @@ const Root = styled.div`
 // TODO: refactor colors to use css vars or theme
 const Content = styled.div<{ $styles: Props["$styles"] }>`
   margin: 24px;
-  color: ${colors.white}; //var(--secondary);
+  color: var(--secondary);
   width: ${(props) => props.$styles?.width || "60%"};
   border-radius: 8px;
   padding: 16px;
-  background-color: rgb(67, 70, 79); //var(--primaryBgColor);
-  border: 2px solid ${colors.white}; //var(--secondary);
+  background-color: var(--primaryBgColor);
+  border: var(--secondary);
+
+  max-height: 90vh;
+  overflow-x: auto;
+
+  ::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 var(--scrollbarWidth) var(--scrollbarBg);
+    box-shadow: inset 0 0 var(--scrollbarWidth) var(--scrollbarBg);
+    border-radius: 0;
+    background-color: var(--scrollbarBg);
+  }
+
+  ::-webkit-scrollbar {
+    width: var(--scrollbarWidth);
+    height: 0;
+    background-color: var(--scrollbarBg);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 0;
+    -webkit-box-shadow: inset 0 0 var(--scrollbarWidth) var(--scrollbarThumb);
+    box-shadow: inset 0 0 var(--scrollbarWidth) var(--scrollbarThumb);
+    background-color: var(--scrollbarThumb);
+  }
 `;
 
 const CloseButtonContainer = styled.div`
@@ -34,8 +55,8 @@ const CloseButtonContainer = styled.div`
 
 const CloseButton = styled(IoIosClose)`
   all: unset;
-  stroke: ${colors.white}; //var(--secondary);
-  fill: ${colors.white}; //var(--secondary);
+  stroke: var(--secondary);
+  fill: var(--secondary);
   font-size: 2rem;
   :hover {
     cursor: pointer;
@@ -48,10 +69,17 @@ interface Props {
   $styles?: {
     width: string;
   };
+  style?: React.CSSProperties;
   onClose?: () => void;
 }
 
-export function Modal({ children, isOpen, onClose, $styles }: Props) {
+export function Modal({
+  children,
+  isOpen,
+  onClose,
+  style = {},
+  $styles
+}: Props) {
   if (!isOpen) {
     return null;
   }
@@ -65,6 +93,7 @@ export function Modal({ children, isOpen, onClose, $styles }: Props) {
         onClick={(e) => {
           e.stopPropagation();
         }}
+        style={style}
       >
         <CloseButtonContainer>
           <CloseButton onClick={onCloseModal} />

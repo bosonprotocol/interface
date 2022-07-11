@@ -3,11 +3,9 @@ import { AiOutlineCheck } from "react-icons/ai";
 import styled from "styled-components";
 
 import portalLogo from "../../assets/portal.svg";
-import { ExternalRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { isOfferHot } from "../../lib/utils/getOfferLabel";
-import { LinkWithQuery } from "../linkStoreFields/LinkStoreFields";
 import Price from "../price/index";
 import Button from "../ui/Button";
 import Grid from "../ui/Grid";
@@ -16,6 +14,7 @@ import OfferDetailTable from "./OfferDetailTable";
 
 interface IOfferDetailWidget {
   offer: Offer;
+  handleModal: () => void;
 }
 
 const PortalLogoImg = styled.img`
@@ -49,13 +48,26 @@ const Widget = styled.div`
   }
 `;
 
+const CommitAndRedeemButton = styled(Typography)`
+  font-weight: 600;
+  color: ${colors.darkGrey};
+  cursor: pointer;
+  transition: color 150ms ease-in-out;
+  &:hover {
+    color: ${colors.secondary};
+  }
+`;
+
 const Break = styled.span`
   width: 100%;
   height: 2px;
   background: ${colors.border};
 `;
 
-const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({ offer }) => {
+const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
+  offer,
+  handleModal
+}) => {
   const [quantity] = useState<number>(Number(offer?.quantityAvailable));
   const isHotOffer = useMemo(
     () => isOfferHot(offer?.quantityAvailable, offer?.quantityInitial),
@@ -95,14 +107,9 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({ offer }) => {
       </div>
       <div>
         <Grid justifyContent="center">
-          <LinkWithQuery to={ExternalRoutes.WhatIsRedeem}>
-            <Typography
-              tag="p"
-              style={{ fontWeight: "600", color: colors.darkGrey }}
-            >
-              What is commit and redeem?
-            </Typography>
-          </LinkWithQuery>
+          <CommitAndRedeemButton tag="p" onClick={handleModal}>
+            What is commit and redeem?
+          </CommitAndRedeemButton>
         </Grid>
       </div>
       <Break />

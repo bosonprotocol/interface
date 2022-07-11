@@ -11,7 +11,7 @@ export const BosonRoutes = {
   Account: `/account/:${UrlParameters.accountId}`,
   CreateStorefront: "/custom-store",
   TermsOfUse: "/terms-of-use", // TODO: add page to handle this route
-  WhatIsRedeem: "/what-is-redeem" // TODO: add page to handle this route
+  LearnMore: "/learn-more" // TODO: add page to handle this route
 } as const;
 
 export const OffersRoutes = {
@@ -20,8 +20,7 @@ export const OffersRoutes = {
 } as const;
 
 export const ExternalRoutes = {
-  TermsOfUse: BosonRoutes.TermsOfUse,
-  WhatIsRedeem: BosonRoutes.WhatIsRedeem
+  TermsOfUse: BosonRoutes.TermsOfUse
 } as const;
 
 export const SocialRoutes = {

@@ -1,12 +1,12 @@
-// import BuyerActions from "@bosonprotocol/widgets/src/views/manage-offer/BuyerActions";
 import { manageOffer } from "@bosonprotocol/widgets-sdk";
-import { useEffect, useReducer, useRef, useState } from "react";
+import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { IoIosInformationCircleOutline } from "react-icons/io";
 import { useLocation, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
 import OfferDetailChart from "../../components/offer/OfferDetailChart";
+import OfferDetailModal from "../../components/offer/OfferDetailModal";
 import OfferDetailShare from "../../components/offer/OfferDetailShare";
 import OfferDetailSlider from "../../components/offer/OfferDetailSlider";
 import OfferDetailTable from "../../components/offer/OfferDetailTable";
@@ -82,6 +82,12 @@ const InfoIcon = styled(IoIosInformationCircleOutline).attrs({
 `;
 
 export default function OfferDetail() {
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(true);
+
+  const handleModal = useCallback(() => {
+    setIsModalOpen(!isModalOpen);
+  }, [isModalOpen]);
+
   const { [UrlParameters.offerId]: offerId } = useParams();
   const widgetRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
@@ -224,13 +230,21 @@ export default function OfferDetail() {
               <OfferLabel offer={offer} />
             </SellerID>
             <Typography tag="h2">{name}</Typography>
-            <OfferDetailWidget offer={offer} />
+            {isSeller ? (
+              <>
+                {isTabSellerSelected ? (
+                  <WidgetContainer ref={widgetRef}></WidgetContainer>
+                ) : (
+                  <OfferDetailWidget offer={offer} handleModal={handleModal} />
+                )}
+              </>
+            ) : (
+              <OfferDetailWidget offer={offer} handleModal={handleModal} />
+            )}
           </div>
           <OfferDetailShare />
         </OfferGrid>
       </LightBackground>
-      {/* <BuyerActions offer={offer} reloadOfferData={() => {}} /> */}
-      {/* TODO: Remove mocks */}
       <WidgetContainer ref={widgetRef}></WidgetContainer>
       <DarkerBackground>
         <OfferGrid>
@@ -260,6 +274,12 @@ export default function OfferDetail() {
           </div>
         </OfferGrid>
       </DarkerBackground>
+      <OfferDetailModal
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+        }}
+      />
       <CreatedExchangeModal
         isOpen={isCreatedExchangeModalOpen}
         onClose={() => toggleCreatedExchangeModal()}
