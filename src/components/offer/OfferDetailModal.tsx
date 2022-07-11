@@ -186,9 +186,6 @@ export default function OfferDetailModal({ isOpen, onClose }: Props) {
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      $styles={{
-        width: "100%"
-      }}
       style={{
         padding: "0",
         borderRadius: 0,

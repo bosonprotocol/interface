@@ -82,7 +82,7 @@ const InfoIcon = styled(IoIosInformationCircleOutline).attrs({
 `;
 
 export default function OfferDetail() {
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(true);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const handleModal = useCallback(() => {
     setIsModalOpen(!isModalOpen);
