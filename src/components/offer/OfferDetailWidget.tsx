@@ -1,9 +1,10 @@
-// import { CommitButton } from "@bosonprotocol/react-kit";
+import { CommitButton } from "@bosonprotocol/react-kit";
 import { useMemo, useState } from "react";
 import { AiOutlineCheck } from "react-icons/ai";
 import styled from "styled-components";
 
 import portalLogo from "../../assets/portal.svg";
+import { CONFIG } from "../../lib/config";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { isOfferHot } from "../../lib/utils/getOfferLabel";
@@ -12,6 +13,8 @@ import Button from "../ui/Button";
 import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
 import OfferDetailTable from "./OfferDetailTable";
+
+const UnstyledCommitButton = styled(CommitButton)``;
 
 interface IOfferDetailWidget {
   offer: Offer;
@@ -98,10 +101,22 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
       </div>
       <div>
         <Grid flexGrow="1" gap="1rem">
-          {/* <CommitButton variant="secondary" size="large" /> */}
-          <Button theme="secondary" size="large" step={1}>
+          <CommitButton
+            offerId={offer.id}
+            chainId={CONFIG.chainId}
+            onError={(args: any) => console.error("onError", args)}
+            onPendingTransactionConfirmation={(args: any) =>
+              console.log("onPendingTransactionConfirmation", args)
+            }
+            onPendingUserConfirmation={(args: any) =>
+              console.log("onPendingUserConfirmation", args)
+            }
+            onSuccess={(args: any) => console.log("onSuccess", args)}
+            extraInfo="Step 1"
+          />
+          {/* <Button theme="secondary" size="large" step={1}>
             Commit
-          </Button>
+          </Button> */}
           <Button theme="outline" size="large" step={2} disabled>
             Redeem
           </Button>

@@ -143,7 +143,7 @@ const Button: React.FC<IButton> = ({
         onClick={onClick}
         type={type}
         size={size}
-        fill={fill}
+        fill={fill ? fill : undefined}
         {...rest}
       >
         <ChildWrapperButton>
