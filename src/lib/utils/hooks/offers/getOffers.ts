@@ -24,7 +24,7 @@ export const getOffers = async (props: UseOffersProps) => {
 
   if (props.type) {
     if (props.type === "hot") {
-      validFromDate_gte = now + "";
+      validFromDate_lte = now + "";
       validUntilDate_lte = in10days + "";
     } else if (props.type === "gone") {
       validFromDate_lte = now + "";
@@ -54,6 +54,7 @@ export const getOffers = async (props: UseOffersProps) => {
     orderBy: "name",
     orderDirection: "asc",
     quantityAvailable_lte: props.quantityAvailable_lte,
+    quantityAvailable_gte: props.quantityAvailable_gte,
     type: props.type,
     sellerCurationList: props.sellerCurationList || [],
     offerCurationList: props.offerCurationList || [],
@@ -71,6 +72,9 @@ export const getOffers = async (props: UseOffersProps) => {
     skip: !!props.skip,
     quantityAvailable_lte: ![null, undefined].includes(
       props.quantityAvailable_lte as null
+    ),
+    quantityAvailable_gte: ![null, undefined].includes(
+      props.quantityAvailable_gte as null
     ),
     offer: false
   };
@@ -106,6 +110,7 @@ export async function getOfferById(
     validUntilDate_gte: !!validUntilDate_gte,
     skip: false,
     quantityAvailable_lte: false,
+    quantityAvailable_gte: false,
     offer: true
   };
 

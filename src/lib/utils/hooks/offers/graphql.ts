@@ -54,6 +54,7 @@ export function buildGetOffersQuery({
   skip,
   offer,
   quantityAvailable_lte,
+  quantityAvailable_gte,
   sellerCurationList,
   offerCurationList
 }: {
@@ -66,6 +67,7 @@ export function buildGetOffersQuery({
   skip: boolean;
   offer: boolean;
   quantityAvailable_lte: boolean;
+  quantityAvailable_gte: boolean;
   sellerCurationList: boolean;
   offerCurationList: boolean;
 }) {
@@ -84,6 +86,7 @@ export function buildGetOffersQuery({
     $orderDirection: String
     ${offer ? "$offer: String" : ""}
     ${quantityAvailable_lte ? "$quantityAvailable_lte: Int" : ""}
+    ${quantityAvailable_gte ? "$quantityAvailable_gte: Int" : ""}
     ${sellerCurationList ? "$sellerCurationList: [String!]" : ""}
     ${offerCurationList ? "$offerCurationList: [String!]" : ""}
   ) {
@@ -103,6 +106,11 @@ export function buildGetOffersQuery({
         ${
           quantityAvailable_lte
             ? "quantityAvailable_lte: $quantityAvailable_lte"
+            : ""
+        }
+        ${
+          quantityAvailable_gte
+            ? "quantityAvailable_gte: $quantityAvailable_gte"
             : ""
         }
         ${sellerCurationList ? "seller_in: $sellerCurationList" : ""}

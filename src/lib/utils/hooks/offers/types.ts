@@ -22,6 +22,7 @@ export interface UseOffersProps extends CommonProps {
   type?: "gone" | "hot" | "soon" | undefined;
   validUntilDate_lte?: number;
   quantityAvailable_lte?: number | null | undefined;
+  quantityAvailable_gte?: number | null | undefined;
 }
 export interface UseOfferProps extends CommonProps {
   offerId: string;

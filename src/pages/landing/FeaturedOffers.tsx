@@ -84,6 +84,7 @@ const FeaturedOffers: React.FC<IFeaturedOffers> = ({
     valid: true,
     first: isLteXS ? 2 : 3,
     quantityAvailable_lte: ["hot", "gone"].includes(type) ? 10 : null,
+    quantityAvailable_gte: 1,
     type
   });
 
