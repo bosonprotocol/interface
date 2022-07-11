@@ -1,9 +1,10 @@
 import { Outlet } from "react-router-dom";
-import styled from "styled-components";
+import styled, { ThemeProvider } from "styled-components";
 
 import Layout from "../../components/Layout";
 import GlobalStyle from "../../lib/styles/GlobalStyle";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
+import theme from "../../theme";
 import Footer from "../footer/Footer";
 import Header from "../header/Header";
 
@@ -25,18 +26,20 @@ export default function App() {
   const primaryBgColor = useCustomStoreQueryParameter("primaryBgColor");
 
   return (
-    <Container>
-      <GlobalStyle
-        $primaryColor={primaryColor}
-        $secondaryColor={secondaryColor}
-        $accentColor={accentColor}
-        $primaryBgColor={primaryBgColor}
-      />
-      <Header />
-      <PageContainer>
-        <Outlet />
-      </PageContainer>
-      <Footer />
-    </Container>
+    <ThemeProvider theme={theme}>
+      <Container>
+        <GlobalStyle
+          $primaryColor={primaryColor}
+          $secondaryColor={secondaryColor}
+          $accentColor={accentColor}
+          $primaryBgColor={primaryBgColor}
+        />
+        <Header />
+        <PageContainer>
+          <Outlet />
+        </PageContainer>
+        <Footer />
+      </Container>
+    </ThemeProvider>
   );
 }
