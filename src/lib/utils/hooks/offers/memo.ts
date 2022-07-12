@@ -1,5 +1,6 @@
 import { Offer } from "../../../types/offer";
 import { checkOfferMetadata } from "../../validators";
+import getOfferImage from "./getOfferImage";
 import { CurationListGetOffersResult } from "./types";
 
 export function memoMergeAndSortOffers() {
@@ -25,7 +26,7 @@ export function memoMergeAndSortOffers() {
         ...base.offer,
         metadata: {
           ...base.offer.metadata,
-          imageUrl: `https://picsum.photos/seed/${base.offer.id}/700`
+          imageUrl: getOfferImage(base.offer.id, base.offer.metadata.name)
         },
         isValid
       } as Offer;
