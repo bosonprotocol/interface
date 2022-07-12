@@ -19,6 +19,7 @@ import { CONFIG } from "../../lib/config";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
+import getOfferImage from "../../lib/utils/hooks/offers/getOfferImage";
 import { useOffer } from "../../lib/utils/hooks/offers/useOffer";
 import { isAccountSeller } from "../../lib/utils/isAccountSeller";
 import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
@@ -188,7 +189,7 @@ export default function OfferDetail() {
   const isSeller = isAccountSeller(offer, address);
 
   const name = offer.metadata?.name || "Untitled";
-  const offerImg = offer.metadata.imageUrl;
+  const offerImg = getOfferImage(offer.id, name);
   const description = offer.metadata?.description || "";
 
   return (

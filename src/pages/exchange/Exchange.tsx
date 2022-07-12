@@ -16,6 +16,7 @@ import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
+import getOfferImage from "../../lib/utils/hooks/offers/getOfferImage";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { isAccountSeller } from "../../lib/utils/isAccountSeller";
@@ -271,7 +272,7 @@ export default function Exchange() {
   }
   const isSeller = isAccountSeller(offer, address);
   const name = offer.metadata?.name || "Untitled";
-  const offerImg = offer.metadata.imageUrl;
+  const offerImg = getOfferImage(offer.id, name);
   const sellerId = offer.seller?.id;
   const sellerAddress = offer.seller?.operator;
   // const isOfferValid = getIsOfferValid(offer);
