@@ -224,7 +224,11 @@ export default function OfferDetail() {
             <SellerID seller={offer?.seller} justifyContent="flex-start">
               <OfferLabel offer={offer} />
             </SellerID>
-            <Typography tag="h2" data-testid="name">
+            <Typography
+              tag="h1"
+              data-testid="name"
+              style={{ fontSize: "2rem" }}
+            >
               {name}
             </Typography>
             {isSeller ? (
@@ -242,7 +246,6 @@ export default function OfferDetail() {
           <OfferDetailShare />
         </OfferGrid>
       </LightBackground>
-      {/* <WidgetContainer ref={widgetRef}></WidgetContainer> */}
       <DarkerBackground>
         <OfferGrid>
           <div>
