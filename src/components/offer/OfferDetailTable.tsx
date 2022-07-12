@@ -1,13 +1,12 @@
-import { AiOutlineQuestionCircle } from "react-icons/ai";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
-import Button from "../ui/Button";
 import Grid from "../ui/Grid";
+import OfferDetailPopper from "./OfferDetailPopper";
 
 interface Props {
   name: React.ReactNode | string;
-  info?: string;
+  info?: React.ReactNode | string;
   value: React.ReactNode | string;
 }
 
@@ -61,16 +60,7 @@ const OfferDetailTable: React.FC<IOfferDetailTable> = ({ align, data }) => {
             <td>
               <Grid justifyContent="flex-start">
                 {d.name}
-                {d.info && (
-                  <Button
-                    theme="blank"
-                    onClick={() => {
-                      console.log("info");
-                    }}
-                  >
-                    <AiOutlineQuestionCircle size={18} />
-                  </Button>
-                )}
+                {d.info && <OfferDetailPopper>{d.info}</OfferDetailPopper>}
               </Grid>
             </td>
             <td>

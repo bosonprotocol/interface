@@ -145,7 +145,21 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
           data={[
             {
               name: "Redeemable",
-              info: "test",
+              info: (
+                <>
+                  <Typography tag="h6">
+                    <b>Redeemable</b>
+                  </Typography>
+                  <Typography tag="p" style={{ margin: "1rem 0" }}>
+                    Redeemable until 30 days after committing.
+                  </Typography>
+                  <Typography tag="p">
+                    If you don’t redeem your NFT during the redemption period,
+                    it will expire and you will receive back the price minus the
+                    Buyer cancel penalty
+                  </Typography>
+                </>
+              ),
               value: (
                 <Typography tag="p">
                   30<small>days</small>
@@ -154,7 +168,20 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
             },
             {
               name: "Seller deposit",
-              info: "test",
+              info: (
+                <>
+                  <Typography tag="h6">
+                    <b>Seller deposit</b>
+                  </Typography>
+                  <Typography tag="p">
+                    The seller deposit is charged from the seller at “Commit”
+                    and is used to hold the seller accountable to follow through
+                    with their commitment to deliver the physical item. If the
+                    seller breaks their commitment, then their deposit will be
+                    transferred to the buyer
+                  </Typography>
+                </>
+              ),
               value: (
                 <Typography tag="p">
                   5%<small>($126.4)</small>
@@ -163,7 +190,17 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
             },
             {
               name: "Buyer cancel. pen.",
-              info: "test",
+              info: (
+                <>
+                  <Typography tag="h6">
+                    <b>Buyer Cancelation penalty</b>
+                  </Typography>
+                  <Typography tag="p">
+                    If you fail to redeem your rNFT in time, you will receive
+                    back the price minus the buyer cancellation penalty.
+                  </Typography>
+                </>
+              ),
               value: (
                 <Typography tag="p">
                   20%<small>($503.6)</small>
@@ -172,12 +209,37 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
             },
             {
               name: "Fair exchange policy",
-              info: "test",
+              info: (
+                <>
+                  <Typography tag="h6">
+                    <b>Exchange policy</b>
+                  </Typography>
+                  <Typography tag="p">
+                    30 days to raise a dispute Fair buyer and seller obligations
+                    Standard evidence requirements 15 days to resolve a raised
+                    dispute
+                  </Typography>
+                </>
+              ),
               value: <AiOutlineCheck size={16} />
             },
             {
               name: "Dispute resolver",
-              info: "test",
+              info: (
+                <>
+                  <Typography tag="h6">
+                    <b>Dispute resolver</b>
+                  </Typography>
+                  <Typography tag="p" style={{ margin: "1rem 0" }}>
+                    PORTAL (A company) is the Dispute Resolver for this
+                    exchange.
+                  </Typography>
+                  <Typography tag="p">
+                    The Dispute resolver will resolve disputes between buyer and
+                    seller that may arise.
+                  </Typography>
+                </>
+              ),
               value: <PortalLogoImg src={portalLogo} alt="Portal logo" />
             }
           ]}

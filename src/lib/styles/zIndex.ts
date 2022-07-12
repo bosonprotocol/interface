@@ -5,5 +5,6 @@ export const zIndex = {
   Carousel: 10,
   LandingTitle: 20,
   Header: 1000,
-  Notification: 1001
+  Notification: 1001,
+  Popper: 1002
 };
