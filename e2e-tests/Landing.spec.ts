@@ -291,8 +291,7 @@ test.describe("Root page (Landing page)", () => {
         expect(offerCount).toStrictEqual(1);
 
         const offer = offers.nth(0);
-        const image = offer.locator("[data-testid=offerImage]");
-        await image.click();
+        await offer.click();
 
         const url = await page.url();
         const { hash } = new URL(url);

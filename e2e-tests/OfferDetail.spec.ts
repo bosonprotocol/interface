@@ -22,7 +22,8 @@ const assertOfferDetail = async (expectedOffer: Offer, page: Page) => {
   );
 
   const sellerId = page.locator("[data-testid=seller-id]");
-  const expectedSellerId = "ID: " + expectedOffer.seller?.id || "Unexpected id";
+  const expectedSellerId =
+    "Seller ID: " + expectedOffer.seller?.id || "Unexpected id";
   await expect(sellerId).toHaveText(expectedSellerId);
 };
 
