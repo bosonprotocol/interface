@@ -9,6 +9,7 @@ import styled from "styled-components";
 
 import { CONFIG } from "../../lib/config";
 import { colors } from "../../lib/styles/colors";
+import { zIndex } from "../../lib/styles/zIndex";
 import { Offer } from "../../lib/types/offer";
 import { getDateTimestamp } from "../../lib/utils/getDateTimestamp";
 
@@ -19,10 +20,11 @@ const BannerContainer = styled.div`
   bottom: 0px;
   border-bottom: 2px solid ${colors.black}20;
   background: ${colors.white};
-  padding: 0.5rem;
   font-size: 12px;
+  line-height: 11px;
   font-weight: 600;
-  padding: 0.4rem 1.5rem;
+  padding: 0.5rem 1.5rem;
+  z-index: ${zIndex.OfferStatus};
 `;
 
 interface Props {
