@@ -27,14 +27,15 @@ export default function Offers({
         voided: false,
         valid: !showInvalidOffers,
         sellerId,
-        first: OFFERS_PER_PAGE + 1
+        first: OFFERS_PER_PAGE + 1,
+        orderBy: "createdAt",
+        orderDirection: "desc"
       },
       {
         enabled: !!sellerId,
         keepPreviousData: true
       }
     );
-
   const offersWithOneExtra = data?.pages[data.pages.length - 1];
   const allOffers =
     data?.pages.flatMap((page) => {
