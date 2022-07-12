@@ -16,6 +16,8 @@ interface CommonProps {
   sellerCurationList?: string[];
   offerCurationList?: string[];
   enableCurationLists?: boolean;
+  orderBy?: string;
+  orderDirection?: "asc" | "desc" | undefined | null;
 }
 
 export interface UseOffersProps extends CommonProps {

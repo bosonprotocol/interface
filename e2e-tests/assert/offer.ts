@@ -5,7 +5,13 @@ import { BigNumber } from "ethers";
 import { Offer } from "../../src/lib/types/offer";
 import { expect } from "../baseFixtures";
 
-export async function assertOffer(offer: Locator, expectedOffer: Offer) {
+export async function assertOffer(
+  offer: Locator,
+  expectedOffer: Offer,
+  options: {
+    withBanner: boolean;
+  }
+) {
   const name = offer.locator("[data-testid=name]");
   await expect(name).toHaveText(
     expectedOffer.metadata?.name || "expected name"
@@ -34,6 +40,11 @@ export async function assertOffer(offer: Locator, expectedOffer: Offer) {
   expect(svg).toBeDefined();
 
   expect(offer).toContainText("Redeemable until 30 days after commit");
+
+  if (options.withBanner) {
+    const banner = offer.locator("[data-testid=offer-banner]");
+    expect(banner).toBeVisible();
+  }
 }
 
 export async function assertOfferInPublicAccountPage(

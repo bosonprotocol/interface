@@ -13,6 +13,16 @@ export function sortOffersBy(by: { property: "name"; asc: boolean }) {
         (isASC ? o2 : o1)?.metadata?.name || ""
       );
     }
+    if (
+      ["validUntilDate", "quantityAvailable", "validFromDate"].includes(
+        by.property
+      )
+    ) {
+      return (
+        Number((isASC ? o1 : o2)?.[by.property] || "") -
+        Number((isASC ? o2 : o1)?.[by.property] || "")
+      );
+    }
     throw new Error(`sortOffersBy cannot sort by ${by.property}`);
   };
 }
