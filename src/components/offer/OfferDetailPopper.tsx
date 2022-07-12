@@ -84,7 +84,19 @@ const OfferDetailPopper: React.FC<IOfferDetailPopper> = ({ children }) => {
 
   return (
     <PopperWrapper>
-      <Button type="button" theme="blank" onClick={togglePopper}>
+      <Button
+        type="button"
+        theme="blank"
+        onClick={() => {
+          setPopperVisibility(true);
+        }}
+        onMouseOver={() => {
+          setPopperVisibility(true);
+        }}
+        onMouseOut={() => {
+          setPopperVisibility(false);
+        }}
+      >
         <AiOutlineQuestionCircle size={18} />
       </Button>
       <Popper
