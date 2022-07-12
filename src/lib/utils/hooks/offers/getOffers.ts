@@ -25,6 +25,7 @@ export const getOffers = async (props: UseOffersProps) => {
   if (props.type) {
     if (props.type === "hot") {
       validFromDate_lte = now + "";
+      validUntilDate_gte = now + "";
       validUntilDate_lte = in10days + "";
     } else if (props.type === "gone") {
       validFromDate_lte = now + "";
