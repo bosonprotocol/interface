@@ -197,7 +197,6 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
 }) => {
   const { data: signer } = useSigner();
   const navigate = useKeepQueryParamsNavigate();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [modalData, setModalData] = useState<IModalData>({ isOpen: false });
 
   const handleClose = () => {
@@ -245,22 +244,18 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
               onPendingTransaction={() => null}
               onError={(args) => {
                 console.error("onError", args);
-                setIsLoading(false);
                 setModalData({
                   isOpen: true,
                   title: "An error occurred when trying to commit to an item",
-                  type: "ERROR",
-                  ...args
+                  type: "ERROR"
                 });
               }}
               onPendingSignature={() => {
                 console.log("onPendingSignature");
-                setIsLoading(true);
               }}
               onSuccess={(args) => {
                 //TODO: remove all these callbacks if they are not used
                 console.log("onSuccess", args);
-                setIsLoading(false);
                 setModalData({
                   isOpen: true,
                   title: "You have successfully committed!",
@@ -353,7 +348,7 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
               <Widget>
                 <Grid flexDirection="column">
                   <Typography tag="p" style={{ margin: 0, color: colors.red }}>
-                    <b>An error occuered when commiting to an item</b>
+                    <b>{modalData.title}</b>
                   </Typography>
                   <Typography
                     tag="h2"
