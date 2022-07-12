@@ -13,7 +13,7 @@ const assertOfferDetail = async (expectedOffer: Offer, page: Page) => {
     expectedOffer.metadata?.name || "expected name"
   );
 
-  const image = page.locator("[data-testid=image]");
+  const image = page.locator("[data-testid=offerImage]");
   expect(await image.getAttribute("src")).toBeTruthy();
 
   const description = page.locator("[data-testid=description]");
@@ -99,6 +99,7 @@ test.describe("OfferDetail", () => {
     });
 
     await page.goto(`${offersUrl}${expectedOffer.id}`);
+
     await assertOfferDetail(expectedOffer, page);
   });
 });

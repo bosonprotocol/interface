@@ -75,19 +75,21 @@ interface IImage {
   src: string;
   children?: React.ReactNode;
   fillHeight?: boolean;
+  dataTestId?: string;
 }
 
 const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
   src,
   children,
   fillHeight = false,
+  dataTestId = "image",
   ...rest
 }) => {
   return (
     <ImageWrapper fillHeight={fillHeight} {...rest}>
       {children || ""}
       {src ? (
-        <ImageContainer data-testid="image" src={src} />
+        <ImageContainer data-testid={dataTestId} src={src} />
       ) : (
         <ImagePlaceholder>
           <ImageNotAvailable />

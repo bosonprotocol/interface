@@ -9,6 +9,7 @@ import Image from "../../components/ui/Image";
 import Typography from "../../components/ui/Typography";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
+import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 
 interface IOfferDetailSlider {
   images: Array<string>;
@@ -58,7 +59,8 @@ const Slide = styled.div``;
 
 const OfferDetailSlider: React.FC<IOfferDetailSlider> = ({ images }) => {
   const [current, setCurrent] = useState<number>(0);
-  const count = images.length - 1;
+  const { isLteXS, isLteM } = useBreakpoints();
+  const count = images.length - (isLteXS ? 1 : isLteM ? 2 : 3);
 
   const handleSwipe = (next: boolean) => {
     if (next) {
@@ -98,6 +100,7 @@ const OfferDetailSlider: React.FC<IOfferDetailSlider> = ({ images }) => {
               <Image
                 src={image}
                 style={{ minWidth: "20rem", paddingTop: "130%" }}
+                dataTestId="sliderImage"
               />
             </Slide>
           ))}

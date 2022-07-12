@@ -218,13 +218,15 @@ export default function OfferDetail() {
         )}
         <OfferGrid>
           <div>
-            <Image src={offerImg} fillHeight />
+            <Image src={offerImg} fillHeight dataTestId="offerImage" />
           </div>
           <div>
             <SellerID seller={offer?.seller} justifyContent="flex-start">
               <OfferLabel offer={offer} />
             </SellerID>
-            <Typography tag="h2">{name}</Typography>
+            <Typography tag="h2" data-testid="name">
+              {name}
+            </Typography>
             {isSeller ? (
               <>
                 {isTabSellerSelected ? (

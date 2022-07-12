@@ -35,7 +35,7 @@ const Card = styled.div<{ isCarousel: boolean }>`
       8px 8px 8px rgba(0, 0, 0, 0.05),
       16px 16px 16px rgba(0, 0, 0, 0.05);
 
-      img[data-testid=image] {
+      img[data-testid] {
         transform: translate(-50%, -50%) scale(1.05);
       }
     }
@@ -156,7 +156,7 @@ export default function OfferCard({
   return (
     <Card data-testid={dataTestId} onClick={onClick} isCarousel={isCarousel}>
       {Status}
-      <Image src={offerImg}>
+      <Image src={offerImg} dataTestId="offerImage">
         {!isCarousel && <OfferBanner type={type} offer={offer} />}
       </Image>
       <Content>

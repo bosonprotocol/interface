@@ -26,7 +26,7 @@ export async function assertOffer(offer: Locator, expectedOffer: Offer) {
 
   await expect(price).toHaveText(expectedPrice);
 
-  const image = offer.locator("[data-testid=image]");
+  const image = offer.locator("[data-testid=offerImage]");
   expect(await image.getAttribute("src")).toBeTruthy();
 
   const profileImg = offer.locator("[data-testid=profileImg]");
@@ -55,6 +55,6 @@ export async function assertOfferInPublicAccountPage(
 
   await expect(price).toHaveText(expectedPrice);
 
-  const image = offer.locator("[data-testid=image]");
+  const image = offer.locator("[data-testid=offerImage]");
   expect(await image.getAttribute("src")).toBeTruthy();
 }

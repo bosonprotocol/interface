@@ -291,7 +291,7 @@ export default function Exchange() {
                 />
               </StatusSubContainer>
             </StatusContainer>
-            <Image src={offerImg} />
+            <Image src={offerImg} dataTestId="offerImage" />
           </ImageContainer>
           <Info>
             <Box>

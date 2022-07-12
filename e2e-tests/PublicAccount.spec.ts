@@ -220,7 +220,7 @@ test.describe("Public Account page", () => {
       expect(offerCount).toStrictEqual(1);
 
       const offer = offers.nth(0);
-      const image = offer.locator("[data-testid=image]");
+      const image = offer.locator("[data-testid=offerImage]");
       await image.click();
 
       const url = await page.url();
