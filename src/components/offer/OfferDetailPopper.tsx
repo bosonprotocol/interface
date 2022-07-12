@@ -57,10 +57,6 @@ const OfferDetailPopper: React.FC<IOfferDetailPopper> = ({ children }) => {
   const popperRef = useRef<HTMLDivElement | null>(null);
   const [isPopperVisible, setPopperVisibility] = useState<boolean>(false);
 
-  const togglePopper = () => {
-    setPopperVisibility(!isPopperVisible);
-  };
-
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       const onPopper =
