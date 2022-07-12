@@ -4,6 +4,7 @@ import { useQuery } from "react-query";
 import { Offer } from "../../types/offer";
 import { fetchSubgraph } from "../core-components/subgraph";
 import { checkOfferMetadata } from "../validators";
+import getOfferImage from "./offers/getOfferImage";
 import { offerGraphQl } from "./offers/graphql";
 
 interface Props {
@@ -89,7 +90,10 @@ export function useExchanges(
               ...exchange.offer,
               metadata: {
                 ...exchange.offer.metadata,
-                imageUrl: `https://picsum.photos/seed/${exchange.offer.id}/700`
+                imageUrl: getOfferImage(
+                  exchange.offer.id,
+                  exchange.offer.metadata.name
+                )
               },
               isValid
             } as Offer
