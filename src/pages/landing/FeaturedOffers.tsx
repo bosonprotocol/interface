@@ -69,6 +69,12 @@ interface IFeaturedOffers {
   type: "gone" | "hot" | "soon";
 }
 
+const orderMap = {
+  hot: "validUntilDate",
+  gone: "quantityAvailable",
+  soon: "validFromDate"
+} as const;
+
 const FeaturedOffers: React.FC<IFeaturedOffers> = ({
   title = "Explore Offers",
   type
@@ -85,7 +91,9 @@ const FeaturedOffers: React.FC<IFeaturedOffers> = ({
     first: isLteXS ? 2 : 3,
     quantityAvailable_lte: ["hot", "gone"].includes(type) ? 10 : null,
     quantityAvailable_gte: 1,
-    type
+    type,
+    orderBy: orderMap[type],
+    orderDirection: "asc"
   });
 
   return (
