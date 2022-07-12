@@ -80,12 +80,6 @@ const InfoIcon = styled(IoIosInformationCircleOutline).attrs({
 `;
 
 export default function OfferDetail() {
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-
-  const handleModal = useCallback(() => {
-    setIsModalOpen(!isModalOpen);
-  }, [isModalOpen]);
-
   const { [UrlParameters.offerId]: offerId } = useParams();
   const widgetRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
@@ -93,6 +87,7 @@ export default function OfferDetail() {
     (location.state as { from: string })?.from === BosonRoutes.YourAccount;
   const [isTabSellerSelected, setTabSellerSelected] =
     useState<boolean>(fromAccountPage);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [createdExchangeId, setCreatedExchangeId] = useState<string>("");
   const [isCreatedExchangeModalOpen, toggleCreatedExchangeModal] = useReducer(
     (state) => !state,
@@ -103,6 +98,10 @@ export default function OfferDetail() {
   const customMetaTransactionsApiKey = useCustomStoreQueryParameter(
     "metaTransactionsApiKey"
   );
+
+  const handleModal = useCallback(() => {
+    setIsModalOpen(!isModalOpen);
+  }, [isModalOpen]);
 
   const {
     data: offer,
@@ -241,6 +240,7 @@ export default function OfferDetail() {
           <OfferDetailShare />
         </OfferGrid>
       </LightBackground>
+      {/* <WidgetContainer ref={widgetRef}></WidgetContainer> */}
       <DarkerBackground>
         <OfferGrid>
           <div>

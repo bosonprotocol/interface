@@ -1,4 +1,5 @@
 import { CommitButton } from "@bosonprotocol/react-kit";
+import dayjs from "dayjs";
 import { useMemo, useState } from "react";
 import { AiOutlineCheck } from "react-icons/ai";
 import styled from "styled-components";
@@ -71,6 +72,9 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
   handleModal
 }) => {
   const [quantity] = useState<number>(Number(offer?.quantityAvailable));
+  const [disabled] = useState<boolean>(
+    dayjs(Number(offer?.validUntilDate) * 1000).isBefore(dayjs())
+  );
   const isHotOffer = useMemo(
     () => isOfferHot(offer?.quantityAvailable, offer?.quantityInitial),
     [offer?.quantityAvailable, offer?.quantityInitial]
@@ -112,8 +116,17 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
               console.log("onSuccess", args);
             }}
             extraInfo="Step 1"
+            disabled={disabled}
           />
-          <Button theme="outline" size="large" step={2} disabled>
+          <Button
+            theme="outline"
+            step={2}
+            disabled
+            style={{
+              padding: "0.975rem 2rem",
+              fontSize: "1rem"
+            }}
+          >
             Redeem
           </Button>
         </Grid>
