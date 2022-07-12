@@ -275,7 +275,7 @@ test.describe("Explore page", () => {
         for (let i = 0; i < offerCount; i++) {
           const offer = uiOffers.nth(i);
           const expectedOffer = offers1stPage[i];
-          await assertOffer(offer, expectedOffer);
+          await assertOffer(offer, expectedOffer, { withBanner: true });
         }
       });
     });
@@ -311,7 +311,7 @@ test.describe("Explore page", () => {
         for (let i = 0; i < offerCount; i++) {
           const offer = uiOffers.nth(i);
           const expectedOffer = offers2ndPage[i];
-          await assertOffer(offer, expectedOffer);
+          await assertOffer(offer, expectedOffer, { withBanner: true });
         }
       });
     });
@@ -420,7 +420,7 @@ test.describe("Explore page", () => {
       for (let i = 0; i < offerCount; i++) {
         const offer = offers.nth(i);
         const expectedOffer = first10Offers[i].offer;
-        await assertOffer(offer, expectedOffer);
+        await assertOffer(offer, expectedOffer, { withBanner: true });
       }
     });
     const numberOfOffers = 17;
@@ -454,7 +454,7 @@ test.describe("Explore page", () => {
       for (let i = 0; i < offerCount; i++) {
         const offer = uiOffers.nth(i);
         const expectedOffer = offers[i];
-        await assertOffer(offer, expectedOffer);
+        await assertOffer(offer, expectedOffer, { withBanner: true });
       }
 
       page.locator("[data-testid=previous]");
@@ -470,7 +470,7 @@ test.describe("Explore page", () => {
       for (let i = 0; i < offerCount; i++) {
         const offer = uiOffers.nth(i);
         const expectedOffer = offers[visibleOffersPerPage + i];
-        await assertOffer(offer, expectedOffer);
+        await assertOffer(offer, expectedOffer, { withBanner: true });
       }
     });
 

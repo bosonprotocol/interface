@@ -18,7 +18,6 @@ test.describe("Root page (Landing page)", () => {
     test.describe("Header", () => {
       test("should display the logo in the header", async ({ page }) => {
         const headerLogoImg = page.locator("header img[data-testid=logo]");
-        await page.pause();
         expect(await headerLogoImg.getAttribute("src")).toBeTruthy();
       });
 
@@ -110,9 +109,7 @@ test.describe("Root page (Landing page)", () => {
         const offer = offers.nth(i);
         const expectedOffer = firstTenOffers[i];
 
-        await assertOffer(offer, expectedOffer);
-        const banner = offer.locator("[data-testid=offer-banner]");
-        expect(banner).not.toBeVisible();
+        await assertOffer(offer, expectedOffer, { withBanner: false });
       }
     });
 
@@ -149,7 +146,6 @@ test.describe("Root page (Landing page)", () => {
       const selectedOfferName = await selectedOffer
         .locator("[data-testid=name]")
         .textContent();
-      await page.pause();
 
       await carouselNextButton.click();
 
@@ -177,6 +173,41 @@ test.describe("Root page (Landing page)", () => {
     });
 
     ["hot", "gone", "soon"].forEach((offersType) => {
+      test(`should display 3 offers (${offersType} offers)`, async ({
+        page
+      }) => {
+        const numberOfOffersInOffersSection = 3;
+        const firstTenOffers = getFirstNOffers(
+          numberOfOffersInOffersSection
+        ).sort(sortOffersBy({ property: "name", asc: true }));
+
+        await mockSubgraph({
+          page,
+          options: {
+            mockGetOffers: {
+              offers: firstTenOffers
+            }
+          }
+        });
+
+        await page.goto("/");
+
+        await page.waitForTimeout(DEFAULT_TIMEOUT);
+
+        const offers = page.locator(
+          `[data-testid=${offersType}] [data-testid=offer]`
+        );
+        const offersCount = await offers.count();
+
+        expect(offersCount).toStrictEqual(numberOfOffersInOffersSection);
+        for (let i = 0; i < numberOfOffersInOffersSection; i++) {
+          const offer = offers.nth(i);
+          const expectedOffer = firstTenOffers[i];
+
+          await assertOffer(offer, expectedOffer, { withBanner: true });
+        }
+      });
+
       test(`should filter out invalid offers (${offersType} offers)`, async ({
         page
       }) => {
