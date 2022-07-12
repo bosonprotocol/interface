@@ -1,5 +1,4 @@
 import { MetadataType } from "@bosonprotocol/common";
-import { IpfsMetadataStorage } from "@bosonprotocol/ipfs-storage";
 import { createOffer } from "@bosonprotocol/widgets-sdk";
 import { parseEther } from "@ethersproject/units";
 import { useFormik } from "formik";
@@ -11,6 +10,7 @@ import Button from "../../components/ui/Button";
 import { CONFIG } from "../../lib/config";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
+import { useCoreSDK } from "../../lib/utils/useCoreSdk";
 
 const CreateOfferContainer = styled(Layout)`
   display: flex;
@@ -90,6 +90,7 @@ const initialValues = {
 
 export default function CreateOffer() {
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const core = useCoreSDK();
 
   const { values, handleChange, handleSubmit } = useFormik({
     initialValues,
@@ -98,11 +99,8 @@ export default function CreateOffer() {
         if (!values) {
           return;
         }
-        const storage = new IpfsMetadataStorage({
-          url: CONFIG.ipfsMetadataUrl
-        });
 
-        const metadataHash = await storage.storeMetadata({
+        const metadataHash = await core.storeMetadata({
           name: values.name,
           description: values.description,
           externalUrl: values.externalUrl,

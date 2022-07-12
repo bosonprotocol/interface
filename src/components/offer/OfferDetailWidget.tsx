@@ -1,8 +1,10 @@
+import { Provider } from "@bosonprotocol/ethers-sdk";
 import { CommitButton } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { useMemo, useState } from "react";
 import { AiOutlineCheck } from "react-icons/ai";
 import styled from "styled-components";
+import { useSigner } from "wagmi";
 
 import portalLogo from "../../assets/portal.svg";
 import { CONFIG } from "../../lib/config";
@@ -193,6 +195,7 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
   name = "",
   image = ""
 }) => {
+  const { data: signer } = useSigner();
   const navigate = useKeepQueryParamsNavigate();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [modalData, setModalData] = useState<IModalData>({ isOpen: false });
@@ -237,21 +240,21 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
             <CommitButton
               offerId={offer.id}
               chainId={CONFIG.chainId}
-              onPendingTransactionConfirmation={() => null}
               // TODO: handle loading on react-kit
               // loading={isLoading}
+              onPendingTransaction={() => null}
               onError={(args) => {
                 console.error("onError", args);
                 setIsLoading(false);
                 setModalData({
                   isOpen: true,
-                  title: "An error occured when trying to commit to an item",
+                  title: "An error occurred when trying to commit to an item",
                   type: "ERROR",
                   ...args
                 });
               }}
-              onPendingUserConfirmation={(args) => {
-                console.log("onPendingUserConfirmation", args);
+              onPendingSignature={() => {
+                console.log("onPendingSignature");
                 setIsLoading(true);
               }}
               onSuccess={(args) => {
@@ -261,12 +264,12 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
                 setModalData({
                   isOpen: true,
                   title: "You have successfully committed!",
-                  type: "SUCCESS",
-                  ...args
+                  type: "SUCCESS"
                 });
               }}
               extraInfo="Step 1"
               disabled={disabled}
+              web3Provider={signer?.provider as Provider}
             />
             <Button
               theme="outline"

@@ -34,11 +34,11 @@
     ]
   },
   "dependencies": {
-    "@bosonprotocol/common": "^1.8.1-alpha.2",
-    "@bosonprotocol/core-sdk": "^1.10.0-alpha.0",
-    "@bosonprotocol/ethers-sdk": "^1.5.0-alpha.8",
+    "@bosonprotocol/common": "^1.8.1",
+    "@bosonprotocol/core-sdk": "^1.10.0",
+    "@bosonprotocol/ethers-sdk": "^1.5.0",
     "@bosonprotocol/ipfs-storage": "^1.5.1-alpha.2",
-    "@bosonprotocol/react-kit": "^0.1.0-alpha.9",
+    "@bosonprotocol/react-kit": "^0.1.0",
     "@bosonprotocol/widgets-sdk": "^1.8.0",
     "@davatar/react": "^1.10.4",
     "@ethersproject/address": "^5.6.1",

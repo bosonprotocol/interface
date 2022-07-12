@@ -83,7 +83,7 @@ export default function CustomStore() {
       </body>
       </html>`;
 
-      const cid = await storage.add(html);
+      const cid = await storage.add(html); // TODO: use core.add once this is supported there
 
       setIpfsUrl(`https://ipfs.io/ipfs/${cid}`);
       toggleModal();
