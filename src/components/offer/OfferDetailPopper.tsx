@@ -96,7 +96,7 @@ const OfferDetailPopper: React.FC<IOfferDetailPopper> = ({ children }) => {
         <AiOutlineQuestionCircle size={18} />
       </Button>
       <Popper
-        ref={(ref: any) => {
+        ref={(ref) => {
           popperRef.current = ref;
         }}
         hidden={!isPopperVisible}
