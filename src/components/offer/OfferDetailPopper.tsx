@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { AiOutlineQuestionCircle } from "react-icons/ai";
 import styled from "styled-components";
 
+import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import Button from "../ui/Button";
@@ -19,13 +20,20 @@ const Popper = styled.div`
   color: ${colors.black};
   padding: 1rem;
   z-index: ${zIndex.Popper};
-  min-width: 25rem;
   box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1), 0px 0px 8px rgba(0, 0, 0, 0.1),
     0px 0px 16px rgba(0, 0, 0, 0.1), 0px 0px 32px rgba(0, 0, 0, 0.1);
 
   bottom: -1rem;
-  left: 50%;
-  transform: translate(-50%, 100%);
+
+  left: 0;
+  min-width: 65vw;
+  transform: translate(0%, 100%);
+
+  ${breakpoint.s} {
+    left: 50%;
+    min-width: 25rem;
+    transform: translate(-50%, 100%);
+  }
 `;
 
 const PopperArrow = styled.div`
@@ -36,8 +44,13 @@ const PopperArrow = styled.div`
   border-right: 0.5rem solid transparent;
   border-bottom: 0.55rem solid ${colors.white};
   top: 0;
-  left: 50%;
-  transform: translate(-50%, -0.5rem);
+
+  left: 0.75rem;
+  transform: translate(0, -0.5rem);
+  ${breakpoint.s} {
+    left: 50%;
+    transform: translate(-50%, -0.5rem);
+  }
 `;
 
 const OfferDetailPopper: React.FC<IOfferDetailPopper> = ({ children }) => {
