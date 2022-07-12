@@ -1,4 +1,4 @@
-import { CommitButton } from "@bosonprotocol/react-kit";
+import { ButtonSize, CommitButton } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { useMemo, useState } from "react";
 import { AiOutlineCheck } from "react-icons/ai";
@@ -106,12 +106,11 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
           <CommitButton
             offerId={offer.id}
             chainId={CONFIG.chainId}
-            onPendingTransactionConfirmation={() => null}
-            onError={(args) => console.error("onError", args)}
-            onPendingUserConfirmation={(args) =>
-              console.log("onPendingUserConfirmation", args)
-            }
-            onSuccess={(args) => {
+            size={ButtonSize.Large}
+            onPendingTransaction={() => null}
+            onError={(args: any) => console.error("onError", args)}
+            onPendingSignature={() => console.log("onPendingUserConfirmation")}
+            onSuccess={(args: any) => {
               //TODO: remove all these callbacks if they are not used
               console.log("onSuccess", args);
             }}
