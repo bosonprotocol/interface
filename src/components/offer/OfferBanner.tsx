@@ -41,6 +41,7 @@ export default function OfferBanner({ offer }: Props) {
         diff: {
           days: release.diff(current, "days"),
           isToday: release.isSame(current, "day"),
+          isReleased: release.isBefore(current),
           hours: release.diff(current, "hours"),
           time: release.format("HH:mm")
         }
@@ -63,7 +64,10 @@ export default function OfferBanner({ offer }: Props) {
     const optionQuantity =
       Number(offer?.quantityAvailable) / Number(offer?.quantityInitial) <
       aspectRatio;
-    const optionRelease = release.diff.days >= 0 && expiry.diff.days !== 0;
+    const optionRelease =
+      !release.diff.isReleased &&
+      release.diff.days >= 0 &&
+      expiry.diff.days !== 0;
     const utcOffset = -(new Date().getTimezoneOffset() / 60);
     const utcValue =
       utcOffset === 0 ? "" : utcOffset < 0 ? `-${utcOffset}` : `+${utcOffset}`;
