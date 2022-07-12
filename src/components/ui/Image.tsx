@@ -29,6 +29,7 @@ const ImageWrapper = styled.div<{ fillHeight: boolean }>`
     transform: translate(-50%, -50%);
     transition: all 300ms ease-in-out;
     pointer-events: none;
+    max-height: 100%;
   }
 
   [data-testid="statuses"] {
