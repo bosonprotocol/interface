@@ -236,11 +236,21 @@ export default function OfferDetail() {
                 {isTabSellerSelected ? (
                   <WidgetContainer ref={widgetRef}></WidgetContainer>
                 ) : (
-                  <OfferDetailWidget offer={offer} handleModal={handleModal} />
+                  <OfferDetailWidget
+                    offer={offer}
+                    handleModal={handleModal}
+                    name={name}
+                    image={offerImg}
+                  />
                 )}
               </>
             ) : (
-              <OfferDetailWidget offer={offer} handleModal={handleModal} />
+              <OfferDetailWidget
+                offer={offer}
+                handleModal={handleModal}
+                name={name}
+                image={offerImg}
+              />
             )}
           </div>
           <OfferDetailShare />
