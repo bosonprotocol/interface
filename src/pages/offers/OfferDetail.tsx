@@ -247,7 +247,11 @@ export default function OfferDetail() {
         <OfferGrid>
           <div>
             <Typography tag="h3">Product data</Typography>
-            <Typography tag="p" style={{ color: colors.darkGrey }}>
+            <Typography
+              tag="p"
+              style={{ color: colors.darkGrey }}
+              data-testid="description"
+            >
               {description || MOCK.description}
             </Typography>
             <OfferDetailTable data={MOCK.table} />
