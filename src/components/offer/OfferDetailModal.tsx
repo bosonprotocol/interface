@@ -14,13 +14,6 @@ import Grid from "../ui/Grid";
 import { buttonText } from "../ui/styles";
 import Typography from "../ui/Typography";
 
-const ModalTitle = styled.div`
-  margin: 0;
-  padding: 1rem 2rem;
-  * {
-    margin: 0;
-  }
-`;
 const CommitStepWrapper = styled.div`
   overflow: hidden;
   margin: 1rem 0;
