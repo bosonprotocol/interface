@@ -15,7 +15,7 @@ import { buttonText } from "../ui/styles";
 import Typography from "../ui/Typography";
 
 const ModalTitle = styled.div`
-  margin: -2rem 0rem 0 0rem;
+  margin: 0;
   padding: 1rem 2rem;
   border-bottom: 2px solid ${colors.border};
   * {

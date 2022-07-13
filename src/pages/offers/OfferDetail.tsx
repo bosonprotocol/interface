@@ -28,6 +28,7 @@ import { MOCK } from "./mock/mock";
 import {
   DarkerBackground,
   LightBackground,
+  MainOfferGrid,
   OfferGrid,
   OfferWrapper,
   WidgetContainer
@@ -219,9 +220,9 @@ export default function OfferDetail() {
             </Tabs>
           </Toggle>
         )}
-        <OfferGrid>
+        <MainOfferGrid>
           <div>
-            <Image src={offerImg} fillHeight dataTestId="offerImage" />
+            <Image src={offerImg} dataTestId="offerImage" />
           </div>
           <div>
             <SellerID seller={offer?.seller} justifyContent="flex-start">
@@ -257,7 +258,7 @@ export default function OfferDetail() {
             )}
           </div>
           <OfferDetailShare />
-        </OfferGrid>
+        </MainOfferGrid>
       </LightBackground>
       <DarkerBackground>
         <OfferGrid>

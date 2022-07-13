@@ -1,26 +1,23 @@
-import { useState } from "react";
+import "@glidejs/glide/dist/css/glide.core.min.css";
+
+import Glide from "@glidejs/glide";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
-import { useSwipeable } from "react-swipeable";
 import styled from "styled-components";
 
 import Button from "../../components/ui/Button";
 import Grid from "../../components/ui/Grid";
 import Image from "../../components/ui/Image";
 import Typography from "../../components/ui/Typography";
+import { breakpointNumbers } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
-import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 
 interface IOfferDetailSlider {
   images: Array<string>;
 }
 
-const SliderWrapper = styled.div`
-  position: relative;
-
-  overflow: hidden;
-  width: calc(100%);
-  max-width: calc(100%);
+const GlideWrapper = styled.div`
   &:after {
     content: "";
     position: absolute;
@@ -39,44 +36,50 @@ const SliderWrapper = styled.div`
   }
 `;
 
-interface ISlider {
-  current: number;
-}
-
-const Slider = styled.div<ISlider>`
-  display: flex;
-  gap: 2.5rem;
-  transition: transform 500ms ease-in-out;
-  transform: ${(props) => {
-    return `translateX(calc(-${props.current * 20}rem - ${
-      props.current !== 0 ? 2.5 * props.current : 0
-    }rem))`;
-  }};
-  width: 100%;
-  min-height: 20rem;
+const GlideSlide = styled.div`
+  overflow: hidden;
 `;
-const Slide = styled.div``;
 
-const OfferDetailSlider: React.FC<IOfferDetailSlider> = ({ images }) => {
-  const [current, setCurrent] = useState<number>(0);
-  const { isLteXS, isLteM } = useBreakpoints();
-  const count = images.length - (isLteXS ? 1 : isLteM ? 2 : 3);
-
-  const handleSwipe = (next: boolean) => {
-    if (next) {
-      setCurrent(current === count ? 0 : current + 1);
-    } else {
-      setCurrent(current === 0 ? count : current - 1);
+const SLIDER_OPTIONS = {
+  type: "carousel" as const,
+  autoplay: 6000,
+  hoverpause: true,
+  startAt: 0,
+  gap: 20,
+  perView: 3,
+  breakpoints: {
+    [breakpointNumbers.l]: {
+      perView: 3
+    },
+    [breakpointNumbers.m]: {
+      perView: 2
+    },
+    [breakpointNumbers.xs]: {
+      perView: 1
     }
-  };
+  }
+};
+console.log(SLIDER_OPTIONS);
+type Direction = "<" | ">";
+const OfferDetailSlider: React.FC<IOfferDetailSlider> = ({ images }) => {
+  const ref = useRef();
+  const [slider, setSlider] = useState<any>(null);
 
-  const handlers = useSwipeable({
-    onSwipedLeft: () => handleSwipe(true),
-    onSwipedRight: () => handleSwipe(false),
-    trackMouse: true,
-    trackTouch: true,
-    preventScrollOnSwipe: false
-  });
+  useEffect(() => {
+    if (ref.current && slider === null) {
+      const glide = new Glide(ref.current, SLIDER_OPTIONS);
+      glide.mount();
+      setSlider(glide);
+    }
+    return () => (slider ? slider.destroy() : false);
+  }, [ref, slider]);
+
+  const handleSlider = useCallback(
+    (direction: Direction) => {
+      slider.go(direction);
+    },
+    [slider]
+  );
 
   return (
     <div style={{ maxWidth: "100%" }}>
@@ -85,27 +88,34 @@ const OfferDetailSlider: React.FC<IOfferDetailSlider> = ({ images }) => {
           Detail images
         </Typography>
         <Grid justifyContent="flex-end">
-          <Button theme="blank" onClick={() => handleSwipe(false)}>
+          <Button theme="blank" onClick={() => handleSlider("<")}>
             <AiOutlineLeft size={32} />
           </Button>
-          <Button theme="blank" onClick={() => handleSwipe(true)}>
+          <Button theme="blank" onClick={() => handleSlider(">")}>
             <AiOutlineRight size={32} />
           </Button>
         </Grid>
       </Grid>
-      <SliderWrapper {...handlers}>
-        <Slider current={current}>
-          {images?.map((image: string, index: number) => (
-            <Slide key={`Slide_${index}`}>
-              <Image
-                src={image}
-                style={{ minWidth: "20rem", paddingTop: "130%" }}
-                dataTestId="sliderImage"
-              />
-            </Slide>
-          ))}
-        </Slider>
-      </SliderWrapper>
+      <GlideWrapper
+        className="glide"
+        ref={(r: any) => {
+          ref.current = r;
+        }}
+      >
+        <div className="glide__track" data-glide-el="track">
+          <div className="glide__slides">
+            {images?.map((image: string, index: number) => (
+              <GlideSlide className="glide__slide" key={`Slide_${index}`}>
+                <Image
+                  src={image}
+                  style={{ minWidth: "20rem", paddingTop: "130%" }}
+                  dataTestId="sliderImage"
+                />
+              </GlideSlide>
+            ))}
+          </div>
+        </div>
+      </GlideWrapper>
     </div>
   );
 };
