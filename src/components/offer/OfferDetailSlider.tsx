@@ -62,6 +62,7 @@ const SLIDER_OPTIONS = {
 type Direction = "<" | ">";
 const OfferDetailSlider: React.FC<IOfferDetailSlider> = ({ images }) => {
   const ref = useRef();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [slider, setSlider] = useState<any>(null);
 
   useEffect(() => {
@@ -97,6 +98,7 @@ const OfferDetailSlider: React.FC<IOfferDetailSlider> = ({ images }) => {
       </Grid>
       <GlideWrapper
         className="glide"
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ref={(r: any) => {
           ref.current = r;
         }}
