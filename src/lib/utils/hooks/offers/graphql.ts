@@ -8,6 +8,7 @@ export const offerGraphQl = gql`
     metadataHash
     sellerDeposit
     fulfillmentPeriodDuration
+    resolutionPeriodDuration
     metadataUri
     buyerCancelPenalty
     quantityAvailable
@@ -15,7 +16,12 @@ export const offerGraphQl = gql`
     validFromDate
     validUntilDate
     voidedAt
+    createdAt
     voucherValidDuration
+    exchanges {
+      committedDate
+      redeemedDate
+    }
     seller {
       id
       admin

@@ -25,6 +25,7 @@ export const getOffers = async (props: UseOffersProps) => {
   if (props.type) {
     if (props.type === "hot") {
       validFromDate_lte = now + "";
+      validUntilDate_gte = now + "";
       validUntilDate_lte = in10days + "";
     } else if (props.type === "gone") {
       validFromDate_lte = now + "";
@@ -117,7 +118,8 @@ export async function getOfferById(
   const [offer] = await fetchCurationListOffers(
     props,
     getOffersQueryArgs,
-    variables
+    variables,
+    id
   );
   return offer;
 }
@@ -128,7 +130,8 @@ async function fetchCurationListOffers(
     Parameters<typeof buildGetOffersQuery>[0],
     "sellerCurationList" | "offerCurationList"
   >,
-  queryVars: Record<string, unknown>
+  queryVars: Record<string, unknown>,
+  offerId?: string
 ) {
   const sellerCurationList = props.enableCurationLists
     ? props.sellerCurationList || []
@@ -166,6 +169,11 @@ async function fetchCurationListOffers(
     sellerCurationListResult,
     offerCurationListResult
   );
+
+  if (offerId) {
+    const newOffer = offers.find((offer) => offer.id === offerId);
+    return newOffer ? [newOffer] : [];
+  }
 
   return offers.slice(props.skip, getOffersSliceEnd(props.skip, props.first));
 }

@@ -32,14 +32,14 @@ export async function assertOffer(
 
   await expect(price).toHaveText(expectedPrice);
 
-  const image = offer.locator("[data-testid=image]");
+  const image = offer.locator("[data-testid=offerImage]");
   expect(await image.getAttribute("src")).toBeTruthy();
 
   const profileImg = offer.locator("[data-testid=profileImg]");
   const svg = profileImg.locator("svg");
   expect(svg).toBeDefined();
 
-  expect(offer).toContainText("Redeemable until 30 days after commit");
+  expect(offer).toContainText("Redeemable until");
 
   if (options.withBanner) {
     const banner = offer.locator("[data-testid=offer-banner]");
@@ -66,6 +66,6 @@ export async function assertOfferInPublicAccountPage(
 
   await expect(price).toHaveText(expectedPrice);
 
-  const image = offer.locator("[data-testid=image]");
+  const image = offer.locator("[data-testid=offerImage]");
   expect(await image.getAttribute("src")).toBeTruthy();
 }

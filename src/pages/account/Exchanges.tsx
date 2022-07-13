@@ -11,6 +11,11 @@ interface Props {
   isPrivateProfile: boolean;
 }
 
+const orderProps = {
+  orderBy: "committedDate",
+  orderDirection: "desc"
+} as const;
+
 export default function Exchanges({
   sellerId,
   buyerId,
@@ -22,13 +27,19 @@ export default function Exchanges({
     data: exchangesSeller,
     isLoading: isLoadingSeller,
     isError: isErrorSeller
-  } = useExchanges({ disputed: null, sellerId }, { enabled: !!sellerId });
+  } = useExchanges(
+    { ...orderProps, disputed: null, sellerId },
+    { enabled: !!sellerId }
+  );
 
   const {
     data: exchangesBuyer,
     isLoading: isLoadingBuyer,
     isError: isErrorBuyer
-  } = useExchanges({ disputed: null, buyerId }, { enabled: !!buyerId });
+  } = useExchanges(
+    { ...orderProps, disputed: null, buyerId },
+    { enabled: !!buyerId }
+  );
 
   const exchanges = isTabSellerSelected ? exchangesSeller : exchangesBuyer;
 

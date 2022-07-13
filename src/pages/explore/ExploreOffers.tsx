@@ -96,7 +96,9 @@ export default function ExploreOffers(props: Props) {
     // TODO: comment this out once we can request offers with valid metadata directly as requesting 1 extra offer should be enough
     // first: OFFERS_PER_PAGE + 1,
     first: OFFERS_PER_PAGE * 2,
-    skip: OFFERS_PER_PAGE * pageIndex
+    skip: OFFERS_PER_PAGE * pageIndex,
+    orderBy: "createdAt",
+    orderDirection: "desc" as const
   };
   const {
     data: currentAndNextPageOffers,

@@ -1,5 +1,6 @@
 import { createGlobalStyle } from "styled-components";
 
+import { scrollStyles } from "../../components/ui/styles";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 
@@ -9,8 +10,9 @@ const GlobalStyle = createGlobalStyle<{
   $accentColor: string;
   $primaryBgColor: string;
 }>`
+
   * {
-    box-sizing: border-box
+    box-sizing: border-box;
   }
   :root {
     --l: 50%;
@@ -24,6 +26,10 @@ const GlobalStyle = createGlobalStyle<{
       props.$accentColor ? props.$accentColor : colors.arsenic};
     --primaryBgColor: ${(props) =>
       props.$primaryBgColor ? props.$primaryBgColor : colors.primaryBgColor};
+    --scrollbarThumb: ${(props) =>
+      props.$primaryColor ? props.$primaryColor : colors.primary};
+    --scrollbarBg: ${colors.black};
+    --scrollbarWidth: 4px;
 
     font-size: 12px;
     ${breakpoint.xs} {
@@ -56,9 +62,12 @@ const GlobalStyle = createGlobalStyle<{
 
     font-family: "Plus Jakarta Sans";
     font-style: normal;
-  }
-  html, body {
+
+    ${scrollStyles}
+
+    overflow-y: auto;
     overflow-x: hidden;
+    ${scrollStyles}
   }
 
   a,
@@ -77,6 +86,13 @@ const GlobalStyle = createGlobalStyle<{
   input,
   select {
     -webkit-appearance: none;
+  }
+
+  * > small {
+    font-size: 65%;
+    font-weight: 400;
+    margin: 0 0.5rem;
+    opacity: 0.75;
   }
 
   h1 {
@@ -104,6 +120,9 @@ const GlobalStyle = createGlobalStyle<{
     font-size: 1rem;
     font-weight: 400;
     line-height: 1.5;
+  }
+  img, svg, input {
+    user-select: none;
   }
 `;
 export default GlobalStyle;

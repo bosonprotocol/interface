@@ -6,19 +6,27 @@ import {
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
+import { zIndex } from "../../lib/styles/zIndex";
 import { Offer } from "../../lib/types/offer";
 
 const Statuses = styled.div`
+  position: absolute;
+  right: -1rem;
+  top: 1rem;
   display: flex;
   gap: 2px;
+  z-index: ${zIndex.OfferStatus};
 `;
 
 const Status = styled.div<{ $background: string; $color: string }>`
   background: ${(props) => props.$background};
   color: ${(props) => props.$color};
-  padding: 2px 10px;
-  border-radius: 50px;
-  font-weight: 800;
+  padding: 0.5rem 1rem;
+  font-family: "Plus Jakarta Sans";
+  font-style: normal;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
 `;
 
 interface Props {

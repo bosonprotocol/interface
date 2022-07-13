@@ -14,7 +14,12 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "paths": {
+      "stream": ["./node_modules/readable-stream"],
+      "buffer": ["./node_modules/buffer"],
+      "assert": ["./node_modules/assert"]
+    }
   },
   "include": ["src", "e2e-tests"]
 }

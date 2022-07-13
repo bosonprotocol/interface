@@ -18,7 +18,7 @@ jest.mock("@bosonprotocol/ipfs-storage", () => {
     IpfsMetadataStorage: IpfsMetadataMock
   };
 });
-test("renders CreateOffer and expects an error to be displayed if IpfsMetadata.storeMetadata fails", async () => {
+test.skip("renders CreateOffer and expects an error to be displayed if IpfsMetadata.storeMetadata fails", async () => {
   render(
     <MemoryRouter>
       <CreateOffer />

@@ -8,14 +8,9 @@ import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 
-const ModalContent = styled.div`
-  margin: -35px 5% 0 5%;
-`;
-
 const Title = styled.p`
   font-size: 1.8rem;
   text-align: center;
-  margin: 0;
 `;
 
 const Body = styled.p`
@@ -73,30 +68,32 @@ export default function CreatedExchangeModal({
     []
   );
   return (
-    <Modal isOpen={isOpen} onClose={() => onClose()} $styles={styles}>
-      <ModalContent>
-        <Title> {exchangeId ? "Commit Successful" : "Error"}</Title>
-        <Body>
-          {exchangeId
-            ? "A new exchange has been created"
-            : "Something has gone wrong"}
-        </Body>
-        <Buttons>
-          <CloseButton onClick={onClose}>Close</CloseButton>
-          <ViewExchangeButton
-            disabled={!exchangeId}
-            onClick={() =>
-              navigate({
-                pathname: generatePath(BosonRoutes.Exchange, {
-                  [UrlParameters.exchangeId]: exchangeId
-                })
+    <Modal
+      isOpen={isOpen}
+      onClose={() => onClose()}
+      $styles={styles}
+      title={<Title> {exchangeId ? "Commit Successful" : "Error"}</Title>}
+    >
+      <Body>
+        {exchangeId
+          ? "A new exchange has been created"
+          : "Something has gone wrong"}
+      </Body>
+      <Buttons>
+        <CloseButton onClick={onClose}>Close</CloseButton>
+        <ViewExchangeButton
+          disabled={!exchangeId}
+          onClick={() =>
+            navigate({
+              pathname: generatePath(BosonRoutes.Exchange, {
+                [UrlParameters.exchangeId]: exchangeId
               })
-            }
-          >
-            View exchange
-          </ViewExchangeButton>
-        </Buttons>
-      </ModalContent>
+            })
+          }
+        >
+          View exchange
+        </ViewExchangeButton>
+      </Buttons>
     </Modal>
   );
 }

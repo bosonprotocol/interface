@@ -1,4 +1,4 @@
-import { getDefaultConfig } from "@bosonprotocol/common";
+import { getDefaultConfig } from "@bosonprotocol/common"; // TODO: import from react-kit instead once it's exported there
 import { chain } from "wagmi";
 
 import { parseCurationList } from "./utils/curationList";
@@ -11,6 +11,12 @@ export const config = getDefaultConfig({ chainId: REACT_APP_CHAIN_ID });
 
 export const CONFIG = {
   ...config,
+  dateFormat: process.env.DATE_FORMAT || "YYYY/MM/DD",
+  fullDateFormat: process.env.FULL_DATE_FORMAT || "YYYY-MM-DDTHH:mm:ssZ[Z]",
+  defaultCurrency: {
+    ticker: process.env.DEFAULT_CURRENCY || "USD",
+    symbol: process.env.DEFAULT_CURRENCY_SYMBOL || "$"
+  },
   widgetsUrl: process.env.REACT_APP_WIDGETS_URL || config.widgetsUrl,
   chainId: REACT_APP_CHAIN_ID,
   ipfsMetadataUrl:

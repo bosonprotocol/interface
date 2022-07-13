@@ -40,11 +40,9 @@ const NavigationGrid = styled(Grid)`
   gap: 5rem;
   padding: 0 2rem 2rem 0;
 
-  justify-content: flex-start;
   ${breakpoint.xs} {
     gap: 5rem;
     padding: 0 0rem 2rem 0;
-    justify-content: flex-end;
   }
   ${breakpoint.m} {
     gap: 10rem;
@@ -120,7 +118,7 @@ export default function FooterComponent() {
               data-testid="logo"
             />
           </LinkWithQuery>
-          <NavigationGrid>
+          <NavigationGrid justifyContent={isXXS ? "flex-start" : "flex-end"}>
             <div>
               <Typography tag="h5">Product</Typography>
               <NavigationLinks flexDirection="column">

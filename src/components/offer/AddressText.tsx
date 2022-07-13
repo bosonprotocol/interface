@@ -6,7 +6,6 @@ const Name = styled.div`
   font-size: 14px;
   font-weight: 600;
   overflow-wrap: break-word;
-  font-family: "Roboto Mono", monospace;
 `;
 
 interface Props {

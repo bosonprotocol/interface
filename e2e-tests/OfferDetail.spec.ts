@@ -13,7 +13,7 @@ const assertOfferDetail = async (expectedOffer: Offer, page: Page) => {
     expectedOffer.metadata?.name || "expected name"
   );
 
-  const image = page.locator("[data-testid=image]");
+  const image = page.locator("[data-testid=offerImage]");
   expect(await image.getAttribute("src")).toBeTruthy();
 
   const description = page.locator("[data-testid=description]");
@@ -21,15 +21,9 @@ const assertOfferDetail = async (expectedOffer: Offer, page: Page) => {
     expectedOffer.metadata?.description || "Unexpected description"
   );
 
-  const deliveryInfo = page.locator("[data-testid=delivery-info]");
-  await expect(deliveryInfo).toHaveText("Not defined");
-
-  const profileImg = page.locator("[data-testid=profileImg]");
-  const svg = profileImg.locator("svg");
-  expect(svg).toBeDefined();
-
   const sellerId = page.locator("[data-testid=seller-id]");
-  const expectedSellerId = "ID: " + expectedOffer.seller?.id || "Unexpected id";
+  const expectedSellerId =
+    "Seller ID: " + expectedOffer.seller?.id || "Unexpected id";
   await expect(sellerId).toHaveText(expectedSellerId);
 };
 
@@ -99,6 +93,7 @@ test.describe("OfferDetail", () => {
     });
 
     await page.goto(`${offersUrl}${expectedOffer.id}`);
+
     await assertOfferDetail(expectedOffer, page);
   });
 });

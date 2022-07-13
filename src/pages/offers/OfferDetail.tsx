@@ -1,176 +1,47 @@
 import { manageOffer } from "@bosonprotocol/widgets-sdk";
-import { Image as AccountImage } from "@davatar/react";
-import { useEffect, useReducer, useRef, useState } from "react";
-import { IoIosImage, IoIosInformationCircleOutline } from "react-icons/io";
-import { generatePath, useLocation, useParams } from "react-router-dom";
+import { useCallback, useEffect, useReducer, useRef, useState } from "react";
+import { IoIosInformationCircleOutline } from "react-icons/io";
+import { useLocation, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
-import OfferStatuses from "../../components/offer/OfferStatuses";
+import OfferDetailChart from "../../components/offer/OfferDetailChart";
+import OfferDetailModal from "../../components/offer/OfferDetailModal";
+import OfferDetailShare from "../../components/offer/OfferDetailShare";
+import OfferDetailSlider from "../../components/offer/OfferDetailSlider";
+import OfferDetailTable from "../../components/offer/OfferDetailTable";
+import OfferDetailWidget from "../../components/offer/OfferDetailWidget";
+import OfferLabel from "../../components/offer/OfferLabel";
+import Image from "../../components/ui/Image";
+import SellerID from "../../components/ui/SellerID";
+import Typography from "../../components/ui/Typography";
 import { CONFIG } from "../../lib/config";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
-import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
+import getOfferImage from "../../lib/utils/hooks/offers/getOfferImage";
 import { useOffer } from "../../lib/utils/hooks/offers/useOffer";
-import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { useSellers } from "../../lib/utils/hooks/useSellers";
 import { isAccountSeller } from "../../lib/utils/isAccountSeller";
 import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
-import AddressContainer from "./../../components/offer/AddressContainer";
-import RootPrice from "./../../components/price";
 import CreatedExchangeModal from "./CreatedExchangeModal";
+import { MOCK } from "./mock/mock";
+import {
+  DarkerBackground,
+  LightBackground,
+  MainOfferGrid,
+  OfferGrid,
+  OfferWrapper,
+  WidgetContainer
+} from "./OfferDetail.style";
 
-const Root = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-top: 64px;
-  gap: 130px;
-  margin-bottom: 42px;
-
-  ${breakpoint.l} {
-    flex-direction: row;
-  }
-`;
-
-const ImageAndDescription = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: start;
-  flex-basis: 50%;
-  gap: 20px;
-
-  ${breakpoint.m} {
-    flex-direction: row;
-  }
-
-  ${breakpoint.l} {
-    flex-direction: column;
-  }
-`;
-
-const StatusContainer = styled.div`
-  width: 100%;
-  position: absolute;
-`;
-
-const StatusSubContainer = styled.div`
-  max-width: 700px;
-  width: 700px;
-  position: relative;
-  margin: 0 auto;
-
-  ${breakpoint.m} {
-    width: initial;
-  }
-`;
-
-const ImageContainer = styled.div`
-  display: flex;
-  justify-content: left;
-  height: auto;
-  max-height: 700px;
+const ImageWrapper = styled.div`
   position: relative;
 
-  [data-testid="statuses"] {
-    position: absolute;
-    right: 5px;
-    top: 5px;
-    margin: 0 auto;
-    justify-content: center;
-  }
-`;
-
-const Image = styled.img`
-  height: auto;
-
-  margin: 0 auto;
-  border-radius: 22px;
-  object-fit: contain;
-
-  ${breakpoint.m} {
+  img {
     width: 100%;
   }
 `;
-
-const ImagePlaceholder = styled.div`
-  width: 100%;
-  min-width: 500px;
-  height: 500px;
-  background-color: ${colors.grey};
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  font-size: 21px;
-  border-radius: 24px;
-
-  span {
-    padding: 10px;
-    text-align: center;
-    color: lightgrey;
-  }
-`;
-
-const ImageNotAvailable = styled(IoIosImage)`
-  font-size: 50px;
-`;
-
-const Title = styled.h1`
-  font-size: 36px;
-  margin: 0;
-`;
-
-const SubHeading = styled.p`
-  font-size: 14px;
-  font-weight: 500;
-  margin: 0 0 4px 0;
-  color: ${colors.grey};
-`;
-
-const Information = styled.span`
-  font-weight: bold;
-`;
-
-const Content = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex-basis: 50%;
-  gap: 20px;
-  padding-top: 24px;
-`;
-
-const ChildrenContainer = styled.div`
-  iframe {
-    width: 100%;
-  }
-`;
-
-const WidgetContainer = styled.div`
-  max-width: 100%;
-  border-radius: 6px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0 auto;
-`;
-
-const Info = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 10px;
-`;
-
-const Box = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 16px 12px;
-  border-radius: 6px;
-  gap: 4px;
-  box-shadow: inset -3px -3px 3px #0e0f17, inset 3px 3px 3px #363b5b;
-`;
-
 const Toggle = styled.div`
   border: 1px solid ${colors.bosonSkyBlue};
   color: ${colors.bosonSkyBlue};
@@ -178,49 +49,38 @@ const Toggle = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 12px;
-  border-radius: 6px;
-  gap: 4px;
+  padding: 1rem 0.75rem;
+  gap: 0.25rem;
+  margin-bottom: 2rem;
 `;
 
 const InfoIconTextWrapper = styled.div`
   display: flex;
   justify-content: start;
   align-items: center;
-  gap: 1px;
 `;
-
 const Tabs = styled.div`
   display: flex;
   flex-direction: row;
   max-width: 30%;
 `;
 
-const Tab = styled("button")<{ $isLeft: boolean; $isSelected: boolean }>`
+const Tab = styled("button")<{ $isSelected: boolean }>`
   all: unset;
   cursor: pointer;
-  border: 1px solid ${colors.bosonSkyBlue};
-  border-radius: ${(props) =>
-    props.$isLeft ? "30px 0 0 30px" : "0 30px 30px 0"};
   background-color: ${(props) =>
-    props.$isSelected ? colors.bosonSkyBlue : colors.navy};
-  ${(props) =>
-    props.$isSelected
-      ? "box-shadow: inset 1px 2px 5px #777;"
-      : `box-shadow: 0px 2px 9px -3px ${colors.bosonSkyBlue};`}
-  padding: 7px;
-  font-size: 14px;
-  color: ${(props) => (props.$isSelected ? colors.black : colors.bosonSkyBlue)};
+    props.$isSelected ? colors.blue : colors.lightGrey};
+  padding: 0.5rem;
+  font-family: "Plus Jakarta Sans";
+  font-style: normal;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  color: ${(props) => (props.$isSelected ? colors.white : colors.black)};
   width: 200px;
   max-width: 100%;
   text-align: center;
 `;
-
-const Price = styled(RootPrice)`
-  font-weight: bold;
-  font-size: 24px;
-`;
-
 const InfoIcon = styled(IoIosInformationCircleOutline).attrs({
   fill: colors.bosonSkyBlue
 })`
@@ -231,12 +91,14 @@ const InfoIcon = styled(IoIosInformationCircleOutline).attrs({
 
 export default function OfferDetail() {
   const { [UrlParameters.offerId]: offerId } = useParams();
+
   const widgetRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
   const fromAccountPage =
     (location.state as { from: string })?.from === BosonRoutes.YourAccount;
   const [isTabSellerSelected, setTabSellerSelected] =
     useState<boolean>(fromAccountPage);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [createdExchangeId, setCreatedExchangeId] = useState<string>("");
   const [isCreatedExchangeModalOpen, toggleCreatedExchangeModal] = useReducer(
     (state) => !state,
@@ -244,10 +106,13 @@ export default function OfferDetail() {
   );
   const { address: account } = useAccount();
   const address = account || "";
-  const navigate = useKeepQueryParamsNavigate();
   const customMetaTransactionsApiKey = useCustomStoreQueryParameter(
     "metaTransactionsApiKey"
   );
+
+  const handleModal = useCallback(() => {
+    setIsModalOpen(!isModalOpen);
+  }, [isModalOpen]);
 
   const {
     data: offer,
@@ -259,6 +124,17 @@ export default function OfferDetail() {
     },
     { enabled: !!offerId }
   );
+
+  const { data: sellers } = useSellers({
+    admin: offer?.seller.admin,
+    includeFunds: true
+  });
+  const sellerAvailableDeposit = sellers?.[0].funds?.find(
+    (fund) => fund.token.address === offer?.exchangeToken.address
+  )?.availableAmount;
+  const offerRequiredDeposit = offer?.sellerDeposit;
+  const hasSellerEnoughFunds =
+    Number(sellerAvailableDeposit) >= Number(offerRequiredDeposit);
 
   useEffect(() => {
     if (!address) {
@@ -334,109 +210,119 @@ export default function OfferDetail() {
   const isSeller = isAccountSeller(offer, address);
 
   const name = offer.metadata?.name || "Untitled";
-  const offerImg = offer.metadata.imageUrl;
-  const sellerId = offer.seller?.id;
-  const sellerAddress = offer.seller?.operator;
+  const offerImg = getOfferImage(offer.id, name);
   const description = offer.metadata?.description || "";
 
   return (
-    <>
-      <Root>
-        <ImageAndDescription>
-          <ImageContainer>
-            <StatusContainer>
-              <StatusSubContainer>
-                <OfferStatuses offer={offer} />
-              </StatusSubContainer>
-            </StatusContainer>
-
-            {offerImg ? (
-              <Image data-testid="image" src={offerImg} />
-            ) : (
-              <ImagePlaceholder>
-                <ImageNotAvailable />
-                <span>IMAGE NOT AVAILABLE</span>
-              </ImagePlaceholder>
-            )}
-          </ImageContainer>
-          <Info>
-            <Box>
-              <SubHeading>Brand</SubHeading>
-              <span data-testid="brand">Not defined</span>
-            </Box>
-            <Box>
-              <SubHeading>Description</SubHeading>
-              <Information data-testid="description">
-                {description || "Not defined"}
-              </Information>
-            </Box>
-            <Box>
-              <SubHeading>Delivery Information</SubHeading>
-              <span data-testid="delivery-info">Not defined</span>
-            </Box>
-            <Box>
-              <SubHeading> Seller</SubHeading>
-              <AddressContainer
-                onClick={() =>
-                  navigate({
-                    pathname: generatePath(BosonRoutes.Account, {
-                      [UrlParameters.accountId]: sellerAddress
-                    })
-                  })
-                }
+    <OfferWrapper>
+      <LightBackground>
+        {isSeller && (
+          <Toggle>
+            <InfoIconTextWrapper>
+              <InfoIcon />
+              <span>You are the owner of this offer. Toggle view:</span>
+            </InfoIconTextWrapper>
+            <Tabs>
+              <Tab
+                $isSelected={!isTabSellerSelected}
+                onClick={() => setTabSellerSelected(false)}
               >
-                <AccountImage size={30} address={sellerAddress} />
-                <div data-testid="seller-id">ID: {sellerId}</div>
-              </AddressContainer>
-            </Box>
-          </Info>
-        </ImageAndDescription>
-        <Content>
-          <Title data-testid="name">{name || "Untitled"}</Title>
-
-          <Box>
-            <SubHeading>Price</SubHeading>
-            <Price
-              address={offer.exchangeToken.address}
-              currencySymbol={offer.exchangeToken.symbol}
-              value={offer.price}
-              decimals={offer.exchangeToken.decimals}
-            />
-          </Box>
-          {isSeller && (
-            <Toggle>
-              <InfoIconTextWrapper>
-                <InfoIcon />
-                <span>You are the owner of this offer. Toggle view:</span>
-              </InfoIconTextWrapper>
-              <Tabs>
-                <Tab
-                  $isLeft
-                  $isSelected={!isTabSellerSelected}
-                  onClick={() => setTabSellerSelected(false)}
-                >
-                  Buyer
-                </Tab>
-                <Tab
-                  $isLeft={false}
-                  $isSelected={isTabSellerSelected}
-                  onClick={() => setTabSellerSelected(true)}
-                >
-                  Seller
-                </Tab>
-              </Tabs>
-            </Toggle>
-          )}
-          <ChildrenContainer>
-            <WidgetContainer ref={widgetRef}></WidgetContainer>
-          </ChildrenContainer>
-          <CreatedExchangeModal
-            isOpen={isCreatedExchangeModalOpen}
-            onClose={() => toggleCreatedExchangeModal()}
-            exchangeId={createdExchangeId}
-          />
-        </Content>
-      </Root>
-    </>
+                Buyer
+              </Tab>
+              <Tab
+                $isSelected={isTabSellerSelected}
+                onClick={() => setTabSellerSelected(true)}
+              >
+                Seller
+              </Tab>
+            </Tabs>
+          </Toggle>
+        )}
+        <MainOfferGrid>
+          <ImageWrapper>
+            <Image src={offerImg} dataTestId="offerImage" />
+          </ImageWrapper>
+          <div>
+            <SellerID seller={offer?.seller} justifyContent="flex-start">
+              <OfferLabel offer={offer} />
+            </SellerID>
+            <Typography
+              tag="h1"
+              data-testid="name"
+              style={{ fontSize: "2rem", marginBottom: "2rem" }}
+            >
+              {name}
+            </Typography>
+            {isSeller ? (
+              <>
+                {isTabSellerSelected ? (
+                  <WidgetContainer ref={widgetRef}></WidgetContainer>
+                ) : (
+                  <OfferDetailWidget
+                    offer={offer}
+                    handleModal={handleModal}
+                    name={name}
+                    image={offerImg}
+                    hasSellerEnoughFunds={hasSellerEnoughFunds}
+                  />
+                )}
+              </>
+            ) : (
+              <OfferDetailWidget
+                offer={offer}
+                handleModal={handleModal}
+                name={name}
+                image={offerImg}
+                hasSellerEnoughFunds={hasSellerEnoughFunds}
+              />
+            )}
+          </div>
+          <OfferDetailShare />
+        </MainOfferGrid>
+      </LightBackground>
+      <DarkerBackground>
+        <OfferGrid>
+          <div>
+            <Typography tag="h3">Product data</Typography>
+            <Typography
+              tag="p"
+              style={{ color: colors.darkGrey }}
+              data-testid="description"
+            >
+              {description || MOCK.description}
+            </Typography>
+            <OfferDetailTable data={MOCK.table} />
+          </div>
+          <div>
+            <Typography tag="h3">About the artist</Typography>
+            <Typography tag="p" style={{ color: colors.darkGrey }}>
+              {MOCK.aboutArtist}
+            </Typography>
+          </div>
+        </OfferGrid>
+        <OfferDetailSlider images={MOCK.images} />
+        <OfferGrid>
+          <OfferDetailChart offer={offer} />
+          <div>
+            <Typography tag="h3">Shipping information</Typography>
+            <Typography tag="p" style={{ color: colors.darkGrey }}>
+              {MOCK.shipping}
+            </Typography>
+            <OfferDetailTable data={MOCK.shippingTable} />
+          </div>
+        </OfferGrid>
+      </DarkerBackground>
+      <OfferDetailModal
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+        }}
+      />
+      <CreatedExchangeModal
+        isOpen={isCreatedExchangeModalOpen}
+        onClose={() => toggleCreatedExchangeModal()}
+        exchangeId={createdExchangeId}
+      />
+    </OfferWrapper>
   );
 }

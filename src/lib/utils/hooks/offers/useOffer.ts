@@ -13,13 +13,10 @@ export function useOffer(
   return useQuery(
     ["offer", offerId],
     async () => {
-      restProps = {
+      const offer = await getOfferById(offerId, {
         sellerCurationList: CONFIG.sellerCurationList,
         offerCurationList: CONFIG.offerCurationList,
         enableCurationLists: CONFIG.enableCurationLists,
-        ...restProps
-      };
-      const offer = await getOfferById(offerId, {
         ...restProps
       });
 

@@ -1,7 +1,7 @@
 import { manageExchange } from "@bosonprotocol/widgets-sdk";
 import { Image as AccountImage } from "@davatar/react";
 import { useEffect, useRef, useState } from "react";
-import { IoIosImage, IoIosInformationCircleOutline } from "react-icons/io";
+import { IoIosInformationCircleOutline } from "react-icons/io";
 import { generatePath, useLocation, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
@@ -9,12 +9,14 @@ import { useAccount } from "wagmi";
 import AddressContainer from "../../components/offer/AddressContainer";
 import ExchangeStatuses from "../../components/offer/ExchangeStatuses";
 import RootPrice from "../../components/price";
+import Image from "../../components/ui/Image";
 import { CONFIG } from "../../lib/config";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
+import getOfferImage from "../../lib/utils/hooks/offers/getOfferImage";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { isAccountSeller } from "../../lib/utils/isAccountSeller";
@@ -71,43 +73,11 @@ const ImageContainer = styled.div`
 
   [data-testid="statuses"] {
     position: absolute;
-    right: 5px;
-    top: 5px;
+    top: 1rem;
+    right: -1rem;
     margin: 0 auto;
     justify-content: center;
   }
-`;
-
-const Image = styled.img`
-  height: auto;
-  width: 100%;
-  margin: 0 auto;
-  border-radius: 22px;
-  object-fit: contain;
-  max-height: 700px;
-`;
-
-const ImagePlaceholder = styled.div`
-  width: 100%;
-  min-width: 500px;
-  height: 500px;
-  background-color: ${colors.grey};
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  font-size: 21px;
-  border-radius: 24px;
-
-  span {
-    padding: 10px;
-    text-align: center;
-    color: lightgrey;
-  }
-`;
-
-const ImageNotAvailable = styled(IoIosImage)`
-  font-size: 50px;
 `;
 
 const Title = styled.h1`
@@ -302,7 +272,7 @@ export default function Exchange() {
   }
   const isSeller = isAccountSeller(offer, address);
   const name = offer.metadata?.name || "Untitled";
-  const offerImg = offer.metadata.imageUrl;
+  const offerImg = getOfferImage(offer.id, name);
   const sellerId = offer.seller?.id;
   const sellerAddress = offer.seller?.operator;
   // const isOfferValid = getIsOfferValid(offer);
@@ -322,15 +292,7 @@ export default function Exchange() {
                 />
               </StatusSubContainer>
             </StatusContainer>
-
-            {offerImg ? (
-              <Image data-testid="image" src={offerImg} />
-            ) : (
-              <ImagePlaceholder>
-                <ImageNotAvailable />
-                <span>IMAGE NOT AVAILABLE</span>
-              </ImagePlaceholder>
-            )}
+            <Image src={offerImg} dataTestId="offerImage" />
           </ImageContainer>
           <Info>
             <Box>
