@@ -387,7 +387,12 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
         <CtaButtonsWrapper>
           <Grid flexGrow="1" gap="1rem">
             <CommitButton
-              disabled={!hasSellerEnoughFunds || isExpiredOffer || isLoading}
+              disabled={
+                !hasSellerEnoughFunds ||
+                isExpiredOffer ||
+                isLoading ||
+                !quantity
+              }
               offerId={offer.id}
               chainId={CONFIG.chainId}
               onError={(args) => {
