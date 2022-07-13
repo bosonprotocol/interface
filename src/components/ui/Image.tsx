@@ -21,7 +21,6 @@ const ImageWrapper = styled.div`
     transform: translate(-50%, -50%);
     transition: all 300ms ease-in-out;
     pointer-events: none;
-    max-height: 100%;
   }
 
   [data-testid="statuses"] {
@@ -35,8 +34,8 @@ const ImageWrapper = styled.div`
 `;
 
 const ImageContainer = styled.img`
-  min-width: 100%;
-  height: auto;
+  width: auto;
+  height: 100%;
 `;
 
 const ImagePlaceholder = styled.div`

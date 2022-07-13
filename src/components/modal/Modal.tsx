@@ -31,7 +31,7 @@ const Root = styled.div`
 
 const Content = styled.div`
   position: relative;
-  color: var(--secondary);
+  color: ${colors.black};
   width: 100%;
   background-color: var(--primaryBgColor);
   border: var(--secondary);

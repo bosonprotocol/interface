@@ -57,9 +57,26 @@ const CtaButtonsWrapper = styled.div`
 
 const ImageWrapper = styled.div`
   position: relative;
+  width: 100%;
+  margin 0 auto;
+  display: block;
+
+  ${breakpoint.xs} {
+    width: 60%;
+    margin 0 auto;
+    display: block;
+  }
+  ${breakpoint.s} {
+    width: unset;
+    margin: 0;
+    display: initial;
+  }
+
   > div {
-    height: 100%;
-    padding-top: 0;
+    ${breakpoint.s} {
+      height: 100%;
+      padding-top: 0;
+    }
   }
 `;
 const ModalGrid = styled.div`
@@ -83,15 +100,12 @@ const ButtonWrapper = styled(Grid)`
   flex-direction: column;
   ${breakpoint.s} {
     flex-direction: row;
-    align-content: flex-end;
-    max-width: calc(50% - 2rem);
-    margin-left: calc(50% + 2rem);
+    align-content: space-between;
   }
   > * {
-    flex: 1 0 auto;
-    min-width: 100%;
+    width: 100%;
     ${breakpoint.s} {
-      min-width: initial;
+      width: unset;
     }
     > div {
       justify-content: center;
@@ -285,12 +299,13 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
 }) => {
   const { data: signer } = useSigner();
   const navigate = useKeepQueryParamsNavigate();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [modalData, setModalData] = useState<IModalData>({ isOpen: false });
 
   const handleClose = () => {
     setModalData({ isOpen: false });
   };
-  console.log(offer);
+
   const OFFER_DETAIL_DATA = useMemo(() => getOfferDetailData(offer), [offer]);
   const quantity = useMemo<number>(
     () => Number(offer?.quantityAvailable),
@@ -330,11 +345,12 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
         <CtaButtonsWrapper>
           <Grid flexGrow="1" gap="1rem">
             <CommitButton
-              disabled={!hasSellerEnoughFunds || isExpiredOffer}
+              disabled={!hasSellerEnoughFunds || isExpiredOffer || isLoading}
               offerId={offer.id}
               chainId={CONFIG.chainId}
               onError={(args) => {
                 console.error("onError", args);
+                setIsLoading(false);
                 setModalData({
                   isOpen: true,
                   title: "An error occurred",
@@ -343,9 +359,11 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
               }}
               onPendingSignature={() => {
                 console.log("onPendingSignature");
+                setIsLoading(true);
               }}
               onSuccess={(args) => {
                 console.log("onSuccess", args);
+                setIsLoading(false);
                 setModalData({
                   isOpen: true,
                   title: "You have successfully committed!",
@@ -420,24 +438,27 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
             </Widget>
           </div>
         </ModalGrid>
-        <ButtonWrapper>
-          <Button
-            theme="secondary"
-            onClick={() => {
-              navigate({ pathname: BosonRoutes.YourAccount });
-            }}
-          >
-            View my items
-          </Button>
-          <Button
-            theme="primary"
-            onClick={() => {
-              navigate({ pathname: BosonRoutes.Explore });
-            }}
-          >
-            Discover more
-          </Button>
-        </ButtonWrapper>
+        <ModalGrid>
+          <div />
+          <ButtonWrapper>
+            <Button
+              theme="secondary"
+              onClick={() => {
+                navigate({ pathname: BosonRoutes.YourAccount });
+              }}
+            >
+              View my items
+            </Button>
+            <Button
+              theme="primary"
+              onClick={() => {
+                navigate({ pathname: BosonRoutes.Explore });
+              }}
+            >
+              Discover more
+            </Button>
+          </ButtonWrapper>
+        </ModalGrid>
       </OfferDetailCtaModal>
     </>
   );

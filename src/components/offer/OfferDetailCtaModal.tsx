@@ -38,19 +38,7 @@ export default function OfferDetailCtaModal({
 }: Props) {
   const { isLteS, isLteM } = useBreakpoints();
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      style={{
-        width: isLteS ? "100%" : isLteM ? "80%" : "70%",
-        padding: "0",
-        borderRadius: 0,
-        borderWidth: 0,
-        background: colors.white,
-        color: colors.black,
-        fill: colors.black
-      }}
-    >
+    <Modal isOpen={isOpen} onClose={onClose}>
       <ModalTitle>
         <Typography tag="h3">
           <b>{title}</b>

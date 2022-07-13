@@ -24,11 +24,11 @@ const Table = styled.table<{ noBorder?: boolean }>`
       line-height: 150%;
 
       &:first-child {
-        width: 70%;
+        width: 60%;
         font-weight: 600;
       }
       &:last-child {
-        width: 30%;
+        width: 35%;
         font-weight: 400;
       }
     }

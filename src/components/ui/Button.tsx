@@ -58,7 +58,7 @@ const ChildWrapperButton = styled.div`
   z-index: ${zIndex.Button};
 
   ${() => Styles.buttonText};
-  white-space: pre;
+  /* white-space: pre; */
 `;
 
 const allThemes = {

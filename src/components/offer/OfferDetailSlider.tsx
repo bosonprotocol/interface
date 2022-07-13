@@ -59,7 +59,6 @@ const SLIDER_OPTIONS = {
     }
   }
 };
-console.log(SLIDER_OPTIONS);
 type Direction = "<" | ">";
 const OfferDetailSlider: React.FC<IOfferDetailSlider> = ({ images }) => {
   const ref = useRef();
