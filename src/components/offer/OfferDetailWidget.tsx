@@ -27,6 +27,7 @@ interface IOfferDetailWidget {
   handleModal: () => void;
   name?: string;
   image?: string;
+  hasSellerEnoughFunds: boolean;
 }
 
 const ModalGrid = styled.div`
@@ -216,7 +217,8 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
   offer,
   handleModal,
   name = "",
-  image = ""
+  image = "",
+  hasSellerEnoughFunds
 }) => {
   const { data: signer } = useSigner();
   const navigate = useKeepQueryParamsNavigate();
@@ -226,9 +228,13 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
     setModalData({ isOpen: false });
   };
 
-  const [quantity] = useState<number>(Number(offer?.quantityAvailable));
-  const [disabled] = useState<boolean>(
-    dayjs(Number(offer?.validUntilDate) * 1000).isBefore(dayjs())
+  const quantity = useMemo<number>(
+    () => Number(offer?.quantityAvailable),
+    [offer?.quantityAvailable]
+  );
+  const isExpiredOffer = useMemo<boolean>(
+    () => dayjs(Number(offer?.validUntilDate) * 1000).isBefore(dayjs()),
+    [offer?.validUntilDate]
   );
   const isHotOffer = useMemo(
     () => isOfferHot(offer?.quantityAvailable, offer?.quantityInitial),
@@ -260,6 +266,7 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
         <div>
           <Grid flexGrow="1" gap="1rem">
             <CommitButton
+              disabled={!hasSellerEnoughFunds || isExpiredOffer}
               offerId={offer.id}
               chainId={CONFIG.chainId}
               // TODO: handle loading on react-kit
@@ -285,7 +292,6 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
                 });
               }}
               extraInfo="Step 1"
-              disabled={disabled}
               web3Provider={signer?.provider as Provider}
             />
             <Button
