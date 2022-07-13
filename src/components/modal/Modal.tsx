@@ -16,7 +16,7 @@ const Root = styled.div`
   left: 0;
   right: 0;
   display: flex;
-  align-items: center;
+  align-items: top;
   justify-content: center;
   background-color: #00000080;
   padding: 0;
@@ -46,10 +46,11 @@ const ModalTitle = styled.div`
 const Content = styled.div`
   position: relative;
   color: ${colors.black};
+  top: 4.2rem;
   width: 100%;
   background-color: var(--primaryBgColor);
   border: var(--secondary);
-
+  height: fit-content;
   min-height: 100vh;
   max-height: 100vh;
   margin: 0;
