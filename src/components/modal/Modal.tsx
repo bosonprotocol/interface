@@ -7,6 +7,8 @@ import { scrollStyles } from "../../components/ui/styles";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 
+const paddingTitleAndContent = "1.25rem";
+
 const Root = styled.div`
   position: fixed;
   top: 0;
@@ -19,14 +21,26 @@ const Root = styled.div`
   background-color: #00000080;
   padding: 0;
   ${breakpoint.s} {
-    padding: 4rem;
+    padding: 0 2rem;
   }
   ${breakpoint.m} {
-    padding: 8rem;
+    padding: 0 6rem;
   }
   ${breakpoint.l} {
-    padding: 10rem;
+    padding: 0 12rem;
   }
+  ${breakpoint.xl} {
+    padding: 0 22rem;
+  }
+`;
+
+const ModalTitle = styled.div`
+  border-bottom: 2px solid ${colors.border};
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: ${paddingTitleAndContent};
 `;
 
 const Content = styled.div`
@@ -51,22 +65,27 @@ const Content = styled.div`
 
 const CloseButtonContainer = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
 `;
 
 const CloseButton = styled(IoIosClose)`
   all: unset;
   font-size: 2rem;
-  position: absolute;
-  right: 0;
   fill: ${colors.black};
-  padding: 1.25rem;
-  width: 2rem;
+  padding: ${paddingTitleAndContent};
+  width: 3rem;
+  position: relative;
+  right: -12px;
 
   &:hover {
     cursor: pointer;
     fill: var(--secondary);
   }
+`;
+
+const ModalContent = styled.div`
+  padding: ${paddingTitleAndContent};
+  overflow: hidden;
 `;
 
 interface Props {
@@ -77,9 +96,16 @@ interface Props {
   };
   style?: React.CSSProperties;
   onClose?: () => void;
+  title?: JSX.Element | string | null | undefined;
 }
 
-export function Modal({ children, isOpen, onClose, style = {} }: Props) {
+export function Modal({
+  children,
+  isOpen,
+  onClose,
+  style = {},
+  title: Title
+}: Props) {
   if (!isOpen) {
     return null;
   }
@@ -96,9 +122,12 @@ export function Modal({ children, isOpen, onClose, style = {} }: Props) {
         style={style}
       >
         <CloseButtonContainer>
-          <CloseButton onClick={onCloseModal} />
+          <ModalTitle>
+            {Title ? Title : <div />}
+            <CloseButton onClick={onCloseModal} />
+          </ModalTitle>
         </CloseButtonContainer>
-        {children}
+        <ModalContent>{children}</ModalContent>
       </Content>
     </Root>,
     document.body

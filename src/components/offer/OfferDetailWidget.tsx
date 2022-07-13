@@ -17,13 +17,13 @@ import { Offer } from "../../lib/types/offer";
 import { IPrice } from "../../lib/utils/convertPrice";
 import { isOfferHot } from "../../lib/utils/getOfferLabel";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { Modal } from "../modal/Modal";
 import Price from "../price/index";
 import { useConvertedPrice } from "../price/useConvertedPrice";
 import Button from "../ui/Button";
 import Grid from "../ui/Grid";
 import Image from "../ui/Image";
 import Typography from "../ui/Typography";
-import OfferDetailCtaModal from "./OfferDetailCtaModal";
 import OfferDetailTable from "./OfferDetailTable";
 
 interface IOfferDetailWidget {
@@ -461,7 +461,15 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
           <OfferDetailTable align noBorder data={OFFER_DETAIL_DATA} />
         </div>
       </Widget>
-      <OfferDetailCtaModal onClose={handleClose} {...modalData}>
+      <Modal
+        onClose={handleClose}
+        {...modalData}
+        title={
+          <Typography tag="h3">
+            <b>{modalData.title}</b>
+          </Typography>
+        }
+      >
         <ModalGrid>
           <ImageWrapper>
             {modalData.type === "SUCCESS" && (
@@ -517,7 +525,7 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
             </ButtonWrapper>
           </div>
         </ModalGrid>
-      </OfferDetailCtaModal>
+      </Modal>
     </>
   );
 };

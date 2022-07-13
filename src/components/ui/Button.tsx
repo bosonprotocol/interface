@@ -74,6 +74,8 @@ const allThemes = {
   secondary: {
     color: colors.black,
     background: "var(--primary)",
+    borderColor: "var(--primary)",
+    borderWidth: 2,
     hover: {
       background: colors.black,
       color: colors.white

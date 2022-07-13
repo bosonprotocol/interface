@@ -184,7 +184,8 @@ export default function Carousel() {
   const { data: offers } = useOffers({
     voided: false,
     valid: true,
-    first: numCells
+    first: numCells,
+    quantityAvailable_gte: 1
   });
   const uiOffers = useMemo(() => {
     if (offers?.length) {

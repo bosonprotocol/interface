@@ -17,7 +17,6 @@ import Typography from "../ui/Typography";
 const ModalTitle = styled.div`
   margin: 0;
   padding: 1rem 2rem;
-  border-bottom: 2px solid ${colors.border};
   * {
     margin: 0;
   }
@@ -45,9 +44,6 @@ const CommitStep = styled.div`
   position: relative;
   padding: 1rem;
   background: ${colors.lightGrey};
-  &:not(:first-child) {
-    padding-top: 2rem;
-  }
   &:not(:last-child) {
     &:before {
       position: absolute;
@@ -143,9 +139,6 @@ const LearnMore = styled(LinkWithQuery)`
   }
 `;
 
-const ModalContent = styled.div`
-  margin: 2rem;
-`;
 const DarkBackground = styled.div`
   overflow: hidden;
   margin: 2rem -2rem -2rem -2rem;
@@ -205,54 +198,52 @@ export default function OfferDetailModal({ isOpen, onClose }: Props) {
         color: colors.black,
         fill: colors.black
       }}
-    >
-      <ModalTitle>
+      title={
         <Typography tag="h3">
           <b>Commit and redeem</b>
         </Typography>
-      </ModalTitle>
-      <ModalContent>
-        <Grid flexDirection="column" alignItems="flex-start">
-          <Typography tag="h4" style={{ margin: 0 }}>
-            <b>How does the purchase process work?</b>
-          </Typography>
-          <Typography tag="p">
-            When Committing, the item price will be transferred into escrow and
-            you will receive a redeemable NFT (rNFT) that can be exchanged for
-            the real-world item it represents.
-          </Typography>
+      }
+    >
+      <Grid flexDirection="column" alignItems="flex-start">
+        <Typography tag="h4" style={{ margin: 0 }}>
+          <b>How does the purchase process work?</b>
+        </Typography>
+        <Typography tag="p">
+          When Committing, the item price will be transferred into escrow and
+          you will receive a redeemable NFT (rNFT) that can be exchanged for the
+          real-world item it represents.
+        </Typography>
+      </Grid>
+      <CommitStepWrapper>
+        {COMMIT_STEPS.map(({ icon: Icon, header, description }, key) => (
+          <CommitStep key={`commit_step_${key}`}>
+            <Icon size={24} />
+            <Typography tag="h6">{header}</Typography>
+            <Typography tag="p">{description}</Typography>
+          </CommitStep>
+        ))}
+      </CommitStepWrapper>
+      <DarkBackground>
+        <Grid flexDirection={isLteXS ? "column" : "row"}>
+          <div>
+            <Typography tag="h4" style={{ margin: 0 }}>
+              <b>Backed by Boson's settlement layer</b>
+            </Typography>
+            <Typography tag="p">
+              Boson Protocol's settlement layer secures the commercial exchange
+              of on-chain value for real-world assets. You can be certain that
+              when redeeming you will either receive the physical good or your
+              money back
+            </Typography>
+            <LearnMore to={BosonRoutes.LearnMore}>
+              <>
+                Learn more
+                <BsArrowRightShort size={32} />
+              </>
+            </LearnMore>
+          </div>
         </Grid>
-        <CommitStepWrapper>
-          {COMMIT_STEPS.map(({ icon: Icon, header, description }, key) => (
-            <CommitStep key={`commit_step_${key}`}>
-              <Icon size={24} />
-              <Typography tag="h6">{header}</Typography>
-              <Typography tag="p">{description}</Typography>
-            </CommitStep>
-          ))}
-        </CommitStepWrapper>
-        <DarkBackground>
-          <Grid flexDirection={isLteXS ? "column" : "row"}>
-            <div>
-              <Typography tag="h4" style={{ margin: 0 }}>
-                <b>Backed by Boson's settlement layer</b>
-              </Typography>
-              <Typography tag="p">
-                Boson Protocol's settlement layer secures the commercial
-                exchange of on-chain value for real-world assets. You can be
-                certain that when redeeming you will either receive the physical
-                good or your money back
-              </Typography>
-              <LearnMore to={BosonRoutes.LearnMore}>
-                <>
-                  Learn more
-                  <BsArrowRightShort size={32} />
-                </>
-              </LearnMore>
-            </div>
-          </Grid>
-        </DarkBackground>
-      </ModalContent>
+      </DarkBackground>
     </Modal>
   );
 }
