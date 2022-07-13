@@ -152,7 +152,7 @@ export default function OfferCard({
   ) : (
     <></>
   );
-
+  const redeemableDays = Math.round(Number(offer.voucherValidDuration) / 86400);
   return (
     <Card data-testid={dataTestId} onClick={onClick} isCarousel={isCarousel}>
       {Status}
@@ -180,7 +180,9 @@ export default function OfferCard({
           )}
         </BasicInfoContainer>
         {!exchange && (
-          <TextBelow>Redeemable until 30 days after commit</TextBelow>
+          <TextBelow>
+            Redeemable until {redeemableDays} days after commit
+          </TextBelow>
         )}
       </Content>
     </Card>
