@@ -39,6 +39,10 @@ import {
 
 const ImageWrapper = styled.div`
   position: relative;
+
+  img {
+    width: 100%;
+  }
 `;
 const OpenSeaButton = styled.button`
   position: absolute;

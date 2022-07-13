@@ -210,13 +210,16 @@ const getOfferDetailData = (offer: Offer, priceInDollars: IPrice | null) => {
   const sellerDepositPercentage =
     Number(offer.sellerDeposit) / Number(offer.price);
   const sellerDeposit = sellerDepositPercentage * 100;
-  const sellerDepositDollars = sellerDepositPercentage * priceInDollarsNumber;
+  const sellerDepositDollars = (
+    sellerDepositPercentage * priceInDollarsNumber
+  ).toFixed(2);
 
   const buyerCancelationPenaltyPercentage =
     Number(offer.buyerCancelPenalty) / Number(offer.price);
   const buyerCancelationPenalty = buyerCancelationPenaltyPercentage * 100;
-  const buyerCancelationPenaltyDollars =
-    buyerCancelationPenaltyPercentage * priceInDollarsNumber;
+  const buyerCancelationPenaltyDollars = (
+    buyerCancelationPenaltyPercentage * priceInDollarsNumber
+  ).toFixed(2);
   return [
     {
       name: "Redeemable",
