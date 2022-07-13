@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { Modal } from "../../components/modal/Modal";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
-import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import Typography from "../ui/Typography";
 
 const ModalTitle = styled.div`
@@ -36,7 +35,6 @@ export default function OfferDetailCtaModal({
   onClose,
   children
 }: Props) {
-  const { isLteS, isLteM } = useBreakpoints();
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalTitle>

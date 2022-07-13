@@ -1,10 +1,9 @@
-import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 
 import { CONFIG } from "../../lib/config";
-import { convertPrice, IPrice } from "../../lib/utils/convertPrice";
 import Typography from "../ui/Typography";
 import CurrencyIcon from "./CurrencyIcon";
+import { useConvertedPrice } from "./useConvertedPrice";
 
 const Root = styled.div`
   display: flex;
@@ -40,24 +39,7 @@ export default function Price({
   address,
   ...rest
 }: IProps) {
-  const [price, setPrice] = useState<IPrice | null>(null);
-
-  const getConvertedPrice = useCallback(async () => {
-    const newPrice = await convertPrice(
-      value,
-      decimals,
-      CONFIG.defaultCurrency.ticker
-    );
-    setPrice(newPrice);
-  }, [value, decimals]);
-
-  useEffect(() => {
-    getConvertedPrice();
-    const interval = setInterval(() => {
-      getConvertedPrice();
-    }, 1000 * 60); // It will update USD price every minute;
-    return () => clearInterval(interval);
-  }, [getConvertedPrice]);
+  const price = useConvertedPrice({ value, decimals });
 
   return (
     <Root {...rest} data-testid="price">

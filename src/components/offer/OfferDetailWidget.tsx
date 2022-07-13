@@ -14,15 +14,18 @@ import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import { Offer } from "../../lib/types/offer";
+import { IPrice } from "../../lib/utils/convertPrice";
 import { isOfferHot } from "../../lib/utils/getOfferLabel";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import Price from "../price/index";
+import { useConvertedPrice } from "../price/useConvertedPrice";
 import Button from "../ui/Button";
 import Grid from "../ui/Grid";
 import Image from "../ui/Image";
 import Typography from "../ui/Typography";
 import OfferDetailCtaModal from "./OfferDetailCtaModal";
 import OfferDetailTable from "./OfferDetailTable";
+import OfferRedeemable from "./OfferRedeemable";
 
 interface IOfferDetailWidget {
   offer: Offer;
@@ -58,12 +61,12 @@ const CtaButtonsWrapper = styled.div`
 const ImageWrapper = styled.div`
   position: relative;
   width: 100%;
-  margin 0 auto;
+  margin: 0 auto;
   display: block;
 
   ${breakpoint.xs} {
     width: 60%;
-    margin 0 auto;
+    margin: 0 auto;
     display: block;
   }
   ${breakpoint.s} {
@@ -187,8 +190,33 @@ interface IModalData {
   type?: "SUCCESS" | "ERROR" | null;
 }
 
-const getOfferDetailData = (offer: Offer) => {
-  const redeemableDays = Math.round(Number(offer.voucherValidDuration) / 86400);
+const oneSecondToDays = 86400;
+const getDayOrDays = (value: number) => (value === 1 ? "day" : "days");
+
+const getOfferDetailData = (offer: Offer, priceInDollars: IPrice | null) => {
+  const redeemableDays = Math.round(
+    Number(offer.voucherValidDuration) / oneSecondToDays
+  );
+
+  const resolutionPeriodDurationDays = Math.round(
+    Number(offer.resolutionPeriodDuration) / oneSecondToDays
+  );
+  const fulfillmentPeriodDurationDays = Math.round(
+    Number(offer.fulfillmentPeriodDuration) / oneSecondToDays
+  );
+
+  const priceInDollarsNumber = Number(priceInDollars?.converted);
+
+  const sellerDepositPercentage =
+    Number(offer.sellerDeposit) / Number(offer.price);
+  const sellerDeposit = sellerDepositPercentage * 100;
+  const sellerDepositDollars = sellerDepositPercentage * priceInDollarsNumber;
+
+  const buyerCancelationPenaltyPercentage =
+    Number(offer.buyerCancelPenalty) / Number(offer.price);
+  const buyerCancelationPenalty = buyerCancelationPenaltyPercentage * 100;
+  const buyerCancelationPenaltyDollars =
+    buyerCancelationPenaltyPercentage * priceInDollarsNumber;
   return [
     {
       name: "Redeemable",
@@ -198,7 +226,7 @@ const getOfferDetailData = (offer: Offer) => {
             <b>Redeemable</b>
           </Typography>
           <Typography tag="p" style={{ margin: "1rem 0" }}>
-            Redeemable until {redeemableDays} days after committing.
+            <OfferRedeemable offer={offer} />
           </Typography>
           <Typography tag="p">
             If you don’t redeem your NFT during the redemption period, it will
@@ -210,7 +238,7 @@ const getOfferDetailData = (offer: Offer) => {
       value: (
         <Typography tag="p">
           {redeemableDays}
-          <small>days</small>
+          <small>{getDayOrDays(redeemableDays)}</small>
         </Typography>
       )
     },
@@ -231,7 +259,7 @@ const getOfferDetailData = (offer: Offer) => {
       ),
       value: (
         <Typography tag="p">
-          5%<small>($126.4)</small>
+          {sellerDeposit}%<small>(${sellerDepositDollars})</small>
         </Typography>
       )
     },
@@ -250,7 +278,8 @@ const getOfferDetailData = (offer: Offer) => {
       ),
       value: (
         <Typography tag="p">
-          20%<small>($503.6)</small>
+          {buyerCancelationPenalty}%
+          <small>(${buyerCancelationPenaltyDollars})</small>
         </Typography>
       )
     },
@@ -262,8 +291,15 @@ const getOfferDetailData = (offer: Offer) => {
             <b>Exchange policy</b>
           </Typography>
           <Typography tag="p">
-            30 days to raise a dispute Fair buyer and seller obligations
-            Standard evidence requirements 15 days to resolve a raised dispute
+            {fulfillmentPeriodDurationDays}{" "}
+            {getDayOrDays(fulfillmentPeriodDurationDays)} to raise a dispute
+          </Typography>
+          <Typography tag="p">Fair buyer and seller obligations</Typography>
+          <Typography tag="p">Standard evidence requirements</Typography>
+          <Typography tag="p">
+            {resolutionPeriodDurationDays}{" "}
+            {getDayOrDays(resolutionPeriodDurationDays)} to resolve a raised
+            dispute
           </Typography>
         </>
       ),
@@ -305,8 +341,14 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
   const handleClose = () => {
     setModalData({ isOpen: false });
   };
-
-  const OFFER_DETAIL_DATA = useMemo(() => getOfferDetailData(offer), [offer]);
+  const priceInDollars = useConvertedPrice({
+    value: offer.price,
+    decimals: offer.exchangeToken.decimals
+  });
+  const OFFER_DETAIL_DATA = useMemo(
+    () => getOfferDetailData(offer, priceInDollars),
+    [offer, priceInDollars]
+  );
   const quantity = useMemo<number>(
     () => Number(offer?.quantityAvailable),
     [offer?.quantityAvailable]

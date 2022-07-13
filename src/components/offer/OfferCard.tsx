@@ -13,6 +13,7 @@ import SellerID from "../ui/SellerID";
 import Typography from "../ui/Typography";
 import ExchangeStatuses from "./ExchangeStatuses";
 import OfferBanner from "./OfferBanner";
+import OfferRedeemable from "./OfferRedeemable";
 import OfferStatuses from "./OfferStatuses";
 
 const Card = styled.div<{ isCarousel: boolean }>`
@@ -152,7 +153,7 @@ export default function OfferCard({
   ) : (
     <></>
   );
-  const redeemableDays = Math.round(Number(offer.voucherValidDuration) / 86400);
+
   return (
     <Card data-testid={dataTestId} onClick={onClick} isCarousel={isCarousel}>
       {Status}
@@ -181,7 +182,7 @@ export default function OfferCard({
         </BasicInfoContainer>
         {!exchange && (
           <TextBelow>
-            Redeemable until {redeemableDays} days after commit
+            <OfferRedeemable offer={offer} />
           </TextBelow>
         )}
       </Content>
