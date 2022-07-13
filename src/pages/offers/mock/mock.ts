@@ -26,19 +26,19 @@ export const MOCK = {
   shippingTable: [
     {
       name: "EU",
-      value: "7 days"
+      value: "No delivery"
     },
     {
       name: "US",
-      value: "10 days"
+      value: "No delivery"
     },
     {
       name: "UK",
-      value: "5 days"
+      value: "No delivery"
     },
     {
       name: "Asia",
-      value: "14 days"
+      value: "No delivery"
     },
     {
       name: "South America",
