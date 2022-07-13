@@ -1,5 +1,6 @@
 import { manageOffer } from "@bosonprotocol/widgets-sdk";
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
+import { HiOutlineExternalLink } from "react-icons/hi";
 import { IoIosInformationCircleOutline } from "react-icons/io";
 import { useLocation, useParams } from "react-router-dom";
 import styled from "styled-components";
@@ -19,6 +20,7 @@ import { CONFIG } from "../../lib/config";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
+import { zIndex } from "../../lib/styles/zIndex";
 import getOfferImage from "../../lib/utils/hooks/offers/getOfferImage";
 import { useOffer } from "../../lib/utils/hooks/offers/useOffer";
 import { useSellers } from "../../lib/utils/hooks/useSellers";
@@ -35,6 +37,33 @@ import {
   WidgetContainer
 } from "./OfferDetail.style";
 
+const ImageWrapper = styled.div`
+  position: relative;
+`;
+const OpenSeaButton = styled.button`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: ${zIndex.OfferStatus};
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 2rem;
+  border: 2px solid ${colors.border};
+  background: ${colors.white};
+  color: ${colors.blue};
+
+  font-family: "Plus Jakarta Sans";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 150%;
+  &:hover {
+    color: ${colors.black};
+  }
+`;
 const Toggle = styled.div`
   border: 1px solid ${colors.bosonSkyBlue};
   color: ${colors.bosonSkyBlue};
@@ -232,9 +261,13 @@ export default function OfferDetail() {
           </Toggle>
         )}
         <MainOfferGrid>
-          <div>
+          <ImageWrapper>
+            <OpenSeaButton>
+              View on OpenSea
+              <HiOutlineExternalLink size={18} />
+            </OpenSeaButton>
             <Image src={offerImg} dataTestId="offerImage" />
-          </div>
+          </ImageWrapper>
           <div>
             <SellerID seller={offer?.seller} justifyContent="flex-start">
               <OfferLabel offer={offer} />

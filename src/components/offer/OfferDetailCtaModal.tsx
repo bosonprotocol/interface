@@ -11,9 +11,6 @@ const ModalTitle = styled.div`
   padding: 1rem;
   border-bottom: 2px solid ${colors.border};
 
-  ${breakpoint.s} {
-    padding: 2rem;
-  }
   * {
     margin: 0;
   }
