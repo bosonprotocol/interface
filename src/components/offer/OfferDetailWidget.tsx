@@ -30,17 +30,24 @@ interface IOfferDetailWidget {
   hasSellerEnoughFunds: boolean;
 }
 
+const ImageWrapper = styled.div`
+  > div {
+    height: 100%;
+    padding-top: 0;
+  }
+`;
 const ModalGrid = styled.div`
   display: grid;
 
   grid-column-gap: 1rem;
   grid-row-gap: 1rem;
-  grid-template-columns: repeat(1, 1fr);
+  grid-template-columns: repeat(1, minmax(0, 1fr));
   ${breakpoint.s} {
     grid-column-gap: 3rem;
     grid-row-gap: 3rem;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+  margin-bottom: 2rem;
 `;
 const PortalLogoImg = styled.img`
   height: 16px;
@@ -50,6 +57,9 @@ const ButtonWrapper = styled(Grid)`
   flex-direction: column;
   ${breakpoint.s} {
     flex-direction: row;
+    align-content: flex-end;
+    max-width: calc(50% - 2rem);
+    margin-left: calc(50% + 2rem);
   }
   > * {
     flex: 1 0 auto;
@@ -325,9 +335,9 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
       </Widget>
       <OfferDetailCtaModal onClose={handleClose} {...modalData}>
         <ModalGrid>
-          <div>
+          <ImageWrapper>
             <Image src={image} dataTestId="offerImage" />
-          </div>
+          </ImageWrapper>
           <div>
             <Widget>
               <Grid flexDirection="column">
@@ -353,28 +363,26 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
                 <OfferDetailTable align noBorder data={OFFER_DETAIL_DATA} />
               </div>
             </Widget>
-            <div style={{ marginTop: "2rem" }}>
-              <ButtonWrapper>
-                <Button
-                  theme="secondary"
-                  onClick={() => {
-                    navigate({ pathname: BosonRoutes.YourAccount });
-                  }}
-                >
-                  View my items
-                </Button>
-                <Button
-                  theme="primary"
-                  onClick={() => {
-                    navigate({ pathname: BosonRoutes.Explore });
-                  }}
-                >
-                  Discover more
-                </Button>
-              </ButtonWrapper>
-            </div>
           </div>
         </ModalGrid>
+        <ButtonWrapper>
+          <Button
+            theme="secondary"
+            onClick={() => {
+              navigate({ pathname: BosonRoutes.YourAccount });
+            }}
+          >
+            View my items
+          </Button>
+          <Button
+            theme="primary"
+            onClick={() => {
+              navigate({ pathname: BosonRoutes.Explore });
+            }}
+          >
+            Discover more
+          </Button>
+        </ButtonWrapper>
       </OfferDetailCtaModal>
     </>
   );

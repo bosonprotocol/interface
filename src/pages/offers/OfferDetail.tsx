@@ -35,6 +35,12 @@ import {
   WidgetContainer
 } from "./OfferDetail.style";
 
+const ImageWrapper = styled.div`
+  > div {
+    height: 100%;
+    padding-top: 0;
+  }
+`;
 const Toggle = styled.div`
   border: 1px solid ${colors.bosonSkyBlue};
   color: ${colors.bosonSkyBlue};
@@ -232,9 +238,9 @@ export default function OfferDetail() {
           </Toggle>
         )}
         <MainOfferGrid>
-          <div>
+          <ImageWrapper>
             <Image src={offerImg} dataTestId="offerImage" />
-          </div>
+          </ImageWrapper>
           <div>
             <SellerID seller={offer?.seller} justifyContent="flex-start">
               <OfferLabel offer={offer} />

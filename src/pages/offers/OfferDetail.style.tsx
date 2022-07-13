@@ -48,11 +48,11 @@ const OfferGrid = styled.div`
 
   grid-column-gap: 1em;
   grid-row-gap: 1rem;
-  grid-template-columns: repeat(1, 1fr);
+  grid-template-columns: repeat(1, minmax(0, 1fr));
   ${breakpoint.s} {
     grid-column-gap: 3rem;
     grid-row-gap: 3rem;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   > div {
     max-width: 100%;
@@ -65,22 +65,17 @@ const MainOfferGrid = styled.div`
 
   grid-column-gap: 1em;
   grid-row-gap: 2rem;
-  grid-template-columns: repeat(1, 100%);
+  grid-template-columns: repeat(1, minmax(0, 1fr));
   grid-template-rows: 2fr;
 
   ${breakpoint.s} {
     grid-column-gap: 3rem;
     grid-row-gap: 3rem;
-    grid-template-columns: repeat(2, 50%);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-rows: 1fr;
   }
   > div {
     max-width: 100%;
-    &:first-child {
-      width: -webkit-fill-available;
-      max-width: 50vw;
-      margin: 0 auto;
-    }
   }
 `;
 
