@@ -39,13 +39,13 @@ export default function OfferDetailCtaModal({
   onClose,
   children
 }: Props) {
-  const { isLteXS, isLteM } = useBreakpoints();
+  const { isLteS, isLteM } = useBreakpoints();
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
       style={{
-        width: isLteXS ? "100%" : isLteM ? "80%" : "70%",
+        width: isLteS ? "100%" : isLteM ? "80%" : "70%",
         padding: "0",
         borderRadius: 0,
         borderWidth: 0,

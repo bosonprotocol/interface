@@ -28,12 +28,13 @@ const Content = styled.div<{ $styles: Props["$styles"] }>`
   background-color: var(--primaryBgColor);
   border: var(--secondary);
 
-  overflow-x: auto;
   min-height: 100vh;
   max-height: 100vh;
   margin: 0;
 
+  overflow-x: auto;
   ${breakpoint.s} {
+    overflow-x: initial;
     min-height: initial;
     max-height: 90vh;
     margin: 2rem;

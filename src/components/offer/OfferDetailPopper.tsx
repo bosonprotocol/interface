@@ -27,29 +27,30 @@ const Popper = styled.div`
 
   left: 0;
   min-width: 65vw;
-  transform: translate(0%, 100%);
+  transform: translate(-5rem, 100%);
 
   ${breakpoint.s} {
     left: 50%;
     min-width: 25rem;
     transform: translate(-50%, 100%);
   }
-`;
 
-const PopperArrow = styled.div`
-  position: absolute;
-  width: 0;
-  height: 0;
-  border-left: 0.5rem solid transparent;
-  border-right: 0.5rem solid transparent;
-  border-bottom: 0.55rem solid ${colors.white};
-  top: 0;
+  &:after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 0.5rem solid transparent;
+    border-right: 0.5rem solid transparent;
+    border-bottom: 0.55rem solid ${colors.white};
+    top: 0;
 
-  left: 0.75rem;
-  transform: translate(0, -0.5rem);
-  ${breakpoint.s} {
-    left: 50%;
-    transform: translate(-50%, -0.5rem);
+    left: 0.75rem;
+    transform: translate(5rem, -0.5rem);
+    ${breakpoint.s} {
+      left: 50%;
+      transform: translate(-50%, -0.5rem);
+    }
   }
 `;
 
@@ -102,7 +103,6 @@ const OfferDetailPopper: React.FC<IOfferDetailPopper> = ({ children }) => {
         hidden={!isPopperVisible}
       >
         {children}
-        <PopperArrow />
       </Popper>
     </PopperWrapper>
   );

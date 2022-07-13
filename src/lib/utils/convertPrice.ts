@@ -24,6 +24,7 @@ export const convertPrice = async (
       return null;
     }
 
+    // TODO: change that
     fetch(
       `https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=${currency}`
     )

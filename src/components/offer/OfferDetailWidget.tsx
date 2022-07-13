@@ -269,7 +269,7 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
                 console.error("onError", args);
                 setModalData({
                   isOpen: true,
-                  title: "An error occurred when trying to commit to an item",
+                  title: "An error occurred",
                   type: "ERROR"
                 });
               }}
@@ -332,7 +332,7 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
                 )}
                 {modalData.type === "ERROR" && (
                   <Typography tag="p" style={{ margin: 0, color: colors.red }}>
-                    <b>{modalData.title}</b>
+                    <b>An error occurred when trying to commit to an item</b>
                   </Typography>
                 )}
                 <Typography
