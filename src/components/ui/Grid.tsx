@@ -26,7 +26,7 @@ const Container = styled.div<IGrid>`
   align-items: ${({ alignItems }) => alignItems || "center"};
   flex-basis: ${({ flexBasis }) => flexBasis || "auto"};
   flex-direction: ${({ flexDirection }) => flexDirection || "row"};
-  flex-frow: ${({ flexGrow }) => flexGrow || "0"};
+  flex-grow: ${({ flexGrow }) => flexGrow || "0"};
   justify-content: ${({ justifyContent }) => justifyContent || "space-between"};
 
   ${({ gap }) => (gap ? `gap:${gap};` : "")}

@@ -1,13 +1,19 @@
 import styled from "styled-components";
 
 import { Modal } from "../../components/modal/Modal";
+import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
+import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import Typography from "../ui/Typography";
 
 const ModalTitle = styled.div`
-  margin: -2rem 0rem 0 0rem;
-  padding: 1rem 2rem;
+  margin: 0;
+  padding: 1rem;
   border-bottom: 2px solid ${colors.border};
+
+  ${breakpoint.s} {
+    padding: 2rem;
+  }
   * {
     margin: 0;
   }
@@ -15,6 +21,9 @@ const ModalTitle = styled.div`
 
 const ModalContent = styled.div`
   margin: 2rem;
+  ${breakpoint.s} {
+    margin: 3rem;
+  }
 `;
 
 interface Props {
@@ -30,11 +39,13 @@ export default function OfferDetailCtaModal({
   onClose,
   children
 }: Props) {
+  const { isLteXS, isLteM } = useBreakpoints();
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
       style={{
+        width: isLteXS ? "100%" : isLteM ? "80%" : "70%",
         padding: "0",
         borderRadius: 0,
         borderWidth: 0,

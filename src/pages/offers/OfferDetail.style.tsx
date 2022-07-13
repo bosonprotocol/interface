@@ -25,8 +25,14 @@ const OfferWrapper = styled.div`
   ${breakpoint.m} {
     padding: 0 6rem;
   }
-  ${breakpoint.xl} {
+  ${breakpoint.l} {
     padding: 0 8rem;
+  }
+  ${breakpoint.xl} {
+    padding: 0 10rem;
+  }
+  > div:first-child {
+    padding-top: 1rem;
   }
   > div:not(:last-child) {
     margin-bottom: 4rem;
@@ -39,11 +45,13 @@ const OfferWrapper = styled.div`
 const OfferGrid = styled.div`
   position: relative;
   display: grid;
-  grid-column-gap: 2rem;
-  grid-row-gap: 2rem;
 
+  grid-column-gap: 1em;
+  grid-row-gap: 1rem;
   grid-template-columns: repeat(1, 1fr);
   ${breakpoint.s} {
+    grid-column-gap: 3rem;
+    grid-row-gap: 3rem;
     grid-template-columns: repeat(2, 1fr);
   }
   > div {
@@ -57,9 +65,13 @@ const StatusContainer = styled.div`
 `;
 
 const DarkerBackground = styled.div`
+  padding: 2rem 0;
   max-width: 100%;
   background-color: ${colors.lightGrey};
   position: relative;
+  > div:not(:last-child) {
+    margin-bottom: 2rem;
+  }
 
   &:before,
   &:after {

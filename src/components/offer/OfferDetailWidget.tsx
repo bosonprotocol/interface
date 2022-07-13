@@ -9,6 +9,7 @@ import { useSigner } from "wagmi";
 import portalLogo from "../../assets/portal.svg";
 import { CONFIG } from "../../lib/config";
 import { BosonRoutes } from "../../lib/routing/routes";
+import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { isOfferHot } from "../../lib/utils/getOfferLabel";
@@ -30,13 +31,35 @@ interface IOfferDetailWidget {
 
 const ModalGrid = styled.div`
   display: grid;
-  grid-column-gap: 2rem;
-  grid-row-gap: 2rem;
 
-  grid-template-columns: repeat(2, 1fr);
+  grid-column-gap: 1rem;
+  grid-row-gap: 1rem;
+  grid-template-columns: repeat(1, 1fr);
+  ${breakpoint.s} {
+    grid-column-gap: 3rem;
+    grid-row-gap: 3rem;
+    grid-template-columns: repeat(2, 1fr);
+  }
 `;
 const PortalLogoImg = styled.img`
   height: 16px;
+`;
+const ButtonWrapper = styled(Grid)`
+  gap: 1rem;
+  flex-direction: column;
+  ${breakpoint.s} {
+    flex-direction: row;
+  }
+  > * {
+    flex: 1 0 auto;
+    min-width: 100%;
+    ${breakpoint.s} {
+      min-width: initial;
+    }
+    > div {
+      justify-content: center;
+    }
+  }
 `;
 
 const Widget = styled.div`
@@ -254,7 +277,6 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
                 console.log("onPendingSignature");
               }}
               onSuccess={(args) => {
-                //TODO: remove all these callbacks if they are not used
                 console.log("onSuccess", args);
                 setModalData({
                   isOpen: true,
@@ -281,106 +303,72 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
         </div>
         <div>
           <Grid justifyContent="center">
-            <CommitAndRedeemButton tag="p" onClick={handleModal}>
+            <CommitAndRedeemButton
+              tag="p"
+              onClick={handleModal}
+              style={{ fontSize: "0.875rem" }}
+            >
               What is commit and redeem?
             </CommitAndRedeemButton>
           </Grid>
         </div>
         <Break />
         <div>
-          <OfferDetailTable align data={OFFER_DETAIL_DATA} />
+          <OfferDetailTable align noBorder data={OFFER_DETAIL_DATA} />
         </div>
       </Widget>
-      {/* TODO: cleanup */}
       <OfferDetailCtaModal onClose={handleClose} {...modalData}>
-        {modalData.type === "SUCCESS" && (
-          <ModalGrid>
-            <div>
-              <Image src={image} dataTestId="offerImage" />
-            </div>
-            <div>
-              <Widget>
-                <Grid flexDirection="column">
+        <ModalGrid>
+          <div>
+            <Image src={image} dataTestId="offerImage" />
+          </div>
+          <div>
+            <Widget>
+              <Grid flexDirection="column">
+                {modalData.type === "SUCCESS" && (
                   <Typography tag="p" style={{ margin: 0 }}>
                     <b>You now own the rNFT</b>
                   </Typography>
-                  <Typography
-                    tag="h2"
-                    style={{ margin: "1rem 0", color: colors.secondary }}
-                  >
-                    {name}
-                  </Typography>
-                </Grid>
-                <Break />
-                <div>
-                  <OfferDetailTable align data={OFFER_DETAIL_DATA} />
-                </div>
-              </Widget>
-              <div style={{ marginTop: "2rem" }}>
-                <Grid gap="1rem">
-                  <Button
-                    theme="secondary"
-                    onClick={() => {
-                      navigate({ pathname: BosonRoutes.YourAccount });
-                    }}
-                  >
-                    View my items
-                  </Button>
-                  <Button
-                    theme="primary"
-                    onClick={() => {
-                      navigate({ pathname: BosonRoutes.Explore });
-                    }}
-                  >
-                    Discover more
-                  </Button>
-                </Grid>
-              </div>
-            </div>
-          </ModalGrid>
-        )}
-        {modalData.type === "ERROR" && (
-          <ModalGrid>
-            <div>
-              <Image src={image} dataTestId="offerImage" />
-            </div>
-            <div>
-              <Widget>
-                <Grid flexDirection="column">
+                )}
+                {modalData.type === "ERROR" && (
                   <Typography tag="p" style={{ margin: 0, color: colors.red }}>
                     <b>{modalData.title}</b>
                   </Typography>
-                  <Typography
-                    tag="h2"
-                    style={{ margin: "1rem 0", color: colors.secondary }}
-                  >
-                    {name}
-                  </Typography>
-                </Grid>
-              </Widget>
-              <div style={{ marginTop: "2rem" }}>
-                <Grid gap="1rem">
-                  <Button
-                    theme="secondary"
-                    onClick={() => {
-                      navigate({ pathname: BosonRoutes.YourAccount });
-                    }}
-                  >
-                    View my items
-                  </Button>
-                  <Button
-                    theme="primary"
-                    onClick={() => {
-                      navigate({ pathname: BosonRoutes.Explore });
-                    }}
-                  >
-                    Discover more
-                  </Button>
-                </Grid>
+                )}
+                <Typography
+                  tag="h2"
+                  style={{ margin: "1rem 0", color: colors.secondary }}
+                >
+                  {name}
+                </Typography>
+              </Grid>
+              <Break />
+              <div>
+                <OfferDetailTable align noBorder data={OFFER_DETAIL_DATA} />
               </div>
+            </Widget>
+            <div style={{ marginTop: "2rem" }}>
+              <ButtonWrapper>
+                <Button
+                  theme="secondary"
+                  onClick={() => {
+                    navigate({ pathname: BosonRoutes.YourAccount });
+                  }}
+                >
+                  View my items
+                </Button>
+                <Button
+                  theme="primary"
+                  onClick={() => {
+                    navigate({ pathname: BosonRoutes.Explore });
+                  }}
+                >
+                  Discover more
+                </Button>
+              </ButtonWrapper>
             </div>
-          </ModalGrid>
-        )}
+          </div>
+        </ModalGrid>
       </OfferDetailCtaModal>
     </>
   );

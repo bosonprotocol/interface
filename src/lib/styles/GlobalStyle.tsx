@@ -1,5 +1,6 @@
 import { createGlobalStyle } from "styled-components";
 
+import { scrollStyles } from "../../components/ui/styles";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 
@@ -61,9 +62,12 @@ const GlobalStyle = createGlobalStyle<{
 
     font-family: "Plus Jakarta Sans";
     font-style: normal;
-  }
-  html, body {
+
+    ${scrollStyles}
+
+    overflow-y: auto;
     overflow-x: hidden;
+    ${scrollStyles}
   }
 
   a,
@@ -119,30 +123,6 @@ const GlobalStyle = createGlobalStyle<{
   }
   img, svg, input {
     user-select: none;
-  }
-
-
-  html,
-  body {
-    ::-webkit-scrollbar-track {
-      -webkit-box-shadow: inset 0 0 var(--scrollbarWidth) var(--scrollbarBg);
-      box-shadow: inset 0 0 var(--scrollbarWidth) var(--scrollbarBg);
-      border-radius: 0;
-      background-color: var(--scrollbarBg);
-    }
-
-    ::-webkit-scrollbar {
-      width: var(--scrollbarWidth);
-      height: 0;
-      background-color: var(--scrollbarBg);
-    }
-
-    ::-webkit-scrollbar-thumb {
-      border-radius: 0;
-      -webkit-box-shadow: inset 0 0 var(--scrollbarWidth) var(--scrollbarThumb);
-      box-shadow: inset 0 0 var(--scrollbarWidth) var(--scrollbarThumb);
-      background-color: var(--scrollbarThumb);
-    }
   }
 `;
 export default GlobalStyle;

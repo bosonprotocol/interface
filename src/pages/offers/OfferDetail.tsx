@@ -82,6 +82,8 @@ const InfoIcon = styled(IoIosInformationCircleOutline).attrs({
 
 export default function OfferDetail() {
   const { [UrlParameters.offerId]: offerId } = useParams();
+  const [currentOfferId, setCurrentOfferId] = useState<any>(offerId);
+
   const widgetRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
   const fromAccountPage =
@@ -228,7 +230,7 @@ export default function OfferDetail() {
             <Typography
               tag="h1"
               data-testid="name"
-              style={{ fontSize: "2rem" }}
+              style={{ fontSize: "2rem", marginBottom: "2rem" }}
             >
               {name}
             </Typography>

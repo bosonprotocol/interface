@@ -4,18 +4,7 @@ import { colors } from "../../lib/styles/colors";
 import Grid from "../ui/Grid";
 import OfferDetailPopper from "./OfferDetailPopper";
 
-interface Props {
-  name: React.ReactNode | string;
-  info?: React.ReactNode | string;
-  value: React.ReactNode | string;
-}
-
-interface IOfferDetailTable {
-  align?: boolean;
-  data: Array<Props>;
-}
-
-const Table = styled.table`
+const Table = styled.table<{ noBorder?: boolean }>`
   width: 100%;
   p {
     margin: 0;
@@ -43,17 +32,47 @@ const Table = styled.table`
         font-weight: 400;
       }
     }
-    &:not(:last-child) {
-      td {
-        border-bottom: 1px solid ${colors.border};
+    ${({ noBorder }) =>
+      noBorder
+        ? `
+        td {
+          > div {
+              font-weight: 600;
+              > p, > p > small {
+                font-weight: 600;
+              }
+          }
+        }
+        }`
+        : `
+      &:not(:last-child) {
+        td {
+          border-bottom: 1px solid ${colors.border};
       }
-    }
+
+    `}
   }
 `;
 
-const OfferDetailTable: React.FC<IOfferDetailTable> = ({ align, data }) => {
+interface Props {
+  name: React.ReactNode | string;
+  info?: React.ReactNode | string;
+  value: React.ReactNode | string;
+}
+
+interface IOfferDetailTable {
+  align?: boolean;
+  data: Array<Props>;
+  noBorder?: boolean;
+}
+
+const OfferDetailTable: React.FC<IOfferDetailTable> = ({
+  align,
+  data,
+  noBorder = false
+}) => {
   return (
-    <Table>
+    <Table noBorder={noBorder}>
       <tbody>
         {data?.map((d: Props, index: number) => (
           <tr key={`tr_${index}`}>

@@ -3,6 +3,10 @@ import { createPortal } from "react-dom";
 import { IoIosClose } from "react-icons/io";
 import styled from "styled-components";
 
+import { scrollStyles } from "../../components/ui/styles";
+import { breakpoint } from "../../lib/styles/breakpoint";
+import { colors } from "../../lib/styles/colors";
+
 const Root = styled.div`
   position: fixed;
   top: 0;
@@ -12,11 +16,11 @@ const Root = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #0004;
+  background-color: #00000080;
 `;
 // TODO: refactor colors to use css vars or theme
 const Content = styled.div<{ $styles: Props["$styles"] }>`
-  margin: 24px;
+  position: relative;
   color: var(--secondary);
   width: ${(props) => props.$styles?.width || "60%"};
   border-radius: 8px;
@@ -24,28 +28,18 @@ const Content = styled.div<{ $styles: Props["$styles"] }>`
   background-color: var(--primaryBgColor);
   border: var(--secondary);
 
-  max-height: 90vh;
   overflow-x: auto;
+  min-height: 100vh;
+  max-height: 100vh;
+  margin: 0;
 
-  ::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 var(--scrollbarWidth) var(--scrollbarBg);
-    box-shadow: inset 0 0 var(--scrollbarWidth) var(--scrollbarBg);
-    border-radius: 0;
-    background-color: var(--scrollbarBg);
+  ${breakpoint.s} {
+    min-height: initial;
+    max-height: 90vh;
+    margin: 2rem;
   }
 
-  ::-webkit-scrollbar {
-    width: var(--scrollbarWidth);
-    height: 0;
-    background-color: var(--scrollbarBg);
-  }
-
-  ::-webkit-scrollbar-thumb {
-    border-radius: 0;
-    -webkit-box-shadow: inset 0 0 var(--scrollbarWidth) var(--scrollbarThumb);
-    box-shadow: inset 0 0 var(--scrollbarWidth) var(--scrollbarThumb);
-    background-color: var(--scrollbarThumb);
-  }
+  ${scrollStyles}
 `;
 
 const CloseButtonContainer = styled.div`
@@ -55,11 +49,20 @@ const CloseButtonContainer = styled.div`
 
 const CloseButton = styled(IoIosClose)`
   all: unset;
-  stroke: var(--secondary);
-  fill: var(--secondary);
   font-size: 2rem;
-  :hover {
+  position: absolute;
+  right: 0;
+  fill: ${colors.black};
+  padding: 1.25rem;
+  width: 2rem;
+
+  ${breakpoint.s} {
+    padding: 1.75rem;
+    width: 3rem;
+  }
+  &:hover {
     cursor: pointer;
+    fill: var(--secondary);
   }
 `;
 
@@ -86,6 +89,7 @@ export function Modal({
   const onCloseModal = () => {
     onClose?.();
   };
+
   return createPortal(
     <Root onClick={onCloseModal}>
       <Content
