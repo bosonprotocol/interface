@@ -39,7 +39,7 @@ export async function assertOffer(
   const svg = profileImg.locator("svg");
   expect(svg).toBeDefined();
 
-  expect(offer).toContainText("Redeemable until 30 days after commit");
+  expect(offer).toContainText("Redeemable until");
 
   if (options.withBanner) {
     const banner = offer.locator("[data-testid=offer-banner]");

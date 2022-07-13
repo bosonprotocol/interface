@@ -14,9 +14,12 @@ export function sortOffersBy(by: { property: "name"; asc: boolean }) {
       );
     }
     if (
-      ["validUntilDate", "quantityAvailable", "validFromDate"].includes(
-        by.property
-      )
+      [
+        "validUntilDate",
+        "quantityAvailable",
+        "validFromDate",
+        "createdAt"
+      ].includes(by.property)
     ) {
       return (
         Number((isASC ? o1 : o2)?.[by.property] || "") -
