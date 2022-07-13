@@ -25,7 +25,6 @@ import Image from "../ui/Image";
 import Typography from "../ui/Typography";
 import OfferDetailCtaModal from "./OfferDetailCtaModal";
 import OfferDetailTable from "./OfferDetailTable";
-import OfferRedeemable from "./OfferRedeemable";
 
 interface IOfferDetailWidget {
   offer: Offer;
@@ -64,6 +63,14 @@ const ImageWrapper = styled.div`
   margin: 0 auto;
   display: block;
 
+  > div {
+    all: unset;
+  }
+  img {
+    all: unset;
+    width: 100%;
+  }
+
   ${breakpoint.xs} {
     width: 60%;
     margin: 0 auto;
@@ -100,6 +107,7 @@ const PortalLogoImg = styled.img`
 `;
 const ButtonWrapper = styled(Grid)`
   gap: 1rem;
+  margin-top: 2.5rem;
   flex-direction: column;
   ${breakpoint.s} {
     flex-direction: row;
@@ -229,7 +237,8 @@ const getOfferDetailData = (offer: Offer, priceInDollars: IPrice | null) => {
             <b>Redeemable</b>
           </Typography>
           <Typography tag="p" style={{ margin: "1rem 0" }}>
-            <OfferRedeemable offer={offer} />
+            Redeemable until {redeemableDays} {getDayOrDays(redeemableDays)}{" "}
+            after committing.
           </Typography>
           <Typography tag="p">
             If you don’t redeem your NFT during the redemption period, it will
@@ -455,10 +464,12 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
       <OfferDetailCtaModal onClose={handleClose} {...modalData}>
         <ModalGrid>
           <ImageWrapper>
-            <OpenSeaButton>
-              View on OpenSea
-              <HiOutlineExternalLink size={18} />
-            </OpenSeaButton>
+            {modalData.type === "SUCCESS" && (
+              <OpenSeaButton>
+                View on OpenSea
+                <HiOutlineExternalLink size={18} />
+              </OpenSeaButton>
+            )}
             <Image src={image} dataTestId="offerImage" />
           </ImageWrapper>
           <div>
@@ -486,28 +497,25 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
                 <OfferDetailTable align noBorder data={OFFER_DETAIL_DATA} />
               </div>
             </Widget>
+            <ButtonWrapper>
+              <Button
+                theme="secondary"
+                onClick={() => {
+                  navigate({ pathname: BosonRoutes.YourAccount });
+                }}
+              >
+                View my items
+              </Button>
+              <Button
+                theme="primary"
+                onClick={() => {
+                  navigate({ pathname: BosonRoutes.Explore });
+                }}
+              >
+                Discover more
+              </Button>
+            </ButtonWrapper>
           </div>
-        </ModalGrid>
-        <ModalGrid>
-          <div />
-          <ButtonWrapper>
-            <Button
-              theme="secondary"
-              onClick={() => {
-                navigate({ pathname: BosonRoutes.YourAccount });
-              }}
-            >
-              View my items
-            </Button>
-            <Button
-              theme="primary"
-              onClick={() => {
-                navigate({ pathname: BosonRoutes.Explore });
-              }}
-            >
-              Discover more
-            </Button>
-          </ButtonWrapper>
         </ModalGrid>
       </OfferDetailCtaModal>
     </>

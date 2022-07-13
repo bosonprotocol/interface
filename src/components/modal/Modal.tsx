@@ -44,7 +44,6 @@ const Content = styled.div`
   ${breakpoint.s} {
     overflow-x: initial;
     min-height: initial;
-    max-height: 90vh;
   }
 
   ${scrollStyles}

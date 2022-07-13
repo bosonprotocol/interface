@@ -7,9 +7,11 @@ import Typography from "../ui/Typography";
 
 const ModalTitle = styled.div`
   margin: 0;
-  padding: 1rem;
   border-bottom: 2px solid ${colors.border};
-
+  padding: 2rem 2.5rem;
+  ${breakpoint.s} {
+    padding: 2 3rem;
+  }
   * {
     margin: 0;
   }
