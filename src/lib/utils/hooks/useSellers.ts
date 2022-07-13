@@ -6,6 +6,7 @@ import { useCurationLists } from "./useCurationLists";
 
 interface Props {
   admin?: string;
+  includeFunds?: boolean;
 }
 
 export function useSellers(props: Props = {}) {
@@ -20,7 +21,8 @@ export function useSellers(props: Props = {}) {
           : undefined
       },
       sellersOrderBy: subgraph.Seller_OrderBy.SellerId,
-      sellersOrderDirection: subgraph.OrderDirection.Asc
+      sellersOrderDirection: subgraph.OrderDirection.Asc,
+      includeFunds: props.includeFunds
     });
   });
 }

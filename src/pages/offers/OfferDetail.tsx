@@ -21,6 +21,7 @@ import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import getOfferImage from "../../lib/utils/hooks/offers/getOfferImage";
 import { useOffer } from "../../lib/utils/hooks/offers/useOffer";
+import { useSellers } from "../../lib/utils/hooks/useSellers";
 import { isAccountSeller } from "../../lib/utils/isAccountSeller";
 import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
 import CreatedExchangeModal from "./CreatedExchangeModal";
@@ -82,7 +83,6 @@ const InfoIcon = styled(IoIosInformationCircleOutline).attrs({
 
 export default function OfferDetail() {
   const { [UrlParameters.offerId]: offerId } = useParams();
-  const [currentOfferId, setCurrentOfferId] = useState<any>(offerId);
 
   const widgetRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
@@ -116,6 +116,17 @@ export default function OfferDetail() {
     },
     { enabled: !!offerId }
   );
+
+  const { data: sellers } = useSellers({
+    admin: offer?.seller.admin,
+    includeFunds: true
+  });
+  const sellerAvailableDeposit = sellers?.[0].funds?.find(
+    (fund) => fund.token.address === offer?.exchangeToken.address
+  )?.availableAmount;
+  const offerRequiredDeposit = offer?.sellerDeposit;
+  const hasSellerEnoughFunds =
+    Number(sellerAvailableDeposit) >= Number(offerRequiredDeposit);
 
   useEffect(() => {
     if (!address) {
@@ -244,6 +255,7 @@ export default function OfferDetail() {
                     handleModal={handleModal}
                     name={name}
                     image={offerImg}
+                    hasSellerEnoughFunds={hasSellerEnoughFunds}
                   />
                 )}
               </>
@@ -253,6 +265,7 @@ export default function OfferDetail() {
                 handleModal={handleModal}
                 name={name}
                 image={offerImg}
+                hasSellerEnoughFunds={hasSellerEnoughFunds}
               />
             )}
           </div>
