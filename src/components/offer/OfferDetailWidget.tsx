@@ -3,6 +3,7 @@ import { CommitButton } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { useMemo, useState } from "react";
 import { AiOutlineCheck } from "react-icons/ai";
+import { HiOutlineExternalLink } from "react-icons/hi";
 import styled from "styled-components";
 import { useSigner } from "wagmi";
 
@@ -11,6 +12,7 @@ import { CONFIG } from "../../lib/config";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
+import { zIndex } from "../../lib/styles/zIndex";
 import { Offer } from "../../lib/types/offer";
 import { isOfferHot } from "../../lib/utils/getOfferLabel";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
@@ -30,7 +32,31 @@ interface IOfferDetailWidget {
   hasSellerEnoughFunds: boolean;
 }
 
+const CtaButtonsWrapper = styled.div`
+  button {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    z-index: 1;
+    letter-spacing: 0.5px;
+    font-family: "Plus Jakarta Sans";
+    font-style: normal;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 24px;
+    white-space: pre;
+    span > span {
+      font-size: 65%;
+      font-weight: 400;
+      margin: 0 0.5rem;
+      opacity: 0.75;
+    }
+  }
+`;
+
 const ImageWrapper = styled.div`
+  position: relative;
   > div {
     height: 100%;
     padding-top: 0;
@@ -101,6 +127,30 @@ const Widget = styled.div`
   }
 `;
 
+const OpenSeaButton = styled.button`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: ${zIndex.OfferStatus};
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 2rem;
+  border: 2px solid ${colors.border};
+  background: ${colors.white};
+  color: ${colors.blue};
+
+  font-family: "Plus Jakarta Sans";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 150%;
+  &:hover {
+    color: ${colors.black};
+  }
+`;
 const CommitAndRedeemButton = styled(Typography)`
   font-weight: 600;
   color: ${colors.darkGrey};
@@ -273,15 +323,12 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
             )}
           </Grid>
         </div>
-        <div>
+        <CtaButtonsWrapper>
           <Grid flexGrow="1" gap="1rem">
             <CommitButton
               disabled={!hasSellerEnoughFunds || isExpiredOffer}
               offerId={offer.id}
               chainId={CONFIG.chainId}
-              // TODO: handle loading on react-kit
-              // loading={isLoading}
-              onPendingTransaction={() => null}
               onError={(args) => {
                 console.error("onError", args);
                 setModalData({
@@ -316,7 +363,7 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
               Redeem
             </Button>
           </Grid>
-        </div>
+        </CtaButtonsWrapper>
         <div>
           <Grid justifyContent="center">
             <CommitAndRedeemButton
@@ -336,6 +383,10 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
       <OfferDetailCtaModal onClose={handleClose} {...modalData}>
         <ModalGrid>
           <ImageWrapper>
+            <OpenSeaButton>
+              View on OpenSea
+              <HiOutlineExternalLink size={18} />
+            </OpenSeaButton>
             <Image src={image} dataTestId="offerImage" />
           </ImageWrapper>
           <div>
@@ -348,7 +399,7 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
                 )}
                 {modalData.type === "ERROR" && (
                   <Typography tag="p" style={{ margin: 0, color: colors.red }}>
-                    <b>An error occurred when trying to commit to an item</b>
+                    <b>An error occurred when trying to commit to this item</b>
                   </Typography>
                 )}
                 <Typography

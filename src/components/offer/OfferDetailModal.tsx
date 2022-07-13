@@ -150,7 +150,18 @@ const DarkBackground = styled.div`
   overflow: hidden;
   margin: 2rem -2rem -2rem -2rem;
   padding: 2rem;
-  background: ${colors.black};
+  background-color: ${colors.black};
+  background-image: url(${frameImage});
+
+  background-repeat: no-repeat;
+  background-position: bottom right;
+  padding-right: 2rem;
+  padding-bottom: 20rem;
+
+  ${breakpoint.s} {
+    padding-right: 15rem;
+    padding-bottom: 12rem;
+  }
   color: ${colors.white};
 `;
 
@@ -238,14 +249,6 @@ export default function OfferDetailModal({ isOpen, onClose }: Props) {
                   <BsArrowRightShort size={32} />
                 </>
               </LearnMore>
-            </div>
-            <div
-              style={{
-                marginRight: isLteXS ? "-13rem" : "-3rem",
-                marginBottom: "-3rem"
-              }}
-            >
-              <img src={frameImage} />
             </div>
           </Grid>
         </DarkBackground>

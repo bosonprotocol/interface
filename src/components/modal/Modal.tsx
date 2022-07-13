@@ -17,14 +17,22 @@ const Root = styled.div`
   align-items: center;
   justify-content: center;
   background-color: #00000080;
+  padding: 0;
+  ${breakpoint.s} {
+    padding: 4rem;
+  }
+  ${breakpoint.m} {
+    padding: 8rem;
+  }
+  ${breakpoint.l} {
+    padding: 10rem;
+  }
 `;
-// TODO: refactor colors to use css vars or theme
-const Content = styled.div<{ $styles: Props["$styles"] }>`
+
+const Content = styled.div`
   position: relative;
   color: var(--secondary);
-  width: ${(props) => props.$styles?.width || "60%"};
-  border-radius: 8px;
-  padding: 16px;
+  width: 100%;
   background-color: var(--primaryBgColor);
   border: var(--secondary);
 
@@ -37,7 +45,6 @@ const Content = styled.div<{ $styles: Props["$styles"] }>`
     overflow-x: initial;
     min-height: initial;
     max-height: 90vh;
-    margin: 2rem;
   }
 
   ${scrollStyles}
@@ -57,10 +64,6 @@ const CloseButton = styled(IoIosClose)`
   padding: 1.25rem;
   width: 2rem;
 
-  ${breakpoint.s} {
-    padding: 1.75rem;
-    width: 3rem;
-  }
   &:hover {
     cursor: pointer;
     fill: var(--secondary);
@@ -77,13 +80,7 @@ interface Props {
   onClose?: () => void;
 }
 
-export function Modal({
-  children,
-  isOpen,
-  onClose,
-  style = {},
-  $styles
-}: Props) {
+export function Modal({ children, isOpen, onClose, style = {} }: Props) {
   if (!isOpen) {
     return null;
   }
@@ -94,7 +91,6 @@ export function Modal({
   return createPortal(
     <Root onClick={onCloseModal}>
       <Content
-        $styles={$styles}
         onClick={(e) => {
           e.stopPropagation();
         }}
