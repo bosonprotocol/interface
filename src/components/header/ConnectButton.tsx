@@ -81,6 +81,7 @@ export default function ConnectButton() {
                     onClick={openAccountModal}
                     theme="outline"
                     size={isLteXS ? "small" : "regular"}
+                    style={{ whiteSpace: "pre" }}
                   >
                     {account.ensAvatar ? (
                       <ENSAvatar src={account.ensAvatar} />

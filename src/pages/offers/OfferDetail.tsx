@@ -1,17 +1,29 @@
 import { manageOffer } from "@bosonprotocol/widgets-sdk";
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
-import { IoIosInformationCircleOutline } from "react-icons/io";
 import { useLocation, useParams } from "react-router-dom";
-import styled from "styled-components";
 import { useAccount } from "wagmi";
 
-import OfferDetailChart from "../../components/offer/OfferDetailChart";
-import OfferDetailModal from "../../components/offer/OfferDetailModal";
-import OfferDetailShare from "../../components/offer/OfferDetailShare";
-import OfferDetailSlider from "../../components/offer/OfferDetailSlider";
-import OfferDetailTable from "../../components/offer/OfferDetailTable";
-import OfferDetailWidget from "../../components/offer/OfferDetailWidget";
-import OfferLabel from "../../components/offer/OfferLabel";
+import {
+  DarkerBackground,
+  DetailGrid,
+  DetailWrapper,
+  ImageWrapper,
+  InfoIcon,
+  InfoIconTextWrapper,
+  LightBackground,
+  MainDetailGrid,
+  Tab,
+  Tabs,
+  Toggle,
+  WidgetContainer
+} from "../../components/detail/Detail.style";
+import DetailChart from "../../components/detail/DetailChart";
+import DetailLabel from "../../components/detail/DetailLabel";
+import DetailModal from "../../components/detail/DetailModal";
+import DetailShare from "../../components/detail/DetailShare";
+import DetailSlider from "../../components/detail/DetailSlider";
+import DetailTable from "../../components/detail/DetailTable";
+import DetailWidget from "../../components/detail/DetailWidget";
 import Image from "../../components/ui/Image";
 import SellerID from "../../components/ui/SellerID";
 import Typography from "../../components/ui/Typography";
@@ -26,68 +38,6 @@ import { isAccountSeller } from "../../lib/utils/isAccountSeller";
 import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
 import CreatedExchangeModal from "./CreatedExchangeModal";
 import { MOCK } from "./mock/mock";
-import {
-  DarkerBackground,
-  LightBackground,
-  MainOfferGrid,
-  OfferGrid,
-  OfferWrapper,
-  WidgetContainer
-} from "./OfferDetail.style";
-
-const ImageWrapper = styled.div`
-  position: relative;
-
-  img {
-    width: 100%;
-  }
-`;
-const Toggle = styled.div`
-  border: 1px solid ${colors.bosonSkyBlue};
-  color: ${colors.bosonSkyBlue};
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 0.75rem;
-  gap: 0.25rem;
-  margin-bottom: 2rem;
-`;
-
-const InfoIconTextWrapper = styled.div`
-  display: flex;
-  justify-content: start;
-  align-items: center;
-`;
-const Tabs = styled.div`
-  display: flex;
-  flex-direction: row;
-  max-width: 30%;
-`;
-
-const Tab = styled("button")<{ $isSelected: boolean }>`
-  all: unset;
-  cursor: pointer;
-  background-color: ${(props) =>
-    props.$isSelected ? colors.blue : colors.lightGrey};
-  padding: 0.5rem;
-  font-family: "Plus Jakarta Sans";
-  font-style: normal;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 24px;
-  color: ${(props) => (props.$isSelected ? colors.white : colors.black)};
-  width: 200px;
-  max-width: 100%;
-  text-align: center;
-`;
-const InfoIcon = styled(IoIosInformationCircleOutline).attrs({
-  fill: colors.bosonSkyBlue
-})`
-  position: relative;
-  right: 2px;
-  font-size: 27px;
-`;
 
 export default function OfferDetail() {
   const { [UrlParameters.offerId]: offerId } = useParams();
@@ -214,7 +164,7 @@ export default function OfferDetail() {
   const description = offer.metadata?.description || "";
 
   return (
-    <OfferWrapper>
+    <DetailWrapper>
       <LightBackground>
         {isSeller && (
           <Toggle>
@@ -238,13 +188,13 @@ export default function OfferDetail() {
             </Tabs>
           </Toggle>
         )}
-        <MainOfferGrid>
+        <MainDetailGrid>
           <ImageWrapper>
             <Image src={offerImg} dataTestId="offerImage" />
           </ImageWrapper>
           <div>
             <SellerID seller={offer?.seller} justifyContent="flex-start">
-              <OfferLabel offer={offer} />
+              <DetailLabel offer={offer} />
             </SellerID>
             <Typography
               tag="h1"
@@ -258,7 +208,7 @@ export default function OfferDetail() {
                 {isTabSellerSelected ? (
                   <WidgetContainer ref={widgetRef}></WidgetContainer>
                 ) : (
-                  <OfferDetailWidget
+                  <DetailWidget
                     offer={offer}
                     handleModal={handleModal}
                     name={name}
@@ -268,7 +218,7 @@ export default function OfferDetail() {
                 )}
               </>
             ) : (
-              <OfferDetailWidget
+              <DetailWidget
                 offer={offer}
                 handleModal={handleModal}
                 name={name}
@@ -277,11 +227,11 @@ export default function OfferDetail() {
               />
             )}
           </div>
-          <OfferDetailShare />
-        </MainOfferGrid>
+          <DetailShare />
+        </MainDetailGrid>
       </LightBackground>
       <DarkerBackground>
-        <OfferGrid>
+        <DetailGrid>
           <div>
             <Typography tag="h3">Product data</Typography>
             <Typography
@@ -291,7 +241,7 @@ export default function OfferDetail() {
             >
               {description || MOCK.description}
             </Typography>
-            <OfferDetailTable data={MOCK.table} />
+            <DetailTable data={MOCK.table} />
           </div>
           <div>
             <Typography tag="h3">About the artist</Typography>
@@ -299,20 +249,20 @@ export default function OfferDetail() {
               {MOCK.aboutArtist}
             </Typography>
           </div>
-        </OfferGrid>
-        <OfferDetailSlider images={MOCK.images} />
-        <OfferGrid>
-          <OfferDetailChart offer={offer} />
+        </DetailGrid>
+        <DetailSlider images={MOCK.images} />
+        <DetailGrid>
+          <DetailChart offer={offer} title="Inventory graph" />
           <div>
             <Typography tag="h3">Shipping information</Typography>
             <Typography tag="p" style={{ color: colors.darkGrey }}>
               {MOCK.shipping}
             </Typography>
-            <OfferDetailTable data={MOCK.shippingTable} />
+            <DetailTable data={MOCK.shippingTable} />
           </div>
-        </OfferGrid>
+        </DetailGrid>
       </DarkerBackground>
-      <OfferDetailModal
+      <DetailModal
         isOpen={isModalOpen}
         onClose={() => {
           setIsModalOpen(false);
@@ -323,6 +273,6 @@ export default function OfferDetail() {
         onClose={() => toggleCreatedExchangeModal()}
         exchangeId={createdExchangeId}
       />
-    </OfferWrapper>
+    </DetailWrapper>
   );
 }
