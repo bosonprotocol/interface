@@ -4,8 +4,8 @@ import { useQuery } from "react-query";
 import { Offer } from "../../types/offer";
 import { fetchSubgraph } from "../core-components/subgraph";
 import { checkOfferMetadata } from "../validators";
-import getOfferImage from "./offers/getOfferImage";
 import { offerGraphQl } from "./offers/graphql";
+import { getOfferImage } from "./offers/placeholders";
 
 interface Props {
   disputed: boolean | null;

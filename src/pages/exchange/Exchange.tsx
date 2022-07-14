@@ -16,7 +16,7 @@ import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
-import getOfferImage from "../../lib/utils/hooks/offers/getOfferImage";
+import { getOfferImage } from "../../lib/utils/hooks/offers/placeholders";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { isAccountSeller } from "../../lib/utils/isAccountSeller";
@@ -321,7 +321,7 @@ export default function Exchange() {
                 }
               >
                 <AccountImage size={30} address={sellerAddress} />
-                <div data-testid="seller-id">ID: {sellerId}</div>
+                <div data-testid="seller-info">ID: {sellerId}</div>
               </AddressContainer>
             </Box>
           </Info>

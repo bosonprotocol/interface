@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
@@ -62,14 +63,16 @@ interface Props {
 
 interface IOfferDetailTable {
   align?: boolean;
-  data: Array<Props>;
+  data: Readonly<Array<Props>>;
   noBorder?: boolean;
+  nameWrapper?: keyof JSX.IntrinsicElements;
 }
 
 const OfferDetailTable: React.FC<IOfferDetailTable> = ({
   align,
   data,
-  noBorder = false
+  noBorder = false,
+  nameWrapper: NameWrapper = Fragment
 }) => {
   return (
     <Table noBorder={noBorder}>
@@ -78,7 +81,7 @@ const OfferDetailTable: React.FC<IOfferDetailTable> = ({
           <tr key={`tr_${index}`}>
             <td>
               <Grid justifyContent="flex-start">
-                {d.name}
+                <NameWrapper>{d.name}</NameWrapper>
                 {d.info && <OfferDetailPopper>{d.info}</OfferDetailPopper>}
               </Grid>
             </td>

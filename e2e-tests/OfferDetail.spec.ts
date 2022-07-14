@@ -21,7 +21,7 @@ const assertOfferDetail = async (expectedOffer: Offer, page: Page) => {
     expectedOffer.metadata?.description || "Unexpected description"
   );
 
-  const sellerId = page.locator("[data-testid=seller-id]");
+  const sellerId = page.locator("[data-testid=seller-info]");
   const expectedSellerId =
     "Seller ID: " + expectedOffer.seller?.id || "Unexpected id";
   await expect(sellerId).toHaveText(expectedSellerId);

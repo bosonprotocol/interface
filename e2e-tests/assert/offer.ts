@@ -17,7 +17,7 @@ export async function assertOffer(
     expectedOffer.metadata?.name || "expected name"
   );
 
-  const sellerId = offer.locator("[data-testid=seller-id]");
+  const sellerId = offer.locator("[data-testid=seller-info]");
   const expectedSellerId =
     "Seller ID: " + expectedOffer.seller?.id || "Unexpected id";
   expect(sellerId).toHaveText(expectedSellerId);

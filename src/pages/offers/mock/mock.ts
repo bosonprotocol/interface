@@ -44,5 +44,5 @@ export const MOCK = {
       name: "South America",
       value: "No delivery"
     }
-  ]
-};
+  ] as const
+} as const;
