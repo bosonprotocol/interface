@@ -1,5 +1,5 @@
 import { Provider } from "@bosonprotocol/ethers-sdk";
-import { CommitButton } from "@bosonprotocol/react-kit";
+import { CommitButton, RedeemButton } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { useMemo, useState } from "react";
 import { AiOutlineCheck } from "react-icons/ai";
@@ -397,7 +397,13 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
           </Grid>
         </div>
         <CtaButtonsWrapper>
-          <Grid flexGrow="1" gap="1rem">
+          <Grid
+            flex="1 1 0"
+            rowGap="1rem"
+            columnGap="0.5rem"
+            justifyContent="space-between"
+            flexWrap="wrap"
+          >
             <CommitButton
               disabled={
                 !hasSellerEnoughFunds ||
@@ -420,8 +426,8 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
                 console.log("onPendingSignature");
                 setIsLoading(true);
               }}
-              onSuccess={(args) => {
-                console.log("onSuccess", args);
+              onSuccess={(receipt, { exchangeId }) => {
+                console.log("onSuccess", receipt, { exchangeId });
                 setIsLoading(false);
                 setModalData({
                   isOpen: true,
@@ -432,17 +438,12 @@ const OfferDetailWidget: React.FC<IOfferDetailWidget> = ({
               extraInfo="Step 1"
               web3Provider={signer?.provider as Provider}
             />
-            <Button
-              theme="outline"
-              step={2}
+            <RedeemButton
+              exchangeId={""}
+              chainId={CONFIG.chainId}
               disabled
-              style={{
-                padding: "0.975rem 2rem",
-                fontSize: "1rem"
-              }}
-            >
-              Redeem
-            </Button>
+              extraInfo="Step 2"
+            />
           </Grid>
         </CtaButtonsWrapper>
         <div>

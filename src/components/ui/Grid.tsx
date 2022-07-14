@@ -15,9 +15,12 @@ export interface IGrid {
   flexDirection?: FlexDirection;
   justifyContent?: JustifyContent;
   flexGrow?: string;
+  flexWrap?: string;
   gap?: string;
   flex?: string;
   padding?: string;
+  rowGap?: string;
+  columnGap?: string;
 }
 
 const Container = styled.div<IGrid>`
@@ -29,6 +32,9 @@ const Container = styled.div<IGrid>`
   flex-grow: ${({ flexGrow }) => flexGrow || "0"};
   justify-content: ${({ justifyContent }) => justifyContent || "space-between"};
 
+  ${({ flexWrap }) => (flexWrap ? `flex-wrap:${flexWrap};` : "")}
+  ${({ rowGap }) => (rowGap ? `row-gap:${rowGap};` : "")}
+  ${({ columnGap }) => (columnGap ? `column-gap:${columnGap};` : "")}
   ${({ gap }) => (gap ? `gap:${gap};` : "")}
   ${({ flex }) => (flex ? `> * { flex: ${flex}; }` : "")}
   ${({ padding }) => (padding ? `padding:${padding};` : "")}
