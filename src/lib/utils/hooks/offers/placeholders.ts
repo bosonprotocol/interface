@@ -175,7 +175,7 @@ const offerNameToProductData: Record<typeof keys[number], ProductData> = {
   "boson t-shirt": [{ name: "Material", value: "100% Cotton" }],
   "boson neon sign": [
     { name: "Materials", value: "Plexiglass, Silicone, LED, Plywood" },
-    { name: "Dimensions", value: "30 cm x 20 cm" }
+    { name: "Dimensions", value: "36 cm x 26 cm x 1.5 cm" }
   ],
   "boson sweatshirt": [
     { name: "Primary material", value: "85% Cotton" },
