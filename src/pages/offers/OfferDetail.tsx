@@ -11,7 +11,6 @@ import OfferDetailShare from "../../components/offer/OfferDetailShare";
 import OfferDetailSlider from "../../components/offer/OfferDetailSlider";
 import OfferDetailTable from "../../components/offer/OfferDetailTable";
 import OfferDetailWidget from "../../components/offer/OfferDetailWidget";
-import OfferLabel from "../../components/offer/OfferLabel";
 import Image from "../../components/ui/Image";
 import SellerID from "../../components/ui/SellerID";
 import Typography from "../../components/ui/Typography";
@@ -19,7 +18,14 @@ import { CONFIG } from "../../lib/config";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
-import getOfferImage from "../../lib/utils/hooks/offers/getOfferImage";
+import {
+  getOfferArtistDescription,
+  getOfferDescription,
+  getOfferImage,
+  getOfferImageList,
+  getOfferProductData,
+  getOfferShippingInformation
+} from "../../lib/utils/hooks/offers/placeholders";
 import { useOffer } from "../../lib/utils/hooks/offers/useOffer";
 import { useSellers } from "../../lib/utils/hooks/useSellers";
 import { isAccountSeller } from "../../lib/utils/isAccountSeller";
@@ -211,8 +217,12 @@ export default function OfferDetail() {
 
   const name = offer.metadata?.name || "Untitled";
   const offerImg = getOfferImage(offer.id, name);
+  const shippingInfo = getOfferShippingInformation(name);
   const description = offer.metadata?.description || "";
-
+  const mockedDescription = getOfferDescription(name);
+  const productData = getOfferProductData(name);
+  const artistDescription = getOfferArtistDescription(name);
+  const images = getOfferImageList(name);
   return (
     <OfferWrapper>
       <LightBackground>
@@ -243,9 +253,11 @@ export default function OfferDetail() {
             <Image src={offerImg} dataTestId="offerImage" />
           </ImageWrapper>
           <div>
-            <SellerID seller={offer?.seller} justifyContent="flex-start">
-              <OfferLabel offer={offer} />
-            </SellerID>
+            <SellerID
+              seller={offer?.seller}
+              offerName={name}
+              justifyContent="flex-start"
+            ></SellerID>
             <Typography
               tag="h1"
               data-testid="name"
@@ -289,26 +301,26 @@ export default function OfferDetail() {
               style={{ color: colors.darkGrey }}
               data-testid="description"
             >
-              {description || MOCK.description}
+              {mockedDescription || description}
             </Typography>
-            <OfferDetailTable data={MOCK.table} />
+            <OfferDetailTable data={productData} nameWrapper={"strong"} />
           </div>
           <div>
             <Typography tag="h3">About the artist</Typography>
             <Typography tag="p" style={{ color: colors.darkGrey }}>
-              {MOCK.aboutArtist}
+              {artistDescription || MOCK.aboutArtist}
             </Typography>
           </div>
         </OfferGrid>
-        <OfferDetailSlider images={MOCK.images} />
+        <OfferDetailSlider images={images.length ? images : MOCK.images} />
         <OfferGrid>
           <OfferDetailChart offer={offer} />
           <div>
             <Typography tag="h3">Shipping information</Typography>
             <Typography tag="p" style={{ color: colors.darkGrey }}>
-              {MOCK.shipping}
+              {shippingInfo.shipping}
             </Typography>
-            <OfferDetailTable data={MOCK.shippingTable} />
+            <OfferDetailTable data={shippingInfo.shippingTable} />
           </div>
         </OfferGrid>
       </DarkerBackground>

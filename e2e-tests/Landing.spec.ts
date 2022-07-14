@@ -289,7 +289,7 @@ test.describe("Root page (Landing page)", () => {
         expect(offerCount).toStrictEqual(1);
 
         const offer = offers.nth(0);
-        const sellerSection = offer.locator("[data-testid=seller-id]");
+        const sellerSection = offer.locator("[data-testid=seller-info]");
         await sellerSection.click();
 
         const url = await page.url();

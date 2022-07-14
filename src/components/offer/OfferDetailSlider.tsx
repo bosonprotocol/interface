@@ -14,7 +14,7 @@ import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 
 interface IOfferDetailSlider {
-  images: Array<string>;
+  images: Readonly<Array<string>>;
 }
 
 const GlideWrapper = styled.div`
