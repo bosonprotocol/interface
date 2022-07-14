@@ -11,7 +11,6 @@ import OfferDetailShare from "../../components/offer/OfferDetailShare";
 import OfferDetailSlider from "../../components/offer/OfferDetailSlider";
 import OfferDetailTable from "../../components/offer/OfferDetailTable";
 import OfferDetailWidget from "../../components/offer/OfferDetailWidget";
-import OfferLabel from "../../components/offer/OfferLabel";
 import Image from "../../components/ui/Image";
 import SellerID from "../../components/ui/SellerID";
 import Typography from "../../components/ui/Typography";
@@ -258,9 +257,7 @@ export default function OfferDetail() {
               seller={offer?.seller}
               offerName={name}
               justifyContent="flex-start"
-            >
-              <OfferLabel offer={offer} />
-            </SellerID>
+            ></SellerID>
             <Typography
               tag="h1"
               data-testid="name"

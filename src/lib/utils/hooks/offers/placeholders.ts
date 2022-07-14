@@ -175,10 +175,11 @@ const offerNameToProductData: Record<typeof keys[number], ProductData> = {
   "boson t-shirt": [{ name: "Material", value: "100% Cotton" }],
   "boson neon sign": [
     { name: "Materials", value: "Plexiglass, Silicone, LED, Plywood" },
-    { name: "Dimensions", value: "30 cm width x 20 cm height" }
+    { name: "Dimensions", value: "30 cm x 20 cm" }
   ],
   "boson sweatshirt": [
-    { name: "Materials", value: "85% Cotton; 15% Polyester" }
+    { name: "Primary material", value: "85% Cotton" },
+    { name: "Secondary material", value: "15% Polyester" }
   ]
 } as const;
 
@@ -234,6 +235,6 @@ export const getOfferImageList = (offerName: string): Readonly<string[]> => {
   const imageList =
     offerNameToImageList[
       lowerCaseOfferName as keyof typeof offerNameToImageList
-    ];
+    ] || [];
   return imageList;
 };
