@@ -246,7 +246,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     // TODO: it's just a workaround for now
     const child = cancelRef.current!.children[0];
     if (child) {
-      /* tslint:disable-next-line */
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       child.click();
     }
   };
