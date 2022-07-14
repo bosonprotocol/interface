@@ -209,6 +209,7 @@ export default function OfferDetail() {
                   <WidgetContainer ref={widgetRef}></WidgetContainer>
                 ) : (
                   <DetailWidget
+                    pageType="offer"
                     offer={offer}
                     handleModal={handleModal}
                     name={name}
@@ -219,6 +220,7 @@ export default function OfferDetail() {
               </>
             ) : (
               <DetailWidget
+                pageType="offer"
                 offer={offer}
                 handleModal={handleModal}
                 name={name}

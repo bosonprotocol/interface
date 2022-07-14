@@ -26,8 +26,6 @@ export const COMMIT_STEPS = [
 
 export const SLIDER_OPTIONS = {
   type: "carousel" as const,
-  autoplay: 6000,
-  hoverpause: true,
   startAt: 0,
   gap: 20,
   perView: 3,
@@ -43,3 +41,12 @@ export const SLIDER_OPTIONS = {
     }
   }
 };
+
+export const HEADER = ["Event", "From", "To", "Price", "Date"];
+export const EVENT_TYPES = [
+  "Commit",
+  "Redeem",
+  "Cancel",
+  "Revoke",
+  "Finalize"
+] as const;

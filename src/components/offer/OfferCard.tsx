@@ -146,7 +146,10 @@ export default function OfferCard({
 
   const Status = isPrivateProfile ? (
     exchange ? (
-      <ExchangeStatuses offer={offer} exchange={exchange} />
+      <ExchangeStatuses
+        offer={offer}
+        exchange={exchange as NonNullable<Offer["exchanges"]>[number]}
+      />
     ) : (
       <OfferStatuses offer={offer} />
     )

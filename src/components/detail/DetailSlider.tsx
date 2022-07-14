@@ -1,7 +1,7 @@
 import "@glidejs/glide/dist/css/glide.core.min.css";
 
 import Glide from "@glidejs/glide";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 
 import Button from "../../components/ui/Button";
@@ -15,27 +15,21 @@ type Direction = "<" | ">";
 interface Props {
   images: Array<string>;
 }
-
+let glide: any;
 export default function DetailSlider({ images }: Props) {
   const ref = useRef();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [slider, setSlider] = useState<any>(null);
 
   useEffect(() => {
-    if (ref.current && slider === null) {
-      const glide = new Glide(ref.current, SLIDER_OPTIONS);
+    if (ref.current) {
+      glide = new Glide(ref.current, SLIDER_OPTIONS);
       glide.mount();
-      setSlider(glide);
     }
-    return () => (slider ? slider.destroy() : false);
-  }, [ref, slider]);
+    return () => glide.destroy();
+  }, [ref]);
 
-  const handleSlider = useCallback(
-    (direction: Direction) => {
-      slider.go(direction);
-    },
-    [slider]
-  );
+  const handleSlider = (direction: Direction) => {
+    glide.go(direction);
+  };
 
   return (
     <div style={{ maxWidth: "100%" }}>

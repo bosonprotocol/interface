@@ -1,18 +1,21 @@
 import { Provider } from "@bosonprotocol/ethers-sdk";
-import { CommitButton } from "@bosonprotocol/react-kit";
+import {
+  CancelButton,
+  CommitButton,
+  RedeemButton
+} from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { AiOutlineCheck } from "react-icons/ai";
+import { BsQuestionCircle } from "react-icons/bs";
 import { HiOutlineExternalLink } from "react-icons/hi";
-import styled from "styled-components";
+import { MdOutlineNotificationsNone } from "react-icons/md";
 import { useSigner } from "wagmi";
 
 import portalLogo from "../../assets/portal.svg";
 import { CONFIG } from "../../lib/config";
 import { BosonRoutes } from "../../lib/routing/routes";
-import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
-import { zIndex } from "../../lib/styles/zIndex";
 import { Offer } from "../../lib/types/offer";
 import { IPrice } from "../../lib/utils/convertPrice";
 import { isOfferHot } from "../../lib/utils/getOfferLabel";
@@ -24,174 +27,30 @@ import Button from "../ui/Button";
 import Grid from "../ui/Grid";
 import Image from "../ui/Image";
 import Typography from "../ui/Typography";
+import {
+  Break,
+  CommitAndRedeemButton,
+  ModalGrid,
+  OpenSeaButton,
+  PortalLogoImg,
+  RaiseProblemButton,
+  RedeemLeftButton,
+  Widget,
+  WidgetButtonWrapper,
+  WidgetImageWrapper,
+  WidgetUpperGrid
+} from "./Detail.style";
 import DetailTable from "./DetailTable";
 
 interface IDetailWidget {
+  pageType?: "exchange" | "offer";
   offer: Offer;
+  exchange?: NonNullable<Offer["exchanges"]>[number];
   handleModal: () => void;
   name?: string;
   image?: string;
   hasSellerEnoughFunds: boolean;
 }
-
-const CtaButtonsWrapper = styled.div`
-  button {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    position: relative;
-    z-index: 1;
-    letter-spacing: 0.5px;
-    font-family: "Plus Jakarta Sans";
-    font-style: normal;
-    font-size: 1rem;
-    font-weight: 500;
-    line-height: 24px;
-    white-space: pre;
-    span > span {
-      font-size: 65%;
-      font-weight: 400;
-      margin: 0 0.5rem;
-      opacity: 0.75;
-    }
-  }
-`;
-
-const ImageWrapper = styled.div`
-  position: relative;
-  width: 100%;
-  margin: 0 auto;
-  display: block;
-
-  > div {
-    all: unset;
-  }
-  img {
-    all: unset;
-    width: 100%;
-  }
-
-  ${breakpoint.xs} {
-    width: 60%;
-    margin: 0 auto;
-    display: block;
-  }
-  ${breakpoint.s} {
-    width: unset;
-    margin: 0;
-    display: initial;
-  }
-
-  > div {
-    ${breakpoint.s} {
-      height: 100%;
-      padding-top: 0;
-    }
-  }
-`;
-const ModalGrid = styled.div`
-  display: grid;
-
-  grid-column-gap: 1rem;
-  grid-row-gap: 1rem;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
-  ${breakpoint.s} {
-    grid-column-gap: 3rem;
-    grid-row-gap: 3rem;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  margin-bottom: 2rem;
-`;
-const PortalLogoImg = styled.img`
-  height: 16px;
-`;
-const ButtonWrapper = styled(Grid)`
-  gap: 1rem;
-  margin-top: 2.5rem;
-  flex-direction: column;
-  ${breakpoint.s} {
-    flex-direction: row;
-    align-content: space-between;
-  }
-  > * {
-    width: 100%;
-    ${breakpoint.s} {
-      width: unset;
-    }
-    > div {
-      justify-content: center;
-    }
-  }
-`;
-
-const Widget = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  width: 100%;
-  background: ${colors.white};
-  > div {
-    padding: 2rem;
-    &:not(:first-of-type) {
-      padding-top: 0;
-    }
-    &:not(:last-of-type) {
-      padding-bottom: 0;
-    }
-  }
-  > span + div {
-    padding-top: 2rem !important;
-  }
-
-  box-shadow: 0px 4.318px 107.946px rgba(21, 30, 52, 0.1);
-  box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.05), 0px 0px 16px rgba(0, 0, 0, 0.05),
-    0px 0px 32px rgba(0, 0, 0, 0.05), 0px 0px 64px rgba(0, 0, 0, 0.05),
-    0px 0px 128px rgba(0, 0, 0, 0.05);
-
-  > div {
-    width: 100%;
-  }
-`;
-
-const OpenSeaButton = styled.button`
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: ${zIndex.OfferStatus};
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.5rem 2rem;
-  border: 2px solid ${colors.border};
-  background: ${colors.white};
-  color: ${colors.blue};
-
-  font-family: "Plus Jakarta Sans";
-  font-style: normal;
-  font-weight: 600;
-  font-size: 12px;
-  line-height: 150%;
-  &:hover {
-    color: ${colors.black};
-  }
-`;
-const CommitAndRedeemButton = styled(Typography)`
-  font-weight: 600;
-  color: ${colors.darkGrey};
-  cursor: pointer;
-  transition: color 150ms ease-in-out;
-  &:hover {
-    color: ${colors.secondary};
-  }
-`;
-
-const Break = styled.span`
-  width: 100%;
-  height: 2px;
-  background: ${colors.border};
-`;
-
 interface IModalData {
   isOpen: boolean;
   title?: string;
@@ -339,12 +198,18 @@ const getOfferDetailData = (offer: Offer, priceInDollars: IPrice | null) => {
 };
 
 const DetailWidget: React.FC<IDetailWidget> = ({
+  pageType,
   offer,
+  exchange = {},
   handleModal,
   name = "",
   image = "",
   hasSellerEnoughFunds
 }) => {
+  const cancelRef = useRef<HTMLDivElement | null>(null);
+
+  const isOffer = pageType === "offer";
+  const isExchange = pageType === "exchange";
   const { data: signer } = useSigner();
   const navigate = useKeepQueryParamsNavigate();
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -373,12 +238,30 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     () => isOfferHot(offer?.quantityAvailable, offer?.quantityInitial),
     [offer?.quantityAvailable, offer?.quantityInitial]
   );
+  const redeemableDays = Math.round(
+    Number(offer.voucherValidDuration) / oneSecondToDays
+  );
+
+  const handleCancel = () => {
+    // TODO: it's just a workaround for now
+    const child = cancelRef.current!.children[0];
+    if (child) {
+      /* tslint:disable-next-line */
+      child.click();
+    }
+  };
 
   return (
     <>
       <Widget>
+        {isExchange && (
+          <RedeemLeftButton>
+            {redeemableDays}days left to Redeem
+            <MdOutlineNotificationsNone size={18} />
+          </RedeemLeftButton>
+        )}
         <div>
-          <Grid style={{ paddingBottom: "1rem" }}>
+          <WidgetUpperGrid style={{ paddingBottom: "1rem" }}>
             <Price
               address={offer.exchangeToken.address}
               currencySymbol={offer.exchangeToken.symbol}
@@ -387,25 +270,58 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               tag="h3"
               convert
             />
-            {isHotOffer && (
+            {isOffer && (
               <Typography tag="p" style={{ color: colors.orange, margin: 0 }}>
-                {quantity === 0 && "No items available!"}
-                {quantity > 0 &&
-                  `Only ${quantity} ${quantity === 1 ? "item" : "items"} left!`}
+                {isHotOffer && (
+                  <>
+                    {quantity === 0 && "No items available!"}
+                    {quantity > 0 &&
+                      `Only ${quantity} ${
+                        quantity === 1 ? "item" : "items"
+                      } left!`}
+                  </>
+                )}
               </Typography>
             )}
-          </Grid>
-        </div>
-        <CtaButtonsWrapper>
-          <Grid flexGrow="1" gap="1rem">
-            <CommitButton
-              disabled={
-                !hasSellerEnoughFunds ||
-                isExpiredOffer ||
-                isLoading ||
-                !quantity
-              }
-              offerId={offer.id}
+            {isOffer && (
+              <CommitButton
+                disabled={
+                  !hasSellerEnoughFunds ||
+                  isExpiredOffer ||
+                  isLoading ||
+                  !quantity
+                }
+                offerId={offer.id}
+                chainId={CONFIG.chainId}
+                onError={(args) => {
+                  console.error("onError", args);
+                  setIsLoading(false);
+                  setModalData({
+                    isOpen: true,
+                    title: "An error occurred",
+                    type: "ERROR"
+                  });
+                }}
+                onPendingSignature={() => {
+                  console.log("onPendingSignature");
+                  setIsLoading(true);
+                }}
+                onSuccess={(args) => {
+                  console.log("onSuccess", args);
+                  setIsLoading(false);
+                  setModalData({
+                    isOpen: true,
+                    title: "You have successfully committed!",
+                    type: "SUCCESS"
+                  });
+                }}
+                extraInfo="Step 1"
+                web3Provider={signer?.provider as Provider}
+              />
+            )}
+            <RedeemButton
+              disabled={isLoading || isOffer}
+              exchangeId={exchange?.id || offer.id}
               chainId={CONFIG.chainId}
               onError={(args) => {
                 console.error("onError", args);
@@ -429,22 +345,11 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                   type: "SUCCESS"
                 });
               }}
-              extraInfo="Step 1"
+              extraInfo="Step 2"
               web3Provider={signer?.provider as Provider}
             />
-            <Button
-              theme="outline"
-              step={2}
-              disabled
-              style={{
-                padding: "0.975rem 2rem",
-                fontSize: "1rem"
-              }}
-            >
-              Redeem
-            </Button>
-          </Grid>
-        </CtaButtonsWrapper>
+          </WidgetUpperGrid>
+        </div>
         <div>
           <Grid justifyContent="center">
             <CommitAndRedeemButton
@@ -452,7 +357,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               onClick={handleModal}
               style={{ fontSize: "0.875rem" }}
             >
-              What is commit and redeem?
+              {isOffer ? "What is commit and redeem?" : "What is redeem?"}
             </CommitAndRedeemButton>
           </Grid>
         </div>
@@ -460,7 +365,58 @@ const DetailWidget: React.FC<IDetailWidget> = ({
         <div>
           <DetailTable align noBorder data={OFFER_DETAIL_DATA} />
         </div>
+        {isExchange && (
+          <>
+            <Break />
+            <RaiseProblemButton
+              tag="p"
+              onClick={handleCancel}
+              style={{ fontSize: "0.875rem" }}
+            >
+              Raise a problem
+              <BsQuestionCircle size={18} />
+            </RaiseProblemButton>
+          </>
+        )}
       </Widget>
+
+      {isExchange && (
+        <div
+          style={{ opacity: 0 }}
+          ref={(ref) => {
+            cancelRef.current = ref;
+          }}
+        >
+          <CancelButton
+            disabled={isLoading}
+            exchangeId={exchange?.id || offer.id}
+            chainId={CONFIG.chainId}
+            onError={(args) => {
+              console.error("onError", args);
+              setIsLoading(false);
+              setModalData({
+                isOpen: true,
+                title: "An error occurred",
+                type: "ERROR"
+              });
+            }}
+            onPendingSignature={() => {
+              console.log("onPendingSignature");
+              setIsLoading(true);
+            }}
+            onSuccess={(args) => {
+              console.log("onSuccess", args);
+              setIsLoading(false);
+              setModalData({
+                isOpen: true,
+                title: "You have successfully canceled!",
+                type: "SUCCESS"
+              });
+            }}
+            web3Provider={signer?.provider as Provider}
+          />
+        </div>
+      )}
       <Modal
         onClose={handleClose}
         {...modalData}
@@ -471,7 +427,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
         }
       >
         <ModalGrid>
-          <ImageWrapper>
+          <WidgetImageWrapper>
             {modalData.type === "SUCCESS" && (
               <OpenSeaButton>
                 View on OpenSea
@@ -479,7 +435,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               </OpenSeaButton>
             )}
             <Image src={image} dataTestId="offerImage" />
-          </ImageWrapper>
+          </WidgetImageWrapper>
           <div>
             <Widget>
               <Grid flexDirection="column">
@@ -505,7 +461,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 <DetailTable align noBorder data={OFFER_DETAIL_DATA} />
               </div>
             </Widget>
-            <ButtonWrapper>
+            <WidgetButtonWrapper>
               <Button
                 theme="secondary"
                 onClick={() => {
@@ -522,7 +478,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               >
                 Discover more
               </Button>
-            </ButtonWrapper>
+            </WidgetButtonWrapper>
           </div>
         </ModalGrid>
       </Modal>

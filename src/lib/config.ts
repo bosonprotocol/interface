@@ -11,6 +11,9 @@ export const config = getDefaultConfig({ chainId: REACT_APP_CHAIN_ID });
 
 export const CONFIG = {
   ...config,
+  enableSentryLogging: process.env.ENABLE_SENTRY_LOGGING
+    ? stringToBoolean(process.env.ENABLE_SENTRY_LOGGING)
+    : ["local", "testing"].includes(config.envName),
   dateFormat: process.env.DATE_FORMAT || "YYYY/MM/DD",
   fullDateFormat: process.env.FULL_DATE_FORMAT || "YYYY-MM-DDTHH:mm:ssZ[Z]",
   defaultCurrency: {

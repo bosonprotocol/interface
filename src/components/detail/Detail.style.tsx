@@ -1,12 +1,14 @@
 import { IoIosInformationCircleOutline } from "react-icons/io";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import frameImage from "../../assets/frame.png";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import { LinkWithQuery } from "../linkStoreFields/LinkStoreFields";
+import Grid from "../ui/Grid";
 import { buttonText } from "../ui/styles";
+import Typography from "../ui/Typography";
 
 export const ChartWrapper = styled.div`
   canvas {
@@ -308,6 +310,106 @@ export const GlideSlide = styled.div`
   overflow: hidden;
 `;
 
+const tableBorder = css`
+  tbody {
+    tr {
+      &:not(:last-child) {
+        td {
+          border-bottom: 1px solid ${colors.border};
+        }
+      }
+    }
+  }
+`;
+
+const tableStyles = css`
+  width: 100%;
+  p {
+    margin: 0;
+  }
+  button {
+    padding: 0 0.5rem !important;
+  }
+
+  thead {
+    tr {
+      th {
+        font-weight: 600;
+        font-size: 12px;
+        text-align: left;
+        line-height: 150%;
+      }
+    }
+  }
+  tbody {
+    tr {
+      td {
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 150%;
+      }
+    }
+  }
+
+  th,
+  td {
+    color: ${colors.darkGrey};
+    font-family: "Plus Jakarta Sans";
+    font-style: normal;
+    font-size: 16px;
+    line-height: 150%;
+  }
+`;
+
+export const Transactions = styled.table`
+  ${tableStyles}
+  ${tableBorder}
+
+  th,
+  td {
+    padding: 0.5rem 0.25rem;
+  }
+`;
+
+export const Table = styled.table<{ noBorder?: boolean }>`
+  ${tableStyles}
+
+  th,
+  td {
+    padding: 0.25rem 0.1rem;
+  }
+  tr {
+    td {
+      &:first-child {
+        width: 60%;
+        font-weight: 600;
+      }
+      &:last-child {
+        width: 35%;
+        font-weight: 400;
+      }
+    }
+    ${({ noBorder }) =>
+      noBorder
+        ? `
+        td {
+          > div {
+              font-weight: 600;
+              > p, > p > small {
+                font-weight: 600;
+              }
+          }
+        }
+        }`
+        : `
+      &:not(:last-child) {
+        td {
+          border-bottom: 1px solid ${colors.border};
+      }
+    `}
+  }
+`;
+
 export const InfoIcon = styled(IoIosInformationCircleOutline).attrs({
   fill: colors.bosonSkyBlue
 })`
@@ -399,6 +501,29 @@ export const DetailGrid = styled.div`
   }
 `;
 
+export const WidgetUpperGrid = styled.div`
+  display: grid;
+  grid-column-gap: 1em;
+  grid-row-gap: 1rem;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  ${breakpoint.s} {
+    grid-column-gap: 2rem;
+    grid-row-gap: 2rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  > button {
+    min-width: unset !important;
+    div {
+      justify-content: space-between;
+      gap: 1rem;
+      > span {
+        margin-left: unset !important;
+      }
+    }
+  }
+`;
+
 export const MainDetailGrid = styled.div`
   position: relative;
   display: grid;
@@ -466,4 +591,207 @@ export const WidgetContainer = styled.div`
   iframe {
     max-width: 100%;
   }
+`;
+
+export const CtaButtonsWrapper = styled.div`
+  button {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    z-index: 1;
+    letter-spacing: 0.5px;
+    font-family: "Plus Jakarta Sans";
+    font-style: normal;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 24px;
+    white-space: pre;
+    span > span {
+      font-size: 65%;
+      font-weight: 400;
+      margin: 0 0.5rem;
+      opacity: 0.75;
+    }
+  }
+`;
+
+export const WidgetImageWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
+  display: block;
+
+  > div {
+    all: unset;
+  }
+  img {
+    all: unset;
+    width: 100%;
+  }
+
+  ${breakpoint.xs} {
+    width: 60%;
+    margin: 0 auto;
+    display: block;
+  }
+  ${breakpoint.s} {
+    width: unset;
+    margin: 0;
+    display: initial;
+  }
+
+  > div {
+    ${breakpoint.s} {
+      height: 100%;
+      padding-top: 0;
+    }
+  }
+`;
+
+export const ModalGrid = styled.div`
+  display: grid;
+
+  grid-column-gap: 1rem;
+  grid-row-gap: 1rem;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  ${breakpoint.s} {
+    grid-column-gap: 3rem;
+    grid-row-gap: 3rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  margin-bottom: 2rem;
+`;
+
+export const PortalLogoImg = styled.img`
+  height: 16px;
+`;
+
+export const WidgetButtonWrapper = styled(Grid)`
+  gap: 1rem;
+  margin-top: 2.5rem;
+  flex-direction: column;
+  ${breakpoint.s} {
+    flex-direction: row;
+    align-content: space-between;
+  }
+  > * {
+    width: 100%;
+    ${breakpoint.s} {
+      width: unset;
+    }
+    > div {
+      justify-content: center;
+    }
+  }
+`;
+
+export const Widget = styled.div`
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  background: ${colors.white};
+  > div {
+    padding: 0 2rem;
+    &:first-of-type {
+      padding-top: 2rem;
+    }
+    &:last-of-type {
+      padding-bottom: 2rem;
+    }
+  }
+  > span + div {
+    padding-top: 2rem !important;
+  }
+
+  box-shadow: 0px 4.318px 107.946px rgba(21, 30, 52, 0.1);
+  box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.05), 0px 0px 16px rgba(0, 0, 0, 0.05),
+    0px 0px 32px rgba(0, 0, 0, 0.05), 0px 0px 64px rgba(0, 0, 0, 0.05),
+    0px 0px 128px rgba(0, 0, 0, 0.05);
+
+  > div {
+    width: 100%;
+  }
+`;
+
+export const miniButton = css`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 2rem;
+  background: ${colors.white};
+  color: ${colors.blue};
+
+  font-family: "Plus Jakarta Sans";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 150%;
+  &:hover {
+    color: ${colors.black};
+  }
+`;
+export const OpenSeaButton = styled.button`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: ${zIndex.OfferStatus};
+  border: 2px solid ${colors.border};
+  ${miniButton}
+`;
+
+export const RedeemLeftButton = styled.button`
+  position: absolute;
+  top: -2rem;
+  left: 0;
+  right: 0;
+  border-width: 0;
+  z-index: ${zIndex.OfferStatus};
+
+  cursor: pointer;
+  transition: all 150ms ease-in-out;
+  &:hover {
+    background: ${colors.lightGrey};
+  }
+
+  ${miniButton}
+`;
+
+export const CommitAndRedeemButton = styled(Typography)`
+  font-weight: 600;
+  color: ${colors.darkGrey};
+  cursor: pointer;
+  transition: color 150ms ease-in-out;
+  &:hover {
+    color: ${colors.secondary};
+  }
+`;
+
+export const RaiseProblemButton = styled(Typography)`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 0.75rem 1rem;
+
+  font-weight: 600;
+  color: ${colors.orange};
+  cursor: pointer;
+  transition: all 150ms ease-in-out;
+  &:hover {
+    color: ${colors.red};
+    background: ${colors.lightGrey};
+  }
+  svg {
+    margin-left: 1rem;
+  }
+`;
+
+export const Break = styled.span`
+  width: 100%;
+  height: 2px;
+  background: ${colors.border};
 `;

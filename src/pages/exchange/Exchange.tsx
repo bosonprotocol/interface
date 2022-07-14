@@ -23,6 +23,7 @@ import DetailModal from "../../components/detail/DetailModal";
 import DetailShare from "../../components/detail/DetailShare";
 import DetailSlider from "../../components/detail/DetailSlider";
 import DetailTable from "../../components/detail/DetailTable";
+import DetailTransactions from "../../components/detail/DetailTransactions";
 import DetailWidget from "../../components/detail/DetailWidget";
 // DETAILS COMPONENTS ABOVE
 import ExchangeStatuses from "../../components/offer/ExchangeStatuses";
@@ -180,7 +181,7 @@ export default function Exchange() {
               <Typography
                 tag="h1"
                 data-testid="name"
-                style={{ fontSize: "2rem", marginBottom: "2rem" }}
+                style={{ fontSize: "2rem", marginBottom: "4rem" }}
               >
                 {name}
               </Typography>
@@ -191,7 +192,11 @@ export default function Exchange() {
                   ) : (
                     // TODO: handle this widget
                     <DetailWidget
+                      pageType="exchange"
                       offer={offer}
+                      exchange={
+                        exchange as NonNullable<Offer["exchanges"]>[number]
+                      }
                       handleModal={handleModal}
                       name={name}
                       image={offerImg}
@@ -202,7 +207,9 @@ export default function Exchange() {
               ) : (
                 // TODO: handle this widget
                 <DetailWidget
+                  pageType="exchange"
                   offer={offer}
+                  exchange={exchange as NonNullable<Offer["exchanges"]>[number]}
                   handleModal={handleModal}
                   name={name}
                   image={offerImg}
@@ -236,6 +243,12 @@ export default function Exchange() {
           <DetailSlider images={MOCK.images} />
           <DetailGrid>
             <DetailChart offer={offer} title="Trade history (all items)" />
+            <DetailTransactions
+              title="Transaction History (this item)"
+              exchange={exchange as NonNullable<Offer["exchanges"]>[number]}
+              offer={offer}
+              buyerAddress={buyerAddress}
+            />
             <div>
               <Typography tag="h3">Shipping information</Typography>
               <Typography tag="p" style={{ color: colors.darkGrey }}>
