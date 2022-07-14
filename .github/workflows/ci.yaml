@@ -23,6 +23,7 @@ jobs:
       DEPLOY_TO_FLEEK: false
       ENV_NAME: 'testing'
       UPDATE_COVERAGE: false
+      REACT_APP_ENABLE_CURATION_LISTS: false
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -34,6 +35,7 @@ jobs:
       DEPLOY_TO_FLEEK: true
       ENV_NAME: 'testing'
       UPDATE_COVERAGE: true
+      REACT_APP_ENABLE_CURATION_LISTS: false
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
@@ -46,6 +48,8 @@ jobs:
       DEPLOY_TO_FLEEK: true
       ENV_NAME: 'staging'
       UPDATE_COVERAGE: false
+      REACT_APP_ENABLE_CURATION_LISTS: true
+      REACT_APP_SELLER_CURATION_LIST: '5'
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
