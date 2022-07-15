@@ -20,7 +20,7 @@ const routingInstrumentationFn = Sentry.reactRouterV6Instrumentation(
 );
 routingInstrumentationFn(() => undefined, true, true);
 Sentry.init({
-  debug: ["local", "testing"].includes(CONFIG.envName),
+  debug: CONFIG.enableSentryLogging,
   dsn: CONFIG.sentryDSNUrl,
   enabled: true,
   integrations: [

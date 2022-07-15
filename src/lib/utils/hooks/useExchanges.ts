@@ -58,7 +58,7 @@ export function useExchanges(
           exchanges(
             ${orderBy ? `orderBy: "${orderBy}"` : ""}
             ${orderDirection ? `orderDirection: "${orderDirection}"` : ""}
-            where: { 
+            where: {
             ${id ? `id: "${id}"` : ""}
             ${sellerId ? "seller: $sellerId" : ""}
             ${buyerId ? "buyer: $buyerId" : ""}
@@ -67,13 +67,16 @@ export function useExchanges(
                 ? "disputed: $disputed"
                 : ""
             }
-             }) {
-            id
+            }) {
+            cancelledDate
             committedDate
             disputed
             expired
             finalizedDate
+            finalizedDate
+            id
             redeemedDate
+            revokedDate
             state
             validUntilDate
             seller {

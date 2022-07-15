@@ -92,6 +92,7 @@ const GlobalStyle = createGlobalStyle<{
     font-size: 65%;
     margin: 0 0.5rem;
     opacity: 0.75;
+    white-space: pre;
   }
 
   h1 {

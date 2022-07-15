@@ -12,11 +12,11 @@ import {
   Tooltip
 } from "chart.js";
 import { Line } from "react-chartjs-2";
-import styled from "styled-components";
 
 import { Offer } from "../../lib/types/offer";
 import { useOfferDataset } from "../../lib/utils/hooks/useOfferDataset";
 import Typography from "../ui/Typography";
+import { ChartWrapper } from "./Detail.style";
 
 ChartJS.register(
   CategoryScale,
@@ -29,35 +29,14 @@ ChartJS.register(
   Tooltip,
   SubTitle,
   Legend
-  // ArcElement,
-  // BarElement,
-  // BarController,
-  // BubbleController,
-  // DoughnutController,
-  // LineController,
-  // PieController,
-  // PolarAreaController,
-  // RadarController,
-  // ScatterController,
-  // LogarithmicScale,
-  // RadialLinearScale,
-  // TimeScale,
-  // TimeSeriesScale,
-  // Decimation,
-  // Filler,
 );
 
-const ChartWrapper = styled.div`
-  canvas {
-    max-width: 100%;
-  }
-`;
-
-interface IOfferDetailChart {
+interface Props {
   offer: Offer;
+  title?: string;
 }
 
-const OfferDetailChart: React.FC<IOfferDetailChart> = ({ offer }) => {
+export default function DetailChart({ offer, title }: Props) {
   const { options, data, display } = useOfferDataset(offer);
 
   if (!display) {
@@ -66,12 +45,10 @@ const OfferDetailChart: React.FC<IOfferDetailChart> = ({ offer }) => {
 
   return (
     <div>
-      <Typography tag="h3">Inventory graph</Typography>
+      <Typography tag="h3">{title || "Graph"}</Typography>
       <ChartWrapper>
         <Line options={options} data={data} />
       </ChartWrapper>
     </div>
   );
-};
-
-export default OfferDetailChart;
+}

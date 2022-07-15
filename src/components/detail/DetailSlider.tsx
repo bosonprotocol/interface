@@ -1,85 +1,37 @@
 import "@glidejs/glide/dist/css/glide.core.min.css";
 
 import Glide from "@glidejs/glide";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
-import styled from "styled-components";
 
 import Button from "../../components/ui/Button";
 import Grid from "../../components/ui/Grid";
 import Image from "../../components/ui/Image";
 import Typography from "../../components/ui/Typography";
-import { breakpointNumbers } from "../../lib/styles/breakpoint";
-import { colors } from "../../lib/styles/colors";
-import { zIndex } from "../../lib/styles/zIndex";
+import { SLIDER_OPTIONS } from "./const";
+import { GlideSlide, GlideWrapper } from "./Detail.style";
 
-interface IOfferDetailSlider {
+type Direction = "<" | ">";
+interface Props {
   images: Readonly<Array<string>>;
 }
 
-const GlideWrapper = styled.div`
-  &:after {
-    content: "";
-    position: absolute;
-    height: 100%;
-    width: 4rem;
-    z-index: ${zIndex.Carousel};
-    top: 0;
-    bottom: 0;
-    right: 0;
-    background: linear-gradient(
-      -90deg,
-      ${colors.lightGrey} 0%,
-      transparent 100%
-    );
-    pointer-events: none;
-  }
-`;
-
-const GlideSlide = styled.div`
-  overflow: hidden;
-`;
-
-const SLIDER_OPTIONS = {
-  type: "carousel" as const,
-  autoplay: 6000,
-  hoverpause: true,
-  startAt: 0,
-  gap: 20,
-  perView: 3,
-  breakpoints: {
-    [breakpointNumbers.l]: {
-      perView: 3
-    },
-    [breakpointNumbers.m]: {
-      perView: 2
-    },
-    [breakpointNumbers.xs]: {
-      perView: 1
-    }
-  }
-};
-type Direction = "<" | ">";
-const OfferDetailSlider: React.FC<IOfferDetailSlider> = ({ images }) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let glide: any;
+export default function DetailSlider({ images }: Props) {
   const ref = useRef();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [slider, setSlider] = useState<any>(null);
 
   useEffect(() => {
-    if (ref.current && slider === null) {
-      const glide = new Glide(ref.current, SLIDER_OPTIONS);
+    if (ref.current) {
+      glide = new Glide(ref.current, SLIDER_OPTIONS);
       glide.mount();
-      setSlider(glide);
     }
-    return () => (slider ? slider.destroy() : false);
-  }, [ref, slider]);
+    return () => glide.destroy();
+  }, [ref]);
 
-  const handleSlider = useCallback(
-    (direction: Direction) => {
-      slider.go(direction);
-    },
-    [slider]
-  );
+  const handleSlider = (direction: Direction) => {
+    glide.go(direction);
+  };
 
   return (
     <div style={{ maxWidth: "100%" }}>
@@ -119,6 +71,4 @@ const OfferDetailSlider: React.FC<IOfferDetailSlider> = ({ images }) => {
       </GlideWrapper>
     </div>
   );
-};
-
-export default OfferDetailSlider;
+}

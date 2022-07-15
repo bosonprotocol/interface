@@ -34,8 +34,9 @@ const ImageWrapper = styled.div`
 `;
 
 const ImageContainer = styled.img`
-  width: auto;
+  width: 100%;
   height: 100%;
+  object-fit: cover;
 `;
 
 const ImagePlaceholder = styled.div`

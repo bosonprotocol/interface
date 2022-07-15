@@ -1,210 +1,67 @@
 import { manageExchange } from "@bosonprotocol/widgets-sdk";
-import { Image as AccountImage } from "@davatar/react";
-import { useEffect, useRef, useState } from "react";
-import { IoIosInformationCircleOutline } from "react-icons/io";
-import { generatePath, useLocation, useParams } from "react-router-dom";
-import styled from "styled-components";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useLocation, useParams } from "react-router-dom";
 import { useAccount } from "wagmi";
 
-import AddressContainer from "../../components/offer/AddressContainer";
-import ExchangeStatuses from "../../components/offer/ExchangeStatuses";
-import RootPrice from "../../components/price";
+import {
+  DarkerBackground,
+  DetailGrid,
+  DetailWrapper,
+  ImageWrapper,
+  InfoIcon,
+  InfoIconTextWrapper,
+  LightBackground,
+  MainDetailGrid,
+  Tab,
+  Tabs,
+  Toggle,
+  WidgetContainer
+} from "../../components/detail/Detail.style";
+import DetailChart from "../../components/detail/DetailChart";
+import DetailModal from "../../components/detail/DetailModal";
+import DetailShare from "../../components/detail/DetailShare";
+import DetailSlider from "../../components/detail/DetailSlider";
+import DetailTable from "../../components/detail/DetailTable";
+import DetailTransactions from "../../components/detail/DetailTransactions";
+import DetailWidget from "../../components/detail/DetailWidget";
+// DETAILS COMPONENTS ABOVE
 import Image from "../../components/ui/Image";
+import SellerID from "../../components/ui/SellerID";
+import Typography from "../../components/ui/Typography";
 import { CONFIG } from "../../lib/config";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
-import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
-import { getOfferImage } from "../../lib/utils/hooks/offers/placeholders";
+import {
+  getOfferArtistDescription,
+  getOfferDescription,
+  getOfferImage,
+  getOfferImageList,
+  getOfferProductData,
+  getOfferShippingInformation
+} from "../../lib/utils/hooks/offers/placeholders";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
-import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { useSellers } from "../../lib/utils/hooks/useSellers";
 import { isAccountSeller } from "../../lib/utils/isAccountSeller";
-
-const Root = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-top: 64px;
-  gap: 130px;
-  margin-bottom: 42px;
-
-  ${breakpoint.l} {
-    flex-direction: row;
-  }
-`;
-
-const ImageAndDescription = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: start;
-  flex-basis: 50%;
-  gap: 20px;
-
-  ${breakpoint.m} {
-    flex-direction: row;
-  }
-
-  ${breakpoint.l} {
-    flex-direction: column;
-  }
-`;
-
-const StatusContainer = styled.div`
-  width: 100%;
-  position: absolute;
-`;
-
-const StatusSubContainer = styled.div`
-  max-width: 700px;
-  width: 700px;
-  position: relative;
-  margin: 0 auto;
-
-  ${breakpoint.m} {
-    width: initial;
-  }
-`;
-
-const ImageContainer = styled.div`
-  display: flex;
-  justify-content: left;
-  height: auto;
-  position: relative;
-
-  [data-testid="statuses"] {
-    position: absolute;
-    top: 1rem;
-    right: -1rem;
-    margin: 0 auto;
-    justify-content: center;
-  }
-`;
-
-const Title = styled.h1`
-  font-size: 36px;
-  margin: 0;
-`;
-
-const SubHeading = styled.p`
-  font-size: 14px;
-  font-weight: 500;
-  margin: 0 0 4px 0;
-  color: ${colors.grey};
-`;
-
-const Information = styled.span`
-  font-weight: bold;
-`;
-
-const Content = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex-basis: 50%;
-  gap: 20px;
-  padding-top: 24px;
-`;
-
-const ChildrenContainer = styled.div`
-  iframe {
-    width: 100%;
-  }
-`;
-
-const WidgetContainer = styled.div`
-  max-width: 100%;
-  border-radius: 6px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0 auto;
-`;
-
-const Info = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 10px;
-`;
-
-const Box = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 16px 12px;
-  border-radius: 6px;
-  gap: 4px;
-  box-shadow: inset -3px -3px 3px #0e0f17, inset 3px 3px 3px #363b5b;
-`;
-
-const Toggle = styled.div`
-  border: 1px solid ${colors.bosonSkyBlue};
-  color: ${colors.bosonSkyBlue};
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 12px;
-  border-radius: 6px;
-  gap: 4px;
-`;
-
-const InfoIconTextWrapper = styled.div`
-  display: flex;
-  justify-content: start;
-  align-items: center;
-  gap: 1px;
-`;
-
-const Tabs = styled.div`
-  display: flex;
-  flex-direction: row;
-  max-width: 30%;
-`;
-
-const Tab = styled("button")<{ $isLeft: boolean; $isSelected: boolean }>`
-  all: unset;
-  cursor: pointer;
-  border: 1px solid ${colors.bosonSkyBlue};
-  border-radius: ${(props) =>
-    props.$isLeft ? "30px 0 0 30px" : "0 30px 30px 0"};
-  background-color: ${(props) =>
-    props.$isSelected ? colors.bosonSkyBlue : colors.navy};
-  ${(props) =>
-    props.$isSelected
-      ? "box-shadow: inset 1px 2px 5px #777;"
-      : `box-shadow: 0px 2px 9px -3px ${colors.bosonSkyBlue};`}
-  padding: 7px;
-  font-size: 14px;
-  color: ${(props) => (props.$isSelected ? colors.black : colors.bosonSkyBlue)};
-  width: 200px;
-  max-width: 100%;
-  text-align: center;
-`;
-
-const Price = styled(RootPrice)`
-  font-weight: bold;
-  font-size: 24px;
-`;
-
-const InfoIcon = styled(IoIosInformationCircleOutline).attrs({
-  fill: colors.bosonSkyBlue
-})`
-  position: relative;
-  right: 2px;
-  font-size: 27px;
-`;
+import { MOCK } from "./mock/mock";
 
 export default function Exchange() {
   const { [UrlParameters.exchangeId]: exchangeId } = useParams();
+
   const widgetRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
   const fromAccountPage =
     (location.state as { from: string })?.from === BosonRoutes.YourAccount;
   const [isTabSellerSelected, setTabSellerSelected] = useState(fromAccountPage);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
   const { address: account } = useAccount();
   const address = account || "";
 
-  const navigate = useKeepQueryParamsNavigate();
+  const handleModal = useCallback(() => {
+    setIsModalOpen(!isModalOpen);
+  }, [isModalOpen]);
 
   const {
     data: exchanges,
@@ -221,6 +78,17 @@ export default function Exchange() {
   );
   const exchange = exchanges?.[0];
   const offer = exchange?.offer;
+
+  const { data: sellers } = useSellers({
+    admin: offer?.seller.admin,
+    includeFunds: true
+  });
+  const sellerAvailableDeposit = sellers?.[0].funds?.find(
+    (fund) => fund.token.address === offer?.exchangeToken.address
+  )?.availableAmount;
+  const offerRequiredDeposit = offer?.sellerDeposit;
+  const hasSellerEnoughFunds =
+    Number(sellerAvailableDeposit) >= Number(offerRequiredDeposit);
 
   useEffect(() => {
     if (!address) {
@@ -271,73 +139,22 @@ export default function Exchange() {
     );
   }
   const isSeller = isAccountSeller(offer, address);
-  const name = offer.metadata?.name || "Untitled";
-  const offerImg = getOfferImage(offer.id, name);
-  const sellerId = offer.seller?.id;
-  const sellerAddress = offer.seller?.operator;
-  // const isOfferValid = getIsOfferValid(offer);
-  const description = offer.metadata?.description || "";
   const buyerAddress = exchange.buyer.wallet;
   const isBuyer = buyerAddress.toLowerCase() === address.toLowerCase();
+
+  const name = offer.metadata?.name || "Untitled";
+  const offerImg = getOfferImage(offer.id, name);
+  const shippingInfo = getOfferShippingInformation(name);
+  const description = offer.metadata?.description || "";
+  const mockedDescription = getOfferDescription(name);
+  const productData = getOfferProductData(name);
+  const artistDescription = getOfferArtistDescription(name);
+  const images = getOfferImageList(name);
+
   return (
     <>
-      <Root>
-        <ImageAndDescription>
-          <ImageContainer>
-            <StatusContainer>
-              <StatusSubContainer>
-                <ExchangeStatuses
-                  offer={offer}
-                  exchange={exchange as NonNullable<Offer["exchanges"]>[number]}
-                />
-              </StatusSubContainer>
-            </StatusContainer>
-            <Image src={offerImg} dataTestId="offerImage" />
-          </ImageContainer>
-          <Info>
-            <Box>
-              <SubHeading>Brand</SubHeading>
-              <span data-testid="brand">Not defined</span>
-            </Box>
-            <Box>
-              <SubHeading>Description</SubHeading>
-              <Information data-testid="description">
-                {description || "Not defined"}
-              </Information>
-            </Box>
-            <Box>
-              <SubHeading>Delivery Information</SubHeading>
-              <span data-testid="delivery-info">Not defined</span>
-            </Box>
-            <Box>
-              <SubHeading>Seller</SubHeading>
-              <AddressContainer
-                onClick={() =>
-                  navigate({
-                    pathname: generatePath(BosonRoutes.Account, {
-                      [UrlParameters.accountId]: sellerAddress
-                    })
-                  })
-                }
-              >
-                <AccountImage size={30} address={sellerAddress} />
-                <div data-testid="seller-info">ID: {sellerId}</div>
-              </AddressContainer>
-            </Box>
-          </Info>
-        </ImageAndDescription>
-        <Content>
-          <Title data-testid="name">{name || "Untitled"}</Title>
-
-          <Box>
-            <SubHeading>Price</SubHeading>
-            <Price
-              address={offer.exchangeToken.address}
-              currencySymbol={offer.exchangeToken.symbol}
-              value={offer.price}
-              decimals={offer.exchangeToken.decimals}
-            />
-          </Box>
+      <DetailWrapper>
+        <LightBackground>
           {isSeller && isBuyer && (
             <Toggle>
               <InfoIconTextWrapper>
@@ -346,14 +163,12 @@ export default function Exchange() {
               </InfoIconTextWrapper>
               <Tabs>
                 <Tab
-                  $isLeft
                   $isSelected={!isTabSellerSelected}
                   onClick={() => setTabSellerSelected(false)}
                 >
                   Buyer
                 </Tab>
                 <Tab
-                  $isLeft={false}
                   $isSelected={isTabSellerSelected}
                   onClick={() => setTabSellerSelected(true)}
                 >
@@ -362,11 +177,104 @@ export default function Exchange() {
               </Tabs>
             </Toggle>
           )}
-          <ChildrenContainer>
-            <WidgetContainer ref={widgetRef}></WidgetContainer>
-          </ChildrenContainer>
-        </Content>
-      </Root>
+          <MainDetailGrid>
+            <ImageWrapper>
+              <Image src={offerImg} dataTestId="offerImage" />
+            </ImageWrapper>
+            <div>
+              <SellerID
+                seller={offer?.seller}
+                offerName={name}
+                justifyContent="flex-start"
+                withProfileImage
+              />
+              <Typography
+                tag="h1"
+                data-testid="name"
+                style={{ fontSize: "2rem", marginBottom: "4rem" }}
+              >
+                {name}
+              </Typography>
+              {isSeller ? (
+                <>
+                  {isTabSellerSelected ? (
+                    <WidgetContainer ref={widgetRef}></WidgetContainer>
+                  ) : (
+                    // TODO: handle this widget
+                    <DetailWidget
+                      pageType="exchange"
+                      offer={offer}
+                      exchange={
+                        exchange as NonNullable<Offer["exchanges"]>[number]
+                      }
+                      handleModal={handleModal}
+                      name={name}
+                      image={offerImg}
+                      hasSellerEnoughFunds={hasSellerEnoughFunds}
+                    />
+                  )}
+                </>
+              ) : (
+                // TODO: handle this widget
+                <DetailWidget
+                  pageType="exchange"
+                  offer={offer}
+                  exchange={exchange as NonNullable<Offer["exchanges"]>[number]}
+                  handleModal={handleModal}
+                  name={name}
+                  image={offerImg}
+                  hasSellerEnoughFunds={hasSellerEnoughFunds}
+                />
+              )}
+            </div>
+            <DetailShare />
+          </MainDetailGrid>
+        </LightBackground>
+        <DarkerBackground>
+          <DetailGrid>
+            <div>
+              <Typography tag="h3">Product data</Typography>
+              <Typography
+                tag="p"
+                style={{ color: colors.darkGrey }}
+                data-testid="description"
+              >
+                {mockedDescription || description}
+              </Typography>
+              <DetailTable data={productData} tag="strong" />
+            </div>
+            <div>
+              <Typography tag="h3">About the artist</Typography>
+              <Typography tag="p" style={{ color: colors.darkGrey }}>
+                {artistDescription || MOCK.aboutArtist}
+              </Typography>
+            </div>
+          </DetailGrid>
+          <DetailSlider images={images.length ? images : MOCK.images} />
+          <DetailGrid>
+            <DetailChart offer={offer} title="Trade history (all items)" />
+            <DetailTransactions
+              title="Transaction History (this item)"
+              exchange={exchange as NonNullable<Offer["exchanges"]>[number]}
+              offer={offer}
+              buyerAddress={buyerAddress}
+            />
+            <div>
+              <Typography tag="h3">Shipping information</Typography>
+              <Typography tag="p" style={{ color: colors.darkGrey }}>
+                {shippingInfo.shipping}
+              </Typography>
+              <DetailTable data={shippingInfo.shippingTable} />
+            </div>
+          </DetailGrid>
+        </DarkerBackground>
+        <DetailModal
+          isOpen={isModalOpen}
+          onClose={() => {
+            setIsModalOpen(false);
+          }}
+        />
+      </DetailWrapper>
     </>
   );
 }

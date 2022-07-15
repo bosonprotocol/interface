@@ -7,7 +7,7 @@ type JustifyContent =
   | "space-between"
   | "space-around"
   | "stretch";
-type AlignItems = "flex-start" | "center" | "flex-end";
+type AlignItems = "flex-start" | "center" | "flex-end" | "baseline";
 type FlexDirection = "row" | "column" | "row-reverse" | "column-reverse";
 export interface IGrid {
   alignItems?: AlignItems;

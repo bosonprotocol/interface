@@ -1,6 +1,5 @@
 import { ethers } from "ethers";
 import { useState } from "react";
-import styled from "styled-components";
 
 import { ReactComponent as bosonIcon } from "./images/boson.svg";
 import { ReactComponent as daiIcon } from "./images/dai.svg";
@@ -17,15 +16,6 @@ interface Props {
   address?: string;
 }
 
-const IconContainer = styled.div`
-  display: flex;
-  align-items: center;
-  transform: scale(1.2);
-  path {
-    stroke-width: 0px;
-  }
-`;
-
 const chain = "polygon";
 
 export default function CurrencyIcon({ currencySymbol, address }: Props) {
@@ -35,15 +25,11 @@ export default function CurrencyIcon({ currencySymbol, address }: Props) {
 
   if (currencyImages[symbolUpperCase]) {
     const Icon = currencyImages[symbolUpperCase];
-    return (
-      <IconContainer>
-        <Icon />
-      </IconContainer>
-    );
+    return <Icon width="25" height="25" viewBox="0 0 25" />;
   }
 
   if (error) {
-    return <>{symbolUpperCase}</>;
+    return <span data-currency>{symbolUpperCase}</span>;
   }
 
   const url =
