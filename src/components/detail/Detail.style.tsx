@@ -280,8 +280,17 @@ export const ImageContainer = styled.div`
   }
 `;
 
+export const ModalImageWrapper = styled.div`
+  position: relative;
+  max-width: 35rem;
+  min-width: 50%;
+  width: -webkit-fill-available;
+`;
 export const ImageWrapper = styled.div`
   position: relative;
+  max-width: 35rem !important;
+  min-width: 50%;
+  width: -webkit-fill-available;
 `;
 
 export const GlideWrapper = styled.div`
@@ -531,11 +540,16 @@ export const MainDetailGrid = styled.div`
   grid-template-columns: repeat(1, minmax(0, 1fr));
   grid-template-rows: 2fr;
 
+  align-items: start;
+  justify-items: center;
+
   ${breakpoint.s} {
-    grid-column-gap: 3rem;
-    grid-row-gap: 3rem;
+    grid-column-gap: 2rem;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-rows: 1fr;
+  }
+  ${breakpoint.s} {
+    grid-column-gap: 3rem;
   }
   > div {
     max-width: 100%;
@@ -645,6 +659,10 @@ export const ModalGrid = styled.div`
   grid-column-gap: 1rem;
   grid-row-gap: 1rem;
   grid-template-columns: repeat(1, minmax(0, 1fr));
+
+  align-items: start;
+  justify-items: center;
+
   ${breakpoint.s} {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }

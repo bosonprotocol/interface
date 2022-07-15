@@ -39,8 +39,8 @@ import Typography from "../ui/Typography";
 import {
   Break,
   CommitAndRedeemButton,
-  ImageWrapper,
   ModalGrid,
+  ModalImageWrapper,
   OpenSeaButton,
   PortalLogoImg,
   RaiseProblemButton,
@@ -235,7 +235,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   image = "",
   hasSellerEnoughFunds
 }) => {
-  const { isLteXS } = useBreakpoints();
+  const { isLteXS, isLteS } = useBreakpoints();
   const cancelRef = useRef<HTMLDivElement | null>(null);
 
   const isOffer = pageType === "offer";
@@ -298,7 +298,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
           </RedeemLeftButton>
         )}
         <div>
-          <PriceAndTextWrapper>
+          <WidgetUpperGrid style={{ paddingBottom: "0.5rem" }}>
             <StyledPrice
               address={offer.exchangeToken.address}
               currencySymbol={offer.exchangeToken.symbol}
@@ -308,20 +308,25 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               convert
             />
             {isOffer && (
-              <Typography tag="p" style={{ color: colors.orange, margin: 0 }}>
-                {isHotOffer && (
-                  <>
-                    {quantity === 0 && "No items available!"}
-                    {quantity > 0 &&
-                      `Only ${quantity} ${
-                        quantity === 1 ? "item" : "items"
-                      } left!`}
-                  </>
-                )}
-              </Typography>
+              <Grid
+                alignItems="center"
+                justifyContent="flex-end"
+                style={{ marginTop: isLteXS ? "-7rem" : "0" }}
+              >
+                <Typography tag="p" style={{ color: colors.orange, margin: 0 }}>
+                  {/* // TODO: change that remove ! */}
+                  {!isHotOffer && (
+                    <>
+                      {quantity === 0 && "No items available!"}
+                      {quantity > 0 &&
+                        `Only ${quantity} ${
+                          quantity === 1 ? "item" : "items"
+                        } left!`}
+                    </>
+                  )}
+                </Typography>
+              </Grid>
             )}
-          </PriceAndTextWrapper>
-          <WidgetUpperGrid style={{ paddingBottom: "0.5rem" }}>
             {isOffer && (
               <CommitButton
                 disabled={
@@ -490,7 +495,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
         }
       >
         <ModalGrid>
-          <ImageWrapper>
+          <ModalImageWrapper>
             {modalData.type === "SUCCESS" && (
               <OpenSeaButton>
                 View on OpenSea
@@ -498,7 +503,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               </OpenSeaButton>
             )}
             <Image src={image} dataTestId="offerImage" />
-          </ImageWrapper>
+          </ModalImageWrapper>
           <div>
             <Widget>
               <Grid flexDirection="column">

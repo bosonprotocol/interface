@@ -27,10 +27,10 @@ const Root = styled.div`
     padding: 0 8rem;
   }
   ${breakpoint.l} {
-    padding: 0 10rem;
+    padding: 0 12rem;
   }
   ${breakpoint.xl} {
-    padding: 0 16rem;
+    padding: 0 16vw;
   }
 `;
 

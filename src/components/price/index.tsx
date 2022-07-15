@@ -58,16 +58,16 @@ export default function Price({
             {price.fractions === "0"
               ? price.integer
               : `${price.integer}.${price.fractions}`}
+            {convert && (
+              <small style={{ margin: "0 0 0.3rem 0", display: "block" }}>
+                {"   "}
+                <span style={{ color: "#556072", opacity: "0.5" }}>
+                  {CONFIG.defaultCurrency.symbol}
+                </span>{" "}
+                {price.converted}
+              </small>
+            )}
           </Typography>
-          {convert && (
-            <small style={{ margin: "0 0 0.3rem 0", display: "block" }}>
-              {"   "}
-              <span style={{ color: "#556072", opacity: "0.5" }}>
-                {CONFIG.defaultCurrency.symbol}
-              </span>{" "}
-              {price.converted}
-            </small>
-          )}
         </Typography>
       ) : (
         "-"
