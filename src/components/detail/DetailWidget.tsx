@@ -113,7 +113,7 @@ const getOfferDetailData = (offer: Offer, priceInDollars: IPrice | null) => {
   ).toFixed(2);
   return [
     {
-      name: "Redeemable Until",
+      name: "Redeemable until",
       info: (
         <>
           <Typography tag="h6">
