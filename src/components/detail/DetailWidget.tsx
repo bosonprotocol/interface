@@ -314,8 +314,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 style={{ marginTop: isLteXS ? "-7rem" : "0" }}
               >
                 <Typography tag="p" style={{ color: colors.orange, margin: 0 }}>
-                  {/* // TODO: change that remove ! */}
-                  {!isHotOffer && (
+                  {isHotOffer && (
                     <>
                       {quantity === 0 && "No items available!"}
                       {quantity > 0 &&
