@@ -281,10 +281,6 @@ export const ImageContainer = styled.div`
 
 export const ImageWrapper = styled.div`
   position: relative;
-
-  img {
-    width: 100%;
-  }
 `;
 
 export const GlideWrapper = styled.div`
@@ -517,6 +513,7 @@ export const WidgetUpperGrid = styled.div`
     div {
       justify-content: space-between;
       gap: 1rem;
+      > div,
       > span {
         margin-left: unset !important;
       }
@@ -622,14 +619,6 @@ export const WidgetImageWrapper = styled.div`
   margin: 0 auto;
   display: block;
 
-  > div {
-    all: unset;
-  }
-  img {
-    all: unset;
-    width: 100%;
-  }
-
   ${breakpoint.xs} {
     width: 60%;
     margin: 0 auto;
@@ -656,11 +645,8 @@ export const ModalGrid = styled.div`
   grid-row-gap: 1rem;
   grid-template-columns: repeat(1, minmax(0, 1fr));
   ${breakpoint.s} {
-    grid-column-gap: 3rem;
-    grid-row-gap: 3rem;
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  margin-bottom: 2rem;
 `;
 
 export const PortalLogoImg = styled.img`
@@ -669,7 +655,7 @@ export const PortalLogoImg = styled.img`
 
 export const WidgetButtonWrapper = styled(Grid)`
   gap: 1rem;
-  margin-top: 2.5rem;
+  margin-top: 1rem;
   flex-direction: column;
   ${breakpoint.s} {
     flex-direction: row;

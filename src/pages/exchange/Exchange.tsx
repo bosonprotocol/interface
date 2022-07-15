@@ -26,7 +26,6 @@ import DetailTable from "../../components/detail/DetailTable";
 import DetailTransactions from "../../components/detail/DetailTransactions";
 import DetailWidget from "../../components/detail/DetailWidget";
 // DETAILS COMPONENTS ABOVE
-import ExchangeStatuses from "../../components/offer/ExchangeStatuses";
 import Image from "../../components/ui/Image";
 import SellerID from "../../components/ui/SellerID";
 import Typography from "../../components/ui/Typography";
@@ -168,10 +167,6 @@ export default function Exchange() {
           )}
           <MainDetailGrid>
             <ImageWrapper>
-              <ExchangeStatuses
-                offer={offer}
-                exchange={exchange as NonNullable<Offer["exchanges"]>[number]}
-              />
               <Image src={offerImg} dataTestId="offerImage" />
             </ImageWrapper>
             <div>

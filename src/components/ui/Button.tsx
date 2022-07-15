@@ -44,8 +44,9 @@ const BaseButton = styled.button<{
       : ""}
 
   :disabled {
-    background-color: ${colors.darkGrey};
-    opacity: 0.5;
+    background-color: ${colors.lightGrey};
+    color: ${colors.darkGrey};
+    border-width: 0;
     cursor: not-allowed;
   }
 `;

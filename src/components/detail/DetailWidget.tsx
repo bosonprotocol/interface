@@ -1,3 +1,8 @@
+import { exchanges } from "@bosonprotocol/core-sdk";
+import {
+  ExchangeFieldsFragment,
+  ExchangeState
+} from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
 import { Provider } from "@bosonprotocol/ethers-sdk";
 import {
   CancelButton,
@@ -7,9 +12,9 @@ import {
 import dayjs from "dayjs";
 import { useMemo, useRef, useState } from "react";
 import { AiOutlineCheck } from "react-icons/ai";
+import { BiCheck } from "react-icons/bi";
 import { BsQuestionCircle } from "react-icons/bs";
 import { HiOutlineExternalLink } from "react-icons/hi";
-import { MdOutlineNotificationsNone } from "react-icons/md";
 import { useSigner } from "wagmi";
 
 import portalLogo from "../../assets/portal.svg";
@@ -18,7 +23,9 @@ import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { IPrice } from "../../lib/utils/convertPrice";
+import { titleCase } from "../../lib/utils/formatText";
 import { isOfferHot } from "../../lib/utils/getOfferLabel";
+import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { Modal } from "../modal/Modal";
 import Price from "../price/index";
@@ -55,6 +62,7 @@ interface IModalData {
   isOpen: boolean;
   title?: string;
   type?: "SUCCESS" | "ERROR" | null;
+  message?: string;
 }
 
 const oneSecondToDays = 86400;
@@ -200,16 +208,23 @@ const getOfferDetailData = (offer: Offer, priceInDollars: IPrice | null) => {
 const DetailWidget: React.FC<IDetailWidget> = ({
   pageType,
   offer,
-  exchange = {},
+  exchange,
   handleModal,
   name = "",
   image = "",
   hasSellerEnoughFunds
 }) => {
+  const { isLteXS } = useBreakpoints();
   const cancelRef = useRef<HTMLDivElement | null>(null);
 
   const isOffer = pageType === "offer";
   const isExchange = pageType === "exchange";
+  const exchangeStatus = exchange
+    ? exchanges.getExchangeState(exchange as ExchangeFieldsFragment)
+    : null;
+  const isToRedeem =
+    !exchangeStatus || exchangeStatus === ExchangeState.Committed;
+
   const { data: signer } = useSigner();
   const navigate = useKeepQueryParamsNavigate();
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -257,12 +272,11 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       <Widget>
         {isExchange && (
           <RedeemLeftButton>
-            {redeemableDays}days left to Redeem
-            <MdOutlineNotificationsNone size={18} />
+            {redeemableDays} days left to Redeem
           </RedeemLeftButton>
         )}
         <div>
-          <WidgetUpperGrid style={{ paddingBottom: "1rem" }}>
+          <WidgetUpperGrid style={{ paddingBottom: "0.5rem" }}>
             <Price
               address={offer.exchangeToken.address}
               currencySymbol={offer.exchangeToken.symbol}
@@ -300,6 +314,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                   setModalData({
                     isOpen: true,
                     title: "An error occurred",
+                    message: "An error occurred when trying to commit!",
                     type: "ERROR"
                   });
                 }}
@@ -313,6 +328,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                   setModalData({
                     isOpen: true,
                     title: "You have successfully committed!",
+                    message: "You now own the rNFT",
                     type: "SUCCESS"
                   });
                 }}
@@ -320,48 +336,66 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 web3Provider={signer?.provider as Provider}
               />
             )}
-            <RedeemButton
-              disabled={isLoading || isOffer}
-              exchangeId={exchange?.id || offer.id}
-              chainId={CONFIG.chainId}
-              onError={(args) => {
-                console.error("onError", args);
-                setIsLoading(false);
-                setModalData({
-                  isOpen: true,
-                  title: "An error occurred",
-                  type: "ERROR"
-                });
-              }}
-              onPendingSignature={() => {
-                console.log("onPendingSignature");
-                setIsLoading(true);
-              }}
-              onSuccess={(args) => {
-                console.log("onSuccess", args);
-                setIsLoading(false);
-                setModalData({
-                  isOpen: true,
-                  title: "You have successfully committed!",
-                  type: "SUCCESS"
-                });
-              }}
-              extraInfo="Step 2"
-              web3Provider={signer?.provider as Provider}
-            />
+            {isToRedeem && (
+              <RedeemButton
+                disabled={isLoading || isOffer}
+                exchangeId={exchange?.id || offer.id}
+                chainId={CONFIG.chainId}
+                onError={(args) => {
+                  console.error("onError", args);
+                  setIsLoading(false);
+                  setModalData({
+                    isOpen: true,
+                    title: "An error occurred",
+                    message: "An error occurred when trying to redeem!",
+                    type: "ERROR"
+                  });
+                }}
+                onPendingSignature={() => {
+                  console.log("onPendingSignature");
+                  setIsLoading(true);
+                }}
+                onSuccess={(args) => {
+                  console.log("onSuccess", args);
+                  setIsLoading(false);
+                  setModalData({
+                    isOpen: true,
+                    title: "You have successfully redeemed!",
+                    message: "You have successfully redeemed!",
+                    type: "SUCCESS"
+                  });
+                }}
+                extraInfo="Step 2"
+                web3Provider={signer?.provider as Provider}
+              />
+            )}
+            {!isToRedeem && (
+              <Button theme="outline" disabled>
+                {titleCase(exchangeStatus)}
+                <BiCheck size={24} />
+              </Button>
+            )}
           </WidgetUpperGrid>
         </div>
-        <div>
-          <Grid justifyContent="center">
-            <CommitAndRedeemButton
-              tag="p"
-              onClick={handleModal}
-              style={{ fontSize: "0.875rem" }}
-            >
-              {isOffer ? "What is commit and redeem?" : "What is redeem?"}
-            </CommitAndRedeemButton>
-          </Grid>
-        </div>
+        <Grid
+          justifyContent="center"
+          style={
+            !isOffer && !isLteXS
+              ? {
+                  maxWidth: "50%",
+                  marginLeft: "calc(50% - 0.5rem)"
+                }
+              : {}
+          }
+        >
+          <CommitAndRedeemButton
+            tag="p"
+            onClick={handleModal}
+            style={{ fontSize: "0.875rem", marginTop: 0 }}
+          >
+            {isOffer ? "What is commit and redeem?" : "What is redeem?"}
+          </CommitAndRedeemButton>
+        </Grid>
         <Break />
         <div>
           <DetailTable align noBorder data={OFFER_DETAIL_DATA} />
@@ -398,6 +432,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               setModalData({
                 isOpen: true,
                 title: "An error occurred",
+                message: "An error occurred when trying to cancel!",
                 type: "ERROR"
               });
             }}
@@ -410,7 +445,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               setIsLoading(false);
               setModalData({
                 isOpen: true,
-                title: "You have successfully canceled!",
+                title: "You have successfully cancelled!",
+                message: "You have successfully cancelled!",
                 type: "SUCCESS"
               });
             }}
@@ -440,16 +476,16 @@ const DetailWidget: React.FC<IDetailWidget> = ({
           <div>
             <Widget>
               <Grid flexDirection="column">
-                {modalData.type === "SUCCESS" && (
-                  <Typography tag="p" style={{ margin: 0 }}>
-                    <b>You now own the rNFT</b>
-                  </Typography>
-                )}
-                {modalData.type === "ERROR" && (
-                  <Typography tag="p" style={{ margin: 0, color: colors.red }}>
-                    <b>An error occurred when trying to commit to this item</b>
-                  </Typography>
-                )}
+                <Typography
+                  tag="p"
+                  style={{
+                    margin: 0,
+                    color:
+                      modalData.type === "ERROR" ? colors.red : colors.black
+                  }}
+                >
+                  <b>{modalData.message}</b>
+                </Typography>
                 <Typography
                   tag="h2"
                   style={{ margin: "1rem 0", color: colors.secondary }}

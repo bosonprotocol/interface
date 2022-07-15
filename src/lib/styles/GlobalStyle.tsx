@@ -93,6 +93,7 @@ const GlobalStyle = createGlobalStyle<{
     font-weight: 400;
     margin: 0 0.5rem;
     opacity: 0.75;
+    white-space: pre;
   }
 
   h1 {

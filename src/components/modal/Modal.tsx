@@ -24,13 +24,13 @@ const Root = styled.div`
     padding: 0 2rem;
   }
   ${breakpoint.m} {
-    padding: 0 6rem;
+    padding: 0 8rem;
   }
   ${breakpoint.l} {
-    padding: 0 12rem;
+    padding: 0 10rem;
   }
   ${breakpoint.xl} {
-    padding: 0 22rem;
+    padding: 0 16rem;
   }
 `;
 
@@ -46,7 +46,10 @@ const ModalTitle = styled.div`
 const Content = styled.div`
   position: relative;
   color: ${colors.black};
-  top: 4.2rem;
+  top: 0;
+  ${breakpoint.s} {
+    top: 4.2rem;
+  }
   width: 100%;
   background-color: var(--primaryBgColor);
   border: var(--secondary);

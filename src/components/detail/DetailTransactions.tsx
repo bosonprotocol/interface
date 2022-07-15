@@ -65,8 +65,8 @@ const handleRows = ({ exchange, price, to, currency }: IHandleRows) => {
             event: EVENT_TYPES[index],
             from: "-",
             to: index === 0 ? to : "-",
-            price: index === 0 ? price?.price : "-",
-            currency: index === 0 ? currency : "-",
+            price: index === 0 ? price?.price : null,
+            currency: index === 0 ? currency : null,
             date
           }
         : null

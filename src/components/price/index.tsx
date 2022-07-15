@@ -15,9 +15,10 @@ const CurrencyIconContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-top: -1.5rem;
   img {
-    height: 25px;
-    width: 25px;
+    height: 1.5rem;
+    width: 1.5rem;
   }
 `;
 
@@ -55,7 +56,7 @@ export default function Price({
             ? price.integer
             : `${price.integer}.${price.fractions}`}
           {convert && (
-            <small>
+            <small style={{ margin: "0", display: "block" }}>
               {" "}
               {CONFIG.defaultCurrency.symbol} {price.converted}
             </small>
