@@ -55,6 +55,7 @@ export default function ConnectButton() {
                   <Button
                     onClick={openConnectModal}
                     size={isLteXS ? "small" : "regular"}
+                    style={{ whiteSpace: "pre" }}
                   >
                     Connect Wallet
                     {!isLteXS && <MetaMaskLogo src={metamaskLogo} />}
@@ -68,6 +69,7 @@ export default function ConnectButton() {
                     onClick={openChainModal}
                     theme="warning"
                     size={isLteXS ? "small" : "regular"}
+                    style={{ whiteSpace: "pre" }}
                   >
                     Wrong network
                     <BsChevronDown size={12} />
