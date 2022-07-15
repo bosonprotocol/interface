@@ -73,6 +73,11 @@ const getOfferDetailData = (offer: Offer, priceInDollars: IPrice | null) => {
     Number(offer.voucherValidDuration) / oneSecondToDays
   );
 
+  const redeemableUntil = dayjs(
+    Number(offer.validFromDate) * 1000 +
+      Number(offer.voucherValidDuration) * 1000
+  ).format(CONFIG.dateFormat);
+
   const resolutionPeriodDurationDays = Math.round(
     Number(offer.resolutionPeriodDuration) / oneSecondToDays
   );
@@ -97,7 +102,7 @@ const getOfferDetailData = (offer: Offer, priceInDollars: IPrice | null) => {
   ).toFixed(2);
   return [
     {
-      name: "Redeemable",
+      name: "Redeemable Until",
       info: (
         <>
           <Typography tag="h6">
@@ -114,12 +119,7 @@ const getOfferDetailData = (offer: Offer, priceInDollars: IPrice | null) => {
           </Typography>
         </>
       ),
-      value: (
-        <Typography tag="p">
-          {redeemableDays}
-          <small>{getDayOrDays(redeemableDays)}</small>
-        </Typography>
-      )
+      value: <Typography tag="p">{redeemableUntil}</Typography>
     },
     {
       name: "Seller deposit",
