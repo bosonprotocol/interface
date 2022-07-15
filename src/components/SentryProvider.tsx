@@ -19,7 +19,6 @@ const routingInstrumentationFn = Sentry.reactRouterV6Instrumentation(
   matchRoutes
 );
 routingInstrumentationFn(() => undefined, true, true);
-console.log(CONFIG.enableSentryLogging);
 Sentry.init({
   debug: CONFIG.enableSentryLogging,
   dsn: CONFIG.sentryDSNUrl,

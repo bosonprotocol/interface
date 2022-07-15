@@ -29,20 +29,6 @@ interface ITransactionHistory {
   date: string;
 }
 
-function TransactionRows({ row, index }: RowProps) {
-  const date = dayjs(getDateTimestamp(row.date)).format(`YY.MM.DD, HH:mm`);
-
-  return (
-    <tr key={`transaction_tr_${index}`}>
-      <td>{row.event}</td>
-      <td>{row.from}</td>
-      <td>{row.to}</td>
-      <td>{row.price ? `${row.price} ${row.currency}` : "-"}</td>
-      <td>{date}</td>
-    </tr>
-  );
-}
-
 interface IHandleRows {
   exchange: NonNullable<Offer["exchanges"]>[number];
   price: IPrice | null;
@@ -103,9 +89,21 @@ export default function DetailTransactions({
           </tr>
         </thead>
         <tbody>
-          {allRows?.map((row: any, index: number) => (
-            <TransactionRows row={row} index={index} />
-          ))}
+          {allRows?.map((row: any, index: number) => {
+            const date = dayjs(getDateTimestamp(row.date)).format(
+              `YY.MM.DD, HH:mm`
+            );
+
+            return (
+              <tr key={`transaction_tr_${index}`}>
+                <td>{row.event}</td>
+                <td>{row.from}</td>
+                <td>{row.to}</td>
+                <td>{row.price ? `${row.price} ${row.currency}` : "-"}</td>
+                <td>{date}</td>
+              </tr>
+            );
+          })}
         </tbody>
       </Transactions>
     </div>

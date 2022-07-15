@@ -27,6 +27,7 @@ import { titleCase } from "../../lib/utils/formatText";
 import { isOfferHot } from "../../lib/utils/getOfferLabel";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { getItemFromStorage } from "../../lib/utils/hooks/useLocalStorage";
 import { Modal } from "../modal/Modal";
 import Price from "../price/index";
 import { useConvertedPrice } from "../price/useConvertedPrice";
@@ -266,6 +267,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       child.click();
     }
   };
+  const isChainUnsupported = getItemFromStorage("isChainUnsupported", false);
 
   return (
     <>
@@ -301,6 +303,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
             {isOffer && (
               <CommitButton
                 disabled={
+                  isChainUnsupported ||
                   !hasSellerEnoughFunds ||
                   isExpiredOffer ||
                   isLoading ||
@@ -338,7 +341,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
             )}
             {isToRedeem && (
               <RedeemButton
-                disabled={isLoading || isOffer}
+                disabled={isChainUnsupported || isLoading || isOffer}
                 exchangeId={exchange?.id || offer.id}
                 chainId={CONFIG.chainId}
                 onError={(args) => {
@@ -404,9 +407,10 @@ const DetailWidget: React.FC<IDetailWidget> = ({
           <>
             <Break />
             <RaiseProblemButton
-              tag="p"
               onClick={handleCancel}
+              theme="blank"
               style={{ fontSize: "0.875rem" }}
+              disabled={isChainUnsupported}
             >
               Raise a problem
               <BsQuestionCircle size={18} />
@@ -423,7 +427,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
           }}
         >
           <CancelButton
-            disabled={isLoading}
+            disabled={isChainUnsupported || isLoading}
             exchangeId={exchange?.id || offer.id}
             chainId={CONFIG.chainId}
             onError={(args) => {

@@ -6,6 +6,7 @@ import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import { LinkWithQuery } from "../linkStoreFields/LinkStoreFields";
+import Button from "../ui/Button";
 import Grid from "../ui/Grid";
 import { buttonText } from "../ui/styles";
 import Typography from "../ui/Typography";
@@ -755,7 +756,7 @@ export const CommitAndRedeemButton = styled(Typography)`
   }
 `;
 
-export const RaiseProblemButton = styled(Typography)`
+export const RaiseProblemButton = styled(Button)`
   width: 100%;
   display: flex;
   justify-content: center;
@@ -767,7 +768,7 @@ export const RaiseProblemButton = styled(Typography)`
   color: ${colors.orange};
   cursor: pointer;
   transition: all 150ms ease-in-out;
-  &:hover {
+  &:hover:not(:disabled) {
     color: ${colors.red};
     background: ${colors.lightGrey};
   }

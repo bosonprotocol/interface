@@ -6,6 +6,7 @@ import styled from "styled-components";
 import metamaskLogo from "../../../src/assets/metamask-logo.svg";
 import Button from "../../components/ui/Button";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
+import { saveItemInStorage } from "../../lib/utils/hooks/useLocalStorage";
 import FallbackAvatar from "../avatar/fallback-avatar";
 
 const MetaMaskLogo = styled.img`
@@ -21,7 +22,6 @@ const ENSAvatar = styled.img`
 
 export default function ConnectButton() {
   const { isLteXS } = useBreakpoints();
-
   return (
     <RainbowConnectButton.Custom>
       {({
@@ -51,6 +51,7 @@ export default function ConnectButton() {
               if (!mounted || !account || !chain) {
                 // reset the tag o undefined
                 Sentry.setTag("wallet_address", undefined);
+
                 return (
                   <Button
                     onClick={openConnectModal}
@@ -64,6 +65,7 @@ export default function ConnectButton() {
               }
 
               if (chain.unsupported) {
+                saveItemInStorage("isChainUnsupported", true);
                 return (
                   <Button
                     onClick={openChainModal}
@@ -76,7 +78,7 @@ export default function ConnectButton() {
                   </Button>
                 );
               }
-
+              saveItemInStorage("isChainUnsupported", false);
               return (
                 <div style={{ display: "flex", gap: 12 }}>
                   <Button
