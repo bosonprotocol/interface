@@ -33,7 +33,14 @@ import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
-import { getOfferImage } from "../../lib/utils/hooks/offers/placeholders";
+import {
+  getOfferArtistDescription,
+  getOfferDescription,
+  getOfferImage,
+  getOfferImageList,
+  getOfferProductData,
+  getOfferShippingInformation
+} from "../../lib/utils/hooks/offers/placeholders";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useSellers } from "../../lib/utils/hooks/useSellers";
 import { isAccountSeller } from "../../lib/utils/isAccountSeller";
@@ -132,11 +139,17 @@ export default function Exchange() {
     );
   }
   const isSeller = isAccountSeller(offer, address);
-  const name = offer.metadata?.name || "Untitled";
-  const offerImg = getOfferImage(offer.id, name);
-  const description = offer.metadata?.description || "";
   const buyerAddress = exchange.buyer.wallet;
   const isBuyer = buyerAddress.toLowerCase() === address.toLowerCase();
+
+  const name = offer.metadata?.name || "Untitled";
+  const offerImg = getOfferImage(offer.id, name);
+  const shippingInfo = getOfferShippingInformation(name);
+  const description = offer.metadata?.description || "";
+  const mockedDescription = getOfferDescription(name);
+  const productData = getOfferProductData(name);
+  const artistDescription = getOfferArtistDescription(name);
+  const images = getOfferImageList(name);
 
   return (
     <>
@@ -225,18 +238,18 @@ export default function Exchange() {
                 style={{ color: colors.darkGrey }}
                 data-testid="description"
               >
-                {description || MOCK.description}
+                {mockedDescription || description}
               </Typography>
-              <DetailTable data={MOCK.table} />
+              <DetailTable data={productData} tag="strong" />
             </div>
             <div>
               <Typography tag="h3">About the artist</Typography>
               <Typography tag="p" style={{ color: colors.darkGrey }}>
-                {MOCK.aboutArtist}
+                {artistDescription || MOCK.aboutArtist}
               </Typography>
             </div>
           </DetailGrid>
-          <DetailSlider images={MOCK.images} />
+          <DetailSlider images={images.length ? images : MOCK.images} />
           <DetailGrid>
             <DetailChart offer={offer} title="Trade history (all items)" />
             <DetailTransactions
@@ -248,9 +261,9 @@ export default function Exchange() {
             <div>
               <Typography tag="h3">Shipping information</Typography>
               <Typography tag="p" style={{ color: colors.darkGrey }}>
-                {MOCK.shipping}
+                {shippingInfo.shipping}
               </Typography>
-              <DetailTable data={MOCK.shippingTable} />
+              <DetailTable data={shippingInfo.shippingTable} />
             </div>
           </DetailGrid>
         </DarkerBackground>

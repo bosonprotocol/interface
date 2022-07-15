@@ -37,6 +37,7 @@ import Typography from "../ui/Typography";
 import {
   Break,
   CommitAndRedeemButton,
+  ImageWrapper,
   ModalGrid,
   OpenSeaButton,
   PortalLogoImg,
@@ -44,7 +45,6 @@ import {
   RedeemLeftButton,
   Widget,
   WidgetButtonWrapper,
-  WidgetImageWrapper,
   WidgetUpperGrid
 } from "./Detail.style";
 import DetailTable from "./DetailTable";
@@ -464,7 +464,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
         }
       >
         <ModalGrid>
-          <WidgetImageWrapper>
+          <ImageWrapper>
             {modalData.type === "SUCCESS" && (
               <OpenSeaButton>
                 View on OpenSea
@@ -472,7 +472,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               </OpenSeaButton>
             )}
             <Image src={image} dataTestId="offerImage" />
-          </WidgetImageWrapper>
+          </ImageWrapper>
           <div>
             <Widget>
               <Grid flexDirection="column">
