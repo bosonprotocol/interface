@@ -50,6 +50,7 @@ export default function ConnectButton() {
               ></div>;
               if (!mounted || !account || !chain) {
                 // reset the tag o undefined
+                saveItemInStorage("isChainUnsupported", true);
                 Sentry.setTag("wallet_address", undefined);
 
                 return (
