@@ -15,17 +15,12 @@ interface Props {
   buyerAddress: string;
 }
 
-interface RowProps {
-  row: ITransactionHistory;
-  index: number;
-}
-
 interface ITransactionHistory {
   event: typeof EVENT_TYPES[number];
   from: string;
   to: string;
-  price?: number;
-  currency?: string;
+  price?: string | null | undefined;
+  currency?: string | null;
   date: string;
 }
 
@@ -37,27 +32,25 @@ interface IHandleRows {
 }
 const handleRows = ({ exchange, price, to, currency }: IHandleRows) => {
   const dates = [
-    exchange?.committedDate || false,
-    exchange?.redeemedDate || false,
-    exchange?.cancelledDate || false,
-    exchange?.revokedDate || false,
-    exchange?.finalizedDate || false
-  ];
+    exchange?.committedDate || null,
+    exchange?.redeemedDate || null,
+    exchange?.cancelledDate || null,
+    exchange?.revokedDate || null,
+    exchange?.finalizedDate || null
+  ].filter((n): n is string => {
+    return n !== null;
+  });
 
-  return dates
-    .map((date: string | boolean, index: number) =>
-      date
-        ? {
-            event: EVENT_TYPES[index],
-            from: "-",
-            to: index === 0 ? to : "-",
-            price: index === 0 ? price?.price : null,
-            currency: index === 0 ? currency : null,
-            date
-          }
-        : null
-    )
-    .filter((n: any) => n);
+  const test = dates.map((date: string, index: number) => ({
+    event: EVENT_TYPES[index],
+    from: "-",
+    to: index === 0 ? to : "-",
+    price: index === 0 ? price?.price : null,
+    currency: index === 0 ? currency : null,
+    date
+  }));
+
+  return test;
 };
 
 export default function DetailTransactions({
@@ -89,7 +82,8 @@ export default function DetailTransactions({
           </tr>
         </thead>
         <tbody>
-          {allRows?.map((row: any, index: number) => {
+          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+          {allRows?.map((row: ITransactionHistory, index: number) => {
             const date = dayjs(getDateTimestamp(row.date)).format(
               `YY.MM.DD, HH:mm`
             );

@@ -16,6 +16,7 @@ interface Props {
   images: Readonly<Array<string>>;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let glide: any;
 export default function DetailSlider({ images }: Props) {
   const ref = useRef();

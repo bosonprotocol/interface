@@ -1,6 +1,8 @@
+import { useMemo } from "react";
 import styled from "styled-components";
 
 import { CONFIG } from "../../lib/config";
+import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
 import CurrencyIcon from "./CurrencyIcon";
 import { useConvertedPrice } from "./useConvertedPrice";
@@ -26,6 +28,7 @@ interface IProps {
   decimals: string;
   currencySymbol: string;
   convert?: boolean;
+  isExchange?: boolean;
   tag?: keyof JSX.IntrinsicElements;
   address: string;
 }
@@ -35,11 +38,27 @@ export default function Price({
   decimals,
   currencySymbol,
   convert = false,
+  isExchange = false,
   tag = "h4",
   address,
   ...rest
 }: IProps) {
   const price = useConvertedPrice({ value, decimals });
+
+  const convertedPrice = useMemo(
+    () =>
+      convert &&
+      price && (
+        <small style={{ marginLeft: isExchange ? "-1rem" : "0" }}>
+          {"   "}
+          <span style={{ color: "#556072", opacity: "0.5" }}>
+            {CONFIG.defaultCurrency.symbol}
+          </span>{" "}
+          {price?.converted}
+        </small>
+      ),
+    [convert, price, isExchange]
+  );
 
   return (
     <Root {...rest} data-testid="price">
@@ -47,9 +66,10 @@ export default function Price({
         <CurrencyIcon currencySymbol={currencySymbol} address={address} />
       </CurrencyIconContainer>
       {price ? (
-        <Typography
-          tag="div"
-          style={{ margin: "0", display: "flex", alignItems: "end" }}
+        <Grid
+          alignItems="baseline"
+          justifyContent="flex-start"
+          flexDirection={isExchange ? "column" : "row"}
         >
           <Typography
             tag={tag}
@@ -58,17 +78,9 @@ export default function Price({
             {price.fractions === "0"
               ? price.integer
               : `${price.integer}.${price.fractions}`}
-            {convert && (
-              <small style={{ margin: "0 0 0.3rem 0", display: "block" }}>
-                {"   "}
-                <span style={{ color: "#556072", opacity: "0.5" }}>
-                  {CONFIG.defaultCurrency.symbol}
-                </span>{" "}
-                {price.converted}
-              </small>
-            )}
           </Typography>
-        </Typography>
+          {convertedPrice}
+        </Grid>
       ) : (
         "-"
       )}

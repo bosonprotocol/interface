@@ -77,9 +77,6 @@ const PriceText = styled(Typography)`
   color: #556072;
   font-size: 0.875rem;
 `;
-const TextBelow = styled(Typography)`
-  font-size: 0.75rem;
-`;
 
 const getCTAPath = (
   action: Props["action"],

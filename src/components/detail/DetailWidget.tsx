@@ -64,12 +64,6 @@ const StyledPrice = styled(Price)`
   }
 `;
 
-const PriceAndTextWrapper = styled.div`
-  display: flex;
-  width: 100%;
-  padding-bottom: 0.5rem;
-`;
-
 interface IDetailWidget {
   pageType?: "exchange" | "offer";
   offer: Offer;
@@ -90,10 +84,6 @@ const oneSecondToDays = 86400;
 const getDayOrDays = (value: number) => (value === 1 ? "day" : "days");
 
 const getOfferDetailData = (offer: Offer, priceInDollars: IPrice | null) => {
-  const redeemableDays = Math.round(
-    Number(offer.voucherValidDuration) / oneSecondToDays
-  );
-
   const redeemableUntil = dayjs(
     Number(offer.validFromDate) * 1000 +
       Number(offer.voucherValidDuration) * 1000
@@ -130,8 +120,7 @@ const getOfferDetailData = (offer: Offer, priceInDollars: IPrice | null) => {
             <b>Redeemable</b>
           </Typography>
           <Typography tag="p" style={{ margin: "1rem 0" }}>
-            Redeemable until {redeemableDays} {getDayOrDays(redeemableDays)}{" "}
-            after committing.
+            Redeemable until {redeemableUntil}
           </Typography>
           <Typography tag="p">
             If you don’t redeem your NFT during the redemption period, it will
@@ -235,7 +224,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   image = "",
   hasSellerEnoughFunds
 }) => {
-  const { isLteXS, isLteS } = useBreakpoints();
+  const { isLteXS } = useBreakpoints();
   const cancelRef = useRef<HTMLDivElement | null>(null);
 
   const isOffer = pageType === "offer";
@@ -280,7 +269,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
 
   const handleCancel = () => {
     // TODO: it's just a workaround for now
-    const child = cancelRef.current!.children[0];
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const child = cancelRef.current!.children[0] ?? null;
     if (child) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
@@ -300,6 +290,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
         <div>
           <WidgetUpperGrid style={{ paddingBottom: "0.5rem" }}>
             <StyledPrice
+              isExchange={isExchange}
               address={offer.exchangeToken.address}
               currencySymbol={offer.exchangeToken.symbol}
               value={offer.price}
