@@ -90,7 +90,6 @@ const GlobalStyle = createGlobalStyle<{
 
   * > small {
     font-size: 65%;
-    font-weight: 400;
     margin: 0 0.5rem;
     opacity: 0.75;
   }
@@ -112,13 +111,11 @@ const GlobalStyle = createGlobalStyle<{
   }
   h4, h5, h6 {
     font-size: 1.25rem;
-    font-weight: 400;
     line-height: 1.5;
     margin: 0 0 1rem 0;
   }
   a, p, span, div {
     font-size: 1rem;
-    font-weight: 400;
     line-height: 1.5;
   }
   img, svg, input {
