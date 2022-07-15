@@ -13,7 +13,6 @@ import SellerID from "../ui/SellerID";
 import Typography from "../ui/Typography";
 import ExchangeStatuses from "./ExchangeStatuses";
 import OfferBanner from "./OfferBanner";
-import OfferRedeemable from "./OfferRedeemable";
 import OfferStatuses from "./OfferStatuses";
 
 const Card = styled.div<{ isCarousel: boolean }>`
@@ -65,16 +64,21 @@ const Name = styled(Typography)`
 `;
 
 const Price = styled(RootPrice)`
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: bold;
   stroke: black;
+  svg {
+    position: relative;
+    top: 2px;
+  }
 `;
 
 const PriceText = styled(Typography)`
   color: #556072;
+  font-size: 0.875rem;
 `;
 const TextBelow = styled(Typography)`
-  font-size: 12px;
+  font-size: 0.75rem;
 `;
 
 const getCTAPath = (
@@ -165,7 +169,11 @@ export default function OfferCard({
       </Image>
       <Content>
         {isSellerVisible && sellerAddress && (
-          <SellerID seller={offer?.seller} offerName={name}>
+          <SellerID
+            seller={offer?.seller}
+            offerName={name}
+            withProfileImage={false}
+          >
             <PriceText>Price</PriceText>
           </SellerID>
         )}
@@ -183,11 +191,6 @@ export default function OfferCard({
             />
           )}
         </BasicInfoContainer>
-        {!exchange && (
-          <TextBelow>
-            <OfferRedeemable offer={offer} />
-          </TextBelow>
-        )}
       </Content>
     </Card>
   );

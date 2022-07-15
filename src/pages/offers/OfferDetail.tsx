@@ -208,6 +208,7 @@ export default function OfferDetail() {
               seller={offer?.seller}
               offerName={name}
               justifyContent="flex-start"
+              withProfileImage
             >
               <DetailLabel offer={offer} />
             </SellerID>

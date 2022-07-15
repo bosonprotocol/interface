@@ -15,6 +15,7 @@ import { AiOutlineCheck } from "react-icons/ai";
 import { BiCheck } from "react-icons/bi";
 import { BsQuestionCircle } from "react-icons/bs";
 import { HiOutlineExternalLink } from "react-icons/hi";
+import styled from "styled-components";
 import { useSigner } from "wagmi";
 
 import portalLogo from "../../assets/portal.svg";
@@ -48,6 +49,25 @@ import {
   WidgetUpperGrid
 } from "./Detail.style";
 import DetailTable from "./DetailTable";
+
+const StyledPrice = styled(Price)`
+  h3 {
+    font-size: 2rem;
+  }
+  small {
+    font-size: 1rem;
+  }
+
+  svg {
+    transform: scale(1.2);
+  }
+`;
+
+const PriceAndTextWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  padding-bottom: 0.5rem;
+`;
 
 interface IDetailWidget {
   pageType?: "exchange" | "offer";
@@ -276,8 +296,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
           </RedeemLeftButton>
         )}
         <div>
-          <WidgetUpperGrid style={{ paddingBottom: "0.5rem" }}>
-            <Price
+          <PriceAndTextWrapper>
+            <StyledPrice
               address={offer.exchangeToken.address}
               currencySymbol={offer.exchangeToken.symbol}
               value={offer.price}
@@ -298,6 +318,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 )}
               </Typography>
             )}
+          </PriceAndTextWrapper>
+          <WidgetUpperGrid style={{ paddingBottom: "0.5rem" }}>
             {isOffer && (
               <CommitButton
                 disabled={
@@ -332,7 +354,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                     type: "SUCCESS"
                   });
                 }}
-                extraInfo="Step 1"
+                extraInfo="Step 1/2"
                 web3Provider={signer?.provider as Provider}
               />
             )}

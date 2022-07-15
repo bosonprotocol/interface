@@ -20,7 +20,6 @@ interface Props {
 const IconContainer = styled.div`
   display: flex;
   align-items: center;
-  transform: scale(1.2);
   path {
     stroke-width: 0px;
   }
@@ -37,7 +36,7 @@ export default function CurrencyIcon({ currencySymbol, address }: Props) {
     const Icon = currencyImages[symbolUpperCase];
     return (
       <IconContainer>
-        <Icon />
+        <Icon width="26.38" height="26.38" viewBox="0 0 26.38" />
       </IconContainer>
     );
   }

@@ -15,7 +15,6 @@ const CurrencyIconContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: -1.5rem;
   img {
     height: 1.5rem;
     width: 1.5rem;
@@ -49,16 +48,24 @@ export default function Price({
       </CurrencyIconContainer>
       {price ? (
         <Typography
-          tag={tag}
-          style={{ margin: "0", fontWeight: "600", letterSpacing: "-1px" }}
+          tag="div"
+          style={{ margin: "0", display: "flex", alignItems: "end" }}
         >
-          {price.fractions === "0"
-            ? price.integer
-            : `${price.integer}.${price.fractions}`}
+          <Typography
+            tag={tag}
+            style={{ fontWeight: "600", letterSpacing: "-1px", margin: "0" }}
+          >
+            {price.fractions === "0"
+              ? price.integer
+              : `${price.integer}.${price.fractions}`}
+          </Typography>
           {convert && (
-            <small style={{ margin: "0", display: "block" }}>
-              {" "}
-              {CONFIG.defaultCurrency.symbol} {price.converted}
+            <small style={{ margin: "0 0 0.3rem 0", display: "block" }}>
+              {"   "}
+              <span style={{ color: "#556072", opacity: "0.5" }}>
+                {CONFIG.defaultCurrency.symbol}
+              </span>{" "}
+              {price.converted}
             </small>
           )}
         </Typography>
