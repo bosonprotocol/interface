@@ -15,11 +15,16 @@ import { AiOutlineCheck } from "react-icons/ai";
 import { BiCheck } from "react-icons/bi";
 import { BsQuestionCircle } from "react-icons/bs";
 import { HiOutlineExternalLink } from "react-icons/hi";
+import { generatePath } from "react-router-dom";
 import styled from "styled-components";
 import { useSigner } from "wagmi";
 
 import portalLogo from "../../assets/portal.svg";
 import { CONFIG } from "../../lib/config";
+import {
+  AccountQueryParameters,
+  UrlParameters
+} from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
@@ -58,10 +63,6 @@ const StyledPrice = styled(Price)`
   small {
     font-size: 1rem;
   }
-
-  svg {
-    transform: scale(1.2);
-  }
 `;
 
 interface IDetailWidget {
@@ -78,6 +79,7 @@ interface IModalData {
   title?: string;
   type?: "SUCCESS" | "ERROR" | null;
   message?: string;
+  id?: string;
 }
 
 const oneSecondToDays = 86400;
@@ -342,14 +344,15 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                   console.log("onPendingSignature");
                   setIsLoading(true);
                 }}
-                onSuccess={(args) => {
-                  console.log("onSuccess", args);
+                onSuccess={(args, { exchangeId }) => {
+                  console.log("onSuccess", args, exchangeId);
                   setIsLoading(false);
                   setModalData({
                     isOpen: true,
                     title: "You have successfully committed!",
                     message: "You now own the rNFT",
-                    type: "SUCCESS"
+                    type: "SUCCESS",
+                    id: exchangeId.toString()
                   });
                 }}
                 extraInfo="Step 1/2"
@@ -523,10 +526,23 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               <Button
                 theme="secondary"
                 onClick={() => {
-                  navigate({ pathname: BosonRoutes.YourAccount });
+                  const exchangeId = modalData?.id || false;
+                  if (exchangeId) {
+                    const pathname = generatePath(BosonRoutes.Exchange, {
+                      [UrlParameters.exchangeId]: exchangeId
+                    });
+                    navigate({
+                      pathname
+                    });
+                  } else {
+                    navigate({
+                      pathname: BosonRoutes.YourAccount,
+                      search: `${AccountQueryParameters.tab}=exchanges`
+                    });
+                  }
                 }}
               >
-                View my items
+                {modalData?.id ? "View my item" : "View my items"}
               </Button>
               <Button
                 theme="primary"

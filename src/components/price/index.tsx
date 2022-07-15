@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import styled from "styled-components";
 
 import { CONFIG } from "../../lib/config";
+import { breakpoint } from "../../lib/styles/breakpoint";
 import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
 import CurrencyIcon from "./CurrencyIcon";
@@ -11,15 +12,23 @@ const Root = styled.div`
   display: flex;
   gap: 0.25rem;
   align-items: center;
-`;
-
-const CurrencyIconContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  img {
-    height: 1.5rem;
-    width: 1.5rem;
+  h3,
+  h4 {
+    padding-left: 2.5rem;
+    ${breakpoint.m} {
+      padding-left: 2rem;
+    }
+    position: relative;
+  }
+  *[data-currency],
+  svg {
+    position: absolute;
+    top: 50%;
+    left: 0rem;
+    transform: translate(0, -50%) scale(1.25);
+    ${breakpoint.m} {
+      transform: translate(0, -50%) scale(1.5);
+    }
   }
 `;
 
@@ -62,9 +71,6 @@ export default function Price({
 
   return (
     <Root {...rest} data-testid="price">
-      <CurrencyIconContainer>
-        <CurrencyIcon currencySymbol={currencySymbol} address={address} />
-      </CurrencyIconContainer>
       {price ? (
         <Grid
           alignItems="baseline"
@@ -75,6 +81,7 @@ export default function Price({
             tag={tag}
             style={{ fontWeight: "600", letterSpacing: "-1px", margin: "0" }}
           >
+            <CurrencyIcon currencySymbol={currencySymbol} address={address} />
             {price.fractions === "0"
               ? price.integer
               : `${price.integer}.${price.fractions}`}

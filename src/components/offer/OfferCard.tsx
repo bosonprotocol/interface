@@ -66,11 +66,6 @@ const Name = styled(Typography)`
 const Price = styled(RootPrice)`
   font-size: 1rem;
   font-weight: bold;
-  stroke: black;
-  svg {
-    position: relative;
-    top: 2px;
-  }
 `;
 
 const PriceText = styled(Typography)`
