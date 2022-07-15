@@ -1,6 +1,6 @@
 import { Offer } from "../../../types/offer";
 import { checkOfferMetadata } from "../../validators";
-import getOfferImage from "./getOfferImage";
+import { getOfferImage } from "./placeholders";
 import { CurationListGetOffersResult } from "./types";
 
 export function memoMergeAndSortOffers() {

@@ -4,11 +4,18 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { HashRouter, Route } from "react-router-dom";
 
 import App from "./components/app";
-import Layout from "./components/Layout";
 import ScrollToTop from "./components/ScrollToTop";
 import SentryProvider from "./components/SentryProvider";
 import WalletConnectionProvider from "./components/WalletConnectionProvider";
 import { BosonRoutes, OffersRoutes } from "./lib/routing/routes";
+import PrivateAccount from "./pages/account/private/PrivateAccountContainer";
+import PublicOrPrivateAccount from "./pages/account/public/PublicOrPrivateAccount";
+import CreateOffer from "./pages/create-offer/CreateOffer";
+import CustomStore from "./pages/custom-store/CustomStore";
+import Exchange from "./pages/exchange/Exchange";
+import Explore from "./pages/explore/Explore";
+import Landing from "./pages/landing/Landing";
+import OfferDetail from "./pages/offers/OfferDetail";
 import reportWebVitals from "./reportWebVitals";
 
 const rootElement = document.getElementById("root");
@@ -16,29 +23,6 @@ if (!rootElement) throw new Error("Unable to find the root element");
 const queryClient = new QueryClient();
 
 const root = createRoot(rootElement);
-
-const CreateOffer = React.lazy(
-  () => import("./pages/create-offer/CreateOffer")
-);
-const Explore = React.lazy(() => import("./pages/explore/Explore"));
-const Landing = React.lazy(() => import("./pages/landing/Landing"));
-const OfferDetail = React.lazy(() => import("./pages/offers/OfferDetail"));
-const Exchange = React.lazy(() => import("./pages/exchange/Exchange"));
-const PrivateAccount = React.lazy(
-  () => import("./pages/account/private/PrivateAccountContainer")
-);
-const PublicOrPrivateAccount = React.lazy(
-  () => import("./pages/account/public/PublicOrPrivateAccount")
-);
-const CustomStore = React.lazy(
-  () => import("./pages/custom-store/CustomStore")
-);
-
-const Loading = () => (
-  <Layout>
-    <p>Loading...</p>
-  </Layout>
-);
 
 const StrictMode = ({
   enable,
@@ -61,78 +45,33 @@ root.render(
           <ScrollToTop />
           <SentryProvider>
             <Route path="/" element={<App />}>
-              <Route
-                path={BosonRoutes.Root}
-                element={
-                  <React.Suspense fallback={<Loading />}>
-                    <Landing />
-                  </React.Suspense>
-                }
-              />
+              <Route path={BosonRoutes.Root} element={<Landing />} />
               {[
                 OffersRoutes.Root,
                 BosonRoutes.Explore,
                 BosonRoutes.ExplorePage,
                 BosonRoutes.ExplorePageByIndex
               ].map((route) => (
-                <Route
-                  key={route}
-                  path={route}
-                  element={
-                    <React.Suspense fallback={<Loading />}>
-                      <Explore />
-                    </React.Suspense>
-                  }
-                />
+                <Route key={route} path={route} element={<Explore />} />
               ))}
 
-              <Route
-                path={BosonRoutes.Sell}
-                element={
-                  <React.Suspense fallback={<Loading />}>
-                    <CreateOffer />
-                  </React.Suspense>
-                }
-              />
+              <Route path={BosonRoutes.Sell} element={<CreateOffer />} />
               <Route
                 path={OffersRoutes.OfferDetail}
-                element={
-                  <React.Suspense fallback={<Loading />}>
-                    <OfferDetail />
-                  </React.Suspense>
-                }
+                element={<OfferDetail />}
               />
-              <Route
-                path={BosonRoutes.Exchange}
-                element={
-                  <React.Suspense fallback={<Loading />}>
-                    <Exchange />
-                  </React.Suspense>
-                }
-              />
+              <Route path={BosonRoutes.Exchange} element={<Exchange />} />
               <Route
                 path={BosonRoutes.YourAccount}
-                element={
-                  <React.Suspense fallback={<Loading />}>
-                    <PrivateAccount />
-                  </React.Suspense>
-                }
+                element={<PrivateAccount />}
               />
               <Route
                 path={BosonRoutes.Account}
-                element={
-                  <React.Suspense fallback={<Loading />}>
-                    <PublicOrPrivateAccount />
-                  </React.Suspense>
-                }
+                element={<PublicOrPrivateAccount />}
               />
               <Route
                 path={BosonRoutes.CreateStorefront}
-                element={
-                  <React.Suspense fallback={<Loading />}>
-                    <CustomStore />
-                  </React.Suspense>
-                }
+                element={<CustomStore />}
               />
 
               <Route

@@ -13,8 +13,9 @@ import { GlideSlide, GlideWrapper } from "./Detail.style";
 
 type Direction = "<" | ">";
 interface Props {
-  images: Array<string>;
+  images: Readonly<Array<string>>;
 }
+
 let glide: any;
 export default function DetailSlider({ images }: Props) {
   const ref = useRef();
