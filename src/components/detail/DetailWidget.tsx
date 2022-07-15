@@ -368,7 +368,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                     type: "SUCCESS"
                   });
                 }}
-                extraInfo="Step 2"
+                extraInfo={isToRedeem ? "Step 2/2" : "Step 2"}
                 web3Provider={signer?.provider as Provider}
               />
             )}
