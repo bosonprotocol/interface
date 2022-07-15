@@ -28,6 +28,7 @@ import { titleCase } from "../../lib/utils/formatText";
 import { isOfferHot } from "../../lib/utils/getOfferLabel";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { getItemFromStorage } from "../../lib/utils/hooks/useLocalStorage";
 import { Modal } from "../modal/Modal";
 import Price from "../price/index";
 import { useConvertedPrice } from "../price/useConvertedPrice";
@@ -38,6 +39,7 @@ import Typography from "../ui/Typography";
 import {
   Break,
   CommitAndRedeemButton,
+  ImageWrapper,
   ModalGrid,
   OpenSeaButton,
   PortalLogoImg,
@@ -45,7 +47,6 @@ import {
   RedeemLeftButton,
   Widget,
   WidgetButtonWrapper,
-  WidgetImageWrapper,
   WidgetUpperGrid
 } from "./Detail.style";
 import DetailTable from "./DetailTable";
@@ -286,6 +287,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       child.click();
     }
   };
+  const isChainUnsupported = getItemFromStorage("isChainUnsupported", false);
 
   return (
     <>
@@ -323,6 +325,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
             {isOffer && (
               <CommitButton
                 disabled={
+                  isChainUnsupported ||
                   !hasSellerEnoughFunds ||
                   isExpiredOffer ||
                   isLoading ||
@@ -360,7 +363,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
             )}
             {isToRedeem && (
               <RedeemButton
-                disabled={isLoading || isOffer}
+                disabled={isChainUnsupported || isLoading || isOffer}
                 exchangeId={exchange?.id || offer.id}
                 chainId={CONFIG.chainId}
                 onError={(args) => {
@@ -387,7 +390,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                     type: "SUCCESS"
                   });
                 }}
-                extraInfo="Step 2"
+                extraInfo={isToRedeem ? "Step 2/2" : "Step 2"}
                 web3Provider={signer?.provider as Provider}
               />
             )}
@@ -426,9 +429,10 @@ const DetailWidget: React.FC<IDetailWidget> = ({
           <>
             <Break />
             <RaiseProblemButton
-              tag="p"
               onClick={handleCancel}
+              theme="blank"
               style={{ fontSize: "0.875rem" }}
+              disabled={isChainUnsupported}
             >
               Raise a problem
               <BsQuestionCircle size={18} />
@@ -445,7 +449,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
           }}
         >
           <CancelButton
-            disabled={isLoading}
+            disabled={isChainUnsupported || isLoading}
             exchangeId={exchange?.id || offer.id}
             chainId={CONFIG.chainId}
             onError={(args) => {
@@ -486,7 +490,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
         }
       >
         <ModalGrid>
-          <WidgetImageWrapper>
+          <ImageWrapper>
             {modalData.type === "SUCCESS" && (
               <OpenSeaButton>
                 View on OpenSea
@@ -494,7 +498,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               </OpenSeaButton>
             )}
             <Image src={image} dataTestId="offerImage" />
-          </WidgetImageWrapper>
+          </ImageWrapper>
           <div>
             <Widget>
               <Grid flexDirection="column">

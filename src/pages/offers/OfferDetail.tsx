@@ -18,7 +18,6 @@ import {
   WidgetContainer
 } from "../../components/detail/Detail.style";
 import DetailChart from "../../components/detail/DetailChart";
-import DetailLabel from "../../components/detail/DetailLabel";
 import DetailModal from "../../components/detail/DetailModal";
 import DetailShare from "../../components/detail/DetailShare";
 import DetailSlider from "../../components/detail/DetailSlider";
@@ -209,9 +208,7 @@ export default function OfferDetail() {
               offerName={name}
               justifyContent="flex-start"
               withProfileImage
-            >
-              <DetailLabel offer={offer} />
-            </SellerID>
+            />
             <Typography
               tag="h1"
               data-testid="name"

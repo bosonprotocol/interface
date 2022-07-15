@@ -140,7 +140,6 @@ export default function Settings() {
   };
   useEffect(() => {
     try {
-      console.log(CONFIG.enableSentryLogging);
       Sentry.init({
         debug: CONFIG.enableSentryLogging,
         dsn: sentryTracingUrl,
