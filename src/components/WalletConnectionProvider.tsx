@@ -48,7 +48,7 @@ export default function WalletConnectionProvider({ children }: Props) {
         chains={chains}
         theme={walletConnectionTheme}
         avatar={CustomAvatar}
-        appInfo={{ appName: "Boson dApp" }}
+        appInfo={{ appName: "Boson Interface" }}
       >
         {children}
       </RainbowKitProvider>

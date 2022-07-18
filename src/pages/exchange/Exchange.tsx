@@ -254,7 +254,7 @@ export default function Exchange() {
           <DetailGrid>
             <DetailChart offer={offer} title="Trade history (all items)" />
             <DetailTransactions
-              title="Transaction History (this item)"
+              title="Exchange History (this item)"
               exchange={exchange as NonNullable<Offer["exchanges"]>[number]}
               offer={offer}
               buyerAddress={buyerAddress}

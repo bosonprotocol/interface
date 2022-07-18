@@ -1,6 +1,5 @@
 import { createGlobalStyle } from "styled-components";
 
-import { scrollStyles } from "../../components/ui/styles";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 
@@ -63,11 +62,8 @@ const GlobalStyle = createGlobalStyle<{
     font-family: "Plus Jakarta Sans";
     font-style: normal;
 
-    ${scrollStyles}
-
     overflow-y: auto;
     overflow-x: hidden;
-    ${scrollStyles}
   }
 
   a,

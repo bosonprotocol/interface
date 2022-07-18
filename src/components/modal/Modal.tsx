@@ -3,7 +3,6 @@ import { createPortal } from "react-dom";
 import { IoIosClose } from "react-icons/io";
 import styled from "styled-components";
 
-import { scrollStyles } from "../../components/ui/styles";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 
@@ -63,8 +62,6 @@ const Content = styled.div`
     overflow-x: initial;
     min-height: initial;
   }
-
-  ${scrollStyles}
 `;
 
 const CloseButtonContainer = styled.div`

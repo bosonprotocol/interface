@@ -175,6 +175,9 @@ export const LearnMore = styled(LinkWithQuery)`
 
 export const PopperWrapper = styled.div`
   position: relative;
+  p {
+    font-weight: 400;
+  }
 `;
 
 export const Popper = styled.div`
@@ -391,7 +394,7 @@ export const Table = styled.table<{ noBorder?: boolean }>`
         font-weight: 600;
       }
       &:last-child {
-        width: 35%;
+        width: 40%;
         font-weight: 400;
       }
     }
@@ -403,6 +406,7 @@ export const Table = styled.table<{ noBorder?: boolean }>`
               font-weight: 600;
               > p, > p > small {
                 font-weight: 600;
+                white-space: pre;
               }
           }
         }
@@ -512,6 +516,8 @@ export const WidgetUpperGrid = styled.div`
   grid-column-gap: 1em;
   grid-row-gap: 1rem;
   grid-template-columns: repeat(1, minmax(0, 1fr));
+  align-items: center;
+
   ${breakpoint.s} {
     grid-column-gap: 2rem;
     grid-row-gap: 2rem;
@@ -753,6 +759,7 @@ export const RedeemLeftButton = styled.button`
   left: 0;
   right: 0;
   border-width: 0;
+  border-bottom: 2px solid ${colors.border};
   z-index: ${zIndex.OfferStatus};
 
   cursor: pointer;
