@@ -73,7 +73,6 @@ export function useExchanges(
             disputed
             expired
             finalizedDate
-            finalizedDate
             id
             redeemedDate
             revokedDate

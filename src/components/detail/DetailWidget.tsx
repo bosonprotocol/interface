@@ -14,7 +14,6 @@ import { useMemo, useRef, useState } from "react";
 import { AiOutlineCheck } from "react-icons/ai";
 import { BiCheck } from "react-icons/bi";
 import { BsQuestionCircle } from "react-icons/bs";
-import { HiOutlineExternalLink } from "react-icons/hi";
 import { generatePath } from "react-router-dom";
 import styled from "styled-components";
 import { useSigner } from "wagmi";
@@ -46,7 +45,6 @@ import {
   CommitAndRedeemButton,
   ModalGrid,
   ModalImageWrapper,
-  OpenSeaButton,
   PortalLogoImg,
   RaiseProblemButton,
   RedeemLeftButton,
@@ -54,6 +52,7 @@ import {
   WidgetButtonWrapper,
   WidgetUpperGrid
 } from "./Detail.style";
+import DetailOpenSea from "./DetailOpenSea";
 import DetailTable from "./DetailTable";
 
 const StyledPrice = styled(Price)`
@@ -80,38 +79,34 @@ interface IModalData {
   type?: "SUCCESS" | "ERROR" | null;
   message?: string;
   id?: string;
+  state?: ExchangeState;
 }
 
 const oneSecondToDays = 86400;
-const getDayOrDays = (value: number) => (value === 1 ? "day" : "days");
-
-const getOfferDetailData = (offer: Offer, priceInDollars: IPrice | null) => {
+const getOfferDetailData = (
+  offer: Offer,
+  convertedPrice: IPrice | null,
+  isModal: boolean
+) => {
   const redeemableUntil = dayjs(
     Number(offer.validFromDate) * 1000 +
       Number(offer.voucherValidDuration) * 1000
   ).format(CONFIG.dateFormat);
 
-  const resolutionPeriodDurationDays = Math.round(
-    Number(offer.resolutionPeriodDuration) / oneSecondToDays
-  );
-  const fulfillmentPeriodDurationDays = Math.round(
-    Number(offer.fulfillmentPeriodDuration) / oneSecondToDays
-  );
-
-  const priceInDollarsNumber = Number(priceInDollars?.converted);
+  const priceNumber = Number(convertedPrice?.converted);
 
   const sellerDepositPercentage =
     Number(offer.sellerDeposit) / Number(offer.price);
   const sellerDeposit = sellerDepositPercentage * 100;
-  const sellerDepositDollars = (
-    sellerDepositPercentage * priceInDollarsNumber
-  ).toFixed(2);
+  const sellerDepositDollars = (sellerDepositPercentage * priceNumber).toFixed(
+    2
+  );
 
   const buyerCancelationPenaltyPercentage =
     Number(offer.buyerCancelPenalty) / Number(offer.price);
   const buyerCancelationPenalty = buyerCancelationPenaltyPercentage * 100;
   const buyerCancelationPenaltyDollars = (
-    buyerCancelationPenaltyPercentage * priceInDollarsNumber
+    buyerCancelationPenaltyPercentage * priceNumber
   ).toFixed(2);
   return [
     {
@@ -120,9 +115,6 @@ const getOfferDetailData = (offer: Offer, priceInDollars: IPrice | null) => {
         <>
           <Typography tag="h6">
             <b>Redeemable</b>
-          </Typography>
-          <Typography tag="p" style={{ margin: "1rem 0" }}>
-            Redeemable until {redeemableUntil}
           </Typography>
           <Typography tag="p">
             If you don’t redeem your NFT during the redemption period, it will
@@ -133,6 +125,21 @@ const getOfferDetailData = (offer: Offer, priceInDollars: IPrice | null) => {
       ),
       value: <Typography tag="p">{redeemableUntil}</Typography>
     },
+    isModal
+      ? {
+          name: "Price",
+          value: convertedPrice?.currency ? (
+            <Typography tag="p">
+              {convertedPrice?.price} ETH
+              <small>
+                ({convertedPrice?.currency?.symbol} {convertedPrice?.converted})
+              </small>
+            </Typography>
+          ) : (
+            <Typography tag="p">{convertedPrice?.price} ETH</Typography>
+          )
+        }
+      : { hide: true },
     {
       name: "Seller deposit",
       info: (
@@ -141,10 +148,10 @@ const getOfferDetailData = (offer: Offer, priceInDollars: IPrice | null) => {
             <b>Seller deposit</b>
           </Typography>
           <Typography tag="p">
-            The seller deposit is charged from the seller at “Commit” and is
-            used to hold the seller accountable to follow through with their
-            commitment to deliver the physical item. If the seller breaks their
-            commitment, then their deposit will be transferred to the buyer
+            The Seller deposit is used to hold the seller accountable to follow
+            through with their commitment to deliver the physical item. If the
+            seller breaks their commitment, the deposit will be transferred to
+            the buyer.
           </Typography>
         </>
       ),
@@ -182,15 +189,8 @@ const getOfferDetailData = (offer: Offer, priceInDollars: IPrice | null) => {
             <b>Exchange policy</b>
           </Typography>
           <Typography tag="p">
-            {fulfillmentPeriodDurationDays}{" "}
-            {getDayOrDays(fulfillmentPeriodDurationDays)} to raise a dispute
-          </Typography>
-          <Typography tag="p">Fair buyer and seller obligations</Typography>
-          <Typography tag="p">Standard evidence requirements</Typography>
-          <Typography tag="p">
-            {resolutionPeriodDurationDays}{" "}
-            {getDayOrDays(resolutionPeriodDurationDays)} to resolve a raised
-            dispute
+            The Exchange policy ensures that the terms of sale are set in a fair
+            way to protect both buyers and sellers.
           </Typography>
         </>
       ),
@@ -203,12 +203,9 @@ const getOfferDetailData = (offer: Offer, priceInDollars: IPrice | null) => {
           <Typography tag="h6">
             <b>Dispute resolver</b>
           </Typography>
-          <Typography tag="p" style={{ margin: "1rem 0" }}>
-            PORTAL (A company) is the Dispute Resolver for this exchange.
-          </Typography>
           <Typography tag="p">
-            The Dispute resolver will resolve disputes between buyer and seller
-            that may arise.
+            The Dispute resolver is trusted to resolve disputes between buyer
+            and seller that can't be mutually resolved.
           </Typography>
         </>
       ),
@@ -217,6 +214,12 @@ const getOfferDetailData = (offer: Offer, priceInDollars: IPrice | null) => {
   ];
 };
 
+const SHOULD_DISPLAY_REDEEM_BTN = [
+  ExchangeState.Revoked,
+  ExchangeState.Cancelled,
+  exchanges.ExtendedExchangeState.Expired,
+  ExchangeState.Completed
+];
 const DetailWidget: React.FC<IDetailWidget> = ({
   pageType,
   offer,
@@ -236,6 +239,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     : null;
   const isToRedeem =
     !exchangeStatus || exchangeStatus === ExchangeState.Committed;
+  const isBeforeRedeem =
+    !exchangeStatus || !SHOULD_DISPLAY_REDEEM_BTN.includes(exchangeStatus);
 
   const { data: signer } = useSigner();
   const navigate = useKeepQueryParamsNavigate();
@@ -245,13 +250,18 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   const handleClose = () => {
     setModalData({ isOpen: false });
   };
-  const priceInDollars = useConvertedPrice({
+  const convertedPrice = useConvertedPrice({
     value: offer.price,
     decimals: offer.exchangeToken.decimals
   });
+
   const OFFER_DETAIL_DATA = useMemo(
-    () => getOfferDetailData(offer, priceInDollars),
-    [offer, priceInDollars]
+    () => getOfferDetailData(offer, convertedPrice, false),
+    [offer, convertedPrice]
+  );
+  const OFFER_DETAIL_DATA_MODAL = useMemo(
+    () => getOfferDetailData(offer, convertedPrice, true),
+    [offer, convertedPrice]
   );
   const quantity = useMemo<number>(
     () => Number(offer?.quantityAvailable),
@@ -284,13 +294,15 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   return (
     <>
       <Widget>
-        {isExchange && (
+        {isExchange && isBeforeRedeem && (
           <RedeemLeftButton>
             {redeemableDays} days left to Redeem
           </RedeemLeftButton>
         )}
         <div>
-          <WidgetUpperGrid style={{ paddingBottom: "0.5rem" }}>
+          <WidgetUpperGrid
+            style={{ paddingBottom: !isExchange || isLteXS ? "0.5rem" : "0" }}
+          >
             <StyledPrice
               isExchange={isExchange}
               address={offer.exchangeToken.address}
@@ -337,7 +349,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                     isOpen: true,
                     title: "An error occurred",
                     message: "An error occurred when trying to commit!",
-                    type: "ERROR"
+                    type: "ERROR",
+                    state: ExchangeState.Committed
                   });
                 }}
                 onPendingSignature={() => {
@@ -352,7 +365,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                     title: "You have successfully committed!",
                     message: "You now own the rNFT",
                     type: "SUCCESS",
-                    id: exchangeId.toString()
+                    id: exchangeId.toString(),
+                    state: ExchangeState.Committed
                   });
                 }}
                 extraInfo="Step 1/2"
@@ -371,7 +385,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                     isOpen: true,
                     title: "An error occurred",
                     message: "An error occurred when trying to redeem!",
-                    type: "ERROR"
+                    type: "ERROR",
+                    state: ExchangeState.Redeemed
                   });
                 }}
                 onPendingSignature={() => {
@@ -385,7 +400,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                     isOpen: true,
                     title: "You have successfully redeemed!",
                     message: "You have successfully redeemed!",
-                    type: "SUCCESS"
+                    type: "SUCCESS",
+                    state: ExchangeState.Redeemed
                   });
                 }}
                 extraInfo={isToRedeem ? "Step 2/2" : "Step 2"}
@@ -411,19 +427,28 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               : {}
           }
         >
-          <CommitAndRedeemButton
-            tag="p"
-            onClick={handleModal}
-            style={{ fontSize: "0.875rem", marginTop: 0 }}
-          >
-            {isOffer ? "What is commit and redeem?" : "What is redeem?"}
-          </CommitAndRedeemButton>
+          {isBeforeRedeem ? (
+            <CommitAndRedeemButton
+              tag="p"
+              onClick={handleModal}
+              style={{ fontSize: "0.75rem", marginTop: 0 }}
+            >
+              {isOffer ? "What is commit and redeem?" : "What is redeem?"}
+            </CommitAndRedeemButton>
+          ) : (
+            <CommitAndRedeemButton
+              tag="p"
+              style={{ fontSize: "0.75rem", marginTop: 0 }}
+            >
+              &nbsp;
+            </CommitAndRedeemButton>
+          )}
         </Grid>
         <Break />
         <div>
           <DetailTable align noBorder data={OFFER_DETAIL_DATA} />
         </div>
-        {isExchange && (
+        {isExchange && isBeforeRedeem && (
           <>
             <Break />
             <RaiseProblemButton
@@ -457,7 +482,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 isOpen: true,
                 title: "An error occurred",
                 message: "An error occurred when trying to cancel!",
-                type: "ERROR"
+                type: "ERROR",
+                state: ExchangeState.Cancelled
               });
             }}
             onPendingSignature={() => {
@@ -471,7 +497,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 isOpen: true,
                 title: "You have successfully cancelled!",
                 message: "You have successfully cancelled!",
-                type: "SUCCESS"
+                type: "SUCCESS",
+                state: ExchangeState.Cancelled
               });
             }}
             web3Provider={signer?.provider as Provider}
@@ -489,12 +516,12 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       >
         <ModalGrid>
           <ModalImageWrapper>
-            {modalData.type === "SUCCESS" && (
-              <OpenSeaButton>
-                View on OpenSea
-                <HiOutlineExternalLink size={18} />
-              </OpenSeaButton>
-            )}
+            {modalData.type === "SUCCESS" &&
+              modalData.state === ExchangeState.Committed && (
+                <DetailOpenSea
+                  exchange={exchange as NonNullable<Offer["exchanges"]>[number]}
+                />
+              )}
             <Image src={image} dataTestId="offerImage" />
           </ModalImageWrapper>
           <div>
@@ -519,7 +546,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               </Grid>
               <Break />
               <div>
-                <DetailTable align noBorder data={OFFER_DETAIL_DATA} />
+                <DetailTable align noBorder data={OFFER_DETAIL_DATA_MODAL} />
               </div>
             </Widget>
             <WidgetButtonWrapper>

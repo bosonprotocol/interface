@@ -82,11 +82,17 @@ export default function Price({
             style={{ fontWeight: "600", letterSpacing: "-1px", margin: "0" }}
           >
             <CurrencyIcon currencySymbol={currencySymbol} address={address} />
-            {price.fractions === "0"
-              ? price.integer
-              : `${price.integer}.${price.fractions}`}
+            {price?.currency ? (
+              <>
+                {price.fractions === "0"
+                  ? price.integer
+                  : `${price.integer}.${price.fractions}`}
+              </>
+            ) : (
+              price.price
+            )}
           </Typography>
-          {convertedPrice}
+          {price?.currency && convertedPrice}
         </Grid>
       ) : (
         "-"

@@ -1,41 +1,43 @@
-import { BigNumber, utils } from "ethers";
+interface Currency {
+  ticker: "USD" | string;
+  symbol: "$" | string;
+}
 
-type Currency = "USD" | "PLN" | string;
-
-export interface IPrice {
-  price: string;
+export interface IPricePassedAsAProp {
   integer: string;
   fractions: string;
   converted: string;
+  currency: Currency;
+}
+
+export interface IPrice {
+  price: string | null;
+  integer?: string;
+  fractions?: string;
+  converted?: string;
+  currency?: Currency;
 }
 
 export const convertPrice = async (
-  value: string,
-  decimals: string,
+  price: string | null,
   currency: Currency
-): Promise<IPrice | null> => {
+): Promise<IPricePassedAsAProp | null> => {
   return new Promise((resolve) => {
-    let price = "";
-
-    try {
-      price = utils.formatUnits(BigNumber.from(value), Number(decimals));
-    } catch (e) {
-      console.error(e);
-      return null;
-    }
-
     // TODO: change that
     fetch(
-      `https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=${currency}`
+      `https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=${currency.ticker}`
     )
       .then((response) => response.json())
       .then((data) => {
-        const [integer, fractions] = price.split(".");
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const [integer, fractions] = price!.split(".");
         resolve({
-          price,
           integer,
           fractions,
-          converted: (Number(data[`${currency}`]) * Number(price)).toFixed(2)
+          converted: (
+            Number(data[`${currency.ticker}`]) * Number(price)
+          ).toFixed(2),
+          currency
         });
       })
       .catch((error) => {

@@ -19,6 +19,7 @@ import {
 } from "../../components/detail/Detail.style";
 import DetailChart from "../../components/detail/DetailChart";
 import DetailModal from "../../components/detail/DetailModal";
+import DetailOpenSea from "../../components/detail/DetailOpenSea";
 import DetailShare from "../../components/detail/DetailShare";
 import DetailSlider from "../../components/detail/DetailSlider";
 import DetailTable from "../../components/detail/DetailTable";
@@ -179,6 +180,9 @@ export default function Exchange() {
           )}
           <MainDetailGrid>
             <ImageWrapper>
+              <DetailOpenSea
+                exchange={exchange as NonNullable<Offer["exchanges"]>[number]}
+              />
               <Image src={offerImg} dataTestId="offerImage" />
             </ImageWrapper>
             <div>

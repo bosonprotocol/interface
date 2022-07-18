@@ -1,24 +1,34 @@
-import { useCallback, useEffect, useState } from "react";
+import { BigNumber, utils } from "ethers";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { CONFIG } from "../../lib/config";
-import { convertPrice, IPrice } from "../../lib/utils/convertPrice";
+import {
+  convertPrice,
+  IPrice,
+  IPricePassedAsAProp
+} from "../../lib/utils/convertPrice";
 
 interface Props {
   value: string;
   decimals: string;
 }
+export const useConvertedPrice = ({ value, decimals }: Props): IPrice => {
+  const [convertedPrice, setConvertedPrice] =
+    useState<IPricePassedAsAProp | null>(null);
 
-export const useConvertedPrice = ({ value, decimals }: Props) => {
-  const [price, setPrice] = useState<IPrice | null>(null);
+  const price = useMemo(() => {
+    try {
+      return utils.formatUnits(BigNumber.from(value), Number(decimals));
+    } catch (e) {
+      console.error(e);
+      return null;
+    }
+  }, [value, decimals]);
 
   const getConvertedPrice = useCallback(async () => {
-    const newPrice = await convertPrice(
-      value,
-      decimals,
-      CONFIG.defaultCurrency.ticker
-    );
-    setPrice(newPrice);
-  }, [value, decimals]);
+    const newPrice = await convertPrice(price, CONFIG.defaultCurrency);
+    setConvertedPrice(newPrice);
+  }, [price]);
 
   useEffect(() => {
     getConvertedPrice();
@@ -28,5 +38,8 @@ export const useConvertedPrice = ({ value, decimals }: Props) => {
     return () => clearInterval(interval);
   }, [getConvertedPrice]);
 
-  return price;
+  return {
+    price,
+    ...convertedPrice
+  };
 };

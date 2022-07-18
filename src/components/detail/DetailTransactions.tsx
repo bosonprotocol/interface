@@ -37,20 +37,24 @@ const handleRows = ({ exchange, price, to, currency }: IHandleRows) => {
     exchange?.cancelledDate || null,
     exchange?.revokedDate || null,
     exchange?.finalizedDate || null
-  ].filter((n): n is string => {
-    return n !== null;
-  });
+  ];
 
-  const test = dates.map((date: string, index: number) => ({
-    event: EVENT_TYPES[index],
-    from: "-",
-    to: index === 0 ? to : "-",
-    price: index === 0 ? price?.price : null,
-    currency: index === 0 ? currency : null,
-    date
-  }));
-
-  return test;
+  return dates
+    .map((date: string | null, index: number) =>
+      date
+        ? {
+            event: EVENT_TYPES[index],
+            from: "-",
+            to: index === 0 ? to : "-",
+            price: index === 0 ? price?.price : null,
+            currency: index === 0 ? currency : null,
+            date
+          }
+        : null
+    )
+    .filter((n): boolean => {
+      return n !== null;
+    });
 };
 
 export default function DetailTransactions({
@@ -72,7 +76,7 @@ export default function DetailTransactions({
 
   return (
     <div>
-      <Typography tag="h3">{title || "Transaction History"}</Typography>
+      <Typography tag="h3">{title || "Exchange History"}</Typography>
       <Transactions>
         <thead>
           <tr>
@@ -83,20 +87,22 @@ export default function DetailTransactions({
         </thead>
         <tbody>
           {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-          {allRows?.map((row: ITransactionHistory, index: number) => {
-            const date = dayjs(getDateTimestamp(row.date)).format(
-              `YY.MM.DD, HH:mm`
-            );
+          {allRows?.map((row: ITransactionHistory | null, index: number) => {
+            if (row) {
+              const date = dayjs(getDateTimestamp(row.date)).format(
+                `YY.MM.DD, HH:mm`
+              );
 
-            return (
-              <tr key={`transaction_tr_${index}`}>
-                <td>{row.event}</td>
-                <td>{row.from}</td>
-                <td>{row.to}</td>
-                <td>{row.price ? `${row.price} ${row.currency}` : "-"}</td>
-                <td>{date}</td>
-              </tr>
-            );
+              return (
+                <tr key={`transaction_tr_${index}`}>
+                  <td>{row.event}</td>
+                  <td>{row.from}</td>
+                  <td>{row.to}</td>
+                  <td>{row.price ? `${row.price} ${row.currency}` : "-"}</td>
+                  <td>{date}</td>
+                </tr>
+              );
+            }
           })}
         </tbody>
       </Transactions>
