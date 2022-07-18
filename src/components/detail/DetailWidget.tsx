@@ -14,7 +14,6 @@ import { useMemo, useRef, useState } from "react";
 import { AiOutlineCheck } from "react-icons/ai";
 import { BiCheck } from "react-icons/bi";
 import { BsQuestionCircle } from "react-icons/bs";
-import { HiOutlineExternalLink } from "react-icons/hi";
 import { generatePath } from "react-router-dom";
 import styled from "styled-components";
 import { useSigner } from "wagmi";
@@ -46,7 +45,6 @@ import {
   CommitAndRedeemButton,
   ModalGrid,
   ModalImageWrapper,
-  OpenSeaButton,
   PortalLogoImg,
   RaiseProblemButton,
   RedeemLeftButton,
@@ -54,6 +52,7 @@ import {
   WidgetButtonWrapper,
   WidgetUpperGrid
 } from "./Detail.style";
+import DetailOpenSea from "./DetailOpenSea";
 import DetailTable from "./DetailTable";
 
 const StyledPrice = styled(Price)`
@@ -80,6 +79,7 @@ interface IModalData {
   type?: "SUCCESS" | "ERROR" | null;
   message?: string;
   id?: string;
+  state?: ExchangeState;
 }
 
 const oneSecondToDays = 86400;
@@ -130,13 +130,13 @@ const getOfferDetailData = (
           name: "Price",
           value: convertedPrice?.currency ? (
             <Typography tag="p">
-              ETH {convertedPrice?.price}
+              {convertedPrice?.price} ETH
               <small>
                 ({convertedPrice?.currency?.symbol} {convertedPrice?.converted})
               </small>
             </Typography>
           ) : (
-            <Typography tag="p">ETH {convertedPrice?.price}</Typography>
+            <Typography tag="p">{convertedPrice?.price} ETH</Typography>
           )
         }
       : { hide: true },
@@ -349,7 +349,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                     isOpen: true,
                     title: "An error occurred",
                     message: "An error occurred when trying to commit!",
-                    type: "ERROR"
+                    type: "ERROR",
+                    state: ExchangeState.Committed
                   });
                 }}
                 onPendingSignature={() => {
@@ -364,7 +365,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                     title: "You have successfully committed!",
                     message: "You now own the rNFT",
                     type: "SUCCESS",
-                    id: exchangeId.toString()
+                    id: exchangeId.toString(),
+                    state: ExchangeState.Committed
                   });
                 }}
                 extraInfo="Step 1/2"
@@ -383,7 +385,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                     isOpen: true,
                     title: "An error occurred",
                     message: "An error occurred when trying to redeem!",
-                    type: "ERROR"
+                    type: "ERROR",
+                    state: ExchangeState.Redeemed
                   });
                 }}
                 onPendingSignature={() => {
@@ -397,7 +400,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                     isOpen: true,
                     title: "You have successfully redeemed!",
                     message: "You have successfully redeemed!",
-                    type: "SUCCESS"
+                    type: "SUCCESS",
+                    state: ExchangeState.Redeemed
                   });
                 }}
                 extraInfo={isToRedeem ? "Step 2/2" : "Step 2"}
@@ -478,7 +482,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 isOpen: true,
                 title: "An error occurred",
                 message: "An error occurred when trying to cancel!",
-                type: "ERROR"
+                type: "ERROR",
+                state: ExchangeState.Cancelled
               });
             }}
             onPendingSignature={() => {
@@ -492,7 +497,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 isOpen: true,
                 title: "You have successfully cancelled!",
                 message: "You have successfully cancelled!",
-                type: "SUCCESS"
+                type: "SUCCESS",
+                state: ExchangeState.Cancelled
               });
             }}
             web3Provider={signer?.provider as Provider}
@@ -510,12 +516,12 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       >
         <ModalGrid>
           <ModalImageWrapper>
-            {modalData.type === "SUCCESS" && isToRedeem && (
-              <OpenSeaButton>
-                View on OpenSea
-                <HiOutlineExternalLink size={18} />
-              </OpenSeaButton>
-            )}
+            {modalData.type === "SUCCESS" &&
+              modalData.state === ExchangeState.Committed && (
+                <DetailOpenSea
+                  exchange={exchange as NonNullable<Offer["exchanges"]>[number]}
+                />
+              )}
             <Image src={image} dataTestId="offerImage" />
           </ModalImageWrapper>
           <div>
