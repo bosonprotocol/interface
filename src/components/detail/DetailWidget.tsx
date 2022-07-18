@@ -271,6 +271,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     () => dayjs(Number(offer?.validUntilDate) * 1000).isBefore(dayjs()),
     [offer?.validUntilDate]
   );
+  const isVoidedOffer = !!offer.voidedAt;
   const isHotOffer = useMemo(
     () => isOfferHot(offer?.quantityAvailable, offer?.quantityInitial),
     [offer?.quantityAvailable, offer?.quantityInitial]
@@ -338,7 +339,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                   !hasSellerEnoughFunds ||
                   isExpiredOffer ||
                   isLoading ||
-                  !quantity
+                  !quantity ||
+                  isVoidedOffer
                 }
                 offerId={offer.id}
                 chainId={CONFIG.chainId}
