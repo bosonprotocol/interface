@@ -4,8 +4,7 @@ import styled from "styled-components";
 import { AccountQueryParameters } from "../../lib/routing/parameters";
 import { useQueryParameter } from "../../lib/routing/useQueryParameter";
 import { colors } from "../../lib/styles/colors";
-import { useBuyers } from "../../lib/utils/hooks/useBuyers";
-import { useSellers } from "../../lib/utils/hooks/useSellers";
+import { useBuyerSellerAccounts } from "../../lib/utils/hooks/useBuyerSellerAccounts";
 import Disputes from "./Disputes";
 import Exchanges from "./Exchanges";
 import Funds from "./funds/Funds";
@@ -75,14 +74,11 @@ export default function Tabs({
   address,
   children: SellerBuyerToggle
 }: Props) {
-  const { data: sellers, isError: isErrorSellers } = useSellers({
-    admin: address
-  });
-  const { data: buyers, isError: isErrorBuyers } = useBuyers({
-    wallet: address
-  });
-  const sellerId = sellers?.[0]?.id || "";
-  const buyerId = buyers?.[0]?.id || "";
+  const {
+    seller: { sellerId, isError: isErrorSellers },
+    buyer: { buyerId, isError: isErrorBuyers }
+  } = useBuyerSellerAccounts(address);
+
   const tabsData = useMemo(() => {
     const tabsData: TabsData[] = [
       {

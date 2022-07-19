@@ -53,11 +53,23 @@ const SellerID: React.FC<
   {
     children?: React.ReactNode;
     seller: OfferFieldsFragment["seller"];
+    accountImageSize?: number;
     offerName: string;
     withProfileImage: boolean;
+    withProfileText?: boolean;
+    onClick?: (e: React.MouseEventHandler<HTMLDivElement>) => void;
   } & IGrid &
     React.HTMLAttributes<HTMLDivElement>
-> = ({ seller, children, offerName, withProfileImage, ...rest }) => {
+> = ({
+  seller,
+  children,
+  offerName,
+  withProfileImage,
+  onClick,
+  accountImageSize,
+  withProfileText = true,
+  ...rest
+}) => {
   const navigate = useKeepQueryParamsNavigate();
 
   const sellerId = seller?.id;
@@ -67,12 +79,16 @@ const SellerID: React.FC<
     <AddressContainer {...rest}>
       <SellerContainer
         onClick={(e) => {
-          e.stopPropagation();
-          navigate({
-            pathname: generatePath(BosonRoutes.Account, {
-              [UrlParameters.accountId]: sellerAddress
-            })
-          });
+          if (onClick) {
+            onClick(e);
+          } else {
+            e.stopPropagation();
+            navigate({
+              pathname: generatePath(BosonRoutes.Account, {
+                [UrlParameters.accountId]: sellerAddress
+              })
+            });
+          }
         }}
       >
         {withProfileImage && (
@@ -80,13 +96,18 @@ const SellerID: React.FC<
             {artist.toLocaleLowerCase() === "boson protocol" ? (
               <RoundedImage src={bosonProtocolImage} />
             ) : (
-              <AccountImage size={17} address={sellerAddress} />
+              <AccountImage
+                size={accountImageSize || 17}
+                address={sellerAddress}
+              />
             )}
           </ImageContainer>
         )}
-        <SellerInfo data-testid="seller-info">
-          {artist ? artist : `Seller ID: ${sellerId}`}
-        </SellerInfo>
+        {withProfileText && (
+          <SellerInfo data-testid="seller-info">
+            {artist ? artist : `Seller ID: ${sellerId}`}
+          </SellerInfo>
+        )}
       </SellerContainer>
       {children || ""}
     </AddressContainer>
