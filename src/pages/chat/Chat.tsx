@@ -6,23 +6,26 @@ import ChatConversation from "./components/ChatConversation";
 import MessageList from "./components/MessageList";
 import { Thread } from "./types";
 
+const myBuyerId = "7";
+const mySellerId = "2";
+
 const threads: Omit<Thread, "exchange">[] = [
   {
     threadId: {
       exchangeId: "115",
-      sellerId: "2",
-      buyerId: "7"
+      sellerId: mySellerId,
+      buyerId: myBuyerId
     },
     messages: [
       {
         id: "1",
-        from: "2",
+        from: mySellerId,
         sentDate: new Date(),
         content: {
           threadId: {
             exchangeId: "115",
-            sellerId: "2",
-            buyerId: "7"
+            sellerId: mySellerId,
+            buyerId: myBuyerId
           },
           contentType: "string",
           value: "hello 😃",
@@ -31,13 +34,13 @@ const threads: Omit<Thread, "exchange">[] = [
       },
       {
         id: "2",
-        from: "7",
+        from: myBuyerId,
         sentDate: new Date(),
         content: {
           threadId: {
             exchangeId: "115",
-            sellerId: "2",
-            buyerId: "7"
+            sellerId: mySellerId,
+            buyerId: myBuyerId
           },
           contentType: "string",
           value: "this is a conversation with myself",
@@ -50,18 +53,18 @@ const threads: Omit<Thread, "exchange">[] = [
     threadId: {
       exchangeId: "20",
       sellerId: "4",
-      buyerId: "7"
+      buyerId: myBuyerId
     },
     messages: [
       {
         id: "3",
-        from: "7",
+        from: myBuyerId,
         sentDate: new Date(),
         content: {
           threadId: {
             exchangeId: "20",
             sellerId: "4",
-            buyerId: "7"
+            buyerId: myBuyerId
           },
           contentType: "string",
           value: "hello 😃 seller with id 4",
@@ -76,10 +79,10 @@ const threads: Omit<Thread, "exchange">[] = [
           threadId: {
             exchangeId: "20",
             sellerId: "4",
-            buyerId: "7"
+            buyerId: myBuyerId
           },
           contentType: "string",
-          value: "hello 😃 buyer with id 7",
+          value: `hello 😃 buyer with id ${myBuyerId}`,
           version: "1"
         }
       }
