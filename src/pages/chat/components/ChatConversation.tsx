@@ -6,11 +6,12 @@ import SellerID from "../../../components/ui/SellerID";
 import { colors } from "../../../lib/styles/colors";
 import { useBuyerSellerAccounts } from "../../../lib/utils/hooks/useBuyerSellerAccounts";
 import { Thread } from "../types";
+import Dispute from "./Dispute";
 import Message from "./Message";
 
 const Container = styled.div`
   display: flex;
-  flex: 0 0 75%;
+  flex: 0 1 75%;
   flex-direction: column;
 `;
 
@@ -92,24 +93,28 @@ export default function ChatConversation({ thread }: Props) {
   }
 
   return (
-    <Container>
-      <Header>
-        <SellerComponent size={24} />
-      </Header>
-      <Messages>
-        {thread.messages.map((message) => {
-          return (
-            <Conversation
-              key={message.id}
-              $alignStart={!getWasItSentByMe(buyerId, sellerId, message.from)}
-            >
-              <Message thread={thread} message={message}>
-                <SellerComponent size={32} withProfileText={false} />
-              </Message>
-            </Conversation>
-          );
-        })}
-      </Messages>
-    </Container>
+    <>
+      <Container>
+        <Header>
+          <SellerComponent size={24} />
+        </Header>
+        <Messages>
+          {thread.messages.map((message) => {
+            return (
+              <Conversation
+                key={message.id}
+                $alignStart={!getWasItSentByMe(buyerId, sellerId, message.from)}
+              >
+                <Message thread={thread} message={message}>
+                  <SellerComponent size={32} withProfileText={false} />
+                </Message>
+              </Conversation>
+            );
+          })}
+        </Messages>
+      </Container>
+      {/* {thread.exchange?.disputed && <Dispute thread={thread} />} */}
+      <Dispute thread={thread} />
+    </>
   );
 }
