@@ -6,8 +6,8 @@ import ChatConversation from "./components/ChatConversation";
 import MessageList from "./components/MessageList";
 import { Thread } from "./types";
 
-const myBuyerId = "7";
-const mySellerId = "2";
+const myBuyerId = "16";
+const mySellerId = "17";
 
 const threads: Omit<Thread, "exchange">[] = [
   {
