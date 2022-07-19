@@ -54,7 +54,7 @@ export default function Price({
 }: IProps) {
   const price = useConvertedPrice({ value, decimals });
 
-  const convertedPrice = useMemo(
+  const ConvertedPriceComponent = useMemo(
     () =>
       convert &&
       price && (
@@ -92,7 +92,7 @@ export default function Price({
               price.price
             )}
           </Typography>
-          {price?.currency && convertedPrice}
+          {price?.currency && ConvertedPriceComponent}
         </Grid>
       ) : (
         "-"

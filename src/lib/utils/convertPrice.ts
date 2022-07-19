@@ -25,18 +25,17 @@ export const convertPrice = async (
   return new Promise((resolve) => {
     // TODO: change that
     fetch(
-      `https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=${currency.ticker}`
+      `https://api.exchangerate.host/convert?from=ETH&to=${currency.ticker}&source=crypto`
     )
       .then((response) => response.json())
       .then((data) => {
+        const conversionRate = data.result;
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const [integer, fractions] = price!.split(".");
         resolve({
           integer,
           fractions,
-          converted: (
-            Number(data[`${currency.ticker}`]) * Number(price)
-          ).toFixed(2),
+          converted: (Number(conversionRate) * Number(price)).toFixed(2),
           currency
         });
       })

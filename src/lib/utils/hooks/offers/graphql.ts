@@ -58,7 +58,8 @@ export function buildGetOffersQuery({
   quantityAvailable_lte,
   quantityAvailable_gte,
   sellerCurationList,
-  offerCurationList
+  offerCurationList,
+  voided
 }: {
   exchangeToken: boolean;
   sellerId: boolean;
@@ -72,6 +73,7 @@ export function buildGetOffersQuery({
   quantityAvailable_gte: boolean;
   sellerCurationList: boolean;
   offerCurationList: boolean;
+  voided: boolean;
 }) {
   return gql`
   query GetOffers(
@@ -91,6 +93,7 @@ export function buildGetOffersQuery({
     ${quantityAvailable_gte ? "$quantityAvailable_gte: Int" : ""}
     ${sellerCurationList ? "$sellerCurationList: [String!]" : ""}
     ${offerCurationList ? "$offerCurationList: [String!]" : ""}
+    ${voided ? "$voided: Boolean" : ""}
   ) {
     baseMetadataEntities(
       first: $first
@@ -117,6 +120,7 @@ export function buildGetOffersQuery({
         }
         ${sellerCurationList ? "seller_in: $sellerCurationList" : ""}
         ${offerCurationList ? "offer_in: $offerCurationList" : ""}
+        ${voided ? "voided: $voided" : ""}
         name_contains_nocase: $name_contains_nocase
       }
     ) {
