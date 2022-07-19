@@ -1,5 +1,5 @@
 import { manageOffer } from "@bosonprotocol/widgets-sdk";
-import { useCallback, useEffect, useReducer, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { useAccount } from "wagmi";
 
@@ -18,11 +18,11 @@ import {
   WidgetContainer
 } from "../../components/detail/Detail.style";
 import DetailChart from "../../components/detail/DetailChart";
-import DetailModal from "../../components/detail/DetailModal";
 import DetailShare from "../../components/detail/DetailShare";
 import DetailSlider from "../../components/detail/DetailSlider";
 import DetailTable from "../../components/detail/DetailTable";
 import DetailWidget from "../../components/detail/DetailWidget";
+import { useModal } from "../../components/modal/useModal";
 import Image from "../../components/ui/Image";
 import SellerID from "../../components/ui/SellerID";
 import Typography from "../../components/ui/Typography";
@@ -42,11 +42,11 @@ import { useOffer } from "../../lib/utils/hooks/offers/useOffer";
 import { useSellers } from "../../lib/utils/hooks/useSellers";
 import { isAccountSeller } from "../../lib/utils/isAccountSeller";
 import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
-import CreatedExchangeModal from "./CreatedExchangeModal";
 import { MOCK } from "./mock/mock";
 
 export default function OfferDetail() {
   const { [UrlParameters.offerId]: offerId } = useParams();
+  const { showModal, modalTypes } = useModal();
 
   const widgetRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
@@ -54,21 +54,11 @@ export default function OfferDetail() {
     (location.state as { from: string })?.from === BosonRoutes.YourAccount;
   const [isTabSellerSelected, setTabSellerSelected] =
     useState<boolean>(fromAccountPage);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [createdExchangeId, setCreatedExchangeId] = useState<string>("");
-  const [isCreatedExchangeModalOpen, toggleCreatedExchangeModal] = useReducer(
-    (state) => !state,
-    false
-  );
   const { address: account } = useAccount();
   const address = account || "";
   const customMetaTransactionsApiKey = useCustomStoreQueryParameter(
     "metaTransactionsApiKey"
   );
-
-  const handleModal = useCallback(() => {
-    setIsModalOpen(!isModalOpen);
-  }, [isModalOpen]);
 
   const {
     data: offer,
@@ -126,14 +116,16 @@ export default function OfferDetail() {
       const { target, message, exchangeId } = e.data || {};
 
       if (target === "boson" && message === "created-exchange") {
-        setCreatedExchangeId(exchangeId);
-        toggleCreatedExchangeModal();
+        showModal(modalTypes.CREATED_EXCHANGE, {
+          title: exchangeId ? "Commit Successful" : "An error occured",
+          exchangeId
+        });
       }
     }
 
     window.addEventListener("message", handleMessageFromIframe);
     return () => window.removeEventListener("message", handleMessageFromIframe);
-  }, []);
+  }, [showModal, modalTypes]);
 
   if (!offerId) {
     return null;
@@ -224,7 +216,6 @@ export default function OfferDetail() {
                   <DetailWidget
                     pageType="offer"
                     offer={offer}
-                    handleModal={handleModal}
                     name={name}
                     image={offerImg}
                     hasSellerEnoughFunds={hasSellerEnoughFunds}
@@ -235,7 +226,6 @@ export default function OfferDetail() {
               <DetailWidget
                 pageType="offer"
                 offer={offer}
-                handleModal={handleModal}
                 name={name}
                 image={offerImg}
                 hasSellerEnoughFunds={hasSellerEnoughFunds}
@@ -277,17 +267,6 @@ export default function OfferDetail() {
           </div>
         </DetailGrid>
       </DarkerBackground>
-      <DetailModal
-        isOpen={isModalOpen}
-        onClose={() => {
-          setIsModalOpen(false);
-        }}
-      />
-      <CreatedExchangeModal
-        isOpen={isCreatedExchangeModalOpen}
-        onClose={() => toggleCreatedExchangeModal()}
-        exchangeId={createdExchangeId}
-      />
     </DetailWrapper>
   );
 }

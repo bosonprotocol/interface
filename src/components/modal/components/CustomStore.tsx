@@ -1,16 +1,10 @@
 import styled from "styled-components";
 
-import Collapse from "../../components/collapse/Collapse";
-import { Modal } from "../../components/modal/Modal";
-import { colors } from "../../lib/styles/colors";
+import Collapse from "../../../components/collapse/Collapse";
+import { colors } from "../../../lib/styles/colors";
 
 const CollapseContent = styled.div`
   margin: 0 10%;
-`;
-
-const Title = styled.p`
-  font-size: 2.3rem;
-  text-align: center;
 `;
 
 const UrlContainer = styled.div`
@@ -48,18 +42,11 @@ const Steps = styled.div`
 `;
 
 interface Props {
-  isOpen: boolean;
-  onClose: () => void;
   ipfsUrl: string;
 }
-
-export default function CustomStoreModal({ isOpen, onClose, ipfsUrl }: Props) {
+export default function CustomStore({ ipfsUrl }: Props) {
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={() => onClose()}
-      title={<Title>Congratulations!</Title>}
-    >
+    <>
       {ipfsUrl && (
         <UrlContainer>
           <Heading>Custom Store URL</Heading>
@@ -128,6 +115,6 @@ export default function CustomStoreModal({ isOpen, onClose, ipfsUrl }: Props) {
           </CollapseContent>
         </Collapse>
       </CollapsibleContainer>
-    </Modal>
+    </>
   );
 }
