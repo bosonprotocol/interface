@@ -11,6 +11,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1 1 25%;
+  border: 1px solid #5560720f;
 `;
 
 const Header = styled.div`
@@ -20,14 +21,12 @@ const Header = styled.div`
   height: ${messageItemHeight};
   font-weight: 600;
   font-size: 24px;
-  border: 1px solid #5560720f;
-  border-top: none;
+  border-bottom: 1px solid #5560720f;
 `;
 
 const MessageItem = styled.div<{ $active?: boolean }>`
   height: ${messageItemHeight};
-  border: 1px solid #5560720f;
-  border-top: none;
+  border-bottom: 1px solid #5560720f;
   ${({ $active }) =>
     $active &&
     `

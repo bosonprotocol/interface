@@ -91,6 +91,7 @@ const CTASection = styled(Section)`
 
 const HistorySection = styled(Section)`
   padding-bottom: 3rem;
+  height: 100%;
 `;
 
 const formatShortDate = (date: string) => {
