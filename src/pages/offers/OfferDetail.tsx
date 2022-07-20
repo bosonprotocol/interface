@@ -22,7 +22,6 @@ import DetailShare from "../../components/detail/DetailShare";
 import DetailSlider from "../../components/detail/DetailSlider";
 import DetailTable from "../../components/detail/DetailTable";
 import DetailWidget from "../../components/detail/DetailWidget";
-import { useModal } from "../../components/modal/useModal";
 import Image from "../../components/ui/Image";
 import SellerID from "../../components/ui/SellerID";
 import Typography from "../../components/ui/Typography";
@@ -46,7 +45,6 @@ import { MOCK } from "./mock/mock";
 
 export default function OfferDetail() {
   const { [UrlParameters.offerId]: offerId } = useParams();
-  const { showModal, modalTypes } = useModal();
 
   const widgetRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
@@ -110,22 +108,6 @@ export default function OfferDetail() {
 
     return;
   }, [offer, isTabSellerSelected, address, customMetaTransactionsApiKey]);
-
-  useEffect(() => {
-    function handleMessageFromIframe(e: MessageEvent) {
-      const { target, message, exchangeId } = e.data || {};
-
-      if (target === "boson" && message === "created-exchange") {
-        showModal(modalTypes.CREATED_EXCHANGE, {
-          title: exchangeId ? "Commit Successful" : "An error occured",
-          exchangeId
-        });
-      }
-    }
-
-    window.addEventListener("message", handleMessageFromIframe);
-    return () => window.removeEventListener("message", handleMessageFromIframe);
-  }, [showModal, modalTypes]);
 
   if (!offerId) {
     return null;
