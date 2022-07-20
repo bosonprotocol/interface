@@ -1,10 +1,10 @@
 import { BaseIpfsStorage } from "@bosonprotocol/ipfs-storage";
 import { useFormik } from "formik";
-import { useReducer, useState } from "react";
 import styled from "styled-components";
 
 import Collapse from "../../components/collapse/Collapse";
 import Layout from "../../components/Layout";
+import { useModal } from "../../components/modal/useModal";
 import Button from "../../components/ui/Button";
 import { CONFIG } from "../../lib/config";
 import { useCSSVariable } from "../../lib/utils/hooks/useCSSVariable";
@@ -15,7 +15,6 @@ import {
   FormLabel,
   StyledForm
 } from "../create-offer/CreateOffer";
-import CustomStoreModal from "./CustomStoreModal";
 import { StoreFields } from "./store-fields";
 
 const Root = styled(Layout)`
@@ -31,8 +30,7 @@ const PreviewContainer = styled.div`
 `;
 
 export default function CustomStore() {
-  const [isModalOpened, toggleModal] = useReducer((state) => !state, false);
-  const [ipfsUrl, setIpfsUrl] = useState<string>("test");
+  const { showModal, modalTypes } = useModal();
   const primaryColor = useCSSVariable("--primary");
 
   const { values, handleChange, handleSubmit } = useFormik<StoreFields>({
@@ -85,8 +83,12 @@ export default function CustomStore() {
 
       const cid = await storage.add(html); // TODO: use core.add once this is supported there
 
-      setIpfsUrl(`https://ipfs.io/ipfs/${cid}`);
-      toggleModal();
+      const ipfsUrl = `https://ipfs.io/ipfs/${cid}`;
+      showModal(modalTypes.CUSTOM_STORE, {
+        title: "Congratulations!",
+        ipfsUrl
+      });
+
       return;
     }
   });
@@ -239,12 +241,6 @@ export default function CustomStore() {
         </PreviewContainer>
 
         <Button type="submit">Create Store</Button>
-
-        <CustomStoreModal
-          isOpen={isModalOpened}
-          onClose={toggleModal}
-          ipfsUrl={ipfsUrl}
-        />
       </StyledForm>
     </Root>
   );

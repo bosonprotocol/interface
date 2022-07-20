@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import styled, { ThemeProvider } from "styled-components";
 
 import Layout from "../../components/Layout";
+import ModalProvider from "../../components/modal/ModalProvider";
 import GlobalStyle from "../../lib/styles/GlobalStyle";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import theme from "../../theme";
@@ -27,19 +28,21 @@ export default function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Container>
-        <GlobalStyle
-          $primaryColor={primaryColor}
-          $secondaryColor={secondaryColor}
-          $accentColor={accentColor}
-          $primaryBgColor={primaryBgColor}
-        />
-        <Header />
-        <PageContainer>
-          <Outlet />
-        </PageContainer>
-        <Footer />
-      </Container>
+      <ModalProvider>
+        <Container>
+          <GlobalStyle
+            $primaryColor={primaryColor}
+            $secondaryColor={secondaryColor}
+            $accentColor={accentColor}
+            $primaryBgColor={primaryBgColor}
+          />
+          <Header />
+          <PageContainer>
+            <Outlet />
+          </PageContainer>
+          <Footer />
+        </Container>
+      </ModalProvider>
     </ThemeProvider>
   );
 }
