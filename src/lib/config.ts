@@ -13,6 +13,7 @@ export const CONFIG = {
   ...config,
   enableSentryLogging: ["local", "testing"].includes(config.envName),
   dateFormat: process.env.DATE_FORMAT || "YYYY/MM/DD",
+  shortDateFormat: process.env.SHORT_DATE_FORMAT || "MMM DD, YYYY",
   fullDateFormat: process.env.FULL_DATE_FORMAT || "YYYY-MM-DDTHH:mm:ssZ[Z]",
   defaultCurrency: {
     ticker: process.env.DEFAULT_CURRENCY || "USD",

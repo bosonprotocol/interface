@@ -83,12 +83,19 @@ const allThemes = {
     }
   },
   outline: {
-    text: colors.black,
+    color: colors.black,
     borderColor: colors.border,
     borderWidth: 1,
     hover: {
       background: colors.border,
       color: "var(--secondary)"
+    }
+  },
+  orange: {
+    color: colors.orange,
+    borderColor: colors.border,
+    hover: {
+      background: colors.border
     }
   },
   blank: {
