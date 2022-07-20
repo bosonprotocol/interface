@@ -3,7 +3,7 @@ import Typography from "../ui/Typography";
 import { Table } from "./Detail.style";
 import DetailPopper from "./DetailPopper";
 
-interface Data {
+export interface Data {
   hide?: boolean | undefined;
   name?: React.ReactNode | string;
   info?: React.ReactNode | string;

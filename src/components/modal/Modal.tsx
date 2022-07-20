@@ -1,12 +1,13 @@
-import { ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { IoIosClose } from "react-icons/io";
 import styled from "styled-components";
 
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
-
-const paddingTitleAndContent = "1.25rem";
+import { zIndex } from "../../lib/styles/zIndex";
+import Button from "../ui/Button";
+import { scrollStyles } from "../ui/styles";
+import Typography from "../ui/Typography";
 
 const Root = styled.div`
   position: fixed;
@@ -14,122 +15,90 @@ const Root = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
-  display: flex;
-  align-items: top;
-  justify-content: center;
+  z-index: ${zIndex.Modal};
+`;
+
+const RootBG = styled.div`
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
   background-color: #00000080;
-  padding: 0;
+  z-index: ${zIndex.Modal - 1};
+`;
+
+const Wrapper = styled.div`
+  position: relative;
+  z-index: ${zIndex.Modal};
+  color: ${colors.black};
+  background-color: var(--primaryBgColor);
+  border: var(--secondary);
+
+  margin: 0;
   ${breakpoint.s} {
-    padding: 0 2rem;
+    margin: 4rem;
   }
   ${breakpoint.m} {
-    padding: 0 8rem;
+    margin: 4rem 8rem;
   }
   ${breakpoint.l} {
-    padding: 0 12rem;
+    margin: 4rem 10rem;
   }
   ${breakpoint.xl} {
-    padding: 0 16vw;
+    margin: 4rem 14rem;
   }
 `;
 
-const ModalTitle = styled.div`
+const Title = styled(Typography)`
+  position: relative;
+  height: 4.25rem;
+  padding: 1rem 2rem;
+  margin: 0;
+  padding-right: 8rem;
   border-bottom: 2px solid ${colors.border};
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-left: ${paddingTitleAndContent};
+  > button {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translate(0%, -50%);
+  }
 `;
 
 const Content = styled.div`
-  position: relative;
-  color: ${colors.black};
-  top: 0;
+  padding: 2rem;
+
+  max-height: calc(100vh - 4.25rem);
+
   ${breakpoint.s} {
-    top: 4.2rem;
+    max-height: calc(100vh - 4rem - 4.25rem);
   }
-  width: 100%;
-  background-color: var(--primaryBgColor);
-  border: var(--secondary);
-  height: fit-content;
-  min-height: 100vh;
-  max-height: 100vh;
-  margin: 0;
-
-  overflow-x: auto;
-  ${breakpoint.s} {
-    overflow-x: initial;
-    min-height: initial;
+  ${breakpoint.m} {
+    max-height: calc(100vh - 8rem - 4.25rem);
   }
-`;
-
-const CloseButtonContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-`;
-
-const CloseButton = styled(IoIosClose)`
-  all: unset;
-  font-size: 2rem;
-  fill: ${colors.black};
-  padding: ${paddingTitleAndContent};
-  width: 3rem;
-  position: relative;
-  right: -12px;
-
-  &:hover {
-    cursor: pointer;
-    fill: var(--secondary);
-  }
-`;
-
-const ModalContent = styled.div`
-  padding: ${paddingTitleAndContent};
-  overflow: hidden;
+  overflow: auto;
+  ${scrollStyles}
 `;
 
 interface Props {
-  children: ReactNode;
-  isOpen: boolean;
-  $styles?: {
-    width: string;
-  };
-  style?: React.CSSProperties;
-  onClose?: () => void;
-  title?: JSX.Element | string | null | undefined;
+  children: React.ReactNode;
+  hideModal: () => void;
+  title?: string;
 }
 
-export function Modal({
-  children,
-  isOpen,
-  onClose,
-  style = {},
-  title: Title
-}: Props) {
-  if (!isOpen) {
-    return null;
-  }
-  const onCloseModal = () => {
-    onClose?.();
-  };
-
+export default function Modal({ children, hideModal, title = "modal" }: Props) {
   return createPortal(
-    <Root onClick={onCloseModal}>
-      <Content
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
-        style={style}
-      >
-        <CloseButtonContainer>
-          <ModalTitle>
-            {Title ? Title : <div />}
-            <CloseButton onClick={onCloseModal} />
-          </ModalTitle>
-        </CloseButtonContainer>
-        <ModalContent>{children}</ModalContent>
-      </Content>
+    <Root data-testid="modal">
+      <Wrapper>
+        <Title tag="h3">
+          {title}
+          <Button theme="blank" onClick={hideModal}>
+            <IoIosClose size={42} />
+          </Button>
+        </Title>
+        <Content>{children}</Content>
+      </Wrapper>
+      <RootBG onClick={hideModal} />
     </Root>,
     document.body
   );

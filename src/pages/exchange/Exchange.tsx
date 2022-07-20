@@ -1,5 +1,5 @@
 import { manageExchange } from "@bosonprotocol/widgets-sdk";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { useAccount } from "wagmi";
 
@@ -18,7 +18,6 @@ import {
   WidgetContainer
 } from "../../components/detail/Detail.style";
 import DetailChart from "../../components/detail/DetailChart";
-import DetailModal from "../../components/detail/DetailModal";
 import DetailOpenSea from "../../components/detail/DetailOpenSea";
 import DetailShare from "../../components/detail/DetailShare";
 import DetailSlider from "../../components/detail/DetailSlider";
@@ -55,15 +54,9 @@ export default function Exchange() {
   const fromAccountPage =
     (location.state as { from: string })?.from === BosonRoutes.YourAccount;
   const [isTabSellerSelected, setTabSellerSelected] = useState(fromAccountPage);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const { address: account } = useAccount();
   const address = account || "";
-
-  const handleModal = useCallback(() => {
-    setIsModalOpen(!isModalOpen);
-  }, [isModalOpen]);
-
   const {
     data: exchanges,
     isError,
@@ -211,7 +204,6 @@ export default function Exchange() {
                       exchange={
                         exchange as NonNullable<Offer["exchanges"]>[number]
                       }
-                      handleModal={handleModal}
                       name={name}
                       image={offerImg}
                       hasSellerEnoughFunds={hasSellerEnoughFunds}
@@ -224,7 +216,6 @@ export default function Exchange() {
                   pageType="exchange"
                   offer={offer}
                   exchange={exchange as NonNullable<Offer["exchanges"]>[number]}
-                  handleModal={handleModal}
                   name={name}
                   image={offerImg}
                   hasSellerEnoughFunds={hasSellerEnoughFunds}
@@ -272,12 +263,6 @@ export default function Exchange() {
             </div>
           </DetailGrid>
         </DarkerBackground>
-        <DetailModal
-          isOpen={isModalOpen}
-          onClose={() => {
-            setIsModalOpen(false);
-          }}
-        />
       </DetailWrapper>
     </>
   );

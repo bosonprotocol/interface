@@ -6,5 +6,6 @@ export const zIndex = {
   LandingTitle: 20,
   Header: 1000,
   Notification: 1001,
-  Popper: 1002
+  Popper: 1002,
+  Modal: 2000
 };

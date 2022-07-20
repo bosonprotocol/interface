@@ -64,6 +64,8 @@ const GlobalStyle = createGlobalStyle<{
 
     overflow-y: auto;
     overflow-x: hidden;
+
+    max-height: 100vh;
   }
 
   html, body, #root, [data-rk] {
