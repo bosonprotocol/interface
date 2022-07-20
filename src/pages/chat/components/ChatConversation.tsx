@@ -6,6 +6,7 @@ import SellerID from "../../../components/ui/SellerID";
 import { colors } from "../../../lib/styles/colors";
 import { useBuyerSellerAccounts } from "../../../lib/utils/hooks/useBuyerSellerAccounts";
 import { Thread } from "../types";
+import Dispute from "./Dispute";
 import Message from "./Message";
 
 const Container = styled.div`
@@ -157,36 +158,39 @@ export default function ChatConversation({ thread }: Props) {
   }
 
   return (
-    <Container>
-      <Header>
-        <SellerComponent size={24} />
-      </Header>
-      <Messages>
-        {thread.messages.map((message) => {
-          return (
-            <Conversation
-              key={message.id}
-              $alignStart={!getWasItSentByMe(buyerId, sellerId, message.from)}
-            >
-              <Message
-                thread={thread}
-                message={message}
-                isLeftAligned={
-                  !getWasItSentByMe(buyerId, sellerId, message.from)
-                }
+    <>
+      <Container>
+        <Header>
+          <SellerComponent size={24} />
+        </Header>
+        <Messages>
+          {thread.messages.map((message) => {
+            return (
+              <Conversation
+                key={message.id}
+                $alignStart={!getWasItSentByMe(buyerId, sellerId, message.from)}
               >
-                <SellerComponent size={32} withProfileText={false} />
-              </Message>
-            </Conversation>
-          );
-        })}
-      </Messages>
-      <TypeMessage>
-        <BtnProposal>
-          Proposal <span>&nbsp;</span>
-        </BtnProposal>
-        <Input placeholder="Write a message" />
-      </TypeMessage>
-    </Container>
+                <Message
+                  thread={thread}
+                  message={message}
+                  isLeftAligned={
+                    !getWasItSentByMe(buyerId, sellerId, message.from)
+                  }
+                >
+                  <SellerComponent size={32} withProfileText={false} />
+                </Message>
+              </Conversation>
+            );
+          })}
+        </Messages>
+        <TypeMessage>
+          <BtnProposal>
+            Proposal <span>&nbsp;</span>
+          </BtnProposal>
+          <Input placeholder="Write a message" />
+        </TypeMessage>
+      </Container>
+      <Dispute thread={thread} />
+    </>
   );
 }

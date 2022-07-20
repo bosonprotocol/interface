@@ -87,7 +87,6 @@ export default function Message({
   isLeftAligned,
   thread
 }: Props) {
-  console.log(message);
   if (typeof message.content.value === "string") {
     return (
       <Content $isLeftAligned={isLeftAligned}>
