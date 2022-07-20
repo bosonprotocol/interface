@@ -338,7 +338,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                     title: "An error occurred",
                     message: "An error occurred when trying to commit!",
                     type: "ERROR",
-                    state: ExchangeState.Committed,
+                    state: "Committed",
                     ...BASE_MODAL_DATA
                   });
                 }}
@@ -354,7 +354,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                     message: "You now own the rNFT",
                     type: "SUCCESS",
                     id: exchangeId.toString(),
-                    state: ExchangeState.Committed,
+                    state: "Committed",
                     ...BASE_MODAL_DATA
                   });
                 }}
@@ -374,7 +374,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                     title: "An error occurred",
                     message: "An error occurred when trying to redeem!",
                     type: "ERROR",
-                    state: ExchangeState.Redeemed,
+                    state: "Redeemed",
                     ...BASE_MODAL_DATA
                   });
                 }}
@@ -389,7 +389,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                     title: "You have successfully redeemed!",
                     message: "You have successfully redeemed!",
                     type: "SUCCESS",
-                    state: ExchangeState.Redeemed,
+                    state: "Redeemed",
                     ...BASE_MODAL_DATA
                   });
                 }}
@@ -471,7 +471,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 title: "An error occurred",
                 message: "An error occurred when trying to cancel!",
                 type: "ERROR",
-                state: ExchangeState.Cancelled,
+                state: "Cancelled",
                 ...BASE_MODAL_DATA
               });
             }}
@@ -486,7 +486,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 title: "You have successfully cancelled!",
                 message: "You have successfully cancelled!",
                 type: "SUCCESS",
-                state: ExchangeState.Cancelled,
+                state: "Cancelled",
                 ...BASE_MODAL_DATA
               });
             }}

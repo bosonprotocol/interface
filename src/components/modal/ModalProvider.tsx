@@ -1,10 +1,14 @@
-/* eslint @typescript-eslint/no-explicit-any: "off" */
 import { useCallback, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 import Modal from "./Modal";
 import { MODAL_COMPONENTS } from "./ModalComponents";
-import ModalContext, { initalState } from "./ModalContext";
+import ModalContext, {
+  initalState,
+  ModalContextType,
+  ModalProps,
+  ModalType
+} from "./ModalContext";
 
 interface Props {
   children: React.ReactNode;
@@ -15,7 +19,7 @@ export default function ModalProvider({ children }: Props) {
   const { modalType, modalProps } = store;
 
   const showModal = useCallback(
-    (modalType: string, modalProps: any = {}) => {
+    (modalType: ModalType, modalProps?: ModalProps) => {
       setStore({
         ...store,
         modalType,
@@ -40,7 +44,7 @@ export default function ModalProvider({ children }: Props) {
   }, [pathname]); // eslint-disable-line
 
   const renderComponent = () => {
-    const ModalComponent = MODAL_COMPONENTS[modalType];
+    const ModalComponent = modalType ? MODAL_COMPONENTS[modalType] : null;
     if (!modalType || !ModalComponent) {
       document.body.style.overflow = "unset";
       return null;
@@ -54,8 +58,10 @@ export default function ModalProvider({ children }: Props) {
     );
   };
 
+  const value: ModalContextType = { store, showModal, hideModal };
+
   return (
-    <ModalContext.Provider value={{ store, showModal, hideModal }}>
+    <ModalContext.Provider value={value}>
       {children}
       {renderComponent()}
     </ModalContext.Provider>

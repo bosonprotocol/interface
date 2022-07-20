@@ -1,4 +1,3 @@
-/* eslint @typescript-eslint/no-explicit-any: "off" */
 import { ExchangeState } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
 import { generatePath } from "react-router-dom";
 
@@ -10,7 +9,9 @@ import {
   WidgetButtonWrapper
 } from "../../../components/detail/Detail.style";
 import DetailOpenSea from "../../../components/detail/DetailOpenSea";
-import DetailTable from "../../../components/detail/DetailTable";
+import DetailTable, {
+  Data as TableData
+} from "../../../components/detail/DetailTable";
 import {
   AccountQueryParameters,
   UrlParameters
@@ -24,16 +25,15 @@ import Grid from "../../ui/Grid";
 import Image from "../../ui/Image";
 import Typography from "../../ui/Typography";
 
-// TODO: work on that
 interface Props {
-  id: any;
+  id: string;
   type: string;
   state: string;
   message: string;
-  data: any;
-  name: any;
-  image: any;
-  exchange: any;
+  data: Readonly<Array<TableData>>;
+  name: string;
+  image: string;
+  exchange: NonNullable<Offer["exchanges"]>[number];
 }
 export default function DetailWidget({
   id,
