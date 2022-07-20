@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { useMemo } from "react";
 import styled from "styled-components";
 
@@ -7,8 +8,10 @@ import { DetailSellerDeposit } from "../../../components/detail/DetailWidget/Det
 import Price from "../../../components/price";
 import Step from "../../../components/stepper/step/Step";
 import Stepper from "../../../components/stepper/Stepper";
+import Timeline from "../../../components/timeline/Timeline";
 import Button from "../../../components/ui/Button";
 import Typography from "../../../components/ui/Typography";
+import { CONFIG } from "../../../lib/config";
 import { colors } from "../../../lib/styles/colors";
 import { Offer } from "../../../lib/types/offer";
 import { Thread } from "../types";
@@ -86,6 +89,16 @@ const CTASection = styled(Section)`
   justify-content: space-between;
 `;
 
+const HistorySection = styled(Section)`
+  padding-bottom: 3rem;
+`;
+
+const formatShortDate = (date: string) => {
+  return date
+    ? dayjs(new Date(Number(date) * 1000)).format(CONFIG.shortDateFormat)
+    : "";
+};
+
 const getOfferDetailData = (offer: Offer) => {
   return [
     {
@@ -127,10 +140,27 @@ export default function Dispute({ thread }: Props) {
     () => offer && getOfferDetailData(offer),
     [offer]
   );
-
+  const timesteps = useMemo(() => {
+    if (!exchange) {
+      return [];
+    }
+    const { committedDate, redeemedDate } = exchange;
+    const timesteps = [];
+    if (committedDate) {
+      timesteps.push({
+        text: "Committed",
+        date: formatShortDate(committedDate)
+      });
+    }
+    if (redeemedDate) {
+      timesteps.push({ text: "Redeemed", date: formatShortDate(redeemedDate) });
+    }
+    return timesteps;
+  }, [exchange]);
   if (!exchange || !offer) {
     return null;
   }
+
   return (
     <Container>
       <img src={exchange.offer.metadata.imageUrl} width="372px" />
@@ -163,8 +193,12 @@ export default function Dispute({ thread }: Props) {
       </Section>
       <CTASection>
         <Button theme="primary">Retract</Button>
-        <Button theme="outline">Escalate</Button>
+        <Button theme="orange">Escalate</Button>
       </CTASection>
+      <HistorySection>
+        <h4>History</h4>
+        <Timeline timesteps={timesteps} />
+      </HistorySection>
     </Container>
   );
 }
