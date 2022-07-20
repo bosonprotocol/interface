@@ -18,42 +18,42 @@ import { generatePath } from "react-router-dom";
 import styled from "styled-components";
 import { useSigner } from "wagmi";
 
-import portalLogo from "../../assets/portal.svg";
-import { CONFIG } from "../../lib/config";
+import { CONFIG } from "../../../lib/config";
 import {
   AccountQueryParameters,
   UrlParameters
-} from "../../lib/routing/parameters";
-import { BosonRoutes } from "../../lib/routing/routes";
-import { colors } from "../../lib/styles/colors";
-import { Offer } from "../../lib/types/offer";
-import { IPrice } from "../../lib/utils/convertPrice";
-import { titleCase } from "../../lib/utils/formatText";
-import { isOfferHot } from "../../lib/utils/getOfferLabel";
-import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
-import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import { getItemFromStorage } from "../../lib/utils/hooks/useLocalStorage";
-import { Modal } from "../modal/Modal";
-import Price from "../price/index";
-import { useConvertedPrice } from "../price/useConvertedPrice";
-import Button from "../ui/Button";
-import Grid from "../ui/Grid";
-import Image from "../ui/Image";
-import Typography from "../ui/Typography";
+} from "../../../lib/routing/parameters";
+import { BosonRoutes } from "../../../lib/routing/routes";
+import { colors } from "../../../lib/styles/colors";
+import { Offer } from "../../../lib/types/offer";
+import { IPrice } from "../../../lib/utils/convertPrice";
+import { titleCase } from "../../../lib/utils/formatText";
+import { isOfferHot } from "../../../lib/utils/getOfferLabel";
+import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
+import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { getItemFromStorage } from "../../../lib/utils/hooks/useLocalStorage";
+import { Modal } from "../../modal/Modal";
+import Price from "../../price/index";
+import { useConvertedPrice } from "../../price/useConvertedPrice";
+import Button from "../../ui/Button";
+import Grid from "../../ui/Grid";
+import Image from "../../ui/Image";
+import Typography from "../../ui/Typography";
 import {
   Break,
   CommitAndRedeemButton,
   ModalGrid,
   ModalImageWrapper,
-  PortalLogoImg,
   RaiseProblemButton,
   RedeemLeftButton,
   Widget,
   WidgetButtonWrapper,
   WidgetUpperGrid
-} from "./Detail.style";
-import DetailOpenSea from "./DetailOpenSea";
-import DetailTable from "./DetailTable";
+} from "../Detail.style";
+import DetailOpenSea from "../DetailOpenSea";
+import DetailTable from "../DetailTable";
+import { DetailDisputeResolver } from "./DetailDisputeResolver";
+import { DetailSellerDeposit } from "./DetailSellerDeposit";
 
 const StyledPrice = styled(Price)`
   h3 {
@@ -95,13 +95,6 @@ const getOfferDetailData = (
 
   const priceNumber = Number(convertedPrice?.converted);
 
-  const sellerDepositPercentage =
-    Number(offer.sellerDeposit) / Number(offer.price);
-  const sellerDeposit = sellerDepositPercentage * 100;
-  const sellerDepositDollars = (sellerDepositPercentage * priceNumber).toFixed(
-    2
-  );
-
   const buyerCancelationPenaltyPercentage =
     Number(offer.buyerCancelPenalty) / Number(offer.price);
   const buyerCancelationPenalty = buyerCancelationPenaltyPercentage * 100;
@@ -141,24 +134,10 @@ const getOfferDetailData = (
         }
       : { hide: true },
     {
-      name: "Seller deposit",
-      info: (
-        <>
-          <Typography tag="h6">
-            <b>Seller deposit</b>
-          </Typography>
-          <Typography tag="p">
-            The Seller deposit is used to hold the seller accountable to follow
-            through with their commitment to deliver the physical item. If the
-            seller breaks their commitment, the deposit will be transferred to
-            the buyer.
-          </Typography>
-        </>
-      ),
+      name: DetailSellerDeposit.name,
+      info: DetailSellerDeposit.info,
       value: (
-        <Typography tag="p">
-          {sellerDeposit}%<small>(${sellerDepositDollars})</small>
-        </Typography>
+        <DetailSellerDeposit.value offer={offer} conversionRate={priceNumber} />
       )
     },
     {
@@ -197,19 +176,9 @@ const getOfferDetailData = (
       value: <AiOutlineCheck size={16} />
     },
     {
-      name: "Dispute resolver",
-      info: (
-        <>
-          <Typography tag="h6">
-            <b>Dispute resolver</b>
-          </Typography>
-          <Typography tag="p">
-            The Dispute resolver is trusted to resolve disputes between buyer
-            and seller that can't be mutually resolved.
-          </Typography>
-        </>
-      ),
-      value: <PortalLogoImg src={portalLogo} alt="Portal logo" />
+      name: DetailDisputeResolver.name,
+      info: DetailDisputeResolver.info,
+      value: <DetailDisputeResolver.value />
     }
   ];
 };

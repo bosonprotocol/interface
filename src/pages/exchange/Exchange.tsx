@@ -24,7 +24,7 @@ import DetailShare from "../../components/detail/DetailShare";
 import DetailSlider from "../../components/detail/DetailSlider";
 import DetailTable from "../../components/detail/DetailTable";
 import DetailTransactions from "../../components/detail/DetailTransactions";
-import DetailWidget from "../../components/detail/DetailWidget";
+import DetailWidget from "../../components/detail/DetailWidget/DetailWidget";
 // DETAILS COMPONENTS ABOVE
 import Image from "../../components/ui/Image";
 import SellerID from "../../components/ui/SellerID";

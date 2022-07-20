@@ -22,7 +22,7 @@ import DetailModal from "../../components/detail/DetailModal";
 import DetailShare from "../../components/detail/DetailShare";
 import DetailSlider from "../../components/detail/DetailSlider";
 import DetailTable from "../../components/detail/DetailTable";
-import DetailWidget from "../../components/detail/DetailWidget";
+import DetailWidget from "../../components/detail/DetailWidget/DetailWidget";
 import Image from "../../components/ui/Image";
 import SellerID from "../../components/ui/SellerID";
 import Typography from "../../components/ui/Typography";
