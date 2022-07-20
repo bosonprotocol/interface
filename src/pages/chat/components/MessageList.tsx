@@ -94,7 +94,7 @@ export default function MessageList({ threads, onChangeConversation }: Props) {
                     seller={thread.exchange?.offer.seller || ({} as never)}
                     offerName={thread.exchange?.offer.metadata.name || ""}
                     withProfileImage
-                    onClick={() => null}
+                    onClick={null}
                   />
                 </MessageInfo>
               </MessageContent>
