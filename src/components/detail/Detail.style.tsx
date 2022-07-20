@@ -484,7 +484,7 @@ export const DetailWrapper = styled.div`
     padding: 0 10rem;
   }
   > div:first-child {
-    padding-top: 1rem;
+    padding-top: 2rem;
   }
   > div:not(:last-child) {
     margin-bottom: 4rem;

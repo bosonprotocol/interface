@@ -66,6 +66,10 @@ const GlobalStyle = createGlobalStyle<{
     overflow-x: hidden;
   }
 
+  html, body, #root, [data-rk] {
+    height: 100%;
+  }
+
   a,
   button,
   input,

@@ -109,6 +109,14 @@ const BtnProposal = styled.button`
   }
 `;
 
+const SimpleMessage = styled.p`
+  all: unset;
+  display: block;
+  height: 100%;
+  padding: 1rem;
+  background: ${colors.lightGrey};
+`;
+
 const getWasItSentByMe = (
   myBuyerId: string,
   mySellerId: string,
@@ -123,8 +131,8 @@ interface Props {
 export default function ChatConversation({ thread }: Props) {
   const { address } = useAccount();
   const {
-    seller: { sellerId, isError: isErrorSellers },
-    buyer: { buyerId, isError: isErrorBuyers }
+    seller: { sellerId, isError: isErrorSellers, isLoading: isLoadingSeller },
+    buyer: { buyerId, isError: isErrorBuyers, isLoading: isLoadingBuyer }
   } = useBuyerSellerAccounts(address || "");
   const SellerComponent = useCallback(
     ({
@@ -149,12 +157,26 @@ export default function ChatConversation({ thread }: Props) {
     },
     [thread]
   );
-  if (isErrorSellers || isErrorBuyers || (!sellerId && !buyerId)) {
-    return <Container>There has been an error, try again or refresh</Container>;
+  if (
+    !isLoadingSeller &&
+    !isLoadingBuyer &&
+    (isErrorSellers || isErrorBuyers || (!sellerId && !buyerId))
+  ) {
+    return (
+      <Container>
+        <SimpleMessage>
+          There has been an error, try again or refresh
+        </SimpleMessage>
+      </Container>
+    );
   }
 
   if (!thread) {
-    return <Container>Select a message</Container>;
+    return (
+      <Container>
+        <SimpleMessage>Select a message</SimpleMessage>
+      </Container>
+    );
   }
 
   return (

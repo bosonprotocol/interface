@@ -20,12 +20,14 @@ const Header = styled.div`
   height: ${messageItemHeight};
   font-weight: 600;
   font-size: 24px;
-  border-bottom: 1px solid #5560720f;
+  border: 1px solid #5560720f;
+  border-top: none;
 `;
 
 const MessageItem = styled.div<{ $active?: boolean }>`
   height: ${messageItemHeight};
-  border-bottom: 1px solid #5560720f;
+  border: 1px solid #5560720f;
+  border-top: none;
   ${({ $active }) =>
     $active &&
     `

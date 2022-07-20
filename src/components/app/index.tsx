@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { Outlet } from "react-router-dom";
 import styled, { ThemeProvider } from "styled-components";
 
@@ -10,6 +11,7 @@ import Header from "../header/Header";
 
 const Container = styled.div`
   width: 100%;
+  height: 100%;
   min-height: 100vh;
   position: relative;
   z-index: 0;
@@ -17,13 +19,17 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
-const PageContainer = styled(Layout)``;
-
-export default function App() {
+interface Props {
+  withLayout?: boolean;
+  withFooter?: boolean;
+}
+export default function App({ withLayout = true, withFooter = true }: Props) {
   const primaryColor = useCustomStoreQueryParameter("primaryColor");
   const secondaryColor = useCustomStoreQueryParameter("secondaryColor");
   const accentColor = useCustomStoreQueryParameter("accentColor");
   const primaryBgColor = useCustomStoreQueryParameter("primaryBgColor");
+
+  const Wrapper = withLayout ? Layout : Fragment;
 
   return (
     <ThemeProvider theme={theme}>
@@ -35,10 +41,10 @@ export default function App() {
           $primaryBgColor={primaryBgColor}
         />
         <Header />
-        <PageContainer>
+        <Wrapper>
           <Outlet />
-        </PageContainer>
-        <Footer />
+        </Wrapper>
+        {withFooter && <Footer />}
       </Container>
     </ThemeProvider>
   );
