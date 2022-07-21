@@ -1,5 +1,5 @@
+import { ShareNetwork } from "phosphor-react";
 import { useState } from "react";
-import { AiOutlineShareAlt } from "react-icons/ai";
 
 import copyToClipboard from "../../lib/utils/copyToClipboard";
 import Button from "../ui/Button";
@@ -22,7 +22,7 @@ export default function DetailShare() {
     <>
       <ShareWrapper>
         <Button onClick={handleShare} theme="blank">
-          <AiOutlineShareAlt size={24} />
+          <ShareNetwork size={24} />
         </Button>
       </ShareWrapper>
       <Notify $show={show}>

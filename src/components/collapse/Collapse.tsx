@@ -1,5 +1,5 @@
+import { CaretDown, CaretUp } from "phosphor-react";
 import { ReactNode, useReducer } from "react";
-import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import styled from "styled-components";
 
 const CollapsibleButton = styled.button.attrs({ type: "button" })`
@@ -35,7 +35,7 @@ export default function Collapse({ title, children }: Props) {
           <Title>{title}</Title>
 
           <ArrowContainer>
-            {isOpen ? <IoIosArrowUp /> : <IoIosArrowDown />}
+            {isOpen ? <CaretUp /> : <CaretDown />}
           </ArrowContainer>
         </>
       </CollapsibleButton>

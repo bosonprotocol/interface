@@ -1,22 +1,21 @@
-import { IoMdSettings } from "react-icons/io";
+import { Gear } from "phosphor-react";
 import styled from "styled-components";
 
 import { BosonRoutes } from "../lib/routing/routes";
-import { colors } from "../lib/styles/colors";
 import { useKeepQueryParamsNavigate } from "../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { transition } from "./ui/styles";
 
 const SettingsSvgIcon = styled.button`
   all: unset;
-  :hover * {
-    fill: ${colors.green};
+  svg > * {
+    ${transition}
   }
   :hover {
     cursor: pointer;
+    svg > *:not(rect) {
+      stroke: var(--primary);
+    }
   }
-`;
-
-const SettingsIcon = styled(IoMdSettings)`
-  font-size: 30px;
 `;
 
 export default function Settings() {
@@ -28,7 +27,7 @@ export default function Settings() {
         data-testid="settings"
         onClick={() => navigate({ pathname: BosonRoutes.CreateStorefront })}
       >
-        <SettingsIcon />
+        <Gear size={32} />
       </SettingsSvgIcon>
     </>
   );

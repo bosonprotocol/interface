@@ -1,6 +1,6 @@
 import { ConnectButton as RainbowConnectButton } from "@rainbow-me/rainbowkit";
 import * as Sentry from "@sentry/browser";
-import { BsChevronDown } from "react-icons/bs";
+import { CaretDown } from "phosphor-react";
 import styled from "styled-components";
 
 import metamaskLogo from "../../../src/assets/metamask-logo.svg";
@@ -75,7 +75,7 @@ export default function ConnectButton() {
                     style={{ whiteSpace: "pre" }}
                   >
                     Wrong network
-                    <BsChevronDown size={12} />
+                    <CaretDown size={12} />
                   </Button>
                 );
               }
@@ -94,7 +94,7 @@ export default function ConnectButton() {
                       <FallbackAvatar address={account.address} size={18} />
                     )}
                     {account.displayName}
-                    <BsChevronDown size={12} />
+                    <CaretDown size={12} />
                   </Button>
                 </div>
               );

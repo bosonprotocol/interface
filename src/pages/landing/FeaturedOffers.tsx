@@ -1,4 +1,4 @@
-import { BsArrowRightShort } from "react-icons/bs";
+import { CaretRight } from "phosphor-react";
 import styled from "styled-components";
 
 import { LinkWithQuery } from "../../components/linkStoreFields/LinkStoreFields";
@@ -45,6 +45,7 @@ const Title = styled(Typography)`
 const ViewMore = styled(LinkWithQuery)`
   all: unset;
   display: flex;
+  gap: 0.5rem;
   align-items: center;
   cursor: pointer;
   ${() => buttonText};
@@ -105,7 +106,7 @@ const FeaturedOffers: React.FC<IFeaturedOffers> = ({
         <ViewMore to={BosonRoutes.Explore}>
           <>
             {isLteXS ? "" : "View more"}
-            <BsArrowRightShort size={32} />
+            <CaretRight size={24} />
           </>
         </ViewMore>
       </TopContainer>
