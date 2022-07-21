@@ -210,7 +210,12 @@ export default function Dispute({ thread }: Props) {
           onClick={() =>
             showModal("RESOLVE_DISPUTE", {
               title: "Resolve dispute",
-              exchange
+              exchange,
+              proposal: {
+                type: "Refund Request",
+                percentageAmount: "10",
+                signature: "0x"
+              }
             })
           }
         >

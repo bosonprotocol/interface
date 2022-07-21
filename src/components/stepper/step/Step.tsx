@@ -1,8 +1,8 @@
 import { ReactNode } from "react";
 import styled from "styled-components";
 
+import { ReactComponent as CheckSvg } from "../../../assets/check.svg";
 import { colors } from "../../../lib/styles/colors";
-import { ReactComponent as CheckSvg } from "./check.svg";
 import { ReactComponent as DotSvg } from "./dot.svg";
 
 const Container = styled.div`

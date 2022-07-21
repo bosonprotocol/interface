@@ -17,7 +17,7 @@ export type Message = {
   content: RegularMessage | ImageMessage | ProposalMessage;
 };
 
-type RegularMessage = {
+export type RegularMessage = {
   threadId: {
     exchangeId: string;
     sellerId: string;
@@ -28,7 +28,7 @@ type RegularMessage = {
   value: string;
 };
 
-type ImageMessage = {
+export type ImageMessage = {
   threadId: {
     exchangeId: string;
     sellerId: string;
@@ -39,7 +39,7 @@ type ImageMessage = {
   value: string;
 };
 
-type ProposalMessage = {
+export type ProposalMessage = {
   threadId: {
     exchangeId: string;
     sellerId: string;

@@ -63,7 +63,7 @@ export default function Price({
           <span style={{ color: "#556072", opacity: "0.5" }}>
             {CONFIG.defaultCurrency.symbol}
           </span>{" "}
-          {price?.converted}
+          <span>{price?.converted}</span>
         </small>
       ),
     [convert, price, isExchange]
