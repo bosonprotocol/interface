@@ -14,14 +14,42 @@ export type Message = {
   id: string;
   from: string;
   sentDate: Date;
-  content: {
-    threadId: {
-      exchangeId: string;
-      sellerId: string;
-      buyerId: string;
-    };
-    contentType: "string" | "json" | "image" | "proposal";
-    version: "1";
-    value: string | Record<string, unknown>;
+  content: RegularMessage | ImageMessage | ProposalMessage;
+};
+
+type RegularMessage = {
+  threadId: {
+    exchangeId: string;
+    sellerId: string;
+    buyerId: string;
+  };
+  contentType: "string";
+  version: "1";
+  value: string;
+};
+
+type ImageMessage = {
+  threadId: {
+    exchangeId: string;
+    sellerId: string;
+    buyerId: string;
+  };
+  contentType: "image";
+  version: "1";
+  value: string;
+};
+
+type ProposalMessage = {
+  threadId: {
+    exchangeId: string;
+    sellerId: string;
+    buyerId: string;
+  };
+  contentType: "proposal";
+  version: "1";
+  value: {
+    title: string;
+    description: string;
+    proposals: { type: string; percentageAmount: string; signature: string }[];
   };
 };
