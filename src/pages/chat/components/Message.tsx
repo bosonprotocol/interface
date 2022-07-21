@@ -137,11 +137,13 @@ export default function Message({
     const currentDate = dayjs();
     const dateOfSending = dayjs(message.sentDate);
 
-    return dateOfSending.diff(currentDate, "day");
+    return currentDate.diff(dateOfSending, "day");
   }, [message]);
 
   const separatorComponent = useMemo(() => {
-    if (calcDate > 0 && calcDate <= 7) {
+    if (calcDate === 0) {
+      return null;
+    } else if (calcDate > 0 && calcDate <= 7) {
       return (
         <Separator>
           <div>
@@ -152,15 +154,13 @@ export default function Message({
           <div></div>
         </Separator>
       );
-    } else if (calcDate > 0 && calcDate > 7) {
+    } else {
       return (
         <Separator>
           <div>{`${calcDate} days ago`}</div>
           <div></div>
         </Separator>
       );
-    } else {
-      return null;
     }
   }, [message, calcDate]);
 
