@@ -8,6 +8,7 @@ import { Thread } from "./types";
 
 const myBuyerId = "16";
 const mySellerId = "17";
+const currentDate = new Date();
 
 const threads: Omit<Thread, "exchange">[] = [
   {
@@ -59,7 +60,11 @@ const threads: Omit<Thread, "exchange">[] = [
       {
         id: "3",
         from: myBuyerId,
-        sentDate: new Date(),
+        sentDate: (() => {
+          const currentDate = new Date();
+          new Date(currentDate.setDate(currentDate.getDate() - 15));
+          return currentDate;
+        })(),
         content: {
           threadId: {
             exchangeId: "20",
@@ -74,7 +79,11 @@ const threads: Omit<Thread, "exchange">[] = [
       {
         id: "4",
         from: "4",
-        sentDate: new Date(),
+        sentDate: (() => {
+          const currentDate = new Date();
+          new Date(currentDate.setDate(currentDate.getDate() - 10));
+          return currentDate;
+        })(),
         content: {
           threadId: {
             exchangeId: "20",
@@ -89,7 +98,11 @@ const threads: Omit<Thread, "exchange">[] = [
       {
         id: "3",
         from: myBuyerId,
-        sentDate: new Date(),
+        sentDate: (() => {
+          const currentDate = new Date();
+          new Date(currentDate.setDate(currentDate.getDate() - 5));
+          return currentDate;
+        })(),
         content: {
           threadId: {
             exchangeId: "20",
@@ -104,7 +117,11 @@ const threads: Omit<Thread, "exchange">[] = [
       {
         id: "4",
         from: "4",
-        sentDate: new Date(),
+        sentDate: (() => {
+          const currentDate = new Date();
+          new Date(currentDate.setDate(currentDate.getDate() - 2));
+          return currentDate;
+        })(),
         content: {
           threadId: {
             exchangeId: "20",
@@ -112,7 +129,7 @@ const threads: Omit<Thread, "exchange">[] = [
             buyerId: myBuyerId
           },
           contentType: "string",
-          value: `hello 😃 buyer with id ${myBuyerId}`,
+          value: `test test hello 😃 buyer with id ${myBuyerId}`,
           version: "1"
         }
       },
