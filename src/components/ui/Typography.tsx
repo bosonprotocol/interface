@@ -10,9 +10,7 @@ interface WrapperProps extends IGrid {
   cursor?: string;
 }
 
-const getWrapper = (tag: keyof JSX.IntrinsicElements) => styled(
-  tag
-)<WrapperProps>`
+const Wrapper = styled.div<WrapperProps>`
   display: flex;
   ${({ alignItems }) => alignItems && `align-items: ${alignItems}`};
   ${({ flexBasis }) => flexBasis && `flex-basis: ${flexBasis}`};
@@ -49,9 +47,8 @@ const Typography: React.FC<ITypography> = ({
   style = {},
   ...props
 }) => {
-  const Wrapper = getWrapper(tag);
   return (
-    <Wrapper style={style} {...props}>
+    <Wrapper style={style} {...props} as={tag}>
       {children}
     </Wrapper>
   );
