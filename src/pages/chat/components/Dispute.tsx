@@ -20,6 +20,9 @@ import { Thread } from "../types";
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+  height: 91vh;
+  overflow-y: auto;
+  min-width: max-content;
 `;
 
 const sectionStyles = `
