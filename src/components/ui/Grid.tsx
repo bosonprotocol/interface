@@ -19,6 +19,7 @@ export interface IGrid {
   gap?: string;
   flex?: string;
   padding?: string;
+  margin?: string;
   rowGap?: string;
   columnGap?: string;
 }
@@ -38,6 +39,7 @@ const Container = styled.div<IGrid>`
   ${({ gap }) => (gap ? `gap:${gap};` : "")}
   ${({ flex }) => (flex ? `> * { flex: ${flex}; }` : "")}
   ${({ padding }) => (padding ? `padding:${padding};` : "")}
+  ${({ margin }) => (margin ? `margin:${margin};` : "")}
 `;
 
 const Grid: React.FC<

@@ -205,7 +205,17 @@ export default function Dispute({ thread }: Props) {
         >
           Retract
         </Button>
-        <Button theme="orange">Escalate</Button>
+        <Button
+          theme="orange"
+          onClick={() =>
+            showModal("RESOLVE_DISPUTE", {
+              title: "Resolve dispute",
+              exchange
+            })
+          }
+        >
+          Escalate
+        </Button>
       </CTASection>
       <HistorySection>
         <h4>History</h4>
