@@ -24,8 +24,8 @@ const Root = styled.div`
   *[data-currency] {
     position: absolute;
     top: 50%;
-    left: 0rem;
-    transform: translate(0rem, -50%) scale(0.75) rotate(-90deg);
+    left: 0;
+    transform: translate(0, -50%) scale(0.75) rotate(-90deg);
     ${breakpoint.m} {
       transform: translate(-0.375rem, -50%) scale(0.75) rotate(-90deg);
     }
@@ -33,7 +33,7 @@ const Root = styled.div`
   svg {
     position: absolute;
     top: 50%;
-    left: 0rem;
+    left: 0;
     transform: translate(0, -50%) scale(1.25);
     ${breakpoint.m} {
       transform: translate(0, -50%) scale(1.5);
