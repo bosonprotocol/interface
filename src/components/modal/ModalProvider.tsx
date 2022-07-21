@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCallback, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
@@ -6,8 +7,8 @@ import { MODAL_COMPONENTS } from "./ModalComponents";
 import ModalContext, {
   initalState,
   ModalContextType,
-  ModalProps,
-  ModalType
+  ModalType,
+  Store
 } from "./ModalContext";
 
 interface Props {
@@ -19,7 +20,7 @@ export default function ModalProvider({ children }: Props) {
   const { modalType, modalProps } = store;
 
   const showModal = useCallback(
-    (modalType: ModalType, modalProps?: ModalProps) => {
+    (modalType: ModalType, modalProps?: Store["modalProps"]) => {
       setStore({
         ...store,
         modalType,
@@ -33,7 +34,7 @@ export default function ModalProvider({ children }: Props) {
     setStore({
       ...store,
       modalType: null,
-      modalProps: {}
+      modalProps: {} as Store["modalProps"]
     });
   }, [store]);
 
@@ -53,12 +54,16 @@ export default function ModalProvider({ children }: Props) {
     document.body.style.overflow = "hidden";
     return (
       <Modal hideModal={hideModal} title={modalProps?.title}>
-        <ModalComponent id="modal" {...modalProps} />
+        <ModalComponent id="modal" {...(modalProps as any)} />
       </Modal>
     );
   };
 
-  const value: ModalContextType = { store, showModal, hideModal };
+  const value: ModalContextType = {
+    store,
+    showModal,
+    hideModal
+  } as ModalContextType;
 
   return (
     <ModalContext.Provider value={value}>
