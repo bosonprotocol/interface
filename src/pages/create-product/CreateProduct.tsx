@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 import CreateYourProfile from "../../components/product/CreateYourProfile";
 import Help from "../../components/product/Help";
+// import ProductType from "../../components/product/ProductType";
 import { createYourProfileHelp } from "./helpData";
 
 const ProductLayoutContainer = styled.main`
@@ -15,6 +16,7 @@ const MockStepper = styled.div`
   background: black;
   height: 50px;
 `;
+
 const MockStepperButton = styled.button`
   width: 100px;
   background: white;
@@ -33,6 +35,7 @@ export default function CreateProduct() {
       </MockStepper>
       <ProductLayoutContainer>
         <CreateYourProfile />
+        {/* <ProductType /> */}
         {isArray(createYourProfileHelp) && (
           <Help data={createYourProfileHelp} />
         )}

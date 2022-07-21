@@ -42,16 +42,18 @@ interface Props {
   subTitle?: string;
   popper?: string;
   children?: ReactNode;
+  style?: React.CSSProperties;
 }
 
 export default function InputGroup({
   title,
   subTitle,
   popper,
-  children
+  children,
+  style
 }: Props) {
   return (
-    <InputGroupContainer className="inputGroup">
+    <InputGroupContainer className="inputGroup" style={style}>
       <TitleContainer>
         <Typography tag="p">{title}</Typography>
         {popper && <DetailPopper>{popper}</DetailPopper>}

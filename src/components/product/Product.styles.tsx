@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 export const ProductButtonGroup = styled.div`
+  margin-top: 56px;
   display: flex;
   justify-content: flex-start;
   button:not(:last-child) {
@@ -10,10 +11,11 @@ export const ProductButtonGroup = styled.div`
 
 export const ContainerProductPage = styled.div`
   max-width: 506px;
+  width: 100%;
   > h2 {
     margin 56px 0;
   }
-  .inputGroup:not(:last-child) {
+  .inputGroup:not(:last-of-type) {
     margin-bottom: 32px;
   }
 `;

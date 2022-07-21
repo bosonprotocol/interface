@@ -20,6 +20,9 @@ export default function CreateYourProfile() {
         title="Website / Social media link"
         subTitle="Put your most frequently used online channel in here. Use the URL for Social media."
         popper="Lorem 123"
+        style={{
+          marginBottom: 0
+        }}
       >
         x
       </InputGroup>
