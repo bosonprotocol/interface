@@ -11,7 +11,7 @@ export type ModalType = keyof typeof MODAL_TYPES | null;
 
 export type Store = {
   modalType: ModalType;
-  modalProps?: ModalProps;
+  modalProps?: Parameters<ModalContextType["showModal"]>[1];
 };
 
 export interface ModalContextType {
@@ -30,7 +30,7 @@ export const initalState: ModalContextType = {
   hideModal: () => {},
   store: {
     modalType: null,
-    modalProps: {}
+    modalProps: {} as any
   }
 };
 
