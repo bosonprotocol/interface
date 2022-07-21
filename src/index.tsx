@@ -10,7 +10,8 @@ import WalletConnectionProvider from "./components/WalletConnectionProvider";
 import { BosonRoutes, OffersRoutes } from "./lib/routing/routes";
 import PrivateAccount from "./pages/account/private/PrivateAccountContainer";
 import PublicOrPrivateAccount from "./pages/account/public/PublicOrPrivateAccount";
-import CreateOffer from "./pages/create-offer/CreateOffer";
+// import CreateOffer from "./pages/create-offer/CreateOffer";
+import CreateProduct from "./pages/create-product/CreateProduct";
 import CustomStore from "./pages/custom-store/CustomStore";
 import Exchange from "./pages/exchange/Exchange";
 import Explore from "./pages/explore/Explore";
@@ -55,7 +56,7 @@ root.render(
                 <Route key={route} path={route} element={<Explore />} />
               ))}
 
-              <Route path={BosonRoutes.Sell} element={<CreateOffer />} />
+              <Route path={BosonRoutes.Sell} element={<CreateProduct />} />
               <Route
                 path={OffersRoutes.OfferDetail}
                 element={<OfferDetail />}
