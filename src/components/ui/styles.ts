@@ -2,6 +2,10 @@ import { css } from "styled-components";
 
 import { breakpoint } from "../../lib/styles/breakpoint";
 
+export const transition = css`
+  transition: all 150ms ease-in-out;
+`;
+
 export const button = css`
   box-sizing: border-box;
   cursor: pointer;
@@ -10,7 +14,7 @@ export const button = css`
   position: relative;
   overflow: hidden;
 
-  transition: all 150ms ease-in-out;
+  ${transition}
 `;
 export const clamp = css`
   overflow: hidden;
