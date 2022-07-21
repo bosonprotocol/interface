@@ -25,7 +25,7 @@ export default function CurrencyIcon({ currencySymbol, address }: Props) {
 
   if (currencyImages[symbolUpperCase]) {
     const Icon = currencyImages[symbolUpperCase];
-    return <Icon width="25" height="25" viewBox="0 0 25" />;
+    return <Icon width="25" height="25" viewBox="0 0 25 25" />;
   }
 
   if (error) {

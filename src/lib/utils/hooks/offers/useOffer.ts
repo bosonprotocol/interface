@@ -1,26 +1,26 @@
 import { useQuery } from "react-query";
 
-import { CONFIG } from "../../../config";
+import { useCurationLists } from "../useCurationLists";
 import { getOfferById } from "./getOffers";
 import { UseOfferProps } from "./types";
 
 export function useOffer(
-  { offerId, ...restProps }: UseOfferProps,
+  props: UseOfferProps,
   options: {
     enabled?: boolean;
   } = {}
 ) {
-  return useQuery(
-    ["offer", offerId],
-    async () => {
-      const offer = await getOfferById(offerId, {
-        sellerCurationList: CONFIG.sellerCurationList,
-        offerCurationList: CONFIG.offerCurationList,
-        enableCurationLists: CONFIG.enableCurationLists,
-        ...restProps
-      });
+  const curationLists = useCurationLists();
 
-      return offer;
+  props = {
+    ...props,
+    ...curationLists
+  };
+
+  return useQuery(
+    ["offer", props.offerId],
+    async () => {
+      return getOfferById(props.offerId, props);
     },
     {
       ...options

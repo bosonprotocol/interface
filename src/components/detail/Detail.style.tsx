@@ -165,10 +165,10 @@ export const LearnMore = styled(LinkWithQuery)`
     transform: translateX(0);
   }
   &:hover {
-    color: ${colors.black};
+    color: var(--primary);
     > svg {
       transform: translateX(5px);
-      fill: ${colors.black};
+      fill: var(--primary);
     }
   }
 `;
