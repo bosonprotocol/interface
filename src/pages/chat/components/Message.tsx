@@ -1,6 +1,6 @@
 import { Image as AccountImage } from "@davatar/react";
 import dayjs from "dayjs";
-import { ReactNode, useMemo } from "react";
+import { ReactNode, useMemo, useState } from "react";
 import styled from "styled-components";
 
 import { useModal } from "../../../components/modal/useModal";
@@ -87,11 +87,13 @@ const Separator = styled.div`
   position: relative;
   z-index: 0;
   div:nth-of-type(2) {
-    width: 100%;
+    width: calc(100% - 2.5rem);
     height: 0.125rem;
     background-color: ${colors.darkGreyTimeStamp};
     z-index: 0;
     position: relative;
+    margin-left: auto;
+    margin-right: auto;
     margin-top: -0.875rem;
   }
   div:nth-of-type(1) {
@@ -137,6 +139,8 @@ export default function Message({
   thread
 }: Props) {
   const { showModal } = useModal();
+  const [error, setError] = useState<boolean>(false);
+
   const calcDate = useMemo(() => {
     const currentDate = dayjs();
     const dateOfSending = dayjs(message.sentDate);
@@ -192,9 +196,18 @@ export default function Message({
         {separatorComponent}
         <Content $isLeftAligned={isLeftAligned}>
           <SellerAvatar />
-          {message.content.contentType === "image" ? (
-            <img src={message.content.value} />
-          ) : (
+          {message.content.contentType === "image" && error && (
+            <div>Corrupt image. Please re-send in a new message</div>
+          )}
+          {message.content.contentType === "image" && !error && (
+            <img
+              src={message.content.value}
+              onError={() => {
+                setError(true);
+              }}
+            />
+          )}
+          {message.content.contentType !== "image" && (
             <div>{message.content.value}</div>
           )}
           <BottomDateStamp />

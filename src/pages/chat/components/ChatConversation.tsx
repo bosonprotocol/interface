@@ -36,7 +36,7 @@ const Messages = styled.div`
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  max-height: 70vh;
+  max-height: 100vh;
   overflow-y: auto;
 `;
 const Conversation = styled.div<{ $alignStart: boolean }>`
@@ -55,6 +55,7 @@ const TypeMessage = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
+  padding: 24px 16px 24px 16px;
 `;
 
 const Input = styled.input`
