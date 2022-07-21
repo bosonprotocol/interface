@@ -90,7 +90,7 @@ function Socials() {
     <NavigationLinks gap={isLteS && !isXXS ? "16px" : "32px"}>
       {SOCIAL_ROUTES.map(({ name, url, logo: Logo }) => (
         <a href={url} target="_blank" rel="noopener" key={`social_nav_${name}`}>
-          <Logo size={isLteS && !isXXS ? 20 : 32} />
+          <Logo size={isLteS && !isXXS ? 20 : 32} weight="regular" />
         </a>
       ))}
     </NavigationLinks>

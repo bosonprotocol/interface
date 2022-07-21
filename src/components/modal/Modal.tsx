@@ -1,5 +1,5 @@
+import { X as Close } from "phosphor-react";
 import { createPortal } from "react-dom";
-import { IoIosClose } from "react-icons/io";
 import styled from "styled-components";
 
 import { breakpoint } from "../../lib/styles/breakpoint";
@@ -93,7 +93,7 @@ export default function Modal({ children, hideModal, title = "modal" }: Props) {
         <Title tag="h3">
           {title}
           <Button theme="blank" onClick={hideModal}>
-            <IoIosClose size={42} />
+            <Close />
           </Button>
         </Title>
         <Content>{children}</Content>

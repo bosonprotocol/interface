@@ -10,10 +10,8 @@ import {
   RedeemButton
 } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
+import { Check, Question } from "phosphor-react";
 import { useMemo, useRef, useState } from "react";
-import { AiOutlineCheck } from "react-icons/ai";
-import { BiCheck } from "react-icons/bi";
-import { BsQuestionCircle } from "react-icons/bs";
 import styled from "styled-components";
 import { useSigner } from "wagmi";
 
@@ -149,7 +147,7 @@ const getOfferDetailData = (
           </Typography>
         </>
       ),
-      value: <AiOutlineCheck size={16} />
+      value: <Check size={16} />
     },
     {
       name: DetailDisputeResolver.name,
@@ -367,7 +365,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
             {!isToRedeem && (
               <Button theme="outline" disabled>
                 {titleCase(exchangeStatus)}
-                <BiCheck size={24} />
+                <Check size={24} />
               </Button>
             )}
           </WidgetUpperGrid>
@@ -414,7 +412,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               disabled={isChainUnsupported}
             >
               Raise a problem
-              <BsQuestionCircle size={18} />
+              <Question size={18} />
             </RaiseProblemButton>
           </>
         )}

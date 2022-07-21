@@ -1,4 +1,4 @@
-import { IoIosImage } from "react-icons/io";
+import { Image as ImageIcon } from "phosphor-react";
 import styled from "styled-components";
 
 import { buttonText } from "../../components/ui/styles";
@@ -60,10 +60,6 @@ const ImagePlaceholder = styled.div`
   }
 `;
 
-const ImageNotAvailable = styled(IoIosImage)`
-  font-size: 50px;
-`;
-
 interface IImage {
   src: string;
   children?: React.ReactNode;
@@ -83,7 +79,7 @@ const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
         <ImageContainer data-testid={dataTestId} src={src} />
       ) : (
         <ImagePlaceholder>
-          <ImageNotAvailable />
+          <ImageIcon size={50} />
           <Typography tag="span">IMAGE NOT AVAILABLE</Typography>
         </ImagePlaceholder>
       )}

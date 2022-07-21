@@ -1,3 +1,4 @@
+import { IconContext } from "phosphor-react";
 import { Fragment } from "react";
 import { Outlet } from "react-router-dom";
 import styled, { ThemeProvider } from "styled-components";
@@ -34,21 +35,28 @@ export default function App({ withLayout = true, withFooter = true }: Props) {
 
   return (
     <ThemeProvider theme={theme}>
-      <ModalProvider>
-        <Container>
-          <GlobalStyle
-            $primaryColor={primaryColor}
-            $secondaryColor={secondaryColor}
-            $accentColor={accentColor}
-            $primaryBgColor={primaryBgColor}
-          />
-          <Header />
-          <Wrapper>
-            <Outlet />
-          </Wrapper>
-          {withFooter && <Footer />}
-        </Container>
-      </ModalProvider>
+      <IconContext.Provider
+        value={{
+          size: 32,
+          weight: "bold"
+        }}
+      >
+        <ModalProvider>
+          <Container>
+            <GlobalStyle
+              $primaryColor={primaryColor}
+              $secondaryColor={secondaryColor}
+              $accentColor={accentColor}
+              $primaryBgColor={primaryBgColor}
+            />
+            <Header />
+            <Wrapper>
+              <Outlet />
+            </Wrapper>
+            {withFooter && <Footer />}
+          </Container>
+        </ModalProvider>
+      </IconContext.Provider>
     </ThemeProvider>
   );
 }

@@ -1,23 +1,22 @@
-import { AiOutlineShoppingCart } from "react-icons/ai";
-import { BiDollarCircle, BiPackage } from "react-icons/bi";
+import { CurrencyCircleDollar, Package, ShoppingCart } from "phosphor-react";
 
 import { breakpointNumbers } from "../../lib/styles/breakpoint";
 
 export const COMMIT_STEPS = [
   {
-    icon: AiOutlineShoppingCart,
+    icon: ShoppingCart,
     header: "Commit",
     description:
       "Commit to an Offer to receive a Redeemable NFT (rNFT) that can be exchanged for the real-world item it represents"
   },
   {
-    icon: BiDollarCircle,
+    icon: CurrencyCircleDollar,
     header: "Hold, Trade or Transfer ",
     description:
       "You can  hold, transfer or easily trade your rNFT on the secondary market"
   },
   {
-    icon: BiPackage,
+    icon: Package,
     header: "Redeem",
     description:
       "Redeem your rNFT to receive the underlying item. The rNFT will be destroyed in the process."

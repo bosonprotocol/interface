@@ -1,4 +1,4 @@
-import { IoIosInformationCircleOutline } from "react-icons/io";
+import { Info } from "phosphor-react";
 import styled, { css } from "styled-components";
 
 import frameImage from "../../assets/frame.png";
@@ -154,6 +154,7 @@ export const CommitStep = styled.div`
 export const LearnMore = styled(LinkWithQuery)`
   all: unset;
   display: flex;
+  gap: 0.5rem;
   align-items: center;
   cursor: pointer;
   ${() => buttonText};
@@ -420,7 +421,7 @@ export const Table = styled.table<{ noBorder?: boolean }>`
   }
 `;
 
-export const InfoIcon = styled(IoIosInformationCircleOutline).attrs({
+export const InfoIcon = styled(Info).attrs({
   fill: colors.bosonSkyBlue
 })`
   position: relative;

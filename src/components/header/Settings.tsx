@@ -1,7 +1,7 @@
 import * as Sentry from "@sentry/react";
 import { BrowserTracing } from "@sentry/tracing";
+import { FloppyDisk, Gear } from "phosphor-react";
 import React, { useEffect, useRef, useState } from "react";
-import { IoIosSave, IoMdSettings } from "react-icons/io";
 import { usePopper } from "react-popper";
 import {
   createRoutesFromChildren,
@@ -14,14 +14,18 @@ import styled from "styled-components";
 import { CONFIG } from "../../lib/config";
 import { colors } from "../../lib/styles/colors";
 import { useLocalStorage } from "../../lib/utils/hooks/useLocalStorage";
+import { transition } from "../ui/styles";
 
 const SettingsSvgIcon = styled.button`
   all: unset;
-  :hover * {
-    fill: ${colors.green};
+  svg > * {
+    ${transition}
   }
   :hover {
     cursor: pointer;
+    svg > *:not(rect) {
+      stroke: var(--primary);
+    }
   }
 `;
 
@@ -60,14 +64,6 @@ const SaveButton = styled.button`
   :hover + [data-testid="tooltip"] {
     visibility: initial;
   }
-`;
-
-const SettingsIcon = styled(IoMdSettings)`
-  font-size: 30px;
-`;
-
-const SaveIcon = styled(IoIosSave)`
-  font-size: 20px;
 `;
 
 const Error = styled.span`
@@ -195,7 +191,7 @@ export default function Settings() {
         }}
         onClick={toggleDropdown}
       >
-        <SettingsIcon />
+        <Gear />
       </SettingsSvgIcon>
       <DropdownItem
         ref={(ref) => {
@@ -222,7 +218,7 @@ export default function Settings() {
             onClick={() => setSentryTracingUrl(tracingUrl)}
             data-testid="save"
           >
-            <SaveIcon width="20px" height="20px" />
+            <FloppyDisk size={20} />
           </SaveButton>
           <SaveButtonTooltip
             ref={setSaveButtonPopper}

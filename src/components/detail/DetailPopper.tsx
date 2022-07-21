@@ -1,5 +1,5 @@
+import { Question } from "phosphor-react";
 import { useEffect, useRef, useState } from "react";
-import { AiOutlineQuestionCircle } from "react-icons/ai";
 
 import Button from "../ui/Button";
 import { Popper, PopperWrapper } from "./Detail.style";
@@ -48,7 +48,7 @@ export default function DetailPopper({ children }: Props) {
           setPopperVisibility(false);
         }}
       >
-        <AiOutlineQuestionCircle size={18} />
+        <Question size={18} />
       </Button>
       <Popper
         ref={(ref) => {
