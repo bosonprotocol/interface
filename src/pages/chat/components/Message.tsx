@@ -3,6 +3,9 @@ import dayjs from "dayjs";
 import { ReactNode, useMemo } from "react";
 import styled from "styled-components";
 
+import { useModal } from "../../../components/modal/useModal";
+import Grid from "../../../components/ui/Grid";
+import Typography from "../../../components/ui/Typography";
 import { colors } from "../../../lib/styles/colors";
 import { Thread } from "../types";
 
@@ -133,6 +136,7 @@ export default function Message({
   isLeftAligned,
   thread
 }: Props) {
+  const { showModal } = useModal();
   const calcDate = useMemo(() => {
     const currentDate = dayjs();
     const dateOfSending = dayjs(message.sentDate);
@@ -164,48 +168,100 @@ export default function Message({
     }
   }, [message, calcDate]);
 
+  const SellerAvatar = () => {
+    return isLeftAligned ? (
+      <Avatar>{children}</Avatar>
+    ) : (
+      <Avatar>
+        <AccountImage size={32} address={thread.exchange?.buyer.wallet} />
+      </Avatar>
+    );
+  };
+
+  const BottomDateStamp = () => {
+    return (
+      <DateStamp $isLeftAligned={isLeftAligned}>
+        {message.sentDate.getHours()}:{message.sentDate.getMinutes()}
+      </DateStamp>
+    );
+  };
+
   if (typeof message.content.value === "string") {
     return (
       <>
         {separatorComponent}
         <Content $isLeftAligned={isLeftAligned}>
-          {isLeftAligned ? (
-            <Avatar>{children}</Avatar>
-          ) : (
-            <Avatar>
-              <AccountImage size={32} address={thread.exchange?.buyer.wallet} />
-            </Avatar>
-          )}
+          <SellerAvatar />
           {message.content.contentType === "image" ? (
             <img src={message.content.value} />
           ) : (
             <div>{message.content.value}</div>
           )}
-          <DateStamp $isLeftAligned={isLeftAligned}>
-            {message.sentDate.getHours()}:{message.sentDate.getMinutes()}
-          </DateStamp>
+          <BottomDateStamp />
         </Content>
       </>
     );
   }
+  const { exchange } = thread;
+  if (!exchange) {
+    return (
+      <Content $isLeftAligned={isLeftAligned}>
+        <SellerAvatar />
+        <p>
+          We couldn't retrieve your exchange to show the proposals, please try
+          again
+        </p>
+      </Content>
+    );
+  }
   return (
     <Content $isLeftAligned={isLeftAligned}>
-      {children}
-      <h4>Balint raised a dispute and made a proposal</h4>
-      <h5>Dispute Category</h5>
-      <ul>
-        <li>Item not as described</li>
-        <li>
-          The item received is a different colour, model, version, or size
-        </li>
-      </ul>
-      <h5>Additional information</h5>
-      <p>
-        Hello there, the item I received has some quality issues. The colours
-        are a bit worn out and not as bright as on the picture. The laces are
-        slightly damaged and in the wrong colour....
-      </p>
-      <div>{JSON.stringify(message.content.value)}</div>
+      <SellerAvatar />
+      <Typography tag="h4" margin="0">
+        {message.content.value.title}
+      </Typography>
+      <Typography tag="p" margin="0.25rem 0">
+        {message.content.value.description}
+      </Typography>
+      <Typography
+        margin="1.5rem 0 0.5rem 0"
+        fontSize="1.25rem"
+        fontWeight="600"
+      >
+        {message.content.value.proposals.length === 1
+          ? "Proposal"
+          : "Proposals"}
+      </Typography>
+      <Grid flexDirection="column" rowGap="1rem">
+        {message.content.value.proposals.map((proposal) => {
+          return (
+            <Grid
+              key={proposal.type}
+              flexDirection="column"
+              rowGap="0.25rem"
+              alignItems="flex-start"
+            >
+              <Typography margin="0">{proposal.type}</Typography>
+              <Grid>
+                <Typography
+                  color={colors.primary}
+                  onClick={() =>
+                    showModal("RESOLVE_DISPUTE", {
+                      title: "Resolve dispute",
+                      exchange,
+                      proposal
+                    })
+                  }
+                  cursor="pointer"
+                >
+                  Proposed refund amount: {proposal.percentageAmount}%
+                </Typography>
+              </Grid>
+            </Grid>
+          );
+        })}
+      </Grid>
+      <BottomDateStamp />
     </Content>
   );
 }

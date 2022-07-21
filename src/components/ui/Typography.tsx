@@ -1,3 +1,41 @@
+import styled from "styled-components";
+
+import { IGrid } from "./Grid";
+
+interface WrapperProps extends IGrid {
+  fontSize?: string;
+  fontWeight?: string;
+  color?: string;
+  background?: string;
+  cursor?: string;
+}
+
+const getWrapper = (tag: keyof JSX.IntrinsicElements) => styled(
+  tag
+)<WrapperProps>`
+  display: flex;
+  ${({ alignItems }) => alignItems && `align-items: ${alignItems}`};
+  ${({ flexBasis }) => flexBasis && `flex-basis: ${flexBasis}`};
+  ${({ flexDirection }) => flexDirection && `flex-direction: ${flexDirection}`};
+  ${({ flexGrow }) => flexGrow && `flex-grow: ${flexGrow}`};
+  ${({ justifyContent }) =>
+    justifyContent && `justify-content: ${justifyContent}`};
+  ${({ flexWrap }) => (flexWrap ? `flex-wrap:${flexWrap};` : "")}
+  ${({ rowGap }) => (rowGap ? `row-gap:${rowGap};` : "")}
+  ${({ columnGap }) => (columnGap ? `column-gap:${columnGap};` : "")}
+  ${({ gap }) => (gap ? `gap:${gap};` : "")}
+  ${({ flex }) => (flex ? `> * { flex: ${flex}; }` : "")}
+  ${({ padding }) => (padding ? `padding:${padding};` : "")}
+  ${({ margin }) => (margin ? `margin:${margin};` : "")}
+
+
+  ${({ fontSize }) => (fontSize ? `font-size:${fontSize};` : "")}
+  ${({ fontWeight }) => (fontWeight ? `font-weight:${fontWeight};` : "")}
+  ${({ color }) => (color ? `color:${color};` : "")}
+  ${({ background }) => (background ? `background:${background};` : "")}
+  ${({ cursor }) => (cursor ? `cursor:${cursor};` : "")}
+`;
+
 interface ITypography {
   children?: string | React.ReactNode;
   tag?: keyof JSX.IntrinsicElements;
@@ -6,11 +44,12 @@ interface ITypography {
 }
 
 const Typography: React.FC<ITypography> = ({
-  tag: Wrapper = "div",
+  tag = "div",
   children,
   style = {},
   ...props
 }) => {
+  const Wrapper = getWrapper(tag);
   return (
     <Wrapper style={style} {...props}>
       {children}

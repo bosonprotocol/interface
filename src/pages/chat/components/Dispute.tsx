@@ -207,17 +207,10 @@ export default function Dispute({ thread }: Props) {
         </Button>
         <Button
           theme="orange"
-          onClick={() =>
-            showModal("RESOLVE_DISPUTE", {
-              title: "Resolve dispute",
-              exchange,
-              proposal: {
-                type: "Refund Request",
-                percentageAmount: "10",
-                signature: "0x"
-              }
-            })
-          }
+          onClick={() => {
+            // TODO: implement
+            console.log("escalate");
+          }}
         >
           Escalate
         </Button>
