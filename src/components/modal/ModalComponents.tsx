@@ -11,13 +11,9 @@ export const MODAL_TYPES = {
   CANCEL_EXCHANGE: "CANCEL_EXCHANGE"
 } as const;
 
-type ModalComponentsType = {
-  [key in keyof typeof MODAL_TYPES]: any;
-};
-
-export const MODAL_COMPONENTS: ModalComponentsType = {
+export const MODAL_COMPONENTS = {
   [MODAL_TYPES.CUSTOM_STORE]: CustomStore,
   [MODAL_TYPES.DETAIL_WIDGET]: DetailWidget,
   [MODAL_TYPES.WHAT_IS_REDEEM]: WhatIsRedeem,
   [MODAL_TYPES.CANCEL_EXCHANGE]: CancelExchange
-};
+} as const;
