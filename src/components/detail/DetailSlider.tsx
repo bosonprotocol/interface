@@ -1,8 +1,8 @@
 import "@glidejs/glide/dist/css/glide.core.min.css";
 
 import Glide from "@glidejs/glide";
+import { CaretLeft, CaretRight } from "phosphor-react";
 import { useEffect, useRef } from "react";
-import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 
 import Button from "../../components/ui/Button";
 import Grid from "../../components/ui/Grid";
@@ -41,10 +41,10 @@ export default function DetailSlider({ images }: Props) {
         </Typography>
         <Grid justifyContent="flex-end">
           <Button theme="blank" onClick={() => handleSlider("<")}>
-            <AiOutlineLeft size={32} />
+            <CaretLeft size={32} />
           </Button>
           <Button theme="blank" onClick={() => handleSlider(">")}>
-            <AiOutlineRight size={32} />
+            <CaretRight size={32} />
           </Button>
         </Grid>
       </Grid>

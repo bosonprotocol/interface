@@ -1,5 +1,5 @@
+import { CaretLeft, CaretRight } from "phosphor-react";
 import { useEffect, useState } from "react";
-import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
 import styled from "styled-components";
 
 import Button from "../../components/ui/Button";
@@ -62,7 +62,7 @@ export default function Pagination({
         onClick={onClick(pageIndex - 1)}
         theme="outline"
       >
-        <BsArrowLeft size={24} />
+        <CaretLeft size={24} />
       </PaginationButton>
 
       <Page>{pageIndex + 1}</Page>
@@ -74,7 +74,7 @@ export default function Pagination({
         onClick={onClick(pageIndex + 1)}
         theme="outline"
       >
-        <BsArrowRight size={24} />
+        <CaretRight size={24} />
       </PaginationButton>
     </Container>
   );

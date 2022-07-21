@@ -1,5 +1,5 @@
+import { UserCircle } from "phosphor-react";
 import { useEffect, useState } from "react";
-import { IoIosContact } from "react-icons/io";
 import styled from "styled-components";
 
 import { BosonRoutes } from "../../lib/routing/routes";
@@ -15,10 +15,6 @@ const AccountSvgIcon = styled.button`
   :hover {
     cursor: pointer;
   }
-`;
-
-const AccountIcon = styled(IoIosContact)`
-  font-size: 30px;
 `;
 
 interface Props {
@@ -45,7 +41,7 @@ export default function Account({ connect, isConnected }: Props) {
         }
       }}
     >
-      <AccountIcon />
+      <UserCircle />
     </AccountSvgIcon>
   );
 }

@@ -1,8 +1,8 @@
 // inspired by https://3dtransforms.desandro.com/carousel
 
+import { CaretLeft, CaretRight } from "phosphor-react";
 import { useMemo, useRef, useState } from "react";
-import { RiArrowLeftSLine } from "react-icons/ri";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import OfferCard from "../../components/offer/OfferCard";
 import { breakpoint } from "../../lib/styles/breakpoint";
@@ -157,20 +157,22 @@ const CarouselCell = styled.div<{
       : ""};
 `;
 
-const PreviousButton = styled(RiArrowLeftSLine)`
+const navButtons = css`
   cursor: pointer;
   position: absolute;
   top: calc(50% - 48px / 2);
+`;
+
+const PreviousButton = styled(CaretLeft)`
+  ${navButtons}
   left: 1rem;
   ${breakpoint.s} {
     left: 0;
   }
-  font-size: 3rem;
 `;
 
-const NextButton = styled(PreviousButton)`
-  transform: rotate(180deg);
-  left: initial;
+const NextButton = styled(CaretRight)`
+  ${navButtons}
   right: 1rem;
   ${breakpoint.s} {
     right: 0;

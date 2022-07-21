@@ -1,4 +1,4 @@
-import { BsArrowRightShort } from "react-icons/bs";
+import { CaretRight } from "phosphor-react";
 
 import { BosonRoutes } from "../../../lib/routing/routes";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
@@ -51,7 +51,7 @@ export default function WhatIsRedeem() {
             <LearnMore to={BosonRoutes.LearnMore}>
               <>
                 Learn more
-                <BsArrowRightShort size={32} />
+                <CaretRight size={32} />
               </>
             </LearnMore>
           </div>
