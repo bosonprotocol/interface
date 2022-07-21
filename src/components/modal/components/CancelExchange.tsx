@@ -5,9 +5,15 @@ import { getBuyerCancelPenalty } from "../../../lib/utils/getPrices";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import DetailTable from "../../detail/DetailTable";
 import { useConvertedPrice } from "../../price/useConvertedPrice";
+import Button from "../../ui/Button";
+import { ModalProps } from "../ModalContext";
+import { ReactComponent as InfoSvg } from "./info.svg";
 
 interface Props {
   exchange: Exchange;
+
+  hideModal: NonNullable<ModalProps["hideModal"]>;
+  title: ModalProps["title"];
 }
 
 const Line = styled.hr`
@@ -18,23 +24,42 @@ const Line = styled.hr`
   margin: 1rem 0;
 `;
 
-export default function CancelExchange({ exchange }: Props) {
+const Info = styled.div`
+  padding: 1.5rem;
+  background-color: ${colors.lightGrey};
+  margin: 2rem 0;
+  color: ${colors.darkGrey};
+  display: flex;
+  align-items: center;
+`;
+
+const InfoIcon = styled(InfoSvg)`
+  margin-right: 1.1875rem;
+`;
+
+const ButtonsSection = styled.div`
+  border-top: 2px solid ${colors.border};
+  padding-top: 2rem;
+  display: flex;
+  justify-content: space-between;
+`;
+
+export default function CancelExchange({ exchange, hideModal }: Props) {
   const { offer } = exchange;
   const convertedPrice = useConvertedPrice({
     value: offer.price,
     decimals: offer.exchangeToken.decimals
   });
-  const oneEthInDollars = useConvertedPrice({
-    value: "1",
-    decimals: offer.exchangeToken.decimals
-  });
+
   const { buyerCancelationPenalty, convertedBuyerCancelationPenalty } =
     getBuyerCancelPenalty(offer, convertedPrice);
 
   const refund =
-    Number(convertedPrice.price) -
-    (Number(convertedPrice.price) * buyerCancelationPenalty) / 100;
-  const refundInDollars = refund * Number(oneEthInDollars.converted);
+    Number(offer.price) - (Number(offer.price) * buyerCancelationPenalty) / 100;
+  const convertedRefund = useConvertedPrice({
+    value: refund.toString(),
+    decimals: offer.exchangeToken.decimals
+  });
   return (
     <>
       <DetailTable
@@ -46,7 +71,7 @@ export default function CancelExchange({ exchange }: Props) {
           },
           {
             name: "Buyer Cancel. Penalty",
-            value: `-${buyerCancelationPenalty}% (${convertedPrice.currency?.symbol} ${convertedBuyerCancelationPenalty})`
+            value: `-${buyerCancelationPenalty}% (${convertedRefund.currency?.symbol} ${convertedBuyerCancelationPenalty})`
           }
         ]}
       />
@@ -57,10 +82,20 @@ export default function CancelExchange({ exchange }: Props) {
         data={[
           {
             name: "Your refund",
-            value: `${refund} ETH (${convertedPrice.currency?.symbol} ${refundInDollars})`
+            value: `${convertedRefund.price} ETH (${convertedPrice.currency?.symbol} ${convertedRefund.converted})`
           }
         ]}
       />
+      <Info>
+        <InfoIcon />
+        Your rNFT will be burned after cancellation.
+      </Info>
+      <ButtonsSection>
+        <Button theme="secondary">Confirm cancellation</Button>
+        <Button theme="blankOutline" onClick={() => hideModal()}>
+          Back
+        </Button>
+      </ButtonsSection>
     </>
   );
 }

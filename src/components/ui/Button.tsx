@@ -33,6 +33,10 @@ const BaseButton = styled.button<{
           `
           : ""
       }
+       ${
+         props.theme.hover.borderColor &&
+         `border-color:${props.theme.hover.borderColor}`
+       };
     }
   `}
 
@@ -102,6 +106,16 @@ const allThemes = {
     color: `${colors.black}4d`,
     padding: "0.75rem 0.5rem",
     hover: {
+      color: colors.black
+    }
+  },
+  blankOutline: {
+    color: colors.black,
+    padding: "1rem 2rem",
+    borderWidth: 1,
+    hover: {
+      borderColor: colors.secondary,
+      background: colors.border,
       color: colors.black
     }
   },
