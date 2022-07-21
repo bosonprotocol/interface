@@ -165,10 +165,10 @@ export const LearnMore = styled(LinkWithQuery)`
     transform: translateX(0);
   }
   &:hover {
-    color: ${colors.black};
+    color: var(--primary);
     > svg {
       transform: translateX(5px);
-      fill: ${colors.black};
+      fill: var(--primary);
     }
   }
 `;
@@ -484,7 +484,7 @@ export const DetailWrapper = styled.div`
     padding: 0 10rem;
   }
   > div:first-child {
-    padding-top: 1rem;
+    padding-top: 2rem;
   }
   > div:not(:last-child) {
     margin-bottom: 4rem;

@@ -19,7 +19,7 @@ const Header = styled.header`
   left: 0;
   right: 0;
   + * {
-    padding-top: calc(${HEADER_HEIGHT} + 2rem) !important;
+    padding-top: ${HEADER_HEIGHT};
   }
 
   width: 100%;

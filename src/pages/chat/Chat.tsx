@@ -138,6 +138,7 @@ const threads: Omit<Thread, "exchange">[] = [
 
 const Container = styled.div`
   display: flex;
+  height: 100%;
 `;
 
 export default function Chat() {

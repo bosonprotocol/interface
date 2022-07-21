@@ -14,43 +14,32 @@ import { useMemo, useRef, useState } from "react";
 import { AiOutlineCheck } from "react-icons/ai";
 import { BiCheck } from "react-icons/bi";
 import { BsQuestionCircle } from "react-icons/bs";
-import { generatePath } from "react-router-dom";
 import styled from "styled-components";
 import { useSigner } from "wagmi";
 
 import { CONFIG } from "../../../lib/config";
-import {
-  AccountQueryParameters,
-  UrlParameters
-} from "../../../lib/routing/parameters";
-import { BosonRoutes } from "../../../lib/routing/routes";
 import { colors } from "../../../lib/styles/colors";
 import { Offer } from "../../../lib/types/offer";
 import { IPrice } from "../../../lib/utils/convertPrice";
 import { titleCase } from "../../../lib/utils/formatText";
 import { isOfferHot } from "../../../lib/utils/getOfferLabel";
+import { getBuyerCancelPenalty } from "../../../lib/utils/getPrices";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
-import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { getItemFromStorage } from "../../../lib/utils/hooks/useLocalStorage";
-import { Modal } from "../../modal/Modal";
+import { useModal } from "../../modal/useModal";
 import Price from "../../price/index";
 import { useConvertedPrice } from "../../price/useConvertedPrice";
 import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
-import Image from "../../ui/Image";
 import Typography from "../../ui/Typography";
 import {
   Break,
   CommitAndRedeemButton,
-  ModalGrid,
-  ModalImageWrapper,
   RaiseProblemButton,
   RedeemLeftButton,
   Widget,
-  WidgetButtonWrapper,
   WidgetUpperGrid
 } from "../Detail.style";
-import DetailOpenSea from "../DetailOpenSea";
 import DetailTable from "../DetailTable";
 import { DetailDisputeResolver } from "./DetailDisputeResolver";
 import { DetailSellerDeposit } from "./DetailSellerDeposit";
@@ -68,18 +57,9 @@ interface IDetailWidget {
   pageType?: "exchange" | "offer";
   offer: Offer;
   exchange?: NonNullable<Offer["exchanges"]>[number];
-  handleModal: () => void;
   name?: string;
   image?: string;
   hasSellerEnoughFunds: boolean;
-}
-interface IModalData {
-  isOpen: boolean;
-  title?: string;
-  type?: "SUCCESS" | "ERROR" | null;
-  message?: string;
-  id?: string;
-  state?: ExchangeState;
 }
 
 const oneSecondToDays = 86400;
@@ -95,12 +75,8 @@ const getOfferDetailData = (
 
   const priceNumber = Number(convertedPrice?.converted);
 
-  const buyerCancelationPenaltyPercentage =
-    Number(offer.buyerCancelPenalty) / Number(offer.price);
-  const buyerCancelationPenalty = buyerCancelationPenaltyPercentage * 100;
-  const buyerCancelationPenaltyDollars = (
-    buyerCancelationPenaltyPercentage * priceNumber
-  ).toFixed(2);
+  const { buyerCancelationPenalty, convertedBuyerCancelationPenalty } =
+    getBuyerCancelPenalty(offer, convertedPrice);
   return [
     {
       name: "Redeemable until",
@@ -156,7 +132,7 @@ const getOfferDetailData = (
       value: (
         <Typography tag="p">
           {buyerCancelationPenalty}%
-          <small>(${buyerCancelationPenaltyDollars})</small>
+          <small>(${convertedBuyerCancelationPenalty})</small>
         </Typography>
       )
     },
@@ -193,11 +169,11 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   pageType,
   offer,
   exchange,
-  handleModal,
   name = "",
   image = "",
   hasSellerEnoughFunds
 }) => {
+  const { showModal, modalTypes } = useModal();
   const { isLteXS } = useBreakpoints();
   const cancelRef = useRef<HTMLDivElement | null>(null);
 
@@ -212,13 +188,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     !exchangeStatus || !SHOULD_DISPLAY_REDEEM_BTN.includes(exchangeStatus);
 
   const { data: signer } = useSigner();
-  const navigate = useKeepQueryParamsNavigate();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [modalData, setModalData] = useState<IModalData>({ isOpen: false });
-
-  const handleClose = () => {
-    setModalData({ isOpen: false });
-  };
   const convertedPrice = useConvertedPrice({
     value: offer.price,
     decimals: offer.exchangeToken.decimals
@@ -240,6 +210,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     () => dayjs(Number(offer?.validUntilDate) * 1000).isBefore(dayjs()),
     [offer?.validUntilDate]
   );
+  const isVoidedOffer = !!offer.voidedAt;
   const isHotOffer = useMemo(
     () => isOfferHot(offer?.quantityAvailable, offer?.quantityInitial),
     [offer?.quantityAvailable, offer?.quantityInitial]
@@ -258,7 +229,22 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       child.click();
     }
   };
+  const handleRedeemModal = () => {
+    showModal(modalTypes.WHAT_IS_REDEEM, { title: "Commit and Redeem" });
+  };
+
   const isChainUnsupported = getItemFromStorage("isChainUnsupported", false);
+
+  const BASE_MODAL_DATA = useMemo(
+    () => ({
+      data: OFFER_DETAIL_DATA_MODAL,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      exchange: exchange!,
+      image,
+      name
+    }),
+    [OFFER_DETAIL_DATA_MODAL, exchange, image, name]
+  );
 
   return (
     <>
@@ -307,19 +293,20 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                   !hasSellerEnoughFunds ||
                   isExpiredOffer ||
                   isLoading ||
-                  !quantity
+                  !quantity ||
+                  isVoidedOffer
                 }
                 offerId={offer.id}
                 chainId={CONFIG.chainId}
                 onError={(args) => {
                   console.error("onError", args);
                   setIsLoading(false);
-                  setModalData({
-                    isOpen: true,
+                  showModal(modalTypes.DETAIL_WIDGET, {
                     title: "An error occurred",
                     message: "An error occurred when trying to commit!",
                     type: "ERROR",
-                    state: ExchangeState.Committed
+                    state: "Committed",
+                    ...BASE_MODAL_DATA
                   });
                 }}
                 onPendingSignature={() => {
@@ -329,13 +316,13 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 onSuccess={(args, { exchangeId }) => {
                   console.log("onSuccess", args, exchangeId);
                   setIsLoading(false);
-                  setModalData({
-                    isOpen: true,
+                  showModal(modalTypes.DETAIL_WIDGET, {
                     title: "You have successfully committed!",
                     message: "You now own the rNFT",
                     type: "SUCCESS",
                     id: exchangeId.toString(),
-                    state: ExchangeState.Committed
+                    state: "Committed",
+                    ...BASE_MODAL_DATA
                   });
                 }}
                 extraInfo="Step 1/2"
@@ -350,12 +337,12 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 onError={(args) => {
                   console.error("onError", args);
                   setIsLoading(false);
-                  setModalData({
-                    isOpen: true,
+                  showModal(modalTypes.DETAIL_WIDGET, {
                     title: "An error occurred",
                     message: "An error occurred when trying to redeem!",
                     type: "ERROR",
-                    state: ExchangeState.Redeemed
+                    state: "Redeemed",
+                    ...BASE_MODAL_DATA
                   });
                 }}
                 onPendingSignature={() => {
@@ -365,12 +352,12 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 onSuccess={(args) => {
                   console.log("onSuccess", args);
                   setIsLoading(false);
-                  setModalData({
-                    isOpen: true,
+                  showModal(modalTypes.DETAIL_WIDGET, {
                     title: "You have successfully redeemed!",
                     message: "You have successfully redeemed!",
                     type: "SUCCESS",
-                    state: ExchangeState.Redeemed
+                    state: "Redeemed",
+                    ...BASE_MODAL_DATA
                   });
                 }}
                 extraInfo={isToRedeem ? "Step 2/2" : "Step 2"}
@@ -399,7 +386,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
           {isBeforeRedeem ? (
             <CommitAndRedeemButton
               tag="p"
-              onClick={handleModal}
+              onClick={handleRedeemModal}
               style={{ fontSize: "0.75rem", marginTop: 0 }}
             >
               {isOffer ? "What is commit and redeem?" : "What is redeem?"}
@@ -447,12 +434,12 @@ const DetailWidget: React.FC<IDetailWidget> = ({
             onError={(args) => {
               console.error("onError", args);
               setIsLoading(false);
-              setModalData({
-                isOpen: true,
+              showModal(modalTypes.DETAIL_WIDGET, {
                 title: "An error occurred",
                 message: "An error occurred when trying to cancel!",
                 type: "ERROR",
-                state: ExchangeState.Cancelled
+                state: "Cancelled",
+                ...BASE_MODAL_DATA
               });
             }}
             onPendingSignature={() => {
@@ -462,96 +449,18 @@ const DetailWidget: React.FC<IDetailWidget> = ({
             onSuccess={(args) => {
               console.log("onSuccess", args);
               setIsLoading(false);
-              setModalData({
-                isOpen: true,
+              showModal(modalTypes.DETAIL_WIDGET, {
                 title: "You have successfully cancelled!",
                 message: "You have successfully cancelled!",
                 type: "SUCCESS",
-                state: ExchangeState.Cancelled
+                state: "Cancelled",
+                ...BASE_MODAL_DATA
               });
             }}
             web3Provider={signer?.provider as Provider}
           />
         </div>
       )}
-      <Modal
-        onClose={handleClose}
-        {...modalData}
-        title={
-          <Typography tag="h3">
-            <b>{modalData.title}</b>
-          </Typography>
-        }
-      >
-        <ModalGrid>
-          <ModalImageWrapper>
-            {modalData.type === "SUCCESS" &&
-              modalData.state === ExchangeState.Committed && (
-                <DetailOpenSea
-                  exchange={exchange as NonNullable<Offer["exchanges"]>[number]}
-                />
-              )}
-            <Image src={image} dataTestId="offerImage" />
-          </ModalImageWrapper>
-          <div>
-            <Widget>
-              <Grid flexDirection="column">
-                <Typography
-                  tag="p"
-                  style={{
-                    margin: 0,
-                    color:
-                      modalData.type === "ERROR" ? colors.red : colors.black
-                  }}
-                >
-                  <b>{modalData.message}</b>
-                </Typography>
-                <Typography
-                  tag="h2"
-                  style={{ margin: "1rem 0", color: colors.secondary }}
-                >
-                  {name}
-                </Typography>
-              </Grid>
-              <Break />
-              <div>
-                <DetailTable align noBorder data={OFFER_DETAIL_DATA_MODAL} />
-              </div>
-            </Widget>
-            <WidgetButtonWrapper>
-              <Button
-                theme="secondary"
-                onClick={() => {
-                  const exchangeId = modalData?.id || false;
-                  if (exchangeId) {
-                    const pathname = generatePath(BosonRoutes.Exchange, {
-                      [UrlParameters.exchangeId]: exchangeId
-                    });
-                    navigate({
-                      pathname
-                    });
-                  } else {
-                    navigate({
-                      pathname: BosonRoutes.YourAccount,
-                      search: `${AccountQueryParameters.tab}=exchanges`
-                    });
-                  }
-                }}
-              >
-                {modalData?.id ? "View my item" : "View my items"}
-              </Button>
-              <Button
-                theme="primary"
-                onClick={() => {
-                  navigate({ pathname: BosonRoutes.Explore });
-                }}
-              >
-                Discover more
-              </Button>
-            </WidgetButtonWrapper>
-          </div>
-        </ModalGrid>
-      </Modal>
     </>
   );
 };

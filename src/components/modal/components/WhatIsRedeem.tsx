@@ -1,44 +1,22 @@
 import { BsArrowRightShort } from "react-icons/bs";
 
-import { Modal } from "../../components/modal/Modal";
-import { BosonRoutes } from "../../lib/routing/routes";
-import { colors } from "../../lib/styles/colors";
-import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
-import Grid from "../ui/Grid";
-import Typography from "../ui/Typography";
-import { COMMIT_STEPS } from "./const";
+import { BosonRoutes } from "../../../lib/routing/routes";
+import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
+import { COMMIT_STEPS } from "../../detail/const";
 import {
   CommitStep,
   CommitStepWrapper,
   LearnMore,
   ModalBackground
-} from "./Detail.style";
+} from "../../detail/Detail.style";
+import Grid from "../../ui/Grid";
+import Typography from "../../ui/Typography";
 
-interface Props {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-export default function DetailModal({ isOpen, onClose }: Props) {
+export default function WhatIsRedeem() {
   const { isLteXS } = useBreakpoints();
+
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      style={{
-        padding: "0",
-        borderRadius: 0,
-        borderWidth: 0,
-        background: colors.white,
-        color: colors.black,
-        fill: colors.black
-      }}
-      title={
-        <Typography tag="h3">
-          <b>Commit and redeem</b>
-        </Typography>
-      }
-    >
+    <>
       <Grid flexDirection="column" alignItems="flex-start">
         <Typography tag="h4" style={{ margin: 0 }}>
           <b>How does the purchase process work?</b>
@@ -79,6 +57,6 @@ export default function DetailModal({ isOpen, onClose }: Props) {
           </div>
         </Grid>
       </ModalBackground>
-    </Modal>
+    </>
   );
 }

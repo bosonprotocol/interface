@@ -126,7 +126,7 @@ export default function Explore() {
               <option value="">Currency</option>
               {tokens &&
                 tokens.map((token) => (
-                  <option key={token.symbol} value={token.address}>
+                  <option key={token.symbol} value={token.symbol}>
                     {token.symbol}
                   </option>
                 ))}

@@ -11,6 +11,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1 1 25%;
+  border: 1px solid #5560720f;
 `;
 
 const Header = styled.div`
@@ -93,7 +94,7 @@ export default function MessageList({ threads, onChangeConversation }: Props) {
                     seller={thread.exchange?.offer.seller || ({} as never)}
                     offerName={thread.exchange?.offer.metadata.name || ""}
                     withProfileImage
-                    onClick={() => null}
+                    onClick={null}
                   />
                 </MessageInfo>
               </MessageContent>

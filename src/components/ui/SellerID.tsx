@@ -16,12 +16,12 @@ const AddressContainer = styled(Grid)`
   margin: 0;
 `;
 
-const SellerContainer = styled.div`
-  cursor: pointer;
+const SellerContainer = styled.div<{ $hasCursorPointer: boolean }>`
+  ${({ $hasCursorPointer }) => $hasCursorPointer && `cursor: pointer;`}
+
   display: flex;
   align-items: center;
   gap: 10px;
-  cursor: pointer;
 `;
 
 const SellerInfo = styled.div`
@@ -57,9 +57,8 @@ const SellerID: React.FC<
     offerName: string;
     withProfileImage: boolean;
     withProfileText?: boolean;
-    onClick?: (e: React.MouseEventHandler<HTMLDivElement>) => void;
-  } & IGrid &
-    React.HTMLAttributes<HTMLDivElement>
+    onClick?: null | undefined | React.MouseEventHandler<HTMLDivElement>;
+  } & IGrid
 > = ({
   seller,
   children,
@@ -75,13 +74,15 @@ const SellerID: React.FC<
   const sellerId = seller?.id;
   const sellerAddress = seller?.operator;
   const artist = getOfferArtist(offerName);
+  const hasCursorPointer = !!onClick || onClick === undefined;
   return (
     <AddressContainer {...rest}>
       <SellerContainer
+        $hasCursorPointer={hasCursorPointer}
         onClick={(e) => {
           if (onClick) {
             onClick(e);
-          } else {
+          } else if (onClick !== null) {
             e.stopPropagation();
             navigate({
               pathname: generatePath(BosonRoutes.Account, {
