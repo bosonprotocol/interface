@@ -26,7 +26,7 @@ import Image from "../../ui/Image";
 import Typography from "../../ui/Typography";
 
 interface Props {
-  id: string;
+  id?: string;
   type: string;
   state: string;
   message: string;

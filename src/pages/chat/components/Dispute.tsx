@@ -5,6 +5,7 @@ import styled from "styled-components";
 import DetailTable from "../../../components/detail/DetailTable";
 import { DetailDisputeResolver } from "../../../components/detail/DetailWidget/DetailDisputeResolver";
 import { DetailSellerDeposit } from "../../../components/detail/DetailWidget/DetailSellerDeposit";
+import { useModal } from "../../../components/modal/useModal";
 import Price from "../../../components/price";
 import Step from "../../../components/stepper/step/Step";
 import Stepper from "../../../components/stepper/Stepper";
@@ -136,7 +137,7 @@ interface Props {
 export default function Dispute({ thread }: Props) {
   const exchange = thread?.exchange;
   const offer = exchange?.offer;
-
+  const { showModal } = useModal();
   const OFFER_DETAIL_DATA = useMemo(
     () => offer && getOfferDetailData(offer),
     [offer]
@@ -193,7 +194,17 @@ export default function Dispute({ thread }: Props) {
         <DetailTable align noBorder data={OFFER_DETAIL_DATA ?? ({} as never)} />
       </Section>
       <CTASection>
-        <Button theme="primary">Retract</Button>
+        <Button
+          theme="primary"
+          onClick={() =>
+            showModal("CANCEL_EXCHANGE", {
+              title: "Cancel exchange",
+              exchange
+            })
+          }
+        >
+          Retract
+        </Button>
         <Button theme="orange">Escalate</Button>
       </CTASection>
       <HistorySection>

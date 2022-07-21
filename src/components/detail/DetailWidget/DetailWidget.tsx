@@ -23,6 +23,7 @@ import { Offer } from "../../../lib/types/offer";
 import { IPrice } from "../../../lib/utils/convertPrice";
 import { titleCase } from "../../../lib/utils/formatText";
 import { isOfferHot } from "../../../lib/utils/getOfferLabel";
+import { getBuyerCancelPenalty } from "../../../lib/utils/getPrices";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { getItemFromStorage } from "../../../lib/utils/hooks/useLocalStorage";
 import { useModal } from "../../modal/useModal";
@@ -74,12 +75,8 @@ const getOfferDetailData = (
 
   const priceNumber = Number(convertedPrice?.converted);
 
-  const buyerCancelationPenaltyPercentage =
-    Number(offer.buyerCancelPenalty) / Number(offer.price);
-  const buyerCancelationPenalty = buyerCancelationPenaltyPercentage * 100;
-  const buyerCancelationPenaltyDollars = (
-    buyerCancelationPenaltyPercentage * priceNumber
-  ).toFixed(2);
+  const { buyerCancelationPenalty, convertedBuyerCancelationPenalty } =
+    getBuyerCancelPenalty(offer, convertedPrice);
   return [
     {
       name: "Redeemable until",
@@ -135,7 +132,7 @@ const getOfferDetailData = (
       value: (
         <Typography tag="p">
           {buyerCancelationPenalty}%
-          <small>(${buyerCancelationPenaltyDollars})</small>
+          <small>(${convertedBuyerCancelationPenalty})</small>
         </Typography>
       )
     },
@@ -241,7 +238,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   const BASE_MODAL_DATA = useMemo(
     () => ({
       data: OFFER_DETAIL_DATA_MODAL,
-      exchange,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      exchange: exchange!,
       image,
       name
     }),

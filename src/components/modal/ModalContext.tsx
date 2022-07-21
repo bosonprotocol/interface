@@ -1,16 +1,11 @@
 /* eslint @typescript-eslint/no-empty-function: "off" */
 /* eslint @typescript-eslint/no-explicit-any: "off" */
-import { ExchangeState } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
 import { createContext } from "react";
 
-import { MODAL_TYPES } from "./ModalComponents";
+import { MODAL_COMPONENTS, MODAL_TYPES } from "./ModalComponents";
 
 export type ModalProps = {
   title?: string;
-  message?: string;
-  type?: string;
-  state?: keyof typeof ExchangeState;
-  [x: string]: any;
 };
 export type ModalType = keyof typeof MODAL_TYPES | null;
 
@@ -20,7 +15,12 @@ export type Store = {
 };
 
 export interface ModalContextType {
-  showModal: (modalType: ModalType, modalProps?: ModalProps) => void;
+  showModal: <T extends keyof typeof MODAL_TYPES>(
+    modalType: T,
+    modalProps?: Parameters<typeof MODAL_COMPONENTS[T]>[0] extends undefined
+      ? ModalProps
+      : ModalProps & Parameters<typeof MODAL_COMPONENTS[T]>[0]
+  ) => void;
   hideModal: () => void;
   store: Store;
 }
