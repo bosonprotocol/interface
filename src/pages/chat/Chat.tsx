@@ -85,6 +85,52 @@ const threads: Omit<Thread, "exchange">[] = [
           value: `hello 😃 buyer with id ${myBuyerId}`,
           version: "1"
         }
+      },
+      {
+        id: "3",
+        from: myBuyerId,
+        sentDate: new Date(),
+        content: {
+          threadId: {
+            exchangeId: "20",
+            sellerId: "4",
+            buyerId: myBuyerId
+          },
+          contentType: "string",
+          value: "hello 😃 seller with id 4",
+          version: "1"
+        }
+      },
+      {
+        id: "4",
+        from: "4",
+        sentDate: new Date(),
+        content: {
+          threadId: {
+            exchangeId: "20",
+            sellerId: "4",
+            buyerId: myBuyerId
+          },
+          contentType: "string",
+          value: `hello 😃 buyer with id ${myBuyerId}`,
+          version: "1"
+        }
+      },
+      {
+        id: "4",
+        from: "4",
+        sentDate: new Date(),
+        content: {
+          threadId: {
+            exchangeId: "20",
+            sellerId: "4",
+            buyerId: myBuyerId
+          },
+          contentType: "image",
+          version: "1",
+          value:
+            "https://www.oxbowanimalhealth.com/images/cache/uploads/images/rabbit_smiling_400_300.jpg"
+        }
       }
     ]
   }

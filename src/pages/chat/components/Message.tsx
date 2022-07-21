@@ -1,5 +1,6 @@
 import { Image as AccountImage } from "@davatar/react";
-import { ReactNode } from "react";
+import dayjs from "dayjs";
+import { ReactNode, useMemo } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../../lib/styles/colors";
@@ -14,7 +15,7 @@ const Content = styled.div<{ $isLeftAligned: boolean }>`
   display: flex;
   flex-direction: column;
   padding: 1rem;
-  border: 0.063rem solid #5560720f;
+  border: 0.063rem solid ${colors.border};
   margin-right: 2.5rem;
   margin-left: 2.5rem;
   padding-top: 1.5rem;
@@ -56,6 +57,10 @@ const Content = styled.div<{ $isLeftAligned: boolean }>`
       }
     }
   }
+  img {
+    max-width: 15.625rem;
+    object-fit: contain;
+  }
 `;
 
 const Avatar = styled.div`
@@ -64,7 +69,7 @@ const Avatar = styled.div`
   left: 1rem;
 `;
 
-const Date = styled.div<{ $isLeftAligned: boolean }>`
+const DateStamp = styled.div<{ $isLeftAligned: boolean }>`
   position: absolute;
   bottom: 1rem;
   right: ${({ $isLeftAligned }) => ($isLeftAligned ? "auto" : "1rem")};
@@ -72,6 +77,47 @@ const Date = styled.div<{ $isLeftAligned: boolean }>`
   font-size: 0.75rem;
   color: ${({ $isLeftAligned }) =>
     $isLeftAligned ? colors.lightGrey : colors.darkGrey};
+`;
+
+const Separator = styled.div`
+  width: 100%;
+  position: relative;
+  z-index: 0;
+  div:nth-of-type(2) {
+    width: 100%;
+    height: 0.125rem;
+    background-color: ${colors.darkGreyTimeStamp};
+    z-index: 0;
+    position: relative;
+    margin-top: -0.875rem;
+  }
+  div:nth-of-type(1) {
+    width: max-content;
+    background-color: ${colors.darkGreyTimeStamp};
+    padding: 0.25rem 1rem 0.25rem 1rem;
+    display: block;
+    margin: 0 auto;
+    z-index: 9;
+    position: relative;
+    font-weight: 600;
+    font-size: 0.75rem;
+    &:before {
+      position: absolute;
+      background-color: ${colors.lightGrey};
+      left: -0.625rem;
+      height: 100%;
+      width: 0.625rem;
+      content: "";
+    }
+    &:after {
+      position: absolute;
+      background-color: ${colors.lightGrey};
+      right: -0.625rem;
+      height: 100%;
+      width: 0.625rem;
+      content: "";
+    }
+  }
 `;
 
 interface Props {
@@ -87,40 +133,78 @@ export default function Message({
   isLeftAligned,
   thread
 }: Props) {
+  const calcDate = useMemo(() => {
+    const currentDate = dayjs();
+    const dateOfSending = dayjs(message.sentDate);
+
+    return dateOfSending.diff(currentDate, "day");
+  }, [message]);
+
+  const separatorComponent = useMemo(() => {
+    if (calcDate > 0 && calcDate <= 7) {
+      return (
+        <Separator>
+          <div>
+            {message.sentDate.toLocaleDateString("en-EN", {
+              weekday: "long"
+            })}
+          </div>
+          <div></div>
+        </Separator>
+      );
+    } else if (calcDate > 0 && calcDate > 7) {
+      return (
+        <Separator>
+          <div>{`${calcDate} days ago`}</div>
+          <div></div>
+        </Separator>
+      );
+    } else {
+      return null;
+    }
+  }, [message, calcDate]);
+
   if (typeof message.content.value === "string") {
     return (
-      <Content $isLeftAligned={isLeftAligned}>
-        {isLeftAligned ? (
-          <Avatar>{children}</Avatar>
-        ) : (
-          <Avatar>
-            <AccountImage size={32} address={thread.exchange?.buyer.wallet} />
-          </Avatar>
-        )}
-        <h4>Balint raised a dispute and made a proposal</h4>
-        <h5>Dispute Category</h5>
-        <ul>
-          <li>Item not as described</li>
-          <li>
-            The item received is a different colour, model, version, or size
-          </li>
-        </ul>
-        <h5>Additional information</h5>
-        <p>
-          Hello there, the item I received has some quality issues. The colours
-          are a bit worn out and not as bright as on the picture. The laces are
-          slightly damaged and in the wrong colour....
-        </p>
-        <div>{message.content.value}</div>
-        <Date $isLeftAligned={isLeftAligned}>
-          {message.sentDate.getHours()}:{message.sentDate.getMinutes()}
-        </Date>
-      </Content>
+      <>
+        {separatorComponent}
+        <Content $isLeftAligned={isLeftAligned}>
+          {isLeftAligned ? (
+            <Avatar>{children}</Avatar>
+          ) : (
+            <Avatar>
+              <AccountImage size={32} address={thread.exchange?.buyer.wallet} />
+            </Avatar>
+          )}
+          {message.content.contentType === "image" ? (
+            <img src={message.content.value} />
+          ) : (
+            <div>{message.content.value}</div>
+          )}
+          <DateStamp $isLeftAligned={isLeftAligned}>
+            {message.sentDate.getHours()}:{message.sentDate.getMinutes()}
+          </DateStamp>
+        </Content>
+      </>
     );
   }
   return (
     <Content $isLeftAligned={isLeftAligned}>
       {children}
+      <h4>Balint raised a dispute and made a proposal</h4>
+      <h5>Dispute Category</h5>
+      <ul>
+        <li>Item not as described</li>
+        <li>
+          The item received is a different colour, model, version, or size
+        </li>
+      </ul>
+      <h5>Additional information</h5>
+      <p>
+        Hello there, the item I received has some quality issues. The colours
+        are a bit worn out and not as bright as on the picture. The laces are
+        slightly damaged and in the wrong colour....
+      </p>
       <div>{JSON.stringify(message.content.value)}</div>
     </Content>
   );

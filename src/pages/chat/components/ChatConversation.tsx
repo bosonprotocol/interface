@@ -2,6 +2,7 @@ import { useCallback } from "react";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
+import { ReactComponent as PlusSign } from "../../../assets/Plus.svg";
 import SellerID from "../../../components/ui/SellerID";
 import { colors } from "../../../lib/styles/colors";
 import { useBuyerSellerAccounts } from "../../../lib/utils/hooks/useBuyerSellerAccounts";
@@ -13,6 +14,7 @@ const Container = styled.div`
   display: flex;
   flex: 0 1 75%;
   flex-direction: column;
+  position: relative;
 `;
 
 const Header = styled.div`
@@ -34,6 +36,8 @@ const Messages = styled.div`
   flex-grow: 1;
   display: flex;
   flex-direction: column;
+  max-height: 70vh;
+  overflow-y: auto;
 `;
 const Conversation = styled.div<{ $alignStart: boolean }>`
   display: flex;
@@ -43,6 +47,7 @@ const Conversation = styled.div<{ $alignStart: boolean }>`
   flex-grow: 1;
   background-color: ${colors.lightGrey};
   padding-bottom: 1.875rem;
+  position: relative;
 `;
 
 const TypeMessage = styled.div`
@@ -80,32 +85,11 @@ const BtnProposal = styled.button`
   color: ${colors.secondary};
   background-color: transparent;
   position: relative;
-  span {
-    display: block;
-    height: 0.6em;
-    width: 0.6em;
-    font-size: 2.063rem;
-    text-align: center;
-    line-height: 0.5em;
-    margin: 0;
-    padding: 0;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    font-family: Frutiger, "Frutiger Linotype", Univers, Calibri, "Gill Sans",
-      "Gill Sans MT", "Myriad Pro", Myriad, "DejaVu Sans Condensed",
-      "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue",
-      Helvetica, Arial, sans-serif;
-    font-weight: 100;
-    color: ${colors.secondary};
+  svg {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    right: 6px;
-    margin-top: -1px;
-    &:before {
-      display: block;
-      content: "+";
-    }
+    right: 0.6rem;
   }
 `;
 
@@ -185,7 +169,7 @@ export default function ChatConversation({ thread }: Props) {
         </Messages>
         <TypeMessage>
           <BtnProposal>
-            Proposal <span>&nbsp;</span>
+            Proposal <PlusSign />
           </BtnProposal>
           <Input placeholder="Write a message" />
         </TypeMessage>

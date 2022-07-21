@@ -25,6 +25,7 @@ export const colors = {
   // Basic
   black: "#09182C",
   darkGrey: "#556072",
+  darkGreyTimeStamp: "#E8EAF1",
   lightGrey: "#F1F3F9",
   border: "#5560720f",
   white: "#FFFFFF",
