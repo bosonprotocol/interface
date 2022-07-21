@@ -20,7 +20,16 @@ const Root = styled.div`
     }
     position: relative;
   }
-  *[data-currency],
+
+  *[data-currency] {
+    position: absolute;
+    top: 50%;
+    left: 0rem;
+    transform: translate(0rem, -50%) scale(0.75) rotate(-90deg);
+    ${breakpoint.m} {
+      transform: translate(-0.375rem, -50%) scale(0.75) rotate(-90deg);
+    }
+  }
   svg {
     position: absolute;
     top: 50%;
