@@ -1,9 +1,14 @@
 import type { Dayjs } from "dayjs";
 
+import { CONFIG } from "../../lib/config";
+
 export interface ICalendarCell {
   text: string;
   value: Dayjs;
   current: boolean;
+  active: boolean;
+  day: string;
+  date: string;
 }
 
 export function changeMonth(date: Dayjs, isNext: boolean): Dayjs {
@@ -16,14 +21,18 @@ export function changeMonth(date: Dayjs, isNext: boolean): Dayjs {
   return date.add(isNext ? 1 : -1, "month");
 }
 
-export function getCells(date: Dayjs): ICalendarCell[] {
+export function getCells(selectedDate: Dayjs, date: Dayjs): ICalendarCell[] {
   const daysInMonth = date.daysInMonth();
   const cells: ICalendarCell[] = [];
 
   const createCell = (date: Dayjs, dayNumber: number, current: boolean) => {
+    const newDate = date.clone().set("date", dayNumber);
     return {
       text: String(dayNumber),
-      value: date.clone().set("date", dayNumber),
+      value: newDate,
+      day: newDate.format("d"),
+      date: newDate.format(CONFIG.dateFormat),
+      active: newDate.isSame(selectedDate, "day"),
       current
     };
   };
@@ -32,22 +41,24 @@ export function getCells(date: Dayjs): ICalendarCell[] {
     cells.push(createCell(date, i + 1, true));
   }
 
-  const cellsToAdd = 35 - daysInMonth;
+  const firstMonday = cells.findIndex(({ day }: ICalendarCell) => day === "1");
+  const daysBeforeMondayToAdd = firstMonday > 0 ? 7 - firstMonday : 0;
   const lastMonth = date.subtract(1, "month");
-  for (let i = 0; i < Math.floor(cellsToAdd / 2); i++) {
+  for (let i = 0; i < daysBeforeMondayToAdd; i++) {
     cells.unshift(createCell(lastMonth, lastMonth.daysInMonth() - i, false));
   }
 
+  const lastDay = Number(cells[cells.length - 1].day);
+  const daysAfterEndOfTheMonthToAdd = lastDay === 0 ? 0 : 7 - Number(lastDay);
   const nextMonth = date.add(1, "month");
-  for (let i = 0; i < Math.round(cellsToAdd / 2); i++) {
+  for (let i = 0; i < daysAfterEndOfTheMonthToAdd; i++) {
     cells.push(createCell(nextMonth, i + 1, false));
   }
-
   return cells;
 }
 
 export function getRows(date: Dayjs): Array<ICalendarCell[]> {
-  const cells = getCells(date);
+  const cells = getCells(date, date.startOf("month"));
   const rows: Array<ICalendarCell[]> = [];
 
   for (let i = 0; i < cells.length; i += 7) {

@@ -1,15 +1,40 @@
 import styled, { css } from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
+import { zIndex } from "../../lib/styles/zIndex";
 import { transition } from "../ui/styles";
 
-export const Picker = styled.div``;
+export const Picker = styled.div`
+  width: 100%;
+  position: relative;
+`;
 
 export const DatePickerWrapper = styled.div.attrs(
   (props: { show: boolean }) => ({
     show: props.show
   })
 )`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background: ${colors.white};
+  z-index: ${zIndex.Calendar};
+  transform: translate(0, calc(100% + 0.5rem));
+
+  &:before {
+    position: absolute;
+    content: "";
+    width: 0;
+    height: 0;
+
+    top: -0.5rem;
+    left: 50%;
+    transform: translate(-50%, 0);
+    border-left: 0.5rem solid transparent;
+    border-right: 0.5rem solid transparent;
+    border-bottom: 0.5rem solid ${colors.white};
+  }
+
   ${({ show }) =>
     show
       ? css`
@@ -19,8 +44,8 @@ export const DatePickerWrapper = styled.div.attrs(
           display: none;
         `}
 
-  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1), 0px 0px 8px rgba(0, 0, 0, 0.1),
-    0px 0px 16px rgba(0, 0, 0, 0.1), 0px 0px 32px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.05), 0px 0px 8px rgba(0, 0, 0, 0.05),
+    0px 0px 16px rgba(0, 0, 0, 0.05), 0px 0px 32px rgba(0, 0, 0, 0.05);
 
   padding: 0.5rem;
   width: 100%;

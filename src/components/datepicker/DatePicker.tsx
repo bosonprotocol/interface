@@ -62,7 +62,7 @@ export default function DatePicker({ onChange, ...props }: Props) {
         }}
       >
         <SelectMonth date={date} setDate={setDate} />
-        <Calendar date={date} selectedDate={date} onChange={handleDate} />
+        <Calendar date={date} onChange={handleDate} />
       </DatePickerWrapper>
     </Picker>
   );

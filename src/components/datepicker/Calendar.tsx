@@ -11,11 +11,11 @@ import { getRows, ICalendarCell } from "./utils";
 
 export interface Props {
   date: Dayjs;
-  selectedDate: Dayjs;
   onChange: (newDate: Dayjs) => void;
 }
 
-export default function Calendar({ date, selectedDate, onChange }: Props) {
+export default function Calendar({ date, onChange }: Props) {
+  // TODO: change month
   const handleSelectDate = useCallback(
     (value: Dayjs) => onChange(value),
     [onChange]
@@ -34,16 +34,18 @@ export default function Calendar({ date, selectedDate, onChange }: Props) {
       </CalendarHeader>
       {rows.map((cells: ICalendarCell[], rowIndex: number) => (
         <CalendarRow key={`calendar_row_${rowIndex}`}>
-          {cells.map(({ text, value, current }: ICalendarCell, i: number) => (
-            <CalendarDay
-              key={`calendar_row_day${text}-${i}`}
-              active={value.toString() === selectedDate.toString()}
-              current={current}
-              onClick={() => handleSelectDate(value)}
-            >
-              <span>{text}</span>
-            </CalendarDay>
-          ))}
+          {cells.map(
+            ({ text, value, active, current }: ICalendarCell, i: number) => (
+              <CalendarDay
+                key={`calendar_row_day${text}-${i}`}
+                active={active}
+                current={current}
+                onClick={() => handleSelectDate(value)}
+              >
+                <span>{text}</span>
+              </CalendarDay>
+            )
+          )}
         </CalendarRow>
       ))}
     </>
