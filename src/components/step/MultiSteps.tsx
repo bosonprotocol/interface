@@ -47,10 +47,13 @@ export default function MultiSteps({
                     ? StepState.Done
                     : StepState.Inactive;
                 return (
-                  <Grid flexDirection="column" justifyContent="flex-start">
+                  <Grid
+                    flexDirection="column"
+                    justifyContent="flex-start"
+                    key={`multi-step_${currentKey}`}
+                  >
                     <StepWrapper
                       flexDirection="column"
-                      key={`multi-step_${currentKey}`}
                       flexWrap="nowrap"
                       gap="0"
                     >
