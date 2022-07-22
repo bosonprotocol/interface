@@ -46,6 +46,10 @@ const RadioButton = styled.input`
     box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1), 0px 0px 8px rgba(0, 0, 0, 0.1),
       0px 0px 16px rgba(0, 0, 0, 0.1), 0px 0px 32px rgba(0, 0, 0, 0.1);
   }
+  &:disabled + div {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 `;
 
 export const Box = styled.div`
@@ -58,8 +62,7 @@ export const Container = styled.div`
 `;
 
 export default function ProductType() {
-  const { handleChange, values, errors } =
-    useFormikContext<CreateProductForm>();
+  const { handleChange, values } = useFormikContext<CreateProductForm>();
   return (
     <ContainerProductPage>
       <Typography tag="h2">Product Type</Typography>
@@ -67,7 +70,7 @@ export default function ProductType() {
         <GridContainer itemsPerRow={productTypeItemsPerRow}>
           <InputGroup
             title="Select Product Type*"
-            popper="lorem20"
+            popper="Need to be added"
             style={{
               marginBottom: 0
             }}
@@ -108,6 +111,7 @@ export default function ProductType() {
                   value="phygital"
                   checked={values.productType === "phygital"}
                   onChange={handleChange}
+                  disabled
                 />
                 <Box>
                   <Image
@@ -133,7 +137,7 @@ export default function ProductType() {
           </InputGroup>
           <InputGroup
             title="Product Variants*"
-            popper="lorem20"
+            popper="Need to be added"
             style={{
               marginBottom: 0
             }}
@@ -174,6 +178,7 @@ export default function ProductType() {
                   value="differentVariants"
                   checked={values.productVariant === "differentVariants"}
                   onChange={handleChange}
+                  disabled
                 />
                 <Box>
                   <Image
@@ -191,7 +196,7 @@ export default function ProductType() {
                       margin: "15px 0 0 0"
                     }}
                   >
-                    Different Variants
+                    One item type
                   </Typography>
                 </Box>
               </Label>

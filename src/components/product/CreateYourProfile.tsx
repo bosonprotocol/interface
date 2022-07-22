@@ -33,7 +33,7 @@ export default function CreateYourProfile() {
       <InputGroup title="Your brand / name*">
         <Field
           fieldType={FieldType.Input}
-          placeholder="name"
+          placeholder="Name"
           name="name"
           value={values.name}
           onChange={handleChange}
@@ -43,7 +43,7 @@ export default function CreateYourProfile() {
       <InputGroup title="Contact E-Mail*">
         <Field
           fieldType={FieldType.Input}
-          placeholder="email"
+          placeholder="Name"
           name="email"
           value={values.email}
           onChange={handleChange}
@@ -63,7 +63,7 @@ export default function CreateYourProfile() {
       <InputGroup
         title="Website / Social media link"
         subTitle="Put your most frequently used online channel in here. Use the URL for Social media."
-        popper="Lorem 123"
+        popper="Need to be added"
         style={{
           marginBottom: 0
         }}

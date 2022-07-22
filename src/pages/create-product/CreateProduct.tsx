@@ -9,10 +9,12 @@ import styled from "styled-components";
 
 import CreateYourProfile from "../../components/product/CreateYourProfile";
 import Help from "../../components/product/Help";
+import ProductInformation from "../../components/product/ProductInformation";
 import ProductType from "../../components/product/ProductType";
 import {
   CreateProductForm,
   createYourProfileValidationSchema,
+  productInformationValidationSchema,
   productTypeValidationSchema
 } from "../../components/product/validation/createProductValidationSchema";
 import MultiSteps from "../../components/step/MultiSteps";
@@ -26,13 +28,31 @@ const ProductLayoutContainer = styled.main`
   }
 `;
 
-const initialValues = {
+const createYourProfileInitialValues = {
   name: "",
   email: "",
   description: "",
-  website: "",
+  website: ""
+} as const;
+
+const productTypeInitialValues = {
   productType: "",
   productVariant: ""
+} as const;
+
+const productInformationInitialValues = {
+  productTitle: "",
+  describe: "",
+  category: "",
+  tags: "",
+  attribute: "",
+  attributeValue: ""
+} as const;
+
+const initialValues: CreateProductForm = {
+  ...createYourProfileInitialValues,
+  ...productTypeInitialValues,
+  ...productInformationInitialValues
 } as const;
 
 type CreateProductSteps = {
@@ -44,6 +64,10 @@ type CreateProductSteps = {
     ui: JSX.Element;
     validation: typeof productTypeValidationSchema;
   };
+  2: {
+    ui: JSX.Element;
+    validation: typeof productInformationValidationSchema;
+  };
 };
 
 const createProductSteps: CreateProductSteps = {
@@ -54,6 +78,10 @@ const createProductSteps: CreateProductSteps = {
   1: {
     ui: <ProductType />,
     validation: productTypeValidationSchema
+  },
+  2: {
+    ui: <ProductInformation />,
+    validation: productInformationValidationSchema
   }
 } as const;
 
@@ -64,7 +92,8 @@ const steps = [
   } as const,
   {
     name: "Product Data",
-    steps: 4
+    // steps: 4
+    steps: 2 // NOTE: FOR CURRENT SCOPE PRODUCTS VARIANTS ARE EXCLUDED
   } as const,
   {
     name: "Terms of Sale",
