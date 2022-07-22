@@ -1,37 +1,37 @@
 import {
-  TbBrandDiscord,
-  TbBrandGithub,
-  TbBrandMedium,
-  TbBrandTwitter,
-  TbBrandYoutube
-} from "react-icons/tb";
+  DiscordLogo,
+  GithubLogo,
+  MediumLogo,
+  TwitterLogo,
+  YoutubeLogo
+} from "phosphor-react";
 
 import { BosonRoutes, SocialRoutes } from "../../lib/routing/routes";
 
 export const SOCIAL_ROUTES = [
   {
     name: "twitter",
-    logo: TbBrandTwitter,
+    logo: TwitterLogo,
     url: SocialRoutes.Twitter
   },
   {
     name: "discord",
-    logo: TbBrandDiscord,
+    logo: DiscordLogo,
     url: SocialRoutes.Discord
   },
   {
     name: "medium",
-    logo: TbBrandMedium,
+    logo: MediumLogo,
     url: SocialRoutes.Medium
   },
   {
     name: "youtube",
-    logo: TbBrandYoutube,
+    logo: YoutubeLogo,
     url: SocialRoutes.Youtube
   },
   {
     name: "github",
-    logo: TbBrandGithub,
+    logo: GithubLogo,
     url: SocialRoutes.Github
   }
 ];

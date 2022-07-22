@@ -3,7 +3,7 @@ import {
   ExchangeFieldsFragment,
   ExchangeState
 } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
-import { HiOutlineExternalLink } from "react-icons/hi";
+import { ArrowSquareOut } from "phosphor-react";
 
 import { Offer } from "../../lib/types/offer";
 import { OpenSeaButton } from "./Detail.style";
@@ -26,7 +26,7 @@ export default function DetailOpenSea({ exchange }: Props) {
   return (
     <OpenSeaButton>
       View on OpenSea
-      <HiOutlineExternalLink size={18} />
+      <ArrowSquareOut size={18} />
     </OpenSeaButton>
   );
 }

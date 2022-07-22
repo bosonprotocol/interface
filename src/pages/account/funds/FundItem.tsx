@@ -1,8 +1,8 @@
 import { CoreSDK } from "@bosonprotocol/core-sdk";
 import { FundsEntityFieldsFragment } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
 import { BigNumber, constants, utils } from "ethers";
+import { CircleNotch } from "phosphor-react";
 import { useState } from "react";
-import { ImSpinner2 } from "react-icons/im";
 import styled from "styled-components";
 
 import Button from "../../../components/ui/Button";
@@ -35,7 +35,7 @@ const Table = styled.div<{ $isHighlighted: boolean }>`
   ${({ $isHighlighted }) =>
     $isHighlighted &&
     `* {
-    animation: shake 0.1s; 
+    animation: shake 0.1s;
     ${shakeKeyframes}
   }`}
 `;
@@ -85,7 +85,7 @@ export const Input = styled.input<{ $hasError?: boolean }>`
     $hasError &&
     `
     border: 0.0625rem solid ${colors.red};
-    animation: shake 0.1s; 
+    animation: shake 0.1s;
     `}
 
   ${shakeKeyframes}
@@ -110,7 +110,7 @@ const InputMaxWrapper = styled.div<{ $hasError?: boolean }>`
     $hasError &&
     `
     border: 0.0625rem solid ${colors.red};
-    animation: shake 0.1s; 
+    animation: shake 0.1s;
     `}
 
   input {
@@ -128,7 +128,7 @@ const MaxButton = styled.button.attrs({
   text-decoration: underline;
 `;
 
-const Spinner = styled(ImSpinner2)`
+const Spinner = styled(CircleNotch)`
   animation: spin 2s infinite linear;
   @keyframes spin {
     0% {

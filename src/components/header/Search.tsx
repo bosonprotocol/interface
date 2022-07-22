@@ -1,5 +1,5 @@
+import { MagnifyingGlass } from "phosphor-react";
 import { useCallback, useState } from "react";
-import { BsSearch } from "react-icons/bs";
 import styled from "styled-components";
 
 import { ExploreQueryParameters } from "../../lib/routing/parameters";
@@ -75,7 +75,7 @@ export default function Search({ isMobile }: Props) {
 
   return (
     <InputWrapper isMobile={isMobile}>
-      {!isMobile && <BsSearch size={24} />}
+      {!isMobile && <MagnifyingGlass size={24} />}
       <Input
         data-testid="search-by-name-input"
         onChange={handleChange}
@@ -85,7 +85,7 @@ export default function Search({ isMobile }: Props) {
       />
       {isMobile && (
         <Button onClick={navigateToExplore} theme="secondary">
-          <BsSearch size={16} />
+          <MagnifyingGlass size={16} />
         </Button>
       )}
     </InputWrapper>
