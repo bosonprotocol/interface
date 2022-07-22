@@ -1,5 +1,6 @@
 import { Image as AccountImage } from "@davatar/react";
 import dayjs from "dayjs";
+import { ArrowRight, ImageSquare, X } from "phosphor-react";
 import { ReactNode, useMemo, useState } from "react";
 import styled from "styled-components";
 
@@ -130,6 +131,25 @@ const Separator = styled.div`
   }
 `;
 
+const ArrowComponent = styled.div`
+  position: absolute;
+  right: 13px;
+`;
+
+const AttachmentContainer = styled.div`
+  position: relative;
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  padding: 1rem;
+  border: 2px solid ${colors.darkGrey};
+  margin-bottom: 0.3rem;
+  svg:nth-of-type(2) {
+    position: absolute;
+    right: 1rem;
+  }
+`;
+
 interface Props {
   thread: Thread;
   message: Thread["messages"][number];
@@ -238,9 +258,39 @@ export default function Message({
       <Typography tag="h4" margin="0">
         {message.content.value.title}
       </Typography>
-      <Typography tag="p" margin="0.25rem 0">
+      <Typography tag="p" margin="0.25rem 1rem 0rem 0rem">
         {message.content.value.description}
       </Typography>
+      <Typography
+        margin="1.5rem 0 0.5rem 0"
+        fontSize="1.25rem"
+        fontWeight="600"
+      >
+        {message.content.value.additionalInformation &&
+          "Additional information"}
+      </Typography>
+      <Typography margin="1.5rem 0 1rem 0" fontSize="1rem" fontWeight="400">
+        {message.content.value.additionalInformation &&
+          message.content.value.additionalInformation}
+      </Typography>
+      {message.content.value.additionalInformationFiles.length &&
+        message.content.value.additionalInformationFiles.map(
+          (additionalInformation) => {
+            return (
+              <div>
+                <div>
+                  <AttachmentContainer>
+                    <ImageSquare size={23} />
+                    <Typography fontSize="1rem" fontWeight="400">
+                      &nbsp;&nbsp; {additionalInformation.name}
+                    </Typography>
+                    <X size={23} />
+                  </AttachmentContainer>
+                </div>
+              </div>
+            );
+          }
+        )}
       <Typography
         margin="1.5rem 0 0.5rem 0"
         fontSize="1.25rem"
@@ -273,6 +323,9 @@ export default function Message({
                   cursor="pointer"
                 >
                   Proposed refund amount: {proposal.percentageAmount}%
+                  <ArrowComponent>
+                    <ArrowRight size={24} />
+                  </ArrowComponent>
                 </Typography>
               </Grid>
             </Grid>

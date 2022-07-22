@@ -178,7 +178,24 @@ const threads: Omit<Thread, "exchange">[] = [
           version: "1",
           value: {
             title: "RTFKT made a proposal",
-            description: "Thank you for reaching out...",
+            description:
+              "Thank you for reaching out lorem ipsum dolor sit amet",
+            additionalInformation:
+              "Hello there, the item I received has some quality issues. The colours are a bit worn out and not as bright as on the picture. The laces are slightly damaged and in the wrong colour....",
+            additionalInformationFiles: [
+              {
+                name: "Photo_of_RTFKT_Sneaker.jpg",
+                url: "base64image"
+              },
+              {
+                name: "Photo_of_RTFKT_Sneaker.jpg",
+                url: "base64image"
+              },
+              {
+                name: "Photo_of_RTFKT_Sneaker.jpg",
+                url: "base64image"
+              }
+            ],
             proposals: [
               {
                 type: "Refund",
