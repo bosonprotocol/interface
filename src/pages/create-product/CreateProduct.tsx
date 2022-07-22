@@ -1,4 +1,4 @@
-import { Form, Formik } from "formik";
+import { Form, Formik, FormikHelpers } from "formik";
 import isArray from "lodash/isArray";
 import keys from "lodash/keys";
 import { useMemo } from "react";
@@ -10,8 +10,13 @@ import styled from "styled-components";
 import CreateYourProfile from "../../components/product/CreateYourProfile";
 import Help from "../../components/product/Help";
 import ProductType from "../../components/product/ProductType";
+import {
+  CreateProductForm,
+  createYourProfileValidationSchema,
+  productTypeValidationSchema
+} from "../../components/product/validation/createProductValidationSchema";
 import MultiSteps from "../../components/step/MultiSteps";
-import { createYourProfileHelp } from "./helpData";
+import { createYourProfileHelp } from "../../lib/const/productHelpOptions";
 
 const ProductLayoutContainer = styled.main`
   display: flex;
@@ -21,32 +26,35 @@ const ProductLayoutContainer = styled.main`
   }
 `;
 
-export interface CreateProductForm {
-  name: string;
-  email: string;
-  description: string;
-  website: string;
-  physical: string;
-  productVariant: string;
-}
-
-const initialValues: CreateProductForm = {
+const initialValues = {
   name: "",
   email: "",
   description: "",
   website: "",
-  physical: "",
+  productType: "",
   productVariant: ""
-};
+} as const;
 
 type CreateProductSteps = {
-  0: JSX.Element;
-  1: JSX.Element;
+  0: {
+    ui: JSX.Element;
+    validation: typeof createYourProfileValidationSchema;
+  };
+  1: {
+    ui: JSX.Element;
+    validation: typeof productTypeValidationSchema;
+  };
 };
 
 const createProductSteps: CreateProductSteps = {
-  0: <CreateYourProfile />,
-  1: <ProductType />
+  0: {
+    ui: <CreateYourProfile />,
+    validation: createYourProfileValidationSchema
+  },
+  1: {
+    ui: <ProductType />,
+    validation: productTypeValidationSchema
+  }
 } as const;
 
 const steps = [
@@ -70,20 +78,34 @@ const steps = [
 
 const formLength = keys(createProductSteps).length - 1;
 
+console.log({
+  createYourProfileValidationSchema,
+  productTypeValidationSchema
+});
 export default function CreateProduct() {
   const [currentForm, setCurrentForm] = useState<number>(0);
-  const renderForm = useMemo(() => {
-    return (
-      createProductSteps?.[currentForm as keyof CreateProductSteps] || null
-    );
+  const wizardStep = useMemo(() => {
+    return {
+      currentForm:
+        createProductSteps?.[currentForm as keyof CreateProductSteps]?.ui ||
+        null,
+      currentValidation:
+        createProductSteps?.[currentForm as keyof CreateProductSteps]
+          ?.validation || null
+    };
   }, [currentForm]);
+
   const handleNextForm = useCallback(() => {
     if (currentForm < formLength) {
       setCurrentForm((prev) => prev + 1);
     }
   }, [currentForm]);
 
-  const handleSubmit = (values: CreateProductForm) => {
+  const handleSubmit = (
+    values: CreateProductForm,
+    formikBag: FormikHelpers<CreateProductForm>
+  ) => {
+    console.log(formikBag, "formikBag");
     console.log(values, "values");
     handleNextForm();
   };
@@ -95,8 +117,14 @@ export default function CreateProduct() {
         callback={(i) => setCurrentForm(i)}
       />
       <ProductLayoutContainer>
-        <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-          <Form>{renderForm}</Form>
+        <Formik<CreateProductForm>
+          initialValues={initialValues}
+          onSubmit={(formikVal, formikBag) =>
+            handleSubmit(formikVal, formikBag)
+          }
+          validationSchema={wizardStep.currentValidation}
+        >
+          <Form>{wizardStep.currentForm}</Form>
         </Formik>
         {isArray(createYourProfileHelp) && (
           <Help data={createYourProfileHelp} />

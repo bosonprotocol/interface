@@ -1,3 +1,4 @@
+import { useFormikContext } from "formik";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
@@ -12,6 +13,7 @@ import oneItemTypeProduct from "./img/one-item-product.png";
 import phygitalProduct from "./img/phygital-product.png";
 import physicalProduct from "./img/physical-product.png";
 import { ContainerProductPage, ProductButtonGroup } from "./Product.styles";
+import type { CreateProductForm } from "./validation/createProductValidationSchema";
 
 const productTypeItemsPerRow = {
   xs: 1,
@@ -56,6 +58,8 @@ export const Container = styled.div`
 `;
 
 export default function ProductType() {
+  const { handleChange, values, errors } =
+    useFormikContext<CreateProductForm>();
   return (
     <ContainerProductPage>
       <Typography tag="h2">Product Type</Typography>
@@ -70,7 +74,13 @@ export default function ProductType() {
           >
             <Grid>
               <Label>
-                <RadioButton type="radio" name="productType" value="physical" />
+                <RadioButton
+                  type="radio"
+                  name="productType"
+                  value="physical"
+                  checked={values.productType === "physical"}
+                  onChange={handleChange}
+                />
                 <Box>
                   <Image
                     src={physicalProduct}
@@ -92,7 +102,13 @@ export default function ProductType() {
                 </Box>
               </Label>
               <Label>
-                <RadioButton type="radio" name="productType" value="phygital" />
+                <RadioButton
+                  type="radio"
+                  name="productType"
+                  value="phygital"
+                  checked={values.productType === "phygital"}
+                  onChange={handleChange}
+                />
                 <Box>
                   <Image
                     src={phygitalProduct}
@@ -128,6 +144,8 @@ export default function ProductType() {
                   type="radio"
                   name="productVariant"
                   value="oneItemType"
+                  checked={values.productVariant === "oneItemType"}
+                  onChange={handleChange}
                 />
                 <Box>
                   <Image
@@ -154,6 +172,8 @@ export default function ProductType() {
                   type="radio"
                   name="productVariant"
                   value="differentVariants"
+                  checked={values.productVariant === "differentVariants"}
+                  onChange={handleChange}
                 />
                 <Box>
                   <Image
