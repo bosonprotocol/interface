@@ -1,7 +1,9 @@
 export const zIndex = {
+  Default: 0,
   Button: 1,
   OfferCard: 2,
   OfferStatus: 5,
+  ChatSeparator: 9,
   Carousel: 10,
   LandingTitle: 20,
   Header: 1000,

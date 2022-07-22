@@ -7,6 +7,7 @@ import { useModal } from "../../../components/modal/useModal";
 import Grid from "../../../components/ui/Grid";
 import Typography from "../../../components/ui/Typography";
 import { colors } from "../../../lib/styles/colors";
+import { zIndex } from "../../../lib/styles/zIndex";
 import { Thread } from "../types";
 
 const Content = styled.div<{ $isLeftAligned: boolean }>`
@@ -70,6 +71,10 @@ const Avatar = styled.div`
   position: absolute;
   top: -1.25rem;
   left: 1rem;
+  img {
+    width: 34px;
+    height: 34px;
+  }
 `;
 
 const DateStamp = styled.div<{ $isLeftAligned: boolean }>`
@@ -85,12 +90,12 @@ const DateStamp = styled.div<{ $isLeftAligned: boolean }>`
 const Separator = styled.div`
   width: 100%;
   position: relative;
-  z-index: 0;
+  z-index: ${zIndex.Default};
   div:nth-of-type(2) {
     width: calc(100% - 2.5rem);
     height: 0.125rem;
     background-color: ${colors.darkGreyTimeStamp};
-    z-index: 0;
+    z-index: ${zIndex.Default};
     position: relative;
     margin-left: auto;
     margin-right: auto;
@@ -102,7 +107,7 @@ const Separator = styled.div`
     padding: 0.25rem 1rem 0.25rem 1rem;
     display: block;
     margin: 0 auto;
-    z-index: 9;
+    z-index: ${zIndex.ChatSeparator};
     position: relative;
     font-weight: 600;
     font-size: 0.75rem;

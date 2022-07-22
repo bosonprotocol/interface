@@ -1,8 +1,8 @@
+import { Plus } from "phosphor-react";
 import { useCallback } from "react";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
-import { ReactComponent as PlusSign } from "../../../assets/Plus.svg";
 import SellerID from "../../../components/ui/SellerID";
 import { colors } from "../../../lib/styles/colors";
 import { useBuyerSellerAccounts } from "../../../lib/utils/hooks/useBuyerSellerAccounts";
@@ -192,7 +192,7 @@ export default function ChatConversation({ thread }: Props) {
         </Messages>
         <TypeMessage>
           <BtnProposal>
-            Proposal <PlusSign />
+            Proposal <Plus size={24} />
           </BtnProposal>
           <Input placeholder="Write a message" />
         </TypeMessage>
