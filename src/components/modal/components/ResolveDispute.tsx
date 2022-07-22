@@ -82,9 +82,7 @@ export default function ResolveDispute({
 }: Props) {
   const { offer } = exchange;
   const { percentageAmount } = proposal;
-  const refund =
-    Number(offer.price) -
-    (Number(offer.price) * Number(percentageAmount)) / 100;
+  const refund = (Number(offer.price) * Number(percentageAmount)) / 100;
   const convertedRefund = useConvertedPrice({
     value: refund.toString(),
     decimals: offer.exchangeToken.decimals
