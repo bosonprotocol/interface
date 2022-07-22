@@ -16,6 +16,7 @@ import styled from "styled-components";
 import { useSigner } from "wagmi";
 
 import { CONFIG } from "../../../lib/config";
+import { BosonRoutes } from "../../../lib/routing/routes";
 import { colors } from "../../../lib/styles/colors";
 import { Offer } from "../../../lib/types/offer";
 import { IPrice } from "../../../lib/utils/convertPrice";
@@ -23,6 +24,7 @@ import { titleCase } from "../../../lib/utils/formatText";
 import { isOfferHot } from "../../../lib/utils/getOfferLabel";
 import { getBuyerCancelPenalty } from "../../../lib/utils/getPrices";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
+import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { getItemFromStorage } from "../../../lib/utils/hooks/useLocalStorage";
 import { useModal } from "../../modal/useModal";
 import Price from "../../price/index";
@@ -33,8 +35,10 @@ import Typography from "../../ui/Typography";
 import {
   Break,
   CommitAndRedeemButton,
+  ContactSellerButton,
   RaiseProblemButton,
   RedeemLeftButton,
+  StyledCancelButton,
   Widget,
   WidgetUpperGrid
 } from "../Detail.style";
@@ -157,7 +161,8 @@ const getOfferDetailData = (
   ];
 };
 
-const SHOULD_DISPLAY_REDEEM_BTN = [
+const NOT_REDEEMED_YET = [
+  ExchangeState.Committed,
   ExchangeState.Revoked,
   ExchangeState.Cancelled,
   exchanges.ExtendedExchangeState.Expired,
@@ -173,6 +178,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
 }) => {
   const { showModal, modalTypes } = useModal();
   const { isLteXS } = useBreakpoints();
+  const navigate = useKeepQueryParamsNavigate();
+
   const cancelRef = useRef<HTMLDivElement | null>(null);
 
   const isOffer = pageType === "offer";
@@ -183,7 +190,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   const isToRedeem =
     !exchangeStatus || exchangeStatus === ExchangeState.Committed;
   const isBeforeRedeem =
-    !exchangeStatus || !SHOULD_DISPLAY_REDEEM_BTN.includes(exchangeStatus);
+    !exchangeStatus || NOT_REDEEMED_YET.includes(exchangeStatus);
 
   const { data: signer } = useSigner();
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -247,7 +254,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   return (
     <>
       <Widget>
-        {isExchange && isBeforeRedeem && (
+        {isExchange && isToRedeem && (
           <RedeemLeftButton>
             {redeemableDays} days left to Redeem
           </RedeemLeftButton>
@@ -308,11 +315,9 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                   });
                 }}
                 onPendingSignature={() => {
-                  console.log("onPendingSignature");
                   setIsLoading(true);
                 }}
-                onSuccess={(args, { exchangeId }) => {
-                  console.log("onSuccess", args, exchangeId);
+                onSuccess={(_args, { exchangeId }) => {
                   setIsLoading(false);
                   showModal(modalTypes.DETAIL_WIDGET, {
                     title: "You have successfully committed!",
@@ -344,11 +349,9 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                   });
                 }}
                 onPendingSignature={() => {
-                  console.log("onPendingSignature");
                   setIsLoading(true);
                 }}
-                onSuccess={(args) => {
-                  console.log("onSuccess", args);
+                onSuccess={() => {
                   setIsLoading(false);
                   showModal(modalTypes.DETAIL_WIDGET, {
                     title: "You have successfully redeemed!",
@@ -402,18 +405,45 @@ const DetailWidget: React.FC<IDetailWidget> = ({
         <div>
           <DetailTable align noBorder data={OFFER_DETAIL_DATA} />
         </div>
-        {isExchange && isBeforeRedeem && (
+        {isExchange && (
           <>
             <Break />
-            <RaiseProblemButton
-              onClick={handleCancel}
-              theme="blank"
-              style={{ fontSize: "0.875rem" }}
-              disabled={isChainUnsupported}
-            >
-              Raise a problem
-              <Question size={18} />
-            </RaiseProblemButton>
+            <Grid as="section">
+              <ContactSellerButton
+                onClick={() =>
+                  navigate({
+                    pathname: BosonRoutes.Chat
+                  })
+                }
+                theme="blank"
+                style={{ fontSize: "0.875rem" }}
+                disabled={isChainUnsupported}
+              >
+                Contact seller
+                <Question size={18} />
+              </ContactSellerButton>
+              {isBeforeRedeem ? (
+                <StyledCancelButton
+                  onClick={handleCancel}
+                  theme="blank"
+                  style={{ fontSize: "0.875rem" }}
+                  disabled={isChainUnsupported}
+                >
+                  Cancel
+                  <Question size={18} />
+                </StyledCancelButton>
+              ) : (
+                <RaiseProblemButton
+                  onClick={() => console.log("raise a problem")}
+                  theme="blank"
+                  style={{ fontSize: "0.875rem" }}
+                  disabled={isChainUnsupported}
+                >
+                  Raise a problem
+                  <Question size={18} />
+                </RaiseProblemButton>
+              )}
+            </Grid>
           </>
         )}
       </Widget>
@@ -441,11 +471,9 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               });
             }}
             onPendingSignature={() => {
-              console.log("onPendingSignature");
               setIsLoading(true);
             }}
-            onSuccess={(args) => {
-              console.log("onSuccess", args);
+            onSuccess={() => {
               setIsLoading(false);
               showModal(modalTypes.DETAIL_WIDGET, {
                 title: "You have successfully cancelled!",

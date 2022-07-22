@@ -1,3 +1,4 @@
+import React from "react";
 import styled from "styled-components";
 
 type JustifyContent =
@@ -45,6 +46,7 @@ const Container = styled.div<IGrid>`
 const Grid: React.FC<
   {
     children: React.ReactNode;
+    as?: React.ElementType;
   } & IGrid &
     React.HTMLAttributes<HTMLDivElement>
 > = ({ children, ...props }) => {

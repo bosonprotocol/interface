@@ -802,6 +802,10 @@ export const RaiseProblemButton = styled(Button)`
     margin-left: 1rem;
   }
 `;
+export const StyledCancelButton = RaiseProblemButton;
+export const ContactSellerButton = styled(RaiseProblemButton)`
+  color: ${colors.secondary};
+`;
 
 export const Break = styled.span`
   width: 100%;

@@ -82,9 +82,7 @@ export default function ResolveDispute({
 }: Props) {
   const { offer } = exchange;
   const { percentageAmount } = proposal;
-  const refund =
-    Number(offer.price) -
-    (Number(offer.price) * Number(percentageAmount)) / 100;
+  const refund = (Number(offer.price) * Number(percentageAmount)) / 100;
   const convertedRefund = useConvertedPrice({
     value: refund.toString(),
     decimals: offer.exchangeToken.decimals
@@ -123,18 +121,20 @@ export default function ResolveDispute({
         <CheckIcon />
         <span>{proposal.type}</span>
       </div>
-      <Grid>
-        <CheckIcon />
-        <Grid justifyContent="flex-start">
-          <span>{convertedRefund.price} ETH</span>
-          <Line />
-          <span>
-            {convertedRefund.currency?.symbol} {convertedRefund.converted}
-          </span>
-          <Line />
-          <span>{proposal.percentageAmount}%</span>
+      {percentageAmount && percentageAmount !== "0" && (
+        <Grid>
+          <CheckIcon />
+          <Grid justifyContent="flex-start">
+            <span>{convertedRefund.price} ETH</span>
+            <Line />
+            <span>
+              {convertedRefund.currency?.symbol} {convertedRefund.converted}
+            </span>
+            <Line />
+            <span>{proposal.percentageAmount}%</span>
+          </Grid>
         </Grid>
-      </Grid>
+      )}
       <Info>
         <InfoIcon />
         By accepting this proposal the dispute is resolved and the refund is
