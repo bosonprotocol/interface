@@ -7,8 +7,7 @@ import { DetailDisputeResolver } from "../../../components/detail/DetailWidget/D
 import { DetailSellerDeposit } from "../../../components/detail/DetailWidget/DetailSellerDeposit";
 import { useModal } from "../../../components/modal/useModal";
 import Price from "../../../components/price";
-import Step from "../../../components/stepper/step/Step";
-import Stepper from "../../../components/stepper/Stepper";
+import MultiSteps from "../../../components/step/MultiSteps";
 import Timeline from "../../../components/timeline/Timeline";
 import Button from "../../../components/ui/Button";
 import Typography from "../../../components/ui/Typography";
@@ -74,18 +73,6 @@ const Name = styled(Typography)`
   all: unset;
   font-size: 1.5rem;
   font-weight: 600;
-`;
-
-const StyledStepper = styled(Stepper)`
-  ${sectionStyles};
-`;
-
-const StepText = styled.span`
-  margin-top: 0.5rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-align: center;
-  color: ${colors.darkGrey};
 `;
 
 const CTASection = styled(Section)`
@@ -182,17 +169,20 @@ export default function Dispute({ thread }: Props) {
           convert
         />
       </ExchangeInfo>
-      <StyledStepper>
-        <Step status="done">
-          <StepText>Describe Problem</StepText>
-        </Step>
-        <Step status="inprogress">
-          <StepText>Raise dispute</StepText>
-        </Step>
-        <Step status="todo">
-          <StepText>Resolve or Escalate</StepText>
-        </Step>
-      </StyledStepper>
+      <Section>
+        <MultiSteps
+          data={[
+            {
+              steps: [
+                { label: "Describe Problem" },
+                { label: "Raise dispute" },
+                { label: "Resolve or Escalate" }
+              ]
+            }
+          ]}
+          active={1}
+        />
+      </Section>
       <Section>
         <DetailTable align noBorder data={OFFER_DETAIL_DATA ?? ({} as never)} />
       </Section>
