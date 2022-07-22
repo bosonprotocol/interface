@@ -1,5 +1,6 @@
 import { Image as AccountImage } from "@davatar/react";
 import dayjs from "dayjs";
+import { ArrowRight } from "phosphor-react";
 import { ReactNode, useMemo, useState } from "react";
 import styled from "styled-components";
 
@@ -10,6 +11,7 @@ import { colors } from "../../../lib/styles/colors";
 import { zIndex } from "../../../lib/styles/zIndex";
 import { Thread } from "../types";
 
+const width = "31.625rem";
 const Content = styled.div<{ $isLeftAligned: boolean }>`
   position: relative;
   background-color: ${({ $isLeftAligned }) =>
@@ -26,7 +28,7 @@ const Content = styled.div<{ $isLeftAligned: boolean }>`
   padding-left: 1rem;
   padding-right: 1rem;
   padding-bottom: 3.75rem;
-  max-width: 31.625rem;
+  max-width: ${width};
   margin-top: 3rem;
   &:after {
     position: absolute;
@@ -127,6 +129,14 @@ const Separator = styled.div`
       width: 0.625rem;
       content: "";
     }
+  }
+`;
+
+const StyledGrid = styled(Grid)`
+  cursor: pointer;
+  :hover * {
+    color: ${colors.secondary};
+    stroke: ${colors.secondary};
   }
 `;
 
@@ -233,7 +243,7 @@ export default function Message({
     );
   }
   return (
-    <Content $isLeftAligned={isLeftAligned}>
+    <Content $isLeftAligned={isLeftAligned} style={{ width }}>
       <SellerAvatar />
       <Typography tag="h4" margin="0">
         {message.content.value.title}
@@ -260,21 +270,21 @@ export default function Message({
               alignItems="flex-start"
             >
               <Typography margin="0">{proposal.type}</Typography>
-              <Grid>
-                <Typography
-                  color={colors.primary}
-                  onClick={() =>
-                    showModal("RESOLVE_DISPUTE", {
-                      title: "Resolve dispute",
-                      exchange,
-                      proposal
-                    })
-                  }
-                  cursor="pointer"
-                >
-                  Proposed refund amount: {proposal.percentageAmount}%
+              <StyledGrid
+                justifyContent="space-between"
+                onClick={() =>
+                  showModal("RESOLVE_DISPUTE", {
+                    title: "Resolve dispute",
+                    exchange,
+                    proposal
+                  })
+                }
+              >
+                <Typography color={colors.primary} cursor="pointer">
+                  Proposed refund amount: {proposal.percentageAmount}%{" "}
                 </Typography>
-              </Grid>
+                <ArrowRight color={colors.primary} />
+              </StyledGrid>
             </Grid>
           );
         })}
