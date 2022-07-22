@@ -9,6 +9,7 @@ import styled from "styled-components";
 
 import CreateYourProfile from "../../components/product/CreateYourProfile";
 import Help from "../../components/product/Help";
+import ProductImages from "../../components/product/ProductImages";
 import ProductInformation from "../../components/product/ProductInformation";
 import ProductType from "../../components/product/ProductType";
 import {
@@ -68,6 +69,10 @@ type CreateProductSteps = {
     ui: JSX.Element;
     validation: typeof productInformationValidationSchema;
   };
+  3: {
+    ui: JSX.Element;
+    validation: null; // TODO: NEED TO BE ADDED, FOR NOW JUSt PLAIN JSX
+  };
 };
 
 const createProductSteps: CreateProductSteps = {
@@ -82,6 +87,10 @@ const createProductSteps: CreateProductSteps = {
   2: {
     ui: <ProductInformation />,
     validation: productInformationValidationSchema
+  },
+  3: {
+    ui: <ProductImages />,
+    validation: null
   }
 } as const;
 
@@ -93,7 +102,7 @@ const steps = [
   {
     name: "Product Data",
     // steps: 4
-    steps: 2 // NOTE: FOR CURRENT SCOPE PRODUCTS VARIANTS ARE EXCLUDED
+    steps: 3 // NOTE: FOR CURRENT SCOPE PRODUCTS VARIANTS ARE EXCLUDED
   } as const,
   {
     name: "Terms of Sale",

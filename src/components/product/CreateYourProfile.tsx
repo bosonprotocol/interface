@@ -1,13 +1,25 @@
 import { useFormikContext } from "formik";
+import styled from "styled-components";
 
-import logoPicturePlaceholder from "../../assets/placeholder/image-thumbnail.png";
+import placeholderImage from "../../assets/placeholder/placeholder-thumbnail.png";
 import Field, { FieldType } from "../../components/form/Field";
+import { colors } from "../../lib/styles/colors";
 import Button from "../ui/Button";
 import Image from "../ui/Image";
 import InputGroup from "../ui/InputGroup";
 import Typography from "../ui/Typography";
 import { ContainerProductPage, ProductButtonGroup } from "./Product.styles";
 import type { CreateProductForm } from "./validation/createProductValidationSchema";
+
+const Box = styled.div`
+  height: 88px;
+  width: 88px;
+  text-align: center;
+  background: ${colors.lightGrey};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 
 export default function CreateYourProfile() {
   const { handleChange, values, errors } =
@@ -20,15 +32,17 @@ export default function CreateYourProfile() {
         subTitle="Upload a profile image with a max. width and height of 800px and a max. size of 300kb."
       >
         {/* NOTE: TEMP ONLY FOR UI PURPOSE */}
-        <Image
-          alt="placeholder"
-          src={logoPicturePlaceholder}
-          style={{
-            width: "88px",
-            height: "88px",
-            paddingTop: "0px"
-          }}
-        />
+        <Box>
+          <Image
+            alt="placeholder"
+            src={placeholderImage}
+            style={{
+              width: "40px",
+              height: "40px",
+              paddingTop: "0px"
+            }}
+          />
+        </Box>
       </InputGroup>
       <InputGroup title="Your brand / name*">
         <Field

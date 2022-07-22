@@ -13,7 +13,7 @@ export const ContainerProductPage = styled.div`
   max-width: 506px;
   width: 100%;
   > h2 {
-    margin 56px 0;
+    margin 56px 0px 48px 0px;
   }
   .inputGroup:not(:last-of-type) {
     margin-bottom: 32px;
