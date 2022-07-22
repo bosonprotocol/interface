@@ -50,9 +50,9 @@ const HelpContentContainer = styled.div`
 
 export default function Help({ title = "Help", background, data }: Props) {
   const renderData = useMemo(() => {
-    return map(data, ({ title, description }) => {
+    return map(data, ({ title, description }, i) => {
       return (
-        <HelpContentContainer>
+        <HelpContentContainer key={`${title}-${i}`}>
           {isString(title) ? <Typography tag="h4">{title}</Typography> : title}
           {isString(description) ? (
             <Typography tag="p">{description}</Typography>
