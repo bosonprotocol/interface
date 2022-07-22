@@ -2,7 +2,6 @@ import styled, { css } from "styled-components";
 
 import { transition } from "../../components/ui/styles";
 import { colors } from "../../lib/styles/colors";
-import Grid from "../ui/Grid";
 import { StepState } from "./Step";
 
 export const StepStyle = styled.div.attrs((props: { state: StepState }) => ({
@@ -14,7 +13,7 @@ export const StepStyle = styled.div.attrs((props: { state: StepState }) => ({
   justify-content: center;
   align-items: center;
   flex-grow: 1;
-  width: 100%;
+
   min-width: 6rem;
   height: 1.25rem;
   ${({ state }) =>
@@ -134,9 +133,10 @@ export const MultiStepStyle = styled.div`
   flex-wrap: nowrap;
   justify-content: flex-start;
 
-  align-items: flex-start;
+  align-items: center;
   p {
     text-align: center;
+    margin: 0;
     font-weight: 600;
     font-size: 12px;
     line-height: 200%;
@@ -144,6 +144,20 @@ export const MultiStepStyle = styled.div`
   }
 `;
 
-export const StepWrapper = styled(Grid)`
+export const MultiStepWrapper = styled.div`
+  display: flex;
+  flex-grow: 1;
+
+  flex-direction: column;
+`;
+
+export const StepWrapper = styled.div`
+  display: flex;
+  gap: 0;
+  flex-grow: 1;
+
+  flex-direction: row;
+  flex-wrap: nowrap;
+
   border: 1px solid ${colors.border};
 `;
