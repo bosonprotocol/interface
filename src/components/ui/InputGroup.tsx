@@ -1,8 +1,9 @@
+import { Question } from "phosphor-react";
 import type { ReactNode } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
-import DetailPopper from "../detail/DetailPopper";
+import DetailTooltip from "../detail/DetailTooltip";
 import Typography from "./Typography";
 
 const InputGroupContainer = styled.div`
@@ -37,6 +38,9 @@ const SubTitleContainer = styled.div`
   }
 `;
 
+const IconWrapper = styled.div`
+  margin-left: 2px;
+`;
 interface Props {
   title: string;
   subTitle?: string;
@@ -56,7 +60,17 @@ export default function InputGroup({
     <InputGroupContainer className="inputGroup" style={style}>
       <TitleContainer>
         <Typography tag="p">{title}</Typography>
-        {popper && <DetailPopper>{popper}</DetailPopper>}
+        {popper && (
+          <DetailTooltip
+            trigger={
+              <IconWrapper>
+                <Question size={13} />
+              </IconWrapper>
+            }
+          >
+            {popper}
+          </DetailTooltip>
+        )}
       </TitleContainer>
       {subTitle && (
         <SubTitleContainer>
