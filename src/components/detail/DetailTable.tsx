@@ -1,7 +1,7 @@
 import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
 import { Table } from "./Detail.style";
-import DetailPopper from "./DetailPopper";
+import DetailTooltip from "./DetailTooltip";
 
 export interface Data {
   hide?: boolean | undefined;
@@ -33,7 +33,7 @@ export default function DetailTable({
                 <td>
                   <Grid justifyContent="flex-start">
                     <Typography tag={tag}>{d.name}</Typography>
-                    {d.info && <DetailPopper>{d.info}</DetailPopper>}
+                    {d.info && <DetailTooltip>{d.info}</DetailTooltip>}
                   </Grid>
                 </td>
                 <td>
