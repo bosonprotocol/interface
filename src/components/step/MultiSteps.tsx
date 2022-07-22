@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 
+import Grid from "../ui/Grid";
+import Typography from "../ui/Typography";
 import Step, { StepState } from "./Step";
-import { MultiStepStyle, MultiStepWrapper, StepWrapper } from "./Step.styles";
+import { MultiStepStyle, StepWrapper } from "./Step.styles";
 
 type StepData = {
   name?: string;
-  steps: number;
+  steps: { label?: string }[];
 };
 
 interface Props {
@@ -27,16 +29,16 @@ export default function MultiSteps({
   return (
     <MultiStepStyle {...props}>
       {data.map((el, i) => {
-        const steps = Array.from(Array(el.steps).keys());
+        const steps = el.steps;
         const newData = data.slice(0, i);
         const previousLength = newData.reduce(
-          (acc, cur) => (acc += cur.steps),
+          (acc, cur) => (acc += cur.steps.length),
           0
         );
         return (
-          <MultiStepWrapper key={`multi_${i}`}>
-            <StepWrapper>
-              {steps.map((step: number, key: number) => {
+          <Grid flexDirection="column" flexGrow="1" key={`multi_${i}`}>
+            <Grid flexDirection="row" alignItems="flex-start">
+              {steps.map((step, key: number) => {
                 const currentKey = previousLength + key;
                 const state =
                   currentKey === current
@@ -45,21 +47,36 @@ export default function MultiSteps({
                     ? StepState.Done
                     : StepState.Inactive;
                 return (
-                  <Step
-                    state={state}
-                    onClick={() => {
-                      setCurrent(currentKey);
-                      if (callback) {
-                        callback(currentKey);
-                      }
-                    }}
-                    key={`multi-step_${currentKey}`}
-                  />
+                  <Grid flexDirection="column" justifyContent="flex-start">
+                    <StepWrapper
+                      flexDirection="column"
+                      key={`multi-step_${currentKey}`}
+                      flexWrap="nowrap"
+                      gap="0"
+                    >
+                      <Step
+                        state={state}
+                        onClick={() => {
+                          setCurrent(currentKey);
+                          if (callback) {
+                            callback(currentKey);
+                          }
+                        }}
+                      />
+                    </StepWrapper>
+                    {step.label && (
+                      <Typography tag="p" margin="0.5rem 0 0 0">
+                        {step.label}
+                      </Typography>
+                    )}
+                  </Grid>
                 );
               })}
-            </StepWrapper>
-            <p>{el.name}</p>
-          </MultiStepWrapper>
+            </Grid>
+            <Typography tag="p" margin="0">
+              {el.name}
+            </Typography>
+          </Grid>
         );
       })}
     </MultiStepStyle>
