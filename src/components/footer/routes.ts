@@ -55,5 +55,9 @@ export const NAVIGATION_ROUTES = [
   {
     name: "Custom Storefront",
     url: BosonRoutes.CreateStorefront
+  },
+  {
+    name: "Chat",
+    url: BosonRoutes.Chat
   }
 ];

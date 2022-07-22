@@ -118,7 +118,10 @@ export default function FooterComponent() {
               data-testid="logo"
             />
           </LinkWithQuery>
-          <NavigationGrid justifyContent={isXXS ? "flex-start" : "flex-end"}>
+          <NavigationGrid
+            justifyContent={isXXS ? "flex-start" : "flex-end"}
+            alignItems="flex-start"
+          >
             <div>
               <Typography tag="h5">Product</Typography>
               <NavigationLinks flexDirection="column">
