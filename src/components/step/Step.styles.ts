@@ -144,13 +144,6 @@ export const MultiStepStyle = styled.div`
   }
 `;
 
-export const MultiStepWrapper = styled.div`
-  display: flex;
-  flex-grow: 1;
-
-  flex-direction: row;
-`;
-
 export const StepWrapper = styled(Grid)`
   border: 1px solid ${colors.border};
 `;
