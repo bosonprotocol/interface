@@ -75,6 +75,10 @@ const Name = styled(Typography)`
   font-weight: 600;
 `;
 
+const StyledMultiSteps = styled(MultiSteps)`
+  gap: 0;
+`;
+
 const CTASection = styled(Section)`
   display: flex;
   justify-content: space-between;
@@ -170,17 +174,12 @@ export default function Dispute({ thread }: Props) {
         />
       </ExchangeInfo>
       <Section>
-        <MultiSteps
+        <StyledMultiSteps
           data={[
-            {
-              steps: [
-                { label: "Describe Problem" },
-                { label: "Raise dispute" },
-                { label: "Resolve or Escalate" }
-              ]
-            }
+            { name: "Describe Problem", steps: 1 },
+            { name: "Raise dispute", steps: 1 },
+            { name: "Resolve or Escalate", steps: 1 }
           ]}
-          active={1}
         />
       </Section>
       <Section>
