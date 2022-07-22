@@ -1,9 +1,10 @@
-import { Plus } from "phosphor-react";
+import { ArrowRight, List, Plus } from "phosphor-react";
 import { useCallback } from "react";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
 import SellerID from "../../../components/ui/SellerID";
+import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
 import { useBuyerSellerAccounts } from "../../../lib/utils/hooks/useBuyerSellerAccounts";
 import { Thread } from "../types";
@@ -31,6 +32,14 @@ const Header = styled.div`
   height: 6.25rem;
   display: flex;
   align-items: center;
+  svg:nth-of-type(1) {
+    margin-right: 0.5rem;
+  }
+  svg {
+    ${breakpoint.m} {
+      display: none;
+    }
+  }
 `;
 const Messages = styled.div`
   flex-grow: 1;
@@ -168,7 +177,9 @@ export default function ChatConversation({ thread }: Props) {
     <>
       <Container>
         <Header>
+          <List size={24} />
           <SellerComponent size={24} />
+          <ArrowRight size={32} />
         </Header>
         <Messages>
           {thread.messages.map((message) => {
