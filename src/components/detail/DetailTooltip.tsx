@@ -1,5 +1,4 @@
 import * as Tooltip from "@radix-ui/react-tooltip";
-import { Question } from "phosphor-react";
 import { ReactNode } from "react";
 import styled from "styled-components";
 
@@ -9,6 +8,7 @@ import { zIndex } from "../../lib/styles/zIndex";
 
 interface Props {
   children?: ReactNode;
+  trigger: ReactNode;
 }
 
 const StyledContent = styled(Tooltip.Content)`
@@ -55,19 +55,13 @@ const Trigger = styled(Tooltip.Trigger)`
   all: unset;
   cursor: pointer;
   display: flex;
-
-  svg > * {
-    stroke-width: 12px;
-  }
 `;
 
-export default function DetailTooltip({ children }: Props) {
+export default function DetailTooltip({ children, trigger }: Props) {
   return (
     <Tooltip.Provider delayDuration={0}>
       <Tooltip.Root>
-        <Trigger>
-          <Question size={20} />
-        </Trigger>
+        <Trigger>{trigger}</Trigger>
         <Tooltip.Portal>
           <StyledContent>{children}</StyledContent>
         </Tooltip.Portal>
