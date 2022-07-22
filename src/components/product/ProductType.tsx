@@ -1,6 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
-
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
@@ -23,9 +20,7 @@ const productTypeItemsPerRow = {
   l: 1,
   xl: 1
 };
-
-export const Box = styled.button`
-  padding: 28px;
+const Label = styled.label`
   max-width: 200px;
   align-items: center;
   border: 1px solid ${colors.lightGrey};
@@ -34,6 +29,27 @@ export const Box = styled.button`
   margin-top: 4px;
   background: transparent;
   height: 197px;
+  cursor: pointer;
+`;
+const RadioButton = styled.input`
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  img {
+    cursor: pointer;
+  }
+  &:checked + div {
+    border: 1px solid ${colors.green};
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1), 0px 0px 8px rgba(0, 0, 0, 0.1),
+      0px 0px 16px rgba(0, 0, 0, 0.1), 0px 0px 32px rgba(0, 0, 0, 0.1);
+  }
+`;
+
+export const Box = styled.div`
+  padding: 28px;
+  height: 100%;
+  width: 100%;
 `;
 export const Container = styled.div`
   max-width: 424px;
@@ -53,44 +69,50 @@ export default function ProductType() {
             }}
           >
             <Grid>
-              <Box>
-                <Image
-                  src={physicalProduct}
-                  style={{
-                    width: "100px",
-                    height: "100px",
-                    paddingTop: "0px",
-                    margin: "auto"
-                  }}
-                />
-                <Typography
-                  tag="p"
-                  style={{
-                    margin: "15px 0 0 0"
-                  }}
-                >
-                  Physical
-                </Typography>
-              </Box>
-              <Box>
-                <Image
-                  src={phygitalProduct}
-                  style={{
-                    width: "100px",
-                    height: "100px",
-                    paddingTop: "0px",
-                    margin: "auto"
-                  }}
-                />
-                <Typography
-                  tag="p"
-                  style={{
-                    margin: "15px 0 0 0"
-                  }}
-                >
-                  Physical
-                </Typography>
-              </Box>
+              <Label>
+                <RadioButton type="radio" name="productType" value="physical" />
+                <Box>
+                  <Image
+                    src={physicalProduct}
+                    style={{
+                      width: "100px",
+                      height: "100px",
+                      paddingTop: "0px",
+                      margin: "auto"
+                    }}
+                  />
+                  <Typography
+                    tag="p"
+                    style={{
+                      margin: "15px 0 0 0"
+                    }}
+                  >
+                    Physical
+                  </Typography>
+                </Box>
+              </Label>
+              <Label>
+                <RadioButton type="radio" name="productType" value="phygital" />
+                <Box>
+                  <Image
+                    src={phygitalProduct}
+                    style={{
+                      width: "100px",
+                      height: "100px",
+                      paddingTop: "0px",
+                      margin: "auto"
+                    }}
+                  />
+                  <Typography
+                    tag="p"
+                    style={{
+                      margin: "15px 0 0 0"
+                    }}
+                  >
+                    Phygital
+                  </Typography>
+                </Box>
+              </Label>
             </Grid>
           </InputGroup>
           <InputGroup
@@ -101,49 +123,65 @@ export default function ProductType() {
             }}
           >
             <Grid>
-              <Box>
-                <Image
-                  src={oneItemTypeProduct}
-                  style={{
-                    width: "62px",
-                    height: "100px",
-                    paddingTop: "0px",
-                    margin: "auto"
-                  }}
+              <Label>
+                <RadioButton
+                  type="radio"
+                  name="productVariant"
+                  value="oneItemType"
                 />
-                <Typography
-                  tag="p"
-                  style={{
-                    margin: "15px 0 0 0"
-                  }}
-                >
-                  Physical
-                </Typography>
-              </Box>
-              <Box>
-                <Image
-                  src={differentVariantsProduct}
-                  style={{
-                    width: "54px",
-                    height: "100px",
-                    paddingTop: "0px",
-                    margin: "auto"
-                  }}
+                <Box>
+                  <Image
+                    src={oneItemTypeProduct}
+                    style={{
+                      width: "62px",
+                      height: "100px",
+                      paddingTop: "0px",
+                      margin: "auto"
+                    }}
+                  />
+                  <Typography
+                    tag="p"
+                    style={{
+                      margin: "15px 0 0 0"
+                    }}
+                  >
+                    Physical
+                  </Typography>
+                </Box>
+              </Label>
+              <Label>
+                <RadioButton
+                  type="radio"
+                  name="productVariant"
+                  value="differentVariants"
                 />
-                <Typography
-                  tag="p"
-                  style={{
-                    margin: "15px 0 0 0"
-                  }}
-                >
-                  Different Variants
-                </Typography>
-              </Box>
+                <Box>
+                  <Image
+                    src={differentVariantsProduct}
+                    style={{
+                      width: "54px",
+                      height: "100px",
+                      paddingTop: "0px",
+                      margin: "auto"
+                    }}
+                  />
+                  <Typography
+                    tag="p"
+                    style={{
+                      margin: "15px 0 0 0"
+                    }}
+                  >
+                    Different Variants
+                  </Typography>
+                </Box>
+              </Label>
             </Grid>
           </InputGroup>
         </GridContainer>
         <ProductButtonGroup>
-          <Button theme="secondary">Next</Button>
+          <Button theme="secondary" type="submit">
+            Next
+          </Button>
         </ProductButtonGroup>
       </Container>
     </ContainerProductPage>
