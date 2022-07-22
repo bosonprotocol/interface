@@ -22,6 +22,7 @@ export const FieldInput = styled.input.attrs((props: { error: any }) => ({
   border: 1px solid ${colors.border};
   border-radius: 0;
   outline: none;
+  font-family: "Plus Jakarta Sans";
 
   ${transition}
 
@@ -70,6 +71,7 @@ export const FieldTextArea = styled.textarea.attrs((props: { error: any }) => ({
   align-items: flex-start;
   padding: 1rem;
   gap: 0.5rem;
+  font-family: "Plus Jakarta Sans";
 
   background: ${colors.lightGrey};
   border: 1px solid ${colors.border};

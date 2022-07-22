@@ -26,7 +26,7 @@ export default function ProductInformation() {
       >
         <Field
           fieldType={FieldType.Input}
-          placeholder="name"
+          placeholder="Name"
           name="productTitle"
           value={values.productTitle}
           onChange={handleChange}
