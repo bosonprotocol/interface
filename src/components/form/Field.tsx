@@ -27,6 +27,7 @@ export interface Props {
   multiple?: boolean;
   trigger?: React.ReactNode | JSX.Element;
   error?: any;
+  fileMaxSize?: number;
   data?: Array<DataProps>;
   [x: string]: any;
 }

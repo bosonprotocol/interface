@@ -41,6 +41,8 @@ const SpaceContainer = styled.div`
   }
 `;
 
+const FILE_MAX_SIZE = 0.6 * 1024;
+
 export default function ProductImages() {
   const { handleChange, values } = useFormikContext<CreateProductForm>();
   return (
@@ -55,17 +57,46 @@ export default function ProductImages() {
         }}
       >
         <SpaceContainer>
-          <Field fieldType={FieldType.FileUpload} placeholder="Thumbnail" />
-          <Field fieldType={FieldType.FileUpload} placeholder="Secondary" />
-          <Field fieldType={FieldType.FileUpload} placeholder="Every angle" />
-          <Field fieldType={FieldType.FileUpload} placeholder="Details" />
-          <Field fieldType={FieldType.FileUpload} placeholder="In Use" />
-          <Field fieldType={FieldType.FileUpload} placeholder="Styled Scene" />
+          <Field
+            fieldType={FieldType.FileUpload}
+            fileMaxSize={FILE_MAX_SIZE}
+            placeholder="Thumbnail"
+          />
+          <Field
+            fieldType={FieldType.FileUpload}
+            fileMaxSize={FILE_MAX_SIZE}
+            placeholder="Secondary"
+          />
+          <Field
+            fieldType={FieldType.FileUpload}
+            fileMaxSize={FILE_MAX_SIZE}
+            placeholder="Every angle"
+          />
+          <Field
+            fieldType={FieldType.FileUpload}
+            fileMaxSize={FILE_MAX_SIZE}
+            placeholder="Details"
+          />
+          <Field
+            fieldType={FieldType.FileUpload}
+            fileMaxSize={FILE_MAX_SIZE}
+            placeholder="In Use"
+          />
+          <Field
+            fieldType={FieldType.FileUpload}
+            fileMaxSize={FILE_MAX_SIZE}
+            placeholder="Styled Scene"
+          />
           <Field
             fieldType={FieldType.FileUpload}
             placeholder="Size and scale"
+            fileMaxSize={FILE_MAX_SIZE}
           />
-          <Field fieldType={FieldType.FileUpload} placeholder="More" />
+          <Field
+            fieldType={FieldType.FileUpload}
+            fileMaxSize={FILE_MAX_SIZE}
+            placeholder="More"
+          />
         </SpaceContainer>
       </InputGroup>
       <ProductButtonGroup>

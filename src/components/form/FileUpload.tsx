@@ -20,8 +20,10 @@ export default function FileUpload({
   multiple = false,
   trigger,
   placeholder,
+  fileMaxSize,
   ...props
 }: Props) {
+  const FILE_MAX_SIZE = fileMaxSize || CONFIG.maxUploadSize;
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [files, setFiles] = useState<File[]>([]);
   const [preview, setPreview] = useState<string | null>(null);
@@ -49,12 +51,10 @@ export default function FileUpload({
     const { files } = e.target;
     const filesArray = Object.values(files);
     for (const file of filesArray) {
-      if (file.size > CONFIG.maxUploadSize) {
+      if (file.size > FILE_MAX_SIZE) {
         // TODO: change to notification
         console.error(
-          `File size cannot exceed more than ${bytesToSize(
-            CONFIG.maxUploadSize
-          )}`
+          `File size cannot exceed more than ${bytesToSize(FILE_MAX_SIZE)}`
         );
         return;
       }
