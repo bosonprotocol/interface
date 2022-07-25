@@ -1,4 +1,3 @@
-/* eslint-disable no-irregular-whitespace */
 import { Warning } from "phosphor-react";
 import styled from "styled-components";
 
@@ -10,6 +9,7 @@ import { ContainerProductPage, ProductButtonGroup } from "./Product.styles";
 
 const ConfirmProductDetailsContainer = styled(ContainerProductPage)`
   max-width: 1051px;
+  margin 0 auto;
 `;
 
 const CollapseContainer = styled.div`
@@ -88,10 +88,10 @@ export default function ConfirmProductDetails() {
             You wont be able to make changes after confirming
           </Typography>
           <Typography tag="p">
-            By selecting confirm, you agree to pay the above fees, accept
-            the Boson seller agreement and Payments Terms of Use, acknowledge
-            reading the User Privacy Notice and assume full responsibility for
-            the item offered and the content of your listing.
+            By selecting confirm, you agree to pay the above fees, accept Boson
+            seller agreement and Payments Terms of Use, acknowledge reading the
+            User Privacy Notice and assume full responsibility for the item
+            offered and the content of your listing.
           </Typography>
         </ConfirmationContent>
       </ConfirmationAlert>

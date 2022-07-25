@@ -67,69 +67,85 @@ type CreateProductSteps = {
   0: {
     ui: JSX.Element;
     validation: typeof createYourProfileValidationSchema;
+    helpSection: typeof createYourProfileHelp;
   };
   1: {
     ui: JSX.Element;
     validation: typeof productTypeValidationSchema;
+    helpSection: null;
   };
   2: {
     ui: JSX.Element;
     validation: typeof productInformationValidationSchema;
+    helpSection: null;
   };
   3: {
     ui: JSX.Element;
     validation: null; // TODO: NEED TO BE ADDED, FOR NOW JUSt PLAIN JSX
+    helpSection: null;
   };
   4: {
     ui: JSX.Element;
     validation: null; // TODO: NEED TO BE ADDED, FOR NOW JUSt PLAIN JSX
+    helpSection: null;
   };
   5: {
     ui: JSX.Element;
     validation: null; // TODO: NEED TO BE ADDED, FOR NOW JUSt PLAIN JSX
+    helpSection: null;
   };
   6: {
     ui: JSX.Element;
     validation: null; // TODO: NEED TO BE ADDED, FOR NOW JUSt PLAIN JSX
+    helpSection: null;
   };
   7: {
     ui: JSX.Element;
     validation: null; // TODO: NEED TO BE ADDED, FOR NOW JUSt PLAIN JSX
+    helpSection: null;
   };
 };
 
 const createProductSteps: CreateProductSteps = {
   0: {
     ui: <CreateYourProfile />,
-    validation: createYourProfileValidationSchema
+    validation: createYourProfileValidationSchema,
+    helpSection: createYourProfileHelp
   },
   1: {
     ui: <ProductType />,
-    validation: productTypeValidationSchema
+    validation: productTypeValidationSchema,
+    helpSection: null
   },
   2: {
     ui: <ProductInformation />,
-    validation: productInformationValidationSchema
+    validation: productInformationValidationSchema,
+    helpSection: null
   },
   3: {
     ui: <ProductImages />,
-    validation: null
+    validation: null,
+    helpSection: null
   },
   4: {
     ui: <CoreTermsOfSale />,
-    validation: null
+    validation: null,
+    helpSection: null
   },
   5: {
     ui: <TermsOfExchange />,
-    validation: null
+    validation: null,
+    helpSection: null
   },
   6: {
     ui: <ShippingInfo />,
-    validation: null
+    validation: null,
+    helpSection: null
   },
   7: {
     ui: <ConfirmProductDetails />,
-    validation: null
+    validation: null,
+    helpSection: null
   }
 } as const;
 
@@ -168,7 +184,10 @@ export default function CreateProduct() {
         null,
       currentValidation:
         createProductSteps?.[currentForm as keyof CreateProductSteps]
-          ?.validation || null
+          ?.validation || null,
+      helpSection:
+        createProductSteps?.[currentForm as keyof CreateProductSteps]
+          ?.helpSection || null
     };
   }, [currentForm]);
 
@@ -203,9 +222,9 @@ export default function CreateProduct() {
         >
           <Form>{wizardStep.currentForm}</Form>
         </Formik>
-        {isArray(createYourProfileHelp) && (
+        {isArray(wizardStep.helpSection) && (
           <HelpWrapper>
-            <Help data={createYourProfileHelp} />
+            <Help data={wizardStep.helpSection} />
           </HelpWrapper>
         )}
       </ProductLayoutContainer>
