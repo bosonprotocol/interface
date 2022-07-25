@@ -1,7 +1,7 @@
 /* eslint @typescript-eslint/no-explicit-any: "off" */
 import React from "react";
 
-import DetailPopper from "../detail/DetailPopper";
+import DetailTooltip from "../detail/DetailTooltip";
 import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
 import { FormFieldWrapper } from "./Field.styles";
@@ -31,7 +31,7 @@ export default function FormField({
         <Typography data-header tag="p">
           {header} {required && "*"}
         </Typography>
-        {tooltip && <DetailPopper>{tooltip}</DetailPopper>}
+        {tooltip && <DetailTooltip>{tooltip}</DetailTooltip>}
       </Grid>
       {subheader && (
         <Grid justifyContent="flex-start">

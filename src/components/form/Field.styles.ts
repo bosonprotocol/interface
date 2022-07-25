@@ -61,6 +61,51 @@ export const FieldInput = styled.input.attrs((props: { error: any }) => ({
         `}
 `;
 
+export const FileUploadWrapper = styled.div.attrs(
+  (props: { choosen: any }) => ({
+    choosen: props.choosen
+  })
+)`
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+
+  ${({ choosen }) =>
+    choosen
+      ? css`
+          width: 100%;
+          height: 6rem;
+        `
+      : css`
+          width: 6rem;
+          height: 6rem;
+        `}
+
+  background: ${colors.lightGrey};
+  border: 1px solid ${colors.border};
+  border-radius: 0;
+  outline: none;
+
+  ${transition}
+
+  :focus,
+  :hover {
+    border: 1px solid var(--secondary);
+  }
+
+  /* prettier-ignore */
+  [data-disabled=true] {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+`;
+
+export const FieldFileUpload = styled(FieldInput)`
+  display: none;
+`;
+
 export const FieldTextArea = styled.textarea.attrs((props: { error: any }) => ({
   error: props.error
 }))`
@@ -114,9 +159,7 @@ export const FieldTextArea = styled.textarea.attrs((props: { error: any }) => ({
 
 export const FormFieldWrapper = styled(Grid)`
   max-width: 50vw;
-  :not(:last-of-type) {
-    margin-bottom: 3.5rem;
-  }
+  margin-bottom: 3.5rem;
 
   p {
     font-family: "Plus Jakarta Sans";
@@ -138,5 +181,55 @@ export const FormFieldWrapper = styled(Grid)`
     font-weight: 400;
     font-size: 0.75rem;
     color: ${colors.darkGrey};
+  }
+`;
+
+export const CheckboxWrapper = styled.label`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  cursor: pointer;
+
+  > div,
+  > div svg {
+    ${transition}
+  }
+  :hover {
+    > div {
+      border: 1px solid ${colors.secondary};
+    }
+    input {
+      :not(:checked) {
+        + div svg {
+          opacity: 0.25;
+        }
+      }
+    }
+  }
+  > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+
+    border: 1px solid ${colors.border};
+    background: ${colors.lightGrey};
+
+    margin-right: 0.5rem;
+  }
+
+  > input {
+    :checked {
+      + div svg {
+        opacity: 1;
+      }
+    }
+    :not(:checked) {
+      + div svg {
+        opacity: 0;
+      }
+    }
   }
 `;

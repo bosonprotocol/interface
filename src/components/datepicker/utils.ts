@@ -6,7 +6,6 @@ export interface ICalendarCell {
   text: string;
   value: Dayjs;
   current: boolean;
-  active: boolean;
   day: string;
   date: string;
 }
@@ -32,7 +31,6 @@ export function getCells(selectedDate: Dayjs, date: Dayjs): ICalendarCell[] {
       value: newDate,
       day: newDate.format("d"),
       date: newDate.format(CONFIG.dateFormat),
-      active: newDate.isSame(selectedDate, "day"),
       current
     };
   };

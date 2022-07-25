@@ -16,7 +16,6 @@ import Exchange from "./pages/exchange/Exchange";
 import Explore from "./pages/explore/Explore";
 import Landing from "./pages/landing/Landing";
 import OfferDetail from "./pages/offers/OfferDetail";
-import TestUi from "./pages/test-ui/TestUi";
 import reportWebVitals from "./reportWebVitals";
 
 const rootElement = document.getElementById("root");
@@ -46,7 +45,6 @@ root.render(
           <ScrollToTop />
           <SentryProvider>
             <Route path="/" element={<App />}>
-              <Route path={"/test"} element={<TestUi />} />
               <Route path={BosonRoutes.Root} element={<Landing />} />
               {[
                 OffersRoutes.Root,

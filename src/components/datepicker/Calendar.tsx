@@ -1,5 +1,6 @@
-import { Dayjs } from "dayjs";
-import React, { useCallback, useMemo } from "react";
+import type { Dayjs } from "dayjs";
+import dayjs from "dayjs";
+import React, { useMemo } from "react";
 
 import {
   CalendarCell,
@@ -11,15 +12,13 @@ import { getRows, ICalendarCell } from "./utils";
 
 export interface Props {
   date: Dayjs;
+  shownDate: string;
   onChange: (newDate: Dayjs) => void;
 }
 
-export default function Calendar({ date, onChange }: Props) {
-  // TODO: change month
-  const handleSelectDate = useCallback(
-    (value: Dayjs) => onChange(value),
-    [onChange]
-  );
+export default function Calendar({ date, shownDate, onChange }: Props) {
+  const selected = dayjs(shownDate);
+  const handleSelectDate = (value: Dayjs) => onChange(value);
 
   const rows = useMemo((): Array<ICalendarCell[]> => getRows(date), [date]);
 
@@ -34,18 +33,16 @@ export default function Calendar({ date, onChange }: Props) {
       </CalendarHeader>
       {rows.map((cells: ICalendarCell[], rowIndex: number) => (
         <CalendarRow key={`calendar_row_${rowIndex}`}>
-          {cells.map(
-            ({ text, value, active, current }: ICalendarCell, i: number) => (
-              <CalendarDay
-                key={`calendar_row_day${text}-${i}`}
-                active={active}
-                current={current}
-                onClick={() => handleSelectDate(value)}
-              >
-                <span>{text}</span>
-              </CalendarDay>
-            )
-          )}
+          {cells.map(({ text, value, current }: ICalendarCell, i: number) => (
+            <CalendarDay
+              key={`calendar_row_day${text}-${i}`}
+              active={value.isSame(selected, "day")}
+              current={current}
+              onClick={() => handleSelectDate(value)}
+            >
+              <span>{text}</span>
+            </CalendarDay>
+          ))}
         </CalendarRow>
       ))}
     </>
