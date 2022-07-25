@@ -37,24 +37,30 @@ const HelpWrapper = styled.div`
 `;
 
 const createYourProfileInitialValues = {
-  name: "",
-  email: "",
-  description: "",
-  website: ""
+  creteYourProfile: {
+    name: "",
+    email: "",
+    description: "",
+    website: ""
+  }
 } as const;
 
 const productTypeInitialValues = {
-  productType: "",
-  productVariant: ""
+  productType: {
+    productType: "",
+    productVariant: ""
+  }
 } as const;
 
 const productInformationInitialValues = {
-  productTitle: "",
-  describe: "",
-  category: "",
-  tags: "",
-  attribute: "",
-  attributeValue: ""
+  productInformation: {
+    productTitle: "",
+    describe: "",
+    category: "",
+    tags: "",
+    attribute: "",
+    attributeValue: ""
+  }
 } as const;
 
 const initialValues: CreateProductForm = {

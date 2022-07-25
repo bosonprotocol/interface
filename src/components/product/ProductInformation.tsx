@@ -37,9 +37,9 @@ export default function ProductInformation() {
           fieldType={FieldType.Input}
           placeholder="Name"
           name="productTitle"
-          value={values.productTitle}
+          value={values.productInformation.productTitle}
           onChange={handleChange}
-          error={errors.productTitle}
+          error={errors.productInformation?.productTitle}
         />
       </InputGroup>
       <InputGroup
@@ -50,9 +50,9 @@ export default function ProductInformation() {
           fieldType={FieldType.Textarea}
           placeholder="Describe"
           name="describe"
-          value={values.describe}
+          value={values.productInformation.describe}
           onChange={handleChange}
-          error={errors.describe}
+          error={errors.productInformation?.describe}
         />
       </InputGroup>
       <InputGroup
@@ -63,9 +63,9 @@ export default function ProductInformation() {
           fieldType={FieldType.Input}
           placeholder="Click to select"
           name="category"
-          value={values.category}
+          value={values.productInformation.category}
           onChange={handleChange}
-          error={errors.category}
+          error={errors.productInformation?.category}
         />
       </InputGroup>
       <InputGroup
@@ -76,9 +76,9 @@ export default function ProductInformation() {
           fieldType={FieldType.Input}
           placeholder="Click to add tags"
           name="tags"
-          value={values.tags}
+          value={values.productInformation.tags}
           onChange={handleChange}
-          error={errors.tags}
+          error={errors.productInformation?.tags}
         />
       </InputGroup>
       <InputGroup
@@ -93,17 +93,17 @@ export default function ProductInformation() {
             fieldType={FieldType.Input}
             placeholder="Attribute"
             name="attribute"
-            value={values.attribute}
+            value={values.productInformation.attribute}
             onChange={handleChange}
-            error={errors.attribute}
+            error={errors.productInformation?.attribute}
           />
           <Field
             fieldType={FieldType.Input}
             placeholder="Attribute value"
             name="attributeValue"
-            value={values.attributeValue}
+            value={values.productInformation.attributeValue}
             onChange={handleChange}
-            error={errors.attributeValue}
+            error={errors.productInformation?.attributeValue}
           />
         </AddProductContainer>
       </InputGroup>
@@ -120,9 +120,9 @@ export default function ProductInformation() {
               fieldType={FieldType.Input}
               placeholder="SKU"
               name=""
-              value={values.productTitle}
+              value={values.productInformation.productTitle}
               onChange={handleChange}
-              error={errors.productTitle}
+              error={errors.productInformation?.productTitle}
             />
           </InputGroup>
           <InputGroup
@@ -134,9 +134,9 @@ export default function ProductInformation() {
               fieldType={FieldType.Input}
               placeholder="ID"
               name=""
-              value={values.productTitle}
+              value={values.productInformation.productTitle}
               onChange={handleChange}
-              error={errors.productTitle}
+              error={errors.productInformation?.productTitle}
             />
           </InputGroup>
           <InputGroup title="Product ID Type" popper="Need to be added">
@@ -144,9 +144,9 @@ export default function ProductInformation() {
               fieldType={FieldType.Input}
               placeholder="ID type"
               name=""
-              value={values.productTitle}
+              value={values.productInformation.productTitle}
               onChange={handleChange}
-              error={errors.productTitle}
+              error={errors.productInformation?.productTitle}
             />
           </InputGroup>
           <InputGroup
@@ -158,9 +158,9 @@ export default function ProductInformation() {
               fieldType={FieldType.Input}
               placeholder="Brand name"
               name=""
-              value={values.productTitle}
+              value={values.productInformation.productTitle}
               onChange={handleChange}
-              error={errors.productTitle}
+              error={errors.productInformation?.productTitle}
             />
           </InputGroup>
           <InputGroup
@@ -172,9 +172,9 @@ export default function ProductInformation() {
               fieldType={FieldType.Input}
               placeholder="Material"
               name=""
-              value={values.productTitle}
+              value={values.productInformation.productTitle}
               onChange={handleChange}
-              error={errors.productTitle}
+              error={errors.productInformation?.productTitle}
             />
           </InputGroup>
           <InputGroup title="Manufacture name" popper="Need to be added">
@@ -182,9 +182,9 @@ export default function ProductInformation() {
               fieldType={FieldType.Input}
               placeholder="Manufacture name"
               name=""
-              value={values.productTitle}
+              value={values.productInformation.productTitle}
               onChange={handleChange}
-              error={errors.productTitle}
+              error={errors.productInformation?.productTitle}
             />
           </InputGroup>
           <InputGroup title="Manufacture model name" popper="Need to be added">
@@ -192,9 +192,9 @@ export default function ProductInformation() {
               fieldType={FieldType.Input}
               placeholder="Model name"
               name=""
-              value={values.productTitle}
+              value={values.productInformation.productTitle}
               onChange={handleChange}
-              error={errors.productTitle}
+              error={errors.productInformation?.productTitle}
             />
           </InputGroup>
           <InputGroup title="Manufacture part number" popper="Need to be added">
@@ -202,9 +202,9 @@ export default function ProductInformation() {
               fieldType={FieldType.Input}
               placeholder="Part number"
               name=""
-              value={values.productTitle}
+              value={values.productInformation.productTitle}
               onChange={handleChange}
-              error={errors.productTitle}
+              error={errors.productInformation?.productTitle}
             />
           </InputGroup>
         </Collapse>

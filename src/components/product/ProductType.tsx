@@ -92,7 +92,7 @@ export default function ProductType() {
                   type="radio"
                   name="productType"
                   value="physical"
-                  checked={values.productType === "physical"}
+                  checked={values.productType.productType === "physical"}
                   onChange={handleChange}
                 />
                 <Box>
@@ -105,7 +105,7 @@ export default function ProductType() {
                   type="radio"
                   name="productType"
                   value="phygital"
-                  checked={values.productType === "phygital"}
+                  checked={values.productType.productType === "phygital"}
                   onChange={handleChange}
                   disabled
                 />
@@ -129,7 +129,7 @@ export default function ProductType() {
                   type="radio"
                   name="productVariant"
                   value="oneItemType"
-                  checked={values.productVariant === "oneItemType"}
+                  checked={values.productType.productVariant === "oneItemType"}
                   onChange={handleChange}
                 />
                 <Box>
@@ -150,7 +150,9 @@ export default function ProductType() {
                   type="radio"
                   name="productVariant"
                   value="differentVariants"
-                  checked={values.productVariant === "differentVariants"}
+                  checked={
+                    values.productType.productVariant === "differentVariants"
+                  }
                   onChange={handleChange}
                   disabled
                 />

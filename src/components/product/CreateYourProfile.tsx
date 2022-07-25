@@ -27,6 +27,7 @@ const Box = styled.div`
 export default function CreateYourProfile() {
   const { handleChange, values, errors } =
     useFormikContext<CreateProductForm>();
+
   return (
     <ContainerProductPage>
       <Typography tag="h2">Create your Profile</Typography>
@@ -44,9 +45,9 @@ export default function CreateYourProfile() {
           fieldType={FieldType.Input}
           placeholder="Name"
           name="name"
-          value={values.name}
+          value={values.creteYourProfile.name}
           onChange={handleChange}
-          error={errors.name}
+          error={errors.creteYourProfile?.name}
         />
       </InputGroup>
       <InputGroup title="Contact E-Mail*">
@@ -54,9 +55,9 @@ export default function CreateYourProfile() {
           fieldType={FieldType.Input}
           placeholder="Name"
           name="email"
-          value={values.email}
+          value={values.creteYourProfile.email}
           onChange={handleChange}
-          error={errors.email}
+          error={errors.creteYourProfile?.email}
         />
       </InputGroup>
       <InputGroup title="Description*">
@@ -64,9 +65,9 @@ export default function CreateYourProfile() {
           fieldType={FieldType.Textarea}
           placeholder="Describe"
           name="description"
-          value={values.description}
+          value={values.creteYourProfile.description}
           onChange={handleChange}
-          error={errors.description}
+          error={errors.creteYourProfile?.description}
         />
       </InputGroup>
       <InputGroup
@@ -81,9 +82,9 @@ export default function CreateYourProfile() {
           fieldType={FieldType.Input}
           placeholder="www.example.com  OR www.instagram.com/example"
           name="website"
-          value={values.website}
+          value={values.creteYourProfile.website}
           onChange={handleChange}
-          error={errors.website}
+          error={errors.creteYourProfile?.website}
         />
       </InputGroup>
       <ProductButtonGroup>

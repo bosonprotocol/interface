@@ -94,9 +94,9 @@ export default function TermsOfExchange() {
               fieldType={FieldType.Input}
               placeholder="Fair Exchange Policy"
               name=""
-              value={values.describe}
+              value=""
               onChange={handleChange}
-              error={errors.describe}
+              error=""
             />
           </InputGroup>
           <InputGroup
@@ -109,17 +109,17 @@ export default function TermsOfExchange() {
                 fieldType={FieldType.Input}
                 placeholder="10"
                 name=""
-                value={values.productTitle}
+                value=""
                 onChange={handleChange}
-                error={errors.productTitle}
+                error=""
               />
               <Field
                 fieldType={FieldType.Input}
                 placeholder="Percent"
                 name=""
-                value={values.productTitle}
+                value=""
                 onChange={handleChange}
-                error={errors.productTitle}
+                error=""
               />
             </FieldContainer>
           </InputGroup>
@@ -133,17 +133,17 @@ export default function TermsOfExchange() {
                 fieldType={FieldType.Input}
                 placeholder="10"
                 name=""
-                value={values.productTitle}
+                value=""
                 onChange={handleChange}
-                error={errors.productTitle}
+                error=""
               />
               <Field
                 fieldType={FieldType.Input}
                 placeholder="Percent"
                 name=""
-                value={values.productTitle}
+                value=""
                 onChange={handleChange}
-                error={errors.productTitle}
+                error=""
               />
             </FieldContainer>
           </InputGroup>
@@ -155,9 +155,9 @@ export default function TermsOfExchange() {
               fieldType={FieldType.Textarea}
               placeholder="Input the amount"
               name=""
-              value={values.describe}
+              value=""
               onChange={handleChange}
-              error={errors.describe}
+              error=""
             />
           </InputGroup>
           <InputGroup
@@ -169,9 +169,9 @@ export default function TermsOfExchange() {
               fieldType={FieldType.Input}
               placeholder="Click to select"
               name=""
-              value={values.category}
+              value=""
               onChange={handleChange}
-              error={errors.category}
+              error=""
             />
           </InputGroup>
           <ProductInformationButtonGroup>

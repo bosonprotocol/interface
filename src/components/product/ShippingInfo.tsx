@@ -54,9 +54,9 @@ export default function ShippingInfo() {
             fieldType={FieldType.Input}
             placeholder="Click to select"
             name=""
-            value={values.describe}
+            value=""
             onChange={handleChange}
-            error={errors.describe}
+            error=""
           />
         </InputGroup>
         <InputGroup
@@ -69,17 +69,17 @@ export default function ShippingInfo() {
               fieldType={FieldType.Input}
               placeholder="10"
               name=""
-              value={values.productTitle}
+              value=""
               onChange={handleChange}
-              error={errors.productTitle}
+              error=""
             />
             <Field
               fieldType={FieldType.Input}
               placeholder="Percent"
               name=""
-              value={values.productTitle}
+              value=""
               onChange={handleChange}
-              error={errors.productTitle}
+              error=""
             />
           </FieldContainerJurisdictions>
         </InputGroup>
@@ -98,9 +98,9 @@ export default function ShippingInfo() {
               fieldType={FieldType.Input}
               placeholder="Add URL"
               name=""
-              value={values.productTitle}
+              value=""
               onChange={handleChange}
-              error={errors.productTitle}
+              error=""
             />
           </InputGroup>
           <InputGroup
@@ -111,9 +111,9 @@ export default function ShippingInfo() {
               fieldType={FieldType.Input}
               placeholder="L x W x H"
               name=""
-              value={values.productTitle}
+              value=""
               onChange={handleChange}
-              error={errors.productTitle}
+              error=""
             />
           </InputGroup>
           <InputGroup title="Weight">
@@ -122,17 +122,17 @@ export default function ShippingInfo() {
                 fieldType={FieldType.Input}
                 placeholder="Weight"
                 name=""
-                value={values.productTitle}
+                value=""
                 onChange={handleChange}
-                error={errors.productTitle}
+                error=""
               />
               <Field
                 fieldType={FieldType.Input}
                 placeholder="KG"
                 name=""
-                value={values.productTitle}
+                value=""
                 onChange={handleChange}
-                error={errors.productTitle}
+                error=""
               />
             </FieldContainerWidth>
           </InputGroup>
@@ -144,9 +144,9 @@ export default function ShippingInfo() {
               fieldType={FieldType.Input}
               placeholder="Centimeter"
               name=""
-              value={values.productTitle}
+              value=""
               onChange={handleChange}
-              error={errors.productTitle}
+              error=""
             />
           </InputGroup>
           <InputGroup title="Height">
@@ -154,9 +154,9 @@ export default function ShippingInfo() {
               fieldType={FieldType.Input}
               placeholder="Height in CM"
               name=""
-              value={values.productTitle}
+              value=""
               onChange={handleChange}
-              error={errors.productTitle}
+              error=""
             />
           </InputGroup>
           <InputGroup title="Width">
@@ -164,9 +164,9 @@ export default function ShippingInfo() {
               fieldType={FieldType.Input}
               placeholder="Width in CM"
               name=""
-              value={values.productTitle}
+              value=""
               onChange={handleChange}
-              error={errors.productTitle}
+              error=""
             />
           </InputGroup>
           <InputGroup title="Length">
@@ -174,9 +174,9 @@ export default function ShippingInfo() {
               fieldType={FieldType.Input}
               placeholder="Length in CM"
               name=""
-              value={values.productTitle}
+              value=""
               onChange={handleChange}
-              error={errors.productTitle}
+              error=""
             />
           </InputGroup>
         </Collapse>

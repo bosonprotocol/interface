@@ -33,9 +33,9 @@ export default function CoreTermsOfSale() {
             fieldType={FieldType.Input}
             placeholder="Name"
             name=""
-            value={values.productTitle}
+            value=""
             onChange={handleChange}
-            error={errors.productTitle}
+            error=""
           />
           <Field fieldType={FieldType.Select} disabled />
         </PriceContainer>
@@ -48,9 +48,9 @@ export default function CoreTermsOfSale() {
           fieldType={FieldType.Textarea}
           placeholder="Input the amount"
           name=""
-          value={values.describe}
+          value=""
           onChange={handleChange}
-          error={errors.describe}
+          error=""
         />
       </InputGroup>
       <InputGroup
@@ -67,9 +67,9 @@ export default function CoreTermsOfSale() {
           fieldType={FieldType.Input}
           placeholder="Jun 24 – Dec 21"
           name=""
-          value={values.tags}
+          value=""
           onChange={handleChange}
-          error={errors.tags}
+          error=""
         />
       </InputGroup>
       <InputGroup
@@ -80,9 +80,9 @@ export default function CoreTermsOfSale() {
           fieldType={FieldType.Input}
           placeholder="Jun 24 – Dec 21"
           name=""
-          value={values.tags}
+          value=""
           onChange={handleChange}
-          error={errors.tags}
+          error=""
         />
       </InputGroup>
       <ProductInformationButtonGroup>
