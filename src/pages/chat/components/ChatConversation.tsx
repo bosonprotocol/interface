@@ -1,8 +1,9 @@
-import { ArrowRight, List, Plus } from "phosphor-react";
+import { ArrowRight, List, Plus, UploadSimple } from "phosphor-react";
 import { useCallback } from "react";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
+import { useModal } from "../../../components/modal/useModal";
 import SellerID from "../../../components/ui/SellerID";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
@@ -128,6 +129,7 @@ export default function ChatConversation({ thread }: Props) {
     seller: { sellerId, isError: isErrorSellers, isLoading: isLoadingSeller },
     buyer: { buyerId, isError: isErrorBuyers, isLoading: isLoadingBuyer }
   } = useBuyerSellerAccounts(address || "");
+  const { showModal } = useModal();
   const SellerComponent = useCallback(
     ({
       size,
@@ -206,6 +208,13 @@ export default function ChatConversation({ thread }: Props) {
             Proposal <Plus size={24} />
           </BtnProposal>
           <Input placeholder="Write a message" />
+          <UploadSimple
+            onClick={() =>
+              showModal("UPLOAD_MODAL", {
+                title: "Upload documents"
+              })
+            }
+          />
         </TypeMessage>
       </Container>
       <Dispute thread={thread} />
