@@ -67,22 +67,31 @@ export const FileUploadWrapper = styled.div.attrs(
     choosen: props.choosen
   })
 )`
+  position: relative;
+  overflow: hidden;
   display: flex;
 
   align-items: center;
   justify-content: center;
   padding: 0.5rem;
 
-  ${({ choosen }) =>
-    choosen
-      ? css`
-          width: 100%;
-          height: 6rem;
-        `
-      : css`
-          width: 6rem;
-          height: 6rem;
-        `}
+  width: 6rem;
+  height: 6rem;
+
+  img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 300ms ease-in-out;
+    pointer-events: none;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    + svg {
+      display: none;
+    }
+  }
 
   background: ${colors.lightGrey};
   border: 1px solid ${colors.border};
@@ -105,6 +114,31 @@ export const FileUploadWrapper = styled.div.attrs(
 
 export const FieldFileUpload = styled(FieldInput)`
   display: none;
+`;
+
+export const FieldFileUploadWrapper = styled.div`
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  :hover {
+    [data-remove] {
+      display: flex;
+    }
+  }
+  [data-remove] {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 6rem;
+    height: 6rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 300ms ease-in-out;
+
+    background: ${colors.black}80;
+  }
 `;
 
 export const FieldTextArea = styled.textarea.attrs((props: { error: any }) => ({

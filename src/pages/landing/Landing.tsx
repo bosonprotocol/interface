@@ -1,6 +1,8 @@
+import { UploadSimple } from "phosphor-react";
 import { useState } from "react";
 import styled from "styled-components";
 
+import Field, { FieldType } from "../../components/form/Field";
 import Layout from "../../components/Layout";
 import Button from "../../components/ui/Button";
 import Grid from "../../components/ui/Grid";
@@ -78,6 +80,16 @@ export default function Landing() {
 
   return (
     <LandingPage>
+      <Field fieldType={FieldType.FileUpload} />
+      <Field
+        fieldType={FieldType.FileUpload}
+        multiple
+        trigger={
+          <>
+            Upload file <UploadSimple />
+          </>
+        }
+      />
       <HeroWrapper
         flexBasis="50%"
         flexDirection={isLteS ? "column-reverse" : "row"}

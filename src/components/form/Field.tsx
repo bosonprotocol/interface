@@ -25,6 +25,7 @@ export interface Props {
   placeholder?: string;
   disabled?: boolean;
   multiple?: boolean;
+  trigger?: React.ReactNode | JSX.Element;
   error?: any;
   data?: Array<DataProps>;
   [x: string]: any;
