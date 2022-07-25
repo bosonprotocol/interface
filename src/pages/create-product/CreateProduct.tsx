@@ -7,6 +7,7 @@ import { useCallback } from "react";
 import { useState } from "react";
 import styled from "styled-components";
 
+import CoreTermsOfSale from "../../components/product/CoreTermsOfSale";
 import CreateYourProfile from "../../components/product/CreateYourProfile";
 import Help from "../../components/product/Help";
 import ProductImages from "../../components/product/ProductImages";
@@ -73,6 +74,10 @@ type CreateProductSteps = {
     ui: JSX.Element;
     validation: null; // TODO: NEED TO BE ADDED, FOR NOW JUSt PLAIN JSX
   };
+  4: {
+    ui: JSX.Element;
+    validation: null; // TODO: NEED TO BE ADDED, FOR NOW JUSt PLAIN JSX
+  };
 };
 
 const createProductSteps: CreateProductSteps = {
@@ -90,6 +95,10 @@ const createProductSteps: CreateProductSteps = {
   },
   3: {
     ui: <ProductImages />,
+    validation: null
+  },
+  4: {
+    ui: <CoreTermsOfSale />,
     validation: null
   }
 } as const;
