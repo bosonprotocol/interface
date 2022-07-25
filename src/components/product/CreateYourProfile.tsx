@@ -1,28 +1,11 @@
 import { useFormikContext } from "formik";
-import styled from "styled-components";
 
-import placeholderImage from "../../assets/placeholder/placeholder-thumbnail.png";
 import Field, { FieldType } from "../../components/form/Field";
-import { colors } from "../../lib/styles/colors";
 import Button from "../ui/Button";
 import InputGroup from "../ui/InputGroup";
 import Typography from "../ui/Typography";
-import {
-  ContainerProductPage,
-  ProductButtonGroup,
-  StyledImage
-} from "./Product.styles";
+import { ContainerProductPage, ProductButtonGroup } from "./Product.styles";
 import type { CreateProductForm } from "./validation/createProductValidationSchema";
-
-const Box = styled.div`
-  height: 88px;
-  width: 88px;
-  text-align: center;
-  background: ${colors.lightGrey};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
 
 export default function CreateYourProfile() {
   const { handleChange, values, errors } =
@@ -35,10 +18,7 @@ export default function CreateYourProfile() {
         title="Logo / profile picture*"
         subTitle="Upload a profile image with a max. width and height of 800px and a max. size of 300kb."
       >
-        {/* NOTE: TEMP ONLY FOR UI PURPOSE */}
-        <Box>
-          <StyledImage alt="placeholder" src={placeholderImage} />
-        </Box>
+        <Field fieldType={FieldType.FileUpload} />
       </InputGroup>
       <InputGroup title="Your brand / name*">
         <Field

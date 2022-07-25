@@ -73,10 +73,12 @@ export const FileUploadWrapper = styled.div.attrs(
 
   align-items: center;
   justify-content: center;
+  flex-direction: column;
+
   padding: 0.5rem;
 
-  width: 6rem;
-  height: 6rem;
+  width: 8rem;
+  height: 8rem;
 
   img {
     position: absolute;
@@ -120,6 +122,8 @@ export const FieldFileUploadWrapper = styled.div`
   position: relative;
   display: inline-block;
   cursor: pointer;
+  width: 8rem;
+
   :hover {
     [data-remove] {
       display: flex;
@@ -129,8 +133,8 @@ export const FieldFileUploadWrapper = styled.div`
     display: none;
     align-items: center;
     justify-content: center;
-    width: 6rem;
-    height: 6rem;
+    width: 8rem;
+    height: 8rem;
     position: absolute;
     top: 50%;
     left: 50%;

@@ -19,6 +19,7 @@ export default function FileUpload({
   disabled,
   multiple = false,
   trigger,
+  placeholder,
   ...props
 }: Props) {
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -94,6 +95,11 @@ export default function FileUpload({
         >
           {preview !== null && <img src={preview} />}
           <Image size={24} />
+          {placeholder && (
+            <Typography tag="p" style={{ marginBottom: "0" }}>
+              {placeholder}
+            </Typography>
+          )}
         </FileUploadWrapper>
       )}
       {preview !== null && (

@@ -1,13 +1,12 @@
 import { useFormikContext } from "formik";
 import styled from "styled-components";
 
-import placeholderImage from "../../assets/placeholder/placeholder-thumbnail.png";
+import Field, { FieldType } from "../../components/form/Field";
 import { colors } from "../../lib/styles/colors";
 import Button from "../ui/Button";
-import GridContainer from "../ui/GridContainer";
 import InputGroup from "../ui/InputGroup";
 import Typography from "../ui/Typography";
-import { ProductButtonGroup, StyledImage } from "./Product.styles";
+import { ProductButtonGroup } from "./Product.styles";
 import type { CreateProductForm } from "./validation/createProductValidationSchema";
 const productTypeItemsPerRow = {
   xs: 2,
@@ -36,13 +35,10 @@ const ContainerProductImage = styled.div`
 `;
 
 const SpaceContainer = styled.div`
-  margin-top: 32px;
-`;
-
-const StyledTitle = styled(Typography)`
-  display: block;
-  width: 100%;
-  margin: 25px 0 0 0;
+  margin-top: 2rem;
+  > div {
+    margin: 0 2rem 2rem 0;
+  }
 `;
 
 export default function ProductImages() {
@@ -52,49 +48,24 @@ export default function ProductImages() {
       <Typography tag="h2">Product Images</Typography>
       <InputGroup
         title="Upload your product images"
-        subTitle="You can disable images for variants that shouldn't be shown.
-              Use a max. width and height of 1200px and a max. size of 600kb per image."
+        subTitle="You can disable images for variants that shouldn't be shown. Use a max. width and height of 1200px and a max. size of 600kb per image."
         popper="Need to be added"
         style={{
           marginBottom: 0
         }}
       >
         <SpaceContainer>
-          <GridContainer itemsPerRow={productTypeItemsPerRow}>
-            {/* TODO: ADD CORRECT WHEN WILL BE AVAILABLE FOR NOW JUST PLACeHOLDER JSX */}
-            <Box>
-              <StyledImage src={placeholderImage} />
-              <StyledTitle tag="p">Thumbnail</StyledTitle>
-            </Box>
-            <Box>
-              <StyledImage src={placeholderImage} />
-              <StyledTitle tag="p">Secondary</StyledTitle>
-            </Box>
-            <Box>
-              <StyledImage src={placeholderImage} />
-              <StyledTitle tag="p">Every angle</StyledTitle>
-            </Box>
-            <Box>
-              <StyledImage src={placeholderImage} />
-              <StyledTitle tag="p">Details</StyledTitle>
-            </Box>
-            <Box>
-              <StyledImage src={placeholderImage} />
-              <StyledTitle tag="p">In Use</StyledTitle>
-            </Box>
-            <Box>
-              <StyledImage src={placeholderImage} />
-              <StyledTitle tag="p">Styled Scene</StyledTitle>
-            </Box>
-            <Box>
-              <StyledImage src={placeholderImage} />
-              <StyledTitle tag="p">Size and Scale</StyledTitle>
-            </Box>
-            <Box>
-              <StyledImage src={placeholderImage} />
-              <StyledTitle tag="p">More</StyledTitle>
-            </Box>
-          </GridContainer>
+          <Field fieldType={FieldType.FileUpload} placeholder="Thumbnail" />
+          <Field fieldType={FieldType.FileUpload} placeholder="Secondary" />
+          <Field fieldType={FieldType.FileUpload} placeholder="Every angle" />
+          <Field fieldType={FieldType.FileUpload} placeholder="Details" />
+          <Field fieldType={FieldType.FileUpload} placeholder="In Use" />
+          <Field fieldType={FieldType.FileUpload} placeholder="Styled Scene" />
+          <Field
+            fieldType={FieldType.FileUpload}
+            placeholder="Size and scale"
+          />
+          <Field fieldType={FieldType.FileUpload} placeholder="More" />
         </SpaceContainer>
       </InputGroup>
       <ProductButtonGroup>
