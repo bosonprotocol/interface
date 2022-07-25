@@ -1,7 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
 
-import DatePicker from "../../components/datepicker/DatePicker";
 import Layout from "../../components/Layout";
 import Button from "../../components/ui/Button";
 import Grid from "../../components/ui/Grid";
@@ -79,7 +78,6 @@ export default function Landing() {
 
   return (
     <LandingPage>
-      <DatePicker />
       <HeroWrapper
         flexBasis="50%"
         flexDirection={isLteS ? "column-reverse" : "row"}
