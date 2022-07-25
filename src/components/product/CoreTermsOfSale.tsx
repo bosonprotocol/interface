@@ -37,14 +37,7 @@ export default function CoreTermsOfSale() {
             onChange={handleChange}
             error={errors.productTitle}
           />
-          <Field
-            fieldType={FieldType.Input}
-            placeholder="ETH"
-            name=""
-            value={values.productTitle}
-            onChange={handleChange}
-            error={errors.productTitle}
-          />
+          <Field fieldType={FieldType.Select} disabled />
         </PriceContainer>
       </InputGroup>
       <InputGroup
@@ -64,14 +57,7 @@ export default function CoreTermsOfSale() {
         title="Token gated offer"
         subTitle="Limit the purchase of your item to users holding a specific token."
       >
-        <Field
-          fieldType={FieldType.Input}
-          placeholder="Click to select"
-          name=""
-          value={values.category}
-          onChange={handleChange}
-          error={errors.category}
-        />
+        <Field fieldType={FieldType.Select} placeholder="Click to select" />
       </InputGroup>
       <InputGroup
         title="Redemption period*"
