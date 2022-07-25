@@ -25,7 +25,6 @@ function Content({ children, ...props }: Props) {
 }
 
 export default function Select({ placeholder, data, ...props }: Props) {
-  console.log(data);
   return (
     <SelectRoot {...props}>
       <SelectTrigger aria-label="Food">

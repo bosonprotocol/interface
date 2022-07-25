@@ -9,7 +9,6 @@ import { FieldFileUpload, FileUploadWrapper } from "./Field.styles";
 export default function FileUpload({ disabled, accept, ...props }: Props) {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [file, setFile] = useState<FileList | null>(null);
-  console.log(file);
 
   const handleFile = () => {
     const input = inputRef.current;
