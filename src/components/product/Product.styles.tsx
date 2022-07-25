@@ -1,5 +1,7 @@
 import styled from "styled-components";
 
+import Image from "../ui/Image";
+
 export const ProductButtonGroup = styled.div`
   margin-top: 56px;
   display: flex;
@@ -19,4 +21,11 @@ export const ContainerProductPage = styled.div`
   .inputGroup:not(:last-of-type) {
     margin-bottom: 32px;
   }
+`;
+
+export const StyledImage = styled(Image)`
+  width: 40px;
+  height: 40px;
+  padding-top: 0;
+  margin: auto;
 `;

@@ -5,10 +5,9 @@ import placeholderImage from "../../assets/placeholder/placeholder-thumbnail.png
 import { colors } from "../../lib/styles/colors";
 import Button from "../ui/Button";
 import GridContainer from "../ui/GridContainer";
-import Image from "../ui/Image";
 import InputGroup from "../ui/InputGroup";
 import Typography from "../ui/Typography";
-import { ProductButtonGroup } from "./Product.styles";
+import { ProductButtonGroup, StyledImage } from "./Product.styles";
 import type { CreateProductForm } from "./validation/createProductValidationSchema";
 const productTypeItemsPerRow = {
   xs: 2,
@@ -44,13 +43,6 @@ const StyledTitle = styled(Typography)`
   display: block;
   width: 100%;
   margin: 25px 0 0 0;
-`;
-
-const StyledImage = styled(Image)`
-  width: 40px;
-  height: 40px;
-  padding-top: 0;
-  margin: auto;
 `;
 
 export default function ProductImages() {

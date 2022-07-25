@@ -5,10 +5,13 @@ import placeholderImage from "../../assets/placeholder/placeholder-thumbnail.png
 import Field, { FieldType } from "../../components/form/Field";
 import { colors } from "../../lib/styles/colors";
 import Button from "../ui/Button";
-import Image from "../ui/Image";
 import InputGroup from "../ui/InputGroup";
 import Typography from "../ui/Typography";
-import { ContainerProductPage, ProductButtonGroup } from "./Product.styles";
+import {
+  ContainerProductPage,
+  ProductButtonGroup,
+  StyledImage
+} from "./Product.styles";
 import type { CreateProductForm } from "./validation/createProductValidationSchema";
 
 const Box = styled.div`
@@ -33,15 +36,7 @@ export default function CreateYourProfile() {
       >
         {/* NOTE: TEMP ONLY FOR UI PURPOSE */}
         <Box>
-          <Image
-            alt="placeholder"
-            src={placeholderImage}
-            style={{
-              width: "40px",
-              height: "40px",
-              paddingTop: "0px"
-            }}
-          />
+          <StyledImage alt="placeholder" src={placeholderImage} />
         </Box>
       </InputGroup>
       <InputGroup title="Your brand / name*">

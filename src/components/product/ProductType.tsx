@@ -56,9 +56,20 @@ export const Box = styled.div`
   padding: 28px;
   height: 100%;
   width: 100%;
+  p {
+    display: block;
+    margin: 15px 0 0 0;
+  }
 `;
 export const Container = styled.div`
   max-width: 424px;
+`;
+
+export const ProductImage = styled(Image)`
+  width: 100px;
+  height: 100px;
+  padding-top: 0px;
+  margin: auto;
 `;
 
 export default function ProductType() {
@@ -85,23 +96,8 @@ export default function ProductType() {
                   onChange={handleChange}
                 />
                 <Box>
-                  <Image
-                    src={physicalProduct}
-                    style={{
-                      width: "100px",
-                      height: "100px",
-                      paddingTop: "0px",
-                      margin: "auto"
-                    }}
-                  />
-                  <Typography
-                    tag="p"
-                    style={{
-                      margin: "15px 0 0 0"
-                    }}
-                  >
-                    Physical
-                  </Typography>
+                  <ProductImage src={physicalProduct} />
+                  <Typography tag="p">Physical</Typography>
                 </Box>
               </Label>
               <Label>
@@ -114,23 +110,8 @@ export default function ProductType() {
                   disabled
                 />
                 <Box>
-                  <Image
-                    src={phygitalProduct}
-                    style={{
-                      width: "100px",
-                      height: "100px",
-                      paddingTop: "0px",
-                      margin: "auto"
-                    }}
-                  />
-                  <Typography
-                    tag="p"
-                    style={{
-                      margin: "15px 0 0 0"
-                    }}
-                  >
-                    Phygital
-                  </Typography>
+                  <ProductImage src={phygitalProduct} />
+                  <Typography tag="p">Phygital</Typography>
                 </Box>
               </Label>
             </Grid>
@@ -152,7 +133,7 @@ export default function ProductType() {
                   onChange={handleChange}
                 />
                 <Box>
-                  <Image
+                  <ProductImage
                     src={oneItemTypeProduct}
                     style={{
                       width: "62px",
@@ -161,14 +142,7 @@ export default function ProductType() {
                       margin: "auto"
                     }}
                   />
-                  <Typography
-                    tag="p"
-                    style={{
-                      margin: "15px 0 0 0"
-                    }}
-                  >
-                    Physical
-                  </Typography>
+                  <Typography tag="p">Physical</Typography>
                 </Box>
               </Label>
               <Label>
@@ -181,7 +155,7 @@ export default function ProductType() {
                   disabled
                 />
                 <Box>
-                  <Image
+                  <ProductImage
                     src={differentVariantsProduct}
                     style={{
                       width: "54px",
@@ -190,14 +164,7 @@ export default function ProductType() {
                       margin: "auto"
                     }}
                   />
-                  <Typography
-                    tag="p"
-                    style={{
-                      margin: "15px 0 0 0"
-                    }}
-                  >
-                    One item type
-                  </Typography>
+                  <Typography tag="p">One item type</Typography>
                 </Box>
               </Label>
             </Grid>
