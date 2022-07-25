@@ -41,16 +41,9 @@ export const createYourProfileHelp = [
     description: (
       <>
         <Typography tag="p">
-          You can edit your seller profile at any time by clicking{" "}
-          <HrefButton
-            onClick={() => {
-              // TODO: NEED TO BE IMPLEMENTED
-              console.log("Not implemented yet");
-            }}
-          >
-            here
-          </HrefButton>{" "}
-          or on the seller icon.
+          {/* TODO: ADD CLICKING HERE BUTTON LOGIC */}
+          You can edit your seller profile at any time by clicking here or on
+          the seller icon.
         </Typography>
       </>
     )

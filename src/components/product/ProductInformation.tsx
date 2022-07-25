@@ -1,6 +1,7 @@
 import { useFormikContext } from "formik";
 import styled from "styled-components";
 
+import Collapse from "../../components/collapse/Collapse";
 import Field, { FieldType } from "../../components/form/Field";
 import Button from "../ui/Button";
 import InputGroup from "../ui/InputGroup";
@@ -12,6 +13,14 @@ const AddProductContainer = styled.div`
   display: grid;
   grid-template-columns: minmax(180px, 1fr) 3fr;
   grid-gap: 1rem;
+`;
+
+const AdditionalContainer = styled.div`
+  margin-top: 1rem;
+`;
+
+const ProductInformationButtonGroup = styled(ProductButtonGroup)`
+  margin-top: 25px;
 `;
 
 export default function ProductInformation() {
@@ -98,11 +107,113 @@ export default function ProductInformation() {
           />
         </AddProductContainer>
       </InputGroup>
-      <ProductButtonGroup>
+      <AdditionalContainer>
+        <Collapse
+          title={<Typography tag="h3">Additional information</Typography>}
+        >
+          <InputGroup
+            title="SKU"
+            subTitle="Input product serial number."
+            popper="Need to be added"
+          >
+            <Field
+              fieldType={FieldType.Input}
+              placeholder="SKU"
+              name=""
+              value={values.productTitle}
+              onChange={handleChange}
+              error={errors.productTitle}
+            />
+          </InputGroup>
+          <InputGroup
+            title="Product ID"
+            subTitle="Input product ID."
+            popper="Need to be added"
+          >
+            <Field
+              fieldType={FieldType.Input}
+              placeholder="ID"
+              name=""
+              value={values.productTitle}
+              onChange={handleChange}
+              error={errors.productTitle}
+            />
+          </InputGroup>
+          <InputGroup title="Product ID Type" popper="Need to be added">
+            <Field
+              fieldType={FieldType.Input}
+              placeholder="ID type"
+              name=""
+              value={values.productTitle}
+              onChange={handleChange}
+              error={errors.productTitle}
+            />
+          </InputGroup>
+          <InputGroup
+            title="Brand Name"
+            subTitle="Input brand name of product"
+            popper="Need to be added"
+          >
+            <Field
+              fieldType={FieldType.Input}
+              placeholder="Brand name"
+              name=""
+              value={values.productTitle}
+              onChange={handleChange}
+              error={errors.productTitle}
+            />
+          </InputGroup>
+          <InputGroup
+            title="Material"
+            subTitle="Input material of product"
+            popper="Need to be added"
+          >
+            <Field
+              fieldType={FieldType.Input}
+              placeholder="Material"
+              name=""
+              value={values.productTitle}
+              onChange={handleChange}
+              error={errors.productTitle}
+            />
+          </InputGroup>
+          <InputGroup title="Manufacture name" popper="Need to be added">
+            <Field
+              fieldType={FieldType.Input}
+              placeholder="Manufacture name"
+              name=""
+              value={values.productTitle}
+              onChange={handleChange}
+              error={errors.productTitle}
+            />
+          </InputGroup>
+          <InputGroup title="Manufacture model name" popper="Need to be added">
+            <Field
+              fieldType={FieldType.Input}
+              placeholder="Model name"
+              name=""
+              value={values.productTitle}
+              onChange={handleChange}
+              error={errors.productTitle}
+            />
+          </InputGroup>
+          <InputGroup title="Manufacture part number" popper="Need to be added">
+            <Field
+              fieldType={FieldType.Input}
+              placeholder="Part number"
+              name=""
+              value={values.productTitle}
+              onChange={handleChange}
+              error={errors.productTitle}
+            />
+          </InputGroup>
+        </Collapse>
+      </AdditionalContainer>
+      <ProductInformationButtonGroup>
         <Button theme="secondary" type="submit">
           Next
         </Button>
-      </ProductButtonGroup>
+      </ProductInformationButtonGroup>
     </ContainerProductPage>
   );
 }

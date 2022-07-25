@@ -7,6 +7,7 @@ export const ProductButtonGroup = styled.div`
   button:not(:last-child) {
     margin-right: 2rem;
   }
+  padding-bottom: 2rem;
 `;
 
 export const ContainerProductPage = styled.div`

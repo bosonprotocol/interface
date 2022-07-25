@@ -40,6 +40,19 @@ const SpaceContainer = styled.div`
   margin-top: 32px;
 `;
 
+const StyledTitle = styled(Typography)`
+  display: block;
+  width: 100%;
+  margin: 25px 0 0 0;
+`;
+
+const StyledImage = styled(Image)`
+  width: 40px;
+  height: 40px;
+  padding-top: 0;
+  margin: auto;
+`;
+
 export default function ProductImages() {
   const { handleChange, values } = useFormikContext<CreateProductForm>();
   return (
@@ -56,158 +69,38 @@ export default function ProductImages() {
       >
         <SpaceContainer>
           <GridContainer itemsPerRow={productTypeItemsPerRow}>
-            {/* TODO: ADD CORRECT WHEN WILL BE AVAILABLE FOR NOW JUST PLACeHOLDER    JSX */}
+            {/* TODO: ADD CORRECT WHEN WILL BE AVAILABLE FOR NOW JUST PLACeHOLDER JSX */}
             <Box>
-              <Image
-                src={placeholderImage}
-                style={{
-                  width: "40px",
-                  height: "40px",
-                  paddingTop: "0",
-                  margin: "auto"
-                }}
-              />
-              <Typography
-                tag="p"
-                style={{
-                  margin: "25px 0 0 0"
-                }}
-              >
-                Thumbnail
-              </Typography>
+              <StyledImage src={placeholderImage} />
+              <StyledTitle tag="p">Thumbnail</StyledTitle>
             </Box>
             <Box>
-              <Image
-                src={placeholderImage}
-                style={{
-                  width: "40px",
-                  height: "40px",
-                  paddingTop: "0",
-                  margin: "auto"
-                }}
-              />
-              <Typography
-                tag="p"
-                style={{
-                  margin: "25px 0 0 0"
-                }}
-              >
-                Secondary
-              </Typography>
+              <StyledImage src={placeholderImage} />
+              <StyledTitle tag="p">Secondary</StyledTitle>
             </Box>
             <Box>
-              <Image
-                src={placeholderImage}
-                style={{
-                  width: "40px",
-                  height: "40px",
-                  paddingTop: "0",
-                  margin: "auto"
-                }}
-              />
-              <Typography
-                tag="p"
-                style={{
-                  margin: "25px 0 0 0"
-                }}
-              >
-                Every angle
-              </Typography>
+              <StyledImage src={placeholderImage} />
+              <StyledTitle tag="p">Every angle</StyledTitle>
             </Box>
             <Box>
-              <Image
-                src={placeholderImage}
-                style={{
-                  width: "40px",
-                  height: "40px",
-                  paddingTop: "0",
-                  margin: "auto"
-                }}
-              />
-              <Typography
-                tag="p"
-                style={{
-                  margin: "25px 0 0 0"
-                }}
-              >
-                Details
-              </Typography>
+              <StyledImage src={placeholderImage} />
+              <StyledTitle tag="p">Details</StyledTitle>
             </Box>
             <Box>
-              <Image
-                src={placeholderImage}
-                style={{
-                  width: "40px",
-                  height: "40px",
-                  paddingTop: "0",
-                  margin: "auto"
-                }}
-              />
-              <Typography
-                tag="p"
-                style={{
-                  margin: "25px 0 0 0"
-                }}
-              >
-                In Use
-              </Typography>
+              <StyledImage src={placeholderImage} />
+              <StyledTitle tag="p">In Use</StyledTitle>
             </Box>
             <Box>
-              <Image
-                src={placeholderImage}
-                style={{
-                  width: "40px",
-                  height: "40px",
-                  paddingTop: "0",
-                  margin: "auto"
-                }}
-              />
-              <Typography
-                tag="p"
-                style={{
-                  margin: "25px 0 0 0"
-                }}
-              >
-                Styled Scene
-              </Typography>
+              <StyledImage src={placeholderImage} />
+              <StyledTitle tag="p">Styled Scene</StyledTitle>
             </Box>
             <Box>
-              <Image
-                src={placeholderImage}
-                style={{
-                  width: "40px",
-                  height: "40px",
-                  paddingTop: "0",
-                  margin: "auto"
-                }}
-              />
-              <Typography
-                tag="p"
-                style={{
-                  margin: "25px 0 0 0"
-                }}
-              >
-                Size and Scale
-              </Typography>
+              <StyledImage src={placeholderImage} />
+              <StyledTitle tag="p">Size and Scale</StyledTitle>
             </Box>
             <Box>
-              <Image
-                src={placeholderImage}
-                style={{
-                  width: "40px",
-                  height: "40px",
-                  paddingTop: "0",
-                  margin: "auto"
-                }}
-              />
-              <Typography
-                tag="p"
-                style={{
-                  margin: "25px 0 0 0"
-                }}
-              >
-                More
-              </Typography>
+              <StyledImage src={placeholderImage} />
+              <StyledTitle tag="p">More</StyledTitle>
             </Box>
           </GridContainer>
         </SpaceContainer>
