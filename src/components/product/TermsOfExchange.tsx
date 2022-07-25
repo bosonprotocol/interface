@@ -42,10 +42,12 @@ const CheckIconWrapper = styled.div`
 `;
 
 const FormWrapper = styled.div``;
-const InfoWrapper = styled.div``;
+const InfoWrapper = styled.div`
+  padding-top: 5.5rem;
+`;
 
 const InfoWrapperList = styled.div`
-  padding: 24px;
+  padding: 20px 24px 24px 24px;
   background: ${colors.lightGrey};
   > p {
     margin 0;
@@ -53,11 +55,17 @@ const InfoWrapperList = styled.div`
 `;
 const InfoTitleWrapper = styled.div`
   display: flex;
+  align-items: center;
   font-weight: bold;
+  margin-bottom: 4px;
+  > p {
+    margin 0;
+  }
 `;
 const InfoList = styled.ul`
   margin 0 0 0 1.5rem;
   padding: 0;
+  line-height: 17px;
 `;
 const InfoListItem = styled.li`
   margin 0;
@@ -174,14 +182,12 @@ export default function TermsOfExchange() {
         </FormWrapper>
         <InfoWrapper>
           <InfoWrapperList>
-            <Typography tag="p">
-              <InfoTitleWrapper>
-                Fair exhange policy{" "}
-                <CheckIconWrapper>
-                  <Check size={13} />
-                </CheckIconWrapper>
-              </InfoTitleWrapper>
-            </Typography>
+            <InfoTitleWrapper>
+              <Typography tag="p">Fair exhange policy </Typography>
+              <CheckIconWrapper>
+                <Check size={13} />
+              </CheckIconWrapper>
+            </InfoTitleWrapper>
             <InfoList>
               <InfoListItem>
                 <Typography tag="p">30 days to raise a dispute</Typography>
