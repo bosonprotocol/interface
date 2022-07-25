@@ -1,13 +1,14 @@
-import { Info } from "phosphor-react";
+import { Info, UploadSimple } from "phosphor-react";
 
+import Field, { FieldType } from "../../../../components/form/Field";
 import Grid from "../../../../components/ui/Grid";
 import Typography from "../../../../components/ui/Typography";
 import { colors } from "../../../../lib/styles/colors";
-import { FileUploader } from "./FileUploader";
 
-type Props = Parameters<typeof FileUploader>[0];
-
-export default function Upload({ onFilesSelect, onFilesSelectError }: Props) {
+interface Props {
+  onFilesSelect: (files: File[]) => void;
+}
+export default function Upload({ onFilesSelect }: Props) {
   return (
     <>
       <Grid justifyContent="flex-start" gap="0.2rem">
@@ -20,9 +21,16 @@ export default function Upload({ onFilesSelect, onFilesSelectError }: Props) {
           Max. file size: 2MB
         </Typography>
       </Grid>
-      <FileUploader
+      <Field
+        fieldType={FieldType.FileUpload}
+        multiple
+        accept="image/*, application/pdf"
         onFilesSelect={onFilesSelect}
-        onFilesSelectError={onFilesSelectError}
+        trigger={
+          <>
+            Upload file <UploadSimple />
+          </>
+        }
       />
     </>
   );

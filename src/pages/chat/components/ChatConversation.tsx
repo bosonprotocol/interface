@@ -112,6 +112,24 @@ const SimpleMessage = styled.p`
   background: ${colors.lightGrey};
 `;
 
+const InputWrapper = styled.div`
+  display: flex;
+  position: relative;
+  width: 100%;
+
+  [data-upload] {
+    cursor: pointer;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    margin: 0 1rem;
+    > *:not(rect) {
+      stroke: ${colors.darkGrey};
+    }
+  }
+`;
+
 const getWasItSentByMe = (
   myBuyerId: string,
   mySellerId: string,
@@ -207,14 +225,24 @@ export default function ChatConversation({ thread }: Props) {
           <BtnProposal>
             Proposal <Plus size={24} />
           </BtnProposal>
-          <Input placeholder="Write a message" />
-          <UploadSimple
-            onClick={() =>
-              showModal("UPLOAD_MODAL", {
-                title: "Upload documents"
-              })
-            }
-          />
+          <InputWrapper>
+            <Input placeholder="Write a message" />
+            <UploadSimple
+              size={24}
+              data-upload
+              onClick={() =>
+                showModal("UPLOAD_MODAL", {
+                  title: "Upload documents",
+                  onFilesSelect: (files) => {
+                    console.log(
+                      `TODO: send ${files.length} messages with these uploaded files`,
+                      files
+                    );
+                  }
+                })
+              }
+            />
+          </InputWrapper>
         </TypeMessage>
       </Container>
       <Dispute thread={thread} />

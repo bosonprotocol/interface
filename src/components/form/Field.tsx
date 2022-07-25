@@ -28,6 +28,7 @@ export interface Props {
   trigger?: React.ReactNode | JSX.Element;
   error?: any;
   data?: Array<DataProps>;
+  onFilesSelect?: (files: File[]) => void;
   [x: string]: any;
 }
 

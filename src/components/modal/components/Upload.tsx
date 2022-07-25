@@ -6,6 +6,8 @@ import Button from "../../ui/Button";
 import { ModalProps } from "../ModalContext";
 
 interface Props {
+  onFilesSelect: (files: File[]) => void;
+
   hideModal: NonNullable<ModalProps["hideModal"]>;
   title: ModalProps["title"];
 }
@@ -16,19 +18,23 @@ const ButtonsSection = styled.div`
   justify-content: space-between;
 `;
 
-export default function Upload({ hideModal }: Props) {
-  const [hasFiles, setHasFiles] = useState<boolean>(false);
+export default function Upload({ onFilesSelect, hideModal }: Props) {
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   return (
     <>
       <UploadForm
-        onFilesSelect={() => setHasFiles(true)}
-        onFilesSelectError={() => setHasFiles(false)}
+        onFilesSelect={(files) => {
+          setUploadedFiles(files);
+        }}
       />
       <ButtonsSection>
         <Button
           theme="secondary"
-          onClick={() => hideModal()}
-          disabled={!hasFiles}
+          onClick={() => {
+            hideModal();
+            onFilesSelect(uploadedFiles);
+          }}
+          disabled={!uploadedFiles?.length}
         >
           Submit
         </Button>

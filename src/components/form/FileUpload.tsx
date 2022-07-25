@@ -19,11 +19,17 @@ export default function FileUpload({
   disabled,
   multiple = false,
   trigger,
+  onFilesSelect,
   ...props
 }: Props) {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [files, setFiles] = useState<File[]>([]);
   const [preview, setPreview] = useState<string | null>(null);
+
+  const onSetFiles = (files: File[]) => {
+    setFiles(files);
+    onFilesSelect?.(files);
+  };
 
   const handleChooseFile = () => {
     const input = inputRef.current;
@@ -33,12 +39,12 @@ export default function FileUpload({
   };
 
   const handleRemoveAllFiles = () => {
-    setFiles([]);
+    onSetFiles([]);
     setPreview(null);
   };
   const handleRemoveFile = (index: number) => {
     const newArray = files.filter((i, k) => k !== index);
-    setFiles(newArray);
+    onSetFiles(newArray);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,7 +64,7 @@ export default function FileUpload({
         return;
       }
     }
-    setFiles(filesArray);
+    onSetFiles(filesArray);
     if (!multiple && accept === "image/*") {
       const reader = new FileReader();
       reader.onloadend = (e: ProgressEvent<FileReader>) => {
