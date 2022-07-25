@@ -44,7 +44,7 @@ export default function CreateYourProfile() {
         <Field
           fieldType={FieldType.Input}
           placeholder="Name"
-          name="name"
+          name="creteYourProfile.name"
           value={values.creteYourProfile.name}
           onChange={handleChange}
           error={errors.creteYourProfile?.name}
@@ -54,7 +54,7 @@ export default function CreateYourProfile() {
         <Field
           fieldType={FieldType.Input}
           placeholder="Name"
-          name="email"
+          name="creteYourProfile.email"
           value={values.creteYourProfile.email}
           onChange={handleChange}
           error={errors.creteYourProfile?.email}
@@ -64,7 +64,7 @@ export default function CreateYourProfile() {
         <Field
           fieldType={FieldType.Textarea}
           placeholder="Describe"
-          name="description"
+          name="creteYourProfile.description"
           value={values.creteYourProfile.description}
           onChange={handleChange}
           error={errors.creteYourProfile?.description}
@@ -81,7 +81,7 @@ export default function CreateYourProfile() {
         <Field
           fieldType={FieldType.Input}
           placeholder="www.example.com  OR www.instagram.com/example"
-          name="website"
+          name="creteYourProfile.website"
           value={values.creteYourProfile.website}
           onChange={handleChange}
           error={errors.creteYourProfile?.website}

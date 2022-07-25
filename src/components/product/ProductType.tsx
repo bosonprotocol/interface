@@ -90,7 +90,7 @@ export default function ProductType() {
               <Label>
                 <RadioButton
                   type="radio"
-                  name="productType"
+                  name="productType.productType"
                   value="physical"
                   checked={values.productType.productType === "physical"}
                   onChange={handleChange}
@@ -103,7 +103,7 @@ export default function ProductType() {
               <Label>
                 <RadioButton
                   type="radio"
-                  name="productType"
+                  name="productType.productType"
                   value="phygital"
                   checked={values.productType.productType === "phygital"}
                   onChange={handleChange}
@@ -127,7 +127,7 @@ export default function ProductType() {
               <Label>
                 <RadioButton
                   type="radio"
-                  name="productVariant"
+                  name="productType.productVariant"
                   value="oneItemType"
                   checked={values.productType.productVariant === "oneItemType"}
                   onChange={handleChange}
@@ -148,7 +148,7 @@ export default function ProductType() {
               <Label>
                 <RadioButton
                   type="radio"
-                  name="productVariant"
+                  name="productType.productVariant"
                   value="differentVariants"
                   checked={
                     values.productType.productVariant === "differentVariants"

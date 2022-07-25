@@ -36,7 +36,7 @@ export default function ProductInformation() {
         <Field
           fieldType={FieldType.Input}
           placeholder="Name"
-          name="productTitle"
+          name="productInformation.productTitle"
           value={values.productInformation.productTitle}
           onChange={handleChange}
           error={errors.productInformation?.productTitle}
@@ -49,7 +49,7 @@ export default function ProductInformation() {
         <Field
           fieldType={FieldType.Textarea}
           placeholder="Describe"
-          name="describe"
+          name="productInformation.describe"
           value={values.productInformation.describe}
           onChange={handleChange}
           error={errors.productInformation?.describe}
@@ -62,7 +62,7 @@ export default function ProductInformation() {
         <Field
           fieldType={FieldType.Input}
           placeholder="Click to select"
-          name="category"
+          name="productInformation.category"
           value={values.productInformation.category}
           onChange={handleChange}
           error={errors.productInformation?.category}
@@ -75,7 +75,7 @@ export default function ProductInformation() {
         <Field
           fieldType={FieldType.Input}
           placeholder="Click to add tags"
-          name="tags"
+          name="productInformation.tags"
           value={values.productInformation.tags}
           onChange={handleChange}
           error={errors.productInformation?.tags}
@@ -92,7 +92,7 @@ export default function ProductInformation() {
           <Field
             fieldType={FieldType.Input}
             placeholder="Attribute"
-            name="attribute"
+            name="productInformation.attribute"
             value={values.productInformation.attribute}
             onChange={handleChange}
             error={errors.productInformation?.attribute}
@@ -100,7 +100,7 @@ export default function ProductInformation() {
           <Field
             fieldType={FieldType.Input}
             placeholder="Attribute value"
-            name="attributeValue"
+            name="productInformation.attributeValue"
             value={values.productInformation.attributeValue}
             onChange={handleChange}
             error={errors.productInformation?.attributeValue}
