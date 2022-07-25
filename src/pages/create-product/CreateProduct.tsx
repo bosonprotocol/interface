@@ -13,6 +13,7 @@ import Help from "../../components/product/Help";
 import ProductImages from "../../components/product/ProductImages";
 import ProductInformation from "../../components/product/ProductInformation";
 import ProductType from "../../components/product/ProductType";
+import TermsOfExchange from "../../components/product/TermsOfExchange";
 import {
   CreateProductForm,
   createYourProfileValidationSchema,
@@ -28,6 +29,9 @@ const ProductLayoutContainer = styled.main`
   > form {
     width: 100%;
   }
+`;
+const HelpWrapper = styled.div`
+  padding-left: 3rem;
 `;
 
 const createYourProfileInitialValues = {
@@ -78,6 +82,10 @@ type CreateProductSteps = {
     ui: JSX.Element;
     validation: null; // TODO: NEED TO BE ADDED, FOR NOW JUSt PLAIN JSX
   };
+  5: {
+    ui: JSX.Element;
+    validation: null; // TODO: NEED TO BE ADDED, FOR NOW JUSt PLAIN JSX
+  };
 };
 
 const createProductSteps: CreateProductSteps = {
@@ -99,6 +107,10 @@ const createProductSteps: CreateProductSteps = {
   },
   4: {
     ui: <CoreTermsOfSale />,
+    validation: null
+  },
+  5: {
+    ui: <TermsOfExchange />,
     validation: null
   }
 } as const;
@@ -174,7 +186,9 @@ export default function CreateProduct() {
           <Form>{wizardStep.currentForm}</Form>
         </Formik>
         {isArray(createYourProfileHelp) && (
-          <Help data={createYourProfileHelp} />
+          <HelpWrapper>
+            <Help data={createYourProfileHelp} />
+          </HelpWrapper>
         )}
       </ProductLayoutContainer>
     </>
