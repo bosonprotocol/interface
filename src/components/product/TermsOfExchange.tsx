@@ -87,7 +87,7 @@ export default function TermsOfExchange() {
           <Typography tag="h2">Terms of Exchange</Typography>
           <InputGroup
             title="Exchange policy*"
-            subTitle="The exchange policy covers the contractual terms of the exchange to protect seller and buyer ."
+            subTitle="The exchange policy covers the contractual terms of the exchange to protect seller and buyer."
             popper="Need to be added"
           >
             <Field

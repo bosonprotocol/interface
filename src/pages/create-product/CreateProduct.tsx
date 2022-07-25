@@ -14,6 +14,7 @@ import Help from "../../components/product/Help";
 import ProductImages from "../../components/product/ProductImages";
 import ProductInformation from "../../components/product/ProductInformation";
 import ProductType from "../../components/product/ProductType";
+import ShippingInfo from "../../components/product/ShippingInfo";
 import TermsOfExchange from "../../components/product/TermsOfExchange";
 import {
   CreateProductForm,
@@ -91,6 +92,10 @@ type CreateProductSteps = {
     ui: JSX.Element;
     validation: null; // TODO: NEED TO BE ADDED, FOR NOW JUSt PLAIN JSX
   };
+  7: {
+    ui: JSX.Element;
+    validation: null; // TODO: NEED TO BE ADDED, FOR NOW JUSt PLAIN JSX
+  };
 };
 
 const createProductSteps: CreateProductSteps = {
@@ -119,6 +124,10 @@ const createProductSteps: CreateProductSteps = {
     validation: null
   },
   6: {
+    ui: <ShippingInfo />,
+    validation: null
+  },
+  7: {
     ui: <ConfirmProductDetails />,
     validation: null
   }
