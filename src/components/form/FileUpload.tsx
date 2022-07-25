@@ -6,7 +6,12 @@ import Typography from "../ui/Typography";
 import { Props } from "./Field";
 import { FieldFileUpload, FileUploadWrapper } from "./Field.styles";
 
-export default function FileUpload({ disabled, accept, ...props }: Props) {
+export default function FileUpload({
+  disabled,
+  accept,
+  multiple = false,
+  ...props
+}: Props) {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [file, setFile] = useState<FileList | null>(null);
 
@@ -36,7 +41,7 @@ export default function FileUpload({ disabled, accept, ...props }: Props) {
           hidden
           type="file"
           accept={accept || "image/*"}
-          multiple={false}
+          multiple={multiple}
           onChange={handleChange}
           ref={(ref) => {
             inputRef.current = ref;

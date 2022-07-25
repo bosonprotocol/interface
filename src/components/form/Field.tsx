@@ -24,6 +24,7 @@ export interface Props {
   fieldType?: FieldType;
   placeholder?: string;
   disabled?: boolean;
+  multiple?: boolean;
   error?: any;
   data?: Array<DataProps>;
   [x: string]: any;

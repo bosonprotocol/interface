@@ -1,3 +1,4 @@
+/* eslint @typescript-eslint/no-explicit-any: "off" */
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
 import { useEffect, useRef, useState } from "react";
@@ -29,7 +30,7 @@ export default function DatePicker({ onChange, ...props }: Props) {
   const handleDate = (v: Dayjs) => {
     setDate(v);
     setShownDate(v.format(CONFIG.dateFormat));
-    if (onChange) onChange(v);
+    onChange?.(v);
   };
 
   useEffect(() => {
