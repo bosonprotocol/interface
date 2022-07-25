@@ -16,7 +16,7 @@ export default function Upload({ onFilesSelect, onFilesSelectError }: Props) {
       </Grid>
       <Grid margin="0.25rem 0 0.75rem 0">
         <Typography color={colors.darkGrey} fontSize="0.75rem">
-          File format: PNG, JPG <br />
+          File format: PDF, PNG, JPG <br />
           Max. file size: 2MB
         </Typography>
       </Grid>
