@@ -1,10 +1,17 @@
+/* eslint @typescript-eslint/no-explicit-any: "off" */
+
 import * as Select from "@radix-ui/react-select";
 import styled, { css } from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
 import { boxShadow, transition } from "../ui/styles";
+import { checkIfValueIsEmpty } from "./utils";
 
-export const SelectTrigger = styled(Select.SelectTrigger)`
+export const SelectTrigger = styled(Select.SelectTrigger).attrs(
+  (props: { error: any }) => ({
+    error: props.error
+  })
+)`
   display: flex;
   width: 100%;
   align-items: center;
@@ -13,7 +20,6 @@ export const SelectTrigger = styled(Select.SelectTrigger)`
   gap: 0.25rem;
   background-color: ${colors.lightGrey};
   color: ${colors.secondary};
-  border: 1px solid ${colors.border};
 
   ${transition}
   :hover,
@@ -23,6 +29,15 @@ export const SelectTrigger = styled(Select.SelectTrigger)`
   [data-placeholder]: {
     color: ${colors.secondary};
   }
+
+  ${({ error }) =>
+    !checkIfValueIsEmpty(error)
+      ? css`
+          border: 1px solid ${colors.red};
+        `
+      : css`
+          border: 1px solid ${colors.border};
+        `}
 `;
 
 export const SelectIcon = styled(Select.SelectIcon)`
