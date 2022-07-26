@@ -11,6 +11,36 @@ import ModalContext, {
   Store
 } from "./ModalContext";
 
+const RenderModalComponent = ({
+  store,
+  hideModal
+}: {
+  store: Store;
+  hideModal: () => void;
+}) => {
+  const ModalComponent = store.modalType
+    ? MODAL_COMPONENTS[store.modalType]
+    : null;
+  if (!store.modalType || !ModalComponent) {
+    document.body.style.overflow = "unset";
+    return null;
+  }
+  document.body.style.overflow = "hidden";
+  return (
+    <Modal
+      hideModal={hideModal}
+      title={store.modalProps?.title}
+      headerComponent={store.modalProps?.headerComponent}
+    >
+      <ModalComponent
+        id="modal"
+        {...(store.modalProps as any)}
+        hideModal={hideModal}
+      />
+    </Modal>
+  );
+};
+
 interface Props {
   children: React.ReactNode;
 }
@@ -49,30 +79,6 @@ export default function ModalProvider({ children }: Props) {
     }
   }, [pathname]); // eslint-disable-line
 
-  const RenderModalComponent = () => {
-    const ModalComponent = store.modalType
-      ? MODAL_COMPONENTS[store.modalType]
-      : null;
-    if (!store.modalType || !ModalComponent) {
-      document.body.style.overflow = "unset";
-      return null;
-    }
-    document.body.style.overflow = "hidden";
-    return (
-      <Modal
-        hideModal={hideModal}
-        title={store.modalProps?.title}
-        headerComponent={store.modalProps?.headerComponent}
-      >
-        <ModalComponent
-          id="modal"
-          {...(store.modalProps as any)}
-          hideModal={hideModal}
-        />
-      </Modal>
-    );
-  };
-
   const value: ModalContextType = {
     store,
     updateProps,
@@ -83,7 +89,7 @@ export default function ModalProvider({ children }: Props) {
   return (
     <ModalContext.Provider value={value}>
       {children}
-      <RenderModalComponent />
+      <RenderModalComponent store={store} hideModal={hideModal} />
     </ModalContext.Provider>
   );
 }

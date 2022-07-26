@@ -74,17 +74,15 @@ export default function DescribeProblemStep({
             );
           }
           const filesInfo = await Promise.all(promises);
-          files &&
-            filesInfo &&
-            setProposal({
-              ...proposal,
-              additionalInformationFiles: [
-                ...files.map((file, index) => ({
-                  name: file.name,
-                  url: filesInfo[index]?.toString() || ""
-                }))
-              ]
-            });
+          setProposal({
+            ...proposal,
+            additionalInformationFiles: [
+              ...files.map((file, index) => ({
+                name: file.name,
+                url: filesInfo[index]?.toString() || ""
+              }))
+            ]
+          });
         }}
       />
       <ButtonsSection>
