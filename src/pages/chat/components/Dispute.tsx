@@ -12,33 +12,60 @@ import Timeline from "../../../components/timeline/Timeline";
 import Button from "../../../components/ui/Button";
 import Typography from "../../../components/ui/Typography";
 import { CONFIG } from "../../../lib/config";
+import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
 import { Offer } from "../../../lib/types/offer";
 import { Thread } from "../types";
 
-const Container = styled.div`
+const Container = styled.div<{ $disputeOpen: boolean }>`
   display: flex;
   flex-direction: column;
   height: 91vh;
   overflow-y: auto;
   min-width: max-content;
+  position: absolute;
+  margin-top: 4.375rem;
+  right: ${({ $disputeOpen }) => ($disputeOpen ? "0" : "-100vw")};
+  transition: 400ms;
+  width: ${({ $disputeOpen }) => $disputeOpen && "100vw"};
+  ${breakpoint.l} {
+    position: relative;
+    background: transparent;
+    right: unset;
+    margin-top: 0;
+    width: unset;
+  }
+  > img {
+    width: 100%;
+    max-height: 400px;
+    object-fit: contain;
+    background: ${colors.lightGrey};
+    ${breakpoint.l} {
+      width: 23.25rem;
+      max-height: unset;
+      object-fit: auto;
+      background: none;
+    }
+  }
 `;
 
 const sectionStyles = `
 border: 2px solid ${colors.border};
 border-top: none;
 padding: 1.625rem;
+background: ${colors.lightGrey};
 `;
 const Section = styled.div`
   ${sectionStyles};
 `;
 
 const DaysLeftToDispute = styled.div`
-  background: ${colors.border};
+  border-left: 2px solid ${colors.border};
   color: ${colors.darkGrey};
   padding: 0.5rem 1.25rem 0.5rem 1.5rem;
   font-size: 0.75rem;
   font-weight: 600;
+  background: ${colors.lightGrey};
 `;
 
 const ExchangeInfo = styled(Section)`
@@ -47,7 +74,6 @@ const ExchangeInfo = styled(Section)`
   align-items: center;
   flex-direction: column;
   row-gap: 0.875rem;
-
   small {
     font-size: 1rem;
     font-weight: 400;
@@ -127,8 +153,9 @@ const getOfferDetailData = (offer: Offer) => {
 
 interface Props {
   thread: Thread | undefined;
+  disputeOpen: boolean;
 }
-export default function Dispute({ thread }: Props) {
+export default function Dispute({ thread, disputeOpen }: Props) {
   const exchange = thread?.exchange;
   const offer = exchange?.offer;
   const { showModal } = useModal();
@@ -158,7 +185,7 @@ export default function Dispute({ thread }: Props) {
   }
 
   return (
-    <Container>
+    <Container $disputeOpen={disputeOpen}>
       <img src={exchange.offer.metadata.imageUrl} width="372px" />
       <DaysLeftToDispute>Just a few days left to dispute</DaysLeftToDispute>
       <ExchangeInfo>

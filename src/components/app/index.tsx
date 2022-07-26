@@ -19,6 +19,7 @@ const Container = styled.div`
   z-index: 0;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 `;
 
 interface Props {
