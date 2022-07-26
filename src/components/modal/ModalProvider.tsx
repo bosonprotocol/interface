@@ -17,7 +17,6 @@ interface Props {
 export default function ModalProvider({ children }: Props) {
   const { pathname } = useLocation();
   const [store, setStore] = useState(initalState.store);
-  const { modalType, modalProps } = store;
 
   const showModal = useCallback(
     (modalType: ModalType, modalProps?: Store["modalProps"]) => {
@@ -38,25 +37,36 @@ export default function ModalProvider({ children }: Props) {
     });
   }, [store]);
 
+  const updateProps = useCallback((store: Store) => {
+    setStore({
+      ...store
+    });
+  }, []);
+
   useEffect(() => {
-    if (modalType !== null) {
+    if (store.modalType !== null) {
       hideModal();
     }
   }, [pathname]); // eslint-disable-line
 
-  const renderComponent = () => {
-    const ModalComponent = modalType ? MODAL_COMPONENTS[modalType] : null;
-    if (!modalType || !ModalComponent) {
+  const RenderModalComponent = () => {
+    const ModalComponent = store.modalType
+      ? MODAL_COMPONENTS[store.modalType]
+      : null;
+    if (!store.modalType || !ModalComponent) {
       document.body.style.overflow = "unset";
       return null;
     }
-
     document.body.style.overflow = "hidden";
     return (
-      <Modal hideModal={hideModal} title={modalProps?.title}>
+      <Modal
+        hideModal={hideModal}
+        title={store.modalProps?.title}
+        headerComponent={store.modalProps?.headerComponent}
+      >
         <ModalComponent
           id="modal"
-          {...(modalProps as any)}
+          {...(store.modalProps as any)}
           hideModal={hideModal}
         />
       </Modal>
@@ -65,14 +75,15 @@ export default function ModalProvider({ children }: Props) {
 
   const value: ModalContextType = {
     store,
+    updateProps,
     showModal,
     hideModal
-  } as ModalContextType;
+  };
 
   return (
     <ModalContext.Provider value={value}>
       {children}
-      {renderComponent()}
+      <RenderModalComponent />
     </ModalContext.Provider>
   );
 }

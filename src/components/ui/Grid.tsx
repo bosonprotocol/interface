@@ -5,12 +5,14 @@ type JustifyContent =
   | "flex-start"
   | "center"
   | "flex-end"
+  | "space-evently"
   | "space-between"
   | "space-around"
   | "stretch";
 type AlignItems = "flex-start" | "center" | "flex-end" | "baseline";
 type FlexDirection = "row" | "column" | "row-reverse" | "column-reverse";
 export interface IGrid {
+  $width?: string;
   alignItems?: AlignItems;
   flexBasis?: string;
   flexDirection?: FlexDirection;
@@ -26,7 +28,7 @@ export interface IGrid {
 }
 
 const Container = styled.div<IGrid>`
-  width: 100%;
+  width: ${({ $width }) => $width || "100%"};
   display: flex;
   align-items: ${({ alignItems }) => alignItems || "center"};
   flex-basis: ${({ flexBasis }) => flexBasis || "auto"};

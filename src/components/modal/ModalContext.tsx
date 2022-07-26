@@ -1,11 +1,12 @@
 /* eslint @typescript-eslint/no-empty-function: "off" */
 /* eslint @typescript-eslint/no-explicit-any: "off" */
-import { createContext } from "react";
+import { createContext, ReactNode } from "react";
 
 import { MODAL_COMPONENTS, MODAL_TYPES } from "./ModalComponents";
 
 export type ModalProps = {
   title?: string;
+  headerComponent?: ReactNode;
   hideModal?: () => void;
 };
 export type ModalType = keyof typeof MODAL_TYPES | null;
@@ -27,12 +28,28 @@ export interface ModalContextType {
           Omit<Parameters<typeof MODAL_COMPONENTS[T]>[0], "hideModal">
   ) => void;
   hideModal: () => void;
+
+  updateProps: <T extends keyof typeof MODAL_TYPES>(
+    store: Store & {
+      modalProps: Omit<
+        Parameters<typeof MODAL_COMPONENTS[T]>,
+        "hideModal"
+      >[0] extends undefined
+        ? Partial<Omit<ModalProps, "hideModal">>
+        : Partial<
+            Omit<ModalProps, "hideModal"> &
+              Omit<Parameters<typeof MODAL_COMPONENTS[T]>[0], "hideModal">
+          >;
+    }
+  ) => void;
+
   store: Store;
 }
 
 export const initalState: ModalContextType = {
   showModal: () => {},
   hideModal: () => {},
+  updateProps: () => {},
   store: {
     modalType: null,
     modalProps: {} as any

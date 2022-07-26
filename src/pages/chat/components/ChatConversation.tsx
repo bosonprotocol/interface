@@ -1,13 +1,15 @@
-import { ArrowLeft, Plus } from "phosphor-react";
+import { UploadSimple } from "phosphor-react";
 import { useCallback, useState } from "react";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
+import { useModal } from "../../../components/modal/useModal";
 import SellerID from "../../../components/ui/SellerID";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
 import { useBuyerSellerAccounts } from "../../../lib/utils/hooks/useBuyerSellerAccounts";
 import { Thread } from "../types";
+import ButtonProposal from "./ButtonProposal/ButtonProposal";
 import Dispute from "./Dispute";
 import Message from "./Message";
 
@@ -147,6 +149,30 @@ const NavigationMobile = styled.div`
   }
 `;
 
+const InputWrapper = styled.div`
+  display: flex;
+  position: relative;
+  width: 100%;
+
+  [data-upload] {
+    cursor: pointer;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    margin: 0 1rem;
+    > *:not(rect) {
+      stroke: ${colors.darkGrey};
+    }
+  }
+`;
+
+const ErrorMessage = () => (
+  <Container>
+    <SimpleMessage>There has been an error, try again or refresh</SimpleMessage>
+  </Container>
+);
+
 const getWasItSentByMe = (
   myBuyerId: string,
   mySellerId: string,
@@ -171,6 +197,7 @@ export default function ChatConversation({
     seller: { sellerId, isError: isErrorSellers, isLoading: isLoadingSeller },
     buyer: { buyerId, isError: isErrorBuyers, isLoading: isLoadingBuyer }
   } = useBuyerSellerAccounts(address || "");
+  const { showModal } = useModal();
   const SellerComponent = useCallback(
     ({
       size,
@@ -199,13 +226,7 @@ export default function ChatConversation({
     !isLoadingBuyer &&
     (isErrorSellers || isErrorBuyers || (!sellerId && !buyerId))
   ) {
-    return (
-      <Container>
-        <SimpleMessage>
-          There has been an error, try again or refresh
-        </SimpleMessage>
-      </Container>
-    );
+    return <ErrorMessage />;
   }
 
   if (!thread) {
@@ -214,6 +235,10 @@ export default function ChatConversation({
         <SimpleMessage>Select a message</SimpleMessage>
       </Container>
     );
+  }
+  const { exchange } = thread;
+  if (!exchange) {
+    return <ErrorMessage />;
   }
 
   return (
@@ -260,10 +285,25 @@ export default function ChatConversation({
           })}
         </Messages>
         <TypeMessage>
-          <BtnProposal>
-            Proposal <Plus size={24} />
-          </BtnProposal>
-          <Input placeholder="Write a message" />
+          <ButtonProposal exchange={exchange} />
+          <InputWrapper>
+            <Input placeholder="Write a message" />
+            <UploadSimple
+              size={24}
+              data-upload
+              onClick={() =>
+                showModal("UPLOAD_MODAL", {
+                  title: "Upload documents",
+                  onFilesSelect: (files) => {
+                    console.log(
+                      `TODO: send ${files.length} messages with these uploaded files`,
+                      files
+                    );
+                  }
+                })
+              }
+            />
+          </InputWrapper>
         </TypeMessage>
       </Container>
       <Dispute thread={thread} disputeOpen={disputeOpen} />

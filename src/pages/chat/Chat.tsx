@@ -11,7 +11,6 @@ import { Thread } from "./types";
 
 const myBuyerId = "16";
 const mySellerId = "17";
-const currentDate = new Date();
 
 const threads: Omit<Thread, "exchange">[] = [
   {
