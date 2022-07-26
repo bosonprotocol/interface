@@ -3,7 +3,6 @@ import isArray from "lodash/isArray";
 import keys from "lodash/keys";
 import { useMemo } from "react";
 import { useCallback } from "react";
-// import reduce from "lodash/reduce";
 import { useState } from "react";
 import styled from "styled-components";
 
@@ -11,6 +10,7 @@ import ConfirmProductDetails from "../../components/product/ConfirmProductDetail
 import CoreTermsOfSale from "../../components/product/CoreTermsOfSale";
 import CreateYourProfile from "../../components/product/CreateYourProfile";
 import Help from "../../components/product/Help";
+import Preview from "../../components/product/Preview";
 import ProductImages from "../../components/product/ProductImages";
 import ProductInformation from "../../components/product/ProductInformation";
 import ProductType from "../../components/product/ProductType";
@@ -25,13 +25,20 @@ import {
 import MultiSteps from "../../components/step/MultiSteps";
 import { createYourProfileHelp } from "../../lib/const/productHelpOptions";
 
-const ProductLayoutContainer = styled.main`
-  display: flex;
-  justify-content: space-between;
-  > form {
-    width: 100%;
+const ProductLayoutContainer = styled.div(
+  ({ isPreviewVisible }: { isPreviewVisible: boolean }) => {
+    if (!isPreviewVisible) {
+      return `
+        display: flex;
+        justify-content: space-between;
+        > form {
+          width: 100%;
+        }
+      `;
+    }
+    return "";
   }
-`;
+);
 const HelpWrapper = styled.div`
   padding-left: 3rem;
 `;
@@ -112,48 +119,56 @@ type CreateProductSteps = {
   };
 };
 
-const createProductSteps: CreateProductSteps = {
-  0: {
-    ui: <CreateYourProfile />,
-    validation: createYourProfileValidationSchema,
-    helpSection: createYourProfileHelp
-  },
-  1: {
-    ui: <ProductType />,
-    validation: productTypeValidationSchema,
-    helpSection: null
-  },
-  2: {
-    ui: <ProductInformation />,
-    validation: productInformationValidationSchema,
-    helpSection: null
-  },
-  3: {
-    ui: <ProductImages />,
-    validation: null,
-    helpSection: null
-  },
-  4: {
-    ui: <CoreTermsOfSale />,
-    validation: null,
-    helpSection: null
-  },
-  5: {
-    ui: <TermsOfExchange />,
-    validation: null,
-    helpSection: null
-  },
-  6: {
-    ui: <ShippingInfo />,
-    validation: null,
-    helpSection: null
-  },
-  7: {
-    ui: <ConfirmProductDetails />,
-    validation: null,
-    helpSection: null
-  }
-} as const;
+type CreateProductStepsParams = {
+  setIsPreviewVisible: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const createProductSteps = ({
+  setIsPreviewVisible
+}: CreateProductStepsParams) => {
+  return {
+    0: {
+      ui: <CreateYourProfile />,
+      validation: createYourProfileValidationSchema,
+      helpSection: createYourProfileHelp
+    },
+    1: {
+      ui: <ProductType />,
+      validation: productTypeValidationSchema,
+      helpSection: null
+    },
+    2: {
+      ui: <ProductInformation />,
+      validation: productInformationValidationSchema,
+      helpSection: null
+    },
+    3: {
+      ui: <ProductImages />,
+      validation: null,
+      helpSection: null
+    },
+    4: {
+      ui: <CoreTermsOfSale />,
+      validation: null,
+      helpSection: null
+    },
+    5: {
+      ui: <TermsOfExchange />,
+      validation: null,
+      helpSection: null
+    },
+    6: {
+      ui: <ShippingInfo />,
+      validation: null,
+      helpSection: null
+    },
+    7: {
+      ui: <ConfirmProductDetails togglePreview={setIsPreviewVisible} />,
+      validation: null,
+      helpSection: null
+    }
+  } as const;
+};
 
 const steps = [
   {
@@ -175,50 +190,73 @@ const steps = [
   } as const
 ];
 
-const formLength = keys(createProductSteps).length - 1;
-
-console.log({
-  createYourProfileValidationSchema,
-  productTypeValidationSchema
-});
 export default function CreateProduct() {
   const [currentForm, setCurrentForm] = useState<number>(0);
+  const [isPreviewVisible, setIsPreviewVisible] = useState<boolean>(false);
   const wizardStep = useMemo(() => {
+    const wizard = createProductSteps({ setIsPreviewVisible });
     return {
       currentForm:
-        createProductSteps?.[currentForm as keyof CreateProductSteps]?.ui ||
-        null,
+        wizard?.[currentForm as keyof CreateProductSteps]?.ui || null,
       currentValidation:
-        createProductSteps?.[currentForm as keyof CreateProductSteps]
-          ?.validation || null,
+        wizard?.[currentForm as keyof CreateProductSteps]?.validation || null,
       helpSection:
-        createProductSteps?.[currentForm as keyof CreateProductSteps]
-          ?.helpSection || null
+        wizard?.[currentForm as keyof CreateProductSteps]?.helpSection || null,
+      wizardLength: keys(wizard).length - 1
     };
   }, [currentForm]);
 
   const handleNextForm = useCallback(() => {
-    if (currentForm < formLength) {
+    if (isPreviewVisible) {
+      setIsPreviewVisible(false);
+    }
+    if (currentForm < wizardStep.wizardLength) {
       setCurrentForm((prev) => prev + 1);
     }
-  }, [currentForm]);
+  }, [currentForm, isPreviewVisible, wizardStep.wizardLength]);
+
+  const handleClickStep = (val: number) => {
+    if (isPreviewVisible) {
+      setIsPreviewVisible(false);
+    }
+    setCurrentForm(val);
+  };
+
+  const handleSendData = (
+    values: CreateProductForm,
+    formikBag: FormikHelpers<CreateProductForm>
+  ) => {
+    // TODO: ADD SEND DATA LOGIC;
+    console.log({
+      log: "SEND DATA",
+      values,
+      formikBag
+    });
+  };
 
   const handleSubmit = (
     values: CreateProductForm,
     formikBag: FormikHelpers<CreateProductForm>
   ) => {
-    console.log(formikBag, "formikBag");
-    console.log(values, "values");
-    handleNextForm();
+    if (currentForm === wizardStep.wizardLength) {
+      return handleSendData(values, formikBag);
+    }
+    console.log({
+      log: "Next step",
+      values,
+      formikBag
+    });
+    formikBag.setSubmitting(false);
+    return handleNextForm();
   };
   return (
     <>
       <MultiSteps
         data={steps}
         active={currentForm}
-        callback={(i) => setCurrentForm(i)}
+        callback={handleClickStep}
       />
-      <ProductLayoutContainer>
+      <ProductLayoutContainer isPreviewVisible={isPreviewVisible}>
         <Formik<CreateProductForm>
           initialValues={initialValues}
           onSubmit={(formikVal, formikBag) =>
@@ -226,9 +264,15 @@ export default function CreateProduct() {
           }
           validationSchema={wizardStep.currentValidation}
         >
-          <Form>{wizardStep.currentForm}</Form>
+          <Form>
+            {isPreviewVisible ? (
+              <Preview togglePreview={setIsPreviewVisible} />
+            ) : (
+              wizardStep.currentForm
+            )}
+          </Form>
         </Formik>
-        {isArray(wizardStep.helpSection) && (
+        {!isPreviewVisible && isArray(wizardStep.helpSection) && (
           <HelpWrapper>
             <Help data={wizardStep.helpSection} />
           </HelpWrapper>

@@ -60,7 +60,14 @@ const ConfirmProductDetailsButtonGroup = styled(ProductButtonGroup)`
   margin: 5rem 0 0 0;
 `;
 
-export default function ConfirmProductDetails() {
+interface Props {
+  togglePreview: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export default function ConfirmProductDetails({ togglePreview }: Props) {
+  const handleOpenPreview = () => {
+    togglePreview(true);
+  };
   return (
     <ConfirmProductDetailsContainer>
       <Typography tag="h2">Confirm Product Details</Typography>
@@ -100,7 +107,7 @@ export default function ConfirmProductDetails() {
           Confirm
         </Button>
         {/* TODO add click functionality */}
-        <Button theme="primary" type="submit">
+        <Button theme="primary" type="button" onClick={handleOpenPreview}>
           Preview product detail page
         </Button>
       </ConfirmProductDetailsButtonGroup>
