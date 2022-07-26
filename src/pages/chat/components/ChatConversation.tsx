@@ -1,4 +1,4 @@
-import { UploadSimple } from "phosphor-react";
+import { ArrowLeft, UploadSimple } from "phosphor-react";
 import { useCallback, useState } from "react";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
