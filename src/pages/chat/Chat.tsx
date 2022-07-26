@@ -1,6 +1,9 @@
 import { useState } from "react";
+import { generatePath, Route, Routes } from "react-router-dom";
 import styled from "styled-components";
 
+import { UrlParameters } from "../../lib/routing/parameters";
+import { BosonRoutes } from "../../lib/routing/routes";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import ChatConversation from "./components/ChatConversation";
 import MessageList from "./components/MessageList";
@@ -234,6 +237,14 @@ export default function Chat() {
     };
   });
   const [selectedThread, selectThread] = useState<Thread>();
+  const [chatListOpen, setChatListOpen] = useState<boolean>(false);
+
+  console.log(selectedThread);
+
+  const path = generatePath(BosonRoutes.ChatMessage, {
+    [UrlParameters.exchangeId]: "1"
+  });
+
   return (
     <Container>
       <MessageList
@@ -241,8 +252,20 @@ export default function Chat() {
         onChangeConversation={(thread) => {
           selectThread(thread);
         }}
+        chatListOpen={chatListOpen}
       />
-      <ChatConversation thread={selectedThread} />
+      <Routes>
+        <Route
+          path=":id"
+          element={
+            <ChatConversation
+              thread={selectedThread}
+              setChatListOpen={setChatListOpen}
+              chatListOpen={chatListOpen}
+            />
+          }
+        />
+      </Routes>
     </Container>
   );
 }

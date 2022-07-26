@@ -12,7 +12,8 @@ export const BosonRoutes = {
   CreateStorefront: "/custom-store",
   TermsOfUse: "/terms-of-use", // TODO: add page to handle this route
   LearnMore: "/learn-more", // TODO: add page to handle this route
-  Chat: "/chat"
+  Chat: "/chat",
+  ChatMessage: `/chat/:${UrlParameters.exchangeId}`
 } as const;
 
 export const OffersRoutes = {

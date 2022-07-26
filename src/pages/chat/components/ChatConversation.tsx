@@ -1,5 +1,5 @@
-import { ArrowRight, List, UploadSimple } from "phosphor-react";
-import { useCallback } from "react";
+import { UploadSimple } from "phosphor-react";
+import { useCallback, useState } from "react";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
@@ -49,6 +49,10 @@ const Messages = styled.div`
   flex-direction: column;
   max-height: 100vh;
   overflow-y: auto;
+  width: 100vw;
+  ${breakpoint.m} {
+    width: unset;
+  }
 `;
 const Conversation = styled.div<{ $alignStart: boolean }>`
   display: flex;
@@ -86,12 +90,63 @@ const Input = styled.input`
   }
 `;
 
+const BtnProposal = styled.button`
+  border: 3px solid ${colors.secondary};
+  padding-left: 1.2rem;
+  padding-right: 2.5rem;
+  font-size: 0.875rem;
+  margin-right: 0.875rem;
+  height: 2.7rem;
+  font-weight: 600;
+  color: ${colors.secondary};
+  background-color: transparent;
+  position: relative;
+  svg {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 0.6rem;
+    ${breakpoint.xs} {
+      transform: translateY(-50%) scale(0.7);
+    }
+    ${breakpoint.s} {
+      transform: translateY(-50%);
+    }
+  }
+`;
+
 const SimpleMessage = styled.p`
   all: unset;
   display: block;
   height: 100%;
   padding: 1rem;
   background: ${colors.lightGrey};
+`;
+
+const NavigationMobile = styled.div`
+  display: flex;
+  min-height: 3.125rem;
+  width: 100%;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  button {
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: none;
+    padding: none;
+    border: none;
+    color: ${colors.secondary};
+  }
+  svg {
+    color: ${colors.secondary};
+    margin-right: 0.438rem;
+    margin-bottom: -0.1875rem;
+  }
+  ${breakpoint.l} {
+    display: none;
+  }
 `;
 
 const InputWrapper = styled.div`
@@ -128,8 +183,15 @@ const getWasItSentByMe = (
 
 interface Props {
   thread: Thread | undefined;
+  chatListOpen: boolean;
+  setChatListOpen: (p: boolean) => void;
 }
-export default function ChatConversation({ thread }: Props) {
+export default function ChatConversation({
+  thread,
+  chatListOpen,
+  setChatListOpen
+}: Props) {
+  const [disputeOpen, setDisputeOpen] = useState<boolean>(false);
   const { address } = useAccount();
   const {
     seller: { sellerId, isError: isErrorSellers, isLoading: isLoadingSeller },
@@ -182,10 +244,25 @@ export default function ChatConversation({ thread }: Props) {
   return (
     <>
       <Container>
+        <NavigationMobile>
+          <button
+            onClick={() => {
+              setChatListOpen(!chatListOpen);
+            }}
+          >
+            <ArrowLeft size={14} />
+            Back
+          </button>
+          <button
+            onClick={() => {
+              setDisputeOpen(!disputeOpen);
+            }}
+          >
+            Details
+          </button>
+        </NavigationMobile>
         <Header>
-          <List size={24} />
           <SellerComponent size={24} />
-          <ArrowRight size={32} />
         </Header>
         <Messages>
           {thread.messages.map((message) => {
@@ -229,7 +306,7 @@ export default function ChatConversation({ thread }: Props) {
           </InputWrapper>
         </TypeMessage>
       </Container>
-      <Dispute thread={thread} />
+      <Dispute thread={thread} disputeOpen={disputeOpen} />
     </>
   );
 }

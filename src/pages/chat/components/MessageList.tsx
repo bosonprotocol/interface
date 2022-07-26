@@ -2,16 +2,32 @@ import { useState } from "react";
 import styled from "styled-components";
 
 import SellerID from "../../../components/ui/SellerID";
+import { breakpoint } from "../../../lib/styles/breakpoint";
+import { zIndex } from "../../../lib/styles/zIndex";
 import { Thread } from "../types";
 
 const messageItemHeight = "6.25rem";
 const messageItemMargin = "1.5rem";
 
-const Container = styled.div`
+const Container = styled.div<{ $chatListOpen?: boolean }>`
   display: flex;
   flex-direction: column;
   flex: 1 1 25%;
   border: 1px solid #5560720f;
+  left: ${({ $chatListOpen }) => ($chatListOpen ? "0" : "-100vw")};
+  position: absolute;
+  z-index: ${zIndex.ChatSeparator};
+  background: white;
+  height: 100vh;
+  margin-top: 3.75rem;
+  transition: 400ms;
+  ${breakpoint.m} {
+    left: unset;
+    position: relative;
+    margin-top: 0;
+    height: auto;
+    z-index: ${zIndex.Default};
+  }
 `;
 
 const Header = styled.div`
@@ -52,19 +68,33 @@ const MessageInfo = styled.div`
   display: flex;
   flex-direction: column;
   row-gap: 0.5rem;
+  div {
+    ${breakpoint.l} {
+      font-size: 0.8rem;
+    }
+    ${breakpoint.xl} {
+      font-size: 1rem;
+    }
+  }
 `;
 
 interface Props {
   threads: Thread[];
   onChangeConversation: (thread: Thread) => void;
+  chatListOpen: boolean;
 }
 const getMessageItemKey = (thread: Thread) =>
   `${thread.threadId.buyerId}-${thread.threadId.exchangeId}-${thread.threadId.sellerId}`;
 
-export default function MessageList({ threads, onChangeConversation }: Props) {
+export default function MessageList({
+  threads,
+  onChangeConversation,
+  chatListOpen
+}: Props) {
   const [activeMessageKey, setActiveMessageKey] = useState<string>();
+
   return (
-    <Container>
+    <Container $chatListOpen={chatListOpen}>
       <Header>Messages</Header>
       {threads
         .filter((thread) => thread.exchange)
