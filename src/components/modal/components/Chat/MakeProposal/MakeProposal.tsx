@@ -1,3 +1,4 @@
+import { Formik } from "formik";
 import { ReactNode, useState } from "react";
 
 import { Exchange } from "../../../../../lib/utils/hooks/useExchanges";
@@ -31,26 +32,37 @@ export default function MakeProposal({
     proposals: [],
     additionalInformationFiles: []
   });
-
+  const onSubmit = () => {
+    console.log("submit");
+  };
   return (
     <>
       <Grid justifyContent="space-between" padding="2rem 0">
         <ExchangePreview exchange={exchange} />
       </Grid>
-      {activeStep === 0 ? (
-        <DescribeProblemStep
-          onNextClick={() => setActiveStep(1)}
-          setProposal={setProposal}
-          proposal={proposal}
-        />
-      ) : activeStep === 1 ? (
-        <MakeAProposalStep onNextClick={() => setActiveStep(2)} />
-      ) : (
-        <ReviewAndSubmitStep
-          onBackClick={() => setActiveStep(1)}
-          onSubmit={() => console.log("submit")}
-        />
-      )}
+      <Formik
+        onSubmit={onSubmit}
+        initialValues={{
+          description: "",
+          proposals: [],
+          additionalInformationFiles: []
+        }}
+      >
+        {activeStep === 0 ? (
+          <DescribeProblemStep
+            onNextClick={() => setActiveStep(1)}
+            setProposal={setProposal}
+            proposal={proposal}
+          />
+        ) : activeStep === 1 ? (
+          <MakeAProposalStep onNextClick={() => setActiveStep(2)} />
+        ) : (
+          <ReviewAndSubmitStep
+            onBackClick={() => setActiveStep(1)}
+            onSubmit={onSubmit}
+          />
+        )}
+      </Formik>
     </>
   );
 }

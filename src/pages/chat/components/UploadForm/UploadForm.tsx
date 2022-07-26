@@ -1,6 +1,6 @@
 import { Info, UploadSimple } from "phosphor-react";
 
-import Field, { FieldType } from "../../../../components/form/Field";
+import UploadComponent from "../../../../components/form/Upload";
 import Grid from "../../../../components/ui/Grid";
 import Typography from "../../../../components/ui/Typography";
 import { colors } from "../../../../lib/styles/colors";
@@ -21,8 +21,8 @@ export default function Upload({ onFilesSelect }: Props) {
           Max. file size: 2MB
         </Typography>
       </Grid>
-      <Field
-        fieldType={FieldType.FileUpload}
+      <UploadComponent
+        name="upload"
         multiple
         accept="image/*, application/pdf"
         onFilesSelect={onFilesSelect}

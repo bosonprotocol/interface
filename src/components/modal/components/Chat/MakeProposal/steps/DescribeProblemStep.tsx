@@ -4,7 +4,7 @@ import { colors } from "../../../../../../lib/styles/colors";
 // import { Exchange } from "../../../../../../lib/utils/hooks/useExchanges";
 import UploadForm from "../../../../../../pages/chat/components/UploadForm/UploadForm";
 import { ProposalMessage } from "../../../../../../pages/chat/types";
-import Field, { FieldType } from "../../../../../form/Field";
+import { Textarea } from "../../../../../form";
 import Button from "../../../../../ui/Button";
 import Grid from "../../../../../ui/Grid";
 import Typography from "../../../../../ui/Typography";
@@ -15,7 +15,7 @@ const ButtonsSection = styled.div`
   justify-content: space-between;
 `;
 
-const TextArea = styled(Field)`
+const TextArea = styled(Textarea)`
   width: 100%;
   resize: none;
 `;
@@ -45,8 +45,8 @@ export default function DescribeProblemStep({
           Message
         </Typography>
         <TextArea
-          rows="5"
-          fieldType={FieldType.Textarea}
+          name="description"
+          rows={5}
           onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
             setProposal({
               ...proposal,
