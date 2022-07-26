@@ -1,5 +1,5 @@
 import { Plus } from "phosphor-react";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 
 import { useModal } from "../../../../components/modal/useModal";
@@ -39,33 +39,46 @@ export default function ButtonProposal({ exchange }: Props) {
   const { showModal, updateProps, store } = useModal();
   console.log("store", store);
   const [activeStep, setActiveStep] = useState<number>(0);
+
+  const headerComponent = useMemo(
+    () => (
+      <Grid justifyContent="space-evently">
+        <StyledMultiSteps
+          data={[
+            { steps: 1, name: "Describe Problem" },
+            { steps: 1, name: "Make a Proposal" },
+            { steps: 1, name: "Review & Submit" }
+          ]}
+          callback={(currentStep) => {
+            setActiveStep(currentStep);
+          }}
+          active={activeStep}
+        />
+      </Grid>
+    ),
+    [activeStep]
+  );
+
+  useEffect(() => {
+    console.log("store", store, activeStep);
+    updateProps<"MAKE_PROPOSAL">({
+      ...store,
+      modalProps: {
+        ...store.modalProps,
+        headerComponent,
+        activeStep
+      }
+    } as any);
+  }, [activeStep]); // eslint-disable-line
+
   return (
     <StyledButton
       onClick={() =>
         showModal("MAKE_PROPOSAL", {
-          headerComponent: (
-            <Grid justifyContent="space-evently">
-              <StyledMultiSteps
-                data={[
-                  { steps: 1, name: "Describe Problem" },
-                  { steps: 1, name: "Make a Proposal" },
-                  { steps: 1, name: "Review & Submit" }
-                ]}
-                callback={(currentStep) => {
-                  setActiveStep(currentStep);
-                }}
-                active={activeStep}
-              />
-            </Grid>
-          ),
+          headerComponent,
           exchange,
           activeStep,
-          setActiveStep: (step: number) => {
-            updateProps<"MAKE_PROPOSAL">({
-              ...store,
-              modalProps: { ...store.modalProps, activeStep: step }
-            } as any);
-          }
+          setActiveStep
         })
       }
     >

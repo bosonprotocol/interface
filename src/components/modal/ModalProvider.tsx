@@ -17,12 +17,9 @@ interface Props {
 export default function ModalProvider({ children }: Props) {
   const { pathname } = useLocation();
   const [store, setStore] = useState(initalState.store);
-  // const { modalType, modalProps } = store;
 
   const showModal = useCallback(
     (modalType: ModalType, modalProps?: Store["modalProps"]) => {
-      console.log("showModal props", modalProps, "store", store);
-
       setStore({
         ...store,
         modalType,
@@ -41,22 +38,12 @@ export default function ModalProvider({ children }: Props) {
     });
   }, [store]);
 
-  const updateProps = useCallback(
-    (props: Store["modalProps"]) => {
-      console.log("updateProps props", props, "store", store);
-      // setStore({
-      //   ...store,
-      //   modalProps: {
-      //     ...store.modalProps,
-      //     ...props
-      //   }
-      // });
-      setStore({
-        ...props
-      } as any);
-    },
-    [store]
-  );
+  const updateProps = useCallback((props: Store["modalProps"]) => {
+    console.log("updateProps props", props);
+    setStore({
+      ...props
+    } as any);
+  }, []);
 
   useEffect(() => {
     if (store.modalType !== null) {
