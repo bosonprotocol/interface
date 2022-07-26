@@ -28,7 +28,7 @@ const Label = styled.label`
   border: 1px solid ${colors.lightGrey};
   width: 100%;
   text-align: center;
-  margin-top: 4px;
+  margin-top: 0.25rem;
   background: transparent;
   height: 197px;
   cursor: pointer;
@@ -53,12 +53,12 @@ const RadioButton = styled.input`
 `;
 
 export const Box = styled.div`
-  padding: 28px;
+  padding: 1.75rem;
   height: 100%;
   width: 100%;
   p {
     display: block;
-    margin: 15px 0 0 0;
+    margin: 0.938rem 0 0 0;
   }
 `;
 export const Container = styled.div`
@@ -68,7 +68,7 @@ export const Container = styled.div`
 export const ProductImage = styled(Image)`
   width: 100px;
   height: 100px;
-  padding-top: 0px;
+  padding-top: 0;
   margin: auto;
 `;
 

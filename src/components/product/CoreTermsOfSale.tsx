@@ -10,12 +10,12 @@ import type { CreateProductForm } from "./validation/createProductValidationSche
 
 const PriceContainer = styled.div`
   display: grid;
-  grid-template-columns: 3fr minmax(140px, 1fr);
+  grid-template-columns: 3fr minmax(8.75rem, 1fr);
   grid-gap: 1rem;
 `;
 
 const ProductInformationButtonGroup = styled(ProductButtonGroup)`
-  margin-top: 25px;
+  margin-top: 1.563px;
 `;
 
 export default function CoreTermsOfSale() {

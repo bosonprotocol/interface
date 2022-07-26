@@ -15,16 +15,16 @@ const TitleContainer = styled.div`
   display: flex;
   align-items: baseline;
   > p {
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: 600;
-    margin: 0 0 4px 0;
+    margin: 0 0 0.25rem 0;
   }
   > div {
     button {
       color: ${colors.grey};
       svg {
-        height: 12px;
-        width: 12px;
+        height: 0.75rem;
+        width: 0.75rem;
       }
     }
   }
@@ -32,14 +32,14 @@ const TitleContainer = styled.div`
 
 const SubTitleContainer = styled.div`
   > p {
-    font-size: 12px;
+    font-size: 0.75rem;
     color: ${colors.darkGrey};
-    margin: 0 0 12px 0;
+    margin: 0 0 0.75rem 0;
   }
 `;
 
 const IconWrapper = styled.div`
-  margin-left: 2px;
+  margin-left: 0.125rem;
 `;
 interface Props {
   title: string;

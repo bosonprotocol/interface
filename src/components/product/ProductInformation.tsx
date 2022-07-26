@@ -20,7 +20,7 @@ const AdditionalContainer = styled.div`
 `;
 
 const ProductInformationButtonGroup = styled(ProductButtonGroup)`
-  margin-top: 25px;
+  margin-top: 1.563rem;
 `;
 
 export default function ProductInformation() {

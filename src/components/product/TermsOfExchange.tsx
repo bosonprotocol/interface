@@ -17,7 +17,7 @@ const TermsOfExchangeContainer = styled(ContainerProductPage)`
 const MainContainer = styled.div`
   display: grid;
   grid-template-columns: 3fr minmax(324px, 1fr);
-  grid-gap: 40px;
+  grid-gap: 2.5rem;
 `;
 
 const FieldContainer = styled.div`
@@ -27,14 +27,14 @@ const FieldContainer = styled.div`
 `;
 
 const ProductInformationButtonGroup = styled(ProductButtonGroup)`
-  margin-top: 25px;
+  margin-top: 1.563rem;
 `;
 
 const CheckIconWrapper = styled.div`
   margin-left: 0.25rem;
   border-radius: 50%;
-  width: 19px;
-  height: 19px;
+  width: 1.188rem;
+  height: 1.188rem;
   background: ${colors.green};
   display: flex;
   justify-content: center;
@@ -47,7 +47,7 @@ const InfoWrapper = styled.div`
 `;
 
 const InfoWrapperList = styled.div`
-  padding: 20px 24px 24px 24px;
+  padding: 1.25rem 1.5rem 1.5rem 1.5rem;
   background: ${colors.lightGrey};
   > p {
     margin 0;
@@ -57,7 +57,7 @@ const InfoTitleWrapper = styled.div`
   display: flex;
   align-items: center;
   font-weight: bold;
-  margin-bottom: 4px;
+  margin-bottom: 0.25rem;
   > p {
     margin 0;
   }
@@ -65,13 +65,13 @@ const InfoTitleWrapper = styled.div`
 const InfoList = styled.ul`
   margin 0 0 0 1.5rem;
   padding: 0;
-  line-height: 17px;
+  line-height: 1.063rem;
 `;
 const InfoListItem = styled.li`
   margin 0;
   padding 0;
   p {
-    font-size: 12px;
+    font-size: 0.75rem;
     margin: 0;
     color: ${colors.darkGrey};
   }

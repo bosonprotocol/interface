@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Image from "../ui/Image";
 
 export const ProductButtonGroup = styled.div`
-  margin-top: 56px;
+  margin-top: 3.5rem;
   display: flex;
   justify-content: flex-start;
   button:not(:last-child) {
@@ -16,16 +16,16 @@ export const ContainerProductPage = styled.div`
   max-width: 506px;
   width: 100%;
   > h2 {
-    margin 56px 0px 48px 0px;
+    margin 3.5rem 0 3rem 0;
   }
   .inputGroup:not(:last-of-type) {
-    margin-bottom: 32px;
+    margin-bottom: 2rem;
   }
 `;
 
 export const StyledImage = styled(Image)`
-  width: 40px;
-  height: 40px;
+  width: 2.5rem;
+  height: 2.5rem;
   padding-top: 0;
   margin: auto;
 `;

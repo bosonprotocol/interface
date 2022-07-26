@@ -17,7 +17,7 @@ const productTypeItemsPerRow = {
 };
 
 export const Box = styled.div`
-  padding: 26px 0;
+  padding: 1.625rem 0;
   height: 100%;
   width: 100%;
   min-height: 150px;

@@ -22,20 +22,20 @@ const FieldContainerWidth = styled.div`
 `;
 
 const ProductInformationButtonGroup = styled(ProductButtonGroup)`
-  margin-top: 25px;
+  margin-top: 1.563rem;
 `;
 
 const RequiredContainer = styled.div`
   .inputGroup:first-of-type {
-    margin-bottom: 56px;
+    margin-bottom: 3.5rem;
   }
 `;
 
 const AdditionalContainer = styled.div`
-  margin-top: 56px;
+  margin-top: 3.5rem;
   h3 {
     margin-top: 0;
-    margin-bottom: 32px;
+    margin-bottom: 2rem;
   }
 `;
 

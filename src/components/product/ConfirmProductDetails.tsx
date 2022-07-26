@@ -13,11 +13,11 @@ const ConfirmProductDetailsContainer = styled(ContainerProductPage)`
 `;
 
 const CollapseContainer = styled.div`
-  padding: 24px 32px;
+  padding: 1.5rem 2rem;
   background: ${colors.lightGrey};
   &:nth-of-type(2) {
-    margin-top: 32px;
-    margin-bottom: 32px;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
   }
   h3 {
     margin: 0;
@@ -30,34 +30,34 @@ const CollapseContainer = styled.div`
 `;
 
 const ConfirmationAlert = styled.div`
-  padding: 24px 24px 24px 26px;
+  padding: 1.5rem 1.5rem 1.5rem 1.625rem;
   background: ${colors.black};
-  margin-top: 32px;
+  margin-top: 2rem;
   display: flex;
   color: ${colors.white};
 `;
 
 const IconWrapper = styled.div`
-  width: 50px;
+  width: 3.125rem;
   > svg {
     color: ${colors.green};
   }
 `;
 
 const ConfirmationContent = styled.div`
-  width: Calc(100% - 50px);
+  width: Calc(100% - 3.125rem);
   p {
     margin: 0;
-    line-height: 24px;
+    line-height: 1.5rem;
   }
   p:first-child {
     font-weight: bold;
-    margin-bottom: 8px;
+    margin-bottom: 0.5rem;
   }
 `;
 
 const ConfirmProductDetailsButtonGroup = styled(ProductButtonGroup)`
-  margin: 80px 0 0 0;
+  margin: 5rem 0 0 0;
 `;
 
 export default function ConfirmProductDetails() {

@@ -27,24 +27,24 @@ const HelpTitleContainer = styled.div`
   display: flex;
   justify-content: space-between;
   border-bottom: 1px solid #5560720f;
-  padding: 16px 24px;
+  padding: 1rem 1.5rem;
 `;
 
 const HelpContent = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  padding: 16px 24px;
+  padding: 1rem 1.5rem;
 `;
 
 const HelpContentContainer = styled.div`
-  margin-bottom: 32px;
+  margin-bottom: 2rem;
   > h4 {
-    margin: 0 0 8px 0;
+    margin: 0 0 0.5rem 0;
   }
   > p {
     margin: 0;
-    line-height: 24px;
+    line-height: 1.5rem;
   }
 `;
 
