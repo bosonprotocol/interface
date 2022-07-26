@@ -294,11 +294,8 @@ export default function ChatConversation({
               onClick={() =>
                 showModal("UPLOAD_MODAL", {
                   title: "Upload documents",
-                  onFilesSelect: (files) => {
-                    console.log(
-                      `TODO: send ${files.length} messages with these uploaded files`,
-                      files
-                    );
+                  onUploadedFiles: (files: File[]) => {
+                    console.log(files);
                   }
                 })
               }

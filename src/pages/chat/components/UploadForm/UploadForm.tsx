@@ -5,10 +5,7 @@ import Grid from "../../../../components/ui/Grid";
 import Typography from "../../../../components/ui/Typography";
 import { colors } from "../../../../lib/styles/colors";
 
-interface Props {
-  onFilesSelect: (files: File[]) => void;
-}
-export default function Upload({ onFilesSelect }: Props) {
+export default function Upload() {
   return (
     <>
       <Grid justifyContent="flex-start" gap="0.2rem">
@@ -25,7 +22,6 @@ export default function Upload({ onFilesSelect }: Props) {
         name="upload"
         multiple
         accept="image/*, application/pdf"
-        onFilesSelect={onFilesSelect}
         trigger={
           <>
             Upload file <UploadSimple />

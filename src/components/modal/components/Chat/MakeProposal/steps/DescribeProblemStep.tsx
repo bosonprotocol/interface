@@ -1,10 +1,8 @@
-import { useField } from "formik";
 import styled from "styled-components";
 
 import { colors } from "../../../../../../lib/styles/colors";
 // import { Exchange } from "../../../../../../lib/utils/hooks/useExchanges";
 import UploadForm from "../../../../../../pages/chat/components/UploadForm/UploadForm";
-import { ProposalMessage } from "../../../../../../pages/chat/types";
 import { Textarea } from "../../../../../form";
 import Button from "../../../../../ui/Button";
 import Grid from "../../../../../ui/Grid";
@@ -22,20 +20,11 @@ const TextArea = styled(Textarea)`
 `;
 
 interface Props {
-  proposal: ProposalMessage["value"];
-  setProposal: React.Dispatch<React.SetStateAction<ProposalMessage["value"]>>;
   onNextClick: () => void;
+  isValid: boolean;
 }
 
-export default function DescribeProblemStep({
-  onNextClick,
-  setProposal,
-  proposal
-}: Props) {
-  const [field, meta, helpers] = useField({
-    name: "description"
-  });
-  console.log({ field, meta, helpers });
+export default function DescribeProblemStep({ onNextClick, isValid }: Props) {
   return (
     <>
       <Typography fontSize="2rem" fontWeight="600">
@@ -51,42 +40,12 @@ export default function DescribeProblemStep({
         </Typography>
         <TextArea name="description" rows={5} />
       </Grid>
-      <UploadForm
-        onFilesSelect={async (files) => {
-          const promises: Promise<string | ArrayBuffer | null>[] = [];
-          for (const file of files) {
-            promises.push(
-              new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = function () {
-                  resolve(reader.result);
-                };
-                reader.onerror = function (error) {
-                  reject(error);
-                };
-              })
-            );
-          }
-          const filesInfo = await Promise.all(promises);
-          setProposal({
-            ...proposal,
-            additionalInformationFiles: [
-              ...files.map((file, index) => ({
-                name: file.name,
-                url: filesInfo[index]?.toString() || ""
-              }))
-            ]
-          });
-        }}
-      />
+      <UploadForm />
       <ButtonsSection>
         <Button
           theme="secondary"
           onClick={() => onNextClick()}
-          disabled={
-            !proposal.description && !proposal.additionalInformationFiles.length
-          }
+          disabled={!isValid}
         >
           Next
         </Button>

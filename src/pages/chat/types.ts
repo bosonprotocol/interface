@@ -50,12 +50,16 @@ export type ProposalMessage = {
   value: {
     title: string;
     description: string;
-    proposals: {
-      type: string;
-      percentageAmount: string;
-      signature: string;
-    }[];
+    proposals: Proposal[];
     additionalInformation: string;
     additionalInformationFiles: { name: string; url: string }[];
   };
+};
+
+export type NewProposal = ProposalMessage["value"];
+
+export type Proposal = {
+  type: string;
+  percentageAmount: string;
+  signature: string;
 };

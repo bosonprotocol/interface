@@ -1,19 +1,20 @@
-import { Form, Formik } from "formik";
-import { ReactNode, useState } from "react";
+import { Form, Formik, FormikProps } from "formik";
+import { ReactNode } from "react";
+import * as Yup from "yup";
 
 import { Exchange } from "../../../../../lib/utils/hooks/useExchanges";
-import { ProposalMessage } from "../../../../../pages/chat/types";
+import { NewProposal } from "../../../../../pages/chat/types";
 import Grid from "../../../../ui/Grid";
 import { ModalProps } from "../../../ModalContext";
 import ExchangePreview from "../components/ExchangePreview";
 import DescribeProblemStep from "./steps/DescribeProblemStep";
-import MakeAProposalStep from "./steps/MakeAProposalStep";
+import MakeAProposalStep from "./steps/MakeAProposalStep/MakeAProposalStep";
 import ReviewAndSubmitStep from "./steps/ReviewAndSubmitStep";
 
 interface Props {
   exchange: Exchange;
   activeStep: number;
-  sendProposal: (proposal: ProposalMessage["value"]) => void;
+  sendProposal: (proposal: NewProposal) => void;
   // modal props
   hideModal: NonNullable<ModalProps["hideModal"]>;
   headerComponent: ReactNode;
@@ -27,20 +28,21 @@ export default function MakeProposal({
   sendProposal,
   activeStep
 }: Props) {
-  const [proposal, setProposal] = useState<ProposalMessage["value"]>({
-    title: `Proposal`,
-    description: "",
-    additionalInformation: "",
-    proposals: [],
-    additionalInformationFiles: []
-  });
+  const reqMessage = "This field is required";
 
+  const validationSchema = Yup.object({
+    description: Yup.string().trim().required(reqMessage),
+    refundPercentage: Yup.number()
+      .moreThan(0, "The percentage should be more than 0")
+      .max(100, "The percentage should be less than or equal to 100")
+  });
   return (
     <>
       <Grid justifyContent="space-between" padding="2rem 0">
         <ExchangePreview exchange={exchange} />
       </Grid>
       <Formik
+        validationSchema={validationSchema}
         onSubmit={async (values) => {
           console.log("submit", values);
 
@@ -63,7 +65,7 @@ export default function MakeProposal({
           }
           const filesInfo = await Promise.all(promises);
 
-          const proposal: ProposalMessage["value"] = {
+          const proposal: NewProposal = {
             title: "Proposal",
             description: values.description,
             additionalInformation: "",
@@ -82,22 +84,44 @@ export default function MakeProposal({
         initialValues={{
           description: "",
           proposals: [],
+          refund: false,
+          refundAmount: 0,
+          refundPercentage: 0,
+          return: false,
           upload: []
         }}
+        validateOnMount
       >
-        <Form>
-          {activeStep === 0 ? (
-            <DescribeProblemStep
-              onNextClick={() => setActiveStep(1)}
-              setProposal={setProposal}
-              proposal={proposal}
-            />
-          ) : activeStep === 1 ? (
-            <MakeAProposalStep onNextClick={() => setActiveStep(2)} />
-          ) : (
-            <ReviewAndSubmitStep onBackClick={() => setActiveStep(1)} />
-          )}
-        </Form>
+        {(props: FormikProps<any>) => {
+          // TODO: remove any
+          console.log(props);
+          const isDescribeProblemOK = !props.errors["description"];
+          const isMakeAProposalOK =
+            (!!props.values["refund"] && !props.errors["refundPercentage"]) ||
+            !!props.values["return"];
+          const isFormValid = isDescribeProblemOK && isMakeAProposalOK;
+          return (
+            <Form>
+              {activeStep === 0 ? (
+                <DescribeProblemStep
+                  onNextClick={() => setActiveStep(1)}
+                  isValid={isDescribeProblemOK}
+                />
+              ) : activeStep === 1 ? (
+                <MakeAProposalStep
+                  onNextClick={() => setActiveStep(2)}
+                  isValid={isMakeAProposalOK}
+                />
+              ) : (
+                <ReviewAndSubmitStep
+                  onBackClick={() => setActiveStep(1)}
+                  isValid={isFormValid}
+                  exchange={exchange}
+                />
+              )}
+            </Form>
+          );
+        }}
       </Formik>
     </>
   );

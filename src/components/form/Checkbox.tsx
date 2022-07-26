@@ -6,7 +6,7 @@ import Error from "./Error";
 import { CheckboxWrapper } from "./Field.styles";
 import type { CheckboxProps } from "./types";
 
-export default function Checkbox({ name, ...props }: CheckboxProps) {
+export default function Checkbox({ name, text, ...props }: CheckboxProps) {
   const [field, meta, helpers] = useField(name);
   const ref = useRef(field.value);
   const errorMessage = meta.error && meta.touched ? meta.error : "";
@@ -30,9 +30,9 @@ export default function Checkbox({ name, ...props }: CheckboxProps) {
         <div>
           <Check size={16} />
         </div>
-        <b>{name || "Checkbox"}</b>
+        <b>{text || "Checkbox"}</b>
       </CheckboxWrapper>
-      <Error display={displayError} message={errorMessage} />{" "}
+      <Error display={displayError} message={errorMessage} />
     </>
   );
 }
