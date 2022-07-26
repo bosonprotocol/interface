@@ -14,11 +14,10 @@ const ButtonsSection = styled.div`
 
 interface Props {
   //   exchange: Exchange;
-  onSubmit: () => void;
   onBackClick: () => void;
 }
 
-export default function ReviewAndSubmitStep({ onSubmit, onBackClick }: Props) {
+export default function ReviewAndSubmitStep({ onBackClick }: Props) {
   return (
     <>
       <Typography fontSize="2rem" fontWeight="600">
@@ -34,7 +33,7 @@ export default function ReviewAndSubmitStep({ onSubmit, onBackClick }: Props) {
         </Typography>
       </Grid>
       <ButtonsSection>
-        <Button theme="secondary" onClick={() => onSubmit()} disabled={false}>
+        <Button theme="secondary" type="submit" disabled={false}>
           Sign & Submit
         </Button>
         <Button theme="secondary" onClick={() => onBackClick()}>

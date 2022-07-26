@@ -69,6 +69,10 @@ export default function ButtonProposal({ exchange }: Props) {
     });
   }, [activeStep, headerComponent, activeStep]); // eslint-disable-line
 
+  const sendProposal = (proposal: any) => {
+    console.log("proposal in button proposal", proposal);
+  };
+
   return (
     <StyledButton
       onClick={() =>
@@ -76,7 +80,8 @@ export default function ButtonProposal({ exchange }: Props) {
           headerComponent,
           exchange,
           activeStep,
-          setActiveStep
+          setActiveStep,
+          sendProposal
         })
       }
     >

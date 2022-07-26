@@ -1,3 +1,4 @@
+import { useField } from "formik";
 import styled from "styled-components";
 
 import { colors } from "../../../../../../lib/styles/colors";
@@ -31,6 +32,10 @@ export default function DescribeProblemStep({
   setProposal,
   proposal
 }: Props) {
+  const [field, meta, helpers] = useField({
+    name: "description"
+  });
+  console.log({ field, meta, helpers });
   return (
     <>
       <Typography fontSize="2rem" fontWeight="600">
@@ -44,17 +49,7 @@ export default function DescribeProblemStep({
         <Typography fontWeight="600" tag="p">
           Message
         </Typography>
-        <TextArea
-          name="description"
-          rows={5}
-          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
-            setProposal({
-              ...proposal,
-              description: e.target.value
-            });
-          }}
-          value={proposal.description}
-        />
+        <TextArea name="description" rows={5} />
       </Grid>
       <UploadForm
         onFilesSelect={async (files) => {
