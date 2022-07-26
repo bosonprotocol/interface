@@ -25,7 +25,7 @@ export default function MultiSteps({
   }, [active]);
 
   return (
-    <MultiStepStyle {...props}>
+    <MultiStepStyle {...props} data-steps-wrapper>
       {data.map((el, i) => {
         const steps = Array.from(Array(el.steps).keys());
         const newData = data.slice(0, i);

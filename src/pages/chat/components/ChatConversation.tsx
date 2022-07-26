@@ -1,4 +1,4 @@
-import { ArrowRight, List, Plus, UploadSimple } from "phosphor-react";
+import { ArrowRight, List, UploadSimple } from "phosphor-react";
 import { useCallback } from "react";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
@@ -9,6 +9,7 @@ import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
 import { useBuyerSellerAccounts } from "../../../lib/utils/hooks/useBuyerSellerAccounts";
 import { Thread } from "../types";
+import ButtonProposal from "./ButtonProposal/ButtonProposal";
 import Dispute from "./Dispute";
 import Message from "./Message";
 
@@ -85,25 +86,6 @@ const Input = styled.input`
   }
 `;
 
-const BtnProposal = styled.button`
-  border: 3px solid ${colors.secondary};
-  padding-left: 1.2rem;
-  padding-right: 2.5rem;
-  font-size: 0.875rem;
-  margin-right: 0.875rem;
-  height: 2.7rem;
-  font-weight: 600;
-  color: ${colors.secondary};
-  background-color: transparent;
-  position: relative;
-  svg {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    right: 0.6rem;
-  }
-`;
-
 const SimpleMessage = styled.p`
   all: unset;
   display: block;
@@ -129,6 +111,12 @@ const InputWrapper = styled.div`
     }
   }
 `;
+
+const ErrorMessage = () => (
+  <Container>
+    <SimpleMessage>There has been an error, try again or refresh</SimpleMessage>
+  </Container>
+);
 
 const getWasItSentByMe = (
   myBuyerId: string,
@@ -176,13 +164,7 @@ export default function ChatConversation({ thread }: Props) {
     !isLoadingBuyer &&
     (isErrorSellers || isErrorBuyers || (!sellerId && !buyerId))
   ) {
-    return (
-      <Container>
-        <SimpleMessage>
-          There has been an error, try again or refresh
-        </SimpleMessage>
-      </Container>
-    );
+    return <ErrorMessage />;
   }
 
   if (!thread) {
@@ -191,6 +173,10 @@ export default function ChatConversation({ thread }: Props) {
         <SimpleMessage>Select a message</SimpleMessage>
       </Container>
     );
+  }
+  const { exchange } = thread;
+  if (!exchange) {
+    return <ErrorMessage />;
   }
 
   return (
@@ -222,9 +208,7 @@ export default function ChatConversation({ thread }: Props) {
           })}
         </Messages>
         <TypeMessage>
-          <BtnProposal>
-            Proposal <Plus size={24} />
-          </BtnProposal>
+          <ButtonProposal exchange={exchange} />
           <InputWrapper>
             <Input placeholder="Write a message" />
             <UploadSimple

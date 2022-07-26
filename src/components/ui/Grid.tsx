@@ -5,6 +5,7 @@ type JustifyContent =
   | "flex-start"
   | "center"
   | "flex-end"
+  | "space-evently"
   | "space-between"
   | "space-around"
   | "stretch";
