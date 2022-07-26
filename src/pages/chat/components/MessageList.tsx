@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 import SellerID from "../../../components/ui/SellerID";
@@ -82,6 +82,7 @@ interface Props {
   threads: Thread[];
   onChangeConversation: (thread: Thread) => void;
   chatListOpen: boolean;
+  currentThread?: Thread;
 }
 const getMessageItemKey = (thread: Thread) =>
   `${thread.threadId.buyerId}-${thread.threadId.exchangeId}-${thread.threadId.sellerId}`;
@@ -89,9 +90,17 @@ const getMessageItemKey = (thread: Thread) =>
 export default function MessageList({
   threads,
   onChangeConversation,
-  chatListOpen
+  chatListOpen,
+  currentThread
 }: Props) {
-  const [activeMessageKey, setActiveMessageKey] = useState<string>();
+  const [activeMessageKey, setActiveMessageKey] = useState<string>(
+    currentThread ? getMessageItemKey(currentThread) : ""
+  );
+  useEffect(() => {
+    if (currentThread) {
+      setActiveMessageKey(getMessageItemKey(currentThread));
+    }
+  }, [currentThread]);
 
   return (
     <Container $chatListOpen={chatListOpen}>

@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Route, Routes, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 
@@ -229,35 +229,36 @@ export default function Chat() {
     id_in: threads.map((message) => message.threadId.exchangeId),
     disputed: null
   });
-  const threadsWithExchanges = threads.map((thread) => {
-    return {
-      threadId: thread.threadId,
-      exchange: exchanges?.find(
-        (exchange) => exchange.id === thread.threadId.exchangeId
-      ),
-      messages: thread.messages
-    };
-  });
+  const threadsWithExchanges = useMemo(
+    () =>
+      threads.map((thread) => {
+        return {
+          threadId: thread.threadId,
+          exchange: exchanges?.find(
+            (exchange) => exchange.id === thread.threadId.exchangeId
+          ),
+          messages: thread.messages
+        };
+      }),
+    [exchanges]
+  );
   const [selectedThread, selectThread] = useState<Thread>();
   const [chatListOpen, setChatListOpen] = useState<boolean>(false);
   const params = useParams();
+  const exchangeId = params["*"];
   const navigate = useNavigate();
 
-  console.log(threadsWithExchanges);
-
   useEffect(() => {
-    if (!selectedThread && threadsWithExchanges[0]?.exchange) {
+    if (threadsWithExchanges?.[0]?.exchange) {
       const currentThread = threadsWithExchanges.find((thread) => {
-        console.log(thread);
-        console.log(Object.values(params)[0]);
-        return thread.threadId.exchangeId === `${Object.values(params)[0]}`;
+        return thread.threadId.exchangeId === exchangeId;
       });
 
       if (currentThread) {
         selectThread(currentThread);
       }
     }
-  }, [params, selectedThread, threadsWithExchanges]);
+  }, [exchangeId, threadsWithExchanges]);
 
   return (
     <Container>
@@ -269,6 +270,7 @@ export default function Chat() {
           navigate(`/chat/${thread.threadId.exchangeId}`, { replace: true });
         }}
         chatListOpen={chatListOpen}
+        currentThread={selectedThread}
       />
       <Routes>
         <Route
