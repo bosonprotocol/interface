@@ -256,7 +256,7 @@ export default function Chat() {
       />
       <Routes>
         <Route
-          path=":id"
+          path={`:${UrlParameters.exchangeId}`}
           element={
             <ChatConversation
               thread={selectedThread}

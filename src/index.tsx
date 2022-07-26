@@ -47,10 +47,10 @@ root.render(
           <SentryProvider>
             <>
               <Route
-                path={BosonRoutes.Chat}
+                path={`${BosonRoutes.Chat}/*`}
                 element={<App withLayout={false} withFooter={false} />}
               >
-                <Route path="" element={<Chat />} />
+                <Route path="*" element={<Chat />} />
               </Route>
               <Route path="/" element={<App />}>
                 <Route path={BosonRoutes.Root} element={<Landing />} />
