@@ -65,7 +65,7 @@ export default function TestForm() {
       onSubmit={(v, b) => handleSubmit(v, b)}
       validationSchema={validationSchema}
     >
-      {({ values, errors }) => {
+      {({ values }) => {
         return (
           <Form>
             <FormField title="Input">
