@@ -1,16 +1,14 @@
+import { Check as CheckComponent, Info as InfoComponent } from "phosphor-react";
 import styled from "styled-components";
 
-import { ReactComponent as CheckSvg } from "../../../assets/check.svg";
-import { colors } from "../../../lib/styles/colors";
-import { Exchange } from "../../../lib/utils/hooks/useExchanges";
-import { ProposalMessage } from "../../../pages/chat/types";
-import Price from "../../price";
-import { useConvertedPrice } from "../../price/useConvertedPrice";
-import Button from "../../ui/Button";
-import Grid from "../../ui/Grid";
-import SellerID from "../../ui/SellerID";
-import { ModalProps } from "../ModalContext";
-import { ReactComponent as InfoSvg } from "./info.svg";
+import { colors } from "../../../../lib/styles/colors";
+import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
+import { ProposalMessage } from "../../../../pages/chat/types";
+import { useConvertedPrice } from "../../../price/useConvertedPrice";
+import Button from "../../../ui/Button";
+import Grid from "../../../ui/Grid";
+import { ModalProps } from "../../ModalContext";
+import ExchangePreview from "./components/ExchangePreview";
 
 interface Props {
   exchange: Exchange;
@@ -21,17 +19,12 @@ interface Props {
   title: ModalProps["title"];
 }
 
-const Name = styled.div`
-  font-size: 1.25rem;
-  font-weight: 600;
-`;
-
 const ProposedSolution = styled.h4`
   font-size: 1.25rem;
   font-weight: 600;
 `;
 
-const CheckIcon = styled(CheckSvg)`
+const CheckIcon = styled(CheckComponent)`
   margin-right: 0.5rem;
 `;
 
@@ -40,19 +33,6 @@ const Line = styled.div`
   height: 0.75rem;
   width: 0.001rem;
   margin: 0 0.5rem;
-`;
-
-const StyledPrice = styled(Price)`
-  > div {
-    align-items: flex-end;
-  }
-
-  small {
-    margin: 0 !important;
-    > * {
-      font-size: 0.75rem;
-    }
-  }
 `;
 
 const Info = styled.div`
@@ -64,7 +44,7 @@ const Info = styled.div`
   align-items: center;
 `;
 
-const InfoIcon = styled(InfoSvg)`
+const InfoIcon = styled(InfoComponent)`
   margin-right: 1.1875rem;
 `;
 
@@ -90,31 +70,7 @@ export default function ResolveDispute({
   return (
     <>
       <Grid justifyContent="space-between" padding="2rem 0">
-        <Grid>
-          <img src={offer.metadata.imageUrl} alt="Exchange url" width={80} />
-          <Grid
-            flexDirection="column"
-            alignItems="flex-start"
-            margin="1rem"
-            gap="0.5rem"
-          >
-            <Name>{offer.metadata.name}</Name>
-            <SellerID
-              seller={offer?.seller}
-              offerName={offer.metadata.name || ""}
-              justifyContent="flex-start"
-              withProfileImage
-            />
-          </Grid>
-        </Grid>
-        <StyledPrice
-          address={offer.exchangeToken.address}
-          currencySymbol={offer.exchangeToken.symbol}
-          value={offer.price}
-          decimals={offer.exchangeToken.decimals}
-          isExchange
-          convert
-        />
+        <ExchangePreview exchange={exchange} />
       </Grid>
       <ProposedSolution>Proposed solution</ProposedSolution>
       <div>

@@ -17,10 +17,12 @@ interface Props {
 export default function ModalProvider({ children }: Props) {
   const { pathname } = useLocation();
   const [store, setStore] = useState(initalState.store);
-  const { modalType, modalProps } = store;
+  // const { modalType, modalProps } = store;
 
   const showModal = useCallback(
     (modalType: ModalType, modalProps?: Store["modalProps"]) => {
+      console.log("showModal props", modalProps, "store", store);
+
       setStore({
         ...store,
         modalType,
@@ -31,6 +33,7 @@ export default function ModalProvider({ children }: Props) {
   );
 
   const hideModal = useCallback(() => {
+    console.log("hideModal call!!");
     setStore({
       ...store,
       modalType: null,
@@ -38,41 +41,71 @@ export default function ModalProvider({ children }: Props) {
     });
   }, [store]);
 
+  const updateProps = useCallback(
+    (props: Store["modalProps"]) => {
+      console.log("updateProps props", props, "store", store);
+      // setStore({
+      //   ...store,
+      //   modalProps: {
+      //     ...store.modalProps,
+      //     ...props
+      //   }
+      // });
+      setStore({
+        ...props
+      } as any);
+    },
+    [store]
+  );
+
   useEffect(() => {
-    if (modalType !== null) {
+    if (store.modalType !== null) {
       hideModal();
     }
   }, [pathname]); // eslint-disable-line
 
-  const renderComponent = () => {
-    const ModalComponent = modalType ? MODAL_COMPONENTS[modalType] : null;
-    if (!modalType || !ModalComponent) {
+  console.log("modalprovider store", store);
+
+  const RenderModalComponent = () => {
+    const ModalComponent = store.modalType
+      ? MODAL_COMPONENTS[store.modalType]
+      : null;
+    if (!store.modalType || !ModalComponent) {
       document.body.style.overflow = "unset";
       return null;
     }
 
     document.body.style.overflow = "hidden";
     return (
-      <Modal hideModal={hideModal} title={modalProps?.title}>
+      <Modal
+        hideModal={hideModal}
+        title={store.modalProps?.title}
+        headerComponent={store.modalProps?.headerComponent}
+      >
         <ModalComponent
           id="modal"
-          {...(modalProps as any)}
+          {...(store.modalProps as any)}
           hideModal={hideModal}
         />
+        <button onClick={() => console.log("store", store)}>store log</button>
+        <button onClick={() => updateProps({ activeStep: 2 } as any)}>
+          update props
+        </button>
       </Modal>
     );
   };
 
   const value: ModalContextType = {
     store,
+    updateProps,
     showModal,
     hideModal
-  } as ModalContextType;
+  };
 
   return (
     <ModalContext.Provider value={value}>
       {children}
-      {renderComponent()}
+      <RenderModalComponent />
     </ModalContext.Provider>
   );
 }

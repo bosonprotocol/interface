@@ -1,13 +1,13 @@
+import { Info as InfoComponent } from "phosphor-react";
 import styled from "styled-components";
 
-import { colors } from "../../../lib/styles/colors";
-import { getBuyerCancelPenalty } from "../../../lib/utils/getPrices";
-import { Exchange } from "../../../lib/utils/hooks/useExchanges";
-import DetailTable from "../../detail/DetailTable";
-import { useConvertedPrice } from "../../price/useConvertedPrice";
-import Button from "../../ui/Button";
-import { ModalProps } from "../ModalContext";
-import { ReactComponent as InfoSvg } from "./info.svg";
+import { colors } from "../../../../lib/styles/colors";
+import { getBuyerCancelPenalty } from "../../../../lib/utils/getPrices";
+import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
+import DetailTable from "../../../detail/DetailTable";
+import { useConvertedPrice } from "../../../price/useConvertedPrice";
+import Button from "../../../ui/Button";
+import { ModalProps } from "../../ModalContext";
 
 interface Props {
   exchange: Exchange;
@@ -33,7 +33,7 @@ const Info = styled.div`
   align-items: center;
 `;
 
-const InfoIcon = styled(InfoSvg)`
+const InfoIcon = styled(InfoComponent)`
   margin-right: 1.1875rem;
 `;
 

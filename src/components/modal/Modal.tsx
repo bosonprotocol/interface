@@ -1,4 +1,5 @@
 import { X as Close } from "phosphor-react";
+import { ReactNode } from "react";
 import { createPortal } from "react-dom";
 import styled from "styled-components";
 
@@ -50,14 +51,14 @@ const Wrapper = styled.div`
   }
 `;
 
-const Title = styled(Typography)`
+const Header = styled(Typography)`
   position: relative;
   height: 4.25rem;
   padding: 1rem 2rem;
   margin: 0;
   padding-right: 8rem;
   border-bottom: 2px solid ${colors.border};
-  > button {
+  > button[data-close] {
     position: absolute;
     top: 50%;
     right: 0;
@@ -84,18 +85,33 @@ interface Props {
   children: React.ReactNode;
   hideModal: () => void;
   title?: string;
+  headerComponent?: ReactNode;
 }
 
-export default function Modal({ children, hideModal, title = "modal" }: Props) {
+export default function Modal({
+  children,
+  hideModal,
+  title = "modal",
+  headerComponent: HeaderComponent
+}: Props) {
   return createPortal(
     <Root data-testid="modal">
       <Wrapper>
-        <Title tag="h3">
-          {title}
-          <Button theme="blank" onClick={hideModal}>
-            <Close />
-          </Button>
-        </Title>
+        {HeaderComponent ? (
+          <Header tag="div">
+            {HeaderComponent}
+            <Button data-close theme="blank" onClick={hideModal}>
+              <Close />
+            </Button>
+          </Header>
+        ) : (
+          <Header tag="h3">
+            {title}
+            <Button data-close theme="blank" onClick={hideModal}>
+              <Close />
+            </Button>
+          </Header>
+        )}
         <Content>{children}</Content>
       </Wrapper>
       <RootBG onClick={hideModal} />
