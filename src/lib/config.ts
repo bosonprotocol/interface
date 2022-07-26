@@ -6,12 +6,16 @@ import { parseCurationList } from "./utils/curationList";
 const REACT_APP_CHAIN_ID = process.env.REACT_APP_CHAIN_ID
   ? parseInt(process.env.REACT_APP_CHAIN_ID)
   : chain.ropsten.id;
-
 export const config = getDefaultConfig({ chainId: REACT_APP_CHAIN_ID });
+
+const ENABLE_SENTRY_LOGGING =
+  process.env.NODE_ENV === "development"
+    ? stringToBoolean(process.env.ENABLE_SENTRY_LOGGING)
+    : ["local", "testing"].includes(config.envName);
 
 export const CONFIG = {
   ...config,
-  enableSentryLogging: ["local", "testing"].includes(config.envName),
+  enableSentryLogging: ENABLE_SENTRY_LOGGING,
   dateFormat: process.env.DATE_FORMAT || "YYYY/MM/DD",
   fullDateFormat: process.env.FULL_DATE_FORMAT || "YYYY-MM-DDTHH:mm:ssZ[Z]",
   defaultCurrency: {

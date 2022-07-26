@@ -264,13 +264,18 @@ export default function CreateProduct() {
           }
           validationSchema={wizardStep.currentValidation}
         >
-          <Form>
-            {isPreviewVisible ? (
-              <Preview togglePreview={setIsPreviewVisible} />
-            ) : (
-              wizardStep.currentForm
-            )}
-          </Form>
+          {({ values, errors }) => {
+            console.log(values, errors);
+            return (
+              <Form>
+                {isPreviewVisible ? (
+                  <Preview togglePreview={setIsPreviewVisible} />
+                ) : (
+                  wizardStep.currentForm
+                )}
+              </Form>
+            );
+          }}
         </Formik>
         {!isPreviewVisible && isArray(wizardStep.helpSection) && (
           <HelpWrapper>
