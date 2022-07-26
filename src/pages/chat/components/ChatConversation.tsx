@@ -18,6 +18,7 @@ const Container = styled.div`
   flex: 0 1 75%;
   flex-direction: column;
   position: relative;
+  width: 100%;
 `;
 
 const Header = styled.div`
@@ -66,27 +67,41 @@ const Conversation = styled.div<{ $alignStart: boolean }>`
 `;
 
 const TypeMessage = styled.div`
-  height: 5rem;
+  height: max-content;
   width: 100%;
   display: flex;
   align-items: center;
   padding: 24px 16px 24px 16px;
 `;
 
-const Input = styled.input`
+const Input = styled.div`
   width: 100%;
   font-size: 1rem;
   background: ${colors.lightGrey};
   border: 0px solid ${colors.border};
-  height: 2.7rem;
+  height: max-content;
   font-family: "Plus Jakarta Sans";
   font-style: normal;
   font-size: 1rem;
   font-weight: 500;
   line-height: 1.5rem;
   padding: 0.75rem 1rem 0.75rem 1rem;
+  max-width: calc(100vw - 10.9375rem);
   &:focus {
     outline: none;
+  }
+  span {
+    width: 100%;
+    height: 100%;
+    max-width: calc(100% - 2.8125rem);
+    border: none;
+    display: block;
+    max-height: 180px;
+    overflow-y: auto;
+    overflow-wrap: break-word;
+    &:focus {
+      outline: none;
+    }
   }
 `;
 
@@ -287,7 +302,9 @@ export default function ChatConversation({
         <TypeMessage>
           <ButtonProposal exchange={exchange} />
           <InputWrapper>
-            <Input placeholder="Write a message" />
+            <Input>
+              <span contentEditable="true">sdfsd</span>
+            </Input>
             <UploadSimple
               size={24}
               data-upload

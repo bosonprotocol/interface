@@ -1,6 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
-
 import { useEffect, useMemo, useState } from "react";
 import { Route, Routes, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
@@ -276,14 +273,11 @@ export default function Chat() {
         <Route
           path={`:${UrlParameters.exchangeId}`}
           element={
-            <>
-              <ChatConversation
-                thread={selectedThread}
-                setChatListOpen={setChatListOpen}
-                chatListOpen={chatListOpen}
-              />
-              <h1>test</h1>
-            </>
+            <ChatConversation
+              thread={selectedThread}
+              setChatListOpen={setChatListOpen}
+              chatListOpen={chatListOpen}
+            />
           }
         />
       </Routes>
