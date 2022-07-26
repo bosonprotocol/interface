@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useState } from "react";
 
 import { Exchange } from "../../../../../lib/utils/hooks/useExchanges";
 import { ProposalMessage } from "../../../../../pages/chat/types";
@@ -31,9 +31,7 @@ export default function MakeProposal({
     proposals: [],
     additionalInformationFiles: []
   });
-  useEffect(() => {
-    console.log("mount MakeProposal");
-  }, []);
+
   return (
     <>
       <Grid justifyContent="space-between" padding="2rem 0">
