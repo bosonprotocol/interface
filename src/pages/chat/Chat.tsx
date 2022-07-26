@@ -1,9 +1,11 @@
-import { useState } from "react";
-import { generatePath, Route, Routes } from "react-router-dom";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
+
+import { useEffect, useState } from "react";
+import { Route, Routes, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 
 import { UrlParameters } from "../../lib/routing/parameters";
-import { BosonRoutes } from "../../lib/routing/routes";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import ChatConversation from "./components/ChatConversation";
 import MessageList from "./components/MessageList";
@@ -238,12 +240,24 @@ export default function Chat() {
   });
   const [selectedThread, selectThread] = useState<Thread>();
   const [chatListOpen, setChatListOpen] = useState<boolean>(false);
+  const params = useParams();
+  const navigate = useNavigate();
 
-  console.log(selectedThread);
+  console.log(threadsWithExchanges);
 
-  const path = generatePath(BosonRoutes.ChatMessage, {
-    [UrlParameters.exchangeId]: "1"
-  });
+  useEffect(() => {
+    if (!selectedThread && threadsWithExchanges[0]?.exchange) {
+      const currentThread = threadsWithExchanges.find((thread) => {
+        console.log(thread);
+        console.log(Object.values(params)[0]);
+        return thread.threadId.exchangeId === `${Object.values(params)[0]}`;
+      });
+
+      if (currentThread) {
+        selectThread(currentThread);
+      }
+    }
+  }, [params, selectedThread, threadsWithExchanges]);
 
   return (
     <Container>
@@ -251,6 +265,8 @@ export default function Chat() {
         threads={threadsWithExchanges}
         onChangeConversation={(thread) => {
           selectThread(thread);
+          console.log(thread);
+          navigate(`/chat/${thread.threadId.exchangeId}`, { replace: true });
         }}
         chatListOpen={chatListOpen}
       />
@@ -258,11 +274,14 @@ export default function Chat() {
         <Route
           path={`:${UrlParameters.exchangeId}`}
           element={
-            <ChatConversation
-              thread={selectedThread}
-              setChatListOpen={setChatListOpen}
-              chatListOpen={chatListOpen}
-            />
+            <>
+              <ChatConversation
+                thread={selectedThread}
+                setChatListOpen={setChatListOpen}
+                chatListOpen={chatListOpen}
+              />
+              <h1>test</h1>
+            </>
           }
         />
       </Routes>
