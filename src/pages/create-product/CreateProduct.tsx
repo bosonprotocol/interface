@@ -205,6 +205,7 @@ export default function CreateProduct() {
   const onViewMyItem = (id: unknown) => {
     hideModal();
     setCurrentForm(0);
+    setIsPreviewVisible(false);
     // TODO: REDIRECT USER {id}
   };
   const handleOpenSuccessModal = ({ offerId }: { offerId: unknown }) => {

@@ -34,7 +34,7 @@ interface Props {
 
 const PreviewWrapper = styled.div`
   margin: 2rem auto;
-  max-width: 65.75rem;
+  max-width: 90%;
 `;
 const PreviewWrapperContent = styled.div`
   overflow: hidden;
@@ -143,9 +143,10 @@ export default function Preview({ togglePreview }: Props) {
                   style={{ fontSize: "2rem", marginBottom: "2rem" }}
                 >
                   {/* TODO: ADD CORRECT VALUES */}
-                  {/* {name} */}
+                  {name}
                 </Typography>
                 <DetailWidget
+                  isPreview={true}
                   pageType="offer"
                   offer={offer}
                   name={name}
