@@ -35,6 +35,7 @@ export default function MakeProposal({
     refundPercentage: Yup.number()
       .moreThan(0, "The percentage should be more than 0")
       .max(100, "The percentage should be less than or equal to 100")
+      .defined("This field cannot be left empty")
   });
   return (
     <>
@@ -83,21 +84,29 @@ export default function MakeProposal({
         }}
         initialValues={{
           description: "",
-          proposals: [],
-          refund: false,
+          proposalsTypes: [],
           refundAmount: 0,
           refundPercentage: 0,
-          return: false,
           upload: []
         }}
         validateOnMount
       >
         {(props: FormikProps<any>) => {
           // TODO: remove any
+          console.log(props);
           const isDescribeProblemOK = !props.errors["description"];
+
+          const isReturnProposal = !!props.values.proposalsTypes.find(
+            (proposal: { label: string; value: string }) =>
+              proposal.value === "return"
+          );
+          const isRefundProposal = !!props.values.proposalsTypes.find(
+            (proposal: { label: string; value: string }) =>
+              proposal.value === "refund"
+          );
           const isMakeAProposalOK =
-            (!!props.values["refund"] && !props.errors["refundPercentage"]) ||
-            !!props.values["return"];
+            (isRefundProposal && !props.errors["refundPercentage"]) ||
+            (!isRefundProposal && isReturnProposal);
           const isFormValid = isDescribeProblemOK && isMakeAProposalOK;
           return (
             <Form>
