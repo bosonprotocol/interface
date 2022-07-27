@@ -29,12 +29,17 @@ const Container = styled.div<{ $disputeOpen: boolean }>`
   transition: 400ms;
   width: ${({ $disputeOpen }) => $disputeOpen && "100vw"};
   background: ${colors.lightGrey};
+  padding-top: 1.875rem;
+  ${breakpoint.m} {
+    width: 75%;
+  }
   ${breakpoint.l} {
     position: relative;
     background: transparent;
     right: unset;
     margin-top: 0;
     width: unset;
+    padding-top: none;
   }
   > img {
     width: 100%;

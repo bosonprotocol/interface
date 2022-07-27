@@ -9,6 +9,7 @@ import {
 import styled from "styled-components";
 
 import { UrlParameters } from "../../lib/routing/parameters";
+import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import ChatConversation from "./components/ChatConversation";
@@ -285,7 +286,10 @@ export default function Chat() {
     <Container>
       <MessageList
         threads={threadsWithExchanges}
-        isConversationOpened={location.pathname !== "/chat/"}
+        isConversationOpened={
+          location.pathname !== `${BosonRoutes.Chat}/` &&
+          location.pathname !== `${BosonRoutes.Chat}`
+        }
         onChangeConversation={(thread) => {
           selectThread(thread);
           console.log(thread);
@@ -306,7 +310,8 @@ export default function Chat() {
           }
         />
       </Routes>
-      {location.pathname === "/chat/" && (
+      {(location.pathname === `${BosonRoutes.Chat}/` ||
+        location.pathname === `${BosonRoutes.Chat}`) && (
         <SelectMessageContainer>
           <SimpleMessage>Select a message</SimpleMessage>
         </SelectMessageContainer>
