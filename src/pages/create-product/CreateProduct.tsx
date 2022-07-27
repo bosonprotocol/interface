@@ -24,6 +24,7 @@ import {
 } from "../../components/product/validation/createProductValidationSchema";
 import MultiSteps from "../../components/step/MultiSteps";
 import { createYourProfileHelp } from "../../lib/const/productHelpOptions";
+import { initialValues } from "./initialValues";
 
 const ProductLayoutContainer = styled.div(
   ({ isPreviewVisible }: { isPreviewVisible: boolean }) => {
@@ -47,39 +48,6 @@ const CreateProductWrapper = styled.div`
     margin-bottom: 2rem;
   }
 `;
-
-const createYourProfileInitialValues = {
-  creteYourProfile: {
-    name: "",
-    email: "",
-    description: "",
-    website: ""
-  }
-} as const;
-
-const productTypeInitialValues = {
-  productType: {
-    productType: "",
-    productVariant: ""
-  }
-} as const;
-
-const productInformationInitialValues = {
-  productInformation: {
-    productTitle: "",
-    describe: "",
-    category: "",
-    tags: "",
-    attribute: "",
-    attributeValue: ""
-  }
-} as const;
-
-const initialValues: CreateProductForm = {
-  ...createYourProfileInitialValues,
-  ...productTypeInitialValues,
-  ...productInformationInitialValues
-} as const;
 
 type CreateProductSteps = {
   0: {
