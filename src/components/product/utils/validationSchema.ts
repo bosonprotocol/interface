@@ -27,15 +27,3 @@ export const productInformationValidationSchema = Yup.object({
     attributeValue: Yup.string().required(validationMessage.required)
   })
 });
-
-type CreateYourProfile = Yup.InferType<
-  typeof createYourProfileValidationSchema
->;
-type ProductType = Yup.InferType<typeof productTypeValidationSchema>;
-type ProductInformation = Yup.InferType<
-  typeof productInformationValidationSchema
->;
-
-export type CreateProductForm = CreateYourProfile &
-  ProductType &
-  ProductInformation;
