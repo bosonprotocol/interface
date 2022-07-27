@@ -46,10 +46,11 @@ export default function MultiSteps({
                     : StepState.Inactive;
                 return (
                   <Step
+                    disabled={!callback}
                     state={state}
                     onClick={() => {
-                      setCurrent(currentKey);
                       if (callback) {
+                        setCurrent(currentKey);
                         callback(currentKey);
                       }
                     }}

@@ -4,9 +4,12 @@ import { transition } from "../../components/ui/styles";
 import { colors } from "../../lib/styles/colors";
 import { StepState } from "./Step";
 
-export const StepStyle = styled.div.attrs((props: { state: StepState }) => ({
-  state: props.state
-}))`
+export const StepStyle = styled.div.attrs(
+  (props: { state: StepState; disabled: boolean }) => ({
+    state: props.state,
+    disabled: props.disabled
+  })
+)`
   position: relative;
   display: flex;
   flex-direction: row;
@@ -16,15 +19,16 @@ export const StepStyle = styled.div.attrs((props: { state: StepState }) => ({
 
   min-width: 6rem;
   height: 1.25rem;
-  ${({ state }) =>
+  ${({ state, disabled }) =>
     state !== StepState.Active &&
+    !disabled &&
     css`
       :hover {
         cursor: pointer;
       }
     `}
 
-  ${({ state }) =>
+  ${({ state, disabled }) =>
     state === StepState.Inactive &&
     css`
       background: ${colors.white};
@@ -44,15 +48,17 @@ export const StepStyle = styled.div.attrs((props: { state: StepState }) => ({
         width: 0.25rem;
         height: 0.25rem;
       }
-
-      :hover {
-        background: ${colors.lightGrey};
-        :before {
-          background: ${colors.darkGrey};
-          width: 0.5rem;
-          height: 0.5rem;
+      ${!disabled &&
+      css`
+        :hover {
+          background: ${colors.lightGrey};
+          :before {
+            background: ${colors.darkGrey};
+            width: 0.5rem;
+            height: 0.5rem;
+          }
         }
-      }
+      `}
 
       > div {
         display: none;
@@ -86,7 +92,7 @@ export const StepStyle = styled.div.attrs((props: { state: StepState }) => ({
       }
     `}
 
-  ${({ state }) =>
+  ${({ state, disabled }) =>
     state === StepState.Done &&
     css`
       background: var(--primary);
@@ -115,14 +121,16 @@ export const StepStyle = styled.div.attrs((props: { state: StepState }) => ({
       > div {
         display: none;
       }
-
-      :hover {
-        background: ${colors.black};
-        :before,
-        :after {
-          background: var(--primary);
+      ${!disabled &&
+      css`
+        :hover {
+          background: ${colors.black};
+          :before,
+          :after {
+            background: var(--primary);
+          }
         }
-      }
+      `}
     `}
 `;
 

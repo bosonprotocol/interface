@@ -17,6 +17,7 @@ const ButtonsSection = styled.div`
 `;
 
 interface Props {
+  onBackClick: () => void;
   onNextClick: () => void;
   isValid: boolean;
   exchange: Exchange;
@@ -30,6 +31,7 @@ export const proposals = [
 export default function MakeAProposalStep({
   exchange,
   onNextClick,
+  onBackClick,
   isValid
 }: Props) {
   const [proposalsTypesField] = useField<typeof proposals>("proposalsTypes");
@@ -75,6 +77,9 @@ export default function MakeAProposalStep({
           disabled={!isValid}
         >
           Next
+        </Button>
+        <Button theme="outline" onClick={() => onBackClick()}>
+          Back
         </Button>
       </ButtonsSection>
     </>

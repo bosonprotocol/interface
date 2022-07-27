@@ -21,6 +21,20 @@ interface Props {
   setActiveStep: (step: number) => void;
 }
 
+const reqMessage = "This field is required";
+const validationSchemaPerStep = [
+  Yup.object({
+    description: Yup.string().trim().required(reqMessage)
+  }),
+  Yup.object({
+    refundPercentage: Yup.number()
+      .moreThan(0, "The percentage should be more than 0")
+      .max(100, "The percentage should be less than or equal to 100")
+      .defined("This field cannot be left empty")
+  }),
+  Yup.object({})
+];
+
 export default function MakeProposal({
   exchange,
   hideModal,
@@ -28,15 +42,7 @@ export default function MakeProposal({
   sendProposal,
   activeStep
 }: Props) {
-  const reqMessage = "This field is required";
-
-  const validationSchema = Yup.object({
-    description: Yup.string().trim().required(reqMessage),
-    refundPercentage: Yup.number()
-      .moreThan(0, "The percentage should be more than 0")
-      .max(100, "The percentage should be less than or equal to 100")
-      .defined("This field cannot be left empty")
-  });
+  const validationSchema = validationSchemaPerStep[activeStep];
   return (
     <>
       <Grid justifyContent="space-between" padding="2rem 0">
@@ -93,7 +99,6 @@ export default function MakeProposal({
       >
         {(props: FormikProps<any>) => {
           // TODO: remove any
-          console.log(props);
           const isDescribeProblemOK = !props.errors["description"];
 
           const isReturnProposal = !!props.values.proposalsTypes.find(
@@ -117,6 +122,7 @@ export default function MakeProposal({
                 />
               ) : activeStep === 1 ? (
                 <MakeAProposalStep
+                  onBackClick={() => setActiveStep(0)}
                   onNextClick={() => setActiveStep(2)}
                   isValid={isMakeAProposalOK}
                   exchange={exchange}
