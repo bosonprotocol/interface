@@ -1,20 +1,11 @@
-import { useFormikContext } from "formik";
 import styled from "styled-components";
 
-import Field, { FieldType } from "../../components/form/Field";
 import { colors } from "../../lib/styles/colors";
+import { Upload } from "../form";
 import Button from "../ui/Button";
 import InputGroup from "../ui/InputGroup";
 import Typography from "../ui/Typography";
 import { ProductButtonGroup } from "./Product.styles";
-import type { CreateProductForm } from "./validation/createProductValidationSchema";
-const productTypeItemsPerRow = {
-  xs: 2,
-  s: 2,
-  m: 2,
-  l: 4,
-  xl: 4
-};
 
 export const Box = styled.div`
   padding: 1.625rem 0;
@@ -41,10 +32,8 @@ const SpaceContainer = styled.div`
   }
 `;
 
-const FILE_MAX_SIZE = 0.6 * 1024;
-
+const FILE_MAX_SIZE = 0.6 * 1000;
 export default function ProductImages() {
-  const { handleChange, values } = useFormikContext<CreateProductForm>();
   return (
     <ContainerProductImage>
       <Typography tag="h2">Product Images</Typography>
@@ -57,45 +46,45 @@ export default function ProductImages() {
         }}
       >
         <SpaceContainer>
-          <Field
-            fieldType={FieldType.FileUpload}
-            fileMaxSize={FILE_MAX_SIZE}
+          <Upload
+            name="productImages.thumbnail"
             placeholder="Thumbnail"
+            maxUploadSize={FILE_MAX_SIZE}
           />
-          <Field
-            fieldType={FieldType.FileUpload}
-            fileMaxSize={FILE_MAX_SIZE}
+          <Upload
+            name="productImages.secondary"
             placeholder="Secondary"
+            maxUploadSize={FILE_MAX_SIZE}
           />
-          <Field
-            fieldType={FieldType.FileUpload}
-            fileMaxSize={FILE_MAX_SIZE}
+          <Upload
+            name="productImages.everyAngle"
             placeholder="Every angle"
+            maxUploadSize={FILE_MAX_SIZE}
           />
-          <Field
-            fieldType={FieldType.FileUpload}
-            fileMaxSize={FILE_MAX_SIZE}
+          <Upload
+            name="productImages.details"
             placeholder="Details"
+            maxUploadSize={FILE_MAX_SIZE}
           />
-          <Field
-            fieldType={FieldType.FileUpload}
-            fileMaxSize={FILE_MAX_SIZE}
+          <Upload
+            name="productImages.inUse"
             placeholder="In Use"
+            maxUploadSize={FILE_MAX_SIZE}
           />
-          <Field
-            fieldType={FieldType.FileUpload}
-            fileMaxSize={FILE_MAX_SIZE}
+          <Upload
+            name="productImages.styledScene"
             placeholder="Styled Scene"
+            maxUploadSize={FILE_MAX_SIZE}
           />
-          <Field
-            fieldType={FieldType.FileUpload}
+          <Upload
+            name="productImages.sizeAndScale"
             placeholder="Size and scale"
-            fileMaxSize={FILE_MAX_SIZE}
+            maxUploadSize={FILE_MAX_SIZE}
           />
-          <Field
-            fieldType={FieldType.FileUpload}
-            fileMaxSize={FILE_MAX_SIZE}
+          <Upload
+            name="productImages.more"
             placeholder="More"
+            maxUploadSize={FILE_MAX_SIZE}
           />
         </SpaceContainer>
       </InputGroup>

@@ -49,6 +49,7 @@ const customStyles = (error: any) => ({
 export default function SelectComponent({
   name,
   options,
+  placeholder = "Choose...",
   isClearable = true,
   isSearchable = true,
   ...props

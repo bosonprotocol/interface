@@ -12,9 +12,9 @@ export default function Input({ name, ...props }: InputProps) {
     typeof errorMessage === typeof "string" && errorMessage !== "";
 
   return (
-    <>
+    <div>
       <FieldInput error={errorMessage} {...field} {...props} />
       <Error display={displayError} message={errorMessage} />
-    </>
+    </div>
   );
 }

@@ -1,14 +1,12 @@
-import { useFormikContext } from "formik";
 import { Check } from "phosphor-react";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
-import Field, { FieldType } from "../form/Field";
+import { Input, Select, Textarea } from "../form";
 import Button from "../ui/Button";
 import InputGroup from "../ui/InputGroup";
 import Typography from "../ui/Typography";
 import { ContainerProductPage, ProductButtonGroup } from "./Product.styles";
-import type { CreateProductForm } from "./validation/createProductValidationSchema";
 
 const TermsOfExchangeContainer = styled(ContainerProductPage)`
   max-width: 100%;
@@ -78,8 +76,6 @@ const InfoListItem = styled.li`
 `;
 
 export default function TermsOfExchange() {
-  const { handleChange, values, errors } =
-    useFormikContext<CreateProductForm>();
   return (
     <TermsOfExchangeContainer>
       <MainContainer>
@@ -90,36 +86,24 @@ export default function TermsOfExchange() {
             subTitle="The exchange policy covers the contractual terms of the exchange to protect seller and buyer."
             popper="Need to be added"
           >
-            <Field
-              fieldType={FieldType.Input}
+            <Input
               placeholder="Fair Exchange Policy"
-              name=""
-              value=""
-              onChange={handleChange}
-              error=""
+              name="termsOfExchange.fairExchangePolicy"
             />
           </InputGroup>
           <InputGroup
-            title="Buyer cancellation  penalty*"
+            title="Buyer cancellation penalty*"
             subTitle="If the buyer fails to redeem the item within the redemption period they will be receive back the payment minus the buyer cancel penalty."
             popper="Need to be added"
           >
             <FieldContainer>
-              <Field
-                fieldType={FieldType.Input}
-                placeholder="10"
-                name=""
-                value=""
-                onChange={handleChange}
-                error=""
+              <Input
+                placeholder="Buyer cancellation penalty"
+                name="termsOfExchange.buyerCancellationPenalty"
               />
-              <Field
-                fieldType={FieldType.Input}
+              <Input
                 placeholder="Percent"
-                name=""
-                value=""
-                onChange={handleChange}
-                error=""
+                name="termsOfExchange.buyerCancellationPenaltyPercent"
               />
             </FieldContainer>
           </InputGroup>
@@ -129,21 +113,13 @@ export default function TermsOfExchange() {
             popper="Need to be added"
           >
             <FieldContainer>
-              <Field
-                fieldType={FieldType.Input}
-                placeholder="10"
-                name=""
-                value=""
-                onChange={handleChange}
-                error=""
+              <Input
+                placeholder="Seller deposit"
+                name="termsOfExchange.sellerDeposit"
               />
-              <Field
-                fieldType={FieldType.Input}
+              <Input
                 placeholder="Percent"
-                name=""
-                value=""
-                onChange={handleChange}
-                error=""
+                name="termsOfExchange.sellerDepositPercent"
               />
             </FieldContainer>
           </InputGroup>
@@ -151,13 +127,9 @@ export default function TermsOfExchange() {
             title="Dispute Resolver*"
             subTitle="Dispute Resolver will resolve disputes between buyer and seller in case they arise."
           >
-            <Field
-              fieldType={FieldType.Textarea}
+            <Textarea
               placeholder="Input the amount"
-              name=""
-              value=""
-              onChange={handleChange}
-              error=""
+              name="termsOfExchange.amount"
             />
           </InputGroup>
           <InputGroup
@@ -165,13 +137,10 @@ export default function TermsOfExchange() {
             subTitle="The time a buyer has to raise a dispute after they redeemed. When the dispute period passes, you will receive payment for the item."
             popper="Need to be added"
           >
-            <Field
-              fieldType={FieldType.Input}
-              placeholder="Click to select"
-              name=""
-              value=""
-              onChange={handleChange}
-              error=""
+            {/* TODO: */}
+            <Select
+              name="termsOfExchange.disputePeriod"
+              options={[{ value: "0", label: "0" }]}
             />
           </InputGroup>
           <ProductInformationButtonGroup>

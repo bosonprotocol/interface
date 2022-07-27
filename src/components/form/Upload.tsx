@@ -17,6 +17,7 @@ export default function Upload({
   name,
   accept = "image/*",
   disabled,
+  maxUploadSize = CONFIG.maxUploadSize,
   multiple = false,
   trigger,
   onFilesSelect,
@@ -71,12 +72,10 @@ export default function Upload({
     const { files } = e.target;
     const filesArray = Object.values(files);
     for (const file of filesArray) {
-      if (file.size > CONFIG.maxUploadSize) {
+      if (file.size > maxUploadSize) {
         // TODO: change to notification
         console.error(
-          `File size cannot exceed more than ${bytesToSize(
-            CONFIG.maxUploadSize
-          )}`
+          `File size cannot exceed more than ${bytesToSize(maxUploadSize)}`
         );
         return;
       }

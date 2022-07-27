@@ -1,13 +1,11 @@
-import { useFormikContext } from "formik";
 import styled from "styled-components";
 
 import Collapse from "../../components/collapse/Collapse";
-import Field, { FieldType } from "../form/Field";
+import { Input, Select } from "../form";
 import Button from "../ui/Button";
 import InputGroup from "../ui/InputGroup";
 import Typography from "../ui/Typography";
 import { ContainerProductPage, ProductButtonGroup } from "./Product.styles";
-import type { CreateProductForm } from "./validation/createProductValidationSchema";
 
 const FieldContainerJurisdictions = styled.div`
   display: grid;
@@ -40,8 +38,6 @@ const AdditionalContainer = styled.div`
 `;
 
 export default function ShippingInfo() {
-  const { handleChange, values, errors } =
-    useFormikContext<CreateProductForm>();
   return (
     <ContainerProductPage>
       <Typography tag="h2">Shipping Info</Typography>
@@ -50,14 +46,7 @@ export default function ShippingInfo() {
           title="Country of Origin"
           subTitle="The country you're dispatching from."
         >
-          <Field
-            fieldType={FieldType.Input}
-            placeholder="Click to select"
-            name=""
-            value=""
-            onChange={handleChange}
-            error=""
-          />
+          <Input placeholder="Country" name="shippingInfo.country" />
         </InputGroup>
         <InputGroup
           title="Supported Jurisdictions"
@@ -65,22 +54,8 @@ export default function ShippingInfo() {
           popper="Need to be added"
         >
           <FieldContainerJurisdictions>
-            <Field
-              fieldType={FieldType.Input}
-              placeholder="10"
-              name=""
-              value=""
-              onChange={handleChange}
-              error=""
-            />
-            <Field
-              fieldType={FieldType.Input}
-              placeholder="Percent"
-              name=""
-              value=""
-              onChange={handleChange}
-              error=""
-            />
+            <Input placeholder="Region" name="shippingInfo.region" />
+            <Input placeholder="Time" name="shippingInfo.time" />
           </FieldContainerJurisdictions>
         </InputGroup>
       </RequiredContainer>
@@ -94,45 +69,21 @@ export default function ShippingInfo() {
               By default the redemption point will be the Boson dApp."
             popper="Need to be added"
           >
-            <Field
-              fieldType={FieldType.Input}
-              placeholder="Add URL"
-              name=""
-              value=""
-              onChange={handleChange}
-              error=""
-            />
+            <Input placeholder="Add URL" name="shippingInfo.addUrl" />
           </InputGroup>
           <InputGroup
             title="Dimensions"
             subTitle="Specify the dimension and weight of your package"
           >
-            <Field
-              fieldType={FieldType.Input}
-              placeholder="L x W x H"
-              name=""
-              value=""
-              onChange={handleChange}
-              error=""
-            />
+            <Input placeholder="L x W x H" name="shippingInfo.lwh" />
           </InputGroup>
           <InputGroup title="Weight">
             <FieldContainerWidth>
-              <Field
-                fieldType={FieldType.Input}
-                placeholder="Weight"
-                name=""
-                value=""
-                onChange={handleChange}
-                error=""
-              />
-              <Field
-                fieldType={FieldType.Input}
-                placeholder="KG"
-                name=""
-                value=""
-                onChange={handleChange}
-                error=""
+              <Input placeholder="Weight" name="shippingInfo.weight" />
+              {/* // TODO: add weight */}
+              <Select
+                name="shippingInfo.kg"
+                options={[{ value: "0", label: "0" }]}
               />
             </FieldContainerWidth>
           </InputGroup>
@@ -140,44 +91,20 @@ export default function ShippingInfo() {
             title="Unit of Measurement"
             subTitle="Which unit do you want to use for the following measurements?"
           >
-            <Field
-              fieldType={FieldType.Input}
-              placeholder="Centimeter"
-              name=""
-              value=""
-              onChange={handleChange}
-              error=""
+            {/* // TODO: add measurements */}
+            <Select
+              name="shippingInfo.measurements"
+              options={[{ value: "0", label: "0" }]}
             />
           </InputGroup>
           <InputGroup title="Height">
-            <Field
-              fieldType={FieldType.Input}
-              placeholder="Height in CM"
-              name=""
-              value=""
-              onChange={handleChange}
-              error=""
-            />
+            <Input placeholder="Height" name="shippingInfo.height" />
           </InputGroup>
           <InputGroup title="Width">
-            <Field
-              fieldType={FieldType.Input}
-              placeholder="Width in CM"
-              name=""
-              value=""
-              onChange={handleChange}
-              error=""
-            />
+            <Input placeholder="Width" name="shippingInfo.width" />
           </InputGroup>
           <InputGroup title="Length">
-            <Field
-              fieldType={FieldType.Input}
-              placeholder="Length in CM"
-              name=""
-              value=""
-              onChange={handleChange}
-              error=""
-            />
+            <Input placeholder="Length" name="shippingInfo.length" />
           </InputGroup>
         </Collapse>
       </AdditionalContainer>

@@ -1,4 +1,4 @@
-import Field, { FieldType } from "../../components/form/Field";
+import { Input, Textarea, Upload } from "../form";
 import Button from "../ui/Button";
 import InputGroup from "../ui/InputGroup";
 import Typography from "../ui/Typography";
@@ -12,34 +12,16 @@ export default function CreateYourProfile() {
         title="Logo / profile picture*"
         subTitle="Upload a profile image with a max. width and height of 800px and a max. size of 300kb."
       >
-        <Field fieldType={FieldType.FileUpload} />
+        <Upload name="creteYourProfile.logo" />
       </InputGroup>
       <InputGroup title="Your brand / name*">
-        <Field
-          fieldType={FieldType.Input}
-          placeholder="Name"
-          fieldProps={{
-            name: "creteYourProfile.name"
-          }}
-        />
+        <Input name="creteYourProfile.name" placeholder="Name" />
       </InputGroup>
       <InputGroup title="Contact E-Mail*">
-        <Field
-          fieldType={FieldType.Input}
-          placeholder="Name"
-          fieldProps={{
-            name: "creteYourProfile.email"
-          }}
-        />
+        <Input name="creteYourProfile.email" placeholder="E-Mail" />
       </InputGroup>
       <InputGroup title="Description*">
-        <Field
-          fieldType={FieldType.Textarea}
-          placeholder="Describe"
-          fieldProps={{
-            name: "creteYourProfile.description"
-          }}
-        />
+        <Textarea name="creteYourProfile.description" placeholder="Describe" />
       </InputGroup>
       <InputGroup
         title="Website / Social media link"
@@ -49,12 +31,9 @@ export default function CreateYourProfile() {
           marginBottom: 0
         }}
       >
-        <Field
-          fieldType={FieldType.Input}
-          placeholder="www.example.com  OR www.instagram.com/example"
-          fieldProps={{
-            name: "creteYourProfile.website"
-          }}
+        <Input
+          name="creteYourProfile.website"
+          placeholder="www.example.com OR www.instagram.com/example"
         />
       </InputGroup>
       <ProductButtonGroup>

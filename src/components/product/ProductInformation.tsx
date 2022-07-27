@@ -1,13 +1,11 @@
-import { useFormikContext } from "formik";
 import styled from "styled-components";
 
 import Collapse from "../../components/collapse/Collapse";
-import Field, { FieldType } from "../../components/form/Field";
+import { Input, Select, Textarea } from "../form";
 import Button from "../ui/Button";
 import InputGroup from "../ui/InputGroup";
 import Typography from "../ui/Typography";
 import { ContainerProductPage, ProductButtonGroup } from "./Product.styles";
-import type { CreateProductForm } from "./validation/createProductValidationSchema";
 
 const AddProductContainer = styled.div`
   display: grid;
@@ -24,8 +22,6 @@ const ProductInformationButtonGroup = styled(ProductButtonGroup)`
 `;
 
 export default function ProductInformation() {
-  const { handleChange, values, errors } =
-    useFormikContext<CreateProductForm>();
   return (
     <ContainerProductPage>
       <Typography tag="h2">Product Information</Typography>
@@ -33,52 +29,35 @@ export default function ProductInformation() {
         title="Product Title*"
         subTitle="Use words people would search for when looking for your item."
       >
-        <Field
-          fieldType={FieldType.Input}
-          placeholder="Name"
+        <Input
           name="productInformation.productTitle"
-          value={values.productInformation.productTitle}
-          onChange={handleChange}
-          error={errors.productInformation?.productTitle}
+          placeholder="Product title"
         />
       </InputGroup>
       <InputGroup
         title="Description*"
         subTitle="Describe your product. Provide as much detail as possible."
       >
-        <Field
-          fieldType={FieldType.Textarea}
-          placeholder="Describe"
-          name="productInformation.describe"
-          value={values.productInformation.describe}
-          onChange={handleChange}
-          error={errors.productInformation?.describe}
-        />
+        <Textarea name="productInformation.describe" placeholder="Describe" />
       </InputGroup>
       <InputGroup
         title="Category*"
         subTitle="Select the category that best matches your product."
       >
-        <Field
-          fieldType={FieldType.Input}
-          placeholder="Click to select"
+        {/* TODO: */}
+        <Select
           name="productInformation.category"
-          value={values.productInformation.category}
-          onChange={handleChange}
-          error={errors.productInformation?.category}
+          options={[{ value: "0", label: "0" }]}
         />
       </InputGroup>
       <InputGroup
         title="Search Tags*"
         subTitle="Input any relevant tags to make your offer stand out."
       >
-        <Field
-          fieldType={FieldType.Input}
-          placeholder="Click to add tags"
+        {/* TODO: */}
+        <Select
           name="productInformation.tags"
-          value={values.productInformation.tags}
-          onChange={handleChange}
-          error={errors.productInformation?.tags}
+          options={[{ value: "0", label: "0" }]}
         />
       </InputGroup>
       <InputGroup
@@ -89,21 +68,10 @@ export default function ProductInformation() {
         }}
       >
         <AddProductContainer>
-          <Field
-            fieldType={FieldType.Input}
-            placeholder="Attribute"
-            name="productInformation.attribute"
-            value={values.productInformation.attribute}
-            onChange={handleChange}
-            error={errors.productInformation?.attribute}
-          />
-          <Field
-            fieldType={FieldType.Input}
-            placeholder="Attribute value"
+          <Input placeholder="Attribute" name="productInformation.attribute" />
+          <Input
+            placeholder="Attribute Value"
             name="productInformation.attributeValue"
-            value={values.productInformation.attributeValue}
-            onChange={handleChange}
-            error={errors.productInformation?.attributeValue}
           />
         </AddProductContainer>
       </InputGroup>
@@ -116,51 +84,26 @@ export default function ProductInformation() {
             subTitle="Input product serial number."
             popper="Need to be added"
           >
-            <Field
-              fieldType={FieldType.Input}
-              placeholder="SKU"
-              name=""
-              value={values.productInformation.productTitle}
-              onChange={handleChange}
-              error={errors.productInformation?.productTitle}
-            />
+            <Input placeholder="SKU" name="productInformation.sku" />
           </InputGroup>
           <InputGroup
             title="Product ID"
             subTitle="Input product ID."
             popper="Need to be added"
           >
-            <Field
-              fieldType={FieldType.Input}
-              placeholder="ID"
-              name=""
-              value={values.productInformation.productTitle}
-              onChange={handleChange}
-              error={errors.productInformation?.productTitle}
-            />
+            <Input placeholder="ID" name="productInformation.id" />
           </InputGroup>
           <InputGroup title="Product ID Type" popper="Need to be added">
-            <Field
-              fieldType={FieldType.Input}
-              placeholder="ID type"
-              name=""
-              value={values.productInformation.productTitle}
-              onChange={handleChange}
-              error={errors.productInformation?.productTitle}
-            />
+            <Input placeholder="ID Type" name="productInformation.idType" />
           </InputGroup>
           <InputGroup
             title="Brand Name"
             subTitle="Input brand name of product"
             popper="Need to be added"
           >
-            <Field
-              fieldType={FieldType.Input}
+            <Input
               placeholder="Brand name"
-              name=""
-              value={values.productInformation.productTitle}
-              onChange={handleChange}
-              error={errors.productInformation?.productTitle}
+              name="productInformation.brandName"
             />
           </InputGroup>
           <InputGroup
@@ -168,43 +111,24 @@ export default function ProductInformation() {
             subTitle="Input material of product"
             popper="Need to be added"
           >
-            <Field
-              fieldType={FieldType.Input}
-              placeholder="Material"
-              name=""
-              value={values.productInformation.productTitle}
-              onChange={handleChange}
-              error={errors.productInformation?.productTitle}
-            />
+            <Input placeholder="Material" name="productInformation.material" />
           </InputGroup>
           <InputGroup title="Manufacture name" popper="Need to be added">
-            <Field
-              fieldType={FieldType.Input}
-              placeholder="Manufacture name"
-              name=""
-              value={values.productInformation.productTitle}
-              onChange={handleChange}
-              error={errors.productInformation?.productTitle}
+            <Input
+              placeholder="Manufacture"
+              name="productInformation.manufacture"
             />
           </InputGroup>
           <InputGroup title="Manufacture model name" popper="Need to be added">
-            <Field
-              fieldType={FieldType.Input}
-              placeholder="Model name"
-              name=""
-              value={values.productInformation.productTitle}
-              onChange={handleChange}
-              error={errors.productInformation?.productTitle}
+            <Input
+              placeholder="Manufacture model name"
+              name="productInformation.manufactureModelName"
             />
           </InputGroup>
           <InputGroup title="Manufacture part number" popper="Need to be added">
-            <Field
-              fieldType={FieldType.Input}
+            <Input
               placeholder="Part number"
-              name=""
-              value={values.productInformation.productTitle}
-              onChange={handleChange}
-              error={errors.productInformation?.productTitle}
+              name="productInformation.partNumber"
             />
           </InputGroup>
         </Collapse>
