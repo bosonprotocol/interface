@@ -8,9 +8,12 @@ export interface DatepickerProps extends BaseProps {
   data?: string;
 }
 
-export type CheckboxProps = BaseProps;
+export interface CheckboxProps extends BaseProps {
+  text?: string;
+}
 
-export type TextareaProps = BaseProps;
+export type TextareaProps = BaseProps &
+  React.TextareaHTMLAttributes<HTMLTextAreaElement>;
 
 export interface ErrorProps {
   display?: boolean;
@@ -26,7 +29,8 @@ export interface FormFieldProps {
   style?: React.CSSProperties;
 }
 
-export type InputProps = BaseProps;
+export type InputProps = BaseProps &
+  React.InputHTMLAttributes<HTMLInputElement>;
 
 export interface SelectDataProps {
   name: string;
@@ -38,6 +42,7 @@ export interface SelectContentProps {
 }
 
 export interface SelectProps extends BaseProps {
+  multiple?: boolean;
   data: Array<SelectDataProps>;
 }
 
