@@ -12,15 +12,6 @@ import CoreTermsOfSale from "../../components/product/CoreTermsOfSale";
 import CreateYourProfile from "../../components/product/CreateYourProfile";
 import Help from "../../components/product/Help";
 import Preview from "../../components/product/Preview";
-import {
-  coreTermsOfSaleHelp,
-  createYourProfileHelp,
-  productImagesHelp,
-  productInformationHelp,
-  productTypeHelp,
-  shippingInfoHelp,
-  termsOfExchangeHelp
-} from "../../components/product/productHelpOptions";
 import ProductImages from "../../components/product/ProductImages";
 import ProductInformation from "../../components/product/ProductInformation";
 import ProductType from "../../components/product/ProductType";
@@ -35,6 +26,15 @@ import {
   productInformationValidationSchema,
   productTypeValidationSchema
 } from "../../components/product/utils";
+import {
+  coreTermsOfSaleHelp,
+  createYourProfileHelp,
+  productImagesHelp,
+  productInformationHelp,
+  productTypeHelp,
+  shippingInfoHelp,
+  termsOfExchangeHelp
+} from "../../components/product/utils/productHelpOptions";
 import MultiSteps from "../../components/step/MultiSteps";
 
 const ProductLayoutContainer = styled.div(
