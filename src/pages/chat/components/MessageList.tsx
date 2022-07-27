@@ -21,12 +21,14 @@ const Container = styled.div<{ $chatListOpen?: boolean }>`
   height: 100vh;
   margin-top: 3.75rem;
   transition: 400ms;
+  width: 100vw;
   ${breakpoint.m} {
     left: unset;
     position: relative;
     margin-top: 0;
     height: auto;
     z-index: ${zIndex.Default};
+    width: auto;
   }
 `;
 

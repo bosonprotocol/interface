@@ -1,5 +1,6 @@
 import { ArrowLeft, UploadSimple } from "phosphor-react";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
@@ -207,12 +208,32 @@ export default function ChatConversation({
   setChatListOpen
 }: Props) {
   const [disputeOpen, setDisputeOpen] = useState<boolean>(false);
+  const [windowSize, setWindowSize] = useState(getWindowSize());
+  const navigate = useNavigate();
   const { address } = useAccount();
   const {
     seller: { sellerId, isError: isErrorSellers, isLoading: isLoadingSeller },
     buyer: { buyerId, isError: isErrorBuyers, isLoading: isLoadingBuyer }
   } = useBuyerSellerAccounts(address || "");
   const { showModal } = useModal();
+
+  useEffect(() => {
+    function handleWindowResize() {
+      setWindowSize(getWindowSize());
+    }
+
+    window.addEventListener("resize", handleWindowResize);
+
+    return () => {
+      window.removeEventListener("resize", handleWindowResize);
+    };
+  }, []);
+
+  function getWindowSize() {
+    const { innerWidth, innerHeight } = window;
+    return { innerWidth, innerHeight };
+  }
+
   const SellerComponent = useCallback(
     ({
       size,
@@ -262,7 +283,11 @@ export default function ChatConversation({
         <NavigationMobile>
           <button
             onClick={() => {
-              setChatListOpen(!chatListOpen);
+              if (windowSize.innerWidth < 981) {
+                setChatListOpen(!chatListOpen);
+              } else {
+                navigate(`/chat`, { replace: true });
+              }
             }}
           >
             <ArrowLeft size={14} />

@@ -66,6 +66,10 @@ const DaysLeftToDispute = styled.div`
   font-size: 0.75rem;
   font-weight: 600;
   background: ${colors.lightGrey};
+  text-align: center;
+  ${breakpoint.l} {
+    text-align: left;
+  }
 `;
 
 const ExchangeInfo = styled(Section)`
