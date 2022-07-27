@@ -109,31 +109,6 @@ const Input = styled.div`
   }
 `;
 
-const BtnProposal = styled.button`
-  border: 3px solid ${colors.secondary};
-  padding-left: 1.2rem;
-  padding-right: 2.5rem;
-  font-size: 0.875rem;
-  margin-right: 0.875rem;
-  height: 2.7rem;
-  font-weight: 600;
-  color: ${colors.secondary};
-  background-color: transparent;
-  position: relative;
-  svg {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    right: 0.6rem;
-    ${breakpoint.xs} {
-      transform: translateY(-50%) scale(0.7);
-    }
-    ${breakpoint.s} {
-      transform: translateY(-50%);
-    }
-  }
-`;
-
 const SimpleMessage = styled.p`
   all: unset;
   display: block;

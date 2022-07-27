@@ -24,10 +24,8 @@ const StyledButton = styled.button`
     position: absolute;
     top: 50%;
     right: 0.6rem;
-    ${breakpoint.xs} {
-      transform: translateY(-50%) scale(0.7);
-    }
-    ${breakpoint.s} {
+    transform: translateY(-50%) scale(0.7);
+    ${breakpoint.m} {
       transform: translateY(-50%);
     }
   }
