@@ -1,34 +1,56 @@
+/* eslint @typescript-eslint/no-explicit-any: "off" */
 import { useField } from "formik";
-import { CaretDown, CaretUp } from "phosphor-react";
+import Select from "react-select";
 
+import { colors } from "../../lib/styles/colors";
+import { zIndex } from "../../lib/styles/zIndex";
 import Error from "./Error";
-import {
-  SelectGroup,
-  SelectIcon,
-  SelectItem,
-  SelectItemText,
-  SelectPrimitive,
-  SelectRoot,
-  SelectScrollDownButton,
-  SelectScrollUpButton,
-  SelectTrigger,
-  SelectValue,
-  SelectViewport,
-  StyledContent
-} from "./Select.styles";
-import type { SelectContentProps, SelectDataProps, SelectProps } from "./types";
+import type { SelectProps } from "./types";
+import { checkIfValueIsEmpty } from "./utils";
 
-function Content({ children, ...props }: SelectContentProps) {
-  return (
-    <SelectPrimitive.Portal>
-      <StyledContent {...props}>{children}</StyledContent>
-    </SelectPrimitive.Portal>
-  );
-}
-export default function Select({
+const customStyles = (error: any) => ({
+  control: (provided: any, state: any) => ({
+    ...provided,
+    borderRadius: 0,
+    padding: "0.25rem",
+    boxShadow: `inset 0px 0px 0px 2px  ${colors.border}`,
+    ":hover": {
+      borderColor: colors.secondary,
+      borderWidth: "1px"
+    },
+    background: colors.white,
+    border: state.isFocused
+      ? `1px solid ${colors.secondary}`
+      : !checkIfValueIsEmpty(error)
+      ? `1px solid ${colors.red}`
+      : `1px solid transparent`
+  }),
+  container: (provided: any) => ({
+    ...provided,
+    zIndex: zIndex.Select,
+    width: "100%"
+  }),
+  option: (provided: any, state: any) => ({
+    ...provided,
+    background:
+      state.isOptionSelected || state.isSelected || state.isFocused
+        ? colors.lightGrey
+        : colors.white,
+    color:
+      state.isOptionSelected || state.isSelected
+        ? colors.secondary
+        : colors.black
+  }),
+  indicatorSeparator: () => ({
+    display: "none"
+  })
+});
+
+export default function SelectComponent({
   name,
-  placeholder,
-  data,
+  options,
+  isClearable = true,
+  isSearchable = true,
   ...props
 }: SelectProps) {
   const [field, meta, helpers] = useField(name);
@@ -36,53 +58,26 @@ export default function Select({
   const displayError =
     typeof errorMessage === typeof "string" && errorMessage !== "";
 
+  const handleChange = (option: any) => {
+    if (!meta.touched) {
+      helpers.setTouched(true);
+    }
+
+    helpers.setValue(option);
+  };
+
   return (
     <>
-      <SelectRoot
-        {...props}
+      <Select
+        styles={customStyles(errorMessage)}
         {...field}
-        onValueChange={(value: string) => {
-          helpers.setValue(value);
-        }}
-        onOpenChange={(open: boolean) => {
-          if (!meta.touched && !open) {
-            helpers.setTouched(true);
-          }
-        }}
-      >
-        <SelectTrigger error={errorMessage}>
-          <SelectValue placeholder={placeholder || "Choose value…"} />
-          <SelectIcon>
-            <CaretDown size={18} />
-          </SelectIcon>
-        </SelectTrigger>
-        <Content>
-          <SelectScrollUpButton>
-            <CaretUp size={18} />
-          </SelectScrollUpButton>
-          <SelectViewport>
-            <SelectGroup>
-              {data ? (
-                data.map((element: SelectDataProps, index: number) => (
-                  <SelectItem
-                    value={element.value}
-                    key={`select_item_${index}`}
-                  >
-                    <SelectItemText>{element.name}</SelectItemText>
-                  </SelectItem>
-                ))
-              ) : (
-                <SelectItem value="none">
-                  <SelectItemText>None</SelectItemText>
-                </SelectItem>
-              )}
-            </SelectGroup>
-          </SelectViewport>
-          <SelectScrollDownButton>
-            <CaretDown size={18} />
-          </SelectScrollDownButton>
-        </Content>
-      </SelectRoot>
+        {...props}
+        options={options}
+        value={field.value}
+        onChange={handleChange}
+        isSearchable={isSearchable}
+        isClearable={isClearable}
+      />
       <Error display={displayError} message={errorMessage} />{" "}
     </>
   );

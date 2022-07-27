@@ -25,7 +25,14 @@ export default function Checkbox({ name, text, ...props }: CheckboxProps) {
   return (
     <>
       <CheckboxWrapper htmlFor={checkboxId} error={errorMessage}>
-        <input hidden id={checkboxId} type="checkbox" {...props} {...field} />
+        <input
+          hidden
+          id={checkboxId}
+          type="checkbox"
+          {...props}
+          {...field}
+          checked={field.value}
+        />
         <div>
           <Check size={16} />
         </div>

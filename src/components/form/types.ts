@@ -33,7 +33,7 @@ export type InputProps = BaseProps &
   React.InputHTMLAttributes<HTMLInputElement>;
 
 export interface SelectDataProps {
-  name: string;
+  label: string;
   value: string;
 }
 
@@ -42,8 +42,11 @@ export interface SelectContentProps {
 }
 
 export interface SelectProps extends BaseProps {
-  multiple?: boolean;
-  data: Array<SelectDataProps>;
+  isMulti?: boolean;
+  isDisabled?: boolean;
+  isClearable?: boolean;
+  isSearchable?: boolean;
+  options: Array<SelectDataProps>;
 }
 
 export interface UploadProps extends BaseProps {

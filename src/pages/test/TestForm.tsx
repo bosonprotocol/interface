@@ -41,7 +41,6 @@ export default function TestForm() {
     checkbox: false,
     input: "",
     textarea: "",
-    select: "",
     upload: [],
     datepicker: ""
   };
@@ -51,7 +50,7 @@ export default function TestForm() {
     input: Yup.string().trim().required(reqMessage),
     textarea: Yup.string().trim().required(reqMessage),
     upload: Yup.array().min(1, "File should be attached!"),
-    select: Yup.string().trim().required(reqMessage),
+    select: Yup.mixed().required(reqMessage),
     datepicker: Yup.string().trim().required(reqMessage)
   });
 
@@ -84,7 +83,10 @@ export default function TestForm() {
               <Select
                 placeholder="select"
                 name="select"
-                data={[{ name: "test", value: "test" }]}
+                options={[...new Array(10)].map((e, index) => ({
+                  label: `test_${index}`,
+                  value: `test_${index}`
+                }))}
               />
             </FormField>
             <FormField title="Upload">
