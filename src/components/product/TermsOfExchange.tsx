@@ -1,14 +1,11 @@
-import { useFormikContext } from "formik";
 import { Check } from "phosphor-react";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
-import Field, { FieldType } from "../form/Field";
+import { FormField, Input, Select } from "../form";
 import Button from "../ui/Button";
-import InputGroup from "../ui/InputGroup";
 import Typography from "../ui/Typography";
 import { ContainerProductPage, ProductButtonGroup } from "./Product.styles";
-import type { CreateProductForm } from "./validation/createProductValidationSchema";
 
 const TermsOfExchangeContainer = styled(ContainerProductPage)`
   max-width: 100%;
@@ -78,102 +75,99 @@ const InfoListItem = styled.li`
 `;
 
 export default function TermsOfExchange() {
-  const { handleChange, values, errors } =
-    useFormikContext<CreateProductForm>();
   return (
     <TermsOfExchangeContainer>
       <MainContainer>
         <FormWrapper>
           <Typography tag="h2">Terms of Exchange</Typography>
-          <InputGroup
-            title="Exchange policy*"
+          <FormField
+            title="Exchange policy"
+            required={true}
             subTitle="The exchange policy covers the contractual terms of the exchange to protect seller and buyer."
-            popper="Need to be added"
+            tooltip="TODO: add"
           >
-            <Field
-              fieldType={FieldType.Input}
+            <Select
               placeholder="Fair Exchange Policy"
-              name=""
-              value=""
-              onChange={handleChange}
-              error=""
+              name="termsOfExchange.fairExchangePolicy"
+              options={[{ value: "0", label: "0" }]}
             />
-          </InputGroup>
-          <InputGroup
-            title="Buyer cancellation  penalty*"
+          </FormField>
+          <FormField
+            title="Buyer cancellation penalty"
+            required={true}
             subTitle="If the buyer fails to redeem the item within the redemption period they will be receive back the payment minus the buyer cancel penalty."
-            popper="Need to be added"
+            tooltip="TODO: add"
           >
             <FieldContainer>
-              <Field
-                fieldType={FieldType.Input}
-                placeholder="10"
-                name=""
-                value=""
-                onChange={handleChange}
-                error=""
-              />
-              <Field
-                fieldType={FieldType.Input}
-                placeholder="Percent"
-                name=""
-                value=""
-                onChange={handleChange}
-                error=""
-              />
+              <div>
+                <Input
+                  placeholder="Buyer cancellation penalty"
+                  name="termsOfExchange.buyerCancellationPenalty"
+                />
+              </div>
+              <div>
+                <Select
+                  placeholder="Percent"
+                  name="termsOfExchange.buyerCancellationPenaltyPercent"
+                  options={[{ value: "0", label: "0" }]}
+                />
+              </div>
             </FieldContainer>
-          </InputGroup>
-          <InputGroup
-            title="Seller deposit*"
+          </FormField>
+          <FormField
+            title="Seller deposit"
+            required={true}
             subTitle="The seller deposit is charged when a buyers commits to the offer and is used to hold the seller accountable to follow through with their commitment to deliver the physical item. If you break your commitment as a seller, then your deposit will be transferred to the buyer."
-            popper="Need to be added"
+            tooltip="TODO: add"
           >
             <FieldContainer>
-              <Field
-                fieldType={FieldType.Input}
-                placeholder="10"
-                name=""
-                value=""
-                onChange={handleChange}
-                error=""
-              />
-              <Field
-                fieldType={FieldType.Input}
-                placeholder="Percent"
-                name=""
-                value=""
-                onChange={handleChange}
-                error=""
-              />
+              <div>
+                <Input
+                  placeholder="Seller deposit"
+                  name="termsOfExchange.sellerDeposit"
+                />
+              </div>
+              <div>
+                <Select
+                  placeholder="Percent"
+                  name="termsOfExchange.sellerDepositPercent"
+                  options={[{ value: "0", label: "0" }]}
+                />
+              </div>
             </FieldContainer>
-          </InputGroup>
-          <InputGroup
-            title="Dispute Resolver*"
-            subTitle="Dispute Resolver will resolve disputes between buyer and seller in case they arise."
+          </FormField>
+          <FormField
+            title="Dispute Resolver"
+            required={true}
+            subTitle="Dispute Resolver will resolve disputes between buyer and seller in case they arise.            "
           >
-            <Field
-              fieldType={FieldType.Textarea}
-              placeholder="Input the amount"
-              name=""
-              value=""
-              onChange={handleChange}
-              error=""
+            <Select
+              placeholder="Percent"
+              name="termsOfExchange.disputeResolverPeriod"
+              options={[{ value: "0", label: "0" }]}
             />
-          </InputGroup>
-          <InputGroup
-            title="Dispute period*"
+          </FormField>
+          <FormField
+            title="Dispute Period"
+            required={true}
             subTitle="The time a buyer has to raise a dispute after they redeemed. When the dispute period passes, you will receive payment for the item."
-            popper="Need to be added"
           >
-            <Field
-              fieldType={FieldType.Input}
-              placeholder="Click to select"
-              name=""
-              value=""
-              onChange={handleChange}
-              error=""
-            />
-          </InputGroup>
+            <FieldContainer>
+              <div>
+                <Input
+                  placeholder="Input the amount"
+                  name="termsOfExchange.disputeResolver"
+                />
+              </div>
+              <div>
+                <Select
+                  placeholder="Percent"
+                  name="termsOfExchange.disputeResolverPeriod"
+                  options={[{ value: "0", label: "0" }]}
+                />
+              </div>
+            </FieldContainer>
+          </FormField>
           <ProductInformationButtonGroup>
             <Button theme="secondary" type="submit">
               Next

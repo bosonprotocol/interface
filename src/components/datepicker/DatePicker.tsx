@@ -4,14 +4,14 @@ import dayjs from "dayjs";
 import { useEffect, useRef, useState } from "react";
 
 import { CONFIG } from "../../lib/config";
-import Field from "../form/Field";
-import { FieldType } from "../form/Field";
+import { FieldInput } from "../form/Field.styles";
 import Calendar from "./Calendar";
 import { DatePickerWrapper, Picker } from "./DatePicker.style";
 import SelectMonth from "./SelectMonth";
 
 interface Props {
   onChange?: (selected: Dayjs) => void;
+  error?: string;
   [x: string]: any;
 }
 
@@ -50,12 +50,7 @@ export default function DatePicker({ onChange, ...props }: Props) {
 
   return (
     <Picker>
-      <Field
-        fieldType={FieldType.Input}
-        value={shownDate}
-        onClick={handleShow}
-        {...props}
-      />
+      <FieldInput value={shownDate} onClick={handleShow} {...props} />
       <DatePickerWrapper
         show={show}
         ref={(r) => {

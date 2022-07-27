@@ -1,13 +1,11 @@
-import { useFormikContext } from "formik";
 import styled from "styled-components";
 
 import Collapse from "../../components/collapse/Collapse";
-import Field, { FieldType } from "../form/Field";
+import { FormField, Input, Select } from "../form";
 import Button from "../ui/Button";
-import InputGroup from "../ui/InputGroup";
 import Typography from "../ui/Typography";
+import { MOCK_OPTIONS } from "./const";
 import { ContainerProductPage, ProductButtonGroup } from "./Product.styles";
-import type { CreateProductForm } from "./validation/createProductValidationSchema";
 
 const FieldContainerJurisdictions = styled.div`
   display: grid;
@@ -26,7 +24,7 @@ const ProductInformationButtonGroup = styled(ProductButtonGroup)`
 `;
 
 const RequiredContainer = styled.div`
-  .inputGroup:first-of-type {
+  .FormField:first-of-type {
     margin-bottom: 3.5rem;
   }
 `;
@@ -40,145 +38,66 @@ const AdditionalContainer = styled.div`
 `;
 
 export default function ShippingInfo() {
-  const { handleChange, values, errors } =
-    useFormikContext<CreateProductForm>();
   return (
     <ContainerProductPage>
       <Typography tag="h2">Shipping Info</Typography>
       <RequiredContainer>
-        <InputGroup
+        <FormField
           title="Country of Origin"
           subTitle="The country you're dispatching from."
         >
-          <Field
-            fieldType={FieldType.Input}
-            placeholder="Click to select"
-            name=""
-            value=""
-            onChange={handleChange}
-            error=""
-          />
-        </InputGroup>
-        <InputGroup
+          <Input placeholder="Country" name="shippingInfo.country" />
+        </FormField>
+        <FormField
           title="Supported Jurisdictions"
           subTitle="Select the jurisdictions you will ship to."
-          popper="Need to be added"
+          tooltip="TODO: add"
         >
           <FieldContainerJurisdictions>
-            <Field
-              fieldType={FieldType.Input}
-              placeholder="10"
-              name=""
-              value=""
-              onChange={handleChange}
-              error=""
-            />
-            <Field
-              fieldType={FieldType.Input}
-              placeholder="Percent"
-              name=""
-              value=""
-              onChange={handleChange}
-              error=""
-            />
+            <Input placeholder="Region" name="shippingInfo.region" />
+            <Input placeholder="Time" name="shippingInfo.time" />
           </FieldContainerJurisdictions>
-        </InputGroup>
+        </FormField>
       </RequiredContainer>
       <AdditionalContainer>
         <Collapse
           title={<Typography tag="h3">Additional information</Typography>}
         >
-          <InputGroup
+          <FormField
             title="Redemption point"
             subTitle="The website from which buyers can redeem the rNFT.
               By default the redemption point will be the Boson dApp."
-            popper="Need to be added"
+            tooltip="TODO: add"
           >
-            <Field
-              fieldType={FieldType.Input}
-              placeholder="Add URL"
-              name=""
-              value=""
-              onChange={handleChange}
-              error=""
-            />
-          </InputGroup>
-          <InputGroup
+            <Input placeholder="Add URL" name="shippingInfo.addUrl" />
+          </FormField>
+          <FormField
             title="Dimensions"
             subTitle="Specify the dimension and weight of your package"
           >
-            <Field
-              fieldType={FieldType.Input}
-              placeholder="L x W x H"
-              name=""
-              value=""
-              onChange={handleChange}
-              error=""
-            />
-          </InputGroup>
-          <InputGroup title="Weight">
+            <Input placeholder="L x W x H" name="shippingInfo.lwh" />
+          </FormField>
+          <FormField title="Weight">
             <FieldContainerWidth>
-              <Field
-                fieldType={FieldType.Input}
-                placeholder="Weight"
-                name=""
-                value=""
-                onChange={handleChange}
-                error=""
-              />
-              <Field
-                fieldType={FieldType.Input}
-                placeholder="KG"
-                name=""
-                value=""
-                onChange={handleChange}
-                error=""
-              />
+              <Input placeholder="Weight" name="shippingInfo.weight" />
+              <Select name="shippingInfo.kg" options={MOCK_OPTIONS} />
             </FieldContainerWidth>
-          </InputGroup>
-          <InputGroup
+          </FormField>
+          <FormField
             title="Unit of Measurement"
             subTitle="Which unit do you want to use for the following measurements?"
           >
-            <Field
-              fieldType={FieldType.Input}
-              placeholder="Centimeter"
-              name=""
-              value=""
-              onChange={handleChange}
-              error=""
-            />
-          </InputGroup>
-          <InputGroup title="Height">
-            <Field
-              fieldType={FieldType.Input}
-              placeholder="Height in CM"
-              name=""
-              value=""
-              onChange={handleChange}
-              error=""
-            />
-          </InputGroup>
-          <InputGroup title="Width">
-            <Field
-              fieldType={FieldType.Input}
-              placeholder="Width in CM"
-              name=""
-              value=""
-              onChange={handleChange}
-              error=""
-            />
-          </InputGroup>
-          <InputGroup title="Length">
-            <Field
-              fieldType={FieldType.Input}
-              placeholder="Length in CM"
-              name=""
-              value=""
-              onChange={handleChange}
-              error=""
-            />
-          </InputGroup>
+            <Select name="shippingInfo.measurements" options={MOCK_OPTIONS} />
+          </FormField>
+          <FormField title="Height">
+            <Input placeholder="Height" name="shippingInfo.height" />
+          </FormField>
+          <FormField title="Width">
+            <Input placeholder="Width" name="shippingInfo.width" />
+          </FormField>
+          <FormField title="Length">
+            <Input placeholder="Length" name="shippingInfo.length" />
+          </FormField>
         </Collapse>
       </AdditionalContainer>
       <ProductInformationButtonGroup>
