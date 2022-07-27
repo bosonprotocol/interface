@@ -158,6 +158,7 @@ export default function CreateProduct() {
   };
 
   const onViewMyItem = (id: unknown) => {
+    console.log(id);
     hideModal();
     setCurrentForm(0);
     setIsPreviewVisible(false);
