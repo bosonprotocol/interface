@@ -94,7 +94,6 @@ export default function MakeProposal({
       >
         {(props: FormikProps<any>) => {
           // TODO: remove any
-          console.log(props);
           const isDescribeProblemOK = !props.errors["description"];
           const isMakeAProposalOK =
             (!!props.values["refund"] && !props.errors["refundPercentage"]) ||

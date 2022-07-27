@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 import { colors } from "../../../../../../lib/styles/colors";
 import { Exchange } from "../../../../../../lib/utils/hooks/useExchanges";
+import UploadedFiles from "../../../../../form/Upload/UploadedFiles";
 import Button from "../../../../../ui/Button";
 import Grid from "../../../../../ui/Grid";
 import Typography from "../../../../../ui/Typography";
@@ -28,7 +29,7 @@ export default function ReviewAndSubmitStep({
   const [descriptionField] = useField({
     name: "description"
   });
-  const [uploadField] = useField<File[]>({
+  const [uploadField, _, uploadFieldHelpers] = useField<File[]>({
     name: "upload"
   });
   const [refundField] = useField<boolean>({
@@ -49,11 +50,13 @@ export default function ReviewAndSubmitStep({
         Description
       </Typography>
       <Typography tag="p">{descriptionField.value}</Typography>
-      <div>
-        {uploadField.value.map((file) => {
-          return <p>{file.name}</p>;
-        })}
-      </div>
+      <UploadedFiles
+        files={uploadField.value}
+        handleRemoveFile={(index) => {
+          const files = uploadField.value.filter((_, idx) => idx !== index);
+          uploadFieldHelpers.setValue(files);
+        }}
+      />
       <Typography fontSize="1.25rem" color={colors.darkGrey}></Typography>
       <Grid flexDirection="column" margin="2rem 0" alignItems="flex-start">
         <Typography fontWeight="600" tag="p" fontSize="1.5rem">

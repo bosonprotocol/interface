@@ -49,4 +49,6 @@ export interface UploadProps extends BaseProps {
   multiple?: boolean;
   trigger?: React.ReactNode | JSX.Element;
   onFilesSelect?: (files: File[]) => void;
+  files?: File[];
+  wrapperProps?: React.HTMLAttributes<HTMLDivElement>;
 }

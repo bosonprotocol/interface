@@ -2,16 +2,15 @@ import { useField } from "formik";
 import { Image, Trash } from "phosphor-react";
 import { useEffect, useRef, useState } from "react";
 
-import { CONFIG } from "../../lib/config";
-import { colors } from "../../lib/styles/colors";
-import bytesToSize from "../../lib/utils/bytesToSize";
-import Button from "../ui/Button";
-import Grid from "../ui/Grid";
-import Typography from "../ui/Typography";
-import Error from "./Error";
-import { FieldInput } from "./Field.styles";
-import { FieldFileUploadWrapper, FileUploadWrapper } from "./Field.styles";
-import type { UploadProps } from "./types";
+import { CONFIG } from "../../../lib/config";
+import { colors } from "../../../lib/styles/colors";
+import bytesToSize from "../../../lib/utils/bytesToSize";
+import Button from "../../ui/Button";
+import Error from "../Error";
+import { FieldInput } from "../Field.styles";
+import { FieldFileUploadWrapper, FileUploadWrapper } from "../Field.styles";
+import type { UploadProps } from "../types";
+import UploadedFiles from "./UploadedFiles";
 
 export default function Upload({
   name,
@@ -20,6 +19,8 @@ export default function Upload({
   multiple = false,
   trigger,
   onFilesSelect,
+  files: initialFiles,
+  wrapperProps,
   ...props
 }: UploadProps) {
   const [, meta, helpers] = useField(name);
@@ -28,7 +29,7 @@ export default function Upload({
     typeof errorMessage === typeof "string" && errorMessage !== "";
 
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [files, setFiles] = useState<File[]>([]);
+  const [files, setFiles] = useState<File[]>(initialFiles ? initialFiles : []);
   const [preview, setPreview] = useState<string | null>(null);
 
   useEffect(() => {
@@ -86,7 +87,7 @@ export default function Upload({
 
   return (
     <>
-      <FieldFileUploadWrapper>
+      <FieldFileUploadWrapper {...wrapperProps}>
         <FieldInput
           {...props}
           hidden
@@ -118,20 +119,9 @@ export default function Upload({
             <Trash size={24} color={colors.white} />
           </div>
         )}
-        {multiple &&
-          files.map((file: File, index: number) => {
-            return (
-              <Grid key={`${file.name}_${index}`}>
-                <Typography tag="p">
-                  {file.name}
-                  <small>{bytesToSize(file.size)}</small>
-                </Typography>
-                <Button onClick={() => handleRemoveFile(index)} theme="blank">
-                  <Trash size={24} />
-                </Button>
-              </Grid>
-            );
-          })}
+        {multiple && (
+          <UploadedFiles files={files} handleRemoveFile={handleRemoveFile} />
+        )}
       </FieldFileUploadWrapper>
       <Error display={displayError} message={errorMessage} />
     </>
