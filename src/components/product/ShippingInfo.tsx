@@ -4,8 +4,8 @@ import Collapse from "../../components/collapse/Collapse";
 import { FormField, Input, Select } from "../form";
 import Button from "../ui/Button";
 import Typography from "../ui/Typography";
-import { MOCK_OPTIONS } from "./const";
 import { ContainerProductPage, ProductButtonGroup } from "./Product.styles";
+import { MOCK_OPTIONS } from "./utils";
 
 const FieldContainerJurisdictions = styled.div`
   display: grid;

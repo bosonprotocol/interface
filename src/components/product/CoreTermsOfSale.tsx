@@ -3,8 +3,8 @@ import styled from "styled-components";
 import { Datepicker, FormField, Input, Select, Textarea } from "../form";
 import Button from "../ui/Button";
 import Typography from "../ui/Typography";
-import { MOCK_OPTIONS } from "./const";
 import { ContainerProductPage, ProductButtonGroup } from "./Product.styles";
+import { MOCK_OPTIONS } from "./utils";
 
 const PriceContainer = styled.div`
   display: grid;

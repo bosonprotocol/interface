@@ -26,7 +26,7 @@ import DetailTable from "../detail/DetailTable";
 import Button from "../ui/Button";
 import Typography from "../ui/Typography";
 import { ProductButtonGroup } from "./Product.styles";
-import type { CreateProductForm } from "./validation/createProductValidationSchema";
+import type { CreateProductForm } from "./utils";
 
 interface Props {
   togglePreview: React.Dispatch<React.SetStateAction<boolean>>;

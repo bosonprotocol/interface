@@ -13,7 +13,7 @@ import oneItemTypeProduct from "./img/one-item-product.png";
 import phygitalProduct from "./img/phygital-product.png";
 import physicalProduct from "./img/physical-product.png";
 import { ContainerProductPage, ProductButtonGroup } from "./Product.styles";
-import type { CreateProductForm } from "./validation/createProductValidationSchema";
+import type { CreateProductForm } from "./utils";
 
 const productTypeItemsPerRow = {
   xs: 1,

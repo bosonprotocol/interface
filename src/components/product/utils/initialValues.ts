@@ -1,4 +1,4 @@
-import { CreateProductForm } from "../../components/product/validation/createProductValidationSchema";
+import { CreateProductForm } from "./types";
 
 export const createYourProfileInitialValues = {
   creteYourProfile: {
