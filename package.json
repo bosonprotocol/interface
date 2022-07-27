@@ -78,6 +78,7 @@
     "react-responsive": "^9.0.0-beta.10",
     "react-router-dom": "^6.3.0",
     "react-scripts": "^5.0.1",
+    "react-select": "^5.4.0",
     "react-swipeable": "^7.0.0",
     "stream-browserify": "^3.0.0",
     "util": "^0.12.4",

@@ -29,7 +29,7 @@ export default function ReviewAndSubmitStep({
   const [descriptionField] = useField({
     name: "description"
   });
-  const [uploadField, _, uploadFieldHelpers] = useField<File[]>({
+  const [uploadField, , uploadFieldHelpers] = useField<File[]>({
     name: "upload"
   });
   const [refundField] = useField<boolean>({
