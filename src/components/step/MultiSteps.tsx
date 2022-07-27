@@ -48,11 +48,10 @@ export default function MultiSteps({
                   <Step
                     state={state}
                     onClick={() => {
-                      if (state !== StepState.Inactive) {
-                        setCurrent(currentKey);
-                        if (callback) {
-                          callback(currentKey);
-                        }
+                      // if (state !== StepState.Inactive) {
+                      setCurrent(currentKey);
+                      if (callback) {
+                        callback(currentKey);
                       }
                     }}
                     key={`multi-step_${currentKey}`}
