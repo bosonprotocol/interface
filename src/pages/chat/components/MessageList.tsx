@@ -9,7 +9,10 @@ import { Thread } from "../types";
 const messageItemHeight = "6.25rem";
 const messageItemMargin = "1.5rem";
 
-const Container = styled.div<{ $chatListOpen?: boolean }>`
+const Container = styled.div<{
+  $chatListOpen?: boolean;
+  $isConversationOpened?: boolean;
+}>`
   display: flex;
   flex-direction: column;
   flex: 1 1 25%;
@@ -22,6 +25,14 @@ const Container = styled.div<{ $chatListOpen?: boolean }>`
   margin-top: 3.75rem;
   transition: 400ms;
   width: 100vw;
+  left: ${({ $isConversationOpened }) =>
+    $isConversationOpened ? "-100vw" : "0"};
+  width: ${({ $isConversationOpened }) =>
+    $isConversationOpened ? "100vw" : "auto"};
+  margin-top: ${({ $isConversationOpened }) =>
+    $isConversationOpened ? "unset" : "0"};
+  position: ${({ $isConversationOpened }) =>
+    $isConversationOpened ? "absolute" : "relative"};
   ${breakpoint.m} {
     left: unset;
     position: relative;
@@ -85,6 +96,7 @@ interface Props {
   onChangeConversation: (thread: Thread) => void;
   chatListOpen: boolean;
   currentThread?: Thread;
+  isConversationOpened: boolean;
 }
 const getMessageItemKey = (thread: Thread) =>
   `${thread.threadId.buyerId}-${thread.threadId.exchangeId}-${thread.threadId.sellerId}`;
@@ -93,7 +105,8 @@ export default function MessageList({
   threads,
   onChangeConversation,
   chatListOpen,
-  currentThread
+  currentThread,
+  isConversationOpened
 }: Props) {
   const [activeMessageKey, setActiveMessageKey] = useState<string>(
     currentThread ? getMessageItemKey(currentThread) : ""
@@ -105,7 +118,10 @@ export default function MessageList({
   }, [currentThread]);
 
   return (
-    <Container $chatListOpen={chatListOpen}>
+    <Container
+      $chatListOpen={chatListOpen}
+      $isConversationOpened={isConversationOpened}
+    >
       <Header>Messages</Header>
       {threads
         .filter((thread) => thread.exchange)

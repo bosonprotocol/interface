@@ -1,8 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
-import { Route, Routes, useNavigate, useParams } from "react-router-dom";
+import {
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+  useParams
+} from "react-router-dom";
 import styled from "styled-components";
 
 import { UrlParameters } from "../../lib/routing/parameters";
+import { colors } from "../../lib/styles/colors";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import ChatConversation from "./components/ChatConversation";
 import MessageList from "./components/MessageList";
@@ -221,6 +228,22 @@ const Container = styled.div`
   height: 100%;
 `;
 
+const SelectMessageContainer = styled.div`
+  display: flex;
+  flex: 0 1 75%;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+`;
+
+const SimpleMessage = styled.p`
+  all: unset;
+  display: block;
+  height: 100%;
+  padding: 1rem;
+  background: ${colors.lightGrey};
+`;
+
 export default function Chat() {
   const { data: exchanges } = useExchanges({
     id_in: threads.map((message) => message.threadId.exchangeId),
@@ -242,6 +265,7 @@ export default function Chat() {
   const [selectedThread, selectThread] = useState<Thread>();
   const [chatListOpen, setChatListOpen] = useState<boolean>(false);
   const params = useParams();
+  const location = useLocation();
   const exchangeId = params["*"];
   const navigate = useNavigate();
 
@@ -261,6 +285,7 @@ export default function Chat() {
     <Container>
       <MessageList
         threads={threadsWithExchanges}
+        isConversationOpened={location.pathname !== "/chat/"}
         onChangeConversation={(thread) => {
           selectThread(thread);
           console.log(thread);
@@ -281,6 +306,11 @@ export default function Chat() {
           }
         />
       </Routes>
+      {location.pathname === "/chat/" && (
+        <SelectMessageContainer>
+          <SimpleMessage>Select a message</SimpleMessage>
+        </SelectMessageContainer>
+      )}
     </Container>
   );
 }

@@ -39,12 +39,13 @@ const Container = styled.div<{ $disputeOpen: boolean }>`
     width: 100%;
     max-height: 400px;
     object-fit: contain;
-    background: ${colors.lightGrey};
+    width: 23.25rem;
+    display: block;
+    margin: 0 auto;
     ${breakpoint.l} {
-      width: 23.25rem;
+      max-width: 23.25rem;
       max-height: unset;
-      object-fit: auto;
-      background: none;
+      object-fit: cover;
     }
   }
 `;
@@ -53,6 +54,9 @@ const sectionStyles = `
 border: 2px solid ${colors.border};
 border-top: none;
 padding: 1.625rem;
+${breakpoint.l} {
+  background: ${colors.white};
+}
 background: ${colors.lightGrey};
 `;
 const Section = styled.div`
@@ -65,10 +69,10 @@ const DaysLeftToDispute = styled.div`
   padding: 0.5rem 1.25rem 0.5rem 1.5rem;
   font-size: 0.75rem;
   font-weight: 600;
-  background: ${colors.lightGrey};
   text-align: center;
   ${breakpoint.l} {
     text-align: left;
+    background: ${colors.lightGrey};
   }
 `;
 

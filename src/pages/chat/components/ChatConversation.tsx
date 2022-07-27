@@ -1,5 +1,5 @@
 import { ArrowLeft, UploadSimple } from "phosphor-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
@@ -91,15 +91,18 @@ const Input = styled.div`
   &:focus {
     outline: none;
   }
-  span {
+  textarea {
     width: 100%;
     height: 100%;
     max-width: calc(100% - 2.8125rem);
     border: none;
     display: block;
-    max-height: 180px;
+    max-height: 16.875rem;
     overflow-y: auto;
     overflow-wrap: break-word;
+    border: none;
+    font-family: "Plus Jakarta Sans";
+    background: none;
     &:focus {
       outline: none;
     }
@@ -209,6 +212,8 @@ export default function ChatConversation({
 }: Props) {
   const [disputeOpen, setDisputeOpen] = useState<boolean>(false);
   const [windowSize, setWindowSize] = useState(getWindowSize());
+  const [value, setValue] = useState<string>();
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const navigate = useNavigate();
   const { address } = useAccount();
   const {
@@ -216,6 +221,10 @@ export default function ChatConversation({
     buyer: { buyerId, isError: isErrorBuyers, isLoading: isLoadingBuyer }
   } = useBuyerSellerAccounts(address || "");
   const { showModal } = useModal();
+
+  const textAreaChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setValue(event.target.value);
+  };
 
   useEffect(() => {
     function handleWindowResize() {
@@ -228,6 +237,14 @@ export default function ChatConversation({
       window.removeEventListener("resize", handleWindowResize);
     };
   }, []);
+
+  useEffect(() => {
+    if (textareaRef && textareaRef.current) {
+      textareaRef.current.style.height = "0px";
+      const scrollHeight = textareaRef.current.scrollHeight;
+      textareaRef.current.style.height = scrollHeight + "px";
+    }
+  }, [value]);
 
   function getWindowSize() {
     const { innerWidth, innerHeight } = window;
@@ -328,7 +345,9 @@ export default function ChatConversation({
           <ButtonProposal exchange={exchange} />
           <InputWrapper>
             <Input>
-              <span contentEditable="true"></span>
+              <textarea ref={textareaRef} onChange={textAreaChange}>
+                {value}
+              </textarea>
             </Input>
             <UploadSimple
               size={24}
