@@ -60,7 +60,7 @@ interface IDetailWidget {
 }
 
 const oneSecondToDays = 86400;
-const getOfferDetailData = (
+export const getOfferDetailData = (
   offer: Offer,
   convertedPrice: IPrice | null,
   isModal: boolean

@@ -10,6 +10,7 @@ export type ModalProps = {
   message?: string;
   type?: string;
   state?: keyof typeof ExchangeState;
+  noCloseIcon?: boolean;
   [x: string]: any;
 };
 export type ModalType = keyof typeof MODAL_TYPES | null;

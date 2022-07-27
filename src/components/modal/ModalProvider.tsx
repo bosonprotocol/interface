@@ -52,7 +52,12 @@ export default function ModalProvider({ children }: Props) {
 
     document.body.style.overflow = "hidden";
     return (
-      <Modal hideModal={hideModal} title={modalProps?.title}>
+      <Modal
+        hideModal={hideModal}
+        title={modalProps?.title}
+        noCloseIcon={modalProps?.noCloseIcon}
+        modalType={modalType}
+      >
         <ModalComponent id="modal" {...modalProps} />
       </Modal>
     );

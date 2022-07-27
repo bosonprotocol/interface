@@ -8,7 +8,7 @@ import { zIndex } from "../../lib/styles/zIndex";
 import Button from "../ui/Button";
 import { scrollStyles } from "../ui/styles";
 import Typography from "../ui/Typography";
-
+import { ModalType } from "./ModalContext";
 const Root = styled.div`
   position: fixed;
   top: 0;
@@ -28,13 +28,14 @@ const RootBG = styled.div`
   z-index: ${zIndex.Modal - 1};
 `;
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ modalType: ModalType }>`
   position: relative;
   z-index: ${zIndex.Modal};
   color: ${colors.black};
   background-color: var(--primaryBgColor);
   border: var(--secondary);
-
+  max-width: ${({ modalType }) =>
+    modalType === "PRODUCT_CREATE_SUCCESS" ? "1054px" : "auto"};
   margin: 0;
   ${breakpoint.s} {
     margin: 4rem;
@@ -50,12 +51,15 @@ const Wrapper = styled.div`
   }
 `;
 
-const Title = styled(Typography)`
+const Title = styled(Typography)<{ modalType: ModalType }>`
   position: relative;
   height: 4.25rem;
-  padding: 1rem 2rem;
+  text-align: ${({ modalType }) =>
+    modalType === "PRODUCT_CREATE_SUCCESS" ? "center" : "left"};
+  padding: ${({ modalType }) =>
+    modalType === "PRODUCT_CREATE_SUCCESS" ? "1rem 0" : "1rem 8rem"};
   margin: 0;
-  padding-right: 8rem;
+  display: block;
   border-bottom: 2px solid ${colors.border};
   > button {
     position: absolute;
@@ -84,21 +88,37 @@ interface Props {
   children: React.ReactNode;
   hideModal: () => void;
   title?: string;
+  noCloseIcon?: boolean;
+  modalType: ModalType;
 }
 
-export default function Modal({ children, hideModal, title = "modal" }: Props) {
+export default function Modal({
+  children,
+  hideModal,
+  title = "modal",
+  noCloseIcon = false,
+  modalType
+}: Props) {
+  const handleHideModal = () => {
+    if (noCloseIcon) {
+      return;
+    }
+    hideModal();
+  };
   return createPortal(
     <Root data-testid="modal">
-      <Wrapper>
-        <Title tag="h3">
+      <Wrapper modalType={modalType}>
+        <Title tag="h3" modalType={modalType}>
           {title}
-          <Button theme="blank" onClick={hideModal}>
-            <Close />
-          </Button>
+          {!noCloseIcon && (
+            <Button theme="blank" onClick={hideModal}>
+              <Close />
+            </Button>
+          )}
         </Title>
         <Content>{children}</Content>
       </Wrapper>
-      <RootBG onClick={hideModal} />
+      <RootBG onClick={handleHideModal} />
     </Root>,
     document.body
   );

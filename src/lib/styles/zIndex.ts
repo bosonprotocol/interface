@@ -7,6 +7,6 @@ export const zIndex = {
   Calendar: 30,
   Header: 1000,
   Notification: 1001,
-  Popper: 1002,
+  Popper: 2001,
   Modal: 2000
 };

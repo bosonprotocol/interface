@@ -128,6 +128,7 @@ export default function Preview({ togglePreview }: Props) {
               data-testid="name"
               style={{ fontSize: "2rem", marginBottom: "2rem" }}
             >
+              {/* TODO: ADD CORRECT VALUES */}
               {/* {name} */}
             </Typography>
             <DetailWidget
