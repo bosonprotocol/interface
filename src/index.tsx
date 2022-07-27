@@ -16,7 +16,6 @@ import Exchange from "./pages/exchange/Exchange";
 import Explore from "./pages/explore/Explore";
 import Landing from "./pages/landing/Landing";
 import OfferDetail from "./pages/offers/OfferDetail";
-import TestForm from "./pages/test/TestForm";
 import reportWebVitals from "./reportWebVitals";
 
 const rootElement = document.getElementById("root");
@@ -47,9 +46,6 @@ root.render(
           <SentryProvider>
             <Route path="/" element={<App />}>
               <Route path={BosonRoutes.Root} element={<Landing />} />
-              {process.env.NODE_ENV === "development" && (
-                <Route path={"/test"} element={<TestForm />} />
-              )}
               {[
                 OffersRoutes.Root,
                 BosonRoutes.Explore,
