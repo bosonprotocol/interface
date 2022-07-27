@@ -328,7 +328,7 @@ export default function ChatConversation({
           <ButtonProposal exchange={exchange} />
           <InputWrapper>
             <Input>
-              <span contentEditable="true">sdfsd</span>
+              <span contentEditable="true"></span>
             </Input>
             <UploadSimple
               size={24}
