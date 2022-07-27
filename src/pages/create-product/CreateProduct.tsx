@@ -221,6 +221,7 @@ export default function CreateProduct() {
     try {
       // TODO: ADD SEND DATA LOGIC;
       // const { offerId } = TODO SEND DATA HERE
+      formikBag.resetForm();
       handleOpenSuccessModal({ offerId: "" });
     } catch (error) {
       // TODO: FAILURE MODAL
@@ -239,6 +240,7 @@ export default function CreateProduct() {
       values,
       formikBag
     });
+    formikBag.setTouched({});
     formikBag.setSubmitting(false);
     return handleNextForm();
   };
@@ -257,8 +259,9 @@ export default function CreateProduct() {
           }
           validationSchema={wizardStep.currentValidation}
         >
-          {({ values, errors }) => {
+          {({ values, errors, touched }) => {
             console.log(values, errors);
+            console.log(touched, "touched");
             return (
               <Form>
                 {isPreviewVisible ? (
