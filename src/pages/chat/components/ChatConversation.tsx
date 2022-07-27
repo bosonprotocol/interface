@@ -203,6 +203,7 @@ export default function ChatConversation({
   };
 
   useEffect(() => {
+    setChatListOpen(false);
     function handleWindowResize() {
       setWindowSize(getWindowSize());
     }
@@ -212,7 +213,7 @@ export default function ChatConversation({
     return () => {
       window.removeEventListener("resize", handleWindowResize);
     };
-  }, []);
+  }, [setChatListOpen]);
 
   useEffect(() => {
     if (textareaRef && textareaRef.current) {

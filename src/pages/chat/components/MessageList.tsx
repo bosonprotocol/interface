@@ -17,7 +17,6 @@ const Container = styled.div<{
   flex-direction: column;
   flex: 1 1 25%;
   border: 1px solid #5560720f;
-  left: ${({ $chatListOpen }) => ($chatListOpen ? "0" : "-100vw")};
   position: absolute;
   z-index: ${zIndex.ChatSeparator};
   background: white;
@@ -25,21 +24,27 @@ const Container = styled.div<{
   margin-top: 3.75rem;
   transition: 400ms;
   width: 100vw;
-  left: ${({ $isConversationOpened }) =>
-    $isConversationOpened ? "-100vw" : "0"};
   width: ${({ $isConversationOpened }) =>
     $isConversationOpened ? "100vw" : "auto"};
   margin-top: ${({ $isConversationOpened }) =>
-    $isConversationOpened ? "unset" : "0"};
+    $isConversationOpened ? "4.375rem" : "0"};
   position: ${({ $isConversationOpened }) =>
     $isConversationOpened ? "absolute" : "relative"};
+  left: ${({ $chatListOpen }) => ($chatListOpen ? "0" : "-100vw")};
+  left: ${({ $isConversationOpened, $chatListOpen }) =>
+    $isConversationOpened && !$chatListOpen ? "-100vw" : "0"};
   ${breakpoint.m} {
     left: unset;
     position: relative;
-    margin-top: 0;
     height: auto;
     z-index: ${zIndex.Default};
     width: auto;
+    margin-top: -0.0625rem;
+    padding-top: 1.5625rem;
+  }
+  ${breakpoint.l} {
+    padding-top: unset;
+    margin-top: -1.875rem;
   }
 `;
 
@@ -51,6 +56,12 @@ const Header = styled.div`
   font-weight: 600;
   font-size: 24px;
   border-bottom: 1px solid #5560720f;
+  ${breakpoint.m} {
+    padding-top: 2.6875rem;
+  }
+  ${breakpoint.l} {
+    padding-top: 3.125rem;
+  }
 `;
 
 const MessageItem = styled.div<{ $active?: boolean }>`
@@ -82,6 +93,9 @@ const MessageInfo = styled.div`
   flex-direction: column;
   row-gap: 0.5rem;
   div {
+    ${breakpoint.xxs} {
+      font-size: 0.8875rem;
+    }
     ${breakpoint.l} {
       font-size: 0.8rem;
     }
@@ -97,6 +111,7 @@ interface Props {
   chatListOpen: boolean;
   currentThread?: Thread;
   isConversationOpened: boolean;
+  setChatListOpen: (p: boolean) => void;
 }
 const getMessageItemKey = (thread: Thread) =>
   `${thread.threadId.buyerId}-${thread.threadId.exchangeId}-${thread.threadId.sellerId}`;
@@ -106,7 +121,8 @@ export default function MessageList({
   onChangeConversation,
   chatListOpen,
   currentThread,
-  isConversationOpened
+  isConversationOpened,
+  setChatListOpen
 }: Props) {
   const [activeMessageKey, setActiveMessageKey] = useState<string>(
     currentThread ? getMessageItemKey(currentThread) : ""
@@ -133,6 +149,7 @@ export default function MessageList({
               onClick={() => {
                 onChangeConversation(thread);
                 setActiveMessageKey(messageKey);
+                setChatListOpen(!chatListOpen);
               }}
               key={messageKey}
             >

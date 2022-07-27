@@ -291,11 +291,12 @@ export default function Chat() {
           location.pathname !== `${BosonRoutes.Chat}`
         }
         onChangeConversation={(thread) => {
+          setChatListOpen(!chatListOpen);
           selectThread(thread);
-          console.log(thread);
           navigate(`/chat/${thread.threadId.exchangeId}`, { replace: true });
         }}
         chatListOpen={chatListOpen}
+        setChatListOpen={setChatListOpen}
         currentThread={selectedThread}
       />
       <Routes>
