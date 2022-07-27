@@ -1,4 +1,5 @@
 import { useFormikContext } from "formik";
+import styled from "styled-components";
 
 import DetailChart from "../../components/detail/DetailChart";
 import DetailShare from "../../components/detail/DetailShare";
@@ -30,6 +31,17 @@ import type { CreateProductForm } from "./validation/createProductValidationSche
 interface Props {
   togglePreview: React.Dispatch<React.SetStateAction<boolean>>;
 }
+
+const PreviewWrapper = styled.div`
+  margin: 2rem auto;
+  max-width: 65.75rem;
+`;
+const PreviewWrapperContent = styled.div`
+  overflow: hidden;
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1), 0px 0px 8px rgba(0, 0, 0, 0.1),
+    0px 0px 16px rgba(0, 0, 0, 0.1), 0px 0px 32px rgba(0, 0, 0, 0.1);
+`;
+
 export default function Preview({ togglePreview }: Props) {
   const { values } = useFormikContext<CreateProductForm>();
   console.log(values, "values");
@@ -110,77 +122,81 @@ export default function Preview({ togglePreview }: Props) {
   } as Offer;
 
   return (
-    <DetailWrapper>
-      <LightBackground>
-        <MainDetailGrid>
-          <ImageWrapper>
-            <Image src={offerImg} dataTestId="offerImage" />
-          </ImageWrapper>
-          <div>
-            <SellerID
-              seller={offer?.seller}
-              offerName={name}
-              justifyContent="flex-start"
-              withProfileImage
-            />
-            <Typography
-              tag="h1"
-              data-testid="name"
-              style={{ fontSize: "2rem", marginBottom: "2rem" }}
-            >
-              {/* TODO: ADD CORRECT VALUES */}
-              {/* {name} */}
-            </Typography>
-            <DetailWidget
-              pageType="offer"
-              offer={offer}
-              name={name}
-              image={offerImg}
-              hasSellerEnoughFunds={true}
-            />
-          </div>
-          <DetailShare />
-        </MainDetailGrid>
-      </LightBackground>
-      <DarkerBackground>
-        <DetailGrid>
-          <div>
-            <Typography tag="h3">Product data</Typography>
-            <Typography
-              tag="p"
-              style={{ color: colors.darkGrey }}
-              data-testid="description"
-            >
-              {/* TODO: ADD CORRECT VALUES */}
-              {values.productInformation.describe}
-            </Typography>
-            <DetailTable data={[]} tag="strong" />
-          </div>
-          <div>
-            <Typography tag="h3">About the artist</Typography>
-            <Typography tag="p" style={{ color: colors.darkGrey }}>
-              {/* TODO: ADD CORRECT VALUES */}
-              {values.creteYourProfile.description}
-            </Typography>
-          </div>
-        </DetailGrid>
-        <DetailSlider images={MOCK.images} />
-        <DetailGrid>
-          <DetailChart
-            // TODO: ADD CORRECT VALUES FOR NOW HARDCODED
-            offer={offer}
-            title="Inventory graph"
-          />
-          <div>
-            <Typography tag="h3">Shipping information</Typography>
-            <Typography tag="p" style={{ color: colors.darkGrey }}>
-              {/* TODO: ADD CORRECT VALUES */}
-              {shippingInfo.shipping}
-            </Typography>
-            <DetailTable data={shippingInfo.shippingTable} />
-          </div>
-        </DetailGrid>
-      </DarkerBackground>
+    <PreviewWrapper>
+      <PreviewWrapperContent>
+        <DetailWrapper>
+          <LightBackground>
+            <MainDetailGrid>
+              <ImageWrapper>
+                <Image src={offerImg} dataTestId="offerImage" />
+              </ImageWrapper>
+              <div>
+                <SellerID
+                  seller={offer?.seller}
+                  offerName={name}
+                  justifyContent="flex-start"
+                  withProfileImage
+                />
+                <Typography
+                  tag="h1"
+                  data-testid="name"
+                  style={{ fontSize: "2rem", marginBottom: "2rem" }}
+                >
+                  {/* TODO: ADD CORRECT VALUES */}
+                  {/* {name} */}
+                </Typography>
+                <DetailWidget
+                  pageType="offer"
+                  offer={offer}
+                  name={name}
+                  image={offerImg}
+                  hasSellerEnoughFunds={true}
+                />
+              </div>
+              <DetailShare />
+            </MainDetailGrid>
+          </LightBackground>
+          <DarkerBackground>
+            <DetailGrid>
+              <div>
+                <Typography tag="h3">Product data</Typography>
+                <Typography
+                  tag="p"
+                  style={{ color: colors.darkGrey }}
+                  data-testid="description"
+                >
+                  {/* TODO: ADD CORRECT VALUES */}
+                  {values.productInformation.describe}
+                </Typography>
+                <DetailTable data={[]} tag="strong" />
+              </div>
+              <div>
+                <Typography tag="h3">About the artist</Typography>
+                <Typography tag="p" style={{ color: colors.darkGrey }}>
+                  {/* TODO: ADD CORRECT VALUES */}
+                  {values.creteYourProfile.description}
+                </Typography>
+              </div>
+            </DetailGrid>
+            <DetailSlider images={MOCK.images} />
+            <DetailGrid>
+              <DetailChart
+                // TODO: ADD CORRECT VALUES FOR NOW HARDCODED
+                offer={offer}
+                title="Inventory graph"
+              />
+              <div>
+                <Typography tag="h3">Shipping information</Typography>
+                <Typography tag="p" style={{ color: colors.darkGrey }}>
+                  {/* TODO: ADD CORRECT VALUES */}
+                  {shippingInfo.shipping}
+                </Typography>
+                <DetailTable data={shippingInfo.shippingTable} />
+              </div>
+            </DetailGrid>
+          </DarkerBackground>
+        </DetailWrapper>
+      </PreviewWrapperContent>
       <ProductButtonGroup>
         <Button theme="secondary" type="submit">
           Confirm
@@ -189,6 +205,6 @@ export default function Preview({ togglePreview }: Props) {
           Back to overview
         </Button>
       </ProductButtonGroup>
-    </DetailWrapper>
+    </PreviewWrapper>
   );
 }
