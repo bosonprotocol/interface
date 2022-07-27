@@ -103,6 +103,7 @@ const Input = styled.div`
     border: none;
     font-family: "Plus Jakarta Sans";
     background: none;
+    resize: none;
     &:focus {
       outline: none;
     }
