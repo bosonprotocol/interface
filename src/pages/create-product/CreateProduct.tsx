@@ -42,6 +42,11 @@ const ProductLayoutContainer = styled.div(
 const HelpWrapper = styled.div`
   padding-left: 3rem;
 `;
+const CreateProductWrapper = styled.div`
+  > div:first-child {
+    margin-bottom: 2rem;
+  }
+`;
 
 const createYourProfileInitialValues = {
   creteYourProfile: {
@@ -250,7 +255,7 @@ export default function CreateProduct() {
     return handleNextForm();
   };
   return (
-    <>
+    <CreateProductWrapper>
       <MultiSteps
         data={steps}
         active={currentForm}
@@ -283,6 +288,6 @@ export default function CreateProduct() {
           </HelpWrapper>
         )}
       </ProductLayoutContainer>
-    </>
+    </CreateProductWrapper>
   );
 }

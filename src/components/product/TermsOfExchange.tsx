@@ -2,9 +2,8 @@ import { Check } from "phosphor-react";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
-import { Input, Select, Textarea } from "../form";
+import { FormField, Input, Select } from "../form";
 import Button from "../ui/Button";
-import InputGroup from "../ui/InputGroup";
 import Typography from "../ui/Typography";
 import { ContainerProductPage, ProductButtonGroup } from "./Product.styles";
 
@@ -81,68 +80,89 @@ export default function TermsOfExchange() {
       <MainContainer>
         <FormWrapper>
           <Typography tag="h2">Terms of Exchange</Typography>
-          <InputGroup
+          <FormField
             title="Exchange policy*"
             subTitle="The exchange policy covers the contractual terms of the exchange to protect seller and buyer."
-            popper="Need to be added"
+            tooltip="TODO: add"
           >
-            <Input
+            <Select
               placeholder="Fair Exchange Policy"
               name="termsOfExchange.fairExchangePolicy"
-            />
-          </InputGroup>
-          <InputGroup
-            title="Buyer cancellation penalty*"
-            subTitle="If the buyer fails to redeem the item within the redemption period they will be receive back the payment minus the buyer cancel penalty."
-            popper="Need to be added"
-          >
-            <FieldContainer>
-              <Input
-                placeholder="Buyer cancellation penalty"
-                name="termsOfExchange.buyerCancellationPenalty"
-              />
-              <Input
-                placeholder="Percent"
-                name="termsOfExchange.buyerCancellationPenaltyPercent"
-              />
-            </FieldContainer>
-          </InputGroup>
-          <InputGroup
-            title="Seller deposit*"
-            subTitle="The seller deposit is charged when a buyers commits to the offer and is used to hold the seller accountable to follow through with their commitment to deliver the physical item. If you break your commitment as a seller, then your deposit will be transferred to the buyer."
-            popper="Need to be added"
-          >
-            <FieldContainer>
-              <Input
-                placeholder="Seller deposit"
-                name="termsOfExchange.sellerDeposit"
-              />
-              <Input
-                placeholder="Percent"
-                name="termsOfExchange.sellerDepositPercent"
-              />
-            </FieldContainer>
-          </InputGroup>
-          <InputGroup
-            title="Dispute Resolver*"
-            subTitle="Dispute Resolver will resolve disputes between buyer and seller in case they arise."
-          >
-            <Textarea
-              placeholder="Input the amount"
-              name="termsOfExchange.amount"
-            />
-          </InputGroup>
-          <InputGroup
-            title="Dispute period*"
-            subTitle="The time a buyer has to raise a dispute after they redeemed. When the dispute period passes, you will receive payment for the item."
-            popper="Need to be added"
-          >
-            {/* TODO: */}
-            <Select
-              name="termsOfExchange.disputePeriod"
               options={[{ value: "0", label: "0" }]}
             />
-          </InputGroup>
+          </FormField>
+          <FormField
+            title="Buyer cancellation penalty*"
+            subTitle="If the buyer fails to redeem the item within the redemption period they will be receive back the payment minus the buyer cancel penalty."
+            tooltip="TODO: add"
+          >
+            <FieldContainer>
+              <div>
+                <Input
+                  placeholder="Buyer cancellation penalty"
+                  name="termsOfExchange.buyerCancellationPenalty"
+                />
+              </div>
+              <div>
+                <Select
+                  placeholder="Percent"
+                  name="termsOfExchange.buyerCancellationPenaltyPercent"
+                  options={[{ value: "0", label: "0" }]}
+                />
+              </div>
+            </FieldContainer>
+          </FormField>
+          <FormField
+            title="Seller deposit*"
+            subTitle="The seller deposit is charged when a buyers commits to the offer and is used to hold the seller accountable to follow through with their commitment to deliver the physical item. If you break your commitment as a seller, then your deposit will be transferred to the buyer."
+            tooltip="TODO: add"
+          >
+            <FieldContainer>
+              <div>
+                <Input
+                  placeholder="Seller deposit"
+                  name="termsOfExchange.sellerDeposit"
+                />
+              </div>
+              <div>
+                <Select
+                  placeholder="Percent"
+                  name="termsOfExchange.sellerDepositPercent"
+                  options={[{ value: "0", label: "0" }]}
+                />
+              </div>
+            </FieldContainer>
+          </FormField>
+          <FormField
+            title="Dispute Resolver*"
+            subTitle="Dispute Resolver will resolve disputes between buyer and seller in case they arise.            "
+          >
+            <Select
+              placeholder="Percent"
+              name="termsOfExchange.disputeResolverPeriod"
+              options={[{ value: "0", label: "0" }]}
+            />
+          </FormField>
+          <FormField
+            title="Dispute Period*"
+            subTitle="The time a buyer has to raise a dispute after they redeemed. When the dispute period passes, you will receive payment for the item."
+          >
+            <FieldContainer>
+              <div>
+                <Input
+                  placeholder="Input the amount"
+                  name="termsOfExchange.disputeResolver"
+                />
+              </div>
+              <div>
+                <Select
+                  placeholder="Percent"
+                  name="termsOfExchange.disputeResolverPeriod"
+                  options={[{ value: "0", label: "0" }]}
+                />
+              </div>
+            </FieldContainer>
+          </FormField>
           <ProductInformationButtonGroup>
             <Button theme="secondary" type="submit">
               Next

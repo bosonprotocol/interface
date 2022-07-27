@@ -17,10 +17,11 @@ export default function Upload({
   name,
   accept = "image/*",
   disabled,
-  maxUploadSize = CONFIG.maxUploadSize,
+  maxSize = CONFIG.maxUploadSize,
   multiple = false,
   trigger,
   onFilesSelect,
+  placeholder,
   ...props
 }: UploadProps) {
   const [, meta, helpers] = useField(name);
@@ -72,10 +73,10 @@ export default function Upload({
     const { files } = e.target;
     const filesArray = Object.values(files);
     for (const file of filesArray) {
-      if (file.size > maxUploadSize) {
+      if (file.size > maxSize) {
         // TODO: change to notification
         console.error(
-          `File size cannot exceed more than ${bytesToSize(maxUploadSize)}`
+          `File size cannot exceed more than ${bytesToSize(maxSize)}`
         );
         return;
       }
@@ -110,6 +111,11 @@ export default function Upload({
           >
             {preview !== null && <img src={preview} />}
             <Image size={24} />
+            {placeholder && (
+              <Typography tag="p" style={{ marginBottom: "0" }}>
+                {placeholder}
+              </Typography>
+            )}
           </FileUploadWrapper>
         )}
         {preview !== null && (

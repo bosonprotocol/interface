@@ -1,10 +1,10 @@
 import styled from "styled-components";
 
 import Collapse from "../../components/collapse/Collapse";
-import { Input, Select } from "../form";
+import { FormField, Input, Select } from "../form";
 import Button from "../ui/Button";
-import InputGroup from "../ui/InputGroup";
 import Typography from "../ui/Typography";
+import { MOCK_OPTIONS } from "./const";
 import { ContainerProductPage, ProductButtonGroup } from "./Product.styles";
 
 const FieldContainerJurisdictions = styled.div`
@@ -24,7 +24,7 @@ const ProductInformationButtonGroup = styled(ProductButtonGroup)`
 `;
 
 const RequiredContainer = styled.div`
-  .inputGroup:first-of-type {
+  .FormField:first-of-type {
     margin-bottom: 3.5rem;
   }
 `;
@@ -42,70 +42,62 @@ export default function ShippingInfo() {
     <ContainerProductPage>
       <Typography tag="h2">Shipping Info</Typography>
       <RequiredContainer>
-        <InputGroup
+        <FormField
           title="Country of Origin"
           subTitle="The country you're dispatching from."
         >
           <Input placeholder="Country" name="shippingInfo.country" />
-        </InputGroup>
-        <InputGroup
+        </FormField>
+        <FormField
           title="Supported Jurisdictions"
           subTitle="Select the jurisdictions you will ship to."
-          popper="Need to be added"
+          tooltip="TODO: add"
         >
           <FieldContainerJurisdictions>
             <Input placeholder="Region" name="shippingInfo.region" />
             <Input placeholder="Time" name="shippingInfo.time" />
           </FieldContainerJurisdictions>
-        </InputGroup>
+        </FormField>
       </RequiredContainer>
       <AdditionalContainer>
         <Collapse
           title={<Typography tag="h3">Additional information</Typography>}
         >
-          <InputGroup
+          <FormField
             title="Redemption point"
             subTitle="The website from which buyers can redeem the rNFT.
               By default the redemption point will be the Boson dApp."
-            popper="Need to be added"
+            tooltip="TODO: add"
           >
             <Input placeholder="Add URL" name="shippingInfo.addUrl" />
-          </InputGroup>
-          <InputGroup
+          </FormField>
+          <FormField
             title="Dimensions"
             subTitle="Specify the dimension and weight of your package"
           >
             <Input placeholder="L x W x H" name="shippingInfo.lwh" />
-          </InputGroup>
-          <InputGroup title="Weight">
+          </FormField>
+          <FormField title="Weight">
             <FieldContainerWidth>
               <Input placeholder="Weight" name="shippingInfo.weight" />
-              {/* // TODO: add weight */}
-              <Select
-                name="shippingInfo.kg"
-                options={[{ value: "0", label: "0" }]}
-              />
+              <Select name="shippingInfo.kg" options={MOCK_OPTIONS} />
             </FieldContainerWidth>
-          </InputGroup>
-          <InputGroup
+          </FormField>
+          <FormField
             title="Unit of Measurement"
             subTitle="Which unit do you want to use for the following measurements?"
           >
-            {/* // TODO: add measurements */}
-            <Select
-              name="shippingInfo.measurements"
-              options={[{ value: "0", label: "0" }]}
-            />
-          </InputGroup>
-          <InputGroup title="Height">
+            <Select name="shippingInfo.measurements" options={MOCK_OPTIONS} />
+          </FormField>
+          <FormField title="Height">
             <Input placeholder="Height" name="shippingInfo.height" />
-          </InputGroup>
-          <InputGroup title="Width">
+          </FormField>
+          <FormField title="Width">
             <Input placeholder="Width" name="shippingInfo.width" />
-          </InputGroup>
-          <InputGroup title="Length">
+          </FormField>
+          <FormField title="Length">
             <Input placeholder="Length" name="shippingInfo.length" />
-          </InputGroup>
+          </FormField>
         </Collapse>
       </AdditionalContainer>
       <ProductInformationButtonGroup>

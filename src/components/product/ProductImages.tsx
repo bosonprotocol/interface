@@ -2,8 +2,8 @@ import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
 import { Upload } from "../form";
+import FormField from "../form/FormField";
 import Button from "../ui/Button";
-import InputGroup from "../ui/InputGroup";
 import Typography from "../ui/Typography";
 import { ProductButtonGroup } from "./Product.styles";
 
@@ -32,15 +32,16 @@ const SpaceContainer = styled.div`
   }
 `;
 
-const FILE_MAX_SIZE = 0.6 * 1000;
+const FILE_MAX_SIZE = 0.6 * 1024;
+
 export default function ProductImages() {
   return (
     <ContainerProductImage>
       <Typography tag="h2">Product Images</Typography>
-      <InputGroup
+      <FormField
         title="Upload your product images"
         subTitle="You can disable images for variants that shouldn't be shown. Use a max. width and height of 1200px and a max. size of 600kb per image."
-        popper="Need to be added"
+        tooltip="Need to be added"
         style={{
           marginBottom: 0
         }}
@@ -49,45 +50,45 @@ export default function ProductImages() {
           <Upload
             name="productImages.thumbnail"
             placeholder="Thumbnail"
-            maxUploadSize={FILE_MAX_SIZE}
+            maxSize={FILE_MAX_SIZE}
           />
           <Upload
             name="productImages.secondary"
             placeholder="Secondary"
-            maxUploadSize={FILE_MAX_SIZE}
+            maxSize={FILE_MAX_SIZE}
           />
           <Upload
             name="productImages.everyAngle"
             placeholder="Every angle"
-            maxUploadSize={FILE_MAX_SIZE}
+            maxSize={FILE_MAX_SIZE}
           />
           <Upload
             name="productImages.details"
             placeholder="Details"
-            maxUploadSize={FILE_MAX_SIZE}
+            maxSize={FILE_MAX_SIZE}
           />
           <Upload
             name="productImages.inUse"
             placeholder="In Use"
-            maxUploadSize={FILE_MAX_SIZE}
+            maxSize={FILE_MAX_SIZE}
           />
           <Upload
             name="productImages.styledScene"
             placeholder="Styled Scene"
-            maxUploadSize={FILE_MAX_SIZE}
+            maxSize={FILE_MAX_SIZE}
           />
           <Upload
             name="productImages.sizeAndScale"
             placeholder="Size and scale"
-            maxUploadSize={FILE_MAX_SIZE}
+            maxSize={FILE_MAX_SIZE}
           />
           <Upload
             name="productImages.more"
             placeholder="More"
-            maxUploadSize={FILE_MAX_SIZE}
+            maxSize={FILE_MAX_SIZE}
           />
         </SpaceContainer>
-      </InputGroup>
+      </FormField>
       <ProductButtonGroup>
         <Button theme="secondary" type="submit">
           Next

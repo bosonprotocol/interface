@@ -13,21 +13,22 @@ const customStyles = (error: any) => ({
     ...provided,
     borderRadius: 0,
     padding: "0.25rem",
-    boxShadow: `inset 0px 0px 0px 2px  ${colors.border}`,
+    boxShadow: "none",
     ":hover": {
       borderColor: colors.secondary,
       borderWidth: "1px"
     },
-    background: colors.white,
+    background: colors.lightGrey,
     border: state.isFocused
       ? `1px solid ${colors.secondary}`
       : !checkIfValueIsEmpty(error)
       ? `1px solid ${colors.red}`
-      : `1px solid transparent`
+      : `1px solid ${colors.border}`
   }),
-  container: (provided: any) => ({
+  container: (provided: any, state: any) => ({
     ...provided,
-    zIndex: zIndex.Select,
+    zIndex: state.isFocused ? zIndex.Select + 1 : zIndex.Select,
+    position: "relative",
     width: "100%"
   }),
   option: (provided: any, state: any) => ({
@@ -73,6 +74,7 @@ export default function SelectComponent({
         styles={customStyles(errorMessage)}
         {...field}
         {...props}
+        placeholder={placeholder}
         options={options}
         value={field.value}
         onChange={handleChange}

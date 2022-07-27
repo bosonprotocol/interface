@@ -2,11 +2,11 @@ import { useFormikContext } from "formik";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
+import { FormField } from "../form";
 import Button from "../ui/Button";
 import Grid from "../ui/Grid";
 import GridContainer from "../ui/GridContainer";
 import Image from "../ui/Image";
-import InputGroup from "../ui/InputGroup";
 import Typography from "../ui/Typography";
 import differentVariantsProduct from "./img/different-variants-product.png";
 import oneItemTypeProduct from "./img/one-item-product.png";
@@ -79,9 +79,9 @@ export default function ProductType() {
       <Typography tag="h2">Product Type</Typography>
       <Container>
         <GridContainer itemsPerRow={productTypeItemsPerRow}>
-          <InputGroup
+          <FormField
             title="Select Product Type*"
-            popper="Need to be added"
+            tooltip="TODO: add"
             style={{
               marginBottom: 0
             }}
@@ -115,10 +115,10 @@ export default function ProductType() {
                 </Box>
               </Label>
             </Grid>
-          </InputGroup>
-          <InputGroup
+          </FormField>
+          <FormField
             title="Product Variants*"
-            popper="Need to be added"
+            tooltip="TODO: add"
             style={{
               marginBottom: 0
             }}
@@ -170,7 +170,7 @@ export default function ProductType() {
                 </Box>
               </Label>
             </Grid>
-          </InputGroup>
+          </FormField>
         </GridContainer>
         <ProductButtonGroup>
           <Button theme="secondary" type="submit">

@@ -203,7 +203,7 @@ export const FieldTextArea = styled.textarea.attrs((props: { error: any }) => ({
 `;
 
 export const FormFieldWrapper = styled(Grid)`
-  max-width: 50vw;
+  /* max-width: 50vw; */
   margin-bottom: 3.5rem;
 
   p {
@@ -214,7 +214,6 @@ export const FormFieldWrapper = styled(Grid)`
 
   [data-header] {
     margin: 0;
-    margin-bottom: 0.375rem;
     font-weight: 600;
     font-size: 1rem;
     color: ${colors.black};
@@ -225,7 +224,6 @@ export const FormFieldWrapper = styled(Grid)`
   }
   [data-subheader] {
     margin: 0;
-    margin-bottom: 0.875rem;
     font-weight: 400;
     font-size: 0.75rem;
     color: ${colors.darkGrey};
