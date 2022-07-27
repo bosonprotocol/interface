@@ -111,6 +111,7 @@ export default function MakeProposal({
                 <MakeAProposalStep
                   onNextClick={() => setActiveStep(2)}
                   isValid={isMakeAProposalOK}
+                  exchange={exchange}
                 />
               ) : (
                 <ReviewAndSubmitStep

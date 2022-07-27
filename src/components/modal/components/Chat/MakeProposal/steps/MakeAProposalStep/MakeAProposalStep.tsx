@@ -2,6 +2,7 @@ import { useField } from "formik";
 import styled from "styled-components";
 
 import { colors } from "../../../../../../../lib/styles/colors";
+import { Exchange } from "../../../../../../../lib/utils/hooks/useExchanges";
 import { Checkbox } from "../../../../../../form";
 import Button from "../../../../../../ui/Button";
 import Grid from "../../../../../../ui/Grid";
@@ -18,9 +19,14 @@ const ButtonsSection = styled.div`
 interface Props {
   onNextClick: () => void;
   isValid: boolean;
+  exchange: Exchange;
 }
 
-export default function MakeAProposalStep({ onNextClick, isValid }: Props) {
+export default function MakeAProposalStep({
+  exchange,
+  onNextClick,
+  isValid
+}: Props) {
   const [refundField] = useField("refund");
   const [returnField] = useField("return");
   const selectOptions = [
@@ -53,7 +59,7 @@ export default function MakeAProposalStep({ onNextClick, isValid }: Props) {
           padding="3.5rem 0 0 0"
           gap="2rem"
         >
-          {refundField.value && <RefundRequest />}
+          {refundField.value && <RefundRequest exchange={exchange} />}
           {returnField.value && <ReturnRequest />}
         </Grid>
       </Grid>

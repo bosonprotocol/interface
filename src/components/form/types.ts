@@ -27,7 +27,8 @@ export interface FormFieldProps {
   style?: React.CSSProperties;
 }
 
-export type InputProps = BaseProps & { type?: string };
+export type InputProps = BaseProps &
+  React.InputHTMLAttributes<HTMLInputElement>;
 
 export interface SelectDataProps {
   name: string;
