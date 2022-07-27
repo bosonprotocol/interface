@@ -4,11 +4,7 @@ import styled, { css } from "styled-components";
 import { transition } from "../../components/ui/styles";
 import { colors } from "../../lib/styles/colors";
 import Grid from "../ui/Grid";
-
-const checkIfValueIsEmpty = (v: any) =>
-  v == null ||
-  (Object.prototype.hasOwnProperty.call(v, "length") && v.length === 0) ||
-  (v.constructor === Object && Object.keys(v).length === 0);
+import { checkIfValueIsEmpty } from "./utils";
 
 export const FieldInput = styled.input.attrs((props: { error: any }) => ({
   error: props.error
@@ -63,8 +59,9 @@ export const FieldInput = styled.input.attrs((props: { error: any }) => ({
 `;
 
 export const FileUploadWrapper = styled.div.attrs(
-  (props: { choosen: any }) => ({
-    choosen: props.choosen
+  (props: { choosen: any; error: any }) => ({
+    choosen: props.choosen,
+    error: props.error
   })
 )`
   position: relative;
@@ -96,9 +93,17 @@ export const FileUploadWrapper = styled.div.attrs(
   }
 
   background: ${colors.lightGrey};
-  border: 1px solid ${colors.border};
   border-radius: 0;
   outline: none;
+
+  ${({ error }) =>
+    !checkIfValueIsEmpty(error)
+      ? css`
+          border: 1px solid ${colors.red};
+        `
+      : css`
+          border: 1px solid ${colors.border};
+        `}
 
   ${transition}
 
@@ -209,6 +214,7 @@ export const FormFieldWrapper = styled(Grid)`
 
   [data-header] {
     margin: 0;
+    margin-bottom: 0.375rem;
     font-weight: 600;
     font-size: 1rem;
     color: ${colors.black};
@@ -218,13 +224,17 @@ export const FormFieldWrapper = styled(Grid)`
     }
   }
   [data-subheader] {
+    margin: 0;
+    margin-bottom: 0.875rem;
     font-weight: 400;
     font-size: 0.75rem;
     color: ${colors.darkGrey};
   }
 `;
 
-export const CheckboxWrapper = styled.label`
+export const CheckboxWrapper = styled.label.attrs((props: { error: any }) => ({
+  error: props.error
+}))`
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -254,7 +264,6 @@ export const CheckboxWrapper = styled.label`
     width: 1.5rem;
     height: 1.5rem;
 
-    border: 1px solid ${colors.border};
     background: ${colors.lightGrey};
 
     margin-right: 0.5rem;
@@ -272,4 +281,17 @@ export const CheckboxWrapper = styled.label`
       }
     }
   }
+
+  ${({ error }) =>
+    !checkIfValueIsEmpty(error)
+      ? css`
+          > div {
+            border: 1px solid ${colors.red};
+          }
+        `
+      : css`
+          > div {
+            border: 1px solid ${colors.border};
+          }
+        `}
 `;
