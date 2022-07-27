@@ -7,7 +7,7 @@ import MultiSteps from "../../../../components/step/MultiSteps";
 import Grid from "../../../../components/ui/Grid";
 import { breakpoint } from "../../../../lib/styles/breakpoint";
 import { colors } from "../../../../lib/styles/colors";
-import { Thread } from "../../types";
+import { NewProposal, Thread } from "../../types";
 
 const StyledButton = styled.button`
   border: 3px solid ${colors.secondary};
@@ -75,6 +75,10 @@ export default function ButtonProposal({ exchange }: Props) {
     });
   }, [activeStep, headerComponent, activeStep]); // eslint-disable-line
 
+  const sendProposal = (proposal: NewProposal) => {
+    console.log("proposal in button proposal", proposal);
+  };
+
   return (
     <StyledButton
       onClick={() =>
@@ -82,7 +86,8 @@ export default function ButtonProposal({ exchange }: Props) {
           headerComponent,
           exchange,
           activeStep,
-          setActiveStep
+          setActiveStep,
+          sendProposal
         })
       }
     >

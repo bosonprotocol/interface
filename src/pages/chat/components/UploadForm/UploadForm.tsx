@@ -1,14 +1,13 @@
+import { useField } from "formik";
 import { Info, UploadSimple } from "phosphor-react";
 
-import Field, { FieldType } from "../../../../components/form/Field";
+import UploadComponent from "../../../../components/form/Upload/Upload";
 import Grid from "../../../../components/ui/Grid";
 import Typography from "../../../../components/ui/Typography";
 import { colors } from "../../../../lib/styles/colors";
 
-interface Props {
-  onFilesSelect: (files: File[]) => void;
-}
-export default function Upload({ onFilesSelect }: Props) {
+export default function Upload() {
+  const [uploadField] = useField("upload");
   return (
     <>
       <Grid justifyContent="flex-start" gap="0.2rem">
@@ -21,16 +20,17 @@ export default function Upload({ onFilesSelect }: Props) {
           Max. file size: 2MB
         </Typography>
       </Grid>
-      <Field
-        fieldType={FieldType.FileUpload}
+      <UploadComponent
+        name="upload"
         multiple
         accept="image/*, application/pdf"
-        onFilesSelect={onFilesSelect}
         trigger={
           <>
             Upload file <UploadSimple />
           </>
         }
+        files={uploadField.value || []}
+        wrapperProps={{ style: { width: "100%" } }}
       />
     </>
   );

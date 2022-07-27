@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Form, Formik, useField } from "formik";
 import styled from "styled-components";
 
 import UploadForm from "../../../pages/chat/components/UploadForm/UploadForm";
@@ -6,8 +6,7 @@ import Button from "../../ui/Button";
 import { ModalProps } from "../ModalContext";
 
 interface Props {
-  onFilesSelect: (files: File[]) => void;
-
+  onUploadedFiles: (files: File[]) => void;
   hideModal: NonNullable<ModalProps["hideModal"]>;
   title: ModalProps["title"];
 }
@@ -18,27 +17,35 @@ const ButtonsSection = styled.div`
   justify-content: space-between;
 `;
 
-export default function Upload({ onFilesSelect, hideModal }: Props) {
-  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+const ButtonsForm = () => {
+  const [field, meta, helpers] = useField({
+    name: "upload"
+  });
   return (
-    <>
-      <UploadForm
-        onFilesSelect={(files) => {
-          setUploadedFiles(files);
-        }}
-      />
-      <ButtonsSection>
-        <Button
-          theme="secondary"
-          onClick={() => {
-            hideModal();
-            onFilesSelect(uploadedFiles);
-          }}
-          disabled={!uploadedFiles?.length}
-        >
-          Submit
-        </Button>
-      </ButtonsSection>
-    </>
+    <ButtonsSection>
+      <Button type="submit" theme="secondary" disabled={!field.value?.length}>
+        Submit
+      </Button>
+    </ButtonsSection>
+  );
+};
+
+export default function Upload({ hideModal, onUploadedFiles }: Props) {
+  return (
+    <Formik
+      onSubmit={async (values) => {
+        console.log("submit", values);
+        onUploadedFiles(values.upload);
+        hideModal();
+      }}
+      initialValues={{
+        upload: []
+      }}
+    >
+      <Form>
+        <UploadForm />
+        <ButtonsForm />
+      </Form>
+    </Formik>
   );
 }
