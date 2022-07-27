@@ -28,6 +28,7 @@ const Container = styled.div<{ $disputeOpen: boolean }>`
   right: ${({ $disputeOpen }) => ($disputeOpen ? "0" : "-100vw")};
   transition: 400ms;
   width: ${({ $disputeOpen }) => $disputeOpen && "100vw"};
+  background: ${colors.lightGrey};
   ${breakpoint.l} {
     position: relative;
     background: transparent;
