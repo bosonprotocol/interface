@@ -2,8 +2,11 @@ import styled from "styled-components";
 
 import { Datepicker, FormField, Input, Select, Textarea } from "../form";
 import Button from "../ui/Button";
-import Typography from "../ui/Typography";
-import { ContainerProductPage, ProductButtonGroup } from "./Product.styles";
+import {
+  ContainerProductPage,
+  ProductButtonGroup,
+  SectionTitle
+} from "./Product.styles";
 import { MOCK_OPTIONS } from "./utils";
 
 const PriceContainer = styled.div`
@@ -19,7 +22,7 @@ const ProductInformationButtonGroup = styled(ProductButtonGroup)`
 export default function CoreTermsOfSale() {
   return (
     <ContainerProductPage>
-      <Typography tag="h2">Core Terms of Sale</Typography>
+      <SectionTitle tag="h2">Core Terms of Sale</SectionTitle>
       <FormField
         title="Price"
         required={true}

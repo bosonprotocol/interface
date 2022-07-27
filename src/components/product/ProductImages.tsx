@@ -4,8 +4,7 @@ import { colors } from "../../lib/styles/colors";
 import { Upload } from "../form";
 import FormField from "../form/FormField";
 import Button from "../ui/Button";
-import Typography from "../ui/Typography";
-import { ProductButtonGroup } from "./Product.styles";
+import { ProductButtonGroup, SectionTitle } from "./Product.styles";
 
 export const Box = styled.div`
   padding: 1.625rem 0;
@@ -37,7 +36,7 @@ const FILE_MAX_SIZE = 0.6 * 1024;
 export default function ProductImages() {
   return (
     <ContainerProductImage>
-      <Typography tag="h2">Product Images</Typography>
+      <SectionTitle tag="h2">Product Images</SectionTitle>
       <FormField
         title="Upload your product images"
         subTitle="You can disable images for variants that shouldn't be shown. Use a max. width and height of 1200px and a max. size of 600kb per image."

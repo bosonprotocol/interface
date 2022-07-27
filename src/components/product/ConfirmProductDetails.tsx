@@ -5,11 +5,16 @@ import Collapse from "../../components/collapse/Collapse";
 import { colors } from "../../lib/styles/colors";
 import Button from "../ui/Button";
 import Typography from "../ui/Typography";
-import { ContainerProductPage, ProductButtonGroup } from "./Product.styles";
+import {
+  ContainerProductPage,
+  ProductButtonGroup,
+  SectionTitle
+} from "./Product.styles";
 
 const ConfirmProductDetailsContainer = styled(ContainerProductPage)`
-  max-width: 1051px;
+  max-width: 65.588rem;
   margin 0 auto;
+  padding-bottom: 10.875rem;
 `;
 
 const CollapseContainer = styled.div`
@@ -70,7 +75,7 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
   };
   return (
     <ConfirmProductDetailsContainer>
-      <Typography tag="h2">Confirm Product Details</Typography>
+      <SectionTitle tag="h2">Confirm Product Details</SectionTitle>
       <CollapseContainer>
         <Collapse title={<Typography tag="h3">Profile Info</Typography>}>
           {/* TODO NEED TO BE IMPLEMENTED */}

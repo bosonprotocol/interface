@@ -12,7 +12,11 @@ import differentVariantsProduct from "./img/different-variants-product.png";
 import oneItemTypeProduct from "./img/one-item-product.png";
 import phygitalProduct from "./img/phygital-product.png";
 import physicalProduct from "./img/physical-product.png";
-import { ContainerProductPage, ProductButtonGroup } from "./Product.styles";
+import {
+  ContainerProductPage,
+  ProductButtonGroup,
+  SectionTitle
+} from "./Product.styles";
 import type { CreateProductForm } from "./utils";
 
 const productTypeItemsPerRow = {
@@ -76,7 +80,7 @@ export default function ProductType() {
   const { handleChange, values } = useFormikContext<CreateProductForm>();
   return (
     <ContainerProductPage>
-      <Typography tag="h2">Product Type</Typography>
+      <SectionTitle tag="h2">Product Type</SectionTitle>
       <Container>
         <GridContainer itemsPerRow={productTypeItemsPerRow}>
           <FormField

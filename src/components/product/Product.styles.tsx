@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 import Image from "../ui/Image";
+import Typography from "../ui/Typography";
 
 export const ProductButtonGroup = styled.div`
   margin-top: 3.5rem;
@@ -15,12 +16,13 @@ export const ProductButtonGroup = styled.div`
 export const ContainerProductPage = styled.div`
   max-width: 506px;
   width: 100%;
-  > h2 {
-    margin 3.5rem 0 3rem 0;
-  }
   .inputGroup:not(:last-of-type) {
     margin-bottom: 2rem;
   }
+`;
+
+export const SectionTitle = styled(Typography)`
+  margin 1rem 0 3rem 0;
 `;
 
 export const StyledImage = styled(Image)`

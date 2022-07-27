@@ -1,13 +1,16 @@
 import { FormField, Input, Textarea, Upload } from "../form";
 import Button from "../ui/Button";
-import Typography from "../ui/Typography";
-import { ContainerProductPage, ProductButtonGroup } from "./Product.styles";
+import {
+  ContainerProductPage,
+  ProductButtonGroup,
+  SectionTitle
+} from "./Product.styles";
 
 const FILE_MAX_SIZE = 0.6 * 1024;
 export default function CreateYourProfile() {
   return (
     <ContainerProductPage>
-      <Typography tag="h2">Create your Profile</Typography>
+      <SectionTitle tag="h2">Create your Profile</SectionTitle>
       <FormField
         title="Logo / profile picture"
         subTitle="Upload a profile image with a max. width and height of 800px and a max. size of 300kb."

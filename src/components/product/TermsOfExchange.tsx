@@ -5,7 +5,11 @@ import { colors } from "../../lib/styles/colors";
 import { FormField, Input, Select } from "../form";
 import Button from "../ui/Button";
 import Typography from "../ui/Typography";
-import { ContainerProductPage, ProductButtonGroup } from "./Product.styles";
+import {
+  ContainerProductPage,
+  ProductButtonGroup,
+  SectionTitle
+} from "./Product.styles";
 
 const TermsOfExchangeContainer = styled(ContainerProductPage)`
   max-width: 100%;
@@ -40,7 +44,7 @@ const CheckIconWrapper = styled.div`
 
 const FormWrapper = styled.div``;
 const InfoWrapper = styled.div`
-  padding-top: 5.5rem;
+  padding-top: 6rem;
 `;
 
 const InfoWrapperList = styled.div`
@@ -79,7 +83,7 @@ export default function TermsOfExchange() {
     <TermsOfExchangeContainer>
       <MainContainer>
         <FormWrapper>
-          <Typography tag="h2">Terms of Exchange</Typography>
+          <SectionTitle tag="h2">Terms of Exchange</SectionTitle>
           <FormField
             title="Exchange policy"
             required={true}

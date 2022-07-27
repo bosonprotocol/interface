@@ -4,7 +4,11 @@ import Collapse from "../../components/collapse/Collapse";
 import { FormField, Input, Select } from "../form";
 import Button from "../ui/Button";
 import Typography from "../ui/Typography";
-import { ContainerProductPage, ProductButtonGroup } from "./Product.styles";
+import {
+  ContainerProductPage,
+  ProductButtonGroup,
+  SectionTitle
+} from "./Product.styles";
 import { MOCK_OPTIONS } from "./utils";
 
 const FieldContainerJurisdictions = styled.div`
@@ -40,7 +44,7 @@ const AdditionalContainer = styled.div`
 export default function ShippingInfo() {
   return (
     <ContainerProductPage>
-      <Typography tag="h2">Shipping Info</Typography>
+      <SectionTitle tag="h2">Shipping Info</SectionTitle>
       <RequiredContainer>
         <FormField
           title="Country of Origin"
