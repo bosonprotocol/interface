@@ -51,13 +51,15 @@ export default function CoreTermsOfSale() {
         <Select name="coreTermsOfSale.price" options={MOCK_OPTIONS} />
       </FormField>
       <FormField
-        title="Redemption period*"
+        title="Redemption period"
+        required={true}
         subTitle="Redemption period is the time in which buyers can redeem the rNFT for the physical item."
       >
         <Datepicker name="coreTermsOfSale.redemptionPeriod" />
       </FormField>
       <FormField
-        title="Offer Validity period*"
+        title="Offer Validity period"
+        required={true}
         subTitle="The Offer validity period is the time in which buyers can commit to your offer."
       >
         <Datepicker name="coreTermsOfSale.offerValidityPeriod" />

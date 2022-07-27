@@ -81,7 +81,8 @@ export default function TermsOfExchange() {
         <FormWrapper>
           <Typography tag="h2">Terms of Exchange</Typography>
           <FormField
-            title="Exchange policy*"
+            title="Exchange policy"
+            required={true}
             subTitle="The exchange policy covers the contractual terms of the exchange to protect seller and buyer."
             tooltip="TODO: add"
           >
@@ -92,7 +93,8 @@ export default function TermsOfExchange() {
             />
           </FormField>
           <FormField
-            title="Buyer cancellation penalty*"
+            title="Buyer cancellation penalty"
+            required={true}
             subTitle="If the buyer fails to redeem the item within the redemption period they will be receive back the payment minus the buyer cancel penalty."
             tooltip="TODO: add"
           >
@@ -113,7 +115,8 @@ export default function TermsOfExchange() {
             </FieldContainer>
           </FormField>
           <FormField
-            title="Seller deposit*"
+            title="Seller deposit"
+            required={true}
             subTitle="The seller deposit is charged when a buyers commits to the offer and is used to hold the seller accountable to follow through with their commitment to deliver the physical item. If you break your commitment as a seller, then your deposit will be transferred to the buyer."
             tooltip="TODO: add"
           >
@@ -134,7 +137,8 @@ export default function TermsOfExchange() {
             </FieldContainer>
           </FormField>
           <FormField
-            title="Dispute Resolver*"
+            title="Dispute Resolver"
+            required={true}
             subTitle="Dispute Resolver will resolve disputes between buyer and seller in case they arise.            "
           >
             <Select
@@ -144,7 +148,8 @@ export default function TermsOfExchange() {
             />
           </FormField>
           <FormField
-            title="Dispute Period*"
+            title="Dispute Period"
+            required={true}
             subTitle="The time a buyer has to raise a dispute after they redeemed. When the dispute period passes, you will receive payment for the item."
           >
             <FieldContainer>

@@ -9,18 +9,19 @@ export default function CreateYourProfile() {
     <ContainerProductPage>
       <Typography tag="h2">Create your Profile</Typography>
       <FormField
-        title="Logo / profile picture*"
+        title="Logo / profile picture"
         subTitle="Upload a profile image with a max. width and height of 800px and a max. size of 300kb."
+        required={true}
       >
         <Upload name="creteYourProfile.logo" maxSize={FILE_MAX_SIZE} />
       </FormField>
-      <FormField title="Your brand / name*">
+      <FormField title="Your brand / name" required={true}>
         <Input name="creteYourProfile.name" placeholder="Name" />
       </FormField>
-      <FormField title="Contact E-Mail*">
+      <FormField title="Contact E-Mail" required={true}>
         <Input name="creteYourProfile.email" placeholder="E-Mail" />
       </FormField>
-      <FormField title="Description*">
+      <FormField title="Description" required={true}>
         <Textarea name="creteYourProfile.description" placeholder="Describe" />
       </FormField>
       <FormField

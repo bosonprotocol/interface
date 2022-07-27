@@ -80,7 +80,8 @@ export default function ProductType() {
       <Container>
         <GridContainer itemsPerRow={productTypeItemsPerRow}>
           <FormField
-            title="Select Product Type*"
+            title="Select Product Type"
+            required={true}
             tooltip="TODO: add"
             style={{
               marginBottom: 0
@@ -117,7 +118,8 @@ export default function ProductType() {
             </Grid>
           </FormField>
           <FormField
-            title="Product Variants*"
+            title="Product Variants"
+            required={true}
             tooltip="TODO: add"
             style={{
               marginBottom: 0

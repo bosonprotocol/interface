@@ -26,7 +26,8 @@ export default function ProductInformation() {
     <ContainerProductPage>
       <Typography tag="h2">Product Information</Typography>
       <FormField
-        title="Product Title*"
+        title="Product Title"
+        required={true}
         subTitle="Use words people would search for when looking for your item."
       >
         <Input
@@ -35,19 +36,22 @@ export default function ProductInformation() {
         />
       </FormField>
       <FormField
-        title="Description*"
+        title="Description"
+        required={true}
         subTitle="Describe your product. Provide as much detail as possible."
       >
         <Textarea name="productInformation.describe" placeholder="Describe" />
       </FormField>
       <FormField
-        title="Category*"
+        title="Category"
+        required={true}
         subTitle="Select the category that best matches your product."
       >
         <Select name="productInformation.category" options={MOCK_OPTIONS} />
       </FormField>
       <FormField
-        title="Search Tags*"
+        title="Search Tags"
+        required={true}
         subTitle="Input any relevant tags to make your offer stand out."
       >
         <Select name="productInformation.tags" options={MOCK_OPTIONS} />

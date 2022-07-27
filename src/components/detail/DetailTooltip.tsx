@@ -63,7 +63,9 @@ export default function DetailTooltip({ children, trigger }: Props) {
   return (
     <Tooltip.Provider delayDuration={0}>
       <Tooltip.Root>
-        <Trigger>{trigger || <Question size={20} weight="regular" />}</Trigger>
+        <Trigger type="button">
+          {trigger || <Question size={20} weight="regular" />}
+        </Trigger>
         <Tooltip.Portal>
           <StyledContent>{children}</StyledContent>
         </Tooltip.Portal>
