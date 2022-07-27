@@ -13,13 +13,13 @@ const TermsOfExchangeContainer = styled(ContainerProductPage)`
 
 const MainContainer = styled.div`
   display: grid;
-  grid-template-columns: 3fr minmax(324px, 1fr);
+  grid-template-columns: 3fr minmax(23.25rem, 1fr);
   grid-gap: 2.5rem;
 `;
 
 const FieldContainer = styled.div`
   display: grid;
-  grid-template-columns: 3fr minmax(140px, 1fr);
+  grid-template-columns: 3fr minmax(8.75rem, 1fr);
   grid-gap: 1rem;
 `;
 

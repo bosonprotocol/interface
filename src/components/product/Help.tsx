@@ -16,7 +16,7 @@ interface Props {
 }
 const HelpWrapper = styled.aside<{ $background?: string }>`
   width: 100%;
-  width: 324px;
+  width: 23.25rem;
   display: flex;
   flex-direction: column;
   background: ${(props) => props.$background || colors.lightGrey};
@@ -40,6 +40,7 @@ const HelpContent = styled.div`
 const HelpContentContainer = styled.div`
   margin-bottom: 2rem;
   > h4 {
+    font-size: 1rem;
     margin: 0 0 0.5rem 0;
   }
   > p {

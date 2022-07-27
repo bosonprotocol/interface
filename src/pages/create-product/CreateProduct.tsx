@@ -12,6 +12,15 @@ import CoreTermsOfSale from "../../components/product/CoreTermsOfSale";
 import CreateYourProfile from "../../components/product/CreateYourProfile";
 import Help from "../../components/product/Help";
 import Preview from "../../components/product/Preview";
+import {
+  coreTermsOfSaleHelp,
+  createYourProfileHelp,
+  productImagesHelp,
+  productInformationHelp,
+  productTypeHelp,
+  shippingInfoHelp,
+  termsOfExchangeHelp
+} from "../../components/product/productHelpOptions";
 import ProductImages from "../../components/product/ProductImages";
 import ProductInformation from "../../components/product/ProductInformation";
 import ProductType from "../../components/product/ProductType";
@@ -24,7 +33,6 @@ import {
   productTypeValidationSchema
 } from "../../components/product/validation/createProductValidationSchema";
 import MultiSteps from "../../components/step/MultiSteps";
-import { createYourProfileHelp } from "../../lib/const/productHelpOptions";
 import { initialValues } from "./initialValues";
 
 const ProductLayoutContainer = styled.div(
@@ -59,32 +67,32 @@ type CreateProductSteps = {
   1: {
     ui: JSX.Element;
     validation: typeof productTypeValidationSchema;
-    helpSection: null;
+    helpSection: typeof productTypeHelp;
   };
   2: {
     ui: JSX.Element;
     validation: typeof productInformationValidationSchema;
-    helpSection: null;
+    helpSection: typeof productInformationHelp;
   };
   3: {
     ui: JSX.Element;
     validation: null; // TODO: NEED TO BE ADDED, FOR NOW JUSt PLAIN JSX
-    helpSection: null;
+    helpSection: typeof productImagesHelp;
   };
   4: {
     ui: JSX.Element;
     validation: null; // TODO: NEED TO BE ADDED, FOR NOW JUSt PLAIN JSX
-    helpSection: null;
+    helpSection: typeof coreTermsOfSaleHelp;
   };
   5: {
     ui: JSX.Element;
     validation: null; // TODO: NEED TO BE ADDED, FOR NOW JUSt PLAIN JSX
-    helpSection: null;
+    helpSection: typeof termsOfExchangeHelp;
   };
   6: {
     ui: JSX.Element;
     validation: null; // TODO: NEED TO BE ADDED, FOR NOW JUSt PLAIN JSX
-    helpSection: null;
+    helpSection: typeof shippingInfoHelp;
   };
   7: {
     ui: JSX.Element;
@@ -109,32 +117,32 @@ const createProductSteps = ({
     1: {
       ui: <ProductType />,
       validation: productTypeValidationSchema,
-      helpSection: null
+      helpSection: productTypeHelp
     },
     2: {
       ui: <ProductInformation />,
       validation: productInformationValidationSchema,
-      helpSection: null
+      helpSection: productInformationHelp
     },
     3: {
       ui: <ProductImages />,
       validation: null,
-      helpSection: null
+      helpSection: productImagesHelp
     },
     4: {
       ui: <CoreTermsOfSale />,
       validation: null,
-      helpSection: null
+      helpSection: coreTermsOfSaleHelp
     },
     5: {
       ui: <TermsOfExchange />,
       validation: null,
-      helpSection: null
+      helpSection: termsOfExchangeHelp
     },
     6: {
       ui: <ShippingInfo />,
       validation: null,
-      helpSection: null
+      helpSection: shippingInfoHelp
     },
     7: {
       ui: <ConfirmProductDetails togglePreview={setIsPreviewVisible} />,
