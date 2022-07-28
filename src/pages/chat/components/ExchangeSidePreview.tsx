@@ -188,11 +188,24 @@ export default function ExchangeSidePreview({ thread, disputeOpen }: Props) {
   const isInDispute = exchange.disputed;
   const isResolved = false; // TODO: change
   const isEscalated = false; // TODO: change
+  // TODO: change these values
+  const deadlineToResolveDispute = new Date(
+    new Date().getTime() + 1000000000
+  ).getTime();
+  const raisedDisputeAt = new Date(new Date().getTime() - 100000000).getTime(); // yesterday
+  const totalDaysToResolveDispute = dayjs(deadlineToResolveDispute).diff(
+    raisedDisputeAt,
+    "day"
+  );
+  const daysLeftToResolveDispute = dayjs(deadlineToResolveDispute).diff(
+    new Date().getTime(),
+    "day"
+  );
   return (
     <Container $disputeOpen={disputeOpen}>
       <img src={exchange.offer.metadata.imageUrl} width="372px" />
       {isInRedeemed && (
-        <InfoMessage>Just a few days left to dispute</InfoMessage>
+        <InfoMessage>{`${daysLeftToResolveDispute} / ${totalDaysToResolveDispute} days left to resolve dispute`}</InfoMessage>
       )}
       <ExchangeInfo>
         <Name tag="h3">{exchange.offer.metadata.name}</Name>
