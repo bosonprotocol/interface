@@ -24,6 +24,7 @@ import {
   createYourProfileValidationSchema,
   initialValues,
   MOCK_MODAL_DATA,
+  productImagesValidationSchema,
   productInformationValidationSchema,
   productTypeValidationSchema,
   termsOfExchangeValidationSchema
@@ -37,6 +38,7 @@ import {
   shippingInfoHelp,
   termsOfExchangeHelp
 } from "../../components/product/utils/productHelpOptions";
+import { shippingInfoValidationSchema } from "../../components/product/utils/validationSchema";
 import MultiSteps from "../../components/step/MultiSteps";
 
 const ProductLayoutContainer = styled.div(
@@ -130,7 +132,7 @@ const createProductSteps = ({
     },
     3: {
       ui: <ProductImages />,
-      validation: null,
+      validation: productImagesValidationSchema,
       helpSection: productImagesHelp
     },
     4: {
@@ -145,7 +147,7 @@ const createProductSteps = ({
     },
     6: {
       ui: <ShippingInfo />,
-      validation: null,
+      validation: shippingInfoValidationSchema,
       helpSection: shippingInfoHelp
     },
     7: {
