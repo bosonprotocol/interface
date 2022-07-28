@@ -1,5 +1,6 @@
+import { FieldArray } from "formik";
 import { Plus } from "phosphor-react";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import styled from "styled-components";
 
 import Collapse from "../../components/collapse/Collapse";
@@ -13,6 +14,7 @@ import {
   SectionTitle
 } from "./Product.styles";
 import { MOCK_OPTIONS } from "./utils";
+import { useThisForm } from "./utils/useThisForm";
 
 const AddProductContainer = styled.div`
   display: grid;
@@ -30,52 +32,56 @@ const ProductInformationButtonGroup = styled(ProductButtonGroup)`
 `;
 
 const AddAttributesContainer = () => {
-  const [count, setCount] = useState<number>(1);
-  const attributes = useMemo(() => Array.from(Array(count).keys()), [count]);
+  const { values } = useThisForm();
 
-  const addNewAttribute = () => {
-    setCount(count + 1);
-  };
+  const elements = useMemo(
+    () => values?.productInformation?.attributes,
+    [values?.productInformation?.attributes]
+  );
 
   return (
-    <FormField
-      title="Add product attribute"
-      tooltip="TODO: add"
-      style={{
-        marginBottom: 0
-      }}
-    >
-      {attributes.map((e: number, key: number) => (
-        <AddProductContainer key={`add_product_container_${key}`}>
-          <div>
-            <Input
-              placeholder="Attribute"
-              name={`productInformation.attribute${
-                key === 0 ? "" : `${key + 1}`
-              }`}
-            />
-          </div>
-          <div>
-            <Input
-              placeholder="Attribute Value"
-              name={`productInformation.attributeValue${
-                key === 0 ? "" : `${key + 1}`
-              }`}
-            />
-          </div>
-        </AddProductContainer>
-      ))}
-      <Button
-        onClick={addNewAttribute}
-        theme="blankSecondary"
-        style={{ borderBottom: `1px solid ${colors.border}` }}
-      >
-        Add new <Plus size={18} />
-      </Button>
+    <FormField title="Add product attribute" tooltip="TODO: add">
+      <FieldArray
+        name="productInformation.attributes"
+        render={(arrayHelpers) => {
+          const render = elements && elements.length > 0;
+
+          return (
+            <>
+              {render && (
+                <>
+                  {elements.map((el: unknown, key: number) => (
+                    <AddProductContainer key={`add_product_container_${key}`}>
+                      <div>
+                        <Input
+                          placeholder="Attribute"
+                          name={`productInformation.attributes[${key}].name`}
+                        />
+                      </div>
+                      <div>
+                        <Input
+                          placeholder="Attribute Value"
+                          name={`productInformation.attributes[${key}].value`}
+                        />
+                      </div>
+                    </AddProductContainer>
+                  ))}
+                </>
+              )}
+              <Button
+                onClick={() => arrayHelpers.push("")}
+                theme="blankSecondary"
+                style={{ borderBottom: `1px solid ${colors.border}` }}
+              >
+                Add new <Plus size={18} />
+              </Button>
+            </>
+          );
+        }}
+      />
     </FormField>
   );
 };
-
 export default function ProductInformation() {
   return (
     <ContainerProductPage>

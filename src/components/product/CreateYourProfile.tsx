@@ -6,7 +6,6 @@ import {
   SectionTitle
 } from "./Product.styles";
 
-const FILE_MAX_SIZE = 300 * 1024;
 export default function CreateYourProfile() {
   return (
     <ContainerProductPage>
@@ -16,7 +15,7 @@ export default function CreateYourProfile() {
         subTitle="Upload a profile image with a max. width and height of 800px and a max. size of 300kb."
         required={true}
       >
-        <Upload name="creteYourProfile.logo" maxSize={FILE_MAX_SIZE} />
+        <Upload name="creteYourProfile.logo" />
       </FormField>
       <FormField title="Your brand / name" required={true}>
         <Input name="creteYourProfile.name" placeholder="Name" />

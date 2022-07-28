@@ -12,6 +12,7 @@ import { CreateProductForm } from "./types";
 
 export const createYourProfileInitialValues = {
   creteYourProfile: {
+    logo: null,
     name: "",
     email: "",
     description: "",
@@ -32,21 +33,25 @@ export const productInformationInitialValues = {
     description: "",
     category: null,
     tags: [],
-    attribute: "",
-    attributeValue: ""
+    attributes: [
+      {
+        name: "",
+        value: ""
+      }
+    ]
   }
 } as const;
 
 export const productImagesInitialValues = {
   productImages: {
-    thumbnail: "",
-    secondary: "",
-    everyAngle: "",
-    details: "",
-    inUse: "",
-    styledScene: "",
-    sizeAndScale: "",
-    more: ""
+    thumbnail: null,
+    secondary: null,
+    everyAngle: null,
+    details: null,
+    inUse: null,
+    styledScene: null,
+    sizeAndScale: null,
+    more: null
   }
 } as const;
 
@@ -77,8 +82,12 @@ export const termsOfExchangeInitialValues = {
 export const shippingInfoInitialValues = {
   shippingInfo: {
     country: "",
-    region: "",
-    time: "",
+    jurisdiction: [
+      {
+        region: "",
+        time: ""
+      }
+    ],
     addUrl: "",
     dimensions: "",
     weight: "",

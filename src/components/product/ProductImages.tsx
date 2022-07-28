@@ -33,8 +33,6 @@ const SpaceContainer = styled.div`
   }
 `;
 
-const FILE_MAX_SIZE = 600 * 1024;
-
 export default function ProductImages() {
   return (
     <ContainerProductImage>
@@ -48,46 +46,17 @@ export default function ProductImages() {
         }}
       >
         <SpaceContainer>
-          <Upload
-            name="productImages.thumbnail"
-            placeholder="Thumbnail"
-            maxSize={FILE_MAX_SIZE}
-          />
-          <Upload
-            name="productImages.secondary"
-            placeholder="Secondary"
-            maxSize={FILE_MAX_SIZE}
-          />
-          <Upload
-            name="productImages.everyAngle"
-            placeholder="Every angle"
-            maxSize={FILE_MAX_SIZE}
-          />
-          <Upload
-            name="productImages.details"
-            placeholder="Details"
-            maxSize={FILE_MAX_SIZE}
-          />
-          <Upload
-            name="productImages.inUse"
-            placeholder="In Use"
-            maxSize={FILE_MAX_SIZE}
-          />
-          <Upload
-            name="productImages.styledScene"
-            placeholder="Styled Scene"
-            maxSize={FILE_MAX_SIZE}
-          />
+          <Upload name="productImages.thumbnail" placeholder="Thumbnail" />
+          <Upload name="productImages.secondary" placeholder="Secondary" />
+          <Upload name="productImages.everyAngle" placeholder="Every angle" />
+          <Upload name="productImages.details" placeholder="Details" />
+          <Upload name="productImages.inUse" placeholder="In Use" />
+          <Upload name="productImages.styledScene" placeholder="Styled Scene" />
           <Upload
             name="productImages.sizeAndScale"
             placeholder="Size and scale"
-            maxSize={FILE_MAX_SIZE}
           />
-          <Upload
-            name="productImages.more"
-            placeholder="More"
-            maxSize={FILE_MAX_SIZE}
-          />
+          <Upload name="productImages.more" placeholder="More" />
         </SpaceContainer>
       </FormField>
       <ProductButtonGroup>

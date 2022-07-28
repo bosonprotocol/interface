@@ -1,5 +1,6 @@
+import { FieldArray } from "formik";
 import { Plus } from "phosphor-react";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import styled from "styled-components";
 
 import Collapse from "../../components/collapse/Collapse";
@@ -47,12 +48,12 @@ const AdditionalContainer = styled.div`
 `;
 
 const AddSupportedJurisdictions = () => {
-  const [count, setCount] = useState<number>(1);
-  const jurisdictions = useMemo(() => Array.from(Array(count).keys()), [count]);
+  const { values } = useThisForm();
 
-  const addNewJurisdiction = () => {
-    setCount(count + 1);
-  };
+  const elements = useMemo(
+    () => values?.shippingInfo?.jurisdiction,
+    [values?.shippingInfo?.jurisdiction]
+  );
 
   return (
     <FormField
@@ -60,31 +61,46 @@ const AddSupportedJurisdictions = () => {
       subTitle="Select the jurisdictions you will ship to."
       tooltip="TODO: add"
     >
-      {jurisdictions.map((e: number, key: number) => (
-        <FieldContainerJurisdictions
-          key={`field_container_jurisdictions_${key}`}
-        >
-          <div>
-            <Input
-              placeholder="Region"
-              name={`shippingInfo.region${key === 0 ? "" : `${key + 1}`}`}
-            />
-          </div>
-          <div>
-            <Input
-              placeholder="Time"
-              name={`shippingInfo.time${key === 0 ? "" : `${key + 1}`}`}
-            />
-          </div>
-        </FieldContainerJurisdictions>
-      ))}
-      <Button
-        onClick={addNewJurisdiction}
-        theme="blankSecondary"
-        style={{ borderBottom: `1px solid ${colors.border}` }}
-      >
-        Add new <Plus size={18} />
-      </Button>
+      <FieldArray
+        name="shippingInfo.jurisdiction"
+        render={(arrayHelpers) => {
+          const render = elements && elements.length > 0;
+
+          return (
+            <>
+              {render && (
+                <>
+                  {elements.map((el: unknown, key: number) => (
+                    <FieldContainerJurisdictions
+                      key={`field_container_jurisdictions_${key}`}
+                    >
+                      <div>
+                        <Input
+                          placeholder="Region"
+                          name={`shippingInfo.jurisdiction[${key}].region`}
+                        />
+                      </div>
+                      <div>
+                        <Input
+                          placeholder="Time"
+                          name={`shippingInfo.jurisdiction[${key}].time`}
+                        />
+                      </div>
+                    </FieldContainerJurisdictions>
+                  ))}
+                </>
+              )}
+              <Button
+                onClick={() => arrayHelpers.push("")}
+                theme="blankSecondary"
+                style={{ borderBottom: `1px solid ${colors.border}` }}
+              >
+                Add new <Plus size={18} />
+              </Button>
+            </>
+          );
+        }}
+      />
     </FormField>
   );
 };
