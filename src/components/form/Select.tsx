@@ -12,7 +12,7 @@ const customStyles = (error: any) => ({
   control: (provided: any, state: any) => ({
     ...provided,
     borderRadius: 0,
-    padding: "0.325rem 0.25rem",
+    padding: "0.4rem 0.25rem",
     boxShadow: "none",
     ":hover": {
       borderColor: colors.secondary,
