@@ -1,4 +1,4 @@
-import { getDefaultConfig } from "@bosonprotocol/common"; // TODO: import from react-kit instead once it's exported there
+import { getDefaultConfig } from "@bosonprotocol/react-kit";
 import { chain } from "wagmi";
 
 import { parseCurationList } from "./utils/curationList";

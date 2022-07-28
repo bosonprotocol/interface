@@ -1,4 +1,4 @@
-import { offers } from "@bosonprotocol/core-sdk";
+import { offers } from "@bosonprotocol/react-kit";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
