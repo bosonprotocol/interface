@@ -353,6 +353,77 @@ const Container = styled.div`
   display: flex;
   height: 100%;
 `;
+// :
+const getExchanges = ({
+  id_in,
+  disputed
+}: {
+  id_in: string[];
+  disputed: null;
+}): ReturnType<typeof useExchanges> => {
+  const r = {
+    data: id_in.map((id) => ({
+      id,
+      buyer: {
+        id: "1",
+        wallet: "0x"
+      },
+      committedDate: new Date().toString(),
+      disputed: true,
+      expired: true,
+      finalizedDate: new Date().toString(),
+      redeemedDate: new Date().toString(),
+      state: "active",
+      validUntilDate: new Date().toString(),
+      seller: { id: "123" },
+      offer: {
+        id: "1",
+        buyerCancelPenalty: "",
+        createdAt: "",
+        disputeResolverId: "",
+        exchangeToken: {
+          address: "",
+          decimals: "",
+          name: "",
+          symbol: "",
+          __typename: "ExchangeToken"
+        },
+        fulfillmentPeriodDuration: "",
+        metadataHash: "",
+        metadataUri: "",
+        price: "",
+        protocolFee: "",
+        quantityAvailable: "",
+        quantityInitial: "",
+        resolutionPeriodDuration: "",
+        seller: {
+          active: true,
+          admin: "0x",
+          clerk: "0x",
+          __typename: "Seller",
+          id: "",
+          operator: "",
+          treasury: ""
+        },
+        sellerDeposit: "",
+        validFromDate: "",
+        validUntilDate: "",
+        voucherRedeemableFromDate: "",
+        voucherRedeemableUntilDate: "",
+        voucherValidDuration: "",
+        __typename: "Offer",
+        isValid: true,
+        voidedAt: "",
+        metadata: {
+          imageUrl:
+            "http://localhost:3000/static/media/logo.1ee71600148baa2c5ceb69f2a0c1b62a.svg",
+          type: "BASE"
+        }
+      }
+    }))
+  };
+  return r as any;
+};
 
 const SelectMessageContainer = styled.div`
   display: flex;
@@ -371,7 +442,13 @@ const SimpleMessage = styled.p`
 `;
 
 export default function Chat() {
-  const { data: exchanges } = useExchanges({
+  // TODO: comment out
+  // const { data: exchanges } = useExchanges({
+  //   id_in: threads.map((message) => message.threadId.exchangeId),
+  //   disputed: null
+  // });
+  const { data: exchanges } = getExchanges({
+    // TODO: remove
     id_in: threads.map((message) => message.threadId.exchangeId),
     disputed: null
   });
