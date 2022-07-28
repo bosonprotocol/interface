@@ -12,7 +12,7 @@ import {
   ProductButtonGroup,
   SectionTitle
 } from "./Product.styles";
-import { OPTIONS_LENGTH, OPTIONS_WEIGHT } from "./utils";
+import { OPTIONS_COUNTRIES, OPTIONS_LENGTH, OPTIONS_WEIGHT } from "./utils";
 import { useThisForm } from "./utils/useThisForm";
 
 const FieldContainerJurisdictions = styled.div`
@@ -117,7 +117,11 @@ export default function ShippingInfo() {
           title="Country of Origin"
           subTitle="The country you're dispatching from."
         >
-          <Input placeholder="Country" name="shippingInfo.country" />
+          <Select
+            placeholder="Country"
+            name="shippingInfo.country"
+            options={OPTIONS_COUNTRIES}
+          />
         </FormField>
         <AddSupportedJurisdictions />
       </RequiredContainer>

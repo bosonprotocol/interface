@@ -1,3 +1,5 @@
+import countries from "./countries.json";
+
 export const CREATE_PRODUCT_STEPS = [
   {
     name: "Profile info",
@@ -74,7 +76,7 @@ export const OPTIONS_PERIOD = [
     label: "Days"
   }
 ];
-
+export const OPTIONS_COUNTRIES = countries;
 export const OPTIONS_LENGTH = [
   {
     value: "mm",
