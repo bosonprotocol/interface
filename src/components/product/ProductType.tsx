@@ -1,4 +1,3 @@
-import { useFormikContext } from "formik";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
@@ -17,7 +16,7 @@ import {
   ProductButtonGroup,
   SectionTitle
 } from "./Product.styles";
-import type { CreateProductForm } from "./utils";
+import { useThisForm } from "./utils/useThisForm";
 
 const productTypeItemsPerRow = {
   xs: 1,
@@ -77,7 +76,8 @@ export const ProductImage = styled(Image)`
 `;
 
 export default function ProductType() {
-  const { handleChange, values } = useFormikContext<CreateProductForm>();
+  const { handleChange, values, nextIsDisabled } = useThisForm();
+
   return (
     <ContainerProductPage>
       <SectionTitle tag="h2">Product Type</SectionTitle>
@@ -179,7 +179,7 @@ export default function ProductType() {
           </FormField>
         </GridContainer>
         <ProductButtonGroup>
-          <Button theme="secondary" type="submit">
+          <Button theme="secondary" type="submit" disabled={nextIsDisabled}>
             Next
           </Button>
         </ProductButtonGroup>

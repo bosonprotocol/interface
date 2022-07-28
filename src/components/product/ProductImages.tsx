@@ -6,6 +6,7 @@ import { Upload } from "../form";
 import FormField from "../form/FormField";
 import Button from "../ui/Button";
 import { ProductButtonGroup, SectionTitle } from "./Product.styles";
+import { useThisForm } from "./utils/useThisForm";
 
 export const Box = styled.div`
   padding: 1.625rem 0;
@@ -40,6 +41,7 @@ const SpaceContainer = styled.div`
 `;
 
 export default function ProductImages() {
+  const { nextIsDisabled } = useThisForm();
   return (
     <ContainerProductImage>
       <SectionTitle tag="h2">Product Images</SectionTitle>
@@ -85,7 +87,7 @@ export default function ProductImages() {
         </SpaceContainer>
       </FormField>
       <ProductButtonGroup>
-        <Button theme="secondary" type="submit">
+        <Button theme="secondary" type="submit" disabled={nextIsDisabled}>
           Next
         </Button>
       </ProductButtonGroup>

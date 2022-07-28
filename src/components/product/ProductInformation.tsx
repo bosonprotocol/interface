@@ -82,7 +82,10 @@ const AddAttributesContainer = () => {
     </FormField>
   );
 };
+
 export default function ProductInformation() {
+  const { nextIsDisabled } = useThisForm();
+
   return (
     <ContainerProductPage>
       <SectionTitle tag="h2">Product Information</SectionTitle>
@@ -190,7 +193,7 @@ export default function ProductInformation() {
         </Collapse>
       </AdditionalContainer>
       <ProductInformationButtonGroup>
-        <Button theme="secondary" type="submit">
+        <Button theme="secondary" type="submit" disabled={nextIsDisabled}>
           Next
         </Button>
       </ProductInformationButtonGroup>

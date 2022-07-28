@@ -106,7 +106,7 @@ const AddSupportedJurisdictions = () => {
 };
 
 export default function ShippingInfo() {
-  const { values } = useThisForm();
+  const { values, nextIsDisabled } = useThisForm();
 
   const unit = useMemo(
     () => (values?.shippingInfo?.measurementUnit?.value || "").toUpperCase(),
@@ -118,11 +118,7 @@ export default function ShippingInfo() {
       `${values?.shippingInfo?.length || 0}x${
         values?.shippingInfo?.width || 0
       }x${values?.shippingInfo?.height || 0}`,
-    [
-      values?.shippingInfo?.height,
-      values?.shippingInfo?.width,
-      values?.shippingInfo?.length
-    ]
+    [values?.shippingInfo]
   );
 
   return (
@@ -211,7 +207,7 @@ export default function ShippingInfo() {
         </Collapse>
       </AdditionalContainer>
       <ProductInformationButtonGroup>
-        <Button theme="secondary" type="submit">
+        <Button theme="secondary" type="submit" disabled={nextIsDisabled}>
           Next
         </Button>
       </ProductInformationButtonGroup>

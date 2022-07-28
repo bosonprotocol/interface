@@ -8,6 +8,7 @@ import {
   SectionTitle
 } from "./Product.styles";
 import { OPTIONS_CURRENCIES, OPTIONS_TOKEN_GATED } from "./utils";
+import { useThisForm } from "./utils/useThisForm";
 
 const PriceContainer = styled.div`
   display: grid;
@@ -20,6 +21,8 @@ const ProductInformationButtonGroup = styled(ProductButtonGroup)`
 `;
 
 export default function CoreTermsOfSale() {
+  const { nextIsDisabled } = useThisForm();
+
   return (
     <ContainerProductPage>
       <SectionTitle tag="h2">Core Terms of Sale</SectionTitle>
@@ -84,7 +87,7 @@ export default function CoreTermsOfSale() {
         <Datepicker name="coreTermsOfSale.offerValidityPeriod" period />
       </FormField>
       <ProductInformationButtonGroup>
-        <Button theme="secondary" type="submit">
+        <Button theme="secondary" type="submit" disabled={nextIsDisabled}>
           Next
         </Button>
       </ProductInformationButtonGroup>

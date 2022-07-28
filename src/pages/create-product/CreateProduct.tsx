@@ -27,6 +27,7 @@ import {
   productImagesValidationSchema,
   productInformationValidationSchema,
   productTypeValidationSchema,
+  shippingInfoValidationSchema,
   termsOfExchangeValidationSchema
 } from "../../components/product/utils";
 import {
@@ -38,7 +39,6 @@ import {
   shippingInfoHelp,
   termsOfExchangeHelp
 } from "../../components/product/utils/productHelpOptions";
-import { shippingInfoValidationSchema } from "../../components/product/utils/validationSchema";
 import MultiSteps from "../../components/step/MultiSteps";
 import { useLocalStorage } from "../../lib/utils/hooks/useLocalStorage";
 
@@ -83,7 +83,7 @@ type CreateProductSteps = {
   };
   3: {
     ui: JSX.Element;
-    validation: null; // TODO: NEED TO BE ADDED, FOR NOW JUSt PLAIN JSX
+    validation: typeof productImagesValidationSchema;
     helpSection: typeof productImagesHelp;
   };
   4: {
@@ -98,7 +98,7 @@ type CreateProductSteps = {
   };
   6: {
     ui: JSX.Element;
-    validation: null; // TODO: NEED TO BE ADDED, FOR NOW JUSt PLAIN JSX
+    validation: typeof shippingInfoValidationSchema;
     helpSection: typeof shippingInfoHelp;
   };
   7: {

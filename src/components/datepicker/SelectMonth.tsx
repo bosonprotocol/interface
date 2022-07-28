@@ -8,14 +8,14 @@ import { Selector } from "./DatePicker.style";
 import { changeMonth } from "./utils";
 
 interface Props {
-  date: Dayjs;
-  setDate: React.Dispatch<React.SetStateAction<Dayjs>>;
+  month: Dayjs;
+  setMonth: React.Dispatch<React.SetStateAction<Dayjs>>;
 }
 
-export default function SelectMonth({ date, setDate }: Props) {
+export default function SelectMonth({ month, setMonth }: Props) {
   const handleMonthChange = useCallback(
-    (isNext: boolean) => setDate(changeMonth(date, isNext)),
-    [setDate, date]
+    (isNext: boolean) => setMonth(changeMonth(month, isNext)),
+    [setMonth, month]
   );
 
   return (
@@ -23,7 +23,7 @@ export default function SelectMonth({ date, setDate }: Props) {
       <Button theme="blank" onClick={() => handleMonthChange(false)}>
         <CaretLeft size={18} />
       </Button>
-      <Typography tag="p">{date.format("MMMM YYYY")}</Typography>
+      <Typography tag="p">{month.format("MMMM YYYY")}</Typography>
       <Button theme="blank" onClick={() => handleMonthChange(true)}>
         <CaretRight size={18} />
       </Button>

@@ -60,9 +60,9 @@ export const coreTermsOfSaleInitialValues = {
     price: "",
     currency: OPTIONS_CURRENCIES[0],
     quantity: "",
-    tokenGatedOffer: OPTIONS_TOKEN_GATED[0],
-    redemptionPeriod: "",
-    offerValidityPeriod: ""
+    tokenGatedOffer: OPTIONS_TOKEN_GATED[0]
+    // redemptionPeriod: [],
+    // offerValidityPeriod: []
   }
 } as const;
 

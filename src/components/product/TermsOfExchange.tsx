@@ -16,6 +16,7 @@ import {
   OPTIONS_PERIOD,
   OPTIONS_UNIT
 } from "./utils/const";
+import { useThisForm } from "./utils/useThisForm";
 
 const TermsOfExchangeContainer = styled(ContainerProductPage)`
   max-width: 100%;
@@ -85,6 +86,8 @@ const InfoListItem = styled.li`
 `;
 
 export default function TermsOfExchange() {
+  const { nextIsDisabled } = useThisForm();
+
   return (
     <TermsOfExchangeContainer>
       <MainContainer>
@@ -189,7 +192,7 @@ export default function TermsOfExchange() {
             </FieldContainer>
           </FormField>
           <ProductInformationButtonGroup>
-            <Button theme="secondary" type="submit">
+            <Button theme="secondary" type="submit" disabled={nextIsDisabled}>
               Next
             </Button>
           </ProductInformationButtonGroup>

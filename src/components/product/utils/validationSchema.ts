@@ -59,10 +59,10 @@ export const coreTermsOfSaleValidationSchema = Yup.object({
     price: Yup.string().required(validationMessage.required),
     // currency: Yup.string().required(validationMessage.required),
     // TODO: ADD Use price for all variants FILED
-    quantity: Yup.string().required(validationMessage.required),
+    quantity: Yup.string().required(validationMessage.required)
     // tokenGatedOffer: Yup.string().required(validationMessage.required),
-    redemptionPeriod: Yup.string().required(validationMessage.required),
-    offerValidityPeriod: Yup.string().required(validationMessage.required)
+    // redemptionPeriod: Yup.array(),
+    // offerValidityPeriod: Yup.array()
   })
 });
 
