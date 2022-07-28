@@ -170,9 +170,14 @@ export default function ChatConversation({
   const [disputeOpen, setDisputeOpen] = useState<boolean>(false);
   const { address } = useAccount();
   const {
-    seller: { sellerId, isError: isErrorSellers, isLoading: isLoadingSeller },
+    seller: {
+      sellerId: _sellerId,
+      isError: isErrorSellers,
+      isLoading: isLoadingSeller
+    },
     buyer: { buyerId, isError: isErrorBuyers, isLoading: isLoadingBuyer }
   } = useBuyerSellerAccounts(address || "");
+  const sellerId = _sellerId || "2"; // TODO: remove
   const { showModal } = useModal();
   const SellerComponent = useCallback(
     ({
