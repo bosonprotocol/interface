@@ -265,6 +265,7 @@ export default function Chat() {
   );
   const [selectedThread, selectThread] = useState<Thread>();
   const [chatListOpen, setChatListOpen] = useState<boolean>(false);
+  const [idNotExist, setIdNotExist] = useState<boolean>(false);
   const params = useParams();
   const location = useLocation();
   const exchangeId = params["*"];
@@ -278,9 +279,11 @@ export default function Chat() {
 
       if (currentThread) {
         selectThread(currentThread);
+      } else {
+        setIdNotExist(true);
       }
     }
-  }, [exchangeId, threadsWithExchanges]);
+  }, [exchangeId, threadsWithExchanges, setIdNotExist, idNotExist]);
 
   return (
     <Container>
@@ -307,6 +310,8 @@ export default function Chat() {
               thread={selectedThread}
               setChatListOpen={setChatListOpen}
               chatListOpen={chatListOpen}
+              exchangeId={`${exchangeId}`}
+              idNotExist={idNotExist}
             />
           }
         />
@@ -314,7 +319,11 @@ export default function Chat() {
       {(location.pathname === `${BosonRoutes.Chat}/` ||
         location.pathname === `${BosonRoutes.Chat}`) && (
         <SelectMessageContainer>
-          <SimpleMessage>Select a message</SimpleMessage>
+          <SimpleMessage>
+            {!idNotExist
+              ? "Select a message"
+              : `Chat with id ${exchangeId} not found`}
+          </SimpleMessage>
         </SelectMessageContainer>
       )}
     </Container>

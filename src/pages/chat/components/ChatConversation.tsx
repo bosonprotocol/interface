@@ -180,11 +180,15 @@ interface Props {
   thread: Thread | undefined;
   chatListOpen: boolean;
   setChatListOpen: (p: boolean) => void;
+  idNotExist: boolean;
+  exchangeId: string;
 }
 export default function ChatConversation({
   thread,
   chatListOpen,
-  setChatListOpen
+  setChatListOpen,
+  idNotExist,
+  exchangeId
 }: Props) {
   const [disputeOpen, setDisputeOpen] = useState<boolean>(false);
   const [windowSize, setWindowSize] = useState(getWindowSize());
@@ -262,7 +266,11 @@ export default function ChatConversation({
   if (!thread) {
     return (
       <Container>
-        <SimpleMessage>Select a message</SimpleMessage>
+        <SimpleMessage>
+          {!idNotExist
+            ? "Select a message"
+            : `Chat with id ${exchangeId} not found`}
+        </SimpleMessage>
       </Container>
     );
   }
@@ -292,7 +300,7 @@ export default function ChatConversation({
               setDisputeOpen(!disputeOpen);
             }}
           >
-            Details
+            {disputeOpen ? "Hide Details" : "Details"}
           </button>
         </NavigationMobile>
         <Header>
