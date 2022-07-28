@@ -1,6 +1,6 @@
 /* eslint @typescript-eslint/no-empty-function: "off" */
 /* eslint @typescript-eslint/no-explicit-any: "off" */
-import { ExchangeState } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
+import { subgraph } from "@bosonprotocol/react-kit";
 import { createContext } from "react";
 
 import { MODAL_TYPES } from "./ModalComponents";
@@ -9,7 +9,7 @@ export type ModalProps = {
   title?: string;
   message?: string;
   type?: string;
-  state?: keyof typeof ExchangeState;
+  state?: keyof typeof subgraph.ExchangeState;
   [x: string]: any;
 };
 export type ModalType = keyof typeof MODAL_TYPES | null;

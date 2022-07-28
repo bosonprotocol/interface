@@ -1,4 +1,4 @@
-import { accounts, subgraph } from "@bosonprotocol/core-sdk";
+import { accounts, subgraph } from "@bosonprotocol/react-kit";
 import { useQuery } from "react-query";
 
 import { CONFIG } from "../../../lib/config";
