@@ -155,7 +155,7 @@ interface Props {
   thread: Thread | undefined;
   disputeOpen: boolean;
 }
-export default function Dispute({ thread, disputeOpen }: Props) {
+export default function ExchangeSidePreview({ thread, disputeOpen }: Props) {
   const exchange = thread?.exchange;
   const offer = exchange?.offer;
   const { showModal } = useModal();

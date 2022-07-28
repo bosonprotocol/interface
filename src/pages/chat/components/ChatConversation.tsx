@@ -10,7 +10,7 @@ import { colors } from "../../../lib/styles/colors";
 import { useBuyerSellerAccounts } from "../../../lib/utils/hooks/useBuyerSellerAccounts";
 import { Thread } from "../types";
 import ButtonProposal from "./ButtonProposal/ButtonProposal";
-import Dispute from "./Dispute";
+import ExchangeSidePreview from "./ExchangeSidePreview";
 import Message from "./Message";
 import MessageSeparator from "./MessageSeparator";
 
@@ -167,7 +167,8 @@ export default function ChatConversation({
   chatListOpen,
   setChatListOpen
 }: Props) {
-  const [disputeOpen, setDisputeOpen] = useState<boolean>(false);
+  const [isExchangePreviewOpen, setExchangePreviewOpen] =
+    useState<boolean>(false);
   const { address } = useAccount();
   const {
     seller: {
@@ -236,7 +237,7 @@ export default function ChatConversation({
           </button>
           <button
             onClick={() => {
-              setDisputeOpen(!disputeOpen);
+              setExchangePreviewOpen(!isExchangePreviewOpen);
             }}
           >
             Details
@@ -287,7 +288,10 @@ export default function ChatConversation({
           </InputWrapper>
         </TypeMessage>
       </Container>
-      <Dispute thread={thread} disputeOpen={disputeOpen} />
+      <ExchangeSidePreview
+        thread={thread}
+        disputeOpen={isExchangePreviewOpen}
+      />
     </>
   );
 }
