@@ -52,6 +52,7 @@ export default function ButtonProposal({ exchange }: Props) {
             setActiveStep(step);
           }}
           active={activeStep}
+          disableInactiveSteps
         />
       </Grid>
     ),
