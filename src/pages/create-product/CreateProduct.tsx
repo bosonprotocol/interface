@@ -259,9 +259,7 @@ export default function CreateProduct() {
           }
           validationSchema={wizardStep.currentValidation}
         >
-          {({ values, errors, touched }) => {
-            console.log(values, errors);
-            console.log(touched, "touched");
+          {() => {
             return (
               <Form>
                 {isPreviewVisible ? (

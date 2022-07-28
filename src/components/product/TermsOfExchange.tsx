@@ -10,6 +10,12 @@ import {
   ProductButtonGroup,
   SectionTitle
 } from "./Product.styles";
+import {
+  OPTIONS_DISPUTE_RESOLVER,
+  OPTIONS_EXCHANGE_POLICY,
+  OPTIONS_PERIOD,
+  OPTIONS_UNIT
+} from "./utils/const";
 
 const TermsOfExchangeContainer = styled(ContainerProductPage)`
   max-width: 100%;
@@ -91,9 +97,9 @@ export default function TermsOfExchange() {
             tooltip="TODO: add"
           >
             <Select
-              placeholder="Fair Exchange Policy"
-              name="termsOfExchange.fairExchangePolicy"
-              options={[{ value: "0", label: "0" }]}
+              placeholder="Choose exchange policy..."
+              name="termsOfExchange.exchangePolicy"
+              options={OPTIONS_EXCHANGE_POLICY}
             />
           </FormField>
           <FormField
@@ -111,9 +117,9 @@ export default function TermsOfExchange() {
               </div>
               <div>
                 <Select
-                  placeholder="Percent"
-                  name="termsOfExchange.buyerCancellationPenaltyPercent"
-                  options={[{ value: "0", label: "0" }]}
+                  placeholder="Choose unit..."
+                  name="termsOfExchange.buyerCancellationPenaltyUnit"
+                  options={OPTIONS_UNIT}
                 />
               </div>
             </FieldContainer>
@@ -133,9 +139,9 @@ export default function TermsOfExchange() {
               </div>
               <div>
                 <Select
-                  placeholder="Percent"
-                  name="termsOfExchange.sellerDepositPercent"
-                  options={[{ value: "0", label: "0" }]}
+                  placeholder="Choose unit..."
+                  name="termsOfExchange.sellerDepositUnit"
+                  options={OPTIONS_UNIT}
                 />
               </div>
             </FieldContainer>
@@ -146,9 +152,9 @@ export default function TermsOfExchange() {
             subTitle="Dispute Resolver will resolve disputes between buyer and seller in case they arise.            "
           >
             <Select
-              placeholder="Percent"
-              name="termsOfExchange.disputeResolverPeriod"
-              options={[{ value: "0", label: "0" }]}
+              placeholder="Choose Dispute Resolver..."
+              name="termsOfExchange.disputeResolver"
+              options={OPTIONS_DISPUTE_RESOLVER}
             />
           </FormField>
           <FormField
@@ -159,15 +165,15 @@ export default function TermsOfExchange() {
             <FieldContainer>
               <div>
                 <Input
-                  placeholder="Input the amount"
-                  name="termsOfExchange.disputeResolver"
+                  placeholder="Dispute Period"
+                  name="termsOfExchange.disputePeriod"
                 />
               </div>
               <div>
                 <Select
-                  placeholder="Percent"
-                  name="termsOfExchange.disputeResolverPeriod"
-                  options={[{ value: "0", label: "0" }]}
+                  placeholder="Choose Dispute Period Unit..."
+                  name="termsOfExchange.disputePeriodUnit"
+                  options={OPTIONS_PERIOD}
                 />
               </div>
             </FieldContainer>

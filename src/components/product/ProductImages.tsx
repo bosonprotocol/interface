@@ -31,7 +31,7 @@ const SpaceContainer = styled.div`
   }
 `;
 
-const FILE_MAX_SIZE = 0.6 * 1024;
+const FILE_MAX_SIZE = 600 * 1024;
 
 export default function ProductImages() {
   return (

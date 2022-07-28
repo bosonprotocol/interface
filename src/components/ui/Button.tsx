@@ -98,6 +98,13 @@ const allThemes = {
       color: colors.black
     }
   },
+  blankSecondary: {
+    color: "var(--secondary)",
+    padding: "0.75rem 0.5rem",
+    hover: {
+      color: colors.black
+    }
+  },
   warning: {
     color: colors.black,
     borderColor: colors.orange,

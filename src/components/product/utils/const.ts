@@ -29,6 +29,89 @@ export const MOCK_OPTIONS = [
   }
 ];
 
+export const OPTIONS_CURRENCIES = [
+  {
+    value: "ETH",
+    label: "ETH"
+  }
+];
+export const OPTIONS_TOKEN_GATED = [
+  {
+    value: "false",
+    label: "No"
+  },
+  {
+    value: "true",
+    label: "Yes",
+    disabled: true
+  }
+];
+
+export const OPTIONS_EXCHANGE_POLICY = [
+  {
+    value: "fairExchangePolicy",
+    label: "Fair Exchange Policy"
+  }
+];
+
+export const OPTIONS_DISPUTE_RESOLVER = [
+  {
+    value: "portal",
+    label: "PORTAL"
+  }
+];
+
+export const OPTIONS_UNIT = [
+  {
+    value: "%",
+    label: "Percent"
+  }
+];
+
+export const OPTIONS_PERIOD = [
+  {
+    value: "days",
+    label: "Days"
+  }
+];
+
+export const OPTIONS_LENGTH = [
+  {
+    value: "mm",
+    label: "Milimetres"
+  },
+  {
+    value: "cm",
+    label: "Centimetres"
+  },
+  {
+    value: "m",
+    label: "Metres"
+  },
+  {
+    value: "in",
+    label: "Inches"
+  },
+  {
+    value: "ft",
+    label: "Feet"
+  },
+  {
+    value: "yd",
+    label: "Yards"
+  }
+];
+export const OPTIONS_WEIGHT = [
+  {
+    value: "g",
+    label: "gram"
+  },
+  {
+    value: "kg",
+    label: "Kilogram"
+  }
+];
+
 export const MOCK_MODAL_DATA = {
   noCloseIcon: true,
   title: "Congratulations!",

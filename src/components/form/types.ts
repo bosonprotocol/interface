@@ -6,6 +6,7 @@ export interface BaseProps {
 
 export interface DatepickerProps extends BaseProps {
   data?: string;
+  period?: boolean;
 }
 
 export interface CheckboxProps extends BaseProps {

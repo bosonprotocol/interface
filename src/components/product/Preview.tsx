@@ -1,4 +1,3 @@
-import { useFormikContext } from "formik";
 import styled from "styled-components";
 
 import DetailChart from "../../components/detail/DetailChart";
@@ -26,7 +25,7 @@ import DetailTable from "../detail/DetailTable";
 import Button from "../ui/Button";
 import Typography from "../ui/Typography";
 import { ProductButtonGroup } from "./Product.styles";
-import type { CreateProductForm } from "./utils";
+import { useThisForm } from "./utils/useThisForm";
 
 interface Props {
   togglePreview: React.Dispatch<React.SetStateAction<boolean>>;
@@ -41,10 +40,8 @@ const PreviewWrapperContent = styled.div`
   box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1), 0px 0px 8px rgba(0, 0, 0, 0.1),
     0px 0px 16px rgba(0, 0, 0, 0.1), 0px 0px 32px rgba(0, 0, 0, 0.1);
 `;
-
 export default function Preview({ togglePreview }: Props) {
-  const { values } = useFormikContext<CreateProductForm>();
-  console.log(values, "values");
+  const { values } = useThisForm();
 
   const handleClosePreview = () => {
     togglePreview(false);

@@ -3,7 +3,8 @@ import * as Yup from "yup";
 import {
   createYourProfileValidationSchema,
   productInformationValidationSchema,
-  productTypeValidationSchema
+  productTypeValidationSchema,
+  shippingInfoValidationSchema
 } from "./validationSchema";
 
 export type CreateYourProfile = Yup.InferType<
@@ -14,6 +15,9 @@ export type ProductInformation = Yup.InferType<
   typeof productInformationValidationSchema
 >;
 
+export type ShippingInfo = Yup.InferType<typeof shippingInfoValidationSchema>;
+
 export type CreateProductForm = CreateYourProfile &
   ProductType &
-  ProductInformation;
+  ProductInformation &
+  ShippingInfo;

@@ -6,7 +6,7 @@ import {
   SectionTitle
 } from "./Product.styles";
 
-const FILE_MAX_SIZE = 0.6 * 1024;
+const FILE_MAX_SIZE = 300 * 1024;
 export default function CreateYourProfile() {
   return (
     <ContainerProductPage>

@@ -12,7 +12,7 @@ const customStyles = (error: any) => ({
   control: (provided: any, state: any) => ({
     ...provided,
     borderRadius: 0,
-    padding: "0.25rem",
+    padding: "0.325rem 0.25rem",
     boxShadow: "none",
     ":hover": {
       borderColor: colors.secondary,
@@ -33,6 +33,8 @@ const customStyles = (error: any) => ({
   }),
   option: (provided: any, state: any) => ({
     ...provided,
+    cursor: state.isDisabled ? "not-allowed" : "pointer",
+    opacity: state.isDisabled ? "0.5" : "1",
     background:
       state.isOptionSelected || state.isSelected || state.isFocused
         ? colors.lightGrey
@@ -51,7 +53,7 @@ export default function SelectComponent({
   name,
   options,
   placeholder = "Choose...",
-  isClearable = true,
+  isClearable = false,
   isSearchable = true,
   ...props
 }: SelectProps) {
@@ -80,6 +82,7 @@ export default function SelectComponent({
         onChange={handleChange}
         isSearchable={isSearchable}
         isClearable={isClearable}
+        isOptionDisabled={(option) => option.disabled}
       />
       <Error display={displayError} message={errorMessage} />{" "}
     </>

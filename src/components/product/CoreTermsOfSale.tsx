@@ -7,7 +7,7 @@ import {
   ProductButtonGroup,
   SectionTitle
 } from "./Product.styles";
-import { MOCK_OPTIONS } from "./utils";
+import { OPTIONS_CURRENCIES, OPTIONS_TOKEN_GATED } from "./utils";
 
 const PriceContainer = styled.div`
   display: grid;
@@ -30,13 +30,18 @@ export default function CoreTermsOfSale() {
       >
         <PriceContainer>
           <div>
-            <Input placeholder="Price" name="coreTermsOfSale.price" />
+            <Input placeholder="Token amount" name="coreTermsOfSale.price" />
           </div>
           <div>
-            <Select name="coreTermsOfSale.price" options={MOCK_OPTIONS} />
+            <Select
+              placeholder="Choose currency"
+              name="coreTermsOfSale.currency"
+              options={OPTIONS_CURRENCIES}
+            />
           </div>
         </PriceContainer>
       </FormField>
+      {/* TODO: use price for all variants */}
       <FormField
         title="Quantity"
         required={true}
@@ -44,28 +49,31 @@ export default function CoreTermsOfSale() {
       >
         <Textarea
           placeholder="Input the amount"
-          name="coreTermsOfSale.amount"
+          name="coreTermsOfSale.quantity"
         />
       </FormField>
       <FormField
         title="Token gated offer"
         subTitle="Limit the purchase of your item to users holding a specific token."
       >
-        <Select name="coreTermsOfSale.price" options={MOCK_OPTIONS} />
+        <Select
+          name="coreTermsOfSale.tokenGatedOffer"
+          options={OPTIONS_TOKEN_GATED}
+        />
       </FormField>
       <FormField
         title="Redemption period"
         required={true}
         subTitle="Redemption period is the time in which buyers can redeem the rNFT for the physical item."
       >
-        <Datepicker name="coreTermsOfSale.redemptionPeriod" />
+        <Datepicker name="coreTermsOfSale.redemptionPeriod" period />
       </FormField>
       <FormField
         title="Offer Validity period"
         required={true}
         subTitle="The Offer validity period is the time in which buyers can commit to your offer."
       >
-        <Datepicker name="coreTermsOfSale.offerValidityPeriod" />
+        <Datepicker name="coreTermsOfSale.offerValidityPeriod" period />
       </FormField>
       <ProductInformationButtonGroup>
         <Button theme="secondary" type="submit">

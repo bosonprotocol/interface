@@ -1,6 +1,9 @@
+import { Plus } from "phosphor-react";
+import { useMemo, useState } from "react";
 import styled from "styled-components";
 
 import Collapse from "../../components/collapse/Collapse";
+import { colors } from "../../lib/styles/colors";
 import { FormField, Input, Select, Textarea } from "../form";
 import Button from "../ui/Button";
 import Typography from "../ui/Typography";
@@ -15,6 +18,7 @@ const AddProductContainer = styled.div`
   display: grid;
   grid-template-columns: minmax(180px, 1fr) 3fr;
   grid-gap: 1rem;
+  margin-bottom: 1rem;
 `;
 
 const AdditionalContainer = styled.div`
@@ -24,6 +28,53 @@ const AdditionalContainer = styled.div`
 const ProductInformationButtonGroup = styled(ProductButtonGroup)`
   margin-top: 1.563rem;
 `;
+
+const AddAttributesContainer = () => {
+  const [count, setCount] = useState<number>(1);
+  const attributes = useMemo(() => Array.from(Array(count).keys()), [count]);
+
+  const addNewAttribute = () => {
+    setCount(count + 1);
+  };
+
+  return (
+    <FormField
+      title="Add product attribute"
+      tooltip="TODO: add"
+      style={{
+        marginBottom: 0
+      }}
+    >
+      {attributes.map((e: number, key: number) => (
+        <AddProductContainer key={`add_product_container_${key}`}>
+          <div>
+            <Input
+              placeholder="Attribute"
+              name={`productInformation.attribute${
+                key === 0 ? "" : `${key + 1}`
+              }`}
+            />
+          </div>
+          <div>
+            <Input
+              placeholder="Attribute Value"
+              name={`productInformation.attributeValue${
+                key === 0 ? "" : `${key + 1}`
+              }`}
+            />
+          </div>
+        </AddProductContainer>
+      ))}
+      <Button
+        onClick={addNewAttribute}
+        theme="blankSecondary"
+        style={{ borderBottom: `1px solid ${colors.border}` }}
+      >
+        Add new <Plus size={18} />
+      </Button>
+    </FormField>
+  );
+};
 
 export default function ProductInformation() {
   return (
@@ -51,37 +102,26 @@ export default function ProductInformation() {
         required={true}
         subTitle="Select the category that best matches your product."
       >
-        <Select name="productInformation.category" options={MOCK_OPTIONS} />
+        <Select
+          placeholder="Choose category..."
+          name="productInformation.category"
+          options={MOCK_OPTIONS}
+          isClearable
+        />
       </FormField>
       <FormField
         title="Search Tags"
         required={true}
         subTitle="Input any relevant tags to make your offer stand out."
       >
-        <Select name="productInformation.tags" options={MOCK_OPTIONS} />
+        <Select
+          placeholder="Choose tags..."
+          name="productInformation.tags"
+          isMulti
+          options={MOCK_OPTIONS}
+        />
       </FormField>
-      <FormField
-        title="Add product attribute"
-        tooltip="TODO: add"
-        style={{
-          marginBottom: 0
-        }}
-      >
-        <AddProductContainer>
-          <div>
-            <Input
-              placeholder="Attribute"
-              name="productInformation.attribute"
-            />
-          </div>
-          <div>
-            <Input
-              placeholder="Attribute Value"
-              name="productInformation.attributeValue"
-            />
-          </div>
-        </AddProductContainer>
-      </FormField>
+      <AddAttributesContainer />
       <AdditionalContainer>
         <Collapse
           title={<Typography tag="h3">Additional information</Typography>}

@@ -12,6 +12,7 @@ import SelectMonth from "./SelectMonth";
 interface Props {
   onChange?: (selected: Dayjs) => void;
   error?: string;
+  period?: boolean;
   [x: string]: any;
 }
 
