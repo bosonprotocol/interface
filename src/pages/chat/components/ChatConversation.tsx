@@ -12,6 +12,7 @@ import { Thread } from "../types";
 import ButtonProposal from "./ButtonProposal/ButtonProposal";
 import Dispute from "./Dispute";
 import Message from "./Message";
+import MessageSeparator from "./MessageSeparator";
 
 const Container = styled.div`
   display: flex;
@@ -87,31 +88,6 @@ const Input = styled.input`
   padding: 0.75rem 1rem 0.75rem 1rem;
   &:focus {
     outline: none;
-  }
-`;
-
-const BtnProposal = styled.button`
-  border: 3px solid ${colors.secondary};
-  padding-left: 1.2rem;
-  padding-right: 2.5rem;
-  font-size: 0.875rem;
-  margin-right: 0.875rem;
-  height: 2.7rem;
-  font-weight: 600;
-  color: ${colors.secondary};
-  background-color: transparent;
-  position: relative;
-  svg {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    right: 0.6rem;
-    ${breakpoint.xs} {
-      transform: translateY(-50%) scale(0.7);
-    }
-    ${breakpoint.s} {
-      transform: translateY(-50%);
-    }
   }
 `;
 
@@ -271,15 +247,18 @@ export default function ChatConversation({
                 key={message.id}
                 $alignStart={!getWasItSentByMe(buyerId, sellerId, message.from)}
               >
-                <Message
-                  thread={thread}
-                  message={message}
-                  isLeftAligned={
-                    !getWasItSentByMe(buyerId, sellerId, message.from)
-                  }
-                >
-                  <SellerComponent size={32} withProfileText={false} />
-                </Message>
+                <>
+                  <MessageSeparator message={message} />
+                  <Message
+                    thread={thread}
+                    message={message}
+                    isLeftAligned={
+                      !getWasItSentByMe(buyerId, sellerId, message.from)
+                    }
+                  >
+                    <SellerComponent size={32} withProfileText={false} />
+                  </Message>
+                </>
               </Conversation>
             );
           })}

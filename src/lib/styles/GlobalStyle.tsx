@@ -68,10 +68,6 @@ const GlobalStyle = createGlobalStyle<{
     max-height: 100vh;
   }
 
-  html, body, #root, [data-rk] {
-    height: 100%;
-  }
-
   a,
   button,
   input,

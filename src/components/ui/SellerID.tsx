@@ -70,7 +70,6 @@ const SellerID: React.FC<
   ...rest
 }) => {
   const navigate = useKeepQueryParamsNavigate();
-
   const sellerId = seller?.id;
   const sellerAddress = seller?.operator;
   const artist = getOfferArtist(offerName);

@@ -22,7 +22,7 @@ const RenderModalComponent = ({
     ? MODAL_COMPONENTS[store.modalType]
     : null;
   if (!store.modalType || !ModalComponent) {
-    document.body.style.overflow = "unset";
+    document.body.style.overflow = "";
     return null;
   }
   document.body.style.overflow = "hidden";

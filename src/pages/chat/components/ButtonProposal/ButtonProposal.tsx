@@ -66,8 +66,8 @@ export default function ButtonProposal({ exchange }: Props) {
     });
   }, [activeStep, headerComponent, activeStep]); // eslint-disable-line
 
-  const sendProposal = (proposal: NewProposal) => {
-    console.log("proposal in button proposal", proposal);
+  const sendProposal = (proposal: NewProposal, proposalFiles: File[]) => {
+    console.log("proposal in button proposal", proposal, proposalFiles);
   };
 
   return (

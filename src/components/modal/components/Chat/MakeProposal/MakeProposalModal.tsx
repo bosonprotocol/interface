@@ -2,6 +2,7 @@ import { Form, Formik, FormikProps } from "formik";
 import { ReactNode } from "react";
 import * as Yup from "yup";
 
+import { getOfferArtist } from "../../../../../lib/utils/hooks/offers/placeholders";
 import { Exchange } from "../../../../../lib/utils/hooks/useExchanges";
 import { NewProposal } from "../../../../../pages/chat/types";
 import Grid from "../../../../ui/Grid";
@@ -15,7 +16,7 @@ import ReviewAndSubmitStep from "./steps/ReviewAndSubmitStep";
 interface Props {
   exchange: Exchange;
   activeStep: number;
-  sendProposal: (proposal: NewProposal) => void;
+  sendProposal: (proposal: NewProposal, proposalFiles: File[]) => void;
   // modal props
   hideModal: NonNullable<ModalProps["hideModal"]>;
   headerComponent: ReactNode;
@@ -53,40 +54,16 @@ export default function MakeProposalModal({
       <Formik
         validationSchema={validationSchema}
         onSubmit={async (values) => {
-          console.log("submit", values);
-
-          const { [FormModel.formFields.upload.name]: upload } = values;
-          const files = upload as File[];
-          const promises: Promise<string | ArrayBuffer | null>[] = [];
-          for (const file of files) {
-            promises.push(
-              new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = function () {
-                  resolve(reader.result);
-                };
-                reader.onerror = function (error) {
-                  reject(error);
-                };
-              })
-            );
-          }
-          const filesInfo = await Promise.all(promises);
-
+          const artist = getOfferArtist(exchange.offer.metadata.name || "");
+          const userName = artist || `Seller ID: ${exchange.seller.id}`; // TODO: change to get real username
           const proposal: NewProposal = {
-            title: "Proposal",
+            title: `${userName} made a proposal`,
             description: values[FormModel.formFields.description.name],
-            additionalInformation: "",
-            additionalInformationFiles: files.map((file, index) => ({
-              name: file.name,
-              url: filesInfo[index]?.toString() || ""
-            })),
-            proposals: []
+            proposals: [],
+            disputeContext: []
           };
-          console.log("proposal", proposal);
 
-          sendProposal(proposal);
+          sendProposal(proposal, values[FormModel.formFields.upload.name]);
 
           hideModal();
         }}
