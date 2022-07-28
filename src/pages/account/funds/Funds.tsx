@@ -113,6 +113,7 @@ export default function Funds({ sellerId, buyerId }: Props) {
             availableAmount: "0",
             id: "",
             token: {
+              id: "",
               __typename: "ExchangeToken",
               address: newTokenAddress,
               name: name,
