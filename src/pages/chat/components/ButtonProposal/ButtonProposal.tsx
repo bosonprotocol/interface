@@ -48,6 +48,9 @@ export default function ButtonProposal({ exchange }: Props) {
             { steps: 1, name: "Make a Proposal" },
             { steps: 1, name: "Review & Submit" }
           ]}
+          callback={(step) => {
+            setActiveStep(step);
+          }}
           active={activeStep}
         />
       </Grid>
