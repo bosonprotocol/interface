@@ -1,7 +1,7 @@
 import { getFirstNOffers } from "../../../../../../e2e-tests/utils/getFirstNOffers";
 import { memoMergeAndSortOffers } from "../memo";
 
-jest.mock("@bosonprotocol/react-kit", () => {
+jest.mock("@bosonprotocol/ipfs-storage", () => {
   return {
     validation: {
       validateMetadata: () => true

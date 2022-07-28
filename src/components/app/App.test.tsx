@@ -7,6 +7,17 @@ import { WagmiConfig } from "wagmi";
 import { wagmiClient } from "../../lib/wallet-connection";
 import App from "./index";
 
+jest.mock("@bosonprotocol/ipfs-storage", () => {
+  class IpfsMetadataMock {
+    storeMetadata() {
+      return;
+    }
+  }
+  return {
+    IpfsMetadataStorage: IpfsMetadataMock
+  };
+});
+
 test("renders App and expects logo to be displayed", () => {
   const queryClient = new QueryClient();
 

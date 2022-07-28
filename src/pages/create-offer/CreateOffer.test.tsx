@@ -4,7 +4,7 @@ import { MemoryRouter } from "react-router-dom";
 import CreateOffer from "./CreateOffer";
 
 const storeMetadataErrorMsg = "storeMetadataErrorMsg";
-jest.mock("@bosonprotocol/react-kit", () => {
+jest.mock("@bosonprotocol/ipfs-storage", () => {
   class IpfsMetadataMock {
     storeMetadata() {
       return;
