@@ -76,7 +76,10 @@ export default function MakeProposalModal({
         }}
         validateOnMount
       >
-        {(props: FormikProps<any>) => {
+        {(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          props: FormikProps<any>
+        ) => {
           // TODO: remove any
           const isDescribeProblemOK =
             !props.errors[FormModel.formFields.description.name];

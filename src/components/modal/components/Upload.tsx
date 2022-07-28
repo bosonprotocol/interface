@@ -4,6 +4,7 @@ import styled from "styled-components";
 import UploadForm from "../../../pages/chat/components/UploadForm/UploadForm";
 import Button from "../../ui/Button";
 import { ModalProps } from "../ModalContext";
+import { FormModel } from "./Chat/MakeProposal/MakeProposalFormModel";
 
 interface Props {
   onUploadedFiles: (files: File[]) => void;
@@ -18,8 +19,8 @@ const ButtonsSection = styled.div`
 `;
 
 const ButtonsForm = () => {
-  const [field, meta, helpers] = useField({
-    name: "upload"
+  const [field] = useField({
+    name: FormModel.formFields.upload.name
   });
   return (
     <ButtonsSection>

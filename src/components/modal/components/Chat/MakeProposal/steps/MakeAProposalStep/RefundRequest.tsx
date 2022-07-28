@@ -42,6 +42,7 @@ interface Props {
 }
 
 export default function RefundRequest({ exchange }: Props) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { setFieldValue, handleChange } = useFormikContext<any>();
 
   const { address } = useAccount();
