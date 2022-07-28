@@ -115,9 +115,9 @@ export default function ShippingInfo() {
 
   const lwh = useMemo(
     () =>
-      `${values?.shippingInfo?.height || 0}x${
+      `${values?.shippingInfo?.length || 0}x${
         values?.shippingInfo?.width || 0
-      }x${values?.shippingInfo?.length || 0}`,
+      }x${values?.shippingInfo?.height || 0}`,
     [
       values?.shippingInfo?.height,
       values?.shippingInfo?.width,
@@ -154,7 +154,7 @@ export default function ShippingInfo() {
             <Input placeholder="Add URL" name="shippingInfo.addUrl" />
           </FormField>
           <FormField
-            title={`Dimensions in ${unit}`}
+            title={`Dimensions L x W x H in ${unit}`}
             subTitle="Specify the dimension and weight of your package"
           >
             <Input
@@ -166,7 +166,12 @@ export default function ShippingInfo() {
           </FormField>
           <FormField title="Weight">
             <FieldContainerWidth>
-              <Input placeholder="Weight" name="shippingInfo.weight" />
+              <Input
+                placeholder="Weight"
+                name="shippingInfo.weight"
+                type="number"
+                min="0"
+              />
               <Select name="shippingInfo.weightUnit" options={OPTIONS_WEIGHT} />
             </FieldContainerWidth>
           </FormField>
@@ -183,15 +188,24 @@ export default function ShippingInfo() {
             <Input
               placeholder={`Height in ${unit}`}
               name="shippingInfo.height"
+              type="number"
+              min="0"
             />
           </FormField>
           <FormField title="Width">
-            <Input placeholder={`Width in ${unit}`} name="shippingInfo.width" />
+            <Input
+              placeholder={`Width in ${unit}`}
+              name="shippingInfo.width"
+              type="number"
+              min="0"
+            />
           </FormField>
           <FormField title="Length">
             <Input
               placeholder={`Length in ${unit}`}
               name="shippingInfo.length"
+              type="number"
+              min="0"
             />
           </FormField>
         </Collapse>

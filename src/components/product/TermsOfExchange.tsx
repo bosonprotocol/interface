@@ -100,6 +100,7 @@ export default function TermsOfExchange() {
               placeholder="Choose exchange policy..."
               name="termsOfExchange.exchangePolicy"
               options={OPTIONS_EXCHANGE_POLICY}
+              disabled
             />
           </FormField>
           <FormField
@@ -113,6 +114,9 @@ export default function TermsOfExchange() {
                 <Input
                   placeholder="Buyer cancellation penalty"
                   name="termsOfExchange.buyerCancellationPenalty"
+                  type="number"
+                  min="0"
+                  max="100"
                 />
               </div>
               <div>
@@ -135,6 +139,9 @@ export default function TermsOfExchange() {
                 <Input
                   placeholder="Seller deposit"
                   name="termsOfExchange.sellerDeposit"
+                  type="number"
+                  min="0"
+                  max="100"
                 />
               </div>
               <div>
@@ -155,6 +162,7 @@ export default function TermsOfExchange() {
               placeholder="Choose Dispute Resolver..."
               name="termsOfExchange.disputeResolver"
               options={OPTIONS_DISPUTE_RESOLVER}
+              disabled
             />
           </FormField>
           <FormField
@@ -167,6 +175,8 @@ export default function TermsOfExchange() {
                 <Input
                   placeholder="Dispute Period"
                   name="termsOfExchange.disputePeriod"
+                  type="number"
+                  min="0"
                 />
               </div>
               <div>

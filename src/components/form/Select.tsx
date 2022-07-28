@@ -55,6 +55,7 @@ export default function SelectComponent({
   placeholder = "Choose...",
   isClearable = false,
   isSearchable = true,
+  disabled = false,
   ...props
 }: SelectProps) {
   const [field, meta, helpers] = useField(name);
@@ -82,6 +83,7 @@ export default function SelectComponent({
         onChange={handleChange}
         isSearchable={isSearchable}
         isClearable={isClearable}
+        isDisabled={disabled}
         isOptionDisabled={(option) => option.disabled}
       />
       <Error display={displayError} message={errorMessage} />{" "}

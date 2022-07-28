@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { Datepicker, FormField, Input, Select, Textarea } from "../form";
+import { Datepicker, FormField, Input, Select } from "../form";
 import Button from "../ui/Button";
 import {
   ContainerProductPage,
@@ -30,7 +30,12 @@ export default function CoreTermsOfSale() {
       >
         <PriceContainer>
           <div>
-            <Input placeholder="Token amount" name="coreTermsOfSale.price" />
+            <Input
+              placeholder="Token amount"
+              name="coreTermsOfSale.price"
+              type="number"
+              min="0"
+            />
           </div>
           <div>
             <Select
@@ -47,9 +52,11 @@ export default function CoreTermsOfSale() {
         required={true}
         subTitle="How many of this item do you want to sell? You can change this value for each variant."
       >
-        <Textarea
+        <Input
           placeholder="Input the amount"
           name="coreTermsOfSale.quantity"
+          type="number"
+          min="0"
         />
       </FormField>
       <FormField
@@ -59,6 +66,7 @@ export default function CoreTermsOfSale() {
         <Select
           name="coreTermsOfSale.tokenGatedOffer"
           options={OPTIONS_TOKEN_GATED}
+          disabled
         />
       </FormField>
       <FormField
