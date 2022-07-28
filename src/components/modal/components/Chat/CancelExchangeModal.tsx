@@ -48,7 +48,8 @@ export default function CancelExchangeModal({ exchange, hideModal }: Props) {
   const { offer } = exchange;
   const convertedPrice = useConvertedPrice({
     value: offer.price,
-    decimals: offer.exchangeToken.decimals
+    decimals: offer.exchangeToken.decimals,
+    symbol: offer.exchangeToken.symbol
   });
 
   const { buyerCancelationPenalty, convertedBuyerCancelationPenalty } =
@@ -58,7 +59,8 @@ export default function CancelExchangeModal({ exchange, hideModal }: Props) {
     Number(offer.price) - (Number(offer.price) * buyerCancelationPenalty) / 100;
   const convertedRefund = useConvertedPrice({
     value: refund.toString(),
-    decimals: offer.exchangeToken.decimals
+    decimals: offer.exchangeToken.decimals,
+    symbol: offer.exchangeToken.symbol
   });
   return (
     <>

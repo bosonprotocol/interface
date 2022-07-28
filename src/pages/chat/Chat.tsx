@@ -374,14 +374,14 @@ const getExchanges = ({
         exchangeToken: {
           address: "0x000000000000000",
           decimals: "18",
-          name: "ether",
-          symbol: "ETH",
+          name: "hola",
+          symbol: "pepito",
           __typename: "ExchangeToken"
         },
         fulfillmentPeriodDuration: "",
         metadataHash: "",
         metadataUri: "",
-        price: "1000000000",
+        price: "1000000000000",
         protocolFee: "",
         quantityAvailable: "",
         quantityInitial: "",

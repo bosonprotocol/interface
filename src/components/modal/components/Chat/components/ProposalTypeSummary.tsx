@@ -30,7 +30,8 @@ export default function ProposalTypeSummary({ proposal, exchange }: Props) {
 
   const convertedRefund = useConvertedPrice({
     value: refund.toString(),
-    decimals: offer.exchangeToken.decimals
+    decimals: offer.exchangeToken.decimals,
+    symbol: offer.exchangeToken.symbol
   });
   return (
     <Grid flexDirection="column" alignItems="flex-start">

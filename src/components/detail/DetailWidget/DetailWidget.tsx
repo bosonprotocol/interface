@@ -193,7 +193,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const convertedPrice = useConvertedPrice({
     value: offer.price,
-    decimals: offer.exchangeToken.decimals
+    decimals: offer.exchangeToken.decimals,
+    symbol: offer.exchangeToken.symbol
   });
 
   const OFFER_DETAIL_DATA = useMemo(

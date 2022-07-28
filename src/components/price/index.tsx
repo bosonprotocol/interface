@@ -61,18 +61,18 @@ export default function Price({
   address,
   ...rest
 }: IProps) {
-  const price = useConvertedPrice({ value, decimals });
+  const price = useConvertedPrice({ value, decimals, symbol: currencySymbol });
 
   const ConvertedPriceComponent = useMemo(
     () =>
       convert &&
-      price && (
+      price?.converted && (
         <small style={{ marginLeft: isExchange ? "-1rem" : "0" }}>
           {"   "}
           <span style={{ color: "#556072", opacity: "0.5" }}>
             {CONFIG.defaultCurrency.symbol}
           </span>{" "}
-          <span>{price?.converted}</span>
+          <span>{price.converted}</span>
         </small>
       ),
     [convert, price, isExchange]
