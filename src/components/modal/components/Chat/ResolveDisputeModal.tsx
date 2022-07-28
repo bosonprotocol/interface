@@ -44,7 +44,7 @@ const ButtonsSection = styled.div`
   justify-content: space-between;
 `;
 
-export default function ResolveDispute({
+export default function ResolveDisputeModal({
   exchange,
   hideModal,
   proposal

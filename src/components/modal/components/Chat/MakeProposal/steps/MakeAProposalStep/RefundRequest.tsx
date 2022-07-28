@@ -106,7 +106,7 @@ export default function RefundRequest({ exchange }: Props) {
               } = e;
               setFieldValue(
                 "refundPercentage",
-                (valueAsNumber / Number(inEscrowDecimals)) * 100,
+                ((valueAsNumber / Number(inEscrowDecimals)) * 100).toFixed(2),
                 true
               );
             }}

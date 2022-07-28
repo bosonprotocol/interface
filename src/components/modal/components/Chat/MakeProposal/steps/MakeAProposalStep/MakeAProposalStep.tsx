@@ -7,8 +7,8 @@ import { Select } from "../../../../../../form";
 import Button from "../../../../../../ui/Button";
 import Grid from "../../../../../../ui/Grid";
 import Typography from "../../../../../../ui/Typography";
+import { FormModel } from "../../MakeProposalFormModel";
 import RefundRequest from "./RefundRequest";
-import ReturnRequest from "./ReturnRequest";
 
 const ButtonsSection = styled.div`
   padding-top: 2rem;
@@ -23,10 +23,7 @@ interface Props {
   exchange: Exchange;
 }
 
-export const proposals = [
-  { label: "Refund", value: "refund" },
-  { label: "Return and replace", value: "return" }
-];
+export const proposals = [{ label: "Refund", value: "refund" }];
 
 export default function MakeAProposalStep({
   exchange,
@@ -34,7 +31,9 @@ export default function MakeAProposalStep({
   onBackClick,
   isValid
 }: Props) {
-  const [proposalsTypesField] = useField<typeof proposals>("proposalsTypes");
+  const [proposalsTypesField] = useField<typeof proposals>(
+    FormModel.formFields.proposalsTypes.name
+  );
 
   return (
     <>
@@ -50,7 +49,11 @@ export default function MakeAProposalStep({
         <Typography fontWeight="600" tag="p" fontSize="1.5rem">
           Type of proposals
         </Typography>
-        <Select name="proposalsTypes" options={proposals} isMulti />
+        <Select
+          name={FormModel.formFields.proposalsTypes.name}
+          options={proposals}
+          isMulti
+        />
         <Grid
           flexDirection="column"
           alignItems="flex-start"
@@ -62,9 +65,6 @@ export default function MakeAProposalStep({
               return (
                 <RefundRequest key={proposalType.value} exchange={exchange} />
               );
-            }
-            if (proposalType.value === "return") {
-              return <ReturnRequest key={proposalType.value} />;
             }
             return null;
           })}

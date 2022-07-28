@@ -44,7 +44,7 @@ const ButtonsSection = styled.div`
   justify-content: space-between;
 `;
 
-export default function CancelExchange({ exchange, hideModal }: Props) {
+export default function CancelExchangeModal({ exchange, hideModal }: Props) {
   const { offer } = exchange;
   const convertedPrice = useConvertedPrice({
     value: offer.price,

@@ -7,6 +7,7 @@ import { Textarea } from "../../../../../form";
 import Button from "../../../../../ui/Button";
 import Grid from "../../../../../ui/Grid";
 import Typography from "../../../../../ui/Typography";
+import { FormModel } from "../MakeProposalFormModel";
 
 const ButtonsSection = styled.div`
   padding-top: 2rem;
@@ -38,7 +39,7 @@ export default function DescribeProblemStep({ onNextClick, isValid }: Props) {
         <Typography fontWeight="600" tag="p">
           Message
         </Typography>
-        <TextArea name="description" rows={5} />
+        <TextArea name={FormModel.formFields.description.name} rows={5} />
       </Grid>
       <UploadForm />
       <ButtonsSection>

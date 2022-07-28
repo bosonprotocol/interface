@@ -8,6 +8,7 @@ import Button from "../../../../../ui/Button";
 import Grid from "../../../../../ui/Grid";
 import Typography from "../../../../../ui/Typography";
 import ProposalTypeSummary from "../../components/ProposalTypeSummary";
+import { FormModel } from "../MakeProposalFormModel";
 import { proposals } from "./MakeAProposalStep/MakeAProposalStep";
 
 const ButtonsSection = styled.div`
@@ -27,18 +28,18 @@ export default function ReviewAndSubmitStep({
   isValid,
   exchange
 }: Props) {
-  const [descriptionField] = useField({
-    name: "description"
+  const [descriptionField] = useField<string>({
+    name: FormModel.formFields.description.name
   });
   const [uploadField, , uploadFieldHelpers] = useField<File[]>({
-    name: "upload"
+    name: FormModel.formFields.upload.name
   });
   const [proposalsTypesField] = useField<typeof proposals>({
-    name: "proposalsTypes"
+    name: FormModel.formFields.proposalsTypes.name
   });
 
   const [refundPercentageField] = useField<string>({
-    name: "refundPercentage"
+    name: FormModel.formFields.refundPercentage.name
   });
   return (
     <>
@@ -71,19 +72,6 @@ export default function ReviewAndSubmitStep({
                   proposal={{
                     type: "Refund Request",
                     percentageAmount: refundPercentageField.value,
-                    signature: "0x"
-                  }}
-                />
-              );
-            }
-            if (proposalType.value === "return") {
-              return (
-                <ProposalTypeSummary
-                  key={proposalType.value}
-                  exchange={exchange}
-                  proposal={{
-                    type: "Return and Replace",
-                    percentageAmount: "0",
                     signature: "0x"
                   }}
                 />

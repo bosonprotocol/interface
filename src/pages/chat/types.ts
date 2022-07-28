@@ -56,6 +56,22 @@ export type ProposalMessage = {
   };
 };
 
+export type ProposalMessage2 = {
+  threadId: {
+    exchangeId: string;
+    sellerId: string;
+    buyerId: string;
+  };
+  contentType: "proposal";
+  version: "1";
+  value: {
+    title: string; // 'ID: x made a proposal' for now
+    description: string;
+    proposals: Proposal[];
+    disputeContext: string[];
+  };
+};
+
 export type NewProposal = ProposalMessage["value"];
 
 export type Proposal = {

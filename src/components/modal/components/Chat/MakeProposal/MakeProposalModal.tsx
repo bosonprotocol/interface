@@ -7,6 +7,7 @@ import { NewProposal } from "../../../../../pages/chat/types";
 import Grid from "../../../../ui/Grid";
 import { ModalProps } from "../../../ModalContext";
 import ExchangePreview from "../components/ExchangePreview";
+import { FormModel } from "./MakeProposalFormModel";
 import DescribeProblemStep from "./steps/DescribeProblemStep";
 import MakeAProposalStep from "./steps/MakeAProposalStep/MakeAProposalStep";
 import ReviewAndSubmitStep from "./steps/ReviewAndSubmitStep";
@@ -21,21 +22,22 @@ interface Props {
   setActiveStep: (step: number) => void;
 }
 
-const reqMessage = "This field is required";
 const validationSchemaPerStep = [
   Yup.object({
-    description: Yup.string().trim().required(reqMessage)
+    [FormModel.formFields.description.name]: Yup.string()
+      .trim()
+      .required(FormModel.formFields.description.requiredErrorMessage)
   }),
   Yup.object({
-    refundPercentage: Yup.number()
-      .moreThan(0, "The percentage should be more than 0")
-      .max(100, "The percentage should be less than or equal to 100")
-      .defined("This field cannot be left empty")
+    [FormModel.formFields.refundPercentage.name]: Yup.number()
+      .moreThan(0, FormModel.formFields.refundPercentage.moreThanErrorMessage)
+      .max(100, FormModel.formFields.refundPercentage.maxErrorMessage)
+      .defined(FormModel.formFields.refundPercentage.emptyErrorMessage)
   }),
   Yup.object({})
 ];
 
-export default function MakeProposal({
+export default function MakeProposalModal({
   exchange,
   hideModal,
   setActiveStep,
@@ -53,7 +55,7 @@ export default function MakeProposal({
         onSubmit={async (values) => {
           console.log("submit", values);
 
-          const { upload } = values;
+          const { [FormModel.formFields.upload.name]: upload } = values;
           const files = upload as File[];
           const promises: Promise<string | ArrayBuffer | null>[] = [];
           for (const file of files) {
@@ -74,7 +76,7 @@ export default function MakeProposal({
 
           const proposal: NewProposal = {
             title: "Proposal",
-            description: values.description,
+            description: values[FormModel.formFields.description.name],
             additionalInformation: "",
             additionalInformationFiles: files.map((file, index) => ({
               name: file.name,
@@ -89,28 +91,34 @@ export default function MakeProposal({
           hideModal();
         }}
         initialValues={{
-          description: "",
-          proposalsTypes: [],
-          refundAmount: 0,
-          refundPercentage: 0,
-          upload: []
+          [FormModel.formFields.description.name]: "",
+          [FormModel.formFields.proposalsTypes.name]: [],
+          [FormModel.formFields.refundAmount.name]: 0,
+          [FormModel.formFields.refundPercentage.name]: 0,
+          [FormModel.formFields.upload.name]: []
         }}
         validateOnMount
       >
         {(props: FormikProps<any>) => {
           // TODO: remove any
-          const isDescribeProblemOK = !props.errors["description"];
+          const isDescribeProblemOK =
+            !props.errors[FormModel.formFields.description.name];
 
-          const isReturnProposal = !!props.values.proposalsTypes.find(
+          const isReturnProposal = !!props.values[
+            FormModel.formFields.proposalsTypes.name
+          ].find(
             (proposal: { label: string; value: string }) =>
               proposal.value === "return"
           );
-          const isRefundProposal = !!props.values.proposalsTypes.find(
+          const isRefundProposal = !!props.values[
+            FormModel.formFields.proposalsTypes.name
+          ].find(
             (proposal: { label: string; value: string }) =>
               proposal.value === "refund"
           );
           const isMakeAProposalOK =
-            (isRefundProposal && !props.errors["refundPercentage"]) ||
+            (isRefundProposal &&
+              !props.errors[FormModel.formFields.refundPercentage.name]) ||
             (!isRefundProposal && isReturnProposal);
           const isFormValid = isDescribeProblemOK && isMakeAProposalOK;
           return (
