@@ -1,5 +1,5 @@
 // import image from '../../pages/offers/mock/bosonprotocol.png'
-import { OfferFieldsFragment } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
+import { subgraph } from "@bosonprotocol/react-kit";
 import { Image as AccountImage } from "@davatar/react";
 import { generatePath } from "react-router-dom";
 import styled from "styled-components";
@@ -52,7 +52,7 @@ const RoundedImage = styled.img`
 const SellerID: React.FC<
   {
     children?: React.ReactNode;
-    seller: OfferFieldsFragment["seller"];
+    seller: subgraph.OfferFieldsFragment["seller"];
     accountImageSize?: number;
     offerName: string;
     withProfileImage: boolean;

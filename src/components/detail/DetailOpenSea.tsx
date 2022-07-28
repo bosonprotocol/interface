@@ -1,8 +1,4 @@
-import { exchanges } from "@bosonprotocol/core-sdk";
-import {
-  ExchangeFieldsFragment,
-  ExchangeState
-} from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
+import { exchanges, subgraph } from "@bosonprotocol/react-kit";
 import { ArrowSquareOut } from "phosphor-react";
 
 import { Offer } from "../../lib/types/offer";
@@ -14,10 +10,10 @@ interface Props {
 
 export default function DetailOpenSea({ exchange }: Props) {
   const exchangeStatus = exchange
-    ? exchanges.getExchangeState(exchange as ExchangeFieldsFragment)
+    ? exchanges.getExchangeState(exchange as subgraph.ExchangeFieldsFragment)
     : null;
   const isToRedeem =
-    !exchangeStatus || exchangeStatus === ExchangeState.Committed;
+    !exchangeStatus || exchangeStatus === subgraph.ExchangeState.Committed;
 
   if (!isToRedeem) {
     return null;

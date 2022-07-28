@@ -1,4 +1,4 @@
-import { ExchangeState } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
+import { subgraph } from "@bosonprotocol/react-kit";
 import { generatePath } from "react-router-dom";
 
 import {
@@ -51,7 +51,7 @@ export default function DetailWidget({
     <>
       <ModalGrid>
         <ModalImageWrapper>
-          {type === "SUCCESS" && state === ExchangeState.Committed && (
+          {type === "SUCCESS" && state === subgraph.ExchangeState.Committed && (
             <DetailOpenSea
               exchange={exchange as NonNullable<Offer["exchanges"]>[number]}
             />
