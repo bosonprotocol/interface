@@ -10,7 +10,7 @@ export const Box = styled.div`
   padding: 1.625rem 0;
   height: 100%;
   width: 100%;
-  min-height: 150px;
+  min-height: 9.375rem;
   text-align: center;
   border: 1px solid ${colors.lightGrey};
 `;
@@ -20,11 +20,13 @@ export const Container = styled.div`
 `;
 
 const ContainerProductImage = styled.div`
-  max-width: 696px;
+  max-width: 43.5rem;
   width: 100%;
 `;
 
 const SpaceContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
   margin-top: 2rem;
   > div {
     margin: 0 2rem 2rem 0;

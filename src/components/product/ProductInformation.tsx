@@ -44,7 +44,10 @@ export default function ProductInformation() {
         required={true}
         subTitle="Describe your product. Provide as much detail as possible."
       >
-        <Textarea name="productInformation.describe" placeholder="Describe" />
+        <Textarea
+          name="productInformation.description"
+          placeholder="Describe"
+        />
       </FormField>
       <FormField
         title="Category"
@@ -71,13 +74,13 @@ export default function ProductInformation() {
           <div>
             <Input
               placeholder="Attribute"
-              name="productInformation.attribute"
+              name="productInformation.productAttribute.name"
             />
           </div>
           <div>
             <Input
               placeholder="Attribute Value"
-              name="productInformation.attributeValue"
+              name="productInformation.productAttribute.value"
             />
           </div>
         </AddProductContainer>

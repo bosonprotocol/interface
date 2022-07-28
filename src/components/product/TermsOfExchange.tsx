@@ -143,11 +143,11 @@ export default function TermsOfExchange() {
           <FormField
             title="Dispute Resolver"
             required={true}
-            subTitle="Dispute Resolver will resolve disputes between buyer and seller in case they arise.            "
+            subTitle="Dispute Resolver will resolve disputes between buyer and seller in case they arise."
           >
             <Select
               placeholder="Percent"
-              name="termsOfExchange.disputeResolverPeriod"
+              name="termsOfExchange.disputeResolver"
               options={[{ value: "0", label: "0" }]}
             />
           </FormField>
@@ -160,13 +160,13 @@ export default function TermsOfExchange() {
               <div>
                 <Input
                   placeholder="Input the amount"
-                  name="termsOfExchange.disputeResolver"
+                  name="termsOfExchange.disputePeriodAmount"
                 />
               </div>
               <div>
                 <Select
                   placeholder="Percent"
-                  name="termsOfExchange.disputeResolverPeriod"
+                  name="termsOfExchange.disputePeriodPercent"
                   options={[{ value: "0", label: "0" }]}
                 />
               </div>

@@ -19,16 +19,42 @@ export const productTypeInitialValues = {
 export const productInformationInitialValues = {
   productInformation: {
     productTitle: "",
-    describe: "",
+    description: "",
     category: "",
     tags: "",
-    attribute: "",
-    attributeValue: ""
+    productAttribute: []
+  }
+};
+
+export const coreTermsOfSaleInitialValues = {
+  coreTermsOfSale: {
+    price: "",
+    symbol: "",
+    // TODO: ADD Use price for all variants FILED
+    amount: "",
+    tokenGatedOffer: "",
+    redemptionPeriod: "",
+    offerValidityPeriod: ""
+  }
+} as const;
+
+export const termsOfExchangeInitialValues = {
+  termsOfExchange: {
+    fairExchangePolicy: "",
+    buyerCancellationPenalty: "",
+    buyerCancellationPenaltyPercent: "",
+    sellerDeposit: "",
+    sellerDepositPercent: "",
+    disputeResolver: "",
+    disputePeriodAmount: "",
+    disputePeriodPercent: ""
   }
 } as const;
 
 export const initialValues: CreateProductForm = {
   ...createYourProfileInitialValues,
   ...productTypeInitialValues,
-  ...productInformationInitialValues
+  ...productInformationInitialValues,
+  ...coreTermsOfSaleInitialValues,
+  ...termsOfExchangeInitialValues
 } as const;

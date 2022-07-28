@@ -33,7 +33,7 @@ export default function CoreTermsOfSale() {
             <Input placeholder="Price" name="coreTermsOfSale.price" />
           </div>
           <div>
-            <Select name="coreTermsOfSale.price" options={MOCK_OPTIONS} />
+            <Select name="coreTermsOfSale.symbol" options={MOCK_OPTIONS} />
           </div>
         </PriceContainer>
       </FormField>
@@ -51,7 +51,7 @@ export default function CoreTermsOfSale() {
         title="Token gated offer"
         subTitle="Limit the purchase of your item to users holding a specific token."
       >
-        <Select name="coreTermsOfSale.price" options={MOCK_OPTIONS} />
+        <Select name="coreTermsOfSale.tokenGatedOffer" options={MOCK_OPTIONS} />
       </FormField>
       <FormField
         title="Redemption period"
