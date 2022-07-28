@@ -1,3 +1,4 @@
+import { subgraph } from "@bosonprotocol/core-sdk";
 import dayjs from "dayjs";
 import { useMemo } from "react";
 import styled from "styled-components";
@@ -59,7 +60,7 @@ const Section = styled.div`
   ${sectionStyles};
 `;
 
-const DaysLeftToDispute = styled.div`
+const InfoMessage = styled.div`
   border-left: 2px solid ${colors.border};
   color: ${colors.darkGrey};
   padding: 0.5rem 1.25rem 0.5rem 1.5rem;
@@ -183,11 +184,16 @@ export default function ExchangeSidePreview({ thread, disputeOpen }: Props) {
   if (!exchange || !offer) {
     return null;
   }
-
+  const isInRedeemed = subgraph.ExchangeState.Redeemed === exchange.state;
+  const isInDispute = exchange.disputed;
+  const isResolved = false; // TODO: change
+  const isEscalated = false; // TODO: change
   return (
     <Container $disputeOpen={disputeOpen}>
       <img src={exchange.offer.metadata.imageUrl} width="372px" />
-      <DaysLeftToDispute>Just a few days left to dispute</DaysLeftToDispute>
+      {isInRedeemed && (
+        <InfoMessage>Just a few days left to dispute</InfoMessage>
+      )}
       <ExchangeInfo>
         <Name tag="h3">{exchange.offer.metadata.name}</Name>
         <StyledPrice
@@ -200,40 +206,45 @@ export default function ExchangeSidePreview({ thread, disputeOpen }: Props) {
           convert
         />
       </ExchangeInfo>
-      <Section>
-        <StyledMultiSteps
-          data={[
-            { name: "Describe Problem", steps: 1 },
-            { name: "Raise dispute", steps: 1 },
-            { name: "Resolve or Escalate", steps: 1 }
-          ]}
-        />
-      </Section>
+      {(isInDispute || isResolved || isEscalated) && (
+        <Section>
+          <StyledMultiSteps
+            data={[
+              { name: "Describe Problem", steps: 1 },
+              { name: "Raise dispute", steps: 1 },
+              { name: "Resolve or Escalate", steps: 1 }
+            ]}
+            active={isInDispute ? 1 : 2}
+          />
+        </Section>
+      )}
       <Section>
         <DetailTable align noBorder data={OFFER_DETAIL_DATA ?? ({} as never)} />
       </Section>
-      <CTASection>
-        <Button
-          theme="primary"
-          onClick={() =>
-            showModal("CANCEL_EXCHANGE", {
-              title: "Cancel exchange",
-              exchange
-            })
-          }
-        >
-          Retract
-        </Button>
-        <Button
-          theme="orange"
-          onClick={() => {
-            // TODO: implement
-            console.log("escalate");
-          }}
-        >
-          Escalate
-        </Button>
-      </CTASection>
+      {isInDispute && (
+        <CTASection>
+          <Button
+            theme="primary"
+            onClick={() =>
+              showModal("CANCEL_EXCHANGE", {
+                title: "Cancel exchange",
+                exchange
+              })
+            }
+          >
+            Retract
+          </Button>
+          <Button
+            theme="orange"
+            onClick={() => {
+              // TODO: implement
+              console.log("escalate");
+            }}
+          >
+            Escalate
+          </Button>
+        </CTASection>
+      )}
       <HistorySection>
         <h4>History</h4>
         <Timeline timesteps={timesteps} />

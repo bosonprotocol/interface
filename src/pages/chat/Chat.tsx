@@ -363,7 +363,7 @@ const getExchanges = ({
       expired: true,
       finalizedDate: new Date().toString(),
       redeemedDate: new Date().toString(),
-      state: "active",
+      state: "COMMITTED",
       validUntilDate: new Date().toString(),
       seller: { id: "123" },
       offer: {
