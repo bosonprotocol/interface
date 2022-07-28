@@ -149,7 +149,7 @@ export default function TermsOfExchange() {
           <FormField
             title="Dispute Resolver"
             required={true}
-            subTitle="Dispute Resolver will resolve disputes between buyer and seller in case they arise.            "
+            subTitle="Dispute Resolver will resolve disputes between buyer and seller in case they arise."
           >
             <Select
               placeholder="Choose Dispute Resolver..."

@@ -95,7 +95,10 @@ export default function ProductInformation() {
         required={true}
         subTitle="Describe your product. Provide as much detail as possible."
       >
-        <Textarea name="productInformation.describe" placeholder="Describe" />
+        <Textarea
+          name="productInformation.description"
+          placeholder="Describe"
+        />
       </FormField>
       <FormField
         title="Category"

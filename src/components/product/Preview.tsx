@@ -7,10 +7,7 @@ import Image from "../../components/ui/Image";
 import SellerID from "../../components/ui/SellerID";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
-import {
-  getOfferImage,
-  getOfferShippingInformation
-} from "../../lib/utils/hooks/offers/placeholders";
+import { getOfferImage } from "../../lib/utils/hooks/offers/placeholders";
 import { MOCK } from "../../pages/offers/mock/mock";
 import {
   DarkerBackground,
@@ -48,13 +45,24 @@ export default function Preview({ togglePreview }: Props) {
   };
 
   // TODO: ADD CORRECT VALUES; FOR NOW HARDCODED
-  const name = values.productInformation.productTitle || "Untitled";
   const offerImg = getOfferImage("35", "boson neon sign");
-  const shippingInfo = getOfferShippingInformation("boson neon sign");
+  console.log(values, "values");
+  const name = values.productInformation.productTitle || "Untitled";
+  // const price = values.coreTermsOfSale.price;
+  // const validFromDate = values.coreTermsOfSale.redemptionPeriod; // transform to timestamp;
+  // const sellerDeposit = values.termsOfExchange.sellerDeposit; // Should be calc with values.termsOfExchange.sellerDepositPercent or not ?
+  // const buyerCancelPenalty = values.termsOfExchange.buyerCancellationPenalty; // Should be calc with values.termsOfExchange.buyerCancelPenalty or not ?
+  // const fairExchangePolicy = values.termsOfExchange.fairExchangePolicy;
+  // const disputeResolver = values.termsOfExchange.disputeResolver;
+  // const seller.operator = values.creteYourProfile.logo
+  // const seller.id = ?
+  // const exchangeToken.symbol = values.coreTermsOfSale.symbol
+  // const validFromDate = values.coreTermsOfSale.redemptionPeriod
+
   const offer = {
     id: "35",
     createdAt: "1657198698",
-    price: "2000000000000000",
+    price: "200000000000",
     metadataHash: "Qmf77HBcgxaiB2XT8fYSdDPMWo58VrMu1PVPXoBsBpgAko",
     sellerDeposit: "20000000000000",
     fulfillmentPeriodDuration: "86400",
@@ -71,26 +79,6 @@ export default function Preview({ togglePreview }: Props) {
       {
         committedDate: "1657730973",
         redeemedDate: "1657789278"
-      },
-      {
-        committedDate: "1657198878",
-        redeemedDate: null
-      },
-      {
-        committedDate: "1657288773",
-        redeemedDate: null
-      },
-      {
-        committedDate: "1657538028",
-        redeemedDate: null
-      },
-      {
-        committedDate: "1657538133",
-        redeemedDate: null
-      },
-      {
-        committedDate: "1657641168",
-        redeemedDate: null
       }
     ],
     seller: {
@@ -107,14 +95,14 @@ export default function Preview({ togglePreview }: Props) {
       name: "Ether",
       symbol: "ETH"
     },
-    metadata: {
-      name: "Long-lived Test Item",
-      description: "Lore ipsum",
-      externalUrl: "https://interface-test.on.fleek.co",
-      schemaUrl: "https://schema.org/schema",
-      type: "BASE",
-      imageUrl: "https://picsum.photos/seed/35/700"
-    },
+    // metadata: {
+    //   name: "Long-lived Test Item",
+    //   description: "Lore ipsum",
+    //   externalUrl: "https://interface-test.on.fleek.co",
+    //   schemaUrl: "https://schema.org/schema",
+    //   type: "BASE",
+    //   imageUrl: ""
+    // },
     isValid: true
   } as Offer;
 
@@ -139,7 +127,6 @@ export default function Preview({ togglePreview }: Props) {
                   data-testid="name"
                   style={{ fontSize: "2rem", marginBottom: "2rem" }}
                 >
-                  {/* TODO: ADD CORRECT VALUES */}
                   {name}
                 </Typography>
                 <DetailWidget
@@ -163,19 +150,30 @@ export default function Preview({ togglePreview }: Props) {
                   style={{ color: colors.darkGrey }}
                   data-testid="description"
                 >
-                  {/* TODO: ADD CORRECT VALUES */}
-                  {values.productInformation.describe}
+                  {values.productInformation.description}
                 </Typography>
-                <DetailTable data={[]} tag="strong" />
+                <DetailTable
+                  // TODO: ADD DATA FROM values.productInformation.productAttribute
+                  data={[
+                    {
+                      name: "Outer / Inner Material",
+                      value: "N/A"
+                    },
+                    {
+                      name: "Sole Material",
+                      value: "N/A"
+                    }
+                  ]}
+                />
               </div>
               <div>
                 <Typography tag="h3">About the artist</Typography>
                 <Typography tag="p" style={{ color: colors.darkGrey }}>
-                  {/* TODO: ADD CORRECT VALUES */}
                   {values.creteYourProfile.description}
                 </Typography>
               </div>
             </DetailGrid>
+            {/* // TODO: ADD CORRECT VAL Product Images */}
             <DetailSlider images={MOCK.images} />
             <DetailGrid>
               <DetailChart
@@ -187,9 +185,30 @@ export default function Preview({ togglePreview }: Props) {
                 <Typography tag="h3">Shipping information</Typography>
                 <Typography tag="p" style={{ color: colors.darkGrey }}>
                   {/* TODO: ADD CORRECT VALUES */}
-                  {shippingInfo.shipping}
+                  {/* NO REPRESENTATION IN FORM AND UI's */}
+                  NEED TO ADD
                 </Typography>
-                <DetailTable data={shippingInfo.shippingTable} />
+                <DetailTable
+                  // TODO: ADD DATA values.sippingInfo.supportedJurisdictions
+                  data={[
+                    {
+                      name: "1",
+                      value: "N/A"
+                    },
+                    {
+                      name: "2",
+                      value: "N/A"
+                    },
+                    {
+                      name: "3",
+                      value: "N/A"
+                    },
+                    {
+                      name: "4",
+                      value: "N/A"
+                    }
+                  ]}
+                />
               </div>
             </DetailGrid>
           </DarkerBackground>

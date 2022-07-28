@@ -19,12 +19,14 @@ import ShippingInfo from "../../components/product/ShippingInfo";
 import TermsOfExchange from "../../components/product/TermsOfExchange";
 import type { CreateProductForm } from "../../components/product/utils";
 import {
+  coreTermsOfSaleValidationSchema,
   CREATE_PRODUCT_STEPS,
   createYourProfileValidationSchema,
   initialValues,
   MOCK_MODAL_DATA,
   productInformationValidationSchema,
-  productTypeValidationSchema
+  productTypeValidationSchema,
+  termsOfExchangeValidationSchema
 } from "../../components/product/utils";
 import {
   coreTermsOfSaleHelp,
@@ -83,12 +85,12 @@ type CreateProductSteps = {
   };
   4: {
     ui: JSX.Element;
-    validation: null; // TODO: NEED TO BE ADDED, FOR NOW JUSt PLAIN JSX
+    validation: typeof coreTermsOfSaleValidationSchema;
     helpSection: typeof coreTermsOfSaleHelp;
   };
   5: {
     ui: JSX.Element;
-    validation: null; // TODO: NEED TO BE ADDED, FOR NOW JUSt PLAIN JSX
+    validation: typeof termsOfExchangeValidationSchema;
     helpSection: typeof termsOfExchangeHelp;
   };
   6: {
@@ -133,12 +135,12 @@ const createProductSteps = ({
     },
     4: {
       ui: <CoreTermsOfSale />,
-      validation: null,
+      validation: coreTermsOfSaleValidationSchema,
       helpSection: coreTermsOfSaleHelp
     },
     5: {
       ui: <TermsOfExchange />,
-      validation: null,
+      validation: termsOfExchangeValidationSchema,
       helpSection: termsOfExchangeHelp
     },
     6: {
@@ -154,21 +156,23 @@ const createProductSteps = ({
   } as const;
 };
 
+const FIRST_STEP = 0;
+
 export default function CreateProduct() {
-  const [currentForm, setCurrentForm] = useState<number>(0);
+  const [currentForm, setCurrentForm] = useState<number>(FIRST_STEP);
   const [isPreviewVisible, setIsPreviewVisible] = useState<boolean>(false);
   const { showModal, modalTypes, hideModal } = useModal();
 
   const onCreateNewProject = () => {
     hideModal();
-    setCurrentForm(0);
+    setCurrentForm(FIRST_STEP);
     setIsPreviewVisible(false);
   };
 
   const onViewMyItem = (id: unknown) => {
     console.log(id);
     hideModal();
-    setCurrentForm(0);
+    setCurrentForm(FIRST_STEP);
     setIsPreviewVisible(false);
     // TODO: REDIRECT USER {id}
   };

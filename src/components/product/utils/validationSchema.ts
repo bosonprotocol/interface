@@ -22,11 +22,36 @@ export const productTypeValidationSchema = Yup.object({
 export const productInformationValidationSchema = Yup.object({
   productInformation: Yup.object({
     productTitle: Yup.string().required(validationMessage.required),
-    describe: Yup.string().required(validationMessage.required),
     // category: Yup.string().required(validationMessage.required),
     // tags: Yup.string().required(validationMessage.required),
     attribute: Yup.string().required(validationMessage.required),
-    attributeValue: Yup.string().required(validationMessage.required)
+    attributeValue: Yup.string().required(validationMessage.required),
+    description: Yup.string().required(validationMessage.required)
+  })
+});
+
+export const coreTermsOfSaleValidationSchema = Yup.object({
+  coreTermsOfSale: Yup.object({
+    price: Yup.string().required(validationMessage.required),
+    // currency: Yup.string().required(validationMessage.required),
+    // TODO: ADD Use price for all variants FILED
+    quantity: Yup.string().required(validationMessage.required),
+    // tokenGatedOffer: Yup.string().required(validationMessage.required),
+    redemptionPeriod: Yup.string().required(validationMessage.required),
+    offerValidityPeriod: Yup.string().required(validationMessage.required)
+  })
+});
+
+export const termsOfExchangeValidationSchema = Yup.object({
+  termsOfExchange: Yup.object({
+    // exchangePolicy: Yup.string().required(validationMessage.required),
+    buyerCancellationPenalty: Yup.string().required(validationMessage.required),
+    // buyerCancellationPenaltyUnit: Yup.string().required( validationMessage.required ),
+    sellerDeposit: Yup.string().required(validationMessage.required),
+    // sellerDepositUnit: Yup.string().required(validationMessage.required),
+    // disputeResolver: Yup.string().required(validationMessage.required),
+    disputePeriod: Yup.string().required(validationMessage.required)
+    // disputePeriodUnit: Yup.string().required(validationMessage.required)
   })
 });
 

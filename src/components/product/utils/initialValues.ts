@@ -29,7 +29,7 @@ export const productTypeInitialValues = {
 export const productInformationInitialValues = {
   productInformation: {
     productTitle: "",
-    describe: "",
+    description: "",
     category: null,
     tags: [],
     attribute: "",
