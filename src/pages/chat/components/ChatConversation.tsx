@@ -13,6 +13,7 @@ import { Thread } from "../types";
 import ButtonProposal from "./ButtonProposal/ButtonProposal";
 import Dispute from "./Dispute";
 import Message from "./Message";
+import MessageSeparator from "./MessageSeparator";
 
 const Container = styled.div`
   display: flex;
@@ -313,15 +314,18 @@ export default function ChatConversation({
                 key={message.id}
                 $alignStart={!getWasItSentByMe(buyerId, sellerId, message.from)}
               >
-                <Message
-                  thread={thread}
-                  message={message}
-                  isLeftAligned={
-                    !getWasItSentByMe(buyerId, sellerId, message.from)
-                  }
-                >
-                  <SellerComponent size={32} withProfileText={false} />
-                </Message>
+                <>
+                  <MessageSeparator message={message} />
+                  <Message
+                    thread={thread}
+                    message={message}
+                    isLeftAligned={
+                      !getWasItSentByMe(buyerId, sellerId, message.from)
+                    }
+                  >
+                    <SellerComponent size={32} withProfileText={false} />
+                  </Message>
+                </>
               </Conversation>
             );
           })}

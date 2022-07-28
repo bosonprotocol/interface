@@ -1,5 +1,4 @@
-import { CoreSDK } from "@bosonprotocol/core-sdk";
-import { FundsEntityFieldsFragment } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
+import { CoreSDK, subgraph } from "@bosonprotocol/react-kit";
 import { BigNumber, constants, utils } from "ethers";
 import { CircleNotch } from "phosphor-react";
 import { useState } from "react";
@@ -144,7 +143,7 @@ const Spinner = styled(CircleNotch)`
 
 interface Props {
   accountId: string;
-  fund: FundsEntityFieldsFragment;
+  fund: subgraph.FundsEntityFieldsFragment;
   isHighlighted: boolean;
   isAllFundsBeingWithdrawn: boolean;
   sellerFlexBasisCells: [number, number, number, number];

@@ -8,6 +8,8 @@ import Button from "../../../../../ui/Button";
 import Grid from "../../../../../ui/Grid";
 import Typography from "../../../../../ui/Typography";
 import ProposalTypeSummary from "../../components/ProposalTypeSummary";
+import { FormModel } from "../MakeProposalFormModel";
+import { proposals } from "./MakeAProposalStep/MakeAProposalStep";
 
 const ButtonsSection = styled.div`
   padding-top: 2rem;
@@ -26,20 +28,18 @@ export default function ReviewAndSubmitStep({
   isValid,
   exchange
 }: Props) {
-  const [descriptionField] = useField({
-    name: "description"
+  const [descriptionField] = useField<string>({
+    name: FormModel.formFields.description.name
   });
-  const [uploadField, _, uploadFieldHelpers] = useField<File[]>({
-    name: "upload"
+  const [uploadField, , uploadFieldHelpers] = useField<File[]>({
+    name: FormModel.formFields.upload.name
   });
-  const [refundField] = useField<boolean>({
-    name: "refund"
+  const [proposalsTypesField] = useField<typeof proposals>({
+    name: FormModel.formFields.proposalsTypes.name
   });
+
   const [refundPercentageField] = useField<string>({
-    name: "refundPercentage"
-  });
-  const [returnField] = useField<File[]>({
-    name: "return"
+    name: FormModel.formFields.refundPercentage.name
   });
   return (
     <>
@@ -63,26 +63,22 @@ export default function ReviewAndSubmitStep({
           Resolution proposal
         </Typography>
         <Grid flexDirection="column" gap="2rem">
-          {refundField.value && (
-            <ProposalTypeSummary
-              exchange={exchange}
-              proposal={{
-                type: "Refund Request",
-                percentageAmount: refundPercentageField.value,
-                signature: "0x"
-              }}
-            />
-          )}
-          {returnField.value && (
-            <ProposalTypeSummary
-              exchange={exchange}
-              proposal={{
-                type: "Return and Replace",
-                percentageAmount: "0",
-                signature: "0x"
-              }}
-            />
-          )}
+          {proposalsTypesField.value.map((proposalType) => {
+            if (proposalType.value === "refund") {
+              return (
+                <ProposalTypeSummary
+                  key={proposalType.value}
+                  exchange={exchange}
+                  proposal={{
+                    type: "Refund Request",
+                    percentageAmount: refundPercentageField.value,
+                    signature: "0x"
+                  }}
+                />
+              );
+            }
+            return null;
+          })}
         </Grid>
       </Grid>
       <ButtonsSection>

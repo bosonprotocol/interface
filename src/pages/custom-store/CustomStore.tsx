@@ -1,4 +1,4 @@
-import { BaseIpfsStorage } from "@bosonprotocol/ipfs-storage";
+import { BaseIpfsStorage } from "@bosonprotocol/react-kit";
 import { useFormik } from "formik";
 import styled from "styled-components";
 

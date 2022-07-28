@@ -3,12 +3,12 @@ import styled from "styled-components";
 
 import { colors } from "../../../../../../../lib/styles/colors";
 import { Exchange } from "../../../../../../../lib/utils/hooks/useExchanges";
-import { Checkbox } from "../../../../../../form";
+import { Select } from "../../../../../../form";
 import Button from "../../../../../../ui/Button";
 import Grid from "../../../../../../ui/Grid";
 import Typography from "../../../../../../ui/Typography";
+import { FormModel } from "../../MakeProposalFormModel";
 import RefundRequest from "./RefundRequest";
-import ReturnRequest from "./ReturnRequest";
 
 const ButtonsSection = styled.div`
   padding-top: 2rem;
@@ -17,23 +17,24 @@ const ButtonsSection = styled.div`
 `;
 
 interface Props {
+  onBackClick: () => void;
   onNextClick: () => void;
   isValid: boolean;
   exchange: Exchange;
 }
 
+export const proposals = [{ label: "Refund", value: "refund" }];
+
 export default function MakeAProposalStep({
   exchange,
   onNextClick,
+  onBackClick,
   isValid
 }: Props) {
-  const [refundField] = useField("refund");
-  const [returnField] = useField("return");
-  const selectOptions = [
-    { name: "Refund", value: "refund" },
-    { name: "Return and replace", value: "return" }
-  ];
-  console.log({ refundField, returnField });
+  const [proposalsTypesField] = useField<typeof proposals>(
+    FormModel.formFields.proposalsTypes.name
+  );
+
   return (
     <>
       <Typography fontSize="2rem" fontWeight="600">
@@ -48,19 +49,25 @@ export default function MakeAProposalStep({
         <Typography fontWeight="600" tag="p" fontSize="1.5rem">
           Type of proposals
         </Typography>
-        <Grid flexDirection="column" gap="0.2rem" alignItems="flex-start">
-          {selectOptions.map((option) => (
-            <Checkbox name={option.value} text={option.name} />
-          ))}
-        </Grid>
+        <Select
+          name={FormModel.formFields.proposalsTypes.name}
+          options={proposals}
+          isMulti
+        />
         <Grid
           flexDirection="column"
           alignItems="flex-start"
           padding="3.5rem 0 0 0"
           gap="2rem"
         >
-          {refundField.value && <RefundRequest exchange={exchange} />}
-          {returnField.value && <ReturnRequest />}
+          {proposalsTypesField.value.map((proposalType) => {
+            if (proposalType.value === "refund") {
+              return (
+                <RefundRequest key={proposalType.value} exchange={exchange} />
+              );
+            }
+            return null;
+          })}
         </Grid>
       </Grid>
       <ButtonsSection>
@@ -70,6 +77,9 @@ export default function MakeAProposalStep({
           disabled={!isValid}
         >
           Next
+        </Button>
+        <Button theme="outline" onClick={() => onBackClick()}>
+          Back
         </Button>
       </ButtonsSection>
     </>

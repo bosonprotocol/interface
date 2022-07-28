@@ -15,7 +15,6 @@ export default function Checkbox({ name, text, ...props }: CheckboxProps) {
   const checkboxId = `checkbox-${name}`;
 
   useEffect(() => {
-    console.log(ref.current, field.value);
     if (ref.current !== field.value) {
       if (!meta.touched) {
         helpers.setTouched(true);

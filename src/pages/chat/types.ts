@@ -14,7 +14,7 @@ export type Message = {
   id: string;
   from: string;
   sentDate: Date;
-  content: RegularMessage | ImageMessage | ProposalMessage;
+  content: RegularMessage | ImageWithMetadata | ProposalMessage;
 };
 
 export type RegularMessage = {
@@ -28,7 +28,7 @@ export type RegularMessage = {
   value: string;
 };
 
-export type ImageMessage = {
+export type ImageWithMetadata = {
   threadId: {
     exchangeId: string;
     sellerId: string;
@@ -36,7 +36,12 @@ export type ImageMessage = {
   };
   contentType: "image";
   version: "1";
-  value: string;
+  value: {
+    name: string;
+    size: number;
+    encodedContent: string;
+    type: "image/png" | "image/jpg" | "image/gif";
+  };
 };
 
 export type ProposalMessage = {
@@ -48,11 +53,10 @@ export type ProposalMessage = {
   contentType: "proposal";
   version: "1";
   value: {
-    title: string;
+    title: string; // 'ID: x made a proposal' for now
     description: string;
     proposals: Proposal[];
-    additionalInformation: string;
-    additionalInformationFiles: { name: string; url: string }[];
+    disputeContext: string[];
   };
 };
 

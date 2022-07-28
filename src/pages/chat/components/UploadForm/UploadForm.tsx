@@ -2,12 +2,13 @@ import { useField } from "formik";
 import { Info, UploadSimple } from "phosphor-react";
 
 import UploadComponent from "../../../../components/form/Upload/Upload";
+import { FormModel } from "../../../../components/modal/components/Chat/MakeProposal/MakeProposalFormModel";
 import Grid from "../../../../components/ui/Grid";
 import Typography from "../../../../components/ui/Typography";
 import { colors } from "../../../../lib/styles/colors";
 
 export default function Upload() {
-  const [uploadField] = useField("upload");
+  const [uploadField] = useField(FormModel.formFields.upload.name);
   return (
     <>
       <Grid justifyContent="flex-start" gap="0.2rem">
@@ -21,7 +22,7 @@ export default function Upload() {
         </Typography>
       </Grid>
       <UploadComponent
-        name="upload"
+        name={FormModel.formFields.upload.name}
         multiple
         accept="image/*, application/pdf"
         trigger={

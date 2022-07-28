@@ -52,9 +52,6 @@ export default function ButtonProposal({ exchange }: Props) {
             { steps: 1, name: "Make a Proposal" },
             { steps: 1, name: "Review & Submit" }
           ]}
-          callback={(currentStep) => {
-            setActiveStep(currentStep);
-          }}
           active={activeStep}
         />
       </Grid>
@@ -73,8 +70,8 @@ export default function ButtonProposal({ exchange }: Props) {
     });
   }, [activeStep, headerComponent, activeStep]); // eslint-disable-line
 
-  const sendProposal = (proposal: NewProposal) => {
-    console.log("proposal in button proposal", proposal);
+  const sendProposal = (proposal: NewProposal, proposalFiles: File[]) => {
+    console.log("proposal in button proposal", proposal, proposalFiles);
   };
 
   return (

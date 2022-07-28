@@ -42,6 +42,7 @@ interface Props {
 }
 
 export default function RefundRequest({ exchange }: Props) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { setFieldValue, handleChange } = useFormikContext<any>();
 
   const { address } = useAccount();
@@ -106,7 +107,7 @@ export default function RefundRequest({ exchange }: Props) {
               } = e;
               setFieldValue(
                 "refundPercentage",
-                (valueAsNumber / Number(inEscrowDecimals)) * 100,
+                ((valueAsNumber / Number(inEscrowDecimals)) * 100).toFixed(2),
                 true
               );
             }}

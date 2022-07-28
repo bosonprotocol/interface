@@ -1,6 +1,4 @@
-import { AnyMetadata } from "@bosonprotocol/common";
-import { subgraph } from "@bosonprotocol/core-sdk";
-import { validation } from "@bosonprotocol/ipfs-storage";
+import { AnyMetadata, subgraph, validation } from "@bosonprotocol/react-kit";
 
 import { Offer } from "../types/offer";
 

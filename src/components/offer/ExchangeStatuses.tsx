@@ -1,8 +1,4 @@
-import { exchanges } from "@bosonprotocol/core-sdk";
-import {
-  ExchangeFieldsFragment,
-  ExchangeState
-} from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
+import { exchanges, subgraph } from "@bosonprotocol/react-kit";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
@@ -37,7 +33,7 @@ interface Props {
 const stateToComponent: {
   [x in exchanges.AllExchangeStates]: JSX.Element;
 } = {
-  [ExchangeState.Cancelled]: (
+  [subgraph.ExchangeState.Cancelled]: (
     <Status
       $color={colors.white}
       $background={colors.red}
@@ -47,7 +43,7 @@ const stateToComponent: {
       Cancelled
     </Status>
   ),
-  [ExchangeState.Revoked]: (
+  [subgraph.ExchangeState.Revoked]: (
     <Status
       $color={colors.white}
       $background={colors.red}
@@ -57,7 +53,7 @@ const stateToComponent: {
       Revoked
     </Status>
   ),
-  [ExchangeState.Redeemed]: (
+  [subgraph.ExchangeState.Redeemed]: (
     <Status
       $color={colors.black}
       $background={colors.green}
@@ -67,7 +63,7 @@ const stateToComponent: {
       Redeemed
     </Status>
   ),
-  [ExchangeState.Committed]: (
+  [subgraph.ExchangeState.Committed]: (
     <Status
       $color={colors.black}
       $background={colors.green}
@@ -77,7 +73,7 @@ const stateToComponent: {
       Committed
     </Status>
   ),
-  [ExchangeState.Completed]: <></>,
+  [subgraph.ExchangeState.Completed]: <></>,
   [exchanges.ExtendedExchangeState.Expired]: (
     <Status
       $color={colors.white}
@@ -103,7 +99,7 @@ const stateToComponent: {
 export default function ExchangeStatuses({ offer, exchange }: Props) {
   const Component = exchange
     ? stateToComponent[
-        exchanges.getExchangeState(exchange as ExchangeFieldsFragment)
+        exchanges.getExchangeState(exchange as subgraph.ExchangeFieldsFragment)
       ]
     : null;
   const isMetadataValid = offer.isValid;

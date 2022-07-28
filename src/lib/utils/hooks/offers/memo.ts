@@ -45,6 +45,14 @@ export function memoMergeAndSortOffers() {
 
     cache[cacheKey] = sortedOffers;
 
+    console.log("sellerCurationListOffers", sellerCurationListOffers);
+    console.log("offerCurationListOffers", offerCurationListOffers);
+    console.log("merged", mergedOffers);
+    console.log("ids", ids);
+    console.log("uniqueOffers", uniqueOffers);
+    console.log("cache", cache);
+    console.log("sorted", sortedOffers);
+
     return sortedOffers;
   }
 

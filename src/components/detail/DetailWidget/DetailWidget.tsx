@@ -1,13 +1,10 @@
-import { exchanges } from "@bosonprotocol/core-sdk";
-import {
-  ExchangeFieldsFragment,
-  ExchangeState
-} from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
-import { Provider } from "@bosonprotocol/ethers-sdk";
 import {
   CancelButton,
   CommitButton,
-  RedeemButton
+  exchanges,
+  Provider,
+  RedeemButton,
+  subgraph
 } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { Check, Question } from "phosphor-react";
@@ -162,11 +159,11 @@ const getOfferDetailData = (
 };
 
 const NOT_REDEEMED_YET = [
-  ExchangeState.Committed,
-  ExchangeState.Revoked,
-  ExchangeState.Cancelled,
+  subgraph.ExchangeState.Committed,
+  subgraph.ExchangeState.Revoked,
+  subgraph.ExchangeState.Cancelled,
   exchanges.ExtendedExchangeState.Expired,
-  ExchangeState.Completed
+  subgraph.ExchangeState.Completed
 ];
 const DetailWidget: React.FC<IDetailWidget> = ({
   pageType,
@@ -185,10 +182,10 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   const isOffer = pageType === "offer";
   const isExchange = pageType === "exchange";
   const exchangeStatus = exchange
-    ? exchanges.getExchangeState(exchange as ExchangeFieldsFragment)
+    ? exchanges.getExchangeState(exchange as subgraph.ExchangeFieldsFragment)
     : null;
   const isToRedeem =
-    !exchangeStatus || exchangeStatus === ExchangeState.Committed;
+    !exchangeStatus || exchangeStatus === subgraph.ExchangeState.Committed;
   const isBeforeRedeem =
     !exchangeStatus || NOT_REDEEMED_YET.includes(exchangeStatus);
 
