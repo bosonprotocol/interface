@@ -508,7 +508,9 @@ export default function Chat() {
             setChatListOpen(!chatListOpen);
             selectThread(thread);
             navigate(
-              { pathname: `/chat/${thread.threadId.exchangeId}` },
+              {
+                pathname: `/${BosonRoutes.Chat}/${thread.threadId.exchangeId}`
+              },
               { replace: true }
             );
           }}
