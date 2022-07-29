@@ -384,7 +384,7 @@ const getExchanges = ({
         fulfillmentPeriodDuration: "",
         metadataHash: "",
         metadataUri: "",
-        price: "1000000000000",
+        price: "10001230000000000000",
         protocolFee: "",
         quantityAvailable: "",
         quantityInitial: "",

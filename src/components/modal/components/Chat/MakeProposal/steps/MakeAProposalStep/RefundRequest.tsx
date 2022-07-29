@@ -1,4 +1,4 @@
-import { BigNumber, constants, utils } from "ethers";
+import { BigNumber, utils } from "ethers";
 import { useFormikContext } from "formik";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
@@ -65,19 +65,17 @@ export default function RefundRequest({ exchange }: Props) {
   const { data: sellers } = useSellers({ admin: address });
   const accountId = sellers?.[0]?.id || "";
   const { funds } = useFunds(accountId);
-  const nativeCoinInDeposit = funds?.find(
-    (fund) => fund.token.address === constants.AddressZero
+  const currencyInDeposit = funds?.find(
+    (fund) => fund.token.address === offer.exchangeToken.address
   );
   const { offer } = exchange;
   const inEscrow: string = BigNumber.from(offer.price)
-    .add(BigNumber.from(nativeCoinInDeposit?.availableAmount || "0"))
+    .add(BigNumber.from(currencyInDeposit?.availableAmount || "0"))
     .toString();
-  const inEscrowDecimals = nativeCoinInDeposit
-    ? utils.formatUnits(
-        BigNumber.from(inEscrow),
-        Number(nativeCoinInDeposit.token.decimals)
-      )
-    : "0";
+  const inEscrowDecimals = utils.formatUnits(
+    BigNumber.from(inEscrow),
+    Number(offer.exchangeToken.decimals)
+  );
   const currencySymbol = offer.exchangeToken.symbol;
   return (
     <>
