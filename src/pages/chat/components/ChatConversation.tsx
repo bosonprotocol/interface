@@ -1,6 +1,6 @@
 import { ArrowLeft, UploadSimple } from "phosphor-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
@@ -118,7 +118,7 @@ const Input = styled.div`
     font-family: "Plus Jakarta Sans";
     background: none;
     resize: none;
-    padding-left: 2.475rem;
+    padding-right: 0.625rem;
     &:focus {
       outline: none;
     }
@@ -167,9 +167,8 @@ const InputWrapper = styled.div`
   [data-upload] {
     cursor: pointer;
     position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
+    right: 0;
+    top: 0.5625rem;
     margin: 0 1rem;
     > *:not(rect) {
       stroke: ${colors.darkGrey};
@@ -195,14 +194,14 @@ interface Props {
   thread: Thread | undefined;
   chatListOpen: boolean;
   setChatListOpen: (p: boolean) => void;
-  idNotExist: boolean;
+  exchangeIdNotOwned: boolean;
   exchangeId: string;
 }
 export default function ChatConversation({
   thread,
   chatListOpen,
   setChatListOpen,
-  idNotExist,
+  exchangeIdNotOwned,
   exchangeId
 }: Props) {
   const [disputeOpen, setDisputeOpen] = useState<boolean>(false);
@@ -210,6 +209,7 @@ export default function ChatConversation({
   const [value, setValue] = useState<string>();
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const navigate = useNavigate();
+  const location = useLocation();
   const { address } = useAccount();
   const {
     seller: {
@@ -240,12 +240,13 @@ export default function ChatConversation({
   }, [setChatListOpen]);
 
   useEffect(() => {
+    console.log(location);
     if (textareaRef && textareaRef.current) {
       textareaRef.current.style.height = "0px";
       const scrollHeight = textareaRef.current.scrollHeight;
       textareaRef.current.style.height = scrollHeight + "px";
     }
-  }, [value]);
+  }, [value, location]);
 
   function getWindowSize() {
     const { innerWidth, innerHeight } = window;
@@ -277,12 +278,12 @@ export default function ChatConversation({
   );
 
   const detailsButton = useMemo(() => {
-    if (!chatListOpen) {
-      return <span>{disputeOpen ? "Hide Details" : "Details"}</span>;
-    } else {
+    if (chatListOpen && windowSize.innerWidth < 981) {
       return <span>&nbsp;</span>;
     }
-  }, [chatListOpen, disputeOpen]);
+
+    return <span>{disputeOpen ? "Hide Details" : "Details"}</span>;
+  }, [chatListOpen, disputeOpen, windowSize]);
 
   if (
     !isLoadingSeller &&
@@ -296,9 +297,9 @@ export default function ChatConversation({
     return (
       <Container>
         <SimpleMessage>
-          {!idNotExist
-            ? "Select a message"
-            : `Chat with id ${exchangeId} not found`}
+          {exchangeIdNotOwned
+            ? "You don't have this exchange"
+            : "Select a message"}
         </SimpleMessage>
       </Container>
     );
@@ -316,6 +317,7 @@ export default function ChatConversation({
             <button
               onClick={() => {
                 if (windowSize.innerWidth < 981) {
+                  console.log("odpalone");
                   setChatListOpen(!chatListOpen);
                 } else if (windowSize.innerWidth > 981 && document.referrer) {
                   history.back();
@@ -333,7 +335,7 @@ export default function ChatConversation({
               {windowSize.innerWidth < 981 && (
                 <span>
                   <ArrowLeft size={14} />
-                  Back
+                  Back to messages
                 </span>
               )}
             </button>

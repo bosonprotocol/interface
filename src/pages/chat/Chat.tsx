@@ -472,12 +472,11 @@ export default function Chat() {
   );
   const [selectedThread, selectThread] = useState<Thread>();
   const [chatListOpen, setChatListOpen] = useState<boolean>(false);
-  const [idNotExist, setIdNotExist] = useState<boolean>(false);
+  const [exchangeIdNotOwned, setExchangeIdNotOwned] = useState<boolean>(false);
   const params = useParams();
   const location = useLocation();
   const exchangeId = params["*"];
   const navigate = useNavigate();
-
   useEffect(() => {
     if (threadsWithExchanges?.[0]?.exchange) {
       const currentThread = threadsWithExchanges.find((thread) => {
@@ -487,10 +486,15 @@ export default function Chat() {
       if (currentThread) {
         selectThread(currentThread);
       } else {
-        setIdNotExist(true);
+        setExchangeIdNotOwned(true);
       }
     }
-  }, [exchangeId, threadsWithExchanges, setIdNotExist, idNotExist]);
+  }, [
+    exchangeId,
+    threadsWithExchanges,
+    setExchangeIdNotOwned,
+    exchangeIdNotOwned
+  ]);
 
   return (
     <>
@@ -521,7 +525,7 @@ export default function Chat() {
                 setChatListOpen={setChatListOpen}
                 chatListOpen={chatListOpen}
                 exchangeId={`${exchangeId}`}
-                idNotExist={idNotExist}
+                exchangeIdNotOwned={exchangeIdNotOwned}
               />
             }
           />
@@ -530,9 +534,9 @@ export default function Chat() {
           location.pathname === `${BosonRoutes.Chat}`) && (
           <SelectMessageContainer>
             <SimpleMessage>
-              {!idNotExist
-                ? "Select a message"
-                : `Chat with id ${exchangeId} not found`}
+              {exchangeIdNotOwned
+                ? "You don't have this exchange"
+                : "Select a message"}
             </SimpleMessage>
           </SelectMessageContainer>
         )}

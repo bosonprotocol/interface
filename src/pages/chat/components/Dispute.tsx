@@ -25,7 +25,7 @@ const Container = styled.div<{ $disputeOpen: boolean }>`
   min-width: max-content;
   position: absolute;
   margin-top: 4.375rem;
-  right: ${({ $disputeOpen }) => ($disputeOpen ? "0" : "-100vw")};
+  right: ${({ $disputeOpen }) => ($disputeOpen ? "0" : "-160vw")};
   transition: 400ms;
   width: ${({ $disputeOpen }) => $disputeOpen && "100vw"};
   background: ${colors.lightGrey};
@@ -55,8 +55,8 @@ const Container = styled.div<{ $disputeOpen: boolean }>`
     }
   }
   > div {
-    padding-left: 100px;
-    padding-right: 100px;
+    padding-left: 20px;
+    padding-right: 20px;
     ${breakpoint.m} {
       padding-left: 160px;
       padding-right: 160px;
