@@ -275,8 +275,6 @@ export default function Message({
                   refundAmount,
                   Number(offer.exchangeToken.decimals)
                 );
-                // eslint-disable-next-line no-debugger
-                debugger;
                 return (
                   <Grid
                     key={proposal.type}
