@@ -43,11 +43,17 @@ export default function ProposalTypeSummary({ proposal, exchange }: Props) {
         <Grid>
           <CheckIcon size={16} />
           <Grid justifyContent="flex-start">
-            <span>{convertedRefund.price} ETH</span>
-            <Line />
             <span>
-              {convertedRefund.currency?.symbol} {convertedRefund.converted}
+              {convertedRefund.price} {offer.exchangeToken.symbol}
             </span>
+            {convertedRefund.converted && (
+              <>
+                <Line />
+                <span>
+                  {convertedRefund.currency?.symbol} {convertedRefund.converted}
+                </span>
+              </>
+            )}
             <Line />
             <span>{proposal.percentageAmount}%</span>
           </Grid>
