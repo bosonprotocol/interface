@@ -57,10 +57,12 @@ const Header = styled.div`
   font-size: 24px;
   border-bottom: 1px solid #5560720f;
   ${breakpoint.m} {
-    padding-top: 2.6875rem;
+    padding-top: 1.25rem;
+    margin-top: 1.5625rem;
   }
   ${breakpoint.l} {
     padding-top: 3.125rem;
+    margin-top: 1.75rem;
   }
 `;
 

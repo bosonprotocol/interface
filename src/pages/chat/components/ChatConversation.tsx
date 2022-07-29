@@ -1,3 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
+
 import { ArrowLeft, UploadSimple } from "phosphor-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -35,9 +38,12 @@ const Header = styled.div`
     height: 1.5rem;
   }
   padding: 1.5rem;
-  height: 6.25rem;
+  height: 0;
   display: flex;
   align-items: center;
+  ${breakpoint.m} {
+    height: 6.25rem;
+  }
   svg:nth-of-type(1) {
     margin-right: 0.5rem;
   }
@@ -57,6 +63,18 @@ const Header = styled.div`
     ${breakpoint.m} {
       display: unset;
       margin: unset;
+    }
+  }
+
+  > div {
+    position: absolute;
+    top: 20px;
+    div {
+      display: flex;
+    }
+    ${breakpoint.m} {
+      position: relative;
+      top: unset;
     }
   }
 `;
@@ -108,7 +126,7 @@ const Input = styled.div`
   }
   textarea {
     width: 100%;
-    height: 100%;
+    height: 21px;
     max-width: calc(100% - 2.1875rem);
     border: none;
     display: block;
@@ -175,6 +193,12 @@ const InputWrapper = styled.div`
       stroke: ${colors.darkGrey};
     }
   }
+`;
+
+const ButtonProposalContainer = styled.span`
+  height: 100%;
+  display: flex;
+  align-items: flex-start;
 `;
 
 const ErrorMessage = () => (
@@ -279,7 +303,8 @@ export default function ChatConversation({
         />
       );
     },
-    [thread]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
   );
 
   const detailsButton = useMemo(() => {
@@ -377,7 +402,9 @@ export default function ChatConversation({
           })}
         </Messages>
         <TypeMessage>
-          <ButtonProposal exchange={exchange} />
+          <ButtonProposalContainer>
+            <ButtonProposal exchange={exchange} />
+          </ButtonProposalContainer>
           <InputWrapper>
             <Input>
               <textarea ref={textareaRef} onChange={textAreaChange}>
