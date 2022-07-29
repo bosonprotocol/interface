@@ -61,18 +61,48 @@ export default function RequestedRefundInput({
     <RefundAmountWrapper>
       <CurrencyIcon currencySymbol={currencySymbol} address={address} />
       <Input
+        step="0.001"
         name={FormModel.formFields.refundAmount.name}
         type="number"
         onChange={(e) => {
           handleChange(e);
           const {
-            target: { valueAsNumber }
+            target: { valueAsNumber: currentRefundAmount }
           } = e;
+          const percentageFromInput = (
+            (currentRefundAmount / Number(inEscrowDecimals)) *
+            100
+          ).toFixed(3);
           setFieldValue(
             FormModel.formFields.refundPercentage.name,
-            ((valueAsNumber / Number(inEscrowDecimals)) * 100).toFixed(3),
+            percentageFromInput,
             true
           );
+        }}
+        onBlur={() => {
+          const currentRefundAmount = refundAmountField.value;
+          const percentageFromInput = (
+            (currentRefundAmount / Number(inEscrowDecimals)) *
+            100
+          ).toFixed(3);
+          const refundAmountFromPercentage =
+            (Number(inEscrowDecimals) * Number(percentageFromInput)) / 100;
+          const percentageFromRoundedRefundAmount = (
+            (refundAmountFromPercentage / Number(inEscrowDecimals)) *
+            100
+          ).toFixed(3);
+          setFieldValue(
+            FormModel.formFields.refundPercentage.name,
+            percentageFromRoundedRefundAmount,
+            true
+          );
+          if (refundAmountFromPercentage !== currentRefundAmount) {
+            setFieldValue(
+              FormModel.formFields.refundAmount.name,
+              refundAmountFromPercentage,
+              true
+            );
+          }
         }}
       />
       <ConvertedPrice price={price} withParethensis />

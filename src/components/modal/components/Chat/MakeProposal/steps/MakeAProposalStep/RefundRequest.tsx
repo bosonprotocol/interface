@@ -130,6 +130,7 @@ export default function RefundRequest({ exchange }: Props) {
             Edit as %
           </Typography>
           <Input
+            step="0.001"
             name={FormModel.formFields.refundPercentage.name}
             type="number"
             onChange={(e) => {
