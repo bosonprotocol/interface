@@ -70,7 +70,7 @@ export default function RequestedRefundInput({
           } = e;
           setFieldValue(
             FormModel.formFields.refundPercentage.name,
-            ((valueAsNumber / Number(inEscrowDecimals)) * 100).toFixed(2),
+            ((valueAsNumber / Number(inEscrowDecimals)) * 100).toFixed(3),
             true
           );
         }}
