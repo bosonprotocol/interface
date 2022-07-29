@@ -12,7 +12,7 @@ const customStyles = (error: any) => ({
   control: (provided: any, state: any) => ({
     ...provided,
     borderRadius: 0,
-    padding: "0.325rem 0.25rem",
+    padding: "0.4rem 0.25rem",
     boxShadow: "none",
     ":hover": {
       borderColor: colors.secondary,
@@ -55,6 +55,7 @@ export default function SelectComponent({
   placeholder = "Choose...",
   isClearable = false,
   isSearchable = true,
+  disabled = false,
   ...props
 }: SelectProps) {
   const [field, meta, helpers] = useField(name);
@@ -82,6 +83,7 @@ export default function SelectComponent({
         onChange={handleChange}
         isSearchable={isSearchable}
         isClearable={isClearable}
+        isDisabled={disabled}
         isOptionDisabled={(option) => option.disabled}
       />
       <Error display={displayError} message={errorMessage} />{" "}

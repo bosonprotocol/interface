@@ -1,10 +1,12 @@
 import styled from "styled-components";
 
+import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { Upload } from "../form";
 import FormField from "../form/FormField";
 import Button from "../ui/Button";
 import { ProductButtonGroup, SectionTitle } from "./Product.styles";
+import { useThisForm } from "./utils/useThisForm";
 
 export const Box = styled.div`
   padding: 1.625rem 0;
@@ -25,17 +27,21 @@ const ContainerProductImage = styled.div`
 `;
 
 const SpaceContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  margin-top: 2rem;
-  > div {
-    margin: 0 2rem 2rem 0;
+  display: grid;
+  grid-column-gap: 2rem;
+  grid-row-gap: 2rem;
+
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  ${breakpoint.xs} {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  ${breakpoint.m} {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 `;
 
-const FILE_MAX_SIZE = 600 * 1024;
-
 export default function ProductImages() {
+  const { nextIsDisabled } = useThisForm();
   return (
     <ContainerProductImage>
       <SectionTitle tag="h2">Product Images</SectionTitle>
@@ -48,50 +54,40 @@ export default function ProductImages() {
         }}
       >
         <SpaceContainer>
-          <Upload
-            name="productImages.thumbnail"
-            placeholder="Thumbnail"
-            maxSize={FILE_MAX_SIZE}
-          />
-          <Upload
-            name="productImages.secondary"
-            placeholder="Secondary"
-            maxSize={FILE_MAX_SIZE}
-          />
-          <Upload
-            name="productImages.everyAngle"
-            placeholder="Every angle"
-            maxSize={FILE_MAX_SIZE}
-          />
-          <Upload
-            name="productImages.details"
-            placeholder="Details"
-            maxSize={FILE_MAX_SIZE}
-          />
-          <Upload
-            name="productImages.inUse"
-            placeholder="In Use"
-            maxSize={FILE_MAX_SIZE}
-          />
-          <Upload
-            name="productImages.styledScene"
-            placeholder="Styled Scene"
-            maxSize={FILE_MAX_SIZE}
-          />
-          <Upload
-            name="productImages.sizeAndScale"
-            placeholder="Size and scale"
-            maxSize={FILE_MAX_SIZE}
-          />
-          <Upload
-            name="productImages.more"
-            placeholder="More"
-            maxSize={FILE_MAX_SIZE}
-          />
+          <div>
+            <Upload name="productImages.thumbnail" placeholder="Thumbnail" />
+          </div>
+          <div>
+            <Upload name="productImages.secondary" placeholder="Secondary" />
+          </div>
+          <div>
+            <Upload name="productImages.everyAngle" placeholder="Every angle" />
+          </div>
+          <div>
+            <Upload name="productImages.details" placeholder="Details" />
+          </div>
+          <div>
+            <Upload name="productImages.inUse" placeholder="In Use" />
+          </div>
+          <div>
+            <Upload
+              name="productImages.styledScene"
+              placeholder="Styled Scene"
+            />
+          </div>
+          <div>
+            <Upload
+              name="productImages.sizeAndScale"
+              placeholder="Size and scale"
+            />
+          </div>
+          <div>
+            <Upload name="productImages.more" placeholder="More" />
+          </div>
         </SpaceContainer>
       </FormField>
       <ProductButtonGroup>
-        <Button theme="secondary" type="submit">
+        <Button theme="secondary" type="submit" disabled={nextIsDisabled}>
           Next
         </Button>
       </ProductButtonGroup>

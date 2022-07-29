@@ -24,8 +24,10 @@ import {
   createYourProfileValidationSchema,
   initialValues,
   MOCK_MODAL_DATA,
+  productImagesValidationSchema,
   productInformationValidationSchema,
   productTypeValidationSchema,
+  shippingInfoValidationSchema,
   termsOfExchangeValidationSchema
 } from "../../components/product/utils";
 import {
@@ -38,6 +40,7 @@ import {
   termsOfExchangeHelp
 } from "../../components/product/utils/productHelpOptions";
 import MultiSteps from "../../components/step/MultiSteps";
+import { useLocalStorage } from "../../lib/utils/hooks/useLocalStorage";
 
 const ProductLayoutContainer = styled.div(
   ({ isPreviewVisible }: { isPreviewVisible: boolean }) => {
@@ -80,7 +83,7 @@ type CreateProductSteps = {
   };
   3: {
     ui: JSX.Element;
-    validation: null; // TODO: NEED TO BE ADDED, FOR NOW JUSt PLAIN JSX
+    validation: typeof productImagesValidationSchema;
     helpSection: typeof productImagesHelp;
   };
   4: {
@@ -95,7 +98,7 @@ type CreateProductSteps = {
   };
   6: {
     ui: JSX.Element;
-    validation: null; // TODO: NEED TO BE ADDED, FOR NOW JUSt PLAIN JSX
+    validation: typeof shippingInfoValidationSchema;
     helpSection: typeof shippingInfoHelp;
   };
   7: {
@@ -130,7 +133,7 @@ const createProductSteps = ({
     },
     3: {
       ui: <ProductImages />,
-      validation: null,
+      validation: productImagesValidationSchema,
       helpSection: productImagesHelp
     },
     4: {
@@ -145,7 +148,7 @@ const createProductSteps = ({
     },
     6: {
       ui: <ShippingInfo />,
-      validation: null,
+      validation: shippingInfoValidationSchema,
       helpSection: shippingInfoHelp
     },
     7: {
@@ -159,23 +162,34 @@ const createProductSteps = ({
 const FIRST_STEP = 0;
 
 export default function CreateProduct() {
-  const [currentForm, setCurrentForm] = useState<number>(FIRST_STEP);
+  const [currentStep, setCurrentStep] = useLocalStorage(
+    "current-step",
+    FIRST_STEP
+  );
+  const [storageValues, setStorageValues] = useLocalStorage(
+    "create-product",
+    initialValues
+  );
+
   const [isPreviewVisible, setIsPreviewVisible] = useState<boolean>(false);
   const { showModal, modalTypes, hideModal } = useModal();
 
   const onCreateNewProject = () => {
     hideModal();
-    setCurrentForm(FIRST_STEP);
+    setCurrentStep(FIRST_STEP);
+    setStorageValues(initialValues);
     setIsPreviewVisible(false);
   };
 
   const onViewMyItem = (id: unknown) => {
     console.log(id);
     hideModal();
-    setCurrentForm(FIRST_STEP);
+    setCurrentStep(FIRST_STEP);
+    setStorageValues(initialValues);
     setIsPreviewVisible(false);
     // TODO: REDIRECT USER {id}
   };
+
   const handleOpenSuccessModal = ({ offerId }: { offerId: unknown }) => {
     showModal(modalTypes.PRODUCT_CREATE_SUCCESS, {
       ...MOCK_MODAL_DATA,
@@ -187,30 +201,30 @@ export default function CreateProduct() {
   const wizardStep = useMemo(() => {
     const wizard = createProductSteps({ setIsPreviewVisible });
     return {
-      currentForm:
-        wizard?.[currentForm as keyof CreateProductSteps]?.ui || null,
+      currentStep:
+        wizard?.[currentStep as keyof CreateProductSteps]?.ui || null,
       currentValidation:
-        wizard?.[currentForm as keyof CreateProductSteps]?.validation || null,
+        wizard?.[currentStep as keyof CreateProductSteps]?.validation || null,
       helpSection:
-        wizard?.[currentForm as keyof CreateProductSteps]?.helpSection || null,
+        wizard?.[currentStep as keyof CreateProductSteps]?.helpSection || null,
       wizardLength: keys(wizard).length - 1
     };
-  }, [currentForm]);
+  }, [currentStep]);
 
   const handleNextForm = useCallback(() => {
     if (isPreviewVisible) {
       setIsPreviewVisible(false);
     }
-    if (currentForm < wizardStep.wizardLength) {
-      setCurrentForm((prev) => prev + 1);
+    if (currentStep < wizardStep.wizardLength) {
+      setCurrentStep((prev) => prev + 1);
     }
-  }, [currentForm, isPreviewVisible, wizardStep.wizardLength]);
+  }, [currentStep, isPreviewVisible, wizardStep.wizardLength, setCurrentStep]);
 
   const handleClickStep = (val: number) => {
     if (isPreviewVisible) {
       setIsPreviewVisible(false);
     }
-    setCurrentForm(val);
+    setCurrentStep(val);
   };
 
   const handleSendData = (
@@ -236,7 +250,7 @@ export default function CreateProduct() {
     values: CreateProductForm,
     formikBag: FormikHelpers<CreateProductForm>
   ) => {
-    if (currentForm === wizardStep.wizardLength) {
+    if (currentStep === wizardStep.wizardLength) {
       return handleSendData(values, formikBag);
     }
     console.log({
@@ -248,28 +262,30 @@ export default function CreateProduct() {
     formikBag.setSubmitting(false);
     return handleNextForm();
   };
+
   return (
     <CreateProductWrapper>
       <MultiSteps
         data={CREATE_PRODUCT_STEPS}
-        active={currentForm}
+        active={currentStep}
         callback={handleClickStep}
       />
       <ProductLayoutContainer isPreviewVisible={isPreviewVisible}>
         <Formik<CreateProductForm>
-          initialValues={initialValues}
+          initialValues={storageValues}
           onSubmit={(formikVal, formikBag) =>
             handleSubmit(formikVal, formikBag)
           }
           validationSchema={wizardStep.currentValidation}
         >
-          {() => {
+          {({ values }) => {
+            setStorageValues(values);
             return (
               <Form>
                 {isPreviewVisible ? (
                   <Preview togglePreview={setIsPreviewVisible} />
                 ) : (
-                  wizardStep.currentForm
+                  wizardStep.currentStep
                 )}
               </Form>
             );

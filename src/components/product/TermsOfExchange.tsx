@@ -16,6 +16,7 @@ import {
   OPTIONS_PERIOD,
   OPTIONS_UNIT
 } from "./utils/const";
+import { useThisForm } from "./utils/useThisForm";
 
 const TermsOfExchangeContainer = styled(ContainerProductPage)`
   max-width: 100%;
@@ -85,6 +86,8 @@ const InfoListItem = styled.li`
 `;
 
 export default function TermsOfExchange() {
+  const { nextIsDisabled } = useThisForm();
+
   return (
     <TermsOfExchangeContainer>
       <MainContainer>
@@ -100,6 +103,7 @@ export default function TermsOfExchange() {
               placeholder="Choose exchange policy..."
               name="termsOfExchange.exchangePolicy"
               options={OPTIONS_EXCHANGE_POLICY}
+              disabled
             />
           </FormField>
           <FormField
@@ -113,6 +117,9 @@ export default function TermsOfExchange() {
                 <Input
                   placeholder="Buyer cancellation penalty"
                   name="termsOfExchange.buyerCancellationPenalty"
+                  type="number"
+                  min="0"
+                  max="100"
                 />
               </div>
               <div>
@@ -135,6 +142,9 @@ export default function TermsOfExchange() {
                 <Input
                   placeholder="Seller deposit"
                   name="termsOfExchange.sellerDeposit"
+                  type="number"
+                  min="0"
+                  max="100"
                 />
               </div>
               <div>
@@ -155,6 +165,7 @@ export default function TermsOfExchange() {
               placeholder="Choose Dispute Resolver..."
               name="termsOfExchange.disputeResolver"
               options={OPTIONS_DISPUTE_RESOLVER}
+              disabled
             />
           </FormField>
           <FormField
@@ -167,6 +178,8 @@ export default function TermsOfExchange() {
                 <Input
                   placeholder="Dispute Period"
                   name="termsOfExchange.disputePeriod"
+                  type="number"
+                  min="0"
                 />
               </div>
               <div>
@@ -179,7 +192,7 @@ export default function TermsOfExchange() {
             </FieldContainer>
           </FormField>
           <ProductInformationButtonGroup>
-            <Button theme="secondary" type="submit">
+            <Button theme="secondary" type="submit" disabled={nextIsDisabled}>
               Next
             </Button>
           </ProductInformationButtonGroup>

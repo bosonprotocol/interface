@@ -70,7 +70,13 @@ export const CalendarFlex = styled.div`
   }
 `;
 
-export const CalendarRow = styled(CalendarFlex)``;
+export const CalendarRow = styled.div`
+  display: grid;
+  grid-column-gap: 0;
+  grid-row-gap: 0;
+
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+`;
 export const CalendarHeader = styled(CalendarFlex)`
   margin-bottom: 0.5rem;
   > div {
@@ -88,9 +94,16 @@ export const CalendarCell = styled.div`
 `;
 
 export const CalendarDay = styled(CalendarCell).attrs(
-  (props: { active: boolean; current: boolean }) => ({
+  (props: {
+    active: boolean;
+    current: boolean;
+    between: boolean;
+    disabled: boolean;
+  }) => ({
     active: props.active,
-    current: props.current
+    current: props.current,
+    between: props.between,
+    disabled: props.disabled
   })
 )`
   cursor: pointer;
@@ -121,6 +134,12 @@ export const CalendarDay = styled(CalendarCell).attrs(
       height: 2rem;
     }
   }
+  ${({ disabled }) =>
+    disabled &&
+    css`
+      opacity: 0.5;
+      cursor: not-allowed;
+    `}
 
   ${({ current }) =>
     !current &&
@@ -138,6 +157,22 @@ export const CalendarDay = styled(CalendarCell).attrs(
         width: 2.25rem;
         height: 2.25rem;
         z-index: 2;
+      }
+      span {
+        color: ${colors.white};
+        font-weight: bold;
+      }
+    `}
+  ${({ active, between }) =>
+    between &&
+    !active &&
+    css`
+      :after {
+        background: ${colors.secondary};
+        width: 1.75rem;
+        height: 1.75rem;
+        z-index: 2;
+        opacity: 0.5;
       }
       span {
         color: ${colors.white};

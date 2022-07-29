@@ -44,7 +44,7 @@ export interface SelectContentProps {
 
 export interface SelectProps extends BaseProps {
   isMulti?: boolean;
-  isDisabled?: boolean;
+  disabled?: boolean;
   isClearable?: boolean;
   isSearchable?: boolean;
   options: Array<SelectDataProps>;

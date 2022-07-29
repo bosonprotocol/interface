@@ -1,5 +1,6 @@
+import { FieldArray } from "formik";
 import { Plus } from "phosphor-react";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import styled from "styled-components";
 
 import Collapse from "../../components/collapse/Collapse";
@@ -12,7 +13,7 @@ import {
   ProductButtonGroup,
   SectionTitle
 } from "./Product.styles";
-import { OPTIONS_LENGTH, OPTIONS_WEIGHT } from "./utils";
+import { OPTIONS_COUNTRIES, OPTIONS_LENGTH, OPTIONS_WEIGHT } from "./utils";
 import { useThisForm } from "./utils/useThisForm";
 
 const FieldContainerJurisdictions = styled.div`
@@ -47,12 +48,12 @@ const AdditionalContainer = styled.div`
 `;
 
 const AddSupportedJurisdictions = () => {
-  const [count, setCount] = useState<number>(1);
-  const jurisdictions = useMemo(() => Array.from(Array(count).keys()), [count]);
+  const { values } = useThisForm();
 
-  const addNewJurisdiction = () => {
-    setCount(count + 1);
-  };
+  const elements = useMemo(
+    () => values?.shippingInfo?.jurisdiction,
+    [values?.shippingInfo?.jurisdiction]
+  );
 
   return (
     <FormField
@@ -60,37 +61,52 @@ const AddSupportedJurisdictions = () => {
       subTitle="Select the jurisdictions you will ship to."
       tooltip="TODO: add"
     >
-      {jurisdictions.map((e: number, key: number) => (
-        <FieldContainerJurisdictions
-          key={`field_container_jurisdictions_${key}`}
-        >
-          <div>
-            <Input
-              placeholder="Region"
-              name={`shippingInfo.region${key === 0 ? "" : `${key + 1}`}`}
-            />
-          </div>
-          <div>
-            <Input
-              placeholder="Time"
-              name={`shippingInfo.time${key === 0 ? "" : `${key + 1}`}`}
-            />
-          </div>
-        </FieldContainerJurisdictions>
-      ))}
-      <Button
-        onClick={addNewJurisdiction}
-        theme="blankSecondary"
-        style={{ borderBottom: `1px solid ${colors.border}` }}
-      >
-        Add new <Plus size={18} />
-      </Button>
+      <FieldArray
+        name="shippingInfo.jurisdiction"
+        render={(arrayHelpers) => {
+          const render = elements && elements.length > 0;
+
+          return (
+            <>
+              {render && (
+                <>
+                  {elements.map((el: unknown, key: number) => (
+                    <FieldContainerJurisdictions
+                      key={`field_container_jurisdictions_${key}`}
+                    >
+                      <div>
+                        <Input
+                          placeholder="Region"
+                          name={`shippingInfo.jurisdiction[${key}].region`}
+                        />
+                      </div>
+                      <div>
+                        <Input
+                          placeholder="Time"
+                          name={`shippingInfo.jurisdiction[${key}].time`}
+                        />
+                      </div>
+                    </FieldContainerJurisdictions>
+                  ))}
+                </>
+              )}
+              <Button
+                onClick={() => arrayHelpers.push("")}
+                theme="blankSecondary"
+                style={{ borderBottom: `1px solid ${colors.border}` }}
+              >
+                Add new <Plus size={18} />
+              </Button>
+            </>
+          );
+        }}
+      />
     </FormField>
   );
 };
 
 export default function ShippingInfo() {
-  const { values } = useThisForm();
+  const { values, nextIsDisabled } = useThisForm();
 
   const unit = useMemo(
     () => (values?.shippingInfo?.measurementUnit?.value || "").toUpperCase(),
@@ -99,14 +115,10 @@ export default function ShippingInfo() {
 
   const lwh = useMemo(
     () =>
-      `${values?.shippingInfo?.height || 0}x${
+      `${values?.shippingInfo?.length || 0}x${
         values?.shippingInfo?.width || 0
-      }x${values?.shippingInfo?.length || 0}`,
-    [
-      values?.shippingInfo?.height,
-      values?.shippingInfo?.width,
-      values?.shippingInfo?.length
-    ]
+      }x${values?.shippingInfo?.height || 0}`,
+    [values?.shippingInfo]
   );
 
   return (
@@ -117,7 +129,11 @@ export default function ShippingInfo() {
           title="Country of Origin"
           subTitle="The country you're dispatching from."
         >
-          <Input placeholder="Country" name="shippingInfo.country" />
+          <Select
+            placeholder="Country"
+            name="shippingInfo.country"
+            options={OPTIONS_COUNTRIES}
+          />
         </FormField>
         <AddSupportedJurisdictions />
       </RequiredContainer>
@@ -134,7 +150,7 @@ export default function ShippingInfo() {
             <Input placeholder="Add URL" name="shippingInfo.addUrl" />
           </FormField>
           <FormField
-            title={`Dimensions in ${unit}`}
+            title={`Dimensions L x W x H in ${unit}`}
             subTitle="Specify the dimension and weight of your package"
           >
             <Input
@@ -146,7 +162,12 @@ export default function ShippingInfo() {
           </FormField>
           <FormField title="Weight">
             <FieldContainerWidth>
-              <Input placeholder="Weight" name="shippingInfo.weight" />
+              <Input
+                placeholder="Weight"
+                name="shippingInfo.weight"
+                type="number"
+                min="0"
+              />
               <Select name="shippingInfo.weightUnit" options={OPTIONS_WEIGHT} />
             </FieldContainerWidth>
           </FormField>
@@ -163,21 +184,30 @@ export default function ShippingInfo() {
             <Input
               placeholder={`Height in ${unit}`}
               name="shippingInfo.height"
+              type="number"
+              min="0"
             />
           </FormField>
           <FormField title="Width">
-            <Input placeholder={`Width in ${unit}`} name="shippingInfo.width" />
+            <Input
+              placeholder={`Width in ${unit}`}
+              name="shippingInfo.width"
+              type="number"
+              min="0"
+            />
           </FormField>
           <FormField title="Length">
             <Input
               placeholder={`Length in ${unit}`}
               name="shippingInfo.length"
+              type="number"
+              min="0"
             />
           </FormField>
         </Collapse>
       </AdditionalContainer>
       <ProductInformationButtonGroup>
-        <Button theme="secondary" type="submit">
+        <Button theme="secondary" type="submit" disabled={nextIsDisabled}>
           Next
         </Button>
       </ProductInformationButtonGroup>

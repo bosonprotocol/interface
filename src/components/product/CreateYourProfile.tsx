@@ -5,9 +5,11 @@ import {
   ProductButtonGroup,
   SectionTitle
 } from "./Product.styles";
+import { useThisForm } from "./utils/useThisForm";
 
-const FILE_MAX_SIZE = 300 * 1024;
 export default function CreateYourProfile() {
+  const { nextIsDisabled } = useThisForm();
+
   return (
     <ContainerProductPage>
       <SectionTitle tag="h2">Create your Profile</SectionTitle>
@@ -16,7 +18,7 @@ export default function CreateYourProfile() {
         subTitle="Upload a profile image with a max. width and height of 800px and a max. size of 300kb."
         required={true}
       >
-        <Upload name="creteYourProfile.logo" maxSize={FILE_MAX_SIZE} />
+        <Upload name="creteYourProfile.logo" />
       </FormField>
       <FormField title="Your brand / name" required={true}>
         <Input name="creteYourProfile.name" placeholder="Name" />
@@ -41,7 +43,7 @@ export default function CreateYourProfile() {
         />
       </FormField>
       <ProductButtonGroup>
-        <Button theme="secondary" type="submit">
+        <Button theme="secondary" type="submit" disabled={nextIsDisabled}>
           Next
         </Button>
       </ProductButtonGroup>

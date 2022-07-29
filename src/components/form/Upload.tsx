@@ -2,9 +2,9 @@ import { useField } from "formik";
 import { Image, Trash } from "phosphor-react";
 import { useEffect, useRef, useState } from "react";
 
-import { CONFIG } from "../../lib/config";
 import { colors } from "../../lib/styles/colors";
 import bytesToSize from "../../lib/utils/bytesToSize";
+import { useLocalStorage } from "../../lib/utils/hooks/useLocalStorage";
 import Button from "../ui/Button";
 import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
@@ -12,18 +12,23 @@ import Error from "./Error";
 import { FieldInput } from "./Field.styles";
 import { FieldFileUploadWrapper, FileUploadWrapper } from "./Field.styles";
 import type { UploadProps } from "./types";
+import { convertToBlob } from "./utils";
 
 export default function Upload({
   name,
   accept = "image/*",
   disabled,
-  maxSize = CONFIG.maxUploadSize,
+  maxSize,
   multiple = false,
   trigger,
   onFilesSelect,
   placeholder,
   ...props
 }: UploadProps) {
+  const [preview, setPreview] = useLocalStorage<string | null>(
+    `create-product-image_${name}`,
+    null
+  );
   const [, meta, helpers] = useField(name);
   const errorMessage = meta.error && meta.touched ? meta.error : "";
   const displayError =
@@ -31,7 +36,6 @@ export default function Upload({
 
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [files, setFiles] = useState<File[]>([]);
-  const [preview, setPreview] = useState<string | null>(null);
 
   useEffect(() => {
     onFilesSelect?.(files);
@@ -46,6 +50,23 @@ export default function Upload({
       reader.readAsDataURL(files[0]);
     }
   }, [files]); // eslint-disable-line
+
+  useEffect(() => {
+    if (preview !== null && files.length === 0) {
+      const extension = preview.split(";")[0].split("/")[1];
+      const encoded = preview.split(",")[1];
+      console.log(extension, encoded);
+      const data = convertToBlob(encoded, `image/${extension}`);
+      const blob = new Blob([data as BlobPart], {
+        type: `image/${extension}`
+      });
+
+      const file = new File([blob as BlobPart], `${name}.${extension}`, {
+        type: `image/${extension}`
+      });
+      setFiles([file]);
+    }
+  }, [preview]); // eslint-disable-line
 
   const handleChooseFile = () => {
     const input = inputRef.current;
@@ -73,12 +94,14 @@ export default function Upload({
     const { files } = e.target;
     const filesArray = Object.values(files);
     for (const file of filesArray) {
-      if (file.size > maxSize) {
-        // TODO: change to notification
-        console.error(
-          `File size cannot exceed more than ${bytesToSize(maxSize)}`
-        );
-        return;
+      if (maxSize) {
+        if (file.size > maxSize) {
+          // TODO: change to notification
+          console.error(
+            `File size cannot exceed more than ${bytesToSize(maxSize)}`
+          );
+          return;
+        }
       }
     }
     setFiles(filesArray);

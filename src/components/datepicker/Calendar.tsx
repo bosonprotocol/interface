@@ -1,5 +1,7 @@
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
+import isBetween from "dayjs/plugin/isBetween";
+dayjs.extend(isBetween);
 import React, { useMemo } from "react";
 
 import {
@@ -11,40 +13,70 @@ import {
 import { getRows, ICalendarCell } from "./utils";
 
 export interface Props {
-  date: Dayjs;
-  shownDate: string;
-  onChange: (newDate: Dayjs) => void;
+  date: Dayjs | null;
+  secondDate: Dayjs | null;
+  month: Dayjs;
+  period: boolean;
+  onChange: (newDate: Dayjs, setFirst: boolean) => void;
 }
 
-export default function Calendar({ date, shownDate, onChange }: Props) {
-  const selected = dayjs(shownDate);
-  const handleSelectDate = (value: Dayjs) => onChange(value);
+export default function Calendar({
+  date,
+  secondDate,
+  month,
+  period,
+  onChange
+}: Props) {
+  const firstDay = date ? dayjs(date) : null;
+  const secondDay = secondDate ? dayjs(secondDate) : null;
+  const handleSelectDate = (value: Dayjs) => {
+    if (period) {
+      if (value.isBefore(firstDay, "day")) {
+        onChange(value, true);
+      } else {
+        onChange(value, false);
+      }
+    }
+    onChange(value, false);
+  };
 
-  const rows = useMemo((): Array<ICalendarCell[]> => getRows(date), [date]);
+  const rows = useMemo((): ICalendarCell[] => getRows(month), [month]);
 
   return (
     <>
       <CalendarHeader>
-        {rows[0].map(({ value }: ICalendarCell, headerIndex: number) => (
-          <CalendarCell key={`calendar_header_cell_${headerIndex}`}>
-            {value.format("dd")}
-          </CalendarCell>
-        ))}
+        {rows
+          .slice(0, 7)
+          .map(({ value }: ICalendarCell, headerIndex: number) => (
+            <CalendarCell key={`calendar_header_cell_${headerIndex}`}>
+              {value.format("dd")}
+            </CalendarCell>
+          ))}
       </CalendarHeader>
-      {rows.map((cells: ICalendarCell[], rowIndex: number) => (
-        <CalendarRow key={`calendar_row_${rowIndex}`}>
-          {cells.map(({ text, value, current }: ICalendarCell, i: number) => (
+      <CalendarRow>
+        {rows.map(({ text, value, current }: ICalendarCell, i: number) => {
+          const disabled = period ? value.isBefore(firstDay, "day") : false;
+          return (
             <CalendarDay
               key={`calendar_row_day${text}-${i}`}
-              active={value.isSame(selected, "day")}
+              active={
+                secondDate
+                  ? value.isSame(firstDay, "day") ||
+                    value.isSame(secondDay, "day")
+                  : value.isSame(firstDay, "day")
+              }
+              between={
+                secondDate ? value.isBetween(firstDay, secondDay, "day") : false
+              }
+              disabled={disabled}
               current={current}
               onClick={() => handleSelectDate(value)}
             >
               <span>{text}</span>
             </CalendarDay>
-          ))}
-        </CalendarRow>
-      ))}
+          );
+        })}
+      </CalendarRow>
     </>
   );
 }
