@@ -47,17 +47,21 @@ export default function Preview({ togglePreview }: Props) {
   // TODO: ADD CORRECT VALUES; FOR NOW HARDCODED
   const offerImg = getOfferImage("35", "boson neon sign");
   console.log(values, "values");
+  // console.log(dayjs(getDateTimestamp(test)), "TEST");
   const name = values.productInformation.productTitle || "Untitled";
   // const price = values.coreTermsOfSale.price;
-  // const validFromDate = values.coreTermsOfSale.redemptionPeriod; // transform to timestamp;
-  // const sellerDeposit = values.termsOfExchange.sellerDeposit; // Should be calc with values.termsOfExchange.sellerDepositPercent or not ?
-  // const buyerCancelPenalty = values.termsOfExchange.buyerCancellationPenalty; // Should be calc with values.termsOfExchange.buyerCancelPenalty or not ?
-  // const fairExchangePolicy = values.termsOfExchange.fairExchangePolicy;
+  // const validFromDate = values.coreTermsOfSale.redemptionPeriod; // transform to timestamp; Redeemable until
+  // const sellerDeposit = values.termsOfExchange.sellerDeposit; // Should be calc with termsOfExchange.sellerDepositUnit or not ? Seller deposit
+  // const buyerCancelPenalty = values.termsOfExchange.buyerCancellationPenalty; // Should be calc with values.termsOfExchange.buyerCancellationPenaltyUnit or not ? Buyer cancel. pen.
+  // const fairExchangePolicy = values.termsOfExchange.exchangePolicy;
   // const disputeResolver = values.termsOfExchange.disputeResolver;
-  // const seller.operator = values.creteYourProfile.logo
+  // const seller.operator = values.creteYourProfile.logo avatar on the top (small picture)
   // const seller.id = ?
-  // const exchangeToken.symbol = values.coreTermsOfSale.symbol
-  // const validFromDate = values.coreTermsOfSale.redemptionPeriod
+  // const exchangeToken.symbol = values.coreTermsOfSale.currency
+
+  const validFromDate = (
+    (values.coreTermsOfSale.redemptionPeriod.valueOf() as any) / 1000
+  ).toString();
 
   const offer = {
     id: "35",
@@ -71,8 +75,8 @@ export default function Preview({ togglePreview }: Props) {
     buyerCancelPenalty: "10000000000000",
     quantityAvailable: "994",
     quantityInitial: "1000",
-    validFromDate: "1657198839",
-    validUntilDate: "1677285059",
+    validFromDate: validFromDate,
+    validUntilDate: "1677285059", // CHECK validUntilDate
     voidedAt: null,
     voucherValidDuration: "21727820",
     exchanges: [
@@ -153,7 +157,7 @@ export default function Preview({ togglePreview }: Props) {
                   {values.productInformation.description}
                 </Typography>
                 <DetailTable
-                  // TODO: ADD DATA FROM values.productInformation.productAttribute
+                  // TODO: ADD DATA FROM values.productInformation product attribute
                   data={[
                     {
                       name: "Outer / Inner Material",
@@ -189,7 +193,7 @@ export default function Preview({ togglePreview }: Props) {
                   NEED TO ADD
                 </Typography>
                 <DetailTable
-                  // TODO: ADD DATA values.sippingInfo.supportedJurisdictions
+                  // TODO: ADD DATA values.sippingInfo Supported Jurisdictions
                   data={[
                     {
                       name: "1",
