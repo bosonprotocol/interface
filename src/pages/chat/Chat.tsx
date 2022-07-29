@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Route, Routes, useLocation, useParams } from "react-router-dom";
+import { Route, Routes, useParams } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
 
 import { UrlParameters } from "../../lib/routing/parameters";
@@ -469,9 +469,6 @@ export default function Chat() {
   const [chatListOpen, setChatListOpen] = useState<boolean>(false);
   const [exchangeIdNotOwned, setExchangeIdNotOwned] = useState<boolean>(false);
   const params = useParams();
-  const location = useLocation();
-  const { state } = location;
-  const { prevPath } = state as { prevPath: string };
   const exchangeId = params["*"];
   const navigate = useKeepQueryParamsNavigate();
   useEffect(() => {
@@ -509,7 +506,7 @@ export default function Chat() {
             selectThread(thread);
             navigate(
               {
-                pathname: `/${BosonRoutes.Chat}/${thread.threadId.exchangeId}`
+                pathname: `${BosonRoutes.Chat}/${thread.threadId.exchangeId}`
               },
               { replace: true }
             );

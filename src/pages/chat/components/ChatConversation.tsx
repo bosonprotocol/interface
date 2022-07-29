@@ -8,6 +8,7 @@ import { useModal } from "../../../components/modal/useModal";
 import SellerID from "../../../components/ui/SellerID";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
+import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { useBuyerSellerAccounts } from "../../../lib/utils/hooks/useBuyerSellerAccounts";
 import { Thread } from "../types";
 import ButtonProposal from "./ButtonProposal/ButtonProposal";
@@ -210,7 +211,10 @@ export default function ChatConversation({
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const { state } = location;
+  const prevPath = (state as { prevPath: string })?.prevPath;
   const { address } = useAccount();
+  const { isLteM, isLteL, isLteS, isM, isL, isS, isXXS } = useBreakpoints();
   const {
     seller: {
       sellerId: _sellerId,
@@ -240,13 +244,12 @@ export default function ChatConversation({
   }, [setChatListOpen]);
 
   useEffect(() => {
-    console.log("location", location);
     if (textareaRef && textareaRef.current) {
       textareaRef.current.style.height = "0px";
       const scrollHeight = textareaRef.current.scrollHeight;
       textareaRef.current.style.height = scrollHeight + "px";
     }
-  }, [value, location]);
+  }, [value, prevPath]);
 
   function getWindowSize() {
     const { innerWidth, innerHeight } = window;
@@ -313,33 +316,30 @@ export default function ChatConversation({
     <>
       <Container>
         <NavigationMobile>
-          {!chatListOpen && (
-            <button
-              onClick={() => {
-                if (windowSize.innerWidth < 981) {
-                  console.log("odpalone");
-                  setChatListOpen(!chatListOpen);
-                } else if (windowSize.innerWidth > 981 && document.referrer) {
-                  history.back();
-                } else {
-                  navigate(`/chat`, { replace: true });
-                }
-              }}
-            >
-              {windowSize.innerWidth > 981 && document.referrer && (
-                <span>
-                  <ArrowLeft size={14} />
-                  Back
-                </span>
-              )}
-              {windowSize.innerWidth < 981 && (
-                <span>
-                  <ArrowLeft size={14} />
-                  Back to messages
-                </span>
-              )}
-            </button>
-          )}
+          <button
+            onClick={() => {
+              if (isLteM) {
+                setChatListOpen(!chatListOpen);
+              } else if (isM && prevPath) {
+                navigate(prevPath, { replace: true });
+              } else {
+                navigate(`/chat`, { replace: true });
+              }
+            }}
+          >
+            {windowSize.innerWidth < 1200 && isM && prevPath && (
+              <span>
+                <ArrowLeft size={14} />
+                Back
+              </span>
+            )}
+            {isLteS && !chatListOpen && (
+              <span>
+                <ArrowLeft size={14} />
+                Back to messages
+              </span>
+            )}
+          </button>
           <button
             onClick={() => {
               setDisputeOpen(!disputeOpen);
