@@ -214,7 +214,7 @@ export default function ChatConversation({
   const { state } = location;
   const prevPath = (state as { prevPath: string })?.prevPath;
   const { address } = useAccount();
-  const { isLteM, isLteL, isLteS, isM, isL, isS, isXXS } = useBreakpoints();
+  const { isLteM, isLteS, isM, isL, isXL } = useBreakpoints();
   const {
     seller: {
       sellerId: _sellerId,
@@ -327,7 +327,7 @@ export default function ChatConversation({
               }
             }}
           >
-            {windowSize.innerWidth < 1200 && isM && prevPath && (
+            {(isM || isL || isXL) && prevPath && (
               <span>
                 <ArrowLeft size={14} />
                 Back
