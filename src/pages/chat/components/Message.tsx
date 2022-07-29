@@ -39,7 +39,10 @@ const Content = styled.div<{ $isLeftAligned: boolean }>`
       $isLeftAligned ? "none" : "16px solid transparent"};
     border-left: ${({ $isLeftAligned }) =>
       $isLeftAligned ? "16px solid transparent" : "none"};
-    top: -0.063rem;
+    top: -1px;
+    ${breakpoint.m} {
+      top: -0.063rem;
+    }
     right: ${({ $isLeftAligned }) => ($isLeftAligned ? "auto" : "-1rem")};
     left: ${({ $isLeftAligned }) => ($isLeftAligned ? "-1rem" : "auto")};
   }
