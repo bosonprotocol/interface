@@ -55,9 +55,17 @@ const SellerID: React.FC<
     seller: OfferFieldsFragment["seller"];
     offerName: string;
     withProfileImage: boolean;
+    customImage?: boolean;
   } & IGrid &
     React.HTMLAttributes<HTMLDivElement>
-> = ({ seller, children, offerName, withProfileImage, ...rest }) => {
+> = ({
+  seller,
+  children,
+  offerName,
+  withProfileImage,
+  customImage,
+  ...rest
+}) => {
   const navigate = useKeepQueryParamsNavigate();
 
   const sellerId = seller?.id;
@@ -77,8 +85,8 @@ const SellerID: React.FC<
       >
         {withProfileImage && (
           <ImageContainer>
-            {artist.toLocaleLowerCase() === "boson protocol" ? (
-              <RoundedImage src={bosonProtocolImage} />
+            {artist.toLocaleLowerCase() === "boson protocol" || customImage ? (
+              <RoundedImage src={sellerAddress || bosonProtocolImage} />
             ) : (
               <AccountImage size={17} address={sellerAddress} />
             )}

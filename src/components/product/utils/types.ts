@@ -3,6 +3,7 @@ import * as Yup from "yup";
 import {
   coreTermsOfSaleValidationSchema,
   createYourProfileValidationSchema,
+  productImagesValidationSchema,
   productInformationValidationSchema,
   productTypeValidationSchema,
   shippingInfoValidationSchema,
@@ -25,9 +26,12 @@ export type TermsOfExchange = Yup.InferType<
 
 export type ShippingInfo = Yup.InferType<typeof shippingInfoValidationSchema>;
 
+export type ProductImages = Yup.InferType<typeof productImagesValidationSchema>;
+
 export type CreateProductForm = CreateYourProfile &
   ProductType &
   ProductInformation &
   ShippingInfo &
   CoreTermsOfSale &
-  TermsOfExchange;
+  TermsOfExchange &
+  ProductImages;

@@ -1,6 +1,6 @@
 import { useField } from "formik";
 import { Image, Trash } from "phosphor-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { colors } from "../../lib/styles/colors";
 import bytesToSize from "../../lib/utils/bytesToSize";
@@ -12,7 +12,6 @@ import Error from "./Error";
 import { FieldInput } from "./Field.styles";
 import { FieldFileUploadWrapper, FileUploadWrapper } from "./Field.styles";
 import type { UploadProps } from "./types";
-import { convertToBlob } from "./utils";
 
 export default function Upload({
   name,
@@ -25,17 +24,19 @@ export default function Upload({
   placeholder,
   ...props
 }: UploadProps) {
-  const [preview, setPreview] = useLocalStorage<string | null>(
-    `create-product-image_${name}`,
+  const fileName = useMemo(() => `create-product-image_${name}`, [name]);
+  const [preview, setPreview, removePreview] = useLocalStorage<string | null>(
+    fileName,
     null
   );
-  const [, meta, helpers] = useField(name);
+
+  const [field, meta, helpers] = useField(name);
   const errorMessage = meta.error && meta.touched ? meta.error : "";
   const displayError =
     typeof errorMessage === typeof "string" && errorMessage !== "";
 
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [files, setFiles] = useState<File[]>([]);
+  const [files, setFiles] = useState<File[]>(field.value || []);
 
   useEffect(() => {
     onFilesSelect?.(files);
@@ -51,23 +52,6 @@ export default function Upload({
     }
   }, [files]); // eslint-disable-line
 
-  useEffect(() => {
-    if (preview !== null && files.length === 0) {
-      const extension = preview.split(";")[0].split("/")[1];
-      const encoded = preview.split(",")[1];
-      console.log(extension, encoded);
-      const data = convertToBlob(encoded, `image/${extension}`);
-      const blob = new Blob([data as BlobPart], {
-        type: `image/${extension}`
-      });
-
-      const file = new File([blob as BlobPart], `${name}.${extension}`, {
-        type: `image/${extension}`
-      });
-      setFiles([file]);
-    }
-  }, [preview]); // eslint-disable-line
-
   const handleChooseFile = () => {
     const input = inputRef.current;
     if (input) {
@@ -78,7 +62,9 @@ export default function Upload({
   const handleRemoveAllFiles = () => {
     setFiles([]);
     setPreview(null);
+    removePreview(fileName);
   };
+
   const handleRemoveFile = (index: number) => {
     const newArray = files.filter((i, k) => k !== index);
     setFiles(newArray);
@@ -132,7 +118,9 @@ export default function Upload({
             onClick={handleChooseFile}
             error={errorMessage}
           >
-            {preview !== null && <img src={preview} />}
+            {field.value && field.value?.length !== 0 && preview !== null && (
+              <img src={preview} />
+            )}
             <Image size={24} />
             {placeholder && (
               <Typography tag="p" style={{ marginBottom: "0" }}>
@@ -141,7 +129,7 @@ export default function Upload({
             )}
           </FileUploadWrapper>
         )}
-        {preview !== null && (
+        {field.value && field.value?.length !== 0 && preview !== null && (
           <div onClick={handleRemoveAllFiles} data-remove>
             <Trash size={24} color={colors.white} />
           </div>

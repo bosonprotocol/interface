@@ -10,16 +10,23 @@ import { DatePickerWrapper, Picker } from "./DatePicker.style";
 import SelectMonth from "./SelectMonth";
 
 interface Props {
+  initialValue?: Dayjs | Array<Dayjs> | null;
   onChange?: (selected: Dayjs | Array<Dayjs | null>) => void;
   error?: string;
   period: boolean;
   [x: string]: any;
 }
 
-export default function DatePicker({ onChange, period, ...props }: Props) {
+export default function DatePicker({
+  // initialValue,
+  onChange,
+  period,
+  ...props
+}: Props) {
   const ref = useRef<HTMLDivElement | null>(null);
 
   const [month, setMonth] = useState<Dayjs>(dayjs());
+  // TODO: load initialValue as initial dates, remember to wrap with Dayjs
   const [date, setDate] = useState<Dayjs | null>(null);
   const [secondDate, setSecondDate] = useState<Dayjs | null>(null);
   const [shownDate, setShownDate] = useState<string>("Choose dates...");
@@ -29,13 +36,16 @@ export default function DatePicker({ onChange, period, ...props }: Props) {
     setShow(!show);
   };
 
-  const handleDateChange = (v: Dayjs, first: boolean) => {
+  const handleDateChange = (v: Dayjs) => {
     if (period) {
-      if (date === null || secondDate !== null || first) {
+      if (date === null) {
         setDate(v);
         setSecondDate(null);
-      } else {
+      } else if (secondDate === null) {
         setSecondDate(v);
+      } else if (date !== null && secondDate !== null) {
+        setDate(null);
+        setSecondDate(null);
       }
     } else {
       setDate(v);

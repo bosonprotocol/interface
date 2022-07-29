@@ -1,4 +1,3 @@
-import { Warning } from "phosphor-react";
 import React from "react";
 
 import { colors } from "../../lib/styles/colors";
@@ -13,14 +12,12 @@ export default function Error({ display = false, message = "" }: ErrorProps) {
     <Typography
       tag="p"
       style={{
-        color: colors.red,
+        color: colors.orange,
         margin: "0.25rem",
         fontWeight: "600",
         fontSize: "0.75rem"
       }}
     >
-      <Warning size={16} weight="bold" color={colors.red} />
-      &nbsp;&nbsp;
       {message}
     </Typography>
   );

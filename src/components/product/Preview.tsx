@@ -1,14 +1,14 @@
+import map from "lodash/map";
+import slice from "lodash/slice";
 import styled from "styled-components";
 
 import DetailChart from "../../components/detail/DetailChart";
-import DetailShare from "../../components/detail/DetailShare";
 import DetailWidget from "../../components/detail/DetailWidget";
 import Image from "../../components/ui/Image";
 import SellerID from "../../components/ui/SellerID";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
-import { getOfferImage } from "../../lib/utils/hooks/offers/placeholders";
-import { MOCK } from "../../pages/offers/mock/mock";
+import { getLocalStorageItems } from "../../lib/utils/getLocalStorageItems";
 import {
   DarkerBackground,
   DetailGrid,
@@ -19,6 +19,7 @@ import {
 } from "../detail/Detail.style";
 import DetailSlider from "../detail/DetailSlider";
 import DetailTable from "../detail/DetailTable";
+import { useConvertedPrice } from "../price/useConvertedPrice";
 import Button from "../ui/Button";
 import Typography from "../ui/Typography";
 import { ProductButtonGroup } from "./Product.styles";
@@ -40,18 +41,37 @@ const PreviewWrapperContent = styled.div`
 export default function Preview({ togglePreview }: Props) {
   const { values } = useThisForm();
 
+  const previewImages = getLocalStorageItems({
+    key: "create-product-image"
+  });
+
   const handleClosePreview = () => {
     togglePreview(false);
   };
 
-  // TODO: ADD CORRECT VALUES; FOR NOW HARDCODED
-  const offerImg = getOfferImage("35", "boson neon sign");
-  console.log(values, "values");
-  // console.log(dayjs(getDateTimestamp(test)), "TEST");
+  const logoImage = previewImages?.[0] ?? null;
+  const offerImg = previewImages?.[1] ?? null;
+  const sliderImages = slice(previewImages, 1);
   const name = values.productInformation.productTitle || "Untitled";
-  // const price = values.coreTermsOfSale.price;
+  console.log("🚀 ~ file: Preview.tsx ~ line 55 ~ Preview ~ values", values);
+  // const price = useConvertedPrice(values.coreTermsOfSale.price);
+  console.log(
+    "🚀 ~ file: Preview.tsx ~ line 60 ~ Preview ~ values.coreTermsOfSale.price",
+    values.coreTermsOfSale.price
+  );
+  const price = useConvertedPrice({
+    value: values.coreTermsOfSale.price,
+    decimals: "0"
+  });
+  console.log("🚀 ~ file: Preview.tsx ~ line 59 ~ Preview ~ price", price);
   // const validFromDate = values.coreTermsOfSale.redemptionPeriod; // transform to timestamp; Redeemable until
-  // const sellerDeposit = values.termsOfExchange.sellerDeposit; // Should be calc with termsOfExchange.sellerDepositUnit or not ? Seller deposit
+  const sellerDeposit = values.termsOfExchange.sellerDeposit; // Should be calc with termsOfExchange.sellerDepositUnit or not ? Seller deposit
+  // console.log(
+  //   "🚀 ~ file: Preview.tsx ~ line 59 ~ Preview ~ sellerDeposit",
+  //   sellerDeposit
+  // );
+
+  // const new
   // const buyerCancelPenalty = values.termsOfExchange.buyerCancellationPenalty; // Should be calc with values.termsOfExchange.buyerCancellationPenaltyUnit or not ? Buyer cancel. pen.
   // const fairExchangePolicy = values.termsOfExchange.exchangePolicy;
   // const disputeResolver = values.termsOfExchange.disputeResolver;
@@ -59,23 +79,24 @@ export default function Preview({ togglePreview }: Props) {
   // const seller.id = ?
   // const exchangeToken.symbol = values.coreTermsOfSale.currency
 
-  const validFromDate = (
-    (values.coreTermsOfSale.redemptionPeriod.valueOf() as any) / 1000
-  ).toString();
+  // const validFromDate = // TODO FIX NON NULL ASSERTION
+  //   (
+  //     (values.coreTermsOfSale.redemptionPeriod?.[1]!.valueOf() as any) / 1000
+  //   ).toString();
 
   const offer = {
     id: "35",
     createdAt: "1657198698",
-    price: "200000000000",
+    price: price.price,
     metadataHash: "Qmf77HBcgxaiB2XT8fYSdDPMWo58VrMu1PVPXoBsBpgAko",
-    sellerDeposit: "20000000000000",
+    sellerDeposit,
     fulfillmentPeriodDuration: "86400",
     resolutionPeriodDuration: "86400",
     metadataUri: "ipfs://Qmf77HBcgxaiB2XT8fYSdDPMWo58VrMu1PVPXoBsBpgAko",
     buyerCancelPenalty: "10000000000000",
     quantityAvailable: "994",
     quantityInitial: "1000",
-    validFromDate: validFromDate,
+    validFromDate: "1677285059",
     validUntilDate: "1677285059", // CHECK validUntilDate
     voidedAt: null,
     voucherValidDuration: "21727820",
@@ -90,23 +111,15 @@ export default function Preview({ togglePreview }: Props) {
       admin: "0xe16955e95d088bd30746c7fb7d76cda436b86f63",
       clerk: "0xe16955e95d088bd30746c7fb7d76cda436b86f63",
       treasury: "0xe16955e95d088bd30746c7fb7d76cda436b86f63",
-      operator: "0xe16955e95d088bd30746c7fb7d76cda436b86f63",
+      operator: logoImage,
       active: true
     },
     exchangeToken: {
       address: "0x0000000000000000000000000000000000000000",
-      decimals: "18",
+      decimals: "0",
       name: "Ether",
       symbol: "ETH"
     },
-    // metadata: {
-    //   name: "Long-lived Test Item",
-    //   description: "Lore ipsum",
-    //   externalUrl: "https://interface-test.on.fleek.co",
-    //   schemaUrl: "https://schema.org/schema",
-    //   type: "BASE",
-    //   imageUrl: ""
-    // },
     isValid: true
   } as Offer;
 
@@ -125,6 +138,7 @@ export default function Preview({ togglePreview }: Props) {
                   offerName={name}
                   justifyContent="flex-start"
                   withProfileImage
+                  customImage
                 />
                 <Typography
                   tag="h1"
@@ -142,7 +156,6 @@ export default function Preview({ togglePreview }: Props) {
                   hasSellerEnoughFunds={true}
                 />
               </div>
-              <DetailShare />
             </MainDetailGrid>
           </LightBackground>
           <DarkerBackground>
@@ -157,17 +170,7 @@ export default function Preview({ togglePreview }: Props) {
                   {values.productInformation.description}
                 </Typography>
                 <DetailTable
-                  // TODO: ADD DATA FROM values.productInformation product attribute
-                  data={[
-                    {
-                      name: "Outer / Inner Material",
-                      value: "N/A"
-                    },
-                    {
-                      name: "Sole Material",
-                      value: "N/A"
-                    }
-                  ]}
+                  data={values?.productInformation?.attributes ?? []}
                 />
               </div>
               <div>
@@ -177,8 +180,7 @@ export default function Preview({ togglePreview }: Props) {
                 </Typography>
               </div>
             </DetailGrid>
-            {/* // TODO: ADD CORRECT VAL Product Images */}
-            <DetailSlider images={MOCK.images} />
+            <DetailSlider images={sliderImages} />
             <DetailGrid>
               <DetailChart
                 // TODO: ADD CORRECT VALUES FOR NOW HARDCODED
@@ -193,25 +195,15 @@ export default function Preview({ togglePreview }: Props) {
                   NEED TO ADD
                 </Typography>
                 <DetailTable
-                  // TODO: ADD DATA values.sippingInfo Supported Jurisdictions
-                  data={[
-                    {
-                      name: "1",
-                      value: "N/A"
-                    },
-                    {
-                      name: "2",
-                      value: "N/A"
-                    },
-                    {
-                      name: "3",
-                      value: "N/A"
-                    },
-                    {
-                      name: "4",
-                      value: "N/A"
+                  data={map(
+                    values?.shippingInfo?.jurisdiction,
+                    ({ region, time }) => {
+                      return {
+                        name: region,
+                        value: time
+                      };
                     }
-                  ]}
+                  )}
                 />
               </div>
             </DetailGrid>

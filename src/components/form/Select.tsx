@@ -4,9 +4,9 @@ import Select from "react-select";
 
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
+import { checkIfValueIsEmpty } from "../../lib/utils/checkIfValueIsEmpty";
 import Error from "./Error";
 import type { SelectProps } from "./types";
-import { checkIfValueIsEmpty } from "./utils";
 
 const customStyles = (error: any) => ({
   control: (provided: any, state: any) => ({
@@ -22,7 +22,7 @@ const customStyles = (error: any) => ({
     border: state.isFocused
       ? `1px solid ${colors.secondary}`
       : !checkIfValueIsEmpty(error)
-      ? `1px solid ${colors.red}`
+      ? `1px solid ${colors.orange}`
       : `1px solid ${colors.border}`
   }),
   container: (provided: any, state: any) => ({

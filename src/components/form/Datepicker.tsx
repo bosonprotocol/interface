@@ -11,7 +11,7 @@ export default function DatepickerComponent({
   period = false,
   ...rest
 }: DatepickerProps) {
-  const [, meta, helpers] = useField(name);
+  const [field, meta, helpers] = useField(name);
   const errorMessage = meta.error && meta.touched ? meta.error : "";
   const displayError =
     typeof errorMessage === typeof "string" && errorMessage !== "";
@@ -29,6 +29,7 @@ export default function DatepickerComponent({
         onChange={handleChange}
         error={errorMessage}
         period={period}
+        initialValue={field.value}
         {...rest}
       />
       <Error display={displayError} message={errorMessage} />

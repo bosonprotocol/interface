@@ -54,10 +54,8 @@ const Wrapper = styled.div<{ modalType: ModalType }>`
 const Title = styled(Typography)<{ modalType: ModalType }>`
   position: relative;
   height: 4.25rem;
-  text-align: ${({ modalType }) =>
-    modalType === "PRODUCT_CREATE_SUCCESS" ? "center" : "left"};
-  padding: ${({ modalType }) =>
-    modalType === "PRODUCT_CREATE_SUCCESS" ? "1rem 0" : "1rem 8rem"};
+  text-align: left;
+  padding: 1rem 2rem;
   margin: 0;
   display: block;
   border-bottom: 2px solid ${colors.border};

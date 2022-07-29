@@ -186,6 +186,7 @@ export default function ShippingInfo() {
               name="shippingInfo.height"
               type="number"
               min="0"
+              defaultValue={0}
             />
           </FormField>
           <FormField title="Width">
@@ -194,6 +195,7 @@ export default function ShippingInfo() {
               name="shippingInfo.width"
               type="number"
               min="0"
+              defaultValue={0}
             />
           </FormField>
           <FormField title="Length">
@@ -202,6 +204,7 @@ export default function ShippingInfo() {
               name="shippingInfo.length"
               type="number"
               min="0"
+              defaultValue={0}
             />
           </FormField>
         </Collapse>

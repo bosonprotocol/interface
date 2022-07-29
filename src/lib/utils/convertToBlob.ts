@@ -1,10 +1,4 @@
-/* eslint @typescript-eslint/no-explicit-any: "off" */
-export const checkIfValueIsEmpty = (v: any) =>
-  v == null ||
-  (Object.prototype.hasOwnProperty.call(v, "length") && v.length === 0) ||
-  (v.constructor === Object && Object.keys(v).length === 0);
-
-export const convertToBlob = (data: any, contentType: string) => {
+export const convertToBlob = (data: string, contentType: string) => {
   const sliceSize = 512;
 
   const chars = atob(data);

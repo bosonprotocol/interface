@@ -40,7 +40,12 @@ export const productImagesValidationSchema = Yup.object({
 export const productInformationValidationSchema = Yup.object({
   productInformation: Yup.object({
     productTitle: Yup.string().required(validationMessage.required),
-    // category: Yup.string().required(validationMessage.required),
+    category: Yup.object()
+      .shape({
+        value: Yup.string(),
+        label: Yup.string()
+      })
+      .required(validationMessage.required),
     // tags: Yup.string().required(validationMessage.required),
     attributes: Yup.array()
       .of(
@@ -57,18 +62,41 @@ export const productInformationValidationSchema = Yup.object({
 export const coreTermsOfSaleValidationSchema = Yup.object({
   coreTermsOfSale: Yup.object({
     price: Yup.string().required(validationMessage.required),
+    currency: Yup.object()
+      .shape({
+        value: Yup.string(),
+        label: Yup.string()
+      })
+      .required(validationMessage.required),
     // currency: Yup.string().required(validationMessage.required),
     // TODO: ADD Use price for all variants FILED
-    quantity: Yup.string().required(validationMessage.required)
+    quantity: Yup.string().required(validationMessage.required),
     // tokenGatedOffer: Yup.string().required(validationMessage.required),
-    // redemptionPeriod: Yup.array(),
-    // offerValidityPeriod: Yup.array()
+    offerValidityPeriod: Yup.array()
+      .of(
+        Yup.object().shape({
+          $d: Yup.string()
+        })
+      )
+      .default([{ $d: "" }]),
+    redemptionPeriod: Yup.array()
+      .of(
+        Yup.object().shape({
+          $d: Yup.string()
+        })
+      )
+      .default([{ $d: "" }])
   })
 });
 
 export const termsOfExchangeValidationSchema = Yup.object({
   termsOfExchange: Yup.object({
-    // exchangePolicy: Yup.string().required(validationMessage.required),
+    exchangePolicy: Yup.object()
+      .shape({
+        value: Yup.string(),
+        label: Yup.string()
+      })
+      .required(validationMessage.required),
     buyerCancellationPenalty: Yup.string().required(validationMessage.required),
     // buyerCancellationPenaltyUnit: Yup.string().required( validationMessage.required ),
     sellerDeposit: Yup.string().required(validationMessage.required),

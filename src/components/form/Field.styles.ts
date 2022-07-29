@@ -3,8 +3,8 @@ import styled, { css } from "styled-components";
 
 import { transition } from "../../components/ui/styles";
 import { colors } from "../../lib/styles/colors";
+import { checkIfValueIsEmpty } from "../../lib/utils/checkIfValueIsEmpty";
 import Grid from "../ui/Grid";
-import { checkIfValueIsEmpty } from "./utils";
 
 export const FieldInput = styled.input.attrs((props: { error: any }) => ({
   error: props.error
@@ -36,16 +36,26 @@ export const FieldInput = styled.input.attrs((props: { error: any }) => ({
   ${({ error }) =>
     !checkIfValueIsEmpty(error)
       ? css`
-          border: 1px solid ${colors.red};
+          border: 1px solid ${colors.orange};
           :not(:disabled) {
             :hover {
-              border: 1px solid ${colors.red};
+              border: 1px solid ${colors.orange};
             }
           }
           :not(:disabled) {
             :focus {
               border: 1px solid var(--secondary);
             }
+          }
+          ::placeholder {
+            color: ${colors.orange};
+            opacity: 1;
+          }
+          :-ms-input-placeholder {
+            color: ${colors.orange};
+          }
+          ::-ms-input-placeholder {
+            color: ${colors.orange};
           }
         `
       : css`
@@ -99,7 +109,7 @@ export const FileUploadWrapper = styled.div.attrs(
   ${({ error }) =>
     !checkIfValueIsEmpty(error)
       ? css`
-          border: 1px solid ${colors.red};
+          border: 1px solid ${colors.orange};
         `
       : css`
           border: 1px solid ${colors.border};
@@ -180,10 +190,20 @@ export const FieldTextArea = styled.textarea.attrs((props: { error: any }) => ({
   ${({ error }) =>
     !checkIfValueIsEmpty(error)
       ? css`
-          border: 1px solid ${colors.red};
+          border: 1px solid ${colors.orange};
+          ::placeholder {
+            color: ${colors.orange};
+            opacity: 1;
+          }
+          :-ms-input-placeholder {
+            color: ${colors.orange};
+          }
+          ::-ms-input-placeholder {
+            color: ${colors.orange};
+          }
           :not(:disabled) {
             :hover {
-              border: 1px solid ${colors.red};
+              border: 1px solid ${colors.orange};
             }
           }
           :not(:disabled) {
@@ -284,7 +304,7 @@ export const CheckboxWrapper = styled.label.attrs((props: { error: any }) => ({
     !checkIfValueIsEmpty(error)
       ? css`
           > div {
-            border: 1px solid ${colors.red};
+            border: 1px solid ${colors.orange};
           }
         `
       : css`
