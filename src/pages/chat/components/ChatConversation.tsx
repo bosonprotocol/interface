@@ -240,7 +240,7 @@ export default function ChatConversation({
   }, [setChatListOpen]);
 
   useEffect(() => {
-    console.log(location);
+    console.log("location", location);
     if (textareaRef && textareaRef.current) {
       textareaRef.current.style.height = "0px";
       const scrollHeight = textareaRef.current.scrollHeight;
