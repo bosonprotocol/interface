@@ -10,6 +10,7 @@ import styled, { createGlobalStyle } from "styled-components";
 
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
+import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import ChatConversation from "./components/ChatConversation";
@@ -431,6 +432,10 @@ const SelectMessageContainer = styled.div`
   flex-direction: column;
   position: relative;
   width: 100%;
+  display: none;
+  ${breakpoint.m} {
+    display: block;
+  }
 `;
 
 const SimpleMessage = styled.p`

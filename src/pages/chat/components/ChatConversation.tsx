@@ -1,5 +1,5 @@
 import { ArrowLeft, UploadSimple } from "phosphor-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
@@ -43,6 +43,19 @@ const Header = styled.div`
   svg {
     ${breakpoint.m} {
       display: none;
+    }
+  }
+
+  text-align: center;
+  ${breakpoint.m} {
+    text-align: left;
+  }
+  div {
+    display: block;
+    margin: 0 auto;
+    ${breakpoint.m} {
+      display: unset;
+      margin: unset;
     }
   }
 `;
@@ -95,7 +108,7 @@ const Input = styled.div`
   textarea {
     width: 100%;
     height: 100%;
-    max-width: calc(100% - 2.8125rem);
+    max-width: calc(100% - 2.1875rem);
     border: none;
     display: block;
     max-height: 16.875rem;
@@ -105,6 +118,7 @@ const Input = styled.div`
     font-family: "Plus Jakarta Sans";
     background: none;
     resize: none;
+    padding-left: 2.475rem;
     &:focus {
       outline: none;
     }
@@ -153,7 +167,7 @@ const InputWrapper = styled.div`
   [data-upload] {
     cursor: pointer;
     position: absolute;
-    right: 0;
+    left: 0;
     top: 50%;
     transform: translateY(-50%);
     margin: 0 1rem;
@@ -261,6 +275,15 @@ export default function ChatConversation({
     },
     [thread]
   );
+
+  const detailsButton = useMemo(() => {
+    if (!chatListOpen) {
+      return <span>{disputeOpen ? "Hide Details" : "Details"}</span>;
+    } else {
+      return <span>&nbsp;</span>;
+    }
+  }, [chatListOpen, disputeOpen]);
+
   if (
     !isLoadingSeller &&
     !isLoadingBuyer &&
@@ -289,24 +312,38 @@ export default function ChatConversation({
     <>
       <Container>
         <NavigationMobile>
-          <button
-            onClick={() => {
-              if (windowSize.innerWidth < 981) {
-                setChatListOpen(!chatListOpen);
-              } else {
-                navigate(`/chat`, { replace: true });
-              }
-            }}
-          >
-            <ArrowLeft size={14} />
-            Back
-          </button>
+          {!chatListOpen && (
+            <button
+              onClick={() => {
+                if (windowSize.innerWidth < 981) {
+                  setChatListOpen(!chatListOpen);
+                } else if (windowSize.innerWidth > 981 && document.referrer) {
+                  history.back();
+                } else {
+                  navigate(`/chat`, { replace: true });
+                }
+              }}
+            >
+              {windowSize.innerWidth > 981 && document.referrer && (
+                <span>
+                  <ArrowLeft size={14} />
+                  Back
+                </span>
+              )}
+              {windowSize.innerWidth < 981 && (
+                <span>
+                  <ArrowLeft size={14} />
+                  Back
+                </span>
+              )}
+            </button>
+          )}
           <button
             onClick={() => {
               setDisputeOpen(!disputeOpen);
             }}
           >
-            {disputeOpen ? "Hide Details" : "Details"}
+            {detailsButton}
           </button>
         </NavigationMobile>
         <Header>

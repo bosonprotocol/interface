@@ -54,6 +54,17 @@ const Container = styled.div<{ $disputeOpen: boolean }>`
       object-fit: cover;
     }
   }
+  > div {
+    padding-left: 100px;
+    padding-right: 100px;
+    ${breakpoint.m} {
+      padding-left: 160px;
+      padding-right: 160px;
+    }
+    ${breakpoint.l} {
+      padding: 1.625rem;
+    }
+  }
 `;
 
 const sectionStyles = `
@@ -117,6 +128,14 @@ const Name = styled(Typography)`
 
 const StyledMultiSteps = styled(MultiSteps)`
   gap: 0;
+  ${breakpoint.m} {
+    padding-left: 100px;
+    padding-right: 100px;
+  }
+  ${breakpoint.l} {
+    padding-left: 0;
+    padding-right: 0;
+  }
 `;
 
 const CTASection = styled(Section)`
