@@ -352,7 +352,7 @@ const getExchanges = ({
   disputed: null;
 }): ReturnType<typeof useExchanges> => {
   const r = {
-    data: id_in.map((id) => ({
+    data: id_in.map((id, index) => ({
       id,
       buyer: {
         id: "1",
@@ -372,10 +372,13 @@ const getExchanges = ({
         createdAt: "",
         disputeResolverId: "",
         exchangeToken: {
-          address: "0x000000000000000",
+          address:
+            index === 0
+              ? "0x123"
+              : "0x0000000000000000000000000000000000000000",
           decimals: "18",
-          name: "hola",
-          symbol: "pepito",
+          name: index === 0 ? "PepitoName" : "Ether",
+          symbol: index === 0 ? "pepito" : "ETH",
           __typename: "ExchangeToken"
         },
         fulfillmentPeriodDuration: "",
@@ -391,7 +394,7 @@ const getExchanges = ({
           admin: "0x",
           clerk: "0x",
           __typename: "Seller",
-          id: "",
+          id: "5",
           operator: "",
           treasury: ""
         },
@@ -406,8 +409,9 @@ const getExchanges = ({
         voidedAt: "",
         metadata: {
           imageUrl:
-            "http://localhost:3000/static/media/logo.1ee71600148baa2c5ceb69f2a0c1b62a.svg",
-          type: "BASE"
+            "https://assets.website-files.com/6058b6a3587b6e155196ebbb/61b24ecf53f687b4500a6203_NiftyKey_Logo_Vertical.svg",
+          type: "BASE",
+          name: index === 0 ? "boson t-shirt" : "another tshirt"
         }
       }
     }))

@@ -14,12 +14,19 @@ import Typography from "../../../../../../ui/Typography";
 const PriceWrapper = styled.div`
   position: relative;
   width: 100%;
+
+  [data-currency] {
+    all: unset;
+    transform: scale(0.75);
+  }
 `;
 
 const StyledPrice = styled(Price)`
   position: absolute;
   top: 0;
   right: 1rem;
+  left: 0;
+  bottom: 0;
 
   > div {
     align-items: flex-end;
