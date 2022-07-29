@@ -391,12 +391,12 @@ const getExchanges = ({
         resolutionPeriodDuration: "",
         seller: {
           active: true,
-          admin: "0x",
-          clerk: "0x",
+          admin: "0x9c2925a41d6FB1c6C8f53351634446B0b2E65999",
+          clerk: "0x9c2925a41d6FB1c6C8f53351634446B0b2E65999",
           __typename: "Seller",
           id: "5",
-          operator: "",
-          treasury: ""
+          operator: "0x9c2925a41d6FB1c6C8f53351634446B0b2E65999",
+          treasury: "0x9c2925a41d6FB1c6C8f53351634446B0b2E65999"
         },
         sellerDeposit: "",
         validFromDate: "",
