@@ -41,8 +41,10 @@ const Header = styled.div`
   height: 0;
   display: flex;
   align-items: center;
+  padding-bottom: 0px;
   ${breakpoint.m} {
     height: 6.25rem;
+    padding: 1.5rem;
   }
   svg:nth-of-type(1) {
     margin-right: 0.5rem;
@@ -68,13 +70,21 @@ const Header = styled.div`
 
   > div {
     position: absolute;
-    top: 20px;
+    top: 17px;
     div {
       display: flex;
+      text-align: center;
+      align-items: center;
+      justify-content: center;
+      width: fit-content;
     }
     ${breakpoint.m} {
       position: relative;
       top: unset;
+      width: unset;
+      justify-content: unset;
+      display: block;
+      align-items: unset;
     }
   }
 `;
@@ -167,6 +177,7 @@ const NavigationMobile = styled.div`
     padding: none;
     border: none;
     color: ${colors.secondary};
+    z-index: ${zIndex.chatSeparator};
   }
   svg {
     color: ${colors.secondary};
