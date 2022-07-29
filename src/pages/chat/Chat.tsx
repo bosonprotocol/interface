@@ -46,6 +46,33 @@ const threads: Omit<Thread, "exchange">[] = [
           value: "this is a conversation with myself",
           version: "1"
         }
+      },
+      {
+        id: "2.1",
+        from: myBuyerId,
+        sentDate: new Date(),
+        content: {
+          threadId: {
+            exchangeId: "20",
+            sellerId: mySellerId,
+            buyerId: myBuyerId
+          },
+          contentType: "proposal",
+          version: "1",
+          value: {
+            title: "Seller ID:4 made a proposal",
+            description:
+              "Thank you for reaching out lorem ipsum dolor sit amet",
+            proposals: [
+              {
+                type: "Refund",
+                percentageAmount: "10",
+                signature: "0x214..."
+              }
+            ],
+            disputeContext: []
+          }
+        }
       }
     ]
   },
