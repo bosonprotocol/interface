@@ -478,11 +478,15 @@ export default function Chat() {
   //   id_in: threads.map((message) => message.threadId.exchangeId),
   //   disputed: null
   // });
-  const { data: exchanges } = getExchanges({
-    // TODO: remove
-    id_in: threads.map((message) => message.threadId.exchangeId),
-    disputed: null
-  });
+  const { data: exchanges } = useMemo(
+    () =>
+      getExchanges({
+        // TODO: remove
+        id_in: threads.map((message) => message.threadId.exchangeId),
+        disputed: null
+      }),
+    []
+  );
   const threadsWithExchanges = useMemo(
     () =>
       threads.map((thread) => {

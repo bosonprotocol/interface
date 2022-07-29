@@ -303,8 +303,7 @@ export default function ChatConversation({
         />
       );
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [thread]
   );
 
   const detailsButton = useMemo(() => {
