@@ -1,10 +1,10 @@
-import { useMemo } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 
-import { CONFIG } from "../../lib/config";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
+import ConvertedPrice from "./ConvertedPrice";
 import CurrencyIcon from "./CurrencyIcon";
 import { useConvertedPrice } from "./useConvertedPrice";
 
@@ -61,22 +61,8 @@ export default function Price({
   address,
   ...rest
 }: IProps) {
-  const price = useConvertedPrice({ value, decimals });
-
-  const ConvertedPriceComponent = useMemo(
-    () =>
-      convert &&
-      price && (
-        <small style={{ marginLeft: isExchange ? "-1rem" : "0" }}>
-          {"   "}
-          <span style={{ color: "#556072", opacity: "0.5" }}>
-            {CONFIG.defaultCurrency.symbol}
-          </span>{" "}
-          <span>{price?.converted}</span>
-        </small>
-      ),
-    [convert, price, isExchange]
-  );
+  const [isSymbolShown, setIsSymbolShown] = useState<boolean>(false); // TODO: remove once CSS :has is supported
+  const price = useConvertedPrice({ value, decimals, symbol: currencySymbol });
 
   return (
     <Root {...rest} data-testid="price">
@@ -89,8 +75,14 @@ export default function Price({
           <Typography
             tag={tag}
             style={{ fontWeight: "600", letterSpacing: "-1px", margin: "0" }}
+            data-icon-price
+            {...(isSymbolShown && { "data-with-symbol": true })}
           >
-            <CurrencyIcon currencySymbol={currencySymbol} address={address} />
+            <CurrencyIcon
+              currencySymbol={currencySymbol}
+              address={address}
+              onError={() => setIsSymbolShown(true)}
+            />
             {price?.currency ? (
               <>
                 {price.fractions === "0"
@@ -101,7 +93,9 @@ export default function Price({
               price.price
             )}
           </Typography>
-          {price?.currency && ConvertedPriceComponent}
+          {convert && price?.currency && (
+            <ConvertedPrice price={price} isExchange={isExchange} />
+          )}
         </Grid>
       ) : (
         "-"

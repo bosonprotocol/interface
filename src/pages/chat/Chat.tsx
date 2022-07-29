@@ -52,6 +52,33 @@ const threads: Omit<Thread, "exchange">[] = [
           value: "this is a conversation with myself",
           version: "1"
         }
+      },
+      {
+        id: "2.1",
+        from: myBuyerId,
+        sentDate: new Date(),
+        content: {
+          threadId: {
+            exchangeId: "20",
+            sellerId: mySellerId,
+            buyerId: myBuyerId
+          },
+          contentType: "proposal",
+          version: "1",
+          value: {
+            title: "Seller ID:4 made a proposal",
+            description:
+              "Thank you for reaching out lorem ipsum dolor sit amet",
+            proposals: [
+              {
+                type: "Refund",
+                percentageAmount: "10",
+                signature: "0x214..."
+              }
+            ],
+            disputeContext: []
+          }
+        }
       }
     ]
   },
@@ -358,7 +385,7 @@ const getExchanges = ({
   disputed: null;
 }): ReturnType<typeof useExchanges> => {
   const r = {
-    data: id_in.map((id) => ({
+    data: id_in.map((id, index) => ({
       id,
       buyer: {
         id: "1",
@@ -369,7 +396,7 @@ const getExchanges = ({
       expired: true,
       finalizedDate: new Date().toString(),
       redeemedDate: new Date().toString(),
-      state: "active",
+      state: "REDEEMED",
       validUntilDate: new Date().toString(),
       seller: { id: "123" },
       offer: {
@@ -378,28 +405,31 @@ const getExchanges = ({
         createdAt: "",
         disputeResolverId: "",
         exchangeToken: {
-          address: "",
-          decimals: "",
-          name: "",
-          symbol: "",
+          address:
+            index === 0
+              ? "0x123"
+              : "0x0000000000000000000000000000000000000000",
+          decimals: "18",
+          name: index === 0 ? "PepitoName" : "Ether",
+          symbol: index === 0 ? "pepito" : "ETH",
           __typename: "ExchangeToken"
         },
         fulfillmentPeriodDuration: "",
         metadataHash: "",
         metadataUri: "",
-        price: "",
+        price: "10001230000000000000",
         protocolFee: "",
         quantityAvailable: "",
         quantityInitial: "",
         resolutionPeriodDuration: "",
         seller: {
           active: true,
-          admin: "0x",
-          clerk: "0x",
+          admin: "0x9c2925a41d6FB1c6C8f53351634446B0b2E65999",
+          clerk: "0x9c2925a41d6FB1c6C8f53351634446B0b2E65999",
           __typename: "Seller",
-          id: "",
-          operator: "",
-          treasury: ""
+          id: "5",
+          operator: "0x9c2925a41d6FB1c6C8f53351634446B0b2E65999",
+          treasury: "0x9c2925a41d6FB1c6C8f53351634446B0b2E65999"
         },
         sellerDeposit: "",
         validFromDate: "",
@@ -412,8 +442,9 @@ const getExchanges = ({
         voidedAt: "",
         metadata: {
           imageUrl:
-            "http://localhost:3000/static/media/logo.1ee71600148baa2c5ceb69f2a0c1b62a.svg",
-          type: "BASE"
+            "https://assets.website-files.com/6058b6a3587b6e155196ebbb/61b24ecf53f687b4500a6203_NiftyKey_Logo_Vertical.svg",
+          type: "BASE",
+          name: index === 0 ? "boson t-shirt" : "another tshirt"
         }
       }
     }))

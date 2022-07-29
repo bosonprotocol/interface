@@ -9,6 +9,7 @@ type StepData = {
 };
 
 interface Props {
+  disableInactiveSteps?: boolean;
   active?: number;
   data: Array<StepData>;
   callback?: (cur: number) => void;
@@ -17,6 +18,7 @@ export default function MultiSteps({
   data,
   active,
   callback,
+  disableInactiveSteps,
   ...props
 }: Props) {
   const [current, setCurrent] = useState<number>(active || 0);
@@ -44,12 +46,15 @@ export default function MultiSteps({
                     : currentKey < current
                     ? StepState.Done
                     : StepState.Inactive;
+                const isStepDisabled =
+                  !callback ||
+                  (disableInactiveSteps && StepState.Inactive === state);
                 return (
                   <Step
-                    disabled={!callback}
+                    disabled={isStepDisabled}
                     state={state}
                     onClick={() => {
-                      if (callback) {
+                      if (!isStepDisabled) {
                         setCurrent(currentKey);
                         callback(currentKey);
                       }

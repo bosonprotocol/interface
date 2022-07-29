@@ -1,4 +1,4 @@
-import { BigNumber, constants, utils } from "ethers";
+import { BigNumber, utils } from "ethers";
 import { useFormikContext } from "formik";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
@@ -10,16 +10,32 @@ import { Input } from "../../../../../../form";
 import Price from "../../../../../../price";
 import Grid from "../../../../../../ui/Grid";
 import Typography from "../../../../../../ui/Typography";
+import { FormModel } from "../../MakeProposalFormModel";
+import RequestedRefundInput from "./RequestedRefundInput";
 
-const PriceWrapper = styled.div`
+const InEscrowPriceWrapper = styled.div`
   position: relative;
   width: 100%;
+  [data-icon-price] {
+    justify-content: space-between;
+    [data-currency] {
+      all: unset;
+      transform: scale(0.75);
+    }
+  }
+  [data-icon-price][data-with-symbol] {
+    /* change once :has is supported */
+    padding: 0;
+    width: 100%;
+  }
 `;
 
 const StyledPrice = styled(Price)`
   position: absolute;
   top: 0;
   right: 1rem;
+  left: 0.5rem;
+  bottom: 0;
 
   > div {
     align-items: flex-end;
@@ -49,19 +65,18 @@ export default function RefundRequest({ exchange }: Props) {
   const { data: sellers } = useSellers({ admin: address });
   const accountId = sellers?.[0]?.id || "";
   const { funds } = useFunds(accountId);
-  const nativeCoinInDeposit = funds?.find(
-    (fund) => fund.token.address === constants.AddressZero
+  const currencyInDeposit = funds?.find(
+    (fund) => fund.token.address === offer.exchangeToken.address
   );
   const { offer } = exchange;
   const inEscrow: string = BigNumber.from(offer.price)
-    .add(BigNumber.from(nativeCoinInDeposit?.availableAmount || "0"))
+    .add(BigNumber.from(currencyInDeposit?.availableAmount || "0"))
     .toString();
-  const inEscrowDecimals = nativeCoinInDeposit
-    ? utils.formatUnits(
-        BigNumber.from(inEscrow),
-        Number(nativeCoinInDeposit.token.decimals)
-      )
-    : "0";
+  const inEscrowDecimals = utils.formatUnits(
+    BigNumber.from(inEscrow),
+    Number(offer.exchangeToken.decimals)
+  );
+  const currencySymbol = offer.exchangeToken.symbol;
   return (
     <>
       <Typography fontSize="1.5rem" fontWeight="600">
@@ -78,17 +93,21 @@ export default function RefundRequest({ exchange }: Props) {
           <Typography fontSize="0.75rem" fontWeight="400">
             Item price + seller diposit
           </Typography>
-          <PriceWrapper>
-            <Input name="escrow" type="number" readOnly />
+          <InEscrowPriceWrapper>
+            <Input
+              name={FormModel.formFields.escrow.name}
+              type="number"
+              readOnly
+            />
             <StyledPrice
               address={offer.exchangeToken.address}
-              currencySymbol={offer.exchangeToken.symbol}
+              currencySymbol={currencySymbol}
               value={inEscrow}
               decimals={offer.exchangeToken.decimals}
               isExchange
               convert
             />
-          </PriceWrapper>
+          </InEscrowPriceWrapper>
         </Grid>
         <Grid flexDirection="column">
           <Typography fontSize="1rem" fontWeight="600">
@@ -97,20 +116,10 @@ export default function RefundRequest({ exchange }: Props) {
           <Typography fontSize="0.75rem" fontWeight="400">
             Request a specific amount as a refund
           </Typography>
-          <Input
-            name="refundAmount"
-            type="number"
-            onChange={(e) => {
-              handleChange(e);
-              const {
-                target: { valueAsNumber }
-              } = e;
-              setFieldValue(
-                "refundPercentage",
-                ((valueAsNumber / Number(inEscrowDecimals)) * 100).toFixed(2),
-                true
-              );
-            }}
+          <RequestedRefundInput
+            address={address || ""}
+            exchangeToken={offer.exchangeToken}
+            inEscrowDecimals={inEscrowDecimals}
           />
         </Grid>
         <Grid flexDirection="column">
@@ -121,7 +130,7 @@ export default function RefundRequest({ exchange }: Props) {
             Edit as %
           </Typography>
           <Input
-            name="refundPercentage"
+            name={FormModel.formFields.refundPercentage.name}
             type="number"
             onChange={(e) => {
               handleChange(e);
@@ -129,7 +138,7 @@ export default function RefundRequest({ exchange }: Props) {
                 target: { valueAsNumber }
               } = e;
               setFieldValue(
-                "refundAmount",
+                FormModel.formFields.refundAmount.name,
                 (Number(inEscrowDecimals) * valueAsNumber) / 100,
                 true
               );

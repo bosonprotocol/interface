@@ -1,4 +1,5 @@
 import { Image as AccountImage } from "@davatar/react";
+import { BigNumber, utils } from "ethers";
 import { ArrowRight, Check, ImageSquare } from "phosphor-react";
 import { ReactNode } from "react";
 import styled from "styled-components";
@@ -272,6 +273,15 @@ export default function Message({
                   : "Proposals"}
               </Typography>
               {messageContent.proposals.map((proposal) => {
+                const { offer } = exchange;
+                const refundAmount = BigNumber.from(offer.price)
+                  .div(BigNumber.from(100))
+                  .mul(BigNumber.from(proposal.percentageAmount));
+
+                const formattedRefundAmount = utils.formatUnits(
+                  refundAmount,
+                  Number(offer.exchangeToken.decimals)
+                );
                 return (
                   <Grid
                     key={proposal.type}
@@ -291,7 +301,9 @@ export default function Message({
                       }
                     >
                       <Typography color={colors.primary} cursor="pointer">
-                        Proposed refund amount: ETH ({proposal.percentageAmount}
+                        Proposed refund amount: {formattedRefundAmount}{" "}
+                        {offer.exchangeToken.symbol} (
+                        {proposal.percentageAmount}
                         %)
                       </Typography>
                       <ArrowRight color={colors.primary} />

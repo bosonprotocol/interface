@@ -11,8 +11,13 @@ import {
 interface Props {
   value: string;
   decimals: string;
+  symbol: string;
 }
-export const useConvertedPrice = ({ value, decimals }: Props): IPrice => {
+export const useConvertedPrice = ({
+  value,
+  decimals,
+  symbol
+}: Props): IPrice => {
   const [convertedPrice, setConvertedPrice] =
     useState<IPricePassedAsAProp | null>(null);
 
@@ -26,9 +31,13 @@ export const useConvertedPrice = ({ value, decimals }: Props): IPrice => {
   }, [value, decimals]);
 
   const getConvertedPrice = useCallback(async () => {
-    const newPrice = await convertPrice(price, CONFIG.defaultCurrency);
+    const newPrice = await convertPrice(
+      price,
+      symbol.toUpperCase(),
+      CONFIG.defaultCurrency
+    );
     setConvertedPrice(newPrice);
-  }, [price]);
+  }, [price, symbol]);
 
   useEffect(() => {
     getConvertedPrice();

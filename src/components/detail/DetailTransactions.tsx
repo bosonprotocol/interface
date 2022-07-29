@@ -65,7 +65,8 @@ export default function DetailTransactions({
 }: Props) {
   const price = useConvertedPrice({
     value: offer.price,
-    decimals: offer.exchangeToken.decimals
+    decimals: offer.exchangeToken.decimals,
+    symbol: offer.exchangeToken.symbol
   });
 
   const to = `${buyerAddress.substring(0, 5)}...${buyerAddress.substring(

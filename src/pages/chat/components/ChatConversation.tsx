@@ -12,7 +12,7 @@ import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { useBuyerSellerAccounts } from "../../../lib/utils/hooks/useBuyerSellerAccounts";
 import { Thread } from "../types";
 import ButtonProposal from "./ButtonProposal/ButtonProposal";
-import Dispute from "./Dispute";
+import ExchangeSidePreview from "./ExchangeSidePreview";
 import Message from "./Message";
 import MessageSeparator from "./MessageSeparator";
 
@@ -213,6 +213,8 @@ export default function ChatConversation({
   const location = useLocation();
   const { state } = location;
   const prevPath = (state as { prevPath: string })?.prevPath;
+  const [isExchangePreviewOpen, setExchangePreviewOpen] =
+    useState<boolean>(false);
   const { address } = useAccount();
   const { isLteM, isLteS, isM, isL, isXL } = useBreakpoints();
   const {
@@ -342,7 +344,7 @@ export default function ChatConversation({
           </button>
           <button
             onClick={() => {
-              setDisputeOpen(!disputeOpen);
+              setExchangePreviewOpen(!isExchangePreviewOpen);
             }}
           >
             {detailsButton}
@@ -397,7 +399,10 @@ export default function ChatConversation({
           </InputWrapper>
         </TypeMessage>
       </Container>
-      <Dispute thread={thread} disputeOpen={disputeOpen} />
+      <ExchangeSidePreview
+        thread={thread}
+        disputeOpen={isExchangePreviewOpen}
+      />
     </>
   );
 }

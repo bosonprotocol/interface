@@ -30,7 +30,8 @@ export default function ProposalTypeSummary({ proposal, exchange }: Props) {
 
   const convertedRefund = useConvertedPrice({
     value: refund.toString(),
-    decimals: offer.exchangeToken.decimals
+    decimals: offer.exchangeToken.decimals,
+    symbol: offer.exchangeToken.symbol
   });
   return (
     <Grid flexDirection="column" alignItems="flex-start">
@@ -42,11 +43,17 @@ export default function ProposalTypeSummary({ proposal, exchange }: Props) {
         <Grid>
           <CheckIcon size={16} />
           <Grid justifyContent="flex-start">
-            <span>{convertedRefund.price} ETH</span>
-            <Line />
             <span>
-              {convertedRefund.currency?.symbol} {convertedRefund.converted}
+              {convertedRefund.price} {offer.exchangeToken.symbol}
             </span>
+            {convertedRefund.converted && (
+              <>
+                <Line />
+                <span>
+                  {convertedRefund.currency?.symbol} {convertedRefund.converted}
+                </span>
+              </>
+            )}
             <Line />
             <span>{proposal.percentageAmount}%</span>
           </Grid>
