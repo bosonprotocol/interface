@@ -7,6 +7,9 @@ export const FormModel = {
     proposalsTypes: {
       name: "proposalsTypes"
     },
+    escrow: {
+      name: "escrow"
+    },
     refundAmount: {
       name: "refundAmount"
     },
