@@ -31,8 +31,11 @@ const Container = styled.div`
 const Header = styled.div`
   [data-testid="seller-info"] {
     font-weight: 600;
-    font-size: 24px;
+    font-size: 1rem;
     color: initial;
+    ${breakpoint.xs} {
+      font-size: 1.5rem;
+    }
   }
   img {
     width: 1.5rem;
@@ -43,9 +46,16 @@ const Header = styled.div`
   display: flex;
   align-items: center;
   padding-bottom: 0px;
+  min-height: unset;
+  max-height: unset;
   ${breakpoint.m} {
     height: 6.25rem;
     padding: 1.5rem;
+    min-height: 6.125rem;
+    max-height: 6.125rem;
+  }
+  @media only screen and (max-width: 1200px) and (min-width: 981px) {
+    min-height: 87px;
   }
   svg:nth-of-type(1) {
     margin-right: 0.5rem;
@@ -116,7 +126,7 @@ const TypeMessage = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
-  padding: 24px 16px 24px 16px;
+  padding: 1.5rem 1rem 1.5rem 1rem;
 `;
 
 const Input = styled.div`
@@ -178,7 +188,7 @@ const NavigationMobile = styled.div`
     padding: none;
     border: none;
     color: ${colors.secondary};
-    z-index: ${zIndex.chatSeparator};
+    z-index: ${zIndex.LandingTitle};
   }
   svg {
     color: ${colors.secondary};
@@ -323,8 +333,8 @@ export default function ChatConversation({
       return <span>&nbsp;</span>;
     }
 
-    return <span>{disputeOpen ? "Hide Details" : "Details"}</span>;
-  }, [chatListOpen, disputeOpen, windowSize]);
+    return <span>{isExchangePreviewOpen ? "Hide Details" : "Details"}</span>;
+  }, [chatListOpen, isExchangePreviewOpen, windowSize]);
 
   if (
     !isLoadingSeller &&
@@ -386,9 +396,7 @@ export default function ChatConversation({
             {detailsButton}
           </button>
         </NavigationMobile>
-        <Header>
-          <SellerComponent size={24} />
-        </Header>
+        <Header>{!chatListOpen && <SellerComponent size={24} />}</Header>
         <Messages>
           {thread.messages.map((message) => {
             return (

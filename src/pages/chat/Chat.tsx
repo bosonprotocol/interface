@@ -6,6 +6,7 @@ import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
+import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import ChatConversation from "./components/ChatConversation";
@@ -507,6 +508,7 @@ export default function Chat() {
   const location = useLocation();
   const exchangeId = params["*"];
   const navigate = useKeepQueryParamsNavigate();
+  const { isXXS, isXS, isS } = useBreakpoints();
   useEffect(() => {
     if (threadsWithExchanges?.[0]?.exchange) {
       const currentThread = threadsWithExchanges.find((thread) => {
@@ -538,7 +540,9 @@ export default function Chat() {
             location.pathname !== `${BosonRoutes.Chat}`
           }
           onChangeConversation={(thread) => {
-            setChatListOpen(!chatListOpen);
+            if (isXXS || isXS || isS) {
+              setChatListOpen(!chatListOpen);
+            }
             selectThread(thread);
             navigate(
               {

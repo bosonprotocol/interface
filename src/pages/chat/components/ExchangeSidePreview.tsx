@@ -33,6 +33,7 @@ const Container = styled.div<{ $disputeOpen: boolean }>`
   padding-top: 1.875rem;
   ${breakpoint.m} {
     width: 75%;
+    min-width: 60%;
   }
   ${breakpoint.l} {
     position: relative;
@@ -41,6 +42,7 @@ const Container = styled.div<{ $disputeOpen: boolean }>`
     margin-top: 0;
     width: unset;
     padding-top: none;
+    min-width: max-content;
   }
   > img {
     width: 100%;
@@ -56,11 +58,19 @@ const Container = styled.div<{ $disputeOpen: boolean }>`
     }
   }
   > div {
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+    ${breakpoint.xs} {
+      padding-left: 4.375rem;
+      padding-right: 4.375rem;
+    }
+    ${breakpoint.s} {
+      padding-left: 7.5rem;
+      padding-right: 7.5rem;
+    }
     ${breakpoint.m} {
-      padding-left: 160px;
-      padding-right: 160px;
+      padding-left: 6.875rem;
+      padding-right: 6.875rem;
     }
     ${breakpoint.l} {
       padding: 1.625rem;

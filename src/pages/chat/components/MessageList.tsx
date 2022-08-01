@@ -4,6 +4,7 @@ import styled from "styled-components";
 import SellerID from "../../../components/ui/SellerID";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { zIndex } from "../../../lib/styles/zIndex";
+import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { Thread } from "../types";
 
 const messageItemHeight = "6.25rem";
@@ -129,6 +130,7 @@ export default function MessageList({
   const [activeMessageKey, setActiveMessageKey] = useState<string>(
     currentThread ? getMessageItemKey(currentThread) : ""
   );
+  const { isS, isM, isL, isXL } = useBreakpoints();
   useEffect(() => {
     if (currentThread) {
       setActiveMessageKey(getMessageItemKey(currentThread));
@@ -151,7 +153,9 @@ export default function MessageList({
               onClick={() => {
                 onChangeConversation(thread);
                 setActiveMessageKey(messageKey);
-                setChatListOpen(!chatListOpen);
+                if (isS) {
+                  setChatListOpen(!chatListOpen);
+                }
               }}
               key={messageKey}
             >
