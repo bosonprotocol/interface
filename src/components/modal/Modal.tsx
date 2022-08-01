@@ -9,6 +9,7 @@ import { zIndex } from "../../lib/styles/zIndex";
 import Button from "../ui/Button";
 import { scrollStyles } from "../ui/styles";
 import Typography from "../ui/Typography";
+import { Store } from "./ModalContext";
 
 const Root = styled.div`
   position: fixed;
@@ -29,7 +30,28 @@ const RootBG = styled.div`
   z-index: ${zIndex.Modal - 1};
 `;
 
-const Wrapper = styled.div`
+const sizeToMargin = {
+  s: {
+    s: "4rem 10rem",
+    m: "4rem 19rem",
+    l: "4rem 22rem",
+    xl: "4rem 30rem"
+  },
+  m: {
+    s: "4rem 6rem",
+    m: "4rem 12rem",
+    l: "4rem 16rem",
+    xl: "4rem 25.75rem"
+  },
+  l: {
+    s: "4rem",
+    m: "4rem 8rem",
+    l: "4rem 10rem",
+    xl: "4rem 14rem"
+  }
+} as const;
+
+const Wrapper = styled.div<{ $size: Props["size"] }>`
   position: relative;
   z-index: ${zIndex.Modal};
   color: ${colors.black};
@@ -38,16 +60,20 @@ const Wrapper = styled.div`
 
   margin: 0;
   ${breakpoint.s} {
-    margin: 4rem;
+    margin: ${({ $size }) =>
+      sizeToMargin[$size as keyof typeof sizeToMargin]["s"] || "4rem"};
   }
   ${breakpoint.m} {
-    margin: 4rem 8rem;
+    margin: ${({ $size }) =>
+      sizeToMargin[$size as keyof typeof sizeToMargin]["m"] || "4rem 8rem"};
   }
   ${breakpoint.l} {
-    margin: 4rem 10rem;
+    margin: ${({ $size }) =>
+      sizeToMargin[$size as keyof typeof sizeToMargin]["l"] || "4rem 10rem"};
   }
   ${breakpoint.xl} {
-    margin: 4rem 14rem;
+    margin: ${({ $size }) =>
+      sizeToMargin[$size as keyof typeof sizeToMargin]["xl"] || "4rem 14rem"};
   }
 `;
 
@@ -86,17 +112,19 @@ interface Props {
   hideModal: () => void;
   title?: string;
   headerComponent?: ReactNode;
+  size: NonNullable<Store["modalSize"]>;
 }
 
 export default function Modal({
   children,
   hideModal,
   title = "modal",
-  headerComponent: HeaderComponent
+  headerComponent: HeaderComponent,
+  size
 }: Props) {
   return createPortal(
     <Root data-testid="modal">
-      <Wrapper>
+      <Wrapper $size={size}>
         {HeaderComponent ? (
           <Header tag="div">
             {HeaderComponent}

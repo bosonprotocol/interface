@@ -239,10 +239,14 @@ export default function ExchangeSidePreview({ thread, disputeOpen }: Props) {
           <Button
             theme="primary"
             onClick={() =>
-              showModal("CANCEL_EXCHANGE", {
-                title: "Cancel exchange",
-                exchange
-              })
+              showModal(
+                "CANCEL_EXCHANGE",
+                {
+                  title: "Cancel exchange",
+                  exchange
+                },
+                "s"
+              )
             }
           >
             Retract

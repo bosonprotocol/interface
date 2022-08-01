@@ -28,6 +28,8 @@ const RenderModalComponent = ({
   document.body.style.overflow = "hidden";
   return (
     <Modal
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      size={store.modalSize || initalState.store.modalSize!}
       hideModal={hideModal}
       title={store.modalProps?.title}
       headerComponent={store.modalProps?.headerComponent}
@@ -49,11 +51,16 @@ export default function ModalProvider({ children }: Props) {
   const [store, setStore] = useState(initalState.store);
 
   const showModal = useCallback(
-    (modalType: ModalType, modalProps?: Store["modalProps"]) => {
+    (
+      modalType: ModalType,
+      modalProps?: Store["modalProps"],
+      modalSize?: Store["modalSize"]
+    ) => {
       setStore({
         ...store,
         modalType,
-        modalProps
+        modalProps,
+        modalSize
       });
     },
     [store]

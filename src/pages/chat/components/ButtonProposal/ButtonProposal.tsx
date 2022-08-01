@@ -77,13 +77,17 @@ export default function ButtonProposal({ exchange }: Props) {
   return (
     <StyledButton
       onClick={() =>
-        showModal("MAKE_PROPOSAL", {
-          headerComponent,
-          exchange,
-          activeStep,
-          setActiveStep,
-          sendProposal
-        })
+        showModal(
+          "MAKE_PROPOSAL",
+          {
+            headerComponent,
+            exchange,
+            activeStep,
+            setActiveStep,
+            sendProposal
+          },
+          "m"
+        )
       }
     >
       Proposal <Plus size={24} />
