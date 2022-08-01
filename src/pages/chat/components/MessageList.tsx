@@ -27,13 +27,12 @@ const Container = styled.div<{
   width: 100vw;
   width: ${({ $isConversationOpened }) =>
     $isConversationOpened ? "100vw" : "auto"};
-  margin-top: ${({ $isConversationOpened }) =>
-    $isConversationOpened ? "4.375rem" : "0"};
   position: ${({ $isConversationOpened }) =>
     $isConversationOpened ? "absolute" : "relative"};
   left: ${({ $chatListOpen }) => ($chatListOpen ? "0" : "-100vw")};
   left: ${({ $isConversationOpened, $chatListOpen }) =>
     $isConversationOpened && !$chatListOpen ? "-100vw" : "0"};
+  margin-top: 0px;
   ${breakpoint.m} {
     left: unset;
     position: relative;
