@@ -11,6 +11,7 @@ import { useModal } from "../../../components/modal/useModal";
 import SellerID from "../../../components/ui/SellerID";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
+import { zIndex } from "../../../lib/styles/zIndex";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { useBuyerSellerAccounts } from "../../../lib/utils/hooks/useBuyerSellerAccounts";
 import { Thread } from "../types";
