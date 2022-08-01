@@ -366,7 +366,7 @@ export default function ChatConversation({
         <NavigationMobile>
           <button
             onClick={() => {
-              if (isLteM) {
+              if (isM && !prevPath) {
                 setChatListOpen(!chatListOpen);
               } else if (isM && prevPath) {
                 navigate(prevPath, { replace: true });
