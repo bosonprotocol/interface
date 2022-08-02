@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import { Route, Routes, useLocation, useParams } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
 
-import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
@@ -501,12 +500,25 @@ export default function Chat() {
       }),
     [exchanges]
   );
+  const threadsExchangeIds = useMemo(
+    () =>
+      threads.map((thread) => {
+        return {
+          threadId: thread.threadId.exchangeId,
+          value: ""
+        };
+      }),
+    []
+  );
   const [selectedThread, selectThread] = useState<Thread>();
   const [chatListOpen, setChatListOpen] = useState<boolean>(false);
   const [exchangeIdNotOwned, setExchangeIdNotOwned] = useState<boolean>(false);
   const params = useParams();
   const location = useLocation();
   const exchangeId = params["*"];
+  const { state } = location;
+  const prevPath = (state as { prevPath: string })?.prevPath;
+  const [previousPath, setPreviousPath] = useState<string>(prevPath);
   const navigate = useKeepQueryParamsNavigate();
   const { isXXS, isXS, isS } = useBreakpoints();
   useEffect(() => {
@@ -557,7 +569,7 @@ export default function Chat() {
         />
         <Routes>
           <Route
-            path={`:${UrlParameters.exchangeId}`}
+            path={`:${exchangeId}`}
             element={
               <ChatConversation
                 thread={selectedThread}
@@ -565,6 +577,8 @@ export default function Chat() {
                 chatListOpen={chatListOpen}
                 exchangeId={`${exchangeId}`}
                 exchangeIdNotOwned={exchangeIdNotOwned}
+                threadsExchangeIds={threadsExchangeIds}
+                prevPath={previousPath}
               />
             }
           />

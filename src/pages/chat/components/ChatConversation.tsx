@@ -3,7 +3,7 @@
 
 import { ArrowLeft, UploadSimple } from "phosphor-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
@@ -237,32 +237,43 @@ const getWasItSentByMe = (
   return myBuyerId === from || mySellerId === from;
 };
 
+interface threadsExchangeIds {
+  threadId: string;
+  value: string;
+}
+
 interface Props {
   thread: Thread | undefined;
   chatListOpen: boolean;
   setChatListOpen: (p: boolean) => void;
   exchangeIdNotOwned: boolean;
   exchangeId: string;
+  threadsExchangeIds: threadsExchangeIds[] | undefined;
+  prevPath: string;
 }
 export default function ChatConversation({
   thread,
   chatListOpen,
   setChatListOpen,
   exchangeIdNotOwned,
-  exchangeId
+  threadsExchangeIds,
+  prevPath
 }: Props) {
   const [disputeOpen, setDisputeOpen] = useState<boolean>(false);
   const [windowSize, setWindowSize] = useState(getWindowSize());
   const [value, setValue] = useState<string>();
+  const [exchangeInputValue, setExchangeInputValue] =
+    useState(threadsExchangeIds);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const params = useParams();
+  const exchangeId = params["*"];
   const { state } = location;
-  const prevPath = (state as { prevPath: string })?.prevPath;
   const [isExchangePreviewOpen, setExchangePreviewOpen] =
     useState<boolean>(false);
   const { address } = useAccount();
-  const { isLteM, isLteS, isM, isL, isXL } = useBreakpoints();
+  const { isLteS, isM, isL, isXL } = useBreakpoints();
   const {
     seller: {
       sellerId: _sellerId,
@@ -275,8 +286,19 @@ export default function ChatConversation({
   const { showModal } = useModal();
 
   const textAreaChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const updatedData = exchangeInputValue.map((exchange) =>
+      exchange.threadId == exchangeId
+        ? { ...exchange, value: event.target.value }
+        : exchange
+    );
+    setExchangeInputValue(updatedData);
     setValue(event.target.value);
   };
+
+  const parseInputValue = useMemo(
+    () => exchangeInputValue.map((value) => value.threadId == exchangeId),
+    [exchangeId, exchangeInputValue]
+  );
 
   useEffect(() => {
     setChatListOpen(false);
@@ -427,7 +449,7 @@ export default function ChatConversation({
           <InputWrapper>
             <Input>
               <textarea ref={textareaRef} onChange={textAreaChange}>
-                {value}
+                {parseInputValue.value}
               </textarea>
             </Input>
             <UploadSimple
