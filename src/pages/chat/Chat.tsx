@@ -527,7 +527,7 @@ export default function Chat() {
   const { state } = useLocation();
   const prevPath = (state as { prevPath: string })?.prevPath;
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const previousPath = useMemo<string>(() => prevPath, []);
+  const [previousPath, setPreviousPath] = useState<string>(prevPath);
   const navigate = useKeepQueryParamsNavigate();
   const { isXXS, isXS, isS } = useBreakpoints();
   const exchangeId = params["*"];
@@ -550,6 +550,13 @@ export default function Chat() {
     setExchangeIdNotOwned,
     exchangeIdNotOwned
   ]);
+
+  useEffect(() => {
+    if (prevPath.includes("chat/")) {
+      setPreviousPath("");
+    }
+  }, [prevPath, setPreviousPath]);
+
   const [textAreasValues, setTextAreasValues] = useState(threadsExchangeIds);
   const onTextAreaChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const updatedData = textAreasValues.map((textAreaValue) =>

@@ -182,7 +182,7 @@ const NavigationMobile = styled.div`
   padding-left: 1.5rem;
   padding-right: 1.5rem;
   button {
-    font-size: 0.75rem;
+    font-size: 1rem;
     font-weight: 600;
     background: none;
     padding: none;
@@ -281,7 +281,7 @@ export default function ChatConversation({
       const scrollHeight = textareaRef.current.scrollHeight;
       textareaRef.current.style.height = scrollHeight + "px";
     }
-  }, [prevPath]);
+  }, [prevPath, textAreaValue]);
 
   function getWindowSize() {
     // TODO: remove
@@ -315,10 +315,24 @@ export default function ChatConversation({
 
   const detailsButton = useMemo(() => {
     if (chatListOpen && windowSize.innerWidth < 981) {
-      return <span>&nbsp;</span>;
+      <button
+        onClick={() => {
+          setExchangePreviewOpen(!isExchangePreviewOpen);
+        }}
+      >
+        <span>&nbsp;</span>
+      </button>;
     }
 
-    return <span>{isExchangePreviewOpen ? "Hide Details" : "Details"}</span>;
+    return (
+      <button
+        onClick={() => {
+          setExchangePreviewOpen(!isExchangePreviewOpen);
+        }}
+      >
+        {isExchangePreviewOpen ? "Hide Details" : "Details"}
+      </button>
+    );
   }, [chatListOpen, isExchangePreviewOpen, windowSize]);
 
   if (
@@ -352,9 +366,10 @@ export default function ChatConversation({
           <button
             onClick={() => {
               if (isM) {
+                console.log(prevPath);
                 if (prevPath) {
                   navigate(prevPath, { replace: true });
-                } else {
+                } else if (!prevPath) {
                   setChatListOpen(!chatListOpen);
                 }
               } else {
@@ -375,13 +390,7 @@ export default function ChatConversation({
               </span>
             )}
           </button>
-          <button
-            onClick={() => {
-              setExchangePreviewOpen(!isExchangePreviewOpen);
-            }}
-          >
-            {detailsButton}
-          </button>
+          {detailsButton}
         </NavigationMobile>
         <Header>{!chatListOpen && <SellerComponent size={24} />}</Header>
         <Messages>

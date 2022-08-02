@@ -129,7 +129,7 @@ export default function MessageList({
   const [activeMessageKey, setActiveMessageKey] = useState<string>(
     currentThread ? getMessageItemKey(currentThread) : ""
   );
-  const { isS, isM, isL, isXL } = useBreakpoints();
+  const { isS } = useBreakpoints();
   useEffect(() => {
     if (currentThread) {
       setActiveMessageKey(getMessageItemKey(currentThread));
