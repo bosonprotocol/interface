@@ -3,7 +3,7 @@
 
 import { ArrowLeft, UploadSimple } from "phosphor-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
@@ -237,39 +237,29 @@ const getWasItSentByMe = (
   return myBuyerId === from || mySellerId === from;
 };
 
-interface threadsExchangeIds {
-  threadId: string;
-  value: string;
-}
-
 interface Props {
   thread: Thread | undefined;
   chatListOpen: boolean;
   setChatListOpen: (p: boolean) => void;
   exchangeIdNotOwned: boolean;
   exchangeId: string;
-  threadsExchangeIds: threadsExchangeIds[] | undefined;
   prevPath: string;
+  onTextAreaChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  textAreaValue: string | undefined;
 }
+
 export default function ChatConversation({
   thread,
   chatListOpen,
   setChatListOpen,
   exchangeIdNotOwned,
-  threadsExchangeIds,
-  prevPath
+  prevPath,
+  onTextAreaChange,
+  textAreaValue
 }: Props) {
-  const [disputeOpen, setDisputeOpen] = useState<boolean>(false);
-  const [windowSize, setWindowSize] = useState(getWindowSize());
-  const [value, setValue] = useState<string>();
-  const [exchangeInputValue, setExchangeInputValue] =
-    useState(threadsExchangeIds);
+  const [windowSize, setWindowSize] = useState(getWindowSize()); // TODO: remove
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const navigate = useNavigate();
-  const location = useLocation();
-  const params = useParams();
-  const exchangeId = params["*"];
-  const { state } = location;
   const [isExchangePreviewOpen, setExchangePreviewOpen] =
     useState<boolean>(false);
   const { address } = useAccount();
@@ -285,43 +275,16 @@ export default function ChatConversation({
   const sellerId = _sellerId || "2"; // TODO: remove
   const { showModal } = useModal();
 
-  const textAreaChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const updatedData = exchangeInputValue.map((exchange) =>
-      exchange.threadId == exchangeId
-        ? { ...exchange, value: event.target.value }
-        : exchange
-    );
-    setExchangeInputValue(updatedData);
-    setValue(event.target.value);
-  };
-
-  const parseInputValue = useMemo(
-    () => exchangeInputValue.map((value) => value.threadId == exchangeId),
-    [exchangeId, exchangeInputValue]
-  );
-
-  useEffect(() => {
-    setChatListOpen(false);
-    function handleWindowResize() {
-      setWindowSize(getWindowSize());
-    }
-
-    window.addEventListener("resize", handleWindowResize);
-
-    return () => {
-      window.removeEventListener("resize", handleWindowResize);
-    };
-  }, [setChatListOpen]);
-
   useEffect(() => {
     if (textareaRef && textareaRef.current) {
       textareaRef.current.style.height = "0px";
       const scrollHeight = textareaRef.current.scrollHeight;
       textareaRef.current.style.height = scrollHeight + "px";
     }
-  }, [value, prevPath]);
+  }, [prevPath]);
 
   function getWindowSize() {
+    // TODO: remove
     const { innerWidth, innerHeight } = window;
     return { innerWidth, innerHeight };
   }
@@ -388,12 +351,14 @@ export default function ChatConversation({
         <NavigationMobile>
           <button
             onClick={() => {
-              if (isM && !prevPath) {
-                setChatListOpen(!chatListOpen);
-              } else if (isM && prevPath) {
-                navigate(prevPath, { replace: true });
+              if (isM) {
+                if (prevPath) {
+                  navigate(prevPath, { replace: true });
+                } else {
+                  setChatListOpen(!chatListOpen);
+                }
               } else {
-                navigate(`/chat`, { replace: true });
+                navigate(`/${BosonRoutes.Chat}`, { replace: true });
               }
             }}
           >
@@ -448,9 +413,11 @@ export default function ChatConversation({
           </ButtonProposalContainer>
           <InputWrapper>
             <Input>
-              <textarea ref={textareaRef} onChange={textAreaChange}>
-                {parseInputValue.value}
-              </textarea>
+              <textarea
+                ref={textareaRef}
+                value={textAreaValue}
+                onChange={onTextAreaChange}
+              />
             </Input>
             <UploadSimple
               size={24}
