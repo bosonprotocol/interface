@@ -140,8 +140,8 @@ const Name = styled(Typography)`
 const StyledMultiSteps = styled(MultiSteps)`
   gap: 0;
   ${breakpoint.m} {
-    padding-left: 100px;
-    padding-right: 100px;
+    padding-left: 6.25rem;
+    padding-right: 6.25rem;
   }
   ${breakpoint.l} {
     padding-left: 0;

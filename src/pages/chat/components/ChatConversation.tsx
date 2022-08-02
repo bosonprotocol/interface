@@ -46,7 +46,7 @@ const Header = styled.div`
   height: 0;
   display: flex;
   align-items: center;
-  padding-bottom: 0px;
+  padding-bottom: 0;
   min-height: unset;
   max-height: unset;
   ${breakpoint.m} {
@@ -148,7 +148,7 @@ const Input = styled.div`
   }
   textarea {
     width: 100%;
-    height: 21px;
+    height: 1.3125rem;
     max-width: calc(100% - 2.1875rem);
     border: none;
     display: block;
@@ -156,7 +156,6 @@ const Input = styled.div`
     overflow-y: auto;
     overflow-wrap: break-word;
     border: none;
-    font-family: "Plus Jakarta Sans";
     background: none;
     resize: none;
     padding-right: 0.625rem;
