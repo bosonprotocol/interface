@@ -524,13 +524,13 @@ export default function Chat() {
   const [chatListOpen, setChatListOpen] = useState<boolean>(false);
   const [exchangeIdNotOwned, setExchangeIdNotOwned] = useState<boolean>(false);
   const params = useParams();
-  const { state } = useLocation();
+  const location = useLocation();
+  const exchangeId = params["*"];
+  const { state } = location;
   const prevPath = (state as { prevPath: string })?.prevPath;
   const [previousPath, setPreviousPath] = useState<string>("");
   const navigate = useKeepQueryParamsNavigate();
   const { isXXS, isXS, isS } = useBreakpoints();
-  const exchangeId = params["*"];
-
   useEffect(() => {
     if (threadsWithExchanges?.[0]?.exchange) {
       const currentThread = threadsWithExchanges.find((thread) => {
@@ -550,11 +550,6 @@ export default function Chat() {
     exchangeIdNotOwned
   ]);
 
-  useEffect(() => {
-    setPreviousPath(prevPath);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const [textAreasValues, setTextAreasValues] = useState(threadsExchangeIds);
   const onTextAreaChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const updatedData = textAreasValues.map((textAreaValue) =>
@@ -572,10 +567,12 @@ export default function Chat() {
       ),
     [exchangeId, textAreasValues]
   );
-  const isChatBasePage = [
-    `${BosonRoutes.Chat}/`,
-    `${BosonRoutes.Chat}`
-  ].includes(location.pathname);
+
+  useEffect(() => {
+    setPreviousPath(prevPath);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <>
       <Container>
@@ -583,7 +580,10 @@ export default function Chat() {
 
         <MessageList
           threads={threadsWithExchanges}
-          isConversationOpened={!isChatBasePage}
+          isConversationOpened={
+            location.pathname !== `${BosonRoutes.Chat}/` &&
+            location.pathname !== `${BosonRoutes.Chat}`
+          }
           onChangeConversation={(thread) => {
             if (isXXS || isXS || isS) {
               setChatListOpen(!chatListOpen);
@@ -608,8 +608,9 @@ export default function Chat() {
                 thread={selectedThread}
                 setChatListOpen={setChatListOpen}
                 chatListOpen={chatListOpen}
-                exchangeId={exchangeId || ""}
+                exchangeId={`${exchangeId}`}
                 exchangeIdNotOwned={exchangeIdNotOwned}
+                threadsExchangeIds={threadsExchangeIds}
                 prevPath={previousPath}
                 onTextAreaChange={onTextAreaChange}
                 textAreaValue={parseInputValue?.value}
@@ -617,7 +618,8 @@ export default function Chat() {
             }
           />
         </Routes>
-        {isChatBasePage && (
+        {(location.pathname === `${BosonRoutes.Chat}/` ||
+          location.pathname === `${BosonRoutes.Chat}`) && (
           <SelectMessageContainer>
             <SimpleMessage>
               {exchangeIdNotOwned

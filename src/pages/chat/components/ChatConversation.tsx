@@ -9,6 +9,7 @@ import { useAccount } from "wagmi";
 
 import { useModal } from "../../../components/modal/useModal";
 import SellerID from "../../../components/ui/SellerID";
+import { BosonRoutes } from "../../../lib/routing/routes";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
 import { zIndex } from "../../../lib/styles/zIndex";
@@ -182,7 +183,7 @@ const NavigationMobile = styled.div`
   padding-left: 1.5rem;
   padding-right: 1.5rem;
   button {
-    font-size: 1rem;
+    font-size: 0.75rem;
     font-weight: 600;
     background: none;
     padding: none;
@@ -237,17 +238,22 @@ const getWasItSentByMe = (
   return myBuyerId === from || mySellerId === from;
 };
 
+interface threadsExchangeIds {
+  threadId: string;
+  value: string;
+}
+
 interface Props {
   thread: Thread | undefined;
   chatListOpen: boolean;
   setChatListOpen: (p: boolean) => void;
   exchangeIdNotOwned: boolean;
   exchangeId: string;
+  threadsExchangeIds: threadsExchangeIds[] | undefined;
   prevPath: string;
   onTextAreaChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
   textAreaValue: string | undefined;
 }
-
 export default function ChatConversation({
   thread,
   chatListOpen,
@@ -257,13 +263,12 @@ export default function ChatConversation({
   onTextAreaChange,
   textAreaValue
 }: Props) {
-  const [windowSize, setWindowSize] = useState(getWindowSize()); // TODO: remove
-  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-  const navigate = useNavigate();
   const [isExchangePreviewOpen, setExchangePreviewOpen] =
     useState<boolean>(false);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const navigate = useNavigate();
   const { address } = useAccount();
-  const { isLteS, isM, isL, isXL } = useBreakpoints();
+  const { isLteS, isXXS, isS, isM, isL, isXL } = useBreakpoints();
   const {
     seller: {
       sellerId: _sellerId,
@@ -276,18 +281,16 @@ export default function ChatConversation({
   const { showModal } = useModal();
 
   useEffect(() => {
+    setChatListOpen(false);
+  }, [setChatListOpen]);
+
+  useEffect(() => {
     if (textareaRef && textareaRef.current) {
       textareaRef.current.style.height = "0px";
       const scrollHeight = textareaRef.current.scrollHeight;
       textareaRef.current.style.height = scrollHeight + "px";
     }
   }, [prevPath, textAreaValue]);
-
-  function getWindowSize() {
-    // TODO: remove
-    const { innerWidth, innerHeight } = window;
-    return { innerWidth, innerHeight };
-  }
 
   const SellerComponent = useCallback(
     ({
@@ -314,14 +317,16 @@ export default function ChatConversation({
   );
 
   const detailsButton = useMemo(() => {
-    if (chatListOpen && windowSize.innerWidth < 981) {
-      <button
-        onClick={() => {
-          setExchangePreviewOpen(!isExchangePreviewOpen);
-        }}
-      >
-        <span>&nbsp;</span>
-      </button>;
+    if (chatListOpen && (isXXS || isS || isM)) {
+      return (
+        <button
+          onClick={() => {
+            setExchangePreviewOpen(!isExchangePreviewOpen);
+          }}
+        >
+          <span>&nbsp;</span>
+        </button>
+      );
     }
 
     return (
@@ -330,10 +335,10 @@ export default function ChatConversation({
           setExchangePreviewOpen(!isExchangePreviewOpen);
         }}
       >
-        {isExchangePreviewOpen ? "Hide Details" : "Details"}
+        <span>{isExchangePreviewOpen ? "Hide Details" : "Details"}</span>
       </button>
     );
-  }, [chatListOpen, isExchangePreviewOpen, windowSize]);
+  }, [chatListOpen, isExchangePreviewOpen, isXXS, isS, isM]);
 
   if (
     !isLoadingSeller &&
@@ -365,24 +370,23 @@ export default function ChatConversation({
         <NavigationMobile>
           <button
             onClick={() => {
-              if (isM) {
-                console.log(prevPath);
-                if (prevPath) {
-                  navigate(prevPath, { replace: true });
-                } else if (!prevPath) {
-                  setChatListOpen(!chatListOpen);
-                }
+              if (isM && !prevPath) {
+                setChatListOpen(!chatListOpen);
+              } else if (isM && prevPath) {
+                navigate(prevPath, { replace: true });
               } else {
-                navigate(`/${BosonRoutes.Chat}`, { replace: true });
+                navigate(`/chat`, { replace: true });
               }
             }}
           >
-            {(isM || isL || isXL) && prevPath && (
-              <span>
-                <ArrowLeft size={14} />
-                Back
-              </span>
-            )}
+            {(isM || isL || isXL) &&
+              prevPath &&
+              !prevPath.includes(`${BosonRoutes.Chat}/`) && (
+                <span>
+                  <ArrowLeft size={14} />
+                  Back
+                </span>
+              )}
             {isLteS && !chatListOpen && (
               <span>
                 <ArrowLeft size={14} />
@@ -426,7 +430,9 @@ export default function ChatConversation({
                 ref={textareaRef}
                 value={textAreaValue}
                 onChange={onTextAreaChange}
-              />
+              >
+                {textAreaValue}
+              </textarea>
             </Input>
             <UploadSimple
               size={24}
