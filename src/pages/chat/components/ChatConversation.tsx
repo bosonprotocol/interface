@@ -55,7 +55,7 @@ const Header = styled.div`
     min-height: 6.125rem;
     max-height: 6.125rem;
   }
-  @media only screen and (max-width: ${breakpointNumbers.l}) and (min-width: ${breakpointNumbers.m}) {
+  @media only screen and (max-width: ${breakpointNumbers.l}px) and (min-width: ${breakpointNumbers.m}px) {
     min-height: 87px;
   }
   svg:nth-of-type(1) {
