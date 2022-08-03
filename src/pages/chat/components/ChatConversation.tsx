@@ -1,6 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
-
 import { ArrowLeft, UploadSimple } from "phosphor-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -15,6 +12,7 @@ import { colors } from "../../../lib/styles/colors";
 import { zIndex } from "../../../lib/styles/zIndex";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { useBuyerSellerAccounts } from "../../../lib/utils/hooks/useBuyerSellerAccounts";
+import { useChatContext } from "../ChatProvider/ChatContext";
 import { Thread } from "../types";
 import ButtonProposal from "./ButtonProposal/ButtonProposal";
 import ExchangeSidePreview from "./ExchangeSidePreview";
@@ -262,10 +260,13 @@ export default function ChatConversation({
   onTextAreaChange,
   textAreaValue
 }: Props) {
+  const { bosonXmtp } = useChatContext();
+  const [inputValue, setInputValue] = useState<string>("");
   const [isExchangePreviewOpen, setExchangePreviewOpen] =
     useState<boolean>(false);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const navigate = useNavigate();
+  const destinationAddress = thread?.exchange?.offer.seller.operator || "";
   const { address } = useAccount();
   const { isLteS, isXXS, isS, isM, isL, isXL } = useBreakpoints();
   const {
@@ -400,8 +401,10 @@ export default function ChatConversation({
           {thread.messages.map((message) => {
             return (
               <Conversation
-                key={message.id}
-                $alignStart={!getWasItSentByMe(buyerId, sellerId, message.from)}
+                key={message.data.threadId.exchangeId}
+                $alignStart={
+                  !getWasItSentByMe(buyerId, sellerId, message.sender)
+                }
               >
                 <>
                   <MessageSeparator message={message} />
@@ -409,7 +412,7 @@ export default function ChatConversation({
                     thread={thread}
                     message={message}
                     isLeftAligned={
-                      !getWasItSentByMe(buyerId, sellerId, message.from)
+                      !getWasItSentByMe(buyerId, sellerId, message.sender)
                     }
                   >
                     <SellerComponent size={32} withProfileText={false} />

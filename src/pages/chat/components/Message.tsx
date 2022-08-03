@@ -1,3 +1,8 @@
+import {
+  ImageContent,
+  MessageType,
+  ProposalContent
+} from "@bosonprotocol/chat-sdk/dist/cjs/util/definitions";
 import { Image as AccountImage } from "@davatar/react";
 import { BigNumber, utils } from "ethers";
 import { ArrowRight, Check, ImageSquare } from "phosphor-react";
@@ -10,6 +15,7 @@ import Grid from "../../../components/ui/Grid";
 import Typography from "../../../components/ui/Typography";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
+import { DeepReadonly } from "../../../lib/types/helpers";
 import { validateMessage } from "../../../lib/utils/chat/message";
 import { Thread } from "../types";
 
@@ -133,15 +139,17 @@ const BottomDateStamp = ({
   isLeftAligned: Props["isLeftAligned"];
   message: Props["message"];
 }) => {
+  const sentDate = new Date(message.timestamp);
   return (
     <DateStamp $isLeftAligned={isLeftAligned}>
-      {message.sentDate.getHours()}:{message.sentDate.getMinutes()}
+      {sentDate.getHours()}:{sentDate.getMinutes()}
     </DateStamp>
   );
 };
+
 interface Props {
   thread: Thread;
-  message: Readonly<Thread["messages"][number]>;
+  message: DeepReadonly<Thread["messages"][number]>;
   children: ReactNode;
   isLeftAligned: boolean;
 }
@@ -153,12 +161,13 @@ export default function Message({
   thread
 }: Props) {
   const { showModal } = useModal();
-
+  const messageContent = message.data.content;
+  const messageContentType = message.data.contentType;
   const isRegularMessage =
-    typeof message.content.value === "string" &&
-    message.content.contentType === "string";
-  const isImageWithMetadataMessage = message.content.contentType === "image";
-  const isProposalMessage = message.content.contentType === "proposal";
+    typeof message.data.content.value === "string" &&
+    messageContentType === MessageType.String;
+  const isImageWithMetadataMessage = messageContentType === MessageType.Image;
+  const isProposalMessage = messageContentType === MessageType.Proposal;
 
   const isValid = validateMessage(message);
   if (!isValid) {
@@ -178,20 +187,20 @@ export default function Message({
       </Content>
     );
   }
-
   if (isRegularMessage) {
     return (
       <Content $isLeftAligned={isLeftAligned}>
         <SellerAvatar isLeftAligned={isLeftAligned} thread={thread}>
           {children}
         </SellerAvatar>
-        <div>{message.content.value}</div>
+        <div>{message.data.content.value}</div>
         <BottomDateStamp isLeftAligned={isLeftAligned} message={message} />
       </Content>
     );
   }
 
   if (isImageWithMetadataMessage) {
+    const imageValue = messageContent as unknown as ImageContent;
     return (
       <Content $isLeftAligned={isLeftAligned}>
         <SellerAvatar isLeftAligned={isLeftAligned} thread={thread}>
@@ -200,7 +209,7 @@ export default function Message({
         <AttachmentContainer>
           <ImageSquare size={23} />
           <Typography fontSize="1rem" fontWeight="400">
-            &nbsp;&nbsp; {message.content.value.name}
+            &nbsp;&nbsp; {imageValue.value.fileName}
           </Typography>
         </AttachmentContainer>
         <BottomDateStamp isLeftAligned={isLeftAligned} message={message} />
@@ -223,7 +232,8 @@ export default function Message({
         </Content>
       );
     }
-    const messageContent = message.content.value;
+    const proposalContent = message.data.content as unknown as ProposalContent;
+    const messageContent = proposalContent.value;
     const isRaisingADispute = !!messageContent.disputeContext?.length;
     return (
       <Content $isLeftAligned={isLeftAligned} style={{ width }}>

@@ -54,7 +54,7 @@ interface Props {
 export default function MessageSeparator({ message }: Props) {
   const calcDate = useMemo(() => {
     const currentDate = dayjs();
-    const dateOfSending = dayjs(message.sentDate);
+    const dateOfSending = dayjs(message.timestamp);
 
     return currentDate.diff(dateOfSending, "day");
   }, [message]);
@@ -63,10 +63,11 @@ export default function MessageSeparator({ message }: Props) {
     if (calcDate === 0) {
       return null;
     } else if (calcDate > 0 && calcDate <= 7) {
+      const sentDate = new Date(message.timestamp);
       return (
         <Separator>
           <div>
-            {message.sentDate.toLocaleDateString("en-EN", {
+            {sentDate.toLocaleDateString("en-EN", {
               weekday: "long"
             })}
           </div>

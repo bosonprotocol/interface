@@ -11,6 +11,7 @@ import { BosonRoutes, OffersRoutes } from "./lib/routing/routes";
 import PrivateAccount from "./pages/account/private/PrivateAccountContainer";
 import PublicOrPrivateAccount from "./pages/account/public/PublicOrPrivateAccount";
 import Chat from "./pages/chat/Chat";
+import ChatProvider from "./pages/chat/ChatProvider/ChatProvider";
 import CreateOffer from "./pages/create-offer/CreateOffer";
 import CustomStore from "./pages/custom-store/CustomStore";
 import Exchange from "./pages/exchange/Exchange";
@@ -50,7 +51,14 @@ root.render(
                 path={`${BosonRoutes.Chat}/*`}
                 element={<App withLayout={false} withFooter={false} />}
               >
-                <Route path="*" element={<Chat />} />
+                <Route
+                  path="*"
+                  element={
+                    <ChatProvider>
+                      <Chat />
+                    </ChatProvider>
+                  }
+                />
               </Route>
               <Route path="/" element={<App />}>
                 <Route path={BosonRoutes.Root} element={<Landing />} />

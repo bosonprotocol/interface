@@ -1,3 +1,4 @@
+import { ThreadObject } from "@bosonprotocol/chat-sdk/dist/cjs/util/definitions";
 import { useEffect, useMemo, useState } from "react";
 import { Route, Routes, useLocation, useParams } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
@@ -8,13 +9,15 @@ import { colors } from "../../lib/styles/colors";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { useChatContext } from "./ChatProvider/ChatContext";
 import ChatConversation from "./components/ChatConversation";
 import MessageList from "./components/MessageList";
 import { Thread } from "./types";
 
 const mySellerId = "2";
 const myBuyerId = "7";
-
+const address = "0xE16955e95D088bd30746c7fb7d76cDA436b86F63";
+/*
 const threads: Omit<Thread, "exchange">[] = [
   {
     threadId: {
@@ -365,7 +368,7 @@ const threads: Omit<Thread, "exchange">[] = [
     ]
   }
 ];
-
+*/
 const GlobalStyle = createGlobalStyle`
   html, body, #root, [data-rk] {
     height: 100%;
@@ -424,12 +427,12 @@ const getExchanges = ({
         resolutionPeriodDuration: "",
         seller: {
           active: true,
-          admin: "0x9c2925a41d6FB1c6C8f53351634446B0b2E65999",
-          clerk: "0x9c2925a41d6FB1c6C8f53351634446B0b2E65999",
+          admin: address,
+          clerk: address,
           __typename: "Seller",
           id: "5",
-          operator: "0x9c2925a41d6FB1c6C8f53351634446B0b2E65999",
-          treasury: "0x9c2925a41d6FB1c6C8f53351634446B0b2E65999"
+          operator: address,
+          treasury: address
         },
         sellerDeposit: "",
         validFromDate: "",
@@ -483,6 +486,25 @@ const getIsSameThread = (
 };
 
 export default function Chat() {
+  const { bosonXmtp } = useChatContext();
+  const [threadsXmtp, setThreadsXmtp] = useState<ThreadObject[]>([]);
+  useEffect(() => {
+    if (!bosonXmtp) {
+      return;
+    }
+    // const address = "0x9c2925a41d6FB1c6C8f53351634446B0b2E65eE8";
+    const counterParties: string[] = [address];
+    bosonXmtp
+      .getThreads(counterParties, {})
+      .then((threadObjects) => {
+        setThreadsXmtp(threadObjects);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [bosonXmtp]);
+
+  console.log({ bosonXmtp, threadsXmtp });
   // TODO: comment out
   // const { data: exchanges } = useExchanges({
   //   id_in: threads.map((message) => message.threadId.exchangeId),
@@ -492,33 +514,33 @@ export default function Chat() {
     () =>
       getExchanges({
         // TODO: remove
-        id_in: threads.map((message) => message.threadId.exchangeId),
+        // id_in: threads.map((message) => message.threadId.exchangeId),
+        id_in: [1, 2, 3, 115].map((v) => "" + v),
         disputed: null
       }),
     []
   );
   const threadsWithExchanges = useMemo(
     () =>
-      threads.map((thread) => {
+      threadsXmtp.map((thread) => {
         return {
-          threadId: thread.threadId,
+          ...thread,
           exchange: exchanges?.find(
             (exchange) => exchange.id === thread.threadId.exchangeId
-          ),
-          messages: thread.messages
+          )
         };
       }),
-    [exchanges]
+    [exchanges, threadsXmtp]
   );
   const threadsExchangeIds = useMemo(
     () =>
-      threads.map((thread) => {
+      threadsXmtp.map((thread) => {
         return {
           threadId: thread.threadId.exchangeId,
           value: ""
         };
       }),
-    []
+    [threadsXmtp]
   );
   const [selectedThread, selectThread] = useState<Thread>();
   const [chatListOpen, setChatListOpen] = useState<boolean>(false);

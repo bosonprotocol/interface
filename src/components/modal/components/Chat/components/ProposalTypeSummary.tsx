@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 import { colors } from "../../../../../lib/styles/colors";
 import { Exchange } from "../../../../../lib/utils/hooks/useExchanges";
-import { ProposalMessage } from "../../../../../pages/chat/types";
+import { ProposalItem } from "../../../../../pages/chat/types";
 import { useConvertedPrice } from "../../../../price/useConvertedPrice";
 import Grid from "../../../../ui/Grid";
 
@@ -19,7 +19,7 @@ const CheckIcon = styled(CheckComponent)`
 `;
 interface Props {
   exchange: Exchange;
-  proposal: ProposalMessage["value"]["proposals"][number];
+  proposal: ProposalItem;
 }
 
 export default function ProposalTypeSummary({ proposal, exchange }: Props) {
