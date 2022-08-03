@@ -1,3 +1,7 @@
+import {
+  MessageData,
+  MessageType
+} from "@bosonprotocol/chat-sdk/dist/cjs/util/definitions";
 import { ArrowLeft, UploadSimple } from "phosphor-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -227,31 +231,23 @@ const ErrorMessage = () => (
   </Container>
 );
 
-const getWasItSentByMe = (
-  myBuyerId: string,
-  mySellerId: string,
-  from: string
-) => {
-  return myBuyerId === from || mySellerId === from;
+const getWasItSentByMe = (myAddress: string | undefined, sender: string) => {
+  return myAddress === sender;
 };
 
-interface threadsExchangeIds {
-  threadId: string;
-  value: string;
-}
-
 interface Props {
+  addMessage: (thread: Thread, newMessage: MessageData) => void;
   thread: Thread | undefined;
   chatListOpen: boolean;
   setChatListOpen: (p: boolean) => void;
   exchangeIdNotOwned: boolean;
   exchangeId: string;
-  threadsExchangeIds: threadsExchangeIds[] | undefined;
   prevPath: string;
-  onTextAreaChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  onTextAreaChange: (textAreaTargetValue: string) => void;
   textAreaValue: string | undefined;
 }
 export default function ChatConversation({
+  addMessage,
   thread,
   chatListOpen,
   setChatListOpen,
@@ -261,13 +257,55 @@ export default function ChatConversation({
   textAreaValue
 }: Props) {
   const { bosonXmtp } = useChatContext();
-  const [inputValue, setInputValue] = useState<string>("");
+  const lastMessageRef = useRef<any>();
+  const scrollToBottom = useCallback(
+    () => lastMessageRef.current?.scrollIntoView({ behavior: "smooth" }),
+    []
+  );
+  const addMessageAndScroll = useCallback(
+    (...args: Parameters<Props["addMessage"]>) => {
+      addMessage(...args);
+      scrollToBottom();
+    },
+    [addMessage, scrollToBottom]
+  );
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [scrollToBottom]);
   const [isExchangePreviewOpen, setExchangePreviewOpen] =
     useState<boolean>(false);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const navigate = useNavigate();
-  const destinationAddress = thread?.exchange?.offer.seller.operator || "";
   const { address } = useAccount();
+  const destinationAddress = thread?.exchange?.offer.seller.operator || "";
+  useEffect(() => {
+    if (!bosonXmtp || !thread?.threadId || !destinationAddress) {
+      return;
+    }
+    const monitor = async () => {
+      for await (const incomingMessage of await bosonXmtp.monitorThread(
+        thread.threadId,
+        destinationAddress
+      )) {
+        addMessageAndScroll(thread, {
+          sender: destinationAddress,
+          authorityId: "",
+          recipient: address || "",
+          timestamp: Date.now(),
+          data: incomingMessage
+        });
+      }
+    };
+    monitor()
+      .then(() => {
+        // TODO:
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [bosonXmtp, destinationAddress, thread, addMessageAndScroll, address]);
+
   const { isLteS, isXXS, isS, isM, isL, isXL } = useBreakpoints();
   const {
     seller: {
@@ -375,7 +413,7 @@ export default function ChatConversation({
               } else if (isM && prevPath) {
                 navigate(prevPath, { replace: true });
               } else {
-                navigate(`/chat`, { replace: true });
+                navigate(`/${BosonRoutes.Chat}`, { replace: true });
               }
             }}
           >
@@ -398,22 +436,20 @@ export default function ChatConversation({
         </NavigationMobile>
         <Header>{!chatListOpen && <SellerComponent size={24} />}</Header>
         <Messages>
-          {thread.messages.map((message) => {
+          {thread.messages.map((message, index) => {
+            const isLastMessage = index === thread.messages.length - 1;
             return (
               <Conversation
-                key={message.data.threadId.exchangeId}
-                $alignStart={
-                  !getWasItSentByMe(buyerId, sellerId, message.sender)
-                }
+                key={message.timestamp}
+                $alignStart={!getWasItSentByMe(address, message.sender)}
               >
                 <>
                   <MessageSeparator message={message} />
                   <Message
                     thread={thread}
                     message={message}
-                    isLeftAligned={
-                      !getWasItSentByMe(buyerId, sellerId, message.sender)
-                    }
+                    isLeftAligned={!getWasItSentByMe(address, message.sender)}
+                    ref={isLastMessage ? lastMessageRef : null}
                   >
                     <SellerComponent size={32} withProfileText={false} />
                   </Message>
@@ -431,7 +467,30 @@ export default function ChatConversation({
               <textarea
                 ref={textareaRef}
                 value={textAreaValue}
-                onChange={onTextAreaChange}
+                onChange={(e) => onTextAreaChange(e.target.value)}
+                onKeyDown={async (e) => {
+                  if (e.key === "Enter" && bosonXmtp) {
+                    const newMessage = {
+                      threadId: thread.threadId,
+                      content: {
+                        value: e.target.value
+                      },
+                      contentType: MessageType.String,
+                      version: "1"
+                    };
+                    await bosonXmtp.encodeAndSendMessage(
+                      newMessage,
+                      destinationAddress
+                    );
+                    addMessageAndScroll(thread, {
+                      sender: address || "",
+                      authorityId: "",
+                      recipient: destinationAddress,
+                      timestamp: Date.now(),
+                      data: newMessage
+                    });
+                  }
+                }}
               >
                 {textAreaValue}
               </textarea>

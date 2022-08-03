@@ -1,5 +1,9 @@
-import { ThreadObject } from "@bosonprotocol/chat-sdk/dist/cjs/util/definitions";
-import { useEffect, useMemo, useState } from "react";
+import {
+  MessageData,
+  ThreadObject
+} from "@bosonprotocol/chat-sdk/dist/cjs/util/definitions";
+import { matchThreadIds } from "@bosonprotocol/chat-sdk/dist/cjs/util/functions";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Route, Routes, useLocation, useParams } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
 
@@ -16,7 +20,8 @@ import { Thread } from "./types";
 
 const mySellerId = "2";
 const myBuyerId = "7";
-const address = "0xE16955e95D088bd30746c7fb7d76cDA436b86F63";
+// const address = "0x5295D74Bbb5195A3e4E788744cB17c2f1c48DfFf";
+const address = "0x5295D74Bbb5195A3e4E788744cB17c2f1c48DfFf";
 /*
 const threads: Omit<Thread, "exchange">[] = [
   {
@@ -478,11 +483,11 @@ const SimpleMessage = styled.p`
 const getIsSameThread = (
   exchangeId: string | undefined,
   textAreaValue: {
-    threadId: string;
+    exchangeId: string;
     value: string;
   }
 ) => {
-  return textAreaValue.threadId === exchangeId;
+  return textAreaValue.exchangeId === exchangeId;
 };
 
 export default function Chat() {
@@ -504,7 +509,7 @@ export default function Chat() {
       });
   }, [bosonXmtp]);
 
-  console.log({ bosonXmtp, threadsXmtp });
+  // console.log({ bosonXmtp, threadsXmtp });
   // TODO: comment out
   // const { data: exchanges } = useExchanges({
   //   id_in: threads.map((message) => message.threadId.exchangeId),
@@ -520,8 +525,11 @@ export default function Chat() {
       }),
     []
   );
-  const threadsWithExchanges = useMemo(
-    () =>
+  const [threadsWithExchanges, setThreadsWithExchanges] = useState<Thread[]>(
+    []
+  );
+  useEffect(() => {
+    setThreadsWithExchanges(
       threadsXmtp.map((thread) => {
         return {
           ...thread,
@@ -529,14 +537,26 @@ export default function Chat() {
             (exchange) => exchange.id === thread.threadId.exchangeId
           )
         };
-      }),
-    [exchanges, threadsXmtp]
+      })
+    );
+  }, [threadsXmtp, exchanges]);
+  const addMessage = useCallback(
+    (thread: Thread, newMessage: MessageData) => {
+      const foundThread = threadsWithExchanges.find((loadedThread) =>
+        matchThreadIds(loadedThread.threadId, thread.threadId)
+      );
+      if (foundThread) {
+        foundThread.messages.push(newMessage);
+        setThreadsWithExchanges([...threadsWithExchanges]);
+      }
+    },
+    [threadsWithExchanges]
   );
-  const threadsExchangeIds = useMemo(
+  const textAreaValueByThread = useMemo(
     () =>
       threadsXmtp.map((thread) => {
         return {
-          threadId: thread.threadId.exchangeId,
+          exchangeId: thread.threadId.exchangeId,
           value: ""
         };
       }),
@@ -572,11 +592,14 @@ export default function Chat() {
     exchangeIdNotOwned
   ]);
 
-  const [textAreasValues, setTextAreasValues] = useState(threadsExchangeIds);
-  const onTextAreaChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const [textAreasValues, setTextAreasValues] = useState(textAreaValueByThread);
+  useEffect(() => {
+    setTextAreasValues(textAreaValueByThread);
+  }, [textAreaValueByThread]);
+  const onTextAreaChange = (textAreaTargetValue: string) => {
     const updatedData = textAreasValues.map((textAreaValue) =>
       getIsSameThread(exchangeId, textAreaValue)
-        ? { ...textAreaValue, value: event.target.value }
+        ? { ...textAreaValue, value: textAreaTargetValue }
         : textAreaValue
     );
     setTextAreasValues(updatedData);
@@ -586,10 +609,9 @@ export default function Chat() {
     () =>
       textAreasValues.find((textAreaValue) =>
         getIsSameThread(exchangeId, textAreaValue)
-      ),
+      )?.value,
     [exchangeId, textAreasValues]
   );
-
   useEffect(() => {
     setPreviousPath(prevPath);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -627,15 +649,15 @@ export default function Chat() {
             path={`:${exchangeId}`}
             element={
               <ChatConversation
+                addMessage={addMessage}
                 thread={selectedThread}
                 setChatListOpen={setChatListOpen}
                 chatListOpen={chatListOpen}
                 exchangeId={`${exchangeId}`}
                 exchangeIdNotOwned={exchangeIdNotOwned}
-                threadsExchangeIds={threadsExchangeIds}
                 prevPath={previousPath}
                 onTextAreaChange={onTextAreaChange}
-                textAreaValue={parseInputValue?.value}
+                textAreaValue={parseInputValue}
               />
             }
           />

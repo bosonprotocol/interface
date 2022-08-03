@@ -34,6 +34,7 @@ const Content = styled.div<{ $isLeftAligned: boolean }>`
   margin-left: 2.5rem;
   margin-top: 3rem;
   padding: 1.5rem 1rem 3.75rem 1rem;
+  min-width: 6.25rem;
   max-width: ${width};
   &:after {
     position: absolute;
@@ -142,12 +143,14 @@ const BottomDateStamp = ({
   const sentDate = new Date(message.timestamp);
   return (
     <DateStamp $isLeftAligned={isLeftAligned}>
-      {sentDate.getHours()}:{sentDate.getMinutes()}
+      {sentDate.getHours().toString().padStart(2, "0")}:
+      {sentDate.getMinutes().toString().padStart(2, "0")}
     </DateStamp>
   );
 };
 
 interface Props {
+  ref: any; // TODO: change
   thread: Thread;
   message: DeepReadonly<Thread["messages"][number]>;
   children: ReactNode;
@@ -155,6 +158,7 @@ interface Props {
 }
 
 export default function Message({
+  ref,
   message,
   children,
   isLeftAligned,
@@ -193,7 +197,9 @@ export default function Message({
         <SellerAvatar isLeftAligned={isLeftAligned} thread={thread}>
           {children}
         </SellerAvatar>
-        <div>{message.data.content.value}</div>
+        <div style={{ overflowWrap: "break-word" }}>
+          {message.data.content.value}
+        </div>
         <BottomDateStamp isLeftAligned={isLeftAligned} message={message} />
       </Content>
     );
@@ -207,10 +213,16 @@ export default function Message({
           {children}
         </SellerAvatar>
         <AttachmentContainer>
-          <ImageSquare size={23} />
-          <Typography fontSize="1rem" fontWeight="400">
-            &nbsp;&nbsp; {imageValue.value.fileName}
-          </Typography>
+          <a
+            style={{ display: "flex", color: "inherit" }}
+            href={imageValue.value.encodedContent}
+            download={imageValue.value.fileName}
+          >
+            <ImageSquare size={23} />
+            <Typography fontSize="1rem" fontWeight="400">
+              &nbsp;&nbsp; {imageValue.value.fileName}
+            </Typography>
+          </a>
         </AttachmentContainer>
         <BottomDateStamp isLeftAligned={isLeftAligned} message={message} />
       </Content>

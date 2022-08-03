@@ -8,7 +8,7 @@ interface Props {
   children: ReactNode;
 }
 
-const envName = "local-chat"; // TODO: change
+const envName = "local-df"; // TODO: change
 export default function ChatProvider({ children }: Props) {
   const { data: signer } = useSigner();
   const [bosonXmtp, setBosonXmtp] = useState<BosonXmtpClient>();
