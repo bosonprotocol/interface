@@ -10,7 +10,7 @@ import { useAccount } from "wagmi";
 import { useModal } from "../../../components/modal/useModal";
 import SellerID from "../../../components/ui/SellerID";
 import { BosonRoutes } from "../../../lib/routing/routes";
-import { breakpoint } from "../../../lib/styles/breakpoint";
+import { breakpoint, breakpointNumbers } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
 import { zIndex } from "../../../lib/styles/zIndex";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
@@ -55,7 +55,7 @@ const Header = styled.div`
     min-height: 6.125rem;
     max-height: 6.125rem;
   }
-  @media only screen and (max-width: 1200px) and (min-width: 981px) {
+  @media only screen and (max-width: ${breakpointNumbers.l}) and (min-width: ${breakpointNumbers.m}) {
     min-height: 87px;
   }
   svg:nth-of-type(1) {
