@@ -26,26 +26,54 @@ const Container = styled.div<{ $disputeOpen: boolean }>`
   min-width: max-content;
   position: absolute;
   margin-top: 4.375rem;
-  right: ${({ $disputeOpen }) => ($disputeOpen ? "0" : "-100vw")};
+  right: ${({ $disputeOpen }) => ($disputeOpen ? "0" : "-160vw")};
   transition: 400ms;
   width: ${({ $disputeOpen }) => $disputeOpen && "100vw"};
+  background: ${colors.lightGrey};
+  padding-top: 1.875rem;
+  ${breakpoint.m} {
+    width: 75%;
+    min-width: 60%;
+  }
   ${breakpoint.l} {
     position: relative;
     background: transparent;
     right: unset;
     margin-top: 0;
     width: unset;
+    padding-top: none;
+    min-width: max-content;
   }
   > img {
     width: 100%;
     max-height: 400px;
     object-fit: contain;
-    background: ${colors.lightGrey};
+    width: 23.25rem;
+    display: block;
+    margin: 0 auto;
     ${breakpoint.l} {
-      width: 23.25rem;
+      max-width: 23.25rem;
       max-height: unset;
-      object-fit: auto;
-      background: none;
+      object-fit: cover;
+    }
+  }
+  > div {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+    ${breakpoint.xs} {
+      padding-left: 4.375rem;
+      padding-right: 4.375rem;
+    }
+    ${breakpoint.s} {
+      padding-left: 7.5rem;
+      padding-right: 7.5rem;
+    }
+    ${breakpoint.m} {
+      padding-left: 6.875rem;
+      padding-right: 6.875rem;
+    }
+    ${breakpoint.l} {
+      padding: 1.625rem;
     }
   }
 `;
@@ -54,6 +82,9 @@ const sectionStyles = `
 border: 2px solid ${colors.border};
 border-top: none;
 padding: 1.625rem;
+${breakpoint.l} {
+  background: ${colors.white};
+}
 background: ${colors.lightGrey};
 `;
 const Section = styled.div`
@@ -66,7 +97,11 @@ const InfoMessage = styled.div`
   padding: 0.5rem 1.25rem 0.5rem 1.5rem;
   font-size: 0.75rem;
   font-weight: 600;
-  background: ${colors.lightGrey};
+  text-align: center;
+  ${breakpoint.l} {
+    text-align: left;
+    background: ${colors.lightGrey};
+  }
 `;
 
 const ExchangeInfo = styled(Section)`
@@ -104,6 +139,14 @@ const Name = styled(Typography)`
 
 const StyledMultiSteps = styled(MultiSteps)`
   gap: 0;
+  ${breakpoint.m} {
+    padding-left: 6.25rem;
+    padding-right: 6.25rem;
+  }
+  ${breakpoint.l} {
+    padding-left: 0;
+    padding-right: 0;
+  }
 `;
 
 const CTASection = styled(Section)`

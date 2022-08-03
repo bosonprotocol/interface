@@ -1,7 +1,13 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Route, Routes, useLocation, useParams } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
 
+import { BosonRoutes } from "../../lib/routing/routes";
+import { breakpoint } from "../../lib/styles/breakpoint";
+import { colors } from "../../lib/styles/colors";
+import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
+import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import ChatConversation from "./components/ChatConversation";
 import MessageList from "./components/MessageList";
 import { Thread } from "./types";
@@ -446,45 +452,182 @@ const getExchanges = ({
   return r as any;
 };
 
+const SelectMessageContainer = styled.div`
+  display: flex;
+  flex: 0 1 75%;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  display: none;
+  ${breakpoint.m} {
+    display: block;
+  }
+`;
+
+const SimpleMessage = styled.p`
+  all: unset;
+  display: block;
+  height: 100%;
+  padding: 1rem;
+  background: ${colors.lightGrey};
+`;
+
+const getIsSameThread = (
+  exchangeId: string | undefined,
+  textAreaValue: {
+    threadId: string;
+    value: string;
+  }
+) => {
+  return textAreaValue.threadId === exchangeId;
+};
+
 export default function Chat() {
   // TODO: comment out
   // const { data: exchanges } = useExchanges({
   //   id_in: threads.map((message) => message.threadId.exchangeId),
   //   disputed: null
   // });
-  const { data: exchanges } = getExchanges({
-    // TODO: remove
-    id_in: threads.map((message) => message.threadId.exchangeId),
-    disputed: null
-  });
-  const threadsWithExchanges = threads.map((thread) => {
-    return {
-      threadId: thread.threadId,
-      exchange: exchanges?.find(
-        (exchange) => exchange.id === thread.threadId.exchangeId
-      ),
-      messages: thread.messages
-    };
-  });
+  const { data: exchanges } = useMemo(
+    () =>
+      getExchanges({
+        // TODO: remove
+        id_in: threads.map((message) => message.threadId.exchangeId),
+        disputed: null
+      }),
+    []
+  );
+  const threadsWithExchanges = useMemo(
+    () =>
+      threads.map((thread) => {
+        return {
+          threadId: thread.threadId,
+          exchange: exchanges?.find(
+            (exchange) => exchange.id === thread.threadId.exchangeId
+          ),
+          messages: thread.messages
+        };
+      }),
+    [exchanges]
+  );
+  const threadsExchangeIds = useMemo(
+    () =>
+      threads.map((thread) => {
+        return {
+          threadId: thread.threadId.exchangeId,
+          value: ""
+        };
+      }),
+    []
+  );
   const [selectedThread, selectThread] = useState<Thread>();
   const [chatListOpen, setChatListOpen] = useState<boolean>(false);
+  const [exchangeIdNotOwned, setExchangeIdNotOwned] = useState<boolean>(false);
+  const params = useParams();
+  const location = useLocation();
+  const exchangeId = params["*"];
+  const { state } = location;
+  const prevPath = (state as { prevPath: string })?.prevPath;
+  const [previousPath, setPreviousPath] = useState<string>("");
+  const navigate = useKeepQueryParamsNavigate();
+  const { isXXS, isXS, isS } = useBreakpoints();
+  useEffect(() => {
+    if (threadsWithExchanges?.[0]?.exchange) {
+      const currentThread = threadsWithExchanges.find((thread) => {
+        return thread.threadId.exchangeId === exchangeId;
+      });
+
+      if (currentThread) {
+        selectThread(currentThread);
+      } else {
+        setExchangeIdNotOwned(true);
+      }
+    }
+  }, [
+    exchangeId,
+    threadsWithExchanges,
+    setExchangeIdNotOwned,
+    exchangeIdNotOwned
+  ]);
+
+  const [textAreasValues, setTextAreasValues] = useState(threadsExchangeIds);
+  const onTextAreaChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const updatedData = textAreasValues.map((textAreaValue) =>
+      getIsSameThread(exchangeId, textAreaValue)
+        ? { ...textAreaValue, value: event.target.value }
+        : textAreaValue
+    );
+    setTextAreasValues(updatedData);
+  };
+
+  const parseInputValue = useMemo(
+    () =>
+      textAreasValues.find((textAreaValue) =>
+        getIsSameThread(exchangeId, textAreaValue)
+      ),
+    [exchangeId, textAreasValues]
+  );
+
+  useEffect(() => {
+    setPreviousPath(prevPath);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
-      <GlobalStyle />
       <Container>
+        <GlobalStyle />
+
         <MessageList
           threads={threadsWithExchanges}
+          isConversationOpened={
+            location.pathname !== `${BosonRoutes.Chat}/` &&
+            location.pathname !== `${BosonRoutes.Chat}`
+          }
           onChangeConversation={(thread) => {
+            if (isXXS || isXS || isS) {
+              setChatListOpen(!chatListOpen);
+            }
             selectThread(thread);
+            navigate(
+              {
+                pathname: `${BosonRoutes.Chat}/${thread.threadId.exchangeId}`
+              },
+              { replace: true }
+            );
           }}
           chatListOpen={chatListOpen}
-        />
-        <ChatConversation
-          thread={selectedThread}
           setChatListOpen={setChatListOpen}
-          chatListOpen={chatListOpen}
+          currentThread={selectedThread}
         />
+        <Routes>
+          <Route
+            path={`:${exchangeId}`}
+            element={
+              <ChatConversation
+                thread={selectedThread}
+                setChatListOpen={setChatListOpen}
+                chatListOpen={chatListOpen}
+                exchangeId={`${exchangeId}`}
+                exchangeIdNotOwned={exchangeIdNotOwned}
+                threadsExchangeIds={threadsExchangeIds}
+                prevPath={previousPath}
+                onTextAreaChange={onTextAreaChange}
+                textAreaValue={parseInputValue?.value}
+              />
+            }
+          />
+        </Routes>
+        {(location.pathname === `${BosonRoutes.Chat}/` ||
+          location.pathname === `${BosonRoutes.Chat}`) && (
+          <SelectMessageContainer>
+            <SimpleMessage>
+              {exchangeIdNotOwned
+                ? "You don't have this exchange"
+                : "Select a message"}
+            </SimpleMessage>
+          </SelectMessageContainer>
+        )}
       </Container>
     </>
   );

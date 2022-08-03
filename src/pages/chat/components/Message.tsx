@@ -8,6 +8,7 @@ import ProposalTypeSummary from "../../../components/modal/components/Chat/compo
 import { useModal } from "../../../components/modal/useModal";
 import Grid from "../../../components/ui/Grid";
 import Typography from "../../../components/ui/Typography";
+import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
 import { validateMessage } from "../../../lib/utils/chat/message";
 import { Thread } from "../types";
@@ -38,7 +39,10 @@ const Content = styled.div<{ $isLeftAligned: boolean }>`
       $isLeftAligned ? "none" : "16px solid transparent"};
     border-left: ${({ $isLeftAligned }) =>
       $isLeftAligned ? "16px solid transparent" : "none"};
-    top: -0.063rem;
+    top: -1px;
+    ${breakpoint.m} {
+      top: -0.063rem;
+    }
     right: ${({ $isLeftAligned }) => ($isLeftAligned ? "auto" : "-1rem")};
     left: ${({ $isLeftAligned }) => ($isLeftAligned ? "-1rem" : "auto")};
   }
@@ -53,6 +57,12 @@ const Content = styled.div<{ $isLeftAligned: boolean }>`
   img {
     max-width: 15.625rem;
     object-fit: contain;
+  }
+  div:nth-of-type(2) {
+    font-size: 1.1875rem;
+    ${breakpoint.m} {
+      font-size: 1rem;
+    }
   }
 `;
 

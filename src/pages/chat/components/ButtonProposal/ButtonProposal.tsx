@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { useModal } from "../../../../components/modal/useModal";
 import MultiSteps from "../../../../components/step/MultiSteps";
 import Grid from "../../../../components/ui/Grid";
+import { breakpoint } from "../../../../lib/styles/breakpoint";
 import { colors } from "../../../../lib/styles/colors";
 import { NewProposal, Thread } from "../../types";
 
@@ -22,8 +23,11 @@ const StyledButton = styled.button`
   svg {
     position: absolute;
     top: 50%;
-    transform: translateY(-50%);
     right: 0.6rem;
+    transform: translateY(-50%) scale(0.7);
+    ${breakpoint.m} {
+      transform: translateY(-50%);
+    }
   }
 `;
 
