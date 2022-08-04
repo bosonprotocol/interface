@@ -34,7 +34,7 @@ const StyledContent = styled.div<StyledContentProps>`
   margin-right: 2.5rem;
   margin-left: 2.5rem;
   margin-top: 3rem;
-  padding: 1.5rem 1rem 3.75rem 1rem;
+  padding: 1.5rem 1rem 2.75rem 1rem;
   min-width: 6.25rem;
   max-width: ${width};
   &:after {
@@ -94,13 +94,17 @@ const DateStamp = styled.div<{ $isLeftAligned: boolean }>`
     $isLeftAligned ? colors.lightGrey : colors.darkGrey};
 `;
 
-const AttachmentContainer = styled.div`
+const AttachmentContainer = styled.div<{ $isLeftAligned: boolean }>`
   position: relative;
   display: flex;
   cursor: pointer;
   align-items: center;
   padding: 1rem;
-  border: 2px solid ${colors.darkGrey};
+  background-color: ${({ $isLeftAligned }) =>
+    $isLeftAligned ? "inherit" : colors.lightGrey};
+  ${({ $isLeftAligned }) =>
+    $isLeftAligned ? `border: 2px solid ${colors.white}` : ""};
+  color: ${({ $isLeftAligned }) => ($isLeftAligned ? "inherit" : colors.black)};
   margin-bottom: 0.3rem;
   svg:nth-of-type(2) {
     position: absolute;
@@ -224,7 +228,7 @@ const Message = forwardRef(
           <SellerAvatar isLeftAligned={isLeftAligned} thread={thread}>
             {children}
           </SellerAvatar>
-          <AttachmentContainer>
+          <AttachmentContainer $isLeftAligned={isLeftAligned}>
             <a
               style={{ display: "flex", color: "inherit" }}
               href={imageValue.value.encodedContent}
