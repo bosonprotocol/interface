@@ -509,7 +509,7 @@ export default function Chat() {
       });
   }, [bosonXmtp]);
 
-  // console.log({ bosonXmtp, threadsXmtp });
+  console.log({ threadsXmtp });
   // TODO: comment out
   // const { data: exchanges } = useExchanges({
   //   id_in: threads.map((message) => message.threadId.exchangeId),

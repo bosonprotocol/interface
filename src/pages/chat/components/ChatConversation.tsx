@@ -1,6 +1,8 @@
 import {
+  ImageContent,
   MessageData,
-  MessageType
+  MessageType,
+  SupportedImageMimeTypes
 } from "@bosonprotocol/chat-sdk/dist/cjs/util/definitions";
 import { ArrowLeft, UploadSimple } from "phosphor-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -257,22 +259,24 @@ export default function ChatConversation({
   textAreaValue
 }: Props) {
   const { bosonXmtp } = useChatContext();
-  const lastMessageRef = useRef<any>();
+  const threadMessagesNumberRef = useRef<number>(thread?.messages.length || 0);
+  const lastMessageRef = useRef<HTMLDivElement>(null);
   const scrollToBottom = useCallback(
-    () => lastMessageRef.current?.scrollIntoView({ behavior: "smooth" }),
+    (scrollOptions: ScrollIntoViewOptions) =>
+      lastMessageRef.current?.scrollIntoView(scrollOptions),
     []
   );
-  const addMessageAndScroll = useCallback(
-    (...args: Parameters<Props["addMessage"]>) => {
-      addMessage(...args);
-      scrollToBottom();
-    },
-    [addMessage, scrollToBottom]
-  );
-
   useEffect(() => {
-    scrollToBottom();
-  }, [scrollToBottom]);
+    if (thread?.messages.length !== threadMessagesNumberRef.current) {
+      if (threadMessagesNumberRef.current) {
+        scrollToBottom({ behavior: "smooth" }); // every time we send/receive a message
+      } else {
+        scrollToBottom({}); // when the conversation loads
+      }
+
+      threadMessagesNumberRef.current = thread?.messages.length || 0;
+    }
+  }, [thread?.messages.length, scrollToBottom]);
   const [isExchangePreviewOpen, setExchangePreviewOpen] =
     useState<boolean>(false);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -288,7 +292,7 @@ export default function ChatConversation({
         thread.threadId,
         destinationAddress
       )) {
-        addMessageAndScroll(thread, {
+        addMessage(thread, {
           sender: destinationAddress,
           authorityId: "",
           recipient: address || "",
@@ -304,7 +308,7 @@ export default function ChatConversation({
       .catch((error) => {
         console.error(error);
       });
-  }, [bosonXmtp, destinationAddress, thread, addMessageAndScroll, address]);
+  }, [bosonXmtp, destinationAddress, thread, addMessage, address]);
 
   const { isLteS, isXXS, isS, isM, isL, isXL } = useBreakpoints();
   const {
@@ -398,7 +402,7 @@ export default function ChatConversation({
     );
   }
   const { exchange } = thread;
-  if (!exchange) {
+  if (!exchange || !bosonXmtp) {
     return <ErrorMessage />;
   }
 
@@ -438,17 +442,15 @@ export default function ChatConversation({
         <Messages>
           {thread.messages.map((message, index) => {
             const isLastMessage = index === thread.messages.length - 1;
+            const leftAligned = !getWasItSentByMe(address, message.sender);
             return (
-              <Conversation
-                key={message.timestamp}
-                $alignStart={!getWasItSentByMe(address, message.sender)}
-              >
+              <Conversation key={message.timestamp} $alignStart={leftAligned}>
                 <>
                   <MessageSeparator message={message} />
                   <Message
                     thread={thread}
                     message={message}
-                    isLeftAligned={!getWasItSentByMe(address, message.sender)}
+                    isLeftAligned={leftAligned}
                     ref={isLastMessage ? lastMessageRef : null}
                   >
                     <SellerComponent size={32} withProfileText={false} />
@@ -469,7 +471,7 @@ export default function ChatConversation({
                 value={textAreaValue}
                 onChange={(e) => onTextAreaChange(e.target.value)}
                 onKeyDown={async (e) => {
-                  if (e.key === "Enter" && bosonXmtp) {
+                  if (e.key === "Enter") {
                     const newMessage = {
                       threadId: thread.threadId,
                       content: {
@@ -482,7 +484,7 @@ export default function ChatConversation({
                       newMessage,
                       destinationAddress
                     );
-                    addMessageAndScroll(thread, {
+                    addMessage(thread, {
                       sender: address || "",
                       authorityId: "",
                       recipient: destinationAddress,
@@ -501,8 +503,35 @@ export default function ChatConversation({
               onClick={() =>
                 showModal("UPLOAD_MODAL", {
                   title: "Upload documents",
-                  onUploadedFiles: (files: File[]) => {
-                    console.log(files);
+                  withEncodedData: true,
+                  onUploadedFilesWithData: async (files) => {
+                    for (const file of files) {
+                      const imageContent: ImageContent = {
+                        value: {
+                          encodedContent: file.encodedData,
+                          fileName: file.name,
+                          fileSize: file.size,
+                          fileType: file.type as SupportedImageMimeTypes
+                        }
+                      };
+                      const newMessage = {
+                        threadId: thread.threadId,
+                        content: imageContent,
+                        contentType: MessageType.Image,
+                        version: "1"
+                      };
+                      await bosonXmtp.encodeAndSendMessage(
+                        newMessage,
+                        destinationAddress
+                      );
+                      addMessage(thread, {
+                        sender: address || "",
+                        authorityId: "",
+                        recipient: destinationAddress,
+                        timestamp: Date.now(),
+                        data: newMessage
+                      });
+                    }
                   }
                 })
               }
