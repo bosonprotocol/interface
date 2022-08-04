@@ -2,6 +2,7 @@ import {
   ImageContent,
   MessageData,
   MessageType,
+  ProposalContent,
   SupportedImageMimeTypes
 } from "@bosonprotocol/chat-sdk/dist/cjs/util/definitions";
 import { ArrowLeft, UploadSimple } from "phosphor-react";
@@ -16,6 +17,7 @@ import { BosonRoutes } from "../../../lib/routing/routes";
 import { breakpoint, breakpointNumbers } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
 import { zIndex } from "../../../lib/styles/zIndex";
+import { FileWithEncodedData } from "../../../lib/utils/files";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { useBuyerSellerAccounts } from "../../../lib/utils/hooks/useBuyerSellerAccounts";
 import { useChatContext } from "../ChatProvider/ChatContext";
@@ -309,7 +311,38 @@ export default function ChatConversation({
         console.error(error);
       });
   }, [bosonXmtp, destinationAddress, thread, addMessage, address]);
-
+  const sendFilesToChat = useCallback(
+    async (files: FileWithEncodedData[]) => {
+      if (!thread || !bosonXmtp) {
+        return;
+      }
+      for (const file of files) {
+        const imageContent: ImageContent = {
+          value: {
+            encodedContent: file.encodedData,
+            fileName: file.name,
+            fileSize: file.size,
+            fileType: file.type as SupportedImageMimeTypes
+          }
+        };
+        const newMessage = {
+          threadId: thread.threadId,
+          content: imageContent,
+          contentType: MessageType.Image,
+          version: "1"
+        };
+        await bosonXmtp.encodeAndSendMessage(newMessage, destinationAddress);
+        addMessage(thread, {
+          sender: address || "",
+          authorityId: "",
+          recipient: destinationAddress,
+          timestamp: Date.now(),
+          data: newMessage
+        });
+      }
+    },
+    [addMessage, address, bosonXmtp, destinationAddress, thread]
+  );
   const { isLteS, isXXS, isS, isM, isL, isXL } = useBreakpoints();
   const {
     seller: {
@@ -462,7 +495,39 @@ export default function ChatConversation({
         </Messages>
         <TypeMessage>
           <ButtonProposalContainer>
-            <ButtonProposal exchange={exchange} />
+            <ButtonProposal
+              exchange={exchange}
+              onSendProposal={async (proposal, proposalFiles) => {
+                const proposalContent: ProposalContent = {
+                  value: {
+                    title: proposal.title,
+                    description: proposal.description,
+                    proposals: proposal.proposals,
+                    disputeContext: proposal.disputeContext
+                  }
+                };
+                const newMessage = {
+                  threadId: thread.threadId,
+                  content: proposalContent,
+                  contentType: MessageType.Proposal,
+                  version: "1"
+                };
+                await bosonXmtp.encodeAndSendMessage(
+                  newMessage,
+                  destinationAddress
+                );
+                addMessage(thread, {
+                  sender: address || "",
+                  authorityId: "",
+                  recipient: destinationAddress,
+                  timestamp: Date.now(),
+                  data: newMessage
+                });
+                if (proposalFiles.length) {
+                  await sendFilesToChat(proposalFiles);
+                }
+              }}
+            />
           </ButtonProposalContainer>
           <InputWrapper>
             <Input>
@@ -505,33 +570,7 @@ export default function ChatConversation({
                   title: "Upload documents",
                   withEncodedData: true,
                   onUploadedFilesWithData: async (files) => {
-                    for (const file of files) {
-                      const imageContent: ImageContent = {
-                        value: {
-                          encodedContent: file.encodedData,
-                          fileName: file.name,
-                          fileSize: file.size,
-                          fileType: file.type as SupportedImageMimeTypes
-                        }
-                      };
-                      const newMessage = {
-                        threadId: thread.threadId,
-                        content: imageContent,
-                        contentType: MessageType.Image,
-                        version: "1"
-                      };
-                      await bosonXmtp.encodeAndSendMessage(
-                        newMessage,
-                        destinationAddress
-                      );
-                      addMessage(thread, {
-                        sender: address || "",
-                        authorityId: "",
-                        recipient: destinationAddress,
-                        timestamp: Date.now(),
-                        data: newMessage
-                      });
-                    }
+                    await sendFilesToChat(files);
                   }
                 })
               }

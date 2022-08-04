@@ -1,14 +1,14 @@
 import { useField } from "formik";
 import { Info, UploadSimple } from "phosphor-react";
 
-import UploadComponent from "../../../../components/form/Upload/Upload";
+import Upload from "../../../../components/form/Upload/Upload";
 import { FormModel } from "../../../../components/modal/components/Chat/MakeProposal/MakeProposalFormModel";
 import Grid from "../../../../components/ui/Grid";
 import Typography from "../../../../components/ui/Typography";
 import { colors } from "../../../../lib/styles/colors";
 
-export default function Upload() {
-  const [uploadField] = useField(FormModel.formFields.upload.name);
+export default function UploadForm() {
+  const [uploadField] = useField<File[]>(FormModel.formFields.upload.name);
   return (
     <>
       <Grid justifyContent="flex-start" gap="0.2rem">
@@ -21,7 +21,7 @@ export default function Upload() {
           Max. file size: 2MB
         </Typography>
       </Grid>
-      <UploadComponent
+      <Upload
         name={FormModel.formFields.upload.name}
         multiple
         accept="image/*, application/pdf"

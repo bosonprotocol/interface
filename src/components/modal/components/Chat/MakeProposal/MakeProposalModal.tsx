@@ -2,6 +2,10 @@ import { Form, Formik, FormikProps } from "formik";
 import { ReactNode } from "react";
 import * as Yup from "yup";
 
+import {
+  FileWithEncodedData,
+  getFilesWithEncodedData
+} from "../../../../../lib/utils/files";
 import { getOfferArtist } from "../../../../../lib/utils/hooks/offers/placeholders";
 import { Exchange } from "../../../../../lib/utils/hooks/useExchanges";
 import { NewProposal } from "../../../../../pages/chat/types";
@@ -16,7 +20,10 @@ import ReviewAndSubmitStep from "./steps/ReviewAndSubmitStep";
 interface Props {
   exchange: Exchange;
   activeStep: number;
-  sendProposal: (proposal: NewProposal, proposalFiles: File[]) => void;
+  sendProposal: (
+    proposal: NewProposal,
+    proposalFiles: FileWithEncodedData[]
+  ) => void;
   // modal props
   hideModal: NonNullable<ModalProps["hideModal"]>;
   headerComponent: ReactNode;
@@ -54,25 +61,43 @@ export default function MakeProposalModal({
       <Formik
         validationSchema={validationSchema}
         onSubmit={async (values) => {
-          const artist = getOfferArtist(exchange.offer.metadata.name || "");
-          const userName = artist || `Seller ID: ${exchange.seller.id}`; // TODO: change to get real username
-          const proposal: NewProposal = {
-            title: `${userName} made a proposal`,
-            description: values[FormModel.formFields.description.name],
-            proposals: [],
-            disputeContext: []
-          };
+          try {
+            const artist = getOfferArtist(exchange.offer.metadata.name || "");
+            const userName = artist || `Seller ID: ${exchange.seller.id}`; // TODO: change to get real username
+            const proposal: NewProposal = {
+              title: `${userName} made a proposal`,
+              description: values[FormModel.formFields.description.name],
+              proposals: values[FormModel.formFields.proposalsTypes.name].map(
+                (proposalType) => {
+                  return {
+                    type: proposalType.value,
+                    percentageAmount:
+                      values[FormModel.formFields.refundPercentage.name] + "",
+                    signature: ""
+                  };
+                }
+              ),
+              disputeContext: []
+            };
+            // TODO: sign proposals
+            const proposalFiles = values[FormModel.formFields.upload.name];
+            const filesWithData = await getFilesWithEncodedData(proposalFiles);
 
-          sendProposal(proposal, values[FormModel.formFields.upload.name]);
-
-          hideModal();
+            sendProposal(proposal, filesWithData);
+            hideModal();
+          } catch (error) {
+            console.error(error); // TODO: handle error case
+          }
         }}
         initialValues={{
           [FormModel.formFields.description.name]: "",
-          [FormModel.formFields.proposalsTypes.name]: [],
+          [FormModel.formFields.proposalsTypes.name]: [] as {
+            label: string;
+            value: string;
+          }[],
           [FormModel.formFields.refundAmount.name]: 0,
           [FormModel.formFields.refundPercentage.name]: 0,
-          [FormModel.formFields.upload.name]: []
+          [FormModel.formFields.upload.name]: [] as File[]
         }}
         validateOnMount
       >

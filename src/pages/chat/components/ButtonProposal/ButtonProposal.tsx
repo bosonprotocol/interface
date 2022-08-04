@@ -7,6 +7,7 @@ import MultiSteps from "../../../../components/step/MultiSteps";
 import Grid from "../../../../components/ui/Grid";
 import { breakpoint } from "../../../../lib/styles/breakpoint";
 import { colors } from "../../../../lib/styles/colors";
+import { FileWithEncodedData } from "../../../../lib/utils/files";
 import { NewProposal, Thread } from "../../types";
 
 const StyledButton = styled.button`
@@ -37,9 +38,13 @@ const StyledMultiSteps = styled(MultiSteps)`
 
 interface Props {
   exchange: NonNullable<Thread["exchange"]>;
+  onSendProposal: (
+    proposal: NewProposal,
+    proposalFiles: FileWithEncodedData[]
+  ) => void;
 }
 
-export default function ButtonProposal({ exchange }: Props) {
+export default function ButtonProposal({ exchange, onSendProposal }: Props) {
   const { showModal, updateProps, store } = useModal();
   const [activeStep, setActiveStep] = useState<number>(0);
 
@@ -74,10 +79,6 @@ export default function ButtonProposal({ exchange }: Props) {
     });
   }, [activeStep, headerComponent, activeStep]); // eslint-disable-line
 
-  const sendProposal = (proposal: NewProposal, proposalFiles: File[]) => {
-    console.log("proposal in button proposal", proposal, proposalFiles);
-  };
-
   return (
     <StyledButton
       onClick={() =>
@@ -88,7 +89,7 @@ export default function ButtonProposal({ exchange }: Props) {
             exchange,
             activeStep,
             setActiveStep,
-            sendProposal
+            sendProposal: onSendProposal
           },
           "m"
         )
