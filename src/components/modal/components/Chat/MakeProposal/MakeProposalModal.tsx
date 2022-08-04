@@ -70,7 +70,7 @@ export default function MakeProposalModal({
               proposals: values[FormModel.formFields.proposalsTypes.name].map(
                 (proposalType) => {
                   return {
-                    type: proposalType.value,
+                    type: proposalType.label,
                     percentageAmount:
                       values[FormModel.formFields.refundPercentage.name] + "",
                     signature: ""
