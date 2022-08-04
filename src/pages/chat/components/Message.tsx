@@ -196,14 +196,15 @@ const Message = forwardRef(
           <SellerAvatar isLeftAligned={isLeftAligned} thread={thread}>
             {children}
           </SellerAvatar>
-          <p>
+          <div>
             {isImageWithMetadataMessage
               ? "Corrupt image."
               : isProposalMessage
               ? "Corrupt proposal"
               : "Corrupt message"}
             &nbsp; Please re-send in a new message
-          </p>
+          </div>
+          <BottomDateStamp isLeftAligned={isLeftAligned} message={message} />
         </Content>
       );
     }
