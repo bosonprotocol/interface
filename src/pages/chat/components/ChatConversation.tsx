@@ -171,6 +171,15 @@ const Input = styled.div`
   }
 `;
 
+const TextArea = styled.textarea`
+  font-family: Plus Jakarta Sans;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5rem;
+  letter-spacing: 0;
+  text-align: left;
+`;
+
 const SimpleMessage = styled.p`
   all: unset;
   display: block;
@@ -227,6 +236,9 @@ const ButtonProposalContainer = styled.span`
   height: 100%;
   display: flex;
   align-items: flex-start;
+  button {
+    min-height: 46px;
+  }
 `;
 
 const ErrorMessage = () => (
@@ -494,47 +506,56 @@ export default function ChatConversation({
           })}
         </Messages>
         <TypeMessage>
-          <ButtonProposalContainer>
-            <ButtonProposal
-              exchange={exchange}
-              onSendProposal={async (proposal, proposalFiles) => {
-                const proposalContent: ProposalContent = {
-                  value: {
-                    title: proposal.title,
-                    description: proposal.description,
-                    proposals: proposal.proposals,
-                    disputeContext: proposal.disputeContext
+          {exchange.disputed && (
+            <ButtonProposalContainer>
+              <ButtonProposal
+                exchange={exchange}
+                onSendProposal={async (proposal, proposalFiles) => {
+                  const proposalContent: ProposalContent = {
+                    value: {
+                      title: proposal.title,
+                      description: proposal.description,
+                      proposals: proposal.proposals,
+                      disputeContext: proposal.disputeContext
+                    }
+                  };
+                  const newMessage = {
+                    threadId: thread.threadId,
+                    content: proposalContent,
+                    contentType: MessageType.Proposal,
+                    version: "1"
+                  };
+                  await bosonXmtp.encodeAndSendMessage(
+                    newMessage,
+                    destinationAddress
+                  );
+                  addMessage(thread, {
+                    sender: address || "",
+                    authorityId: "",
+                    recipient: destinationAddress,
+                    timestamp: Date.now(),
+                    data: newMessage
+                  });
+                  if (proposalFiles.length) {
+                    await sendFilesToChat(proposalFiles);
                   }
-                };
-                const newMessage = {
-                  threadId: thread.threadId,
-                  content: proposalContent,
-                  contentType: MessageType.Proposal,
-                  version: "1"
-                };
-                await bosonXmtp.encodeAndSendMessage(
-                  newMessage,
-                  destinationAddress
-                );
-                addMessage(thread, {
-                  sender: address || "",
-                  authorityId: "",
-                  recipient: destinationAddress,
-                  timestamp: Date.now(),
-                  data: newMessage
-                });
-                if (proposalFiles.length) {
-                  await sendFilesToChat(proposalFiles);
-                }
-              }}
-            />
-          </ButtonProposalContainer>
+                }}
+              />
+            </ButtonProposalContainer>
+          )}
           <InputWrapper>
             <Input>
-              <textarea
+              <TextArea
                 ref={textareaRef}
+                placeholder="Write a message"
                 value={textAreaValue}
-                onChange={(e) => onTextAreaChange(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  const didPressEnter = value[value.length - 1] === `\n`;
+                  if (!didPressEnter) {
+                    onTextAreaChange(value);
+                  }
+                }}
                 onKeyDown={async (e) => {
                   if (e.key === "Enter") {
                     const newMessage = {
@@ -556,11 +577,12 @@ export default function ChatConversation({
                       timestamp: Date.now(),
                       data: newMessage
                     });
+                    onTextAreaChange("");
                   }
                 }}
               >
                 {textAreaValue}
-              </textarea>
+              </TextArea>
             </Input>
             <UploadSimple
               size={24}
