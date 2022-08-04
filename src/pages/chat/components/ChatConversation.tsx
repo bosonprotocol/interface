@@ -178,6 +178,7 @@ const TextArea = styled.textarea`
   line-height: 1.5rem;
   letter-spacing: 0;
   text-align: left;
+  cursor: text;
 `;
 
 const SimpleMessage = styled.p`
