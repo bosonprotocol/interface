@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Route, Routes, useLocation, useParams } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
 
+import DisputeModal from "../../components/modal/components/DisputeModal/DisputeModal";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
@@ -628,6 +629,7 @@ export default function Chat() {
             </SimpleMessage>
           </SelectMessageContainer>
         )}
+        <DisputeModal visible={false} />
       </Container>
     </>
   );
