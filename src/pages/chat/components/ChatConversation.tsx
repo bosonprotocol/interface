@@ -6,7 +6,15 @@ import {
   SupportedImageMimeTypes
 } from "@bosonprotocol/chat-sdk/dist/cjs/util/definitions";
 import { ArrowLeft, UploadSimple } from "phosphor-react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  ForwardedRef,
+  forwardRef,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
@@ -263,308 +271,290 @@ interface Props {
   onTextAreaChange: (textAreaTargetValue: string) => void;
   textAreaValue: string | undefined;
 }
-export default function ChatConversation({
-  addMessage,
-  thread,
-  chatListOpen,
-  setChatListOpen,
-  exchangeIdNotOwned,
-  prevPath,
-  onTextAreaChange,
-  textAreaValue
-}: Props) {
-  const { bosonXmtp } = useChatContext();
-  const threadMessagesNumberRef = useRef<number>(thread?.messages.length || 0);
-  const lastMessageRef = useRef<HTMLDivElement>(null);
-  const scrollToBottom = useCallback(
-    (scrollOptions: ScrollIntoViewOptions) =>
-      lastMessageRef.current?.scrollIntoView(scrollOptions),
-    []
-  );
-  useEffect(() => {
-    if (thread?.messages.length !== threadMessagesNumberRef.current) {
-      if (threadMessagesNumberRef.current) {
-        scrollToBottom({ behavior: "smooth" }); // every time we send/receive a message
-      } else {
-        scrollToBottom({}); // when the conversation loads
-      }
+const ChatConversation = forwardRef(
+  (
+    {
+      addMessage,
+      thread,
+      chatListOpen,
+      setChatListOpen,
+      exchangeIdNotOwned,
+      prevPath,
+      onTextAreaChange,
+      textAreaValue
+    }: Props,
+    intersectRef: ForwardedRef<HTMLDivElement>
+  ) => {
+    // const { intersectRef, messagesRef } = refs as unknown as {
+    //   intersectRef: React.ForwardedRef<HTMLDivElement>;
+    //   messagesRef: React.ForwardedRef<HTMLDivElement>;
+    // };
+    // console.log("chatconversation", intersectRef, messagesRef);
+    const { bosonXmtp } = useChatContext();
+    const threadMessagesNumberRef = useRef<number>(
+      thread?.messages.length || 0
+    );
+    const lastMessageRef = useRef<HTMLDivElement>(null);
+    const scrollToBottom = useCallback(
+      (scrollOptions: ScrollIntoViewOptions) =>
+        lastMessageRef.current?.scrollIntoView(scrollOptions),
+      []
+    );
+    useEffect(() => {
+      if (thread?.messages.length !== threadMessagesNumberRef.current) {
+        if (threadMessagesNumberRef.current) {
+          scrollToBottom({ behavior: "smooth" }); // every time we send/receive a message
+        } else {
+          scrollToBottom({}); // when the conversation loads
+        }
 
-      threadMessagesNumberRef.current = thread?.messages.length || 0;
-    }
-  }, [thread?.messages.length, scrollToBottom]);
-  const [isExchangePreviewOpen, setExchangePreviewOpen] =
-    useState<boolean>(false);
-  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-  const navigate = useNavigate();
-  const { address } = useAccount();
-  const destinationAddress = thread?.exchange?.offer.seller.operator || "";
-  useEffect(() => {
-    if (!bosonXmtp || !thread?.threadId || !destinationAddress) {
-      return;
-    }
-    const monitor = async () => {
-      for await (const incomingMessage of await bosonXmtp.monitorThread(
-        thread.threadId,
-        destinationAddress
-      )) {
-        addMessage(thread, {
-          sender: destinationAddress,
-          authorityId: "",
-          recipient: address || "",
-          timestamp: Date.now(),
-          data: incomingMessage
-        });
+        threadMessagesNumberRef.current = thread?.messages.length || 0;
       }
-    };
-    monitor()
-      .then(() => {
-        // TODO:
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, [bosonXmtp, destinationAddress, thread, addMessage, address]);
-  const sendFilesToChat = useCallback(
-    async (files: FileWithEncodedData[]) => {
-      if (!thread || !bosonXmtp) {
+    }, [thread?.messages.length, scrollToBottom]);
+    const [isExchangePreviewOpen, setExchangePreviewOpen] =
+      useState<boolean>(false);
+    const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+    const navigate = useNavigate();
+    const { address } = useAccount();
+    const destinationAddress = thread?.exchange?.offer.seller.operator || "";
+    useEffect(() => {
+      if (!bosonXmtp || !thread?.threadId || !destinationAddress) {
         return;
       }
-      for (const file of files) {
-        const imageContent: ImageContent = {
-          value: {
-            encodedContent: file.encodedData,
-            fileName: file.name,
-            fileSize: file.size,
-            fileType: file.type as SupportedImageMimeTypes
-          }
-        };
-        const newMessage = {
-          threadId: thread.threadId,
-          content: imageContent,
-          contentType: MessageType.Image,
-          version: "1"
-        };
-        await bosonXmtp.encodeAndSendMessage(newMessage, destinationAddress);
-        addMessage(thread, {
-          sender: address || "",
-          authorityId: "",
-          recipient: destinationAddress,
-          timestamp: Date.now(),
-          data: newMessage
+      const monitor = async () => {
+        for await (const incomingMessage of await bosonXmtp.monitorThread(
+          thread.threadId,
+          destinationAddress
+        )) {
+          addMessage(thread, {
+            sender: destinationAddress,
+            authorityId: "",
+            recipient: address || "",
+            timestamp: Date.now(),
+            data: incomingMessage
+          });
+        }
+      };
+      monitor()
+        .then(() => {
+          // TODO:
+        })
+        .catch((error) => {
+          console.error(error);
         });
+    }, [bosonXmtp, destinationAddress, thread, addMessage, address]);
+    const sendFilesToChat = useCallback(
+      async (files: FileWithEncodedData[]) => {
+        if (!thread || !bosonXmtp) {
+          return;
+        }
+        for (const file of files) {
+          const imageContent: ImageContent = {
+            value: {
+              encodedContent: file.encodedData,
+              fileName: file.name,
+              fileSize: file.size,
+              fileType: file.type as SupportedImageMimeTypes
+            }
+          };
+          const newMessage = {
+            threadId: thread.threadId,
+            content: imageContent,
+            contentType: MessageType.Image,
+            version: "1"
+          };
+          await bosonXmtp.encodeAndSendMessage(newMessage, destinationAddress);
+          addMessage(thread, {
+            sender: address || "",
+            authorityId: "",
+            recipient: destinationAddress,
+            timestamp: Date.now(),
+            data: newMessage
+          });
+        }
+      },
+      [addMessage, address, bosonXmtp, destinationAddress, thread]
+    );
+    const { isLteS, isXXS, isS, isM, isL, isXL } = useBreakpoints();
+    const {
+      seller: {
+        sellerId: _sellerId,
+        isError: isErrorSellers,
+        isLoading: isLoadingSeller
+      },
+      buyer: { buyerId, isError: isErrorBuyers, isLoading: isLoadingBuyer }
+    } = useBuyerSellerAccounts(address || "");
+    const sellerId = _sellerId || "2"; // TODO: remove
+    const { showModal } = useModal();
+
+    useEffect(() => {
+      setChatListOpen(false);
+    }, [setChatListOpen]);
+
+    useEffect(() => {
+      if (textareaRef && textareaRef.current) {
+        textareaRef.current.style.height = "0px";
+        const scrollHeight = textareaRef.current.scrollHeight;
+        textareaRef.current.style.height = scrollHeight + "px";
       }
-    },
-    [addMessage, address, bosonXmtp, destinationAddress, thread]
-  );
-  const { isLteS, isXXS, isS, isM, isL, isXL } = useBreakpoints();
-  const {
-    seller: {
-      sellerId: _sellerId,
-      isError: isErrorSellers,
-      isLoading: isLoadingSeller
-    },
-    buyer: { buyerId, isError: isErrorBuyers, isLoading: isLoadingBuyer }
-  } = useBuyerSellerAccounts(address || "");
-  const sellerId = _sellerId || "2"; // TODO: remove
-  const { showModal } = useModal();
+    }, [prevPath, textAreaValue]);
 
-  useEffect(() => {
-    setChatListOpen(false);
-  }, [setChatListOpen]);
+    const SellerComponent = useCallback(
+      ({
+        size,
+        withProfileText
+      }: {
+        size: number;
+        withProfileText?: boolean;
+      }) => {
+        if (!thread) {
+          return null;
+        }
+        return (
+          <SellerID
+            seller={thread.exchange?.offer.seller || ({} as never)}
+            offerName={thread.exchange?.offer.metadata.name || ""}
+            withProfileImage
+            accountImageSize={size}
+            withProfileText={withProfileText}
+          />
+        );
+      },
+      [thread]
+    );
 
-  useEffect(() => {
-    if (textareaRef && textareaRef.current) {
-      textareaRef.current.style.height = "0px";
-      const scrollHeight = textareaRef.current.scrollHeight;
-      textareaRef.current.style.height = scrollHeight + "px";
-    }
-  }, [prevPath, textAreaValue]);
-
-  const SellerComponent = useCallback(
-    ({
-      size,
-      withProfileText
-    }: {
-      size: number;
-      withProfileText?: boolean;
-    }) => {
-      if (!thread) {
-        return null;
+    const detailsButton = useMemo(() => {
+      if (chatListOpen && (isXXS || isS || isM)) {
+        return (
+          <button
+            onClick={() => {
+              setExchangePreviewOpen(!isExchangePreviewOpen);
+            }}
+          >
+            <span>&nbsp;</span>
+          </button>
+        );
       }
-      return (
-        <SellerID
-          seller={thread.exchange?.offer.seller || ({} as never)}
-          offerName={thread.exchange?.offer.metadata.name || ""}
-          withProfileImage
-          accountImageSize={size}
-          withProfileText={withProfileText}
-        />
-      );
-    },
-    [thread]
-  );
 
-  const detailsButton = useMemo(() => {
-    if (chatListOpen && (isXXS || isS || isM)) {
       return (
         <button
           onClick={() => {
             setExchangePreviewOpen(!isExchangePreviewOpen);
           }}
         >
-          <span>&nbsp;</span>
+          <span>{isExchangePreviewOpen ? "Hide Details" : "Details"}</span>
         </button>
       );
+    }, [chatListOpen, isExchangePreviewOpen, isXXS, isS, isM]);
+
+    if (
+      !isLoadingSeller &&
+      !isLoadingBuyer &&
+      (isErrorSellers || isErrorBuyers || (!sellerId && !buyerId))
+    ) {
+      return <ErrorMessage />;
+    }
+
+    if (!thread) {
+      return (
+        <Container>
+          <SimpleMessage>
+            {exchangeIdNotOwned
+              ? "You don't have this exchange"
+              : "Select a message"}
+          </SimpleMessage>
+        </Container>
+      );
+    }
+    const { exchange } = thread;
+    if (!exchange || !bosonXmtp) {
+      return <ErrorMessage />;
     }
 
     return (
-      <button
-        onClick={() => {
-          setExchangePreviewOpen(!isExchangePreviewOpen);
-        }}
-      >
-        <span>{isExchangePreviewOpen ? "Hide Details" : "Details"}</span>
-      </button>
-    );
-  }, [chatListOpen, isExchangePreviewOpen, isXXS, isS, isM]);
-
-  if (
-    !isLoadingSeller &&
-    !isLoadingBuyer &&
-    (isErrorSellers || isErrorBuyers || (!sellerId && !buyerId))
-  ) {
-    return <ErrorMessage />;
-  }
-
-  if (!thread) {
-    return (
-      <Container>
-        <SimpleMessage>
-          {exchangeIdNotOwned
-            ? "You don't have this exchange"
-            : "Select a message"}
-        </SimpleMessage>
-      </Container>
-    );
-  }
-  const { exchange } = thread;
-  if (!exchange || !bosonXmtp) {
-    return <ErrorMessage />;
-  }
-
-  return (
-    <>
-      <Container>
-        <NavigationMobile>
-          <button
-            onClick={() => {
-              if (isM && !prevPath) {
-                setChatListOpen(!chatListOpen);
-              } else if (isM && prevPath) {
-                navigate(prevPath, { replace: true });
-              } else {
-                navigate(`/${BosonRoutes.Chat}`, { replace: true });
-              }
-            }}
-          >
-            {(isM || isL || isXL) &&
-              prevPath &&
-              !prevPath.includes(`${BosonRoutes.Chat}/`) && (
+      <>
+        <Container>
+          <NavigationMobile>
+            <button
+              onClick={() => {
+                if (isM && !prevPath) {
+                  setChatListOpen(!chatListOpen);
+                } else if (isM && prevPath) {
+                  navigate(prevPath, { replace: true });
+                } else {
+                  navigate(`/${BosonRoutes.Chat}`, { replace: true });
+                }
+              }}
+            >
+              {(isM || isL || isXL) &&
+                prevPath &&
+                !prevPath.includes(`${BosonRoutes.Chat}/`) && (
+                  <span>
+                    <ArrowLeft size={14} />
+                    Back
+                  </span>
+                )}
+              {isLteS && !chatListOpen && (
                 <span>
                   <ArrowLeft size={14} />
-                  Back
+                  Back to messages
                 </span>
               )}
-            {isLteS && !chatListOpen && (
-              <span>
-                <ArrowLeft size={14} />
-                Back to messages
-              </span>
-            )}
-          </button>
-          {detailsButton}
-        </NavigationMobile>
-        <Header>{!chatListOpen && <SellerComponent size={24} />}</Header>
-        <Messages>
-          {thread.messages.map((message, index) => {
-            const isLastMessage = index === thread.messages.length - 1;
-            const leftAligned = !getWasItSentByMe(address, message.sender);
-            return (
-              <Conversation key={message.timestamp} $alignStart={leftAligned}>
-                <>
-                  <MessageSeparator message={message} />
-                  <Message
-                    thread={thread}
-                    message={message}
-                    isLeftAligned={leftAligned}
-                    ref={isLastMessage ? lastMessageRef : null}
-                  >
-                    <SellerComponent size={32} withProfileText={false} />
-                  </Message>
-                </>
-              </Conversation>
-            );
-          })}
-        </Messages>
-        <TypeMessage>
-          {exchange.disputed && (
-            <ButtonProposalContainer>
-              <ButtonProposal
-                exchange={exchange}
-                onSendProposal={async (proposal, proposalFiles) => {
-                  const proposalContent: ProposalContent = {
-                    value: {
-                      title: proposal.title,
-                      description: proposal.description,
-                      proposals: proposal.proposals,
-                      disputeContext: proposal.disputeContext
-                    }
-                  };
-                  const newMessage = {
-                    threadId: thread.threadId,
-                    content: proposalContent,
-                    contentType: MessageType.Proposal,
-                    version: "1"
-                  };
-                  await bosonXmtp.encodeAndSendMessage(
-                    newMessage,
-                    destinationAddress
-                  );
-                  addMessage(thread, {
-                    sender: address || "",
-                    authorityId: "",
-                    recipient: destinationAddress,
-                    timestamp: Date.now(),
-                    data: newMessage
-                  });
-                  if (proposalFiles.length) {
-                    await sendFilesToChat(proposalFiles);
-                  }
-                }}
-              />
-            </ButtonProposalContainer>
-          )}
-          <InputWrapper>
-            <Input>
-              <TextArea
-                ref={textareaRef}
-                placeholder="Write a message"
-                value={textAreaValue}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  const didPressEnter = value[value.length - 1] === `\n`;
-                  if (!didPressEnter) {
-                    onTextAreaChange(value);
-                  }
-                }}
-                onKeyDown={async (e) => {
-                  if (e.key === "Enter") {
+            </button>
+            {detailsButton}
+          </NavigationMobile>
+          <Header>{!chatListOpen && <SellerComponent size={24} />}</Header>
+
+          <Messages data-messages>
+            {thread.messages.map((message, index) => {
+              const isFirstMessage = index === 0;
+              const isLastMessage = index === thread.messages.length - 1;
+              const leftAligned = !getWasItSentByMe(address, message.sender);
+              return (
+                <Conversation key={message.timestamp} $alignStart={leftAligned}>
+                  <>
+                    {isFirstMessage && (
+                      <div
+                        ref={intersectRef}
+                        style={{
+                          height: "100px",
+                          width: "100%",
+                          background: "red"
+                        }}
+                      ></div>
+                    )}
+                    <MessageSeparator message={message} />
+                    <Message
+                      thread={thread}
+                      message={message}
+                      isLeftAligned={leftAligned}
+                      ref={isLastMessage ? lastMessageRef : null}
+                    >
+                      <SellerComponent size={32} withProfileText={false} />
+                    </Message>
+                  </>
+                </Conversation>
+              );
+            })}
+          </Messages>
+          <TypeMessage>
+            {exchange.disputed && (
+              <ButtonProposalContainer>
+                <ButtonProposal
+                  exchange={exchange}
+                  onSendProposal={async (proposal, proposalFiles) => {
+                    const proposalContent: ProposalContent = {
+                      value: {
+                        title: proposal.title,
+                        description: proposal.description,
+                        proposals: proposal.proposals,
+                        disputeContext: proposal.disputeContext
+                      }
+                    };
                     const newMessage = {
                       threadId: thread.threadId,
-                      content: {
-                        value: e.target.value
-                      },
-                      contentType: MessageType.String,
+                      content: proposalContent,
+                      contentType: MessageType.Proposal,
                       version: "1"
                     };
                     await bosonXmtp.encodeAndSendMessage(
@@ -578,33 +568,76 @@ export default function ChatConversation({
                       timestamp: Date.now(),
                       data: newMessage
                     });
-                    onTextAreaChange("");
-                  }
-                }}
-              >
-                {textAreaValue}
-              </TextArea>
-            </Input>
-            <UploadSimple
-              size={24}
-              data-upload
-              onClick={() =>
-                showModal("UPLOAD_MODAL", {
-                  title: "Upload documents",
-                  withEncodedData: true,
-                  onUploadedFilesWithData: async (files) => {
-                    await sendFilesToChat(files);
-                  }
-                })
-              }
-            />
-          </InputWrapper>
-        </TypeMessage>
-      </Container>
-      <ExchangeSidePreview
-        thread={thread}
-        disputeOpen={isExchangePreviewOpen}
-      />
-    </>
-  );
-}
+                    if (proposalFiles.length) {
+                      await sendFilesToChat(proposalFiles);
+                    }
+                  }}
+                />
+              </ButtonProposalContainer>
+            )}
+            <InputWrapper>
+              <Input>
+                <TextArea
+                  ref={textareaRef}
+                  placeholder="Write a message"
+                  value={textAreaValue}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    const didPressEnter = value[value.length - 1] === `\n`;
+                    if (!didPressEnter) {
+                      onTextAreaChange(value);
+                    }
+                  }}
+                  onKeyDown={async (e) => {
+                    if (e.key === "Enter") {
+                      const newMessage = {
+                        threadId: thread.threadId,
+                        content: {
+                          value: e.target.value
+                        },
+                        contentType: MessageType.String,
+                        version: "1"
+                      };
+                      await bosonXmtp.encodeAndSendMessage(
+                        newMessage,
+                        destinationAddress
+                      );
+                      addMessage(thread, {
+                        sender: address || "",
+                        authorityId: "",
+                        recipient: destinationAddress,
+                        timestamp: Date.now(),
+                        data: newMessage
+                      });
+                      onTextAreaChange("");
+                    }
+                  }}
+                >
+                  {textAreaValue}
+                </TextArea>
+              </Input>
+              <UploadSimple
+                size={24}
+                data-upload
+                onClick={() =>
+                  showModal("UPLOAD_MODAL", {
+                    title: "Upload documents",
+                    withEncodedData: true,
+                    onUploadedFilesWithData: async (files) => {
+                      await sendFilesToChat(files);
+                    }
+                  })
+                }
+              />
+            </InputWrapper>
+          </TypeMessage>
+        </Container>
+        <ExchangeSidePreview
+          thread={thread}
+          disputeOpen={isExchangePreviewOpen}
+        />
+      </>
+    );
+  }
+);
+export default ChatConversation;

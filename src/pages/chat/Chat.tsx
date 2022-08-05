@@ -3,7 +3,8 @@ import {
   ThreadObject
 } from "@bosonprotocol/chat-sdk/dist/cjs/util/definitions";
 import { matchThreadIds } from "@bosonprotocol/chat-sdk/dist/cjs/util/functions";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import dayjs from "dayjs";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Route, Routes, useLocation, useParams } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
 
@@ -490,25 +491,123 @@ const getIsSameThread = (
   return textAreaValue.exchangeId === exchangeId;
 };
 
+const mergeThreads = (
+  threadsA: ThreadObject[],
+  threadsB: ThreadObject[]
+): ThreadObject[] => {
+  const resultingThreads = [...threadsA];
+  if (!resultingThreads.length) {
+    return [...threadsB];
+  }
+  for (const thread of resultingThreads) {
+    const matchingThread = threadsB.find((threadB) =>
+      matchThreadIds(thread.threadId, threadB.threadId)
+    );
+    if (matchingThread) {
+      // messages in matchingThread should be all after or all before the messages in thread
+      if (thread.messages.length && matchingThread.messages.length) {
+        const afterFirst =
+          thread.messages[0].timestamp >= matchingThread.messages[0].timestamp;
+        const afterLast =
+          thread.messages[thread.messages.length - 1].timestamp >=
+          matchingThread.messages[matchingThread.messages.length - 1].timestamp;
+        if (afterFirst && afterLast) {
+          thread.messages = [...matchingThread.messages, ...thread.messages];
+        } else if (!afterFirst && !afterLast) {
+          thread.messages = [...thread.messages, ...matchingThread.messages];
+        } else {
+          throw new Error(
+            `Overlapping messages in threads with id ${JSON.stringify(
+              thread.threadId
+            )} ${JSON.stringify({ afterFirst, afterLast })}`
+          );
+        }
+      } else {
+        thread.messages = matchingThread.messages || [];
+      }
+    }
+  }
+  return resultingThreads;
+};
+
+const requestedData = new Map<string, boolean>();
+const genesisDate = new Date("2022-07-28"); // TODO: change
+const dateStep = "day";
 export default function Chat() {
   const { bosonXmtp } = useChatContext();
   const [threadsXmtp, setThreadsXmtp] = useState<ThreadObject[]>([]);
+  const intersectRef = useRef<HTMLDivElement>(null);
+  const [dateIndex, setDateIndex] = useState<number>(0);
+  const [areThreadsLoading, setThreadsLoading] = useState<boolean>(false);
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const target = entries[0];
+        console.log("isIntersecting", target.isIntersecting, {
+          areThreadsLoading
+        });
+        if (target.isIntersecting && !areThreadsLoading) {
+          setDateIndex(dateIndex - 1);
+        }
+      },
+      {
+        root: intersectRef.current?.closest("[data-messages]"),
+        rootMargin: "0px 0px 0px 0px",
+        threshold: 0
+      }
+    );
+    if (intersectRef.current) observer.observe(intersectRef.current);
+    return () => observer.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dateIndex, intersectRef.current]);
   useEffect(() => {
     if (!bosonXmtp) {
       return;
     }
-    // const address = "0x9c2925a41d6FB1c6C8f53351634446B0b2E65eE8";
+    // endTime, startTime
+    // abans dahir, ahir
+    // ahir, avui
+
     const counterParties: string[] = [address];
+
+    const startTime = dayjs().add(dateIndex, dateStep).toDate();
+    const endTime = dayjs(startTime)
+      .add(dateIndex - 1, dateStep)
+      .toDate();
+    const key = `${dayjs(startTime).format("YYYY-MM-DD")}-${dayjs(
+      endTime
+    ).format("YYYY-MM-DD")}`;
+    console.log("threads key", key);
+    if (requestedData.has(key)) {
+      return;
+    }
+    requestedData.set(key, true);
+    console.log("requesting threads from", startTime, "until", endTime);
+    setThreadsLoading(true);
+
     bosonXmtp
-      .getThreads(counterParties, {})
+      .getThreads(counterParties, {
+        startTime: endTime,
+        endTime: startTime
+      })
       .then((threadObjects) => {
-        setThreadsXmtp(threadObjects);
+        const mergedThreads = mergeThreads(threadsXmtp, threadObjects);
+        console.log(
+          "threadObjects",
+          threadObjects,
+          "mergedThreads",
+          mergedThreads
+        );
+        setThreadsXmtp(mergedThreads);
       })
       .catch((error) => {
         console.error(error);
+      })
+      .finally(() => {
+        setThreadsLoading(false);
       });
-  }, [bosonXmtp]);
-
+  }, [bosonXmtp, dateIndex, threadsXmtp]);
+  console.log({ dateIndex });
   // console.log({ threadsXmtp });
   // TODO: comment out
   // const { data: exchanges } = useExchanges({
@@ -658,6 +757,7 @@ export default function Chat() {
                 prevPath={previousPath}
                 onTextAreaChange={onTextAreaChange}
                 textAreaValue={parseInputValue}
+                ref={intersectRef}
               />
             }
           />
