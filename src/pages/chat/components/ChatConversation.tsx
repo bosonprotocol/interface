@@ -5,8 +5,10 @@ import {
   ProposalContent,
   SupportedImageMimeTypes
 } from "@bosonprotocol/chat-sdk/dist/cjs/util/definitions";
+import { CircleNotch } from "phosphor-react";
 import { ArrowLeft, UploadSimple } from "phosphor-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
@@ -106,8 +108,27 @@ const Header = styled.div`
     }
   }
 `;
+const Spinner = styled(CircleNotch)`
+  animation: spin 2s infinite linear;
+  @keyframes spin {
+    0% {
+      -webkit-transform: rotate(0deg);
+      transform: rotate(0deg);
+    }
+    100% {
+      -webkit-transform: rotate(359deg);
+      transform: rotate(359deg);
+    }
+  }
+`;
+const Loading = styled.div`
+  display: flex;
+  background-color: ${colors.lightGrey};
+  justify-content: center;
+  padding: 1rem;
+`;
 const Messages = styled.div`
-  flex-grow: 1;
+  /* flex-grow: 1;
   display: flex;
   flex-direction: column;
   max-height: 100vh;
@@ -115,7 +136,12 @@ const Messages = styled.div`
   width: 100vw;
   ${breakpoint.m} {
     width: unset;
-  }
+  } */
+
+  height: 300;
+  overflow: auto;
+  display: flex;
+  flex-direction: column-reverse;
 `;
 const Conversation = styled.div<{ $alignStart: boolean }>`
   display: flex;
@@ -263,6 +289,9 @@ interface Props {
   onTextAreaChange: (textAreaTargetValue: string) => void;
   textAreaValue: string | undefined;
   setIntersectRef: (node: HTMLDivElement | null) => void;
+  loadMoreMessages: () => void;
+  hasMoreMessages: boolean;
+  areThreadsLoading: boolean;
 }
 const ChatConversation = ({
   addMessage,
@@ -273,7 +302,10 @@ const ChatConversation = ({
   prevPath,
   onTextAreaChange,
   textAreaValue,
-  setIntersectRef
+  setIntersectRef,
+  loadMoreMessages,
+  hasMoreMessages,
+  areThreadsLoading
 }: Props) => {
   // const { intersectRef, messagesRef } = refs as unknown as {
   //   intersectRef: React.ForwardedRef<HTMLDivElement>;
@@ -297,11 +329,11 @@ const ChatConversation = ({
       lastMessageRef.current?.scrollIntoView(scrollOptions),
     []
   );
-  console.log(
-    "scroll",
-    dataMessagesRef.current?.scrollTop,
-    dataMessagesRef.current?.scrollHeight
-  );
+  // console.log(
+  //   "scroll",
+  //   dataMessagesRef.current?.scrollTop,
+  //   dataMessagesRef.current?.scrollHeight
+  // );
   useEffect(() => {
     if (thread?.messages.length !== previousThreadMessagesNumberRef.current) {
       if (previousThreadMessagesNumberRef.current) {
@@ -314,7 +346,7 @@ const ChatConversation = ({
           // scrollToTop({
           //   behavior: "smooth"
           // });
-          dataMessagesRef?.current?.scroll(0, 2998);
+          // dataMessagesRef?.current?.scroll(0, 2998);
         } else {
           scrollToBottom({
             behavior: "smooth"
@@ -486,7 +518,6 @@ const ChatConversation = ({
   if (!exchange || !bosonXmtp) {
     return <ErrorMessage />;
   }
-
   return (
     <>
       <Container>
@@ -520,44 +551,48 @@ const ChatConversation = ({
           {detailsButton}
         </NavigationMobile>
         <Header>{!chatListOpen && <SellerComponent size={24} />}</Header>
-
-        <Messages data-messages ref={dataMessagesRef}>
-          {thread.messages.map((message, index) => {
-            const isFirstMessage = index === 0;
-            const isLastMessage = index === thread.messages.length - 1;
-            const leftAligned = !getWasItSentByMe(address, message.sender);
-            const ref = isLastMessage
-              ? lastMessageRef
-              : isFirstMessage
-              ? firstMessageRef
-              : null;
-            // TODO: fix when the message separator is shown
-            return (
-              <Conversation key={message.timestamp} $alignStart={leftAligned}>
-                <>
-                  {isFirstMessage && (
-                    <div
-                      ref={setIntersectRef}
-                      style={{
-                        height: "100px",
-                        width: "100%",
-                        background: "red"
-                      }}
-                    ></div>
-                  )}
-                  <MessageSeparator message={message} />
-                  <Message
-                    thread={thread}
-                    message={message}
-                    isLeftAligned={leftAligned}
-                    ref={ref}
-                  >
-                    <SellerComponent size={32} withProfileText={false} />
-                  </Message>
-                </>
-              </Conversation>
-            );
-          })}
+        {areThreadsLoading && (
+          <Loading>
+            <Spinner />
+          </Loading>
+        )}
+        <Messages data-messages ref={dataMessagesRef} id="messages">
+          <InfiniteScroll
+            inverse={true}
+            next={loadMoreMessages}
+            hasMore={hasMoreMessages}
+            loader={<></>}
+            dataLength={thread.messages.length}
+            scrollableTarget="messages"
+            scrollThreshold="200px"
+          >
+            {thread.messages.map((message, index) => {
+              const isFirstMessage = index === 0;
+              const isLastMessage = index === thread.messages.length - 1;
+              const leftAligned = !getWasItSentByMe(address, message.sender);
+              const ref = isLastMessage
+                ? lastMessageRef
+                : isFirstMessage
+                ? firstMessageRef
+                : null;
+              // TODO: fix when the message separator is shown
+              return (
+                <Conversation key={message.timestamp} $alignStart={leftAligned}>
+                  <>
+                    <MessageSeparator message={message} />
+                    <Message
+                      thread={thread}
+                      message={message}
+                      isLeftAligned={leftAligned}
+                      ref={ref}
+                    >
+                      <SellerComponent size={32} withProfileText={false} />
+                    </Message>
+                  </>
+                </Conversation>
+              );
+            })}
+          </InfiniteScroll>
         </Messages>
         <TypeMessage>
           {exchange.disputed && (

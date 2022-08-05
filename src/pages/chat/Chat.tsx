@@ -497,7 +497,7 @@ export default function Chat() {
     isBeginningOfTimes
   } = useInfiniteChat({
     dateIndex,
-    dateStep: "day",
+    dateStep: "day", // TODO: change to week
     counterParties: [address],
     bosonXmtp
   });
@@ -535,6 +535,11 @@ export default function Chat() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [dateIndex]
   );
+  const loadMoreMessages = useCallback(() => {
+    if (!areThreadsLoading) {
+      setDateIndex(dateIndex - 1);
+    }
+  }, [dateIndex, areThreadsLoading]);
   // console.log({ threadsXmtp });
   // TODO: comment out
   // const { data: exchanges } = useExchanges({
@@ -642,6 +647,7 @@ export default function Chat() {
     setPreviousPath(prevPath);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  console.log({ hasMoreMessages: !isBeginningOfTimes, areThreadsLoading });
 
   return (
     <>
@@ -685,6 +691,9 @@ export default function Chat() {
                 onTextAreaChange={onTextAreaChange}
                 textAreaValue={parseInputValue}
                 setIntersectRef={setIntersectRef}
+                loadMoreMessages={loadMoreMessages}
+                hasMoreMessages={!isBeginningOfTimes}
+                areThreadsLoading={areThreadsLoading}
               />
             }
           />
