@@ -43,14 +43,25 @@ const stateToComponent: {
       Cancelled
     </Status>
   ),
-  [subgraph.ExchangeState.Revoked]: (
+  [subgraph.ExchangeState.Committed]: (
     <Status
-      $color={colors.white}
+      $color={colors.black}
+      $background={colors.green}
+      className="status"
+      data-testid="committed-status"
+    >
+      Committed
+    </Status>
+  ),
+  [subgraph.ExchangeState.Completed]: <></>,
+  [subgraph.ExchangeState.Disputed]: (
+    <Status
+      $color={colors.black}
       $background={colors.red}
       className="status"
-      data-testid="revoked-status"
+      data-testid="disputed-status"
     >
-      Revoked
+      Disputed
     </Status>
   ),
   [subgraph.ExchangeState.Redeemed]: (
@@ -63,17 +74,16 @@ const stateToComponent: {
       Redeemed
     </Status>
   ),
-  [subgraph.ExchangeState.Committed]: (
+  [subgraph.ExchangeState.Revoked]: (
     <Status
-      $color={colors.black}
-      $background={colors.green}
+      $color={colors.white}
+      $background={colors.red}
       className="status"
-      data-testid="committed-status"
+      data-testid="revoked-status"
     >
-      Committed
+      Revoked
     </Status>
   ),
-  [subgraph.ExchangeState.Completed]: <></>,
   [exchanges.ExtendedExchangeState.Expired]: (
     <Status
       $color={colors.white}
