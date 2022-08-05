@@ -1,16 +1,13 @@
-import {
-  MessageData,
-  ThreadObject
-} from "@bosonprotocol/chat-sdk/dist/cjs/util/definitions";
+import { MessageData } from "@bosonprotocol/chat-sdk/dist/cjs/util/definitions";
 import { matchThreadIds } from "@bosonprotocol/chat-sdk/dist/cjs/util/functions";
-import dayjs from "dayjs";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Route, Routes, useLocation, useParams } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
 
 import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
+import { useInfiniteChat } from "../../lib/utils/hooks/chat/useInfiniteChat";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
@@ -451,9 +448,9 @@ const getExchanges = ({
         voidedAt: "",
         metadata: {
           imageUrl:
-            "https://assets.website-files.com/6058b6a3587b6e155196ebbb/61b24ecf53f687b4500a6203_NiftyKey_Logo_Vertical.svg",
+            "https://bsn-portal-development-image-upload-storage.s3.amazonaws.com/boson-sweatshirt-FINAL.gif",
           type: "BASE",
-          name: index === 0 ? "boson t-shirt" : "another tshirt"
+          name: index === 0 ? "boson sweatshirt" : "another sweatshirt"
         }
       }
     }))
@@ -491,123 +488,53 @@ const getIsSameThread = (
   return textAreaValue.exchangeId === exchangeId;
 };
 
-const mergeThreads = (
-  threadsA: ThreadObject[],
-  threadsB: ThreadObject[]
-): ThreadObject[] => {
-  const resultingThreads = [...threadsA];
-  if (!resultingThreads.length) {
-    return [...threadsB];
-  }
-  for (const thread of resultingThreads) {
-    const matchingThread = threadsB.find((threadB) =>
-      matchThreadIds(thread.threadId, threadB.threadId)
-    );
-    if (matchingThread) {
-      // messages in matchingThread should be all after or all before the messages in thread
-      if (thread.messages.length && matchingThread.messages.length) {
-        const afterFirst =
-          thread.messages[0].timestamp >= matchingThread.messages[0].timestamp;
-        const afterLast =
-          thread.messages[thread.messages.length - 1].timestamp >=
-          matchingThread.messages[matchingThread.messages.length - 1].timestamp;
-        if (afterFirst && afterLast) {
-          thread.messages = [...matchingThread.messages, ...thread.messages];
-        } else if (!afterFirst && !afterLast) {
-          thread.messages = [...thread.messages, ...matchingThread.messages];
-        } else {
-          throw new Error(
-            `Overlapping messages in threads with id ${JSON.stringify(
-              thread.threadId
-            )} ${JSON.stringify({ afterFirst, afterLast })}`
-          );
-        }
-      } else {
-        thread.messages = matchingThread.messages || [];
-      }
-    }
-  }
-  return resultingThreads;
-};
-
-const requestedData = new Map<string, boolean>();
-const genesisDate = new Date("2022-07-28"); // TODO: change
-const dateStep = "day";
 export default function Chat() {
   const { bosonXmtp } = useChatContext();
-  const [threadsXmtp, setThreadsXmtp] = useState<ThreadObject[]>([]);
-  const intersectRef = useRef<HTMLDivElement>(null);
   const [dateIndex, setDateIndex] = useState<number>(0);
-  const [areThreadsLoading, setThreadsLoading] = useState<boolean>(false);
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const target = entries[0];
-        console.log("isIntersecting", target.isIntersecting, {
-          areThreadsLoading
-        });
-        if (target.isIntersecting && !areThreadsLoading) {
-          setDateIndex(dateIndex - 1);
-        }
-      },
-      {
-        root: intersectRef.current?.closest("[data-messages]"),
-        rootMargin: "0px 0px 0px 0px",
-        threshold: 0
-      }
-    );
-    if (intersectRef.current) observer.observe(intersectRef.current);
-    return () => observer.disconnect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dateIndex, intersectRef.current]);
-  useEffect(() => {
-    if (!bosonXmtp) {
-      return;
-    }
-    // endTime, startTime
-    // abans dahir, ahir
-    // ahir, avui
-
-    const counterParties: string[] = [address];
-
-    const startTime = dayjs().add(dateIndex, dateStep).toDate();
-    const endTime = dayjs(startTime)
-      .add(dateIndex - 1, dateStep)
-      .toDate();
-    const key = `${dayjs(startTime).format("YYYY-MM-DD")}-${dayjs(
-      endTime
-    ).format("YYYY-MM-DD")}`;
-    console.log("threads key", key);
-    if (requestedData.has(key)) {
-      return;
-    }
-    requestedData.set(key, true);
-    console.log("requesting threads from", startTime, "until", endTime);
-    setThreadsLoading(true);
-
+  const {
+    data: threadsXmtp,
+    isLoading: areThreadsLoading,
+    isBeginningOfTimes
+  } = useInfiniteChat({
+    dateIndex,
+    dateStep: "day",
+    counterParties: [address],
     bosonXmtp
-      .getThreads(counterParties, {
-        startTime: endTime,
-        endTime: startTime
-      })
-      .then((threadObjects) => {
-        const mergedThreads = mergeThreads(threadsXmtp, threadObjects);
-        console.log(
-          "threadObjects",
-          threadObjects,
-          "mergedThreads",
-          mergedThreads
-        );
-        setThreadsXmtp(mergedThreads);
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-      .finally(() => {
-        setThreadsLoading(false);
-      });
-  }, [bosonXmtp, dateIndex, threadsXmtp]);
-  console.log({ dateIndex });
+  });
+  // console.log(
+  //   "threadsXmtp",
+  //   threadsXmtp,
+  //   "dateIndex",
+  //   dateIndex,
+  //   "isBeginningOfTimes",
+  //   isBeginningOfTimes
+  // );
+  const setIntersectRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const target = entries[0];
+          if (target.isIntersecting && !areThreadsLoading) {
+            setDateIndex(dateIndex - 1);
+          }
+        },
+        {
+          root: node?.closest("[data-messages]"),
+          rootMargin: "0px 0px 0px 0px",
+          threshold: 0
+        }
+      );
+      if (node && !isBeginningOfTimes) {
+        observer.observe(node);
+      } else {
+        observer.disconnect(); // TODO: check if it disconnects when you select another thread
+      }
+
+      // return () => observer.disconnect();
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [dateIndex]
+  );
   // console.log({ threadsXmtp });
   // TODO: comment out
   // const { data: exchanges } = useExchanges({
@@ -757,7 +684,7 @@ export default function Chat() {
                 prevPath={previousPath}
                 onTextAreaChange={onTextAreaChange}
                 textAreaValue={parseInputValue}
-                ref={intersectRef}
+                setIntersectRef={setIntersectRef}
               />
             }
           />

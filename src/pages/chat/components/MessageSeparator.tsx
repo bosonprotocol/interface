@@ -63,13 +63,14 @@ export default function MessageSeparator({ message }: Props) {
     if (calcDate === 0) {
       return null;
     } else if (calcDate > 0 && calcDate <= 7) {
-      const sentDate = new Date(message.timestamp);
+      const sentDate = new Date(message.timestamp); // TODO: change format back
       return (
         <Separator>
           <div>
-            {sentDate.toLocaleDateString("en-EN", {
+            {/* {sentDate.toLocaleDateString("en-EN", {
               weekday: "long"
-            })}
+            })} */}
+            {dayjs(sentDate).format("YYYY-MM-DD")}
           </div>
           <div></div>
         </Separator>
