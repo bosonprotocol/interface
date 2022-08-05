@@ -59,6 +59,8 @@ interface IDetailWidget {
   name?: string;
   image?: string;
   hasSellerEnoughFunds: boolean;
+  isModalOpened?: boolean;
+  setIsModalOpened?: (p: boolean) => void;
 }
 
 const oneSecondToDays = 86400;
@@ -169,6 +171,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   pageType,
   offer,
   exchange,
+  isModalOpened,
+  setIsModalOpened,
   name = "",
   image = "",
   hasSellerEnoughFunds
@@ -432,7 +436,11 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 </StyledCancelButton>
               ) : (
                 <RaiseProblemButton
-                  onClick={() => console.log("raise a problem")}
+                  onClick={() => {
+                    if (setIsModalOpened) {
+                      setIsModalOpened(!isModalOpened);
+                    }
+                  }}
                   theme="blank"
                   style={{ fontSize: "0.875rem" }}
                   disabled={isChainUnsupported}

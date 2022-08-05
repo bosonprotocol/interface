@@ -8,16 +8,15 @@ import { zIndex } from "../../../../lib/styles/zIndex";
 import Typography from "../../../ui/Typography";
 
 const ModalBackground = styled.div<{
-  $visible?: boolean;
+  $isModalOpened?: boolean;
 }>`
   position: absolute;
   left: 0;
   top: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.4);
+  width: 100vw;
+  height: 100vh;
   z-index: ${zIndex.Modal};
-  display: ${({ $visible }) => ($visible ? "block" : "none")};
+  display: ${({ $isModalOpened }) => ($isModalOpened ? "block" : "none")};
 `;
 
 const ModalContainer = styled.div`
@@ -50,6 +49,12 @@ const ModalHeader = styled.div`
   padding-bottom: 1.5rem;
   > svg {
     color: ${colors.black};
+  }
+  button {
+    background: none;
+    border: none;
+    padding: none;
+    margin: none;
   }
 `;
 
@@ -189,12 +194,13 @@ const ButtonContainer = styled.div`
 `;
 
 interface Props {
-  visible: boolean;
+  isModalOpened: boolean;
+  setIsModalOpened: (p: boolean) => void;
 }
 
-function DisputeModal({ visible }: Props) {
+function DisputeModal({ isModalOpened, setIsModalOpened }: Props) {
   return (
-    <ModalBackground $visible={visible}>
+    <ModalBackground $isModalOpened={isModalOpened}>
       <ModalContainer>
         <ModalHeader>
           <Typography
@@ -205,7 +211,13 @@ function DisputeModal({ visible }: Props) {
           >
             Raise a problem
           </Typography>
-          <X size={24} />
+          <button
+            onClick={() => {
+              setIsModalOpened(!isModalOpened);
+            }}
+          >
+            <X size={24} />
+          </button>
         </ModalHeader>
         <ModalGrid>
           <div>

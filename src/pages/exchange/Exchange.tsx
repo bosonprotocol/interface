@@ -1,5 +1,5 @@
 import { manageExchange } from "@bosonprotocol/widgets-sdk";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { useAccount } from "wagmi";
 
@@ -24,6 +24,7 @@ import DetailSlider from "../../components/detail/DetailSlider";
 import DetailTable from "../../components/detail/DetailTable";
 import DetailTransactions from "../../components/detail/DetailTransactions";
 import DetailWidget from "../../components/detail/DetailWidget/DetailWidget";
+import DisputeModal from "../../components/modal/components/DisputeModal/DisputeModal";
 // DETAILS COMPONENTS ABOVE
 import Image from "../../components/ui/Image";
 import SellerID from "../../components/ui/SellerID";
@@ -42,7 +43,6 @@ import {
   getOfferShippingInformation
 } from "../../lib/utils/hooks/offers/placeholders";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
-import { useSellers } from "../../lib/utils/hooks/useSellers";
 import { isAccountSeller } from "../../lib/utils/isAccountSeller";
 import { MOCK } from "./mock/mock";
 
@@ -54,29 +54,125 @@ export default function Exchange() {
   const fromAccountPage =
     (location.state as { from: string })?.from === BosonRoutes.YourAccount;
   const [isTabSellerSelected, setTabSellerSelected] = useState(fromAccountPage);
+  const [isModalOpened, setIsModalOpened] = useState<boolean>(false);
 
   const { address: account } = useAccount();
   const address = account || "";
-  const {
-    data: exchanges,
-    isError,
-    isLoading
-  } = useExchanges(
-    {
-      id: exchangeId,
-      disputed: null
-    },
-    {
-      enabled: !!exchangeId
-    }
+  // const {
+  //   data: exchanges,
+  //   isError,
+  //   isLoading
+  // } = useExchanges(
+  //   {
+  //     id: exchangeId,
+  //     disputed: null
+  //   },
+  //   {
+  //     enabled: !!exchangeId
+  //   }
+  // );
+  const getExchanges = ({
+    id_in,
+    disputed
+  }: {
+    id_in: string[];
+    disputed: null;
+  }): ReturnType<typeof useExchanges> => {
+    const r = {
+      data: id_in.map((id, index) => ({
+        id,
+        buyer: {
+          id: "1",
+          wallet: "0x"
+        },
+        committedDate: new Date().toString(),
+        disputed: true,
+        expired: true,
+        finalizedDate: new Date().toString(),
+        redeemedDate: new Date().toString(),
+        state: "REDEEMED",
+        validUntilDate: new Date().toString(),
+        seller: { id: "123" },
+        offer: {
+          id: "1",
+          exchanges: [{ id, commitedDate: new Date().toString() }],
+          buyerCancelPenalty: "",
+          createdAt: "",
+          disputeResolverId: "",
+          exchangeToken: {
+            address:
+              index === 0
+                ? "0x123"
+                : "0x0000000000000000000000000000000000000000",
+            decimals: "18",
+            name: index === 0 ? "PepitoName" : "Ether",
+            symbol: index === 0 ? "pepito" : "ETH",
+            __typename: "ExchangeToken"
+          },
+          fulfillmentPeriodDuration: "",
+          metadataHash: "",
+          metadataUri: "",
+          price: "10001230000000000000",
+          protocolFee: "",
+          quantityAvailable: "",
+          quantityInitial: "",
+          resolutionPeriodDuration: "",
+          seller: {
+            active: true,
+            admin: "0x9c2925a41d6FB1c6C8f53351634446B0b2E65999",
+            clerk: "0x9c2925a41d6FB1c6C8f53351634446B0b2E65999",
+            __typename: "Seller",
+            id: "5",
+            operator: "0x9c2925a41d6FB1c6C8f53351634446B0b2E65999",
+            treasury: "0x9c2925a41d6FB1c6C8f53351634446B0b2E65999"
+          },
+          sellerDeposit: "",
+          validFromDate: "",
+          validUntilDate: "",
+          voucherRedeemableFromDate: "",
+          voucherRedeemableUntilDate: "",
+          voucherValidDuration: "",
+          __typename: "Offer",
+          isValid: true,
+          voidedAt: "",
+          metadata: {
+            imageUrl:
+              "https://assets.website-files.com/6058b6a3587b6e155196ebbb/61b24ecf53f687b4500a6203_NiftyKey_Logo_Vertical.svg",
+            type: "BASE",
+            name: index === 0 ? "boson t-shirt" : "another tshirt"
+          }
+        }
+      }))
+    };
+    return r as any;
+  };
+  const { data: exchanges } = useMemo(
+    () =>
+      getExchanges({
+        // TODO: remove
+        id_in: ["115"],
+        disputed: null
+      }),
+    []
   );
+  const isError = false;
+  const isLoading = false;
   const exchange = exchanges?.[0];
   const offer = exchange?.offer;
 
-  const { data: sellers } = useSellers({
-    admin: offer?.seller.admin,
-    includeFunds: true
-  });
+  // const { data: sellers } = useSellers({
+  //   admin: offer?.seller.admin,
+  //   includeFunds: true
+  // });
+
+  const getSellers = () => {
+    return {
+      data: [{ funds: [{ token: { address: "" }, availableAmount: 3 }] }]
+    };
+  };
+
+  const { data: sellers } = getSellers();
+
   const sellerAvailableDeposit = sellers?.[0].funds?.find(
     (fund) => fund.token.address === offer?.exchangeToken.address
   )?.availableAmount;
@@ -201,6 +297,8 @@ export default function Exchange() {
                     <DetailWidget
                       pageType="exchange"
                       offer={offer}
+                      setIsModalOpened={setIsModalOpened}
+                      isModalOpened={isModalOpened}
                       exchange={
                         exchange as NonNullable<Offer["exchanges"]>[number]
                       }
@@ -219,6 +317,8 @@ export default function Exchange() {
                   name={name}
                   image={offerImg}
                   hasSellerEnoughFunds={hasSellerEnoughFunds}
+                  setIsModalOpened={setIsModalOpened}
+                  isModalOpened={isModalOpened}
                 />
               )}
             </div>
@@ -264,6 +364,10 @@ export default function Exchange() {
           </DetailGrid>
         </DarkerBackground>
       </DetailWrapper>
+      <DisputeModal
+        isModalOpened={isModalOpened}
+        setIsModalOpened={setIsModalOpened}
+      />
     </>
   );
 }
