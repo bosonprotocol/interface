@@ -16,362 +16,9 @@ import ChatConversation from "./components/ChatConversation";
 import MessageList from "./components/MessageList";
 import { Thread } from "./types";
 
-const mySellerId = "2";
-const myBuyerId = "7";
 // const address = "0x5295D74Bbb5195A3e4E788744cB17c2f1c48DfFf";
 const address = "0x5295D74Bbb5195A3e4E788744cB17c2f1c48DfFf";
-/*
-const threads: Omit<Thread, "exchange">[] = [
-  {
-    threadId: {
-      exchangeId: "115",
-      sellerId: mySellerId,
-      buyerId: myBuyerId
-    },
-    messages: [
-      {
-        id: "1",
-        from: mySellerId,
-        sentDate: new Date(),
-        content: {
-          threadId: {
-            exchangeId: "115",
-            sellerId: mySellerId,
-            buyerId: myBuyerId
-          },
-          contentType: "string",
-          value: "hello 😃",
-          version: "1"
-        }
-      },
-      {
-        id: "2",
-        from: myBuyerId,
-        sentDate: new Date(),
-        content: {
-          threadId: {
-            exchangeId: "115",
-            sellerId: mySellerId,
-            buyerId: myBuyerId
-          },
-          contentType: "string",
-          value: "this is a conversation with myself",
-          version: "1"
-        }
-      },
-      {
-        id: "2.1",
-        from: myBuyerId,
-        sentDate: new Date(),
-        content: {
-          threadId: {
-            exchangeId: "20",
-            sellerId: mySellerId,
-            buyerId: myBuyerId
-          },
-          contentType: "proposal",
-          version: "1",
-          value: {
-            title: "Seller ID:4 made a proposal",
-            description:
-              "Thank you for reaching out lorem ipsum dolor sit amet",
-            proposals: [
-              {
-                type: "Refund",
-                percentageAmount: "10",
-                signature: "0x214..."
-              }
-            ],
-            disputeContext: []
-          }
-        }
-      }
-    ]
-  },
-  {
-    threadId: {
-      exchangeId: "133",
-      sellerId: mySellerId,
-      buyerId: myBuyerId
-    },
-    messages: [
-      {
-        id: "1",
-        from: "123",
-        sentDate: new Date(),
-        content: {
-          threadId: {
-            exchangeId: "115",
-            sellerId: mySellerId,
-            buyerId: myBuyerId
-          },
-          contentType: "string",
-          value: "hello 😃",
-          version: "1"
-        }
-      },
-      {
-        id: "2",
-        from: myBuyerId,
-        sentDate: new Date(),
-        content: {
-          threadId: {
-            exchangeId: "115",
-            sellerId: mySellerId,
-            buyerId: myBuyerId
-          },
-          contentType: "string",
-          value: "this is a conversation with myself",
-          version: "1"
-        }
-      }
-    ]
-  },
-  {
-    threadId: {
-      exchangeId: "20",
-      sellerId: "4",
-      buyerId: myBuyerId
-    },
-    messages: [
-      {
-        id: "3",
-        from: myBuyerId,
-        sentDate: (() => {
-          const currentDate = new Date();
-          new Date(currentDate.setDate(currentDate.getDate() - 15));
-          return currentDate;
-        })(),
-        content: {
-          threadId: {
-            exchangeId: "20",
-            sellerId: "4",
-            buyerId: myBuyerId
-          },
-          contentType: "string",
-          value: "hello 😃 seller with id 4",
-          version: "1"
-        }
-      },
-      {
-        id: "4",
-        from: "4",
-        sentDate: (() => {
-          const currentDate = new Date();
-          new Date(currentDate.setDate(currentDate.getDate() - 10));
-          return currentDate;
-        })(),
-        content: {
-          threadId: {
-            exchangeId: "20",
-            sellerId: "4",
-            buyerId: myBuyerId
-          },
-          contentType: "string",
-          value: `hello 😃 buyer with id ${myBuyerId}`,
-          version: "1"
-        }
-      },
-      {
-        id: "5",
-        from: myBuyerId,
-        sentDate: (() => {
-          const currentDate = new Date();
-          new Date(currentDate.setDate(currentDate.getDate() - 5));
-          return currentDate;
-        })(),
-        content: {
-          threadId: {
-            exchangeId: "20",
-            sellerId: "4",
-            buyerId: myBuyerId
-          },
-          contentType: "string",
-          value: "hello 😃 seller with id 4",
-          version: "1"
-        }
-      },
-      {
-        id: "6",
-        from: "4",
-        sentDate: (() => {
-          const currentDate = new Date();
-          new Date(currentDate.setDate(currentDate.getDate() - 2));
-          return currentDate;
-        })(),
-        content: {
-          threadId: {
-            exchangeId: "20",
-            sellerId: "4",
-            buyerId: myBuyerId
-          },
-          contentType: "string",
-          value: `test test hello 😃 buyer with id ${myBuyerId}`,
-          version: "1"
-        }
-      },
-      {
-        id: "7",
-        from: "4",
-        sentDate: new Date(),
-        content: {
-          threadId: {
-            exchangeId: "20",
-            sellerId: "4",
-            buyerId: myBuyerId
-          },
-          contentType: "image",
-          version: "1",
-          value: {
-            name: "dot.png",
-            type: "image/png",
-            size: 123,
-            encodedContent: `data:image/png;base64,iVBORw0KGgoAAA
-              ANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4
-              //8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU
-              5ErkJggg==`
-          }
-        }
-      },
-      {
-        id: "8",
-        from: "4",
-        sentDate: new Date(),
-        content: {
-          threadId: {
-            exchangeId: "20",
-            sellerId: "4",
-            buyerId: myBuyerId
-          },
-          contentType: "image",
-          version: "1",
-          value: {
-            name: "123.png",
-            type: "image/png",
-            size: 123,
-            encodedContent:
-              "invalid format image, we should show an error in the chat"
-          }
-        }
-      },
-      {
-        id: "9",
-        from: "4",
-        sentDate: new Date(),
-        content: {
-          threadId: {
-            exchangeId: "20",
-            sellerId: "4",
-            buyerId: myBuyerId
-          },
-          contentType: "proposal",
-          version: "1",
-          value: {
-            title: `Seller ID:x raised a dispute and made a proposal`,
-            description:
-              "Hello there, the item I received has some quality issues. The colours are a bit worn out and not as bright as on the picture. The laces are slightly damaged and in the wrong colour....",
-            proposals: [
-              {
-                type: "Refund",
-                percentageAmount: "20",
-                signature: "0x214..."
-              }
-            ],
-            disputeContext: [
-              "Item not as described",
-              "The item received is a different colour, model, version, or size"
-            ]
-          }
-        }
-      },
-      {
-        id: "10",
-        from: "4",
-        sentDate: new Date(),
-        content: {
-          threadId: {
-            exchangeId: "20",
-            sellerId: "4",
-            buyerId: myBuyerId
-          },
-          contentType: "proposal",
-          version: "1",
-          value: {
-            title: "Seller ID:4 made a proposal",
-            description:
-              "Thank you for reaching out lorem ipsum dolor sit amet",
-            proposals: [
-              {
-                type: "Refund",
-                percentageAmount: "10",
-                signature: "0x214..."
-              }
-            ],
-            disputeContext: []
-          }
-        }
-      },
-      {
-        id: "11",
-        from: myBuyerId,
-        sentDate: new Date(),
-        content: {
-          threadId: {
-            exchangeId: "20",
-            sellerId: mySellerId,
-            buyerId: myBuyerId
-          },
-          contentType: "proposal",
-          version: "1",
-          value: {
-            title: `Seller ID:x raised a dispute and made a proposal`,
-            description:
-              "Hello there, the item I received has some quality issues. The colours are a bit worn out and not as bright as on the picture. The laces are slightly damaged and in the wrong colour....",
-            proposals: [
-              {
-                type: "Refund",
-                percentageAmount: "20",
-                signature: "0x214..."
-              }
-            ],
-            disputeContext: [
-              "Item not as described",
-              "The item received is a different colour, model, version, or size"
-            ]
-          }
-        }
-      },
-      {
-        id: "12",
-        from: myBuyerId,
-        sentDate: new Date(),
-        content: {
-          threadId: {
-            exchangeId: "20",
-            sellerId: mySellerId,
-            buyerId: myBuyerId
-          },
-          contentType: "proposal",
-          version: "1",
-          value: {
-            title: "Seller ID:4 made a proposal",
-            description:
-              "Thank you for reaching out lorem ipsum dolor sit amet",
-            proposals: [
-              {
-                type: "Refund",
-                percentageAmount: "10",
-                signature: "0x214..."
-              }
-            ],
-            disputeContext: []
-          }
-        }
-      }
-    ]
-  }
-];
-*/
+
 const GlobalStyle = createGlobalStyle`
   html, body, #root, [data-rk] {
     height: 100%;
@@ -491,49 +138,40 @@ const getIsSameThread = (
 export default function Chat() {
   const { bosonXmtp } = useChatContext();
   const [dateIndex, setDateIndex] = useState<number>(0);
+  const { data: exchanges = [] } = useMemo(
+    () =>
+      getExchanges({
+        // TODO: remove
+        id_in: [1, 2, 3, 115].map((v) => "" + v),
+        disputed: null
+      }),
+    []
+  );
+  // TODO: comment out
+  // const { data: exchanges } = useExchanges({
+  //   id_in: threads.map((message) => message.threadId.exchangeId),
+  //   disputed: null
+  // });
   const {
     data: threadsXmtp,
     isLoading: areThreadsLoading,
     isBeginningOfTimes
   } = useInfiniteChat({
     dateIndex,
-    dateStep: "day", // TODO: change to week
-    counterParties: [address],
+    dateStep: "month", // TODO: change to week
+    counterParties:
+      exchanges?.map((exchange) => exchange.offer.seller.operator) || [],
     bosonXmtp
   });
-  // console.log(
-  //   "threadsXmtp",
-  //   threadsXmtp,
-  //   "dateIndex",
-  //   dateIndex,
-  //   "isBeginningOfTimes",
-  //   isBeginningOfTimes
-  // );
-  const setIntersectRef = useCallback(
-    (node: HTMLDivElement | null) => {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          const target = entries[0];
-          if (target.isIntersecting && !areThreadsLoading) {
-            setDateIndex(dateIndex - 1);
-          }
-        },
-        {
-          root: node?.closest("[data-messages]"),
-          rootMargin: "0px 0px 0px 0px",
-          threshold: 0
-        }
-      );
-      if (node && !isBeginningOfTimes) {
-        observer.observe(node);
-      } else {
-        observer.disconnect(); // TODO: check if it disconnects when you select another thread
-      }
-
-      // return () => observer.disconnect();
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [dateIndex]
+  console.log(
+    "threadsXmtp",
+    threadsXmtp,
+    "dateIndex",
+    dateIndex,
+    "isBeginningOfTimes",
+    isBeginningOfTimes,
+    "areThreadsLoading",
+    areThreadsLoading
   );
   const loadMoreMessages = useCallback(() => {
     if (!areThreadsLoading) {
@@ -541,21 +179,8 @@ export default function Chat() {
     }
   }, [dateIndex, areThreadsLoading]);
   // console.log({ threadsXmtp });
-  // TODO: comment out
-  // const { data: exchanges } = useExchanges({
-  //   id_in: threads.map((message) => message.threadId.exchangeId),
-  //   disputed: null
-  // });
-  const { data: exchanges } = useMemo(
-    () =>
-      getExchanges({
-        // TODO: remove
-        // id_in: threads.map((message) => message.threadId.exchangeId),
-        id_in: [1, 2, 3, 115].map((v) => "" + v),
-        disputed: null
-      }),
-    []
-  );
+
+  // TODO: remove this
   const [threadsWithExchanges, setThreadsWithExchanges] = useState<Thread[]>(
     []
   );
@@ -647,7 +272,6 @@ export default function Chat() {
     setPreviousPath(prevPath);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  console.log({ hasMoreMessages: !isBeginningOfTimes, areThreadsLoading });
 
   return (
     <>
@@ -655,16 +279,29 @@ export default function Chat() {
         <GlobalStyle />
 
         <MessageList
-          threads={threadsWithExchanges}
+          exchanges={exchanges}
           isConversationOpened={
             location.pathname !== `${BosonRoutes.Chat}/` &&
             location.pathname !== `${BosonRoutes.Chat}`
           }
-          onChangeConversation={(thread) => {
+          onChangeConversation={(exchange) => {
             if (isXXS || isXS || isS) {
               setChatListOpen(!chatListOpen);
             }
-            selectThread(thread);
+            const thread = threadsXmtp.find((thread) => {
+              return thread.threadId.exchangeId === exchange.id;
+            });
+            if (!thread) {
+              console.error(
+                `Thread xmtp not found with this exchange id=${exchange.id}`
+              );
+              selectThread(undefined);
+              return;
+            }
+            selectThread({
+              ...thread,
+              exchange
+            });
             navigate(
               {
                 pathname: `${BosonRoutes.Chat}/${thread.threadId.exchangeId}`
@@ -674,7 +311,7 @@ export default function Chat() {
           }}
           chatListOpen={chatListOpen}
           setChatListOpen={setChatListOpen}
-          currentThread={selectedThread}
+          currentExchange={selectedThread?.exchange}
         />
         <Routes>
           <Route
@@ -685,12 +322,10 @@ export default function Chat() {
                 thread={selectedThread}
                 setChatListOpen={setChatListOpen}
                 chatListOpen={chatListOpen}
-                exchangeId={`${exchangeId}`}
                 exchangeIdNotOwned={exchangeIdNotOwned}
                 prevPath={previousPath}
                 onTextAreaChange={onTextAreaChange}
                 textAreaValue={parseInputValue}
-                setIntersectRef={setIntersectRef}
                 loadMoreMessages={loadMoreMessages}
                 hasMoreMessages={!isBeginningOfTimes}
                 areThreadsLoading={areThreadsLoading}

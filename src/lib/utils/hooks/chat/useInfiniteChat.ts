@@ -63,7 +63,8 @@ export function useInfiniteChat({
     bosonXmtp
       .getThreads(counterParties, {
         startTime: endTime,
-        endTime: startTime
+        endTime: startTime,
+        pageSize: 100
       })
       .then((threadObjects) => {
         const mergedThreads = mergeThreads(threadsXmtp, threadObjects);

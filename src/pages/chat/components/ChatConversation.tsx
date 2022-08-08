@@ -284,11 +284,9 @@ interface Props {
   chatListOpen: boolean;
   setChatListOpen: (p: boolean) => void;
   exchangeIdNotOwned: boolean;
-  exchangeId: string;
   prevPath: string;
   onTextAreaChange: (textAreaTargetValue: string) => void;
   textAreaValue: string | undefined;
-  setIntersectRef: (node: HTMLDivElement | null) => void;
   loadMoreMessages: () => void;
   hasMoreMessages: boolean;
   areThreadsLoading: boolean;
@@ -302,16 +300,10 @@ const ChatConversation = ({
   prevPath,
   onTextAreaChange,
   textAreaValue,
-  setIntersectRef,
   loadMoreMessages,
   hasMoreMessages,
   areThreadsLoading
 }: Props) => {
-  // const { intersectRef, messagesRef } = refs as unknown as {
-  //   intersectRef: React.ForwardedRef<HTMLDivElement>;
-  //   messagesRef: React.ForwardedRef<HTMLDivElement>;
-  // };
-  // console.log("chatconversation", intersectRef, messagesRef);
   const { bosonXmtp } = useChatContext();
   const previousThreadMessagesNumberRef = useRef<number>(
     thread?.messages.length || 0
@@ -329,29 +321,12 @@ const ChatConversation = ({
       lastMessageRef.current?.scrollIntoView(scrollOptions),
     []
   );
-  // console.log(
-  //   "scroll",
-  //   dataMessagesRef.current?.scrollTop,
-  //   dataMessagesRef.current?.scrollHeight
-  // );
   useEffect(() => {
     if (thread?.messages.length !== previousThreadMessagesNumberRef.current) {
       if (previousThreadMessagesNumberRef.current) {
-        // const haveLoadedMessagesInThePast =
-        //   previousLastTimeStamp.current > (thread?.messages[0].timestamp || 0);
-        // // eslint-disable-next-line no-debugger
-        // debugger;
-        const haveLoadedMessagesInThePast = true; // TODO: change
-        if (haveLoadedMessagesInThePast) {
-          // scrollToTop({
-          //   behavior: "smooth"
-          // });
-          // dataMessagesRef?.current?.scroll(0, 2998);
-        } else {
-          scrollToBottom({
-            behavior: "smooth"
-          }); // every time we send/receive a message
-        }
+        scrollToBottom({
+          behavior: "smooth"
+        }); // every time we send/receive a message
       } else {
         scrollToBottom({}); // when the conversation loads
       }
@@ -383,13 +358,9 @@ const ChatConversation = ({
         });
       }
     };
-    monitor()
-      .then(() => {
-        // TODO:
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    monitor().catch((error) => {
+      console.error(error);
+    });
   }, [bosonXmtp, destinationAddress, thread, addMessage, address]);
   const sendFilesToChat = useCallback(
     async (files: FileWithEncodedData[]) => {
@@ -502,7 +473,15 @@ const ChatConversation = ({
   ) {
     return <ErrorMessage />;
   }
-
+  console.log({ thread });
+  const isConversationBeingLoaded = !thread && areThreadsLoading;
+  if (isConversationBeingLoaded) {
+    return (
+      <Container>
+        <SimpleMessage>Loading your messages...</SimpleMessage>
+      </Container>
+    );
+  }
   if (!thread) {
     return (
       <Container>

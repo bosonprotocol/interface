@@ -5,7 +5,7 @@ import SellerID from "../../../components/ui/SellerID";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { zIndex } from "../../../lib/styles/zIndex";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
-import { Thread } from "../types";
+import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 
 const messageItemHeight = "6.25rem";
 const messageItemMargin = "1.5rem";
@@ -108,33 +108,33 @@ const MessageInfo = styled.div`
 `;
 
 interface Props {
-  threads: Thread[];
-  onChangeConversation: (thread: Thread) => void;
+  exchanges: Exchange[];
+  onChangeConversation: (exchange: Exchange) => void;
   chatListOpen: boolean;
-  currentThread?: Thread;
+  currentExchange?: Exchange;
   isConversationOpened: boolean;
   setChatListOpen: (p: boolean) => void;
 }
-const getMessageItemKey = (thread: Thread) =>
-  `${thread.threadId.buyerId}-${thread.threadId.exchangeId}-${thread.threadId.sellerId}`;
+
+const getMessageItemKey = (exchange: Exchange) => exchange.id;
 
 export default function MessageList({
-  threads,
+  exchanges,
   onChangeConversation,
   chatListOpen,
-  currentThread,
+  currentExchange,
   isConversationOpened,
   setChatListOpen
 }: Props) {
   const [activeMessageKey, setActiveMessageKey] = useState<string>(
-    currentThread ? getMessageItemKey(currentThread) : ""
+    currentExchange ? getMessageItemKey(currentExchange) : ""
   );
   const { isS } = useBreakpoints();
   useEffect(() => {
-    if (currentThread) {
-      setActiveMessageKey(getMessageItemKey(currentThread));
+    if (currentExchange) {
+      setActiveMessageKey(getMessageItemKey(currentExchange));
     }
-  }, [currentThread]);
+  }, [currentExchange]);
 
   return (
     <Container
@@ -142,15 +142,15 @@ export default function MessageList({
       $isConversationOpened={isConversationOpened}
     >
       <Header>Messages</Header>
-      {threads
-        .filter((thread) => thread.exchange)
-        .map((thread) => {
-          const messageKey = getMessageItemKey(thread);
+      {exchanges
+        .filter((exchange) => exchange)
+        .map((exchange) => {
+          const messageKey = getMessageItemKey(exchange);
           return (
             <MessageItem
               $active={messageKey === activeMessageKey}
               onClick={() => {
-                onChangeConversation(thread);
+                onChangeConversation(exchange);
                 setActiveMessageKey(messageKey);
                 if (isS) {
                   setChatListOpen(!chatListOpen);
@@ -160,18 +160,16 @@ export default function MessageList({
             >
               <MessageContent>
                 <img
-                  src={thread.exchange?.offer.metadata.imageUrl}
+                  src={exchange?.offer.metadata.imageUrl}
                   alt="exchange image"
                   width="50"
                   height="50"
                 />
                 <MessageInfo>
-                  <ExchangeName>
-                    {thread.exchange?.offer.metadata.name}
-                  </ExchangeName>
+                  <ExchangeName>{exchange?.offer.metadata.name}</ExchangeName>
                   <SellerID
-                    seller={thread.exchange?.offer.seller || ({} as never)}
-                    offerName={thread.exchange?.offer.metadata.name || ""}
+                    seller={exchange?.offer.seller || ({} as never)}
+                    offerName={exchange?.offer.metadata.name || ""}
                     withProfileImage
                     onClick={null}
                   />
