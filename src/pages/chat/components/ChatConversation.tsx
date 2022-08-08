@@ -141,11 +141,14 @@ const Messages = styled.div`
     width: unset;
   } */
 
-  height: 300;
-  background-color: red;
+  background-color: ${colors.lightGrey};
   overflow: auto;
   display: flex;
   flex-direction: column-reverse;
+
+  [data-infinite-scroll] > .infinite-scroll-component__outerdiv {
+    overflow: hidden;
+  }
 `;
 const Conversation = styled.div<{ $alignStart: boolean }>`
   display: flex;
@@ -574,56 +577,75 @@ const ChatConversation = ({
             <Spinner />
           </Loading>
         )}
-        <Messages data-messages ref={dataMessagesRef} id="messages">
-          <InfiniteScroll
-            inverse
-            next={loadMoreMessages}
-            hasMore={hasMoreMessages}
-            loader={<></>}
-            dataLength={thread?.messages.length || 0}
-            scrollableTarget="messages"
-            scrollThreshold="200px"
-          >
-            <>
-              {thread?.messages.map((message, index) => {
-                const isFirstMessage = index === 0;
-                const isLastMessage = index === thread.messages.length - 1;
-                const leftAligned = !getWasItSentByMe(address, message.sender);
-                const ref = isLastMessage
-                  ? lastMessageRef
-                  : isFirstMessage
-                  ? firstMessageRef
-                  : null;
-                // TODO: fix when the message separator is shown
-                return (
-                  <Conversation
-                    key={message.timestamp}
-                    $alignStart={leftAligned}
-                  >
-                    <>
-                      <MessageSeparator message={message} />
-                      <Message
-                        exchange={exchange}
-                        message={message}
-                        isLeftAligned={leftAligned}
-                        ref={ref}
-                      >
-                        <SellerComponent
-                          size={32}
-                          withProfileText={false}
+
+        {thread?.messages.length ? (
+          <Messages data-messages ref={dataMessagesRef} id="messages">
+            <InfiniteScroll
+              inverse
+              next={loadMoreMessages}
+              hasMore={hasMoreMessages}
+              loader={<></>}
+              dataLength={thread?.messages.length || 0}
+              scrollableTarget="messages"
+              scrollThreshold="200px"
+            >
+              <>
+                {thread?.messages.map((message, index) => {
+                  const isFirstMessage = index === 0;
+                  const isLastMessage = index === thread.messages.length - 1;
+                  const leftAligned = !getWasItSentByMe(
+                    address,
+                    message.sender
+                  );
+                  const ref = isLastMessage
+                    ? lastMessageRef
+                    : isFirstMessage
+                    ? firstMessageRef
+                    : null;
+                  // TODO: fix when the message separator is shown
+                  return (
+                    <Conversation
+                      key={message.timestamp}
+                      $alignStart={leftAligned}
+                    >
+                      <>
+                        <MessageSeparator message={message} />
+                        <Message
                           exchange={exchange}
-                        />
-                      </Message>
-                    </>
-                  </Conversation>
-                );
-              })}
-            </>
-          </InfiniteScroll>
-        </Messages>
-        {/* ) : (
-          <Messages></Messages>
-        )} */}
+                          message={message}
+                          isLeftAligned={leftAligned}
+                          ref={ref}
+                        >
+                          <SellerComponent
+                            size={32}
+                            withProfileText={false}
+                            exchange={exchange}
+                          />
+                        </Message>
+                      </>
+                    </Conversation>
+                  );
+                })}
+              </>
+            </InfiniteScroll>
+          </Messages>
+        ) : (
+          <Messages>
+            <div data-infinite-scroll>
+              <InfiniteScroll
+                inverse
+                next={() => null}
+                hasMore={false}
+                loader={<></>}
+                dataLength={9}
+              >
+                {new Array(100).fill(0).map((_, idx) => (
+                  <p key={idx}>&nbsp;</p>
+                ))}
+              </InfiniteScroll>
+            </div>
+          </Messages>
+        )}
         <TypeMessage>
           {exchange.disputed && (
             <ButtonProposalContainer>
