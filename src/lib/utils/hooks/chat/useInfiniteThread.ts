@@ -1,29 +1,39 @@
-import { BosonXmtpClient } from "@bosonprotocol/chat-sdk";
-import { ThreadObject } from "@bosonprotocol/chat-sdk/dist/cjs/util/definitions";
+import {
+  ThreadId,
+  ThreadObject
+} from "@bosonprotocol/chat-sdk/dist/cjs/util/definitions";
 import { matchThreadIds } from "@bosonprotocol/chat-sdk/dist/cjs/util/functions";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 
+import { useChatContext } from "../../../../pages/chat/ChatProvider/ChatContext";
+
 interface Props {
   dateStep: "day" | "week" | "month" | "year";
-  counterParties: string[];
+  counterParty: string;
+  threadId: ThreadId | null | undefined;
   dateIndex: number;
-  bosonXmtp: BosonXmtpClient | undefined;
 }
-const requestedData = new Map<string, boolean>();
 const genesisDate = new Date("2022-07-28"); // TODO: change
-export function useInfiniteChat({
+export function useInfiniteThread({
   dateStep,
   dateIndex,
-  counterParties,
-  bosonXmtp
-}: Props) {
+  counterParty,
+  threadId
+}: Props): {
+  data: ThreadObject | null;
+  isLoading: boolean;
+  isError: boolean;
+  error: Error | null;
+  isBeginningOfTimes: boolean;
+} {
+  const { bosonXmtp } = useChatContext();
   const [areThreadsLoading, setThreadsLoading] = useState<boolean>(false);
   const [threadsXmtp, setThreadsXmtp] = useState<ThreadObject[]>([]);
   const [error, setError] = useState<Error | null>(null);
   const [isBeginningOfTimes, setIsBeginningOfTimes] = useState<boolean>(false);
   useEffect(() => {
-    if (!bosonXmtp) {
+    if (!bosonXmtp || !threadId) {
       return;
     }
     if (dateIndex > 0) {
@@ -36,9 +46,6 @@ export function useInfiniteChat({
       .add(dateIndex - 1, dateStep)
       .toDate();
     const startTime = dayjs(endTime).add(1, dateStep).toDate();
-    const key = `${dayjs(startTime).format("YYYY-MM-DD")}-${dayjs(
-      endTime
-    ).format("YYYY-MM-DD")}`;
     console.log(
       "threads from",
       dayjs(startTime).format("YYYY-MM-DD"),
@@ -50,43 +57,46 @@ export function useInfiniteChat({
       dayjs(startTime).isSame(genesisDate, "day");
     setIsBeginningOfTimes(isBeginning);
     if (isBeginning) {
-      console.log("threads reached beginning!", { startTime, genesisDate });
+      console.log("threads reached beginning!", {
+        startTime,
+        genesisDate,
+        threadId
+      });
       return;
     }
-    if (requestedData.has(key)) {
-      return;
-    }
-    requestedData.set(key, true);
-    console.log("requesting threads from", startTime, "until", endTime);
+    console.log("requesting threads from", startTime, "until", endTime, {
+      threadId,
+      counterParty
+    });
     setThreadsLoading(true);
-
     bosonXmtp
-      .getThreads(counterParties, {
+      .getThread(threadId, counterParty, {
         startTime: endTime,
         endTime: startTime,
         pageSize: 100
       })
-      .then((threadObjects) => {
-        const mergedThreads = mergeThreads(threadsXmtp, threadObjects);
-        console.log(
-          "threadObjects",
-          threadObjects,
-          "mergedThreads",
-          mergedThreads
-        );
+      .then((threadObject) => {
+        if (!threadObject) {
+          return;
+        }
+        const mergedThreads = mergeThreads(threadsXmtp, [threadObject]);
         setThreadsXmtp(mergedThreads);
       })
       .catch((err) => {
-        console.error(err);
+        console.error(
+          // `Error while requesting threadId: ${JSON.stringify(threadId)}`,
+          err
+        );
         setError(err);
       })
       .finally(() => {
         setThreadsLoading(false);
       });
-  }, [bosonXmtp, dateIndex, threadsXmtp, counterParties, dateStep]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bosonXmtp, dateIndex, counterParty, dateStep, threadId]);
 
   return {
-    data: threadsXmtp,
+    data: threadsXmtp[0] || null,
     isLoading: areThreadsLoading,
     isError: !!error,
     error,

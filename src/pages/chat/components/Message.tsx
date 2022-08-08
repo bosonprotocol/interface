@@ -17,6 +17,7 @@ import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
 import { DeepReadonly } from "../../../lib/types/helpers";
 import { validateMessage } from "../../../lib/utils/chat/message";
+import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { Thread } from "../types";
 
 const width = "31.625rem";
@@ -123,17 +124,17 @@ const StyledGrid = styled(Grid)`
 const SellerAvatar = ({
   isLeftAligned,
   children,
-  thread
+  exchange
 }: {
   isLeftAligned: Props["isLeftAligned"];
   children: Props["children"];
-  thread: Props["thread"];
+  exchange: Props["exchange"];
 }) => {
   return isLeftAligned ? (
     <Avatar>{children}</Avatar>
   ) : (
     <Avatar>
-      <AccountImage size={32} address={thread.exchange?.buyer.wallet} />
+      <AccountImage size={32} address={exchange.buyer.wallet} />
     </Avatar>
   );
 };
@@ -155,7 +156,7 @@ const BottomDateStamp = ({
 };
 
 interface Props {
-  thread: Thread;
+  exchange: Exchange;
   message: DeepReadonly<Thread["messages"][number]>;
   children: ReactNode;
   isLeftAligned: boolean;
@@ -163,7 +164,7 @@ interface Props {
 
 const Message = forwardRef(
   (
-    { message, children, isLeftAligned, thread }: Props,
+    { message, children, isLeftAligned, exchange }: Props,
     ref: React.ForwardedRef<HTMLDivElement>
   ) => {
     const Content = useCallback(
@@ -193,7 +194,7 @@ const Message = forwardRef(
     if (!isValid) {
       return (
         <Content $isLeftAligned={isLeftAligned}>
-          <SellerAvatar isLeftAligned={isLeftAligned} thread={thread}>
+          <SellerAvatar isLeftAligned={isLeftAligned} exchange={exchange}>
             {children}
           </SellerAvatar>
           <div>
@@ -211,7 +212,7 @@ const Message = forwardRef(
     if (isRegularMessage) {
       return (
         <Content $isLeftAligned={isLeftAligned}>
-          <SellerAvatar isLeftAligned={isLeftAligned} thread={thread}>
+          <SellerAvatar isLeftAligned={isLeftAligned} exchange={exchange}>
             {children}
           </SellerAvatar>
           <div style={{ overflowWrap: "break-word" }}>
@@ -226,7 +227,7 @@ const Message = forwardRef(
       const imageValue = messageContent as unknown as ImageContent;
       return (
         <Content $isLeftAligned={isLeftAligned}>
-          <SellerAvatar isLeftAligned={isLeftAligned} thread={thread}>
+          <SellerAvatar isLeftAligned={isLeftAligned} exchange={exchange}>
             {children}
           </SellerAvatar>
           <AttachmentContainer $isLeftAligned={isLeftAligned}>
@@ -247,11 +248,10 @@ const Message = forwardRef(
     }
 
     if (isProposalMessage) {
-      const { exchange } = thread;
       if (!exchange) {
         return (
           <Content $isLeftAligned={isLeftAligned}>
-            <SellerAvatar isLeftAligned={isLeftAligned} thread={thread}>
+            <SellerAvatar isLeftAligned={isLeftAligned} exchange={exchange}>
               {children}
             </SellerAvatar>
             <p>
@@ -267,7 +267,7 @@ const Message = forwardRef(
       const isRaisingADispute = !!messageContent.disputeContext?.length;
       return (
         <Content $isLeftAligned={isLeftAligned} style={{ width }}>
-          <SellerAvatar isLeftAligned={isLeftAligned} thread={thread}>
+          <SellerAvatar isLeftAligned={isLeftAligned} exchange={exchange}>
             {children}
           </SellerAvatar>
           <Typography tag="h4" margin="0">
@@ -381,7 +381,7 @@ const Message = forwardRef(
 
     return (
       <Content $isLeftAligned={isLeftAligned}>
-        <SellerAvatar isLeftAligned={isLeftAligned} thread={thread}>
+        <SellerAvatar isLeftAligned={isLeftAligned} exchange={exchange}>
           {children}
         </SellerAvatar>
         Unsupported message

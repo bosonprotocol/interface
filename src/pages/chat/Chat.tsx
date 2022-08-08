@@ -1,20 +1,16 @@
-import { MessageData } from "@bosonprotocol/chat-sdk/dist/cjs/util/definitions";
-import { matchThreadIds } from "@bosonprotocol/chat-sdk/dist/cjs/util/functions";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Route, Routes, useLocation, useParams } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
 
+import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
-import { useInfiniteChat } from "../../lib/utils/hooks/chat/useInfiniteChat";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
-import { useExchanges } from "../../lib/utils/hooks/useExchanges";
+import { Exchange, useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import { useChatContext } from "./ChatProvider/ChatContext";
 import ChatConversation from "./components/ChatConversation";
 import MessageList from "./components/MessageList";
-import { Thread } from "./types";
 
 // const address = "0x5295D74Bbb5195A3e4E788744cB17c2f1c48DfFf";
 const address = "0x5295D74Bbb5195A3e4E788744cB17c2f1c48DfFf";
@@ -41,7 +37,7 @@ const getExchanges = ({
     data: id_in.map((id, index) => ({
       id,
       buyer: {
-        id: "1",
+        id: "7",
         wallet: "0x"
       },
       committedDate: new Date().toString(),
@@ -51,7 +47,7 @@ const getExchanges = ({
       redeemedDate: new Date().toString(),
       state: "REDEEMED",
       validUntilDate: new Date().toString(),
-      seller: { id: "123" },
+      seller: { id: "2" },
       offer: {
         id: "1",
         buyerCancelPenalty: "",
@@ -80,7 +76,7 @@ const getExchanges = ({
           admin: address,
           clerk: address,
           __typename: "Seller",
-          id: "5",
+          id: "2",
           operator: address,
           treasury: address
         },
@@ -136,8 +132,7 @@ const getIsSameThread = (
 };
 
 export default function Chat() {
-  const { bosonXmtp } = useChatContext();
-  const [dateIndex, setDateIndex] = useState<number>(0);
+  // const { bosonXmtp } = useChatContext();
   const { data: exchanges = [] } = useMemo(
     () =>
       getExchanges({
@@ -152,73 +147,58 @@ export default function Chat() {
   //   id_in: threads.map((message) => message.threadId.exchangeId),
   //   disputed: null
   // });
-  const {
-    data: threadsXmtp,
-    isLoading: areThreadsLoading,
-    isBeginningOfTimes
-  } = useInfiniteChat({
-    dateIndex,
-    dateStep: "month", // TODO: change to week
-    counterParties:
-      exchanges?.map((exchange) => exchange.offer.seller.operator) || [],
-    bosonXmtp
-  });
-  console.log(
-    "threadsXmtp",
-    threadsXmtp,
-    "dateIndex",
-    dateIndex,
-    "isBeginningOfTimes",
-    isBeginningOfTimes,
-    "areThreadsLoading",
-    areThreadsLoading
-  );
-  const loadMoreMessages = useCallback(() => {
-    if (!areThreadsLoading) {
-      setDateIndex(dateIndex - 1);
-    }
-  }, [dateIndex, areThreadsLoading]);
+  // const {
+  //   data: threadsXmtp,
+  //   isLoading: areThreadsLoading,
+  //   isBeginningOfTimes
+  // } = useInfiniteChat({
+  //   dateIndex,
+  //   dateStep: "month", // TODO: change to week
+  //   counterParties:
+  //     exchanges?.map((exchange) => exchange.offer.seller.operator) || [],
+  //   bosonXmtp
+  // });
+  // console.log(
+  //   "threadsXmtp",
+  //   threadsXmtp,
+  //   "dateIndex",
+  //   dateIndex,
+  //   "isBeginningOfTimes",
+  //   isBeginningOfTimes,
+  //   "areThreadsLoading",
+  //   areThreadsLoading
+  // );
+  // const loadMoreMessages = useCallback(() => {
+  //   if (!areThreadsLoading) {
+  //     setDateIndex(dateIndex - 1);
+  //   }
+  // }, [dateIndex, areThreadsLoading]);
   // console.log({ threadsXmtp });
 
   // TODO: remove this
-  const [threadsWithExchanges, setThreadsWithExchanges] = useState<Thread[]>(
-    []
-  );
-  useEffect(() => {
-    setThreadsWithExchanges(
-      threadsXmtp.map((thread) => {
-        return {
-          ...thread,
-          exchange: exchanges?.find(
-            (exchange) => exchange.id === thread.threadId.exchangeId
-          )
-        };
-      })
-    );
-  }, [threadsXmtp, exchanges]);
-  const addMessage = useCallback(
-    (thread: Thread, newMessage: MessageData) => {
-      const foundThread = threadsWithExchanges.find((loadedThread) =>
-        matchThreadIds(loadedThread.threadId, thread.threadId)
-      );
-      if (foundThread) {
-        foundThread.messages.push(newMessage);
-        setThreadsWithExchanges([...threadsWithExchanges]);
-      }
-    },
-    [threadsWithExchanges]
-  );
+  // const [threads, setThreads] = useState<ThreadObject[]>([]);
+  // useEffect(() => {
+  //   setThreads(
+  //     threadsXmtp.map((thread) => {
+  //       return {
+  //         ...thread
+  //       };
+  //     })
+  //   );
+  // }, [threadsXmtp, exchanges]);
+
   const textAreaValueByThread = useMemo(
     () =>
-      threadsXmtp.map((thread) => {
+      exchanges.map((exchange) => {
         return {
-          exchangeId: thread.threadId.exchangeId,
+          exchangeId: exchange.id,
           value: ""
         };
       }),
-    [threadsXmtp]
+    [exchanges]
   );
-  const [selectedThread, selectThread] = useState<Thread>();
+  // const [selectedThread, selectThread] = useState<Thread>();
+  const [selectedExchange, selectExchange] = useState<Exchange>();
   const [chatListOpen, setChatListOpen] = useState<boolean>(false);
   const [exchangeIdNotOwned, setExchangeIdNotOwned] = useState<boolean>(false);
   const params = useParams();
@@ -229,24 +209,48 @@ export default function Chat() {
   const [previousPath, setPreviousPath] = useState<string>("");
   const navigate = useKeepQueryParamsNavigate();
   const { isXXS, isXS, isS } = useBreakpoints();
-  useEffect(() => {
-    if (threadsWithExchanges?.[0]?.exchange) {
-      const currentThread = threadsWithExchanges.find((thread) => {
-        return thread.threadId.exchangeId === exchangeId;
-      });
 
-      if (currentThread) {
-        selectThread(currentThread);
-      } else {
-        setExchangeIdNotOwned(true);
-      }
-    }
-  }, [
-    exchangeId,
-    threadsWithExchanges,
-    setExchangeIdNotOwned,
-    exchangeIdNotOwned
-  ]);
+  // select thread based on url /exchangeId
+  // useEffect(() => {
+  //   if (threads?.[0]) {
+  //     const foundExchange = exchanges.find((exchange) => {
+  //       return exchange.id === exchangeId;
+  //     });
+  //     if (!foundExchange) {
+  //       setExchangeIdNotOwned(true);
+  //       return;
+  //     }
+  //     const thread = threads.find((thread) => {
+  //       return thread.threadId.exchangeId === foundExchange.id;
+  //     });
+  //     if (thread) {
+  //       if (exchangeId !== selectedThread?.exchange?.id) {
+  //         selectThread({
+  //           ...thread,
+  //           exchange: foundExchange
+  //         });
+  //         // TODO: fix
+  //         // if (exchangeId !== selectedThread?.exchange?.id) {
+  //         //   navigate({
+  //         //     pathname: `${BosonRoutes.Chat}/${thread.threadId.exchangeId}`
+  //         //   });
+  //       }
+  //     } else {
+  //       console.error(
+  //         `Thread xmtp not found with this exchange id=${foundExchange.id}`
+  //       );
+  //       selectThread(undefined);
+  //     }
+  //   }
+  // }, [
+  //   selectedThread?.exchange?.id,
+  //   navigate,
+  //   exchangeId,
+  //   threads,
+  //   setExchangeIdNotOwned,
+  //   exchangeIdNotOwned,
+  //   exchanges
+  // ]);
 
   const [textAreasValues, setTextAreasValues] = useState(textAreaValueByThread);
   useEffect(() => {
@@ -288,47 +292,46 @@ export default function Chat() {
             if (isXXS || isXS || isS) {
               setChatListOpen(!chatListOpen);
             }
-            const thread = threadsXmtp.find((thread) => {
-              return thread.threadId.exchangeId === exchange.id;
+            selectExchange(exchange);
+            // const thread = threads.find((thread) => {
+            //   return thread.threadId.exchangeId === exchange.id;
+            // });
+            // if (!thread) {
+            //   console.error(
+            //     `Thread xmtp not found with this exchange id=${exchange.id}`
+            //   );
+            //   selectThread(undefined);
+            //   return;
+            // }
+            // selectThread({
+            //   ...thread,
+            //   exchange
+            // });
+            navigate({
+              pathname: `${BosonRoutes.Chat}/${exchange.id}`
             });
-            if (!thread) {
-              console.error(
-                `Thread xmtp not found with this exchange id=${exchange.id}`
-              );
-              selectThread(undefined);
-              return;
-            }
-            selectThread({
-              ...thread,
-              exchange
-            });
-            navigate(
-              {
-                pathname: `${BosonRoutes.Chat}/${thread.threadId.exchangeId}`
-              },
-              { replace: true }
-            );
           }}
           chatListOpen={chatListOpen}
           setChatListOpen={setChatListOpen}
-          currentExchange={selectedThread?.exchange}
+          currentExchange={selectedExchange}
         />
         <Routes>
           <Route
-            path={`:${exchangeId}`}
+            path={`:${UrlParameters.exchangeId}`}
             element={
               <ChatConversation
-                addMessage={addMessage}
-                thread={selectedThread}
+                key={selectedExchange?.id || ""}
+                // addMessage={addMessage}
+                exchange={selectedExchange}
                 setChatListOpen={setChatListOpen}
                 chatListOpen={chatListOpen}
                 exchangeIdNotOwned={exchangeIdNotOwned}
                 prevPath={previousPath}
                 onTextAreaChange={onTextAreaChange}
                 textAreaValue={parseInputValue}
-                loadMoreMessages={loadMoreMessages}
-                hasMoreMessages={!isBeginningOfTimes}
-                areThreadsLoading={areThreadsLoading}
+                // loadMoreMessages={loadMoreMessages}
+                // hasMoreMessages={!isBeginningOfTimes}
+                // areThreadsLoading={areThreadsLoading}
               />
             }
           />

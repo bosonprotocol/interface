@@ -21,6 +21,7 @@ const StyledButton = styled.button`
   color: ${colors.secondary};
   background-color: transparent;
   position: relative;
+  cursor: pointer;
   svg {
     position: absolute;
     top: 50%;
@@ -29,6 +30,9 @@ const StyledButton = styled.button`
     ${breakpoint.m} {
       transform: translateY(-50%);
     }
+  }
+  :disabled {
+    cursor: not-allowed;
   }
 `;
 
@@ -42,9 +46,14 @@ interface Props {
     proposal: NewProposal,
     proposalFiles: FileWithEncodedData[]
   ) => void;
+  disabled?: boolean;
 }
 
-export default function ButtonProposal({ exchange, onSendProposal }: Props) {
+export default function ButtonProposal({
+  exchange,
+  onSendProposal,
+  disabled
+}: Props) {
   const { showModal, updateProps, store } = useModal();
   const [activeStep, setActiveStep] = useState<number>(0);
 
@@ -81,6 +90,7 @@ export default function ButtonProposal({ exchange, onSendProposal }: Props) {
 
   return (
     <StyledButton
+      disabled={disabled}
       onClick={() =>
         showModal(
           "MAKE_PROPOSAL",

@@ -3,13 +3,14 @@ import {
   MessageData,
   MessageType,
   ProposalContent,
-  SupportedImageMimeTypes
+  SupportedImageMimeTypes,
+  ThreadId,
+  ThreadObject
 } from "@bosonprotocol/chat-sdk/dist/cjs/util/definitions";
 import { CircleNotch } from "phosphor-react";
 import { ArrowLeft, UploadSimple } from "phosphor-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
@@ -20,10 +21,12 @@ import { breakpoint, breakpointNumbers } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
 import { zIndex } from "../../../lib/styles/zIndex";
 import { FileWithEncodedData } from "../../../lib/utils/files";
+import { useInfiniteThread } from "../../../lib/utils/hooks/chat/useInfiniteThread";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { useBuyerSellerAccounts } from "../../../lib/utils/hooks/useBuyerSellerAccounts";
+import { Exchange } from "../../../lib/utils/hooks/useExchanges";
+import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useChatContext } from "../ChatProvider/ChatContext";
-import { Thread } from "../types";
 import ButtonProposal from "./ButtonProposal/ButtonProposal";
 import ExchangeSidePreview from "./ExchangeSidePreview";
 import Message from "./Message";
@@ -139,6 +142,7 @@ const Messages = styled.div`
   } */
 
   height: 300;
+  background-color: red;
   overflow: auto;
   display: flex;
   flex-direction: column-reverse;
@@ -205,6 +209,9 @@ const TextArea = styled.textarea`
   letter-spacing: 0;
   text-align: left;
   cursor: text;
+  :disabled {
+    cursor: not-allowed;
+  }
 `;
 
 const SimpleMessage = styled.p`
@@ -246,17 +253,6 @@ const InputWrapper = styled.div`
   display: flex;
   position: relative;
   width: 100%;
-
-  [data-upload] {
-    cursor: pointer;
-    position: absolute;
-    right: 0;
-    top: 0.5625rem;
-    margin: 0 1rem;
-    > *:not(rect) {
-      stroke: ${colors.darkGrey};
-    }
-  }
 `;
 
 const ButtonProposalContainer = styled.span`
@@ -267,6 +263,44 @@ const ButtonProposalContainer = styled.span`
     min-height: 46px;
   }
 `;
+
+const UploadButtonWrapper = styled.button`
+  all: unset;
+  cursor: pointer;
+  position: absolute;
+  right: 0;
+  top: 0.5625rem;
+  margin: 0 1rem;
+  > *:not(rect) {
+    stroke: ${colors.darkGrey};
+  }
+  :disabled {
+    cursor: not-allowed;
+  }
+`;
+
+const SellerComponent = ({
+  size,
+  withProfileText,
+  exchange
+}: {
+  size: number;
+  withProfileText?: boolean;
+  exchange: Exchange | undefined;
+}) => {
+  if (!exchange) {
+    return null;
+  }
+  return (
+    <SellerID
+      seller={exchange.offer.seller}
+      offerName={exchange.offer.metadata.name || ""}
+      withProfileImage
+      accountImageSize={size}
+      withProfileText={withProfileText}
+    />
+  );
+};
 
 const ErrorMessage = () => (
   <Container>
@@ -279,32 +313,58 @@ const getWasItSentByMe = (myAddress: string | undefined, sender: string) => {
 };
 
 interface Props {
-  addMessage: (thread: Thread, newMessage: MessageData) => void;
-  thread: Thread | undefined;
+  exchange: Exchange | undefined;
   chatListOpen: boolean;
   setChatListOpen: (p: boolean) => void;
   exchangeIdNotOwned: boolean;
   prevPath: string;
   onTextAreaChange: (textAreaTargetValue: string) => void;
   textAreaValue: string | undefined;
-  loadMoreMessages: () => void;
-  hasMoreMessages: boolean;
-  areThreadsLoading: boolean;
 }
 const ChatConversation = ({
-  addMessage,
-  thread,
+  exchange,
   chatListOpen,
   setChatListOpen,
   exchangeIdNotOwned,
   prevPath,
   onTextAreaChange,
-  textAreaValue,
-  loadMoreMessages,
-  hasMoreMessages,
-  areThreadsLoading
+  textAreaValue
 }: Props) => {
+  const [dateIndex, setDateIndex] = useState<number>(0);
+  const addMessage = useCallback(
+    (thread: ThreadObject, newMessage: MessageData) => {
+      thread.messages = [...thread.messages, newMessage];
+    },
+    []
+  );
   const { bosonXmtp } = useChatContext();
+  const threadId = useMemo<ThreadId | null>(() => {
+    if (!exchange) {
+      return null;
+    }
+    return {
+      exchangeId: exchange.id,
+      buyerId: exchange.buyer.id,
+      sellerId: exchange.seller.id
+    };
+  }, [exchange]);
+  const {
+    data: thread,
+    isLoading: areThreadsLoading,
+    isBeginningOfTimes,
+    isError: isErrorThread
+  } = useInfiniteThread({
+    threadId,
+    dateIndex,
+    dateStep: "day", // TODO: change to week
+    counterParty: exchange?.offer.seller.operator || ""
+  });
+  const loadMoreMessages = useCallback(() => {
+    if (!areThreadsLoading) {
+      setDateIndex(dateIndex - 1);
+    }
+  }, [dateIndex, areThreadsLoading]);
+  const hasMoreMessages = !isBeginningOfTimes;
   const previousThreadMessagesNumberRef = useRef<number>(
     thread?.messages.length || 0
   );
@@ -337,9 +397,9 @@ const ChatConversation = ({
   const [isExchangePreviewOpen, setExchangePreviewOpen] =
     useState<boolean>(false);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-  const navigate = useNavigate();
+  const navigate = useKeepQueryParamsNavigate();
   const { address } = useAccount();
-  const destinationAddress = thread?.exchange?.offer.seller.operator || "";
+  const destinationAddress = exchange?.offer.seller.operator || "";
   useEffect(() => {
     if (!bosonXmtp || !thread?.threadId || !destinationAddress) {
       return;
@@ -403,7 +463,7 @@ const ChatConversation = ({
     },
     buyer: { buyerId, isError: isErrorBuyers, isLoading: isLoadingBuyer }
   } = useBuyerSellerAccounts(address || "");
-  const sellerId = _sellerId || "2"; // TODO: remove
+  const sellerId = _sellerId || "";
   const { showModal } = useModal();
 
   useEffect(() => {
@@ -417,30 +477,6 @@ const ChatConversation = ({
       textareaRef.current.style.height = scrollHeight + "px";
     }
   }, [prevPath, textAreaValue]);
-
-  const SellerComponent = useCallback(
-    ({
-      size,
-      withProfileText
-    }: {
-      size: number;
-      withProfileText?: boolean;
-    }) => {
-      if (!thread) {
-        return null;
-      }
-      return (
-        <SellerID
-          seller={thread.exchange?.offer.seller || ({} as never)}
-          offerName={thread.exchange?.offer.metadata.name || ""}
-          withProfileImage
-          accountImageSize={size}
-          withProfileText={withProfileText}
-        />
-      );
-    },
-    [thread]
-  );
 
   const detailsButton = useMemo(() => {
     if (chatListOpen && (isXXS || isS || isM)) {
@@ -465,24 +501,25 @@ const ChatConversation = ({
       </button>
     );
   }, [chatListOpen, isExchangePreviewOpen, isXXS, isS, isM]);
+  // TODO: comment out
+  // if (
+  //   !isLoadingSeller &&
+  //   !isLoadingBuyer &&
+  //   (isErrorSellers || isErrorBuyers || (!sellerId && !buyerId))
+  // ) {
+  //   return <ErrorMessage />;
+  // }
 
-  if (
-    !isLoadingSeller &&
-    !isLoadingBuyer &&
-    (isErrorSellers || isErrorBuyers || (!sellerId && !buyerId))
-  ) {
-    return <ErrorMessage />;
-  }
-  console.log({ thread });
   const isConversationBeingLoaded = !thread && areThreadsLoading;
-  if (isConversationBeingLoaded) {
-    return (
-      <Container>
-        <SimpleMessage>Loading your messages...</SimpleMessage>
-      </Container>
-    );
-  }
-  if (!thread) {
+  const disableInputs = isErrorThread || isConversationBeingLoaded;
+  console.log({
+    thread,
+    isConversationBeingLoaded,
+    disableInputs,
+    isErrorThread,
+    exchangeId: exchange?.id
+  });
+  if (!thread && !disableInputs) {
     return (
       <Container>
         <SimpleMessage>
@@ -493,10 +530,10 @@ const ChatConversation = ({
       </Container>
     );
   }
-  const { exchange } = thread;
   if (!exchange || !bosonXmtp) {
     return <ErrorMessage />;
   }
+  console.log({ hasMoreMessages });
   return (
     <>
       <Container>
@@ -506,9 +543,12 @@ const ChatConversation = ({
               if (isM && !prevPath) {
                 setChatListOpen(!chatListOpen);
               } else if (isM && prevPath) {
-                navigate(prevPath, { replace: true });
+                navigate({ pathname: prevPath }, { replace: true });
               } else {
-                navigate(`/${BosonRoutes.Chat}`, { replace: true });
+                navigate(
+                  { pathname: `/${BosonRoutes.Chat}` },
+                  { replace: true }
+                );
               }
             }}
           >
@@ -529,7 +569,9 @@ const ChatConversation = ({
           </button>
           {detailsButton}
         </NavigationMobile>
-        <Header>{!chatListOpen && <SellerComponent size={24} />}</Header>
+        <Header>
+          {!chatListOpen && <SellerComponent size={24} exchange={exchange} />}
+        </Header>
         {areThreadsLoading && (
           <Loading>
             <Spinner />
@@ -537,48 +579,64 @@ const ChatConversation = ({
         )}
         <Messages data-messages ref={dataMessagesRef} id="messages">
           <InfiniteScroll
-            inverse={true}
+            inverse
             next={loadMoreMessages}
             hasMore={hasMoreMessages}
             loader={<></>}
-            dataLength={thread.messages.length}
+            dataLength={thread?.messages.length || 0}
             scrollableTarget="messages"
             scrollThreshold="200px"
           >
-            {thread.messages.map((message, index) => {
-              const isFirstMessage = index === 0;
-              const isLastMessage = index === thread.messages.length - 1;
-              const leftAligned = !getWasItSentByMe(address, message.sender);
-              const ref = isLastMessage
-                ? lastMessageRef
-                : isFirstMessage
-                ? firstMessageRef
-                : null;
-              // TODO: fix when the message separator is shown
-              return (
-                <Conversation key={message.timestamp} $alignStart={leftAligned}>
-                  <>
-                    <MessageSeparator message={message} />
-                    <Message
-                      thread={thread}
-                      message={message}
-                      isLeftAligned={leftAligned}
-                      ref={ref}
-                    >
-                      <SellerComponent size={32} withProfileText={false} />
-                    </Message>
-                  </>
-                </Conversation>
-              );
-            })}
+            <>
+              {thread?.messages.map((message, index) => {
+                const isFirstMessage = index === 0;
+                const isLastMessage = index === thread.messages.length - 1;
+                const leftAligned = !getWasItSentByMe(address, message.sender);
+                const ref = isLastMessage
+                  ? lastMessageRef
+                  : isFirstMessage
+                  ? firstMessageRef
+                  : null;
+                // TODO: fix when the message separator is shown
+                return (
+                  <Conversation
+                    key={message.timestamp}
+                    $alignStart={leftAligned}
+                  >
+                    <>
+                      <MessageSeparator message={message} />
+                      <Message
+                        exchange={exchange}
+                        message={message}
+                        isLeftAligned={leftAligned}
+                        ref={ref}
+                      >
+                        <SellerComponent
+                          size={32}
+                          withProfileText={false}
+                          exchange={exchange}
+                        />
+                      </Message>
+                    </>
+                  </Conversation>
+                );
+              })}
+            </>
           </InfiniteScroll>
         </Messages>
+        {/* ) : (
+          <Messages></Messages>
+        )} */}
         <TypeMessage>
           {exchange.disputed && (
             <ButtonProposalContainer>
               <ButtonProposal
                 exchange={exchange}
+                disabled={disableInputs}
                 onSendProposal={async (proposal, proposalFiles) => {
+                  if (!thread) {
+                    return;
+                  }
                   const proposalContent: ProposalContent = {
                     value: {
                       title: proposal.title,
@@ -616,6 +674,7 @@ const ChatConversation = ({
               <TextArea
                 ref={textareaRef}
                 placeholder="Write a message"
+                disabled={disableInputs}
                 value={textAreaValue}
                 onChange={(e) => {
                   const value = e.target.value;
@@ -625,7 +684,7 @@ const ChatConversation = ({
                   }
                 }}
                 onKeyDown={async (e) => {
-                  if (e.key === "Enter") {
+                  if (e.key === "Enter" && thread) {
                     const newMessage = {
                       threadId: thread.threadId,
                       content: {
@@ -652,9 +711,9 @@ const ChatConversation = ({
                 {textAreaValue}
               </TextArea>
             </Input>
-            <UploadSimple
-              size={24}
-              data-upload
+            <UploadButtonWrapper
+              type="button"
+              disabled={disableInputs}
               onClick={() =>
                 showModal("UPLOAD_MODAL", {
                   title: "Upload documents",
@@ -664,12 +723,14 @@ const ChatConversation = ({
                   }
                 })
               }
-            />
+            >
+              <UploadSimple size={24} />
+            </UploadButtonWrapper>
           </InputWrapper>
         </TypeMessage>
       </Container>
       <ExchangeSidePreview
-        thread={thread}
+        exchange={exchange}
         disputeOpen={isExchangePreviewOpen}
       />
     </>

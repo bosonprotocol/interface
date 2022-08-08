@@ -16,7 +16,7 @@ import { CONFIG } from "../../../lib/config";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
 import { Offer } from "../../../lib/types/offer";
-import { Thread } from "../types";
+import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 
 const Container = styled.div<{ $disputeOpen: boolean }>`
   display: flex;
@@ -196,11 +196,10 @@ const getOfferDetailData = (offer: Offer) => {
 };
 
 interface Props {
-  thread: Thread | undefined;
+  exchange: Exchange | undefined;
   disputeOpen: boolean;
 }
-export default function ExchangeSidePreview({ thread, disputeOpen }: Props) {
-  const exchange = thread?.exchange;
+export default function ExchangeSidePreview({ exchange, disputeOpen }: Props) {
   const offer = exchange?.offer;
   const { showModal } = useModal();
   const OFFER_DETAIL_DATA = useMemo(
