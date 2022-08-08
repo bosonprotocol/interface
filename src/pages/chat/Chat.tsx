@@ -132,7 +132,6 @@ const getIsSameThread = (
 };
 
 export default function Chat() {
-  // const { bosonXmtp } = useChatContext();
   const { data: exchanges = [] } = useMemo(
     () =>
       getExchanges({
@@ -147,45 +146,6 @@ export default function Chat() {
   //   id_in: threads.map((message) => message.threadId.exchangeId),
   //   disputed: null
   // });
-  // const {
-  //   data: threadsXmtp,
-  //   isLoading: areThreadsLoading,
-  //   isBeginningOfTimes
-  // } = useInfiniteChat({
-  //   dateIndex,
-  //   dateStep: "month", // TODO: change to week
-  //   counterParties:
-  //     exchanges?.map((exchange) => exchange.offer.seller.operator) || [],
-  //   bosonXmtp
-  // });
-  // console.log(
-  //   "threadsXmtp",
-  //   threadsXmtp,
-  //   "dateIndex",
-  //   dateIndex,
-  //   "isBeginningOfTimes",
-  //   isBeginningOfTimes,
-  //   "areThreadsLoading",
-  //   areThreadsLoading
-  // );
-  // const loadMoreMessages = useCallback(() => {
-  //   if (!areThreadsLoading) {
-  //     setDateIndex(dateIndex - 1);
-  //   }
-  // }, [dateIndex, areThreadsLoading]);
-  // console.log({ threadsXmtp });
-
-  // TODO: remove this
-  // const [threads, setThreads] = useState<ThreadObject[]>([]);
-  // useEffect(() => {
-  //   setThreads(
-  //     threadsXmtp.map((thread) => {
-  //       return {
-  //         ...thread
-  //       };
-  //     })
-  //   );
-  // }, [threadsXmtp, exchanges]);
 
   const textAreaValueByThread = useMemo(
     () =>
@@ -197,7 +157,6 @@ export default function Chat() {
       }),
     [exchanges]
   );
-  // const [selectedThread, selectThread] = useState<Thread>();
   const [selectedExchange, selectExchange] = useState<Exchange>();
   const [chatListOpen, setChatListOpen] = useState<boolean>(false);
   const [exchangeIdNotOwned, setExchangeIdNotOwned] = useState<boolean>(false);
@@ -211,46 +170,18 @@ export default function Chat() {
   const { isXXS, isXS, isS } = useBreakpoints();
 
   // select thread based on url /exchangeId
-  // useEffect(() => {
-  //   if (threads?.[0]) {
-  //     const foundExchange = exchanges.find((exchange) => {
-  //       return exchange.id === exchangeId;
-  //     });
-  //     if (!foundExchange) {
-  //       setExchangeIdNotOwned(true);
-  //       return;
-  //     }
-  //     const thread = threads.find((thread) => {
-  //       return thread.threadId.exchangeId === foundExchange.id;
-  //     });
-  //     if (thread) {
-  //       if (exchangeId !== selectedThread?.exchange?.id) {
-  //         selectThread({
-  //           ...thread,
-  //           exchange: foundExchange
-  //         });
-  //         // TODO: fix
-  //         // if (exchangeId !== selectedThread?.exchange?.id) {
-  //         //   navigate({
-  //         //     pathname: `${BosonRoutes.Chat}/${thread.threadId.exchangeId}`
-  //         //   });
-  //       }
-  //     } else {
-  //       console.error(
-  //         `Thread xmtp not found with this exchange id=${foundExchange.id}`
-  //       );
-  //       selectThread(undefined);
-  //     }
-  //   }
-  // }, [
-  //   selectedThread?.exchange?.id,
-  //   navigate,
-  //   exchangeId,
-  //   threads,
-  //   setExchangeIdNotOwned,
-  //   exchangeIdNotOwned,
-  //   exchanges
-  // ]);
+  useEffect(() => {
+    if (exchanges) {
+      const foundExchange = exchanges.find((exchange) => {
+        return exchange.id === exchangeId;
+      });
+      if (!foundExchange) {
+        setExchangeIdNotOwned(true);
+        return;
+      }
+      selectExchange(foundExchange);
+    }
+  }, [exchangeId, exchanges]);
 
   const [textAreasValues, setTextAreasValues] = useState(textAreaValueByThread);
   useEffect(() => {
@@ -293,20 +224,6 @@ export default function Chat() {
               setChatListOpen(!chatListOpen);
             }
             selectExchange(exchange);
-            // const thread = threads.find((thread) => {
-            //   return thread.threadId.exchangeId === exchange.id;
-            // });
-            // if (!thread) {
-            //   console.error(
-            //     `Thread xmtp not found with this exchange id=${exchange.id}`
-            //   );
-            //   selectThread(undefined);
-            //   return;
-            // }
-            // selectThread({
-            //   ...thread,
-            //   exchange
-            // });
             navigate({
               pathname: `${BosonRoutes.Chat}/${exchange.id}`
             });
@@ -321,7 +238,6 @@ export default function Chat() {
             element={
               <ChatConversation
                 key={selectedExchange?.id || ""}
-                // addMessage={addMessage}
                 exchange={selectedExchange}
                 setChatListOpen={setChatListOpen}
                 chatListOpen={chatListOpen}
@@ -329,9 +245,6 @@ export default function Chat() {
                 prevPath={previousPath}
                 onTextAreaChange={onTextAreaChange}
                 textAreaValue={parseInputValue}
-                // loadMoreMessages={loadMoreMessages}
-                // hasMoreMessages={!isBeginningOfTimes}
-                // areThreadsLoading={areThreadsLoading}
               />
             }
           />
