@@ -519,7 +519,7 @@ const ChatConversation = ({
     isErrorThread,
     exchangeId: exchange?.id
   });
-  if (!thread && !disableInputs) {
+  if (!exchange) {
     return (
       <Container>
         <SimpleMessage>
@@ -529,9 +529,6 @@ const ChatConversation = ({
         </SimpleMessage>
       </Container>
     );
-  }
-  if (!exchange || !bosonXmtp) {
-    return <ErrorMessage />;
   }
   console.log({ hasMoreMessages });
   return (
@@ -634,7 +631,7 @@ const ChatConversation = ({
                 exchange={exchange}
                 disabled={disableInputs}
                 onSendProposal={async (proposal, proposalFiles) => {
-                  if (!thread) {
+                  if (!thread || !bosonXmtp) {
                     return;
                   }
                   const proposalContent: ProposalContent = {
@@ -684,7 +681,7 @@ const ChatConversation = ({
                   }
                 }}
                 onKeyDown={async (e) => {
-                  if (e.key === "Enter" && thread) {
+                  if (e.key === "Enter" && thread && bosonXmtp) {
                     const newMessage = {
                       threadId: thread.threadId,
                       content: {
