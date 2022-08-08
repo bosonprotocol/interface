@@ -21,7 +21,7 @@ export const CONFIG = {
   },
   maxUploadSize: process.env.MAX_UPLOAD_SIZE
     ? Number(process.env.MAX_UPLOAD_SIZE)
-    : 2 * 1024 * 1024,
+    : 1 * 1024 * 1024,
   widgetsUrl: process.env.REACT_APP_WIDGETS_URL || config.widgetsUrl,
   chainId: REACT_APP_CHAIN_ID,
   ipfsMetadataUrl:

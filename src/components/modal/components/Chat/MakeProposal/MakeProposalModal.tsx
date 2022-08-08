@@ -35,6 +35,14 @@ const validationSchemaPerStep = [
     [FormModel.formFields.description.name]: Yup.string()
       .trim()
       .required(FormModel.formFields.description.requiredErrorMessage)
+    // [FormModel.formFields.upload.name]: Yup.mixed().test(
+    //   "fileSize",
+    //   "The file is too large",
+    //   (value) => {
+    //     console.log("value yup", value);
+    //     return value && value[0] <= 2000000;
+    //   }
+    // )
   }),
   Yup.object({
     [FormModel.formFields.refundPercentage.name]: Yup.number()

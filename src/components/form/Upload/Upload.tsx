@@ -18,6 +18,7 @@ export default function Upload({
   disabled,
   multiple = false,
   trigger,
+  maxUploadSizeInBytes = CONFIG.maxUploadSize,
   onFilesSelect,
   files: initialFiles,
   wrapperProps,
@@ -66,19 +67,20 @@ export default function Upload({
     if (!meta.touched) {
       helpers.setTouched(true);
     }
+
     if (!e.target.files) {
       return;
     }
     const { files } = e.target;
     const filesArray = Object.values(files);
     for (const file of filesArray) {
-      if (file.size > CONFIG.maxUploadSize) {
+      if (file.size > maxUploadSizeInBytes) {
+        const error = `File size cannot exceed more than ${bytesToSize(
+          maxUploadSizeInBytes
+        )}`;
         // TODO: change to notification
-        console.error(
-          `File size cannot exceed more than ${bytesToSize(
-            CONFIG.maxUploadSize
-          )}`
-        );
+        console.error(error);
+        // helpers.setError(error);
         return;
       }
     }
