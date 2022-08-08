@@ -661,17 +661,11 @@ const ChatConversation = ({
                     contentType: MessageType.Proposal,
                     version: "1"
                   };
-                  await bosonXmtp.encodeAndSendMessage(
+                  const messageData = await bosonXmtp.encodeAndSendMessage(
                     newMessage,
                     destinationAddress
                   );
-                  addMessage(thread, {
-                    sender: address || "",
-                    authorityId: "",
-                    recipient: destinationAddress,
-                    timestamp: Date.now(),
-                    data: newMessage
-                  });
+                  addMessage(thread, messageData);
                   if (proposalFiles.length) {
                     await sendFilesToChat(proposalFiles);
                   }
@@ -703,17 +697,11 @@ const ChatConversation = ({
                       contentType: MessageType.String,
                       version: "1"
                     };
-                    await bosonXmtp.encodeAndSendMessage(
+                    const messageData = await bosonXmtp.encodeAndSendMessage(
                       newMessage,
                       destinationAddress
                     );
-                    addMessage(thread, {
-                      sender: address || "",
-                      authorityId: "",
-                      recipient: destinationAddress,
-                      timestamp: Date.now(),
-                      data: newMessage
-                    });
+                    addMessage(thread, messageData);
                     onTextAreaChange("");
                   }
                 }}
