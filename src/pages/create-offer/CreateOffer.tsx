@@ -1,4 +1,4 @@
-import { MetadataType } from "@bosonprotocol/common";
+import { MetadataType } from "@bosonprotocol/react-kit";
 import { createOffer } from "@bosonprotocol/widgets-sdk";
 import { parseEther } from "@ethersproject/units";
 import { useFormik } from "formik";

@@ -1,4 +1,4 @@
-import { FundsEntityFieldsFragment } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
+import { subgraph } from "@bosonprotocol/react-kit";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
@@ -78,7 +78,8 @@ export default function Funds({ sellerId, buyerId }: Props) {
   const accountId = isTabSellerSelected ? sellerId : buyerId;
 
   const { funds, reload } = useFunds(accountId);
-  const [uiFunds, setUiFunds] = useState<FundsEntityFieldsFragment[]>(funds);
+  const [uiFunds, setUiFunds] =
+    useState<subgraph.FundsEntityFieldsFragment[]>(funds);
   const highlightToken = (tokenName: string) => {
     setHighlightedToken(tokenName);
     setTimeout(() => setHighlightedToken(""), 300);
