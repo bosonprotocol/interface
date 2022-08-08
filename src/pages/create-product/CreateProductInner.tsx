@@ -7,6 +7,7 @@ import { useMemo } from "react";
 import { useCallback } from "react";
 import { useState } from "react";
 import styled from "styled-components";
+import { useAccount } from "wagmi";
 
 import { useModal } from "../../components/modal/useModal";
 import ConfirmProductDetails from "../../components/product/ConfirmProductDetails";
@@ -24,7 +25,6 @@ import {
   coreTermsOfSaleValidationSchema,
   CREATE_PRODUCT_STEPS,
   createYourProfileValidationSchema,
-  MOCK_MODAL_DATA,
   productImagesValidationSchema,
   productInformationValidationSchema,
   productTypeValidationSchema,
@@ -44,6 +44,7 @@ import MultiSteps from "../../components/step/MultiSteps";
 import { getLocalStorageItems } from "../../lib/utils/getLocalStorageItems";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
 import { saveItemInStorage } from "../../lib/utils/hooks/useLocalStorage";
+import { useSellers } from "../../lib/utils/hooks/useSellers";
 import { useCoreSDK } from "../../lib/utils/useCoreSdk";
 
 const ProductLayoutContainer = styled.div(
@@ -195,27 +196,52 @@ function CreateProductInner({ initial }: Props) {
     // TODO: REDIRECT USER {id}
   };
 
+  const { address } = useAccount();
+
+  const { data: sellers } = useSellers({
+    admin: address,
+    includeFunds: true
+  });
+
   const handleOpenSuccessModal = async ({
     offerId
   }: {
     offerId: string | null;
   }) => {
-    console.log(
-      "🚀 ~ file: CreateProductInner.tsx ~ line 199 ~ handleOpenSuccessModal ~ offerId",
-      offerId
-    );
-    const offerINfo = await coreSDK.getOfferById(offerId as string);
-    const sample = await coreSDK.getOffers({ offersFilter: { id: offerId } });
-    console.log(
-      "🚀 ~ file: CreateProductInner.tsx ~ line 209 ~ CreateProductInner ~ sample",
-      sample
-    );
-    console.log(
-      "🚀 ~ file: CreateProductInner.tsx ~ line 201 ~ handleOpenSuccessModal ~ offerINfo",
-      offerINfo
-    );
+    const offerInfo = await coreSDK.getOfferById(offerId as string);
+
+    const metadataInfo = await coreSDK.getMetadata(offerInfo.metadataUri);
+
     showModal(modalTypes.PRODUCT_CREATE_SUCCESS, {
-      ...MOCK_MODAL_DATA,
+      name: metadataInfo.name,
+      message: "You have successfully created:",
+      image: "metadataInfo.image",
+      price: offerInfo.price,
+      offer: {
+        id: offerInfo.id,
+        createdAt: offerInfo.createdAt,
+        price: offerInfo.price,
+        metadataHash: offerInfo.metadataHash,
+        sellerDeposit: offerInfo.sellerDeposit,
+        resolutionPeriodDuration: offerInfo.resolutionPeriodDuration,
+        metadataUri: offerInfo.metadataUri,
+        buyerCancelPenalty: offerInfo.buyerCancelPenalty,
+        quantityAvailable: offerInfo.quantityAvailable,
+        quantityInitial: offerInfo.quantityInitial,
+        fulfillmentPeriodDuration: offerInfo.fulfillmentPeriodDuration,
+        validFromDate: offerInfo.validFromDate,
+        validUntilDate: offerInfo.validUntilDate,
+        voidedAt: offerInfo.voidedAt,
+        voucherValidDuration: offerInfo.voucherValidDuration,
+        exchangeToken: {
+          address: "0x0000000000000000000000000000000000000000",
+          decimals: "18",
+          name: "Ether",
+          symbol: "ETH"
+        },
+        seller: offerInfo.seller
+      },
+      // these are the ones that we already had before
       onCreateNewProject: onCreateNewProject,
       onViewMyItem: () => onViewMyItem(offerId)
     });
@@ -254,18 +280,11 @@ function CreateProductInner({ initial }: Props) {
     values: CreateProductForm,
     formikBag: FormikHelpers<CreateProductForm>
   ) => {
-    console.log(
-      "🚀 ~ file: CreateProductInner.tsx ~ line 228 ~ CreateProductInner ~ values",
-      values
-    );
     console.log({
       log: "SEND DATA",
       values,
       formikBag
     });
-
-    const dayInMs = 1000 * 60 * 60 * 24;
-    const minuteInMS = 1000 * 60;
 
     const profileImage = getLocalStorageItems({
       key: "create-product-image_creteYourProfile"
@@ -292,17 +311,10 @@ function CreateProductInner({ initial }: Props) {
     const {
       coreTermsOfSale,
       creteYourProfile,
-      // productImages,
       productInformation,
       productType,
-      // shippingInfo,
       termsOfExchange
     } = values;
-
-    console.log(
-      "🚀 ~ file: CreateProductInner.tsx ~ line 285 ~ CreateProductInner ~ values",
-      values
-    );
 
     const attributes = productInformation.attributes.map(
       ({ name, value }: { name: string; value: string }) => {
@@ -356,54 +368,80 @@ function CreateProductInner({ initial }: Props) {
         }
       });
 
-      // formikBag.resetForm();
+      // reset the form
+      formikBag.resetForm();
+
+      const buyerCancellationPenaltyValue =
+        parseInt(coreTermsOfSale.price) *
+        (parseInt(termsOfExchange.buyerCancellationPenalty) / 100);
+
+      const sellerCancellationPenaltyValue =
+        parseInt(coreTermsOfSale.price) *
+        (parseInt(termsOfExchange.sellerDeposit) / 100);
+
+      const validFromDateInMS = Date.parse(
+        coreTermsOfSale.offerValidityPeriod[0].$d
+      );
+
+      const validUntilDateInMS = Date.parse(
+        coreTermsOfSale.offerValidityPeriod[1].$d
+      );
+
+      const voucherRedeemableFromDateInMS = Date.parse(
+        coreTermsOfSale.redemptionPeriod[0].$d
+      );
+
+      const voucherRedeemableUntilDateInMS = Date.parse(
+        coreTermsOfSale.redemptionPeriod[1].$d
+      );
+
+      const resolutionPeriodDurationInMS =
+        parseInt(termsOfExchange.disputePeriod) * 86400;
 
       const offerData = {
         price: parseEther(`${coreTermsOfSale.price}`).toString(),
-        sellerDeposit: parseEther("0.01").toString(),
+        sellerDeposit: parseEther(
+          `${sellerCancellationPenaltyValue}`
+        ).toString(),
         protocolFee: parseEther("0.001").toString(),
-        buyerCancelPenalty: parseEther("0.01").toString(),
-        quantityAvailable: 1,
-        voucherRedeemableFromDateInMS: (Date.now() + 3 * minuteInMS).toString(),
-        voucherRedeemableUntilDateInMS: (Date.now() + 20 * dayInMs).toString(),
-        validFromDateInMS: (Date.now() + 3 * minuteInMS).toString(),
-        validUntilDateInMS: (Date.now() + dayInMs).toString(),
-        fulfillmentPeriodDurationInMS: dayInMs.toString(),
-        resolutionPeriodDurationInMS: dayInMs.toString(),
-        voucherValidDurationInMS: (Date.now() + 2 * dayInMs).toString(),
+        buyerCancelPenalty: parseEther(
+          `${buyerCancellationPenaltyValue}`
+        ).toString(),
+
+        quantityAvailable: coreTermsOfSale.quantity,
+        voucherRedeemableFromDateInMS: voucherRedeemableFromDateInMS.toString(),
+        voucherRedeemableUntilDateInMS:
+          voucherRedeemableUntilDateInMS.toString(),
+        validFromDateInMS: validFromDateInMS.toString(),
+        validUntilDateInMS: validUntilDateInMS.toString(),
+        fulfillmentPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
+        resolutionPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
+        voucherValidDurationInMS: resolutionPeriodDurationInMS.toString(),
         exchangeToken: "0x0000000000000000000000000000000000000000",
         disputeResolverId: 1,
         metadataUri: `ipfs://${metadataHash}`,
         metadataHash: metadataHash
       };
-      console.log(
-        "🚀 ~ file: CreateProductInner.tsx ~ line 358 ~ CreateProductInner ~ offerData",
-        offerData
-      );
 
-      const operatorAddress = "0xF93FEb7C16af25244180DB590Dc0Eaf356C7aB01";
-
-      // check if seller exist
-      // if not create one
-      // else create the order
-
-      const txResponse = await coreSDK.createOffer(offerData);
+      const txResponse =
+        sellers?.length === 0 && address
+          ? await coreSDK.createSellerAndOffer(
+              {
+                operator: address,
+                admin: address,
+                treasury: address,
+                clerk: address,
+                contractUri: ""
+              },
+              offerData
+            )
+          : await coreSDK.createOffer(offerData);
 
       const txReceipt = await txResponse.wait();
 
-      console.log(
-        "🚀 ~ file: CreateProductInner.tsx ~ line 383 ~ CreateProductInner ~ txReceipt",
-        txReceipt
-      );
-
       const offerId = coreSDK.getCreatedOfferIdFromLogs(txReceipt.logs);
 
-      console.log(
-        "🚀 ~ file: CreateProductInner.tsx ~ line 392 ~ CreateProductInner ~ offerId",
-        offerId
-      );
-
-      await wait(10_000);
+      await wait(3_000);
       handleOpenSuccessModal({ offerId });
     } catch (error) {
       // TODO: FAILURE MODAL

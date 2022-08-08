@@ -96,7 +96,10 @@ const Amount = styled.span`
   transform: translate(0, -50%);
 `;
 
-const PROGRESS = 50;
+/**
+ * TODO: get the amount of funds and calculate the progress
+ */
+const PROGRESS = 15;
 export default function ProductCreateSuccess({
   message,
   name,
@@ -109,13 +112,18 @@ export default function ProductCreateSuccess({
     value: offer.price,
     decimals: offer.exchangeToken.decimals
   });
+
   const OFFER_DETAIL_DATA = useMemo(
     () => getOfferDetailData(offer, convertedPrice, false),
     [convertedPrice, offer]
   );
+
   const handleCreateNew = () => {
     onCreateNewProject();
   };
+
+  const suggestedAmount = parseInt(convertedPrice.price || "0") * 0.15;
+
   return (
     <>
       <ModalGrid>
@@ -202,7 +210,7 @@ export default function ProductCreateSuccess({
                 <StyledIndicator
                   style={{ transform: `translateX(-${100 - PROGRESS}%)` }}
                 />
-                <Amount>0 / 0.26 ETH</Amount>
+                <Amount>0 / {suggestedAmount} ETH</Amount>
               </StyledProgressLayer>
             </StyledProgress>
           </Founds>

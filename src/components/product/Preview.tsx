@@ -1,3 +1,4 @@
+import { parseEther } from "@ethersproject/units";
 import map from "lodash/map";
 import slice from "lodash/slice";
 import styled from "styled-components";
@@ -19,7 +20,6 @@ import {
 } from "../detail/Detail.style";
 import DetailSlider from "../detail/DetailSlider";
 import DetailTable from "../detail/DetailTable";
-import { useConvertedPrice } from "../price/useConvertedPrice";
 import Button from "../ui/Button";
 import Typography from "../ui/Typography";
 import { ProductButtonGroup } from "./Product.styles";
@@ -53,74 +53,49 @@ export default function Preview({ togglePreview }: Props) {
   const offerImg = previewImages?.[1] ?? null;
   const sliderImages = slice(previewImages, 1);
   const name = values.productInformation.productTitle || "Untitled";
-  console.log("🚀 ~ file: Preview.tsx ~ line 55 ~ Preview ~ values", values);
-  // const price = useConvertedPrice(values.coreTermsOfSale.price);
-  console.log(
-    "🚀 ~ file: Preview.tsx ~ line 60 ~ Preview ~ values.coreTermsOfSale.price",
-    values.coreTermsOfSale.price
+  console.log("🚀 ~ file: Preview.tsx ~ line 56 ~ Preview ~ values", values);
+
+  const weiPrice = parseEther(`${values.coreTermsOfSale.price}`);
+
+  const sellerDeposit = parseInt(values.termsOfExchange.sellerDeposit) / 100;
+  const buyerDeposit =
+    parseInt(values.termsOfExchange.buyerCancellationPenalty) / 100;
+
+  const validFromDateInMS = Date.parse(
+    values.coreTermsOfSale.offerValidityPeriod[0]
   );
-  const price = useConvertedPrice({
-    value: values.coreTermsOfSale.price,
-    decimals: "0"
-  });
-  console.log("🚀 ~ file: Preview.tsx ~ line 59 ~ Preview ~ price", price);
-  // const validFromDate = values.coreTermsOfSale.redemptionPeriod; // transform to timestamp; Redeemable until
-  const sellerDeposit = values.termsOfExchange.sellerDeposit; // Should be calc with termsOfExchange.sellerDepositUnit or not ? Seller deposit
-  // console.log(
-  //   "🚀 ~ file: Preview.tsx ~ line 59 ~ Preview ~ sellerDeposit",
-  //   sellerDeposit
-  // );
-
-  // const new
-  // const buyerCancelPenalty = values.termsOfExchange.buyerCancellationPenalty; // Should be calc with values.termsOfExchange.buyerCancellationPenaltyUnit or not ? Buyer cancel. pen.
-  // const fairExchangePolicy = values.termsOfExchange.exchangePolicy;
-  // const disputeResolver = values.termsOfExchange.disputeResolver;
-  // const seller.operator = values.creteYourProfile.logo avatar on the top (small picture)
-  // const seller.id = ?
-  // const exchangeToken.symbol = values.coreTermsOfSale.currency
-
-  // const validFromDate = // TODO FIX NON NULL ASSERTION
-  //   (
-  //     (values.coreTermsOfSale.redemptionPeriod?.[1]!.valueOf() as any) / 1000
-  //   ).toString();
 
   const offer = {
-    id: "35",
-    createdAt: "1657198698",
-    price: price.price,
-    metadataHash: "Qmf77HBcgxaiB2XT8fYSdDPMWo58VrMu1PVPXoBsBpgAko",
-    sellerDeposit,
-    fulfillmentPeriodDuration: "86400",
-    resolutionPeriodDuration: "86400",
-    metadataUri: "ipfs://Qmf77HBcgxaiB2XT8fYSdDPMWo58VrMu1PVPXoBsBpgAko",
-    buyerCancelPenalty: "10000000000000",
-    quantityAvailable: "994",
-    quantityInitial: "1000",
-    validFromDate: "1677285059",
+    price: weiPrice.toString(),
+
+    sellerDeposit: parseEther(
+      `${parseInt(values.coreTermsOfSale.price) * sellerDeposit}`
+    ).toString(),
+    buyerCancelPenalty: parseEther(
+      `${parseInt(values.coreTermsOfSale.price) * buyerDeposit}`
+    ).toString(),
+    validFromDate: validFromDateInMS.toString(),
     validUntilDate: "1677285059", // CHECK validUntilDate
     voidedAt: null,
     voucherValidDuration: "21727820",
     exchanges: [
       {
-        committedDate: "1657730973",
-        redeemedDate: "1657789278"
+        committedDate: Date.now().toString(),
+        redeemedDate: Date.now().toString()
       }
     ],
     seller: {
       id: "4",
-      admin: "0xe16955e95d088bd30746c7fb7d76cda436b86f63",
-      clerk: "0xe16955e95d088bd30746c7fb7d76cda436b86f63",
-      treasury: "0xe16955e95d088bd30746c7fb7d76cda436b86f63",
       operator: logoImage,
       active: true
     },
     exchangeToken: {
       address: "0x0000000000000000000000000000000000000000",
-      decimals: "0",
+      decimals: "18",
       name: "Ether",
       symbol: "ETH"
     },
-    isValid: true
+    isValid: false
   } as Offer;
 
   return (

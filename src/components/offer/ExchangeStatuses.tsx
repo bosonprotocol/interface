@@ -57,6 +57,16 @@ const stateToComponent: {
       Revoked
     </Status>
   ),
+  [ExchangeState.Disputed]: (
+    <Status
+      $color={colors.white}
+      $background={colors.red}
+      className="status"
+      data-testid="disputed-status"
+    >
+      Revoked
+    </Status>
+  ),
   [ExchangeState.Redeemed]: (
     <Status
       $color={colors.black}
