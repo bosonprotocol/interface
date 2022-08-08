@@ -1,5 +1,6 @@
 /* eslint @typescript-eslint/no-explicit-any: "off" */
 import CancelExchangeModal from "./components/Chat/CancelExchangeModal";
+import InitializeChatModal from "./components/Chat/InitializeChatModal";
 import MakeProposalModal from "./components/Chat/MakeProposal/MakeProposalModal";
 import ResolveDisputeModal from "./components/Chat/ResolveDisputeModal";
 import CustomStore from "./components/CustomStore";
@@ -14,7 +15,8 @@ export const MODAL_TYPES = {
   CANCEL_EXCHANGE: "CANCEL_EXCHANGE",
   RESOLVE_DISPUTE: "RESOLVE_DISPUTE",
   UPLOAD_MODAL: "UPLOAD_MODAL",
-  MAKE_PROPOSAL: "MAKE_PROPOSAL"
+  MAKE_PROPOSAL: "MAKE_PROPOSAL",
+  INITIALIZE_CHAT: "INITIALIZE_CHAT"
 } as const;
 
 export const MODAL_COMPONENTS = {
@@ -24,5 +26,6 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.CANCEL_EXCHANGE]: CancelExchangeModal,
   [MODAL_TYPES.RESOLVE_DISPUTE]: ResolveDisputeModal,
   [MODAL_TYPES.UPLOAD_MODAL]: Upload,
-  [MODAL_TYPES.MAKE_PROPOSAL]: MakeProposalModal
+  [MODAL_TYPES.MAKE_PROPOSAL]: MakeProposalModal,
+  [MODAL_TYPES.INITIALIZE_CHAT]: InitializeChatModal
 } as const;

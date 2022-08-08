@@ -8,6 +8,7 @@ import Grid from "../../../../components/ui/Grid";
 import { breakpoint } from "../../../../lib/styles/breakpoint";
 import { colors } from "../../../../lib/styles/colors";
 import { FileWithEncodedData } from "../../../../lib/utils/files";
+import { useChatContext } from "../../ChatProvider/ChatContext";
 import { NewProposal, Thread } from "../../types";
 
 const StyledButton = styled.button`
@@ -54,6 +55,7 @@ export default function ButtonProposal({
   onSendProposal,
   disabled
 }: Props) {
+  const { bosonXmtp } = useChatContext();
   const { showModal, updateProps, store } = useModal();
   const [activeStep, setActiveStep] = useState<number>(0);
 
@@ -78,14 +80,16 @@ export default function ButtonProposal({
   );
 
   useEffect(() => {
-    updateProps<"MAKE_PROPOSAL">({
-      ...store,
-      modalProps: {
-        ...store.modalProps,
-        headerComponent,
-        activeStep
-      }
-    });
+    if (bosonXmtp) {
+      updateProps<"MAKE_PROPOSAL">({
+        ...store,
+        modalProps: {
+          ...store.modalProps,
+          headerComponent,
+          activeStep
+        }
+      });
+    }
   }, [activeStep, headerComponent, activeStep]); // eslint-disable-line
 
   return (

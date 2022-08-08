@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Route, Routes, useLocation, useParams } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
 
+import { useModal } from "../../components/modal/useModal";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
@@ -9,6 +10,7 @@ import { colors } from "../../lib/styles/colors";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { Exchange, useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { useChatContext } from "./ChatProvider/ChatContext";
 import ChatConversation from "./components/ChatConversation";
 import MessageList from "./components/MessageList";
 
@@ -132,6 +134,23 @@ const getIsSameThread = (
 };
 
 export default function Chat() {
+  const { bosonXmtp } = useChatContext();
+  const { showModal, hideModal } = useModal();
+  useEffect(() => {
+    if (bosonXmtp) {
+      hideModal();
+    } else {
+      showModal(
+        "INITIALIZE_CHAT",
+        {
+          title: "Initialize Chat",
+          closable: false
+        },
+        "s"
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bosonXmtp]);
   const { data: exchanges = [] } = useMemo(
     () =>
       getExchanges({
@@ -171,7 +190,7 @@ export default function Chat() {
 
   // select thread based on url /exchangeId
   useEffect(() => {
-    if (exchanges) {
+    if (exchanges && exchangeId) {
       const foundExchange = exchanges.find((exchange) => {
         return exchange.id === exchangeId;
       });
@@ -232,6 +251,7 @@ export default function Chat() {
           setChatListOpen={setChatListOpen}
           currentExchange={selectedExchange}
         />
+
         <Routes>
           <Route
             path={`:${UrlParameters.exchangeId}`}
@@ -249,6 +269,7 @@ export default function Chat() {
             }
           />
         </Routes>
+
         {(location.pathname === `${BosonRoutes.Chat}/` ||
           location.pathname === `${BosonRoutes.Chat}`) && (
           <SelectMessageContainer>

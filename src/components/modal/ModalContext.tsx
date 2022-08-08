@@ -8,6 +8,7 @@ export type ModalProps = {
   title?: string;
   headerComponent?: ReactNode;
   hideModal?: () => void;
+  closable?: boolean;
 };
 export type ModalType = keyof typeof MODAL_TYPES | null;
 
