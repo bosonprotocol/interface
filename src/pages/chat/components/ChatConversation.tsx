@@ -130,25 +130,11 @@ const Loading = styled.div`
   justify-content: center;
   padding: 1rem;
 `;
-const Messages = styled.div`
-  /* flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  max-height: 100vh;
-  overflow-y: auto;
-  width: 100vw;
-  ${breakpoint.m} {
-    width: unset;
-  } */
-
+const Messages = styled.div<{ $overflow: string }>`
   background-color: ${colors.lightGrey};
-  overflow: auto;
+  overflow: ${({ $overflow }) => $overflow};
   display: flex;
   flex-direction: column-reverse;
-
-  [data-infinite-scroll] > .infinite-scroll-component__outerdiv {
-    overflow: hidden;
-  }
 `;
 const Conversation = styled.div<{ $alignStart: boolean }>`
   display: flex;
@@ -579,7 +565,12 @@ const ChatConversation = ({
         )}
 
         {thread?.messages.length ? (
-          <Messages data-messages ref={dataMessagesRef} id="messages">
+          <Messages
+            data-messages
+            ref={dataMessagesRef}
+            id="messages"
+            $overflow="auto"
+          >
             <InfiniteScroll
               inverse
               next={loadMoreMessages}
@@ -630,7 +621,7 @@ const ChatConversation = ({
             </InfiniteScroll>
           </Messages>
         ) : (
-          <Messages>
+          <Messages $overflow="hidden">
             <div data-infinite-scroll>
               <InfiniteScroll
                 inverse
