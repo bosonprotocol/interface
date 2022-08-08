@@ -24,7 +24,6 @@ import DetailSlider from "../../components/detail/DetailSlider";
 import DetailTable from "../../components/detail/DetailTable";
 import DetailTransactions from "../../components/detail/DetailTransactions";
 import DetailWidget from "../../components/detail/DetailWidget/DetailWidget";
-import DisputeModal from "../../components/modal/components/DisputeModal/DisputeModal";
 // DETAILS COMPONENTS ABOVE
 import Image from "../../components/ui/Image";
 import SellerID from "../../components/ui/SellerID";
@@ -364,10 +363,6 @@ export default function Exchange() {
           </DetailGrid>
         </DarkerBackground>
       </DetailWrapper>
-      <DisputeModal
-        isModalOpened={isModalOpened}
-        setIsModalOpened={setIsModalOpened}
-      />
     </>
   );
 }

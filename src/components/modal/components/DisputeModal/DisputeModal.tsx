@@ -1,60 +1,24 @@
-import { CheckCircle, FileText, HandsClapping, X } from "phosphor-react";
+import { CheckCircle, FileText, HandsClapping } from "phosphor-react";
 import React from "react";
 import styled from "styled-components";
 
 import { breakpoint } from "../../../../lib/styles/breakpoint";
 import { colors } from "../../../../lib/styles/colors";
-import { zIndex } from "../../../../lib/styles/zIndex";
 import Typography from "../../../ui/Typography";
-
-const ModalBackground = styled.div<{
-  $isModalOpened?: boolean;
-}>`
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: ${zIndex.Modal};
-  display: ${({ $isModalOpened }) => ($isModalOpened ? "block" : "none")};
-`;
+import { ModalProps } from "../../ModalContext";
 
 const ModalContainer = styled.div`
-  position: absolute;
-  width: 70vw;
+  position: relative;
   min-height: 500px;
   background: ${colors.white};
-  left: 50%;
   top: 50%;
-  transform: translate(-50%, -50%);
   padding-top: 2.5rem;
   padding-bottom: 2.5rem;
-  top: calc(50vh - 10px);
   max-width: 1120px;
   div {
     svg {
       color: ${colors.secondary};
     }
-  }
-`;
-
-const ModalHeader = styled.div`
-  margin-bottom: 3.125rem;
-  position: relative;
-  padding-left: 2.5rem;
-  padding-right: 2.5rem;
-  border-bottom: 0.0625rem solid ${colors.lightGrey};
-  display: flex;
-  justify-content: space-between;
-  padding-bottom: 1.5rem;
-  > svg {
-    color: ${colors.black};
-  }
-  button {
-    background: none;
-    border: none;
-    padding: none;
-    margin: none;
   }
 `;
 
@@ -194,31 +158,13 @@ const ButtonContainer = styled.div`
 `;
 
 interface Props {
-  isModalOpened: boolean;
-  setIsModalOpened: (p: boolean) => void;
+  hideModal: NonNullable<ModalProps["hideModal"]>;
 }
 
-function DisputeModal({ isModalOpened, setIsModalOpened }: Props) {
+function DisputeModal({ hideModal }: Props) {
   return (
-    <ModalBackground $isModalOpened={isModalOpened}>
+    <>
       <ModalContainer>
-        <ModalHeader>
-          <Typography
-            margin="0"
-            fontSize="1.5rem"
-            color={colors.black}
-            fontWeight="600"
-          >
-            Raise a problem
-          </Typography>
-          <button
-            onClick={() => {
-              setIsModalOpened(!isModalOpened);
-            }}
-          >
-            <X size={24} />
-          </button>
-        </ModalHeader>
         <ModalGrid>
           <div>
             <FileText size={24} />
@@ -284,10 +230,16 @@ function DisputeModal({ isModalOpened, setIsModalOpened }: Props) {
         </ModalGrid>
         <ButtonContainer>
           <button>Submit an issue</button>
-          <button>Back</button>
+          <button
+            onClick={() => {
+              hideModal();
+            }}
+          >
+            Back
+          </button>
         </ButtonContainer>
       </ModalContainer>
-    </ModalBackground>
+    </>
   );
 }
 

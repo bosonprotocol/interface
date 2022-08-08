@@ -437,13 +437,12 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               ) : (
                 <RaiseProblemButton
                   onClick={() => {
-                    if (setIsModalOpened) {
-                      setIsModalOpened(!isModalOpened);
-                    }
+                    showModal(modalTypes.DISPUTE_MODAL, {
+                      title: "Raise a problem"
+                    });
                   }}
                   theme="blank"
                   style={{ fontSize: "0.875rem" }}
-                  disabled={isChainUnsupported}
                 >
                   Raise a problem
                   <Question size={18} />
