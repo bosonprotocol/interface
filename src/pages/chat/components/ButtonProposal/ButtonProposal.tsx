@@ -101,7 +101,7 @@ export default function ButtonProposal({
           {
             headerComponent,
             exchange,
-            activeStep,
+            activeStep: 0,
             setActiveStep,
             sendProposal: onSendProposal
           },
