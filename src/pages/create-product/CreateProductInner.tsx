@@ -411,7 +411,6 @@ function CreateProductInner({ initial }: Props) {
         sellerDeposit: parseEther(
           `${sellerCancellationPenaltyValue}`
         ).toString(),
-        protocolFee: parseEther("0.001").toString(),
         buyerCancelPenalty: parseEther(
           `${buyerCancellationPenaltyValue}`
         ).toString(),
@@ -427,6 +426,7 @@ function CreateProductInner({ initial }: Props) {
         voucherValidDurationInMS: resolutionPeriodDurationInMS.toString(),
         exchangeToken: "0x0000000000000000000000000000000000000000",
         disputeResolverId: 1,
+        agentId: 0, // no agent
         metadataUri: `ipfs://${metadataHash}`,
         metadataHash: metadataHash,
         agentId: "0"

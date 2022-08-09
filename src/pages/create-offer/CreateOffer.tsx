@@ -76,7 +76,6 @@ const initialValues = {
   disputeResolverId: "1",
   price: "0.00002",
   sellerDeposit: "0.00002",
-  protocolFee: "0.00001",
   buyerCancelPenalty: "0.00001",
   quantityAvailable: "10",
   exchangeToken: "0x0000000000000000000000000000000000000000",
@@ -85,7 +84,8 @@ const initialValues = {
   validFromDateInMS: (Date.now() + 3 * minuteInMS).toString(),
   validUntilDateInMS: (Date.now() + dayInMs).toString(),
   fulfillmentPeriodDurationInMS: dayInMs.toString(),
-  resolutionPeriodDurationInMS: dayInMs.toString()
+  resolutionPeriodDurationInMS: dayInMs.toString(),
+  agentId: "0"
 };
 
 export default function CreateOffer() {
@@ -117,7 +117,6 @@ export default function CreateOffer() {
             buyerCancelPenalty: parseEther(
               values.buyerCancelPenalty
             ).toString(),
-            protocolFee: parseEther(values.protocolFee).toString(),
             metadataHash,
             metadataUri
           },
@@ -211,11 +210,11 @@ export default function CreateOffer() {
             />
           </FormElement>
           <FormElement>
-            <FormLabel>ProtocolFee</FormLabel>
+            <FormLabel>AgentId</FormLabel>
             <FormControl
-              value={values.protocolFee}
+              value={values.agentId}
               onChange={handleChange}
-              name="protocolFee"
+              name="agentId"
               type="text"
               placeholder="..."
             />
