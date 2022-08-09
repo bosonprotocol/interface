@@ -7,6 +7,7 @@ import {
   ThreadId,
   ThreadObject
 } from "@bosonprotocol/chat-sdk/dist/cjs/util/definitions";
+import dayjs from "dayjs";
 import { CircleNotch } from "phosphor-react";
 import { ArrowLeft, UploadSimple } from "phosphor-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -345,7 +346,7 @@ const ChatConversation = ({
   } = useInfiniteThread({
     threadId,
     dateIndex,
-    dateStep: "day", // TODO: change to week
+    dateStep: "week", // TODO: change to week
     counterParty: exchange?.offer.seller.operator || ""
   });
   const loadMoreMessages = useCallback(() => {
@@ -577,6 +578,17 @@ const ChatConversation = ({
               <>
                 {thread?.messages.map((message, index) => {
                   const isFirstMessage = index === 0;
+                  const isPreviousMessageInADifferentDay = isFirstMessage
+                    ? false
+                    : dayjs(message.timestamp)
+                        .startOf("day")
+                        .diff(
+                          dayjs(thread.messages[index - 1].timestamp).startOf(
+                            "day"
+                          )
+                        ) > 0;
+                  const showMessageSeparator =
+                    isFirstMessage || isPreviousMessageInADifferentDay;
                   const isLastMessage = index === thread.messages.length - 1;
                   const leftAligned = !getWasItSentByMe(
                     address,
@@ -594,7 +606,9 @@ const ChatConversation = ({
                       $alignStart={leftAligned}
                     >
                       <>
-                        <MessageSeparator message={message} />
+                        {showMessageSeparator && (
+                          <MessageSeparator message={message} />
+                        )}
                         <Message
                           exchange={exchange}
                           message={message}
