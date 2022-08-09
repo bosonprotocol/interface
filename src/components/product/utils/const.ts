@@ -115,12 +115,10 @@ export const OPTIONS_PERIOD = [
     label: "Days"
   }
 ];
+
 export const OPTIONS_COUNTRIES = countries;
+
 export const OPTIONS_LENGTH = [
-  {
-    value: "mm",
-    label: "Milimetres"
-  },
   {
     value: "cm",
     label: "Centimetres"
@@ -136,16 +134,13 @@ export const OPTIONS_LENGTH = [
   {
     value: "ft",
     label: "Feet"
-  },
-  {
-    value: "yd",
-    label: "Yards"
   }
 ];
+
 export const OPTIONS_WEIGHT = [
   {
     value: "g",
-    label: "gram"
+    label: "Gram"
   },
   {
     value: "kg",
