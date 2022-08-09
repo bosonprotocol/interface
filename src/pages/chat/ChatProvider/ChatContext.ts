@@ -3,7 +3,7 @@ import { createContext, Dispatch, SetStateAction, useContext } from "react";
 
 export const Context = createContext<{
   bosonXmtp: BosonXmtpClient | undefined;
-  initialize: Dispatch<SetStateAction<boolean>>;
+  initialize: Dispatch<SetStateAction<void>>;
 }>({
   bosonXmtp: undefined,
   initialize: () => null

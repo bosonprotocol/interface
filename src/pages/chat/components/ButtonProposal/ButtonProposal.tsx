@@ -80,7 +80,7 @@ export default function ButtonProposal({
   );
 
   useEffect(() => {
-    if (bosonXmtp) {
+    if (bosonXmtp && store.modalType === "MAKE_PROPOSAL") {
       updateProps<"MAKE_PROPOSAL">({
         ...store,
         modalProps: {

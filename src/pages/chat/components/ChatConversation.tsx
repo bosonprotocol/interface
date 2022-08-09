@@ -520,7 +520,7 @@ const ChatConversation = ({
 
   const isConversationBeingLoaded = !thread && areThreadsLoading;
   const disableInputs = isErrorThread || isConversationBeingLoaded;
-  if (!exchange) {
+  if (!exchange || !address) {
     return (
       <Container>
         <SimpleMessage>

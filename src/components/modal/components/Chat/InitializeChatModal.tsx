@@ -1,8 +1,10 @@
 import { ChatDots } from "phosphor-react";
 import styled from "styled-components";
+import { useAccount } from "wagmi";
 
 import { colors } from "../../../../lib/styles/colors";
 import { useChatContext } from "../../../../pages/chat/ChatProvider/ChatContext";
+import ConnectButton from "../../../header/ConnectButton";
 import Button from "../../../ui/Button";
 import Grid from "../../../ui/Grid";
 import Typography from "../../../ui/Typography";
@@ -32,7 +34,9 @@ const InfoMessage = styled(Typography)`
 `;
 
 export default function InitializeChatModal() {
-  const { initialize } = useChatContext();
+  const { initialize, bosonXmtp } = useChatContext();
+  const { address } = useAccount();
+
   return (
     <Info justifyContent="space-between" gap="2rem">
       <Grid justifyContent="flex-start" gap="1rem">
@@ -42,15 +46,19 @@ export default function InitializeChatModal() {
         </InfoMessage>
       </Grid>
       <div>
-        <Button
-          type="button"
-          theme="primaryInverse"
-          onClick={() => {
-            initialize(true);
-          }}
-        >
-          Initialize
-        </Button>
+        {address && !bosonXmtp ? (
+          <Button
+            type="button"
+            theme="primaryInverse"
+            onClick={() => {
+              initialize();
+            }}
+          >
+            Initialize
+          </Button>
+        ) : !address ? (
+          <ConnectButton />
+        ) : null}
       </div>
     </Info>
   );
