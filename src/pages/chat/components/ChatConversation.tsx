@@ -320,14 +320,13 @@ const ChatConversation = ({
   onTextAreaChange,
   textAreaValue
 }: Props) => {
-  const [dateIndex, setDateIndex] = useState<number>(0);
-  const addMessage = useCallback(
-    (thread: ThreadObject, newMessage: MessageData) => {
-      thread.messages = [...thread.messages, newMessage];
-    },
-    []
-  );
   const { bosonXmtp } = useChatContext();
+  const [dateIndex, setDateIndex] = useState<number>(0);
+  const onFinishFetching = () => {
+    if (bosonXmtp && !isBeginningOfTimes && !areThreadsLoading && !lastThread) {
+      loadMoreMessages();
+    }
+  };
   const threadId = useMemo<ThreadId | null>(() => {
     if (!exchange) {
       return null;
@@ -338,13 +337,6 @@ const ChatConversation = ({
       sellerId: exchange.seller.id
     };
   }, [exchange]);
-
-  const onFinishFetching = () => {
-    if (bosonXmtp && !isBeginningOfTimes && !areThreadsLoading && !lastThread) {
-      loadMoreMessages();
-    }
-  };
-
   const {
     data: thread,
     isLoading: areThreadsLoading,
@@ -358,17 +350,41 @@ const ChatConversation = ({
     counterParty: exchange?.offer.seller.operator || "",
     onFinishFetching
   });
+  const loadMoreMessages = useCallback(
+    (forceDateIndex?: number) => {
+      if (!areThreadsLoading) {
+        if (forceDateIndex !== undefined) {
+          setDateIndex(forceDateIndex);
+        } else {
+          setDateIndex(dateIndex - 1);
+        }
+      }
+    },
+    [dateIndex, areThreadsLoading]
+  );
 
-  const loadMoreMessages = useCallback(() => {
-    if (!areThreadsLoading) {
-      setDateIndex(dateIndex - 1);
-    }
-  }, [dateIndex, areThreadsLoading]);
-
-  const hasMoreMessages = !isBeginningOfTimes;
+  const addMessage = useCallback(
+    (
+      thread: ThreadObject | null,
+      newMessageOrList: MessageData | MessageData[]
+    ) => {
+      const newMessages = Array.isArray(newMessageOrList)
+        ? newMessageOrList
+        : [newMessageOrList];
+      if (thread) {
+        thread.messages = [...thread.messages, ...newMessages];
+      } else {
+        loadMoreMessages(0); // trigger getting the thread
+      }
+    },
+    [loadMoreMessages]
+  );
   const previousThreadMessagesRef = useRef<MessageData[]>(
     thread?.messages || []
   );
+
+  const hasMoreMessages = !isBeginningOfTimes;
+
   const dataMessagesRef = useRef<HTMLDivElement>(null);
   const lastMessageRef = useRef<HTMLDivElement>(null);
   const scrollToBottom = useCallback(
@@ -419,7 +435,7 @@ const ChatConversation = ({
   }, [bosonXmtp, destinationAddress, thread, addMessage, address]);
   const sendFilesToChat = useCallback(
     async (files: FileWithEncodedData[]) => {
-      if (!thread || !bosonXmtp) {
+      if (!bosonXmtp || !threadId) {
         return;
       }
       for (const file of files) {
@@ -432,7 +448,7 @@ const ChatConversation = ({
           }
         };
         const newMessage = {
-          threadId: thread.threadId,
+          threadId,
           content: imageContent,
           contentType: MessageType.File,
           version: "1"
@@ -444,7 +460,7 @@ const ChatConversation = ({
         addMessage(thread, messageData);
       }
     },
-    [addMessage, bosonXmtp, destinationAddress, thread]
+    [addMessage, bosonXmtp, destinationAddress, threadId, thread]
   );
   const { isLteS, isXXS, isS, isM, isL, isXL } = useBreakpoints();
   const {
@@ -625,7 +641,7 @@ const ChatConversation = ({
                 exchange={exchange}
                 disabled={disableInputs}
                 onSendProposal={async (proposal, proposalFiles) => {
-                  if (!thread || !bosonXmtp) {
+                  if (!threadId || !bosonXmtp) {
                     return;
                   }
                   const proposalContent: ProposalContent = {
@@ -637,7 +653,7 @@ const ChatConversation = ({
                     }
                   };
                   const newMessage = {
-                    threadId: thread.threadId,
+                    threadId,
                     content: proposalContent,
                     contentType: MessageType.Proposal,
                     version: "1"
@@ -682,7 +698,7 @@ const ChatConversation = ({
                       newMessage,
                       destinationAddress
                     );
-                    addMessage(thread!, messageData);
+                    addMessage(thread, messageData);
                     onTextAreaChange("");
                   }
                 }}

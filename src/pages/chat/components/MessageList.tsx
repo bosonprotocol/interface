@@ -3,12 +3,13 @@ import styled from "styled-components";
 
 import SellerID from "../../../components/ui/SellerID";
 import { breakpoint } from "../../../lib/styles/breakpoint";
+import { colors } from "../../../lib/styles/colors";
 import { zIndex } from "../../../lib/styles/zIndex";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 
 const messageItemHeight = "6.25rem";
-const messageItemMargin = "1.5rem";
+const messageItemPadding = "1.5rem";
 
 const Container = styled.div<{
   $chatListOpen?: boolean;
@@ -17,7 +18,7 @@ const Container = styled.div<{
   display: flex;
   flex-direction: column;
   flex: 1 1 25%;
-  border: 1px solid #5560720f;
+  border: 1px solid ${colors.border};
   position: absolute;
   z-index: ${zIndex.ChatSeparator};
   background: white;
@@ -51,11 +52,11 @@ const Container = styled.div<{
 const Header = styled.div`
   display: flex;
   align-items: center;
-  padding: ${messageItemMargin};
+  padding: ${messageItemPadding};
   height: ${messageItemHeight};
   font-weight: 600;
-  font-size: 24px;
-  border-bottom: 1px solid #5560720f;
+  font-size: 1.5rem;
+  border-bottom: 1px solid ${colors.border};
   ${breakpoint.m} {
     padding-top: 1.25rem;
     margin-top: 1.5625rem;
@@ -66,21 +67,25 @@ const Header = styled.div`
   }
 `;
 
+const ExchangesThreads = styled.div`
+  overflow: auto;
+`;
+
 const MessageItem = styled.div<{ $active?: boolean }>`
   height: ${messageItemHeight};
-  border-bottom: 1px solid #5560720f;
+  border-bottom: 1px solid ${colors.border};
   ${({ $active }) =>
     $active &&
     `
-    background-color: rgba(85, 96, 114, 0.06);
+    background-color: ${colors.border};
   `};
   :hover {
-    background-color: rgba(85, 96, 114, 0.06);
+    background-color: ${colors.border};
   }
 `;
 
 const MessageContent = styled.div`
-  margin: ${messageItemMargin};
+  padding: ${messageItemPadding};
   display: flex;
   align-items: center;
   column-gap: 1rem;
@@ -142,42 +147,44 @@ export default function MessageList({
       $isConversationOpened={isConversationOpened}
     >
       <Header>Messages</Header>
-      {exchanges
-        .filter((exchange) => exchange)
-        .map((exchange) => {
-          const messageKey = getMessageItemKey(exchange);
-          return (
-            <MessageItem
-              $active={messageKey === activeMessageKey}
-              onClick={() => {
-                onChangeConversation(exchange);
-                setActiveMessageKey(messageKey);
-                if (isS) {
-                  setChatListOpen(!chatListOpen);
-                }
-              }}
-              key={messageKey}
-            >
-              <MessageContent>
-                <img
-                  src={exchange?.offer.metadata.imageUrl}
-                  alt="exchange image"
-                  width="50"
-                  height="50"
-                />
-                <MessageInfo>
-                  <ExchangeName>{exchange?.offer.metadata.name}</ExchangeName>
-                  <SellerID
-                    seller={exchange?.offer.seller || ({} as never)}
-                    offerName={exchange?.offer.metadata.name || ""}
-                    withProfileImage
-                    onClick={null}
+      <ExchangesThreads>
+        {exchanges
+          .filter((exchange) => exchange)
+          .map((exchange) => {
+            const messageKey = getMessageItemKey(exchange);
+            return (
+              <MessageItem
+                $active={messageKey === activeMessageKey}
+                onClick={() => {
+                  onChangeConversation(exchange);
+                  setActiveMessageKey(messageKey);
+                  if (isS) {
+                    setChatListOpen(!chatListOpen);
+                  }
+                }}
+                key={messageKey}
+              >
+                <MessageContent>
+                  <img
+                    src={exchange?.offer.metadata.imageUrl}
+                    alt="exchange image"
+                    width="50"
+                    height="50"
                   />
-                </MessageInfo>
-              </MessageContent>
-            </MessageItem>
-          );
-        })}
+                  <MessageInfo>
+                    <ExchangeName>{exchange?.offer.metadata.name}</ExchangeName>
+                    <SellerID
+                      seller={exchange?.offer.seller}
+                      offerName={exchange?.offer.metadata.name || ""}
+                      withProfileImage
+                      onClick={null}
+                    />
+                  </MessageInfo>
+                </MessageContent>
+              </MessageItem>
+            );
+          })}
+      </ExchangesThreads>
     </Container>
   );
 }

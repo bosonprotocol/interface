@@ -95,7 +95,7 @@ const getExchanges = ({
           imageUrl:
             "https://bsn-portal-development-image-upload-storage.s3.amazonaws.com/boson-sweatshirt-FINAL.gif",
           type: "BASE",
-          name: index === 0 ? "boson sweatshirt" : "another sweatshirt"
+          name: index === 0 ? "boson sweatshirt" : `another sweatshirt ${id}`
         }
       }
     }))
@@ -155,7 +155,7 @@ export default function Chat() {
     () =>
       getExchanges({
         // TODO: remove
-        id_in: [1, 2, 3, 115].map((v) => "" + v),
+        id_in: new Array(116).fill(0).map((v, idx) => "" + idx),
         disputed: null
       }),
     []
