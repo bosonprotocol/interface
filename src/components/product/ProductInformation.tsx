@@ -13,7 +13,7 @@ import {
   ProductButtonGroup,
   SectionTitle
 } from "./Product.styles";
-import { MOCK_OPTIONS } from "./utils";
+import { CATEGORY_OPTIONS, MOCK_OPTIONS } from "./utils";
 import { useThisForm } from "./utils/useThisForm";
 
 const AddProductContainer = styled.div`
@@ -117,7 +117,7 @@ export default function ProductInformation() {
         <Select
           placeholder="Choose category..."
           name="productInformation.category"
-          options={MOCK_OPTIONS}
+          options={CATEGORY_OPTIONS}
           isClearable
         />
       </FormField>
@@ -172,19 +172,19 @@ export default function ProductInformation() {
           >
             <Input placeholder="Material" name="productInformation.material" />
           </FormField>
-          <FormField title="Manufacture name" tooltip="TODO: add">
+          <FormField title="Manufacturer name" tooltip="TODO: add">
             <Input
-              placeholder="Manufacture"
+              placeholder="Manufacturer"
               name="productInformation.manufacture"
             />
           </FormField>
-          <FormField title="Manufacture model name" tooltip="TODO: add">
+          <FormField title="Manufacturer model name" tooltip="TODO: add">
             <Input
-              placeholder="Manufacture model name"
+              placeholder="Manufacturer model name"
               name="productInformation.manufactureModelName"
             />
           </FormField>
-          <FormField title="Manufacture part number" tooltip="TODO: add">
+          <FormField title="Manufacturer part number" tooltip="TODO: add">
             <Input
               placeholder="Part number"
               name="productInformation.partNumber"
