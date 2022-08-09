@@ -426,17 +426,14 @@ const ChatConversation = ({
           contentType: MessageType.File,
           version: "1"
         };
-        await bosonXmtp.encodeAndSendMessage(newMessage, destinationAddress);
-        addMessage(thread, {
-          sender: address || "",
-          authorityId: "",
-          recipient: destinationAddress,
-          timestamp: Date.now(),
-          data: newMessage
-        });
+        const messageData = await bosonXmtp.encodeAndSendMessage(
+          newMessage,
+          destinationAddress
+        );
+        addMessage(thread, messageData);
       }
     },
-    [addMessage, address, bosonXmtp, destinationAddress, thread]
+    [addMessage, bosonXmtp, destinationAddress, thread]
   );
   const { isLteS, isXXS, isS, isM, isL, isXL } = useBreakpoints();
   const {
@@ -524,12 +521,9 @@ const ChatConversation = ({
               if (isM && !prevPath) {
                 setChatListOpen(!chatListOpen);
               } else if (isM && prevPath) {
-                navigate({ pathname: prevPath }, { replace: true });
+                navigate({ pathname: prevPath });
               } else {
-                navigate(
-                  { pathname: `/${BosonRoutes.Chat}` },
-                  { replace: true }
-                );
+                navigate({ pathname: `/${BosonRoutes.Chat}` });
               }
             }}
           >
