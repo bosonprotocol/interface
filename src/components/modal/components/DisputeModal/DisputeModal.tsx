@@ -13,12 +13,14 @@ const ModalContainer = styled.div`
   background: ${colors.white};
   top: 50%;
   padding-top: 2.5rem;
-  padding-bottom: 2.5rem;
+  padding-bottom: 7.1875rem;
   max-width: 92.5rem;
   display: block;
   margin-left: auto;
   margin-right: auto;
   margin-bottom: -1.875rem;
+  margin-top: -3.125rem;
+  min-height: max-content;
   div {
     svg {
       color: ${colors.secondary};
@@ -141,22 +143,28 @@ const ModalGrid = styled.div`
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  padding: 2rem 2.5rem 2rem 2.5rem;
   margin-top: 1.5rem;
   border-top: 0.0625rem solid ${colors.lightGrey};
+  position: absolute;
+  width: 100%;
+  left: -2rem;
+  width: calc(100% + 3.875rem);
   button {
     font-family: "Plus Jakarta Sans";
     font-weight: 600;
     font-size: 1rem;
     border: none;
+    margin-top: 1.25rem;
   }
   button:nth-of-type(1) {
     background-color: ${colors.green};
     padding: 1rem 2rem 1rem 2rem;
+    margin-left: 4.375rem;
   }
   button:nth-of-type(2) {
     background: none;
     padding: 1rem 2rem 1rem 2rem;
+    margin-right: 4.375rem;
   }
 `;
 
