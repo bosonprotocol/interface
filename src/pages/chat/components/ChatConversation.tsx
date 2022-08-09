@@ -135,6 +135,7 @@ const Messages = styled.div<{ $overflow: string }>`
   overflow: ${({ $overflow }) => $overflow};
   display: flex;
   flex-direction: column-reverse;
+  flex-grow: 1;
 `;
 const Conversation = styled.div<{ $alignStart: boolean }>`
   display: flex;
@@ -562,92 +563,72 @@ const ChatConversation = ({
           />
         </Loading>
 
-        {thread?.messages.length ? (
-          <Messages
-            data-messages
-            ref={dataMessagesRef}
-            id="messages"
-            $overflow="auto"
+        <Messages
+          data-messages
+          ref={dataMessagesRef}
+          id="messages"
+          $overflow="auto"
+        >
+          <InfiniteScroll
+            inverse
+            next={loadMoreMessages}
+            hasMore={true || hasMoreMessages}
+            loader={<></>}
+            dataLength={thread?.messages.length || 0}
+            scrollableTarget="messages"
+            scrollThreshold="200px"
           >
-            <InfiniteScroll
-              inverse
-              next={loadMoreMessages}
-              hasMore={true || hasMoreMessages}
-              loader={<></>}
-              dataLength={thread?.messages.length || 0}
-              scrollableTarget="messages"
-              scrollThreshold="200px"
-            >
-              <>
-                {thread?.messages.map((message, index) => {
-                  const isFirstMessage = index === 0;
-                  const isPreviousMessageInADifferentDay = isFirstMessage
-                    ? false
-                    : dayjs(message.timestamp)
-                        .startOf("day")
-                        .diff(
-                          dayjs(thread.messages[index - 1].timestamp).startOf(
-                            "day"
-                          )
-                        ) > 0;
-                  const showMessageSeparator =
-                    isFirstMessage || isPreviousMessageInADifferentDay;
-                  const isLastMessage = index === thread.messages.length - 1;
-                  const leftAligned = !getWasItSentByMe(
-                    address,
-                    message.sender
-                  );
-                  const ref = isLastMessage
-                    ? lastMessageRef
-                    : isFirstMessage
-                    ? firstMessageRef
-                    : null;
-                  // TODO: how does this look if there is not enough messages? the conversation doesnt fill all available space
-                  return (
-                    <Conversation
-                      key={message.timestamp}
-                      $alignStart={leftAligned}
-                    >
-                      <>
-                        {showMessageSeparator && (
-                          <MessageSeparator message={message} />
-                        )}
-                        <Message
+            <>
+              {thread?.messages.map((message, index) => {
+                const isFirstMessage = index === 0;
+                const isPreviousMessageInADifferentDay = isFirstMessage
+                  ? false
+                  : dayjs(message.timestamp)
+                      .startOf("day")
+                      .diff(
+                        dayjs(thread.messages[index - 1].timestamp).startOf(
+                          "day"
+                        )
+                      ) > 0;
+                const showMessageSeparator =
+                  isFirstMessage || isPreviousMessageInADifferentDay;
+                const isLastMessage = index === thread.messages.length - 1;
+                const leftAligned = !getWasItSentByMe(address, message.sender);
+                const ref = isLastMessage
+                  ? lastMessageRef
+                  : isFirstMessage
+                  ? firstMessageRef
+                  : null;
+                // TODO: how does this look if there is not enough messages? the conversation doesnt fill all available space
+                return (
+                  <Conversation
+                    key={message.timestamp}
+                    $alignStart={leftAligned}
+                  >
+                    <>
+                      {showMessageSeparator && (
+                        <MessageSeparator message={message} />
+                      )}
+                      <Message
+                        exchange={exchange}
+                        message={message}
+                        isLeftAligned={leftAligned}
+                        ref={ref}
+                      >
+                        <SellerComponent
+                          size={32}
+                          withProfileText={false}
                           exchange={exchange}
-                          message={message}
-                          isLeftAligned={leftAligned}
-                          ref={ref}
-                        >
-                          <SellerComponent
-                            size={32}
-                            withProfileText={false}
-                            exchange={exchange}
-                          />
-                        </Message>
-                      </>
-                    </Conversation>
-                  );
-                })}
-              </>
-            </InfiniteScroll>
-          </Messages>
-        ) : (
-          <Messages $overflow="hidden">
-            <div data-infinite-scroll>
-              <InfiniteScroll
-                inverse
-                next={() => null}
-                hasMore={false}
-                loader={<></>}
-                dataLength={9}
-              >
-                {new Array(100).fill(0).map((_, idx) => (
-                  <p key={idx}>&nbsp;</p>
-                ))}
-              </InfiniteScroll>
-            </div>
-          </Messages>
-        )}
+                        />
+                      </Message>
+                    </>
+                  </Conversation>
+                );
+              })}
+            </>
+          </InfiniteScroll>
+        </Messages>
+
         <TypeMessage>
           {exchange.disputed && (
             <ButtonProposalContainer>
@@ -699,9 +680,9 @@ const ChatConversation = ({
                   }
                 }}
                 onKeyDown={async (e) => {
-                  if (e.key === "Enter" && thread && bosonXmtp) {
+                  if (e.key === "Enter" && bosonXmtp && threadId) {
                     const newMessage = {
-                      threadId: thread.threadId,
+                      threadId,
                       content: {
                         value: e.target.value
                       },
@@ -712,7 +693,7 @@ const ChatConversation = ({
                       newMessage,
                       destinationAddress
                     );
-                    addMessage(thread, messageData);
+                    addMessage(thread!, messageData);
                     onTextAreaChange("");
                   }
                 }}
