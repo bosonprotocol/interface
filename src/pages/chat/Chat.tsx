@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Route, Routes, useLocation, useParams } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
+import { useAccount } from "wagmi";
 
 import { useModal } from "../../components/modal/useModal";
 import { UrlParameters } from "../../lib/routing/parameters";
@@ -135,9 +136,10 @@ const getIsSameThread = (
 
 export default function Chat() {
   const { bosonXmtp } = useChatContext();
+  const { address } = useAccount();
   const { showModal, hideModal } = useModal();
   useEffect(() => {
-    if (bosonXmtp) {
+    if (bosonXmtp && address) {
       hideModal();
     } else {
       showModal(
@@ -150,7 +152,7 @@ export default function Chat() {
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bosonXmtp]);
+  }, [bosonXmtp, address]);
   const { data: exchanges = [] } = useMemo(
     () =>
       getExchanges({
