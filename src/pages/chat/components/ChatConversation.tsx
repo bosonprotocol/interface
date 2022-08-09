@@ -129,7 +129,6 @@ const Loading = styled.div`
   display: flex;
   background-color: ${colors.lightGrey};
   justify-content: center;
-  padding: 1rem;
 `;
 const Messages = styled.div<{ $overflow: string }>`
   background-color: ${colors.lightGrey};
@@ -338,25 +337,36 @@ const ChatConversation = ({
       sellerId: exchange.seller.id
     };
   }, [exchange]);
+
+  const onFinishFetching = () => {
+    if (bosonXmtp && !isBeginningOfTimes && !areThreadsLoading && !lastThread) {
+      loadMoreMessages();
+    }
+  };
+
   const {
     data: thread,
     isLoading: areThreadsLoading,
     isBeginningOfTimes,
-    isError: isErrorThread
+    isError: isErrorThread,
+    lastData: lastThread
   } = useInfiniteThread({
     threadId,
     dateIndex,
-    dateStep: "week", // TODO: change to week
-    counterParty: exchange?.offer.seller.operator || ""
+    dateStep: "week",
+    counterParty: exchange?.offer.seller.operator || "",
+    onFinishFetching
   });
+
   const loadMoreMessages = useCallback(() => {
     if (!areThreadsLoading) {
       setDateIndex(dateIndex - 1);
     }
   }, [dateIndex, areThreadsLoading]);
+
   const hasMoreMessages = !isBeginningOfTimes;
-  const previousThreadMessagesNumberRef = useRef<number>(
-    thread?.messages.length || 0
+  const previousThreadMessagesRef = useRef<MessageData[]>(
+    thread?.messages || []
   );
   const dataMessagesRef = useRef<HTMLDivElement>(null);
   const firstMessageRef = useRef<HTMLDivElement>(null);
@@ -372,18 +382,24 @@ const ChatConversation = ({
     []
   );
   useEffect(() => {
-    if (thread?.messages.length !== previousThreadMessagesNumberRef.current) {
-      if (previousThreadMessagesNumberRef.current) {
-        scrollToBottom({
-          behavior: "smooth"
-        }); // every time we send/receive a message
-      } else {
-        scrollToBottom({}); // when the conversation loads
+    if (
+      thread &&
+      thread?.messages.length !== previousThreadMessagesRef.current.length
+    ) {
+      if (previousThreadMessagesRef.current.length) {
+        const isLoadingHistoryMessages =
+          (thread?.messages[0].timestamp || 0) <
+          previousThreadMessagesRef.current[0].timestamp;
+        if (!isLoadingHistoryMessages) {
+          scrollToBottom({
+            behavior: "smooth"
+          }); // every time we send/receive a message
+        }
       }
 
-      previousThreadMessagesNumberRef.current = thread?.messages.length || 0;
+      previousThreadMessagesRef.current = thread?.messages || [];
     }
-  }, [scrollToBottom, scrollToTop, thread?.messages]);
+  }, [thread, lastThread, scrollToBottom, scrollToTop, thread?.messages]);
   const [isExchangePreviewOpen, setExchangePreviewOpen] =
     useState<boolean>(false);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -493,13 +509,6 @@ const ChatConversation = ({
 
   const isConversationBeingLoaded = !thread && areThreadsLoading;
   const disableInputs = isErrorThread || isConversationBeingLoaded;
-  console.log({
-    thread,
-    isConversationBeingLoaded,
-    disableInputs,
-    isErrorThread,
-    exchangeId: exchange?.id
-  });
   if (!exchange) {
     return (
       <Container>
@@ -511,7 +520,6 @@ const ChatConversation = ({
       </Container>
     );
   }
-  console.log({ hasMoreMessages });
   return (
     <>
       <Container>
@@ -547,11 +555,12 @@ const ChatConversation = ({
         <Header>
           {!chatListOpen && <SellerComponent size={24} exchange={exchange} />}
         </Header>
-        {areThreadsLoading && (
-          <Loading>
-            <Spinner />
-          </Loading>
-        )}
+
+        <Loading>
+          <Spinner
+            style={{ visibility: areThreadsLoading ? "initial" : "hidden" }}
+          />
+        </Loading>
 
         {thread?.messages.length ? (
           <Messages
@@ -563,7 +572,7 @@ const ChatConversation = ({
             <InfiniteScroll
               inverse
               next={loadMoreMessages}
-              hasMore={hasMoreMessages}
+              hasMore={true || hasMoreMessages}
               loader={<></>}
               dataLength={thread?.messages.length || 0}
               scrollableTarget="messages"
@@ -593,7 +602,7 @@ const ChatConversation = ({
                     : isFirstMessage
                     ? firstMessageRef
                     : null;
-                  // TODO: fix when the message separator is shown
+                  // TODO: how does this look if there is not enough messages? the conversation doesnt fill all available space
                   return (
                     <Conversation
                       key={message.timestamp}

@@ -13,23 +13,29 @@ interface Props {
   counterParty: string;
   threadId: ThreadId | null | undefined;
   dateIndex: number;
+  onFinishFetching: () => void;
 }
 const genesisDate = new Date("2022-07-28"); // TODO: change
 export function useInfiniteThread({
   dateStep,
   dateIndex,
   counterParty,
-  threadId
+  threadId,
+  onFinishFetching
 }: Props): {
   data: ThreadObject | null;
   isLoading: boolean;
   isError: boolean;
   error: Error | null;
   isBeginningOfTimes: boolean;
+  lastData: ThreadObject | null;
 } {
   const { bosonXmtp } = useChatContext();
   const [areThreadsLoading, setThreadsLoading] = useState<boolean>(false);
   const [threadsXmtp, setThreadsXmtp] = useState<ThreadObject[]>([]);
+  const [lastThreadXmtp, setLastThreadXmtp] = useState<ThreadObject | null>(
+    null
+  );
   const [error, setError] = useState<Error | null>(null);
   const [isBeginningOfTimes, setIsBeginningOfTimes] = useState<boolean>(false);
   useEffect(() => {
@@ -39,19 +45,10 @@ export function useInfiniteThread({
     if (dateIndex > 0) {
       return;
     }
-    // endTime, startTime
-    // abans dahir, ahir
-    // ahir, avui
     const endTime = dayjs()
       .add(dateIndex - 1, dateStep)
       .toDate();
     const startTime = dayjs(endTime).add(1, dateStep).toDate();
-    console.log(
-      "threads from",
-      dayjs(startTime).format("YYYY-MM-DD"),
-      "to",
-      dayjs(endTime).format("YYYY-MM-DD")
-    );
     const isBeginning =
       dayjs(startTime).isBefore(genesisDate) ||
       dayjs(startTime).isSame(genesisDate, "day");
@@ -64,11 +61,13 @@ export function useInfiniteThread({
       });
       return;
     }
+    setThreadsLoading(true);
+
     console.log("requesting threads from", startTime, "until", endTime, {
       threadId,
-      counterParty
+      counterParty,
+      areThreadsLoading
     });
-    setThreadsLoading(true);
     bosonXmtp
       .getThread(threadId, counterParty, {
         startTime: endTime,
@@ -76,6 +75,18 @@ export function useInfiniteThread({
         pageSize: 100
       })
       .then((threadObject) => {
+        console.log(
+          "FINISH requesting threads from",
+          startTime,
+          "until",
+          endTime,
+          {
+            threadId,
+            counterParty,
+            threadObject: !!threadObject
+          }
+        );
+        setLastThreadXmtp(threadObject);
         if (!threadObject) {
           return;
         }
@@ -91,6 +102,7 @@ export function useInfiniteThread({
       })
       .finally(() => {
         setThreadsLoading(false);
+        onFinishFetching();
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bosonXmtp, dateIndex, counterParty, dateStep, threadId]);
@@ -100,7 +112,8 @@ export function useInfiniteThread({
     isLoading: areThreadsLoading,
     isError: !!error,
     error,
-    isBeginningOfTimes
+    isBeginningOfTimes,
+    lastData: lastThreadXmtp || null
   };
 }
 

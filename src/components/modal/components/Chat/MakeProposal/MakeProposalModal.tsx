@@ -35,6 +35,7 @@ const validationSchemaPerStep = [
     [FormModel.formFields.description.name]: Yup.string()
       .trim()
       .required(FormModel.formFields.description.requiredErrorMessage)
+    // TODO: check
     // [FormModel.formFields.upload.name]: Yup.mixed().test(
     //   "fileSize",
     //   "The file is too large",
