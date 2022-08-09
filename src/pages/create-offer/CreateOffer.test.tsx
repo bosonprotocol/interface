@@ -1,3 +1,6 @@
+/**
+ * @jest-environment ./jest.custom.env
+ */
 import { act, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 
