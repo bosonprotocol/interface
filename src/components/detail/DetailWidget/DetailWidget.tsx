@@ -439,6 +439,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                   }}
                   theme="blank"
                   style={{ fontSize: "0.875rem" }}
+                  disabled={!isToRedeem}
                 >
                   Raise a problem
                   <Question size={18} />
