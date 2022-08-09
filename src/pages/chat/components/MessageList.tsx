@@ -72,7 +72,6 @@ const ExchangesThreads = styled.div`
 `;
 
 const MessageItem = styled.div<{ $active?: boolean }>`
-  height: ${messageItemHeight};
   border-bottom: 1px solid ${colors.border};
   ${({ $active }) =>
     $active &&
