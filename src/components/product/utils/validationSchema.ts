@@ -73,7 +73,7 @@ export const coreTermsOfSaleValidationSchema = Yup.object({
       .required(validationMessage.required),
     // currency: Yup.string().required(validationMessage.required),
     // TODO: ADD Use price for all variants FILED
-    quantity: Yup.string().required(validationMessage.required),
+    quantity: Yup.number().min(1).required(validationMessage.required),
     // tokenGatedOffer: Yup.string().required(validationMessage.required),
     offerValidityPeriod: Yup.array()
       .of(
@@ -112,9 +112,9 @@ export const termsOfExchangeValidationSchema = Yup.object({
 
 export const shippingInfoValidationSchema = Yup.object({
   shippingInfo: Yup.object({
-    height: Yup.string().required(validationMessage.required),
-    width: Yup.string().required(validationMessage.required),
-    length: Yup.string().required(validationMessage.required),
+    height: Yup.string(),
+    width: Yup.string(),
+    length: Yup.string(),
     measurementUnit: Yup.mixed().required(validationMessage.required),
     jurisdiction: Yup.array()
       .of(

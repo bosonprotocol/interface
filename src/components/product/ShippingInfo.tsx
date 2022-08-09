@@ -47,6 +47,11 @@ const AdditionalContainer = styled.div`
   }
 `;
 
+const checkLastElementIsPristine = (elements: any): boolean => {
+  const element = elements[elements.length - 1];
+  return element?.region.length === 0 || element?.time.length === 0;
+};
+
 const AddSupportedJurisdictions = () => {
   const { values } = useThisForm();
 
@@ -90,13 +95,15 @@ const AddSupportedJurisdictions = () => {
                   ))}
                 </>
               )}
-              <Button
-                onClick={() => arrayHelpers.push("")}
-                theme="blankSecondary"
-                style={{ borderBottom: `1px solid ${colors.border}` }}
-              >
-                Add new <Plus size={18} />
-              </Button>
+              {!checkLastElementIsPristine(elements) && (
+                <Button
+                  onClick={() => arrayHelpers.push({ region: "", time: "" })}
+                  theme="blankSecondary"
+                  style={{ borderBottom: `1px solid ${colors.border}` }}
+                >
+                  Add new <Plus size={18} />
+                </Button>
+              )}
             </>
           );
         }}

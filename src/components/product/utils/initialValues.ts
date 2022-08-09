@@ -59,7 +59,7 @@ export const coreTermsOfSaleInitialValues = {
   coreTermsOfSale: {
     price: "",
     currency: OPTIONS_CURRENCIES[0],
-    quantity: "",
+    quantity: 1,
     tokenGatedOffer: OPTIONS_TOKEN_GATED[0],
     redemptionPeriod: [],
     offerValidityPeriod: []

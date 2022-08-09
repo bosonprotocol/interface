@@ -38,6 +38,7 @@ export default function CoreTermsOfSale() {
               name="coreTermsOfSale.price"
               type="number"
               min="0"
+              step="0.0000000001"
             />
           </div>
           <div>

@@ -31,6 +31,11 @@ const ProductInformationButtonGroup = styled(ProductButtonGroup)`
   margin-top: 1.563rem;
 `;
 
+const checkLastElementIsPristine = (elements: any): boolean => {
+  const element = elements[elements.length - 1];
+  return element?.name.length === 0 || element?.value.length === 0;
+};
+
 const AddAttributesContainer = () => {
   const { values } = useThisForm();
 
@@ -45,7 +50,6 @@ const AddAttributesContainer = () => {
         name="productInformation.attributes"
         render={(arrayHelpers) => {
           const render = elements && elements.length > 0;
-
           return (
             <>
               {render && (
@@ -68,13 +72,15 @@ const AddAttributesContainer = () => {
                   ))}
                 </>
               )}
-              <Button
-                onClick={() => arrayHelpers.push("")}
-                theme="blankSecondary"
-                style={{ borderBottom: `1px solid ${colors.border}` }}
-              >
-                Add new <Plus size={18} />
-              </Button>
+              {!checkLastElementIsPristine(elements) && (
+                <Button
+                  onClick={() => arrayHelpers.push({ name: "", value: "" })}
+                  theme="blankSecondary"
+                  style={{ borderBottom: `1px solid ${colors.border}` }}
+                >
+                  Add new <Plus size={18} />
+                </Button>
+              )}
             </>
           );
         }}

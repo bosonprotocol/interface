@@ -28,6 +28,7 @@ export default function CreateYourProfile() {
           name="creteYourProfile.email"
           placeholder="e-Mail"
           pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+          defaultValue={"roberto@mail.com"}
         />
       </FormField>
       <FormField title="Description" required={true}>
@@ -45,6 +46,7 @@ export default function CreateYourProfile() {
           name="creteYourProfile.website"
           placeholder="www.example.com OR www.instagram.com/example"
           pattern="^(http:\/\/|https:\/\/)?(www.)?([a-zA-Z0-9]+).[a-zA-Z0-9]*.[‌​a-z]{3}\.([a-z]+)?$"
+          defaultValue={"www.roberto.com"}
         />
       </FormField>
       <ProductButtonGroup>

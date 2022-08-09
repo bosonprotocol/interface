@@ -39,6 +39,7 @@ const PreviewWrapperContent = styled.div`
 `;
 export default function Preview({ togglePreview }: Props) {
   const { values } = useThisForm();
+  console.log("🚀 ~ file: Preview.tsx ~ line 42 ~ Preview ~ values", values);
 
   const previewImages = getLocalStorageItems({
     key: "create-product-image"
@@ -155,25 +156,23 @@ export default function Preview({ togglePreview }: Props) {
             </DetailGrid>
             <DetailSlider images={sliderImages} />
             <DetailGrid>
-              <div>
-                <Typography tag="h3">Shipping information</Typography>
-                <Typography tag="p" style={{ color: colors.darkGrey }}>
-                  {/* TODO Roberto: ADD CORRECT VALUES */}
-                  {/* NO REPRESENTATION IN FORM AND UI's */}
-                  NEED TO ADD
-                </Typography>
-                <DetailTable
-                  data={map(
-                    values?.shippingInfo?.jurisdiction,
-                    ({ region, time }) => {
-                      return {
-                        name: region,
-                        value: time
-                      };
-                    }
-                  )}
-                />
-              </div>
+              {values?.shippingInfo?.jurisdiction?.length > 0 &&
+                values?.shippingInfo?.jurisdiction[0]?.region?.length > 0 && (
+                  <div>
+                    <Typography tag="h3">Shipping information</Typography>
+                    <DetailTable
+                      data={map(
+                        values?.shippingInfo?.jurisdiction,
+                        ({ region, time }) => {
+                          return {
+                            name: region,
+                            value: time
+                          };
+                        }
+                      )}
+                    />
+                  </div>
+                )}
             </DetailGrid>
           </DarkerBackground>
         </DetailWrapper>
