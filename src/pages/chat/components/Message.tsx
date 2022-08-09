@@ -1,5 +1,5 @@
 import {
-  ImageContent,
+  FileContent,
   MessageType,
   ProposalContent
 } from "@bosonprotocol/chat-sdk/dist/cjs/util/definitions";
@@ -187,7 +187,7 @@ const Message = forwardRef(
     const isRegularMessage =
       typeof message.data.content.value === "string" &&
       messageContentType === MessageType.String;
-    const isImageWithMetadataMessage = messageContentType === MessageType.Image;
+    const isFileMessage = messageContentType === MessageType.File;
     const isProposalMessage = messageContentType === MessageType.Proposal;
 
     const isValid = validateMessage(message);
@@ -198,7 +198,7 @@ const Message = forwardRef(
             {children}
           </SellerAvatar>
           <div>
-            {isImageWithMetadataMessage
+            {isFileMessage
               ? "Corrupt image."
               : isProposalMessage
               ? "Corrupt proposal"
@@ -223,8 +223,8 @@ const Message = forwardRef(
       );
     }
 
-    if (isImageWithMetadataMessage) {
-      const imageValue = messageContent as unknown as ImageContent;
+    if (isFileMessage) {
+      const imageValue = messageContent as unknown as FileContent;
       return (
         <Content $isLeftAligned={isLeftAligned}>
           <SellerAvatar isLeftAligned={isLeftAligned} exchange={exchange}>

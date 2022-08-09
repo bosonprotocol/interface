@@ -16,7 +16,7 @@ export const validateMessage = (
     // const isRegularMessage =
     //   typeof message.data.content.value === "string" &&
     //   messageContentType === MessageType.String;
-    // const isImageWithMetadataMessage = messageContentType === MessageType.Image;
+    // const isFileMessage = messageContentType === MessageType.File;
     const isProposalMessage = messageContentType === MessageType.Proposal;
     if (isProposalMessage) {
       const proposalContent = message.data

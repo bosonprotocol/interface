@@ -1,9 +1,9 @@
 import {
-  ImageContent,
+  FileContent,
   MessageData,
   MessageType,
   ProposalContent,
-  SupportedImageMimeTypes,
+  SupportedFileMimeTypes,
   ThreadId,
   ThreadObject
 } from "@bosonprotocol/chat-sdk/dist/cjs/util/definitions";
@@ -398,13 +398,7 @@ const ChatConversation = ({
         thread.threadId,
         destinationAddress
       )) {
-        addMessage(thread, {
-          sender: destinationAddress,
-          authorityId: "",
-          recipient: address || "",
-          timestamp: Date.now(),
-          data: incomingMessage
-        });
+        addMessage(thread, incomingMessage);
       }
     };
     monitor().catch((error) => {
@@ -417,18 +411,18 @@ const ChatConversation = ({
         return;
       }
       for (const file of files) {
-        const imageContent: ImageContent = {
+        const imageContent: FileContent = {
           value: {
             encodedContent: file.encodedData,
             fileName: file.name,
             fileSize: file.size,
-            fileType: file.type as SupportedImageMimeTypes
+            fileType: file.type as SupportedFileMimeTypes
           }
         };
         const newMessage = {
           threadId: thread.threadId,
           content: imageContent,
-          contentType: MessageType.Image,
+          contentType: MessageType.File,
           version: "1"
         };
         await bosonXmtp.encodeAndSendMessage(newMessage, destinationAddress);
