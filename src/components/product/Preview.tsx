@@ -3,7 +3,6 @@ import map from "lodash/map";
 import slice from "lodash/slice";
 import styled from "styled-components";
 
-import DetailChart from "../../components/detail/DetailChart";
 import DetailWidget from "../../components/detail/DetailWidget";
 import Image from "../../components/ui/Image";
 import SellerID from "../../components/ui/SellerID";
@@ -156,15 +155,10 @@ export default function Preview({ togglePreview }: Props) {
             </DetailGrid>
             <DetailSlider images={sliderImages} />
             <DetailGrid>
-              <DetailChart
-                // TODO: ADD CORRECT VALUES FOR NOW HARDCODED
-                offer={offer}
-                title="Inventory graph"
-              />
               <div>
                 <Typography tag="h3">Shipping information</Typography>
                 <Typography tag="p" style={{ color: colors.darkGrey }}>
-                  {/* TODO: ADD CORRECT VALUES */}
+                  {/* TODO Roberto: ADD CORRECT VALUES */}
                   {/* NO REPRESENTATION IN FORM AND UI's */}
                   NEED TO ADD
                 </Typography>
