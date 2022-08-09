@@ -53,7 +53,6 @@ export default function Exchange() {
   const fromAccountPage =
     (location.state as { from: string })?.from === BosonRoutes.YourAccount;
   const [isTabSellerSelected, setTabSellerSelected] = useState(fromAccountPage);
-  const [isModalOpened, setIsModalOpened] = useState<boolean>(false);
 
   const { address: account } = useAccount();
   const address = account || "";
@@ -296,8 +295,6 @@ export default function Exchange() {
                     <DetailWidget
                       pageType="exchange"
                       offer={offer}
-                      setIsModalOpened={setIsModalOpened}
-                      isModalOpened={isModalOpened}
                       exchange={
                         exchange as NonNullable<Offer["exchanges"]>[number]
                       }
@@ -316,8 +313,6 @@ export default function Exchange() {
                   name={name}
                   image={offerImg}
                   hasSellerEnoughFunds={hasSellerEnoughFunds}
-                  setIsModalOpened={setIsModalOpened}
-                  isModalOpened={isModalOpened}
                 />
               )}
             </div>

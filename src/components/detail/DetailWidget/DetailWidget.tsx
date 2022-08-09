@@ -59,8 +59,6 @@ interface IDetailWidget {
   name?: string;
   image?: string;
   hasSellerEnoughFunds: boolean;
-  isModalOpened?: boolean;
-  setIsModalOpened?: (p: boolean) => void;
 }
 
 const oneSecondToDays = 86400;
@@ -171,8 +169,6 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   pageType,
   offer,
   exchange,
-  isModalOpened,
-  setIsModalOpened,
   name = "",
   image = "",
   hasSellerEnoughFunds

@@ -9,12 +9,16 @@ import { ModalProps } from "../../ModalContext";
 
 const ModalContainer = styled.div`
   position: relative;
-  min-height: 500px;
+  min-height: 31.25rem;
   background: ${colors.white};
   top: 50%;
   padding-top: 2.5rem;
   padding-bottom: 2.5rem;
-  max-width: 1120px;
+  max-width: 92.5rem;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: -1.875rem;
   div {
     svg {
       color: ${colors.secondary};
@@ -24,8 +28,7 @@ const ModalContainer = styled.div`
 
 const ModalGrid = styled.div`
   display: grid;
-
-  grid-gap: 24px;
+  grid-gap: 1.5rem;
   padding-left: 2.5rem;
   padding-right: 4rem;
   grid-template-columns: 100%;
@@ -141,19 +144,19 @@ const ButtonContainer = styled.div`
   padding: 2rem 2.5rem 2rem 2.5rem;
   margin-top: 1.5rem;
   border-top: 0.0625rem solid ${colors.lightGrey};
-  button:nth-of-type(1) {
-    background-color: ${colors.green};
-    padding: 1rem 2rem 1rem 2rem;
+  button {
+    font-family: "Plus Jakarta Sans";
     font-weight: 600;
     font-size: 1rem;
     border: none;
   }
+  button:nth-of-type(1) {
+    background-color: ${colors.green};
+    padding: 1rem 2rem 1rem 2rem;
+  }
   button:nth-of-type(2) {
     background: none;
     padding: 1rem 2rem 1rem 2rem;
-    font-weight: 600;
-    font-size: 1rem;
-    border: none;
   }
 `;
 
@@ -179,7 +182,7 @@ function DisputeModal({ hideModal }: Props) {
             <Typography
               margin="0"
               fontSize="1rem"
-              color={colors.black}
+              color={colors.darkGrey}
               fontWeight="400"
             >
               Message the Seller about the issue. Most problems are resolved by
@@ -199,7 +202,7 @@ function DisputeModal({ hideModal }: Props) {
             <Typography
               margin="0"
               fontSize="1rem"
-              color={colors.black}
+              color={colors.darkGrey}
               fontWeight="400"
             >
               If you still need help or the Seller has not responded, you can
@@ -219,7 +222,7 @@ function DisputeModal({ hideModal }: Props) {
             <Typography
               margin="0"
               fontSize="1rem"
-              color={colors.black}
+              color={colors.darkGrey}
               fontWeight="400"
             >
               Find a solution to your dispute with the seller. If you are unable
