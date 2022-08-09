@@ -370,13 +370,7 @@ const ChatConversation = ({
     thread?.messages || []
   );
   const dataMessagesRef = useRef<HTMLDivElement>(null);
-  const firstMessageRef = useRef<HTMLDivElement>(null);
   const lastMessageRef = useRef<HTMLDivElement>(null);
-  const scrollToTop = useCallback(
-    (scrollOptions: ScrollIntoViewOptions) =>
-      firstMessageRef.current?.scrollIntoView(scrollOptions),
-    []
-  );
   const scrollToBottom = useCallback(
     (scrollOptions: ScrollIntoViewOptions) =>
       lastMessageRef.current?.scrollIntoView(scrollOptions),
@@ -400,7 +394,7 @@ const ChatConversation = ({
 
       previousThreadMessagesRef.current = thread?.messages || [];
     }
-  }, [thread, lastThread, scrollToBottom, scrollToTop, thread?.messages]);
+  }, [thread, lastThread, scrollToBottom, thread?.messages]);
   const [isExchangePreviewOpen, setExchangePreviewOpen] =
     useState<boolean>(false);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -594,12 +588,7 @@ const ChatConversation = ({
                   isFirstMessage || isPreviousMessageInADifferentDay;
                 const isLastMessage = index === thread.messages.length - 1;
                 const leftAligned = !getWasItSentByMe(address, message.sender);
-                const ref = isLastMessage
-                  ? lastMessageRef
-                  : isFirstMessage
-                  ? firstMessageRef
-                  : null;
-                // TODO: how does this look if there is not enough messages? the conversation doesnt fill all available space
+                const ref = isLastMessage ? lastMessageRef : null;
                 return (
                   <Conversation
                     key={message.timestamp}
