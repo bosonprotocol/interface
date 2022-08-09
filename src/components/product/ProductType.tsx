@@ -148,7 +148,7 @@ export default function ProductType() {
                       margin: "auto"
                     }}
                   />
-                  <Typography tag="p">Physical</Typography>
+                  <Typography tag="p">One item type</Typography>
                 </Box>
               </Label>
               <Label>
@@ -172,7 +172,7 @@ export default function ProductType() {
                       margin: "auto"
                     }}
                   />
-                  <Typography tag="p">One item type</Typography>
+                  <Typography tag="p">Different Variants</Typography>
                 </Box>
               </Label>
             </Grid>
