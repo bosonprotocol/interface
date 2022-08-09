@@ -4,6 +4,7 @@ import MakeProposalModal from "./components/Chat/MakeProposal/MakeProposalModal"
 import ResolveDisputeModal from "./components/Chat/ResolveDisputeModal";
 import CustomStore from "./components/CustomStore";
 import DetailWidget from "./components/DetailWidget";
+import DisputeModal from "./components/DisputeModal/DisputeModal";
 import Upload from "./components/Upload";
 import WhatIsRedeem from "./components/WhatIsRedeem";
 
@@ -14,7 +15,8 @@ export const MODAL_TYPES = {
   CANCEL_EXCHANGE: "CANCEL_EXCHANGE",
   RESOLVE_DISPUTE: "RESOLVE_DISPUTE",
   UPLOAD_MODAL: "UPLOAD_MODAL",
-  MAKE_PROPOSAL: "MAKE_PROPOSAL"
+  MAKE_PROPOSAL: "MAKE_PROPOSAL",
+  DISPUTE_MODAL: "DISPUTE_MODAL"
 } as const;
 
 export const MODAL_COMPONENTS = {
@@ -24,5 +26,6 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.CANCEL_EXCHANGE]: CancelExchangeModal,
   [MODAL_TYPES.RESOLVE_DISPUTE]: ResolveDisputeModal,
   [MODAL_TYPES.UPLOAD_MODAL]: Upload,
-  [MODAL_TYPES.MAKE_PROPOSAL]: MakeProposalModal
+  [MODAL_TYPES.MAKE_PROPOSAL]: MakeProposalModal,
+  [MODAL_TYPES.DISPUTE_MODAL]: DisputeModal
 } as const;

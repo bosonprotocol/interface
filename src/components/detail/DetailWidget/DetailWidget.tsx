@@ -432,10 +432,14 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 </StyledCancelButton>
               ) : (
                 <RaiseProblemButton
-                  onClick={() => console.log("raise a problem")}
+                  onClick={() => {
+                    showModal(modalTypes.DISPUTE_MODAL, {
+                      title: "Raise a problem"
+                    });
+                  }}
                   theme="blank"
                   style={{ fontSize: "0.875rem" }}
-                  disabled={isChainUnsupported}
+                  disabled={!isToRedeem}
                 >
                   Raise a problem
                   <Question size={18} />
