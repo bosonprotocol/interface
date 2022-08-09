@@ -115,9 +115,13 @@ export default function ShippingInfo() {
 
   const lwh = useMemo(
     () =>
-      `${values?.shippingInfo?.length || 0}x${
-        values?.shippingInfo?.width || 0
-      }x${values?.shippingInfo?.height || 0}`,
+      `${values?.shippingInfo?.length || 0}${
+        values?.shippingInfo?.measurementUnit?.value
+      } x ${values?.shippingInfo?.width || 0}${
+        values?.shippingInfo?.measurementUnit?.value
+      } x ${values?.shippingInfo?.height || 0}${
+        values?.shippingInfo?.measurementUnit?.value
+      }`,
     [values?.shippingInfo]
   );
 
@@ -154,7 +158,7 @@ export default function ShippingInfo() {
             subTitle="Specify the dimension and weight of your package"
           >
             <Input
-              placeholder={`L x W x H in ${unit}`}
+              placeholder={`L${unit} x W${unit} x H${unit}`}
               name="shippingInfo.dimensions"
               value={lwh}
               disabled
