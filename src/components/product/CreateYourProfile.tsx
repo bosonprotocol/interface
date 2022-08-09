@@ -23,8 +23,12 @@ export default function CreateYourProfile() {
       <FormField title="Your brand / name" required={true}>
         <Input name="creteYourProfile.name" placeholder="Name" />
       </FormField>
-      <FormField title="Contact E-Mail" required={true}>
-        <Input name="creteYourProfile.email" placeholder="E-Mail" />
+      <FormField title="Contact e-Mail" required={true}>
+        <Input
+          name="creteYourProfile.email"
+          placeholder="e-Mail"
+          pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+        />
       </FormField>
       <FormField title="Description" required={true}>
         <Textarea name="creteYourProfile.description" placeholder="Describe" />
@@ -40,6 +44,7 @@ export default function CreateYourProfile() {
         <Input
           name="creteYourProfile.website"
           placeholder="www.example.com OR www.instagram.com/example"
+          pattern="^(http:\/\/|https:\/\/)?(www.)?([a-zA-Z0-9]+).[a-zA-Z0-9]*.[‌​a-z]{3}\.([a-z]+)?$"
         />
       </FormField>
       <ProductButtonGroup>

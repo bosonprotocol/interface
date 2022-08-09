@@ -39,6 +39,36 @@ export const MOCK_OPTIONS = [
     label: "Second option"
   }
 ];
+export const CATEGORY_OPTIONS = [
+  {
+    value: "apparel-accessories",
+    label: "Apparel & Accessories"
+  },
+  {
+    value: "art",
+    label: "art"
+  },
+  {
+    value: "jewelry",
+    label: "Jewelry"
+  },
+  {
+    value: "photography",
+    label: "Photography"
+  },
+  {
+    value: "shoes",
+    label: "Shoes"
+  },
+  {
+    value: "collectibles",
+    label: "Collectibles"
+  },
+  {
+    value: "other",
+    label: "Other"
+  }
+];
 
 export const OPTIONS_CURRENCIES = [
   {
