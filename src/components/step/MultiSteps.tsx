@@ -20,6 +20,7 @@ export default function MultiSteps({
   ...props
 }: Props) {
   const [current, setCurrent] = useState<number>(active || 0);
+
   useEffect(() => {
     setCurrent(active || 0);
   }, [active]);
@@ -38,6 +39,7 @@ export default function MultiSteps({
             <StepWrapper>
               {steps.map((step: number, key: number) => {
                 const currentKey = previousLength + key;
+
                 const state =
                   currentKey === current
                     ? StepState.Active
@@ -49,12 +51,12 @@ export default function MultiSteps({
                     state={state}
                     onClick={() => {
                       // TODO: comment the IF below to allow easily jump between each steps
-                      // if (state !== StepState.Inactive) {
-                      setCurrent(currentKey);
-                      if (callback) {
-                        callback(currentKey);
+                      if (state !== StepState.Inactive) {
+                        setCurrent(currentKey);
+                        if (callback) {
+                          callback(currentKey);
+                        }
                       }
-                      // }
                     }}
                     key={`multi-step_${currentKey}`}
                   />

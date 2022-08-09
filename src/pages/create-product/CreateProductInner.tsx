@@ -260,20 +260,28 @@ function CreateProductInner({ initial }: Props) {
     };
   }, [currentStep]);
 
-  const handleNextForm = useCallback(() => {
-    if (isPreviewVisible) {
-      setIsPreviewVisible(false);
-    }
-    if (currentStep < wizardStep.wizardLength) {
-      setCurrentStep((prev) => prev + 1);
-    }
-  }, [currentStep, isPreviewVisible, wizardStep.wizardLength, setCurrentStep]);
+  const handleNextForm = useCallback(
+    (formikBag: FormikHelpers<CreateProductForm>) => {
+      // roberto: handle next click
+      if (isPreviewVisible) {
+        setIsPreviewVisible(false);
+      }
+      if (currentStep < wizardStep.wizardLength) {
+        setCurrentStep((prev) => prev + 1);
+      }
+
+      formikBag.setFieldValue("isValid", false);
+    },
+    [currentStep, isPreviewVisible, wizardStep.wizardLength, setCurrentStep]
+  );
 
   const handleClickStep = (val: number) => {
     if (isPreviewVisible) {
       setIsPreviewVisible(false);
     }
-    setCurrentStep(val);
+    if (currentStep > val) {
+      setCurrentStep(val);
+    }
   };
 
   const handleSendData = async (
@@ -420,7 +428,8 @@ function CreateProductInner({ initial }: Props) {
         exchangeToken: "0x0000000000000000000000000000000000000000",
         disputeResolverId: 1,
         metadataUri: `ipfs://${metadataHash}`,
-        metadataHash: metadataHash
+        metadataHash: metadataHash,
+        agentId: "0"
       };
 
       const txResponse =
@@ -431,7 +440,9 @@ function CreateProductInner({ initial }: Props) {
                 admin: address,
                 treasury: address,
                 clerk: address,
-                contractUri: ""
+                contractUri: "",
+                authTokenId: "0",
+                authTokenType: 0
               },
               offerData
             )
@@ -461,9 +472,8 @@ function CreateProductInner({ initial }: Props) {
       values,
       formikBag
     });
-    formikBag.setTouched({});
-    formikBag.setSubmitting(false);
-    return handleNextForm();
+
+    return handleNextForm(formikBag);
   };
 
   return (
@@ -475,12 +485,12 @@ function CreateProductInner({ initial }: Props) {
       />
       <ProductLayoutContainer isPreviewVisible={isPreviewVisible}>
         <Formik<CreateProductForm>
+          validateOnMount={true}
           initialValues={initial}
           onSubmit={(formikVal, formikBag) =>
             handleSubmit(formikVal, formikBag)
           }
           validationSchema={wizardStep.currentValidation}
-          enableReinitialize
         >
           {({ values }) => {
             saveItemInStorage("create-product", values);

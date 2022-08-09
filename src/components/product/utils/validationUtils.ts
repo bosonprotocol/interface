@@ -3,6 +3,7 @@ import * as Yup from "yup";
 import bytesToSize from "../../../lib/utils/bytesToSize";
 import { SUPPORTED_FILE_FORMATS } from "./const";
 
+// roberto check the image size here
 export const validationOfRequiredImage = (size: number) =>
   Yup.mixed()
     .test(

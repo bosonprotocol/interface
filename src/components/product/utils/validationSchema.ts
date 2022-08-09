@@ -19,8 +19,11 @@ export const createYourProfileValidationSchema = Yup.object({
 
 export const productTypeValidationSchema = Yup.object({
   productType: Yup.object({
-    productType: Yup.string().required(validationMessage.required),
-    productVariant: Yup.string().required(validationMessage.required)
+    productType: Yup.string()
+      .min(1)
+      .oneOf(["physical", "phygital"])
+      .required(validationMessage.required),
+    productVariant: Yup.string().min(1).required(validationMessage.required)
   })
 });
 

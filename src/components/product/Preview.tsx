@@ -53,7 +53,6 @@ export default function Preview({ togglePreview }: Props) {
   const offerImg = previewImages?.[1] ?? null;
   const sliderImages = slice(previewImages, 1);
   const name = values.productInformation.productTitle || "Untitled";
-  console.log("🚀 ~ file: Preview.tsx ~ line 56 ~ Preview ~ values", values);
 
   const weiPrice = parseEther(`${values.coreTermsOfSale.price}`);
 
