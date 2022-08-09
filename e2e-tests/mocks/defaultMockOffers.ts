@@ -10,7 +10,7 @@ export const defaultMockOffers: Offer[] = [
     fulfillmentPeriodDuration: "",
     metadataUri: "",
     buyerCancelPenalty: "",
-    protocolFee: "",
+    agentId: "0",
     quantityInitial: "0",
     voucherRedeemableFromDate: "",
     voucherRedeemableUntilDate: "",
