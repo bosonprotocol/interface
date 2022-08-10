@@ -17,6 +17,8 @@ import MessageList from "./components/MessageList";
 
 const dennisAddress = "0xE16955e95D088bd30746c7fb7d76cDA436b86F63";
 const albertAddress = "0x9c2925a41d6FB1c6C8f53351634446B0b2E65eE8";
+const dennisId = "1";
+const albertId = "2";
 
 const GlobalStyle = createGlobalStyle`
   html, body, #root, [data-rk] {
@@ -40,10 +42,11 @@ const getExchanges = ({
     data: id_in.map((id, index) => {
       const isAlbert = index % 2 === 0;
       const address = isAlbert ? albertAddress : dennisAddress;
+      const buyerOrSellerId = isAlbert ? albertId : dennisId;
       return {
         id,
         buyer: {
-          id: "7",
+          id: buyerOrSellerId,
           wallet: "0x"
         },
         committedDate: new Date().toString(),
@@ -53,7 +56,7 @@ const getExchanges = ({
         redeemedDate: new Date().toString(),
         state: "REDEEMED",
         validUntilDate: new Date().toString(),
-        seller: { id: "2" },
+        seller: { id: buyerOrSellerId },
         offer: {
           id: "1",
           buyerCancelPenalty: "",
@@ -82,7 +85,7 @@ const getExchanges = ({
             admin: address,
             clerk: address,
             __typename: "Seller",
-            id: "2",
+            id: buyerOrSellerId,
             operator: address,
             treasury: address
           },
