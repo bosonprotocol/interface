@@ -75,7 +75,7 @@ const SellerID: React.FC<
   const artist = getOfferArtist(offerName);
   const hasCursorPointer = !!onClick || onClick === undefined;
   return (
-    <AddressContainer {...rest}>
+    <AddressContainer {...rest} data-address-container>
       <SellerContainer
         $hasCursorPointer={hasCursorPointer}
         onClick={(e) => {
@@ -90,9 +90,10 @@ const SellerID: React.FC<
             });
           }
         }}
+        data-seller-container
       >
         {withProfileImage && (
-          <ImageContainer>
+          <ImageContainer data-image-container>
             {artist.toLocaleLowerCase() === "boson protocol" ? (
               <RoundedImage src={bosonProtocolImage} />
             ) : (

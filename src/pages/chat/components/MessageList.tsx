@@ -8,7 +8,6 @@ import { zIndex } from "../../../lib/styles/zIndex";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 
-const messageItemHeight = "6.25rem";
 const messageItemPadding = "1.5rem";
 
 const Container = styled.div<{
@@ -23,7 +22,6 @@ const Container = styled.div<{
   z-index: ${zIndex.ChatSeparator};
   background: white;
   height: 100vh;
-  margin-top: 3.75rem;
   transition: 400ms;
   width: 100vw;
   width: ${({ $isConversationOpened }) =>
@@ -33,42 +31,31 @@ const Container = styled.div<{
   left: ${({ $chatListOpen }) => ($chatListOpen ? "0" : "-100vw")};
   left: ${({ $isConversationOpened, $chatListOpen }) =>
     $isConversationOpened && !$chatListOpen ? "-100vw" : "0"};
-  margin-top: 0px;
   ${breakpoint.m} {
     left: unset;
     position: relative;
     height: auto;
     z-index: ${zIndex.Default};
     width: auto;
-    margin-top: -0.0625rem;
-    padding-top: 1.5625rem;
-  }
-  ${breakpoint.l} {
-    padding-top: unset;
-    margin-top: -1.875rem;
   }
 `;
 
 const Header = styled.div`
   display: flex;
   align-items: center;
-  padding: ${messageItemPadding};
-  height: ${messageItemHeight};
+  padding: 26px 32px;
   font-weight: 600;
   font-size: 1.5rem;
   border-bottom: 1px solid ${colors.border};
-  ${breakpoint.m} {
-    padding-top: 1.25rem;
-    margin-top: 1.5625rem;
-  }
+
   ${breakpoint.l} {
-    padding-top: 3.125rem;
-    margin-top: 1.75rem;
+    padding: 1.5rem;
   }
 `;
 
 const ExchangesThreads = styled.div`
   overflow: auto;
+  padding-bottom: 20%;
 `;
 
 const MessageItem = styled.div<{ $active?: boolean }>`

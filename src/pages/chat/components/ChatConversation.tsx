@@ -19,7 +19,7 @@ import { useModal } from "../../../components/modal/useModal";
 import Grid from "../../../components/ui/Grid";
 import SellerID from "../../../components/ui/SellerID";
 import { BosonRoutes } from "../../../lib/routing/routes";
-import { breakpoint, breakpointNumbers } from "../../../lib/styles/breakpoint";
+import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
 import { zIndex } from "../../../lib/styles/zIndex";
 import { FileWithEncodedData } from "../../../lib/utils/files";
@@ -37,8 +37,18 @@ import MessageSeparator from "./MessageSeparator";
 const Container = styled.div`
   display: flex;
   flex: 0 1 100%;
-  flex-direction: column;
+  flex-direction: row;
   position: relative;
+  width: 100%;
+
+  ${breakpoint.m} {
+    flex: 0 1 75%;
+  }
+`;
+
+const ConversationContainer = styled.div`
+  display: flex;
+  flex-direction: column;
   width: 100%;
 `;
 
@@ -55,22 +65,9 @@ const Header = styled.div`
     width: 1.5rem;
     height: 1.5rem;
   }
-  padding: 1.5rem;
-  height: 0;
   display: flex;
   align-items: center;
-  padding-bottom: 0;
-  min-height: unset;
-  max-height: unset;
-  ${breakpoint.m} {
-    height: 6.25rem;
-    padding: 1.5rem;
-    min-height: 6.125rem;
-    max-height: 6.125rem;
-  }
-  @media only screen and (max-width: ${breakpointNumbers.l}px) and (min-width: ${breakpointNumbers.m}px) {
-    min-height: 87px;
-  }
+  justify-content: center;
   svg:nth-of-type(1) {
     margin-right: 0.5rem;
   }
@@ -94,8 +91,6 @@ const Header = styled.div`
   }
 
   > div {
-    position: absolute;
-    top: 17px;
     div {
       display: flex;
       text-align: center;
@@ -111,6 +106,10 @@ const Header = styled.div`
       display: block;
       align-items: unset;
     }
+  }
+
+  ${breakpoint.l} {
+    justify-content: unset;
   }
 `;
 const Spinner = styled(CircleNotch)`
@@ -213,23 +212,36 @@ const SimpleMessage = styled.p`
   background: ${colors.lightGrey};
 `;
 
-const NavigationMobile = styled.div`
+const GridHeader = styled.div`
   display: flex;
-  min-height: 3.125rem;
-  width: 100%;
-  align-items: flex-end;
   justify-content: space-between;
+  align-items: center;
   padding-left: 1.5rem;
   padding-right: 1.5rem;
-  button {
-    font-size: 0.75rem;
-    font-weight: 600;
-    background: none;
-    padding: none;
-    border: none;
-    color: ${colors.secondary};
-    z-index: ${zIndex.LandingTitle};
+  min-height: 84px;
+  > * {
+    flex-basis: 100%;
   }
+  ${breakpoint.m} {
+  }
+`;
+
+const HeaderButton = styled.button`
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: none;
+  padding: none;
+  border: none;
+  color: ${colors.secondary};
+  z-index: ${zIndex.LandingTitle};
+`;
+
+const NavigationMobile = styled.div`
+  display: flex;
+  /* min-height: 3.125rem; */
+  /* width: 100%; */
+  align-items: flex-end;
+  justify-content: space-between;
   svg {
     color: ${colors.secondary};
     margin-right: 0.438rem;
@@ -452,7 +464,7 @@ const ChatConversation = ({
     },
     [addMessage, bosonXmtp, destinationAddress, threadId, thread]
   );
-  const { isLteS, isXXS, isS, isM, isL, isXL } = useBreakpoints();
+  const { isLteS, isLteM, isXXS, isS, isM, isL, isXL } = useBreakpoints();
   const {
     seller: {
       sellerId: _sellerId,
@@ -479,24 +491,25 @@ const ChatConversation = ({
   const detailsButton = useMemo(() => {
     if (chatListOpen && (isXXS || isS || isM)) {
       return (
-        <button
+        <HeaderButton
+          type="button"
           onClick={() => {
             setExchangePreviewOpen(!isExchangePreviewOpen);
           }}
         >
           <span>&nbsp;</span>
-        </button>
+        </HeaderButton>
       );
     }
 
     return (
-      <button
+      <HeaderButton
         onClick={() => {
           setExchangePreviewOpen(!isExchangePreviewOpen);
         }}
       >
         <span>{isExchangePreviewOpen ? "Hide Details" : "Details"}</span>
-      </button>
+      </HeaderButton>
     );
   }, [chatListOpen, isExchangePreviewOpen, isXXS, isS, isM]);
   // TODO: comment out
@@ -522,41 +535,43 @@ const ChatConversation = ({
     );
   }
   return (
-    <>
-      <Container>
-        <NavigationMobile>
-          <button
-            onClick={() => {
-              if (isM && !prevPath) {
-                setChatListOpen(!chatListOpen);
-              } else if (isM && prevPath) {
-                navigate({ pathname: prevPath });
-              } else {
-                navigate({ pathname: BosonRoutes.Chat });
-              }
-            }}
-          >
-            {(isM || isL || isXL) &&
-              prevPath &&
-              !prevPath.includes(`${BosonRoutes.Chat}/`) && (
+    <Container>
+      <ConversationContainer>
+        <GridHeader>
+          <NavigationMobile>
+            <HeaderButton
+              type="button"
+              onClick={() => {
+                if (isM && !prevPath) {
+                  setChatListOpen(!chatListOpen);
+                } else if (isM && prevPath) {
+                  navigate({ pathname: prevPath });
+                } else {
+                  navigate({ pathname: BosonRoutes.Chat });
+                }
+              }}
+            >
+              {(isM || isL || isXL) &&
+                prevPath &&
+                !prevPath.includes(`${BosonRoutes.Chat}/`) && (
+                  <span>
+                    <ArrowLeft size={14} />
+                    Back
+                  </span>
+                )}
+              {isLteS && !chatListOpen && (
                 <span>
                   <ArrowLeft size={14} />
-                  Back
+                  Back to messages
                 </span>
               )}
-            {isLteS && !chatListOpen && (
-              <span>
-                <ArrowLeft size={14} />
-                Back to messages
-              </span>
-            )}
-          </button>
-          {detailsButton}
-        </NavigationMobile>
-        <Header>
-          {!chatListOpen && <SellerComponent size={24} exchange={exchange} />}
-        </Header>
-
+            </HeaderButton>
+          </NavigationMobile>
+          <Header>
+            <SellerComponent size={24} exchange={exchange} />
+          </Header>
+          {isLteM && <Grid justifyContent="flex-end">{detailsButton}</Grid>}
+        </GridHeader>
         <Loading>
           <Spinner
             style={{ visibility: areThreadsLoading ? "initial" : "hidden" }}
@@ -718,12 +733,12 @@ const ChatConversation = ({
             </UploadButtonWrapper>
           </InputWrapper>
         </TypeMessage>
-      </Container>
+      </ConversationContainer>
       <ExchangeSidePreview
         exchange={exchange}
         disputeOpen={isExchangePreviewOpen}
       />
-    </>
+    </Container>
   );
 };
 export default ChatConversation;

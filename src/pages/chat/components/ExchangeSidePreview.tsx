@@ -25,14 +25,14 @@ const Container = styled.div<{ $disputeOpen: boolean }>`
   overflow-y: auto;
   min-width: max-content;
   position: absolute;
-  margin-top: 4.375rem;
+  margin-top: 7.05rem;
   right: ${({ $disputeOpen }) => ($disputeOpen ? "0" : "-160vw")};
   transition: 400ms;
   width: ${({ $disputeOpen }) => $disputeOpen && "100vw"};
   background: ${colors.lightGrey};
   padding-top: 1.875rem;
   ${breakpoint.m} {
-    width: 75%;
+    width: 100%;
     min-width: 60%;
   }
   ${breakpoint.l} {
