@@ -259,11 +259,9 @@ const UploadButtonWrapper = styled.button`
   cursor: pointer;
   position: absolute;
   right: 0;
-  top: 0.5625rem;
+  top: 0;
+  transform: translate(0, 25%);
   margin: 0 1rem;
-  > *:not(rect) {
-    stroke: ${colors.darkGrey};
-  }
   :disabled {
     cursor: not-allowed;
   }
