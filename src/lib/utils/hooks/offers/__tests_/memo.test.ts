@@ -1,3 +1,6 @@
+/**
+ * @jest-environment ./jest.custom.env
+ */
 import { getFirstNOffers } from "../../../../../../e2e-tests/utils/getFirstNOffers";
 import { memoMergeAndSortOffers } from "../memo";
 
