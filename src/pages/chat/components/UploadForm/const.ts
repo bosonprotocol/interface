@@ -1,7 +1,6 @@
 export const SUPPORTED_FILE_FORMATS = [
   "image/jpg",
   "image/jpeg",
-  "image/gif",
   "image/png",
   "application/pdf"
 ];
