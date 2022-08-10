@@ -126,7 +126,7 @@ test.describe("Public Account page", () => {
       }
     });
 
-    test.skip("test that when you click on Offers and scroll, more offers are lazy loaded (via infinite scrolling)", async ({
+    test("test that when you click on Offers and scroll, more offers are lazy loaded (via infinite scrolling)", async ({
       page
     }) => {
       const allOffers = getFirstNOffers(offersPerPage + 5);

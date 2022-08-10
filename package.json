@@ -22,7 +22,7 @@
     "coverage:unit": "npm run test -- --silent --watchAll=false --coverage --coverageReporters 'json'",
     "coverage:e2e": "cross-env CI=true npx playwright test --project=chromium && npx nyc report --reporter=json",
     "coverage:e2e:view": "npx nyc report --reporter html && echo 'open coverage/index.html to see it'",
-    "coverage:report": "npm run coverage:unit && npm run coverage:e2e",
+    "coverage:report": "npm run coverage:unit",
     "postinstall": "npx playwright install --with-deps chromium"
   },
   "lint-staged": {
