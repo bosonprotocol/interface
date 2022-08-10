@@ -16,6 +16,7 @@ import styled from "styled-components";
 import { useAccount } from "wagmi";
 
 import { useModal } from "../../../components/modal/useModal";
+import Grid from "../../../components/ui/Grid";
 import SellerID from "../../../components/ui/SellerID";
 import { BosonRoutes } from "../../../lib/routing/routes";
 import { breakpoint, breakpointNumbers } from "../../../lib/styles/breakpoint";
@@ -243,15 +244,6 @@ const InputWrapper = styled.div`
   display: flex;
   position: relative;
   width: 100%;
-`;
-
-const ButtonProposalContainer = styled.span`
-  height: 100%;
-  display: flex;
-  align-items: flex-start;
-  button {
-    min-height: 46px;
-  }
 `;
 
 const UploadButtonWrapper = styled.button`
@@ -634,7 +626,12 @@ const ChatConversation = ({
 
         <TypeMessage>
           {exchange.disputed && (
-            <ButtonProposalContainer>
+            <Grid
+              alignItems="flex-start"
+              $width="auto"
+              justifyContent="flex-start"
+              $height="100%"
+            >
               <ButtonProposal
                 exchange={exchange}
                 disabled={disableInputs}
@@ -666,7 +663,7 @@ const ChatConversation = ({
                   }
                 }}
               />
-            </ButtonProposalContainer>
+            </Grid>
           )}
           <InputWrapper>
             <Input>

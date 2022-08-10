@@ -17,7 +17,7 @@ const StyledButton = styled.button`
   padding-right: 2.5rem;
   font-size: 0.875rem;
   margin-right: 0.875rem;
-  height: 2.7rem;
+  height: 46px;
   font-weight: 600;
   color: ${colors.secondary};
   background-color: transparent;
