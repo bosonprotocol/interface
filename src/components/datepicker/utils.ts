@@ -55,14 +55,9 @@ export function getCells(selectedDate: Dayjs, date: Dayjs): ICalendarCell[] {
   return cells;
 }
 
-export function getRows(date: Dayjs): ICalendarCell[] {
+export function getCalenderRow(date: Dayjs): ICalendarCell[] {
   const cells = getCells(date, date.startOf("month"));
   const rows: Array<ICalendarCell[]> = [];
-
   rows.push(cells);
-  // for (let i = 0; i < cells.length; i += 7) {
-  //   rows.push(cells.slice(i, i + 7));
-  // }
-
   return rows[0];
 }
