@@ -41,7 +41,7 @@ const getExchanges = ({
   const r = {
     data: [
       {
-        id: 0,
+        id: "0",
         buyer: {
           id: albertId,
           wallet: "0x"
@@ -60,7 +60,7 @@ const getExchanges = ({
           createdAt: "",
           disputeResolverId: "",
           exchangeToken: {
-            address: "0x0000000000000000000000000000000000000000",
+            address: "0x1000000000000000000000000000000000000000",
             decimals: "18",
             name: "PepitoName",
             symbol: "pepito",
@@ -101,7 +101,7 @@ const getExchanges = ({
         }
       },
       {
-        id: 1,
+        id: "1",
         buyer: {
           id: dennisId,
           wallet: "0x"
@@ -120,7 +120,7 @@ const getExchanges = ({
           createdAt: "",
           disputeResolverId: "",
           exchangeToken: {
-            address: "0x0000000000000000000000000000000000000000",
+            address: "0x2000000000000000000000000000000000000000",
             decimals: "18",
             name: "PepitoName",
             symbol: "pepito",
