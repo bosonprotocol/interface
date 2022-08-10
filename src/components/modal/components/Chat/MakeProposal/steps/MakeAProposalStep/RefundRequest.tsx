@@ -69,13 +69,14 @@ export default function RefundRequest({ exchange }: Props) {
     (fund) => fund.token.address === offer.exchangeToken.address
   );
   const { offer } = exchange;
+  const decimals = Number(offer.exchangeToken.decimals);
+  const formatIntValueToDecimals = (value: string | BigNumber) => {
+    return utils.formatUnits(BigNumber.from(value), decimals);
+  };
   const inEscrow: string = BigNumber.from(offer.price)
     .add(BigNumber.from(currencyInDeposit?.availableAmount || "0"))
     .toString();
-  const inEscrowDecimals = utils.formatUnits(
-    BigNumber.from(inEscrow),
-    Number(offer.exchangeToken.decimals)
-  );
+  const inEscrowWithDecimals: string = formatIntValueToDecimals(inEscrow);
   const currencySymbol = offer.exchangeToken.symbol;
   return (
     <>
@@ -119,7 +120,8 @@ export default function RefundRequest({ exchange }: Props) {
           <RequestedRefundInput
             address={address || ""}
             exchangeToken={offer.exchangeToken}
-            inEscrowDecimals={inEscrowDecimals}
+            inEscrow={inEscrow}
+            inEscrowWithDecimals={inEscrowWithDecimals}
           />
         </Grid>
         <Grid flexDirection="column">
@@ -138,9 +140,17 @@ export default function RefundRequest({ exchange }: Props) {
               const {
                 target: { valueAsNumber }
               } = e;
+              if (isNaN(valueAsNumber)) {
+                return;
+              }
+              const valueInDecimals: string = formatIntValueToDecimals(
+                BigNumber.from(inEscrow)
+                  .mul(valueAsNumber * 1000)
+                  .div(100 * 1000)
+              );
               setFieldValue(
                 FormModel.formFields.refundAmount.name,
-                (Number(inEscrowDecimals) * valueAsNumber) / 100,
+                valueInDecimals,
                 true
               );
             }}

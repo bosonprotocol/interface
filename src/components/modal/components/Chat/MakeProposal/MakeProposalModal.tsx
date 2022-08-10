@@ -104,7 +104,7 @@ export default function MakeProposalModal({
             label: string;
             value: string;
           }[],
-          [FormModel.formFields.refundAmount.name]: 0,
+          [FormModel.formFields.refundAmount.name]: "0",
           [FormModel.formFields.refundPercentage.name]: 0,
           [FormModel.formFields.upload.name]: [] as File[]
         }}
