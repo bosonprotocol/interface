@@ -15,8 +15,8 @@ import { useChatContext } from "./ChatProvider/ChatContext";
 import ChatConversation from "./components/ChatConversation";
 import MessageList from "./components/MessageList";
 
-// const address = "0x5295D74Bbb5195A3e4E788744cB17c2f1c48DfFf";
-const address = "0x5295D74Bbb5195A3e4E788744cB17c2f1c48DfFf";
+const dennisAddress = "0xE16955e95D088bd30746c7fb7d76cDA436b86F63";
+const albertAddress = "0x9c2925a41d6FB1c6C8f53351634446B0b2E65eE8";
 
 const GlobalStyle = createGlobalStyle`
   html, body, #root, [data-rk] {
@@ -37,69 +37,78 @@ const getExchanges = ({
   disputed: null;
 }): ReturnType<typeof useExchanges> => {
   const r = {
-    data: id_in.map((id, index) => ({
-      id,
-      buyer: {
-        id: "7",
-        wallet: "0x"
-      },
-      committedDate: new Date().toString(),
-      disputed: true,
-      expired: true,
-      finalizedDate: new Date().toString(),
-      redeemedDate: new Date().toString(),
-      state: "REDEEMED",
-      validUntilDate: new Date().toString(),
-      seller: { id: "2" },
-      offer: {
-        id: "1",
-        buyerCancelPenalty: "",
-        createdAt: "",
-        disputeResolverId: "",
-        exchangeToken: {
-          address:
-            index === 0
-              ? "0x123"
-              : "0x0000000000000000000000000000000000000000",
-          decimals: "18",
-          name: index === 0 ? "PepitoName" : "Ether",
-          symbol: index === 0 ? "pepito" : "ETH",
-          __typename: "ExchangeToken"
+    data: id_in.map((id, index) => {
+      const isAlbert = index % 2 === 0;
+      const address = isAlbert ? albertAddress : dennisAddress;
+      return {
+        id,
+        buyer: {
+          id: "7",
+          wallet: "0x"
         },
-        fulfillmentPeriodDuration: "",
-        metadataHash: "",
-        metadataUri: "",
-        price: "10001230000000000000",
-        protocolFee: "",
-        quantityAvailable: "",
-        quantityInitial: "",
-        resolutionPeriodDuration: "",
-        seller: {
-          active: true,
-          admin: address,
-          clerk: address,
-          __typename: "Seller",
-          id: "2",
-          operator: address,
-          treasury: address
-        },
-        sellerDeposit: "",
-        validFromDate: "",
-        validUntilDate: "",
-        voucherRedeemableFromDate: "",
-        voucherRedeemableUntilDate: "",
-        voucherValidDuration: "",
-        __typename: "Offer",
-        isValid: true,
-        voidedAt: "",
-        metadata: {
-          imageUrl:
-            "https://bsn-portal-development-image-upload-storage.s3.amazonaws.com/boson-sweatshirt-FINAL.gif",
-          type: "BASE",
-          name: index === 0 ? "boson sweatshirt" : `another sweatshirt ${id}`
+        committedDate: new Date().toString(),
+        disputed: true,
+        expired: true,
+        finalizedDate: new Date().toString(),
+        redeemedDate: new Date().toString(),
+        state: "REDEEMED",
+        validUntilDate: new Date().toString(),
+        seller: { id: "2" },
+        offer: {
+          id: "1",
+          buyerCancelPenalty: "",
+          createdAt: "",
+          disputeResolverId: "",
+          exchangeToken: {
+            address:
+              index === 0
+                ? "0x123"
+                : "0x0000000000000000000000000000000000000000",
+            decimals: "18",
+            name: index === 0 ? "PepitoName" : "Ether",
+            symbol: index === 0 ? "pepito" : "ETH",
+            __typename: "ExchangeToken"
+          },
+          fulfillmentPeriodDuration: "",
+          metadataHash: "",
+          metadataUri: "",
+          price: "10001230000000000000",
+          protocolFee: "",
+          quantityAvailable: "",
+          quantityInitial: "",
+          resolutionPeriodDuration: "",
+          seller: {
+            active: true,
+            admin: address,
+            clerk: address,
+            __typename: "Seller",
+            id: "2",
+            operator: address,
+            treasury: address
+          },
+          sellerDeposit: "",
+          validFromDate: "",
+          validUntilDate: "",
+          voucherRedeemableFromDate: "",
+          voucherRedeemableUntilDate: "",
+          voucherValidDuration: "",
+          __typename: "Offer",
+          isValid: true,
+          voidedAt: "",
+          metadata: {
+            imageUrl:
+              "https://bsn-portal-development-image-upload-storage.s3.amazonaws.com/boson-sweatshirt-FINAL.gif",
+            type: "BASE",
+            name:
+              index === 0
+                ? "boson sweatshirt"
+                : isAlbert
+                ? `albert tshirt ${id}`
+                : `dennis tshirt ${id}`
+          }
         }
-      }
-    }))
+      };
+    })
   };
   return r as any;
 };
