@@ -16,7 +16,7 @@ export const validationOfFile = ({ isOptional }: { isOptional: boolean }) =>
     .nullable(isOptional ? true : undefined)
     .test(
       "fileSize",
-      `Files size cannot exceed more than ${bytesToSize(MAX_FILE_SIZE)}`,
+      `File size cannot exceed ${bytesToSize(MAX_FILE_SIZE)} (for each file)`,
       (files: File[]) => {
         return files.every((file) => file.size <= MAX_FILE_SIZE);
       }

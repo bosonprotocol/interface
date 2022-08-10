@@ -160,7 +160,6 @@ const Input = styled.div`
   width: 100%;
   font-size: 1rem;
   background: ${colors.lightGrey};
-  border: 0px solid ${colors.border};
   height: max-content;
   font-family: "Plus Jakarta Sans";
   font-style: normal;
@@ -562,7 +561,7 @@ const ChatConversation = ({
               {isLteS && !chatListOpen && (
                 <span>
                   <ArrowLeft size={14} />
-                  Back to messages
+                  Back
                 </span>
               )}
             </HeaderButton>
