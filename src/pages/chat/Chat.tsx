@@ -32,9 +32,11 @@ const Container = styled.div`
 `;
 // :
 const getExchanges = ({
+  address,
   id_in,
   disputed
 }: {
+  address: string | undefined;
   id_in: string[];
   disputed: null;
 }): ReturnType<typeof useExchanges> => {
@@ -80,7 +82,7 @@ const getExchanges = ({
             clerk: dennisAddress,
             __typename: "Seller",
             id: dennisId,
-            operator: dennisAddress,
+            operator: address === dennisAddress ? albertAddress : dennisAddress,
             treasury: dennisAddress
           },
           sellerDeposit: "",
@@ -140,7 +142,7 @@ const getExchanges = ({
             clerk: albertAddress,
             __typename: "Seller",
             id: albertId,
-            operator: albertAddress,
+            operator: address === dennisAddress ? albertAddress : dennisAddress,
             treasury: albertAddress
           },
           sellerDeposit: "",
@@ -217,11 +219,12 @@ export default function Chat() {
   const { data: exchanges = [] } = useMemo(
     () =>
       getExchanges({
+        address,
         // TODO: remove
         id_in: new Array(116).fill(0).map((v, idx) => "" + idx),
         disputed: null
       }),
-    []
+    [address]
   );
   // TODO: comment out
   // const { data: exchanges } = useExchanges({
