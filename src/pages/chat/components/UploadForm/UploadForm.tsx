@@ -6,9 +6,7 @@ import { FormModel } from "../../../../components/modal/components/Chat/MakeProp
 import Grid from "../../../../components/ui/Grid";
 import Typography from "../../../../components/ui/Typography";
 import { colors } from "../../../../lib/styles/colors";
-
-const numMB = 1;
-const oneMBinBytes = numMB * 1024 * 1024;
+import { MAX_FILE_SIZE, SUPPORTED_FILE_FORMATS } from "./const";
 
 export default function UploadForm() {
   const [uploadField] = useField<File[]>(FormModel.formFields.upload.name);
@@ -20,15 +18,14 @@ export default function UploadForm() {
       </Grid>
       <Grid margin="0.25rem 0 0.75rem 0">
         <Typography color={colors.darkGrey} fontSize="0.75rem">
-          File format: PDF, PNG, JPG <br />
-          Max. file size: {numMB}MB
+          File format: PDF, PNG, JPG, GIF <br />
+          Max. file size: {MAX_FILE_SIZE / (1024 * 1024)}MB
         </Typography>
       </Grid>
       <Upload
         name={FormModel.formFields.upload.name}
-        maxUploadSizeInBytes={oneMBinBytes}
         multiple
-        accept="image/*, application/pdf"
+        accept={SUPPORTED_FILE_FORMATS.join(",")}
         trigger={
           <>
             Upload file <UploadSimple />
