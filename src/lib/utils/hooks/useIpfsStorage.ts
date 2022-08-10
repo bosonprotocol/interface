@@ -3,8 +3,5 @@ import { hooks } from "@bosonprotocol/react-kit";
 import { CONFIG } from "../../config";
 
 export function useIpfsStorage() {
-  const storage = hooks.useIpfsMetadataStorage(CONFIG.chainId);
-
-  console.log(storage);
-  return storage;
+  return hooks.useIpfsMetadataStorage(CONFIG.chainId);
 }
