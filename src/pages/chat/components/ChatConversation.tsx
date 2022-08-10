@@ -36,7 +36,7 @@ import MessageSeparator from "./MessageSeparator";
 
 const Container = styled.div`
   display: flex;
-  flex: 0 1 75%;
+  flex: 0 1 100%;
   flex-direction: column;
   position: relative;
   width: 100%;

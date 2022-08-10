@@ -266,7 +266,7 @@ const Message = forwardRef(
       const messageContent = proposalContent.value;
       const isRaisingADispute = !!messageContent.disputeContext?.length;
       return (
-        <Content $isLeftAligned={isLeftAligned} style={{ width }}>
+        <Content $isLeftAligned={isLeftAligned}>
           <SellerAvatar isLeftAligned={isLeftAligned} exchange={exchange}>
             {children}
           </SellerAvatar>
