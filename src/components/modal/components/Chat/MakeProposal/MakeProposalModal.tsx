@@ -2,17 +2,13 @@ import { Form, Formik, FormikProps } from "formik";
 import { ReactNode } from "react";
 import * as Yup from "yup";
 
-import bytesToSize from "../../../../../lib/utils/bytesToSize";
 import {
   FileWithEncodedData,
   getFilesWithEncodedData
 } from "../../../../../lib/utils/files";
 import { getOfferArtist } from "../../../../../lib/utils/hooks/offers/placeholders";
 import { Exchange } from "../../../../../lib/utils/hooks/useExchanges";
-import {
-  MAX_FILE_SIZE,
-  SUPPORTED_FILE_FORMATS
-} from "../../../../../pages/chat/components/UploadForm/const";
+import { validationOfFile } from "../../../../../pages/chat/components/UploadForm/const";
 import { NewProposal } from "../../../../../pages/chat/types";
 import Grid from "../../../../ui/Grid";
 import { ModalProps } from "../../../ModalContext";
@@ -35,32 +31,12 @@ interface Props {
   setActiveStep: (step: number) => void;
 }
 
-export const validationOfFile = () =>
-  Yup.mixed()
-    .nullable()
-    .test(
-      "fileSize",
-      `Files size cannot exceed more than ${bytesToSize(MAX_FILE_SIZE)}`,
-      (files: File[]) => {
-        return files.every((file) => file.size <= MAX_FILE_SIZE);
-      }
-    )
-    .test(
-      "FILE_FORMAT",
-      "Uploaded files have unsupported format",
-      (files: File[]) => {
-        return files.every((file) =>
-          SUPPORTED_FILE_FORMATS.includes(file.type)
-        );
-      }
-    );
-
 const validationSchemaPerStep = [
   Yup.object({
     [FormModel.formFields.description.name]: Yup.string()
       .trim()
       .required(FormModel.formFields.description.requiredErrorMessage),
-    [FormModel.formFields.upload.name]: validationOfFile()
+    [FormModel.formFields.upload.name]: validationOfFile({ isOptional: true })
   }),
   Yup.object({
     [FormModel.formFields.refundPercentage.name]: Yup.number()

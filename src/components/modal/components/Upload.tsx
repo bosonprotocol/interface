@@ -1,10 +1,12 @@
-import { Form, Formik, useField } from "formik";
+import { Form, Formik, FormikProps } from "formik";
 import styled from "styled-components";
+import * as Yup from "yup";
 
 import {
   FileWithEncodedData,
   getFilesWithEncodedData
 } from "../../../lib/utils/files";
+import { validationOfFile } from "../../../pages/chat/components/UploadForm/const";
 import UploadForm from "../../../pages/chat/components/UploadForm/UploadForm";
 import Button from "../../ui/Button";
 import { ModalProps } from "../ModalContext";
@@ -25,18 +27,12 @@ const ButtonsSection = styled.div`
   justify-content: space-between;
 `;
 
-const ButtonsForm = () => {
-  const [field] = useField({
-    name: FormModel.formFields.upload.name
-  });
-  return (
-    <ButtonsSection>
-      <Button type="submit" theme="secondary" disabled={!field.value?.length}>
-        Submit
-      </Button>
-    </ButtonsSection>
-  );
-};
+const validationSchema = Yup.object({
+  [FormModel.formFields.upload.name]: validationOfFile({
+    isOptional: false
+  })
+});
+
 export default function Upload({
   hideModal,
   onUploadedFilesWithData,
@@ -65,11 +61,25 @@ export default function Upload({
       initialValues={{
         upload: [] as File[]
       }}
+      validationSchema={validationSchema}
+      isInitialValid={false}
     >
-      <Form>
-        <UploadForm />
-        <ButtonsForm />
-      </Form>
+      {(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        props: FormikProps<any>
+      ) => {
+        const isFormValid = props.isValid;
+        return (
+          <Form>
+            <UploadForm />
+            <ButtonsSection>
+              <Button type="submit" theme="secondary" disabled={!isFormValid}>
+                Submit
+              </Button>
+            </ButtonsSection>
+          </Form>
+        );
+      }}
     </Formik>
   );
 }
