@@ -31,6 +31,7 @@ const Container = styled.div<{ $disputeOpen: boolean }>`
   width: ${({ $disputeOpen }) => $disputeOpen && "100vw"};
   background: ${colors.lightGrey};
   padding-top: 1.875rem;
+  padding-bottom: 20%;
   ${breakpoint.m} {
     width: 100%;
     min-width: 60%;
@@ -157,6 +158,7 @@ const CTASection = styled(Section)`
 const HistorySection = styled(Section)`
   padding-bottom: 3rem;
   height: 100%;
+  border-bottom: none;
 `;
 
 const formatShortDate = (date: string) => {
