@@ -27,7 +27,7 @@ const assertOfferDetail = async (expectedOffer: Offer, page: Page) => {
   await expect(sellerId).toHaveText(expectedSellerId);
 };
 
-test.describe("OfferDetail", () => {
+test.describe.skip("OfferDetail", () => {
   test("should display 'There has been an error, please try again later...' if we get a 500 error", async ({
     page
   }) => {

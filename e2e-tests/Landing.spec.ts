@@ -7,7 +7,7 @@ import { getFirstNOffers } from "./utils/getFirstNOffers";
 import { sortOffersBy } from "./utils/sort";
 import { DEFAULT_TIMEOUT } from "./utils/timeouts";
 
-test.describe("Root page (Landing page)", () => {
+test.describe.skip("Root page (Landing page)", () => {
   test.describe("Header & body & footer", () => {
     test.beforeEach(async ({ page }) => {
       await mockSubgraph({
