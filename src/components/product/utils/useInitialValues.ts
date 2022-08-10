@@ -28,7 +28,7 @@ function getConvertImagesFromLocalStorage() {
   for (let index = 0; index < images.length; index++) {
     const value = images[index];
     const key = images[index].key;
-    converted[key] = convertImage(value);
+    converted[key] = convertImageToFile(value);
   }
 
   return {
@@ -36,7 +36,7 @@ function getConvertImagesFromLocalStorage() {
     converted
   };
 }
-function convertImage({ value, key }: Image) {
+const convertImageToFile = ({ value, key }: Image) => {
   const extension = value.split(";")[0].split("/")[1];
   const encoded = value.split(",")[1];
 
@@ -48,7 +48,7 @@ function convertImage({ value, key }: Image) {
     type: `image/${extension}`
   });
   return file;
-}
+};
 
 const IMAGES_KEY = "create-product-image_";
 const MAIN_KEY = "create-product";
