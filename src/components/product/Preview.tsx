@@ -39,7 +39,6 @@ const PreviewWrapperContent = styled.div`
 `;
 export default function Preview({ togglePreview }: Props) {
   const { values } = useThisForm();
-  console.log("🚀 ~ file: Preview.tsx ~ line 42 ~ Preview ~ values", values);
 
   const previewImages = getLocalStorageItems({
     key: "create-product-image"

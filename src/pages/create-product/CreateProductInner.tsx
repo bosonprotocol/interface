@@ -342,7 +342,7 @@ function CreateProductInner({ initial }: Props) {
         externalUrl: "https://interface-staging.on.fleek.co",
         image: `ipfs://${profileImageLink}`,
         type: MetadataType.PRODUCT_V1,
-        attributes: attributes,
+        attributes,
         product: {
           uuid: Date.now().toString(),
           version: 1,
@@ -377,7 +377,8 @@ function CreateProductInner({ initial }: Props) {
       });
 
       // reset the form
-      formikBag.resetForm();
+      // roberto
+      // formikBag.resetForm();
 
       const buyerCancellationPenaltyValue =
         parseInt(coreTermsOfSale.price) *
@@ -484,7 +485,7 @@ function CreateProductInner({ initial }: Props) {
       />
       <ProductLayoutContainer isPreviewVisible={isPreviewVisible}>
         <Formik<CreateProductForm>
-          validateOnMount={true}
+          enableReinitialize
           initialValues={initial}
           onSubmit={(formikVal, formikBag) =>
             handleSubmit(formikVal, formikBag)
