@@ -542,7 +542,7 @@ const ChatConversation = ({
               } else if (isM && prevPath) {
                 navigate({ pathname: prevPath });
               } else {
-                navigate({ pathname: `/${BosonRoutes.Chat}` });
+                navigate({ pathname: BosonRoutes.Chat });
               }
             }}
           >
