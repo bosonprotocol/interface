@@ -338,6 +338,7 @@ const ChatConversation = ({
       sellerId: exchange.seller.id
     };
   }, [exchange]);
+  console.log("my threadId", threadId);
   const {
     data: thread,
     isLoading: areThreadsLoading,
