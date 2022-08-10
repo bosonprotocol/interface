@@ -1,6 +1,8 @@
+import { BigNumber, utils } from "ethers";
 import { useField, useFormikContext } from "formik";
 import styled from "styled-components";
 
+import { colors } from "../../../../../../../lib/styles/colors";
 import { Offer } from "../../../../../../../lib/types/offer";
 import { Input } from "../../../../../../form";
 import ConvertedPrice from "../../../../../../price/ConvertedPrice";
@@ -13,8 +15,8 @@ const RefundAmountWrapper = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
-  background: #f1f3f9;
-  border: 1px solid #5560720f;
+  background: ${colors.lightGrey};
+  border: 1px solid ${colors.border};
   padding: 0 0 0 0.5rem;
 
   [data-currency] {
@@ -39,19 +41,33 @@ const RefundAmountWrapper = styled.div`
 
 interface Props {
   address: string;
-  inEscrowDecimals: string;
+  inEscrow: string;
+  inEscrowWithDecimals: string;
   exchangeToken: Offer["exchangeToken"];
 }
 
 export default function RequestedRefundInput({
   address,
-  inEscrowDecimals,
+  inEscrow,
+  inEscrowWithDecimals,
   exchangeToken
 }: Props) {
-  const [refundAmountField] = useField(FormModel.formFields.refundAmount.name);
+  const [refundAmountField] = useField<string>(
+    FormModel.formFields.refundAmount.name
+  );
+  const decimals = Number(exchangeToken.decimals);
+  const formatDecimalsToIntValue = (value: string | number): BigNumber => {
+    return utils.parseUnits(
+      typeof value === "number" ? value.toString() : value || "0",
+      decimals
+    );
+  };
+  const refundAmountWithoutDecimals: string = formatDecimalsToIntValue(
+    refundAmountField.value
+  ).toString();
   const currencySymbol = exchangeToken.symbol;
   const price = useConvertedPrice({
-    value: refundAmountField.value,
+    value: refundAmountWithoutDecimals,
     decimals: exchangeToken.decimals,
     symbol: currencySymbol
   });
@@ -70,7 +86,7 @@ export default function RequestedRefundInput({
             target: { valueAsNumber: currentRefundAmount }
           } = e;
           const percentageFromInput = (
-            (currentRefundAmount / Number(inEscrowDecimals)) *
+            (currentRefundAmount / Number(inEscrowWithDecimals)) *
             100
           ).toFixed(3);
           setFieldValue(
@@ -80,15 +96,18 @@ export default function RequestedRefundInput({
           );
         }}
         onBlur={() => {
-          const currentRefundAmount = refundAmountField.value;
+          const currentRefundAmount: string = refundAmountWithoutDecimals;
           const percentageFromInput = (
-            (currentRefundAmount / Number(inEscrowDecimals)) *
+            (Number(currentRefundAmount) / Number(inEscrow)) *
             100
           ).toFixed(3);
-          const refundAmountFromPercentage =
-            (Number(inEscrowDecimals) * Number(percentageFromInput)) / 100;
+          const refundAmountFromPercentage: string = (
+            (Number(inEscrowWithDecimals) * Number(percentageFromInput)) /
+            100
+          ).toFixed(decimals);
           const percentageFromRoundedRefundAmount = (
-            (refundAmountFromPercentage / Number(inEscrowDecimals)) *
+            (Number(refundAmountFromPercentage) /
+              Number(inEscrowWithDecimals)) *
             100
           ).toFixed(3);
           setFieldValue(
@@ -96,7 +115,10 @@ export default function RequestedRefundInput({
             percentageFromRoundedRefundAmount,
             true
           );
-          if (refundAmountFromPercentage !== currentRefundAmount) {
+          if (
+            refundAmountFromPercentage !==
+            Number(refundAmountField.value).toFixed(decimals)
+          ) {
             setFieldValue(
               FormModel.formFields.refundAmount.name,
               refundAmountFromPercentage,

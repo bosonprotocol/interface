@@ -1,370 +1,26 @@
 import { useEffect, useMemo, useState } from "react";
 import { Route, Routes, useLocation, useParams } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
+import { useAccount } from "wagmi";
 
+import { useModal } from "../../components/modal/useModal";
+import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
-import { useExchanges } from "../../lib/utils/hooks/useExchanges";
+import { Exchange, useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { useChatContext } from "./ChatProvider/ChatContext";
 import ChatConversation from "./components/ChatConversation";
 import MessageList from "./components/MessageList";
-import { Thread } from "./types";
 
-const mySellerId = "2";
-const myBuyerId = "7";
-
-const threads: Omit<Thread, "exchange">[] = [
-  {
-    threadId: {
-      exchangeId: "115",
-      sellerId: mySellerId,
-      buyerId: myBuyerId
-    },
-    messages: [
-      {
-        id: "1",
-        from: mySellerId,
-        sentDate: new Date(),
-        content: {
-          threadId: {
-            exchangeId: "115",
-            sellerId: mySellerId,
-            buyerId: myBuyerId
-          },
-          contentType: "string",
-          value: "hello 😃",
-          version: "1"
-        }
-      },
-      {
-        id: "2",
-        from: myBuyerId,
-        sentDate: new Date(),
-        content: {
-          threadId: {
-            exchangeId: "115",
-            sellerId: mySellerId,
-            buyerId: myBuyerId
-          },
-          contentType: "string",
-          value: "this is a conversation with myself",
-          version: "1"
-        }
-      },
-      {
-        id: "2.1",
-        from: myBuyerId,
-        sentDate: new Date(),
-        content: {
-          threadId: {
-            exchangeId: "20",
-            sellerId: mySellerId,
-            buyerId: myBuyerId
-          },
-          contentType: "proposal",
-          version: "1",
-          value: {
-            title: "Seller ID:4 made a proposal",
-            description:
-              "Thank you for reaching out lorem ipsum dolor sit amet",
-            proposals: [
-              {
-                type: "Refund",
-                percentageAmount: "10",
-                signature: "0x214..."
-              }
-            ],
-            disputeContext: []
-          }
-        }
-      }
-    ]
-  },
-  {
-    threadId: {
-      exchangeId: "133",
-      sellerId: mySellerId,
-      buyerId: myBuyerId
-    },
-    messages: [
-      {
-        id: "1",
-        from: "123",
-        sentDate: new Date(),
-        content: {
-          threadId: {
-            exchangeId: "115",
-            sellerId: mySellerId,
-            buyerId: myBuyerId
-          },
-          contentType: "string",
-          value: "hello 😃",
-          version: "1"
-        }
-      },
-      {
-        id: "2",
-        from: myBuyerId,
-        sentDate: new Date(),
-        content: {
-          threadId: {
-            exchangeId: "115",
-            sellerId: mySellerId,
-            buyerId: myBuyerId
-          },
-          contentType: "string",
-          value: "this is a conversation with myself",
-          version: "1"
-        }
-      }
-    ]
-  },
-  {
-    threadId: {
-      exchangeId: "20",
-      sellerId: "4",
-      buyerId: myBuyerId
-    },
-    messages: [
-      {
-        id: "3",
-        from: myBuyerId,
-        sentDate: (() => {
-          const currentDate = new Date();
-          new Date(currentDate.setDate(currentDate.getDate() - 15));
-          return currentDate;
-        })(),
-        content: {
-          threadId: {
-            exchangeId: "20",
-            sellerId: "4",
-            buyerId: myBuyerId
-          },
-          contentType: "string",
-          value: "hello 😃 seller with id 4",
-          version: "1"
-        }
-      },
-      {
-        id: "4",
-        from: "4",
-        sentDate: (() => {
-          const currentDate = new Date();
-          new Date(currentDate.setDate(currentDate.getDate() - 10));
-          return currentDate;
-        })(),
-        content: {
-          threadId: {
-            exchangeId: "20",
-            sellerId: "4",
-            buyerId: myBuyerId
-          },
-          contentType: "string",
-          value: `hello 😃 buyer with id ${myBuyerId}`,
-          version: "1"
-        }
-      },
-      {
-        id: "5",
-        from: myBuyerId,
-        sentDate: (() => {
-          const currentDate = new Date();
-          new Date(currentDate.setDate(currentDate.getDate() - 5));
-          return currentDate;
-        })(),
-        content: {
-          threadId: {
-            exchangeId: "20",
-            sellerId: "4",
-            buyerId: myBuyerId
-          },
-          contentType: "string",
-          value: "hello 😃 seller with id 4",
-          version: "1"
-        }
-      },
-      {
-        id: "6",
-        from: "4",
-        sentDate: (() => {
-          const currentDate = new Date();
-          new Date(currentDate.setDate(currentDate.getDate() - 2));
-          return currentDate;
-        })(),
-        content: {
-          threadId: {
-            exchangeId: "20",
-            sellerId: "4",
-            buyerId: myBuyerId
-          },
-          contentType: "string",
-          value: `test test hello 😃 buyer with id ${myBuyerId}`,
-          version: "1"
-        }
-      },
-      {
-        id: "7",
-        from: "4",
-        sentDate: new Date(),
-        content: {
-          threadId: {
-            exchangeId: "20",
-            sellerId: "4",
-            buyerId: myBuyerId
-          },
-          contentType: "image",
-          version: "1",
-          value: {
-            name: "dot.png",
-            type: "image/png",
-            size: 123,
-            encodedContent: `data:image/png;base64,iVBORw0KGgoAAA
-              ANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4
-              //8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU
-              5ErkJggg==`
-          }
-        }
-      },
-      {
-        id: "8",
-        from: "4",
-        sentDate: new Date(),
-        content: {
-          threadId: {
-            exchangeId: "20",
-            sellerId: "4",
-            buyerId: myBuyerId
-          },
-          contentType: "image",
-          version: "1",
-          value: {
-            name: "123.png",
-            type: "image/png",
-            size: 123,
-            encodedContent:
-              "invalid format image, we should show an error in the chat"
-          }
-        }
-      },
-      {
-        id: "9",
-        from: "4",
-        sentDate: new Date(),
-        content: {
-          threadId: {
-            exchangeId: "20",
-            sellerId: "4",
-            buyerId: myBuyerId
-          },
-          contentType: "proposal",
-          version: "1",
-          value: {
-            title: `Seller ID:x raised a dispute and made a proposal`,
-            description:
-              "Hello there, the item I received has some quality issues. The colours are a bit worn out and not as bright as on the picture. The laces are slightly damaged and in the wrong colour....",
-            proposals: [
-              {
-                type: "Refund",
-                percentageAmount: "20",
-                signature: "0x214..."
-              }
-            ],
-            disputeContext: [
-              "Item not as described",
-              "The item received is a different colour, model, version, or size"
-            ]
-          }
-        }
-      },
-      {
-        id: "10",
-        from: "4",
-        sentDate: new Date(),
-        content: {
-          threadId: {
-            exchangeId: "20",
-            sellerId: "4",
-            buyerId: myBuyerId
-          },
-          contentType: "proposal",
-          version: "1",
-          value: {
-            title: "Seller ID:4 made a proposal",
-            description:
-              "Thank you for reaching out lorem ipsum dolor sit amet",
-            proposals: [
-              {
-                type: "Refund",
-                percentageAmount: "10",
-                signature: "0x214..."
-              }
-            ],
-            disputeContext: []
-          }
-        }
-      },
-      {
-        id: "11",
-        from: myBuyerId,
-        sentDate: new Date(),
-        content: {
-          threadId: {
-            exchangeId: "20",
-            sellerId: mySellerId,
-            buyerId: myBuyerId
-          },
-          contentType: "proposal",
-          version: "1",
-          value: {
-            title: `Seller ID:x raised a dispute and made a proposal`,
-            description:
-              "Hello there, the item I received has some quality issues. The colours are a bit worn out and not as bright as on the picture. The laces are slightly damaged and in the wrong colour....",
-            proposals: [
-              {
-                type: "Refund",
-                percentageAmount: "20",
-                signature: "0x214..."
-              }
-            ],
-            disputeContext: [
-              "Item not as described",
-              "The item received is a different colour, model, version, or size"
-            ]
-          }
-        }
-      },
-      {
-        id: "12",
-        from: myBuyerId,
-        sentDate: new Date(),
-        content: {
-          threadId: {
-            exchangeId: "20",
-            sellerId: mySellerId,
-            buyerId: myBuyerId
-          },
-          contentType: "proposal",
-          version: "1",
-          value: {
-            title: "Seller ID:4 made a proposal",
-            description:
-              "Thank you for reaching out lorem ipsum dolor sit amet",
-            proposals: [
-              {
-                type: "Refund",
-                percentageAmount: "10",
-                signature: "0x214..."
-              }
-            ],
-            disputeContext: []
-          }
-        }
-      }
-    ]
-  }
-];
+const dennisAddress = "0xE16955e95D088bd30746c7fb7d76cDA436b86F63";
+const albertAddress = "0x9c2925a41d6FB1c6C8f53351634446B0b2E65eE8";
+const jonasAddress = "0x00c5D17c55940783961352E6f83ea18167841Bca";
+const dennisId = "1";
+const albertId = "2";
+const jonasId = "3";
 
 const GlobalStyle = createGlobalStyle`
   html, body, #root, [data-rk] {
@@ -378,76 +34,197 @@ const Container = styled.div`
 `;
 // :
 const getExchanges = ({
+  address,
   id_in,
   disputed
 }: {
+  address: string | undefined;
   id_in: string[];
   disputed: null;
 }): ReturnType<typeof useExchanges> => {
   const r = {
-    data: id_in.map((id, index) => ({
-      id,
-      buyer: {
-        id: "1",
-        wallet: "0x"
+    data: [
+      {
+        id: "0",
+        buyer: {
+          id: albertId,
+          wallet: "0x"
+        },
+        committedDate: new Date().toString(),
+        disputed: true,
+        expired: true,
+        finalizedDate: new Date().toString(),
+        redeemedDate: new Date().toString(),
+        state: "REDEEMED",
+        validUntilDate: new Date().toString(),
+        seller: { id: dennisId },
+        offer: {
+          id: "1",
+          buyerCancelPenalty: "",
+          createdAt: "",
+          disputeResolverId: "",
+          exchangeToken: {
+            address: "0x1000000000000000000000000000000000000000",
+            decimals: "18",
+            name: "PepitoName",
+            symbol: "pepito",
+            __typename: "ExchangeToken"
+          },
+          fulfillmentPeriodDuration: "",
+          metadataHash: "",
+          metadataUri: "",
+          price: "10001230000000000000",
+          protocolFee: "",
+          quantityAvailable: "",
+          quantityInitial: "",
+          resolutionPeriodDuration: "",
+          seller: {
+            active: true,
+            admin: dennisAddress,
+            clerk: dennisAddress,
+            __typename: "Seller",
+            id: dennisId,
+            operator: address === dennisAddress ? albertAddress : dennisAddress,
+            treasury: dennisAddress
+          },
+          sellerDeposit: "",
+          validFromDate: "",
+          validUntilDate: "",
+          voucherRedeemableFromDate: "",
+          voucherRedeemableUntilDate: "",
+          voucherValidDuration: "",
+          __typename: "Offer",
+          isValid: true,
+          voidedAt: "",
+          metadata: {
+            imageUrl:
+              "https://bsn-portal-development-image-upload-storage.s3.amazonaws.com/boson-sweatshirt-FINAL.gif",
+            type: "BASE",
+            name: "boson sweatshirt (dennis<->albert)"
+          }
+        }
       },
-      committedDate: new Date().toString(),
-      disputed: true,
-      expired: true,
-      finalizedDate: new Date().toString(),
-      redeemedDate: new Date().toString(),
-      state: "REDEEMED",
-      validUntilDate: new Date().toString(),
-      seller: { id: "123" },
-      offer: {
+      {
         id: "1",
-        buyerCancelPenalty: "",
-        createdAt: "",
-        disputeResolverId: "",
-        exchangeToken: {
-          address:
-            index === 0
-              ? "0x123"
-              : "0x0000000000000000000000000000000000000000",
-          decimals: "18",
-          name: index === 0 ? "PepitoName" : "Ether",
-          symbol: index === 0 ? "pepito" : "ETH",
-          __typename: "ExchangeToken"
+        buyer: {
+          id: dennisId,
+          wallet: "0x"
         },
-        fulfillmentPeriodDuration: "",
-        metadataHash: "",
-        metadataUri: "",
-        price: "10001230000000000000",
-        protocolFee: "",
-        quantityAvailable: "",
-        quantityInitial: "",
-        resolutionPeriodDuration: "",
-        seller: {
-          active: true,
-          admin: "0x9c2925a41d6FB1c6C8f53351634446B0b2E65999",
-          clerk: "0x9c2925a41d6FB1c6C8f53351634446B0b2E65999",
-          __typename: "Seller",
-          id: "5",
-          operator: "0x9c2925a41d6FB1c6C8f53351634446B0b2E65999",
-          treasury: "0x9c2925a41d6FB1c6C8f53351634446B0b2E65999"
+        committedDate: new Date().toString(),
+        disputed: true,
+        expired: true,
+        finalizedDate: new Date().toString(),
+        redeemedDate: new Date().toString(),
+        state: "REDEEMED",
+        validUntilDate: new Date().toString(),
+        seller: { id: albertId },
+        offer: {
+          id: "1",
+          buyerCancelPenalty: "",
+          createdAt: "",
+          disputeResolverId: "",
+          exchangeToken: {
+            address: "0x2000000000000000000000000000000000000000",
+            decimals: "18",
+            name: "PepitoName",
+            symbol: "pepito",
+            __typename: "ExchangeToken"
+          },
+          fulfillmentPeriodDuration: "",
+          metadataHash: "",
+          metadataUri: "",
+          price: "10001230000000000000",
+          protocolFee: "",
+          quantityAvailable: "",
+          quantityInitial: "",
+          resolutionPeriodDuration: "",
+          seller: {
+            active: true,
+            admin: albertAddress,
+            clerk: albertAddress,
+            __typename: "Seller",
+            id: albertId,
+            operator: address === dennisAddress ? albertAddress : dennisAddress,
+            treasury: albertAddress
+          },
+          sellerDeposit: "",
+          validFromDate: "",
+          validUntilDate: "",
+          voucherRedeemableFromDate: "",
+          voucherRedeemableUntilDate: "",
+          voucherValidDuration: "",
+          __typename: "Offer",
+          isValid: true,
+          voidedAt: "",
+          metadata: {
+            imageUrl:
+              "https://bsn-portal-development-image-upload-storage.s3.amazonaws.com/boson-sweatshirt-FINAL.gif",
+            type: "BASE",
+            name: "boson sweatshirt (albert<->dennis)"
+          }
+        }
+      },
+      {
+        id: "2",
+        buyer: {
+          id: dennisId,
+          wallet: "0x"
         },
-        sellerDeposit: "",
-        validFromDate: "",
-        validUntilDate: "",
-        voucherRedeemableFromDate: "",
-        voucherRedeemableUntilDate: "",
-        voucherValidDuration: "",
-        __typename: "Offer",
-        isValid: true,
-        voidedAt: "",
-        metadata: {
-          imageUrl:
-            "https://assets.website-files.com/6058b6a3587b6e155196ebbb/61b24ecf53f687b4500a6203_NiftyKey_Logo_Vertical.svg",
-          type: "BASE",
-          name: index === 0 ? "boson t-shirt" : "another tshirt"
+        committedDate: new Date().toString(),
+        disputed: true,
+        expired: true,
+        finalizedDate: new Date().toString(),
+        redeemedDate: new Date().toString(),
+        state: "REDEEMED",
+        validUntilDate: new Date().toString(),
+        seller: { id: albertId },
+        offer: {
+          id: "1",
+          buyerCancelPenalty: "",
+          createdAt: "",
+          disputeResolverId: "",
+          exchangeToken: {
+            address: "0x2000000000000000000000000000000000000000",
+            decimals: "18",
+            name: "PepitoName",
+            symbol: "pepito",
+            __typename: "ExchangeToken"
+          },
+          fulfillmentPeriodDuration: "",
+          metadataHash: "",
+          metadataUri: "",
+          price: "10001230000000000000",
+          protocolFee: "",
+          quantityAvailable: "",
+          quantityInitial: "",
+          resolutionPeriodDuration: "",
+          seller: {
+            active: true,
+            admin: albertAddress,
+            clerk: albertAddress,
+            __typename: "Seller",
+            id: albertId,
+            operator: address === jonasAddress ? dennisAddress : jonasAddress,
+            treasury: albertAddress
+          },
+          sellerDeposit: "",
+          validFromDate: "",
+          validUntilDate: "",
+          voucherRedeemableFromDate: "",
+          voucherRedeemableUntilDate: "",
+          voucherValidDuration: "",
+          __typename: "Offer",
+          isValid: true,
+          voidedAt: "",
+          metadata: {
+            imageUrl:
+              "https://bsn-portal-development-image-upload-storage.s3.amazonaws.com/boson-sweatshirt-FINAL.gif",
+            type: "BASE",
+            name: "boson sweatshirt (jonas<->dennis)"
+          }
         }
       }
-    }))
+    ]
   };
   return r as any;
 };
@@ -475,52 +252,59 @@ const SimpleMessage = styled.p`
 const getIsSameThread = (
   exchangeId: string | undefined,
   textAreaValue: {
-    threadId: string;
+    exchangeId: string;
     value: string;
   }
 ) => {
-  return textAreaValue.threadId === exchangeId;
+  return textAreaValue.exchangeId === exchangeId;
 };
 
 export default function Chat() {
+  const { bosonXmtp } = useChatContext();
+  const { address } = useAccount();
+  const { showModal, hideModal } = useModal();
+  useEffect(() => {
+    if (bosonXmtp && address) {
+      hideModal();
+    } else {
+      showModal(
+        "INITIALIZE_CHAT",
+        {
+          title: "Initialize Chat",
+          closable: false
+        },
+        "s"
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bosonXmtp, address]);
+  const { data: exchanges = [] } = useMemo(
+    () =>
+      getExchanges({
+        address,
+        // TODO: remove
+        id_in: new Array(116).fill(0).map((v, idx) => "" + idx),
+        disputed: null
+      }),
+    [address]
+  );
   // TODO: comment out
   // const { data: exchanges } = useExchanges({
   //   id_in: threads.map((message) => message.threadId.exchangeId),
   //   disputed: null
   // });
-  const { data: exchanges } = useMemo(
+
+  const textAreaValueByThread = useMemo(
     () =>
-      getExchanges({
-        // TODO: remove
-        id_in: threads.map((message) => message.threadId.exchangeId),
-        disputed: null
-      }),
-    []
-  );
-  const threadsWithExchanges = useMemo(
-    () =>
-      threads.map((thread) => {
+      exchanges.map((exchange) => {
         return {
-          threadId: thread.threadId,
-          exchange: exchanges?.find(
-            (exchange) => exchange.id === thread.threadId.exchangeId
-          ),
-          messages: thread.messages
+          exchangeId: exchange.id,
+          value: ""
         };
       }),
     [exchanges]
   );
-  const threadsExchangeIds = useMemo(
-    () =>
-      threads.map((thread) => {
-        return {
-          threadId: thread.threadId.exchangeId,
-          value: ""
-        };
-      }),
-    []
-  );
-  const [selectedThread, selectThread] = useState<Thread>();
+  const [selectedExchange, selectExchange] = useState<Exchange>();
   const [chatListOpen, setChatListOpen] = useState<boolean>(false);
   const [exchangeIdNotOwned, setExchangeIdNotOwned] = useState<boolean>(false);
   const params = useParams();
@@ -531,30 +315,29 @@ export default function Chat() {
   const [previousPath, setPreviousPath] = useState<string>("");
   const navigate = useKeepQueryParamsNavigate();
   const { isXXS, isXS, isS } = useBreakpoints();
+
+  // select thread based on url /exchangeId
   useEffect(() => {
-    if (threadsWithExchanges?.[0]?.exchange) {
-      const currentThread = threadsWithExchanges.find((thread) => {
-        return thread.threadId.exchangeId === exchangeId;
+    if (exchanges && exchangeId) {
+      const foundExchange = exchanges.find((exchange) => {
+        return exchange.id === exchangeId;
       });
-
-      if (currentThread) {
-        selectThread(currentThread);
-      } else {
+      if (!foundExchange) {
         setExchangeIdNotOwned(true);
+        return;
       }
+      selectExchange(foundExchange);
     }
-  }, [
-    exchangeId,
-    threadsWithExchanges,
-    setExchangeIdNotOwned,
-    exchangeIdNotOwned
-  ]);
+  }, [exchangeId, exchanges]);
 
-  const [textAreasValues, setTextAreasValues] = useState(threadsExchangeIds);
-  const onTextAreaChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const [textAreasValues, setTextAreasValues] = useState(textAreaValueByThread);
+  useEffect(() => {
+    setTextAreasValues(textAreaValueByThread);
+  }, [textAreaValueByThread]);
+  const onTextAreaChange = (textAreaTargetValue: string) => {
     const updatedData = textAreasValues.map((textAreaValue) =>
       getIsSameThread(exchangeId, textAreaValue)
-        ? { ...textAreaValue, value: event.target.value }
+        ? { ...textAreaValue, value: textAreaTargetValue }
         : textAreaValue
     );
     setTextAreasValues(updatedData);
@@ -564,10 +347,9 @@ export default function Chat() {
     () =>
       textAreasValues.find((textAreaValue) =>
         getIsSameThread(exchangeId, textAreaValue)
-      ),
+      )?.value,
     [exchangeId, textAreasValues]
   );
-
   useEffect(() => {
     setPreviousPath(prevPath);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -579,45 +361,43 @@ export default function Chat() {
         <GlobalStyle />
 
         <MessageList
-          threads={threadsWithExchanges}
+          exchanges={exchanges}
           isConversationOpened={
             location.pathname !== `${BosonRoutes.Chat}/` &&
             location.pathname !== `${BosonRoutes.Chat}`
           }
-          onChangeConversation={(thread) => {
+          onChangeConversation={(exchange) => {
             if (isXXS || isXS || isS) {
               setChatListOpen(!chatListOpen);
             }
-            selectThread(thread);
-            navigate(
-              {
-                pathname: `${BosonRoutes.Chat}/${thread.threadId.exchangeId}`
-              },
-              { replace: true }
-            );
+            selectExchange(exchange);
+            navigate({
+              pathname: `${BosonRoutes.Chat}/${exchange.id}`
+            });
           }}
           chatListOpen={chatListOpen}
           setChatListOpen={setChatListOpen}
-          currentThread={selectedThread}
+          currentExchange={selectedExchange}
         />
+
         <Routes>
           <Route
-            path={`:${exchangeId}`}
+            path={`:${UrlParameters.exchangeId}`}
             element={
               <ChatConversation
-                thread={selectedThread}
+                key={selectedExchange?.id || ""}
+                exchange={selectedExchange}
                 setChatListOpen={setChatListOpen}
                 chatListOpen={chatListOpen}
-                exchangeId={`${exchangeId}`}
                 exchangeIdNotOwned={exchangeIdNotOwned}
-                threadsExchangeIds={threadsExchangeIds}
                 prevPath={previousPath}
                 onTextAreaChange={onTextAreaChange}
-                textAreaValue={parseInputValue?.value}
+                textAreaValue={parseInputValue}
               />
             }
           />
         </Routes>
+
         {(location.pathname === `${BosonRoutes.Chat}/` ||
           location.pathname === `${BosonRoutes.Chat}`) && (
           <SelectMessageContainer>

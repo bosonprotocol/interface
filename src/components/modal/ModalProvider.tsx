@@ -33,6 +33,7 @@ const RenderModalComponent = ({
       hideModal={hideModal}
       title={store.modalProps?.title}
       headerComponent={store.modalProps?.headerComponent}
+      closable={store.modalProps?.closable}
     >
       <ModalComponent
         id="modal"

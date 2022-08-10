@@ -2,7 +2,6 @@ import { useField } from "formik";
 import { Image, Trash } from "phosphor-react";
 import { useEffect, useRef, useState } from "react";
 
-import { CONFIG } from "../../../lib/config";
 import { colors } from "../../../lib/styles/colors";
 import bytesToSize from "../../../lib/utils/bytesToSize";
 import Button from "../../ui/Button";
@@ -18,6 +17,7 @@ export default function Upload({
   disabled,
   multiple = false,
   trigger,
+  maxSize,
   onFilesSelect,
   files: initialFiles,
   wrapperProps,
@@ -66,20 +66,21 @@ export default function Upload({
     if (!meta.touched) {
       helpers.setTouched(true);
     }
+
     if (!e.target.files) {
       return;
     }
     const { files } = e.target;
     const filesArray = Object.values(files);
     for (const file of filesArray) {
-      if (file.size > CONFIG.maxUploadSize) {
-        // TODO: change to notification
-        console.error(
-          `File size cannot exceed more than ${bytesToSize(
-            CONFIG.maxUploadSize
-          )}`
-        );
-        return;
+      if (maxSize) {
+        if (file.size > maxSize) {
+          const error = `File size cannot exceed more than ${bytesToSize(
+            maxSize
+          )}`;
+          // TODO: change to notification
+          console.error(error);
+        }
       }
     }
     setFiles(filesArray);

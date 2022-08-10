@@ -120,5 +120,9 @@ const GlobalStyle = createGlobalStyle<{
   img, svg, input {
     user-select: none;
   }
+
+  [data-rk][role=dialog] {
+    top: 0; // rainbowkit modal backdrop should fill up all height
+  }
 `;
 export default GlobalStyle;

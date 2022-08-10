@@ -6,6 +6,7 @@ import styled, { ThemeProvider } from "styled-components";
 import Layout from "../../components/Layout";
 import ModalProvider from "../../components/modal/ModalProvider";
 import GlobalStyle from "../../lib/styles/GlobalStyle";
+import ChatProvider from "../../pages/chat/ChatProvider/ChatProvider";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import theme from "../../theme";
 import Footer from "../footer/Footer";
@@ -42,21 +43,23 @@ export default function App({ withLayout = true, withFooter = true }: Props) {
           weight: "bold"
         }}
       >
-        <ModalProvider>
-          <Container>
-            <GlobalStyle
-              $primaryColor={primaryColor}
-              $secondaryColor={secondaryColor}
-              $accentColor={accentColor}
-              $primaryBgColor={primaryBgColor}
-            />
-            <Header />
-            <Wrapper>
-              <Outlet />
-            </Wrapper>
-            {withFooter && <Footer />}
-          </Container>
-        </ModalProvider>
+        <ChatProvider>
+          <ModalProvider>
+            <Container>
+              <GlobalStyle
+                $primaryColor={primaryColor}
+                $secondaryColor={secondaryColor}
+                $accentColor={accentColor}
+                $primaryBgColor={primaryBgColor}
+              />
+              <Header />
+              <Wrapper>
+                <Outlet />
+              </Wrapper>
+              {withFooter && <Footer />}
+            </Container>
+          </ModalProvider>
+        </ChatProvider>
       </IconContext.Provider>
     </ThemeProvider>
   );

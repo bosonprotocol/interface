@@ -1,20 +1,29 @@
+import {
+  FileContent,
+  MessageType,
+  ProposalContent
+} from "@bosonprotocol/chat-sdk/dist/cjs/util/definitions";
 import { Image as AccountImage } from "@davatar/react";
 import { BigNumber, utils } from "ethers";
-import { ArrowRight, Check, ImageSquare } from "phosphor-react";
-import { ReactNode } from "react";
+import { ArrowRight, Check } from "phosphor-react";
+import React, { forwardRef, ReactNode, useCallback } from "react";
 import styled from "styled-components";
 
+import UploadedFile from "../../../components/form/Upload/UploadedFile";
 import ProposalTypeSummary from "../../../components/modal/components/Chat/components/ProposalTypeSummary";
 import { useModal } from "../../../components/modal/useModal";
 import Grid from "../../../components/ui/Grid";
 import Typography from "../../../components/ui/Typography";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
+import { DeepReadonly } from "../../../lib/types/helpers";
 import { validateMessage } from "../../../lib/utils/chat/message";
+import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { Thread } from "../types";
 
 const width = "31.625rem";
-const Content = styled.div<{ $isLeftAligned: boolean }>`
+type StyledContentProps = { $isLeftAligned: boolean };
+const StyledContent = styled.div<StyledContentProps>`
   position: relative;
   background-color: ${({ $isLeftAligned }) =>
     $isLeftAligned ? colors.black : colors.white};
@@ -27,7 +36,8 @@ const Content = styled.div<{ $isLeftAligned: boolean }>`
   margin-right: 2.5rem;
   margin-left: 2.5rem;
   margin-top: 3rem;
-  padding: 1.5rem 1rem 3.75rem 1rem;
+  padding: 1.5rem 1rem 2.75rem 1rem;
+  min-width: 6.25rem;
   max-width: ${width};
   &:after {
     position: absolute;
@@ -86,13 +96,17 @@ const DateStamp = styled.div<{ $isLeftAligned: boolean }>`
     $isLeftAligned ? colors.lightGrey : colors.darkGrey};
 `;
 
-const AttachmentContainer = styled.div`
+const AttachmentContainer = styled.div<{ $isLeftAligned: boolean }>`
   position: relative;
   display: flex;
   cursor: pointer;
   align-items: center;
   padding: 1rem;
-  border: 2px solid ${colors.darkGrey};
+  background-color: ${({ $isLeftAligned }) =>
+    $isLeftAligned ? "inherit" : colors.lightGrey};
+  ${({ $isLeftAligned }) =>
+    $isLeftAligned ? `border: 2px solid ${colors.white}` : ""};
+  color: ${({ $isLeftAligned }) => ($isLeftAligned ? "inherit" : colors.black)};
   margin-bottom: 0.3rem;
   svg:nth-of-type(2) {
     position: absolute;
@@ -111,17 +125,17 @@ const StyledGrid = styled(Grid)`
 const SellerAvatar = ({
   isLeftAligned,
   children,
-  thread
+  exchange
 }: {
   isLeftAligned: Props["isLeftAligned"];
   children: Props["children"];
-  thread: Props["thread"];
+  exchange: Props["exchange"];
 }) => {
   return isLeftAligned ? (
     <Avatar>{children}</Avatar>
   ) : (
     <Avatar>
-      <AccountImage size={32} address={thread.exchange?.buyer.wallet} />
+      <AccountImage size={32} address={exchange.buyer.wallet} />
     </Avatar>
   );
 };
@@ -133,219 +147,244 @@ const BottomDateStamp = ({
   isLeftAligned: Props["isLeftAligned"];
   message: Props["message"];
 }) => {
+  const sentDate = new Date(message.timestamp);
   return (
     <DateStamp $isLeftAligned={isLeftAligned}>
-      {message.sentDate.getHours()}:{message.sentDate.getMinutes()}
+      {sentDate.getHours().toString().padStart(2, "0")}:
+      {sentDate.getMinutes().toString().padStart(2, "0")}
     </DateStamp>
   );
 };
+
 interface Props {
-  thread: Thread;
-  message: Readonly<Thread["messages"][number]>;
+  exchange: Exchange;
+  message: DeepReadonly<Thread["messages"][number]>;
   children: ReactNode;
   isLeftAligned: boolean;
 }
 
-export default function Message({
-  message,
-  children,
-  isLeftAligned,
-  thread
-}: Props) {
-  const { showModal } = useModal();
-
-  const isRegularMessage =
-    typeof message.content.value === "string" &&
-    message.content.contentType === "string";
-  const isImageWithMetadataMessage = message.content.contentType === "image";
-  const isProposalMessage = message.content.contentType === "proposal";
-
-  const isValid = validateMessage(message);
-  if (!isValid) {
-    return (
-      <Content $isLeftAligned={isLeftAligned}>
-        <SellerAvatar isLeftAligned={isLeftAligned} thread={thread}>
-          {children}
-        </SellerAvatar>
-        <p>
-          {isImageWithMetadataMessage
-            ? "Corrupt image."
-            : isProposalMessage
-            ? "Corrupt proposal"
-            : "Corrupt message"}
-          &nbsp; Please re-send in a new message
-        </p>
-      </Content>
+const Message = forwardRef(
+  (
+    { message, children, isLeftAligned, exchange }: Props,
+    ref: React.ForwardedRef<HTMLDivElement>
+  ) => {
+    const Content = useCallback(
+      ({
+        children,
+        ...props
+      }: { children: ReactNode } & StyledContentProps &
+        React.HTMLAttributes<HTMLDivElement>) => {
+        return (
+          <StyledContent {...props} ref={ref}>
+            {children}
+          </StyledContent>
+        );
+      },
+      [ref]
     );
-  }
+    const { showModal } = useModal();
+    const messageContent = message.data.content;
+    const messageContentType = message.data.contentType;
+    const isRegularMessage =
+      typeof message.data.content.value === "string" &&
+      messageContentType === MessageType.String;
+    const isFileMessage = messageContentType === MessageType.File;
+    const isProposalMessage = messageContentType === MessageType.Proposal;
 
-  if (isRegularMessage) {
-    return (
-      <Content $isLeftAligned={isLeftAligned}>
-        <SellerAvatar isLeftAligned={isLeftAligned} thread={thread}>
-          {children}
-        </SellerAvatar>
-        <div>{message.content.value}</div>
-        <BottomDateStamp isLeftAligned={isLeftAligned} message={message} />
-      </Content>
-    );
-  }
-
-  if (isImageWithMetadataMessage) {
-    return (
-      <Content $isLeftAligned={isLeftAligned}>
-        <SellerAvatar isLeftAligned={isLeftAligned} thread={thread}>
-          {children}
-        </SellerAvatar>
-        <AttachmentContainer>
-          <ImageSquare size={23} />
-          <Typography fontSize="1rem" fontWeight="400">
-            &nbsp;&nbsp; {message.content.value.name}
-          </Typography>
-        </AttachmentContainer>
-        <BottomDateStamp isLeftAligned={isLeftAligned} message={message} />
-      </Content>
-    );
-  }
-
-  if (isProposalMessage) {
-    const { exchange } = thread;
-    if (!exchange) {
+    const isValid = validateMessage(message);
+    if (!isValid) {
       return (
         <Content $isLeftAligned={isLeftAligned}>
-          <SellerAvatar isLeftAligned={isLeftAligned} thread={thread}>
+          <SellerAvatar isLeftAligned={isLeftAligned} exchange={exchange}>
             {children}
           </SellerAvatar>
-          <p>
-            We couldn't retrieve your exchange to show the proposals, please try
-            again
-          </p>
+          <div>
+            {isFileMessage
+              ? "Corrupt image."
+              : isProposalMessage
+              ? "Corrupt proposal"
+              : "Corrupt message"}
+            &nbsp; Please re-send in a new message
+          </div>
+          <BottomDateStamp isLeftAligned={isLeftAligned} message={message} />
         </Content>
       );
     }
-    const messageContent = message.content.value;
-    const isRaisingADispute = !!messageContent.disputeContext?.length;
-    return (
-      <Content $isLeftAligned={isLeftAligned} style={{ width }}>
-        <SellerAvatar isLeftAligned={isLeftAligned} thread={thread}>
-          {children}
-        </SellerAvatar>
-        <Typography tag="h4" margin="0">
-          {messageContent.title}
-        </Typography>
-        {isRaisingADispute && (
-          <>
-            <Typography
-              margin="1.5rem 0 0.5rem 0"
-              fontSize="1rem"
-              fontWeight="600"
-            >
-              Dispute Category
-            </Typography>
-            {messageContent.disputeContext.map((reason) => {
-              return (
-                <Grid justifyContent="flex-start" gap="0.5rem" key={reason}>
-                  <Check size={16} />
-                  <span>{reason}</span>
-                </Grid>
-              );
-            })}
-            <Typography
-              margin="1.5rem 0 0.5rem 0"
-              fontSize="1rem"
-              fontWeight="600"
-            >
-              Additional information
-            </Typography>
-          </>
-        )}
-        <Typography tag="p" margin="0.25rem 1rem 0rem 0rem">
-          {messageContent.description}
-        </Typography>
+    if (isRegularMessage) {
+      return (
+        <Content $isLeftAligned={isLeftAligned}>
+          <SellerAvatar isLeftAligned={isLeftAligned} exchange={exchange}>
+            {children}
+          </SellerAvatar>
+          <div style={{ overflowWrap: "break-word" }}>
+            {message.data.content.value}
+          </div>
+          <BottomDateStamp isLeftAligned={isLeftAligned} message={message} />
+        </Content>
+      );
+    }
 
-        <Grid flexDirection="column" alignItems="flex-start">
-          {isLeftAligned ? (
-            <>
-              <Typography
-                margin="1.5rem 0 0.5rem 0"
-                fontSize="1.25rem"
-                fontWeight="600"
-              >
-                {messageContent.proposals.length === 1
-                  ? "Proposal"
-                  : "Proposals"}
-              </Typography>
-              {messageContent.proposals.map((proposal) => {
-                const { offer } = exchange;
-                const refundAmount = BigNumber.from(offer.price)
-                  .div(BigNumber.from(100))
-                  .mul(BigNumber.from(proposal.percentageAmount));
+    if (isFileMessage) {
+      const imageValue = messageContent as unknown as FileContent;
+      return (
+        <Content $isLeftAligned={isLeftAligned}>
+          <SellerAvatar isLeftAligned={isLeftAligned} exchange={exchange}>
+            {children}
+          </SellerAvatar>
+          <UploadedFile
+            fileName={imageValue.value.fileName}
+            color={isLeftAligned ? "white" : "grey"}
+            fileSize={imageValue.value.fileSize}
+            base64Content={imageValue.value.encodedContent}
+            showSize={false}
+          />
+          <BottomDateStamp isLeftAligned={isLeftAligned} message={message} />
+        </Content>
+      );
+    }
 
-                const formattedRefundAmount = utils.formatUnits(
-                  refundAmount,
-                  Number(offer.exchangeToken.decimals)
-                );
-                return (
-                  <Grid
-                    key={proposal.type}
-                    flexDirection="column"
-                    rowGap="0.25rem"
-                    alignItems="flex-start"
-                  >
-                    <Typography margin="0">{proposal.type}</Typography>
-                    <StyledGrid
-                      justifyContent="space-between"
-                      onClick={() =>
-                        showModal("RESOLVE_DISPUTE", {
-                          title: "Resolve dispute",
-                          exchange,
-                          proposal
-                        })
-                      }
-                    >
-                      <Typography color={colors.primary} cursor="pointer">
-                        Proposed refund amount: {formattedRefundAmount}{" "}
-                        {offer.exchangeToken.symbol} (
-                        {proposal.percentageAmount}
-                        %)
-                      </Typography>
-                      <ArrowRight color={colors.primary} />
-                    </StyledGrid>
-                  </Grid>
-                );
-              })}
-            </>
-          ) : (
+    if (isProposalMessage) {
+      if (!exchange) {
+        return (
+          <Content $isLeftAligned={isLeftAligned}>
+            <SellerAvatar isLeftAligned={isLeftAligned} exchange={exchange}>
+              {children}
+            </SellerAvatar>
+            <p>
+              We couldn't retrieve your exchange to show the proposals, please
+              try again
+            </p>
+          </Content>
+        );
+      }
+      const proposalContent = message.data
+        .content as unknown as ProposalContent;
+      const messageContent = proposalContent.value;
+      const isRaisingADispute = !!messageContent.disputeContext?.length;
+      return (
+        <Content $isLeftAligned={isLeftAligned}>
+          <SellerAvatar isLeftAligned={isLeftAligned} exchange={exchange}>
+            {children}
+          </SellerAvatar>
+          <Typography tag="h4" margin="0">
+            {messageContent.title}
+          </Typography>
+          {isRaisingADispute && (
             <>
               <Typography
                 margin="1.5rem 0 0.5rem 0"
                 fontSize="1rem"
                 fontWeight="600"
               >
-                Resolution Proposal
+                Dispute Category
               </Typography>
-              {messageContent.proposals.map((proposal) => (
-                <ProposalTypeSummary
-                  key={proposal.type}
-                  exchange={exchange}
-                  proposal={proposal}
-                />
-              ))}
+              {messageContent.disputeContext.map((reason) => {
+                return (
+                  <Grid justifyContent="flex-start" gap="0.5rem" key={reason}>
+                    <Check size={16} />
+                    <span>{reason}</span>
+                  </Grid>
+                );
+              })}
+              <Typography
+                margin="1.5rem 0 0.5rem 0"
+                fontSize="1rem"
+                fontWeight="600"
+              >
+                Additional information
+              </Typography>
             </>
           )}
-        </Grid>
+          <Typography tag="p" margin="0.25rem 1rem 0rem 0rem">
+            {messageContent.description}
+          </Typography>
+
+          <Grid flexDirection="column" alignItems="flex-start">
+            {isLeftAligned ? (
+              <>
+                <Typography
+                  margin="1.5rem 0 0.5rem 0"
+                  fontSize="1.25rem"
+                  fontWeight="600"
+                >
+                  {messageContent.proposals.length === 1
+                    ? "Proposal"
+                    : "Proposals"}
+                </Typography>
+                {messageContent.proposals.map((proposal) => {
+                  const { offer } = exchange;
+                  const refundAmount = BigNumber.from(offer.price)
+                    .div(BigNumber.from(100))
+                    .mul(BigNumber.from(proposal.percentageAmount));
+
+                  const formattedRefundAmount = utils.formatUnits(
+                    refundAmount,
+                    Number(offer.exchangeToken.decimals)
+                  );
+                  return (
+                    <Grid
+                      key={proposal.type}
+                      flexDirection="column"
+                      rowGap="0.25rem"
+                      alignItems="flex-start"
+                    >
+                      <Typography margin="0">{proposal.type}</Typography>
+                      <StyledGrid
+                        justifyContent="space-between"
+                        onClick={() =>
+                          showModal("RESOLVE_DISPUTE", {
+                            title: "Resolve dispute",
+                            exchange,
+                            proposal
+                          })
+                        }
+                      >
+                        <Typography color={colors.primary} cursor="pointer">
+                          Proposed refund amount: {formattedRefundAmount}{" "}
+                          {offer.exchangeToken.symbol} (
+                          {proposal.percentageAmount}
+                          %)
+                        </Typography>
+                        <ArrowRight color={colors.primary} />
+                      </StyledGrid>
+                    </Grid>
+                  );
+                })}
+              </>
+            ) : (
+              <>
+                <Typography
+                  margin="1.5rem 0 0.5rem 0"
+                  fontSize="1rem"
+                  fontWeight="600"
+                >
+                  Resolution Proposal
+                </Typography>
+                {messageContent.proposals.map((proposal) => (
+                  <ProposalTypeSummary
+                    key={proposal.type}
+                    exchange={exchange}
+                    proposal={proposal}
+                  />
+                ))}
+              </>
+            )}
+          </Grid>
+          <BottomDateStamp isLeftAligned={isLeftAligned} message={message} />
+        </Content>
+      );
+    }
+
+    return (
+      <Content $isLeftAligned={isLeftAligned}>
+        <SellerAvatar isLeftAligned={isLeftAligned} exchange={exchange}>
+          {children}
+        </SellerAvatar>
+        Unsupported message
         <BottomDateStamp isLeftAligned={isLeftAligned} message={message} />
       </Content>
     );
   }
+);
 
-  return (
-    <Content $isLeftAligned={isLeftAligned}>
-      <SellerAvatar isLeftAligned={isLeftAligned} thread={thread}>
-        {children}
-      </SellerAvatar>
-      Unsupported message
-      <BottomDateStamp isLeftAligned={isLeftAligned} message={message} />
-    </Content>
-  );
-}
+export default Message;

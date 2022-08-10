@@ -7,6 +7,8 @@ import MultiSteps from "../../../../components/step/MultiSteps";
 import Grid from "../../../../components/ui/Grid";
 import { breakpoint } from "../../../../lib/styles/breakpoint";
 import { colors } from "../../../../lib/styles/colors";
+import { FileWithEncodedData } from "../../../../lib/utils/files";
+import { useChatContext } from "../../ChatProvider/ChatContext";
 import { NewProposal, Thread } from "../../types";
 
 const StyledButton = styled.button`
@@ -15,11 +17,12 @@ const StyledButton = styled.button`
   padding-right: 2.5rem;
   font-size: 0.875rem;
   margin-right: 0.875rem;
-  height: 2.7rem;
+  height: 46px;
   font-weight: 600;
   color: ${colors.secondary};
   background-color: transparent;
   position: relative;
+  cursor: pointer;
   svg {
     position: absolute;
     top: 50%;
@@ -29,6 +32,9 @@ const StyledButton = styled.button`
       transform: translateY(-50%);
     }
   }
+  :disabled {
+    cursor: not-allowed;
+  }
 `;
 
 const StyledMultiSteps = styled(MultiSteps)`
@@ -37,9 +43,19 @@ const StyledMultiSteps = styled(MultiSteps)`
 
 interface Props {
   exchange: NonNullable<Thread["exchange"]>;
+  onSendProposal: (
+    proposal: NewProposal,
+    proposalFiles: FileWithEncodedData[]
+  ) => void;
+  disabled?: boolean;
 }
 
-export default function ButtonProposal({ exchange }: Props) {
+export default function ButtonProposal({
+  exchange,
+  onSendProposal,
+  disabled
+}: Props) {
+  const { bosonXmtp } = useChatContext();
   const { showModal, updateProps, store } = useModal();
   const [activeStep, setActiveStep] = useState<number>(0);
 
@@ -64,31 +80,30 @@ export default function ButtonProposal({ exchange }: Props) {
   );
 
   useEffect(() => {
-    updateProps<"MAKE_PROPOSAL">({
-      ...store,
-      modalProps: {
-        ...store.modalProps,
-        headerComponent,
-        activeStep
-      }
-    });
+    if (bosonXmtp && store.modalType === "MAKE_PROPOSAL") {
+      updateProps<"MAKE_PROPOSAL">({
+        ...store,
+        modalProps: {
+          ...store.modalProps,
+          headerComponent,
+          activeStep
+        }
+      });
+    }
   }, [activeStep, headerComponent, activeStep]); // eslint-disable-line
-
-  const sendProposal = (proposal: NewProposal, proposalFiles: File[]) => {
-    console.log("proposal in button proposal", proposal, proposalFiles);
-  };
 
   return (
     <StyledButton
+      disabled={disabled}
       onClick={() =>
         showModal(
           "MAKE_PROPOSAL",
           {
             headerComponent,
             exchange,
-            activeStep,
+            activeStep: 0,
             setActiveStep,
-            sendProposal
+            sendProposal: onSendProposal
           },
           "m"
         )

@@ -16,7 +16,7 @@ import { CONFIG } from "../../../lib/config";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
 import { Offer } from "../../../lib/types/offer";
-import { Thread } from "../types";
+import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 
 const Container = styled.div<{ $disputeOpen: boolean }>`
   display: flex;
@@ -25,14 +25,15 @@ const Container = styled.div<{ $disputeOpen: boolean }>`
   overflow-y: auto;
   min-width: max-content;
   position: absolute;
-  margin-top: 4.375rem;
+  margin-top: 7.05rem;
   right: ${({ $disputeOpen }) => ($disputeOpen ? "0" : "-160vw")};
   transition: 400ms;
   width: ${({ $disputeOpen }) => $disputeOpen && "100vw"};
   background: ${colors.lightGrey};
   padding-top: 1.875rem;
+  padding-bottom: 20%;
   ${breakpoint.m} {
-    width: 75%;
+    width: 100%;
     min-width: 60%;
   }
   ${breakpoint.l} {
@@ -157,6 +158,7 @@ const CTASection = styled(Section)`
 const HistorySection = styled(Section)`
   padding-bottom: 3rem;
   height: 100%;
+  border-bottom: none;
 `;
 
 const formatShortDate = (date: string) => {
@@ -196,11 +198,10 @@ const getOfferDetailData = (offer: Offer) => {
 };
 
 interface Props {
-  thread: Thread | undefined;
+  exchange: Exchange | undefined;
   disputeOpen: boolean;
 }
-export default function ExchangeSidePreview({ thread, disputeOpen }: Props) {
-  const exchange = thread?.exchange;
+export default function ExchangeSidePreview({ exchange, disputeOpen }: Props) {
   const offer = exchange?.offer;
   const { showModal } = useModal();
   const OFFER_DETAIL_DATA = useMemo(

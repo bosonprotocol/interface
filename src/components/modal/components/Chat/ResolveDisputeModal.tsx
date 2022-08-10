@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 import { colors } from "../../../../lib/styles/colors";
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
-import { ProposalMessage } from "../../../../pages/chat/types";
+import { ProposalItem } from "../../../../pages/chat/types";
 import Button from "../../../ui/Button";
 import Grid from "../../../ui/Grid";
 import { ModalProps } from "../../ModalContext";
@@ -12,7 +12,7 @@ import ProposalTypeSummary from "./components/ProposalTypeSummary";
 
 interface Props {
   exchange: Exchange;
-  proposal: ProposalMessage["value"]["proposals"][number];
+  proposal: ProposalItem;
 
   // modal props
   hideModal: NonNullable<ModalProps["hideModal"]>;

@@ -113,6 +113,7 @@ interface Props {
   title?: string;
   headerComponent?: ReactNode;
   size: NonNullable<Store["modalSize"]>;
+  closable?: boolean;
 }
 
 export default function Modal({
@@ -120,7 +121,8 @@ export default function Modal({
   hideModal,
   title = "modal",
   headerComponent: HeaderComponent,
-  size
+  size,
+  closable = true
 }: Props) {
   return createPortal(
     <Root data-testid="modal">
@@ -128,21 +130,29 @@ export default function Modal({
         {HeaderComponent ? (
           <Header tag="div">
             {HeaderComponent}
-            <Button data-close theme="blank" onClick={hideModal}>
-              <Close />
-            </Button>
+            {closable && (
+              <Button data-close theme="blank" onClick={hideModal}>
+                <Close />
+              </Button>
+            )}
           </Header>
         ) : (
           <Header tag="h3">
             {title}
-            <Button data-close theme="blank" onClick={hideModal}>
-              <Close />
-            </Button>
+            {closable && (
+              <Button data-close theme="blank" onClick={hideModal}>
+                <Close />
+              </Button>
+            )}
           </Header>
         )}
         <Content>{children}</Content>
       </Wrapper>
-      <RootBG onClick={hideModal} />
+      <RootBG
+        onClick={() => {
+          closable && hideModal();
+        }}
+      />
     </Root>,
     document.body
   );

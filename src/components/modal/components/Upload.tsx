@@ -1,13 +1,22 @@
-import { Form, Formik, useField } from "formik";
+import { Form, Formik, FormikProps } from "formik";
 import styled from "styled-components";
+import * as Yup from "yup";
 
+import {
+  FileWithEncodedData,
+  getFilesWithEncodedData
+} from "../../../lib/utils/files";
+import { validationOfFile } from "../../../pages/chat/components/UploadForm/const";
 import UploadForm from "../../../pages/chat/components/UploadForm/UploadForm";
 import Button from "../../ui/Button";
 import { ModalProps } from "../ModalContext";
 import { FormModel } from "./Chat/MakeProposal/MakeProposalFormModel";
 
 interface Props {
-  onUploadedFiles: (files: File[]) => void;
+  onUploadedFiles?: (files: File[]) => void;
+  onUploadedFilesWithData?: (filesWithData: FileWithEncodedData[]) => void;
+  onError?: (error: Error) => void;
+  withEncodedData?: boolean;
   hideModal: NonNullable<ModalProps["hideModal"]>;
   title: ModalProps["title"];
 }
@@ -18,35 +27,59 @@ const ButtonsSection = styled.div`
   justify-content: space-between;
 `;
 
-const ButtonsForm = () => {
-  const [field] = useField({
-    name: FormModel.formFields.upload.name
-  });
-  return (
-    <ButtonsSection>
-      <Button type="submit" theme="secondary" disabled={!field.value?.length}>
-        Submit
-      </Button>
-    </ButtonsSection>
-  );
-};
+const validationSchema = Yup.object({
+  [FormModel.formFields.upload.name]: validationOfFile({
+    isOptional: false
+  })
+});
 
-export default function Upload({ hideModal, onUploadedFiles }: Props) {
+export default function Upload({
+  hideModal,
+  onUploadedFilesWithData,
+  onError,
+  onUploadedFiles,
+  withEncodedData // TODO: if this is defined, then onUploadedFilesWithData should be defined
+}: Props) {
   return (
     <Formik
       onSubmit={async (values) => {
-        console.log("submit", values);
-        onUploadedFiles(values.upload);
+        const files = values.upload;
+        if (withEncodedData) {
+          try {
+            const filesWithData = await getFilesWithEncodedData(files);
+
+            onUploadedFilesWithData?.(filesWithData);
+          } catch (error) {
+            onError?.(error as Error);
+          }
+        } else {
+          onUploadedFiles?.(files);
+        }
+
         hideModal();
       }}
       initialValues={{
-        upload: []
+        upload: [] as File[]
       }}
+      validationSchema={validationSchema}
+      isInitialValid={false}
     >
-      <Form>
-        <UploadForm />
-        <ButtonsForm />
-      </Form>
+      {(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        props: FormikProps<any>
+      ) => {
+        const isFormValid = props.isValid;
+        return (
+          <Form>
+            <UploadForm />
+            <ButtonsSection>
+              <Button type="submit" theme="secondary" disabled={!isFormValid}>
+                Submit
+              </Button>
+            </ButtonsSection>
+          </Form>
+        );
+      }}
     </Formik>
   );
 }

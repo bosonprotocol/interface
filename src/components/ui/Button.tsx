@@ -76,6 +76,17 @@ const allThemes = {
       color: colors.white
     }
   },
+  primaryInverse: {
+    color: colors.white,
+    borderColor: "var(--secondary)",
+    background: "var(--secondary)",
+    borderWidth: 2,
+    hover: {
+      color: "var(--secondary)",
+      borderColor: "var(--secondary)",
+      background: colors.white
+    }
+  },
   secondary: {
     color: colors.black,
     background: "var(--primary)",
