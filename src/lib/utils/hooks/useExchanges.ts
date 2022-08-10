@@ -7,11 +7,31 @@ import { checkOfferMetadata } from "../validators";
 import { offerGraphQl } from "./offers/graphql";
 import { getOfferImage } from "./offers/placeholders";
 
+export type Exchange = {
+  id: string;
+  committedDate: string;
+  disputed: boolean;
+  expired: boolean;
+  finalizedDate: string;
+  redeemedDate: string;
+  state: string;
+  validUntilDate: string;
+  seller: {
+    id: string;
+  };
+  buyer: {
+    id: string;
+    wallet: string;
+  };
+  offer: Offer;
+};
+
 interface Props {
   disputed: boolean | null;
   sellerId?: string;
   buyerId?: string;
   id?: string;
+  id_in?: string[];
   orderBy?: string | null | undefined;
   orderDirection?: string | null | undefined;
 }
@@ -27,6 +47,7 @@ export function useExchanges(
     sellerId,
     buyerId,
     id,
+    id_in,
     orderBy = "id",
     orderDirection = "desc"
   } = props;
@@ -34,24 +55,7 @@ export function useExchanges(
     ["exchanges", props],
     async () => {
       const result = await fetchSubgraph<{
-        exchanges: {
-          id: string;
-          committedDate: string;
-          disputed: boolean;
-          expired: boolean;
-          finalizedDate: string;
-          redeemedDate: string;
-          state: string;
-          validUntilDate: string;
-          seller: {
-            id: string;
-          };
-          buyer: {
-            id: string;
-            wallet: string;
-          };
-          offer: Offer;
-        }[];
+        exchanges: Exchange[];
       }>(
         gql`
         query GetExchanges($disputed: Boolean, $sellerId: String, $buyerId: String, $orderBy: String, $orderDirection: String) {
@@ -60,6 +64,7 @@ export function useExchanges(
             ${orderDirection ? `orderDirection: "${orderDirection}"` : ""}
             where: {
             ${id ? `id: "${id}"` : ""}
+            ${id_in ? `id_in: [${id_in.join(",")}]` : ""}
             ${sellerId ? "seller: $sellerId" : ""}
             ${buyerId ? "buyer: $buyerId" : ""}
             ${

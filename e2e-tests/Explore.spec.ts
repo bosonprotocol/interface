@@ -12,7 +12,7 @@ const exploreUrl = "/#/explore";
 const offersPerPage = 11;
 const visibleOffersPerPage = offersPerPage - 1;
 
-test.describe("Explore page", () => {
+test.describe.skip("Explore page", () => {
   test.describe("Header & footer", () => {
     test.beforeEach(async ({ page }) => {
       await mockSubgraph({

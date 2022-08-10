@@ -1,3 +1,6 @@
+/**
+ * @jest-environment ./jest.custom.env
+ */
 import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { render, screen } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";

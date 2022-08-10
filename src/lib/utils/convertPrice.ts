@@ -6,7 +6,7 @@ interface Currency {
 export interface IPricePassedAsAProp {
   integer: string;
   fractions: string;
-  converted: string;
+  converted: string | null;
   currency: Currency;
 }
 
@@ -14,18 +14,19 @@ export interface IPrice {
   price: string | null;
   integer?: string;
   fractions?: string;
-  converted?: string;
+  converted?: string | null;
   currency?: Currency;
 }
 
 export const convertPrice = async (
   price: string | null,
+  priceSymbol: string,
   currency: Currency
 ): Promise<IPricePassedAsAProp | null> => {
   return new Promise((resolve) => {
     // TODO: change that
     fetch(
-      `https://api.exchangerate.host/convert?from=ETH&to=${currency.ticker}&source=crypto`
+      `https://api.exchangerate.host/convert?from=${priceSymbol}&to=${currency.ticker}&source=crypto`
     )
       .then((response) => response.json())
       .then((data) => {
@@ -35,7 +36,10 @@ export const convertPrice = async (
         resolve({
           integer,
           fractions,
-          converted: (Number(conversionRate) * Number(price)).toFixed(2),
+          converted:
+            conversionRate === null
+              ? null
+              : (Number(conversionRate) * Number(price)).toFixed(2),
           currency
         });
       })

@@ -1,5 +1,4 @@
 import { Warning } from "phosphor-react";
-import React from "react";
 
 import { colors } from "../../lib/styles/colors";
 import Typography from "../ui/Typography";

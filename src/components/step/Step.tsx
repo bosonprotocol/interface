@@ -1,5 +1,3 @@
-import React from "react";
-
 import { StepStyle } from "./Step.styles";
 
 export enum StepState {
@@ -12,6 +10,7 @@ export interface Props {
   className?: string;
   onClick?: () => void;
   state?: StepState;
+  disabled?: boolean;
 }
 
 export default function Step({ state = StepState.Inactive, ...props }: Props) {

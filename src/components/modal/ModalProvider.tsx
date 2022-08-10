@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCallback, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
@@ -6,9 +7,42 @@ import { MODAL_COMPONENTS } from "./ModalComponents";
 import ModalContext, {
   initalState,
   ModalContextType,
-  ModalProps,
-  ModalType
+  ModalType,
+  Store
 } from "./ModalContext";
+
+const RenderModalComponent = ({
+  store,
+  hideModal
+}: {
+  store: Store;
+  hideModal: () => void;
+}) => {
+  const ModalComponent = store.modalType
+    ? MODAL_COMPONENTS[store.modalType]
+    : null;
+  if (!store.modalType || !ModalComponent) {
+    document.body.style.overflow = "";
+    return null;
+  }
+  document.body.style.overflow = "hidden";
+  return (
+    <Modal
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      size={store.modalSize || initalState.store.modalSize!}
+      hideModal={hideModal}
+      title={store.modalProps?.title}
+      headerComponent={store.modalProps?.headerComponent}
+      closable={store.modalProps?.closable}
+    >
+      <ModalComponent
+        id="modal"
+        {...(store.modalProps as any)}
+        hideModal={hideModal}
+      />
+    </Modal>
+  );
+};
 
 interface Props {
   children: React.ReactNode;
@@ -16,14 +50,18 @@ interface Props {
 export default function ModalProvider({ children }: Props) {
   const { pathname } = useLocation();
   const [store, setStore] = useState(initalState.store);
-  const { modalType, modalProps } = store;
 
   const showModal = useCallback(
-    (modalType: ModalType, modalProps?: ModalProps) => {
+    (
+      modalType: ModalType,
+      modalProps?: Store["modalProps"],
+      modalSize?: Store["modalSize"]
+    ) => {
       setStore({
         ...store,
         modalType,
-        modalProps
+        modalProps,
+        modalSize
       });
     },
     [store]
@@ -33,37 +71,33 @@ export default function ModalProvider({ children }: Props) {
     setStore({
       ...store,
       modalType: null,
-      modalProps: {}
+      modalProps: {} as Store["modalProps"]
     });
   }, [store]);
 
+  const updateProps = useCallback((store: Store) => {
+    setStore({
+      ...store
+    });
+  }, []);
+
   useEffect(() => {
-    if (modalType !== null) {
+    if (store.modalType !== null) {
       hideModal();
     }
   }, [pathname]); // eslint-disable-line
 
-  const renderComponent = () => {
-    const ModalComponent = modalType ? MODAL_COMPONENTS[modalType] : null;
-    if (!modalType || !ModalComponent) {
-      document.body.style.overflow = "unset";
-      return null;
-    }
-
-    document.body.style.overflow = "hidden";
-    return (
-      <Modal hideModal={hideModal} title={modalProps?.title}>
-        <ModalComponent id="modal" {...modalProps} />
-      </Modal>
-    );
+  const value: ModalContextType = {
+    store,
+    updateProps,
+    showModal,
+    hideModal
   };
-
-  const value: ModalContextType = { store, showModal, hideModal };
 
   return (
     <ModalContext.Provider value={value}>
       {children}
-      {renderComponent()}
+      <RenderModalComponent store={store} hideModal={hideModal} />
     </ModalContext.Provider>
   );
 }
