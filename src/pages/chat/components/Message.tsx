@@ -5,10 +5,11 @@ import {
 } from "@bosonprotocol/chat-sdk/dist/cjs/util/definitions";
 import { Image as AccountImage } from "@davatar/react";
 import { BigNumber, utils } from "ethers";
-import { ArrowRight, Check, ImageSquare } from "phosphor-react";
+import { ArrowRight, Check } from "phosphor-react";
 import React, { forwardRef, ReactNode, useCallback } from "react";
 import styled from "styled-components";
 
+import UploadedFile from "../../../components/form/Upload/UploadedFile";
 import ProposalTypeSummary from "../../../components/modal/components/Chat/components/ProposalTypeSummary";
 import { useModal } from "../../../components/modal/useModal";
 import Grid from "../../../components/ui/Grid";
@@ -230,18 +231,13 @@ const Message = forwardRef(
           <SellerAvatar isLeftAligned={isLeftAligned} exchange={exchange}>
             {children}
           </SellerAvatar>
-          <AttachmentContainer $isLeftAligned={isLeftAligned}>
-            <a
-              style={{ display: "flex", color: "inherit" }}
-              href={imageValue.value.encodedContent}
-              download={imageValue.value.fileName}
-            >
-              <ImageSquare size={23} />
-              <Typography fontSize="1rem" fontWeight="400">
-                &nbsp;&nbsp; {imageValue.value.fileName}
-              </Typography>
-            </a>
-          </AttachmentContainer>
+          <UploadedFile
+            fileName={imageValue.value.fileName}
+            color={isLeftAligned ? "white" : "grey"}
+            fileSize={imageValue.value.fileSize}
+            base64Content={imageValue.value.encodedContent}
+            showSize={false}
+          />
           <BottomDateStamp isLeftAligned={isLeftAligned} message={message} />
         </Content>
       );
