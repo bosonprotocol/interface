@@ -23,8 +23,12 @@ export const CONFIG = {
     : 2 * 1024 * 1024,
   widgetsUrl: process.env.REACT_APP_WIDGETS_URL || config.widgetsUrl,
   chainId: REACT_APP_CHAIN_ID,
-  ipfsMetadataUrl:
+  ipfsMetadataStorageUrl:
     process.env.REACT_APP_IPFS_METADATA_URL || config.ipfsMetadataUrl,
+  ipfsMetadataStorageHeaders: getIpfsMetadataStorageHeaders(
+    process.env.REACT_APP_INFURA_IPFS_PROJECT_ID,
+    process.env.REACT_APP_INFURA_IPFS_PROJECT_SECRET
+  ),
   sentryDSNUrl:
     "https://ff9c04ed823a4658bc5de78945961937@o992661.ingest.sentry.io/6455090",
   metaTransactionsApiKey: process.env.REACT_APP_META_TX_API_KEY,
@@ -45,4 +49,19 @@ function stringToBoolean(value?: string) {
   }
 
   return Boolean(value);
+}
+
+function getIpfsMetadataStorageHeaders(
+  infuraProjectId?: string,
+  infuraProjectSecret?: string
+) {
+  if (!infuraProjectId && !infuraProjectSecret) {
+    return undefined;
+  }
+
+  return {
+    authorization: `Basic ${Buffer.from(
+      infuraProjectId + ":" + infuraProjectSecret
+    ).toString("base64")}`
+  };
 }
