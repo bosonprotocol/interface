@@ -111,7 +111,6 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
         <Button theme="secondary" type="submit">
           Confirm
         </Button>
-        {/* TODO add click functionality */}
         <Button theme="primary" type="button" onClick={handleOpenPreview}>
           Preview product detail page
         </Button>

@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 import { FieldInput } from "./Field.styles";
 
-function TagsInput() {
+const TagsInput = ({ name }: { name: string }) => {
   const [tags, setTags] = useState<string[]>([]);
 
   function handleKeyDown(event: any) {
@@ -25,6 +25,7 @@ function TagsInput() {
         onKeyDown={handleKeyDown}
         type="text"
         placeholder="Choose tags..."
+        name={name}
       />
       {tags.map((tag, index) => (
         <TagWrapper key={index}>
@@ -34,7 +35,7 @@ function TagsInput() {
       ))}
     </TagContainer>
   );
-}
+};
 
 const TagContainer = styled.div`
   width: 100%;

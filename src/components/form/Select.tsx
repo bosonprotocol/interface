@@ -67,7 +67,6 @@ export default function SelectComponent({
     if (!meta.touched) {
       helpers.setTouched(true);
     }
-
     helpers.setValue(option);
   };
 

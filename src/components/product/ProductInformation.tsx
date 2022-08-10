@@ -132,7 +132,7 @@ export default function ProductInformation() {
         required={true}
         subTitle="Input any relevant tags to make your offer stand out."
       >
-        <TagsInput />
+        <TagsInput name="productInformation.tags" />
       </FormField>
       <AddAttributesContainer />
       <AdditionalContainer>
