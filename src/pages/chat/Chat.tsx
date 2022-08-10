@@ -17,8 +17,10 @@ import MessageList from "./components/MessageList";
 
 const dennisAddress = "0xE16955e95D088bd30746c7fb7d76cDA436b86F63";
 const albertAddress = "0x9c2925a41d6FB1c6C8f53351634446B0b2E65eE8";
+const jonasAddress = "0x00c5D17c55940783961352E6f83ea18167841Bca";
 const dennisId = "1";
 const albertId = "2";
+const jonasId = "3";
 
 const GlobalStyle = createGlobalStyle`
   html, body, #root, [data-rk] {
@@ -98,7 +100,7 @@ const getExchanges = ({
             imageUrl:
               "https://bsn-portal-development-image-upload-storage.s3.amazonaws.com/boson-sweatshirt-FINAL.gif",
             type: "BASE",
-            name: "boson sweatshirt (dennis)"
+            name: "boson sweatshirt (dennis<->albert)"
           }
         }
       },
@@ -158,7 +160,67 @@ const getExchanges = ({
             imageUrl:
               "https://bsn-portal-development-image-upload-storage.s3.amazonaws.com/boson-sweatshirt-FINAL.gif",
             type: "BASE",
-            name: "boson sweatshirt (albert)"
+            name: "boson sweatshirt (albert<->dennis)"
+          }
+        }
+      },
+      {
+        id: "2",
+        buyer: {
+          id: dennisId,
+          wallet: "0x"
+        },
+        committedDate: new Date().toString(),
+        disputed: true,
+        expired: true,
+        finalizedDate: new Date().toString(),
+        redeemedDate: new Date().toString(),
+        state: "REDEEMED",
+        validUntilDate: new Date().toString(),
+        seller: { id: albertId },
+        offer: {
+          id: "1",
+          buyerCancelPenalty: "",
+          createdAt: "",
+          disputeResolverId: "",
+          exchangeToken: {
+            address: "0x2000000000000000000000000000000000000000",
+            decimals: "18",
+            name: "PepitoName",
+            symbol: "pepito",
+            __typename: "ExchangeToken"
+          },
+          fulfillmentPeriodDuration: "",
+          metadataHash: "",
+          metadataUri: "",
+          price: "10001230000000000000",
+          protocolFee: "",
+          quantityAvailable: "",
+          quantityInitial: "",
+          resolutionPeriodDuration: "",
+          seller: {
+            active: true,
+            admin: albertAddress,
+            clerk: albertAddress,
+            __typename: "Seller",
+            id: albertId,
+            operator: address === jonasAddress ? dennisAddress : jonasAddress,
+            treasury: albertAddress
+          },
+          sellerDeposit: "",
+          validFromDate: "",
+          validUntilDate: "",
+          voucherRedeemableFromDate: "",
+          voucherRedeemableUntilDate: "",
+          voucherValidDuration: "",
+          __typename: "Offer",
+          isValid: true,
+          voidedAt: "",
+          metadata: {
+            imageUrl:
+              "https://bsn-portal-development-image-upload-storage.s3.amazonaws.com/boson-sweatshirt-FINAL.gif",
+            type: "BASE",
+            name: "boson sweatshirt (jonas<->dennis)"
           }
         }
       }
