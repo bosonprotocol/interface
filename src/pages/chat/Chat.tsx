@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */ // TODO: remove
 import { useEffect, useMemo, useState } from "react";
 import { Route, Routes, useLocation, useParams } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
@@ -20,7 +21,6 @@ const albertAddress = "0x9c2925a41d6FB1c6C8f53351634446B0b2E65eE8";
 const jonasAddress = "0x00c5D17c55940783961352E6f83ea18167841Bca";
 const dennisId = "1";
 const albertId = "2";
-const jonasId = "3";
 
 const GlobalStyle = createGlobalStyle`
   html, body, #root, [data-rk] {

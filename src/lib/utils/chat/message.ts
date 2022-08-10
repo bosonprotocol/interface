@@ -11,6 +11,7 @@ export const validateMessage = (
   message: DeepReadonly<MessageData>
 ): boolean => {
   try {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const messageContent = message.data.content;
     const messageContentType = message.data.contentType;
     // const isRegularMessage =

@@ -96,24 +96,6 @@ const DateStamp = styled.div<{ $isLeftAligned: boolean }>`
     $isLeftAligned ? colors.lightGrey : colors.darkGrey};
 `;
 
-const AttachmentContainer = styled.div<{ $isLeftAligned: boolean }>`
-  position: relative;
-  display: flex;
-  cursor: pointer;
-  align-items: center;
-  padding: 1rem;
-  background-color: ${({ $isLeftAligned }) =>
-    $isLeftAligned ? "inherit" : colors.lightGrey};
-  ${({ $isLeftAligned }) =>
-    $isLeftAligned ? `border: 2px solid ${colors.white}` : ""};
-  color: ${({ $isLeftAligned }) => ($isLeftAligned ? "inherit" : colors.black)};
-  margin-bottom: 0.3rem;
-  svg:nth-of-type(2) {
-    position: absolute;
-    right: 1rem;
-  }
-`;
-
 const StyledGrid = styled(Grid)`
   cursor: pointer;
   :hover * {
