@@ -428,8 +428,7 @@ function CreateProductInner({ initial }: Props) {
         disputeResolverId: 1,
         agentId: 0, // no agent
         metadataUri: `ipfs://${metadataHash}`,
-        metadataHash: metadataHash,
-        agentId: "0"
+        metadataHash: metadataHash
       };
 
       const txResponse =

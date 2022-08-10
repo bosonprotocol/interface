@@ -5,7 +5,7 @@ import styled from "styled-components";
 
 import Collapse from "../../components/collapse/Collapse";
 import { colors } from "../../lib/styles/colors";
-import { FormField, Input, Select, Textarea } from "../form";
+import { FormField, Input, Select, TagsInput, Textarea } from "../form";
 import Button from "../ui/Button";
 import Typography from "../ui/Typography";
 import {
@@ -13,7 +13,7 @@ import {
   ProductButtonGroup,
   SectionTitle
 } from "./Product.styles";
-import { CATEGORY_OPTIONS, MOCK_OPTIONS } from "./utils";
+import { CATEGORY_OPTIONS } from "./utils";
 import { useThisForm } from "./utils/useThisForm";
 
 const AddProductContainer = styled.div`
@@ -132,12 +132,7 @@ export default function ProductInformation() {
         required={true}
         subTitle="Input any relevant tags to make your offer stand out."
       >
-        <Select
-          placeholder="Choose tags..."
-          name="productInformation.tags"
-          isMulti
-          options={MOCK_OPTIONS}
-        />
+        <TagsInput />
       </FormField>
       <AddAttributesContainer />
       <AdditionalContainer>

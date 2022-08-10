@@ -118,7 +118,8 @@ export default function CreateOffer() {
               values.buyerCancelPenalty
             ).toString(),
             metadataHash,
-            metadataUri
+            metadataUri,
+            protocolFee: "0"
           },
           CONFIG
         );
