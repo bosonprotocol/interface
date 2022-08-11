@@ -50,7 +50,6 @@ export default function CoreTermsOfSale() {
           </div>
         </PriceContainer>
       </FormField>
-      {/* TODO: use price for all variants */}
       <FormField
         title="Quantity"
         required={true}

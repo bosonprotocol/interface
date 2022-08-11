@@ -79,14 +79,14 @@ export const coreTermsOfSaleValidationSchema = Yup.object({
       .of(
         Yup.object().shape({
           $d: Yup.string()
-        })
+        }) || Yup.string()
       )
       .default([{ $d: "" }]),
     redemptionPeriod: Yup.array()
       .of(
         Yup.object().shape({
           $d: Yup.string()
-        })
+        }) || Yup.string()
       )
       .default([{ $d: "" }])
   })
