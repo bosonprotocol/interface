@@ -34,7 +34,7 @@
     ]
   },
   "dependencies": {
-    "@bosonprotocol/chat-sdk": "^1.0.2-alpha.2", 
+    "@bosonprotocol/chat-sdk": "^1.0.2-alpha.2",
     "@bosonprotocol/react-kit": "^0.3.0-alpha.6",
     "@bosonprotocol/widgets-sdk": "^1.9.0-alpha.0",
     "@davatar/react": "^1.10.4",
@@ -119,9 +119,11 @@
   },
   "browserslist": {
     "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
+      "chrome >= 67",
+      "edge >= 79",
+      "firefox >= 68",
+      "opera >= 54",
+      "safari >= 14"
     ],
     "development": [
       "last 1 chrome version",
