@@ -13,6 +13,7 @@ import PublicOrPrivateAccount from "./pages/account/public/PublicOrPrivateAccoun
 // import CreateOffer from "./pages/create-offer/CreateOffer";
 import CreateProduct from "./pages/create-product/CreateProduct";
 import CustomStore from "./pages/custom-store/CustomStore";
+import DisputeCentre from "./pages/dispute-centre/DisputeCentre";
 import Exchange from "./pages/exchange/Exchange";
 import Explore from "./pages/explore/Explore";
 import Landing from "./pages/landing/Landing";
@@ -74,7 +75,7 @@ root.render(
                 path={BosonRoutes.CreateStorefront}
                 element={<CustomStore />}
               />
-
+              <Route path={BosonRoutes.Dispute} element={<DisputeCentre />} />
               <Route
                 path="*"
                 element={
