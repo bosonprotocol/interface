@@ -204,7 +204,7 @@ const getExchanges = ({
             admin: albertAddress,
             clerk: albertAddress,
             __typename: "Seller",
-            id: albertId,
+            id: jonasId,
             operator: address === jonasAddress ? dennisAddress : jonasAddress,
             treasury: albertAddress
           },
