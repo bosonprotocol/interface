@@ -210,12 +210,14 @@ function CreateProductInner({ initial }: Props) {
   }) => {
     const offerInfo = await coreSDK.getOfferById(offerId as string);
 
-    const metadataInfo = await coreSDK.getMetadata(offerInfo.metadataUri);
+    const metadataInfo = (await coreSDK.getMetadata(
+      offerInfo.metadataUri
+    )) as any;
 
     showModal(modalTypes.PRODUCT_CREATE_SUCCESS, {
       name: metadataInfo.name,
       message: "You have successfully created:",
-      image: "metadataInfo.image",
+      image: metadataInfo.image,
       price: offerInfo.price,
       offer: {
         id: offerInfo.id,
@@ -324,7 +326,7 @@ function CreateProductInner({ initial }: Props) {
       termsOfExchange
     } = values;
 
-    const attributes = productInformation.attributes.map(
+    const productAttributes = productInformation.attributes.map(
       ({ name, value }: { name: string; value: string }) => {
         return {
           trait_type: name,
@@ -342,7 +344,7 @@ function CreateProductInner({ initial }: Props) {
         externalUrl: "https://interface-staging.on.fleek.co",
         image: `ipfs://${profileImageLink}`,
         type: MetadataType.PRODUCT_V1,
-        attributes,
+        attributes: [{ trait_type: "Offer Category", value: "PHYSICAL" }],
         product: {
           uuid: Date.now().toString(),
           version: 1,
@@ -375,6 +377,10 @@ function CreateProductInner({ initial }: Props) {
           template: termsOfExchange.exchangePolicy.value
         }
       });
+      console.log(
+        "🚀 ~ file: CreateProductInner.tsx ~ line 378 ~ CreateProductInner ~ metadataHash",
+        metadataHash
+      );
 
       // reset the form
       // roberto
@@ -415,7 +421,6 @@ function CreateProductInner({ initial }: Props) {
         buyerCancelPenalty: parseEther(
           `${buyerCancellationPenaltyValue}`
         ).toString(),
-
         quantityAvailable: coreTermsOfSale.quantity,
         voucherRedeemableFromDateInMS: voucherRedeemableFromDateInMS.toString(),
         voucherRedeemableUntilDateInMS:
@@ -431,6 +436,10 @@ function CreateProductInner({ initial }: Props) {
         metadataUri: `ipfs://${metadataHash}`,
         metadataHash: metadataHash
       };
+      console.log(
+        "🚀 ~ file: CreateProductInner.tsx ~ line 445 ~ CreateProductInner ~ sellers",
+        sellers
+      );
 
       const txResponse =
         sellers?.length === 0 && address
@@ -440,7 +449,7 @@ function CreateProductInner({ initial }: Props) {
                 admin: address,
                 treasury: address,
                 clerk: address,
-                contractUri: "",
+                contractUri: "ipfs://sample",
                 authTokenId: "0",
                 authTokenType: 0
               },
@@ -448,15 +457,24 @@ function CreateProductInner({ initial }: Props) {
             )
           : await coreSDK.createOffer(offerData);
 
+      console.log(
+        "🚀 ~ file: CreateProductInner.tsx ~ line 444 ~ CreateProductInner ~ txResponse",
+        txResponse
+      );
+
       const txReceipt = await txResponse.wait();
 
       const offerId = coreSDK.getCreatedOfferIdFromLogs(txReceipt.logs);
+      console.log(
+        "🚀 ~ file: CreateProductInner.tsx ~ line 462 ~ CreateProductInner ~ offerId",
+        offerId
+      );
 
       await wait(3_000);
       handleOpenSuccessModal({ offerId });
-    } catch (error) {
+    } catch (error: any) {
       // TODO: FAILURE MODAL
-      console.error(error);
+      console.error("error->", error.errors);
     }
   };
 
