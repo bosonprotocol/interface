@@ -27,13 +27,12 @@ export default function DatePicker({
 
   let startDate: Dayjs | null = null;
   let endDate: Dayjs | null = null;
-  if (Array.isArray(initialValue)) {
-    startDate = initialValue[0];
-    endDate = initialValue[1];
+  if (Array.isArray(initialValue) && initialValue.length === 2) {
+    startDate = dayjs(initialValue[0]);
+    endDate = dayjs(initialValue[1]);
   }
 
   const [month, setMonth] = useState<Dayjs>(dayjs());
-  // TODO: load initialValue as initial dates, remember to wrap with Dayjs
   const [date, setDate] = useState<Dayjs | null>(startDate);
   const [secondDate, setSecondDate] = useState<Dayjs | null>(endDate);
   const [shownDate, setShownDate] = useState<string>("Choose dates...");

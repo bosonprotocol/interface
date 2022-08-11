@@ -29,6 +29,7 @@ export default function Calendar({
 }: Props) {
   const firstDay = date ? dayjs(date) : null;
   const secondDay = secondDate ? dayjs(secondDate) : null;
+  const today = dayjs();
   const handleSelectDate = (value: Dayjs) => {
     if (!period || (period && !value.isBefore(firstDay, "day"))) {
       onChange(value);
@@ -50,7 +51,10 @@ export default function Calendar({
       </CalendarHeader>
       <CalendarRow>
         {rows.map(({ text, value, current }: ICalendarCell, i: number) => {
-          const disabled = period ? value.isBefore(firstDay, "day") : false;
+          const disabled = period
+            ? value.isBefore(firstDay, "day") || value.isBefore(today, "day")
+            : false;
+
           return (
             <CalendarDay
               key={`calendar_row_day${text}-${i}`}

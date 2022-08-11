@@ -46,7 +46,7 @@ export const CATEGORY_OPTIONS = [
   },
   {
     value: "art",
-    label: "art"
+    label: "Art"
   },
   {
     value: "jewelry",
