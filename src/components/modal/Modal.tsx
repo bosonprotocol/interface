@@ -127,11 +127,12 @@ export default function Modal({
   title = "modal",
   headerComponent: HeaderComponent,
   size,
-  closable = true
+  closable = true,
+  modalType
 }: Props) {
   return createPortal(
     <Root data-testid="modal">
-      <Wrapper $size={size}>
+      <Wrapper $size={size} modalType={modalType}>
         {HeaderComponent ? (
           <Header tag="div">
             {HeaderComponent}
@@ -158,7 +159,6 @@ export default function Modal({
           closable && hideModal();
         }}
       />
-      {/* >>>>>>> main */}
     </Root>,
     document.body
   );

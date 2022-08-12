@@ -20,7 +20,7 @@ import ProductInformation from "../../components/product/ProductInformation";
 import ProductType from "../../components/product/ProductType";
 import ShippingInfo from "../../components/product/ShippingInfo";
 import TermsOfExchange from "../../components/product/TermsOfExchange";
-import type { CreateProductForm } from "../../components/product/utils";
+import { CreateProductForm } from "../../components/product/utils";
 import {
   coreTermsOfSaleValidationSchema,
   CREATE_PRODUCT_STEPS,
@@ -236,6 +236,7 @@ function CreateProductInner({ initial }: Props) {
         voidedAt: offerInfo.voidedAt,
         voucherValidDuration: offerInfo.voucherValidDuration,
         exchangeToken: {
+          id: "",
           address: "0x0000000000000000000000000000000000000000",
           decimals: "18",
           name: "Ether",

@@ -8,7 +8,6 @@ import { getOfferDetailData } from "../../../components/detail/DetailWidget/Deta
 import Price from "../../../components/price/index";
 import { useConvertedPrice } from "../../../components/price/useConvertedPrice";
 import { colors } from "../../../lib/styles/colors";
-import { Offer } from "../../../lib/types/offer";
 import {
   Break,
   ModalGrid,
@@ -26,7 +25,7 @@ interface Props {
   message: string;
   name: string;
   image: string;
-  offer: Offer;
+  offer: any;
   onCreateNewProject: () => void;
   onViewMyItem: () => void;
 }
@@ -109,7 +108,7 @@ export default function ProductCreateSuccess({
   onViewMyItem
 }: Props) {
   const convertedPrice = useConvertedPrice({
-    value: offer.price,
+    value: offer?.price,
     decimals: offer.exchangeToken.decimals,
     symbol: offer.exchangeToken.symbol
   });

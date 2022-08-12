@@ -1,5 +1,6 @@
 /* eslint @typescript-eslint/no-empty-function: "off" */
 /* eslint @typescript-eslint/no-explicit-any: "off" */
+import { subgraph } from "@bosonprotocol/react-kit";
 import { createContext, ReactNode } from "react";
 
 import { MODAL_COMPONENTS, MODAL_TYPES } from "./ModalComponents";
