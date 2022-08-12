@@ -22,6 +22,7 @@ export default function MultiSteps({
   ...props
 }: Props) {
   const [current, setCurrent] = useState<number>(active || 0);
+
   useEffect(() => {
     setCurrent(active || 0);
   }, [active]);
@@ -40,6 +41,7 @@ export default function MultiSteps({
             <StepWrapper>
               {steps.map((step: number, key: number) => {
                 const currentKey = previousLength + key;
+
                 const state =
                   currentKey === current
                     ? StepState.Active

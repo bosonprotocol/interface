@@ -10,6 +10,10 @@ import { zIndex } from "../../lib/styles/zIndex";
 interface Props {
   children?: ReactNode;
   trigger?: ReactNode;
+  align?: "start" | "center" | "end";
+  alignOffset?: number;
+  side?: "top" | "right" | "bottom" | "left";
+  sideOffset?: number;
 }
 
 const StyledContent = styled(Tooltip.Content)`
@@ -59,13 +63,29 @@ const Trigger = styled(Tooltip.Trigger)`
   margin-left: 0.5rem;
 `;
 
-export default function DetailTooltip({ children, trigger }: Props) {
+export default function DetailTooltip({
+  children,
+  trigger,
+  align = "center",
+  alignOffset = 0,
+  side = "bottom",
+  sideOffset = 0
+}: Props) {
   return (
     <Tooltip.Provider delayDuration={0}>
       <Tooltip.Root>
-        <Trigger>{trigger || <Question size={20} weight="regular" />}</Trigger>
+        <Trigger type="button">
+          {trigger || <Question size={20} weight="regular" />}
+        </Trigger>
         <Tooltip.Portal>
-          <StyledContent>{children}</StyledContent>
+          <StyledContent
+            align={align}
+            side={side}
+            alignOffset={alignOffset}
+            sideOffset={sideOffset}
+          >
+            {children}
+          </StyledContent>
         </Tooltip.Portal>
       </Tooltip.Root>
     </Tooltip.Provider>

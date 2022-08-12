@@ -1,4 +1,3 @@
-// import image from '../../pages/offers/mock/bosonprotocol.png'
 import { subgraph } from "@bosonprotocol/react-kit";
 import { Image as AccountImage } from "@davatar/react";
 import { generatePath } from "react-router-dom";
@@ -56,17 +55,22 @@ const SellerID: React.FC<
     accountImageSize?: number;
     offerName: string;
     withProfileImage: boolean;
+
+    customImage?: boolean;
     withProfileText?: boolean;
     onClick?: null | undefined | React.MouseEventHandler<HTMLDivElement>;
-  } & IGrid
+  } & IGrid &
+    React.HTMLAttributes<HTMLDivElement>
 > = ({
   seller,
   children,
   offerName,
   withProfileImage,
+  customImage,
   onClick,
   accountImageSize,
   withProfileText = true,
+
   ...rest
 }) => {
   const navigate = useKeepQueryParamsNavigate();
@@ -93,9 +97,9 @@ const SellerID: React.FC<
         data-seller-container
       >
         {withProfileImage && (
-          <ImageContainer data-image-container>
-            {artist.toLocaleLowerCase() === "boson protocol" ? (
-              <RoundedImage src={bosonProtocolImage} />
+          <ImageContainer>
+            {artist.toLocaleLowerCase() === "boson protocol" || customImage ? (
+              <RoundedImage src={sellerAddress || bosonProtocolImage} />
             ) : (
               <AccountImage
                 size={accountImageSize || 17}

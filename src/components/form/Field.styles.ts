@@ -3,8 +3,8 @@ import styled, { css } from "styled-components";
 
 import { transition } from "../../components/ui/styles";
 import { colors } from "../../lib/styles/colors";
+import { checkIfValueIsEmpty } from "../../lib/utils/checkIfValueIsEmpty";
 import Grid from "../ui/Grid";
-import { checkIfValueIsEmpty } from "./utils";
 
 export const FieldInput = styled.input.attrs((props: { error: any }) => ({
   error: props.error
@@ -17,6 +17,7 @@ export const FieldInput = styled.input.attrs((props: { error: any }) => ({
   border: 1px solid ${colors.border};
   border-radius: 0;
   outline: none;
+  font-family: "Plus Jakarta Sans";
 
   ${transition}
 
@@ -35,16 +36,26 @@ export const FieldInput = styled.input.attrs((props: { error: any }) => ({
   ${({ error }) =>
     !checkIfValueIsEmpty(error)
       ? css`
-          border: 1px solid ${colors.red};
+          border: 1px solid ${colors.orange};
           :not(:disabled) {
             :hover {
-              border: 1px solid ${colors.red};
+              border: 1px solid ${colors.orange};
             }
           }
           :not(:disabled) {
             :focus {
               border: 1px solid var(--secondary);
             }
+          }
+          ::placeholder {
+            color: ${colors.orange};
+            opacity: 1;
+          }
+          :-ms-input-placeholder {
+            color: ${colors.orange};
+          }
+          ::-ms-input-placeholder {
+            color: ${colors.orange};
           }
         `
       : css`
@@ -69,10 +80,12 @@ export const FileUploadWrapper = styled.div.attrs(
 
   align-items: center;
   justify-content: center;
+  flex-direction: column;
+
   padding: 0.5rem;
 
-  width: 6rem;
-  height: 6rem;
+  width: 8rem;
+  height: 8rem;
 
   img {
     position: absolute;
@@ -96,7 +109,7 @@ export const FileUploadWrapper = styled.div.attrs(
   ${({ error }) =>
     !checkIfValueIsEmpty(error)
       ? css`
-          border: 1px solid ${colors.red};
+          border: 1px solid ${colors.orange};
         `
       : css`
           border: 1px solid ${colors.border};
@@ -124,6 +137,8 @@ export const FieldFileUploadWrapper = styled.div`
   position: relative;
   display: inline-block;
   cursor: pointer;
+  width: 8rem;
+
   :hover {
     [data-remove] {
       display: flex;
@@ -133,8 +148,8 @@ export const FieldFileUploadWrapper = styled.div`
     display: none;
     align-items: center;
     justify-content: center;
-    width: 6rem;
-    height: 6rem;
+    width: 8rem;
+    height: 8rem;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -151,6 +166,7 @@ export const FieldTextArea = styled.textarea.attrs((props: { error: any }) => ({
   width: 100%;
   padding: 1rem;
   gap: 0.5rem;
+  font-family: "Plus Jakarta Sans";
 
   background: ${colors.lightGrey};
   border: 1px solid ${colors.border};
@@ -174,10 +190,20 @@ export const FieldTextArea = styled.textarea.attrs((props: { error: any }) => ({
   ${({ error }) =>
     !checkIfValueIsEmpty(error)
       ? css`
-          border: 1px solid ${colors.red};
+          border: 1px solid ${colors.orange};
+          ::placeholder {
+            color: ${colors.orange};
+            opacity: 1;
+          }
+          :-ms-input-placeholder {
+            color: ${colors.orange};
+          }
+          ::-ms-input-placeholder {
+            color: ${colors.orange};
+          }
           :not(:disabled) {
             :hover {
-              border: 1px solid ${colors.red};
+              border: 1px solid ${colors.orange};
             }
           }
           :not(:disabled) {
@@ -197,7 +223,7 @@ export const FieldTextArea = styled.textarea.attrs((props: { error: any }) => ({
 `;
 
 export const FormFieldWrapper = styled(Grid)`
-  max-width: 50vw;
+  /* max-width: 50vw; */
   margin-bottom: 3.5rem;
 
   p {
@@ -208,7 +234,6 @@ export const FormFieldWrapper = styled(Grid)`
 
   [data-header] {
     margin: 0;
-    margin-bottom: 0.375rem;
     font-weight: 600;
     font-size: 1rem;
     color: ${colors.black};
@@ -219,7 +244,6 @@ export const FormFieldWrapper = styled(Grid)`
   }
   [data-subheader] {
     margin: 0;
-    margin-bottom: 0.875rem;
     font-weight: 400;
     font-size: 0.75rem;
     color: ${colors.darkGrey};
@@ -280,7 +304,7 @@ export const CheckboxWrapper = styled.label.attrs((props: { error: any }) => ({
     !checkIfValueIsEmpty(error)
       ? css`
           > div {
-            border: 1px solid ${colors.red};
+            border: 1px solid ${colors.orange};
           }
         `
       : css`
@@ -288,4 +312,8 @@ export const CheckboxWrapper = styled.label.attrs((props: { error: any }) => ({
             border: 1px solid ${colors.border};
           }
         `}
+`;
+
+export const ImagePreview = styled.img`
+  background: ${colors.lightGrey};
 `;

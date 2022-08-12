@@ -10,28 +10,70 @@ import { DatePickerWrapper, Picker } from "./DatePicker.style";
 import SelectMonth from "./SelectMonth";
 
 interface Props {
-  onChange?: (selected: Dayjs) => void;
+  initialValue?: Dayjs | Array<Dayjs> | null;
+  onChange?: (selected: Dayjs | Array<Dayjs | null>) => void;
   error?: string;
+  period: boolean;
   [x: string]: any;
 }
 
-export default function DatePicker({ onChange, ...props }: Props) {
+export default function DatePicker({
+  initialValue,
+  onChange,
+  period,
+  ...props
+}: Props) {
   const ref = useRef<HTMLDivElement | null>(null);
 
-  const [date, setDate] = useState<Dayjs>(dayjs());
-  const [shownDate, setShownDate] = useState<string>(
-    date.format(CONFIG.dateFormat)
-  );
+  let startDate: Dayjs | null = null;
+  let endDate: Dayjs | null = null;
+  if (Array.isArray(initialValue) && initialValue.length === 2) {
+    startDate = dayjs(initialValue[0]);
+    endDate = dayjs(initialValue[1]);
+  }
+
+  const [month, setMonth] = useState<Dayjs>(dayjs());
+  const [date, setDate] = useState<Dayjs | null>(startDate);
+  const [secondDate, setSecondDate] = useState<Dayjs | null>(endDate);
+  const [shownDate, setShownDate] = useState<string>("Choose dates...");
   const [show, setShow] = useState<boolean>(false);
 
   const handleShow = () => {
     setShow(!show);
   };
-  const handleDate = (v: Dayjs) => {
-    setDate(v);
-    setShownDate(v.format(CONFIG.dateFormat));
-    onChange?.(v);
+
+  const handleDateChange = (v: Dayjs) => {
+    if (period) {
+      if (date === null) {
+        setDate(v);
+        setSecondDate(null);
+      } else if (secondDate === null) {
+        setSecondDate(v);
+      } else if (date !== null && secondDate !== null) {
+        setDate(null);
+        setSecondDate(null);
+      }
+    } else {
+      setDate(v);
+    }
   };
+
+  useEffect(() => {
+    if (period) {
+      if (date !== null && secondDate !== null)
+        setShownDate(
+          `${date.format(CONFIG.dateFormat)} - ${secondDate?.format(
+            CONFIG.dateFormat
+          )}`
+        );
+      onChange?.([date, secondDate]);
+    } else {
+      if (date !== null) {
+        setShownDate(date.format(CONFIG.dateFormat));
+        onChange?.(date);
+      }
+    }
+  }, [date, secondDate]); // eslint-disable-line
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -57,8 +99,14 @@ export default function DatePicker({ onChange, ...props }: Props) {
           ref.current = r;
         }}
       >
-        <SelectMonth date={date} setDate={setDate} />
-        <Calendar date={date} shownDate={shownDate} onChange={handleDate} />
+        <SelectMonth month={month} setMonth={setMonth} />
+        <Calendar
+          date={date}
+          secondDate={secondDate}
+          month={month}
+          period={period}
+          onChange={handleDateChange}
+        />
       </DatePickerWrapper>
     </Picker>
   );

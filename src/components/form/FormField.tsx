@@ -22,14 +22,16 @@ export default function FormField({
       flexGrow="1"
       style={style}
     >
-      <Grid justifyContent="flex-start">
+      <Grid justifyContent="flex-start" style={{ marginBottom: "0.375rem" }}>
         <Typography data-header tag="p">
-          {title} {required && "*"}
+          {title}
+          {"  "}
+          {required && "*"}
         </Typography>
         {tooltip && <DetailTooltip>{tooltip}</DetailTooltip>}
       </Grid>
       {subTitle && (
-        <Grid justifyContent="flex-start">
+        <Grid justifyContent="flex-start" style={{ marginBottom: "0.875rem" }}>
           <Typography data-subheader tag="p">
             {subTitle}
           </Typography>

@@ -7,6 +7,5 @@ export function useIpfsStorage() {
     CONFIG.chainId,
     CONFIG.ipfsMetadataStorageHeaders
   );
-
   return storage;
 }

@@ -4,34 +4,37 @@ import Select from "react-select";
 
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
+import { checkIfValueIsEmpty } from "../../lib/utils/checkIfValueIsEmpty";
 import Error from "./Error";
 import type { SelectProps } from "./types";
-import { checkIfValueIsEmpty } from "./utils";
 
 const customStyles = (error: any) => ({
   control: (provided: any, state: any) => ({
     ...provided,
     borderRadius: 0,
-    padding: "0.25rem",
-    boxShadow: `inset 0px 0px 0px 2px  ${colors.border}`,
+    padding: "0.4rem 0.25rem",
+    boxShadow: "none",
     ":hover": {
       borderColor: colors.secondary,
       borderWidth: "1px"
     },
-    background: colors.white,
+    background: colors.lightGrey,
     border: state.isFocused
       ? `1px solid ${colors.secondary}`
       : !checkIfValueIsEmpty(error)
-      ? `1px solid ${colors.red}`
-      : `1px solid transparent`
+      ? `1px solid ${colors.orange}`
+      : `1px solid ${colors.border}`
   }),
-  container: (provided: any) => ({
+  container: (provided: any, state: any) => ({
     ...provided,
-    zIndex: zIndex.Select,
+    zIndex: state.isFocused ? zIndex.Select + 1 : zIndex.Select,
+    position: "relative",
     width: "100%"
   }),
   option: (provided: any, state: any) => ({
     ...provided,
+    cursor: state.isDisabled ? "not-allowed" : "pointer",
+    opacity: state.isDisabled ? "0.5" : "1",
     background:
       state.isOptionSelected || state.isSelected || state.isFocused
         ? colors.lightGrey
@@ -49,36 +52,48 @@ const customStyles = (error: any) => ({
 export default function SelectComponent({
   name,
   options,
-  isClearable = true,
+  placeholder = "Choose...",
+  isClearable = false,
   isSearchable = true,
+  disabled = false,
+  errorMessage,
   ...props
 }: SelectProps) {
   const [field, meta, helpers] = useField(name);
-  const errorMessage = meta.error && meta.touched ? meta.error : "";
+  const displayErrorMessage =
+    meta.error && meta.touched && !errorMessage
+      ? meta.error
+      : meta.error && meta.touched && errorMessage
+      ? errorMessage
+      : "";
+
   const displayError =
-    typeof errorMessage === typeof "string" && errorMessage !== "";
+    typeof displayErrorMessage === typeof "string" &&
+    displayErrorMessage !== "";
 
   const handleChange = (option: any) => {
     if (!meta.touched) {
       helpers.setTouched(true);
     }
-
     helpers.setValue(option);
   };
 
   return (
     <>
       <Select
-        styles={customStyles(errorMessage)}
+        styles={customStyles(displayErrorMessage)}
         {...field}
         {...props}
+        placeholder={placeholder}
         options={options}
         value={field.value}
         onChange={handleChange}
         isSearchable={isSearchable}
         isClearable={isClearable}
+        isDisabled={disabled}
+        isOptionDisabled={(option) => option.disabled}
       />
-      <Error display={displayError} message={errorMessage} />{" "}
+      <Error display={displayError} message={displayErrorMessage} />{" "}
     </>
   );
 }

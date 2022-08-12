@@ -163,7 +163,9 @@ export default function MessageList({
                       seller={exchange?.offer.seller}
                       offerName={exchange?.offer.metadata.name || ""}
                       withProfileImage
-                      onClick={null}
+                      onClick={() => {
+                        console.log("on click");
+                      }}
                     />
                   </MessageInfo>
                 </MessageContent>

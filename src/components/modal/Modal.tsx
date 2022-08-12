@@ -9,6 +9,7 @@ import { zIndex } from "../../lib/styles/zIndex";
 import Button from "../ui/Button";
 import { scrollStyles } from "../ui/styles";
 import Typography from "../ui/Typography";
+import { ModalType } from "./ModalContext";
 import { Store } from "./ModalContext";
 
 const Root = styled.div`
@@ -51,13 +52,14 @@ const sizeToMargin = {
   }
 } as const;
 
-const Wrapper = styled.div<{ $size: Props["size"] }>`
+const Wrapper = styled.div<{ modalType: ModalType; $size: Props["size"] }>`
   position: relative;
   z-index: ${zIndex.Modal};
   color: ${colors.black};
   background-color: var(--primaryBgColor);
   border: var(--secondary);
-
+  max-width: ${({ modalType }) =>
+    modalType === "PRODUCT_CREATE_SUCCESS" ? "1054px" : "auto"};
   margin: 0;
   ${breakpoint.s} {
     margin: ${({ $size }) =>
@@ -80,9 +82,10 @@ const Wrapper = styled.div<{ $size: Props["size"] }>`
 const Header = styled(Typography)`
   position: relative;
   height: 4.25rem;
+  text-align: left;
   padding: 1rem 2rem;
   margin: 0;
-  padding-right: 8rem;
+  display: block;
   border-bottom: 2px solid ${colors.border};
   > button[data-close] {
     position: absolute;
@@ -111,6 +114,8 @@ interface Props {
   children: React.ReactNode;
   hideModal: () => void;
   title?: string;
+  noCloseIcon?: boolean;
+  modalType: ModalType;
   headerComponent?: ReactNode;
   size: NonNullable<Store["modalSize"]>;
   closable?: boolean;
@@ -122,11 +127,12 @@ export default function Modal({
   title = "modal",
   headerComponent: HeaderComponent,
   size,
-  closable = true
+  closable = true,
+  modalType
 }: Props) {
   return createPortal(
     <Root data-testid="modal">
-      <Wrapper $size={size}>
+      <Wrapper $size={size} modalType={modalType}>
         {HeaderComponent ? (
           <Header tag="div">
             {HeaderComponent}

@@ -1,13 +1,19 @@
 import { useField } from "formik";
 import { Image, Trash } from "phosphor-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { colors } from "../../../lib/styles/colors";
 import bytesToSize from "../../../lib/utils/bytesToSize";
+import { useLocalStorage } from "../../../lib/utils/hooks/useLocalStorage";
 import Button from "../../ui/Button";
+import Typography from "../../ui/Typography";
 import Error from "../Error";
-import { FieldInput } from "../Field.styles";
-import { FieldFileUploadWrapper, FileUploadWrapper } from "../Field.styles";
+import {
+  FieldFileUploadWrapper,
+  FieldInput,
+  FileUploadWrapper,
+  ImagePreview
+} from "../Field.styles";
 import type { UploadProps } from "../types";
 import UploadedFiles from "./UploadedFiles";
 
@@ -15,22 +21,27 @@ export default function Upload({
   name,
   accept = "image/*",
   disabled,
+  maxSize,
   multiple = false,
   trigger,
-  maxSize,
   onFilesSelect,
-  files: initialFiles,
+  placeholder,
   wrapperProps,
   ...props
 }: UploadProps) {
-  const [, meta, helpers] = useField(name);
+  const fileName = useMemo(() => `create-product-image_${name}`, [name]);
+  const [preview, setPreview, removePreview] = useLocalStorage<string | null>(
+    fileName,
+    null
+  );
+
+  const [field, meta, helpers] = useField(name);
   const errorMessage = meta.error && meta.touched ? meta.error : "";
   const displayError =
     typeof errorMessage === typeof "string" && errorMessage !== "";
 
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [files, setFiles] = useState<File[]>(initialFiles ? initialFiles : []);
-  const [preview, setPreview] = useState<string | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
 
   useEffect(() => {
     onFilesSelect?.(files);
@@ -56,7 +67,9 @@ export default function Upload({
   const handleRemoveAllFiles = () => {
     setFiles([]);
     setPreview(null);
+    removePreview(fileName);
   };
+
   const handleRemoveFile = (index: number) => {
     const newArray = files.filter((i, k) => k !== index);
     setFiles(newArray);
@@ -111,11 +124,18 @@ export default function Upload({
             onClick={handleChooseFile}
             error={errorMessage}
           >
-            {preview !== null && <img src={preview} />}
+            {field.value && field.value?.length !== 0 && preview !== null && (
+              <ImagePreview src={preview} />
+            )}
             <Image size={24} />
+            {placeholder && (
+              <Typography tag="p" style={{ marginBottom: "0" }}>
+                {placeholder}
+              </Typography>
+            )}
           </FileUploadWrapper>
         )}
-        {preview !== null && (
+        {field.value && field.value?.length !== 0 && preview !== null && (
           <div onClick={handleRemoveAllFiles} data-remove>
             <Trash size={24} color={colors.white} />
           </div>

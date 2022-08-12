@@ -1,17 +1,23 @@
 /* eslint @typescript-eslint/no-empty-function: "off" */
 /* eslint @typescript-eslint/no-explicit-any: "off" */
+import { subgraph } from "@bosonprotocol/react-kit";
 import { createContext, ReactNode } from "react";
 
 import { MODAL_COMPONENTS, MODAL_TYPES } from "./ModalComponents";
 
 export type ModalProps = {
   title?: string;
+  message?: string;
+  type?: string;
+  state?: keyof typeof subgraph.ExchangeState;
+  noCloseIcon?: boolean;
+  [x: string]: any;
+
   headerComponent?: ReactNode;
   hideModal?: () => void;
   closable?: boolean;
 };
 export type ModalType = keyof typeof MODAL_TYPES | null;
-
 export type Store = {
   modalType: ModalType;
   modalProps?: Parameters<ModalContextType["showModal"]>[1];

@@ -64,6 +64,16 @@ const stateToComponent: {
       Disputed
     </Status>
   ),
+  [subgraph.ExchangeState.Disputed]: (
+    <Status
+      $color={colors.white}
+      $background={colors.red}
+      className="status"
+      data-testid="disputed-status"
+    >
+      Revoked
+    </Status>
+  ),
   [subgraph.ExchangeState.Redeemed]: (
     <Status
       $color={colors.black}

@@ -64,19 +64,21 @@ interface IImage {
   src: string;
   children?: React.ReactNode;
   dataTestId?: string;
+  alt?: string;
 }
 
 const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
   src,
   children,
   dataTestId = "image",
+  alt = "",
   ...rest
 }) => {
   return (
     <ImageWrapper {...rest}>
       {children || ""}
       {src ? (
-        <ImageContainer data-testid={dataTestId} src={src} />
+        <ImageContainer data-testid={dataTestId} src={src} alt={alt} />
       ) : (
         <ImagePlaceholder>
           <ImageIcon size={50} />

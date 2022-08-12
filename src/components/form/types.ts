@@ -6,6 +6,7 @@ export interface BaseProps {
 
 export interface DatepickerProps extends BaseProps {
   data?: string;
+  period?: boolean;
 }
 
 export interface CheckboxProps extends BaseProps {
@@ -43,18 +44,19 @@ export interface SelectContentProps {
 
 export interface SelectProps extends BaseProps {
   isMulti?: boolean;
-  isDisabled?: boolean;
+  disabled?: boolean;
   isClearable?: boolean;
   isSearchable?: boolean;
   options: Array<SelectDataProps>;
+  errorMessage?: string;
 }
 
 export interface UploadProps extends BaseProps {
   accept?: string;
   multiple?: boolean;
   trigger?: React.ReactNode | JSX.Element;
+  maxSize?: number;
   onFilesSelect?: (files: File[]) => void;
   files?: File[];
   wrapperProps?: React.HTMLAttributes<HTMLDivElement>;
-  maxSize?: number;
 }

@@ -120,6 +120,16 @@ const allThemes = {
       color: colors.black
     }
   },
+
+  blankSecondary: {
+    color: "var(--secondary)",
+    padding: "0.75rem 0.5rem",
+    hover: {
+      borderColor: colors.secondary,
+      background: colors.border,
+      color: colors.black
+    }
+  },
   blankOutline: {
     color: colors.black,
     padding: "1rem 2rem",

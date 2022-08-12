@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint @typescript-eslint/no-empty-function: "off" */
 import { useCallback, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
@@ -34,6 +35,7 @@ const RenderModalComponent = ({
       title={store.modalProps?.title}
       headerComponent={store.modalProps?.headerComponent}
       closable={store.modalProps?.closable}
+      modalType={null}
     >
       <ModalComponent
         id="modal"

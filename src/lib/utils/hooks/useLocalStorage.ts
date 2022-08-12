@@ -13,10 +13,21 @@ export function getItemFromStorage<T>(key: string, initialValue: T) {
     return initialValue;
   }
 }
+
 export function saveItemInStorage<T>(key: string, value: T) {
   if (typeof window !== "undefined") {
     try {
       window.localStorage.setItem(key, JSON.stringify(value));
+    } catch (error) {
+      console.log(error);
+    }
+  }
+}
+
+export function removeItemInStorage(key: string) {
+  if (typeof window !== "undefined") {
+    try {
+      window.localStorage.removeItem(key);
     } catch (error) {
       console.log(error);
     }
@@ -38,5 +49,5 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
       console.log(error);
     }
   };
-  return [storedValue, setValue] as const;
+  return [storedValue, setValue, removeItemInStorage] as const;
 }

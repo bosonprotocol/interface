@@ -59,10 +59,11 @@ interface IDetailWidget {
   name?: string;
   image?: string;
   hasSellerEnoughFunds: boolean;
+  isPreview?: boolean;
 }
 
 const oneSecondToDays = 86400;
-const getOfferDetailData = (
+export const getOfferDetailData = (
   offer: Offer,
   convertedPrice: IPrice | null,
   isModal: boolean
@@ -171,7 +172,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   exchange,
   name = "",
   image = "",
-  hasSellerEnoughFunds
+  hasSellerEnoughFunds,
+  isPreview = false
 }) => {
   const { showModal, modalTypes } = useModal();
   const { isLteXS } = useBreakpoints();
@@ -297,7 +299,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                   isExpiredOffer ||
                   isLoading ||
                   !quantity ||
-                  isVoidedOffer
+                  isVoidedOffer ||
+                  isPreview
                 }
                 offerId={offer.id}
                 chainId={CONFIG.chainId}
@@ -332,7 +335,9 @@ const DetailWidget: React.FC<IDetailWidget> = ({
             )}
             {isToRedeem && (
               <RedeemButton
-                disabled={isChainUnsupported || isLoading || isOffer}
+                disabled={
+                  isChainUnsupported || isLoading || isOffer || isPreview
+                }
                 exchangeId={exchange?.id || offer.id}
                 chainId={CONFIG.chainId}
                 onError={(args) => {
