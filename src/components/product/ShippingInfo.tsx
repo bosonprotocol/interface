@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FieldArray } from "formik";
 import { Plus } from "phosphor-react";
 import { useMemo } from "react";

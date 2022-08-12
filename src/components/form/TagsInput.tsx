@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useField } from "formik";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
