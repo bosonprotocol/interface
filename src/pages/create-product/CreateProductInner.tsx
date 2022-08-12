@@ -376,16 +376,16 @@ function CreateProductInner({ initial }: Props) {
           uuid: Date.now().toString(),
           version: 1,
           template: termsOfExchange.exchangePolicy.value
+        },
+        shipping: {
+          defaultVersion: 1,
+          countryOfOrigin: "Porugal"
         }
       });
-      console.log(
-        "🚀 ~ file: CreateProductInner.tsx ~ line 378 ~ CreateProductInner ~ metadataHash",
-        metadataHash
-      );
+      //TODO (Roberto) - add the country of origin
 
       // reset the form
-      // roberto
-      // formikBag.resetForm();
+      formikBag.resetForm();
 
       const buyerCancellationPenaltyValue =
         parseInt(coreTermsOfSale.price) *
@@ -437,10 +437,6 @@ function CreateProductInner({ initial }: Props) {
         metadataUri: `ipfs://${metadataHash}`,
         metadataHash: metadataHash
       };
-      console.log(
-        "🚀 ~ file: CreateProductInner.tsx ~ line 445 ~ CreateProductInner ~ sellers",
-        sellers
-      );
 
       const txResponse =
         sellers?.length === 0 && address
@@ -458,18 +454,9 @@ function CreateProductInner({ initial }: Props) {
             )
           : await coreSDK.createOffer(offerData);
 
-      console.log(
-        "🚀 ~ file: CreateProductInner.tsx ~ line 444 ~ CreateProductInner ~ txResponse",
-        txResponse
-      );
-
       const txReceipt = await txResponse.wait();
 
       const offerId = coreSDK.getCreatedOfferIdFromLogs(txReceipt.logs);
-      console.log(
-        "🚀 ~ file: CreateProductInner.tsx ~ line 462 ~ CreateProductInner ~ offerId",
-        offerId
-      );
 
       await wait(3_000);
       handleOpenSuccessModal({ offerId });
