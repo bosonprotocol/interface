@@ -26,7 +26,6 @@ export default function Upload({
   trigger,
   onFilesSelect,
   placeholder,
-  files: initialFiles,
   wrapperProps,
   ...props
 }: UploadProps) {
