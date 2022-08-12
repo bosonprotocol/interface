@@ -2,7 +2,7 @@ import { useFormikContext } from "formik";
 
 import type { CreateProductForm } from "./types";
 
-export function useThisForm() {
+export function useCreateForm() {
   const context = useFormikContext<CreateProductForm>();
 
   const nextIsDisabled = !context.isValid && context.submitCount > 0;

@@ -1,4 +1,4 @@
-import { parseEther } from "@ethersproject/units";
+import { parseUnits } from "@ethersproject/units";
 import map from "lodash/map";
 import slice from "lodash/slice";
 import styled from "styled-components";
@@ -22,7 +22,7 @@ import DetailTable from "../detail/DetailTable";
 import Button from "../ui/Button";
 import Typography from "../ui/Typography";
 import { ProductButtonGroup } from "./Product.styles";
-import { useThisForm } from "./utils/useThisForm";
+import { useCreateForm } from "./utils/useCreateForm";
 
 interface Props {
   togglePreview: React.Dispatch<React.SetStateAction<boolean>>;
@@ -38,7 +38,7 @@ const PreviewWrapperContent = styled.div`
     0px 0px 16px rgba(0, 0, 0, 0.1), 0px 0px 32px rgba(0, 0, 0, 0.1);
 `;
 export default function Preview({ togglePreview }: Props) {
-  const { values } = useThisForm();
+  const { values } = useCreateForm();
 
   const previewImages = getLocalStorageItems({
     key: "create-product-image"
@@ -53,7 +53,7 @@ export default function Preview({ togglePreview }: Props) {
   const sliderImages = slice(previewImages, 1);
   const name = values.productInformation.productTitle || "Untitled";
 
-  const weiPrice = parseEther(`${values.coreTermsOfSale.price}`);
+  const weiPrice = parseUnits(`${values.coreTermsOfSale.price}`, 18);
 
   const sellerDeposit = parseInt(values.termsOfExchange.sellerDeposit) / 100;
   const buyerDeposit =
@@ -66,11 +66,13 @@ export default function Preview({ togglePreview }: Props) {
   const offer = {
     price: weiPrice.toString(),
 
-    sellerDeposit: parseEther(
-      `${parseInt(values.coreTermsOfSale.price) * sellerDeposit}`
+    sellerDeposit: parseUnits(
+      `${parseInt(values.coreTermsOfSale.price) * sellerDeposit}`,
+      18
     ).toString(),
-    buyerCancelPenalty: parseEther(
-      `${parseInt(values.coreTermsOfSale.price) * buyerDeposit}`
+    buyerCancelPenalty: parseUnits(
+      `${parseInt(values.coreTermsOfSale.price) * buyerDeposit}`,
+      18
     ).toString(),
     validFromDate: validFromDateInMS.toString(),
     validUntilDate: "1677285059", // CHECK validUntilDate

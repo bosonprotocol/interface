@@ -1,5 +1,5 @@
 import { MetadataType } from "@bosonprotocol/common";
-import { parseEther } from "@ethersproject/units";
+import { parseUnits } from "@ethersproject/units";
 import { Form, Formik, FormikHelpers } from "formik";
 import isArray from "lodash/isArray";
 import keys from "lodash/keys";
@@ -415,12 +415,14 @@ function CreateProductInner({ initial }: Props) {
         parseInt(termsOfExchange.disputePeriod) * 86400;
 
       const offerData = {
-        price: parseEther(`${coreTermsOfSale.price}`).toString(),
-        sellerDeposit: parseEther(
-          `${sellerCancellationPenaltyValue}`
+        price: parseUnits(`${coreTermsOfSale.price}`, 18).toString(),
+        sellerDeposit: parseUnits(
+          `${sellerCancellationPenaltyValue}`,
+          18
         ).toString(),
-        buyerCancelPenalty: parseEther(
-          `${buyerCancellationPenaltyValue}`
+        buyerCancelPenalty: parseUnits(
+          `${buyerCancellationPenaltyValue}`,
+          18
         ).toString(),
         quantityAvailable: coreTermsOfSale.quantity,
         voucherRedeemableFromDateInMS: voucherRedeemableFromDateInMS.toString(),

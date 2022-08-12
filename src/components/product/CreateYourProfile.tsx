@@ -5,10 +5,10 @@ import {
   ProductButtonGroup,
   SectionTitle
 } from "./Product.styles";
-import { useThisForm } from "./utils/useThisForm";
+import { useCreateForm } from "./utils/useCreateForm";
 
 export default function CreateYourProfile() {
-  const { nextIsDisabled } = useThisForm();
+  const { nextIsDisabled } = useCreateForm();
 
   return (
     <ContainerProductPage>

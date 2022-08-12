@@ -8,7 +8,7 @@ import {
   SectionTitle
 } from "./Product.styles";
 import { OPTIONS_CURRENCIES, OPTIONS_TOKEN_GATED } from "./utils";
-import { useThisForm } from "./utils/useThisForm";
+import { useCreateForm } from "./utils/useCreateForm";
 
 const PriceContainer = styled.div`
   display: grid;
@@ -21,7 +21,7 @@ const ProductInformationButtonGroup = styled(ProductButtonGroup)`
 `;
 
 export default function CoreTermsOfSale() {
-  const { nextIsDisabled } = useThisForm();
+  const { nextIsDisabled } = useCreateForm();
 
   return (
     <ContainerProductPage>

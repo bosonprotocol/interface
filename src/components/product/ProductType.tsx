@@ -16,7 +16,7 @@ import {
   ProductButtonGroup,
   SectionTitle
 } from "./Product.styles";
-import { useThisForm } from "./utils/useThisForm";
+import { useCreateForm } from "./utils/useCreateForm";
 
 const productTypeItemsPerRow = {
   xs: 1,
@@ -76,7 +76,7 @@ export const ProductImage = styled(Image)`
 `;
 
 export default function ProductType() {
-  const { handleChange, values, nextIsDisabled } = useThisForm();
+  const { handleChange, values, nextIsDisabled } = useCreateForm();
 
   return (
     <ContainerProductPage>

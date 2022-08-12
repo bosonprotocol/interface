@@ -14,7 +14,7 @@ import {
   SectionTitle
 } from "./Product.styles";
 import { CATEGORY_OPTIONS } from "./utils";
-import { useThisForm } from "./utils/useThisForm";
+import { useCreateForm } from "./utils/useCreateForm";
 
 const AddProductContainer = styled.div`
   display: grid;
@@ -37,7 +37,7 @@ const checkLastElementIsPristine = (elements: any): boolean => {
 };
 
 const AddAttributesContainer = () => {
-  const { values } = useThisForm();
+  const { values } = useCreateForm();
 
   const elements = useMemo(
     () => values?.productInformation?.attributes,
@@ -90,7 +90,7 @@ const AddAttributesContainer = () => {
 };
 
 export default function ProductInformation() {
-  const { nextIsDisabled } = useThisForm();
+  const { nextIsDisabled } = useCreateForm();
 
   return (
     <ContainerProductPage>

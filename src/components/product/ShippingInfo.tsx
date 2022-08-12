@@ -14,7 +14,7 @@ import {
   SectionTitle
 } from "./Product.styles";
 import { OPTIONS_COUNTRIES, OPTIONS_LENGTH, OPTIONS_WEIGHT } from "./utils";
-import { useThisForm } from "./utils/useThisForm";
+import { useCreateForm } from "./utils/useCreateForm";
 
 const FieldContainerJurisdictions = styled.div`
   display: grid;
@@ -53,7 +53,7 @@ const checkLastElementIsPristine = (elements: any): boolean => {
 };
 
 const AddSupportedJurisdictions = () => {
-  const { values } = useThisForm();
+  const { values } = useCreateForm();
 
   const elements = useMemo(
     () => values?.shippingInfo?.jurisdiction,
@@ -113,7 +113,7 @@ const AddSupportedJurisdictions = () => {
 };
 
 export default function ShippingInfo() {
-  const { values, nextIsDisabled } = useThisForm();
+  const { values, nextIsDisabled } = useCreateForm();
 
   const unit = useMemo(
     () => (values?.shippingInfo?.measurementUnit?.value || "").toUpperCase(),

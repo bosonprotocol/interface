@@ -1,6 +1,6 @@
 import { MetadataType } from "@bosonprotocol/react-kit";
 import { createOffer } from "@bosonprotocol/widgets-sdk";
-import { parseEther } from "@ethersproject/units";
+import { parseUnits } from "@ethersproject/units";
 import { useFormik } from "formik";
 import { useState } from "react";
 import styled from "styled-components";
@@ -112,10 +112,11 @@ export default function CreateOffer() {
         createOffer(
           {
             ...values,
-            price: parseEther(values.price).toString(),
-            sellerDeposit: parseEther(values.sellerDeposit).toString(),
-            buyerCancelPenalty: parseEther(
-              values.buyerCancelPenalty
+            price: parseUnits(values.price, 18).toString(),
+            sellerDeposit: parseUnits(values.sellerDeposit, 18).toString(),
+            buyerCancelPenalty: parseUnits(
+              values.buyerCancelPenalty,
+              18
             ).toString(),
             metadataHash,
             metadataUri

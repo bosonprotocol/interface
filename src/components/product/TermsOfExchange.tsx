@@ -16,7 +16,7 @@ import {
   OPTIONS_PERIOD,
   OPTIONS_UNIT
 } from "./utils/const";
-import { useThisForm } from "./utils/useThisForm";
+import { useCreateForm } from "./utils/useCreateForm";
 
 const TermsOfExchangeContainer = styled(ContainerProductPage)`
   max-width: 100%;
@@ -86,7 +86,7 @@ const InfoListItem = styled.li`
 `;
 
 export default function TermsOfExchange() {
-  const { nextIsDisabled } = useThisForm();
+  const { nextIsDisabled } = useCreateForm();
 
   return (
     <TermsOfExchangeContainer>
