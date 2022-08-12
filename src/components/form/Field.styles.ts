@@ -313,3 +313,7 @@ export const CheckboxWrapper = styled.label.attrs((props: { error: any }) => ({
           }
         `}
 `;
+
+export const ImagePreview = styled.img`
+  background: ${colors.lightGrey};
+`;

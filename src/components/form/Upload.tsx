@@ -9,7 +9,7 @@ import Button from "../ui/Button";
 import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
 import Error from "./Error";
-import { FieldInput } from "./Field.styles";
+import { FieldInput, ImagePreview } from "./Field.styles";
 import { FieldFileUploadWrapper, FileUploadWrapper } from "./Field.styles";
 import type { UploadProps } from "./types";
 
@@ -119,7 +119,7 @@ export default function Upload({
             error={errorMessage}
           >
             {field.value && field.value?.length !== 0 && preview !== null && (
-              <img src={preview} />
+              <ImagePreview src={preview} />
             )}
             <Image size={24} />
             {placeholder && (

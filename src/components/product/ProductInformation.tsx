@@ -125,6 +125,7 @@ export default function ProductInformation() {
           name="productInformation.category"
           options={CATEGORY_OPTIONS}
           isClearable
+          errorMessage="Please select the category that best matches your product."
         />
       </FormField>
       <FormField

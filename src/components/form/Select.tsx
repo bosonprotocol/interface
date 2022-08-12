@@ -56,12 +56,20 @@ export default function SelectComponent({
   isClearable = false,
   isSearchable = true,
   disabled = false,
+  errorMessage,
   ...props
 }: SelectProps) {
   const [field, meta, helpers] = useField(name);
-  const errorMessage = meta.error && meta.touched ? meta.error : "";
+  const displayErrorMessage =
+    meta.error && meta.touched && !errorMessage
+      ? meta.error
+      : meta.error && meta.touched && errorMessage
+      ? errorMessage
+      : "";
+
   const displayError =
-    typeof errorMessage === typeof "string" && errorMessage !== "";
+    typeof displayErrorMessage === typeof "string" &&
+    displayErrorMessage !== "";
 
   const handleChange = (option: any) => {
     if (!meta.touched) {
@@ -73,7 +81,7 @@ export default function SelectComponent({
   return (
     <>
       <Select
-        styles={customStyles(errorMessage)}
+        styles={customStyles(displayErrorMessage)}
         {...field}
         {...props}
         placeholder={placeholder}
@@ -85,7 +93,7 @@ export default function SelectComponent({
         isDisabled={disabled}
         isOptionDisabled={(option) => option.disabled}
       />
-      <Error display={displayError} message={errorMessage} />{" "}
+      <Error display={displayError} message={displayErrorMessage} />{" "}
     </>
   );
 }

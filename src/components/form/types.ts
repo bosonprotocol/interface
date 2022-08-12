@@ -48,6 +48,7 @@ export interface SelectProps extends BaseProps {
   isClearable?: boolean;
   isSearchable?: boolean;
   options: Array<SelectDataProps>;
+  errorMessage?: string;
 }
 
 export interface UploadProps extends BaseProps {
