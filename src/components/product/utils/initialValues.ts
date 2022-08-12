@@ -81,7 +81,7 @@ export const termsOfExchangeInitialValues = {
 
 export const shippingInfoInitialValues = {
   shippingInfo: {
-    country: "",
+    country: { value: "", label: "" },
     jurisdiction: [
       {
         region: "",

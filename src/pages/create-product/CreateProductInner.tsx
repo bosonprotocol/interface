@@ -215,6 +215,7 @@ function CreateProductInner({ initial }: Props) {
     )) as any;
 
     showModal(modalTypes.PRODUCT_CREATE_SUCCESS, {
+      title: `Offer ${offerId}`,
       name: metadataInfo.name,
       message: "You have successfully created:",
       image: metadataInfo.image,
@@ -300,6 +301,7 @@ function CreateProductInner({ initial }: Props) {
     const profileImage = getLocalStorageItems({
       key: "create-product-image_creteYourProfile"
     });
+
     const previewImages = getLocalStorageItems({
       key: "create-product-image_productImages"
     });
@@ -324,14 +326,28 @@ function CreateProductInner({ initial }: Props) {
       creteYourProfile,
       productInformation,
       productType,
-      termsOfExchange
+      termsOfExchange,
+      shippingInfo
     } = values;
+    console.log(
+      "🚀 ~ file: CreateProductInner.tsx ~ line 329 ~ CreateProductInner ~ values",
+      values
+    );
 
     const productAttributes = productInformation.attributes.map(
       ({ name, value }: { name: string; value: string }) => {
         return {
           trait_type: name,
           value: value
+        };
+      }
+    );
+
+    const supportedJurisdictions = shippingInfo.jurisdiction.map(
+      ({ region, time }: { region: string; time: string }) => {
+        return {
+          label: region,
+          deliveryTime: time
         };
       }
     );
@@ -345,7 +361,10 @@ function CreateProductInner({ initial }: Props) {
         externalUrl: "https://interface-staging.on.fleek.co",
         image: `ipfs://${profileImageLink}`,
         type: MetadataType.PRODUCT_V1,
-        attributes: [{ trait_type: "Offer Category", value: "PHYSICAL" }],
+        attributes: [
+          { trait_type: "Offer Category", value: "PHYSICAL" },
+          ...productAttributes
+        ],
         product: {
           uuid: Date.now().toString(),
           version: 1,
@@ -379,10 +398,13 @@ function CreateProductInner({ initial }: Props) {
         },
         shipping: {
           defaultVersion: 1,
-          countryOfOrigin: "Porugal"
+          countryOfOrigin: shippingInfo.country.label || "",
+          supportedJurisdictions:
+            supportedJurisdictions[0].label.length > 0
+              ? supportedJurisdictions
+              : undefined
         }
       });
-      //TODO (Roberto) - add the country of origin
 
       // reset the form
       formikBag.resetForm();
@@ -459,6 +481,10 @@ function CreateProductInner({ initial }: Props) {
       const txReceipt = await txResponse.wait();
 
       const offerId = coreSDK.getCreatedOfferIdFromLogs(txReceipt.logs);
+      console.log(
+        "🚀 ~ file: CreateProductInner.tsx ~ line 482 ~ CreateProductInner ~ offerId",
+        offerId
+      );
 
       await wait(3_000);
       handleOpenSuccessModal({ offerId });
