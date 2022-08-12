@@ -89,11 +89,11 @@ export default function Upload({
     for (const file of filesArray) {
       if (maxSize) {
         if (file.size > maxSize) {
+          const error = `File size cannot exceed more than ${bytesToSize(
+            maxSize
+          )}`;
           // TODO: change to notification
-          console.error(
-            `File size cannot exceed more than ${bytesToSize(maxSize)}`
-          );
-          return;
+          console.error(error);
         }
       }
     }
