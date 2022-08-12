@@ -3,7 +3,7 @@ import map from "lodash/map";
 import slice from "lodash/slice";
 import styled from "styled-components";
 
-import DetailWidget from "../../components/detail/DetailWidget";
+import DetailWidget from "../../components/detail/DetailWidget/DetailWidget";
 import Image from "../../components/ui/Image";
 import SellerID from "../../components/ui/SellerID";
 import { colors } from "../../lib/styles/colors";

@@ -17,7 +17,6 @@ export type ModalProps = {
   closable?: boolean;
 };
 export type ModalType = keyof typeof MODAL_TYPES | null;
-
 export type Store = {
   modalType: ModalType;
   modalProps?: Parameters<ModalContextType["showModal"]>[1];

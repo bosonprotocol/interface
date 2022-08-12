@@ -45,7 +45,9 @@ export default function ExchangePreview({ exchange }: Props) {
             offerName={offer.metadata.name || ""}
             justifyContent="flex-start"
             withProfileImage
-            onClick={null}
+            onClick={() => {
+              console.log("on click exchaneg preview");
+            }}
           />
         </Grid>
       </Grid>

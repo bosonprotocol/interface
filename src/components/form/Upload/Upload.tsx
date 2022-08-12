@@ -4,15 +4,18 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import { colors } from "../../../lib/styles/colors";
 import bytesToSize from "../../../lib/utils/bytesToSize";
+import { useLocalStorage } from "../../../lib/utils/hooks/useLocalStorage";
 import Button from "../../ui/Button";
 import Typography from "../../ui/Typography";
 import Error from "../Error";
 import {
   FieldFileUploadWrapper,
   FieldInput,
-  FileUploadWrapper
+  FileUploadWrapper,
+  ImagePreview
 } from "../Field.styles";
 import type { UploadProps } from "../types";
+import UploadedFiles from "./UploadedFiles";
 
 export default function Upload({
   name,

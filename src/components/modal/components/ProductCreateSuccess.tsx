@@ -4,7 +4,7 @@ import { Plus } from "phosphor-react";
 import { useMemo } from "react";
 import styled from "styled-components";
 
-import { getOfferDetailData } from "../../../components/detail/DetailWidget";
+import { getOfferDetailData } from "../../../components/detail/DetailWidget/DetailWidget";
 import Price from "../../../components/price/index";
 import { useConvertedPrice } from "../../../components/price/useConvertedPrice";
 import { colors } from "../../../lib/styles/colors";
@@ -110,7 +110,8 @@ export default function ProductCreateSuccess({
 }: Props) {
   const convertedPrice = useConvertedPrice({
     value: offer.price,
-    decimals: offer.exchangeToken.decimals
+    decimals: offer.exchangeToken.decimals,
+    symbol: offer.exchangeToken.symbol
   });
 
   const OFFER_DETAIL_DATA = useMemo(

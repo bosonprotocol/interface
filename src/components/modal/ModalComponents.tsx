@@ -4,6 +4,7 @@ import CancelExchangeModal from "./components/Chat/CancelExchangeModal";
 import InitializeChatModal from "./components/Chat/InitializeChatModal";
 import MakeProposalModal from "./components/Chat/MakeProposal/MakeProposalModal";
 import ResolveDisputeModal from "./components/Chat/ResolveDisputeModal";
+import CreateProductDraft from "./components/CreateProductDraft";
 import CustomStore from "./components/CustomStore";
 import DetailWidget from "./components/DetailWidget";
 import DisputeModal from "./components/DisputeModal/DisputeModal";
@@ -24,11 +25,8 @@ export const MODAL_TYPES = {
   DISPUTE_MODAL: "DISPUTE_MODAL"
 } as const;
 
-type ModalComponentsType = {
-  [key in keyof typeof MODAL_TYPES]: any;
-};
-
 export const MODAL_COMPONENTS = {
+  [MODAL_TYPES.CREATE_PRODUCT_DRAFT]: CreateProductDraft,
   [MODAL_TYPES.CUSTOM_STORE]: CustomStore,
   [MODAL_TYPES.DETAIL_WIDGET]: DetailWidget,
   [MODAL_TYPES.WHAT_IS_REDEEM]: WhatIsRedeem,
