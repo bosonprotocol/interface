@@ -57,4 +57,7 @@ export interface UploadProps extends BaseProps {
   trigger?: React.ReactNode | JSX.Element;
   maxSize?: number;
   onFilesSelect?: (files: File[]) => void;
+  files?: File[];
+  wrapperProps?: React.HTMLAttributes<HTMLDivElement>;
+  maxSize?: number;
 }

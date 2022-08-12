@@ -12,31 +12,36 @@ import { useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { useSigner } from "wagmi";
 
-import portalLogo from "../../assets/portal.svg";
-import { CONFIG } from "../../lib/config";
-import { colors } from "../../lib/styles/colors";
-import { Offer } from "../../lib/types/offer";
-import { IPrice } from "../../lib/utils/convertPrice";
-import { titleCase } from "../../lib/utils/formatText";
-import { isOfferHot } from "../../lib/utils/getOfferLabel";
-import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
-import { getItemFromStorage } from "../../lib/utils/hooks/useLocalStorage";
-import { useModal } from "../modal/useModal";
-import Price from "../price/index";
-import { useConvertedPrice } from "../price/useConvertedPrice";
-import Button from "../ui/Button";
-import Grid from "../ui/Grid";
-import Typography from "../ui/Typography";
+import { CONFIG } from "../../../lib/config";
+import { BosonRoutes } from "../../../lib/routing/routes";
+import { colors } from "../../../lib/styles/colors";
+import { Offer } from "../../../lib/types/offer";
+import { IPrice } from "../../../lib/utils/convertPrice";
+import { titleCase } from "../../../lib/utils/formatText";
+import { isOfferHot } from "../../../lib/utils/getOfferLabel";
+import { getBuyerCancelPenalty } from "../../../lib/utils/getPrices";
+import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
+import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { getItemFromStorage } from "../../../lib/utils/hooks/useLocalStorage";
+import { useModal } from "../../modal/useModal";
+import Price from "../../price/index";
+import { useConvertedPrice } from "../../price/useConvertedPrice";
+import Button from "../../ui/Button";
+import Grid from "../../ui/Grid";
+import Typography from "../../ui/Typography";
 import {
   Break,
   CommitAndRedeemButton,
-  PortalLogoImg,
+  ContactSellerButton,
   RaiseProblemButton,
   RedeemLeftButton,
+  StyledCancelButton,
   Widget,
   WidgetUpperGrid
-} from "./Detail.style";
-import DetailTable from "./DetailTable";
+} from "../Detail.style";
+import DetailTable from "../DetailTable";
+import { DetailDisputeResolver } from "./DetailDisputeResolver";
+import { DetailSellerDeposit } from "./DetailSellerDeposit";
 
 const StyledPrice = styled(Price)`
   h3 {
@@ -70,19 +75,8 @@ export const getOfferDetailData = (
 
   const priceNumber = Number(convertedPrice?.converted);
 
-  const sellerDepositPercentage =
-    Number(offer.sellerDeposit) / Number(offer.price);
-  const sellerDeposit = sellerDepositPercentage * 100;
-  const sellerDepositDollars = (sellerDepositPercentage * priceNumber).toFixed(
-    2
-  );
-
-  const buyerCancelationPenaltyPercentage =
-    Number(offer.buyerCancelPenalty) / Number(offer.price);
-  const buyerCancelationPenalty = buyerCancelationPenaltyPercentage * 100;
-  const buyerCancelationPenaltyDollars = (
-    buyerCancelationPenaltyPercentage * priceNumber
-  ).toFixed(2);
+  const { buyerCancelationPenalty, convertedBuyerCancelationPenalty } =
+    getBuyerCancelPenalty(offer, convertedPrice);
   return [
     {
       name: "Redeemable until",
@@ -116,24 +110,10 @@ export const getOfferDetailData = (
         }
       : { hide: true },
     {
-      name: "Seller deposit",
-      info: (
-        <>
-          <Typography tag="h6">
-            <b>Seller deposit</b>
-          </Typography>
-          <Typography tag="p">
-            The Seller deposit is used to hold the seller accountable to follow
-            through with their commitment to deliver the physical item. If the
-            seller breaks their commitment, the deposit will be transferred to
-            the buyer.
-          </Typography>
-        </>
-      ),
+      name: DetailSellerDeposit.name,
+      info: DetailSellerDeposit.info,
       value: (
-        <Typography tag="p">
-          {sellerDeposit}%<small>(${sellerDepositDollars})</small>
-        </Typography>
+        <DetailSellerDeposit.value offer={offer} conversionRate={priceNumber} />
       )
     },
     {
@@ -152,7 +132,7 @@ export const getOfferDetailData = (
       value: (
         <Typography tag="p">
           {buyerCancelationPenalty}%
-          <small>(${buyerCancelationPenaltyDollars})</small>
+          <small>(${convertedBuyerCancelationPenalty})</small>
         </Typography>
       )
     },
@@ -172,24 +152,15 @@ export const getOfferDetailData = (
       value: <Check size={16} />
     },
     {
-      name: "Dispute resolver",
-      info: (
-        <>
-          <Typography tag="h6">
-            <b>Dispute resolver</b>
-          </Typography>
-          <Typography tag="p">
-            The Dispute resolver is trusted to resolve disputes between buyer
-            and seller that can't be mutually resolved.
-          </Typography>
-        </>
-      ),
-      value: <PortalLogoImg src={portalLogo} alt="Portal logo" />
+      name: DetailDisputeResolver.name,
+      info: DetailDisputeResolver.info,
+      value: <DetailDisputeResolver.value />
     }
   ];
 };
 
-const SHOULD_DISPLAY_REDEEM_BTN = [
+const NOT_REDEEMED_YET = [
+  subgraph.ExchangeState.Committed,
   subgraph.ExchangeState.Revoked,
   subgraph.ExchangeState.Cancelled,
   exchanges.ExtendedExchangeState.Expired,
@@ -206,6 +177,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
 }) => {
   const { showModal, modalTypes } = useModal();
   const { isLteXS } = useBreakpoints();
+  const navigate = useKeepQueryParamsNavigate();
+
   const cancelRef = useRef<HTMLDivElement | null>(null);
 
   const isOffer = pageType === "offer";
@@ -216,13 +189,14 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   const isToRedeem =
     !exchangeStatus || exchangeStatus === subgraph.ExchangeState.Committed;
   const isBeforeRedeem =
-    !exchangeStatus || !SHOULD_DISPLAY_REDEEM_BTN.includes(exchangeStatus);
+    !exchangeStatus || NOT_REDEEMED_YET.includes(exchangeStatus);
 
   const { data: signer } = useSigner();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const convertedPrice = useConvertedPrice({
     value: offer.price,
-    decimals: offer.exchangeToken.decimals
+    decimals: offer.exchangeToken.decimals,
+    symbol: offer.exchangeToken.symbol
   });
 
   const OFFER_DETAIL_DATA = useMemo(
@@ -269,7 +243,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   const BASE_MODAL_DATA = useMemo(
     () => ({
       data: OFFER_DETAIL_DATA_MODAL,
-      exchange,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      exchange: exchange!,
       image,
       name
     }),
@@ -279,7 +254,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   return (
     <>
       <Widget>
-        {isExchange && isBeforeRedeem && (
+        {isExchange && isToRedeem && (
           <RedeemLeftButton>
             {redeemableDays} days left to Redeem
           </RedeemLeftButton>
@@ -341,11 +316,9 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                   });
                 }}
                 onPendingSignature={() => {
-                  console.log("onPendingSignature");
                   setIsLoading(true);
                 }}
-                onSuccess={(args, { exchangeId }) => {
-                  console.log("onSuccess", args, exchangeId);
+                onSuccess={(_args, { exchangeId }) => {
                   setIsLoading(false);
                   showModal(modalTypes.DETAIL_WIDGET, {
                     title: "You have successfully committed!",
@@ -379,11 +352,9 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                   });
                 }}
                 onPendingSignature={() => {
-                  console.log("onPendingSignature");
                   setIsLoading(true);
                 }}
-                onSuccess={(args) => {
-                  console.log("onSuccess", args);
+                onSuccess={() => {
                   setIsLoading(false);
                   showModal(modalTypes.DETAIL_WIDGET, {
                     title: "You have successfully redeemed!",
@@ -437,18 +408,49 @@ const DetailWidget: React.FC<IDetailWidget> = ({
         <div>
           <DetailTable align noBorder data={OFFER_DETAIL_DATA} />
         </div>
-        {isExchange && isBeforeRedeem && (
+        {isExchange && (
           <>
             <Break />
-            <RaiseProblemButton
-              onClick={handleCancel}
-              theme="blank"
-              style={{ fontSize: "0.875rem" }}
-              disabled={isChainUnsupported}
-            >
-              Raise a problem
-              <Question size={18} />
-            </RaiseProblemButton>
+            <Grid as="section">
+              <ContactSellerButton
+                onClick={() =>
+                  navigate({
+                    pathname: BosonRoutes.Chat
+                  })
+                }
+                theme="blank"
+                style={{ fontSize: "0.875rem" }}
+                disabled={isChainUnsupported}
+              >
+                Contact seller
+                <Question size={18} />
+              </ContactSellerButton>
+              {isBeforeRedeem ? (
+                <StyledCancelButton
+                  onClick={handleCancel}
+                  theme="blank"
+                  style={{ fontSize: "0.875rem" }}
+                  disabled={isChainUnsupported}
+                >
+                  Cancel
+                  <Question size={18} />
+                </StyledCancelButton>
+              ) : (
+                <RaiseProblemButton
+                  onClick={() => {
+                    showModal(modalTypes.DISPUTE_MODAL, {
+                      title: "Raise a problem"
+                    });
+                  }}
+                  theme="blank"
+                  style={{ fontSize: "0.875rem" }}
+                  disabled={!isToRedeem}
+                >
+                  Raise a problem
+                  <Question size={18} />
+                </RaiseProblemButton>
+              )}
+            </Grid>
           </>
         )}
       </Widget>
@@ -476,11 +478,9 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               });
             }}
             onPendingSignature={() => {
-              console.log("onPendingSignature");
               setIsLoading(true);
             }}
-            onSuccess={(args) => {
-              console.log("onSuccess", args);
+            onSuccess={() => {
               setIsLoading(false);
               showModal(modalTypes.DETAIL_WIDGET, {
                 title: "You have successfully cancelled!",

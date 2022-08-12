@@ -10,7 +10,6 @@ export default function Textarea({ name, ...props }: TextareaProps) {
   const errorMessage = meta.error && meta.touched ? meta.error : "";
   const displayError =
     typeof errorMessage === typeof "string" && errorMessage !== "";
-
   return (
     <>
       <FieldTextArea error={errorMessage} {...field} {...props} />

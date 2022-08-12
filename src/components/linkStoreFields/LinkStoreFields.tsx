@@ -5,9 +5,10 @@ import { getKeepStoreFieldsQueryParams } from "../../lib/utils/hooks/useKeepQuer
 interface Props {
   children: string | JSX.Element;
   to: string;
+  state?: Record<string, unknown>;
   [x: string]: unknown;
 }
-export const LinkWithQuery = ({ children, to, ...props }: Props) => {
+export const LinkWithQuery = ({ children, to, state, ...props }: Props) => {
   const location = useLocation();
   // TODO: doesnt currently support passing query params in the 'to' parameter
   const search = getKeepStoreFieldsQueryParams(location, null);
@@ -17,6 +18,7 @@ export const LinkWithQuery = ({ children, to, ...props }: Props) => {
         pathname: to,
         search
       }}
+      state={{ ...state, prevPath: location.pathname }}
       {...props}
     >
       {children}

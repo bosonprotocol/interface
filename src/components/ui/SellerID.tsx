@@ -1,4 +1,3 @@
-// import image from '../../pages/offers/mock/bosonprotocol.png'
 import { subgraph } from "@bosonprotocol/react-kit";
 import { Image as AccountImage } from "@davatar/react";
 import { generatePath } from "react-router-dom";
@@ -16,12 +15,12 @@ const AddressContainer = styled(Grid)`
   margin: 0;
 `;
 
-const SellerContainer = styled.div`
-  cursor: pointer;
+const SellerContainer = styled.div<{ $hasCursorPointer: boolean }>`
+  ${({ $hasCursorPointer }) => $hasCursorPointer && `cursor: pointer;`}
+
   display: flex;
   align-items: center;
   gap: 10px;
-  cursor: pointer;
 `;
 
 const SellerInfo = styled.div`
@@ -53,9 +52,13 @@ const SellerID: React.FC<
   {
     children?: React.ReactNode;
     seller: subgraph.OfferFieldsFragment["seller"];
+    accountImageSize?: number;
     offerName: string;
     withProfileImage: boolean;
+
     customImage?: boolean;
+    withProfileText?: boolean;
+    onClick?: null | undefined | React.MouseEventHandler<HTMLDivElement>;
   } & IGrid &
     React.HTMLAttributes<HTMLDivElement>
 > = ({
@@ -64,37 +67,52 @@ const SellerID: React.FC<
   offerName,
   withProfileImage,
   customImage,
+  onClick,
+  accountImageSize,
+  withProfileText = true,
+
   ...rest
 }) => {
   const navigate = useKeepQueryParamsNavigate();
-
   const sellerId = seller?.id;
   const sellerAddress = seller?.operator;
   const artist = getOfferArtist(offerName);
+  const hasCursorPointer = !!onClick || onClick === undefined;
   return (
-    <AddressContainer {...rest}>
+    <AddressContainer {...rest} data-address-container>
       <SellerContainer
+        $hasCursorPointer={hasCursorPointer}
         onClick={(e) => {
-          e.stopPropagation();
-          navigate({
-            pathname: generatePath(BosonRoutes.Account, {
-              [UrlParameters.accountId]: sellerAddress
-            })
-          });
+          if (onClick) {
+            onClick(e);
+          } else if (onClick !== null) {
+            e.stopPropagation();
+            navigate({
+              pathname: generatePath(BosonRoutes.Account, {
+                [UrlParameters.accountId]: sellerAddress
+              })
+            });
+          }
         }}
+        data-seller-container
       >
         {withProfileImage && (
           <ImageContainer>
             {artist.toLocaleLowerCase() === "boson protocol" || customImage ? (
               <RoundedImage src={sellerAddress || bosonProtocolImage} />
             ) : (
-              <AccountImage size={17} address={sellerAddress} />
+              <AccountImage
+                size={accountImageSize || 17}
+                address={sellerAddress}
+              />
             )}
           </ImageContainer>
         )}
-        <SellerInfo data-testid="seller-info">
-          {artist ? artist : `Seller ID: ${sellerId}`}
-        </SellerInfo>
+        {withProfileText && (
+          <SellerInfo data-testid="seller-info">
+            {artist ? artist : `Seller ID: ${sellerId}`}
+          </SellerInfo>
+        )}
       </SellerContainer>
       {children || ""}
     </AddressContainer>

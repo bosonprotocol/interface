@@ -14,11 +14,16 @@ const currencyImages = {
 interface Props {
   currencySymbol: string;
   address?: string;
+  onError?: () => void;
 }
 
 const chain = "polygon";
 
-export default function CurrencyIcon({ currencySymbol, address }: Props) {
+export default function CurrencyIcon({
+  currencySymbol,
+  address,
+  onError
+}: Props) {
   const [error, setError] = useState<boolean>(false);
   const symbolUpperCase =
     currencySymbol.toUpperCase() as keyof typeof currencyImages;
@@ -42,6 +47,7 @@ export default function CurrencyIcon({ currencySymbol, address }: Props) {
       src={url}
       onError={() => {
         setError(true);
+        onError?.();
       }}
     />
   );

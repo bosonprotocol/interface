@@ -61,9 +61,12 @@ export function useKeepQueryParamsNavigate() {
           ...to,
           search
         },
-        options
+        {
+          ...options,
+          state: { prevPath: location.pathname }
+        }
       );
     },
-    [locationRef, navigate]
+    [locationRef, navigate, location]
   );
 }

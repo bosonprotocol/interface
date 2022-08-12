@@ -7,6 +7,7 @@ export const colors = {
   darkOrange: "darkorange",
   darkRed: "darkred",
   cyan: "#00FFFF",
+  grey2: "#D3D5DB",
 
   /*
     TODO: Remove what's above when refactor/redesign of all pages is done
@@ -24,8 +25,9 @@ export const colors = {
   // Basic
   black: "#09182C",
   darkGrey: "#556072",
+  darkGreyTimeStamp: "#E8EAF1",
   lightGrey: "#F1F3F9",
-  border: "rgba(85,96,114,0.06)",
+  border: "#5560720f",
   white: "#FFFFFF",
   primaryBgColor: "#FFFFFF"
 };

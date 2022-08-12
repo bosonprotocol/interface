@@ -1,5 +1,4 @@
 import { useField } from "formik";
-import React from "react";
 
 import Error from "./Error";
 import { FieldInput } from "./Field.styles";

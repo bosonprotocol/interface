@@ -1,20 +1,25 @@
+import React from "react";
 import styled from "styled-components";
 
 type JustifyContent =
   | "flex-start"
   | "center"
   | "flex-end"
+  | "space-evently"
   | "space-between"
   | "space-around"
   | "stretch";
 type AlignItems = "flex-start" | "center" | "flex-end" | "baseline";
 type FlexDirection = "row" | "column" | "row-reverse" | "column-reverse";
 export interface IGrid {
+  $width?: string;
+  $height?: string;
   alignItems?: AlignItems;
   flexBasis?: string;
   flexDirection?: FlexDirection;
   justifyContent?: JustifyContent;
   flexGrow?: string;
+  flexShrink?: string;
   flexWrap?: string;
   gap?: string;
   flex?: string;
@@ -25,12 +30,14 @@ export interface IGrid {
 }
 
 const Container = styled.div<IGrid>`
-  width: 100%;
+  width: ${({ $width }) => $width || "100%"};
+  height: ${({ $height }) => $height || "initial"};
   display: flex;
   align-items: ${({ alignItems }) => alignItems || "center"};
   flex-basis: ${({ flexBasis }) => flexBasis || "auto"};
   flex-direction: ${({ flexDirection }) => flexDirection || "row"};
-  flex-grow: ${({ flexGrow }) => flexGrow || "0"};
+  flex-grow: ${({ flexGrow }) => flexGrow || "initial"};
+  flex-shrink: ${({ flexShrink }) => flexShrink || "initial"};
   justify-content: ${({ justifyContent }) => justifyContent || "space-between"};
 
   ${({ flexWrap }) => (flexWrap ? `flex-wrap:${flexWrap};` : "")}
@@ -45,6 +52,7 @@ const Container = styled.div<IGrid>`
 const Grid: React.FC<
   {
     children: React.ReactNode;
+    as?: React.ElementType;
   } & IGrid &
     React.HTMLAttributes<HTMLDivElement>
 > = ({ children, ...props }) => {

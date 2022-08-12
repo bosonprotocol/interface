@@ -485,7 +485,7 @@ export const DetailWrapper = styled.div`
     padding: 0 10rem;
   }
   > div:first-child {
-    padding-top: 1rem;
+    padding-top: 2rem;
   }
   > div:not(:last-child) {
     margin-bottom: 4rem;
@@ -801,6 +801,10 @@ export const RaiseProblemButton = styled(Button)`
   svg {
     margin-left: 1rem;
   }
+`;
+export const StyledCancelButton = RaiseProblemButton;
+export const ContactSellerButton = styled(RaiseProblemButton)`
+  color: ${colors.secondary};
 `;
 
 export const Break = styled.span`

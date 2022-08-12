@@ -1,0 +1,133 @@
+import { BigNumber, utils } from "ethers";
+import { useField, useFormikContext } from "formik";
+import styled from "styled-components";
+
+import { colors } from "../../../../../../../lib/styles/colors";
+import { Offer } from "../../../../../../../lib/types/offer";
+import { Input } from "../../../../../../form";
+import ConvertedPrice from "../../../../../../price/ConvertedPrice";
+import CurrencyIcon from "../../../../../../price/CurrencyIcon";
+import { useConvertedPrice } from "../../../../../../price/useConvertedPrice";
+import { FormModel } from "../../MakeProposalFormModel";
+
+const RefundAmountWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  background: ${colors.lightGrey};
+  border: 1px solid ${colors.border};
+  padding: 0 0 0 0.5rem;
+
+  [data-currency] {
+    all: unset;
+    transform: scale(0.75);
+    font-size: 1.25rem;
+    font-weight: 600;
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: -1px;
+  }
+
+  input {
+    border: none;
+    background: none;
+    text-align: right;
+  }
+
+  [data-converted-price] * {
+    font-size: 0.65625rem;
+  }
+`;
+
+interface Props {
+  address: string;
+  inEscrow: string;
+  inEscrowWithDecimals: string;
+  exchangeToken: Offer["exchangeToken"];
+}
+
+export default function RequestedRefundInput({
+  address,
+  inEscrow,
+  inEscrowWithDecimals,
+  exchangeToken
+}: Props) {
+  const [refundAmountField] = useField<string>(
+    FormModel.formFields.refundAmount.name
+  );
+  const decimals = Number(exchangeToken.decimals);
+  const formatDecimalsToIntValue = (value: string | number): BigNumber => {
+    return utils.parseUnits(
+      typeof value === "number" ? value.toString() : value || "0",
+      decimals
+    );
+  };
+  const refundAmountWithoutDecimals: string = formatDecimalsToIntValue(
+    refundAmountField.value
+  ).toString();
+  const currencySymbol = exchangeToken.symbol;
+  const price = useConvertedPrice({
+    value: refundAmountWithoutDecimals,
+    decimals: exchangeToken.decimals,
+    symbol: currencySymbol
+  });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { setFieldValue, handleChange } = useFormikContext<any>();
+  return (
+    <RefundAmountWrapper>
+      <CurrencyIcon currencySymbol={currencySymbol} address={address} />
+      <Input
+        step="0.001"
+        name={FormModel.formFields.refundAmount.name}
+        type="number"
+        onChange={(e) => {
+          handleChange(e);
+          const {
+            target: { valueAsNumber: currentRefundAmount }
+          } = e;
+          const percentageFromInput = (
+            (currentRefundAmount / Number(inEscrowWithDecimals)) *
+            100
+          ).toFixed(3);
+          setFieldValue(
+            FormModel.formFields.refundPercentage.name,
+            percentageFromInput,
+            true
+          );
+        }}
+        onBlur={() => {
+          const currentRefundAmount: string = refundAmountWithoutDecimals;
+          const percentageFromInput = (
+            (Number(currentRefundAmount) / Number(inEscrow)) *
+            100
+          ).toFixed(3);
+          const refundAmountFromPercentage: string = (
+            (Number(inEscrowWithDecimals) * Number(percentageFromInput)) /
+            100
+          ).toFixed(decimals);
+          const percentageFromRoundedRefundAmount = (
+            (Number(refundAmountFromPercentage) /
+              Number(inEscrowWithDecimals)) *
+            100
+          ).toFixed(3);
+          setFieldValue(
+            FormModel.formFields.refundPercentage.name,
+            percentageFromRoundedRefundAmount,
+            true
+          );
+          if (
+            refundAmountFromPercentage !==
+            Number(refundAmountField.value).toFixed(decimals)
+          ) {
+            setFieldValue(
+              FormModel.formFields.refundAmount.name,
+              refundAmountFromPercentage,
+              true
+            );
+          }
+        }}
+      />
+      <ConvertedPrice price={price} withParethensis />
+    </RefundAmountWrapper>
+  );
+}
