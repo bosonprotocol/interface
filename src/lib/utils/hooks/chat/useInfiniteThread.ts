@@ -71,8 +71,7 @@ export function useInfiniteThread({
     bosonXmtp
       .getThread(threadId, counterParty, {
         startTime: endTime,
-        endTime: startTime,
-        pageSize: 100
+        endTime: startTime
       })
       .then((threadObject) => {
         console.log(
