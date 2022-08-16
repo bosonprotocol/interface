@@ -13,6 +13,7 @@ import { NewProposal } from "../../../../../pages/chat/types";
 import Grid from "../../../../ui/Grid";
 import { ModalProps } from "../../../ModalContext";
 import ExchangePreview from "../components/ExchangePreview";
+import { PERCENTAGE_FACTOR } from "../const";
 import { FormModel } from "./MakeProposalFormModel";
 import DescribeProblemStep from "./steps/DescribeProblemStep";
 import MakeAProposalStep from "./steps/MakeAProposalStep/MakeAProposalStep";
@@ -57,7 +58,7 @@ export default function MakeProposalModal({
   const validationSchema = validationSchemaPerStep[activeStep];
   return (
     <>
-      <Grid justifyContent="space-between" padding="2rem 0">
+      <Grid justifyContent="space-between" padding="0 0 2rem 0">
         <ExchangePreview exchange={exchange} />
       </Grid>
       <Formik
@@ -71,10 +72,13 @@ export default function MakeProposalModal({
               description: values[FormModel.formFields.description.name],
               proposals: values[FormModel.formFields.proposalsTypes.name].map(
                 (proposalType) => {
+                  // the percentageAmount must be an integer so it goes from 1 - 100000 (0.001% - 100%)
                   return {
                     type: proposalType.label,
                     percentageAmount:
-                      values[FormModel.formFields.refundPercentage.name] + "",
+                      values[FormModel.formFields.refundPercentage.name] *
+                        PERCENTAGE_FACTOR +
+                      "",
                     signature: ""
                   };
                 }

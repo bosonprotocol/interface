@@ -224,6 +224,66 @@ const getExchanges = ({
             name: "boson sweatshirt (jonas<->dennis)"
           }
         }
+      },
+      {
+        id: "3",
+        buyer: {
+          id: albertId,
+          wallet: "0x"
+        },
+        committedDate: new Date().toString(),
+        disputed: true,
+        expired: true,
+        finalizedDate: new Date().toString(),
+        redeemedDate: new Date().toString(),
+        state: "REDEEMED",
+        validUntilDate: new Date().toString(),
+        seller: { id: albertId },
+        offer: {
+          id: "1",
+          buyerCancelPenalty: "",
+          createdAt: "",
+          disputeResolverId: "",
+          exchangeToken: {
+            address: "0x2000000000000000000000000000000000000000",
+            decimals: "18",
+            name: "PepitoName",
+            symbol: "pepito",
+            __typename: "ExchangeToken"
+          },
+          fulfillmentPeriodDuration: "",
+          metadataHash: "",
+          metadataUri: "",
+          price: "10001230000000000000",
+          protocolFee: "",
+          quantityAvailable: "",
+          quantityInitial: "",
+          resolutionPeriodDuration: "",
+          seller: {
+            active: true,
+            admin: albertAddress,
+            clerk: albertAddress,
+            __typename: "Seller",
+            id: albertId,
+            operator: albertAddress,
+            treasury: albertAddress
+          },
+          sellerDeposit: "",
+          validFromDate: "",
+          validUntilDate: "",
+          voucherRedeemableFromDate: "",
+          voucherRedeemableUntilDate: "",
+          voucherValidDuration: "",
+          __typename: "Offer",
+          isValid: true,
+          voidedAt: "",
+          metadata: {
+            imageUrl:
+              "https://bsn-portal-development-image-upload-storage.s3.amazonaws.com/boson-sweatshirt-FINAL.gif",
+            type: "BASE",
+            name: "boson sweatshirt (albert<->albert)"
+          }
+        }
       }
     ]
   };

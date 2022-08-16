@@ -47,7 +47,7 @@ export default function MakeAProposalStep({
       </Typography>
       <Grid flexDirection="column" margin="2rem 0 0 0" alignItems="flex-start">
         <Typography fontWeight="600" tag="p" fontSize="1.5rem">
-          Type of proposals
+          Proposal type
         </Typography>
         <Select
           name={FormModel.formFields.proposalsTypes.name}

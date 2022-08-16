@@ -1,0 +1,4 @@
+export const MAX_PERCENTAGE_DECIMALS = 3;
+export const PERCENTAGE_FACTOR = 10 ** MAX_PERCENTAGE_DECIMALS;
+// 0.001% * 1000 -> 1
+// 100% * 1000  -> 100000

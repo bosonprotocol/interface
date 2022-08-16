@@ -11,6 +11,7 @@ import styled from "styled-components";
 
 import UploadedFile from "../../../components/form/Upload/UploadedFile";
 import ProposalTypeSummary from "../../../components/modal/components/Chat/components/ProposalTypeSummary";
+import { PERCENTAGE_FACTOR } from "../../../components/modal/components/Chat/const";
 import { useModal } from "../../../components/modal/useModal";
 import Grid from "../../../components/ui/Grid";
 import Typography from "../../../components/ui/Typography";
@@ -295,8 +296,9 @@ const Message = forwardRef(
                 </Typography>
                 {messageContent.proposals.map((proposal) => {
                   const { offer } = exchange;
+
                   const refundAmount = BigNumber.from(offer.price)
-                    .div(BigNumber.from(100))
+                    .div(BigNumber.from(100 * PERCENTAGE_FACTOR))
                     .mul(BigNumber.from(proposal.percentageAmount));
 
                   const formattedRefundAmount = utils.formatUnits(
@@ -324,7 +326,8 @@ const Message = forwardRef(
                         <Typography color={colors.primary} cursor="pointer">
                           Proposed refund amount: {formattedRefundAmount}{" "}
                           {offer.exchangeToken.symbol} (
-                          {proposal.percentageAmount}
+                          {Number(proposal.percentageAmount) /
+                            PERCENTAGE_FACTOR}
                           %)
                         </Typography>
                         <ArrowRight color={colors.primary} />

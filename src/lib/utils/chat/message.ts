@@ -22,11 +22,13 @@ export const validateMessage = (
     if (isProposalMessage) {
       const proposalContent = message.data
         .content as unknown as ProposalContent;
-      const isNumber = proposalContent.value.proposals.every((proposal) => {
-        const isNumber = isNumeric(proposal.percentageAmount);
-        return isNumber;
+      const isInteger = proposalContent.value.proposals.every((proposal) => {
+        const isInteger =
+          isNumeric(proposal.percentageAmount) &&
+          Number.isInteger(Number(proposal.percentageAmount));
+        return isInteger;
       });
-      if (!isNumber) {
+      if (!isInteger) {
         return false;
       }
     }
