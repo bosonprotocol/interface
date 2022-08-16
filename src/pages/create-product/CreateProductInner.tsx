@@ -352,12 +352,10 @@ function CreateProductInner({ initial }: Props) {
       }
     );
 
-    productAttributes[productAttributes.length]?.trait_type.length > 0;
-
-    const additionalAttributes =
-      productAttributes[productAttributes.length]?.trait_type.length > 0
-        ? productAttributes
-        : [];
+    // filter empty attributes
+    const additionalAttributes = productAttributes.filter((attribute) => {
+      return attribute.trait_type.length > 0;
+    });
 
     try {
       const metadataHash = await coreSDK.storeMetadata({
@@ -369,7 +367,8 @@ function CreateProductInner({ initial }: Props) {
         image: `ipfs://${profileImageLink}`,
         type: MetadataType.PRODUCT_V1,
         attributes: [
-          { trait_type: "Offer Category", value: "PHYSICAL" },
+          { trait_type: "productType", value: productType.productType },
+          { trait_type: "productVariant", value: productType.productVariant },
           ...additionalAttributes
         ],
         product: {
@@ -412,9 +411,6 @@ function CreateProductInner({ initial }: Props) {
               : undefined
         }
       });
-
-      // reset the form
-      formikBag.resetForm();
 
       const buyerCancellationPenaltyValue =
         parseInt(coreTermsOfSale.price) *
@@ -491,6 +487,9 @@ function CreateProductInner({ initial }: Props) {
 
       await wait(3_000);
       handleOpenSuccessModal({ offerId });
+
+      // reset the form
+      formikBag.resetForm();
     } catch (error: any) {
       // TODO: FAILURE MODAL
       console.error("error->", error.errors);
