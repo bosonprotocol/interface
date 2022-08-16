@@ -62,6 +62,7 @@ export default function CancelExchangeModal({ exchange, hideModal }: Props) {
     decimals: offer.exchangeToken.decimals,
     symbol: offer.exchangeToken.symbol
   });
+  const showConvertedPrice = !!convertedPrice?.converted;
   return (
     <>
       <DetailTable
@@ -69,11 +70,19 @@ export default function CancelExchangeModal({ exchange, hideModal }: Props) {
         data={[
           {
             name: "Item price",
-            value: `${convertedPrice.price} ETH (${convertedPrice.currency?.symbol} ${convertedPrice?.converted})`
+            value: `${convertedPrice.price} ${offer.exchangeToken.symbol} ${
+              showConvertedPrice
+                ? `(${convertedPrice.currency?.symbol} ${convertedPrice?.converted})`
+                : ""
+            }`
           },
           {
             name: "Buyer Cancel. Penalty",
-            value: `-${buyerCancelationPenalty}% (${convertedRefund.currency?.symbol} ${convertedBuyerCancelationPenalty})`
+            value: `-${buyerCancelationPenalty}% ${
+              showConvertedPrice
+                ? `(${convertedRefund.currency?.symbol} ${convertedBuyerCancelationPenalty})`
+                : ""
+            }`
           }
         ]}
       />
@@ -84,7 +93,11 @@ export default function CancelExchangeModal({ exchange, hideModal }: Props) {
         data={[
           {
             name: "Your refund",
-            value: `${convertedRefund.price} ETH (${convertedPrice.currency?.symbol} ${convertedRefund.converted})`
+            value: `${convertedRefund.price} ${offer.exchangeToken.symbol} ${
+              showConvertedPrice
+                ? `(${convertedPrice.currency?.symbol} ${convertedRefund?.converted})`
+                : ""
+            }`
           }
         ]}
       />

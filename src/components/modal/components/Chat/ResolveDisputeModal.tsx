@@ -51,7 +51,7 @@ export default function ResolveDisputeModal({
 }: Props) {
   return (
     <>
-      <Grid justifyContent="space-between" padding="2rem 0">
+      <Grid justifyContent="space-between" padding="0 0 2rem 0">
         <ExchangePreview exchange={exchange} />
       </Grid>
       <ProposedSolution>Proposed solution</ProposedSolution>
