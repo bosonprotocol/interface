@@ -30,9 +30,9 @@ const Container = styled.div<{ $disputeOpen: boolean }>`
   transition: 400ms;
   width: ${({ $disputeOpen }) => $disputeOpen && "100vw"};
   background: ${colors.lightGrey};
-  padding-top: 1.875rem;
   padding-bottom: 20%;
   ${breakpoint.m} {
+    padding-top: 0;
     width: 100%;
     min-width: 60%;
   }
@@ -44,19 +44,6 @@ const Container = styled.div<{ $disputeOpen: boolean }>`
     width: unset;
     padding-top: none;
     min-width: max-content;
-  }
-  > img {
-    width: 100%;
-    max-height: 400px;
-    object-fit: contain;
-    width: 23.25rem;
-    display: block;
-    margin: 0 auto;
-    ${breakpoint.l} {
-      max-width: 23.25rem;
-      max-height: unset;
-      object-fit: cover;
-    }
   }
   > div {
     padding-left: 1.25rem;
@@ -79,6 +66,23 @@ const Container = styled.div<{ $disputeOpen: boolean }>`
   }
 `;
 
+const ExchangeImage = styled.img`
+  width: 100%;
+  max-height: 400px;
+  max-width: 400px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+  padding: 1.875rem 0;
+
+  ${breakpoint.l} {
+    padding: unset;
+    margin: unset;
+    max-width: unset;
+    object-fit: cover;
+  }
+`;
+
 const sectionStyles = `
 border: 2px solid ${colors.border};
 border-top: none;
@@ -93,15 +97,18 @@ const Section = styled.div`
 `;
 
 const InfoMessage = styled.div`
-  border-left: 2px solid ${colors.border};
+  border: 2px solid ${colors.border};
   color: ${colors.darkGrey};
-  padding: 0.5rem 1.25rem 0.5rem 1.5rem;
+
   font-size: 0.75rem;
   font-weight: 600;
   text-align: center;
   ${breakpoint.l} {
     text-align: left;
     background: ${colors.lightGrey};
+  }
+  && {
+    padding: 0.6875rem 1.5rem;
   }
 `;
 
@@ -247,7 +254,7 @@ export default function ExchangeSidePreview({ exchange, disputeOpen }: Props) {
   );
   return (
     <Container $disputeOpen={disputeOpen}>
-      <img src={exchange.offer.metadata.imageUrl} width="372px" />
+      <ExchangeImage src={exchange.offer.metadata.imageUrl} width="372px" />
       {isInRedeemed && (
         <InfoMessage>{`${daysLeftToResolveDispute} / ${totalDaysToResolveDispute} days left to resolve dispute`}</InfoMessage>
       )}

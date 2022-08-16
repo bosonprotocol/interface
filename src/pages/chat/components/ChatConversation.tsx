@@ -156,6 +156,7 @@ const TypeMessage = styled.div`
   display: flex;
   align-items: center;
   padding: 1.5rem 1rem 1.5rem 1rem;
+  border-right: 1px solid ${colors.border};
 `;
 
 const Input = styled.div`
