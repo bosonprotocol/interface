@@ -330,12 +330,11 @@ function CreateProductInner({ initial }: Props) {
       termsOfExchange,
       shippingInfo
     } = values;
-    console.log(
-      "🚀 ~ file: CreateProductInner.tsx ~ line 329 ~ CreateProductInner ~ values",
-      values
-    );
 
-    const productAttributes = productInformation.attributes.map(
+    const productAttributes: Array<{
+      trait_type: string;
+      value: string;
+    }> = productInformation.attributes.map(
       ({ name, value }: { name: string; value: string }) => {
         return {
           trait_type: name,
@@ -353,6 +352,13 @@ function CreateProductInner({ initial }: Props) {
       }
     );
 
+    productAttributes[productAttributes.length]?.trait_type.length > 0;
+
+    const additionalAttributes =
+      productAttributes[productAttributes.length]?.trait_type.length > 0
+        ? productAttributes
+        : [];
+
     try {
       const metadataHash = await coreSDK.storeMetadata({
         schemaUrl: "https://schema.org/schema",
@@ -364,7 +370,7 @@ function CreateProductInner({ initial }: Props) {
         type: MetadataType.PRODUCT_V1,
         attributes: [
           { trait_type: "Offer Category", value: "PHYSICAL" },
-          ...productAttributes
+          ...additionalAttributes
         ],
         product: {
           uuid: Date.now().toString(),
@@ -482,10 +488,6 @@ function CreateProductInner({ initial }: Props) {
       const txReceipt = await txResponse.wait();
 
       const offerId = coreSDK.getCreatedOfferIdFromLogs(txReceipt.logs);
-      console.log(
-        "🚀 ~ file: CreateProductInner.tsx ~ line 482 ~ CreateProductInner ~ offerId",
-        offerId
-      );
 
       await wait(3_000);
       handleOpenSuccessModal({ offerId });
