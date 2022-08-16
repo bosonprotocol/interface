@@ -47,7 +47,7 @@ interface Props {
 export default function Timeline({ timesteps }: Props) {
   return (
     <Container>
-      {timesteps.map((step) => {
+      {timesteps.map((step, index) => {
         return (
           <Fragment key={`${step.text}-${step.date}`}>
             <DotWrapper>
@@ -58,7 +58,7 @@ export default function Timeline({ timesteps }: Props) {
                 <StyledDate>{step.date}</StyledDate>
               </div>
             </DotWrapper>
-            <VerticalLine />
+            {index !== timesteps.length - 1 && <VerticalLine />}
           </Fragment>
         );
       })}
