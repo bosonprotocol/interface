@@ -267,7 +267,6 @@ function CreateProductInner({ initial }: Props) {
 
   const handleNextForm = useCallback(
     (formikBag: FormikHelpers<CreateProductForm>) => {
-      // roberto: handle next click
       if (isPreviewVisible) {
         setIsPreviewVisible(false);
       }
