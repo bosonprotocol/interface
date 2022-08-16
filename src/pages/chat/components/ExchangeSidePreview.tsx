@@ -21,7 +21,7 @@ import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 const Container = styled.div<{ $disputeOpen: boolean }>`
   display: flex;
   flex-direction: column;
-  height: 91vh;
+  height: 100%;
   overflow-y: auto;
   min-width: max-content;
   position: absolute;
@@ -30,7 +30,6 @@ const Container = styled.div<{ $disputeOpen: boolean }>`
   transition: 400ms;
   width: ${({ $disputeOpen }) => $disputeOpen && "100vw"};
   background: ${colors.lightGrey};
-  padding-bottom: 20%;
   ${breakpoint.m} {
     padding-top: 0;
     width: 100%;
@@ -163,9 +162,12 @@ const CTASection = styled(Section)`
 `;
 
 const HistorySection = styled(Section)`
-  padding-bottom: 3rem;
   height: 100%;
   border-bottom: none;
+
+  && {
+    padding-bottom: 5rem;
+  }
 `;
 
 const formatShortDate = (date: string) => {
