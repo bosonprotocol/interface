@@ -267,7 +267,6 @@ function CreateProductInner({ initial }: Props) {
 
   const handleNextForm = useCallback(
     (formikBag: FormikHelpers<CreateProductForm>) => {
-      // roberto: handle next click
       if (isPreviewVisible) {
         setIsPreviewVisible(false);
       }
@@ -330,12 +329,11 @@ function CreateProductInner({ initial }: Props) {
       termsOfExchange,
       shippingInfo
     } = values;
-    console.log(
-      "🚀 ~ file: CreateProductInner.tsx ~ line 329 ~ CreateProductInner ~ values",
-      values
-    );
 
-    const productAttributes = productInformation.attributes.map(
+    const productAttributes: Array<{
+      trait_type: string;
+      value: string;
+    }> = productInformation.attributes.map(
       ({ name, value }: { name: string; value: string }) => {
         return {
           trait_type: name,
@@ -353,6 +351,11 @@ function CreateProductInner({ initial }: Props) {
       }
     );
 
+    // filter empty attributes
+    const additionalAttributes = productAttributes.filter((attribute) => {
+      return attribute.trait_type.length > 0;
+    });
+
     try {
       const metadataHash = await coreSDK.storeMetadata({
         schemaUrl: "https://schema.org/schema",
@@ -363,8 +366,9 @@ function CreateProductInner({ initial }: Props) {
         image: `ipfs://${profileImageLink}`,
         type: MetadataType.PRODUCT_V1,
         attributes: [
-          { trait_type: "Offer Category", value: "PHYSICAL" },
-          ...productAttributes
+          { trait_type: "productType", value: productType.productType },
+          { trait_type: "productVariant", value: productType.productVariant },
+          ...additionalAttributes
         ],
         product: {
           uuid: Date.now().toString(),
@@ -406,9 +410,6 @@ function CreateProductInner({ initial }: Props) {
               : undefined
         }
       });
-
-      // reset the form
-      formikBag.resetForm();
 
       const buyerCancellationPenaltyValue =
         parseInt(coreTermsOfSale.price) *
@@ -482,13 +483,12 @@ function CreateProductInner({ initial }: Props) {
       const txReceipt = await txResponse.wait();
 
       const offerId = coreSDK.getCreatedOfferIdFromLogs(txReceipt.logs);
-      console.log(
-        "🚀 ~ file: CreateProductInner.tsx ~ line 482 ~ CreateProductInner ~ offerId",
-        offerId
-      );
 
       await wait(3_000);
       handleOpenSuccessModal({ offerId });
+
+      // reset the form
+      formikBag.resetForm();
     } catch (error: any) {
       // TODO: FAILURE MODAL
       console.error("error->", error.errors);
