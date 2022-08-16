@@ -4,7 +4,7 @@ import {
 } from "@bosonprotocol/chat-sdk/dist/cjs/util/definitions";
 import { matchThreadIds } from "@bosonprotocol/chat-sdk/dist/cjs/util/functions";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { useChatContext } from "../../../../pages/chat/ChatProvider/ChatContext";
 
@@ -29,10 +29,11 @@ export function useInfiniteThread({
   error: Error | null;
   isBeginningOfTimes: boolean;
   lastData: ThreadObject | null;
+  appendMessages: (messages: ThreadObject["messages"]) => void;
 } {
   const { bosonXmtp } = useChatContext();
   const [areThreadsLoading, setThreadsLoading] = useState<boolean>(false);
-  const [threadsXmtp, setThreadsXmtp] = useState<ThreadObject[]>([]);
+  const [threadXmtp, setThreadXmtp] = useState<ThreadObject | null>(null);
   const [lastThreadXmtp, setLastThreadXmtp] = useState<ThreadObject | null>(
     null
   );
@@ -89,8 +90,10 @@ export function useInfiniteThread({
         if (!threadObject) {
           return;
         }
-        const mergedThreads = mergeThreads(threadsXmtp, [threadObject]);
-        setThreadsXmtp(mergedThreads);
+        const mergedThreads = mergeThreads(threadXmtp ? [threadXmtp] : [], [
+          threadObject
+        ]);
+        setThreadXmtp(mergedThreads[0]);
       })
       .catch((err) => {
         console.error(
@@ -107,12 +110,24 @@ export function useInfiniteThread({
   }, [bosonXmtp, dateIndex, counterParty, dateStep, threadId]);
 
   return {
-    data: threadsXmtp[0] || null,
+    data: threadXmtp || null,
     isLoading: areThreadsLoading,
     isError: !!error,
     error,
     isBeginningOfTimes,
-    lastData: lastThreadXmtp || null
+    lastData: lastThreadXmtp || null,
+    appendMessages: useCallback(
+      (messages): void => {
+        if (!threadXmtp) {
+          return;
+        }
+        setThreadXmtp({
+          ...threadXmtp,
+          messages: [...(threadXmtp.messages || []), ...messages]
+        });
+      },
+      [threadXmtp]
+    )
   };
 }
 

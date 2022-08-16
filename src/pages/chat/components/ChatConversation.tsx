@@ -346,7 +346,8 @@ const ChatConversation = ({
     isLoading: areThreadsLoading,
     isBeginningOfTimes,
     isError: isErrorThread,
-    lastData: lastThread
+    lastData: lastThread,
+    appendMessages
   } = useInfiniteThread({
     threadId,
     dateIndex,
@@ -376,12 +377,12 @@ const ChatConversation = ({
         ? newMessageOrList
         : [newMessageOrList];
       if (thread) {
-        thread.messages = [...thread.messages, ...newMessages];
+        appendMessages(newMessages);
       } else {
         loadMoreMessages(0); // trigger getting the thread
       }
     },
-    [loadMoreMessages]
+    [loadMoreMessages, appendMessages]
   );
   const previousThreadMessagesRef = useRef<MessageData[]>(
     thread?.messages || []
