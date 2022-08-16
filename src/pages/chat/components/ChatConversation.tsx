@@ -698,11 +698,12 @@ const ChatConversation = ({
                   }
                 }}
                 onKeyDown={async (e) => {
-                  if (e.key === "Enter" && bosonXmtp && threadId) {
+                  const value = e.target.value.trim();
+                  if (e.key === "Enter" && bosonXmtp && threadId && value) {
                     const newMessage = {
                       threadId,
                       content: {
-                        value: e.target.value
+                        value
                       },
                       contentType: MessageType.String,
                       version: "1"
