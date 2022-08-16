@@ -7,7 +7,6 @@ import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import Button from "../ui/Button";
-import { scrollStyles } from "../ui/styles";
 import Typography from "../ui/Typography";
 import { ModalType } from "./ModalContext";
 import { Store } from "./ModalContext";
@@ -107,7 +106,6 @@ const Content = styled.div`
     max-height: calc(100vh - 8rem - 4.25rem);
   }
   overflow: auto;
-  ${scrollStyles}
 `;
 
 interface Props {
