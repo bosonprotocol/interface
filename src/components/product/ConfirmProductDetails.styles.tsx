@@ -1,0 +1,197 @@
+import styled from "styled-components";
+
+import { breakpoint } from "../../lib/styles/breakpoint";
+import { colors } from "../../lib/styles/colors";
+import Typography from "../ui/Typography";
+import { ContainerProductPage, ProductButtonGroup } from "./Product.styles";
+
+export const ConfirmProductDetailsContainer = styled(ContainerProductPage)`
+  max-width: 65.588rem;
+  margin 0 auto;
+  padding-bottom: 10.875rem;
+`;
+
+export const CurrencyIconWrapper = styled.div`
+  svg {
+    width: 1.125rem;
+    height: 1.125rem;
+  }
+`;
+
+export const CollapseContainer = styled.div`
+  padding: 1.5rem 2rem 2rem 2rem;
+  background: ${colors.lightGrey};
+  &:nth-of-type(2) {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+  h3 {
+    margin: 0;
+  }
+  button {
+    div {
+      display: flex;
+    }
+  }
+`;
+
+export const ConfirmationAlert = styled.div`
+  padding: 1.5rem 1.5rem 1.5rem 1.625rem;
+  background: ${colors.black};
+  margin-top: 2rem;
+  display: flex;
+  color: ${colors.white};
+`;
+
+export const IconWrapper = styled.div`
+  width: 3.125rem;
+  > svg {
+    color: ${colors.green};
+  }
+`;
+
+export const ConfirmationContent = styled.div`
+  width: Calc(100% - 3.125rem);
+  p {
+    margin: 0;
+    line-height: 1.5rem;
+  }
+  p:first-child {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+`;
+
+export const ConfirmProductDetailsButtonGroup = styled(ProductButtonGroup)`
+  margin: 5rem 0 0 0;
+`;
+
+export const CollapseContent = styled.div`
+  margin-top 1.719rem;
+`;
+
+export const LogoImg = styled.img`
+  margin-top: 0.5rem;
+  width: 5.5rem;
+  height: 5.5rem;
+`;
+
+export const GridBox = styled.div<{ $minWidth?: string }>`
+  min-width: ${({ $minWidth }) => ($minWidth ? $minWidth : "auto")};
+  &:not(:last-child) {
+    padding-right: 3.25rem;
+  }
+`;
+
+export const ProductTypeBox = styled(GridBox)`
+  margin-bottom: 2rem;
+  &:not(:last-child) {
+    padding-right: 1.5rem;
+  }
+`;
+
+export const ContentValue = styled(Typography)`
+  font-size: 0.75rem;
+  color: ${colors.darkGrey};
+  word-break: break-all;
+`;
+
+export const FormFieldContainer = styled.div`
+  margin-bottom: 2rem;
+  > div {
+    margin-bottom: 0;
+  }
+  p,
+  [data-header] {
+    font-size: 0.75rem;
+    margin: 0;
+  }
+`;
+
+export const ProductInformationContent = styled.div`
+  padding: 1rem 0.75rem 0 0.75rem;
+`;
+
+export const TermsOfSaleContent = styled.div`
+  padding-top: 2.25rem;
+`;
+
+export const ProductBox = styled.div`
+  border: 1px solid rgba(85, 96, 114, 0.06);
+  padding-top: 1rem;
+  text-align: center;
+  width: 6.313rem;
+  height: 6.625rem;
+  p {
+    display: block;
+    font-size: 0.625rem;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+`;
+
+export const ProductSubtitle = styled(Typography)`
+  font-size: 1.25rem;
+`;
+
+export const TagsWrapper = styled.div`
+  display: flex;
+`;
+
+export const Tag = styled.div`
+  background-color: #e3e8f8;
+  display: flex;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+  span {
+    font-size: 0.75rem;
+  }
+  &:not(:first-child) {
+    margin-left: 0.75rem;
+  }
+`;
+
+export const SpaceContainer = styled.div`
+  display: grid;
+  grid-column-gap: 2rem;
+  grid-row-gap: 2rem;
+  ${breakpoint.xxs} {
+    max-width: 22rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  ${breakpoint.xs} {
+    max-width: 32rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  ${breakpoint.s} {
+    max-width: 42rem;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+`;
+
+export const ProductEmptyImage = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  p {
+    margin: 1rem 0 0 0;
+  }
+`;
+
+export const InitializeChatContainer = styled.div`
+  margin-top: 2rem;
+`;
+
+export const RenderProductImageWrapper = styled.div<{
+  $isPlaceholder: boolean;
+}>`
+  max-height: 9.375rem;
+  max-width: 9.375rem;
+  border: 1px solid rgba(85, 96, 114, 0.06);
+  border: ${({ $isPlaceholder }) =>
+    $isPlaceholder ? "1px solid rgba(85, 96, 114, 0.06)" : "none"};
+  overflow: hidden;
+`;

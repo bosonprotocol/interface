@@ -6,7 +6,7 @@ import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import Typography from "./Typography";
 
-const ImageWrapper = styled.div`
+export const ImageWrapper = styled.div`
   overflow: hidden;
   position: relative;
   z-index: ${zIndex.OfferCard};
@@ -33,7 +33,7 @@ const ImageWrapper = styled.div`
   }
 `;
 
-const ImageContainer = styled.img`
+export const ImageContainer = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
