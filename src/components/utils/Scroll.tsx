@@ -12,13 +12,10 @@ function ScrollToTop() {
 }
 
 export const ScroolToID = ({ id }: { id: string }) => {
-  useEffect(() => {
-    const localElement = document.getElementById(id);
-    if (localElement) {
-      localElement.scrollIntoView({ block: "center" });
-    }
-  }, [id]);
-
+  const localElement = document.getElementById(id);
+  if (localElement) {
+    localElement.scrollIntoView({ block: "center" });
+  }
   return null;
 };
 
