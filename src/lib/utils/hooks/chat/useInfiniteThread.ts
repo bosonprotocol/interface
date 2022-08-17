@@ -121,28 +121,16 @@ export function useInfiniteThread({
     error,
     isBeginningOfTimes,
     lastData: lastThreadXmtp || null,
-    appendMessages: useCallback(
-      async (messages): Promise<void> => {
-        if (!threadXmtp) {
-          return;
-        }
-        setThreadXmtp({
-          ...threadXmtp,
-          messages: [
-            ...(threadXmtp.messages || []),
-            ...(await Promise.all(
-              messages.map(async (message) => {
-                if (message.isValid === undefined) {
-                  message.isValid = await validateMessage(message.data);
-                }
-                return message;
-              })
-            ))
-          ]
-        });
-      },
-      [threadXmtp]
-    )
+    appendMessages: useCallback((messages): void => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      setThreadXmtp((newThread) => {
+        return {
+          ...(newThread || {}),
+          messages: [...(newThread?.messages || []), ...messages]
+        };
+      });
+    }, [])
   };
 }
 

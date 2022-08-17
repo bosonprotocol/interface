@@ -79,7 +79,7 @@ export default function MakeProposalModal({
                       values[FormModel.formFields.refundPercentage.name] *
                         PERCENTAGE_FACTOR +
                       "",
-                    signature: ""
+                    signature: "0x" // TODO: change
                   };
                 }
               ),

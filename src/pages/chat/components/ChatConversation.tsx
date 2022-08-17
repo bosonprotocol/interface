@@ -7,7 +7,6 @@ import {
   ProposalContent,
   SupportedFileMimeTypes,
   ThreadId,
-  ThreadObject,
   version
 } from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/definitions";
 import { validateMessage } from "@bosonprotocol/chat-sdk/dist/cjs/util/validators";
@@ -33,7 +32,7 @@ import { useBuyerSellerAccounts } from "../../../lib/utils/hooks/useBuyerSellerA
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useChatContext } from "../ChatProvider/ChatContext";
-import { MessageDataWithIsValid } from "../types";
+import { MessageDataWithIsValid, ThreadObjectWithIsValid } from "../types";
 import ButtonProposal from "./ButtonProposal/ButtonProposal";
 import ExchangeSidePreview from "./ExchangeSidePreview";
 import Message from "./Message";
@@ -370,15 +369,23 @@ const ChatConversation = ({
   );
 
   const addMessage = useCallback(
-    (
-      thread: ThreadObject | null,
+    async (
+      thread: ThreadObjectWithIsValid | null,
       newMessageOrList: MessageDataWithIsValid | MessageDataWithIsValid[]
     ) => {
       const newMessages = Array.isArray(newMessageOrList)
         ? newMessageOrList
         : [newMessageOrList];
       if (thread) {
-        appendMessages(newMessages);
+        const messagesWithIsValid = await Promise.all(
+          newMessages.map(async (message) => {
+            if (message.isValid === undefined) {
+              message.isValid = await validateMessage(message.data);
+            }
+            return message;
+          })
+        );
+        await appendMessages(messagesWithIsValid);
       } else {
         loadMoreMessages(0); // trigger getting the thread
       }
@@ -433,7 +440,7 @@ const ChatConversation = ({
         destinationAddress
       )) {
         const isValid = await validateMessage(incomingMessage.data);
-        addMessage(thread, { ...incomingMessage, isValid });
+        await addMessage(thread, { ...incomingMessage, isValid });
       }
     };
     monitor().catch((error) => {
@@ -464,7 +471,7 @@ const ChatConversation = ({
           newMessage,
           destinationAddress
         );
-        addMessage(thread, { ...messageData, isValid: true });
+        await addMessage(thread, { ...messageData, isValid: true });
       }
     },
     [addMessage, bosonXmtp, destinationAddress, threadId, thread]
@@ -592,7 +599,7 @@ const ChatConversation = ({
           <InfiniteScroll
             inverse
             next={loadMoreMessages}
-            hasMore={true || hasMoreMessages}
+            hasMore={hasMoreMessages}
             loader={<></>}
             dataLength={thread?.messages.length || 0}
             scrollableTarget="messages"
@@ -677,7 +684,7 @@ const ChatConversation = ({
                     newMessage,
                     destinationAddress
                   );
-                  addMessage(thread, { ...messageData, isValid: true });
+                  await addMessage(thread, { ...messageData, isValid: true });
                   if (proposalFiles.length) {
                     await sendFilesToChat(proposalFiles);
                   }
@@ -714,7 +721,7 @@ const ChatConversation = ({
                       newMessage,
                       destinationAddress
                     );
-                    addMessage(thread, { ...messageData, isValid: true });
+                    await addMessage(thread, { ...messageData, isValid: true });
                     onTextAreaChange("");
                   }
                 }}
