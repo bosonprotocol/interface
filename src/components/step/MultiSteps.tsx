@@ -37,7 +37,7 @@ export default function MultiSteps({
           0
         );
         return (
-          <MultiStepWrapper key={`multi_${i}`}>
+          <MultiStepWrapper id="multisteps_wrapper" key={`multi_${i}`}>
             <StepWrapper>
               {steps.map((step: number, key: number) => {
                 const currentKey = previousLength + key;

@@ -7,175 +7,35 @@ import keys from "lodash/keys";
 import { useMemo } from "react";
 import { useCallback } from "react";
 import { useState } from "react";
-import styled from "styled-components";
 import { useAccount } from "wagmi";
 
 import { useModal } from "../../components/modal/useModal";
-import ConfirmProductDetails from "../../components/product/ConfirmProductDetails";
-import CoreTermsOfSale from "../../components/product/CoreTermsOfSale";
-import CreateYourProfile from "../../components/product/CreateYourProfile";
 import Help from "../../components/product/Help";
 import Preview from "../../components/product/Preview";
-import ProductImages from "../../components/product/ProductImages";
-import ProductInformation from "../../components/product/ProductInformation";
-import ProductType from "../../components/product/ProductType";
-import ShippingInfo from "../../components/product/ShippingInfo";
-import TermsOfExchange from "../../components/product/TermsOfExchange";
 import { CreateProductForm } from "../../components/product/utils";
-import {
-  coreTermsOfSaleValidationSchema,
-  CREATE_PRODUCT_STEPS,
-  createYourProfileValidationSchema,
-  productImagesValidationSchema,
-  productInformationValidationSchema,
-  productTypeValidationSchema,
-  shippingInfoValidationSchema,
-  termsOfExchangeValidationSchema
-} from "../../components/product/utils";
-import {
-  coreTermsOfSaleHelp,
-  createYourProfileHelp,
-  productImagesHelp,
-  productInformationHelp,
-  productTypeHelp,
-  shippingInfoHelp,
-  termsOfExchangeHelp
-} from "../../components/product/utils/productHelpOptions";
+import { CREATE_PRODUCT_STEPS } from "../../components/product/utils";
 import MultiSteps from "../../components/step/MultiSteps";
 import { getLocalStorageItems } from "../../lib/utils/getLocalStorageItems";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
 import { saveItemInStorage } from "../../lib/utils/hooks/useLocalStorage";
 import { useSellers } from "../../lib/utils/hooks/useSellers";
 import { useCoreSDK } from "../../lib/utils/useCoreSdk";
-
-const ProductLayoutContainer = styled.div(
-  ({ isPreviewVisible }: { isPreviewVisible: boolean }) => {
-    if (!isPreviewVisible) {
-      return `
-        display: flex;
-        justify-content: space-between;
-        > form {
-          width: 100%;
-        }
-      `;
-    }
-    return "";
-  }
-);
-const HelpWrapper = styled.div`
-  padding-left: 3rem;
-`;
-const CreateProductWrapper = styled.div`
-  > div:first-child {
-    margin-bottom: 2rem;
-  }
-`;
-
-type CreateProductSteps = {
-  0: {
-    ui: JSX.Element;
-    validation: typeof createYourProfileValidationSchema;
-    helpSection: typeof createYourProfileHelp;
-  };
-  1: {
-    ui: JSX.Element;
-    validation: typeof productTypeValidationSchema;
-    helpSection: typeof productTypeHelp;
-  };
-  2: {
-    ui: JSX.Element;
-    validation: typeof productInformationValidationSchema;
-    helpSection: typeof productInformationHelp;
-  };
-  3: {
-    ui: JSX.Element;
-    validation: typeof productImagesValidationSchema;
-    helpSection: typeof productImagesHelp;
-  };
-  4: {
-    ui: JSX.Element;
-    validation: typeof coreTermsOfSaleValidationSchema;
-    helpSection: typeof coreTermsOfSaleHelp;
-  };
-  5: {
-    ui: JSX.Element;
-    validation: typeof termsOfExchangeValidationSchema;
-    helpSection: typeof termsOfExchangeHelp;
-  };
-  6: {
-    ui: JSX.Element;
-    validation: typeof shippingInfoValidationSchema;
-    helpSection: typeof shippingInfoHelp;
-  };
-  7: {
-    ui: JSX.Element;
-    validation: null; // TODO: NEED TO BE ADDED, FOR NOW JUSt PLAIN JSX
-    helpSection: null;
-  };
-};
-
-type CreateProductStepsParams = {
-  setIsPreviewVisible: React.Dispatch<React.SetStateAction<boolean>>;
-};
-
-const createProductSteps = ({
-  setIsPreviewVisible
-}: CreateProductStepsParams) => {
-  return {
-    0: {
-      ui: <CreateYourProfile />,
-      validation: createYourProfileValidationSchema,
-      helpSection: createYourProfileHelp
-    },
-    1: {
-      ui: <ProductType />,
-      validation: productTypeValidationSchema,
-      helpSection: productTypeHelp
-    },
-    2: {
-      ui: <ProductInformation />,
-      validation: productInformationValidationSchema,
-      helpSection: productInformationHelp
-    },
-    3: {
-      ui: <ProductImages />,
-      validation: productImagesValidationSchema,
-      helpSection: productImagesHelp
-    },
-    4: {
-      ui: <CoreTermsOfSale />,
-      validation: coreTermsOfSaleValidationSchema,
-      helpSection: coreTermsOfSaleHelp
-    },
-    5: {
-      ui: <TermsOfExchange />,
-      validation: termsOfExchangeValidationSchema,
-      helpSection: termsOfExchangeHelp
-    },
-    6: {
-      ui: <ShippingInfo />,
-      validation: shippingInfoValidationSchema,
-      helpSection: shippingInfoHelp
-    },
-    7: {
-      ui: <ConfirmProductDetails togglePreview={setIsPreviewVisible} />,
-      validation: null,
-      helpSection: null
-    }
-  } as const;
-};
-
-const FIRST_STEP = 0;
-
-async function wait(ms: number) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
-}
+import {
+  CreateProductWrapper,
+  HelpWrapper,
+  ProductLayoutContainer
+} from "./CreateProductInner.styles";
+import {
+  CreateProductSteps,
+  createProductSteps,
+  FIRST_STEP,
+  wait
+} from "./utils";
 
 interface Props {
   initial: CreateProductForm;
 }
+
 function CreateProductInner({ initial }: Props) {
   const [currentStep, setCurrentStep] = useState<number>(FIRST_STEP);
   const [isPreviewVisible, setIsPreviewVisible] = useState<boolean>(false);
@@ -265,19 +125,14 @@ function CreateProductInner({ initial }: Props) {
     };
   }, [currentStep]);
 
-  const handleNextForm = useCallback(
-    (formikBag: FormikHelpers<CreateProductForm>) => {
-      if (isPreviewVisible) {
-        setIsPreviewVisible(false);
-      }
-      if (currentStep < wizardStep.wizardLength) {
-        setCurrentStep((prev) => prev + 1);
-      }
-
-      formikBag.setFieldValue("isValid", false);
-    },
-    [currentStep, isPreviewVisible, wizardStep.wizardLength, setCurrentStep]
-  );
+  const handleNextForm = useCallback(() => {
+    if (isPreviewVisible) {
+      setIsPreviewVisible(false);
+    }
+    if (currentStep < wizardStep.wizardLength) {
+      setCurrentStep((prev) => prev + 1);
+    }
+  }, [currentStep, isPreviewVisible, wizardStep.wizardLength, setCurrentStep]);
 
   const handleClickStep = (val: number) => {
     if (isPreviewVisible) {
@@ -508,7 +363,7 @@ function CreateProductInner({ initial }: Props) {
       formikBag
     });
 
-    return handleNextForm(formikBag);
+    return handleNextForm();
   };
 
   return (
@@ -518,6 +373,7 @@ function CreateProductInner({ initial }: Props) {
         active={currentStep}
         callback={handleClickStep}
       />
+
       <ProductLayoutContainer isPreviewVisible={isPreviewVisible}>
         <Formik<CreateProductForm>
           initialValues={initial}
