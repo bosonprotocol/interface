@@ -16,8 +16,6 @@ export default function CreateProductDraft({ chooseNew, chooseDraft }: Props) {
           Do you whish to continue editing this product or start fresh?
         </Typography>
       </Grid>
-      {/* TODO: add items from figma based on props */}
-      {/* <Grid>item</Grid> */}
       <Grid flexDirection="row" justifyContent="space-between">
         <Button theme="secondary" onClick={chooseDraft}>
           Edit draft
