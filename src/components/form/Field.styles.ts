@@ -223,12 +223,8 @@ export const FieldTextArea = styled.textarea.attrs((props: { error: any }) => ({
 `;
 
 export const FormFieldWrapper = styled(Grid)`
-  /* max-width: 50vw; */
   margin-bottom: 3.5rem;
-
-  p {
-    font-family: "Plus Jakarta Sans";
-    font-style: normal;
+  p 
     line-height: 150%;
   }
 
