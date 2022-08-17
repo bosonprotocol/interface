@@ -50,7 +50,7 @@ const IconWrapper = styled.div`
 `;
 
 const ConfirmationContent = styled.div`
-  width: Calc(100% - 3.125rem);
+  width: calc(100% - 3.125rem);
   p {
     margin: 0;
     line-height: 1.5rem;
