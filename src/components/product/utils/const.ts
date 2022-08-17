@@ -16,7 +16,6 @@ export const CREATE_PRODUCT_STEPS = [
   } as const,
   {
     name: "Product Data",
-    // steps: 4
     steps: 3 // NOTE: FOR CURRENT SCOPE PRODUCTS VARIANTS ARE EXCLUDED
   } as const,
   {
