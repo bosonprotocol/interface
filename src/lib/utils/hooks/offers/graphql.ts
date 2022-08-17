@@ -37,11 +37,93 @@ export const offerGraphQl = gql`
       symbol
     }
     metadata {
+      id
       name
       description
       externalUrl
       schemaUrl
       type
+      ... on ProductV1MetadataEntity {
+        image
+        attributes {
+          id
+          traitType
+          value
+          displayType
+        }
+        createdAt
+        voided
+        validFromDate
+        validUntilDate
+        uuid
+        product {
+          id
+          uuid
+          version
+          title
+          description
+          identification_sKU
+          identification_productId
+          identification_productIdType
+          productionInformation_brandName
+          productionInformation_manufacturer
+          productionInformation_manufacturerPartNumber
+          productionInformation_modelNumber
+          productionInformation_materials
+          details_category
+          details_subCategory
+          details_subCategory2
+          details_offerCategory
+          offerCategory
+          details_tags
+          details_sections
+          details_personalisation
+          packaging_packageQuantity
+          packaging_dimensions_length
+          packaging_dimensions_width
+          packaging_dimensions_height
+          packaging_dimensions_unit
+          packaging_weight_value
+          packaging_weight_unit
+        }
+        productV1Seller {
+          id
+          defaultVersion
+          name
+          description
+          externalUrl
+          tokenId
+          images {
+            id
+            url
+            tag
+            type
+          }
+          contactLinks {
+            id
+            url
+            tag
+          }
+        }
+        exchangePolicy {
+          id
+          uuid
+          version
+          label
+          template
+        }
+        shipping {
+          id
+          defaultVersion
+          countryOfOrigin
+          supportedJurisdictions {
+            id
+            label
+            deliveryTime
+          }
+          redemptionPoint
+        }
+      }
     }
   }
 `;
@@ -95,7 +177,7 @@ export function buildGetOffersQuery({
     ${offerCurationList ? "$offerCurationList: [String!]" : ""}
     ${voided ? "$voided: Boolean" : ""}
   ) {
-    baseMetadataEntities(
+    productV1MetadataEntities(
       first: $first
       ${skip ? "skip : $skip" : ""}
       orderBy: $orderBy
