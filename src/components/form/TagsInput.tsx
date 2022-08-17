@@ -3,6 +3,7 @@ import { useField } from "formik";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
+import { colors } from "../../lib/styles/colors";
 import Error from "./Error";
 import { FieldInput } from "./Field.styles";
 
@@ -76,19 +77,19 @@ const TagContainer = styled.div`
 `;
 
 const TagWrapper = styled.div`
-  background-color: #f1f3f9;
+  background-color: ${colors.lightGrey};
   display: inline-block;
   padding: 0.5em 0.75em;
 `;
 
 const Close = styled.span`
-  color: #556072;
+  color: ${colors.darkGrey};
   border-radius: 50%;
   display: inline-flex;
   justify-content: center;
   align-items: center;
   margin-left: 0.5em;
-  font-size: 18px;
+  font-size: 1.125rem;
   cursor: pointer;
 `;
 
