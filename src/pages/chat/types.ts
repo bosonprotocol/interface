@@ -1,7 +1,8 @@
 import {
+  MessageData,
   ProposalContent,
   ThreadObject
-} from "@bosonprotocol/chat-sdk/dist/cjs/util/definitions";
+} from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/definitions";
 
 import { Exchange } from "../../lib/utils/hooks/useExchanges";
 
@@ -12,6 +13,14 @@ export type Thread = ThreadObject & {
       })
     | undefined;
 };
+
+export interface ThreadObjectWithIsValid extends ThreadObject {
+  messages: MessageDataWithIsValid[];
+}
+
+export interface MessageDataWithIsValid extends MessageData {
+  isValid: boolean;
+}
 
 export type NewProposal = ProposalContent["value"];
 

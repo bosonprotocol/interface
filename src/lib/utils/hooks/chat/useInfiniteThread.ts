@@ -1,12 +1,14 @@
 import {
   ThreadId,
   ThreadObject
-} from "@bosonprotocol/chat-sdk/dist/cjs/util/definitions";
-import { matchThreadIds } from "@bosonprotocol/chat-sdk/dist/cjs/util/functions";
+} from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/definitions";
+import { matchThreadIds } from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/functions";
+import { validateMessage } from "@bosonprotocol/chat-sdk/dist/cjs/util/validators";
 import dayjs from "dayjs";
 import { useCallback, useEffect, useState } from "react";
 
 import { useChatContext } from "../../../../pages/chat/ChatProvider/ChatContext";
+import { ThreadObjectWithIsValid } from "../../../../pages/chat/types";
 
 interface Props {
   dateStep: "day" | "week" | "month" | "year";
@@ -23,17 +25,19 @@ export function useInfiniteThread({
   threadId,
   onFinishFetching
 }: Props): {
-  data: ThreadObject | null;
+  data: ThreadObjectWithIsValid | null;
   isLoading: boolean;
   isError: boolean;
   error: Error | null;
   isBeginningOfTimes: boolean;
   lastData: ThreadObject | null;
-  appendMessages: (messages: ThreadObject["messages"]) => void;
+  appendMessages: (messages: ThreadObjectWithIsValid["messages"]) => void;
 } {
   const { bosonXmtp } = useChatContext();
   const [areThreadsLoading, setThreadsLoading] = useState<boolean>(false);
-  const [threadXmtp, setThreadXmtp] = useState<ThreadObject | null>(null);
+  const [threadXmtp, setThreadXmtp] = useState<ThreadObjectWithIsValid | null>(
+    null
+  );
   const [lastThreadXmtp, setLastThreadXmtp] = useState<ThreadObject | null>(
     null
   );
@@ -68,13 +72,13 @@ export function useInfiniteThread({
       threadId,
       counterParty,
       areThreadsLoading
-    });
+    }); // TODO: remove
     bosonXmtp
       .getThread(threadId, counterParty, {
         startTime: endTime,
         endTime: startTime
       })
-      .then((threadObject) => {
+      .then(async (threadObject) => {
         console.log(
           "FINISH requesting threads from",
           startTime,
@@ -85,7 +89,7 @@ export function useInfiniteThread({
             counterParty,
             threadObject: !!threadObject
           }
-        );
+        ); // TODO: remove
         setLastThreadXmtp(threadObject);
         if (!threadObject) {
           return;
@@ -93,13 +97,14 @@ export function useInfiniteThread({
         const mergedThreads = mergeThreads(threadXmtp ? [threadXmtp] : [], [
           threadObject
         ]);
-        setThreadXmtp(mergedThreads[0]);
+        const newThreadXmtp = mergedThreads[0] as ThreadObjectWithIsValid;
+
+        await setIsValidToMessages(newThreadXmtp);
+
+        setThreadXmtp(newThreadXmtp);
       })
       .catch((err) => {
-        console.error(
-          // `Error while requesting threadId: ${JSON.stringify(threadId)}`,
-          err
-        );
+        console.error(err);
         setError(err);
       })
       .finally(() => {
@@ -117,13 +122,23 @@ export function useInfiniteThread({
     isBeginningOfTimes,
     lastData: lastThreadXmtp || null,
     appendMessages: useCallback(
-      (messages): void => {
+      async (messages): Promise<void> => {
         if (!threadXmtp) {
           return;
         }
         setThreadXmtp({
           ...threadXmtp,
-          messages: [...(threadXmtp.messages || []), ...messages]
+          messages: [
+            ...(threadXmtp.messages || []),
+            ...(await Promise.all(
+              messages.map(async (message) => {
+                if (message.isValid === undefined) {
+                  message.isValid = await validateMessage(message.data);
+                }
+                return message;
+              })
+            ))
+          ]
         });
       },
       [threadXmtp]
@@ -168,4 +183,23 @@ const mergeThreads = (
     }
   }
   return resultingThreads;
+};
+
+const setIsValidToMessages = async (newThreadXmtp: ThreadObjectWithIsValid) => {
+  const promises = [];
+  for (const message of newThreadXmtp.messages) {
+    promises.push(
+      message.isValid === undefined
+        ? validateMessage(message.data)
+        : message.isValid
+    );
+  }
+
+  const promisesResults = await Promise.all(promises);
+
+  for (let i = 0; i < promisesResults.length; i++) {
+    const promiseResult = promisesResults[i];
+    const message = newThreadXmtp.messages[i];
+    message.isValid = promiseResult;
+  }
 };

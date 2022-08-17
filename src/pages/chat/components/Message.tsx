@@ -1,8 +1,9 @@
 import {
   FileContent,
   MessageType,
-  ProposalContent
-} from "@bosonprotocol/chat-sdk/dist/cjs/util/definitions";
+  ProposalContent,
+  StringContent
+} from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/definitions";
 import { Image as AccountImage } from "@davatar/react";
 import { BigNumber, utils } from "ethers";
 import { ArrowRight, Check } from "phosphor-react";
@@ -17,10 +18,8 @@ import Grid from "../../../components/ui/Grid";
 import Typography from "../../../components/ui/Typography";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
-import { DeepReadonly } from "../../../lib/types/helpers";
-import { validateMessage } from "../../../lib/utils/chat/message";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
-import { Thread } from "../types";
+import { MessageDataWithIsValid } from "../types";
 
 const width = "31.625rem";
 type StyledContentProps = { $isLeftAligned: boolean };
@@ -141,7 +140,7 @@ const BottomDateStamp = ({
 
 interface Props {
   exchange: Exchange;
-  message: DeepReadonly<Thread["messages"][number]>;
+  message: MessageDataWithIsValid;
   children: ReactNode;
   isLeftAligned: boolean;
 }
@@ -173,8 +172,8 @@ const Message = forwardRef(
       messageContentType === MessageType.String;
     const isFileMessage = messageContentType === MessageType.File;
     const isProposalMessage = messageContentType === MessageType.Proposal;
+    const { isValid } = message;
 
-    const isValid = validateMessage(message);
     if (!isValid) {
       return (
         <Content $isLeftAligned={isLeftAligned}>
@@ -194,14 +193,14 @@ const Message = forwardRef(
       );
     }
     if (isRegularMessage) {
+      const messageValue = messageContent as unknown as StringContent;
+
       return (
         <Content $isLeftAligned={isLeftAligned}>
           <SellerAvatar isLeftAligned={isLeftAligned} exchange={exchange}>
             {children}
           </SellerAvatar>
-          <div style={{ overflowWrap: "break-word" }}>
-            {message.data.content.value}
-          </div>
+          <div style={{ overflowWrap: "break-word" }}>{messageValue.value}</div>
           <BottomDateStamp isLeftAligned={isLeftAligned} message={message} />
         </Content>
       );

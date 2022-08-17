@@ -7,8 +7,10 @@ import {
   ProposalContent,
   SupportedFileMimeTypes,
   ThreadId,
-  ThreadObject
-} from "@bosonprotocol/chat-sdk/dist/cjs/util/definitions";
+  ThreadObject,
+  version
+} from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/definitions";
+import { validateMessage } from "@bosonprotocol/chat-sdk/dist/cjs/util/validators";
 import dayjs from "dayjs";
 import { CircleNotch } from "phosphor-react";
 import { ArrowLeft, UploadSimple } from "phosphor-react";
@@ -31,6 +33,7 @@ import { useBuyerSellerAccounts } from "../../../lib/utils/hooks/useBuyerSellerA
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useChatContext } from "../ChatProvider/ChatContext";
+import { MessageDataWithIsValid } from "../types";
 import ButtonProposal from "./ButtonProposal/ButtonProposal";
 import ExchangeSidePreview from "./ExchangeSidePreview";
 import Message from "./Message";
@@ -240,8 +243,6 @@ const HeaderButton = styled.button`
 
 const NavigationMobile = styled.div`
   display: flex;
-  /* min-height: 3.125rem; */
-  /* width: 100%; */
   align-items: flex-end;
   justify-content: space-between;
   svg {
@@ -341,7 +342,6 @@ const ChatConversation = ({
       sellerId: exchange.seller.id
     };
   }, [exchange]);
-  console.log("my threadId", threadId);
   const {
     data: thread,
     isLoading: areThreadsLoading,
@@ -372,7 +372,7 @@ const ChatConversation = ({
   const addMessage = useCallback(
     (
       thread: ThreadObject | null,
-      newMessageOrList: MessageData | MessageData[]
+      newMessageOrList: MessageDataWithIsValid | MessageDataWithIsValid[]
     ) => {
       const newMessages = Array.isArray(newMessageOrList)
         ? newMessageOrList
@@ -432,7 +432,8 @@ const ChatConversation = ({
         thread.threadId,
         destinationAddress
       )) {
-        addMessage(thread, incomingMessage);
+        const isValid = await validateMessage(incomingMessage.data);
+        addMessage(thread, { ...incomingMessage, isValid });
       }
     };
     monitor().catch((error) => {
@@ -457,13 +458,13 @@ const ChatConversation = ({
           threadId,
           content: imageContent,
           contentType: MessageType.File,
-          version: "1"
-        };
+          version
+        } as const;
         const messageData = await bosonXmtp.encodeAndSendMessage(
           newMessage,
           destinationAddress
         );
-        addMessage(thread, messageData);
+        addMessage(thread, { ...messageData, isValid: true });
       }
     },
     [addMessage, bosonXmtp, destinationAddress, threadId, thread]
@@ -670,13 +671,13 @@ const ChatConversation = ({
                     threadId,
                     content: proposalContent,
                     contentType: MessageType.Proposal,
-                    version: "1"
-                  };
+                    version
+                  } as const;
                   const messageData = await bosonXmtp.encodeAndSendMessage(
                     newMessage,
                     destinationAddress
                   );
-                  addMessage(thread, messageData);
+                  addMessage(thread, { ...messageData, isValid: true });
                   if (proposalFiles.length) {
                     await sendFilesToChat(proposalFiles);
                   }
@@ -707,13 +708,13 @@ const ChatConversation = ({
                         value
                       },
                       contentType: MessageType.String,
-                      version: "1"
-                    };
+                      version
+                    } as const;
                     const messageData = await bosonXmtp.encodeAndSendMessage(
                       newMessage,
                       destinationAddress
                     );
-                    addMessage(thread, messageData);
+                    addMessage(thread, { ...messageData, isValid: true });
                     onTextAreaChange("");
                   }
                 }}
