@@ -98,7 +98,7 @@ export default function ProductInformation() {
       <SectionTitle tag="h2">Product Information</SectionTitle>
       <FormField
         title="Product Title"
-        required={true}
+        required
         subTitle="Use words people would search for when looking for your item."
       >
         <Input
@@ -108,7 +108,7 @@ export default function ProductInformation() {
       </FormField>
       <FormField
         title="Description"
-        required={true}
+        required
         subTitle="Describe your product. Provide as much detail as possible."
       >
         <Textarea
@@ -118,7 +118,7 @@ export default function ProductInformation() {
       </FormField>
       <FormField
         title="Category"
-        required={true}
+        required
         subTitle="Select the category that best matches your product."
       >
         <Select
@@ -131,7 +131,7 @@ export default function ProductInformation() {
       </FormField>
       <FormField
         title="Search Tags"
-        required={true}
+        required
         subTitle="Input any relevant tags to make your offer stand out."
       >
         <TagsInput name="productInformation.tags" />

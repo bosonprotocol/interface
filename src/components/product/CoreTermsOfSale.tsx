@@ -28,7 +28,7 @@ export default function CoreTermsOfSale() {
       <SectionTitle tag="h2">Core Terms of Sale</SectionTitle>
       <FormField
         title="Price"
-        required={true}
+        required
         subTitle="Input the selling price of the selected item. Note that the price includes shipping."
       >
         <PriceContainer>
@@ -52,7 +52,7 @@ export default function CoreTermsOfSale() {
       </FormField>
       <FormField
         title="Quantity"
-        required={true}
+        required
         subTitle="How many of this item do you want to sell? You can change this value for each variant."
       >
         <Input
@@ -74,14 +74,14 @@ export default function CoreTermsOfSale() {
       </FormField>
       <FormField
         title="Redemption period"
-        required={true}
+        required
         subTitle="Redemption period is the time in which buyers can redeem the rNFT for the physical item."
       >
         <Datepicker name="coreTermsOfSale.redemptionPeriod" period />
       </FormField>
       <FormField
         title="Offer Validity period"
-        required={true}
+        required
         subTitle="The Offer validity period is the time in which buyers can commit to your offer."
       >
         <Datepicker name="coreTermsOfSale.offerValidityPeriod" period />
