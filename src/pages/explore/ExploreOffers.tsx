@@ -89,7 +89,7 @@ export default function ExploreOffers(props: Props) {
     brand,
     name,
     voided: false,
-    valid: true,
+    // valid: true,
     exchangeTokenAddress,
     quantityAvailable_gte: 1,
     sellerId,
