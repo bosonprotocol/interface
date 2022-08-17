@@ -19,7 +19,7 @@ import { useCreateForm } from "./utils/useCreateForm";
 
 const AddProductContainer = styled.div`
   display: grid;
-  grid-template-columns: minmax(180px, 1fr) 3fr;
+  grid-template-columns: minmax(11.25rem, 1fr) 3fr;
   grid-gap: 1rem;
   margin-bottom: 1rem;
 `;

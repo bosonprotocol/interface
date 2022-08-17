@@ -89,7 +89,7 @@ const Close = styled.span`
   justify-content: center;
   align-items: center;
   margin-left: 0.5em;
-  font-size: 18px;
+  font-size: 1.125rem;
   cursor: pointer;
 `;
 
