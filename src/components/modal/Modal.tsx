@@ -59,7 +59,7 @@ const Wrapper = styled.div<{ modalType: ModalType; $size: Props["size"] }>`
   background-color: var(--primaryBgColor);
   border: var(--secondary);
   max-width: ${({ modalType }) =>
-    modalType === "PRODUCT_CREATE_SUCCESS" ? "1054px" : "auto"};
+    modalType === "PRODUCT_CREATE_SUCCESS" ? "65.875rem" : "auto"};
   margin: 0;
   ${breakpoint.s} {
     margin: ${({ $size }) =>
