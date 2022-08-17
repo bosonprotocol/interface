@@ -13,11 +13,11 @@ export const createYourProfileHelp = [
     title: "What to think about when describing yourself/your brand?",
     description: (
       <>
-        <Typography tag="p" style={{ margin: "0 0 10px 0" }}>
+        <Typography tag="p" margin="0 0 10px 0">
           Highly Unique items often have an interesting story behind them and
           buyers like to know about the creator.
         </Typography>
-        <Typography tag="p" style={{ margin: "0 0 10px 0" }}>
+        <Typography tag="p" margin="0 0 10px 0">
           Tell them about the types of items you sell and what your brand is all
           about.
         </Typography>

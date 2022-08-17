@@ -67,7 +67,7 @@ export default function Help({ title = "Help", background, data }: Props) {
   return (
     <HelpWrapper $background={background}>
       <HelpTitleContainer>
-        <Typography tag="h3" style={{ margin: 0 }}>
+        <Typography tag="h3" margin="0">
           {title}
         </Typography>
       </HelpTitleContainer>
