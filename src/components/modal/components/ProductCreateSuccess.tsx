@@ -123,7 +123,8 @@ export default function ProductCreateSuccess({
     onCreateNewProject();
   };
 
-  const suggestedAmount = parseInt(convertedPrice.price || "0") * 0.15;
+  const suggestedAmount =
+    parseFloat(convertedPrice.price || "0") * (PROGRESS / 100);
 
   return (
     <>
