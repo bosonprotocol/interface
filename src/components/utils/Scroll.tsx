@@ -11,4 +11,15 @@ function ScrollToTop() {
   return null;
 }
 
+export const ScroolToID = ({ id }: { id: string }) => {
+  useEffect(() => {
+    const localElement = document.getElementById(id);
+    if (localElement) {
+      localElement.scrollIntoView({ block: "center" });
+    }
+  }, [id]);
+
+  return null;
+};
+
 export default ScrollToTop;
