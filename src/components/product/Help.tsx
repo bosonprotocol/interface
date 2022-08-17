@@ -26,7 +26,7 @@ const HelpTitleContainer = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
-  border-bottom: 1px solid #5560720f;
+  border-bottom: 1px solid ${colors.border};
   padding: 1rem 1.5rem;
 `;
 
