@@ -86,17 +86,32 @@ export const createProductSteps = ({
 }: CreateProductStepsParams) => {
   return {
     0: {
-      ui: <CreateYourProfile />,
+      ui: (
+        <>
+          <ScroolToID id="multisteps_wrapper" />
+          <CreateYourProfile />
+        </>
+      ),
       validation: createYourProfileValidationSchema,
       helpSection: createYourProfileHelp
     },
     1: {
-      ui: <ProductType />,
+      ui: (
+        <>
+          <ScroolToID id="multisteps_wrapper" />
+          <ProductType />
+        </>
+      ),
       validation: productTypeValidationSchema,
       helpSection: productTypeHelp
     },
     2: {
-      ui: <ProductInformation />,
+      ui: (
+        <>
+          <ScroolToID id="multisteps_wrapper" />
+          <ProductInformation />
+        </>
+      ),
       validation: productInformationValidationSchema,
       helpSection: productInformationHelp
     },
@@ -111,22 +126,42 @@ export const createProductSteps = ({
       helpSection: productImagesHelp
     },
     4: {
-      ui: <CoreTermsOfSale />,
+      ui: (
+        <>
+          <ScroolToID id="multisteps_wrapper" />
+          <CoreTermsOfSale />
+        </>
+      ),
       validation: coreTermsOfSaleValidationSchema,
       helpSection: coreTermsOfSaleHelp
     },
     5: {
-      ui: <TermsOfExchange />,
+      ui: (
+        <>
+          <ScroolToID id="multisteps_wrapper" />
+          <TermsOfExchange />
+        </>
+      ),
       validation: termsOfExchangeValidationSchema,
       helpSection: termsOfExchangeHelp
     },
     6: {
-      ui: <ShippingInfo />,
+      ui: (
+        <>
+          <ScroolToID id="multisteps_wrapper" />
+          <ShippingInfo />
+        </>
+      ),
       validation: shippingInfoValidationSchema,
       helpSection: shippingInfoHelp
     },
     7: {
-      ui: <ConfirmProductDetails togglePreview={setIsPreviewVisible} />,
+      ui: (
+        <>
+          <ScroolToID id="multisteps_wrapper" />
+          <ConfirmProductDetails togglePreview={setIsPreviewVisible} />
+        </>
+      ),
       validation: null,
       helpSection: null
     }
