@@ -151,7 +151,7 @@ export default function ProductCreateSuccess({
               <Typography
                 tag="h2"
                 margin="1rem 0"
-                color="colors.secondary"
+                color={colors.secondary}
                 fontSize="1.5rem"
               >
                 {name}
