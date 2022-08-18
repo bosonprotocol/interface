@@ -6,7 +6,6 @@ import {
   FileWithEncodedData,
   getFilesWithEncodedData
 } from "../../../../../lib/utils/files";
-import { getOfferArtist } from "../../../../../lib/utils/hooks/offers/placeholders";
 import { Exchange } from "../../../../../lib/utils/hooks/useExchanges";
 import { validationOfFile } from "../../../../../pages/chat/components/UploadForm/const";
 import { NewProposal } from "../../../../../pages/chat/types";
@@ -65,8 +64,7 @@ export default function MakeProposalModal({
         validationSchema={validationSchema}
         onSubmit={async (values) => {
           try {
-            const artist = getOfferArtist(exchange.offer.metadata.name || "");
-            const userName = artist || `Seller ID: ${exchange.seller.id}`; // TODO: change to get real username
+            const userName = `Seller ID: ${exchange.seller.id}`; // TODO: change to get real username
             const proposal: NewProposal = {
               title: `${userName} made a proposal`,
               description: values[FormModel.formFields.description.name],
