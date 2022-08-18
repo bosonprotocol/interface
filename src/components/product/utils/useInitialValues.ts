@@ -44,14 +44,17 @@ const convertImageToFile = ({ value, key }: Image) => {
   const blob = new Blob([data as BlobPart], {
     type: `image/${extension}`
   });
+
   const file = new File([blob as BlobPart], `${key}.${extension}`, {
     type: `image/${extension}`
   });
+
   return file;
 };
 
 const IMAGES_KEY = "create-product-image_";
 const MAIN_KEY = "create-product";
+
 export function useInitialValues() {
   const { converted: convertedImages } = getConvertImagesFromLocalStorage();
   const initialValues = getItemFromStorage<CreateProductForm | null>(

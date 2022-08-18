@@ -46,7 +46,7 @@ export default function ExchangePreview({ exchange }: Props) {
             justifyContent="flex-start"
             withProfileImage
             onClick={() => {
-              console.log("on click exchaneg preview");
+              console.log("on click exchange preview");
             }}
           />
         </Grid>

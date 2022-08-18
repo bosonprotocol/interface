@@ -47,6 +47,7 @@ export default function Preview({ togglePreview }: Props) {
   const handleClosePreview = () => {
     togglePreview(false);
   };
+  console.log("🚀 ~ file: Preview.tsx ~ line 57 ~ Preview ~ values", values);
 
   const logoImage = previewImages?.[0] ?? null;
   const offerImg = previewImages?.[1] ?? null;
@@ -62,6 +63,8 @@ export default function Preview({ togglePreview }: Props) {
   const validFromDateInMS = Date.parse(
     values.coreTermsOfSale.offerValidityPeriod[0]
   );
+
+  const exchangeDate = Date.now().toString();
 
   const offer = {
     price: weiPrice.toString(),
@@ -80,8 +83,8 @@ export default function Preview({ togglePreview }: Props) {
     voucherValidDuration: "21727820",
     exchanges: [
       {
-        committedDate: Date.now().toString(),
-        redeemedDate: Date.now().toString()
+        committedDate: exchangeDate,
+        redeemedDate: exchangeDate
       }
     ],
     seller: {
