@@ -6,7 +6,7 @@ interface ITable {
   value: string;
 }
 interface IShippingInfo {
-  shipping: string;
+  shipping?: string;
   shippingTable: Array<ITable>;
 }
 interface IGetOfferDetails {
@@ -24,7 +24,7 @@ export const getOfferDetails = (offer: Offer): IGetOfferDetails => {
     offer.metadata?.product?.title || offer.metadata?.name || "Untitled";
   const offerImg = offer.metadata?.image;
   const shippingInfo = {
-    shipping: "Shipping details ??????",
+    // shipping: "Shipping details", // TODO
     shippingTable:
       offer.metadata?.shipping?.supportedJurisdictions?.map(
         (jurisdiction: any) => ({
