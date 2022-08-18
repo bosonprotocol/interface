@@ -14,7 +14,7 @@ export const ProductButtonGroup = styled.div`
 `;
 
 export const ContainerProductPage = styled.div`
-  max-width: 506px;
+  max-width: 31.625rem;
   width: 100%;
   .inputGroup:not(:last-of-type) {
     margin-bottom: 2rem;

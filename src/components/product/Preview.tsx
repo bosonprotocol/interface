@@ -118,7 +118,8 @@ export default function Preview({ togglePreview }: Props) {
                 <Typography
                   tag="h1"
                   data-testid="name"
-                  style={{ fontSize: "2rem", marginBottom: "2rem" }}
+                  fontSize="2rem"
+                  margin="0 0 2rem 0"
                 >
                   {name}
                 </Typography>
@@ -139,7 +140,7 @@ export default function Preview({ togglePreview }: Props) {
                 <Typography tag="h3">Product data</Typography>
                 <Typography
                   tag="p"
-                  style={{ color: colors.darkGrey }}
+                  color={colors.darkGrey}
                   data-testid="description"
                 >
                   {values.productInformation.description}
@@ -150,7 +151,7 @@ export default function Preview({ togglePreview }: Props) {
               </div>
               <div>
                 <Typography tag="h3">About the artist</Typography>
-                <Typography tag="p" style={{ color: colors.darkGrey }}>
+                <Typography tag="p" color={colors.darkGrey}>
                   {values.creteYourProfile.description}
                 </Typography>
               </div>
