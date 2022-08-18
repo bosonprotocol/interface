@@ -23,7 +23,9 @@ export default function DetailSlider({ images }: Props) {
 
   useEffect(() => {
     if (ref.current) {
-      glide = new Glide(ref.current, SLIDER_OPTIONS);
+      glide = new Glide(ref.current, {
+        ...SLIDER_OPTIONS
+      });
       glide.mount();
     }
     return () => glide.destroy();
@@ -61,7 +63,7 @@ export default function DetailSlider({ images }: Props) {
               <GlideSlide className="glide__slide" key={`Slide_${index}`}>
                 <Image
                   src={image}
-                  style={{ minWidth: "20rem", paddingTop: "130%" }}
+                  style={{ paddingTop: "130%" }}
                   dataTestId="sliderImage"
                 />
               </GlideSlide>

@@ -407,9 +407,6 @@ function CreateProductInner({ initial }: Props) {
         }
       });
 
-      // reset the form
-      formikBag.resetForm();
-
       const buyerCancellationPenaltyValue =
         parseInt(coreTermsOfSale.price) *
         (parseInt(termsOfExchange.buyerCancellationPenalty) / 100);
@@ -487,6 +484,8 @@ function CreateProductInner({ initial }: Props) {
         offerId
       );
 
+      // reset the form
+      formikBag.resetForm();
       await wait(3_000);
       handleOpenSuccessModal({ offerId });
     } catch (error: any) {
