@@ -85,7 +85,11 @@ export default function Funds({ sellerId, buyerId }: Props) {
     setTimeout(() => setHighlightedToken(""), 300);
   };
   useEffect(() => {
-    setUiFunds(funds);
+    setUiFunds((prevFunds) => [
+      ...Array.from(
+        new Map([...funds, ...prevFunds].map((v) => [v.id, v])).values()
+      )
+    ]);
   }, [funds]);
 
   if (!core) {

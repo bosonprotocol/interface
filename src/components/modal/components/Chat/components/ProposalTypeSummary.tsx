@@ -6,6 +6,7 @@ import { Exchange } from "../../../../../lib/utils/hooks/useExchanges";
 import { ProposalItem } from "../../../../../pages/chat/types";
 import { useConvertedPrice } from "../../../../price/useConvertedPrice";
 import Grid from "../../../../ui/Grid";
+import { PERCENTAGE_FACTOR } from "../const";
 
 const Line = styled.div`
   border-right: 2px solid ${colors.border};
@@ -25,8 +26,10 @@ interface Props {
 export default function ProposalTypeSummary({ proposal, exchange }: Props) {
   const { offer } = exchange;
   const { percentageAmount } = proposal;
+  const fixedPercentageAmount =
+    Number(proposal.percentageAmount) / PERCENTAGE_FACTOR;
 
-  const refund = (Number(offer.price) * Number(percentageAmount)) / 100;
+  const refund = (Number(offer.price) * Number(fixedPercentageAmount)) / 100;
 
   const convertedRefund = useConvertedPrice({
     value: refund.toString(),
@@ -55,7 +58,7 @@ export default function ProposalTypeSummary({ proposal, exchange }: Props) {
               </>
             )}
             <Line />
-            <span>{proposal.percentageAmount}%</span>
+            <span>{fixedPercentageAmount}%</span>
           </Grid>
         </Grid>
       ) : null}

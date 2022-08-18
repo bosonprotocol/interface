@@ -62,7 +62,7 @@ export default function Upload({
         upload: [] as File[]
       }}
       validationSchema={validationSchema}
-      isInitialValid={false}
+      validateOnMount
     >
       {(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
