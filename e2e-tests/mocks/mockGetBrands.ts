@@ -16,10 +16,14 @@ export async function mockGetBrands({ postData }: MockProps) {
     data: {
       productV1MetadataEntities: [
         {
-          brandName: "brand1"
+          product: {
+            productionInformation_brandName: "brand1"
+          }
         },
         {
-          brandName: "brand2"
+          product: {
+            productionInformation_brandName: "brand2"
+          }
         }
       ]
     }

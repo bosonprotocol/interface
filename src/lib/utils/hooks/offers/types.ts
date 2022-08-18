@@ -1,7 +1,7 @@
 import { Offer } from "../../../types/offer";
 
 export type CurationListGetOffersResult = {
-  baseMetadataEntities: { offer: Offer }[];
+  productV1MetadataEntities: { offer: Offer }[];
 };
 
 interface CommonProps {

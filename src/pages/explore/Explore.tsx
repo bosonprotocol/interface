@@ -100,7 +100,6 @@ export default function Explore() {
           <h2>Filter</h2>
           <FiltersContainer>
             <BrandSelect
-              disabled
               value={brandSelect}
               onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                 setBrandSelect(e.target.value);
@@ -176,6 +175,7 @@ export default function Explore() {
         name={nameToSearch}
         exchangeTokenAddress={selectedToken}
         sellerId={selectedSeller}
+        brand={brandSelect}
       />
     </ExploreContainer>
   );
