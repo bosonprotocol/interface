@@ -107,30 +107,22 @@ export default function Funds({ sellerId, buyerId }: Props) {
       if (existingToken?.token?.address) {
         highlightToken(existingToken.token.address);
       } else {
-        // const { name, decimals, symbol } = await core.getExchangeTokenInfo(
-        //   newTokenAddress
-        // );
+        const { name, decimals, symbol } = await core.getExchangeTokenInfo(
+          newTokenAddress
+        );
         setUiFunds([
           ...uiFunds,
           {
             accountId,
             availableAmount: "0",
             id: "",
-            // token: {
-            //   id: "",
-            //   __typename: "ExchangeToken",
-            //   address: newTokenAddress,
-            //   name: name,
-            //   symbol: symbol,
-            //   decimals: decimals + ""
-            // }
             token: {
               id: "",
               __typename: "ExchangeToken",
               address: newTokenAddress,
-              name: "Ethereum",
-              symbol: "ETH",
-              decimals: "18"
+              name: name,
+              symbol: symbol,
+              decimals: decimals + ""
             }
           }
         ]);
