@@ -47,7 +47,6 @@ export default function Preview({ togglePreview }: Props) {
   const handleClosePreview = () => {
     togglePreview(false);
   };
-  console.log("🚀 ~ file: Preview.tsx ~ line 57 ~ Preview ~ values", values);
 
   const logoImage = previewImages?.[0] ?? null;
   const offerImg = previewImages?.[1] ?? null;
