@@ -1,13 +1,13 @@
+import { BosonXmtpClient } from "@bosonprotocol/chat-sdk";
 import dayjs from "dayjs";
+import includes from "lodash/includes";
 import map from "lodash/map";
-import { Warning } from "phosphor-react";
-import { Image } from "phosphor-react";
-import { useCallback, useMemo } from "react";
+import { Image, Warning } from "phosphor-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useAccount } from "wagmi";
 
 import Collapse from "../../components/collapse/Collapse";
 import InitializeChat from "../../components/modal/components/Chat/components/InitializeChat";
-import { ImageContainer, ImageWrapper } from "../../components/ui/Image";
-import { getLocalStorageItems } from "../../lib/utils/getLocalStorageItems";
 import { getItemFromStorage } from "../../lib/utils/hooks/useLocalStorage";
 import { useChatContext } from "../../pages/chat/ChatProvider/ChatContext";
 import { FormField } from "../form";
@@ -16,6 +16,7 @@ import Button from "../ui/Button";
 import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
 import {
+  CheckIcon,
   CollapseContainer,
   CollapseContent,
   ConfirmationAlert,
@@ -26,7 +27,10 @@ import {
   CurrencyIconWrapper,
   FormFieldContainer,
   GridBox,
+  Icon,
   IconWrapper,
+  Info,
+  InfoMessage,
   InitializeChatContainer,
   LogoImg,
   ProductBox,
@@ -49,19 +53,48 @@ interface Props {
   togglePreview: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+type ChatInitializationStatus =
+  | "PENDING"
+  | "ALREADY_INITIALIZED"
+  | "INITIALIZED"
+  | "NOT_INITIALIZED"
+  | "ERROR";
+
 export default function ConfirmProductDetails({ togglePreview }: Props) {
-  const { bosonXmtp } = useChatContext();
+  const [chatInitializationStatus, setChatInitializationStatus] =
+    useState<ChatInitializationStatus>("PENDING");
+  const { bosonXmtp, envName } = useChatContext();
+
   const { values } = useCreateForm();
+  const { address } = useAccount();
+
+  useEffect(() => {
+    if (chatInitializationStatus === "PENDING" && !!bosonXmtp) {
+      setChatInitializationStatus("ALREADY_INITIALIZED");
+    } else if (address && chatInitializationStatus !== "ALREADY_INITIALIZED") {
+      BosonXmtpClient.isXmtpEnabled(address, envName)
+        .then((isEnabled) => {
+          if (isEnabled) {
+            setChatInitializationStatus("INITIALIZED");
+          } else {
+            setChatInitializationStatus("NOT_INITIALIZED");
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+          setChatInitializationStatus("ERROR");
+        });
+    }
+  }, [address, bosonXmtp, chatInitializationStatus, envName]);
 
   const handleOpenPreview = () => {
     togglePreview(true);
   };
 
-  const previewImages = getLocalStorageItems({
-    key: "create-product-image"
-  });
-
-  const logoImage = previewImages?.[0] ?? null;
+  const logoImage = getItemFromStorage(
+    "create-product-image_creteYourProfile.logo",
+    ""
+  );
 
   const renderProductType = useMemo(() => {
     let src = "";
@@ -122,18 +155,16 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
   }, [values.productType.productVariant]);
 
   const renderProductImage = useCallback(
-    ({ placeholder, key }: { placeholder: string; key: string }) => {
+    ({ title, key }: { title: string; key: string }) => {
       const src = getItemFromStorage(key, "");
       return (
         <RenderProductImageWrapper $isPlaceholder={!src}>
           {src ? (
-            <ImageWrapper>
-              <ImageContainer src={src} alt={placeholder} />
-            </ImageWrapper>
+            <img src={src} alt={title} />
           ) : (
             <ProductEmptyImage>
               <Image size={24} />
-              <Typography tag="p">{placeholder}</Typography>
+              <Typography tag="p">{title}</Typography>
             </ProductEmptyImage>
           )}
         </RenderProductImageWrapper>
@@ -286,35 +317,35 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
               <SpaceContainer>
                 {renderProductImage({
                   key: "create-product-image_productImages.thumbnail",
-                  placeholder: "Thumbnail"
+                  title: "Thumbnail"
                 })}
                 {renderProductImage({
                   key: "create-product-image_productImages.secondary",
-                  placeholder: "Secondary"
+                  title: "Secondary"
                 })}
                 {renderProductImage({
                   key: "create-product-image_productImages.everyAngle",
-                  placeholder: "Every angle"
+                  title: "Every angle"
                 })}
                 {renderProductImage({
                   key: "create-product-image_productImages.details",
-                  placeholder: "Details"
+                  title: "Details"
                 })}
                 {renderProductImage({
-                  key: "create-product-image_productImages.inUse1",
-                  placeholder: "In Use"
+                  key: "create-product-image_productImages.inUse",
+                  title: "In Use"
                 })}
                 {renderProductImage({
                   key: "create-product-image_productImages.styledScene",
-                  placeholder: "Styled Scene"
+                  title: "Styled Scene"
                 })}
                 {renderProductImage({
                   key: "create-product-image_productImages.sizeAndScale",
-                  placeholder: "Size and Scale"
+                  title: "Size and Scale"
                 })}
                 {renderProductImage({
                   key: "create-product-image_productImages.more",
-                  placeholder: "More"
+                  title: "More"
                 })}
               </SpaceContainer>
             </div>
@@ -440,13 +471,37 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
           </Typography>
         </ConfirmationContent>
       </ConfirmationAlert>
-      {!bosonXmtp && (
+      {chatInitializationStatus === "NOT_INITIALIZED" && address && !bosonXmtp && (
         <InitializeChatContainer>
           <InitializeChat />
         </InitializeChatContainer>
       )}
+      {chatInitializationStatus === "INITIALIZED" && bosonXmtp && (
+        <InitializeChatContainer>
+          <Info justifyContent="space-between" gap="2rem">
+            <Grid justifyContent="flex-start" gap="1rem">
+              <Icon size={24} />
+              <InfoMessage>
+                You succesfully initialized your chat client
+              </InfoMessage>
+            </Grid>
+            <div>
+              <CheckIcon />
+            </div>
+          </Info>
+        </InitializeChatContainer>
+      )}
       <ConfirmProductDetailsButtonGroup>
-        <Button theme="secondary" type="submit">
+        <Button
+          theme="secondary"
+          type="submit"
+          disabled={
+            !includes(
+              ["INITIALIZED", "ALREADY_INITIALIZED"],
+              chatInitializationStatus
+            )
+          }
+        >
           Confirm
         </Button>
         <Button theme="primary" type="button" onClick={handleOpenPreview}>

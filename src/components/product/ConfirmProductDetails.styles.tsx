@@ -1,7 +1,9 @@
+import { ChatDots, CheckCircle } from "phosphor-react";
 import styled from "styled-components";
 
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
+import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
 import { ContainerProductPage, ProductButtonGroup } from "./Product.styles";
 
@@ -193,5 +195,38 @@ export const RenderProductImageWrapper = styled.div<{
   border: 1px solid rgba(85, 96, 114, 0.06);
   border: ${({ $isPlaceholder }) =>
     $isPlaceholder ? "1px solid rgba(85, 96, 114, 0.06)" : "none"};
-  overflow: hidden;
+  img {
+    width: 100%;
+    height: 100%;
+  }
+`;
+
+export const Info = styled(Grid)`
+  display: flex;
+  justify-content: space-between;
+  background-color: ${colors.lightGrey};
+  padding: 1.5rem;
+`;
+
+export const Icon = styled(ChatDots)`
+  fill: var(--secondary);
+  path {
+    stroke: var(--secondary);
+  }
+`;
+export const CheckIcon = styled(CheckCircle)`
+  color: var(--secondary);
+  path {
+    stroke: var(--secondary);
+  }
+`;
+
+export const InfoMessage = styled(Typography)`
+  font-family: Plus Jakarta Sans;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5rem;
+  letter-spacing: 0px;
+  text-align: left;
+  flex: 1 1;
 `;

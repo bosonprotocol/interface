@@ -2,7 +2,7 @@ import {
   FileContent,
   MessageType,
   ProposalContent
-} from "@bosonprotocol/chat-sdk/dist/cjs/util/definitions";
+} from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/definitions";
 import { Image as AccountImage } from "@davatar/react";
 import { BigNumber, utils } from "ethers";
 import { ArrowRight, Check } from "phosphor-react";

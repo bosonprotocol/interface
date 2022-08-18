@@ -1,8 +1,8 @@
 import {
   ThreadId,
   ThreadObject
-} from "@bosonprotocol/chat-sdk/dist/cjs/util/definitions";
-import { matchThreadIds } from "@bosonprotocol/chat-sdk/dist/cjs/util/functions";
+} from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/definitions";
+import { matchThreadIds } from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/functions";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 

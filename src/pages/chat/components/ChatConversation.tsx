@@ -7,8 +7,9 @@ import {
   ProposalContent,
   SupportedFileMimeTypes,
   ThreadId,
-  ThreadObject
-} from "@bosonprotocol/chat-sdk/dist/cjs/util/definitions";
+  ThreadObject,
+  version
+} from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/definitions";
 import dayjs from "dayjs";
 import { CircleNotch } from "phosphor-react";
 import { ArrowLeft, UploadSimple } from "phosphor-react";
@@ -455,8 +456,8 @@ const ChatConversation = ({
           threadId,
           content: imageContent,
           contentType: MessageType.File,
-          version: "1"
-        };
+          version
+        } as const;
         const messageData = await bosonXmtp.encodeAndSendMessage(
           newMessage,
           destinationAddress
@@ -668,8 +669,8 @@ const ChatConversation = ({
                     threadId,
                     content: proposalContent,
                     contentType: MessageType.Proposal,
-                    version: "1"
-                  };
+                    version
+                  } as const;
                   const messageData = await bosonXmtp.encodeAndSendMessage(
                     newMessage,
                     destinationAddress
@@ -704,8 +705,8 @@ const ChatConversation = ({
                         value: e.target.value
                       },
                       contentType: MessageType.String,
-                      version: "1"
-                    };
+                      version
+                    } as const;
                     const messageData = await bosonXmtp.encodeAndSendMessage(
                       newMessage,
                       destinationAddress

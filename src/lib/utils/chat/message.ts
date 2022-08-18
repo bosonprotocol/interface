@@ -2,7 +2,7 @@ import {
   MessageData,
   MessageType,
   ProposalContent
-} from "@bosonprotocol/chat-sdk/dist/cjs/util/definitions";
+} from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/definitions";
 
 import { DeepReadonly } from "../../types/helpers";
 // TODO: use yup
