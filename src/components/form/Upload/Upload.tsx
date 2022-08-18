@@ -36,12 +36,13 @@ export default function Upload({
   );
 
   const [field, meta, helpers] = useField(name);
+
   const errorMessage = meta.error && meta.touched ? meta.error : "";
   const displayError =
     typeof errorMessage === typeof "string" && errorMessage !== "";
 
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [files, setFiles] = useState<File[]>([]);
+  const [files, setFiles] = useState<File[]>(field.value || []);
 
   useEffect(() => {
     onFilesSelect?.(files);
