@@ -16,7 +16,7 @@ export function checkOfferMetadata(
   return isValid;
 }
 
-function replaceNullFields(obj: object) {
+function replaceNullFields(obj: Record<string, any>) {
   if (typeof obj === "object") {
     Object.keys(obj).forEach((key: string) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
