@@ -27,8 +27,7 @@ export function saveItemInStorage<T>(key: string, value: T) {
 export function removeItemInStorage(key: string) {
   if (typeof window !== "undefined") {
     try {
-      Object.entries(localStorage)
-        .map((localKey) => localKey[0])
+      Object.keys(localStorage)
         .filter((filterKey) => filterKey?.includes(key))
         .map((finalKey) => localStorage.removeItem(finalKey));
     } catch (error) {
