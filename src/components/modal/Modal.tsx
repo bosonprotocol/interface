@@ -1,4 +1,4 @@
-import { X as Close } from "phosphor-react";
+import { X } from "phosphor-react";
 import { ReactNode } from "react";
 import { createPortal } from "react-dom";
 import styled from "styled-components";
@@ -80,17 +80,23 @@ const Wrapper = styled.div<{ modalType: ModalType; $size: Props["size"] }>`
 
 const Header = styled(Typography)`
   position: relative;
-  height: 4.25rem;
+
   text-align: left;
   padding: 1rem 2rem;
   margin: 0;
-  display: block;
+  display: flex;
   border-bottom: 2px solid ${colors.border};
-  > button[data-close] {
-    position: absolute;
-    top: 50%;
-    right: 0;
-    transform: translate(0%, -50%);
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+const HeaderWithTitle = styled(Header)`
+  height: 4.25rem;
+`;
+
+const Close = styled(X)`
+  line {
+    stroke: ${colors.darkGrey};
   }
 `;
 
@@ -141,14 +147,14 @@ export default function Modal({
             )}
           </Header>
         ) : (
-          <Header tag="h3">
+          <HeaderWithTitle tag="h3">
             {title}
             {closable && (
               <Button data-close theme="blank" onClick={hideModal}>
                 <Close />
               </Button>
             )}
-          </Header>
+          </HeaderWithTitle>
         )}
         <Content>{children}</Content>
       </Wrapper>
