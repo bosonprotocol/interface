@@ -123,3 +123,26 @@ export const shippingInfoValidationSchema = Yup.object({
       .default([{ region: "", time: "" }])
   })
 });
+
+export const disputeCentreValidationSchemaGetStarted = Yup.object({
+  getStarted: Yup.string().required(validationMessage.required)
+});
+
+export const disputeCentreValidationSchemaTellUsMore = Yup.object({
+  tellUsMore: Yup.string().required(validationMessage.required)
+});
+
+export const disputeCentreValidationSchemaAdditionalInformation = Yup.object({
+  documentMessage: Yup.string(),
+  file: Yup.mixed()
+});
+
+export const disputeCentreValidationSchemaMakeProposal = Yup.object({
+  proposalType: Yup.object({
+    value: Yup.string().required(validationMessage.required),
+    label: Yup.string().required(validationMessage.required)
+  }),
+  inEscrow: Yup.string(),
+  refundAmount: Yup.string(),
+  refundPercent: Yup.string()
+});

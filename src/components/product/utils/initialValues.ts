@@ -99,6 +99,20 @@ export const shippingInfoInitialValues = {
   }
 } as const;
 
+export const disputeCentreInitialValues = {
+  getStarted: "",
+  tellUsMore: "",
+  proposalType: {
+    label: "",
+    value: ""
+  },
+  documentMessage: "",
+  file: [],
+  inEscrow: "",
+  refundAmount: "",
+  refundPercent: ""
+} as const;
+
 export const initialValues: CreateProductForm = {
   ...createYourProfileInitialValues,
   ...productTypeInitialValues,
@@ -106,5 +120,6 @@ export const initialValues: CreateProductForm = {
   ...productImagesInitialValues,
   ...coreTermsOfSaleInitialValues,
   ...termsOfExchangeInitialValues,
-  ...shippingInfoInitialValues
+  ...shippingInfoInitialValues,
+  ...disputeCentreInitialValues
 } as const;
