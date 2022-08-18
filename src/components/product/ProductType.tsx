@@ -26,7 +26,7 @@ const productTypeItemsPerRow = {
   xl: 1
 };
 const Label = styled.label`
-  max-width: 200px;
+  max-width: 12.5rem;
   align-items: center;
   border: 1px solid ${colors.lightGrey};
   width: 100%;
@@ -65,12 +65,12 @@ export const Box = styled.div`
   }
 `;
 export const Container = styled.div`
-  max-width: 424px;
+  max-width: 26.5rem;
 `;
 
 export const ProductImage = styled(Image)`
-  width: 100px;
-  height: 100px;
+  width: 6.25rem;
+  height: 6.25rem;
   padding-top: 0;
   margin: auto;
 `;

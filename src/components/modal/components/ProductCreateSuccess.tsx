@@ -123,7 +123,8 @@ export default function ProductCreateSuccess({
     onCreateNewProject();
   };
 
-  const suggestedAmount = parseInt(convertedPrice.price || "0") * 0.15;
+  const suggestedAmount =
+    parseFloat(convertedPrice.price || "0") * (PROGRESS / 100);
 
   return (
     <>
@@ -144,21 +145,14 @@ export default function ProductCreateSuccess({
         <div>
           <Widget>
             <Grid flexDirection="column">
-              <Typography
-                tag="p"
-                style={{
-                  margin: "0.5rem 0 0 0"
-                }}
-              >
+              <Typography tag="p" margin="0.5rem 0 0 0">
                 <b>{message}</b>
               </Typography>
               <Typography
                 tag="h2"
-                style={{
-                  margin: "1rem 0",
-                  color: colors.secondary,
-                  fontSize: "1.5rem"
-                }}
+                margin="1rem 0"
+                color={colors.secondary}
+                fontSize="1.5rem"
               >
                 {name}
               </Typography>
@@ -181,27 +175,19 @@ export default function ProductCreateSuccess({
             <FoundTile tag="p">
               Please provide
               <DetailTooltip trigger={<Question size={16} />}>
-                {/* TODO: ADD */}
                 NEED TO BE ADDED
               </DetailTooltip>
             </FoundTile>
-            <Typography
-              tag="p"
-              style={{
-                fontSize: "0.75rem"
-              }}
-            >
+            <Typography tag="p" fontSize="0.75rem">
               Describe here why seller should provide funds ..
               <br />
               alos in multiple lines possible.
             </Typography>
             <Typography
               tag="p"
-              style={{
-                marginTop: "1rem",
-                fontSize: "0.75rem",
-                fontWeight: "bold"
-              }}
+              marginTop="1rem"
+              fontSize="0.75rem"
+              fontWeight="bold"
             >
               Suggested pool amount: 15%
             </Typography>
