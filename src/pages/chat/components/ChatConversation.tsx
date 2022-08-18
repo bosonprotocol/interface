@@ -11,6 +11,7 @@ import {
 } from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/definitions";
 import { validateMessage } from "@bosonprotocol/chat-sdk/dist/cjs/util/validators";
 import dayjs from "dayjs";
+import { utils } from "ethers";
 import { CircleNotch } from "phosphor-react";
 import { ArrowLeft, UploadSimple } from "phosphor-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -428,18 +429,24 @@ const ChatConversation = ({
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const navigate = useKeepQueryParamsNavigate();
   const { address } = useAccount();
-  const destinationAddress = exchange?.offer.seller.operator || "";
+  const destinationAddress = exchange?.offer.seller.operator
+    ? utils.getAddress(exchange?.offer.seller.operator)
+    : "";
   useEffect(() => {
     if (!bosonXmtp || !thread?.threadId || !destinationAddress) {
       return;
     }
     const monitor = async () => {
-      for await (const incomingMessage of await bosonXmtp.monitorThread(
-        thread.threadId,
-        destinationAddress
-      )) {
-        const isValid = await validateMessage(incomingMessage.data);
-        await addMessage(thread, { ...incomingMessage, isValid });
+      try {
+        for await (const incomingMessage of await bosonXmtp.monitorThread(
+          thread.threadId,
+          destinationAddress
+        )) {
+          const isValid = await validateMessage(incomingMessage.data);
+          await addMessage(thread, { ...incomingMessage, isValid });
+        }
+      } catch (error) {
+        console.error(error);
       }
     };
     monitor().catch((error) => {
@@ -634,7 +641,7 @@ const ChatConversation = ({
         </Messages>
 
         <TypeMessage>
-          {exchange.disputed && (
+          {1 === 1 && (
             <Grid
               alignItems="flex-start"
               $width="auto"
@@ -648,27 +655,31 @@ const ChatConversation = ({
                   if (!threadId || !bosonXmtp) {
                     return;
                   }
-                  const proposalContent: ProposalContent = {
-                    value: {
-                      title: proposal.title,
-                      description: proposal.description,
-                      proposals: proposal.proposals,
-                      disputeContext: proposal.disputeContext
+                  try {
+                    const proposalContent: ProposalContent = {
+                      value: {
+                        title: proposal.title,
+                        description: proposal.description,
+                        proposals: proposal.proposals,
+                        disputeContext: proposal.disputeContext
+                      }
+                    };
+                    const newMessage = {
+                      threadId,
+                      content: proposalContent,
+                      contentType: MessageType.Proposal,
+                      version
+                    } as const;
+                    const messageData = await bosonXmtp.encodeAndSendMessage(
+                      newMessage,
+                      destinationAddress
+                    );
+                    await addMessage(thread, { ...messageData, isValid: true });
+                    if (proposalFiles.length) {
+                      await sendFilesToChat(proposalFiles);
                     }
-                  };
-                  const newMessage = {
-                    threadId,
-                    content: proposalContent,
-                    contentType: MessageType.Proposal,
-                    version
-                  } as const;
-                  const messageData = await bosonXmtp.encodeAndSendMessage(
-                    newMessage,
-                    destinationAddress
-                  );
-                  await addMessage(thread, { ...messageData, isValid: true });
-                  if (proposalFiles.length) {
-                    await sendFilesToChat(proposalFiles);
+                  } catch (error) {
+                    console.error(error);
                   }
                 }}
               />
@@ -691,20 +702,27 @@ const ChatConversation = ({
                 onKeyDown={async (e) => {
                   const value = e.target.value.trim();
                   if (e.key === "Enter" && bosonXmtp && threadId && value) {
-                    const newMessage = {
-                      threadId,
-                      content: {
-                        value
-                      },
-                      contentType: MessageType.String,
-                      version
-                    } as const;
-                    const messageData = await bosonXmtp.encodeAndSendMessage(
-                      newMessage,
-                      destinationAddress
-                    );
-                    await addMessage(thread, { ...messageData, isValid: true });
-                    onTextAreaChange("");
+                    try {
+                      const newMessage = {
+                        threadId,
+                        content: {
+                          value
+                        },
+                        contentType: MessageType.String,
+                        version
+                      } as const;
+                      const messageData = await bosonXmtp.encodeAndSendMessage(
+                        newMessage,
+                        destinationAddress
+                      );
+                      await addMessage(thread, {
+                        ...messageData,
+                        isValid: true
+                      });
+                      onTextAreaChange("");
+                    } catch (error) {
+                      console.error(error);
+                    }
                   }
                 }}
               >
@@ -719,7 +737,11 @@ const ChatConversation = ({
                   title: "Upload documents",
                   withEncodedData: true,
                   onUploadedFilesWithData: async (files) => {
-                    await sendFilesToChat(files);
+                    try {
+                      await sendFilesToChat(files);
+                    } catch (error) {
+                      console.error(error);
+                    }
                   }
                 })
               }

@@ -5,6 +5,7 @@ import {
 import { matchThreadIds } from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/functions";
 import { validateMessage } from "@bosonprotocol/chat-sdk/dist/cjs/util/validators";
 import dayjs from "dayjs";
+import { utils } from "ethers";
 import { useCallback, useEffect, useState } from "react";
 
 import { useChatContext } from "../../../../pages/chat/ChatProvider/ChatContext";
@@ -73,8 +74,9 @@ export function useInfiniteThread({
       counterParty,
       areThreadsLoading
     }); // TODO: remove
+    setError(null);
     bosonXmtp
-      .getThread(threadId, counterParty, {
+      .getThread(threadId, utils.getAddress(counterParty), {
         startTime: endTime,
         endTime: startTime
       })
@@ -104,7 +106,6 @@ export function useInfiniteThread({
         setThreadXmtp(newThreadXmtp);
       })
       .catch((err) => {
-        console.error(err);
         setError(err);
       })
       .finally(() => {
