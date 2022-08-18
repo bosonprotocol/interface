@@ -16,43 +16,36 @@ export function checkOfferMetadata(
   return isValid;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function replaceNullFields(obj: Record<string, any>) {
   if (typeof obj === "object") {
     Object.keys(obj).forEach((key: string) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      if ((obj as any)[key] === null) {
+      if (obj[key] === null) {
         console.log("replace", key, "null --> undefined");
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (obj as any)[key] = undefined;
+        obj[key] = undefined;
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      replaceNullFields((obj as any)[key]);
+      replaceNullFields(obj[key]);
     });
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function fixAttributes(metadata: Record<string, any>) {
   // Create 2 new fields, keeping the old ones to not invalidate the current object
   // (that would avoid to deep clone the object)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  if (Array.isArray((metadata as any).attributes)) {
+  if (Array.isArray(metadata.attributes)) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ((metadata as any).attributes as any[]).forEach((attribute: any) => {
+    (metadata.attributes as any[]).forEach((attribute: any) => {
       attribute.trait_type = attribute.traitType;
       attribute.display_type = attribute.displayType;
     });
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function fixVisualImages(metadata: Record<string, any>) {
-  if (
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (metadata as any).product &&
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    !(metadata as any)?.product?.visuals_images
-  ) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (metadata as any).product.visuals_images = [
+  if (metadata.product && !metadata?.product?.visuals_images) {
+    metadata.product.visuals_images = [
       {
         id: "dummy",
         url: "dummy",
