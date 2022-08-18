@@ -209,7 +209,7 @@ export default function Chat() {
             <SimpleMessage>
               {exchangeIdNotOwned
                 ? "You don't have this exchange"
-                : isSellerOrBuyer
+                : isSellerOrBuyer && exchanges.length
                 ? "Select a message"
                 : "You need to have an exchange to chat"}
             </SimpleMessage>
