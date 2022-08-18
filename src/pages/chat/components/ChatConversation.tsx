@@ -28,7 +28,6 @@ import { zIndex } from "../../../lib/styles/zIndex";
 import { FileWithEncodedData } from "../../../lib/utils/files";
 import { useInfiniteThread } from "../../../lib/utils/hooks/chat/useInfiniteThread";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
-import { useBuyerSellerAccounts } from "../../../lib/utils/hooks/useBuyerSellerAccounts";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useChatContext } from "../ChatProvider/ChatContext";
@@ -477,15 +476,6 @@ const ChatConversation = ({
     [addMessage, bosonXmtp, destinationAddress, threadId, thread]
   );
   const { isLteS, isLteM, isXXS, isS, isM, isL, isXL } = useBreakpoints();
-  const {
-    seller: {
-      sellerId: _sellerId,
-      isError: isErrorSellers,
-      isLoading: isLoadingSeller
-    },
-    buyer: { buyerId, isError: isErrorBuyers, isLoading: isLoadingBuyer }
-  } = useBuyerSellerAccounts(address || "");
-  const sellerId = _sellerId || "";
   const { showModal } = useModal();
 
   useEffect(() => {
@@ -524,14 +514,6 @@ const ChatConversation = ({
       </HeaderButton>
     );
   }, [chatListOpen, isExchangePreviewOpen, isXXS, isS, isM]);
-  // TODO: comment out
-  // if (
-  //   !isLoadingSeller &&
-  //   !isLoadingBuyer &&
-  //   (isErrorSellers || isErrorBuyers || (!sellerId && !buyerId))
-  // ) {
-  //   return <ErrorMessage />;
-  // }
 
   const isConversationBeingLoaded = !thread && areThreadsLoading;
   const disableInputs = isErrorThread || isConversationBeingLoaded;
