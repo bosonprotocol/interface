@@ -339,12 +339,8 @@ function CreateProductInner({ initial }: Props) {
 
       const offerId = coreSDK.getCreatedOfferIdFromLogs(txReceipt.logs);
 
-      // reset the form
-      formikBag.resetForm();
       await wait(3_000);
       handleOpenSuccessModal({ offerId });
-
-      // reset the form
       formikBag.resetForm();
     } catch (error: any) {
       // TODO: FAILURE MODAL
