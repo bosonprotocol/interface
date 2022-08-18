@@ -298,12 +298,6 @@ const SellerComponent = ({
   );
 };
 
-const ErrorMessage = () => (
-  <Container>
-    <SimpleMessage>There has been an error, try again or refresh</SimpleMessage>
-  </Container>
-);
-
 const getWasItSentByMe = (myAddress: string | undefined, sender: string) => {
   return myAddress === sender;
 };
