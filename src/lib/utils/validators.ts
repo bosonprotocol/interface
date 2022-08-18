@@ -31,7 +31,7 @@ function replaceNullFields(obj: Record<string, any>) {
   }
 }
 
-function fixAttributes(metadata: never) {
+function fixAttributes(metadata: Record<string, any>) {
   // Create 2 new fields, keeping the old ones to not invalidate the current object
   // (that would avoid to deep clone the object)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
