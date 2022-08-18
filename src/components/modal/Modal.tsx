@@ -87,6 +87,7 @@ const Header = styled(Typography)`
   display: flex;
   border-bottom: 2px solid ${colors.border};
   align-items: center;
+  justify-content: space-between;
   gap: 0.5rem;
 `;
 
