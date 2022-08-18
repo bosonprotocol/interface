@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */ // TODO: remove
-
 import {
   FileContent,
   MessageData,
@@ -33,7 +31,9 @@ import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useChatContext } from "../ChatProvider/ChatContext";
 import { MessageDataWithIsValid, ThreadObjectWithIsValid } from "../types";
-import ButtonProposal from "./ButtonProposal/ButtonProposal";
+import ButtonProposal, {
+  ButtonProposalHeight
+} from "./ButtonProposal/ButtonProposal";
 import ExchangeSidePreview from "./ExchangeSidePreview";
 import Message from "./Message";
 import MessageSeparator from "./MessageSeparator";
@@ -258,6 +258,7 @@ const InputWrapper = styled.div`
   display: flex;
   position: relative;
   width: 100%;
+  min-height: ${ButtonProposalHeight};
 `;
 
 const UploadButtonWrapper = styled.button`
@@ -266,7 +267,7 @@ const UploadButtonWrapper = styled.button`
   position: absolute;
   right: 0;
   top: 0;
-  transform: translate(0, 25%);
+  transform: translate(0, calc(${ButtonProposalHeight} / 4));
   margin: 0 1rem;
   :disabled {
     cursor: not-allowed;
@@ -641,7 +642,7 @@ const ChatConversation = ({
         </Messages>
 
         <TypeMessage>
-          {1 === 1 && (
+          {exchange.disputed && (
             <Grid
               alignItems="flex-start"
               $width="auto"
