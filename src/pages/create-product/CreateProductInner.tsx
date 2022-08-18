@@ -154,7 +154,7 @@ function CreateProductInner({ initial }: Props) {
     });
 
     const profileImage = getLocalStorageItems({
-      key: "create-product-image_creteYourProfile"
+      key: "create-product-image_createYourProfile"
     });
 
     const previewImages = getLocalStorageItems({
@@ -178,7 +178,7 @@ function CreateProductInner({ initial }: Props) {
 
     const {
       coreTermsOfSale,
-      creteYourProfile,
+      createYourProfile,
       productInformation,
       productType,
       termsOfExchange,
@@ -228,16 +228,16 @@ function CreateProductInner({ initial }: Props) {
         product: {
           uuid: Date.now().toString(),
           version: 1,
-          productionInformation_brandName: creteYourProfile.name,
+          productionInformation_brandName: createYourProfile.name,
           title: productInformation.productTitle,
           description: productInformation.description,
           visuals_images: visualImages,
           details_offerCategory: productType.productType.toUpperCase()
         },
         seller: {
-          name: creteYourProfile.name,
-          description: creteYourProfile.description,
-          externalUrl: creteYourProfile.website,
+          name: createYourProfile.name,
+          description: createYourProfile.description,
+          externalUrl: createYourProfile.website,
           images: [
             {
               url: `ipfs://${profileImageLink}`,
@@ -246,7 +246,7 @@ function CreateProductInner({ initial }: Props) {
           ],
           contactLinks: [
             {
-              url: creteYourProfile.email,
+              url: createYourProfile.email,
               tag: "email"
             }
           ]

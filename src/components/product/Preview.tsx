@@ -154,10 +154,11 @@ export default function Preview({ togglePreview }: Props) {
               <div>
                 <Typography tag="h3">About the artist</Typography>
                 <Typography tag="p" color={colors.darkGrey}>
-                  {values.creteYourProfile.description}
+                  {values.createYourProfile.description}
                 </Typography>
               </div>
             </DetailGrid>
+            createYourProfile
             <DetailSlider images={sliderImages} />
             <DetailGrid>
               {values?.shippingInfo?.jurisdiction?.length > 0 &&

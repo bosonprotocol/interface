@@ -8,7 +8,7 @@ import {
 } from "./validationUtils";
 
 export const createYourProfileValidationSchema = Yup.object({
-  creteYourProfile: Yup.object({
+  createYourProfile: Yup.object({
     logo: validationOfRequiredImage(MAX_LOGO_SIZE),
     name: Yup.string().trim().required(validationMessage.required),
     email: Yup.string().trim().required(validationMessage.required),
