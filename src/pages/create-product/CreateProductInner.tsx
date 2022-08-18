@@ -377,14 +377,14 @@ function CreateProductInner({ initial }: Props) {
       <ProductLayoutContainer isPreviewVisible={isPreviewVisible}>
         <Formik<CreateProductForm>
           initialValues={initial}
-          onSubmit={(formikVal, formikBag) =>
-            handleSubmit(formikVal, formikBag)
-          }
+          onSubmit={(formikVal, formikBag) => {
+            saveItemInStorage("create-product", formikVal);
+            return handleSubmit(formikVal, formikBag);
+          }}
           validationSchema={wizardStep.currentValidation}
           enableReinitialize
         >
-          {({ values }) => {
-            saveItemInStorage("create-product", values);
+          {() => {
             return (
               <Form>
                 {isPreviewVisible ? (
