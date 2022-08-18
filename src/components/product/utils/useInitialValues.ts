@@ -2,6 +2,7 @@ import { checkIfValueIsEmpty } from "../../../lib/utils/checkIfValueIsEmpty";
 import { convertToBlob } from "../../../lib/utils/convertToBlob";
 import { getLocalStorageItems } from "../../../lib/utils/getLocalStorageItems";
 import {
+  clearLocalStorage,
   getItemFromStorage,
   removeItemInStorage,
   saveItemInStorage
@@ -77,6 +78,7 @@ export function useInitialValues() {
     draft: initialValues,
     remove: removeItemInStorage,
     save: saveItemInStorage,
+    clear: clearLocalStorage,
     key: MAIN_KEY
   };
 }
