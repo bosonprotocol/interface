@@ -44,7 +44,7 @@ function fixAttributes(metadata: Record<string, any>) {
   }
 }
 
-function fixVisualImages(metadata: never) {
+function fixVisualImages(metadata: Record<string, any>) {
   if (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (metadata as any).product &&
