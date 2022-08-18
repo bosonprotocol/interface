@@ -3,6 +3,10 @@ import * as Yup from "yup";
 import {
   coreTermsOfSaleValidationSchema,
   createYourProfileValidationSchema,
+  disputeCentreValidationSchemaAdditionalInformation,
+  disputeCentreValidationSchemaGetStarted,
+  disputeCentreValidationSchemaMakeProposal,
+  disputeCentreValidationSchemaTellUsMore,
   productImagesValidationSchema,
   productInformationValidationSchema,
   productTypeValidationSchema,
@@ -28,10 +32,30 @@ export type ShippingInfo = Yup.InferType<typeof shippingInfoValidationSchema>;
 
 export type ProductImages = Yup.InferType<typeof productImagesValidationSchema>;
 
+export type DisputeCentreGetStarted = Yup.InferType<
+  typeof disputeCentreValidationSchemaGetStarted
+>;
+
+export type DisputeCentreTellUsMore = Yup.InferType<
+  typeof disputeCentreValidationSchemaTellUsMore
+>;
+
+export type DisputeCentreAdditionalInformation = Yup.InferType<
+  typeof disputeCentreValidationSchemaAdditionalInformation
+>;
+
+export type DisputeCentreMakeProposal = Yup.InferType<
+  typeof disputeCentreValidationSchemaMakeProposal
+>;
+
 export type CreateProductForm = CreateYourProfile &
   ProductType &
   ProductInformation &
   ShippingInfo &
   CoreTermsOfSale &
   TermsOfExchange &
-  ProductImages;
+  ProductImages &
+  DisputeCentreGetStarted &
+  DisputeCentreTellUsMore &
+  DisputeCentreAdditionalInformation &
+  DisputeCentreMakeProposal;

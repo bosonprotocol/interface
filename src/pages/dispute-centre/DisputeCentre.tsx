@@ -3,6 +3,13 @@ import { useState } from "react";
 import styled from "styled-components";
 
 import Ethereum from "../../assets/Ethereum.svg";
+import {
+  disputeCentreInitialValues,
+  disputeCentreValidationSchemaAdditionalInformation,
+  disputeCentreValidationSchemaGetStarted,
+  disputeCentreValidationSchemaMakeProposal,
+  disputeCentreValidationSchemaTellUsMore
+} from "../../components/product/utils";
 import MultiSteps from "../../components/step/MultiSteps";
 import Typography from "../../components/ui/Typography";
 import { colors } from "../../lib/styles/colors";
@@ -25,6 +32,10 @@ const DISPUTE_STEPS = [
   } as const,
   {
     name: "Make a proposal",
+    steps: 1
+  } as const,
+  {
+    name: "Review & Submit",
     steps: 1
   } as const
 ];
@@ -109,10 +120,6 @@ const ItemPreview = styled.div`
 function DisputeCentre() {
   const [currentStep, setCurrentStep] = useState(0);
 
-  const handleClickStep = () => {
-    console.log("clicked!");
-  };
-
   const {
     data: exchanges,
     isError,
@@ -126,6 +133,29 @@ function DisputeCentre() {
       enabled: !!"1"
     }
   );
+
+  const handleSubmit = () => {
+    if (currentStep < 4) {
+      setCurrentStep(currentStep + 1);
+    } else {
+      console.log("submit");
+    }
+  };
+
+  const handleClickStep = (val: number) => {
+    if (val < currentStep) {
+      setCurrentStep(val);
+    }
+  };
+
+  const validationSchema = [
+    disputeCentreValidationSchemaGetStarted,
+    disputeCentreValidationSchemaTellUsMore,
+    disputeCentreValidationSchemaAdditionalInformation,
+    disputeCentreValidationSchemaMakeProposal
+  ];
+
+  console.log(currentStep);
 
   return (
     <>
@@ -191,22 +221,11 @@ function DisputeCentre() {
           </div>
         </ItemPreview>
         <GetStartedBox>
-          {currentStep === 0 && (
-            <div get-started="true">
-              <Typography fontWeight="600" fontSize="2rem">
-                Get started
-              </Typography>
-              <Typography fontSize="1.25rem" color={colors.darkGrey}>
-                First, choose the issue you're facing with your redemption.
-              </Typography>
-            </div>
-          )}
           <ItemWidget>
             <Formik
-              initialValues={{}}
-              onSubmit={() => {
-                console.log("clicked");
-              }}
+              initialValues={disputeCentreInitialValues}
+              onSubmit={handleSubmit}
+              validationSchema={validationSchema[currentStep]}
             >
               {(formikProps) => (
                 <DisputeCentreForm
