@@ -17,6 +17,7 @@ import Exchange from "./pages/exchange/Exchange";
 import Explore from "./pages/explore/Explore";
 import Landing from "./pages/landing/Landing";
 import OfferDetail from "./pages/offers/OfferDetail";
+import SellerCenter from "./pages/sell/SellerCenter";
 import reportWebVitals from "./reportWebVitals";
 
 const rootElement = document.getElementById("root");
@@ -63,7 +64,14 @@ root.render(
                   <Route key={route} path={route} element={<Explore />} />
                 ))}
 
-                <Route path={BosonRoutes.Sell} element={<CreateProduct />} />
+                <Route
+                  path={BosonRoutes.SellerCenter}
+                  element={<SellerCenter />}
+                />
+                <Route
+                  path={BosonRoutes.CreateProduct}
+                  element={<CreateProduct />}
+                />
                 <Route
                   path={OffersRoutes.OfferDetail}
                   element={<OfferDetail />}

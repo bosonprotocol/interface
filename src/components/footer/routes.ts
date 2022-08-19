@@ -5,7 +5,9 @@ import {
   TwitterLogo,
   YoutubeLogo
 } from "phosphor-react";
+import { generatePath } from "react-router-dom";
 
+import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes, SocialRoutes } from "../../lib/routing/routes";
 
 export const SOCIAL_ROUTES = [
@@ -43,7 +45,9 @@ export const PRODUCT_ROUTES = [
   },
   {
     name: "Sell",
-    url: BosonRoutes.Sell
+    url: generatePath(BosonRoutes.SellerCenter, {
+      [UrlParameters.sellerPage]: "dashboard"
+    })
   }
 ];
 
