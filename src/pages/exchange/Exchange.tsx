@@ -173,8 +173,7 @@ export default function Exchange() {
             </ImageWrapper>
             <div>
               <SellerID
-                seller={offer?.seller}
-                offerName={name}
+                buyerOrSeller={offer?.seller}
                 justifyContent="flex-start"
                 withProfileImage
               />
