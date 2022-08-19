@@ -178,7 +178,7 @@ function CreateProductInner({ initial }: Props) {
 
     const {
       coreTermsOfSale,
-      creteYourProfile,
+      createYourProfile,
       productInformation,
       productType,
       termsOfExchange,
@@ -228,16 +228,42 @@ function CreateProductInner({ initial }: Props) {
         product: {
           uuid: Date.now().toString(),
           version: 1,
-          productionInformation_brandName: creteYourProfile.name,
           title: productInformation.productTitle,
           description: productInformation.description,
+          identification_sKU: productInformation.sku,
+          identification_productId: productInformation.id,
+          identification_productIdType: productInformation.idType,
+          productionInformation_brandName:
+            productInformation.brandName || createYourProfile.name,
+          productionInformation_manufacturer: productInformation.manufacture,
+          productionInformation_manufacturerPartNumber:
+            productInformation.manufactureModelName,
+          productionInformation_modelNumber: productInformation.partNumber,
+          productionInformation_materials:
+            productInformation.materials?.split(","),
+          details_category: productInformation.category.value,
+          details_subCategory: undefined, // no entry in the UI
+          details_subCategory2: undefined, // no entry in the UI
+          details_offerCategory: productType.productType.toUpperCase(),
+          details_tags: productInformation.tags,
+          details_sections: undefined, // no entry in the UI
+          details_personalisation: undefined, // no entry in the UI
           visuals_images: visualImages,
-          details_offerCategory: productType.productType.toUpperCase()
+          visuals_videos: undefined, // no entry in the UI
+          packaging_packageQuantity: undefined, // no entry in the UI
+          packaging_dimensions_length: shippingInfo.length,
+          packaging_dimensions_width: shippingInfo.width,
+          packaging_dimensions_height: shippingInfo.height,
+          packaging_dimensions_unit: shippingInfo.measurementUnit.value,
+          packaging_weight_value: shippingInfo.weight,
+          packaging_weight_unit: shippingInfo.weightUnit.value
         },
         seller: {
-          name: creteYourProfile.name,
-          description: creteYourProfile.description,
-          externalUrl: creteYourProfile.website,
+          defaultVersion: 1,
+          name: createYourProfile.name,
+          description: createYourProfile.description,
+          externalUrl: createYourProfile.website,
+          tokenId: undefined, // no entry in the UI
           images: [
             {
               url: `ipfs://${profileImageLink}`,
@@ -246,7 +272,7 @@ function CreateProductInner({ initial }: Props) {
           ],
           contactLinks: [
             {
-              url: creteYourProfile.email,
+              url: createYourProfile.email,
               tag: "email"
             }
           ]
@@ -254,7 +280,8 @@ function CreateProductInner({ initial }: Props) {
         exchangePolicy: {
           uuid: Date.now().toString(),
           version: 1,
-          template: termsOfExchange.exchangePolicy.value
+          label: termsOfExchange.exchangePolicy.value,
+          template: termsOfExchange.exchangePolicy.value // TODO: set the URL to the fairExchangePolicy contractual agreement
         },
         shipping: {
           defaultVersion: 1,
@@ -269,10 +296,12 @@ function CreateProductInner({ initial }: Props) {
       const buyerCancellationPenaltyValue =
         parseInt(coreTermsOfSale.price) *
         (parseInt(termsOfExchange.buyerCancellationPenalty) / 100);
+      // TODO: FIX buyerCancellationPenaltyValue computation: Price needs to be converted to BigNumber (eg ETH --> Wei - according to the token decimals) before applying the percentage
 
       const sellerCancellationPenaltyValue =
         parseInt(coreTermsOfSale.price) *
         (parseInt(termsOfExchange.sellerDeposit) / 100);
+      // TODO: FIX buyerCancellationPenaltyValue computation: Price needs to be converted to BigNumber (eg ETH --> Wei - according to the token decimals) before applying the percentage
 
       const validFromDateInMS = Date.parse(
         coreTermsOfSale.offerValidityPeriod[0].$d
@@ -291,7 +320,7 @@ function CreateProductInner({ initial }: Props) {
       );
 
       const resolutionPeriodDurationInMS =
-        parseInt(termsOfExchange.disputePeriod) * 86400;
+        parseInt(termsOfExchange.disputePeriod) * 24 * 3600 * 1000; // day to msec
 
       const offerData = {
         price: parseUnits(`${coreTermsOfSale.price}`, 18).toString(),
@@ -309,9 +338,11 @@ function CreateProductInner({ initial }: Props) {
           voucherRedeemableUntilDateInMS.toString(),
         validFromDateInMS: validFromDateInMS.toString(),
         validUntilDateInMS: validUntilDateInMS.toString(),
-        fulfillmentPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
+        fulfillmentPeriodDurationInMS: resolutionPeriodDurationInMS.toString(), // TODO: find what should be fulfillmentPeriodDuration
         resolutionPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
-        voucherValidDurationInMS: resolutionPeriodDurationInMS.toString(),
+        voucherValidDurationInMS: (
+          validUntilDateInMS - validFromDateInMS
+        ).toString(),
         exchangeToken: "0x0000000000000000000000000000000000000000",
         disputeResolverId: 1,
         agentId: 0, // no agent
