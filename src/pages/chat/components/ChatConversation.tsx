@@ -72,14 +72,6 @@ const Header = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  /* svg:nth-of-type(1) {
-    margin-right: 0.5rem;
-  }
-  svg {
-    ${breakpoint.m} {
-      display: none;
-    }
-  } */
 
   text-align: center;
   ${breakpoint.m} {
