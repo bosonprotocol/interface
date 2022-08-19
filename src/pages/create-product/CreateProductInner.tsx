@@ -163,7 +163,7 @@ function CreateProductInner({ initial }: Props) {
     });
 
     const profileImage = getLocalStorageItems({
-      key: "create-product-image_creteYourProfile"
+      key: "create-product-image_createYourProfile"
     });
 
     const previewImages = getLocalStorageItems({
