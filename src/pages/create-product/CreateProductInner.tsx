@@ -31,6 +31,7 @@ import {
   FIRST_STEP,
   wait
 } from "./utils";
+import { ValidateDates } from "./utils/dataValidator";
 
 interface Props {
   initial: CreateProductForm;
@@ -274,21 +275,15 @@ function CreateProductInner({ initial }: Props) {
         parseInt(coreTermsOfSale.price) *
         (parseInt(termsOfExchange.sellerDeposit) / 100);
 
-      const validFromDateInMS = Date.parse(
-        coreTermsOfSale.offerValidityPeriod[0].$d
-      );
-
-      const validUntilDateInMS = Date.parse(
-        coreTermsOfSale.offerValidityPeriod[1].$d
-      );
-
-      const voucherRedeemableFromDateInMS = Date.parse(
-        coreTermsOfSale.redemptionPeriod[0].$d
-      );
-
-      const voucherRedeemableUntilDateInMS = Date.parse(
-        coreTermsOfSale.redemptionPeriod[1].$d
-      );
+      const {
+        voucherRedeemableFromDateInMS,
+        voucherRedeemableUntilDateInMS,
+        validFromDateInMS,
+        validUntilDateInMS
+      } = ValidateDates({
+        offerValidityPeriod: coreTermsOfSale.offerValidityPeriod,
+        redemptionPeriod: coreTermsOfSale.redemptionPeriod
+      });
 
       const resolutionPeriodDurationInMS =
         parseInt(termsOfExchange.disputePeriod) * 86400;
