@@ -306,13 +306,11 @@ function CreateProductInner({ initial }: Props) {
       const buyerCancellationPenaltyValue =
         (parseFloat(termsOfExchange.buyerCancellationPenalty) / 100) *
         parseFloat(coreTermsOfSale.price);
-      // TODO: FIX buyerCancellationPenaltyValue computation: Price needs to be converted to BigNumber (eg ETH --> Wei - according to the token decimals) before applying the percentage
 
       // TODO: change when more than percentage unit
       const sellerCancellationPenaltyValue =
         (parseFloat(termsOfExchange.sellerDeposit) / 100) *
         parseFloat(coreTermsOfSale.price);
-      // TODO: FIX sellerCancellationPenaltyValue computation: Price needs to be converted to BigNumber (eg ETH --> Wei - according to the token decimals) before applying the percentage
 
       const validFromDateInMS = Date.parse(
         coreTermsOfSale.offerValidityPeriod[0].$d
