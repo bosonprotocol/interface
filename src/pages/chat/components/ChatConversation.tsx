@@ -268,19 +268,30 @@ const UploadButtonWrapper = styled.button`
 const SellerComponent = ({
   size,
   withProfileText,
-  exchange
+  exchange,
+  myBuyerId,
+  mySellerId
 }: {
   size: number;
   withProfileText?: boolean;
   exchange: Exchange | undefined;
+  myBuyerId: string;
+  mySellerId: string;
 }) => {
   if (!exchange) {
     return null;
   }
+  const iAmTheBuyer = myBuyerId === exchange?.buyer.id;
+  const iAmTheSeller = mySellerId === exchange?.offer.seller.id;
+  const iAmBoth = iAmTheBuyer && iAmTheSeller;
+  const buyerOrSellerToShow = iAmBoth
+    ? exchange?.offer.seller
+    : iAmTheBuyer
+    ? exchange?.offer.seller
+    : exchange?.buyer;
   return (
     <SellerID
-      seller={exchange.offer.seller}
-      offerName={exchange.offer.metadata.name || ""}
+      buyerOrSeller={buyerOrSellerToShow}
       withProfileImage
       accountImageSize={size}
       withProfileText={withProfileText}
@@ -293,6 +304,8 @@ const getWasItSentByMe = (myAddress: string | undefined, sender: string) => {
 };
 
 interface Props {
+  myBuyerId: string;
+  mySellerId: string;
   exchange: Exchange | undefined;
   chatListOpen: boolean;
   setChatListOpen: (p: boolean) => void;
@@ -302,6 +315,8 @@ interface Props {
   textAreaValue: string | undefined;
 }
 const ChatConversation = ({
+  myBuyerId,
+  mySellerId,
   exchange,
   chatListOpen,
   setChatListOpen,
@@ -415,8 +430,12 @@ const ChatConversation = ({
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const navigate = useKeepQueryParamsNavigate();
   const { address } = useAccount();
-  const destinationAddress = exchange?.offer.seller.operator
-    ? utils.getAddress(exchange?.offer.seller.operator)
+  const iAmTheBuyer = myBuyerId === exchange?.buyer.id;
+  const destinationAddressLowerCase = iAmTheBuyer
+    ? exchange?.offer.seller.operator
+    : exchange?.buyer.wallet;
+  const destinationAddress = destinationAddressLowerCase
+    ? utils.getAddress(destinationAddressLowerCase)
     : "";
   useEffect(() => {
     if (!bosonXmtp || !thread?.threadId || !destinationAddress) {
@@ -555,7 +574,12 @@ const ChatConversation = ({
             </HeaderButton>
           </NavigationMobile>
           <Header>
-            <SellerComponent size={24} exchange={exchange} />
+            <SellerComponent
+              size={24}
+              exchange={exchange}
+              myBuyerId={myBuyerId}
+              mySellerId={mySellerId}
+            />
           </Header>
           {isLteM && <Grid justifyContent="flex-end">{detailsButton}</Grid>}
         </GridHeader>
@@ -616,6 +640,8 @@ const ChatConversation = ({
                           size={32}
                           withProfileText={false}
                           exchange={exchange}
+                          myBuyerId={myBuyerId}
+                          mySellerId={mySellerId}
                         />
                       </Message>
                     </>

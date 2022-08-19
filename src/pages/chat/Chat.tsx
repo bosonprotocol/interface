@@ -175,6 +175,8 @@ export default function Chat() {
         <GlobalStyle />
 
         <MessageList
+          myBuyerId={buyerId}
+          mySellerId={sellerId}
           exchanges={exchanges}
           isConversationOpened={
             location.pathname !== `${BosonRoutes.Chat}/` &&
@@ -199,6 +201,8 @@ export default function Chat() {
             path={`:${UrlParameters.exchangeId}`}
             element={
               <ChatConversation
+                myBuyerId={buyerId}
+                mySellerId={sellerId}
                 key={selectedExchange?.id || ""}
                 exchange={selectedExchange}
                 setChatListOpen={setChatListOpen}

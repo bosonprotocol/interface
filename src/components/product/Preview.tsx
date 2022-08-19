@@ -111,8 +111,7 @@ export default function Preview({ togglePreview }: Props) {
               </ImageWrapper>
               <div>
                 <SellerID
-                  seller={offer?.seller}
-                  offerName={name}
+                  buyerOrSeller={offer?.seller}
                   justifyContent="flex-start"
                   withProfileImage
                   customImage

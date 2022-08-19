@@ -99,6 +99,8 @@ const MessageInfo = styled.div`
 `;
 
 interface Props {
+  myBuyerId: string;
+  mySellerId: string;
   exchanges: Exchange[];
   onChangeConversation: (exchange: Exchange) => void;
   chatListOpen: boolean;
@@ -110,6 +112,8 @@ interface Props {
 const getMessageItemKey = (exchange: Exchange) => exchange.id;
 
 export default function MessageList({
+  myBuyerId,
+  mySellerId,
   exchanges,
   onChangeConversation,
   chatListOpen,
@@ -138,6 +142,14 @@ export default function MessageList({
           .filter((exchange) => exchange)
           .map((exchange) => {
             const messageKey = getMessageItemKey(exchange);
+            const iAmTheBuyer = myBuyerId === exchange?.buyer.id;
+            const iAmTheSeller = mySellerId === exchange?.offer.seller.id;
+            const iAmBoth = iAmTheBuyer && iAmTheSeller;
+            const buyerOrSellerToShow = iAmBoth
+              ? exchange?.offer.seller
+              : iAmTheBuyer
+              ? exchange?.offer.seller
+              : exchange?.buyer;
             return (
               <MessageItem
                 $active={messageKey === activeMessageKey}
@@ -160,8 +172,7 @@ export default function MessageList({
                   <MessageInfo>
                     <ExchangeName>{exchange?.offer.metadata.name}</ExchangeName>
                     <SellerID
-                      seller={exchange?.offer.seller}
-                      offerName={exchange?.offer.metadata.name || ""}
+                      buyerOrSeller={buyerOrSellerToShow}
                       withProfileImage
                       onClick={() => null}
                     />

@@ -6,9 +6,7 @@ import styled from "styled-components";
 import Grid, { IGrid } from "../../components/ui/Grid";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
-import { getOfferArtist } from "../../lib/utils/hooks/offers/placeholders";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import bosonProtocolImage from "../../pages/offers/mock/bosonprotocol.jpeg";
 
 const AddressContainer = styled(Grid)`
   gap: 10px;
@@ -51,20 +49,19 @@ const RoundedImage = styled.img`
 const SellerID: React.FC<
   {
     children?: React.ReactNode;
-    seller: subgraph.OfferFieldsFragment["seller"];
+    buyerOrSeller:
+      | Pick<subgraph.Seller, "id" | "operator">
+      | Pick<subgraph.Buyer, "id" | "wallet">;
     accountImageSize?: number;
-    offerName: string;
     withProfileImage: boolean;
-
     customImage?: boolean;
     withProfileText?: boolean;
     onClick?: null | undefined | React.MouseEventHandler<HTMLDivElement>;
   } & IGrid &
     React.HTMLAttributes<HTMLDivElement>
 > = ({
-  seller,
+  buyerOrSeller,
   children,
-  offerName,
   withProfileImage,
   customImage,
   onClick,
@@ -74,9 +71,9 @@ const SellerID: React.FC<
   ...rest
 }) => {
   const navigate = useKeepQueryParamsNavigate();
-  const sellerId = seller?.id;
-  const sellerAddress = seller?.operator;
-  const artist = getOfferArtist(offerName);
+  const userId = buyerOrSeller?.id;
+  const isSeller = "operator" in buyerOrSeller;
+  const userAddress = isSeller ? buyerOrSeller.operator : buyerOrSeller.wallet;
   const hasCursorPointer = !!onClick || onClick === undefined;
   return (
     <AddressContainer {...rest} data-address-container>
@@ -89,7 +86,7 @@ const SellerID: React.FC<
             e.stopPropagation();
             navigate({
               pathname: generatePath(BosonRoutes.Account, {
-                [UrlParameters.accountId]: sellerAddress
+                [UrlParameters.accountId]: userAddress
               })
             });
           }
@@ -98,19 +95,19 @@ const SellerID: React.FC<
       >
         {withProfileImage && (
           <ImageContainer>
-            {artist.toLocaleLowerCase() === "boson protocol" || customImage ? (
-              <RoundedImage src={sellerAddress || bosonProtocolImage} />
+            {customImage ? (
+              <RoundedImage src={userAddress} />
             ) : (
               <AccountImage
                 size={accountImageSize || 17}
-                address={sellerAddress}
+                address={userAddress}
               />
             )}
           </ImageContainer>
         )}
         {withProfileText && (
           <SellerInfo data-testid="seller-info">
-            {artist ? artist : `Seller ID: ${sellerId}`}
+            {isSeller ? `Seller ID: ${userId}` : `Buyer ID: ${userId}`}
           </SellerInfo>
         )}
       </SellerContainer>
