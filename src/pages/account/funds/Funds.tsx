@@ -1,4 +1,5 @@
 import { subgraph } from "@bosonprotocol/react-kit";
+import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
@@ -87,10 +88,28 @@ export default function Funds({ sellerId, buyerId }: Props) {
   useEffect(() => {
     setUiFunds((prevFunds) => [
       ...Array.from(
-        new Map([...funds, ...prevFunds].map((v) => [v.id, v])).values()
+        new Map(
+          [
+            {
+              accountId,
+              availableAmount: "0",
+              id: "",
+              token: {
+                // TODO: change this depending on chainId
+                id: "",
+                address: ethers.constants.AddressZero,
+                name: "Ether",
+                symbol: "ETH",
+                decimals: "18"
+              }
+            },
+            ...funds,
+            ...prevFunds
+          ].map((v) => [v.id, v])
+        ).values()
       )
     ]);
-  }, [funds]);
+  }, [funds, accountId]);
 
   if (!core) {
     return <div>Connect your wallet</div>;
