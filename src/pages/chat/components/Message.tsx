@@ -1,9 +1,9 @@
 import {
   FileContent,
   MessageType,
-  ProposalContent
-} from "@bosonprotocol/chat-sdk/dist/cjs/util/definitions";
-import { Image as AccountImage } from "@davatar/react";
+  ProposalContent,
+  StringContent
+} from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/definitions";
 import { BigNumber, utils } from "ethers";
 import { ArrowRight, Check } from "phosphor-react";
 import React, { forwardRef, ReactNode, useCallback } from "react";
@@ -11,15 +11,14 @@ import styled from "styled-components";
 
 import UploadedFile from "../../../components/form/Upload/UploadedFile";
 import ProposalTypeSummary from "../../../components/modal/components/Chat/components/ProposalTypeSummary";
+import { PERCENTAGE_FACTOR } from "../../../components/modal/components/Chat/const";
 import { useModal } from "../../../components/modal/useModal";
 import Grid from "../../../components/ui/Grid";
 import Typography from "../../../components/ui/Typography";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
-import { DeepReadonly } from "../../../lib/types/helpers";
-import { validateMessage } from "../../../lib/utils/chat/message";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
-import { Thread } from "../types";
+import { MessageDataWithIsValid } from "../types";
 
 const width = "31.625rem";
 type StyledContentProps = { $isLeftAligned: boolean };
@@ -76,7 +75,7 @@ const StyledContent = styled.div<StyledContentProps>`
   }
 `;
 
-const Avatar = styled.div`
+const AvatarContainer = styled.div`
   position: absolute;
   top: -1.25rem;
   left: 1rem;
@@ -104,24 +103,6 @@ const StyledGrid = styled(Grid)`
   }
 `;
 
-const SellerAvatar = ({
-  isLeftAligned,
-  children,
-  exchange
-}: {
-  isLeftAligned: Props["isLeftAligned"];
-  children: Props["children"];
-  exchange: Props["exchange"];
-}) => {
-  return isLeftAligned ? (
-    <Avatar>{children}</Avatar>
-  ) : (
-    <Avatar>
-      <AccountImage size={32} address={exchange.buyer.wallet} />
-    </Avatar>
-  );
-};
-
 const BottomDateStamp = ({
   isLeftAligned,
   message
@@ -140,14 +121,14 @@ const BottomDateStamp = ({
 
 interface Props {
   exchange: Exchange;
-  message: DeepReadonly<Thread["messages"][number]>;
+  message: MessageDataWithIsValid;
   children: ReactNode;
   isLeftAligned: boolean;
 }
 
 const Message = forwardRef(
   (
-    { message, children, isLeftAligned, exchange }: Props,
+    { message, children: Avatar, isLeftAligned, exchange }: Props,
     ref: React.ForwardedRef<HTMLDivElement>
   ) => {
     const Content = useCallback(
@@ -172,14 +153,13 @@ const Message = forwardRef(
       messageContentType === MessageType.String;
     const isFileMessage = messageContentType === MessageType.File;
     const isProposalMessage = messageContentType === MessageType.Proposal;
+    const { isValid } = message;
 
-    const isValid = validateMessage(message);
     if (!isValid) {
       return (
         <Content $isLeftAligned={isLeftAligned}>
-          <SellerAvatar isLeftAligned={isLeftAligned} exchange={exchange}>
-            {children}
-          </SellerAvatar>
+          <AvatarContainer>{Avatar}</AvatarContainer>
+
           <div>
             {isFileMessage
               ? "Corrupt image."
@@ -193,14 +173,13 @@ const Message = forwardRef(
       );
     }
     if (isRegularMessage) {
+      const messageValue = messageContent as unknown as StringContent;
+
       return (
         <Content $isLeftAligned={isLeftAligned}>
-          <SellerAvatar isLeftAligned={isLeftAligned} exchange={exchange}>
-            {children}
-          </SellerAvatar>
-          <div style={{ overflowWrap: "break-word" }}>
-            {message.data.content.value}
-          </div>
+          <AvatarContainer>{Avatar}</AvatarContainer>
+
+          <div style={{ overflowWrap: "break-word" }}>{messageValue.value}</div>
           <BottomDateStamp isLeftAligned={isLeftAligned} message={message} />
         </Content>
       );
@@ -210,9 +189,8 @@ const Message = forwardRef(
       const imageValue = messageContent as unknown as FileContent;
       return (
         <Content $isLeftAligned={isLeftAligned}>
-          <SellerAvatar isLeftAligned={isLeftAligned} exchange={exchange}>
-            {children}
-          </SellerAvatar>
+          <AvatarContainer>{Avatar}</AvatarContainer>
+
           <UploadedFile
             fileName={imageValue.value.fileName}
             color={isLeftAligned ? "white" : "grey"}
@@ -229,9 +207,8 @@ const Message = forwardRef(
       if (!exchange) {
         return (
           <Content $isLeftAligned={isLeftAligned}>
-            <SellerAvatar isLeftAligned={isLeftAligned} exchange={exchange}>
-              {children}
-            </SellerAvatar>
+            <AvatarContainer>{Avatar}</AvatarContainer>
+
             <p>
               We couldn't retrieve your exchange to show the proposals, please
               try again
@@ -245,9 +222,8 @@ const Message = forwardRef(
       const isRaisingADispute = !!messageContent.disputeContext?.length;
       return (
         <Content $isLeftAligned={isLeftAligned}>
-          <SellerAvatar isLeftAligned={isLeftAligned} exchange={exchange}>
-            {children}
-          </SellerAvatar>
+          <AvatarContainer>{Avatar}</AvatarContainer>
+
           <Typography tag="h4" margin="0">
             {messageContent.title}
           </Typography>
@@ -295,8 +271,9 @@ const Message = forwardRef(
                 </Typography>
                 {messageContent.proposals.map((proposal) => {
                   const { offer } = exchange;
+
                   const refundAmount = BigNumber.from(offer.price)
-                    .div(BigNumber.from(100))
+                    .div(BigNumber.from(100 * PERCENTAGE_FACTOR))
                     .mul(BigNumber.from(proposal.percentageAmount));
 
                   const formattedRefundAmount = utils.formatUnits(
@@ -324,7 +301,8 @@ const Message = forwardRef(
                         <Typography color={colors.primary} cursor="pointer">
                           Proposed refund amount: {formattedRefundAmount}{" "}
                           {offer.exchangeToken.symbol} (
-                          {proposal.percentageAmount}
+                          {Number(proposal.percentageAmount) /
+                            PERCENTAGE_FACTOR}
                           %)
                         </Typography>
                         <ArrowRight color={colors.primary} />
@@ -359,9 +337,7 @@ const Message = forwardRef(
 
     return (
       <Content $isLeftAligned={isLeftAligned}>
-        <SellerAvatar isLeftAligned={isLeftAligned} exchange={exchange}>
-          {children}
-        </SellerAvatar>
+        <AvatarContainer>{Avatar}</AvatarContainer>
         Unsupported message
         <BottomDateStamp isLeftAligned={isLeftAligned} message={message} />
       </Content>

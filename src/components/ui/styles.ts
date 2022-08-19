@@ -29,28 +29,6 @@ export const boxShadow = css`
     0px 0px 16px rgba(0, 0, 0, 0.05), 0px 0px 32px rgba(0, 0, 0, 0.05);
 `;
 
-export const scrollStyles = css`
-  ::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 var(--scrollbarWidth) var(--scrollbarBg);
-    box-shadow: inset 0 0 var(--scrollbarWidth) var(--scrollbarBg);
-    border-radius: 0;
-    background-color: var(--scrollbarBg);
-  }
-
-  ::-webkit-scrollbar {
-    width: var(--scrollbarWidth);
-    height: 0;
-    background-color: var(--scrollbarBg);
-  }
-
-  ::-webkit-scrollbar-thumb {
-    border-radius: 0;
-    -webkit-box-shadow: inset 0 0 var(--scrollbarWidth) var(--scrollbarThumb);
-    box-shadow: inset 0 0 var(--scrollbarWidth) var(--scrollbarThumb);
-    background-color: var(--scrollbarThumb);
-  }
-`;
-
 export const text = css`
   letter-spacing: 0.5px;
   font-family: "Plus Jakarta Sans";

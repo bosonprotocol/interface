@@ -10,6 +10,7 @@ import { Input } from "../../../../../../form";
 import Price from "../../../../../../price";
 import Grid from "../../../../../../ui/Grid";
 import Typography from "../../../../../../ui/Typography";
+import { MAX_PERCENTAGE_DECIMALS } from "../../../const";
 import { FormModel } from "../../MakeProposalFormModel";
 import RequestedRefundInput from "./RequestedRefundInput";
 
@@ -65,10 +66,10 @@ export default function RefundRequest({ exchange }: Props) {
   const { data: sellers } = useSellers({ admin: address });
   const accountId = sellers?.[0]?.id || "";
   const { funds } = useFunds(accountId);
+  const { offer } = exchange;
   const currencyInDeposit = funds?.find(
     (fund) => fund.token.address === offer.exchangeToken.address
   );
-  const { offer } = exchange;
   const decimals = Number(offer.exchangeToken.decimals);
   const formatIntValueToDecimals = (value: string | BigNumber) => {
     return utils.formatUnits(BigNumber.from(value), decimals);
@@ -132,7 +133,7 @@ export default function RefundRequest({ exchange }: Props) {
             Edit as %
           </Typography>
           <Input
-            step="0.001"
+            step={10 ** -MAX_PERCENTAGE_DECIMALS}
             name={FormModel.formFields.refundPercentage.name}
             type="number"
             onChange={(e) => {

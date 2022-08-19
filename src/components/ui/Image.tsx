@@ -1,7 +1,10 @@
+import { IpfsMetadataStorage } from "@bosonprotocol/ipfs-storage";
 import { Image as ImageIcon } from "phosphor-react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 import { buttonText } from "../../components/ui/styles";
+import { CONFIG } from "../../lib/config";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import Typography from "./Typography";
@@ -40,6 +43,8 @@ const ImageContainer = styled.img`
 `;
 
 const ImagePlaceholder = styled.div`
+  position: absolute;
+  top: 0;
   height: 100%;
   width: 100%;
   background-color: ${colors.darkGrey};
@@ -47,10 +52,6 @@ const ImagePlaceholder = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
-  svg {
-    fill: ${colors.white};
-  }
 
   span {
     ${buttonText}
@@ -74,14 +75,35 @@ const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
   alt = "",
   ...rest
 }) => {
+  const [imageSrc, setImageSrc] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData(src: string) {
+      const ipfsMetadataStorage = IpfsMetadataStorage.fromTheGraphIpfsUrl(
+        CONFIG.ipfsMetadataUrl
+      );
+
+      const fetchPromises = await ipfsMetadataStorage.get(src, false);
+      const [image] = await Promise.all([fetchPromises]);
+      setImageSrc(String(image));
+    }
+    if (src.includes("ipfs://")) {
+      fetchData(src);
+    }
+  }, [src]); // eslint-disable-line
+
   return (
     <ImageWrapper {...rest}>
       {children || ""}
-      {src ? (
-        <ImageContainer data-testid={dataTestId} src={src} alt={alt} />
+      {imageSrc || src ? (
+        <ImageContainer
+          data-testid={dataTestId}
+          src={imageSrc || src}
+          alt={alt}
+        />
       ) : (
         <ImagePlaceholder>
-          <ImageIcon size={50} />
+          <ImageIcon size={50} color={colors.white} />
           <Typography tag="span">IMAGE NOT AVAILABLE</Typography>
         </ImagePlaceholder>
       )}

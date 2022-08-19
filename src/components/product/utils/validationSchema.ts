@@ -58,7 +58,16 @@ export const productInformationValidationSchema = Yup.object({
         })
       )
       .default([{ name: "", value: "" }]),
-    description: Yup.string().required(validationMessage.required)
+    description: Yup.string().required(validationMessage.required),
+    sku: Yup.string(),
+    id: Yup.string(),
+    idType: Yup.string(),
+    brandName: Yup.string(),
+    manufacture: Yup.string(),
+    manufactureModelName: Yup.string(),
+    partNumber: Yup.string(),
+    materials: Yup.string(),
+    tags: Yup.mixed()
   })
 });
 
@@ -114,6 +123,8 @@ export const termsOfExchangeValidationSchema = Yup.object({
 
 export const shippingInfoValidationSchema = Yup.object({
   shippingInfo: Yup.object({
+    weight: Yup.string(),
+    weightUnit: Yup.object({ value: Yup.string(), label: Yup.string() }),
     height: Yup.string(),
     width: Yup.string(),
     length: Yup.string(),

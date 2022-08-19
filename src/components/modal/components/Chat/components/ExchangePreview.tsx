@@ -30,7 +30,7 @@ const StyledPrice = styled(Price)`
 export default function ExchangePreview({ exchange }: Props) {
   const { offer } = exchange;
   return (
-    <Grid justifyContent="space-between" padding="2rem 0">
+    <Grid justifyContent="space-between">
       <Grid>
         <img src={offer.metadata.imageUrl} alt="Exchange url" width={80} />
         <Grid
@@ -41,8 +41,8 @@ export default function ExchangePreview({ exchange }: Props) {
         >
           <Name>{offer.metadata.name}</Name>
           <SellerID
-            seller={offer?.seller}
-            offerName={offer.metadata.name || ""}
+            offer={offer}
+            buyerOrSeller={offer?.seller}
             justifyContent="flex-start"
             withProfileImage
             onClick={() => {

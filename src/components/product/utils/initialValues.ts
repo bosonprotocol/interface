@@ -38,7 +38,15 @@ export const productInformationInitialValues = {
         name: "",
         value: ""
       }
-    ]
+    ],
+    sku: undefined,
+    id: undefined,
+    idType: undefined,
+    brandName: undefined,
+    manufacture: undefined,
+    manufactureModelName: undefined,
+    partNumber: undefined,
+    materials: undefined
   }
 } as const;
 
