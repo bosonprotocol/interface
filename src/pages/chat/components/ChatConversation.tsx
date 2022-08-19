@@ -72,14 +72,6 @@ const Header = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  svg:nth-of-type(1) {
-    margin-right: 0.5rem;
-  }
-  svg {
-    ${breakpoint.m} {
-      display: none;
-    }
-  }
 
   text-align: center;
   ${breakpoint.m} {
@@ -172,14 +164,12 @@ const Input = styled.div`
   font-weight: 500;
   line-height: 1.5rem;
   padding: 0.75rem 1rem 0.75rem 1rem;
-  max-width: calc(100vw - 10.9375rem);
   &:focus {
     outline: none;
   }
   textarea {
     width: 100%;
     height: 1.3125rem;
-    max-width: calc(100% - 2.1875rem);
     border: none;
     display: block;
     max-height: 16.875rem;
