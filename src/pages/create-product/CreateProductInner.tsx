@@ -341,8 +341,6 @@ function CreateProductInner({ initial }: Props) {
 
       await wait(3_000);
       handleOpenSuccessModal({ offerId });
-
-      // reset the form
       formikBag.resetForm();
     } catch (error: any) {
       // TODO: FAILURE MODAL

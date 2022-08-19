@@ -29,19 +29,11 @@ import { CONFIG } from "../../lib/config";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
-import {
-  getOfferArtistDescription,
-  getOfferDescription,
-  getOfferImage,
-  getOfferImageList,
-  getOfferProductData,
-  getOfferShippingInformation
-} from "../../lib/utils/hooks/offers/placeholders";
-import { useOffer } from "../../lib/utils/hooks/offers/useOffer";
+import { getOfferDetails } from "../../lib/utils/hooks/getOfferDetails";
+import useOffer from "../../lib/utils/hooks/offer/useOffer";
 import { useSellers } from "../../lib/utils/hooks/useSellers";
 import { isAccountSeller } from "../../lib/utils/isAccountSeller";
 import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
-import { MOCK } from "./mock/mock";
 
 export default function OfferDetail() {
   const { [UrlParameters.offerId]: offerId } = useParams();
@@ -139,14 +131,16 @@ export default function OfferDetail() {
   }
   const isSeller = isAccountSeller(offer, address);
 
-  const name = offer.metadata?.name || "Untitled";
-  const offerImg = getOfferImage(offer.id, name);
-  const shippingInfo = getOfferShippingInformation(name);
-  const description = offer.metadata?.description || "";
-  const mockedDescription = getOfferDescription(name);
-  const productData = getOfferProductData(name);
-  const artistDescription = getOfferArtistDescription(name);
-  const images = getOfferImageList(name);
+  const {
+    name,
+    offerImg,
+    shippingInfo,
+    description,
+    productData,
+    artistDescription,
+    images
+  } = getOfferDetails(offer);
+
   return (
     <DetailWrapper>
       <LightBackground>
@@ -226,18 +220,18 @@ export default function OfferDetail() {
               style={{ color: colors.darkGrey }}
               data-testid="description"
             >
-              {mockedDescription || description}
+              {description}
             </Typography>
             <DetailTable data={productData} tag="strong" />
           </div>
           <div>
             <Typography tag="h3">About the artist</Typography>
             <Typography tag="p" style={{ color: colors.darkGrey }}>
-              {artistDescription || MOCK.aboutArtist}
+              {artistDescription}
             </Typography>
           </div>
         </DetailGrid>
-        <DetailSlider images={images.length ? images : MOCK.images} />
+        {images.length > 0 && <DetailSlider images={images} />}
         <DetailGrid>
           <DetailChart offer={offer} title="Inventory graph" />
           <div>

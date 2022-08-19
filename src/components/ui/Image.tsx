@@ -1,4 +1,5 @@
 import { Image as ImageIcon } from "phosphor-react";
+import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 
 import { buttonText } from "../../components/ui/styles";
@@ -40,6 +41,8 @@ const ImageContainer = styled.img`
 `;
 
 const ImagePlaceholder = styled.div`
+  position: absolute;
+  top: 0;
   height: 100%;
   width: 100%;
   background-color: ${colors.darkGrey};
@@ -47,10 +50,6 @@ const ImagePlaceholder = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
-  svg {
-    fill: ${colors.white};
-  }
 
   span {
     ${buttonText}
@@ -67,6 +66,31 @@ interface IImage {
   alt?: string;
 }
 
+const handleIPFS = async (src: string): Promise<string | null> => {
+  if (src) {
+    if (!src.includes("ipfs://")) {
+      return src;
+    } else {
+      return new Promise((resolve) =>
+        fetch(src)
+          .then(async (response) => {
+            if (response.status === 200) {
+              resolve(response.text());
+            } else {
+              resolve(null);
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+            resolve(null);
+          })
+      );
+    }
+  }
+
+  return null;
+};
+
 const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
   src,
   children,
@@ -74,14 +98,25 @@ const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
   alt = "",
   ...rest
 }) => {
+  const [imageSrc, setImageSrc] = useState<string | null>(null);
+
+  const getIPFS = useCallback(async () => {
+    const newSrc = await handleIPFS(src);
+    setImageSrc(newSrc);
+  }, [src, setImageSrc]);
+
+  useEffect(() => {
+    getIPFS();
+  }, [getIPFS]);
+
   return (
     <ImageWrapper {...rest}>
       {children || ""}
-      {src ? (
-        <ImageContainer data-testid={dataTestId} src={src} alt={alt} />
+      {imageSrc ? (
+        <ImageContainer data-testid={dataTestId} src={imageSrc} alt={alt} />
       ) : (
         <ImagePlaceholder>
-          <ImageIcon size={50} />
+          <ImageIcon size={50} color={colors.white} />
           <Typography tag="span">IMAGE NOT AVAILABLE</Typography>
         </ImagePlaceholder>
       )}
