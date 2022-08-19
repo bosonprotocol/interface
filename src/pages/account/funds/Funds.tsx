@@ -85,7 +85,6 @@ export default function Funds({ sellerId, buyerId }: Props) {
     setHighlightedToken(tokenName);
     setTimeout(() => setHighlightedToken(""), 300);
   };
-  console.log("funds", funds, "uiFunds", uiFunds);
   useEffect(() => {
     const nativeFund = funds.find(
       (f) => f.token.address === ethers.constants.AddressZero
