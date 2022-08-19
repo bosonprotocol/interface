@@ -8,6 +8,7 @@ import Button from "../../../../../ui/Button";
 import Grid from "../../../../../ui/Grid";
 import Typography from "../../../../../ui/Typography";
 import ProposalTypeSummary from "../../components/ProposalTypeSummary";
+import { PERCENTAGE_FACTOR } from "../../const";
 import { FormModel } from "../MakeProposalFormModel";
 import { proposals } from "./MakeAProposalStep/MakeAProposalStep";
 
@@ -71,8 +72,10 @@ export default function ReviewAndSubmitStep({
                   exchange={exchange}
                   proposal={{
                     type: "Refund Request",
-                    percentageAmount: refundPercentageField.value,
-                    signature: "0x"
+                    percentageAmount: (
+                      Number(refundPercentageField.value) * PERCENTAGE_FACTOR
+                    ).toString(),
+                    signature: "0x" // TODO: change
                   }}
                 />
               );

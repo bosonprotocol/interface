@@ -14,6 +14,9 @@ export const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1 MB
 export const validationOfFile = ({ isOptional }: { isOptional: boolean }) =>
   Yup.mixed()
     .nullable(isOptional ? true : undefined)
+    .test("numFiles", `Please upload one file`, (files: File[]) => {
+      return isOptional ? true : !!files.length;
+    })
     .test(
       "fileSize",
       `File size cannot exceed ${bytesToSize(MAX_FILE_SIZE)} (for each file)`,

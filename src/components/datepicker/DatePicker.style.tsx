@@ -56,10 +56,8 @@ export const Selector = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   height: 3rem;
   padding-bottom: 0.5rem;
-
   border-bottom: 1px solid ${colors.border};
 `;
 
@@ -74,9 +72,9 @@ export const CalendarRow = styled.div`
   display: grid;
   grid-column-gap: 0;
   grid-row-gap: 0;
-
   grid-template-columns: repeat(7, minmax(0, 1fr));
 `;
+
 export const CalendarHeader = styled(CalendarFlex)`
   margin-bottom: 0.5rem;
   > div {

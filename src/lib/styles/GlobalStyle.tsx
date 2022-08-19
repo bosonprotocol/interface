@@ -25,10 +25,6 @@ const GlobalStyle = createGlobalStyle<{
       props.$accentColor ? props.$accentColor : colors.arsenic};
     --primaryBgColor: ${(props) =>
       props.$primaryBgColor ? props.$primaryBgColor : colors.primaryBgColor};
-    --scrollbarThumb: ${(props) =>
-      props.$primaryColor ? props.$primaryColor : colors.primary};
-    --scrollbarBg: ${colors.black};
-    --scrollbarWidth: 4px;
 
     font-size: 12px;
     ${breakpoint.xs} {

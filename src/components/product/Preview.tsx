@@ -63,6 +63,8 @@ export default function Preview({ togglePreview }: Props) {
     values.coreTermsOfSale.offerValidityPeriod[0]
   );
 
+  const exchangeDate = Date.now().toString();
+
   const offer = {
     price: weiPrice.toString(),
 
@@ -80,8 +82,8 @@ export default function Preview({ togglePreview }: Props) {
     voucherValidDuration: "21727820",
     exchanges: [
       {
-        committedDate: Date.now().toString(),
-        redeemedDate: Date.now().toString()
+        committedDate: exchangeDate,
+        redeemedDate: exchangeDate
       }
     ],
     seller: {

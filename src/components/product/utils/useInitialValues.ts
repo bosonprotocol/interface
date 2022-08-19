@@ -2,6 +2,7 @@ import { checkIfValueIsEmpty } from "../../../lib/utils/checkIfValueIsEmpty";
 import { convertToBlob } from "../../../lib/utils/convertToBlob";
 import { getLocalStorageItems } from "../../../lib/utils/getLocalStorageItems";
 import {
+  clearLocalStorage,
   getItemFromStorage,
   removeItemInStorage,
   saveItemInStorage
@@ -44,14 +45,17 @@ const convertImageToFile = ({ value, key }: Image) => {
   const blob = new Blob([data as BlobPart], {
     type: `image/${extension}`
   });
+
   const file = new File([blob as BlobPart], `${key}.${extension}`, {
     type: `image/${extension}`
   });
+
   return file;
 };
 
 const IMAGES_KEY = "create-product-image_";
 const MAIN_KEY = "create-product";
+
 export function useInitialValues() {
   const { converted: convertedImages } = getConvertImagesFromLocalStorage();
   const initialValues = getItemFromStorage<CreateProductForm | null>(
@@ -74,6 +78,7 @@ export function useInitialValues() {
     draft: initialValues,
     remove: removeItemInStorage,
     save: saveItemInStorage,
+    clear: clearLocalStorage,
     key: MAIN_KEY
   };
 }
