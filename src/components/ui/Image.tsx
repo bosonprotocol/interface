@@ -1,8 +1,10 @@
+import { IpfsMetadataStorage } from "@bosonprotocol/ipfs-storage";
 import { Image as ImageIcon } from "phosphor-react";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 import { buttonText } from "../../components/ui/styles";
+import { CONFIG } from "../../lib/config";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import Typography from "./Typography";
@@ -66,31 +68,6 @@ interface IImage {
   alt?: string;
 }
 
-const handleIPFS = async (src: string): Promise<string | null> => {
-  if (src) {
-    if (!src.includes("ipfs://")) {
-      return src;
-    } else {
-      return new Promise((resolve) =>
-        fetch(src)
-          .then(async (response) => {
-            if (response.status === 200) {
-              resolve(response.text());
-            } else {
-              resolve(null);
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-            resolve(null);
-          })
-      );
-    }
-  }
-
-  return null;
-};
-
 const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
   src,
   children,
@@ -98,22 +75,27 @@ const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
   alt = "",
   ...rest
 }) => {
-  const [imageSrc, setImageSrc] = useState<string | null>(null);
-
-  const getIPFS = useCallback(async () => {
-    const newSrc = await handleIPFS(src);
-    setImageSrc(newSrc);
-  }, [src, setImageSrc]);
+  const [imageSrc, setImageSrc] = useState<any>(src);
 
   useEffect(() => {
-    getIPFS();
-  }, [getIPFS]);
+    async function fetchData(src: string) {
+      const ipfsMetadataStorage = IpfsMetadataStorage.fromTheGraphIpfsUrl(
+        CONFIG.ipfsMetadataUrl
+      );
+      return await ipfsMetadataStorage.get(src);
+    }
+    if (src.includes("ipfs://")) {
+      const meta = fetchData(src);
+      console.log(meta);
+      setImageSrc(meta);
+    }
+  }, [src]); // eslint-disable-line
 
   return (
     <ImageWrapper {...rest}>
       {children || ""}
       {imageSrc ? (
-        <ImageContainer data-testid={dataTestId} src={imageSrc} alt={alt} />
+        <ImageContainer data-testid={dataTestId} src={"null"} alt={alt} />
       ) : (
         <ImagePlaceholder>
           <ImageIcon size={50} color={colors.white} />
