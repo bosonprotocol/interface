@@ -307,13 +307,13 @@ function CreateProductInner({ initial }: Props) {
 
       // TODO: change when more than percentage unit
       const buyerCancellationPenaltyValue = priceBN
-        .mul(termsOfExchange.buyerCancellationPenalty)
-        .div(100);
+        .mul(parseFloat(termsOfExchange.buyerCancellationPenalty) * 1000)
+        .div(100 * 1000);
 
       // TODO: change when more than percentage unit
       const sellerCancellationPenaltyValue = priceBN
-        .mul(termsOfExchange.sellerDeposit)
-        .div(100);
+        .mul(parseFloat(termsOfExchange.sellerDeposit) * 1000)
+        .div(100 * 1000);
 
       const {
         voucherRedeemableFromDateInMS,
