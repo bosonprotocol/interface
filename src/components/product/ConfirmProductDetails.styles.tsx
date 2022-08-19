@@ -21,7 +21,7 @@ export const CurrencyIconWrapper = styled.div`
 `;
 
 export const CollapseContainer = styled.div`
-  padding: 1.5rem 2rem 2rem 2rem;
+  padding: 1.5rem 2rem;
   background: ${colors.lightGrey};
   &:nth-of-type(2) {
     margin-top: 2rem;
