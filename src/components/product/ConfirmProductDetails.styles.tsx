@@ -190,8 +190,8 @@ export const InitializeChatContainer = styled.div`
 export const RenderProductImageWrapper = styled.div<{
   $isPlaceholder: boolean;
 }>`
-  max-height: 9.375rem;
-  max-width: 9.375rem;
+  height: 9.375rem;
+  width: 9.375rem;
   border: ${({ $isPlaceholder }) =>
     $isPlaceholder ? "1px solid rgba(85, 96, 114, 0.06)" : "none"};
   img {
