@@ -192,7 +192,6 @@ export const RenderProductImageWrapper = styled.div<{
 }>`
   max-height: 9.375rem;
   max-width: 9.375rem;
-  border: 1px solid rgba(85, 96, 114, 0.06);
   border: ${({ $isPlaceholder }) =>
     $isPlaceholder ? "1px solid rgba(85, 96, 114, 0.06)" : "none"};
   img {
