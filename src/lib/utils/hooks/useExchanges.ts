@@ -17,6 +17,7 @@ export type Exchange = {
   validUntilDate: string;
   seller: {
     id: string;
+    operator: string;
   };
   buyer: {
     id: string;
@@ -84,6 +85,7 @@ export function useExchanges(
             validUntilDate
             seller {
               id
+              operator
             }
             buyer {
               id

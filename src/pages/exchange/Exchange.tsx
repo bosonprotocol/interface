@@ -173,6 +173,7 @@ export default function Exchange() {
             <div>
               <SellerID
                 offer={offer}
+                buyerOrSeller={offer?.seller}
                 justifyContent="flex-start"
                 withProfileImage
               />

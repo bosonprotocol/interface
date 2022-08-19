@@ -1,3 +1,4 @@
+import { subgraph } from "@bosonprotocol/react-kit";
 import { Image as AccountImage } from "@davatar/react";
 import { generatePath } from "react-router-dom";
 import styled from "styled-components";
@@ -46,8 +47,11 @@ const ImageContainer = styled.div`
 const SellerID: React.FC<
   {
     children?: React.ReactNode;
-    accountImageSize?: number;
     offer: Offer;
+    buyerOrSeller:
+      | Pick<subgraph.Seller, "id" | "operator">
+      | Pick<subgraph.Buyer, "id" | "wallet">;
+    accountImageSize?: number;
     withProfileImage: boolean;
     customImage?: boolean;
     withProfileText?: boolean;
@@ -57,6 +61,7 @@ const SellerID: React.FC<
 > = ({
   children,
   offer,
+  buyerOrSeller,
   withProfileImage,
   customImage,
   onClick,
@@ -64,13 +69,12 @@ const SellerID: React.FC<
   withProfileText = true,
   ...rest
 }) => {
-  const {
-    seller: { id: sellerId, operator: sellerAddress }
-  } = offer;
   const navigate = useKeepQueryParamsNavigate();
   const { artist } = getOfferDetails(offer);
-  console.log(artist);
 
+  const userId = buyerOrSeller?.id;
+  const isSeller = "operator" in buyerOrSeller;
+  const userAddress = isSeller ? buyerOrSeller.operator : buyerOrSeller.wallet;
   const hasCursorPointer = !!onClick || onClick === undefined;
   return (
     <AddressContainer {...rest} data-address-container>
@@ -83,7 +87,7 @@ const SellerID: React.FC<
             e.stopPropagation();
             navigate({
               pathname: generatePath(BosonRoutes.Account, {
-                [UrlParameters.accountId]: sellerAddress
+                [UrlParameters.accountId]: userAddress
               })
             });
           }
@@ -107,14 +111,14 @@ const SellerID: React.FC<
             ) : (
               <AccountImage
                 size={accountImageSize || 17}
-                address={sellerAddress}
+                address={userAddress}
               />
             )}
           </ImageContainer>
         )}
         {withProfileText && (
           <SellerInfo data-testid="seller-info">
-            {artist?.name ? artist.name : `Seller ID: ${sellerId}`}
+            {isSeller ? `Seller ID: ${userId}` : `Buyer ID: ${userId}`}
           </SellerInfo>
         )}
       </SellerContainer>
