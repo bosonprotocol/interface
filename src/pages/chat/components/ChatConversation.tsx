@@ -289,8 +289,7 @@ const SellerComponent = ({
   }
   return (
     <SellerID
-      seller={exchange.offer.seller}
-      offerName={exchange.offer.metadata.name || ""}
+      offer={exchange?.offer}
       withProfileImage
       accountImageSize={size}
       withProfileText={withProfileText}

@@ -160,8 +160,7 @@ export default function MessageList({
                   <MessageInfo>
                     <ExchangeName>{exchange?.offer.metadata.name}</ExchangeName>
                     <SellerID
-                      seller={exchange?.offer.seller}
-                      offerName={exchange?.offer.metadata.name || ""}
+                      offer={exchange?.offer}
                       withProfileImage
                       onClick={() => null}
                     />

@@ -75,27 +75,30 @@ const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
   alt = "",
   ...rest
 }) => {
-  const [imageSrc, setImageSrc] = useState<any>(src);
+  const [imageSrc, setImageSrc] = useState<any>(null);
 
   useEffect(() => {
     async function fetchData(src: string) {
       const ipfsMetadataStorage = IpfsMetadataStorage.fromTheGraphIpfsUrl(
         CONFIG.ipfsMetadataUrl
       );
-      return await ipfsMetadataStorage.get(src);
+      const meta = await ipfsMetadataStorage.get(src, false);
+      setImageSrc(meta);
     }
     if (src.includes("ipfs://")) {
-      const meta = fetchData(src);
-      console.log(meta);
-      setImageSrc(meta);
+      fetchData(src);
     }
   }, [src]); // eslint-disable-line
 
   return (
     <ImageWrapper {...rest}>
       {children || ""}
-      {imageSrc ? (
-        <ImageContainer data-testid={dataTestId} src={"null"} alt={alt} />
+      {imageSrc || src ? (
+        <ImageContainer
+          data-testid={dataTestId}
+          src={imageSrc || src}
+          alt={alt}
+        />
       ) : (
         <ImagePlaceholder>
           <ImageIcon size={50} color={colors.white} />

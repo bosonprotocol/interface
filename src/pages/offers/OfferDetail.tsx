@@ -172,8 +172,7 @@ export default function OfferDetail() {
           </ImageWrapper>
           <div>
             <SellerID
-              seller={offer?.seller}
-              offerName={name}
+              offer={offer}
               justifyContent="flex-start"
               withProfileImage
             />

@@ -9,6 +9,9 @@ interface IShippingInfo {
   shipping?: string;
   shippingTable: Array<ITable>;
 }
+interface IArtist {
+  description: string;
+}
 interface IGetOfferDetails {
   display: boolean;
   name: string;
@@ -16,6 +19,7 @@ interface IGetOfferDetails {
   shippingInfo: IShippingInfo;
   description: string;
   productData: Array<ITable>;
+  artist: any;
   artistDescription: string;
   images: Array<string>;
 }
@@ -40,6 +44,7 @@ export const getOfferDetails = (offer: Offer): IGetOfferDetails => {
       name: attr.traitType,
       value: attr.value
     })) || [];
+  const artist = offer.metadata?.productV1Seller || null;
   const artistDescription = offer.metadata?.productV1Seller?.description || "";
   const images =
     offer.metadata?.product?.visuals_images.map(
@@ -53,6 +58,7 @@ export const getOfferDetails = (offer: Offer): IGetOfferDetails => {
     shippingInfo,
     description,
     productData,
+    artist,
     artistDescription,
     images
   };

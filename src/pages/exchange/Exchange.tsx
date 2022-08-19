@@ -17,7 +17,6 @@ import {
   Toggle,
   WidgetContainer
 } from "../../components/detail/Detail.style";
-import DetailChart from "../../components/detail/DetailChart";
 import DetailOpenSea from "../../components/detail/DetailOpenSea";
 import DetailShare from "../../components/detail/DetailShare";
 import DetailSlider from "../../components/detail/DetailSlider";
@@ -173,8 +172,7 @@ export default function Exchange() {
             </ImageWrapper>
             <div>
               <SellerID
-                seller={offer?.seller}
-                offerName={name}
+                offer={offer}
                 justifyContent="flex-start"
                 withProfileImage
               />
@@ -240,7 +238,6 @@ export default function Exchange() {
           </DetailGrid>
           {images.length > 0 && <DetailSlider images={images} />}
           <DetailGrid>
-            <DetailChart offer={offer} title="Trade history (all items)" />
             <DetailTransactions
               title="Transaction History (this item)"
               exchange={exchange as NonNullable<Offer["exchanges"]>[number]}

@@ -21,7 +21,7 @@ function replaceNullFields(obj: Record<string, any>) {
   if (typeof obj === "object") {
     Object.keys(obj).forEach((key: string) => {
       if (obj[key] === null) {
-        console.log("replace", key, "null --> undefined");
+        // console.log("replace", key, "null --> undefined");
         obj[key] = undefined;
       }
       replaceNullFields(obj[key]);
