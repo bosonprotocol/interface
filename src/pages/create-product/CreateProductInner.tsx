@@ -236,6 +236,7 @@ function CreateProductInner({ initial }: Props) {
           details_offerCategory: productType.productType.toUpperCase()
         },
         seller: {
+          defaultVersion: 1,
           name: createYourProfile.name,
           description: createYourProfile.description,
           externalUrl: createYourProfile.website,
