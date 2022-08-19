@@ -302,15 +302,17 @@ function CreateProductInner({ initial }: Props) {
         }
       });
 
-      // TODO: change when more than percentage unit
-      const buyerCancellationPenaltyValue =
-        (parseFloat(termsOfExchange.buyerCancellationPenalty) / 100) *
-        parseFloat(coreTermsOfSale.price);
+      const priceBN = parseUnits(`${coreTermsOfSale.price}`, 18); // TODO: the number of decimals (here: 18) shall depend on the token
 
       // TODO: change when more than percentage unit
-      const sellerCancellationPenaltyValue =
-        (parseFloat(termsOfExchange.sellerDeposit) / 100) *
-        parseFloat(coreTermsOfSale.price);
+      const buyerCancellationPenaltyValue = priceBN
+        .mul(termsOfExchange.buyerCancellationPenalty)
+        .div(100);
+
+      // TODO: change when more than percentage unit
+      const sellerCancellationPenaltyValue = priceBN
+        .mul(termsOfExchange.sellerDeposit)
+        .div(100);
 
       const validFromDateInMS = Date.parse(
         coreTermsOfSale.offerValidityPeriod[0].$d
@@ -332,15 +334,9 @@ function CreateProductInner({ initial }: Props) {
         parseInt(termsOfExchange.disputePeriod) * 24 * 3600 * 1000; // day to msec
 
       const offerData = {
-        price: parseUnits(`${coreTermsOfSale.price}`, 18).toString(), // TODO: the number of decimals (here: 18) shall depend on the token
-        sellerDeposit: parseUnits(
-          `${sellerCancellationPenaltyValue}`,
-          18
-        ).toString(),
-        buyerCancelPenalty: parseUnits(
-          `${buyerCancellationPenaltyValue}`,
-          18
-        ).toString(),
+        price: priceBN.toString(),
+        sellerDeposit: sellerCancellationPenaltyValue.toString(),
+        buyerCancelPenalty: buyerCancellationPenaltyValue.toString(),
         quantityAvailable: coreTermsOfSale.quantity,
         voucherRedeemableFromDateInMS: voucherRedeemableFromDateInMS.toString(),
         voucherRedeemableUntilDateInMS:
@@ -384,7 +380,7 @@ function CreateProductInner({ initial }: Props) {
       // formikBag.resetForm();
     } catch (error: any) {
       // TODO: FAILURE MODAL
-      console.error("error->", error.errors);
+      console.error("error->", error.errors ?? error.toString());
     }
   };
 
