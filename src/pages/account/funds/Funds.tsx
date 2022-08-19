@@ -86,29 +86,37 @@ export default function Funds({ sellerId, buyerId }: Props) {
     setTimeout(() => setHighlightedToken(""), 300);
   };
   useEffect(() => {
+    const nativeFund = funds.find(
+      (f) => f.token.address === ethers.constants.AddressZero
+    );
+    const fundsDefaultList = nativeFund
+      ? [nativeFund]
+      : [
+          {
+            accountId,
+            availableAmount: "0",
+            id: "",
+            token: {
+              // TODO: change this depending on chainId
+              id: "",
+              address: ethers.constants.AddressZero,
+              name: "Ether",
+              symbol: "ETH",
+              decimals: "18"
+            }
+          }
+        ];
     setUiFunds((prevFunds) => [
       ...Array.from(
         new Map(
-          [
-            {
-              accountId,
-              availableAmount: "0",
-              id: "",
-              token: {
-                // TODO: change this depending on chainId
-                id: "",
-                address: ethers.constants.AddressZero,
-                name: "Ether",
-                symbol: "ETH",
-                decimals: "18"
-              }
-            },
-            ...funds,
-            ...prevFunds
-          ].map((v) => [v.id, v])
+          [...funds, ...prevFunds, ...fundsDefaultList].map((v) => [
+            v.token.address,
+            v
+          ])
         ).values()
       )
     ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [funds, accountId]);
 
   if (!core) {
