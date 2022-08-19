@@ -1,8 +1,8 @@
+import { matchThreadIds } from "@bosonprotocol/chat-sdk/dist/cjs/util/helper";
 import {
   ThreadId,
   ThreadObject
-} from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/definitions";
-import { matchThreadIds } from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/functions";
+} from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/types";
 import { validateMessage } from "@bosonprotocol/chat-sdk/dist/cjs/util/validators";
 import dayjs from "dayjs";
 import { utils } from "ethers";
@@ -74,6 +74,16 @@ export function useInfiniteThread({
       counterParty,
       areThreadsLoading
     }); // TODO: remove
+
+    bosonXmtp
+      .getThreadsParallel([utils.getAddress(counterParty)], {
+        startTime: endTime,
+        endTime: startTime
+      })
+      .then((value) => {
+        console.log("parallel threads", value);
+      })
+      .catch(console.error);
     setError(null);
     bosonXmtp
       .getThread(threadId, utils.getAddress(counterParty), {

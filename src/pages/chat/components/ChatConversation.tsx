@@ -6,7 +6,7 @@ import {
   SupportedFileMimeTypes,
   ThreadId,
   version
-} from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/definitions";
+} from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/types";
 import { validateMessage } from "@bosonprotocol/chat-sdk/dist/cjs/util/validators";
 import dayjs from "dayjs";
 import { utils } from "ethers";
