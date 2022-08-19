@@ -325,6 +325,13 @@ const ChatConversation = ({
   onTextAreaChange,
   textAreaValue
 }: Props) => {
+  const iAmTheBuyer = myBuyerId === exchange?.buyer.id;
+  const destinationAddressLowerCase = iAmTheBuyer
+    ? exchange?.offer.seller.operator
+    : exchange?.buyer.wallet;
+  const destinationAddress = destinationAddressLowerCase
+    ? utils.getAddress(destinationAddressLowerCase)
+    : "";
   const { bosonXmtp } = useChatContext();
   const [dateIndex, setDateIndex] = useState<number>(0);
   const onFinishFetching = () => {
@@ -353,7 +360,7 @@ const ChatConversation = ({
     threadId,
     dateIndex,
     dateStep: "week",
-    counterParty: exchange?.offer.seller.operator || "",
+    counterParty: destinationAddress,
     onFinishFetching
   });
   const loadMoreMessages = useCallback(
@@ -430,13 +437,6 @@ const ChatConversation = ({
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const navigate = useKeepQueryParamsNavigate();
   const { address } = useAccount();
-  const iAmTheBuyer = myBuyerId === exchange?.buyer.id;
-  const destinationAddressLowerCase = iAmTheBuyer
-    ? exchange?.offer.seller.operator
-    : exchange?.buyer.wallet;
-  const destinationAddress = destinationAddressLowerCase
-    ? utils.getAddress(destinationAddressLowerCase)
-    : "";
   useEffect(() => {
     if (!bosonXmtp || !thread?.threadId || !destinationAddress) {
       return;
