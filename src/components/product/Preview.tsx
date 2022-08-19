@@ -62,6 +62,15 @@ export default function Preview({ togglePreview }: Props) {
   const validFromDateInMS = Date.parse(
     values.coreTermsOfSale.offerValidityPeriod[0]
   );
+  const validUntilDateInMS = Date.parse(
+    values.coreTermsOfSale.offerValidityPeriod[1]
+  );
+  const voucherRedeemableFromDateInMS = Date.parse(
+    values.coreTermsOfSale.redemptionPeriod[0]
+  );
+  const voucherRedeemableUntilDateInMS = Date.parse(
+    values.coreTermsOfSale.redemptionPeriod[1]
+  );
 
   const exchangeDate = Date.now().toString();
 
@@ -77,7 +86,9 @@ export default function Preview({ togglePreview }: Props) {
       18
     ).toString(),
     validFromDate: validFromDateInMS.toString(),
-    validUntilDate: "1677285059", // CHECK validUntilDate
+    validUntilDate: validUntilDateInMS.toString(),
+    voucherRedeemableFromDate: voucherRedeemableFromDateInMS.toString(),
+    voucherRedeemableUntilDate: voucherRedeemableUntilDateInMS.toString(),
     voidedAt: null,
     voucherValidDuration: "21727820",
     exchanges: [
