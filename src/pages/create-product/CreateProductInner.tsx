@@ -334,7 +334,7 @@ function CreateProductInner({ initial }: Props) {
         parseInt(termsOfExchange.disputePeriod) * 24 * 3600 * 1000; // day to msec
 
       const offerData = {
-        price: parseUnits(`${coreTermsOfSale.price}`, 18).toString(),
+        price: parseUnits(`${coreTermsOfSale.price}`, 18).toString(), // TODO: the number of decimals (here: 18) shall depend on the token
         sellerDeposit: parseUnits(
           `${sellerCancellationPenaltyValue}`,
           18
