@@ -18,20 +18,20 @@ export default function CreateYourProfile() {
         subTitle="Upload a profile image with a max. width and height of 800px and a max. size of 300kb."
         required={true}
       >
-        <Upload name="creteYourProfile.logo" />
+        <Upload name="createYourProfile.logo" />
       </FormField>
       <FormField title="Your brand / name" required={true}>
-        <Input name="creteYourProfile.name" placeholder="Name" />
+        <Input name="createYourProfile.name" placeholder="Name" />
       </FormField>
       <FormField title="Contact e-Mail" required={true}>
         <Input
-          name="creteYourProfile.email"
+          name="createYourProfile.email"
           placeholder="e-Mail"
           pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
         />
       </FormField>
       <FormField title="Description" required={true}>
-        <Textarea name="creteYourProfile.description" placeholder="Describe" />
+        <Textarea name="createYourProfile.description" placeholder="Describe" />
       </FormField>
       <FormField
         title="Website / Social media link"
@@ -42,7 +42,7 @@ export default function CreateYourProfile() {
         }}
       >
         <Input
-          name="creteYourProfile.website"
+          name="createYourProfile.website"
           placeholder="www.example.com OR www.instagram.com/example"
           pattern="^(http:\/\/|https:\/\/)?(www.)?([a-zA-Z0-9]+).[a-zA-Z0-9]*.[‌​a-z]{3}\.([a-z]+)?$"
         />
