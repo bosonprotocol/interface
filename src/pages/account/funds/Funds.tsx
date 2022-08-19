@@ -100,8 +100,8 @@ export default function Funds({ sellerId, buyerId }: Props) {
               // TODO: change this depending on chainId
               id: "",
               address: ethers.constants.AddressZero,
-              name: "Ether",
-              symbol: "ETH",
+              name: "Native coin",
+              symbol: "Native coin",
               decimals: "18"
             }
           }
