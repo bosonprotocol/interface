@@ -82,7 +82,9 @@ export const coreTermsOfSaleValidationSchema = Yup.object({
       .required(validationMessage.required),
     // currency: Yup.string().required(validationMessage.required),
     // TODO: ADD Use price for all variants FILED
-    quantity: Yup.number().min(1).required(validationMessage.required),
+    quantity: Yup.number()
+      .min(1, "Quantity must be greater than or equal to 1")
+      .required(validationMessage.required),
     // tokenGatedOffer: Yup.string().required(validationMessage.required),
     offerValidityPeriod: Yup.array()
       .of(
