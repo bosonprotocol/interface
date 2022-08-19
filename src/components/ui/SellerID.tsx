@@ -92,9 +92,11 @@ const SellerID: React.FC<
       >
         {withProfileImage && (
           <ImageContainer>
-            {artist.images?.length > 0 || customImage ? (
+            {artist.images?.length !== 0 || customImage ? (
               <Image
-                src={artist.images[0].url || bosonProtocolImage}
+                src={
+                  artist?.images ? artist?.images[0]?.url : bosonProtocolImage
+                }
                 style={{
                   height: "1rem",
                   width: "1rem",

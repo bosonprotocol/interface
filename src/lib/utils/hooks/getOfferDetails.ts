@@ -1,4 +1,6 @@
 /* eslint @typescript-eslint/no-explicit-any: "off" */
+import { subgraph } from "@bosonprotocol/react-kit";
+
 import { Offer } from "./../../types/offer";
 
 interface ITable {
@@ -9,9 +11,6 @@ interface IShippingInfo {
   shipping?: string;
   shippingTable: Array<ITable>;
 }
-interface IArtist {
-  description: string;
-}
 interface IGetOfferDetails {
   display: boolean;
   name: string;
@@ -19,7 +18,7 @@ interface IGetOfferDetails {
   shippingInfo: IShippingInfo;
   description: string;
   productData: Array<ITable>;
-  artist: any;
+  artist: subgraph.ProductV1Seller;
   artistDescription: string;
   images: Array<string>;
 }
@@ -50,6 +49,8 @@ export const getOfferDetails = (offer: Offer): IGetOfferDetails => {
     offer.metadata?.product?.visuals_images.map(
       ({ url }: { url: string }) => url
     ) || [];
+
+  console.log(artist);
 
   return {
     display: false,

@@ -75,15 +75,17 @@ const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
   alt = "",
   ...rest
 }) => {
-  const [imageSrc, setImageSrc] = useState<any>(null);
+  const [imageSrc, setImageSrc] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchData(src: string) {
       const ipfsMetadataStorage = IpfsMetadataStorage.fromTheGraphIpfsUrl(
         CONFIG.ipfsMetadataUrl
       );
-      const meta = await ipfsMetadataStorage.get(src, false);
-      setImageSrc(meta);
+
+      const fetchPromises = await ipfsMetadataStorage.get(src, false);
+      const [image] = await Promise.all([fetchPromises]);
+      setImageSrc(String(image));
     }
     if (src.includes("ipfs://")) {
       fetchData(src);

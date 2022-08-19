@@ -19,19 +19,18 @@ interface Props {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-let glide: any;
+let glide: any = null;
 export default function DetailSlider({ images }: Props) {
   const [sliderImages, setSliderImages] = useState<Array<string>>([]);
   const ref = useRef();
 
   useEffect(() => {
-    if (sliderImages.length > 0 && ref.current) {
+    if (sliderImages.length !== 0 && ref.current) {
       glide = new Glide(ref.current, {
         ...SLIDER_OPTIONS
       });
       glide.mount();
     }
-    return () => (glide ? glide.destroy() : null);
   }, [ref, sliderImages]);
 
   useEffect(() => {
