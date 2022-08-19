@@ -87,11 +87,21 @@ export default function Chat() {
     buyer: { buyerId, isError: isErrorBuyers, isLoading: isLoadingBuyer }
   } = useBuyerSellerAccounts(address || "");
 
-  const { data: exchanges = [] } = useExchanges({
+  const { data: exchangesAsTheBuyer = [] } = useExchanges({
     buyerId: buyerId,
+    disputed: null
+  });
+  const { data: exchangesAsTheSeller = [] } = useExchanges({
     sellerId: sellerId,
     disputed: null
   });
+  const exchanges = useMemo(() => {
+    return Array.from(
+      new Map(
+        [...exchangesAsTheBuyer, ...exchangesAsTheSeller].map((v) => [v.id, v])
+      ).values()
+    );
+  }, [exchangesAsTheBuyer, exchangesAsTheSeller]);
 
   const textAreaValueByThread = useMemo(
     () =>
@@ -165,6 +175,8 @@ export default function Chat() {
         <GlobalStyle />
 
         <MessageList
+          myBuyerId={buyerId}
+          mySellerId={sellerId}
           exchanges={exchanges}
           isConversationOpened={
             location.pathname !== `${BosonRoutes.Chat}/` &&
@@ -189,6 +201,8 @@ export default function Chat() {
             path={`:${UrlParameters.exchangeId}`}
             element={
               <ChatConversation
+                myBuyerId={buyerId}
+                mySellerId={sellerId}
                 key={selectedExchange?.id || ""}
                 exchange={selectedExchange}
                 setChatListOpen={setChatListOpen}

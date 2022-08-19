@@ -66,10 +66,10 @@ export default function RefundRequest({ exchange }: Props) {
   const { data: sellers } = useSellers({ admin: address });
   const accountId = sellers?.[0]?.id || "";
   const { funds } = useFunds(accountId);
+  const { offer } = exchange;
   const currencyInDeposit = funds?.find(
     (fund) => fund.token.address === offer.exchangeToken.address
   );
-  const { offer } = exchange;
   const decimals = Number(offer.exchangeToken.decimals);
   const formatIntValueToDecimals = (value: string | BigNumber) => {
     return utils.formatUnits(BigNumber.from(value), decimals);

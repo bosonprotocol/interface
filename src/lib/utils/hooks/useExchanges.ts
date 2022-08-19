@@ -5,7 +5,6 @@ import { Offer } from "../../types/offer";
 import { fetchSubgraph } from "../core-components/subgraph";
 import { checkOfferMetadata } from "../validators";
 import { offerGraphQl } from "./offers/graphql";
-import { getOfferImage } from "./offers/placeholders";
 
 export type Exchange = {
   id: string;
@@ -18,6 +17,7 @@ export type Exchange = {
   validUntilDate: string;
   seller: {
     id: string;
+    operator: string;
   };
   buyer: {
     id: string;
@@ -85,6 +85,7 @@ export function useExchanges(
             validUntilDate
             seller {
               id
+              operator
             }
             buyer {
               id
@@ -111,10 +112,7 @@ export function useExchanges(
               ...exchange.offer,
               metadata: {
                 ...exchange.offer.metadata,
-                imageUrl: getOfferImage(
-                  exchange.offer.id,
-                  exchange.offer.metadata.name
-                )
+                imageUrl: exchange.offer.metadata.image
               },
               isValid
             } as Offer

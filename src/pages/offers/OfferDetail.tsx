@@ -29,7 +29,7 @@ import { CONFIG } from "../../lib/config";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
-import { getOfferDetails } from "../../lib/utils/hooks/getOfferDetails";
+import { getOfferDetails } from "../../lib/utils/getOfferDetails";
 import useOffer from "../../lib/utils/hooks/offer/useOffer";
 import { useSellers } from "../../lib/utils/hooks/useSellers";
 import { isAccountSeller } from "../../lib/utils/isAccountSeller";
@@ -172,8 +172,8 @@ export default function OfferDetail() {
           </ImageWrapper>
           <div>
             <SellerID
-              seller={offer?.seller}
-              offerName={name}
+              offer={offer}
+              buyerOrSeller={offer?.seller}
               justifyContent="flex-start"
               withProfileImage
             />
