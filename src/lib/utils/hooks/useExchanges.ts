@@ -5,7 +5,6 @@ import { Offer } from "../../types/offer";
 import { fetchSubgraph } from "../core-components/subgraph";
 import { checkOfferMetadata } from "../validators";
 import { offerGraphQl } from "./offers/graphql";
-import { getOfferImage } from "./offers/placeholders";
 
 export type Exchange = {
   id: string;
@@ -113,10 +112,7 @@ export function useExchanges(
               ...exchange.offer,
               metadata: {
                 ...exchange.offer.metadata,
-                imageUrl: getOfferImage(
-                  exchange.offer.id,
-                  exchange.offer.metadata.name
-                )
+                imageUrl: exchange.offer.metadata.image
               },
               isValid
             } as Offer

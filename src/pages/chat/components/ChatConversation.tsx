@@ -285,6 +285,7 @@ const SellerComponent = ({
   }
   return (
     <SellerID
+      offer={exchange?.offer}
       buyerOrSeller={buyerOrSeller}
       withProfileImage
       accountImageSize={size}

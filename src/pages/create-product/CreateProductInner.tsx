@@ -7,6 +7,7 @@ import keys from "lodash/keys";
 import { useMemo } from "react";
 import { useCallback } from "react";
 import { useState } from "react";
+import { generatePath } from "react-router-dom";
 import { useAccount } from "wagmi";
 
 import { useModal } from "../../components/modal/useModal";
@@ -15,8 +16,11 @@ import Preview from "../../components/product/Preview";
 import { CreateProductForm } from "../../components/product/utils";
 import { CREATE_PRODUCT_STEPS } from "../../components/product/utils";
 import MultiSteps from "../../components/step/MultiSteps";
+import { UrlParameters } from "../../lib/routing/parameters";
+import { OffersRoutes } from "../../lib/routing/routes";
 import { getLocalStorageItems } from "../../lib/utils/getLocalStorageItems";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
+import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { saveItemInStorage } from "../../lib/utils/hooks/useLocalStorage";
 import { useSellers } from "../../lib/utils/hooks/useSellers";
 import { useCoreSDK } from "../../lib/utils/useCoreSdk";
@@ -35,8 +39,9 @@ import {
 interface Props {
   initial: CreateProductForm;
 }
-
 function CreateProductInner({ initial }: Props) {
+  const navigate = useKeepQueryParamsNavigate();
+
   const [currentStep, setCurrentStep] = useState<number>(FIRST_STEP);
   const [isPreviewVisible, setIsPreviewVisible] = useState<boolean>(false);
   const { showModal, modalTypes, hideModal } = useModal();
@@ -49,12 +54,16 @@ function CreateProductInner({ initial }: Props) {
     setIsPreviewVisible(false);
   };
 
-  const onViewMyItem = (id: unknown) => {
-    console.log(id);
+  const onViewMyItem = (id: string | null) => {
     hideModal();
     setCurrentStep(FIRST_STEP);
     setIsPreviewVisible(false);
-    // TODO: REDIRECT USER {id}
+    const pathname = id
+      ? generatePath(OffersRoutes.OfferDetail, {
+          [UrlParameters.offerId]: id
+        })
+      : generatePath(OffersRoutes.Root);
+    navigate({ pathname });
   };
 
   const { address } = useAccount();
@@ -266,13 +275,15 @@ function CreateProductInner({ initial }: Props) {
         }
       });
 
+      // TODO: change when more than percentage unit
       const buyerCancellationPenaltyValue =
-        parseInt(coreTermsOfSale.price) *
-        (parseInt(termsOfExchange.buyerCancellationPenalty) / 100);
+        (parseFloat(termsOfExchange.buyerCancellationPenalty) / 100) *
+        parseFloat(coreTermsOfSale.price);
 
+      // TODO: change when more than percentage unit
       const sellerCancellationPenaltyValue =
-        parseInt(coreTermsOfSale.price) *
-        (parseInt(termsOfExchange.sellerDeposit) / 100);
+        (parseFloat(termsOfExchange.sellerDeposit) / 100) *
+        parseFloat(coreTermsOfSale.price);
 
       const validFromDateInMS = Date.parse(
         coreTermsOfSale.offerValidityPeriod[0].$d
@@ -341,7 +352,7 @@ function CreateProductInner({ initial }: Props) {
 
       await wait(3_000);
       handleOpenSuccessModal({ offerId });
-      formikBag.resetForm();
+      // formikBag.resetForm();
     } catch (error: any) {
       // TODO: FAILURE MODAL
       console.error("error->", error.errors);

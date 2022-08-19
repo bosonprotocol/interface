@@ -6,7 +6,10 @@ import styled from "styled-components";
 import Grid, { IGrid } from "../../components/ui/Grid";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
+import { Offer } from "../../lib/types/offer";
+import { getOfferDetails } from "../../lib/utils/getOfferDetails";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import Image from "./Image";
 
 const AddressContainer = styled(Grid)`
   gap: 10px;
@@ -40,41 +43,40 @@ const ImageContainer = styled.div`
   justify-content: center;
 `;
 
-const RoundedImage = styled.img`
-  height: 16px;
-  width: 16px;
-  border-radius: 50%;
-`;
-
 const SellerID: React.FC<
   {
     children?: React.ReactNode;
+    offer: Offer;
     buyerOrSeller:
       | Pick<subgraph.Seller, "id" | "operator">
       | Pick<subgraph.Buyer, "id" | "wallet">;
     accountImageSize?: number;
     withProfileImage: boolean;
-    customImage?: boolean;
     withProfileText?: boolean;
     onClick?: null | undefined | React.MouseEventHandler<HTMLDivElement>;
   } & IGrid &
     React.HTMLAttributes<HTMLDivElement>
 > = ({
-  buyerOrSeller,
   children,
+  offer,
+  buyerOrSeller,
   withProfileImage,
-  customImage,
   onClick,
   accountImageSize,
   withProfileText = true,
-
   ...rest
 }) => {
   const navigate = useKeepQueryParamsNavigate();
+  const { artist } = getOfferDetails(offer);
+
   const userId = buyerOrSeller?.id;
   const isSeller = "operator" in buyerOrSeller;
   const userAddress = isSeller ? buyerOrSeller.operator : buyerOrSeller.wallet;
   const hasCursorPointer = !!onClick || onClick === undefined;
+
+  const artistImage =
+    artist.images && artist.images?.length > 0 ? artist?.images : false;
+
   return (
     <AddressContainer {...rest} data-address-container>
       <SellerContainer
@@ -95,8 +97,16 @@ const SellerID: React.FC<
       >
         {withProfileImage && (
           <ImageContainer>
-            {customImage ? (
-              <RoundedImage src={userAddress} />
+            {artistImage ? (
+              <Image
+                src={artistImage[0].url}
+                style={{
+                  height: "1rem",
+                  width: "1rem",
+                  borderRadius: "50%",
+                  padding: 0
+                }}
+              />
             ) : (
               <AccountImage
                 size={accountImageSize || 17}

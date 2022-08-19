@@ -111,10 +111,10 @@ export default function Preview({ togglePreview }: Props) {
               </ImageWrapper>
               <div>
                 <SellerID
+                  offer={offer}
                   buyerOrSeller={offer?.seller}
                   justifyContent="flex-start"
                   withProfileImage
-                  customImage
                 />
                 <Typography
                   tag="h1"
