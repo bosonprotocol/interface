@@ -7,9 +7,8 @@ import Grid, { IGrid } from "../../components/ui/Grid";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { Offer } from "../../lib/types/offer";
-import { getOfferDetails } from "../../lib/utils/hooks/getOfferDetails";
+import { getOfferDetails } from "../../lib/utils/getOfferDetails";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import bosonProtocolImage from "../../pages/offers/mock/bosonprotocol.jpeg";
 import Image from "./Image";
 
 const AddressContainer = styled(Grid)`
@@ -53,7 +52,6 @@ const SellerID: React.FC<
       | Pick<subgraph.Buyer, "id" | "wallet">;
     accountImageSize?: number;
     withProfileImage: boolean;
-    customImage?: boolean;
     withProfileText?: boolean;
     onClick?: null | undefined | React.MouseEventHandler<HTMLDivElement>;
   } & IGrid &
@@ -63,7 +61,6 @@ const SellerID: React.FC<
   offer,
   buyerOrSeller,
   withProfileImage,
-  customImage,
   onClick,
   accountImageSize,
   withProfileText = true,
@@ -76,6 +73,10 @@ const SellerID: React.FC<
   const isSeller = "operator" in buyerOrSeller;
   const userAddress = isSeller ? buyerOrSeller.operator : buyerOrSeller.wallet;
   const hasCursorPointer = !!onClick || onClick === undefined;
+
+  const artistImage =
+    artist.images && artist.images?.length > 0 ? artist?.images : false;
+
   return (
     <AddressContainer {...rest} data-address-container>
       <SellerContainer
@@ -96,11 +97,9 @@ const SellerID: React.FC<
       >
         {withProfileImage && (
           <ImageContainer>
-            {artist.images?.length !== 0 || customImage ? (
+            {artistImage ? (
               <Image
-                src={
-                  artist?.images ? artist?.images[0]?.url : bosonProtocolImage
-                }
+                src={artistImage[0].url}
                 style={{
                   height: "1rem",
                   width: "1rem",

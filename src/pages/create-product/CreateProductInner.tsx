@@ -330,8 +330,6 @@ function CreateProductInner({ initial }: Props) {
         metadataHash: metadataHash
       };
 
-      // console.log("offerData", offerData);
-
       const txResponse =
         sellers?.length === 0 && address
           ? await coreSDK.createSellerAndOffer(

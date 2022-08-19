@@ -115,7 +115,6 @@ export default function Preview({ togglePreview }: Props) {
                   buyerOrSeller={offer?.seller}
                   justifyContent="flex-start"
                   withProfileImage
-                  customImage
                 />
                 <Typography
                   tag="h1"

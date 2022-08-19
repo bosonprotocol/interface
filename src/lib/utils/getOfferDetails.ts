@@ -1,7 +1,7 @@
 /* eslint @typescript-eslint/no-explicit-any: "off" */
 import { subgraph } from "@bosonprotocol/react-kit";
 
-import { Offer } from "./../../types/offer";
+import { Offer } from "./../types/offer";
 
 interface ITable {
   name: string;
@@ -49,8 +49,6 @@ export const getOfferDetails = (offer: Offer): IGetOfferDetails => {
     offer.metadata?.product?.visuals_images.map(
       ({ url }: { url: string }) => url
     ) || [];
-
-  console.log(artist);
 
   return {
     display: false,
