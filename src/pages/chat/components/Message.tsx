@@ -4,7 +4,6 @@ import {
   ProposalContent,
   StringContent
 } from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/definitions";
-import { Image as AccountImage } from "@davatar/react";
 import { BigNumber, utils } from "ethers";
 import { ArrowRight, Check } from "phosphor-react";
 import React, { forwardRef, ReactNode, useCallback } from "react";
@@ -76,7 +75,7 @@ const StyledContent = styled.div<StyledContentProps>`
   }
 `;
 
-const Avatar = styled.div`
+const AvatarContainer = styled.div`
   position: absolute;
   top: -1.25rem;
   left: 1rem;
@@ -104,24 +103,6 @@ const StyledGrid = styled(Grid)`
   }
 `;
 
-const SellerAvatar = ({
-  isLeftAligned,
-  children,
-  exchange
-}: {
-  isLeftAligned: Props["isLeftAligned"];
-  children: Props["children"];
-  exchange: Props["exchange"];
-}) => {
-  return isLeftAligned ? (
-    <Avatar>{children}</Avatar>
-  ) : (
-    <Avatar>
-      <AccountImage size={32} address={exchange.buyer.wallet} />
-    </Avatar>
-  );
-};
-
 const BottomDateStamp = ({
   isLeftAligned,
   message
@@ -147,7 +128,7 @@ interface Props {
 
 const Message = forwardRef(
   (
-    { message, children, isLeftAligned, exchange }: Props,
+    { message, children: Avatar, isLeftAligned, exchange }: Props,
     ref: React.ForwardedRef<HTMLDivElement>
   ) => {
     const Content = useCallback(
@@ -177,9 +158,8 @@ const Message = forwardRef(
     if (!isValid) {
       return (
         <Content $isLeftAligned={isLeftAligned}>
-          <SellerAvatar isLeftAligned={isLeftAligned} exchange={exchange}>
-            {children}
-          </SellerAvatar>
+          <AvatarContainer>{Avatar}</AvatarContainer>
+
           <div>
             {isFileMessage
               ? "Corrupt image."
@@ -197,9 +177,8 @@ const Message = forwardRef(
 
       return (
         <Content $isLeftAligned={isLeftAligned}>
-          <SellerAvatar isLeftAligned={isLeftAligned} exchange={exchange}>
-            {children}
-          </SellerAvatar>
+          <AvatarContainer>{Avatar}</AvatarContainer>
+
           <div style={{ overflowWrap: "break-word" }}>{messageValue.value}</div>
           <BottomDateStamp isLeftAligned={isLeftAligned} message={message} />
         </Content>
@@ -210,9 +189,8 @@ const Message = forwardRef(
       const imageValue = messageContent as unknown as FileContent;
       return (
         <Content $isLeftAligned={isLeftAligned}>
-          <SellerAvatar isLeftAligned={isLeftAligned} exchange={exchange}>
-            {children}
-          </SellerAvatar>
+          <AvatarContainer>{Avatar}</AvatarContainer>
+
           <UploadedFile
             fileName={imageValue.value.fileName}
             color={isLeftAligned ? "white" : "grey"}
@@ -229,9 +207,8 @@ const Message = forwardRef(
       if (!exchange) {
         return (
           <Content $isLeftAligned={isLeftAligned}>
-            <SellerAvatar isLeftAligned={isLeftAligned} exchange={exchange}>
-              {children}
-            </SellerAvatar>
+            <AvatarContainer>{Avatar}</AvatarContainer>
+
             <p>
               We couldn't retrieve your exchange to show the proposals, please
               try again
@@ -245,9 +222,8 @@ const Message = forwardRef(
       const isRaisingADispute = !!messageContent.disputeContext?.length;
       return (
         <Content $isLeftAligned={isLeftAligned}>
-          <SellerAvatar isLeftAligned={isLeftAligned} exchange={exchange}>
-            {children}
-          </SellerAvatar>
+          <AvatarContainer>{Avatar}</AvatarContainer>
+
           <Typography tag="h4" margin="0">
             {messageContent.title}
           </Typography>
@@ -361,9 +337,7 @@ const Message = forwardRef(
 
     return (
       <Content $isLeftAligned={isLeftAligned}>
-        <SellerAvatar isLeftAligned={isLeftAligned} exchange={exchange}>
-          {children}
-        </SellerAvatar>
+        <AvatarContainer>{Avatar}</AvatarContainer>
         Unsupported message
         <BottomDateStamp isLeftAligned={isLeftAligned} message={message} />
       </Content>

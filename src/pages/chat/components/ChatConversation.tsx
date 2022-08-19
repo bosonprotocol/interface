@@ -30,7 +30,11 @@ import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useChatContext } from "../ChatProvider/ChatContext";
-import { MessageDataWithIsValid, ThreadObjectWithIsValid } from "../types";
+import {
+  BuyerOrSeller,
+  MessageDataWithIsValid,
+  ThreadObjectWithIsValid
+} from "../types";
 import ButtonProposal, {
   ButtonProposalHeight
 } from "./ButtonProposal/ButtonProposal";
@@ -269,29 +273,19 @@ const SellerComponent = ({
   size,
   withProfileText,
   exchange,
-  myBuyerId,
-  mySellerId
+  buyerOrSeller
 }: {
   size: number;
   withProfileText?: boolean;
   exchange: Exchange | undefined;
-  myBuyerId: string;
-  mySellerId: string;
+  buyerOrSeller: BuyerOrSeller;
 }) => {
   if (!exchange) {
     return null;
   }
-  const iAmTheBuyer = myBuyerId === exchange?.buyer.id;
-  const iAmTheSeller = mySellerId === exchange?.offer.seller.id;
-  const iAmBoth = iAmTheBuyer && iAmTheSeller;
-  const buyerOrSellerToShow = iAmBoth
-    ? exchange?.offer.seller
-    : iAmTheBuyer
-    ? exchange?.offer.seller
-    : exchange?.buyer;
   return (
     <SellerID
-      buyerOrSeller={buyerOrSellerToShow}
+      buyerOrSeller={buyerOrSeller}
       withProfileImage
       accountImageSize={size}
       withProfileText={withProfileText}
@@ -326,6 +320,13 @@ const ChatConversation = ({
   textAreaValue
 }: Props) => {
   const iAmTheBuyer = myBuyerId === exchange?.buyer.id;
+  const iAmTheSeller = mySellerId === exchange?.offer.seller.id;
+  const iAmBoth = iAmTheBuyer && iAmTheSeller;
+  const buyerOrSellerToShow: BuyerOrSeller = iAmBoth
+    ? exchange?.offer.seller
+    : iAmTheBuyer
+    ? exchange?.offer.seller
+    : exchange?.buyer || ({} as BuyerOrSeller);
   const destinationAddressLowerCase = iAmTheBuyer
     ? exchange?.offer.seller.operator
     : exchange?.buyer.wallet;
@@ -333,6 +334,7 @@ const ChatConversation = ({
     ? utils.getAddress(destinationAddressLowerCase)
     : "";
   const { bosonXmtp } = useChatContext();
+  const [isMessageBeingSent, setIsMessageBeingSent] = useState<boolean>(false);
   const [dateIndex, setDateIndex] = useState<number>(0);
   const onFinishFetching = () => {
     if (bosonXmtp && !isBeginningOfTimes && !areThreadsLoading && !lastThread) {
@@ -577,8 +579,7 @@ const ChatConversation = ({
             <SellerComponent
               size={24}
               exchange={exchange}
-              myBuyerId={myBuyerId}
-              mySellerId={mySellerId}
+              buyerOrSeller={buyerOrSellerToShow}
             />
           </Header>
           {isLteM && <Grid justifyContent="flex-end">{detailsButton}</Grid>}
@@ -619,7 +620,23 @@ const ChatConversation = ({
                 const showMessageSeparator =
                   isFirstMessage || isPreviousMessageInADifferentDay;
                 const isLastMessage = index === thread.messages.length - 1;
-                const leftAligned = !getWasItSentByMe(address, message.sender);
+                const wasItMe = getWasItSentByMe(address, message.sender);
+
+                let buyerOrSeller: BuyerOrSeller;
+                if (wasItMe) {
+                  if (iAmTheBuyer) {
+                    buyerOrSeller = exchange.buyer;
+                  } else {
+                    buyerOrSeller = exchange.seller;
+                  }
+                } else {
+                  if (iAmTheBuyer) {
+                    buyerOrSeller = exchange.seller;
+                  } else {
+                    buyerOrSeller = exchange.buyer;
+                  }
+                }
+                const leftAligned = !wasItMe;
                 const ref = isLastMessage ? lastMessageRef : null;
                 return (
                   <Conversation
@@ -640,8 +657,7 @@ const ChatConversation = ({
                           size={32}
                           withProfileText={false}
                           exchange={exchange}
-                          myBuyerId={myBuyerId}
-                          mySellerId={mySellerId}
+                          buyerOrSeller={buyerOrSeller}
                         />
                       </Message>
                     </>
@@ -713,8 +729,15 @@ const ChatConversation = ({
                 }}
                 onKeyDown={async (e) => {
                   const value = e.target.value.trim();
-                  if (e.key === "Enter" && bosonXmtp && threadId && value) {
+                  if (
+                    e.key === "Enter" &&
+                    bosonXmtp &&
+                    threadId &&
+                    value &&
+                    !isMessageBeingSent
+                  ) {
                     try {
+                      setIsMessageBeingSent(true);
                       const newMessage = {
                         threadId,
                         content: {
@@ -727,6 +750,7 @@ const ChatConversation = ({
                         newMessage,
                         destinationAddress
                       );
+                      setIsMessageBeingSent(false);
                       await addMessage(thread, {
                         ...messageData,
                         isValid: true
@@ -734,6 +758,7 @@ const ChatConversation = ({
                       onTextAreaChange("");
                     } catch (error) {
                       console.error(error);
+                      setIsMessageBeingSent(false);
                     }
                   }
                 }}
