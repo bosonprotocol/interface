@@ -27,12 +27,24 @@ export function saveItemInStorage<T>(key: string, value: T) {
 export function removeItemInStorage(key: string) {
   if (typeof window !== "undefined") {
     try {
-      window.localStorage.removeItem(key);
+      Object.keys(localStorage)
+        .filter((filterKey) => filterKey?.includes(key))
+        .map((finalKey) => localStorage.removeItem(finalKey));
     } catch (error) {
       console.log(error);
     }
   }
 }
+
+export const clearLocalStorage = () => {
+  if (typeof window !== "undefined") {
+    try {
+      window.localStorage.clear();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+};
 
 export function useLocalStorage<T>(key: string, initialValue: T) {
   const [storedValue, setStoredValue] = useState<T>(() =>

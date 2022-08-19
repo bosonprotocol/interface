@@ -1,7 +1,8 @@
 import {
   FileContent,
   MessageType,
-  ProposalContent
+  ProposalContent,
+  StringContent
 } from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/definitions";
 import { Image as AccountImage } from "@davatar/react";
 import { BigNumber, utils } from "ethers";
@@ -11,15 +12,14 @@ import styled from "styled-components";
 
 import UploadedFile from "../../../components/form/Upload/UploadedFile";
 import ProposalTypeSummary from "../../../components/modal/components/Chat/components/ProposalTypeSummary";
+import { PERCENTAGE_FACTOR } from "../../../components/modal/components/Chat/const";
 import { useModal } from "../../../components/modal/useModal";
 import Grid from "../../../components/ui/Grid";
 import Typography from "../../../components/ui/Typography";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
-import { DeepReadonly } from "../../../lib/types/helpers";
-import { validateMessage } from "../../../lib/utils/chat/message";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
-import { Thread } from "../types";
+import { MessageDataWithIsValid } from "../types";
 
 const width = "31.625rem";
 type StyledContentProps = { $isLeftAligned: boolean };
@@ -140,7 +140,7 @@ const BottomDateStamp = ({
 
 interface Props {
   exchange: Exchange;
-  message: DeepReadonly<Thread["messages"][number]>;
+  message: MessageDataWithIsValid;
   children: ReactNode;
   isLeftAligned: boolean;
 }
@@ -172,8 +172,8 @@ const Message = forwardRef(
       messageContentType === MessageType.String;
     const isFileMessage = messageContentType === MessageType.File;
     const isProposalMessage = messageContentType === MessageType.Proposal;
+    const { isValid } = message;
 
-    const isValid = validateMessage(message);
     if (!isValid) {
       return (
         <Content $isLeftAligned={isLeftAligned}>
@@ -193,14 +193,14 @@ const Message = forwardRef(
       );
     }
     if (isRegularMessage) {
+      const messageValue = messageContent as unknown as StringContent;
+
       return (
         <Content $isLeftAligned={isLeftAligned}>
           <SellerAvatar isLeftAligned={isLeftAligned} exchange={exchange}>
             {children}
           </SellerAvatar>
-          <div style={{ overflowWrap: "break-word" }}>
-            {message.data.content.value}
-          </div>
+          <div style={{ overflowWrap: "break-word" }}>{messageValue.value}</div>
           <BottomDateStamp isLeftAligned={isLeftAligned} message={message} />
         </Content>
       );
@@ -295,8 +295,9 @@ const Message = forwardRef(
                 </Typography>
                 {messageContent.proposals.map((proposal) => {
                   const { offer } = exchange;
+
                   const refundAmount = BigNumber.from(offer.price)
-                    .div(BigNumber.from(100))
+                    .div(BigNumber.from(100 * PERCENTAGE_FACTOR))
                     .mul(BigNumber.from(proposal.percentageAmount));
 
                   const formattedRefundAmount = utils.formatUnits(
@@ -324,7 +325,8 @@ const Message = forwardRef(
                         <Typography color={colors.primary} cursor="pointer">
                           Proposed refund amount: {formattedRefundAmount}{" "}
                           {offer.exchangeToken.symbol} (
-                          {proposal.percentageAmount}
+                          {Number(proposal.percentageAmount) /
+                            PERCENTAGE_FACTOR}
                           %)
                         </Typography>
                         <ArrowRight color={colors.primary} />

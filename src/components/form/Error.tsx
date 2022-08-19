@@ -11,12 +11,10 @@ export default function Error({ display = false, message = "" }: ErrorProps) {
   return (
     <Typography
       tag="p"
-      style={{
-        color: colors.orange,
-        margin: "0.25rem",
-        fontWeight: "600",
-        fontSize: "0.75rem"
-      }}
+      color={colors.orange}
+      margin="0.25rem"
+      fontWeight="600"
+      fontSize="0.75rem"
     >
       {message}
     </Typography>

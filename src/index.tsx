@@ -4,8 +4,8 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { HashRouter, Route } from "react-router-dom";
 
 import App from "./components/app";
-import ScrollToTop from "./components/ScrollToTop";
 import SentryProvider from "./components/SentryProvider";
+import ScrollToTop from "./components/utils/Scroll";
 import WalletConnectionProvider from "./components/WalletConnectionProvider";
 import { BosonRoutes, OffersRoutes } from "./lib/routing/routes";
 import PrivateAccount from "./pages/account/private/PrivateAccountContainer";

@@ -22,7 +22,7 @@ export default function FormField({
       flexGrow="1"
       style={style}
     >
-      <Grid justifyContent="flex-start" style={{ marginBottom: "0.375rem" }}>
+      <Grid justifyContent="flex-start" margin="0 0 0.375rem 0">
         <Typography data-header tag="p">
           {title}
           {"  "}

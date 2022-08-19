@@ -17,14 +17,14 @@ describe("#makeMemoizedMergeAndSortOffers()", () => {
     // offers with ids 000 - 009
     const sellerCurationListOffers = getFirstNOffers(10);
     const sellerCurationListResult = {
-      baseMetadataEntities: sellerCurationListOffers.map((offer) => ({
+      productV1MetadataEntities: sellerCurationListOffers.map((offer) => ({
         offer
       }))
     };
     // offers with ids 000 - 004
     const offerCurationListOffers = getFirstNOffers(5);
     const offerCurationListResult = {
-      baseMetadataEntities: offerCurationListOffers.map((offer) => ({
+      productV1MetadataEntities: offerCurationListOffers.map((offer) => ({
         offer
       }))
     };
@@ -50,13 +50,13 @@ describe("#makeMemoizedMergeAndSortOffers()", () => {
 
     // offers with ids 000 - 004
     const sellerCurationListResult = {
-      baseMetadataEntities: offers.slice(0, 5).map((offer) => ({
+      productV1MetadataEntities: offers.slice(0, 5).map((offer) => ({
         offer
       }))
     };
     // offers with ids 004 - 009
     const offerCurationListResult = {
-      baseMetadataEntities: offers.slice(5).map((offer) => ({
+      productV1MetadataEntities: offers.slice(5).map((offer) => ({
         offer
       }))
     };
@@ -70,13 +70,13 @@ describe("#makeMemoizedMergeAndSortOffers()", () => {
     );
     const secondMergedAndSortedOffers = memoizedMergeAndSortOffers(
       "firstKey",
-      { baseMetadataEntities: [] },
-      { baseMetadataEntities: [] }
+      { productV1MetadataEntities: [] },
+      { productV1MetadataEntities: [] }
     );
     const thirdMergedAndSortedOffers = memoizedMergeAndSortOffers(
       "thirdKey",
-      { baseMetadataEntities: [] },
-      { baseMetadataEntities: [] }
+      { productV1MetadataEntities: [] },
+      { productV1MetadataEntities: [] }
     );
     expect(firstMergedAndSortedOffers.length).toBe(
       secondMergedAndSortedOffers.length

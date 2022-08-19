@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useField } from "formik";
 import { useEffect, useState } from "react";
-import styled from "styled-components";
 
 import Error from "./Error";
 import { FieldInput } from "./Field.styles";
+import { Close, TagContainer, TagWrapper } from "./styles/TagsInput.styles";
 
 const TagsInput = ({ name }: { name: string }) => {
   const [field, meta, helpers] = useField(name);
@@ -64,32 +64,5 @@ const TagsInput = ({ name }: { name: string }) => {
     </>
   );
 };
-
-const TagContainer = styled.div`
-  width: 100%;
-  border-radius: 3px;
-  margin-top: 1em;
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.5em;
-`;
-
-const TagWrapper = styled.div`
-  background-color: #f1f3f9;
-  display: inline-block;
-  padding: 0.5em 0.75em;
-`;
-
-const Close = styled.span`
-  color: #556072;
-  border-radius: 50%;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  margin-left: 0.5em;
-  font-size: 18px;
-  cursor: pointer;
-`;
 
 export default TagsInput;

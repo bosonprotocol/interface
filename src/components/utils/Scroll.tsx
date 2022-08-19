@@ -11,4 +11,12 @@ function ScrollToTop() {
   return null;
 }
 
+export const ScroolToID = ({ id }: { id: string }) => {
+  const localElement = document.getElementById(id);
+  if (localElement) {
+    localElement.scrollIntoView({ block: "center" });
+  }
+  return null;
+};
+
 export default ScrollToTop;

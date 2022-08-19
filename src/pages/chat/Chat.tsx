@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */ // TODO: remove
 import { useEffect, useMemo, useState } from "react";
 import { Route, Routes, useLocation, useParams } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
@@ -10,18 +9,12 @@ import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
+import { useBuyerSellerAccounts } from "../../lib/utils/hooks/useBuyerSellerAccounts";
 import { Exchange, useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useChatContext } from "./ChatProvider/ChatContext";
 import ChatConversation from "./components/ChatConversation";
 import MessageList from "./components/MessageList";
-
-const dennisAddress = "0xE16955e95D088bd30746c7fb7d76cDA436b86F63";
-const albertAddress = "0x9c2925a41d6FB1c6C8f53351634446B0b2E65eE8";
-const jonasAddress = "0x00c5D17c55940783961352E6f83ea18167841Bca";
-const dennisId = "1";
-const albertId = "2";
-const jonasId = "3";
 
 const GlobalStyle = createGlobalStyle`
   html, body, #root, [data-rk] {
@@ -33,203 +26,6 @@ const Container = styled.div`
   display: flex;
   height: 100%;
 `;
-// :
-const getExchanges = ({
-  address,
-  id_in,
-  disputed
-}: {
-  address: string | undefined;
-  id_in: string[];
-  disputed: null;
-}): ReturnType<typeof useExchanges> => {
-  const r = {
-    data: [
-      {
-        id: "0",
-        buyer: {
-          id: albertId,
-          wallet: "0x"
-        },
-        committedDate: new Date().toString(),
-        disputed: true,
-        expired: true,
-        finalizedDate: new Date().toString(),
-        redeemedDate: new Date().toString(),
-        state: "REDEEMED",
-        validUntilDate: new Date().toString(),
-        seller: { id: dennisId },
-        offer: {
-          id: "1",
-          buyerCancelPenalty: "",
-          createdAt: "",
-          disputeResolverId: "",
-          exchangeToken: {
-            address: "0x1000000000000000000000000000000000000000",
-            decimals: "18",
-            name: "PepitoName",
-            symbol: "pepito",
-            __typename: "ExchangeToken"
-          },
-          fulfillmentPeriodDuration: "",
-          metadataHash: "",
-          metadataUri: "",
-          price: "10001230000000000000",
-          protocolFee: "",
-          quantityAvailable: "",
-          quantityInitial: "",
-          resolutionPeriodDuration: "",
-          seller: {
-            active: true,
-            admin: dennisAddress,
-            clerk: dennisAddress,
-            __typename: "Seller",
-            id: dennisId,
-            operator: address === dennisAddress ? albertAddress : dennisAddress,
-            treasury: dennisAddress
-          },
-          sellerDeposit: "",
-          validFromDate: "",
-          validUntilDate: "",
-          voucherRedeemableFromDate: "",
-          voucherRedeemableUntilDate: "",
-          voucherValidDuration: "",
-          __typename: "Offer",
-          isValid: true,
-          voidedAt: "",
-          metadata: {
-            imageUrl:
-              "https://bsn-portal-development-image-upload-storage.s3.amazonaws.com/boson-sweatshirt-FINAL.gif",
-            type: "BASE",
-            name: "boson sweatshirt (dennis<->albert)"
-          }
-        }
-      },
-      {
-        id: "1",
-        buyer: {
-          id: dennisId,
-          wallet: "0x"
-        },
-        committedDate: new Date().toString(),
-        disputed: true,
-        expired: true,
-        finalizedDate: new Date().toString(),
-        redeemedDate: new Date().toString(),
-        state: "REDEEMED",
-        validUntilDate: new Date().toString(),
-        seller: { id: albertId },
-        offer: {
-          id: "1",
-          buyerCancelPenalty: "",
-          createdAt: "",
-          disputeResolverId: "",
-          exchangeToken: {
-            address: "0x2000000000000000000000000000000000000000",
-            decimals: "18",
-            name: "PepitoName",
-            symbol: "pepito",
-            __typename: "ExchangeToken"
-          },
-          fulfillmentPeriodDuration: "",
-          metadataHash: "",
-          metadataUri: "",
-          price: "10001230000000000000",
-          protocolFee: "",
-          quantityAvailable: "",
-          quantityInitial: "",
-          resolutionPeriodDuration: "",
-          seller: {
-            active: true,
-            admin: albertAddress,
-            clerk: albertAddress,
-            __typename: "Seller",
-            id: albertId,
-            operator: address === dennisAddress ? albertAddress : dennisAddress,
-            treasury: albertAddress
-          },
-          sellerDeposit: "",
-          validFromDate: "",
-          validUntilDate: "",
-          voucherRedeemableFromDate: "",
-          voucherRedeemableUntilDate: "",
-          voucherValidDuration: "",
-          __typename: "Offer",
-          isValid: true,
-          voidedAt: "",
-          metadata: {
-            imageUrl:
-              "https://bsn-portal-development-image-upload-storage.s3.amazonaws.com/boson-sweatshirt-FINAL.gif",
-            type: "BASE",
-            name: "boson sweatshirt (albert<->dennis)"
-          }
-        }
-      },
-      {
-        id: "2",
-        buyer: {
-          id: jonasId,
-          wallet: "0x"
-        },
-        committedDate: new Date().toString(),
-        disputed: true,
-        expired: true,
-        finalizedDate: new Date().toString(),
-        redeemedDate: new Date().toString(),
-        state: "REDEEMED",
-        validUntilDate: new Date().toString(),
-        seller: { id: albertId },
-        offer: {
-          id: "1",
-          buyerCancelPenalty: "",
-          createdAt: "",
-          disputeResolverId: "",
-          exchangeToken: {
-            address: "0x2000000000000000000000000000000000000000",
-            decimals: "18",
-            name: "PepitoName",
-            symbol: "pepito",
-            __typename: "ExchangeToken"
-          },
-          fulfillmentPeriodDuration: "",
-          metadataHash: "",
-          metadataUri: "",
-          price: "10001230000000000000",
-          protocolFee: "",
-          quantityAvailable: "",
-          quantityInitial: "",
-          resolutionPeriodDuration: "",
-          seller: {
-            active: true,
-            admin: albertAddress,
-            clerk: albertAddress,
-            __typename: "Seller",
-            id: jonasId,
-            operator: address === jonasAddress ? dennisAddress : jonasAddress,
-            treasury: albertAddress
-          },
-          sellerDeposit: "",
-          validFromDate: "",
-          validUntilDate: "",
-          voucherRedeemableFromDate: "",
-          voucherRedeemableUntilDate: "",
-          voucherValidDuration: "",
-          __typename: "Offer",
-          isValid: true,
-          voidedAt: "",
-          metadata: {
-            imageUrl:
-              "https://bsn-portal-development-image-upload-storage.s3.amazonaws.com/boson-sweatshirt-FINAL.gif",
-            type: "BASE",
-            name: "boson sweatshirt (jonas<->dennis)"
-          }
-        }
-      }
-    ]
-  };
-  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-  return r as any;
-};
 
 const SelectMessageContainer = styled.div`
   display: flex;
@@ -246,6 +42,7 @@ const SelectMessageContainer = styled.div`
 const SimpleMessage = styled.p`
   all: unset;
   display: block;
+  width: 100%;
   height: 100%;
   padding: 1rem;
   background: ${colors.lightGrey};
@@ -280,21 +77,21 @@ export default function Chat() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bosonXmtp, address]);
-  const { data: exchanges = [] } = useMemo(
-    () =>
-      getExchanges({
-        address,
-        // TODO: remove
-        id_in: new Array(116).fill(0).map((v, idx) => "" + idx),
-        disputed: null
-      }),
-    [address]
-  );
-  // TODO: comment out
-  // const { data: exchanges } = useExchanges({
-  //   id_in: threads.map((message) => message.threadId.exchangeId),
-  //   disputed: null
-  // });
+
+  const {
+    seller: {
+      sellerId: sellerId,
+      isError: isErrorSellers,
+      isLoading: isLoadingSeller
+    },
+    buyer: { buyerId, isError: isErrorBuyers, isLoading: isLoadingBuyer }
+  } = useBuyerSellerAccounts(address || "");
+
+  const { data: exchanges = [] } = useExchanges({
+    buyerId: buyerId,
+    sellerId: sellerId,
+    disputed: null
+  });
 
   const textAreaValueByThread = useMemo(
     () =>
@@ -357,6 +154,11 @@ export default function Chat() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const isSellerOrBuyer = !(
+    !isLoadingSeller &&
+    !isLoadingBuyer &&
+    (isErrorSellers || isErrorBuyers || (!sellerId && !buyerId))
+  );
   return (
     <>
       <Container>
@@ -401,12 +203,15 @@ export default function Chat() {
         </Routes>
 
         {(location.pathname === `${BosonRoutes.Chat}/` ||
-          location.pathname === `${BosonRoutes.Chat}`) && (
+          location.pathname === `${BosonRoutes.Chat}` ||
+          !isSellerOrBuyer) && (
           <SelectMessageContainer>
             <SimpleMessage>
               {exchangeIdNotOwned
                 ? "You don't have this exchange"
-                : "Select a message"}
+                : isSellerOrBuyer && exchanges.length
+                ? "Select a message"
+                : "You need to have an exchange to chat"}
             </SimpleMessage>
           </SelectMessageContainer>
         )}

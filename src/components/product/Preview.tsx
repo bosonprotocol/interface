@@ -63,6 +63,8 @@ export default function Preview({ togglePreview }: Props) {
     values.coreTermsOfSale.offerValidityPeriod[0]
   );
 
+  const exchangeDate = Date.now().toString();
+
   const offer = {
     price: weiPrice.toString(),
 
@@ -80,8 +82,8 @@ export default function Preview({ togglePreview }: Props) {
     voucherValidDuration: "21727820",
     exchanges: [
       {
-        committedDate: Date.now().toString(),
-        redeemedDate: Date.now().toString()
+        committedDate: exchangeDate,
+        redeemedDate: exchangeDate
       }
     ],
     seller: {
@@ -118,7 +120,8 @@ export default function Preview({ togglePreview }: Props) {
                 <Typography
                   tag="h1"
                   data-testid="name"
-                  style={{ fontSize: "2rem", marginBottom: "2rem" }}
+                  fontSize="2rem"
+                  margin="0 0 2rem 0"
                 >
                   {name}
                 </Typography>
@@ -139,7 +142,7 @@ export default function Preview({ togglePreview }: Props) {
                 <Typography tag="h3">Product data</Typography>
                 <Typography
                   tag="p"
-                  style={{ color: colors.darkGrey }}
+                  color={colors.darkGrey}
                   data-testid="description"
                 >
                   {values.productInformation.description}
@@ -150,7 +153,7 @@ export default function Preview({ togglePreview }: Props) {
               </div>
               <div>
                 <Typography tag="h3">About the artist</Typography>
-                <Typography tag="p" style={{ color: colors.darkGrey }}>
+                <Typography tag="p" color={colors.darkGrey}>
                   {values.creteYourProfile.description}
                 </Typography>
               </div>

@@ -13,9 +13,9 @@ export function memoMergeAndSortOffers() {
   ): Offer[] {
     const cachedOffers = cache[cacheKey] || [];
     const sellerCurationListOffers =
-      sellerCurationListResult?.baseMetadataEntities || [];
+      sellerCurationListResult?.productV1MetadataEntities || [];
     const offerCurationListOffers =
-      offerCurationListResult?.baseMetadataEntities || [];
+      offerCurationListResult?.productV1MetadataEntities || [];
 
     const mergedCurationListOffers = [
       ...sellerCurationListOffers,

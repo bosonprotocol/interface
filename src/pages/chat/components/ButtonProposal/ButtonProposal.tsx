@@ -11,13 +11,15 @@ import { FileWithEncodedData } from "../../../../lib/utils/files";
 import { useChatContext } from "../../ChatProvider/ChatContext";
 import { NewProposal, Thread } from "../../types";
 
+export const ButtonProposalHeight = "52px";
+
 const StyledButton = styled.button`
   border: 3px solid ${colors.secondary};
   padding-left: 1.2rem;
   padding-right: 2.5rem;
   font-size: 0.875rem;
   margin-right: 0.875rem;
-  height: 46px;
+  height: ${ButtonProposalHeight};
   font-weight: 600;
   color: ${colors.secondary};
   background-color: transparent;

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */ // TODO: remove
-
 import {
   FileContent,
   MessageData,
@@ -7,10 +5,11 @@ import {
   ProposalContent,
   SupportedFileMimeTypes,
   ThreadId,
-  ThreadObject,
   version
 } from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/definitions";
+import { validateMessage } from "@bosonprotocol/chat-sdk/dist/cjs/util/validators";
 import dayjs from "dayjs";
+import { utils } from "ethers";
 import { CircleNotch } from "phosphor-react";
 import { ArrowLeft, UploadSimple } from "phosphor-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -28,11 +27,13 @@ import { zIndex } from "../../../lib/styles/zIndex";
 import { FileWithEncodedData } from "../../../lib/utils/files";
 import { useInfiniteThread } from "../../../lib/utils/hooks/chat/useInfiniteThread";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
-import { useBuyerSellerAccounts } from "../../../lib/utils/hooks/useBuyerSellerAccounts";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useChatContext } from "../ChatProvider/ChatContext";
-import ButtonProposal from "./ButtonProposal/ButtonProposal";
+import { MessageDataWithIsValid, ThreadObjectWithIsValid } from "../types";
+import ButtonProposal, {
+  ButtonProposalHeight
+} from "./ButtonProposal/ButtonProposal";
 import ExchangeSidePreview from "./ExchangeSidePreview";
 import Message from "./Message";
 import MessageSeparator from "./MessageSeparator";
@@ -157,6 +158,7 @@ const TypeMessage = styled.div`
   display: flex;
   align-items: center;
   padding: 1.5rem 1rem 1.5rem 1rem;
+  border-right: 1px solid ${colors.border};
 `;
 
 const Input = styled.div`
@@ -209,6 +211,7 @@ const TextArea = styled.textarea`
 const SimpleMessage = styled.p`
   all: unset;
   display: block;
+  width: 100%;
   height: 100%;
   padding: 1rem;
   background: ${colors.lightGrey};
@@ -240,8 +243,6 @@ const HeaderButton = styled.button`
 
 const NavigationMobile = styled.div`
   display: flex;
-  /* min-height: 3.125rem; */
-  /* width: 100%; */
   align-items: flex-end;
   justify-content: space-between;
   svg {
@@ -258,6 +259,7 @@ const InputWrapper = styled.div`
   display: flex;
   position: relative;
   width: 100%;
+  min-height: ${ButtonProposalHeight};
 `;
 
 const UploadButtonWrapper = styled.button`
@@ -266,7 +268,7 @@ const UploadButtonWrapper = styled.button`
   position: absolute;
   right: 0;
   top: 0;
-  transform: translate(0, 25%);
+  transform: translate(0, calc(${ButtonProposalHeight} / 4));
   margin: 0 1rem;
   :disabled {
     cursor: not-allowed;
@@ -295,12 +297,6 @@ const SellerComponent = ({
     />
   );
 };
-
-const ErrorMessage = () => (
-  <Container>
-    <SimpleMessage>There has been an error, try again or refresh</SimpleMessage>
-  </Container>
-);
 
 const getWasItSentByMe = (myAddress: string | undefined, sender: string) => {
   return myAddress === sender;
@@ -341,13 +337,13 @@ const ChatConversation = ({
       sellerId: exchange.seller.id
     };
   }, [exchange]);
-  console.log("my threadId", threadId);
   const {
     data: thread,
     isLoading: areThreadsLoading,
     isBeginningOfTimes,
     isError: isErrorThread,
-    lastData: lastThread
+    lastData: lastThread,
+    appendMessages
   } = useInfiniteThread({
     threadId,
     dateIndex,
@@ -369,20 +365,28 @@ const ChatConversation = ({
   );
 
   const addMessage = useCallback(
-    (
-      thread: ThreadObject | null,
-      newMessageOrList: MessageData | MessageData[]
+    async (
+      thread: ThreadObjectWithIsValid | null,
+      newMessageOrList: MessageDataWithIsValid | MessageDataWithIsValid[]
     ) => {
       const newMessages = Array.isArray(newMessageOrList)
         ? newMessageOrList
         : [newMessageOrList];
       if (thread) {
-        thread.messages = [...thread.messages, ...newMessages];
+        const messagesWithIsValid = await Promise.all(
+          newMessages.map(async (message) => {
+            if (message.isValid === undefined) {
+              message.isValid = await validateMessage(message.data);
+            }
+            return message;
+          })
+        );
+        await appendMessages(messagesWithIsValid);
       } else {
         loadMoreMessages(0); // trigger getting the thread
       }
     },
-    [loadMoreMessages]
+    [loadMoreMessages, appendMessages]
   );
   const previousThreadMessagesRef = useRef<MessageData[]>(
     thread?.messages || []
@@ -421,17 +425,24 @@ const ChatConversation = ({
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const navigate = useKeepQueryParamsNavigate();
   const { address } = useAccount();
-  const destinationAddress = exchange?.offer.seller.operator || "";
+  const destinationAddress = exchange?.offer.seller.operator
+    ? utils.getAddress(exchange?.offer.seller.operator)
+    : "";
   useEffect(() => {
     if (!bosonXmtp || !thread?.threadId || !destinationAddress) {
       return;
     }
     const monitor = async () => {
-      for await (const incomingMessage of await bosonXmtp.monitorThread(
-        thread.threadId,
-        destinationAddress
-      )) {
-        addMessage(thread, incomingMessage);
+      try {
+        for await (const incomingMessage of await bosonXmtp.monitorThread(
+          thread.threadId,
+          destinationAddress
+        )) {
+          const isValid = await validateMessage(incomingMessage.data);
+          await addMessage(thread, { ...incomingMessage, isValid });
+        }
+      } catch (error) {
+        console.error(error);
       }
     };
     monitor().catch((error) => {
@@ -462,21 +473,12 @@ const ChatConversation = ({
           newMessage,
           destinationAddress
         );
-        addMessage(thread, messageData);
+        await addMessage(thread, { ...messageData, isValid: true });
       }
     },
     [addMessage, bosonXmtp, destinationAddress, threadId, thread]
   );
   const { isLteS, isLteM, isXXS, isS, isM, isL, isXL } = useBreakpoints();
-  const {
-    seller: {
-      sellerId: _sellerId,
-      isError: isErrorSellers,
-      isLoading: isLoadingSeller
-    },
-    buyer: { buyerId, isError: isErrorBuyers, isLoading: isLoadingBuyer }
-  } = useBuyerSellerAccounts(address || "");
-  const sellerId = _sellerId || "";
   const { showModal } = useModal();
 
   useEffect(() => {
@@ -515,14 +517,6 @@ const ChatConversation = ({
       </HeaderButton>
     );
   }, [chatListOpen, isExchangePreviewOpen, isXXS, isS, isM]);
-  // TODO: comment out
-  // if (
-  //   !isLoadingSeller &&
-  //   !isLoadingBuyer &&
-  //   (isErrorSellers || isErrorBuyers || (!sellerId && !buyerId))
-  // ) {
-  //   return <ErrorMessage />;
-  // }
 
   const isConversationBeingLoaded = !thread && areThreadsLoading;
   const disableInputs = isErrorThread || isConversationBeingLoaded;
@@ -590,7 +584,7 @@ const ChatConversation = ({
           <InfiniteScroll
             inverse
             next={loadMoreMessages}
-            hasMore={true || hasMoreMessages}
+            hasMore={hasMoreMessages}
             loader={<></>}
             dataLength={thread?.messages.length || 0}
             scrollableTarget="messages"
@@ -657,27 +651,31 @@ const ChatConversation = ({
                   if (!threadId || !bosonXmtp) {
                     return;
                   }
-                  const proposalContent: ProposalContent = {
-                    value: {
-                      title: proposal.title,
-                      description: proposal.description,
-                      proposals: proposal.proposals,
-                      disputeContext: proposal.disputeContext
+                  try {
+                    const proposalContent: ProposalContent = {
+                      value: {
+                        title: proposal.title,
+                        description: proposal.description,
+                        proposals: proposal.proposals,
+                        disputeContext: proposal.disputeContext
+                      }
+                    };
+                    const newMessage = {
+                      threadId,
+                      content: proposalContent,
+                      contentType: MessageType.Proposal,
+                      version
+                    } as const;
+                    const messageData = await bosonXmtp.encodeAndSendMessage(
+                      newMessage,
+                      destinationAddress
+                    );
+                    await addMessage(thread, { ...messageData, isValid: true });
+                    if (proposalFiles.length) {
+                      await sendFilesToChat(proposalFiles);
                     }
-                  };
-                  const newMessage = {
-                    threadId,
-                    content: proposalContent,
-                    contentType: MessageType.Proposal,
-                    version
-                  } as const;
-                  const messageData = await bosonXmtp.encodeAndSendMessage(
-                    newMessage,
-                    destinationAddress
-                  );
-                  addMessage(thread, messageData);
-                  if (proposalFiles.length) {
-                    await sendFilesToChat(proposalFiles);
+                  } catch (error) {
+                    console.error(error);
                   }
                 }}
               />
@@ -698,21 +696,29 @@ const ChatConversation = ({
                   }
                 }}
                 onKeyDown={async (e) => {
-                  if (e.key === "Enter" && bosonXmtp && threadId) {
-                    const newMessage = {
-                      threadId,
-                      content: {
-                        value: e.target.value
-                      },
-                      contentType: MessageType.String,
-                      version
-                    } as const;
-                    const messageData = await bosonXmtp.encodeAndSendMessage(
-                      newMessage,
-                      destinationAddress
-                    );
-                    addMessage(thread, messageData);
-                    onTextAreaChange("");
+                  const value = e.target.value.trim();
+                  if (e.key === "Enter" && bosonXmtp && threadId && value) {
+                    try {
+                      const newMessage = {
+                        threadId,
+                        content: {
+                          value
+                        },
+                        contentType: MessageType.String,
+                        version
+                      } as const;
+                      const messageData = await bosonXmtp.encodeAndSendMessage(
+                        newMessage,
+                        destinationAddress
+                      );
+                      await addMessage(thread, {
+                        ...messageData,
+                        isValid: true
+                      });
+                      onTextAreaChange("");
+                    } catch (error) {
+                      console.error(error);
+                    }
                   }
                 }}
               >
@@ -727,7 +733,11 @@ const ChatConversation = ({
                   title: "Upload documents",
                   withEncodedData: true,
                   onUploadedFilesWithData: async (files) => {
-                    await sendFilesToChat(files);
+                    try {
+                      await sendFilesToChat(files);
+                    } catch (error) {
+                      console.error(error);
+                    }
                   }
                 })
               }
