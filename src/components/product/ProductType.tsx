@@ -86,7 +86,6 @@ export default function ProductType() {
           <FormField
             title="Select Product Type"
             required={true}
-            tooltip="TODO: add"
             style={{
               marginBottom: 0
             }}
@@ -124,7 +123,6 @@ export default function ProductType() {
           <FormField
             title="Product Variants"
             required={true}
-            tooltip="TODO: add"
             style={{
               marginBottom: 0
             }}
