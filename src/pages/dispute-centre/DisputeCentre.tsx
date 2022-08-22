@@ -83,11 +83,7 @@ function DisputeCentre() {
   const params = useParams();
   const exchangeId = params["*"];
 
-  const {
-    data: exchanges,
-    isError,
-    isLoading
-  } = useExchanges(
+  const { data: exchanges } = useExchanges(
     {
       id: exchangeId,
       disputed: null
