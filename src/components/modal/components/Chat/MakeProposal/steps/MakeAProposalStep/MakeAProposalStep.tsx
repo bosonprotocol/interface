@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { colors } from "../../../../../../../lib/styles/colors";
 import { Exchange } from "../../../../../../../lib/utils/hooks/useExchanges";
 import { Select } from "../../../../../../form";
+import { useCreateForm } from "../../../../../../product/utils/useCreateForm";
 import Button from "../../../../../../ui/Button";
 import Grid from "../../../../../../ui/Grid";
 import Typography from "../../../../../../ui/Typography";
@@ -34,9 +35,8 @@ export default function MakeAProposalStep({
   const [proposalsTypesField] = useField<typeof proposals>(
     FormModel.formFields.proposalsTypes.name
   );
-
-  console.log("tu testuje");
-  console.log(proposalsTypesField);
+  const formValues = useCreateForm();
+  console.log(formValues);
 
   return (
     <>

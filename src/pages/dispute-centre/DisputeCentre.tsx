@@ -1,5 +1,6 @@
 import { Formik } from "formik";
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
 import ExchangePreview from "../../components/modal/components/Chat/components/ExchangePreview";
@@ -79,6 +80,8 @@ const ItemPreview = styled.div`
 
 function DisputeCentre() {
   const [currentStep, setCurrentStep] = useState(0);
+  const params = useParams();
+  const exchangeId = params["*"];
 
   const {
     data: exchanges,
@@ -86,7 +89,7 @@ function DisputeCentre() {
     isLoading
   } = useExchanges(
     {
-      id: "1",
+      id: exchangeId,
       disputed: null
     },
     {

@@ -151,6 +151,14 @@ export const disputeCentreValidationSchemaAdditionalInformation = Yup.object({
 });
 
 export const disputeCentreValidationSchemaMakeProposal = Yup.object({
+  [FormModel.formFields.proposalsTypes.name]: Yup.array()
+    .of(
+      Yup.object().shape({
+        label: Yup.string(),
+        value: Yup.string()
+      })
+    )
+    .default([{ label: "", value: "" }]),
   [FormModel.formFields.refundPercentage.name]: Yup.number()
     .moreThan(0, FormModel.formFields.refundPercentage.moreThanErrorMessage)
     .max(100, FormModel.formFields.refundPercentage.maxErrorMessage)

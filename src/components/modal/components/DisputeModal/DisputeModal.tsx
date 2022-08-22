@@ -1,9 +1,13 @@
 import { CheckCircle, FileText, HandsClapping } from "phosphor-react";
 import React from "react";
+import { generatePath } from "react-router-dom";
 import styled from "styled-components";
 
+import { BosonRoutes } from "../../../../lib/routing/routes";
 import { breakpoint } from "../../../../lib/styles/breakpoint";
 import { colors } from "../../../../lib/styles/colors";
+import { Offer } from "../../../../lib/types/offer";
+import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import Typography from "../../../ui/Typography";
 import { ModalProps } from "../../ModalContext";
 
@@ -165,9 +169,18 @@ const ButtonContainer = styled.div`
 
 interface Props {
   hideModal: NonNullable<ModalProps["hideModal"]>;
+  exchange: NonNullable<Offer["exchanges"]>[number];
 }
 
-function DisputeModal({ hideModal }: Props) {
+function DisputeModal({ hideModal, exchange }: Props) {
+  console.log("exchange", exchange);
+  const navigate = useKeepQueryParamsNavigate();
+
+  const handleSubmitIssue = () => {
+    navigate({
+      pathname: generatePath(`${BosonRoutes.Dispute}/${exchange.id}`)
+    });
+  };
   return (
     <>
       <ModalContainer>
@@ -239,7 +252,7 @@ function DisputeModal({ hideModal }: Props) {
           </div>
         </ModalGrid>
         <ButtonContainer>
-          <button data-button data-button-submit>
+          <button data-button data-button-submit onClick={handleSubmitIssue}>
             Submit an issue
           </button>
           <button

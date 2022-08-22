@@ -14,7 +14,8 @@ export const BosonRoutes = {
   LearnMore: "/learn-more", // TODO: add page to handle this route
   Chat: "/chat",
   ChatMessage: `/chat/:${UrlParameters.exchangeId}`,
-  Dispute: "/dispute"
+  Dispute: "/dispute",
+  DisputeId: `/dispute/:${UrlParameters.exchangeId}`
 } as const;
 
 export const OffersRoutes = {

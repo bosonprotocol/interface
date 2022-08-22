@@ -74,7 +74,10 @@ root.render(
                 path={BosonRoutes.CreateStorefront}
                 element={<CustomStore />}
               />
-              <Route path={BosonRoutes.Dispute} element={<DisputeCentre />} />
+              <Route
+                path={`${BosonRoutes.Dispute}/*`}
+                element={<DisputeCentre />}
+              />
               <Route
                 path="*"
                 element={
