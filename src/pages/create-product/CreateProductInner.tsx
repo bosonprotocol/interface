@@ -417,7 +417,10 @@ function CreateProductInner({ initial }: Props) {
             return (
               <Form>
                 {isPreviewVisible ? (
-                  <Preview togglePreview={setIsPreviewVisible} />
+                  <Preview
+                    togglePreview={setIsPreviewVisible}
+                    seller={sellers?.[0]}
+                  />
                 ) : (
                   wizardStep.currentStep
                 )}
