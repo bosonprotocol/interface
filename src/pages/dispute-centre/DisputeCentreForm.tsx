@@ -15,21 +15,6 @@ function DisputeCentreForm({
   currentStep: number;
   exchange: Exchange;
 }) {
-  const buttonSteps = [
-    [
-      { label: "Item was not delivered or delivered late", id: 1 },
-      { label: "Item is not as described", id: 2 }
-    ],
-    [
-      "The item received is a different colour, model, version, or size",
-      "The item has a different design or material",
-      "The item is damaged or is missing parts",
-      "The item was advertised as authentic but is not authentic",
-      "The condition of the item is misrepresented (e.g., the item is described as new but is used)",
-      "Other ..."
-    ]
-  ];
-
   const getStartedSteps = [
     { label: "Item was not delivered or delivered late", id: 1 },
     { label: "Item is not as described", id: 2 }
