@@ -16,7 +16,10 @@ function DisputeCentreForm({
   exchange: Exchange;
 }) {
   const buttonSteps = [
-    ["Item was not delivered or delivered late", "Item is not as described"],
+    [
+      { label: "Item was not delivered or delivered late", id: 1 },
+      { label: "Item is not as described", id: 2 }
+    ],
     [
       "The item received is a different colour, model, version, or size",
       "The item has a different design or material",
@@ -27,6 +30,30 @@ function DisputeCentreForm({
     ]
   ];
 
+  const getStartedSteps = [
+    { label: "Item was not delivered or delivered late", id: 1 },
+    { label: "Item is not as described", id: 2 }
+  ];
+
+  const tellUsMoreSteps = [
+    {
+      label: "The item received is a different colour, model, version, or size",
+      id: 1
+    },
+    { label: "The item has a different design or material", id: 2 },
+    { label: "The item is damaged or is missing parts", id: 3 },
+    {
+      label: "The item was advertised as authentic but is not authentic",
+      id: 4
+    },
+    {
+      label:
+        "The condition of the item is misrepresented (e.g., the item is described as new but is used)",
+      id: 5
+    },
+    { label: "Other ...", id: 6 }
+  ];
+
   const formComponent = (currentStep: number) => {
     switch (currentStep) {
       case 0:
@@ -34,7 +61,7 @@ function DisputeCentreForm({
           <GetStarted
             setCurrentStep={setCurrentStep}
             currentStep={currentStep}
-            buttonSteps={buttonSteps}
+            getStartedSteps={getStartedSteps}
           />
         );
       case 1:
@@ -42,7 +69,7 @@ function DisputeCentreForm({
           <TellUsMore
             setCurrentStep={setCurrentStep}
             currentStep={currentStep}
-            buttonSteps={buttonSteps}
+            tellUsMoreSteps={tellUsMoreSteps}
           />
         );
       case 2:

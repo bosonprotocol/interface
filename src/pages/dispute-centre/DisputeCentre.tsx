@@ -13,6 +13,7 @@ import {
   disputeCentreValidationSchemaTellUsMore
 } from "../../components/product/utils";
 import MultiSteps from "../../components/step/MultiSteps";
+import Grid from "../../components/ui/Grid";
 import { colors } from "../../lib/styles/colors";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import DisputeCentreForm from "./DisputeCentreForm";
@@ -42,13 +43,8 @@ const DISPUTE_STEPS = [
 
 const ItemWidget = styled.div``;
 
-const DisputeContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+const DisputeContainer = styled(Grid)`
   height: 100%;
-  width: 100%;
   background: ${colors.lightGrey};
 `;
 
@@ -59,23 +55,15 @@ const GetStartedBox = styled.div`
   background: ${colors.white};
   margin-bottom: 3.125rem;
   height: max-content;
-  [get-started] {
-    padding-bottom: 3.125rem;
-  }
 `;
 
 const MultiStepsContainer = styled.div`
   padding-bottom: 0.5rem;
 `;
 
-const ItemPreview = styled.div`
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
+const ItemPreview = styled(Grid)`
   width: 41.75rem;
   background-color: ${colors.white};
-  margin-top: 2rem;
-  padding: 2rem;
 `;
 
 function DisputeCentre() {
@@ -83,17 +71,12 @@ function DisputeCentre() {
   const params = useParams();
   const exchangeId = params["*"];
 
-  const { data: exchanges } = useExchanges(
-    {
-      id: exchangeId,
-      disputed: null
-    },
-    {
-      enabled: !!"1"
-    }
-  );
+  const { data: exchanges = [] } = useExchanges({
+    id: exchangeId,
+    disputed: null
+  });
 
-  const [exchange] = exchanges || [];
+  const [exchange] = exchanges;
 
   const handleClickStep = (val: number) => {
     if (val < currentStep) {
@@ -118,8 +101,16 @@ function DisputeCentre() {
           callback={handleClickStep}
         />
       </MultiStepsContainer>
-      <DisputeContainer>
-        <ItemPreview>
+      <DisputeContainer
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+      >
+        <ItemPreview
+          justifyContent="space-between"
+          margin="2rem 0 0 0"
+          padding="2rem"
+        >
           {exchange && <ExchangePreview exchange={exchange} />}
         </ItemPreview>
         <GetStartedBox>

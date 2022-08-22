@@ -5,11 +5,8 @@ import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
 import { useCreateForm } from "../product/utils/useCreateForm";
+import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
-
-const FormHeader = styled.div`
-  margin-bottom: 3.125rem;
-`;
 
 const FormButton = styled.button`
   border: none;
@@ -27,48 +24,56 @@ const FormButton = styled.button`
   text-align: left;
   margin-top: 1.5rem;
   font-weight: 600;
-  [data-text-container] {
-    max-width: 31.25rem;
-  }
+`;
+
+const TextContainer = styled.span`
+  max-width: 31.25rem;
 `;
 
 function TellUsMore({
   setCurrentStep,
   currentStep,
-  buttonSteps
+  tellUsMoreSteps
 }: {
   setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
   currentStep: number;
-  buttonSteps: string[][];
+  tellUsMoreSteps: {
+    label: string;
+    id: number;
+  }[];
 }) {
   const formValues = useCreateForm();
 
-  // extract
+  const FieldArrayName = "tellUsMore";
 
   return (
     <>
-      <FormHeader>
+      <Grid
+        margin="0 0 3.125rem 0"
+        flexDirection="column"
+        alignItems="flex-start"
+      >
         <Typography fontWeight="600" fontSize="2rem">
           Tell us more about your problem
         </Typography>
         <Typography fontSize="1.25rem" color={colors.darkGrey}>
           Choose from one of the problems listed below
         </Typography>
-      </FormHeader>
+      </Grid>
       <FieldArray
-        name="friends"
+        name={FieldArrayName}
         render={() => (
           <div>
-            {buttonSteps[currentStep].map((step, index) => (
-              <div key={index}>
+            {tellUsMoreSteps.map((step) => (
+              <div key={step.id}>
                 <FormButton
                   type="submit"
                   onClick={() => {
-                    formValues.setFieldValue("tellUsMore", step);
+                    formValues.setFieldValue(FieldArrayName, step);
                     setCurrentStep(currentStep + 1);
                   }}
                 >
-                  <span data-text-container>{step}</span>{" "}
+                  <TextContainer>{step.label}</TextContainer>{" "}
                   <ArrowRight size={17} />
                 </FormButton>
               </div>

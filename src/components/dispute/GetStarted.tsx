@@ -23,23 +23,28 @@ const FormButton = styled.button`
   text-align: left;
   margin-top: 1.5rem;
   font-weight: 600;
-  [data-text-container] {
-    max-width: 31.25rem;
-  }
+`;
+
+const TextContainer = styled.span`
+  max-width: 31.25rem;
 `;
 
 function GetStarted({
   setCurrentStep,
   currentStep,
-  buttonSteps
+  getStartedSteps
 }: {
   setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
   currentStep: number;
-  buttonSteps: string[][];
+  getStartedSteps: {
+    label: string;
+    id: number;
+  }[];
 }) {
   const formValues = useCreateForm();
 
-  // extract setValues
+  const FieldArrayName = "getStarted";
+
   return (
     <>
       <div>
@@ -51,19 +56,19 @@ function GetStarted({
         </Typography>
       </div>
       <FieldArray
-        name="friends"
+        name={FieldArrayName}
         render={() => (
           <div>
-            {buttonSteps[currentStep].map((step, index) => (
-              <div key={index}>
+            {getStartedSteps.map((step) => (
+              <div key={step.id}>
                 <FormButton
                   type="submit"
                   onClick={() => {
-                    formValues.setFieldValue("getStarted", step);
+                    formValues.setFieldValue(FieldArrayName, step.label);
                     setCurrentStep(currentStep + 1);
                   }}
                 >
-                  <span data-text-container>{step}</span>{" "}
+                  <TextContainer>{step.label}</TextContainer>{" "}
                   <ArrowRight size={17} />
                 </FormButton>
               </div>

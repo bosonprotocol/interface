@@ -36,106 +36,107 @@ const ModalGrid = styled.div`
   ${breakpoint.m} {
     grid-template-columns: 32% 32% 32%;
   }
-  > [data-modal-columns] {
-    background-color: ${colors.lightGrey};
-    padding: 1.5625rem;
-    grid-gap: 0.3125rem;
-    position: relative;
-    &:nth-of-type(1) {
-      &:after {
+`;
+
+const ModalGridColumns = styled.div`
+  background-color: ${colors.lightGrey};
+  padding: 1.5625rem;
+  grid-gap: 0.3125rem;
+  position: relative;
+  &:nth-of-type(1) {
+    &:after {
+      background-color: ${colors.lightGrey};
+      content: "";
+      bottom: calc(-100% + 1px);
+      width: 100%;
+      top: unset;
+      clip-path: polygon(50% 10%, 0 0, 100% 0);
+      height: 100%;
+      position: absolute;
+      left: 0;
+      ${breakpoint.m} {
+        clip-path: polygon(0 0, 0% 100%, 13% 49%);
         background-color: ${colors.lightGrey};
         content: "";
-        bottom: calc(-100% + 1px);
-        width: 100%;
-        top: unset;
-        clip-path: polygon(50% 10%, 0 0, 100% 0);
         height: 100%;
+        width: 6.25rem;
         position: absolute;
-        left: 0;
-        ${breakpoint.m} {
-          clip-path: polygon(0 0, 0% 100%, 13% 49%);
-          background-color: ${colors.lightGrey};
-          content: "";
-          height: 100%;
-          width: 6.25rem;
-          position: absolute;
-          right: -6.1875rem;
-          top: 0;
-          bottom: unset;
-          left: unset;
-        }
+        right: -6.1875rem;
+        top: 0;
+        bottom: unset;
+        left: unset;
       }
     }
-    &:nth-of-type(2) {
-      &:before {
-        clip-path: polygon(50% 10%, 0 0, 100% 0);
+  }
+  &:nth-of-type(2) {
+    &:before {
+      clip-path: polygon(50% 10%, 0 0, 100% 0);
+      background-color: ${colors.white};
+      content: "";
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      left: 0;
+      top: -0.0625rem;
+      ${breakpoint.m} {
+        clip-path: polygon(0 0, 0% 100%, 13% 49%);
         background-color: ${colors.white};
         content: "";
         height: 100%;
-        width: 100%;
+        width: 6.25rem;
         position: absolute;
-        left: 0;
-        top: -0.0625rem;
-        ${breakpoint.m} {
-          clip-path: polygon(0 0, 0% 100%, 13% 49%);
-          background-color: ${colors.white};
-          content: "";
-          height: 100%;
-          width: 6.25rem;
-          position: absolute;
-          left: -0.0625rem;
-          top: 0;
-        }
-      }
-      &:after {
-        background-color: ${colors.lightGrey};
-        content: "";
-        bottom: calc(-100% + 0.0625rem);
-        width: 100%;
-        top: unset;
-        clip-path: polygon(50% 10%, 0 0, 100% 0);
-        height: 100%;
-        position: absolute;
-        left: 0;
-        ${breakpoint.m} {
-          clip-path: polygon(0 0, 0% 100%, 13% 49%);
-          background-color: ${colors.lightGrey};
-          content: "";
-          height: 100%;
-          width: 6.25rem;
-          position: absolute;
-          right: -6.1875rem;
-          top: 0;
-          bottom: unset;
-          left: unset;
-        }
+        left: -0.0625rem;
+        top: 0;
       }
     }
-    &:nth-of-type(3) {
-      &:before {
-        clip-path: polygon(50% 10%, 0 0, 100% 0);
+    &:after {
+      background-color: ${colors.lightGrey};
+      content: "";
+      bottom: calc(-100% + 0.0625rem);
+      width: 100%;
+      top: unset;
+      clip-path: polygon(50% 10%, 0 0, 100% 0);
+      height: 100%;
+      position: absolute;
+      left: 0;
+      ${breakpoint.m} {
+        clip-path: polygon(0 0, 0% 100%, 13% 49%);
+        background-color: ${colors.lightGrey};
+        content: "";
+        height: 100%;
+        width: 6.25rem;
+        position: absolute;
+        right: -6.1875rem;
+        top: 0;
+        bottom: unset;
+        left: unset;
+      }
+    }
+  }
+  &:nth-of-type(3) {
+    &:before {
+      clip-path: polygon(50% 10%, 0 0, 100% 0);
+      background-color: ${colors.white};
+      content: "";
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      left: 0;
+      top: -0.0625rem;
+      ${breakpoint.m} {
+        clip-path: polygon(0 0, 0% 100%, 13% 49%);
         background-color: ${colors.white};
         content: "";
         height: 100%;
-        width: 100%;
+        width: 6.25rem;
         position: absolute;
-        left: 0;
-        top: -0.0625rem;
-        ${breakpoint.m} {
-          clip-path: polygon(0 0, 0% 100%, 13% 49%);
-          background-color: ${colors.white};
-          content: "";
-          height: 100%;
-          width: 6.25rem;
-          position: absolute;
-          left: -0.0625rem;
-          top: 0;
-        }
+        left: -0.0625rem;
+        top: 0;
       }
     }
-    [data-columns-icon] {
-      margin-bottom: 0.9375rem;
-    }
+  }
+  [data-columns-icon] {
+    margin-bottom: 0.9375rem;
   }
 `;
 
@@ -185,7 +186,7 @@ function DisputeModal({ hideModal, exchange }: Props) {
     <>
       <ModalContainer>
         <ModalGrid>
-          <div data-modal-columns>
+          <ModalGridColumns>
             <FileText size={24} color={colors.secondary} data-columns-icon />
             <Typography
               margin="0"
@@ -204,8 +205,8 @@ function DisputeModal({ hideModal, exchange }: Props) {
               Message the Seller about the issue. Most problems are resolved by
               working with the Seller this way.
             </Typography>
-          </div>
-          <div data-modal-columns>
+          </ModalGridColumns>
+          <ModalGridColumns data-modal-columns>
             <CheckCircle size={24} color={colors.secondary} data-columns-icon />
             <Typography
               margin="0"
@@ -224,8 +225,8 @@ function DisputeModal({ hideModal, exchange }: Props) {
               If you still need help or the Seller has not responded, you can
               raise a dispute while the exchange is in the dispute period.
             </Typography>
-          </div>
-          <div data-modal-columns>
+          </ModalGridColumns>
+          <ModalGridColumns data-modal-columns>
             <HandsClapping
               size={24}
               color={colors.secondary}
@@ -249,7 +250,7 @@ function DisputeModal({ hideModal, exchange }: Props) {
               to reach a resolution with the Seller, you always have the option
               to escalate to a 3rd party dispute resolver.
             </Typography>
-          </div>
+          </ModalGridColumns>
         </ModalGrid>
         <ButtonContainer>
           <button data-button data-button-submit onClick={handleSubmitIssue}>

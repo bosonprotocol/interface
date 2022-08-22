@@ -1,4 +1,5 @@
 import { FormModel } from "../../modal/components/Chat/MakeProposal/MakeProposalFormModel";
+import { DisputeFormModel } from "../../modal/components/DisputeModal/DisputeModalFormModel";
 import {
   OPTIONS_CURRENCIES,
   OPTIONS_DISPUTE_RESOLVER,
@@ -101,8 +102,8 @@ export const shippingInfoInitialValues = {
 } as const;
 
 export const disputeCentreInitialValues = {
-  getStarted: "",
-  tellUsMore: "",
+  [DisputeFormModel.formFields.getStarted.name]: "",
+  [DisputeFormModel.formFields.tellUsMore.name]: "",
   [FormModel.formFields.description.name]: "",
   [FormModel.formFields.proposalsTypes.name]: [] as {
     label: string;

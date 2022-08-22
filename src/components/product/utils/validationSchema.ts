@@ -3,6 +3,7 @@ import * as Yup from "yup";
 import { validationMessage } from "../../../lib/const/validationMessage";
 import { validationOfFile } from "../../../pages/chat/components/UploadForm/const";
 import { FormModel } from "../../modal/components/Chat/MakeProposal/MakeProposalFormModel";
+import { DisputeFormModel } from "../../modal/components/DisputeModal/DisputeModalFormModel";
 import { MAX_IMAGE_SIZE, MAX_LOGO_SIZE } from "./const";
 import {
   validationOfImage,
@@ -136,11 +137,15 @@ export const shippingInfoValidationSchema = Yup.object({
 });
 
 export const disputeCentreValidationSchemaGetStarted = Yup.object({
-  getStarted: Yup.string().required(validationMessage.required)
+  [DisputeFormModel.formFields.getStarted.name]: Yup.string().required(
+    validationMessage.required
+  )
 });
 
 export const disputeCentreValidationSchemaTellUsMore = Yup.object({
-  tellUsMore: Yup.string().required(validationMessage.required)
+  [DisputeFormModel.formFields.tellUsMore.name]: Yup.string().required(
+    validationMessage.required
+  )
 });
 
 export const disputeCentreValidationSchemaAdditionalInformation = Yup.object({

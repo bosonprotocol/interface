@@ -17,7 +17,6 @@ export default function MakeProposalCore({
   activeStep
 }: Props) {
   const formValues = useCreateForm();
-  // TODO: remove any
   const isDescribeProblemOK = Object.keys(formValues.errors).length === 0;
 
   const isReturnProposal = !!formValues.values[
