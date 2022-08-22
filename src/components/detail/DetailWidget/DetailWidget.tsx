@@ -63,14 +63,14 @@ interface IDetailWidget {
 }
 
 const oneSecondToDays = 86400;
+
 export const getOfferDetailData = (
   offer: Offer,
   convertedPrice: IPrice | null,
   isModal: boolean
 ) => {
   const redeemableUntil = dayjs(
-    Number(offer.validFromDate) * 1000 +
-      Number(offer.voucherValidDuration) * 1000
+    Number(offer.voucherRedeemableUntilDate)
   ).format(CONFIG.dateFormat);
 
   const priceNumber = Number(convertedPrice?.converted);

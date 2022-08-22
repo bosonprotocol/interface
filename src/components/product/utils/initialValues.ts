@@ -11,7 +11,7 @@ import {
 import { CreateProductForm } from "./types";
 
 export const createYourProfileInitialValues = {
-  creteYourProfile: {
+  createYourProfile: {
     logo: null,
     name: "",
     email: "",
@@ -38,7 +38,15 @@ export const productInformationInitialValues = {
         name: "",
         value: ""
       }
-    ]
+    ],
+    sku: undefined,
+    id: undefined,
+    idType: undefined,
+    brandName: undefined,
+    manufacture: undefined,
+    manufactureModelName: undefined,
+    partNumber: undefined,
+    materials: undefined
   }
 } as const;
 

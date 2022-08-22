@@ -102,7 +102,7 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
   };
 
   const logoImage = getItemFromStorage(
-    "create-product-image_creteYourProfile.logo",
+    "create-product-image_createYourProfile.logo",
     ""
   );
 
@@ -217,7 +217,7 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
                 <FormFieldContainer>
                   <FormField title="Your brand / name" required={true}>
                     <ContentValue tag="p">
-                      {values.creteYourProfile.name}
+                      {values.createYourProfile.name}
                     </ContentValue>
                   </FormField>
                 </FormFieldContainer>
@@ -226,7 +226,7 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
                 <FormFieldContainer>
                   <FormField title="Contact E-Mail" required={true}>
                     <ContentValue tag="p">
-                      {values.creteYourProfile.email}
+                      {values.createYourProfile.email}
                     </ContentValue>
                   </FormField>
                 </FormFieldContainer>
@@ -238,7 +238,7 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
                     required={false}
                   >
                     <ContentValue tag="p">
-                      {values.creteYourProfile.website}
+                      {values.createYourProfile.website}
                     </ContentValue>
                   </FormField>
                 </FormFieldContainer>
@@ -251,7 +251,7 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
             >
               <FormField title="Description" required={true}>
                 <ContentValue tag="p">
-                  {values.creteYourProfile.description}
+                  {values.createYourProfile.description}
                 </ContentValue>
               </FormField>
             </FormFieldContainer>

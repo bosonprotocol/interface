@@ -8,7 +8,7 @@ import {
 } from "./validationUtils";
 
 export const createYourProfileValidationSchema = Yup.object({
-  creteYourProfile: Yup.object({
+  createYourProfile: Yup.object({
     logo: validationOfRequiredImage(MAX_LOGO_SIZE),
     name: Yup.string().trim().required(validationMessage.required),
     email: Yup.string().trim().required(validationMessage.required),
@@ -58,7 +58,15 @@ export const productInformationValidationSchema = Yup.object({
         })
       )
       .default([{ name: "", value: "" }]),
-    description: Yup.string().required(validationMessage.required)
+    description: Yup.string().required(validationMessage.required),
+    sku: Yup.string(),
+    id: Yup.string(),
+    idType: Yup.string(),
+    brandName: Yup.string(),
+    manufacture: Yup.string(),
+    manufactureModelName: Yup.string(),
+    partNumber: Yup.string(),
+    materials: Yup.string()
   })
 });
 
@@ -73,7 +81,9 @@ export const coreTermsOfSaleValidationSchema = Yup.object({
       .required(validationMessage.required),
     // currency: Yup.string().required(validationMessage.required),
     // TODO: ADD Use price for all variants FILED
-    quantity: Yup.number().min(1).required(validationMessage.required),
+    quantity: Yup.number()
+      .min(1, "Quantity must be greater than or equal to 1")
+      .required(validationMessage.required),
     tokenGatedOffer: Yup.object()
       .shape({
         value: Yup.string(),
@@ -117,6 +127,8 @@ export const termsOfExchangeValidationSchema = Yup.object({
 
 export const shippingInfoValidationSchema = Yup.object({
   shippingInfo: Yup.object({
+    weight: Yup.string(),
+    weightUnit: Yup.object({ value: Yup.string(), label: Yup.string() }),
     height: Yup.string(),
     width: Yup.string(),
     length: Yup.string(),

@@ -118,6 +118,7 @@ export default function TermsOfExchange() {
                   type="number"
                   min="0"
                   max="100"
+                  step="0.001"
                 />
               </div>
               <div>
@@ -142,6 +143,7 @@ export default function TermsOfExchange() {
                   type="number"
                   min="0"
                   max="100"
+                  step="0.001"
                 />
               </div>
               <div>
@@ -177,6 +179,7 @@ export default function TermsOfExchange() {
                   name="termsOfExchange.disputePeriod"
                   type="number"
                   min="0"
+                  step="0.001"
                 />
               </div>
               <div>

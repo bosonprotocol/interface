@@ -177,6 +177,7 @@ export default function ShippingInfo() {
                 name="shippingInfo.weight"
                 type="number"
                 min="0"
+                step="0.001"
               />
               <Select name="shippingInfo.weightUnit" options={OPTIONS_WEIGHT} />
             </FieldContainerWidth>
@@ -197,6 +198,7 @@ export default function ShippingInfo() {
               type="number"
               min="0"
               defaultValue={0}
+              step="0.001"
             />
           </FormField>
           <FormField title="Width">
@@ -206,6 +208,7 @@ export default function ShippingInfo() {
               type="number"
               min="0"
               defaultValue={0}
+              step="0.001"
             />
           </FormField>
           <FormField title="Length">
@@ -215,6 +218,7 @@ export default function ShippingInfo() {
               type="number"
               min="0"
               defaultValue={0}
+              step="0.001"
             />
           </FormField>
         </Collapse>
