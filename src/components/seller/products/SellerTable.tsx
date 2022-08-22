@@ -4,7 +4,7 @@
 import dayjs from "dayjs";
 import { Check } from "phosphor-react";
 import { CaretDown, CaretLeft, CaretRight, CaretUp } from "phosphor-react";
-import { Dispatch, forwardRef, useEffect, useMemo, useRef } from "react";
+import { forwardRef, useEffect, useMemo, useRef } from "react";
 import { usePagination, useRowSelect, useSortBy, useTable } from "react-table";
 import styled from "styled-components";
 
@@ -23,8 +23,6 @@ interface Props {
   offers?: Array<Offer>;
   isError: boolean;
   isLoading?: boolean;
-  offersPerPage: number;
-  setOffersPerPage: Dispatch<SetStateAction<number>>;
 }
 
 const IndeterminateCheckbox = forwardRef(({ indeterminate, ...rest }, ref) => {
@@ -54,6 +52,38 @@ const IndeterminateCheckbox = forwardRef(({ indeterminate, ...rest }, ref) => {
 
 const Table = styled.table`
   width: 100%;
+  border-collapse: collapse;
+  thead {
+    tr {
+      th {
+        border-bottom: 2px solid ${colors.border};
+        &:not(:first-child) {
+          text-align: left;
+        }
+        &:first-child {
+          padding-left: 0.5rem;
+        }
+      }
+    }
+  }
+  tbody {
+    tr {
+      &:not(:last-child) {
+        td {
+          border-bottom: 1px solid ${colors.border};
+        }
+      }
+      td {
+        &:not(:first-child) {
+          text-align: left;
+        }
+        padding: 0.5rem;
+      }
+    }
+  }
+  [data-testid="price"] {
+    transform: scale(0.75);
+  }
 `;
 
 const HeaderSorter = styled.span`
@@ -79,11 +109,7 @@ const Span = styled.span`
   }
 `;
 
-export default function SellerTable({
-  offers,
-  offersPerPage,
-  setOffersPerPage
-}: Props) {
+export default function SellerTable({ offers }: Props) {
   const columns = useMemo(
     () => [
       {
@@ -157,16 +183,18 @@ export default function SellerTable({
           ),
           offerValidity: (
             <Typography>
-              Until <br />
-              {dayjs(getDateTimestamp(offer?.validUntilDate)).format(
-                CONFIG.dateFormat
-              )}
+              <span>
+                <small style={{ margin: "0" }}>Until</small> <br />
+                {dayjs(getDateTimestamp(offer?.validUntilDate)).format(
+                  CONFIG.dateFormat
+                )}
+              </span>
             </Typography>
           ),
           action: (
             <Button
               // disabled
-              theme="primary"
+              theme="void"
               size="small"
               onClick={() => {
                 console.log(`VOID: ${offer.id}`);
@@ -184,9 +212,7 @@ export default function SellerTable({
     {
       columns,
       data,
-      initialState: { pageIndex: 0 },
-      manualPagination: true,
-      pageCount: 10
+      initialState: { pageIndex: 0 }
     },
     useSortBy,
     usePagination,
@@ -196,14 +222,10 @@ export default function SellerTable({
         {
           id: "selection",
           Header: ({ getToggleAllRowsSelectedProps }: any) => (
-            <div>
-              <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
-            </div>
+            <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
           ),
           Cell: ({ row }: any) => (
-            <div>
-              <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
-            </div>
+            <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
           )
         },
         ...columns
@@ -215,16 +237,18 @@ export default function SellerTable({
     getTableBodyProps,
     headerGroups,
     rows,
-    prepareRow,
     page,
+    prepareRow,
     canPreviousPage,
     canNextPage,
-    pageCount,
     gotoPage,
     nextPage,
-    previousPage
+    previousPage,
+    setPageSize,
+    state: { pageIndex, pageSize }
   } = tableProps;
-  console.log("dsfdsfsd", tableProps);
+
+  console.log("tableProps", tableProps);
 
   return (
     <>
@@ -258,7 +282,7 @@ export default function SellerTable({
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {rows.map((row: any, key: number) => {
+          {page.map((row: any, key: number) => {
             prepareRow(row);
             return (
               <tr {...row.getRowProps()} key={`seller_table_tbody_tr_${key}`}>
@@ -283,12 +307,12 @@ export default function SellerTable({
             <Span>
               Show
               <select
-                value={offersPerPage}
+                value={pageSize}
                 onChange={(e) => {
-                  setOffersPerPage(Number(e.target.value));
+                  setPageSize(Number(e.target.value));
                 }}
               >
-                {[10, 25, 50, 100].map((pageSize) => (
+                {[5, 10, 25, 50, 100].map((pageSize) => (
                   <option key={pageSize} value={pageSize}>
                     {pageSize}
                   </option>
@@ -297,8 +321,8 @@ export default function SellerTable({
               per page
             </Span>
             <Span>
-              Showing {tableProps.state.pageIndex + 1} -{" "}
-              {tableProps.rows.length} of {tableProps.rows.length} entries
+              Showing {pageIndex * pageSize + 1} - {(pageIndex + 1) * pageSize}{" "}
+              of {rows.length} entries
             </Span>
           </Grid>
           <Grid justifyContent="flex-end" gap="1rem">
@@ -310,8 +334,9 @@ export default function SellerTable({
             >
               <CaretLeft size={16} />
             </Button>
+            {/* // TODO: add pages between */}
             <Button size="small" theme="blank" onClick={() => gotoPage(1)}>
-              1
+              {pageIndex + 1}
             </Button>
             <Button
               size="small"

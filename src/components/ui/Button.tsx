@@ -113,6 +113,14 @@ const allThemes = {
       background: colors.border
     }
   },
+  void: {
+    color: colors.orange,
+    borderColor: colors.orange,
+    borderWidth: 1,
+    hover: {
+      background: colors.border
+    }
+  },
   blank: {
     color: `${colors.black}4d`,
     padding: "0.75rem 0.5rem",

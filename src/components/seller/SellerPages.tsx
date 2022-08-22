@@ -23,13 +23,6 @@ export const sellerPageTypes = {
     label: "Exchanges",
     icon: <Gear size={16} />,
     component: () => <div>Exchanges</div>
-  },
-  // TODO: remove this thing after Product page is done
-  "create-product": {
-    url: "create-product",
-    label: "Create product",
-    icon: <Gear size={16} />,
-    component: () => null
   }
 };
 

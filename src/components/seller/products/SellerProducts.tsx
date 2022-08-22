@@ -39,19 +39,18 @@ const productTags = [
   }
 ];
 
-const OFFERS_PER_PAGE = 10;
+const OFFERS_PER_PAGE = 5;
 
 export default function SellerProducts() {
-  const [offersPerPage, setOffersPerPage] = useState<number>(OFFERS_PER_PAGE);
   const [currentTag, setCurrentTag] = useState(productTags[0].value);
 
   // TODO: change this mock and get real seller id based on he's address
-  const SELLER_ID = "6";
+  const SELLER_ID = "2";
   const { data, isLoading, isError, ...rest } = useInfiniteOffers(
     {
       voided: false,
       sellerId: SELLER_ID,
-      first: offersPerPage + 1,
+      first: 1000,
       orderBy: "createdAt",
       orderDirection: "desc"
     },
@@ -79,8 +78,6 @@ export default function SellerProducts() {
           }
           isLoading={isLoading}
           isError={isError}
-          offersPerPage={offersPerPage}
-          setOffersPerPage={setOffersPerPage}
         />
       </SellerInner>
     </>
