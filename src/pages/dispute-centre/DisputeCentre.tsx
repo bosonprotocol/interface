@@ -131,7 +131,7 @@ function DisputeCentre() {
             <Formik
               initialValues={disputeCentreInitialValues}
               onSubmit={() => {
-                // TODO- make a task
+                // TODO- submitting form
                 console.log("submitted");
               }}
               validationSchema={validationSchema[currentStep]}

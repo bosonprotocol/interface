@@ -1,9 +1,4 @@
-import * as Yup from "yup";
-
-import { FileWithEncodedData } from "../../../../../lib/utils/files";
 import { Exchange } from "../../../../../lib/utils/hooks/useExchanges";
-import { validationOfFile } from "../../../../../pages/chat/components/UploadForm/const";
-import { NewProposal } from "../../../../../pages/chat/types";
 import { useCreateForm } from "../../../../product/utils/useCreateForm";
 import { FormModel } from "../MakeProposal/MakeProposalFormModel";
 import DescribeProblemStep from "../MakeProposal/steps/DescribeProblemStep";
@@ -13,28 +8,8 @@ import ReviewAndSubmitStep from "../MakeProposal/steps/ReviewAndSubmitStep";
 interface Props {
   exchange: Exchange;
   activeStep: number;
-  sendProposal: (
-    proposal: NewProposal,
-    proposalFiles: FileWithEncodedData[]
-  ) => void;
   setActiveStep: (step: number) => void;
 }
-
-const validationSchemaPerStep = [
-  Yup.object({
-    [FormModel.formFields.description.name]: Yup.string()
-      .trim()
-      .required(FormModel.formFields.description.requiredErrorMessage),
-    [FormModel.formFields.upload.name]: validationOfFile({ isOptional: true })
-  }),
-  Yup.object({
-    [FormModel.formFields.refundPercentage.name]: Yup.number()
-      .moreThan(0, FormModel.formFields.refundPercentage.moreThanErrorMessage)
-      .max(100, FormModel.formFields.refundPercentage.maxErrorMessage)
-      .defined(FormModel.formFields.refundPercentage.emptyErrorMessage)
-  }),
-  Yup.object({})
-];
 
 export default function MakeProposalCore({
   exchange,
