@@ -439,12 +439,13 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 <RaiseProblemButton
                   onClick={() => {
                     showModal(modalTypes.DISPUTE_MODAL, {
-                      title: "Raise a problem"
+                      title: "Raise a problem",
+                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                      exchange: exchange!
                     });
                   }}
                   theme="blank"
                   style={{ fontSize: "0.875rem" }}
-                  disabled={!isToRedeem}
                 >
                   Raise a problem
                   <Question size={18} />
