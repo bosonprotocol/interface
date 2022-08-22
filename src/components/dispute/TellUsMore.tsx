@@ -4,6 +4,7 @@ import React from "react";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
+import { DisputeFormModel } from "../modal/components/DisputeModal/DisputeModalFormModel";
 import { useCreateForm } from "../product/utils/useCreateForm";
 import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
@@ -44,7 +45,7 @@ function TellUsMore({
 }) {
   const formValues = useCreateForm();
 
-  const FieldArrayName = "tellUsMore";
+  const FieldArrayName = DisputeFormModel.formFields.tellUsMore.name;
 
   return (
     <>

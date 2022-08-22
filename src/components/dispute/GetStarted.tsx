@@ -4,6 +4,7 @@ import React from "react";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
+import { DisputeFormModel } from "../modal/components/DisputeModal/DisputeModalFormModel";
 import { useCreateForm } from "../product/utils/useCreateForm";
 import Typography from "../ui/Typography";
 
@@ -43,7 +44,7 @@ function GetStarted({
 }) {
   const formValues = useCreateForm();
 
-  const FieldArrayName = "getStarted";
+  const FieldArrayName = DisputeFormModel.formFields.getStarted.name;
 
   return (
     <>

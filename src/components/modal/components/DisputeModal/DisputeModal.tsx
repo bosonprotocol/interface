@@ -174,7 +174,6 @@ interface Props {
 }
 
 function DisputeModal({ hideModal, exchange }: Props) {
-  console.log("exchange", exchange);
   const navigate = useKeepQueryParamsNavigate();
 
   const handleSubmitIssue = () => {
