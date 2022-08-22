@@ -1,3 +1,4 @@
+import { FormModel } from "../../modal/components/Chat/MakeProposal/MakeProposalFormModel";
 import {
   OPTIONS_CURRENCIES,
   OPTIONS_DISPUTE_RESOLVER,
@@ -102,15 +103,14 @@ export const shippingInfoInitialValues = {
 export const disputeCentreInitialValues = {
   getStarted: "",
   tellUsMore: "",
-  proposalType: {
-    label: "",
-    value: ""
-  },
-  documentMessage: "",
-  file: [],
-  inEscrow: "",
-  refundAmount: "",
-  refundPercent: ""
+  [FormModel.formFields.description.name]: "",
+  [FormModel.formFields.proposalsTypes.name]: [] as {
+    label: string;
+    value: string;
+  }[],
+  [FormModel.formFields.refundAmount.name]: "0",
+  [FormModel.formFields.refundPercentage.name]: 0,
+  [FormModel.formFields.upload.name]: [] as File[]
 } as const;
 
 export const initialValues: CreateProductForm = {

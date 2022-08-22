@@ -2,19 +2,18 @@ import { Formik } from "formik";
 import { useState } from "react";
 import styled from "styled-components";
 
-import Ethereum from "../../assets/Ethereum.svg";
+import ExchangePreview from "../../components/modal/components/Chat/components/ExchangePreview";
 import {
   disputeCentreInitialValues,
   disputeCentreValidationSchemaAdditionalInformation,
   disputeCentreValidationSchemaGetStarted,
   disputeCentreValidationSchemaMakeProposal,
+  disputeCentreValidationSchemaProposalSummary,
   disputeCentreValidationSchemaTellUsMore
 } from "../../components/product/utils";
 import MultiSteps from "../../components/step/MultiSteps";
-import Typography from "../../components/ui/Typography";
 import { colors } from "../../lib/styles/colors";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
-import MockImage from "../offers/mock/image1.jpg";
 import DisputeCentreForm from "./DisputeCentreForm";
 
 const DISPUTE_STEPS = [
@@ -76,45 +75,6 @@ const ItemPreview = styled.div`
   background-color: ${colors.white};
   margin-top: 2rem;
   padding: 2rem;
-  [data-container-first] {
-    display: flex;
-    flex-direction: row;
-    div {
-      margin-left: 1rem;
-      display: flex;
-      justify-content: center;
-      flex-direction: column;
-      div {
-        margin-left: 0;
-        margin-bottom: 0.3125rem;
-      }
-    }
-    img {
-      height: 5rem;
-      width: 5rem;
-    }
-    span {
-      display: flex;
-      img {
-        height: 1rem;
-        width: 1rem;
-        border-radius: 50%;
-        margin-right: 0.3125rem;
-      }
-    }
-  }
-  [data-container-second] {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-    span {
-      display: flex;
-      &:nth-of-type(1) {
-        margin-left: -0.3125rem;
-      }
-    }
-  }
 `;
 
 function DisputeCentre() {
@@ -134,13 +94,7 @@ function DisputeCentre() {
     }
   );
 
-  const handleSubmit = () => {
-    if (currentStep < 4) {
-      setCurrentStep(currentStep + 1);
-    } else {
-      console.log("submit");
-    }
-  };
+  const [exchange] = exchanges || [];
 
   const handleClickStep = (val: number) => {
     if (val < currentStep) {
@@ -152,10 +106,9 @@ function DisputeCentre() {
     disputeCentreValidationSchemaGetStarted,
     disputeCentreValidationSchemaTellUsMore,
     disputeCentreValidationSchemaAdditionalInformation,
-    disputeCentreValidationSchemaMakeProposal
+    disputeCentreValidationSchemaMakeProposal,
+    disputeCentreValidationSchemaProposalSummary
   ];
-
-  console.log(currentStep);
 
   return (
     <>
@@ -168,69 +121,23 @@ function DisputeCentre() {
       </MultiStepsContainer>
       <DisputeContainer>
         <ItemPreview>
-          <div data-container-first>
-            <img src={MockImage} img-large alt="item thumbnail" />
-            <div text-container>
-              <Typography
-                fontWeight="600"
-                fontSize="1.25rem"
-                color={colors.black}
-              >
-                FEWO SHOE EPIC
-              </Typography>
-              <span>
-                <img src={MockImage} alt="item small thumbnail" />
-                <Typography
-                  fontWeight="600"
-                  fontSize="0.75rem"
-                  color={colors.secondary}
-                >
-                  FEWOCiOUS x RTFKT
-                </Typography>
-              </span>
-            </div>
-          </div>
-          <div data-container-second>
-            <span>
-              <img src={Ethereum} alt="Ethereum logo" />
-              <Typography
-                color={colors.black}
-                fontSize="1.25rem"
-                fontWeight="600"
-              >
-                1.3
-              </Typography>
-            </span>
-            <span>
-              <Typography
-                color={colors.darkGrey}
-                fontSize="0.75rem"
-                fontWeight="400"
-                opacity="0.5"
-              >
-                $
-              </Typography>
-              <Typography
-                color={colors.darkGrey}
-                fontSize="0.75rem"
-                fontWeight="400"
-              >
-                2,524.69
-              </Typography>
-            </span>
-          </div>
+          {exchange && <ExchangePreview exchange={exchange} />}
         </ItemPreview>
         <GetStartedBox>
           <ItemWidget>
             <Formik
               initialValues={disputeCentreInitialValues}
-              onSubmit={handleSubmit}
+              onSubmit={() => {
+                // TODO- make a task
+                console.log("submitted");
+              }}
               validationSchema={validationSchema[currentStep]}
             >
               {(formikProps) => (
                 <DisputeCentreForm
                   setCurrentStep={setCurrentStep}
                   currentStep={currentStep}
+                  exchange={exchange}
                   {...formikProps}
                 />
               )}

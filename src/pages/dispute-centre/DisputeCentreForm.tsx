@@ -1,18 +1,19 @@
 import { Form } from "formik";
 import React from "react";
 
-import AdditionalInformation from "../../components/dispute/AdditionalInformation";
 import GetStarted from "../../components/dispute/GetStarted";
-import MakeProposal from "../../components/dispute/MakeProposal";
-import RequestOverview from "../../components/dispute/RequestOverview";
 import TellUsMore from "../../components/dispute/TellUsMore";
+import MakeProposalCore from "../../components/modal/components/Chat/components/MakeProposalCore";
+import { Exchange } from "../../lib/utils/hooks/useExchanges";
 
 function DisputeCentreForm({
   setCurrentStep,
-  currentStep
+  currentStep,
+  exchange
 }: {
   setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
   currentStep: number;
+  exchange: Exchange;
 }) {
   const buttonSteps = [
     ["Item was not delivered or delivered late", "Item is not as described"],
@@ -45,19 +46,13 @@ function DisputeCentreForm({
           />
         );
       case 2:
-        return <AdditionalInformation />;
       case 3:
-        return (
-          <MakeProposal
-            setCurrentStep={setCurrentStep}
-            currentStep={currentStep}
-          />
-        );
       case 4:
         return (
-          <RequestOverview
-            setCurrentStep={setCurrentStep}
-            currentStep={currentStep}
+          <MakeProposalCore
+            setActiveStep={setCurrentStep}
+            activeStep={currentStep}
+            exchange={exchange}
           />
         );
       default:

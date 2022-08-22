@@ -1,6 +1,8 @@
 import * as Yup from "yup";
 
 import { validationMessage } from "../../../lib/const/validationMessage";
+import { validationOfFile } from "../../../pages/chat/components/UploadForm/const";
+import { FormModel } from "../../modal/components/Chat/MakeProposal/MakeProposalFormModel";
 import { MAX_IMAGE_SIZE, MAX_LOGO_SIZE } from "./const";
 import {
   validationOfImage,
@@ -142,16 +144,17 @@ export const disputeCentreValidationSchemaTellUsMore = Yup.object({
 });
 
 export const disputeCentreValidationSchemaAdditionalInformation = Yup.object({
-  documentMessage: Yup.string(),
-  file: Yup.mixed()
+  [FormModel.formFields.description.name]: Yup.string()
+    .trim()
+    .required(FormModel.formFields.description.requiredErrorMessage),
+  [FormModel.formFields.upload.name]: validationOfFile({ isOptional: true })
 });
 
 export const disputeCentreValidationSchemaMakeProposal = Yup.object({
-  proposalType: Yup.object({
-    value: Yup.string().required(validationMessage.required),
-    label: Yup.string().required(validationMessage.required)
-  }),
-  inEscrow: Yup.string(),
-  refundAmount: Yup.string(),
-  refundPercent: Yup.string()
+  [FormModel.formFields.refundPercentage.name]: Yup.number()
+    .moreThan(0, FormModel.formFields.refundPercentage.moreThanErrorMessage)
+    .max(100, FormModel.formFields.refundPercentage.maxErrorMessage)
+    .defined(FormModel.formFields.refundPercentage.emptyErrorMessage)
 });
+
+export const disputeCentreValidationSchemaProposalSummary = Yup.object({});

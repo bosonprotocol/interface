@@ -21,11 +21,6 @@ const ModalContainer = styled.div`
   margin-bottom: -1.875rem;
   margin-top: -3.125rem;
   min-height: max-content;
-  div {
-    svg {
-      color: ${colors.secondary};
-    }
-  }
 `;
 
 const ModalGrid = styled.div`
@@ -37,7 +32,7 @@ const ModalGrid = styled.div`
   ${breakpoint.m} {
     grid-template-columns: 32% 32% 32%;
   }
-  > div {
+  > [data-modal-columns] {
     background-color: ${colors.lightGrey};
     padding: 1.5625rem;
     grid-gap: 0.3125rem;
@@ -134,7 +129,7 @@ const ModalGrid = styled.div`
         }
       }
     }
-    svg {
+    [data-columns-icon] {
       margin-bottom: 0.9375rem;
     }
   }
@@ -149,19 +144,19 @@ const ButtonContainer = styled.div`
   width: 100%;
   left: -2rem;
   width: calc(100% + 3.875rem);
-  button {
+  [data-button] {
     font-family: "Plus Jakarta Sans";
     font-weight: 600;
     font-size: 1rem;
     border: none;
     margin-top: 1.25rem;
   }
-  button:nth-of-type(1) {
+  [data-button-submit]:nth-of-type(1) {
     background-color: ${colors.green};
     padding: 1rem 2rem 1rem 2rem;
     margin-left: 4.375rem;
   }
-  button:nth-of-type(2) {
+  [data-button-back]:nth-of-type(2) {
     background: none;
     padding: 1rem 2rem 1rem 2rem;
     margin-right: 4.375rem;
@@ -177,8 +172,8 @@ function DisputeModal({ hideModal }: Props) {
     <>
       <ModalContainer>
         <ModalGrid>
-          <div>
-            <FileText size={24} />
+          <div data-modal-columns>
+            <FileText size={24} color={colors.secondary} data-columns-icon />
             <Typography
               margin="0"
               fontSize="1.25rem"
@@ -197,8 +192,8 @@ function DisputeModal({ hideModal }: Props) {
               working with the Seller this way.
             </Typography>
           </div>
-          <div>
-            <CheckCircle size={24} />
+          <div data-modal-columns>
+            <CheckCircle size={24} color={colors.secondary} data-columns-icon />
             <Typography
               margin="0"
               fontSize="1.25rem"
@@ -217,8 +212,12 @@ function DisputeModal({ hideModal }: Props) {
               raise a dispute while the exchange is in the dispute period.
             </Typography>
           </div>
-          <div>
-            <HandsClapping size={24} />
+          <div data-modal-columns>
+            <HandsClapping
+              size={24}
+              color={colors.secondary}
+              data-columns-icon
+            />
             <Typography
               margin="0"
               fontSize="1.25rem"
@@ -240,8 +239,12 @@ function DisputeModal({ hideModal }: Props) {
           </div>
         </ModalGrid>
         <ButtonContainer>
-          <button>Submit an issue</button>
+          <button data-button data-button-submit>
+            Submit an issue
+          </button>
           <button
+            data-button
+            data-button-back
             onClick={() => {
               hideModal();
             }}

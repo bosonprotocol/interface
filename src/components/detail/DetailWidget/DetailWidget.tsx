@@ -425,7 +425,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 Contact seller
                 <Question size={18} />
               </ContactSellerButton>
-              {isBeforeRedeem ? (
+              {isBeforeRedeem && (
                 <StyledCancelButton
                   onClick={handleCancel}
                   theme="blank"
@@ -435,7 +435,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                   Cancel
                   <Question size={18} />
                 </StyledCancelButton>
-              ) : (
+              )}
+              {!isBeforeRedeem && (
                 <RaiseProblemButton
                   onClick={() => {
                     showModal(modalTypes.DISPUTE_MODAL, {
@@ -444,7 +445,6 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                   }}
                   theme="blank"
                   style={{ fontSize: "0.875rem" }}
-                  disabled={!isToRedeem}
                 >
                   Raise a problem
                   <Question size={18} />

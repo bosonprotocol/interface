@@ -4,7 +4,7 @@ import React from "react";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
-import { useThisForm } from "../product/utils/useThisForm";
+import { useCreateForm } from "../product/utils/useCreateForm";
 import Typography from "../ui/Typography";
 
 const FormHeader = styled.div`
@@ -27,7 +27,7 @@ const FormButton = styled.button`
   text-align: left;
   margin-top: 1.5rem;
   font-weight: 600;
-  [text-container] {
+  [data-text-container] {
     max-width: 31.25rem;
   }
 `;
@@ -41,7 +41,9 @@ function TellUsMore({
   currentStep: number;
   buttonSteps: string[][];
 }) {
-  const formValues = useThisForm();
+  const formValues = useCreateForm();
+
+  // extract
 
   return (
     <>
@@ -66,7 +68,8 @@ function TellUsMore({
                     setCurrentStep(currentStep + 1);
                   }}
                 >
-                  <span text-container>{step}</span> <ArrowRight size={17} />
+                  <span data-text-container>{step}</span>{" "}
+                  <ArrowRight size={17} />
                 </FormButton>
               </div>
             ))}

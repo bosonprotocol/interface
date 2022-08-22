@@ -6,6 +6,7 @@ import {
   disputeCentreValidationSchemaAdditionalInformation,
   disputeCentreValidationSchemaGetStarted,
   disputeCentreValidationSchemaMakeProposal,
+  disputeCentreValidationSchemaProposalSummary,
   disputeCentreValidationSchemaTellUsMore,
   productImagesValidationSchema,
   productInformationValidationSchema,
@@ -48,6 +49,10 @@ export type DisputeCentreMakeProposal = Yup.InferType<
   typeof disputeCentreValidationSchemaMakeProposal
 >;
 
+export type DisputeCentreValidationSchemaProposalSummary = Yup.InferType<
+  typeof disputeCentreValidationSchemaProposalSummary
+>;
+
 export type CreateProductForm = CreateYourProfile &
   ProductType &
   ProductInformation &
@@ -58,4 +63,5 @@ export type CreateProductForm = CreateYourProfile &
   DisputeCentreGetStarted &
   DisputeCentreTellUsMore &
   DisputeCentreAdditionalInformation &
-  DisputeCentreMakeProposal;
+  DisputeCentreMakeProposal &
+  DisputeCentreValidationSchemaProposalSummary;

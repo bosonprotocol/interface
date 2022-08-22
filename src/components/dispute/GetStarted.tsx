@@ -4,7 +4,7 @@ import React from "react";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
-import { useThisForm } from "../product/utils/useThisForm";
+import { useCreateForm } from "../product/utils/useCreateForm";
 import Typography from "../ui/Typography";
 
 const FormButton = styled.button`
@@ -23,7 +23,7 @@ const FormButton = styled.button`
   text-align: left;
   margin-top: 1.5rem;
   font-weight: 600;
-  [text-container] {
+  [data-text-container] {
     max-width: 31.25rem;
   }
 `;
@@ -37,11 +37,12 @@ function GetStarted({
   currentStep: number;
   buttonSteps: string[][];
 }) {
-  const formValues = useThisForm();
+  const formValues = useCreateForm();
 
+  // extract setValues
   return (
     <>
-      <div get-started="true">
+      <div>
         <Typography fontWeight="600" fontSize="2rem">
           Get started
         </Typography>
@@ -62,7 +63,8 @@ function GetStarted({
                     setCurrentStep(currentStep + 1);
                   }}
                 >
-                  <span text-container>{step}</span> <ArrowRight size={17} />
+                  <span data-text-container>{step}</span>{" "}
+                  <ArrowRight size={17} />
                 </FormButton>
               </div>
             ))}

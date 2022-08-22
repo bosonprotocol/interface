@@ -35,6 +35,9 @@ export default function MakeAProposalStep({
     FormModel.formFields.proposalsTypes.name
   );
 
+  console.log("tu testuje");
+  console.log(proposalsTypesField);
+
   return (
     <>
       <Typography fontSize="2rem" fontWeight="600">
