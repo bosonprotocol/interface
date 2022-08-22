@@ -51,14 +51,14 @@ const sizeToMargin = {
   }
 } as const;
 
-const Wrapper = styled.div<{ modalType: ModalType; $size: Props["size"] }>`
+const Wrapper = styled.div<{ $modalType: ModalType; $size: Props["size"] }>`
   position: relative;
   z-index: ${zIndex.Modal};
   color: ${colors.black};
   background-color: var(--primaryBgColor);
   border: var(--secondary);
-  max-width: ${({ modalType }) =>
-    modalType === "PRODUCT_CREATE_SUCCESS" ? "65.875rem" : "auto"};
+  max-width: ${({ $modalType }) =>
+    $modalType === "PRODUCT_CREATE_SUCCESS" ? "65.875rem" : "auto"};
   margin: 0;
   ${breakpoint.s} {
     margin: ${({ $size }) =>
@@ -78,16 +78,22 @@ const Wrapper = styled.div<{ modalType: ModalType; $size: Props["size"] }>`
   }
 `;
 
-const Header = styled(Typography)`
+const Header = styled(Typography)<{ $title: string; $modalType: ModalType }>`
   position: relative;
 
   text-align: left;
   padding: 1rem 2rem;
   margin: 0;
   display: flex;
-  border-bottom: 2px solid ${colors.border};
+  border-bottom: ${({ $modalType }) =>
+    $modalType === "CHAT_INITIALIZATION_FAILED"
+      ? "none"
+      : `2px solid ${colors.border};`}
+  margin: 0;
   align-items: center;
-  justify-content: space-between;
+  justify-content: ${(props) => {
+    return props.$title ? "space-between" : "flex-end";
+  }};
   gap: 0.5rem;
 `;
 
@@ -137,7 +143,7 @@ export default function Modal({
 }: Props) {
   return createPortal(
     <Root data-testid="modal">
-      <Wrapper $size={size} modalType={modalType}>
+      <Wrapper $size={size} $modalType={modalType}>
         {HeaderComponent ? (
           <Header tag="div">
             {HeaderComponent}
@@ -148,7 +154,7 @@ export default function Modal({
             )}
           </Header>
         ) : (
-          <HeaderWithTitle tag="h3">
+          <HeaderWithTitle tag="h3" $title={title} $modalType={modalType}>
             {title}
             {closable && (
               <Button data-close theme="blank" onClick={hideModal}>

@@ -3,6 +3,7 @@ import CancelExchangeModal from "./components/Chat/CancelExchangeModal";
 import InitializeChatModal from "./components/Chat/InitializeChatModal";
 import MakeProposalModal from "./components/Chat/MakeProposal/MakeProposalModal";
 import ResolveDisputeModal from "./components/Chat/ResolveDisputeModal";
+import ChatInitializationFailed from "./components/ChatInitializationFailed";
 import CreateProductDraft from "./components/CreateProductDraft";
 import CustomStore from "./components/CustomStore";
 import DetailWidget from "./components/DetailWidget";
@@ -22,7 +23,8 @@ export const MODAL_TYPES = {
   INITIALIZE_CHAT: "INITIALIZE_CHAT",
   DISPUTE_MODAL: "DISPUTE_MODAL",
   PRODUCT_CREATE_SUCCESS: "PRODUCT_CREATE_SUCCESS",
-  CREATE_PRODUCT_DRAFT: "CREATE_PRODUCT_DRAFT"
+  CREATE_PRODUCT_DRAFT: "CREATE_PRODUCT_DRAFT",
+  CHAT_INITIALIZATION_FAILED: "CHAT_INITIALIZATION_FAILED"
 } as const;
 
 export const MODAL_COMPONENTS = {
@@ -36,5 +38,6 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.INITIALIZE_CHAT]: InitializeChatModal,
   [MODAL_TYPES.DISPUTE_MODAL]: DisputeModal,
   [MODAL_TYPES.PRODUCT_CREATE_SUCCESS]: ProductCreateSuccess,
-  [MODAL_TYPES.CREATE_PRODUCT_DRAFT]: CreateProductDraft
+  [MODAL_TYPES.CREATE_PRODUCT_DRAFT]: CreateProductDraft,
+  [MODAL_TYPES.CHAT_INITIALIZATION_FAILED]: ChatInitializationFailed
 } as const;

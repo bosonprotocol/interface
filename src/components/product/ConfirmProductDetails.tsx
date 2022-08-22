@@ -8,6 +8,7 @@ import { useAccount } from "wagmi";
 
 import Collapse from "../../components/collapse/Collapse";
 import InitializeChat from "../../components/modal/components/Chat/components/InitializeChat";
+import { useModal } from "../../components/modal/useModal";
 import { getItemFromStorage } from "../../lib/utils/hooks/useLocalStorage";
 import { useChatContext } from "../../pages/chat/ChatProvider/ChatContext";
 import { FormField } from "../form";
@@ -65,6 +66,7 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
     useState<ChatInitializationStatus>("PENDING");
   const { bosonXmtp, envName } = useChatContext();
 
+  const { showModal, modalTypes } = useModal();
   const { values } = useCreateForm();
   const { address } = useAccount();
 
@@ -82,10 +84,18 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
         })
         .catch((err) => {
           console.error(err);
+          showModal(modalTypes.CHAT_INITIALIZATION_FAILED);
           setChatInitializationStatus("ERROR");
         });
     }
-  }, [address, bosonXmtp, chatInitializationStatus, envName]);
+  }, [
+    address,
+    bosonXmtp,
+    chatInitializationStatus,
+    envName,
+    modalTypes.CHAT_INITIALIZATION_FAILED,
+    showModal
+  ]);
 
   const handleOpenPreview = () => {
     togglePreview(true);
@@ -471,7 +481,10 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
           </Typography>
         </ConfirmationContent>
       </ConfirmationAlert>
-      {chatInitializationStatus === "NOT_INITIALIZED" && address && !bosonXmtp && (
+      {((chatInitializationStatus === "NOT_INITIALIZED" &&
+        address &&
+        !bosonXmtp) ||
+        chatInitializationStatus === "ERROR") && (
         <InitializeChatContainer>
           <InitializeChat />
         </InitializeChatContainer>
