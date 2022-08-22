@@ -87,7 +87,7 @@ const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
       const [image] = await Promise.all([fetchPromises]);
       setImageSrc(String(image));
     }
-    if (src.includes("ipfs://")) {
+    if (src?.includes("ipfs://")) {
       fetchData(src);
     }
   }, [src]); // eslint-disable-line
