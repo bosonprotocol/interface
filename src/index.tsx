@@ -53,6 +53,12 @@ root.render(
               >
                 <Route path="*" element={<Chat />} />
               </Route>
+              <Route
+                path={`${BosonRoutes.SellerCenter}/*`}
+                element={<App withLayout={false} withFooter={false} />}
+              >
+                <Route path="*" element={<SellerCenter />} />
+              </Route>
               <Route path="/" element={<App />}>
                 <Route path={BosonRoutes.Root} element={<Landing />} />
                 {[
@@ -63,11 +69,7 @@ root.render(
                 ].map((route) => (
                   <Route key={route} path={route} element={<Explore />} />
                 ))}
-
-                <Route
-                  path={BosonRoutes.SellerCenter}
-                  element={<SellerCenter />}
-                />
+                {/* TODO MOVE TO  BosonRoutes.SellerCenter*/}
                 <Route
                   path={BosonRoutes.CreateProduct}
                   element={<CreateProduct />}

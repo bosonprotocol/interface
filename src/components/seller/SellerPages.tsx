@@ -46,7 +46,7 @@ export type SellerPages = {
   [x in keyof SellerPageTypes]: SellerPage;
 };
 
-export const SellerPages = (type: string | undefined): any => {
+export const SellerPages = (type: string | undefined) => {
   return () =>
     sellerPageTypes[
       (type || DEFAULT_SELLER_PAGE) as keyof typeof sellerPageTypes

@@ -7,7 +7,7 @@ import { colors } from "../../lib/styles/colors";
 import { sellerPageTypes } from "./SellerPages";
 
 const SellerMain = styled.main`
-  padding: 2rem;
+  padding: 1.375rem 2.5rem 2.75rem 2.5rem;
   background: ${colors.lightGrey};
 `;
 export default function SellerInside() {

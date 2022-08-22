@@ -10,32 +10,45 @@ import Grid from "../ui/Grid";
 import { sellerPageTypes } from "./SellerPages";
 
 const Aside = styled.aside`
-  padding: 1rem;
   background: ${colors.white};
+  width: 14.375rem;
   ul {
-    position: fixed;
-    top: 6.5rem;
     list-style: none;
     padding: 0;
     margin: 0;
+    min-height: 100vh;
     li {
-      &:not(:last-child) {
-        margin-bottom: 0.5rem;
+      height: 4.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      border-top: 1px solid rgba(85, 96, 114, 0.06);
+      &:last-child {
+        border-bottom: 1px solid rgba(85, 96, 114, 0.06);
       }
     }
   }
 `;
 
 const AsideLink = styled.li<{ $active?: boolean }>`
-  color: ${(props) => (props.$active ? colors.secondary : colors.black)};
+  background: ${(props) =>
+    props.$active ? "rgba(85, 96, 114, 0.06)" : colors.white};
   div {
-    color: ${(props) => (props.$active ? colors.secondary : colors.black)};
+    color: ${colors.black};
   }
   svg {
     fill: ${(props) => (props.$active ? colors.secondary : colors.black)};
+    // margin-right: 1.1875rem;
+    width: 1.5rem;
+    height: 1.5rem;
   }
   a {
-    all: none;
+    padding-left: 1.5625rem;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    font-size: 1rem;
   }
 `;
 
@@ -63,7 +76,7 @@ export default function SellerAside() {
                 <Grid
                   alignItems="center"
                   justifyContent="flex-start"
-                  gap="0.5rem"
+                  gap="1rem"
                 >
                   {icon}
                   {label}
