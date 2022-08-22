@@ -372,7 +372,7 @@ function CreateProductInner({ initial }: Props) {
 
       await wait(3_000);
       handleOpenSuccessModal({ offerId });
-      // formikBag.resetForm();
+      formikBag.resetForm();
     } catch (error: any) {
       // TODO: FAILURE MODAL
       console.error("error->", error.errors ?? error.toString());
