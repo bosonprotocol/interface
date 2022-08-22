@@ -50,7 +50,6 @@ export default function Preview({ togglePreview, seller }: Props) {
     togglePreview(false);
   };
 
-  const logoImage = previewImages?.[0] ?? null;
   const offerImg = previewImages?.[1] ?? null;
   const sliderImages = slice(previewImages, 1);
   const name = values.productInformation.productTitle || "Untitled";
