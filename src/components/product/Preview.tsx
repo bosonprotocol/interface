@@ -10,7 +10,6 @@ import SellerID from "../../components/ui/SellerID";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { getLocalStorageItems } from "../../lib/utils/getLocalStorageItems";
-import { getItemFromStorage } from "../../lib/utils/hooks/useLocalStorage";
 import {
   DarkerBackground,
   DetailGrid,
@@ -42,11 +41,6 @@ const PreviewWrapperContent = styled.div`
 `;
 export default function Preview({ togglePreview, seller }: Props) {
   const { values } = useCreateForm();
-
-  const logoImage = getItemFromStorage(
-    "create-product-image_createYourProfile.logo",
-    ""
-  );
 
   const previewImages = getLocalStorageItems({
     key: "create-product-image"
