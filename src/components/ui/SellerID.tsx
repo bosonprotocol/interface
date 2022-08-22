@@ -75,7 +75,7 @@ const SellerID: React.FC<
   const hasCursorPointer = !!onClick || onClick === undefined;
 
   const artistImage =
-    artist?.images && artist.images?.length > 0 ? artist?.images : false;
+    artist?.images && artist?.images?.length > 0 ? artist?.images : false;
 
   return (
     <AddressContainer {...rest} data-address-container>

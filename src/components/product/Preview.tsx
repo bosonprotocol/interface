@@ -1,3 +1,4 @@
+import { SellerFieldsFragment } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
 import { parseUnits } from "@ethersproject/units";
 import map from "lodash/map";
 import slice from "lodash/slice";
@@ -27,6 +28,7 @@ import { useCreateForm } from "./utils/useCreateForm";
 
 interface Props {
   togglePreview: React.Dispatch<React.SetStateAction<boolean>>;
+  seller?: SellerFieldsFragment;
 }
 
 const PreviewWrapper = styled.div`
@@ -38,7 +40,7 @@ const PreviewWrapperContent = styled.div`
   box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1), 0px 0px 8px rgba(0, 0, 0, 0.1),
     0px 0px 16px rgba(0, 0, 0, 0.1), 0px 0px 32px rgba(0, 0, 0, 0.1);
 `;
-export default function Preview({ togglePreview }: Props) {
+export default function Preview({ togglePreview, seller }: Props) {
   const { values } = useCreateForm();
 
   const logoImage = getItemFromStorage(
@@ -102,11 +104,7 @@ export default function Preview({ togglePreview }: Props) {
         redeemedDate: exchangeDate
       }
     ],
-    seller: {
-      id: "4",
-      operator: logoImage,
-      active: true
-    },
+    seller,
     exchangeToken: {
       address: "0x0000000000000000000000000000000000000000",
       decimals: "18",
@@ -174,7 +172,7 @@ export default function Preview({ togglePreview }: Props) {
               </div>
             </DetailGrid>
             createYourProfile
-            <DetailSlider images={sliderImages} />
+            <DetailSlider images={sliderImages} isPreview />
             <DetailGrid>
               {values?.shippingInfo?.jurisdiction?.length > 0 &&
                 values?.shippingInfo?.jurisdiction[0]?.region?.length > 0 && (
