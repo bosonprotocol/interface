@@ -9,7 +9,6 @@ const SellerCenterWrapper = styled.div`
   grid-template-columns: 14.3em 1fr;
   gap: 0;
   min-height: calc(100vh - 30.25rem);
-
   margin: 0 -1rem;
 `;
 

@@ -9,6 +9,7 @@ import { sellerPageTypes } from "./SellerPages";
 const SellerMain = styled.main`
   padding: 1.375rem 2.5rem 2.75rem 2.5rem;
   background: ${colors.lightGrey};
+  min-height: calc(100vh - 5.5rem);
 `;
 export default function SellerInside() {
   const { [UrlParameters.sellerPage]: sellerPage } = useParams();

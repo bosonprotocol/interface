@@ -11,8 +11,9 @@ import { sellerPageTypes } from "./SellerPages";
 
 const Aside = styled.aside`
   background: ${colors.white};
-  width: 14.375rem;
   ul {
+    width: 14.375rem;
+    position: fixed;
     list-style: none;
     padding: 0;
     margin: 0;
