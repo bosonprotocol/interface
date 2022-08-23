@@ -57,6 +57,7 @@ export default function RedeemModal({
 }: Props) {
   const [activeStep, setActiveStep] = useState<number>(0);
   const validationSchema = validationSchemaPerStep[activeStep];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const formRef = useRef<FormikProps<any> | null>(null);
 
   useEffect(() => {
