@@ -45,12 +45,17 @@ export default function Preview({ togglePreview, seller }: Props) {
   const previewImages = getLocalStorageItems({
     key: "create-product-image"
   });
+  const thumbnailImages = getLocalStorageItems({
+    key: "create-product-image_productImages.thumbnail"
+  });
 
   const handleClosePreview = () => {
     togglePreview(false);
   };
 
   const offerImg = previewImages?.[1] ?? null;
+  const thumbnailImg = thumbnailImages?.[0] ?? null;
+
   const sliderImages = slice(previewImages, 1);
   const name = values.productInformation.productTitle || "Untitled";
 
@@ -115,7 +120,7 @@ export default function Preview({ togglePreview, seller }: Props) {
           <LightBackground>
             <MainDetailGrid>
               <ImageWrapper>
-                <Image src={offerImg} dataTestId="offerImage" />
+                <Image src={thumbnailImg} dataTestId="offerImage" />
               </ImageWrapper>
               <div>
                 <SellerID

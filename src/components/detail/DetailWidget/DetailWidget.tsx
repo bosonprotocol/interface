@@ -77,6 +77,7 @@ export const getOfferDetailData = (
 
   const { buyerCancelationPenalty, convertedBuyerCancelationPenalty } =
     getBuyerCancelPenalty(offer, convertedPrice);
+
   return [
     {
       name: "Redeemable until",
