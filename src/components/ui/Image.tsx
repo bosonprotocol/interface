@@ -1,4 +1,4 @@
-import { Image as ImageIcon } from "phosphor-react";
+import { CameraSlash, Image as ImageIcon } from "phosphor-react";
 import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 
@@ -13,6 +13,7 @@ const ImageWrapper = styled.div`
   z-index: ${zIndex.OfferCard};
   height: 0;
   padding-top: 120%;
+  font-size: inherit;
 
   > img,
   > div[data-testid="image"] {
@@ -53,6 +54,8 @@ const ImagePlaceholder = styled.div`
 
   span {
     ${buttonText}
+    font-size: inherit;
+    line-height: 1;
     color: ${colors.white};
     padding: 1rem;
     text-align: center;
@@ -64,6 +67,7 @@ interface IImage {
   children?: React.ReactNode;
   dataTestId?: string;
   alt?: string;
+  showPlaceholderText?: boolean;
 }
 
 const handleIPFS = async (src: string): Promise<string | null> => {
@@ -96,6 +100,7 @@ const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
   children,
   dataTestId = "image",
   alt = "",
+  showPlaceholderText = true,
   ...rest
 }) => {
   const [imageSrc, setImageSrc] = useState<string | null>(null);
@@ -116,8 +121,14 @@ const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
         <ImageContainer data-testid={dataTestId} src={imageSrc} alt={alt} />
       ) : (
         <ImagePlaceholder>
-          <ImageIcon size={50} color={colors.white} />
-          <Typography tag="span">IMAGE NOT AVAILABLE</Typography>
+          {showPlaceholderText ? (
+            <ImageIcon size={50} color={colors.white} />
+          ) : (
+            <CameraSlash size={20} color={colors.white} />
+          )}
+          {showPlaceholderText && (
+            <Typography tag="span">IMAGE NOT AVAILABLE</Typography>
+          )}
         </ImagePlaceholder>
       )}
     </ImageWrapper>
