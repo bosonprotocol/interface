@@ -33,10 +33,10 @@ const BaseButton = styled.button<{
           `
           : ""
       }
-       ${
-         props.theme.hover.borderColor &&
-         `border-color:${props.theme.hover.borderColor}`
-       };
+      ${
+        props.theme.hover.borderColor &&
+        `border-color:${props.theme.hover.borderColor}`
+      };
     }
   `}
 
@@ -47,12 +47,26 @@ const BaseButton = styled.button<{
     `
       : ""}
 
-  :disabled {
-    background-color: ${colors.lightGrey};
-    color: ${colors.darkGrey};
-    border-width: 0;
-    cursor: not-allowed;
-  }
+  ${(props) =>
+    props.theme.disabled
+      ? `
+      :disabled {
+        background-color: ${props.theme.disabled.background || "transparent"};
+        color: ${props.theme.disabled.color || colors.darkGrey};
+        border-width: 0;
+        cursor: not-allowed;
+        opacity: 0.5;
+      }
+    `
+      : `
+      :disabled {
+        background-color: ${colors.lightGrey};
+        color: ${colors.darkGrey};
+        border-width: 0;
+        cursor: not-allowed;
+        opacity: 0.5;
+      }
+    `};
 `;
 
 const ChildWrapperButton = styled.div`
@@ -126,9 +140,11 @@ const allThemes = {
     padding: "0.75rem 0.5rem",
     hover: {
       color: colors.black
+    },
+    disabled: {
+      background: "transparent"
     }
   },
-
   blankSecondary: {
     color: "var(--secondary)",
     padding: "0.75rem 0.5rem",

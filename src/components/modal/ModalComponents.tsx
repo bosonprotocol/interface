@@ -9,6 +9,7 @@ import DetailWidget from "./components/DetailWidget";
 import DisputeModal from "./components/DisputeModal/DisputeModal";
 import ProductCreateSuccess from "./components/ProductCreateSuccess";
 import Upload from "./components/Upload";
+import VoidProduct from "./components/VoidProduct";
 import WhatIsRedeem from "./components/WhatIsRedeem";
 
 export const MODAL_TYPES = {
@@ -22,7 +23,8 @@ export const MODAL_TYPES = {
   INITIALIZE_CHAT: "INITIALIZE_CHAT",
   DISPUTE_MODAL: "DISPUTE_MODAL",
   PRODUCT_CREATE_SUCCESS: "PRODUCT_CREATE_SUCCESS",
-  CREATE_PRODUCT_DRAFT: "CREATE_PRODUCT_DRAFT"
+  CREATE_PRODUCT_DRAFT: "CREATE_PRODUCT_DRAFT",
+  VOID_PRODUCT: "VOID_PRODUCT"
 } as const;
 
 export const MODAL_COMPONENTS = {
@@ -36,5 +38,6 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.INITIALIZE_CHAT]: InitializeChatModal,
   [MODAL_TYPES.DISPUTE_MODAL]: DisputeModal,
   [MODAL_TYPES.PRODUCT_CREATE_SUCCESS]: ProductCreateSuccess,
+  [MODAL_TYPES.VOID_PRODUCT]: VoidProduct,
   [MODAL_TYPES.CREATE_PRODUCT_DRAFT]: CreateProductDraft
 } as const;

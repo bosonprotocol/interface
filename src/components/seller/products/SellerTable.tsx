@@ -5,14 +5,20 @@ import dayjs from "dayjs";
 import { Check } from "phosphor-react";
 import { CaretDown, CaretLeft, CaretRight, CaretUp } from "phosphor-react";
 import { forwardRef, useEffect, useMemo, useRef } from "react";
+import { generatePath } from "react-router-dom";
 import { usePagination, useRowSelect, useSortBy, useTable } from "react-table";
 import styled from "styled-components";
 
 import { CONFIG } from "../../../lib/config";
+import { UrlParameters } from "../../../lib/routing/parameters";
+import { OffersRoutes } from "../../../lib/routing/routes";
 import { colors } from "../../../lib/styles/colors";
 import { Offer } from "../../../lib/types/offer";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
+import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { CheckboxWrapper } from "../../form/Field.styles";
+import { useModal } from "../../modal/useModal";
+import OfferStatuses from "../../offer/OfferStatuses";
 import Price from "../../price/index";
 import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
@@ -20,7 +26,7 @@ import Image from "../../ui/Image";
 import Typography from "../../ui/Typography";
 
 interface Props {
-  offers?: Array<Offer>;
+  offers: (Offer | null)[];
   isError: boolean;
   isLoading?: boolean;
 }
@@ -56,6 +62,12 @@ const Table = styled.table`
   th {
     font-weight: 600;
     color: ${colors.darkGrey};
+    :not([data-sortable]) {
+      cursor: default !important;
+    }
+    [data-sortable] {
+      cursor: pointer !important;
+    }
   }
   td {
     font-weight: 400;
@@ -72,27 +84,41 @@ const Table = styled.table`
     tr {
       th {
         border-bottom: 2px solid ${colors.border};
-        &:not(:first-child) {
-          text-align: left;
-        }
+        text-align: left;
+        padding: 0.5rem;
         &:first-child {
           padding-left: 0.5rem;
+        }
+        &:last-child {
+          text-align: right;
         }
       }
     }
   }
   tbody {
     tr {
+      :hover {
+        td {
+          background-color: ${colors.darkGrey}08;
+          cursor: pointer;
+        }
+      }
       &:not(:last-child) {
         td {
           border-bottom: 1px solid ${colors.border};
         }
       }
       td {
-        &:not(:first-child) {
-          text-align: left;
-        }
+        text-align: left;
         padding: 0.5rem;
+        &:first-child {
+        }
+        &:last-child {
+          text-align: right;
+          > button {
+            display: inline-block;
+          }
+        }
       }
     }
   }
@@ -100,7 +126,6 @@ const Table = styled.table`
     transform: scale(0.75);
   }
 `;
-
 const HeaderSorter = styled.span`
   margin-left: 0.5rem;
 `;
@@ -123,41 +148,54 @@ const Span = styled.span`
     margin-right: 1rem;
   }
 `;
-
 export default function SellerTable({ offers }: Props) {
+  const { showModal, modalTypes } = useModal();
+  const navigate = useKeepQueryParamsNavigate();
   const columns = useMemo(
     () => [
       {
+        Header: "Offer ID",
+        accessor: "offerId"
+      },
+      {
         Header: "",
-        accessor: "image"
+        accessor: "image",
+        disableSortBy: true
       },
       {
         Header: "ID/SKU",
-        accessor: "sku"
+        accessor: "sku",
+        sortable: true
       },
       {
         Header: "Product name",
-        accessor: "productName"
+        accessor: "productName",
+        sortable: true
       },
       {
         Header: "Status",
-        accessor: "status"
+        accessor: "status",
+        disableSortBy: true
       },
       {
         Header: "Quantity",
-        accessor: "quantity"
+        accessor: "quantity",
+        disableSortBy: true
       },
       {
         Header: "Price",
-        accessor: "price"
+        accessor: "price",
+        disableSortBy: true
       },
       {
         Header: "Offer validity",
-        accessor: "offerValidity"
+        accessor: "offerValidity",
+        disableSortBy: true
       },
       {
         Header: "Action",
-        accessor: "action"
+        accessor: "action",
+        disableSortBy: true
       }
     ],
     []
@@ -165,8 +203,9 @@ export default function SellerTable({ offers }: Props) {
 
   const data = useMemo(
     () =>
-      offers.map((offer) => {
+      offers?.map((offer) => {
         return {
+          offerId: offer.id,
           image: (
             <Image
               // TODO: prefetch to prevent reloading
@@ -181,8 +220,20 @@ export default function SellerTable({ offers }: Props) {
             />
           ),
           sku: ("0000" + offer.id).slice(-4),
-          productName: offer.metadata?.name,
-          status: "status",
+          productName: (
+            <Typography tag="p">
+              <b>{offer.metadata?.name}</b>
+            </Typography>
+          ),
+          status: (
+            <OfferStatuses
+              offer={offer}
+              size="small"
+              displayDot
+              showValid
+              style={{ position: "initial", top: "unset", left: "unset" }}
+            />
+          ),
           quantity: (
             <Typography>
               {offer.quantityAvailable}/{offer.quantityInitial}
@@ -209,10 +260,13 @@ export default function SellerTable({ offers }: Props) {
           action: (
             <Button
               // disabled
-              theme="void"
+              theme="primary"
               size="small"
               onClick={() => {
-                console.log(`VOID: ${offer.id}`);
+                showModal(modalTypes.VOID_PRODUCT, {
+                  title: "Void Confirmation",
+                  offerId: offer.id
+                });
               }}
             >
               Void
@@ -220,14 +274,14 @@ export default function SellerTable({ offers }: Props) {
           )
         };
       }),
-    [offers]
+    [offers] // eslint-disable-line
   );
 
   const tableProps = useTable(
     {
       columns,
       data,
-      initialState: { pageIndex: 0 }
+      initialState: { pageIndex: 0, hiddenColumns: ["offerId"] }
     },
     useSortBy,
     usePagination,
@@ -260,8 +314,16 @@ export default function SellerTable({ offers }: Props) {
     nextPage,
     previousPage,
     setPageSize,
+    pageCount,
     state: { pageIndex, pageSize }
   } = tableProps;
+
+  const paginate = useMemo(() => {
+    return Array.from(Array(pageCount).keys()).slice(
+      pageIndex < 1 ? 0 : pageIndex - 1,
+      pageIndex < 1 ? 3 : pageIndex + 2
+    );
+  }, [pageCount, pageIndex]);
 
   return (
     <>
@@ -275,43 +337,73 @@ export default function SellerTable({ offers }: Props) {
               {headerGroup.headers.map((column: any, i: number) => (
                 <th
                   key={`seller_table_thead_th_${i}`}
+                  data-sortable={column.sortable}
                   {...column.getHeaderProps(column.getSortByToggleProps())}
                 >
                   {column.render("Header")}
-                  <HeaderSorter>
-                    {column.isSorted ? (
-                      column.isSortedDesc ? (
-                        <CaretDown size={16} />
+                  {i > 0 && column.sortable && (
+                    <HeaderSorter>
+                      {column.isSorted ? (
+                        column.isSortedDesc ? (
+                          <CaretDown size={14} />
+                        ) : (
+                          <CaretUp size={14} />
+                        )
                       ) : (
-                        <CaretUp size={16} />
-                      )
-                    ) : (
-                      ""
-                    )}
-                  </HeaderSorter>
+                        ""
+                      )}
+                    </HeaderSorter>
+                  )}
                 </th>
               ))}
             </tr>
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {page.map((row: any, key: number) => {
-            prepareRow(row);
-            return (
-              <tr {...row.getRowProps()} key={`seller_table_tbody_tr_${key}`}>
-                {row.cells.map((cell: any, i: number) => {
-                  return (
-                    <td
-                      {...cell.getCellProps()}
-                      key={`seller_table_tbody_td_${i}`}
-                    >
-                      {cell.render("Cell")}
-                    </td>
-                  );
-                })}
-              </tr>
-            );
-          })}
+          {(page.length > 0 &&
+            page.map((row: Offer, key: number) => {
+              prepareRow(row);
+              return (
+                <tr {...row.getRowProps()} key={`seller_table_tbody_tr_${key}`}>
+                  {row.cells.map((cell: any, i: number) => {
+                    return (
+                      <td
+                        {...cell.getCellProps()}
+                        key={`seller_table_tbody_td_${i}`}
+                        onClick={() => {
+                          if (cell.column.id !== "action") {
+                            const pathname = generatePath(
+                              OffersRoutes.OfferDetail,
+                              {
+                                [UrlParameters.offerId]: row?.original?.offerId
+                              }
+                            );
+                            navigate({ pathname });
+                          }
+                        }}
+                      >
+                        {cell.render("Cell")}
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })) || (
+            <tr>
+              <td colSpan={columns.length}>
+                <Typography
+                  tag="h6"
+                  justifyContent="center"
+                  style={{
+                    padding: "1rem 0",
+                    margin: "0"
+                  }}
+                >
+                  No data to display
+                </Typography>
+              </td>
+            </tr>
+          )}
         </tbody>
       </Table>
       <Pagination>
@@ -338,28 +430,46 @@ export default function SellerTable({ offers }: Props) {
               of {rows.length} entries
             </Span>
           </Grid>
-          <Grid justifyContent="flex-end" gap="1rem">
-            <Button
-              size="small"
-              theme="blank"
-              onClick={() => previousPage()}
-              disabled={!canPreviousPage}
-            >
-              <CaretLeft size={16} />
-            </Button>
-            {/* // TODO: add pages between */}
-            <Button size="small" theme="blank" onClick={() => gotoPage(1)}>
-              {pageIndex + 1}
-            </Button>
-            <Button
-              size="small"
-              theme="blank"
-              onClick={() => nextPage()}
-              disabled={!canNextPage}
-            >
-              <CaretRight size={16} />
-            </Button>
-          </Grid>
+          {pageCount > 1 && (
+            <Grid justifyContent="flex-end" gap="1rem">
+              <Button
+                size="small"
+                theme="blank"
+                onClick={() => previousPage()}
+                disabled={!canPreviousPage}
+              >
+                <CaretLeft size={16} />
+              </Button>
+              {paginate.map((pageNumber: number) => (
+                <Button
+                  key={`page_btn_${pageNumber}`}
+                  size="small"
+                  theme="blank"
+                  style={{
+                    color:
+                      pageNumber === pageIndex
+                        ? colors.secondary
+                        : colors.black,
+                    background:
+                      pageNumber === pageIndex
+                        ? colors.lightGrey
+                        : "transparent"
+                  }}
+                  onClick={() => gotoPage(pageNumber)}
+                >
+                  {pageNumber + 1}
+                </Button>
+              ))}
+              <Button
+                size="small"
+                theme="blank"
+                onClick={() => nextPage()}
+                disabled={!canNextPage}
+              >
+                <CaretRight size={16} />
+              </Button>
+            </Grid>
+          )}
         </Grid>
       </Pagination>
     </>
