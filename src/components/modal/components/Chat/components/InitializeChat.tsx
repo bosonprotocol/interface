@@ -1,4 +1,4 @@
-import { ChatDots } from "phosphor-react";
+import { ChatDots, Warning } from "phosphor-react";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
@@ -23,6 +23,10 @@ const Icon = styled(ChatDots)`
   }
 `;
 
+const IconError = styled(Warning)`
+  color: ${colors.froly};
+`;
+
 const InfoMessage = styled(Typography)`
   font-family: Plus Jakarta Sans;
   font-size: 1rem;
@@ -32,21 +36,28 @@ const InfoMessage = styled(Typography)`
   text-align: left;
   flex: 1 1;
 `;
-
-export default function InitializeChat() {
+interface Props {
+  isError?: boolean;
+}
+export default function InitializeChat({ isError = false }: Props) {
   const { initialize, bosonXmtp } = useChatContext();
   const { address } = useAccount();
+
+  const isInitializeButtonVisible =
+    (address && !bosonXmtp) || (isError && address && !bosonXmtp);
 
   return (
     <Info justifyContent="space-between" gap="2rem">
       <Grid justifyContent="flex-start" gap="1rem">
-        <Icon size={24} />
+        {isError ? <IconError size={24} /> : <Icon size={24} />}
         <InfoMessage>
-          To proceed you must first initialize your chat client
+          {isError
+            ? `Chat initialization failed, please try again`
+            : `To proceed you must first initialize your chat client`}
         </InfoMessage>
       </Grid>
       <div>
-        {address && !bosonXmtp ? (
+        {isInitializeButtonVisible ? (
           <Button
             type="button"
             theme="primaryInverse"

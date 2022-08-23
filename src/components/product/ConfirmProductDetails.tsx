@@ -495,7 +495,7 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
         !bosonXmtp) ||
         chatInitializationStatus === "ERROR") && (
         <InitializeChatContainer>
-          <InitializeChat />
+          <InitializeChat isError={chatInitializationStatus === "ERROR"} />
         </InitializeChatContainer>
       )}
       {chatInitializationStatus === "INITIALIZED" && bosonXmtp && (
