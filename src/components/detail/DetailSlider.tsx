@@ -16,11 +16,13 @@ import { GlideSlide, GlideWrapper } from "./Detail.style";
 type Direction = "<" | ">";
 interface Props {
   images: Array<string>;
+  isPreview?: boolean;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let glide: any = null;
-export default function DetailSlider({ images }: Props) {
+
+export default function DetailSlider({ images, isPreview = false }: Props) {
   const [sliderImages, setSliderImages] = useState<Array<string>>([]);
   const ref = useRef();
 
@@ -33,19 +35,20 @@ export default function DetailSlider({ images }: Props) {
     }
   }, [ref, sliderImages]);
 
-  useEffect(() => {
-    async function fetchData(images: Array<string>) {
-      const ipfsMetadataStorage = IpfsMetadataStorage.fromTheGraphIpfsUrl(
-        CONFIG.ipfsMetadataUrl
-      );
+  const fetchData = async (images: Array<string>) => {
+    const ipfsMetadataStorage = IpfsMetadataStorage.fromTheGraphIpfsUrl(
+      CONFIG.ipfsMetadataUrl
+    );
 
-      const fetchPromises = images.map(
-        async (src) => await ipfsMetadataStorage.get(src, false)
-      );
-      const imagesFromIpfs = await Promise.all(fetchPromises);
-      setSliderImages(imagesFromIpfs.map((s) => String(s)));
-    }
-    fetchData(images);
+    const fetchPromises = images.map(
+      async (src) => await ipfsMetadataStorage.get(src, false)
+    );
+    const imagesFromIpfs = await Promise.all(fetchPromises);
+    setSliderImages(imagesFromIpfs.map((s) => String(s)));
+  };
+
+  useEffect(() => {
+    isPreview ? setSliderImages(images) : fetchData(images);
   }, [images]); // eslint-disable-line
 
   const handleSlider = (direction: Direction) => {

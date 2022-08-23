@@ -34,12 +34,12 @@
     ]
   },
   "dependencies": {
-    "@bosonprotocol/chat-sdk": "^1.0.2-alpha.4",
-    "@bosonprotocol/common": "^1.9.0-alpha.5",
-    "@bosonprotocol/core-sdk": "^1.12.0-alpha.5",
+    "@bosonprotocol/chat-sdk": "1.0.2-alpha.4 ",
+    "@bosonprotocol/common": "^1.9.0-alpha.13",
+    "@bosonprotocol/core-sdk": "^1.12.0-alpha.13",
     "@bosonprotocol/ethers-sdk": "^1.6.0-alpha.5",
     "@bosonprotocol/ipfs-storage": "^1.6.0-alpha.0",
-    "@bosonprotocol/react-kit": "^0.3.0-alpha.5",
+    "@bosonprotocol/react-kit": "^0.3.0-alpha.13",
     "@bosonprotocol/widgets-sdk": "^1.9.0-alpha.0",
     "@davatar/react": "^1.10.4",
     "@ethersproject/address": "^5.6.1",

@@ -54,7 +54,7 @@ const TagsInput = ({ name }: { name: string }) => {
           name={name}
         />
         {tags.map((tag, index) => (
-          <TagWrapper key={index}>
+          <TagWrapper key={`tags-wrapper-${index}`}>
             <span className="text">{tag}</span>
             <Close onClick={() => removeTag(index)}>&times;</Close>
           </TagWrapper>

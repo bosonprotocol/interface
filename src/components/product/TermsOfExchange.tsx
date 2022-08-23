@@ -77,7 +77,6 @@ export default function TermsOfExchange() {
             title="Exchange policy"
             required
             subTitle="The exchange policy covers the contractual terms of the exchange to protect seller and buyer."
-            tooltip="TODO: add"
           >
             <Select
               placeholder="Choose exchange policy..."
@@ -90,7 +89,6 @@ export default function TermsOfExchange() {
             title="Buyer cancellation penalty"
             required
             subTitle="If the buyer fails to redeem the item within the redemption period they will be receive back the payment minus the buyer cancel penalty."
-            tooltip="TODO: add"
           >
             <FieldContainer>
               <div>
@@ -100,6 +98,7 @@ export default function TermsOfExchange() {
                   type="number"
                   min="0"
                   max="100"
+                  step="0.001"
                 />
               </div>
               <div>
@@ -115,7 +114,6 @@ export default function TermsOfExchange() {
             title="Seller deposit"
             required
             subTitle="The seller deposit is charged when a buyers commits to the offer and is used to hold the seller accountable to follow through with their commitment to deliver the physical item. If you break your commitment as a seller, then your deposit will be transferred to the buyer."
-            tooltip="TODO: add"
           >
             <FieldContainer>
               <div>
@@ -125,6 +123,7 @@ export default function TermsOfExchange() {
                   type="number"
                   min="0"
                   max="100"
+                  step="0.001"
                 />
               </div>
               <div>
@@ -160,6 +159,7 @@ export default function TermsOfExchange() {
                   name="termsOfExchange.disputePeriod"
                   type="number"
                   min="0"
+                  step="0.001"
                 />
               </div>
               <div>

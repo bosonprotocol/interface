@@ -1,3 +1,5 @@
+import { FormModel } from "../../modal/components/Chat/MakeProposal/MakeProposalFormModel";
+import { DisputeFormModel } from "../../modal/components/DisputeModal/DisputeModalFormModel";
 import {
   OPTIONS_CURRENCIES,
   OPTIONS_DISPUTE_RESOLVER,
@@ -11,7 +13,7 @@ import {
 import { CreateProductForm } from "./types";
 
 export const createYourProfileInitialValues = {
-  creteYourProfile: {
+  createYourProfile: {
     logo: null,
     name: "",
     email: "",
@@ -38,7 +40,15 @@ export const productInformationInitialValues = {
         name: "",
         value: ""
       }
-    ]
+    ],
+    sku: undefined,
+    id: undefined,
+    idType: undefined,
+    brandName: undefined,
+    manufacture: undefined,
+    manufactureModelName: undefined,
+    partNumber: undefined,
+    materials: undefined
   }
 } as const;
 
@@ -99,6 +109,19 @@ export const shippingInfoInitialValues = {
   }
 } as const;
 
+export const disputeCentreInitialValues = {
+  [DisputeFormModel.formFields.getStarted.name]: "",
+  [DisputeFormModel.formFields.tellUsMore.name]: "",
+  [FormModel.formFields.description.name]: "",
+  [FormModel.formFields.proposalsTypes.name]: [] as {
+    label: string;
+    value: string;
+  }[],
+  [FormModel.formFields.refundAmount.name]: "0",
+  [FormModel.formFields.refundPercentage.name]: 0,
+  [FormModel.formFields.upload.name]: [] as File[]
+} as const;
+
 export const initialValues: CreateProductForm = {
   ...createYourProfileInitialValues,
   ...productTypeInitialValues,
@@ -106,5 +129,6 @@ export const initialValues: CreateProductForm = {
   ...productImagesInitialValues,
   ...coreTermsOfSaleInitialValues,
   ...termsOfExchangeInitialValues,
-  ...shippingInfoInitialValues
+  ...shippingInfoInitialValues,
+  ...disputeCentreInitialValues
 } as const;

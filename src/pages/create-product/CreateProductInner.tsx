@@ -35,6 +35,7 @@ import {
   FIRST_STEP,
   wait
 } from "./utils";
+import { ValidateDates } from "./utils/dataValidator";
 
 interface Props {
   initial: CreateProductForm;
@@ -102,8 +103,8 @@ function CreateProductInner({ initial }: Props) {
         quantityAvailable: offerInfo.quantityAvailable,
         quantityInitial: offerInfo.quantityInitial,
         fulfillmentPeriodDuration: offerInfo.fulfillmentPeriodDuration,
+        voucherRedeemableUntilDate: `${offerInfo.voucherRedeemableUntilDate}000`,
         validFromDate: offerInfo.validFromDate,
-        validUntilDate: offerInfo.validUntilDate,
         voidedAt: offerInfo.voidedAt,
         voucherValidDuration: offerInfo.voucherValidDuration,
         exchangeToken: {
@@ -163,7 +164,7 @@ function CreateProductInner({ initial }: Props) {
     });
 
     const profileImage = getLocalStorageItems({
-      key: "create-product-image_creteYourProfile"
+      key: "create-product-image_createYourProfile"
     });
 
     const previewImages = getLocalStorageItems({
@@ -187,7 +188,7 @@ function CreateProductInner({ initial }: Props) {
 
     const {
       coreTermsOfSale,
-      creteYourProfile,
+      createYourProfile,
       productInformation,
       productType,
       termsOfExchange,
@@ -237,16 +238,42 @@ function CreateProductInner({ initial }: Props) {
         product: {
           uuid: Date.now().toString(),
           version: 1,
-          productionInformation_brandName: creteYourProfile.name,
           title: productInformation.productTitle,
           description: productInformation.description,
+          identification_sKU: productInformation.sku,
+          identification_productId: productInformation.id,
+          identification_productIdType: productInformation.idType,
+          productionInformation_brandName:
+            productInformation.brandName || createYourProfile.name,
+          productionInformation_manufacturer: productInformation.manufacture,
+          productionInformation_manufacturerPartNumber:
+            productInformation.manufactureModelName,
+          productionInformation_modelNumber: productInformation.partNumber,
+          productionInformation_materials:
+            productInformation.materials?.split(","),
+          details_category: productInformation.category.value,
+          details_subCategory: undefined, // no entry in the UI
+          details_subCategory2: undefined, // no entry in the UI
+          details_offerCategory: productType.productType.toUpperCase(),
+          details_tags: productInformation.tags,
+          details_sections: undefined, // no entry in the UI
+          details_personalisation: undefined, // no entry in the UI
           visuals_images: visualImages,
-          details_offerCategory: productType.productType.toUpperCase()
+          visuals_videos: undefined, // no entry in the UI
+          packaging_packageQuantity: undefined, // no entry in the UI
+          packaging_dimensions_length: shippingInfo.length,
+          packaging_dimensions_width: shippingInfo.width,
+          packaging_dimensions_height: shippingInfo.height,
+          packaging_dimensions_unit: shippingInfo.measurementUnit.value,
+          packaging_weight_value: shippingInfo.weight,
+          packaging_weight_unit: shippingInfo.weightUnit.value
         },
         seller: {
-          name: creteYourProfile.name,
-          description: creteYourProfile.description,
-          externalUrl: creteYourProfile.website,
+          defaultVersion: 1,
+          name: createYourProfile.name,
+          description: createYourProfile.description,
+          externalUrl: createYourProfile.website,
+          tokenId: undefined, // no entry in the UI
           images: [
             {
               url: `ipfs://${profileImageLink}`,
@@ -255,7 +282,7 @@ function CreateProductInner({ initial }: Props) {
           ],
           contactLinks: [
             {
-              url: creteYourProfile.email,
+              url: createYourProfile.email,
               tag: "email"
             }
           ]
@@ -263,7 +290,8 @@ function CreateProductInner({ initial }: Props) {
         exchangePolicy: {
           uuid: Date.now().toString(),
           version: 1,
-          template: termsOfExchange.exchangePolicy.value
+          label: termsOfExchange.exchangePolicy.value,
+          template: termsOfExchange.exchangePolicy.value // TODO: set the URL to the fairExchangePolicy contractual agreement
         },
         shipping: {
           defaultVersion: 1,
@@ -275,54 +303,44 @@ function CreateProductInner({ initial }: Props) {
         }
       });
 
-      // TODO: change when more than percentage unit
-      const buyerCancellationPenaltyValue =
-        (parseFloat(termsOfExchange.buyerCancellationPenalty) / 100) *
-        parseFloat(coreTermsOfSale.price);
+      const priceBN = parseUnits(`${coreTermsOfSale.price}`, 18); // TODO: the number of decimals (here: 18) shall depend on the token
 
       // TODO: change when more than percentage unit
-      const sellerCancellationPenaltyValue =
-        (parseFloat(termsOfExchange.sellerDeposit) / 100) *
-        parseFloat(coreTermsOfSale.price);
+      const buyerCancellationPenaltyValue = priceBN
+        .mul(parseFloat(termsOfExchange.buyerCancellationPenalty) * 1000)
+        .div(100 * 1000);
 
-      const validFromDateInMS = Date.parse(
-        coreTermsOfSale.offerValidityPeriod[0].$d
-      );
+      // TODO: change when more than percentage unit
+      const sellerCancellationPenaltyValue = priceBN
+        .mul(parseFloat(termsOfExchange.sellerDeposit) * 1000)
+        .div(100 * 1000);
 
-      const validUntilDateInMS = Date.parse(
-        coreTermsOfSale.offerValidityPeriod[1].$d
-      );
-
-      const voucherRedeemableFromDateInMS = Date.parse(
-        coreTermsOfSale.redemptionPeriod[0].$d
-      );
-
-      const voucherRedeemableUntilDateInMS = Date.parse(
-        coreTermsOfSale.redemptionPeriod[1].$d
-      );
+      const {
+        voucherRedeemableFromDateInMS,
+        voucherRedeemableUntilDateInMS,
+        validFromDateInMS,
+        validUntilDateInMS
+      } = ValidateDates({
+        offerValidityPeriod: coreTermsOfSale.offerValidityPeriod,
+        redemptionPeriod: coreTermsOfSale.redemptionPeriod
+      });
 
       const resolutionPeriodDurationInMS =
-        parseInt(termsOfExchange.disputePeriod) * 86400;
+        parseInt(termsOfExchange.disputePeriod) * 24 * 3600 * 1000; // day to msec
 
       const offerData = {
-        price: parseUnits(`${coreTermsOfSale.price}`, 18).toString(),
-        sellerDeposit: parseUnits(
-          `${sellerCancellationPenaltyValue}`,
-          18
-        ).toString(),
-        buyerCancelPenalty: parseUnits(
-          `${buyerCancellationPenaltyValue}`,
-          18
-        ).toString(),
+        price: priceBN.toString(),
+        sellerDeposit: sellerCancellationPenaltyValue.toString(),
+        buyerCancelPenalty: buyerCancellationPenaltyValue.toString(),
         quantityAvailable: coreTermsOfSale.quantity,
         voucherRedeemableFromDateInMS: voucherRedeemableFromDateInMS.toString(),
         voucherRedeemableUntilDateInMS:
           voucherRedeemableUntilDateInMS.toString(),
+        voucherValidDurationInMS: 0,
         validFromDateInMS: validFromDateInMS.toString(),
         validUntilDateInMS: validUntilDateInMS.toString(),
         fulfillmentPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
         resolutionPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
-        voucherValidDurationInMS: resolutionPeriodDurationInMS.toString(),
         exchangeToken: "0x0000000000000000000000000000000000000000",
         disputeResolverId: 1,
         agentId: 0, // no agent
@@ -352,10 +370,10 @@ function CreateProductInner({ initial }: Props) {
 
       await wait(3_000);
       handleOpenSuccessModal({ offerId });
-      // formikBag.resetForm();
+      formikBag.resetForm();
     } catch (error: any) {
       // TODO: FAILURE MODAL
-      console.error("error->", error.errors);
+      console.error("error->", error.errors ?? error.toString());
     }
   };
 
@@ -381,6 +399,7 @@ function CreateProductInner({ initial }: Props) {
         data={CREATE_PRODUCT_STEPS}
         active={currentStep}
         callback={handleClickStep}
+        disableInactiveSteps
       />
 
       <ProductLayoutContainer isPreviewVisible={isPreviewVisible}>
@@ -397,7 +416,10 @@ function CreateProductInner({ initial }: Props) {
             return (
               <Form>
                 {isPreviewVisible ? (
-                  <Preview togglePreview={setIsPreviewVisible} />
+                  <Preview
+                    togglePreview={setIsPreviewVisible}
+                    seller={sellers?.[0]}
+                  />
                 ) : (
                   wizardStep.currentStep
                 )}
