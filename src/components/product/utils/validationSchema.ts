@@ -52,7 +52,7 @@ export const productInformationValidationSchema = Yup.object({
         label: Yup.string()
       })
       .required(validationMessage.required),
-    // tags: Yup.string().required(validationMessage.required),
+    tags: Yup.array().of(Yup.string()).default([]),
     attributes: Yup.array()
       .of(
         Yup.object().shape({
@@ -69,8 +69,7 @@ export const productInformationValidationSchema = Yup.object({
     manufacture: Yup.string(),
     manufactureModelName: Yup.string(),
     partNumber: Yup.string(),
-    materials: Yup.string(),
-    tags: Yup.mixed()
+    materials: Yup.string()
   })
 });
 
@@ -88,7 +87,12 @@ export const coreTermsOfSaleValidationSchema = Yup.object({
     quantity: Yup.number()
       .min(1, "Quantity must be greater than or equal to 1")
       .required(validationMessage.required),
-    // tokenGatedOffer: Yup.string().required(validationMessage.required),
+    tokenGatedOffer: Yup.object()
+      .shape({
+        value: Yup.string(),
+        label: Yup.string()
+      })
+      .default([{ value: "", label: "" }]),
     offerValidityPeriod: Yup.array()
       .of(
         Yup.object().shape({

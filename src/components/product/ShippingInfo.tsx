@@ -65,7 +65,6 @@ const AddSupportedJurisdictions = () => {
     <FormField
       title="Supported Jurisdictions"
       subTitle="Select the jurisdictions you will ship to."
-      tooltip="TODO: add"
     >
       <FieldArray
         name="shippingInfo.jurisdiction"
@@ -157,7 +156,6 @@ export default function ShippingInfo() {
             title="Redemption point"
             subTitle="The website from which buyers can redeem the rNFT.
               By default the redemption point will be the Boson dApp."
-            tooltip="TODO: add"
           >
             <Input placeholder="Add URL" name="shippingInfo.addUrl" />
           </FormField>

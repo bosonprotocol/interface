@@ -16,21 +16,21 @@ export default function CreateYourProfile() {
       <FormField
         title="Logo / profile picture"
         subTitle="Upload a profile image with a max. width and height of 800px and a max. size of 300kb."
-        required={true}
+        required
       >
         <Upload name="createYourProfile.logo" />
       </FormField>
-      <FormField title="Your brand / name" required={true}>
+      <FormField title="Your brand / name" required>
         <Input name="createYourProfile.name" placeholder="Name" />
       </FormField>
-      <FormField title="Contact e-Mail" required={true}>
+      <FormField title="Contact e-Mail" required>
         <Input
           name="createYourProfile.email"
           placeholder="e-Mail"
           pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
         />
       </FormField>
-      <FormField title="Description" required={true}>
+      <FormField title="Description" required>
         <Textarea name="createYourProfile.description" placeholder="Describe" />
       </FormField>
       <FormField

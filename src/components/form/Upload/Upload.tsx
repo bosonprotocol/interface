@@ -4,7 +4,10 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import { colors } from "../../../lib/styles/colors";
 import bytesToSize from "../../../lib/utils/bytesToSize";
-import { useLocalStorage } from "../../../lib/utils/hooks/useLocalStorage";
+import {
+  GetItemFromStorageKey,
+  useLocalStorage
+} from "../../../lib/utils/hooks/useLocalStorage";
 import Button from "../../ui/Button";
 import Typography from "../../ui/Typography";
 import Error from "../Error";
@@ -30,10 +33,11 @@ export default function Upload({
   ...props
 }: UploadProps) {
   const fileName = useMemo(() => `create-product-image_${name}`, [name]);
-  const [preview, setPreview, removePreview] = useLocalStorage<string | null>(
-    fileName,
-    null
-  );
+  const [preview, setPreview, removePreview] =
+    useLocalStorage<GetItemFromStorageKey | null>(
+      fileName as GetItemFromStorageKey,
+      null
+    );
 
   const [field, meta, helpers] = useField(name);
 
@@ -52,7 +56,7 @@ export default function Upload({
       const reader = new FileReader();
       reader.onloadend = (e: ProgressEvent<FileReader>) => {
         const prev = e.target?.result?.toString() || null;
-        setPreview(prev);
+        setPreview(prev as GetItemFromStorageKey | null);
       };
       reader.readAsDataURL(files[0]);
     }
