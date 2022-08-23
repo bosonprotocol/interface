@@ -59,7 +59,7 @@ export default function CoreTermsOfSale() {
           placeholder="Input the amount"
           name="coreTermsOfSale.quantity"
           type="number"
-          min="0"
+          min="1"
         />
       </FormField>
       <FormField

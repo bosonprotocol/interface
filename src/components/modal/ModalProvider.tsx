@@ -35,7 +35,7 @@ const RenderModalComponent = ({
       title={store.modalProps?.title}
       headerComponent={store.modalProps?.headerComponent}
       closable={store.modalProps?.closable}
-      modalType={null}
+      modalType={store.modalType}
     >
       <ModalComponent
         id="modal"

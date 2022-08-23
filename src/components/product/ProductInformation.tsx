@@ -46,7 +46,7 @@ const AddAttributesContainer = () => {
   );
 
   return (
-    <FormField title="Add product attribute" tooltip="TODO: add">
+    <FormField title="Add product attribute">
       <FieldArray
         name="productInformation.attributes"
         render={(arrayHelpers) => {
@@ -141,53 +141,37 @@ export default function ProductInformation() {
         <Collapse
           title={<Typography tag="h3">Additional information</Typography>}
         >
-          <FormField
-            title="SKU"
-            subTitle="Input product serial number."
-            tooltip="TODO: add"
-          >
+          <FormField title="SKU" subTitle="Input product serial number.">
             <Input placeholder="SKU" name="productInformation.sku" />
           </FormField>
-          <FormField
-            title="Product ID"
-            subTitle="Input product ID."
-            tooltip="TODO: add"
-          >
+          <FormField title="Product ID" subTitle="Input product ID.">
             <Input placeholder="ID" name="productInformation.id" />
           </FormField>
-          <FormField title="Product ID Type" tooltip="TODO: add">
+          <FormField title="Product ID Type">
             <Input placeholder="ID Type" name="productInformation.idType" />
           </FormField>
-          <FormField
-            title="Brand Name"
-            subTitle="Input brand name of product"
-            tooltip="TODO: add"
-          >
+          <FormField title="Brand Name" subTitle="Input brand name of product">
             <Input
               placeholder="Brand name"
               name="productInformation.brandName"
             />
           </FormField>
-          <FormField
-            title="Material"
-            subTitle="Input material of product"
-            tooltip="TODO: add"
-          >
+          <FormField title="Material" subTitle="Input material of product">
             <Input placeholder="Material" name="productInformation.material" />
           </FormField>
-          <FormField title="Manufacturer name" tooltip="TODO: add">
+          <FormField title="Manufacturer name">
             <Input
               placeholder="Manufacturer"
               name="productInformation.manufacture"
             />
           </FormField>
-          <FormField title="Manufacturer model name" tooltip="TODO: add">
+          <FormField title="Manufacturer model name">
             <Input
               placeholder="Manufacturer model name"
               name="productInformation.manufactureModelName"
             />
           </FormField>
-          <FormField title="Manufacturer part number" tooltip="TODO: add">
+          <FormField title="Manufacturer part number">
             <Input
               placeholder="Part number"
               name="productInformation.partNumber"

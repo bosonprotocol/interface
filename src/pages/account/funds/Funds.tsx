@@ -1,4 +1,5 @@
 import { subgraph } from "@bosonprotocol/react-kit";
+import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
@@ -85,12 +86,38 @@ export default function Funds({ sellerId, buyerId }: Props) {
     setTimeout(() => setHighlightedToken(""), 300);
   };
   useEffect(() => {
+    const nativeFund = funds.find(
+      (f) => f.token.address === ethers.constants.AddressZero
+    );
+    const fundsDefaultList = nativeFund
+      ? [nativeFund]
+      : [
+          {
+            accountId,
+            availableAmount: "0",
+            id: "",
+            token: {
+              // TODO: change this depending on chainId
+              id: "",
+              address: ethers.constants.AddressZero,
+              name: "Native coin",
+              symbol: "Native coin",
+              decimals: "18"
+            }
+          }
+        ];
     setUiFunds((prevFunds) => [
       ...Array.from(
-        new Map([...funds, ...prevFunds].map((v) => [v.id, v])).values()
+        new Map(
+          [...funds, ...prevFunds, ...fundsDefaultList].map((v) => [
+            v.token.address,
+            v
+          ])
+        ).values()
       )
     ]);
-  }, [funds]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [funds, accountId]);
 
   if (!core) {
     return <div>Connect your wallet</div>;

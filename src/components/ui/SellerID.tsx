@@ -6,9 +6,10 @@ import styled from "styled-components";
 import Grid, { IGrid } from "../../components/ui/Grid";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
-import { getOfferArtist } from "../../lib/utils/hooks/offers/placeholders";
+import { Offer } from "../../lib/types/offer";
+import { getOfferDetails } from "../../lib/utils/getOfferDetails";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import bosonProtocolImage from "../../pages/offers/mock/bosonprotocol.jpeg";
+import Image from "./Image";
 
 const AddressContainer = styled(Grid)`
   gap: 10px;
@@ -42,42 +43,40 @@ const ImageContainer = styled.div`
   justify-content: center;
 `;
 
-const RoundedImage = styled.img`
-  height: 16px;
-  width: 16px;
-  border-radius: 50%;
-`;
-
 const SellerID: React.FC<
   {
     children?: React.ReactNode;
-    seller: subgraph.OfferFieldsFragment["seller"];
+    offer: Offer;
+    buyerOrSeller:
+      | Pick<subgraph.Seller, "id" | "operator">
+      | Pick<subgraph.Buyer, "id" | "wallet">;
     accountImageSize?: number;
-    offerName: string;
     withProfileImage: boolean;
-
-    customImage?: boolean;
     withProfileText?: boolean;
     onClick?: null | undefined | React.MouseEventHandler<HTMLDivElement>;
   } & IGrid &
     React.HTMLAttributes<HTMLDivElement>
 > = ({
-  seller,
   children,
-  offerName,
+  offer,
+  buyerOrSeller,
   withProfileImage,
-  customImage,
   onClick,
   accountImageSize,
   withProfileText = true,
-
   ...rest
 }) => {
   const navigate = useKeepQueryParamsNavigate();
-  const sellerId = seller?.id;
-  const sellerAddress = seller?.operator;
-  const artist = getOfferArtist(offerName);
+  const { artist } = getOfferDetails(offer);
+
+  const userId = buyerOrSeller?.id;
+  const isSeller = "operator" in buyerOrSeller;
+  const userAddress = isSeller ? buyerOrSeller.operator : buyerOrSeller.wallet;
   const hasCursorPointer = !!onClick || onClick === undefined;
+
+  const artistImage =
+    artist?.images && artist?.images?.length > 0 ? artist?.images : false;
+
   return (
     <AddressContainer {...rest} data-address-container>
       <SellerContainer
@@ -89,7 +88,7 @@ const SellerID: React.FC<
             e.stopPropagation();
             navigate({
               pathname: generatePath(BosonRoutes.Account, {
-                [UrlParameters.accountId]: sellerAddress
+                [UrlParameters.accountId]: userAddress
               })
             });
           }
@@ -98,19 +97,27 @@ const SellerID: React.FC<
       >
         {withProfileImage && (
           <ImageContainer>
-            {artist.toLocaleLowerCase() === "boson protocol" || customImage ? (
-              <RoundedImage src={sellerAddress || bosonProtocolImage} />
+            {artistImage ? (
+              <Image
+                src={artistImage[0].url}
+                style={{
+                  height: "1rem",
+                  width: "1rem",
+                  borderRadius: "50%",
+                  padding: 0
+                }}
+              />
             ) : (
               <AccountImage
                 size={accountImageSize || 17}
-                address={sellerAddress}
+                address={userAddress}
               />
             )}
           </ImageContainer>
         )}
         {withProfileText && (
           <SellerInfo data-testid="seller-info">
-            {artist ? artist : `Seller ID: ${sellerId}`}
+            {isSeller ? `Seller ID: ${userId}` : `Buyer ID: ${userId}`}
           </SellerInfo>
         )}
       </SellerContainer>

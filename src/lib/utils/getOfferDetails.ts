@@ -1,5 +1,7 @@
 /* eslint @typescript-eslint/no-explicit-any: "off" */
-import { Offer } from "./../../types/offer";
+import { subgraph } from "@bosonprotocol/react-kit";
+
+import { Offer } from "./../types/offer";
 
 interface ITable {
   name: string;
@@ -16,6 +18,7 @@ interface IGetOfferDetails {
   shippingInfo: IShippingInfo;
   description: string;
   productData: Array<ITable>;
+  artist: subgraph.ProductV1Seller;
   artistDescription: string;
   images: Array<string>;
 }
@@ -40,6 +43,7 @@ export const getOfferDetails = (offer: Offer): IGetOfferDetails => {
       name: attr.traitType,
       value: attr.value
     })) || [];
+  const artist = offer.metadata?.productV1Seller || null;
   const artistDescription = offer.metadata?.productV1Seller?.description || "";
   const images =
     offer.metadata?.product?.visuals_images.map(
@@ -53,6 +57,7 @@ export const getOfferDetails = (offer: Offer): IGetOfferDetails => {
     shippingInfo,
     description,
     productData,
+    artist,
     artistDescription,
     images
   };
