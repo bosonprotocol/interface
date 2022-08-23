@@ -49,10 +49,10 @@ function GetStarted({
   return (
     <>
       <div>
-        <Typography fontWeight="600" fontSize="2rem">
+        <Typography fontWeight="600" $fontSize="2rem">
           Get started
         </Typography>
-        <Typography fontSize="1.25rem" color={colors.darkGrey}>
+        <Typography $fontSize="1.25rem" color={colors.darkGrey}>
           First, choose the issue you're facing with your redemption.
         </Typography>
       </div>

@@ -456,8 +456,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                   onClick={() => {
                     showModal(modalTypes.DISPUTE_MODAL, {
                       title: "Raise a problem",
-                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                      exchange: exchange!
+                      exchangeId: exchange?.id || ""
                     });
                   }}
                   theme="blank"

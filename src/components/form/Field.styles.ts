@@ -115,7 +115,7 @@ export const FileUploadWrapper = styled.div.attrs(
           border: 1px solid ${colors.border};
         `}
 
-  ${transition}
+  ${transition};
 
   :focus,
   :hover {
@@ -224,7 +224,7 @@ export const FieldTextArea = styled.textarea.attrs((props: { error: any }) => ({
 
 export const FormFieldWrapper = styled(Grid)`
   margin-bottom: 3.5rem;
-  p 
+  p {
     line-height: 150%;
   }
 
