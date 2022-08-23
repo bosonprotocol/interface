@@ -401,6 +401,7 @@ function CreateProductInner({ initial }: Props) {
         data={CREATE_PRODUCT_STEPS}
         active={currentStep}
         callback={handleClickStep}
+        disableInactiveSteps
       />
 
       <ProductLayoutContainer isPreviewVisible={isPreviewVisible}>
