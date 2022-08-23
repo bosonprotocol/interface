@@ -263,8 +263,6 @@ export default function SellerTable({ offers }: Props) {
     state: { pageIndex, pageSize }
   } = tableProps;
 
-  console.log("tableProps", tableProps);
-
   return (
     <>
       <Table {...getTableProps()}>

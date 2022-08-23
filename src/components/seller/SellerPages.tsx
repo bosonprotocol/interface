@@ -1,27 +1,32 @@
-import { Gear } from "phosphor-react";
+import { ArrowsLeftRight, GridFour, Storefront } from "phosphor-react";
 import React from "react";
 
 import SellerProducts from "./products/SellerProducts";
 
 export const DEFAULT_SELLER_PAGE = "Dashboard";
+interface SellerProps {
+  sellerId: string;
+}
 
 export const sellerPageTypes = {
   dashboard: {
     url: "dashboard",
     label: "Dashboard",
-    icon: <Gear size={16} />,
+    icon: GridFour,
     component: () => <div>Dashboard</div>
   },
   products: {
     url: "products",
     label: "Products",
-    icon: <Gear size={16} />,
-    component: () => <SellerProducts />
+    icon: Storefront,
+    component: ({ sellerId }: SellerProps) => (
+      <SellerProducts sellerId={sellerId} />
+    )
   },
   exchanges: {
     url: "exchanges",
     label: "Exchanges",
-    icon: <Gear size={16} />,
+    icon: ArrowsLeftRight,
     component: () => <div>Exchanges</div>
   }
 };
