@@ -534,7 +534,7 @@ export const Widget = styled.div`
   }
 `;
 
-export const miniButton = css`
+const miniButton = css`
   display: flex;
   justify-content: space-between;
   align-items: center;

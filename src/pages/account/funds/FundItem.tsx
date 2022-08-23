@@ -11,7 +11,7 @@ import useWithdrawFunds from "./useWithdrawFunds";
 
 export const fundsBorderRadius = "0.3125rem";
 
-export const shakeKeyframes = `
+const shakeKeyframes = `
   @keyframes shake {
     0% { transform: translate(0.0625rem, 0.0625rem) rotate(0deg); }
     10% { transform: translate(-0.0625rem, -0.125rem) rotate(-1deg); }
@@ -90,7 +90,7 @@ export const Input = styled.input<{ $hasError?: boolean }>`
   ${shakeKeyframes}
 `;
 
-export const CustomButton = styled(Button)`
+const CustomButton = styled(Button)`
   border-radius: ${fundsBorderRadius};
   width: 25%;
   justify-content: center;
