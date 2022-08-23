@@ -53,7 +53,7 @@ export default function FairExchangePolicy({
     <>
       <InfoTitleWrapper>
         <Typography tag={titleTag} data-title>
-          Fair exhange policy
+          Fair exchange policy
         </Typography>
         {policyIcon}
       </InfoTitleWrapper>

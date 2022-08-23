@@ -46,7 +46,7 @@ export const getOfferDetails = (offer: Offer): IGetOfferDetails => {
   const artist = offer.metadata?.productV1Seller || null;
   const artistDescription = offer.metadata?.productV1Seller?.description || "";
   const images =
-    offer.metadata?.product?.visuals_images.map(
+    offer.metadata?.product?.visuals_images?.map(
       ({ url }: { url: string }) => url
     ) || [];
 
