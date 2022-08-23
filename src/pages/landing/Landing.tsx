@@ -49,10 +49,6 @@ const ExploreContainer = styled.div`
 `;
 
 const HeroWrapper = styled(Grid)``;
-const StepWrapper = styled(Grid)`
-  gap: 50px;
-  margin: 5rem 0;
-`;
 
 const DarkerBackground = styled.div`
   background-color: ${colors.lightGrey};
@@ -102,9 +98,11 @@ export default function Landing() {
         </GridWithZindex>
         <Carousel />
       </HeroWrapper>
-      <StepWrapper
+      <Grid
         alignItems="flex-start"
         flexDirection={isLteS ? "column" : "row"}
+        gap="50px"
+        margin="5rem 0"
       >
         <Step number={1} title="Commit">
           Commit to an Offer to receive a Redeemable NFT (rNFT) that can be
@@ -118,7 +116,7 @@ export default function Landing() {
           Redeem your rNFT to receive the underlying item. The rNFT will be
           destroyed in the process.
         </Step>
-      </StepWrapper>
+      </Grid>
 
       <DarkerBackground>
         <Layout>

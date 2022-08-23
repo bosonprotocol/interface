@@ -6,7 +6,6 @@ import styled from "styled-components";
 import { BosonRoutes } from "../../../../lib/routing/routes";
 import { breakpoint } from "../../../../lib/styles/breakpoint";
 import { colors } from "../../../../lib/styles/colors";
-import { Offer } from "../../../../lib/types/offer";
 import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import Typography from "../../../ui/Typography";
 import { ModalProps } from "../../ModalContext";
@@ -170,15 +169,15 @@ const ButtonContainer = styled.div`
 
 interface Props {
   hideModal: NonNullable<ModalProps["hideModal"]>;
-  exchange: NonNullable<Offer["exchanges"]>[number];
+  exchangeId: string;
 }
 
-function DisputeModal({ hideModal, exchange }: Props) {
+function DisputeModal({ hideModal, exchangeId }: Props) {
   const navigate = useKeepQueryParamsNavigate();
 
   const handleSubmitIssue = () => {
     navigate({
-      pathname: generatePath(`${BosonRoutes.Dispute}/${exchange.id}`)
+      pathname: generatePath(`${BosonRoutes.Dispute}/${exchangeId}`)
     });
   };
   return (
@@ -189,7 +188,7 @@ function DisputeModal({ hideModal, exchange }: Props) {
             <FileText size={24} color={colors.secondary} data-columns-icon />
             <Typography
               margin="0"
-              fontSize="1.25rem"
+              $fontSize="1.25rem"
               color={colors.black}
               fontWeight="600"
             >
@@ -197,7 +196,7 @@ function DisputeModal({ hideModal, exchange }: Props) {
             </Typography>
             <Typography
               margin="0"
-              fontSize="1rem"
+              $fontSize="1rem"
               color={colors.darkGrey}
               fontWeight="400"
             >
@@ -209,7 +208,7 @@ function DisputeModal({ hideModal, exchange }: Props) {
             <CheckCircle size={24} color={colors.secondary} data-columns-icon />
             <Typography
               margin="0"
-              fontSize="1.25rem"
+              $fontSize="1.25rem"
               color={colors.black}
               fontWeight="600"
             >
@@ -217,7 +216,7 @@ function DisputeModal({ hideModal, exchange }: Props) {
             </Typography>
             <Typography
               margin="0"
-              fontSize="1rem"
+              $fontSize="1rem"
               color={colors.darkGrey}
               fontWeight="400"
             >
@@ -233,7 +232,7 @@ function DisputeModal({ hideModal, exchange }: Props) {
             />
             <Typography
               margin="0"
-              fontSize="1.25rem"
+              $fontSize="1.25rem"
               color={colors.black}
               fontWeight="600"
             >
@@ -241,7 +240,7 @@ function DisputeModal({ hideModal, exchange }: Props) {
             </Typography>
             <Typography
               margin="0"
-              fontSize="1rem"
+              $fontSize="1rem"
               color={colors.darkGrey}
               fontWeight="400"
             >

@@ -81,18 +81,18 @@ export default function RefundRequest({ exchange }: Props) {
   const currencySymbol = offer.exchangeToken.symbol;
   return (
     <>
-      <Typography fontSize="1.5rem" fontWeight="600">
+      <Typography $fontSize="1.5rem" fontWeight="600">
         Refund request
       </Typography>
-      <Typography fontSize="1rem">
+      <Typography $fontSize="1rem">
         You will keep your purchased product and get a partial refund.
       </Typography>
       <Grid gap="1rem" alignItems="flex-start">
         <Grid flexDirection="column">
-          <Typography fontSize="1rem" fontWeight="600">
+          <Typography $fontSize="1rem" fontWeight="600">
             In escrow
           </Typography>
-          <Typography fontSize="0.75rem" fontWeight="400">
+          <Typography $fontSize="0.75rem" fontWeight="400">
             Item price + seller diposit
           </Typography>
           <InEscrowPriceWrapper>
@@ -112,10 +112,10 @@ export default function RefundRequest({ exchange }: Props) {
           </InEscrowPriceWrapper>
         </Grid>
         <Grid flexDirection="column">
-          <Typography fontSize="1rem" fontWeight="600">
+          <Typography $fontSize="1rem" fontWeight="600">
             Requested refund
           </Typography>
-          <Typography fontSize="0.75rem" fontWeight="400">
+          <Typography $fontSize="0.75rem" fontWeight="400">
             Request a specific amount as a refund
           </Typography>
           <RequestedRefundInput
@@ -126,10 +126,10 @@ export default function RefundRequest({ exchange }: Props) {
           />
         </Grid>
         <Grid flexDirection="column">
-          <Typography fontSize="1rem" fontWeight="600">
+          <Typography $fontSize="1rem" fontWeight="600">
             Percentage
           </Typography>
-          <Typography fontSize="0.75rem" fontWeight="400">
+          <Typography $fontSize="0.75rem" fontWeight="400">
             Edit as %
           </Typography>
           <Input

@@ -18,7 +18,7 @@ import {
 } from "../../../lib/routing/parameters";
 import { BosonRoutes } from "../../../lib/routing/routes";
 import { colors } from "../../../lib/styles/colors";
-import { Offer } from "../../../lib/types/offer";
+import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
@@ -33,7 +33,7 @@ interface Props {
   data: Readonly<Array<TableData>>;
   name: string;
   image: string;
-  exchange: NonNullable<Offer["exchanges"]>[number];
+  exchange: Exchange;
 }
 export default function DetailWidget({
   id,
@@ -52,9 +52,7 @@ export default function DetailWidget({
       <ModalGrid>
         <ModalImageWrapper>
           {type === "SUCCESS" && state === subgraph.ExchangeState.Committed && (
-            <DetailOpenSea
-              exchange={exchange as NonNullable<Offer["exchanges"]>[number]}
-            />
+            <DetailOpenSea exchange={exchange} />
           )}
           <Image src={image} dataTestId="offerImage" />
         </ModalImageWrapper>

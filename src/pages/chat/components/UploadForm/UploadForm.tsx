@@ -17,7 +17,7 @@ export default function UploadForm() {
         <Info size={20} />
       </Grid>
       <Grid margin="0.25rem 0 0.75rem 0">
-        <Typography color={colors.darkGrey} fontSize="0.75rem">
+        <Typography color={colors.darkGrey} $fontSize="0.75rem">
           File format: PDF, PNG, JPG <br />
           Max. file size: {MAX_FILE_SIZE / (1024 * 1024)}MB
         </Typography>

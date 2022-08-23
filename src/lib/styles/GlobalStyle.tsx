@@ -44,6 +44,10 @@ const GlobalStyle = createGlobalStyle<{
     }
   }
 
+  button {
+    all: unset;
+  }
+
   html, body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -63,6 +67,8 @@ const GlobalStyle = createGlobalStyle<{
 
     max-height: 100vh;
   }
+
+  
 
   a,
   button,

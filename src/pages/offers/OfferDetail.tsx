@@ -8,14 +8,8 @@ import {
   DetailGrid,
   DetailWrapper,
   ImageWrapper,
-  InfoIcon,
-  InfoIconTextWrapper,
   LightBackground,
-  MainDetailGrid,
-  Tab,
-  Tabs,
-  Toggle,
-  WidgetContainer
+  MainDetailGrid
 } from "../../components/detail/Detail.style";
 import DetailChart from "../../components/detail/DetailChart";
 import DetailShare from "../../components/detail/DetailShare";
@@ -32,7 +26,6 @@ import { colors } from "../../lib/styles/colors";
 import { getOfferDetails } from "../../lib/utils/getOfferDetails";
 import useOffer from "../../lib/utils/hooks/offer/useOffer";
 import { useSellers } from "../../lib/utils/hooks/useSellers";
-import { isAccountSeller } from "../../lib/utils/isAccountSeller";
 import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
 
 export default function OfferDetail() {
@@ -129,7 +122,6 @@ export default function OfferDetail() {
       </div>
     );
   }
-  const isSeller = isAccountSeller(offer, address);
 
   const {
     name,
@@ -144,28 +136,6 @@ export default function OfferDetail() {
   return (
     <DetailWrapper>
       <LightBackground>
-        {isSeller && (
-          <Toggle>
-            <InfoIconTextWrapper>
-              <InfoIcon />
-              <span>You are the owner of this offer. Toggle view:</span>
-            </InfoIconTextWrapper>
-            <Tabs>
-              <Tab
-                $isSelected={!isTabSellerSelected}
-                onClick={() => setTabSellerSelected(false)}
-              >
-                Buyer
-              </Tab>
-              <Tab
-                $isSelected={isTabSellerSelected}
-                onClick={() => setTabSellerSelected(true)}
-              >
-                Seller
-              </Tab>
-            </Tabs>
-          </Toggle>
-        )}
         <MainDetailGrid>
           <ImageWrapper>
             <Image src={offerImg} dataTestId="offerImage" />
@@ -184,29 +154,14 @@ export default function OfferDetail() {
             >
               {name}
             </Typography>
-            {isSeller ? (
-              <>
-                {isTabSellerSelected ? (
-                  <WidgetContainer ref={widgetRef}></WidgetContainer>
-                ) : (
-                  <DetailWidget
-                    pageType="offer"
-                    offer={offer}
-                    name={name}
-                    image={offerImg}
-                    hasSellerEnoughFunds={hasSellerEnoughFunds}
-                  />
-                )}
-              </>
-            ) : (
-              <DetailWidget
-                pageType="offer"
-                offer={offer}
-                name={name}
-                image={offerImg}
-                hasSellerEnoughFunds={hasSellerEnoughFunds}
-              />
-            )}
+
+            <DetailWidget
+              pageType="offer"
+              offer={offer}
+              name={name}
+              image={offerImg}
+              hasSellerEnoughFunds={hasSellerEnoughFunds}
+            />
           </div>
           <DetailShare />
         </MainDetailGrid>

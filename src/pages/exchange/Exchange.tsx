@@ -8,14 +8,8 @@ import {
   DetailGrid,
   DetailWrapper,
   ImageWrapper,
-  InfoIcon,
-  InfoIconTextWrapper,
   LightBackground,
-  MainDetailGrid,
-  Tab,
-  Tabs,
-  Toggle,
-  WidgetContainer
+  MainDetailGrid
 } from "../../components/detail/Detail.style";
 import DetailOpenSea from "../../components/detail/DetailOpenSea";
 import DetailShare from "../../components/detail/DetailShare";
@@ -35,7 +29,6 @@ import { Offer } from "../../lib/types/offer";
 import { getOfferDetails } from "../../lib/utils/getOfferDetails";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useSellers } from "../../lib/utils/hooks/useSellers";
-import { isAccountSeller } from "../../lib/utils/isAccountSeller";
 
 export default function Exchange() {
   const { [UrlParameters.exchangeId]: exchangeId } = useParams();
@@ -123,9 +116,7 @@ export default function Exchange() {
       </div>
     );
   }
-  const isSeller = isAccountSeller(offer, address);
   const buyerAddress = exchange.buyer.wallet;
-  const isBuyer = buyerAddress.toLowerCase() === address.toLowerCase();
 
   const {
     name,
@@ -141,33 +132,9 @@ export default function Exchange() {
     <>
       <DetailWrapper>
         <LightBackground>
-          {isSeller && isBuyer && (
-            <Toggle>
-              <InfoIconTextWrapper>
-                <InfoIcon />
-                <span>You are the owner of this exchange. Toggle view:</span>
-              </InfoIconTextWrapper>
-              <Tabs>
-                <Tab
-                  $isSelected={!isTabSellerSelected}
-                  onClick={() => setTabSellerSelected(false)}
-                >
-                  Buyer
-                </Tab>
-                <Tab
-                  $isSelected={isTabSellerSelected}
-                  onClick={() => setTabSellerSelected(true)}
-                >
-                  Seller
-                </Tab>
-              </Tabs>
-            </Toggle>
-          )}
           <MainDetailGrid>
             <ImageWrapper>
-              <DetailOpenSea
-                exchange={exchange as NonNullable<Offer["exchanges"]>[number]}
-              />
+              <DetailOpenSea exchange={exchange} />
               <Image src={offerImg} dataTestId="offerImage" />
             </ImageWrapper>
             <div>
@@ -184,35 +151,15 @@ export default function Exchange() {
               >
                 {name}
               </Typography>
-              {isSeller ? (
-                <>
-                  {isTabSellerSelected ? (
-                    <WidgetContainer ref={widgetRef}></WidgetContainer>
-                  ) : (
-                    // TODO: handle this widget
-                    <DetailWidget
-                      pageType="exchange"
-                      offer={offer}
-                      exchange={
-                        exchange as NonNullable<Offer["exchanges"]>[number]
-                      }
-                      name={name}
-                      image={offerImg}
-                      hasSellerEnoughFunds={hasSellerEnoughFunds}
-                    />
-                  )}
-                </>
-              ) : (
-                // TODO: handle this widget
-                <DetailWidget
-                  pageType="exchange"
-                  offer={offer}
-                  exchange={exchange as NonNullable<Offer["exchanges"]>[number]}
-                  name={name}
-                  image={offerImg}
-                  hasSellerEnoughFunds={hasSellerEnoughFunds}
-                />
-              )}
+
+              <DetailWidget
+                pageType="exchange"
+                offer={offer}
+                exchange={exchange}
+                name={name}
+                image={offerImg}
+                hasSellerEnoughFunds={hasSellerEnoughFunds}
+              />
             </div>
             <DetailShare />
           </MainDetailGrid>

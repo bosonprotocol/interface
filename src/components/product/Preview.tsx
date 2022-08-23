@@ -132,7 +132,7 @@ export default function Preview({ togglePreview, seller }: Props) {
                 <Typography
                   tag="h1"
                   data-testid="name"
-                  fontSize="2rem"
+                  $fontSize="2rem"
                   margin="0 0 2rem 0"
                 >
                   {name}
