@@ -13,6 +13,7 @@ import { useSigner } from "wagmi";
 
 import { CONFIG } from "../../../lib/config";
 import { BosonRoutes } from "../../../lib/routing/routes";
+import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
 import { Offer } from "../../../lib/types/offer";
 import { IPrice } from "../../../lib/utils/convertPrice";
@@ -60,10 +61,24 @@ const RedeemButton = styled(Button)`
 
   && {
     > div {
+      width: 100%;
+      gap: 1rem;
       display: flex;
       align-items: stretch;
+      justify-content: center;
       small {
         align-items: center;
+      }
+    }
+
+    ${breakpoint.s} {
+      > div {
+        gap: 0.5rem;
+      }
+    }
+    ${breakpoint.m} {
+      > div {
+        gap: 1rem;
       }
     }
   }
@@ -375,8 +390,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 <span>Redeem</span>
                 <Typography
                   tag="small"
-                  $fontSize="12px"
-                  lineHeight="18px"
+                  $fontSize="0.75rem"
+                  lineHeight="1.125rem"
                   fontWeight="600"
                   margin="0"
                 >
