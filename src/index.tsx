@@ -10,6 +10,7 @@ import WalletConnectionProvider from "./components/WalletConnectionProvider";
 import { BosonRoutes, OffersRoutes } from "./lib/routing/routes";
 import PrivateAccount from "./pages/account/private/PrivateAccountContainer";
 import PublicOrPrivateAccount from "./pages/account/public/PublicOrPrivateAccount";
+import Chat from "./pages/chat/Chat";
 import CreateProduct from "./pages/create-product/CreateProduct";
 import CustomStore from "./pages/custom-store/CustomStore";
 import DisputeCentre from "./pages/dispute-centre/DisputeCentre";
@@ -45,48 +46,56 @@ root.render(
         <HashRouter>
           <ScrollToTop />
           <SentryProvider>
-            <Route path="/" element={<App />}>
-              <Route path={BosonRoutes.Root} element={<Landing />} />
-              {[
-                OffersRoutes.Root,
-                BosonRoutes.Explore,
-                BosonRoutes.ExplorePage,
-                BosonRoutes.ExplorePageByIndex
-              ].map((route) => (
-                <Route key={route} path={route} element={<Explore />} />
-              ))}
+            <>
+              <Route
+                path={`${BosonRoutes.Chat}/*`}
+                element={<App withLayout={false} withFooter={false} />}
+              >
+                <Route path="*" element={<Chat />} />
+              </Route>
+              <Route path="/" element={<App />}>
+                <Route path={BosonRoutes.Root} element={<Landing />} />
+                {[
+                  OffersRoutes.Root,
+                  BosonRoutes.Explore,
+                  BosonRoutes.ExplorePage,
+                  BosonRoutes.ExplorePageByIndex
+                ].map((route) => (
+                  <Route key={route} path={route} element={<Explore />} />
+                ))}
 
-              <Route path={BosonRoutes.Sell} element={<CreateProduct />} />
-              <Route
-                path={OffersRoutes.OfferDetail}
-                element={<OfferDetail />}
-              />
-              <Route path={BosonRoutes.Exchange} element={<Exchange />} />
-              <Route
-                path={BosonRoutes.YourAccount}
-                element={<PrivateAccount />}
-              />
-              <Route
-                path={BosonRoutes.Account}
-                element={<PublicOrPrivateAccount />}
-              />
-              <Route
-                path={BosonRoutes.CreateStorefront}
-                element={<CustomStore />}
-              />
-              <Route
-                path={`${BosonRoutes.Dispute}/*`}
-                element={<DisputeCentre />}
-              />
-              <Route
-                path="*"
-                element={
-                  <main style={{ padding: "1rem" }}>
-                    <p>Page not found</p>
-                  </main>
-                }
-              />
-            </Route>
+                <Route path={BosonRoutes.Sell} element={<CreateProduct />} />
+                <Route
+                  path={OffersRoutes.OfferDetail}
+                  element={<OfferDetail />}
+                />
+                <Route path={BosonRoutes.Exchange} element={<Exchange />} />
+                <Route
+                  path={BosonRoutes.YourAccount}
+                  element={<PrivateAccount />}
+                />
+                <Route
+                  path={BosonRoutes.Account}
+                  element={<PublicOrPrivateAccount />}
+                />
+                <Route
+                  path={BosonRoutes.CreateStorefront}
+                  element={<CustomStore />}
+                />
+                <Route
+                  path={`${BosonRoutes.Dispute}/*`}
+                  element={<DisputeCentre />}
+                />
+                <Route
+                  path="*"
+                  element={
+                    <main style={{ padding: "1rem" }}>
+                      <p>Page not found</p>
+                    </main>
+                  }
+                />
+              </Route>
+            </>
           </SentryProvider>
         </HashRouter>
       </QueryClientProvider>

@@ -44,7 +44,7 @@ export default function Summary({ onNextClick }: Props) {
   return (
     <>
       <StyledGrid justifyContent="flex-start" gap="0.5rem">
-        <Info size={16} />
+        <Info size={30} />
         <Typography fontWeight="600" $fontSize="1rem" lineHeight="1.5rem">
           This exchange is facilitated by Boson Protocol's settlement mechanism.
         </Typography>

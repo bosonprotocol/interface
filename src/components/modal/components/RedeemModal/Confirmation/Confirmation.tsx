@@ -14,6 +14,7 @@ import { CONFIG } from "../../../../../lib/config";
 import { colors } from "../../../../../lib/styles/colors";
 import { useChatStatus } from "../../../../../lib/utils/hooks/chat/useChatStatus";
 import { useChatContext } from "../../../../../pages/chat/ChatProvider/ChatContext";
+import { Spinner } from "../../../../loading/Spinner";
 import Button from "../../../../ui/Button";
 import Grid from "../../../../ui/Grid";
 import Typography from "../../../../ui/Typography";
@@ -103,7 +104,13 @@ ${FormModel.formFields.email.placeholder}: ${emailField.value}`;
     setChatError(null);
     bosonXmtp
       ?.encodeAndSendMessage(newMessage, destinationAddress)
-      .catch((error) => setChatError(error));
+      .catch((error) => {
+        console.error(
+          "Error while sending a message with the delivery details",
+          error
+        );
+        setChatError(error);
+      });
   };
   return (
     <>
@@ -142,7 +149,7 @@ ${FormModel.formFields.email.placeholder}: ${emailField.value}`;
       )}
       {showSuccessInitialization && (
         <div>
-          <Grid justifyContent="space-between" gap="2rem">
+          <Grid justifyContent="space-between" gap="2rem" margin="1.5rem 0">
             <Grid justifyContent="flex-start" gap="1rem">
               <ChatDotsIcon size={24} />
               <Typography>
@@ -185,6 +192,7 @@ ${FormModel.formFields.email.placeholder}: ${emailField.value}`;
           exchangeId={exchangeId}
           chainId={CONFIG.chainId}
           onError={(error) => {
+            console.error("Error while redeeming", error);
             setRedeemError(error);
             setIsLoading(false);
           }}
@@ -199,7 +207,10 @@ ${FormModel.formFields.email.placeholder}: ${emailField.value}`;
           }}
           web3Provider={signer?.provider as Provider}
         >
-          Confirm address and redeem
+          <Grid gap="0.5rem">
+            Confirm address and redeem
+            {isLoading && <Spinner size="20" />}
+          </Grid>
         </RedeemButton>
         <Button theme="outline" onClick={() => onBackClick()}>
           Back
