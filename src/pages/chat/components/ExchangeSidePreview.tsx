@@ -11,6 +11,7 @@ import Price from "../../../components/price";
 import MultiSteps from "../../../components/step/MultiSteps";
 import Timeline from "../../../components/timeline/Timeline";
 import Button from "../../../components/ui/Button";
+import Image from "../../../components/ui/Image";
 import Typography from "../../../components/ui/Typography";
 import { CONFIG } from "../../../lib/config";
 import { breakpoint } from "../../../lib/styles/breakpoint";
@@ -79,6 +80,28 @@ const ExchangeImage = styled.img`
     margin: unset;
     max-width: unset;
     object-fit: cover;
+  }
+`;
+
+const StyledImage = styled(Image)`
+  all: unset;
+
+  [data-testid="exchange-image"] {
+    all: unset;
+    width: 100%;
+    max-height: 400px;
+    max-width: 400px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+    padding: 1.875rem 0;
+
+    ${breakpoint.l} {
+      padding: unset;
+      margin: unset;
+      max-width: unset;
+      object-fit: cover;
+    }
   }
 `;
 
@@ -256,7 +279,12 @@ export default function ExchangeSidePreview({ exchange, disputeOpen }: Props) {
   );
   return (
     <Container $disputeOpen={disputeOpen}>
-      <ExchangeImage src={exchange.offer.metadata.imageUrl} width="372px" />
+      {/* <ExchangeImage src={exchange.offer.metadata.imageUrl} width="372px" /> */}
+      <StyledImage
+        src={exchange?.offer.metadata.imageUrl}
+        alt="exchange image"
+        dataTestId="exchange-image"
+      />
       {isInRedeemed && (
         <InfoMessage>{`${daysLeftToResolveDispute} / ${totalDaysToResolveDispute} days left to resolve dispute`}</InfoMessage>
       )}

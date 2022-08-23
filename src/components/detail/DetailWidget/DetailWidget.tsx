@@ -3,7 +3,6 @@ import {
   CommitButton,
   exchanges,
   Provider,
-  RedeemButton,
   subgraph
 } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
@@ -21,6 +20,7 @@ import { titleCase } from "../../../lib/utils/formatText";
 import { isOfferHot } from "../../../lib/utils/getOfferLabel";
 import { getBuyerCancelPenalty } from "../../../lib/utils/getPrices";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
+import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { getItemFromStorage } from "../../../lib/utils/hooks/useLocalStorage";
 import { useModal } from "../../modal/useModal";
@@ -52,10 +52,27 @@ const StyledPrice = styled(Price)`
   }
 `;
 
+const RedeemButton = styled(Button)`
+  padding: 1rem;
+  height: 3.5rem;
+  display: flex;
+  align-items: center;
+
+  && {
+    > div {
+      display: flex;
+      align-items: stretch;
+      small {
+        align-items: center;
+      }
+    }
+  }
+`;
+
 interface IDetailWidget {
   pageType?: "exchange" | "offer";
   offer: Offer;
-  exchange?: NonNullable<Offer["exchanges"]>[number];
+  exchange?: Exchange;
   name?: string;
   image?: string;
   hasSellerEnoughFunds: boolean;
@@ -335,38 +352,36 @@ const DetailWidget: React.FC<IDetailWidget> = ({
             )}
             {isToRedeem && (
               <RedeemButton
+                theme="secondary"
+                size="large"
                 disabled={
                   isChainUnsupported || isLoading || isOffer || isPreview
                 }
-                exchangeId={exchange?.id || offer.id}
-                chainId={CONFIG.chainId}
-                onError={(args) => {
-                  console.error("onError", args);
-                  setIsLoading(false);
-                  showModal(modalTypes.DETAIL_WIDGET, {
-                    title: "An error occurred",
-                    message: "An error occurred when trying to redeem!",
-                    type: "ERROR",
-                    state: "Redeemed",
-                    ...BASE_MODAL_DATA
-                  });
+                onClick={() => {
+                  showModal(
+                    modalTypes.REDEEM_MODAL,
+                    {
+                      title: "Redeem your item",
+                      exchangeId: exchange?.id || "",
+                      buyerId: exchange?.buyer.id || "",
+                      sellerId: exchange?.seller.id || "",
+                      sellerAddress: exchange?.seller.operator || ""
+                    },
+                    "s"
+                  );
                 }}
-                onPendingSignature={() => {
-                  setIsLoading(true);
-                }}
-                onSuccess={() => {
-                  setIsLoading(false);
-                  showModal(modalTypes.DETAIL_WIDGET, {
-                    title: "You have successfully redeemed!",
-                    message: "You have successfully redeemed!",
-                    type: "SUCCESS",
-                    state: "Redeemed",
-                    ...BASE_MODAL_DATA
-                  });
-                }}
-                extraInfo={isToRedeem ? "Step 2/2" : "Step 2"}
-                web3Provider={signer?.provider as Provider}
-              />
+              >
+                <span>Redeem</span>
+                <Typography
+                  tag="small"
+                  $fontSize="12px"
+                  lineHeight="18px"
+                  fontWeight="600"
+                  margin="0"
+                >
+                  Step 2/2
+                </Typography>
+              </RedeemButton>
             )}
             {!isToRedeem && (
               <Button theme="outline" disabled>

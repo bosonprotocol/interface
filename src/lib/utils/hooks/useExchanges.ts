@@ -18,10 +18,18 @@ export type Exchange = {
   seller: {
     id: string;
     operator: string;
+    admin: string;
+    clerk: string;
+    treasury: string;
+    authTokenId: string;
+    authTokenType: number;
+    voucherCloneAddress: string;
+    active: boolean;
   };
   buyer: {
     id: string;
     wallet: string;
+    active: boolean;
   };
   offer: Offer;
 };
@@ -86,10 +94,18 @@ export function useExchanges(
             seller {
               id
               operator
+              admin
+              clerk
+              treasury
+              authTokenId
+              authTokenType
+              voucherCloneAddress
+              active
             }
             buyer {
               id
               wallet
+              active
             }
             offer ${offerGraphQl}
           }

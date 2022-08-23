@@ -46,7 +46,7 @@ export default function UploadedFile({
     return (
       <>
         <ImageSquare size={23} />
-        <Typography fontSize="1rem" fontWeight="400">
+        <Typography $fontSize="1rem" fontWeight="400">
           &nbsp;&nbsp; {fileName}
         </Typography>
         {showSize && (

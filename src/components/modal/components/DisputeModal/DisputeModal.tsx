@@ -181,7 +181,7 @@ function DisputeModal({ hideModal }: Props) {
             <FileText size={24} />
             <Typography
               margin="0"
-              fontSize="1.25rem"
+              $fontSize="1.25rem"
               color={colors.black}
               fontWeight="600"
             >
@@ -189,7 +189,7 @@ function DisputeModal({ hideModal }: Props) {
             </Typography>
             <Typography
               margin="0"
-              fontSize="1rem"
+              $fontSize="1rem"
               color={colors.darkGrey}
               fontWeight="400"
             >
@@ -201,7 +201,7 @@ function DisputeModal({ hideModal }: Props) {
             <CheckCircle size={24} />
             <Typography
               margin="0"
-              fontSize="1.25rem"
+              $fontSize="1.25rem"
               color={colors.black}
               fontWeight="600"
             >
@@ -209,7 +209,7 @@ function DisputeModal({ hideModal }: Props) {
             </Typography>
             <Typography
               margin="0"
-              fontSize="1rem"
+              $fontSize="1rem"
               color={colors.darkGrey}
               fontWeight="400"
             >
@@ -221,7 +221,7 @@ function DisputeModal({ hideModal }: Props) {
             <HandsClapping size={24} />
             <Typography
               margin="0"
-              fontSize="1.25rem"
+              $fontSize="1.25rem"
               color={colors.black}
               fontWeight="600"
             >
@@ -229,7 +229,7 @@ function DisputeModal({ hideModal }: Props) {
             </Typography>
             <Typography
               margin="0"
-              fontSize="1rem"
+              $fontSize="1rem"
               color={colors.darkGrey}
               fontWeight="400"
             >
