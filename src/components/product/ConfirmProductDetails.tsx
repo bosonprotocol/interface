@@ -7,7 +7,6 @@ import { useAccount } from "wagmi";
 
 import Collapse from "../../components/collapse/Collapse";
 import InitializeChat from "../../components/modal/components/Chat/components/InitializeChat";
-import { useModal } from "../../components/modal/useModal";
 import { CONFIG } from "../../lib/config";
 import {
   CreateProductImageProductImages,
@@ -69,14 +68,10 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
     useState<ChatInitializationStatus>("PENDING");
   const { bosonXmtp, envName } = useChatContext();
 
-  const { showModal, modalTypes } = useModal();
   const { values } = useCreateForm();
   const { address } = useAccount();
 
   useEffect(() => {
-    // showModal(modalTypes.CHAT_INITIALIZATION_FAILED, {
-    //   title: ""
-    // });
     if (chatInitializationStatus === "PENDING" && !!bosonXmtp) {
       setChatInitializationStatus("ALREADY_INITIALIZED");
     } else if (address && chatInitializationStatus !== "ALREADY_INITIALIZED") {
@@ -90,20 +85,10 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
         })
         .catch((err) => {
           console.error(err);
-          showModal(modalTypes.CHAT_INITIALIZATION_FAILED, {
-            title: ""
-          });
           setChatInitializationStatus("ERROR");
         });
     }
-  }, [
-    address,
-    bosonXmtp,
-    chatInitializationStatus,
-    envName,
-    modalTypes.CHAT_INITIALIZATION_FAILED,
-    showModal
-  ]);
+  }, [address, bosonXmtp, chatInitializationStatus, envName]);
 
   const handleOpenPreview = () => {
     togglePreview(true);

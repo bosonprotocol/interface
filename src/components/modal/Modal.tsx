@@ -78,16 +78,13 @@ const Wrapper = styled.div<{ $modalType: ModalType; $size: Props["size"] }>`
   }
 `;
 
-const Header = styled(Typography)<{ $title: string; $modalType: ModalType }>`
+const Header = styled(Typography)<{ $title: string }>`
   position: relative;
 
   text-align: left;
   padding: 1rem 2rem;
   display: flex;
-  border-bottom: ${({ $modalType }) =>
-    $modalType === "CHAT_INITIALIZATION_FAILED"
-      ? "none"
-      : `2px solid ${colors.border};`}
+  border-bottom: 2px solid ${colors.border};
   align-items: center;
   justify-content: ${(props) => {
     return props.$title ? "space-between" : "flex-end";
@@ -152,12 +149,7 @@ export default function Modal({
             )}
           </Header>
         ) : (
-          <HeaderWithTitle
-            tag="h3"
-            $title={title}
-            $modalType={modalType}
-            margin="0"
-          >
+          <HeaderWithTitle tag="h3" $title={title} margin="0">
             {title}
             {closable && (
               <Button data-close theme="blank" onClick={hideModal}>
