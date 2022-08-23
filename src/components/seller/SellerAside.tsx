@@ -65,20 +65,26 @@ export default function SellerAside() {
     <Aside>
       <ul>
         {Object.keys(sellerPageTypes).map((key: string) => {
-          const { label, url, icon } =
-            sellerPageTypes[key as keyof typeof sellerPageTypes];
+          const {
+            label,
+            url,
+            icon: Icon
+          } = sellerPageTypes[key as keyof typeof sellerPageTypes];
+          const isActive = sellerPage === url;
+
           return (
-            <AsideLink
-              key={`seller_aside_route_${label}`}
-              $active={sellerPage === url}
-            >
+            <AsideLink key={`seller_aside_route_${label}`} $active={isActive}>
               <LinkWithQuery to={handleUrl(url)}>
                 <Grid
                   alignItems="center"
                   justifyContent="flex-start"
                   gap="1rem"
                 >
-                  {icon}
+                  <Icon
+                    size={16}
+                    weight={isActive ? "regular" : "thin"}
+                    color={isActive ? colors.black : colors.darkGrey}
+                  />
                   {label}
                 </Grid>
               </LinkWithQuery>

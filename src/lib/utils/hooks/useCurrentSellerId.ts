@@ -12,7 +12,7 @@ export function useCurrentSellerId() {
     admin: accountAddress
   };
 
-  return useQuery(["sellers", props], async () => {
+  const result = useQuery(["sellers", props], async () => {
     const result = await fetchSubgraph<{
       sellers: {
         sellerId: string;
@@ -27,7 +27,11 @@ export function useCurrentSellerId() {
       `,
       props
     );
-    console.log(result);
-    return result?.sellers?.[0] ?? null;
+    return result;
   });
+
+  return {
+    ...result,
+    sellerId: result?.data?.sellers?.[0]?.sellerId ?? null
+  };
 }

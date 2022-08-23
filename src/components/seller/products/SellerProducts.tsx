@@ -1,21 +1,10 @@
 import { useState } from "react";
-import styled from "styled-components";
 
-import { colors } from "../../../lib/styles/colors";
 import { useInfiniteOffers } from "../../../lib/utils/hooks/offers/useInfiniteOffers";
-import { useCurrentSellerId } from "../../../lib/utils/hooks/useCurrentSellerId";
-import Typography from "../../ui/Typography";
+import Loading from "../../ui/Loading";
 import SellerTags from "../SellerTags";
 import SellerFilters from "./SellerFilters";
 import SellerTable from "./SellerTable";
-
-const SellerTitle = styled(Typography)`
-  margin: 0 0 1.25rem 0;
-`;
-const SellerInner = styled.div`
-  background: ${colors.white};
-  padding: 1rem;
-`;
 
 const productTags = [
   {
@@ -40,48 +29,48 @@ const productTags = [
   }
 ];
 
-export default function SellerProducts() {
-  const sellerId = useCurrentSellerId();
+interface Props {
+  sellerId: string;
+}
 
-  console.log(sellerId);
+export default function SellerProducts({ sellerId }: Props) {
   const [currentTag, setCurrentTag] = useState(productTags[0].value);
 
-  // TODO: change this mock and get real seller id based on he's address
-  const SELLER_ID = "2";
-  const { data, isLoading, isError, ...rest } = useInfiniteOffers(
+  const { data, isLoading, isError } = useInfiniteOffers(
     {
       voided: false,
-      sellerId: SELLER_ID,
+      sellerId,
       first: 1000,
       orderBy: "createdAt",
       orderDirection: "desc"
     },
     {
-      enabled: !!SELLER_ID,
+      enabled: !!sellerId,
       keepPreviousData: true
     }
   );
 
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
     <>
-      <SellerTitle tag="h3">Products</SellerTitle>
-      <SellerInner>
-        <SellerTags
-          tags={productTags}
-          currentTag={currentTag}
-          setCurrentTag={setCurrentTag}
-        />
-        <SellerFilters />
-        <SellerTable
-          offers={
-            data?.pages.flatMap((page) => {
-              return page;
-            }) || []
-          }
-          isLoading={isLoading}
-          isError={isError}
-        />
-      </SellerInner>
+      <SellerTags
+        tags={productTags}
+        currentTag={currentTag}
+        setCurrentTag={setCurrentTag}
+      />
+      <SellerFilters />
+      <SellerTable
+        offers={
+          data?.pages?.flatMap((page: any) => {
+            return page;
+          }) || []
+        }
+        isLoading={isLoading}
+        isError={isError}
+      />
     </>
   );
 }
