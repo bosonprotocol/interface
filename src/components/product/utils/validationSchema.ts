@@ -1,6 +1,9 @@
 import * as Yup from "yup";
 
 import { validationMessage } from "../../../lib/const/validationMessage";
+import { validationOfFile } from "../../../pages/chat/components/UploadForm/const";
+import { FormModel } from "../../modal/components/Chat/MakeProposal/MakeProposalFormModel";
+import { DisputeFormModel } from "../../modal/components/DisputeModal/DisputeModalFormModel";
 import { MAX_IMAGE_SIZE, MAX_LOGO_SIZE } from "./const";
 import {
   validationOfImage,
@@ -8,7 +11,7 @@ import {
 } from "./validationUtils";
 
 export const createYourProfileValidationSchema = Yup.object({
-  creteYourProfile: Yup.object({
+  createYourProfile: Yup.object({
     logo: validationOfRequiredImage(MAX_LOGO_SIZE),
     name: Yup.string().trim().required(validationMessage.required),
     email: Yup.string().trim().required(validationMessage.required),
@@ -49,7 +52,7 @@ export const productInformationValidationSchema = Yup.object({
         label: Yup.string()
       })
       .required(validationMessage.required),
-    // tags: Yup.string().required(validationMessage.required),
+    tags: Yup.array().of(Yup.string()).default([]),
     attributes: Yup.array()
       .of(
         Yup.object().shape({
@@ -58,7 +61,15 @@ export const productInformationValidationSchema = Yup.object({
         })
       )
       .default([{ name: "", value: "" }]),
-    description: Yup.string().required(validationMessage.required)
+    description: Yup.string().required(validationMessage.required),
+    sku: Yup.string(),
+    id: Yup.string(),
+    idType: Yup.string(),
+    brandName: Yup.string(),
+    manufacture: Yup.string(),
+    manufactureModelName: Yup.string(),
+    partNumber: Yup.string(),
+    materials: Yup.string()
   })
 });
 
@@ -73,8 +84,15 @@ export const coreTermsOfSaleValidationSchema = Yup.object({
       .required(validationMessage.required),
     // currency: Yup.string().required(validationMessage.required),
     // TODO: ADD Use price for all variants FILED
-    quantity: Yup.number().min(1).required(validationMessage.required),
-    // tokenGatedOffer: Yup.string().required(validationMessage.required),
+    quantity: Yup.number()
+      .min(1, "Quantity must be greater than or equal to 1")
+      .required(validationMessage.required),
+    tokenGatedOffer: Yup.object()
+      .shape({
+        value: Yup.string(),
+        label: Yup.string()
+      })
+      .default([{ value: "", label: "" }]),
     offerValidityPeriod: Yup.array()
       .of(
         Yup.object().shape({
@@ -112,6 +130,8 @@ export const termsOfExchangeValidationSchema = Yup.object({
 
 export const shippingInfoValidationSchema = Yup.object({
   shippingInfo: Yup.object({
+    weight: Yup.string(),
+    weightUnit: Yup.object({ value: Yup.string(), label: Yup.string() }),
     height: Yup.string(),
     width: Yup.string(),
     length: Yup.string(),
@@ -132,3 +152,39 @@ export const shippingInfoValidationSchema = Yup.object({
       .default([{ region: "", time: "" }])
   })
 });
+
+export const disputeCentreValidationSchemaGetStarted = Yup.object({
+  [DisputeFormModel.formFields.getStarted.name]: Yup.string().required(
+    validationMessage.required
+  )
+});
+
+export const disputeCentreValidationSchemaTellUsMore = Yup.object({
+  [DisputeFormModel.formFields.tellUsMore.name]: Yup.string().required(
+    validationMessage.required
+  )
+});
+
+export const disputeCentreValidationSchemaAdditionalInformation = Yup.object({
+  [FormModel.formFields.description.name]: Yup.string()
+    .trim()
+    .required(FormModel.formFields.description.requiredErrorMessage),
+  [FormModel.formFields.upload.name]: validationOfFile({ isOptional: true })
+});
+
+export const disputeCentreValidationSchemaMakeProposal = Yup.object({
+  [FormModel.formFields.proposalsTypes.name]: Yup.array()
+    .of(
+      Yup.object().shape({
+        label: Yup.string(),
+        value: Yup.string()
+      })
+    )
+    .default([{ label: "", value: "" }]),
+  [FormModel.formFields.refundPercentage.name]: Yup.number()
+    .moreThan(0, FormModel.formFields.refundPercentage.moreThanErrorMessage)
+    .max(100, FormModel.formFields.refundPercentage.maxErrorMessage)
+    .defined(FormModel.formFields.refundPercentage.emptyErrorMessage)
+});
+
+export const disputeCentreValidationSchemaProposalSummary = Yup.object({});

@@ -53,6 +53,21 @@ const IndeterminateCheckbox = forwardRef(({ indeterminate, ...rest }, ref) => {
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
+  th {
+    font-weight: 600;
+    color: ${colors.darkGrey};
+  }
+  td {
+    font-weight: 400;
+    color: ${colors.black};
+  }
+  th,
+  td {
+    font-family: "Plus Jakarta Sans";
+    font-style: normal;
+    font-size: 0.75rem;
+    line-height: 1.5;
+  }
   thead {
     tr {
       th {
@@ -157,8 +172,8 @@ export default function SellerTable({ offers }: Props) {
               // TODO: prefetch to prevent reloading
               src={offer.metadata?.image}
               style={{
-                width: "5rem",
-                height: "5rem",
+                width: "2.5rem",
+                height: "2.5rem",
                 paddingTop: "0%",
                 fontSize: "0.75rem"
               }}

@@ -1,3 +1,4 @@
+import { SellerFieldsFragment } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
 import { parseUnits } from "@ethersproject/units";
 import map from "lodash/map";
 import slice from "lodash/slice";
@@ -26,6 +27,7 @@ import { useCreateForm } from "./utils/useCreateForm";
 
 interface Props {
   togglePreview: React.Dispatch<React.SetStateAction<boolean>>;
+  seller?: SellerFieldsFragment;
 }
 
 const PreviewWrapper = styled.div`
@@ -37,7 +39,7 @@ const PreviewWrapperContent = styled.div`
   box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1), 0px 0px 8px rgba(0, 0, 0, 0.1),
     0px 0px 16px rgba(0, 0, 0, 0.1), 0px 0px 32px rgba(0, 0, 0, 0.1);
 `;
-export default function Preview({ togglePreview }: Props) {
+export default function Preview({ togglePreview, seller }: Props) {
   const { values } = useCreateForm();
 
   const previewImages = getLocalStorageItems({
@@ -48,7 +50,6 @@ export default function Preview({ togglePreview }: Props) {
     togglePreview(false);
   };
 
-  const logoImage = previewImages?.[0] ?? null;
   const offerImg = previewImages?.[1] ?? null;
   const sliderImages = slice(previewImages, 1);
   const name = values.productInformation.productTitle || "Untitled";
@@ -61,6 +62,15 @@ export default function Preview({ togglePreview }: Props) {
 
   const validFromDateInMS = Date.parse(
     values.coreTermsOfSale.offerValidityPeriod[0]
+  );
+  const validUntilDateInMS = Date.parse(
+    values.coreTermsOfSale.offerValidityPeriod[1]
+  );
+  const voucherRedeemableFromDateInMS = Date.parse(
+    values.coreTermsOfSale.redemptionPeriod[0]
+  );
+  const voucherRedeemableUntilDateInMS = Date.parse(
+    values.coreTermsOfSale.redemptionPeriod[1]
   );
 
   const exchangeDate = Date.now().toString();
@@ -77,7 +87,9 @@ export default function Preview({ togglePreview }: Props) {
       18
     ).toString(),
     validFromDate: validFromDateInMS.toString(),
-    validUntilDate: "1677285059", // CHECK validUntilDate
+    validUntilDate: validUntilDateInMS.toString(),
+    voucherRedeemableFromDate: voucherRedeemableFromDateInMS.toString(),
+    voucherRedeemableUntilDate: voucherRedeemableUntilDateInMS.toString(),
     voidedAt: null,
     voucherValidDuration: "21727820",
     exchanges: [
@@ -86,11 +98,7 @@ export default function Preview({ togglePreview }: Props) {
         redeemedDate: exchangeDate
       }
     ],
-    seller: {
-      id: "4",
-      operator: logoImage,
-      active: true
-    },
+    seller,
     exchangeToken: {
       address: "0x0000000000000000000000000000000000000000",
       decimals: "18",
@@ -111,11 +119,10 @@ export default function Preview({ togglePreview }: Props) {
               </ImageWrapper>
               <div>
                 <SellerID
-                  seller={offer?.seller}
-                  offerName={name}
+                  offer={offer}
+                  buyerOrSeller={offer?.seller}
                   justifyContent="flex-start"
                   withProfileImage
-                  customImage
                 />
                 <Typography
                   tag="h1"
@@ -154,11 +161,12 @@ export default function Preview({ togglePreview }: Props) {
               <div>
                 <Typography tag="h3">About the artist</Typography>
                 <Typography tag="p" color={colors.darkGrey}>
-                  {values.creteYourProfile.description}
+                  {values.createYourProfile.description}
                 </Typography>
               </div>
             </DetailGrid>
-            <DetailSlider images={sliderImages} />
+            createYourProfile
+            <DetailSlider images={sliderImages} isPreview />
             <DetailGrid>
               {values?.shippingInfo?.jurisdiction?.length > 0 &&
                 values?.shippingInfo?.jurisdiction[0]?.region?.length > 0 && (

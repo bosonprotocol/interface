@@ -162,8 +162,8 @@ export default function OfferCard({
       <Content>
         {isSellerVisible && sellerAddress && (
           <SellerID
-            seller={offer?.seller}
-            offerName={name}
+            offer={offer}
+            buyerOrSeller={offer?.seller}
             withProfileImage={false}
           >
             <PriceText>Price</PriceText>

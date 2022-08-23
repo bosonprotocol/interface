@@ -44,6 +44,8 @@ export default function CurrencyIcon({
 
   return (
     <img
+      width="50"
+      height="50"
       src={url}
       onError={() => {
         setError(true);

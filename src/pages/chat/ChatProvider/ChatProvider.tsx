@@ -27,7 +27,8 @@ export default function ChatProvider({ children }: Props) {
     <Context.Provider
       value={{
         bosonXmtp,
-        initialize: () => setInitialized((prev) => prev + 1)
+        initialize: () => setInitialized((prev) => prev + 1),
+        envName
       }}
     >
       {children}

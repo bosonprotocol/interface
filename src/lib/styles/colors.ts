@@ -8,6 +8,7 @@ export const colors = {
   darkRed: "darkred",
   cyan: "#00FFFF",
   grey2: "#D3D5DB",
+  froly: "#F46A6A",
 
   /*
     TODO: Remove what's above when refactor/redesign of all pages is done

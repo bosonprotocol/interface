@@ -17,7 +17,6 @@ import {
   Toggle,
   WidgetContainer
 } from "../../components/detail/Detail.style";
-import DetailChart from "../../components/detail/DetailChart";
 import DetailOpenSea from "../../components/detail/DetailOpenSea";
 import DetailShare from "../../components/detail/DetailShare";
 import DetailSlider from "../../components/detail/DetailSlider";
@@ -33,7 +32,7 @@ import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
-import { getOfferDetails } from "../../lib/utils/hooks/getOfferDetails";
+import { getOfferDetails } from "../../lib/utils/getOfferDetails";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useSellers } from "../../lib/utils/hooks/useSellers";
 import { isAccountSeller } from "../../lib/utils/isAccountSeller";
@@ -173,8 +172,8 @@ export default function Exchange() {
             </ImageWrapper>
             <div>
               <SellerID
-                seller={offer?.seller}
-                offerName={name}
+                offer={offer}
+                buyerOrSeller={offer?.seller}
                 justifyContent="flex-start"
                 withProfileImage
               />
@@ -240,7 +239,6 @@ export default function Exchange() {
           </DetailGrid>
           {images.length > 0 && <DetailSlider images={images} />}
           <DetailGrid>
-            <DetailChart offer={offer} title="Trade history (all items)" />
             <DetailTransactions
               title="Transaction History (this item)"
               exchange={exchange as NonNullable<Offer["exchanges"]>[number]}

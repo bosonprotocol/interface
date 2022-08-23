@@ -109,7 +109,6 @@ export default function MakeProposalModal({
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           props: FormikProps<any>
         ) => {
-          // TODO: remove any
           const isDescribeProblemOK = Object.keys(props.errors).length === 0;
 
           const isReturnProposal = !!props.values[

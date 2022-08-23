@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 import { colors } from "../../../lib/styles/colors";
 import { useInfiniteOffers } from "../../../lib/utils/hooks/offers/useInfiniteOffers";
+import { useCurrentSellerId } from "../../../lib/utils/hooks/useCurrentSellerId";
 import Typography from "../../ui/Typography";
 import SellerTags from "../SellerTags";
 import SellerFilters from "./SellerFilters";
@@ -39,9 +40,10 @@ const productTags = [
   }
 ];
 
-const OFFERS_PER_PAGE = 5;
-
 export default function SellerProducts() {
+  const sellerId = useCurrentSellerId();
+
+  console.log(sellerId);
   const [currentTag, setCurrentTag] = useState(productTags[0].value);
 
   // TODO: change this mock and get real seller id based on he's address

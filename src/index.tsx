@@ -69,7 +69,6 @@ root.render(
                 ].map((route) => (
                   <Route key={route} path={route} element={<Explore />} />
                 ))}
-                {/* TODO MOVE TO  BosonRoutes.SellerCenter*/}
                 <Route
                   path={BosonRoutes.CreateProduct}
                   element={<CreateProduct />}
@@ -91,7 +90,6 @@ root.render(
                   path={BosonRoutes.CreateStorefront}
                   element={<CustomStore />}
                 />
-
                 <Route
                   path="*"
                   element={

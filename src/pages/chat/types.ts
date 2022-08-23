@@ -4,6 +4,7 @@ import {
   ThreadObject
 } from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/definitions";
 
+import type SellerID from "../../components/ui/SellerID";
 import { Exchange } from "../../lib/utils/hooks/useExchanges";
 
 export type Thread = ThreadObject & {
@@ -26,62 +27,4 @@ export type NewProposal = ProposalContent["value"];
 
 export type ProposalItem = ProposalContent["value"]["proposals"][number];
 
-// export type Message = {
-//   authorityId: string;
-//   sender: string;
-//   recipient: string;
-//   timestamp: number;
-//   data
-//   content: RegularMessage | ImageWithMetadata | ProposalMessage;
-// };
-
-// export type RegularMessage = {
-//   threadId: {
-//     exchangeId: string;
-//     sellerId: string;
-//     buyerId: string;
-//   };
-//   contentType: "string";
-//   version: "1";
-//   value: string;
-// };
-
-// export type ImageWithMetadata = {
-//   threadId: {
-//     exchangeId: string;
-//     sellerId: string;
-//     buyerId: string;
-//   };
-//   contentType: "image";
-//   version: "1";
-//   value: {
-//     name: string;
-//     size: number;
-//     encodedContent: string;
-//     type: "image/png" | "image/jpg" | "image/gif";
-//   };
-// };
-
-// export type ProposalMessage = {
-//   threadId: {
-//     exchangeId: string;
-//     sellerId: string;
-//     buyerId: string;
-//   };
-//   contentType: "proposal";
-//   version: "1";
-//   value: {
-//     title: string; // 'ID: x made a proposal' for now
-//     description: string;
-//     proposals: Proposal[];
-//     disputeContext: string[];
-//   };
-// };
-
-// export type NewProposal = ProposalMessage["value"];
-
-// export type Proposal = {
-//   type: string;
-//   percentageAmount: string;
-//   signature: string;
-// };
+export type BuyerOrSeller = Parameters<typeof SellerID>[0]["buyerOrSeller"];
