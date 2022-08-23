@@ -19,6 +19,7 @@ export const CONFIG = {
   dateFormat: process.env.DATE_FORMAT || "YYYY/MM/DD",
   shortDateFormat: process.env.SHORT_DATE_FORMAT || "MMM DD, YYYY",
   fullDateFormat: process.env.FULL_DATE_FORMAT || "YYYY-MM-DDTHH:mm:ssZ[Z]",
+  shortMonthWithDay: process.env.SHORT_MONTH_WITH_DAY_FORMAT || "MMM DD",
   defaultCurrency: {
     ticker: process.env.DEFAULT_CURRENCY || "USD",
     symbol: process.env.DEFAULT_CURRENCY_SYMBOL || "$"

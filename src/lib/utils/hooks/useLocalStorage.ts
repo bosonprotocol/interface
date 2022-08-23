@@ -1,7 +1,30 @@
 // extracted from https://usehooks.com/useLocalStorage/
 import { useState } from "react";
 
-export function getItemFromStorage<T>(key: string, initialValue: T) {
+export type CreateProductImageCreteYourProfileLogo =
+  "create-product-image_createYourProfile.logo";
+
+export type CreateProductImageProductImages =
+  | "create-product-image_productImages.thumbnail"
+  | "create-product-image_productImages.secondary"
+  | "create-product-image_productImages.everyAngle"
+  | "create-product-image_productImages.details"
+  | "create-product-image_productImages.inUse"
+  | "create-product-image_productImages.styledScene"
+  | "create-product-image_productImages.sizeAndScale"
+  | "create-product-image_productImages.more";
+
+export type GetItemFromStorageKey =
+  | "isChainUnsupported"
+  | "create-product"
+  | "tracing-url"
+  | CreateProductImageProductImages
+  | CreateProductImageCreteYourProfileLogo;
+
+export function getItemFromStorage<T>(
+  key: GetItemFromStorageKey,
+  initialValue: T
+) {
   if (typeof window === "undefined") {
     return initialValue;
   }
@@ -46,7 +69,10 @@ export const clearLocalStorage = () => {
   }
 };
 
-export function useLocalStorage<T>(key: string, initialValue: T) {
+export function useLocalStorage<T>(
+  key: GetItemFromStorageKey,
+  initialValue: T
+) {
   const [storedValue, setStoredValue] = useState<T>(() =>
     getItemFromStorage(key, initialValue)
   );

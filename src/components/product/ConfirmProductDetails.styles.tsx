@@ -9,7 +9,7 @@ import { ContainerProductPage, ProductButtonGroup } from "./Product.styles";
 
 export const ConfirmProductDetailsContainer = styled(ContainerProductPage)`
   max-width: 65.588rem;
-  margin 0 auto;
+  margin: 0 auto;
   padding-bottom: 10.875rem;
 `;
 
@@ -53,7 +53,7 @@ export const IconWrapper = styled.div`
 `;
 
 export const ConfirmationContent = styled.div`
-  width: Calc(100% - 3.125rem);
+  width: calc(100% - 3.125rem);
   p {
     margin: 0;
     line-height: 1.5rem;
@@ -119,7 +119,7 @@ export const TermsOfSaleContent = styled.div`
 `;
 
 export const ProductBox = styled.div`
-  border: 1px solid rgba(85, 96, 114, 0.06);
+  border: 1px solid ${colors.border};
   padding-top: 1rem;
   text-align: center;
   width: 6.313rem;
@@ -157,10 +157,8 @@ export const SpaceContainer = styled.div`
   display: grid;
   grid-column-gap: 2rem;
   grid-row-gap: 2rem;
-  ${breakpoint.xxs} {
-    max-width: 22rem;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+  max-width: 22rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   ${breakpoint.xs} {
     max-width: 32rem;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -171,13 +169,9 @@ export const SpaceContainer = styled.div`
   }
 `;
 
-export const ProductEmptyImage = styled.div`
+export const ProductEmptyImage = styled(Grid)`
   width: 100%;
   height: 100%;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  justify-content: center;
   p {
     margin: 1rem 0 0 0;
   }
@@ -193,7 +187,7 @@ export const RenderProductImageWrapper = styled.div<{
   height: 9.375rem;
   width: 9.375rem;
   border: ${({ $isPlaceholder }) =>
-    $isPlaceholder ? "1px solid rgba(85, 96, 114, 0.06)" : "none"};
+    $isPlaceholder ? `1px solid ${colors.border}` : "none"};
   img {
     width: 100%;
     height: 100%;
@@ -201,13 +195,12 @@ export const RenderProductImageWrapper = styled.div<{
 `;
 
 export const Info = styled(Grid)`
-  display: flex;
   justify-content: space-between;
   background-color: ${colors.lightGrey};
   padding: 1.5rem;
 `;
 
-export const Icon = styled(ChatDots)`
+export const ChatDotsIcon = styled(ChatDots)`
   fill: var(--secondary);
   path {
     stroke: var(--secondary);
@@ -221,9 +214,6 @@ export const CheckIcon = styled(CheckCircle)`
 `;
 
 export const InfoMessage = styled(Typography)`
-  font-family: Plus Jakarta Sans;
-  font-size: 1rem;
-  font-weight: 600;
   line-height: 1.5rem;
   letter-spacing: 0px;
   text-align: left;

@@ -1,6 +1,5 @@
 import { BosonXmtpClient } from "@bosonprotocol/chat-sdk";
 import dayjs from "dayjs";
-import includes from "lodash/includes";
 import map from "lodash/map";
 import { Image, Warning } from "phosphor-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -9,7 +8,11 @@ import { useAccount } from "wagmi";
 import Collapse from "../../components/collapse/Collapse";
 import InitializeChat from "../../components/modal/components/Chat/components/InitializeChat";
 import { useModal } from "../../components/modal/useModal";
-import { getItemFromStorage } from "../../lib/utils/hooks/useLocalStorage";
+import { CONFIG } from "../../lib/config";
+import {
+  CreateProductImageProductImages,
+  getItemFromStorage
+} from "../../lib/utils/hooks/useLocalStorage";
 import { useChatContext } from "../../pages/chat/ChatProvider/ChatContext";
 import { FormField } from "../form";
 import CurrencyIcon from "../price/CurrencyIcon";
@@ -17,6 +20,7 @@ import Button from "../ui/Button";
 import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
 import {
+  ChatDotsIcon,
   CheckIcon,
   CollapseContainer,
   CollapseContent,
@@ -28,7 +32,6 @@ import {
   CurrencyIconWrapper,
   FormFieldContainer,
   GridBox,
-  Icon,
   IconWrapper,
   Info,
   InfoMessage,
@@ -71,6 +74,9 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
   const { address } = useAccount();
 
   useEffect(() => {
+    // showModal(modalTypes.CHAT_INITIALIZATION_FAILED, {
+    //   title: ""
+    // });
     if (chatInitializationStatus === "PENDING" && !!bosonXmtp) {
       setChatInitializationStatus("ALREADY_INITIALIZED");
     } else if (address && chatInitializationStatus !== "ALREADY_INITIALIZED") {
@@ -84,7 +90,9 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
         })
         .catch((err) => {
           console.error(err);
-          showModal(modalTypes.CHAT_INITIALIZATION_FAILED);
+          showModal(modalTypes.CHAT_INITIALIZATION_FAILED, {
+            title: ""
+          });
           setChatInitializationStatus("ERROR");
         });
     }
@@ -113,18 +121,12 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
       src = physicalProductSmall;
       description = "Physical";
     } else if (values.productType.productType === "phygital") {
-      // MISSING UI AND FOR NOW ONLY physical available
+      // TODO: MISSING UI AND FOR NOW ONLY physical available
       // description = "Phygital";
     }
     return (
       <>
-        <Typography
-          tag="p"
-          style={{
-            fontSize: "0.75rem",
-            fontWeight: "bold"
-          }}
-        >
+        <Typography tag="p" fontSize="0.75rem" fontWeight="bold">
           Product Type*
         </Typography>
         <ProductBox>
@@ -143,7 +145,7 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
       description = "One Item Type";
     } else if (values.productType.productVariant === "differentVariants") {
       // MISSING UI AND FOR NOW ONLY oneItemType available
-      // description = "Different Variants";
+      // TODO: description = "Different Variants";
     }
     return (
       <>
@@ -165,14 +167,24 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
   }, [values.productType.productVariant]);
 
   const renderProductImage = useCallback(
-    ({ title, key }: { title: string; key: string }) => {
+    ({
+      title,
+      key
+    }: {
+      title: string;
+      key: CreateProductImageProductImages;
+    }) => {
       const src = getItemFromStorage(key, "");
       return (
         <RenderProductImageWrapper $isPlaceholder={!src}>
           {src ? (
             <img src={src} alt={title} />
           ) : (
-            <ProductEmptyImage>
+            <ProductEmptyImage
+              alignItems="center"
+              justifyContent="center"
+              flexDirection="column"
+            >
               <Image size={24} />
               <Typography tag="p">{title}</Typography>
             </ProductEmptyImage>
@@ -201,7 +213,7 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
           <CollapseContent>
             <FormField
               title="Logo / profile picture"
-              required={true}
+              required
               style={{
                 marginBottom: "2rem"
               }}
@@ -215,7 +227,7 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
             >
               <GridBox $minWidth="7.1rem">
                 <FormFieldContainer>
-                  <FormField title="Your brand / name" required={true}>
+                  <FormField title="Your brand / name" required>
                     <ContentValue tag="p">
                       {values.createYourProfile.name}
                     </ContentValue>
@@ -224,19 +236,16 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
               </GridBox>
               <GridBox $minWidth="6rem">
                 <FormFieldContainer>
-                  <FormField title="Contact E-Mail" required={true}>
+                  <FormField title="Contact E-Mail" required>
                     <ContentValue tag="p">
                       {values.createYourProfile.email}
                     </ContentValue>
                   </FormField>
                 </FormFieldContainer>
               </GridBox>
-              <GridBox $minWidth="9.688rem">
+              <GridBox $minWidth="9.75rem">
                 <FormFieldContainer>
-                  <FormField
-                    title="Website / Social media link"
-                    required={false}
-                  >
+                  <FormField title="Website / Social media link">
                     <ContentValue tag="p">
                       {values.createYourProfile.website}
                     </ContentValue>
@@ -249,7 +258,7 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
                 marginBottom: 0
               }}
             >
-              <FormField title="Description" required={true}>
+              <FormField title="Description" required>
                 <ContentValue tag="p">
                   {values.createYourProfile.description}
                 </ContentValue>
@@ -273,7 +282,7 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
             <Grid justifyContent="flex-start" alignItems="flex-start">
               <GridBox $minWidth="5.625rem">
                 <FormFieldContainer>
-                  <FormField title="Product Title" required={true}>
+                  <FormField title="Product Title" required>
                     <ContentValue tag="p">
                       {values.productInformation.productTitle}
                     </ContentValue>
@@ -282,7 +291,7 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
               </GridBox>
               <GridBox $minWidth="4.1rem">
                 <FormFieldContainer>
-                  <FormField title="Category" required={true}>
+                  <FormField title="Category" required>
                     <ContentValue tag="p">
                       {values.productInformation.category?.label}
                     </ContentValue>
@@ -291,7 +300,7 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
               </GridBox>
               <GridBox $minWidth="6.9rem">
                 <FormFieldContainer>
-                  <FormField title="Product Attribute" required={true}>
+                  <FormField title="Product Attribute" required>
                     <ContentValue tag="p">
                       {map(
                         values.productInformation.attributes,
@@ -303,18 +312,18 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
               </GridBox>
             </Grid>
             <FormFieldContainer>
-              <FormField title="Description" required={true}>
+              <FormField title="Description" required>
                 <ContentValue tag="p">
                   {values.productInformation.description}
                 </ContentValue>
               </FormField>
             </FormFieldContainer>
             <FormFieldContainer>
-              <FormField title="Search Tags" required={false}>
+              <FormField title="Search Tags">
                 <TagsWrapper>
                   {map(values.productInformation.tags, (tag, index) => {
                     return (
-                      <Tag key={index}>
+                      <Tag key={`productInformation_tags${index}`}>
                         <span className="text">{tag}</span>
                       </Tag>
                     );
@@ -372,7 +381,7 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
             >
               <GridBox $minWidth="16rem">
                 <FormFieldContainer>
-                  <FormField title="Price" required={true}>
+                  <FormField title="Price" required>
                     <ContentValue tag="p">
                       {values.coreTermsOfSale.price &&
                         values.coreTermsOfSale.currency?.value &&
@@ -395,7 +404,7 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
               </GridBox>
               <GridBox $minWidth="9.5rem">
                 <FormFieldContainer>
-                  <FormField title="Quantity" required={true}>
+                  <FormField title="Quantity" required>
                     <ContentValue tag="p">
                       {values.coreTermsOfSale.quantity}
                     </ContentValue>
@@ -404,7 +413,7 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
               </GridBox>
               <GridBox>
                 <FormFieldContainer>
-                  <FormField title="Token Gated Offer" required={true}>
+                  <FormField title="Token Gated Offer" required>
                     <ContentValue tag="p">
                       {values.coreTermsOfSale?.tokenGatedOffer?.label}
                     </ContentValue>
@@ -419,7 +428,7 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
                     marginBottom: 0
                   }}
                 >
-                  <FormField title="Redemption period" required={true}>
+                  <FormField title="Redemption period" required>
                     <ContentValue tag="p">
                       {values.coreTermsOfSale?.redemptionPeriod[0] &&
                         values.coreTermsOfSale?.redemptionPeriod[1] && (
@@ -443,18 +452,18 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
                     marginBottom: 0
                   }}
                 >
-                  <FormField title="Offer Validity period" required={true}>
+                  <FormField title="Offer Validity period" required>
                     <ContentValue tag="p">
                       {values.coreTermsOfSale?.offerValidityPeriod[0] &&
                         values.coreTermsOfSale?.offerValidityPeriod[1] && (
                           <>
                             {dayjs(
                               values.coreTermsOfSale.offerValidityPeriod[0]
-                            ).format("MMM DD")}{" "}
+                            ).format(CONFIG.shortMonthWithDay)}{" "}
                             -{" "}
                             {dayjs(
                               values.coreTermsOfSale.offerValidityPeriod[1]
-                            ).format("MMM DD")}
+                            ).format(CONFIG.shortMonthWithDay)}
                           </>
                         )}
                     </ContentValue>
@@ -493,8 +502,8 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
         <InitializeChatContainer>
           <Info justifyContent="space-between" gap="2rem">
             <Grid justifyContent="flex-start" gap="1rem">
-              <Icon size={24} />
-              <InfoMessage>
+              <ChatDotsIcon size={24} />
+              <InfoMessage fontSize="1rem" fontWeight="bold">
                 You succesfully initialized your chat client
               </InfoMessage>
             </Grid>
@@ -509,8 +518,7 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
           theme="secondary"
           type="submit"
           disabled={
-            !includes(
-              ["INITIALIZED", "ALREADY_INITIALIZED"],
+            !["INITIALIZED", "ALREADY_INITIALIZED"].includes(
               chatInitializationStatus
             )
           }

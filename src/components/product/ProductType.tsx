@@ -85,7 +85,7 @@ export default function ProductType() {
         <GridContainer itemsPerRow={productTypeItemsPerRow}>
           <FormField
             title="Select Product Type"
-            required={true}
+            required
             style={{
               marginBottom: 0
             }}
@@ -122,7 +122,7 @@ export default function ProductType() {
           </FormField>
           <FormField
             title="Product Variants"
-            required={true}
+            required
             style={{
               marginBottom: 0
             }}
