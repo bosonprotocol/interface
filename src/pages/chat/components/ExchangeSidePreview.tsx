@@ -66,23 +66,6 @@ const Container = styled.div<{ $disputeOpen: boolean }>`
   }
 `;
 
-const ExchangeImage = styled.img`
-  width: 100%;
-  max-height: 400px;
-  max-width: 400px;
-  object-fit: contain;
-  display: block;
-  margin: 0 auto;
-  padding: 1.875rem 0;
-
-  ${breakpoint.l} {
-    padding: unset;
-    margin: unset;
-    max-width: unset;
-    object-fit: cover;
-  }
-`;
-
 const StyledImage = styled(Image)`
   all: unset;
 
