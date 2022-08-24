@@ -27,21 +27,19 @@ const BaseButton = styled.button<{
     css`
       &:hover:not(:disabled) {
         background-color: ${props.theme.hover.background};
-        ${props.theme.hover.color
-          ? css`
-              color: ${props.theme.hover.color} !important;
-              svg {
-                fill: ${props.theme.hover.color} !important;
-              }
-            `
-          : ""}
+        ${props.theme.hover.color &&
+        css`
+          color: ${props.theme.hover.color} !important;
+          svg {
+            fill: ${props.theme.hover.color} !important;
+          }
+        `};
         ${props.theme.hover.borderColor &&
         css`
           border-color: ${props.theme.hover.borderColor};
         `};
       }
     `}
-
   ${(props) =>
     props.theme.padding
       ? css`
@@ -49,12 +47,26 @@ const BaseButton = styled.button<{
         `
       : ""}
 
-  :disabled {
-    background-color: ${colors.lightGrey};
-    color: ${colors.darkGrey};
-    border-width: 0;
-    cursor: not-allowed;
-  }
+  ${(props) =>
+    props.theme.disabled
+      ? `
+      :disabled {
+        background-color: ${props.theme.disabled.background || "transparent"};
+        color: ${props.theme.disabled.color || colors.darkGrey};
+        border-width: 0;
+        cursor: not-allowed;
+        opacity: 0.5;
+      }
+    `
+      : `
+      :disabled {
+        background-color: ${colors.lightGrey};
+        color: ${colors.darkGrey};
+        border-width: 0;
+        cursor: not-allowed;
+        opacity: 0.5;
+      }
+    `};
 `;
 
 const ChildWrapperButton = styled.div`
@@ -116,11 +128,22 @@ const allThemes = {
       background: colors.border
     }
   },
+  void: {
+    color: colors.orange,
+    borderColor: colors.orange,
+    borderWidth: 1,
+    hover: {
+      background: colors.border
+    }
+  },
   blank: {
     color: `${colors.black}4d`,
     padding: "0.75rem 0.5rem",
     hover: {
       color: colors.black
+    },
+    disabled: {
+      background: "transparent"
     }
   },
   blankSecondary: {
@@ -163,7 +186,7 @@ const allThemes = {
   }
 };
 
-interface IButton {
+export interface IButton {
   children?: string | React.ReactNode;
   onClick?: React.MouseEventHandler<HTMLButtonElement> | undefined;
   size?: "small" | "regular" | "large";

@@ -4,6 +4,7 @@ import styled from "styled-components";
 
 import logo from "../../../src/assets/logo.svg";
 import { BosonRoutes } from "../../lib/routing/routes";
+import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
@@ -56,25 +57,31 @@ const BurgerButton = styled.button`
   }
 `;
 
-const HeaderContainer = styled(Layout)`
+const HeaderContainer = styled(Layout)<{ fluidHeader?: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  ${breakpoint.xs} {
+    max-width: ${({ fluidHeader }) => (fluidHeader ? "none" : "93.75rem;")};
+  }
 `;
 
-const HeaderItems = styled.nav<{ isMobile: boolean }>`
+const HeaderItems = styled.nav<{ isMobile: boolean; fluidHeader?: boolean }>`
   display: flex;
   align-items: ${({ isMobile }) => (isMobile ? "center" : "stretch")};
   justify-content: end;
   width: 100%;
+  margin-left: ${({ fluidHeader }) => (fluidHeader ? "2.3rem" : "0")};
 `;
 
 const LogoImg = styled.img`
   height: 24px;
   cursor: pointer;
 `;
-
-export default function HeaderComponent() {
+interface Props {
+  fluidHeader: boolean;
+}
+export default function HeaderComponent({ fluidHeader = false }: Props) {
   const { pathname, search } = useLocation();
   const { isLteM } = useBreakpoints();
   const [isOpen, setOpen] = useState(false);
@@ -90,7 +97,7 @@ export default function HeaderComponent() {
   const burgerMenuBreakpoint = isLteM;
   return (
     <Header>
-      <HeaderContainer>
+      <HeaderContainer fluidHeader={fluidHeader}>
         <LinkWithQuery to={BosonRoutes.Root}>
           <LogoImg
             src={logoUrl || logo}
@@ -98,7 +105,7 @@ export default function HeaderComponent() {
             data-testid="logo"
           />
         </LinkWithQuery>
-        <HeaderItems isMobile={burgerMenuBreakpoint}>
+        <HeaderItems isMobile={burgerMenuBreakpoint} fluidHeader={fluidHeader}>
           {burgerMenuBreakpoint && (
             <>
               <ConnectButton />

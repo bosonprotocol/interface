@@ -1,4 +1,5 @@
 import { offers } from "@bosonprotocol/react-kit";
+import { useMemo } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
@@ -10,73 +11,160 @@ const Statuses = styled.div`
   right: -1rem;
   top: 1rem;
   display: flex;
-  gap: 2px;
+  gap: 0.125rem;
   z-index: ${zIndex.OfferStatus};
+  &[data-dot="true"] {
+    > div {
+      &[data-testid="voided-status"] {
+        :before {
+          background: transparent;
+          box-shadow: inset 0px 0px 0px 2px ${colors.darkGrey};
+        }
+      }
+      padding-left: 1.5rem;
+      :before {
+        content: "";
+        position: absolute;
+        left: 0.25rem;
+        top: 50%;
+        transform: translate(0.25rem, -50%);
+        width: 0.5rem;
+        height: 0.5rem;
+        background: ${colors.darkGrey};
+        opacity: 0.6;
+        border-radius: 50%;
+      }
+    }
+  }
 `;
 
-const Status = styled.div<{ $background: string; $color: string }>`
-  background: ${(props) => props.$background};
-  color: ${(props) => props.$color};
-  padding: 0.5rem 1rem;
+const Status = styled.div<{
+  $background: string;
+  $color: string;
+  $size: Props["size"];
+}>`
+  background: ${({ $background }) => $background || colors.white};
+  color: ${({ $color }) => $color || colors.black};
+  padding: ${({ $size }) =>
+    $size === "regular"
+      ? "0.5rem 1rem"
+      : $size === "small"
+      ? "0.4375rem 0.625rem"
+      : "0.75rem 1.5rem"};
   font-family: "Plus Jakarta Sans";
   font-style: normal;
-  font-size: 14px;
+  font-size: ${({ $size }) =>
+    $size === "regular"
+      ? "0.875rem"
+      : $size === "small"
+      ? "0.75rem"
+      : "0.1rem"};
+
+  text-transform: uppercase;
   font-weight: 600;
   line-height: 1.5;
 `;
 
 interface Props {
   offer: Offer;
+  style?: React.CSSProperties;
+  statusStyle?: React.CSSProperties;
+  showValid?: boolean;
+  displayDot?: boolean;
+  size?: "small" | "regular" | "large";
 }
 
-const statusToComponent = {
-  [offers.OfferState.EXPIRED]: (
-    <Status
-      $color={colors.white}
-      $background={colors.red}
-      className="status"
-      data-testid="expired-status"
-    >
-      Expired
-    </Status>
-  ),
-  [offers.OfferState.VOIDED]: (
-    <Status
-      $color={colors.white}
-      $background={colors.red}
-      className="status"
-      data-testid="voided-status"
-    >
-      Voided
-    </Status>
-  ),
-  [offers.OfferState.NOT_YET_VALID]: (
-    <Status
-      $color={colors.white}
-      $background={colors.darkOrange}
-      className="status"
-      data-testid="not_yet_valid-status"
-    >
-      Not yet valid
-    </Status>
-  ),
-  [offers.OfferState.VALID]: <></>
-} as const;
+interface StatusToComponentProps {
+  style?: React.CSSProperties;
+  size?: "small" | "regular" | "large";
+}
 
-export default function OfferStatuses({ offer }: Props) {
-  const status = offers.getOfferStatus(offer);
-  const Component = statusToComponent[status];
+const StatusToComponent = (
+  { size, style }: StatusToComponentProps,
+  type: string
+) => {
+  const component = () =>
+    ({
+      [offers.OfferState.EXPIRED]: (
+        <Status
+          $color={colors.darkGrey}
+          $size={size}
+          $background={`${colors.red}33`}
+          className="status"
+          data-testid="expired-status"
+          style={style}
+        >
+          Expired
+        </Status>
+      ),
+      [offers.OfferState.VOIDED]: (
+        <Status
+          $color={colors.darkGrey}
+          $size={size}
+          $background={`${colors.darkGrey}33`}
+          className="status"
+          data-testid="voided-status"
+          style={style}
+        >
+          Voided
+        </Status>
+      ),
+      [offers.OfferState.NOT_YET_VALID]: (
+        <Status
+          $color={colors.darkGrey}
+          $size={size}
+          $background={`${colors.orange}33`}
+          className="status"
+          data-testid="not_yet_valid-status"
+          style={style}
+        >
+          Not yet valid
+        </Status>
+      ),
+      [offers.OfferState.VALID]: (
+        <Status
+          $color={colors.darkGrey}
+          $size={size}
+          $background={`${colors.lime}33`}
+          className="status"
+          data-testid="valid-status"
+          style={style}
+        >
+          Valid
+        </Status>
+      )
+      // eslint-disable-next-line
+    }[type]);
+
+  return component();
+};
+
+export default function OfferStatuses({
+  offer,
+  style,
+  statusStyle,
+  showValid = false,
+  displayDot = false,
+  size = "regular"
+}: Props) {
+  const status = useMemo(() => offers.getOfferStatus(offer), [offer]);
+  const displayComponent = showValid
+    ? true
+    : status !== offers.OfferState.VALID;
+  const Component = StatusToComponent({ size, style: statusStyle }, status);
   const isMetadataValid = offer.isValid;
 
   return (
-    <Statuses data-testid="statuses">
-      {Component && Component}
+    <Statuses data-testid="statuses" data-dot={displayDot} style={style}>
+      {displayComponent && Component}
       {!isMetadataValid && (
         <Status
           $color={colors.white}
           $background={colors.black}
+          $size={size}
           className="status"
           data-testid="unsupported-status"
+          style={statusStyle}
         >
           Unsupported
         </Status>

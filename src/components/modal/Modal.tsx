@@ -31,6 +31,12 @@ const RootBG = styled.div`
 `;
 
 const sizeToMargin = {
+  xs: {
+    s: "4rem 12rem",
+    m: "4rem 20rem",
+    l: "4rem 24rem",
+    xl: "4rem 30rem"
+  },
   s: {
     s: "4rem 10rem",
     m: "4rem 19rem",
