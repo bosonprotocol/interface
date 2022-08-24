@@ -18,15 +18,14 @@ const InputWrapper = styled(Grid)`
 
 const Input = styled.input`
   width: 100%;
-  font-size: 16px;
   background: transparent;
   border: 0px solid ${colors.border};
 
   font-family: "Plus Jakarta Sans";
   font-style: normal;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 500;
-  line-height: 24px;
+  line-height: 1.5;
 
   &:focus {
     outline: none;

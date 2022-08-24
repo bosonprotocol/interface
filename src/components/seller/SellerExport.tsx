@@ -9,7 +9,7 @@ import Button, { IButton } from "../ui/Button";
 const ExportButton = styled(Button)`
   color: ${colors.secondary};
   border: none;
-  gap: 5px;
+  gap: 0.3125rem;
   > div {
     gap: 0.625rem;
   }

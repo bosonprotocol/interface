@@ -12,7 +12,7 @@ const Root = styled.div`
 
   ${breakpoint.xs} {
     padding: 0 1.5rem;
-    max-width: 1500px;
+    max-width: 93.75rem;
   }
   ${breakpoint.s} {
     padding: 0 1.75rem;

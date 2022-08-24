@@ -62,7 +62,7 @@ const HeaderContainer = styled(Layout)<{ fluidHeader?: boolean }>`
   justify-content: space-between;
   align-items: center;
   ${breakpoint.xs} {
-    max-width: ${({ fluidHeader }) => (fluidHeader ? "none" : "1500px;")};
+    max-width: ${({ fluidHeader }) => (fluidHeader ? "none" : "93.75rem;")};
   }
 `;
 

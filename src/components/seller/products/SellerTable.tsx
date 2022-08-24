@@ -425,10 +425,8 @@ export default function SellerTable({ offers }: Props) {
                 <Typography
                   tag="h6"
                   justifyContent="center"
-                  style={{
-                    padding: "1rem 0",
-                    margin: "0"
-                  }}
+                  padding="1rem 0"
+                  margin="0"
                 >
                   No data to display
                 </Typography>

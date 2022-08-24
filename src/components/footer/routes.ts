@@ -9,6 +9,7 @@ import { generatePath } from "react-router-dom";
 
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes, SocialRoutes } from "../../lib/routing/routes";
+import { DEFAULT_SELLER_PAGE } from "./../seller/SellerPages";
 
 export const SOCIAL_ROUTES = [
   {
@@ -46,7 +47,7 @@ export const PRODUCT_ROUTES = [
   {
     name: "Sell",
     url: generatePath(BosonRoutes.SellerCenter, {
-      [UrlParameters.sellerPage]: "dashboard"
+      [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
     })
   }
 ];

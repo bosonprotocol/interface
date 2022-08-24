@@ -6,6 +6,7 @@ import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { LinkWithQuery } from "../linkStoreFields/LinkStoreFields";
+import { DEFAULT_SELLER_PAGE } from "../seller/SellerPages";
 import Search from "./Search";
 
 export const HEADER_HEIGHT = "5.4rem";
@@ -101,7 +102,7 @@ export default function HeaderLinks({ isMobile, isOpen }: Props) {
   const { address } = useAccount();
 
   const sellerCenterUrl = generatePath(BosonRoutes.SellerCenter, {
-    [UrlParameters.sellerPage]: "dashboard"
+    [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
   });
 
   return (

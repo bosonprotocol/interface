@@ -58,7 +58,7 @@ const Status = styled.div<{
       ? "0.875rem"
       : $size === "small"
       ? "0.75rem"
-      : "0.1rem"};\
+      : "0.1rem"};
 
   text-transform: uppercase;
   font-weight: 600;
@@ -156,7 +156,7 @@ export default function OfferStatuses({
 
   return (
     <Statuses data-testid="statuses" data-dot={displayDot} style={style}>
-      {Component && displayComponent && Component}
+      {displayComponent && Component}
       {!isMetadataValid && (
         <Status
           $color={colors.white}

@@ -39,7 +39,6 @@ const AsideLink = styled.li<{ $active?: boolean }>`
   }
   svg {
     fill: ${(props) => (props.$active ? colors.secondary : colors.black)};
-    // margin-right: 1.1875rem;
     width: 1.5rem;
     height: 1.5rem;
   }

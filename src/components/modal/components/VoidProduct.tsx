@@ -66,7 +66,7 @@ export default function VoidProduct({ offer, offerId }: Props) {
       <Grid flexDirection="column" gap="1rem">
         <div>
           <Typography tag="h6">What is Void?</Typography>
-          <Typography tag="p" style={{ margin: 0 }}>
+          <Typography tag="p" margin="0">
             By voiding this item, it will no longer be possible for buyers to
             commit to this product however any existing exchanges will be
             unaffected.
@@ -74,10 +74,10 @@ export default function VoidProduct({ offer, offerId }: Props) {
         </div>
         <Break />
         <Grid>
-          <Typography tag="p" style={{ margin: 0 }}>
+          <Typography tag="p" margin="0">
             <b>Quantity</b>&nbsp;&nbsp;(available/total)
           </Typography>
-          <Typography tag="p" style={{ margin: 0 }}>
+          <Typography tag="p" margin="0">
             <b>
               {offer.quantityAvailable}/{offer.quantityInitial}
             </b>

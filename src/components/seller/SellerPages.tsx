@@ -3,7 +3,7 @@ import React from "react";
 
 import SellerProducts from "./products/SellerProducts";
 
-export const DEFAULT_SELLER_PAGE = "Dashboard";
+export const DEFAULT_SELLER_PAGE = "dashboard";
 interface SellerProps {
   sellerId: string;
 }
