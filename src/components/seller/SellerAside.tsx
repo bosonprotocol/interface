@@ -24,17 +24,16 @@ const Aside = styled.aside`
       align-items: center;
       justify-content: center;
       font-size: 1rem;
-      border-top: 1px solid rgba(85, 96, 114, 0.06);
+      border-top: 1px solid ${colors.border};
       &:last-child {
-        border-bottom: 1px solid rgba(85, 96, 114, 0.06);
+        border-bottom: 1px solid ${colors.border};
       }
     }
   }
 `;
 
 const AsideLink = styled.li<{ $active?: boolean }>`
-  background: ${(props) =>
-    props.$active ? "rgba(85, 96, 114, 0.06)" : colors.white};
+  background: ${(props) => (props.$active ? colors.border : colors.white)};
   div {
     color: ${colors.black};
   }
