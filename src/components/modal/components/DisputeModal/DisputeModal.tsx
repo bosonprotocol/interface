@@ -170,16 +170,18 @@ const ButtonContainer = styled.div`
 
 interface Props {
   hideModal: NonNullable<ModalProps["hideModal"]>;
-  exchange: NonNullable<Offer["exchanges"]>[number];
+  exchange?: NonNullable<Offer["exchanges"]>[number];
 }
 
 function DisputeModal({ hideModal, exchange }: Props) {
   const navigate = useKeepQueryParamsNavigate();
 
   const handleSubmitIssue = () => {
-    navigate({
-      pathname: generatePath(`${BosonRoutes.Dispute}/${exchange.id}`)
-    });
+    if (exchange) {
+      navigate({
+        pathname: generatePath(`${BosonRoutes.Dispute}/${exchange.id}`)
+      });
+    }
   };
   return (
     <>
@@ -251,20 +253,22 @@ function DisputeModal({ hideModal, exchange }: Props) {
             </Typography>
           </ModalGridColumns>
         </ModalGrid>
-        <ButtonContainer>
-          <button data-button data-button-submit onClick={handleSubmitIssue}>
-            Submit an issue
-          </button>
-          <button
-            data-button
-            data-button-back
-            onClick={() => {
-              hideModal();
-            }}
-          >
-            Back
-          </button>
-        </ButtonContainer>
+        {exchange && (
+          <ButtonContainer>
+            <button data-button data-button-submit onClick={handleSubmitIssue}>
+              Submit an issue
+            </button>
+            <button
+              data-button
+              data-button-back
+              onClick={() => {
+                hideModal();
+              }}
+            >
+              Back
+            </button>
+          </ButtonContainer>
+        )}
       </ModalContainer>
     </>
   );

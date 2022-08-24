@@ -2,11 +2,14 @@ import React from "react";
 import styled from "styled-components";
 
 import DisputeTable from "../../components/modal/components/DisputeTable/DisputeTable";
+import { useModal } from "../../components/modal/useModal";
 import Button from "../../components/ui/Button";
 import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
+import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
+import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 
 const DisputeListContainer = styled.div`
   background: ${colors.lightGrey};
@@ -39,6 +42,9 @@ const HowItWorksButton = styled(Button)`
 `;
 
 function DisputeList() {
+  const navigate = useKeepQueryParamsNavigate();
+  const { showModal, modalTypes } = useModal();
+
   const { data: exchanges = [] } = useExchanges({
     disputed: false
   });
@@ -55,10 +61,28 @@ function DisputeList() {
           Raise and resolve problems of your exchanges.
         </Typography>
         <Grid $width="max-content">
-          <SubmitButton type="submit" theme="secondary" size="small">
+          <SubmitButton
+            type="submit"
+            theme="secondary"
+            size="small"
+            onClick={() => {
+              navigate({
+                pathname: `${BosonRoutes.Account}?tab=exchanges`
+              });
+            }}
+          >
             Submit an issue
           </SubmitButton>
-          <HowItWorksButton type="button" theme="outline" size="small">
+          <HowItWorksButton
+            type="button"
+            theme="outline"
+            size="small"
+            onClick={() => {
+              showModal(modalTypes.DISPUTE_MODAL, {
+                title: "Raise a problem"
+              });
+            }}
+          >
             How it works?
           </HowItWorksButton>
         </Grid>

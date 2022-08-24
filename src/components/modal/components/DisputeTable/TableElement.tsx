@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { ClockClockwise } from "phosphor-react";
-import React from "react";
+import React, { useMemo } from "react";
 import styled from "styled-components";
 
 import { BosonRoutes } from "../../../../lib/routing/routes";
@@ -56,6 +56,21 @@ function TableElement({ exchange }: { exchange: Exchange }) {
 
   const parseDisputeDate = dayjs(getDateTimestamp(exchange.validUntilDate));
 
+  const deadlineTimeLeft = useMemo(() => {
+    if (parseDisputeDate.diff(currentDate, "days") === 0) {
+      return "Dispute period ended today";
+    }
+    if (parseDisputeDate.diff(currentDate, "days") > 0) {
+      return `${parseDisputeDate.diff(
+        currentDate,
+        "days"
+      )} days until dispute end`;
+    }
+    return `Dispute period ended ${
+      parseDisputeDate.diff(currentDate, "days") * -1
+    } days ago`;
+  }, [currentDate, parseDisputeDate]);
+
   if (exchange) {
     return (
       <>
@@ -88,7 +103,7 @@ function TableElement({ exchange }: { exchange: Exchange }) {
               fontWeight="light"
               color={colors.black}
             />
-            {parseDisputeDate.diff(currentDate, "days")} days until dispute end
+            {deadlineTimeLeft}
           </Grid>
         </DisputeEndDate>
         <td>
@@ -111,7 +126,7 @@ function TableElement({ exchange }: { exchange: Exchange }) {
             size="small"
             onClick={() => {
               navigate({
-                pathname: BosonRoutes.Chat
+                pathname: `${BosonRoutes.Chat}/${exchange.id}`
               });
             }}
           >
