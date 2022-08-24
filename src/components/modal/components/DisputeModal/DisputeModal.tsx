@@ -180,7 +180,7 @@ function DisputeModal({ hideModal, exchange }: Props) {
   const handleSubmitIssue = () => {
     if (exchange) {
       navigate({
-        pathname: generatePath(`${BosonRoutes.Dispute}/${exchange.id}`)
+        pathname: generatePath(`${BosonRoutes.DisputeId}`)
       });
     }
   };
