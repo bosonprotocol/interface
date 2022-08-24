@@ -253,23 +253,29 @@ export const CheckboxWrapper = styled.label.attrs((props: { error: any }) => ({
   align-items: center;
   justify-content: flex-start;
 
-  cursor: pointer;
+  > input {
+    :disabled {
+      + div {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+    :not(:disabled) {
+      + div {
+        cursor: pointer;
+        :hover {
+          border: 1px solid ${colors.secondary};
+          svg {
+            opacity: 0.25;
+          }
+        }
+      }
+    }
+  }
 
   > div,
   > div svg {
     ${transition}
-  }
-  :hover {
-    > div {
-      border: 1px solid ${colors.secondary};
-    }
-    input {
-      :not(:checked) {
-        + div svg {
-          opacity: 0.25;
-        }
-      }
-    }
   }
   > div {
     display: flex;

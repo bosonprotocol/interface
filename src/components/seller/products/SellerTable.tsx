@@ -215,6 +215,7 @@ export default function SellerTable({ offers }: Props) {
 
         return {
           offerId: offer.id,
+          isSelectable: status !== OffersKit.OfferState.VOIDED,
           image: (
             <Image
               src={offer.metadata?.image}
@@ -273,7 +274,6 @@ export default function SellerTable({ offers }: Props) {
           ),
           action: (
             <Button
-              // disabled
               theme={
                 status === OffersKit.OfferState.VOIDED ? "outline" : "primary"
               }
@@ -305,7 +305,7 @@ export default function SellerTable({ offers }: Props) {
     {
       columns,
       data,
-      initialState: { pageIndex: 0, hiddenColumns: ["offerId"] }
+      initialState: { pageIndex: 0, hiddenColumns: ["offerId", "isSelectable"] }
     },
     useSortBy,
     usePagination,
@@ -318,7 +318,10 @@ export default function SellerTable({ offers }: Props) {
             <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
           ),
           Cell: ({ row }: Cell) => (
-            <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+            <IndeterminateCheckbox
+              {...row.getToggleRowSelectedProps()}
+              disabled={!row?.original?.isSelectable}
+            />
           )
         },
         ...columns
