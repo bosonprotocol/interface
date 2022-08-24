@@ -42,9 +42,6 @@ export default function SellerProducts({ sellerId }: Props) {
   const [search, setSearch] = useState<string>("");
   const [filter, setFilter] = useState<string>("");
 
-  console.log(search, "search");
-  console.log(filter, "filter");
-
   const filterButton = useMemo(() => {
     return (
       <>
@@ -56,7 +53,6 @@ export default function SellerProducts({ sellerId }: Props) {
 
   const { data, isLoading, isError } = useInfiniteOffers(
     {
-      voided: false,
       sellerId,
       first: 1000,
       orderBy: "createdAt",

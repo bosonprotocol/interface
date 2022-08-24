@@ -1,6 +1,7 @@
 // TODO: remove below comments
 // eslint-disable-next-line
 // @ts-nocheck
+import { offers as OffersKit } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { Check } from "phosphor-react";
 import { CaretDown, CaretLeft, CaretRight, CaretUp } from "phosphor-react";
@@ -204,6 +205,8 @@ export default function SellerTable({ offers }: Props) {
   const data = useMemo(
     () =>
       offers?.map((offer) => {
+        const status = OffersKit.getOfferStatus(offer);
+
         return {
           offerId: offer.id,
           image: (
@@ -231,7 +234,13 @@ export default function SellerTable({ offers }: Props) {
               size="small"
               displayDot
               showValid
-              style={{ position: "initial", top: "unset", left: "unset" }}
+              style={{
+                display: "inline-block",
+                position: "relative",
+                top: "unset",
+                left: "unset",
+                right: "unset"
+              }}
             />
           ),
           quantity: (
@@ -260,16 +269,22 @@ export default function SellerTable({ offers }: Props) {
           action: (
             <Button
               // disabled
-              theme="primary"
+              theme={
+                status === OffersKit.OfferState.VOIDED ? "outline" : "primary"
+              }
               size="small"
+              disabled={status === OffersKit.OfferState.VOIDED}
               onClick={() => {
-                showModal(modalTypes.VOID_PRODUCT, {
-                  title: "Void Confirmation",
-                  offerId: offer.id
-                });
+                if (status !== OffersKit.OfferState.VOIDED) {
+                  showModal(modalTypes.VOID_PRODUCT, {
+                    title: "Void Confirmation",
+                    offerId: offer.id,
+                    offer
+                  });
+                }
               }}
             >
-              Void
+              {status === OffersKit.OfferState.VOIDED ? "Voided" : "Void"}
             </Button>
           )
         };
