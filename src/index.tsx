@@ -88,7 +88,7 @@ root.render(
                   element={<DisputeCentre />}
                 />
                 <Route
-                  path={`${BosonRoutes.DisputeList}/*`}
+                  path={`${BosonRoutes.Dispute}/*`}
                   element={<DisputeList />}
                 />
                 <Route

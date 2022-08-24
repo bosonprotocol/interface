@@ -48,8 +48,6 @@ function DisputeList() {
     disputed: false
   });
 
-  console.log(exchanges);
-
   return (
     <>
       <DisputeListHeader>

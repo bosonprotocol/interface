@@ -13,15 +13,16 @@ const Table = styled.table`
     padding-bottom: 1.25rem;
     padding-top: 1.25rem;
   }
-  [data-table-header] {
-    padding-top: 1.5625rem;
-    color: ${colors.darkGrey};
-    font-size: 0.75rem;
-    font-weight: 600;
-    font-family: "Plus Jakarta Sans";
-    border-bottom: none;
-    padding-bottom: 0;
-  }
+`;
+
+const TableHeader = styled.td`
+  padding-top: 1.5625rem;
+  color: ${colors.darkGrey};
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: inherit;
+  border-bottom: none;
+  padding-bottom: 0;
 `;
 
 const TableElementContainer = styled.tr`
@@ -66,11 +67,7 @@ function DisputeTable({ exchanges }: { exchanges: Exchange[] }) {
       <tbody>
         <tr>
           {TableHeaderFields.map((header) => {
-            return (
-              <td data-table-header key={header.value}>
-                {header.label}
-              </td>
-            );
+            return <TableHeader key={header.value}>{header.label}</TableHeader>;
           })}
         </tr>
         {exchanges.map((exchange) => {

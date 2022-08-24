@@ -43,11 +43,9 @@ const DisputeRaised = styled.td`
   }
 `;
 
-const DisputeEndDate = styled.td`
-  [data-clock-icon] {
-    margin-right: 0.625rem;
-    font-weight: 400;
-  }
+const DisputeEndDate = styled(ClockClockwise)`
+  margin-right: 0.625rem;
+  font-weight: 400;
 `;
 
 function TableElement({ exchange }: { exchange: Exchange }) {
@@ -95,17 +93,12 @@ function TableElement({ exchange }: { exchange: Exchange }) {
           </Grid>
         </td>
         <DisputeRaised>{exchange?.state}</DisputeRaised>
-        <DisputeEndDate>
+        <td>
           <Grid alignItems="center" $width="max-content">
-            <ClockClockwise
-              data-clock-icon
-              size={17}
-              fontWeight="light"
-              color={colors.black}
-            />
+            <DisputeEndDate size={17} fontWeight="light" color={colors.black} />
             {deadlineTimeLeft}
           </Grid>
-        </DisputeEndDate>
+        </td>
         <td>
           <Button
             theme="orange"
