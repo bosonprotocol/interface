@@ -36,7 +36,6 @@ export default function CreateYourProfile() {
       <FormField
         title="Website / Social media link"
         subTitle="Put your most frequently used online channel in here. Use the URL for Social media."
-        tooltip="TODO:"
         style={{
           marginBottom: 0
         }}

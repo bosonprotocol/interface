@@ -48,7 +48,6 @@ export default function ProductImages() {
       <FormField
         title="Upload your product images"
         subTitle="You can disable images for variants that shouldn't be shown. Use a max. width and height of 1200px and a max. size of 600kb per image."
-        tooltip="Need to be added"
         style={{
           marginBottom: 0
         }}
