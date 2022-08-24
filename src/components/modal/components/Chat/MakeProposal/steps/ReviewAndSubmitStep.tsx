@@ -3,10 +3,12 @@ import styled from "styled-components";
 
 import { colors } from "../../../../../../lib/styles/colors";
 import { Exchange } from "../../../../../../lib/utils/hooks/useExchanges";
+import { useChatContext } from "../../../../../../pages/chat/ChatProvider/ChatContext";
 import UploadedFiles from "../../../../../form/Upload/UploadedFiles";
 import Button from "../../../../../ui/Button";
 import Grid from "../../../../../ui/Grid";
 import Typography from "../../../../../ui/Typography";
+import InitializeChatWithSuccess from "../../components/InitializeChatWithSuccess";
 import ProposalTypeSummary from "../../components/ProposalTypeSummary";
 import { PERCENTAGE_FACTOR } from "../../const";
 import { FormModel } from "../MakeProposalFormModel";
@@ -29,6 +31,8 @@ export default function ReviewAndSubmitStep({
   isValid,
   exchange
 }: Props) {
+  const { bosonXmtp } = useChatContext();
+
   const [descriptionField] = useField<string>({
     name: FormModel.formFields.description.name
   });
@@ -42,6 +46,8 @@ export default function ReviewAndSubmitStep({
   const [refundPercentageField] = useField<string>({
     name: FormModel.formFields.refundPercentage.name
   });
+
+  const isChatInitialized = !!bosonXmtp;
   return (
     <>
       <Typography $fontSize="2rem" fontWeight="600">
@@ -71,11 +77,11 @@ export default function ReviewAndSubmitStep({
                   key={proposalType.value}
                   exchange={exchange}
                   proposal={{
-                    type: "Refund Request",
+                    type: proposalType.label,
                     percentageAmount: (
                       Number(refundPercentageField.value) * PERCENTAGE_FACTOR
                     ).toString(),
-                    signature: "0x" // TODO: change
+                    signature: ""
                   }}
                 />
               );
@@ -84,8 +90,13 @@ export default function ReviewAndSubmitStep({
           })}
         </Grid>
       </Grid>
+      <InitializeChatWithSuccess />
       <ButtonsSection>
-        <Button theme="secondary" type="submit" disabled={!isValid}>
+        <Button
+          theme="secondary"
+          type="submit"
+          disabled={!isValid || !isChatInitialized}
+        >
           Sign & Submit
         </Button>
 

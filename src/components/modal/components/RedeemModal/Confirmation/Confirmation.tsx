@@ -18,7 +18,7 @@ import { Spinner } from "../../../../loading/Spinner";
 import Button from "../../../../ui/Button";
 import Grid from "../../../../ui/Grid";
 import Typography from "../../../../ui/Typography";
-import InitializeChat from "../../Chat/components/InitializeChat";
+import InitializeChatWithSuccess from "../../Chat/components/InitializeChatWithSuccess";
 import { FormModel } from "../RedeemModalFormModel";
 
 const StyledGrid = styled(Grid)`
@@ -59,7 +59,6 @@ export default function Confirmation({
   const [chatError, setChatError] = useState<Error | null>(null);
   const [redeemError, setRedeemError] = useState<Error | null>(null);
   const { chatInitializationStatus } = useChatStatus();
-  const showInitializeChat = !bosonXmtp || chatInitializationStatus === "ERROR";
   const showSuccessInitialization =
     chatInitializationStatus === "INITIALIZED" && bosonXmtp;
   const isInitializationValid =
@@ -142,24 +141,9 @@ ${FormModel.formFields.email.placeholder}: ${emailField.value}`;
           </Button>
         </Grid>
       </Grid>
-      {showInitializeChat && (
-        <Grid margin="1.5rem 0">
-          <InitializeChat isError={chatInitializationStatus === "ERROR"} />
-        </Grid>
-      )}
+      <InitializeChatWithSuccess />
       {showSuccessInitialization && (
         <div>
-          <Grid justifyContent="space-between" gap="2rem" margin="1.5rem 0">
-            <Grid justifyContent="flex-start" gap="1rem">
-              <ChatDotsIcon size={24} />
-              <Typography>
-                You succesfully initialized your chat client
-              </Typography>
-            </Grid>
-            <div>
-              <CheckIcon />
-            </div>
-          </Grid>
           <StyledGrid
             justifyContent="flex-start"
             gap="0.5rem"
