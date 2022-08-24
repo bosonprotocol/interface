@@ -53,7 +53,7 @@ export default function SellerTags({ tags, currentTag, setCurrentTag }: Props) {
             <TagItem
               key={`seller_tags_${key}`}
               $active={currentTag === tag.value}
-              $disabled={tag.value == "phygital"}
+              $disabled={tag.value === "phygital"}
               onClick={() => {
                 // TODO: REMOVE IN FURTHER DEVELOPMENT FOR NOW WE DONT HAVE phygital
                 if (tag.value === "phygital") {

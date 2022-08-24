@@ -1,4 +1,5 @@
 import { MagnifyingGlass } from "phosphor-react";
+import { useEffect, useState } from "react";
 import Select, { SingleValue, StylesConfig } from "react-select";
 import styled from "styled-components";
 
@@ -51,8 +52,7 @@ const SelectTitle = styled.strong`
 
 const selectOptions = [
   { value: "1", label: "Show all" },
-  { value: "2", label: "Show all-1" },
-  { value: "3", label: "Show all-2" }
+  { value: "2", label: "Jonas to add" }
 ];
 
 const customStyles: StylesConfig<
@@ -124,16 +124,17 @@ export default function SellerFilters({
   setFilter,
   buttons
 }: Props) {
+  const [searchValue, setSearchValue] = useState<string>(search);
+
   const handleChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
-    setSearch(newValue);
+    setSearchValue(newValue);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
-    if (e.key === "Enter") {
-      console.log(search);
-    }
-  };
+  useEffect(() => {
+    const searchInterval = setTimeout(() => setSearch(searchValue), 1000);
+    return () => clearTimeout(searchInterval);
+  }, [searchValue, setSearch]);
 
   const handleChangeSelect = (
     option: SingleValue<{
@@ -168,8 +169,7 @@ export default function SellerFilters({
               <Input
                 name="search"
                 onChange={handleChangeSearch}
-                onKeyDown={handleKeyDown}
-                value={search}
+                value={searchValue}
                 placeholder="Search"
               />
             </InputWrapper>

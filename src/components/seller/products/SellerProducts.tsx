@@ -51,9 +51,6 @@ export default function SellerProducts({ sellerId }: Props) {
   const [search, setSearch] = useState<string>("");
   const [filter, setFilter] = useState<FilterValue | null>(null);
 
-  console.log(search, "search");
-  console.log(filter, "filter");
-
   const { data, isLoading, isError } = useInfiniteOffers(
     {
       sellerId,
@@ -90,10 +87,20 @@ export default function SellerProducts({ sellerId }: Props) {
         }
         return offer;
       }) || [];
+
+    if (search && search.length > 0) {
+      return filtered.filter((n): boolean => {
+        return (
+          n !== null &&
+          (n.id.includes(search) || n.metadata.name.includes(search))
+        );
+      });
+    }
+
     return filtered.filter((n): boolean => {
       return n !== null;
     });
-  }, [data, currentTag]);
+  }, [data, search, currentTag]);
 
   const prepareCSVData = useMemo(() => {
     const csvData = map(allOffers, (offer) => {

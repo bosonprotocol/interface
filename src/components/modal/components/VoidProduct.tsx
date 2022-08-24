@@ -4,11 +4,13 @@ import { useSigner } from "wagmi";
 
 import { CONFIG } from "../../../lib/config";
 import { Offer } from "../../../lib/types/offer";
+import { Break } from "../../detail/Detail.style";
 import Price from "../../price/index";
 import Grid from "../../ui/Grid";
 import Image from "../../ui/Image";
 import SellerID from "../../ui/SellerID";
 import Typography from "../../ui/Typography";
+import { useModal } from "../useModal";
 
 const OfferWrapper = styled.div`
   width: 100%;
@@ -21,6 +23,7 @@ interface Props {
 
 export default function VoidProduct({ offer, offerId }: Props) {
   const { data: signer } = useSigner();
+  const { hideModal } = useModal();
 
   return (
     <Grid flexDirection="column" alignItems="flex-start" gap="2rem">
@@ -60,29 +63,40 @@ export default function VoidProduct({ offer, offerId }: Props) {
           )}
         </Grid>
       </OfferWrapper>
-      <div>
-        <Typography tag="h6" style={{ margin: 0 }}>
-          What is Void?
-        </Typography>
-        <Typography tag="p" style={{ margin: 0 }}>
-          By voiding a Product offer you remove the available quantity of items
-          from the marketplace.
-        </Typography>
-      </div>
+      <Grid flexDirection="column" gap="1rem">
+        <div>
+          <Typography tag="h6">What is Void?</Typography>
+          <Typography tag="p" style={{ margin: 0 }}>
+            By voiding this item, it will no longer be possible for buyers to
+            commit to this product however any existing exchanges will be
+            unaffected.
+          </Typography>
+        </div>
+        <Break />
+        <Grid>
+          <Typography tag="p" style={{ margin: 0 }}>
+            <b>Quantity</b>&nbsp;&nbsp;(available/total)
+          </Typography>
+          <Typography tag="p" style={{ margin: 0 }}>
+            <b>
+              {offer.quantityAvailable}/{offer.quantityInitial}
+            </b>
+          </Typography>
+        </Grid>
+      </Grid>
       <Grid justifyContent="center">
         <VoidButton
           offerId={offerId || 0}
           chainId={CONFIG.chainId}
           onError={(args) => {
-            // TODO: handle error
             console.error("onError", args);
           }}
           onPendingSignature={() => {
             console.error("onPendingSignature");
           }}
           onSuccess={(_args, res) => {
-            // TODO: refetch data
             console.log(_args, res);
+            hideModal();
           }}
           web3Provider={signer?.provider as Provider}
         />
