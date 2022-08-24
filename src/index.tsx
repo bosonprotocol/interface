@@ -84,7 +84,7 @@ root.render(
                   element={<CustomStore />}
                 />
                 <Route
-                  path={`${BosonRoutes.Dispute}/*`}
+                  path={`${BosonRoutes.DisputeId}/*`}
                   element={<DisputeCentre />}
                 />
                 <Route

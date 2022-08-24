@@ -11,7 +11,7 @@ import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQ
 import Typography from "../../../ui/Typography";
 import { ModalProps } from "../../ModalContext";
 
-const ModalContainer = styled.div`
+const ModalContainer = styled.div<{ $exchange: boolean }>`
   position: relative;
   min-height: 31.25rem;
   background: ${colors.white};
@@ -25,6 +25,7 @@ const ModalContainer = styled.div`
   margin-bottom: -1.875rem;
   margin-top: -3.125rem;
   min-height: max-content;
+  padding-bottom: ${({ $exchange }) => ($exchange ? "7.1875rem" : "1.35rem")};
 `;
 
 const ModalGrid = styled.div`
@@ -185,7 +186,7 @@ function DisputeModal({ hideModal, exchange }: Props) {
   };
   return (
     <>
-      <ModalContainer>
+      <ModalContainer $exchange={!!exchange}>
         <ModalGrid>
           <ModalGridColumns>
             <FileText size={24} color={colors.secondary} data-columns-icon />

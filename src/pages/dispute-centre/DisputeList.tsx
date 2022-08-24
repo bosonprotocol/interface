@@ -6,7 +6,6 @@ import { useModal } from "../../components/modal/useModal";
 import Button from "../../components/ui/Button";
 import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
-import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
@@ -67,7 +66,7 @@ function DisputeList() {
             size="small"
             onClick={() => {
               navigate({
-                pathname: `${BosonRoutes.Account}?tab=exchanges`
+                pathname: `/account/?tab=exchanges`
               });
             }}
           >
