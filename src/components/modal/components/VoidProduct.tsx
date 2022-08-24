@@ -87,6 +87,7 @@ export default function VoidProduct({ offerId, offer, refetch }: Props) {
       </Grid>
       <Grid justifyContent="center">
         <VoidButton
+          variant="secondary"
           offerId={offerId || 0}
           chainId={CONFIG.chainId}
           onError={(args) => {
