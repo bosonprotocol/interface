@@ -374,11 +374,7 @@ function CreateProductInner({ initial }: Props) {
 
       await wait(3_000);
       handleOpenSuccessModal({ offerId });
-      console.log(
-        "🚀  roberto --  ~ file: CreateProductInner.tsx ~ line 377 ~ CreateProductInner ~ offerId",
-        offerId
-      );
-      // formikBag.resetForm();
+      formikBag.resetForm();
     } catch (error: any) {
       // TODO: FAILURE MODAL
       console.error("error->", error.errors ?? error.toString());
