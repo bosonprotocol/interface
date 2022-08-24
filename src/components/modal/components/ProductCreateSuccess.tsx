@@ -108,7 +108,6 @@ export default function ProductCreateSuccess({
   onCreateNewProject,
   onViewMyItem
 }: Props) {
-  console.log("🚀 ~ file: ProductCreateSuccess.tsx ~ line 109 ~ offer", offer);
   const convertedPrice = useConvertedPrice({
     value: offer?.price,
     decimals: offer.exchangeToken.decimals,
