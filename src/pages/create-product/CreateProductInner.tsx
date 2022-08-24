@@ -85,41 +85,45 @@ function CreateProductInner({ initial }: Props) {
       offerInfo.metadataUri
     )) as any;
 
-    showModal(modalTypes.PRODUCT_CREATE_SUCCESS, {
-      title: `Offer ${offerId}`,
-      name: metadataInfo.name,
-      message: "You have successfully created:",
-      image: metadataInfo.image,
-      price: offerInfo.price,
-      offer: {
-        id: offerInfo.id,
-        createdAt: offerInfo.createdAt,
+    showModal(
+      modalTypes.PRODUCT_CREATE_SUCCESS,
+      {
+        title: `Offer ${offerId}`,
+        name: metadataInfo.name,
+        message: "You have successfully created:",
+        image: metadataInfo.image,
         price: offerInfo.price,
-        metadataHash: offerInfo.metadataHash,
-        sellerDeposit: offerInfo.sellerDeposit,
-        resolutionPeriodDuration: offerInfo.resolutionPeriodDuration,
-        metadataUri: offerInfo.metadataUri,
-        buyerCancelPenalty: offerInfo.buyerCancelPenalty,
-        quantityAvailable: offerInfo.quantityAvailable,
-        quantityInitial: offerInfo.quantityInitial,
-        fulfillmentPeriodDuration: offerInfo.fulfillmentPeriodDuration,
-        voucherRedeemableUntilDate: `${offerInfo.voucherRedeemableUntilDate}000`,
-        validFromDate: offerInfo.validFromDate,
-        voidedAt: offerInfo.voidedAt,
-        voucherValidDuration: offerInfo.voucherValidDuration,
-        exchangeToken: {
-          id: "",
-          address: "0x0000000000000000000000000000000000000000",
-          decimals: "18",
-          name: "Ether",
-          symbol: "ETH"
+        offer: {
+          id: offerInfo.id,
+          createdAt: offerInfo.createdAt,
+          price: offerInfo.price,
+          metadataHash: offerInfo.metadataHash,
+          sellerDeposit: offerInfo.sellerDeposit,
+          resolutionPeriodDuration: offerInfo.resolutionPeriodDuration,
+          metadataUri: offerInfo.metadataUri,
+          buyerCancelPenalty: offerInfo.buyerCancelPenalty,
+          quantityAvailable: offerInfo.quantityAvailable,
+          quantityInitial: offerInfo.quantityInitial,
+          fulfillmentPeriodDuration: offerInfo.fulfillmentPeriodDuration,
+          voucherRedeemableUntilDate: `${offerInfo.voucherRedeemableUntilDate}000`,
+          validFromDate: offerInfo.validFromDate,
+          voidedAt: offerInfo.voidedAt,
+          voucherValidDuration: offerInfo.voucherValidDuration,
+          exchangeToken: {
+            id: "",
+            address: "0x0000000000000000000000000000000000000000",
+            decimals: "18",
+            name: "Ether",
+            symbol: "ETH"
+          },
+          seller: offerInfo.seller
         },
-        seller: offerInfo.seller
+        // these are the ones that we already had before
+        onCreateNewProject: onCreateNewProject,
+        onViewMyItem: () => onViewMyItem(offerId)
       },
-      // these are the ones that we already had before
-      onCreateNewProject: onCreateNewProject,
-      onViewMyItem: () => onViewMyItem(offerId)
-    });
+      "auto"
+    );
   };
 
   const wizardStep = useMemo(() => {
@@ -370,7 +374,11 @@ function CreateProductInner({ initial }: Props) {
 
       await wait(3_000);
       handleOpenSuccessModal({ offerId });
-      formikBag.resetForm();
+      console.log(
+        "🚀  roberto --  ~ file: CreateProductInner.tsx ~ line 377 ~ CreateProductInner ~ offerId",
+        offerId
+      );
+      // formikBag.resetForm();
     } catch (error: any) {
       // TODO: FAILURE MODAL
       console.error("error->", error.errors ?? error.toString());
