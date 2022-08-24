@@ -13,6 +13,7 @@ import PublicOrPrivateAccount from "./pages/account/public/PublicOrPrivateAccoun
 import CreateProduct from "./pages/create-product/CreateProduct";
 import CustomStore from "./pages/custom-store/CustomStore";
 import DisputeCentre from "./pages/dispute-centre/DisputeCentre";
+import DisputeList from "./pages/dispute-centre/DisputeList";
 import Exchange from "./pages/exchange/Exchange";
 import Explore from "./pages/explore/Explore";
 import Landing from "./pages/landing/Landing";
@@ -77,6 +78,10 @@ root.render(
               <Route
                 path={`${BosonRoutes.Dispute}/*`}
                 element={<DisputeCentre />}
+              />
+              <Route
+                path={`${BosonRoutes.DisputeList}/*`}
+                element={<DisputeList />}
               />
               <Route
                 path="*"
