@@ -26,8 +26,13 @@ const Container = styled.div`
 interface Props {
   withLayout?: boolean;
   withFooter?: boolean;
+  fluidHeader?: boolean;
 }
-export default function App({ withLayout = true, withFooter = true }: Props) {
+export default function App({
+  withLayout = true,
+  withFooter = true,
+  fluidHeader = false
+}: Props) {
   const primaryColor = useCustomStoreQueryParameter("primaryColor");
   const secondaryColor = useCustomStoreQueryParameter("secondaryColor");
   const accentColor = useCustomStoreQueryParameter("accentColor");
@@ -52,7 +57,7 @@ export default function App({ withLayout = true, withFooter = true }: Props) {
                 $accentColor={accentColor}
                 $primaryBgColor={primaryBgColor}
               />
-              <Header />
+              <Header fluidHeader={fluidHeader} />
               <Wrapper>
                 <Outlet />
               </Wrapper>

@@ -56,7 +56,13 @@ root.render(
               </Route>
               <Route
                 path={`${BosonRoutes.SellerCenter}/*`}
-                element={<App withLayout={false} withFooter={false} />}
+                element={
+                  <App
+                    withLayout={false}
+                    withFooter={false}
+                    fluidHeader={true}
+                  />
+                }
               >
                 <Route path="*" element={<SellerCenter />} />
               </Route>
