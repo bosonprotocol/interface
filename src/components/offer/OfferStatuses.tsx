@@ -1,5 +1,5 @@
 import { offers } from "@bosonprotocol/react-kit";
-import { useState } from "react";
+import { useMemo } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
@@ -147,7 +147,7 @@ export default function OfferStatuses({
   displayDot = false,
   size = "regular"
 }: Props) {
-  const [status] = useState<string>(offers.getOfferStatus(offer));
+  const status = useMemo(() => offers.getOfferStatus(offer), [offer]);
   const displayComponent = showValid
     ? true
     : status !== offers.OfferState.VALID;

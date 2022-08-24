@@ -395,7 +395,10 @@ export default function SellerTable({ offers }: Props) {
                         {...cell.getCellProps()}
                         key={`seller_table_tbody_td_${i}`}
                         onClick={() => {
-                          if (cell.column.id !== "action") {
+                          if (
+                            cell.column.id !== "action" &&
+                            cell.column.id !== "selection"
+                          ) {
                             const pathname = generatePath(
                               OffersRoutes.OfferDetail,
                               {

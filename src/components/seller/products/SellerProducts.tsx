@@ -92,7 +92,8 @@ export default function SellerProducts({ sellerId }: Props) {
       return filtered.filter((n): boolean => {
         return (
           n !== null &&
-          (n.id.includes(search) || n.metadata.name.includes(search))
+          (n.id.includes(search) ||
+            n.metadata.name.toLowerCase().includes(search.toLowerCase()))
         );
       });
     }
