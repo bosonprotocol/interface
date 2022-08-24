@@ -1,25 +1,32 @@
 import { DownloadSimple } from "phosphor-react";
+import { CSVLink } from "react-csv";
+import { CommonPropTypes } from "react-csv/components/CommonPropTypes";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
-import Button from "../ui/Button";
+import Button, { IButton } from "../ui/Button";
 
 const ExportButton = styled(Button)`
   color: ${colors.secondary};
   border: none;
-  gap: 0.5rem;
+  gap: 5px;
+  > div {
+    gap: 0.625rem;
+  }
 `;
 
-function SellerExport() {
+interface Props {
+  csvProps: CommonPropTypes;
+  buttonProps?: IButton;
+}
+
+function SellerExport({ csvProps, buttonProps = {} }: Props) {
   return (
-    <ExportButton
-      theme="outline"
-      size="small"
-      onClick={() => console.log("IN_PROGRESS")}
-    >
-      Export
-      <DownloadSimple size={13} />
-    </ExportButton>
+    <CSVLink {...csvProps} filename={csvProps.filename ?? "filename"}>
+      <ExportButton theme="outline" size="small" {...buttonProps}>
+        Export <DownloadSimple size={16} />
+      </ExportButton>
+    </CSVLink>
   );
 }
 

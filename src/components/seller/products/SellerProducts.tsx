@@ -1,7 +1,12 @@
 import { offers } from "@bosonprotocol/react-kit";
+import dayjs from "dayjs";
+import { BigNumber, utils } from "ethers";
+import map from "lodash/map";
 import { useMemo, useState } from "react";
 
+import { CONFIG } from "../../../lib/config";
 import { Offer } from "../../../lib/types/offer";
+import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import { useInfiniteOffers } from "../../../lib/utils/hooks/offers/useInfiniteOffers";
 import Loading from "../../ui/Loading";
 import SellerAddNewProduct from "../SellerAddNewProduct";
@@ -45,15 +50,6 @@ export default function SellerProducts({ sellerId }: Props) {
   console.log(search, "search");
   console.log(filter, "filter");
 
-  const filterButton = useMemo(() => {
-    return (
-      <>
-        <SellerExport />
-        <SellerAddNewProduct />
-      </>
-    );
-  }, []);
-
   const { data, isLoading, isError } = useInfiniteOffers(
     {
       voided: false,
@@ -95,6 +91,53 @@ export default function SellerProducts({ sellerId }: Props) {
       return n !== null;
     });
   }, [data, currentTag]);
+
+  const prepareCSVData = useMemo(() => {
+    const csvData = map(allOffers, (offer) => {
+      const price = (value: string, decimals: string) => {
+        try {
+          return utils.formatUnits(BigNumber.from(value), Number(decimals));
+        } catch (e) {
+          console.error(e);
+          return "";
+        }
+      };
+      return {
+        ["ID/SKU"]: offer?.id ? ("0000" + offer.id).slice(-4) : "",
+        ["Product name"]: offer?.metadata?.name ?? "",
+        ["Status"]: offer ? offers.getOfferStatus(offer) : "",
+        ["Quantity"]:
+          offer?.quantityAvailable && offer?.quantityInitial
+            ? `${offer.quantityAvailable} / ${offer.quantityInitial}`
+            : "",
+        ["Price"]:
+          offer?.price && offer?.exchangeToken?.decimals
+            ? price(offer.price, offer.exchangeToken.decimals)
+            : "",
+        ["Token"]: offer?.exchangeToken?.symbol ?? "",
+        ["Offer validity"]: offer?.validUntilDate
+          ? dayjs(getDateTimestamp(offer.validUntilDate)).format(
+              CONFIG.dateFormat
+            )
+          : ""
+      };
+    });
+    return csvData;
+  }, [allOffers]);
+
+  const filterButton = useMemo(() => {
+    return (
+      <>
+        <SellerExport
+          csvProps={{
+            data: prepareCSVData,
+            filename: "products"
+          }}
+        />
+        <SellerAddNewProduct />
+      </>
+    );
+  }, [prepareCSVData]);
 
   if (isLoading) {
     return <Loading />;

@@ -185,7 +185,7 @@ const allThemes = {
   }
 };
 
-interface IButton {
+export interface IButton {
   children?: string | React.ReactNode;
   onClick?: React.MouseEventHandler<HTMLButtonElement> | undefined;
   size?: "small" | "regular" | "large";

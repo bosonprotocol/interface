@@ -14,7 +14,7 @@ function SellerAddNewProduct() {
         navigate({ pathname: BosonRoutes.CreateProduct });
       }}
     >
-      Add product <PlusCircle size={13} />
+      Add product <PlusCircle size={16} />
     </Button>
   );
 }
