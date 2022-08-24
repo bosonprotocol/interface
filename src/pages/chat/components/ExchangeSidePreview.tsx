@@ -227,7 +227,7 @@ export default function ExchangeSidePreview({ exchange, disputeOpen }: Props) {
     if (!exchange) {
       return [];
     }
-    const { committedDate, redeemedDate } = exchange;
+    const { committedDate, redeemedDate, disputed } = exchange;
     const timesteps = [];
     if (committedDate) {
       timesteps.push({
@@ -237,6 +237,12 @@ export default function ExchangeSidePreview({ exchange, disputeOpen }: Props) {
     }
     if (redeemedDate) {
       timesteps.push({ text: "Redeemed", date: formatShortDate(redeemedDate) });
+    }
+    if (disputed) {
+      timesteps.push({
+        text: "Dispute Raised",
+        date: "" // TODO: use disputed timestamp once CC returns that in the subgraph
+      });
     }
     return timesteps;
   }, [exchange]);

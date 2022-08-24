@@ -14,8 +14,14 @@ import {
 } from "../../components/product/utils";
 import MultiSteps from "../../components/step/MultiSteps";
 import Grid from "../../components/ui/Grid";
+import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
+import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { useCoreSDK } from "../../lib/utils/useCoreSdk";
+import { useChatContext } from "../chat/ChatProvider/ChatContext";
+import { createProposal } from "../chat/utils/create";
+import { sendProposalToChat } from "../chat/utils/send";
 import DisputeCentreForm from "./DisputeCentreForm";
 
 const DISPUTE_STEPS = [
@@ -67,11 +73,18 @@ const ItemPreview = styled(Grid)`
 `;
 
 function DisputeCentre() {
-  const [currentStep, setCurrentStep] = useState(0);
+  const { bosonXmtp } = useChatContext();
+  const coreSDK = useCoreSDK();
+  const [currentStep, setCurrentStep] = useState<number>(0);
   const params = useParams();
   const exchangeId = params["*"];
+  const navigate = useKeepQueryParamsNavigate();
 
-  const { data: exchanges = [] } = useExchanges({
+  const {
+    data: exchanges = [],
+    isError,
+    isLoading
+  } = useExchanges({
     id: exchangeId,
     disputed: null
   });
@@ -92,6 +105,18 @@ function DisputeCentre() {
     disputeCentreValidationSchemaProposalSummary
   ];
 
+  if (!exchange && isLoading) {
+    return <p>Your exchange info is loading</p>;
+  }
+
+  if (!exchange && isError) {
+    return <p>There has been an error while retrieving your exchange</p>;
+  }
+
+  if (exchange.disputed) {
+    return <p>This exchange has already been disputed</p>;
+  }
+
   return (
     <>
       <MultiStepsContainer>
@@ -99,6 +124,7 @@ function DisputeCentre() {
           data={DISPUTE_STEPS}
           active={currentStep}
           callback={handleClickStep}
+          disableInactiveSteps
         />
       </MultiStepsContainer>
       <DisputeContainer
@@ -111,24 +137,61 @@ function DisputeCentre() {
           margin="2rem 0 0 0"
           padding="2rem"
         >
-          {exchange && <ExchangePreview exchange={exchange} />}
+          <ExchangePreview exchange={exchange} />
         </ItemPreview>
         <GetStartedBox>
           <ItemWidget>
             <Formik
               initialValues={disputeCentreInitialValues}
-              onSubmit={() => {
-                // TODO- submitting form
-                console.log("submitted");
+              onSubmit={async (values) => {
+                try {
+                  if (!bosonXmtp) {
+                    console.error(
+                      "You have to initialize the chat before raising a dispute"
+                    );
+                    return;
+                  }
+                  const { proposal, filesWithData } = await createProposal({
+                    isSeller: false,
+                    sellerOrBuyerId: exchange.buyer.id,
+                    proposalFields: {
+                      description: values.description,
+                      upload: values.upload,
+                      proposalTypeName: values.proposalsTypes[0].label || "",
+                      refundPercentage: values.refundPercentage,
+                      disputeContext: [values.getStarted, values.tellUsMore]
+                    }
+                  });
+                  await sendProposalToChat({
+                    bosonXmtp,
+                    proposal,
+                    files: filesWithData,
+                    destinationAddress: exchange.seller.operator,
+                    threadId: {
+                      buyerId: exchange.buyer.id,
+                      sellerId: exchange.seller.id,
+                      exchangeId: exchange.id
+                    }
+                  });
+                  const tx = await coreSDK.raiseDispute(
+                    exchange.id,
+                    proposal.disputeContext.join("\n")
+                  );
+                  await tx.wait();
+                  navigate({
+                    pathname: BosonRoutes.Dispute // TODO: change to dispute center
+                  });
+                } catch (error) {
+                  console.error(error);
+                }
               }}
               validationSchema={validationSchema[currentStep]}
             >
-              {(formikProps) => (
+              {() => (
                 <DisputeCentreForm
                   setCurrentStep={setCurrentStep}
                   currentStep={currentStep}
                   exchange={exchange}
-                  {...formikProps}
                 />
               )}
             </Formik>

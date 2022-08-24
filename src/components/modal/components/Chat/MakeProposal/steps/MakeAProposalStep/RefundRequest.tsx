@@ -88,7 +88,7 @@ export default function RefundRequest({ exchange }: Props) {
         You will keep your purchased product and get a partial refund.
       </Typography>
       <Grid gap="1rem" alignItems="flex-start">
-        <Grid flexDirection="column">
+        <Grid flexDirection="column" flexBasis="30%">
           <Typography $fontSize="1rem" fontWeight="600">
             In escrow
           </Typography>
@@ -111,7 +111,7 @@ export default function RefundRequest({ exchange }: Props) {
             />
           </InEscrowPriceWrapper>
         </Grid>
-        <Grid flexDirection="column">
+        <Grid flexDirection="column" flexBasis="40%">
           <Typography $fontSize="1rem" fontWeight="600">
             Requested refund
           </Typography>
@@ -125,7 +125,7 @@ export default function RefundRequest({ exchange }: Props) {
             inEscrowWithDecimals={inEscrowWithDecimals}
           />
         </Grid>
-        <Grid flexDirection="column">
+        <Grid flexDirection="column" flexBasis="30%">
           <Typography $fontSize="1rem" fontWeight="600">
             Percentage
           </Typography>

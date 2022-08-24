@@ -3,7 +3,7 @@ import { useSellers } from "./useSellers";
 
 export const useBuyerSellerAccounts = (address: string) => {
   const { data: sellers, ...restSellers } = useSellers({
-    admin: address
+    operator: address
   });
   const { data: buyers, ...restBuyers } = useBuyers({
     wallet: address

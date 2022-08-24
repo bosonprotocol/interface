@@ -70,7 +70,7 @@ function TellUsMore({
                 <FormButton
                   type="submit"
                   onClick={() => {
-                    formValues.setFieldValue(FieldArrayName, step);
+                    formValues.setFieldValue(FieldArrayName, step.label);
                     setCurrentStep(currentStep + 1);
                   }}
                 >
