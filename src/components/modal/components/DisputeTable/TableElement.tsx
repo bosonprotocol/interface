@@ -14,8 +14,8 @@ import Image from "../../../ui/Image";
 import SellerID from "../../../ui/SellerID";
 
 const OfferImage = styled.div`
-  width: 60px;
-  height: 60px;
+  width: 3.75rem;
+  height: 3.75rem;
   margin-right: 1rem;
   img {
     margin-top: -5px;
@@ -31,7 +31,7 @@ const MessageInfo = styled.div`
 
 const ExchangeName = styled.div`
   font-weight: 600;
-  font-size: 16px;
+  font-size: 1rem;
 `;
 
 const DisputeRaised = styled.td`

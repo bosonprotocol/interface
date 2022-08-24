@@ -32,7 +32,7 @@ const SubmitButton = styled(Button)`
 const HowItWorksButton = styled(Button)`
   border: 2px solid ${colors.secondary};
   color: ${colors.secondary};
-  margin-top: 30px;
+  margin-top: 1.875rem;
   div {
     font-weight: 600;
   }

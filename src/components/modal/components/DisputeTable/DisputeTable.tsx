@@ -10,8 +10,8 @@ const Table = styled.table`
   max-width: 65.625rem;
   margin: 0 auto;
   td {
-    padding-bottom: 20px;
-    padding-top: 20px;
+    padding-bottom: 1.25rem;
+    padding-top: 1.25rem;
   }
   [data-table-header] {
     padding-top: 1.5625rem;
@@ -33,7 +33,7 @@ const TableElementContainer = styled.tr`
     left: 0;
     bottom: 0;
     width: calc(100% - 2.0625rem);
-    height: 2px;
+    height: 0.125rem;
   }
 `;
 
