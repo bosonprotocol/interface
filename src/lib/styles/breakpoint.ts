@@ -13,5 +13,6 @@ export const breakpoint = {
   s: `@media (min-width: ${breakpointNumbers.s}px)`,
   m: `@media (min-width: ${breakpointNumbers.m}px)`,
   l: `@media (min-width: ${breakpointNumbers.l}px)`,
-  xl: `@media (min-width: ${breakpointNumbers.xl}px)`
+  xl: `@media (min-width: ${breakpointNumbers.xl}px)`,
+  auto: `@media (min-width: ${breakpointNumbers.l}px)`
 };

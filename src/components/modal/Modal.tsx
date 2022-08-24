@@ -48,6 +48,12 @@ const sizeToMargin = {
     m: "4rem 8rem",
     l: "4rem 10rem",
     xl: "4rem 14rem"
+  },
+  auto: {
+    s: "4rem auto",
+    m: "4rem auto",
+    l: "4rem auto",
+    xl: "4rem auto"
   }
 } as const;
 
@@ -75,6 +81,9 @@ const Wrapper = styled.div<{ $modalType: ModalType; $size: Props["size"] }>`
   ${breakpoint.xl} {
     margin: ${({ $size }) =>
       sizeToMargin[$size as keyof typeof sizeToMargin]["xl"] || "4rem 14rem"};
+  }
+  ${breakpoint.auto} {
+    margin: 4rem auto;
   }
 `;
 
