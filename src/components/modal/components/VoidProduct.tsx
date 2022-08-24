@@ -19,9 +19,10 @@ const OfferWrapper = styled.div`
 interface Props {
   offer: Offer;
   offerId?: string;
+  refetch: () => void;
 }
 
-export default function VoidProduct({ offer, offerId }: Props) {
+export default function VoidProduct({ offerId, offer, refetch }: Props) {
   const { data: signer } = useSigner();
   const { hideModal } = useModal();
 
@@ -97,6 +98,7 @@ export default function VoidProduct({ offer, offerId }: Props) {
           onSuccess={(_args, res) => {
             console.log(_args, res);
             hideModal();
+            refetch();
           }}
           web3Provider={signer?.provider as Provider}
         />

@@ -36,6 +36,7 @@ interface Props {
   offers: (Offer | null)[];
   isError: boolean;
   isLoading?: boolean;
+  refetch: () => void;
 }
 
 const IndeterminateCheckbox = forwardRef(({ indeterminate, ...rest }, ref) => {
@@ -155,7 +156,7 @@ const Span = styled.span`
     margin-right: 1rem;
   }
 `;
-export default function SellerTable({ offers }: Props) {
+export default function SellerTable({ offers, refetch }: Props) {
   const { showModal, modalTypes } = useModal();
   const navigate = useKeepQueryParamsNavigate();
   const columns = useMemo(
@@ -228,7 +229,7 @@ export default function SellerTable({ offers }: Props) {
               showPlaceholderText={false}
             />
           ),
-          sku: ("0000" + offer.id).slice(-4),
+          sku: offer.id,
           productName: (
             <Typography tag="p">
               <b>{offer.metadata?.name}</b>
@@ -272,28 +273,27 @@ export default function SellerTable({ offers }: Props) {
               </span>
             </Typography>
           ),
-          action: (
+          action: !(
+            status === OffersKit.OfferState.EXPIRED ||
+            status === OffersKit.OfferState.VOIDED
+          ) && (
             <Button
-              theme={
-                status === OffersKit.OfferState.VOIDED ? "outline" : "primary"
-              }
+              theme="primary"
               size="small"
-              disabled={status === OffersKit.OfferState.VOIDED}
               onClick={() => {
-                if (status !== OffersKit.OfferState.VOIDED) {
-                  showModal(
-                    modalTypes.VOID_PRODUCT,
-                    {
-                      title: "Void Confirmation",
-                      offerId: offer.id,
-                      offer
-                    },
-                    "xs"
-                  );
-                }
+                showModal(
+                  modalTypes.VOID_PRODUCT,
+                  {
+                    title: "Void Confirmation",
+                    offerId: offer.id,
+                    offer,
+                    refetch
+                  },
+                  "xs"
+                );
               }}
             >
-              {status === OffersKit.OfferState.VOIDED ? "Voided" : "Void"}
+              Void
             </Button>
           )
         };

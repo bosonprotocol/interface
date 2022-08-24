@@ -51,7 +51,7 @@ export default function SellerProducts({ sellerId }: Props) {
   const [search, setSearch] = useState<string>("");
   const [filter, setFilter] = useState<FilterValue | null>(null);
 
-  const { data, isLoading, isError } = useInfiniteOffers(
+  const { data, isLoading, isError, refetch } = useInfiniteOffers(
     {
       sellerId,
       first: 1000,
@@ -117,10 +117,8 @@ export default function SellerProducts({ sellerId }: Props) {
         ["ID/SKU"]: offer?.id ? ("0000" + offer.id).slice(-4) : "",
         ["Product name"]: offer?.metadata?.name ?? "",
         ["Status"]: offer ? offers.getOfferStatus(offer) : "",
-        ["Quantity"]:
-          offer?.quantityAvailable && offer?.quantityInitial
-            ? `${offer.quantityAvailable} / ${offer.quantityInitial}`
-            : "",
+        ["Remaining Quantity"]: offer?.quantityAvailable ?? "",
+        ["Initial Quantity"]: offer?.quantityInitial ?? "",
         ["Price"]:
           offer?.price && offer?.exchangeToken?.decimals
             ? price(offer.price, offer.exchangeToken.decimals)
@@ -168,7 +166,12 @@ export default function SellerProducts({ sellerId }: Props) {
         setFilter={setFilter}
         buttons={filterButton}
       />
-      <SellerTable offers={allOffers} isLoading={isLoading} isError={isError} />
+      <SellerTable
+        offers={allOffers}
+        isLoading={isLoading}
+        isError={isError}
+        refetch={refetch}
+      />
     </>
   );
 }
