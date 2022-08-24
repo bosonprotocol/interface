@@ -49,14 +49,6 @@ const SelectTitle = styled.strong`
   display: block;
 `;
 
-interface Props {
-  search: string;
-  setSearch: React.Dispatch<React.SetStateAction<string>>;
-  filter: string;
-  setFilter: React.Dispatch<React.SetStateAction<string>>;
-  buttons?: JSX.Element;
-}
-
 const selectOptions = [
   { value: "1", label: "Show all" },
   { value: "2", label: "Show all-1" },
@@ -114,6 +106,17 @@ const customStyles: StylesConfig<
   })
 };
 
+interface FilterValue {
+  value: string;
+  label: string;
+}
+interface Props {
+  search: string;
+  setSearch: React.Dispatch<React.SetStateAction<string>>;
+  filter: FilterValue | null;
+  setFilter: React.Dispatch<React.SetStateAction<FilterValue | null>>;
+  buttons?: JSX.Element;
+}
 export default function SellerFilters({
   setSearch,
   search,
@@ -138,8 +141,9 @@ export default function SellerFilters({
       label: string;
     }>
   ) => {
-    if (option?.value) {
-      setFilter(option.value);
+    if (option) {
+      console.log(option);
+      setFilter(option);
     }
   };
 
@@ -153,6 +157,7 @@ export default function SellerFilters({
               styles={customStyles}
               isSearchable={false}
               placeholder=""
+              value={filter}
               options={selectOptions}
               onChange={handleChangeSelect}
             />

@@ -1,7 +1,13 @@
-// TODO: remove below comments
 // eslint-disable-next-line
 // @ts-nocheck
 import { offers as OffersKit } from "@bosonprotocol/react-kit";
+import type {
+  Cell,
+  Column,
+  Header,
+  HeaderGroup,
+  Row
+} from "@types/react-table";
 import dayjs from "dayjs";
 import { Check } from "phosphor-react";
 import { CaretDown, CaretLeft, CaretRight, CaretUp } from "phosphor-react";
@@ -211,7 +217,6 @@ export default function SellerTable({ offers }: Props) {
           offerId: offer.id,
           image: (
             <Image
-              // TODO: prefetch to prevent reloading
               src={offer.metadata?.image}
               style={{
                 width: "2.5rem",
@@ -276,11 +281,15 @@ export default function SellerTable({ offers }: Props) {
               disabled={status === OffersKit.OfferState.VOIDED}
               onClick={() => {
                 if (status !== OffersKit.OfferState.VOIDED) {
-                  showModal(modalTypes.VOID_PRODUCT, {
-                    title: "Void Confirmation",
-                    offerId: offer.id,
-                    offer
-                  });
+                  showModal(
+                    modalTypes.VOID_PRODUCT,
+                    {
+                      title: "Void Confirmation",
+                      offerId: offer.id,
+                      offer
+                    },
+                    "xs"
+                  );
                 }
               }}
             >
@@ -305,10 +314,10 @@ export default function SellerTable({ offers }: Props) {
       hooks.visibleColumns.push((columns) => [
         {
           id: "selection",
-          Header: ({ getToggleAllRowsSelectedProps }: any) => (
+          Header: ({ getToggleAllRowsSelectedProps }: Header) => (
             <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
           ),
-          Cell: ({ row }: any) => (
+          Cell: ({ row }: Cell) => (
             <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
           )
         },
@@ -344,12 +353,12 @@ export default function SellerTable({ offers }: Props) {
     <>
       <Table {...getTableProps()}>
         <thead>
-          {headerGroups.map((headerGroup: any, key: number) => (
+          {headerGroups.map((headerGroup: HeaderGroup, key: number) => (
             <tr
               key={`seller_table_thead_tr_${key}`}
               {...headerGroup.getHeaderGroupProps()}
             >
-              {headerGroup.headers.map((column: any, i: number) => (
+              {headerGroup.headers.map((column: Column, i: number) => (
                 <th
                   key={`seller_table_thead_th_${i}`}
                   data-sortable={column.sortable}
@@ -358,8 +367,8 @@ export default function SellerTable({ offers }: Props) {
                   {column.render("Header")}
                   {i > 0 && column.sortable && (
                     <HeaderSorter>
-                      {column.isSorted ? (
-                        column.isSortedDesc ? (
+                      {column?.isSorted ? (
+                        column?.isSortedDesc ? (
                           <CaretDown size={14} />
                         ) : (
                           <CaretUp size={14} />
@@ -376,11 +385,11 @@ export default function SellerTable({ offers }: Props) {
         </thead>
         <tbody {...getTableBodyProps()}>
           {(page.length > 0 &&
-            page.map((row: Offer, key: number) => {
+            page.map((row: Row, key: number) => {
               prepareRow(row);
               return (
                 <tr {...row.getRowProps()} key={`seller_table_tbody_tr_${key}`}>
-                  {row.cells.map((cell: any, i: number) => {
+                  {row.cells.map((cell: Cell, i: number) => {
                     return (
                       <td
                         {...cell.getCellProps()}
@@ -390,7 +399,8 @@ export default function SellerTable({ offers }: Props) {
                             const pathname = generatePath(
                               OffersRoutes.OfferDetail,
                               {
-                                [UrlParameters.offerId]: row?.original?.offerId
+                                [UrlParameters.offerId]:
+                                  row?.original?.offerId ?? 0
                               }
                             );
                             navigate({ pathname });

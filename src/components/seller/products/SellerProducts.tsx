@@ -36,11 +36,15 @@ const productTags = [
 interface Props {
   sellerId: string;
 }
+interface FilterValue {
+  value: string;
+  label: string;
+}
 
 export default function SellerProducts({ sellerId }: Props) {
   const [currentTag, setCurrentTag] = useState(productTags[0].value);
   const [search, setSearch] = useState<string>("");
-  const [filter, setFilter] = useState<string>("");
+  const [filter, setFilter] = useState<FilterValue | null>(null);
 
   const filterButton = useMemo(() => {
     return (
