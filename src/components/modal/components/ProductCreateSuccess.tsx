@@ -123,6 +123,9 @@ export default function ProductCreateSuccess({
     onCreateNewProject();
   };
 
+  /**
+   * TODO: make the decimals depending on the token
+   */
   const suggestedAmount = formatUnits(
     BigNumber.from(offer.sellerDeposit).mul(parseInt(offer.quantityInitial)),
     18

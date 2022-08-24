@@ -85,6 +85,10 @@ function CreateProductInner({ initial }: Props) {
       offerInfo.metadataUri
     )) as any;
 
+    /**
+     * TODO: The exchange token should not be hardcoded to suport multiple tokens
+     */
+
     showModal(
       modalTypes.PRODUCT_CREATE_SUCCESS,
       {
