@@ -8,6 +8,7 @@ import CustomStore from "./components/CustomStore";
 import DetailWidget from "./components/DetailWidget";
 import DisputeModal from "./components/DisputeModal/DisputeModal";
 import ProductCreateSuccess from "./components/ProductCreateSuccess";
+import RedeemModal from "./components/RedeemModal/RedeemModal";
 import Upload from "./components/Upload";
 import VoidProduct from "./components/VoidProduct";
 import WhatIsRedeem from "./components/WhatIsRedeem";
@@ -24,7 +25,8 @@ export const MODAL_TYPES = {
   DISPUTE_MODAL: "DISPUTE_MODAL",
   PRODUCT_CREATE_SUCCESS: "PRODUCT_CREATE_SUCCESS",
   CREATE_PRODUCT_DRAFT: "CREATE_PRODUCT_DRAFT",
-  VOID_PRODUCT: "VOID_PRODUCT"
+  VOID_PRODUCT: "VOID_PRODUCT",
+  REDEEM_MODAL: "REDEEM_MODAL"
 } as const;
 
 export const MODAL_COMPONENTS = {
@@ -39,5 +41,6 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.DISPUTE_MODAL]: DisputeModal,
   [MODAL_TYPES.PRODUCT_CREATE_SUCCESS]: ProductCreateSuccess,
   [MODAL_TYPES.VOID_PRODUCT]: VoidProduct,
-  [MODAL_TYPES.CREATE_PRODUCT_DRAFT]: CreateProductDraft
+  [MODAL_TYPES.CREATE_PRODUCT_DRAFT]: CreateProductDraft,
+  [MODAL_TYPES.REDEEM_MODAL]: RedeemModal
 } as const;

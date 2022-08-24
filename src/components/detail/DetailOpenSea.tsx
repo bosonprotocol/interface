@@ -1,16 +1,18 @@
 import { exchanges, subgraph } from "@bosonprotocol/react-kit";
 import { ArrowSquareOut } from "phosphor-react";
 
-import { Offer } from "../../lib/types/offer";
+import { Exchange } from "../../lib/utils/hooks/useExchanges";
 import { OpenSeaButton } from "./Detail.style";
 
 interface Props {
-  exchange?: NonNullable<Offer["exchanges"]>[number];
+  exchange?: Exchange;
 }
 
 export default function DetailOpenSea({ exchange }: Props) {
   const exchangeStatus = exchange
-    ? exchanges.getExchangeState(exchange as subgraph.ExchangeFieldsFragment)
+    ? exchanges.getExchangeState(
+        exchange as unknown as subgraph.ExchangeFieldsFragment
+      )
     : null;
   const isToRedeem =
     !exchangeStatus || exchangeStatus === subgraph.ExchangeState.Committed;

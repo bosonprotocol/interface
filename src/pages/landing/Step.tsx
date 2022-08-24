@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 import Typography from "../../components/ui/Typography";
 import { breakpoint } from "../../lib/styles/breakpoint";
+import { zIndex } from "../../lib/styles/zIndex";
 
 const StepWrapper = styled.div`
   display: flex;
@@ -20,10 +21,11 @@ const StepWrapper = styled.div`
     position: relative;
     color: var(--secondary);
     margin-bottom: 0.5rem !important;
+    z-index: ${zIndex.CommitStep};
     &:after {
       content: "";
       position: absolute;
-      z-index: -1;
+      z-index: ${zIndex.CommitStep - 1};
       width: 100%;
       height: 50%;
       top: 50%;
@@ -46,14 +48,14 @@ const StepWrapper = styled.div`
 `;
 
 interface IStep {
-  children: string | React.ReactNode;
+  children?: string | React.ReactNode;
   number: number;
   title: string;
 }
 
-const Step: React.FC<IStep> = ({ children, number, title }) => {
+const Step: React.FC<IStep> = ({ children, number, title, ...props }) => {
   return (
-    <StepWrapper>
+    <StepWrapper {...props}>
       <Typography tag="div" data-testid="number">
         0{number}
       </Typography>

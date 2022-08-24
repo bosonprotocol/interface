@@ -1,13 +1,18 @@
+import React from "react";
 import styled from "styled-components";
 
 import { IGrid } from "./Grid";
 
 interface WrapperProps extends IGrid {
-  fontSize?: string;
+  $fontSize?: string;
   fontWeight?: string;
+  lineHeight?: string;
   color?: string;
   background?: string;
   cursor?: string;
+  letterSpacing?: string;
+  textAlign?: string;
+  opacity?: string;
 }
 
 const Wrapper = styled.div<WrapperProps>`
@@ -27,18 +32,23 @@ const Wrapper = styled.div<WrapperProps>`
   ${({ margin }) => (margin ? `margin:${margin};` : "")}
 
 
-  ${({ fontSize }) => (fontSize ? `font-size:${fontSize};` : "")}
+  ${({ $fontSize }) => ($fontSize ? `font-size:${$fontSize};` : "")}
   ${({ fontWeight }) => (fontWeight ? `font-weight:${fontWeight};` : "")}
+  ${({ lineHeight }) => (lineHeight ? `line-height:${lineHeight};` : "")}
   ${({ color }) => (color ? `color:${color};` : "")}
   ${({ background }) => (background ? `background:${background};` : "")}
   ${({ cursor }) => (cursor ? `cursor:${cursor};` : "")}
+  ${({ letterSpacing }) =>
+    letterSpacing ? `letter-spacing:${letterSpacing};` : ""}
+    ${({ textAlign }) => (textAlign ? `text-align:${textAlign};` : "")}
+    ${({ opacity }) => (opacity ? `opacity:${opacity};` : "")}
 `;
 
-interface ITypography {
+interface ITypography extends WrapperProps {
   children?: string | React.ReactNode;
   tag?: keyof JSX.IntrinsicElements;
   style?: React.CSSProperties;
-  [x: string]: unknown;
+  onClick?: () => void;
 }
 
 const Typography: React.FC<ITypography> = ({

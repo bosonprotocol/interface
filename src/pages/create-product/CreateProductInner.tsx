@@ -103,8 +103,8 @@ function CreateProductInner({ initial }: Props) {
         quantityAvailable: offerInfo.quantityAvailable,
         quantityInitial: offerInfo.quantityInitial,
         fulfillmentPeriodDuration: offerInfo.fulfillmentPeriodDuration,
+        voucherRedeemableUntilDate: `${offerInfo.voucherRedeemableUntilDate}000`,
         validFromDate: offerInfo.validFromDate,
-        validUntilDate: offerInfo.validUntilDate,
         voidedAt: offerInfo.voidedAt,
         voucherValidDuration: offerInfo.voucherValidDuration,
         exchangeToken: {
@@ -336,13 +336,11 @@ function CreateProductInner({ initial }: Props) {
         voucherRedeemableFromDateInMS: voucherRedeemableFromDateInMS.toString(),
         voucherRedeemableUntilDateInMS:
           voucherRedeemableUntilDateInMS.toString(),
+        voucherValidDurationInMS: 0,
         validFromDateInMS: validFromDateInMS.toString(),
         validUntilDateInMS: validUntilDateInMS.toString(),
-        fulfillmentPeriodDurationInMS: resolutionPeriodDurationInMS.toString(), // TODO: find what should be fulfillmentPeriodDuration
+        fulfillmentPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
         resolutionPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
-        voucherValidDurationInMS: (
-          validUntilDateInMS - validFromDateInMS
-        ).toString(),
         exchangeToken: "0x0000000000000000000000000000000000000000",
         disputeResolverId: 1,
         agentId: 0, // no agent
@@ -401,6 +399,7 @@ function CreateProductInner({ initial }: Props) {
         data={CREATE_PRODUCT_STEPS}
         active={currentStep}
         callback={handleClickStep}
+        disableInactiveSteps
       />
 
       <ProductLayoutContainer isPreviewVisible={isPreviewVisible}>

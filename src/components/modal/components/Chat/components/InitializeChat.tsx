@@ -27,15 +27,6 @@ const IconError = styled(Warning)`
   color: ${colors.froly};
 `;
 
-const InfoMessage = styled(Typography)`
-  font-family: Plus Jakarta Sans;
-  font-size: 1rem;
-  font-weight: 600;
-  line-height: 1.5rem;
-  letter-spacing: 0px;
-  text-align: left;
-  flex: 1 1;
-`;
 interface Props {
   isError?: boolean;
 }
@@ -50,11 +41,18 @@ export default function InitializeChat({ isError = false }: Props) {
     <Info justifyContent="space-between" gap="2rem">
       <Grid justifyContent="flex-start" gap="1rem">
         {isError ? <IconError size={24} /> : <Icon size={24} />}
-        <InfoMessage>
+        <Typography
+          $fontSize="1rem"
+          fontWeight="600"
+          lineHeight="1.5rem"
+          flex="1 1"
+          letterSpacing="0"
+          text-align="left"
+        >
           {isError
             ? `Chat initialization failed, please try again`
             : `To proceed you must first initialize your chat client`}
-        </InfoMessage>
+        </Typography>
       </Grid>
       <div>
         {isInitializeButtonVisible ? (

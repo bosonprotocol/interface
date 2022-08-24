@@ -111,7 +111,7 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
     }
     return (
       <>
-        <Typography tag="p" fontSize="0.75rem" fontWeight="bold">
+        <Typography tag="p" $fontSize="0.75rem" fontWeight="bold">
           Product Type*
         </Typography>
         <ProductBox>
@@ -488,7 +488,7 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
           <Info justifyContent="space-between" gap="2rem">
             <Grid justifyContent="flex-start" gap="1rem">
               <ChatDotsIcon size={24} />
-              <InfoMessage fontSize="1rem" fontWeight="bold">
+              <InfoMessage $fontSize="1rem" fontWeight="bold">
                 You succesfully initialized your chat client
               </InfoMessage>
             </Grid>

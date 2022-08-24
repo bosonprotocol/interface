@@ -3,7 +3,6 @@ import { useQuery } from "react-query";
 
 import { Offer } from "../../types/offer";
 import { fetchSubgraph } from "../core-components/subgraph";
-import { checkOfferMetadata } from "../validators";
 import { offerGraphQl } from "./offers/graphql";
 
 export type Exchange = {
@@ -18,10 +17,18 @@ export type Exchange = {
   seller: {
     id: string;
     operator: string;
+    admin: string;
+    clerk: string;
+    treasury: string;
+    authTokenId: string;
+    authTokenType: number;
+    voucherCloneAddress: string;
+    active: boolean;
   };
   buyer: {
     id: string;
     wallet: string;
+    active: boolean;
   };
   offer: Offer;
 };
@@ -86,10 +93,18 @@ export function useExchanges(
             seller {
               id
               operator
+              admin
+              clerk
+              treasury
+              authTokenId
+              authTokenType
+              voucherCloneAddress
+              active
             }
             buyer {
               id
               wallet
+              active
             }
             offer ${offerGraphQl}
           }
@@ -105,7 +120,6 @@ export function useExchanges(
       );
       return (
         result?.exchanges.map((exchange) => {
-          const isValid = checkOfferMetadata(exchange.offer);
           return {
             ...exchange,
             offer: {
@@ -114,7 +128,7 @@ export function useExchanges(
                 ...exchange.offer.metadata,
                 imageUrl: exchange.offer.metadata.image
               },
-              isValid
+              isValid: true
             } as Offer
           };
         }) ?? []

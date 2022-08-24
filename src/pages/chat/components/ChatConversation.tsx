@@ -10,13 +10,13 @@ import {
 import { validateMessage } from "@bosonprotocol/chat-sdk/dist/cjs/util/validators";
 import dayjs from "dayjs";
 import { utils } from "ethers";
-import { CircleNotch } from "phosphor-react";
 import { ArrowLeft, UploadSimple } from "phosphor-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
+import { Spinner } from "../../../components/loading/Spinner";
 import { useModal } from "../../../components/modal/useModal";
 import Grid from "../../../components/ui/Grid";
 import SellerID from "../../../components/ui/SellerID";
@@ -112,19 +112,7 @@ const Header = styled.div`
     justify-content: unset;
   }
 `;
-const Spinner = styled(CircleNotch)`
-  animation: spin 2s infinite linear;
-  @keyframes spin {
-    0% {
-      -webkit-transform: rotate(0deg);
-      transform: rotate(0deg);
-    }
-    100% {
-      -webkit-transform: rotate(359deg);
-      transform: rotate(359deg);
-    }
-  }
-`;
+
 const Loading = styled.div`
   display: flex;
   background-color: ${colors.lightGrey};

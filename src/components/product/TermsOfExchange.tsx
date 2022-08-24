@@ -2,9 +2,9 @@ import { Check } from "phosphor-react";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
+import FairExchangePolicy from "../exchangePolicy/FairExchangePolicy";
 import { FormField, Input, Select } from "../form";
 import Button from "../ui/Button";
-import Typography from "../ui/Typography";
 import {
   ContainerProductPage,
   ProductButtonGroup,
@@ -58,30 +58,10 @@ const InfoWrapperList = styled.div`
   padding: 1.25rem 1.5rem 1.5rem 1.5rem;
   background: ${colors.lightGrey};
   > p {
-    margin 0;
+    margin: 0;
   }
-`;
-const InfoTitleWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  font-weight: bold;
-  margin-bottom: 0.25rem;
-  > p {
-    margin 0;
-  }
-`;
-const InfoList = styled.ul`
-  margin 0 0 0 1.5rem;
-  padding: 0;
-  line-height: 1.063rem;
-`;
-const InfoListItem = styled.li`
-  margin 0;
-  padding 0;
   p {
     font-size: 0.75rem;
-    margin: 0;
-    color: ${colors.darkGrey};
   }
 `;
 
@@ -199,30 +179,13 @@ export default function TermsOfExchange() {
         </FormWrapper>
         <InfoWrapper>
           <InfoWrapperList>
-            <InfoTitleWrapper>
-              <Typography tag="p">Fair exhange policy </Typography>
-              <CheckIconWrapper>
-                <Check size={13} />
-              </CheckIconWrapper>
-            </InfoTitleWrapper>
-            <InfoList>
-              <InfoListItem>
-                <Typography tag="p">30 days to raise a dispute</Typography>
-              </InfoListItem>
-              <InfoListItem>
-                <Typography tag="p">
-                  Fair buyer and seller obligations
-                </Typography>
-              </InfoListItem>
-              <InfoListItem>
-                <Typography tag="p">Standard evidence requirements</Typography>
-              </InfoListItem>
-              <InfoListItem>
-                <Typography tag="p">
-                  15 days to resolve a raised dispute
-                </Typography>
-              </InfoListItem>
-            </InfoList>
+            <FairExchangePolicy
+              policyIcon={
+                <CheckIconWrapper>
+                  <Check size={13} />
+                </CheckIconWrapper>
+              }
+            />
           </InfoWrapperList>
         </InfoWrapper>
       </MainContainer>

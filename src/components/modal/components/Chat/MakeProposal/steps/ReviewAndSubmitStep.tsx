@@ -44,10 +44,10 @@ export default function ReviewAndSubmitStep({
   });
   return (
     <>
-      <Typography fontSize="2rem" fontWeight="600">
+      <Typography $fontSize="2rem" fontWeight="600">
         Review & Submit
       </Typography>
-      <Typography fontWeight="600" tag="p" fontSize="1.5rem">
+      <Typography fontWeight="600" tag="p" $fontSize="1.5rem">
         Description
       </Typography>
       <Typography tag="p">{descriptionField.value}</Typography>
@@ -58,9 +58,9 @@ export default function ReviewAndSubmitStep({
           uploadFieldHelpers.setValue(files);
         }}
       />
-      <Typography fontSize="1.25rem" color={colors.darkGrey}></Typography>
+      <Typography $fontSize="1.25rem" color={colors.darkGrey}></Typography>
       <Grid flexDirection="column" margin="2rem 0" alignItems="flex-start">
-        <Typography fontWeight="600" tag="p" fontSize="1.5rem">
+        <Typography fontWeight="600" tag="p" $fontSize="1.5rem">
           Resolution proposal
         </Typography>
         <Grid flexDirection="column" gap="2rem">
