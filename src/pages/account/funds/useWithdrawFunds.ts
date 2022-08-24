@@ -3,7 +3,7 @@ import { useCallback } from "react";
 
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 
-export interface TokenToWithdraw {
+interface TokenToWithdraw {
   address: string;
   amount: BigNumberish;
 }

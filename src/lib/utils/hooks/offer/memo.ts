@@ -1,5 +1,4 @@
 import { Offer } from "../../../types/offer";
-import { checkOfferMetadata } from "../../validators";
 import { CurationListGetOffersResult } from "./types";
 
 export function memoMergeAndSortOffers() {
@@ -20,14 +19,13 @@ export function memoMergeAndSortOffers() {
       ...sellerCurationListOffers,
       ...offerCurationListOffers
     ].map((base) => {
-      const isValid = checkOfferMetadata(base.offer);
       return {
         ...base.offer,
         metadata: {
           ...base.offer.metadata,
           imageUrl: base.offer.metadata.image
         },
-        isValid
+        isValid: true
       } as Offer;
     });
     const mergedOffers = [...cachedOffers, ...mergedCurationListOffers];

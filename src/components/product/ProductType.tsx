@@ -55,7 +55,7 @@ const RadioButton = styled.input`
   }
 `;
 
-export const Box = styled.div`
+const Box = styled.div`
   padding: 1.75rem;
   height: 100%;
   width: 100%;
@@ -64,11 +64,11 @@ export const Box = styled.div`
     margin: 0.938rem 0 0 0;
   }
 `;
-export const Container = styled.div`
+const Container = styled.div`
   max-width: 26.5rem;
 `;
 
-export const ProductImage = styled(Image)`
+const ProductImage = styled(Image)`
   width: 6.25rem;
   height: 6.25rem;
   padding-top: 0;

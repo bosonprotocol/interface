@@ -78,7 +78,7 @@ const Wrapper = styled.div<{ $modalType: ModalType; $size: Props["size"] }>`
   }
 `;
 
-const Header = styled(Typography)<{ $title: string }>`
+const Header = styled(Typography)<{ $title?: string }>`
   position: relative;
 
   text-align: left;

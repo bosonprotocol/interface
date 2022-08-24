@@ -52,7 +52,6 @@ export default function SellerProducts({ sellerId }: Props) {
 
   const { data, isLoading, isError } = useInfiniteOffers(
     {
-      voided: false,
       sellerId,
       first: 1000,
       orderBy: "createdAt",

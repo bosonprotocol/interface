@@ -6,7 +6,7 @@ export enum StepState {
   Done = "done"
 }
 
-export interface Props {
+interface Props {
   className?: string;
   onClick?: () => void;
   state?: StepState;

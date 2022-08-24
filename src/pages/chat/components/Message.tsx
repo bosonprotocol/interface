@@ -179,7 +179,11 @@ const Message = forwardRef(
         <Content $isLeftAligned={isLeftAligned}>
           <AvatarContainer>{Avatar}</AvatarContainer>
 
-          <div style={{ overflowWrap: "break-word" }}>{messageValue.value}</div>
+          <div
+            style={{ overflowWrap: "break-word", whiteSpace: "break-spaces" }}
+          >
+            {messageValue.value}
+          </div>
           <BottomDateStamp isLeftAligned={isLeftAligned} message={message} />
         </Content>
       );
@@ -231,7 +235,7 @@ const Message = forwardRef(
             <>
               <Typography
                 margin="1.5rem 0 0.5rem 0"
-                fontSize="1rem"
+                $fontSize="1rem"
                 fontWeight="600"
               >
                 Dispute Category
@@ -246,7 +250,7 @@ const Message = forwardRef(
               })}
               <Typography
                 margin="1.5rem 0 0.5rem 0"
-                fontSize="1rem"
+                $fontSize="1rem"
                 fontWeight="600"
               >
                 Additional information
@@ -262,7 +266,7 @@ const Message = forwardRef(
               <>
                 <Typography
                   margin="1.5rem 0 0.5rem 0"
-                  fontSize="1.25rem"
+                  $fontSize="1.25rem"
                   fontWeight="600"
                 >
                   {messageContent.proposals.length === 1
@@ -315,7 +319,7 @@ const Message = forwardRef(
               <>
                 <Typography
                   margin="1.5rem 0 0.5rem 0"
-                  fontSize="1rem"
+                  $fontSize="1rem"
                   fontWeight="600"
                 >
                   Resolution Proposal

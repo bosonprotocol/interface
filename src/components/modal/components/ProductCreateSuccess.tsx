@@ -152,7 +152,7 @@ export default function ProductCreateSuccess({
                 tag="h2"
                 margin="1rem 0"
                 color={colors.secondary}
-                fontSize="1.5rem"
+                $fontSize="1.5rem"
               >
                 {name}
               </Typography>
@@ -178,15 +178,15 @@ export default function ProductCreateSuccess({
                 NEED TO BE ADDED
               </DetailTooltip>
             </FoundTile>
-            <Typography tag="p" fontSize="0.75rem">
+            <Typography tag="p" $fontSize="0.75rem">
               Describe here why seller should provide funds ..
               <br />
               alos in multiple lines possible.
             </Typography>
             <Typography
               tag="p"
-              marginTop="1rem"
-              fontSize="0.75rem"
+              margin="1rem 0 0 0"
+              $fontSize="0.75rem"
               fontWeight="bold"
             >
               Suggested pool amount: 15%

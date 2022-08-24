@@ -48,10 +48,10 @@ export default function SellerTags({ tags, currentTag, setCurrentTag }: Props) {
   return (
     <TagsWrapper>
       <TagsList>
-        {map(tags, (tag, index) => {
+        {map(tags, (tag, key: number) => {
           return (
             <TagItem
-              key={`seller-tags-${index}`}
+              key={`seller_tags_${key}`}
               $active={currentTag === tag.value}
               $disabled={tag.value == "phygital"}
               onClick={() => {

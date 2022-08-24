@@ -1,5 +1,6 @@
 export const zIndex = {
   Default: 0,
+  CommitStep: 0,
   Button: 1,
   OfferCard: 2,
   OfferStatus: 5,

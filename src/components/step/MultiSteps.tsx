@@ -18,7 +18,7 @@ export default function MultiSteps({
   data,
   active,
   callback,
-  disableInactiveSteps,
+  disableInactiveSteps = false,
   ...props
 }: Props) {
   const [current, setCurrent] = useState<number>(active || 0);
@@ -48,9 +48,11 @@ export default function MultiSteps({
                     : currentKey < current
                     ? StepState.Done
                     : StepState.Inactive;
+
                 const isStepDisabled =
                   !callback ||
                   (disableInactiveSteps && StepState.Inactive === state);
+
                 return (
                   <Step
                     disabled={isStepDisabled}
