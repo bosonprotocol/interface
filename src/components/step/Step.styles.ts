@@ -140,7 +140,7 @@ export const MultiStepStyle = styled.div`
   flex-direction: row;
   flex-wrap: nowrap;
   justify-content: flex-start;
-
+  width: 100%;
   align-items: center;
   p {
     text-align: center;

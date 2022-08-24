@@ -1,7 +1,9 @@
 import { Formik } from "formik";
+import { ArrowLeft } from "phosphor-react";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { generatePath, useParams } from "react-router-dom";
 import styled from "styled-components";
+import { useAccount } from "wagmi";
 
 import ExchangePreview from "../../components/modal/components/Chat/components/ExchangePreview";
 import {
@@ -14,8 +16,10 @@ import {
 } from "../../components/product/utils";
 import MultiSteps from "../../components/step/MultiSteps";
 import Grid from "../../components/ui/Grid";
+import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
+import { useBuyers } from "../../lib/utils/hooks/useBuyers";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useCoreSDK } from "../../lib/utils/useCoreSdk";
@@ -74,11 +78,16 @@ const ItemPreview = styled(Grid)`
 
 function DisputeCentre() {
   const { bosonXmtp } = useChatContext();
+  const { address } = useAccount();
   const coreSDK = useCoreSDK();
   const [currentStep, setCurrentStep] = useState<number>(0);
   const params = useParams();
   const exchangeId = params["*"];
   const navigate = useKeepQueryParamsNavigate();
+  const { data: buyers } = useBuyers({
+    wallet: address
+  });
+  const buyerId = buyers?.[0]?.id || "";
 
   const {
     data: exchanges = [],
@@ -86,7 +95,8 @@ function DisputeCentre() {
     isLoading
   } = useExchanges({
     id: exchangeId,
-    disputed: null
+    disputed: null,
+    buyerId
   });
 
   const [exchange] = exchanges;
@@ -109,8 +119,8 @@ function DisputeCentre() {
     return <p>Your exchange info is loading</p>;
   }
 
-  if (!exchange && isError) {
-    return <p>There has been an error while retrieving your exchange</p>;
+  if (!exchange || isError) {
+    return <p>There has been an error while retrieving this exchange</p>;
   }
 
   if (exchange.disputed) {
@@ -119,14 +129,28 @@ function DisputeCentre() {
 
   return (
     <>
-      <MultiStepsContainer>
-        <MultiSteps
-          data={DISPUTE_STEPS}
-          active={currentStep}
-          callback={handleClickStep}
-          disableInactiveSteps
-        />
-      </MultiStepsContainer>
+      <Grid alignItems="center" gap="2.5rem" flex="1 0">
+        <Grid alignItems="center">
+          <ArrowLeft
+            size={32}
+            onClick={() =>
+              navigate({
+                pathname: generatePath(BosonRoutes.Exchange, {
+                  [UrlParameters.exchangeId]: exchangeId
+                })
+              })
+            }
+          />
+        </Grid>
+        <Grid padding="0.5rem 0">
+          <MultiSteps
+            data={DISPUTE_STEPS}
+            active={currentStep}
+            callback={handleClickStep}
+            disableInactiveSteps
+          />
+        </Grid>
+      </Grid>
       <DisputeContainer
         flexDirection="column"
         alignItems="center"

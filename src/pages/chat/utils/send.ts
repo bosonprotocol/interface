@@ -26,6 +26,8 @@ export const sendFilesToChat = async ({
   threadId: ThreadId;
   callback?: (messageData: MessageData) => Promise<unknown>;
 }) => {
+  const destinationAddressFormatted = utils.getAddress(destinationAddress);
+
   for (const file of files) {
     const imageContent: FileContent = {
       value: {
@@ -43,7 +45,7 @@ export const sendFilesToChat = async ({
     } as const;
     const messageData = await bosonXmtp.encodeAndSendMessage(
       newMessage,
-      destinationAddress
+      destinationAddressFormatted
     );
     await callback?.(messageData);
   }
@@ -64,6 +66,7 @@ export const sendProposalToChat = async ({
   threadId: ThreadId;
   callback?: (messageData: MessageData) => Promise<unknown>;
 }) => {
+  const destinationAddressFormatted = utils.getAddress(destinationAddress);
   const proposalContent: ProposalContent = {
     value: proposal
   };
@@ -75,13 +78,13 @@ export const sendProposalToChat = async ({
   } as const;
   const messageData = await bosonXmtp.encodeAndSendMessage(
     newMessage,
-    utils.getAddress(destinationAddress)
+    destinationAddressFormatted
   );
   await callback?.(messageData);
   if (files.length) {
     await sendFilesToChat({
       bosonXmtp,
-      destinationAddress,
+      destinationAddress: destinationAddressFormatted,
       files,
       threadId,
       callback

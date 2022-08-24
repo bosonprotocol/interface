@@ -39,14 +39,9 @@ export default function ReviewAndSubmitStep({
   const [uploadField, , uploadFieldHelpers] = useField<File[]>({
     name: FormModel.formFields.upload.name
   });
-  const [proposalsTypesField] = useField<typeof proposals>({
-    name: FormModel.formFields.proposalsTypes.name
-  });
-
   const [refundPercentageField] = useField<string>({
     name: FormModel.formFields.refundPercentage.name
   });
-
   const isChatInitialized = !!bosonXmtp;
   return (
     <>
@@ -70,24 +65,16 @@ export default function ReviewAndSubmitStep({
           Resolution proposal
         </Typography>
         <Grid flexDirection="column" gap="2rem">
-          {proposalsTypesField.value.map((proposalType) => {
-            if (proposalType.value === "refund") {
-              return (
-                <ProposalTypeSummary
-                  key={proposalType.value}
-                  exchange={exchange}
-                  proposal={{
-                    type: proposalType.label,
-                    percentageAmount: (
-                      Number(refundPercentageField.value) * PERCENTAGE_FACTOR
-                    ).toString(),
-                    signature: ""
-                  }}
-                />
-              );
-            }
-            return null;
-          })}
+          <ProposalTypeSummary
+            exchange={exchange}
+            proposal={{
+              type: proposals[0].label,
+              percentageAmount: (
+                Number(refundPercentageField.value) * PERCENTAGE_FACTOR
+              ).toString(),
+              signature: ""
+            }}
+          />
         </Grid>
       </Grid>
       <InitializeChatWithSuccess />

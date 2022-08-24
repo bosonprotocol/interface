@@ -105,22 +105,8 @@ export default function MakeProposalModal({
         ) => {
           const isDescribeProblemOK = Object.keys(props.errors).length === 0;
 
-          const isReturnProposal = !!props.values[
-            FormModel.formFields.proposalsTypes.name
-          ].find(
-            (proposal: { label: string; value: string }) =>
-              proposal.value === "return"
-          );
-          const isRefundProposal = !!props.values[
-            FormModel.formFields.proposalsTypes.name
-          ].find(
-            (proposal: { label: string; value: string }) =>
-              proposal.value === "refund"
-          );
           const isMakeAProposalOK =
-            (isRefundProposal &&
-              !props.errors[FormModel.formFields.refundPercentage.name]) ||
-            (!isRefundProposal && isReturnProposal);
+            !props.errors[FormModel.formFields.refundPercentage.name];
           const isFormValid = isDescribeProblemOK && isMakeAProposalOK;
           return (
             <Form>

@@ -92,7 +92,7 @@ export default function ButtonProposal({
         }
       });
     }
-  }, [activeStep, headerComponent, activeStep]); // eslint-disable-line
+  }, [activeStep, headerComponent]); // eslint-disable-line
 
   return (
     <StyledButton
