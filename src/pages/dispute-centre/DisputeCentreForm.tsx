@@ -9,11 +9,13 @@ import { Exchange } from "../../lib/utils/hooks/useExchanges";
 function DisputeCentreForm({
   setCurrentStep,
   currentStep,
-  exchange
+  exchange,
+  submitError
 }: {
   setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
   currentStep: number;
   exchange: Exchange;
+  submitError: Error | null;
 }) {
   const getStartedSteps = [
     { label: "Item was not delivered or delivered late", id: 1 },
@@ -65,6 +67,7 @@ function DisputeCentreForm({
             setActiveStep={setCurrentStep}
             activeStep={currentStep}
             exchange={exchange}
+            submitError={submitError}
           />
         );
       default:

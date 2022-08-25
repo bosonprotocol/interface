@@ -102,7 +102,7 @@ export const getOfferDetailData = (
   isModal: boolean
 ) => {
   const redeemableUntil = dayjs(
-    Number(offer.voucherRedeemableUntilDate)
+    Number(`${offer.voucherRedeemableUntilDate}000`)
   ).format(CONFIG.dateFormat);
 
   const priceNumber = Number(convertedPrice?.converted);
@@ -199,6 +199,7 @@ const NOT_REDEEMED_YET = [
   exchanges.ExtendedExchangeState.Expired,
   subgraph.ExchangeState.Completed
 ];
+
 const DetailWidget: React.FC<IDetailWidget> = ({
   pageType,
   offer,

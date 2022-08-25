@@ -5,11 +5,12 @@ import { colors } from "../../lib/styles/colors";
 import { ReactComponent as Dot } from "./timeline-dot.svg";
 import { ReactComponent as VerticalLineSVG } from "./timeline-line.svg";
 
-const Container = styled.div`
+const Container = styled.div<{ $height: string }>`
   display: flex;
   flex-direction: column;
   align-items: center;
   transform: translateX(-48%);
+  height: ${(props) => props.$height};
 `;
 
 const DotWrapper = styled.div`
@@ -46,7 +47,7 @@ interface Props {
 }
 export default function Timeline({ timesteps }: Props) {
   return (
-    <Container>
+    <Container $height={`${timesteps.length * 5}rem`}>
       {timesteps.map((step, index) => {
         return (
           <Fragment key={`${step.text}-${step.date}`}>

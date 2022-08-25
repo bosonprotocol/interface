@@ -1,18 +1,18 @@
 import { Form, Formik, FormikProps } from "formik";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
+import { useAccount } from "wagmi";
 import * as Yup from "yup";
 
-import {
-  FileWithEncodedData,
-  getFilesWithEncodedData
-} from "../../../../../lib/utils/files";
+import { FileWithEncodedData } from "../../../../../lib/utils/files";
 import { Exchange } from "../../../../../lib/utils/hooks/useExchanges";
+import { useSellers } from "../../../../../lib/utils/hooks/useSellers";
+import { useCoreSDK } from "../../../../../lib/utils/useCoreSdk";
 import { validationOfFile } from "../../../../../pages/chat/components/UploadForm/const";
 import { NewProposal } from "../../../../../pages/chat/types";
+import { createProposal } from "../../../../../pages/chat/utils/create";
 import Grid from "../../../../ui/Grid";
 import { ModalProps } from "../../../ModalContext";
 import ExchangePreview from "../components/ExchangePreview";
-import { PERCENTAGE_FACTOR } from "../const";
 import { FormModel } from "./MakeProposalFormModel";
 import DescribeProblemStep from "./steps/DescribeProblemStep";
 import MakeAProposalStep from "./steps/MakeAProposalStep/MakeAProposalStep";
@@ -54,6 +54,15 @@ export default function MakeProposalModal({
   sendProposal,
   activeStep
 }: Props) {
+  const [submitError, setSubmitError] = useState<Error | null>(null);
+  const coreSDK = useCoreSDK();
+  const { address } = useAccount();
+  const { data: sellers } = useSellers({
+    operator: address
+  });
+  const mySellerId = sellers?.[0]?.id || "";
+  const iAmTheSeller = mySellerId === exchange.seller.id;
+  const sellerOrBuyerId = iAmTheSeller ? exchange.seller.id : exchange.buyer.id;
   const validationSchema = validationSchemaPerStep[activeStep];
   return (
     <>
@@ -64,41 +73,33 @@ export default function MakeProposalModal({
         validationSchema={validationSchema}
         onSubmit={async (values) => {
           try {
-            const userName = `Seller ID: ${exchange.seller.id}`; // TODO: change to get real username
-            const proposal: NewProposal = {
-              title: `${userName} made a proposal`,
-              description: values[FormModel.formFields.description.name],
-              proposals: values[FormModel.formFields.proposalsTypes.name].map(
-                (proposalType) => {
-                  // the percentageAmount must be an integer so it goes from 1 - 100000 (0.001% - 100%)
-                  return {
-                    type: proposalType.label,
-                    percentageAmount:
-                      values[FormModel.formFields.refundPercentage.name] *
-                        PERCENTAGE_FACTOR +
-                      "",
-                    signature: "0x" // TODO: change
-                  };
-                }
-              ),
-              disputeContext: []
-            };
-            // TODO: sign proposals
-            const proposalFiles = values[FormModel.formFields.upload.name];
-            const filesWithData = await getFilesWithEncodedData(proposalFiles);
-
+            setSubmitError(null);
+            const { proposal, filesWithData } = await createProposal({
+              isSeller: iAmTheSeller,
+              sellerOrBuyerId,
+              proposalFields: {
+                description: values.description,
+                upload: values.upload,
+                proposalTypeName: values.proposalsTypes?.label || "",
+                refundPercentage: values.refundPercentage,
+                disputeContext: []
+              },
+              exchangeId: exchange.id,
+              coreSDK
+            });
             sendProposal(proposal, filesWithData);
             hideModal();
           } catch (error) {
-            console.error(error); // TODO: handle error case
+            console.error(error);
+            setSubmitError(error as Error);
           }
         }}
         initialValues={{
           [FormModel.formFields.description.name]: "",
-          [FormModel.formFields.proposalsTypes.name]: [] as {
+          [FormModel.formFields.proposalsTypes.name]: null as unknown as {
             label: string;
             value: string;
-          }[],
+          },
           [FormModel.formFields.refundAmount.name]: "0",
           [FormModel.formFields.refundPercentage.name]: 0,
           [FormModel.formFields.upload.name]: [] as File[]
@@ -111,22 +112,8 @@ export default function MakeProposalModal({
         ) => {
           const isDescribeProblemOK = Object.keys(props.errors).length === 0;
 
-          const isReturnProposal = !!props.values[
-            FormModel.formFields.proposalsTypes.name
-          ].find(
-            (proposal: { label: string; value: string }) =>
-              proposal.value === "return"
-          );
-          const isRefundProposal = !!props.values[
-            FormModel.formFields.proposalsTypes.name
-          ].find(
-            (proposal: { label: string; value: string }) =>
-              proposal.value === "refund"
-          );
           const isMakeAProposalOK =
-            (isRefundProposal &&
-              !props.errors[FormModel.formFields.refundPercentage.name]) ||
-            (!isRefundProposal && isReturnProposal);
+            !props.errors[FormModel.formFields.refundPercentage.name];
           const isFormValid = isDescribeProblemOK && isMakeAProposalOK;
           return (
             <Form>
@@ -147,6 +134,7 @@ export default function MakeProposalModal({
                   onBackClick={() => setActiveStep(1)}
                   isValid={isFormValid}
                   exchange={exchange}
+                  submitError={submitError}
                 />
               )}
             </Form>

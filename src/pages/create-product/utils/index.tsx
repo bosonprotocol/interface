@@ -27,6 +27,7 @@ import {
   termsOfExchangeHelp
 } from "../../../components/product/utils/productHelpOptions";
 import { ScroolToID } from "../../../components/utils/Scroll";
+import { ChatInitializationStatus } from "../../../lib/utils/hooks/chat/useChatStatus";
 
 export const wait = async (ms: number) => {
   return new Promise((resolve) => {
@@ -79,10 +80,12 @@ export type CreateProductSteps = {
 
 export type CreateProductStepsParams = {
   setIsPreviewVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  chatInitializationStatus: ChatInitializationStatus;
 };
 
 export const createProductSteps = ({
-  setIsPreviewVisible
+  setIsPreviewVisible,
+  chatInitializationStatus
 }: CreateProductStepsParams) => {
   return {
     0: {
@@ -159,7 +162,10 @@ export const createProductSteps = ({
       ui: (
         <>
           <ScroolToID id="multisteps_wrapper" />
-          <ConfirmProductDetails togglePreview={setIsPreviewVisible} />
+          <ConfirmProductDetails
+            togglePreview={setIsPreviewVisible}
+            chatInitializationStatus={chatInitializationStatus}
+          />
         </>
       ),
       validation: null,

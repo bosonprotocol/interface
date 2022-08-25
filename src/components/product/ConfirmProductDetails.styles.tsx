@@ -169,28 +169,17 @@ export const SpaceContainer = styled.div`
   }
 `;
 
-export const ProductEmptyImage = styled(Grid)`
-  width: 100%;
-  height: 100%;
-  p {
-    margin: 1rem 0 0 0;
-  }
-`;
-
 export const InitializeChatContainer = styled.div`
   margin-top: 2rem;
 `;
 
-export const RenderProductImageWrapper = styled.div<{
-  $isPlaceholder: boolean;
-}>`
+export const RenderProductImageWrapper = styled.div`
   height: 9.375rem;
   width: 9.375rem;
-  border: ${({ $isPlaceholder }) =>
-    $isPlaceholder ? `1px solid ${colors.border}` : "none"};
   img {
     width: 100%;
     height: 100%;
+    object-fit: cover;
   }
 `;
 

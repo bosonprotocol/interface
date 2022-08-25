@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Exchange } from "../../../../../lib/utils/hooks/useExchanges";
 import Price from "../../../../price";
 import Grid from "../../../../ui/Grid";
+import Image from "../../../../ui/Image";
 import SellerID from "../../../../ui/SellerID";
 
 interface Props {
@@ -27,12 +28,20 @@ const StyledPrice = styled(Price)`
   }
 `;
 
+const StyledImage = styled(Image)`
+  all: unset;
+  img {
+    all: unset;
+    width: 80px;
+  }
+`;
+
 export default function ExchangePreview({ exchange }: Props) {
   const { offer } = exchange;
   return (
     <Grid justifyContent="space-between">
       <Grid>
-        <img src={offer.metadata.imageUrl} alt="Exchange url" width={80} />
+        <StyledImage src={offer.metadata.imageUrl} alt="Exchange image" />
         <Grid
           flexDirection="column"
           alignItems="flex-start"

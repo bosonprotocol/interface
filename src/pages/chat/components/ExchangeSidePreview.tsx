@@ -16,6 +16,7 @@ import Typography from "../../../components/ui/Typography";
 import { CONFIG } from "../../../lib/config";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
+import { zIndex } from "../../../lib/styles/zIndex";
 import { Offer } from "../../../lib/types/offer";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 
@@ -27,6 +28,7 @@ const Container = styled.div<{ $disputeOpen: boolean }>`
   min-width: max-content;
   position: absolute;
   margin-top: 7.05rem;
+  z-index: ${zIndex.ExchangeSidePreview};
   right: ${({ $disputeOpen }) => ($disputeOpen ? "0" : "-160vw")};
   transition: 400ms;
   width: ${({ $disputeOpen }) => $disputeOpen && "100vw"};
@@ -227,7 +229,7 @@ export default function ExchangeSidePreview({ exchange, disputeOpen }: Props) {
     if (!exchange) {
       return [];
     }
-    const { committedDate, redeemedDate } = exchange;
+    const { committedDate, redeemedDate, disputed } = exchange;
     const timesteps = [];
     if (committedDate) {
       timesteps.push({
@@ -237,6 +239,12 @@ export default function ExchangeSidePreview({ exchange, disputeOpen }: Props) {
     }
     if (redeemedDate) {
       timesteps.push({ text: "Redeemed", date: formatShortDate(redeemedDate) });
+    }
+    if (disputed) {
+      timesteps.push({
+        text: "Dispute Raised",
+        date: "" // TODO: use disputed timestamp once CC returns that in the subgraph
+      });
     }
     return timesteps;
   }, [exchange]);

@@ -9,30 +9,20 @@ interface Props {
   exchange: Exchange;
   activeStep: number;
   setActiveStep: (step: number) => void;
+  submitError: Error | null;
 }
 
 export default function MakeProposalCore({
   exchange,
   setActiveStep,
-  activeStep
+  activeStep,
+  submitError
 }: Props) {
   const formValues = useCreateForm();
   const isDescribeProblemOK = Object.keys(formValues.errors).length === 0;
 
-  const isReturnProposal = !!formValues.values[
-    FormModel.formFields.proposalsTypes.name
-  ].find(
-    (proposal: { label: string; value: string }) => proposal.value === "return"
-  );
-  const isRefundProposal = !!formValues.values[
-    FormModel.formFields.proposalsTypes.name
-  ].find(
-    (proposal: { label: string; value: string }) => proposal.value === "refund"
-  );
   const isMakeAProposalOK =
-    (isRefundProposal &&
-      !formValues.errors[FormModel.formFields.refundPercentage.name]) ||
-    (!isRefundProposal && isReturnProposal);
+    !formValues.errors[FormModel.formFields.refundPercentage.name];
   const isFormValid = isDescribeProblemOK && isMakeAProposalOK;
 
   return (
@@ -54,6 +44,7 @@ export default function MakeProposalCore({
           onBackClick={() => setActiveStep(activeStep - 1)}
           isValid={isFormValid}
           exchange={exchange}
+          submitError={submitError}
         />
       )}
     </>

@@ -1,16 +1,24 @@
-import { useField } from "formik";
+import { useField, useFormikContext } from "formik";
+import { Warning } from "phosphor-react";
 import styled from "styled-components";
 
 import { colors } from "../../../../../../lib/styles/colors";
 import { Exchange } from "../../../../../../lib/utils/hooks/useExchanges";
+import { useChatContext } from "../../../../../../pages/chat/ChatProvider/ChatContext";
 import UploadedFiles from "../../../../../form/Upload/UploadedFiles";
+import { Spinner } from "../../../../../loading/Spinner";
 import Button from "../../../../../ui/Button";
 import Grid from "../../../../../ui/Grid";
 import Typography from "../../../../../ui/Typography";
+import InitializeChatWithSuccess from "../../components/InitializeChatWithSuccess";
 import ProposalTypeSummary from "../../components/ProposalTypeSummary";
 import { PERCENTAGE_FACTOR } from "../../const";
 import { FormModel } from "../MakeProposalFormModel";
 import { proposals } from "./MakeAProposalStep/MakeAProposalStep";
+
+const StyledGrid = styled(Grid)`
+  background-color: ${colors.lightGrey};
+`;
 
 const ButtonsSection = styled.div`
   padding-top: 2rem;
@@ -22,26 +30,27 @@ interface Props {
   onBackClick: () => void;
   isValid: boolean;
   exchange: Exchange;
+  submitError: Error | null;
 }
 
 export default function ReviewAndSubmitStep({
   onBackClick,
   isValid,
-  exchange
+  exchange,
+  submitError
 }: Props) {
+  const { bosonXmtp } = useChatContext();
+  const { isSubmitting } = useFormikContext();
   const [descriptionField] = useField<string>({
     name: FormModel.formFields.description.name
   });
   const [uploadField, , uploadFieldHelpers] = useField<File[]>({
     name: FormModel.formFields.upload.name
   });
-  const [proposalsTypesField] = useField<typeof proposals>({
-    name: FormModel.formFields.proposalsTypes.name
-  });
-
   const [refundPercentageField] = useField<string>({
     name: FormModel.formFields.refundPercentage.name
   });
+  const isChatInitialized = !!bosonXmtp;
   return (
     <>
       <Typography $fontSize="2rem" fontWeight="600">
@@ -64,29 +73,40 @@ export default function ReviewAndSubmitStep({
           Resolution proposal
         </Typography>
         <Grid flexDirection="column" gap="2rem">
-          {proposalsTypesField.value.map((proposalType) => {
-            if (proposalType.value === "refund") {
-              return (
-                <ProposalTypeSummary
-                  key={proposalType.value}
-                  exchange={exchange}
-                  proposal={{
-                    type: "Refund Request",
-                    percentageAmount: (
-                      Number(refundPercentageField.value) * PERCENTAGE_FACTOR
-                    ).toString(),
-                    signature: "0x" // TODO: change
-                  }}
-                />
-              );
-            }
-            return null;
-          })}
+          <ProposalTypeSummary
+            exchange={exchange}
+            proposal={{
+              type: proposals[0].label,
+              percentageAmount: (
+                Number(refundPercentageField.value) * PERCENTAGE_FACTOR
+              ).toString(),
+              signature: ""
+            }}
+          />
         </Grid>
       </Grid>
+      <InitializeChatWithSuccess />
+      {submitError && (
+        <StyledGrid
+          justifyContent="flex-start"
+          gap="0.5rem"
+          margin="1.5rem 0 0 0"
+          padding="1.5rem"
+        >
+          <Warning color={colors.darkOrange} size={16} />
+          <Typography fontWeight="600" $fontSize="1rem" lineHeight="1.5rem">
+            There has been an error, please try again
+          </Typography>
+        </StyledGrid>
+      )}
       <ButtonsSection>
-        <Button theme="secondary" type="submit" disabled={!isValid}>
+        <Button
+          theme="secondary"
+          type="submit"
+          disabled={!isValid || !isChatInitialized || isSubmitting}
+        >
           Sign & Submit
+          {isSubmitting && <Spinner />}
         </Button>
 
         <Button theme="outline" onClick={() => onBackClick()}>
