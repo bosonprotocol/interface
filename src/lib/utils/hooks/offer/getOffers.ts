@@ -64,6 +64,7 @@ async function fetchCurationListOffers(
   const sellerCurationList = props.enableCurationLists
     ? props.sellerCurationList || []
     : null;
+
   const offerCurationList = props.enableCurationLists
     ? props.offerCurationList || []
     : null;
@@ -96,6 +97,7 @@ async function fetchCurationListOffers(
     sellerCurationListResult,
     offerCurationListResult
   );
+
   if (offerId) {
     const newOffer = offers.find((offer) => offer.id === offerId);
     return newOffer ? [newOffer] : [];
