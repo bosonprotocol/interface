@@ -47,7 +47,7 @@ function DisputeList() {
   const { showModal, modalTypes } = useModal();
 
   const { data: exchanges = [] } = useExchanges({
-    disputed: false
+    disputed: true
   });
 
   return (
