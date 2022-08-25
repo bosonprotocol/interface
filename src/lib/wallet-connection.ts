@@ -7,7 +7,8 @@ import { CONFIG } from "./config";
 
 const supportedChains: Readonly<Array<number>> = [
   chain.ropsten.id,
-  chain.mainnet.id
+  chain.mainnet.id,
+  chain.polygonMumbai.id
 ] as const;
 
 function getBosonTestNetworkChainConfig(): Chain {
