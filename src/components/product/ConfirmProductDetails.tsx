@@ -1,7 +1,7 @@
 import { BosonXmtpClient } from "@bosonprotocol/chat-sdk";
 import dayjs from "dayjs";
 import map from "lodash/map";
-import { Image, Warning } from "phosphor-react";
+import { Warning } from "phosphor-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAccount } from "wagmi";
 
@@ -37,7 +37,6 @@ import {
   InitializeChatContainer,
   LogoImg,
   ProductBox,
-  ProductEmptyImage,
   ProductInformationContent,
   ProductSubtitle,
   ProductTypeBox,
@@ -160,20 +159,12 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
       key: CreateProductImageProductImages;
     }) => {
       const src = getItemFromStorage(key, "");
+      if (!src) {
+        return null;
+      }
       return (
-        <RenderProductImageWrapper $isPlaceholder={!src}>
-          {src ? (
-            <img src={src} alt={title} />
-          ) : (
-            <ProductEmptyImage
-              alignItems="center"
-              justifyContent="center"
-              flexDirection="column"
-            >
-              <Image size={24} />
-              <Typography tag="p">{title}</Typography>
-            </ProductEmptyImage>
-          )}
+        <RenderProductImageWrapper>
+          <img src={src} alt={title} />
         </RenderProductImageWrapper>
       );
     },
@@ -379,8 +370,7 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
                                 }
                               />
                             </CurrencyIconWrapper>
-                            {`${values.coreTermsOfSale.price} ${values.coreTermsOfSale.currency.label} (Price for all
-                      variants)`}
+                            {`${values.coreTermsOfSale.price} ${values.coreTermsOfSale.currency.label}`}
                           </>
                         )}
                     </ContentValue>
