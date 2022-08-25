@@ -1,3 +1,4 @@
+import { subgraph } from "@bosonprotocol/react-kit";
 import { gql } from "graphql-request";
 import { useQuery } from "react-query";
 
@@ -5,7 +6,7 @@ import { Offer } from "../../types/offer";
 import { fetchSubgraph } from "../core-components/subgraph";
 import { offerGraphQl } from "./offers/graphql";
 
-export type Exchange = {
+export type Exchange = subgraph.ExchangeFieldsFragment & {
   id: string;
   committedDate: string;
   disputed: boolean;

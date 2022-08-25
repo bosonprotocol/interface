@@ -1,6 +1,6 @@
 // eslint-disable-next-line
 // @ts-nocheck
-import { offers as OffersKit } from "@bosonprotocol/react-kit";
+import { exchanges as ExchangesKit, subgraph } from "@bosonprotocol/react-kit";
 import type {
   Cell,
   Column,
@@ -9,7 +9,7 @@ import type {
   Row
 } from "@types/react-table";
 import dayjs from "dayjs";
-import { Check } from "phosphor-react";
+import { Chat, Check } from "phosphor-react";
 import { CaretDown, CaretLeft, CaretRight, CaretUp } from "phosphor-react";
 import { forwardRef, useEffect, useMemo, useRef } from "react";
 import { generatePath } from "react-router-dom";
@@ -18,14 +18,15 @@ import styled from "styled-components";
 
 import { CONFIG } from "../../../lib/config";
 import { UrlParameters } from "../../../lib/routing/parameters";
-import { OffersRoutes } from "../../../lib/routing/routes";
+import { BosonRoutes } from "../../../lib/routing/routes";
 import { colors } from "../../../lib/styles/colors";
 import { Offer } from "../../../lib/types/offer";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
+import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { CheckboxWrapper } from "../../form/Field.styles";
 import { useModal } from "../../modal/useModal";
-import OfferStatuses from "../../offer/OfferStatuses";
+import ExchangeStatuses from "../../offer/ExchangeStatuses";
 import Price from "../../price/index";
 import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
@@ -33,7 +34,7 @@ import Image from "../../ui/Image";
 import Typography from "../../ui/Typography";
 
 interface Props {
-  offers: (Offer | null)[];
+  data: (Exchange | null)[];
   isError: boolean;
   isLoading?: boolean;
   refetch: () => void;
@@ -156,14 +157,14 @@ const Span = styled.span`
     margin-right: 1rem;
   }
 `;
-export default function SellerTable({ offers, refetch }: Props) {
+export default function SellerExchangeTable({ data, refetch }: Props) {
   const { showModal, modalTypes } = useModal();
   const navigate = useKeepQueryParamsNavigate();
   const columns = useMemo(
     () => [
       {
-        Header: "Offer ID",
-        accessor: "offerId"
+        Header: "Exchange ID",
+        accessor: "exchangeId"
       },
       {
         Header: "",
@@ -186,11 +187,6 @@ export default function SellerTable({ offers, refetch }: Props) {
         disableSortBy: true
       },
       {
-        Header: "Quantity",
-        accessor: "quantity",
-        disableSortBy: true
-      },
-      {
         Header: "Price",
         accessor: "price",
         disableSortBy: true
@@ -209,17 +205,16 @@ export default function SellerTable({ offers, refetch }: Props) {
     []
   );
 
-  const data = useMemo(
+  const tableData = useMemo(
     () =>
-      offers?.map((offer) => {
-        const status = OffersKit.getOfferStatus(offer);
-
+      data?.map((element) => {
+        const status = ExchangesKit.getExchangeState(element);
         return {
-          offerId: offer.id,
-          isSelectable: status !== OffersKit.OfferState.VOIDED,
+          exchangeId: element.id,
+          isSelectable: true,
           image: (
             <Image
-              src={offer.metadata?.image}
+              src={element?.offer?.metadata?.image}
               style={{
                 width: "2.5rem",
                 height: "2.5rem",
@@ -229,15 +224,16 @@ export default function SellerTable({ offers, refetch }: Props) {
               showPlaceholderText={false}
             />
           ),
-          sku: offer.id,
+          sku: element.id,
           productName: (
             <Typography tag="p">
-              <b>{offer.metadata?.name}</b>
+              <b>{element?.offer?.metadata?.name}</b>
             </Typography>
           ),
           status: (
-            <OfferStatuses
-              offer={offer}
+            <ExchangeStatuses
+              offer={element?.offer}
+              exchange={element as NonNullable<Offer["exchanges"]>[number]}
               size="small"
               displayDot
               showValid
@@ -250,62 +246,72 @@ export default function SellerTable({ offers, refetch }: Props) {
               }}
             />
           ),
-          quantity: (
-            <Typography>
-              {offer.quantityAvailable}/{offer.quantityInitial}
-            </Typography>
-          ),
           price: (
             <Price
-              address={offer.exchangeToken.address}
-              currencySymbol={offer.exchangeToken.symbol}
-              value={offer.price}
-              decimals={offer.exchangeToken.decimals}
+              address={element?.offer?.exchangeToken?.address}
+              currencySymbol={element?.offer?.exchangeToken?.symbol}
+              value={element?.offer?.price}
+              decimals={element?.offer?.exchangeToken?.decimals}
             />
           ),
           offerValidity: (
+            // TODO: add based on status
             <Typography>
               <span>
-                <small style={{ margin: "0" }}>Until</small> <br />
-                {dayjs(getDateTimestamp(offer?.validUntilDate)).format(
-                  CONFIG.dateFormat
-                )}
+                <small style={{ margin: "0" }}>Redeemable Until</small> <br />
+                {dayjs(
+                  getDateTimestamp(element?.offer?.voucherRedeemableUntilDate)
+                ).format(CONFIG.dateFormat)}
               </span>
             </Typography>
           ),
-          action: !(
-            status === OffersKit.OfferState.EXPIRED ||
-            status === OffersKit.OfferState.VOIDED
-          ) && (
-            <Button
-              theme="primary"
-              size="small"
-              onClick={() => {
-                showModal(
-                  modalTypes.VOID_PRODUCT,
-                  {
-                    title: "Void Confirmation",
-                    offerId: offer.id,
-                    offer,
-                    refetch
-                  },
-                  "xs"
-                );
-              }}
-            >
-              Void
-            </Button>
-          )
+          action:
+            // TODO: add proper logic and modals if needed
+            status === subgraph.ExchangeState.Committed ? (
+              <Grid justifyContent="flex-end" gap="1rem">
+                <Button
+                  theme="orange"
+                  size="small"
+                  onClick={() => {
+                    console.log(element.id);
+                  }}
+                >
+                  Revoke
+                </Button>
+                <Button
+                  theme="primary"
+                  size="small"
+                  onClick={() => {
+                    console.log(element.id);
+                  }}
+                >
+                  Chat <Chat size={14} />
+                </Button>
+              </Grid>
+            ) : (
+              <Button
+                theme="secondary"
+                size="small"
+                onClick={() => {
+                  console.log(element.id);
+                }}
+              >
+                Redeem
+              </Button>
+            )
         };
       }),
-    [offers] // eslint-disable-line
+    [data] // eslint-disable-line
   );
 
   const tableProps = useTable(
     {
       columns,
-      data,
-      initialState: { pageIndex: 0, hiddenColumns: ["offerId", "isSelectable"] }
+      data: tableData,
+      initialState: {
+        pageIndex: 0,
+        hiddenColumns: ["exchangeId", "isSelectable"]
+      }
     },
     useSortBy,
     usePagination,
@@ -403,10 +409,10 @@ export default function SellerTable({ offers, refetch }: Props) {
                             cell.column.id !== "selection"
                           ) {
                             const pathname = generatePath(
-                              OffersRoutes.OfferDetail,
+                              BosonRoutes.Exchange,
                               {
-                                [UrlParameters.offerId]:
-                                  row?.original?.offerId ?? 0
+                                [UrlParameters.exchangeId]:
+                                  row?.original?.exchangeId ?? 0
                               }
                             );
                             navigate({ pathname });
