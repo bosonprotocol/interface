@@ -1,5 +1,5 @@
 import { Form, Formik, FormikProps } from "formik";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { useAccount } from "wagmi";
 import * as Yup from "yup";
 
@@ -53,6 +53,8 @@ export default function MakeProposalModal({
   sendProposal,
   activeStep
 }: Props) {
+  const [submitError, setSubmitError] = useState<Error | null>(null);
+
   const { address } = useAccount();
   const { data: sellers } = useSellers({
     operator: address
@@ -70,6 +72,7 @@ export default function MakeProposalModal({
         validationSchema={validationSchema}
         onSubmit={async (values) => {
           try {
+            setSubmitError(null);
             const { proposal, filesWithData } = await createProposal({
               isSeller: iAmTheSeller,
               sellerOrBuyerId,
@@ -85,6 +88,7 @@ export default function MakeProposalModal({
             hideModal();
           } catch (error) {
             console.error(error);
+            setSubmitError(error as Error);
           }
         }}
         initialValues={{
@@ -127,6 +131,7 @@ export default function MakeProposalModal({
                   onBackClick={() => setActiveStep(1)}
                   isValid={isFormValid}
                   exchange={exchange}
+                  submitError={submitError}
                 />
               )}
             </Form>

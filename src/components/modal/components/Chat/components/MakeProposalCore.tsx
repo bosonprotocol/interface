@@ -9,12 +9,14 @@ interface Props {
   exchange: Exchange;
   activeStep: number;
   setActiveStep: (step: number) => void;
+  submitError: Error | null;
 }
 
 export default function MakeProposalCore({
   exchange,
   setActiveStep,
-  activeStep
+  activeStep,
+  submitError
 }: Props) {
   const formValues = useCreateForm();
   const isDescribeProblemOK = Object.keys(formValues.errors).length === 0;
@@ -42,6 +44,7 @@ export default function MakeProposalCore({
           onBackClick={() => setActiveStep(activeStep - 1)}
           isValid={isFormValid}
           exchange={exchange}
+          submitError={submitError}
         />
       )}
     </>

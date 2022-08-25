@@ -67,10 +67,6 @@ const GetStartedBox = styled.div`
   height: max-content;
 `;
 
-const MultiStepsContainer = styled.div`
-  padding-bottom: 0.5rem;
-`;
-
 const ItemPreview = styled(Grid)`
   width: 41.75rem;
   background-color: ${colors.white};
@@ -81,6 +77,7 @@ function DisputeCentre() {
   const { address } = useAccount();
   const coreSDK = useCoreSDK();
   const [currentStep, setCurrentStep] = useState<number>(0);
+  const [submitError, setSubmitError] = useState<Error | null>(null);
   const params = useParams();
   const exchangeId = params["*"];
   const navigate = useKeepQueryParamsNavigate();
@@ -170,11 +167,14 @@ function DisputeCentre() {
               onSubmit={async (values) => {
                 try {
                   if (!bosonXmtp) {
-                    console.error(
+                    const err = new Error(
                       "You have to initialize the chat before raising a dispute"
                     );
+                    setSubmitError(err);
+                    console.error(err.message);
                     return;
                   }
+                  setSubmitError(null);
                   const { proposal, filesWithData } = await createProposal({
                     isSeller: false,
                     sellerOrBuyerId: exchange.buyer.id,
@@ -206,7 +206,8 @@ function DisputeCentre() {
                     pathname: BosonRoutes.Dispute // TODO: change to dispute center
                   });
                 } catch (error) {
-                  console.error(error); // TODO: handle error
+                  console.error(error);
+                  setSubmitError(error as Error);
                 }
               }}
               validationSchema={validationSchema[currentStep]}
@@ -216,6 +217,7 @@ function DisputeCentre() {
                   setCurrentStep={setCurrentStep}
                   currentStep={currentStep}
                   exchange={exchange}
+                  submitError={submitError}
                 />
               )}
             </Formik>

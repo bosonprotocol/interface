@@ -5,7 +5,7 @@ import {
 import { Provider, RedeemButton } from "@bosonprotocol/react-kit";
 import { utils } from "ethers";
 import { useField } from "formik";
-import { ChatDots, CheckCircle, Warning } from "phosphor-react";
+import { Warning } from "phosphor-react";
 import { useState } from "react";
 import styled from "styled-components";
 import { useSigner } from "wagmi";
@@ -23,19 +23,6 @@ import { FormModel } from "../RedeemModalFormModel";
 
 const StyledGrid = styled(Grid)`
   background-color: ${colors.lightGrey};
-`;
-
-const CheckIcon = styled(CheckCircle)`
-  color: var(--secondary);
-  path {
-    stroke: var(--secondary);
-  }
-`;
-const ChatDotsIcon = styled(ChatDots)`
-  fill: var(--secondary);
-  path {
-    stroke: var(--secondary);
-  }
 `;
 
 interface Props {
