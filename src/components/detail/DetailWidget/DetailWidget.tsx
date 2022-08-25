@@ -447,7 +447,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               <ContactSellerButton
                 onClick={() =>
                   navigate({
-                    pathname: BosonRoutes.Chat
+                    pathname: `${BosonRoutes.Chat}/${exchange?.id || ""}`
                   })
                 }
                 theme="blank"
@@ -477,6 +477,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                   }}
                   theme="blank"
                   style={{ fontSize: "0.875rem" }}
+                  disabled={exchange?.state !== "REDEEMED"}
                 >
                   Raise a problem
                   <Question size={18} />

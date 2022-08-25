@@ -1,15 +1,22 @@
-import { Info as InfoComponent } from "phosphor-react";
+import { utils } from "ethers";
+import { Info as InfoComponent, Warning } from "phosphor-react";
+import { useState } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../../../lib/styles/colors";
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
+import { useCoreSDK } from "../../../../lib/utils/useCoreSdk";
 import { ProposalItem } from "../../../../pages/chat/types";
 import Button from "../../../ui/Button";
 import Grid from "../../../ui/Grid";
+import Typography from "../../../ui/Typography";
 import { ModalProps } from "../../ModalContext";
 import ExchangePreview from "./components/ExchangePreview";
 import ProposalTypeSummary from "./components/ProposalTypeSummary";
 
+const StyledGrid = styled(Grid)`
+  background-color: ${colors.lightGrey};
+`;
 interface Props {
   exchange: Exchange;
   proposal: ProposalItem;
@@ -49,6 +56,10 @@ export default function ResolveDisputeModal({
   hideModal,
   proposal
 }: Props) {
+  const coreSDK = useCoreSDK();
+  const [resolveDisputeError, setResolveDisputeError] = useState<Error | null>(
+    null
+  );
   return (
     <>
       <Grid justifyContent="space-between" padding="0 0 2rem 0">
@@ -61,12 +72,36 @@ export default function ResolveDisputeModal({
         By accepting this proposal the dispute is resolved and the refund is
         implemented
       </Info>
+      {resolveDisputeError && (
+        <StyledGrid
+          justifyContent="flex-start"
+          gap="0.5rem"
+          margin="1.5rem 0"
+          padding="1.5rem"
+        >
+          <Warning color={colors.darkOrange} size={16} />
+          <Typography fontWeight="600" $fontSize="1rem" lineHeight="1.5rem">
+            There has been an error, please try again
+          </Typography>
+        </StyledGrid>
+      )}
       <ButtonsSection>
         <Button
           theme="secondary"
-          onClick={() => {
-            // TODO: implement
-            console.log("accept proposal");
+          onClick={async () => {
+            try {
+              setResolveDisputeError(null);
+              const signature = utils.splitSignature(proposal.signature);
+              await coreSDK.resolveDispute({
+                exchangeId: exchange.id,
+                buyerPercent: proposal.percentageAmount,
+                sigR: signature.r,
+                sigS: signature.s,
+                sigV: signature.v
+              });
+            } catch (error) {
+              setResolveDisputeError(error as Error);
+            }
           }}
         >
           Accept proposal

@@ -64,5 +64,9 @@ export const NAVIGATION_ROUTES = [
   {
     name: "Chat",
     url: BosonRoutes.Chat
+  },
+  {
+    name: "Dispute Center",
+    url: BosonRoutes.DisputeCenter
   }
 ];
