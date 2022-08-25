@@ -6,16 +6,20 @@ import { useCurationLists } from "./useCurationLists";
 
 interface Props {
   admin?: string;
+  operator?: string;
   includeFunds?: boolean;
 }
 
 export function useSellers(props: Props = {}) {
   const curationLists = useCurationLists();
-
+  const filter = {
+    ...(props.admin && { admin: props.admin }),
+    ...(props.operator && { operator: props.operator })
+  };
   return useQuery(["sellers", props], async () => {
     return accounts.subgraph.getSellers(CONFIG.subgraphUrl, {
       sellersFilter: {
-        admin: props.admin,
+        ...filter,
         id_in: curationLists.enableCurationLists
           ? curationLists.sellerCurationList
           : undefined

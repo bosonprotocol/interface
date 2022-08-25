@@ -3,6 +3,7 @@ export const zIndex = {
   CommitStep: 0,
   Button: 1,
   OfferCard: 2,
+  ExchangeSidePreview: 2,
   OfferStatus: 5,
   ChatSeparator: 9,
   Carousel: 10,

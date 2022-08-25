@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import Step, { StepState } from "./Step";
 import { MultiStepStyle, MultiStepWrapper, StepWrapper } from "./Step.styles";

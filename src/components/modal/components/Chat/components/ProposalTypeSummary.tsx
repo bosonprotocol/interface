@@ -29,7 +29,9 @@ export default function ProposalTypeSummary({ proposal, exchange }: Props) {
   const fixedPercentageAmount =
     Number(proposal.percentageAmount) / PERCENTAGE_FACTOR;
 
-  const refund = (Number(offer.price) * Number(fixedPercentageAmount)) / 100;
+  const refund = Math.round(
+    (Number(offer.price) * Number(fixedPercentageAmount)) / 100
+  );
 
   const convertedRefund = useConvertedPrice({
     value: refund.toString(),

@@ -31,10 +31,9 @@ export default function MakeAProposalStep({
   onBackClick,
   isValid
 }: Props) {
-  const [proposalsTypesField] = useField<typeof proposals>(
+  const [proposalsTypesField] = useField<typeof proposals[0]>(
     FormModel.formFields.proposalsTypes.name
   );
-
   return (
     <>
       <Typography $fontSize="2rem" fontWeight="600">
@@ -52,23 +51,17 @@ export default function MakeAProposalStep({
         <Select
           name={FormModel.formFields.proposalsTypes.name}
           options={proposals}
-          isMulti
         />
-        <Grid
-          flexDirection="column"
-          alignItems="flex-start"
-          padding="3.5rem 0 0 0"
-          gap="2rem"
-        >
-          {proposalsTypesField.value.map((proposalType) => {
-            if (proposalType.value === "refund") {
-              return (
-                <RefundRequest key={proposalType.value} exchange={exchange} />
-              );
-            }
-            return null;
-          })}
-        </Grid>
+        {proposalsTypesField.value?.label === "Refund" && (
+          <Grid
+            flexDirection="column"
+            alignItems="flex-start"
+            padding="3.5rem 0 0 0"
+            gap="2rem"
+          >
+            <RefundRequest exchange={exchange} />
+          </Grid>
+        )}
       </Grid>
       <ButtonsSection>
         <Button

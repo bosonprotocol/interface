@@ -1,9 +1,6 @@
 import {
-  FileContent,
   MessageData,
   MessageType,
-  ProposalContent,
-  SupportedFileMimeTypes,
   ThreadId,
   version
 } from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/definitions";
@@ -35,6 +32,7 @@ import {
   MessageDataWithIsValid,
   ThreadObjectWithIsValid
 } from "../types";
+import { sendFilesToChat, sendProposalToChat } from "../utils/send";
 import ButtonProposal, {
   ButtonProposalHeight
 } from "./ButtonProposal/ButtonProposal";
@@ -449,32 +447,22 @@ const ChatConversation = ({
       console.error(error);
     });
   }, [bosonXmtp, destinationAddress, thread, addMessage, address]);
-  const sendFilesToChat = useCallback(
+
+  const sendFiles = useCallback(
     async (files: FileWithEncodedData[]) => {
       if (!bosonXmtp || !threadId) {
         return;
       }
-      for (const file of files) {
-        const imageContent: FileContent = {
-          value: {
-            encodedContent: file.encodedData,
-            fileName: file.name,
-            fileSize: file.size,
-            fileType: file.type as SupportedFileMimeTypes
-          }
-        };
-        const newMessage = {
-          threadId,
-          content: imageContent,
-          contentType: MessageType.File,
-          version
-        } as const;
-        const messageData = await bosonXmtp.encodeAndSendMessage(
-          newMessage,
-          destinationAddress
-        );
-        await addMessage(thread, { ...messageData, isValid: true });
-      }
+
+      await sendFilesToChat({
+        bosonXmtp,
+        files,
+        destinationAddress,
+        threadId,
+        callback: async (messageData) => {
+          await addMessage(thread, { ...messageData, isValid: true });
+        }
+      });
     },
     [addMessage, bosonXmtp, destinationAddress, threadId, thread]
   );
@@ -673,28 +661,24 @@ const ChatConversation = ({
                     return;
                   }
                   try {
-                    const proposalContent: ProposalContent = {
-                      value: {
+                    await sendProposalToChat({
+                      bosonXmtp,
+                      proposal: {
                         title: proposal.title,
                         description: proposal.description,
                         proposals: proposal.proposals,
                         disputeContext: proposal.disputeContext
-                      }
-                    };
-                    const newMessage = {
+                      },
+                      files: proposalFiles,
+                      destinationAddress,
                       threadId,
-                      content: proposalContent,
-                      contentType: MessageType.Proposal,
-                      version
-                    } as const;
-                    const messageData = await bosonXmtp.encodeAndSendMessage(
-                      newMessage,
-                      destinationAddress
-                    );
-                    await addMessage(thread, { ...messageData, isValid: true });
-                    if (proposalFiles.length) {
-                      await sendFilesToChat(proposalFiles);
-                    }
+                      callback: async (messageData) => {
+                        await addMessage(thread, {
+                          ...messageData,
+                          isValid: true
+                        });
+                      }
+                    });
                   } catch (error) {
                     console.error(error);
                   }
@@ -764,7 +748,7 @@ const ChatConversation = ({
                   withEncodedData: true,
                   onUploadedFilesWithData: async (files) => {
                     try {
-                      await sendFilesToChat(files);
+                      await sendFiles(files);
                     } catch (error) {
                       console.error(error);
                     }

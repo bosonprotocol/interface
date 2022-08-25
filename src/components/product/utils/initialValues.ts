@@ -113,10 +113,10 @@ export const disputeCentreInitialValues = {
   [DisputeFormModel.formFields.getStarted.name]: "",
   [DisputeFormModel.formFields.tellUsMore.name]: "",
   [FormModel.formFields.description.name]: "",
-  [FormModel.formFields.proposalsTypes.name]: [] as {
-    label: string;
+  [FormModel.formFields.proposalsTypes.name]: null as unknown as {
     value: string;
-  }[],
+    label: string;
+  },
   [FormModel.formFields.refundAmount.name]: "0",
   [FormModel.formFields.refundPercentage.name]: 0,
   [FormModel.formFields.upload.name]: [] as File[]
