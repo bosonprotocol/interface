@@ -97,7 +97,9 @@ export default function Preview({ togglePreview, seller }: Props) {
     validFromDate: validFromDateInMS.toString(),
     validUntilDate: validUntilDateInMS.toString(),
     voucherRedeemableFromDate: voucherRedeemableFromDateInMS.toString(),
-    voucherRedeemableUntilDate: voucherRedeemableUntilDateInMS.toString(),
+    voucherRedeemableUntilDate: (
+      voucherRedeemableUntilDateInMS / 1000
+    ).toString(),
     voidedAt: null,
     voucherValidDuration: "21727820",
     exchanges: [

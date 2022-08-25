@@ -110,7 +110,7 @@ function CreateProductInner({ initial }: Props) {
           quantityAvailable: offerInfo.quantityAvailable,
           quantityInitial: offerInfo.quantityInitial,
           fulfillmentPeriodDuration: offerInfo.fulfillmentPeriodDuration,
-          voucherRedeemableUntilDate: `${offerInfo.voucherRedeemableUntilDate}000`,
+          voucherRedeemableUntilDate: `${offerInfo.voucherRedeemableUntilDate}`,
           validFromDate: offerInfo.validFromDate,
           voidedAt: offerInfo.voidedAt,
           voucherValidDuration: offerInfo.voucherValidDuration,
