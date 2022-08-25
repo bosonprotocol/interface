@@ -80,6 +80,9 @@ export default function Preview({ togglePreview, seller }: Props) {
 
   const exchangeDate = Date.now().toString();
 
+  /**
+   * TODO: The exchange token should not be hardcoded to suport multiple tokens
+   */
   const offer = {
     price: weiPrice.toString(),
 

@@ -15,6 +15,7 @@ export type CreateProductImageProductImages =
   | "create-product-image_productImages.more";
 
 export type GetItemFromStorageKey =
+  | "wagmi.store"
   | "isChainUnsupported"
   | "create-product"
   | "tracing-url"
