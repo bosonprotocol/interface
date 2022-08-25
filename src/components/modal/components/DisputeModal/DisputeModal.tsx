@@ -3,6 +3,7 @@ import React from "react";
 import { generatePath } from "react-router-dom";
 import styled from "styled-components";
 
+import { UrlParameters } from "../../../../lib/routing/parameters";
 import { BosonRoutes } from "../../../../lib/routing/routes";
 import { breakpoint } from "../../../../lib/styles/breakpoint";
 import { colors } from "../../../../lib/styles/colors";
@@ -10,7 +11,7 @@ import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQ
 import Typography from "../../../ui/Typography";
 import { ModalProps } from "../../ModalContext";
 
-const ModalContainer = styled.div`
+const ModalContainer = styled.div<{ $exchangeId: boolean }>`
   position: relative;
   min-height: 31.25rem;
   background: ${colors.white};
@@ -24,6 +25,8 @@ const ModalContainer = styled.div`
   margin-bottom: -1.875rem;
   margin-top: -3.125rem;
   min-height: max-content;
+  padding-bottom: ${({ $exchangeId }) =>
+    $exchangeId ? "7.1875rem" : "1.35rem"};
 `;
 
 const ModalGrid = styled.div`
@@ -148,41 +151,50 @@ const ButtonContainer = styled.div`
   width: 100%;
   left: -2rem;
   width: calc(100% + 3.875rem);
-  [data-button] {
-    font-family: "Plus Jakarta Sans";
-    font-weight: 600;
-    font-size: 1rem;
-    border: none;
-    margin-top: 1.25rem;
-  }
-  [data-button-submit]:nth-of-type(1) {
-    background-color: ${colors.green};
-    padding: 1rem 2rem 1rem 2rem;
-    margin-left: 4.375rem;
-  }
-  [data-button-back]:nth-of-type(2) {
-    background: none;
-    padding: 1rem 2rem 1rem 2rem;
-    margin-right: 4.375rem;
-  }
+`;
+
+const SubmitStyledButton = styled.button`
+  font-family: "Plus Jakarta Sans";
+  font-weight: 600;
+  font-size: 1rem;
+  border: none;
+  margin-top: 1.25rem;
+  background-color: ${colors.green};
+  padding: 1rem 2rem 1rem 2rem;
+  margin-left: 4.375rem;
+`;
+
+const BackStyledButton = styled.button`
+  font-family: "Plus Jakarta Sans";
+  font-weight: 600;
+  font-size: 1rem;
+  border: none;
+  margin-top: 1.25rem;
+  background: none;
+  padding: 1rem 2rem 1rem 2rem;
+  margin-right: 4.375rem;
 `;
 
 interface Props {
   hideModal: NonNullable<ModalProps["hideModal"]>;
-  exchangeId: string;
+  exchangeId?: string;
 }
 
 function DisputeModal({ hideModal, exchangeId }: Props) {
   const navigate = useKeepQueryParamsNavigate();
 
   const handleSubmitIssue = () => {
-    navigate({
-      pathname: generatePath(`${BosonRoutes.Dispute}/${exchangeId}`)
-    });
+    if (exchangeId) {
+      navigate({
+        pathname: generatePath(BosonRoutes.DisputeId, {
+          [UrlParameters.exchangeId]: exchangeId
+        })
+      });
+    }
   };
   return (
     <>
-      <ModalContainer>
+      <ModalContainer $exchangeId={!!exchangeId}>
         <ModalGrid>
           <ModalGridColumns>
             <FileText size={24} color={colors.secondary} data-columns-icon />
@@ -250,20 +262,20 @@ function DisputeModal({ hideModal, exchangeId }: Props) {
             </Typography>
           </ModalGridColumns>
         </ModalGrid>
-        <ButtonContainer>
-          <button data-button data-button-submit onClick={handleSubmitIssue}>
-            Submit an issue
-          </button>
-          <button
-            data-button
-            data-button-back
-            onClick={() => {
-              hideModal();
-            }}
-          >
-            Back
-          </button>
-        </ButtonContainer>
+        {exchangeId && (
+          <ButtonContainer>
+            <SubmitStyledButton onClick={handleSubmitIssue}>
+              Submit an issue
+            </SubmitStyledButton>
+            <BackStyledButton
+              onClick={() => {
+                hideModal();
+              }}
+            >
+              Back
+            </BackStyledButton>
+          </ButtonContainer>
+        )}
       </ModalContainer>
     </>
   );
