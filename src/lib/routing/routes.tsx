@@ -5,7 +5,8 @@ export const BosonRoutes = {
   Explore: "/explore",
   ExplorePage: "/explore/page",
   ExplorePageByIndex: `/explore/page/:${UrlParameters.page}`,
-  Sell: "/sell",
+  SellerCenter: `/sell/:${UrlParameters.sellerPage}`,
+  CreateProduct: "/sell/create-product",
   Exchange: `/exchange/:${UrlParameters.exchangeId}`,
   YourAccount: `/account`,
   Account: `/account/:${UrlParameters.accountId}`,
@@ -14,7 +15,7 @@ export const BosonRoutes = {
   LearnMore: "/learn-more", // TODO: add page to handle this route
   Chat: "/chat",
   ChatMessage: `/chat/:${UrlParameters.exchangeId}`,
-  Dispute: "/dispute-centre",
+  DisputeCenter: "/dispute-center",
   DisputeId: `/exchange/:${UrlParameters.exchangeId}/raise-dispute`
 } as const;
 

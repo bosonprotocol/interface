@@ -28,10 +28,10 @@ interface Props {
 export default function DescribeProblemStep({ onNextClick, isValid }: Props) {
   return (
     <>
-      <Typography fontSize="2rem" fontWeight="600">
+      <Typography $fontSize="2rem" fontWeight="600">
         Describe Problem
       </Typography>
-      <Typography fontSize="1.25rem" color={colors.darkGrey}>
+      <Typography $fontSize="1.25rem" color={colors.darkGrey}>
         You may provide any information or attach any files that can support
         your case.
       </Typography>

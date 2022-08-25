@@ -12,5 +12,6 @@ export const UrlParameters = {
   offerId: "id",
   exchangeId: "id",
   accountId: "id",
-  page: "page"
+  page: "page",
+  sellerPage: "sellerPage"
 } as const;

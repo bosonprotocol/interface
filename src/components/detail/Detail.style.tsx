@@ -1,4 +1,3 @@
-import { Info } from "phosphor-react";
 import styled, { css } from "styled-components";
 
 import frameImage from "../../assets/frame.png";
@@ -14,25 +13,6 @@ import Typography from "../ui/Typography";
 export const ChartWrapper = styled.div`
   canvas {
     max-width: 100%;
-  }
-`;
-
-export const CtaModalTitle = styled.div`
-  margin: 0;
-  border-bottom: 2px solid ${colors.border};
-  padding: 2rem 2.5rem;
-  ${breakpoint.s} {
-    padding: 2 3rem;
-  }
-  * {
-    margin: 0;
-  }
-`;
-
-export const CtaModalContent = styled.div`
-  margin: 2rem;
-  ${breakpoint.s} {
-    margin: 3rem;
   }
 `;
 
@@ -174,53 +154,6 @@ export const LearnMore = styled(LinkWithQuery)`
   }
 `;
 
-export const PopperWrapper = styled.div`
-  position: relative;
-  p {
-    font-weight: 400;
-  }
-`;
-
-export const Popper = styled.div`
-  position: absolute;
-  background: ${colors.white};
-  color: ${colors.black};
-  padding: 1rem;
-  z-index: ${zIndex.Popper};
-  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1), 0px 0px 8px rgba(0, 0, 0, 0.1),
-    0px 0px 16px rgba(0, 0, 0, 0.1), 0px 0px 32px rgba(0, 0, 0, 0.1);
-
-  bottom: -1rem;
-
-  left: 0;
-  min-width: 65vw;
-  transform: translate(-5rem, 100%);
-
-  ${breakpoint.s} {
-    left: 50%;
-    min-width: 25rem;
-    transform: translate(-50%, 100%);
-  }
-
-  &:after {
-    content: "";
-    position: absolute;
-    width: 0;
-    height: 0;
-    border-left: 0.5rem solid transparent;
-    border-right: 0.5rem solid transparent;
-    border-bottom: 0.55rem solid ${colors.white};
-    top: 0;
-
-    left: 0.75rem;
-    transform: translate(5rem, -0.5rem);
-    ${breakpoint.s} {
-      left: 50%;
-      transform: translate(-50%, -0.5rem);
-    }
-  }
-`;
-
 export const ModalBackground = styled.div`
   overflow: hidden;
   margin: 2rem -2rem -2rem -2rem;
@@ -269,19 +202,6 @@ export const Notify = styled.div<{ $show: boolean }>`
   color: ${colors.white};
   background: ${colors.blue};
   padding: 0 1rem;
-`;
-
-export const ImageContainer = styled.div`
-  position: relative;
-  [data-testid="statuses"] {
-    position: absolute;
-    top: 1rem;
-    right: -1rem;
-    margin: 0 auto;
-    justify-content: center;
-    z-index: ${zIndex.OfferStatus};
-    border-radius: 0;
-  }
 `;
 
 export const ModalImageWrapper = styled.div`
@@ -421,55 +341,6 @@ export const Table = styled.table<{ noBorder?: boolean }>`
   }
 `;
 
-export const InfoIcon = styled(Info).attrs({
-  fill: colors.bosonSkyBlue
-})`
-  position: relative;
-  right: 2px;
-  font-size: 27px;
-`;
-
-export const InfoIconTextWrapper = styled.div`
-  display: flex;
-  justify-content: start;
-  align-items: center;
-`;
-
-export const Tabs = styled.div`
-  display: flex;
-  flex-direction: row;
-  max-width: 30%;
-`;
-
-export const Tab = styled("button")<{ $isSelected: boolean }>`
-  all: unset;
-  cursor: pointer;
-  background-color: ${(props) =>
-    props.$isSelected ? colors.blue : colors.lightGrey};
-  padding: 0.5rem;
-  font-family: "Plus Jakarta Sans";
-  font-style: normal;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 24px;
-  color: ${(props) => (props.$isSelected ? colors.white : colors.black)};
-  width: 200px;
-  max-width: 100%;
-  text-align: center;
-`;
-
-export const Toggle = styled.div`
-  border: 1px solid ${colors.bosonSkyBlue};
-  color: ${colors.bosonSkyBlue};
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 0.75rem;
-  gap: 0.25rem;
-  margin-bottom: 2rem;
-`;
-
 export const DetailWrapper = styled.div`
   padding: 0;
   ${breakpoint.s} {
@@ -563,11 +434,6 @@ export const MainDetailGrid = styled.div`
   }
 `;
 
-export const StatusContainer = styled.div`
-  width: 100%;
-  position: absolute;
-`;
-
 export const DarkerBackground = styled.div`
   padding: 2rem 0;
   max-width: 100%;
@@ -599,65 +465,6 @@ export const LightBackground = styled.div`
   max-width: 100%;
   background-color: ${colors.white};
   position: relative;
-`;
-
-export const WidgetContainer = styled.div`
-  width: 100%;
-  max-width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  iframe {
-    max-width: 100%;
-  }
-`;
-
-export const CtaButtonsWrapper = styled.div`
-  button {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    position: relative;
-    z-index: 1;
-    letter-spacing: 0.5px;
-    font-family: "Plus Jakarta Sans";
-    font-style: normal;
-    font-size: 1rem;
-    font-weight: 500;
-    line-height: 24px;
-    white-space: pre;
-    span > span {
-      font-size: 65%;
-      font-weight: 400;
-      margin: 0 0.5rem;
-      opacity: 0.75;
-    }
-  }
-`;
-
-export const WidgetImageWrapper = styled.div`
-  position: relative;
-  width: 100%;
-  margin: 0 auto;
-  display: block;
-
-  ${breakpoint.xs} {
-    width: 60%;
-    margin: 0 auto;
-    display: block;
-  }
-  ${breakpoint.s} {
-    width: unset;
-    margin: 0;
-    display: initial;
-  }
-
-  > div {
-    ${breakpoint.s} {
-      height: 100%;
-      padding-top: 0;
-    }
-  }
 `;
 
 export const ModalGrid = styled.div`
@@ -727,7 +534,7 @@ export const Widget = styled.div`
   }
 `;
 
-export const miniButton = css`
+const miniButton = css`
   display: flex;
   justify-content: space-between;
   align-items: center;

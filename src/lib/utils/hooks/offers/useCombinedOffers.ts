@@ -3,7 +3,6 @@ import { useInfiniteQuery, useQuery } from "react-query";
 
 import { CONFIG } from "../../../config";
 import { Offer } from "../../../types/offer";
-import { checkOfferMetadata } from "../../validators";
 
 export function useCombinedOffers(
   queryOffersArgs: subgraph.GetOffersQueryQueryVariables,
@@ -80,14 +79,12 @@ function mergeAndSortCurationListOffers(
     ...sellerCurationListOffers,
     ...offerCurationListOffers
   ].map((offer) => {
-    const isValid = checkOfferMetadata(offer);
     return {
       ...offer,
       metadata: {
         ...offer.metadata,
         imageUrl: `https://picsum.photos/seed/${offer.id}/700`
-      },
-      isValid
+      }
     } as Offer;
   });
   const ids = mergedOffers.map((offer) => Number(offer.id));

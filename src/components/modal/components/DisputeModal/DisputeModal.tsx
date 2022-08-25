@@ -3,10 +3,10 @@ import React from "react";
 import { generatePath } from "react-router-dom";
 import styled from "styled-components";
 
+import { UrlParameters } from "../../../../lib/routing/parameters";
 import { BosonRoutes } from "../../../../lib/routing/routes";
 import { breakpoint } from "../../../../lib/styles/breakpoint";
 import { colors } from "../../../../lib/styles/colors";
-import { Offer } from "../../../../lib/types/offer";
 import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import Typography from "../../../ui/Typography";
 import { ModalProps } from "../../ModalContext";
@@ -171,28 +171,30 @@ const ButtonContainer = styled.div`
 
 interface Props {
   hideModal: NonNullable<ModalProps["hideModal"]>;
-  exchange?: NonNullable<Offer["exchanges"]>[number];
+  exchangeId?: string;
 }
 
-function DisputeModal({ hideModal, exchange }: Props) {
+function DisputeModal({ hideModal, exchangeId }: Props) {
   const navigate = useKeepQueryParamsNavigate();
 
   const handleSubmitIssue = () => {
-    if (exchange) {
+    if (exchangeId) {
       navigate({
-        pathname: generatePath(`${BosonRoutes.DisputeId}`)
+        pathname: generatePath(BosonRoutes.DisputeId, {
+          [UrlParameters.exchangeId]: exchangeId
+        })
       });
     }
   };
   return (
     <>
-      <ModalContainer $exchange={!!exchange}>
+      <ModalContainer $exchange={!!exchangeId}>
         <ModalGrid>
           <ModalGridColumns>
             <FileText size={24} color={colors.secondary} data-columns-icon />
             <Typography
               margin="0"
-              fontSize="1.25rem"
+              $fontSize="1.25rem"
               color={colors.black}
               fontWeight="600"
             >
@@ -200,7 +202,7 @@ function DisputeModal({ hideModal, exchange }: Props) {
             </Typography>
             <Typography
               margin="0"
-              fontSize="1rem"
+              $fontSize="1rem"
               color={colors.darkGrey}
               fontWeight="400"
             >
@@ -212,7 +214,7 @@ function DisputeModal({ hideModal, exchange }: Props) {
             <CheckCircle size={24} color={colors.secondary} data-columns-icon />
             <Typography
               margin="0"
-              fontSize="1.25rem"
+              $fontSize="1.25rem"
               color={colors.black}
               fontWeight="600"
             >
@@ -220,7 +222,7 @@ function DisputeModal({ hideModal, exchange }: Props) {
             </Typography>
             <Typography
               margin="0"
-              fontSize="1rem"
+              $fontSize="1rem"
               color={colors.darkGrey}
               fontWeight="400"
             >
@@ -236,7 +238,7 @@ function DisputeModal({ hideModal, exchange }: Props) {
             />
             <Typography
               margin="0"
-              fontSize="1.25rem"
+              $fontSize="1.25rem"
               color={colors.black}
               fontWeight="600"
             >
@@ -244,7 +246,7 @@ function DisputeModal({ hideModal, exchange }: Props) {
             </Typography>
             <Typography
               margin="0"
-              fontSize="1rem"
+              $fontSize="1rem"
               color={colors.darkGrey}
               fontWeight="400"
             >
@@ -254,7 +256,7 @@ function DisputeModal({ hideModal, exchange }: Props) {
             </Typography>
           </ModalGridColumns>
         </ModalGrid>
-        {exchange && (
+        {exchangeId && (
           <ButtonContainer>
             <button data-button data-button-submit onClick={handleSubmitIssue}>
               Submit an issue

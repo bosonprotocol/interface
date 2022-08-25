@@ -6,6 +6,8 @@ import { useModal } from "../../components/modal/useModal";
 import Button from "../../components/ui/Button";
 import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
+import { AccountQueryParameters } from "../../lib/routing/parameters";
+import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
@@ -51,10 +53,10 @@ function DisputeList() {
   return (
     <>
       <DisputeListHeader>
-        <Typography fontSize="2rem" color={colors.black} fontWeight="600">
+        <Typography $fontSize="2rem" color={colors.black} fontWeight="600">
           Dispute resolution center
         </Typography>
-        <Typography fontSize="1.25rem" color={colors.darkGrey}>
+        <Typography $fontSize="1.25rem" color={colors.darkGrey}>
           Raise and resolve problems of your exchanges.
         </Typography>
         <Grid $width="max-content">
@@ -64,7 +66,8 @@ function DisputeList() {
             size="small"
             onClick={() => {
               navigate({
-                pathname: `/account/?tab=exchanges`
+                pathname: BosonRoutes.YourAccount,
+                search: `${AccountQueryParameters.tab}=exchange` // TODO CHANGE EXCHANGE TO CONST
               });
             }}
           >

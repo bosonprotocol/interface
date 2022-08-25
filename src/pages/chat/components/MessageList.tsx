@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
+import Image from "../../../components/ui/Image";
 import SellerID from "../../../components/ui/SellerID";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
@@ -163,11 +164,14 @@ export default function MessageList({
                 key={messageKey}
               >
                 <MessageContent>
-                  <img
+                  <Image
                     src={exchange?.offer.metadata.imageUrl}
                     alt="exchange image"
-                    width="50"
-                    height="50"
+                    style={{
+                      height: "3.125rem",
+                      width: "3.125rem",
+                      padding: 0
+                    }}
                   />
                   <MessageInfo>
                     <ExchangeName>{exchange?.offer.metadata.name}</ExchangeName>

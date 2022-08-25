@@ -85,41 +85,49 @@ function CreateProductInner({ initial }: Props) {
       offerInfo.metadataUri
     )) as any;
 
-    showModal(modalTypes.PRODUCT_CREATE_SUCCESS, {
-      title: `Offer ${offerId}`,
-      name: metadataInfo.name,
-      message: "You have successfully created:",
-      image: metadataInfo.image,
-      price: offerInfo.price,
-      offer: {
-        id: offerInfo.id,
-        createdAt: offerInfo.createdAt,
+    /**
+     * TODO: The exchange token should not be hardcoded to suport multiple tokens
+     */
+
+    showModal(
+      modalTypes.PRODUCT_CREATE_SUCCESS,
+      {
+        title: `Offer ${offerId}`,
+        name: metadataInfo.name,
+        message: "You have successfully created:",
+        image: metadataInfo.image,
         price: offerInfo.price,
-        metadataHash: offerInfo.metadataHash,
-        sellerDeposit: offerInfo.sellerDeposit,
-        resolutionPeriodDuration: offerInfo.resolutionPeriodDuration,
-        metadataUri: offerInfo.metadataUri,
-        buyerCancelPenalty: offerInfo.buyerCancelPenalty,
-        quantityAvailable: offerInfo.quantityAvailable,
-        quantityInitial: offerInfo.quantityInitial,
-        fulfillmentPeriodDuration: offerInfo.fulfillmentPeriodDuration,
-        validFromDate: offerInfo.validFromDate,
-        validUntilDate: offerInfo.validUntilDate,
-        voidedAt: offerInfo.voidedAt,
-        voucherValidDuration: offerInfo.voucherValidDuration,
-        exchangeToken: {
-          id: "",
-          address: "0x0000000000000000000000000000000000000000",
-          decimals: "18",
-          name: "Ether",
-          symbol: "ETH"
+        offer: {
+          id: offerInfo.id,
+          createdAt: offerInfo.createdAt,
+          price: offerInfo.price,
+          metadataHash: offerInfo.metadataHash,
+          sellerDeposit: offerInfo.sellerDeposit,
+          resolutionPeriodDuration: offerInfo.resolutionPeriodDuration,
+          metadataUri: offerInfo.metadataUri,
+          buyerCancelPenalty: offerInfo.buyerCancelPenalty,
+          quantityAvailable: offerInfo.quantityAvailable,
+          quantityInitial: offerInfo.quantityInitial,
+          fulfillmentPeriodDuration: offerInfo.fulfillmentPeriodDuration,
+          voucherRedeemableUntilDate: `${offerInfo.voucherRedeemableUntilDate}000`,
+          validFromDate: offerInfo.validFromDate,
+          voidedAt: offerInfo.voidedAt,
+          voucherValidDuration: offerInfo.voucherValidDuration,
+          exchangeToken: {
+            id: "",
+            address: "0x0000000000000000000000000000000000000000",
+            decimals: "18",
+            name: "Ether",
+            symbol: "ETH"
+          },
+          seller: offerInfo.seller
         },
-        seller: offerInfo.seller
+        // these are the ones that we already had before
+        onCreateNewProject: onCreateNewProject,
+        onViewMyItem: () => onViewMyItem(offerId)
       },
-      // these are the ones that we already had before
-      onCreateNewProject: onCreateNewProject,
-      onViewMyItem: () => onViewMyItem(offerId)
-    });
+      "auto"
+    );
   };
 
   const wizardStep = useMemo(() => {
@@ -166,9 +174,11 @@ function CreateProductInner({ initial }: Props) {
     const profileImage = getLocalStorageItems({
       key: "create-product-image_createYourProfile"
     });
-
     const previewImages = getLocalStorageItems({
       key: "create-product-image_productImages"
+    });
+    const productMainImage = getLocalStorageItems({
+      key: "create-product-image_productImages.thumbnail"
     });
 
     const uploadPromises = previewImages.map((previewImage) => {
@@ -176,6 +186,7 @@ function CreateProductInner({ initial }: Props) {
     });
 
     const profileImageLink = await storage.add(profileImage[0]);
+    const productMainImageLink = await storage.add(productMainImage[0]);
 
     const imagesIpfsLinks = await Promise.all(uploadPromises);
 
@@ -227,8 +238,8 @@ function CreateProductInner({ initial }: Props) {
         uuid: Date.now().toString(),
         name: productInformation.productTitle,
         description: productInformation.description,
-        externalUrl: "https://interface-staging.on.fleek.co",
-        image: `ipfs://${profileImageLink}`,
+        externalUrl: window.origin,
+        image: `ipfs://${productMainImageLink}`,
         type: MetadataType.PRODUCT_V1,
         attributes: [
           { trait_type: "productType", value: productType.productType },
@@ -336,13 +347,11 @@ function CreateProductInner({ initial }: Props) {
         voucherRedeemableFromDateInMS: voucherRedeemableFromDateInMS.toString(),
         voucherRedeemableUntilDateInMS:
           voucherRedeemableUntilDateInMS.toString(),
+        voucherValidDurationInMS: 0,
         validFromDateInMS: validFromDateInMS.toString(),
         validUntilDateInMS: validUntilDateInMS.toString(),
-        fulfillmentPeriodDurationInMS: resolutionPeriodDurationInMS.toString(), // TODO: find what should be fulfillmentPeriodDuration
+        fulfillmentPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
         resolutionPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
-        voucherValidDurationInMS: (
-          validUntilDateInMS - validFromDateInMS
-        ).toString(),
         exchangeToken: "0x0000000000000000000000000000000000000000",
         disputeResolverId: 1,
         agentId: 0, // no agent
@@ -401,6 +410,7 @@ function CreateProductInner({ initial }: Props) {
         data={CREATE_PRODUCT_STEPS}
         active={currentStep}
         callback={handleClickStep}
+        disableInactiveSteps
       />
 
       <ProductLayoutContainer isPreviewVisible={isPreviewVisible}>

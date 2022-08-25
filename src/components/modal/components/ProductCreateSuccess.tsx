@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { formatUnits } from "@ethersproject/units";
 import * as ProgressPrimitive from "@radix-ui/react-progress";
+import { BigNumber } from "ethers";
 import { Question } from "phosphor-react";
 import { Plus } from "phosphor-react";
 import { useMemo } from "react";
@@ -96,10 +98,8 @@ const Amount = styled.span`
   transform: translate(0, -50%);
 `;
 
-/**
- * TODO: get the amount of funds and calculate the progress
- */
 const PROGRESS = 15;
+
 export default function ProductCreateSuccess({
   message,
   name,
@@ -123,8 +123,15 @@ export default function ProductCreateSuccess({
     onCreateNewProject();
   };
 
-  const suggestedAmount =
-    parseFloat(convertedPrice.price || "0") * (PROGRESS / 100);
+  /**
+   * TODO: make the decimals depending on the token
+   */
+  const suggestedAmount = formatUnits(
+    BigNumber.from(offer.sellerDeposit).mul(parseInt(offer.quantityInitial)),
+    18
+  );
+
+  const fifteenOfAmmount = parseFloat(suggestedAmount) * 0.15;
 
   return (
     <>
@@ -152,7 +159,7 @@ export default function ProductCreateSuccess({
                 tag="h2"
                 margin="1rem 0"
                 color={colors.secondary}
-                fontSize="1.5rem"
+                $fontSize="1.5rem"
               >
                 {name}
               </Typography>
@@ -178,26 +185,27 @@ export default function ProductCreateSuccess({
                 NEED TO BE ADDED
               </DetailTooltip>
             </FoundTile>
-            <Typography tag="p" fontSize="0.75rem">
+            <Typography tag="p" $fontSize="0.75rem">
               Describe here why seller should provide funds ..
               <br />
               alos in multiple lines possible.
             </Typography>
             <Typography
               tag="p"
-              marginTop="1rem"
-              fontSize="0.75rem"
+              margin="1rem 0 0 0"
+              $fontSize="0.75rem"
               fontWeight="bold"
             >
               Suggested pool amount: 15%
             </Typography>
-            {/* NOTE: CAN BE CREATED AS A SHARED COMPONENT */}
             <StyledProgress>
               <StyledProgressLayer>
                 <StyledIndicator
                   style={{ transform: `translateX(-${100 - PROGRESS}%)` }}
                 />
-                <Amount>0 / {suggestedAmount} ETH</Amount>
+                <Amount>
+                  {fifteenOfAmmount} / {suggestedAmount} ETH
+                </Amount>
               </StyledProgressLayer>
             </StyledProgress>
           </Founds>

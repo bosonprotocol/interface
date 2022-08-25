@@ -1,4 +1,4 @@
-import styled, { ThemeProvider } from "styled-components";
+import styled, { css, ThemeProvider } from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
@@ -16,43 +16,57 @@ const BaseButton = styled.button<{
   border-width: ${(props) => props.theme.borderWidth || 0}px;
   color: ${(props) => props.theme.color || "#000000"};
   background-color: ${(props) => props.theme.background || "transparent"};
-  ${(props) => (props.fill ? "width: 100%;" : "")};
-
+  ${(props) =>
+    props.fill
+      ? css`
+          width: 100%;
+        `
+      : ""};
   ${(props) =>
     props.theme.hover &&
-    `
-    &:hover:not(:disabled) {
-      background-color: ${props.theme.hover.background};
-      ${
-        props.theme.hover.color
-          ? `
+    css`
+      &:hover:not(:disabled) {
+        background-color: ${props.theme.hover.background};
+        ${props.theme.hover.color &&
+        css`
           color: ${props.theme.hover.color} !important;
           svg {
             fill: ${props.theme.hover.color} !important;
           }
-          `
-          : ""
+        `};
+        ${props.theme.hover.borderColor &&
+        css`
+          border-color: ${props.theme.hover.borderColor};
+        `};
       }
-       ${
-         props.theme.hover.borderColor &&
-         `border-color:${props.theme.hover.borderColor}`
-       };
-    }
-  `}
-
+    `}
   ${(props) =>
     props.theme.padding
-      ? `
-    padding: ${props.theme.padding} !important;
-    `
+      ? css`
+          padding: ${props.theme.padding} !important;
+        `
       : ""}
 
-  :disabled {
-    background-color: ${colors.lightGrey};
-    color: ${colors.darkGrey};
-    border-width: 0;
-    cursor: not-allowed;
-  }
+  ${(props) =>
+    props.theme.disabled
+      ? `
+      :disabled {
+        background-color: ${props.theme.disabled.background || "transparent"};
+        color: ${props.theme.disabled.color || colors.darkGrey};
+        border-width: 0;
+        cursor: not-allowed;
+        opacity: 0.5;
+      }
+    `
+      : `
+      :disabled {
+        background-color: ${colors.lightGrey};
+        color: ${colors.darkGrey};
+        border-width: 0;
+        cursor: not-allowed;
+        opacity: 0.5;
+      }
+    `};
 `;
 
 const ChildWrapperButton = styled.div`
@@ -94,7 +108,8 @@ const allThemes = {
     borderWidth: 2,
     hover: {
       background: colors.black,
-      color: colors.white
+      color: colors.white,
+      borderColor: colors.black
     }
   },
   outline: {
@@ -113,14 +128,24 @@ const allThemes = {
       background: colors.border
     }
   },
+  void: {
+    color: colors.orange,
+    borderColor: colors.orange,
+    borderWidth: 1,
+    hover: {
+      background: colors.border
+    }
+  },
   blank: {
     color: `${colors.black}4d`,
     padding: "0.75rem 0.5rem",
     hover: {
       color: colors.black
+    },
+    disabled: {
+      background: "transparent"
     }
   },
-
   blankSecondary: {
     color: "var(--secondary)",
     padding: "0.75rem 0.5rem",
@@ -161,7 +186,7 @@ const allThemes = {
   }
 };
 
-interface IButton {
+export interface IButton {
   children?: string | React.ReactNode;
   onClick?: React.MouseEventHandler<HTMLButtonElement> | undefined;
   size?: "small" | "regular" | "large";
