@@ -19,6 +19,7 @@ import MultiSteps from "../../components/step/MultiSteps";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { OffersRoutes } from "../../lib/routing/routes";
 import { getLocalStorageItems } from "../../lib/utils/getLocalStorageItems";
+import { useChatStatus } from "../../lib/utils/hooks/chat/useChatStatus";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { saveItemInStorage } from "../../lib/utils/hooks/useLocalStorage";
@@ -42,7 +43,7 @@ interface Props {
 }
 function CreateProductInner({ initial }: Props) {
   const navigate = useKeepQueryParamsNavigate();
-
+  const { chatInitializationStatus } = useChatStatus();
   const [currentStep, setCurrentStep] = useState<number>(FIRST_STEP);
   const [isPreviewVisible, setIsPreviewVisible] = useState<boolean>(false);
   const { showModal, modalTypes, hideModal } = useModal();
@@ -123,7 +124,10 @@ function CreateProductInner({ initial }: Props) {
   };
 
   const wizardStep = useMemo(() => {
-    const wizard = createProductSteps({ setIsPreviewVisible });
+    const wizard = createProductSteps({
+      setIsPreviewVisible,
+      chatInitializationStatus
+    });
     return {
       currentStep:
         wizard?.[currentStep as keyof CreateProductSteps]?.ui || null,
@@ -133,7 +137,7 @@ function CreateProductInner({ initial }: Props) {
         wizard?.[currentStep as keyof CreateProductSteps]?.helpSection || null,
       wizardLength: keys(wizard).length - 1
     };
-  }, [currentStep]);
+  }, [chatInitializationStatus, currentStep]);
 
   const handleNextForm = useCallback(() => {
     if (isPreviewVisible) {
@@ -227,7 +231,7 @@ function CreateProductInner({ initial }: Props) {
         uuid: Date.now().toString(),
         name: productInformation.productTitle,
         description: productInformation.description,
-        externalUrl: "https://interface-staging.on.fleek.co",
+        externalUrl: window.location.origin,
         image: `ipfs://${profileImageLink}`,
         type: MetadataType.PRODUCT_V1,
         attributes: [

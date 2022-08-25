@@ -1,13 +1,14 @@
-import { BosonXmtpClient } from "@bosonprotocol/chat-sdk";
 import dayjs from "dayjs";
 import map from "lodash/map";
 import { Warning } from "phosphor-react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import { useAccount } from "wagmi";
 
 import Collapse from "../../components/collapse/Collapse";
+import { Spinner } from "../../components/loading/Spinner";
 import InitializeChat from "../../components/modal/components/Chat/components/InitializeChat";
 import { CONFIG } from "../../lib/config";
+import { ChatInitializationStatus } from "../../lib/utils/hooks/chat/useChatStatus";
 import {
   CreateProductImageProductImages,
   getItemFromStorage
@@ -53,41 +54,23 @@ import { useCreateForm } from "./utils/useCreateForm";
 
 interface Props {
   togglePreview: React.Dispatch<React.SetStateAction<boolean>>;
+  chatInitializationStatus: ChatInitializationStatus;
 }
 
-type ChatInitializationStatus =
-  | "PENDING"
-  | "ALREADY_INITIALIZED"
-  | "INITIALIZED"
-  | "NOT_INITIALIZED"
-  | "ERROR";
-
-export default function ConfirmProductDetails({ togglePreview }: Props) {
-  const [chatInitializationStatus, setChatInitializationStatus] =
-    useState<ChatInitializationStatus>("PENDING");
-  const { bosonXmtp, envName } = useChatContext();
+export default function ConfirmProductDetails({
+  togglePreview,
+  chatInitializationStatus
+}: Props) {
+  const { bosonXmtp } = useChatContext();
 
   const { values } = useCreateForm();
   const { address } = useAccount();
 
-  useEffect(() => {
-    if (chatInitializationStatus === "PENDING" && !!bosonXmtp) {
-      setChatInitializationStatus("ALREADY_INITIALIZED");
-    } else if (address && chatInitializationStatus !== "ALREADY_INITIALIZED") {
-      BosonXmtpClient.isXmtpEnabled(address, envName)
-        .then((isEnabled) => {
-          if (isEnabled) {
-            setChatInitializationStatus("INITIALIZED");
-          } else {
-            setChatInitializationStatus("NOT_INITIALIZED");
-          }
-        })
-        .catch((err) => {
-          console.error(err);
-          setChatInitializationStatus("ERROR");
-        });
-    }
-  }, [address, bosonXmtp, chatInitializationStatus, envName]);
+  const showSuccessInitialization =
+    chatInitializationStatus === "INITIALIZED" && bosonXmtp;
+  const showInitializeChat =
+    (chatInitializationStatus === "NOT_INITIALIZED" && address && !bosonXmtp) ||
+    chatInitializationStatus === "ERROR";
 
   const handleOpenPreview = () => {
     togglePreview(true);
@@ -465,15 +448,12 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
           </Typography>
         </ConfirmationContent>
       </ConfirmationAlert>
-      {((chatInitializationStatus === "NOT_INITIALIZED" &&
-        address &&
-        !bosonXmtp) ||
-        chatInitializationStatus === "ERROR") && (
+      {showInitializeChat && (
         <InitializeChatContainer>
           <InitializeChat isError={chatInitializationStatus === "ERROR"} />
         </InitializeChatContainer>
       )}
-      {chatInitializationStatus === "INITIALIZED" && bosonXmtp && (
+      {showSuccessInitialization && (
         <InitializeChatContainer>
           <Info justifyContent="space-between" gap="2rem">
             <Grid justifyContent="flex-start" gap="1rem">
@@ -498,7 +478,11 @@ export default function ConfirmProductDetails({ togglePreview }: Props) {
             )
           }
         >
-          Confirm
+          {chatInitializationStatus === "NOT_INITIALIZED" && bosonXmtp ? (
+            <Spinner size={20} />
+          ) : (
+            "Confirm"
+          )}
         </Button>
         <Button theme="primary" type="button" onClick={handleOpenPreview}>
           Preview product detail page
