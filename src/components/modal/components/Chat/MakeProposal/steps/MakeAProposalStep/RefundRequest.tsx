@@ -10,7 +10,7 @@ import { Input } from "../../../../../../form";
 import Price from "../../../../../../price";
 import Grid from "../../../../../../ui/Grid";
 import Typography from "../../../../../../ui/Typography";
-import { MAX_PERCENTAGE_DECIMALS } from "../../../const";
+import { MIN_VALUE } from "../../../const";
 import { FormModel } from "../../MakeProposalFormModel";
 import RequestedRefundInput from "./RequestedRefundInput";
 
@@ -133,7 +133,7 @@ export default function RefundRequest({ exchange }: Props) {
             Edit as %
           </Typography>
           <Input
-            step={10 ** -MAX_PERCENTAGE_DECIMALS}
+            step={MIN_VALUE}
             name={FormModel.formFields.refundPercentage.name}
             type="number"
             onChange={(e) => {
