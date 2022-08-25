@@ -116,7 +116,7 @@ function DisputeCentre() {
   ];
 
   if (!exchange && isLoading) {
-    return <p>Your exchange info is loading</p>;
+    return <p>Loading exchange info...</p>;
   }
 
   if (!exchange || isError) {
@@ -181,7 +181,7 @@ function DisputeCentre() {
                     proposalFields: {
                       description: values.description,
                       upload: values.upload,
-                      proposalTypeName: values.proposalsTypes[0].label || "",
+                      proposalTypeName: values.proposalsTypes?.label || "",
                       refundPercentage: values.refundPercentage,
                       disputeContext: [values.getStarted, values.tellUsMore]
                     }
@@ -206,7 +206,7 @@ function DisputeCentre() {
                     pathname: BosonRoutes.Dispute // TODO: change to dispute center
                   });
                 } catch (error) {
-                  console.error(error);
+                  console.error(error); // TODO: handle error
                 }
               }}
               validationSchema={validationSchema[currentStep]}

@@ -76,7 +76,7 @@ export default function MakeProposalModal({
               proposalFields: {
                 description: values.description,
                 upload: values.upload,
-                proposalTypeName: values.proposalsTypes[0].label || "",
+                proposalTypeName: values.proposalsTypes?.label || "",
                 refundPercentage: values.refundPercentage,
                 disputeContext: []
               }
@@ -89,10 +89,10 @@ export default function MakeProposalModal({
         }}
         initialValues={{
           [FormModel.formFields.description.name]: "",
-          [FormModel.formFields.proposalsTypes.name]: [] as {
+          [FormModel.formFields.proposalsTypes.name]: null as unknown as {
             label: string;
             value: string;
-          }[],
+          },
           [FormModel.formFields.refundAmount.name]: "0",
           [FormModel.formFields.refundPercentage.name]: 0,
           [FormModel.formFields.upload.name]: [] as File[]
