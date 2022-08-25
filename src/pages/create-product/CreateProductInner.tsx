@@ -16,6 +16,7 @@ import Preview from "../../components/product/Preview";
 import { CreateProductForm } from "../../components/product/utils";
 import { CREATE_PRODUCT_STEPS } from "../../components/product/utils";
 import MultiSteps from "../../components/step/MultiSteps";
+import { CONFIG } from "../../lib/config";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { OffersRoutes } from "../../lib/routing/routes";
 import { getLocalStorageItems } from "../../lib/utils/getLocalStorageItems";
@@ -357,7 +358,7 @@ function CreateProductInner({ initial }: Props) {
         fulfillmentPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
         resolutionPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
         exchangeToken: "0x0000000000000000000000000000000000000000",
-        disputeResolverId: 1,
+        disputeResolverId: CONFIG.envName === "testing" ? 1 : 2,
         agentId: 0, // no agent
         metadataUri: `ipfs://${metadataHash}`,
         metadataHash: metadataHash
