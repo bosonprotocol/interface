@@ -174,9 +174,11 @@ function CreateProductInner({ initial }: Props) {
     const profileImage = getLocalStorageItems({
       key: "create-product-image_createYourProfile"
     });
-
     const previewImages = getLocalStorageItems({
       key: "create-product-image_productImages"
+    });
+    const productMainImage = getLocalStorageItems({
+      key: "create-product-image_productImages.thumbnail"
     });
 
     const uploadPromises = previewImages.map((previewImage) => {
@@ -184,6 +186,7 @@ function CreateProductInner({ initial }: Props) {
     });
 
     const profileImageLink = await storage.add(profileImage[0]);
+    const productMainImageLink = await storage.add(productMainImage);
 
     const imagesIpfsLinks = await Promise.all(uploadPromises);
 
@@ -235,8 +238,8 @@ function CreateProductInner({ initial }: Props) {
         uuid: Date.now().toString(),
         name: productInformation.productTitle,
         description: productInformation.description,
-        externalUrl: "https://interface-staging.on.fleek.co",
-        image: `ipfs://${profileImageLink}`,
+        externalUrl: window.origin,
+        image: `ipfs://${productMainImageLink}`,
         type: MetadataType.PRODUCT_V1,
         attributes: [
           { trait_type: "productType", value: productType.productType },
