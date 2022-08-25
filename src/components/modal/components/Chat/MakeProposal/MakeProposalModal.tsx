@@ -13,6 +13,7 @@ import { createProposal } from "../../../../../pages/chat/utils/create";
 import Grid from "../../../../ui/Grid";
 import { ModalProps } from "../../../ModalContext";
 import ExchangePreview from "../components/ExchangePreview";
+import { MIN_VALUE } from "../const";
 import { FormModel } from "./MakeProposalFormModel";
 import DescribeProblemStep from "./steps/DescribeProblemStep";
 import MakeAProposalStep from "./steps/MakeAProposalStep/MakeAProposalStep";
@@ -40,7 +41,10 @@ const validationSchemaPerStep = [
   }),
   Yup.object({
     [FormModel.formFields.refundPercentage.name]: Yup.number()
-      .moreThan(0, FormModel.formFields.refundPercentage.moreThanErrorMessage)
+      .moreThan(
+        MIN_VALUE,
+        FormModel.formFields.refundPercentage.moreThanErrorMessage(MIN_VALUE)
+      )
       .max(100, FormModel.formFields.refundPercentage.maxErrorMessage)
       .defined(FormModel.formFields.refundPercentage.emptyErrorMessage)
   }),
