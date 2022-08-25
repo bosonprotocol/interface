@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { useAccount } from "wagmi";
 
 import DisputeTable from "../../components/modal/components/DisputeTable/DisputeTable";
 import { useModal } from "../../components/modal/useModal";
@@ -9,6 +10,7 @@ import Typography from "../../components/ui/Typography";
 import { AccountQueryParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
+import { useBuyers } from "../../lib/utils/hooks/useBuyers";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 
@@ -45,10 +47,21 @@ const HowItWorksButton = styled(Button)`
 function DisputeList() {
   const navigate = useKeepQueryParamsNavigate();
   const { showModal, modalTypes } = useModal();
-
-  const { data: exchanges = [] } = useExchanges({
-    disputed: true
+  const { address } = useAccount();
+  const { data: buyers } = useBuyers({
+    wallet: address
   });
+  const buyerId = buyers?.[0]?.id || "";
+
+  const { data: exchanges = [] } = useExchanges(
+    {
+      disputed: true,
+      buyerId: buyerId
+    },
+    {
+      enabled: !!buyerId
+    }
+  );
 
   return (
     <>
