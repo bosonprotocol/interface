@@ -186,7 +186,7 @@ function CreateProductInner({ initial }: Props) {
     });
 
     const profileImageLink = await storage.add(profileImage[0]);
-    const productMainImageLink = await storage.add(productMainImage);
+    const productMainImageLink = await storage.add(productMainImage[0]);
 
     const imagesIpfsLinks = await Promise.all(uploadPromises);
 
