@@ -88,9 +88,6 @@ const Wrapper = styled.div<{ $modalType: ModalType; $size: Props["size"] }>`
     margin: ${({ $size }) =>
       sizeToMargin[$size as keyof typeof sizeToMargin]["xl"] || "4rem 14rem"};
   }
-  ${breakpoint.auto} {
-    margin: 4rem auto;
-  }
 `;
 
 const Header = styled(Typography)<{ $title?: string }>`
