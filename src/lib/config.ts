@@ -15,6 +15,11 @@ const ENABLE_SENTRY_LOGGING =
 
 export const CONFIG = {
   ...config,
+  // TODO: remove this workaround for common package dependency issue
+  subgraphUrl:
+    config.chainId === 80001
+      ? "https://api.thegraph.com/subgraphs/name/levalleux-ludo/bosonmumbai"
+      : config.subgraphUrl,
   enableSentryLogging: ENABLE_SENTRY_LOGGING,
   dateFormat: process.env.DATE_FORMAT || "YYYY/MM/DD",
   shortDateFormat: process.env.SHORT_DATE_FORMAT || "MMM DD, YYYY",
