@@ -11,7 +11,7 @@ import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQ
 import Typography from "../../../ui/Typography";
 import { ModalProps } from "../../ModalContext";
 
-const ModalContainer = styled.div<{ $exchange: boolean }>`
+const ModalContainer = styled.div<{ $exchangeId: boolean }>`
   position: relative;
   min-height: 31.25rem;
   background: ${colors.white};
@@ -25,7 +25,8 @@ const ModalContainer = styled.div<{ $exchange: boolean }>`
   margin-bottom: -1.875rem;
   margin-top: -3.125rem;
   min-height: max-content;
-  padding-bottom: ${({ $exchange }) => ($exchange ? "7.1875rem" : "1.35rem")};
+  padding-bottom: ${({ $exchangeId }) =>
+    $exchangeId ? "7.1875rem" : "1.35rem"};
 `;
 
 const ModalGrid = styled.div`
@@ -150,23 +151,28 @@ const ButtonContainer = styled.div`
   width: 100%;
   left: -2rem;
   width: calc(100% + 3.875rem);
-  [data-button] {
-    font-family: "Plus Jakarta Sans";
-    font-weight: 600;
-    font-size: 1rem;
-    border: none;
-    margin-top: 1.25rem;
-  }
-  [data-button-submit]:nth-of-type(1) {
-    background-color: ${colors.green};
-    padding: 1rem 2rem 1rem 2rem;
-    margin-left: 4.375rem;
-  }
-  [data-button-back]:nth-of-type(2) {
-    background: none;
-    padding: 1rem 2rem 1rem 2rem;
-    margin-right: 4.375rem;
-  }
+`;
+
+const SubmitStyledButton = styled.button`
+  font-family: "Plus Jakarta Sans";
+  font-weight: 600;
+  font-size: 1rem;
+  border: none;
+  margin-top: 1.25rem;
+  background-color: ${colors.green};
+  padding: 1rem 2rem 1rem 2rem;
+  margin-left: 4.375rem;
+`;
+
+const BackStyledButton = styled.button`
+  font-family: "Plus Jakarta Sans";
+  font-weight: 600;
+  font-size: 1rem;
+  border: none;
+  margin-top: 1.25rem;
+  background: none;
+  padding: 1rem 2rem 1rem 2rem;
+  margin-right: 4.375rem;
 `;
 
 interface Props {
@@ -188,7 +194,7 @@ function DisputeModal({ hideModal, exchangeId }: Props) {
   };
   return (
     <>
-      <ModalContainer $exchange={!!exchangeId}>
+      <ModalContainer $exchangeId={!!exchangeId}>
         <ModalGrid>
           <ModalGridColumns>
             <FileText size={24} color={colors.secondary} data-columns-icon />
@@ -258,18 +264,16 @@ function DisputeModal({ hideModal, exchangeId }: Props) {
         </ModalGrid>
         {exchangeId && (
           <ButtonContainer>
-            <button data-button data-button-submit onClick={handleSubmitIssue}>
+            <SubmitStyledButton onClick={handleSubmitIssue}>
               Submit an issue
-            </button>
-            <button
-              data-button
-              data-button-back
+            </SubmitStyledButton>
+            <BackStyledButton
               onClick={() => {
                 hideModal();
               }}
             >
               Back
-            </button>
+            </BackStyledButton>
           </ButtonContainer>
         )}
       </ModalContainer>
