@@ -9,7 +9,7 @@ interface Props {
   children: ReactNode;
 }
 
-const envName = config.envName;
+const envName = `${config.envName}-${config.contracts.protocolDiamond}`;
 export default function ChatProvider({ children }: Props) {
   const { data: signer } = useSigner();
   const [initialize, setInitialized] = useState<number>(0);

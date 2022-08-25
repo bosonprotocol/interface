@@ -99,6 +99,7 @@ export default function ResolveDisputeModal({
                 sigS: signature.s,
                 sigV: signature.v
               });
+              // TODO: close modal
             } catch (error) {
               setResolveDisputeError(error as Error);
             }
