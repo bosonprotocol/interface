@@ -184,7 +184,9 @@ function DisputeCentre() {
                       proposalTypeName: values.proposalsTypes?.label || "",
                       refundPercentage: values.refundPercentage,
                       disputeContext: [values.getStarted, values.tellUsMore]
-                    }
+                    },
+                    exchangeId: exchange.id,
+                    coreSDK
                   });
                   await sendProposalToChat({
                     bosonXmtp,
@@ -203,7 +205,7 @@ function DisputeCentre() {
                   );
                   await tx.wait();
                   navigate({
-                    pathname: BosonRoutes.Dispute // TODO: change to dispute center
+                    pathname: BosonRoutes.DisputeCenter
                   });
                 } catch (error) {
                   console.error(error);

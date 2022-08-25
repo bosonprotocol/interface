@@ -6,6 +6,7 @@ import * as Yup from "yup";
 import { FileWithEncodedData } from "../../../../../lib/utils/files";
 import { Exchange } from "../../../../../lib/utils/hooks/useExchanges";
 import { useSellers } from "../../../../../lib/utils/hooks/useSellers";
+import { useCoreSDK } from "../../../../../lib/utils/useCoreSdk";
 import { validationOfFile } from "../../../../../pages/chat/components/UploadForm/const";
 import { NewProposal } from "../../../../../pages/chat/types";
 import { createProposal } from "../../../../../pages/chat/utils/create";
@@ -54,7 +55,7 @@ export default function MakeProposalModal({
   activeStep
 }: Props) {
   const [submitError, setSubmitError] = useState<Error | null>(null);
-
+  const coreSDK = useCoreSDK();
   const { address } = useAccount();
   const { data: sellers } = useSellers({
     operator: address
@@ -82,7 +83,9 @@ export default function MakeProposalModal({
                 proposalTypeName: values.proposalsTypes?.label || "",
                 refundPercentage: values.refundPercentage,
                 disputeContext: []
-              }
+              },
+              exchangeId: exchange.id,
+              coreSDK
             });
             sendProposal(proposal, filesWithData);
             hideModal();

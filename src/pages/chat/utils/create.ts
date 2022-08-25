@@ -1,3 +1,6 @@
+import { CoreSDK } from "@bosonprotocol/core-sdk";
+import { utils } from "ethers";
+
 import { PERCENTAGE_FACTOR } from "../../../components/modal/components/Chat/const";
 import {
   FileWithEncodedData,
@@ -8,7 +11,9 @@ import { NewProposal } from "../types";
 export const createProposal = async ({
   isSeller,
   sellerOrBuyerId,
-  proposalFields
+  proposalFields,
+  exchangeId,
+  coreSDK
 }: {
   isSeller: boolean;
   sellerOrBuyerId: string;
@@ -19,6 +24,8 @@ export const createProposal = async ({
     refundPercentage: number;
     disputeContext: string[];
   };
+  exchangeId: string;
+  coreSDK: CoreSDK;
 }): Promise<{
   proposal: NewProposal;
   filesWithData: FileWithEncodedData[];
@@ -35,12 +42,16 @@ export const createProposal = async ({
         type: proposalFields.proposalTypeName,
         percentageAmount:
           proposalFields.refundPercentage * PERCENTAGE_FACTOR + "",
-        signature: "0x" // TODO: sign proposals
+        signature: ""
       }
     ],
     disputeContext: proposalFields.disputeContext
   };
-  // TODO: sign proposals
+  const signature = await coreSDK.signDisputeResolutionProposal({
+    exchangeId,
+    buyerPercent: proposal.proposals[0].percentageAmount
+  });
+  proposal.proposals[0].signature = utils.joinSignature(signature);
   const proposalFiles = proposalFields.upload;
   const filesWithData = await getFilesWithEncodedData(proposalFiles);
   return {
