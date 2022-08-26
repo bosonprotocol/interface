@@ -28,6 +28,7 @@ import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
 import Image from "../../ui/Image";
 import Typography from "../../ui/Typography";
+import PaginationPages from "../common/PaginationPages";
 
 interface Props {
   offers: (Offer | null)[];
@@ -167,7 +168,7 @@ const Span = styled.span`
     margin-right: 1rem;
   }
 `;
-export default function SellerTable({ offers, refetch }: Props) {
+export default function SellerProductsTable({ offers, refetch }: Props) {
   const { showModal, modalTypes } = useModal();
   const navigate = useKeepQueryParamsNavigate();
   const columns = useMemo(
@@ -183,13 +184,11 @@ export default function SellerTable({ offers, refetch }: Props) {
       } as const,
       {
         Header: "ID/SKU",
-        accessor: "sku",
-        sortable: true
+        accessor: "sku"
       } as const,
       {
         Header: "Product name",
-        accessor: "productName",
-        sortable: true
+        accessor: "productName"
       } as const,
       {
         Header: "Status",
@@ -197,7 +196,7 @@ export default function SellerTable({ offers, refetch }: Props) {
         disableSortBy: true
       } as const,
       {
-        Header: "Quantity",
+        Header: "Quantity (available/total)",
         accessor: "quantity",
         disableSortBy: true
       } as const,
@@ -475,10 +474,11 @@ export default function SellerTable({ offers, refetch }: Props) {
               </select>
               per page
             </Span>
-            <Span>
-              Showing {pageIndex * pageSize + 1} - {(pageIndex + 1) * pageSize}{" "}
-              of {rows.length} entries
-            </Span>
+            <PaginationPages
+              pageIndex={pageIndex + 1}
+              pageSize={pageSize}
+              allItems={rows.length}
+            />
           </Grid>
           {pageCount > 1 && (
             <Grid justifyContent="flex-end" gap="1rem">
