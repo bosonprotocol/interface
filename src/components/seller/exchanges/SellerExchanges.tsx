@@ -48,19 +48,18 @@ export default function SellerExchanges({ sellerId }: Props) {
   const [search, setSearch] = useState<string>("");
   const [filter, setFilter] = useState<FilterValue | null>(null);
 
-  let newSellerId;
+  let newSellerId = "3"; // eslint-disable-line
   const { data, isLoading, isError, refetch } = useExchanges({
     sellerId: newSellerId || sellerId,
-    disputed: false
+    disputed: null
   });
 
   const allData = useMemo(() => {
     const filtered =
       data?.map((exchange: Exchange) => {
         const status = ExchangesKit.getExchangeState(exchange);
-
         if (currentTag === "live-rnfts") {
-          return status === subgraph.ExchangeState.Completed ? exchange : null;
+          return status === subgraph.ExchangeState.Committed ? exchange : null;
         }
         if (currentTag === "redemptions") {
           return status === subgraph.ExchangeState.Redeemed ? exchange : null;
@@ -69,7 +68,8 @@ export default function SellerExchanges({ sellerId }: Props) {
           return status === subgraph.ExchangeState.Disputed ? exchange : null;
         }
         if (currentTag === "past-exchanges") {
-          return status === ExchangesKit.ExtendedExchangeState.Expired
+          return status === ExchangesKit.ExtendedExchangeState.Expired ||
+            status === subgraph.ExchangeState.Completed
             ? exchange
             : null;
         }

@@ -46,6 +46,7 @@ const Status = styled.div<{
   $color: string;
   $size: Props["size"];
 }>`
+  text-transform: uppercase;
   position: relative;
   :after {
     content: "";
@@ -135,19 +136,19 @@ const StatusToComponent = (
       [subgraph.ExchangeState.Disputed]: (
         <Status
           $color={colors.darkGrey}
-          $background={colors.red}
+          $background={colors.torquise}
           $size={size}
           style={style}
           className="status"
           data-testid="disputed-status"
         >
-          Disputed
+          In Dispute
         </Status>
       ),
       [subgraph.ExchangeState.Revoked]: (
         <Status
           $color={colors.darkGrey}
-          $background={colors.red}
+          $background={colors.blue}
           $size={size}
           style={style}
           className="status"
@@ -159,7 +160,7 @@ const StatusToComponent = (
       [subgraph.ExchangeState.Redeemed]: (
         <Status
           $color={colors.darkGrey}
-          $background={colors.green}
+          $background={colors.lime}
           $size={size}
           style={style}
           className="status"

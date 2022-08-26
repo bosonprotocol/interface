@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { generatePath } from "react-router-dom";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
@@ -101,15 +102,21 @@ interface Props {
 export default function HeaderLinks({ isMobile, isOpen }: Props) {
   const { address } = useAccount();
 
-  const sellerCenterUrl = generatePath(BosonRoutes.SellerCenter, {
-    [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
-  });
+  const sellUrl = useMemo(
+    () =>
+      address
+        ? generatePath(BosonRoutes.SellerCenter, {
+            [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
+          })
+        : BosonRoutes.CreateProduct,
+    [address]
+  );
 
   return (
     <NavigationLinks isMobile={isMobile} isOpen={isOpen}>
       <Search isMobile={isMobile} />
       <Links isMobile={isMobile}>
-        <LinkWithQuery to={sellerCenterUrl}>Sell</LinkWithQuery>
+        <LinkWithQuery to={sellUrl}>Sell</LinkWithQuery>
         <LinkWithQuery to={BosonRoutes.Explore}>Explore Products</LinkWithQuery>
         {address && (
           <LinkWithQuery to={BosonRoutes.YourAccount}>My Items</LinkWithQuery>

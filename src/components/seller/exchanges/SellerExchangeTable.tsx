@@ -8,7 +8,6 @@ import type {
   HeaderGroup,
   Row
 } from "@types/react-table";
-import dayjs from "dayjs";
 import { Chat, Check } from "phosphor-react";
 import { CaretDown, CaretLeft, CaretRight, CaretUp } from "phosphor-react";
 import { forwardRef, useEffect, useMemo, useRef } from "react";
@@ -16,12 +15,10 @@ import { generatePath } from "react-router-dom";
 import { usePagination, useRowSelect, useSortBy, useTable } from "react-table";
 import styled from "styled-components";
 
-import { CONFIG } from "../../../lib/config";
 import { UrlParameters } from "../../../lib/routing/parameters";
 import { BosonRoutes } from "../../../lib/routing/routes";
 import { colors } from "../../../lib/styles/colors";
 import { Offer } from "../../../lib/types/offer";
-import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { CheckboxWrapper } from "../../form/Field.styles";
@@ -32,6 +29,7 @@ import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
 import Image from "../../ui/Image";
 import Typography from "../../ui/Typography";
+import SellerExchangeTimePeriod from "./SellerExchangeTimePeriod";
 
 interface Props {
   data: (Exchange | null)[];
@@ -192,8 +190,8 @@ export default function SellerExchangeTable({ data, refetch }: Props) {
         disableSortBy: true
       },
       {
-        Header: "Offer validity",
-        accessor: "offerValidity",
+        Header: "Time period",
+        accessor: "timePeriod",
         disableSortBy: true
       },
       {
@@ -254,50 +252,60 @@ export default function SellerExchangeTable({ data, refetch }: Props) {
               decimals={element?.offer?.exchangeToken?.decimals}
             />
           ),
-          offerValidity: (
-            // TODO: add based on status
-            <Typography>
-              <span>
-                <small style={{ margin: "0" }}>Redeemable Until</small> <br />
-                {dayjs(
-                  getDateTimestamp(element?.offer?.voucherRedeemableUntilDate)
-                ).format(CONFIG.dateFormat)}
-              </span>
-            </Typography>
-          ),
+          timePeriod: <SellerExchangeTimePeriod exchange={element} />,
           action:
-            // TODO: add proper logic and modals if needed
-            status === subgraph.ExchangeState.Committed ? (
+            status === subgraph.ExchangeState.Disputed ? (
+              <Button
+                theme="secondary"
+                size="small"
+                onClick={() => {
+                  if (element?.id) {
+                    const pathname = generatePath(BosonRoutes.ChatMessage, {
+                      [UrlParameters.exchangeId]: element?.id ?? 0
+                    });
+                    navigate({ pathname });
+                  }
+                }}
+              >
+                Resolve dispute
+              </Button>
+            ) : (
               <Grid justifyContent="flex-end" gap="1rem">
                 <Button
                   theme="orange"
                   size="small"
                   onClick={() => {
-                    console.log(element.id);
-                  }}
-                >
-                  Revoke
-                </Button>
-                <Button
-                  theme="primary"
-                  size="small"
-                  onClick={() => {
-                    console.log(element.id);
+                    if (element?.id) {
+                      const pathname = generatePath(BosonRoutes.ChatMessage, {
+                        [UrlParameters.exchangeId]: element?.id ?? 0
+                      });
+                      navigate({ pathname });
+                    }
                   }}
                 >
                   Chat <Chat size={14} />
                 </Button>
+                {status === subgraph.ExchangeState.Committed && (
+                  <Button
+                    theme="secondary"
+                    size="small"
+                    onClick={() => {
+                      showModal(
+                        modalTypes.REVOKE_PRODUCT,
+                        {
+                          title: "Revoke rNFT",
+                          exchangeId: element?.id,
+                          exchange: element,
+                          refetch
+                        },
+                        "xs"
+                      );
+                    }}
+                  >
+                    Revoke
+                  </Button>
+                )}
               </Grid>
-            ) : (
-              <Button
-                theme="secondary"
-                size="small"
-                onClick={() => {
-                  console.log(element.id);
-                }}
-              >
-                Redeem
-              </Button>
             )
         };
       }),
