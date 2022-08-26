@@ -1,4 +1,4 @@
-import { SellerFieldsFragment } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
+import { subgraph } from "@bosonprotocol/react-kit";
 import { parseUnits } from "@ethersproject/units";
 import map from "lodash/map";
 import slice from "lodash/slice";
@@ -7,6 +7,7 @@ import styled from "styled-components";
 import DetailWidget from "../../components/detail/DetailWidget/DetailWidget";
 import Image from "../../components/ui/Image";
 import SellerID from "../../components/ui/SellerID";
+import { CONFIG } from "../../lib/config";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { getLocalStorageItems } from "../../lib/utils/getLocalStorageItems";
@@ -27,7 +28,7 @@ import { useCreateForm } from "./utils/useCreateForm";
 
 interface Props {
   togglePreview: React.Dispatch<React.SetStateAction<boolean>>;
-  seller?: SellerFieldsFragment;
+  seller?: subgraph.SellerFieldsFragment;
 }
 
 const PreviewWrapper = styled.div`
@@ -111,9 +112,9 @@ export default function Preview({ togglePreview, seller }: Props) {
     seller,
     exchangeToken: {
       address: "0x0000000000000000000000000000000000000000",
-      decimals: "18",
-      name: "Ether",
-      symbol: "ETH"
+      decimals: CONFIG.nativeCoin?.decimals || "",
+      name: CONFIG.nativeCoin?.name || "",
+      symbol: CONFIG.nativeCoin?.symbol || ""
     },
     isValid: false
   } as Offer;

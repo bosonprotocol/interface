@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { MetadataType } from "@bosonprotocol/common";
+import { MetadataType } from "@bosonprotocol/react-kit";
 import { parseUnits } from "@ethersproject/units";
 import { Form, Formik, FormikHelpers } from "formik";
 import isArray from "lodash/isArray";
@@ -16,6 +16,7 @@ import Preview from "../../components/product/Preview";
 import { CreateProductForm } from "../../components/product/utils";
 import { CREATE_PRODUCT_STEPS } from "../../components/product/utils";
 import MultiSteps from "../../components/step/MultiSteps";
+import { CONFIG } from "../../lib/config";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { OffersRoutes } from "../../lib/routing/routes";
 import { getLocalStorageItems } from "../../lib/utils/getLocalStorageItems";
@@ -86,10 +87,6 @@ function CreateProductInner({ initial }: Props) {
       offerInfo.metadataUri
     )) as any;
 
-    /**
-     * TODO: The exchange token should not be hardcoded to suport multiple tokens
-     */
-
     showModal(
       modalTypes.PRODUCT_CREATE_SUCCESS,
       {
@@ -114,13 +111,7 @@ function CreateProductInner({ initial }: Props) {
           validFromDate: offerInfo.validFromDate,
           voidedAt: offerInfo.voidedAt,
           voucherValidDuration: offerInfo.voucherValidDuration,
-          exchangeToken: {
-            id: "",
-            address: "0x0000000000000000000000000000000000000000",
-            decimals: "18",
-            name: "Ether",
-            symbol: "ETH"
-          },
+          exchangeToken: offerInfo.exchangeToken,
           seller: offerInfo.seller
         },
         // these are the ones that we already had before
@@ -357,7 +348,7 @@ function CreateProductInner({ initial }: Props) {
         fulfillmentPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
         resolutionPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
         exchangeToken: "0x0000000000000000000000000000000000000000",
-        disputeResolverId: 1,
+        disputeResolverId: CONFIG.envName === "testing" ? 1 : 2,
         agentId: 0, // no agent
         metadataUri: `ipfs://${metadataHash}`,
         metadataHash: metadataHash

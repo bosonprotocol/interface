@@ -1,4 +1,4 @@
-import { IpfsMetadataStorage } from "@bosonprotocol/ipfs-storage";
+import { IpfsMetadataStorage } from "@bosonprotocol/react-kit";
 import { CameraSlash, Image as ImageIcon } from "phosphor-react";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
@@ -84,9 +84,10 @@ const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
 
   useEffect(() => {
     async function fetchData(src: string) {
-      const ipfsMetadataStorage = IpfsMetadataStorage.fromTheGraphIpfsUrl(
-        CONFIG.ipfsMetadataUrl
-      );
+      const ipfsMetadataStorage = IpfsMetadataStorage.fromTheGraphIpfsUrl({
+        url: CONFIG.ipfsMetadataUrl,
+        headers: CONFIG.ipfsMetadataStorageHeaders
+      });
 
       const fetchPromises = await ipfsMetadataStorage.get(src, false);
       const [image] = await Promise.all([fetchPromises]);

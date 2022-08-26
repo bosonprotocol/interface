@@ -1,4 +1,4 @@
-import { CoreSDK } from "@bosonprotocol/core-sdk";
+import { CoreSDK } from "@bosonprotocol/react-kit";
 import { utils } from "ethers";
 
 import { PERCENTAGE_FACTOR } from "../../../components/modal/components/Chat/const";

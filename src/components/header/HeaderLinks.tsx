@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { generatePath } from "react-router-dom";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
@@ -5,6 +6,7 @@ import { useAccount } from "wagmi";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
+import { useCurrentSellerId } from "../../lib/utils/hooks/useCurrentSellerId";
 import { LinkWithQuery } from "../linkStoreFields/LinkStoreFields";
 import { DEFAULT_SELLER_PAGE } from "../seller/SellerPages";
 import Search from "./Search";
@@ -100,16 +102,27 @@ interface Props {
 }
 export default function HeaderLinks({ isMobile, isOpen }: Props) {
   const { address } = useAccount();
+  const { isLoading, sellerId } = useCurrentSellerId();
+  const isAccountSeller = useMemo(
+    () => !isLoading && sellerId !== null,
+    [isLoading, sellerId]
+  );
 
-  const sellerCenterUrl = generatePath(BosonRoutes.SellerCenter, {
-    [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
-  });
+  const sellUrl = useMemo(
+    () =>
+      isAccountSeller
+        ? generatePath(BosonRoutes.SellerCenter, {
+            [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
+          })
+        : BosonRoutes.CreateProduct,
+    [isAccountSeller]
+  );
 
   return (
     <NavigationLinks isMobile={isMobile} isOpen={isOpen}>
       <Search isMobile={isMobile} />
       <Links isMobile={isMobile}>
-        <LinkWithQuery to={sellerCenterUrl}>Sell</LinkWithQuery>
+        <LinkWithQuery to={sellUrl}>Sell</LinkWithQuery>
         <LinkWithQuery to={BosonRoutes.Explore}>Explore Products</LinkWithQuery>
         {address && (
           <LinkWithQuery to={BosonRoutes.YourAccount}>My Items</LinkWithQuery>

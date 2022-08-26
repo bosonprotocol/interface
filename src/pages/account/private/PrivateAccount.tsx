@@ -1,3 +1,4 @@
+import { ethers } from "ethers";
 import { useState } from "react";
 import styled from "styled-components";
 import { useEnsName } from "wagmi";
@@ -6,6 +7,7 @@ import Avatar from "../../../components/avatar";
 import AddressText from "../../../components/offer/AddressText";
 import CurrencyIcon from "../../../components/price/CurrencyIcon";
 import Settings from "../../../components/settings";
+import { CONFIG } from "../../../lib/config";
 import Tabs from "../Tabs";
 import { SellerToggleContext } from "./Toogle/SellerToggleContext";
 import Toggle from "./Toogle/Toogle";
@@ -31,12 +33,14 @@ const AddressAndSettings = styled.div`
 const AddressContainer = styled.div`
   display: flex;
   justify-content: center;
+  align-items: center;
   margin-top: 5px;
   margin-bottom: 20px;
   font-size: 1rem;
   flex-basis: 50%;
   img {
-    width: 15px;
+    width: 30px;
+    height: 30px;
     margin-right: 5px;
   }
 `;
@@ -62,7 +66,10 @@ export default function PrivateAccount({ account }: { account: string }) {
         <AddressAndSettings>
           <div style={{ flexBasis: "25%" }}></div>
           <AddressContainer>
-            <CurrencyIcon currencySymbol="ETH" />
+            <CurrencyIcon
+              currencySymbol={CONFIG.nativeCoin?.symbol || ""}
+              address={ethers.constants.AddressZero}
+            />
             <AddressText address={account} />
           </AddressContainer>
           <SettingsWrapper>

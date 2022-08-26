@@ -26,13 +26,16 @@ const TagsInput = ({ name }: { name: string }) => {
     event.preventDefault();
     const value: string = event.target.value;
     if (!value.trim()) return;
-    const newTags = [...tags, value];
-    setTags(newTags);
     event.target.value = "";
     if (!meta.touched) {
       helpers.setTouched(true);
     }
-    helpers.setValue(newTags);
+
+    if (!tags.includes(value.toLowerCase())) {
+      const newTags = [...tags, value.toLowerCase()];
+      setTags(newTags);
+      helpers.setValue(newTags);
+    }
   }
 
   function removeTag(index: number) {
@@ -53,8 +56,8 @@ const TagsInput = ({ name }: { name: string }) => {
           placeholder="Choose tags..."
           name={name}
         />
-        {tags.map((tag, index) => (
-          <TagWrapper key={`tags-wrapper-${index}`}>
+        {tags.map((tag: string, index: number) => (
+          <TagWrapper key={`tags-wrapper_${tag}`}>
             <span className="text">{tag}</span>
             <Close onClick={() => removeTag(index)}>&times;</Close>
           </TagWrapper>
