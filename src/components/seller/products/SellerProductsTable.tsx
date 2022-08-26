@@ -183,13 +183,11 @@ export default function SellerProductsTable({ offers, refetch }: Props) {
       } as const,
       {
         Header: "ID/SKU",
-        accessor: "sku",
-        sortable: true
+        accessor: "sku"
       } as const,
       {
         Header: "Product name",
-        accessor: "productName",
-        sortable: true
+        accessor: "productName"
       } as const,
       {
         Header: "Status",

@@ -58,14 +58,14 @@ export default function SellerExchangeTimePeriod({ exchange }: Props) {
   );
 
   return (
-    renderValues?.display !== false && (
-      <Typography>
+    <Typography>
+      {renderValues?.display !== false && (
         <span>
           <small style={{ margin: "0" }}>{renderValues?.text}</small>
           <br />
           {renderValues?.value}
         </span>
-      </Typography>
-    )
+      )}
+    </Typography>
   );
 }

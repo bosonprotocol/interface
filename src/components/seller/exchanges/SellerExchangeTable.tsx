@@ -1,18 +1,15 @@
-// eslint-disable-next-line
-// @ts-nocheck
 import { exchanges as ExchangesKit, subgraph } from "@bosonprotocol/react-kit";
-import type {
-  Cell,
-  Column,
-  Header,
-  HeaderGroup,
-  Row
-} from "@types/react-table";
 import { Chat, Check } from "phosphor-react";
 import { CaretDown, CaretLeft, CaretRight, CaretUp } from "phosphor-react";
 import { forwardRef, useEffect, useMemo, useRef } from "react";
 import { generatePath } from "react-router-dom";
-import { usePagination, useRowSelect, useSortBy, useTable } from "react-table";
+import {
+  CellProps,
+  usePagination,
+  useRowSelect,
+  useSortBy,
+  useTable
+} from "react-table";
 import styled from "styled-components";
 
 import { UrlParameters } from "../../../lib/routing/parameters";
@@ -38,13 +35,26 @@ interface Props {
   refetch: () => void;
 }
 
-const IndeterminateCheckbox = forwardRef(({ indeterminate, ...rest }, ref) => {
-  const defaultRef = useRef();
+interface IIndeterminateInputProps {
+  indeterminate?: boolean;
+  disabled?: boolean;
+}
+const IndeterminateCheckbox = forwardRef<
+  HTMLInputElement,
+  IIndeterminateInputProps
+>(({ indeterminate, ...rest }, ref: React.Ref<HTMLInputElement>) => {
+  const defaultRef = useRef(null);
   const resolvedRef = ref || defaultRef;
   const checkboxId = `checkbox-${Math.random().toString().replace("0.", "")}`;
 
   useEffect(() => {
-    resolvedRef.current.indeterminate = indeterminate;
+    if (
+      "current" in resolvedRef &&
+      resolvedRef.current !== null &&
+      "indeterminate" in resolvedRef.current
+    ) {
+      resolvedRef.current.indeterminate = !!indeterminate;
+    }
   }, [resolvedRef, indeterminate]);
 
   return (
@@ -163,42 +173,40 @@ export default function SellerExchangeTable({ data, refetch }: Props) {
       {
         Header: "Exchange ID",
         accessor: "exchangeId"
-      },
+      } as const,
       {
         Header: "",
         accessor: "image",
         disableSortBy: true
-      },
+      } as const,
       {
         Header: "ID/SKU",
-        accessor: "sku",
-        sortable: true
-      },
+        accessor: "sku"
+      } as const,
       {
         Header: "Product name",
-        accessor: "productName",
-        sortable: true
-      },
+        accessor: "productName"
+      } as const,
       {
         Header: "Status",
         accessor: "status",
         disableSortBy: true
-      },
+      } as const,
       {
         Header: "Price",
         accessor: "price",
         disableSortBy: true
-      },
+      } as const,
       {
         Header: "Time period",
         accessor: "timePeriod",
         disableSortBy: true
-      },
+      } as const,
       {
         Header: "Action",
         accessor: "action",
         disableSortBy: true
-      }
+      } as const
     ],
     []
   );
@@ -206,13 +214,13 @@ export default function SellerExchangeTable({ data, refetch }: Props) {
   const tableData = useMemo(
     () =>
       data?.map((element) => {
-        const status = ExchangesKit.getExchangeState(element);
+        const status = element ? ExchangesKit.getExchangeState(element) : "";
         return {
-          exchangeId: element.id,
+          exchangeId: element?.id,
           isSelectable: true,
           image: (
             <Image
-              src={element?.offer?.metadata?.image}
+              src={element?.offer?.metadata?.image ?? ""}
               style={{
                 width: "2.5rem",
                 height: "2.5rem",
@@ -222,13 +230,13 @@ export default function SellerExchangeTable({ data, refetch }: Props) {
               showPlaceholderText={false}
             />
           ),
-          sku: element.id,
+          sku: element?.id,
           productName: (
             <Typography tag="p">
               <b>{element?.offer?.metadata?.name}</b>
             </Typography>
           ),
-          status: (
+          status: element && (
             <ExchangeStatuses
               offer={element?.offer}
               exchange={element as NonNullable<Offer["exchanges"]>[number]}
@@ -244,7 +252,7 @@ export default function SellerExchangeTable({ data, refetch }: Props) {
               }}
             />
           ),
-          price: (
+          price: element && (
             <Price
               address={element?.offer?.exchangeToken?.address}
               currencySymbol={element?.offer?.exchangeToken?.symbol}
@@ -252,7 +260,9 @@ export default function SellerExchangeTable({ data, refetch }: Props) {
               decimals={element?.offer?.exchangeToken?.decimals}
             />
           ),
-          timePeriod: <SellerExchangeTimePeriod exchange={element} />,
+          timePeriod: element && (
+            <SellerExchangeTimePeriod exchange={element} />
+          ),
           action:
             status === subgraph.ExchangeState.Disputed ? (
               <Button
@@ -328,10 +338,11 @@ export default function SellerExchangeTable({ data, refetch }: Props) {
       hooks.visibleColumns.push((columns) => [
         {
           id: "selection",
-          Header: ({ getToggleAllRowsSelectedProps }: Header) => (
+          Header: ({ getToggleAllRowsSelectedProps }) => (
             <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
           ),
-          Cell: ({ row }: Cell) => (
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          Cell: ({ row }: CellProps<any>) => (
             <IndeterminateCheckbox
               {...row.getToggleRowSelectedProps()}
               disabled={!row?.original?.isSelectable}
@@ -370,19 +381,19 @@ export default function SellerExchangeTable({ data, refetch }: Props) {
     <>
       <Table {...getTableProps()}>
         <thead>
-          {headerGroups.map((headerGroup: HeaderGroup, key: number) => (
+          {headerGroups.map((headerGroup, key) => (
             <tr
-              key={`seller_table_thead_tr_${key}`}
               {...headerGroup.getHeaderGroupProps()}
+              key={`seller_table_thead_tr_${key}`}
             >
-              {headerGroup.headers.map((column: Column, i: number) => (
+              {headerGroup.headers.map((column, i) => (
                 <th
-                  key={`seller_table_thead_th_${i}`}
-                  data-sortable={column.sortable}
+                  data-sortable={column.disableSortBy}
                   {...column.getHeaderProps(column.getSortByToggleProps())}
+                  key={`seller_table_thead_th_${i}`}
                 >
                   {column.render("Header")}
-                  {i > 0 && column.sortable && (
+                  {i > 0 && !column.disableSortBy && (
                     <HeaderSorter>
                       {column?.isSorted ? (
                         column?.isSortedDesc ? (
@@ -402,15 +413,18 @@ export default function SellerExchangeTable({ data, refetch }: Props) {
         </thead>
         <tbody {...getTableBodyProps()}>
           {(page.length > 0 &&
-            page.map((row: Row, key: number) => {
+            page.map((row) => {
               prepareRow(row);
               return (
-                <tr {...row.getRowProps()} key={`seller_table_tbody_tr_${key}`}>
-                  {row.cells.map((cell: Cell, i: number) => {
+                <tr
+                  {...row.getRowProps()}
+                  key={`seller_table_tbody_tr_${row.original.exchangeId}`}
+                >
+                  {row.cells.map((cell) => {
                     return (
                       <td
                         {...cell.getCellProps()}
-                        key={`seller_table_tbody_td_${i}`}
+                        key={`seller_table_tbody_td_${row.original.exchangeId}-${cell.column.id}`}
                         onClick={() => {
                           if (
                             cell.column.id !== "action" &&
@@ -420,7 +434,7 @@ export default function SellerExchangeTable({ data, refetch }: Props) {
                               BosonRoutes.Exchange,
                               {
                                 [UrlParameters.exchangeId]:
-                                  row?.original?.exchangeId ?? 0
+                                  row?.original?.exchangeId ?? "0"
                               }
                             );
                             navigate({ pathname });
