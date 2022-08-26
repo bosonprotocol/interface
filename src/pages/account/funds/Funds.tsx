@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 import Button from "../../../components/ui/Button";
+import { CONFIG } from "../../../lib/config";
 import { colors } from "../../../lib/styles/colors";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 import { useSellerToggle } from "../private/Toogle/SellerToggleContext";
@@ -97,12 +98,11 @@ export default function Funds({ sellerId, buyerId }: Props) {
             availableAmount: "0",
             id: "",
             token: {
-              // TODO: change this depending on chainId
               id: "",
               address: ethers.constants.AddressZero,
-              name: "Native coin",
-              symbol: "Native coin",
-              decimals: "18"
+              name: CONFIG.nativeCoin?.name || "",
+              symbol: CONFIG.nativeCoin?.symbol || "",
+              decimals: CONFIG.nativeCoin?.decimals || ""
             }
           }
         ];
