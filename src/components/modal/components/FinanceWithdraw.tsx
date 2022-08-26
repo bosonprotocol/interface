@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { useSigner } from "wagmi";
 
 import { colors } from "../../../lib/styles/colors";
-import { Offer } from "../../../lib/types/offer";
 import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
 import Typography from "../../ui/Typography";
@@ -46,13 +45,13 @@ const Input = styled.input`
 const AmountWrapper = styled.div`
   width: 100%;
 `;
-interface Props {
-  offer: Offer;
-  offerId?: string;
-  refetch: () => void;
-}
+// interface Props {
+//   offer: Offer;
+//   offerId?: string;
+//   refetch: () => void;
+// }
 
-export default function FinanceWithdraw({ offerId, offer, refetch }: Props) {
+export default function FinanceWithdraw() {
   const [depositAmount, setDepositAmount] = useState<string>("");
   const { data: signer } = useSigner();
   const { hideModal } = useModal();

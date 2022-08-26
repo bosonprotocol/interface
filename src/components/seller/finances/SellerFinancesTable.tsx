@@ -1,17 +1,10 @@
-// eslint-disable-next-line
-// @ts-nocheck
-import type { Cell, Column, HeaderGroup, Row } from "@types/react-table";
 import { CaretDown, CaretLeft, CaretRight, CaretUp } from "phosphor-react";
 import { useMemo } from "react";
-import { generatePath } from "react-router-dom";
 import { usePagination, useRowSelect, useSortBy, useTable } from "react-table";
 import styled from "styled-components";
 
-import { UrlParameters } from "../../../lib/routing/parameters";
-import { OffersRoutes } from "../../../lib/routing/routes";
 import { colors } from "../../../lib/styles/colors";
 import { Offer } from "../../../lib/types/offer";
-import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useModal } from "../../modal/useModal";
 import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
@@ -121,51 +114,49 @@ const WithdrawButton = styled(Button)`
   color: ${colors.secondary};
   border: none;
 `;
-export default function SellerFinancesTable({ offers, refetch }: Props) {
+export default function SellerFinancesTable({ offers }: Props) {
   const { showModal, modalTypes } = useModal();
-  const navigate = useKeepQueryParamsNavigate();
   const columns = useMemo(
     () => [
       {
         Header: "Token",
         accessor: "token"
-      },
+      } as const,
       {
         Header: "All funds",
         accessor: "allFound"
-      },
+      } as const,
       {
         Header: "Locked funds",
         accessor: "lockedFounds"
-      },
+      } as const,
       {
         Header: "Withdrawable",
         accessor: "withdrawable"
-      },
+      } as const,
       {
         Header: "Offers backed",
         accessor: "offersBacked"
-      },
+      } as const,
       {
         Header: "",
         accessor: "action"
-      }
+      } as const
     ],
     []
   );
 
   const data = useMemo(
     () =>
-      offers?.map((offer) => {
+      offers?.map(() => {
         return {
-          sku: offer.id,
           token: <Typography tag="p">MOCK 0</Typography>,
           allFound: <Typography tag="p">MOCK 1</Typography>,
           lockedFounds: <Typography tag="p">MOCK 2</Typography>,
           withdrawable: <Typography tag="p">MOCK 3</Typography>,
           offersBacked: <Typography tag="p">MOCK 4</Typography>,
           action: (
-            <Grid justifyContent="space-evenly">
+            <Grid justifyContent="space-evently">
               <WithdrawButton
                 theme="outline"
                 size="small"
@@ -173,10 +164,7 @@ export default function SellerFinancesTable({ offers, refetch }: Props) {
                   showModal(
                     modalTypes.FINANCE_WITHDRAW_MODAL,
                     {
-                      title: "Withdraw USDC",
-                      offerId: offer.id,
-                      offer,
-                      refetch
+                      title: "Withdraw USDC"
                     },
                     "auto",
                     "dark"
@@ -192,10 +180,7 @@ export default function SellerFinancesTable({ offers, refetch }: Props) {
                   showModal(
                     modalTypes.FINANCE_DEPOSIT_MODAL,
                     {
-                      title: "Deposit USDC",
-                      offerId: offer.id,
-                      offer,
-                      refetch
+                      title: "Deposit USDC"
                     },
                     "auto",
                     "dark"
@@ -215,7 +200,7 @@ export default function SellerFinancesTable({ offers, refetch }: Props) {
     {
       columns,
       data,
-      initialState: { pageIndex: 0, hiddenColumns: ["offerId", "isSelectable"] }
+      initialState: { pageIndex: 0 }
     },
     useSortBy,
     usePagination,
@@ -249,63 +234,55 @@ export default function SellerFinancesTable({ offers, refetch }: Props) {
     <>
       <Table {...getTableProps()}>
         <thead>
-          {headerGroups.map((headerGroup: HeaderGroup, key: number) => (
+          {headerGroups.map((headerGroup, key) => (
             <tr
-              key={`seller_table_thead_tr_${key}`}
               {...headerGroup.getHeaderGroupProps()}
+              key={`seller_table_thead_tr_${key}`}
             >
-              {headerGroup.headers.map((column: Column, i: number) => (
-                <th
-                  key={`seller_table_thead_th_${i}`}
-                  data-sortable={column.sortable}
-                  {...column.getHeaderProps(column.getSortByToggleProps())}
-                >
-                  {column.render("Header")}
-                  {i > 0 && column.sortable && (
-                    <HeaderSorter>
-                      {column?.isSorted ? (
-                        column?.isSortedDesc ? (
-                          <CaretDown size={14} />
+              {headerGroup.headers.map((column, i) => {
+                return (
+                  <th
+                    data-sortable={column.disableSortBy}
+                    {...column.getHeaderProps(column.getSortByToggleProps())}
+                    key={`seller_table_thead_th_${i}`}
+                  >
+                    {column.render("Header")}
+                    {i > 0 && !column.disableSortBy && (
+                      <HeaderSorter>
+                        {column?.isSorted ? (
+                          column?.isSortedDesc ? (
+                            <CaretDown size={14} />
+                          ) : (
+                            <CaretUp size={14} />
+                          )
                         ) : (
-                          <CaretUp size={14} />
-                        )
-                      ) : (
-                        ""
-                      )}
-                    </HeaderSorter>
-                  )}
-                </th>
-              ))}
+                          ""
+                        )}
+                      </HeaderSorter>
+                    )}
+                  </th>
+                );
+              })}
             </tr>
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
           {(page.length > 0 &&
-            page.map((row: Row, key: number) => {
+            page.map((row) => {
               prepareRow(row);
               return (
-                <tr {...row.getRowProps()} key={`seller_table_tbody_tr_${key}`}>
-                  {row.cells.map((cell: Cell, i: number) => {
+                <tr
+                  {...row.getRowProps()}
+                  key={`seller_table_tbody_tr_${row.original.token}`}
+                >
+                  {row.cells.map((cell) => {
                     return (
                       <td
                         {...cell.getCellProps()}
-                        key={`seller_table_tbody_td_${i}`}
+                        key={`seller_table_tbody_td_${row.original.token}-${cell.column.id}`}
                         onClick={() => {
-                          return;
-                          // TODO: ASK ABOUT LOGIC
-                          if (
-                            cell.column.id !== "action" &&
-                            cell.column.id !== "selection"
-                          ) {
-                            const pathname = generatePath(
-                              OffersRoutes.OfferDetail,
-                              {
-                                [UrlParameters.offerId]:
-                                  row?.original?.offerId ?? 0
-                              }
-                            );
-                            navigate({ pathname });
-                          }
+                          // TODO: SHOULD IT DO SOMETHING ?
+                          console.log("LOG");
                         }}
                       >
                         {cell.render("Cell")}
