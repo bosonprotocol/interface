@@ -406,15 +406,18 @@ export default function SellerTable({ offers, refetch }: Props) {
         </thead>
         <tbody {...getTableBodyProps()}>
           {(page.length > 0 &&
-            page.map((row, key) => {
+            page.map((row) => {
               prepareRow(row);
               return (
-                <tr {...row.getRowProps()} key={`seller_table_tbody_tr_${key}`}>
-                  {row.cells.map((cell, i) => {
+                <tr
+                  {...row.getRowProps()}
+                  key={`seller_table_tbody_tr_${row.original.offerId}`}
+                >
+                  {row.cells.map((cell) => {
                     return (
                       <td
                         {...cell.getCellProps()}
-                        key={`seller_table_tbody_td_${i}`}
+                        key={`seller_table_tbody_td_${row.original.offerId}-${cell.column.id}`}
                         onClick={() => {
                           if (
                             cell.column.id !== "action" &&
