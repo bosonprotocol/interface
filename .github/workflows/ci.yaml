@@ -44,7 +44,7 @@ jobs:
     uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
     if: github.event_name == 'release' && github.event.action == 'created'
     with:
-      REACT_APP_CHAIN_ID: '3'
+      REACT_APP_CHAIN_ID: '80001'
       DEPLOY_TO_FLEEK: true
       ENV_NAME: 'staging'
       UPDATE_COVERAGE: false

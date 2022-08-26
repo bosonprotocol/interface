@@ -1,19 +1,16 @@
-// eslint-disable-next-line
-// @ts-nocheck
 import { offers as OffersKit } from "@bosonprotocol/react-kit";
-import type {
-  Cell,
-  Column,
-  Header,
-  HeaderGroup,
-  Row
-} from "@types/react-table";
 import dayjs from "dayjs";
 import { Check } from "phosphor-react";
 import { CaretDown, CaretLeft, CaretRight, CaretUp } from "phosphor-react";
 import { forwardRef, useEffect, useMemo, useRef } from "react";
 import { generatePath } from "react-router-dom";
-import { usePagination, useRowSelect, useSortBy, useTable } from "react-table";
+import {
+  CellProps,
+  usePagination,
+  useRowSelect,
+  useSortBy,
+  useTable
+} from "react-table";
 import styled from "styled-components";
 
 import { CONFIG } from "../../../lib/config";
@@ -39,13 +36,27 @@ interface Props {
   refetch: () => void;
 }
 
-const IndeterminateCheckbox = forwardRef(({ indeterminate, ...rest }, ref) => {
-  const defaultRef = useRef();
+interface IIndeterminateInputProps {
+  indeterminate?: boolean;
+  disabled?: boolean;
+}
+
+const IndeterminateCheckbox = forwardRef<
+  HTMLInputElement,
+  IIndeterminateInputProps
+>(({ indeterminate, ...rest }, ref: React.Ref<HTMLInputElement>) => {
+  const defaultRef = useRef(null);
   const resolvedRef = ref || defaultRef;
   const checkboxId = `checkbox-${Math.random().toString().replace("0.", "")}`;
 
   useEffect(() => {
-    resolvedRef.current.indeterminate = indeterminate;
+    if (
+      "current" in resolvedRef &&
+      resolvedRef.current !== null &&
+      "indeterminate" in resolvedRef.current
+    ) {
+      resolvedRef.current.indeterminate = !!indeterminate;
+    }
   }, [resolvedRef, indeterminate]);
 
   return (
@@ -164,47 +175,47 @@ export default function SellerProductsTable({ offers, refetch }: Props) {
       {
         Header: "Offer ID",
         accessor: "offerId"
-      },
+      } as const,
       {
         Header: "",
         accessor: "image",
         disableSortBy: true
-      },
+      } as const,
       {
         Header: "ID/SKU",
         accessor: "sku",
         sortable: true
-      },
+      } as const,
       {
         Header: "Product name",
         accessor: "productName",
         sortable: true
-      },
+      } as const,
       {
         Header: "Status",
         accessor: "status",
         disableSortBy: true
-      },
+      } as const,
       {
         Header: "Quantity (available/total)",
         accessor: "quantity",
         disableSortBy: true
-      },
+      } as const,
       {
         Header: "Price",
         accessor: "price",
         disableSortBy: true
-      },
+      } as const,
       {
         Header: "Offer validity",
         accessor: "offerValidity",
         disableSortBy: true
-      },
+      } as const,
       {
         Header: "Action",
         accessor: "action",
         disableSortBy: true
-      }
+      } as const
     ],
     []
   );
@@ -212,14 +223,14 @@ export default function SellerProductsTable({ offers, refetch }: Props) {
   const data = useMemo(
     () =>
       offers?.map((offer) => {
-        const status = OffersKit.getOfferStatus(offer);
+        const status = offer ? OffersKit.getOfferStatus(offer) : "";
 
         return {
-          offerId: offer.id,
+          offerId: offer?.id,
           isSelectable: status !== OffersKit.OfferState.VOIDED,
           image: (
             <Image
-              src={offer.metadata?.image}
+              src={offer?.metadata?.image ?? ""}
               style={{
                 width: "2.5rem",
                 height: "2.5rem",
@@ -229,13 +240,13 @@ export default function SellerProductsTable({ offers, refetch }: Props) {
               showPlaceholderText={false}
             />
           ),
-          sku: offer.id,
+          sku: offer?.id,
           productName: (
             <Typography tag="p">
-              <b>{offer.metadata?.name}</b>
+              <b>{offer?.metadata?.name}</b>
             </Typography>
           ),
-          status: (
+          status: offer && (
             <OfferStatuses
               offer={offer}
               size="small"
@@ -252,22 +263,22 @@ export default function SellerProductsTable({ offers, refetch }: Props) {
           ),
           quantity: (
             <Typography>
-              {offer.quantityAvailable}/{offer.quantityInitial}
+              {offer?.quantityAvailable}/{offer?.quantityInitial}
             </Typography>
           ),
           price: (
             <Price
-              address={offer.exchangeToken.address}
-              currencySymbol={offer.exchangeToken.symbol}
-              value={offer.price}
-              decimals={offer.exchangeToken.decimals}
+              address={offer?.exchangeToken?.address ?? ""}
+              currencySymbol={offer?.exchangeToken?.symbol ?? ""}
+              value={offer?.price ?? ""}
+              decimals={offer?.exchangeToken?.decimals ?? ""}
             />
           ),
-          offerValidity: (
+          offerValidity: offer?.validUntilDate && (
             <Typography>
               <span>
                 <small style={{ margin: "0" }}>Until</small> <br />
-                {dayjs(getDateTimestamp(offer?.validUntilDate)).format(
+                {dayjs(getDateTimestamp(offer.validUntilDate)).format(
                   CONFIG.dateFormat
                 )}
               </span>
@@ -281,16 +292,18 @@ export default function SellerProductsTable({ offers, refetch }: Props) {
               theme="primary"
               size="small"
               onClick={() => {
-                showModal(
-                  modalTypes.VOID_PRODUCT,
-                  {
-                    title: "Void Confirmation",
-                    offerId: offer.id,
-                    offer,
-                    refetch
-                  },
-                  "xs"
-                );
+                if (offer) {
+                  showModal(
+                    modalTypes.VOID_PRODUCT,
+                    {
+                      title: "Void Confirmation",
+                      offerId: offer.id,
+                      offer,
+                      refetch
+                    },
+                    "xs"
+                  );
+                }
               }}
             >
               Void
@@ -314,10 +327,13 @@ export default function SellerProductsTable({ offers, refetch }: Props) {
       hooks.visibleColumns.push((columns) => [
         {
           id: "selection",
-          Header: ({ getToggleAllRowsSelectedProps }: Header) => (
-            <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
-          ),
-          Cell: ({ row }: Cell) => (
+          Header: ({ getToggleAllRowsSelectedProps }) => {
+            return (
+              <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
+            );
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          Cell: ({ row }: CellProps<any>) => (
             <IndeterminateCheckbox
               {...row.getToggleRowSelectedProps()}
               disabled={!row?.original?.isSelectable}
@@ -356,47 +372,52 @@ export default function SellerProductsTable({ offers, refetch }: Props) {
     <>
       <Table {...getTableProps()}>
         <thead>
-          {headerGroups.map((headerGroup: HeaderGroup, key: number) => (
+          {headerGroups.map((headerGroup, key) => (
             <tr
-              key={`seller_table_thead_tr_${key}`}
               {...headerGroup.getHeaderGroupProps()}
+              key={`seller_table_thead_tr_${key}`}
             >
-              {headerGroup.headers.map((column: Column, i: number) => (
-                <th
-                  key={`seller_table_thead_th_${i}`}
-                  data-sortable={column.sortable}
-                  {...column.getHeaderProps(column.getSortByToggleProps())}
-                >
-                  {column.render("Header")}
-                  {i > 0 && column.sortable && (
-                    <HeaderSorter>
-                      {column?.isSorted ? (
-                        column?.isSortedDesc ? (
-                          <CaretDown size={14} />
+              {headerGroup.headers.map((column, i) => {
+                return (
+                  <th
+                    data-sortable={column.disableSortBy}
+                    {...column.getHeaderProps(column.getSortByToggleProps())}
+                    key={`seller_table_thead_th_${i}`}
+                  >
+                    {column.render("Header")}
+                    {i > 0 && !column.disableSortBy && (
+                      <HeaderSorter>
+                        {column?.isSorted ? (
+                          column?.isSortedDesc ? (
+                            <CaretDown size={14} />
+                          ) : (
+                            <CaretUp size={14} />
+                          )
                         ) : (
-                          <CaretUp size={14} />
-                        )
-                      ) : (
-                        ""
-                      )}
-                    </HeaderSorter>
-                  )}
-                </th>
-              ))}
+                          ""
+                        )}
+                      </HeaderSorter>
+                    )}
+                  </th>
+                );
+              })}
             </tr>
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
           {(page.length > 0 &&
-            page.map((row: Row, key: number) => {
+            page.map((row) => {
               prepareRow(row);
               return (
-                <tr {...row.getRowProps()} key={`seller_table_tbody_tr_${key}`}>
-                  {row.cells.map((cell: Cell, i: number) => {
+                <tr
+                  {...row.getRowProps()}
+                  key={`seller_table_tbody_tr_${row.original.offerId}`}
+                >
+                  {row.cells.map((cell) => {
                     return (
                       <td
                         {...cell.getCellProps()}
-                        key={`seller_table_tbody_td_${i}`}
+                        key={`seller_table_tbody_td_${row.original.offerId}-${cell.column.id}`}
                         onClick={() => {
                           if (
                             cell.column.id !== "action" &&
@@ -406,7 +427,7 @@ export default function SellerProductsTable({ offers, refetch }: Props) {
                               OffersRoutes.OfferDetail,
                               {
                                 [UrlParameters.offerId]:
-                                  row?.original?.offerId ?? 0
+                                  row?.original?.offerId ?? "0"
                               }
                             );
                             navigate({ pathname });

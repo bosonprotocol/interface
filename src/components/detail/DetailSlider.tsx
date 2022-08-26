@@ -1,6 +1,6 @@
 import "@glidejs/glide/dist/css/glide.core.min.css";
 
-import { IpfsMetadataStorage } from "@bosonprotocol/ipfs-storage";
+import { IpfsMetadataStorage } from "@bosonprotocol/react-kit";
 import Glide from "@glidejs/glide";
 import { CaretLeft, CaretRight } from "phosphor-react";
 import { useEffect, useRef, useState } from "react";

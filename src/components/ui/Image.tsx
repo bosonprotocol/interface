@@ -1,4 +1,4 @@
-import { IpfsMetadataStorage } from "@bosonprotocol/ipfs-storage";
+import { IpfsMetadataStorage } from "@bosonprotocol/react-kit";
 import { CameraSlash, Image as ImageIcon } from "phosphor-react";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
