@@ -85,7 +85,6 @@ export default function Explore() {
   );
   const { data: brands } = useBrands();
   const { data: sellers } = useSellers();
-  console.log("sellers", sellers);
   const [selectedSeller, setSelectedSeller] =
     useState<string>(sellerQueryParameter);
 
