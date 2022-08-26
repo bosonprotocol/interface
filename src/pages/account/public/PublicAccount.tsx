@@ -1,3 +1,4 @@
+import { ethers } from "ethers";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { useEnsName } from "wagmi";
@@ -30,7 +31,8 @@ const AddressContainer = styled.div`
   font-size: 1rem;
 
   img {
-    width: 15px;
+    width: 30px;
+    height: 30px;
     margin-right: 5px;
   }
 `;
@@ -54,7 +56,10 @@ export default function PublicAccount() {
         <EnsName>{ensName}</EnsName>
 
         <AddressContainer>
-          <CurrencyIcon currencySymbol={CONFIG.nativeCoin?.symbol || ""} />
+          <CurrencyIcon
+            currencySymbol={CONFIG.nativeCoin?.symbol || ""}
+            address={ethers.constants.AddressZero}
+          />
           <AddressText address={address} />
         </AddressContainer>
       </BasicInfo>
