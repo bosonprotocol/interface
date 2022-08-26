@@ -15,6 +15,9 @@ const Statuses = styled.div`
   z-index: ${zIndex.OfferStatus};
   &[data-dot="true"] {
     > div {
+      :after {
+        opacity: 0.2;
+      }
       &[data-testid="voided-status"] {
         :before {
           background: transparent;
@@ -43,7 +46,16 @@ const Status = styled.div<{
   $color: string;
   $size: Props["size"];
 }>`
-  background: ${({ $background }) => $background || colors.white};
+  position: relative;
+  :after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: ${(props) => props.$background};
+  }
   color: ${({ $color }) => $color || colors.black};
   padding: ${({ $size }) =>
     $size === "regular"
@@ -88,11 +100,11 @@ const StatusToComponent = (
       [offers.OfferState.EXPIRED]: (
         <Status
           $color={colors.darkGrey}
+          $background={`${colors.red}`}
           $size={size}
-          $background={`${colors.red}33`}
+          style={style}
           className="status"
           data-testid="expired-status"
-          style={style}
         >
           Expired
         </Status>
@@ -100,11 +112,11 @@ const StatusToComponent = (
       [offers.OfferState.VOIDED]: (
         <Status
           $color={colors.darkGrey}
+          $background={`${colors.darkGrey}`}
           $size={size}
-          $background={`${colors.darkGrey}33`}
+          style={style}
           className="status"
           data-testid="voided-status"
-          style={style}
         >
           Voided
         </Status>
@@ -112,11 +124,11 @@ const StatusToComponent = (
       [offers.OfferState.NOT_YET_VALID]: (
         <Status
           $color={colors.darkGrey}
+          $background={`${colors.orange}`}
           $size={size}
-          $background={`${colors.orange}33`}
+          style={style}
           className="status"
           data-testid="not_yet_valid-status"
-          style={style}
         >
           Not yet valid
         </Status>
@@ -124,11 +136,11 @@ const StatusToComponent = (
       [offers.OfferState.VALID]: (
         <Status
           $color={colors.darkGrey}
+          $background={`${colors.lime}`}
           $size={size}
-          $background={`${colors.lime}33`}
+          style={style}
           className="status"
           data-testid="valid-status"
-          style={style}
         >
           Valid
         </Status>

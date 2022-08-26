@@ -6,6 +6,7 @@ import Avatar from "../../../components/avatar";
 import AddressText from "../../../components/offer/AddressText";
 import CurrencyIcon from "../../../components/price/CurrencyIcon";
 import Settings from "../../../components/settings";
+import { CONFIG } from "../../../lib/config";
 import Tabs from "../Tabs";
 import { SellerToggleContext } from "./Toogle/SellerToggleContext";
 import Toggle from "./Toogle/Toogle";
@@ -62,7 +63,7 @@ export default function PrivateAccount({ account }: { account: string }) {
         <AddressAndSettings>
           <div style={{ flexBasis: "25%" }}></div>
           <AddressContainer>
-            <CurrencyIcon currencySymbol="ETH" />
+            <CurrencyIcon currencySymbol={CONFIG.nativeCoin?.symbol || ""} />
             <AddressText address={account} />
           </AddressContainer>
           <SettingsWrapper>

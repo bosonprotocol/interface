@@ -5,6 +5,7 @@ import { useEnsName } from "wagmi";
 import Avatar from "../../../components/avatar";
 import AddressText from "../../../components/offer/AddressText";
 import CurrencyIcon from "../../../components/price/CurrencyIcon";
+import { CONFIG } from "../../../lib/config";
 import { UrlParameters } from "../../../lib/routing/parameters";
 import Tabs from "../Tabs";
 
@@ -53,7 +54,7 @@ export default function PublicAccount() {
         <EnsName>{ensName}</EnsName>
 
         <AddressContainer>
-          <CurrencyIcon currencySymbol="ETH" />
+          <CurrencyIcon currencySymbol={CONFIG.nativeCoin?.symbol || ""} />
           <AddressText address={address} />
         </AddressContainer>
       </BasicInfo>

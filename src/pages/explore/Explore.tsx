@@ -141,9 +141,10 @@ export default function Explore() {
             >
               <option value="">Seller</option>
               {sellers &&
-                sellers.map((seller) => (
-                  <option key={seller.id} value={seller.id}>
-                    ID: {seller.id}
+                Array.isArray(sellers) &&
+                sellers?.map((seller) => (
+                  <option key={seller?.id} value={seller?.id}>
+                    ID: {seller?.id}
                   </option>
                 ))}
             </CurrencyOrSellerSelect>

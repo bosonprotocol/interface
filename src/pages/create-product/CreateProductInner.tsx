@@ -87,10 +87,6 @@ function CreateProductInner({ initial }: Props) {
       offerInfo.metadataUri
     )) as any;
 
-    /**
-     * TODO: The exchange token should not be hardcoded to suport multiple tokens
-     */
-
     showModal(
       modalTypes.PRODUCT_CREATE_SUCCESS,
       {
@@ -115,13 +111,7 @@ function CreateProductInner({ initial }: Props) {
           validFromDate: offerInfo.validFromDate,
           voidedAt: offerInfo.voidedAt,
           voucherValidDuration: offerInfo.voucherValidDuration,
-          exchangeToken: {
-            id: "",
-            address: "0x0000000000000000000000000000000000000000",
-            decimals: "18",
-            name: "Ether",
-            symbol: "ETH"
-          },
+          exchangeToken: offerInfo.exchangeToken,
           seller: offerInfo.seller
         },
         // these are the ones that we already had before

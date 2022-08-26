@@ -20,9 +20,9 @@ function getBosonTestNetworkChainConfig(): Chain {
     iconUrl: ethIcon,
     iconBackground: "#fff",
     nativeCurrency: {
-      decimals: 18,
-      name: "ETH",
-      symbol: "ETH"
+      decimals: Number(CONFIG.nativeCoin?.decimals) || 18,
+      name: CONFIG.nativeCoin?.name || "",
+      symbol: CONFIG.nativeCoin?.symbol || ""
     },
     rpcUrls: {
       default: CONFIG.jsonRpcUrl
