@@ -1,3 +1,4 @@
+import { ExtendedExchangeState } from "@bosonprotocol/core-sdk/dist/cjs/exchanges";
 import {
   CancelButton,
   CommitButton,
@@ -464,15 +465,19 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 <Question size={18} />
               </ContactSellerButton>
               {isBeforeRedeem ? (
-                <StyledCancelButton
-                  onClick={handleCancel}
-                  theme="blank"
-                  style={{ fontSize: "0.875rem" }}
-                  disabled={isChainUnsupported || !isBuyer}
-                >
-                  Cancel
-                  <Question size={18} />
-                </StyledCancelButton>
+                <>
+                  {exchangeStatus !== ExtendedExchangeState.Expired && (
+                    <StyledCancelButton
+                      onClick={handleCancel}
+                      theme="blank"
+                      style={{ fontSize: "0.875rem" }}
+                      disabled={isChainUnsupported || !isBuyer}
+                    >
+                      Cancel
+                      <Question size={18} />
+                    </StyledCancelButton>
+                  )}
+                </>
               ) : (
                 <RaiseProblemButton
                   onClick={() => {
@@ -493,7 +498,6 @@ const DetailWidget: React.FC<IDetailWidget> = ({
           </>
         )}
       </Widget>
-
       {isExchange && (
         <div
           style={{ opacity: 0 }}
