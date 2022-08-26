@@ -24,6 +24,9 @@ on:
       REACT_APP_OFFER_CURATION_LIST:
         required: false
         type: string
+      REACT_APP_IPFS_METADATA_URL:
+        required: false
+        type: string
     secrets:
       NPM_TOKEN:
         required: true
@@ -55,6 +58,7 @@ jobs:
       REACT_APP_ENABLE_CURATION_LISTS: ${{ inputs.REACT_APP_ENABLE_CURATION_LISTS }}
       REACT_APP_SELLER_CURATION_LIST: ${{ inputs.REACT_APP_SELLER_CURATION_LIST }}
       REACT_APP_OFFER_CURATION_LIST: ${{ inputs.REACT_APP_OFFER_CURATION_LIST }}
+      REACT_APP_IPFS_METADATA_URL: ${{ inputs.REACT_APP_IPFS_METADATA_URL }}
       REACT_APP_INFURA_IPFS_PROJECT_ID: ${{ secrets.REACT_APP_INFURA_IPFS_PROJECT_ID }}
       REACT_APP_INFURA_IPFS_PROJECT_SECRET: ${{ secrets.REACT_APP_INFURA_IPFS_PROJECT_SECRET }}
     outputs:
