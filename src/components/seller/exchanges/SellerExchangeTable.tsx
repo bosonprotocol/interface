@@ -300,16 +300,18 @@ export default function SellerExchangeTable({ data, refetch }: Props) {
                     theme="secondary"
                     size="small"
                     onClick={() => {
-                      showModal(
-                        modalTypes.REVOKE_PRODUCT,
-                        {
-                          title: "Revoke rNFT",
-                          exchangeId: element?.id,
-                          exchange: element,
-                          refetch
-                        },
-                        "xs"
-                      );
+                      if (element) {
+                        showModal(
+                          modalTypes.REVOKE_PRODUCT,
+                          {
+                            title: "Revoke rNFT",
+                            exchangeId: element?.id,
+                            exchange: element,
+                            refetch
+                          },
+                          "xs"
+                        );
+                      }
                     }}
                   >
                     Revoke

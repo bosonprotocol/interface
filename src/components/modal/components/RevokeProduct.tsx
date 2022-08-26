@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useSigner } from "wagmi";
 
 import { CONFIG } from "../../../lib/config";
+import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { Break } from "../../detail/Detail.style";
 import Price from "../../price/index";
 import { useConvertedPrice } from "../../price/useConvertedPrice";
@@ -17,7 +18,7 @@ const OfferWrapper = styled.div`
 `;
 
 interface Props {
-  exchange: any;
+  exchange: Exchange;
   exchangeId?: string;
   refetch: () => void;
 }
@@ -35,7 +36,6 @@ export default function RevokeProduct({
     decimals: exchange?.offer?.exchangeToken?.decimals,
     symbol: exchange?.offer?.exchangeToken?.symbol
   });
-  console.log(convertedPrice);
   const conversionRate = Number(convertedPrice?.converted);
   const sellerDepositPercentage =
     Number(exchange?.offer?.sellerDeposit) / Number(exchange?.offer?.price);

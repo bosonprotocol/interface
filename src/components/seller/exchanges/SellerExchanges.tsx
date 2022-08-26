@@ -97,8 +97,8 @@ export default function SellerExchanges({ sellerId }: Props) {
   }, [data, search, currentTag]);
 
   const prepareCSVData = useMemo(() => {
-    const csvData = allData?.map((exchange: any) => {
-      const status = ExchangesKit.getExchangeState(exchange);
+    const csvData = allData?.map((exchange) => {
+      const status = exchange ? ExchangesKit.getExchangeState(exchange) : "";
       subgraph.ExchangeState;
       const price = (value: string, decimals: string) => {
         try {
@@ -120,7 +120,7 @@ export default function SellerExchanges({ sellerId }: Props) {
         ["Token"]: exchange?.offer?.exchangeToken?.symbol ?? "",
         ["Redeemable Until"]: exchange?.offer?.voucherRedeemableUntilDate
           ? dayjs(
-              getDateTimestamp(exchange.offer.voucherRedeemableUntilDate)
+              getDateTimestamp(exchange?.offer?.voucherRedeemableUntilDate)
             ).format(CONFIG.dateFormat)
           : ""
       };

@@ -4,10 +4,11 @@ import { useMemo } from "react";
 
 import { CONFIG } from "../../../lib/config";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
+import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import Typography from "../../ui/Typography";
 
 interface Props {
-  exchange: any;
+  exchange: Exchange;
 }
 export default function SellerExchangeTimePeriod({ exchange }: Props) {
   const status = ExchangesKit.getExchangeState(exchange);
