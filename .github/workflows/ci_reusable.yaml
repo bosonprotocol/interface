@@ -31,6 +31,10 @@ on:
         required: false
       CODECOV_TOKEN:
         required: true
+      REACT_APP_INFURA_IPFS_PROJECT_ID:
+        required: false
+      REACT_APP_INFURA_IPFS_PROJECT_SECRET:
+        required: false
     outputs:
       JOB_LINT:
         value: ${{ jobs.build-test-deploy.outputs.jobLint }}
@@ -51,8 +55,8 @@ jobs:
       REACT_APP_ENABLE_CURATION_LISTS: ${{ inputs.REACT_APP_ENABLE_CURATION_LISTS }}
       REACT_APP_SELLER_CURATION_LIST: ${{ inputs.REACT_APP_SELLER_CURATION_LIST }}
       REACT_APP_OFFER_CURATION_LIST: ${{ inputs.REACT_APP_OFFER_CURATION_LIST }}
-      REACT_APP_INFURA_IPFS_PROJECT_ID: ${{ inputs.REACT_APP_INFURA_IPFS_PROJECT_ID }}
-      REACT_APP_INFURA_IPFS_PROJECT_SECRET: ${{ inputs.REACT_APP_INFURA_IPFS_PROJECT_SECRET }}
+      REACT_APP_INFURA_IPFS_PROJECT_ID: ${{ secrets.REACT_APP_INFURA_IPFS_PROJECT_ID }}
+      REACT_APP_INFURA_IPFS_PROJECT_SECRET: ${{ secrets.REACT_APP_INFURA_IPFS_PROJECT_SECRET }}
     outputs:
       jobLint: ${{ steps.lint.outputs.pass }}
       jobBuild: ${{ steps.build.outputs.pass }}
