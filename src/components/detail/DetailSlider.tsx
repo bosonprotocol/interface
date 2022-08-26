@@ -36,9 +36,10 @@ export default function DetailSlider({ images, isPreview = false }: Props) {
   }, [ref, sliderImages]);
 
   const fetchData = async (images: Array<string>) => {
-    const ipfsMetadataStorage = IpfsMetadataStorage.fromTheGraphIpfsUrl(
-      CONFIG.ipfsMetadataUrl
-    );
+    const ipfsMetadataStorage = IpfsMetadataStorage.fromTheGraphIpfsUrl({
+      url: CONFIG.ipfsMetadataUrl,
+      headers: CONFIG.ipfsMetadataStorageHeaders
+    });
 
     const fetchPromises = images.map(
       async (src) => await ipfsMetadataStorage.get(src, false)
