@@ -4,8 +4,6 @@ import styled from "styled-components";
 import { useAccount } from "wagmi";
 
 import { Exchange } from "../../../../../../../lib/utils/hooks/useExchanges";
-import { useSellers } from "../../../../../../../lib/utils/hooks/useSellers";
-import useFunds from "../../../../../../../pages/account/funds/useFunds";
 import { Input } from "../../../../../../form";
 import Price from "../../../../../../price";
 import Grid from "../../../../../../ui/Grid";
@@ -63,19 +61,13 @@ export default function RefundRequest({ exchange }: Props) {
   const { setFieldValue, handleChange } = useFormikContext<any>();
 
   const { address } = useAccount();
-  const { data: sellers } = useSellers({ admin: address });
-  const accountId = sellers?.[0]?.id || "";
-  const { funds } = useFunds(accountId);
   const { offer } = exchange;
-  const currencyInDeposit = funds?.find(
-    (fund) => fund.token.address === offer.exchangeToken.address
-  );
   const decimals = Number(offer.exchangeToken.decimals);
   const formatIntValueToDecimals = (value: string | BigNumber) => {
     return utils.formatUnits(BigNumber.from(value), decimals);
   };
   const inEscrow: string = BigNumber.from(offer.price)
-    .add(BigNumber.from(currencyInDeposit?.availableAmount || "0"))
+    .add(BigNumber.from(offer.sellerDeposit || "0"))
     .toString();
   const inEscrowWithDecimals: string = formatIntValueToDecimals(inEscrow);
   const currencySymbol = offer.exchangeToken.symbol;
