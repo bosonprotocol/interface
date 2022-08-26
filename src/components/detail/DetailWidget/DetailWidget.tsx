@@ -132,13 +132,15 @@ export const getOfferDetailData = (
           name: "Price",
           value: convertedPrice?.currency ? (
             <Typography tag="p">
-              {convertedPrice?.price} ETH
+              {convertedPrice?.price} {offer.exchangeToken.symbol}
               <small>
                 ({convertedPrice?.currency?.symbol} {convertedPrice?.converted})
               </small>
             </Typography>
           ) : (
-            <Typography tag="p">{convertedPrice?.price} ETH</Typography>
+            <Typography tag="p">
+              {convertedPrice?.price} {offer.exchangeToken.symbol}
+            </Typography>
           )
         }
       : { hide: true },

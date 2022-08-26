@@ -7,8 +7,7 @@ import { CONFIG } from "./config";
 
 const supportedChains: Readonly<Array<number>> = [
   chain.ropsten.id,
-  chain.mainnet.id,
-  chain.polygonMumbai.id
+  chain.mainnet.id
 ] as const;
 
 function getBosonTestNetworkChainConfig(): Chain {
@@ -19,9 +18,9 @@ function getBosonTestNetworkChainConfig(): Chain {
     iconUrl: ethIcon,
     iconBackground: "#fff",
     nativeCurrency: {
-      decimals: 18,
-      name: "ETH",
-      symbol: "ETH"
+      decimals: Number(CONFIG.nativeCoin?.decimals) || 18,
+      name: CONFIG.nativeCoin?.name || "",
+      symbol: CONFIG.nativeCoin?.symbol || ""
     },
     rpcUrls: {
       default: CONFIG.jsonRpcUrl
