@@ -479,20 +479,24 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                   )}
                 </>
               ) : (
-                <RaiseProblemButton
-                  onClick={() => {
-                    showModal(modalTypes.DISPUTE_MODAL, {
-                      title: "Raise a problem",
-                      exchangeId: exchange?.id || ""
-                    });
-                  }}
-                  theme="blank"
-                  style={{ fontSize: "0.875rem" }}
-                  disabled={exchange?.state !== "REDEEMED" || !isBuyer}
-                >
-                  Raise a problem
-                  <Question size={18} />
-                </RaiseProblemButton>
+                <>
+                  {!exchange?.disputed && (
+                    <RaiseProblemButton
+                      onClick={() => {
+                        showModal(modalTypes.DISPUTE_MODAL, {
+                          title: "Raise a problem",
+                          exchangeId: exchange?.id || ""
+                        });
+                      }}
+                      theme="blank"
+                      style={{ fontSize: "0.875rem" }}
+                      disabled={exchange?.state !== "REDEEMED" || !isBuyer}
+                    >
+                      Raise a problem
+                      <Question size={18} />
+                    </RaiseProblemButton>
+                  )}
+                </>
               )}
             </Grid>
           </>
