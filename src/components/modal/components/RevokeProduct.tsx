@@ -5,6 +5,7 @@ import { useSigner } from "wagmi";
 import { CONFIG } from "../../../lib/config";
 import { Break } from "../../detail/Detail.style";
 import Price from "../../price/index";
+import { useConvertedPrice } from "../../price/useConvertedPrice";
 import Grid from "../../ui/Grid";
 import Image from "../../ui/Image";
 import SellerID from "../../ui/SellerID";
@@ -28,6 +29,21 @@ export default function RevokeProduct({
 }: Props) {
   const { data: signer } = useSigner();
   const { hideModal } = useModal();
+
+  const convertedPrice = useConvertedPrice({
+    value: exchange?.offer?.price,
+    decimals: exchange?.offer?.exchangeToken?.decimals,
+    symbol: exchange?.offer?.exchangeToken?.symbol
+  });
+  console.log(convertedPrice);
+  const conversionRate = Number(convertedPrice?.converted);
+  const sellerDepositPercentage =
+    Number(exchange?.offer?.sellerDeposit) / Number(exchange?.offer?.price);
+
+  const sellerDeposit = sellerDepositPercentage * 100;
+  const sellerDepositDollars = conversionRate
+    ? (sellerDepositPercentage * conversionRate).toFixed(2)
+    : "";
 
   return (
     <Grid flexDirection="column" alignItems="flex-start" gap="2rem">
@@ -82,12 +98,11 @@ export default function RevokeProduct({
         <Break />
         <Grid>
           <Typography tag="p" margin="0">
-            <b>Slashed Seller deposit</b>
+            <b>Seller deposit</b>
           </Typography>
-          {/* TODO: add proper values */}
           <Typography tag="p" margin="0">
-            <b>-1.17 ETH</b>
-            ($1350)
+            <b>{sellerDeposit}%</b>
+            {sellerDepositDollars && <small>(${sellerDepositDollars})</small>}
           </Typography>
         </Grid>
       </Grid>
