@@ -9,7 +9,7 @@ import dayjs from "dayjs";
 import { Check, Question } from "phosphor-react";
 import { useMemo, useRef, useState } from "react";
 import styled from "styled-components";
-import { useSigner } from "wagmi";
+import { useAccount, useSigner } from "wagmi";
 
 import { CONFIG } from "../../../lib/config";
 import { BosonRoutes } from "../../../lib/routing/routes";
@@ -212,9 +212,9 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   const { showModal, modalTypes } = useModal();
   const { isLteXS } = useBreakpoints();
   const navigate = useKeepQueryParamsNavigate();
-
+  const { address } = useAccount();
   const cancelRef = useRef<HTMLDivElement | null>(null);
-
+  const isBuyer = exchange?.buyer.wallet === address?.toLowerCase();
   const isOffer = pageType === "offer";
   const isExchange = pageType === "exchange";
   const exchangeStatus = exchange
@@ -372,7 +372,11 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 theme="secondary"
                 size="large"
                 disabled={
-                  isChainUnsupported || isLoading || isOffer || isPreview
+                  isChainUnsupported ||
+                  isLoading ||
+                  isOffer ||
+                  isPreview ||
+                  !isBuyer
                 }
                 onClick={() => {
                   showModal(
@@ -452,7 +456,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 }
                 theme="blank"
                 style={{ fontSize: "0.875rem" }}
-                disabled={isChainUnsupported}
+                disabled={isChainUnsupported || !isBuyer}
               >
                 Contact seller
                 <Question size={18} />
@@ -462,7 +466,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                   onClick={handleCancel}
                   theme="blank"
                   style={{ fontSize: "0.875rem" }}
-                  disabled={isChainUnsupported}
+                  disabled={isChainUnsupported || !isBuyer}
                 >
                   Cancel
                   <Question size={18} />
@@ -477,7 +481,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                   }}
                   theme="blank"
                   style={{ fontSize: "0.875rem" }}
-                  disabled={exchange?.state !== "REDEEMED"}
+                  disabled={exchange?.state !== "REDEEMED" || !isBuyer}
                 >
                   Raise a problem
                   <Question size={18} />
@@ -496,8 +500,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
           }}
         >
           <CancelButton
-            disabled={isChainUnsupported || isLoading}
-            exchangeId={exchange?.id || offer.id}
+            disabled={isChainUnsupported || isLoading || !isBuyer}
+            exchangeId={exchange?.id || ""}
             chainId={CONFIG.chainId}
             onError={(args) => {
               console.error("onError", args);
