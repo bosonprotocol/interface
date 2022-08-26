@@ -2,6 +2,7 @@ import * as Yup from "yup";
 
 import { validationMessage } from "../../../lib/const/validationMessage";
 import { validationOfFile } from "../../../pages/chat/components/UploadForm/const";
+import { MIN_VALUE } from "../../modal/components/Chat/const";
 import { FormModel } from "../../modal/components/Chat/MakeProposal/MakeProposalFormModel";
 import { DisputeFormModel } from "../../modal/components/DisputeModal/DisputeModalFormModel";
 import { MAX_IMAGE_SIZE, MAX_LOGO_SIZE } from "./const";
@@ -180,7 +181,10 @@ export const disputeCentreValidationSchemaMakeProposal = Yup.object({
     })
     .default({ label: "", value: "" }),
   [FormModel.formFields.refundPercentage.name]: Yup.number()
-    .moreThan(0, FormModel.formFields.refundPercentage.moreThanErrorMessage)
+    .moreThan(
+      MIN_VALUE,
+      FormModel.formFields.refundPercentage.moreThanErrorMessage(MIN_VALUE)
+    )
     .max(100, FormModel.formFields.refundPercentage.maxErrorMessage)
     .defined(FormModel.formFields.refundPercentage.emptyErrorMessage)
 });

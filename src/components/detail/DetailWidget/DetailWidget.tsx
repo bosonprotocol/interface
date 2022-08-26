@@ -1,3 +1,4 @@
+import { ExtendedExchangeState } from "@bosonprotocol/core-sdk/dist/cjs/exchanges";
 import {
   CancelButton,
   CommitButton,
@@ -9,7 +10,7 @@ import dayjs from "dayjs";
 import { Check, Question } from "phosphor-react";
 import { useMemo, useRef, useState } from "react";
 import styled from "styled-components";
-import { useSigner } from "wagmi";
+import { useAccount, useSigner } from "wagmi";
 
 import { CONFIG } from "../../../lib/config";
 import { BosonRoutes } from "../../../lib/routing/routes";
@@ -214,9 +215,9 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   const { showModal, modalTypes } = useModal();
   const { isLteXS } = useBreakpoints();
   const navigate = useKeepQueryParamsNavigate();
-
+  const { address } = useAccount();
   const cancelRef = useRef<HTMLDivElement | null>(null);
-
+  const isBuyer = exchange?.buyer.wallet === address?.toLowerCase();
   const isOffer = pageType === "offer";
   const isExchange = pageType === "exchange";
   const exchangeStatus = exchange
@@ -374,7 +375,11 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 theme="secondary"
                 size="large"
                 disabled={
-                  isChainUnsupported || isLoading || isOffer || isPreview
+                  isChainUnsupported ||
+                  isLoading ||
+                  isOffer ||
+                  isPreview ||
+                  !isBuyer
                 }
                 onClick={() => {
                   showModal(
@@ -449,46 +454,54 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               <ContactSellerButton
                 onClick={() =>
                   navigate({
-                    pathname: BosonRoutes.Chat
+                    pathname: `${BosonRoutes.Chat}/${exchange?.id || ""}`
                   })
                 }
                 theme="blank"
                 style={{ fontSize: "0.875rem" }}
-                disabled={isChainUnsupported}
+                disabled={isChainUnsupported || !isBuyer}
               >
                 Contact seller
                 <Question size={18} />
               </ContactSellerButton>
               {isBeforeRedeem ? (
-                <StyledCancelButton
-                  onClick={handleCancel}
-                  theme="blank"
-                  style={{ fontSize: "0.875rem" }}
-                  disabled={isChainUnsupported}
-                >
-                  Cancel
-                  <Question size={18} />
-                </StyledCancelButton>
+                <>
+                  {exchangeStatus !== ExtendedExchangeState.Expired && (
+                    <StyledCancelButton
+                      onClick={handleCancel}
+                      theme="blank"
+                      style={{ fontSize: "0.875rem" }}
+                      disabled={isChainUnsupported || !isBuyer}
+                    >
+                      Cancel
+                      <Question size={18} />
+                    </StyledCancelButton>
+                  )}
+                </>
               ) : (
-                <RaiseProblemButton
-                  onClick={() => {
-                    showModal(modalTypes.DISPUTE_MODAL, {
-                      title: "Raise a problem",
-                      exchangeId: exchange?.id || ""
-                    });
-                  }}
-                  theme="blank"
-                  style={{ fontSize: "0.875rem" }}
-                >
-                  Raise a problem
-                  <Question size={18} />
-                </RaiseProblemButton>
+                <>
+                  {!exchange?.disputed && (
+                    <RaiseProblemButton
+                      onClick={() => {
+                        showModal(modalTypes.DISPUTE_MODAL, {
+                          title: "Raise a problem",
+                          exchangeId: exchange?.id || ""
+                        });
+                      }}
+                      theme="blank"
+                      style={{ fontSize: "0.875rem" }}
+                      disabled={exchange?.state !== "REDEEMED" || !isBuyer}
+                    >
+                      Raise a problem
+                      <Question size={18} />
+                    </RaiseProblemButton>
+                  )}
+                </>
               )}
             </Grid>
           </>
         )}
       </Widget>
-
       {isExchange && (
         <div
           style={{ opacity: 0 }}
@@ -497,8 +510,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
           }}
         >
           <CancelButton
-            disabled={isChainUnsupported || isLoading}
-            exchangeId={exchange?.id || offer.id}
+            disabled={isChainUnsupported || isLoading || !isBuyer}
+            exchangeId={exchange?.id || ""}
             chainId={CONFIG.chainId}
             onError={(args) => {
               console.error("onError", args);

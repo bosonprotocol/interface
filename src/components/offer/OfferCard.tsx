@@ -80,7 +80,11 @@ const getCTAPath = (
     exchangeId
   }: { offerId: Props["offer"]["id"]; exchangeId: string | undefined }
 ) => {
-  if (action === "redeem" && exchangeId) {
+  console.log({ action, exchangeId });
+  if (
+    (["redeem", "contact-seller"] as Action[]).includes(action as Action) &&
+    exchangeId
+  ) {
     return generatePath(BosonRoutes.Exchange, {
       [UrlParameters.exchangeId]: exchangeId
     });
@@ -90,7 +94,7 @@ const getCTAPath = (
   });
 };
 
-export type Action = "commit" | "redeem" | null;
+export type Action = "commit" | "redeem" | "contact-seller" | null;
 
 interface Props {
   offer: Offer;

@@ -38,7 +38,7 @@ export const createProposal = async ({
     description: proposalFields.description,
     proposals: [
       {
-        // the percentageAmount must be an integer so it goes from 1 - 100000 (0.001% - 100%)
+        // the percentageAmount must be an integer so it goes from 1 - 10000 (0.01% - 100%)
         type: proposalFields.proposalTypeName,
         percentageAmount:
           proposalFields.refundPercentage * PERCENTAGE_FACTOR + "",

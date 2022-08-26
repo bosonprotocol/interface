@@ -270,7 +270,6 @@ export default function ExchangeSidePreview({ exchange, disputeOpen }: Props) {
   );
   return (
     <Container $disputeOpen={disputeOpen}>
-      {/* <ExchangeImage src={exchange.offer.metadata.imageUrl} width="372px" /> */}
       <StyledImage
         src={exchange?.offer.metadata.imageUrl}
         alt="exchange image"
