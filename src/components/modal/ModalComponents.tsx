@@ -7,6 +7,8 @@ import CreateProductDraft from "./components/CreateProductDraft";
 import CustomStore from "./components/CustomStore";
 import DetailWidget from "./components/DetailWidget";
 import DisputeModal from "./components/DisputeModal/DisputeModal";
+import FinanceDeposit from "./components/FinanceDeposit";
+import FinanceWithdraw from "./components/FinanceWithdraw";
 import ProductCreateSuccess from "./components/ProductCreateSuccess";
 import RedeemModal from "./components/RedeemModal/RedeemModal";
 import Upload from "./components/Upload";
@@ -26,7 +28,9 @@ export const MODAL_TYPES = {
   PRODUCT_CREATE_SUCCESS: "PRODUCT_CREATE_SUCCESS",
   CREATE_PRODUCT_DRAFT: "CREATE_PRODUCT_DRAFT",
   VOID_PRODUCT: "VOID_PRODUCT",
-  REDEEM_MODAL: "REDEEM_MODAL"
+  REDEEM_MODAL: "REDEEM_MODAL",
+  FINANCE_DEPOSIT_MODAL: "FINANCE_DEPOSIT_MODAL",
+  FINANCE_WITHDRAW_MODAL: "FINANCE_WITHDRAW_MODAL"
 } as const;
 
 export const MODAL_COMPONENTS = {
@@ -42,5 +46,7 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.PRODUCT_CREATE_SUCCESS]: ProductCreateSuccess,
   [MODAL_TYPES.VOID_PRODUCT]: VoidProduct,
   [MODAL_TYPES.CREATE_PRODUCT_DRAFT]: CreateProductDraft,
-  [MODAL_TYPES.REDEEM_MODAL]: RedeemModal
+  [MODAL_TYPES.REDEEM_MODAL]: RedeemModal,
+  [MODAL_TYPES.FINANCE_DEPOSIT_MODAL]: FinanceDeposit,
+  [MODAL_TYPES.FINANCE_WITHDRAW_MODAL]: FinanceWithdraw
 } as const;

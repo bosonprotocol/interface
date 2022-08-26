@@ -5,8 +5,6 @@ import styled from "styled-components";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { colors } from "../../lib/styles/colors";
 import { useCurrentSellerId } from "../../lib/utils/hooks/useCurrentSellerId";
-import Grid from "../ui/Grid";
-import Loading from "../ui/Loading";
 import Typography from "../ui/Typography";
 import { sellerPageTypes } from "./SellerPages";
 
@@ -45,25 +43,27 @@ export default function SellerInside() {
     [sellerPage]
   );
 
-  if (isLoading) {
-    return (
-      <SellerWrapper label={label}>
-        <Loading />
-      </SellerWrapper>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <SellerWrapper label={label}>
+  //       <Loading />
+  //     </SellerWrapper>
+  //   );
+  // }
 
-  if (sellerId === null) {
-    return (
-      <SellerWrapper label={label}>
-        <Grid justifyContent="center" padding="5rem">
-          <Typography tag="h5">
-            The seller with that ID doesn't exist!
-          </Typography>
-        </Grid>
-      </SellerWrapper>
-    );
-  }
+  // if (sellerId === null) {
+  //   return (
+  //     <SellerWrapper label={label}>
+  //       <Grid justifyContent="center" padding="5rem">
+  //         <Typography tag="h5">
+  //           The seller with that ID doesn't exist!
+  //         </Typography>
+  //       </Grid>
+  //     </SellerWrapper>
+  //   );
+  // }
 
-  return <SellerWrapper label={label}>{component({ sellerId })}</SellerWrapper>;
+  return (
+    <SellerWrapper label={label}>{component({ sellerId: "2" })}</SellerWrapper>
+  );
 }

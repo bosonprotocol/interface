@@ -63,14 +63,41 @@ const sizeToMargin = {
   }
 } as const;
 
-const Wrapper = styled.div<{ $modalType: ModalType; $size: Props["size"] }>`
+const background = {
+  white: "var(--primaryBgColor)",
+  dark: `${colors.black}`
+} as const;
+
+const Wrapper = styled.div<{
+  $modalType: ModalType;
+  $size: Props["size"];
+  $theme: Props["theme"];
+}>`
   position: relative;
   z-index: ${zIndex.Modal};
-  color: ${colors.black};
-  background-color: var(--primaryBgColor);
+  color: ${({ $theme }) => {
+    switch ($theme) {
+      case "dark":
+        return colors.white;
+      default:
+        return colors.black;
+    }
+  }};
+  background-color: ${({ $theme }) => {
+    return background[$theme as keyof typeof background];
+  }};
   border: var(--secondary);
-  max-width: ${({ $modalType }) =>
-    $modalType === "PRODUCT_CREATE_SUCCESS" ? "65.875rem" : "auto"};
+  max-width: ${({ $modalType }) => {
+    switch ($modalType) {
+      case "PRODUCT_CREATE_SUCCESS":
+        return "65.875rem";
+      case "FINANCE_WITHDRAW_MODAL":
+      case "FINANCE_DEPOSIT_MODAL":
+        return "31.25rem";
+      default:
+        break;
+    }
+  }};
   margin: 0;
   ${breakpoint.s} {
     margin: ${({ $size }) =>
@@ -136,6 +163,7 @@ interface Props {
   modalType: ModalType;
   headerComponent?: ReactNode;
   size: NonNullable<Store["modalSize"]>;
+  theme: NonNullable<Store["theme"]>;
   closable?: boolean;
 }
 
@@ -145,12 +173,13 @@ export default function Modal({
   title = "modal",
   headerComponent: HeaderComponent,
   size,
+  theme,
   closable = true,
   modalType
 }: Props) {
   return createPortal(
     <Root data-testid="modal">
-      <Wrapper $size={size} $modalType={modalType}>
+      <Wrapper $size={size} $modalType={modalType} $theme={theme}>
         {HeaderComponent ? (
           <Header tag="div" margin="0">
             {HeaderComponent}

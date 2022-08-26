@@ -1,6 +1,7 @@
-import { ArrowsLeftRight, GridFour, Storefront } from "phosphor-react";
+import { ArrowsLeftRight, Bank, GridFour, Storefront } from "phosphor-react";
 import React from "react";
 
+import SellerFinances from "./finances/SellerFinances";
 import SellerProducts from "./products/SellerProducts";
 
 export const DEFAULT_SELLER_PAGE = "dashboard";
@@ -28,6 +29,14 @@ export const sellerPageTypes = {
     label: "Exchanges",
     icon: ArrowsLeftRight,
     component: () => <div>Exchanges</div>
+  },
+  finances: {
+    url: "finances",
+    label: "Finances",
+    icon: Bank,
+    component: ({ sellerId }: SellerProps) => (
+      <SellerFinances sellerId={sellerId} />
+    )
   }
 };
 

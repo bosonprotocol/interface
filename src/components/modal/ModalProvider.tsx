@@ -31,6 +31,10 @@ const RenderModalComponent = ({
     <Modal
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       size={store.modalSize || initalState.store.modalSize!}
+      theme={
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        store.theme || initalState.store.theme!
+      }
       hideModal={hideModal}
       title={store.modalProps?.title}
       headerComponent={store.modalProps?.headerComponent}
@@ -57,13 +61,15 @@ export default function ModalProvider({ children }: Props) {
     (
       modalType: ModalType,
       modalProps?: Store["modalProps"],
-      modalSize?: Store["modalSize"]
+      modalSize?: Store["modalSize"],
+      theme?: Store["theme"]
     ) => {
       setStore({
         ...store,
         modalType,
         modalProps,
-        modalSize
+        modalSize,
+        theme
       });
     },
     [store]

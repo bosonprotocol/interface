@@ -22,6 +22,7 @@ export type Store = {
   modalType: ModalType;
   modalProps?: Parameters<ModalContextType["showModal"]>[1];
   modalSize?: "xxs" | "xs" | "s" | "m" | "l" | "xl" | "auto";
+  theme?: "white" | "dark";
 };
 
 export interface ModalContextType {
@@ -34,7 +35,8 @@ export interface ModalContextType {
       ? Omit<ModalProps, "hideModal">
       : Omit<ModalProps, "hideModal"> &
           Omit<Parameters<typeof MODAL_COMPONENTS[T]>[0], "hideModal">,
-    modalSize?: Store["modalSize"]
+    modalSize?: Store["modalSize"],
+    theme?: Store["theme"]
   ) => void;
   hideModal: () => void;
 
@@ -50,6 +52,7 @@ export interface ModalContextType {
               Omit<Parameters<typeof MODAL_COMPONENTS[T]>[0], "hideModal">
           >;
       modalSize?: Store["modalSize"];
+      theme?: Store["theme"];
     }
   ) => void;
 
@@ -63,7 +66,8 @@ export const initalState: ModalContextType = {
   store: {
     modalType: null,
     modalProps: {} as any,
-    modalSize: "l"
+    modalSize: "l",
+    theme: "white"
   }
 };
 
