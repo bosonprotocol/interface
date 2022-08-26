@@ -48,9 +48,8 @@ export default function SellerExchanges({ sellerId }: Props) {
   const [search, setSearch] = useState<string>("");
   const [filter, setFilter] = useState<FilterValue | null>(null);
 
-  let newSellerId = "3"; // eslint-disable-line
   const { data, isLoading, isError, refetch } = useExchanges({
-    sellerId: newSellerId || sellerId,
+    sellerId,
     disputed: null
   });
 

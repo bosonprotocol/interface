@@ -108,6 +108,7 @@ export default function RevokeProduct({
       </Grid>
       <Grid justifyContent="center">
         <RevokeButton
+          variant="secondaryOutline"
           exchangeId={exchangeId || 0}
           chainId={CONFIG.chainId}
           onError={(args) => {

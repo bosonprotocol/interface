@@ -6,6 +6,7 @@ import { useAccount } from "wagmi";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
+import { useCurrentSellerId } from "../../lib/utils/hooks/useCurrentSellerId";
 import { LinkWithQuery } from "../linkStoreFields/LinkStoreFields";
 import { DEFAULT_SELLER_PAGE } from "../seller/SellerPages";
 import Search from "./Search";
@@ -101,15 +102,20 @@ interface Props {
 }
 export default function HeaderLinks({ isMobile, isOpen }: Props) {
   const { address } = useAccount();
+  const { isLoading, sellerId } = useCurrentSellerId();
+  const isAccountSeller = useMemo(
+    () => !isLoading && sellerId !== null,
+    [isLoading, sellerId]
+  );
 
   const sellUrl = useMemo(
     () =>
-      address
+      isAccountSeller
         ? generatePath(BosonRoutes.SellerCenter, {
             [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
           })
         : BosonRoutes.CreateProduct,
-    [address]
+    [isAccountSeller]
   );
 
   return (
