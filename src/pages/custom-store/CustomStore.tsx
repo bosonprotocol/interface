@@ -7,14 +7,8 @@ import Layout from "../../components/Layout";
 import { useModal } from "../../components/modal/useModal";
 import Button from "../../components/ui/Button";
 import { CONFIG } from "../../lib/config";
+import { breakpoint } from "../../lib/styles/breakpoint";
 import { useCSSVariable } from "../../lib/utils/hooks/useCSSVariable";
-import {
-  FormControl,
-  FormElement,
-  FormElementsContainer,
-  FormLabel,
-  StyledForm
-} from "../create-offer/CreateOffer";
 import { StoreFields } from "./store-fields";
 
 const Root = styled(Layout)`
@@ -27,6 +21,40 @@ const Root = styled(Layout)`
 
 const PreviewContainer = styled.div`
   margin: 20px 0;
+`;
+
+export const StyledForm = styled.form`
+  width: 100%;
+`;
+
+export const FormElement = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+export const FormLabel = styled.label`
+  margin-bottom: 6px;
+`;
+
+export const FormControl = styled.input`
+  font-family: "Plus Jakarta Sans", sans-serif;
+  padding: 10px;
+  border-radius: 6px;
+  border-width: 2px;
+  border-color: black;
+`;
+
+export const FormElementsContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-row-gap: 20px;
+  grid-column-gap: 20px;
+  justify-content: space-between;
+  padding-bottom: 24px;
+
+  ${breakpoint.s} {
+    grid-template-columns: 1fr 1fr;
+  }
 `;
 
 export default function CustomStore() {

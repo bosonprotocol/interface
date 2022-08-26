@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { MetadataType } from "@bosonprotocol/common";
+import { MetadataType } from "@bosonprotocol/react-kit";
 import { parseUnits } from "@ethersproject/units";
 import { Form, Formik, FormikHelpers } from "formik";
 import isArray from "lodash/isArray";

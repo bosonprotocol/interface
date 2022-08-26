@@ -1,4 +1,4 @@
-import { SellerFieldsFragment } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
+import { subgraph } from "@bosonprotocol/react-kit";
 import { parseUnits } from "@ethersproject/units";
 import map from "lodash/map";
 import slice from "lodash/slice";
@@ -27,7 +27,7 @@ import { useCreateForm } from "./utils/useCreateForm";
 
 interface Props {
   togglePreview: React.Dispatch<React.SetStateAction<boolean>>;
-  seller?: SellerFieldsFragment;
+  seller?: subgraph.SellerFieldsFragment;
 }
 
 const PreviewWrapper = styled.div`

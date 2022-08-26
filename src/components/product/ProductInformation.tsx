@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { FieldArray } from "formik";
 import { Plus } from "phosphor-react";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import styled from "styled-components";
 
 import Collapse from "../../components/collapse/Collapse";
 import { colors } from "../../lib/styles/colors";
 import { FormField, Input, Select, TagsInput, Textarea } from "../form";
+import Error from "../form/Error";
 import Button from "../ui/Button";
 import Typography from "../ui/Typography";
 import {
@@ -32,15 +33,33 @@ const ProductInformationButtonGroup = styled(ProductButtonGroup)`
   margin-top: 1.563rem;
 `;
 
-const checkLastElementIsPristine = (elements: any): boolean => {
+const checkLastElementIsPristine = (elements: ElementType[]): boolean => {
   const element = elements[elements.length - 1];
   return element?.name.length === 0 || element?.value.length === 0;
 };
 
-const AddAttributesContainer = () => {
+const checkIfElementIsDuplicated = (elements: ElementType[]): boolean => {
+  const listElements = elements.map((element) => {
+    return `${element.name}_${element.value}`.toLowerCase();
+  });
+  return new Set(listElements).size !== listElements.length;
+};
+
+interface ElementType {
+  name: string;
+  value: string;
+}
+
+const AddAttributesContainer = ({
+  setHasDuplicated,
+  hasDuplicated
+}: {
+  setHasDuplicated: (hadDuplicated: boolean) => void;
+  hasDuplicated: boolean;
+}) => {
   const { values } = useCreateForm();
 
-  const elements = useMemo(
+  const elements: ElementType[] = useMemo(
     () => values?.productInformation?.attributes,
     [values?.productInformation?.attributes]
   );
@@ -55,7 +74,7 @@ const AddAttributesContainer = () => {
             <>
               {render && (
                 <>
-                  {elements.map((el: unknown, key: number) => (
+                  {elements.map((_el: ElementType, key: number) => (
                     <AddProductContainer key={`add_product_container_${key}`}>
                       <div>
                         <Input
@@ -73,6 +92,11 @@ const AddAttributesContainer = () => {
                   ))}
                 </>
               )}
+              {setHasDuplicated(checkIfElementIsDuplicated(elements))}
+              <Error
+                display={hasDuplicated}
+                message={"You can’t have duplicate attributes!"}
+              />
               {!checkLastElementIsPristine(elements) && (
                 <Button
                   onClick={() => arrayHelpers.push({ name: "", value: "" })}
@@ -92,6 +116,8 @@ const AddAttributesContainer = () => {
 
 export default function ProductInformation() {
   const { nextIsDisabled } = useCreateForm();
+
+  const [hasDuplicated, setHasDuplicated] = useState<boolean>(false);
 
   return (
     <ContainerProductPage>
@@ -136,7 +162,10 @@ export default function ProductInformation() {
       >
         <TagsInput name="productInformation.tags" />
       </FormField>
-      <AddAttributesContainer />
+      <AddAttributesContainer
+        setHasDuplicated={setHasDuplicated}
+        hasDuplicated={hasDuplicated}
+      />
       <AdditionalContainer>
         <Collapse
           title={<Typography tag="h3">Additional information</Typography>}
@@ -180,7 +209,11 @@ export default function ProductInformation() {
         </Collapse>
       </AdditionalContainer>
       <ProductInformationButtonGroup>
-        <Button theme="secondary" type="submit" disabled={nextIsDisabled}>
+        <Button
+          theme="secondary"
+          type="submit"
+          disabled={nextIsDisabled || hasDuplicated}
+        >
           Next
         </Button>
       </ProductInformationButtonGroup>
