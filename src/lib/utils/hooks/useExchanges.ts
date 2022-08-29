@@ -73,8 +73,8 @@ export function useExchanges(
             where: {
             ${id ? `id: "${id}"` : ""}
             ${id_in ? `id_in: [${id_in.join(",")}]` : ""}
-            ${sellerId ? "seller: $sellerId" : ""}
-            ${buyerId ? "buyer: $buyerId" : ""}
+            ${sellerId !== undefined ? "seller: $sellerId" : ""}
+            ${buyerId !== undefined ? "buyer: $buyerId" : ""}
             ${
               [true, false].includes(disputed as boolean)
                 ? "disputed: $disputed"
@@ -113,8 +113,8 @@ export function useExchanges(
       `,
         {
           disputed,
-          sellerId,
-          buyerId,
+          sellerId: sellerId?.length ? sellerId : null,
+          buyerId: buyerId?.length ? buyerId : null,
           orderBy,
           orderDirection
         }

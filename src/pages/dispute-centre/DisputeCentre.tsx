@@ -187,7 +187,7 @@ function DisputeCentre() {
                     proposalFields: {
                       description: values.description,
                       upload: values.upload,
-                      proposalTypeName: values.proposalsTypes?.label || "",
+                      proposalTypeName: values.proposalType?.label || "",
                       refundPercentage: values.refundPercentage,
                       disputeContext: [values.getStarted, values.tellUsMore]
                     },

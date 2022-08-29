@@ -43,28 +43,8 @@ const Container = styled.div<{ $disputeOpen: boolean }>`
     background: transparent;
     right: unset;
     margin-top: 0;
-    width: unset;
-    padding-top: none;
-    min-width: max-content;
-  }
-  > div {
-    padding-left: 1.25rem;
-    padding-right: 1.25rem;
-    ${breakpoint.xs} {
-      padding-left: 4.375rem;
-      padding-right: 4.375rem;
-    }
-    ${breakpoint.s} {
-      padding-left: 7.5rem;
-      padding-right: 7.5rem;
-    }
-    ${breakpoint.m} {
-      padding-left: 6.875rem;
-      padding-right: 6.875rem;
-    }
-    ${breakpoint.l} {
-      padding: 1.625rem;
-    }
+    flex-basis: 39rem;
+    min-width: unset;
   }
 `;
 

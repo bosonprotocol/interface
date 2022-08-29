@@ -1,4 +1,5 @@
-import { useField } from "formik";
+import { useField, useFormikContext } from "formik";
+import { useEffect } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../../../../../../lib/styles/colors";
@@ -31,9 +32,14 @@ export default function MakeAProposalStep({
   onBackClick,
   isValid
 }: Props) {
-  const [proposalsTypesField] = useField<typeof proposals[0]>(
-    FormModel.formFields.proposalsTypes.name
+  const [proposalTypeField] = useField<typeof proposals[0]>(
+    FormModel.formFields.proposalType.name
   );
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { setFieldTouched } = useFormikContext<any>();
+  useEffect(() => {
+    setFieldTouched(FormModel.formFields.proposalType.name, true);
+  }, [setFieldTouched]);
   return (
     <>
       <Typography $fontSize="2rem" fontWeight="600">
@@ -49,10 +55,10 @@ export default function MakeAProposalStep({
           Proposal type
         </Typography>
         <Select
-          name={FormModel.formFields.proposalsTypes.name}
+          name={FormModel.formFields.proposalType.name}
           options={proposals}
         />
-        {proposalsTypesField.value?.label === "Refund" && (
+        {proposalTypeField.value?.label === "Refund" && (
           <Grid
             flexDirection="column"
             alignItems="flex-start"
