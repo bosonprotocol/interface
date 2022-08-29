@@ -1,6 +1,5 @@
 import "@glidejs/glide/dist/css/glide.core.min.css";
 
-import { IpfsMetadataStorage } from "@bosonprotocol/react-kit";
 import Glide from "@glidejs/glide";
 import { CaretLeft, CaretRight } from "phosphor-react";
 import { useEffect, useRef, useState } from "react";
@@ -9,7 +8,7 @@ import Button from "../../components/ui/Button";
 import Grid from "../../components/ui/Grid";
 import Image from "../../components/ui/Image";
 import Typography from "../../components/ui/Typography";
-import { CONFIG } from "../../lib/config";
+import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
 import { SLIDER_OPTIONS } from "./const";
 import { GlideSlide, GlideWrapper } from "./Detail.style";
 
@@ -25,6 +24,7 @@ let glide: any = null;
 export default function DetailSlider({ images, isPreview = false }: Props) {
   const [sliderImages, setSliderImages] = useState<Array<string>>([]);
   const ref = useRef();
+  const ipfsMetadataStorage = useIpfsStorage();
 
   useEffect(() => {
     if (sliderImages.length !== 0 && ref.current) {
@@ -36,11 +36,6 @@ export default function DetailSlider({ images, isPreview = false }: Props) {
   }, [ref, sliderImages]);
 
   const fetchData = async (images: Array<string>) => {
-    const ipfsMetadataStorage = IpfsMetadataStorage.fromTheGraphIpfsUrl({
-      url: CONFIG.ipfsMetadataUrl,
-      headers: CONFIG.ipfsMetadataStorageHeaders
-    });
-
     const fetchPromises = images.map(
       async (src) => await ipfsMetadataStorage.get(src, false)
     );
