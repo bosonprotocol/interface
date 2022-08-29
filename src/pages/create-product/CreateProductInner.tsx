@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { MetadataType } from "@bosonprotocol/react-kit";
 import { parseUnits } from "@ethersproject/units";
+import type { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import { Form, Formik, FormikHelpers } from "formik";
 import isArray from "lodash/isArray";
 import keys from "lodash/keys";
-import { useMemo } from "react";
-import { useCallback } from "react";
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { generatePath } from "react-router-dom";
 import { useAccount } from "wagmi";
 
@@ -399,6 +399,27 @@ function CreateProductInner({ initial }: Props) {
     return handleNextForm();
   };
 
+  const handleFormikValuesBeforeSave = useCallback(
+    (values: CreateProductForm) => {
+      const dateFormat = "YYYY-MM-DDTHH:mm:ssZ[Z]";
+      return {
+        ...values,
+        coreTermsOfSale: {
+          ...values.coreTermsOfSale,
+          redemptionPeriod:
+            values?.coreTermsOfSale?.redemptionPeriod?.map((d: Dayjs) =>
+              dayjs(d).format(dateFormat)
+            ) ?? [],
+          offerValidityPeriod:
+            values?.coreTermsOfSale?.offerValidityPeriod?.map((d: Dayjs) =>
+              dayjs(d).format(dateFormat)
+            ) ?? []
+        }
+      };
+    },
+    []
+  );
+
   return (
     <CreateProductWrapper>
       <MultiSteps
@@ -411,14 +432,16 @@ function CreateProductInner({ initial }: Props) {
       <ProductLayoutContainer isPreviewVisible={isPreviewVisible}>
         <Formik<CreateProductForm>
           initialValues={initial}
-          onSubmit={(formikVal, formikBag) => {
-            saveItemInStorage("create-product", formikVal);
-            return handleSubmit(formikVal, formikBag);
-          }}
+          onSubmit={(formikVal, formikBag) =>
+            handleSubmit(formikVal, formikBag)
+          }
           validationSchema={wizardStep.currentValidation}
           enableReinitialize
         >
-          {() => {
+          {({ values }) => {
+            const newValues = handleFormikValuesBeforeSave(values);
+            saveItemInStorage("create-product", newValues);
+
             return (
               <Form>
                 {isPreviewVisible ? (
