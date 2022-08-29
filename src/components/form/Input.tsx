@@ -9,7 +9,7 @@ export default function Input({ name, ...props }: InputProps) {
   const errorMessage = meta.error && meta.touched ? meta.error : "";
   const displayError =
     typeof errorMessage === typeof "string" && errorMessage !== "";
-
+  console.log({ name, displayError, errorMessage, meta });
   return (
     <>
       <FieldInput error={errorMessage} {...field} {...props} />

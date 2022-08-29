@@ -1,63 +1,44 @@
 import { Form, Formik, FormikProps } from "formik";
-import { ReactNode, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import styled from "styled-components";
 import { useAccount } from "wagmi";
-import * as Yup from "yup";
 
 import { FileWithEncodedData } from "../../../../../lib/utils/files";
 import { Exchange } from "../../../../../lib/utils/hooks/useExchanges";
 import { useSellers } from "../../../../../lib/utils/hooks/useSellers";
 import { useCoreSDK } from "../../../../../lib/utils/useCoreSdk";
-import { validationOfFile } from "../../../../../pages/chat/components/UploadForm/const";
 import { NewProposal } from "../../../../../pages/chat/types";
 import { createProposal } from "../../../../../pages/chat/utils/create";
+import MultiSteps from "../../../../step/MultiSteps";
 import Grid from "../../../../ui/Grid";
 import { ModalProps } from "../../../ModalContext";
+import { useModal } from "../../../useModal";
 import ExchangePreview from "../components/ExchangePreview";
-import { MIN_VALUE } from "../const";
-import { FormModel } from "./MakeProposalFormModel";
+import { FormModel, validationSchemaPerStep } from "./MakeProposalFormModel";
 import DescribeProblemStep from "./steps/DescribeProblemStep";
 import MakeAProposalStep from "./steps/MakeAProposalStep/MakeAProposalStep";
 import ReviewAndSubmitStep from "./steps/ReviewAndSubmitStep";
 
+const StyledMultiSteps = styled(MultiSteps)`
+  width: 100%;
+`;
 interface Props {
   exchange: Exchange;
-  activeStep: number;
   sendProposal: (
     proposal: NewProposal,
     proposalFiles: FileWithEncodedData[]
   ) => void;
   // modal props
   hideModal: NonNullable<ModalProps["hideModal"]>;
-  headerComponent: ReactNode;
-  setActiveStep: (step: number) => void;
 }
-
-const validationSchemaPerStep = [
-  Yup.object({
-    [FormModel.formFields.description.name]: Yup.string()
-      .trim()
-      .required(FormModel.formFields.description.requiredErrorMessage),
-    [FormModel.formFields.upload.name]: validationOfFile({ isOptional: true })
-  }),
-  Yup.object({
-    [FormModel.formFields.refundPercentage.name]: Yup.number()
-      .moreThan(
-        MIN_VALUE,
-        FormModel.formFields.refundPercentage.moreThanErrorMessage(MIN_VALUE)
-      )
-      .max(100, FormModel.formFields.refundPercentage.maxErrorMessage)
-      .defined(FormModel.formFields.refundPercentage.emptyErrorMessage)
-  }),
-  Yup.object({})
-];
 
 export default function MakeProposalModal({
   exchange,
   hideModal,
-  setActiveStep,
-  sendProposal,
-  activeStep
+  sendProposal
 }: Props) {
+  const { updateProps, store } = useModal();
+  const [activeStep, setActiveStep] = useState<number>(0);
   const [submitError, setSubmitError] = useState<Error | null>(null);
   const coreSDK = useCoreSDK();
   const { address } = useAccount();
@@ -68,6 +49,37 @@ export default function MakeProposalModal({
   const iAmTheSeller = mySellerId === exchange.seller.id;
   const sellerOrBuyerId = iAmTheSeller ? exchange.seller.id : exchange.buyer.id;
   const validationSchema = validationSchemaPerStep[activeStep];
+
+  const headerComponent = useMemo(
+    () => (
+      <Grid justifyContent="space-evently">
+        <StyledMultiSteps
+          data={[
+            { steps: 1, name: "Describe Problem" },
+            { steps: 1, name: "Make a Proposal" },
+            { steps: 1, name: "Review & Submit" }
+          ]}
+          callback={(step) => {
+            setActiveStep(step);
+          }}
+          active={activeStep}
+          disableInactiveSteps
+        />
+      </Grid>
+    ),
+    [activeStep]
+  );
+
+  useEffect(() => {
+    updateProps<"MAKE_PROPOSAL">({
+      ...store,
+      modalProps: {
+        ...store.modalProps,
+        headerComponent,
+        activeStep
+      }
+    });
+  }, [activeStep, headerComponent]); // eslint-disable-line
   return (
     <>
       <Grid justifyContent="space-between" padding="0 0 2rem 0">
@@ -84,7 +96,7 @@ export default function MakeProposalModal({
               proposalFields: {
                 description: values.description,
                 upload: values.upload,
-                proposalTypeName: values.proposalsTypes?.label || "",
+                proposalTypeName: values.proposalType?.label || "",
                 refundPercentage: values.refundPercentage,
                 disputeContext: []
               },
@@ -100,7 +112,7 @@ export default function MakeProposalModal({
         }}
         initialValues={{
           [FormModel.formFields.description.name]: "",
-          [FormModel.formFields.proposalsTypes.name]: null as unknown as {
+          [FormModel.formFields.proposalType.name]: null as unknown as {
             label: string;
             value: string;
           },
@@ -117,6 +129,7 @@ export default function MakeProposalModal({
           const isDescribeProblemOK = Object.keys(props.errors).length === 0;
 
           const isMakeAProposalOK =
+            !props.errors[FormModel.formFields.proposalType.name] &&
             !props.errors[FormModel.formFields.refundPercentage.name];
           const isFormValid = isDescribeProblemOK && isMakeAProposalOK;
           return (

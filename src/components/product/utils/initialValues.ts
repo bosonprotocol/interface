@@ -113,7 +113,7 @@ export const disputeCentreInitialValues = {
   [DisputeFormModel.formFields.getStarted.name]: "",
   [DisputeFormModel.formFields.tellUsMore.name]: "",
   [FormModel.formFields.description.name]: "",
-  [FormModel.formFields.proposalsTypes.name]: null as unknown as {
+  [FormModel.formFields.proposalType.name]: null as unknown as {
     value: string;
     label: string;
   },
