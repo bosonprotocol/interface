@@ -95,8 +95,6 @@ interface IDetailWidget {
   isPreview?: boolean;
 }
 
-const oneSecondToDays = 86400;
-
 export const getOfferDetailData = (
   offer: Offer,
   convertedPrice: IPrice | null,
