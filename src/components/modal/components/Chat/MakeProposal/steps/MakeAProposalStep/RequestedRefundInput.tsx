@@ -81,7 +81,7 @@ export default function RequestedRefundInput({
         step="0.001"
         name={FormModel.formFields.refundAmount.name}
         type="number"
-        onChange={(e) => {
+        onChange={(e: { target: { valueAsNumber: number } }) => {
           handleChange(e);
           const {
             target: { valueAsNumber: currentRefundAmount }
