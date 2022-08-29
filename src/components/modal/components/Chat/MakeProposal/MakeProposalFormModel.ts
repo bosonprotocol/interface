@@ -21,8 +21,8 @@ export const FormModel = {
     refundPercentage: {
       name: "refundPercentage",
       moreThanErrorMessage: (minValue: string | number) =>
-        `The percentage should be more than or equal to ${minValue}`,
-      maxErrorMessage: "The percentage should be less than or equal to 100",
+        `This percentage must be greater than or equal to ${minValue}`,
+      maxErrorMessage: "This percentage should be less than or equal to 100",
       emptyErrorMessage: "This field cannot be left empty"
     },
     upload: {
