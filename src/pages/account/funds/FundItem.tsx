@@ -153,7 +153,10 @@ interface Props {
   coreSDK: CoreSDK;
 }
 
-const getNumberWithoutDecimals = (value: string, decimals: string): string => {
+export const getNumberWithoutDecimals = (
+  value: string,
+  decimals: string
+): string => {
   const valueAsNumber = Number(value);
   if (!Number.isInteger(valueAsNumber)) {
     return Math.floor(valueAsNumber * 10 ** Number(decimals)).toString();
@@ -163,7 +166,10 @@ const getNumberWithoutDecimals = (value: string, decimals: string): string => {
     .toString();
 };
 
-const getNumberWithDecimals = (value: string, decimals: string): number => {
+export const getNumberWithDecimals = (
+  value: string,
+  decimals: string
+): number => {
   return Number(value) * 10 ** -Number(decimals);
 };
 

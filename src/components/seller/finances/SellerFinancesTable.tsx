@@ -1,13 +1,18 @@
+import { BigNumber, utils } from "ethers";
 import { CaretDown, CaretLeft, CaretRight, CaretUp } from "phosphor-react";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { usePagination, useRowSelect, useSortBy, useTable } from "react-table";
 import styled from "styled-components";
+import { useAccount } from "wagmi";
 
 import { colors } from "../../../lib/styles/colors";
 import { Offer } from "../../../lib/types/offer";
+import { useBuyerSellerAccounts } from "../../../lib/utils/hooks/useBuyerSellerAccounts";
+import useFunds from "../../../pages/account/funds/useFunds";
 import { useModal } from "../../modal/useModal";
 import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
+import Loading from "../../ui/Loading";
 import Typography from "../../ui/Typography";
 
 interface Props {
@@ -112,10 +117,26 @@ const Span = styled.span`
 
 const WithdrawButton = styled(Button)`
   color: ${colors.secondary};
-  border: none;
+  border-color: transparent;
 `;
 export default function SellerFinancesTable({ offers }: Props) {
   const { showModal, modalTypes } = useModal();
+  const { address } = useAccount();
+  const {
+    seller: { sellerId, isError: isErrorSellers, isLoading: isLoadingSellers }
+  } = useBuyerSellerAccounts(address || "");
+  console.log(sellerId, "sellerId");
+  console.log(address, "address");
+  const { funds, reload, foundStatus } = useFunds(sellerId);
+  console.log(funds, "funds");
+  const [isFoundsInitialized, setIsFoundsInitialized] = useState(false);
+
+  useEffect(() => {
+    if (foundStatus === "success" && !isFoundsInitialized) {
+      setIsFoundsInitialized(true);
+    }
+  }, [foundStatus, isFoundsInitialized]);
+
   const columns = useMemo(
     () => [
       {
@@ -148,15 +169,22 @@ export default function SellerFinancesTable({ offers }: Props) {
 
   const data = useMemo(
     () =>
-      offers?.map(() => {
+      funds?.map((found) => {
+        const allFounds = utils.formatUnits(
+          BigNumber.from(found.availableAmount),
+          Number(found.token.decimals)
+        );
+        const lockedFounds = "";
+        const withdrawable = "";
+        const offersBacked = "";
         return {
-          token: <Typography tag="p">MOCK 0</Typography>,
-          allFound: <Typography tag="p">MOCK 1</Typography>,
-          lockedFounds: <Typography tag="p">MOCK 2</Typography>,
-          withdrawable: <Typography tag="p">MOCK 3</Typography>,
-          offersBacked: <Typography tag="p">MOCK 4</Typography>,
+          token: <Typography tag="p">{found.token.symbol}</Typography>,
+          allFound: <Typography tag="p">{allFounds}</Typography>,
+          lockedFounds: <Typography tag="p">{lockedFounds}</Typography>,
+          withdrawable: <Typography tag="p">{withdrawable}</Typography>,
+          offersBacked: <Typography tag="p">{offersBacked}</Typography>,
           action: (
-            <Grid justifyContent="space-evently">
+            <Grid justifyContent="space-evently" gap="1rem">
               <WithdrawButton
                 theme="outline"
                 size="small"
@@ -164,7 +192,14 @@ export default function SellerFinancesTable({ offers }: Props) {
                   showModal(
                     modalTypes.FINANCE_WITHDRAW_MODAL,
                     {
-                      title: "Withdraw USDC"
+                      title: `Withdraw ${found.token.symbol}`,
+                      protocolBalance: allFounds,
+                      symbol: found.token.symbol,
+                      accountId: sellerId,
+                      tokenDecimals: found.token.decimals,
+                      exchangeToken: found.token.address,
+                      availableAmount: found.availableAmount,
+                      reload
                     },
                     "auto",
                     "dark"
@@ -180,7 +215,13 @@ export default function SellerFinancesTable({ offers }: Props) {
                   showModal(
                     modalTypes.FINANCE_DEPOSIT_MODAL,
                     {
-                      title: "Deposit USDC"
+                      title: `Deposit ${found.token.symbol}`,
+                      protocolBalance: allFounds,
+                      symbol: found.token.symbol,
+                      accountId: sellerId,
+                      tokenDecimals: found.token.decimals,
+                      exchangeToken: found.token.address,
+                      reload
                     },
                     "auto",
                     "dark"
@@ -193,7 +234,14 @@ export default function SellerFinancesTable({ offers }: Props) {
           )
         };
       }),
-    [offers] // eslint-disable-line
+    [
+      funds,
+      modalTypes.FINANCE_DEPOSIT_MODAL,
+      modalTypes.FINANCE_WITHDRAW_MODAL,
+      reload,
+      sellerId,
+      showModal
+    ]
   );
 
   const tableProps = useTable(
@@ -229,6 +277,14 @@ export default function SellerFinancesTable({ offers }: Props) {
       pageIndex < 1 ? 3 : pageIndex + 2
     );
   }, [pageCount, pageIndex]);
+
+  if (!isFoundsInitialized || isLoadingSellers) {
+    return <Loading />;
+  }
+
+  if (isErrorSellers || foundStatus === "error") {
+    // TODO: NO FIGMA REPRESENTATIONS
+  }
 
   return (
     <>
@@ -293,6 +349,7 @@ export default function SellerFinancesTable({ offers }: Props) {
               );
             })) || (
             <tr>
+              (
               <td colSpan={columns.length}>
                 <Typography
                   tag="h6"
@@ -303,6 +360,7 @@ export default function SellerFinancesTable({ offers }: Props) {
                   No data to display
                 </Typography>
               </td>
+              )
             </tr>
           )}
         </tbody>
