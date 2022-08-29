@@ -348,7 +348,7 @@ const ChatConversation = ({
   } = useInfiniteThread({
     threadId,
     dateIndex,
-    dateStep: "week",
+    dateStep: "month",
     counterParty: destinationAddress,
     onFinishFetching
   });
@@ -430,12 +430,16 @@ const ChatConversation = ({
     if (!bosonXmtp || !thread?.threadId || !destinationAddress) {
       return;
     }
+    let isMounted = true;
     const monitor = async () => {
       try {
-        for await (const incomingMessage of await bosonXmtp.monitorThread(
+        for await (const incomingMessage of bosonXmtp.monitorThread(
           thread.threadId,
           destinationAddress
         )) {
+          if (!isMounted) {
+            return;
+          }
           const isValid = await validateMessage(incomingMessage.data);
           await addMessage(thread, { ...incomingMessage, isValid });
         }
@@ -446,6 +450,9 @@ const ChatConversation = ({
     monitor().catch((error) => {
       console.error(error);
     });
+    return () => {
+      isMounted = false;
+    };
   }, [bosonXmtp, destinationAddress, thread, addMessage, address]);
 
   const sendFiles = useCallback(
