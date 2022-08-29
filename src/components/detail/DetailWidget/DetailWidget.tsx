@@ -257,9 +257,15 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     () => isOfferHot(offer?.quantityAvailable, offer?.quantityInitial),
     [offer?.quantityAvailable, offer?.quantityInitial]
   );
-  const redeemableDays = Math.round(
-    Number(offer.voucherValidDuration) / oneSecondToDays
+
+  const voucherRedeemableUntilDate = dayjs(
+    Number(offer.voucherRedeemableUntilDate) * 1000
   );
+  const nowDate = dayjs();
+
+  const totalHours = voucherRedeemableUntilDate.diff(nowDate, "hours");
+  const redeemableDays = Math.floor(totalHours / 24);
+  const redeemableHours = totalHours - redeemableDays * 24;
 
   const handleCancel = () => {
     // TODO: it's just a workaround for now
@@ -293,7 +299,9 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       <Widget>
         {isExchange && isToRedeem && (
           <RedeemLeftButton>
-            {redeemableDays} days left to Redeem
+            {redeemableDays > 0
+              ? `${redeemableDays} days left to Redeem`
+              : `${redeemableHours} hours left to Redeem`}
           </RedeemLeftButton>
         )}
         <div>
