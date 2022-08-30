@@ -318,10 +318,18 @@ export default function SellerFinancesTable() {
         const offersBacked = () => {
           let result = null;
           if (fund.availableAmount && calcOffersBacked[fund.token.symbol]) {
-            result =
-              BigNumber.from(fund.availableAmount)
-                .div(calcOffersBacked[fund.token.symbol])
-                .toNumber() * 100;
+            console.log(fund.availableAmount, "fund.availableAmount");
+            console.log(
+              calcOffersBacked[fund.token.symbol],
+              "calcOffersBacked[fund.token.symbol]"
+            );
+            result = Number(
+              (
+                (Number(fund.availableAmount) /
+                  Number(calcOffersBacked[fund.token.symbol])) *
+                100
+              ).toFixed(2)
+            );
           }
           return result;
         };
