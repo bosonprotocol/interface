@@ -258,15 +258,9 @@ function CreateProductInner({ initial }: Props) {
           productionInformation_materials:
             productInformation.materials?.split(","),
           details_category: productInformation.category.value,
-          details_subCategory: undefined, // no entry in the UI
-          details_subCategory2: undefined, // no entry in the UI
           details_offerCategory: productType.productType.toUpperCase(),
           details_tags: productInformation.tags,
-          details_sections: undefined, // no entry in the UI
-          details_personalisation: undefined, // no entry in the UI
           visuals_images: visualImages,
-          visuals_videos: undefined, // no entry in the UI
-          packaging_packageQuantity: undefined, // no entry in the UI
           packaging_dimensions_length: shippingInfo.length,
           packaging_dimensions_width: shippingInfo.width,
           packaging_dimensions_height: shippingInfo.height,
@@ -279,7 +273,6 @@ function CreateProductInner({ initial }: Props) {
           name: createYourProfile.name,
           description: createYourProfile.description,
           externalUrl: createYourProfile.website,
-          tokenId: undefined, // no entry in the UI
           images: [
             {
               url: `ipfs://${profileImageLink}`,
@@ -353,6 +346,10 @@ function CreateProductInner({ initial }: Props) {
         metadataUri: `ipfs://${metadataHash}`,
         metadataHash: metadataHash
       };
+      console.log(
+        "🚀  roberto --  ~ file: CreateProductInner.tsx ~ line 356 ~ CreateProductInner ~ offerData",
+        offerData
+      );
 
       const txResponse =
         sellers?.length === 0 && address
@@ -373,10 +370,14 @@ function CreateProductInner({ initial }: Props) {
       const txReceipt = await txResponse.wait();
 
       const offerId = coreSDK.getCreatedOfferIdFromLogs(txReceipt.logs);
+      console.log(
+        "🚀  roberto --  ~ file: CreateProductInner.tsx ~ line 376 ~ CreateProductInner ~ offerId",
+        offerId
+      );
 
       await wait(3_000);
       handleOpenSuccessModal({ offerId });
-      formikBag.resetForm();
+      // formikBag.resetForm();
     } catch (error: any) {
       // TODO: FAILURE MODAL
       console.error("error->", error.errors ?? error.toString());
