@@ -42,10 +42,10 @@ export default function MakeProposalModal({
   const [submitError, setSubmitError] = useState<Error | null>(null);
   const coreSDK = useCoreSDK();
   const { address } = useAccount();
-  const { data: sellers } = useSellers({
+  const { data: sellers = [] } = useSellers({
     operator: address
   });
-  const mySellerId = sellers?.[0]?.id || "";
+  const mySellerId = sellers[0]?.id || "";
   const iAmTheSeller = mySellerId === exchange.seller.id;
   const sellerOrBuyerId = iAmTheSeller ? exchange.seller.id : exchange.buyer.id;
   const validationSchema = validationSchemaPerStep[activeStep];
