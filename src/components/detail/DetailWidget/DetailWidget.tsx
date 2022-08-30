@@ -220,10 +220,14 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   const exchangeStatus = exchange
     ? exchanges.getExchangeState(exchange as subgraph.ExchangeFieldsFragment)
     : null;
+
   const isToRedeem =
     !exchangeStatus || exchangeStatus === subgraph.ExchangeState.Committed;
+
   const isBeforeRedeem =
     !exchangeStatus || NOT_REDEEMED_YET.includes(exchangeStatus);
+
+  const isCancelled = exchangeStatus === subgraph.ExchangeState.Cancelled;
 
   const { data: signer } = useSigner();
   const [isLoading, setIsLoading] = useState<boolean>(false);
