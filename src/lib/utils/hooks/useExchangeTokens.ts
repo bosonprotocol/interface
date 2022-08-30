@@ -4,8 +4,12 @@ import { useQuery } from "react-query";
 import { Offer } from "../../types/offer";
 import { fetchSubgraph } from "../core-components/subgraph";
 
-export function useExchangeTokens() {
-  return useQuery("exchangeTokens", async () => {
+interface Props {
+  sellerId: string;
+}
+
+export function useExchangeTokens(props: Props) {
+  return useQuery(["exchangeTokens", props], async () => {
     const result = await fetchSubgraph<{
       exchangeTokens: {
         name: string;
@@ -14,9 +18,9 @@ export function useExchangeTokens() {
       }[];
     }>(
       gql`
-        {
+        query GetExchangesTokens($sellerId: String) {
           exchangeTokens {
-            offers {
+            offers(where: { sellerId: $sellerId }) {
               id
               validFromDate
               validUntilDate
@@ -29,7 +33,8 @@ export function useExchangeTokens() {
             symbol
           }
         }
-      `
+      `,
+      { ...props }
     );
     return result?.exchangeTokens ?? [];
   });

@@ -140,200 +140,6 @@ const processValue = (value: string, decimals: string) => {
   }
 };
 
-const mockedFunds = [
-  {
-    id: "20-0x0000000000000000000000000000000000000000",
-    availableAmount: "130000000000000000",
-    accountId: "20",
-    token: {
-      id: "0x0000000000000000000000000000000000000000",
-      address: "0x0000000000000000000000000000000000000000",
-      decimals: "18",
-      symbol: "ETH",
-      name: "Ether"
-    }
-  },
-  {
-    id: "20-0x0000000000000000000000000000000000000000",
-    availableAmount: "130000000000000000",
-    accountId: "20",
-    token: {
-      id: "0x0000000000000000000000000000000000000000",
-      address: "0x0000000000000000000000000000000000000000",
-      decimals: "18",
-      symbol: "BTC",
-      name: "Bit Coin"
-    }
-  },
-  {
-    id: "20-0x0000000000000000000000000000000000000000",
-    availableAmount: "130000000000000000",
-    accountId: "20",
-    token: {
-      id: "0x0000000000000000000000000000000000000000",
-      address: "0x0000000000000000000000000000000000000000",
-      decimals: "18",
-      symbol: "A",
-      name: "A Coin"
-    }
-  },
-  {
-    id: "20-0x0000000000000000000000000000000000000000",
-    availableAmount: "130000000000000000",
-    accountId: "20",
-    token: {
-      id: "0x0000000000000000000000000000000000000000",
-      address: "0x0000000000000000000000000000000000000000",
-      decimals: "18",
-      symbol: "b",
-      name: "b Coin"
-    }
-  },
-  {
-    id: "20-0x0000000000000000000000000000000000000000",
-    availableAmount: "130000000000000000",
-    accountId: "20",
-    token: {
-      id: "0x0000000000000000000000000000000000000000",
-      address: "0x0000000000000000000000000000000000000000",
-      decimals: "18",
-      symbol: "c",
-      name: "c Coin"
-    }
-  },
-  {
-    id: "20-0x0000000000000000000000000000000000000000",
-    availableAmount: "130000000000000000",
-    accountId: "20",
-    token: {
-      id: "0x0000000000000000000000000000000000000000",
-      address: "0x0000000000000000000000000000000000000000",
-      decimals: "18",
-      symbol: "d",
-      name: "d Coin"
-    }
-  },
-  {
-    id: "20-0x0000000000000000000000000000000000000000",
-    availableAmount: "130000000000000000",
-    accountId: "20",
-    token: {
-      id: "0x0000000000000000000000000000000000000000",
-      address: "0x0000000000000000000000000000000000000000",
-      decimals: "18",
-      symbol: "e",
-      name: "e Coin"
-    }
-  },
-  {
-    id: "20-0x0000000000000000000000000000000000000000",
-    availableAmount: "130000000000000000",
-    accountId: "20",
-    token: {
-      id: "0x0000000000000000000000000000000000000000",
-      address: "0x0000000000000000000000000000000000000000",
-      decimals: "18",
-      symbol: "f",
-      name: "f Coin"
-    }
-  },
-  {
-    id: "20-0x0000000000000000000000000000000000000000",
-    availableAmount: "130000000000000000",
-    accountId: "20",
-    token: {
-      id: "0x0000000000000000000000000000000000000000",
-      address: "0x0000000000000000000000000000000000000000",
-      decimals: "18",
-      symbol: "g",
-      name: "g Coin"
-    }
-  },
-  {
-    id: "20-0x0000000000000000000000000000000000000000",
-    availableAmount: "130000000000000000",
-    accountId: "20",
-    token: {
-      id: "0x0000000000000000000000000000000000000000",
-      address: "0x0000000000000000000000000000000000000000",
-      decimals: "18",
-      symbol: "h",
-      name: "h Coin"
-    }
-  },
-  {
-    id: "20-0x0000000000000000000000000000000000000000",
-    availableAmount: "130000000000000000",
-    accountId: "20",
-    token: {
-      id: "0x0000000000000000000000000000000000000000",
-      address: "0x0000000000000000000000000000000000000000",
-      decimals: "18",
-      symbol: "i",
-      name: "i Coin"
-    }
-  },
-  {
-    id: "20-0x0000000000000000000000000000000000000000",
-    availableAmount: "130000000000000000",
-    accountId: "20",
-    token: {
-      id: "0x0000000000000000000000000000000000000000",
-      address: "0x0000000000000000000000000000000000000000",
-      decimals: "18",
-      symbol: "j",
-      name: "j Coin"
-    }
-  },
-  {
-    id: "20-0x0000000000000000000000000000000000000000",
-    availableAmount: "130000000000000000",
-    accountId: "20",
-    token: {
-      id: "0x0000000000000000000000000000000000000000",
-      address: "0x0000000000000000000000000000000000000000",
-      decimals: "18",
-      symbol: "k",
-      name: "k Coin"
-    }
-  },
-  {
-    id: "20-0x0000000000000000000000000000000000000000",
-    availableAmount: "130000000000000000",
-    accountId: "20",
-    token: {
-      id: "0x0000000000000000000000000000000000000000",
-      address: "0x0000000000000000000000000000000000000000",
-      decimals: "18",
-      symbol: "l",
-      name: "l Coin"
-    }
-  },
-  {
-    id: "20-0x0000000000000000000000000000000000000000",
-    availableAmount: "130000000000000000",
-    accountId: "20",
-    token: {
-      id: "0x0000000000000000000000000000000000000000",
-      address: "0x0000000000000000000000000000000000000000",
-      decimals: "18",
-      symbol: "h",
-      name: "h Coin"
-    }
-  },
-  {
-    id: "20-0x0000000000000000000000000000000000000000",
-    availableAmount: "130000000000000000",
-    accountId: "20",
-    token: {
-      id: "0x0000000000000000000000000000000000000000",
-      address: "0x0000000000000000000000000000000000000000",
-      decimals: "18",
-      symbol: "ł",
-      name: "ł Coin"
-    }
-  }
-];
 export default function SellerFinancesTable() {
   const { showModal, modalTypes } = useModal();
   const { address } = useAccount();
@@ -346,7 +152,7 @@ export default function SellerFinancesTable() {
     isLoading: isLoadingExchangesTokens,
     isError: isErrorExchangesTokens,
     refetch: exchangesTokensRefetch
-  } = useExchangeTokens();
+  } = useExchangeTokens({ sellerId });
   const [isFoundsInitialized, setIsFoundsInitialized] = useState(false);
 
   const {
@@ -415,24 +221,27 @@ export default function SellerFinancesTable() {
           const validFromDateParsed = dayjs(
             Number(offer?.validFromDate) * 1000
           );
-          const isNotExpired = dayjs()
-            .startOf("day")
-            .isBetween(validUntilDateParsed, validFromDateParsed, "day");
+          const isNotExpired = dayjs().isBetween(
+            validFromDateParsed,
+            validUntilDateParsed,
+            "day",
+            "[]"
+          );
           return isNotExpired && !offer.voidedAt;
         }
       );
+      console.log(notExpiredAndNotVoidedOffers, "notExpiredAndNotVoidedOffers");
       const sumValue = notExpiredAndNotVoidedOffers.reduce(
-        (acc, { price, sellerDeposit, quantityAvailable }) => {
+        (acc, { sellerDeposit, quantityAvailable }) => {
           acc = acc
             ? BigNumber.from(acc)
                 .add(
-                  BigNumber.from(sellerDeposit)
-                    .mul(BigNumber.from(price))
-                    .mul(BigNumber.from(quantityAvailable))
+                  BigNumber.from(sellerDeposit).mul(
+                    BigNumber.from(quantityAvailable)
+                  )
                 )
                 .toString()
             : BigNumber.from(sellerDeposit)
-                .mul(BigNumber.from(price))
                 .mul(BigNumber.from(quantityAvailable))
                 .toString();
           return acc;
@@ -495,7 +304,7 @@ export default function SellerFinancesTable() {
 
   const data = useMemo(
     () =>
-      mockedFunds?.map((fund) => {
+      funds?.map((fund) => {
         const decimals = fund.token.decimals;
         const lockedFunds = sellerLockedFunds?.[fund.token.symbol] ?? "0";
         const lockedFundsFormatted = utils.formatUnits(lockedFunds, decimals);
@@ -509,10 +318,6 @@ export default function SellerFinancesTable() {
         const offersBacked = () => {
           let result = null;
           if (fund.availableAmount && calcOffersBacked[fund.token.symbol]) {
-            console.log({
-              withdrawable: fund.availableAmount,
-              calcOffersBacked: calcOffersBacked[fund.token.symbol]
-            });
             result =
               BigNumber.from(fund.availableAmount)
                 .div(calcOffersBacked[fund.token.symbol])
@@ -591,7 +396,8 @@ export default function SellerFinancesTable() {
       reloadData,
       sellerId,
       sellerLockedFunds,
-      showModal
+      showModal,
+      funds
     ]
   );
 
@@ -687,7 +493,6 @@ export default function SellerFinancesTable() {
           {(page.length > 0 &&
             page.map((row) => {
               prepareRow(row);
-              console.log(row.original, "LOGGG");
               return (
                 <tr
                   {...row.getRowProps()}
