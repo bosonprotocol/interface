@@ -13,13 +13,13 @@ interface Props {
 const openSeaUrlMap = new Map([
   [
     80001,
-    (exchangeId: string) =>
-      `http://testnets.opensea.io/assets/mumbai/{contractAddress}/${exchangeId}`
+    (exchangeId: string, contractAddress: string) =>
+      `http://testnets.opensea.io/assets/mumbai/${contractAddress}/${exchangeId}`
   ],
   [
     137,
-    (exchangeId: string) =>
-      `http://opensea.io/assets/polygon/{contractAddress}/${exchangeId}`
+    (exchangeId: string, contractAddress: string) =>
+      `http://opensea.io/assets/polygon/${contractAddress}/${exchangeId}`
   ]
 ]);
 
@@ -39,7 +39,7 @@ export default function DetailOpenSea({ exchange }: Props) {
 
     const urlFn = openSeaUrlMap.get(CONFIG.chainId);
 
-    return urlFn?.(exchange.id) || "";
+    return urlFn?.(exchange.id, exchange.seller.voucherCloneAddress) || "";
   }, [exchange]);
 
   if (!isToRedeem) {
