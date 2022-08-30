@@ -207,7 +207,9 @@ export default function ExchangeSidePreview({
       },
       { enabled: !!exchange }
     );
-  const [dispute] = disputes;
+  const [dispute] = disputes.length
+    ? disputes
+    : [{} as subgraph.DisputeFieldsFragment];
   const offer = exchange?.offer;
   const { showModal } = useModal();
   const OFFER_DETAIL_DATA = useMemo(
