@@ -1,26 +1,32 @@
+import dayjs from "dayjs";
+import isBetween from "dayjs/plugin/isBetween";
 import { BigNumber, utils } from "ethers";
-import { CaretDown, CaretLeft, CaretRight, CaretUp } from "phosphor-react";
-import { useEffect, useMemo, useState } from "react";
+import filter from "lodash/filter";
+import groupBy from "lodash/groupBy";
+import isEmpty from "lodash/isEmpty";
+import {
+  CaretDown,
+  CaretLeft,
+  CaretRight,
+  CaretUp,
+  WarningCircle
+} from "phosphor-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { usePagination, useRowSelect, useSortBy, useTable } from "react-table";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
+dayjs.extend(isBetween);
 
 import { colors } from "../../../lib/styles/colors";
-import { Offer } from "../../../lib/types/offer";
 import { useBuyerSellerAccounts } from "../../../lib/utils/hooks/useBuyerSellerAccounts";
+import { useExchangeTokens } from "../../../lib/utils/hooks/useExchangeTokens";
+import { useSellerDeposit } from "../../../lib/utils/hooks/useSellerDeposit";
 import useFunds from "../../../pages/account/funds/useFunds";
 import { useModal } from "../../modal/useModal";
 import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
 import Loading from "../../ui/Loading";
 import Typography from "../../ui/Typography";
-
-interface Props {
-  offers: (Offer | null)[];
-  isError: boolean;
-  isLoading?: boolean;
-  refetch: () => void;
-}
 
 const Table = styled.table`
   width: 100%;
@@ -119,17 +125,238 @@ const WithdrawButton = styled(Button)`
   color: ${colors.secondary};
   border-color: transparent;
 `;
-export default function SellerFinancesTable({ offers }: Props) {
+const WarningWrapper = styled(Grid)`
+  svg {
+    color: ${colors.orange};
+  }
+`;
+
+const processValue = (value: string, decimals: string) => {
+  try {
+    return utils.formatUnits(BigNumber.from(value), Number(decimals));
+  } catch (e) {
+    console.error(e);
+    return "";
+  }
+};
+
+const mockedFunds = [
+  {
+    id: "20-0x0000000000000000000000000000000000000000",
+    availableAmount: "130000000000000000",
+    accountId: "20",
+    token: {
+      id: "0x0000000000000000000000000000000000000000",
+      address: "0x0000000000000000000000000000000000000000",
+      decimals: "18",
+      symbol: "ETH",
+      name: "Ether"
+    }
+  },
+  {
+    id: "20-0x0000000000000000000000000000000000000000",
+    availableAmount: "130000000000000000",
+    accountId: "20",
+    token: {
+      id: "0x0000000000000000000000000000000000000000",
+      address: "0x0000000000000000000000000000000000000000",
+      decimals: "18",
+      symbol: "BTC",
+      name: "Bit Coin"
+    }
+  },
+  {
+    id: "20-0x0000000000000000000000000000000000000000",
+    availableAmount: "130000000000000000",
+    accountId: "20",
+    token: {
+      id: "0x0000000000000000000000000000000000000000",
+      address: "0x0000000000000000000000000000000000000000",
+      decimals: "18",
+      symbol: "A",
+      name: "A Coin"
+    }
+  },
+  {
+    id: "20-0x0000000000000000000000000000000000000000",
+    availableAmount: "130000000000000000",
+    accountId: "20",
+    token: {
+      id: "0x0000000000000000000000000000000000000000",
+      address: "0x0000000000000000000000000000000000000000",
+      decimals: "18",
+      symbol: "b",
+      name: "b Coin"
+    }
+  },
+  {
+    id: "20-0x0000000000000000000000000000000000000000",
+    availableAmount: "130000000000000000",
+    accountId: "20",
+    token: {
+      id: "0x0000000000000000000000000000000000000000",
+      address: "0x0000000000000000000000000000000000000000",
+      decimals: "18",
+      symbol: "c",
+      name: "c Coin"
+    }
+  },
+  {
+    id: "20-0x0000000000000000000000000000000000000000",
+    availableAmount: "130000000000000000",
+    accountId: "20",
+    token: {
+      id: "0x0000000000000000000000000000000000000000",
+      address: "0x0000000000000000000000000000000000000000",
+      decimals: "18",
+      symbol: "d",
+      name: "d Coin"
+    }
+  },
+  {
+    id: "20-0x0000000000000000000000000000000000000000",
+    availableAmount: "130000000000000000",
+    accountId: "20",
+    token: {
+      id: "0x0000000000000000000000000000000000000000",
+      address: "0x0000000000000000000000000000000000000000",
+      decimals: "18",
+      symbol: "e",
+      name: "e Coin"
+    }
+  },
+  {
+    id: "20-0x0000000000000000000000000000000000000000",
+    availableAmount: "130000000000000000",
+    accountId: "20",
+    token: {
+      id: "0x0000000000000000000000000000000000000000",
+      address: "0x0000000000000000000000000000000000000000",
+      decimals: "18",
+      symbol: "f",
+      name: "f Coin"
+    }
+  },
+  {
+    id: "20-0x0000000000000000000000000000000000000000",
+    availableAmount: "130000000000000000",
+    accountId: "20",
+    token: {
+      id: "0x0000000000000000000000000000000000000000",
+      address: "0x0000000000000000000000000000000000000000",
+      decimals: "18",
+      symbol: "g",
+      name: "g Coin"
+    }
+  },
+  {
+    id: "20-0x0000000000000000000000000000000000000000",
+    availableAmount: "130000000000000000",
+    accountId: "20",
+    token: {
+      id: "0x0000000000000000000000000000000000000000",
+      address: "0x0000000000000000000000000000000000000000",
+      decimals: "18",
+      symbol: "h",
+      name: "h Coin"
+    }
+  },
+  {
+    id: "20-0x0000000000000000000000000000000000000000",
+    availableAmount: "130000000000000000",
+    accountId: "20",
+    token: {
+      id: "0x0000000000000000000000000000000000000000",
+      address: "0x0000000000000000000000000000000000000000",
+      decimals: "18",
+      symbol: "i",
+      name: "i Coin"
+    }
+  },
+  {
+    id: "20-0x0000000000000000000000000000000000000000",
+    availableAmount: "130000000000000000",
+    accountId: "20",
+    token: {
+      id: "0x0000000000000000000000000000000000000000",
+      address: "0x0000000000000000000000000000000000000000",
+      decimals: "18",
+      symbol: "j",
+      name: "j Coin"
+    }
+  },
+  {
+    id: "20-0x0000000000000000000000000000000000000000",
+    availableAmount: "130000000000000000",
+    accountId: "20",
+    token: {
+      id: "0x0000000000000000000000000000000000000000",
+      address: "0x0000000000000000000000000000000000000000",
+      decimals: "18",
+      symbol: "k",
+      name: "k Coin"
+    }
+  },
+  {
+    id: "20-0x0000000000000000000000000000000000000000",
+    availableAmount: "130000000000000000",
+    accountId: "20",
+    token: {
+      id: "0x0000000000000000000000000000000000000000",
+      address: "0x0000000000000000000000000000000000000000",
+      decimals: "18",
+      symbol: "l",
+      name: "l Coin"
+    }
+  },
+  {
+    id: "20-0x0000000000000000000000000000000000000000",
+    availableAmount: "130000000000000000",
+    accountId: "20",
+    token: {
+      id: "0x0000000000000000000000000000000000000000",
+      address: "0x0000000000000000000000000000000000000000",
+      decimals: "18",
+      symbol: "h",
+      name: "h Coin"
+    }
+  },
+  {
+    id: "20-0x0000000000000000000000000000000000000000",
+    availableAmount: "130000000000000000",
+    accountId: "20",
+    token: {
+      id: "0x0000000000000000000000000000000000000000",
+      address: "0x0000000000000000000000000000000000000000",
+      decimals: "18",
+      symbol: "ł",
+      name: "ł Coin"
+    }
+  }
+];
+export default function SellerFinancesTable() {
   const { showModal, modalTypes } = useModal();
   const { address } = useAccount();
   const {
     seller: { sellerId, isError: isErrorSellers, isLoading: isLoadingSellers }
   } = useBuyerSellerAccounts(address || "");
-  console.log(sellerId, "sellerId");
-  console.log(address, "address");
   const { funds, reload, foundStatus } = useFunds(sellerId);
-  console.log(funds, "funds");
+  const {
+    data: exchangesTokens,
+    isLoading: isLoadingExchangesTokens,
+    isError: isErrorExchangesTokens,
+    refetch: exchangesTokensRefetch
+  } = useExchangeTokens();
   const [isFoundsInitialized, setIsFoundsInitialized] = useState(false);
+
+  const {
+    data: sellersData,
+    refetch: sellerRefetch,
+    isLoading: sellerDataLoading,
+    isError: sellerDataIsError
+  } = useSellerDeposit({
+    sellerId
+  });
 
   useEffect(() => {
     if (foundStatus === "success" && !isFoundsInitialized) {
@@ -141,48 +368,170 @@ export default function SellerFinancesTable({ offers }: Props) {
     () => [
       {
         Header: "Token",
-        accessor: "token"
+        accessor: "token",
+        disableSortBy: false
       } as const,
       {
         Header: "All funds",
-        accessor: "allFound"
+        accessor: "allFound",
+        disableSortBy: false
       } as const,
       {
         Header: "Locked funds",
-        accessor: "lockedFounds"
+        accessor: "lockedFunds",
+        disableSortBy: false
       } as const,
       {
         Header: "Withdrawable",
-        accessor: "withdrawable"
+        accessor: "withdrawable",
+        disableSortBy: false
       } as const,
       {
         Header: "Offers backed",
-        accessor: "offersBacked"
+        accessor: "offersBacked",
+        disableSortBy: false
       } as const,
       {
         Header: "",
-        accessor: "action"
+        accessor: "action",
+        disableSortBy: false
       } as const
     ],
     []
   );
 
+  const calcOffersBacked = useMemo(() => {
+    const offersBackedByGroup: { [key: string]: string } = {};
+    if (isEmpty(exchangesTokens)) {
+      return offersBackedByGroup;
+    }
+    exchangesTokens?.forEach((exchangeToken) => {
+      const key = exchangeToken.symbol;
+      const notExpiredAndNotVoidedOffers = exchangeToken.offers.filter(
+        (offer) => {
+          const validUntilDateParsed = dayjs(
+            Number(offer?.validUntilDate) * 1000
+          );
+          const validFromDateParsed = dayjs(
+            Number(offer?.validFromDate) * 1000
+          );
+          const isNotExpired = dayjs()
+            .startOf("day")
+            .isBetween(validUntilDateParsed, validFromDateParsed, "day");
+          return isNotExpired && !offer.voidedAt;
+        }
+      );
+      const sumValue = notExpiredAndNotVoidedOffers.reduce(
+        (acc, { price, sellerDeposit, quantityAvailable }) => {
+          acc = acc
+            ? BigNumber.from(acc)
+                .add(
+                  BigNumber.from(sellerDeposit)
+                    .mul(BigNumber.from(price))
+                    .mul(BigNumber.from(quantityAvailable))
+                )
+                .toString()
+            : BigNumber.from(sellerDeposit)
+                .mul(BigNumber.from(price))
+                .mul(BigNumber.from(quantityAvailable))
+                .toString();
+          return acc;
+        },
+        ""
+      );
+      offersBackedByGroup[key] = sumValue;
+    });
+    return offersBackedByGroup;
+  }, [exchangesTokens]);
+
+  const sellerLockedFunds = useMemo(() => {
+    const lockedFundsByGroup: { [key: string]: string } = {};
+    if (isEmpty(sellersData?.exchanges)) {
+      return lockedFundsByGroup;
+    }
+    const noFinalized = filter(
+      sellersData?.exchanges,
+      ({ finalizedDate }) => !finalizedDate
+    );
+
+    const groupedBySymbol = groupBy(
+      noFinalized,
+      (exchange) => exchange.offer.exchangeToken.symbol
+    );
+    Object.keys(groupedBySymbol).forEach((key) => {
+      const element = groupedBySymbol[key];
+      const sum = element.reduce((acc, elem) => {
+        acc = acc
+          ? BigNumber.from(acc)
+              .add(BigNumber.from(elem.offer.sellerDeposit))
+              .toString()
+          : elem.offer.sellerDeposit;
+        return acc;
+      }, "");
+      lockedFundsByGroup[key] = sum;
+    });
+    return lockedFundsByGroup;
+  }, [sellersData?.exchanges]);
+
+  const reloadData = useCallback(() => {
+    reload();
+    sellerRefetch();
+    exchangesTokensRefetch();
+  }, [reload, sellerRefetch, exchangesTokensRefetch]);
+
+  const offersBackedCell = useCallback((value: number | null) => {
+    if (value === null) {
+      return "";
+    }
+    if (value < 15) {
+      return (
+        <>
+          <WarningCircle size={15} /> {value} %
+        </>
+      );
+    }
+    return `${value} %`;
+  }, []);
+
   const data = useMemo(
     () =>
-      funds?.map((found) => {
-        const allFounds = utils.formatUnits(
-          BigNumber.from(found.availableAmount),
-          Number(found.token.decimals)
+      mockedFunds?.map((fund) => {
+        const decimals = fund.token.decimals;
+        const lockedFunds = sellerLockedFunds?.[fund.token.symbol] ?? "0";
+        const lockedFundsFormatted = utils.formatUnits(lockedFunds, decimals);
+        const withdrawable = processValue(fund.availableAmount, decimals);
+        const allFounds = processValue(
+          BigNumber.from(lockedFunds)
+            .add(BigNumber.from(fund.availableAmount))
+            .toString(),
+          decimals
         );
-        const lockedFounds = "";
-        const withdrawable = "";
-        const offersBacked = "";
+        const offersBacked = () => {
+          let result = null;
+          if (fund.availableAmount && calcOffersBacked[fund.token.symbol]) {
+            console.log({
+              withdrawable: fund.availableAmount,
+              calcOffersBacked: calcOffersBacked[fund.token.symbol]
+            });
+            result =
+              BigNumber.from(fund.availableAmount)
+                .div(calcOffersBacked[fund.token.symbol])
+                .toNumber() * 100;
+          }
+          return result;
+        };
         return {
-          token: <Typography tag="p">{found.token.symbol}</Typography>,
+          token: <Typography tag="p">{fund.token.symbol}</Typography>,
           allFound: <Typography tag="p">{allFounds}</Typography>,
-          lockedFounds: <Typography tag="p">{lockedFounds}</Typography>,
+          lockedFunds: <Typography tag="p">{lockedFundsFormatted}</Typography>,
           withdrawable: <Typography tag="p">{withdrawable}</Typography>,
-          offersBacked: <Typography tag="p">{offersBacked}</Typography>,
+          offersBacked: (
+            <Typography tag="p">
+              <WarningWrapper gap="0.2rem" justifyContent="flex-start">
+                {offersBackedCell(offersBacked())}
+              </WarningWrapper>
+            </Typography>
+          ),
           action: (
             <Grid justifyContent="space-evently" gap="1rem">
               <WithdrawButton
@@ -192,14 +541,14 @@ export default function SellerFinancesTable({ offers }: Props) {
                   showModal(
                     modalTypes.FINANCE_WITHDRAW_MODAL,
                     {
-                      title: `Withdraw ${found.token.symbol}`,
-                      protocolBalance: allFounds,
-                      symbol: found.token.symbol,
+                      title: `Withdraw ${fund.token.symbol}`,
+                      protocolBalance: withdrawable,
+                      symbol: fund.token.symbol,
                       accountId: sellerId,
-                      tokenDecimals: found.token.decimals,
-                      exchangeToken: found.token.address,
-                      availableAmount: found.availableAmount,
-                      reload
+                      tokenDecimals: fund.token.decimals,
+                      exchangeToken: fund.token.address,
+                      availableAmount: fund.availableAmount,
+                      reload: reloadData
                     },
                     "auto",
                     "dark"
@@ -215,13 +564,13 @@ export default function SellerFinancesTable({ offers }: Props) {
                   showModal(
                     modalTypes.FINANCE_DEPOSIT_MODAL,
                     {
-                      title: `Deposit ${found.token.symbol}`,
-                      protocolBalance: allFounds,
-                      symbol: found.token.symbol,
+                      title: `Deposit ${fund.token.symbol}`,
+                      protocolBalance: withdrawable,
+                      symbol: fund.token.symbol,
                       accountId: sellerId,
-                      tokenDecimals: found.token.decimals,
-                      exchangeToken: found.token.address,
-                      reload
+                      tokenDecimals: fund.token.decimals,
+                      exchangeToken: fund.token.address,
+                      reload: reloadData
                     },
                     "auto",
                     "dark"
@@ -235,11 +584,13 @@ export default function SellerFinancesTable({ offers }: Props) {
         };
       }),
     [
-      funds,
+      calcOffersBacked,
       modalTypes.FINANCE_DEPOSIT_MODAL,
       modalTypes.FINANCE_WITHDRAW_MODAL,
-      reload,
+      offersBackedCell,
+      reloadData,
       sellerId,
+      sellerLockedFunds,
       showModal
     ]
   );
@@ -278,11 +629,21 @@ export default function SellerFinancesTable({ offers }: Props) {
     );
   }, [pageCount, pageIndex]);
 
-  if (!isFoundsInitialized || isLoadingSellers) {
+  if (
+    !isFoundsInitialized ||
+    isLoadingSellers ||
+    sellerDataLoading ||
+    isLoadingExchangesTokens
+  ) {
     return <Loading />;
   }
 
-  if (isErrorSellers || foundStatus === "error") {
+  if (
+    isErrorSellers ||
+    sellerDataIsError ||
+    foundStatus === "error" ||
+    isErrorExchangesTokens
+  ) {
     // TODO: NO FIGMA REPRESENTATIONS
   }
 
@@ -326,20 +687,17 @@ export default function SellerFinancesTable({ offers }: Props) {
           {(page.length > 0 &&
             page.map((row) => {
               prepareRow(row);
+              console.log(row.original, "LOGGG");
               return (
                 <tr
                   {...row.getRowProps()}
-                  key={`seller_table_tbody_tr_${row.original.token}`}
+                  key={`seller_table_finances_tbody_tr_${row.original.token}`}
                 >
                   {row.cells.map((cell) => {
                     return (
                       <td
                         {...cell.getCellProps()}
-                        key={`seller_table_tbody_td_${row.original.token}-${cell.column.id}`}
-                        onClick={() => {
-                          // TODO: SHOULD IT DO SOMETHING ?
-                          console.log("LOG");
-                        }}
+                        key={`seller_table_finances_tbody_td_${row.original.token}-${cell.column.id}`}
                       >
                         {cell.render("Cell")}
                       </td>

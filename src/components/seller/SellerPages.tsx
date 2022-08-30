@@ -34,9 +34,7 @@ export const sellerPageTypes = {
     url: "finances",
     label: "Finances",
     icon: Bank,
-    component: ({ sellerId }: SellerProps) => (
-      <SellerFinances sellerId={sellerId} />
-    )
+    component: () => <SellerFinances />
   }
 };
 

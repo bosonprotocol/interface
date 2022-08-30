@@ -30,7 +30,6 @@ export const InputWrapper = styled(Grid)<{ $hasError?: boolean }>`
     $hasError &&
     `
     border: 0.0625rem solid ${colors.red};
-    animation: shake 0.1s;
     `}
 `;
 

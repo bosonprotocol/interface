@@ -161,7 +161,7 @@ export const getNumberWithoutDecimals = (
   if (!Number.isInteger(valueAsNumber)) {
     return Math.floor(valueAsNumber * 10 ** Number(decimals)).toString();
   }
-  return BigNumber.from(value)
+  return BigNumber.from(valueAsNumber + "")
     .mul(BigNumber.from(10).pow(BigNumber.from(decimals)))
     .toString();
 };

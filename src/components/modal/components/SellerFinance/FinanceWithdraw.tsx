@@ -1,6 +1,7 @@
 import { BigNumber } from "ethers";
 import { useState } from "react";
 import styled from "styled-components";
+import { useAccount, useBalance } from "wagmi";
 
 import { colors } from "../../../../lib/styles/colors";
 import {
@@ -50,6 +51,11 @@ export default function FinanceWithdraw({
   const [isBeingWithdrawn, setIsBeingWithdrawn] = useState<boolean>(false);
   const [isWithdrawInvalid, setIsWithdrawInvalid] = useState<boolean>(true);
   const [withdrawError, setWithdrawError] = useState<unknown>(null);
+
+  const { address } = useAccount();
+  const { data: dataBalance } = useBalance({
+    addressOrName: address
+  });
 
   const { hideModal } = useModal();
   const withdrawFunds = useWithdrawFunds({
@@ -148,15 +154,13 @@ export default function FinanceWithdraw({
         </InputWrapper>
         <MaxLimitWrapper>
           <Typography tag="p" $fontSize="0.75rem" margin="0">
-            {/* TODO ADD MAX LIMIT */}
-            (Max Limit 100 USDC)
+            (Max Limit {protocolBalance} {symbol})
           </Typography>
         </MaxLimitWrapper>
       </AmountWrapper>
       <Grid>
         <Typography tag="p" margin="0" $fontSize="0.75rem" fontWeight="bold">
-          {/* TODO ADD WALlET BALANCE */}
-          Wallet Balance: 89 USDC
+          Wallet Balance: {dataBalance?.formatted} {dataBalance?.symbol}
         </Typography>
         <CTAButton
           theme="secondary"

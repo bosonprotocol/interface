@@ -1,5 +1,6 @@
 import { BigNumber, constants } from "ethers";
 import { useState } from "react";
+import { useAccount, useBalance } from "wagmi";
 
 import { useCoreSDK } from "../../../../lib/utils/useCoreSdk";
 import { getNumberWithoutDecimals } from "../../../../pages/account/funds/FundItem";
@@ -39,6 +40,11 @@ export default function FinanceDeposit({
   const [isBeingDeposit, setIsBeingDeposit] = useState<boolean>(false);
   const [isDepositInvalid, setIsDepositInvalid] = useState<boolean>(true);
   const [depositError, setDepositError] = useState<unknown>(null);
+
+  const { address } = useAccount();
+  const { data: dataBalance } = useBalance({
+    addressOrName: address
+  });
 
   const { hideModal } = useModal();
   const coreSDK = useCoreSDK();
@@ -149,8 +155,7 @@ export default function FinanceDeposit({
               {symbol}
             </Typography>
             <Typography $fontSize="0.625rem" margin="0">
-              {/* TODO ADD MISSING BALANCE */}
-              Balance 89.980.00
+              Balance {dataBalance?.formatted}
             </Typography>
           </div>
         </InputWrapper>
