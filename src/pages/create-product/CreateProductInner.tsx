@@ -346,10 +346,6 @@ function CreateProductInner({ initial }: Props) {
         metadataUri: `ipfs://${metadataHash}`,
         metadataHash: metadataHash
       };
-      console.log(
-        "🚀  roberto --  ~ file: CreateProductInner.tsx ~ line 356 ~ CreateProductInner ~ offerData",
-        offerData
-      );
 
       const txResponse =
         sellers?.length === 0 && address
@@ -370,14 +366,10 @@ function CreateProductInner({ initial }: Props) {
       const txReceipt = await txResponse.wait();
 
       const offerId = coreSDK.getCreatedOfferIdFromLogs(txReceipt.logs);
-      console.log(
-        "🚀  roberto --  ~ file: CreateProductInner.tsx ~ line 376 ~ CreateProductInner ~ offerId",
-        offerId
-      );
 
       await wait(3_000);
       handleOpenSuccessModal({ offerId });
-      // formikBag.resetForm();
+      formikBag.resetForm();
     } catch (error: any) {
       // TODO: FAILURE MODAL
       console.error("error->", error.errors ?? error.toString());
