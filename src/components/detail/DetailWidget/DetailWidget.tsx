@@ -8,7 +8,7 @@ import {
 } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { Check, Question } from "phosphor-react";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import styled from "styled-components";
 import { useAccount, useSigner } from "wagmi";
 
@@ -214,7 +214,6 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   const { isLteXS } = useBreakpoints();
   const navigate = useKeepQueryParamsNavigate();
   const { address } = useAccount();
-  const cancelRef = useRef<HTMLDivElement | null>(null);
   const isBuyer = exchange?.buyer.wallet === address?.toLowerCase();
   const isOffer = pageType === "offer";
   const isExchange = pageType === "exchange";

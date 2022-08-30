@@ -8,7 +8,6 @@ import { CONFIG } from "../../../../lib/config";
 import { colors } from "../../../../lib/styles/colors";
 import { getBuyerCancelPenalty } from "../../../../lib/utils/getPrices";
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
-import { useCoreSDK } from "../../../../lib/utils/useCoreSdk";
 import DetailTable from "../../../detail/DetailTable";
 import SimpleError from "../../../error/SimpleError";
 import { Spinner } from "../../../loading/Spinner";
@@ -87,7 +86,6 @@ export default function CancelExchangeModal({
   BASE_MODAL_DATA
 }: Props) {
   const { offer } = exchange;
-  const coreSDK = useCoreSDK();
   const { data: signer } = useSigner();
   const { showModal, modalTypes } = useModal();
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -158,8 +156,9 @@ export default function CancelExchangeModal({
           exchangeId={exchange.id}
           chainId={CONFIG.chainId}
           disabled={isLoading}
-          onError={(args) => {
-            console.error("onError", args);
+          onError={(error) => {
+            console.error(error);
+            setCancelError(error);
             setIsLoading(false);
             showModal(modalTypes.DETAIL_WIDGET, {
               title: "An error occurred",
@@ -171,9 +170,11 @@ export default function CancelExchangeModal({
           }}
           onPendingSignature={() => {
             setIsLoading(true);
+            setCancelError(null);
           }}
           onSuccess={() => {
             setIsLoading(false);
+            setCancelError(null);
             showModal(modalTypes.DETAIL_WIDGET, {
               title: "You have successfully cancelled!",
               message: "You have successfully cancelled!",
