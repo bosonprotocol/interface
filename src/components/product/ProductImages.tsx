@@ -47,7 +47,7 @@ export default function ProductImages() {
       <SectionTitle tag="h2">Product Images</SectionTitle>
       <FormField
         title="Upload your product images"
-        subTitle="You can disable images for variants that shouldn't be shown. Use a max. width and height of 2048px and a max. size of 10MB per image."
+        subTitle="You can disable images for variants that shouldn't be shown. Use a max. size of 10MB per image"
         style={{
           marginBottom: 0
         }}
