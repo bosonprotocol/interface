@@ -30,7 +30,7 @@ import DisputeCentreForm from "./DisputeCentreForm";
 
 const DISPUTE_STEPS = [
   {
-    name: "Choose isue",
+    name: "Choose issue",
     steps: 1
   } as const,
   {
