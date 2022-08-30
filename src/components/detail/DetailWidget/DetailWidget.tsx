@@ -1,6 +1,6 @@
 import { ExtendedExchangeState } from "@bosonprotocol/core-sdk/dist/cjs/exchanges";
+import { ExchangeState } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
 import {
-  CancelButton,
   CommitButton,
   exchanges,
   Provider,
@@ -8,7 +8,7 @@ import {
 } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { Check, Question } from "phosphor-react";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import styled from "styled-components";
 import { useAccount, useSigner } from "wagmi";
 
@@ -214,7 +214,6 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   const { isLteXS } = useBreakpoints();
   const navigate = useKeepQueryParamsNavigate();
   const { address } = useAccount();
-  const cancelRef = useRef<HTMLDivElement | null>(null);
   const isBuyer = exchange?.buyer.wallet === address?.toLowerCase();
   const isOffer = pageType === "offer";
   const isExchange = pageType === "exchange";
@@ -265,16 +264,6 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   const redeemableDays = Math.floor(totalHours / 24);
   const redeemableHours = totalHours - redeemableDays * 24;
 
-  const handleCancel = () => {
-    // TODO: it's just a workaround for now
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const child = cancelRef.current!.children[0] ?? null;
-    if (child) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      child.click();
-    }
-  };
   const handleRedeemModal = () => {
     showModal(modalTypes.WHAT_IS_REDEEM, { title: "Commit and Redeem" });
   };
@@ -291,7 +280,16 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     }),
     [OFFER_DETAIL_DATA_MODAL, exchange, image, name]
   );
-
+  const handleCancel = () => {
+    if (!exchange) {
+      return;
+    }
+    showModal(modalTypes.CANCEL_EXCHANGE, {
+      title: "Cancel exchange",
+      exchange,
+      BASE_MODAL_DATA
+    });
+  };
   return (
     <>
       <Widget>
@@ -389,7 +387,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 }
                 onClick={() => {
                   showModal(
-                    modalTypes.REDEEM_MODAL,
+                    modalTypes.REDEEM,
                     {
                       title: "Redeem your item",
                       exchangeId: exchange?.id || "",
@@ -472,7 +470,12 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               </ContactSellerButton>
               {isBeforeRedeem ? (
                 <>
-                  {exchangeStatus !== ExtendedExchangeState.Expired && (
+                  {![
+                    ExtendedExchangeState.Expired,
+                    ExchangeState.Cancelled
+                  ].includes(
+                    exchangeStatus as ExtendedExchangeState | ExchangeState
+                  ) && (
                     <StyledCancelButton
                       onClick={handleCancel}
                       theme="blank"
@@ -489,7 +492,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                   {!exchange?.disputed && (
                     <RaiseProblemButton
                       onClick={() => {
-                        showModal(modalTypes.DISPUTE_MODAL, {
+                        showModal(modalTypes.RAISE_DISPUTE, {
                           title: "Raise a problem",
                           exchangeId: exchange?.id || ""
                         });
@@ -508,45 +511,6 @@ const DetailWidget: React.FC<IDetailWidget> = ({
           </>
         )}
       </Widget>
-      {isExchange && (
-        <div
-          style={{ opacity: 0 }}
-          ref={(ref) => {
-            cancelRef.current = ref;
-          }}
-        >
-          <CancelButton
-            disabled={isChainUnsupported || isLoading || !isBuyer}
-            exchangeId={exchange?.id || ""}
-            chainId={CONFIG.chainId}
-            onError={(args) => {
-              console.error("onError", args);
-              setIsLoading(false);
-              showModal(modalTypes.DETAIL_WIDGET, {
-                title: "An error occurred",
-                message: "An error occurred when trying to cancel!",
-                type: "ERROR",
-                state: "Cancelled",
-                ...BASE_MODAL_DATA
-              });
-            }}
-            onPendingSignature={() => {
-              setIsLoading(true);
-            }}
-            onSuccess={() => {
-              setIsLoading(false);
-              showModal(modalTypes.DETAIL_WIDGET, {
-                title: "You have successfully cancelled!",
-                message: "You have successfully cancelled!",
-                type: "SUCCESS",
-                state: "Cancelled",
-                ...BASE_MODAL_DATA
-              });
-            }}
-            web3Provider={signer?.provider as Provider}
-          />
-        </div>
-      )}
     </>
   );
 };

@@ -775,6 +775,7 @@ const ChatConversation = ({
       <ExchangeSidePreview
         exchange={exchange}
         disputeOpen={isExchangePreviewOpen}
+        iAmTheBuyer={iAmTheBuyer}
       />
     </Container>
   );

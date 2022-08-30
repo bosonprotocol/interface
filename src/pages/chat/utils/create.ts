@@ -1,7 +1,10 @@
 import { CoreSDK } from "@bosonprotocol/react-kit";
 import { utils } from "ethers";
 
-import { PERCENTAGE_FACTOR } from "../../../components/modal/components/Chat/const";
+import {
+  MAX_PERCENTAGE_DECIMALS,
+  PERCENTAGE_FACTOR
+} from "../../../components/modal/components/Chat/const";
 import {
   FileWithEncodedData,
   getFilesWithEncodedData
@@ -40,8 +43,9 @@ export const createProposal = async ({
       {
         // the percentageAmount must be an integer so it goes from 1 - 10000 (0.01% - 100%)
         type: proposalFields.proposalTypeName,
-        percentageAmount:
-          proposalFields.refundPercentage * PERCENTAGE_FACTOR + "",
+        percentageAmount: (
+          proposalFields.refundPercentage * PERCENTAGE_FACTOR
+        ).toFixed(MAX_PERCENTAGE_DECIMALS),
         signature: ""
       }
     ],

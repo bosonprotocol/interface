@@ -7,30 +7,6 @@ import { fetchSubgraph } from "../core-components/subgraph";
 import { offerGraphQl } from "./offers/graphql";
 
 export type Exchange = subgraph.ExchangeFieldsFragment & {
-  id: string;
-  committedDate: string;
-  disputed: boolean;
-  expired: boolean;
-  finalizedDate: string;
-  redeemedDate: string;
-  state: string;
-  validUntilDate: string;
-  seller: {
-    id: string;
-    operator: string;
-    admin: string;
-    clerk: string;
-    treasury: string;
-    authTokenId: string;
-    authTokenType: number;
-    voucherCloneAddress: string;
-    active: boolean;
-  };
-  buyer: {
-    id: string;
-    wallet: string;
-    active: boolean;
-  };
   offer: Offer;
 };
 
