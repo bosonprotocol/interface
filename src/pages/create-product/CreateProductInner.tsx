@@ -3,6 +3,8 @@ import { MetadataType } from "@bosonprotocol/react-kit";
 import { parseUnits } from "@ethersproject/units";
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
+import localizedFormat from "dayjs/plugin/localizedFormat";
+dayjs.extend(localizedFormat);
 import { Form, Formik, FormikHelpers } from "formik";
 import isArray from "lodash/isArray";
 import keys from "lodash/keys";
@@ -401,18 +403,17 @@ function CreateProductInner({ initial }: Props) {
 
   const handleFormikValuesBeforeSave = useCallback(
     (values: CreateProductForm) => {
-      const dateFormat = "YYYY-MM-DDTHH:mm:ssZ[Z]";
       return {
         ...values,
         coreTermsOfSale: {
           ...values.coreTermsOfSale,
           redemptionPeriod:
             values?.coreTermsOfSale?.redemptionPeriod?.map((d: Dayjs) =>
-              dayjs(d).format(dateFormat)
+              dayjs(d).format()
             ) ?? [],
           offerValidityPeriod:
             values?.coreTermsOfSale?.offerValidityPeriod?.map((d: Dayjs) =>
-              dayjs(d).format(dateFormat)
+              dayjs(d).format()
             ) ?? []
         }
       };
@@ -432,16 +433,15 @@ function CreateProductInner({ initial }: Props) {
       <ProductLayoutContainer isPreviewVisible={isPreviewVisible}>
         <Formik<CreateProductForm>
           initialValues={initial}
-          onSubmit={(formikVal, formikBag) =>
-            handleSubmit(formikVal, formikBag)
-          }
+          onSubmit={(formikVal, formikBag) => {
+            const newValues = handleFormikValuesBeforeSave(formikVal);
+            saveItemInStorage("create-product", newValues);
+            return handleSubmit(formikVal, formikBag);
+          }}
           validationSchema={wizardStep.currentValidation}
           enableReinitialize
         >
-          {({ values }) => {
-            const newValues = handleFormikValuesBeforeSave(values);
-            saveItemInStorage("create-product", newValues);
-
+          {() => {
             return (
               <Form>
                 {isPreviewVisible ? (

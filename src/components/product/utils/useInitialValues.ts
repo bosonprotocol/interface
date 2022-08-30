@@ -1,5 +1,3 @@
-import dayjs from "dayjs";
-
 import { checkIfValueIsEmpty } from "../../../lib/utils/checkIfValueIsEmpty";
 import { convertToBlob } from "../../../lib/utils/convertToBlob";
 import { getLocalStorageItems } from "../../../lib/utils/getLocalStorageItems";
@@ -71,20 +69,6 @@ const parseInitialValues = (
         initialValues[keys[0]][keys[1]] = [convertedImages[d]];
       });
     }
-    initialValues = {
-      ...initialValues,
-      coreTermsOfSale: {
-        ...initialValues.coreTermsOfSale,
-        redemptionPeriod:
-          initialValues?.coreTermsOfSale?.redemptionPeriod?.map((d: string) =>
-            dayjs(d)
-          ) ?? [],
-        offerValidityPeriod:
-          initialValues?.coreTermsOfSale?.offerValidityPeriod?.map(
-            (d: string) => dayjs(d)
-          ) ?? []
-      }
-    };
   }
 
   return initialValues;
@@ -97,8 +81,6 @@ export function useInitialValues() {
     null
   );
   const initialValues = parseInitialValues(storageItems, convertedImages);
-
-  console.log("initialValues", initialValues);
 
   return {
     shouldDisplayModal: initialValues !== null,

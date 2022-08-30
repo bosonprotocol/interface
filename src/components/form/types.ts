@@ -7,6 +7,7 @@ export interface BaseProps {
 export interface DatepickerProps extends BaseProps {
   data?: string;
   period?: boolean;
+  selectTime?: boolean;
   setIsFormValid?: (isValid: boolean) => void;
 }
 
@@ -41,6 +42,13 @@ export interface SelectDataProps {
 
 export interface SelectContentProps {
   children: React.ReactNode | JSX.Element;
+}
+
+export interface BaseSelectProps {
+  options: Array<SelectDataProps>;
+  placeholder?: string;
+  defaultValue?: SelectDataProps | null;
+  onChange?: (option: SelectDataProps) => void;
 }
 
 export interface SelectProps extends BaseProps {
