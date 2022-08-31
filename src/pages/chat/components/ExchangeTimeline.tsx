@@ -26,26 +26,33 @@ export default function ExchangeTimeline({ exchange }: Props) {
   const timesteps = useMemo(() => {
     const { committedDate, redeemedDate, cancelledDate, revokedDate } =
       exchange;
-    const timesteps = [];
+    const timesteps: { text: string; date: string; timestamp: number }[] = [];
     if (committedDate) {
       timesteps.push({
         text: "Committed",
-        date: formatShortDate(committedDate)
+        date: formatShortDate(committedDate),
+        timestamp: Number(committedDate)
       });
     }
     if (redeemedDate) {
-      timesteps.push({ text: "Redeemed", date: formatShortDate(redeemedDate) });
+      timesteps.push({
+        text: "Redeemed",
+        date: formatShortDate(redeemedDate),
+        timestamp: Number(redeemedDate)
+      });
     }
     if (cancelledDate) {
       timesteps.push({
         text: "Cancelled",
-        date: formatShortDate(cancelledDate)
+        date: formatShortDate(cancelledDate),
+        timestamp: Number(cancelledDate)
       });
     }
     if (revokedDate) {
       timesteps.push({
         text: "Revoked",
-        date: formatShortDate(revokedDate)
+        date: formatShortDate(revokedDate),
+        timestamp: Number(revokedDate)
       });
     }
     if (dispute) {
@@ -53,24 +60,27 @@ export default function ExchangeTimeline({ exchange }: Props) {
       if (disputedDate) {
         timesteps.push({
           text: "Dispute Raised",
-          date: formatShortDate(disputedDate)
+          date: formatShortDate(disputedDate),
+          timestamp: Number(disputedDate)
         });
       }
       if (retractedDate) {
         timesteps.push({
           text: "Dispute Retracted",
-          date: formatShortDate(retractedDate)
+          date: formatShortDate(retractedDate),
+          timestamp: Number(retractedDate)
         });
       }
       if (resolvedDate) {
         timesteps.push({
           text: "Dispute Mutually Resolved",
-          date: formatShortDate(resolvedDate)
+          date: formatShortDate(resolvedDate),
+          timestamp: Number(resolvedDate)
         });
       }
     }
 
-    return timesteps; // TODO: sort by date
+    return timesteps.sort((a, b) => a.timestamp - b.timestamp);
   }, [exchange, dispute]);
   return (
     <>
