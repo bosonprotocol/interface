@@ -73,10 +73,6 @@ const StyledGrid = styled(Grid)`
   min-width: 13.6875rem;
   font-weight: 500;
   font-size: 0.75rem;
-  color: ${colors.darkGrey};
-  align-items: flex-start;
-  justify-content: flex-end;
-  margin-right: 0px;
 `;
 
 const DisputeEndDate = styled(ClockClockwise)`
@@ -141,7 +137,12 @@ function DisputeListMobileElement({ exchange }: { exchange: Exchange }) {
         <Grid $width="initial">
           <DisputeRaised>{exchange?.state}</DisputeRaised>
         </Grid>
-        <StyledGrid alignItems="center" margin="0 -1.25rem 0 0">
+        <StyledGrid
+          alignItems="flex-start"
+          justifyContent="flex-end"
+          margin="0 0 0 0"
+          color={colors.darkGrey}
+        >
           <DisputeEndDate
             size={17}
             fontWeight="light"

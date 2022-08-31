@@ -20,20 +20,20 @@ const DisputeListContainer = styled.div`
   padding-bottom: 3.125rem;
 `;
 
-const DisputeListHeader = styled.div<{ isMobile: boolean }>`
+const DisputeListHeader = styled.div<{ isLteS: boolean }>`
   max-width: 65.625rem;
   margin: 0 auto;
-  padding-top: ${({ isMobile }) => (isMobile ? "2.5rem" : "3.125rem")};
-  padding-bottom: ${({ isMobile }) => (isMobile ? "1.5625rem" : "2rem")};
-  max-width: ${({ isMobile }) => (isMobile ? "100%" : "65.625rem")};
-  display: ${({ isMobile }) => isMobile && "block"};
-  background: ${({ isMobile }) => isMobile && colors.lightGrey};
+  padding-top: ${({ isLteS }) => (isLteS ? "2.5rem" : "3.125rem")};
+  padding-bottom: ${({ isLteS }) => (isLteS ? "1.5625rem" : "2rem")};
+  max-width: ${({ isLteS }) => (isLteS ? "100%" : "65.625rem")};
+  display: ${({ isLteS }) => isLteS && "block"};
+  background: ${({ isLteS }) => isLteS && colors.lightGrey};
   span {
-    max-width: ${({ isMobile }) => isMobile && "25rem"};
-    background: ${({ isMobile }) => isMobile && colors.white};
-    display: ${({ isMobile }) => isMobile && "block"};
-    margin: ${({ isMobile }) => isMobile && "0 auto"};
-    padding: ${({ isMobile }) => isMobile && "1.25rem"};
+    max-width: ${({ isLteS }) => isLteS && "25rem"};
+    background: ${({ isLteS }) => isLteS && colors.white};
+    display: ${({ isLteS }) => isLteS && "block"};
+    margin: ${({ isLteS }) => isLteS && "0 auto"};
+    padding: ${({ isLteS }) => isLteS && "1.25rem"};
   }
 `;
 
@@ -60,12 +60,12 @@ function DisputeList() {
   const { isLteS } = useBreakpoints();
 
   const { data: exchanges = [] } = useExchanges({
-    disputed: false
+    disputed: true
   });
 
   return (
     <>
-      <DisputeListHeader isMobile={isLteS}>
+      <DisputeListHeader isLteS={isLteS}>
         <span>
           <Typography $fontSize="2rem" color={colors.black} fontWeight="600">
             Dispute resolution center
