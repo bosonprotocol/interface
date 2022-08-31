@@ -287,45 +287,6 @@ const SellerComponent = ({
 const getWasItSentByMe = (myAddress: string | undefined, sender: string) => {
   return myAddress === sender;
 };
-let isMounted = false;
-const monitor = async ({
-  threadId,
-  isMounted,
-  bosonXmtp,
-  addMessage,
-  destinationAddress
-}: {
-  threadId: ThreadId;
-  isMounted: boolean;
-  bosonXmtp: BosonXmtpClient;
-  addMessage: (
-    threadId: ThreadObjectWithIsValid["threadId"] | null | undefined,
-    newMessageOrList: MessageDataWithIsValid | MessageDataWithIsValid[]
-  ) => Promise<void>;
-  destinationAddress: string;
-}) => {
-  try {
-    for await (const incomingMessage of bosonXmtp.monitorThread(
-      threadId,
-      destinationAddress
-    )) {
-      // if (!isMounted) {
-      //   return;
-      // }
-      const isValid = await validateMessage(incomingMessage.data);
-      await addMessage(threadId, { ...incomingMessage, isValid });
-    }
-    // console.log("stopped listening to ", { threadIdString });
-    // setListeningThreadIds((prev) => [
-    //   ...prev.filter((value) => value !== threadIdString)
-    // ]);
-  } catch (error) {
-    console.error(error);
-    // setListeningThreadIds((prev) => [
-    //   ...prev.filter((value) => value !== threadIdString)
-    // ]);
-  }
-};
 
 interface Props {
   myBuyerId: string;
@@ -479,31 +440,46 @@ const ChatConversation = ({
     );
   }, [addMessage, bosonXmtp, destinationAddress, thread?.threadId]);
   useEffect(() => {
-    if (!isMonitorOk && !isMounted) {
+    if (!isMonitorOk) {
       return;
     }
+    const stopGenerator = {
+      done: false
+    };
 
-    isMounted = true;
-    console.log({ threadId: thread?.threadId });
-    // const threadIdString = `${thread?.threadId.buyerId}-${thread?.threadId.exchangeId}-${thread?.threadId.sellerId}`;
-    // if (listeningThreadIds.includes(threadIdString)) {
-    //   return;
-    // }
-    // setListeningThreadIds((prev) => [...prev, threadIdString]);
+    const monitor = async ({
+      threadId,
+      bosonXmtp,
+      destinationAddress
+    }: {
+      threadId: ThreadId;
+      bosonXmtp: BosonXmtpClient;
+      destinationAddress: string;
+    }) => {
+      try {
+        for await (const incomingMessage of bosonXmtp.monitorThread(
+          threadId,
+          destinationAddress,
+          stopGenerator
+        )) {
+          await addMessage(threadId, { ...incomingMessage, isValid: true });
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
     monitor({
-      addMessage,
       bosonXmtp: bosonXmtp!,
       destinationAddress,
-      isMounted,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
       threadId: thread?.threadId!
     }).catch((error) => {
       console.error(error);
     });
 
     return () => {
-      isMounted = false;
+      stopGenerator.done = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMonitorOk]);
