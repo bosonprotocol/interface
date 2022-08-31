@@ -117,7 +117,7 @@ export default function SelectTime({
       <Grid gap="0.5rem" flexDirection="column" margin="1rem 0 0 0">
         <BaseSelect
           options={OPTIONS_TIMEZONES}
-          onChange={(o) => setTimezone(o.value)}
+          onChange={(o) => setTimezone(o?.value ?? "")}
           defaultValue={
             OPTIONS_TIMEZONES.filter((v) => v.value === timezone)[0] || null
           }
@@ -130,7 +130,7 @@ export default function SelectTime({
         <Grid justifyContent="space-around" gap="0.5rem">
           <BaseSelect
             options={BASE_HOURES}
-            onChange={(o) => handleHourSet(o.value, true)}
+            onChange={(o) => handleHourSet(o?.value ?? "00", true)}
             defaultValue={
               BASE_HOURES.filter(
                 (v) => v.value === hour || v.value === hour[0]
@@ -140,7 +140,7 @@ export default function SelectTime({
           :
           <BaseSelect
             options={BASE_MINUTES}
-            onChange={(o) => handleMinuteSet(o.value, true)}
+            onChange={(o) => handleMinuteSet(o?.value ?? "00", true)}
             defaultValue={
               BASE_MINUTES.filter(
                 (v) => v.value === minute || v.value === minute[0]
@@ -156,7 +156,7 @@ export default function SelectTime({
             <Grid justifyContent="space-around" gap="0.5rem">
               <BaseSelect
                 options={BASE_HOURES}
-                onChange={(o) => handleHourSet(o.value, false)}
+                onChange={(o) => handleHourSet(o?.value ?? "00", false)}
                 defaultValue={
                   BASE_HOURES.filter(
                     (v) => v.value === hour || v.value === hour[1]
@@ -166,7 +166,7 @@ export default function SelectTime({
               :
               <BaseSelect
                 options={BASE_MINUTES}
-                onChange={(o) => handleMinuteSet(o.value, false)}
+                onChange={(o) => handleMinuteSet(o?.value ?? "00", false)}
                 defaultValue={
                   BASE_MINUTES.filter(
                     (v) => v.value === minute || v.value === minute[1]

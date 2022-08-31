@@ -2,6 +2,7 @@
 // @ts-nocheck
 import * as Yup from "yup";
 
+// TODO: add unit tests for both functions
 import isOfferValidityDatesValid from "./isOfferValidityDatesValid";
 import isRedemptionDatesValid from "./isRedemptionDatesValid";
 

@@ -1,10 +1,10 @@
 /* eslint @typescript-eslint/no-explicit-any: "off" */
-import Select from "react-select";
+import Select, { SingleValue } from "react-select";
 
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import { checkIfValueIsEmpty } from "../../lib/utils/checkIfValueIsEmpty";
-import type { BaseSelectProps } from "./types";
+import type { BaseSelectProps, SelectDataProps } from "./types";
 
 const customStyles = (error: any) => ({
   control: (provided: any, state: any) => ({
@@ -53,7 +53,7 @@ export default function BaseSelect({
   onChange,
   ...props
 }: BaseSelectProps) {
-  const handleChange = (option: any) => {
+  const handleChange = (option: SingleValue<SelectDataProps>) => {
     onChange?.(option);
   };
 

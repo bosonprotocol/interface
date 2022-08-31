@@ -1,3 +1,5 @@
+import { SingleValue } from "react-select";
+
 export interface BaseProps {
   name: string;
   placeholder?: string;
@@ -44,11 +46,13 @@ export interface SelectContentProps {
   children: React.ReactNode | JSX.Element;
 }
 
+export type OnChange = (value: SingleValue<SelectDataProps>) => void;
+
 export interface BaseSelectProps {
   options: Array<SelectDataProps>;
   placeholder?: string;
   defaultValue?: SelectDataProps | null;
-  onChange?: (option: SelectDataProps) => void;
+  onChange?: OnChange;
 }
 
 export interface SelectProps extends BaseProps {

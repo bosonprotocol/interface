@@ -28,7 +28,9 @@ export interface ChoosenTime {
   timezone: string;
 }
 
-const handleInitialDates = (initialValue: any) => {
+const handleInitialDates = (
+  initialValue: Dayjs | Array<Dayjs> | null | undefined
+) => {
   let startDate: Dayjs | null = null;
   let endDate: Dayjs | null = null;
 
@@ -115,8 +117,6 @@ export default function DatePicker({
   }, [date, secondDate, period]);
 
   useEffect(() => {
-    console.log(date, secondDate);
-
     if (period) {
       if (date instanceof dayjs && secondDate instanceof dayjs) {
         let newDate = date;
