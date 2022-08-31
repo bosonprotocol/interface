@@ -63,14 +63,41 @@ const sizeToMargin = {
   }
 } as const;
 
-const Wrapper = styled.div<{ $modalType: ModalType; $size: Props["size"] }>`
+const background = {
+  primaryBgColor: "var(--primaryBgColor)",
+  dark: `${colors.black}`
+} as const;
+
+const Wrapper = styled.div<{
+  $modalType: ModalType;
+  $size: Props["size"];
+  $theme: Props["theme"];
+}>`
   position: relative;
   z-index: ${zIndex.Modal};
-  color: ${colors.black};
-  background-color: var(--primaryBgColor);
+  color: ${({ $theme }) => {
+    switch ($theme) {
+      case "dark":
+        return colors.white;
+      default:
+        return colors.black;
+    }
+  }};
+  background-color: ${({ $theme }) => {
+    return background[$theme as keyof typeof background];
+  }};
   border: var(--secondary);
-  max-width: ${({ $modalType }) =>
-    $modalType === "PRODUCT_CREATE_SUCCESS" ? "65.875rem" : "auto"};
+  max-width: ${({ $modalType }) => {
+    switch ($modalType) {
+      case "PRODUCT_CREATE_SUCCESS":
+        return "65.875rem";
+      case "FINANCE_WITHDRAW_MODAL":
+      case "FINANCE_DEPOSIT_MODAL":
+        return "31.25rem";
+      default:
+        break;
+    }
+  }};
   margin: 0;
   ${breakpoint.s} {
     margin: ${({ $size }) =>
@@ -114,8 +141,18 @@ const Close = styled(X)`
   }
 `;
 
-const Content = styled.div`
-  padding: 2rem;
+const Content = styled.div<{
+  $modalType: ModalType;
+}>`
+  padding: ${({ $modalType }) => {
+    switch ($modalType) {
+      case "FINANCE_WITHDRAW_MODAL":
+      case "FINANCE_DEPOSIT_MODAL":
+        return "0 2rem 2rem 2rem";
+      default:
+        return "2rem";
+    }
+  }};
 
   max-height: calc(100vh - 4.25rem);
 
@@ -136,6 +173,7 @@ interface Props {
   modalType: ModalType;
   headerComponent?: ReactNode;
   size: NonNullable<Store["modalSize"]>;
+  theme: NonNullable<Store["theme"]>;
   closable?: boolean;
 }
 
@@ -145,12 +183,13 @@ export default function Modal({
   title = "modal",
   headerComponent: HeaderComponent,
   size,
+  theme,
   closable = true,
   modalType
 }: Props) {
   return createPortal(
     <Root data-testid="modal">
-      <Wrapper $size={size} $modalType={modalType}>
+      <Wrapper $size={size} $modalType={modalType} $theme={theme}>
         {HeaderComponent ? (
           <Header tag="div" margin="0">
             {HeaderComponent}
@@ -170,7 +209,7 @@ export default function Modal({
             )}
           </HeaderWithTitle>
         )}
-        <Content>{children}</Content>
+        <Content $modalType={modalType}>{children}</Content>
       </Wrapper>
       <RootBG
         onClick={() => {
