@@ -14,12 +14,12 @@ const openSeaUrlMap = new Map([
   [
     80001,
     (exchangeId: string, contractAddress: string) =>
-      `http://testnets.opensea.io/assets/mumbai/${contractAddress}/${exchangeId}`
+      `https://testnets.opensea.io/assets/mumbai/${contractAddress}/${exchangeId}`
   ],
   [
     137,
     (exchangeId: string, contractAddress: string) =>
-      `http://opensea.io/assets/polygon/${contractAddress}/${exchangeId}`
+      `https://opensea.io/assets/polygon/${contractAddress}/${exchangeId}`
   ]
 ]);
 
