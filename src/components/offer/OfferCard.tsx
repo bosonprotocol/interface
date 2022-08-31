@@ -80,7 +80,6 @@ const getCTAPath = (
     exchangeId
   }: { offerId: Props["offer"]["id"]; exchangeId: string | undefined }
 ) => {
-  console.log({ action, exchangeId });
   if (
     (["redeem", "contact-seller"] as Action[]).includes(action as Action) &&
     exchangeId

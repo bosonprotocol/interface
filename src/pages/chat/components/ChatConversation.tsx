@@ -1,3 +1,4 @@
+import { BosonXmtpClient } from "@bosonprotocol/chat-sdk";
 import {
   MessageData,
   MessageType,
@@ -370,13 +371,13 @@ const ChatConversation = ({
 
   const addMessage = useCallback(
     async (
-      thread: ThreadObjectWithIsValid | null,
+      threadId: ThreadObjectWithIsValid["threadId"] | null | undefined,
       newMessageOrList: MessageDataWithIsValid | MessageDataWithIsValid[]
     ) => {
       const newMessages = Array.isArray(newMessageOrList)
         ? newMessageOrList
         : [newMessageOrList];
-      if (thread) {
+      if (threadId) {
         const messagesWithIsValid = await Promise.all(
           newMessages.map(async (message) => {
             if (message.isValid === undefined) {
@@ -429,34 +430,56 @@ const ChatConversation = ({
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const navigate = useKeepQueryParamsNavigate();
   const { address } = useAccount();
+  const isMonitorOk = useMemo(() => {
+    return (
+      !!addMessage && !!bosonXmtp && !!destinationAddress && thread?.threadId
+    );
+  }, [addMessage, bosonXmtp, destinationAddress, thread?.threadId]);
   useEffect(() => {
-    if (!bosonXmtp || !thread?.threadId || !destinationAddress) {
+    if (!isMonitorOk) {
       return;
     }
-    let isMounted = true;
-    const monitor = async () => {
+    const stopGenerator = {
+      done: false
+    };
+
+    const monitor = async ({
+      threadId,
+      bosonXmtp,
+      destinationAddress
+    }: {
+      threadId: ThreadId;
+      bosonXmtp: BosonXmtpClient;
+      destinationAddress: string;
+    }) => {
       try {
         for await (const incomingMessage of bosonXmtp.monitorThread(
-          thread.threadId,
-          destinationAddress
+          threadId,
+          destinationAddress,
+          stopGenerator
         )) {
-          if (!isMounted) {
-            return;
-          }
-          const isValid = await validateMessage(incomingMessage.data);
-          await addMessage(thread, { ...incomingMessage, isValid });
+          await addMessage(threadId, { ...incomingMessage, isValid: true });
         }
       } catch (error) {
         console.error(error);
       }
     };
-    monitor().catch((error) => {
+
+    monitor({
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      bosonXmtp: bosonXmtp!,
+      destinationAddress,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+      threadId: thread?.threadId!
+    }).catch((error) => {
       console.error(error);
     });
+
     return () => {
-      isMounted = false;
+      stopGenerator.done = true;
     };
-  }, [bosonXmtp, destinationAddress, thread, addMessage, address]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMonitorOk]);
 
   const sendFiles = useCallback(
     async (files: FileWithEncodedData[]) => {
@@ -470,7 +493,7 @@ const ChatConversation = ({
         destinationAddress,
         threadId,
         callback: async (messageData) => {
-          await addMessage(thread, { ...messageData, isValid: true });
+          await addMessage(thread?.threadId, { ...messageData, isValid: true });
         }
       });
     },
@@ -683,7 +706,7 @@ const ChatConversation = ({
                       destinationAddress,
                       threadId,
                       callback: async (messageData) => {
-                        await addMessage(thread, {
+                        await addMessage(thread?.threadId, {
                           ...messageData,
                           isValid: true
                         });
@@ -756,7 +779,7 @@ const ChatConversation = ({
                     destinationAddress
                   );
                   setIsMessageBeingSent(false);
-                  await addMessage(thread, {
+                  await addMessage(thread?.threadId, {
                     ...messageData,
                     isValid: true
                   });

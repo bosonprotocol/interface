@@ -207,7 +207,9 @@ export default function ExchangeSidePreview({
       },
       { enabled: !!exchange }
     );
-  const [dispute] = disputes;
+  const [dispute] = disputes.length
+    ? disputes
+    : [{} as subgraph.DisputeFieldsFragment];
   const offer = exchange?.offer;
   const { showModal } = useModal();
   const OFFER_DETAIL_DATA = useMemo(
@@ -240,7 +242,7 @@ export default function ExchangeSidePreview({
         alt="exchange image"
         dataTestId="exchange-image"
       />
-      {isInRedeemed && (
+      {isInDispute && (
         <InfoMessage>{`${daysLeftToResolveDispute} / ${totalDaysToResolveDispute} days left to resolve dispute`}</InfoMessage>
       )}
       <ExchangeInfo>
@@ -270,7 +272,7 @@ export default function ExchangeSidePreview({
       <Section>
         <DetailTable align noBorder data={OFFER_DETAIL_DATA ?? ({} as never)} />
       </Section>
-      {isInDispute && iAmTheBuyer && (
+      {isInDispute && iAmTheBuyer ? (
         <CTASection>
           <Button
             theme="primary"
@@ -297,7 +299,25 @@ export default function ExchangeSidePreview({
             Escalate
           </Button>
         </CTASection>
-      )}
+      ) : isInRedeemed ? (
+        <CTASection>
+          <Button
+            theme="secondary"
+            onClick={() =>
+              showModal(
+                "RAISE_DISPUTE",
+                {
+                  title: "Raise a problem",
+                  exchangeId: exchange.id
+                },
+                "s"
+              )
+            }
+          >
+            Raise a Problem
+          </Button>
+        </CTASection>
+      ) : null}
       <HistorySection>
         <h4>History</h4>
         <ExchangeTimeline exchange={exchange} />
