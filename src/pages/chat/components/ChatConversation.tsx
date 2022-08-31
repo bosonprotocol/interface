@@ -1,4 +1,4 @@
-import { BosonXmtpClient } from "@bosonprotocol/chat-sdk";
+/* eslint @typescript-eslint/no-explicit-any: "off" */
 import {
   MessageData,
   MessageType,
@@ -287,45 +287,7 @@ const SellerComponent = ({
 const getWasItSentByMe = (myAddress: string | undefined, sender: string) => {
   return myAddress === sender;
 };
-let isMounted = false;
-const monitor = async ({
-  threadId,
-  isMounted,
-  bosonXmtp,
-  addMessage,
-  destinationAddress
-}: {
-  threadId: ThreadId;
-  isMounted: boolean;
-  bosonXmtp: BosonXmtpClient;
-  addMessage: (
-    threadId: ThreadObjectWithIsValid["threadId"] | null | undefined,
-    newMessageOrList: MessageDataWithIsValid | MessageDataWithIsValid[]
-  ) => Promise<void>;
-  destinationAddress: string;
-}) => {
-  try {
-    for await (const incomingMessage of bosonXmtp.monitorThread(
-      threadId,
-      destinationAddress
-    )) {
-      // if (!isMounted) {
-      //   return;
-      // }
-      const isValid = await validateMessage(incomingMessage.data);
-      await addMessage(threadId, { ...incomingMessage, isValid });
-    }
-    // console.log("stopped listening to ", { threadIdString });
-    // setListeningThreadIds((prev) => [
-    //   ...prev.filter((value) => value !== threadIdString)
-    // ]);
-  } catch (error) {
-    console.error(error);
-    // setListeningThreadIds((prev) => [
-    //   ...prev.filter((value) => value !== threadIdString)
-    // ]);
-  }
-};
+import monitor from "./monitor";
 
 interface Props {
   myBuyerId: string;
@@ -340,6 +302,7 @@ interface Props {
   listeningThreadIds: string[];
   setListeningThreadIds: React.Dispatch<React.SetStateAction<string[]>>;
 }
+let nth = 0;
 const ChatConversation = ({
   myBuyerId,
   mySellerId,
@@ -353,6 +316,7 @@ const ChatConversation = ({
   listeningThreadIds,
   setListeningThreadIds
 }: Props) => {
+  const [myCurrentMonitor, setMyCurrentMonitor] = useState<any>(null);
   const iAmTheBuyer = myBuyerId === exchange?.buyer.id;
   const iAmTheSeller = mySellerId === exchange?.offer.seller.id;
   const iAmBoth = iAmTheBuyer && iAmTheSeller;
@@ -473,40 +437,55 @@ const ChatConversation = ({
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const navigate = useKeepQueryParamsNavigate();
   const { address } = useAccount();
+
   const isMonitorOk = useMemo(() => {
-    return (
-      !!addMessage && !!bosonXmtp && !!destinationAddress && thread?.threadId
-    );
-  }, [addMessage, bosonXmtp, destinationAddress, thread?.threadId]);
+    if (
+      !!addMessage &&
+      !!bosonXmtp &&
+      !!destinationAddress &&
+      thread?.threadId
+    ) {
+      return {
+        addMessage,
+        bosonXmtp,
+        destinationAddress,
+        threadId: thread?.threadId
+      };
+    }
+    console.log("thread?.threadId", thread);
+    console.log("destinationAddress", destinationAddress);
+    return false;
+  }, [addMessage, bosonXmtp, destinationAddress, thread?.threadId]); // eslint-disable-line
+
+  console.log("isMonitorOk", isMonitorOk);
+  console.log("isLoading", areThreadsLoading);
+  console.log("myCurrentMonitor", myCurrentMonitor);
+
   useEffect(() => {
-    if (!isMonitorOk && !isMounted) {
-      return;
+    if (isMonitorOk !== false && myCurrentMonitor === null) {
+      nth += 1;
+      console.log({ isMonitorOk });
+      console.log("========================");
+      console.log(`Fired for the ${nth} time for id`, {
+        threadId: thread?.threadId
+      });
+      console.log("========================");
+      const myCurrentMonitor = monitor({
+        addMessage,
+        bosonXmtp: bosonXmtp!,
+        destinationAddress,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+        threadId: thread?.threadId!
+      }).catch((error) => {
+        console.error(error);
+      });
+      setMyCurrentMonitor(myCurrentMonitor);
     }
 
-    isMounted = true;
-    console.log({ threadId: thread?.threadId });
-    // const threadIdString = `${thread?.threadId.buyerId}-${thread?.threadId.exchangeId}-${thread?.threadId.sellerId}`;
-    // if (listeningThreadIds.includes(threadIdString)) {
-    //   return;
+    // if (isMonitorOk === false && myCurrentMonitor !== null) {
+    //   setMyCurrentMonitor(null);
     // }
-    // setListeningThreadIds((prev) => [...prev, threadIdString]);
-
-    monitor({
-      addMessage,
-      bosonXmtp: bosonXmtp!,
-      destinationAddress,
-      isMounted,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-      threadId: thread?.threadId!
-    }).catch((error) => {
-      console.error(error);
-    });
-
-    return () => {
-      isMounted = false;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isMonitorOk]);
+  }, [isMonitorOk, myCurrentMonitor]); // eslint-disable-line
 
   const sendFiles = useCallback(
     async (files: FileWithEncodedData[]) => {
