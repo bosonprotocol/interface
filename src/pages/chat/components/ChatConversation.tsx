@@ -298,8 +298,6 @@ interface Props {
   prevPath: string;
   onTextAreaChange: (textAreaTargetValue: string) => void;
   textAreaValue: string | undefined;
-  listeningThreadIds: string[];
-  setListeningThreadIds: React.Dispatch<React.SetStateAction<string[]>>;
 }
 const ChatConversation = ({
   myBuyerId,
@@ -310,9 +308,7 @@ const ChatConversation = ({
   exchangeIdNotOwned,
   prevPath,
   onTextAreaChange,
-  textAreaValue,
-  listeningThreadIds,
-  setListeningThreadIds
+  textAreaValue
 }: Props) => {
   const iAmTheBuyer = myBuyerId === exchange?.buyer.id;
   const iAmTheSeller = mySellerId === exchange?.offer.seller.id;
@@ -470,6 +466,7 @@ const ChatConversation = ({
     };
 
     monitor({
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       bosonXmtp: bosonXmtp!,
       destinationAddress,
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
