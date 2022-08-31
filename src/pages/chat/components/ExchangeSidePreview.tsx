@@ -9,16 +9,16 @@ import { DetailSellerDeposit } from "../../../components/detail/DetailWidget/Det
 import { useModal } from "../../../components/modal/useModal";
 import Price from "../../../components/price";
 import MultiSteps from "../../../components/step/MultiSteps";
-import Timeline from "../../../components/timeline/Timeline";
 import Button from "../../../components/ui/Button";
 import Image from "../../../components/ui/Image";
 import Typography from "../../../components/ui/Typography";
-import { CONFIG } from "../../../lib/config";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
 import { zIndex } from "../../../lib/styles/zIndex";
 import { Offer } from "../../../lib/types/offer";
+import { useDisputes } from "../../../lib/utils/hooks/useDisputes";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
+import ExchangeTimeline from "./ExchangeTimeline";
 
 const Container = styled.div<{ $disputeOpen: boolean }>`
   display: flex;
@@ -43,28 +43,8 @@ const Container = styled.div<{ $disputeOpen: boolean }>`
     background: transparent;
     right: unset;
     margin-top: 0;
-    width: unset;
-    padding-top: none;
-    min-width: max-content;
-  }
-  > div {
-    padding-left: 1.25rem;
-    padding-right: 1.25rem;
-    ${breakpoint.xs} {
-      padding-left: 4.375rem;
-      padding-right: 4.375rem;
-    }
-    ${breakpoint.s} {
-      padding-left: 7.5rem;
-      padding-right: 7.5rem;
-    }
-    ${breakpoint.m} {
-      padding-left: 6.875rem;
-      padding-right: 6.875rem;
-    }
-    ${breakpoint.l} {
-      padding: 1.625rem;
-    }
+    flex-basis: 39rem;
+    min-width: unset;
   }
 `;
 
@@ -178,12 +158,6 @@ const HistorySection = styled(Section)`
   }
 `;
 
-const formatShortDate = (date: string) => {
-  return date
-    ? dayjs(new Date(Number(date) * 1000)).format(CONFIG.shortDateFormat)
-    : "";
-};
-
 const getOfferDetailData = (offer: Offer) => {
   return [
     {
@@ -217,49 +191,42 @@ const getOfferDetailData = (offer: Offer) => {
 interface Props {
   exchange: Exchange | undefined;
   disputeOpen: boolean;
+  iAmTheBuyer: boolean;
 }
-export default function ExchangeSidePreview({ exchange, disputeOpen }: Props) {
+export default function ExchangeSidePreview({
+  exchange,
+  disputeOpen,
+  iAmTheBuyer
+}: Props) {
+  const { data: disputes = [{} as subgraph.DisputeFieldsFragment] } =
+    useDisputes(
+      {
+        disputesFilter: {
+          exchange: exchange?.id
+        }
+      },
+      { enabled: !!exchange }
+    );
+  const [dispute] = disputes.length
+    ? disputes
+    : [{} as subgraph.DisputeFieldsFragment];
   const offer = exchange?.offer;
   const { showModal } = useModal();
   const OFFER_DETAIL_DATA = useMemo(
     () => offer && getOfferDetailData(offer),
     [offer]
   );
-  const timesteps = useMemo(() => {
-    if (!exchange) {
-      return [];
-    }
-    const { committedDate, redeemedDate, disputed } = exchange;
-    const timesteps = [];
-    if (committedDate) {
-      timesteps.push({
-        text: "Committed",
-        date: formatShortDate(committedDate)
-      });
-    }
-    if (redeemedDate) {
-      timesteps.push({ text: "Redeemed", date: formatShortDate(redeemedDate) });
-    }
-    if (disputed) {
-      timesteps.push({
-        text: "Dispute Raised",
-        date: "" // TODO: use disputed timestamp once CC returns that in the subgraph
-      });
-    }
-    return timesteps;
-  }, [exchange]);
+
   if (!exchange || !offer) {
     return null;
   }
   const isInRedeemed = subgraph.ExchangeState.Redeemed === exchange.state;
-  const isInDispute = exchange.disputed;
-  const isResolved = false; // TODO: change
-  const isEscalated = false; // TODO: change
-  // TODO: change these values
-  const deadlineToResolveDispute = new Date(
-    new Date().getTime() + 1000000000
-  ).getTime();
-  const raisedDisputeAt = new Date(new Date().getTime() - 100000000).getTime(); // yesterday
+  const isInDispute = exchange.disputed && !dispute.finalizedDate;
+  const isResolved = !!dispute.resolvedDate;
+  const isEscalated = !!dispute.escalatedDate;
+  const deadlineToResolveDispute =
+    Number(exchange.offer.resolutionPeriodDuration) / 1000;
+  const raisedDisputeAt = new Date(Number(dispute.disputedDate) / 1000);
   const totalDaysToResolveDispute = dayjs(deadlineToResolveDispute).diff(
     raisedDisputeAt,
     "day"
@@ -270,13 +237,12 @@ export default function ExchangeSidePreview({ exchange, disputeOpen }: Props) {
   );
   return (
     <Container $disputeOpen={disputeOpen}>
-      {/* <ExchangeImage src={exchange.offer.metadata.imageUrl} width="372px" /> */}
       <StyledImage
         src={exchange?.offer.metadata.imageUrl}
         alt="exchange image"
         dataTestId="exchange-image"
       />
-      {isInRedeemed && (
+      {isInDispute && (
         <InfoMessage>{`${daysLeftToResolveDispute} / ${totalDaysToResolveDispute} days left to resolve dispute`}</InfoMessage>
       )}
       <ExchangeInfo>
@@ -306,16 +272,16 @@ export default function ExchangeSidePreview({ exchange, disputeOpen }: Props) {
       <Section>
         <DetailTable align noBorder data={OFFER_DETAIL_DATA ?? ({} as never)} />
       </Section>
-      {isInDispute && (
+      {isInDispute && iAmTheBuyer ? (
         <CTASection>
           <Button
             theme="primary"
             onClick={() =>
               showModal(
-                "CANCEL_EXCHANGE",
+                "RETRACT_DISPUTE",
                 {
-                  title: "Cancel exchange",
-                  exchange
+                  title: "Retract",
+                  exchangeId: exchange.id
                 },
                 "s"
               )
@@ -333,10 +299,28 @@ export default function ExchangeSidePreview({ exchange, disputeOpen }: Props) {
             Escalate
           </Button>
         </CTASection>
-      )}
+      ) : isInRedeemed ? (
+        <CTASection>
+          <Button
+            theme="secondary"
+            onClick={() =>
+              showModal(
+                "RAISE_DISPUTE",
+                {
+                  title: "Raise a problem",
+                  exchangeId: exchange.id
+                },
+                "s"
+              )
+            }
+          >
+            Raise a Problem
+          </Button>
+        </CTASection>
+      ) : null}
       <HistorySection>
         <h4>History</h4>
-        <Timeline timesteps={timesteps} />
+        <ExchangeTimeline exchange={exchange} />
       </HistorySection>
     </Container>
   );

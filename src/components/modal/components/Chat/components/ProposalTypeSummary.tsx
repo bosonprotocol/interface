@@ -1,3 +1,4 @@
+import { BigNumber } from "ethers";
 import { Check as CheckComponent } from "phosphor-react";
 import styled from "styled-components";
 
@@ -29,10 +30,13 @@ export default function ProposalTypeSummary({ proposal, exchange }: Props) {
   const fixedPercentageAmount =
     Number(proposal.percentageAmount) / PERCENTAGE_FACTOR;
 
-  const refund = Math.round(
-    (Number(offer.price) * Number(fixedPercentageAmount)) / 100
-  );
+  const inEscrow: string = BigNumber.from(offer.price)
+    .add(BigNumber.from(offer.sellerDeposit || "0"))
+    .toString();
 
+  const refund = Math.round(
+    (Number(inEscrow) * Number(fixedPercentageAmount)) / 100
+  );
   const convertedRefund = useConvertedPrice({
     value: refund.toString(),
     decimals: offer.exchangeToken.decimals,

@@ -1,3 +1,5 @@
+import { SingleValue } from "react-select";
+
 export interface BaseProps {
   name: string;
   placeholder?: string;
@@ -7,6 +9,8 @@ export interface BaseProps {
 export interface DatepickerProps extends BaseProps {
   data?: string;
   period?: boolean;
+  selectTime?: boolean;
+  setIsFormValid?: (isValid: boolean) => void;
 }
 
 export interface CheckboxProps extends BaseProps {
@@ -40,6 +44,15 @@ export interface SelectDataProps {
 
 export interface SelectContentProps {
   children: React.ReactNode | JSX.Element;
+}
+
+export type OnChange = (value: SingleValue<SelectDataProps>) => void;
+
+export interface BaseSelectProps {
+  options: Array<SelectDataProps>;
+  placeholder?: string;
+  defaultValue?: SelectDataProps | null;
+  onChange?: OnChange;
 }
 
 export interface SelectProps extends BaseProps {

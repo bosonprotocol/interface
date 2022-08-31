@@ -56,21 +56,31 @@ const convertImageToFile = ({ value, key }: Image) => {
 const IMAGES_KEY = "create-product-image_";
 const MAIN_KEY = "create-product";
 
+const parseInitialValues = (
+  initialValues: CreateProductForm,
+  convertedImages: ConvertedObject
+): CreateProductForm => {
+  if (initialValues !== null) {
+    if (!checkIfValueIsEmpty(convertedImages)) {
+      Object.keys(convertedImages).map((d: string) => {
+        const keys = d.split(".");
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        initialValues[keys[0]][keys[1]] = [convertedImages[d]];
+      });
+    }
+  }
+
+  return initialValues;
+};
+
 export function useInitialValues() {
   const { converted: convertedImages } = getConvertImagesFromLocalStorage();
-  const initialValues = getItemFromStorage<CreateProductForm | null>(
+  const storageItems = getItemFromStorage<CreateProductForm | null>(
     MAIN_KEY,
     null
   );
-
-  if (initialValues !== null && !checkIfValueIsEmpty(convertedImages)) {
-    Object.keys(convertedImages).map((d: string) => {
-      const keys = d.split(".");
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      initialValues[keys[0]][keys[1]] = [convertedImages[d]];
-    });
-  }
+  const initialValues = parseInitialValues(storageItems, convertedImages);
 
   return {
     shouldDisplayModal: initialValues !== null,

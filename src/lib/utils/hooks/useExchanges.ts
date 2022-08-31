@@ -1,3 +1,4 @@
+import { subgraph } from "@bosonprotocol/react-kit";
 import { gql } from "graphql-request";
 import { useQuery } from "react-query";
 
@@ -5,31 +6,7 @@ import { Offer } from "../../types/offer";
 import { fetchSubgraph } from "../core-components/subgraph";
 import { offerGraphQl } from "./offers/graphql";
 
-export type Exchange = {
-  id: string;
-  committedDate: string;
-  disputed: boolean;
-  expired: boolean;
-  finalizedDate: string;
-  redeemedDate: string;
-  state: string;
-  validUntilDate: string;
-  seller: {
-    id: string;
-    operator: string;
-    admin: string;
-    clerk: string;
-    treasury: string;
-    authTokenId: string;
-    authTokenType: number;
-    voucherCloneAddress: string;
-    active: boolean;
-  };
-  buyer: {
-    id: string;
-    wallet: string;
-    active: boolean;
-  };
+export type Exchange = subgraph.ExchangeFieldsFragment & {
   offer: Offer;
 };
 
@@ -72,8 +49,8 @@ export function useExchanges(
             where: {
             ${id ? `id: "${id}"` : ""}
             ${id_in ? `id_in: [${id_in.join(",")}]` : ""}
-            ${sellerId ? "seller: $sellerId" : ""}
-            ${buyerId ? "buyer: $buyerId" : ""}
+            ${sellerId !== undefined ? "seller: $sellerId" : ""}
+            ${buyerId !== undefined ? "buyer: $buyerId" : ""}
             ${
               [true, false].includes(disputed as boolean)
                 ? "disputed: $disputed"
@@ -112,8 +89,8 @@ export function useExchanges(
       `,
         {
           disputed,
-          sellerId,
-          buyerId,
+          sellerId: sellerId?.length ? sellerId : null,
+          buyerId: buyerId?.length ? buyerId : null,
           orderBy,
           orderDirection
         }

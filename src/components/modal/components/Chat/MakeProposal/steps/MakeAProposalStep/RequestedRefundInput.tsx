@@ -72,7 +72,9 @@ export default function RequestedRefundInput({
     symbol: currencySymbol
   });
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { setFieldValue, handleChange } = useFormikContext<any>();
+  const { setFieldValue, handleChange, setFieldTouched } =
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    useFormikContext<any>();
   return (
     <RefundAmountWrapper>
       <CurrencyIcon currencySymbol={currencySymbol} address={address} />
@@ -80,7 +82,7 @@ export default function RequestedRefundInput({
         step="0.001"
         name={FormModel.formFields.refundAmount.name}
         type="number"
-        onChange={(e) => {
+        onChange={(e: { target: { valueAsNumber: number } }) => {
           handleChange(e);
           const {
             target: { valueAsNumber: currentRefundAmount }
@@ -94,6 +96,7 @@ export default function RequestedRefundInput({
             percentageFromInput,
             true
           );
+          setFieldTouched(FormModel.formFields.refundPercentage.name, true);
         }}
         onBlur={() => {
           const currentRefundAmount: string = refundAmountWithoutDecimals;
@@ -115,6 +118,7 @@ export default function RequestedRefundInput({
             percentageFromRoundedRefundAmount,
             true
           );
+          setFieldTouched(FormModel.formFields.refundPercentage.name, true);
           if (
             refundAmountFromPercentage !==
             Number(refundAmountField.value).toFixed(decimals)

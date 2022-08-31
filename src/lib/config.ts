@@ -26,6 +26,8 @@ export const CONFIG = {
   },
   widgetsUrl: process.env.REACT_APP_WIDGETS_URL || config.widgetsUrl,
   chainId: REACT_APP_CHAIN_ID,
+  theGraphIpfsUrl:
+    process.env.REACT_APP_THE_GRAPH_IPFS_URL || config.theGraphIpfsUrl,
   ipfsMetadataStorageUrl:
     process.env.REACT_APP_IPFS_METADATA_URL || config.ipfsMetadataUrl,
   ipfsMetadataStorageHeaders: getIpfsMetadataStorageHeaders(

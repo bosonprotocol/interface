@@ -17,7 +17,7 @@ export interface Props {
   secondDate: Dayjs | null;
   month: Dayjs;
   period: boolean;
-  onChange: (newDate: Dayjs) => void;
+  onChange: (newDate: Dayjs | null) => void;
 }
 
 export default function Calendar({
@@ -31,9 +31,18 @@ export default function Calendar({
   const secondDay = secondDate ? dayjs(secondDate) : null;
   const today = dayjs();
   const handleSelectDate = (value: Dayjs) => {
-    if (!period || (period && !value.isBefore(firstDay, "day"))) {
-      onChange(value);
+    if (value.isBefore(today, "day")) {
+      return onChange(null);
     }
+
+    if (
+      period &&
+      (value.isBefore(firstDay, "day") || value.isBefore(today, "day"))
+    ) {
+      return onChange(null);
+    }
+
+    return onChange(value);
   };
 
   const rows = useMemo((): ICalendarCell[] => getCalenderRow(month), [month]);

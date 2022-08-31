@@ -1,12 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { MetadataType } from "@bosonprotocol/react-kit";
 import { parseUnits } from "@ethersproject/units";
+import type { Dayjs } from "dayjs";
+import dayjs from "dayjs";
+import localizedFormat from "dayjs/plugin/localizedFormat";
+dayjs.extend(localizedFormat);
 import { Form, Formik, FormikHelpers } from "formik";
 import isArray from "lodash/isArray";
 import keys from "lodash/keys";
-import { useMemo } from "react";
-import { useCallback } from "react";
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { generatePath } from "react-router-dom";
 import { useAccount } from "wagmi";
 
@@ -87,10 +89,6 @@ function CreateProductInner({ initial }: Props) {
       offerInfo.metadataUri
     )) as any;
 
-    /**
-     * TODO: The exchange token should not be hardcoded to suport multiple tokens
-     */
-
     showModal(
       modalTypes.PRODUCT_CREATE_SUCCESS,
       {
@@ -115,13 +113,7 @@ function CreateProductInner({ initial }: Props) {
           validFromDate: offerInfo.validFromDate,
           voidedAt: offerInfo.voidedAt,
           voucherValidDuration: offerInfo.voucherValidDuration,
-          exchangeToken: {
-            id: "",
-            address: "0x0000000000000000000000000000000000000000",
-            decimals: "18",
-            name: "Ether",
-            symbol: "ETH"
-          },
+          exchangeToken: offerInfo.exchangeToken,
           seller: offerInfo.seller
         },
         // these are the ones that we already had before
@@ -409,6 +401,26 @@ function CreateProductInner({ initial }: Props) {
     return handleNextForm();
   };
 
+  const handleFormikValuesBeforeSave = useCallback(
+    (values: CreateProductForm) => {
+      return {
+        ...values,
+        coreTermsOfSale: {
+          ...values.coreTermsOfSale,
+          redemptionPeriod:
+            values?.coreTermsOfSale?.redemptionPeriod?.map((d: Dayjs) =>
+              dayjs(d).format()
+            ) ?? [],
+          offerValidityPeriod:
+            values?.coreTermsOfSale?.offerValidityPeriod?.map((d: Dayjs) =>
+              dayjs(d).format()
+            ) ?? []
+        }
+      };
+    },
+    []
+  );
+
   return (
     <CreateProductWrapper>
       <MultiSteps
@@ -422,7 +434,8 @@ function CreateProductInner({ initial }: Props) {
         <Formik<CreateProductForm>
           initialValues={initial}
           onSubmit={(formikVal, formikBag) => {
-            saveItemInStorage("create-product", formikVal);
+            const newValues = handleFormikValuesBeforeSave(formikVal);
+            saveItemInStorage("create-product", newValues);
             return handleSubmit(formikVal, formikBag);
           }}
           validationSchema={wizardStep.currentValidation}

@@ -1,3 +1,4 @@
+import { BosonXmtpClient } from "@bosonprotocol/chat-sdk";
 import {
   MessageData,
   MessageType,
@@ -7,7 +8,7 @@ import {
 import { validateMessage } from "@bosonprotocol/chat-sdk/dist/cjs/util/validators";
 import dayjs from "dayjs";
 import { utils } from "ethers";
-import { ArrowLeft, UploadSimple } from "phosphor-react";
+import { ArrowLeft, PaperPlaneRight, UploadSimple } from "phosphor-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import styled from "styled-components";
@@ -15,6 +16,7 @@ import { useAccount } from "wagmi";
 
 import { Spinner } from "../../../components/loading/Spinner";
 import { useModal } from "../../../components/modal/useModal";
+import Button from "../../../components/ui/Button";
 import Grid from "../../../components/ui/Grid";
 import SellerID from "../../../components/ui/SellerID";
 import { BosonRoutes } from "../../../lib/routing/routes";
@@ -33,9 +35,7 @@ import {
   ThreadObjectWithIsValid
 } from "../types";
 import { sendFilesToChat, sendProposalToChat } from "../utils/send";
-import ButtonProposal, {
-  ButtonProposalHeight
-} from "./ButtonProposal/ButtonProposal";
+import ButtonProposal from "./ButtonProposal/ButtonProposal";
 import ExchangeSidePreview from "./ExchangeSidePreview";
 import Message from "./Message";
 import MessageSeparator from "./MessageSeparator";
@@ -48,7 +48,7 @@ const Container = styled.div`
   width: 100%;
 
   ${breakpoint.m} {
-    flex: 0 1 75%;
+    flex: 0 1 100%;
   }
 `;
 
@@ -138,7 +138,7 @@ const TypeMessage = styled.div`
   height: max-content;
   width: 100%;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   padding: 1.5rem 1rem 1.5rem 1rem;
   border-right: 1px solid ${colors.border};
 `;
@@ -157,25 +157,20 @@ const Input = styled.div`
   &:focus {
     outline: none;
   }
-  textarea {
-    width: 100%;
-    height: 1.3125rem;
-    border: none;
-    display: block;
-    max-height: 16.875rem;
-    overflow-y: auto;
-    overflow-wrap: break-word;
-    border: none;
-    background: none;
-    resize: none;
-    padding-right: 0.625rem;
-    &:focus {
-      outline: none;
-    }
-  }
 `;
 
 const TextArea = styled.textarea`
+  width: 100%;
+  height: 1.3125rem;
+  border: none;
+  display: block;
+  max-height: 16.875rem;
+  overflow-y: auto;
+  overflow-wrap: break-word;
+  border: none;
+  background: none;
+  resize: none;
+  padding-right: 0.625rem;
   font-family: Plus Jakarta Sans;
   font-size: 1rem;
   font-weight: 400;
@@ -183,6 +178,9 @@ const TextArea = styled.textarea`
   letter-spacing: 0;
   text-align: left;
   cursor: text;
+  &:focus {
+    outline: none;
+  }
   :disabled {
     cursor: not-allowed;
   }
@@ -239,7 +237,8 @@ const InputWrapper = styled.div`
   display: flex;
   position: relative;
   width: 100%;
-  min-height: ${ButtonProposalHeight};
+  margin-right: 0.875rem;
+  margin-left: 0.875rem;
 `;
 
 const UploadButtonWrapper = styled.button`
@@ -248,11 +247,16 @@ const UploadButtonWrapper = styled.button`
   position: absolute;
   right: 0;
   top: 0;
-  transform: translate(0, calc(${ButtonProposalHeight} / 4));
+  transform: translate(0, 40%);
   margin: 0 1rem;
   :disabled {
     cursor: not-allowed;
   }
+`;
+
+const SendButton = styled(Button)`
+  padding: 0.75rem;
+  min-width: 3rem;
 `;
 
 const SellerComponent = ({
@@ -348,7 +352,7 @@ const ChatConversation = ({
   } = useInfiniteThread({
     threadId,
     dateIndex,
-    dateStep: "week",
+    dateStep: "month",
     counterParty: destinationAddress,
     onFinishFetching
   });
@@ -367,13 +371,13 @@ const ChatConversation = ({
 
   const addMessage = useCallback(
     async (
-      thread: ThreadObjectWithIsValid | null,
+      threadId: ThreadObjectWithIsValid["threadId"] | null | undefined,
       newMessageOrList: MessageDataWithIsValid | MessageDataWithIsValid[]
     ) => {
       const newMessages = Array.isArray(newMessageOrList)
         ? newMessageOrList
         : [newMessageOrList];
-      if (thread) {
+      if (threadId) {
         const messagesWithIsValid = await Promise.all(
           newMessages.map(async (message) => {
             if (message.isValid === undefined) {
@@ -426,27 +430,56 @@ const ChatConversation = ({
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const navigate = useKeepQueryParamsNavigate();
   const { address } = useAccount();
+  const isMonitorOk = useMemo(() => {
+    return (
+      !!addMessage && !!bosonXmtp && !!destinationAddress && thread?.threadId
+    );
+  }, [addMessage, bosonXmtp, destinationAddress, thread?.threadId]);
   useEffect(() => {
-    if (!bosonXmtp || !thread?.threadId || !destinationAddress) {
+    if (!isMonitorOk) {
       return;
     }
-    const monitor = async () => {
+    const stopGenerator = {
+      done: false
+    };
+
+    const monitor = async ({
+      threadId,
+      bosonXmtp,
+      destinationAddress
+    }: {
+      threadId: ThreadId;
+      bosonXmtp: BosonXmtpClient;
+      destinationAddress: string;
+    }) => {
       try {
-        for await (const incomingMessage of await bosonXmtp.monitorThread(
-          thread.threadId,
-          destinationAddress
+        for await (const incomingMessage of bosonXmtp.monitorThread(
+          threadId,
+          destinationAddress,
+          stopGenerator
         )) {
-          const isValid = await validateMessage(incomingMessage.data);
-          await addMessage(thread, { ...incomingMessage, isValid });
+          await addMessage(threadId, { ...incomingMessage, isValid: true });
         }
       } catch (error) {
         console.error(error);
       }
     };
-    monitor().catch((error) => {
+
+    monitor({
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      bosonXmtp: bosonXmtp!,
+      destinationAddress,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+      threadId: thread?.threadId!
+    }).catch((error) => {
       console.error(error);
     });
-  }, [bosonXmtp, destinationAddress, thread, addMessage, address]);
+
+    return () => {
+      stopGenerator.done = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMonitorOk]);
 
   const sendFiles = useCallback(
     async (files: FileWithEncodedData[]) => {
@@ -460,7 +493,7 @@ const ChatConversation = ({
         destinationAddress,
         threadId,
         callback: async (messageData) => {
-          await addMessage(thread, { ...messageData, isValid: true });
+          await addMessage(thread?.threadId, { ...messageData, isValid: true });
         }
       });
     },
@@ -673,7 +706,7 @@ const ChatConversation = ({
                       destinationAddress,
                       threadId,
                       callback: async (messageData) => {
-                        await addMessage(thread, {
+                        await addMessage(thread?.threadId, {
                           ...messageData,
                           isValid: true
                         });
@@ -700,45 +733,11 @@ const ChatConversation = ({
                     onTextAreaChange(value);
                   }
                 }}
-                onKeyDown={async (e) => {
-                  const value = e.target.value.trim();
-                  if (
-                    e.key === "Enter" &&
-                    bosonXmtp &&
-                    threadId &&
-                    value &&
-                    !isMessageBeingSent
-                  ) {
-                    try {
-                      setIsMessageBeingSent(true);
-                      const newMessage = {
-                        threadId,
-                        content: {
-                          value
-                        },
-                        contentType: MessageType.String,
-                        version
-                      } as const;
-                      const messageData = await bosonXmtp.encodeAndSendMessage(
-                        newMessage,
-                        destinationAddress
-                      );
-                      setIsMessageBeingSent(false);
-                      await addMessage(thread, {
-                        ...messageData,
-                        isValid: true
-                      });
-                      onTextAreaChange("");
-                    } catch (error) {
-                      console.error(error);
-                      setIsMessageBeingSent(false);
-                    }
-                  }
-                }}
               >
                 {textAreaValue}
               </TextArea>
             </Input>
+
             <UploadButtonWrapper
               type="button"
               disabled={disableInputs}
@@ -759,11 +758,47 @@ const ChatConversation = ({
               <UploadSimple size={24} />
             </UploadButtonWrapper>
           </InputWrapper>
+          <SendButton
+            theme="secondary"
+            disabled={disableInputs}
+            onClick={async () => {
+              const value = textAreaValue?.trim() || "";
+              if (bosonXmtp && threadId && value && !isMessageBeingSent) {
+                try {
+                  setIsMessageBeingSent(true);
+                  const newMessage = {
+                    threadId,
+                    content: {
+                      value
+                    },
+                    contentType: MessageType.String,
+                    version
+                  } as const;
+                  const messageData = await bosonXmtp.encodeAndSendMessage(
+                    newMessage,
+                    destinationAddress
+                  );
+                  setIsMessageBeingSent(false);
+                  await addMessage(thread?.threadId, {
+                    ...messageData,
+                    isValid: true
+                  });
+                  onTextAreaChange("");
+                } catch (error) {
+                  console.error(error);
+                  setIsMessageBeingSent(false);
+                }
+              }
+            }}
+          >
+            <PaperPlaneRight size={24} />
+          </SendButton>
         </TypeMessage>
       </ConversationContainer>
       <ExchangeSidePreview
         exchange={exchange}
         disputeOpen={isExchangePreviewOpen}
+        iAmTheBuyer={iAmTheBuyer}
       />
     </Container>
   );

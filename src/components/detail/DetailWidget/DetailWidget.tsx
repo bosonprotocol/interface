@@ -1,5 +1,6 @@
+import { ExtendedExchangeState } from "@bosonprotocol/core-sdk/dist/cjs/exchanges";
+import { ExchangeState } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
 import {
-  CancelButton,
   CommitButton,
   exchanges,
   Provider,
@@ -7,9 +8,9 @@ import {
 } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { Check, Question } from "phosphor-react";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import styled from "styled-components";
-import { useSigner } from "wagmi";
+import { useAccount, useSigner } from "wagmi";
 
 import { CONFIG } from "../../../lib/config";
 import { BosonRoutes } from "../../../lib/routing/routes";
@@ -94,8 +95,6 @@ interface IDetailWidget {
   isPreview?: boolean;
 }
 
-const oneSecondToDays = 86400;
-
 export const getOfferDetailData = (
   offer: Offer,
   convertedPrice: IPrice | null,
@@ -132,13 +131,15 @@ export const getOfferDetailData = (
           name: "Price",
           value: convertedPrice?.currency ? (
             <Typography tag="p">
-              {convertedPrice?.price} ETH
+              {convertedPrice?.price} {offer.exchangeToken.symbol}
               <small>
                 ({convertedPrice?.currency?.symbol} {convertedPrice?.converted})
               </small>
             </Typography>
           ) : (
-            <Typography tag="p">{convertedPrice?.price} ETH</Typography>
+            <Typography tag="p">
+              {convertedPrice?.price} {offer.exchangeToken.symbol}
+            </Typography>
           )
         }
       : { hide: true },
@@ -212,16 +213,17 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   const { showModal, modalTypes } = useModal();
   const { isLteXS } = useBreakpoints();
   const navigate = useKeepQueryParamsNavigate();
-
-  const cancelRef = useRef<HTMLDivElement | null>(null);
-
+  const { address } = useAccount();
+  const isBuyer = exchange?.buyer.wallet === address?.toLowerCase();
   const isOffer = pageType === "offer";
   const isExchange = pageType === "exchange";
   const exchangeStatus = exchange
     ? exchanges.getExchangeState(exchange as subgraph.ExchangeFieldsFragment)
     : null;
+
   const isToRedeem =
     !exchangeStatus || exchangeStatus === subgraph.ExchangeState.Committed;
+
   const isBeforeRedeem =
     !exchangeStatus || NOT_REDEEMED_YET.includes(exchangeStatus);
 
@@ -254,20 +256,16 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     () => isOfferHot(offer?.quantityAvailable, offer?.quantityInitial),
     [offer?.quantityAvailable, offer?.quantityInitial]
   );
-  const redeemableDays = Math.round(
-    Number(offer.voucherValidDuration) / oneSecondToDays
-  );
 
-  const handleCancel = () => {
-    // TODO: it's just a workaround for now
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const child = cancelRef.current!.children[0] ?? null;
-    if (child) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      child.click();
-    }
-  };
+  const voucherRedeemableUntilDate = dayjs(
+    Number(offer.voucherRedeemableUntilDate) * 1000
+  );
+  const nowDate = dayjs();
+
+  const totalHours = voucherRedeemableUntilDate.diff(nowDate, "hours");
+  const redeemableDays = Math.floor(totalHours / 24);
+  const redeemableHours = totalHours - redeemableDays * 24;
+
   const handleRedeemModal = () => {
     showModal(modalTypes.WHAT_IS_REDEEM, { title: "Commit and Redeem" });
   };
@@ -284,13 +282,24 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     }),
     [OFFER_DETAIL_DATA_MODAL, exchange, image, name]
   );
-
+  const handleCancel = () => {
+    if (!exchange) {
+      return;
+    }
+    showModal(modalTypes.CANCEL_EXCHANGE, {
+      title: "Cancel exchange",
+      exchange,
+      BASE_MODAL_DATA
+    });
+  };
   return (
     <>
       <Widget>
         {isExchange && isToRedeem && (
           <RedeemLeftButton>
-            {redeemableDays} days left to Redeem
+            {redeemableDays > 0
+              ? `${redeemableDays} days left to Redeem`
+              : `${redeemableHours} hours left to Redeem`}
           </RedeemLeftButton>
         )}
         <div>
@@ -372,11 +381,15 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 theme="secondary"
                 size="large"
                 disabled={
-                  isChainUnsupported || isLoading || isOffer || isPreview
+                  isChainUnsupported ||
+                  isLoading ||
+                  isOffer ||
+                  isPreview ||
+                  !isBuyer
                 }
                 onClick={() => {
                   showModal(
-                    modalTypes.REDEEM_MODAL,
+                    modalTypes.REDEEM,
                     {
                       title: "Redeem your item",
                       exchangeId: exchange?.id || "",
@@ -447,85 +460,59 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               <ContactSellerButton
                 onClick={() =>
                   navigate({
-                    pathname: BosonRoutes.Chat
+                    pathname: `${BosonRoutes.Chat}/${exchange?.id || ""}`
                   })
                 }
                 theme="blank"
                 style={{ fontSize: "0.875rem" }}
-                disabled={isChainUnsupported}
+                disabled={isChainUnsupported || !isBuyer}
               >
                 Contact seller
                 <Question size={18} />
               </ContactSellerButton>
               {isBeforeRedeem ? (
-                <StyledCancelButton
-                  onClick={handleCancel}
-                  theme="blank"
-                  style={{ fontSize: "0.875rem" }}
-                  disabled={isChainUnsupported}
-                >
-                  Cancel
-                  <Question size={18} />
-                </StyledCancelButton>
+                <>
+                  {![
+                    ExtendedExchangeState.Expired,
+                    ExchangeState.Cancelled
+                  ].includes(
+                    exchangeStatus as ExtendedExchangeState | ExchangeState
+                  ) && (
+                    <StyledCancelButton
+                      onClick={handleCancel}
+                      theme="blank"
+                      style={{ fontSize: "0.875rem" }}
+                      disabled={isChainUnsupported || !isBuyer}
+                    >
+                      Cancel
+                      <Question size={18} />
+                    </StyledCancelButton>
+                  )}
+                </>
               ) : (
-                <RaiseProblemButton
-                  onClick={() => {
-                    showModal(modalTypes.DISPUTE_MODAL, {
-                      title: "Raise a problem",
-                      exchangeId: exchange?.id || ""
-                    });
-                  }}
-                  theme="blank"
-                  style={{ fontSize: "0.875rem" }}
-                >
-                  Raise a problem
-                  <Question size={18} />
-                </RaiseProblemButton>
+                <>
+                  {!exchange?.disputed && (
+                    <RaiseProblemButton
+                      onClick={() => {
+                        showModal(modalTypes.RAISE_DISPUTE, {
+                          title: "Raise a problem",
+                          exchangeId: exchange?.id || ""
+                        });
+                      }}
+                      theme="blank"
+                      style={{ fontSize: "0.875rem" }}
+                      disabled={exchange?.state !== "REDEEMED" || !isBuyer}
+                    >
+                      Raise a problem
+                      <Question size={18} />
+                    </RaiseProblemButton>
+                  )}
+                </>
               )}
             </Grid>
           </>
         )}
       </Widget>
-
-      {isExchange && (
-        <div
-          style={{ opacity: 0 }}
-          ref={(ref) => {
-            cancelRef.current = ref;
-          }}
-        >
-          <CancelButton
-            disabled={isChainUnsupported || isLoading}
-            exchangeId={exchange?.id || offer.id}
-            chainId={CONFIG.chainId}
-            onError={(args) => {
-              console.error("onError", args);
-              setIsLoading(false);
-              showModal(modalTypes.DETAIL_WIDGET, {
-                title: "An error occurred",
-                message: "An error occurred when trying to cancel!",
-                type: "ERROR",
-                state: "Cancelled",
-                ...BASE_MODAL_DATA
-              });
-            }}
-            onPendingSignature={() => {
-              setIsLoading(true);
-            }}
-            onSuccess={() => {
-              setIsLoading(false);
-              showModal(modalTypes.DETAIL_WIDGET, {
-                title: "You have successfully cancelled!",
-                message: "You have successfully cancelled!",
-                type: "SUCCESS",
-                state: "Cancelled",
-                ...BASE_MODAL_DATA
-              });
-            }}
-            web3Provider={signer?.provider as Provider}
-          />
-        </div>
-      )}
     </>
   );
 };

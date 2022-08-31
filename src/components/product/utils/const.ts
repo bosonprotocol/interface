@@ -1,7 +1,8 @@
-import countries from "./countries.json";
+import { CONFIG } from "../../../lib/config";
+import countries from "../../../lib/const/countries.json";
 
-export const MAX_LOGO_SIZE = 300 * 1024;
-export const MAX_IMAGE_SIZE = 600 * 1024;
+export const MAX_LOGO_SIZE = 10 * 1024 * 1024;
+export const MAX_IMAGE_SIZE = 10 * 1024 * 1024;
 export const SUPPORTED_FILE_FORMATS = [
   "image/jpg",
   "image/jpeg",
@@ -71,8 +72,8 @@ export const CATEGORY_OPTIONS = [
 
 export const OPTIONS_CURRENCIES = [
   {
-    value: "ETH",
-    label: "ETH"
+    value: CONFIG.nativeCoin?.symbol || "",
+    label: CONFIG.nativeCoin?.symbol || ""
   }
 ];
 export const OPTIONS_TOKEN_GATED = [
@@ -206,9 +207,9 @@ export const MOCK_MODAL_DATA = {
     },
     exchangeToken: {
       address: "0x0000000000000000000000000000000000000000",
-      decimals: "18",
-      name: "Ether",
-      symbol: "ETH"
+      decimals: CONFIG.nativeCoin?.decimals || "",
+      name: CONFIG.nativeCoin?.name || "",
+      symbol: CONFIG.nativeCoin?.symbol || ""
     },
     metadata: {
       name: "Long-lived Test Item",

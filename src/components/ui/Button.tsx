@@ -53,7 +53,7 @@ const BaseButton = styled.button<{
       :disabled {
         background-color: ${props.theme.disabled.background || "transparent"};
         color: ${props.theme.disabled.color || colors.darkGrey};
-        border-width: 0;
+        border-color: transparent;
         cursor: not-allowed;
         opacity: 0.5;
       }
@@ -62,7 +62,7 @@ const BaseButton = styled.button<{
       :disabled {
         background-color: ${colors.lightGrey};
         color: ${colors.darkGrey};
-        border-width: 0;
+        border-color: transparent;
         cursor: not-allowed;
         opacity: 0.5;
       }

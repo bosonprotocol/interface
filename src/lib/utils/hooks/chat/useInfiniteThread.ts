@@ -18,7 +18,7 @@ interface Props {
   dateIndex: number;
   onFinishFetching: () => void;
 }
-const genesisDate = new Date("2022-07-28"); // TODO: change
+const genesisDate = new Date("2022-08-15");
 export function useInfiniteThread({
   dateStep,
   dateIndex,
@@ -60,20 +60,10 @@ export function useInfiniteThread({
       dayjs(startTime).isSame(genesisDate, "day");
     setIsBeginningOfTimes(isBeginning);
     if (isBeginning) {
-      console.log("threads reached beginning!", {
-        startTime,
-        genesisDate,
-        threadId
-      });
       return;
     }
     setThreadsLoading(true);
 
-    console.log("requesting threads from", startTime, "until", endTime, {
-      threadId,
-      counterParty,
-      areThreadsLoading
-    }); // TODO: remove
     setError(null);
     bosonXmtp
       .getThread(threadId, utils.getAddress(counterParty), {
@@ -81,17 +71,6 @@ export function useInfiniteThread({
         endTime: startTime
       })
       .then(async (threadObject) => {
-        console.log(
-          "FINISH requesting threads from",
-          startTime,
-          "until",
-          endTime,
-          {
-            threadId,
-            counterParty,
-            threadObject: !!threadObject
-          }
-        ); // TODO: remove
         setLastThreadXmtp(threadObject);
         if (!threadObject) {
           return;

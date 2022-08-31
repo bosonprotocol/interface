@@ -14,6 +14,7 @@ import { CONFIG } from "../../../../../lib/config";
 import { colors } from "../../../../../lib/styles/colors";
 import { useChatStatus } from "../../../../../lib/utils/hooks/chat/useChatStatus";
 import { useChatContext } from "../../../../../pages/chat/ChatProvider/ChatContext";
+import SimpleError from "../../../../error/SimpleError";
 import { Spinner } from "../../../../loading/Spinner";
 import Button from "../../../../ui/Button";
 import Grid from "../../../../ui/Grid";
@@ -144,19 +145,7 @@ ${FormModel.formFields.email.placeholder}: ${emailField.value}`;
           </StyledGrid>
         </div>
       )}
-      {(chatError || redeemError) && (
-        <StyledGrid
-          justifyContent="flex-start"
-          gap="0.5rem"
-          margin="1.5rem 0"
-          padding="1.5rem"
-        >
-          <Warning color={colors.darkOrange} size={16} />
-          <Typography fontWeight="600" $fontSize="1rem" lineHeight="1.5rem">
-            There has been an error, please try again
-          </Typography>
-        </StyledGrid>
-      )}
+      {(chatError || redeemError) && <SimpleError />}
       <Grid padding="2rem 0 0 0" justifyContent="space-between">
         <RedeemButton
           disabled={isLoading || !isInitializationValid}

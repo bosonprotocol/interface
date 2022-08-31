@@ -1,10 +1,10 @@
 import { useField, useFormikContext } from "formik";
-import { Warning } from "phosphor-react";
 import styled from "styled-components";
 
 import { colors } from "../../../../../../lib/styles/colors";
 import { Exchange } from "../../../../../../lib/utils/hooks/useExchanges";
 import { useChatContext } from "../../../../../../pages/chat/ChatProvider/ChatContext";
+import SimpleError from "../../../../../error/SimpleError";
 import UploadedFiles from "../../../../../form/Upload/UploadedFiles";
 import { Spinner } from "../../../../../loading/Spinner";
 import Button from "../../../../../ui/Button";
@@ -15,10 +15,6 @@ import ProposalTypeSummary from "../../components/ProposalTypeSummary";
 import { PERCENTAGE_FACTOR } from "../../const";
 import { FormModel } from "../MakeProposalFormModel";
 import { proposals } from "./MakeAProposalStep/MakeAProposalStep";
-
-const StyledGrid = styled(Grid)`
-  background-color: ${colors.lightGrey};
-`;
 
 const ButtonsSection = styled.div`
   padding-top: 2rem;
@@ -86,19 +82,7 @@ export default function ReviewAndSubmitStep({
         </Grid>
       </Grid>
       <InitializeChatWithSuccess />
-      {submitError && (
-        <StyledGrid
-          justifyContent="flex-start"
-          gap="0.5rem"
-          margin="1.5rem 0 0 0"
-          padding="1.5rem"
-        >
-          <Warning color={colors.darkOrange} size={16} />
-          <Typography fontWeight="600" $fontSize="1rem" lineHeight="1.5rem">
-            There has been an error, please try again
-          </Typography>
-        </StyledGrid>
-      )}
+      {submitError && <SimpleError />}
       <ButtonsSection>
         <Button
           theme="secondary"

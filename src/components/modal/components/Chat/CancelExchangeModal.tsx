@@ -1,16 +1,52 @@
+import { CancelButton, Provider } from "@bosonprotocol/react-kit";
 import { Info as InfoComponent } from "phosphor-react";
+import { useState } from "react";
 import styled from "styled-components";
+import { useSigner } from "wagmi";
 
+import { CONFIG } from "../../../../lib/config";
 import { colors } from "../../../../lib/styles/colors";
 import { getBuyerCancelPenalty } from "../../../../lib/utils/getPrices";
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
 import DetailTable from "../../../detail/DetailTable";
+import SimpleError from "../../../error/SimpleError";
+import { Spinner } from "../../../loading/Spinner";
 import { useConvertedPrice } from "../../../price/useConvertedPrice";
 import Button from "../../../ui/Button";
+import Grid from "../../../ui/Grid";
 import { ModalProps } from "../../ModalContext";
+import { useModal } from "../../useModal";
 
 interface Props {
   exchange: Exchange;
+  BASE_MODAL_DATA: {
+    data: (
+      | {
+          name: string;
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          info: any;
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          value: any;
+          hide?: undefined;
+        }
+      | {
+          name: string;
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          value: any;
+          info?: undefined;
+          hide?: undefined;
+        }
+      | {
+          hide: boolean;
+          name?: undefined;
+          info?: undefined;
+          value?: undefined;
+        }
+    )[];
+    exchange: Exchange;
+    image: string;
+    name: string;
+  };
 
   hideModal: NonNullable<ModalProps["hideModal"]>;
   title: ModalProps["title"];
@@ -44,8 +80,16 @@ const ButtonsSection = styled.div`
   justify-content: space-between;
 `;
 
-export default function CancelExchangeModal({ exchange, hideModal }: Props) {
+export default function CancelExchangeModal({
+  exchange,
+  hideModal,
+  BASE_MODAL_DATA
+}: Props) {
   const { offer } = exchange;
+  const { data: signer } = useSigner();
+  const { showModal, modalTypes } = useModal();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [cancelError, setCancelError] = useState<Error | null>(null);
   const convertedPrice = useConvertedPrice({
     value: offer.price,
     decimals: offer.exchangeToken.decimals,
@@ -105,8 +149,48 @@ export default function CancelExchangeModal({ exchange, hideModal }: Props) {
         <InfoIcon />
         Your rNFT will be burned after cancellation.
       </Info>
+      {cancelError && <SimpleError />}
       <ButtonsSection>
-        <Button theme="secondary">Confirm cancellation</Button>
+        <CancelButton
+          variant="primary"
+          exchangeId={exchange.id}
+          chainId={CONFIG.chainId}
+          disabled={isLoading}
+          onError={(error) => {
+            console.error(error);
+            setCancelError(error);
+            setIsLoading(false);
+            showModal(modalTypes.DETAIL_WIDGET, {
+              title: "An error occurred",
+              message: "An error occurred when trying to cancel!",
+              type: "ERROR",
+              state: "Cancelled",
+              ...BASE_MODAL_DATA
+            });
+          }}
+          onPendingSignature={() => {
+            setIsLoading(true);
+            setCancelError(null);
+          }}
+          onSuccess={(_, payload) => {
+            setIsLoading(false);
+            setCancelError(null);
+            showModal(modalTypes.DETAIL_WIDGET, {
+              title: "You have successfully cancelled!",
+              message: "You have successfully cancelled!",
+              type: "SUCCESS",
+              state: "Cancelled",
+              id: payload.exchangeId.toString(),
+              ...BASE_MODAL_DATA
+            });
+          }}
+          web3Provider={signer?.provider as Provider}
+        >
+          <Grid gap="0.5rem">
+            Confirm cancellation
+            {isLoading && <Spinner size="20" />}
+          </Grid>
+        </CancelButton>
         <Button theme="blankOutline" onClick={() => hideModal()}>
           Back
         </Button>
