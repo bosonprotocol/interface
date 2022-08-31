@@ -48,6 +48,7 @@ function DisputeCentreForm({
   const formErrors = Object.keys(formValues.errors).length === 0;
 
   useEffect(() => {
+    console.log(formValues);
     if (currentStep === 0 && formValues.values.getStarted !== "") {
       setIsRightArrowEnabled(true);
     } else if (currentStep === 1 && formValues.values.tellUsMore !== "") {
@@ -57,7 +58,7 @@ function DisputeCentreForm({
     } else if (
       currentStep === 3 &&
       formErrors &&
-      formValues.values.proposalsTypes !== null
+      formValues.values.proposalType !== null
     ) {
       setIsRightArrowEnabled(true);
     } else {
