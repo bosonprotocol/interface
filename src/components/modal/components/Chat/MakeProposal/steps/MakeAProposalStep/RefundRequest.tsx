@@ -3,6 +3,7 @@ import { useFormikContext } from "formik";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
+import { useBreakpoints } from "../../../../../../../lib/utils/hooks/useBreakpoints";
 import { Exchange } from "../../../../../../../lib/utils/hooks/useExchanges";
 import { useSellers } from "../../../../../../../lib/utils/hooks/useSellers";
 import useFunds from "../../../../../../../pages/account/funds/useFunds";
@@ -67,6 +68,7 @@ export default function RefundRequest({ exchange }: Props) {
   const accountId = sellers?.[0]?.id || "";
   const { funds } = useFunds(accountId);
   const { offer } = exchange;
+  const { isLteS } = useBreakpoints();
   const currencyInDeposit = funds?.find(
     (fund) => fund.token.address === offer.exchangeToken.address
   );
@@ -87,12 +89,24 @@ export default function RefundRequest({ exchange }: Props) {
       <Typography $fontSize="1rem">
         You will keep your purchased product and get a partial refund.
       </Typography>
-      <Grid gap="1rem" alignItems="flex-start">
+      <Grid
+        gap="1rem"
+        alignItems="flex-start"
+        flexDirection={isLteS ? "column" : "row"}
+      >
         <Grid flexDirection="column" flexBasis="30%">
-          <Typography $fontSize="1rem" fontWeight="600">
+          <Typography
+            $fontSize="1rem"
+            fontWeight="600"
+            margin={isLteS ? "1.5625rem auto 0 0" : "0"}
+          >
             In escrow
           </Typography>
-          <Typography $fontSize="0.75rem" fontWeight="400">
+          <Typography
+            $fontSize="0.75rem"
+            fontWeight="400"
+            margin={isLteS ? "0.625rem auto 0.625rem 0" : "0"}
+          >
             Item price + seller diposit
           </Typography>
           <InEscrowPriceWrapper>
@@ -112,10 +126,18 @@ export default function RefundRequest({ exchange }: Props) {
           </InEscrowPriceWrapper>
         </Grid>
         <Grid flexDirection="column" flexBasis="40%">
-          <Typography $fontSize="1rem" fontWeight="600">
+          <Typography
+            $fontSize="1rem"
+            fontWeight="600"
+            margin={isLteS ? "1.5625rem auto 0 0" : "0"}
+          >
             Requested refund
           </Typography>
-          <Typography $fontSize="0.75rem" fontWeight="400">
+          <Typography
+            $fontSize="0.75rem"
+            fontWeight="400"
+            margin={isLteS ? "0.625rem auto 0.625rem 0" : "0"}
+          >
             Request a specific amount as a refund
           </Typography>
           <RequestedRefundInput
@@ -126,10 +148,18 @@ export default function RefundRequest({ exchange }: Props) {
           />
         </Grid>
         <Grid flexDirection="column" flexBasis="30%">
-          <Typography $fontSize="1rem" fontWeight="600">
+          <Typography
+            $fontSize="1rem"
+            fontWeight="600"
+            margin={isLteS ? "1.5625rem auto 0 0" : "0"}
+          >
             Percentage
           </Typography>
-          <Typography $fontSize="0.75rem" fontWeight="400">
+          <Typography
+            $fontSize="0.75rem"
+            fontWeight="400"
+            margin={isLteS ? "0.625rem auto 0.625rem 0" : "0"}
+          >
             Edit as %
           </Typography>
           <Input
