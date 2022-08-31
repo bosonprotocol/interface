@@ -172,7 +172,7 @@ export default function CancelExchangeModal({
             setIsLoading(true);
             setCancelError(null);
           }}
-          onSuccess={() => {
+          onSuccess={(_, payload) => {
             setIsLoading(false);
             setCancelError(null);
             showModal(modalTypes.DETAIL_WIDGET, {
@@ -180,6 +180,7 @@ export default function CancelExchangeModal({
               message: "You have successfully cancelled!",
               type: "SUCCESS",
               state: "Cancelled",
+              id: payload.exchangeId.toString(),
               ...BASE_MODAL_DATA
             });
           }}
