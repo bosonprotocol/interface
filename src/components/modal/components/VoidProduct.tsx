@@ -96,7 +96,7 @@ export default function VoidProduct({ offerId, offer, refetch }: Props) {
           onPendingSignature={() => {
             console.error("onPendingSignature");
           }}
-          onSuccess={(_args, res) => {
+          onSuccess={() => {
             hideModal();
             refetch();
           }}
