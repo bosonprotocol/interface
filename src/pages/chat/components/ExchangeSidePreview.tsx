@@ -291,7 +291,7 @@ export default function ExchangeSidePreview({
             theme="orange"
             onClick={() => {
               // TODO: implement
-              console.log("escalate");
+              return null;
             }}
           >
             Escalate
