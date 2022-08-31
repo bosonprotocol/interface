@@ -24,7 +24,8 @@ export default function ExchangeTimeline({ exchange }: Props) {
   });
   const [dispute] = disputes;
   const timesteps = useMemo(() => {
-    const { committedDate, redeemedDate } = exchange;
+    const { committedDate, redeemedDate, cancelledDate, revokedDate } =
+      exchange;
     const timesteps = [];
     if (committedDate) {
       timesteps.push({
@@ -34,6 +35,18 @@ export default function ExchangeTimeline({ exchange }: Props) {
     }
     if (redeemedDate) {
       timesteps.push({ text: "Redeemed", date: formatShortDate(redeemedDate) });
+    }
+    if (cancelledDate) {
+      timesteps.push({
+        text: "Cancelled",
+        date: formatShortDate(cancelledDate)
+      });
+    }
+    if (revokedDate) {
+      timesteps.push({
+        text: "Revoked",
+        date: formatShortDate(revokedDate)
+      });
     }
     if (dispute) {
       const { disputedDate, retractedDate, resolvedDate } = dispute;
@@ -57,7 +70,7 @@ export default function ExchangeTimeline({ exchange }: Props) {
       }
     }
 
-    return timesteps;
+    return timesteps; // TODO: sort by date
   }, [exchange, dispute]);
   return (
     <>

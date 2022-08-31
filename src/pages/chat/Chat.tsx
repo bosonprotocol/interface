@@ -86,6 +86,7 @@ export default function Chat() {
     },
     buyer: { buyerId, isError: isErrorBuyers, isLoading: isLoadingBuyer }
   } = useBuyerSellerAccounts(address || "");
+  const [listeningThreadIds, setListeningThreadIds] = useState<string[]>([]);
 
   const { data: exchangesAsTheBuyer = [] } = useExchanges({
     buyerId: buyerId,
@@ -211,6 +212,8 @@ export default function Chat() {
                 prevPath={previousPath}
                 onTextAreaChange={onTextAreaChange}
                 textAreaValue={parseInputValue}
+                listeningThreadIds={listeningThreadIds}
+                setListeningThreadIds={setListeningThreadIds}
               />
             }
           />

@@ -1,3 +1,4 @@
+import { BosonXmtpClient } from "@bosonprotocol/chat-sdk";
 import {
   MessageData,
   MessageType,
@@ -286,6 +287,45 @@ const SellerComponent = ({
 const getWasItSentByMe = (myAddress: string | undefined, sender: string) => {
   return myAddress === sender;
 };
+let isMounted = false;
+const monitor = async ({
+  threadId,
+  isMounted,
+  bosonXmtp,
+  addMessage,
+  destinationAddress
+}: {
+  threadId: ThreadId;
+  isMounted: boolean;
+  bosonXmtp: BosonXmtpClient;
+  addMessage: (
+    threadId: ThreadObjectWithIsValid["threadId"] | null | undefined,
+    newMessageOrList: MessageDataWithIsValid | MessageDataWithIsValid[]
+  ) => Promise<void>;
+  destinationAddress: string;
+}) => {
+  try {
+    for await (const incomingMessage of bosonXmtp.monitorThread(
+      threadId,
+      destinationAddress
+    )) {
+      // if (!isMounted) {
+      //   return;
+      // }
+      const isValid = await validateMessage(incomingMessage.data);
+      await addMessage(threadId, { ...incomingMessage, isValid });
+    }
+    // console.log("stopped listening to ", { threadIdString });
+    // setListeningThreadIds((prev) => [
+    //   ...prev.filter((value) => value !== threadIdString)
+    // ]);
+  } catch (error) {
+    console.error(error);
+    // setListeningThreadIds((prev) => [
+    //   ...prev.filter((value) => value !== threadIdString)
+    // ]);
+  }
+};
 
 interface Props {
   myBuyerId: string;
@@ -297,6 +337,8 @@ interface Props {
   prevPath: string;
   onTextAreaChange: (textAreaTargetValue: string) => void;
   textAreaValue: string | undefined;
+  listeningThreadIds: string[];
+  setListeningThreadIds: React.Dispatch<React.SetStateAction<string[]>>;
 }
 const ChatConversation = ({
   myBuyerId,
@@ -307,7 +349,9 @@ const ChatConversation = ({
   exchangeIdNotOwned,
   prevPath,
   onTextAreaChange,
-  textAreaValue
+  textAreaValue,
+  listeningThreadIds,
+  setListeningThreadIds
 }: Props) => {
   const iAmTheBuyer = myBuyerId === exchange?.buyer.id;
   const iAmTheSeller = mySellerId === exchange?.offer.seller.id;
@@ -370,13 +414,13 @@ const ChatConversation = ({
 
   const addMessage = useCallback(
     async (
-      thread: ThreadObjectWithIsValid | null,
+      threadId: ThreadObjectWithIsValid["threadId"] | null | undefined,
       newMessageOrList: MessageDataWithIsValid | MessageDataWithIsValid[]
     ) => {
       const newMessages = Array.isArray(newMessageOrList)
         ? newMessageOrList
         : [newMessageOrList];
-      if (thread) {
+      if (threadId) {
         const messagesWithIsValid = await Promise.all(
           newMessages.map(async (message) => {
             if (message.isValid === undefined) {
@@ -429,34 +473,40 @@ const ChatConversation = ({
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const navigate = useKeepQueryParamsNavigate();
   const { address } = useAccount();
+  const isMonitorOk = useMemo(() => {
+    return (
+      !!addMessage && !!bosonXmtp && !!destinationAddress && thread?.threadId
+    );
+  }, [addMessage, bosonXmtp, destinationAddress, thread?.threadId]);
   useEffect(() => {
-    if (!bosonXmtp || !thread?.threadId || !destinationAddress) {
+    if (!isMonitorOk && !isMounted) {
       return;
     }
-    let isMounted = true;
-    const monitor = async () => {
-      try {
-        for await (const incomingMessage of bosonXmtp.monitorThread(
-          thread.threadId,
-          destinationAddress
-        )) {
-          if (!isMounted) {
-            return;
-          }
-          const isValid = await validateMessage(incomingMessage.data);
-          await addMessage(thread, { ...incomingMessage, isValid });
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    monitor().catch((error) => {
+
+    isMounted = true;
+    console.log({ threadId: thread?.threadId });
+    // const threadIdString = `${thread?.threadId.buyerId}-${thread?.threadId.exchangeId}-${thread?.threadId.sellerId}`;
+    // if (listeningThreadIds.includes(threadIdString)) {
+    //   return;
+    // }
+    // setListeningThreadIds((prev) => [...prev, threadIdString]);
+
+    monitor({
+      addMessage,
+      bosonXmtp: bosonXmtp!,
+      destinationAddress,
+      isMounted,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+      threadId: thread?.threadId!
+    }).catch((error) => {
       console.error(error);
     });
+
     return () => {
       isMounted = false;
     };
-  }, [bosonXmtp, destinationAddress, thread, addMessage, address]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMonitorOk]);
 
   const sendFiles = useCallback(
     async (files: FileWithEncodedData[]) => {
@@ -470,7 +520,7 @@ const ChatConversation = ({
         destinationAddress,
         threadId,
         callback: async (messageData) => {
-          await addMessage(thread, { ...messageData, isValid: true });
+          await addMessage(thread?.threadId, { ...messageData, isValid: true });
         }
       });
     },
@@ -683,7 +733,7 @@ const ChatConversation = ({
                       destinationAddress,
                       threadId,
                       callback: async (messageData) => {
-                        await addMessage(thread, {
+                        await addMessage(thread?.threadId, {
                           ...messageData,
                           isValid: true
                         });
@@ -756,7 +806,7 @@ const ChatConversation = ({
                     destinationAddress
                   );
                   setIsMessageBeingSent(false);
-                  await addMessage(thread, {
+                  await addMessage(thread?.threadId, {
                     ...messageData,
                     isValid: true
                   });
