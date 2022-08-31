@@ -11,6 +11,8 @@ import ProductCreateSuccess from "./components/ProductCreateSuccess";
 import RedeemModal from "./components/RedeemModal/RedeemModal";
 import { RetractDisputeModal } from "./components/RetractDisputeModal";
 import RevokeProduct from "./components/RevokeProduct";
+import FinanceDeposit from "./components/SellerFinance/FinanceDeposit";
+import FinanceWithdraw from "./components/SellerFinance/FinanceWithdraw";
 import Upload from "./components/Upload";
 import VoidProduct from "./components/VoidProduct";
 import WhatIsRedeem from "./components/WhatIsRedeem";
@@ -30,7 +32,9 @@ export const MODAL_TYPES = {
   UPLOAD_MODAL: "UPLOAD_MODAL",
   VOID_PRODUCT: "VOID_PRODUCT",
   WHAT_IS_REDEEM: "WHAT_IS_REDEEM",
-  RETRACT_DISPUTE: "RETRACT_DISPUTE"
+  RETRACT_DISPUTE: "RETRACT_DISPUTE",
+  FINANCE_DEPOSIT_MODAL: "FINANCE_DEPOSIT_MODAL",
+  FINANCE_WITHDRAW_MODAL: "FINANCE_WITHDRAW_MODAL"
 } as const;
 
 export const MODAL_COMPONENTS = {
@@ -48,5 +52,7 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.UPLOAD_MODAL]: Upload,
   [MODAL_TYPES.VOID_PRODUCT]: VoidProduct,
   [MODAL_TYPES.WHAT_IS_REDEEM]: WhatIsRedeem,
-  [MODAL_TYPES.RETRACT_DISPUTE]: RetractDisputeModal
+  [MODAL_TYPES.RETRACT_DISPUTE]: RetractDisputeModal,
+  [MODAL_TYPES.FINANCE_DEPOSIT_MODAL]: FinanceDeposit,
+  [MODAL_TYPES.FINANCE_WITHDRAW_MODAL]: FinanceWithdraw
 } as const;

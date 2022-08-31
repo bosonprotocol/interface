@@ -1,3 +1,4 @@
+import { Loading } from "@bosonprotocol/react-kit";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
@@ -6,7 +7,6 @@ import { UrlParameters } from "../../lib/routing/parameters";
 import { colors } from "../../lib/styles/colors";
 import { useCurrentSellerId } from "../../lib/utils/hooks/useCurrentSellerId";
 import Grid from "../ui/Grid";
-import Loading from "../ui/Loading";
 import Typography from "../ui/Typography";
 import { sellerPageTypes } from "./SellerPages";
 
@@ -21,6 +21,9 @@ const SellerTitle = styled(Typography)`
 const SellerInner = styled.div`
   background: ${colors.white};
   padding: 1rem;
+`;
+const LoadingWrapper = styled.div`
+  text-align: center;
 `;
 
 interface SellerWrapperProps {
@@ -48,7 +51,9 @@ export default function SellerInside() {
   if (isLoading) {
     return (
       <SellerWrapper label={label}>
-        <Loading />
+        <LoadingWrapper>
+          <Loading />
+        </LoadingWrapper>
       </SellerWrapper>
     );
   }
