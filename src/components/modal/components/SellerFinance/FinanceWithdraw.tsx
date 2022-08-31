@@ -119,12 +119,7 @@ export default function FinanceWithdraw({
   };
 
   return (
-    <Grid
-      flexDirection="column"
-      alignItems="flex-start"
-      gap="1.5rem"
-      margin="-2rem 0 0 0"
-    >
+    <Grid flexDirection="column" alignItems="flex-start" gap="1.5rem">
       <Typography tag="p" margin="0" $fontSize="0.75rem">
         <ProtocolStrong>Withdrawable Balance:</ProtocolStrong> {protocolBalance}{" "}
         {symbol}

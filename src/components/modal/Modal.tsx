@@ -64,7 +64,7 @@ const sizeToMargin = {
 } as const;
 
 const background = {
-  white: "var(--primaryBgColor)",
+  primaryBgColor: "var(--primaryBgColor)",
   dark: `${colors.black}`
 } as const;
 
@@ -141,8 +141,18 @@ const Close = styled(X)`
   }
 `;
 
-const Content = styled.div`
-  padding: 2rem;
+const Content = styled.div<{
+  $modalType: ModalType;
+}>`
+  padding: ${({ $modalType }) => {
+    switch ($modalType) {
+      case "FINANCE_WITHDRAW_MODAL":
+      case "FINANCE_DEPOSIT_MODAL":
+        return "0 2rem 2rem 2rem";
+      default:
+        return "2rem";
+    }
+  }};
 
   max-height: calc(100vh - 4.25rem);
 
@@ -199,7 +209,7 @@ export default function Modal({
             )}
           </HeaderWithTitle>
         )}
-        <Content>{children}</Content>
+        <Content $modalType={modalType}>{children}</Content>
       </Wrapper>
       <RootBG
         onClick={() => {

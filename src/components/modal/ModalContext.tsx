@@ -22,7 +22,7 @@ export type Store = {
   modalType: ModalType;
   modalProps?: Parameters<ModalContextType["showModal"]>[1];
   modalSize?: "xxs" | "xs" | "s" | "m" | "l" | "xl" | "auto";
-  theme?: "white" | "dark";
+  theme?: "light" | "dark";
 };
 
 export interface ModalContextType {
@@ -67,8 +67,8 @@ export const initalState: ModalContextType = {
     modalType: null,
     modalProps: {} as any,
     modalSize: "l",
-    theme: "white"
-  }
+    theme: "light"
+  } as const
 };
 
 const ModalContext = createContext(initalState as ModalContextType);

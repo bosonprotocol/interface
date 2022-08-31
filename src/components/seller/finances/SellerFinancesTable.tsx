@@ -144,7 +144,7 @@ export default function SellerFinancesTable() {
   const {
     seller: { sellerId, isError: isErrorSellers, isLoading: isLoadingSellers }
   } = useBuyerSellerAccounts(address || "");
-  const { funds, reload, foundStatus } = useFunds(sellerId);
+  const { funds, reload, fundStatus } = useFunds(sellerId);
   const {
     data: exchangesTokens,
     isLoading: isLoadingExchangesTokens,
@@ -158,15 +158,18 @@ export default function SellerFinancesTable() {
     refetch: sellerRefetch,
     isLoading: isLoadingSellerData,
     isError: sellerDataIsError
-  } = useSellerDeposit({
-    sellerId
-  });
+  } = useSellerDeposit(
+    {
+      sellerId
+    },
+    { enabled: !!sellerId }
+  );
 
   useEffect(() => {
-    if (foundStatus === "success" && !isFoundsInitialized) {
+    if (fundStatus === "success" && !isFoundsInitialized) {
       setIsFoundsInitialized(true);
     }
-  }, [foundStatus, isFoundsInitialized]);
+  }, [fundStatus, isFoundsInitialized]);
 
   const columns = useMemo(
     () => [
@@ -450,7 +453,7 @@ export default function SellerFinancesTable() {
   if (
     isErrorSellers ||
     sellerDataIsError ||
-    foundStatus === "error" ||
+    fundStatus === "error" ||
     isErrorExchangesTokens
   ) {
     // TODO: NO FIGMA REPRESENTATIONS

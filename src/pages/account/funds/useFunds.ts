@@ -3,33 +3,33 @@ import { useCallback, useEffect, useReducer, useState } from "react";
 
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 
-type FoundStatus = "idle" | "loading" | "error" | "success";
+type FundStatus = "idle" | "loading" | "error" | "success";
 
 export default function useFunds(accountId: string): {
   funds: Array<subgraph.FundsEntityFieldsFragment>;
   reload: React.DispatchWithoutAction;
-  foundStatus: FoundStatus;
+  fundStatus: FundStatus;
 } {
   const coreSdk = useCoreSDK();
   const [numRequests, reload] = useReducer((state) => state + 1, 0);
   const [funds, setFunds] = useState<Array<subgraph.FundsEntityFieldsFragment>>(
     []
   );
-  const [foundStatus, setFoundStatus] = useState<FoundStatus>("idle");
+  const [fundStatus, setFundStatus] = useState<FundStatus>("idle");
 
   const getFunds = useCallback(() => {
     if (accountId && coreSdk) {
-      setFoundStatus("loading");
+      setFundStatus("loading");
       coreSdk
         .getFunds({
           fundsFilter: { accountId }
         })
         .then((funds) => {
-          setFoundStatus("success");
+          setFundStatus("success");
           return setFunds(funds);
         })
         .catch(() => {
-          setFoundStatus("error");
+          setFundStatus("error");
         });
     }
   }, [coreSdk, accountId]);
@@ -38,5 +38,5 @@ export default function useFunds(accountId: string): {
     getFunds();
   }, [getFunds, numRequests]);
 
-  return { funds, reload, foundStatus };
+  return { funds, reload, fundStatus };
 }

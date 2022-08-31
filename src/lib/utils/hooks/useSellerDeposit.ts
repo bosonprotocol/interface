@@ -6,54 +6,65 @@ import { fetchSubgraph } from "../core-components/subgraph";
 interface Props {
   sellerId?: string;
 }
-export function useSellerDeposit(props: Props) {
-  return useQuery(["seller", props], async () => {
-    const result = await fetchSubgraph<{
-      seller: {
-        id: string;
-        exchanges: {
+export function useSellerDeposit(
+  props: Props,
+  options: {
+    enabled?: boolean;
+  } = {}
+) {
+  return useQuery(
+    ["sellerDeposit", props],
+    async () => {
+      const result = await fetchSubgraph<{
+        seller: {
           id: string;
-          finalizedDate: string;
-          offer: {
-            sellerDeposit: string;
-            price: string;
-            exchangeToken: {
-              id: string;
-              address: string;
-              decimals: string;
-              symbol: string;
-              name: string;
+          exchanges: {
+            id: string;
+            finalizedDate: string;
+            offer: {
+              sellerDeposit: string;
+              price: string;
+              exchangeToken: {
+                id: string;
+                address: string;
+                decimals: string;
+                symbol: string;
+                name: string;
+              };
             };
-          };
-        }[];
-      };
-    }>(
-      gql`
-        query GetSeller($sellerId: String) {
-          seller(id: $sellerId) {
-            id
-            exchanges {
-              finalizedDate
+          }[];
+        };
+      }>(
+        gql`
+          query GetSellerDeposit($sellerId: String) {
+            seller(id: $sellerId) {
               id
-              offer {
-                sellerDeposit
-                price
-                exchangeToken {
-                  id
-                  address
-                  decimals
-                  name
-                  symbol
+              exchanges {
+                finalizedDate
+                id
+                offer {
+                  sellerDeposit
+                  price
+                  exchangeToken {
+                    id
+                    address
+                    decimals
+                    name
+                    symbol
+                  }
                 }
               }
             }
           }
+        `,
+        {
+          ...(props.sellerId && { sellerId: props.sellerId })
         }
-      `,
-      {
-        ...(props.sellerId && { sellerId: props.sellerId })
-      }
-    );
-    return result?.seller ?? {};
-  });
+      );
+      return result?.seller ?? {};
+    },
+    {
+      ...options
+    }
+  );
 }
