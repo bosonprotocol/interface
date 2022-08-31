@@ -63,6 +63,9 @@ export default function Disputes({
           dataTestId="dispute"
           showSeller={false}
           isPrivateProfile={isPrivateProfile}
+          action="contact-seller"
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          exchange={exchange as any}
         />
       ))}
     </GridContainer>

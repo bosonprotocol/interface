@@ -1,9 +1,13 @@
+import { utils } from "ethers";
 import { Info as InfoComponent } from "phosphor-react";
+import { useState } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../../../lib/styles/colors";
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
+import { useCoreSDK } from "../../../../lib/utils/useCoreSdk";
 import { ProposalItem } from "../../../../pages/chat/types";
+import SimpleError from "../../../error/SimpleError";
 import Button from "../../../ui/Button";
 import Grid from "../../../ui/Grid";
 import { ModalProps } from "../../ModalContext";
@@ -49,6 +53,10 @@ export default function ResolveDisputeModal({
   hideModal,
   proposal
 }: Props) {
+  const coreSDK = useCoreSDK();
+  const [resolveDisputeError, setResolveDisputeError] = useState<Error | null>(
+    null
+  );
   return (
     <>
       <Grid justifyContent="space-between" padding="0 0 2rem 0">
@@ -61,12 +69,26 @@ export default function ResolveDisputeModal({
         By accepting this proposal the dispute is resolved and the refund is
         implemented
       </Info>
+      {resolveDisputeError && <SimpleError />}
       <ButtonsSection>
         <Button
           theme="secondary"
-          onClick={() => {
-            // TODO: implement
-            console.log("accept proposal");
+          onClick={async () => {
+            try {
+              setResolveDisputeError(null);
+              const signature = utils.splitSignature(proposal.signature);
+              const tx = await coreSDK.resolveDispute({
+                exchangeId: exchange.id,
+                buyerPercent: proposal.percentageAmount,
+                sigR: signature.r,
+                sigS: signature.s,
+                sigV: signature.v
+              });
+              await tx.wait();
+              hideModal();
+            } catch (error) {
+              setResolveDisputeError(error as Error);
+            }
           }}
         >
           Accept proposal

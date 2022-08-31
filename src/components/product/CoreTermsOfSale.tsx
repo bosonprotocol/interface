@@ -1,3 +1,4 @@
+import { useState } from "react";
 import styled from "styled-components";
 
 import { Datepicker, FormField, Input, Select } from "../form";
@@ -22,6 +23,8 @@ const ProductInformationButtonGroup = styled(ProductButtonGroup)`
 
 export default function CoreTermsOfSale() {
   const { nextIsDisabled } = useCreateForm();
+
+  const [isFormValid, setIsFormValid] = useState<boolean>(true);
 
   return (
     <ContainerProductPage>
@@ -77,7 +80,11 @@ export default function CoreTermsOfSale() {
         required
         subTitle="Redemption period is the time in which buyers can redeem the rNFT for the physical item."
       >
-        <Datepicker name="coreTermsOfSale.redemptionPeriod" period />
+        <Datepicker
+          name="coreTermsOfSale.redemptionPeriod"
+          period
+          setIsFormValid={setIsFormValid}
+        />
       </FormField>
       <FormField
         title="Offer Validity period"
@@ -87,7 +94,11 @@ export default function CoreTermsOfSale() {
         <Datepicker name="coreTermsOfSale.offerValidityPeriod" period />
       </FormField>
       <ProductInformationButtonGroup>
-        <Button theme="secondary" type="submit" disabled={nextIsDisabled}>
+        <Button
+          theme="secondary"
+          type="submit"
+          disabled={nextIsDisabled || !isFormValid}
+        >
           Next
         </Button>
       </ProductInformationButtonGroup>

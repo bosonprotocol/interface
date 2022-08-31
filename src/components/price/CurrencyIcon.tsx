@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
 import { useState } from "react";
 
+import { CONFIG } from "../../lib/config";
 import { ReactComponent as bosonIcon } from "./images/boson.svg";
 import { ReactComponent as daiIcon } from "./images/dai.svg";
 import { ReactComponent as ethIcon } from "./images/eth-icon.svg";
@@ -17,7 +18,7 @@ interface Props {
   onError?: () => void;
 }
 
-const chain = "polygon";
+const chain = [137, 80001].includes(CONFIG.chainId) ? "polygon" : "ethereum";
 
 export default function CurrencyIcon({
   currencySymbol,

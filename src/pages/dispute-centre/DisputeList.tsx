@@ -91,7 +91,7 @@ function DisputeList() {
             theme="outline"
             size="small"
             onClick={() => {
-              showModal(modalTypes.DISPUTE_MODAL, {
+              showModal(modalTypes.RAISE_DISPUTE, {
                 title: "Raise a problem"
               });
             }}

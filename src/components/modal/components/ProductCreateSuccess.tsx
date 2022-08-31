@@ -10,6 +10,7 @@ import styled from "styled-components";
 import { getOfferDetailData } from "../../../components/detail/DetailWidget/DetailWidget";
 import Price from "../../../components/price/index";
 import { useConvertedPrice } from "../../../components/price/useConvertedPrice";
+import { CONFIG } from "../../../lib/config";
 import { colors } from "../../../lib/styles/colors";
 import {
   Break,
@@ -123,12 +124,9 @@ export default function ProductCreateSuccess({
     onCreateNewProject();
   };
 
-  /**
-   * TODO: make the decimals depending on the token
-   */
   const suggestedAmount = formatUnits(
     BigNumber.from(offer.sellerDeposit).mul(parseInt(offer.quantityInitial)),
-    18
+    Number(CONFIG.nativeCoin?.decimals) || 18
   );
 
   const fifteenOfAmmount = parseFloat(suggestedAmount) * 0.15;
@@ -204,7 +202,8 @@ export default function ProductCreateSuccess({
                   style={{ transform: `translateX(-${100 - PROGRESS}%)` }}
                 />
                 <Amount>
-                  {fifteenOfAmmount} / {suggestedAmount} ETH
+                  {fifteenOfAmmount} / {suggestedAmount}{" "}
+                  {offer.exchangeToken.symbol}
                 </Amount>
               </StyledProgressLayer>
             </StyledProgress>

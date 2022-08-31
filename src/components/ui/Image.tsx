@@ -1,12 +1,11 @@
-import { IpfsMetadataStorage } from "@bosonprotocol/react-kit";
 import { CameraSlash, Image as ImageIcon } from "phosphor-react";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 import { buttonText } from "../../components/ui/styles";
-import { CONFIG } from "../../lib/config";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
+import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
 import Typography from "./Typography";
 
 const ImageWrapper = styled.div`
@@ -81,13 +80,10 @@ const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
   ...rest
 }) => {
   const [imageSrc, setImageSrc] = useState<string | null>(null);
+  const ipfsMetadataStorage = useIpfsStorage();
 
   useEffect(() => {
     async function fetchData(src: string) {
-      const ipfsMetadataStorage = IpfsMetadataStorage.fromTheGraphIpfsUrl(
-        CONFIG.ipfsMetadataUrl
-      );
-
       const fetchPromises = await ipfsMetadataStorage.get(src, false);
       const [image] = await Promise.all([fetchPromises]);
       setImageSrc(String(image));

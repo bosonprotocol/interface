@@ -1,3 +1,4 @@
+import { ethers } from "ethers";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { useEnsName } from "wagmi";
@@ -5,6 +6,7 @@ import { useEnsName } from "wagmi";
 import Avatar from "../../../components/avatar";
 import AddressText from "../../../components/offer/AddressText";
 import CurrencyIcon from "../../../components/price/CurrencyIcon";
+import { CONFIG } from "../../../lib/config";
 import { UrlParameters } from "../../../lib/routing/parameters";
 import Tabs from "../Tabs";
 
@@ -29,7 +31,8 @@ const AddressContainer = styled.div`
   font-size: 1rem;
 
   img {
-    width: 15px;
+    width: 30px;
+    height: 30px;
     margin-right: 5px;
   }
 `;
@@ -53,7 +56,10 @@ export default function PublicAccount() {
         <EnsName>{ensName}</EnsName>
 
         <AddressContainer>
-          <CurrencyIcon currencySymbol="ETH" />
+          <CurrencyIcon
+            currencySymbol={CONFIG.nativeCoin?.symbol || ""}
+            address={ethers.constants.AddressZero}
+          />
           <AddressText address={address} />
         </AddressContainer>
       </BasicInfo>

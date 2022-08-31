@@ -48,8 +48,7 @@ jobs:
       DEPLOY_TO_FLEEK: true
       ENV_NAME: 'staging'
       UPDATE_COVERAGE: false
-      REACT_APP_ENABLE_CURATION_LISTS: true
-      REACT_APP_SELLER_CURATION_LIST: '15'
+      REACT_APP_ENABLE_CURATION_LISTS: false
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}

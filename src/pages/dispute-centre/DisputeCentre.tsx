@@ -30,7 +30,7 @@ import DisputeCentreForm from "./DisputeCentreForm";
 
 const DISPUTE_STEPS = [
   {
-    name: "Choose isue",
+    name: "Choose issue",
     steps: 1
   } as const,
   {
@@ -79,7 +79,7 @@ function DisputeCentre() {
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [submitError, setSubmitError] = useState<Error | null>(null);
   const params = useParams();
-  const exchangeId = params["*"];
+  const exchangeId = params["id"];
   const navigate = useKeepQueryParamsNavigate();
   const { data: buyers } = useBuyers({
     wallet: address
@@ -92,8 +92,7 @@ function DisputeCentre() {
     isLoading
   } = useExchanges({
     id: exchangeId,
-    disputed: null,
-    buyerId
+    disputed: null
   });
 
   const [exchange] = exchanges;
@@ -118,6 +117,13 @@ function DisputeCentre() {
 
   if (!exchange || isError) {
     return <p>There has been an error while retrieving this exchange</p>;
+  }
+
+  if (
+    !buyerId ||
+    exchange.buyer.wallet.toLowerCase() !== address?.toLowerCase()
+  ) {
+    return <p>You have to be the buyer of this exchange to raise a dispute</p>;
   }
 
   if (exchange.disputed) {
@@ -181,7 +187,7 @@ function DisputeCentre() {
                     proposalFields: {
                       description: values.description,
                       upload: values.upload,
-                      proposalTypeName: values.proposalsTypes?.label || "",
+                      proposalTypeName: values.proposalType?.label || "",
                       refundPercentage: values.refundPercentage,
                       disputeContext: [values.getStarted, values.tellUsMore]
                     },

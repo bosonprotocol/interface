@@ -17,7 +17,7 @@ const Container = styled.div<{
 }>`
   display: flex;
   flex-direction: column;
-  flex: 1 1 25%;
+  flex: 1 1 auto;
   border: 1px solid ${colors.border};
   position: absolute;
   z-index: ${zIndex.ChatSeparator};
@@ -38,6 +38,14 @@ const Container = styled.div<{
     height: auto;
     z-index: ${zIndex.Default};
     width: auto;
+    flex: 1 1 39rem;
+  }
+  ${breakpoint.l} {
+    flex: 1 1 22%;
+  }
+  ${breakpoint.xl} {
+    flex: 1 1 25%;
+    max-width: 25rem;
   }
 `;
 

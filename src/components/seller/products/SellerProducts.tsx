@@ -13,7 +13,7 @@ import SellerAddNewProduct from "../SellerAddNewProduct";
 import SellerExport from "../SellerExport";
 import SellerFilters from "../SellerFilters";
 import SellerTags from "../SellerTags";
-import SellerTable from "./SellerTable";
+import SellerProductsTable from "./SellerProductsTable";
 
 const productTags = [
   {
@@ -114,7 +114,7 @@ export default function SellerProducts({ sellerId }: Props) {
         }
       };
       return {
-        ["ID/SKU"]: offer?.id ? ("0000" + offer.id).slice(-4) : "",
+        ["ID/SKU"]: offer?.id ? offer?.id : "",
         ["Product name"]: offer?.metadata?.name ?? "",
         ["Status"]: offer ? offers.getOfferStatus(offer) : "",
         ["Remaining Quantity"]: offer?.quantityAvailable ?? "",
@@ -166,7 +166,7 @@ export default function SellerProducts({ sellerId }: Props) {
         setFilter={setFilter}
         buttons={filterButton}
       />
-      <SellerTable
+      <SellerProductsTable
         offers={allOffers}
         isLoading={isLoading}
         isError={isError}

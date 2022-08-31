@@ -24,6 +24,7 @@ import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
 import Image from "../../ui/Image";
 import Typography from "../../ui/Typography";
+import { useModal } from "../useModal";
 
 interface Props {
   id?: string;
@@ -46,6 +47,7 @@ export default function DetailWidget({
   exchange
 }: Props) {
   const navigate = useKeepQueryParamsNavigate();
+  const { hideModal } = useModal();
 
   return (
     <>
@@ -85,6 +87,7 @@ export default function DetailWidget({
               theme="secondary"
               onClick={() => {
                 const exchangeId = id || false;
+                hideModal();
                 if (exchangeId) {
                   const pathname = generatePath(BosonRoutes.Exchange, {
                     [UrlParameters.exchangeId]: exchangeId

@@ -2,13 +2,14 @@ import { BosonXmtpClient } from "@bosonprotocol/chat-sdk";
 import { ReactNode, useEffect, useState } from "react";
 import { useSigner } from "wagmi";
 
+import { config } from "../../../lib/config";
 import { Context } from "./ChatContext";
 
 interface Props {
   children: ReactNode;
 }
 
-const envName = "local-df"; // TODO: change
+const envName = `${config.envName}-${config.contracts.protocolDiamond}`;
 export default function ChatProvider({ children }: Props) {
   const { data: signer } = useSigner();
   const [initialize, setInitialized] = useState<number>(0);

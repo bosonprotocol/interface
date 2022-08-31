@@ -1,6 +1,15 @@
-import { ArrowsLeftRight, Bank, GridFour, Storefront } from "phosphor-react";
+import {
+  ArrowsLeftRight,
+  Bank,
+  Chats,
+  GridFour,
+  Storefront
+} from "phosphor-react";
 import React from "react";
+import { Navigate } from "react-router-dom";
 
+import { BosonRoutes } from "../../lib/routing/routes";
+import SellerExchanges from "./exchanges/SellerExchanges";
 import SellerFinances from "./finances/SellerFinances";
 import SellerProducts from "./products/SellerProducts";
 
@@ -28,7 +37,15 @@ export const sellerPageTypes = {
     url: "exchanges",
     label: "Exchanges",
     icon: ArrowsLeftRight,
-    component: () => <div>Exchanges</div>
+    component: ({ sellerId }: SellerProps) => (
+      <SellerExchanges sellerId={sellerId} />
+    )
+  },
+  messages: {
+    url: "messages",
+    label: "Messages",
+    icon: Chats,
+    component: () => <Navigate replace to={BosonRoutes.Chat} />
   },
   finances: {
     url: "finances",
