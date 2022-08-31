@@ -1,9 +1,7 @@
 import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 import { BigNumber, utils } from "ethers";
-import filter from "lodash/filter";
 import groupBy from "lodash/groupBy";
-import isEmpty from "lodash/isEmpty";
 import {
   CaretDown,
   CaretLeft,
@@ -158,7 +156,7 @@ export default function SellerFinancesTable() {
   const {
     data: sellersData,
     refetch: sellerRefetch,
-    isLoading: sellerDataLoading,
+    isLoading: isLoadingSellerData,
     isError: sellerDataIsError
   } = useSellerDeposit({
     sellerId
@@ -198,9 +196,9 @@ export default function SellerFinancesTable() {
         disableSortBy: false
       } as const,
       {
-        Header: "",
+        Header: "Action",
         accessor: "action",
-        disableSortBy: false
+        disableSortBy: true
       } as const
     ],
     []
@@ -208,7 +206,7 @@ export default function SellerFinancesTable() {
 
   const calcOffersBacked = useMemo(() => {
     const offersBackedByGroup: { [key: string]: string } = {};
-    if (isEmpty(exchangesTokens)) {
+    if (!Array.isArray(exchangesTokens) || !exchangesTokens.length) {
       return offersBackedByGroup;
     }
     exchangesTokens?.forEach((exchangeToken) => {
@@ -230,7 +228,6 @@ export default function SellerFinancesTable() {
           return isNotExpired && !offer.voidedAt;
         }
       );
-      console.log(notExpiredAndNotVoidedOffers, "notExpiredAndNotVoidedOffers");
       const sumValue = notExpiredAndNotVoidedOffers.reduce(
         (acc, { sellerDeposit, quantityAvailable }) => {
           acc = acc
@@ -255,13 +252,16 @@ export default function SellerFinancesTable() {
 
   const sellerLockedFunds = useMemo(() => {
     const lockedFundsByGroup: { [key: string]: string } = {};
-    if (isEmpty(sellersData?.exchanges)) {
+    if (
+      !Array.isArray(sellersData?.exchanges) ||
+      !sellersData?.exchanges.length
+    ) {
       return lockedFundsByGroup;
     }
-    const noFinalized = filter(
-      sellersData?.exchanges,
-      ({ finalizedDate }) => !finalizedDate
-    );
+
+    const noFinalized =
+      sellersData?.exchanges?.filter(({ finalizedDate }) => !finalizedDate) ??
+      [];
 
     const groupedBySymbol = groupBy(
       noFinalized,
@@ -318,11 +318,6 @@ export default function SellerFinancesTable() {
         const offersBacked = () => {
           let result = null;
           if (fund.availableAmount && calcOffersBacked[fund.token.symbol]) {
-            console.log(fund.availableAmount, "fund.availableAmount");
-            console.log(
-              calcOffersBacked[fund.token.symbol],
-              "calcOffersBacked[fund.token.symbol]"
-            );
             result = Number(
               (
                 (Number(fund.availableAmount) /
@@ -346,7 +341,7 @@ export default function SellerFinancesTable() {
             </Typography>
           ),
           action: (
-            <Grid justifyContent="space-evently" gap="1rem">
+            <Grid justifyContent="flex-end" gap="1rem">
               <WithdrawButton
                 theme="outline"
                 size="small"
@@ -446,7 +441,7 @@ export default function SellerFinancesTable() {
   if (
     !isFoundsInitialized ||
     isLoadingSellers ||
-    sellerDataLoading ||
+    isLoadingSellerData ||
     isLoadingExchangesTokens
   ) {
     return <Loading />;
@@ -478,7 +473,7 @@ export default function SellerFinancesTable() {
                     key={`seller_table_thead_th_${i}`}
                   >
                     {column.render("Header")}
-                    {i > 0 && !column.disableSortBy && (
+                    {i >= 0 && !column.disableSortBy && (
                       <HeaderSorter>
                         {column?.isSorted ? (
                           column?.isSortedDesc ? (

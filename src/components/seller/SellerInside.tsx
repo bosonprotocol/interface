@@ -22,6 +22,9 @@ const SellerInner = styled.div`
   background: ${colors.white};
   padding: 1rem;
 `;
+const LoadingWrapper = styled.div`
+  text-align: center;
+`;
 
 interface SellerWrapperProps {
   children: React.ReactNode;
@@ -48,7 +51,9 @@ export default function SellerInside() {
   if (isLoading) {
     return (
       <SellerWrapper label={label}>
-        <Loading />
+        <LoadingWrapper>
+          <Loading />
+        </LoadingWrapper>
       </SellerWrapper>
     );
   }
