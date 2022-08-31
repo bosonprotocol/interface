@@ -65,7 +65,8 @@ const sizeToMargin = {
 
 const background = {
   primaryBgColor: "var(--primaryBgColor)",
-  dark: `${colors.black}`
+  dark: `${colors.black}`,
+  light: `${colors.white}`
 } as const;
 
 const Wrapper = styled.div<{
@@ -84,7 +85,7 @@ const Wrapper = styled.div<{
     }
   }};
   background-color: ${({ $theme }) => {
-    return background[$theme as keyof typeof background];
+    return background[$theme as keyof typeof background] || colors.white;
   }};
   border: var(--secondary);
   max-width: ${({ $modalType }) => {

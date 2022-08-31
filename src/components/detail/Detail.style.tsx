@@ -551,7 +551,7 @@ const miniButton = css`
     color: ${colors.black};
   }
 `;
-export const OpenSeaButton = styled.button`
+export const OpenSeaButton = styled.a<{ $disabled: boolean }>`
   position: absolute;
   bottom: 0;
   left: 0;
@@ -559,6 +559,16 @@ export const OpenSeaButton = styled.button`
   z-index: ${zIndex.OfferStatus};
   border: 2px solid ${colors.border};
   ${miniButton}
+
+  ${({ $disabled }) =>
+    $disabled &&
+    css`
+      pointer-events: none;
+      color: ${colors.grey};
+      &:hover {
+        color: ${colors.grey};
+      }
+    `}
 `;
 
 export const RedeemLeftButton = styled.button`

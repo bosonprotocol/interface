@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Route, Routes, useLocation, useParams } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
 import { useAccount } from "wagmi";
@@ -143,14 +143,17 @@ export default function Chat() {
   useEffect(() => {
     setTextAreasValues(textAreaValueByThread);
   }, [textAreaValueByThread]);
-  const onTextAreaChange = (textAreaTargetValue: string) => {
-    const updatedData = textAreasValues.map((textAreaValue) =>
-      getIsSameThread(exchangeId, textAreaValue)
-        ? { ...textAreaValue, value: textAreaTargetValue }
-        : textAreaValue
-    );
-    setTextAreasValues(updatedData);
-  };
+  const onTextAreaChange = useCallback(
+    (textAreaTargetValue: string) => {
+      const updatedData = textAreasValues.map((textAreaValue) =>
+        getIsSameThread(exchangeId, textAreaValue)
+          ? { ...textAreaValue, value: textAreaTargetValue }
+          : textAreaValue
+      );
+      setTextAreasValues(updatedData);
+    },
+    [exchangeId, textAreasValues]
+  );
 
   const parseInputValue = useMemo(
     () =>
