@@ -1,5 +1,5 @@
 import { CONFIG } from "../../../lib/config";
-import countries from "./countries.json";
+import countries from "../../../lib/const/countries.json";
 
 export const MAX_LOGO_SIZE = 10 * 1024 * 1024;
 export const MAX_IMAGE_SIZE = 10 * 1024 * 1024;

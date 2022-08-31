@@ -1,6 +1,5 @@
-import * as Yup from "yup";
-
 import { validationMessage } from "../../../lib/const/validationMessage";
+import Yup from "../../../lib/validation/index";
 import { validationOfFile } from "../../../pages/chat/components/UploadForm/const";
 import { MIN_VALUE } from "../../modal/components/Chat/const";
 import { FormModel } from "../../modal/components/Chat/MakeProposal/MakeProposalFormModel";
@@ -94,20 +93,12 @@ export const coreTermsOfSaleValidationSchema = Yup.object({
         label: Yup.string()
       })
       .default([{ value: "", label: "" }]),
-    offerValidityPeriod: Yup.array()
-      .of(
-        Yup.object().nullable().shape({
-          $d: Yup.string()
-        }) || Yup.string()
-      )
-      .default([{ $d: "" }]),
-    redemptionPeriod: Yup.array()
-      .of(
-        Yup.object().nullable().shape({
-          $d: Yup.string()
-        }) || Yup.string()
-      )
-      .default([{ $d: "" }])
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    offerValidityPeriod: Yup.mixed().isOfferValidityDatesValid(),
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    redemptionPeriod: Yup.mixed().isRedemptionDatesValid()
   })
 });
 

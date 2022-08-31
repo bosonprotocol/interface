@@ -14,6 +14,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
+    "noImplicitThis": false,
     "jsx": "react-jsx",
     "paths": {
       "stream": ["./node_modules/readable-stream"],
