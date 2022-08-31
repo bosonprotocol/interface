@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import { useAccount } from "wagmi";
 
 import DisputeListMobile from "../../components/modal/components/DisputeListMobile/DisputeListMobile";
 import DisputeTable from "../../components/modal/components/DisputeTable/DisputeTable";
@@ -12,7 +11,6 @@ import { AccountQueryParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
-import { useBuyers } from "../../lib/utils/hooks/useBuyers";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 
@@ -59,11 +57,6 @@ const HowItWorksButton = styled(Button)`
 function DisputeList() {
   const navigate = useKeepQueryParamsNavigate();
   const { showModal, modalTypes } = useModal();
-  const { address } = useAccount();
-  const { data: buyers } = useBuyers({
-    wallet: address
-  });
-  const buyerId = buyers?.[0]?.id || "";
   const { isLteS } = useBreakpoints();
 
   const { data: exchanges = [] } = useExchanges({
