@@ -440,7 +440,8 @@ const ChatConversation = ({
       return;
     }
     const stopGenerator = {
-      done: false
+      done: false,
+      random: Math.random() * 10
     };
 
     const monitor = async ({
@@ -458,6 +459,7 @@ const ChatConversation = ({
           destinationAddress,
           stopGenerator
         )) {
+          console.log(incomingMessage.data.content.value);
           await addMessage(threadId, { ...incomingMessage, isValid: true });
         }
       } catch (error) {
@@ -759,8 +761,9 @@ const ChatConversation = ({
             </UploadButtonWrapper>
           </InputWrapper>
           <SendButton
+            data-testid="send"
             theme="secondary"
-            disabled={disableInputs}
+            disabled={disableInputs || isMessageBeingSent}
             onClick={async () => {
               const value = textAreaValue?.trim() || "";
               if (bosonXmtp && threadId && value && !isMessageBeingSent) {
@@ -791,7 +794,11 @@ const ChatConversation = ({
               }
             }}
           >
-            <PaperPlaneRight size={24} />
+            {isMessageBeingSent ? (
+              <Spinner size={24} />
+            ) : (
+              <PaperPlaneRight size={24} />
+            )}
           </SendButton>
         </TypeMessage>
       </ConversationContainer>
