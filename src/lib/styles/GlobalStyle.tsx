@@ -68,7 +68,7 @@ const GlobalStyle = createGlobalStyle<{
     max-height: 100vh;
   }
 
-  
+
 
   a,
   button,
@@ -83,9 +83,12 @@ const GlobalStyle = createGlobalStyle<{
     cursor: pointer;
   }
 
-  input,
   select {
     -webkit-appearance: none;
+  }
+
+  input {
+    user-select: text;
   }
 
   * > small {
@@ -119,7 +122,7 @@ const GlobalStyle = createGlobalStyle<{
     font-size: 1rem;
     line-height: 1.5;
   }
-  img, svg, input {
+  img, svg {
     user-select: none;
   }
 
