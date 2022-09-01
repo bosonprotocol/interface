@@ -291,10 +291,16 @@ export default function ExchangeSidePreview({
           </Button>
           <Button
             theme="orange"
-            onClick={() => {
-              // TODO: implement
-              console.log("escalate");
-            }}
+            onClick={() =>
+              showModal(
+                "ESCALATE_MODAL",
+                {
+                  title: "Escalate",
+                  exchange: exchange
+                },
+                "l"
+              )
+            }
           >
             Escalate
           </Button>
