@@ -106,9 +106,15 @@ export function useInfiniteThread({
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       setThreadXmtp((newThread) => {
+        const oldMessages = newThread?.messages || [];
+        const lastMessage = oldMessages[oldMessages.length - 1];
+        // TODO: this is a patch because sometimes we receive messages that we have already received, hence we filter out duplicated messages
+        const newMessages = messages.filter((message) => {
+          return !lastMessage || message.timestamp >= lastMessage?.timestamp;
+        });
         return {
           ...(newThread || {}),
-          messages: [...(newThread?.messages || []), ...messages]
+          messages: [...oldMessages, ...newMessages]
         };
       });
     }, [])
