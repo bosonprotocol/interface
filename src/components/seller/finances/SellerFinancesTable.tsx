@@ -25,6 +25,7 @@ import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
 import Loading from "../../ui/Loading";
 import Typography from "../../ui/Typography";
+import PaginationPages from "../common/PaginationPages";
 
 const Table = styled.table`
   width: 100%;
@@ -553,10 +554,11 @@ export default function SellerFinancesTable() {
               </select>
               per page
             </Span>
-            <Span>
-              Showing {pageIndex * pageSize + 1} - {(pageIndex + 1) * pageSize}{" "}
-              of {rows.length} entries
-            </Span>
+            <PaginationPages
+              pageIndex={pageIndex + 1}
+              pageSize={pageSize}
+              allItems={rows.length}
+            />
           </Grid>
           {pageCount > 1 && (
             <Grid justifyContent="flex-end" gap="1rem">
