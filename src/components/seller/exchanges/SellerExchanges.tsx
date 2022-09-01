@@ -2,6 +2,7 @@ import { exchanges as ExchangesKit, subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { BigNumber, utils } from "ethers";
 import { useMemo, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 import { CONFIG } from "../../../lib/config";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
@@ -42,9 +43,23 @@ interface FilterValue {
   value: string;
   label: string;
 }
-
+interface MyLocationState {
+  currentTag: string;
+}
 export default function SellerExchanges({ sellerId }: Props) {
-  const [currentTag, setCurrentTag] = useState(productTags[0].value);
+  const location = useLocation();
+  const state = location.state as MyLocationState;
+
+  const initialTag = useMemo(() => {
+    const { currentTag } = state;
+    return currentTag
+      ? productTags.filter((f) => f?.value === currentTag)[0]
+      : productTags[0];
+  }, [state]);
+
+  const [currentTag, setCurrentTag] = useState(
+    initialTag?.value || productTags[0].value
+  );
   const [search, setSearch] = useState<string>("");
   const [filter, setFilter] = useState<FilterValue | null>(null);
 

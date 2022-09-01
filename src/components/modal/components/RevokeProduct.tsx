@@ -117,8 +117,7 @@ export default function RevokeProduct({
           onPendingSignature={() => {
             console.error("onPendingSignature");
           }}
-          onSuccess={(_args, res) => {
-            console.log(_args, res);
+          onSuccess={() => {
             hideModal();
             refetch();
           }}

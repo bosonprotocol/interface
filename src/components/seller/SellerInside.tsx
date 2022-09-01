@@ -21,6 +21,8 @@ const SellerTitle = styled(Typography)`
 const SellerInner = styled.div`
   background: ${colors.white};
   padding: 1rem;
+  box-shadow: 0px 0px 5px 0px rgb(0 0 0 / 2%), 0px 0px 10px 0px rgb(0 0 0 / 2%),
+    0px 0px 15px 0px rgb(0 0 0 / 5%);
 `;
 const LoadingWrapper = styled.div`
   text-align: center;
@@ -29,12 +31,17 @@ const LoadingWrapper = styled.div`
 interface SellerWrapperProps {
   children: React.ReactNode;
   label: string;
+  withoutWrapper?: boolean;
 }
-function SellerWrapper({ label, children }: SellerWrapperProps) {
+function SellerWrapper({
+  label,
+  children,
+  withoutWrapper = false
+}: SellerWrapperProps) {
   return (
     <SellerMain>
       <SellerTitle tag="h3">{label}</SellerTitle>
-      <SellerInner>{children}</SellerInner>
+      {withoutWrapper ? children : <SellerInner>{children}</SellerInner>}
     </SellerMain>
   );
 }
@@ -43,7 +50,7 @@ export default function SellerInside() {
   const { [UrlParameters.sellerPage]: sellerPage } = useParams();
   const { isLoading, sellerId } = useCurrentSellerId();
 
-  const { label, component } = useMemo(
+  const { label, component, ...rest } = useMemo(
     () =>
       sellerPageTypes[sellerPage as keyof typeof sellerPageTypes] ||
       sellerPageTypes.dashboard,
@@ -72,5 +79,9 @@ export default function SellerInside() {
     );
   }
 
-  return <SellerWrapper label={label}>{component({ sellerId })}</SellerWrapper>;
+  return (
+    <SellerWrapper label={label} {...rest}>
+      {component({ sellerId })}
+    </SellerWrapper>
+  );
 }
