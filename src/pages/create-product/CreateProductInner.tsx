@@ -162,12 +162,6 @@ function CreateProductInner({ initial }: Props) {
     values: CreateProductForm,
     formikBag: FormikHelpers<CreateProductForm>
   ) => {
-    console.log({
-      log: "SEND DATA",
-      values,
-      formikBag
-    });
-
     const profileImage = getLocalStorageItems({
       key: "create-product-image_createYourProfile"
     });
@@ -392,11 +386,6 @@ function CreateProductInner({ initial }: Props) {
     if (currentStep === wizardStep.wizardLength) {
       return handleSendData(values, formikBag);
     }
-    console.log({
-      log: "Next step",
-      values,
-      formikBag
-    });
 
     return handleNextForm();
   };

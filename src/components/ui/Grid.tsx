@@ -9,7 +9,7 @@ type JustifyContent =
   | "space-between"
   | "space-around"
   | "stretch";
-type AlignItems = "flex-start" | "center" | "flex-end" | "baseline";
+type AlignItems = "flex-start" | "center" | "flex-end" | "baseline" | "stretch";
 type FlexDirection = "row" | "column" | "row-reverse" | "column-reverse";
 export interface IGrid {
   $width?: string;

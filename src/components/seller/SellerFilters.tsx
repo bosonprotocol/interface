@@ -142,7 +142,6 @@ export default function SellerFilters({
     }>
   ) => {
     if (option) {
-      console.log(option);
       setFilter(option);
     }
   };

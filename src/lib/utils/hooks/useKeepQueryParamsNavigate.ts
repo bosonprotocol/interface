@@ -63,7 +63,7 @@ export function useKeepQueryParamsNavigate() {
         },
         {
           ...options,
-          state: { prevPath: location.pathname }
+          state: { ...options?.state, prevPath: location.pathname }
         }
       );
     },

@@ -165,6 +165,14 @@ const allThemes = {
       color: colors.black
     }
   },
+  blankWhite: {
+    color: colors.white,
+    padding: "1rem 2rem",
+    borderWidth: 0,
+    hover: {
+      color: colors.primary
+    }
+  },
   warning: {
     color: colors.black,
     borderColor: colors.orange,
