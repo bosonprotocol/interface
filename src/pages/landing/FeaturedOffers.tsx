@@ -1,7 +1,7 @@
 import { CaretRight } from "phosphor-react";
 import styled from "styled-components";
 
-import { LinkWithQuery } from "../../components/linkStoreFields/LinkStoreFields";
+import { LinkWithQuery } from "../../components/customNavigation/LinkWithQuery";
 import OfferList from "../../components/offers/OfferList";
 import { buttonText } from "../../components/ui/styles";
 import Typography from "../../components/ui/Typography";

@@ -1,10 +1,13 @@
 import { ArrowLeft } from "phosphor-react";
 import { useEffect, useState } from "react";
+import { generatePath } from "react-router-dom";
 import styled from "styled-components";
 
+import { sellerPageTypes } from "../../../components/seller/SellerPages";
 import Image from "../../../components/ui/Image";
 import SellerID from "../../../components/ui/SellerID";
-import { BosonRoutes } from "../../../lib/routing/routes";
+import { UrlParameters } from "../../../lib/routing/parameters";
+import { BosonRoutes, SellerCenterRoutes } from "../../../lib/routing/routes";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
 import { zIndex } from "../../../lib/styles/zIndex";
@@ -169,8 +172,20 @@ export default function MessageList({
           <BackToSellerCenterButton
             type="button"
             onClick={() => {
+              const sellerCenterMessagesUrl = generatePath(
+                SellerCenterRoutes.SellerCenter,
+                {
+                  [UrlParameters.sellerPage]: sellerPageTypes.messages.url
+                }
+              );
               navigate({
-                pathname: prevPath
+                pathname:
+                  sellerCenterMessagesUrl === prevPath
+                    ? generatePath(SellerCenterRoutes.SellerCenter, {
+                        [UrlParameters.sellerPage]:
+                          sellerPageTypes.dashboard.url
+                      })
+                    : prevPath
               });
             }}
           >

@@ -6,9 +6,9 @@ import {
   Storefront
 } from "phosphor-react";
 import React from "react";
-import { Navigate } from "react-router-dom";
 
 import { BosonRoutes } from "../../lib/routing/routes";
+import Navigate from "../customNavigation/Navigate";
 import SellerDashboard from "./dashboard/SellerDashboard";
 import SellerExchanges from "./exchanges/SellerExchanges";
 import SellerFinances from "./finances/SellerFinances";
@@ -49,7 +49,7 @@ export const sellerPageTypes = {
     url: "messages",
     label: "Messages",
     icon: Chats,
-    component: () => <Navigate replace to={BosonRoutes.Chat} />
+    component: () => <Navigate replace to={{ pathname: BosonRoutes.Chat }} />
   },
   finances: {
     url: "finances",

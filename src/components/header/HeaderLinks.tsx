@@ -7,7 +7,7 @@ import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes, SellerCenterRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { useCurrentSellerId } from "../../lib/utils/hooks/useCurrentSellerId";
-import { LinkWithQuery } from "../linkStoreFields/LinkStoreFields";
+import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
 import { DEFAULT_SELLER_PAGE } from "../seller/SellerPages";
 import Search from "./Search";
 

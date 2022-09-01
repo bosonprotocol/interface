@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { SellerCenterRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
-import { LinkWithQuery } from "../linkStoreFields/LinkStoreFields";
+import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
 import Grid from "../ui/Grid";
 import { sellerPageTypes } from "./SellerPages";
 
