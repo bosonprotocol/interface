@@ -24,7 +24,8 @@ interface Props {
   exchange: Exchange;
 }
 
-export const proposals = [{ label: "Refund", value: "refund" }];
+export const RefundLabel = "Refund";
+export const proposals = [{ label: RefundLabel, value: "refund" }];
 
 export default function MakeAProposalStep({
   exchange,
@@ -36,10 +37,15 @@ export default function MakeAProposalStep({
     FormModel.formFields.proposalType.name
   );
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { setFieldTouched } = useFormikContext<any>();
+  const { setFieldTouched, setFieldValue } = useFormikContext<any>();
   useEffect(() => {
     setFieldTouched(FormModel.formFields.proposalType.name, true);
   }, [setFieldTouched]);
+  useEffect(() => {
+    if (!proposalTypeField.value) {
+      setFieldValue(FormModel.formFields.refundPercentage.name, "0", true);
+    }
+  }, [proposalTypeField.value, setFieldValue]);
   return (
     <>
       <Typography $fontSize="2rem" fontWeight="600">
@@ -57,17 +63,19 @@ export default function MakeAProposalStep({
         <Select
           name={FormModel.formFields.proposalType.name}
           options={proposals}
+          isClearable
         />
-        {proposalTypeField.value?.label === "Refund" && (
-          <Grid
-            flexDirection="column"
-            alignItems="flex-start"
-            padding="3.5rem 0 0 0"
-            gap="2rem"
-          >
-            <RefundRequest exchange={exchange} />
-          </Grid>
-        )}
+        {typeof proposalTypeField.value !== "string" &&
+          proposalTypeField.value?.label === "Refund" && (
+            <Grid
+              flexDirection="column"
+              alignItems="flex-start"
+              padding="3.5rem 0 0 0"
+              gap="2rem"
+            >
+              <RefundRequest exchange={exchange} />
+            </Grid>
+          )}
       </Grid>
       <ButtonsSection>
         <Button

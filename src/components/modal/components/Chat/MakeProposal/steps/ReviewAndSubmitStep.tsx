@@ -14,7 +14,7 @@ import InitializeChatWithSuccess from "../../components/InitializeChatWithSucces
 import ProposalTypeSummary from "../../components/ProposalTypeSummary";
 import { PERCENTAGE_FACTOR } from "../../const";
 import { FormModel } from "../MakeProposalFormModel";
-import { proposals } from "./MakeAProposalStep/MakeAProposalStep";
+import { RefundLabel } from "./MakeAProposalStep/MakeAProposalStep";
 
 const ButtonsSection = styled.div`
   padding-top: 2rem;
@@ -43,6 +43,9 @@ export default function ReviewAndSubmitStep({
   const [uploadField, , uploadFieldHelpers] = useField<File[]>({
     name: FormModel.formFields.upload.name
   });
+  const [proposalTypeField] = useField<string>({
+    name: FormModel.formFields.proposalType.name
+  });
   const [refundPercentageField] = useField<string>({
     name: FormModel.formFields.refundPercentage.name
   });
@@ -64,23 +67,25 @@ export default function ReviewAndSubmitStep({
         }}
       />
       <Typography $fontSize="1.25rem" color={colors.darkGrey}></Typography>
-      <Grid flexDirection="column" margin="2rem 0" alignItems="flex-start">
-        <Typography fontWeight="600" tag="p" $fontSize="1.5rem">
-          Resolution proposal
-        </Typography>
-        <Grid flexDirection="column" gap="2rem">
-          <ProposalTypeSummary
-            exchange={exchange}
-            proposal={{
-              type: proposals[0].label,
-              percentageAmount: (
-                Number(refundPercentageField.value) * PERCENTAGE_FACTOR
-              ).toString(),
-              signature: ""
-            }}
-          />
+      {proposalTypeField.value && (
+        <Grid flexDirection="column" margin="2rem 0" alignItems="flex-start">
+          <Typography fontWeight="600" tag="p" $fontSize="1.5rem">
+            Resolution proposal
+          </Typography>
+          <Grid flexDirection="column" gap="2rem">
+            <ProposalTypeSummary
+              exchange={exchange}
+              proposal={{
+                type: RefundLabel,
+                percentageAmount: (
+                  Number(refundPercentageField.value) * PERCENTAGE_FACTOR
+                ).toString(),
+                signature: ""
+              }}
+            />
+          </Grid>
         </Grid>
-      </Grid>
+      )}
       <InitializeChatWithSuccess />
       {submitError && <SimpleError />}
       <ButtonsSection>

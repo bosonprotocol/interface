@@ -220,14 +220,16 @@ function DisputeCentre() {
               }}
               validationSchema={validationSchema[currentStep]}
             >
-              {() => (
-                <DisputeCentreForm
-                  setCurrentStep={setCurrentStep}
-                  currentStep={currentStep}
-                  exchange={exchange}
-                  submitError={submitError}
-                />
-              )}
+              {() => {
+                return (
+                  <DisputeCentreForm
+                    setCurrentStep={setCurrentStep}
+                    currentStep={currentStep}
+                    exchange={exchange}
+                    submitError={submitError}
+                  />
+                );
+              }}
             </Formik>
           </ItemWidget>
         </GetStartedBox>

@@ -13,14 +13,17 @@ const envName = `${config.envName}-${config.contracts.protocolDiamond}`;
 export default function ChatProvider({ children }: Props) {
   const { data: signer } = useSigner();
   const [initialize, setInitialized] = useState<number>(0);
+  const [isLoading, setLoading] = useState<boolean>(false);
   const [bosonXmtp, setBosonXmtp] = useState<BosonXmtpClient>();
   useEffect(() => {
     if (signer && initialize && !bosonXmtp) {
+      setLoading(true);
       BosonXmtpClient.initialise(signer, envName)
         .then((bosonClient) => {
           setBosonXmtp(bosonClient);
         })
-        .catch(console.error);
+        .catch(console.error)
+        .finally(() => setLoading(false));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [signer, initialize]);
@@ -29,7 +32,8 @@ export default function ChatProvider({ children }: Props) {
       value={{
         bosonXmtp,
         initialize: () => setInitialized((prev) => prev + 1),
-        envName
+        envName,
+        isInitializing: isLoading
       }}
     >
       {children}
