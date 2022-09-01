@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { generatePath } from "react-router-dom";
 
 import { UrlParameters } from "../../../lib/routing/parameters";
-import { BosonRoutes } from "../../../lib/routing/routes";
+import { SellerCenterRoutes } from "../../../lib/routing/routes";
 import { colors } from "../../../lib/styles/colors";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import { useOffers } from "../../../lib/utils/hooks/offers/useOffers";
@@ -129,9 +129,12 @@ export default function SellerDashboard({ sellerId }: Props) {
               <Button
                 theme="blankWhite"
                 onClick={() => {
-                  const pathname = generatePath(BosonRoutes.SellerCenter, {
-                    [UrlParameters.sellerPage]: "finances"
-                  });
+                  const pathname = generatePath(
+                    SellerCenterRoutes.SellerCenter,
+                    {
+                      [UrlParameters.sellerPage]: "finances"
+                    }
+                  );
                   navigate({ pathname });
                 }}
               >
@@ -140,9 +143,12 @@ export default function SellerDashboard({ sellerId }: Props) {
               <Button
                 theme="secondary"
                 onClick={() => {
-                  const pathname = generatePath(BosonRoutes.SellerCenter, {
-                    [UrlParameters.sellerPage]: "finances"
-                  });
+                  const pathname = generatePath(
+                    SellerCenterRoutes.SellerCenter,
+                    {
+                      [UrlParameters.sellerPage]: "finances"
+                    }
+                  );
                   navigate({ pathname });
                 }}
               >
@@ -170,7 +176,7 @@ export default function SellerDashboard({ sellerId }: Props) {
             name="Commits"
             items={commits.slice(0, 3)}
             onClick={() => {
-              const pathname = generatePath(BosonRoutes.SellerCenter, {
+              const pathname = generatePath(SellerCenterRoutes.SellerCenter, {
                 [UrlParameters.sellerPage]: "exchanges"
               });
               navigate({ pathname }, { state: { currentTag: "live-rnfts" } });
@@ -182,7 +188,7 @@ export default function SellerDashboard({ sellerId }: Props) {
             name="Redemptions"
             items={redemptions.slice(0, 3)}
             onClick={() => {
-              const pathname = generatePath(BosonRoutes.SellerCenter, {
+              const pathname = generatePath(SellerCenterRoutes.SellerCenter, {
                 [UrlParameters.sellerPage]: "exchanges"
               });
               navigate({ pathname }, { state: { currentTag: "redemptions" } });
@@ -194,7 +200,7 @@ export default function SellerDashboard({ sellerId }: Props) {
             name="Disputes"
             items={disputes.slice(0, 3)}
             onClick={() => {
-              const pathname = generatePath(BosonRoutes.SellerCenter, {
+              const pathname = generatePath(SellerCenterRoutes.SellerCenter, {
                 [UrlParameters.sellerPage]: "exchanges"
               });
               navigate({ pathname }, { state: { currentTag: "disputes" } });
