@@ -183,6 +183,7 @@ export default function Chat() {
           myBuyerId={buyerId}
           mySellerId={sellerId}
           exchanges={exchanges}
+          prevPath={previousPath}
           isConversationOpened={
             location.pathname !== `${BosonRoutes.Chat}/` &&
             location.pathname !== `${BosonRoutes.Chat}`

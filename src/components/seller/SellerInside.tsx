@@ -44,7 +44,9 @@ export default function SellerInside() {
   const { isLoading, sellerId } = useCurrentSellerId();
 
   const { label, component } = useMemo(
-    () => sellerPageTypes[sellerPage as keyof typeof sellerPageTypes],
+    () =>
+      sellerPageTypes[sellerPage as keyof typeof sellerPageTypes] ||
+      sellerPageTypes.dashboard,
     [sellerPage]
   );
 
