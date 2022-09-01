@@ -1,18 +1,21 @@
 import { Form } from "formik";
-import React from "react";
+import React, { useEffect } from "react";
 
 import GetStarted from "../../components/dispute/GetStarted";
 import TellUsMore from "../../components/dispute/TellUsMore";
 import MakeProposalCore from "../../components/modal/components/Chat/components/MakeProposalCore";
+import { useCreateForm } from "../../components/product/utils/useCreateForm";
 import { Exchange } from "../../lib/utils/hooks/useExchanges";
 
 function DisputeCentreForm({
   setCurrentStep,
   currentStep,
   exchange,
-  submitError
+  submitError,
+  setIsRightArrowEnabled
 }: {
   setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
+  setIsRightArrowEnabled: React.Dispatch<React.SetStateAction<boolean>>;
   currentStep: number;
   exchange: Exchange;
   submitError: Error | null;
@@ -40,6 +43,27 @@ function DisputeCentreForm({
     },
     { label: "Other ...", id: 6 }
   ];
+
+  const formValues = useCreateForm();
+  const formErrors = Object.keys(formValues.errors).length === 0;
+
+  useEffect(() => {
+    if (currentStep === 0 && formValues.values.getStarted !== "") {
+      setIsRightArrowEnabled(true);
+    } else if (currentStep === 1 && formValues.values.tellUsMore !== "") {
+      setIsRightArrowEnabled(true);
+    } else if (currentStep === 2 && formErrors) {
+      setIsRightArrowEnabled(true);
+    } else if (
+      currentStep === 3 &&
+      formErrors &&
+      formValues.values.proposalType !== null
+    ) {
+      setIsRightArrowEnabled(true);
+    } else {
+      setIsRightArrowEnabled(false);
+    }
+  }, [formValues, setIsRightArrowEnabled, currentStep, formErrors]);
 
   const formComponent = (currentStep: number) => {
     switch (currentStep) {

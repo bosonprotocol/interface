@@ -1,5 +1,5 @@
 import { Formik } from "formik";
-import { ArrowLeft } from "phosphor-react";
+import { ArrowLeft, ArrowRight } from "phosphor-react";
 import { useState } from "react";
 import { generatePath, useParams } from "react-router-dom";
 import styled from "styled-components";
@@ -19,6 +19,7 @@ import Grid from "../../components/ui/Grid";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
+import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useBuyers } from "../../lib/utils/hooks/useBuyers";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
@@ -58,8 +59,8 @@ const DisputeContainer = styled(Grid)`
   background: ${colors.lightGrey};
 `;
 
-const GetStartedBox = styled.div`
-  width: 41.75rem;
+const GetStartedBox = styled.div<{ isLteS: boolean }>`
+  width: ${({ isLteS }) => (isLteS ? "calc(100% - 3.125rem)" : "41.75rem")};
   padding: 2rem;
   margin-top: 1rem;
   background: ${colors.white};
@@ -67,8 +68,8 @@ const GetStartedBox = styled.div`
   height: max-content;
 `;
 
-const ItemPreview = styled(Grid)`
-  width: 41.75rem;
+const ItemPreview = styled(Grid)<{ isLteS: boolean }>`
+  width: ${({ isLteS }) => (isLteS ? "calc(100% - 3.125rem)" : "41.75rem")};
   background-color: ${colors.white};
 `;
 
@@ -78,14 +79,16 @@ function DisputeCentre() {
   const coreSDK = useCoreSDK();
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [submitError, setSubmitError] = useState<Error | null>(null);
+  const [isRightArrowEnabled, setIsRightArrowEnabled] =
+    useState<boolean>(false);
   const params = useParams();
   const exchangeId = params["id"];
   const navigate = useKeepQueryParamsNavigate();
+  const { isLteS } = useBreakpoints();
   const { data: buyers } = useBuyers({
     wallet: address
   });
   const buyerId = buyers?.[0]?.id || "";
-
   const {
     data: exchanges = [],
     isError,
@@ -136,16 +139,21 @@ function DisputeCentre() {
         <Grid alignItems="center">
           <ArrowLeft
             size={32}
-            onClick={() =>
-              navigate({
-                pathname: generatePath(BosonRoutes.Exchange, {
-                  [UrlParameters.exchangeId]: exchangeId
-                })
-              })
-            }
+            color={currentStep === 0 ? colors.lightArrowColor : colors.darkGrey}
+            onClick={() => {
+              if (isLteS) {
+                setCurrentStep(currentStep - 1);
+              } else {
+                navigate({
+                  pathname: generatePath(BosonRoutes.Exchange, {
+                    [UrlParameters.exchangeId]: exchangeId
+                  })
+                });
+              }
+            }}
           />
         </Grid>
-        <Grid padding="0.5rem 0">
+        <Grid padding={isLteS ? "2.5rem 0" : "0.5rem 0"}>
           <MultiSteps
             data={DISPUTE_STEPS}
             active={currentStep}
@@ -153,6 +161,21 @@ function DisputeCentre() {
             disableInactiveSteps
           />
         </Grid>
+        {isLteS && (
+          <Grid alignItems="center">
+            <ArrowRight
+              size={32}
+              color={
+                isRightArrowEnabled ? colors.darkGrey : colors.lightArrowColor
+              }
+              onClick={() => {
+                if (isRightArrowEnabled) {
+                  setCurrentStep(currentStep + 1);
+                }
+              }}
+            />
+          </Grid>
+        )}
       </Grid>
       <DisputeContainer
         flexDirection="column"
@@ -163,10 +186,11 @@ function DisputeCentre() {
           justifyContent="space-between"
           margin="2rem 0 0 0"
           padding="2rem"
+          isLteS={isLteS}
         >
           <ExchangePreview exchange={exchange} />
         </ItemPreview>
-        <GetStartedBox>
+        <GetStartedBox isLteS={isLteS}>
           <ItemWidget>
             <Formik
               initialValues={disputeCentreInitialValues}
@@ -220,16 +244,15 @@ function DisputeCentre() {
               }}
               validationSchema={validationSchema[currentStep]}
             >
-              {() => {
-                return (
-                  <DisputeCentreForm
-                    setCurrentStep={setCurrentStep}
-                    currentStep={currentStep}
-                    exchange={exchange}
-                    submitError={submitError}
-                  />
-                );
-              }}
+              {() => (
+                <DisputeCentreForm
+                  setCurrentStep={setCurrentStep}
+                  currentStep={currentStep}
+                  exchange={exchange}
+                  submitError={submitError}
+                  setIsRightArrowEnabled={setIsRightArrowEnabled}
+                />
+              )}
             </Formik>
           </ItemWidget>
         </GetStartedBox>

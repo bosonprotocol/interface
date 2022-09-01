@@ -9,6 +9,7 @@ export const colors = {
   cyan: "#00FFFF",
   grey2: "#D3D5DB",
   froly: "#F46A6A",
+  lightArrowColor: "#dedfe3",
 
   /*
     TODO: Remove what's above when refactor/redesign of all pages is done
