@@ -5,8 +5,7 @@ export const BosonRoutes = {
   Explore: "/explore",
   ExplorePage: "/explore/page",
   ExplorePageByIndex: `/explore/page/:${UrlParameters.page}`,
-  SellerCenter: `/sell/:${UrlParameters.sellerPage}`,
-  CreateProduct: "/sell/create-product",
+  Sell: "/sell",
   Exchange: `/exchange/:${UrlParameters.exchangeId}`,
   YourAccount: `/account`,
   Account: `/account/:${UrlParameters.accountId}`,
@@ -18,6 +17,11 @@ export const BosonRoutes = {
   DisputeCenter: "/dispute-center",
   DisputeId: `/exchange/:${UrlParameters.exchangeId}/raise-dispute`
 } as const;
+
+export const SellerCenterRoutes = {
+  SellerCenter: `${BosonRoutes.Sell}/:${UrlParameters.sellerPage}`,
+  CreateProduct: `${BosonRoutes.Sell}/create-product`
+};
 
 export const OffersRoutes = {
   Root: "/offers",

@@ -7,7 +7,11 @@ import App from "./components/app";
 import SentryProvider from "./components/SentryProvider";
 import ScrollToTop from "./components/utils/Scroll";
 import WalletConnectionProvider from "./components/WalletConnectionProvider";
-import { BosonRoutes, OffersRoutes } from "./lib/routing/routes";
+import {
+  BosonRoutes,
+  OffersRoutes,
+  SellerCenterRoutes
+} from "./lib/routing/routes";
 import PrivateAccount from "./pages/account/private/PrivateAccountContainer";
 import PublicOrPrivateAccount from "./pages/account/public/PublicOrPrivateAccount";
 import Chat from "./pages/chat/Chat";
@@ -56,7 +60,7 @@ root.render(
                 <Route path="*" element={<Chat />} />
               </Route>
               <Route
-                path={`${BosonRoutes.SellerCenter}/*`}
+                path={`${SellerCenterRoutes.SellerCenter}/*`}
                 element={
                   <App
                     withLayout={false}
@@ -78,7 +82,7 @@ root.render(
                   <Route key={route} path={route} element={<Explore />} />
                 ))}
                 <Route
-                  path={BosonRoutes.CreateProduct}
+                  path={SellerCenterRoutes.CreateProduct}
                   element={<CreateProduct />}
                 />
                 <Route

@@ -3,9 +3,9 @@ import { generatePath, useParams } from "react-router-dom";
 import styled from "styled-components";
 
 import { UrlParameters } from "../../lib/routing/parameters";
-import { BosonRoutes } from "../../lib/routing/routes";
+import { SellerCenterRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
-import { LinkWithQuery } from "../linkStoreFields/LinkStoreFields";
+import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
 import Grid from "../ui/Grid";
 import { sellerPageTypes } from "./SellerPages";
 
@@ -55,7 +55,7 @@ export default function SellerAside() {
   const { [UrlParameters.sellerPage]: sellerPage } = useParams();
 
   const handleUrl = useCallback((path: string) => {
-    return generatePath(BosonRoutes.SellerCenter, {
+    return generatePath(SellerCenterRoutes.SellerCenter, {
       [UrlParameters.sellerPage]: path
     });
   }, []);

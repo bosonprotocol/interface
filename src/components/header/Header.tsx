@@ -9,8 +9,8 @@ import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
+import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
 import Layout from "../Layout";
-import { LinkWithQuery } from "../linkStoreFields/LinkStoreFields";
 import ConnectButton from "./ConnectButton";
 import HeaderLinks, { HEADER_HEIGHT } from "./HeaderLinks";
 
