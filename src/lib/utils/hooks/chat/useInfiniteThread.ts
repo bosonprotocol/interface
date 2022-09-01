@@ -45,7 +45,7 @@ export function useInfiniteThread({
   const [error, setError] = useState<Error | null>(null);
   const [isBeginningOfTimes, setIsBeginningOfTimes] = useState<boolean>(false);
   useEffect(() => {
-    if (!bosonXmtp || !threadId) {
+    if (!bosonXmtp || !threadId || !counterParty) {
       return;
     }
     if (dateIndex > 0) {
@@ -68,7 +68,8 @@ export function useInfiniteThread({
     bosonXmtp
       .getThread(threadId, utils.getAddress(counterParty), {
         startTime: endTime,
-        endTime: startTime
+        endTime: startTime,
+        limit: 75
       })
       .then(async (threadObject) => {
         setLastThreadXmtp(threadObject);
