@@ -1,16 +1,19 @@
+import { Question } from "phosphor-react";
+
 import { colors } from "../../../lib/styles/colors";
+import DetailTooltip from "../../detail/DetailTooltip";
 import Typography from "../../ui/Typography";
 import { BaseElement, DashboardBaseInfo } from "./SellerDashboard.styles";
 
-interface DefaultVaule {
+interface DefaultValue {
   value: number;
   percent?: number;
 }
 interface Props {
-  offers: DefaultVaule;
-  liveNfts: DefaultVaule;
-  redemptions: DefaultVaule;
-  revenue: DefaultVaule;
+  offers: DefaultValue;
+  liveNfts: DefaultValue;
+  redemptions: DefaultValue;
+  revenue: DefaultValue;
 }
 
 export default function SellerDashboardInfo({
@@ -88,6 +91,11 @@ export default function SellerDashboardInfo({
       <BaseElement>
         <Typography margin="0" tag="p">
           Revenue
+          <DetailTooltip trigger={<Question size={18} />}>
+            This relates to completed exchanges only. Those currently in the
+            redeemed state are not considered as non-completed exchanges could
+            result in a misleading metric value.
+          </DetailTooltip>
         </Typography>
         <Typography margin="0" tag="h2">
           {revenue?.value && revenue?.value !== 0 ? revenue?.value : "-"}
