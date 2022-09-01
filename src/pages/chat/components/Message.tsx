@@ -261,79 +261,81 @@ const Message = forwardRef(
             {messageContent.description}
           </Typography>
 
-          <Grid flexDirection="column" alignItems="flex-start">
-            {isLeftAligned ? (
-              <>
-                <Typography
-                  margin="1.5rem 0 0.5rem 0"
-                  $fontSize="1.25rem"
-                  fontWeight="600"
-                >
-                  {messageContent.proposals.length === 1
-                    ? "Proposal"
-                    : "Proposals"}
-                </Typography>
-                {messageContent.proposals.map((proposal) => {
-                  const { offer } = exchange;
+          {messageContent.proposals.length ? (
+            <Grid flexDirection="column" alignItems="flex-start">
+              {isLeftAligned ? (
+                <>
+                  <Typography
+                    margin="1.5rem 0 0.5rem 0"
+                    $fontSize="1.25rem"
+                    fontWeight="600"
+                  >
+                    {messageContent.proposals.length === 1
+                      ? "Proposal"
+                      : "Proposals"}
+                  </Typography>
+                  {messageContent.proposals.map((proposal) => {
+                    const { offer } = exchange;
 
-                  const refundAmount = BigNumber.from(offer.price)
-                    .div(BigNumber.from(100 * PERCENTAGE_FACTOR))
-                    .mul(BigNumber.from(proposal.percentageAmount));
+                    const refundAmount = BigNumber.from(offer.price)
+                      .div(BigNumber.from(100 * PERCENTAGE_FACTOR))
+                      .mul(BigNumber.from(proposal.percentageAmount));
 
-                  const formattedRefundAmount = utils.formatUnits(
-                    refundAmount,
-                    Number(offer.exchangeToken.decimals)
-                  );
-                  return (
-                    <Grid
-                      key={proposal.type}
-                      flexDirection="column"
-                      rowGap="0.25rem"
-                      alignItems="flex-start"
-                    >
-                      <Typography margin="0">{proposal.type}</Typography>
-                      <StyledGrid
-                        justifyContent="space-between"
-                        onClick={() =>
-                          showModal("RESOLVE_DISPUTE", {
-                            title: "Resolve dispute",
-                            exchange,
-                            proposal
-                          })
-                        }
+                    const formattedRefundAmount = utils.formatUnits(
+                      refundAmount,
+                      Number(offer.exchangeToken.decimals)
+                    );
+                    return (
+                      <Grid
+                        key={proposal.type}
+                        flexDirection="column"
+                        rowGap="0.25rem"
+                        alignItems="flex-start"
                       >
-                        <Typography color={colors.primary} cursor="pointer">
-                          Proposed refund amount: {formattedRefundAmount}{" "}
-                          {offer.exchangeToken.symbol} (
-                          {Number(proposal.percentageAmount) /
-                            PERCENTAGE_FACTOR}
-                          %)
-                        </Typography>
-                        <ArrowRight color={colors.primary} />
-                      </StyledGrid>
-                    </Grid>
-                  );
-                })}
-              </>
-            ) : (
-              <>
-                <Typography
-                  margin="1.5rem 0 0.5rem 0"
-                  $fontSize="1rem"
-                  fontWeight="600"
-                >
-                  Resolution Proposal
-                </Typography>
-                {messageContent.proposals.map((proposal) => (
-                  <ProposalTypeSummary
-                    key={proposal.type}
-                    exchange={exchange}
-                    proposal={proposal}
-                  />
-                ))}
-              </>
-            )}
-          </Grid>
+                        <Typography margin="0">{proposal.type}</Typography>
+                        <StyledGrid
+                          justifyContent="space-between"
+                          onClick={() =>
+                            showModal("RESOLVE_DISPUTE", {
+                              title: "Resolve dispute",
+                              exchange,
+                              proposal
+                            })
+                          }
+                        >
+                          <Typography color={colors.primary} cursor="pointer">
+                            Proposed refund amount: {formattedRefundAmount}{" "}
+                            {offer.exchangeToken.symbol} (
+                            {Number(proposal.percentageAmount) /
+                              PERCENTAGE_FACTOR}
+                            %)
+                          </Typography>
+                          <ArrowRight color={colors.primary} />
+                        </StyledGrid>
+                      </Grid>
+                    );
+                  })}
+                </>
+              ) : (
+                <>
+                  <Typography
+                    margin="1.5rem 0 0.5rem 0"
+                    $fontSize="1rem"
+                    fontWeight="600"
+                  >
+                    Resolution Proposal
+                  </Typography>
+                  {messageContent.proposals.map((proposal) => (
+                    <ProposalTypeSummary
+                      key={proposal.type}
+                      exchange={exchange}
+                      proposal={proposal}
+                    />
+                  ))}
+                </>
+              )}
+            </Grid>
+          ) : null}
           <BottomDateStamp isLeftAligned={isLeftAligned} message={message} />
         </Content>
       );

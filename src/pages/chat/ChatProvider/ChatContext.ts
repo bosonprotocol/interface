@@ -5,10 +5,12 @@ export const Context = createContext<{
   bosonXmtp: BosonXmtpClient | undefined;
   initialize: Dispatch<SetStateAction<void>>;
   envName: string;
+  isInitializing: boolean;
 }>({
   bosonXmtp: undefined,
   initialize: () => null,
-  envName: ""
+  envName: "",
+  isInitializing: false
 });
 
 export const useChatContext = () => useContext(Context);
