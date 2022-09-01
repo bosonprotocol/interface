@@ -15,7 +15,7 @@ export default function CreateYourProfile() {
       <SectionTitle tag="h2">Create your Profile</SectionTitle>
       <FormField
         title="Logo / profile picture"
-        subTitle="Upload a profile image with a max. size of 10MB"
+        subTitle="Upload a profile image with a max. size of 600Kb"
         required
       >
         <Upload name="createYourProfile.logo" />

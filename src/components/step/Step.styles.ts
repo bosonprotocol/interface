@@ -5,7 +5,7 @@ import { colors } from "../../lib/styles/colors";
 import { StepState } from "./Step";
 
 export const StepStyle = styled.div.attrs(
-  (props: { state: StepState; disabled: boolean }) => ({
+  (props: { state: StepState; disabled: boolean; isLteS?: boolean }) => ({
     state: props.state,
     disabled: props.disabled
   })
@@ -134,7 +134,7 @@ export const StepStyle = styled.div.attrs(
     `}
 `;
 
-export const MultiStepStyle = styled.div`
+export const MultiStepStyle = styled.div<{ isLteS: boolean }>`
   display: flex;
   gap: 1rem;
   flex-direction: row;
@@ -142,6 +142,10 @@ export const MultiStepStyle = styled.div`
   justify-content: flex-start;
   width: 100%;
   align-items: center;
+  div div {
+    display: ${({ isLteS }) => isLteS && "none"};
+  }
+
   p {
     text-align: center;
     margin: 0;
@@ -152,11 +156,13 @@ export const MultiStepStyle = styled.div`
   }
 `;
 
-export const MultiStepWrapper = styled.div`
+export const MultiStepWrapper = styled.div<{ isLteS: boolean }>`
   display: flex;
   flex-grow: 1;
-
   flex-direction: column;
+  position: ${({ isLteS }) => isLteS && "absolute"};
+  left: ${({ isLteS }) => isLteS && "50%"};
+  transform: ${({ isLteS }) => isLteS && "translate(-50%, 0)"};
 `;
 
 export const StepWrapper = styled.div`
@@ -166,6 +172,11 @@ export const StepWrapper = styled.div`
 
   flex-direction: row;
   flex-wrap: nowrap;
-
   border: 1px solid ${colors.border};
+  :empty + p {
+    display: none;
+  }
+  :empty {
+    display: none;
+  }
 `;
