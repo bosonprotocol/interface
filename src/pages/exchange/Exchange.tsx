@@ -1,7 +1,4 @@
-import { manageExchange } from "@bosonprotocol/widgets-sdk";
-import { useEffect, useRef, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
-import { useAccount } from "wagmi";
+import { useParams } from "react-router-dom";
 
 import {
   DarkerBackground,
@@ -21,9 +18,7 @@ import DetailWidget from "../../components/detail/DetailWidget/DetailWidget";
 import Image from "../../components/ui/Image";
 import SellerID from "../../components/ui/SellerID";
 import Typography from "../../components/ui/Typography";
-import { CONFIG } from "../../lib/config";
 import { UrlParameters } from "../../lib/routing/parameters";
-import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { getOfferDetails } from "../../lib/utils/getOfferDetails";
@@ -33,14 +28,6 @@ import { useSellers } from "../../lib/utils/hooks/useSellers";
 export default function Exchange() {
   const { [UrlParameters.exchangeId]: exchangeId } = useParams();
 
-  const widgetRef = useRef<HTMLDivElement>(null);
-  const location = useLocation();
-  const fromAccountPage =
-    (location.state as { from: string })?.from === BosonRoutes.YourAccount;
-  const [isTabSellerSelected, setTabSellerSelected] = useState(fromAccountPage);
-
-  const { address: account } = useAccount();
-  const address = account || "";
   const {
     data: exchanges,
     isError,
@@ -67,26 +54,6 @@ export default function Exchange() {
   const offerRequiredDeposit = offer?.sellerDeposit;
   const hasSellerEnoughFunds =
     Number(sellerAvailableDeposit) >= Number(offerRequiredDeposit);
-
-  useEffect(() => {
-    if (!address) {
-      setTabSellerSelected(false);
-    }
-  }, [address]);
-
-  useEffect(() => {
-    if (offer && widgetRef.current && exchangeId) {
-      const widgetContainer = document.createElement("div");
-      widgetContainer.style.width = "100%";
-      widgetRef.current.appendChild(widgetContainer);
-      manageExchange(exchangeId, CONFIG, widgetContainer, {
-        forceBuyerView: !isTabSellerSelected
-      });
-      return () => widgetContainer.remove();
-    }
-
-    return;
-  }, [offer, isTabSellerSelected, exchangeId]);
 
   if (!exchangeId) {
     return null;
