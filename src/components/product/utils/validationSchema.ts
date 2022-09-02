@@ -52,7 +52,10 @@ export const productInformationValidationSchema = Yup.object({
         label: Yup.string()
       })
       .required(validationMessage.required),
-    tags: Yup.array().of(Yup.string()).default([]),
+    tags: Yup.array()
+      .of(Yup.string())
+      .default([])
+      .min(1, "Please provide at least one tag"),
     attributes: Yup.array()
       .of(
         Yup.object().shape({
