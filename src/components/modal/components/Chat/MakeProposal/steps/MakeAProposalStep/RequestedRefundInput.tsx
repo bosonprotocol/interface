@@ -77,7 +77,7 @@ export default function RequestedRefundInput({
     useFormikContext<any>();
   return (
     <RefundAmountWrapper>
-      <CurrencyIcon currencySymbol={currencySymbol} address={address} />
+      <CurrencyIcon currencySymbol={currencySymbol} />
       <Input
         step="0.001"
         name={FormModel.formFields.refundAmount.name}

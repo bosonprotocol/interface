@@ -80,7 +80,6 @@ export default function Price({
           >
             <CurrencyIcon
               currencySymbol={currencySymbol}
-              address={address}
               onError={() => setIsSymbolShown(true)}
             />
             {price?.currency ? (
