@@ -1,6 +1,7 @@
 import { subgraph } from "@bosonprotocol/core-sdk";
 import dayjs from "dayjs";
 import { useMemo } from "react";
+import { generatePath } from "react-router-dom";
 import styled from "styled-components";
 
 import DetailTable from "../../../components/detail/DetailTable";
@@ -12,12 +13,15 @@ import MultiSteps from "../../../components/step/MultiSteps";
 import Button from "../../../components/ui/Button";
 import Image from "../../../components/ui/Image";
 import Typography from "../../../components/ui/Typography";
+import { UrlParameters } from "../../../lib/routing/parameters";
+import { BosonRoutes } from "../../../lib/routing/routes";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
 import { zIndex } from "../../../lib/styles/zIndex";
 import { Offer } from "../../../lib/types/offer";
 import { useDisputes } from "../../../lib/utils/hooks/useDisputes";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
+import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import ExchangeTimeline from "./ExchangeTimeline";
 
 const Container = styled.div<{ $disputeOpen: boolean }>`
@@ -50,7 +54,7 @@ const Container = styled.div<{ $disputeOpen: boolean }>`
 
 const StyledImage = styled(Image)`
   all: unset;
-
+  cursor: pointer;
   [data-testid="exchange-image"] {
     all: unset;
     width: 100%;
@@ -216,6 +220,7 @@ export default function ExchangeSidePreview({
     () => offer && getOfferDetailData(offer),
     [offer]
   );
+  const navigate = useKeepQueryParamsNavigate();
 
   if (!exchange || !offer) {
     return null;
@@ -243,6 +248,13 @@ export default function ExchangeSidePreview({
         src={exchange?.offer.metadata.imageUrl}
         alt="exchange image"
         dataTestId="exchange-image"
+        onClick={() => {
+          navigate({
+            pathname: generatePath(BosonRoutes.Exchange, {
+              [UrlParameters.exchangeId]: exchange.id
+            })
+          });
+        }}
       />
       {isInDispute && (
         <InfoMessage>{`${daysLeftToResolveDispute} / ${totalDaysToResolveDispute} days left to resolve dispute`}</InfoMessage>
@@ -301,7 +313,7 @@ export default function ExchangeSidePreview({
             Escalate
           </Button>
         </CTASection>
-      ) : isInRedeemed ? (
+      ) : isInRedeemed && iAmTheBuyer ? (
         <CTASection>
           <Button
             theme="secondary"
