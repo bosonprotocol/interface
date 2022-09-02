@@ -43,26 +43,20 @@ export default function SelectTime({
   const DEFAULT_HOUR = useMemo(
     () =>
       period
-        ? [
-            date?.isToday() ? dayjs().format("HH") : "00",
-            secondDate?.isToday() ? "23" : "00"
-          ]
+        ? [date?.isToday() ? dayjs().format("HH") : "00", "23"]
         : date?.isToday()
         ? dayjs().format("HH")
         : "00",
-    [period, date, secondDate]
+    [period, date]
   );
   const DEFAULT_MINUTE = useMemo(
     () =>
       period
-        ? [
-            date?.isToday() ? dayjs().add(5, "minute").format("mm") : "00",
-            secondDate?.isToday() ? "59" : "00"
-          ]
+        ? [date?.isToday() ? dayjs().add(5, "minute").format("mm") : "00", "59"]
         : date?.isToday()
         ? dayjs().add(5, "minute").format("mm")
         : "00",
-    [period, date, secondDate]
+    [period, date]
   );
   const DEFAULT_TIME = useMemo(() => (period ? ["00", "00"] : "00"), [period]);
   const [timezone, setTimezone] = useState<string>(dayjs.tz.guess());
