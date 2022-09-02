@@ -21,6 +21,7 @@ import MultiSteps from "../../components/step/MultiSteps";
 import { CONFIG } from "../../lib/config";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { OffersRoutes } from "../../lib/routing/routes";
+import { fromBase64ToBinary } from "../../lib/utils/base64ImageConverter";
 import { getLocalStorageItems } from "../../lib/utils/getLocalStorageItems";
 import { useChatStatus } from "../../lib/utils/hooks/chat/useChatStatus";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
@@ -173,11 +174,15 @@ function CreateProductInner({ initial }: Props) {
     });
 
     const uploadPromises = previewImages.map((previewImage) => {
-      return storage.add(previewImage);
+      return storage.add(fromBase64ToBinary(previewImage));
     });
 
-    const profileImageLink = await storage.add(profileImage[0]);
-    const productMainImageLink = await storage.add(productMainImage[0]);
+    const profileImageLink = await storage.add(
+      fromBase64ToBinary(profileImage[0])
+    );
+    const productMainImageLink = await storage.add(
+      fromBase64ToBinary(productMainImage[0])
+    );
 
     const imagesIpfsLinks = await Promise.all(uploadPromises);
 
