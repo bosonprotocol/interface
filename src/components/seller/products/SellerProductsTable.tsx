@@ -267,7 +267,6 @@ export default function SellerProductsTable({ offers, refetch }: Props) {
           ),
           price: (
             <Price
-              address={offer?.exchangeToken?.address ?? ""}
               currencySymbol={offer?.exchangeToken?.symbol ?? ""}
               value={offer?.price ?? ""}
               decimals={offer?.exchangeToken?.decimals ?? ""}

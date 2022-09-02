@@ -263,7 +263,6 @@ export default function ExchangeSidePreview({
         <Name tag="h3">{exchange.offer.metadata.name}</Name>
         <StyledPrice
           isExchange={false}
-          address={offer.exchangeToken.address}
           currencySymbol={offer.exchangeToken.symbol}
           value={offer.price}
           decimals={offer.exchangeToken.decimals}

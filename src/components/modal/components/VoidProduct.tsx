@@ -54,7 +54,6 @@ export default function VoidProduct({ offerId, offer, refetch }: Props) {
           </Grid>
           {offer.exchangeToken && (
             <Price
-              address={offer.exchangeToken.address}
               currencySymbol={offer.exchangeToken.symbol}
               value={offer.price}
               decimals={offer.exchangeToken.decimals}

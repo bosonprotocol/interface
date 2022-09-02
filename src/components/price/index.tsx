@@ -48,7 +48,6 @@ interface IProps {
   convert?: boolean;
   isExchange?: boolean;
   tag?: keyof JSX.IntrinsicElements;
-  address: string;
 }
 
 export default function Price({
@@ -58,7 +57,6 @@ export default function Price({
   convert = false,
   isExchange = false,
   tag = "h4",
-  address,
   ...rest
 }: IProps) {
   const [isSymbolShown, setIsSymbolShown] = useState<boolean>(false); // TODO: remove once CSS :has is supported

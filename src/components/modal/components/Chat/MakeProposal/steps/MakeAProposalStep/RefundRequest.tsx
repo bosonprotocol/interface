@@ -108,7 +108,6 @@ export default function RefundRequest({ exchange }: Props) {
               readOnly
             />
             <StyledPrice
-              address={offer.exchangeToken.address}
               currencySymbol={currencySymbol}
               value={inEscrow}
               decimals={offer.exchangeToken.decimals}
