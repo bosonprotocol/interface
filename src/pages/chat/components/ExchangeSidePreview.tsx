@@ -224,14 +224,17 @@ export default function ExchangeSidePreview({
   const isInDispute = exchange.disputed && !dispute.finalizedDate;
   const isResolved = !!dispute.resolvedDate;
   const isEscalated = !!dispute.escalatedDate;
-  const deadlineToResolveDispute =
-    Number(exchange.offer.resolutionPeriodDuration) / 1000;
-  const raisedDisputeAt = new Date(Number(dispute.disputedDate) / 1000);
-  const totalDaysToResolveDispute = dayjs(deadlineToResolveDispute).diff(
+  console.log({ exchange });
+  const raisedDisputeAt = new Date(Number(dispute.disputedDate) * 1000);
+  const lastDayToResolveDispute = new Date(
+    raisedDisputeAt.getTime() +
+      Number(exchange.offer.resolutionPeriodDuration) * 1000
+  );
+  const totalDaysToResolveDispute = dayjs(lastDayToResolveDispute).diff(
     raisedDisputeAt,
     "day"
   );
-  const daysLeftToResolveDispute = dayjs(deadlineToResolveDispute).diff(
+  const daysLeftToResolveDispute = dayjs(lastDayToResolveDispute).diff(
     new Date().getTime(),
     "day"
   );
