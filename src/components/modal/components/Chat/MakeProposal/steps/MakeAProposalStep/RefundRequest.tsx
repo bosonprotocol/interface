@@ -1,7 +1,6 @@
 import { BigNumber, utils } from "ethers";
 import { useFormikContext } from "formik";
 import styled from "styled-components";
-import { useAccount } from "wagmi";
 
 import { useBreakpoints } from "../../../../../../../lib/utils/hooks/useBreakpoints";
 import { Exchange } from "../../../../../../../lib/utils/hooks/useExchanges";
@@ -61,7 +60,6 @@ export default function RefundRequest({ exchange }: Props) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { setFieldValue, handleChange } = useFormikContext<any>();
 
-  const { address } = useAccount();
   const { offer } = exchange;
   const { isLteS } = useBreakpoints();
   const decimals = Number(offer.exchangeToken.decimals);
@@ -97,7 +95,11 @@ export default function RefundRequest({ exchange }: Props) {
           <Typography
             $fontSize="0.75rem"
             fontWeight="400"
-            margin={isLteS ? "0.625rem auto 0.625rem 0" : "0"}
+            margin={
+              isLteS
+                ? "0.625rem auto 0.6npm run prettier && npm run lin25rem 0"
+                : "0"
+            }
           >
             Item price + seller diposit
           </Typography>
@@ -132,7 +134,6 @@ export default function RefundRequest({ exchange }: Props) {
             Request a specific amount as a refund
           </Typography>
           <RequestedRefundInput
-            address={address || ""}
             exchangeToken={offer.exchangeToken}
             inEscrow={inEscrow}
             inEscrowWithDecimals={inEscrowWithDecimals}

@@ -40,14 +40,12 @@ const RefundAmountWrapper = styled.div`
 `;
 
 interface Props {
-  address: string;
   inEscrow: string;
   inEscrowWithDecimals: string;
   exchangeToken: Offer["exchangeToken"];
 }
 
 export default function RequestedRefundInput({
-  address,
   inEscrow,
   inEscrowWithDecimals,
   exchangeToken
