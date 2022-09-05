@@ -13,20 +13,23 @@ const Container = styled.div`
 const StyledList = styled.ol`
   margin-top: 2rem;
   padding-left: 1rem;
-  [data-list-element] {
-    font-weight: 600;
-    font-size: 1rem;
-  }
-  [data-sublist] {
-    list-style-type: none;
-    padding-left: 0;
-    [data-list-element] {
-      font-weight: 400;
-      font-size: 1rem;
-      color: ${colors.darkGrey};
-      margin-bottom: 1rem;
-    }
-  }
+`;
+
+const StyledListElement = styled.li`
+  font-weight: 600;
+  font-size: 1rem;
+`;
+
+const StyledSublist = styled.ol`
+  list-style-type: none;
+  padding-left: 0;
+`;
+
+const StyledSublistElement = styled.ol`
+  font-weight: 400;
+  font-size: 1rem;
+  color: ${colors.darkGrey};
+  margin-bottom: 1rem;
 `;
 
 function EscalateStepTwo() {
@@ -41,18 +44,18 @@ function EscalateStepTwo() {
         contractual agreement and evidence submitted by both parties.
       </Typography>
       <StyledList>
-        <li data-list-element>Dispute Escalation Transaction</li>
-        <ol data-sublist>
-          <li data-list-element>
+        <StyledListElement>Dispute Escalation Transaction</StyledListElement>
+        <StyledSublist>
+          <StyledSublistElement>
             Confirm dispute escalation transaction first submit
-          </li>
-        </ol>
-        <li data-list-element>Case Description & Evidence</li>
-        <ol data-sublist>
-          <li data-list-element>
+          </StyledSublistElement>
+        </StyledSublist>
+        <StyledListElement>Case Description & Evidence</StyledListElement>
+        <StyledSublist>
+          <StyledSublistElement>
             Submit case description and evidence to dispute resolver via e-mail
-          </li>
-        </ol>
+          </StyledSublistElement>
+        </StyledSublist>
       </StyledList>
     </Container>
   );

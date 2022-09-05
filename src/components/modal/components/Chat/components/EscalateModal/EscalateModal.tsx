@@ -25,7 +25,7 @@ const Container = styled.div`
 const StyledMultiSteps = styled(MultiSteps)`
   background: ${colors.white};
   padding-bottom: 0.625rem;
-  margin-bottom: 15px;
+  margin-bottom: 0.9375rem;
 `;
 
 const InnerContainer = styled.div`
@@ -41,11 +41,11 @@ const StyledGrid = styled(Grid)`
   z-index: ${zIndex.Popper};
 `;
 
-const StyledButtonGrid = styled(Grid)<{ isMobile: boolean }>`
+const StyledButtonGrid = styled(Grid)<{ isLteS: boolean }>`
   background: ${colors.white};
   z-index: ${zIndex.Popper};
   p {
-    margin-top: ${({ isMobile }) => isMobile && "1.8125rem"};
+    margin-top: ${({ isLteS }) => isLteS && "1.8125rem"};
   }
 `;
 
@@ -67,7 +67,7 @@ const multiStepsData = [
 
 function EscalateModal({ exchange }: Props) {
   const [activeStep, setActiveStep] = useState(0);
-  const { isXS, isXXS, isS } = useBreakpoints();
+  const { isLteS } = useBreakpoints();
 
   const escalateSteps = (activeStep: number) => {
     switch (activeStep) {
@@ -87,10 +87,10 @@ function EscalateModal({ exchange }: Props) {
       <StyledButtonGrid
         alignItems="center"
         justifyContent="center"
-        isMobile={isS || isXXS || isXS}
-        padding={isS || isXXS || isXS ? "0 0 0.625rem 0" : "0"}
+        isLteS={isLteS}
+        padding={isLteS ? "0 0 0.625rem 0" : "0"}
       >
-        {(isS || isXXS || isXS) && (
+        {isLteS && (
           <StyledButton
             onClick={() => {
               setActiveStep(activeStep - 1);
@@ -108,7 +108,7 @@ function EscalateModal({ exchange }: Props) {
           active={activeStep}
           disableInactiveSteps
         />
-        {(isS || isXXS || isXS) && (
+        {isLteS && (
           <StyledButton
             onClick={() => {
               setActiveStep(activeStep + 1);

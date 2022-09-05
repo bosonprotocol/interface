@@ -34,7 +34,7 @@ const StyledPrice = styled(Price)<{ isLteS: boolean }>`
 
 const StyledImage = styled(Image)<{ isLteS: boolean; isLteXS: boolean }>`
   all: unset;
-  width: ${({ isLteXS }) => isLteXS && "50%"};
+  width: ${({ isLteXS }) => (isLteXS ? "50%" : "unset")};
   img {
     all: unset;
     width: 80px;

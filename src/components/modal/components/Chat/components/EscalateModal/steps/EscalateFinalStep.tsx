@@ -85,7 +85,7 @@ function EscalateFinalStep({ exchange }: Props) {
         <CopyButton
           onClick={() =>
             navigator.clipboard.writeText(
-              "Exchange ID XY \nDispute ID XY \nAuthenticator 893984vgghjkjhlklkjkjljlkjlkjkljlhkjgjhgjhhgf"
+              `Exchange ID ${exchange.id} \nDispute ID ${exchange.id} \nAuthenticator insert-signature`
             )
           }
         >
