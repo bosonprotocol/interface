@@ -34,6 +34,8 @@ export interface FormFieldProps {
   style?: React.CSSProperties;
 }
 
+export type InputColorProps = BaseProps;
+
 export type InputProps = BaseProps &
   React.InputHTMLAttributes<HTMLInputElement>;
 

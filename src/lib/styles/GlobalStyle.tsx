@@ -4,10 +4,11 @@ import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 
 const GlobalStyle = createGlobalStyle<{
-  $primaryColor: string;
-  $secondaryColor: string;
-  $accentColor: string;
   $primaryBgColor: string;
+  $secondaryBgColor: string;
+  $accentColor1: string;
+  $accentColor2: string;
+  $textColor: string;
 }>`
 
   * {
@@ -16,15 +17,17 @@ const GlobalStyle = createGlobalStyle<{
   :root {
     --l: 50%;
     --primary: ${(props) =>
-      props.$primaryColor ? props.$primaryColor : colors.primary};
+      props.$primaryBgColor ? props.$primaryBgColor : colors.primary};
     --secondary: ${(props) =>
-      props.$secondaryColor ? props.$secondaryColor : colors.secondary};
+      props.$secondaryBgColor ? props.$secondaryBgColor : colors.secondary};
     --accent: ${(props) =>
-      props.$accentColor ? props.$accentColor : colors.white};
+      props.$accentColor1 ? props.$accentColor1 : colors.white};
     --accentDark: ${(props) =>
-      props.$accentColor ? props.$accentColor : colors.arsenic};
+      props.$accentColor2 ? props.$accentColor2 : colors.arsenic};
     --primaryBgColor: ${(props) =>
       props.$primaryBgColor ? props.$primaryBgColor : colors.primaryBgColor};
+    --secondaryBgColor: ${(props) =>
+      props.$secondaryBgColor ? props.$secondaryBgColor : colors.secondary};
 
     font-size: 12px;
     ${breakpoint.xs} {

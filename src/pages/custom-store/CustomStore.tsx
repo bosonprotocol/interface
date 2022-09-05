@@ -1,15 +1,14 @@
 import { BaseIpfsStorage } from "@bosonprotocol/react-kit";
-import { useFormik } from "formik";
+import { Form, Formik } from "formik";
 import styled from "styled-components";
 
-import Collapse from "../../components/collapse/Collapse";
 import Layout from "../../components/Layout";
 import { useModal } from "../../components/modal/useModal";
-import Button from "../../components/ui/Button";
+import Typography from "../../components/ui/Typography";
 import { CONFIG } from "../../lib/config";
-import { breakpoint } from "../../lib/styles/breakpoint";
 import { useCSSVariable } from "../../lib/utils/hooks/useCSSVariable";
-import { StoreFields } from "./store-fields";
+import CustomStoreFormContent from "./CustomStoreFormContent";
+import { initialValues, validationSchema } from "./store-fields";
 
 const Root = styled(Layout)`
   display: flex;
@@ -19,75 +18,38 @@ const Root = styled(Layout)`
   overflow: hidden;
 `;
 
-const PreviewContainer = styled.div`
-  margin: 20px 0;
-`;
-
-export const StyledForm = styled.form`
-  width: 100%;
-`;
-
-export const FormElement = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-export const FormLabel = styled.label`
-  margin-bottom: 6px;
-`;
-
-export const FormControl = styled.input`
-  font-family: "Plus Jakarta Sans", sans-serif;
-  padding: 10px;
-  border-radius: 6px;
-  border-width: 2px;
-  border-color: black;
-`;
-
-export const FormElementsContainer = styled.div`
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-row-gap: 20px;
-  grid-column-gap: 20px;
-  justify-content: space-between;
-  padding-bottom: 24px;
-
-  ${breakpoint.s} {
-    grid-template-columns: 1fr 1fr;
-  }
-`;
-
 export default function CustomStore() {
   const { showModal, modalTypes } = useModal();
   const primaryColor = useCSSVariable("--primary");
 
-  const { values, handleChange, handleSubmit } = useFormik<StoreFields>({
-    initialValues: {
-      storeName: "",
-      logoUrl: "",
-      primaryColor: "",
-      secondaryColor: "",
-      accentColor: "",
-      primaryBgColor: "",
-      sellerCurationList: "",
-      offerCurationList: "",
-      metaTransactionsApiKey: ""
-    },
-    onSubmit: async (values: StoreFields) => {
-      const storage = new BaseIpfsStorage({
-        url: CONFIG.ipfsMetadataUrl
-      });
+  return (
+    <Root>
+      <Typography
+        tag="h2"
+        fontWeight="600"
+        $fontSize="2rem"
+        lineHeight="2.4rem"
+      >
+        Create Custom Store
+      </Typography>
+      <Formik<typeof initialValues>
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={async (values) => {
+          const storage = new BaseIpfsStorage({
+            url: CONFIG.ipfsMetadataUrl
+          });
 
-      const queryParams = new URLSearchParams(
-        Object.entries(values)
-      ).toString();
-      const html = `<!DOCTYPE html>
+          const queryParams = new URLSearchParams(
+            Object.entries(values)
+          ).toString();
+          const html = `<!DOCTYPE html>
       <html lang="en">
       <head>
           <meta charset="UTF-8">
           <meta http-equiv="X-UA-Compatible" content="IE=edge">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>${values.storeName || "Boson Protocol"}</title>
+          <title>${values.storeName || ""}</title>
           ${values.logoUrl ? `<link rel="icon" href="${values.logoUrl}">` : ""}
       </head>
       <body>
@@ -96,7 +58,7 @@ export default function CustomStore() {
                 margin: 0;
                 padding: 0;
                 height: 100vh;
-                background-color:${values.primaryColor || primaryColor};
+                background-color:${values.primaryBgColor || primaryColor};
               }
               iframe {
                 border: none;
@@ -109,167 +71,25 @@ export default function CustomStore() {
       </body>
       </html>`;
 
-      const cid = await storage.add(html); // TODO: use core.add once this is supported there
+          const cid = await storage.add(html);
 
-      const ipfsUrl = `https://ipfs.io/ipfs/${cid}`;
-      showModal(modalTypes.CUSTOM_STORE, {
-        title: "Congratulations!",
-        ipfsUrl
-      });
+          const ipfsUrl = `https://ipfs.io/ipfs/${cid}`;
+          showModal(modalTypes.CUSTOM_STORE, {
+            title: "Congratulations!",
+            ipfsUrl
+          });
 
-      return;
-    }
-  });
-
-  const queryParams = new URLSearchParams(Object.entries(values)).toString();
-  return (
-    <Root>
-      <h1>Create Custom Store</h1>
-      <p style={{ color: "red" }}>
-        This page will be changed drastically, ignore it
-      </p>
-      <StyledForm onSubmit={handleSubmit}>
-        <FormElementsContainer>
-          <FormElement>
-            <FormLabel>Store Name</FormLabel>
-            <FormControl
-              value={values.storeName}
-              onChange={handleChange}
-              name="storeName"
-              type="text"
-              placeholder="..."
-            />
-          </FormElement>
-          <FormElement>
-            <FormLabel>Logo URL</FormLabel>
-            <FormControl
-              value={values.logoUrl}
-              onChange={handleChange}
-              name="logoUrl"
-              type="text"
-              placeholder="..."
-            />
-          </FormElement>
-          <FormElement>
-            <FormLabel>Primary Colour</FormLabel>
-            <div>
-              <FormControl
-                value={values.primaryColor}
-                onChange={handleChange}
-                name="primaryColor"
-                type="color"
-                placeholder="..."
-              />
-              <span
-                style={{
-                  color: values.primaryColor
-                }}
-              >
-                {values.primaryColor}
-              </span>
-            </div>
-          </FormElement>
-          <FormElement>
-            <FormLabel>Secondary Colour</FormLabel>
-            <div>
-              <FormControl
-                value={values.secondaryColor}
-                onChange={handleChange}
-                name="secondaryColor"
-                type="color"
-                placeholder="..."
-              />
-              <span
-                style={{
-                  color: values.secondaryColor
-                }}
-              >
-                {values.secondaryColor}
-              </span>
-            </div>
-          </FormElement>
-          <FormElement>
-            <FormLabel>Accent Colour</FormLabel>
-            <div>
-              <FormControl
-                value={values.accentColor}
-                onChange={handleChange}
-                name="accentColor"
-                type="color"
-                placeholder="..."
-              />
-              <span
-                style={{
-                  color: values.accentColor
-                }}
-              >
-                {values.accentColor}
-              </span>
-            </div>
-          </FormElement>
-          <FormElement>
-            <FormLabel>Primary Background Colour</FormLabel>
-            <div>
-              <FormControl
-                value={values.primaryBgColor}
-                onChange={handleChange}
-                name="primaryBgColor"
-                type="color"
-                placeholder="..."
-              />
-              <span
-                style={{
-                  color: values.primaryBgColor
-                }}
-              >
-                {values.primaryBgColor}
-              </span>
-            </div>
-          </FormElement>
-          <FormElement>
-            <FormLabel>Seller CurationList</FormLabel>
-            <FormControl
-              value={values.sellerCurationList}
-              onChange={handleChange}
-              name="sellerCurationList"
-              type="text"
-              placeholder="Comma-separated list of seller IDs"
-            />
-          </FormElement>
-          <FormElement>
-            <FormLabel>Offer CurationList</FormLabel>
-            <FormControl
-              value={values.offerCurationList}
-              onChange={handleChange}
-              name="offerCurationList"
-              type="text"
-              placeholder="Comma-separated list of offer IDs"
-            />
-          </FormElement>
-          <FormElement>
-            <FormLabel>Meta Transactions API Key</FormLabel>
-            <FormControl
-              value={values.metaTransactionsApiKey}
-              onChange={handleChange}
-              name="metaTransactionsApiKey"
-              type="text"
-              placeholder="Biconomy API Key"
-            />
-          </FormElement>
-        </FormElementsContainer>
-
-        <PreviewContainer>
-          <Collapse title={<p>Preview</p>}>
-            <iframe
-              src={`${window.location.origin}/#/?${queryParams}`}
-              width="100%"
-              height="500px"
-            ></iframe>
-          </Collapse>
-        </PreviewContainer>
-
-        <Button type="submit">Create Store</Button>
-      </StyledForm>
+          return;
+        }}
+      >
+        {() => {
+          return (
+            <Form>
+              <CustomStoreFormContent />
+            </Form>
+          );
+        }}
+      </Formik>
     </Root>
   );
 }
