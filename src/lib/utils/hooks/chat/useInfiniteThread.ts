@@ -45,7 +45,7 @@ export function useInfiniteThread({
   const [error, setError] = useState<Error | null>(null);
   const [isBeginningOfTimes, setIsBeginningOfTimes] = useState<boolean>(false);
   useEffect(() => {
-    if (!bosonXmtp || !threadId) {
+    if (!bosonXmtp || !threadId || !counterParty) {
       return;
     }
     if (dateIndex > 0) {
@@ -68,7 +68,8 @@ export function useInfiniteThread({
     bosonXmtp
       .getThread(threadId, utils.getAddress(counterParty), {
         startTime: endTime,
-        endTime: startTime
+        endTime: startTime,
+        limit: 75
       })
       .then(async (threadObject) => {
         setLastThreadXmtp(threadObject);
@@ -105,9 +106,15 @@ export function useInfiniteThread({
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       setThreadXmtp((newThread) => {
+        const oldMessages = newThread?.messages || [];
+        const lastMessage = oldMessages[oldMessages.length - 1];
+        // TODO: this is a patch because sometimes we receive messages that we have already received, hence we filter out duplicated messages
+        const newMessages = messages.filter((message) => {
+          return !lastMessage || message.timestamp >= lastMessage?.timestamp;
+        });
         return {
           ...(newThread || {}),
-          messages: [...(newThread?.messages || []), ...messages]
+          messages: [...oldMessages, ...newMessages]
         };
       });
     }, [])

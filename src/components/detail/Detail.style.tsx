@@ -4,7 +4,7 @@ import frameImage from "../../assets/frame.png";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
-import { LinkWithQuery } from "../linkStoreFields/LinkStoreFields";
+import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
 import Button from "../ui/Button";
 import Grid from "../ui/Grid";
 import { buttonText } from "../ui/styles";

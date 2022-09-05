@@ -33,7 +33,7 @@ export function getItemFromStorage<T>(
     const item = window.localStorage.getItem(key);
     return item ? JSON.parse(item) : initialValue;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return initialValue;
   }
 }
@@ -43,7 +43,7 @@ export function saveItemInStorage<T>(key: string, value: T) {
     try {
       window.localStorage.setItem(key, JSON.stringify(value));
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 }
@@ -55,7 +55,7 @@ export function removeItemInStorage(key: string) {
         .filter((filterKey) => filterKey?.includes(key))
         .map((finalKey) => localStorage.removeItem(finalKey));
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 }
@@ -85,7 +85,7 @@ export function useLocalStorage<T>(
       setStoredValue(valueToStore);
       saveItemInStorage(key, valueToStore);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
   return [storedValue, setValue, removeItemInStorage] as const;

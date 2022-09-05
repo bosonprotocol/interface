@@ -6,9 +6,10 @@ import {
   Storefront
 } from "phosphor-react";
 import React from "react";
-import { Navigate } from "react-router-dom";
 
 import { BosonRoutes } from "../../lib/routing/routes";
+import Navigate from "../customNavigation/Navigate";
+import SellerDashboard from "./dashboard/SellerDashboard";
 import SellerExchanges from "./exchanges/SellerExchanges";
 import SellerFinances from "./finances/SellerFinances";
 import SellerProducts from "./products/SellerProducts";
@@ -23,7 +24,10 @@ export const sellerPageTypes = {
     url: "dashboard",
     label: "Dashboard",
     icon: GridFour,
-    component: () => <div>Dashboard</div>
+    component: ({ sellerId }: SellerProps) => (
+      <SellerDashboard sellerId={sellerId} />
+    ),
+    withoutWrapper: true
   },
   products: {
     url: "products",
@@ -45,7 +49,7 @@ export const sellerPageTypes = {
     url: "messages",
     label: "Messages",
     icon: Chats,
-    component: () => <Navigate replace to={BosonRoutes.Chat} />
+    component: () => <Navigate replace to={{ pathname: BosonRoutes.Chat }} />
   },
   finances: {
     url: "finances",
@@ -62,6 +66,7 @@ export type SellerPage = {
   label: string;
   icon: React.ReactNode | JSX.Element;
   component: React.ReactNode | JSX.Element;
+  withoutWrapper?: boolean;
 };
 
 export type SellerPages = {

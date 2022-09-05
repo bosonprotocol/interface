@@ -1,13 +1,19 @@
+import { ArrowLeft } from "phosphor-react";
 import { useEffect, useState } from "react";
+import { generatePath } from "react-router-dom";
 import styled from "styled-components";
 
+import { sellerPageTypes } from "../../../components/seller/SellerPages";
 import Image from "../../../components/ui/Image";
 import SellerID from "../../../components/ui/SellerID";
+import { UrlParameters } from "../../../lib/routing/parameters";
+import { BosonRoutes, SellerCenterRoutes } from "../../../lib/routing/routes";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
 import { zIndex } from "../../../lib/styles/zIndex";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
+import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 
 const messageItemPadding = "1.5rem";
 
@@ -49,13 +55,26 @@ const Container = styled.div<{
   }
 `;
 
+const BackToSellerCenterButton = styled.button`
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: unset;
+  padding: unset;
+  border: unset;
+  color: ${colors.secondary};
+  z-index: ${zIndex.LandingTitle};
+`;
+
 const Header = styled.div`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  gap: 0.5rem;
+  flex-direction: column;
   padding: 26px 32px;
   font-weight: 600;
   font-size: 1.5rem;
   border-bottom: 1px solid ${colors.border};
+  position: relative;
 
   ${breakpoint.l} {
     padding: 1.5rem;
@@ -116,6 +135,7 @@ interface Props {
   currentExchange?: Exchange;
   isConversationOpened: boolean;
   setChatListOpen: (p: boolean) => void;
+  prevPath: string;
 }
 
 const getMessageItemKey = (exchange: Exchange) => exchange.id;
@@ -128,24 +148,57 @@ export default function MessageList({
   chatListOpen,
   currentExchange,
   isConversationOpened,
-  setChatListOpen
+  setChatListOpen,
+  prevPath
 }: Props) {
   const [activeMessageKey, setActiveMessageKey] = useState<string>(
     currentExchange ? getMessageItemKey(currentExchange) : ""
   );
+  const navigate = useKeepQueryParamsNavigate();
   const { isS } = useBreakpoints();
   useEffect(() => {
     if (currentExchange) {
       setActiveMessageKey(getMessageItemKey(currentExchange));
     }
   }, [currentExchange]);
-
+  const comesFromSellerCenter = !!prevPath?.startsWith(BosonRoutes.Sell);
   return (
     <Container
       $chatListOpen={chatListOpen}
       $isConversationOpened={isConversationOpened}
     >
-      <Header>Messages</Header>
+      <Header>
+        {comesFromSellerCenter && (
+          <BackToSellerCenterButton
+            type="button"
+            onClick={() => {
+              const sellerCenterMessagesUrl = generatePath(
+                SellerCenterRoutes.SellerCenter,
+                {
+                  [UrlParameters.sellerPage]: sellerPageTypes.messages.url
+                }
+              );
+              navigate({
+                pathname:
+                  sellerCenterMessagesUrl === prevPath
+                    ? generatePath(SellerCenterRoutes.SellerCenter, {
+                        [UrlParameters.sellerPage]:
+                          sellerPageTypes.dashboard.url
+                      })
+                    : prevPath
+              });
+            }}
+          >
+            <div>
+              <ArrowLeft size={14} />
+              <span style={{ marginLeft: "0.5rem" }}>
+                Back to Seller Center
+              </span>
+            </div>
+          </BackToSellerCenterButton>
+        )}
+        Messages
+      </Header>
       <ExchangesThreads>
         {exchanges
           .filter((exchange) => exchange)
