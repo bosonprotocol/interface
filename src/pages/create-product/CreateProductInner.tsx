@@ -349,7 +349,7 @@ function CreateProductInner({ initial }: Props) {
         fulfillmentPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
         resolutionPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
         exchangeToken: "0x0000000000000000000000000000000000000000",
-        disputeResolverId: CONFIG.envName === "testing" ? 1 : 2,
+        disputeResolverId: CONFIG.envName === "testing" ? 4 : 2,
         agentId: 0, // no agent
         metadataUri: `ipfs://${metadataHash}`,
         metadataHash: metadataHash
