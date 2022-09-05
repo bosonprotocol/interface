@@ -103,7 +103,7 @@ export default function HeaderComponent({ fluidHeader = false }: Props) {
     <Header $navigationBarBgColor={navigationBarBgColor}>
       <HeaderContainer fluidHeader={fluidHeader}>
         <LinkWithQuery to={BosonRoutes.Root}>
-          <LogoImg src={logoUrl || logo} alt="logo" data-testid="logo" />
+          <LogoImg src={logoUrl || logo} alt="logo image" data-testid="logo" />
         </LinkWithQuery>
         <HeaderItems isMobile={burgerMenuBreakpoint} fluidHeader={fluidHeader}>
           {burgerMenuBreakpoint && (

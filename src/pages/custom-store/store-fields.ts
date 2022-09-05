@@ -47,21 +47,22 @@ export const storeFields = {
   metaTransactionsApiKey: "metaTransactionsApiKey"
 } as const;
 
+const standardRequiredErrorMessage = "This field is required";
 export const formModel = {
   formFields: {
     [storeFields.storeName]: {
       name: storeFields.storeName,
-      requiredErrorMessage: "This field is required",
+      requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: ""
     },
     [storeFields.title]: {
       name: storeFields.title,
-      requiredErrorMessage: "This field is required",
+      requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: ""
     },
     [storeFields.description]: {
       name: storeFields.description,
-      requiredErrorMessage: "This field is required",
+      requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: ""
     },
     [storeFields.logoUrl]: {
@@ -69,72 +70,72 @@ export const formModel = {
     },
     [storeFields.logoUrlText]: {
       name: storeFields.logoUrlText,
-      requiredErrorMessage: "This field is required",
+      requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: ""
     },
     [storeFields.logoUpload]: {
       name: storeFields.logoUpload,
-      requiredErrorMessage: "This field is required",
+      requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: "Logo Image"
     },
     [storeFields.primaryBgColor]: {
       name: storeFields.primaryBgColor,
-      requiredErrorMessage: "This field is required",
+      requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: "Primary"
     },
     [storeFields.secondaryBgColor]: {
       name: storeFields.secondaryBgColor,
-      requiredErrorMessage: "This field is required",
+      requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: "Secondary"
     },
     [storeFields.footerBgColor]: {
       name: storeFields.footerBgColor,
-      requiredErrorMessage: "This field is required",
+      requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: "Footer Color"
     },
     [storeFields.accentColor1]: {
       name: storeFields.accentColor1,
-      requiredErrorMessage: "This field is required",
+      requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: "Accent Color1"
     },
     [storeFields.accentColor2]: {
       name: storeFields.accentColor2,
-      requiredErrorMessage: "This field is required",
+      requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: "Accent Color2"
     },
     [storeFields.navigationBarBgColor]: {
       name: storeFields.navigationBarBgColor,
-      requiredErrorMessage: "This field is required",
+      requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: ""
     },
     [storeFields.textColor]: {
       name: storeFields.textColor,
-      requiredErrorMessage: "This field is required",
+      requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: ""
     },
     [storeFields.fontFamily]: {
       name: storeFields.fontFamily,
-      requiredErrorMessage: "This field is required",
+      requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: ""
     },
     [storeFields.navigationBarPosition]: {
       name: storeFields.navigationBarPosition,
-      requiredErrorMessage: "This field is required",
+      requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: ""
     },
     [storeFields.sellerCurationList]: {
       name: storeFields.sellerCurationList,
-      requiredErrorMessage: "This field is required",
+      requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: ""
     },
     [storeFields.offerCurationList]: {
       name: storeFields.offerCurationList,
-      requiredErrorMessage: "This field is required",
+      requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: ""
     },
     [storeFields.metaTransactionsApiKey]: {
       name: storeFields.metaTransactionsApiKey,
-      requiredErrorMessage: "This field is required",
+      requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: ""
     }
   }

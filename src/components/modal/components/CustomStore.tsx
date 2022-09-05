@@ -1,4 +1,5 @@
-import { CopySimple } from "phosphor-react";
+import * as Tooltip from "@radix-ui/react-tooltip";
+import { CopySimple, Info } from "phosphor-react";
 import styled from "styled-components";
 
 import Collapse from "../../../components/collapse/Collapse";
@@ -28,8 +29,11 @@ const CollapsibleContainer = styled.div`
   padding: 1.5rem;
 `;
 
-const Steps = styled.div`
-  display: flex;
+const StyledTooltip = styled.div`
+  background: ${colors.white};
+  padding: 1rem;
+  border: 1px solid ${colors.darkGrey};
+  max-width: 20rem;
 `;
 
 interface Props {
@@ -48,7 +52,28 @@ export default function CustomStore({ ipfsUrl = "", hideModal }: Props) {
         Congrats for creating your store front.
       </Typography>
       <CollapsibleContainer>
-        <Collapse title={<Heading>Custom Store URL</Heading>}>
+        <Collapse
+          title={
+            <Grid justifyContent="flex-start" gap="0.5rem">
+              <Heading>Custom Store URL </Heading>
+              <Tooltip.Provider delayDuration={0}>
+                <Tooltip.Root>
+                  <Tooltip.TooltipTrigger asChild>
+                    <Info size="20" />
+                  </Tooltip.TooltipTrigger>
+                  <Tooltip.Content>
+                    <StyledTooltip>
+                      This shows the IPFS CID for your custom storefront website
+                      file. Extract this and access via any IPFS gateway (note:
+                      default URL points to a gateway where your content is
+                      pinned and therefore more highly available).
+                    </StyledTooltip>
+                  </Tooltip.Content>
+                </Tooltip.Root>
+              </Tooltip.Provider>
+            </Grid>
+          }
+        >
           <Grid alignItems="center" justifyContent="flex-start" gap="0.5rem">
             <a href={ipfsUrl} target="_blank">
               {ipfsUrl}
@@ -62,41 +87,39 @@ export default function CustomStore({ ipfsUrl = "", hideModal }: Props) {
       </CollapsibleContainer>
       <CollapsibleContainer>
         <Collapse title={<Heading>Link to ENS</Heading>}>
+          <p>
+            To improve your users' experience, you can provide them with a
+            branded link by hooking up the above redirect link to your ENS
+            (sub)domain.
+          </p>
           <div>
-            <p>
-              To improve your users' experience, you can provide them with a
-              branded link by hooking up the above redirect link to your ENS
-              (sub)domain.
-            </p>
-            <Steps>
-              <ol>
-                <li>
-                  Navigate to{" "}
-                  <a href="https://app.ens.domains/" target="_blank">
-                    https://app.ens.domains/
-                  </a>{" "}
-                  -{">"} My Account{" "}
-                </li>
-                <li>Select your ENS domain & click "Add/Edit Record" </li>
-                <li>
-                  Set the "Content" value to "ipfs://
-                  {`CID`}"
-                  <ol type="a">
-                    <li>
-                      Where CID is the last part of the above Custom Store URL
-                    </li>
-                  </ol>
-                </li>
-                <li>
-                  Click "Confirm" and send the transaction using your wallet.
-                </li>
-                <li>
-                  You can then share this ENS domain with your users. (Add a
-                  ".link" suffix to the ENS domain. i.e.g. https://ens
-                  Domain.eth.link)
-                </li>
-              </ol>
-            </Steps>
+            <ol style={{ padding: "0 1rem" }}>
+              <li>
+                Navigate to{" "}
+                <a href="https://app.ens.domains/" target="_blank">
+                  https://app.ens.domains/
+                </a>{" "}
+                -{">"} My Account{" "}
+              </li>
+              <li>Select your ENS domain & click "Add/Edit Record" </li>
+              <li>
+                Set the "Content" value to "ipfs://
+                {`CID`}"
+                <ol type="a">
+                  <li>
+                    Where CID is the last part of the above Custom Store URL
+                  </li>
+                </ol>
+              </li>
+              <li>
+                Click "Confirm" and send the transaction using your wallet.
+              </li>
+              <li>
+                You can then share this ENS domain with your users. (Add a
+                ".link" suffix to the ENS domain. i.e.g. https://ens
+                Domain.eth.link)
+              </li>
+            </ol>
           </div>
         </Collapse>
       </CollapsibleContainer>

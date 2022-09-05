@@ -19,8 +19,9 @@ export const validationOfFile = ({
   isOptional: boolean;
   maxFileSizeInB?: number;
   supportedFormats?: string[];
-}) =>
-  Yup.mixed()
+}) => {
+  const formats = supportedFormats || SUPPORTED_FILE_FORMATS;
+  return Yup.mixed()
     .nullable(isOptional ? true : undefined)
     .test("numFiles", `Please upload one file`, (files: File[]) => {
       return isOptional ? true : !!(files || []).length;
@@ -38,10 +39,11 @@ export const validationOfFile = ({
     )
     .test(
       "FILE_FORMAT",
-      "Uploaded files have unsupported format",
+      `Uploaded files have unsupported format. Supported formats are: ${formats.join(
+        ","
+      )}`,
       (files: File[]) => {
-        return (files || []).every((file) =>
-          (supportedFormats || SUPPORTED_FILE_FORMATS).includes(file.type)
-        );
+        return (files || []).every((file) => formats.includes(file.type));
       }
     );
+};

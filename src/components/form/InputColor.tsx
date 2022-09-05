@@ -25,8 +25,6 @@ const ColorPicker = styled(Input).attrs({
   type: "color"
 })`
   appearance: none;
-  -moz-appearance: none;
-  -webkit-appearance: none;
   background: none;
   border: 0;
   cursor: pointer;
