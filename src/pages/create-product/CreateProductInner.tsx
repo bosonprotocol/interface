@@ -364,6 +364,7 @@ function CreateProductInner({ initial }: Props) {
                 treasury: address,
                 clerk: address,
                 contractUri: "ipfs://sample",
+                royaltyPercentage: "0",
                 authTokenId: "0",
                 authTokenType: 0
               },
