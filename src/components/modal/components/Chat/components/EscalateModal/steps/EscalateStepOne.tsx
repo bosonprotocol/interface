@@ -12,7 +12,6 @@ import Typography from "../../../../../../ui/Typography";
 
 interface Props {
   exchange: Exchange;
-  setActiveStep: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const StyledGrid = styled(Grid)`
@@ -34,7 +33,7 @@ const StyledArrowSquare = styled(ArrowSquareOut)`
   margin-left: 5px;
 `;
 
-function EscalateStepOne({ exchange, setActiveStep }: Props) {
+function EscalateStepOne({ exchange }: Props) {
   const currentDate = dayjs();
 
   const { data } = useDisputeResolvers();

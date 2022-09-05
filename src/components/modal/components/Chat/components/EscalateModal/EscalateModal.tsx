@@ -72,9 +72,7 @@ function EscalateModal({ exchange }: Props) {
   const escalateSteps = (activeStep: number) => {
     switch (activeStep) {
       case 0:
-        return (
-          <EscalateStepOne exchange={exchange} setActiveStep={setActiveStep} />
-        );
+        return <EscalateStepOne exchange={exchange} />;
       case 1:
         return <EscalateStepTwo />;
       case 2:
