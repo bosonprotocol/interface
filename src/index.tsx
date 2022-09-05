@@ -19,6 +19,7 @@ import Exchange from "./pages/exchange/Exchange";
 import Explore from "./pages/explore/Explore";
 import Landing from "./pages/landing/Landing";
 import OfferDetail from "./pages/offers/OfferDetail";
+import ProfilePage from "./pages/profile-page/ProfilePage";
 import SellerCenter from "./pages/sell/SellerCenter";
 import reportWebVitals from "./reportWebVitals";
 
@@ -105,6 +106,14 @@ root.render(
                 <Route
                   path={BosonRoutes.DisputeCenter}
                   element={<DisputeList />}
+                />
+                <Route
+                  path={BosonRoutes.BuyerPage}
+                  element={<ProfilePage profileType="buyer" />}
+                />
+                <Route
+                  path={BosonRoutes.SellerPage}
+                  element={<ProfilePage profileType="seller" />}
                 />
                 <Route
                   path="*"

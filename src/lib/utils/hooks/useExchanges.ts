@@ -1,3 +1,4 @@
+import { ExchangeState } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
 import { subgraph } from "@bosonprotocol/react-kit";
 import { gql } from "graphql-request";
 import { useQuery } from "react-query";
@@ -14,6 +15,7 @@ interface Props {
   disputed: boolean | null;
   sellerId?: string;
   buyerId?: string;
+  state?: ExchangeState;
   id?: string;
   id_in?: string[];
   orderBy?: string | null | undefined;
@@ -29,6 +31,7 @@ export function useExchanges(
   const {
     disputed,
     sellerId,
+    state,
     buyerId,
     id,
     id_in,
@@ -48,6 +51,7 @@ export function useExchanges(
             ${orderDirection ? `orderDirection: "${orderDirection}"` : ""}
             where: {
             ${id ? `id: "${id}"` : ""}
+            ${state ? `state: "${state}"` : ""}
             ${id_in ? `id_in: [${id_in.join(",")}]` : ""}
             ${sellerId !== undefined ? "seller: $sellerId" : ""}
             ${buyerId !== undefined ? "buyer: $buyerId" : ""}

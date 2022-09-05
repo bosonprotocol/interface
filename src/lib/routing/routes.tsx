@@ -16,7 +16,9 @@ export const BosonRoutes = {
   Chat: "/chat",
   ChatMessage: `/chat/:${UrlParameters.exchangeId}`,
   DisputeCenter: "/dispute-center",
-  DisputeId: `/exchange/:${UrlParameters.exchangeId}/raise-dispute`
+  DisputeId: `/exchange/:${UrlParameters.exchangeId}/raise-dispute`,
+  BuyerPage: `/buyer/:${UrlParameters.buyerId}`,
+  SellerPage: `/seller/:${UrlParameters.sellerId}`
 } as const;
 
 export const OffersRoutes = {
