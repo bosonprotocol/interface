@@ -1,7 +1,11 @@
-import React from "react";
+import dayjs from "dayjs";
+import { ArrowSquareOut } from "phosphor-react";
+import React, { useMemo } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../../../../../../lib/styles/colors";
+import { getDateTimestamp } from "../../../../../../../lib/utils/getDateTimestamp";
+import { useDisputeResolvers } from "../../../../../../../lib/utils/hooks/useDisputeResolvers";
 import { Exchange } from "../../../../../../../lib/utils/hooks/useExchanges";
 import Grid from "../../../../../../ui/Grid";
 import Typography from "../../../../../../ui/Typography";
@@ -26,7 +30,33 @@ const GridContainer = styled.div`
   border-bottom: 1px solid ${colors.lightGrey};
 `;
 
+const StyledArrowSquare = styled(ArrowSquareOut)`
+  margin-left: 5px;
+`;
+
 function EscalateStepOne({ exchange, setActiveStep }: Props) {
+  const currentDate = dayjs();
+
+  const { data } = useDisputeResolvers();
+
+  const feeAmount = data?.disputeResolvers[0]?.fees[0].feeAmount;
+
+  const parseDisputePeriod = dayjs(
+    getDateTimestamp(exchange.offer.resolutionPeriodDuration)
+  );
+
+  const deadlineTimeLeft = useMemo(() => {
+    if (parseDisputePeriod.diff(currentDate, "days") === 0) {
+      return "Dispute period ended today";
+    }
+    if (parseDisputePeriod.diff(currentDate, "days") > 0) {
+      return `${parseDisputePeriod.diff(currentDate, "days")} days left`;
+    }
+    return `Dispute period ended ${
+      parseDisputePeriod.diff(currentDate, "days") * -1
+    } days ago`;
+  }, [currentDate, parseDisputePeriod]);
+
   return (
     <>
       <StyledGrid
@@ -59,14 +89,17 @@ function EscalateStepOne({ exchange, setActiveStep }: Props) {
           <Typography fontWeight="400" $fontSize="1rem" color={colors.darkGrey}>
             Exchange policy
           </Typography>
-          <Typography
-            fontWeight="600"
-            $fontSize="1rem"
-            color={colors.darkGrey}
-            justifyContent="flex-end"
-          >
-            Fair Exchange Policy
-          </Typography>
+          <Grid justifyContent="flex-end">
+            <Typography
+              fontWeight="600"
+              $fontSize="1rem"
+              color={colors.darkGrey}
+              justifyContent="flex-end"
+            >
+              Fair Exchange Policy
+            </Typography>
+            <StyledArrowSquare color={colors.secondary} size={22} />
+          </Grid>
           <Typography fontWeight="400" $fontSize="1rem" color={colors.darkGrey}>
             Escalation deposit
           </Typography>
@@ -76,7 +109,7 @@ function EscalateStepOne({ exchange, setActiveStep }: Props) {
             color={colors.darkGrey}
             justifyContent="flex-end"
           >
-            10% ($5)
+            {feeAmount}
           </Typography>
           <Typography fontWeight="400" $fontSize="1rem" color={colors.darkGrey}>
             Dispute period
@@ -87,7 +120,7 @@ function EscalateStepOne({ exchange, setActiveStep }: Props) {
             color={colors.darkGrey}
             justifyContent="flex-end"
           >
-            20 days left
+            {deadlineTimeLeft}
           </Typography>
         </GridContainer>
       </StyledGrid>

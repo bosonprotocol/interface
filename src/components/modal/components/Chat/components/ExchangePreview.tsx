@@ -32,8 +32,9 @@ const StyledPrice = styled(Price)<{ isLteS: boolean }>`
   bottom: ${({ isLteS }) => isLteS && "2.8125rem"};
 `;
 
-const StyledImage = styled(Image)<{ isLteS: boolean }>`
+const StyledImage = styled(Image)<{ isLteS: boolean; isLteXS: boolean }>`
   all: unset;
+  width: ${({ isLteXS }) => isLteXS && "50%"};
   img {
     all: unset;
     width: 80px;
@@ -48,7 +49,8 @@ const StyledGrid = styled(Grid)`
 
 export default function ExchangePreview({ exchange }: Props) {
   const { offer } = exchange;
-  const { isLteS } = useBreakpoints();
+  const { isLteS, isLteXS } = useBreakpoints();
+
   return (
     <StyledGrid
       justifyContent="space-between"
@@ -59,6 +61,7 @@ export default function ExchangePreview({ exchange }: Props) {
           isLteS={isLteS}
           src={offer.metadata.imageUrl}
           alt="Exchange image"
+          isLteXS={isLteXS}
         />
         <Grid
           flexDirection="column"

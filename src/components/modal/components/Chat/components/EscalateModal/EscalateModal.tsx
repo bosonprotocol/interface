@@ -1,7 +1,10 @@
+import { ArrowLeft, ArrowRight } from "phosphor-react";
 import React, { useState } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../../../../../lib/styles/colors";
+import { zIndex } from "../../../../../../lib/styles/zIndex";
+import { useBreakpoints } from "../../../../../../lib/utils/hooks/useBreakpoints";
 import { Exchange } from "../../../../../../lib/utils/hooks/useExchanges";
 import MultiSteps from "../../../../../step/MultiSteps";
 import Button from "../../../../../ui/Button";
@@ -35,9 +38,26 @@ const InnerContainer = styled.div`
 
 const StyledGrid = styled(Grid)`
   background: ${colors.white};
+  z-index: ${zIndex.Popper};
+`;
+
+const StyledButtonGrid = styled(Grid)<{ isMobile: boolean }>`
+  background: ${colors.white};
+  z-index: ${zIndex.Popper};
+  p {
+    margin-top: ${({ isMobile }) => isMobile && "1.8125rem"};
+  }
 `;
 
 const buttonSteps = ["Next", "Escalate Dispute", "Done"];
+
+const StyledButton = styled.button`
+  border: none;
+  background: none;
+  &:disabled {
+    color: ${colors.lightGrey};
+  }
+`;
 
 const multiStepsData = [
   { steps: 1, name: "Dispute Overview" },
@@ -47,6 +67,7 @@ const multiStepsData = [
 
 function EscalateModal({ exchange }: Props) {
   const [activeStep, setActiveStep] = useState(0);
+  const { isXS, isXXS, isS } = useBreakpoints();
 
   const escalateSteps = (activeStep: number) => {
     switch (activeStep) {
@@ -57,7 +78,7 @@ function EscalateModal({ exchange }: Props) {
       case 1:
         return <EscalateStepTwo />;
       case 2:
-        return <EscalateFinalStep />;
+        return <EscalateFinalStep exchange={exchange} />;
       default:
         return 0;
     }
@@ -65,14 +86,41 @@ function EscalateModal({ exchange }: Props) {
 
   return (
     <Container>
-      <StyledMultiSteps
-        data={multiStepsData}
-        callback={(step) => {
-          setActiveStep(step);
-        }}
-        active={activeStep}
-        disableInactiveSteps
-      />
+      <StyledButtonGrid
+        alignItems="center"
+        justifyContent="center"
+        isMobile={isS || isXXS || isXS}
+        padding={isS || isXXS || isXS ? "0 0 0.625rem 0" : "0"}
+      >
+        {(isS || isXXS || isXS) && (
+          <StyledButton
+            onClick={() => {
+              setActiveStep(activeStep - 1);
+            }}
+            disabled={activeStep === 0}
+          >
+            <ArrowLeft size={27} />
+          </StyledButton>
+        )}
+        <StyledMultiSteps
+          data={multiStepsData}
+          callback={(step) => {
+            setActiveStep(step);
+          }}
+          active={activeStep}
+          disableInactiveSteps
+        />
+        {(isS || isXXS || isXS) && (
+          <StyledButton
+            onClick={() => {
+              setActiveStep(activeStep + 1);
+            }}
+            disabled={activeStep === 2}
+          >
+            <ArrowRight size={27} />
+          </StyledButton>
+        )}
+      </StyledButtonGrid>
       <InnerContainer>
         <StyledGrid padding="2rem">
           <ExchangePreview exchange={exchange} />
