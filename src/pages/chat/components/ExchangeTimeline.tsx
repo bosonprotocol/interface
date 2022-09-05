@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { useMemo } from "react";
+import { ReactNode, useMemo } from "react";
 
 import Timeline from "../../../components/timeline/Timeline";
 import { CONFIG } from "../../../lib/config";
@@ -14,9 +14,10 @@ const formatShortDate = (date: string) => {
 
 interface Props {
   exchange: Exchange;
+  children?: ReactNode;
 }
 
-export default function ExchangeTimeline({ exchange }: Props) {
+export default function ExchangeTimeline({ children, exchange }: Props) {
   const { data: disputes = [] } = useDisputes({
     disputesFilter: {
       exchange: exchange.id
@@ -84,6 +85,7 @@ export default function ExchangeTimeline({ exchange }: Props) {
   }, [exchange, dispute]);
   return (
     <>
+      {!!timesteps.length && children}
       <Timeline timesteps={timesteps} />
     </>
   );

@@ -1,6 +1,5 @@
 /* eslint @typescript-eslint/no-explicit-any: "off" */
 import CancelExchangeModal from "./components/Chat/CancelExchangeModal";
-import InitializeChatModal from "./components/Chat/InitializeChatModal";
 import MakeProposalModal from "./components/Chat/MakeProposal/MakeProposalModal";
 import ResolveDisputeModal from "./components/Chat/ResolveDisputeModal";
 import CreateProductDraft from "./components/CreateProductDraft";
@@ -23,7 +22,6 @@ export const MODAL_TYPES = {
   CUSTOM_STORE: "CUSTOM_STORE",
   DETAIL_WIDGET: "DETAIL_WIDGET",
   RAISE_DISPUTE: "RAISE_DISPUTE",
-  INITIALIZE_CHAT: "INITIALIZE_CHAT",
   MAKE_PROPOSAL: "MAKE_PROPOSAL",
   PRODUCT_CREATE_SUCCESS: "PRODUCT_CREATE_SUCCESS",
   REDEEM: "REDEEM",
@@ -43,7 +41,6 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.CUSTOM_STORE]: CustomStore,
   [MODAL_TYPES.DETAIL_WIDGET]: DetailWidget,
   [MODAL_TYPES.RAISE_DISPUTE]: DisputeModal,
-  [MODAL_TYPES.INITIALIZE_CHAT]: InitializeChatModal,
   [MODAL_TYPES.MAKE_PROPOSAL]: MakeProposalModal,
   [MODAL_TYPES.PRODUCT_CREATE_SUCCESS]: ProductCreateSuccess,
   [MODAL_TYPES.REDEEM]: RedeemModal,
