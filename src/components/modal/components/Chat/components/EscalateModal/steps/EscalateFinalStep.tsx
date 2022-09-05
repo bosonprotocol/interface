@@ -62,6 +62,7 @@ function EscalateFinalStep({ exchange }: Props) {
         <CopyButton
           onClick={() => navigator.clipboard.writeText("Portal@dispute.com")}
         >
+          {/* TODO */}
           <StyledCopy size={24} color={colors.secondary} weight="light" />
         </CopyButton>
       </Grid>
@@ -83,10 +84,12 @@ function EscalateFinalStep({ exchange }: Props) {
           Authentication message
         </Typography>
         <CopyButton
-          onClick={() =>
-            navigator.clipboard.writeText(
-              `Exchange ID ${exchange.id} \nDispute ID ${exchange.id} \nAuthenticator insert-signature`
-            )
+          onClick={
+            () =>
+              navigator.clipboard.writeText(
+                `Exchange ID ${exchange.id} \nDispute ID ${exchange.id} \nAuthenticator insert-signature`
+              )
+            // TODO: insert signature
           }
         >
           <StyledCopy size={24} color={colors.secondary} weight="light" />
