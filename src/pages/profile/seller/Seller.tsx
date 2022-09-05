@@ -62,13 +62,6 @@ export default function Seller() {
   const isMySeller =
     currentSellerAddress.toLowerCase() === currentWalletAddress.toLowerCase();
 
-  console.log({
-    sellerId,
-    currentSellerAddress,
-    currentWalletAddress,
-    isMySeller
-  });
-
   const socialIcons = useMemo(() => {
     return [
       {
@@ -147,12 +140,11 @@ export default function Seller() {
               <AvatarEmptySpace />
               <div>
                 <Typography tag="h2" margin="0.5rem 0 0 0">
-                  Mekaverse Where should this text come from ? or Seller with
-                  id: {sellerId}
+                  Placeholder Name (work in progress)
                 </Typography>
                 <Grid alignItems="center" justifyContent="flex-start">
                   <Typography tag="p" margin="0 0.5rem 0 0">
-                    @mekaverse.lens
+                    @placeholder.lens
                   </Typography>
                   <AddressContainer>
                     <AddressText address={currentSellerAddress} />
@@ -170,7 +162,11 @@ export default function Seller() {
           </Grid>
         </ProfileSectionWrapper>
         <ProfileSectionWrapper>
-          <ReadMore text="Where should this text come from Where should this text come from Where should this text come from Where should this text come from Where should this text come from Where should this text come from" />
+          <ReadMore
+            text="is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+Why do we use it?
+It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like)."
+          />
         </ProfileSectionWrapper>
       </BasicInfo>
       <ProfileSectionWrapper>

@@ -18,8 +18,9 @@ import DisputeList from "./pages/dispute-centre/DisputeList";
 import Exchange from "./pages/exchange/Exchange";
 import Explore from "./pages/explore/Explore";
 import Landing from "./pages/landing/Landing";
+import NotFound from "./pages/not-found/NotFound";
 import OfferDetail from "./pages/offers/OfferDetail";
-import ProfilePage from "./pages/profile-page/ProfilePage";
+import ProfilePage from "./pages/profile/ProfilePage";
 import SellerCenter from "./pages/sell/SellerCenter";
 import reportWebVitals from "./reportWebVitals";
 
@@ -115,14 +116,7 @@ root.render(
                   path={BosonRoutes.SellerPage}
                   element={<ProfilePage profileType="seller" />}
                 />
-                <Route
-                  path="*"
-                  element={
-                    <main style={{ padding: "1rem" }}>
-                      <p>Page not found</p>
-                    </main>
-                  }
-                />
+                <Route path="*" element={<NotFound />} />
               </Route>
             </>
           </SentryProvider>

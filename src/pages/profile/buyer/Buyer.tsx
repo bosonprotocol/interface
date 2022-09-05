@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { useAccount } from "wagmi";
 
 import Avatar from "../../../components/avatar";
+import { useModal } from "../../../components/modal/useModal";
 import AddressText from "../../../components/offer/AddressText";
 import Button from "../../../components/ui/Button";
 import Grid from "../../../components/ui/Grid";
@@ -25,9 +26,15 @@ import {
 } from "../ProfilePage.styles";
 import Exchanges from "./Exchanges";
 
-export default function Buyer() {
+interface Props {
+  manageFundsId?: string;
+}
+
+export default function Buyer({ manageFundsId }: Props) {
   const { address: currentWalletAddress = "" } = useAccount();
-  const { [UrlParameters.buyerId]: buyerId = "" } = useParams();
+  const { [UrlParameters.buyerId]: urlBuyerId = "" } = useParams();
+
+  const buyerId = manageFundsId || urlBuyerId;
   const {
     data: buyers,
     isError: isErrorBuyers,
@@ -40,17 +47,26 @@ export default function Buyer() {
       enabled: !!buyerId
     }
   );
+  const { showModal, modalTypes } = useModal();
   const isBuyerExists = !!buyers?.length;
   const currentBuyerAddress = buyers?.[0]?.wallet || "";
 
   const isMyBuyer =
     currentBuyerAddress.toLowerCase() === currentWalletAddress.toLowerCase();
-  console.log({
-    buyerId,
-    currentWalletAddress,
-    currentBuyerAddress,
-    isMyBuyer
-  });
+
+  const handleManageFunds = () => {
+    if (manageFundsId) {
+      showModal(
+        modalTypes.MANAGE_FUNDS_MODAL,
+        {
+          title: "Manage Funds",
+          id: manageFundsId
+        },
+        "auto",
+        "dark"
+      );
+    }
+  };
   const socialIcons = useMemo(() => {
     return [
       {
@@ -89,7 +105,7 @@ export default function Buyer() {
     );
   }
 
-  if (!isBuyerExists) {
+  if (!isBuyerExists && !manageFundsId) {
     // TODO: NO FIGMA REPRESENTATION
     return (
       <BasicInfo>
@@ -120,7 +136,7 @@ export default function Buyer() {
               <AvatarEmptySpace />
               <div>
                 <Typography tag="h2" margin="1rem 0 0 0">
-                  Buyer with ID: {buyerId}
+                  Buyer ID: {buyerId}
                 </Typography>
                 <Grid alignItems="flex-start">
                   <AddressContainer>
@@ -134,7 +150,11 @@ export default function Buyer() {
               $width="auto"
               margin="1.25rem 0 0 0"
             >
-              {isMyBuyer && <Button theme="primary">Manage Funds</Button>}
+              {manageFundsId && (
+                <Button theme="primary" onClick={handleManageFunds}>
+                  Manage Funds
+                </Button>
+              )}
               <SocialIcons icons={socialIcons} />
             </Grid>
           </Grid>
