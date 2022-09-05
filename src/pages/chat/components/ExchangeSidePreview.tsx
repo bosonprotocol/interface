@@ -305,10 +305,16 @@ export default function ExchangeSidePreview({
           </Button>
           <Button
             theme="orange"
-            onClick={() => {
-              // TODO: implement
-              return null;
-            }}
+            onClick={() =>
+              showModal(
+                "ESCALATE_MODAL",
+                {
+                  title: "Escalate",
+                  exchange: exchange
+                },
+                "l"
+              )
+            }
           >
             Escalate
           </Button>

@@ -1,5 +1,6 @@
 /* eslint @typescript-eslint/no-explicit-any: "off" */
 import CancelExchangeModal from "./components/Chat/CancelExchangeModal";
+import EscalateModal from "./components/Chat/components/EscalateModal/EscalateModal";
 import InitializeChatModal from "./components/Chat/InitializeChatModal";
 import MakeProposalModal from "./components/Chat/MakeProposal/MakeProposalModal";
 import ResolveDisputeModal from "./components/Chat/ResolveDisputeModal";
@@ -34,7 +35,8 @@ export const MODAL_TYPES = {
   WHAT_IS_REDEEM: "WHAT_IS_REDEEM",
   RETRACT_DISPUTE: "RETRACT_DISPUTE",
   FINANCE_DEPOSIT_MODAL: "FINANCE_DEPOSIT_MODAL",
-  FINANCE_WITHDRAW_MODAL: "FINANCE_WITHDRAW_MODAL"
+  FINANCE_WITHDRAW_MODAL: "FINANCE_WITHDRAW_MODAL",
+  ESCALATE_MODAL: "ESCALATE_MODAL"
 } as const;
 
 export const MODAL_COMPONENTS = {
@@ -54,5 +56,6 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.WHAT_IS_REDEEM]: WhatIsRedeem,
   [MODAL_TYPES.RETRACT_DISPUTE]: RetractDisputeModal,
   [MODAL_TYPES.FINANCE_DEPOSIT_MODAL]: FinanceDeposit,
-  [MODAL_TYPES.FINANCE_WITHDRAW_MODAL]: FinanceWithdraw
+  [MODAL_TYPES.FINANCE_WITHDRAW_MODAL]: FinanceWithdraw,
+  [MODAL_TYPES.ESCALATE_MODAL]: EscalateModal
 } as const;
