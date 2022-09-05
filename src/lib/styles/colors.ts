@@ -1,3 +1,6 @@
+/*
+    TODO: reorganize colors
+  */
 export const colors = {
   navy: "#222539",
   green: "#02F3A2",
@@ -8,13 +11,10 @@ export const colors = {
   darkRed: "darkred",
   cyan: "#00FFFF",
   grey2: "#D3D5DB",
+  grey3: "#A1A1A1",
   froly: "#F46A6A",
   lightArrowColor: "#dedfe3",
 
-  /*
-    TODO: Remove what's above when refactor/redesign of all pages is done
-    COLORS: Based on the Figma designs
-  */
   // Main
   primary: "#02F3A2",
   secondary: "#7829F9",
@@ -32,4 +32,4 @@ export const colors = {
   border: "#5560720f",
   white: "#FFFFFF",
   primaryBgColor: "#FFFFFF"
-};
+} as const;

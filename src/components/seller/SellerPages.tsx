@@ -3,6 +3,7 @@ import {
   Bank,
   Chats,
   GridFour,
+  Megaphone,
   Storefront
 } from "phosphor-react";
 import React from "react";
@@ -56,6 +57,14 @@ export const sellerPageTypes = {
     label: "Finances",
     icon: Bank,
     component: () => <SellerFinances />
+  },
+  salesChannels: {
+    url: "salesChannels",
+    label: "Sales Channels",
+    icon: Megaphone,
+    component: () => (
+      <Navigate replace to={{ pathname: BosonRoutes.CreateStorefront }} />
+    )
   }
 };
 

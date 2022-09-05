@@ -11,25 +11,37 @@ export const SUPPORTED_FILE_FORMATS = [
 
 export const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1 MB
 
-export const validationOfFile = ({ isOptional }: { isOptional: boolean }) =>
+export const validationOfFile = ({
+  isOptional,
+  maxFileSizeInB,
+  supportedFormats
+}: {
+  isOptional: boolean;
+  maxFileSizeInB?: number;
+  supportedFormats?: string[];
+}) =>
   Yup.mixed()
     .nullable(isOptional ? true : undefined)
     .test("numFiles", `Please upload one file`, (files: File[]) => {
-      return isOptional ? true : !!files.length;
+      return isOptional ? true : !!(files || []).length;
     })
     .test(
       "fileSize",
-      `File size cannot exceed ${bytesToSize(MAX_FILE_SIZE)} (for each file)`,
+      `File size cannot exceed ${bytesToSize(
+        maxFileSizeInB || MAX_FILE_SIZE
+      )} (for each file)`,
       (files: File[]) => {
-        return files.every((file) => file.size <= MAX_FILE_SIZE);
+        return (files || []).every(
+          (file) => file.size <= (maxFileSizeInB || MAX_FILE_SIZE)
+        );
       }
     )
     .test(
       "FILE_FORMAT",
       "Uploaded files have unsupported format",
       (files: File[]) => {
-        return files.every((file) =>
-          SUPPORTED_FILE_FORMATS.includes(file.type)
+        return (files || []).every((file) =>
+          (supportedFormats || SUPPORTED_FILE_FORMATS).includes(file.type)
         );
       }
     );
