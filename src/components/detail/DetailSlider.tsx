@@ -84,6 +84,7 @@ export default function DetailSlider({ images, isPreview = false }: Props) {
             {sliderImages?.map((image: string, index: number) => (
               <GlideSlide className="glide__slide" key={`Slide_${index}`}>
                 <Image
+                  noPreload
                   src={image}
                   style={{ paddingTop: "130%" }}
                   dataTestId="sliderImage"

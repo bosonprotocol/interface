@@ -71,6 +71,7 @@ interface IImage {
   dataTestId?: string;
   alt?: string;
   showPlaceholderText?: boolean;
+  noPreload?: boolean;
 }
 const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
   src,
@@ -78,11 +79,14 @@ const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
   dataTestId = "image",
   alt = "",
   showPlaceholderText = true,
+  noPreload = false,
   ...rest
 }) => {
-  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [isLoaded, setIsLoaded] = useState<boolean>(noPreload);
   const [isError, setIsError] = useState<boolean>(false);
-  const [imageSrc, setImageSrc] = useState<string | null>(null);
+  const [imageSrc, setImageSrc] = useState<string | null>(
+    noPreload ? src : null
+  );
   const ipfsMetadataStorage = useIpfsStorage();
 
   useEffect(() => {
