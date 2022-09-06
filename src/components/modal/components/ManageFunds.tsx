@@ -1,6 +1,9 @@
-import { BigNumber, utils } from "ethers";
+import { subgraph } from "@bosonprotocol/react-kit";
+import { BigNumber, ethers, utils } from "ethers";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
+import { CONFIG } from "../../../lib/config";
 import { colors } from "../../../lib/styles/colors";
 import useFunds from "../../../pages/account/funds/useFunds";
 import { Spinner } from "../../loading/Spinner";
@@ -50,7 +53,42 @@ interface Props {
 }
 export default function ManageFunds({ id }: Props) {
   const { funds, reload, fundStatus } = useFunds(id);
+  const [uiFunds, setUiFunds] =
+    useState<subgraph.FundsEntityFieldsFragment[]>(funds);
   const { showModal, modalTypes } = useModal();
+
+  useEffect(() => {
+    const nativeFund = funds.find(
+      (f) => f.token.address === ethers.constants.AddressZero
+    );
+    const fundsDefaultList = nativeFund
+      ? [nativeFund]
+      : [
+          {
+            accountId: id,
+            availableAmount: "0",
+            id: "",
+            token: {
+              id: "",
+              address: ethers.constants.AddressZero,
+              name: CONFIG.nativeCoin?.name || "",
+              symbol: CONFIG.nativeCoin?.symbol || "",
+              decimals: CONFIG.nativeCoin?.decimals || ""
+            }
+          }
+        ];
+    setUiFunds((prevFunds) => [
+      ...Array.from(
+        new Map(
+          [...funds, ...prevFunds, ...fundsDefaultList].map((v) => [
+            v.token.address,
+            v
+          ])
+        ).values()
+      )
+    ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [funds, id]);
 
   if (fundStatus === "error") {
     // TODO: NO FIGMA REPRESENTATIONS
@@ -79,12 +117,7 @@ export default function ManageFunds({ id }: Props) {
           </Typography>
         </WithdrawableWrapper>
       </Grid>
-      {funds?.length < 1 && (
-        <Typography tag="p" $fontSize="1" fontWeight="bold" textAlign="center">
-          No founds
-        </Typography>
-      )}
-      {funds?.map((fund) => {
+      {uiFunds?.map((fund) => {
         const withdrawable = processValue(
           fund.availableAmount,
           fund.token.decimals

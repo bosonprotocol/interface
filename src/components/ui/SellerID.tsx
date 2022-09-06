@@ -86,11 +86,19 @@ const SellerID: React.FC<
             onClick(e);
           } else if (onClick !== null) {
             e.stopPropagation();
-            navigate({
-              pathname: generatePath(BosonRoutes.Account, {
-                [UrlParameters.accountId]: userAddress
-              })
-            });
+            if (isSeller) {
+              navigate({
+                pathname: generatePath(BosonRoutes.SellerPage, {
+                  [UrlParameters.sellerId]: userId
+                })
+              });
+            } else {
+              navigate({
+                pathname: generatePath(BosonRoutes.BuyerPage, {
+                  [UrlParameters.buyerId]: userId
+                })
+              });
+            }
           }
         }}
         data-seller-container
