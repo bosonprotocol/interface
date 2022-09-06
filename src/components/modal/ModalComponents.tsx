@@ -8,6 +8,7 @@ import CreateProductDraft from "./components/CreateProductDraft";
 import CustomStore from "./components/CustomStore";
 import DetailWidget from "./components/DetailWidget";
 import DisputeModal from "./components/DisputeModal/DisputeModal";
+import ManageFunds from "./components/ManageFunds";
 import ProductCreateSuccess from "./components/ProductCreateSuccess";
 import RedeemModal from "./components/RedeemModal/RedeemModal";
 import { RetractDisputeModal } from "./components/RetractDisputeModal";
@@ -36,7 +37,8 @@ export const MODAL_TYPES = {
   RETRACT_DISPUTE: "RETRACT_DISPUTE",
   FINANCE_DEPOSIT_MODAL: "FINANCE_DEPOSIT_MODAL",
   FINANCE_WITHDRAW_MODAL: "FINANCE_WITHDRAW_MODAL",
-  ESCALATE_MODAL: "ESCALATE_MODAL"
+  ESCALATE_MODAL: "ESCALATE_MODAL",
+  MANAGE_FUNDS_MODAL: "MANAGE_FUNDS_MODAL"
 } as const;
 
 export const MODAL_COMPONENTS = {
@@ -57,5 +59,6 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.RETRACT_DISPUTE]: RetractDisputeModal,
   [MODAL_TYPES.FINANCE_DEPOSIT_MODAL]: FinanceDeposit,
   [MODAL_TYPES.FINANCE_WITHDRAW_MODAL]: FinanceWithdraw,
-  [MODAL_TYPES.ESCALATE_MODAL]: EscalateModal
+  [MODAL_TYPES.ESCALATE_MODAL]: EscalateModal,
+  [MODAL_TYPES.MANAGE_FUNDS_MODAL]: ManageFunds
 } as const;
