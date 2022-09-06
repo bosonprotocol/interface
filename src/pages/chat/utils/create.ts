@@ -1,10 +1,7 @@
 import { CoreSDK } from "@bosonprotocol/react-kit";
 import { utils } from "ethers";
 
-import {
-  MAX_PERCENTAGE_DECIMALS,
-  PERCENTAGE_FACTOR
-} from "../../../components/modal/components/Chat/const";
+import { PERCENTAGE_FACTOR } from "../../../components/modal/components/Chat/const";
 import {
   FileWithEncodedData,
   getFilesWithEncodedData
@@ -39,23 +36,29 @@ export const createProposal = async ({
   const proposal: NewProposal = {
     title: `${userName} made a proposal`,
     description: proposalFields.description,
-    proposals: [
-      {
-        // the percentageAmount must be an integer so it goes from 1 - 10000 (0.01% - 100%)
-        type: proposalFields.proposalTypeName,
-        percentageAmount: (
-          proposalFields.refundPercentage * PERCENTAGE_FACTOR
-        ).toFixed(MAX_PERCENTAGE_DECIMALS),
-        signature: ""
-      }
-    ],
+    proposals:
+      proposalFields.proposalTypeName && proposalFields.refundPercentage
+        ? [
+            {
+              // the percentageAmount must be an integer so it goes from 1 - 10000 (0.01% - 100%)
+              type: proposalFields.proposalTypeName,
+              percentageAmount: (
+                proposalFields.refundPercentage * PERCENTAGE_FACTOR
+              ).toFixed(0),
+              signature: ""
+            }
+          ]
+        : [],
     disputeContext: proposalFields.disputeContext
   };
-  const signature = await coreSDK.signDisputeResolutionProposal({
-    exchangeId,
-    buyerPercent: proposal.proposals[0].percentageAmount
-  });
-  proposal.proposals[0].signature = utils.joinSignature(signature);
+  if (proposal.proposals.length) {
+    const signature = await coreSDK.signDisputeResolutionProposal({
+      exchangeId,
+      buyerPercent: proposal.proposals[0].percentageAmount
+    });
+    proposal.proposals[0].signature = utils.joinSignature(signature);
+  }
+
   const proposalFiles = proposalFields.upload;
   const filesWithData = await getFilesWithEncodedData(proposalFiles);
   return {

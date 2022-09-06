@@ -24,7 +24,6 @@ export const CONFIG = {
     ticker: process.env.DEFAULT_CURRENCY || "USD",
     symbol: process.env.DEFAULT_CURRENCY_SYMBOL || "$"
   },
-  widgetsUrl: process.env.REACT_APP_WIDGETS_URL || config.widgetsUrl,
   chainId: REACT_APP_CHAIN_ID,
   theGraphIpfsUrl:
     process.env.REACT_APP_THE_GRAPH_IPFS_URL || config.theGraphIpfsUrl,

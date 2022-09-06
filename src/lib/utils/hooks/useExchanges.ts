@@ -63,6 +63,7 @@ export function useExchanges(
             }) {
             cancelledDate
             committedDate
+            disputedDate
             disputed
             expired
             finalizedDate

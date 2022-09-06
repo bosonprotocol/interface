@@ -21,6 +21,7 @@ import MultiSteps from "../../components/step/MultiSteps";
 import { CONFIG } from "../../lib/config";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { OffersRoutes } from "../../lib/routing/routes";
+import { fromBase64ToBinary } from "../../lib/utils/base64ImageConverter";
 import { getLocalStorageItems } from "../../lib/utils/getLocalStorageItems";
 import { useChatStatus } from "../../lib/utils/hooks/chat/useChatStatus";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
@@ -162,12 +163,6 @@ function CreateProductInner({ initial }: Props) {
     values: CreateProductForm,
     formikBag: FormikHelpers<CreateProductForm>
   ) => {
-    console.log({
-      log: "SEND DATA",
-      values,
-      formikBag
-    });
-
     const profileImage = getLocalStorageItems({
       key: "create-product-image_createYourProfile"
     });
@@ -179,11 +174,15 @@ function CreateProductInner({ initial }: Props) {
     });
 
     const uploadPromises = previewImages.map((previewImage) => {
-      return storage.add(previewImage);
+      return storage.add(fromBase64ToBinary(previewImage));
     });
 
-    const profileImageLink = await storage.add(profileImage[0]);
-    const productMainImageLink = await storage.add(productMainImage[0]);
+    const profileImageLink = await storage.add(
+      fromBase64ToBinary(profileImage[0])
+    );
+    const productMainImageLink = await storage.add(
+      fromBase64ToBinary(productMainImage[0])
+    );
 
     const imagesIpfsLinks = await Promise.all(uploadPromises);
 
@@ -350,7 +349,7 @@ function CreateProductInner({ initial }: Props) {
         fulfillmentPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
         resolutionPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
         exchangeToken: "0x0000000000000000000000000000000000000000",
-        disputeResolverId: CONFIG.envName === "testing" ? 1 : 2,
+        disputeResolverId: CONFIG.envName === "testing" ? 4 : 2,
         agentId: 0, // no agent
         metadataUri: `ipfs://${metadataHash}`,
         metadataHash: metadataHash
@@ -365,6 +364,7 @@ function CreateProductInner({ initial }: Props) {
                 treasury: address,
                 clerk: address,
                 contractUri: "ipfs://sample",
+                royaltyPercentage: "0",
                 authTokenId: "0",
                 authTokenType: 0
               },
@@ -392,11 +392,6 @@ function CreateProductInner({ initial }: Props) {
     if (currentStep === wizardStep.wizardLength) {
       return handleSendData(values, formikBag);
     }
-    console.log({
-      log: "Next step",
-      values,
-      formikBag
-    });
 
     return handleNextForm();
   };

@@ -5,6 +5,7 @@ import { useAccount } from "wagmi";
 import { colors } from "../../../../../lib/styles/colors";
 import { useChatContext } from "../../../../../pages/chat/ChatProvider/ChatContext";
 import ConnectButton from "../../../../header/ConnectButton";
+import { Spinner } from "../../../../loading/Spinner";
 import Button from "../../../../ui/Button";
 import Grid from "../../../../ui/Grid";
 import Typography from "../../../../ui/Typography";
@@ -31,7 +32,7 @@ interface Props {
   isError?: boolean;
 }
 export default function InitializeChat({ isError = false }: Props) {
-  const { initialize, bosonXmtp } = useChatContext();
+  const { initialize, bosonXmtp, isInitializing } = useChatContext();
   const { address } = useAccount();
 
   const isInitializeButtonVisible =
@@ -59,11 +60,19 @@ export default function InitializeChat({ isError = false }: Props) {
           <Button
             type="button"
             theme="primaryInverse"
+            disabled={isInitializing}
             onClick={() => {
               initialize();
             }}
           >
-            Initialize
+            {isInitializing ? (
+              <>
+                Initializing
+                <Spinner />
+              </>
+            ) : (
+              <>Initialize</>
+            )}
           </Button>
         ) : !address ? (
           <ConnectButton />

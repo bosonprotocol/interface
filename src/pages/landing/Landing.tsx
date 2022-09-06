@@ -13,6 +13,7 @@ import { zIndex } from "../../lib/styles/zIndex";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import FeaturedOffers from "../../pages/landing/FeaturedOffers";
+import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
 import Carousel from "./Carousel";
 import Step from "./Step";
 
@@ -64,6 +65,8 @@ const DarkerBackground = styled.div`
 export default function Landing() {
   const { isLteS } = useBreakpoints();
   const navigate = useKeepQueryParamsNavigate();
+  const title = useCustomStoreQueryParameter("title");
+  const description = useCustomStoreQueryParameter("description");
   const [name] = useState("");
 
   const navigateToExplore = () =>
@@ -81,10 +84,18 @@ export default function Landing() {
       >
         <GridWithZindex alignItems="flex-start" flexDirection="column">
           <Title tag="h1">
-            Tokenize, transfer and trade any physical asset as&nbsp;an&nbsp;NFT
+            {title ? (
+              title
+            ) : (
+              <>
+                Tokenize, transfer and trade any physical asset
+                as&nbsp;an&nbsp;NFT
+              </>
+            )}
           </Title>
           <SubTitle tag="h4">
-            The first decentralized marketplace built on Boson Protocol
+            {description ||
+              "The first decentralized marketplace built on Boson Protocol"}
           </SubTitle>
           <ExploreContainer>
             <Button

@@ -1,7 +1,4 @@
-import { manageOffer } from "@bosonprotocol/widgets-sdk";
-import { useEffect, useRef, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
-import { useAccount } from "wagmi";
+import { useParams } from "react-router-dom";
 
 import {
   DarkerBackground,
@@ -19,29 +16,14 @@ import DetailWidget from "../../components/detail/DetailWidget/DetailWidget";
 import Image from "../../components/ui/Image";
 import SellerID from "../../components/ui/SellerID";
 import Typography from "../../components/ui/Typography";
-import { CONFIG } from "../../lib/config";
 import { UrlParameters } from "../../lib/routing/parameters";
-import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { getOfferDetails } from "../../lib/utils/getOfferDetails";
 import useOffer from "../../lib/utils/hooks/offer/useOffer";
 import { useSellers } from "../../lib/utils/hooks/useSellers";
-import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
 
 export default function OfferDetail() {
   const { [UrlParameters.offerId]: offerId } = useParams();
-
-  const widgetRef = useRef<HTMLDivElement>(null);
-  const location = useLocation();
-  const fromAccountPage =
-    (location.state as { from: string })?.from === BosonRoutes.YourAccount;
-  const [isTabSellerSelected, setTabSellerSelected] =
-    useState<boolean>(fromAccountPage);
-  const { address: account } = useAccount();
-  const address = account || "";
-  const customMetaTransactionsApiKey = useCustomStoreQueryParameter(
-    "metaTransactionsApiKey"
-  );
 
   const {
     data: offer,
@@ -64,35 +46,6 @@ export default function OfferDetail() {
   const offerRequiredDeposit = offer?.sellerDeposit;
   const hasSellerEnoughFunds =
     Number(sellerAvailableDeposit) >= Number(offerRequiredDeposit);
-
-  useEffect(() => {
-    if (!address) {
-      setTabSellerSelected(false);
-    }
-  }, [address]);
-
-  useEffect(() => {
-    if (offer && widgetRef.current) {
-      const widgetContainer = document.createElement("div");
-      widgetContainer.style.width = "100%";
-      widgetRef.current.appendChild(widgetContainer);
-      manageOffer(
-        offer.id,
-        {
-          ...CONFIG,
-          metaTransactionsApiKey:
-            customMetaTransactionsApiKey || CONFIG.metaTransactionsApiKey
-        },
-        widgetContainer,
-        {
-          forceBuyerView: !isTabSellerSelected
-        }
-      );
-      return () => widgetContainer.remove();
-    }
-
-    return;
-  }, [offer, isTabSellerSelected, address, customMetaTransactionsApiKey]);
 
   if (!offerId) {
     return null;

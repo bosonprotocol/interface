@@ -33,10 +33,11 @@ export default function App({
   withFooter = true,
   fluidHeader = false
 }: Props) {
-  const primaryColor = useCustomStoreQueryParameter("primaryColor");
-  const secondaryColor = useCustomStoreQueryParameter("secondaryColor");
-  const accentColor = useCustomStoreQueryParameter("accentColor");
   const primaryBgColor = useCustomStoreQueryParameter("primaryBgColor");
+  const secondaryBgColor = useCustomStoreQueryParameter("secondaryBgColor");
+  const accentColor1 = useCustomStoreQueryParameter("accentColor1");
+  const accentColor2 = useCustomStoreQueryParameter("accentColor2");
+  const textColor = useCustomStoreQueryParameter("textColor");
 
   const Wrapper = withLayout ? Layout : Fragment;
 
@@ -52,10 +53,11 @@ export default function App({
           <ModalProvider>
             <Container>
               <GlobalStyle
-                $primaryColor={primaryColor}
-                $secondaryColor={secondaryColor}
-                $accentColor={accentColor}
                 $primaryBgColor={primaryBgColor}
+                $secondaryBgColor={secondaryBgColor}
+                $accentColor1={accentColor1}
+                $accentColor2={accentColor2}
+                $textColor={textColor}
               />
               <Header fluidHeader={fluidHeader} />
               <Wrapper>

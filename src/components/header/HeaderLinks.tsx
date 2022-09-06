@@ -4,10 +4,10 @@ import styled from "styled-components";
 import { useAccount } from "wagmi";
 
 import { UrlParameters } from "../../lib/routing/parameters";
-import { BosonRoutes } from "../../lib/routing/routes";
+import { BosonRoutes, SellerCenterRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { useCurrentSellerId } from "../../lib/utils/hooks/useCurrentSellerId";
-import { LinkWithQuery } from "../linkStoreFields/LinkStoreFields";
+import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
 import { DEFAULT_SELLER_PAGE } from "../seller/SellerPages";
 import Search from "./Search";
 
@@ -111,10 +111,10 @@ export default function HeaderLinks({ isMobile, isOpen }: Props) {
   const sellUrl = useMemo(
     () =>
       isAccountSeller
-        ? generatePath(BosonRoutes.SellerCenter, {
+        ? generatePath(SellerCenterRoutes.SellerCenter, {
             [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
           })
-        : BosonRoutes.CreateProduct,
+        : SellerCenterRoutes.CreateProduct,
     [isAccountSeller]
   );
 

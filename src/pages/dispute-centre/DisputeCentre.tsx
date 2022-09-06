@@ -229,10 +229,7 @@ function DisputeCentre() {
                       exchangeId: exchange.id
                     }
                   });
-                  const tx = await coreSDK.raiseDispute(
-                    exchange.id,
-                    proposal.disputeContext.join("\n")
-                  );
+                  const tx = await coreSDK.raiseDispute(exchange.id);
                   await tx.wait();
                   navigate({
                     pathname: BosonRoutes.DisputeCenter

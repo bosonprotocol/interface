@@ -1,0 +1,144 @@
+import { subgraph } from "@bosonprotocol/react-kit";
+import dayjs from "dayjs";
+import { ArrowRight } from "phosphor-react";
+
+import { CONFIG } from "../../../lib/config";
+import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
+import { Exchange } from "../../../lib/utils/hooks/useExchanges";
+import Image from "../../ui/Image";
+import SellerID from "../../ui/SellerID";
+import Typography from "../../ui/Typography";
+import {
+  ExchangeName,
+  Items,
+  ItemsDates,
+  ItemsGrid,
+  ItemsName,
+  MessageInfo,
+  OfferImage
+} from "./SellerDashboard.styles";
+
+interface Props {
+  name: string;
+  items: Exchange[];
+  onClick?: () => void;
+}
+
+const ItemDates = (item: Exchange, type: string) => {
+  const component = () =>
+    ({
+      [subgraph.ExchangeState.Committed]: {
+        first: {
+          label: "Expires",
+          value: item?.offer?.validUntilDate
+            ? dayjs(getDateTimestamp(item?.offer?.validUntilDate)).format(
+                CONFIG.dateFormat
+              )
+            : ""
+        },
+        second: {
+          label: "Redeemable until",
+          value: item?.offer?.voucherRedeemableUntilDate
+            ? dayjs(
+                getDateTimestamp(item?.offer?.voucherRedeemableUntilDate)
+              ).format(CONFIG.dateFormat)
+            : ""
+        }
+      },
+      [subgraph.ExchangeState.Redeemed]: {
+        first: {
+          label: "Redeemed",
+          value: item?.redeemedDate
+            ? dayjs(getDateTimestamp(item?.redeemedDate)).format(
+                CONFIG.dateFormat
+              )
+            : ""
+        },
+        second: {
+          label: "Finalized",
+          value: item?.finalizedDate
+            ? dayjs(getDateTimestamp(item?.finalizedDate)).format(
+                CONFIG.dateFormat
+              )
+            : ""
+        }
+      },
+      [subgraph.ExchangeState.Disputed]: {
+        first: {
+          label: "Dispute raised",
+          value: item?.disputedDate
+            ? dayjs(getDateTimestamp(item?.disputedDate)).format(
+                CONFIG.dateFormat
+              )
+            : ""
+        },
+        second: {
+          label: "Dispute ends",
+          value:
+            item?.disputedDate && item?.offer?.fulfillmentPeriodDuration
+              ? dayjs(
+                  getDateTimestamp(
+                    (
+                      Number(item?.disputedDate) +
+                      Number(item?.offer?.fulfillmentPeriodDuration)
+                    ).toString()
+                  )
+                ).format(CONFIG.dateFormat)
+              : ""
+        }
+      }
+    }[type]);
+
+  return component();
+};
+export default function SellerDashboardItems({ items, name, onClick }: Props) {
+  return (
+    <>
+      <ItemsName onClick={onClick}>
+        <Typography tag="h4" margin="0" padding="0">
+          {name}
+        </Typography>
+        <ArrowRight size={16} />
+      </ItemsName>
+      <Items gap="1rem" flexDirection="column" alignItems="stretch">
+        {items.length === 0 && (
+          <Typography tag="p">No items to display</Typography>
+        )}
+        {items.map((item: Exchange) => {
+          const itemDate = ItemDates(item, item?.state);
+
+          return (
+            <ItemsGrid key={`dashboard_items_${item?.id}`}>
+              <OfferImage>
+                <Image src={item?.offer?.metadata?.image} />
+              </OfferImage>
+              <MessageInfo>
+                <ExchangeName>{item?.offer?.metadata?.name}</ExchangeName>
+                <SellerID
+                  offer={item?.offer}
+                  buyerOrSeller={item?.offer?.seller}
+                  withProfileImage
+                  onClick={() => null}
+                />
+                <div>
+                  {itemDate?.first?.value && (
+                    <ItemsDates>
+                      <span>{itemDate.first.label}</span>
+                      <span>{itemDate.first.value}</span>
+                    </ItemsDates>
+                  )}
+                  {itemDate?.second?.value && (
+                    <ItemsDates>
+                      <span>{itemDate.second.label}</span>
+                      <span>{itemDate.second.value}</span>
+                    </ItemsDates>
+                  )}
+                </div>
+              </MessageInfo>
+            </ItemsGrid>
+          );
+        })}
+      </Items>
+    </>
+  );
+}

@@ -52,7 +52,10 @@ export const productInformationValidationSchema = Yup.object({
         label: Yup.string()
       })
       .required(validationMessage.required),
-    tags: Yup.array().of(Yup.string()).default([]),
+    tags: Yup.array()
+      .of(Yup.string())
+      .default([])
+      .min(1, "Please provide at least one tag"),
     attributes: Yup.array()
       .of(
         Yup.object().shape({
@@ -168,16 +171,25 @@ export const disputeCentreValidationSchemaMakeProposal = Yup.object({
   [FormModel.formFields.proposalType.name]: Yup.object({
     label: Yup.string().required(),
     value: Yup.string().required()
-  })
-    .nullable()
-    .default({ label: "", value: "" }),
-  [FormModel.formFields.refundPercentage.name]: Yup.number()
-    .min(
-      MIN_VALUE,
-      FormModel.formFields.refundPercentage.moreThanErrorMessage(MIN_VALUE)
-    )
-    .max(100, FormModel.formFields.refundPercentage.maxErrorMessage)
-    .defined(FormModel.formFields.refundPercentage.emptyErrorMessage)
+  }).nullable(),
+  [FormModel.formFields.refundPercentage.name]: Yup.number().when(
+    FormModel.formFields.proposalType.name,
+    (proposalType) => {
+      if (proposalType) {
+        return Yup.number()
+          .min(
+            MIN_VALUE,
+            FormModel.formFields.refundPercentage.moreThanErrorMessage(
+              MIN_VALUE
+            )
+          )
+          .max(100, FormModel.formFields.refundPercentage.maxErrorMessage)
+          .defined(FormModel.formFields.refundPercentage.emptyErrorMessage);
+      } else {
+        return Yup.number();
+      }
+    }
+  )
 });
 
 export const disputeCentreValidationSchemaProposalSummary = Yup.object({});

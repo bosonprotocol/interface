@@ -9,12 +9,12 @@ import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
+import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
 import Layout from "../Layout";
-import { LinkWithQuery } from "../linkStoreFields/LinkStoreFields";
 import ConnectButton from "./ConnectButton";
 import HeaderLinks, { HEADER_HEIGHT } from "./HeaderLinks";
 
-const Header = styled.header`
+const Header = styled.header<{ $navigationBarBgColor: string }>`
   position: fixed;
   top: 0;
   left: 0;
@@ -24,7 +24,8 @@ const Header = styled.header`
   }
 
   width: 100%;
-  background-color: ${colors.white};
+  background-color: ${({ $navigationBarBgColor }) =>
+    $navigationBarBgColor || colors.white};
   border-bottom: 2px solid ${colors.border};
   color: ${colors.darkGrey};
   z-index: ${zIndex.Header};
@@ -86,6 +87,9 @@ export default function HeaderComponent({ fluidHeader = false }: Props) {
   const { isLteM } = useBreakpoints();
   const [isOpen, setOpen] = useState(false);
   const logoUrl = useCustomStoreQueryParameter("logoUrl");
+  const navigationBarBgColor = useCustomStoreQueryParameter(
+    "navigationBarBgColor"
+  );
 
   useEffect(() => {
     setOpen(false);
@@ -96,14 +100,10 @@ export default function HeaderComponent({ fluidHeader = false }: Props) {
   };
   const burgerMenuBreakpoint = isLteM;
   return (
-    <Header>
+    <Header $navigationBarBgColor={navigationBarBgColor}>
       <HeaderContainer fluidHeader={fluidHeader}>
         <LinkWithQuery to={BosonRoutes.Root}>
-          <LogoImg
-            src={logoUrl || logo}
-            alt="Boson Protocol"
-            data-testid="logo"
-          />
+          <LogoImg src={logoUrl || logo} alt="logo image" data-testid="logo" />
         </LinkWithQuery>
         <HeaderItems isMobile={burgerMenuBreakpoint} fluidHeader={fluidHeader}>
           {burgerMenuBreakpoint && (
