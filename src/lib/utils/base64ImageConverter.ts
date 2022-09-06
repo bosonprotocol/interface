@@ -3,7 +3,7 @@ export function fromBase64ToBinary(base64: string): Buffer {
 }
 
 export async function blobToBase64(blob: Blob): Promise<string> {
-  return new Promise((resolve, _) => {
+  return new Promise((resolve) => {
     const reader = new FileReader();
     reader.onloadend = () => resolve(reader.result as string);
     reader.readAsDataURL(blob);
