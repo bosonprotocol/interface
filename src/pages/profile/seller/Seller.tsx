@@ -52,7 +52,7 @@ export default function Seller() {
     }
   );
   const {
-    data: { exchanges = [], offers = [] } = {},
+    data: { exchanges, offers = [] } = {},
     isError: isErrorSellerCalculation,
     isLoading: isLoadingSellersCalculation
   } = useSellerCalculations(
@@ -189,7 +189,7 @@ It is a long established fact that a reader will be distracted by the readable c
                     margin="0"
                     fontWeight="bold"
                   >
-                    {exchanges.length}
+                    {exchanges?.length ?? 0}
                   </Typography>
                 </div>
                 <div>
