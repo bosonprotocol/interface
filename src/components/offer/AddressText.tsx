@@ -3,8 +3,7 @@ import styled from "styled-components";
 import { formatAddress } from "../../lib/utils/address";
 
 const Name = styled.div`
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 1rem;
   overflow-wrap: break-word;
 `;
 

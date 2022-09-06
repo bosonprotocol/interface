@@ -5,6 +5,7 @@ import { fetchSubgraph } from "../core-components/subgraph";
 
 interface Props {
   wallet?: string;
+  id?: string;
 }
 export function useBuyers(
   props: Props,
@@ -23,15 +24,19 @@ export function useBuyers(
         }[];
       }>(
         gql`
-          query GetSellers(
+          query GetBuyers(
             $orderBy: String
             $orderDirection: String
             $wallet: String
+            $id: String
           ) {
             buyers(
               orderBy: $orderBy
               orderDirection: $orderDirection
-              where: { wallet: $wallet }
+              where: {
+                ${props.id ? `id: "${props.id}"` : ""}
+                ${props.wallet ? `wallet: "${props.wallet}"` : ""}
+              }
             ) {
               id
               wallet
@@ -42,7 +47,8 @@ export function useBuyers(
         {
           orderBy: "id",
           orderDirection: "asc",
-          ...(props.wallet && { wallet: props.wallet })
+          ...(props.wallet && { wallet: props.wallet }),
+          ...(props.id && { id: props.id })
         }
       );
       return result?.buyers ?? [];

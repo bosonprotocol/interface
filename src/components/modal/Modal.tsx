@@ -94,6 +94,7 @@ const Wrapper = styled.div<{
         return "65.875rem";
       case "FINANCE_WITHDRAW_MODAL":
       case "FINANCE_DEPOSIT_MODAL":
+      case "MANAGE_FUNDS_MODAL":
         return "31.25rem";
       default:
         break;
@@ -149,6 +150,7 @@ const Content = styled.div<{
     switch ($modalType) {
       case "FINANCE_WITHDRAW_MODAL":
       case "FINANCE_DEPOSIT_MODAL":
+      case "MANAGE_FUNDS_MODAL":
         return "0 2rem 2rem 2rem";
       default:
         return "2rem";

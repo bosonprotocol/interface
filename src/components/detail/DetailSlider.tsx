@@ -8,6 +8,7 @@ import Button from "../../components/ui/Button";
 import Grid from "../../components/ui/Grid";
 import Image from "../../components/ui/Image";
 import Typography from "../../components/ui/Typography";
+import { blobToBase64 } from "../../lib/utils/base64ImageConverter";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
 import { SLIDER_OPTIONS } from "./const";
 import { GlideSlide, GlideWrapper } from "./Detail.style";
@@ -36,11 +37,12 @@ export default function DetailSlider({ images, isPreview = false }: Props) {
   }, [ref, sliderImages]);
 
   const fetchData = async (images: Array<string>) => {
-    const fetchPromises = images.map(
-      async (src) => await ipfsMetadataStorage.get(src, false)
-    );
+    const fetchPromises = images.map(async (src) => {
+      const imgData = await ipfsMetadataStorage.get(src, false);
+      return await blobToBase64(new Blob([imgData as unknown as BlobPart]));
+    });
     const imagesFromIpfs = await Promise.all(fetchPromises);
-    setSliderImages(imagesFromIpfs.map((s) => String(s)));
+    setSliderImages(imagesFromIpfs);
   };
 
   useEffect(() => {
