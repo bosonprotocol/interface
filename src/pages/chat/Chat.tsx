@@ -3,7 +3,6 @@ import { Route, Routes, useLocation, useParams } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
 import { useAccount } from "wagmi";
 
-import { useModal } from "../../components/modal/useModal";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
@@ -12,7 +11,6 @@ import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useBuyerSellerAccounts } from "../../lib/utils/hooks/useBuyerSellerAccounts";
 import { Exchange, useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import { useChatContext } from "./ChatProvider/ChatContext";
 import ChatConversation from "./components/ChatConversation";
 import MessageList from "./components/MessageList";
 
@@ -59,24 +57,7 @@ const getIsSameThread = (
 };
 
 export default function Chat() {
-  const { bosonXmtp } = useChatContext();
   const { address } = useAccount();
-  const { showModal, hideModal } = useModal();
-  useEffect(() => {
-    if (bosonXmtp && address) {
-      hideModal();
-    } else {
-      showModal(
-        "INITIALIZE_CHAT",
-        {
-          title: "Initialize Chat",
-          closable: false
-        },
-        "s"
-      );
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bosonXmtp, address]);
 
   const {
     seller: {
@@ -202,38 +183,41 @@ export default function Chat() {
           currentExchange={selectedExchange}
         />
 
-        <Routes>
-          <Route
-            path={`:${UrlParameters.exchangeId}`}
-            element={
-              <ChatConversation
-                myBuyerId={buyerId}
-                mySellerId={sellerId}
-                key={selectedExchange?.id || ""}
-                exchange={selectedExchange}
-                setChatListOpen={setChatListOpen}
-                chatListOpen={chatListOpen}
-                exchangeIdNotOwned={exchangeIdNotOwned}
-                prevPath={previousPath}
-                onTextAreaChange={onTextAreaChange}
-                textAreaValue={parseInputValue}
-              />
-            }
-          />
-        </Routes>
-
-        {(location.pathname === `${BosonRoutes.Chat}/` ||
-          location.pathname === `${BosonRoutes.Chat}` ||
-          !isSellerOrBuyer) && (
-          <SelectMessageContainer>
-            <SimpleMessage>
-              {exchangeIdNotOwned
-                ? "You don't have this exchange"
-                : isSellerOrBuyer && exchanges.length
-                ? "Select a message"
-                : "You need to have an exchange to chat"}
-            </SimpleMessage>
-          </SelectMessageContainer>
+        {exchangeIdNotOwned ? (
+          <>
+            {(location.pathname === `${BosonRoutes.Chat}/` ||
+              location.pathname === `${BosonRoutes.Chat}` ||
+              !isSellerOrBuyer) && (
+              <SelectMessageContainer>
+                <SimpleMessage>
+                  {exchangeIdNotOwned
+                    ? "You don't have this exchange"
+                    : isSellerOrBuyer && exchanges.length
+                    ? "Select a message"
+                    : "You need to have an exchange to chat"}
+                </SimpleMessage>
+              </SelectMessageContainer>
+            )}
+          </>
+        ) : (
+          <Routes>
+            <Route
+              path={`:${UrlParameters.exchangeId}`}
+              element={
+                <ChatConversation
+                  myBuyerId={buyerId}
+                  mySellerId={sellerId}
+                  key={selectedExchange?.id || ""}
+                  exchange={selectedExchange}
+                  setChatListOpen={setChatListOpen}
+                  chatListOpen={chatListOpen}
+                  prevPath={previousPath}
+                  onTextAreaChange={onTextAreaChange}
+                  textAreaValue={parseInputValue}
+                />
+              }
+            />
+          </Routes>
         )}
       </Container>
     </>
