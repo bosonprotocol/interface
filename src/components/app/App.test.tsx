@@ -10,13 +10,16 @@ import { WagmiConfig } from "wagmi";
 import { wagmiClient } from "../../lib/wallet-connection";
 import App from "./index";
 
-jest.mock("@bosonprotocol/ipfs-storage", () => {
+jest.mock("@bosonprotocol/react-kit", () => {
+  const actualReactKit = jest.requireActual("@bosonprotocol/react-kit");
+
   class IpfsMetadataMock {
     storeMetadata() {
       return;
     }
   }
   return {
+    ...actualReactKit,
     IpfsMetadataStorage: IpfsMetadataMock
   };
 });
