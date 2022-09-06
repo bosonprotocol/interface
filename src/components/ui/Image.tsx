@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { buttonText } from "../../components/ui/styles";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
+import { blobToBase64 } from "../../lib/utils/base64ImageConverter";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
 import Typography from "./Typography";
 
@@ -86,7 +87,8 @@ const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
     async function fetchData(src: string) {
       const fetchPromises = await ipfsMetadataStorage.get(src, false);
       const [image] = await Promise.all([fetchPromises]);
-      setImageSrc(String(image));
+      const base64str = await blobToBase64(new Blob([image as BlobPart]));
+      setImageSrc(base64str as string);
     }
     if (src?.includes("ipfs://")) {
       fetchData(src);
