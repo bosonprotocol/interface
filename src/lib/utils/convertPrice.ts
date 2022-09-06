@@ -1,3 +1,4 @@
+import { RateProps } from "../../components/convertion-rate/utils";
 interface Currency {
   ticker: "USD" | string;
   symbol: "$" | string;
@@ -17,35 +18,33 @@ export interface IPrice {
   converted?: string | null;
   currency?: Currency;
 }
+export interface Props {
+  price: string | null;
+  symbol: string;
+  currency: Currency;
+  rates: Array<RateProps>;
+  fixed: number;
+}
 
-export const convertPrice = async (
-  price: string | null,
-  priceSymbol: string,
-  currency: Currency
-): Promise<IPricePassedAsAProp | null> => {
-  return new Promise((resolve) => {
-    // TODO: change that
-    fetch(
-      `https://api.exchangerate.host/convert?from=${priceSymbol}&to=${currency.ticker}&source=crypto`
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        const conversionRate = data.result;
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const [integer, fractions] = price!.split(".");
-        resolve({
-          integer,
-          fractions,
-          converted:
-            conversionRate === null
-              ? null
-              : (Number(conversionRate) * Number(price)).toFixed(2),
-          currency
-        });
-      })
-      .catch((error) => {
-        console.error(error);
-        return null;
-      });
-  });
+export const convertPrice = ({
+  price,
+  symbol,
+  currency,
+  rates,
+  fixed = 2
+}: Props): IPricePassedAsAProp => {
+  const conversionRate =
+    rates && rates.length
+      ? rates?.find((f: RateProps) => (f.to || "").includes(symbol))?.value
+      : false;
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const [integer, fractions] = price!.split(".");
+  return {
+    integer,
+    fractions,
+    converted: conversionRate
+      ? (Number(conversionRate || 1) * Number(price)).toFixed(fixed)
+      : null,
+    currency
+  };
 };

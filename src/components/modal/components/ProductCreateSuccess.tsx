@@ -2,7 +2,6 @@
 import { formatUnits } from "@ethersproject/units";
 import * as ProgressPrimitive from "@radix-ui/react-progress";
 import { BigNumber } from "ethers";
-import { Question } from "phosphor-react";
 import { Plus } from "phosphor-react";
 import { useMemo } from "react";
 import styled from "styled-components";
@@ -20,7 +19,7 @@ import {
   WidgetButtonWrapper
 } from "../../detail/Detail.style";
 import DetailTable from "../../detail/DetailTable";
-import DetailTooltip from "../../detail/DetailTooltip";
+import Tooltip from "../../tooltip/Tooltip";
 import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
 import Image from "../../ui/Image";
@@ -179,9 +178,7 @@ export default function ProductCreateSuccess({
           <Founds>
             <FoundTile tag="p">
               Please provide
-              <DetailTooltip trigger={<Question size={16} />}>
-                NEED TO BE ADDED
-              </DetailTooltip>
+              <Tooltip content="NEED TO BE ADDED" size={16} />
             </FoundTile>
             <Typography tag="p" $fontSize="0.75rem">
               Describe here why seller should provide funds ..

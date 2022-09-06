@@ -1,3 +1,4 @@
+import { Loading } from "@bosonprotocol/react-kit";
 import { CameraSlash, Image as ImageIcon } from "phosphor-react";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
@@ -70,7 +71,6 @@ interface IImage {
   alt?: string;
   showPlaceholderText?: boolean;
 }
-
 const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
   src,
   children,
@@ -79,6 +79,8 @@ const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
   showPlaceholderText = true,
   ...rest
 }) => {
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [isError, setIsError] = useState<boolean>(false);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const ipfsMetadataStorage = useIpfsStorage();
 
@@ -86,23 +88,43 @@ const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
     async function fetchData(src: string) {
       const fetchPromises = await ipfsMetadataStorage.get(src, false);
       const [image] = await Promise.all([fetchPromises]);
-      setImageSrc(String(image));
+      if (!String(image).includes("base64")) {
+        setIsLoaded(true);
+        setIsError(true);
+      } else {
+        setImageSrc(String(image));
+      }
     }
-    if (src?.includes("ipfs://")) {
-      fetchData(src);
+    if (!isLoaded && imageSrc === null) {
+      if (src?.includes("ipfs://")) {
+        fetchData(src);
+      } else {
+        setImageSrc(src);
+      }
     }
-  }, [src]); // eslint-disable-line
+  }, []); // eslint-disable-line
 
-  return (
-    <ImageWrapper {...rest}>
-      {children || ""}
-      {imageSrc || src ? (
-        <ImageContainer
-          data-testid={dataTestId}
-          src={imageSrc || src}
-          alt={alt}
-        />
-      ) : (
+  useEffect(() => {
+    if (imageSrc !== null) {
+      setTimeout(() => setIsLoaded(true), 100);
+    }
+  }, [imageSrc]);
+
+  if (!isLoaded && !isError) {
+    return (
+      <ImageWrapper {...rest}>
+        <ImagePlaceholder>
+          <Typography tag="div">
+            <Loading />
+          </Typography>
+        </ImagePlaceholder>
+      </ImageWrapper>
+    );
+  }
+
+  if (isLoaded && isError) {
+    return (
+      <ImageWrapper {...rest}>
         <ImagePlaceholder>
           {showPlaceholderText ? (
             <ImageIcon size={50} color={colors.white} />
@@ -113,6 +135,15 @@ const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
             <Typography tag="span">IMAGE NOT AVAILABLE</Typography>
           )}
         </ImagePlaceholder>
+      </ImageWrapper>
+    );
+  }
+
+  return (
+    <ImageWrapper {...rest}>
+      {children || ""}
+      {imageSrc && (
+        <ImageContainer data-testid={dataTestId} src={imageSrc} alt={alt} />
       )}
     </ImageWrapper>
   );
