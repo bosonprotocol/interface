@@ -1,9 +1,8 @@
-import { DiscordLogo, Globe, ShareNetwork } from "phosphor-react";
-import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { useAccount } from "wagmi";
 
 import Avatar from "../../../components/avatar";
+import DetailShare from "../../../components/detail/DetailShare";
 import { useModal } from "../../../components/modal/useModal";
 import AddressText from "../../../components/offer/AddressText";
 import Button from "../../../components/ui/Button";
@@ -11,9 +10,9 @@ import Grid from "../../../components/ui/Grid";
 import Typography from "../../../components/ui/Typography";
 import { UrlParameters } from "../../../lib/routing/parameters";
 import { useBuyers } from "../../../lib/utils/hooks/useBuyers";
-import placeHolderSrc from "../common/image12.png";
+import NotFound from "../../not-found/NotFound";
+import backgroundFluid from "../common/background-img.png";
 import ReadMore from "../common/ReadMore";
-import SocialIcons from "../common/SocialIcons";
 import {
   AddressContainer,
   AvatarContainer,
@@ -21,8 +20,10 @@ import {
   BannerImage,
   BannerImageLayer,
   BasicInfo,
+  DetailShareWrapper,
   GrayWrapper,
-  ProfileSectionWrapper
+  ProfileSectionWrapper,
+  SocialIconContainer
 } from "../ProfilePage.styles";
 import Exchanges from "./Exchanges";
 
@@ -67,28 +68,6 @@ export default function Buyer({ manageFundsId }: Props) {
       );
     }
   };
-  const socialIcons = useMemo(() => {
-    return [
-      {
-        id: 1,
-        icon: <DiscordLogo size={24} />,
-        isDisabled: true,
-        href: ""
-      },
-      {
-        id: 2,
-        icon: <Globe size={24} />,
-        isDisabled: true,
-        href: ""
-      },
-      {
-        id: 3,
-        icon: <ShareNetwork size={24} />,
-        isDisabled: false,
-        href: window.location.href
-      }
-    ];
-  }, []);
 
   if (isLoadingBuyers) {
     // TODO: ADD LOADING INDICATOR
@@ -106,20 +85,14 @@ export default function Buyer({ manageFundsId }: Props) {
   }
 
   if (!isBuyerExists && !manageFundsId) {
-    // TODO: NO FIGMA REPRESENTATION
-    return (
-      <BasicInfo>
-        <Typography tag="h2" margin="2rem auto">
-          Buyer with this ID does not exist
-        </Typography>
-      </BasicInfo>
-    );
+    return <NotFound />;
   }
+
   return (
     <>
       <BasicInfo>
         <ProfileSectionWrapper>
-          <BannerImage src={placeHolderSrc} />
+          <BannerImage src={backgroundFluid} />
           <BannerImageLayer>
             <AvatarContainer>
               <Avatar address={currentBuyerAddress} size={160} />
@@ -155,7 +128,11 @@ export default function Buyer({ manageFundsId }: Props) {
                   Manage Funds
                 </Button>
               )}
-              <SocialIcons icons={socialIcons} />
+              <SocialIconContainer>
+                <DetailShareWrapper>
+                  <DetailShare />
+                </DetailShareWrapper>
+              </SocialIconContainer>
             </Grid>
           </Grid>
         </ProfileSectionWrapper>

@@ -1,19 +1,20 @@
 import Avatar from "@davatar/react";
-import { DiscordLogo, Globe, ShareNetwork } from "phosphor-react";
+import { DiscordLogo, Globe } from "phosphor-react";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
+import DetailShare from "../../../components/detail/DetailShare";
 import AddressText from "../../../components/offer/AddressText";
 import Grid from "../../../components/ui/Grid";
 import Typography from "../../../components/ui/Typography";
 import { UrlParameters } from "../../../lib/routing/parameters";
 import { useSellerCalculations } from "../../../lib/utils/hooks/useSellerCalculations";
 import { useSellers } from "../../../lib/utils/hooks/useSellers";
-import placeHolderSrc from "../common/image12.png";
+import NotFound from "../../not-found/NotFound";
+import backgroundFluid from "../common/background-img.png";
 import ReadMore from "../common/ReadMore";
-import SocialIcons from "../common/SocialIcons";
 import {
   AddressContainer,
   AvatarContainer,
@@ -21,7 +22,10 @@ import {
   BannerImage,
   BannerImageLayer,
   BasicInfo,
-  ProfileSectionWrapper
+  DetailShareWrapper,
+  ProfileSectionWrapper,
+  SocialIcon,
+  SocialIconContainer
 } from "../ProfilePage.styles";
 import Tabs from "./Tabs";
 
@@ -62,29 +66,6 @@ export default function Seller() {
   const isMySeller =
     currentSellerAddress.toLowerCase() === currentWalletAddress.toLowerCase();
 
-  const socialIcons = useMemo(() => {
-    return [
-      {
-        id: 1,
-        icon: <DiscordLogo size={24} />,
-        isDisabled: true,
-        href: ""
-      },
-      {
-        id: 2,
-        icon: <Globe size={24} />,
-        isDisabled: true,
-        href: ""
-      },
-      {
-        id: 3,
-        icon: <ShareNetwork size={24} />,
-        isDisabled: false,
-        href: window.location.href
-      }
-    ];
-  }, []);
-
   const owners = useMemo(() => {
     return [
       ...Array.from(new Set(exchanges.map((exchange) => exchange.buyer.id)))
@@ -108,21 +89,14 @@ export default function Seller() {
   }
 
   if (!isSellerExists) {
-    // TODO: NO FIGMA REPRESENTATION
-    return (
-      <BasicInfo>
-        <Typography tag="h2" margin="2rem auto">
-          Seller with this ID does not exist
-        </Typography>
-      </BasicInfo>
-    );
+    return <NotFound />;
   }
 
   return (
     <>
       <BasicInfo>
         <ProfileSectionWrapper>
-          <BannerImage src={placeHolderSrc} />
+          <BannerImage src={backgroundFluid} />
           <BannerImageLayer>
             <AvatarContainer>
               <Avatar address={currentSellerAddress} size={160} />
@@ -157,7 +131,17 @@ export default function Seller() {
               $width="auto"
               margin="1.25rem 0 0 0"
             >
-              <SocialIcons icons={socialIcons} />
+              <SocialIconContainer>
+                <SocialIcon href="" $isDisabled={true}>
+                  <DiscordLogo size={24} />
+                </SocialIcon>
+                <SocialIcon href="" $isDisabled={true}>
+                  <Globe size={24} />
+                </SocialIcon>
+                <DetailShareWrapper>
+                  <DetailShare />
+                </DetailShareWrapper>
+              </SocialIconContainer>
             </Grid>
           </Grid>
         </ProfileSectionWrapper>

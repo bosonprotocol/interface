@@ -82,3 +82,30 @@ export const AddressContainer = styled.div`
 export const AvatarEmptySpace = styled.div`
   min-width: 11rem;
 `;
+
+export const SocialIconContainer = styled.div`
+  display: flex;
+  svg {
+    color: ${colors.secondary};
+  }
+`;
+
+export const SocialIcon = styled.a<{ $isDisabled: boolean }>`
+  margin-left: 1.5rem;
+  cursor: ${({ $isDisabled }) => ($isDisabled ? "default" : "pointer")};
+  pointer-events: ${({ $isDisabled }) => ($isDisabled ? "none" : "auto")};
+`;
+
+export const DetailShareWrapper = styled.div`
+  position: relative;
+  margin-left: 1.5rem;
+  div:first-of-type {
+    position: relative;
+    top: auto;
+    right: auto;
+    button {
+      padding: 0 !important;
+      margin: 0;
+    }
+  }
+`;
