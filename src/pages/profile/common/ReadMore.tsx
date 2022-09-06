@@ -51,11 +51,6 @@ function ReadMore({ text }: Props) {
       >
         {truncateText}
       </Typography>
-      {isShowMoreVisible && (
-        <Typography tag="p" $fontSize="1rem" margin="0">
-          {/* TODO */}
-        </Typography>
-      )}
       {text.length > MAX_CHARACTERS && (
         <ReadMoreButton
           theme="outline"

@@ -109,3 +109,9 @@ export const DetailShareWrapper = styled.div`
     }
   }
 `;
+
+export const LoadingWrapper = styled.div`
+  padding: 2rem;
+  text-align: center;
+  color: ${colors.secondary};
+`;

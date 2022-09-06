@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { useAccount } from "wagmi";
 
 import DetailShare from "../../../components/detail/DetailShare";
+import { Spinner } from "../../../components/loading/Spinner";
 import AddressText from "../../../components/offer/AddressText";
 import Grid from "../../../components/ui/Grid";
 import Typography from "../../../components/ui/Typography";
@@ -23,6 +24,7 @@ import {
   BannerImageLayer,
   BasicInfo,
   DetailShareWrapper,
+  LoadingWrapper,
   ProfileSectionWrapper,
   SocialIcon,
   SocialIconContainer
@@ -73,8 +75,11 @@ export default function Seller() {
   }, [exchanges]);
 
   if (isLoadingSellers || isLoadingSellersCalculation) {
-    // TODO: ADD LOADING INDICATOR
-    return <p>Loading...</p>;
+    return (
+      <LoadingWrapper>
+        <Spinner size={44} />
+      </LoadingWrapper>
+    );
   }
 
   if (isErrorSellers || isErrorSellerCalculation) {

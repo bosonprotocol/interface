@@ -3,6 +3,7 @@ import { useAccount } from "wagmi";
 
 import Avatar from "../../../components/avatar";
 import DetailShare from "../../../components/detail/DetailShare";
+import { Spinner } from "../../../components/loading/Spinner";
 import { useModal } from "../../../components/modal/useModal";
 import AddressText from "../../../components/offer/AddressText";
 import Button from "../../../components/ui/Button";
@@ -22,6 +23,7 @@ import {
   BasicInfo,
   DetailShareWrapper,
   GrayWrapper,
+  LoadingWrapper,
   ProfileSectionWrapper,
   SocialIconContainer
 } from "../ProfilePage.styles";
@@ -68,10 +70,12 @@ export default function Buyer({ manageFundsId }: Props) {
       );
     }
   };
-
   if (isLoadingBuyers) {
-    // TODO: ADD LOADING INDICATOR
-    return <p>Loading...</p>;
+    return (
+      <LoadingWrapper>
+        <Spinner size={44} />
+      </LoadingWrapper>
+    );
   }
 
   if (isErrorBuyers) {
