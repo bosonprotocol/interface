@@ -1,10 +1,19 @@
+import styled from "styled-components";
 import { useAccount } from "wagmi";
 
+import { Spinner } from "../../../components/loading/Spinner";
 import { BosonRoutes } from "../../../lib/routing/routes";
+import { colors } from "../../../lib/styles/colors";
 import { useBuyers } from "../../../lib/utils/hooks/useBuyers";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import NotFound from "../../not-found/NotFound";
 import Buyer from "../../profile/buyer/Buyer";
+
+const SpinnerWrapper = styled.div`
+  padding: 3rem;
+  text-align: center;
+  color: ${colors.secondary};
+`;
 
 export default function PrivateAccountContainer() {
   const { address, isConnecting, isReconnecting, isDisconnected } =
@@ -18,7 +27,11 @@ export default function PrivateAccountContainer() {
   const buyerId = buyers?.[0]?.id || "";
 
   if (isConnecting || isReconnecting || isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <SpinnerWrapper>
+        <Spinner size={42} />
+      </SpinnerWrapper>
+    );
   }
 
   if (!address || isDisconnected) {
