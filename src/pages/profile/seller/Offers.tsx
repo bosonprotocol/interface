@@ -75,10 +75,6 @@ export default function Offers({
     isFetchingNextPage
   ]);
 
-  console.log({
-    isPrivateProfile,
-    sellerId
-  });
   return (
     <>
       <OfferList
