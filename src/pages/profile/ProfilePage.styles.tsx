@@ -99,7 +99,7 @@ export const SocialIcon = styled.a<{ $isDisabled: boolean }>`
 export const DetailShareWrapper = styled.div`
   position: relative;
   margin-left: 1.5rem;
-  div:first-of-type {
+  [data-name="detail-share-wrapper"] {
     position: relative;
     top: auto;
     right: auto;

@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import styled from "styled-components";
 
+import Grid from "../../../components/ui/Grid";
 import { AccountQueryParameters } from "../../../lib/routing/parameters";
 import { useQueryParameter } from "../../../lib/routing/useQueryParameter";
 import { colors } from "../../../lib/styles/colors";
@@ -9,10 +10,6 @@ import Exchanges from "./Exchanges";
 import Offers from "./Offers";
 import Redemptions from "./Redemptions";
 
-const TabsContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
 const Headers = styled.div`
   display: flex;
   justify-content: flex-start;
@@ -46,10 +43,6 @@ const HeaderTab = styled.div<{ isPrivateProfile: boolean }>`
   &:not(:last-child) {
     margin-right: 1.5rem;
   }
-`;
-const ContentTab = styled.div`
-  display: flex;
-  flex-direction: column;
 `;
 const TabTitle = styled.div<{ $isActive: boolean }>`
   cursor: pointer;
@@ -135,7 +128,7 @@ export default function Tabs({
     setCurrentTab(tab[tabIdentifier]);
   };
   return (
-    <TabsContainer>
+    <Grid flexDirection="column" alignItems="stretch">
       <Headers>
         {tabsData.map((tab, index) => {
           const isActive = indexActiveTab === index;
@@ -157,13 +150,13 @@ export default function Tabs({
           {tabsData.map((tab, index) => {
             const isActive = indexActiveTab === index;
             return (
-              <ContentTab key={tab.title}>
+              <Grid key={tab.title} flexDirection="column" alignItems="stretch">
                 {isActive && <>{tab.content}</>}
-              </ContentTab>
+              </Grid>
             );
           })}
         </ProfileSectionWrapper>
       </Content>
-    </TabsContainer>
+    </Grid>
   );
 }

@@ -70,7 +70,9 @@ export default function Seller() {
 
   const owners = useMemo(() => {
     return [
-      ...Array.from(new Set(exchanges.map((exchange) => exchange.buyer.id)))
+      ...Array.from(
+        new Set((exchanges || []).map((exchange) => exchange.buyer.id))
+      )
     ].length;
   }, [exchanges]);
 
