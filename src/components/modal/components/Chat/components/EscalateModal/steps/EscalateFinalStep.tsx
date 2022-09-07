@@ -46,10 +46,6 @@ function EscalateFinalStep({ exchange }: Props) {
       <Typography fontWeight="600" $fontSize="2rem" margin="0 0 0.625rem 0">
         Submit Evidence
       </Typography>
-      <Typography fontWeight="400" $fontSize="1.25rem" margin="0 0 0.625rem 0">
-        You have to submit evidence to the dispute resolver to decide on your
-        case.
-      </Typography>
       <Typography
         fontWeight="400"
         $fontSize="1rem"
