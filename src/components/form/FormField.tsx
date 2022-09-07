@@ -1,6 +1,6 @@
 import React from "react";
 
-import DetailTooltip from "../detail/DetailTooltip";
+import Tooltip from "../tooltip/Tooltip";
 import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
 import { FormFieldWrapper } from "./Field.styles";
@@ -28,7 +28,7 @@ export default function FormField({
           {"  "}
           {required && "*"}
         </Typography>
-        {tooltip && <DetailTooltip>{tooltip}</DetailTooltip>}
+        {tooltip && <Tooltip content={tooltip} size={16} />}
       </Grid>
       {subTitle && (
         <Grid justifyContent="flex-start" style={{ marginBottom: "0.875rem" }}>

@@ -1,16 +1,7 @@
-import { Question } from "phosphor-react";
-import styled from "styled-components";
-
+import Tooltip from "../tooltip/Tooltip";
 import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
 import { Table } from "./Detail.style";
-import DetailTooltip from "./DetailTooltip";
-
-const StyledQuestion = styled(Question)`
-  * {
-    stroke-width: 12px;
-  }
-`;
 
 export interface Data {
   hide?: boolean | undefined;
@@ -42,11 +33,7 @@ export default function DetailTable({
                 <td>
                   <Grid justifyContent="flex-start">
                     <Typography tag={tag}>{d.name}</Typography>
-                    {d.info && (
-                      <DetailTooltip trigger={<StyledQuestion size={20} />}>
-                        {d.info}
-                      </DetailTooltip>
-                    )}
+                    {d.info && <Tooltip content={d.info} size={20} />}
                   </Grid>
                 </td>
                 <td>

@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { HashRouter, Route } from "react-router-dom";
 
 import App from "./components/app";
+import ConvertionRateProvider from "./components/convertion-rate/ConvertionRateProvider";
 import SentryProvider from "./components/SentryProvider";
 import ScrollToTop from "./components/utils/Scroll";
 import WalletConnectionProvider from "./components/WalletConnectionProvider";
@@ -51,80 +52,82 @@ root.render(
   <StrictMode enable={true}>
     <WalletConnectionProvider>
       <QueryClientProvider client={queryClient}>
-        <HashRouter>
-          <ScrollToTop />
-          <SentryProvider>
-            <>
-              <Route
-                path={`${BosonRoutes.Chat}/*`}
-                element={<App withLayout={false} withFooter={false} />}
-              >
-                <Route path="*" element={<Chat />} />
-              </Route>
-              <Route
-                path={`${SellerCenterRoutes.SellerCenter}/*`}
-                element={
-                  <App
-                    withLayout={false}
-                    withFooter={false}
-                    fluidHeader={true}
+        <ConvertionRateProvider>
+          <HashRouter>
+            <ScrollToTop />
+            <SentryProvider>
+              <>
+                <Route
+                  path={`${BosonRoutes.Chat}/*`}
+                  element={<App withLayout={false} withFooter={false} />}
+                >
+                  <Route path="*" element={<Chat />} />
+                </Route>
+                <Route
+                  path={`${SellerCenterRoutes.SellerCenter}/*`}
+                  element={
+                    <App
+                      withLayout={false}
+                      withFooter={false}
+                      fluidHeader={true}
+                    />
+                  }
+                >
+                  <Route path="*" element={<SellerCenter />} />
+                </Route>
+                <Route path="/" element={<App />}>
+                  <Route path={BosonRoutes.Root} element={<Landing />} />
+                  {[
+                    OffersRoutes.Root,
+                    BosonRoutes.Explore,
+                    BosonRoutes.ExplorePage,
+                    BosonRoutes.ExplorePageByIndex
+                  ].map((route) => (
+                    <Route key={route} path={route} element={<Explore />} />
+                  ))}
+                  <Route
+                    path={SellerCenterRoutes.CreateProduct}
+                    element={<CreateProduct />}
                   />
-                }
-              >
-                <Route path="*" element={<SellerCenter />} />
-              </Route>
-              <Route path="/" element={<App />}>
-                <Route path={BosonRoutes.Root} element={<Landing />} />
-                {[
-                  OffersRoutes.Root,
-                  BosonRoutes.Explore,
-                  BosonRoutes.ExplorePage,
-                  BosonRoutes.ExplorePageByIndex
-                ].map((route) => (
-                  <Route key={route} path={route} element={<Explore />} />
-                ))}
-                <Route
-                  path={SellerCenterRoutes.CreateProduct}
-                  element={<CreateProduct />}
-                />
-                <Route
-                  path={OffersRoutes.OfferDetail}
-                  element={<OfferDetail />}
-                />
-                <Route path={BosonRoutes.Exchange} element={<Exchange />} />
-                <Route
-                  path={BosonRoutes.YourAccount}
-                  element={<PrivateAccount />}
-                />
-                <Route
-                  path={BosonRoutes.Account}
-                  element={<PublicOrPrivateAccount />}
-                />
-                <Route
-                  path={BosonRoutes.CreateStorefront}
-                  element={<CustomStore />}
-                />
-                <Route
-                  path={`${BosonRoutes.DisputeId}/*`}
-                  element={<DisputeCentre />}
-                />
-                <Route
-                  path={BosonRoutes.DisputeCenter}
-                  element={<DisputeList />}
-                />
-                <Route
-                  path={BosonRoutes.BuyerPage}
-                  element={<ProfilePage profileType="buyer" />}
-                />
-                <Route
-                  path={BosonRoutes.SellerPage}
-                  element={<ProfilePage profileType="seller" />}
-                />
-                <Route path="*" element={<NotFound />} />
-              </Route>
-            </>
-          </SentryProvider>
-        </HashRouter>
+                  <Route
+                    path={OffersRoutes.OfferDetail}
+                    element={<OfferDetail />}
+                  />
+                  <Route path={BosonRoutes.Exchange} element={<Exchange />} />
+                  <Route
+                    path={BosonRoutes.YourAccount}
+                    element={<PrivateAccount />}
+                  />
+                  <Route
+                    path={BosonRoutes.Account}
+                    element={<PublicOrPrivateAccount />}
+                  />
+                  <Route
+                    path={BosonRoutes.CreateStorefront}
+                    element={<CustomStore />}
+                  />
+                  <Route
+                    path={`${BosonRoutes.DisputeId}/*`}
+                    element={<DisputeCentre />}
+                  />
+                  <Route
+                    path={BosonRoutes.DisputeCenter}
+                    element={<DisputeList />}
+                  />
+                  <Route
+                    path={BosonRoutes.BuyerPage}
+                    element={<ProfilePage profileType="buyer" />}
+                  />
+                  <Route
+                    path={BosonRoutes.SellerPage}
+                    element={<ProfilePage profileType="seller" />}
+                  />
+                  <Route path="*" element={<NotFound />} />
+                </Route>
+              </>
+            </SentryProvider>
+          </HashRouter>
+        </ConvertionRateProvider>
       </QueryClientProvider>
     </WalletConnectionProvider>
   </StrictMode>
