@@ -1,10 +1,11 @@
 import { Copy } from "phosphor-react";
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../../../../../../lib/styles/colors";
 import { useBreakpoints } from "../../../../../../../lib/utils/hooks/useBreakpoints";
 import { Exchange } from "../../../../../../../lib/utils/hooks/useExchanges";
+import { Notify } from "../../../../../../detail/Detail.style";
 import Grid from "../../../../../../ui/Grid";
 import Typography from "../../../../../../ui/Typography";
 
@@ -40,6 +41,7 @@ const StyledTypography = styled(Typography)<{ isLteXS: boolean }>`
 
 function EscalateFinalStep({ exchange }: Props) {
   const { isLteXS } = useBreakpoints();
+  const [show, setShow] = useState(false);
 
   return (
     <Container>
@@ -61,7 +63,13 @@ function EscalateFinalStep({ exchange }: Props) {
           Portal Dis Rec Inc.
         </Typography>
         <CopyButton
-          onClick={() => navigator.clipboard.writeText("Portal@dispute.com")}
+          onClick={() => {
+            navigator.clipboard.writeText("Portal@dispute.com");
+            setShow(true);
+            setTimeout(() => {
+              setShow(false);
+            }, 3000);
+          }}
         >
           {/* TODO */}
           <StyledCopy size={24} color={colors.secondary} weight="light" />
@@ -86,10 +94,15 @@ function EscalateFinalStep({ exchange }: Props) {
         </Typography>
         <CopyButton
           onClick={
-            () =>
+            () => {
               navigator.clipboard.writeText(
-                `Exchange ID ${exchange.id} \nDispute ID ${exchange.id} \nAuthenticator insert-signature`
-              )
+                `Exchange ID: ${exchange.id} \nDispute ID: ${exchange.id} \nAuthenticator: insert-signature`
+              );
+              setShow(true);
+              setTimeout(() => {
+                setShow(false);
+              }, 3000);
+            }
             // TODO: insert signature
           }
         >
@@ -164,6 +177,9 @@ function EscalateFinalStep({ exchange }: Props) {
           insert-signature
         </StyledTypography>
       </StyledGrid>
+      <Notify $show={show}>
+        <Typography tag="p">Text has been copied to clipboard</Typography>
+      </Notify>
     </Container>
   );
 }
