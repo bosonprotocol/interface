@@ -1,7 +1,5 @@
-import { Question } from "phosphor-react";
-
 import { colors } from "../../../lib/styles/colors";
-import DetailTooltip from "../../detail/DetailTooltip";
+import Tooltip from "../../tooltip/Tooltip";
 import Typography from "../../ui/Typography";
 import { BaseElement, DashboardBaseInfo } from "./SellerDashboard.styles";
 
@@ -91,11 +89,7 @@ export default function SellerDashboardInfo({
       <BaseElement>
         <Typography margin="0" tag="p">
           Revenue
-          <DetailTooltip trigger={<Question size={18} />}>
-            This relates to completed exchanges only. Those currently in the
-            redeemed state are not considered as non-completed exchanges could
-            result in a misleading metric value.
-          </DetailTooltip>
+          <Tooltip content="This relates to completed exchanges only. Those currently in the redeemed state are not considered as this may lead to a misleading value." />
         </Typography>
         <Typography margin="0" tag="h2">
           {revenue?.value && revenue?.value !== 0 ? revenue?.value : "-"}

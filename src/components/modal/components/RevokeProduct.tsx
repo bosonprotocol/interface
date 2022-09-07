@@ -73,7 +73,6 @@ export default function RevokeProduct({
           </Grid>
           {exchange?.offer?.exchangeToken && (
             <Price
-              address={exchange?.offer?.exchangeToken?.address}
               currencySymbol={exchange?.offer?.exchangeToken?.symbol}
               value={exchange?.offer?.price}
               decimals={exchange?.offer?.exchangeToken?.decimals}

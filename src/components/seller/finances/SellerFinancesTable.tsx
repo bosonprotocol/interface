@@ -152,7 +152,7 @@ export default function SellerFinancesTable() {
     isError: isErrorExchangesTokens,
     refetch: exchangesTokensRefetch
   } = useExchangeTokens({ sellerId });
-  const [isFoundsInitialized, setIsFoundsInitialized] = useState(false);
+  const [isFundsInitialized, setIsFundsInitialized] = useState(false);
 
   const {
     data: sellersData,
@@ -167,10 +167,10 @@ export default function SellerFinancesTable() {
   );
 
   useEffect(() => {
-    if (fundStatus === "success" && !isFoundsInitialized) {
-      setIsFoundsInitialized(true);
+    if (fundStatus === "success" && !isFundsInitialized) {
+      setIsFundsInitialized(true);
     }
-  }, [fundStatus, isFoundsInitialized]);
+  }, [fundStatus, isFundsInitialized]);
 
   const columns = useMemo(
     () => [
@@ -181,7 +181,7 @@ export default function SellerFinancesTable() {
       } as const,
       {
         Header: "All funds",
-        accessor: "allFound",
+        accessor: "allFund",
         disableSortBy: false
       } as const,
       {
@@ -313,7 +313,7 @@ export default function SellerFinancesTable() {
         const lockedFunds = sellerLockedFunds?.[fund.token.symbol] ?? "0";
         const lockedFundsFormatted = utils.formatUnits(lockedFunds, decimals);
         const withdrawable = processValue(fund.availableAmount, decimals);
-        const allFounds = processValue(
+        const allFunds = processValue(
           BigNumber.from(lockedFunds)
             .add(BigNumber.from(fund.availableAmount))
             .toString(),
@@ -334,7 +334,7 @@ export default function SellerFinancesTable() {
         };
         return {
           token: <Typography tag="p">{fund.token.symbol}</Typography>,
-          allFound: <Typography tag="p">{allFounds}</Typography>,
+          allFund: <Typography tag="p">{allFunds}</Typography>,
           lockedFunds: <Typography tag="p">{lockedFundsFormatted}</Typography>,
           withdrawable: <Typography tag="p">{withdrawable}</Typography>,
           offersBacked: (
@@ -443,7 +443,7 @@ export default function SellerFinancesTable() {
   }, [pageCount, pageIndex]);
 
   if (
-    !isFoundsInitialized ||
+    !isFundsInitialized ||
     isLoadingSellers ||
     isLoadingSellerData ||
     isLoadingExchangesTokens

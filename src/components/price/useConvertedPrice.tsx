@@ -1,5 +1,5 @@
 import { BigNumber, utils } from "ethers";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 
 import { CONFIG } from "../../lib/config";
 import {
@@ -7,6 +7,7 @@ import {
   IPrice,
   IPricePassedAsAProp
 } from "../../lib/utils/convertPrice";
+import ConvertionRateContext from "../convertion-rate/ConvertionRateContext";
 
 interface Props {
   value: string;
@@ -18,6 +19,7 @@ export const useConvertedPrice = ({
   decimals,
   symbol
 }: Props): IPrice => {
+  const { store } = useContext(ConvertionRateContext);
   const [convertedPrice, setConvertedPrice] =
     useState<IPricePassedAsAProp | null>(null);
 
@@ -30,22 +32,16 @@ export const useConvertedPrice = ({
     }
   }, [value, decimals]);
 
-  const getConvertedPrice = useCallback(async () => {
-    const newPrice = await convertPrice(
-      price,
-      symbol.toUpperCase(),
-      CONFIG.defaultCurrency
-    );
-    setConvertedPrice(newPrice);
-  }, [price, symbol]);
-
   useEffect(() => {
-    getConvertedPrice();
-    const interval = setInterval(() => {
-      getConvertedPrice();
-    }, 1000 * 60); // It will update USD price every minute;
-    return () => clearInterval(interval);
-  }, [getConvertedPrice]);
+    const newPrice = convertPrice({
+      price,
+      symbol: symbol.toUpperCase(),
+      currency: CONFIG.defaultCurrency,
+      rates: store.rates,
+      fixed: store.fixed
+    });
+    setConvertedPrice(newPrice);
+  }, [price, symbol, store]);
 
   return {
     price,

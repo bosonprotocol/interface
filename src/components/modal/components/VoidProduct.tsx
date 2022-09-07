@@ -66,12 +66,9 @@ function VoidProductOffer({ offer, single = false }: OfferProps) {
           <div>
             {offer.exchangeToken && (
               <Price
-                address={offer.exchangeToken.address}
                 currencySymbol={offer.exchangeToken.symbol}
                 value={offer.price}
                 decimals={offer.exchangeToken.decimals}
-                convert
-                isExchange
               />
             )}
             {!single && (

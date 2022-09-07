@@ -257,9 +257,6 @@ const tableStyles = css`
   p {
     margin: 0;
   }
-  button {
-    padding: 0 0.5rem !important;
-  }
 
   thead {
     tr {

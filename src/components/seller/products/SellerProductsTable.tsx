@@ -272,7 +272,6 @@ export default function SellerProductsTable({
           ),
           price: (
             <Price
-              address={offer?.exchangeToken?.address ?? ""}
               currencySymbol={offer?.exchangeToken?.symbol ?? ""}
               value={offer?.price ?? ""}
               decimals={offer?.exchangeToken?.decimals ?? ""}

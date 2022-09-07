@@ -1,4 +1,3 @@
-import { ethers } from "ethers";
 import { useState } from "react";
 import styled from "styled-components";
 import { useEnsName } from "wagmi";
@@ -66,10 +65,7 @@ export default function PrivateAccount({ account }: { account: string }) {
         <AddressAndSettings>
           <div style={{ flexBasis: "25%" }}></div>
           <AddressContainer>
-            <CurrencyIcon
-              currencySymbol={CONFIG.nativeCoin?.symbol || ""}
-              address={ethers.constants.AddressZero}
-            />
+            <CurrencyIcon currencySymbol={CONFIG.nativeCoin?.symbol || ""} />
             <AddressText address={account} />
           </AddressContainer>
           <SettingsWrapper>
