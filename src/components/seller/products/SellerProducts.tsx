@@ -10,6 +10,7 @@ import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import { useInfiniteOffers } from "../../../lib/utils/hooks/offers/useInfiniteOffers";
 import Loading from "../../ui/Loading";
 import SellerAddNewProduct from "../SellerAddNewProduct";
+import SellerBatchVoid from "../SellerBatchVoid";
 import SellerExport from "../SellerExport";
 import SellerFilters from "../SellerFilters";
 import SellerTags from "../SellerTags";
@@ -50,6 +51,7 @@ export default function SellerProducts({ sellerId }: Props) {
   const [currentTag, setCurrentTag] = useState(productTags[0].value);
   const [search, setSearch] = useState<string>("");
   const [filter, setFilter] = useState<FilterValue | null>(null);
+  const [selected, setSelected] = useState<Array<Offer | null>>([]);
 
   const { data, isLoading, isError, refetch } = useInfiniteOffers(
     {
@@ -137,6 +139,9 @@ export default function SellerProducts({ sellerId }: Props) {
   const filterButton = useMemo(() => {
     return (
       <>
+        {selected.length > 0 && (
+          <SellerBatchVoid selected={selected} refetch={refetch} />
+        )}
         <SellerExport
           csvProps={{
             data: prepareCSVData,
@@ -146,7 +151,7 @@ export default function SellerProducts({ sellerId }: Props) {
         <SellerAddNewProduct />
       </>
     );
-  }, [prepareCSVData]);
+  }, [prepareCSVData, selected, refetch]);
 
   if (isLoading) {
     return <Loading />;
@@ -171,6 +176,7 @@ export default function SellerProducts({ sellerId }: Props) {
         isLoading={isLoading}
         isError={isError}
         refetch={refetch}
+        setSelected={setSelected}
       />
     </>
   );

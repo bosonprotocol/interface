@@ -35,6 +35,7 @@ interface Props {
   isError: boolean;
   isLoading?: boolean;
   refetch: () => void;
+  setSelected: React.Dispatch<React.SetStateAction<Array<Offer | null>>>;
 }
 
 interface IIndeterminateInputProps {
@@ -168,7 +169,11 @@ const Span = styled.span`
     margin-right: 1rem;
   }
 `;
-export default function SellerProductsTable({ offers, refetch }: Props) {
+export default function SellerProductsTable({
+  offers,
+  refetch,
+  setSelected
+}: Props) {
   const { showModal, modalTypes } = useModal();
   const navigate = useKeepQueryParamsNavigate();
   const columns = useMemo(
@@ -357,7 +362,7 @@ export default function SellerProductsTable({ offers, refetch }: Props) {
     previousPage,
     setPageSize,
     pageCount,
-    state: { pageIndex, pageSize }
+    state: { pageIndex, pageSize, selectedRowIds }
   } = tableProps;
 
   const paginate = useMemo(() => {
@@ -367,6 +372,22 @@ export default function SellerProductsTable({ offers, refetch }: Props) {
     );
   }, [pageCount, pageIndex]);
 
+  useEffect(() => {
+    const arr = Object.keys(selectedRowIds);
+    if (arr.length) {
+      const selectedOffers = arr
+        .map((index: string) => {
+          const el = rows[Number(index)];
+          const offerId = el?.original?.offerId;
+          const offer = offers?.find((offer) => offer?.id === offerId);
+          return offer || null;
+        })
+        .filter((n): boolean => n !== null);
+      setSelected(selectedOffers);
+    } else {
+      setSelected([]);
+    }
+  }, [selectedRowIds]); // eslint-disable-line
   return (
     <>
       <Table {...getTableProps()}>
