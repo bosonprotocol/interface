@@ -107,14 +107,22 @@ export function useInfiniteThread({
       // @ts-ignore
       setThreadXmtp((newThread) => {
         const oldMessages = newThread?.messages || [];
-        const lastMessage = oldMessages[oldMessages.length - 1];
-        // TODO: this is a patch because sometimes we receive messages that we have already received, hence we filter out duplicated messages
-        const newMessages = messages.filter((message) => {
-          return !lastMessage || message.timestamp >= lastMessage?.timestamp;
-        });
+        const allMessagesIncludingDuplicates = [...oldMessages, ...messages];
+
+        const seenMessagesSet = new Set();
+        const uniqueMessages = allMessagesIncludingDuplicates.filter(
+          (message) => {
+            const id = message.timestamp;
+            const duplicate = seenMessagesSet.has(id);
+            seenMessagesSet.add(id);
+            return !duplicate;
+          }
+        );
         return {
           ...(newThread || {}),
-          messages: [...oldMessages, ...newMessages]
+          messages: uniqueMessages.sort(
+            (msgA, msgB) => msgA.timestamp - msgB.timestamp
+          )
         };
       });
     }, [])

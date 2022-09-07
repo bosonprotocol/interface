@@ -98,6 +98,12 @@ const MessageItem = styled.div<{ $active?: boolean }>`
   }
 `;
 
+const StyledImage = styled(Image)`
+  [data-image-placeholder] {
+    font-size: 0.5rem;
+  }
+`;
+
 const MessageContent = styled.div`
   padding: ${messageItemPadding};
   display: flex;
@@ -225,7 +231,7 @@ export default function MessageList({
                 key={messageKey}
               >
                 <MessageContent>
-                  <Image
+                  <StyledImage
                     src={exchange?.offer.metadata.imageUrl}
                     alt="exchange image"
                     style={{

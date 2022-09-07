@@ -132,7 +132,7 @@ const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
   if (isLoaded && isError) {
     return (
       <ImageWrapper {...rest}>
-        <ImagePlaceholder>
+        <ImagePlaceholder data-image-placeholder>
           {showPlaceholderText ? (
             <ImageIcon size={50} color={colors.white} />
           ) : (

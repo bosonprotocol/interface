@@ -15,6 +15,7 @@ import styled from "styled-components";
 import { useAccount } from "wagmi";
 
 import { Spinner } from "../../../components/loading/Spinner";
+import InitializeChat from "../../../components/modal/components/Chat/components/InitializeChat";
 import { useModal } from "../../../components/modal/useModal";
 import Button from "../../../components/ui/Button";
 import Grid from "../../../components/ui/Grid";
@@ -294,7 +295,6 @@ interface Props {
   exchange: Exchange | undefined;
   chatListOpen: boolean;
   setChatListOpen: (p: boolean) => void;
-  exchangeIdNotOwned: boolean;
   prevPath: string;
   onTextAreaChange: (textAreaTargetValue: string) => void;
   textAreaValue: string | undefined;
@@ -305,7 +305,6 @@ const ChatConversation = ({
   exchange,
   chatListOpen,
   setChatListOpen,
-  exchangeIdNotOwned,
   prevPath,
   onTextAreaChange,
   textAreaValue
@@ -544,257 +543,258 @@ const ChatConversation = ({
   if (!exchange || !address) {
     return (
       <Container>
-        <SimpleMessage>
-          {exchangeIdNotOwned
-            ? "You don't have this exchange"
-            : "Select a message"}
-        </SimpleMessage>
+        <SimpleMessage>Select a message</SimpleMessage>
       </Container>
     );
   }
+  const canChat = !!bosonXmtp;
   return (
     <Container>
-      <ConversationContainer>
-        <GridHeader>
-          <NavigationMobile>
-            <HeaderButton
-              type="button"
-              onClick={() => {
-                if (isM && !prevPath) {
-                  setChatListOpen(!chatListOpen);
-                } else if (isM && prevPath) {
-                  navigate({ pathname: prevPath });
-                } else {
-                  navigate({ pathname: BosonRoutes.Chat });
-                }
-              }}
-            >
-              {(isM || isL || isXL) &&
-                prevPath &&
-                !prevPath.includes(`${BosonRoutes.Chat}/`) && (
+      {canChat ? (
+        <ConversationContainer>
+          <GridHeader>
+            <NavigationMobile>
+              <HeaderButton
+                type="button"
+                onClick={() => {
+                  if (isM && !prevPath) {
+                    setChatListOpen(!chatListOpen);
+                  } else if (isM && prevPath) {
+                    navigate({ pathname: prevPath });
+                  } else {
+                    navigate({ pathname: BosonRoutes.Chat });
+                  }
+                }}
+              >
+                {(isM || isL || isXL) &&
+                  prevPath &&
+                  !prevPath.includes(`${BosonRoutes.Chat}/`) && (
+                    <span>
+                      <ArrowLeft size={14} />
+                      Back
+                    </span>
+                  )}
+                {isLteS && !chatListOpen && (
                   <span>
                     <ArrowLeft size={14} />
                     Back
                   </span>
                 )}
-              {isLteS && !chatListOpen && (
-                <span>
-                  <ArrowLeft size={14} />
-                  Back
-                </span>
-              )}
-            </HeaderButton>
-          </NavigationMobile>
-          <Header>
-            <SellerComponent
-              size={24}
-              exchange={exchange}
-              buyerOrSeller={buyerOrSellerToShow}
-            />
-          </Header>
-          {isLteM && <Grid justifyContent="flex-end">{detailsButton}</Grid>}
-        </GridHeader>
-        <Loading>
-          <Spinner
-            style={{ visibility: areThreadsLoading ? "initial" : "hidden" }}
-          />
-        </Loading>
-
-        <Messages
-          data-messages
-          ref={dataMessagesRef}
-          id="messages"
-          $overflow="auto"
-        >
-          <InfiniteScroll
-            inverse
-            next={loadMoreMessages}
-            hasMore={hasMoreMessages}
-            loader={<></>}
-            dataLength={thread?.messages.length || 0}
-            scrollableTarget="messages"
-            scrollThreshold="200px"
-          >
-            <>
-              {thread?.messages.map((message, index) => {
-                const isFirstMessage = index === 0;
-                const isPreviousMessageInADifferentDay = isFirstMessage
-                  ? false
-                  : dayjs(message.timestamp)
-                      .startOf("day")
-                      .diff(
-                        dayjs(thread.messages[index - 1].timestamp).startOf(
-                          "day"
-                        )
-                      ) > 0;
-                const showMessageSeparator =
-                  isFirstMessage || isPreviousMessageInADifferentDay;
-                const isLastMessage = index === thread.messages.length - 1;
-                const wasItMe = getWasItSentByMe(address, message.sender);
-
-                let buyerOrSeller: BuyerOrSeller;
-                if (wasItMe) {
-                  if (iAmTheBuyer) {
-                    buyerOrSeller = exchange.buyer;
-                  } else {
-                    buyerOrSeller = exchange.seller;
-                  }
-                } else {
-                  if (iAmTheBuyer) {
-                    buyerOrSeller = exchange.seller;
-                  } else {
-                    buyerOrSeller = exchange.buyer;
-                  }
-                }
-                const leftAligned = !wasItMe;
-                const ref = isLastMessage ? lastMessageRef : null;
-                return (
-                  <Conversation
-                    key={message.timestamp}
-                    $alignStart={leftAligned}
-                  >
-                    <>
-                      {showMessageSeparator && (
-                        <MessageSeparator message={message} />
-                      )}
-                      <Message
-                        exchange={exchange}
-                        message={message}
-                        isLeftAligned={leftAligned}
-                        ref={ref}
-                      >
-                        <SellerComponent
-                          size={32}
-                          withProfileText={false}
-                          exchange={exchange}
-                          buyerOrSeller={buyerOrSeller}
-                        />
-                      </Message>
-                    </>
-                  </Conversation>
-                );
-              })}
-            </>
-          </InfiniteScroll>
-        </Messages>
-
-        <TypeMessage>
-          {exchange.disputed && (
-            <Grid
-              alignItems="flex-start"
-              $width="auto"
-              justifyContent="flex-start"
-              $height="100%"
-            >
-              <ButtonProposal
+              </HeaderButton>
+            </NavigationMobile>
+            <Header>
+              <SellerComponent
+                size={24}
                 exchange={exchange}
-                disabled={disableInputs}
-                onSendProposal={async (proposal, proposalFiles) => {
-                  if (!threadId || !bosonXmtp) {
-                    return;
-                  }
-                  try {
-                    await sendProposalToChat({
-                      bosonXmtp,
-                      proposal,
-                      files: proposalFiles,
-                      destinationAddress,
-                      threadId,
-                      callback: async (messageData) => {
-                        await addMessage(thread?.threadId, {
-                          ...messageData,
-                          isValid: true
-                        });
-                      }
-                    });
-                  } catch (error) {
-                    console.error(error);
-                  }
-                }}
+                buyerOrSeller={buyerOrSellerToShow}
               />
-            </Grid>
-          )}
-          <InputWrapper>
-            <Input>
-              <TextArea
-                ref={textareaRef}
-                placeholder="Write a message"
-                disabled={disableInputs}
-                value={textAreaValue}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  const didPressEnter = value[value.length - 1] === `\n`;
-                  if (!didPressEnter) {
-                    onTextAreaChange(value);
-                  }
-                }}
-              >
-                {textAreaValue}
-              </TextArea>
-            </Input>
+            </Header>
+            {isLteM && <Grid justifyContent="flex-end">{detailsButton}</Grid>}
+          </GridHeader>
+          <Loading>
+            <Spinner
+              style={{ visibility: areThreadsLoading ? "initial" : "hidden" }}
+            />
+          </Loading>
 
-            <UploadButtonWrapper
-              type="button"
-              disabled={disableInputs}
-              onClick={() =>
-                showModal("UPLOAD_MODAL", {
-                  title: "Upload documents",
-                  withEncodedData: true,
-                  onUploadedFilesWithData: async (files) => {
+          <Messages
+            data-messages
+            ref={dataMessagesRef}
+            id="messages"
+            $overflow="auto"
+          >
+            <InfiniteScroll
+              inverse
+              next={loadMoreMessages}
+              hasMore={hasMoreMessages}
+              loader={<></>}
+              dataLength={thread?.messages.length || 0}
+              scrollableTarget="messages"
+              scrollThreshold="200px"
+            >
+              <>
+                {thread?.messages.map((message, index) => {
+                  const isFirstMessage = index === 0;
+                  const isPreviousMessageInADifferentDay = isFirstMessage
+                    ? false
+                    : dayjs(message.timestamp)
+                        .startOf("day")
+                        .diff(
+                          dayjs(thread.messages[index - 1].timestamp).startOf(
+                            "day"
+                          )
+                        ) > 0;
+                  const showMessageSeparator =
+                    isFirstMessage || isPreviousMessageInADifferentDay;
+                  const isLastMessage = index === thread.messages.length - 1;
+                  const wasItMe = getWasItSentByMe(address, message.sender);
+
+                  let buyerOrSeller: BuyerOrSeller;
+                  if (wasItMe) {
+                    if (iAmTheBuyer) {
+                      buyerOrSeller = exchange.buyer;
+                    } else {
+                      buyerOrSeller = exchange.seller;
+                    }
+                  } else {
+                    if (iAmTheBuyer) {
+                      buyerOrSeller = exchange.seller;
+                    } else {
+                      buyerOrSeller = exchange.buyer;
+                    }
+                  }
+                  const leftAligned = !wasItMe;
+                  const ref = isLastMessage ? lastMessageRef : null;
+                  return (
+                    <Conversation
+                      key={message.timestamp}
+                      $alignStart={leftAligned}
+                    >
+                      <>
+                        {showMessageSeparator && (
+                          <MessageSeparator message={message} />
+                        )}
+                        <Message
+                          exchange={exchange}
+                          message={message}
+                          isLeftAligned={leftAligned}
+                          ref={ref}
+                        >
+                          <SellerComponent
+                            size={32}
+                            withProfileText={false}
+                            exchange={exchange}
+                            buyerOrSeller={buyerOrSeller}
+                          />
+                        </Message>
+                      </>
+                    </Conversation>
+                  );
+                })}
+              </>
+            </InfiniteScroll>
+          </Messages>
+
+          <TypeMessage>
+            {exchange.disputed && (
+              <Grid
+                alignItems="flex-start"
+                $width="auto"
+                justifyContent="flex-start"
+                $height="100%"
+              >
+                <ButtonProposal
+                  exchange={exchange}
+                  disabled={disableInputs}
+                  onSendProposal={async (proposal, proposalFiles) => {
+                    if (!threadId || !bosonXmtp) {
+                      return;
+                    }
                     try {
-                      await sendFiles(files);
+                      await sendProposalToChat({
+                        bosonXmtp,
+                        proposal,
+                        files: proposalFiles,
+                        destinationAddress,
+                        threadId,
+                        callback: async (messageData) => {
+                          await addMessage(thread?.threadId, {
+                            ...messageData,
+                            isValid: true
+                          });
+                        }
+                      });
                     } catch (error) {
                       console.error(error);
                     }
-                  }
-                })
-              }
-            >
-              <UploadSimple size={24} />
-            </UploadButtonWrapper>
-          </InputWrapper>
-          <SendButton
-            data-testid="send"
-            theme="secondary"
-            disabled={disableInputs || isMessageBeingSent}
-            onClick={async () => {
-              const value = textAreaValue?.trim() || "";
-              if (bosonXmtp && threadId && value && !isMessageBeingSent) {
-                try {
-                  setIsMessageBeingSent(true);
-                  const newMessage = {
-                    threadId,
-                    content: {
-                      value
-                    },
-                    contentType: MessageType.String,
-                    version
-                  } as const;
-                  const messageData = await bosonXmtp.encodeAndSendMessage(
-                    newMessage,
-                    destinationAddress
-                  );
-                  setIsMessageBeingSent(false);
-                  await addMessage(thread?.threadId, {
-                    ...messageData,
-                    isValid: true
-                  });
-                  onTextAreaChange("");
-                } catch (error) {
-                  console.error(error);
-                  setIsMessageBeingSent(false);
-                }
-              }
-            }}
-          >
-            {isMessageBeingSent ? (
-              <Spinner size={24} />
-            ) : (
-              <PaperPlaneRight size={24} />
+                  }}
+                />
+              </Grid>
             )}
-          </SendButton>
-        </TypeMessage>
-      </ConversationContainer>
+            <InputWrapper>
+              <Input>
+                <TextArea
+                  ref={textareaRef}
+                  placeholder="Write a message"
+                  disabled={disableInputs}
+                  value={textAreaValue}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    const didPressEnter = value[value.length - 1] === `\n`;
+                    if (!didPressEnter) {
+                      onTextAreaChange(value);
+                    }
+                  }}
+                >
+                  {textAreaValue}
+                </TextArea>
+              </Input>
+
+              <UploadButtonWrapper
+                type="button"
+                disabled={disableInputs}
+                onClick={() =>
+                  showModal("UPLOAD_MODAL", {
+                    title: "Upload documents",
+                    withEncodedData: true,
+                    onUploadedFilesWithData: async (files) => {
+                      try {
+                        await sendFiles(files);
+                      } catch (error) {
+                        console.error(error);
+                      }
+                    }
+                  })
+                }
+              >
+                <UploadSimple size={24} />
+              </UploadButtonWrapper>
+            </InputWrapper>
+            <SendButton
+              data-testid="send"
+              theme="secondary"
+              disabled={disableInputs || isMessageBeingSent}
+              onClick={async () => {
+                const value = textAreaValue?.trim() || "";
+                if (bosonXmtp && threadId && value && !isMessageBeingSent) {
+                  try {
+                    setIsMessageBeingSent(true);
+                    const newMessage = {
+                      threadId,
+                      content: {
+                        value
+                      },
+                      contentType: MessageType.String,
+                      version
+                    } as const;
+                    const messageData = await bosonXmtp.encodeAndSendMessage(
+                      newMessage,
+                      destinationAddress
+                    );
+                    setIsMessageBeingSent(false);
+                    await addMessage(thread?.threadId, {
+                      ...messageData,
+                      isValid: true
+                    });
+                    onTextAreaChange("");
+                  } catch (error) {
+                    console.error(error);
+                    setIsMessageBeingSent(false);
+                  }
+                }
+              }}
+            >
+              {isMessageBeingSent ? (
+                <Spinner size={24} />
+              ) : (
+                <PaperPlaneRight size={24} />
+              )}
+            </SendButton>
+          </TypeMessage>
+        </ConversationContainer>
+      ) : (
+        <InitializeChat />
+      )}
       <ExchangeSidePreview
         exchange={exchange}
         disputeOpen={isExchangePreviewOpen}
