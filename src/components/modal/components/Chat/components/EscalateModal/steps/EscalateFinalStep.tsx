@@ -46,14 +46,19 @@ function EscalateFinalStep({ exchange }: Props) {
       <Typography fontWeight="600" $fontSize="2rem" margin="0 0 0.625rem 0">
         Submit Evidence
       </Typography>
-      <Typography
-        fontWeight="400"
-        $fontSize="1.25rem"
-        margin="0 0 5rem 0"
-        color={colors.darkGrey}
-      >
+      <Typography fontWeight="400" $fontSize="1.25rem" margin="0 0 0.625rem 0">
         You have to submit evidence to the dispute resolver to decide on your
         case.
+      </Typography>
+      <Typography
+        fontWeight="400"
+        $fontSize="1rem"
+        color={colors.darkGrey}
+        margin="0 0 1.5625rem 0"
+      >
+        You must now submit evidence to support your dispute. Please copy the
+        below values into an email and attach any files or other evidence before
+        addressing the email to the address shown below.
       </Typography>
       <Grid justifyContent={isLteXS ? "center" : "flex-start"}>
         <Typography $fontSize="1rem" fontWeight="600">
