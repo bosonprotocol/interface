@@ -41,7 +41,8 @@ function EscalateStepOne({ exchange }: Props) {
   const feeAmount = data?.disputeResolvers[0]?.fees[0]?.feeAmount;
 
   const parseDisputePeriod = dayjs(
-    getDateTimestamp(exchange.offer.resolutionPeriodDuration)
+    getDateTimestamp(exchange.offer.validUntilDate) +
+      getDateTimestamp(exchange.offer.fulfillmentPeriodDuration)
   );
 
   const deadlineTimeLeft = useMemo(() => {
@@ -69,7 +70,7 @@ function EscalateStepOne({ exchange }: Props) {
           Escalate Dispute
         </Typography>
         <Typography $fontSize="1rem" fontWeight="400">
-          Escalating a dispute will enable the dispite resolver to decide on the
+          Escalating a dispute will enable the dispute resolver to decide on the
           outcome of the dispute. The dispute resolver will decide based on the
           contractual agreement and evidence submitted by both parties.
         </Typography>
