@@ -6,6 +6,8 @@ import { colors } from "../../../../../../lib/styles/colors";
 import { zIndex } from "../../../../../../lib/styles/zIndex";
 import { useBreakpoints } from "../../../../../../lib/utils/hooks/useBreakpoints";
 import { Exchange } from "../../../../../../lib/utils/hooks/useExchanges";
+import { useCoreSDK } from "../../../../../../lib/utils/useCoreSdk";
+import SimpleError from "../../../../../error/SimpleError";
 import MultiSteps from "../../../../../step/MultiSteps";
 import Button from "../../../../../ui/Button";
 import Grid from "../../../../../ui/Grid";
@@ -16,6 +18,7 @@ import EscalateStepTwo from "./steps/EscalateStepTwo";
 
 interface Props {
   exchange: Exchange;
+  hideModal: () => void;
 }
 
 const Container = styled.div`
@@ -65,9 +68,11 @@ const multiStepsData = [
   { steps: 1, name: "Contact Dispute Resolver" }
 ];
 
-function EscalateModal({ exchange }: Props) {
+function EscalateModal({ exchange, hideModal }: Props) {
   const [activeStep, setActiveStep] = useState(0);
+  const [error, setError] = useState(false);
   const { isLteS } = useBreakpoints();
+  const coreSDK = useCoreSDK();
 
   const escalateSteps = (activeStep: number) => {
     switch (activeStep) {
@@ -127,11 +132,26 @@ function EscalateModal({ exchange }: Props) {
         <StyledGrid padding="0 0 2rem 2rem">
           <Button
             theme="secondary"
-            onClick={() => setActiveStep(activeStep + 1)}
+            onClick={async () => {
+              if (activeStep + 1 < buttonSteps.length) {
+                setActiveStep(activeStep + 1);
+              }
+              if (activeStep + 1 === buttonSteps.length) {
+                try {
+                  const tx = await coreSDK.escalateDispute(exchange.id);
+                  await tx.wait();
+                  hideModal();
+                } catch (error) {
+                  console.error(error);
+                  setError(true);
+                }
+              }
+            }}
           >
             {buttonSteps[activeStep]}
           </Button>
         </StyledGrid>
+        {error && <SimpleError />}
       </InnerContainer>
     </Container>
   );
