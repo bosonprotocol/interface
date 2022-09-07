@@ -43,7 +43,7 @@ function EscalateFinalStep({ exchange }: Props) {
 
   return (
     <Container>
-      <Typography fontWeight="600" $fontSize="2rem" margin="0 0 0.625rem 0">
+      <Typography fontWeight="600" $fontSize="2rem">
         Submit Evidence
       </Typography>
       <Typography
