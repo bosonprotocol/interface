@@ -95,11 +95,7 @@ export default function RefundRequest({ exchange }: Props) {
           <Typography
             $fontSize="0.75rem"
             fontWeight="400"
-            margin={
-              isLteS
-                ? "0.625rem auto 0.6npm run prettier && npm run lin25rem 0"
-                : "0"
-            }
+            margin={isLteS ? "0.625rem auto 0.625rem 0" : "0"}
           >
             Item price + seller diposit
           </Typography>
