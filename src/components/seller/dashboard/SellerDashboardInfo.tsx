@@ -89,7 +89,7 @@ export default function SellerDashboardInfo({
       <BaseElement>
         <Typography margin="0" tag="p">
           Revenue
-          <Tooltip content="This relates to completed exchanges only. Those currently in the redeemed state are not considered as non-completed exchanges could result in a misleading metric value." />
+          <Tooltip content="This relates to completed exchanges only. Those currently in the redeemed state are not considered as this may lead to a misleading value." />
         </Typography>
         <Typography margin="0" tag="h2">
           {revenue?.value && revenue?.value !== 0 ? revenue?.value : "-"}

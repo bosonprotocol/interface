@@ -32,7 +32,7 @@ interface Props {
   onCreateNewProject: () => void;
   onViewMyItem: () => void;
 }
-const Founds = styled.div`
+const Funds = styled.div`
   margin: 2rem auto;
   padding: 1.5rem 2rem;
   background: ${colors.black};
@@ -82,7 +82,7 @@ const StyledWidgetButtonWrapper = styled(WidgetButtonWrapper)`
   }
 `;
 
-const FoundTile = styled(Typography)`
+const FundTile = styled(Typography)`
   font-weight: bold;
   display: flex;
   justify-content: space-between;
@@ -175,11 +175,11 @@ export default function ProductCreateSuccess({
               <DetailTable align noBorder data={OFFER_DETAIL_DATA} />
             </div>
           </Widget>
-          <Founds>
-            <FoundTile tag="p">
+          <Funds>
+            <FundTile tag="p">
               Please provide
               <Tooltip content="NEED TO BE ADDED" size={16} />
-            </FoundTile>
+            </FundTile>
             <Typography tag="p" $fontSize="0.75rem">
               Describe here why seller should provide funds ..
               <br />
@@ -204,7 +204,7 @@ export default function ProductCreateSuccess({
                 </Amount>
               </StyledProgressLayer>
             </StyledProgress>
-          </Founds>
+          </Funds>
           <StyledWidgetButtonWrapper>
             <Button type="button" theme="secondary" onClick={onViewMyItem}>
               View my item

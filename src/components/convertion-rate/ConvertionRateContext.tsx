@@ -2,6 +2,8 @@
 /* eslint @typescript-eslint/no-explicit-any: "off" */
 import { createContext } from "react";
 
+import { getItemFromStorage } from "../../lib/utils/hooks/useLocalStorage";
+
 export type Store = {
   type: string | null;
   rates: any;
@@ -18,7 +20,7 @@ export const initalState: ConvertionRateContextType = {
   updateProps: () => {},
   store: {
     type: null,
-    rates: null,
+    rates: getItemFromStorage("convertionRates", null),
     fixed: 2,
     isLoading: true
   } as const

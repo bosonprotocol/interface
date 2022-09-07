@@ -19,6 +19,7 @@ export type GetItemFromStorageKey =
   | "isChainUnsupported"
   | "create-product"
   | "tracing-url"
+  | "convertionRates"
   | CreateProductImageProductImages
   | CreateProductImageCreteYourProfileLogo;
 

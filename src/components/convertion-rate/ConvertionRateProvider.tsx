@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
+import { saveItemInStorage } from "../../lib/utils/hooks/useLocalStorage";
 import { useTokens } from "../../lib/utils/hooks/useTokens";
 import { useUniswapPools } from "../../lib/utils/hooks/useUniswapPools";
 import ConvertionRateContext, {
@@ -30,6 +31,7 @@ export default function ConvertionRateProvider({ children }: Props) {
   useEffect(() => {
     if (data) {
       const rates = handleRates(data);
+      saveItemInStorage("convertionRates", rates);
       updateProps({ ...store, rates, isLoading });
     } else {
       updateProps({ ...store, isLoading });
