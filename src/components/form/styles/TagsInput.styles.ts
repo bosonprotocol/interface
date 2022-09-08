@@ -16,7 +16,7 @@ export const TagContainer = styled.div`
 export const Helper = styled.div`
   position: absolute;
   right: 0.5rem;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   opacity: 0.5;
   pointer-events: none;

@@ -7,7 +7,7 @@ function isRedemptionDatesValid() {
       const ovValue = this.parent.offerValidityPeriod;
       const doesItEndBefore = value[1]?.isBefore(ovValue[1]);
 
-      if (doesItEndBefore) {
+      if (ovValue && doesItEndBefore) {
         throw this.createError({
           path: this.path,
           message:

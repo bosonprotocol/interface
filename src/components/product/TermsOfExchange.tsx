@@ -159,7 +159,7 @@ export default function TermsOfExchange() {
                   name="termsOfExchange.disputePeriod"
                   type="number"
                   min="0"
-                  step="0.001"
+                  step="1"
                 />
               </div>
               <div>
