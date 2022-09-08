@@ -16,11 +16,16 @@ export interface ConvertionRateContextType {
   store: Store;
 }
 
+const MOCK_RATES = [{ to: "WETH", from: "USDC", value: 1638.1516924980162 }];
+
 export const initalState: ConvertionRateContextType = {
   updateProps: () => {},
   store: {
     type: null,
-    rates: getItemFromStorage("convertionRates", null),
+    rates:
+      process.env.NODE_ENV === "development"
+        ? MOCK_RATES
+        : getItemFromStorage("convertionRates", null),
     fixed: 2,
     isLoading: true
   } as const

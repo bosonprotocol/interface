@@ -77,6 +77,11 @@ export default function SelectComponent({
     }
     helpers.setValue(option);
   };
+  const handleBlur = () => {
+    if (!meta.touched) {
+      helpers.setTouched(true);
+    }
+  };
 
   return (
     <>
@@ -88,6 +93,7 @@ export default function SelectComponent({
         options={options}
         value={field.value}
         onChange={handleChange}
+        onBlur={handleBlur}
         isSearchable={isSearchable}
         isClearable={isClearable}
         isDisabled={disabled}

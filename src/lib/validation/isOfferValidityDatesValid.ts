@@ -1,7 +1,7 @@
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
 
-function isOfferValidityDatesValid(path = "") {
+function isOfferValidityDatesValid() {
   return this.test(
     "isOfferValidityDatesValid",
     function (value: (Dayjs | null)[]) {
@@ -11,9 +11,9 @@ function isOfferValidityDatesValid(path = "") {
           ? rpValue[1]?.isBefore(value[1])
           : dayjs(rpValue[1])?.isBefore(value[1]);
 
-      if (doesItEndBefore) {
+      if (rpValue && doesItEndBefore) {
         throw this.createError({
-          path: path || "coreTermsOfSale.redemptionPeriod",
+          path: "coreTermsOfSale.redemptionPeriod",
           message:
             "Redemption period has to be after or equal to validity period"
         });
