@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { generatePath, useParams } from "react-router-dom";
 import styled from "styled-components";
 
@@ -15,7 +15,7 @@ import { usePrevious } from "../../lib/utils/hooks/usePrevious";
 import Pagination from "./Pagination";
 
 const Container = styled.div`
-  margin-top: 10px;
+  display: block;
 `;
 
 const PaginationWrapper = styled.div``;
@@ -25,6 +25,8 @@ interface Props {
   brand?: string;
   exchangeTokenAddress?: Offer["exchangeToken"]["address"];
   sellerId?: Offer["seller"]["id"];
+  hidePagination?: boolean;
+  rows?: number;
 }
 
 const updatePageIndexInUrl =
@@ -51,7 +53,6 @@ const updatePageIndexInUrl =
     }
   };
 
-const OFFERS_PER_PAGE = 10;
 const DEFAULT_PAGE = 0;
 
 const extractFiltersWithDefaults = (props: Props): Props => {
@@ -84,6 +85,13 @@ export default function ExploreOffers(props: Props) {
       : DEFAULT_PAGE
   );
   const [pageIndex, setPageIndex] = useState(initialPageIndex);
+
+  const OFFERS_PER_PAGE = useMemo(() => {
+    if (props.rows) {
+      return 4 * props.rows;
+    }
+    return 4;
+  }, [props.rows]);
 
   const useOffersPayload = {
     brand,
@@ -165,7 +173,6 @@ export default function ExploreOffers(props: Props) {
 
   return (
     <Container>
-      <h1>Explore</h1>
       <OfferList
         offers={offers}
         isError={isError}
@@ -180,19 +187,21 @@ export default function ExploreOffers(props: Props) {
           xl: 4
         }}
       />
-      <PaginationWrapper>
-        <Pagination
-          defaultPage={pageIndex}
-          isNextEnabled={
-            (currentAndNextPageOffers?.length || 0) >= OFFERS_PER_PAGE + 1
-          }
-          isPreviousEnabled={(firstPageOffers?.length || 0) > 0}
-          onChangeIndex={(index) => {
-            setPageIndex(index);
-            updateUrl(index);
-          }}
-        />
-      </PaginationWrapper>
+      {!props.hidePagination && (
+        <PaginationWrapper>
+          <Pagination
+            defaultPage={pageIndex}
+            isNextEnabled={
+              (currentAndNextPageOffers?.length || 0) >= OFFERS_PER_PAGE + 1
+            }
+            isPreviousEnabled={(firstPageOffers?.length || 0) > 0}
+            onChangeIndex={(index) => {
+              setPageIndex(index);
+              updateUrl(index);
+            }}
+          />
+        </PaginationWrapper>
+      )}
     </Container>
   );
 }

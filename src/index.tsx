@@ -21,7 +21,9 @@ import CustomStore from "./pages/custom-store/CustomStore";
 import DisputeCentre from "./pages/dispute-centre/DisputeCentre";
 import DisputeList from "./pages/dispute-centre/DisputeList";
 import Exchange from "./pages/exchange/Exchange";
+import Collections from "./pages/explore/Collections";
 import Explore from "./pages/explore/Explore";
+import Products from "./pages/explore/Products";
 import Landing from "./pages/landing/Landing";
 import NotFound from "./pages/not-found/NotFound";
 import OfferDetail from "./pages/offers/OfferDetail";
@@ -114,6 +116,11 @@ root.render(
                     path={BosonRoutes.DisputeCenter}
                     element={<DisputeList />}
                   />
+                  <Route
+                    path={BosonRoutes.Collections}
+                    element={<Collections />}
+                  />
+                  <Route path={BosonRoutes.Products} element={<Products />} />
                   <Route
                     path={BosonRoutes.BuyerPage}
                     element={<ProfilePage profileType="buyer" />}
