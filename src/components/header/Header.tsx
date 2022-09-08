@@ -44,50 +44,57 @@ const Header = styled.header<{
               left: 0;
               border-right: 2px solid ${colors.border};
 
-              ~ * {
-                ${$isSideBarOpen
-                  ? css`
-                      padding-left: calc(${smallWidth} + ${sideMargin});
-                    `
-                  : css`
-                      padding-left: calc(${closedHeaderWidth} + ${sideMargin});
-                    `}
-
-                ${breakpoint.m} {
+              && {
+                ~ * {
                   ${$isSideBarOpen
                     ? css`
-                        padding-left: calc(${mediumWidth} + ${sideMargin});
+                        padding-left: calc(${smallWidth} + ${sideMargin});
                       `
                     : css`
                         padding-left: calc(
                           ${closedHeaderWidth} + ${sideMargin}
                         );
                       `}
+
+                  ${breakpoint.m} {
+                    ${$isSideBarOpen
+                      ? css`
+                          padding-left: calc(${mediumWidth} + ${sideMargin});
+                        `
+                      : css`
+                          padding-left: calc(
+                            ${closedHeaderWidth} + ${sideMargin}
+                          );
+                        `}
+                  }
                 }
               }
             `
           : css`
               right: 0;
               border-left: 2px solid ${colors.border};
-
-              ~ * {
-                ${$isSideBarOpen
-                  ? css`
-                      padding-right: calc(${smallWidth} + ${sideMargin});
-                    `
-                  : css`
-                      padding-right: calc(${closedHeaderWidth} + ${sideMargin});
-                    `}
-                ${breakpoint.m} {
+              && {
+                ~ * {
                   ${$isSideBarOpen
                     ? css`
-                        padding-right: calc(${mediumWidth} + ${sideMargin});
+                        padding-right: calc(${smallWidth} + ${sideMargin});
                       `
                     : css`
                         padding-right: calc(
                           ${closedHeaderWidth} + ${sideMargin}
                         );
                       `}
+                  ${breakpoint.m} {
+                    ${$isSideBarOpen
+                      ? css`
+                          padding-right: calc(${mediumWidth} + ${sideMargin});
+                        `
+                      : css`
+                          padding-right: calc(
+                            ${closedHeaderWidth} + ${sideMargin}
+                          );
+                        `}
+                  }
                 }
               }
             `}
