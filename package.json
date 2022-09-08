@@ -23,8 +23,8 @@
     "coverage:e2e": "cross-env CI=true npx playwright test --project=chromium && npx nyc report --reporter=json",
     "coverage:e2e:view": "npx nyc report --reporter html && echo 'open coverage/index.html to see it'",
     "coverage:report": "npm run coverage:unit",
-    "upgrade:corec:latest": "npm install @bosonprotocol/common@latest @bosonprotocol/core-sdk@latest @bosonprotocol/ethers-sdk@latest @bosonprotocol/ipfs-storage@latest @bosonprotocol/react-kit@latest @bosonprotocol/widgets-sdk@latest",
-    "upgrade:corec:alpha": "npm install @bosonprotocol/common@alpha @bosonprotocol/core-sdk@alpha @bosonprotocol/ethers-sdk@alpha @bosonprotocol/ipfs-storage@alpha @bosonprotocol/react-kit@alpha @bosonprotocol/widgets-sdk@alpha",
+    "upgrade:corec:latest": "npm install @bosonprotocol/ipfs-storage@latest @bosonprotocol/react-kit@latest",
+    "upgrade:corec:alpha": "npm install @bosonprotocol/ipfs-storage@alpha @bosonprotocol/react-kit@alpha",
     "postinstall": "npx playwright install --with-deps chromium"
   },
   "lint-staged": {
