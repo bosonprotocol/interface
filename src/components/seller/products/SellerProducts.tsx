@@ -62,7 +62,8 @@ export default function SellerProducts({ sellerId }: Props) {
     },
     {
       enabled: !!sellerId,
-      keepPreviousData: true
+      keepPreviousData: false,
+      refetchOnMount: true
     }
   );
 

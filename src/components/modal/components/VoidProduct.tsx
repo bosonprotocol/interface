@@ -148,10 +148,9 @@ export default function VoidProduct({
         <div>
           <Typography tag="h6">What is Void?</Typography>
           <Typography tag="p" margin="0">
-            By voiding this item{offers && offers.length && "s"}, it will no
-            longer be possible for buyers to commit to this product
-            {offers && offers.length && "s"} however any existing exchanges will
-            be unaffected.
+            {offers && offers.length
+              ? "By voiding these items, it will no longer be possible for buyers to commit to these products however any existing exchanges will be unaffected."
+              : "By voiding this item, it will no longer be possible for buyers to commit to this product however any existing exchanges will be unaffected."}
           </Typography>
         </div>
       </Grid>
@@ -175,6 +174,7 @@ export default function VoidProduct({
             offerId={offerId || 0}
             chainId={CONFIG.chainId}
             onError={(args) => {
+              // TODO: add to notification system
               console.error("onError", args);
             }}
             onPendingSignature={() => {
@@ -193,7 +193,7 @@ export default function VoidProduct({
             disabled={isLoading}
             onClick={handleBatchVoid}
           >
-            Void
+            Batch Void
           </Button>
         </Grid>
       )}

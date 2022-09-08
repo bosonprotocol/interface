@@ -25,7 +25,7 @@ function SellerBatchVoid({ selected, refetch }: Props) {
         );
       }}
     >
-      Void
+      Batch Void
     </Button>
   );
 }
