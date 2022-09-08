@@ -2,12 +2,9 @@ import { gql, request } from "graphql-request";
 import { useQuery } from "react-query";
 
 import { Offer } from "../../../lib/types/offer";
-const CORS_URL =
-  process.env.NODE_ENV === "development"
-    ? "https://cors-anywhere.herokuapp.com/"
-    : "";
 
-const UNISWAP_API_URL = `${CORS_URL}https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3`;
+const UNISWAP_API_URL =
+  "https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3";
 
 const poolsQuery = gql`
   query GetPools($token0: String, $token1: String) {
@@ -67,6 +64,7 @@ export interface IPool {
 }
 
 export function useUniswapPools({ tokens }: Props) {
+  const isDev = process.env.NODE_ENV === "development";
   const queries = generateQuery(tokens);
 
   return useQuery(
@@ -80,7 +78,7 @@ export function useUniswapPools({ tokens }: Props) {
       return pools?.flatMap((p: PromiseProps) => p?.pools) || [];
     },
     {
-      enabled: !!queries.length
+      enabled: !!queries.length && !isDev
     }
   );
 }
