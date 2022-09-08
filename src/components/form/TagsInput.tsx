@@ -1,10 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useField } from "formik";
+import { KeyReturn } from "phosphor-react";
 import { useEffect, useState } from "react";
 
 import Error from "./Error";
 import { FieldInput } from "./Field.styles";
-import { Close, TagContainer, TagWrapper } from "./styles/TagsInput.styles";
+import {
+  Close,
+  Helper,
+  TagContainer,
+  TagWrapper
+} from "./styles/TagsInput.styles";
 
 const TagsInput = ({ name }: { name: string }) => {
   const [field, meta, helpers] = useField(name);
@@ -56,6 +62,11 @@ const TagsInput = ({ name }: { name: string }) => {
           placeholder="Choose tags..."
           name={name}
         />
+        <Helper>
+          Hit Enter <KeyReturn size={16} />
+        </Helper>
+      </TagContainer>
+      <TagContainer>
         {tags.map((tag: string, index: number) => (
           <TagWrapper key={`tags-wrapper_${tag}`}>
             <span className="text">{tag}</span>
