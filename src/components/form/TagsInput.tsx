@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useField } from "formik";
 import { KeyReturn } from "phosphor-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import Error from "./Error";
 import { FieldInput } from "./Field.styles";
@@ -13,19 +13,18 @@ import {
 } from "./styles/TagsInput.styles";
 
 const TagsInput = ({ name }: { name: string }) => {
-  const [field, meta, helpers] = useField(name);
+  const [, meta, helpers] = useField(name);
   const [tags, setTags] = useState<string[]>([]);
 
   const errorMessage = meta.error && meta.touched ? meta.error : "";
   const displayError =
     typeof errorMessage === typeof "string" && errorMessage !== "";
 
-  useEffect(() => {
+  const handleBlur = () => {
     if (!meta.touched) {
       helpers.setTouched(true);
     }
-    setTags(field.value);
-  }, [field.value]); // eslint-disable-line
+  };
 
   function handleKeyDown(event: any) {
     if (event.key !== "Enter") return;
@@ -61,6 +60,8 @@ const TagsInput = ({ name }: { name: string }) => {
           type="text"
           placeholder="Choose tags..."
           name={name}
+          onBlur={handleBlur}
+          error={errorMessage}
         />
         <Helper>
           Hit Enter <KeyReturn size={16} />
