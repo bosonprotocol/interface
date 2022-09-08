@@ -345,6 +345,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                   isVoidedOffer ||
                   isPreview
                 }
+                metaTransactionsApiKey={CONFIG.metaTransactionsApiKey}
                 offerId={offer.id}
                 chainId={CONFIG.chainId}
                 onError={(args) => {
@@ -387,6 +388,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                   isPreview ||
                   !isBuyer
                 }
+                metaTransactionsApiKey={CONFIG.metaTransactionsApiKey}
                 onClick={() => {
                   showModal(
                     modalTypes.REDEEM,

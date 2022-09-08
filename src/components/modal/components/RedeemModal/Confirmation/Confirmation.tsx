@@ -149,6 +149,7 @@ ${FormModel.formFields.email.placeholder}: ${emailField.value}`;
       <Grid padding="2rem 0 0 0" justifyContent="space-between">
         <RedeemButton
           disabled={isLoading || !isInitializationValid}
+          metaTransactionsApiKey={CONFIG.metaTransactionsApiKey}
           exchangeId={exchangeId}
           chainId={CONFIG.chainId}
           onError={(error) => {
