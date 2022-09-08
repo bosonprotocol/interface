@@ -1,5 +1,6 @@
 import { BaseIpfsStorage } from "@bosonprotocol/react-kit";
 import { Form, Formik } from "formik";
+import { useState } from "react";
 import styled from "styled-components";
 
 import Layout from "../../components/Layout";
@@ -20,6 +21,7 @@ const Root = styled(Layout)`
 
 export default function CustomStore() {
   const { showModal, modalTypes } = useModal();
+  const [hasSubmitError, setHasSubmitError] = useState<boolean>(false);
   const primaryColor = useCSSVariable("--primary");
 
   return (
@@ -33,17 +35,22 @@ export default function CustomStore() {
         Create Custom Store
       </Typography>
       <Formik<typeof initialValues>
-        initialValues={initialValues}
+        initialValues={{ ...initialValues }}
         validationSchema={validationSchema}
         onSubmit={async (values) => {
-          const storage = new BaseIpfsStorage({
-            url: CONFIG.ipfsMetadataUrl
-          });
+          setHasSubmitError(false);
+          try {
+            const storage = new BaseIpfsStorage({
+              url: CONFIG.ipfsMetadataUrl
+            });
 
-          const queryParams = new URLSearchParams(
-            Object.entries(values)
-          ).toString();
-          const html = `<!DOCTYPE html>
+            const queryParams = new URLSearchParams(
+              Object.entries(values).map(([key, value]) => [
+                String(key),
+                String(value)
+              ])
+            ).toString();
+            const html = `<!DOCTYPE html>
       <html lang="en">
       <head>
           <meta charset="UTF-8">
@@ -71,21 +78,23 @@ export default function CustomStore() {
       </body>
       </html>`;
 
-          const cid = await storage.add(html);
+            const cid = await storage.add(html);
 
-          const ipfsUrl = `https://ipfs.io/ipfs/${cid}`;
-          showModal(modalTypes.CUSTOM_STORE, {
-            title: "Congratulations!",
-            ipfsUrl
-          });
-
-          return;
+            const ipfsUrl = `https://ipfs.io/ipfs/${cid}`;
+            showModal(modalTypes.CUSTOM_STORE, {
+              title: "Congratulations!",
+              ipfsUrl
+            });
+          } catch (error) {
+            console.error(error);
+            setHasSubmitError(true);
+          }
         }}
       >
         {() => {
           return (
             <Form>
-              <CustomStoreFormContent />
+              <CustomStoreFormContent hasSubmitError={hasSubmitError} />
             </Form>
           );
         }}
