@@ -1,6 +1,7 @@
 import * as Yup from "yup";
 
 import { SelectDataProps } from "../../components/form/types";
+import { websitePattern } from "../../lib/validation/regex/url";
 import { validationOfFile } from "../chat/components/UploadForm/const";
 import { SocialLogoValues } from "./SocialLogo";
 
@@ -24,6 +25,7 @@ export type StoreFields = {
   showFooter: SelectType;
   socialMediaLinks: SelectType<SocialLogoValues>[];
   additionalFooterLinks: SelectType[];
+  withOwnProducts: SelectType;
   sellerCurationList: string;
   offerCurationList: string;
   metaTransactionsApiKey: string;
@@ -33,7 +35,6 @@ export type StoreFormFields = StoreFields & {
   logoUrlText: string;
   logoUpload: File[];
   withAdditionalFooterLinks: SelectType;
-  withOwnProducts: SelectType;
   withMetaTx: SelectType;
 };
 
@@ -70,7 +71,7 @@ const yesNoOptions = [
   { label: "No", value: "false", default: true }
 ] as const;
 const standardRequiredErrorMessage = "This field is required";
-const notUrlErrorMessage = "This is not a URL like: https://www.example.com";
+const notUrlErrorMessage = "This is not a URL like: www.example.com";
 export const formModel = {
   formFields: {
     [storeFields.storeName]: {
@@ -260,7 +261,7 @@ export const validationSchema = Yup.object({
       label: Yup.string().required(standardRequiredErrorMessage),
       value: Yup.string().required(standardRequiredErrorMessage),
       url: Yup.string()
-        .url(notUrlErrorMessage)
+        .matches(new RegExp(websitePattern), notUrlErrorMessage)
         .required(standardRequiredErrorMessage)
     })
   ),
@@ -271,14 +272,16 @@ export const validationSchema = Yup.object({
   [storeFields.additionalFooterLinks]: Yup.array(
     Yup.object({
       label: Yup.string(),
-      value: Yup.string().when("label", (label) => {
-        if (label) {
-          return Yup.string()
-            .url(notUrlErrorMessage)
-            .required(standardRequiredErrorMessage);
-        }
-        return Yup.string();
-      })
+      value: Yup.string()
+        .matches(new RegExp(websitePattern), notUrlErrorMessage)
+        .when("label", (label) => {
+          if (label) {
+            return Yup.string()
+              .matches(new RegExp(websitePattern), notUrlErrorMessage)
+              .required(standardRequiredErrorMessage);
+          }
+          return Yup.string();
+        })
     })
   ),
   [storeFields.copyright]: Yup.string(),

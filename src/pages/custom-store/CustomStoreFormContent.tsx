@@ -53,8 +53,14 @@ interface Props {
   hasSubmitError: boolean;
 }
 
+const preAppendHttps = (url: string) => {
+  return url.startsWith("https://") || url.startsWith("http://")
+    ? url
+    : `https://${url}`;
+};
+
 export default function CustomStoreFormContent({ hasSubmitError }: Props) {
-  const { setFieldValue, values, isValid } =
+  const { setFieldValue, values, isValid, setFieldTouched } =
     useFormikContext<StoreFormFields>();
 
   const formValuesWithOneLogoUrl = Object.entries(values)
@@ -97,16 +103,20 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
               return null;
             }
             if ("label" in val && "value" in val && "url" in val) {
+              // socialMediaLinks
               if (!val.value || !val.url) {
                 return null;
               }
               return {
                 value: val.value.trim(),
-                url: (val.url as string)?.trim()
+                url: preAppendHttps((val.url as string)?.trim())
               };
             }
             if (Object.values(val).every((v) => !!v)) {
-              return val;
+              return {
+                label: val.label,
+                value: preAppendHttps(val.value || "")
+              };
             }
             return null;
           })
@@ -158,6 +168,32 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
       );
     }
   }, [values.withAdditionalFooterLinks?.value, setFieldValue]);
+
+  const removeEmptyRowsExceptOne = () => {
+    const value = values.additionalFooterLinks;
+    const onlyFilledValues = value.filter((v) => !!v?.label || !!v?.value);
+    const valueToSet =
+      onlyFilledValues.length !== value.length
+        ? onlyFilledValues.length - 1 < value.length
+          ? [...onlyFilledValues, { label: "", value: "" }]
+          : onlyFilledValues
+        : value;
+    setFieldValue(storeFields.additionalFooterLinks, valueToSet, true);
+    valueToSet.forEach((val, index) => {
+      if (val?.value) {
+        setFieldTouched(
+          `${storeFields.additionalFooterLinks}[${index}].label`,
+          true
+        );
+      }
+      if (val?.label) {
+        setFieldTouched(
+          `${storeFields.additionalFooterLinks}[${index}].value`,
+          true
+        );
+      }
+    });
+  };
 
   return (
     <Grid alignItems="flex-start" gap="2.875rem">
@@ -483,6 +519,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                               <Input
                                 name={`${storeFields.additionalFooterLinks}[${index}].label`}
                                 placeholder={`Label`}
+                                onBlur={() => removeEmptyRowsExceptOne()}
                               />
                             </Grid>
                             <Grid
@@ -493,6 +530,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                               <Input
                                 name={`${storeFields.additionalFooterLinks}[${index}].value`}
                                 placeholder={`URL`}
+                                onBlur={() => removeEmptyRowsExceptOne()}
                               />
                             </Grid>
                           </Grid>
@@ -571,6 +609,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                 name={storeFields.withMetaTx}
                 placeholder={formModel.formFields.withMetaTx.placeholder}
                 isClearable
+                disabled
               />
             </Grid>
             {values.withMetaTx?.value === "true" && (
@@ -588,6 +627,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                     placeholder={
                       formModel.formFields.metaTransactionsApiKey.placeholder
                     }
+                    disabled
                   />
                 </Grid>
               </Grid>
