@@ -2,13 +2,16 @@ import { useFormikContext } from "formik";
 import { useEffect } from "react";
 import styled from "styled-components";
 
-import { Input, Upload } from "../../components/form";
+import SimpleError from "../../components/error/SimpleError";
+import { Input, Select, Upload } from "../../components/form";
 import InputColor from "../../components/form/InputColor";
+import { SelectDataProps } from "../../components/form/types";
 import Button from "../../components/ui/Button";
 import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
 import { colors } from "../../lib/styles/colors";
 import { getFilesWithEncodedData } from "../../lib/utils/files";
+import SocialLogo from "./SocialLogo";
 import {
   formModel,
   storeFields,
@@ -42,18 +45,82 @@ const FieldDescription = styled(Typography)`
   color: ${colors.darkGrey};
 `;
 const gapBetweenInputs = "2rem";
+const subFieldsMarginLeft = "4rem";
+const gap = "0.5rem";
+const firstSubFieldBasis = "15%";
+const secondSubFieldBasis = "85%";
+interface Props {
+  hasSubmitError: boolean;
+}
 
-export default function CustomStoreFormContent() {
-  const { setFieldValue, values } = useFormikContext<StoreFormFields>();
+export default function CustomStoreFormContent({ hasSubmitError }: Props) {
+  const { setFieldValue, values, isValid } =
+    useFormikContext<StoreFormFields>();
 
-  const formValuesWithOneLogoUrl = Object.entries(values).filter(
-    ([key]) =>
-      !([storeFields.logoUrlText, storeFields.logoUpload] as string[]).includes(
-        key
-      )
-  ) as unknown as string[][];
+  const formValuesWithOneLogoUrl = Object.entries(values)
+    .filter(
+      ([key]) =>
+        !(
+          [storeFields.logoUrlText, storeFields.logoUpload] as string[]
+        ).includes(key)
+    )
+    .map(([key, value]) => {
+      if (typeof value === "string") {
+        let val = value.trim();
+        const isCurationList = (
+          [
+            storeFields.sellerCurationList,
+            storeFields.offerCurationList
+          ] as string[]
+        ).includes(key);
+        if (isCurationList) {
+          const removedDuplicates = Array.from(
+            new Set([
+              ...val
+                .split(",")
+                .filter((v) => !!v)
+                .map((v) => v.trim())
+            ])
+          ).join(",");
+          val = removedDuplicates;
+        }
+
+        return [[key, val]];
+      }
+      if (Array.isArray(value)) {
+        if (!value.length) {
+          return [[key, ""]];
+        }
+        const valueListWithoutExtraKeys = value
+          .map((val) => {
+            if (!val || val instanceof File) {
+              return null;
+            }
+            if ("label" in val && "value" in val && "url" in val) {
+              if (!val.value || !val.url) {
+                return null;
+              }
+              return {
+                value: val.value.trim(),
+                url: (val.url as string)?.trim()
+              };
+            }
+            if (Object.values(val).every((v) => !!v)) {
+              return val;
+            }
+            return null;
+          })
+          .filter((v) => !!v);
+        if (!valueListWithoutExtraKeys.length) {
+          return [[key, ""]];
+        }
+        return [[key, JSON.stringify(valueListWithoutExtraKeys)]];
+      }
+      return [[key, value?.value?.trim() || ""]];
+    })
+    .filter((v) => !!v && !!v[0] && !!v[0][0] && !!v[0][1])
+    .flat();
   const queryParams = new URLSearchParams(formValuesWithOneLogoUrl).toString();
-
   useEffect(() => {
     setFieldValue(storeFields.logoUrl, "", true);
     if (values.logoUpload.length) {
@@ -68,6 +135,29 @@ export default function CustomStoreFormContent() {
       setFieldValue(storeFields.logoUrl, values.logoUrlText, true);
     }
   }, [values.logoUpload, values.logoUrlText, setFieldValue]);
+  const allFilledOut = values.additionalFooterLinks.every((footerLink) => {
+    const { label, value } = footerLink || {};
+    return !!label && !!value;
+  });
+  const addFooterLink = () => {
+    if (allFilledOut) {
+      setFieldValue(
+        storeFields.additionalFooterLinks,
+        [...values.additionalFooterLinks, { label: "", value: "" }],
+        true
+      );
+    }
+  };
+
+  useEffect(() => {
+    if (values.withAdditionalFooterLinks?.value) {
+      setFieldValue(
+        storeFields.additionalFooterLinks,
+        [{ label: "", value: "" }],
+        true
+      );
+    }
+  }, [values.withAdditionalFooterLinks?.value, setFieldValue]);
 
   return (
     <Grid alignItems="flex-start" gap="2.875rem">
@@ -248,7 +338,7 @@ export default function CustomStoreFormContent() {
           </Grid>
         </Grid>
         <Grid flexDirection="column" alignItems="flex-start">
-          <Section>Others</Section>
+          <Section>Advanced</Section>
           <Grid
             flexDirection="column"
             alignItems="flex-start"
@@ -256,10 +346,12 @@ export default function CustomStoreFormContent() {
           >
             <Grid flexDirection="column" alignItems="flex-start">
               <FieldTitle>Toggle between Header or Side Bar Nav</FieldTitle>
-              <FieldDescription>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              </FieldDescription>
-              <Input
+
+              <Select
+                options={
+                  formModel.formFields.navigationBarPosition
+                    .options as unknown as SelectDataProps<string>[]
+                }
                 name={storeFields.navigationBarPosition}
                 placeholder={
                   formModel.formFields.navigationBarPosition.placeholder
@@ -267,50 +359,254 @@ export default function CustomStoreFormContent() {
               />
             </Grid>
             <Grid flexDirection="column" alignItems="flex-start">
-              <FieldTitle>Seller Curation List</FieldTitle>
-              <FieldDescription>
-                Enter Seller IDs separated by comma
-              </FieldDescription>
-              <Input
-                name={storeFields.sellerCurationList}
-                placeholder={
-                  formModel.formFields.sellerCurationList.placeholder
+              <FieldTitle>Toggle footer (show/hide)</FieldTitle>
+              <Select
+                options={
+                  formModel.formFields.showFooter
+                    .options as unknown as SelectDataProps<string>[]
                 }
+                name={storeFields.showFooter}
+                placeholder={formModel.formFields.showFooter.placeholder}
               />
             </Grid>
+            {values.showFooter?.value === "true" && (
+              <Grid
+                flexDirection="column"
+                margin={`0 0 0 ${subFieldsMarginLeft}`}
+                $width={`calc(100% - ${subFieldsMarginLeft})`}
+                gap={gapBetweenInputs}
+              >
+                <Grid flexDirection="column" alignItems="flex-start">
+                  <FieldTitle>Copyright label</FieldTitle>
+                  <FieldDescription>
+                    The copyright label shown (e.g. "@ 2022 Example Company")
+                  </FieldDescription>
+                  <Input
+                    name={storeFields.copyright}
+                    placeholder={formModel.formFields.copyright.placeholder}
+                  />
+                </Grid>
+                <Grid flexDirection="column" alignItems="flex-start">
+                  <FieldTitle>Social media links</FieldTitle>
+                  <FieldDescription>
+                    Links to any social media profiles/websites{" "}
+                  </FieldDescription>
+                  <Select
+                    options={
+                      formModel.formFields.socialMediaLinks
+                        .options as unknown as SelectDataProps<string>[]
+                    }
+                    name={storeFields.socialMediaLinks}
+                    placeholder={
+                      formModel.formFields.socialMediaLinks.placeholder
+                    }
+                    isMulti
+                    isClearable
+                    isSearchable
+                  />
+                </Grid>
+                <Grid
+                  flexDirection="column"
+                  alignItems="flex-start"
+                  gap="0.5rem"
+                >
+                  {!!values.socialMediaLinks.length && (
+                    <Grid gap={gap}>
+                      <Grid flexBasis={firstSubFieldBasis}>
+                        <Typography>Logo</Typography>
+                      </Grid>
+                      <Grid flexBasis={secondSubFieldBasis}>
+                        <Typography>URL</Typography>
+                      </Grid>
+                    </Grid>
+                  )}
+                  {(values.socialMediaLinks || []).map((selection, index) => {
+                    const { label, value } = selection || {};
+
+                    return (
+                      <Grid key={label} gap={gap}>
+                        <Grid flexBasis={firstSubFieldBasis}>
+                          <SocialLogo logo={value} />
+                        </Grid>
+                        <Grid
+                          flexBasis={secondSubFieldBasis}
+                          flexDirection="column"
+                          alignItems="flex-start"
+                        >
+                          <Input
+                            name={`${storeFields.socialMediaLinks}[${index}].url`}
+                            placeholder={`${label} URL`}
+                          />
+                        </Grid>
+                      </Grid>
+                    );
+                  })}
+                </Grid>
+                <Grid flexDirection="column" alignItems="flex-start">
+                  <FieldTitle>Additional footer links</FieldTitle>
+                  <FieldDescription>
+                    Further links to add to your footer (e.g. "Terms &
+                    Conditions")
+                  </FieldDescription>
+                  <Select
+                    options={
+                      formModel.formFields.withAdditionalFooterLinks
+                        .options as unknown as SelectDataProps<string>[]
+                    }
+                    name={storeFields.withAdditionalFooterLinks}
+                    placeholder={
+                      formModel.formFields.withAdditionalFooterLinks.placeholder
+                    }
+                    isClearable
+                  />
+                </Grid>
+                <Grid
+                  flexDirection="column"
+                  alignItems="flex-start"
+                  gap="0.5rem"
+                >
+                  {values.withAdditionalFooterLinks?.value === "true" && (
+                    <>
+                      <Grid gap={gap}>
+                        <Grid flexBasis="50%">
+                          <Typography>Label</Typography>
+                        </Grid>
+                        <Grid flexBasis="50%">
+                          <Typography>URL</Typography>
+                        </Grid>
+                      </Grid>
+
+                      {(values.additionalFooterLinks || []).map((_, index) => {
+                        return (
+                          <Grid key={`${index}`} gap={gap}>
+                            <Grid flexBasis="50%" flexDirection="column">
+                              <Input
+                                name={`${storeFields.additionalFooterLinks}[${index}].label`}
+                                placeholder={`Label`}
+                              />
+                            </Grid>
+                            <Grid
+                              flexBasis="50%"
+                              flexDirection="column"
+                              alignItems="flex-start"
+                            >
+                              <Input
+                                name={`${storeFields.additionalFooterLinks}[${index}].value`}
+                                placeholder={`URL`}
+                              />
+                            </Grid>
+                          </Grid>
+                        );
+                      })}
+                      <Button
+                        disabled={!allFilledOut}
+                        onClick={addFooterLink}
+                        theme="primary"
+                      >
+                        + Add
+                      </Button>
+                    </>
+                  )}
+                </Grid>
+              </Grid>
+            )}
             <Grid flexDirection="column" alignItems="flex-start">
-              <FieldTitle>Offer Curation List</FieldTitle>
+              <FieldTitle>Products</FieldTitle>
               <FieldDescription>
-                Enter Offer IDs separated by comma
+                Only show your own products in the store
               </FieldDescription>
-              <Input
-                name={storeFields.offerCurationList}
-                placeholder={formModel.formFields.offerCurationList.placeholder}
-              />
-            </Grid>
-            <Grid flexDirection="column" alignItems="flex-start">
-              <FieldTitle>Meta Transactions API Key</FieldTitle>
-              <FieldDescription>Enter Biconomy API Key</FieldDescription>
-              <Input
-                name={storeFields.metaTransactionsApiKey}
-                placeholder={
-                  formModel.formFields.metaTransactionsApiKey.placeholder
+              <Select
+                options={
+                  formModel.formFields.withOwnProducts
+                    .options as unknown as SelectDataProps<string>[]
                 }
+                name={storeFields.withOwnProducts}
+                placeholder={formModel.formFields.withOwnProducts.placeholder}
+                isClearable
               />
             </Grid>
+            {values.withOwnProducts?.value === "true" && (
+              <Grid
+                flexDirection="column"
+                margin={`0 0 0 ${subFieldsMarginLeft}`}
+                $width={`calc(100% - ${subFieldsMarginLeft})`}
+                gap={gapBetweenInputs}
+              >
+                <Grid flexDirection="column" alignItems="flex-start">
+                  <FieldTitle>Seller Curation List</FieldTitle>
+                  <FieldDescription>
+                    Enter Seller IDs separated by comma
+                  </FieldDescription>
+                  <Input
+                    name={storeFields.sellerCurationList}
+                    placeholder={
+                      formModel.formFields.sellerCurationList.placeholder
+                    }
+                  />
+                </Grid>
+                <Grid flexDirection="column" alignItems="flex-start">
+                  <FieldTitle>Offer Curation List</FieldTitle>
+                  <FieldDescription>
+                    Enter Offer IDs separated by comma
+                  </FieldDescription>
+                  <Input
+                    name={storeFields.offerCurationList}
+                    placeholder={
+                      formModel.formFields.offerCurationList.placeholder
+                    }
+                  />
+                </Grid>
+              </Grid>
+            )}
+            <Grid flexDirection="column" alignItems="flex-start">
+              <FieldTitle>Meta Transactions</FieldTitle>
+              <FieldDescription>
+                Pay for your users' transaction fees
+              </FieldDescription>
+              <Select
+                options={
+                  formModel.formFields.withMetaTx
+                    .options as unknown as SelectDataProps<string>[]
+                }
+                name={storeFields.withMetaTx}
+                placeholder={formModel.formFields.withMetaTx.placeholder}
+                isClearable
+              />
+            </Grid>
+            {values.withMetaTx?.value === "true" && (
+              <Grid
+                flexDirection="column"
+                margin={`0 0 0 ${subFieldsMarginLeft}`}
+                $width={`calc(100% - ${subFieldsMarginLeft})`}
+                gap={gapBetweenInputs}
+              >
+                <Grid flexDirection="column" alignItems="flex-start">
+                  <FieldTitle>Meta Transactions API Key</FieldTitle>
+                  <FieldDescription>Enter Biconomy API Key</FieldDescription>
+                  <Input
+                    name={storeFields.metaTransactionsApiKey}
+                    placeholder={
+                      formModel.formFields.metaTransactionsApiKey.placeholder
+                    }
+                  />
+                </Grid>
+              </Grid>
+            )}
           </Grid>
         </Grid>
-        <Button type="submit" theme="secondary">
+        {hasSubmitError && <SimpleError />}
+        <Button type="submit" theme="secondary" disabled={!isValid}>
           Create
         </Button>
       </Grid>
-      <Grid flex="1 1 50%">
-        <iframe
-          src={`${window.location.origin}/#/?${queryParams}`}
-          width="100%"
-          style={{ height: "100vh" }}
-        ></iframe>
-      </Grid>
+      <iframe
+        src={`${window.location.origin}/#/?${queryParams}`}
+        style={{
+          alignSelf: "stretch",
+          width: "100%",
+          display: "flex"
+        }}
+      ></iframe>
     </Grid>
   );
 }

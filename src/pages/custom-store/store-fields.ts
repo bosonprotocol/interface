@@ -1,6 +1,10 @@
 import * as Yup from "yup";
 
+import { SelectDataProps } from "../../components/form/types";
 import { validationOfFile } from "../chat/components/UploadForm/const";
+import { SocialLogoValues } from "./SocialLogo";
+
+type SelectType<Value extends string = string> = SelectDataProps<Value> | null;
 
 export type StoreFields = {
   storeName: string;
@@ -15,7 +19,11 @@ export type StoreFields = {
   navigationBarBgColor: string;
   textColor: string;
   fontFamily: string;
-  navigationBarPosition: string;
+  navigationBarPosition: SelectType;
+  copyright: string;
+  showFooter: SelectType;
+  socialMediaLinks: SelectType<SocialLogoValues>[];
+  additionalFooterLinks: SelectType[];
   sellerCurationList: string;
   offerCurationList: string;
   metaTransactionsApiKey: string;
@@ -24,6 +32,9 @@ export type StoreFields = {
 export type StoreFormFields = StoreFields & {
   logoUrlText: string;
   logoUpload: File[];
+  withAdditionalFooterLinks: SelectType;
+  withOwnProducts: SelectType;
+  withMetaTx: SelectType;
 };
 
 export const storeFields = {
@@ -42,12 +53,24 @@ export const storeFields = {
   textColor: "textColor",
   fontFamily: "fontFamily",
   navigationBarPosition: "navigationBarPosition",
+  showFooter: "showFooter",
+  copyright: "copyright",
+  socialMediaLinks: "socialMediaLinks",
+  withAdditionalFooterLinks: "withAdditionalFooterLinks",
+  additionalFooterLinks: "additionalFooterLinks",
+  withOwnProducts: "withOwnProducts",
   sellerCurationList: "sellerCurationList",
   offerCurationList: "offerCurationList",
+  withMetaTx: "withMetaTx",
   metaTransactionsApiKey: "metaTransactionsApiKey"
 } as const;
 
+const yesNoOptions = [
+  { label: "Yes", value: "true" },
+  { label: "No", value: "false", default: true }
+] as const;
 const standardRequiredErrorMessage = "This field is required";
+const notUrlErrorMessage = "This is not a URL like: https://www.example.com";
 export const formModel = {
   formFields: {
     [storeFields.storeName]: {
@@ -118,10 +141,64 @@ export const formModel = {
       requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: ""
     },
+    [storeFields.showFooter]: {
+      name: storeFields.showFooter,
+      requiredErrorMessage: standardRequiredErrorMessage,
+      placeholder: "",
+      options: [
+        { label: "Show", value: "true" },
+        { label: "Hide", value: "false", default: true }
+      ]
+    },
+    [storeFields.copyright]: {
+      name: storeFields.copyright,
+      requiredErrorMessage: standardRequiredErrorMessage,
+      placeholder: ""
+    },
+    [storeFields.socialMediaLinks]: {
+      name: storeFields.socialMediaLinks,
+      requiredErrorMessage: standardRequiredErrorMessage,
+      placeholder: "",
+      options: [
+        { label: "Facebook", value: "facebook", url: "" },
+        { label: "Instagram", value: "instagram", url: "" },
+        { label: "LinkedIn", value: "linkedin", url: "" },
+        { label: "Medium", value: "medium", url: "" },
+        { label: "Pinterest", value: "pinterest", url: "" },
+        { label: "Reddit", value: "reddit", url: "" },
+        { label: "Snapchat", value: "snapchat", url: "" },
+        { label: "TikTok", value: "tiktok", url: "" },
+        { label: "Twitch", value: "twitch", url: "" },
+        { label: "Twitter", value: "twitter", url: "" },
+        { label: "Youtube", value: "youtube", url: "" }
+      ]
+    },
+    [storeFields.withAdditionalFooterLinks]: {
+      name: storeFields.withAdditionalFooterLinks,
+      requiredErrorMessage: standardRequiredErrorMessage,
+      placeholder: "",
+      options: yesNoOptions
+    },
+    [storeFields.additionalFooterLinks]: {
+      name: storeFields.additionalFooterLinks,
+      requiredErrorMessage: standardRequiredErrorMessage,
+      placeholder: ""
+    },
     [storeFields.navigationBarPosition]: {
       name: storeFields.navigationBarPosition,
       requiredErrorMessage: standardRequiredErrorMessage,
-      placeholder: ""
+      placeholder: "",
+      options: [
+        { label: "Top", value: "top", default: true },
+        { label: "Left", value: "left" },
+        { label: "Right", value: "right" }
+      ]
+    },
+    [storeFields.withOwnProducts]: {
+      name: storeFields.withOwnProducts,
+      requiredErrorMessage: standardRequiredErrorMessage,
+      placeholder: "",
+      options: yesNoOptions
     },
     [storeFields.sellerCurationList]: {
       name: storeFields.sellerCurationList,
@@ -132,6 +209,12 @@ export const formModel = {
       name: storeFields.offerCurationList,
       requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: ""
+    },
+    [storeFields.withMetaTx]: {
+      name: storeFields.withMetaTx,
+      requiredErrorMessage: standardRequiredErrorMessage,
+      placeholder: "",
+      options: yesNoOptions
     },
     [storeFields.metaTransactionsApiKey]: {
       name: storeFields.metaTransactionsApiKey,
@@ -164,9 +247,51 @@ export const validationSchema = Yup.object({
   [storeFields.navigationBarBgColor]: Yup.string(),
   [storeFields.textColor]: Yup.string(),
   [storeFields.fontFamily]: Yup.string(),
-  [storeFields.navigationBarPosition]: Yup.string(),
+  [storeFields.navigationBarPosition]: Yup.object({
+    label: Yup.string().required(standardRequiredErrorMessage),
+    value: Yup.string().required(standardRequiredErrorMessage)
+  }).nullable(),
+  [storeFields.showFooter]: Yup.object({
+    label: Yup.string().required(standardRequiredErrorMessage),
+    value: Yup.string().required(standardRequiredErrorMessage)
+  }).nullable(),
+  [storeFields.socialMediaLinks]: Yup.array(
+    Yup.object({
+      label: Yup.string().required(standardRequiredErrorMessage),
+      value: Yup.string().required(standardRequiredErrorMessage),
+      url: Yup.string()
+        .url(notUrlErrorMessage)
+        .required(standardRequiredErrorMessage)
+    })
+  ),
+  [storeFields.withAdditionalFooterLinks]: Yup.object({
+    label: Yup.string().required(standardRequiredErrorMessage),
+    value: Yup.string().required(standardRequiredErrorMessage)
+  }).nullable(),
+  [storeFields.additionalFooterLinks]: Yup.array(
+    Yup.object({
+      label: Yup.string(),
+      value: Yup.string().when("label", (label) => {
+        if (label) {
+          return Yup.string()
+            .url(notUrlErrorMessage)
+            .required(standardRequiredErrorMessage);
+        }
+        return Yup.string();
+      })
+    })
+  ),
+  [storeFields.copyright]: Yup.string(),
+  [storeFields.withOwnProducts]: Yup.object({
+    label: Yup.string().required(standardRequiredErrorMessage),
+    value: Yup.string().required(standardRequiredErrorMessage)
+  }).nullable(),
   [storeFields.sellerCurationList]: Yup.string(),
   [storeFields.offerCurationList]: Yup.string(),
+  [storeFields.withMetaTx]: Yup.object({
+    label: Yup.string().required(standardRequiredErrorMessage),
+    value: Yup.string().required(standardRequiredErrorMessage)
+  }).nullable(),
   [storeFields.metaTransactionsApiKey]: Yup.string()
 });
 
@@ -185,8 +310,25 @@ export const initialValues = {
   [storeFields.navigationBarBgColor]: "",
   [storeFields.textColor]: "",
   [storeFields.fontFamily]: "",
-  [storeFields.navigationBarPosition]: "",
+  [storeFields.navigationBarPosition]:
+    formModel.formFields.navigationBarPosition.options.find(
+      (option) => "default" in option && option.default
+    ) as SelectDataProps,
+  [storeFields.showFooter]: formModel.formFields.showFooter.options.find(
+    (option) => "default" in option && option.default
+  ) as SelectDataProps,
+  [storeFields.socialMediaLinks]: [] as (SelectDataProps & { url: string })[],
+  [storeFields.withAdditionalFooterLinks]: null as unknown as SelectDataProps,
+  [storeFields.additionalFooterLinks]: [] as SelectDataProps[],
+  [storeFields.copyright]: "",
+  [storeFields.withOwnProducts]:
+    formModel.formFields.withOwnProducts.options.find(
+      (option) => "default" in option && option.default
+    ) as SelectDataProps,
   [storeFields.sellerCurationList]: "",
   [storeFields.offerCurationList]: "",
+  [storeFields.withMetaTx]: formModel.formFields.withMetaTx.options.find(
+    (option) => "default" in option && option.default
+  ) as SelectDataProps,
   [storeFields.metaTransactionsApiKey]: ""
 } as const;

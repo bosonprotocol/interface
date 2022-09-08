@@ -1,6 +1,6 @@
 import { MagnifyingGlass } from "phosphor-react";
 import { useCallback, useState } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import { ExploreQueryParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
@@ -9,7 +9,10 @@ import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryPa
 import Button from "../ui/Button";
 import Grid from "../ui/Grid";
 
-const InputWrapper = styled(Grid)<{ isMobile: boolean }>`
+const InputWrapper = styled(Grid)<{
+  isMobile: boolean;
+  $navigationBarPosition: string;
+}>`
   flex: 1;
   gap: 1rem;
 
@@ -19,16 +22,23 @@ const InputWrapper = styled(Grid)<{ isMobile: boolean }>`
 
   margin: 0rem;
 
-  ${({ isMobile }) =>
+  ${({ isMobile, $navigationBarPosition }) =>
     isMobile
       ? ""
-      : `
-      max-width: 487px;
-      border-bottom: none;
-    margin: 1.25rem;
-    padding: 0.25rem 1rem;
-    min-width: 20vw;
-    background: ${colors.lightGrey};`}
+      : ["left", "right"].includes($navigationBarPosition)
+      ? css`
+          border-bottom: none;
+          padding: 0.25rem 1rem;
+          background: ${colors.lightGrey};
+        `
+      : css`
+          max-width: 487px;
+          border-bottom: none;
+          margin: 1.25rem;
+          padding: 0.25rem 1rem;
+          min-width: 20vw;
+          background: ${colors.lightGrey};
+        `}
 `;
 
 const Input = styled.input`
@@ -50,9 +60,10 @@ const Input = styled.input`
 
 interface Props {
   isMobile: boolean;
+  navigationBarPosition: string;
 }
 
-export default function Search({ isMobile }: Props) {
+export default function Search({ isMobile, navigationBarPosition }: Props) {
   const navigate = useKeepQueryParamsNavigate();
   const [name, setName] = useState<string>("");
 
@@ -74,7 +85,10 @@ export default function Search({ isMobile }: Props) {
   }, [navigate, name]);
 
   return (
-    <InputWrapper isMobile={isMobile}>
+    <InputWrapper
+      isMobile={isMobile}
+      $navigationBarPosition={navigationBarPosition}
+    >
       {!isMobile && <MagnifyingGlass size={24} />}
       <Input
         data-testid="search-by-name-input"

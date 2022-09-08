@@ -20,8 +20,20 @@ const ENSAvatar = styled.img`
   border-radius: 100%;
 `;
 
-export default function ConnectButton() {
+interface Props {
+  navigationBarPosition?: string;
+}
+
+export default function ConnectButton({ navigationBarPosition = "" }: Props) {
   const { isLteXS } = useBreakpoints();
+  const isSideBar = ["left", "right"].includes(navigationBarPosition);
+  const buttonPadding = isSideBar ? "0.75rem 1rem" : "";
+  const justifyContent = isSideBar ? "center" : "";
+  const width = isSideBar ? "100%" : "";
+  const buttonPropsWhenSideBar = {
+    ...(buttonPadding && { padding: buttonPadding }),
+    ...(justifyContent && { justifyContent })
+  };
   return (
     <RainbowConnectButton.Custom>
       {({
@@ -57,7 +69,10 @@ export default function ConnectButton() {
                   <Button
                     onClick={openConnectModal}
                     size={isLteXS ? "small" : "regular"}
-                    style={{ whiteSpace: "pre" }}
+                    style={{
+                      whiteSpace: "pre",
+                      ...buttonPropsWhenSideBar
+                    }}
                   >
                     Connect Wallet
                     {!isLteXS && <MetaMaskLogo src={metamaskLogo} />}
@@ -72,7 +87,10 @@ export default function ConnectButton() {
                     onClick={openChainModal}
                     theme="warning"
                     size={isLteXS ? "small" : "regular"}
-                    style={{ whiteSpace: "pre" }}
+                    style={{
+                      whiteSpace: "pre",
+                      ...buttonPropsWhenSideBar
+                    }}
                   >
                     Wrong network
                     <CaretDown size={12} />
@@ -81,12 +99,22 @@ export default function ConnectButton() {
               }
               saveItemInStorage("isChainUnsupported", false);
               return (
-                <div style={{ display: "flex", gap: 12 }}>
+                <div
+                  style={{
+                    display: "flex",
+                    gap: 12,
+                    ...(justifyContent && { justifyContent }),
+                    ...(width && { width })
+                  }}
+                >
                   <Button
                     onClick={openAccountModal}
                     theme="outline"
                     size={isLteXS ? "small" : "regular"}
-                    style={{ whiteSpace: "pre" }}
+                    style={{
+                      whiteSpace: "pre",
+                      ...buttonPropsWhenSideBar
+                    }}
                   >
                     {account.ensAvatar ? (
                       <ENSAvatar src={account.ensAvatar} />
