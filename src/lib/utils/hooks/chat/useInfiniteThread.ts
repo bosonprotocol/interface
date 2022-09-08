@@ -18,7 +18,7 @@ interface Props {
   dateIndex: number;
   onFinishFetching: () => void;
 }
-const genesisDate = new Date("2022-08-15");
+const genesisDate = new Date("2022-08-25");
 export function useInfiniteThread({
   dateStep,
   dateIndex,
