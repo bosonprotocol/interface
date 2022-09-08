@@ -68,8 +68,7 @@ export function useInfiniteThread({
     bosonXmtp
       .getThread(threadId, utils.getAddress(counterParty), {
         startTime: endTime,
-        endTime: startTime,
-        limit: 75
+        endTime: startTime
       })
       .then(async (threadObject) => {
         setLastThreadXmtp(threadObject);
