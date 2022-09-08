@@ -4,7 +4,12 @@ import { validationOfFile } from "../../../pages/chat/components/UploadForm/cons
 import { MIN_VALUE } from "../../modal/components/Chat/const";
 import { FormModel } from "../../modal/components/Chat/MakeProposal/MakeProposalFormModel";
 import { DisputeFormModel } from "../../modal/components/DisputeModal/DisputeModalFormModel";
-import { MAX_IMAGE_SIZE, MAX_LOGO_SIZE } from "./const";
+import { SelectDataProps } from "./../../form/types";
+import {
+  MAX_IMAGE_SIZE,
+  MAX_LOGO_SIZE,
+  OPTIONS_EXCHANGE_POLICY
+} from "./const";
 import {
   validationOfImage,
   validationOfRequiredImage
@@ -98,10 +103,10 @@ export const coreTermsOfSaleValidationSchema = Yup.object({
       .default([{ value: "", label: "" }]),
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    offerValidityPeriod: Yup.mixed().isOfferValidityDatesValid(),
+    offerValidityPeriod: Yup.mixed().isItBeforeNow().isOfferValidityDatesValid(), // prettier-ignore
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    redemptionPeriod: Yup.mixed().isRedemptionDatesValid()
+    redemptionPeriod: Yup.mixed().isItBeforeNow().isRedemptionDatesValid() // prettier-ignore
   })
 });
 
@@ -118,7 +123,18 @@ export const termsOfExchangeValidationSchema = Yup.object({
     sellerDeposit: Yup.string().required(validationMessage.required),
     // sellerDepositUnit: Yup.string().required(validationMessage.required),
     // disputeResolver: Yup.string().required(validationMessage.required),
-    disputePeriod: Yup.string().required(validationMessage.required)
+    disputePeriod: Yup.string()
+      .matches(/^[0-9]+$/, "Must be only digits")
+      .required(validationMessage.required)
+      .when(["exchangePolicy"], {
+        is: (exchangePolicy: SelectDataProps) =>
+          exchangePolicy &&
+          exchangePolicy.value === OPTIONS_EXCHANGE_POLICY[0].value,
+        then: (schema) =>
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          schema.disputePeriodValue("The Dispute Period must be in line with the selected exchange policy (>=30 days)" ) // prettier-ignore
+      })
     // disputePeriodUnit: Yup.string().required(validationMessage.required)
   })
 });

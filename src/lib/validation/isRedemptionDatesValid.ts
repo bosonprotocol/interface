@@ -11,7 +11,7 @@ function isRedemptionDatesValid() {
           ? value[1]?.isBefore(ovValue[1])
           : dayjs(value[1])?.isBefore(ovValue[1]);
 
-      if (doesItEndBefore) {
+      if (ovValue && doesItEndBefore) {
         throw this.createError({
           path: this.path,
           message:

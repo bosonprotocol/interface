@@ -42,6 +42,12 @@ import {
 } from "./utils";
 import { ValidateDates } from "./utils/dataValidator";
 
+function onKeyPress(event: React.KeyboardEvent<HTMLFormElement>) {
+  if (event.key === "Enter") {
+    event.preventDefault();
+  }
+}
+
 interface Props {
   initial: CreateProductForm;
 }
@@ -392,7 +398,7 @@ function CreateProductInner({ initial }: Props) {
     if (currentStep === wizardStep.wizardLength) {
       return handleSendData(values, formikBag);
     }
-
+    formikBag.setTouched({});
     return handleNextForm();
   };
 
@@ -438,7 +444,7 @@ function CreateProductInner({ initial }: Props) {
         >
           {() => {
             return (
-              <Form>
+              <Form onKeyPress={onKeyPress}>
                 {isPreviewVisible ? (
                   <Preview
                     togglePreview={setIsPreviewVisible}
