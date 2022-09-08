@@ -35,6 +35,7 @@ interface Props {
   isError: boolean;
   isLoading?: boolean;
   refetch: () => void;
+  setSelected: React.Dispatch<React.SetStateAction<Array<Offer | null>>>;
 }
 
 interface IIndeterminateInputProps {
@@ -168,7 +169,11 @@ const Span = styled.span`
     margin-right: 1rem;
   }
 `;
-export default function SellerProductsTable({ offers, refetch }: Props) {
+export default function SellerProductsTable({
+  offers,
+  refetch,
+  setSelected
+}: Props) {
   const { showModal, modalTypes } = useModal();
   const navigate = useKeepQueryParamsNavigate();
   const columns = useMemo(
@@ -226,7 +231,10 @@ export default function SellerProductsTable({ offers, refetch }: Props) {
 
         return {
           offerId: offer?.id,
-          isSelectable: status !== OffersKit.OfferState.VOIDED,
+          isSelectable: !(
+            status === OffersKit.OfferState.EXPIRED ||
+            status === OffersKit.OfferState.VOIDED
+          ),
           image: (
             <Image
               src={offer?.metadata?.image ?? ""}
@@ -331,12 +339,12 @@ export default function SellerProductsTable({ offers, refetch }: Props) {
             );
           },
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          Cell: ({ row }: CellProps<any>) => (
-            <IndeterminateCheckbox
-              {...row.getToggleRowSelectedProps()}
-              disabled={!row?.original?.isSelectable}
-            />
-          )
+          Cell: ({ row }: CellProps<any>) =>
+            !row?.original?.isSelectable ? (
+              <IndeterminateCheckbox disabled />
+            ) : (
+              <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+            )
         },
         ...columns
       ]);
@@ -356,7 +364,7 @@ export default function SellerProductsTable({ offers, refetch }: Props) {
     previousPage,
     setPageSize,
     pageCount,
-    state: { pageIndex, pageSize }
+    state: { pageIndex, pageSize, selectedRowIds }
   } = tableProps;
 
   const paginate = useMemo(() => {
@@ -366,6 +374,33 @@ export default function SellerProductsTable({ offers, refetch }: Props) {
     );
   }, [pageCount, pageIndex]);
 
+  useEffect(() => {
+    const arr = Object.keys(selectedRowIds);
+    if (arr.length) {
+      const selectedOffers = arr
+        .map((index: string) => {
+          const el = rows[Number(index)];
+          const offerId = el?.original?.offerId;
+          const offer = offers?.find((offer) => offer?.id === offerId);
+          const status = offer ? OffersKit.getOfferStatus(offer) : "";
+
+          if (
+            !(
+              status === OffersKit.OfferState.EXPIRED ||
+              status === OffersKit.OfferState.VOIDED
+            )
+          ) {
+            return offer || null;
+          }
+
+          return null;
+        })
+        .filter((n): boolean => n !== null);
+      setSelected(selectedOffers);
+    } else {
+      setSelected([]);
+    }
+  }, [selectedRowIds]); // eslint-disable-line
   return (
     <>
       <Table {...getTableProps()}>
