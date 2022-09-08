@@ -81,22 +81,22 @@ export default function DatePicker({
     setShownDate("Choose dates...");
   }, []);
 
-  const handleDateChange = (v: Dayjs | null) => {
-    if (v === null) {
+  const handleDateChange = (inputDate: Dayjs | null) => {
+    if (inputDate === null) {
       return reset();
     }
 
     if (period) {
       if (date === null) {
-        setDate(v);
+        setDate(inputDate);
         setSecondDate(null);
       } else if (secondDate === null) {
-        setSecondDate(v);
+        setSecondDate(inputDate);
       } else if (date !== null && secondDate !== null) {
         reset();
       }
     } else {
-      setDate(v);
+      setDate(inputDate);
     }
   };
 

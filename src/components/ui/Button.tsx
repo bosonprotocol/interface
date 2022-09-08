@@ -1,3 +1,4 @@
+import { Loading } from "@bosonprotocol/react-kit";
 import styled, { css, ThemeProvider } from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
@@ -202,6 +203,7 @@ export interface IButton {
   type?: "button" | "submit" | "reset" | undefined;
   fill?: boolean;
   step?: number;
+  isLoading?: boolean;
   [x: string]: unknown;
 }
 
@@ -213,6 +215,7 @@ const Button: React.FC<IButton> = ({
   type = "button",
   step = 0,
   fill = false,
+  isLoading = false,
   ...rest
 }) => {
   return (
@@ -224,14 +227,18 @@ const Button: React.FC<IButton> = ({
         fill={fill ? fill : undefined}
         {...rest}
       >
-        <ChildWrapperButton>
-          {children}
-          {step !== 0 && (
-            <Typography>
-              <small>Step {step}</small>
-            </Typography>
-          )}
-        </ChildWrapperButton>
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <ChildWrapperButton>
+            {children}
+            {step !== 0 && (
+              <Typography>
+                <small>Step {step}</small>
+              </Typography>
+            )}
+          </ChildWrapperButton>
+        )}
       </BaseButton>
     </ThemeProvider>
   );

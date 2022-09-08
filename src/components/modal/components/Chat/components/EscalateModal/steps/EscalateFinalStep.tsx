@@ -1,10 +1,11 @@
 import { Copy } from "phosphor-react";
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../../../../../../lib/styles/colors";
 import { useBreakpoints } from "../../../../../../../lib/utils/hooks/useBreakpoints";
 import { Exchange } from "../../../../../../../lib/utils/hooks/useExchanges";
+import { Notify } from "../../../../../../detail/Detail.style";
 import Grid from "../../../../../../ui/Grid";
 import Typography from "../../../../../../ui/Typography";
 
@@ -40,27 +41,35 @@ const StyledTypography = styled(Typography)<{ isLteXS: boolean }>`
 
 function EscalateFinalStep({ exchange }: Props) {
   const { isLteXS } = useBreakpoints();
+  const [show, setShow] = useState(false);
 
   return (
     <Container>
-      <Typography fontWeight="600" $fontSize="2rem" margin="0 0 0.625rem 0">
+      <Typography fontWeight="600" $fontSize="2rem">
         Submit Evidence
       </Typography>
       <Typography
         fontWeight="400"
-        $fontSize="1.25rem"
-        margin="0 0 5rem 0"
+        $fontSize="1rem"
         color={colors.darkGrey}
+        margin="0 0 1.5625rem 0"
       >
-        You have to submit evidence to the dispute resolver to decide on your
-        case.
+        You must now submit evidence to support your dispute. Please copy the
+        below values into an email and attach any files or other evidence before
+        addressing the email to the address shown below.
       </Typography>
       <Grid justifyContent={isLteXS ? "center" : "flex-start"}>
         <Typography $fontSize="1rem" fontWeight="600">
           Portal Dis Rec Inc.
         </Typography>
         <CopyButton
-          onClick={() => navigator.clipboard.writeText("Portal@dispute.com")}
+          onClick={() => {
+            navigator.clipboard.writeText("Portal@dispute.com");
+            setShow(true);
+            setTimeout(() => {
+              setShow(false);
+            }, 3000);
+          }}
         >
           {/* TODO */}
           <StyledCopy size={24} color={colors.secondary} weight="light" />
@@ -85,10 +94,15 @@ function EscalateFinalStep({ exchange }: Props) {
         </Typography>
         <CopyButton
           onClick={
-            () =>
+            () => {
               navigator.clipboard.writeText(
-                `Exchange ID ${exchange.id} \nDispute ID ${exchange.id} \nAuthenticator insert-signature`
-              )
+                `Exchange ID: ${exchange.id} \nDispute ID: ${exchange.id} \nAuthenticator: insert-signature`
+              );
+              setShow(true);
+              setTimeout(() => {
+                setShow(false);
+              }, 3000);
+            }
             // TODO: insert signature
           }
         >
@@ -163,6 +177,9 @@ function EscalateFinalStep({ exchange }: Props) {
           insert-signature
         </StyledTypography>
       </StyledGrid>
+      <Notify $show={show}>
+        <Typography tag="p">Text has been copied to clipboard</Typography>
+      </Notify>
     </Container>
   );
 }

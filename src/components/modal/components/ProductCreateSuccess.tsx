@@ -2,7 +2,6 @@
 import { formatUnits } from "@ethersproject/units";
 import * as ProgressPrimitive from "@radix-ui/react-progress";
 import { BigNumber } from "ethers";
-import { Question } from "phosphor-react";
 import { Plus } from "phosphor-react";
 import { useMemo } from "react";
 import styled from "styled-components";
@@ -20,7 +19,7 @@ import {
   WidgetButtonWrapper
 } from "../../detail/Detail.style";
 import DetailTable from "../../detail/DetailTable";
-import DetailTooltip from "../../detail/DetailTooltip";
+import Tooltip from "../../tooltip/Tooltip";
 import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
 import Image from "../../ui/Image";
@@ -33,7 +32,7 @@ interface Props {
   onCreateNewProject: () => void;
   onViewMyItem: () => void;
 }
-const Founds = styled.div`
+const Funds = styled.div`
   margin: 2rem auto;
   padding: 1.5rem 2rem;
   background: ${colors.black};
@@ -83,7 +82,7 @@ const StyledWidgetButtonWrapper = styled(WidgetButtonWrapper)`
   }
 `;
 
-const FoundTile = styled(Typography)`
+const FundTile = styled(Typography)`
   font-weight: bold;
   display: flex;
   justify-content: space-between;
@@ -163,7 +162,6 @@ export default function ProductCreateSuccess({
               </Typography>
               <StyledPrice
                 isExchange={false}
-                address={offer.exchangeToken.address}
                 currencySymbol={offer.exchangeToken.symbol}
                 value={offer.price}
                 decimals={offer.exchangeToken.decimals}
@@ -176,13 +174,11 @@ export default function ProductCreateSuccess({
               <DetailTable align noBorder data={OFFER_DETAIL_DATA} />
             </div>
           </Widget>
-          <Founds>
-            <FoundTile tag="p">
+          <Funds>
+            <FundTile tag="p">
               Please provide
-              <DetailTooltip trigger={<Question size={16} />}>
-                NEED TO BE ADDED
-              </DetailTooltip>
-            </FoundTile>
+              <Tooltip content="NEED TO BE ADDED" size={16} />
+            </FundTile>
             <Typography tag="p" $fontSize="0.75rem">
               Describe here why seller should provide funds ..
               <br />
@@ -207,7 +203,7 @@ export default function ProductCreateSuccess({
                 </Amount>
               </StyledProgressLayer>
             </StyledProgress>
-          </Founds>
+          </Funds>
           <StyledWidgetButtonWrapper>
             <Button type="button" theme="secondary" onClick={onViewMyItem}>
               View my item

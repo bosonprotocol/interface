@@ -308,7 +308,6 @@ const DetailWidget: React.FC<IDetailWidget> = ({
           >
             <StyledPrice
               isExchange={isExchange}
-              address={offer.exchangeToken.address}
               currencySymbol={offer.exchangeToken.symbol}
               value={offer.price}
               decimals={offer.exchangeToken.decimals}

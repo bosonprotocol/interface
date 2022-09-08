@@ -24,7 +24,7 @@ const GridContainer = styled.div`
   justify-content: space-between;
   width: 100%;
   grid-gap: 0.625rem;
-  margin-top: 5rem;
+  margin-top: 1.5625rem;
   padding-bottom: 15px;
   border-bottom: 1px solid ${colors.lightGrey};
 `;
@@ -38,10 +38,11 @@ function EscalateStepOne({ exchange }: Props) {
 
   const { data } = useDisputeResolvers();
 
-  const feeAmount = data?.disputeResolvers[0]?.fees[0].feeAmount;
+  const feeAmount = data?.disputeResolvers[0]?.fees[0]?.feeAmount;
 
   const parseDisputePeriod = dayjs(
-    getDateTimestamp(exchange.offer.resolutionPeriodDuration)
+    getDateTimestamp(exchange.offer.validUntilDate) +
+      getDateTimestamp(exchange.offer.fulfillmentPeriodDuration)
   );
 
   const deadlineTimeLeft = useMemo(() => {
@@ -68,8 +69,8 @@ function EscalateStepOne({ exchange }: Props) {
         <Typography fontWeight="600" $fontSize="2rem" margin="1rem 0 0 0">
           Escalate Dispute
         </Typography>
-        <Typography $fontSize="1rem" fontWeight="400">
-          Escalating a dispute will enable the dispite resolver to decide on the
+        <Typography $fontSize="1rem" fontWeight="400" color={colors.darkGrey}>
+          Escalating a dispute will enable the dispute resolver to decide on the
           outcome of the dispute. The dispute resolver will decide based on the
           contractual agreement and evidence submitted by both parties.
         </Typography>

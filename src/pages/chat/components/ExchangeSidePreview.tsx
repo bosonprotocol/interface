@@ -55,6 +55,11 @@ const Container = styled.div<{ $disputeOpen: boolean }>`
 const StyledImage = styled(Image)`
   all: unset;
   cursor: pointer;
+
+  [data-image-placeholder] {
+    position: initial;
+  }
+
   [data-testid="exchange-image"] {
     all: unset;
     width: 100%;
@@ -263,7 +268,6 @@ export default function ExchangeSidePreview({
         <Name tag="h3">{exchange.offer.metadata.name}</Name>
         <StyledPrice
           isExchange={false}
-          address={offer.exchangeToken.address}
           currencySymbol={offer.exchangeToken.symbol}
           value={offer.price}
           decimals={offer.exchangeToken.decimals}
@@ -339,8 +343,9 @@ export default function ExchangeSidePreview({
         </CTASection>
       ) : null}
       <HistorySection>
-        <h4>History</h4>
-        <ExchangeTimeline exchange={exchange} />
+        <ExchangeTimeline exchange={exchange}>
+          <h4>History</h4>
+        </ExchangeTimeline>
       </HistorySection>
     </Container>
   );

@@ -51,6 +51,9 @@ module.exports = {
   // work here.
   jest: function (config) {
     // ...add your jest config customisation...
+    config.moduleNameMapper = {
+      "\\.(css|less|scss|sass)$": "<rootDir>/styleMock.js"
+    };
     config.transformIgnorePatterns = [
       // '[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs|cjs|ts|tsx)$',
       "node_modules/(?!(@rainbow-me/rainbowkit)/)",

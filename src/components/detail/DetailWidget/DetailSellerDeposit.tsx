@@ -32,7 +32,7 @@ export const DetailSellerDeposit = {
       : "";
     return (
       <Typography tag="p">
-        {sellerDeposit}%
+        {isNaN(sellerDeposit) ? "-" : sellerDeposit}%
         {sellerDepositDollars && <small>(${sellerDepositDollars})</small>}
       </Typography>
     );

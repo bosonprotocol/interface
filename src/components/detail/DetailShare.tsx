@@ -20,7 +20,7 @@ export default function DetailShare() {
 
   return (
     <>
-      <ShareWrapper>
+      <ShareWrapper data-name="detail-share-wrapper">
         <Button onClick={handleShare} theme="blank">
           <ShareNetwork size={24} />
         </Button>

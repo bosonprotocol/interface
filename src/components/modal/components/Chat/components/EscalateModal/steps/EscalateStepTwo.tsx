@@ -47,7 +47,7 @@ function EscalateStepTwo() {
         <StyledListElement>Dispute Escalation Transaction</StyledListElement>
         <StyledSublist>
           <StyledSublistElement>
-            Confirm dispute escalation transaction first submit
+            Confirm the dispute escalation transaction
           </StyledSublistElement>
         </StyledSublist>
         <StyledListElement>Case Description & Evidence</StyledListElement>

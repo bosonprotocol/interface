@@ -40,14 +40,12 @@ const RefundAmountWrapper = styled.div`
 `;
 
 interface Props {
-  address: string;
   inEscrow: string;
   inEscrowWithDecimals: string;
   exchangeToken: Offer["exchangeToken"];
 }
 
 export default function RequestedRefundInput({
-  address,
   inEscrow,
   inEscrowWithDecimals,
   exchangeToken
@@ -77,7 +75,7 @@ export default function RequestedRefundInput({
     useFormikContext<any>();
   return (
     <RefundAmountWrapper>
-      <CurrencyIcon currencySymbol={currencySymbol} address={address} />
+      <CurrencyIcon currencySymbol={currencySymbol} />
       <Input
         step="0.001"
         name={FormModel.formFields.refundAmount.name}

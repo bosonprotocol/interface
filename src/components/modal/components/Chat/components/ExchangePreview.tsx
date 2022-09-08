@@ -83,7 +83,6 @@ export default function ExchangePreview({ exchange }: Props) {
         </Grid>
       </Grid>
       <StyledPrice
-        address={offer.exchangeToken.address}
         currencySymbol={offer.exchangeToken.symbol}
         value={offer.price}
         decimals={offer.exchangeToken.decimals}

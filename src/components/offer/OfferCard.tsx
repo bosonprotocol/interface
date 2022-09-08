@@ -179,7 +179,6 @@ export default function OfferCard({
           </Name>
           {offer.exchangeToken && (
             <Price
-              address={offer.exchangeToken.address}
               currencySymbol={offer.exchangeToken.symbol}
               value={offer.price}
               decimals={offer.exchangeToken.decimals}

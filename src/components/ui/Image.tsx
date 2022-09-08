@@ -1,3 +1,4 @@
+import { Loading } from "@bosonprotocol/react-kit";
 import { CameraSlash, Image as ImageIcon } from "phosphor-react";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
@@ -5,6 +6,7 @@ import styled from "styled-components";
 import { buttonText } from "../../components/ui/styles";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
+import { blobToBase64 } from "../../lib/utils/base64ImageConverter";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
 import Typography from "./Typography";
 
@@ -69,41 +71,68 @@ interface IImage {
   dataTestId?: string;
   alt?: string;
   showPlaceholderText?: boolean;
+  noPreload?: boolean;
 }
-
 const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
   src,
   children,
   dataTestId = "image",
   alt = "",
   showPlaceholderText = true,
+  noPreload = false,
   ...rest
 }) => {
-  const [imageSrc, setImageSrc] = useState<string | null>(null);
+  const [isLoaded, setIsLoaded] = useState<boolean>(noPreload);
+  const [isError, setIsError] = useState<boolean>(false);
+  const [imageSrc, setImageSrc] = useState<string | null>(
+    noPreload ? src : null
+  );
   const ipfsMetadataStorage = useIpfsStorage();
 
   useEffect(() => {
     async function fetchData(src: string) {
       const fetchPromises = await ipfsMetadataStorage.get(src, false);
       const [image] = await Promise.all([fetchPromises]);
-      setImageSrc(String(image));
-    }
-    if (src?.includes("ipfs://")) {
-      fetchData(src);
-    }
-  }, [src]); // eslint-disable-line
+      const base64str = await blobToBase64(new Blob([image as BlobPart]));
 
-  return (
-    <ImageWrapper {...rest}>
-      {children || ""}
-      {imageSrc || src ? (
-        <ImageContainer
-          data-testid={dataTestId}
-          src={imageSrc || src}
-          alt={alt}
-        />
-      ) : (
+      if (!String(base64str).includes("base64")) {
+        setIsLoaded(true);
+        setIsError(true);
+      } else {
+        setImageSrc(base64str as string);
+      }
+    }
+    if (!isLoaded && imageSrc === null) {
+      if (src?.includes("ipfs://")) {
+        fetchData(src);
+      } else {
+        setImageSrc(src);
+      }
+    }
+  }, []); // eslint-disable-line
+
+  useEffect(() => {
+    if (imageSrc !== null) {
+      setTimeout(() => setIsLoaded(true), 100);
+    }
+  }, [imageSrc]);
+
+  if (!isLoaded && !isError) {
+    return (
+      <ImageWrapper {...rest}>
         <ImagePlaceholder>
+          <Typography tag="div">
+            <Loading />
+          </Typography>
+        </ImagePlaceholder>
+      </ImageWrapper>
+    );
+  }
+
+  if (isLoaded && isError) {
+    return (
+      <ImageWrapper {...rest}>
+        <ImagePlaceholder data-image-placeholder>
           {showPlaceholderText ? (
             <ImageIcon size={50} color={colors.white} />
           ) : (
@@ -113,6 +142,15 @@ const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
             <Typography tag="span">IMAGE NOT AVAILABLE</Typography>
           )}
         </ImagePlaceholder>
+      </ImageWrapper>
+    );
+  }
+
+  return (
+    <ImageWrapper {...rest}>
+      {children || ""}
+      {imageSrc && (
+        <ImageContainer data-testid={dataTestId} src={imageSrc} alt={alt} />
       )}
     </ImageWrapper>
   );
