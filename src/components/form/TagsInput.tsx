@@ -13,8 +13,8 @@ import {
 } from "./styles/TagsInput.styles";
 
 const TagsInput = ({ name }: { name: string }) => {
-  const [, meta, helpers] = useField(name);
-  const [tags, setTags] = useState<string[]>([]);
+  const [field, meta, helpers] = useField(name);
+  const [tags, setTags] = useState<string[]>(field.value || []);
 
   const errorMessage = meta.error && meta.touched ? meta.error : "";
   const displayError =
@@ -46,10 +46,10 @@ const TagsInput = ({ name }: { name: string }) => {
   function removeTag(index: number) {
     const filteredTags = tags.filter((el, i) => i !== index);
     setTags(filteredTags);
+    helpers.setValue(filteredTags);
     if (!meta.touched) {
       helpers.setTouched(true);
     }
-    helpers.setValue(filteredTags);
   }
 
   return (
