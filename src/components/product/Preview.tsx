@@ -1,5 +1,6 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import { parseUnits } from "@ethersproject/units";
+import { ethers } from "ethers";
 import map from "lodash/map";
 import slice from "lodash/slice";
 import styled from "styled-components";
@@ -84,18 +85,20 @@ export default function Preview({ togglePreview, seller }: Props) {
   const offer = {
     price: weiPrice.toString(),
 
-    sellerDeposit: parseUnits(
-      `${(parseFloat(values.coreTermsOfSale.price) * sellerDeposit).toFixed(
-        18
-      )}`,
+    sellerDeposit: ethers.utils.formatUnits(
+      ethers.utils
+        .parseUnits(values.coreTermsOfSale.price.toString(), 18)
+        .mul(ethers.utils.parseUnits(sellerDeposit.toString(), 18))
+        .toString(),
       18
-    ).toString(),
-    buyerCancelPenalty: parseUnits(
-      `${(parseFloat(values.coreTermsOfSale.price) * buyerDeposit).toFixed(
-        18
-      )}`,
+    ),
+    buyerCancelPenalty: ethers.utils.formatUnits(
+      ethers.utils
+        .parseUnits(values.coreTermsOfSale.price.toString(), 18)
+        .mul(ethers.utils.parseUnits(buyerDeposit.toString(), 18))
+        .toString(),
       18
-    ).toString(),
+    ),
     validFromDate: validFromDateInMS.toString(),
     validUntilDate: validUntilDateInMS.toString(),
     voucherRedeemableFromDate: voucherRedeemableFromDateInMS.toString(),
