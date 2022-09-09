@@ -142,13 +142,15 @@ export default function OfferDetail() {
         {images.length > 0 && <DetailSlider images={images} />}
         <DetailGrid>
           <DetailChart offer={offer} title="Inventory graph" />
-          <div>
-            <Typography tag="h3">Shipping information</Typography>
-            <Typography tag="p" style={{ color: colors.darkGrey }}>
-              {shippingInfo.shipping}
-            </Typography>
-            <DetailTable data={shippingInfo.shippingTable} />
-          </div>
+          {(shippingInfo.shipping || shippingInfo.shippingTable.length) && (
+            <div>
+              <Typography tag="h3">Shipping information</Typography>
+              <Typography tag="p" style={{ color: colors.darkGrey }}>
+                {shippingInfo.shipping}
+              </Typography>
+              <DetailTable data={shippingInfo.shippingTable} />
+            </div>
+          )}
         </DetailGrid>
       </DarkerBackground>
     </DetailWrapper>

@@ -1,6 +1,7 @@
+import { subgraph } from "@bosonprotocol/core-sdk";
 import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
-import { BigNumber, utils } from "ethers";
+import { BigNumber, ethers, utils } from "ethers";
 import groupBy from "lodash/groupBy";
 import {
   CaretDown,
@@ -13,6 +14,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { usePagination, useRowSelect, useSortBy, useTable } from "react-table";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
+
+import { CONFIG } from "../../../lib/config";
 dayjs.extend(isBetween);
 
 import { colors } from "../../../lib/styles/colors";
@@ -145,7 +148,42 @@ export default function SellerFinancesTable() {
   const {
     seller: { sellerId, isError: isErrorSellers, isLoading: isLoadingSellers }
   } = useBuyerSellerAccounts(address || "");
+  const accountId = sellerId;
   const { funds, reload, fundStatus } = useFunds(sellerId);
+  const [uiFunds, setUiFunds] =
+    useState<subgraph.FundsEntityFieldsFragment[]>(funds);
+  useEffect(() => {
+    const nativeFund = funds.find(
+      (f) => f.token.address === ethers.constants.AddressZero
+    );
+    const fundsDefaultList = nativeFund
+      ? [nativeFund]
+      : [
+          {
+            accountId,
+            availableAmount: "0",
+            id: "",
+            token: {
+              id: "",
+              address: ethers.constants.AddressZero,
+              name: CONFIG.nativeCoin?.name || "",
+              symbol: CONFIG.nativeCoin?.symbol || "",
+              decimals: CONFIG.nativeCoin?.decimals || ""
+            }
+          }
+        ];
+    setUiFunds((prevFunds) => [
+      ...Array.from(
+        new Map(
+          [...funds, ...prevFunds, ...fundsDefaultList].map((v) => [
+            v.token.address,
+            v
+          ])
+        ).values()
+      )
+    ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [funds, accountId]);
   const {
     data: exchangesTokens,
     isLoading: isLoadingExchangesTokens,
@@ -308,7 +346,7 @@ export default function SellerFinancesTable() {
 
   const data = useMemo(
     () =>
-      funds?.map((fund) => {
+      uiFunds?.map((fund) => {
         const decimals = fund.token.decimals;
         const lockedFunds = sellerLockedFunds?.[fund.token.symbol] ?? "0";
         const lockedFundsFormatted = utils.formatUnits(lockedFunds, decimals);
@@ -404,7 +442,7 @@ export default function SellerFinancesTable() {
       sellerId,
       sellerLockedFunds,
       showModal,
-      funds
+      uiFunds
     ]
   );
 
@@ -458,6 +496,7 @@ export default function SellerFinancesTable() {
     isErrorExchangesTokens
   ) {
     // TODO: NO FIGMA REPRESENTATIONS
+    return <p>There has been an error, please try again later...</p>;
   }
 
   return (
@@ -519,7 +558,6 @@ export default function SellerFinancesTable() {
               );
             })) || (
             <tr>
-              (
               <td colSpan={columns.length}>
                 <Typography
                   tag="h6"
@@ -527,10 +565,9 @@ export default function SellerFinancesTable() {
                   padding="1rem 0"
                   margin="0"
                 >
-                  No data to display
+                  (No data to display)
                 </Typography>
               </td>
-              )
             </tr>
           )}
         </tbody>
