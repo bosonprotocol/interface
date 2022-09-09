@@ -69,7 +69,7 @@ export default function Price({
     <Root {...rest} data-testid="price">
       {price ? (
         <Grid
-          alignItems="flex-end"
+          alignItems="baseline"
           justifyContent="flex-start"
           flexDirection={isExchange ? "column" : "row"}
         >

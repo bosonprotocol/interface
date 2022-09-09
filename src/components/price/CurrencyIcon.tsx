@@ -1,4 +1,4 @@
-import { Currencies, CurrencyDisplay } from "@bosonprotocol/react-kit";
+import { Currencies, CurrencyLogo } from "@bosonprotocol/react-kit";
 import { useState } from "react";
 
 import { CONFIG } from "../../lib/config";
@@ -50,7 +50,7 @@ export default function CurrencyIcon({
       default:
         usedCurrency = Currencies.ETH;
     }
-    return <CurrencyDisplay currency={usedCurrency} height={size} />;
+    return <CurrencyLogo currency={usedCurrency} />;
   } catch (error) {
     setError(true);
     onError?.();
