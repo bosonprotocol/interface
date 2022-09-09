@@ -6,7 +6,7 @@ import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import { Offer } from "../../lib/types/offer";
 
-const Statuses = styled.div`
+export const Statuses = styled.div`
   position: absolute;
   right: -1rem;
   top: 1rem;
@@ -41,7 +41,7 @@ const Statuses = styled.div`
   }
 `;
 
-const Status = styled.div<{
+export const Status = styled.div<{
   $background: string;
   $color: string;
   $size: Props["size"];

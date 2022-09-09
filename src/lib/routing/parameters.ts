@@ -14,6 +14,7 @@ export const UrlParameters = {
   accountId: "id",
   page: "page",
   sellerPage: "sellerPage",
+  adminPage: "adminPage",
   buyerId: "id",
   sellerId: "id"
 } as const;

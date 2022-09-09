@@ -9,12 +9,14 @@ import SentryProvider from "./components/SentryProvider";
 import ScrollToTop from "./components/utils/Scroll";
 import WalletConnectionProvider from "./components/WalletConnectionProvider";
 import {
+  AdminRoutes,
   BosonRoutes,
   OffersRoutes,
   SellerCenterRoutes
 } from "./lib/routing/routes";
 import PrivateAccount from "./pages/account/private/PrivateAccountContainer";
 import PublicOrPrivateAccount from "./pages/account/public/PublicOrPrivateAccount";
+import AdminCenter from "./pages/admin/AdminCenter";
 import Chat from "./pages/chat/Chat";
 import CreateProduct from "./pages/create-product/CreateProduct";
 import CustomStore from "./pages/custom-store/CustomStore";
@@ -74,6 +76,18 @@ root.render(
                   }
                 >
                   <Route path="*" element={<SellerCenter />} />
+                </Route>
+                <Route
+                  path={`${AdminRoutes.Admin}/*`}
+                  element={
+                    <App
+                      withLayout={false}
+                      withFooter={false}
+                      fluidHeader={true}
+                    />
+                  }
+                >
+                  <Route path="*" element={<AdminCenter />} />
                 </Route>
                 <Route path="/" element={<App />}>
                   <Route path={BosonRoutes.Root} element={<Landing />} />

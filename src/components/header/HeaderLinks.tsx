@@ -4,9 +4,14 @@ import styled, { css } from "styled-components";
 import { useAccount } from "wagmi";
 
 import { UrlParameters } from "../../lib/routing/parameters";
-import { BosonRoutes, SellerCenterRoutes } from "../../lib/routing/routes";
+import {
+  AdminRoutes,
+  BosonRoutes,
+  SellerCenterRoutes
+} from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { useBuyerSellerAccounts } from "../../lib/utils/hooks/useBuyerSellerAccounts";
+import { useIsAdmin } from "../../lib/utils/hooks/useIsAdmin";
 import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
 import { DEFAULT_SELLER_PAGE } from "../seller/SellerPages";
 import Search from "./Search";
@@ -138,6 +143,7 @@ export default function HeaderLinks({
   navigationBarPosition
 }: Props) {
   const { address } = useAccount();
+  const isAdmin = useIsAdmin(address);
 
   const {
     buyer: { buyerId },
@@ -167,6 +173,7 @@ export default function HeaderLinks({
         navigationBarPosition={navigationBarPosition}
       />
       <Links isMobile={isMobile} $navigationBarPosition={navigationBarPosition}>
+        {isAdmin && <LinkWithQuery to={AdminRoutes.Root}>Admin</LinkWithQuery>}
         <LinkWithQuery to={sellUrl}>Sell</LinkWithQuery>
         <LinkWithQuery to={BosonRoutes.Explore}>Explore Products</LinkWithQuery>
         {isAccountBuyer && (

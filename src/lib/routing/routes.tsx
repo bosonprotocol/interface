@@ -6,6 +6,7 @@ export const BosonRoutes = {
   ExplorePage: "/explore/page",
   ExplorePageByIndex: `/explore/page/:${UrlParameters.page}`,
   Sell: "/sell",
+  Admin: "/admin",
   Exchange: `/exchange/:${UrlParameters.exchangeId}`,
   YourAccount: `/account`,
   Account: `/account/:${UrlParameters.accountId}`,
@@ -23,6 +24,11 @@ export const BosonRoutes = {
 export const SellerCenterRoutes = {
   SellerCenter: `${BosonRoutes.Sell}/:${UrlParameters.sellerPage}`,
   CreateProduct: `${BosonRoutes.Sell}/create-product`
+};
+
+export const AdminRoutes = {
+  Root: `${BosonRoutes.Admin}/dashboard`,
+  Admin: `${BosonRoutes.Admin}/:${UrlParameters.adminPage}`
 };
 
 export const OffersRoutes = {
