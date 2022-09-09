@@ -6,7 +6,7 @@ import { useAccount } from "wagmi";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes, SellerCenterRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
-import { useCurrentSellerId } from "../../lib/utils/hooks/useCurrentSellerId";
+import { useBuyerSellerAccounts } from "../../lib/utils/hooks/useBuyerSellerAccounts";
 import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
 import { DEFAULT_SELLER_PAGE } from "../seller/SellerPages";
 import Search from "./Search";
@@ -138,11 +138,13 @@ export default function HeaderLinks({
   navigationBarPosition
 }: Props) {
   const { address } = useAccount();
-  const { isLoading, sellerId } = useCurrentSellerId();
-  const isAccountSeller = useMemo(
-    () => !isLoading && sellerId !== null,
-    [isLoading, sellerId]
-  );
+
+  const {
+    buyer: { buyerId },
+    seller: { sellerId }
+  } = useBuyerSellerAccounts(address || "");
+  const isAccountSeller = useMemo(() => !!sellerId, [sellerId]);
+  const isAccountBuyer = useMemo(() => !!buyerId, [buyerId]);
 
   const sellUrl = useMemo(
     () =>
@@ -167,7 +169,7 @@ export default function HeaderLinks({
       <Links isMobile={isMobile} $navigationBarPosition={navigationBarPosition}>
         <LinkWithQuery to={sellUrl}>Sell</LinkWithQuery>
         <LinkWithQuery to={BosonRoutes.Explore}>Explore Products</LinkWithQuery>
-        {address && (
+        {isAccountBuyer && (
           <LinkWithQuery to={BosonRoutes.YourAccount}>My Items</LinkWithQuery>
         )}
       </Links>

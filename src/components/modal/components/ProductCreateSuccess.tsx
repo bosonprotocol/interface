@@ -128,7 +128,9 @@ export default function ProductCreateSuccess({
     Number(CONFIG.nativeCoin?.decimals) || 18
   );
 
-  const fifteenOfAmmount = parseFloat(suggestedAmount) * 0.15;
+  const fifteenOfAmmount = parseFloat(
+    (parseFloat(suggestedAmount) * 0.15).toFixed(18)
+  );
 
   return (
     <>
@@ -177,6 +179,7 @@ export default function ProductCreateSuccess({
           <Funds>
             <FundTile tag="p">
               Please provide
+              {/* TODO: */}
               <Tooltip content="NEED TO BE ADDED" size={16} />
             </FundTile>
             <Typography tag="p" $fontSize="0.75rem">

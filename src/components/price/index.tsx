@@ -60,13 +60,16 @@ export default function Price({
   ...rest
 }: IProps) {
   const [isSymbolShown, setIsSymbolShown] = useState<boolean>(false); // TODO: remove once CSS :has is supported
-  const price = useConvertedPrice({ value, decimals, symbol: currencySymbol });
-
+  const price = useConvertedPrice({
+    value,
+    decimals,
+    symbol: currencySymbol
+  });
   return (
     <Root {...rest} data-testid="price">
       {price ? (
         <Grid
-          alignItems="baseline"
+          alignItems="flex-end"
           justifyContent="flex-start"
           flexDirection={isExchange ? "column" : "row"}
         >

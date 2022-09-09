@@ -4,22 +4,24 @@ import { useState } from "react";
 import { CONFIG } from "../../lib/config";
 import { ReactComponent as bosonIcon } from "./images/boson.svg";
 import { ReactComponent as daiIcon } from "./images/dai.svg";
-import { ReactComponent as ethIcon } from "./images/eth-icon.svg";
 
 const currencyImages = {
   DAI: daiIcon,
-  BOSON: bosonIcon,
-  ETH: ethIcon
+  BOSON: bosonIcon
 } as const;
 
 interface Props {
   currencySymbol: string;
   onError?: () => void;
+  size?: number;
 }
 
 const chain = [137, 80001].includes(CONFIG.chainId) ? "polygon" : "ethereum";
-
-export default function CurrencyIcon({ currencySymbol, onError }: Props) {
+export default function CurrencyIcon({
+  currencySymbol,
+  onError,
+  size = 20
+}: Props) {
   const [error, setError] = useState<boolean>(false);
   try {
     const symbolUpperCase =
@@ -27,7 +29,9 @@ export default function CurrencyIcon({ currencySymbol, onError }: Props) {
 
     if (currencyImages[symbolUpperCase]) {
       const Icon = currencyImages[symbolUpperCase];
-      return <Icon width="25" height="25" viewBox="0 0 25 25" />;
+      return (
+        <Icon width={size} height={size} viewBox={`0 0 ${size} ${size}`} />
+      );
     }
 
     if (error) {
@@ -46,7 +50,7 @@ export default function CurrencyIcon({ currencySymbol, onError }: Props) {
       default:
         usedCurrency = Currencies.ETH;
     }
-    return <CurrencyDisplay currency={usedCurrency} height={20} />;
+    return <CurrencyDisplay currency={usedCurrency} height={size} />;
   } catch (error) {
     setError(true);
     onError?.();

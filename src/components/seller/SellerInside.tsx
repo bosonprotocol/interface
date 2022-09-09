@@ -72,7 +72,7 @@ export default function SellerInside() {
       <SellerWrapper label={label}>
         <Grid justifyContent="center" padding="5rem">
           <Typography tag="h5">
-            The seller with that ID doesn't exist!
+            You must be a seller to interact with this
           </Typography>
         </Grid>
       </SellerWrapper>
