@@ -27,6 +27,8 @@ interface Props {
   sellerId?: Offer["seller"]["id"];
   hidePagination?: boolean;
   rows?: number;
+  breadcrumbs?: boolean;
+  orderDirection?: "asc" | "desc";
 }
 
 const updatePageIndexInUrl =
@@ -106,7 +108,7 @@ export default function ExploreOffers(props: Props) {
     first: OFFERS_PER_PAGE * 2,
     skip: OFFERS_PER_PAGE * pageIndex,
     orderBy: "createdAt",
-    orderDirection: "desc" as const
+    orderDirection: props.orderDirection
   };
   const {
     data: currentAndNextPageOffers,
@@ -186,6 +188,7 @@ export default function ExploreOffers(props: Props) {
           l: 4,
           xl: 4
         }}
+        breadcrumbs={props.breadcrumbs}
       />
       {!props.hidePagination && (
         <PaginationWrapper>

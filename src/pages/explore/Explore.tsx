@@ -9,28 +9,21 @@ import Typography from "../../components/ui/Typography";
 import { ExploreQueryParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { useQueryParameter } from "../../lib/routing/useQueryParameter";
-import { Select } from "../../lib/styles/base";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
-import { useBrands } from "../../lib/utils/hooks/useBrands";
 import { useCollections } from "../../lib/utils/hooks/useCollections";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import { useTokens } from "../../lib/utils/hooks/useTokens";
 import ExploreOffers from "./ExploreOffers";
 
 interface FilterValue {
-  value: string;
+  value: "asc" | "desc";
   label: string;
 }
 const selectOptions = [
-  { value: "1", label: "Price Low to High ($)" },
-  { value: "2", label: "Price High to Low ($)" },
-  { value: "3", label: "Recently Created" },
-  { value: "4", label: "Recently Live" },
-  { value: "5", label: "Recently Committed" },
-  { value: "6", label: "Recently Redeemed" }
-];
+  { value: "asc", label: "Ascending" },
+  { value: "desc", label: "Descending" }
+] as const;
 
 const customStyles: StylesConfig<
   {
@@ -87,20 +80,20 @@ const ExploreContainer = styled.div`
   display: flex;
   justify-content: center;
   flex-direction: column;
-  margin: 0 auto 64px auto;
+  margin: 0 auto 4rem auto;
   overflow: hidden;
 `;
 
-const Input = styled.input`
-  max-width: 100%;
-  padding: 10px 8px;
-  border-radius: 5px;
-  font-size: 16px;
+// const Input = styled.input`
+//   max-width: 100%;
+//   padding: 0.625rem 0.5rem;
+//   border-radius: 0.3125rem;
+//   font-size: 1rem;
 
-  ${breakpoint.m} {
-    width: 500px;
-  }
-`;
+//   ${breakpoint.m} {
+//     width: 31.25rem;
+//   }
+// `;
 
 const SelectFilterWrapper = styled.div`
   position: relative;
@@ -122,22 +115,22 @@ const TopContainer = styled.div`
   }
 `;
 
-const FiltersContainer = styled.div``;
+// const FiltersContainer = styled.div``;
 
-const BrandSelect = styled(Select)`
-  max-width: 100%;
-  ${breakpoint.m} {
-    width: 500px;
-  }
-`;
+// const BrandSelect = styled(Select)`
+//   max-width: 100%;
+//   ${breakpoint.m} {
+//     width: 31.25rem;
+//   }
+// `;
 
-const CurrencyOrSellerSelect = styled(BrandSelect)`
-  margin-top: 10px;
-`;
+// const CurrencyOrSellerSelect = styled(BrandSelect)`
+//   margin-top: 0.625rem;
+// `;
 
-const SidebarContainer = styled.div`
-  display: none;
-`;
+// const SidebarContainer = styled.div`
+//   display: none;
+// `;
 
 const ExploreOffersContainer = styled.div`
   background: ${colors.lightGrey};
@@ -148,7 +141,7 @@ const CreatorsGrid = styled.div`
   display: grid;
   width: 100%;
   grid-template-columns: 25% 25% 25% 25%;
-  grid-gap: 8px;
+  grid-gap: 0.5rem;
 `;
 
 const ViewMoreButton = styled.button`
@@ -156,52 +149,52 @@ const ViewMoreButton = styled.button`
   justify-content: space-between;
   align-items: center;
   color: ${colors.secondary};
-  width: 110px;
-  font-size: 16px;
+  width: 6.875rem;
+  font-size: 1rem;
   font-weight: 600;
 `;
+
 export default function Explore() {
-  const [nameQueryParameter, setNameQueryParameter] = useQueryParameter(
-    ExploreQueryParameters.name
-  );
-  const [currencyQueryParameter, setCurrencyQueryParameter] = useQueryParameter(
+  const [nameQueryParameter] = useQueryParameter(ExploreQueryParameters.name);
+  const [currencyQueryParameter] = useQueryParameter(
     ExploreQueryParameters.currency
   );
-  const [sellerQueryParameter, setSellerQueryParameter] = useQueryParameter(
+  const [sellerQueryParameter] = useQueryParameter(
     ExploreQueryParameters.seller
   );
 
-  const [brandInput, setBrandInput] = useState<string>(nameQueryParameter);
-  const [brandSelect, setBrandSelect] = useState<string>("");
+  // const [brandInput, setBrandInput] = useState<string>(nameQueryParameter);
+  // const [brandSelect, setBrandSelect] = useState<string>("");
   const [nameToSearch, setNameToSearch] = useState<string>(nameQueryParameter);
-  const [filter, setFilter] = useState<FilterValue | null>(null);
+  const [filter, setFilter] = useState<FilterValue>(selectOptions[0]);
   const navigate = useKeepQueryParamsNavigate();
 
   useEffect(() => {
-    setBrandInput(nameQueryParameter);
+    // setBrandInput(nameQueryParameter);
     setNameToSearch(nameQueryParameter);
   }, [nameQueryParameter]);
 
-  const { data: tokens } = useTokens();
-  const [selectedToken, setSelectedToken] = useState<string>(
-    currencyQueryParameter
-  );
-  const { data: brands } = useBrands();
+  const [selectedToken] = useState<string>(currencyQueryParameter);
+  // const { data: brands } = useBrands();
 
-  const [selectedSeller, setSelectedSeller] =
-    useState<string>(sellerQueryParameter);
+  const [selectedSeller] = useState<string>(sellerQueryParameter);
 
-  const { data } = useCollections();
+  const useCollectionPayload = {
+    orderDirection: filter.value
+  };
+  const { data } = useCollections({
+    ...useCollectionPayload
+  });
 
   const collections = useMemo(
     () => data && data.filter((item) => item.offers.length > 0).slice(0, 4),
     [data]
   );
 
-  const onChangeName = (name: string) => {
-    setNameToSearch(name);
-    setNameQueryParameter(name);
-  };
+  // const onChangeName = (name: string) => {
+  //   setNameToSearch(name);
+  //   setNameQueryParameter(name);
+  // };
 
   return (
     <ExploreContainer>
@@ -218,7 +211,7 @@ export default function Explore() {
             value={filter}
             options={selectOptions}
             onChange={(option) => {
-              setFilter(option);
+              setFilter(option as typeof selectOptions[number]);
             }}
           />
         </SelectFilterWrapper>
@@ -282,8 +275,9 @@ export default function Explore() {
           name={nameToSearch}
           exchangeTokenAddress={selectedToken}
           sellerId={selectedSeller}
-          brand={brandSelect}
+          // brand={brandSelect}
           hidePagination
+          orderDirection={filter.value}
         />
       </ExploreOffersContainer>
       <ExploreOffersContainer>

@@ -79,12 +79,7 @@ root.render(
                 </Route>
                 <Route path="/" element={<App />}>
                   <Route path={BosonRoutes.Root} element={<Landing />} />
-                  {[
-                    OffersRoutes.Root,
-                    BosonRoutes.Explore,
-                    BosonRoutes.ExplorePage,
-                    BosonRoutes.ExplorePageByIndex
-                  ].map((route) => (
+                  {[OffersRoutes.Root, BosonRoutes.Explore].map((route) => (
                     <Route key={route} path={route} element={<Explore />} />
                   ))}
                   <Route
@@ -121,6 +116,14 @@ root.render(
                     element={<Collections />}
                   />
                   <Route path={BosonRoutes.Products} element={<Products />} />
+                  <Route
+                    path={BosonRoutes.ExplorePageByIndex}
+                    element={<Products />}
+                  />
+                  <Route
+                    path={BosonRoutes.ExplorePage}
+                    element={<Products />}
+                  />
                   <Route
                     path={BosonRoutes.BuyerPage}
                     element={<ProfilePage profileType="buyer" />}

@@ -3,8 +3,8 @@ import { UrlParameters } from "./parameters";
 export const BosonRoutes = {
   Root: "/",
   Explore: "/explore",
-  ExplorePage: "/explore/page",
-  ExplorePageByIndex: `/explore/page/:${UrlParameters.page}`,
+  ExplorePage: "/products/page",
+  ExplorePageByIndex: `/products/page/:${UrlParameters.page}`,
   Sell: "/sell",
   Exchange: `/exchange/:${UrlParameters.exchangeId}`,
   YourAccount: `/account`,

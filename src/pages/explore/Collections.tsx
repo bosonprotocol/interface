@@ -1,23 +1,27 @@
 import React, { useMemo, useState } from "react";
 import ReactSelect, { StylesConfig } from "react-select";
-import { FilterValue } from "react-table";
 import styled from "styled-components";
 
+import Breadcrumbs from "../../components/breadcrumbs/Breadcrumbs";
 import CollectionsCard from "../../components/modal/components/Explore/Collections/CollectionsCard";
 import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
+import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
+import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useCollections } from "../../lib/utils/hooks/useCollections";
+import Pagination from "./Pagination";
+
+interface FilterValue {
+  value: "asc" | "desc";
+  label: string;
+}
 
 const selectOptions = [
-  { value: "1", label: "Price Low to High ($)" },
-  { value: "2", label: "Price High to Low ($)" },
-  { value: "3", label: "Recently Created" },
-  { value: "4", label: "Recently Live" },
-  { value: "5", label: "Recently Committed" },
-  { value: "6", label: "Recently Redeemed" }
-];
+  { value: "asc", label: "Ascending" },
+  { value: "desc", label: "Descending" }
+] as const;
 
 const ExploreContainer = styled.div`
   display: flex;
@@ -29,10 +33,12 @@ const ExploreContainer = styled.div`
   padding: 3.125rem;
 `;
 
-const CreatorsGrid = styled.div`
+const CreatorsGrid = styled.div<{ $isLteS: boolean; $isLteXS: boolean }>`
   display: grid;
   width: 100%;
   grid-template-columns: 25% 25% 25% 25%;
+  grid-template-columns: ${({ $isLteS }) => $isLteS && "50%"};
+  grid-template-columns: ${({ $isLteXS }) => $isLteXS && "100%"};
   grid-gap: 0.5rem;
   grid-row-gap: 2rem;
 `;
@@ -41,10 +47,13 @@ const SelectFilterWrapper = styled.div`
   position: relative;
   min-width: 10.125rem;
   max-height: 2.5rem;
-  background: ${colors.lightGrey};
   padding: 0.5rem 0.75rem 0.5rem 1rem;
   display: flex;
   align-items: center;
+`;
+
+const BreadcrumbsContainer = styled.div`
+  display: block;
 `;
 
 const customStyles: StylesConfig<
@@ -100,13 +109,31 @@ const customStyles: StylesConfig<
 };
 
 function Collections() {
-  const [filter, setFilter] = useState<FilterValue | null>(null);
-  const { data } = useCollections();
+  const [filter, setFilter] = useState<FilterValue>(selectOptions[0]);
+  const [pageIndex, setPageIndex] = useState(0);
+  const OFFERS_PER_PAGE = 8;
+  const useCollectionPayload = {
+    first: OFFERS_PER_PAGE * 2,
+    skip: OFFERS_PER_PAGE * pageIndex,
+    orderDirection: filter.value
+  };
+  const { data } = useCollections({
+    ...useCollectionPayload
+  });
+
+  const { isLteXS, isLteS } = useBreakpoints();
 
   const collections = useMemo(
     () => data && data.filter((item) => item.offers.length > 0),
     [data]
   );
+
+  const currentAndNextPageOffers = useMemo(() => {
+    if (data) {
+      return data.length / 3;
+    }
+    return 1;
+  }, [data]);
 
   return (
     <>
@@ -123,19 +150,49 @@ function Collections() {
             value={filter}
             options={selectOptions}
             onChange={(option) => {
-              setFilter(option);
+              setFilter(option as typeof selectOptions[number]);
             }}
           />
         </SelectFilterWrapper>
       </Grid>
       <ExploreContainer>
-        <CreatorsGrid>
+        <BreadcrumbsContainer>
+          <Breadcrumbs
+            steps={[
+              {
+                id: 0,
+                label: "Explore products",
+                url: `${BosonRoutes.Explore}`,
+                hightlighted: false
+              },
+              {
+                id: 1,
+                label: "All collections",
+                url: `${BosonRoutes.Products}`,
+                hightlighted: true
+              }
+            ]}
+            margin="-0.625rem 0 2rem 0"
+          />
+        </BreadcrumbsContainer>
+        <CreatorsGrid $isLteS={isLteS} $isLteXS={isLteXS}>
           {collections &&
             collections.map((collection) => (
               <CollectionsCard key={collection.id} collection={collection} />
             ))}
         </CreatorsGrid>
       </ExploreContainer>
+      <div>
+        <Pagination
+          defaultPage={pageIndex}
+          isNextEnabled={(currentAndNextPageOffers || 0) >= 1 + 1}
+          isPreviousEnabled={true}
+          onChangeIndex={(index) => {
+            console.log(index);
+            setPageIndex(index);
+          }}
+        />
+      </div>
     </>
   );
 }
