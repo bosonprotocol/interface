@@ -313,6 +313,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               decimals={offer.exchangeToken.decimals}
               tag="h3"
               convert
+              withBosonStyles
             />
             {isOffer && (
               <Grid
@@ -335,6 +336,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
             )}
             {isOffer && (
               <CommitButton
+                variant="primary"
                 disabled={
                   isChainUnsupported ||
                   !hasSellerEnoughFunds ||
@@ -377,7 +379,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
             )}
             {isToRedeem && (
               <RedeemButton
-                theme="secondary"
+                theme="bosonPrimary"
                 size="large"
                 disabled={
                   isChainUnsupported ||

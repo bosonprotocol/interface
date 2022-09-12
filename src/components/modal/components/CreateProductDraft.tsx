@@ -17,7 +17,7 @@ export default function CreateProductDraft({ chooseNew, chooseDraft }: Props) {
         </Typography>
       </Grid>
       <Grid flexDirection="row" justifyContent="space-between">
-        <Button theme="secondary" onClick={chooseDraft}>
+        <Button theme="primary" onClick={chooseDraft}>
           Edit draft
         </Button>
         <Button theme="primary" onClick={chooseNew}>

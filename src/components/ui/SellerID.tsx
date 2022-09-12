@@ -1,12 +1,13 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import { Image as AccountImage } from "@davatar/react";
 import { generatePath } from "react-router-dom";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { useAccount } from "wagmi";
 
 import Grid, { IGrid } from "../../components/ui/Grid";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
+import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { getOfferDetails } from "../../lib/utils/getOfferDetails";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
@@ -25,13 +26,22 @@ const SellerContainer = styled.div<{ $hasCursorPointer: boolean }>`
   gap: 10px;
 `;
 
-const SellerInfo = styled.div`
+const SellerInfo = styled.div<{ $withBosonStyles?: boolean }>`
   display: flex;
   flex-direction: row;
   width: 100%;
   align-items: center;
-  color: var(--secondary);
-  font-family: "Plus Jakarta Sans";
+
+  ${({ $withBosonStyles }) =>
+    $withBosonStyles
+      ? css`
+          color: ${colors.secondary};
+          font-family: "Plus Jakarta Sans";
+        `
+      : css`
+          color: var(--accent);
+        `};
+
   font-style: normal;
   font-size: 14px;
   font-weight: 600;
@@ -55,6 +65,7 @@ const SellerID: React.FC<
     accountImageSize?: number;
     withProfileImage: boolean;
     withProfileText?: boolean;
+    withBosonStyles?: boolean;
     onClick?: null | undefined | React.MouseEventHandler<HTMLDivElement>;
   } & IGrid &
     React.HTMLAttributes<HTMLDivElement>
@@ -66,6 +77,7 @@ const SellerID: React.FC<
   onClick,
   accountImageSize,
   withProfileText = true,
+  withBosonStyles = false,
   ...rest
 }) => {
   const { address } = useAccount();
@@ -131,7 +143,10 @@ const SellerID: React.FC<
           </ImageContainer>
         )}
         {withProfileText && userId && (
-          <SellerInfo data-testid="seller-info">
+          <SellerInfo
+            data-testid="seller-info"
+            $withBosonStyles={withBosonStyles}
+          >
             {isSeller ? `Seller ID: ${userId}` : `Buyer ID: ${userId}`}
           </SellerInfo>
         )}

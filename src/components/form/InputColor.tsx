@@ -9,7 +9,7 @@ import { InputColorProps } from "./types";
 
 const Container = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   width: 100%;
   padding: 0.5rem 1rem;
@@ -42,10 +42,10 @@ export default function InputColor({ name, ...props }: InputColorProps) {
   return (
     <>
       <Container>
-        <ColorPicker name={name} />
         <span style={{ color: colors.darkGrey }}>
           {field.value || props.placeholder}
         </span>
+        <ColorPicker name={name} />
       </Container>
       <Error display={displayError} message={errorMessage} />
     </>

@@ -80,7 +80,7 @@ export default function Summary({ onNextClick }: Props) {
         contact the Dispute Resolver.
       </Typography>
       <Grid padding="2rem 0 0 0" justifyContent="space-between">
-        <Button theme="secondary" onClick={() => onNextClick()}>
+        <Button theme="primary" onClick={() => onNextClick()}>
           Done
         </Button>
       </Grid>

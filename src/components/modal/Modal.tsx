@@ -1,7 +1,7 @@
 import { X } from "phosphor-react";
 import { ReactNode } from "react";
 import { createPortal } from "react-dom";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
@@ -32,30 +32,35 @@ const RootBG = styled.div`
 
 const sizeToMargin = {
   xs: {
+    xs: "0",
     s: "4rem 12rem",
     m: "4rem 20rem",
     l: "4rem 24rem",
     xl: "4rem 30rem"
   },
   s: {
+    xs: "0",
     s: "4rem 10rem",
     m: "4rem 19rem",
     l: "4rem 22rem",
     xl: "4rem 30rem"
   },
   m: {
+    xs: "0",
     s: "4rem 6rem",
     m: "4rem 12rem",
     l: "4rem 16rem",
     xl: "4rem 25.75rem"
   },
   l: {
+    xs: "0",
     s: "4rem",
     m: "4rem 8rem",
     l: "4rem 10rem",
     xl: "4rem 14rem"
   },
   auto: {
+    xs: "0 auto",
     s: "4rem auto",
     m: "4rem auto",
     l: "4rem auto",
@@ -88,19 +93,26 @@ const Wrapper = styled.div<{
     return background[$theme as keyof typeof background] || colors.white;
   }};
   border: var(--secondary);
-  max-width: ${({ $modalType }) => {
+  ${({ $modalType }) => {
     switch ($modalType) {
       case "PRODUCT_CREATE_SUCCESS":
-        return "65.875rem";
+        return css`
+          max-width: 65.875rem;
+        `;
       case "FINANCE_WITHDRAW_MODAL":
       case "FINANCE_DEPOSIT_MODAL":
       case "MANAGE_FUNDS_MODAL":
-        return "31.25rem";
+        return css`
+          ${breakpoint.xs} {
+            max-width: 31.25rem;
+          }
+        `;
       default:
         break;
     }
   }};
-  margin: 0;
+  margin: ${({ $size }) =>
+    sizeToMargin[$size as keyof typeof sizeToMargin]["xs"] || 0};
   ${breakpoint.s} {
     margin: ${({ $size }) =>
       sizeToMargin[$size as keyof typeof sizeToMargin]["s"] || "4rem"};

@@ -172,7 +172,7 @@ export default function TermsOfExchange() {
             </FieldContainer>
           </FormField>
           <ProductInformationButtonGroup>
-            <Button theme="secondary" type="submit" disabled={nextIsDisabled}>
+            <Button theme="primary" type="submit" disabled={nextIsDisabled}>
               Next
             </Button>
           </ProductInformationButtonGroup>

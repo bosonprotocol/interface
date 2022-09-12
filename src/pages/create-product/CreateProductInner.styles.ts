@@ -20,6 +20,8 @@ export const HelpWrapper = styled.div`
 `;
 
 export const CreateProductWrapper = styled.div`
+  font-family: "Plus Jakarta Sans";
+
   > div:first-child {
     margin-bottom: 2rem;
   }

@@ -281,7 +281,6 @@ const tableStyles = css`
   th,
   td {
     color: ${colors.darkGrey};
-    font-family: "Plus Jakarta Sans";
     font-style: normal;
     font-size: 16px;
     line-height: 150%;
@@ -318,7 +317,7 @@ export const Table = styled.table<{ noBorder?: boolean }>`
     }
     ${({ noBorder }) =>
       noBorder
-        ? `
+        ? css`
         td {
           > div {
               font-weight: 600;
@@ -329,7 +328,7 @@ export const Table = styled.table<{ noBorder?: boolean }>`
           }
         }
         }`
-        : `
+        : css`
       &:not(:last-child) {
         td {
           border-bottom: 1px solid ${colors.border};
@@ -434,7 +433,7 @@ export const MainDetailGrid = styled.div`
 export const DarkerBackground = styled.div`
   padding: 2rem 0;
   max-width: 100%;
-  background-color: ${colors.lightGrey};
+  background-color: var(--secondary);
   position: relative;
   > div:not(:last-child) {
     margin-bottom: 2rem;
@@ -447,7 +446,7 @@ export const DarkerBackground = styled.div`
     top: 0;
     bottom: 0;
     position: absolute;
-    background-color: ${colors.lightGrey};
+    background-color: var(--secondary);
     z-index: -1;
   }
   &:before {
@@ -460,7 +459,6 @@ export const DarkerBackground = styled.div`
 
 export const LightBackground = styled.div`
   max-width: 100%;
-  background-color: ${colors.white};
   position: relative;
 `;
 
@@ -508,6 +506,7 @@ export const Widget = styled.div`
   flex-wrap: wrap;
   width: 100%;
   background: ${colors.white};
+  font-family: "Plus Jakarta Sans";
   > div {
     padding: 0 2rem;
     &:first-of-type {
@@ -539,7 +538,6 @@ const miniButton = css`
   background: ${colors.white};
   color: ${colors.blue};
 
-  font-family: "Plus Jakarta Sans";
   font-style: normal;
   font-weight: 600;
   font-size: 12px;
@@ -584,6 +582,7 @@ export const RedeemLeftButton = styled.button`
   }
 
   ${miniButton}
+  color: ${colors.black};
 `;
 
 export const CommitAndRedeemButton = styled(Typography)`

@@ -13,7 +13,7 @@ export const ProfileSectionWrapper = styled.div`
 `;
 
 export const GrayWrapper = styled.div`
-  background-color: ${colors.lightGrey};
+  background-color: var(--secondary);
   width: 100vw;
   position: relative;
   left: 50%;

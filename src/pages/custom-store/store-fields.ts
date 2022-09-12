@@ -1,6 +1,7 @@
 import * as Yup from "yup";
 
 import { SelectDataProps } from "../../components/form/types";
+import { colors } from "../../lib/styles/colors";
 import { websitePattern } from "../../lib/validation/regex/url";
 import { validationOfFile } from "../chat/components/UploadForm/const";
 import { SocialLogoValues } from "./SocialLogo";
@@ -12,13 +13,14 @@ export type StoreFields = {
   title: string;
   description: string;
   logoUrl: string;
+  headerBgColor: string;
+  headerTextColor: string;
   primaryBgColor: string;
   secondaryBgColor: string;
-  footerBgColor: string;
-  accentColor1: string;
-  accentColor2: string;
-  navigationBarBgColor: string;
+  accentColor: string;
   textColor: string;
+  footerBgColor: string;
+  footerTextColor: string;
   fontFamily: string;
   navigationBarPosition: SelectType;
   copyright: string;
@@ -45,13 +47,14 @@ export const storeFields = {
   logoUrl: "logoUrl",
   logoUrlText: "logoUrlText",
   logoUpload: "logoUpload",
+  headerBgColor: "headerBgColor",
+  headerTextColor: "headerTextColor",
   primaryBgColor: "primaryBgColor",
   secondaryBgColor: "secondaryBgColor",
-  footerBgColor: "footerBgColor",
-  accentColor1: "accentColor1",
-  accentColor2: "accentColor2",
-  navigationBarBgColor: "navigationBarBgColor",
+  accentColor: "accentColor",
   textColor: "textColor",
+  footerBgColor: "footerBgColor",
+  footerTextColor: "footerTextColor",
   fontFamily: "fontFamily",
   navigationBarPosition: "navigationBarPosition",
   showFooter: "showFooter",
@@ -66,10 +69,13 @@ export const storeFields = {
   metaTransactionsApiKey: "metaTransactionsApiKey"
 } as const;
 
-const yesNoOptions = [
-  { label: "Yes", value: "true" },
-  { label: "No", value: "false", default: true }
-] as const;
+const getYesNoOptions = (defaultValue: "yes" | "no") => {
+  return [
+    { label: "Yes", value: "true", default: defaultValue === "yes" },
+    { label: "No", value: "false", default: defaultValue === "no" }
+  ] as const;
+};
+
 const standardRequiredErrorMessage = "This field is required";
 const notUrlErrorMessage = "This is not a URL like: www.example.com";
 export const formModel = {
@@ -102,6 +108,16 @@ export const formModel = {
       requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: "Logo Image"
     },
+    [storeFields.headerBgColor]: {
+      name: storeFields.headerBgColor,
+      requiredErrorMessage: standardRequiredErrorMessage,
+      placeholder: "Background"
+    },
+    [storeFields.headerTextColor]: {
+      name: storeFields.headerTextColor,
+      requiredErrorMessage: standardRequiredErrorMessage,
+      placeholder: "Text"
+    },
     [storeFields.primaryBgColor]: {
       name: storeFields.primaryBgColor,
       requiredErrorMessage: standardRequiredErrorMessage,
@@ -112,35 +128,41 @@ export const formModel = {
       requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: "Secondary"
     },
+    [storeFields.accentColor]: {
+      name: storeFields.accentColor,
+      requiredErrorMessage: standardRequiredErrorMessage,
+      placeholder: "Accent"
+    },
+    [storeFields.textColor]: {
+      name: storeFields.textColor,
+      requiredErrorMessage: standardRequiredErrorMessage,
+      placeholder: "Text"
+    },
     [storeFields.footerBgColor]: {
       name: storeFields.footerBgColor,
       requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: "Footer Color"
     },
-    [storeFields.accentColor1]: {
-      name: storeFields.accentColor1,
+    [storeFields.footerTextColor]: {
+      name: storeFields.footerTextColor,
       requiredErrorMessage: standardRequiredErrorMessage,
-      placeholder: "Accent Color1"
-    },
-    [storeFields.accentColor2]: {
-      name: storeFields.accentColor2,
-      requiredErrorMessage: standardRequiredErrorMessage,
-      placeholder: "Accent Color2"
-    },
-    [storeFields.navigationBarBgColor]: {
-      name: storeFields.navigationBarBgColor,
-      requiredErrorMessage: standardRequiredErrorMessage,
-      placeholder: ""
-    },
-    [storeFields.textColor]: {
-      name: storeFields.textColor,
-      requiredErrorMessage: standardRequiredErrorMessage,
-      placeholder: ""
+      placeholder: "Footer Text Color"
     },
     [storeFields.fontFamily]: {
       name: storeFields.fontFamily,
       requiredErrorMessage: standardRequiredErrorMessage,
-      placeholder: ""
+      placeholder: "",
+      options: [
+        {
+          label: "Plus Jakarta Sans",
+          value: "Plus Jakarta Sans",
+          default: true
+        },
+        {
+          label: "Times New Roman",
+          value: "Times New Roman"
+        }
+      ]
     },
     [storeFields.showFooter]: {
       name: storeFields.showFooter,
@@ -178,7 +200,7 @@ export const formModel = {
       name: storeFields.withAdditionalFooterLinks,
       requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: "",
-      options: yesNoOptions
+      options: getYesNoOptions("no")
     },
     [storeFields.additionalFooterLinks]: {
       name: storeFields.additionalFooterLinks,
@@ -199,7 +221,11 @@ export const formModel = {
       name: storeFields.withOwnProducts,
       requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: "",
-      options: yesNoOptions
+      options: [
+        { label: "All products", value: "all", default: true },
+        { label: "Only my own products", value: "mine" },
+        { label: "Custom", value: "custom" }
+      ]
     },
     [storeFields.sellerCurationList]: {
       name: storeFields.sellerCurationList,
@@ -215,7 +241,7 @@ export const formModel = {
       name: storeFields.withMetaTx,
       requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: "",
-      options: yesNoOptions
+      options: getYesNoOptions("no")
     },
     [storeFields.metaTransactionsApiKey]: {
       name: storeFields.metaTransactionsApiKey,
@@ -240,14 +266,19 @@ export const validationSchema = Yup.object({
     maxFileSizeInB: MAX_FILE_SIZE,
     supportedFormats: SUPPORTED_FILE_FORMATS
   }),
+  [storeFields.headerBgColor]: Yup.string(),
+  [storeFields.headerTextColor]: Yup.string(),
   [storeFields.primaryBgColor]: Yup.string(),
   [storeFields.secondaryBgColor]: Yup.string(),
-  [storeFields.footerBgColor]: Yup.string(),
-  [storeFields.accentColor1]: Yup.string(),
-  [storeFields.accentColor2]: Yup.string(),
-  [storeFields.navigationBarBgColor]: Yup.string(),
+  [storeFields.accentColor]: Yup.string(),
   [storeFields.textColor]: Yup.string(),
-  [storeFields.fontFamily]: Yup.string(),
+  [storeFields.footerBgColor]: Yup.string(),
+  [storeFields.footerTextColor]: Yup.string(),
+  [storeFields.textColor]: Yup.string(),
+  [storeFields.fontFamily]: Yup.object({
+    label: Yup.string().required(standardRequiredErrorMessage),
+    value: Yup.string().required(standardRequiredErrorMessage)
+  }).nullable(),
   [storeFields.navigationBarPosition]: Yup.object({
     label: Yup.string().required(standardRequiredErrorMessage),
     value: Yup.string().required(standardRequiredErrorMessage)
@@ -305,14 +336,17 @@ export const initialValues = {
   [storeFields.logoUrl]: "",
   [storeFields.logoUrlText]: "",
   [storeFields.logoUpload]: "",
-  [storeFields.primaryBgColor]: "",
-  [storeFields.secondaryBgColor]: "",
-  [storeFields.footerBgColor]: "",
-  [storeFields.accentColor1]: "",
-  [storeFields.accentColor2]: "",
-  [storeFields.navigationBarBgColor]: "",
-  [storeFields.textColor]: "",
-  [storeFields.fontFamily]: "",
+  [storeFields.headerBgColor]: colors.white,
+  [storeFields.headerTextColor]: colors.black,
+  [storeFields.primaryBgColor]: colors.white,
+  [storeFields.secondaryBgColor]: colors.lightGrey,
+  [storeFields.accentColor]: colors.secondary,
+  [storeFields.textColor]: colors.black,
+  [storeFields.footerBgColor]: colors.black,
+  [storeFields.footerTextColor]: colors.white,
+  [storeFields.fontFamily]: formModel.formFields.fontFamily.options.find(
+    (option) => "default" in option && option.default
+  ) as SelectDataProps,
   [storeFields.navigationBarPosition]:
     formModel.formFields.navigationBarPosition.options.find(
       (option) => "default" in option && option.default

@@ -84,7 +84,7 @@ function DisputeList() {
           <Grid $width="max-content">
             <SubmitButton
               type="submit"
-              theme="secondary"
+              theme="primary"
               size="small"
               onClick={() => {
                 navigate({

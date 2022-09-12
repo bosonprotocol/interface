@@ -18,7 +18,7 @@ const InputWrapper = styled(Grid)<{
 
   padding: 1.5rem 1.75rem;
   border-bottom: 2px solid ${colors.border};
-  background: ${colors.white};
+  background: ${colors.lightGrey};
 
   margin: 0rem;
 
@@ -98,7 +98,7 @@ export default function Search({ isMobile, navigationBarPosition }: Props) {
         placeholder="Search"
       />
       {isMobile && (
-        <Button onClick={navigateToExplore} theme="secondary">
+        <Button onClick={navigateToExplore} theme="primary">
           <MagnifyingGlass size={16} />
         </Button>
       )}

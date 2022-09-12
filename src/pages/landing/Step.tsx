@@ -19,7 +19,7 @@ const StepWrapper = styled.div`
     font-weight: 600;
     line-height: 1.2;
     position: relative;
-    color: var(--secondary);
+    color: var(--accent);
     margin-bottom: 0.5rem !important;
     z-index: ${zIndex.CommitStep};
     &:after {

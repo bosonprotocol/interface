@@ -73,7 +73,7 @@ export default function Upload({
           <Form>
             <UploadForm />
             <ButtonsSection>
-              <Button type="submit" theme="secondary" disabled={!isFormValid}>
+              <Button type="submit" theme="primary" disabled={!isFormValid}>
                 Submit
               </Button>
             </ButtonsSection>

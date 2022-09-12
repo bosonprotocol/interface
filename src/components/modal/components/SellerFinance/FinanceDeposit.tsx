@@ -157,7 +157,7 @@ export default function FinanceDeposit({
       </AmountWrapper>
       <Grid>
         <CTAButton
-          theme="secondary"
+          theme="primary"
           size="small"
           onClick={handleSubmitDeposit}
           disabled={isBeingDeposit || isDepositInvalid}

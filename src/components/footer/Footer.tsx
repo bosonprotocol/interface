@@ -4,7 +4,6 @@ import styled from "styled-components";
 import logo from "../../../src/assets/logo-white.svg";
 import { BosonRoutes, ExternalRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
-import { colors } from "../../lib/styles/colors";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import SocialLogo, {
   SocialLogoValues
@@ -18,8 +17,8 @@ import { NAVIGATION_ROUTES, PRODUCT_ROUTES, SOCIAL_ROUTES } from "./routes";
 
 const Footer = styled.footer`
   width: 100%;
-  background-color: ${colors.black};
-  color: ${colors.white};
+  background-color: var(--footerBgColor);
+  color: var(--footerTextColor);
 
   padding: 4rem 1rem 2rem 1rem;
   margin-top: auto;
@@ -78,10 +77,10 @@ const NavigationLinks = styled.nav<INavigationLinks>`
   a {
     cursor: pointer;
     text-decoration: none;
-    color: ${colors.white};
+    color: var(--footerTextColor);
   }
   a:hover {
-    color: var(--primary);
+    color: var(--accent);
   }
 
   ${breakpoint.xs} {

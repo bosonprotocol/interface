@@ -11,6 +11,7 @@ import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
 import { colors } from "../../lib/styles/colors";
 import { getFilesWithEncodedData } from "../../lib/utils/files";
+import { useCurrentSellerId } from "../../lib/utils/hooks/useCurrentSellerId";
 import SocialLogo from "./SocialLogo";
 import {
   formModel,
@@ -62,7 +63,7 @@ const preAppendHttps = (url: string) => {
 export default function CustomStoreFormContent({ hasSubmitError }: Props) {
   const { setFieldValue, values, isValid, setFieldTouched } =
     useFormikContext<StoreFormFields>();
-
+  const { sellerId } = useCurrentSellerId();
   const formValuesWithOneLogoUrl = Object.entries(values)
     .filter(
       ([key]) =>
@@ -168,6 +169,15 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
       );
     }
   }, [values.withAdditionalFooterLinks?.value, setFieldValue]);
+
+  const disableCurationLists = ["mine"].includes(
+    values.withOwnProducts?.value || ""
+  );
+  useEffect(() => {
+    if (sellerId && ["mine"].includes(values.withOwnProducts?.value || "")) {
+      setFieldValue(storeFields.sellerCurationList, sellerId, true);
+    }
+  }, [values.withOwnProducts?.value, setFieldValue, sellerId]);
 
   const removeEmptyRowsExceptOne = () => {
     const value = values.additionalFooterLinks;
@@ -278,18 +288,16 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                 <Grid flexDirection="column" alignItems="flex-start">
                   <FieldDescription>Background color</FieldDescription>
                   <InputColor
-                    name={storeFields.primaryBgColor}
-                    placeholder={
-                      formModel.formFields.primaryBgColor.placeholder
-                    }
+                    name={storeFields.headerBgColor}
+                    placeholder={formModel.formFields.headerBgColor.placeholder}
                   />
                 </Grid>
                 <Grid flexDirection="column" alignItems="flex-start">
                   <FieldDescription>Text color</FieldDescription>
                   <InputColor
-                    name={storeFields.secondaryBgColor}
+                    name={storeFields.headerTextColor}
                     placeholder={
-                      formModel.formFields.secondaryBgColor.placeholder
+                      formModel.formFields.headerTextColor.placeholder
                     }
                   />
                 </Grid>
@@ -323,19 +331,15 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                 <Grid flexDirection="column" alignItems="flex-start">
                   <FieldDescription>Accent color</FieldDescription>
                   <InputColor
-                    name={storeFields.primaryBgColor}
-                    placeholder={
-                      formModel.formFields.primaryBgColor.placeholder
-                    }
+                    name={storeFields.accentColor}
+                    placeholder={formModel.formFields.accentColor.placeholder}
                   />
                 </Grid>
                 <Grid flexDirection="column" alignItems="flex-start">
                   <FieldDescription>Text Color</FieldDescription>
                   <InputColor
-                    name={storeFields.secondaryBgColor}
-                    placeholder={
-                      formModel.formFields.secondaryBgColor.placeholder
-                    }
+                    name={storeFields.textColor}
+                    placeholder={formModel.formFields.textColor.placeholder}
                   />
                 </Grid>
               </Grid>
@@ -346,18 +350,16 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                 <Grid flexDirection="column" alignItems="flex-start">
                   <FieldDescription>Background color</FieldDescription>
                   <InputColor
-                    name={storeFields.primaryBgColor}
-                    placeholder={
-                      formModel.formFields.primaryBgColor.placeholder
-                    }
+                    name={storeFields.footerBgColor}
+                    placeholder={formModel.formFields.footerBgColor.placeholder}
                   />
                 </Grid>
                 <Grid flexDirection="column" alignItems="flex-start">
                   <FieldDescription>Text color</FieldDescription>
                   <InputColor
-                    name={storeFields.secondaryBgColor}
+                    name={storeFields.footerTextColor}
                     placeholder={
-                      formModel.formFields.secondaryBgColor.placeholder
+                      formModel.formFields.footerTextColor.placeholder
                     }
                   />
                 </Grid>
@@ -366,9 +368,14 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
             <Grid flexDirection="column" alignItems="flex-start">
               <FieldTitle>Font family</FieldTitle>
               <FieldDescription>Choose your font type</FieldDescription>
-              <Input
+              <Select
+                options={
+                  formModel.formFields.fontFamily
+                    .options as unknown as SelectDataProps<string>[]
+                }
                 name={storeFields.fontFamily}
                 placeholder={formModel.formFields.fontFamily.placeholder}
+                isSearchable
               />
             </Grid>
           </Grid>
@@ -563,7 +570,9 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                 isClearable
               />
             </Grid>
-            {values.withOwnProducts?.value === "true" && (
+            {["custom", "mine"].includes(
+              values.withOwnProducts?.value || ""
+            ) && (
               <Grid
                 flexDirection="column"
                 margin={`0 0 0 ${subFieldsMarginLeft}`}
@@ -576,6 +585,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                     Enter Seller IDs separated by comma
                   </FieldDescription>
                   <Input
+                    disabled={disableCurationLists}
                     name={storeFields.sellerCurationList}
                     placeholder={
                       formModel.formFields.sellerCurationList.placeholder
@@ -588,6 +598,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                     Enter Offer IDs separated by comma
                   </FieldDescription>
                   <Input
+                    disabled={disableCurationLists}
                     name={storeFields.offerCurationList}
                     placeholder={
                       formModel.formFields.offerCurationList.placeholder
@@ -635,7 +646,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
           </Grid>
         </Grid>
         {hasSubmitError && <SimpleError />}
-        <Button type="submit" theme="secondary" disabled={!isValid}>
+        <Button type="submit" theme="primary" disabled={!isValid}>
           Create
         </Button>
       </Grid>
