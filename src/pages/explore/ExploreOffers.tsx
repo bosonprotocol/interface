@@ -62,12 +62,13 @@ const extractFiltersWithDefaults = (props: Props): Props => {
     brand: props.brand || "",
     name: props.name || "",
     exchangeTokenAddress: props.exchangeTokenAddress || "",
-    sellerId: props.sellerId || ""
+    sellerId: props.sellerId || "",
+    orderDirection: props.orderDirection || undefined
   };
 };
 
 export default function ExploreOffers(props: Props) {
-  const { brand, name, exchangeTokenAddress, sellerId } =
+  const { brand, name, exchangeTokenAddress, sellerId, orderDirection } =
     extractFiltersWithDefaults(props);
   const params = useParams();
   const navigate = useKeepQueryParamsNavigate();
@@ -76,9 +77,10 @@ export default function ExploreOffers(props: Props) {
       updatePageIndexInUrl(navigate)(index, {
         name: name ?? "",
         currency: exchangeTokenAddress ?? "",
-        seller: sellerId ?? ""
+        seller: sellerId ?? "",
+        orderDirection: orderDirection ?? ""
       }),
-    [navigate, name, exchangeTokenAddress, sellerId]
+    [navigate, name, exchangeTokenAddress, sellerId, orderDirection]
   );
   const initialPageIndex = Math.max(
     0,
@@ -109,6 +111,8 @@ export default function ExploreOffers(props: Props) {
     skip: OFFERS_PER_PAGE * pageIndex,
     orderBy: "createdAt",
     orderDirection: props.orderDirection
+      ? props.orderDirection
+      : ("asc" as const)
   };
   const {
     data: currentAndNextPageOffers,

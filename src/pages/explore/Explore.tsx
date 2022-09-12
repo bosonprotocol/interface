@@ -166,7 +166,20 @@ export default function Explore() {
   // const [brandInput, setBrandInput] = useState<string>(nameQueryParameter);
   // const [brandSelect, setBrandSelect] = useState<string>("");
   const [nameToSearch, setNameToSearch] = useState<string>(nameQueryParameter);
+  const [sortQueryParameter, setSortQueryParameter] = useQueryParameter(
+    ExploreQueryParameters.orderDirection
+  );
+
   const [filter, setFilter] = useState<FilterValue>(selectOptions[0]);
+
+  useEffect(() => {
+    if (sortQueryParameter) {
+      setFilter(
+        selectOptions.filter((option) => option.value === sortQueryParameter)[0]
+      );
+    }
+  }, [sortQueryParameter]);
+
   const navigate = useKeepQueryParamsNavigate();
 
   useEffect(() => {
@@ -212,6 +225,7 @@ export default function Explore() {
             options={selectOptions}
             onChange={(option) => {
               setFilter(option as typeof selectOptions[number]);
+              setSortQueryParameter(option?.value || "");
             }}
           />
         </SelectFilterWrapper>

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import ReactSelect, { StylesConfig } from "react-select";
 import styled from "styled-components";
 
@@ -6,7 +6,9 @@ import Breadcrumbs from "../../components/breadcrumbs/Breadcrumbs";
 import CollectionsCard from "../../components/modal/components/Explore/Collections/CollectionsCard";
 import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
+import { ExploreQueryParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
+import { useQueryParameter } from "../../lib/routing/useQueryParameter";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
@@ -110,6 +112,16 @@ const customStyles: StylesConfig<
 
 function Collections() {
   const [filter, setFilter] = useState<FilterValue>(selectOptions[0]);
+  const [sortQueryParameter, setSortQueryParameter] = useQueryParameter(
+    ExploreQueryParameters.orderDirection
+  );
+  useEffect(() => {
+    if (sortQueryParameter) {
+      setFilter(
+        selectOptions.filter((option) => option.value === sortQueryParameter)[0]
+      );
+    }
+  }, [sortQueryParameter]);
   const [pageIndex, setPageIndex] = useState(0);
   const OFFERS_PER_PAGE = 8;
   const useCollectionPayload = {
@@ -151,6 +163,7 @@ function Collections() {
             options={selectOptions}
             onChange={(option) => {
               setFilter(option as typeof selectOptions[number]);
+              setSortQueryParameter(option?.value || "");
             }}
           />
         </SelectFilterWrapper>

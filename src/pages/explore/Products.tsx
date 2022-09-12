@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactSelect, { StylesConfig } from "react-select";
 import styled from "styled-components";
 
@@ -39,6 +39,16 @@ const SelectFilterWrapper = styled.div`
 
 function Products() {
   const [filter, setFilter] = useState<FilterValue>(selectOptions[0]);
+  const [sortQueryParameter, setSortQueryParameter] = useQueryParameter(
+    ExploreQueryParameters.orderDirection
+  );
+  useEffect(() => {
+    if (sortQueryParameter) {
+      setFilter(
+        selectOptions.filter((option) => option.value === sortQueryParameter)[0]
+      );
+    }
+  }, [sortQueryParameter]);
 
   const customStyles: StylesConfig<
     {
@@ -122,6 +132,7 @@ function Products() {
           options={selectOptions}
           onChange={(option) => {
             setFilter(option as typeof selectOptions[number]);
+            setSortQueryParameter(option?.value || "");
           }}
         />
       </SelectFilterWrapper>
