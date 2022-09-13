@@ -60,7 +60,7 @@ function SellerCenterWrapper() {
           gap="2rem"
           flexDirection="column"
         >
-          <WarningCircle size={112} color={colors.red} weight="thin" />
+          <WarningCircle size={112} color={colors.orange} weight="thin" />
           <Typography tag="h5">
             The seller with that ID doesn't exist!
           </Typography>
