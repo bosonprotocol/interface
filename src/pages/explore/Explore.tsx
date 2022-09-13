@@ -180,8 +180,8 @@ export default function Explore() {
   // const [brandInput, setBrandInput] = useState<string>(nameQueryParameter);
   // const [brandSelect, setBrandSelect] = useState<string>("");
   const [nameToSearch, setNameToSearch] = useState<string>(nameQueryParameter);
+  // eslint-disable-next-line
   const [sortQueryParameter, setSortQueryParameter] = useQueryParameter(
-    // eslint-disable-line
     ExploreQueryParameters.orderDirection
   );
 
@@ -240,6 +240,7 @@ export default function Explore() {
             placeholder=""
             value={{ value: filter.value, label: filter.label }}
             options={selectOptions}
+            // eslint-disable-next-line
             onChange={(option: any) => {
               // eslint-disable-line
               if (option !== null) {
