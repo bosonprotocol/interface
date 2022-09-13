@@ -65,7 +65,10 @@ const AddAttributesContainer = ({
   );
 
   return (
-    <FormField title="Add product attribute">
+    <FormField
+      title="Add product attribute"
+      tooltip='Provide additional data about your product (e.g. materials; "Cotton": "60%")'
+    >
       <FieldArray
         name="productInformation.attributes"
         render={(arrayHelpers) => {

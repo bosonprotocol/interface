@@ -7,7 +7,15 @@ declare module "Yup" {
   interface MixedSchema<TType = any, TContext = AnyObject, TDefault = undefined>
     extends BaseSchema<TType, TContext, TDefault> {
     isRedemptionDatesValid(): this;
-    isOfferValidityDatesValid(path: string): this;
+    isOfferValidityDatesValid(): this;
+    isItBeforeNow(): this;
+  }
+  interface StringSchema<
+    TType = any,
+    TContext = AnyObject,
+    TDefault = undefined
+  > extends BaseSchema<TType, TContext, TDefault> {
+    disputePeriodValue(msg: string): this;
   }
 }
 

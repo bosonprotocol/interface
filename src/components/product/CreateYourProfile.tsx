@@ -1,3 +1,4 @@
+import { websitePattern } from "../../lib/validation/regex/url";
 import { FormField, Input, Textarea, Upload } from "../form";
 import Button from "../ui/Button";
 import {
@@ -43,7 +44,7 @@ export default function CreateYourProfile() {
         <Input
           name="createYourProfile.website"
           placeholder="www.example.com OR www.instagram.com/example"
-          pattern="^(http:\/\/|https:\/\/)?(www.)?([a-zA-Z0-9]+).[a-zA-Z0-9]*.[‌​a-z]{3}\.([a-z]+)?$"
+          pattern={websitePattern}
         />
       </FormField>
       <ProductButtonGroup>

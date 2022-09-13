@@ -9,6 +9,7 @@ export function useInfiniteOffers(
   options: {
     enabled?: boolean;
     keepPreviousData?: boolean;
+    refetchOnMount?: boolean;
   } = {}
 ) {
   const curationLists = useCurationLists();
@@ -29,7 +30,7 @@ export function useInfiniteOffers(
     {
       ...options,
       refetchOnWindowFocus: false,
-      refetchOnMount: false
+      refetchOnMount: options.refetchOnMount || false
     }
   );
 }

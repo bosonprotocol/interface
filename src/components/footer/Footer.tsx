@@ -6,6 +6,9 @@ import { BosonRoutes, ExternalRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
+import SocialLogo, {
+  SocialLogoValues
+} from "../../pages/custom-store/SocialLogo";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
 import Layout from "../Layout";
@@ -66,8 +69,10 @@ interface INavigationLinks {
 const NavigationLinks = styled.nav<INavigationLinks>`
   display: flex;
   gap: ${({ gap }) => gap || "16px"};
+  flex-wrap: wrap;
   align-items: self-start;
-  justify-content: flex-end;
+  max-width: 100%;
+  justify-content: center;
   flex-direction: ${({ flexDirection }) => flexDirection || "row"};
 
   a {
@@ -78,6 +83,13 @@ const NavigationLinks = styled.nav<INavigationLinks>`
   a:hover {
     color: var(--primary);
   }
+
+  ${breakpoint.xs} {
+    max-width: 125px;
+  }
+  ${breakpoint.s} {
+    max-width: 300px;
+  }
 `;
 const LogoImg = styled.img`
   height: 24px;
@@ -86,13 +98,40 @@ const LogoImg = styled.img`
 
 function Socials() {
   const { isXXS, isLteS } = useBreakpoints();
+  const socialMediaLinks = useCustomStoreQueryParameter<
+    { value: SocialLogoValues; url: string }[]
+  >("socialMediaLinks", { parseJson: true });
   return (
     <NavigationLinks gap={isLteS && !isXXS ? "16px" : "32px"}>
-      {SOCIAL_ROUTES.map(({ name, url, logo: Logo }) => (
-        <a href={url} target="_blank" rel="noopener" key={`social_nav_${name}`}>
-          <Logo size={isLteS && !isXXS ? 20 : 32} weight="regular" />
-        </a>
-      ))}
+      {typeof socialMediaLinks !== "string" ? (
+        <>
+          {socialMediaLinks.map(({ url, value }) => {
+            return (
+              <a
+                href={url}
+                target="_blank"
+                rel="noopener"
+                key={`social_nav_${value}_${url}`}
+              >
+                <SocialLogo logo={value} />
+              </a>
+            );
+          })}
+        </>
+      ) : (
+        <>
+          {SOCIAL_ROUTES.map(({ name, url, logo: Logo }) => (
+            <a
+              href={url}
+              target="_blank"
+              rel="noopener"
+              key={`social_nav_${name}`}
+            >
+              <Logo size={isLteS && !isXXS ? 20 : 32} weight="regular" />
+            </a>
+          ))}
+        </>
+      )}
     </NavigationLinks>
   );
 }
@@ -101,15 +140,13 @@ export default function FooterComponent() {
   const { isXXS } = useBreakpoints();
   const [year] = useState<number>(new Date().getFullYear());
   const logoUrl = useCustomStoreQueryParameter("logoUrl");
-
+  const copyright = useCustomStoreQueryParameter("copyright");
+  const additionalFooterLinks = useCustomStoreQueryParameter<
+    { label: string; value: string }[]
+  >("additionalFooterLinks", { parseJson: true });
   return (
     <Footer>
       <Layout>
-        {isXXS && (
-          <Grid justifyContent="center">
-            <Socials />
-          </Grid>
-        )}
         <LogoGrid alignItems="flex-start" padding="0 0 2rem 0">
           <LinkWithQuery to={BosonRoutes.Root}>
             <LogoImg
@@ -144,16 +181,42 @@ export default function FooterComponent() {
             </div>
           </NavigationGrid>
         </LogoGrid>
+        {isXXS && (
+          <Grid justifyContent="center">
+            <Socials />
+          </Grid>
+        )}
         <Grid padding="2rem 0 0 0">
-          <Typography tag="p">© {year} Boson Protocol</Typography>
+          <Typography tag="p">
+            {copyright ? copyright : `© ${year} Boson Protocol`}
+          </Typography>
           {!isXXS && <Socials />}
-          <NavigationLinks>
-            <LinkWithQuery to={BosonRoutes.Root}>Home</LinkWithQuery>
-            <LinkWithQuery to={BosonRoutes.Explore}>Explore</LinkWithQuery>
-            <LinkWithQuery to={ExternalRoutes.TermsOfUse}>
-              Terms of use
-            </LinkWithQuery>
-          </NavigationLinks>
+          <>
+            {typeof additionalFooterLinks !== "string" ? (
+              <NavigationLinks>
+                {additionalFooterLinks.map((footerLink, index) => {
+                  return (
+                    <a
+                      key={`${footerLink.label}-${footerLink.value}-${index}`}
+                      href={footerLink.value}
+                      target="_blank"
+                      style={{ textAlign: "center" }}
+                    >
+                      {footerLink.label}
+                    </a>
+                  );
+                })}
+              </NavigationLinks>
+            ) : (
+              <NavigationLinks>
+                <LinkWithQuery to={BosonRoutes.Root}>Home</LinkWithQuery>
+                <LinkWithQuery to={BosonRoutes.Explore}>Explore</LinkWithQuery>
+                <LinkWithQuery to={ExternalRoutes.TermsOfUse}>
+                  Terms of use
+                </LinkWithQuery>
+              </NavigationLinks>
+            )}
+          </>
         </Grid>
       </Layout>
     </Footer>

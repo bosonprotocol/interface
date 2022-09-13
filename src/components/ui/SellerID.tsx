@@ -2,6 +2,7 @@ import { subgraph } from "@bosonprotocol/react-kit";
 import { Image as AccountImage } from "@davatar/react";
 import { generatePath } from "react-router-dom";
 import styled from "styled-components";
+import { useAccount } from "wagmi";
 
 import Grid, { IGrid } from "../../components/ui/Grid";
 import { UrlParameters } from "../../lib/routing/parameters";
@@ -43,13 +44,14 @@ const ImageContainer = styled.div`
   justify-content: center;
 `;
 
+type Buyer = Pick<subgraph.Buyer, "id" | "wallet">;
+type Seller = Pick<subgraph.Seller, "id" | "operator">;
+
 const SellerID: React.FC<
   {
     children?: React.ReactNode;
     offer: Offer;
-    buyerOrSeller:
-      | Pick<subgraph.Seller, "id" | "operator">
-      | Pick<subgraph.Buyer, "id" | "wallet">;
+    buyerOrSeller: Buyer | Seller;
     accountImageSize?: number;
     withProfileImage: boolean;
     withProfileText?: boolean;
@@ -66,12 +68,17 @@ const SellerID: React.FC<
   withProfileText = true,
   ...rest
 }) => {
+  const { address } = useAccount();
   const navigate = useKeepQueryParamsNavigate();
   const { artist } = getOfferDetails(offer);
 
   const userId = buyerOrSeller?.id;
-  const isSeller = "operator" in buyerOrSeller;
-  const userAddress = isSeller ? buyerOrSeller.operator : buyerOrSeller.wallet;
+  const isSeller = buyerOrSeller ? "operator" in buyerOrSeller : false;
+  const userAddress = buyerOrSeller
+    ? isSeller
+      ? (buyerOrSeller as Seller).operator
+      : (buyerOrSeller as Buyer).wallet
+    : address;
   const hasCursorPointer = !!onClick || onClick === undefined;
 
   const artistImage =
@@ -103,7 +110,7 @@ const SellerID: React.FC<
         }}
         data-seller-container
       >
-        {withProfileImage && (
+        {withProfileImage && userId && (
           <ImageContainer>
             {artistImage ? (
               <Image
@@ -123,7 +130,7 @@ const SellerID: React.FC<
             )}
           </ImageContainer>
         )}
-        {withProfileText && (
+        {withProfileText && userId && (
           <SellerInfo data-testid="seller-info">
             {isSeller ? `Seller ID: ${userId}` : `Buyer ID: ${userId}`}
           </SellerInfo>

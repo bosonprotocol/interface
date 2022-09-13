@@ -257,18 +257,22 @@ export default function ConfirmProductDetails({
                   </FormField>
                 </FormFieldContainer>
               </GridBox>
-              <GridBox $minWidth="6.9rem">
-                <FormFieldContainer>
-                  <FormField title="Product Attribute" required>
-                    <ContentValue tag="p">
-                      {map(
-                        values.productInformation.attributes,
-                        (elem) => elem.name
-                      ).join(", ")}
-                    </ContentValue>
-                  </FormField>
-                </FormFieldContainer>
-              </GridBox>
+              {values.productInformation.attributes &&
+                values.productInformation.attributes.length &&
+                values.productInformation.attributes[0].name !== "" && (
+                  <GridBox $minWidth="6.9rem">
+                    <FormFieldContainer>
+                      <FormField title="Product Attribute">
+                        <ContentValue tag="p">
+                          {map(
+                            values.productInformation.attributes,
+                            (elem) => elem.name
+                          ).join(", ")}
+                        </ContentValue>
+                      </FormField>
+                    </FormFieldContainer>
+                  </GridBox>
+                )}
             </Grid>
             <FormFieldContainer>
               <FormField title="Description" required>
@@ -278,7 +282,7 @@ export default function ConfirmProductDetails({
               </FormField>
             </FormFieldContainer>
             <FormFieldContainer>
-              <FormField title="Search Tags">
+              <FormField title="Search Tags" required>
                 <TagsWrapper>
                   {map(values.productInformation.tags, (tag, index) => {
                     return (

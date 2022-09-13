@@ -64,9 +64,13 @@ const parseInitialValues = (
     if (!checkIfValueIsEmpty(convertedImages)) {
       Object.keys(convertedImages).map((d: string) => {
         const keys = d.split(".");
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        initialValues[keys[0]][keys[1]] = [convertedImages[d]];
+        try {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          initialValues[keys[0]][keys[1]] = [convertedImages[d]];
+        } catch (e) {
+          console.error(e);
+        }
       });
     }
   }
