@@ -1,7 +1,11 @@
 import React from "react";
+import { generatePath } from "react-router-dom";
 import styled from "styled-components";
 
+import { UrlParameters } from "../../../../../lib/routing/parameters";
+import { BosonRoutes } from "../../../../../lib/routing/routes";
 import { colors } from "../../../../../lib/styles/colors";
+import { useKeepQueryParamsNavigate } from "../../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import Grid from "../../../../ui/Grid";
 import Image from "../../../../ui/Image";
 import Typography from "../../../../ui/Typography";
@@ -68,8 +72,19 @@ const DataContainer = styled.div`
 `;
 
 function CollectionsCard({ collection }: Props) {
+  const navigate = useKeepQueryParamsNavigate();
+
   return (
-    <CardContainer>
+    <CardContainer
+      onClick={() => {
+        const pathname = generatePath(BosonRoutes.SellerPage, {
+          [UrlParameters.exchangeId]: collection.id
+        });
+        navigate({
+          pathname
+        });
+      }}
+    >
       <ImagesContainer>
         {collection &&
           collection.offers.slice(0, 4).map((offer) => (
@@ -88,7 +103,7 @@ function CollectionsCard({ collection }: Props) {
             fontWeight="600"
             margin="0 0 0.625rem 0"
           >
-            Placeholder
+            Seller ID: {collection.id}
           </Typography>
           <Grid alignItems="flex-start" margin="0 0 0.3125rem 0">
             <Typography

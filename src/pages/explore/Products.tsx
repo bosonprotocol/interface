@@ -142,7 +142,7 @@ function Products() {
           exchangeTokenAddress={selectedToken}
           sellerId={selectedSeller}
           brand={brandSelect}
-          rows={3}
+          rows={2}
           breadcrumbs={true}
           orderDirection={filter.value}
         />

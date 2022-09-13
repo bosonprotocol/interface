@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { generatePath, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
 import OfferList from "../../components/offers/OfferList";
@@ -7,7 +7,6 @@ import {
   ExploreQueryParameters,
   UrlParameters
 } from "../../lib/routing/parameters";
-import { BosonRoutes } from "../../lib/routing/routes";
 import { Offer } from "../../lib/types/offer";
 import { useOffers } from "../../lib/utils/hooks/offers";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
@@ -29,6 +28,7 @@ interface Props {
   rows?: number;
   breadcrumbs?: boolean;
   orderDirection?: "asc" | "desc";
+  orderBy?: string;
 }
 
 const updatePageIndexInUrl =
@@ -40,19 +40,19 @@ const updatePageIndexInUrl =
     const queryParamsUrl = new URLSearchParams(
       Object.entries(queryParams).filter(([, value]) => value !== "")
     ).toString();
-    if (index === 0) {
-      navigate({
-        pathname: BosonRoutes.Explore,
-        search: queryParamsUrl
-      });
-    } else {
-      navigate({
-        pathname: generatePath(BosonRoutes.ExplorePageByIndex, {
-          [UrlParameters.page]: index + 1 + ""
-        }),
-        search: queryParamsUrl
-      });
-    }
+    // if (index === 0) {
+    //   navigate({
+    //     pathname: BosonRoutes.Products,
+    //     search: queryParamsUrl
+    //   });
+    // } else {
+    //   navigate({
+    //     pathname: generatePath(BosonRoutes.ExplorePageByIndex, {
+    //       [UrlParameters.page]: index + 1 + ""
+    //     }),
+    //     search: queryParamsUrl
+    //   });
+    // }
   };
 
 const DEFAULT_PAGE = 0;
@@ -63,13 +63,20 @@ const extractFiltersWithDefaults = (props: Props): Props => {
     name: props.name || "",
     exchangeTokenAddress: props.exchangeTokenAddress || "",
     sellerId: props.sellerId || "",
-    orderDirection: props.orderDirection || undefined
+    orderDirection: props.orderDirection || undefined,
+    orderBy: props.orderBy || undefined
   };
 };
 
 export default function ExploreOffers(props: Props) {
-  const { brand, name, exchangeTokenAddress, sellerId, orderDirection } =
-    extractFiltersWithDefaults(props);
+  const {
+    brand,
+    name,
+    exchangeTokenAddress,
+    sellerId,
+    orderDirection,
+    orderBy
+  } = extractFiltersWithDefaults(props);
   const params = useParams();
   const navigate = useKeepQueryParamsNavigate();
   const updateUrl = useCallback(
@@ -78,9 +85,10 @@ export default function ExploreOffers(props: Props) {
         name: name ?? "",
         currency: exchangeTokenAddress ?? "",
         seller: sellerId ?? "",
-        orderDirection: orderDirection ?? ""
+        orderDirection: orderDirection ?? "",
+        orderBy: orderBy ?? ""
       }),
-    [navigate, name, exchangeTokenAddress, sellerId, orderDirection]
+    [navigate, name, exchangeTokenAddress, sellerId, orderDirection, orderBy]
   );
   const initialPageIndex = Math.max(
     0,
@@ -109,7 +117,7 @@ export default function ExploreOffers(props: Props) {
     // first: OFFERS_PER_PAGE + 1,
     first: OFFERS_PER_PAGE * 2,
     skip: OFFERS_PER_PAGE * pageIndex,
-    orderBy: "createdAt",
+    orderBy: props.orderBy || "createdAt",
     orderDirection: props.orderDirection
       ? props.orderDirection
       : ("asc" as const)

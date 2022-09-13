@@ -17,12 +17,24 @@ import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryPa
 import ExploreOffers from "./ExploreOffers";
 
 interface FilterValue {
-  value: "asc" | "desc";
+  value: string;
+  orderDirection: "asc" | "desc";
+  orderBy: string;
   label: string;
 }
 const selectOptions = [
-  { value: "asc", label: "Ascending" },
-  { value: "desc", label: "Descending" }
+  {
+    value: "0",
+    orderDirection: "asc",
+    orderBy: "createdAt",
+    label: "Price Low to High ($)"
+  },
+  {
+    value: "1",
+    orderDirection: "desc",
+    orderBy: "createdAt",
+    label: "Price Low to High ($)"
+  }
 ] as const;
 
 const customStyles: StylesConfig<
@@ -172,13 +184,15 @@ export default function Explore() {
 
   const [filter, setFilter] = useState<FilterValue>(selectOptions[0]);
 
-  useEffect(() => {
-    if (sortQueryParameter) {
-      setFilter(
-        selectOptions.filter((option) => option.value === sortQueryParameter)[0]
-      );
-    }
-  }, [sortQueryParameter]);
+  // useEffect(() => {
+  //   if (sortQueryParameter) {
+  //     setFilter(
+  //       selectOptions.filter(
+  //         (option) => option.orderDirection === sortQueryParameter
+  //       )[0]
+  //     );
+  //   }
+  // }, [sortQueryParameter]);
 
   const navigate = useKeepQueryParamsNavigate();
 
@@ -191,9 +205,10 @@ export default function Explore() {
   // const { data: brands } = useBrands();
 
   const [selectedSeller] = useState<string>(sellerQueryParameter);
-
+  console.log(filter);
   const useCollectionPayload = {
-    orderDirection: filter.value
+    orderDirection: filter.orderDirection,
+    orderBy: filter.orderBy
   };
   const { data } = useCollections({
     ...useCollectionPayload
@@ -221,10 +236,18 @@ export default function Explore() {
             styles={customStyles}
             isSearchable={false}
             placeholder=""
-            value={filter}
+            value={{ value: filter.value, label: filter.label }}
             options={selectOptions}
-            onChange={(option) => {
-              setFilter(option as typeof selectOptions[number]);
+            onChange={(option: any) => {
+              if (option !== null) {
+                console.log(option);
+                setFilter({
+                  value: option.value,
+                  orderDirection: option.orderDirection,
+                  orderBy: option.orderBy,
+                  label: option.label
+                });
+              }
               setSortQueryParameter(option?.value || "");
             }}
           />
@@ -291,16 +314,23 @@ export default function Explore() {
           sellerId={selectedSeller}
           // brand={brandSelect}
           hidePagination
-          orderDirection={filter.value}
+          orderDirection={filter.orderDirection}
+          orderBy={filter.orderBy}
         />
       </ExploreOffersContainer>
       <ExploreOffersContainer>
         <Grid>
-          <h1>Collections</h1>
+          <Typography
+            $fontSize="32px"
+            fontWeight="600"
+            margin="0.67em 0 0.67em 0"
+          >
+            Sellers
+          </Typography>
           <ViewMoreButton
             onClick={() =>
               navigate({
-                pathname: `${BosonRoutes.Collections}`
+                pathname: `${BosonRoutes.Sellers}`
               })
             }
           >

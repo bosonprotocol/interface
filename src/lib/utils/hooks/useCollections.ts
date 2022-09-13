@@ -8,6 +8,7 @@ export function useCollections(
     skip?: number;
     first?: number;
     orderDirection?: string;
+    orderBy?: string;
   },
   options: {
     enabled?: boolean;
@@ -33,7 +34,11 @@ export function useCollections(
         }[];
       }>(
         gql`
-          query GetCollections($skip: Int, $sort: String) {
+          query GetCollections(
+            $skip: Int
+            $orderDirection: String
+            $orderBy: String
+          ) {
             sellers(skip: $skip, first: 15) {
               id
               exchanges {
@@ -45,6 +50,7 @@ export function useCollections(
                   validFromDate_lte: "1662847140"
                   validUntilDate_lte: "1662847140"
                 }
+                orderBy: $orderBy
                 orderDirection: $orderDirection
               ) {
                 id

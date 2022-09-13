@@ -54,6 +54,12 @@ const SelectFilterWrapper = styled.div`
   align-items: center;
 `;
 
+const CardButton = styled.button`
+  background: none;
+  border: none;
+  width: 100%;
+`;
+
 const BreadcrumbsContainer = styled.div`
   display: block;
 `;
@@ -150,7 +156,13 @@ function Collections() {
   return (
     <>
       <Grid>
-        <h1>Collections</h1>
+        <Typography
+          $fontSize="32px"
+          fontWeight="600"
+          margin="0.67em 0 0.67em 0"
+        >
+          Sellers
+        </Typography>
         <SelectFilterWrapper>
           <Typography fontWeight="600" color={colors.darkGrey}>
             Sort:

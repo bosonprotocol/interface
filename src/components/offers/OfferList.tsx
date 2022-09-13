@@ -65,7 +65,7 @@ export default function OfferList({
   const location = useLocation();
 
   const isProductPage = useMemo(
-    () => location.pathname === "/products",
+    () => location.pathname.includes("/products"),
     [location]
   );
 
@@ -95,7 +95,13 @@ export default function OfferList({
     <>
       {isProductPage && (
         <StyledGrid>
-          <h1>Products</h1>
+          <Typography
+            $fontSize="32px"
+            fontWeight="600"
+            margin="0.67em 0 0.67em 0"
+          >
+            Products
+          </Typography>
         </StyledGrid>
       )}
       <Container>
@@ -125,7 +131,13 @@ export default function OfferList({
         >
           {!isProductPage && (
             <>
-              <h1>Products</h1>
+              <Typography
+                $fontSize="32px"
+                fontWeight="600"
+                margin="0.67em 0 0.67em 0"
+              >
+                Products
+              </Typography>
               <ViewMoreButton
                 onClick={() =>
                   navigate({

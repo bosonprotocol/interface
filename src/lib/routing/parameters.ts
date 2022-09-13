@@ -2,7 +2,8 @@ export const ExploreQueryParameters = {
   name: "name",
   seller: "seller",
   currency: "currency",
-  orderDirection: "orderDirection"
+  orderDirection: "orderDirection",
+  orderBy: "orderBy"
 } as const;
 
 export const AccountQueryParameters = {
