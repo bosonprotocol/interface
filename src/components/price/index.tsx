@@ -1,17 +1,24 @@
 import { useState } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import { breakpoint } from "../../lib/styles/breakpoint";
+import { colors } from "../../lib/styles/colors";
 import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
 import ConvertedPrice from "./ConvertedPrice";
 import CurrencyIcon from "./CurrencyIcon";
 import { useConvertedPrice } from "./useConvertedPrice";
 
-const Root = styled.div`
+const Root = styled.div<{ $withBosonStyles: boolean }>`
   display: flex;
   gap: 0.25rem;
   align-items: center;
+  ${({ $withBosonStyles }) =>
+    $withBosonStyles
+      ? css`
+          color: ${colors.black};
+        `
+      : ""}
   h3,
   h4 {
     padding-left: 2.5rem;
@@ -47,6 +54,7 @@ interface IProps {
   currencySymbol: string;
   convert?: boolean;
   isExchange?: boolean;
+  withBosonStyles?: boolean;
   tag?: keyof JSX.IntrinsicElements;
 }
 
@@ -57,13 +65,17 @@ export default function Price({
   convert = false,
   isExchange = false,
   tag = "h4",
+  withBosonStyles = false,
   ...rest
 }: IProps) {
   const [isSymbolShown, setIsSymbolShown] = useState<boolean>(false); // TODO: remove once CSS :has is supported
-  const price = useConvertedPrice({ value, decimals, symbol: currencySymbol });
-
+  const price = useConvertedPrice({
+    value,
+    decimals,
+    symbol: currencySymbol
+  });
   return (
-    <Root {...rest} data-testid="price">
+    <Root {...rest} $withBosonStyles={withBosonStyles} data-testid="price">
       {price ? (
         <Grid
           alignItems="baseline"

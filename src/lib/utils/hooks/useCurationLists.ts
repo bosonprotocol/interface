@@ -11,10 +11,10 @@ export function useCurationLists() {
 
   return {
     enableCurationLists:
-      withOwnProducts === "true"
-        ? true
-        : withOwnProducts === "false"
+      withOwnProducts === "all"
         ? false
+        : ["mine", "custom"].includes(withOwnProducts)
+        ? true
         : CONFIG.enableCurationLists,
     sellerCurationList: sellerCurationListFromUrl
       ? parseCurationList(sellerCurationListFromUrl)

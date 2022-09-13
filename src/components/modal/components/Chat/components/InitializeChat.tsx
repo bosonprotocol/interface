@@ -59,7 +59,7 @@ export default function InitializeChat({ isError = false }: Props) {
         {isInitializeButtonVisible ? (
           <Button
             type="button"
-            theme="primaryInverse"
+            theme="bosonSecondaryInverse"
             disabled={isInitializing}
             onClick={() => {
               initialize();

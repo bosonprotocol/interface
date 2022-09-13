@@ -50,24 +50,25 @@ const BaseButton = styled.button<{
 
   ${(props) =>
     props.theme.disabled
-      ? `
-      :disabled {
-        background-color: ${props.theme.disabled.background || "transparent"};
-        color: ${props.theme.disabled.color || colors.darkGrey};
-        border-color: transparent;
-        cursor: not-allowed;
-        opacity: 0.5;
-      }
-    `
-      : `
-      :disabled {
-        background-color: ${colors.lightGrey};
-        color: ${colors.darkGrey};
-        border-color: transparent;
-        cursor: not-allowed;
-        opacity: 0.5;
-      }
-    `};
+      ? css`
+          :disabled {
+            background-color: ${props.theme.disabled.background ||
+            "transparent"};
+            color: ${props.theme.disabled.color || colors.darkGrey};
+            border-color: transparent;
+            cursor: not-allowed;
+            opacity: 0.5;
+          }
+        `
+      : css`
+          :disabled {
+            background-color: ${colors.lightGrey};
+            color: ${colors.darkGrey};
+            border-color: transparent;
+            cursor: not-allowed;
+            opacity: 0.5;
+          }
+        `};
 `;
 
 const ChildWrapperButton = styled.div`
@@ -78,39 +79,58 @@ const ChildWrapperButton = styled.div`
   z-index: ${zIndex.Button};
 
   ${() => Styles.buttonText};
-  /* white-space: pre; */
 `;
 
 const allThemes = {
   primary: {
-    color: "var(--secondary)",
-    borderColor: "var(--secondary)",
-    borderWidth: 2,
-    hover: {
-      background: "var(--secondary)",
-      color: colors.white
-    }
-  },
-  primaryInverse: {
-    color: colors.white,
-    borderColor: "var(--secondary)",
-    background: "var(--secondary)",
-    borderWidth: 2,
-    hover: {
-      color: "var(--secondary)",
-      borderColor: "var(--secondary)",
-      background: colors.white
-    }
-  },
-  secondary: {
-    color: colors.black,
-    background: "var(--primary)",
-    borderColor: "var(--primary)",
+    color: "var(--textColor)",
+    background: `var(--accentNoDefault, ${colors.green})`,
+    borderColor: `var(--accentNoDefault, ${colors.green})`,
     borderWidth: 2,
     hover: {
       background: colors.black,
       color: colors.white,
       borderColor: colors.black
+    }
+  },
+  bosonPrimary: {
+    color: colors.black,
+    background: colors.primary,
+    borderColor: colors.primary,
+    borderWidth: 2,
+    hover: {
+      background: colors.black,
+      color: colors.white,
+      borderColor: colors.black
+    }
+  },
+  secondary: {
+    color: "var(--accent)",
+    borderColor: "var(--accent)",
+    borderWidth: 2,
+    hover: {
+      background: "var(--accent)",
+      color: colors.white
+    }
+  },
+  bosonSecondary: {
+    color: colors.secondary,
+    borderColor: colors.secondary,
+    borderWidth: 2,
+    hover: {
+      background: colors.secondary,
+      color: colors.white
+    }
+  },
+  bosonSecondaryInverse: {
+    color: colors.white,
+    borderColor: colors.secondary,
+    background: colors.secondary,
+    borderWidth: 2,
+    hover: {
+      color: colors.secondary,
+      borderColor: colors.secondary,
+      background: colors.white
     }
   },
   outline: {
@@ -119,20 +139,12 @@ const allThemes = {
     borderWidth: 1,
     hover: {
       background: colors.border,
-      color: "var(--secondary)"
+      color: "var(--accent)"
     }
   },
   orange: {
     color: colors.orange,
     borderColor: colors.border,
-    hover: {
-      background: colors.border
-    }
-  },
-  void: {
-    color: colors.orange,
-    borderColor: colors.orange,
-    borderWidth: 1,
     hover: {
       background: colors.border
     }
@@ -148,7 +160,7 @@ const allThemes = {
     }
   },
   blankSecondary: {
-    color: "var(--secondary)",
+    color: "var(--accent)",
     padding: "0.75rem 0.5rem",
     hover: {
       borderColor: colors.secondary,
@@ -181,16 +193,6 @@ const allThemes = {
     hover: {
       background: colors.orange,
       color: colors.white
-    }
-  },
-  error: {
-    color: colors.white,
-    background: colors.red,
-    borderColor: colors.red,
-    borderWidth: 2,
-    hover: {
-      background: colors.white,
-      color: colors.black
     }
   }
 };

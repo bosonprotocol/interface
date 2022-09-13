@@ -96,7 +96,7 @@ export default function FinanceWithdraw({
     setAmountToWithdraw(valueStr);
   };
 
-  const handleSubmitDeposit = async () => {
+  const handleWithdraw = async () => {
     {
       try {
         setWithdrawError(null);
@@ -158,9 +158,9 @@ export default function FinanceWithdraw({
           Wallet Balance: {dataBalance?.formatted} {dataBalance?.symbol}
         </Typography>
         <CTAButton
-          theme="secondary"
+          theme="primary"
           size="small"
-          onClick={handleSubmitDeposit}
+          onClick={handleWithdraw}
           disabled={isBeingWithdrawn || isWithdrawInvalid}
         >
           {isBeingWithdrawn ? (

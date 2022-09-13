@@ -7,12 +7,13 @@ import { useMemo, useState } from "react";
 import { CONFIG } from "../../../lib/config";
 import { Offer } from "../../../lib/types/offer";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
-import { useInfiniteOffers } from "../../../lib/utils/hooks/offers/useInfiniteOffers";
 import Loading from "../../ui/Loading";
+import { WithSellerDataProps } from "../common/WithSellerData";
 import SellerAddNewProduct from "../SellerAddNewProduct";
 import SellerBatchVoid from "../SellerBatchVoid";
 import SellerExport from "../SellerExport";
 import SellerFilters from "../SellerFilters";
+import { SellerInsideProps } from "../SellerInside";
 import SellerTags from "../SellerTags";
 import SellerProductsTable from "./SellerProductsTable";
 
@@ -39,37 +40,24 @@ const productTags = [
   }
 ];
 
-interface Props {
-  sellerId: string;
-}
 interface FilterValue {
   value: string;
   label: string;
 }
 
-export default function SellerProducts({ sellerId }: Props) {
+export default function SellerProducts({
+  offers: offersData
+}: SellerInsideProps & WithSellerDataProps) {
   const [currentTag, setCurrentTag] = useState(productTags[0].value);
   const [search, setSearch] = useState<string>("");
   const [filter, setFilter] = useState<FilterValue | null>(null);
   const [selected, setSelected] = useState<Array<Offer | null>>([]);
 
-  const { data, isLoading, isError, refetch } = useInfiniteOffers(
-    {
-      sellerId,
-      first: 1000,
-      orderBy: "createdAt",
-      orderDirection: "desc"
-    },
-    {
-      enabled: !!sellerId,
-      keepPreviousData: false,
-      refetchOnMount: true
-    }
-  );
+  const { data, isLoading, isError, refetch } = offersData;
 
   const allOffers = useMemo(() => {
     const filtered =
-      data?.pages.flat()?.map((offer: Offer) => {
+      data?.map((offer: Offer) => {
         const status = offers.getOfferStatus(offer);
 
         if (currentTag === "physical") {

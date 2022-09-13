@@ -1,5 +1,5 @@
 import { generatePath, useLocation } from "react-router-dom";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import RootPrice from "../../components/price";
 import { clamp } from "../../components/ui/styles";
@@ -22,24 +22,24 @@ const Card = styled.div<{ isCarousel: boolean }>`
   width: 100%;
   cursor: pointer;
   border: 1px solid ${colors.black}20;
+  color: ${colors.black};
 
   ${({ isCarousel }) =>
     !isCarousel
-      ? `
-    transition: all 300ms ease-in-out;
-    transition: box-shadow 300ms;
+      ? css`
+          transition: all 300ms ease-in-out;
+          transition: box-shadow 300ms;
 
-    &:hover {
-      box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.05),
-      4px 4px 4px rgba(0, 0, 0, 0.05),
-      8px 8px 8px rgba(0, 0, 0, 0.05),
-      16px 16px 16px rgba(0, 0, 0, 0.05);
+          &:hover {
+            box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.05),
+              4px 4px 4px rgba(0, 0, 0, 0.05), 8px 8px 8px rgba(0, 0, 0, 0.05),
+              16px 16px 16px rgba(0, 0, 0, 0.05);
 
-      img[data-testid] {
-        transform: translate(-50%, -50%) scale(1.05);
-      }
-    }
-  `
+            img[data-testid] {
+              transform: translate(-50%, -50%) scale(1.05);
+            }
+          }
+        `
       : ""}
 `;
 
@@ -69,7 +69,7 @@ const Price = styled(RootPrice)`
 `;
 
 const PriceText = styled(Typography)`
-  color: #556072;
+  color: ${colors.darkGrey};
   font-size: 0.875rem;
 `;
 
@@ -182,6 +182,7 @@ export default function OfferCard({
               currencySymbol={offer.exchangeToken.symbol}
               value={offer.price}
               decimals={offer.exchangeToken.decimals}
+              withBosonStyles
             />
           )}
         </BasicInfoContainer>

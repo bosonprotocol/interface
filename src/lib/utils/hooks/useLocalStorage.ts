@@ -20,6 +20,7 @@ export type GetItemFromStorageKey =
   | "create-product"
   | "tracing-url"
   | "convertionRates"
+  | "shouldDisplayOfferBackedWarning"
   | CreateProductImageProductImages
   | CreateProductImageCreteYourProfileLogo;
 

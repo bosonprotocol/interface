@@ -1,5 +1,6 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import { parseUnits } from "@ethersproject/units";
+import { ethers } from "ethers";
 import map from "lodash/map";
 import slice from "lodash/slice";
 import styled from "styled-components";
@@ -81,20 +82,23 @@ export default function Preview({ togglePreview, seller }: Props) {
 
   const exchangeDate = Date.now().toString();
 
-  /**
-   * TODO: The exchange token should not be hardcoded to suport multiple tokens
-   */
   const offer = {
     price: weiPrice.toString(),
 
-    sellerDeposit: parseUnits(
-      `${parseInt(values.coreTermsOfSale.price) * sellerDeposit}`,
+    sellerDeposit: ethers.utils.formatUnits(
+      ethers.utils
+        .parseUnits(values.coreTermsOfSale.price.toString(), 18)
+        .mul(ethers.utils.parseUnits(sellerDeposit.toString(), 18))
+        .toString(),
       18
-    ).toString(),
-    buyerCancelPenalty: parseUnits(
-      `${parseInt(values.coreTermsOfSale.price) * buyerDeposit}`,
+    ),
+    buyerCancelPenalty: ethers.utils.formatUnits(
+      ethers.utils
+        .parseUnits(values.coreTermsOfSale.price.toString(), 18)
+        .mul(ethers.utils.parseUnits(buyerDeposit.toString(), 18))
+        .toString(),
       18
-    ).toString(),
+    ),
     validFromDate: validFromDateInMS.toString(),
     validUntilDate: validUntilDateInMS.toString(),
     voucherRedeemableFromDate: voucherRedeemableFromDateInMS.toString(),
@@ -201,7 +205,7 @@ export default function Preview({ togglePreview, seller }: Props) {
         </DetailWrapper>
       </PreviewWrapperContent>
       <ProductButtonGroup>
-        <Button theme="secondary" type="submit">
+        <Button theme="primary" type="submit">
           Confirm
         </Button>
         <Button theme="primary" type="button" onClick={handleClosePreview}>

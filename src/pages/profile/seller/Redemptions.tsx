@@ -1,4 +1,4 @@
-import { ExchangeState } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
+import { subgraph } from "@bosonprotocol/react-kit";
 
 import OfferCard, { Action } from "../../../components/offer/OfferCard";
 import GridContainer from "../../../components/ui/GridContainer";
@@ -26,7 +26,12 @@ export default function Redemptions({
     isLoading: isLoadingSeller,
     isError: isErrorSeller
   } = useExchanges(
-    { ...orderProps, disputed: null, sellerId, state: ExchangeState.Redeemed },
+    {
+      ...orderProps,
+      disputed: null,
+      sellerId,
+      state: subgraph.ExchangeState.Redeemed
+    },
     { enabled: !!sellerId }
   );
 

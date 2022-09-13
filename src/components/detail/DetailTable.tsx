@@ -14,6 +14,7 @@ interface Props {
   align?: boolean;
   data: Readonly<Array<Data>>;
   noBorder?: boolean;
+  inheritColor?: boolean;
   tag?: keyof JSX.IntrinsicElements;
 }
 
@@ -21,10 +22,11 @@ export default function DetailTable({
   align,
   data,
   noBorder = false,
+  inheritColor = false,
   tag = "span"
 }: Props) {
   return (
-    <Table noBorder={noBorder}>
+    <Table noBorder={noBorder} $inheritColor={inheritColor}>
       <tbody>
         {data?.map(
           ({ hide = false, ...d }: Data, index: number) =>

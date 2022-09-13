@@ -43,34 +43,76 @@ export const SOCIAL_ROUTES = [
   }
 ];
 
-export const PRODUCT_ROUTES = [
-  {
-    name: "Explore",
-    url: BosonRoutes.Explore
-  },
-  {
-    name: "Sell",
-    url: generatePath(SellerCenterRoutes.SellerCenter, {
-      [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
-    })
+export const getProductRoutes = ({
+  isSupportFunctionalityDefined,
+  onlyBuyer,
+  onlySeller
+}: {
+  isSupportFunctionalityDefined: boolean;
+  onlyBuyer: boolean;
+  onlySeller: boolean;
+}) => {
+  const productRoutes: { name: string; url: string }[] = [];
+  if (
+    !isSupportFunctionalityDefined ||
+    (isSupportFunctionalityDefined && !onlySeller)
+  ) {
+    productRoutes.push({
+      name: "Explore",
+      url: BosonRoutes.Explore
+    });
   }
-];
 
-export const NAVIGATION_ROUTES = [
-  {
-    name: "Profile",
-    url: BosonRoutes.YourAccount
-  },
-  {
-    name: "Custom Storefront",
-    url: BosonRoutes.CreateStorefront
-  },
-  {
-    name: "Chat",
-    url: BosonRoutes.Chat
-  },
-  {
-    name: "Dispute Center",
-    url: BosonRoutes.DisputeCenter
+  if (
+    !isSupportFunctionalityDefined ||
+    (isSupportFunctionalityDefined && (!onlyBuyer || onlySeller))
+  ) {
+    productRoutes.push({
+      name: "Sell",
+      url: generatePath(SellerCenterRoutes.SellerCenter, {
+        [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
+      })
+    });
   }
-];
+  return productRoutes;
+};
+
+export const getNavigationRoutes = ({
+  isSupportFunctionalityDefined,
+  onlySeller
+}: {
+  isSupportFunctionalityDefined: boolean;
+  onlySeller: boolean;
+}) => {
+  if (isSupportFunctionalityDefined && onlySeller) {
+    return [
+      {
+        name: "Custom Storefront",
+        url: BosonRoutes.CreateStorefront
+      },
+      {
+        name: "Chat",
+        url: BosonRoutes.Chat
+      }
+    ];
+  }
+
+  return [
+    {
+      name: "Profile",
+      url: BosonRoutes.YourAccount
+    },
+    {
+      name: "Custom Storefront",
+      url: BosonRoutes.CreateStorefront
+    },
+    {
+      name: "Chat",
+      url: BosonRoutes.Chat
+    },
+    {
+      name: "Dispute Center",
+      url: BosonRoutes.DisputeCenter
+    }
+  ];
+};

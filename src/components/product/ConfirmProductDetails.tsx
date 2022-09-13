@@ -474,7 +474,7 @@ export default function ConfirmProductDetails({
       )}
       <ConfirmProductDetailsButtonGroup>
         <Button
-          theme="secondary"
+          theme="primary"
           type="submit"
           disabled={
             !["INITIALIZED", "ALREADY_INITIALIZED"].includes(

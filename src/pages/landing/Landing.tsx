@@ -8,7 +8,6 @@ import Typography from "../../components/ui/Typography";
 import { ExploreQueryParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
-import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
@@ -50,7 +49,7 @@ const ExploreContainer = styled.div`
 `;
 
 const DarkerBackground = styled.div`
-  background-color: ${colors.lightGrey};
+  background-color: var(--secondary);
   width: 100vw;
   position: relative;
   left: 50%;
@@ -105,7 +104,7 @@ export default function Landing() {
             <Button
               data-testid="explore-all-offers"
               onClick={() => navigateToExplore()}
-              theme="secondary"
+              theme="primary"
             >
               Explore products
             </Button>

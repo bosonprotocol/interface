@@ -11,7 +11,7 @@ function SellerBatchVoid({ selected, refetch }: Props) {
 
   return (
     <Button
-      theme="primary"
+      theme="bosonSecondary"
       size="small"
       onClick={() => {
         showModal(

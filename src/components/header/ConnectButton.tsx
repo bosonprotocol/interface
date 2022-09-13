@@ -71,7 +71,8 @@ export default function ConnectButton({ navigationBarPosition = "" }: Props) {
                     size={isLteXS ? "small" : "regular"}
                     style={{
                       whiteSpace: "pre",
-                      ...buttonPropsWhenSideBar
+                      ...buttonPropsWhenSideBar,
+                      color: "inherit"
                     }}
                   >
                     Connect Wallet
@@ -89,7 +90,8 @@ export default function ConnectButton({ navigationBarPosition = "" }: Props) {
                     size={isLteXS ? "small" : "regular"}
                     style={{
                       whiteSpace: "pre",
-                      ...buttonPropsWhenSideBar
+                      ...buttonPropsWhenSideBar,
+                      color: "inherit"
                     }}
                   >
                     Wrong network
@@ -113,7 +115,8 @@ export default function ConnectButton({ navigationBarPosition = "" }: Props) {
                     size={isLteXS ? "small" : "regular"}
                     style={{
                       whiteSpace: "pre",
-                      ...buttonPropsWhenSideBar
+                      ...buttonPropsWhenSideBar,
+                      color: "inherit"
                     }}
                   >
                     {account.ensAvatar ? (

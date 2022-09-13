@@ -165,7 +165,7 @@ function DisputeListMobileElement({ exchange }: { exchange: Exchange }) {
         </StyledDisputeButton>
         <StyledChatButton
           type="button"
-          theme="secondary"
+          theme="primary"
           size="small"
           onClick={() => {
             navigate({

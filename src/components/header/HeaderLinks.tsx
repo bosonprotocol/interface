@@ -6,7 +6,8 @@ import { useAccount } from "wagmi";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes, SellerCenterRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
-import { useCurrentSellerId } from "../../lib/utils/hooks/useCurrentSellerId";
+import { useBuyerSellerAccounts } from "../../lib/utils/hooks/useBuyerSellerAccounts";
+import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
 import { DEFAULT_SELLER_PAGE } from "../seller/SellerPages";
 import Search from "./Search";
@@ -18,10 +19,19 @@ const NavigationLinks = styled.div<{
   isOpen: boolean;
   $navigationBarPosition: string;
 }>`
+  background-color: var(--headerBgColor);
+  color: var(--headerTextColor);
   > * {
     flex: 1;
   }
   height: 100%;
+  a {
+    color: var(--headerTextColor, ${colors.black});
+    :hover {
+      background-color: ${colors.border};
+      color: var(--accent);
+    }
+  }
   ${({ isMobile, isOpen, $navigationBarPosition }) =>
     isMobile
       ? css`
@@ -31,7 +41,6 @@ const NavigationLinks = styled.div<{
           right: 0;
           bottom: 0;
           height: 100vh;
-          background: white;
           transform: ${isOpen ? "translateX(0%)" : "translateX(100%)"};
 
           a {
@@ -44,8 +53,6 @@ const NavigationLinks = styled.div<{
             font-weight: 600;
             line-height: 150%;
             padding: 2rem;
-            color: ${colors.black};
-            background-color: ${colors.lightGrey};
             border-bottom: 2px solid ${colors.border};
             position: relative;
             white-space: pre;
@@ -60,7 +67,6 @@ const NavigationLinks = styled.div<{
             }
 
             &:hover {
-              color: var(--secondary);
               &:before {
                 height: 100%;
               }
@@ -109,11 +115,6 @@ const NavigationLinks = styled.div<{
             font-weight: 600;
             line-height: 150%;
             height: 100%;
-            color: ${colors.black};
-          }
-          a:hover {
-            background-color: ${colors.border};
-            color: var(--secondary);
           }
         `};
 `;
@@ -138,11 +139,15 @@ export default function HeaderLinks({
   navigationBarPosition
 }: Props) {
   const { address } = useAccount();
-  const { isLoading, sellerId } = useCurrentSellerId();
-  const isAccountSeller = useMemo(
-    () => !isLoading && sellerId !== null,
-    [isLoading, sellerId]
-  );
+  const supportFunctionality = useCustomStoreQueryParameter<
+    ("buyer" | "seller" | "dr")[]
+  >("supportFunctionality", { parseJson: true });
+  const {
+    buyer: { buyerId },
+    seller: { sellerId }
+  } = useBuyerSellerAccounts(address || "");
+  const isAccountSeller = useMemo(() => !!sellerId, [sellerId]);
+  const isAccountBuyer = useMemo(() => !!buyerId, [buyerId]);
 
   const sellUrl = useMemo(
     () =>
@@ -153,7 +158,15 @@ export default function HeaderLinks({
         : SellerCenterRoutes.CreateProduct,
     [isAccountSeller]
   );
-
+  const isSupportFunctionalityDefined = supportFunctionality !== "";
+  const onlyBuyer =
+    typeof supportFunctionality != "string" &&
+    supportFunctionality?.length === 1 &&
+    supportFunctionality?.[0] === "buyer";
+  const onlySeller =
+    typeof supportFunctionality != "string" &&
+    supportFunctionality?.length === 1 &&
+    supportFunctionality?.[0] === "seller";
   return (
     <NavigationLinks
       isMobile={isMobile}
@@ -165,9 +178,16 @@ export default function HeaderLinks({
         navigationBarPosition={navigationBarPosition}
       />
       <Links isMobile={isMobile} $navigationBarPosition={navigationBarPosition}>
-        <LinkWithQuery to={sellUrl}>Sell</LinkWithQuery>
-        <LinkWithQuery to={BosonRoutes.Explore}>Explore Products</LinkWithQuery>
-        {address && (
+        {((isSupportFunctionalityDefined && !onlyBuyer) ||
+          !isSupportFunctionalityDefined) && (
+          <LinkWithQuery to={sellUrl}>Sell</LinkWithQuery>
+        )}
+        {!onlySeller && (
+          <LinkWithQuery to={BosonRoutes.Explore}>
+            Explore Products
+          </LinkWithQuery>
+        )}
+        {isAccountBuyer && !onlySeller && (
           <LinkWithQuery to={BosonRoutes.YourAccount}>My Items</LinkWithQuery>
         )}
       </Links>

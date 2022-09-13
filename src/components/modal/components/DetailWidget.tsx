@@ -84,7 +84,7 @@ export default function DetailWidget({
           </Widget>
           <WidgetButtonWrapper>
             <Button
-              theme="secondary"
+              theme="primary"
               onClick={() => {
                 const exchangeId = id || false;
                 hideModal();

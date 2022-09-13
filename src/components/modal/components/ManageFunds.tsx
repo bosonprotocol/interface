@@ -25,6 +25,7 @@ const WithdrawButton = styled(Button)`
   padding: 0.25rem 1rem;
   background: transparent;
   color: ${colors.green};
+  border: 2px solid ${colors.green};
   :hover:not(:disabled) {
     background: ${colors.green};
     border: 2px solid ${colors.green};
@@ -128,7 +129,7 @@ export default function ManageFunds({ id }: Props) {
             <WithdrawableWrapper>
               <AmountWrapper>{withdrawable}</AmountWrapper>
               <WithdrawButton
-                theme="secondary"
+                theme="primary"
                 size="small"
                 onClick={() => {
                   showModal(

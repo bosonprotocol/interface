@@ -21,7 +21,6 @@ const mediumWidth = "225px";
 const sideMargin = "1rem";
 const closedHeaderWidth = "75px";
 const Header = styled.header<{
-  $navigationBarBgColor: string;
   $navigationBarPosition: string;
   $isSideBarOpen: boolean;
 }>`
@@ -124,9 +123,8 @@ const Header = styled.header<{
     `;
   }}
 
-  background-color: ${({ $navigationBarBgColor }) =>
-    $navigationBarBgColor || colors.white};
-  color: ${colors.darkGrey};
+  background-color: var(--headerBgColor);
+  color: var(--headerTextColor);
   z-index: ${zIndex.Header};
 `;
 
@@ -145,7 +143,7 @@ const BurgerButton = styled.button`
     width: 1.25rem;
     height: 2px;
     border-radius: 5px;
-    background: var(--secondary);
+    background: var(--accent);
   }
 `;
 
@@ -162,6 +160,10 @@ const HeaderContainer = styled(Layout)<{
         height: 100%;
         padding: 1rem;
         gap: 2rem;
+
+        ${breakpoint.m} {
+          align-items: center;
+        }
       `;
     }
     return css`
@@ -225,9 +227,6 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
     const { pathname, search } = useLocation();
     const { isLteS, isLteM, isM } = useBreakpoints();
     const logoUrl = useCustomStoreQueryParameter("logoUrl");
-    const navigationBarBgColor = useCustomStoreQueryParameter(
-      "navigationBarBgColor"
-    );
     const navigationBarPosition = useCustomStoreQueryParameter(
       "navigationBarPosition"
     );
@@ -254,7 +253,6 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
 
     return (
       <Header
-        $navigationBarBgColor={navigationBarBgColor}
         $navigationBarPosition={navigationBarPosition}
         $isSideBarOpen={isOpen}
         ref={ref}
