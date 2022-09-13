@@ -32,12 +32,14 @@ interface Props {
 }
 
 const updatePageIndexInUrl =
-  (navigate: ReturnType<typeof useKeepQueryParamsNavigate>) =>
+  (
+    navigate: ReturnType<typeof useKeepQueryParamsNavigate> // eslint-disable-line
+  ) =>
   (
     index: number,
     queryParams: { [x in keyof typeof ExploreQueryParameters]: string }
   ): void => {
-    const queryParamsUrl = new URLSearchParams(
+    const queryParamsUrl = new URLSearchParams( // eslint-disable-line
       Object.entries(queryParams).filter(([, value]) => value !== "")
     ).toString();
     // if (index === 0) {

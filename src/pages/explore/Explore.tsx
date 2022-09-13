@@ -181,6 +181,7 @@ export default function Explore() {
   // const [brandSelect, setBrandSelect] = useState<string>("");
   const [nameToSearch, setNameToSearch] = useState<string>(nameQueryParameter);
   const [sortQueryParameter, setSortQueryParameter] = useQueryParameter(
+    // eslint-disable-line
     ExploreQueryParameters.orderDirection
   );
 
@@ -240,6 +241,7 @@ export default function Explore() {
             value={{ value: filter.value, label: filter.label }}
             options={selectOptions}
             onChange={(option: any) => {
+              // eslint-disable-line
               if (option !== null) {
                 setFilter({
                   value: option.value,

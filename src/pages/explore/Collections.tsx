@@ -54,11 +54,11 @@ const SelectFilterWrapper = styled.div`
   align-items: center;
 `;
 
-const CardButton = styled.button`
-  background: none;
-  border: none;
-  width: 100%;
-`;
+// const CardButton = styled.button`
+//   background: none;
+//   border: none;
+//   width: 100%;
+// `;
 
 const BreadcrumbsContainer = styled.div`
   display: block;
