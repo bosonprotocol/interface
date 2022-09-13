@@ -17,11 +17,11 @@ interface Props {
 }
 export default function OfferHistory({ offer }: Props) {
   const allExchanges =
-    offer?.exchanges && offer?.exchanges.length ? offer?.exchanges[0] : [];
+    offer?.exchanges && offer?.exchanges.length ? offer?.exchanges[0] : false;
 
   return (
     <Statuses>
-      {Object.keys(allExchanges).length ? (
+      {allExchanges !== false ? (
         <ExchangeTimeline exchange={allExchanges} showDispute={false}>
           <h4>History</h4>
         </ExchangeTimeline>

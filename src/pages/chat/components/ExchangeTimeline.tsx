@@ -1,3 +1,4 @@
+/* eslint @typescript-eslint/no-explicit-any: "off" */
 import dayjs from "dayjs";
 import { ReactNode, useMemo } from "react";
 
