@@ -7,15 +7,15 @@ import { fetchSubgraph } from "../core-components/subgraph";
 interface Props {
   sellerId: string;
 }
-
+export interface ExchangeTokensProps {
+  name: string;
+  symbol: string;
+  offers: Array<Offer>;
+}
 export function useExchangeTokens(props: Props) {
   return useQuery(["exchangeTokens", props], async () => {
     const result = await fetchSubgraph<{
-      exchangeTokens: {
-        name: string;
-        symbol: string;
-        offers: Array<Offer>;
-      }[];
+      exchangeTokens: ExchangeTokensProps[];
     }>(
       gql`
         query GetExchangesTokens($sellerId: String) {

@@ -5,11 +5,12 @@ import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 
 type FundStatus = "idle" | "loading" | "error" | "success";
 
-export default function useFunds(accountId: string): {
+export interface FundsProps {
   funds: Array<subgraph.FundsEntityFieldsFragment>;
   reload: React.DispatchWithoutAction;
   fundStatus: FundStatus;
-} {
+}
+export default function useFunds(accountId: string): FundsProps {
   const coreSdk = useCoreSDK();
   const [numRequests, reload] = useReducer((state) => state + 1, 0);
   const [funds, setFunds] = useState<Array<subgraph.FundsEntityFieldsFragment>>(

@@ -44,10 +44,11 @@ const StyledDate = styled.span`
 
 interface Props {
   timesteps: { text: string; date?: string }[];
+  height?: string;
 }
-export default function Timeline({ timesteps }: Props) {
+export default function Timeline({ height, timesteps }: Props) {
   return (
-    <Container $height={`${timesteps.length * 5}rem`}>
+    <Container $height={height || `${timesteps.length * 5}rem`}>
       {timesteps.map((step, index) => {
         return (
           <Fragment key={`${step.text}-${step.date}`}>
