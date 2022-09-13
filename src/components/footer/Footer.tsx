@@ -4,7 +4,6 @@ import styled from "styled-components";
 import logo from "../../../src/assets/logo-white.svg";
 import { BosonRoutes, ExternalRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
-import { colors } from "../../lib/styles/colors";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import SocialLogo, {
   SocialLogoValues
@@ -14,12 +13,12 @@ import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
 import Layout from "../Layout";
 import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
-import { NAVIGATION_ROUTES, PRODUCT_ROUTES, SOCIAL_ROUTES } from "./routes";
+import { getNavigationRoutes, getProductRoutes, SOCIAL_ROUTES } from "./routes";
 
 const Footer = styled.footer`
   width: 100%;
-  background-color: ${colors.black};
-  color: ${colors.white};
+  background-color: var(--footerBgColor);
+  color: var(--footerTextColor);
 
   padding: 4rem 1rem 2rem 1rem;
   margin-top: auto;
@@ -78,10 +77,10 @@ const NavigationLinks = styled.nav<INavigationLinks>`
   a {
     cursor: pointer;
     text-decoration: none;
-    color: ${colors.white};
+    color: var(--footerTextColor);
   }
   a:hover {
-    color: var(--primary);
+    color: var(--accent);
   }
 
   ${breakpoint.xs} {
@@ -144,6 +143,18 @@ export default function FooterComponent() {
   const additionalFooterLinks = useCustomStoreQueryParameter<
     { label: string; value: string }[]
   >("additionalFooterLinks", { parseJson: true });
+  const supportFunctionality = useCustomStoreQueryParameter<
+    ("buyer" | "seller" | "dr")[]
+  >("supportFunctionality", { parseJson: true });
+  const isSupportFunctionalityDefined = supportFunctionality !== "";
+  const onlyBuyer =
+    typeof supportFunctionality != "string" &&
+    supportFunctionality?.length === 1 &&
+    supportFunctionality?.[0] === "buyer";
+  const onlySeller =
+    typeof supportFunctionality != "string" &&
+    supportFunctionality?.length === 1 &&
+    supportFunctionality?.[0] === "seller";
   return (
     <Footer>
       <Layout>
@@ -162,7 +173,11 @@ export default function FooterComponent() {
             <div>
               <Typography tag="h5">Product</Typography>
               <NavigationLinks flexDirection="column">
-                {PRODUCT_ROUTES.map(({ name, url }) => (
+                {getProductRoutes({
+                  isSupportFunctionalityDefined,
+                  onlyBuyer,
+                  onlySeller
+                }).map(({ name, url }) => (
                   <LinkWithQuery to={url} key={`product_nav_${name}`}>
                     {name}
                   </LinkWithQuery>
@@ -172,7 +187,10 @@ export default function FooterComponent() {
             <div>
               <Typography tag="h5">Navigation</Typography>
               <NavigationLinks flexDirection="column">
-                {NAVIGATION_ROUTES.map(({ name, url }) => (
+                {getNavigationRoutes({
+                  isSupportFunctionalityDefined,
+                  onlySeller
+                }).map(({ name, url }) => (
                   <LinkWithQuery to={url} key={`navigation_nav_${name}`}>
                     {name}
                   </LinkWithQuery>
@@ -209,11 +227,18 @@ export default function FooterComponent() {
               </NavigationLinks>
             ) : (
               <NavigationLinks>
-                <LinkWithQuery to={BosonRoutes.Root}>Home</LinkWithQuery>
-                <LinkWithQuery to={BosonRoutes.Explore}>Explore</LinkWithQuery>
-                <LinkWithQuery to={ExternalRoutes.TermsOfUse}>
-                  Terms of use
-                </LinkWithQuery>
+                {!isSupportFunctionalityDefined ||
+                  (isSupportFunctionalityDefined && !onlySeller && (
+                    <>
+                      <LinkWithQuery to={BosonRoutes.Root}>Home</LinkWithQuery>
+                      <LinkWithQuery to={BosonRoutes.Explore}>
+                        Explore
+                      </LinkWithQuery>
+                      <LinkWithQuery to={ExternalRoutes.TermsOfUse}>
+                        Terms of use
+                      </LinkWithQuery>
+                    </>
+                  ))}
               </NavigationLinks>
             )}
           </>

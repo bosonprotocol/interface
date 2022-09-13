@@ -30,7 +30,7 @@ export function RetractDisputeModal({ hideModal, exchangeId }: Props) {
       </div>
       <Grid justifyContent="space-between">
         <Button
-          theme="secondary"
+          theme="primary"
           onClick={async () => {
             try {
               setRetractDisputeError(null);

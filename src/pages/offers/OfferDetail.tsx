@@ -142,7 +142,7 @@ export default function OfferDetail() {
         {images.length > 0 && <DetailSlider images={images} />}
         <DetailGrid>
           <DetailChart offer={offer} title="Inventory graph" />
-          {(shippingInfo.shipping || shippingInfo.shippingTable.length) && (
+          {(!!shippingInfo.shipping || !!shippingInfo.shippingTable.length) && (
             <div>
               <Typography tag="h3">Shipping information</Typography>
               <Typography tag="p" style={{ color: colors.darkGrey }}>

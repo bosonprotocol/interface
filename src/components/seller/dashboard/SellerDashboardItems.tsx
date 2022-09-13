@@ -119,6 +119,7 @@ export default function SellerDashboardItems({ items, name, onClick }: Props) {
                   buyerOrSeller={item?.offer?.seller}
                   withProfileImage
                   onClick={() => null}
+                  withBosonStyles
                 />
                 <div>
                   {itemDate?.first?.value && (

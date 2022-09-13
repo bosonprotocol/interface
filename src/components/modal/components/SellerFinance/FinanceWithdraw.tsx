@@ -158,7 +158,7 @@ export default function FinanceWithdraw({
           Wallet Balance: {dataBalance?.formatted} {dataBalance?.symbol}
         </Typography>
         <CTAButton
-          theme="secondary"
+          theme="primary"
           size="small"
           onClick={handleWithdraw}
           disabled={isBeingWithdrawn || isWithdrawInvalid}

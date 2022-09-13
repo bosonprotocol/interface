@@ -115,7 +115,7 @@ function TableElement({ exchange }: { exchange: Exchange }) {
         <td>
           <Button
             type="button"
-            theme="secondary"
+            theme="primary"
             size="small"
             onClick={() => {
               navigate({

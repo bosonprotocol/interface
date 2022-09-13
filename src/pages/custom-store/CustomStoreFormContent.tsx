@@ -2,6 +2,7 @@ import { useFormikContext } from "formik";
 import { useEffect } from "react";
 import styled from "styled-components";
 
+import CollapseWithTrigger from "../../components/collapse/CollapseWithTrigger";
 import SimpleError from "../../components/error/SimpleError";
 import { Input, Select, Upload } from "../../components/form";
 import InputColor from "../../components/form/InputColor";
@@ -11,9 +12,11 @@ import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
 import { colors } from "../../lib/styles/colors";
 import { getFilesWithEncodedData } from "../../lib/utils/files";
+import { useCurrentSellerId } from "../../lib/utils/hooks/useCurrentSellerId";
 import SocialLogo from "./SocialLogo";
 import {
   formModel,
+  SelectType,
   storeFields,
   StoreFormFields,
   uploadMaxMB
@@ -62,7 +65,7 @@ const preAppendHttps = (url: string) => {
 export default function CustomStoreFormContent({ hasSubmitError }: Props) {
   const { setFieldValue, values, isValid, setFieldTouched } =
     useFormikContext<StoreFormFields>();
-
+  const { sellerId } = useCurrentSellerId();
   const formValuesWithOneLogoUrl = Object.entries(values)
     .filter(
       ([key]) =>
@@ -96,6 +99,18 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
       if (Array.isArray(value)) {
         if (!value.length) {
           return [[key, ""]];
+        }
+        if (([storeFields.supportFunctionality] as string[]).includes(key)) {
+          return [
+            [
+              key,
+              JSON.stringify(
+                (value as SelectType<string>[])
+                  .map((obj) => obj?.value)
+                  .filter((v) => !!v)
+              )
+            ]
+          ];
         }
         const valueListWithoutExtraKeys = value
           .map((val) => {
@@ -168,6 +183,15 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
       );
     }
   }, [values.withAdditionalFooterLinks?.value, setFieldValue]);
+
+  const disableCurationLists = ["mine"].includes(
+    values.withOwnProducts?.value || ""
+  );
+  useEffect(() => {
+    if (sellerId && ["mine"].includes(values.withOwnProducts?.value || "")) {
+      setFieldValue(storeFields.sellerCurationList, sellerId, true);
+    }
+  }, [values.withOwnProducts?.value, setFieldValue, sellerId]);
 
   const removeEmptyRowsExceptOne = () => {
     const value = values.additionalFooterLinks;
@@ -266,376 +290,413 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
           </Grid>
         </Grid>
         <Grid flexDirection="column" alignItems="flex-start">
-          <Section>Style</Section>
-          <Grid
-            flexDirection="column"
-            alignItems="flex-start"
-            gap={gapBetweenInputs}
+          <CollapseWithTrigger
+            isInitiallyOpen
+            trigger={() => <Section>Style</Section>}
           >
-            <Grid flexDirection="column" alignItems="flex-start">
-              <FieldTitle>Header / Nav</FieldTitle>
-              <Grid gap={gapBetweenInputs}>
-                <Grid flexDirection="column" alignItems="flex-start">
-                  <FieldDescription>Background color</FieldDescription>
-                  <InputColor
-                    name={storeFields.primaryBgColor}
-                    placeholder={
-                      formModel.formFields.primaryBgColor.placeholder
-                    }
-                  />
-                </Grid>
-                <Grid flexDirection="column" alignItems="flex-start">
-                  <FieldDescription>Text color</FieldDescription>
-                  <InputColor
-                    name={storeFields.secondaryBgColor}
-                    placeholder={
-                      formModel.formFields.secondaryBgColor.placeholder
-                    }
-                  />
-                </Grid>
-              </Grid>
-            </Grid>
-            <Grid flexDirection="column" alignItems="flex-start">
-              <FieldTitle>Body / Content</FieldTitle>
-              <Grid gap={gapBetweenInputs}>
-                <Grid flexDirection="column" alignItems="flex-start">
-                  <FieldDescription>Primary background color</FieldDescription>
-                  <InputColor
-                    name={storeFields.primaryBgColor}
-                    placeholder={
-                      formModel.formFields.primaryBgColor.placeholder
-                    }
-                  />
-                </Grid>
-                <Grid flexDirection="column" alignItems="flex-start">
-                  <FieldDescription>
-                    Secondary background color
-                  </FieldDescription>
-                  <InputColor
-                    name={storeFields.secondaryBgColor}
-                    placeholder={
-                      formModel.formFields.secondaryBgColor.placeholder
-                    }
-                  />
+            <Grid
+              flexDirection="column"
+              alignItems="flex-start"
+              gap={gapBetweenInputs}
+            >
+              <Grid flexDirection="column" alignItems="flex-start">
+                <FieldTitle>Header / Nav</FieldTitle>
+                <Grid gap={gapBetweenInputs}>
+                  <Grid flexDirection="column" alignItems="flex-start">
+                    <FieldDescription>Background color</FieldDescription>
+                    <InputColor
+                      name={storeFields.headerBgColor}
+                      placeholder={
+                        formModel.formFields.headerBgColor.placeholder
+                      }
+                    />
+                  </Grid>
+                  <Grid flexDirection="column" alignItems="flex-start">
+                    <FieldDescription>Text color</FieldDescription>
+                    <InputColor
+                      name={storeFields.headerTextColor}
+                      placeholder={
+                        formModel.formFields.headerTextColor.placeholder
+                      }
+                    />
+                  </Grid>
                 </Grid>
               </Grid>
-              <Grid gap={gapBetweenInputs}>
-                <Grid flexDirection="column" alignItems="flex-start">
-                  <FieldDescription>Accent color</FieldDescription>
-                  <InputColor
-                    name={storeFields.primaryBgColor}
-                    placeholder={
-                      formModel.formFields.primaryBgColor.placeholder
-                    }
-                  />
+              <Grid flexDirection="column" alignItems="flex-start">
+                <FieldTitle>Body / Content</FieldTitle>
+                <Grid gap={gapBetweenInputs}>
+                  <Grid flexDirection="column" alignItems="flex-start">
+                    <FieldDescription>
+                      Primary background color
+                    </FieldDescription>
+                    <InputColor
+                      name={storeFields.primaryBgColor}
+                      placeholder={
+                        formModel.formFields.primaryBgColor.placeholder
+                      }
+                    />
+                  </Grid>
+                  <Grid flexDirection="column" alignItems="flex-start">
+                    <FieldDescription>
+                      Secondary background color
+                    </FieldDescription>
+                    <InputColor
+                      name={storeFields.secondaryBgColor}
+                      placeholder={
+                        formModel.formFields.secondaryBgColor.placeholder
+                      }
+                    />
+                  </Grid>
                 </Grid>
-                <Grid flexDirection="column" alignItems="flex-start">
-                  <FieldDescription>Text Color</FieldDescription>
-                  <InputColor
-                    name={storeFields.secondaryBgColor}
-                    placeholder={
-                      formModel.formFields.secondaryBgColor.placeholder
-                    }
-                  />
+                <Grid gap={gapBetweenInputs}>
+                  <Grid flexDirection="column" alignItems="flex-start">
+                    <FieldDescription>Accent color</FieldDescription>
+                    <InputColor
+                      name={storeFields.accentColor}
+                      placeholder={formModel.formFields.accentColor.placeholder}
+                    />
+                  </Grid>
+                  <Grid flexDirection="column" alignItems="flex-start">
+                    <FieldDescription>Text Color</FieldDescription>
+                    <InputColor
+                      name={storeFields.textColor}
+                      placeholder={formModel.formFields.textColor.placeholder}
+                    />
+                  </Grid>
                 </Grid>
               </Grid>
-            </Grid>
-            <Grid flexDirection="column" alignItems="flex-start">
-              <FieldTitle>Footer Color</FieldTitle>
-              <Grid gap={gapBetweenInputs}>
-                <Grid flexDirection="column" alignItems="flex-start">
-                  <FieldDescription>Background color</FieldDescription>
-                  <InputColor
-                    name={storeFields.primaryBgColor}
-                    placeholder={
-                      formModel.formFields.primaryBgColor.placeholder
-                    }
-                  />
-                </Grid>
-                <Grid flexDirection="column" alignItems="flex-start">
-                  <FieldDescription>Text color</FieldDescription>
-                  <InputColor
-                    name={storeFields.secondaryBgColor}
-                    placeholder={
-                      formModel.formFields.secondaryBgColor.placeholder
-                    }
-                  />
+              <Grid flexDirection="column" alignItems="flex-start">
+                <FieldTitle>Footer Color</FieldTitle>
+                <Grid gap={gapBetweenInputs}>
+                  <Grid flexDirection="column" alignItems="flex-start">
+                    <FieldDescription>Background color</FieldDescription>
+                    <InputColor
+                      name={storeFields.footerBgColor}
+                      placeholder={
+                        formModel.formFields.footerBgColor.placeholder
+                      }
+                    />
+                  </Grid>
+                  <Grid flexDirection="column" alignItems="flex-start">
+                    <FieldDescription>Text color</FieldDescription>
+                    <InputColor
+                      name={storeFields.footerTextColor}
+                      placeholder={
+                        formModel.formFields.footerTextColor.placeholder
+                      }
+                    />
+                  </Grid>
                 </Grid>
               </Grid>
+              <Grid flexDirection="column" alignItems="flex-start">
+                <FieldTitle>Font family</FieldTitle>
+                <FieldDescription>Choose your font type</FieldDescription>
+                <Select
+                  options={
+                    formModel.formFields.fontFamily
+                      .options as unknown as SelectDataProps<string>[]
+                  }
+                  name={storeFields.fontFamily}
+                  placeholder={formModel.formFields.fontFamily.placeholder}
+                  isSearchable
+                />
+              </Grid>
             </Grid>
-            <Grid flexDirection="column" alignItems="flex-start">
-              <FieldTitle>Font family</FieldTitle>
-              <FieldDescription>Choose your font type</FieldDescription>
-              <Input
-                name={storeFields.fontFamily}
-                placeholder={formModel.formFields.fontFamily.placeholder}
-              />
-            </Grid>
-          </Grid>
+          </CollapseWithTrigger>
         </Grid>
         <Grid flexDirection="column" alignItems="flex-start">
-          <Section>Advanced</Section>
-          <Grid
-            flexDirection="column"
-            alignItems="flex-start"
-            gap={gapBetweenInputs}
+          <CollapseWithTrigger
+            isInitiallyOpen
+            trigger={() => <Section>Advanced</Section>}
           >
-            <Grid flexDirection="column" alignItems="flex-start">
-              <FieldTitle>Toggle between Header or Side Bar Nav</FieldTitle>
+            <Grid
+              flexDirection="column"
+              alignItems="flex-start"
+              gap={gapBetweenInputs}
+            >
+              <Grid flexDirection="column" alignItems="flex-start">
+                <FieldTitle>Toggle between Header or Side Bar Nav</FieldTitle>
 
-              <Select
-                options={
-                  formModel.formFields.navigationBarPosition
-                    .options as unknown as SelectDataProps<string>[]
-                }
-                name={storeFields.navigationBarPosition}
-                placeholder={
-                  formModel.formFields.navigationBarPosition.placeholder
-                }
-              />
-            </Grid>
-            <Grid flexDirection="column" alignItems="flex-start">
-              <FieldTitle>Toggle footer (show/hide)</FieldTitle>
-              <Select
-                options={
-                  formModel.formFields.showFooter
-                    .options as unknown as SelectDataProps<string>[]
-                }
-                name={storeFields.showFooter}
-                placeholder={formModel.formFields.showFooter.placeholder}
-              />
-            </Grid>
-            {values.showFooter?.value === "true" && (
-              <Grid
-                flexDirection="column"
-                margin={`0 0 0 ${subFieldsMarginLeft}`}
-                $width={`calc(100% - ${subFieldsMarginLeft})`}
-                gap={gapBetweenInputs}
-              >
-                <Grid flexDirection="column" alignItems="flex-start">
-                  <FieldTitle>Copyright label</FieldTitle>
-                  <FieldDescription>
-                    The copyright label shown (e.g. "@ 2022 Example Company")
-                  </FieldDescription>
-                  <Input
-                    name={storeFields.copyright}
-                    placeholder={formModel.formFields.copyright.placeholder}
-                  />
-                </Grid>
-                <Grid flexDirection="column" alignItems="flex-start">
-                  <FieldTitle>Social media links</FieldTitle>
-                  <FieldDescription>
-                    Links to any social media profiles/websites{" "}
-                  </FieldDescription>
-                  <Select
-                    options={
-                      formModel.formFields.socialMediaLinks
-                        .options as unknown as SelectDataProps<string>[]
-                    }
-                    name={storeFields.socialMediaLinks}
-                    placeholder={
-                      formModel.formFields.socialMediaLinks.placeholder
-                    }
-                    isMulti
-                    isClearable
-                    isSearchable
-                  />
-                </Grid>
+                <Select
+                  options={
+                    formModel.formFields.navigationBarPosition
+                      .options as unknown as SelectDataProps<string>[]
+                  }
+                  name={storeFields.navigationBarPosition}
+                  placeholder={
+                    formModel.formFields.navigationBarPosition.placeholder
+                  }
+                />
+              </Grid>
+              <Grid flexDirection="column" alignItems="flex-start">
+                <FieldTitle>Toggle footer (show/hide)</FieldTitle>
+                <Select
+                  options={
+                    formModel.formFields.showFooter
+                      .options as unknown as SelectDataProps<string>[]
+                  }
+                  name={storeFields.showFooter}
+                  placeholder={formModel.formFields.showFooter.placeholder}
+                />
+              </Grid>
+              {values.showFooter?.value === "true" && (
                 <Grid
                   flexDirection="column"
-                  alignItems="flex-start"
-                  gap="0.5rem"
+                  margin={`0 0 0 ${subFieldsMarginLeft}`}
+                  $width={`calc(100% - ${subFieldsMarginLeft})`}
+                  gap={gapBetweenInputs}
                 >
-                  {!!values.socialMediaLinks.length && (
-                    <Grid gap={gap}>
-                      <Grid flexBasis={firstSubFieldBasis}>
-                        <Typography>Logo</Typography>
-                      </Grid>
-                      <Grid flexBasis={secondSubFieldBasis}>
-                        <Typography>URL</Typography>
-                      </Grid>
-                    </Grid>
-                  )}
-                  {(values.socialMediaLinks || []).map((selection, index) => {
-                    const { label, value } = selection || {};
-
-                    return (
-                      <Grid key={label} gap={gap}>
-                        <Grid flexBasis={firstSubFieldBasis}>
-                          <SocialLogo logo={value} />
-                        </Grid>
-                        <Grid
-                          flexBasis={secondSubFieldBasis}
-                          flexDirection="column"
-                          alignItems="flex-start"
-                        >
-                          <Input
-                            name={`${storeFields.socialMediaLinks}[${index}].url`}
-                            placeholder={`${label} URL`}
-                          />
-                        </Grid>
-                      </Grid>
-                    );
-                  })}
-                </Grid>
-                <Grid flexDirection="column" alignItems="flex-start">
-                  <FieldTitle>Additional footer links</FieldTitle>
-                  <FieldDescription>
-                    Further links to add to your footer (e.g. "Terms &
-                    Conditions")
-                  </FieldDescription>
-                  <Select
-                    options={
-                      formModel.formFields.withAdditionalFooterLinks
-                        .options as unknown as SelectDataProps<string>[]
-                    }
-                    name={storeFields.withAdditionalFooterLinks}
-                    placeholder={
-                      formModel.formFields.withAdditionalFooterLinks.placeholder
-                    }
-                    isClearable
-                  />
-                </Grid>
-                <Grid
-                  flexDirection="column"
-                  alignItems="flex-start"
-                  gap="0.5rem"
-                >
-                  {values.withAdditionalFooterLinks?.value === "true" && (
-                    <>
+                  <Grid flexDirection="column" alignItems="flex-start">
+                    <FieldTitle>Copyright label</FieldTitle>
+                    <FieldDescription>
+                      The copyright label shown (e.g. "@ 2022 Example Company")
+                    </FieldDescription>
+                    <Input
+                      name={storeFields.copyright}
+                      placeholder={formModel.formFields.copyright.placeholder}
+                    />
+                  </Grid>
+                  <Grid flexDirection="column" alignItems="flex-start">
+                    <FieldTitle>Social media links</FieldTitle>
+                    <FieldDescription>
+                      Links to any social media profiles/websites{" "}
+                    </FieldDescription>
+                    <Select
+                      options={
+                        formModel.formFields.socialMediaLinks
+                          .options as unknown as SelectDataProps<string>[]
+                      }
+                      name={storeFields.socialMediaLinks}
+                      placeholder={
+                        formModel.formFields.socialMediaLinks.placeholder
+                      }
+                      isMulti
+                      isClearable
+                      isSearchable
+                    />
+                  </Grid>
+                  <Grid
+                    flexDirection="column"
+                    alignItems="flex-start"
+                    gap="0.5rem"
+                  >
+                    {!!values.socialMediaLinks.length && (
                       <Grid gap={gap}>
-                        <Grid flexBasis="50%">
-                          <Typography>Label</Typography>
+                        <Grid flexBasis={firstSubFieldBasis}>
+                          <Typography>Logo</Typography>
                         </Grid>
-                        <Grid flexBasis="50%">
+                        <Grid flexBasis={secondSubFieldBasis}>
                           <Typography>URL</Typography>
                         </Grid>
                       </Grid>
+                    )}
+                    {(values.socialMediaLinks || []).map((selection, index) => {
+                      const { label, value } = selection || {};
 
-                      {(values.additionalFooterLinks || []).map((_, index) => {
-                        return (
-                          <Grid key={`${index}`} gap={gap}>
-                            <Grid flexBasis="50%" flexDirection="column">
-                              <Input
-                                name={`${storeFields.additionalFooterLinks}[${index}].label`}
-                                placeholder={`Label`}
-                                onBlur={() => removeEmptyRowsExceptOne()}
-                              />
-                            </Grid>
-                            <Grid
-                              flexBasis="50%"
-                              flexDirection="column"
-                              alignItems="flex-start"
-                            >
-                              <Input
-                                name={`${storeFields.additionalFooterLinks}[${index}].value`}
-                                placeholder={`URL`}
-                                onBlur={() => removeEmptyRowsExceptOne()}
-                              />
-                            </Grid>
+                      return (
+                        <Grid key={label} gap={gap}>
+                          <Grid flexBasis={firstSubFieldBasis}>
+                            <SocialLogo logo={value} />
                           </Grid>
-                        );
-                      })}
-                      <Button
-                        disabled={!allFilledOut}
-                        onClick={addFooterLink}
-                        theme="primary"
-                      >
-                        + Add
-                      </Button>
-                    </>
-                  )}
+                          <Grid
+                            flexBasis={secondSubFieldBasis}
+                            flexDirection="column"
+                            alignItems="flex-start"
+                          >
+                            <Input
+                              name={`${storeFields.socialMediaLinks}[${index}].url`}
+                              placeholder={`${label} URL`}
+                            />
+                          </Grid>
+                        </Grid>
+                      );
+                    })}
+                  </Grid>
+                  <Grid flexDirection="column" alignItems="flex-start">
+                    <FieldTitle>Additional footer links</FieldTitle>
+                    <FieldDescription>
+                      Further links to add to your footer (e.g. "Terms &
+                      Conditions")
+                    </FieldDescription>
+                    <Select
+                      options={
+                        formModel.formFields.withAdditionalFooterLinks
+                          .options as unknown as SelectDataProps<string>[]
+                      }
+                      name={storeFields.withAdditionalFooterLinks}
+                      placeholder={
+                        formModel.formFields.withAdditionalFooterLinks
+                          .placeholder
+                      }
+                      isClearable
+                    />
+                  </Grid>
+                  <Grid
+                    flexDirection="column"
+                    alignItems="flex-start"
+                    gap="0.5rem"
+                  >
+                    {values.withAdditionalFooterLinks?.value === "true" && (
+                      <>
+                        <Grid gap={gap}>
+                          <Grid flexBasis="50%">
+                            <Typography>Label</Typography>
+                          </Grid>
+                          <Grid flexBasis="50%">
+                            <Typography>URL</Typography>
+                          </Grid>
+                        </Grid>
+
+                        {(values.additionalFooterLinks || []).map(
+                          (_, index) => {
+                            return (
+                              <Grid key={`${index}`} gap={gap}>
+                                <Grid flexBasis="50%" flexDirection="column">
+                                  <Input
+                                    name={`${storeFields.additionalFooterLinks}[${index}].label`}
+                                    placeholder={`Label`}
+                                    onBlur={() => removeEmptyRowsExceptOne()}
+                                  />
+                                </Grid>
+                                <Grid
+                                  flexBasis="50%"
+                                  flexDirection="column"
+                                  alignItems="flex-start"
+                                >
+                                  <Input
+                                    name={`${storeFields.additionalFooterLinks}[${index}].value`}
+                                    placeholder={`URL`}
+                                    onBlur={() => removeEmptyRowsExceptOne()}
+                                  />
+                                </Grid>
+                              </Grid>
+                            );
+                          }
+                        )}
+                        <Button
+                          disabled={!allFilledOut}
+                          onClick={addFooterLink}
+                          theme="primary"
+                        >
+                          + Add
+                        </Button>
+                      </>
+                    )}
+                  </Grid>
                 </Grid>
+              )}
+              <Grid flexDirection="column" alignItems="flex-start">
+                <FieldTitle>Products</FieldTitle>
+                <FieldDescription>
+                  Only show your own products in the store
+                </FieldDescription>
+                <Select
+                  options={
+                    formModel.formFields.withOwnProducts
+                      .options as unknown as SelectDataProps<string>[]
+                  }
+                  name={storeFields.withOwnProducts}
+                  placeholder={formModel.formFields.withOwnProducts.placeholder}
+                  isClearable
+                />
               </Grid>
-            )}
-            <Grid flexDirection="column" alignItems="flex-start">
-              <FieldTitle>Products</FieldTitle>
-              <FieldDescription>
-                Only show your own products in the store
-              </FieldDescription>
-              <Select
-                options={
-                  formModel.formFields.withOwnProducts
-                    .options as unknown as SelectDataProps<string>[]
-                }
-                name={storeFields.withOwnProducts}
-                placeholder={formModel.formFields.withOwnProducts.placeholder}
-                isClearable
-              />
+              {["custom", "mine"].includes(
+                values.withOwnProducts?.value || ""
+              ) && (
+                <Grid
+                  flexDirection="column"
+                  margin={`0 0 0 ${subFieldsMarginLeft}`}
+                  $width={`calc(100% - ${subFieldsMarginLeft})`}
+                  gap={gapBetweenInputs}
+                >
+                  <Grid flexDirection="column" alignItems="flex-start">
+                    <FieldTitle>Seller Curation List</FieldTitle>
+                    <FieldDescription>
+                      Enter Seller IDs separated by comma
+                    </FieldDescription>
+                    <Input
+                      disabled={disableCurationLists}
+                      name={storeFields.sellerCurationList}
+                      placeholder={
+                        formModel.formFields.sellerCurationList.placeholder
+                      }
+                    />
+                  </Grid>
+                  <Grid flexDirection="column" alignItems="flex-start">
+                    <FieldTitle>Offer Curation List</FieldTitle>
+                    <FieldDescription>
+                      Enter Offer IDs separated by comma
+                    </FieldDescription>
+                    <Input
+                      disabled={disableCurationLists}
+                      name={storeFields.offerCurationList}
+                      placeholder={
+                        formModel.formFields.offerCurationList.placeholder
+                      }
+                    />
+                  </Grid>
+                </Grid>
+              )}
+              <Grid flexDirection="column" alignItems="flex-start">
+                <FieldTitle>Meta Transactions</FieldTitle>
+                <FieldDescription>
+                  Pay for your users' transaction fees
+                </FieldDescription>
+                <Select
+                  options={
+                    formModel.formFields.withMetaTx
+                      .options as unknown as SelectDataProps<string>[]
+                  }
+                  name={storeFields.withMetaTx}
+                  placeholder={formModel.formFields.withMetaTx.placeholder}
+                  isClearable
+                  disabled
+                />
+              </Grid>
+              {values.withMetaTx?.value === "true" && (
+                <Grid
+                  flexDirection="column"
+                  margin={`0 0 0 ${subFieldsMarginLeft}`}
+                  $width={`calc(100% - ${subFieldsMarginLeft})`}
+                  gap={gapBetweenInputs}
+                >
+                  <Grid flexDirection="column" alignItems="flex-start">
+                    <FieldTitle>Meta Transactions API Key</FieldTitle>
+                    <FieldDescription>Enter Biconomy API Key</FieldDescription>
+                    <Input
+                      name={storeFields.metaTransactionsApiKey}
+                      placeholder={
+                        formModel.formFields.metaTransactionsApiKey.placeholder
+                      }
+                      disabled
+                    />
+                  </Grid>
+                </Grid>
+              )}
+              <Grid flexDirection="column" alignItems="flex-start">
+                <FieldTitle>Toggle header/footer options</FieldTitle>
+                <FieldDescription>
+                  Focus your user's attention exclusively on relevant actions
+                  (buyer, seller and/or dispute resolver)
+                </FieldDescription>
+                <Select
+                  options={
+                    formModel.formFields.supportFunctionality
+                      .options as unknown as SelectDataProps<string>[]
+                  }
+                  name={storeFields.supportFunctionality}
+                  placeholder={
+                    formModel.formFields.supportFunctionality.placeholder
+                  }
+                  isClearable
+                  isMulti
+                />
+              </Grid>
             </Grid>
-            {values.withOwnProducts?.value === "true" && (
-              <Grid
-                flexDirection="column"
-                margin={`0 0 0 ${subFieldsMarginLeft}`}
-                $width={`calc(100% - ${subFieldsMarginLeft})`}
-                gap={gapBetweenInputs}
-              >
-                <Grid flexDirection="column" alignItems="flex-start">
-                  <FieldTitle>Seller Curation List</FieldTitle>
-                  <FieldDescription>
-                    Enter Seller IDs separated by comma
-                  </FieldDescription>
-                  <Input
-                    name={storeFields.sellerCurationList}
-                    placeholder={
-                      formModel.formFields.sellerCurationList.placeholder
-                    }
-                  />
-                </Grid>
-                <Grid flexDirection="column" alignItems="flex-start">
-                  <FieldTitle>Offer Curation List</FieldTitle>
-                  <FieldDescription>
-                    Enter Offer IDs separated by comma
-                  </FieldDescription>
-                  <Input
-                    name={storeFields.offerCurationList}
-                    placeholder={
-                      formModel.formFields.offerCurationList.placeholder
-                    }
-                  />
-                </Grid>
-              </Grid>
-            )}
-            <Grid flexDirection="column" alignItems="flex-start">
-              <FieldTitle>Meta Transactions</FieldTitle>
-              <FieldDescription>
-                Pay for your users' transaction fees
-              </FieldDescription>
-              <Select
-                options={
-                  formModel.formFields.withMetaTx
-                    .options as unknown as SelectDataProps<string>[]
-                }
-                name={storeFields.withMetaTx}
-                placeholder={formModel.formFields.withMetaTx.placeholder}
-                isClearable
-                disabled
-              />
-            </Grid>
-            {values.withMetaTx?.value === "true" && (
-              <Grid
-                flexDirection="column"
-                margin={`0 0 0 ${subFieldsMarginLeft}`}
-                $width={`calc(100% - ${subFieldsMarginLeft})`}
-                gap={gapBetweenInputs}
-              >
-                <Grid flexDirection="column" alignItems="flex-start">
-                  <FieldTitle>Meta Transactions API Key</FieldTitle>
-                  <FieldDescription>Enter Biconomy API Key</FieldDescription>
-                  <Input
-                    name={storeFields.metaTransactionsApiKey}
-                    placeholder={
-                      formModel.formFields.metaTransactionsApiKey.placeholder
-                    }
-                    disabled
-                  />
-                </Grid>
-              </Grid>
-            )}
-          </Grid>
+          </CollapseWithTrigger>
         </Grid>
         {hasSubmitError && <SimpleError />}
-        <Button type="submit" theme="secondary" disabled={!isValid}>
+        <Button type="submit" theme="primary" disabled={!isValid}>
           Create
         </Button>
       </Grid>

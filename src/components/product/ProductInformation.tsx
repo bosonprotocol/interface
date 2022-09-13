@@ -213,7 +213,7 @@ export default function ProductInformation() {
       </AdditionalContainer>
       <ProductInformationButtonGroup>
         <Button
-          theme="secondary"
+          theme="primary"
           type="submit"
           disabled={nextIsDisabled || hasDuplicated}
         >

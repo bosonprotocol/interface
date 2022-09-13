@@ -205,7 +205,7 @@ export default function Preview({ togglePreview, seller }: Props) {
         </DetailWrapper>
       </PreviewWrapperContent>
       <ProductButtonGroup>
-        <Button theme="secondary" type="submit">
+        <Button theme="primary" type="submit">
           Confirm
         </Button>
         <Button theme="primary" type="button" onClick={handleClosePreview}>

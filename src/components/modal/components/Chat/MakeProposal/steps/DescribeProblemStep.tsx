@@ -44,7 +44,7 @@ export default function DescribeProblemStep({ onNextClick, isValid }: Props) {
       <UploadForm />
       <ButtonsSection>
         <Button
-          theme="secondary"
+          theme="primary"
           onClick={() => onNextClick()}
           disabled={!isValid}
         >

@@ -752,7 +752,7 @@ const ChatConversation = ({
             </InputWrapper>
             <SendButton
               data-testid="send"
-              theme="secondary"
+              theme="primary"
               disabled={disableInputs || isMessageBeingSent}
               onClick={async () => {
                 const value = textAreaValue?.trim() || "";

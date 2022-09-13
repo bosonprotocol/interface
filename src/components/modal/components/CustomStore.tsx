@@ -134,7 +134,7 @@ export default function CustomStore({ ipfsUrl = "", hideModal }: Props) {
         </div>
       </CollapsibleContainer>
       <Grid margin={`${marginBetweenContainers} 0 0 0`}>
-        <Button theme="secondary" type="button" onClick={() => hideModal()}>
+        <Button theme="primary" type="button" onClick={() => hideModal()}>
           Done
         </Button>
       </Grid>
