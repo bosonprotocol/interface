@@ -3,8 +3,8 @@ import { UrlParameters } from "./parameters";
 export const BosonRoutes = {
   Root: "/",
   Explore: "/explore",
-  ExplorePage: "/explore/page",
-  ExplorePageByIndex: `/explore/page/:${UrlParameters.page}`,
+  ExplorePage: "/products/page",
+  ExplorePageByIndex: `/products/page/:${UrlParameters.page}`,
   Sell: "/sell",
   Exchange: `/exchange/:${UrlParameters.exchangeId}`,
   YourAccount: `/account`,
@@ -17,7 +17,9 @@ export const BosonRoutes = {
   DisputeCenter: "/dispute-center",
   DisputeId: `/exchange/:${UrlParameters.exchangeId}/raise-dispute`,
   BuyerPage: `/buyer/:${UrlParameters.buyerId}`,
-  SellerPage: `/seller/:${UrlParameters.sellerId}`
+  SellerPage: `/seller/:${UrlParameters.sellerId}`,
+  Sellers: "/sellers",
+  Products: "/products"
 } as const;
 
 export const SellerCenterRoutes = {
