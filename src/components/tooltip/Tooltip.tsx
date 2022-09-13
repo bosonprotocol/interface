@@ -31,6 +31,12 @@ interface Props {
     | "auto"
     | "auto-start"
     | "auto-end";
+  trigger?:
+    | "mouseenter focus"
+    | "mouseenter click"
+    | "click"
+    | "focusin"
+    | "manual";
 }
 
 const Button = styled.button`
@@ -51,6 +57,7 @@ export default function Tooltip({
   interactive = false,
   size = 18,
   weight = "regular",
+  trigger = "mouseenter focus",
   ...rest
 }: Props) {
   return (
@@ -61,6 +68,7 @@ export default function Tooltip({
       duration={300}
       animation="shift-toward"
       interactive={interactive}
+      trigger={trigger}
       {...rest}
     >
       <Button type="button">

@@ -6,10 +6,12 @@ import { useLocation } from "react-router-dom";
 
 import { CONFIG } from "../../../lib/config";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
-import { Exchange, useExchanges } from "../../../lib/utils/hooks/useExchanges";
+import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import Loading from "../../ui/Loading";
+import { WithSellerDataProps } from "../common/WithSellerData";
 import SellerExport from "../SellerExport";
 import SellerFilters from "../SellerFilters";
+import { SellerInsideProps } from "../SellerInside";
 import SellerTags from "../SellerTags";
 import SellerExchangeTable from "./SellerExchangeTable";
 
@@ -36,9 +38,6 @@ const productTags = [
   }
 ];
 
-interface Props {
-  sellerId: string;
-}
 interface FilterValue {
   value: string;
   label: string;
@@ -46,7 +45,9 @@ interface FilterValue {
 interface MyLocationState {
   currentTag: string;
 }
-export default function SellerExchanges({ sellerId }: Props) {
+export default function SellerExchanges({
+  exchanges: exchangesData
+}: SellerInsideProps & WithSellerDataProps) {
   const location = useLocation();
   const state = location.state as MyLocationState;
 
@@ -63,10 +64,7 @@ export default function SellerExchanges({ sellerId }: Props) {
   const [search, setSearch] = useState<string>("");
   const [filter, setFilter] = useState<FilterValue | null>(null);
 
-  const { data, isLoading, isError, refetch } = useExchanges({
-    sellerId,
-    disputed: null
-  });
+  const { data, isLoading, isError, refetch } = exchangesData;
 
   const allData = useMemo(() => {
     const filtered =

@@ -1,7 +1,20 @@
+import { House, WarningCircle } from "phosphor-react";
 import styled from "styled-components";
 
 import SellerAside from "../../components/seller/SellerAside";
 import SellerInside from "../../components/seller/SellerInside";
+import Button from "../../components/ui/Button";
+import Grid from "../../components/ui/Grid";
+import Loading from "../../components/ui/Loading";
+import Typography from "../../components/ui/Typography";
+import { BosonRoutes } from "../../lib/routing/routes";
+import { colors } from "../../lib/styles/colors";
+import { useCurrentSellerId } from "../../lib/utils/hooks/useCurrentSellerId";
+import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+
+export const Wrapper = styled.div`
+  text-align: center;
+`;
 
 const SellerCenterWrapper = styled.div`
   display: grid;
@@ -11,13 +24,51 @@ const SellerCenterWrapper = styled.div`
   margin: 0 -1rem;
 `;
 
-function SellerCenter() {
+export default function SellerCenter() {
+  const navigate = useKeepQueryParamsNavigate();
+  const { isLoading, sellerId } = useCurrentSellerId();
+
+  if (isLoading) {
+    return (
+      <Wrapper>
+        <Loading />
+      </Wrapper>
+    );
+  }
+
+  if (sellerId === null) {
+    return (
+      <Wrapper>
+        <Grid
+          justifyContent="center"
+          padding="5rem"
+          gap="2rem"
+          flexDirection="column"
+        >
+          <WarningCircle size={112} color={colors.red} weight="thin" />
+          <Typography tag="h5">
+            The seller with that ID doesn't exist!
+          </Typography>
+          <Button
+            theme="secondary"
+            onClick={() => {
+              navigate({
+                pathname: BosonRoutes.Root
+              });
+            }}
+          >
+            Back home
+            <House size={16} />
+          </Button>
+        </Grid>
+      </Wrapper>
+    );
+  }
+
   return (
     <SellerCenterWrapper>
       <SellerAside />
-      <SellerInside />
+      <SellerInside sellerId={sellerId} />
     </SellerCenterWrapper>
   );
 }
-
-export default SellerCenter;

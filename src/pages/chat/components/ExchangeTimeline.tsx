@@ -8,22 +8,33 @@ import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 
 const formatShortDate = (date: string) => {
   return date
-    ? dayjs(new Date(Number(date) * 1000)).format(CONFIG.shortDateFormat)
+    ? dayjs(new Date(Number(date) * 1000)).format(
+        `${CONFIG.shortDateFormat} HH:mm`
+      )
     : "";
 };
 
 interface Props {
-  exchange: Exchange;
+  exchange: Exchange | any;
   children?: ReactNode;
+  showDispute?: boolean;
 }
 
-export default function ExchangeTimeline({ children, exchange }: Props) {
-  const { data: disputes = [] } = useDisputes({
-    disputesFilter: {
-      exchange: exchange.id
-    }
-  });
+export default function ExchangeTimeline({
+  children,
+  exchange,
+  showDispute = true
+}: Props) {
+  const { data: disputes = [] } = useDisputes(
+    {
+      disputesFilter: {
+        exchange: exchange?.id
+      }
+    },
+    { enabled: !!exchange?.id && showDispute }
+  );
   const [dispute] = disputes;
+
   const timesteps = useMemo(() => {
     const { committedDate, redeemedDate, cancelledDate, revokedDate } =
       exchange;
@@ -56,7 +67,7 @@ export default function ExchangeTimeline({ children, exchange }: Props) {
         timestamp: Number(revokedDate)
       });
     }
-    if (dispute) {
+    if (showDispute && dispute) {
       const { disputedDate, retractedDate, resolvedDate } = dispute;
       if (disputedDate) {
         timesteps.push({
@@ -82,7 +93,7 @@ export default function ExchangeTimeline({ children, exchange }: Props) {
     }
 
     return timesteps.sort((a, b) => a.timestamp - b.timestamp);
-  }, [exchange, dispute]);
+  }, [exchange, dispute, showDispute]);
   return (
     <>
       {!!timesteps.length && children}

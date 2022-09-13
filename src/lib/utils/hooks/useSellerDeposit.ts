@@ -6,6 +6,25 @@ import { fetchSubgraph } from "../core-components/subgraph";
 interface Props {
   sellerId?: string;
 }
+export interface SellerExchangeProps {
+  id: string;
+  finalizedDate: string;
+  offer: {
+    sellerDeposit: string;
+    price: string;
+    exchangeToken: {
+      id: string;
+      address: string;
+      decimals: string;
+      symbol: string;
+      name: string;
+    };
+  };
+}
+export interface SellerProps {
+  id: string;
+  exchanges: SellerExchangeProps[];
+}
 export function useSellerDeposit(
   props: Props,
   options: {
@@ -16,24 +35,7 @@ export function useSellerDeposit(
     ["sellerDeposit", props],
     async () => {
       const result = await fetchSubgraph<{
-        seller: {
-          id: string;
-          exchanges: {
-            id: string;
-            finalizedDate: string;
-            offer: {
-              sellerDeposit: string;
-              price: string;
-              exchangeToken: {
-                id: string;
-                address: string;
-                decimals: string;
-                symbol: string;
-                name: string;
-              };
-            };
-          }[];
-        };
+        seller: SellerProps;
       }>(
         gql`
           query GetSellerDeposit($sellerId: String) {
