@@ -450,7 +450,12 @@ const DetailWidget: React.FC<IDetailWidget> = ({
         </Grid>
         <Break />
         <div>
-          <DetailTable align noBorder data={OFFER_DETAIL_DATA} />
+          <DetailTable
+            align
+            noBorder
+            data={OFFER_DETAIL_DATA}
+            inheritColor={false}
+          />
         </div>
         {isExchange && (
           <>

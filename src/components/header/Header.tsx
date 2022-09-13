@@ -160,6 +160,10 @@ const HeaderContainer = styled(Layout)<{
         height: 100%;
         padding: 1rem;
         gap: 2rem;
+
+        ${breakpoint.m} {
+          align-items: center;
+        }
       `;
     }
     return css`

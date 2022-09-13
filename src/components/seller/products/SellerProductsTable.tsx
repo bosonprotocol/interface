@@ -299,7 +299,7 @@ export default function SellerProductsTable({
             status === OffersKit.OfferState.VOIDED
           ) && (
             <Button
-              theme="primary"
+              theme="bosonSecondary"
               size="small"
               onClick={() => {
                 if (offer) {

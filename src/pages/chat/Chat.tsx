@@ -18,6 +18,9 @@ const GlobalStyle = createGlobalStyle`
   html, body, #root, [data-rk] {
     height: 100%;
   }
+  :root {
+    --textColor: unset;
+  }
 `;
 
 const Container = styled.div`

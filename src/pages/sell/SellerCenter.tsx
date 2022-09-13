@@ -27,6 +27,7 @@ const GridWrapper = styled.div`
   min-height: calc(100vh - 30.25rem);
   margin: 0 -1rem;
   font-family: "Plus Jakarta Sans";
+  color: ${colors.black};
 `;
 
 function SellerCenter(props: SellerInsideProps & WithSellerDataProps) {
