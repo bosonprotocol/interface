@@ -24,10 +24,18 @@ const CollapsibleContent = styled.div``;
 interface Props {
   title: ReactNode;
   children: ReactNode;
+  isInitiallyOpen?: boolean;
 }
 
-export default function Collapse({ title, children }: Props) {
-  const [isOpen, toggleCollapsible] = useReducer((state) => !state, false);
+export default function Collapse({
+  title,
+  children,
+  isInitiallyOpen = false
+}: Props) {
+  const [isOpen, toggleCollapsible] = useReducer(
+    (state) => !state,
+    isInitiallyOpen
+  );
   return (
     <>
       <CollapsibleButton onClick={toggleCollapsible}>

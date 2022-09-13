@@ -326,7 +326,7 @@ export default function ExchangeSidePreview({
       ) : isInRedeemed && iAmTheBuyer ? (
         <CTASection>
           <Button
-            theme="secondary"
+            theme="primary"
             onClick={() =>
               showModal(
                 "RAISE_DISPUTE",

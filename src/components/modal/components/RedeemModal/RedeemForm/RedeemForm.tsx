@@ -101,7 +101,7 @@ export default function RedeemForm({
       </Grid>
       <Grid padding="2rem 0 0 0" justifyContent="space-between">
         <Button
-          theme="secondary"
+          theme="primary"
           onClick={() => onNextClick()}
           disabled={!isValid}
         >

@@ -72,7 +72,7 @@ export default function ResolveDisputeModal({
       {resolveDisputeError && <SimpleError />}
       <ButtonsSection>
         <Button
-          theme="secondary"
+          theme="primary"
           onClick={async () => {
             try {
               setResolveDisputeError(null);

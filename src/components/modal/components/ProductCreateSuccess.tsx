@@ -208,7 +208,7 @@ export default function ProductCreateSuccess({
             </StyledProgress>
           </Funds>
           <StyledWidgetButtonWrapper>
-            <Button type="button" theme="secondary" onClick={onViewMyItem}>
+            <Button type="button" theme="primary" onClick={onViewMyItem}>
               View my item
             </Button>
             <Button type="button" theme="primary" onClick={handleCreateNew}>

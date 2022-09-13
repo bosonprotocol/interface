@@ -33,12 +33,16 @@ export default function App({
   withFooter = true,
   fluidHeader = false
 }: Props) {
+  const headerBgColor = useCustomStoreQueryParameter("headerBgColor");
+  const headerTextColor = useCustomStoreQueryParameter("headerTextColor");
   const primaryBgColor = useCustomStoreQueryParameter("primaryBgColor");
   const secondaryBgColor = useCustomStoreQueryParameter("secondaryBgColor");
-  const accentColor1 = useCustomStoreQueryParameter("accentColor1");
-  const accentColor2 = useCustomStoreQueryParameter("accentColor2");
+  const accentColor = useCustomStoreQueryParameter("accentColor");
   const textColor = useCustomStoreQueryParameter("textColor");
+  const footerBgColor = useCustomStoreQueryParameter("footerBgColor");
+  const footerTextColor = useCustomStoreQueryParameter("footerTextColor");
   const showFooterValue = useCustomStoreQueryParameter("showFooter");
+  const fontFamily = useCustomStoreQueryParameter("fontFamily");
   const showFooter = ["", "true"].includes(showFooterValue) && withFooter;
   const Wrapper = withLayout ? Layout : Fragment;
 
@@ -54,11 +58,15 @@ export default function App({
           <ModalProvider>
             <Container>
               <GlobalStyle
+                $headerBgColor={headerBgColor}
+                $headerTextColor={headerTextColor}
                 $primaryBgColor={primaryBgColor}
                 $secondaryBgColor={secondaryBgColor}
-                $accentColor1={accentColor1}
-                $accentColor2={accentColor2}
+                $accentColor={accentColor}
                 $textColor={textColor}
+                $footerBgColor={footerBgColor}
+                $footerTextColor={footerTextColor}
+                $fontFamily={fontFamily}
               />
               <Header fluidHeader={fluidHeader} />
               <Wrapper>

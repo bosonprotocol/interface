@@ -166,7 +166,7 @@ export default function Explore() {
               value={brandInput}
               placeholder="Search by Name"
             />
-            <Button onClick={() => onChangeName(brandInput)} theme="secondary">
+            <Button onClick={() => onChangeName(brandInput)} theme="primary">
               Go
             </Button>
           </InputContainer>

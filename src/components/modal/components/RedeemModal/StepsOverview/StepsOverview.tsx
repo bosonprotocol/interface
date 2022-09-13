@@ -37,7 +37,7 @@ export default function StepsOverview({ onNextClick }: Props) {
         bulletPointIcon={<Check size={16} color={colors.secondary} />}
       />
       <Grid padding="2rem 0 0 0" justifyContent="space-between">
-        <Button theme="secondary" onClick={() => onNextClick()}>
+        <Button theme="primary" onClick={() => onNextClick()}>
           Next
         </Button>
       </Grid>

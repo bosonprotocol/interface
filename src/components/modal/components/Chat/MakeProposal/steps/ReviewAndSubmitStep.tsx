@@ -90,7 +90,7 @@ export default function ReviewAndSubmitStep({
       {submitError && <SimpleError />}
       <ButtonsSection>
         <Button
-          theme="secondary"
+          theme="primary"
           type="submit"
           disabled={!isValid || !isChatInitialized || isSubmitting}
         >

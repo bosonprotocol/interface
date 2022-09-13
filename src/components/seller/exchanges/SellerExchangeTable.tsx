@@ -266,7 +266,7 @@ export default function SellerExchangeTable({ data, refetch }: Props) {
           action:
             status === subgraph.ExchangeState.Disputed ? (
               <Button
-                theme="secondary"
+                theme="primary"
                 size="small"
                 onClick={() => {
                   if (element?.id) {

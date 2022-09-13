@@ -86,7 +86,7 @@ export default function ProductImages() {
         </SpaceContainer>
       </FormField>
       <ProductButtonGroup>
-        <Button theme="secondary" type="submit" disabled={nextIsDisabled}>
+        <Button theme="primary" type="submit" disabled={nextIsDisabled}>
           Next
         </Button>
       </ProductButtonGroup>

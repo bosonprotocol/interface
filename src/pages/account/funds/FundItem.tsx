@@ -310,7 +310,7 @@ export default function FundItem({
               reload();
             }
           }}
-          theme="secondary"
+          theme="primary"
           size="small"
           disabled={isBeingWithdrawn || isWithdrawInvalid}
         >
@@ -355,7 +355,7 @@ export default function FundItem({
                 reload();
               }
             }}
-            theme="secondary"
+            theme="primary"
             size="small"
             disabled={isBeingDeposit || isDepositInvalid}
           >
