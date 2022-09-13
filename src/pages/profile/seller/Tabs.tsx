@@ -17,7 +17,7 @@ const Headers = styled.div`
   z-index: 1;
 `;
 const Content = styled.div<{ isPrivateProfile: boolean }>`
-  background-color: ${colors.lightGrey};
+  background-color: var(--secondary);
   width: 100vw;
   position: relative;
   left: 50%;

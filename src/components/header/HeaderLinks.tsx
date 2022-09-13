@@ -7,6 +7,7 @@ import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes, SellerCenterRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { useBuyerSellerAccounts } from "../../lib/utils/hooks/useBuyerSellerAccounts";
+import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
 import { DEFAULT_SELLER_PAGE } from "../seller/SellerPages";
 import Search from "./Search";
@@ -138,7 +139,9 @@ export default function HeaderLinks({
   navigationBarPosition
 }: Props) {
   const { address } = useAccount();
-
+  const supportFunctionality = useCustomStoreQueryParameter<
+    ("buyer" | "seller" | "dr")[]
+  >("supportFunctionality", { parseJson: true });
   const {
     buyer: { buyerId },
     seller: { sellerId }
@@ -155,7 +158,15 @@ export default function HeaderLinks({
         : SellerCenterRoutes.CreateProduct,
     [isAccountSeller]
   );
-
+  const isSupportFunctionalityDefined = supportFunctionality !== "";
+  const onlyBuyer =
+    typeof supportFunctionality != "string" &&
+    supportFunctionality?.length === 1 &&
+    supportFunctionality?.[0] === "buyer";
+  const onlySeller =
+    typeof supportFunctionality != "string" &&
+    supportFunctionality?.length === 1 &&
+    supportFunctionality?.[0] === "seller";
   return (
     <NavigationLinks
       isMobile={isMobile}
@@ -167,9 +178,16 @@ export default function HeaderLinks({
         navigationBarPosition={navigationBarPosition}
       />
       <Links isMobile={isMobile} $navigationBarPosition={navigationBarPosition}>
-        <LinkWithQuery to={sellUrl}>Sell</LinkWithQuery>
-        <LinkWithQuery to={BosonRoutes.Explore}>Explore Products</LinkWithQuery>
-        {isAccountBuyer && (
+        {((isSupportFunctionalityDefined && !onlyBuyer) ||
+          !isSupportFunctionalityDefined) && (
+          <LinkWithQuery to={sellUrl}>Sell</LinkWithQuery>
+        )}
+        {!onlySeller && (
+          <LinkWithQuery to={BosonRoutes.Explore}>
+            Explore Products
+          </LinkWithQuery>
+        )}
+        {isAccountBuyer && !onlySeller && (
           <LinkWithQuery to={BosonRoutes.YourAccount}>My Items</LinkWithQuery>
         )}
       </Links>

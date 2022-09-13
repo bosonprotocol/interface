@@ -16,6 +16,7 @@ import { useCurrentSellerId } from "../../lib/utils/hooks/useCurrentSellerId";
 import SocialLogo from "./SocialLogo";
 import {
   formModel,
+  SelectType,
   storeFields,
   StoreFormFields,
   uploadMaxMB
@@ -98,6 +99,18 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
       if (Array.isArray(value)) {
         if (!value.length) {
           return [[key, ""]];
+        }
+        if (([storeFields.supportFunctionality] as string[]).includes(key)) {
+          return [
+            [
+              key,
+              JSON.stringify(
+                (value as SelectType<string>[])
+                  .map((obj) => obj?.value)
+                  .filter((v) => !!v)
+              )
+            ]
+          ];
         }
         const valueListWithoutExtraKeys = value
           .map((val) => {
@@ -660,6 +673,21 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                   </Grid>
                 </Grid>
               )}
+              <Grid flexDirection="column" alignItems="flex-start">
+                <FieldTitle>Support functionality</FieldTitle>
+                <Select
+                  options={
+                    formModel.formFields.supportFunctionality
+                      .options as unknown as SelectDataProps<string>[]
+                  }
+                  name={storeFields.supportFunctionality}
+                  placeholder={
+                    formModel.formFields.supportFunctionality.placeholder
+                  }
+                  isClearable
+                  isMulti
+                />
+              </Grid>
             </Grid>
           </CollapseWithTrigger>
         </Grid>

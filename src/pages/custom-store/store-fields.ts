@@ -6,7 +6,8 @@ import { websitePattern } from "../../lib/validation/regex/url";
 import { validationOfFile } from "../chat/components/UploadForm/const";
 import { SocialLogoValues } from "./SocialLogo";
 
-type SelectType<Value extends string = string> = SelectDataProps<Value> | null;
+export type SelectType<Value extends string = string> =
+  SelectDataProps<Value> | null;
 
 export type StoreFields = {
   storeName: string;
@@ -31,6 +32,7 @@ export type StoreFields = {
   sellerCurationList: string;
   offerCurationList: string;
   metaTransactionsApiKey: string;
+  supportFunctionality: SelectType[];
 };
 
 export type StoreFormFields = StoreFields & {
@@ -66,7 +68,8 @@ export const storeFields = {
   sellerCurationList: "sellerCurationList",
   offerCurationList: "offerCurationList",
   withMetaTx: "withMetaTx",
-  metaTransactionsApiKey: "metaTransactionsApiKey"
+  metaTransactionsApiKey: "metaTransactionsApiKey",
+  supportFunctionality: "supportFunctionality"
 } as const;
 
 const getYesNoOptions = (defaultValue: "yes" | "no") => {
@@ -247,6 +250,16 @@ export const formModel = {
       name: storeFields.metaTransactionsApiKey,
       requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: ""
+    },
+    [storeFields.supportFunctionality]: {
+      name: storeFields.supportFunctionality,
+      requiredErrorMessage: standardRequiredErrorMessage,
+      placeholder: "Support functionality",
+      options: [
+        { label: "Buyer", value: "buyer" },
+        { label: "Seller", value: "seller" },
+        { label: "Dispute Resolver", value: "dr" }
+      ]
     }
   }
 } as const;
@@ -326,7 +339,13 @@ export const validationSchema = Yup.object({
     label: Yup.string().required(standardRequiredErrorMessage),
     value: Yup.string().required(standardRequiredErrorMessage)
   }).nullable(),
-  [storeFields.metaTransactionsApiKey]: Yup.string()
+  [storeFields.metaTransactionsApiKey]: Yup.string(),
+  [storeFields.supportFunctionality]: Yup.array(
+    Yup.object({
+      label: Yup.string().required(standardRequiredErrorMessage),
+      value: Yup.string().required(standardRequiredErrorMessage)
+    }).nullable()
+  )
 });
 
 export const initialValues = {
@@ -340,7 +359,7 @@ export const initialValues = {
   [storeFields.headerTextColor]: colors.black,
   [storeFields.primaryBgColor]: colors.white,
   [storeFields.secondaryBgColor]: colors.lightGrey,
-  [storeFields.accentColor]: colors.secondary,
+  [storeFields.accentColor]: "",
   [storeFields.textColor]: colors.black,
   [storeFields.footerBgColor]: colors.black,
   [storeFields.footerTextColor]: colors.white,
@@ -367,5 +386,6 @@ export const initialValues = {
   [storeFields.withMetaTx]: formModel.formFields.withMetaTx.options.find(
     (option) => "default" in option && option.default
   ) as SelectDataProps,
-  [storeFields.metaTransactionsApiKey]: ""
+  [storeFields.metaTransactionsApiKey]: "",
+  [storeFields.supportFunctionality]: [] as SelectDataProps[]
 } as const;

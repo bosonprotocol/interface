@@ -16,7 +16,6 @@ const Root = styled(Layout)`
   justify-content: center;
   flex-direction: column;
   margin: 0 auto 64px auto;
-  overflow: hidden;
 `;
 
 export default function CustomStore() {
