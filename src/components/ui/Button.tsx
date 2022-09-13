@@ -113,6 +113,15 @@ const allThemes = {
       color: colors.white
     }
   },
+  bosonSecondary: {
+    color: colors.secondary,
+    borderColor: colors.secondary,
+    borderWidth: 2,
+    hover: {
+      background: colors.secondary,
+      color: colors.white
+    }
+  },
   bosonSecondaryInverse: {
     color: colors.white,
     borderColor: colors.secondary,

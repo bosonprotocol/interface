@@ -293,7 +293,7 @@ export default function SellerFinances({
                 Withdraw
               </WithdrawButton>
               <Button
-                theme="primary"
+                theme="bosonSecondary"
                 size="small"
                 onClick={() => {
                   showModal(

@@ -160,7 +160,7 @@ export default function SellerDashboard({
             </div>
             <Grid justifyContent="flex-end" alignItems="center">
               <Button
-                theme="primary"
+                theme="bosonPrimary"
                 onClick={() => {
                   const pathname = generatePath(
                     SellerCenterRoutes.SellerCenter,

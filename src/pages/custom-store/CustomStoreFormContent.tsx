@@ -600,9 +600,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                   isClearable
                 />
               </Grid>
-              {["custom", "mine"].includes(
-                values.withOwnProducts?.value || ""
-              ) && (
+              {["custom"].includes(values.withOwnProducts?.value || "") && (
                 <Grid
                   flexDirection="column"
                   margin={`0 0 0 ${subFieldsMarginLeft}`}

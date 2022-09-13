@@ -280,7 +280,6 @@ const tableStyles = css`
 
   th,
   td {
-    color: ${colors.darkGrey};
     font-style: normal;
     font-size: 16px;
     line-height: 150%;
@@ -297,12 +296,24 @@ export const Transactions = styled.table`
   }
 `;
 
-export const Table = styled.table<{ noBorder?: boolean }>`
+export const Table = styled.table<{
+  noBorder?: boolean;
+  $inheritColor?: boolean;
+}>`
   ${tableStyles}
 
   th,
   td {
     padding: 0.25rem 0.1rem;
+
+    ${({ $inheritColor }) =>
+      $inheritColor
+        ? css`
+            color: inherit;
+          `
+        : css`
+            color: ${colors.darkGrey};
+          `}
   }
   tr {
     td {
