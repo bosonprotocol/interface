@@ -183,7 +183,7 @@ export default function HeaderLinks({
             Explore Products
           </LinkWithQuery>
         )}
-        {isAccountBuyer && !onlySeller && (
+        {isAccountBuyer && !onlySeller && address && (
           <LinkWithQuery to={BosonRoutes.YourAccount}>My Items</LinkWithQuery>
         )}
       </Links>
