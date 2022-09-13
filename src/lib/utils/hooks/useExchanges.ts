@@ -1,4 +1,3 @@
-import { ExchangeState } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
 import { subgraph } from "@bosonprotocol/react-kit";
 import { gql } from "graphql-request";
 import { useQuery } from "react-query";
@@ -15,7 +14,7 @@ interface Props {
   disputed: boolean | null;
   sellerId?: string;
   buyerId?: string;
-  state?: ExchangeState;
+  state?: subgraph.ExchangeState;
   id?: string;
   id_in?: string[];
   orderBy?: string | null | undefined;

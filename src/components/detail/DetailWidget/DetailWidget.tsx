@@ -1,5 +1,3 @@
-import { ExtendedExchangeState } from "@bosonprotocol/core-sdk/dist/cjs/exchanges";
-import { ExchangeState } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
 import {
   CommitButton,
   exchanges,
@@ -474,10 +472,12 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               {isBeforeRedeem ? (
                 <>
                   {![
-                    ExtendedExchangeState.Expired,
-                    ExchangeState.Cancelled
+                    exchanges.ExtendedExchangeState.Expired,
+                    subgraph.ExchangeState.Cancelled
                   ].includes(
-                    exchangeStatus as ExtendedExchangeState | ExchangeState
+                    exchangeStatus as
+                      | exchanges.ExtendedExchangeState
+                      | subgraph.ExchangeState
                   ) && (
                     <StyledCancelButton
                       onClick={handleCancel}

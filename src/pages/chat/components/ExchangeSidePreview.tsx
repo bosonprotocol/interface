@@ -1,4 +1,4 @@
-import { subgraph } from "@bosonprotocol/core-sdk";
+import { subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { useMemo } from "react";
 import { generatePath } from "react-router-dom";
