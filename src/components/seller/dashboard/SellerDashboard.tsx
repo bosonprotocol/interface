@@ -6,6 +6,8 @@ import { generatePath } from "react-router-dom";
 import { UrlParameters } from "../../../lib/routing/parameters";
 import { SellerCenterRoutes } from "../../../lib/routing/routes";
 import { colors } from "../../../lib/styles/colors";
+import { Offer } from "../../../lib/types/offer";
+import { IPricePassedAsAProp } from "../../../lib/utils/convertPrice";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
@@ -40,7 +42,10 @@ const calcPercentageInLastWeek = (items: Exchange[], type: keyof Exchange) => {
       .filter((n) => n !== null) || [];
   return v.length ? Math.round((100 * v.length) / t) : 0;
 };
-const calcRevenue = (items: Exchange[] | undefined, convertPrice: any) => {
+const calcRevenue = (
+  items: Exchange[] | undefined,
+  convertPrice: (offer: Offer) => IPricePassedAsAProp | null
+) => {
   const calc =
     (items &&
       items
@@ -49,7 +54,7 @@ const calcRevenue = (items: Exchange[] | undefined, convertPrice: any) => {
             item as subgraph.ExchangeFieldsFragment
           );
           if (status === subgraph.ExchangeState.Committed) {
-            const price = convertPrice(item?.offer);
+            const price = convertPrice(item.offer);
             return price;
           }
           return null;
@@ -61,8 +66,11 @@ const calcRevenue = (items: Exchange[] | undefined, convertPrice: any) => {
     return 0;
   }
 
-  const price = calc.reduce((acc, e) => (acc += Number(e.converted)), 0);
-  const currency = calc.reduce((acc, e) => (acc = e.currency.symbol), {});
+  const price = calc.reduce(
+    (acc, e) => (e && e !== null ? (acc += Number(e.converted)) : acc),
+    0
+  );
+  const currency = calc[0]?.currency?.symbol || "$";
 
   return `${currency} ${price}`;
 };

@@ -2,13 +2,17 @@ import { BigNumber, utils } from "ethers";
 import { useCallback, useContext } from "react";
 
 import { CONFIG } from "../../lib/config";
-import { convertPrice } from "../../lib/utils/convertPrice";
+import { Offer } from "../../lib/types/offer";
+import {
+  convertPrice,
+  IPricePassedAsAProp
+} from "../../lib/utils/convertPrice";
 import ConvertionRateContext from "../convertion-rate/ConvertionRateContext";
 
 export const useConvertedPriceFunction = () => {
   const { store } = useContext(ConvertionRateContext);
 
-  const calcPrice = (value: any, decimals: any) => {
+  const calcPrice = (value: string, decimals: string) => {
     try {
       return utils.formatUnits(BigNumber.from(value), Number(decimals));
     } catch (e) {
@@ -18,7 +22,7 @@ export const useConvertedPriceFunction = () => {
   };
 
   const convert = useCallback(
-    (offer: any): any => {
+    (offer: Offer): IPricePassedAsAProp | null => {
       const price = calcPrice(offer?.price, offer?.exchangeToken?.decimals);
 
       return convertPrice({
