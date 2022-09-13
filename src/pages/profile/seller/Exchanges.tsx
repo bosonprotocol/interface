@@ -1,9 +1,11 @@
 import Exchange from "../../../components/exchange/Exchange";
+import { Spinner } from "../../../components/loading/Spinner";
 import GridContainer from "../../../components/ui/GridContainer";
 import {
   Exchange as IExchange,
   useExchanges
 } from "../../../lib/utils/hooks/useExchanges";
+import { LoadingWrapper } from "../ProfilePage.styles";
 
 interface Props {
   sellerId: string;
@@ -26,7 +28,11 @@ export default function Exchanges({ sellerId }: Props) {
   );
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <LoadingWrapper>
+        <Spinner size={42} />
+      </LoadingWrapper>
+    );
   }
 
   if (isError) {

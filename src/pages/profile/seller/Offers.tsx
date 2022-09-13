@@ -78,6 +78,7 @@ export default function Offers({
   return (
     <>
       <OfferList
+        isLoading={isLoading}
         offers={allOffers}
         isError={isError}
         showSeller={false}
