@@ -1,14 +1,13 @@
 import { ExchangeState } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
 
-import OfferCard, { Action } from "../../../components/offer/OfferCard";
+import Exchange from "../../../components/exchange/Exchange";
 import GridContainer from "../../../components/ui/GridContainer";
-import { Offer } from "../../../lib/types/offer";
-import { useExchanges } from "../../../lib/utils/hooks/useExchanges";
-
+import {
+  Exchange as IExchange,
+  useExchanges
+} from "../../../lib/utils/hooks/useExchanges";
 interface Props {
   sellerId: string;
-  action: Action;
-  isPrivateProfile: boolean;
 }
 
 const orderProps = {
@@ -16,15 +15,12 @@ const orderProps = {
   orderDirection: "desc"
 } as const;
 
-export default function Redemptions({
-  sellerId,
-  action,
-  isPrivateProfile
-}: Props) {
+export default function Redemptions({ sellerId }: Props) {
   const {
     data: exchangesSeller,
     isLoading: isLoadingSeller,
-    isError: isErrorSeller
+    isError: isErrorSeller,
+    refetch
   } = useExchanges(
     { ...orderProps, disputed: null, sellerId, state: ExchangeState.Redeemed },
     { enabled: !!sellerId }
@@ -57,14 +53,11 @@ export default function Redemptions({
       }}
     >
       {exchangesSeller?.map((exchange) => (
-        <OfferCard
+        <Exchange
           key={exchange.id}
-          offer={exchange.offer}
-          exchange={exchange as NonNullable<Offer["exchanges"]>[number]}
-          action={action}
-          dataTestId="exchange"
-          showSeller={false}
-          isPrivateProfile={isPrivateProfile}
+          {...exchange}
+          exchange={exchange as IExchange}
+          reload={refetch}
         />
       ))}
     </GridContainer>
