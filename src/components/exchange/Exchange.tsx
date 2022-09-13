@@ -164,7 +164,8 @@ export default function Exchange({ offer, exchange, reload }: Props) {
       onCardClick={handleOnCardClick}
       id={offer.id}
       title={offer.metadata.name}
-      avatarName="ABI"
+      avatarName={`Seller ID: ${offer.seller.id}`}
+      // TODO: ADD AVATAR IMAGE
       avatar="https://images.unsplash.com/photo-1613771404721-1f92d799e49f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cG9rZW1vbnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60"
       imageProps={{
         src: imageSrc,
