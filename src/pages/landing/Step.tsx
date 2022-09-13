@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 import Typography from "../../components/ui/Typography";
 import { breakpoint } from "../../lib/styles/breakpoint";
+import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 
 const StepWrapper = styled.div`
@@ -30,7 +31,7 @@ const StepWrapper = styled.div`
       height: 50%;
       top: 50%;
       left: 0%;
-      background: var(--primary);
+      background: var(--primary, ${colors.green});
     }
   }
   [data-testid="step-title"] {

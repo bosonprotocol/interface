@@ -34,7 +34,7 @@ const ColorPicker = styled(Input).attrs({
 `;
 
 export default function InputColor({ name, ...props }: InputColorProps) {
-  const [field, meta] = useField(name);
+  const [field, meta] = useField<string>(name);
   const errorMessage = meta.error && meta.touched ? meta.error : "";
   const displayError =
     typeof errorMessage === typeof "string" && errorMessage !== "";
@@ -43,7 +43,7 @@ export default function InputColor({ name, ...props }: InputColorProps) {
     <>
       <Container>
         <span style={{ color: colors.darkGrey }}>
-          {field.value || props.placeholder}
+          {field.value?.toUpperCase() || props.placeholder}
         </span>
         <ColorPicker name={name} />
       </Container>

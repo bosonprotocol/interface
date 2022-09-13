@@ -84,8 +84,8 @@ const ChildWrapperButton = styled.div`
 const allThemes = {
   primary: {
     color: "var(--textColor)",
-    background: "var(--accentNoDefault, var(--primary))",
-    borderColor: "var(--accentNoDefault, var(--primary))",
+    background: `var(--accentNoDefault, ${colors.green})`,
+    borderColor: `var(--accentNoDefault, ${colors.green})`,
     borderWidth: 2,
     hover: {
       background: colors.black,
