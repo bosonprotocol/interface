@@ -32,7 +32,7 @@ const GridWrapper = styled.div`
 
 function SellerCenter(props: SellerInsideProps & WithSellerDataProps) {
   return (
-    <GridWrapper data-wrapper>
+    <GridWrapper>
       <SellerAside {...props} />
       <SellerInside {...props} />
     </GridWrapper>
