@@ -6,7 +6,6 @@ import OfferList from "../../components/offers/OfferList";
 import { buttonText } from "../../components/ui/styles";
 import Typography from "../../components/ui/Typography";
 import { BosonRoutes } from "../../lib/routing/routes";
-import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { useOffers } from "../../lib/utils/hooks/offers";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
@@ -18,14 +17,6 @@ const Root = styled.div`
   margin-bottom: 2rem;
   &:last-of-type {
     margin-bottom: 0rem;
-  }
-
-  padding: 0rem 3rem;
-  ${breakpoint.m} {
-    padding: 0rem 6rem;
-  }
-  ${breakpoint.l} {
-    padding: 0rem 12rem;
   }
 `;
 

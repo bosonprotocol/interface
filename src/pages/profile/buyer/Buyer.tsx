@@ -151,7 +151,7 @@ export default function Buyer({ manageFundsId }: Props) {
         <ProfileSectionWrapper>
           <Exchanges
             buyerId={buyerId}
-            action={null}
+            action="redeem"
             isPrivateProfile={isMyBuyer}
           />
         </ProfileSectionWrapper>

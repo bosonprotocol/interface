@@ -351,7 +351,7 @@ const ChatConversation = ({
   } = useInfiniteThread({
     threadId,
     dateIndex,
-    dateStep: "month",
+    dateStep: "week",
     counterParty: destinationAddress,
     onFinishFetching
   });

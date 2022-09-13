@@ -1,7 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
+import useResizeObserver from "use-resize-observer";
 
-import Layout from "../../components/Layout";
 import Button from "../../components/ui/Button";
 import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
@@ -49,8 +49,6 @@ const ExploreContainer = styled.div`
   margin-top: 2rem;
 `;
 
-const HeroWrapper = styled(Grid)``;
-
 const DarkerBackground = styled.div`
   background-color: ${colors.lightGrey};
   width: 100vw;
@@ -60,6 +58,12 @@ const DarkerBackground = styled.div`
   margin-left: -50vw;
   margin-right: -50vw;
   padding: 4rem 0;
+  display: flex;
+  justify-content: center;
+`;
+
+const OffersSection = styled.div`
+  padding: 4rem 0;
 `;
 
 export default function Landing() {
@@ -68,19 +72,19 @@ export default function Landing() {
   const title = useCustomStoreQueryParameter("title");
   const description = useCustomStoreQueryParameter("description");
   const [name] = useState("");
-
+  const { ref, width } = useResizeObserver<HTMLDivElement>();
   const navigateToExplore = () =>
     navigate({
       pathname: BosonRoutes.Explore,
       search: name ? `${ExploreQueryParameters.name}=${name}` : ""
     });
-
   return (
-    <LandingPage>
-      <HeroWrapper
+    <LandingPage ref={ref}>
+      <Grid
         flexBasis="50%"
         flexDirection={isLteS ? "column-reverse" : "row"}
         gap="2.5rem"
+        data-hero-wrapper
       >
         <GridWithZindex alignItems="flex-start" flexDirection="column">
           <Title tag="h1">
@@ -108,7 +112,7 @@ export default function Landing() {
           </ExploreContainer>
         </GridWithZindex>
         <Carousel />
-      </HeroWrapper>
+      </Grid>
       <Grid
         alignItems="flex-start"
         flexDirection={isLteS ? "column" : "row"}
@@ -130,11 +134,15 @@ export default function Landing() {
       </Grid>
 
       <DarkerBackground>
-        <Layout>
+        <OffersSection
+          style={{
+            width
+          }}
+        >
           <FeaturedOffers type="hot" title="Hot products" />
           <FeaturedOffers type="gone" title="Almost gone" />
           <FeaturedOffers type="soon" title="Coming soon..." />
-        </Layout>
+        </OffersSection>
       </DarkerBackground>
     </LandingPage>
   );

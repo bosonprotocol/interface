@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import styled from "styled-components";
 
 type JustifyContent =
@@ -48,15 +48,21 @@ const Container = styled.div<IGrid>`
   ${({ padding }) => (padding ? `padding:${padding};` : "")}
   ${({ margin }) => (margin ? `margin:${margin};` : "")}
 `;
+type Props = {
+  children: React.ReactNode;
+  as?: React.ElementType;
+  src?: string;
+} & IGrid &
+  React.HTMLAttributes<HTMLDivElement>;
 
-const Grid: React.FC<
-  {
-    children: React.ReactNode;
-    as?: React.ElementType;
-  } & IGrid &
-    React.HTMLAttributes<HTMLDivElement>
-> = ({ children, ...props }) => {
-  return <Container {...props}>{children}</Container>;
-};
+const Grid = forwardRef<HTMLDivElement, Props>(
+  ({ children, ...props }, ref) => {
+    return (
+      <Container {...props} ref={ref}>
+        {children}
+      </Container>
+    );
+  }
+);
 
 export default Grid;

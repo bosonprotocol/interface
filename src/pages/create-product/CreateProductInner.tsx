@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { OfferFieldsFragment } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
 import { MetadataType } from "@bosonprotocol/react-kit";
 import { parseUnits } from "@ethersproject/units";
 import type { Dayjs } from "dayjs";
@@ -38,7 +39,7 @@ import {
   CreateProductSteps,
   createProductSteps,
   FIRST_STEP,
-  wait
+  poll
 } from "./utils";
 import { ValidateDates } from "./utils/dataValidator";
 
@@ -86,12 +87,11 @@ function CreateProductInner({ initial }: Props) {
   });
 
   const handleOpenSuccessModal = async ({
-    offerId
+    offerInfo
   }: {
-    offerId: string | null;
+    offerInfo: OfferFieldsFragment;
   }) => {
-    const offerInfo = await coreSDK.getOfferById(offerId as string);
-
+    const offerId = offerInfo.id;
     const metadataInfo = (await coreSDK.getMetadata(
       offerInfo.metadataUri
     )) as any;
@@ -381,9 +381,21 @@ function CreateProductInner({ initial }: Props) {
       const txReceipt = await txResponse.wait();
 
       const offerId = coreSDK.getCreatedOfferIdFromLogs(txReceipt.logs);
-
-      await wait(3_000);
-      handleOpenSuccessModal({ offerId });
+      let createdOffer: OfferFieldsFragment | null = null;
+      await poll(
+        async () => {
+          createdOffer = await coreSDK.getOfferById(offerId as string);
+          return createdOffer;
+        },
+        (offer) => {
+          return !offer;
+        },
+        500
+      );
+      if (!createdOffer) {
+        return;
+      }
+      handleOpenSuccessModal({ offerInfo: createdOffer });
       formikBag.resetForm();
     } catch (error: any) {
       // TODO: FAILURE MODAL

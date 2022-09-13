@@ -118,6 +118,7 @@ export default function Chat() {
         setExchangeIdNotOwned(true);
         return;
       }
+      setExchangeIdNotOwned(false);
       selectExchange(foundExchange);
     }
   }, [exchangeId, exchanges]);

@@ -38,7 +38,8 @@ export default function App({
   const accentColor1 = useCustomStoreQueryParameter("accentColor1");
   const accentColor2 = useCustomStoreQueryParameter("accentColor2");
   const textColor = useCustomStoreQueryParameter("textColor");
-
+  const showFooterValue = useCustomStoreQueryParameter("showFooter");
+  const showFooter = ["", "true"].includes(showFooterValue) && withFooter;
   const Wrapper = withLayout ? Layout : Fragment;
 
   return (
@@ -63,7 +64,7 @@ export default function App({
               <Wrapper>
                 <Outlet />
               </Wrapper>
-              {withFooter && <Footer />}
+              {showFooter && <Footer />}
             </Container>
           </ModalProvider>
         </ChatProvider>

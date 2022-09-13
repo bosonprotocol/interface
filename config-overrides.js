@@ -7,6 +7,9 @@ const {
   addWebpackResolve
 } = require("customize-cra");
 const webpack = require("webpack");
+const BundleAnalyzerPlugin =
+  require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
+
 // module.exports = override(addBabelPlugins("babel-plugin-styled-components"));
 
 // // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -45,7 +48,9 @@ module.exports = {
       new webpack.ProvidePlugin({
         Buffer: ["buffer", "Buffer"]
       })
-    )
+    ),
+    process.env.ANALYZE_BUNDLE &&
+      addWebpackPlugin(new BundleAnalyzerPlugin({ analyzerMode: "server" }))
   ),
   // The Jest config to use when running your jest tests - note that the normal rewires do not
   // work here.

@@ -159,13 +159,15 @@ export default function Exchange() {
               offer={offer}
               buyerAddress={buyerAddress}
             />
-            <div>
-              <Typography tag="h3">Shipping information</Typography>
-              <Typography tag="p" style={{ color: colors.darkGrey }}>
-                {shippingInfo.shipping}
-              </Typography>
-              <DetailTable data={shippingInfo.shippingTable} />
-            </div>
+            {(shippingInfo.shipping || shippingInfo.shippingTable.length) && (
+              <div>
+                <Typography tag="h3">Shipping information</Typography>
+                <Typography tag="p" style={{ color: colors.darkGrey }}>
+                  {shippingInfo.shipping}
+                </Typography>
+                <DetailTable data={shippingInfo.shippingTable} />
+              </div>
+            )}
           </DetailGrid>
         </DarkerBackground>
       </DetailWrapper>
