@@ -92,11 +92,7 @@ export default function SellerAside(
                   {label}
                   {label === "Finances" &&
                     props.offersBacked.displayWarning && (
-                      <WarningCircle
-                        size={16}
-                        weight="regular"
-                        color={colors.red}
-                      />
+                      <WarningCircle size={16} color={colors.orange} />
                     )}
                 </Grid>
               </LinkWithQuery>
