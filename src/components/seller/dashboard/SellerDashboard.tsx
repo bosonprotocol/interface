@@ -50,10 +50,14 @@ const calcRevenue = (
     (items &&
       items
         ?.map((item: Exchange) => {
-          const status = ExchangesKit.getExchangeState(
-            item as subgraph.ExchangeFieldsFragment
+          const wasItRedeemed = item?.redeemedDate !== null;
+          const wasItDisputed = item?.disputed;
+          const disputeUntil = dayjs(
+            getDateTimestamp(item?.redeemedDate as string) +
+              getDateTimestamp(item?.offer?.fulfillmentPeriodDuration)
           );
-          if (status === subgraph.ExchangeState.Committed) {
+          const stillCanDispute = disputeUntil.isAfter(dayjs());
+          if (wasItRedeemed && !wasItDisputed && !stillCanDispute) {
             const price = convertPrice(item.offer);
             return price;
           }
@@ -138,56 +142,41 @@ export default function SellerDashboard({
 
   return (
     <Grid gap="2rem" flexDirection="column" alignItems="stretch">
-      {offersBacked?.offersBacked[0] &&
-        offersBacked?.offersBacked[0] < offersBacked.threshold && (
-          <SellerInner
-            padding="1.5rem"
-            background={colors.black}
-            color={colors.white}
-          >
-            <Grid justifyContent="space-between" alignItems="center">
-              <div>
-                <Typography tag="h4" padding="0">
-                  You need to top up your seller deposit pool
-                </Typography>
-                <Typography tag="p" padding="0">
-                  Currently, your product can’t be bought becasue the balance in
-                  your seller deposit pool is not sufficient enough.
-                </Typography>
-              </div>
-              <Grid justifyContent="flex-end" alignItems="center">
-                <Button
-                  theme="blankWhite"
-                  onClick={() => {
-                    const pathname = generatePath(
-                      SellerCenterRoutes.SellerCenter,
-                      {
-                        [UrlParameters.sellerPage]: "finances"
-                      }
-                    );
-                    navigate({ pathname });
-                  }}
-                >
-                  View finances
-                </Button>
-                <Button
-                  theme="secondary"
-                  onClick={() => {
-                    const pathname = generatePath(
-                      SellerCenterRoutes.SellerCenter,
-                      {
-                        [UrlParameters.sellerPage]: "finances"
-                      }
-                    );
-                    navigate({ pathname });
-                  }}
-                >
-                  Deposit funds
-                </Button>
-              </Grid>
+      {offersBacked?.displayWarning && (
+        <SellerInner
+          padding="1.5rem"
+          background={colors.black}
+          color={colors.white}
+        >
+          <Grid justifyContent="space-between" alignItems="center">
+            <div>
+              <Typography tag="h4" padding="0">
+                You need to top up your seller deposit pool
+              </Typography>
+              <Typography tag="p" padding="0">
+                Currently, your product can’t be bought becasue the balance in
+                your seller deposit pool is not sufficient enough.
+              </Typography>
+            </div>
+            <Grid justifyContent="flex-end" alignItems="center">
+              <Button
+                theme="secondary"
+                onClick={() => {
+                  const pathname = generatePath(
+                    SellerCenterRoutes.SellerCenter,
+                    {
+                      [UrlParameters.sellerPage]: "finances"
+                    }
+                  );
+                  navigate({ pathname });
+                }}
+              >
+                Deposit funds
+              </Button>
             </Grid>
-          </SellerInner>
-        )}
+          </Grid>
+        </SellerInner>
+      )}
       <SellerInner padding="0">
         <SellerDashboardInfo {...sellerDashboardProps} />
       </SellerInner>

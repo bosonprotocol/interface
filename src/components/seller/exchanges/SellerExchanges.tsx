@@ -52,11 +52,11 @@ export default function SellerExchanges({
   const state = location.state as MyLocationState;
 
   const initialTag = useMemo(() => {
-    const { currentTag } = state;
-    return currentTag
-      ? productTags.filter((f) => f?.value === currentTag)[0]
+    console.log(location, state);
+    return state?.currentTag
+      ? productTags.filter((f) => f?.value === state?.currentTag)[0]
       : productTags[0];
-  }, [state]);
+  }, [location, state]);
 
   const [currentTag, setCurrentTag] = useState(
     initialTag?.value || productTags[0].value

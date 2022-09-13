@@ -4,7 +4,8 @@ import { Offer } from "../../lib/types/offer";
 import ExchangeTimeline from "../../pages/chat/components/ExchangeTimeline";
 import Typography from "../ui/Typography";
 
-const Statuses = styled.div`
+export const OfferHistoryStatuses = styled.div`
+  padding: 0.5rem 0;
   min-width: 10rem;
   > div {
     height: initial;
@@ -20,7 +21,7 @@ export default function OfferHistory({ offer }: Props) {
     offer?.exchanges && offer?.exchanges.length ? offer?.exchanges[0] : false;
 
   return (
-    <Statuses>
+    <OfferHistoryStatuses>
       {allExchanges !== false ? (
         <ExchangeTimeline exchange={allExchanges} showDispute={false}>
           <h4>History</h4>
@@ -28,6 +29,6 @@ export default function OfferHistory({ offer }: Props) {
       ) : (
         <Typography tag="p">No history of that item yet</Typography>
       )}
-    </Statuses>
+    </OfferHistoryStatuses>
   );
 }

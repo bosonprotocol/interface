@@ -4,14 +4,17 @@ import { useParams } from "react-router-dom";
 import { UrlParameters } from "../../lib/routing/parameters";
 import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
-import { WithSellerData, WithSellerDataProps } from "./common/WithSellerData";
+import { WithSellerDataProps } from "./common/WithSellerData";
 import { sellerPageTypes } from "./SellerPages";
 import SellerWrapper from "./SellerWrapper";
 
 export interface SellerInsideProps {
   sellerId: string;
 }
-function SellerInside(props: SellerInsideProps & WithSellerDataProps) {
+
+export default function SellerInside(
+  props: SellerInsideProps & WithSellerDataProps
+) {
   const { [UrlParameters.sellerPage]: sellerPage } = useParams();
   const { label, component, ...rest } = useMemo(
     () =>
@@ -37,5 +40,3 @@ function SellerInside(props: SellerInsideProps & WithSellerDataProps) {
     </SellerWrapper>
   );
 }
-
-export default WithSellerData<SellerInsideProps>(SellerInside);

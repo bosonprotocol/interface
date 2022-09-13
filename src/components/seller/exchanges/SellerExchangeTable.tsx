@@ -18,10 +18,13 @@ import { colors } from "../../../lib/styles/colors";
 import { Offer } from "../../../lib/types/offer";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import ExchangeTimeline from "../../../pages/chat/components/ExchangeTimeline";
 import { CheckboxWrapper } from "../../form/Field.styles";
 import { useModal } from "../../modal/useModal";
 import ExchangeStatuses from "../../offer/ExchangeStatuses";
+import { OfferHistoryStatuses } from "../../offer/OfferHistory";
 import Price from "../../price/index";
+import Tooltip from "../../tooltip/Tooltip";
 import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
 import Image from "../../ui/Image";
@@ -238,20 +241,31 @@ export default function SellerExchangeTable({ data, refetch }: Props) {
             </Typography>
           ),
           status: element && (
-            <ExchangeStatuses
-              offer={element?.offer}
-              exchange={element as NonNullable<Offer["exchanges"]>[number]}
-              size="small"
-              displayDot
-              showValid
-              style={{
-                display: "inline-block",
-                position: "relative",
-                top: "unset",
-                left: "unset",
-                right: "unset"
-              }}
-            />
+            <Tooltip
+              interactive
+              content={
+                <OfferHistoryStatuses>
+                  <ExchangeTimeline exchange={element}>
+                    <h4>History</h4>
+                  </ExchangeTimeline>
+                </OfferHistoryStatuses>
+              }
+            >
+              <ExchangeStatuses
+                offer={element?.offer}
+                exchange={element as NonNullable<Offer["exchanges"]>[number]}
+                size="small"
+                displayDot
+                showValid
+                style={{
+                  display: "inline-block",
+                  position: "relative",
+                  top: "unset",
+                  left: "unset",
+                  right: "unset"
+                }}
+              />
+            </Tooltip>
           ),
           price: element && (
             <Price

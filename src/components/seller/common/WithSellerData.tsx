@@ -50,6 +50,7 @@ interface OffersBackedProps {
     [x: string]: string;
   };
   threshold: number;
+  displayWarning: boolean;
 }
 
 export interface WithSellerDataProps {

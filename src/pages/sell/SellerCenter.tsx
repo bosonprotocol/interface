@@ -1,8 +1,13 @@
 import { House, WarningCircle } from "phosphor-react";
 import styled from "styled-components";
 
+import {
+  WithSellerData,
+  WithSellerDataProps
+} from "../../components/seller/common/WithSellerData";
 import SellerAside from "../../components/seller/SellerAside";
 import SellerInside from "../../components/seller/SellerInside";
+import { SellerInsideProps } from "../../components/seller/SellerInside";
 import Button from "../../components/ui/Button";
 import Grid from "../../components/ui/Grid";
 import Loading from "../../components/ui/Loading";
@@ -15,8 +20,7 @@ import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryPa
 export const Wrapper = styled.div`
   text-align: center;
 `;
-
-const SellerCenterWrapper = styled.div`
+const GridWrapper = styled.div`
   display: grid;
   grid-template-columns: 14.3em 1fr;
   gap: 0;
@@ -24,7 +28,17 @@ const SellerCenterWrapper = styled.div`
   margin: 0 -1rem;
 `;
 
-export default function SellerCenter() {
+function SellerCenter(props: SellerInsideProps & WithSellerDataProps) {
+  return (
+    <GridWrapper>
+      <SellerAside {...props} />
+      <SellerInside {...props} />
+    </GridWrapper>
+  );
+}
+const SellerCenterWithData = WithSellerData<SellerInsideProps>(SellerCenter);
+
+function SellerCenterWrapper() {
   const navigate = useKeepQueryParamsNavigate();
   const { isLoading, sellerId } = useCurrentSellerId();
 
@@ -65,10 +79,7 @@ export default function SellerCenter() {
     );
   }
 
-  return (
-    <SellerCenterWrapper>
-      <SellerAside />
-      <SellerInside sellerId={sellerId} />
-    </SellerCenterWrapper>
-  );
+  return <SellerCenterWithData sellerId={sellerId} />;
 }
+
+export default SellerCenterWrapper;

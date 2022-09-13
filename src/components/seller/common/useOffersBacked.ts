@@ -6,6 +6,7 @@ import { useMemo } from "react";
 dayjs.extend(isBetween);
 
 import { Offer } from "../../../lib/types/offer";
+import { saveItemInStorage } from "../../../lib/utils/hooks/useLocalStorage";
 import { SellerExchangeProps } from "../../../lib/utils/hooks/useSellerDeposit";
 import { WithSellerDataProps } from "./WithSellerData";
 
@@ -116,12 +117,20 @@ export default function useOffersBacked({
     [calcOffersBacked, funds]
   );
 
+  const displayWarning = useMemo(() => {
+    const shouldDisplay =
+      (offersBacked[0] && offersBacked[0] < THRESHOLD) || false;
+    saveItemInStorage("shouldDisplayOfferBackedWarning", shouldDisplay);
+    return shouldDisplay;
+  }, [offersBacked]);
+
   if (exchangesTokensData.isLoading || sellerLockedFunds.isLoading) {
     return {
       offersBacked: [],
       calcOffersBacked: {},
       sellerLockedFunds: {},
-      threshold: THRESHOLD
+      threshold: THRESHOLD,
+      displayWarning
     };
   }
 
@@ -129,6 +138,7 @@ export default function useOffersBacked({
     offersBacked,
     calcOffersBacked,
     sellerLockedFunds,
-    threshold: THRESHOLD
+    threshold: THRESHOLD,
+    displayWarning
   };
 }

@@ -1,3 +1,4 @@
+import { WarningCircle } from "phosphor-react";
 import { useCallback } from "react";
 import { generatePath, useParams } from "react-router-dom";
 import styled from "styled-components";
@@ -7,6 +8,8 @@ import { SellerCenterRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
 import Grid from "../ui/Grid";
+import { WithSellerDataProps } from "./common/WithSellerData";
+import { SellerInsideProps } from "./SellerInside";
 import { sellerPageTypes } from "./SellerPages";
 
 const Aside = styled.aside`
@@ -37,7 +40,7 @@ const AsideLink = styled.li<{ $active?: boolean }>`
   div {
     color: ${colors.black};
   }
-  svg {
+  svg:first-child {
     fill: ${(props) => (props.$active ? colors.secondary : colors.black)};
     width: 1.5rem;
     height: 1.5rem;
@@ -51,7 +54,9 @@ const AsideLink = styled.li<{ $active?: boolean }>`
   }
 `;
 
-export default function SellerAside() {
+export default function SellerAside(
+  props: SellerInsideProps & WithSellerDataProps
+) {
   const { [UrlParameters.sellerPage]: sellerPage } = useParams();
 
   const handleUrl = useCallback((path: string) => {
@@ -85,6 +90,14 @@ export default function SellerAside() {
                     color={isActive ? colors.black : colors.darkGrey}
                   />
                   {label}
+                  {label === "Finances" &&
+                    props.offersBacked.displayWarning && (
+                      <WarningCircle
+                        size={16}
+                        weight="regular"
+                        color={colors.red}
+                      />
+                    )}
                 </Grid>
               </LinkWithQuery>
             </AsideLink>
