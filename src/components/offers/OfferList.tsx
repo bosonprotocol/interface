@@ -65,7 +65,7 @@ export default function OfferList({
   const location = useLocation();
 
   const isProductPage = useMemo(
-    () => location.pathname.includes("/products"),
+    () => location.pathname.includes(BosonRoutes.Products),
     [location]
   );
 

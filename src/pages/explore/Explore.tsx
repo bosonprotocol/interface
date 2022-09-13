@@ -96,6 +96,8 @@ const ExploreContainer = styled.div`
   overflow: hidden;
 `;
 
+// TODO: Filter sidebar
+
 // const Input = styled.input`
 //   max-width: 100%;
 //   padding: 0.625rem 0.5rem;
@@ -205,7 +207,6 @@ export default function Explore() {
   // const { data: brands } = useBrands();
 
   const [selectedSeller] = useState<string>(sellerQueryParameter);
-  console.log(filter);
   const useCollectionPayload = {
     orderDirection: filter.orderDirection,
     orderBy: filter.orderBy
@@ -240,7 +241,6 @@ export default function Explore() {
             options={selectOptions}
             onChange={(option: any) => {
               if (option !== null) {
-                console.log(option);
                 setFilter({
                   value: option.value,
                   orderDirection: option.orderDirection,

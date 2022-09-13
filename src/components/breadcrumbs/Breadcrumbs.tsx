@@ -1,5 +1,5 @@
 import { CaretRight } from "phosphor-react";
-import React from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
@@ -32,6 +32,11 @@ const Button = styled.button`
 function Breadcrumbs({ steps, margin }: Props) {
   const navigate = useKeepQueryParamsNavigate();
 
+  const isNotFinalStep = useCallback(
+    (stepId: number) => stepId + 1 < steps.length,
+    [steps]
+  );
+
   return (
     <Grid $width="fit-content" margin={margin ? margin : "0"}>
       {steps.map((step) => (
@@ -49,7 +54,7 @@ function Breadcrumbs({ steps, margin }: Props) {
           >
             {step.label}
           </Typography>{" "}
-          {step.id + 1 < steps.length && (
+          {isNotFinalStep(step.id) && (
             <StyledCaret
               size={18}
               color={step.hightlighted ? colors.secondary : colors.darkGrey}

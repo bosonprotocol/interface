@@ -133,7 +133,9 @@ function Collections() {
   const useCollectionPayload = {
     first: OFFERS_PER_PAGE * 2,
     skip: OFFERS_PER_PAGE * pageIndex,
-    orderDirection: filter.value
+    orderDirection: filter.value,
+    validFromDate: "1662847140",
+    validUntilDate: "1662847140"
   };
   const { data } = useCollections({
     ...useCollectionPayload
@@ -213,7 +215,6 @@ function Collections() {
           isNextEnabled={(currentAndNextPageOffers || 0) >= 1 + 1}
           isPreviousEnabled={true}
           onChangeIndex={(index) => {
-            console.log(index);
             setPageIndex(index);
           }}
         />

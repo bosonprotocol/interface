@@ -9,6 +9,8 @@ export function useCollections(
     first?: number;
     orderDirection?: string;
     orderBy?: string;
+    validFromDate?: string;
+    validUntilDate?: string;
   },
   options: {
     enabled?: boolean;
@@ -38,8 +40,11 @@ export function useCollections(
             $skip: Int
             $orderDirection: String
             $orderBy: String
+            $first: Int
+            $validFromDate: String
+            $validUntilDate: String
           ) {
-            sellers(skip: $skip, first: 15) {
+            sellers(skip: $skip, first: $first) {
               id
               exchanges {
                 id
@@ -47,8 +52,8 @@ export function useCollections(
               offers(
                 where: {
                   voided: false
-                  validFromDate_lte: "1662847140"
-                  validUntilDate_lte: "1662847140"
+                  validFromDate_lte: $validFromDate
+                  validUntilDate_lte: $validUntilDate
                 }
                 orderBy: $orderBy
                 orderDirection: $orderDirection
