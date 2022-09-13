@@ -50,6 +50,7 @@ interface Props {
 
   hideModal: NonNullable<ModalProps["hideModal"]>;
   title: ModalProps["title"];
+  reload?: () => void;
 }
 
 const Line = styled.hr`
@@ -83,7 +84,8 @@ const ButtonsSection = styled.div`
 export default function CancelExchangeModal({
   exchange,
   hideModal,
-  BASE_MODAL_DATA
+  BASE_MODAL_DATA,
+  reload
 }: Props) {
   const { offer } = exchange;
   const { data: signer } = useSigner();
@@ -175,6 +177,7 @@ export default function CancelExchangeModal({
           onSuccess={(_, payload) => {
             setIsLoading(false);
             setCancelError(null);
+            reload?.();
             showModal(modalTypes.DETAIL_WIDGET, {
               title: "You have successfully cancelled!",
               message: "You have successfully cancelled!",

@@ -1,5 +1,4 @@
 import { useParams } from "react-router-dom";
-import { useAccount } from "wagmi";
 
 import Avatar from "../../../components/avatar";
 import DetailShare from "../../../components/detail/DetailShare";
@@ -34,7 +33,6 @@ interface Props {
 }
 
 export default function Buyer({ manageFundsId }: Props) {
-  const { address: currentWalletAddress = "" } = useAccount();
   const { [UrlParameters.buyerId]: urlBuyerId = "" } = useParams();
 
   const buyerId = manageFundsId || urlBuyerId;
@@ -53,9 +51,6 @@ export default function Buyer({ manageFundsId }: Props) {
   const { showModal, modalTypes } = useModal();
   const isBuyerExists = !!buyers?.length;
   const currentBuyerAddress = buyers?.[0]?.wallet || "";
-
-  const isMyBuyer =
-    currentBuyerAddress.toLowerCase() === currentWalletAddress.toLowerCase();
 
   const handleManageFunds = () => {
     if (manageFundsId) {
@@ -149,11 +144,7 @@ export default function Buyer({ manageFundsId }: Props) {
       </BasicInfo>
       <GrayWrapper>
         <ProfileSectionWrapper>
-          <Exchanges
-            buyerId={buyerId}
-            action={null}
-            isPrivateProfile={isMyBuyer}
-          />
+          <Exchanges buyerId={buyerId} />
         </ProfileSectionWrapper>
       </GrayWrapper>
     </>

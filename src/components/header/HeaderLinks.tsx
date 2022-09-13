@@ -6,6 +6,7 @@ import { useAccount } from "wagmi";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes, SellerCenterRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
+import { useBuyers } from "../../lib/utils/hooks/useBuyers";
 import { useCurrentSellerId } from "../../lib/utils/hooks/useCurrentSellerId";
 import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
 import { DEFAULT_SELLER_PAGE } from "../seller/SellerPages";
@@ -108,6 +109,12 @@ export default function HeaderLinks({ isMobile, isOpen }: Props) {
     [isLoading, sellerId]
   );
 
+  const { data: buyers } = useBuyers({
+    wallet: address
+  });
+
+  const buyerId = buyers?.[0]?.id || "";
+
   const sellUrl = useMemo(
     () =>
       isAccountSeller
@@ -124,7 +131,7 @@ export default function HeaderLinks({ isMobile, isOpen }: Props) {
       <Links isMobile={isMobile}>
         <LinkWithQuery to={sellUrl}>Sell</LinkWithQuery>
         <LinkWithQuery to={BosonRoutes.Explore}>Explore Products</LinkWithQuery>
-        {address && (
+        {buyerId && (
           <LinkWithQuery to={BosonRoutes.YourAccount}>My Items</LinkWithQuery>
         )}
       </Links>
