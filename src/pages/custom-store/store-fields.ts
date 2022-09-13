@@ -254,7 +254,7 @@ export const formModel = {
     [storeFields.supportFunctionality]: {
       name: storeFields.supportFunctionality,
       requiredErrorMessage: standardRequiredErrorMessage,
-      placeholder: "Support functionality",
+      placeholder: "Select actor(s)",
       options: [
         { label: "Buyer", value: "buyer" },
         { label: "Seller", value: "seller" },

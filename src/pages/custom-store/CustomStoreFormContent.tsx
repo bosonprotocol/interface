@@ -674,7 +674,11 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                 </Grid>
               )}
               <Grid flexDirection="column" alignItems="flex-start">
-                <FieldTitle>Support functionality</FieldTitle>
+                <FieldTitle>Toggle header/footer options</FieldTitle>
+                <FieldDescription>
+                  Focus your user's attention exclusively on relevant actions
+                  (buyer, seller and/or dispute resolver)
+                </FieldDescription>
                 <Select
                   options={
                     formModel.formFields.supportFunctionality
