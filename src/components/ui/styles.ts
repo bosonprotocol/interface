@@ -31,7 +31,6 @@ export const boxShadow = css`
 
 export const text = css`
   letter-spacing: 0.5px;
-  font-family: "Plus Jakarta Sans";
   font-style: normal;
   font-size: 14px;
   line-height: 24px;
@@ -39,7 +38,6 @@ export const text = css`
 
 export const buttonText = css`
   letter-spacing: 0.5px;
-  font-family: "Plus Jakarta Sans";
   font-style: normal;
   font-size: 16px;
   font-weight: 500;

@@ -247,6 +247,7 @@ export default function MessageList({
                       buyerOrSeller={buyerOrSellerToShow}
                       withProfileImage
                       onClick={() => null}
+                      withBosonStyles
                     />
                   </MessageInfo>
                 </MessageContent>

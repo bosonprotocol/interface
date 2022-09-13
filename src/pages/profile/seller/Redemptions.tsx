@@ -1,4 +1,4 @@
-import { ExchangeState } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
+import { subgraph } from "@bosonprotocol/react-kit";
 
 import Exchange from "../../../components/exchange/Exchange";
 import { Spinner } from "../../../components/loading/Spinner";
@@ -24,7 +24,12 @@ export default function Redemptions({ sellerId }: Props) {
     isError: isErrorSeller,
     refetch
   } = useExchanges(
-    { ...orderProps, disputed: null, sellerId, state: ExchangeState.Redeemed },
+    {
+      ...orderProps,
+      disputed: null,
+      sellerId,
+      state: subgraph.ExchangeState.Redeemed
+    },
     { enabled: !!sellerId }
   );
 

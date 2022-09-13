@@ -4,11 +4,15 @@ import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 
 const GlobalStyle = createGlobalStyle<{
+  $headerBgColor: string;
+  $headerTextColor: string;
   $primaryBgColor: string;
   $secondaryBgColor: string;
-  $accentColor1: string;
-  $accentColor2: string;
+  $accentColor: string;
   $textColor: string;
+  $footerBgColor: string;
+  $footerTextColor: string;
+  $fontFamily: string;
 }>`
 
   * {
@@ -16,18 +20,30 @@ const GlobalStyle = createGlobalStyle<{
   }
   :root {
     --l: 50%;
+    --headerBgColor: ${(props) =>
+      props.$headerBgColor ? props.$headerBgColor : colors.white};
+    --headerTextColor: ${(props) =>
+      props.$headerTextColor ? props.$headerTextColor : colors.darkGrey};
     --primary: ${(props) =>
       props.$primaryBgColor ? props.$primaryBgColor : colors.primary};
     --secondary: ${(props) =>
-      props.$secondaryBgColor ? props.$secondaryBgColor : colors.secondary};
+      props.$secondaryBgColor ? props.$secondaryBgColor : colors.lightGrey};
     --accent: ${(props) =>
-      props.$accentColor1 ? props.$accentColor1 : colors.white};
+      props.$accentColor ? props.$accentColor : colors.secondary};
+    --accentNoDefault : ${(props) =>
+      props.$accentColor ? props.$accentColor : ""};
     --accentDark: ${(props) =>
-      props.$accentColor2 ? props.$accentColor2 : colors.arsenic};
+      props.$accentColor ? props.$accentColor : colors.arsenic};
+    --textColor: ${(props) =>
+      props.$textColor ? props.$textColor : colors.black};
     --primaryBgColor: ${(props) =>
       props.$primaryBgColor ? props.$primaryBgColor : colors.primaryBgColor};
     --secondaryBgColor: ${(props) =>
       props.$secondaryBgColor ? props.$secondaryBgColor : colors.secondary};
+    --footerBgColor: ${(props) =>
+      props.$footerBgColor ? props.$footerBgColor : colors.black};
+    --footerTextColor: ${(props) =>
+      props.$footerTextColor ? props.$footerTextColor : colors.white};
 
     font-size: 12px;
     ${breakpoint.xs} {
@@ -60,9 +76,9 @@ const GlobalStyle = createGlobalStyle<{
     padding: 0;
 
     background-color: var(--primaryBgColor);
-    color: ${colors.black};
+    color: var(--textColor);
 
-    font-family: "Plus Jakarta Sans";
+    font-family: ${(props) => props.$fontFamily || "Plus Jakarta Sans"};
     font-style: normal;
 
     overflow-y: auto;

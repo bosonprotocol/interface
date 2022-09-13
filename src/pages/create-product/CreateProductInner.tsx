@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { OfferFieldsFragment } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
-import { MetadataType } from "@bosonprotocol/react-kit";
+import { MetadataType, subgraph } from "@bosonprotocol/react-kit";
 import { parseUnits } from "@ethersproject/units";
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
@@ -42,6 +41,8 @@ import {
   poll
 } from "./utils";
 import { ValidateDates } from "./utils/dataValidator";
+
+type OfferFieldsFragment = subgraph.OfferFieldsFragment;
 
 function onKeyPress(event: React.KeyboardEvent<HTMLFormElement>) {
   if (event.key === "Enter") {

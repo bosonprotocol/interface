@@ -255,7 +255,7 @@ export default function Funds({ sellerId, buyerId }: Props) {
           >
             <CustomButton
               onClick={addNew}
-              theme="secondary"
+              theme="primary"
               size="small"
               disabled={!newTokenAddress.length}
             >
@@ -270,11 +270,7 @@ export default function Funds({ sellerId, buyerId }: Props) {
             <Cell $flexBasis={sellerFlexBasisCells[0]} />
             <Cell $flexBasis={sellerFlexBasisCells[1]} />
             <ButtonCell $flexBasis={sellerFlexBasisCells[2]}>
-              <CustomButton
-                onClick={withdrawAll}
-                theme="secondary"
-                size="small"
-              >
+              <CustomButton onClick={withdrawAll} theme="primary" size="small">
                 Withdraw All Funds
               </CustomButton>
             </ButtonCell>
@@ -285,11 +281,7 @@ export default function Funds({ sellerId, buyerId }: Props) {
             <Cell $flexBasis={buyerFlexBasisCells[0]} />
             <Cell $flexBasis={buyerFlexBasisCells[1]} />
             <ButtonCell $flexBasis={buyerFlexBasisCells[2]}>
-              <CustomButton
-                onClick={withdrawAll}
-                theme="secondary"
-                size="small"
-              >
+              <CustomButton onClick={withdrawAll} theme="primary" size="small">
                 Withdraw All Funds
               </CustomButton>
             </ButtonCell>

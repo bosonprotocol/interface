@@ -1,4 +1,4 @@
-import { subgraph } from "@bosonprotocol/core-sdk";
+import { subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { useMemo } from "react";
 import { generatePath } from "react-router-dom";
@@ -326,7 +326,7 @@ export default function ExchangeSidePreview({
       ) : isInRedeemed && iAmTheBuyer ? (
         <CTASection>
           <Button
-            theme="secondary"
+            theme="primary"
             onClick={() =>
               showModal(
                 "RAISE_DISPUTE",

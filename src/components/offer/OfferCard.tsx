@@ -69,7 +69,7 @@ const Price = styled(RootPrice)`
 `;
 
 const PriceText = styled(Typography)`
-  color: #556072;
+  color: var(--textColor);
   font-size: 0.875rem;
 `;
 

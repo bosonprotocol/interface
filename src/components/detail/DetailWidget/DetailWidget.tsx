@@ -1,5 +1,3 @@
-import { ExtendedExchangeState } from "@bosonprotocol/core-sdk/dist/cjs/exchanges";
-import { ExchangeState } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
 import {
   CommitButton,
   exchanges,
@@ -313,6 +311,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               decimals={offer.exchangeToken.decimals}
               tag="h3"
               convert
+              withBosonStyles
             />
             {isOffer && (
               <Grid
@@ -335,6 +334,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
             )}
             {isOffer && (
               <CommitButton
+                variant="primary"
                 disabled={
                   isChainUnsupported ||
                   !hasSellerEnoughFunds ||
@@ -377,7 +377,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
             )}
             {isToRedeem && (
               <RedeemButton
-                theme="secondary"
+                theme="bosonPrimary"
                 size="large"
                 disabled={
                   isChainUnsupported ||
@@ -472,10 +472,12 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               {isBeforeRedeem ? (
                 <>
                   {![
-                    ExtendedExchangeState.Expired,
-                    ExchangeState.Cancelled
+                    exchanges.ExtendedExchangeState.Expired,
+                    subgraph.ExchangeState.Cancelled
                   ].includes(
-                    exchangeStatus as ExtendedExchangeState | ExchangeState
+                    exchangeStatus as
+                      | exchanges.ExtendedExchangeState
+                      | subgraph.ExchangeState
                   ) && (
                     <StyledCancelButton
                       onClick={handleCancel}

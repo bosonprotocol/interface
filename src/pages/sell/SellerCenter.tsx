@@ -9,6 +9,7 @@ const SellerCenterWrapper = styled.div`
   gap: 0;
   min-height: calc(100vh - 30.25rem);
   margin: 0 -1rem;
+  font-family: "Plus Jakarta Sans";
 `;
 
 function SellerCenter() {

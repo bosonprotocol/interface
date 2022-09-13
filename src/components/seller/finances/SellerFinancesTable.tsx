@@ -1,4 +1,4 @@
-import { subgraph } from "@bosonprotocol/core-sdk";
+import { subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 import { BigNumber, ethers, utils } from "ethers";

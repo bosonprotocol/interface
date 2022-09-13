@@ -131,7 +131,7 @@ function EscalateModal({ exchange, hideModal }: Props) {
         {escalateSteps(activeStep)}
         <StyledGrid padding="0 0 2rem 2rem">
           <Button
-            theme="secondary"
+            theme="primary"
             onClick={async () => {
               if (activeStep + 1 < buttonSteps.length) {
                 setActiveStep(activeStep + 1);

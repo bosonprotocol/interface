@@ -141,7 +141,7 @@ export default function SellerDashboard({ sellerId }: Props) {
                 View finances
               </Button>
               <Button
-                theme="secondary"
+                theme="primary"
                 onClick={() => {
                   const pathname = generatePath(
                     SellerCenterRoutes.SellerCenter,

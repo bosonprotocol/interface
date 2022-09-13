@@ -89,7 +89,7 @@ export default function MakeAProposalStep({
       </Grid>
       <ButtonsSection>
         <Button
-          theme="secondary"
+          theme="primary"
           onClick={() => onNextClick()}
           disabled={!isValid}
         >
