@@ -4,7 +4,7 @@ import { CaretLeft, CaretRight } from "phosphor-react";
 import { useMemo, useRef, useState } from "react";
 import styled, { css } from "styled-components";
 
-import OfferCard from "../../components/offer/OfferCard";
+import ProductCard from "../../components/productCard/ProductCard";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { zIndex } from "../../lib/styles/zIndex";
 import { Offer } from "../../lib/types/offer";
@@ -144,6 +144,9 @@ const CarouselCell = styled.div<{
     !$isCurrent && !$isPrevious && !$isNext ? "0" : "1"};
   > div {
     transition: transform ${ANIMATION_TIME_MS}ms;
+    &:hover {
+      box-shadow: none;
+    }
   }
 
   ${nthChilds}
@@ -155,6 +158,9 @@ const CarouselCell = styled.div<{
   }
   `
       : ""};
+  [data-testid="offer"] {
+    box-shadow: none;
+  }
 `;
 
 const navButtons = css`
@@ -253,13 +259,11 @@ export default function Carousel() {
               $isNext={nextCell}
               {...(currentCell && { "data-current": true })}
             >
-              <OfferCard
+              <ProductCard
                 key={offer.id}
                 offer={offer}
-                showSeller
                 dataTestId="offer"
-                isPrivateProfile={false}
-                isCarousel
+                isHoverDisabled={true}
               />
             </CarouselCell>
           );

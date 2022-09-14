@@ -108,6 +108,13 @@ const FeaturedOffers: React.FC<IFeaturedOffers> = ({
         action="commit"
         showInvalidOffers={false}
         type={type}
+        itemsPerRow={{
+          xs: 1,
+          s: 2,
+          m: 3,
+          l: 4,
+          xl: 4
+        }}
       />
     </Root>
   );

@@ -1,12 +1,14 @@
-import OfferCard, { Action } from "../../../components/offer/OfferCard";
+import Exchange from "../../../components/exchange/Exchange";
+import { Spinner } from "../../../components/loading/Spinner";
 import GridContainer from "../../../components/ui/GridContainer";
-import { Offer } from "../../../lib/types/offer";
-import { useExchanges } from "../../../lib/utils/hooks/useExchanges";
+import {
+  Exchange as IExchange,
+  useExchanges
+} from "../../../lib/utils/hooks/useExchanges";
+import { LoadingWrapper } from "../ProfilePage.styles";
 
 interface Props {
   sellerId: string;
-  action: Action;
-  isPrivateProfile: boolean;
 }
 
 const orderProps = {
@@ -14,22 +16,23 @@ const orderProps = {
   orderDirection: "desc"
 } as const;
 
-export default function Exchanges({
-  sellerId,
-  action,
-  isPrivateProfile
-}: Props) {
+export default function Exchanges({ sellerId }: Props) {
   const {
     data: exchangesSeller,
     isLoading,
-    isError
+    isError,
+    refetch
   } = useExchanges(
     { ...orderProps, disputed: null, sellerId },
     { enabled: !!sellerId }
   );
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <LoadingWrapper>
+        <Spinner size={42} />
+      </LoadingWrapper>
+    );
   }
 
   if (isError) {
@@ -55,14 +58,11 @@ export default function Exchanges({
       }}
     >
       {exchangesSeller?.map((exchange) => (
-        <OfferCard
+        <Exchange
           key={exchange.id}
-          offer={exchange.offer}
-          exchange={exchange as NonNullable<Offer["exchanges"]>[number]}
-          action={action}
-          dataTestId="exchange"
-          showSeller={false}
-          isPrivateProfile={isPrivateProfile}
+          {...exchange}
+          exchange={exchange as IExchange}
+          reload={refetch}
         />
       ))}
     </GridContainer>

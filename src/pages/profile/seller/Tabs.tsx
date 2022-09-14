@@ -90,25 +90,12 @@ export default function Tabs({
       {
         id: "exchanges",
         title: "Exchanges",
-        content: (
-          <Exchanges
-            sellerId={sellerId}
-            action="redeem"
-            isPrivateProfile={isPrivateProfile}
-          />
-        )
+        content: <Exchanges sellerId={sellerId} />
       },
       {
         id: "redemptions",
         title: "Redemptions",
-        content: (
-          <Redemptions
-            sellerId={sellerId}
-            // TODO WHAT ACTIONS USER CAN DO
-            action={null}
-            isPrivateProfile={isPrivateProfile}
-          />
-        )
+        content: <Redemptions sellerId={sellerId} />
       }
     ];
     return tabsData;
