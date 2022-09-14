@@ -7,6 +7,7 @@ import { CameraSlash } from "phosphor-react";
 import { useMemo } from "react";
 import { generatePath, useLocation } from "react-router-dom";
 
+import mockedAvatar from "../../assets/frame.png";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes, OffersRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
@@ -73,7 +74,7 @@ export default function ProductCard({
       title={offer.metadata.name}
       avatarName={`Seller ID: ${offer.seller.id}`}
       // TODO: ADD AVATAR IMAGE FOR NOW HARDCODED
-      avatar="https://images.unsplash.com/photo-1613771404721-1f92d799e49f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cG9rZW1vbnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60"
+      avatar={mockedAvatar}
       price={Number(price)}
       currency={offer.exchangeToken.symbol as Currencies}
       onAvatarNameClick={handleOnAvatarClick}
