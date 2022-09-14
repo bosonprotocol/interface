@@ -21,7 +21,9 @@ import CustomStore from "./pages/custom-store/CustomStore";
 import DisputeCentre from "./pages/dispute-centre/DisputeCentre";
 import DisputeList from "./pages/dispute-centre/DisputeList";
 import Exchange from "./pages/exchange/Exchange";
+import Collections from "./pages/explore/Collections";
 import Explore from "./pages/explore/Explore";
+import Products from "./pages/explore/Products";
 import Landing from "./pages/landing/Landing";
 import NotFound from "./pages/not-found/NotFound";
 import OfferDetail from "./pages/offers/OfferDetail";
@@ -77,12 +79,7 @@ root.render(
                 </Route>
                 <Route path="/" element={<App />}>
                   <Route path={BosonRoutes.Root} element={<Landing />} />
-                  {[
-                    OffersRoutes.Root,
-                    BosonRoutes.Explore,
-                    BosonRoutes.ExplorePage,
-                    BosonRoutes.ExplorePageByIndex
-                  ].map((route) => (
+                  {[OffersRoutes.Root, BosonRoutes.Explore].map((route) => (
                     <Route key={route} path={route} element={<Explore />} />
                   ))}
                   <Route
@@ -113,6 +110,16 @@ root.render(
                   <Route
                     path={BosonRoutes.DisputeCenter}
                     element={<DisputeList />}
+                  />
+                  <Route path={BosonRoutes.Sellers} element={<Collections />} />
+                  <Route path={BosonRoutes.Products} element={<Products />} />
+                  <Route
+                    path={BosonRoutes.ExplorePageByIndex}
+                    element={<Products />}
+                  />
+                  <Route
+                    path={BosonRoutes.ExplorePage}
+                    element={<Products />}
                   />
                   <Route
                     path={BosonRoutes.BuyerPage}

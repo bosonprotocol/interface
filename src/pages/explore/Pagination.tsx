@@ -24,7 +24,7 @@ const PaginationButton = styled(Button).attrs({
 
 const Page = styled.p`
   font-weight: 600;
-  color: var(--secondary);
+  color: ${colors.black}
   border: 1px solid var(--secondary);
   border-radius: 50%;
   min-width: 3rem;

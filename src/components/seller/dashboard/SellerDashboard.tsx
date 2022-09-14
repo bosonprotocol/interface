@@ -1,27 +1,27 @@
 import { exchanges as ExchangesKit, subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { generatePath } from "react-router-dom";
 
 import { UrlParameters } from "../../../lib/routing/parameters";
 import { SellerCenterRoutes } from "../../../lib/routing/routes";
 import { colors } from "../../../lib/styles/colors";
+import { Offer } from "../../../lib/types/offer";
+import { IPricePassedAsAProp } from "../../../lib/utils/convertPrice";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
-import { useOffers } from "../../../lib/utils/hooks/offers/useOffers";
-import { Exchange, useExchanges } from "../../../lib/utils/hooks/useExchanges";
+import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { useConvertedPriceFunction } from "../../price/useConvertedPriceFunction";
 import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
 import GridContainer from "../../ui/GridContainer";
 import Loading from "../../ui/Loading";
 import Typography from "../../ui/Typography";
+import { WithSellerDataProps } from "../common/WithSellerData";
+import { SellerInsideProps } from "../SellerInside";
 import { SellerInner } from "./SellerDashboard.styles";
 import SellerDashboardInfo from "./SellerDashboardInfo";
 import SellerDashboardItems from "./SellerDashboardItems";
-
-interface Props {
-  sellerId: string;
-}
 
 const calcPercentageInLastWeek = (items: Exchange[], type: keyof Exchange) => {
   const t = items.length;
@@ -41,6 +41,42 @@ const calcPercentageInLastWeek = (items: Exchange[], type: keyof Exchange) => {
       })
       .filter((n) => n !== null) || [];
   return v.length ? Math.round((100 * v.length) / t) : 0;
+};
+const calcRevenue = (
+  items: Exchange[] | undefined,
+  convertPrice: (offer: Offer) => IPricePassedAsAProp | null
+) => {
+  const calc =
+    (items &&
+      items
+        ?.map((item: Exchange) => {
+          const wasItRedeemed = item?.redeemedDate !== null;
+          const wasItDisputed = item?.disputed;
+          const disputeUntil = dayjs(
+            getDateTimestamp(item?.redeemedDate as string) +
+              getDateTimestamp(item?.offer?.fulfillmentPeriodDuration)
+          );
+          const stillCanDispute = disputeUntil.isAfter(dayjs());
+          if (wasItRedeemed && !wasItDisputed && !stillCanDispute) {
+            const price = convertPrice(item.offer);
+            return price;
+          }
+          return null;
+        })
+        .filter((n) => n !== null)) ||
+    [];
+
+  if (calc.length === 0) {
+    return 0;
+  }
+
+  const price = calc.reduce(
+    (acc, e) => (e && e !== null ? (acc += Number(e.converted)) : acc),
+    0
+  );
+  const currency = calc[0]?.currency?.symbol || "$";
+
+  return `${currency} ${price}`;
 };
 const filterItems = (exchanges: Exchange[] | undefined, type: string) => {
   if (!exchanges) {
@@ -62,19 +98,16 @@ const filterItems = (exchanges: Exchange[] | undefined, type: string) => {
     }) || []
   );
 };
-export default function SellerDashboard({ sellerId }: Props) {
+export default function SellerDashboard({
+  offers: offersData,
+  exchanges: exchangesData,
+  offersBacked
+}: SellerInsideProps & WithSellerDataProps) {
   const navigate = useKeepQueryParamsNavigate();
-  // TODO: change displayPopup in future
-  const [displayPopup] = useState<boolean>(false);
-  const { data: offers, isLoading: isLoadingOffers } = useOffers({
-    sellerId,
-    first: 1000
-  });
+  const convertPrice = useConvertedPriceFunction();
 
-  const { data: exchanges, isLoading: isLoadingExchanges } = useExchanges({
-    sellerId,
-    disputed: null
-  });
+  const { data: offers, isLoading: isLoadingOffers } = offersData;
+  const { data: exchanges, isLoading: isLoadingExchanges } = exchangesData;
 
   const commits = useMemo(() => filterItems(exchanges, "Commits"), [exchanges]);
   const redemptions = useMemo(
@@ -97,10 +130,10 @@ export default function SellerDashboard({ sellerId }: Props) {
         percent: calcPercentageInLastWeek(redemptions, "redeemedDate")
       },
       revenue: {
-        value: 0
+        value: calcRevenue(exchanges, convertPrice)
       }
     }),
-    [offers, commits, redemptions]
+    [offers, commits, redemptions, exchanges, convertPrice]
   );
 
   if (isLoadingOffers || isLoadingExchanges) {
@@ -109,7 +142,7 @@ export default function SellerDashboard({ sellerId }: Props) {
 
   return (
     <Grid gap="2rem" flexDirection="column" alignItems="stretch">
-      {displayPopup && (
+      {offersBacked?.displayWarning && (
         <SellerInner
           padding="1.5rem"
           background={colors.black}
@@ -127,21 +160,7 @@ export default function SellerDashboard({ sellerId }: Props) {
             </div>
             <Grid justifyContent="flex-end" alignItems="center">
               <Button
-                theme="blankWhite"
-                onClick={() => {
-                  const pathname = generatePath(
-                    SellerCenterRoutes.SellerCenter,
-                    {
-                      [UrlParameters.sellerPage]: "finances"
-                    }
-                  );
-                  navigate({ pathname });
-                }}
-              >
-                View finances
-              </Button>
-              <Button
-                theme="primary"
+                theme="bosonPrimary"
                 onClick={() => {
                   const pathname = generatePath(
                     SellerCenterRoutes.SellerCenter,

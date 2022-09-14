@@ -10,23 +10,22 @@ import React from "react";
 
 import { BosonRoutes } from "../../lib/routing/routes";
 import Navigate from "../customNavigation/Navigate";
+import { WithSellerDataProps } from "./common/WithSellerData";
 import SellerDashboard from "./dashboard/SellerDashboard";
 import SellerExchanges from "./exchanges/SellerExchanges";
 import SellerFinances from "./finances/SellerFinances";
 import SellerProducts from "./products/SellerProducts";
+import { SellerInsideProps } from "./SellerInside";
 
 export const DEFAULT_SELLER_PAGE = "dashboard";
-interface SellerProps {
-  sellerId: string;
-}
 
 export const sellerPageTypes = {
   dashboard: {
     url: "dashboard",
     label: "Dashboard",
     icon: GridFour,
-    component: ({ sellerId }: SellerProps) => (
-      <SellerDashboard sellerId={sellerId} />
+    component: (props: SellerInsideProps & WithSellerDataProps) => (
+      <SellerDashboard {...props} />
     ),
     withoutWrapper: true
   },
@@ -34,16 +33,16 @@ export const sellerPageTypes = {
     url: "products",
     label: "Products",
     icon: Storefront,
-    component: ({ sellerId }: SellerProps) => (
-      <SellerProducts sellerId={sellerId} />
+    component: (props: SellerInsideProps & WithSellerDataProps) => (
+      <SellerProducts {...props} />
     )
   },
   exchanges: {
     url: "exchanges",
     label: "Exchanges",
     icon: ArrowsLeftRight,
-    component: ({ sellerId }: SellerProps) => (
-      <SellerExchanges sellerId={sellerId} />
+    component: (props: SellerInsideProps & WithSellerDataProps) => (
+      <SellerExchanges {...props} />
     )
   },
   messages: {
@@ -56,7 +55,9 @@ export const sellerPageTypes = {
     url: "finances",
     label: "Finances",
     icon: Bank,
-    component: () => <SellerFinances />
+    component: (props: SellerInsideProps & WithSellerDataProps) => (
+      <SellerFinances {...props} />
+    )
   },
   salesChannels: {
     url: "salesChannels",

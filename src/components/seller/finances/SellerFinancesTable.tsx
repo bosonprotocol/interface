@@ -408,7 +408,7 @@ export default function SellerFinancesTable() {
                 Withdraw
               </WithdrawButton>
               <Button
-                theme="primary"
+                theme="bosonSecondary"
                 size="small"
                 onClick={() => {
                   showModal(

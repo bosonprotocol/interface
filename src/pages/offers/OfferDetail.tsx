@@ -123,20 +123,14 @@ export default function OfferDetail() {
         <DetailGrid>
           <div>
             <Typography tag="h3">Product data</Typography>
-            <Typography
-              tag="p"
-              style={{ color: colors.darkGrey }}
-              data-testid="description"
-            >
+            <Typography tag="p" data-testid="description">
               {description}
             </Typography>
-            <DetailTable data={productData} tag="strong" />
+            <DetailTable data={productData} tag="strong" inheritColor />
           </div>
           <div>
             <Typography tag="h3">About the artist</Typography>
-            <Typography tag="p" style={{ color: colors.darkGrey }}>
-              {artistDescription}
-            </Typography>
+            <Typography tag="p">{artistDescription}</Typography>
           </div>
         </DetailGrid>
         {images.length > 0 && <DetailSlider images={images} />}

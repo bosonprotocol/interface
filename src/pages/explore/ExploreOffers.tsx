@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
-import { generatePath, useParams } from "react-router-dom";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
 import OfferList from "../../components/offers/OfferList";
@@ -7,7 +7,6 @@ import {
   ExploreQueryParameters,
   UrlParameters
 } from "../../lib/routing/parameters";
-import { BosonRoutes } from "../../lib/routing/routes";
 import { Offer } from "../../lib/types/offer";
 import { useOffers } from "../../lib/utils/hooks/offers";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
@@ -15,7 +14,7 @@ import { usePrevious } from "../../lib/utils/hooks/usePrevious";
 import Pagination from "./Pagination";
 
 const Container = styled.div`
-  margin-top: 10px;
+  display: block;
 `;
 
 const PaginationWrapper = styled.div``;
@@ -25,33 +24,39 @@ interface Props {
   brand?: string;
   exchangeTokenAddress?: Offer["exchangeToken"]["address"];
   sellerId?: Offer["seller"]["id"];
+  hidePagination?: boolean;
+  rows?: number;
+  breadcrumbs?: boolean;
+  orderDirection?: "asc" | "desc";
+  orderBy?: string;
 }
 
 const updatePageIndexInUrl =
-  (navigate: ReturnType<typeof useKeepQueryParamsNavigate>) =>
+  (
+    navigate: ReturnType<typeof useKeepQueryParamsNavigate> // eslint-disable-line
+  ) =>
   (
     index: number,
     queryParams: { [x in keyof typeof ExploreQueryParameters]: string }
   ): void => {
-    const queryParamsUrl = new URLSearchParams(
+    const queryParamsUrl = new URLSearchParams( // eslint-disable-line
       Object.entries(queryParams).filter(([, value]) => value !== "")
     ).toString();
-    if (index === 0) {
-      navigate({
-        pathname: BosonRoutes.Explore,
-        search: queryParamsUrl
-      });
-    } else {
-      navigate({
-        pathname: generatePath(BosonRoutes.ExplorePageByIndex, {
-          [UrlParameters.page]: index + 1 + ""
-        }),
-        search: queryParamsUrl
-      });
-    }
+    // if (index === 0) {
+    //   navigate({
+    //     pathname: BosonRoutes.Products,
+    //     search: queryParamsUrl
+    //   });
+    // } else {
+    //   navigate({
+    //     pathname: generatePath(BosonRoutes.ExplorePageByIndex, {
+    //       [UrlParameters.page]: index + 1 + ""
+    //     }),
+    //     search: queryParamsUrl
+    //   });
+    // }
   };
 
-const OFFERS_PER_PAGE = 10;
 const DEFAULT_PAGE = 0;
 
 const extractFiltersWithDefaults = (props: Props): Props => {
@@ -59,13 +64,21 @@ const extractFiltersWithDefaults = (props: Props): Props => {
     brand: props.brand || "",
     name: props.name || "",
     exchangeTokenAddress: props.exchangeTokenAddress || "",
-    sellerId: props.sellerId || ""
+    sellerId: props.sellerId || "",
+    orderDirection: props.orderDirection || undefined,
+    orderBy: props.orderBy || undefined
   };
 };
 
 export default function ExploreOffers(props: Props) {
-  const { brand, name, exchangeTokenAddress, sellerId } =
-    extractFiltersWithDefaults(props);
+  const {
+    brand,
+    name,
+    exchangeTokenAddress,
+    sellerId,
+    orderDirection,
+    orderBy
+  } = extractFiltersWithDefaults(props);
   const params = useParams();
   const navigate = useKeepQueryParamsNavigate();
   const updateUrl = useCallback(
@@ -73,9 +86,11 @@ export default function ExploreOffers(props: Props) {
       updatePageIndexInUrl(navigate)(index, {
         name: name ?? "",
         currency: exchangeTokenAddress ?? "",
-        seller: sellerId ?? ""
+        seller: sellerId ?? "",
+        orderDirection: orderDirection ?? "",
+        orderBy: orderBy ?? ""
       }),
-    [navigate, name, exchangeTokenAddress, sellerId]
+    [navigate, name, exchangeTokenAddress, sellerId, orderDirection, orderBy]
   );
   const initialPageIndex = Math.max(
     0,
@@ -84,6 +99,13 @@ export default function ExploreOffers(props: Props) {
       : DEFAULT_PAGE
   );
   const [pageIndex, setPageIndex] = useState(initialPageIndex);
+
+  const OFFERS_PER_PAGE = useMemo(() => {
+    if (props.rows) {
+      return 4 * props.rows;
+    }
+    return 4;
+  }, [props.rows]);
 
   const useOffersPayload = {
     brand,
@@ -97,8 +119,10 @@ export default function ExploreOffers(props: Props) {
     // first: OFFERS_PER_PAGE + 1,
     first: OFFERS_PER_PAGE * 2,
     skip: OFFERS_PER_PAGE * pageIndex,
-    orderBy: "createdAt",
-    orderDirection: "desc" as const
+    orderBy: props.orderBy || "createdAt",
+    orderDirection: props.orderDirection
+      ? props.orderDirection
+      : ("asc" as const)
   };
   const {
     data: currentAndNextPageOffers,
@@ -165,7 +189,6 @@ export default function ExploreOffers(props: Props) {
 
   return (
     <Container>
-      <h1>Explore</h1>
       <OfferList
         offers={offers}
         isError={isError}
@@ -179,20 +202,23 @@ export default function ExploreOffers(props: Props) {
           l: 4,
           xl: 4
         }}
+        breadcrumbs={props.breadcrumbs}
       />
-      <PaginationWrapper>
-        <Pagination
-          defaultPage={pageIndex}
-          isNextEnabled={
-            (currentAndNextPageOffers?.length || 0) >= OFFERS_PER_PAGE + 1
-          }
-          isPreviousEnabled={(firstPageOffers?.length || 0) > 0}
-          onChangeIndex={(index) => {
-            setPageIndex(index);
-            updateUrl(index);
-          }}
-        />
-      </PaginationWrapper>
+      {!props.hidePagination && (
+        <PaginationWrapper>
+          <Pagination
+            defaultPage={pageIndex}
+            isNextEnabled={
+              (currentAndNextPageOffers?.length || 0) >= OFFERS_PER_PAGE + 1
+            }
+            isPreviousEnabled={(firstPageOffers?.length || 0) > 0}
+            onChangeIndex={(index) => {
+              setPageIndex(index);
+              updateUrl(index);
+            }}
+          />
+        </PaginationWrapper>
+      )}
     </Container>
   );
 }

@@ -22,8 +22,10 @@ import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { CheckboxWrapper } from "../../form/Field.styles";
 import { useModal } from "../../modal/useModal";
+import OfferHistory from "../../offer/OfferHistory";
 import OfferStatuses from "../../offer/OfferStatuses";
 import Price from "../../price/index";
+import Tooltip from "../../tooltip/Tooltip";
 import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
 import Image from "../../ui/Image";
@@ -254,19 +256,21 @@ export default function SellerProductsTable({
             </Typography>
           ),
           status: offer && (
-            <OfferStatuses
-              offer={offer}
-              size="small"
-              displayDot
-              showValid
-              style={{
-                display: "inline-block",
-                position: "relative",
-                top: "unset",
-                left: "unset",
-                right: "unset"
-              }}
-            />
+            <Tooltip interactive content={<OfferHistory offer={offer} />}>
+              <OfferStatuses
+                offer={offer}
+                size="small"
+                displayDot
+                showValid
+                style={{
+                  display: "inline-block",
+                  position: "relative",
+                  top: "unset",
+                  left: "unset",
+                  right: "unset"
+                }}
+              />
+            </Tooltip>
           ),
           quantity: (
             <Typography>
@@ -295,7 +299,7 @@ export default function SellerProductsTable({
             status === OffersKit.OfferState.VOIDED
           ) && (
             <Button
-              theme="primary"
+              theme="bosonSecondary"
               size="small"
               onClick={() => {
                 if (offer) {
@@ -454,7 +458,8 @@ export default function SellerProductsTable({
                         onClick={() => {
                           if (
                             cell.column.id !== "action" &&
-                            cell.column.id !== "selection"
+                            cell.column.id !== "selection" &&
+                            cell.column.id !== "status"
                           ) {
                             const pathname = generatePath(
                               OffersRoutes.OfferDetail,
