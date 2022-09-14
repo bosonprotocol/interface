@@ -6,12 +6,14 @@ import {
   subgraph
 } from "@bosonprotocol/react-kit";
 import { BigNumber, utils } from "ethers";
+import { CameraSlash } from "phosphor-react";
 import { useMemo } from "react";
 import { generatePath } from "react-router-dom";
 import { useAccount } from "wagmi";
 
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
+import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { Exchange as IExchange } from "../../lib/utils/hooks/useExchanges";
 import { useGetIpfsImage } from "../../lib/utils/hooks/useGetIpfsImage";
@@ -59,6 +61,14 @@ export default function Exchange({ offer, exchange, reload }: Props) {
     navigate({
       pathname: generatePath(BosonRoutes.Exchange, {
         [UrlParameters.exchangeId]: exchange.id
+      })
+    });
+  };
+
+  const handleOnAvatarClick = () => {
+    navigate({
+      pathname: generatePath(BosonRoutes.SellerPage, {
+        [UrlParameters.sellerId]: offer.seller.id
       })
     });
   };
@@ -165,14 +175,16 @@ export default function Exchange({ offer, exchange, reload }: Props) {
       id={offer.id}
       title={offer.metadata.name}
       avatarName={`Seller ID: ${offer.seller.id}`}
-      // TODO: ADD AVATAR IMAGE
+      // TODO: ADD AVATAR IMAGE FOR NOW HARDCODED
       avatar="https://images.unsplash.com/photo-1613771404721-1f92d799e49f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cG9rZW1vbnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60"
       imageProps={{
         src: imageSrc,
         preloadConfig: {
-          status: imageStatus
+          status: imageStatus,
+          errorIcon: <CameraSlash size={32} color={colors.white} />
         }
       }}
+      onAvatarNameClick={handleOnAvatarClick}
       price={Number(price)}
       currency={offer.exchangeToken.symbol as Currencies}
       {...createSpecificCardConfig()}

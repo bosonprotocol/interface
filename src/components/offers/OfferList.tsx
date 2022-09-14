@@ -1,7 +1,8 @@
 import { ReactElement } from "react";
 
 import { Offer } from "../../lib/types/offer";
-import OfferCard, { Action } from "../offer/OfferCard";
+import { Action } from "../offer/OfferCard";
+import ProductCard from "../productCard/ProductCard";
 import Grid from "../ui/Grid";
 import GridContainer, { ItemsPerRow } from "../ui/GridContainer";
 import Typography from "../ui/Typography";
@@ -24,11 +25,7 @@ export default function OfferList({
   isLoading,
   isError,
   loadingComponent,
-  showSeller,
-  action,
   showInvalidOffers,
-  isPrivateProfile,
-  type,
   itemsPerRow
 }: Props) {
   if (isLoading) {
@@ -58,15 +55,7 @@ export default function OfferList({
       {offers.map((offer: Offer) => {
         return (
           (offer.isValid || (showInvalidOffers && !offer.isValid)) && (
-            <OfferCard
-              key={offer.id}
-              offer={offer}
-              showSeller={showSeller}
-              action={action}
-              dataTestId="offer"
-              isPrivateProfile={isPrivateProfile}
-              type={type}
-            />
+            <ProductCard key={offer.id} offer={offer} dataTestId="offer" />
           )
         );
       })}
