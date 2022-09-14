@@ -230,7 +230,7 @@ export default function Explore() {
     <ExploreContainer>
       <TopContainer>
         <Typography tag="h2" $fontSize="2.25rem">
-          Explore products
+          Explore
         </Typography>
         <SelectFilterWrapper>
           <Typography fontWeight="600" color={colors.darkGrey}>

@@ -107,15 +107,15 @@ export default function OfferList({
             steps={[
               {
                 id: 0,
-                label: "Explore products",
+                label: "Explore",
                 url: `${BosonRoutes.Explore}`,
-                hightlighted: false
+                hightlighted: true
               },
               {
                 id: 1,
                 label: "All products",
                 url: `${BosonRoutes.Products}`,
-                hightlighted: true
+                hightlighted: false
               }
             ]}
             margin="2.5rem 0 -1rem 0"
