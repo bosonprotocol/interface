@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { getDefaultTokens } from "../../lib/config";
 import { saveItemInStorage } from "../../lib/utils/hooks/useLocalStorage";
@@ -9,18 +9,31 @@ import ConvertionRateContext, {
   initalState,
   Store
 } from "./ConvertionRateContext";
+import { Token } from "./ConvertionRateContext";
 import { handleRates } from "./utils";
 
 interface Props {
   children: React.ReactNode;
 }
-const REFETCH_INTERVAL = 1000 * 60 * 3;
 export default function ConvertionRateProvider({ children }: Props) {
   const defaultTokens = getDefaultTokens();
   const [store, setStore] = useState(initalState.store);
   const { data: tokens, isLoading: isTokensLoading } = useTokens();
-  const { data, isLoading, refetch } = useUniswapPools({
-    tokens: !isTokensLoading && (defaultTokens || tokens || [])
+  const appTokens = useMemo(
+    () =>
+      (tokens?.concat(defaultTokens) || []).reduce((acc, o) => {
+        if (!acc.some((obj: Token) => obj?.symbol === o?.symbol)) {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          acc.push(o);
+        }
+        return acc;
+      }, []) as Token[],
+    [tokens, defaultTokens]
+  );
+
+  const { data } = useUniswapPools({
+    tokens: !isTokensLoading && appTokens?.length > 0 ? appTokens : []
   });
 
   const updateProps = useCallback((store: Store) => {
@@ -30,28 +43,21 @@ export default function ConvertionRateProvider({ children }: Props) {
   }, []);
 
   useEffect(() => {
-    if (!isTokensLoading) {
-      const appTokens = defaultTokens || tokens || [];
-      updateProps({ ...store, tokens: appTokens });
+    if (!isTokensLoading && store?.tokens === null) {
+      updateProps({
+        ...store,
+        tokens: appTokens
+      });
     }
-  }, [isTokensLoading]); //eslint-disable-line
+  }, [isTokensLoading, store?.tokens]); //eslint-disable-line
 
   useEffect(() => {
-    if (data) {
+    if (data && store?.isLoading === true) {
       const rates = handleRates(data);
       saveItemInStorage("convertionRates", rates);
-      updateProps({ ...store, rates, isLoading });
-    } else {
-      updateProps({ ...store, isLoading });
+      updateProps({ ...store, rates, isLoading: false });
     }
-  }, [data, isLoading]); //eslint-disable-line
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      refetch();
-    }, REFETCH_INTERVAL);
-    return () => clearInterval(interval);
-  }, [refetch]);
+  }, [data]); //eslint-disable-line
 
   const value: ConvertionRateContextType = {
     store,

@@ -13,7 +13,9 @@ export function useTokens() {
         {
           exchangeTokens(orderBy: "symbol", orderDirection: asc) {
             address
+            name
             symbol
+            decimals
           }
         }
       `
