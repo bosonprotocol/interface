@@ -188,15 +188,15 @@ function Collections() {
             steps={[
               {
                 id: 0,
-                label: "Explore products",
+                label: "Explore",
                 url: `${BosonRoutes.Explore}`,
-                hightlighted: false
+                hightlighted: true
               },
               {
                 id: 1,
-                label: "All collections",
-                url: `${BosonRoutes.Products}`,
-                hightlighted: true
+                label: "All sellers",
+                url: `${BosonRoutes.Sellers}`,
+                hightlighted: false
               }
             ]}
             margin="-0.625rem 0 2rem 0"

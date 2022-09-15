@@ -46,6 +46,7 @@ interface Props {
   sellerAddress: string;
   // modal props
   hideModal: NonNullable<ModalProps["hideModal"]>;
+  reload?: () => void;
 }
 
 export default function RedeemModal({
@@ -53,7 +54,8 @@ export default function RedeemModal({
   exchangeId,
   buyerId,
   sellerId,
-  sellerAddress
+  sellerAddress,
+  reload
 }: Props) {
   const [activeStep, setActiveStep] = useState<number>(0);
   const validationSchema = validationSchemaPerStep[activeStep];
@@ -119,6 +121,7 @@ export default function RedeemModal({
                   sellerAddress={sellerAddress}
                   onBackClick={() => setActiveStep(1)}
                   onNextClick={() => setActiveStep(3)}
+                  reload={reload}
                 />
               ) : (
                 <Summary onNextClick={() => hideModal()} />

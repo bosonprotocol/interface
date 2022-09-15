@@ -33,6 +33,7 @@ interface Props {
   sellerAddress: string;
   onNextClick: () => void;
   onBackClick: () => void;
+  reload?: () => void;
 }
 
 export default function Confirmation({
@@ -41,7 +42,8 @@ export default function Confirmation({
   exchangeId,
   buyerId,
   sellerId,
-  sellerAddress
+  sellerAddress,
+  reload
 }: Props) {
   const { bosonXmtp } = useChatContext();
   const [chatError, setChatError] = useState<Error | null>(null);
@@ -164,6 +166,7 @@ ${FormModel.formFields.email.placeholder}: ${emailField.value}`;
           onSuccess={() => {
             setIsLoading(false);
             onNextClick();
+            reload?.();
           }}
           web3Provider={signer?.provider as Provider}
         >
