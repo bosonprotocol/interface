@@ -12,6 +12,7 @@ import { useCallback, useMemo, useState } from "react";
 import { generatePath } from "react-router-dom";
 import { useAccount } from "wagmi";
 
+import { Token } from "../../components/convertion-rate/ConvertionRateContext";
 import { useModal } from "../../components/modal/useModal";
 import Help from "../../components/product/Help";
 import Preview from "../../components/product/Preview";
@@ -341,7 +342,9 @@ function CreateProductInner({ initial }: Props) {
 
       const resolutionPeriodDurationInMS =
         parseInt(termsOfExchange.disputePeriod) * 24 * 3600 * 1000; // day to msec
-
+      const exchangeToken = CONFIG.defaultTokens.find(
+        (token: Token) => token["symbol"] === coreTermsOfSale.currency.value
+      );
       const offerData = {
         price: priceBN.toString(),
         sellerDeposit: sellerCancellationPenaltyValue.toString(),
@@ -355,7 +358,7 @@ function CreateProductInner({ initial }: Props) {
         validUntilDateInMS: validUntilDateInMS.toString(),
         fulfillmentPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
         resolutionPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
-        exchangeToken: "0x0000000000000000000000000000000000000000",
+        exchangeToken: exchangeToken.address,
         disputeResolverId: CONFIG.envName === "testing" ? 4 : 2,
         agentId: 0, // no agent
         metadataUri: `ipfs://${metadataHash}`,
