@@ -19,34 +19,36 @@ jobs:
     uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
     if: github.event_name == 'pull_request'
     with:
-      REACT_APP_CHAIN_ID: '1234'
+      REACT_APP_CHAIN_ID: "1234"
       DEPLOY_TO_FLEEK: false
-      ENV_NAME: 'testing'
+      ENV_NAME: "testing"
       UPDATE_COVERAGE: false
       REACT_APP_ENABLE_CURATION_LISTS: false
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      REACT_APP_DEFAULT_TOKENS_LIST_TESTING: ${{ secrets.REACT_APP_DEFAULT_TOKENS_LIST_TESTING }}
   call-reusable-workflow-testing:
     uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
     if: github.event_name == 'push'
     with:
-      REACT_APP_CHAIN_ID: '1234'
+      REACT_APP_CHAIN_ID: "1234"
       DEPLOY_TO_FLEEK: true
-      ENV_NAME: 'testing'
+      ENV_NAME: "testing"
       UPDATE_COVERAGE: true
       REACT_APP_ENABLE_CURATION_LISTS: false
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      REACT_APP_DEFAULT_TOKENS_LIST_TESTING: ${{ secrets.REACT_APP_DEFAULT_TOKENS_LIST_TESTING }}
   call-reusable-workflow-staging:
     uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
     if: github.event_name == 'release' && github.event.action == 'created'
     with:
-      REACT_APP_CHAIN_ID: '80001'
+      REACT_APP_CHAIN_ID: "80001"
       DEPLOY_TO_FLEEK: true
-      ENV_NAME: 'staging'
+      ENV_NAME: "staging"
       UPDATE_COVERAGE: false
       REACT_APP_ENABLE_CURATION_LISTS: false
     secrets:
@@ -55,12 +57,18 @@ jobs:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       REACT_APP_INFURA_IPFS_PROJECT_ID: ${{ secrets.REACT_APP_INFURA_IPFS_PROJECT_ID }}
       REACT_APP_INFURA_IPFS_PROJECT_SECRET: ${{ secrets.REACT_APP_INFURA_IPFS_PROJECT_SECRET }}
+      REACT_APP_DEFAULT_TOKENS_LIST_TESTING: ${{ secrets.REACT_APP_DEFAULT_TOKENS_LIST_TESTING }}
 
   job-sumary:
     name: Create Job Summary
     runs-on: ubuntu-latest
     if: ${{ always() && contains(join(needs.*.result, ','), 'success') }}
-    needs: [call-reusable-workflow-PR, call-reusable-workflow-testing, call-reusable-workflow-staging]
+    needs:
+      [
+        call-reusable-workflow-PR,
+        call-reusable-workflow-testing,
+        call-reusable-workflow-staging
+      ]
     steps:
       - uses: actions/checkout@v3
       - name: Install JQ

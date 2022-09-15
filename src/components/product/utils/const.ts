@@ -1,5 +1,6 @@
 import { CONFIG } from "../../../lib/config";
 import countries from "../../../lib/const/countries.json";
+import { Token } from "../../convertion-rate/ConvertionRateContext";
 
 export const MAX_LOGO_SIZE = 600 * 1024;
 export const MAX_IMAGE_SIZE = 600 * 1024;
@@ -70,12 +71,19 @@ export const CATEGORY_OPTIONS = [
   }
 ];
 
-export const OPTIONS_CURRENCIES = [
-  {
-    value: CONFIG.nativeCoin?.symbol || "",
-    label: CONFIG.nativeCoin?.symbol || ""
-  }
-];
+export const OPTIONS_CURRENCIES = CONFIG.defaultTokens?.length
+  ? [
+      ...(CONFIG.defaultTokens?.map((token: Token) => ({
+        value: token?.symbol || "",
+        label: token?.symbol || ""
+      })) || [])
+    ]
+  : [
+      {
+        value: CONFIG.nativeCoin?.symbol || "",
+        label: CONFIG.nativeCoin?.symbol || ""
+      }
+    ];
 export const OPTIONS_TOKEN_GATED = [
   {
     value: "false",

@@ -8,14 +8,19 @@ const REACT_APP_CHAIN_ID = process.env.REACT_APP_CHAIN_ID
   : chain.ropsten.id;
 export const config = getDefaultConfig({ chainId: REACT_APP_CHAIN_ID });
 
-const ENABLE_SENTRY_LOGGING =
+const REACT_APP_ENABLE_SENTRY_LOGGING =
   process.env.NODE_ENV === "development"
-    ? stringToBoolean(process.env.ENABLE_SENTRY_LOGGING)
+    ? stringToBoolean(process.env.REACT_APP_ENABLE_SENTRY_LOGGING)
     : ["local", "testing"].includes(config.envName);
+
+export function getDefaultTokens() {
+  const tokens = process.env.REACT_APP_DEFAULT_TOKENS_LIST_TESTING || "[]";
+  return JSON.parse(tokens);
+}
 
 export const CONFIG = {
   ...config,
-  enableSentryLogging: ENABLE_SENTRY_LOGGING,
+  enableSentryLogging: REACT_APP_ENABLE_SENTRY_LOGGING,
   dateFormat: process.env.DATE_FORMAT || "YYYY/MM/DD",
   shortDateFormat: process.env.SHORT_DATE_FORMAT || "MMM DD, YYYY",
   fullDateFormat: process.env.FULL_DATE_FORMAT || "YYYY-MM-DDTHH:mm:ssZ[Z]",
@@ -44,7 +49,8 @@ export const CONFIG = {
   ),
   enableCurationLists: stringToBoolean(
     process.env.REACT_APP_ENABLE_CURATION_LISTS
-  )
+  ),
+  defaultTokens: getDefaultTokens()
 };
 
 function stringToBoolean(value?: string) {

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
+import { getDefaultTokens } from "../../lib/config";
 import { saveItemInStorage } from "../../lib/utils/hooks/useLocalStorage";
 import { useTokens } from "../../lib/utils/hooks/useTokens";
 import { useUniswapPools } from "../../lib/utils/hooks/useUniswapPools";
@@ -14,12 +15,12 @@ interface Props {
   children: React.ReactNode;
 }
 const REFETCH_INTERVAL = 1000 * 60 * 3;
-
 export default function ConvertionRateProvider({ children }: Props) {
+  const defaultTokens = getDefaultTokens();
   const [store, setStore] = useState(initalState.store);
-  const { data: tokens } = useTokens();
+  const { data: tokens, isLoading: isTokensLoading } = useTokens();
   const { data, isLoading, refetch } = useUniswapPools({
-    tokens: tokens || []
+    tokens: !isTokensLoading && (defaultTokens || tokens || [])
   });
 
   const updateProps = useCallback((store: Store) => {
@@ -27,6 +28,13 @@ export default function ConvertionRateProvider({ children }: Props) {
       ...store
     });
   }, []);
+
+  useEffect(() => {
+    if (!isTokensLoading) {
+      const appTokens = defaultTokens || tokens || [];
+      updateProps({ ...store, tokens: appTokens });
+    }
+  }, [isTokensLoading]); //eslint-disable-line
 
   useEffect(() => {
     if (data) {
