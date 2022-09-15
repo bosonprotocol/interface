@@ -27,7 +27,6 @@ jobs:
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      REACT_APP_DEFAULT_TOKENS_LIST_TESTING: ${{ secrets.REACT_APP_DEFAULT_TOKENS_LIST_TESTING }}
   call-reusable-workflow-testing:
     uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
     if: github.event_name == 'push'
@@ -57,7 +56,7 @@ jobs:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       REACT_APP_INFURA_IPFS_PROJECT_ID: ${{ secrets.REACT_APP_INFURA_IPFS_PROJECT_ID }}
       REACT_APP_INFURA_IPFS_PROJECT_SECRET: ${{ secrets.REACT_APP_INFURA_IPFS_PROJECT_SECRET }}
-      REACT_APP_DEFAULT_TOKENS_LIST_TESTING: ${{ secrets.REACT_APP_DEFAULT_TOKENS_LIST_TESTING }}
+      REACT_APP_DEFAULT_TOKENS_LIST_STAGING: ${{ secrets.REACT_APP_DEFAULT_TOKENS_LIST_STAGING }}
 
   job-sumary:
     name: Create Job Summary
