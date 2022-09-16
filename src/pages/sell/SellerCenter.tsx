@@ -44,6 +44,7 @@ const SellerCenterWithData = WithSellerData<SellerInsideProps>(SellerCenter);
 function SellerCenterWrapper() {
   const navigate = useKeepQueryParamsNavigate();
   const { isLoading, sellerId: userSellerId } = useCurrentSellerId();
+  const sellerId = userSellerId;
 
   if (isLoading) {
     return (
@@ -52,7 +53,6 @@ function SellerCenterWrapper() {
       </Wrapper>
     );
   }
-  const sellerId = "3" || userSellerId; // TODO: change to userSellerId
 
   if (sellerId === null) {
     return (
