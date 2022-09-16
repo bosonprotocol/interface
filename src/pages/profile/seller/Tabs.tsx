@@ -34,7 +34,7 @@ const Headers = styled.div`
     font-size: 1rem;
   }
 `;
-const Content = styled.div<{ isPrivateProfile: boolean }>`
+const Content = styled.div`
   background-color: var(--secondary);
   width: 100vw;
   position: relative;
@@ -57,7 +57,7 @@ const Content = styled.div<{ isPrivateProfile: boolean }>`
   }
 `;
 
-const HeaderTab = styled.div<{ isPrivateProfile: boolean }>`
+const HeaderTab = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -97,8 +97,8 @@ const TabTitle = styled.div<{ $isActive: boolean }>`
 `;
 
 const TabProfileSectionWrapper = styled(ProfileSectionWrapper)`
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
 `;
 
 type TabsData = {
@@ -165,7 +165,7 @@ export default function Tabs({
         {tabsData.map((tab, index) => {
           const isActive = indexActiveTab === index;
           return (
-            <HeaderTab key={tab.id} isPrivateProfile={isPrivateProfile}>
+            <HeaderTab key={tab.id}>
               <TabTitle
                 $isActive={isActive}
                 data-testid={`tab-${tab.title}`}
@@ -177,7 +177,7 @@ export default function Tabs({
           );
         })}
       </Headers>
-      <Content isPrivateProfile={isPrivateProfile}>
+      <Content>
         <TabProfileSectionWrapper>
           {tabsData.map((tab, index) => {
             const isActive = indexActiveTab === index;

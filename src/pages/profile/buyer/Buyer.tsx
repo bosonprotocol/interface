@@ -63,6 +63,15 @@ const AllExchangesTitle = styled(Typography)`
     padding-bottom: 2rem;
   }
 `;
+const ExchangesWrapper = styled(Typography)`
+  display: block;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  ${breakpoint.s} {
+    padding-left: 0;
+    padding-right: 0;
+  }
+`;
 
 export default function Buyer({ manageFundsId }: Props) {
   const { [UrlParameters.buyerId]: urlBuyerId = "" } = useParams();
@@ -188,7 +197,9 @@ export default function Buyer({ manageFundsId }: Props) {
       </BasicInfo>
       <GrayWrapper>
         <ProfileSectionWrapper>
-          <Exchanges buyerId={buyerId} />
+          <ExchangesWrapper>
+            <Exchanges buyerId={buyerId} />
+          </ExchangesWrapper>
         </ProfileSectionWrapper>
       </GrayWrapper>
     </>
