@@ -66,7 +66,10 @@ export default function OfferList({
     () => location.pathname.includes(BosonRoutes.Products),
     [location]
   );
-
+  const isExplorePage = useMemo(
+    () => location.pathname.includes(BosonRoutes.Explore),
+    [location]
+  );
   if (isLoading) {
     return loadingComponent || <div>Loading...</div>;
   }
@@ -124,10 +127,10 @@ export default function OfferList({
         )}
         <Grid
           padding={
-            isProductPage ? "1.5625rem 3.125rem 1.5625rem 3.125rem" : "unset"
+            isExplorePage ? "1.5625rem 3.125rem 1.5625rem 3.125rem" : "unset"
           }
         >
-          {!isProductPage && (
+          {isExplorePage && (
             <>
               <Typography
                 $fontSize="32px"

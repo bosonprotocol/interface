@@ -26,7 +26,10 @@ export const GrayWrapper = styled.div`
   right: 50%;
   margin-left: -50vw;
   margin-right: -50vw;
-  padding: 2rem 0;
+  padding: 2.25rem 0;
+  ${breakpoint.s} {
+    padding: 5rem 0;
+  }
   &::before {
     content: "";
     position: absolute;

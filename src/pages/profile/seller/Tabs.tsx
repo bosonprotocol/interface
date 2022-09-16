@@ -42,8 +42,9 @@ const Content = styled.div<{ isPrivateProfile: boolean }>`
   right: 50%;
   margin-left: -50vw;
   margin-right: -50vw;
+  padding: 2.25rem 0;
   ${breakpoint.s} {
-    padding: 1rem 0;
+    padding: 5rem 0;
   }
   &::before {
     content: "";
