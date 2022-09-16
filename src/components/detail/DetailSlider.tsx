@@ -37,17 +37,19 @@ export default function DetailSlider({ images, isPreview = false }: Props) {
   }, [ref, sliderImages]);
 
   const fetchData = async (images: Array<string>) => {
-    const fetchPromises = images.map(async (src) => {
-      const imgData = await ipfsMetadataStorage.get(src, false);
-      return await blobToBase64(new Blob([imgData as unknown as BlobPart]));
-    });
-    const imagesFromIpfs = await Promise.all(fetchPromises);
-    setSliderImages(imagesFromIpfs);
+    if (ipfsMetadataStorage) {
+      const fetchPromises = images.map(async (src) => {
+        const imgData = await ipfsMetadataStorage.get(src, false);
+        return await blobToBase64(new Blob([imgData as unknown as BlobPart]));
+      });
+      const imagesFromIpfs = await Promise.all(fetchPromises);
+      setSliderImages(imagesFromIpfs);
+    }
   };
 
   useEffect(() => {
     isPreview ? setSliderImages(images) : fetchData(images);
-  }, [images]); // eslint-disable-line
+  }, [images, ipfsMetadataStorage]); // eslint-disable-line
 
   const handleSlider = (direction: Direction) => {
     glide.go(direction);

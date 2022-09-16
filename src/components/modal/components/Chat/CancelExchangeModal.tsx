@@ -154,7 +154,7 @@ export default function CancelExchangeModal({
         <CancelButton
           variant="primary"
           exchangeId={exchange.id}
-          chainId={CONFIG.chainId}
+          envName={CONFIG.envName}
           disabled={isLoading}
           onError={(error) => {
             console.error(error);

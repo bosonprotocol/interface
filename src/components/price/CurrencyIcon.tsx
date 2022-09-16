@@ -16,7 +16,9 @@ interface Props {
   size?: number;
 }
 
-const chain = [137, 80001].includes(CONFIG.chainId) ? "polygon" : "ethereum";
+const chain = ["testing", "staging", "production"].includes(CONFIG.envName)
+  ? "polygon"
+  : "ethereum";
 export default function CurrencyIcon({
   currencySymbol,
   onError,

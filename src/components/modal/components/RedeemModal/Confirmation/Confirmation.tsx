@@ -150,7 +150,7 @@ ${FormModel.formFields.email.placeholder}: ${emailField.value}`;
         <RedeemButton
           disabled={isLoading || !isInitializationValid}
           exchangeId={exchangeId}
-          chainId={CONFIG.chainId}
+          envName={CONFIG.envName}
           onError={(error) => {
             console.error("Error while redeeming", error);
             setRedeemError(error);
