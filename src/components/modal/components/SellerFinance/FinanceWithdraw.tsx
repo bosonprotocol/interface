@@ -53,10 +53,16 @@ export default function FinanceWithdraw({
   const [withdrawError, setWithdrawError] = useState<unknown>(null);
 
   const { address } = useAccount();
-  const { data: dataBalance } = useBalance({
-    addressOrName: address,
-    token: exchangeToken
-  });
+
+  const { data: dataBalance } = useBalance(
+    exchangeToken !== "0x0000000000000000000000000000000000000000"
+      ? {
+          addressOrName: address,
+          token: exchangeToken
+        }
+      : { addressOrName: address }
+  );
+  console.log("dataBalance", exchangeToken, dataBalance);
 
   const { hideModal } = useModal();
   const withdrawFunds = useWithdrawFunds({

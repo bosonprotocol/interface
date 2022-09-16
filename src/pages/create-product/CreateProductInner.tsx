@@ -4,20 +4,22 @@ import { parseUnits } from "@ethersproject/units";
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
-dayjs.extend(localizedFormat);
 import { Form, Formik, FormikHelpers } from "formik";
 import isArray from "lodash/isArray";
 import keys from "lodash/keys";
 import { useCallback, useMemo, useState } from "react";
 import { generatePath } from "react-router-dom";
 import { useAccount } from "wagmi";
+dayjs.extend(localizedFormat);
 
 import { Token } from "../../components/convertion-rate/ConvertionRateContext";
 import { useModal } from "../../components/modal/useModal";
 import Help from "../../components/product/Help";
 import Preview from "../../components/product/Preview";
-import { CreateProductForm } from "../../components/product/utils";
-import { CREATE_PRODUCT_STEPS } from "../../components/product/utils";
+import {
+  CREATE_PRODUCT_STEPS,
+  CreateProductForm
+} from "../../components/product/utils";
 import MultiSteps from "../../components/step/MultiSteps";
 import { CONFIG } from "../../lib/config";
 import { UrlParameters } from "../../lib/routing/parameters";

@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 import { BigNumber, utils } from "ethers";
@@ -13,6 +15,9 @@ import { usePagination, useRowSelect, useSortBy, useTable } from "react-table";
 import styled from "styled-components";
 dayjs.extend(isBetween);
 
+import { Currencies, CurrencyDisplay } from "@bosonprotocol/react-kit";
+
+import { CONFIG } from "../../../lib/config";
 import { colors } from "../../../lib/styles/colors";
 import { useConvertionRate } from "../../convertion-rate/useConvertionRate";
 import { useModal } from "../../modal/useModal";
@@ -92,6 +97,11 @@ const Table = styled.table`
   }
   [data-testid="price"] {
     transform: scale(0.75);
+  }
+`;
+const CurrencyName = styled(Typography)`
+  > div > *:not(svg) {
+    display: none;
   }
 `;
 const HeaderSorter = styled.span`
@@ -228,36 +238,38 @@ export default function SellerFinances({
     [threshold]
   );
 
-  const allFunds = useMemo(
-    () =>
-      tokens?.map((token) => {
-        const tokenFund = funds.filter(
-          (fund) => fund?.token?.symbol === token?.symbol
-        )[0];
-        return {
-          accountId: tokenFund?.accountId || sellerId,
-          availableAmount: tokenFund?.availableAmount || "0",
-          id:
-            tokenFund?.id ||
-            `${sellerId}-0x0000000000000000000000000000000000000000`,
-          token: {
-            id:
-              tokenFund?.token?.id ||
-              token?.address ||
-              "0x0000000000000000000000000000000000000000",
-            address:
-              tokenFund?.token?.address ||
-              token?.address ||
-              "0x0000000000000000000000000000000000000000",
-            decimals: tokenFund?.token?.decimals || token?.decimals || "18",
-            name: tokenFund?.token?.name || token?.name,
-            symbol: tokenFund?.token?.symbol || token?.symbol,
-            logoUrl: token?.logoUrl || ""
-          }
-        };
-      }) || [],
-    [tokens, funds, sellerId]
-  );
+  const allFunds = useMemo(() => {
+    const mergeTokens = [
+      ...(tokens || []),
+      ...(funds || []),
+      ...(CONFIG.nativeCoin ? [CONFIG.nativeCoin] : [])
+    ];
+
+    const allTokens = mergeTokens?.reduce((acc, o) => {
+      // TODO: work on fixing the types here
+      if (!acc.some((obj) => obj?.symbol === o?.symbol)) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        acc.push(o);
+      }
+      return acc;
+    }, []);
+    return (
+      allTokens?.map((token) => ({
+        accountId: sellerId,
+        availableAmount: "0",
+        id: `${sellerId}-0x00`,
+        token: {
+          id: token?.address || "0x0000000000000000000000000000000000000000",
+          address:
+            token?.address || "0x0000000000000000000000000000000000000000",
+          decimals: token?.decimals || "18",
+          name: token?.name,
+          symbol: token?.symbol
+        }
+      })) || []
+    );
+  }, [tokens, funds, sellerId]);
 
   const data = useMemo(
     () =>
@@ -287,12 +299,13 @@ export default function SellerFinances({
         };
         return {
           token: (
-            <Typography tag="p">
+            <CurrencyName tag="p" gap="0.5rem">
               {fund.token.symbol}
-              {fund.token.logoUrl && (
-                <img src={fund.token.logoUrl} width="30" />
-              )}
-            </Typography>
+              <CurrencyDisplay
+                currency={fund.token.symbol as Currencies}
+                height={18}
+              />
+            </CurrencyName>
           ),
           allFund: <Typography tag="p">{allFunds}</Typography>,
           lockedFunds: <Typography tag="p">{lockedFundsFormatted}</Typography>,

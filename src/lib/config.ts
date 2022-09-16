@@ -14,8 +14,17 @@ const REACT_APP_ENABLE_SENTRY_LOGGING =
     : ["local", "testing"].includes(config.envName);
 
 export function getDefaultTokens() {
-  const tokens = process.env.REACT_APP_DEFAULT_TOKENS_LIST_TESTING || "[]";
-  return JSON.parse(tokens);
+  let tokens = [];
+  try {
+    tokens = JSON.parse(
+      process.env.REACT_APP_DEFAULT_TOKENS_LIST_TESTING ||
+        process.env.REACT_APP_DEFAULT_TOKENS_LIST_STAGING ||
+        "[]"
+    );
+  } catch (e) {
+    console.error(e);
+  }
+  return tokens;
 }
 
 export const CONFIG = {
@@ -50,7 +59,8 @@ export const CONFIG = {
   enableCurationLists: stringToBoolean(
     process.env.REACT_APP_ENABLE_CURATION_LISTS
   ),
-  defaultTokens: getDefaultTokens()
+  defaultTokens: getDefaultTokens(),
+  mockSellerId: process.env.REACT_APP_MOCK_SELLER_ID
 };
 
 function stringToBoolean(value?: string) {
