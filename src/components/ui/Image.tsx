@@ -111,7 +111,7 @@ const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
         setImageSrc(src);
       }
     }
-  }, [ipfsMetadataStorage]); // eslint-disable-line
+  }, []); // eslint-disable-line
 
   useEffect(() => {
     if (imageSrc !== null) {

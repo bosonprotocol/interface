@@ -49,7 +49,7 @@ export default function DetailSlider({ images, isPreview = false }: Props) {
 
   useEffect(() => {
     isPreview ? setSliderImages(images) : fetchData(images);
-  }, [images, ipfsMetadataStorage]); // eslint-disable-line
+  }, [images]); // eslint-disable-line
 
   const handleSlider = (direction: Direction) => {
     glide.go(direction);

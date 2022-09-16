@@ -34,7 +34,7 @@ export function useGetIpfsImage(src: string) {
         setImageStatus("success");
       }
     }
-  }, [ipfsMetadataStorage]); // eslint-disable-line
+  }, []); // eslint-disable-line
   return {
     imageStatus,
     imageSrc
