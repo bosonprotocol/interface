@@ -251,7 +251,8 @@ export default function SellerFinances({
               "0x0000000000000000000000000000000000000000",
             decimals: tokenFund?.token?.decimals || token?.decimals || "18",
             name: tokenFund?.token?.name || token?.name,
-            symbol: tokenFund?.token?.symbol || token?.symbol
+            symbol: tokenFund?.token?.symbol || token?.symbol,
+            logoUrl: token?.logoUrl || ""
           }
         };
       }) || [],
@@ -285,7 +286,14 @@ export default function SellerFinances({
           return result;
         };
         return {
-          token: <Typography tag="p">{fund.token.symbol}</Typography>,
+          token: (
+            <Typography tag="p">
+              {fund.token.symbol}
+              {fund.token.logoUrl && (
+                <img src={fund.token.logoUrl} width="30" />
+              )}
+            </Typography>
+          ),
           allFund: <Typography tag="p">{allFunds}</Typography>,
           lockedFunds: <Typography tag="p">{lockedFundsFormatted}</Typography>,
           withdrawable: <Typography tag="p">{withdrawable}</Typography>,

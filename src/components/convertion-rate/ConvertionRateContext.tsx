@@ -5,6 +5,7 @@ import { createContext } from "react";
 import { getItemFromStorage } from "../../lib/utils/hooks/useLocalStorage";
 
 export type Token = {
+  logoUrl?: string;
   symbol: string;
   name: string;
   address: string;

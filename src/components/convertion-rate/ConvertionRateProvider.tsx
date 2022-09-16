@@ -7,9 +7,9 @@ import { useUniswapPools } from "../../lib/utils/hooks/useUniswapPools";
 import ConvertionRateContext, {
   ConvertionRateContextType,
   initalState,
-  Store
+  Store,
+  Token
 } from "./ConvertionRateContext";
-import { Token } from "./ConvertionRateContext";
 import { handleRates } from "./utils";
 
 interface Props {
@@ -18,17 +18,12 @@ interface Props {
 export default function ConvertionRateProvider({ children }: Props) {
   const defaultTokens = getDefaultTokens();
   const [store, setStore] = useState(initalState.store);
-  const { data: tokens, isLoading: isTokensLoading } = useTokens();
+  const { data: tokens, isLoading: isTokensLoading } = useTokens({
+    enabled: defaultTokens.length > 0
+  });
   const appTokens = useMemo(
     () =>
-      (tokens?.concat(defaultTokens) || []).reduce((acc, o) => {
-        if (!acc.some((obj: Token) => obj?.symbol === o?.symbol)) {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          acc.push(o);
-        }
-        return acc;
-      }, []) as Token[],
+      defaultTokens.length > 0 ? defaultTokens : ((tokens || []) as Token[]),
     [tokens, defaultTokens]
   );
 
@@ -43,7 +38,7 @@ export default function ConvertionRateProvider({ children }: Props) {
   }, []);
 
   useEffect(() => {
-    if (!isTokensLoading && store?.tokens === null) {
+    if (appTokens && store?.tokens === null) {
       updateProps({
         ...store,
         tokens: appTokens

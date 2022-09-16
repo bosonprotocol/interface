@@ -54,7 +54,8 @@ export default function FinanceWithdraw({
 
   const { address } = useAccount();
   const { data: dataBalance } = useBalance({
-    addressOrName: address
+    addressOrName: address,
+    token: exchangeToken
   });
 
   const { hideModal } = useModal();
@@ -154,9 +155,13 @@ export default function FinanceWithdraw({
         </MaxLimitWrapper>
       </AmountWrapper>
       <Grid>
-        <Typography tag="p" margin="0" $fontSize="0.75rem" fontWeight="bold">
-          Wallet Balance: {dataBalance?.formatted} {dataBalance?.symbol}
-        </Typography>
+        {dataBalance ? (
+          <Typography tag="p" margin="0" $fontSize="0.75rem" fontWeight="bold">
+            Wallet Balance: {dataBalance?.formatted} {dataBalance?.symbol}
+          </Typography>
+        ) : (
+          <div />
+        )}
         <CTAButton
           theme="primary"
           size="small"

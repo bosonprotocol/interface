@@ -43,7 +43,8 @@ export default function FinanceDeposit({
 
   const { address } = useAccount();
   const { data: dataBalance } = useBalance({
-    addressOrName: address
+    addressOrName: address,
+    token: exchangeToken
   });
 
   const { hideModal } = useModal();
@@ -156,6 +157,7 @@ export default function FinanceDeposit({
         </InputWrapper>
       </AmountWrapper>
       <Grid>
+        <div />
         <CTAButton
           theme="primary"
           size="small"
