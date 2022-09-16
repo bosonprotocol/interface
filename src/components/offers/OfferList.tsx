@@ -7,11 +7,12 @@ import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { ProductGridContainer } from "../../pages/profile/ProfilePage.styles";
 import Breadcrumbs from "../breadcrumbs/Breadcrumbs";
 import { Action } from "../offer/OfferCard";
 import ProductCard from "../productCard/ProductCard";
 import Grid from "../ui/Grid";
-import GridContainer, { ItemsPerRow } from "../ui/GridContainer";
+import { ItemsPerRow } from "../ui/GridContainer";
 import Typography from "../ui/Typography";
 
 interface Props {
@@ -147,7 +148,7 @@ export default function OfferList({
             </>
           )}
         </Grid>
-        <GridContainer itemsPerRow={itemsPerRow}>
+        <ProductGridContainer itemsPerRow={itemsPerRow}>
           {offers.map((offer: Offer) => {
             return (
               (offer.isValid || (showInvalidOffers && !offer.isValid)) && (
@@ -155,7 +156,7 @@ export default function OfferList({
               )
             );
           })}
-        </GridContainer>
+        </ProductGridContainer>
       </Container>
     </>
   );

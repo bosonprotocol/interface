@@ -1,11 +1,10 @@
 import Exchange from "../../../components/exchange/Exchange";
 import { Spinner } from "../../../components/loading/Spinner";
-import GridContainer from "../../../components/ui/GridContainer";
 import {
   Exchange as IExchange,
   useExchanges
 } from "../../../lib/utils/hooks/useExchanges";
-import { LoadingWrapper } from "../ProfilePage.styles";
+import { LoadingWrapper, ProductGridContainer } from "../ProfilePage.styles";
 
 interface Props {
   buyerId: string;
@@ -48,7 +47,7 @@ export default function Exchanges({ buyerId }: Props) {
   }
 
   return (
-    <GridContainer
+    <ProductGridContainer
       itemsPerRow={{
         xs: 1,
         s: 2,
@@ -67,6 +66,6 @@ export default function Exchanges({ buyerId }: Props) {
           />
         );
       })}
-    </GridContainer>
+    </ProductGridContainer>
   );
 }

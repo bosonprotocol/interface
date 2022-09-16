@@ -1,5 +1,6 @@
 import styled from "styled-components";
 
+import GridContainer from "../../components/ui/GridContainer";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 
@@ -139,4 +140,11 @@ export const LoadingWrapper = styled.div`
   padding: 2rem;
   text-align: center;
   color: ${colors.secondary};
+`;
+
+export const ProductGridContainer = styled(GridContainer)`
+  grid-row-gap: 3.5rem;
+  ${breakpoint.s} {
+    grid-row-gap: 2rem;
+  }
 `;
