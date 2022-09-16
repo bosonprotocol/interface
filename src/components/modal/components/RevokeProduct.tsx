@@ -109,7 +109,7 @@ export default function RevokeProduct({
         <RevokeButton
           variant="secondaryOutline"
           exchangeId={exchangeId || 0}
-          chainId={CONFIG.chainId}
+          envName={CONFIG.envName}
           onError={(args) => {
             console.error("onError", args);
           }}

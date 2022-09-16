@@ -12,12 +12,17 @@ interface Props {
 
 const openSeaUrlMap = new Map([
   [
-    80001,
+    "testing", // Mumbai
     (exchangeId: string, contractAddress: string) =>
       `https://testnets.opensea.io/assets/mumbai/${contractAddress}/${exchangeId}`
   ],
   [
-    137,
+    "staging", // Mumbai
+    (exchangeId: string, contractAddress: string) =>
+      `https://testnets.opensea.io/assets/mumbai/${contractAddress}/${exchangeId}`
+  ],
+  [
+    "production", // Polygon
     (exchangeId: string, contractAddress: string) =>
       `https://opensea.io/assets/polygon/${contractAddress}/${exchangeId}`
   ]
@@ -37,7 +42,7 @@ export default function DetailOpenSea({ exchange }: Props) {
       return "";
     }
 
-    const urlFn = openSeaUrlMap.get(CONFIG.chainId);
+    const urlFn = openSeaUrlMap.get(CONFIG.envName);
 
     return urlFn?.(exchange.id, exchange.seller.voucherCloneAddress) || "";
   }, [exchange]);

@@ -345,7 +345,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                   isPreview
                 }
                 offerId={offer.id}
-                chainId={CONFIG.chainId}
+                envName={CONFIG.envName}
                 onError={(args) => {
                   console.error("onError", args);
                   setIsLoading(false);

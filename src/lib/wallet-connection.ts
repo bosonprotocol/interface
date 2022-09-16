@@ -5,16 +5,18 @@ import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 import ethIcon from "./assets/ethereum-chain-icon.svg";
 import { CONFIG } from "./config";
 
-const supportedChains: Readonly<Array<number>> = [
-  chain.ropsten.id,
-  chain.mainnet.id,
-  chain.polygonMumbai.id,
-  chain.polygon.id
-] as const;
+type EnvironmentType = "local" | "testing" | "staging" | "production"; // TODO: export EnvironmentType in react-kit
+
+const chainPerEnviromnent: Record<EnvironmentType, Chain> = {
+  local: getLocalNetworkChainConfig(),
+  testing: chain.polygonMumbai,
+  staging: chain.polygonMumbai,
+  production: chain.polygon
+};
 
 function getBosonTestNetworkChainConfig(): Chain {
   return {
-    id: CONFIG.chainId,
+    id: 1234,
     name: "Boson Test (PoA)",
     network: "boson",
     iconUrl: ethIcon,
@@ -37,16 +39,37 @@ function getBosonTestNetworkChainConfig(): Chain {
   };
 }
 
+function getLocalNetworkChainConfig(): Chain {
+  return {
+    id: 31337,
+    name: "Local Hardhat",
+    network: "hardhat",
+    iconUrl: ethIcon,
+    iconBackground: "#fff",
+    nativeCurrency: {
+      decimals: Number(CONFIG.nativeCoin?.decimals) || 18,
+      name: CONFIG.nativeCoin?.name || "",
+      symbol: CONFIG.nativeCoin?.symbol || ""
+    },
+    rpcUrls: {
+      default: CONFIG.jsonRpcUrl
+    },
+    blockExplorers: {
+      default: {
+        name: "Local",
+        url: ""
+      }
+    },
+    testnet: true
+  };
+}
+
 function getChainForEnvironment(): Array<Chain> {
-  if (!supportedChains.includes(CONFIG.chainId)) {
+  const chain = chainPerEnviromnent[CONFIG.envName];
+  if (!chain) {
     return [getBosonTestNetworkChainConfig()];
   }
-
-  const existingChain = Object.values(chain).find(
-    (value: Chain) => value.id === CONFIG.chainId
-  );
-
-  return [existingChain ?? chain.ropsten];
+  return [chain];
 }
 
 export const { provider, chains } = configureChains(getChainForEnvironment(), [
