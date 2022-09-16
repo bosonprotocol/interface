@@ -1,4 +1,5 @@
 import { useParams } from "react-router-dom";
+import styled from "styled-components";
 
 import Avatar from "../../../components/avatar";
 import DetailShare from "../../../components/detail/DetailShare";
@@ -9,6 +10,8 @@ import Button from "../../../components/ui/Button";
 import Grid from "../../../components/ui/Grid";
 import Typography from "../../../components/ui/Typography";
 import { UrlParameters } from "../../../lib/routing/parameters";
+import { breakpoint } from "../../../lib/styles/breakpoint";
+import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { useBuyers } from "../../../lib/utils/hooks/useBuyers";
 import NotFound from "../../not-found/NotFound";
 import backgroundFluid from "../common/background-img.png";
@@ -32,9 +35,38 @@ interface Props {
   manageFundsId?: string;
 }
 
+const ManageFundMobileWrapper = styled.div`
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  button {
+    width: 100%;
+    padding: 1.05rem 2rem;
+    div {
+      text-align: center;
+      display: block;
+    }
+  }
+`;
+
+const AllExchangesTitle = styled(Typography)`
+  margin: 0.25rem 0 0.25rem 0;
+  font-size: 1.7rem;
+  justify-content: center;
+  padding-bottom: 3rem;
+  ${breakpoint.s} {
+    margin: 1rem 0 0 0;
+    font-size: 2.25rem;
+    justify-content: flex-start;
+    padding-bottom: 2rem;
+  }
+`;
+
 export default function Buyer({ manageFundsId }: Props) {
   const { [UrlParameters.buyerId]: urlBuyerId = "" } = useParams();
-
+  const { isLteXS } = useBreakpoints();
   const buyerId = manageFundsId || urlBuyerId;
   const {
     data: buyers,
@@ -94,7 +126,10 @@ export default function Buyer({ manageFundsId }: Props) {
           <BannerImage src={backgroundFluid} />
           <BannerImageLayer>
             <AvatarContainer>
-              <Avatar address={currentBuyerAddress} size={160} />
+              <Avatar
+                address={currentBuyerAddress}
+                size={!isLteXS ? 160 : 80}
+              />
             </AvatarContainer>
           </BannerImageLayer>
         </ProfileSectionWrapper>
@@ -107,7 +142,11 @@ export default function Buyer({ manageFundsId }: Props) {
             >
               <AvatarEmptySpace />
               <div>
-                <Typography tag="h2" margin="1rem 0 0 0">
+                <Typography
+                  tag="h2"
+                  margin={!isLteXS ? "1rem 0 0 0" : "0.25rem 0 0.25rem 0"}
+                  $fontSize={!isLteXS ? "2rem" : "1.675rem"}
+                >
                   Buyer ID: {buyerId}
                 </Typography>
                 <Grid alignItems="flex-start">
@@ -122,8 +161,8 @@ export default function Buyer({ manageFundsId }: Props) {
               $width="auto"
               margin="1.25rem 0 0 0"
             >
-              {manageFundsId && (
-                <Button theme="primary" onClick={handleManageFunds}>
+              {manageFundsId && !isLteXS && (
+                <Button theme="secondary" onClick={handleManageFunds}>
                   Manage Funds
                 </Button>
               )}
@@ -134,12 +173,17 @@ export default function Buyer({ manageFundsId }: Props) {
               </SocialIconContainer>
             </Grid>
           </Grid>
+          {manageFundsId && isLteXS && (
+            <ManageFundMobileWrapper>
+              <Button theme="secondary" onClick={handleManageFunds}>
+                Manage Funds
+              </Button>
+            </ManageFundMobileWrapper>
+          )}
         </ProfileSectionWrapper>
         <ProfileSectionWrapper>
-          <ReadMore text="Designs unclear. Where should this text come from as the buyer has no metadata and no Lens profile for us to get this from." />
-          <Typography tag="h2" $fontSize="2.25rem" margin="0 0 1rem 0">
-            All exchanges
-          </Typography>
+          <ReadMore text="Designs unclear. Where should unclear. Where shouldunclear. Where shouldunclear. Where should this text come from as the buyer has no metadata and no Lens profile for us to get this from." />
+          <AllExchangesTitle tag="h2">All exchanges</AllExchangesTitle>
         </ProfileSectionWrapper>
       </BasicInfo>
       <GrayWrapper>

@@ -37,9 +37,9 @@ const ViewMoreButton = styled.button`
   justify-content: space-between;
   align-items: center;
   color: ${colors.secondary};
-  width: 6.875rem;
   font-size: 1rem;
   font-weight: 600;
+  width: auto;
 `;
 
 const StyledGrid = styled(Grid)`

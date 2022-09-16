@@ -3,15 +3,19 @@ import styled from "styled-components";
 
 import Button from "../../../components/ui/Button";
 import Typography from "../../../components/ui/Typography";
+import { colors } from "../../../lib/styles/colors";
+import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 
 const ReadMoreContainer = styled.div`
   margin-bottom: 2rem;
+  color: ${colors.darkGrey};
   > p {
     line-height: 2.5rem;
   }
 `;
 
 const ReadMoreButton = styled(Button)`
+  color: ${colors.darkGrey};
   outline: none;
   border: none;
   padding: 0;
@@ -33,6 +37,7 @@ function ReadMore({ text }: Props) {
   const [isShowMoreVisible, setIsShowMoreVisible] = useState<boolean>(
     text.length < MAX_CHARACTERS
   );
+  const { isLteXS } = useBreakpoints();
   const handleToggleShowMore = () => {
     setIsShowMoreVisible((prev) => !prev);
   };
@@ -45,7 +50,7 @@ function ReadMore({ text }: Props) {
     <ReadMoreContainer>
       <Typography
         tag="p"
-        $fontSize="1rem"
+        $fontSize={isLteXS ? "1.15rem" : "1rem"}
         margin="0"
         style={{ overflow: "hidden", textOverflow: "ellipsis" }}
       >
