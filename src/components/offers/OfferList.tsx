@@ -8,7 +8,8 @@ import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import Breadcrumbs from "../breadcrumbs/Breadcrumbs";
-import OfferCard, { Action } from "../offer/OfferCard";
+import { Action } from "../offer/OfferCard";
+import ProductCard from "../productCard/ProductCard";
 import Grid from "../ui/Grid";
 import GridContainer, { ItemsPerRow } from "../ui/GridContainer";
 import Typography from "../ui/Typography";
@@ -53,11 +54,7 @@ export default function OfferList({
   isLoading,
   isError,
   loadingComponent,
-  showSeller,
-  action,
   showInvalidOffers,
-  isPrivateProfile,
-  type,
   itemsPerRow,
   breadcrumbs
 }: Props) {
@@ -110,15 +107,15 @@ export default function OfferList({
             steps={[
               {
                 id: 0,
-                label: "Explore products",
+                label: "Explore",
                 url: `${BosonRoutes.Explore}`,
-                hightlighted: false
+                hightlighted: true
               },
               {
                 id: 1,
                 label: "All products",
                 url: `${BosonRoutes.Products}`,
-                hightlighted: true
+                hightlighted: false
               }
             ]}
             margin="2.5rem 0 -1rem 0"
@@ -154,15 +151,7 @@ export default function OfferList({
           {offers.map((offer: Offer) => {
             return (
               (offer.isValid || (showInvalidOffers && !offer.isValid)) && (
-                <OfferCard
-                  key={offer.id}
-                  offer={offer}
-                  showSeller={showSeller}
-                  action={action}
-                  dataTestId="offer"
-                  isPrivateProfile={isPrivateProfile}
-                  type={type}
-                />
+                <ProductCard key={offer.id} offer={offer} dataTestId="offer" />
               )
             );
           })}

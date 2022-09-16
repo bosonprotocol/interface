@@ -35,6 +35,10 @@ on:
         required: false
       REACT_APP_INFURA_IPFS_PROJECT_SECRET:
         required: false
+      REACT_APP_DEFAULT_TOKENS_LIST_TESTING:
+        required: false
+      REACT_APP_DEFAULT_TOKENS_LIST_STAGING:
+        required: false
     outputs:
       JOB_LINT:
         value: ${{ jobs.build-test-deploy.outputs.jobLint }}
@@ -57,6 +61,8 @@ jobs:
       REACT_APP_OFFER_CURATION_LIST: ${{ inputs.REACT_APP_OFFER_CURATION_LIST }}
       REACT_APP_INFURA_IPFS_PROJECT_ID: ${{ secrets.REACT_APP_INFURA_IPFS_PROJECT_ID }}
       REACT_APP_INFURA_IPFS_PROJECT_SECRET: ${{ secrets.REACT_APP_INFURA_IPFS_PROJECT_SECRET }}
+      REACT_APP_DEFAULT_TOKENS_LIST_TESTING: ${{ secrets.REACT_APP_DEFAULT_TOKENS_LIST_TESTING }}
+      REACT_APP_DEFAULT_TOKENS_LIST_STAGING: ${{ secrets.REACT_APP_DEFAULT_TOKENS_LIST_STAGING }}
     outputs:
       jobLint: ${{ steps.lint.outputs.pass }}
       jobBuild: ${{ steps.build.outputs.pass }}

@@ -42,7 +42,6 @@ const NavigationLinks = styled.div<{
           bottom: 0;
           height: 100vh;
           transform: ${isOpen ? "translateX(0%)" : "translateX(100%)"};
-
           a {
             display: flex;
             align-items: center;
@@ -65,7 +64,6 @@ const NavigationLinks = styled.div<{
               background-color: ${colors.border};
               transition: all 150ms ease-in-out;
             }
-
             &:hover {
               &:before {
                 height: 100%;
@@ -98,14 +96,12 @@ const NavigationLinks = styled.div<{
               width: 100%;
               align-items: stretch;
               justify-content: space-between;
-
               a {
                 justify-content: center;
                 padding: 1rem;
               }
             `;
           }}
-
           a {
             display: flex;
             align-items: center;
@@ -187,7 +183,7 @@ export default function HeaderLinks({
             Explore Products
           </LinkWithQuery>
         )}
-        {isAccountBuyer && !onlySeller && (
+        {isAccountBuyer && !onlySeller && address && (
           <LinkWithQuery to={BosonRoutes.YourAccount}>My Items</LinkWithQuery>
         )}
       </Links>

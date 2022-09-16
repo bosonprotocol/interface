@@ -1,14 +1,15 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 
-import OfferCard, { Action } from "../../../components/offer/OfferCard";
+import Exchange from "../../../components/exchange/Exchange";
+import { Spinner } from "../../../components/loading/Spinner";
 import GridContainer from "../../../components/ui/GridContainer";
-import { Offer } from "../../../lib/types/offer";
-import { useExchanges } from "../../../lib/utils/hooks/useExchanges";
-
+import {
+  Exchange as IExchange,
+  useExchanges
+} from "../../../lib/utils/hooks/useExchanges";
+import { LoadingWrapper } from "../ProfilePage.styles";
 interface Props {
   sellerId: string;
-  action: Action;
-  isPrivateProfile: boolean;
 }
 
 const orderProps = {
@@ -16,15 +17,12 @@ const orderProps = {
   orderDirection: "desc"
 } as const;
 
-export default function Redemptions({
-  sellerId,
-  action,
-  isPrivateProfile
-}: Props) {
+export default function Redemptions({ sellerId }: Props) {
   const {
     data: exchangesSeller,
     isLoading: isLoadingSeller,
-    isError: isErrorSeller
+    isError: isErrorSeller,
+    refetch
   } = useExchanges(
     {
       ...orderProps,
@@ -36,7 +34,11 @@ export default function Redemptions({
   );
 
   if (isLoadingSeller) {
-    return <div>Loading...</div>;
+    return (
+      <LoadingWrapper>
+        <Spinner size={42} />
+      </LoadingWrapper>
+    );
   }
 
   if (isErrorSeller) {
@@ -62,14 +64,11 @@ export default function Redemptions({
       }}
     >
       {exchangesSeller?.map((exchange) => (
-        <OfferCard
+        <Exchange
           key={exchange.id}
-          offer={exchange.offer}
-          exchange={exchange as NonNullable<Offer["exchanges"]>[number]}
-          action={action}
-          dataTestId="exchange"
-          showSeller={false}
-          isPrivateProfile={isPrivateProfile}
+          {...exchange}
+          exchange={exchange as IExchange}
+          reload={refetch}
         />
       ))}
     </GridContainer>
