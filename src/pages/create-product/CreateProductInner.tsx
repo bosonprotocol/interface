@@ -170,6 +170,10 @@ function CreateProductInner({ initial }: Props) {
     values: CreateProductForm,
     formikBag: FormikHelpers<CreateProductForm>
   ) => {
+    if (!storage) {
+      console.error("Storage is undefined. Unable to progress.");
+      return;
+    }
     const profileImage = getLocalStorageItems({
       key: "create-product-image_createYourProfile"
     });
@@ -356,7 +360,7 @@ function CreateProductInner({ initial }: Props) {
         fulfillmentPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
         resolutionPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
         exchangeToken: "0x0000000000000000000000000000000000000000",
-        disputeResolverId: CONFIG.envName === "testing" ? 4 : 2,
+        disputeResolverId: CONFIG.envName === "testing" ? 1 : 2,
         agentId: 0, // no agent
         metadataUri: `ipfs://${metadataHash}`,
         metadataHash: metadataHash

@@ -19,7 +19,7 @@ jobs:
     uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
     if: github.event_name == 'pull_request'
     with:
-      REACT_APP_CHAIN_ID: '1234'
+      REACT_APP_ENV_NAME: 'testing'
       DEPLOY_TO_FLEEK: false
       ENV_NAME: 'testing'
       UPDATE_COVERAGE: false
@@ -31,7 +31,7 @@ jobs:
     uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
     if: github.event_name == 'push'
     with:
-      REACT_APP_CHAIN_ID: '1234'
+      REACT_APP_ENV_NAME: 'testing'
       DEPLOY_TO_FLEEK: true
       ENV_NAME: 'testing'
       UPDATE_COVERAGE: true
@@ -40,11 +40,13 @@ jobs:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      REACT_APP_INFURA_IPFS_PROJECT_ID: ${{ secrets.REACT_APP_INFURA_IPFS_PROJECT_ID }}
+      REACT_APP_INFURA_IPFS_PROJECT_SECRET: ${{ secrets.REACT_APP_INFURA_IPFS_PROJECT_SECRET }}
   call-reusable-workflow-staging:
     uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
     if: github.event_name == 'release' && github.event.action == 'created'
     with:
-      REACT_APP_CHAIN_ID: '80001'
+      REACT_APP_ENV_NAME: 'staging'
       DEPLOY_TO_FLEEK: true
       ENV_NAME: 'staging'
       UPDATE_COVERAGE: false

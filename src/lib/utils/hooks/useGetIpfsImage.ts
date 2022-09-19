@@ -12,16 +12,18 @@ export function useGetIpfsImage(src: string) {
 
   useEffect(() => {
     async function fetchData(src: string) {
-      setImageStatus("loading");
-      const fetchPromises = await ipfsMetadataStorage.get(src, false);
-      const [image] = await Promise.all([fetchPromises]);
-      const base64str = await blobToBase64(new Blob([image as BlobPart]));
+      if (ipfsMetadataStorage) {
+        setImageStatus("loading");
+        const fetchPromises = await ipfsMetadataStorage.get(src, false);
+        const [image] = await Promise.all([fetchPromises]);
+        const base64str = await blobToBase64(new Blob([image as BlobPart]));
 
-      if (!String(base64str).includes("base64")) {
-        setImageStatus("error");
-      } else {
-        setImageSrc(base64str as string);
-        setImageStatus("success");
+        if (!String(base64str).includes("base64")) {
+          setImageStatus("error");
+        } else {
+          setImageSrc(base64str as string);
+          setImageStatus("success");
+        }
       }
     }
     if (["idle", "loading"].includes(imageStatus) && !imageSrc) {

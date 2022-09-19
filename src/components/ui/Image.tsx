@@ -91,15 +91,17 @@ const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
 
   useEffect(() => {
     async function fetchData(src: string) {
-      const fetchPromises = await ipfsMetadataStorage.get(src, false);
-      const [image] = await Promise.all([fetchPromises]);
-      const base64str = await blobToBase64(new Blob([image as BlobPart]));
+      if (ipfsMetadataStorage) {
+        const fetchPromises = await ipfsMetadataStorage.get(src, false);
+        const [image] = await Promise.all([fetchPromises]);
+        const base64str = await blobToBase64(new Blob([image as BlobPart]));
 
-      if (!String(base64str).includes("base64")) {
-        setIsLoaded(true);
-        setIsError(true);
-      } else {
-        setImageSrc(base64str as string);
+        if (!String(base64str).includes("base64")) {
+          setIsLoaded(true);
+          setIsError(true);
+        } else {
+          setImageSrc(base64str as string);
+        }
       }
     }
     if (!isLoaded && imageSrc === null) {

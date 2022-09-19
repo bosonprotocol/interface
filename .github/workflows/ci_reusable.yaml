@@ -3,7 +3,7 @@ name: Build, Test and Deploy the Marketplace Interface - Reusable workflow
 on:
   workflow_call:
     inputs:
-      REACT_APP_CHAIN_ID:
+      REACT_APP_ENV_NAME:
         required: true
         type: string
       DEPLOY_TO_FLEEK:
@@ -35,6 +35,10 @@ on:
         required: false
       REACT_APP_INFURA_IPFS_PROJECT_SECRET:
         required: false
+      REACT_APP_DEFAULT_TOKENS_LIST_TESTING:
+        required: false
+      REACT_APP_DEFAULT_TOKENS_LIST_STAGING:
+        required: false
     outputs:
       JOB_LINT:
         value: ${{ jobs.build-test-deploy.outputs.jobLint }}
@@ -50,13 +54,15 @@ jobs:
     name: Build, Test and Deploy the Marketplace Interface
     runs-on: ubuntu-latest
     env:
-      REACT_APP_CHAIN_ID: ${{ inputs.REACT_APP_CHAIN_ID }}
+      REACT_APP_ENV_NAME: ${{ inputs.REACT_APP_ENV_NAME }}
       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       REACT_APP_ENABLE_CURATION_LISTS: ${{ inputs.REACT_APP_ENABLE_CURATION_LISTS }}
       REACT_APP_SELLER_CURATION_LIST: ${{ inputs.REACT_APP_SELLER_CURATION_LIST }}
       REACT_APP_OFFER_CURATION_LIST: ${{ inputs.REACT_APP_OFFER_CURATION_LIST }}
       REACT_APP_INFURA_IPFS_PROJECT_ID: ${{ secrets.REACT_APP_INFURA_IPFS_PROJECT_ID }}
       REACT_APP_INFURA_IPFS_PROJECT_SECRET: ${{ secrets.REACT_APP_INFURA_IPFS_PROJECT_SECRET }}
+      REACT_APP_DEFAULT_TOKENS_LIST_TESTING: ${{ secrets.REACT_APP_DEFAULT_TOKENS_LIST_TESTING }}
+      REACT_APP_DEFAULT_TOKENS_LIST_STAGING: ${{ secrets.REACT_APP_DEFAULT_TOKENS_LIST_STAGING }}
     outputs:
       jobLint: ${{ steps.lint.outputs.pass }}
       jobBuild: ${{ steps.build.outputs.pass }}
