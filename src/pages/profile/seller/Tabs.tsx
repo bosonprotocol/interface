@@ -61,12 +61,10 @@ const HeaderTab = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 30%;
-  ${breakpoint.xs} {
-    width: 33%;
-  }
+  flex: 1;
   ${breakpoint.s} {
     width: auto;
+    flex: 0;
     &:not(:last-child) {
       margin-right: 1.5rem;
     }

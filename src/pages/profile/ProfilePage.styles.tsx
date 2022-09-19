@@ -5,7 +5,7 @@ import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 
 export const ProfileSectionWrapper = styled.div`
-  max-width: 65.75rem;
+  max-width: 68.75rem;
   width: 100%;
   margin-left: auto;
   margin-right: auto;
