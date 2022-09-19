@@ -6,6 +6,7 @@ import { BigNumber, utils } from "ethers";
 import { CameraSlash } from "phosphor-react";
 import { useMemo } from "react";
 import { generatePath, useLocation } from "react-router-dom";
+import styled from "styled-components";
 
 import mockedAvatar from "../../assets/frame.png";
 import { UrlParameters } from "../../lib/routing/parameters";
@@ -22,6 +23,12 @@ interface Props {
   dataTestId: string;
   isHoverDisabled?: boolean;
 }
+
+const ProductCardWrapper = styled.div`
+  [data-card="product-card"] {
+    min-height: 500px;
+  }
+`;
 
 export default function ProductCard({
   offer,
@@ -67,26 +74,29 @@ export default function ProductCard({
   };
 
   return (
-    <BosonProductCard
-      dataTestId={dataTestId}
-      productId={offer.id}
-      onCardClick={handleOnCardClick}
-      title={offer.metadata.name}
-      avatarName={`Seller ID: ${offer.seller.id}`}
-      // TODO: ADD AVATAR IMAGE FOR NOW HARDCODED
-      avatar={mockedAvatar}
-      price={Number(price)}
-      currency={offer.exchangeToken.symbol as Currencies}
-      onAvatarNameClick={handleOnAvatarClick}
-      imageProps={{
-        src: imageSrc,
-        preloadConfig: {
-          status: imageStatus,
-          errorIcon: <CameraSlash size={32} color={colors.white} />
-        }
-      }}
-      bottomText={handleText}
-      isHoverDisabled={isHoverDisabled}
-    />
+    <ProductCardWrapper>
+      <BosonProductCard
+        dataCard="product-card"
+        dataTestId={dataTestId}
+        productId={offer.id}
+        onCardClick={handleOnCardClick}
+        title={offer.metadata.name}
+        avatarName={`Seller ID: ${offer.seller.id}`}
+        // TODO: ADD AVATAR IMAGE FOR NOW HARDCODED
+        avatar={mockedAvatar}
+        price={Number(price)}
+        currency={offer.exchangeToken.symbol as Currencies}
+        onAvatarNameClick={handleOnAvatarClick}
+        imageProps={{
+          src: imageSrc,
+          preloadConfig: {
+            status: imageStatus,
+            errorIcon: <CameraSlash size={32} color={colors.white} />
+          }
+        }}
+        bottomText={handleText}
+        isHoverDisabled={isHoverDisabled}
+      />
+    </ProductCardWrapper>
   );
 }

@@ -1,14 +1,20 @@
 import styled from "styled-components";
 
+import GridContainer from "../../components/ui/GridContainer";
+import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 
 export const ProfileSectionWrapper = styled.div`
-  max-width: 65.75rem;
+  max-width: 68.75rem;
   width: 100%;
   margin-left: auto;
   margin-right: auto;
-  padding-left: 2rem;
-  padding-right: 2rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  ${breakpoint.s} {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
   box-sizing: border-box;
 `;
 
@@ -20,7 +26,10 @@ export const GrayWrapper = styled.div`
   right: 50%;
   margin-left: -50vw;
   margin-right: -50vw;
-  padding: 4rem 0;
+  padding: 2.25rem 0;
+  ${breakpoint.s} {
+    padding: 5rem 0;
+  }
   &::before {
     content: "";
     position: absolute;
@@ -41,7 +50,10 @@ export const BasicInfo = styled.section`
 `;
 
 export const BannerImage = styled.img`
-  height: 11.875rem;
+  height: 9rem;
+  ${breakpoint.s} {
+    height: 11.875rem;
+  }
   width: 100vw;
   object-fit: cover;
   z-index: -1;
@@ -51,18 +63,29 @@ export const BannerImage = styled.img`
 `;
 
 export const BannerImageLayer = styled.div`
-  height: 11.875rem;
   position: relative;
+  ${breakpoint.s} {
+    height: 11.875rem;
+  }
 `;
 
 export const AvatarContainer = styled.div`
   display: flex;
-  position: absolute;
-  top: 50%;
+  margin-top: 4.5rem;
+  ${breakpoint.s} {
+    margin-top: 0;
+    position: absolute;
+    top: 50%;
+  }
   div {
-    width: 10rem !important;
-    height: 10rem !important;
+    width: 7.25rem !important;
+    height: 7.25rem !important;
     overflow: hidden;
+    ${breakpoint.s} {
+      top: 50%;
+      width: 10rem !important;
+      height: 10rem !important;
+    }
   }
 `;
 
@@ -70,17 +93,23 @@ export const AddressContainer = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  font-size: 1rem;
+  font-size: 2rem;
   flex-basis: 50%;
-  img {
-    width: 30px;
-    height: 30px;
-    margin-right: 5px;
+  margin-top: 0.5rem;
+  [data-addrest-text] {
+    color: ${colors.darkGrey};
+    font-size: 1.25rem;
+  }
+  ${breakpoint.s} {
+    margin-top: 0;
+    font-size: 1rem;
   }
 `;
 
 export const AvatarEmptySpace = styled.div`
-  min-width: 11rem;
+  ${breakpoint.s} {
+    min-width: 11rem;
+  }
 `;
 
 export const SocialIconContainer = styled.div`
@@ -114,4 +143,11 @@ export const LoadingWrapper = styled.div`
   padding: 2rem;
   text-align: center;
   color: ${colors.secondary};
+`;
+
+export const ProductGridContainer = styled(GridContainer)`
+  grid-row-gap: 3.5rem;
+  ${breakpoint.s} {
+    grid-row-gap: 2rem;
+  }
 `;

@@ -208,7 +208,7 @@ export default function Preview({ togglePreview, seller }: Props) {
         <Button theme="primary" type="submit">
           Confirm
         </Button>
-        <Button theme="primary" type="button" onClick={handleClosePreview}>
+        <Button theme="secondary" type="button" onClick={handleClosePreview}>
           Back to overview
         </Button>
       </ProductButtonGroup>

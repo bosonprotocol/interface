@@ -119,7 +119,7 @@ export default function Upload({
           }}
         />
         {trigger ? (
-          <Button onClick={handleChooseFile} theme="primary">
+          <Button onClick={handleChooseFile} theme="secondary">
             {trigger}
           </Button>
         ) : (

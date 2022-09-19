@@ -9,6 +9,7 @@ import { BigNumber, utils } from "ethers";
 import { CameraSlash } from "phosphor-react";
 import { useMemo } from "react";
 import { generatePath } from "react-router-dom";
+import styled from "styled-components";
 import { useAccount } from "wagmi";
 
 import mockedAvatar from "../../assets/frame.png";
@@ -30,6 +31,12 @@ interface Props {
   isPrivateProfile?: boolean;
   reload?: () => void;
 }
+
+const ExchangeCardWrapper = styled.div`
+  [data-card="exchange-card"] {
+    min-height: 500px;
+  }
+`;
 
 export default function Exchange({ offer, exchange, reload }: Props) {
   const { showModal, modalTypes } = useModal();
@@ -171,24 +178,27 @@ export default function Exchange({ offer, exchange, reload }: Props) {
   };
 
   return (
-    <ExchangeCard
-      onCardClick={handleOnCardClick}
-      id={offer.id}
-      title={offer.metadata.name}
-      avatarName={`Seller ID: ${offer.seller.id}`}
-      // TODO: ADD AVATAR IMAGE FOR NOW HARDCODED
-      avatar={mockedAvatar}
-      imageProps={{
-        src: imageSrc,
-        preloadConfig: {
-          status: imageStatus,
-          errorIcon: <CameraSlash size={32} color={colors.white} />
-        }
-      }}
-      onAvatarNameClick={handleOnAvatarClick}
-      price={Number(price)}
-      currency={offer.exchangeToken.symbol as Currencies}
-      {...createSpecificCardConfig()}
-    />
+    <ExchangeCardWrapper>
+      <ExchangeCard
+        onCardClick={handleOnCardClick}
+        dataCard="exchange-card"
+        id={offer.id}
+        title={offer.metadata.name}
+        avatarName={`Seller ID: ${offer.seller.id}`}
+        // TODO: ADD AVATAR IMAGE FOR NOW HARDCODED
+        avatar={mockedAvatar}
+        imageProps={{
+          src: imageSrc,
+          preloadConfig: {
+            status: imageStatus,
+            errorIcon: <CameraSlash size={32} color={colors.white} />
+          }
+        }}
+        onAvatarNameClick={handleOnAvatarClick}
+        price={Number(price)}
+        currency={offer.exchangeToken.symbol as Currencies}
+        {...createSpecificCardConfig()}
+      />
+    </ExchangeCardWrapper>
   );
 }
