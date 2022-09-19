@@ -167,7 +167,7 @@ export default function DatePicker({
 
   return (
     <Picker>
-      <FieldInput value={shownDate} onClick={handleShow} {...props} />
+      <FieldInput value={shownDate} onClick={handleShow} {...props} readOnly />
       <DatePickerWrapper
         show={show}
         selectTime={selectTime && showTime}
