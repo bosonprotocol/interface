@@ -115,7 +115,7 @@ export default function Preview({ togglePreview, seller }: Props) {
     ],
     seller,
     exchangeToken: {
-      address: "0x0000000000000000000000000000000000000000",
+      address: ethers.constants.AddressZero,
       decimals: CONFIG.nativeCoin?.decimals || "",
       name: CONFIG.nativeCoin?.name || "",
       symbol: CONFIG.nativeCoin?.symbol || ""

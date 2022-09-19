@@ -4,19 +4,23 @@ import { parseUnits } from "@ethersproject/units";
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
-dayjs.extend(localizedFormat);
 import { Form, Formik, FormikHelpers } from "formik";
 import isArray from "lodash/isArray";
 import keys from "lodash/keys";
 import { useCallback, useMemo, useState } from "react";
 import { generatePath } from "react-router-dom";
 import { useAccount } from "wagmi";
+dayjs.extend(localizedFormat);
+
+import { ethers } from "ethers";
 
 import { useModal } from "../../components/modal/useModal";
 import Help from "../../components/product/Help";
 import Preview from "../../components/product/Preview";
-import { CreateProductForm } from "../../components/product/utils";
-import { CREATE_PRODUCT_STEPS } from "../../components/product/utils";
+import {
+  CREATE_PRODUCT_STEPS,
+  CreateProductForm
+} from "../../components/product/utils";
 import MultiSteps from "../../components/step/MultiSteps";
 import { CONFIG } from "../../lib/config";
 import { UrlParameters } from "../../lib/routing/parameters";
@@ -345,7 +349,6 @@ function CreateProductInner({ initial }: Props) {
 
       const resolutionPeriodDurationInMS =
         parseInt(termsOfExchange.disputePeriod) * 24 * 3600 * 1000; // day to msec
-
       const offerData = {
         price: priceBN.toString(),
         sellerDeposit: sellerCancellationPenaltyValue.toString(),
@@ -359,7 +362,7 @@ function CreateProductInner({ initial }: Props) {
         validUntilDateInMS: validUntilDateInMS.toString(),
         fulfillmentPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
         resolutionPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
-        exchangeToken: "0x0000000000000000000000000000000000000000",
+        exchangeToken: ethers.constants.AddressZero,
         disputeResolverId: CONFIG.envName === "testing" ? 1 : 2,
         agentId: 0, // no agent
         metadataUri: `ipfs://${metadataHash}`,

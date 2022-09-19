@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { CONFIG } from "../../../lib/config";
 import { colors } from "../../../lib/styles/colors";
 import useFunds from "../../../pages/account/funds/useFunds";
+import { useConvertionRate } from "../../convertion-rate/useConvertionRate";
 import { Spinner } from "../../loading/Spinner";
 import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
@@ -53,7 +54,10 @@ interface Props {
   id: string;
 }
 export default function ManageFunds({ id }: Props) {
-  const { funds, reload, fundStatus } = useFunds(id);
+  const {
+    store: { tokens }
+  } = useConvertionRate();
+  const { funds, reload, fundStatus } = useFunds(id, tokens);
   const [uiFunds, setUiFunds] =
     useState<subgraph.FundsEntityFieldsFragment[]>(funds);
   const { showModal, modalTypes } = useModal();

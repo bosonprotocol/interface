@@ -11,11 +11,11 @@ import {
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { usePagination, useRowSelect, useSortBy, useTable } from "react-table";
 import styled from "styled-components";
-import { useAccount } from "wagmi";
 dayjs.extend(isBetween);
 
+import { Currencies, CurrencyDisplay } from "@bosonprotocol/react-kit";
+
 import { colors } from "../../../lib/styles/colors";
-import { useBuyerSellerAccounts } from "../../../lib/utils/hooks/useBuyerSellerAccounts";
 import { useModal } from "../../modal/useModal";
 import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
@@ -95,6 +95,11 @@ const Table = styled.table`
     transform: scale(0.75);
   }
 `;
+const CurrencyName = styled(Typography)`
+  > div > *:not(svg) {
+    display: none;
+  }
+`;
 const HeaderSorter = styled.span`
   margin-left: 0.5rem;
 `;
@@ -138,17 +143,14 @@ const processValue = (value: string, decimals: string) => {
 };
 
 export default function SellerFinances({
+  sellerId,
   funds: fundsData,
   exchangesTokens: exchangesTokensData,
   sellerDeposit: sellerDepositData,
   offersBacked
 }: SellerInsideProps & WithSellerDataProps) {
   const { showModal, modalTypes } = useModal();
-  const { address } = useAccount();
-  const {
-    seller: { sellerId, isError: isErrorSellers, isLoading: isLoadingSellers }
-  } = useBuyerSellerAccounts(address || "");
-  const { funds, reload, fundStatus } = fundsData;
+  const { funds: allFunds, reload, fundStatus } = fundsData;
   const {
     isLoading: isLoadingExchangesTokens,
     isError: isErrorExchangesTokens,
@@ -231,7 +233,7 @@ export default function SellerFinances({
 
   const data = useMemo(
     () =>
-      funds?.map((fund) => {
+      allFunds?.map((fund) => {
         const decimals = fund.token.decimals;
         const lockedFunds = sellerLockedFunds?.[fund.token.symbol] ?? "0";
         const lockedFundsFormatted = utils.formatUnits(lockedFunds, decimals);
@@ -256,7 +258,15 @@ export default function SellerFinances({
           return result;
         };
         return {
-          token: <Typography tag="p">{fund.token.symbol}</Typography>,
+          token: (
+            <CurrencyName tag="p" gap="0.5rem">
+              {fund.token.symbol}
+              <CurrencyDisplay
+                currency={fund.token.symbol as Currencies}
+                height={18}
+              />
+            </CurrencyName>
+          ),
           allFund: <Typography tag="p">{allFunds}</Typography>,
           lockedFunds: <Typography tag="p">{lockedFundsFormatted}</Typography>,
           withdrawable: <Typography tag="p">{withdrawable}</Typography>,
@@ -327,7 +337,7 @@ export default function SellerFinances({
       sellerId,
       sellerLockedFunds,
       showModal,
-      funds
+      allFunds
     ]
   );
 
@@ -365,21 +375,11 @@ export default function SellerFinances({
     );
   }, [pageCount, pageIndex]);
 
-  if (
-    !isFundsInitialized ||
-    isLoadingSellers ||
-    isLoadingSellerData ||
-    isLoadingExchangesTokens
-  ) {
+  if (!isFundsInitialized || isLoadingSellerData || isLoadingExchangesTokens) {
     return <Loading />;
   }
 
-  if (
-    isErrorSellers ||
-    sellerDataIsError ||
-    fundStatus === "error" ||
-    isErrorExchangesTokens
-  ) {
+  if (sellerDataIsError || fundStatus === "error" || isErrorExchangesTokens) {
     // TODO: NO FIGMA REPRESENTATIONS
   }
 
@@ -421,18 +421,18 @@ export default function SellerFinances({
         </thead>
         <tbody {...getTableBodyProps()}>
           {(page.length > 0 &&
-            page.map((row) => {
+            page.map((row, id) => {
               prepareRow(row);
               return (
                 <tr
                   {...row.getRowProps()}
-                  key={`seller_table_finances_tbody_tr_${row?.original?.token}`}
+                  key={`seller_table_finances_tbody_tr_${id}`}
                 >
-                  {row.cells.map((cell) => {
+                  {row.cells.map((cell, key) => {
                     return (
                       <td
                         {...cell.getCellProps()}
-                        key={`seller_table_finances_tbody_td_${row?.original?.token}-${cell.column.id}`}
+                        key={`seller_table_finances_tbody_td_${id}-${key}`}
                       >
                         {cell.render("Cell")}
                       </td>
