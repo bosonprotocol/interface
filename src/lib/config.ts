@@ -1,12 +1,11 @@
 import { getDefaultConfig } from "@bosonprotocol/react-kit";
-import { chain } from "wagmi";
 
 import { parseCurationList } from "./utils/curationList";
 
-const REACT_APP_CHAIN_ID = process.env.REACT_APP_CHAIN_ID
-  ? parseInt(process.env.REACT_APP_CHAIN_ID)
-  : chain.ropsten.id;
-export const config = getDefaultConfig({ chainId: REACT_APP_CHAIN_ID });
+type EnvironmentType = "local" | "testing" | "staging" | "production"; // TODO: export EnvironmentType in react-kit
+
+const REACT_APP_ENV_NAME = process.env.REACT_APP_ENV_NAME;
+export const config = getDefaultConfig(REACT_APP_ENV_NAME as EnvironmentType);
 
 const REACT_APP_ENABLE_SENTRY_LOGGING =
   process.env.NODE_ENV === "development"
@@ -38,7 +37,7 @@ export const CONFIG = {
     ticker: process.env.DEFAULT_CURRENCY || "USD",
     symbol: process.env.DEFAULT_CURRENCY_SYMBOL || "$"
   },
-  chainId: REACT_APP_CHAIN_ID,
+  envName: REACT_APP_ENV_NAME as EnvironmentType,
   theGraphIpfsUrl:
     process.env.REACT_APP_THE_GRAPH_IPFS_URL || config.theGraphIpfsUrl,
   ipfsMetadataStorageUrl:

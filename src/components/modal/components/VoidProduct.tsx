@@ -172,7 +172,7 @@ export default function VoidProduct({
           <VoidButton
             variant="secondary"
             offerId={offerId || 0}
-            chainId={CONFIG.chainId}
+            envName={CONFIG.envName}
             onError={(args) => {
               // TODO: add to notification system
               console.error("onError", args);
