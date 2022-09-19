@@ -8,7 +8,7 @@ function SellerAddNewProduct() {
   const navigate = useKeepQueryParamsNavigate();
   return (
     <Button
-      theme="bosonSecondary"
+      theme="bosonPrimary"
       size="small"
       onClick={() => {
         navigate({ pathname: SellerCenterRoutes.CreateProduct });
