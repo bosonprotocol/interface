@@ -488,7 +488,7 @@ export default function ConfirmProductDetails({
             "Confirm"
           )}
         </Button>
-        <Button theme="primary" type="button" onClick={handleOpenPreview}>
+        <Button theme="secondary" type="button" onClick={handleOpenPreview}>
           Preview product detail page
         </Button>
       </ConfirmProductDetailsButtonGroup>
