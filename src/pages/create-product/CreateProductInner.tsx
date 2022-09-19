@@ -347,9 +347,6 @@ function CreateProductInner({ initial }: Props) {
 
       const resolutionPeriodDurationInMS =
         parseInt(termsOfExchange.disputePeriod) * 24 * 3600 * 1000; // day to msec
-      // const exchangeToken = CONFIG.defaultTokens.find(
-      //   (token: Token) => token["symbol"] === coreTermsOfSale.currency.value
-      // );
       const offerData = {
         price: priceBN.toString(),
         sellerDeposit: sellerCancellationPenaltyValue.toString(),
