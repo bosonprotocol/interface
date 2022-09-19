@@ -13,11 +13,9 @@ import { useAccount, useSigner } from "wagmi";
 import { CONFIG } from "../../../lib/config";
 import { BosonRoutes } from "../../../lib/routing/routes";
 import { breakpoint } from "../../../lib/styles/breakpoint";
-import { colors } from "../../../lib/styles/colors";
 import { Offer } from "../../../lib/types/offer";
 import { IPrice } from "../../../lib/utils/convertPrice";
 import { titleCase } from "../../../lib/utils/formatText";
-import { isOfferHot } from "../../../lib/utils/getOfferLabel";
 import { getBuyerCancelPenalty } from "../../../lib/utils/getPrices";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
@@ -42,6 +40,7 @@ import {
 import DetailTable from "../DetailTable";
 import { DetailDisputeResolver } from "./DetailDisputeResolver";
 import { DetailSellerDeposit } from "./DetailSellerDeposit";
+import { QuantityDisplay } from "./QuantityDisplay";
 
 const StyledPrice = styled(Price)`
   h3 {
@@ -245,15 +244,17 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     () => Number(offer?.quantityAvailable),
     [offer?.quantityAvailable]
   );
+
+  const quantityInitial = useMemo<number>(
+    () => Number(offer?.quantityInitial),
+    [offer?.quantityInitial]
+  );
+
   const isExpiredOffer = useMemo<boolean>(
     () => dayjs(Number(offer?.validUntilDate) * 1000).isBefore(dayjs()),
     [offer?.validUntilDate]
   );
   const isVoidedOffer = !!offer.voidedAt;
-  const isHotOffer = useMemo(
-    () => isOfferHot(offer?.quantityAvailable, offer?.quantityInitial),
-    [offer?.quantityAvailable, offer?.quantityInitial]
-  );
 
   const voucherRedeemableUntilDate = dayjs(
     Number(offer.voucherRedeemableUntilDate) * 1000
@@ -313,24 +314,12 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               convert
               withBosonStyles
             />
+
             {isOffer && (
-              <Grid
-                alignItems="center"
-                justifyContent="flex-end"
-                style={{ marginTop: isLteXS ? "-7rem" : "0" }}
-              >
-                <Typography tag="p" style={{ color: colors.orange, margin: 0 }}>
-                  {isHotOffer && (
-                    <>
-                      {quantity === 0 && "No items available!"}
-                      {quantity > 0 &&
-                        `Only ${quantity} ${
-                          quantity === 1 ? "item" : "items"
-                        } left!`}
-                    </>
-                  )}
-                </Typography>
-              </Grid>
+              <QuantityDisplay
+                quantityInitial={quantityInitial}
+                quantity={quantity}
+              />
             )}
             {isOffer && (
               <CommitButton
