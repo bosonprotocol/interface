@@ -195,7 +195,7 @@ export default function Buyer({ manageFundsId }: Props) {
           )}
         </ProfileSectionWrapper>
         <ProfileSectionWrapper>
-          <ReadMore text="Designs unclear. Where should unclear. Where shouldunclear. Where shouldunclear. Where should this text come from as the buyer has no metadata and no Lens profile for us to get this from." />
+          <ReadMore text="Designs unclear. Where should this text come from as the buyer has no metadata and no Lens profile for us to get this from." />
           <AllExchangesTitle tag="h2">All exchanges</AllExchangesTitle>
         </ProfileSectionWrapper>
       </BasicInfo>
