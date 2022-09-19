@@ -41,10 +41,10 @@ const ManageFundMobileWrapper = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
-  button {
+  [data-manage-funds-button] {
     width: 100%;
     padding: 1.05rem 2rem;
-    div {
+    [data-child-wrapper-button] {
       text-align: center;
       display: block;
     }
@@ -184,7 +184,11 @@ export default function Buyer({ manageFundsId }: Props) {
           </Grid>
           {manageFundsId && isLteXS && (
             <ManageFundMobileWrapper>
-              <Button theme="secondary" onClick={handleManageFunds}>
+              <Button
+                theme="secondary"
+                onClick={handleManageFunds}
+                data-manage-funds-button
+              >
                 Manage Funds
               </Button>
             </ManageFundMobileWrapper>

@@ -96,7 +96,7 @@ export const AddressContainer = styled.div`
   font-size: 2rem;
   flex-basis: 50%;
   margin-top: 0.5rem;
-  div {
+  [data-addrest-text] {
     color: ${colors.darkGrey};
     font-size: 1.25rem;
   }
