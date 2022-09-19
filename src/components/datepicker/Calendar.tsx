@@ -31,13 +31,13 @@ export default function Calendar({
   const secondDay = secondDate ? dayjs(secondDate) : null;
   const today = dayjs();
   const handleSelectDate = (value: Dayjs) => {
-    if (value.isBefore(today, "day")) {
+    if (value?.isBefore(today, "day")) {
       return onChange(null);
     }
 
     if (
       period &&
-      (value.isBefore(firstDay, "day") || value.isBefore(today, "day"))
+      (value?.isBefore(firstDay, "day") || value?.isBefore(today, "day"))
     ) {
       return onChange(null);
     }
@@ -61,7 +61,7 @@ export default function Calendar({
       <CalendarRow>
         {rows.map(({ text, value, current }: ICalendarCell, i: number) => {
           const disabled = period
-            ? value.isBefore(firstDay, "day") || value.isBefore(today, "day")
+            ? value?.isBefore(firstDay, "day") || value?.isBefore(today, "day")
             : false;
 
           return (

@@ -160,7 +160,6 @@ export default function TermsOfExchange() {
                   type="number"
                   min="0"
                   step="1"
-                  defaultValue={30}
                 />
               </div>
               <div>
