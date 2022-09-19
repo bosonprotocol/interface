@@ -33,7 +33,7 @@ import { useChatContext } from "../ChatProvider/ChatContext";
 import {
   BuyerOrSeller,
   MessageDataWithInfo,
-  ThreadObjectWithIsValid
+  ThreadObjectWithInfo
 } from "../types";
 import { sendFilesToChat, sendProposalToChat } from "../utils/send";
 import ButtonProposal from "./ButtonProposal/ButtonProposal";
@@ -324,13 +324,7 @@ const ChatConversation = ({
     ? utils.getAddress(destinationAddressLowerCase)
     : "";
   const { bosonXmtp } = useChatContext();
-  const [isMessageBeingSent, setIsMessageBeingSent] = useState<boolean>(false);
   const [dateIndex, setDateIndex] = useState<number>(0);
-  const onFinishFetching = () => {
-    if (bosonXmtp && !isBeginningOfTimes && !areThreadsLoading && !lastThread) {
-      loadMoreMessages();
-    }
-  };
   const threadId = useMemo<ThreadId | null>(() => {
     if (!exchange) {
       return null;
@@ -354,44 +348,82 @@ const ChatConversation = ({
     dateIndex,
     dateStep: "week",
     counterParty: destinationAddress,
-    onFinishFetching
+    onFinishFetching: ({
+      isBeginningOfTimes,
+      isLoading: areThreadsLoading,
+      lastData: lastThread
+    }) => {
+      console.log("abc before if onFinishFetching", {
+        bosonXmtp,
+        isBeginningOfTimes,
+        areThreadsLoading,
+        lastThread
+      });
+      if (
+        bosonXmtp &&
+        !isBeginningOfTimes &&
+        !areThreadsLoading &&
+        !lastThread
+      ) {
+        console.log("abc onFinishFetching", {
+          bosonXmtp,
+          isBeginningOfTimes,
+          areThreadsLoading,
+          lastThread
+        });
+        loadMoreMessages();
+      }
+    }
   });
+  console.log({ isBeginningOfTimes });
   const loadMoreMessages = useCallback(
     (forceDateIndex?: number) => {
       if (!areThreadsLoading) {
         if (forceDateIndex !== undefined) {
+          // TODO:
+          console.log("abc loadMoreMessages setDateIndex(forceDateIndex)", {
+            forceDateIndex
+          });
           setDateIndex(forceDateIndex);
         } else {
-          setDateIndex(dateIndex - 1);
+          // TODO:
+          console.log("abc loadMoreMessages setDateIndex(dateIndex - 1)", {
+            dateIndex
+          });
+          setDateIndex((prevDateIndex) => prevDateIndex - 1);
         }
       }
     },
-    [dateIndex, areThreadsLoading]
+    [areThreadsLoading, dateIndex]
   );
 
   const addMessage = useCallback(
     async (
-      threadId: ThreadObjectWithIsValid["threadId"] | null | undefined,
+      threadId: ThreadObjectWithInfo["threadId"] | null | undefined,
       newMessageOrList: MessageDataWithInfo | MessageDataWithInfo[]
     ) => {
       const newMessages = Array.isArray(newMessageOrList)
         ? newMessageOrList
         : [newMessageOrList];
-      if (threadId) {
-        const messagesWithIsValid = await Promise.all(
-          newMessages.map(async (message) => {
-            if (message.isValid === undefined) {
-              message.isValid = await validateMessage(message.data);
-            }
-            return message;
-          })
-        );
-        appendMessages(messagesWithIsValid);
-      } else {
-        loadMoreMessages(0); // trigger getting the thread
-      }
+      const messagesWithIsValid = await Promise.all(
+        newMessages.map(async (message) => {
+          if (message.isValid === undefined) {
+            message.isValid = await validateMessage(message.data);
+          }
+          return message;
+        })
+      );
+      appendMessages(messagesWithIsValid);
+      // if (!threadId) {
+      //   console.log(
+      //     "abc no threadId",
+      //     { threadId, threadId2: thread?.threadId },
+      //     "loading more messages"
+      //   );
+      //   loadMoreMessages(0); // trigger getting the thread
+      // }
     },
-    [loadMoreMessages, appendMessages]
+    [appendMessages]
   );
   const previousThreadMessagesRef = useRef<MessageData[]>(
     thread?.messages || []
@@ -480,9 +512,9 @@ const ChatConversation = ({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMonitorOk]);
+
   const onSentMessage = useCallback(
     async (messageData: MessageData, uuid: string) => {
-      setIsMessageBeingSent(false);
       removePendingMessage(uuid);
       await addMessage(thread?.threadId, {
         ...messageData,
@@ -493,6 +525,54 @@ const ChatConversation = ({
     },
     [addMessage, removePendingMessage, thread?.threadId]
   );
+
+  const handleSendingRegularMessage = useCallback(async () => {
+    const value = textAreaValue?.trim() || "";
+    if (bosonXmtp && threadId && value && address) {
+      try {
+        const newMessage = {
+          threadId,
+          content: {
+            value
+          },
+          contentType: MessageType.String,
+          version
+        } as const;
+        const uuid = window.crypto.randomUUID();
+
+        await addMessage(thread?.threadId, {
+          authorityId: "",
+          timestamp: Date.now(),
+          sender: address,
+          recipient: destinationAddress,
+          data: newMessage,
+          isValid: false,
+          isPending: true,
+          uuid
+        });
+        onTextAreaChange("");
+
+        const messageData = await bosonXmtp.encodeAndSendMessage(
+          newMessage,
+          destinationAddress
+        );
+
+        onSentMessage(messageData, uuid);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }, [
+    addMessage,
+    address,
+    bosonXmtp,
+    destinationAddress,
+    onSentMessage,
+    onTextAreaChange,
+    textAreaValue,
+    thread?.threadId,
+    threadId
+  ]);
 
   useEffect(() => {
     async function backOnline() {
@@ -511,7 +591,6 @@ const ChatConversation = ({
           onSentMessage(messageData, message.uuid);
         } catch (error) {
           console.error(error);
-          setIsMessageBeingSent(false);
         }
       }
     }
@@ -580,8 +659,8 @@ const ChatConversation = ({
     );
   }, [chatListOpen, isExchangePreviewOpen, isXXS, isS, isM]);
 
-  const isConversationBeingLoaded = !thread && areThreadsLoading;
-  const disableInputs = isErrorThread || isConversationBeingLoaded;
+  // const isConversationBeingLoaded = !thread && areThreadsLoading;
+  const disableInputs = isErrorThread;
   if (!exchange || !address) {
     return (
       <Container>
@@ -760,10 +839,12 @@ const ChatConversation = ({
                   placeholder="Write a message"
                   disabled={disableInputs}
                   value={textAreaValue}
-                  onChange={(e) => {
+                  onChange={async (e) => {
                     const value = e.target.value;
                     const didPressEnter = value[value.length - 1] === `\n`;
-                    if (!didPressEnter) {
+                    if (didPressEnter) {
+                      await handleSendingRegularMessage();
+                    } else {
                       onTextAreaChange(value);
                     }
                   }}
@@ -796,42 +877,7 @@ const ChatConversation = ({
               data-testid="send"
               theme="primary"
               disabled={disableInputs}
-              onClick={async () => {
-                const value = textAreaValue?.trim() || "";
-                if (bosonXmtp && threadId && value) {
-                  try {
-                    setIsMessageBeingSent(true);
-                    const newMessage = {
-                      threadId,
-                      content: {
-                        value
-                      },
-                      contentType: MessageType.String,
-                      version
-                    } as const;
-                    const uuid = window.crypto.randomUUID();
-                    await addMessage(thread?.threadId, {
-                      authorityId: "",
-                      timestamp: Date.now(),
-                      sender: address,
-                      recipient: destinationAddress,
-                      data: newMessage,
-                      isValid: false,
-                      isPending: true,
-                      uuid
-                    });
-                    onTextAreaChange("");
-                    const messageData = await bosonXmtp.encodeAndSendMessage(
-                      newMessage,
-                      destinationAddress
-                    );
-                    onSentMessage(messageData, uuid);
-                  } catch (error) {
-                    console.error(error);
-                    setIsMessageBeingSent(false);
-                  }
-                }
-              }}
+              onClick={handleSendingRegularMessage}
             >
               <PaperPlaneRight size={24} />
             </SendButton>

@@ -15,7 +15,7 @@ export type Thread = ThreadObject & {
     | undefined;
 };
 
-export interface ThreadObjectWithIsValid extends ThreadObject {
+export interface ThreadObjectWithInfo extends ThreadObject {
   messages: MessageDataWithInfo[];
 }
 

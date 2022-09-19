@@ -51,7 +51,7 @@ const StrictMode = ({
 };
 
 root.render(
-  <StrictMode enable={true}>
+  <StrictMode enable={false}>
     <WalletConnectionProvider>
       <QueryClientProvider client={queryClient}>
         <ConvertionRateProvider>

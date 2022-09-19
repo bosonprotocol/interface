@@ -6,17 +6,24 @@ import { matchThreadIds } from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/fun
 import { validateMessage } from "@bosonprotocol/chat-sdk/dist/cjs/util/validators";
 import dayjs from "dayjs";
 import { utils } from "ethers";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 import { useChatContext } from "../../../../pages/chat/ChatProvider/ChatContext";
-import { ThreadObjectWithIsValid } from "../../../../pages/chat/types";
+import { ThreadObjectWithInfo } from "../../../../pages/chat/types";
+import { useEffectDebugger } from "../useEffectDebugger";
 
+type DataToReturn = {
+  isLoading: boolean;
+  isError: boolean;
+  isBeginningOfTimes: boolean;
+  lastData: ThreadObject | null;
+};
 interface Props {
-  dateStep: "day" | "week" | "month" | "year";
+  dateStep: "hour" | "day" | "week" | "month" | "year";
   counterParty: string;
   threadId: ThreadId | null | undefined;
   dateIndex: number;
-  onFinishFetching: () => void;
+  onFinishFetching: (arg: DataToReturn) => void;
 }
 const genesisDate = new Date("2022-08-25");
 export function useInfiniteThread({
@@ -26,18 +33,18 @@ export function useInfiniteThread({
   threadId,
   onFinishFetching
 }: Props): {
-  data: ThreadObjectWithIsValid | null;
+  data: ThreadObjectWithInfo | null;
   isLoading: boolean;
   isError: boolean;
   error: Error | null;
   isBeginningOfTimes: boolean;
   lastData: ThreadObject | null;
-  appendMessages: (messages: ThreadObjectWithIsValid["messages"]) => void;
+  appendMessages: (messages: ThreadObjectWithInfo["messages"]) => void;
   removePendingMessage: (uuid: string) => void;
 } {
   const { bosonXmtp } = useChatContext();
   const [areThreadsLoading, setThreadsLoading] = useState<boolean>(false);
-  const [threadXmtp, setThreadXmtp] = useState<ThreadObjectWithIsValid | null>(
+  const [threadXmtp, setThreadXmtp] = useState<ThreadObjectWithInfo | null>(
     null
   );
   const [lastThreadXmtp, setLastThreadXmtp] = useState<ThreadObject | null>(
@@ -45,7 +52,7 @@ export function useInfiniteThread({
   );
   const [error, setError] = useState<Error | null>(null);
   const [isBeginningOfTimes, setIsBeginningOfTimes] = useState<boolean>(false);
-  useEffect(() => {
+  useEffectDebugger(() => {
     if (!bosonXmtp || !threadId || !counterParty) {
       return;
     }
@@ -66,35 +73,66 @@ export function useInfiniteThread({
     setThreadsLoading(true);
 
     setError(null);
+    console.log("abc getThread request", {
+      dateIndex,
+      threadId,
+      counterParty,
+      dates: {
+        startTime: endTime,
+        endTime: startTime
+      }
+    });
     bosonXmtp
       .getThread(threadId, utils.getAddress(counterParty), {
         startTime: endTime,
         endTime: startTime
       })
       .then(async (threadObject) => {
+        console.log("abc getThread END request", {
+          dateIndex,
+          threadId,
+          counterParty,
+          dates: {
+            startTime: endTime,
+            endTime: startTime
+          },
+          threadObject,
+          threadXmtp
+        });
         setLastThreadXmtp(threadObject);
-        if (!threadObject) {
-          return;
+        if (threadObject) {
+          await setIsValidToMessages(threadObject as ThreadObjectWithInfo);
+
+          setThreadXmtp((prevThread) => {
+            const mergedThreads = mergeThreads(prevThread ? [prevThread] : [], [
+              threadObject
+            ]);
+            const newThreadXmtp = mergedThreads[0] as ThreadObjectWithInfo;
+
+            return newThreadXmtp;
+          });
         }
-        const mergedThreads = mergeThreads(threadXmtp ? [threadXmtp] : [], [
-          threadObject
-        ]);
-        const newThreadXmtp = mergedThreads[0] as ThreadObjectWithIsValid;
 
-        await setIsValidToMessages(newThreadXmtp);
-
-        setThreadXmtp(newThreadXmtp);
+        setThreadsLoading(false);
+        onFinishFetching({
+          isBeginningOfTimes: isBeginning,
+          isLoading: false,
+          isError: false,
+          lastData: threadObject
+        });
       })
       .catch((err) => {
         setError(err);
-      })
-      .finally(() => {
         setThreadsLoading(false);
-        onFinishFetching();
+        onFinishFetching({
+          isLoading: false,
+          isError: !!err,
+          isBeginningOfTimes: isBeginning,
+          lastData: lastThreadXmtp
+        });
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bosonXmtp, dateIndex, counterParty, dateStep, threadId]);
-
   return {
     data: threadXmtp || null,
     isLoading: areThreadsLoading,
@@ -102,30 +140,34 @@ export function useInfiniteThread({
     error,
     isBeginningOfTimes,
     lastData: lastThreadXmtp || null,
-    appendMessages: useCallback((messages): void => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      setThreadXmtp((newThread) => {
-        const oldMessages = newThread?.messages || [];
-        const allMessagesIncludingDuplicates = [...oldMessages, ...messages];
+    appendMessages: useCallback(
+      (messages): void => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        setThreadXmtp((newThread) => {
+          const oldMessages = newThread?.messages || [];
+          const allMessagesIncludingDuplicates = [...oldMessages, ...messages];
 
-        const seenMessagesSet = new Set();
-        const uniqueMessages = allMessagesIncludingDuplicates.filter(
-          (message) => {
-            const id = message.timestamp;
-            const duplicate = seenMessagesSet.has(id);
-            seenMessagesSet.add(id);
-            return !duplicate;
-          }
-        );
-        return {
-          ...(newThread || {}),
-          messages: uniqueMessages.sort(
-            (msgA, msgB) => msgA.timestamp - msgB.timestamp
-          )
-        };
-      });
-    }, []),
+          const seenMessagesSet = new Set();
+          const uniqueMessages = allMessagesIncludingDuplicates.filter(
+            (message) => {
+              const id = message.timestamp;
+              const duplicate = seenMessagesSet.has(id);
+              seenMessagesSet.add(id);
+              return !duplicate;
+            }
+          );
+          return {
+            ...(newThread || {}),
+            threadId: newThread?.threadId || threadId,
+            messages: uniqueMessages.sort(
+              (msgA, msgB) => msgA.timestamp - msgB.timestamp
+            )
+          };
+        });
+      },
+      [threadId]
+    ),
     removePendingMessage: useCallback((uuid: string): void => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
@@ -181,7 +223,7 @@ const mergeThreads = (
   return resultingThreads;
 };
 
-const setIsValidToMessages = async (newThreadXmtp: ThreadObjectWithIsValid) => {
+const setIsValidToMessages = async (newThreadXmtp: ThreadObjectWithInfo) => {
   const promises = [];
   for (const message of newThreadXmtp.messages) {
     promises.push(
