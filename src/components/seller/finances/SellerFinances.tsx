@@ -1,5 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
 import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 import { BigNumber, utils } from "ethers";
@@ -17,9 +15,7 @@ dayjs.extend(isBetween);
 
 import { Currencies, CurrencyDisplay } from "@bosonprotocol/react-kit";
 
-import { CONFIG } from "../../../lib/config";
 import { colors } from "../../../lib/styles/colors";
-import { useConvertionRate } from "../../convertion-rate/useConvertionRate";
 import { useModal } from "../../modal/useModal";
 import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
@@ -153,11 +149,8 @@ export default function SellerFinances({
   sellerDeposit: sellerDepositData,
   offersBacked
 }: SellerInsideProps & WithSellerDataProps) {
-  const {
-    store: { tokens }
-  } = useConvertionRate();
   const { showModal, modalTypes } = useModal();
-  const { funds, reload, fundStatus } = fundsData;
+  const { funds: allFunds, reload, fundStatus } = fundsData;
   const {
     isLoading: isLoadingExchangesTokens,
     isError: isErrorExchangesTokens,
@@ -237,39 +230,6 @@ export default function SellerFinances({
     },
     [threshold]
   );
-
-  const allFunds = useMemo(() => {
-    const mergeTokens = [
-      ...(tokens || []),
-      ...(funds || []),
-      ...(CONFIG.nativeCoin ? [CONFIG.nativeCoin] : [])
-    ];
-
-    const allTokens = mergeTokens?.reduce((acc, o) => {
-      // TODO: work on fixing the types here
-      if (!acc.some((obj) => obj?.symbol === o?.symbol)) {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        acc.push(o);
-      }
-      return acc;
-    }, []);
-    return (
-      allTokens?.map((token) => ({
-        accountId: sellerId,
-        availableAmount: "0",
-        id: `${sellerId}-0x00`,
-        token: {
-          id: token?.address || "0x0000000000000000000000000000000000000000",
-          address:
-            token?.address || "0x0000000000000000000000000000000000000000",
-          decimals: token?.decimals || "18",
-          name: token?.name,
-          symbol: token?.symbol
-        }
-      })) || []
-    );
-  }, [tokens, funds, sellerId]);
 
   const data = useMemo(
     () =>

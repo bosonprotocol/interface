@@ -364,7 +364,7 @@ function CreateProductInner({ initial }: Props) {
         validUntilDateInMS: validUntilDateInMS.toString(),
         fulfillmentPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
         resolutionPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
-        exchangeToken: "0x0000000000000000000000000000000000000000",
+        exchangeToken: exchangeToken.address,
         disputeResolverId: CONFIG.envName === "testing" ? 1 : 2,
         agentId: 0, // no agent
         metadataUri: `ipfs://${metadataHash}`,

@@ -62,7 +62,6 @@ export default function FinanceWithdraw({
         }
       : { addressOrName: address }
   );
-  console.log("dataBalance", exchangeToken, dataBalance);
 
   const { hideModal } = useModal();
   const withdrawFunds = useWithdrawFunds({

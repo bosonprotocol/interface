@@ -50,7 +50,6 @@ export default function FinanceDeposit({
         }
       : { addressOrName: address }
   );
-  console.log("dataBalance", dataBalance);
 
   const { hideModal } = useModal();
   const coreSDK = useCoreSDK();
