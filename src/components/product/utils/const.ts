@@ -1,3 +1,5 @@
+import { ethers } from "ethers";
+
 import { CONFIG } from "../../../lib/config";
 import countries from "../../../lib/const/countries.json";
 import { Token } from "../../convertion-rate/ConvertionRateContext";
@@ -214,7 +216,7 @@ export const MOCK_MODAL_DATA = {
       active: true
     },
     exchangeToken: {
-      address: "0x0000000000000000000000000000000000000000",
+      address: ethers.constants.AddressZero,
       decimals: CONFIG.nativeCoin?.decimals || "",
       name: CONFIG.nativeCoin?.name || "",
       symbol: CONFIG.nativeCoin?.symbol || ""

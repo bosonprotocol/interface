@@ -12,6 +12,8 @@ import { generatePath } from "react-router-dom";
 import { useAccount } from "wagmi";
 dayjs.extend(localizedFormat);
 
+import { ethers } from "ethers";
+
 import { useModal } from "../../components/modal/useModal";
 import Help from "../../components/product/Help";
 import Preview from "../../components/product/Preview";
@@ -360,7 +362,7 @@ function CreateProductInner({ initial }: Props) {
         validUntilDateInMS: validUntilDateInMS.toString(),
         fulfillmentPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
         resolutionPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
-        exchangeToken: "0x0000000000000000000000000000000000000000",
+        exchangeToken: ethers.constants.AddressZero,
         disputeResolverId: CONFIG.envName === "testing" ? 1 : 2,
         agentId: 0, // no agent
         metadataUri: `ipfs://${metadataHash}`,

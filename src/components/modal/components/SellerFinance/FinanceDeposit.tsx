@@ -1,4 +1,4 @@
-import { BigNumber, constants } from "ethers";
+import { BigNumber, constants, ethers } from "ethers";
 import { useState } from "react";
 import { useAccount, useBalance } from "wagmi";
 
@@ -43,7 +43,7 @@ export default function FinanceDeposit({
 
   const { address } = useAccount();
   const { data: dataBalance } = useBalance(
-    exchangeToken !== "0x0000000000000000000000000000000000000000"
+    exchangeToken !== ethers.constants.AddressZero
       ? {
           addressOrName: address,
           token: exchangeToken

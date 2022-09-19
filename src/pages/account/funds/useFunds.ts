@@ -1,5 +1,6 @@
 /* eslint @typescript-eslint/no-explicit-any: "off" */
 import { subgraph } from "@bosonprotocol/react-kit";
+import { ethers } from "ethers";
 import { useCallback, useEffect, useReducer, useState } from "react";
 
 import { Token } from "../../../components/convertion-rate/ConvertionRateContext";
@@ -49,12 +50,8 @@ export default function useFunds(
                   availableAmount: "0",
                   id: `${accountId}0x${String(index).padStart(2, "0")}`,
                   token: {
-                    id:
-                      token?.address ||
-                      "0x0000000000000000000000000000000000000000",
-                    address:
-                      token?.address ||
-                      "0x0000000000000000000000000000000000000000",
+                    id: token?.address || ethers.constants.AddressZero,
+                    address: token?.address || ethers.constants.AddressZero,
                     decimals: token?.decimals || "18",
                     name: token?.name,
                     symbol: token?.symbol
