@@ -32,7 +32,7 @@ import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQuer
 import { useChatContext } from "../ChatProvider/ChatContext";
 import {
   BuyerOrSeller,
-  MessageDataWithIsValid,
+  MessageDataWithInfo,
   ThreadObjectWithIsValid
 } from "../types";
 import { sendFilesToChat, sendProposalToChat } from "../utils/send";
@@ -347,7 +347,8 @@ const ChatConversation = ({
     isBeginningOfTimes,
     isError: isErrorThread,
     lastData: lastThread,
-    appendMessages
+    appendMessages,
+    removePendingMessage
   } = useInfiniteThread({
     threadId,
     dateIndex,
@@ -371,7 +372,7 @@ const ChatConversation = ({
   const addMessage = useCallback(
     async (
       threadId: ThreadObjectWithIsValid["threadId"] | null | undefined,
-      newMessageOrList: MessageDataWithIsValid | MessageDataWithIsValid[]
+      newMessageOrList: MessageDataWithInfo | MessageDataWithInfo[]
     ) => {
       const newMessages = Array.isArray(newMessageOrList)
         ? newMessageOrList
@@ -385,7 +386,7 @@ const ChatConversation = ({
             return message;
           })
         );
-        await appendMessages(messagesWithIsValid);
+        appendMessages(messagesWithIsValid);
       } else {
         loadMoreMessages(0); // trigger getting the thread
       }
@@ -479,6 +480,47 @@ const ChatConversation = ({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMonitorOk]);
+  const onSentMessage = useCallback(
+    async (messageData: MessageData, uuid: string) => {
+      setIsMessageBeingSent(false);
+      removePendingMessage(uuid);
+      await addMessage(thread?.threadId, {
+        ...messageData,
+        isValid: true,
+        isPending: false,
+        uuid
+      });
+    },
+    [addMessage, removePendingMessage, thread?.threadId]
+  );
+
+  useEffect(() => {
+    async function backOnline() {
+      if (!thread?.messages || !bosonXmtp) {
+        return;
+      }
+      for (const message of thread.messages) {
+        if (!message.isPending || !message.uuid) {
+          continue;
+        }
+        try {
+          const messageData = await bosonXmtp.encodeAndSendMessage(
+            message.data,
+            destinationAddress
+          );
+          onSentMessage(messageData, message.uuid);
+        } catch (error) {
+          console.error(error);
+          setIsMessageBeingSent(false);
+        }
+      }
+    }
+
+    window.addEventListener("online", backOnline);
+    return () => {
+      window.removeEventListener("online", backOnline);
+    };
+  }, [bosonXmtp, destinationAddress, onSentMessage, thread?.messages]);
 
   const sendFiles = useCallback(
     async (files: FileWithEncodedData[]) => {
@@ -753,10 +795,10 @@ const ChatConversation = ({
             <SendButton
               data-testid="send"
               theme="primary"
-              disabled={disableInputs || isMessageBeingSent}
+              disabled={disableInputs}
               onClick={async () => {
                 const value = textAreaValue?.trim() || "";
-                if (bosonXmtp && threadId && value && !isMessageBeingSent) {
+                if (bosonXmtp && threadId && value) {
                   try {
                     setIsMessageBeingSent(true);
                     const newMessage = {
@@ -767,16 +809,23 @@ const ChatConversation = ({
                       contentType: MessageType.String,
                       version
                     } as const;
+                    const uuid = window.crypto.randomUUID();
+                    await addMessage(thread?.threadId, {
+                      authorityId: "",
+                      timestamp: Date.now(),
+                      sender: address,
+                      recipient: destinationAddress,
+                      data: newMessage,
+                      isValid: false,
+                      isPending: true,
+                      uuid
+                    });
+                    onTextAreaChange("");
                     const messageData = await bosonXmtp.encodeAndSendMessage(
                       newMessage,
                       destinationAddress
                     );
-                    setIsMessageBeingSent(false);
-                    await addMessage(thread?.threadId, {
-                      ...messageData,
-                      isValid: true
-                    });
-                    onTextAreaChange("");
+                    onSentMessage(messageData, uuid);
                   } catch (error) {
                     console.error(error);
                     setIsMessageBeingSent(false);
@@ -784,11 +833,7 @@ const ChatConversation = ({
                 }
               }}
             >
-              {isMessageBeingSent ? (
-                <Spinner size={24} />
-              ) : (
-                <PaperPlaneRight size={24} />
-              )}
+              <PaperPlaneRight size={24} />
             </SendButton>
           </TypeMessage>
         </ConversationContainer>

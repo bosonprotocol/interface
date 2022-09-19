@@ -53,7 +53,6 @@ const Container = styled.div<{ $disputeOpen: boolean }>`
 `;
 
 const StyledImage = styled(Image)`
-  all: unset;
   cursor: pointer;
 
   [data-image-placeholder] {

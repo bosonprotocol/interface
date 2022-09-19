@@ -33,6 +33,7 @@ export function useInfiniteThread({
   isBeginningOfTimes: boolean;
   lastData: ThreadObject | null;
   appendMessages: (messages: ThreadObjectWithIsValid["messages"]) => void;
+  removePendingMessage: (uuid: string) => void;
 } {
   const { bosonXmtp } = useChatContext();
   const [areThreadsLoading, setThreadsLoading] = useState<boolean>(false);
@@ -122,6 +123,19 @@ export function useInfiniteThread({
           messages: uniqueMessages.sort(
             (msgA, msgB) => msgA.timestamp - msgB.timestamp
           )
+        };
+      });
+    }, []),
+    removePendingMessage: useCallback((uuid: string): void => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      setThreadXmtp((newThread) => {
+        return {
+          ...(newThread || {}),
+          messages:
+            newThread?.messages.filter((message) => {
+              return message.uuid !== uuid;
+            }) || []
         };
       });
     }, [])
