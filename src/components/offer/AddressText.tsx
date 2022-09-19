@@ -12,5 +12,9 @@ interface Props {
 }
 
 export default function AddressText({ address }: Props) {
-  return <Name data-testid="address">{formatAddress(address)}</Name>;
+  return (
+    <Name data-testid="address" data-addrest-text>
+      {formatAddress(address)}
+    </Name>
+  );
 }
