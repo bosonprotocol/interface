@@ -324,7 +324,6 @@ const ChatConversation = ({
     ? utils.getAddress(destinationAddressLowerCase)
     : "";
   const { bosonXmtp } = useChatContext();
-  const [dateIndex, setDateIndex] = useState<number>(0);
   const threadId = useMemo<ThreadId | null>(() => {
     if (!exchange) {
       return null;
@@ -341,11 +340,12 @@ const ChatConversation = ({
     isBeginningOfTimes,
     isError: isErrorThread,
     lastData: lastThread,
+    setDateIndex,
+    addToDateIndex,
     appendMessages,
     removePendingMessage
   } = useInfiniteThread({
     threadId,
-    dateIndex,
     dateStep: "week",
     counterParty: destinationAddress,
     onFinishFetching: ({
@@ -380,21 +380,13 @@ const ChatConversation = ({
     (forceDateIndex?: number) => {
       if (!areThreadsLoading) {
         if (forceDateIndex !== undefined) {
-          // TODO:
-          console.log("abc loadMoreMessages setDateIndex(forceDateIndex)", {
-            forceDateIndex
-          });
           setDateIndex(forceDateIndex);
         } else {
-          // TODO:
-          console.log("abc loadMoreMessages setDateIndex(dateIndex - 1)", {
-            dateIndex
-          });
-          setDateIndex((prevDateIndex) => prevDateIndex - 1);
+          addToDateIndex(-1);
         }
       }
     },
-    [areThreadsLoading, dateIndex]
+    [areThreadsLoading, setDateIndex, addToDateIndex]
   );
 
   const addMessage = useCallback(
