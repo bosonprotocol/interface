@@ -19,14 +19,33 @@ export const getTimes = (
   from?: Date
 ) => {
   const startTime = dayjs(from)
-    .add(dateIndex * dateStepValue - 1, dateStep)
+    .add((dateIndex - 1) * dateStepValue, dateStep)
     .toDate();
   const endTime = dayjs(startTime).add(dateStepValue, dateStep).toDate();
   return {
     startTime,
     endTime,
-    isBeginning: dayjs(startTime).isBefore(genesisDate)
+    isBeginning: dayjs(startTime).isBefore(genesisDate),
+    dateStep,
+    dateStepValue
   };
+};
+
+export const getSmallerDateStep = (dateStep: DateStep): DateStep => {
+  switch (dateStep) {
+    case "year":
+      return "month";
+    case "month":
+      return "week";
+    case "week":
+      return "day";
+    case "day":
+      return "hour";
+    case "hour":
+      return "minute";
+    default:
+      return "second";
+  }
 };
 
 export const mergeThreads = (
