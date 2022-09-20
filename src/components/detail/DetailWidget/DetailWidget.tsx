@@ -16,6 +16,7 @@ import { breakpoint } from "../../../lib/styles/breakpoint";
 import { Offer } from "../../../lib/types/offer";
 import { IPrice } from "../../../lib/utils/convertPrice";
 import { titleCase } from "../../../lib/utils/formatText";
+import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import { getBuyerCancelPenalty } from "../../../lib/utils/getPrices";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
@@ -242,23 +243,23 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   );
 
   const quantity = useMemo<number>(
-    () => Number(offer?.quantityAvailable),
+    () => Number(offer?.quantityAvailable || 0),
     [offer?.quantityAvailable]
   );
 
   const quantityInitial = useMemo<number>(
-    () => Number(offer?.quantityInitial),
+    () => Number(offer?.quantityInitial || 0),
     [offer?.quantityInitial]
   );
 
   const isExpiredOffer = useMemo<boolean>(
-    () => dayjs(Number(offer?.validUntilDate) * 1000).isBefore(dayjs()),
+    () => dayjs(getDateTimestamp(offer?.validUntilDate)).isBefore(dayjs()),
     [offer?.validUntilDate]
   );
   const isVoidedOffer = !!offer.voidedAt;
 
   const voucherRedeemableUntilDate = dayjs(
-    Number(offer.voucherRedeemableUntilDate) * 1000
+    getDateTimestamp(offer.voucherRedeemableUntilDate)
   );
   const nowDate = dayjs();
 
