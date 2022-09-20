@@ -334,6 +334,7 @@ const ChatConversation = ({
       sellerId: exchange.seller.id
     };
   }, [exchange]);
+  // console.log("threadId", threadId, "destinationAddrs", destinationAddress);
   const {
     data: thread,
     isLoading: areThreadsLoading,
@@ -346,7 +347,8 @@ const ChatConversation = ({
     removePendingMessage
   } = useInfiniteThread({
     threadId,
-    dateStep: "week",
+    dateStep: "day",
+    dateStepValue: 1,
     counterParty: destinationAddress,
     onFinishFetching: ({
       isBeginningOfTimes,

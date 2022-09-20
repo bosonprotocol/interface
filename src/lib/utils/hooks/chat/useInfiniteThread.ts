@@ -13,6 +13,7 @@ import { DateStep, getTimes, mergeThreads } from "./common";
 
 interface Props {
   dateStep: DateStep;
+  dateStepValue?: number;
   counterParty: string;
   threadId: ThreadId | null | undefined;
   onFinishFetching: (arg: {
@@ -27,6 +28,7 @@ const createWorker = createWorkerFactory(() => import("./getThreadWorker"));
 
 export function useInfiniteThread({
   dateStep,
+  dateStepValue = 1,
   counterParty,
   threadId,
   onFinishFetching
@@ -68,7 +70,13 @@ export function useInfiniteThread({
     if (dateIndex.index > 0) {
       return;
     }
-    const { isBeginning } = getTimes(dateIndex.index, dateStep);
+    const now = new Date();
+    const { isBeginning } = getTimes(
+      dateIndex.index,
+      dateStep,
+      dateStepValue,
+      now
+    );
     setIsBeginningOfTimes(isBeginning);
     if (isBeginning) {
       return;
@@ -83,7 +91,9 @@ export function useInfiniteThread({
         threadId,
         counterParty: utils.getAddress(counterParty),
         dateIndex: dateIndex.index,
-        dateStep
+        dateStep,
+        dateStepValue,
+        now
       })
       .then(async ({ thread: threadObject, dateIndex: iDateIndex }) => {
         setLastThreadXmtp(threadObject);

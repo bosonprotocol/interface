@@ -12,13 +12,17 @@ export async function getThread({
   threadId,
   counterParty,
   dateIndex,
-  dateStep
+  dateStep,
+  dateStepValue,
+  now
 }: {
   bosonXmtp: BosonXmtpClient;
   threadId: ThreadId;
   counterParty: string;
   dateIndex: number;
   dateStep: DateStep;
+  dateStepValue: number;
+  now: Date;
 }): Promise<{ thread: ThreadObject | null; dateIndex: number }> {
   let iDateIndex = dateIndex;
 
@@ -26,11 +30,12 @@ export async function getThread({
 
   let lastRequests = false;
   let anyMessage = false;
-
   do {
     const timesArray = new Array(numRequests).fill(0).map((_, index) => {
-      return getTimes(iDateIndex - index, dateStep);
+      return getTimes(iDateIndex - index, dateStep, dateStepValue, now);
     });
+    const failedTimesArray: typeof timesArray = []; // TODO: what should be do?
+
     console.log("timesArray", timesArray, { iDateIndex, dateStep });
     const promises = timesArray
       .filter((times) => !times.isBeginning)
@@ -44,9 +49,21 @@ export async function getThread({
     if (!promises.length) {
       return { thread: null, dateIndex: iDateIndex };
     }
-    const threads = await Promise.all(promises);
+    const settledThreads = await Promise.allSettled(promises);
+    const threads = settledThreads
+      .filter(
+        (result, index): result is PromiseFulfilledResult<ThreadObject> => {
+          const isFulfilled = result.status === "fulfilled";
+          if (!isFulfilled) {
+            failedTimesArray.push(timesArray[index]);
+          }
+          return isFulfilled;
+        }
+      )
+      .map((result) => result.value);
     console.log("results", threads);
     lastRequests = !!timesArray.find((times) => times.isBeginning);
+
     threadsWithMessages = threads.filter((thread) => !!thread?.messages.length);
     console.log("results with messages", threadsWithMessages);
 

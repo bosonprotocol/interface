@@ -4,12 +4,24 @@ import dayjs from "dayjs";
 
 import { genesisDate } from "./const";
 
-export type DateStep = "hour" | "day" | "week" | "month" | "year";
-export const getTimes = (dateIndex: number, dateStep: DateStep) => {
-  const startTime = dayjs()
-    .add(dateIndex - 1, dateStep)
+export type DateStep =
+  | "second"
+  | "minute"
+  | "hour"
+  | "day"
+  | "week"
+  | "month"
+  | "year";
+export const getTimes = (
+  dateIndex: number,
+  dateStep: DateStep,
+  dateStepValue = 1,
+  from?: Date
+) => {
+  const startTime = dayjs(from)
+    .add(dateIndex * dateStepValue - 1, dateStep)
     .toDate();
-  const endTime = dayjs(startTime).add(1, dateStep).toDate();
+  const endTime = dayjs(startTime).add(dateStepValue, dateStep).toDate();
   return {
     startTime,
     endTime,
