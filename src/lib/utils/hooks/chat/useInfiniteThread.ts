@@ -172,19 +172,23 @@ export function useInfiniteThread({
       },
       [threadId]
     ),
-    removePendingMessage: useCallback((uuid: string): void => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      setThreadXmtp((newThread) => {
-        return {
-          ...(newThread || {}),
-          messages:
-            newThread?.messages.filter((message) => {
-              return message.uuid !== uuid;
-            }) || []
-        };
-      });
-    }, [])
+    removePendingMessage: useCallback(
+      (uuid: string): void => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        setThreadXmtp((newThread) => {
+          return {
+            ...(newThread || {}),
+            threadId: newThread?.threadId || threadId,
+            messages:
+              newThread?.messages.filter((message) => {
+                return message.uuid !== uuid;
+              }) || []
+          };
+        });
+      },
+      [threadId]
+    )
   };
 }
 

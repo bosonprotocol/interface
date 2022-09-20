@@ -56,7 +56,7 @@ export default function RequestedRefundInput({
   const decimals = Number(exchangeToken.decimals);
   const formatDecimalsToIntValue = (value: string | number): BigNumber => {
     return utils.parseUnits(
-      typeof value === "number" ? value.toString() : value || "0",
+      typeof value === "number" ? value.toFixed(decimals) : value || "0",
       decimals
     );
   };

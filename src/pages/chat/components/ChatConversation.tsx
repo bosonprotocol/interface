@@ -595,7 +595,7 @@ const ChatConversation = ({
 
   const sendFiles = useCallback(
     async (files: FileWithEncodedData[]) => {
-      if (!bosonXmtp || !threadId) {
+      if (!bosonXmtp || !threadId || !address) {
         return;
       }
 
@@ -604,12 +604,31 @@ const ChatConversation = ({
         files,
         destinationAddress,
         threadId,
-        callback: async (messageData) => {
-          await addMessage(thread?.threadId, { ...messageData, isValid: true });
+        callbackSendingMessage: async (newMessage, uuid) => {
+          await addMessage(threadId, {
+            authorityId: "",
+            timestamp: Date.now(),
+            sender: address,
+            recipient: destinationAddress,
+            data: newMessage,
+            isValid: false,
+            isPending: true,
+            uuid
+          });
+        },
+        callback: async (messageData, uuid) => {
+          onSentMessage(messageData, uuid);
         }
       });
     },
-    [addMessage, bosonXmtp, destinationAddress, threadId, thread]
+    [
+      bosonXmtp,
+      threadId,
+      address,
+      destinationAddress,
+      addMessage,
+      onSentMessage
+    ]
   );
   const { isLteS, isLteM, isXXS, isS, isM, isL, isXL } = useBreakpoints();
   const { showModal } = useModal();
@@ -810,11 +829,20 @@ const ChatConversation = ({
                         files: proposalFiles,
                         destinationAddress,
                         threadId,
-                        callback: async (messageData) => {
-                          await addMessage(thread?.threadId, {
-                            ...messageData,
-                            isValid: true
+                        callbackSendingMessage: async (newMessage, uuid) => {
+                          await addMessage(threadId, {
+                            authorityId: "",
+                            timestamp: Date.now(),
+                            sender: address,
+                            recipient: destinationAddress,
+                            data: newMessage,
+                            isValid: false,
+                            isPending: true,
+                            uuid
                           });
+                        },
+                        callback: async (messageData, uuid) => {
+                          onSentMessage(messageData, uuid);
                         }
                       });
                     } catch (error) {
