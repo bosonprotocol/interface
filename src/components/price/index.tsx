@@ -1,3 +1,4 @@
+import { Currencies, CurrencyDisplay } from "@bosonprotocol/react-kit";
 import { useState } from "react";
 import styled, { css } from "styled-components";
 
@@ -6,7 +7,6 @@ import { colors } from "../../lib/styles/colors";
 import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
 import ConvertedPrice from "./ConvertedPrice";
-import CurrencyIcon from "./CurrencyIcon";
 import { useConvertedPrice } from "./useConvertedPrice";
 
 const Root = styled.div<{ $withBosonStyles: boolean }>`
@@ -68,12 +68,13 @@ export default function Price({
   withBosonStyles = false,
   ...rest
 }: IProps) {
-  const [isSymbolShown, setIsSymbolShown] = useState<boolean>(false); // TODO: remove once CSS :has is supported
+  const [isSymbolShown] = useState<boolean>(false); // TODO: remove once CSS :has is supported
   const price = useConvertedPrice({
     value,
     decimals,
     symbol: currencySymbol
   });
+
   return (
     <Root {...rest} $withBosonStyles={withBosonStyles} data-testid="price">
       {price ? (
@@ -88,9 +89,9 @@ export default function Price({
             data-icon-price
             {...(isSymbolShown && { "data-with-symbol": true })}
           >
-            <CurrencyIcon
-              currencySymbol={currencySymbol}
-              onError={() => setIsSymbolShown(true)}
+            <CurrencyDisplay
+              currency={currencySymbol as Currencies}
+              height={18}
             />
             {price?.currency ? (
               <>
