@@ -5,11 +5,10 @@ import {
 import { validateMessage } from "@bosonprotocol/chat-sdk/dist/cjs/util/validators";
 import { createWorkerFactory, useWorker } from "@shopify/react-web-worker";
 import { utils } from "ethers";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { useChatContext } from "../../../../pages/chat/ChatProvider/ChatContext";
 import { ThreadObjectWithInfo } from "../../../../pages/chat/types";
-import { useEffectDebugger } from "../useEffectDebugger";
 import { DateStep, getTimes, mergeThreads } from "./common";
 
 interface Props {
@@ -62,7 +61,7 @@ export function useInfiniteThread({
   );
   const [error, setError] = useState<Error | null>(null);
   const [isBeginningOfTimes, setIsBeginningOfTimes] = useState<boolean>(false);
-  useEffectDebugger(() => {
+  useEffect(() => {
     if (!bosonXmtp || !threadId || !counterParty || !dateIndex.trigger) {
       return;
     }

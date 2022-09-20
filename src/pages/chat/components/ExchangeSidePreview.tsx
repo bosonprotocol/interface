@@ -1,6 +1,6 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { generatePath } from "react-router-dom";
 import styled from "styled-components";
 
@@ -225,7 +225,16 @@ export default function ExchangeSidePreview({
     [offer]
   );
   const navigate = useKeepQueryParamsNavigate();
-
+  const handleExchangeImageOnClick = useCallback(() => {
+    if (!exchange) {
+      return;
+    }
+    navigate({
+      pathname: generatePath(BosonRoutes.Exchange, {
+        [UrlParameters.exchangeId]: exchange.id
+      })
+    });
+  }, [exchange, navigate]);
   if (!exchange || !offer) {
     return null;
   }
@@ -252,13 +261,7 @@ export default function ExchangeSidePreview({
         src={exchange?.offer.metadata.imageUrl}
         alt="exchange image"
         dataTestId="exchange-image"
-        onClick={() => {
-          navigate({
-            pathname: generatePath(BosonRoutes.Exchange, {
-              [UrlParameters.exchangeId]: exchange.id
-            })
-          });
-        }}
+        onClick={handleExchangeImageOnClick}
       />
       {isInDispute && (
         <InfoMessage>{`${daysLeftToResolveDispute} / ${totalDaysToResolveDispute} days left to resolve dispute`}</InfoMessage>
