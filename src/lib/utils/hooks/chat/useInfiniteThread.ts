@@ -93,36 +93,45 @@ export function useInfiniteThread({
         dateIndex: dateIndex.index,
         dateStep,
         dateStepValue,
-        now
+        now,
+        onMessageReceived: async (threadObject) => {
+          if (threadObject) {
+            await setIsValidToMessages(threadObject as ThreadObjectWithInfo);
+
+            setThreadXmtp((prevThread) => {
+              const mergedThreads = mergeThreads(
+                prevThread ? prevThread : null,
+                threadObject
+              );
+              const newThreadXmtp = mergedThreads as ThreadObjectWithInfo;
+
+              return newThreadXmtp;
+            });
+          }
+        }
       })
-      .then(async ({ thread: threadObject, dateIndex: iDateIndex }) => {
-        setLastThreadXmtp(threadObject);
-        setDateIndex({
-          index: iDateIndex,
-          trigger: false
-        });
-        if (threadObject) {
-          await setIsValidToMessages(threadObject as ThreadObjectWithInfo);
+      .then(
+        async ({
+          thread: threadObject,
+          dateIndex: iDateIndex,
+          isBeginning
+        }) => {
+          setIsBeginningOfTimes(isBeginning);
+          setLastThreadXmtp(threadObject);
+          setDateIndex({
+            index: iDateIndex,
+            trigger: false
+          });
 
-          setThreadXmtp((prevThread) => {
-            const mergedThreads = mergeThreads(
-              prevThread ? prevThread : null,
-              threadObject
-            );
-            const newThreadXmtp = mergedThreads as ThreadObjectWithInfo;
-
-            return newThreadXmtp;
+          setThreadsLoading(false);
+          onFinishFetching({
+            isBeginningOfTimes: isBeginning,
+            isLoading: false,
+            isError: false,
+            lastData: threadObject
           });
         }
-
-        setThreadsLoading(false);
-        onFinishFetching({
-          isBeginningOfTimes: isBeginning,
-          isLoading: false,
-          isError: false,
-          lastData: threadObject
-        });
-      })
+      )
       .catch((err) => {
         setError(err);
         setThreadsLoading(false);

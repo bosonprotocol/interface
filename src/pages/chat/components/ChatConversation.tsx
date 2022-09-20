@@ -355,29 +355,29 @@ const ChatConversation = ({
       isLoading: areThreadsLoading,
       lastData: lastThread
     }) => {
-      console.log("abc before if onFinishFetching", {
-        bosonXmtp,
-        isBeginningOfTimes,
-        areThreadsLoading,
-        lastThread
-      });
+      // console.log("abc before if onFinishFetching", {
+      //   bosonXmtp,
+      //   isBeginningOfTimes,
+      //   areThreadsLoading,
+      //   lastThread
+      // });
       if (
         bosonXmtp &&
         !isBeginningOfTimes &&
         !areThreadsLoading &&
         !lastThread
       ) {
-        console.log("abc onFinishFetching", {
-          bosonXmtp,
-          isBeginningOfTimes,
-          areThreadsLoading,
-          lastThread
-        });
+        // console.log("abc onFinishFetching", {
+        //   bosonXmtp,
+        //   isBeginningOfTimes,
+        //   areThreadsLoading,
+        //   lastThread
+        // });
         loadMoreMessages();
       }
     }
   });
-  console.log({ isBeginningOfTimes });
+  // console.log({ isBeginningOfTimes });
   const loadMoreMessages = useCallback(
     (forceDateIndex?: number) => {
       if (!areThreadsLoading) {

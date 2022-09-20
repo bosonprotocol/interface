@@ -22,7 +22,8 @@ export async function getThread({
   dateIndex,
   dateStep,
   dateStepValue,
-  now
+  now,
+  onMessageReceived
 }: {
   bosonXmtp: BosonXmtpClient;
   threadId: ThreadId;
@@ -31,23 +32,30 @@ export async function getThread({
   dateStep: DateStep;
   dateStepValue: number;
   now: Date;
-}): Promise<{ thread: ThreadObject | null; dateIndex: number }> {
+  onMessageReceived: (currentThread: ThreadObject | null) => Promise<unknown>;
+}): Promise<{
+  thread: ThreadObject | null;
+  dateIndex: number;
+  isBeginning: boolean;
+}> {
   checkDateStepValue(dateStepValue);
 
   let iDateIndex = dateIndex;
 
   let threadsWithMessages: ThreadObject[] = [];
 
-  let hasReachedBeginning = false;
-  // let anyMessage = false;
+  let isBeginning = false;
+  let anyMessage = false;
   let failedTimesArray: Time[] = [];
   // const pendingTimesArray: Time[] = [];
   // TODO:
   // acumular threadWithMessages per no perdren cap dels parallels
   // fer tantes requests com X escollides a dalt, no com time steps
   // dividir els timeSteps fallits en sub-timesteps mes petits per repetirho
+  // retornar missatges i continuar processant els pendents
+  let oldestThread: ThreadObject | null = null;
   do {
-    const timesArrayInRange: Time[] = hasReachedBeginning
+    const timesArrayInRange: Time[] = isBeginning
       ? []
       : new Array(numRequests).fill(0).map((_, index) => {
           return getTimes(iDateIndex - index, dateStep, dateStepValue, now);
@@ -66,14 +74,14 @@ export async function getThread({
     const promises = timesArray
       .filter((times) => !times.isBeginning)
       .map((times) => {
-        console.log("request in parallel", times);
+        // console.log("request in parallel", times);
         return bosonXmtp.getThread(threadId, counterParty, {
           startTime: times.startTime,
           endTime: times.endTime
         });
       });
     if (!promises.length) {
-      return { thread: null, dateIndex: iDateIndex };
+      return { thread: null, dateIndex: iDateIndex, isBeginning };
     }
     const settledThreads = await Promise.allSettled(promises);
     const threads = settledThreads
@@ -86,7 +94,20 @@ export async function getThread({
           return isFulfilled;
         }
       )
-      .map((result) => result.value);
+      .map((result) => {
+        const currentThread = result.value;
+        if (oldestThread) {
+          if (
+            oldestThread.messages[0].timestamp >
+            currentThread?.messages[0].timestamp
+          ) {
+            oldestThread = currentThread;
+          }
+        } else {
+          oldestThread = currentThread;
+        }
+        return currentThread;
+      });
     // console.log(
     //   "settledThreads",
     //   settledThreads,
@@ -95,27 +116,52 @@ export async function getThread({
     //   "failed",
     //   failedTimesArray
     // );
-    hasReachedBeginning =
-      hasReachedBeginning || !!timesArray.find((times) => times.isBeginning);
+    isBeginning =
+      isBeginning || !!timesArray.find((times) => times.isBeginning);
 
-    threadsWithMessages = threadsWithMessages.concat(
-      threads.filter((thread) => !!thread?.messages.length)
-    );
+    threadsWithMessages = threads.filter((thread) => !!thread?.messages.length);
+    if (threadsWithMessages.length) {
+      const merged = mergeListOfThreads(threadsWithMessages);
+      onMessageReceived(merged);
+    }
     // console.log("results with messages", threadsWithMessages);
 
-    // anyMessage = !!threadsWithMessages.length;
+    anyMessage = !!threadsWithMessages.length;
     iDateIndex -= numRequests;
-    // } while (!hasReachedBeginning && !anyMessage && failedTimesArray.length);
-  } while (failedTimesArray.length);
-  // console.log("END of parallel threads", { hasReachedBeginning, anyMessage });
-  if (!threadsWithMessages.length) {
-    return { thread: null, dateIndex: iDateIndex };
+    // } while (!isBeginning && !anyMessage && failedTimesArray.length);
+    // console.log("while condition", {
+    //   failedTimesArray,
+    //   isBeginning,
+    //   anyMessage
+    // });
+  } while (
+    failedTimesArray.length ||
+    (!failedTimesArray.length && !isBeginning && !anyMessage)
+  );
+  // console.log("END of parallel threads", {
+  //   failedTimesArray,
+  //   isBeginning,
+  //   anyMessage
+  // });
+
+  return {
+    dateIndex: iDateIndex,
+    thread: oldestThread,
+    isBeginning
+  };
+}
+
+function mergeListOfThreads(
+  threadsObjects: ThreadObject[]
+): ThreadObject | null {
+  if (!threadsObjects.length) {
+    return null;
   }
-  if (threadsWithMessages.length === 1) {
-    return { thread: threadsWithMessages[0], dateIndex: iDateIndex };
+  if (threadsObjects.length === 1) {
+    return threadsObjects[0];
   }
-  let acum = threadsWithMessages[0];
-  for (const [index, thread] of Object.entries(threadsWithMessages)) {
+  let acum = threadsObjects[0];
+  for (const [index, thread] of Object.entries(threadsObjects)) {
     if (index === "0") {
       continue;
     }
@@ -124,10 +170,7 @@ export async function getThread({
       acum = merged;
     }
   }
-  return {
-    thread: threadsWithMessages.length ? acum : null,
-    dateIndex: iDateIndex
-  };
+  return acum;
 }
 
 function getTimesInFailedPeriod(failedTimesArray: Time[]) {
