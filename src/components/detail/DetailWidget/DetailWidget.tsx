@@ -240,6 +240,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     () => getOfferDetailData(offer, convertedPrice, true),
     [offer, convertedPrice]
   );
+
   const quantity = useMemo<number>(
     () => Number(offer?.quantityAvailable),
     [offer?.quantityAvailable]

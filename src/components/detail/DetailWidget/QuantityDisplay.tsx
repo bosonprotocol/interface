@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import styled from "styled-components";
 
 import { colors } from "../../../lib/styles/colors";
 import { isOfferHot } from "../../../lib/utils/getOfferLabel";
@@ -36,22 +35,11 @@ export const QuantityDisplay: React.FC<IQuantityDisplay> = ({
               `Only ${quantity} ${quantity === 1 ? "item" : "items"} left!`}
           </>
         ) : (
-          <QuantityDisplayWrapper>
+          <>
             {quantity}/{quantityInitial} remaining
-          </QuantityDisplayWrapper>
+          </>
         )}
       </Typography>
     </Grid>
   );
 };
-
-const QuantityDisplayWrapper = styled.p`
-  line-height: 150%;
-  font-size: 1rem;
-  color: ${colors.orange};
-  flex: none;
-  order: 1;
-  flex-grow: 0;
-  align-items: center;
-  align-self: center;
-`;
