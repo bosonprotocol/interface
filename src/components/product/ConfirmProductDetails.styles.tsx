@@ -96,6 +96,8 @@ export const ContentValue = styled(Typography)`
   font-size: 0.75rem;
   color: ${colors.darkGrey};
   word-break: break-all;
+  white-space: pre;
+  gap: 0.5rem;
 `;
 
 export const FormFieldContainer = styled.div`

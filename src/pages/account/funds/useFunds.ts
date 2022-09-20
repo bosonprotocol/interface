@@ -34,32 +34,33 @@ export default function useFunds(
         ...(CONFIG.nativeCoin ? [CONFIG.nativeCoin] : [])
       ];
 
-      const allTokens = mergeTokens?.reduce((acc, o) => {
-        if (!acc.some((obj: any) => obj?.symbol === o?.symbol)) {
-          acc.push(o);
-        }
-        return acc;
-      }, []);
-
       const allTokensParsed =
-        allTokens
+        mergeTokens
           ?.map((token: any, index: number) =>
-            token?.name
+            token?.name || token.availableAmount
               ? {
                   accountId,
-                  availableAmount: "0",
+                  availableAmount: token?.availableAmount || "0",
                   id: `${accountId}0x${String(index).padStart(2, "0")}`,
+                  name: token?.name || token?.token?.name,
                   token: {
                     id: token?.address || ethers.constants.AddressZero,
                     address: token?.address || ethers.constants.AddressZero,
                     decimals: token?.decimals || "18",
-                    name: token?.name,
-                    symbol: token?.symbol
+                    name: token?.name || token?.token?.name,
+                    symbol: token?.symbol || token?.token?.symbol
                   }
                 }
               : null
           )
-          .filter((n: boolean) => n !== null) || [];
+          .reduce((acc: Array<any>, o: any) => {
+            if (o !== null) {
+              if (!acc.some((obj: any) => obj?.name === o?.name)) {
+                acc.push(o);
+              }
+            }
+            return acc;
+          }, []) || [];
 
       setFundStatus("success");
       setFunds(allTokensParsed);
