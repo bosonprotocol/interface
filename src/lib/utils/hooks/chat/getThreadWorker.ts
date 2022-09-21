@@ -41,7 +41,6 @@ export async function getThread({
   isBeginning: boolean;
 }> {
   checkDateStepValue(dateStepValue);
-
   let iDateIndex = dateIndex;
 
   let threadsWithMessages: ThreadObject[] = [];
@@ -55,7 +54,7 @@ export async function getThread({
       .flat()
       .filter((v): v is Time => !!v);
     const timesArrayInRange: Time[] =
-      isBeginning || failedTimes.length
+      isBeginning || failedTimes.length || !window.navigator.onLine
         ? []
         : new Array(numRequests).fill(0).map((_, index) => {
             return getTimes({
@@ -67,7 +66,7 @@ export async function getThread({
             });
           });
     const timesArray = [...timesArrayInRange, ...failedTimes];
-    console.log("timesArray", timesArray); // TODO: correct?
+    console.log("timesArray", timesArray);
     failedTimesArray = [];
     // console.log("timesArray", timesArray, {
     //   iDateIndex,
@@ -140,15 +139,15 @@ export async function getThread({
     //   anyMessage
     // });
   } while (
-    failedTimesArray.length ||
-    (!failedTimesArray.length && !isBeginning && !anyMessage)
+    window.navigator.onLine &&
+    (failedTimesArray.length ||
+      (!failedTimesArray.length && !isBeginning && !anyMessage))
   );
   // console.log("END of parallel threads", {
   //   failedTimesArray,
   //   isBeginning,
   //   anyMessage
   // });
-
   return {
     dateIndex: iDateIndex,
     thread: oldestThread,

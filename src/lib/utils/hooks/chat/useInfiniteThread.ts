@@ -70,8 +70,15 @@ export function useInfiniteThread({
   );
   const [error, setError] = useState<Error | null>(null);
   const [isBeginningOfTimes, setIsBeginningOfTimes] = useState<boolean>(false);
+
   useEffect(() => {
-    if (!bosonXmtp || !threadId || !counterParty || !dateIndex.trigger) {
+    if (
+      !bosonXmtp ||
+      !threadId ||
+      !counterParty ||
+      !dateIndex.trigger ||
+      !window.navigator.onLine
+    ) {
       return;
     }
     if (dateIndex.index > 0) {

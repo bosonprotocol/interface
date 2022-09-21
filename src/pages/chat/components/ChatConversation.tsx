@@ -37,11 +37,7 @@ import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useChatContext } from "../ChatProvider/ChatContext";
-import {
-  BuyerOrSeller,
-  MessageDataWithInfo,
-  ThreadObjectWithInfo
-} from "../types";
+import { BuyerOrSeller, MessageDataWithInfo } from "../types";
 import { sendFilesToChat, sendProposalToChat } from "../utils/send";
 import ButtonProposal from "./ButtonProposal/ButtonProposal";
 import ExchangeSidePreview from "./ExchangeSidePreview";
@@ -407,10 +403,7 @@ const ChatConversation = ({
   );
 
   const addMessage = useCallback(
-    async (
-      threadId: ThreadObjectWithInfo["threadId"] | null | undefined,
-      newMessageOrList: MessageDataWithInfo | MessageDataWithInfo[]
-    ) => {
+    async (newMessageOrList: MessageDataWithInfo | MessageDataWithInfo[]) => {
       const newMessages = Array.isArray(newMessageOrList)
         ? newMessageOrList
         : [newMessageOrList];
@@ -423,14 +416,6 @@ const ChatConversation = ({
         })
       );
       appendMessages(messagesWithIsValid);
-      // if (!threadId) {
-      //   console.log(
-      //     "abc no threadId",
-      //     { threadId, threadId2: thread?.threadId },
-      //     "loading more messages"
-      //   );
-      //   loadMoreMessages(0); // trigger getting the thread
-      // }
     },
     [appendMessages]
   );
@@ -499,7 +484,7 @@ const ChatConversation = ({
           destinationAddress,
           stopGenerator
         )) {
-          await addMessage(threadId, { ...incomingMessage, isValid: true });
+          await addMessage({ ...incomingMessage, isValid: true });
         }
       } catch (error) {
         console.error(error);
@@ -525,14 +510,14 @@ const ChatConversation = ({
   const onSentMessage = useCallback(
     async (messageData: MessageData, uuid: string) => {
       removePendingMessage(uuid);
-      await addMessage(thread?.threadId, {
+      await addMessage({
         ...messageData,
         isValid: true,
         isPending: false,
         uuid
       });
     },
-    [addMessage, removePendingMessage, thread?.threadId]
+    [addMessage, removePendingMessage]
   );
 
   const handleSendingRegularMessage = useCallback(async () => {
@@ -549,7 +534,7 @@ const ChatConversation = ({
         } as const;
         const uuid = window.crypto.randomUUID();
 
-        await addMessage(thread?.threadId, {
+        await addMessage({
           authorityId: "",
           timestamp: Date.now(),
           sender: address,
@@ -579,7 +564,6 @@ const ChatConversation = ({
     onSentMessage,
     onTextAreaChange,
     textAreaValue,
-    thread?.threadId,
     threadId
   ]);
 
@@ -622,7 +606,7 @@ const ChatConversation = ({
         destinationAddress,
         threadId,
         callbackSendingMessage: async (newMessage, uuid) => {
-          await addMessage(threadId, {
+          await addMessage({
             authorityId: "",
             timestamp: Date.now(),
             sender: address,
@@ -880,7 +864,7 @@ const ChatConversation = ({
                         destinationAddress,
                         threadId,
                         callbackSendingMessage: async (newMessage, uuid) => {
-                          await addMessage(threadId, {
+                          await addMessage({
                             authorityId: "",
                             timestamp: Date.now(),
                             sender: address,
