@@ -8,7 +8,7 @@ import dayjs from "dayjs";
 import { DateStep, getSmallerDateStep, getTimes, mergeThreads } from "./common";
 
 type Time = ReturnType<typeof getTimes>;
-const numRequests = 4;
+const concurrency = 4;
 
 /**
  * Loads a thread until it finds a message
@@ -56,7 +56,7 @@ export async function getThread({
     const timesArrayInRange: Time[] =
       isBeginning || failedTimes.length || !window.navigator.onLine
         ? []
-        : new Array(numRequests).fill(0).map((_, index) => {
+        : new Array(concurrency).fill(0).map((_, index) => {
             return getTimes({
               dateIndex: iDateIndex - index,
               dateStep,
@@ -76,18 +76,29 @@ export async function getThread({
       if (times.isBeginning) {
         return null;
       }
-      // console.log("request in parallel", times);
-      return bosonXmtp.getThread(threadId, counterParty, {
-        startTime: times.startTime,
-        endTime: times.endTime
-      });
+      return () => {
+        // console.log("request in parallel", times);
+        return bosonXmtp.getThread(threadId, counterParty, {
+          startTime: times.startTime,
+          endTime: times.endTime
+        });
+      };
     });
     if (!promises.filter((v) => !!v).length) {
       console.log("all is beginning");
       return { thread: null, dateIndex: iDateIndex, isBeginning };
     }
-    console.log("promises to make", promises);
-    const settledThreads = await Promise.allSettled(promises);
+    // console.log("promises to make", promises);
+    const settledThreads = await allSettled(
+      promises.map((p) => {
+        if (!p) {
+          return () => null;
+        }
+        return p;
+      })
+    );
+    // console.log("settledThreads", settledThreads);
+    // const settledThreads = await Promise.allSettled(promises);
     const threads = settledThreads
       .filter(
         (result, index): result is PromiseFulfilledResult<ThreadObject> => {
@@ -131,7 +142,7 @@ export async function getThread({
     // console.log("results with messages", threadsWithMessages);
 
     anyMessage = anyMessage || !!threadsWithMessages.length;
-    iDateIndex -= numRequests;
+    iDateIndex -= concurrency;
     // } while (!isBeginning && !anyMessage && failedTimesArray.length);
     // console.log("while condition", {
     //   failedTimesArray,
@@ -210,4 +221,23 @@ function checkDateStepValue(dateStepValue: number) {
     return true;
   }
   throw new Error(`dateStepValue has to be equal or greater than 1`); // so that it's easier to get the next smaller time unit
+}
+async function allSettled(promisesFns: (() => Promise<unknown> | null)[]) {
+  const makeRequests = promisesFns;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const results: PromiseSettledResult<any>[] = [];
+  let started = 0;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const recurse = (): any => {
+    const i = started++;
+    const makeRequest = makeRequests.shift();
+    return !makeRequest
+      ? null
+      : Promise.allSettled([makeRequest()]).then((result) => {
+          results[i] = result[0];
+          return recurse();
+        });
+  };
+  await Promise.all(Array.from({ length: concurrency }, recurse));
+  return results;
 }

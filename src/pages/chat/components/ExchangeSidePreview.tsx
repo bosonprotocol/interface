@@ -294,7 +294,7 @@ export default function ExchangeSidePreview({
       {isInDispute && iAmTheBuyer ? (
         <CTASection>
           <Button
-            theme="primary"
+            theme="secondary"
             onClick={() =>
               showModal(
                 "RETRACT_DISPUTE",

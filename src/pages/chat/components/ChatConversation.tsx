@@ -126,6 +126,7 @@ const Messages = styled.div<{ $overflow: string }>`
   display: flex;
   flex-direction: column-reverse;
   flex-grow: 1;
+  /* height: 100vh; */
 `;
 const Conversation = styled.div<{ $alignStart: boolean }>`
   display: flex;
@@ -391,6 +392,7 @@ const ChatConversation = ({
   console.log({ isBeginningOfTimes });
   const loadMoreMessages = useCallback(
     (forceDateIndex?: number) => {
+      console.log("call to loadMoreMessages");
       if (!areThreadsLoading) {
         if (forceDateIndex !== undefined) {
           setDateIndex(forceDateIndex);
@@ -762,7 +764,7 @@ const ChatConversation = ({
               style={{ visibility: areThreadsLoading ? "initial" : "hidden" }}
             />
           </Loading>
-
+          {/* <div style={{ overflow: "scroll" }} id="message2"> */}
           <Messages
             data-messages
             ref={dataMessagesRef}
@@ -775,7 +777,7 @@ const ChatConversation = ({
               hasMore={hasMoreMessages}
               loader={<></>}
               dataLength={thread?.messages.length || 0}
-              scrollableTarget="messages"
+              scrollableTarget="messages2"
               scrollThreshold="200px"
             >
               <>
@@ -840,7 +842,7 @@ const ChatConversation = ({
               </>
             </InfiniteScroll>
           </Messages>
-
+          {/* </div> */}
           <TypeMessage>
             {exchange.disputed && (
               <Grid
