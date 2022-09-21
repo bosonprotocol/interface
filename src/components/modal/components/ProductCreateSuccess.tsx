@@ -109,8 +109,8 @@ export default function ProductCreateSuccess({
 }: Props) {
   const convertedPrice = useConvertedPrice({
     value: offer?.price,
-    decimals: offer.exchangeToken.decimals,
-    symbol: offer.exchangeToken.symbol
+    decimals: offer?.exchangeToken.decimals,
+    symbol: offer?.exchangeToken.symbol
   });
 
   const OFFER_DETAIL_DATA = useMemo(
@@ -132,6 +132,7 @@ export default function ProductCreateSuccess({
   const mulBy = FixedNumber.fromString("0.15");
   const fifteenOfAmmount = suggestedAmount.mulUnsafe(mulBy);
 
+  const hasDeposit = offer?.sellerDeposit !== "0";
   return (
     <>
       <ModalGrid>
@@ -176,42 +177,44 @@ export default function ProductCreateSuccess({
               <DetailTable align noBorder data={OFFER_DETAIL_DATA} />
             </div>
           </Widget>
-          <Funds>
-            <FundTile tag="p">
-              Please provide
-              {/* TODO: */}
-              <Tooltip content="NEED TO BE ADDED" size={16} />
-            </FundTile>
-            <Typography tag="p" $fontSize="0.75rem">
-              Describe here why seller should provide funds ..
-              <br />
-              alos in multiple lines possible.
-            </Typography>
-            <Typography
-              tag="p"
-              margin="1rem 0 0 0"
-              $fontSize="0.75rem"
-              fontWeight="bold"
-            >
-              Suggested pool amount: 15%
-            </Typography>
-            <StyledProgress>
-              <StyledProgressLayer>
-                <StyledIndicator
-                  style={{ transform: `translateX(-${100 - PROGRESS}%)` }}
-                />
-                <Amount>
-                  {fifteenOfAmmount?._value} / {suggestedAmount?._value}{" "}
-                  {offer.exchangeToken.symbol}
-                </Amount>
-              </StyledProgressLayer>
-            </StyledProgress>
-          </Funds>
+          {hasDeposit && (
+            <Funds>
+              <FundTile tag="p">
+                Please provide
+                {/* TODO: */}
+                <Tooltip content="NEED TO BE ADDED" size={16} />
+              </FundTile>
+              <Typography tag="p" $fontSize="0.75rem">
+                Describe here why seller should provide funds ..
+                <br />
+                alos in multiple lines possible.
+              </Typography>
+              <Typography
+                tag="p"
+                margin="1rem 0 0 0"
+                $fontSize="0.75rem"
+                fontWeight="bold"
+              >
+                Suggested pool amount: 15%
+              </Typography>
+              <StyledProgress>
+                <StyledProgressLayer>
+                  <StyledIndicator
+                    style={{ transform: `translateX(-${100 - PROGRESS}%)` }}
+                  />
+                  <Amount>
+                    {fifteenOfAmmount?._value} / {suggestedAmount?._value}{" "}
+                    {offer.exchangeToken.symbol}
+                  </Amount>
+                </StyledProgressLayer>
+              </StyledProgress>
+            </Funds>
+          )}
           <StyledWidgetButtonWrapper>
             <Button type="button" theme="primary" onClick={onViewMyItem}>
               View my item
             </Button>
-            <Button type="button" theme="primary" onClick={handleCreateNew}>
+            <Button type="button" theme="secondary" onClick={handleCreateNew}>
               Create new
               <Plus size={14} />
             </Button>
