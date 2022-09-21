@@ -76,7 +76,6 @@ export const mergeThreads = (
     ? thB
     : null;
   if (matchingThread) {
-    // messages in matchingThread should be all after or all before the messages in resultingThread
     if (resultingThread.messages.length && matchingThread.messages.length) {
       const afterFirst =
         resultingThread.messages[0].timestamp >=
