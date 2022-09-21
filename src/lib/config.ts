@@ -7,14 +7,28 @@ type EnvironmentType = "local" | "testing" | "staging" | "production"; // TODO: 
 const REACT_APP_ENV_NAME = process.env.REACT_APP_ENV_NAME;
 export const config = getDefaultConfig(REACT_APP_ENV_NAME as EnvironmentType);
 
-const ENABLE_SENTRY_LOGGING =
+const REACT_APP_ENABLE_SENTRY_LOGGING =
   process.env.NODE_ENV === "development"
-    ? stringToBoolean(process.env.ENABLE_SENTRY_LOGGING)
+    ? stringToBoolean(process.env.REACT_APP_ENABLE_SENTRY_LOGGING)
     : ["local", "testing"].includes(config.envName);
+
+export function getDefaultTokens() {
+  let tokens = [];
+  try {
+    tokens = JSON.parse(
+      process.env.REACT_APP_DEFAULT_TOKENS_LIST_TESTING ||
+        process.env.REACT_APP_DEFAULT_TOKENS_LIST_STAGING ||
+        "[]"
+    );
+  } catch (e) {
+    console.error(e);
+  }
+  return tokens;
+}
 
 export const CONFIG = {
   ...config,
-  enableSentryLogging: ENABLE_SENTRY_LOGGING,
+  enableSentryLogging: REACT_APP_ENABLE_SENTRY_LOGGING,
   dateFormat: process.env.DATE_FORMAT || "YYYY/MM/DD",
   shortDateFormat: process.env.SHORT_DATE_FORMAT || "MMM DD, YYYY",
   fullDateFormat: process.env.FULL_DATE_FORMAT || "YYYY-MM-DDTHH:mm:ssZ[Z]",
@@ -43,7 +57,9 @@ export const CONFIG = {
   ),
   enableCurationLists: stringToBoolean(
     process.env.REACT_APP_ENABLE_CURATION_LISTS
-  )
+  ),
+  defaultTokens: getDefaultTokens(),
+  mockSellerId: process.env.REACT_APP_MOCK_SELLER_ID
 };
 
 function stringToBoolean(value?: string) {

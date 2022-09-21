@@ -81,8 +81,7 @@ function DisputeCentre() {
   const [submitError, setSubmitError] = useState<Error | null>(null);
   const [isRightArrowEnabled, setIsRightArrowEnabled] =
     useState<boolean>(false);
-  const params = useParams();
-  const exchangeId = params["id"];
+  const { [UrlParameters.exchangeId]: exchangeId } = useParams();
   const navigate = useKeepQueryParamsNavigate();
   const { isLteS } = useBreakpoints();
   const { data: buyers } = useBuyers({
@@ -146,7 +145,7 @@ function DisputeCentre() {
               } else {
                 navigate({
                   pathname: generatePath(BosonRoutes.Exchange, {
-                    [UrlParameters.exchangeId]: exchangeId
+                    [UrlParameters.exchangeId]: exchangeId as string
                   })
                 });
               }

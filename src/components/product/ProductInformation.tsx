@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { FieldArray } from "formik";
 import { Plus } from "phosphor-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 
 import Collapse from "../../components/collapse/Collapse";
@@ -64,6 +64,10 @@ const AddAttributesContainer = ({
     [values?.productInformation?.attributes]
   );
 
+  useEffect(() => {
+    setHasDuplicated(checkIfElementIsDuplicated(elements));
+  }, [elements, setHasDuplicated]);
+
   return (
     <FormField
       title="Add product attribute"
@@ -95,7 +99,7 @@ const AddAttributesContainer = ({
                   ))}
                 </>
               )}
-              {setHasDuplicated(checkIfElementIsDuplicated(elements))}
+
               <Error
                 display={hasDuplicated}
                 message={"You can’t have duplicate attributes!"}

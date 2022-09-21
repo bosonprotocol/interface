@@ -4,8 +4,16 @@ import { createContext } from "react";
 
 import { getItemFromStorage } from "../../lib/utils/hooks/useLocalStorage";
 
+export type Token = {
+  symbol: string;
+  name: string;
+  address: string;
+  decimals: string;
+};
+
 export type Store = {
   type: string | null;
+  tokens: Token[] | null;
   rates: any;
   fixed: number;
   isLoading: boolean;
@@ -17,14 +25,17 @@ export interface ConvertionRateContextType {
 }
 
 const MOCK_RATES = [
-  { to: "WETH", from: "USDC", value: 1638.1516924980162 },
-  { to: "MATIC", from: "USDC", value: 1.37 }
+  { to: "WETH", from: "USD", value: 1602.94 },
+  { to: "MATIC", from: "USD", value: 0.859599 },
+  { to: "DAI", from: "USD", value: 0.998621 },
+  { to: "BOSON", from: "USD", value: 0.244912 }
 ];
 
 export const initalState: ConvertionRateContextType = {
   updateProps: () => {},
   store: {
     type: null,
+    tokens: null,
     rates:
       process.env.NODE_ENV === "development"
         ? MOCK_RATES

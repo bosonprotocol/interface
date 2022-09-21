@@ -1,12 +1,17 @@
-import { subgraph } from "@bosonprotocol/react-kit";
-import { BigNumber, ethers, utils } from "ethers";
+import {
+  Currencies,
+  CurrencyDisplay,
+  subgraph
+} from "@bosonprotocol/react-kit";
+import { BigNumber, utils } from "ethers";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
-import { CONFIG } from "../../../lib/config";
 import { colors } from "../../../lib/styles/colors";
 import useFunds from "../../../pages/account/funds/useFunds";
+import { useConvertionRate } from "../../convertion-rate/useConvertionRate";
 import { Spinner } from "../../loading/Spinner";
+import Tooltip from "../../tooltip/Tooltip";
 import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
 import Typography from "../../ui/Typography";
@@ -32,9 +37,10 @@ const WithdrawButton = styled(Button)`
   }
 `;
 
-const TokenWrapper = styled.div`
+const TokenWrapper = styled(Grid)`
   flex-basis: 33%;
   text-align: left;
+  justify-content: flex-start;
 `;
 const WithdrawableWrapper = styled(Grid)`
   flex-basis: 67%;
@@ -53,38 +59,19 @@ interface Props {
   id: string;
 }
 export default function ManageFunds({ id }: Props) {
-  const { funds, reload, fundStatus } = useFunds(id);
+  const {
+    store: { tokens }
+  } = useConvertionRate();
+  const { funds, reload, fundStatus } = useFunds(id, tokens);
   const [uiFunds, setUiFunds] =
     useState<subgraph.FundsEntityFieldsFragment[]>(funds);
   const { showModal, modalTypes } = useModal();
 
   useEffect(() => {
-    const nativeFund = funds.find(
-      (f) => f.token.address === ethers.constants.AddressZero
-    );
-    const fundsDefaultList = nativeFund
-      ? [nativeFund]
-      : [
-          {
-            accountId: id,
-            availableAmount: "0",
-            id: "",
-            token: {
-              id: "",
-              address: ethers.constants.AddressZero,
-              name: CONFIG.nativeCoin?.name || "",
-              symbol: CONFIG.nativeCoin?.symbol || "",
-              decimals: CONFIG.nativeCoin?.decimals || ""
-            }
-          }
-        ];
     setUiFunds((prevFunds) => [
       ...Array.from(
         new Map(
-          [...funds, ...prevFunds, ...fundsDefaultList].map((v) => [
-            v.token.address,
-            v
-          ])
+          [...funds, ...prevFunds].map((v) => [v.token.address, v])
         ).values()
       )
     ]);
@@ -125,7 +112,15 @@ export default function ManageFunds({ id }: Props) {
         );
         return (
           <Grid justifyContent="flex-start" key={fund.id}>
-            <TokenWrapper>{fund.token.symbol}</TokenWrapper>
+            <TokenWrapper>
+              {fund.token.symbol}
+              <Tooltip content={fund.token.symbol} wrap={false}>
+                <CurrencyDisplay
+                  currency={fund.token.symbol as Currencies}
+                  height={18}
+                />
+              </Tooltip>
+            </TokenWrapper>
             <WithdrawableWrapper>
               <AmountWrapper>{withdrawable}</AmountWrapper>
               <WithdrawButton

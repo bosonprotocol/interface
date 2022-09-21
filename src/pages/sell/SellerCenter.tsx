@@ -6,8 +6,9 @@ import {
   WithSellerDataProps
 } from "../../components/seller/common/WithSellerData";
 import SellerAside from "../../components/seller/SellerAside";
-import SellerInside from "../../components/seller/SellerInside";
-import { SellerInsideProps } from "../../components/seller/SellerInside";
+import SellerInside, {
+  SellerInsideProps
+} from "../../components/seller/SellerInside";
 import Button from "../../components/ui/Button";
 import Grid from "../../components/ui/Grid";
 import Loading from "../../components/ui/Loading";
@@ -42,7 +43,8 @@ const SellerCenterWithData = WithSellerData<SellerInsideProps>(SellerCenter);
 
 function SellerCenterWrapper() {
   const navigate = useKeepQueryParamsNavigate();
-  const { isLoading, sellerId } = useCurrentSellerId();
+  const { isLoading, sellerId: userSellerId } = useCurrentSellerId();
+  const sellerId = userSellerId;
 
   if (isLoading) {
     return (
