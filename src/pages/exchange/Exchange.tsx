@@ -134,14 +134,14 @@ export default function Exchange() {
         <DarkerBackground>
           <DetailGrid>
             <div>
-              <Typography tag="h3">Product data</Typography>
+              <Typography tag="h3">Product description</Typography>
               <Typography tag="p" data-testid="description">
                 {description}
               </Typography>
               <DetailTable data={productData} tag="strong" inheritColor />
             </div>
             <div>
-              <Typography tag="h3">About the artist</Typography>
+              <Typography tag="h3">About the creator</Typography>
               <Typography tag="p">{artistDescription}</Typography>
             </div>
           </DetailGrid>

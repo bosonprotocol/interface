@@ -18,6 +18,7 @@ import {
   useState
 } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
@@ -115,19 +116,22 @@ const Header = styled.div`
   }
 `;
 
-const LoadingContainer = styled.div`
-  display: flex;
-  background-color: ${colors.lightGrey};
-  justify-content: center;
-`;
 const Messages = styled.div<{ $overflow: string }>`
   background-color: ${colors.lightGrey};
   overflow: ${({ $overflow }) => $overflow};
   display: flex;
   flex-direction: column-reverse;
   flex-grow: 1;
-  /* height: 100vh; */
 `;
+
+const LoadingContainer = styled.div`
+  display: flex;
+  background-color: ${colors.lightGrey};
+  justify-content: center;
+  width: 100%;
+  align-self: stretch;
+`;
+
 const Conversation = styled.div<{ $alignStart: boolean }>`
   display: flex;
   flex-direction: column;
@@ -336,6 +340,7 @@ const ChatConversation = ({
   onTextAreaChange,
   textAreaValue
 }: Props) => {
+  const location = useLocation();
   const iAmTheBuyer = myBuyerId === exchange?.buyer.id;
   const iAmTheSeller = mySellerId === exchange?.offer.seller.id;
   const iAmBoth = iAmTheBuyer && iAmTheSeller;
@@ -701,7 +706,9 @@ const ChatConversation = ({
               >
                 {(isM || isL || isXL) &&
                   prevPath &&
-                  !prevPath.includes(`${BosonRoutes.Chat}/`) && (
+                  !prevPath.includes(BosonRoutes.Chat) &&
+                  !prevPath.includes(`${BosonRoutes.Chat}/`) &&
+                  !prevPath.includes(location.pathname) && (
                     <span>
                       <ArrowLeft size={14} />
                       Back
@@ -740,7 +747,8 @@ const ChatConversation = ({
       isXL,
       navigate,
       prevPath,
-      setChatListOpen
+      setChatListOpen,
+      location.pathname
     ]
   );
 
@@ -767,17 +775,6 @@ const ChatConversation = ({
     <Container>
       {canChat ? (
         <ContainerWithSellerHeader>
-          <LoadingContainer>
-            {areThreadsLoading ? (
-              <Spinner />
-            ) : isBeginningOfTimes ? (
-              <NoMoreMessages>No earlier messages</NoMoreMessages>
-            ) : (
-              <LoadMoreMessages onClick={() => loadMoreMessages()}>
-                Load more messages
-              </LoadMoreMessages>
-            )}
-          </LoadingContainer>
           <Messages
             data-messages
             ref={dataMessagesRef}
@@ -807,6 +804,17 @@ const ChatConversation = ({
               }
             >
               <>
+                <LoadingContainer>
+                  {areThreadsLoading ? (
+                    <Spinner />
+                  ) : isBeginningOfTimes ? (
+                    <NoMoreMessages>No earlier messages</NoMoreMessages>
+                  ) : (
+                    <LoadMoreMessages onClick={() => loadMoreMessages()}>
+                      Load more messages
+                    </LoadMoreMessages>
+                  )}
+                </LoadingContainer>
                 {thread?.messages.map((message, index) => {
                   const isFirstMessage = index === 0;
                   const isPreviousMessageInADifferentDay = isFirstMessage

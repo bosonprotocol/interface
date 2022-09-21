@@ -165,7 +165,7 @@ export default function Preview({ togglePreview, seller }: Props) {
           <DarkerBackground>
             <DetailGrid>
               <div>
-                <Typography tag="h3">Product data</Typography>
+                <Typography tag="h3">Product description</Typography>
                 <Typography
                   tag="p"
                   color={colors.darkGrey}
@@ -178,7 +178,7 @@ export default function Preview({ togglePreview, seller }: Props) {
                 />
               </div>
               <div>
-                <Typography tag="h3">About the artist</Typography>
+                <Typography tag="h3">About the creator</Typography>
                 <Typography tag="p" color={colors.darkGrey}>
                   {values.createYourProfile.description}
                 </Typography>
