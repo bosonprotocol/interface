@@ -57,9 +57,13 @@ const Container = styled.div`
 `;
 
 const ConversationContainer = styled.div`
-  display: flex;
+  /* display: flex;
   flex-direction: column;
+  width: 100%; */
   width: 100%;
+  display: grid;
+  grid-auto-columns: 1fr;
+  grid-template-rows: auto 1rem 1fr auto;
 `;
 
 const Header = styled.div`
@@ -122,11 +126,16 @@ const Loading = styled.div`
 `;
 const Messages = styled.div<{ $overflow: string }>`
   background-color: ${colors.lightGrey};
-  overflow: ${({ $overflow }) => $overflow};
+  /* overflow: ${({ $overflow }) => $overflow}; */
   display: flex;
   flex-direction: column-reverse;
   flex-grow: 1;
   /* height: 100vh; */
+  /* height: 1200px; */
+  /* padding-top: 1300px; */
+  flex: unset;
+  background-color: darkred;
+  overflow-y: scroll;
 `;
 const Conversation = styled.div<{ $alignStart: boolean }>`
   display: flex;
@@ -355,7 +364,7 @@ const ChatConversation = ({
     removePendingMessage
   } = useInfiniteThread({
     threadId,
-    dateStep: "week",
+    dateStep: "hour",
     dateStepValue: 1,
     counterParty: destinationAddress,
     // genesisDate: new Date("2022-08-25"),
@@ -777,8 +786,27 @@ const ChatConversation = ({
               hasMore={hasMoreMessages}
               loader={<></>}
               dataLength={thread?.messages.length || 0}
-              scrollableTarget="messages2"
-              scrollThreshold="200px"
+              scrollableTarget="messages"
+              scrollThreshold="20px"
+              endMessage={
+                <p style={{ textAlign: "center" }}>
+                  <b>Yay! You have seen it all</b>
+                </p>
+              }
+              // below props only if you need pull down functionality
+              refreshFunction={loadMoreMessages}
+              pullDownToRefresh
+              pullDownToRefreshThreshold={50}
+              pullDownToRefreshContent={
+                <h3 style={{ textAlign: "center" }}>
+                  &#8595; Pull down to get more messages
+                </h3>
+              }
+              releaseToRefreshContent={
+                <h3 style={{ textAlign: "center" }}>
+                  &#8593; Release to get more messages
+                </h3>
+              }
             >
               <>
                 {thread?.messages.map((message, index) => {
