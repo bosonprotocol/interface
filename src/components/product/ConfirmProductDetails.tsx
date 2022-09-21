@@ -16,6 +16,7 @@ import {
 } from "../../lib/utils/hooks/useLocalStorage";
 import { useChatContext } from "../../pages/chat/ChatProvider/ChatContext";
 import { FormField } from "../form";
+import Tooltip from "../tooltip/Tooltip";
 import Button from "../ui/Button";
 import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
@@ -349,13 +350,18 @@ export default function ConfirmProductDetails({
                         values.coreTermsOfSale.currency?.value &&
                         values.coreTermsOfSale.currency?.label && (
                           <>
-                            <CurrencyDisplay
-                              currency={
-                                values.coreTermsOfSale.currency
-                                  .value as Currencies
-                              }
-                              height={18}
-                            />
+                            <Tooltip
+                              content={values.coreTermsOfSale.currency.value}
+                              wrap={false}
+                            >
+                              <CurrencyDisplay
+                                currency={
+                                  values.coreTermsOfSale.currency
+                                    .value as Currencies
+                                }
+                                height={18}
+                              />
+                            </Tooltip>
                             {`${values.coreTermsOfSale.price} ${values.coreTermsOfSale.currency.label}`}
                           </>
                         )}
