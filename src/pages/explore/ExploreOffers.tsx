@@ -29,6 +29,7 @@ interface Props {
   breadcrumbs?: boolean;
   orderDirection?: "asc" | "desc";
   orderBy?: string;
+  disputeResolverId?: string;
 }
 
 const updatePageIndexInUrl =
@@ -66,7 +67,8 @@ const extractFiltersWithDefaults = (props: Props): Props => {
     exchangeTokenAddress: props.exchangeTokenAddress || "",
     sellerId: props.sellerId || "",
     orderDirection: props.orderDirection || undefined,
-    orderBy: props.orderBy || undefined
+    orderBy: props.orderBy || undefined,
+    disputeResolverId: props.disputeResolverId || undefined
   };
 };
 
@@ -77,7 +79,8 @@ export default function ExploreOffers(props: Props) {
     exchangeTokenAddress,
     sellerId,
     orderDirection,
-    orderBy
+    orderBy,
+    disputeResolverId
   } = extractFiltersWithDefaults(props);
   const params = useParams();
   const navigate = useKeepQueryParamsNavigate();
@@ -88,9 +91,18 @@ export default function ExploreOffers(props: Props) {
         currency: exchangeTokenAddress ?? "",
         seller: sellerId ?? "",
         orderDirection: orderDirection ?? "",
-        orderBy: orderBy ?? ""
+        orderBy: orderBy ?? "",
+        disputeResolver: disputeResolverId ?? ""
       }),
-    [navigate, name, exchangeTokenAddress, sellerId, orderDirection, orderBy]
+    [
+      navigate,
+      name,
+      exchangeTokenAddress,
+      sellerId,
+      orderDirection,
+      orderBy,
+      disputeResolverId
+    ]
   );
   const initialPageIndex = Math.max(
     0,
