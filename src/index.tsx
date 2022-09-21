@@ -10,6 +10,7 @@ import ScrollToTop from "./components/utils/Scroll";
 import WalletConnectionProvider from "./components/WalletConnectionProvider";
 import {
   BosonRoutes,
+  DisputeResolverCenterRoutes,
   OffersRoutes,
   SellerCenterRoutes
 } from "./lib/routing/routes";
@@ -20,6 +21,7 @@ import CreateProduct from "./pages/create-product/CreateProduct";
 import CustomStore from "./pages/custom-store/CustomStore";
 import DisputeCentre from "./pages/dispute-centre/DisputeCentre";
 import DisputeList from "./pages/dispute-centre/DisputeList";
+import DisputeResolver from "./pages/dispute-resolver/DisputeResolver";
 import Exchange from "./pages/exchange/Exchange";
 import Collections from "./pages/explore/Collections";
 import Explore from "./pages/explore/Explore";
@@ -129,6 +131,22 @@ root.render(
                     path={BosonRoutes.SellerPage}
                     element={<ProfilePage profileType="seller" />}
                   />
+                  <Route
+                    path={BosonRoutes.DRAdmin}
+                    element={<DisputeResolver />}
+                  />
+                  <Route
+                    path={`${DisputeResolverCenterRoutes.DisputeResolverCenter}/*`}
+                    element={
+                      <App
+                        withLayout={false}
+                        withFooter={false}
+                        fluidHeader={true}
+                      />
+                    }
+                  >
+                    <Route path="*" element={<DisputeResolver />} />
+                  </Route>
                   <Route path="*" element={<NotFound />} />
                 </Route>
               </>

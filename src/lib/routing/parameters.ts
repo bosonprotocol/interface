@@ -3,7 +3,8 @@ export const ExploreQueryParameters = {
   seller: "seller",
   currency: "currency",
   orderDirection: "orderDirection",
-  orderBy: "orderBy"
+  orderBy: "orderBy",
+  disputeResolver: "dr-admin"
 } as const;
 
 export const AccountQueryParameters = {
@@ -17,5 +18,6 @@ export const UrlParameters = {
   page: "page",
   sellerPage: "sellerPage",
   buyerId: "id",
-  sellerId: "id"
+  sellerId: "id",
+  disputeResolverPageId: "disputeResolverPage"
 } as const;

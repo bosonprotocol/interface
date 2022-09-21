@@ -19,12 +19,18 @@ export const BosonRoutes = {
   BuyerPage: `/buyer/:${UrlParameters.buyerId}`,
   SellerPage: `/seller/:${UrlParameters.sellerId}`,
   Sellers: "/sellers",
-  Products: "/products"
+  Products: "/products",
+  DRAdmin: "/dr-admin",
+  DRAdminPage: `/dr-admin/:${UrlParameters.disputeResolverPageId}`
 } as const;
 
 export const SellerCenterRoutes = {
   SellerCenter: `${BosonRoutes.Sell}/:${UrlParameters.sellerPage}`,
   CreateProduct: `${BosonRoutes.Sell}/create-product`
+};
+
+export const DisputeResolverCenterRoutes = {
+  DisputeResolverCenter: `${BosonRoutes.DRAdmin}/:${UrlParameters.disputeResolverPageId}`
 };
 
 export const OffersRoutes = {
