@@ -21,11 +21,11 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
-import { Spinner } from "../../../components/loading/Spinner";
 import InitializeChat from "../../../components/modal/components/Chat/components/InitializeChat";
 import { useModal } from "../../../components/modal/useModal";
 import Button from "../../../components/ui/Button";
 import Grid from "../../../components/ui/Grid";
+import Loading from "../../../components/ui/Loading";
 import SellerID from "../../../components/ui/SellerID";
 import { BosonRoutes } from "../../../lib/routing/routes";
 import { breakpoint } from "../../../lib/styles/breakpoint";
@@ -63,7 +63,7 @@ const ConversationContainer = styled.div`
   width: 100%;
   display: grid;
   grid-auto-columns: 1fr;
-  grid-template-rows: auto 1rem 1fr auto;
+  grid-template-rows: auto 2rem 1fr auto;
 `;
 
 const Header = styled.div`
@@ -119,7 +119,7 @@ const Header = styled.div`
   }
 `;
 
-const Loading = styled.div`
+const Loading2 = styled.div`
   display: flex;
   background-color: ${colors.lightGrey};
   justify-content: center;
@@ -127,15 +127,17 @@ const Loading = styled.div`
 const Messages = styled.div<{ $overflow: string }>`
   background-color: ${colors.lightGrey};
   /* overflow: ${({ $overflow }) => $overflow}; */
-  display: flex;
+  /* display: flex;
   flex-direction: column-reverse;
   flex-grow: 1;
   /* height: 100vh; */
   /* height: 1200px; */
   /* padding-top: 1300px; */
-  flex: unset;
-  background-color: darkred;
-  overflow-y: scroll;
+  /* flex: unset; */
+  overflow: scroll;
+  > div {
+    height: calc(100% + 20px);
+  }
 `;
 const Conversation = styled.div<{ $alignStart: boolean }>`
   display: flex;
@@ -768,11 +770,12 @@ const ChatConversation = ({
     <Container>
       {canChat ? (
         <ContainerWithSellerHeader>
-          <Loading>
+          <div>{areThreadsLoading && <Loading size={2} />}</div>
+          {/* <Loading>
             <Spinner
               style={{ visibility: areThreadsLoading ? "initial" : "hidden" }}
             />
-          </Loading>
+          </Loading> */}
           {/* <div style={{ overflow: "scroll" }} id="message2"> */}
           <Messages
             data-messages
