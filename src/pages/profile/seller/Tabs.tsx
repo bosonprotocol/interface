@@ -4,6 +4,7 @@ import styled from "styled-components";
 import Grid from "../../../components/ui/Grid";
 import { AccountQueryParameters } from "../../../lib/routing/parameters";
 import { useQueryParameter } from "../../../lib/routing/useQueryParameter";
+import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
 import { ProfileSectionWrapper } from "../ProfilePage.styles";
 import Exchanges from "./Exchanges";
@@ -12,11 +13,28 @@ import Redemptions from "./Redemptions";
 
 const Headers = styled.div`
   display: flex;
-  justify-content: flex-start;
-  margin-bottom: 1rem;
   z-index: 1;
+  justify-content: space-between;
+  margin-bottom: 3.25rem;
+  margin-top: 0.5rem;
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  ${breakpoint.s} {
+    position: static;
+    left: 0;
+    right: 0;
+    width: 100%;
+    margin 0;
+    justify-content: flex-start;
+    margin-top: 0;
+    font-size: 1rem;
+  }
 `;
-const Content = styled.div<{ isPrivateProfile: boolean }>`
+const Content = styled.div`
   background-color: var(--secondary);
   width: 100vw;
   position: relative;
@@ -24,7 +42,10 @@ const Content = styled.div<{ isPrivateProfile: boolean }>`
   right: 50%;
   margin-left: -50vw;
   margin-right: -50vw;
-  padding: 4rem 0;
+  padding: 2.25rem 0;
+  ${breakpoint.s} {
+    padding: 5rem 0;
+  }
   &::before {
     content: "";
     position: absolute;
@@ -36,24 +57,46 @@ const Content = styled.div<{ isPrivateProfile: boolean }>`
   }
 `;
 
-const HeaderTab = styled.div<{ isPrivateProfile: boolean }>`
+const HeaderTab = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  &:not(:last-child) {
-    margin-right: 1.5rem;
+  flex: 1;
+  ${breakpoint.s} {
+    width: auto;
+    flex: 0;
+    &:not(:last-child) {
+      margin-right: 1.5rem;
+    }
   }
 `;
 const TabTitle = styled.div<{ $isActive: boolean }>`
   cursor: pointer;
+  width: 100%;
   span {
-    font-size: 1rem;
-    padding: 1rem 1.25rem;
+    font-size: 1.15rem;
     border-bottom: 3px solid;
     border-color: ${({ $isActive }) =>
       $isActive ? colors.black : "transparent"};
     font-weight: ${({ $isActive }) => ($isActive ? "bold" : "normal")};
+    width: 100%;
+    display: block;
+    text-align: center;
+    padding: 1rem 0;
+    ${breakpoint.xs} {
+      padding: 1rem 0.5rem;
+    }
+    ${breakpoint.s} {
+      font-size: 1.25rem;
+      text-align: left;
+      font-size: 1.1rem;
+    }
   }
+`;
+
+const TabProfileSectionWrapper = styled(ProfileSectionWrapper)`
+  padding-left: 2rem;
+  padding-right: 2rem;
 `;
 
 type TabsData = {
@@ -120,7 +163,7 @@ export default function Tabs({
         {tabsData.map((tab, index) => {
           const isActive = indexActiveTab === index;
           return (
-            <HeaderTab key={tab.id} isPrivateProfile={isPrivateProfile}>
+            <HeaderTab key={tab.id}>
               <TabTitle
                 $isActive={isActive}
                 data-testid={`tab-${tab.title}`}
@@ -132,8 +175,8 @@ export default function Tabs({
           );
         })}
       </Headers>
-      <Content isPrivateProfile={isPrivateProfile}>
-        <ProfileSectionWrapper>
+      <Content>
+        <TabProfileSectionWrapper>
           {tabsData.map((tab, index) => {
             const isActive = indexActiveTab === index;
             return (
@@ -142,7 +185,7 @@ export default function Tabs({
               </Grid>
             );
           })}
-        </ProfileSectionWrapper>
+        </TabProfileSectionWrapper>
       </Content>
     </Grid>
   );

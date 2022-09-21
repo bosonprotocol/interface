@@ -1,4 +1,4 @@
-import { BigNumber, constants } from "ethers";
+import { BigNumber, constants, ethers } from "ethers";
 import { useState } from "react";
 import { useAccount, useBalance } from "wagmi";
 
@@ -42,9 +42,14 @@ export default function FinanceDeposit({
   const [depositError, setDepositError] = useState<unknown>(null);
 
   const { address } = useAccount();
-  const { data: dataBalance } = useBalance({
-    addressOrName: address
-  });
+  const { data: dataBalance } = useBalance(
+    exchangeToken !== ethers.constants.AddressZero
+      ? {
+          addressOrName: address,
+          token: exchangeToken
+        }
+      : { addressOrName: address }
+  );
 
   const { hideModal } = useModal();
   const coreSDK = useCoreSDK();
@@ -156,6 +161,7 @@ export default function FinanceDeposit({
         </InputWrapper>
       </AmountWrapper>
       <Grid>
+        <div />
         <CTAButton
           theme="primary"
           size="small"

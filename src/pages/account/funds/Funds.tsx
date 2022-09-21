@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
+import { useConvertionRate } from "../../../components/convertion-rate/useConvertionRate";
 import Button from "../../../components/ui/Button";
 import { CONFIG } from "../../../lib/config";
 import { colors } from "../../../lib/styles/colors";
@@ -79,7 +80,10 @@ export default function Funds({ sellerId, buyerId }: Props) {
 
   const accountId = isTabSellerSelected ? sellerId : buyerId;
 
-  const { funds, reload } = useFunds(accountId);
+  const {
+    store: { tokens }
+  } = useConvertionRate();
+  const { funds, reload } = useFunds(accountId, tokens);
   const [uiFunds, setUiFunds] =
     useState<subgraph.FundsEntityFieldsFragment[]>(funds);
   const highlightToken = (tokenName: string) => {

@@ -1,3 +1,4 @@
+import { Currencies, CurrencyDisplay } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import map from "lodash/map";
 import { Warning } from "phosphor-react";
@@ -15,7 +16,7 @@ import {
 } from "../../lib/utils/hooks/useLocalStorage";
 import { useChatContext } from "../../pages/chat/ChatProvider/ChatContext";
 import { FormField } from "../form";
-import CurrencyIcon from "../price/CurrencyIcon";
+import Tooltip from "../tooltip/Tooltip";
 import Button from "../ui/Button";
 import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
@@ -29,7 +30,6 @@ import {
   ConfirmProductDetailsButtonGroup,
   ConfirmProductDetailsContainer,
   ContentValue,
-  CurrencyIconWrapper,
   FormFieldContainer,
   GridBox,
   IconWrapper,
@@ -350,13 +350,18 @@ export default function ConfirmProductDetails({
                         values.coreTermsOfSale.currency?.value &&
                         values.coreTermsOfSale.currency?.label && (
                           <>
-                            <CurrencyIconWrapper>
-                              <CurrencyIcon
-                                currencySymbol={
-                                  values.coreTermsOfSale.currency.value
+                            <Tooltip
+                              content={values.coreTermsOfSale.currency.value}
+                              wrap={false}
+                            >
+                              <CurrencyDisplay
+                                currency={
+                                  values.coreTermsOfSale.currency
+                                    .value as Currencies
                                 }
+                                height={18}
                               />
-                            </CurrencyIconWrapper>
+                            </Tooltip>
                             {`${values.coreTermsOfSale.price} ${values.coreTermsOfSale.currency.label}`}
                           </>
                         )}
@@ -488,7 +493,7 @@ export default function ConfirmProductDetails({
             "Confirm"
           )}
         </Button>
-        <Button theme="primary" type="button" onClick={handleOpenPreview}>
+        <Button theme="secondary" type="button" onClick={handleOpenPreview}>
           Preview product detail page
         </Button>
       </ConfirmProductDetailsButtonGroup>

@@ -1,4 +1,4 @@
-import { BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { useState } from "react";
 import styled from "styled-components";
 import { useAccount, useBalance } from "wagmi";
@@ -53,9 +53,15 @@ export default function FinanceWithdraw({
   const [withdrawError, setWithdrawError] = useState<unknown>(null);
 
   const { address } = useAccount();
-  const { data: dataBalance } = useBalance({
-    addressOrName: address
-  });
+
+  const { data: dataBalance } = useBalance(
+    exchangeToken !== ethers.constants.AddressZero
+      ? {
+          addressOrName: address,
+          token: exchangeToken
+        }
+      : { addressOrName: address }
+  );
 
   const { hideModal } = useModal();
   const withdrawFunds = useWithdrawFunds({
@@ -154,9 +160,13 @@ export default function FinanceWithdraw({
         </MaxLimitWrapper>
       </AmountWrapper>
       <Grid>
-        <Typography tag="p" margin="0" $fontSize="0.75rem" fontWeight="bold">
-          Wallet Balance: {dataBalance?.formatted} {dataBalance?.symbol}
-        </Typography>
+        {dataBalance ? (
+          <Typography tag="p" margin="0" $fontSize="0.75rem" fontWeight="bold">
+            Wallet Balance: {dataBalance?.formatted} {dataBalance?.symbol}
+          </Typography>
+        ) : (
+          <div />
+        )}
         <CTAButton
           theme="primary"
           size="small"

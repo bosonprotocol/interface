@@ -232,7 +232,7 @@ const Button: React.FC<IButton> = ({
         {isLoading ? (
           <Loading />
         ) : (
-          <ChildWrapperButton>
+          <ChildWrapperButton data-child-wrapper-button>
             {children}
             {step !== 0 && (
               <Typography>
