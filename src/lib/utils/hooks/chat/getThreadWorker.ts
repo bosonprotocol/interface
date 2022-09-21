@@ -23,6 +23,7 @@ export async function getThread({
   dateStep,
   dateStepValue,
   now,
+  genesisDate,
   onMessageReceived
 }: {
   bosonXmtp: BosonXmtpClient;
@@ -32,6 +33,7 @@ export async function getThread({
   dateStep: DateStep;
   dateStepValue: number;
   now: Date;
+  genesisDate: Date;
   onMessageReceived: (currentThread: ThreadObject | null) => Promise<unknown>;
 }): Promise<{
   thread: ThreadObject | null;
@@ -47,42 +49,45 @@ export async function getThread({
   let isBeginning = false;
   let anyMessage = false;
   let failedTimesArray: Time[] = [];
-  // const pendingTimesArray: Time[] = [];
-  // TODO:
-  // acumular threadWithMessages per no perdren cap dels parallels
-  // fer tantes requests com X escollides a dalt, no com time steps
-  // dividir els timeSteps fallits en sub-timesteps mes petits per repetirho
-  // retornar missatges i continuar processant els pendents
   let oldestThread: ThreadObject | null = null;
   do {
-    const timesArrayInRange: Time[] = isBeginning
-      ? []
-      : new Array(numRequests).fill(0).map((_, index) => {
-          return getTimes(iDateIndex - index, dateStep, dateStepValue, now);
-        });
-    const timesArray = [
-      ...timesArrayInRange,
-      ...getTimesInFailedPeriod(failedTimesArray)
-        .flat()
-        .filter((v): v is Time => !!v)
-    ];
+    const failedTimes = getTimesInFailedPeriod(failedTimesArray)
+      .flat()
+      .filter((v): v is Time => !!v);
+    const timesArrayInRange: Time[] =
+      isBeginning || failedTimes.length
+        ? []
+        : new Array(numRequests).fill(0).map((_, index) => {
+            return getTimes({
+              dateIndex: iDateIndex - index,
+              dateStep,
+              dateStepValue,
+              from: now,
+              genesisDate
+            });
+          });
+    const timesArray = [...timesArrayInRange, ...failedTimes];
+    console.log("timesArray", timesArray); // TODO: correct?
     failedTimesArray = [];
     // console.log("timesArray", timesArray, {
     //   iDateIndex,
     //   dateStep
     // });
-    const promises = timesArray
-      .filter((times) => !times.isBeginning)
-      .map((times) => {
-        // console.log("request in parallel", times);
-        return bosonXmtp.getThread(threadId, counterParty, {
-          startTime: times.startTime,
-          endTime: times.endTime
-        });
+    const promises = timesArray.map((times) => {
+      if (times.isBeginning) {
+        return null;
+      }
+      // console.log("request in parallel", times);
+      return bosonXmtp.getThread(threadId, counterParty, {
+        startTime: times.startTime,
+        endTime: times.endTime
       });
-    if (!promises.length) {
+    });
+    if (!promises.filter((v) => !!v).length) {
+      console.log("all is beginning");
       return { thread: null, dateIndex: iDateIndex, isBeginning };
     }
+    console.log("promises to make", promises);
     const settledThreads = await Promise.allSettled(promises);
     const threads = settledThreads
       .filter(
@@ -108,14 +113,14 @@ export async function getThread({
         }
         return currentThread;
       });
-    // console.log(
-    //   "settledThreads",
-    //   settledThreads,
-    //   "results",
-    //   threads,
-    //   "failed",
-    //   failedTimesArray
-    // );
+    console.log(
+      "settledThreads",
+      settledThreads,
+      "threads",
+      threads,
+      "failed",
+      failedTimesArray
+    );
     isBeginning =
       isBeginning || !!timesArray.find((times) => times.isBeginning);
 
@@ -126,7 +131,7 @@ export async function getThread({
     }
     // console.log("results with messages", threadsWithMessages);
 
-    anyMessage = !!threadsWithMessages.length;
+    anyMessage = anyMessage || !!threadsWithMessages.length;
     iDateIndex -= numRequests;
     // } while (!isBeginning && !anyMessage && failedTimesArray.length);
     // console.log("while condition", {
@@ -186,7 +191,13 @@ function getTimesInFailedPeriod(failedTimesArray: Time[]) {
     let iDateIndex = 1;
     let from = time.startTime;
     while (dayjs(from).isBefore(time.endTime)) {
-      const currentTime = getTimes(iDateIndex, dateStep, 1, time.startTime);
+      const currentTime = getTimes({
+        dateIndex: iDateIndex,
+        dateStep,
+        dateStepValue: 1,
+        from: time.startTime,
+        genesisDate: time.genesisDate
+      });
       from = currentTime.endTime;
       iDateIndex++;
       subTimePeriods.push(currentTime);

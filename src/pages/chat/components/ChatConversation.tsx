@@ -9,7 +9,14 @@ import { validateMessage } from "@bosonprotocol/chat-sdk/dist/cjs/util/validator
 import dayjs from "dayjs";
 import { utils } from "ethers";
 import { ArrowLeft, PaperPlaneRight, UploadSimple } from "phosphor-react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
@@ -312,11 +319,15 @@ const ChatConversation = ({
   const iAmTheBuyer = myBuyerId === exchange?.buyer.id;
   const iAmTheSeller = mySellerId === exchange?.offer.seller.id;
   const iAmBoth = iAmTheBuyer && iAmTheSeller;
-  const buyerOrSellerToShow: BuyerOrSeller = iAmBoth
-    ? exchange?.offer.seller
-    : iAmTheBuyer
-    ? exchange?.offer.seller
-    : exchange?.buyer || ({} as BuyerOrSeller);
+  const buyerOrSellerToShow: BuyerOrSeller = useMemo(
+    () =>
+      iAmBoth
+        ? exchange?.offer.seller
+        : iAmTheBuyer
+        ? exchange?.offer.seller
+        : exchange?.buyer || ({} as BuyerOrSeller),
+    [exchange?.buyer, exchange?.offer.seller, iAmBoth, iAmTheBuyer]
+  );
   const destinationAddressLowerCase = iAmTheBuyer
     ? exchange?.offer.seller.operator
     : exchange?.buyer.wallet;
@@ -347,9 +358,13 @@ const ChatConversation = ({
     removePendingMessage
   } = useInfiniteThread({
     threadId,
-    dateStep: "day",
+    dateStep: "week",
     dateStepValue: 1,
     counterParty: destinationAddress,
+    // genesisDate: new Date("2022-08-25"),
+    genesisDate: exchange?.committedDate
+      ? new Date(Number(exchange?.committedDate) * 1000)
+      : new Date("2022-08-25"),
     onFinishFetching: ({
       isBeginningOfTimes,
       isLoading: areThreadsLoading,
@@ -377,7 +392,7 @@ const ChatConversation = ({
       }
     }
   });
-  // console.log({ isBeginningOfTimes });
+  console.log({ isBeginningOfTimes });
   const loadMoreMessages = useCallback(
     (forceDateIndex?: number) => {
       if (!areThreadsLoading) {
@@ -672,19 +687,9 @@ const ChatConversation = ({
     );
   }, [chatListOpen, isExchangePreviewOpen, isXXS, isS, isM]);
 
-  // const isConversationBeingLoaded = !thread && areThreadsLoading;
-  const disableInputs = isErrorThread;
-  if (!exchange || !address) {
-    return (
-      <Container>
-        <SimpleMessage>Select a message</SimpleMessage>
-      </Container>
-    );
-  }
-  const canChat = !!bosonXmtp;
-  return (
-    <Container>
-      {canChat ? (
+  const ContainerWithSellerHeader = useCallback(
+    ({ children }: { children: ReactNode }) => {
+      return (
         <ConversationContainer>
           <GridHeader>
             <NavigationMobile>
@@ -725,6 +730,49 @@ const ChatConversation = ({
             </Header>
             {isLteM && <Grid justifyContent="flex-end">{detailsButton}</Grid>}
           </GridHeader>
+          {children}
+        </ConversationContainer>
+      );
+    },
+    [
+      buyerOrSellerToShow,
+      chatListOpen,
+      detailsButton,
+      exchange,
+      isL,
+      isLteM,
+      isLteS,
+      isM,
+      isXL,
+      navigate,
+      prevPath,
+      setChatListOpen
+    ]
+  );
+
+  // const isConversationBeingLoaded = !thread && areThreadsLoading;
+  const disableInputs = isErrorThread;
+  if (!exchange) {
+    return (
+      <Container>
+        <SimpleMessage>Select a message</SimpleMessage>
+      </Container>
+    );
+  }
+
+  if (!address) {
+    return (
+      <Container>
+        <SimpleMessage>Connect your wallet</SimpleMessage>
+      </Container>
+    );
+  }
+
+  const canChat = !!bosonXmtp;
+  return (
+    <Container>
+      {canChat ? (
+        <ContainerWithSellerHeader>
           <Loading>
             <Spinner
               style={{ visibility: areThreadsLoading ? "initial" : "hidden" }}
@@ -904,9 +952,13 @@ const ChatConversation = ({
               <PaperPlaneRight size={24} />
             </SendButton>
           </TypeMessage>
-        </ConversationContainer>
+        </ContainerWithSellerHeader>
       ) : (
-        <InitializeChat />
+        <ContainerWithSellerHeader>
+          <div style={{ display: "flex", flexGrow: 1 }}>
+            <InitializeChat />
+          </div>
+        </ContainerWithSellerHeader>
       )}
       <ExchangeSidePreview
         exchange={exchange}

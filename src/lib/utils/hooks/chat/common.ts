@@ -1,8 +1,9 @@
-import { ThreadObject } from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/definitions";
+import {
+  MessageData,
+  ThreadObject
+} from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/definitions";
 import { matchThreadIds } from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/functions";
 import dayjs from "dayjs";
-
-import { genesisDate } from "./const";
 
 export type DateStep =
   | "second"
@@ -12,12 +13,19 @@ export type DateStep =
   | "week"
   | "month"
   | "year";
-export const getTimes = (
-  dateIndex: number,
-  dateStep: DateStep,
+export const getTimes = ({
+  dateIndex,
+  dateStep,
   dateStepValue = 1,
-  from?: Date
-) => {
+  from,
+  genesisDate
+}: {
+  dateIndex: number;
+  dateStep: DateStep;
+  dateStepValue: number;
+  from: Date;
+  genesisDate: Date;
+}) => {
   const startTime = dayjs(from)
     .add((dateIndex - 1) * dateStepValue, dateStep)
     .toDate();
@@ -25,9 +33,10 @@ export const getTimes = (
   return {
     startTime,
     endTime,
-    isBeginning: dayjs(startTime).isBefore(genesisDate),
+    isBeginning: dayjs(endTime).isBefore(genesisDate),
     dateStep,
-    dateStepValue
+    dateStepValue,
+    genesisDate
   };
 };
 
@@ -87,11 +96,11 @@ export const mergeThreads = (
           ...matchingThread.messages
         ];
       } else {
-        throw new Error(
-          `Overlapping messages in threads with id ${JSON.stringify(
-            resultingThread.threadId
-          )} ${JSON.stringify({ afterFirst, afterLast })}`
+        const dedupSortedMessages = getDedupSortedMessages(
+          resultingThread.messages,
+          matchingThread.messages
         );
+        resultingThread.messages = dedupSortedMessages;
       }
     } else {
       resultingThread.messages = matchingThread.messages || [];
@@ -100,3 +109,19 @@ export const mergeThreads = (
 
   return resultingThread;
 };
+
+export function getDedupSortedMessages(
+  messagesA: MessageData[],
+  messagesB: MessageData[]
+): MessageData[] {
+  const allMessagesIncludingDuplicates = [...messagesA, ...messagesB];
+
+  const seenMessagesSet = new Set();
+  const uniqueMessages = allMessagesIncludingDuplicates.filter((message) => {
+    const id = message.timestamp;
+    const duplicate = seenMessagesSet.has(id);
+    seenMessagesSet.add(id);
+    return !duplicate;
+  });
+  return uniqueMessages.sort((msgA, msgB) => msgA.timestamp - msgB.timestamp);
+}

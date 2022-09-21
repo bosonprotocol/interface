@@ -9,13 +9,19 @@ import { useCallback, useEffect, useState } from "react";
 
 import { useChatContext } from "../../../../pages/chat/ChatProvider/ChatContext";
 import { ThreadObjectWithInfo } from "../../../../pages/chat/types";
-import { DateStep, getTimes, mergeThreads } from "./common";
+import {
+  DateStep,
+  getDedupSortedMessages,
+  getTimes,
+  mergeThreads
+} from "./common";
 
 interface Props {
   dateStep: DateStep;
   dateStepValue?: number;
   counterParty: string;
   threadId: ThreadId | null | undefined;
+  genesisDate: Date;
   onFinishFetching: (arg: {
     isLoading: boolean;
     isError: boolean;
@@ -31,6 +37,7 @@ export function useInfiniteThread({
   dateStepValue = 1,
   counterParty,
   threadId,
+  genesisDate,
   onFinishFetching
 }: Props): {
   data: ThreadObjectWithInfo | null;
@@ -70,15 +77,19 @@ export function useInfiniteThread({
     if (dateIndex.index > 0) {
       return;
     }
+    console.log({ genesisDate });
     const now = new Date();
-    const { isBeginning } = getTimes(
-      dateIndex.index,
+    const { isBeginning, startTime, endTime } = getTimes({
+      dateIndex: dateIndex.index,
       dateStep,
       dateStepValue,
-      now
-    );
+      from: now,
+      genesisDate
+    });
+    console.log({ isBeginning, startTime, endTime });
     setIsBeginningOfTimes(isBeginning);
     if (isBeginning) {
+      console.log("no request because its beginning");
       return;
     }
     setThreadsLoading(true);
@@ -94,6 +105,7 @@ export function useInfiniteThread({
         dateStep,
         dateStepValue,
         now,
+        genesisDate,
         onMessageReceived: async (threadObject) => {
           if (threadObject) {
             await setIsValidToMessages(threadObject as ThreadObjectWithInfo);
@@ -169,23 +181,15 @@ export function useInfiniteThread({
         // @ts-ignore
         setThreadXmtp((newThread) => {
           const oldMessages = newThread?.messages || [];
-          const allMessagesIncludingDuplicates = [...oldMessages, ...messages];
 
-          const seenMessagesSet = new Set();
-          const uniqueMessages = allMessagesIncludingDuplicates.filter(
-            (message) => {
-              const id = message.timestamp;
-              const duplicate = seenMessagesSet.has(id);
-              seenMessagesSet.add(id);
-              return !duplicate;
-            }
+          const dedupSortedMessages = getDedupSortedMessages(
+            oldMessages,
+            messages
           );
           return {
             ...(newThread || {}),
             threadId: newThread?.threadId || threadId,
-            messages: uniqueMessages.sort(
-              (msgA, msgB) => msgA.timestamp - msgB.timestamp
-            )
+            messages: dedupSortedMessages
           };
         });
       },

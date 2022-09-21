@@ -31,7 +31,7 @@ const Container = styled.div<{ $disputeOpen: boolean }>`
   overflow-y: auto;
   min-width: max-content;
   position: absolute;
-  margin-top: 7.05rem;
+  margin-top: 6rem;
   z-index: ${zIndex.ExchangeSidePreview};
   right: ${({ $disputeOpen }) => ($disputeOpen ? "0" : "-160vw")};
   transition: 400ms;
@@ -54,27 +54,26 @@ const Container = styled.div<{ $disputeOpen: boolean }>`
 
 const StyledImage = styled(Image)`
   cursor: pointer;
+  padding-top: 50%;
 
   [data-image-placeholder] {
     position: initial;
   }
 
-  [data-testid="exchange-image"] {
-    all: unset;
-    width: 100%;
+  img[data-testid="exchange-image"] {
     max-height: 400px;
     max-width: 400px;
     object-fit: contain;
-    display: block;
-    margin: 0 auto;
-    padding: 1.875rem 0;
 
     ${breakpoint.l} {
-      padding: unset;
-      margin: unset;
+      max-height: unset;
       max-width: unset;
       object-fit: cover;
     }
+  }
+
+  ${breakpoint.l} {
+    padding-top: 120%;
   }
 `;
 
