@@ -115,7 +115,7 @@ const Header = styled.div`
   }
 `;
 
-const Loading = styled.div`
+const LoadingContainer = styled.div`
   display: flex;
   background-color: ${colors.lightGrey};
   justify-content: center;
@@ -246,6 +246,29 @@ const InputWrapper = styled.div`
   margin-left: 0.875rem;
 `;
 
+const NoMoreMessages = styled.button.attrs({ type: "button" })`
+  background-color: ${colors.white};
+  color: ${colors.black};
+  border-radius: 1rem;
+  margin: 0.5rem;
+  padding: 0.2rem 0.7rem;
+  pointer-events: none;
+`;
+
+const LoadMoreMessages = styled.button.attrs({ type: "button" })`
+  background-color: ${colors.white};
+  color: ${colors.black};
+  border-radius: 1rem;
+  margin: 0.5rem;
+  padding: 0.2rem 0.7rem;
+  transition: all 300ms;
+
+  :hover {
+    background-color: ${colors.black};
+    color: ${colors.white};
+  }
+`;
+
 const UploadButtonWrapper = styled.button`
   all: unset;
   cursor: pointer;
@@ -342,7 +365,7 @@ const ChatConversation = ({
       sellerId: exchange.seller.id
     };
   }, [exchange]);
-  // console.log("threadId", threadId, "destinationAddrs", destinationAddress);
+
   const {
     data: thread,
     isLoading: areThreadsLoading,
@@ -358,7 +381,6 @@ const ChatConversation = ({
     dateStep: "week",
     dateStepValue: 1,
     counterParty: destinationAddress,
-    // genesisDate: new Date("2022-08-25"),
     genesisDate: exchange?.committedDate
       ? new Date(Number(exchange?.committedDate) * 1000)
       : new Date("2022-08-25"),
@@ -367,32 +389,18 @@ const ChatConversation = ({
       isLoading: areThreadsLoading,
       lastData: lastThread
     }) => {
-      // console.log("abc before if onFinishFetching", {
-      //   bosonXmtp,
-      //   isBeginningOfTimes,
-      //   areThreadsLoading,
-      //   lastThread
-      // });
       if (
         bosonXmtp &&
         !isBeginningOfTimes &&
         !areThreadsLoading &&
         !lastThread
       ) {
-        // console.log("abc onFinishFetching", {
-        //   bosonXmtp,
-        //   isBeginningOfTimes,
-        //   areThreadsLoading,
-        //   lastThread
-        // });
         loadMoreMessages();
       }
     }
   });
-  console.log({ isBeginningOfTimes });
   const loadMoreMessages = useCallback(
     (forceDateIndex?: number) => {
-      console.log("call to loadMoreMessages");
       if (!areThreadsLoading) {
         if (forceDateIndex !== undefined) {
           setDateIndex(forceDateIndex);
@@ -759,12 +767,17 @@ const ChatConversation = ({
     <Container>
       {canChat ? (
         <ContainerWithSellerHeader>
-          <Loading>
-            <Spinner
-              style={{ visibility: areThreadsLoading ? "initial" : "hidden" }}
-            />
-          </Loading>
-          {/* <div style={{ overflow: "scroll" }} id="message2"> */}
+          <LoadingContainer>
+            {areThreadsLoading ? (
+              <Spinner />
+            ) : isBeginningOfTimes ? (
+              <NoMoreMessages>No earlier messages</NoMoreMessages>
+            ) : (
+              <LoadMoreMessages onClick={() => loadMoreMessages()}>
+                Load more messages
+              </LoadMoreMessages>
+            )}
+          </LoadingContainer>
           <Messages
             data-messages
             ref={dataMessagesRef}
@@ -777,8 +790,21 @@ const ChatConversation = ({
               hasMore={hasMoreMessages}
               loader={<></>}
               dataLength={thread?.messages.length || 0}
-              scrollableTarget="messages2"
+              scrollableTarget="messages"
               scrollThreshold="200px"
+              refreshFunction={loadMoreMessages}
+              pullDownToRefresh
+              pullDownToRefreshThreshold={50}
+              pullDownToRefreshContent={
+                <h3 style={{ textAlign: "center" }}>
+                  &#8595; Pull down to refresh
+                </h3>
+              }
+              releaseToRefreshContent={
+                <h3 style={{ textAlign: "center" }}>
+                  &#8593; Release to refresh
+                </h3>
+              }
             >
               <>
                 {thread?.messages.map((message, index) => {
@@ -842,7 +868,6 @@ const ChatConversation = ({
               </>
             </InfiniteScroll>
           </Messages>
-          {/* </div> */}
           <TypeMessage>
             {exchange.disputed && (
               <Grid

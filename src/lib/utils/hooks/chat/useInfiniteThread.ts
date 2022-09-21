@@ -84,19 +84,16 @@ export function useInfiniteThread({
     if (dateIndex.index > 0) {
       return;
     }
-    console.log({ genesisDate });
     const now = new Date();
-    const { isBeginning, startTime, endTime } = getTimes({
+    const { isBeginning } = getTimes({
       dateIndex: dateIndex.index,
       dateStep,
       dateStepValue,
       from: now,
       genesisDate
     });
-    console.log({ isBeginning, startTime, endTime });
     setIsBeginningOfTimes(isBeginning);
     if (isBeginning) {
-      console.log("no request because its beginning");
       return;
     }
     setThreadsLoading(true);

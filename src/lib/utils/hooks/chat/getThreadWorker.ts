@@ -66,18 +66,12 @@ export async function getThread({
             });
           });
     const timesArray = [...timesArrayInRange, ...failedTimes];
-    console.log("timesArray", timesArray);
     failedTimesArray = [];
-    // console.log("timesArray", timesArray, {
-    //   iDateIndex,
-    //   dateStep
-    // });
     const promises = timesArray.map((times) => {
       if (times.isBeginning) {
         return null;
       }
       return () => {
-        // console.log("request in parallel", times);
         return bosonXmtp.getThread(threadId, counterParty, {
           startTime: times.startTime,
           endTime: times.endTime
@@ -85,10 +79,8 @@ export async function getThread({
       };
     });
     if (!promises.filter((v) => !!v).length) {
-      console.log("all is beginning");
       return { thread: null, dateIndex: iDateIndex, isBeginning };
     }
-    // console.log("promises to make", promises);
     const settledThreads = await allSettled(
       promises.map((p) => {
         if (!p) {
@@ -97,8 +89,6 @@ export async function getThread({
         return p;
       })
     );
-    // console.log("settledThreads", settledThreads);
-    // const settledThreads = await Promise.allSettled(promises);
     const threads = settledThreads
       .filter(
         (result, index): result is PromiseFulfilledResult<ThreadObject> => {
@@ -123,14 +113,6 @@ export async function getThread({
         }
         return currentThread;
       });
-    console.log(
-      "settledThreads",
-      settledThreads,
-      "threads",
-      threads,
-      "failed",
-      failedTimesArray
-    );
     isBeginning =
       isBeginning || !!timesArray.find((times) => times.isBeginning);
 
@@ -139,26 +121,14 @@ export async function getThread({
       const merged = mergeListOfThreads(threadsWithMessages);
       onMessageReceived(merged);
     }
-    // console.log("results with messages", threadsWithMessages);
 
     anyMessage = anyMessage || !!threadsWithMessages.length;
     iDateIndex -= concurrency;
-    // } while (!isBeginning && !anyMessage && failedTimesArray.length);
-    // console.log("while condition", {
-    //   failedTimesArray,
-    //   isBeginning,
-    //   anyMessage
-    // });
   } while (
     window.navigator.onLine &&
     (failedTimesArray.length ||
       (!failedTimesArray.length && !isBeginning && !anyMessage))
   );
-  // console.log("END of parallel threads", {
-  //   failedTimesArray,
-  //   isBeginning,
-  //   anyMessage
-  // });
   return {
     dateIndex: iDateIndex,
     thread: oldestThread,
