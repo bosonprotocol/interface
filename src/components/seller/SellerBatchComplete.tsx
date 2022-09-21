@@ -8,7 +8,6 @@ interface Props {
 }
 function SellerBatchComplete({ selected, refetch }: Props) {
   const { showModal, modalTypes } = useModal();
-
   return (
     <Button
       theme="bosonPrimary"

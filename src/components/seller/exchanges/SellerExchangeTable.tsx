@@ -227,33 +227,16 @@ export default function SellerExchangeTable({
     if (
       exchange.redeemedDate &&
       !exchange.disputedDate &&
-      exchange.offer.fulfillmentPeriodDuration
+      exchange.offer.fulfillmentPeriodDuration &&
+      exchange.state !== subgraph.ExchangeState.Completed
     ) {
-      const redeemedTime = dayjs(getDateTimestamp(exchange.redeemedDate));
       const fulfillmentPeriodTime = dayjs(
         getDateTimestamp(exchange.redeemedDate) +
           getDateTimestamp(exchange.offer.fulfillmentPeriodDuration)
       );
-
-      console.log({
-        exchangeId: exchange.id,
-        fulfillmentPeriod: exchange.offer.fulfillmentPeriodDuration,
-        fulfillmentPeriodHumanReadable: dayjs(fulfillmentPeriodTime).format(
-          "YYYY-MM-DD: HH:mm:ss"
-        ),
-        status: exchange.state,
-        redeemedDate: exchange.redeemedDate,
-        disputedDate: exchange.disputedDate,
-        redeemedTime,
-        fulfillmentPeriodTime,
-        isBefore: !!dayjs(fulfillmentPeriodTime).isBefore(dayjs())
-      });
       isRedeemedAndFulfillmentPeriodInPast = !!dayjs(
         fulfillmentPeriodTime
       ).isBefore(dayjs());
-
-      // TEMP FOR DEV PURPOSE
-      isRedeemedAndFulfillmentPeriodInPast = true;
     }
     return isRedeemedAndFulfillmentPeriodInPast;
   };
