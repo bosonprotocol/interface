@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { formatUnits } from "@ethersproject/units";
 import * as ProgressPrimitive from "@radix-ui/react-progress";
-import { BigNumber, FixedNumber } from "ethers";
+import { BigNumber } from "ethers";
 import { Plus } from "phosphor-react";
 import { useMemo } from "react";
 import styled from "styled-components";
@@ -9,6 +9,7 @@ import styled from "styled-components";
 import { getOfferDetailData } from "../../../components/detail/DetailWidget/DetailWidget";
 import Price from "../../../components/price/index";
 import { useConvertedPrice } from "../../../components/price/useConvertedPrice";
+import { CONFIG } from "../../../lib/config";
 import { colors } from "../../../lib/styles/colors";
 import {
   Break,
@@ -122,15 +123,14 @@ export default function ProductCreateSuccess({
     onCreateNewProject();
   };
 
-  const suggestedAmount = FixedNumber.fromString(
-    formatUnits(
-      BigNumber.from(offer?.sellerDeposit).mul(Number(offer?.quantityInitial)),
-      Number(offer?.exchangeToken?.decimals || 18)
-    )
+  const suggestedAmount = formatUnits(
+    BigNumber.from(offer.sellerDeposit).mul(parseInt(offer.quantityInitial)),
+    Number(CONFIG.nativeCoin?.decimals) || 18
   );
 
-  const mulBy = FixedNumber.fromString("0.15");
-  const fifteenOfAmmount = suggestedAmount.mulUnsafe(mulBy);
+  const fifteenOfAmmount = parseFloat(
+    (parseFloat(suggestedAmount) * 0.15).toFixed(18)
+  );
 
   return (
     <>
@@ -201,7 +201,7 @@ export default function ProductCreateSuccess({
                   style={{ transform: `translateX(-${100 - PROGRESS}%)` }}
                 />
                 <Amount>
-                  {fifteenOfAmmount?._value} / {suggestedAmount?._value}{" "}
+                  {fifteenOfAmmount} / {suggestedAmount}{" "}
                   {offer.exchangeToken.symbol}
                 </Amount>
               </StyledProgressLayer>

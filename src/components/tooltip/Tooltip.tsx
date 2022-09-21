@@ -1,6 +1,6 @@
-import "tippy.js/animations/shift-toward.css";
 import "tippy.js/dist/tippy.css";
 import "tippy.js/themes/light-border.css";
+import "tippy.js/animations/shift-toward.css";
 
 import Tippy from "@tippyjs/react";
 import { IconWeight, Question } from "phosphor-react";
@@ -8,7 +8,6 @@ import React from "react";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
-import { IButton } from "../ui/Button";
 import * as Styles from "../ui/styles";
 interface Props {
   content: string | JSX.Element | React.ReactNode;
@@ -16,7 +15,6 @@ interface Props {
   interactive?: boolean;
   size?: number;
   weight?: IconWeight;
-  wrap?: boolean;
   placement?:
     | "top"
     | "top-start"
@@ -39,7 +37,6 @@ interface Props {
     | "click"
     | "focusin"
     | "manual";
-  theme?: IButton["theme"];
 }
 
 const Button = styled.button`
@@ -61,8 +58,6 @@ export default function Tooltip({
   size = 18,
   weight = "regular",
   trigger = "mouseenter focus",
-  theme = "primary",
-  wrap = true,
   ...rest
 }: Props) {
   return (
@@ -76,15 +71,9 @@ export default function Tooltip({
       trigger={trigger}
       {...rest}
     >
-      {wrap ? (
-        <Button type="button" theme={theme}>
-          {children ? children : <Question size={size} weight={weight} />}
-        </Button>
-      ) : (
-        <button type="button">
-          {children ? children : <Question size={size} weight={weight} />}
-        </button>
-      )}
+      <Button type="button">
+        {children ? children : <Question size={size} weight={weight} />}
+      </Button>
     </Tippy>
   );
 }

@@ -4,7 +4,6 @@ import styled, { css } from "styled-components";
 
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
-import Tooltip from "../tooltip/Tooltip";
 import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
 import ConvertedPrice from "./ConvertedPrice";
@@ -90,12 +89,10 @@ export default function Price({
             data-icon-price
             {...(isSymbolShown && { "data-with-symbol": true })}
           >
-            <Tooltip content={currencySymbol} wrap={false}>
-              <CurrencyDisplay
-                currency={currencySymbol as Currencies}
-                height={18}
-              />
-            </Tooltip>
+            <CurrencyDisplay
+              currency={currencySymbol as Currencies}
+              height={18}
+            />
             {price?.currency ? (
               <>
                 {price.fractions === "0"

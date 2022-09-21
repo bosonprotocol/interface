@@ -14,7 +14,6 @@ dayjs.extend(localizedFormat);
 
 import { ethers } from "ethers";
 
-import { Token } from "../../components/convertion-rate/ConvertionRateContext";
 import { useModal } from "../../components/modal/useModal";
 import Help from "../../components/product/Help";
 import Preview from "../../components/product/Preview";
@@ -326,14 +325,7 @@ function CreateProductInner({ initial }: Props) {
         }
       });
 
-      const exchangeToken = CONFIG.defaultTokens.find(
-        (n: Token) => n.symbol === coreTermsOfSale.currency.value
-      );
-
-      const priceBN = parseUnits(
-        `${coreTermsOfSale.price}`,
-        Number(exchangeToken?.decimals || 18)
-      );
+      const priceBN = parseUnits(`${coreTermsOfSale.price}`, 18); // TODO: the number of decimals (here: 18) shall depend on the token
 
       // TODO: change when more than percentage unit
       const buyerCancellationPenaltyValue = priceBN
@@ -344,6 +336,7 @@ function CreateProductInner({ initial }: Props) {
       const sellerCancellationPenaltyValue = priceBN
         .mul(parseFloat(termsOfExchange.sellerDeposit) * 1000)
         .div(100 * 1000);
+
       const {
         voucherRedeemableFromDateInMS,
         voucherRedeemableUntilDateInMS,
@@ -369,7 +362,7 @@ function CreateProductInner({ initial }: Props) {
         validUntilDateInMS: validUntilDateInMS.toString(),
         fulfillmentPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
         resolutionPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
-        exchangeToken: exchangeToken.address || ethers.constants.AddressZero,
+        exchangeToken: ethers.constants.AddressZero,
         disputeResolverId: CONFIG.envName === "testing" ? 1 : 2,
         agentId: 0, // no agent
         metadataUri: `ipfs://${metadataHash}`,

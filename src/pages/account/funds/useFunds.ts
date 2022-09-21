@@ -11,6 +11,7 @@ type FundStatus = "idle" | "loading" | "error" | "success";
 
 export interface FundsProps {
   funds: Array<subgraph.FundsEntityFieldsFragment>;
+  allFunds: Array<subgraph.FundsEntityFieldsFragment>;
   reload: React.DispatchWithoutAction;
   fundStatus: FundStatus;
 }
@@ -41,32 +42,26 @@ export default function useFunds(
                   accountId,
                   availableAmount: token?.availableAmount || "0",
                   id: `${accountId}0x${String(index).padStart(2, "0")}`,
+                  name: token?.name || token?.token?.name,
                   token: {
-                    id:
-                      token?.token?.id ||
-                      token?.address ||
-                      ethers.constants.AddressZero,
-                    address:
-                      token?.token?.address ||
-                      token?.address ||
-                      ethers.constants.AddressZero,
-                    decimals: token?.token?.decimals || token?.decimals || "18",
-                    name: token?.token?.name || token?.name,
-                    symbol: token?.token?.symbol || token?.symbol
+                    id: token?.address || ethers.constants.AddressZero,
+                    address: token?.address || ethers.constants.AddressZero,
+                    decimals: token?.decimals || "18",
+                    name: token?.name || token?.token?.name,
+                    symbol: token?.symbol || token?.token?.symbol
                   }
                 }
               : null
           )
           .reduce((acc: Array<any>, o: any) => {
             if (o !== null) {
-              if (
-                !acc.some((obj: any) => obj?.token?.symbol === o?.token?.symbol)
-              ) {
+              if (!acc.some((obj: any) => obj?.name === o?.name)) {
                 acc.push(o);
               }
             }
             return acc;
           }, []) || [];
+
       setFundStatus("success");
       setFunds(allTokensParsed);
     },
@@ -80,7 +75,9 @@ export default function useFunds(
         .getFunds({
           fundsFilter: { accountId }
         })
-        .then((funds) => handleFunds(funds))
+        .then((funds) => {
+          return handleFunds(funds);
+        })
         .catch(() => {
           setFundStatus("error");
         });
@@ -91,5 +88,5 @@ export default function useFunds(
     getFunds();
   }, [getFunds, numRequests]);
 
-  return { funds, reload, fundStatus };
+  return { funds, allFunds: funds, reload, fundStatus };
 }
