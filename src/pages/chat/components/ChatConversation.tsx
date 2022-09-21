@@ -21,11 +21,12 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
+import { Spinner } from "../../../components/loading/Spinner";
 import InitializeChat from "../../../components/modal/components/Chat/components/InitializeChat";
 import { useModal } from "../../../components/modal/useModal";
 import Button from "../../../components/ui/Button";
 import Grid from "../../../components/ui/Grid";
-import Loading from "../../../components/ui/Loading";
+// import Loading from "../../../components/ui/Loading";
 import SellerID from "../../../components/ui/SellerID";
 import { BosonRoutes } from "../../../lib/routing/routes";
 import { breakpoint } from "../../../lib/styles/breakpoint";
@@ -119,7 +120,7 @@ const Header = styled.div`
   }
 `;
 
-const Loading2 = styled.div`
+const Loading = styled.div`
   display: flex;
   background-color: ${colors.lightGrey};
   justify-content: center;
@@ -136,7 +137,7 @@ const Messages = styled.div<{ $overflow: string }>`
   /* flex: unset; */
   overflow: scroll;
   > div {
-    height: calc(100% + 20px);
+    height: calc(100% + 50px);
   }
 `;
 const Conversation = styled.div<{ $alignStart: boolean }>`
@@ -169,7 +170,7 @@ const Input = styled.div`
   font-size: 1rem;
   font-weight: 500;
   line-height: 1.5rem;
-  padding: 0.75rem 1rem 0.75rem 1rem;
+  padding: 0.75rem 3.5rem 0.75rem 1rem;
   &:focus {
     outline: none;
   }
@@ -186,7 +187,7 @@ const TextArea = styled.textarea`
   border: none;
   background: none;
   resize: none;
-  padding-right: 0.625rem;
+  padding-right: 0.5rem;
   font-family: Plus Jakarta Sans;
   font-size: 1rem;
   font-weight: 400;
@@ -766,16 +767,17 @@ const ChatConversation = ({
   }
 
   const canChat = !!bosonXmtp;
+  console.log({ areThreadsLoading });
   return (
     <Container>
       {canChat ? (
         <ContainerWithSellerHeader>
-          <div>{areThreadsLoading && <Loading size={2} />}</div>
-          {/* <Loading>
+          {/* <div>{areThreadsLoading && <Loading size={2} />}</div> */}
+          <Loading>
             <Spinner
               style={{ visibility: areThreadsLoading ? "initial" : "hidden" }}
             />
-          </Loading> */}
+          </Loading>
           {/* <div style={{ overflow: "scroll" }} id="message2"> */}
           <Messages
             data-messages
