@@ -326,17 +326,15 @@ export default function SellerExchangeTable({
                     theme="bosonPrimary"
                     size="small"
                     onClick={() => {
-                      if (element.offer) {
-                        showModal(
-                          modalTypes.COMPLETE_EXCHANGE,
-                          {
-                            title: "Complete Confirmation",
-                            exchange: element,
-                            refetch
-                          },
-                          "xs"
-                        );
-                      }
+                      showModal(
+                        modalTypes.COMPLETE_EXCHANGE,
+                        {
+                          title: "Complete Confirmation",
+                          exchange: element,
+                          refetch
+                        },
+                        "xs"
+                      );
                     }}
                   >
                     Complete exchange
