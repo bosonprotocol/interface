@@ -111,6 +111,10 @@ root.render(
                     path={BosonRoutes.DisputeCenter}
                     element={<DisputeList />}
                   />
+                  <Route
+                    path={BosonRoutes.SellersByIndex}
+                    element={<Collections />}
+                  />
                   <Route path={BosonRoutes.Sellers} element={<Collections />} />
                   <Route path={BosonRoutes.Products} element={<Products />} />
                   <Route

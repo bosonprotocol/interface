@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { generatePath, useParams } from "react-router-dom";
 import ReactSelect, { StylesConfig } from "react-select";
 import styled from "styled-components";
 
@@ -6,24 +7,64 @@ import Breadcrumbs from "../../components/breadcrumbs/Breadcrumbs";
 import CollectionsCard from "../../components/modal/components/Explore/Collections/CollectionsCard";
 import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
-import { ExploreQueryParameters } from "../../lib/routing/parameters";
+import {
+  CollectionsQueryParameters,
+  UrlParameters
+} from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { useQueryParameter } from "../../lib/routing/useQueryParameter";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useCollections } from "../../lib/utils/hooks/useCollections";
+import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import Pagination from "./Pagination";
 
 interface FilterValue {
-  value: "asc" | "desc";
+  value: string;
+  orderDirection: "asc" | "desc";
+  orderBy: string;
   label: string;
+  exchangeOrderBy: string;
+  validFromDate_lte: string;
 }
 
 const selectOptions = [
-  { value: "asc", label: "Ascending" },
-  { value: "desc", label: "Descending" }
+  {
+    value: "0",
+    orderDirection: "desc",
+    orderBy: "createdAt",
+    label: "Recently created",
+    exchangeOrderBy: "",
+    validFromDate_lte: ""
+  },
+  {
+    value: "1",
+    orderDirection: "desc",
+    orderBy: "validFromDate",
+    label: "Recently live",
+    exchangeOrderBy: "",
+    validFromDate_lte: `${Math.floor(Date.now() / 1000)}`
+  },
+  {
+    value: "2",
+    orderDirection: "desc",
+    orderBy: "createdAt",
+    label: "Recently Commited",
+    exchangeOrderBy: "committedDate",
+    validFromDate_lte: ""
+  },
+  {
+    value: "3",
+    orderDirection: "desc",
+    orderBy: "createdAt",
+    label: "Recently Redeemed",
+    exchangeOrderBy: "redeemedDate",
+    validFromDate_lte: ""
+  }
 ] as const;
+
+const DEFAULT_PAGE = 0;
 
 const ExploreContainer = styled.div`
   display: flex;
@@ -49,16 +90,10 @@ const SelectFilterWrapper = styled.div`
   position: relative;
   min-width: 10.125rem;
   max-height: 2.5rem;
-  padding: 0.5rem 0.75rem 0.5rem 1rem;
+  padding: 0.5rem 0 0.5rem 1rem;
   display: flex;
   align-items: center;
 `;
-
-// const CardButton = styled.button`
-//   background: none;
-//   border: none;
-//   width: 100%;
-// `;
 
 const BreadcrumbsContainer = styled.div`
   display: block;
@@ -117,36 +152,128 @@ const customStyles: StylesConfig<
 };
 
 function Collections() {
-  const [filter, setFilter] = useState<FilterValue>(selectOptions[0]);
-  const [sortQueryParameter, setSortQueryParameter] = useQueryParameter(
-    ExploreQueryParameters.orderDirection
+  const navigate = useKeepQueryParamsNavigate();
+  const [sortOrderByParameter, setSortOrderByParameter] = useQueryParameter(
+    CollectionsQueryParameters.orderBy
   );
-  useEffect(() => {
-    if (sortQueryParameter) {
-      setFilter(
-        selectOptions.filter((option) => option.value === sortQueryParameter)[0]
-      );
-    }
-  }, [sortQueryParameter]);
-  const [pageIndex, setPageIndex] = useState(0);
+  const [sortOrderDirectionParameter, setSortOrderDirectionParameter] =
+    useQueryParameter(CollectionsQueryParameters.orderDirection);
+
+  const [sortExchangeOrderByParameter, setSortExchangeOrderByParameter] =
+    useQueryParameter(CollectionsQueryParameters.exchangeOrderBy);
+
+  const [sortValidFromDate_lte, setValidFromDate_lte] = useQueryParameter(
+    CollectionsQueryParameters.validFromDate_lte
+  );
+
+  const [filter, setFilter] = useState<FilterValue>(selectOptions[0]);
+
+  const params = useParams();
+
+  const updatePageIndexInUrl =
+    (
+      navigate: ReturnType<typeof useKeepQueryParamsNavigate> // eslint-disable-line
+    ) =>
+    (
+      index: number,
+      queryParams: {
+        orderDirection: "asc" | "desc";
+        orderBy: string;
+        exchangeOrderBy: string;
+        validFromDate_lte: string;
+      }
+    ): void => {
+      const queryParamsUrl = new URLSearchParams( // eslint-disable-line
+        Object.entries(queryParams)
+      ).toString();
+
+      if (index === 0) {
+        navigate({
+          pathname: BosonRoutes.Sellers,
+          search: queryParamsUrl
+        });
+      } else {
+        navigate({
+          pathname: generatePath(BosonRoutes.SellersByIndex, {
+            [UrlParameters.page]: index + 1 + ""
+          }),
+          search: queryParamsUrl
+        });
+      }
+    };
+  console.log("filter collections", filter);
+  const updateUrl = useCallback(
+    (index: number) => {
+      return updatePageIndexInUrl(navigate)(index, {
+        orderDirection: (sortOrderDirectionParameter as "asc" | "desc") ?? "",
+        orderBy: sortOrderByParameter,
+        exchangeOrderBy: sortExchangeOrderByParameter,
+        validFromDate_lte: sortValidFromDate_lte
+      });
+    },
+
+    [
+      navigate,
+      sortExchangeOrderByParameter,
+      sortOrderByParameter,
+      sortOrderDirectionParameter,
+      sortValidFromDate_lte
+    ]
+  );
+
+  // useEffect(() => {
+  //   if (sortQueryParameter) {
+  //     setFilter(
+  //       selectOptions.filter((option) => option.value === sortQueryParameter)[0]
+  //     );
+  //   }
+  // }, [sortQueryParameter]);
+
+  const initialPageIndex = Math.max(
+    0,
+    params[UrlParameters.page]
+      ? Number(params[UrlParameters.page]) - 1
+      : DEFAULT_PAGE
+  );
+  const [pageIndex, setPageIndex] = useState(initialPageIndex);
   const OFFERS_PER_PAGE = 8;
+
+  const parseOrderBy = useMemo(() => {
+    if (
+      filter?.orderBy === "priceLowToHigh" ||
+      filter?.orderBy === "priceHightToLow"
+    ) {
+      return "createdAt";
+    }
+    return filter?.orderBy || "createdAt";
+  }, [filter]);
+
   const useCollectionPayload = {
     first: OFFERS_PER_PAGE * 2,
     skip: OFFERS_PER_PAGE * pageIndex,
-    orderDirection: filter.value,
-    validFromDate: "1662847140",
-    validUntilDate: "1662847140"
+    orderDirection: filter?.orderDirection,
+    orderBy: parseOrderBy,
+    exchangeOrderBy:
+      filter?.exchangeOrderBy !== "" ? filter?.exchangeOrderBy : "",
+    validFromDate_lte: filter?.validFromDate_lte
   };
-  const { data } = useCollections({
+  const { data, isFetched } = useCollections({
     ...useCollectionPayload
   });
 
   const { isLteXS, isLteS } = useBreakpoints();
 
-  const collections = useMemo(
-    () => data && data.filter((item) => item.offers.length > 0),
-    [data]
-  );
+  const collections = useMemo(() => {
+    const filtered = data?.filter((item) => item.offers.length > 0);
+
+    if (filtered && filtered.length > 0) {
+      return filtered;
+    }
+
+    if (data) {
+      return data;
+    }
+  }, [data]);
 
   const currentAndNextPageOffers = useMemo(() => {
     if (data) {
@@ -155,13 +282,43 @@ function Collections() {
     return 1;
   }, [data]);
 
+  useEffect(() => {
+    if (isFetched && !data?.length) {
+      console.log("test");
+      /**
+       * if you go directly to a page without any offers,
+       * you'll be redirected to the first page
+       */
+      setPageIndex(DEFAULT_PAGE);
+      updateUrl(DEFAULT_PAGE);
+    }
+  }, [currentAndNextPageOffers, data, data?.length, isFetched, updateUrl]);
+
+  useEffect(() => {
+    if (
+      sortOrderByParameter ||
+      sortOrderDirectionParameter ||
+      sortExchangeOrderByParameter ||
+      sortValidFromDate_lte
+    ) {
+      updateUrl(pageIndex);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    pageIndex,
+    sortOrderByParameter,
+    sortOrderDirectionParameter,
+    sortExchangeOrderByParameter,
+    sortValidFromDate_lte
+  ]);
+
   return (
     <>
       <Grid>
         <Typography
-          $fontSize="32px"
+          $fontSize="2.25rem"
           fontWeight="600"
-          margin="0.67em 0 0.67em 0"
+          margin="1.375rem 0 0.67em 0"
         >
           Sellers
         </Typography>
@@ -175,9 +332,27 @@ function Collections() {
             placeholder=""
             value={filter}
             options={selectOptions}
-            onChange={(option) => {
-              setFilter(option as typeof selectOptions[number]);
-              setSortQueryParameter(option?.value || "");
+            // eslint-disable-next-line
+            onInputChange={() => {
+              console.log("dupa");
+            }}
+            onChange={(option: any) => {
+              console.log("dupa2");
+              // eslint-disable-line
+              if (option !== null) {
+                setFilter({
+                  value: option.value,
+                  orderDirection: option.orderDirection,
+                  orderBy: option.orderBy,
+                  label: option.label,
+                  exchangeOrderBy: option.exchangeOrderBy,
+                  validFromDate_lte: option.validFromDate_lte
+                });
+              }
+              setSortOrderByParameter(option.orderBy);
+              setSortOrderDirectionParameter(option.orderDirection);
+              setSortExchangeOrderByParameter(option.exchangeOrderBy);
+              setValidFromDate_lte(option.validFromDate_lte);
             }}
           />
         </SelectFilterWrapper>
@@ -216,6 +391,7 @@ function Collections() {
           isPreviousEnabled={true}
           onChangeIndex={(index) => {
             setPageIndex(index);
+            updateUrl(index);
           }}
         />
       </div>

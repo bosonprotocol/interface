@@ -21,19 +21,57 @@ interface FilterValue {
   orderDirection: "asc" | "desc";
   orderBy: string;
   label: string;
+  exchangeOrderBy: string;
+  validFromDate_lte: string;
 }
 const selectOptions = [
   {
     value: "0",
     orderDirection: "asc",
-    orderBy: "createdAt",
-    label: "Price Low to High ($)"
+    orderBy: "priceHightToLow",
+    label: "Price Low to High ($)",
+    exchangeOrderBy: "",
+    validFromDate_lte: ""
   },
   {
     value: "1",
     orderDirection: "desc",
+    orderBy: "priceLowToHigh",
+    label: "Price High to Low ($)",
+    exchangeOrderBy: "",
+    validFromDate_lte: ""
+  },
+  {
+    value: "2",
+    orderDirection: "desc",
     orderBy: "createdAt",
-    label: "Price Low to High ($)"
+    label: "Recently created",
+    exchangeOrderBy: "",
+    validFromDate_lte: ""
+  },
+  {
+    value: "3",
+    orderDirection: "desc",
+    orderBy: "validFromDate",
+    label: "Recently live",
+    exchangeOrderBy: "",
+    validFromDate_lte: `${Math.floor(Date.now() / 1000)}`
+  },
+  {
+    value: "4",
+    orderDirection: "desc",
+    orderBy: "createdAt",
+    label: "Recently Commited",
+    exchangeOrderBy: "committedDate",
+    validFromDate_lte: ""
+  },
+  {
+    value: "5",
+    orderDirection: "desc",
+    orderBy: "createdAt",
+    label: "Recently Redeemed",
+    exchangeOrderBy: "redeemedDate",
+    validFromDate_lte: ""
   }
 ] as const;
 
@@ -96,27 +134,14 @@ const ExploreContainer = styled.div`
   overflow: hidden;
 `;
 
-// TODO: Filter sidebar
-
-// const Input = styled.input`
-//   max-width: 100%;
-//   padding: 0.625rem 0.5rem;
-//   border-radius: 0.3125rem;
-//   font-size: 1rem;
-
-//   ${breakpoint.m} {
-//     width: 31.25rem;
-//   }
-// `;
-
 const SelectFilterWrapper = styled.div`
   position: relative;
   min-width: 10.125rem;
   max-height: 2.5rem;
-  background: ${colors.lightGrey};
-  padding: 0.5rem 0.75rem 0.5rem 1rem;
+  padding: 0.5rem 0 0.5rem 70px;
   display: flex;
   align-items: center;
+  width: max-content;
 `;
 
 const TopContainer = styled.div`
@@ -128,23 +153,6 @@ const TopContainer = styled.div`
     flex-direction: row;
   }
 `;
-
-// const FiltersContainer = styled.div``;
-
-// const BrandSelect = styled(Select)`
-//   max-width: 100%;
-//   ${breakpoint.m} {
-//     width: 31.25rem;
-//   }
-// `;
-
-// const CurrencyOrSellerSelect = styled(BrandSelect)`
-//   margin-top: 0.625rem;
-// `;
-
-// const SidebarContainer = styled.div`
-//   display: none;
-// `;
 
 const ExploreOffersContainer = styled.div`
   background: ${colors.lightGrey};
@@ -177,54 +185,62 @@ export default function Explore() {
     ExploreQueryParameters.seller
   );
 
-  // const [brandInput, setBrandInput] = useState<string>(nameQueryParameter);
-  // const [brandSelect, setBrandSelect] = useState<string>("");
   const [nameToSearch, setNameToSearch] = useState<string>(nameQueryParameter);
   // eslint-disable-next-line
   const [sortQueryParameter, setSortQueryParameter] = useQueryParameter(
     ExploreQueryParameters.orderDirection
   );
 
-  const [filter, setFilter] = useState<FilterValue>(selectOptions[0]);
+  const parseQueryParameter = useMemo(
+    () => (sortQueryParameter ? sortQueryParameter : 0),
+    [sortQueryParameter]
+  );
 
-  // useEffect(() => {
-  //   if (sortQueryParameter) {
-  //     setFilter(
-  //       selectOptions.filter(
-  //         (option) => option.orderDirection === sortQueryParameter
-  //       )[0]
-  //     );
-  //   }
-  // }, [sortQueryParameter]);
-
+  const [filter, setFilter] = useState<FilterValue>(
+    selectOptions[parseQueryParameter as number]
+  );
   const navigate = useKeepQueryParamsNavigate();
 
   useEffect(() => {
-    // setBrandInput(nameQueryParameter);
     setNameToSearch(nameQueryParameter);
   }, [nameQueryParameter]);
 
   const [selectedToken] = useState<string>(currencyQueryParameter);
-  // const { data: brands } = useBrands();
 
   const [selectedSeller] = useState<string>(sellerQueryParameter);
+
+  const parseOrderBy = useMemo(() => {
+    if (
+      filter.orderBy === "priceLowToHigh" ||
+      filter.orderBy === "priceHightToLow"
+    ) {
+      return "createdAt";
+    }
+    return filter.orderBy || "createdAt";
+  }, [filter.orderBy]);
+
   const useCollectionPayload = {
     orderDirection: filter.orderDirection,
-    orderBy: filter.orderBy
+    orderBy: parseOrderBy,
+    exchangeOrderBy:
+      filter.exchangeOrderBy !== "" ? filter.exchangeOrderBy : "",
+    validFromDate_lte: filter.validFromDate_lte
   };
   const { data } = useCollections({
     ...useCollectionPayload
   });
 
-  const collections = useMemo(
-    () => data && data.filter((item) => item.offers.length > 0).slice(0, 4),
-    [data]
-  );
+  const collections = useMemo(() => {
+    const filtered = data?.filter((item) => item.offers.length > 0);
 
-  // const onChangeName = (name: string) => {
-  //   setNameToSearch(name);
-  //   setNameQueryParameter(name);
-  // };
+    if (filtered && filtered.length > 0) {
+      return filtered.slice(0, 4);
+    }
+
+    if (data) {
+      return data.slice(0, 4);
+    }
+  }, [data]);
 
   return (
     <ExploreContainer>
@@ -232,95 +248,45 @@ export default function Explore() {
         <Typography tag="h2" $fontSize="2.25rem">
           Explore
         </Typography>
-        <SelectFilterWrapper>
-          <Typography fontWeight="600" color={colors.darkGrey}>
-            Sort:
-          </Typography>
-          <ReactSelect
-            styles={customStyles}
-            isSearchable={false}
-            placeholder=""
-            value={{ value: filter.value, label: filter.label }}
-            options={selectOptions}
-            // eslint-disable-next-line
-            onChange={(option: any) => {
-              // eslint-disable-line
-              if (option !== null) {
-                setFilter({
-                  value: option.value,
-                  orderDirection: option.orderDirection,
-                  orderBy: option.orderBy,
-                  label: option.label
-                });
-              }
-              setSortQueryParameter(option?.value || "");
-            }}
-          />
-        </SelectFilterWrapper>
+        <Grid justifyContent="flex-end">
+          <SelectFilterWrapper>
+            <Typography fontWeight="600" color={colors.darkGrey}>
+              Sort:
+            </Typography>
+            <ReactSelect
+              styles={customStyles}
+              isSearchable={false}
+              placeholder=""
+              value={{ value: filter.value, label: filter.label }}
+              options={selectOptions}
+              // eslint-disable-next-line
+              onChange={(option: any) => {
+                // eslint-disable-line
+                if (option !== null) {
+                  setFilter({
+                    value: option.value,
+                    orderDirection: option.orderDirection,
+                    orderBy: option.orderBy,
+                    label: option.label,
+                    exchangeOrderBy: option.exchangeOrderBy,
+                    validFromDate_lte: option.validFromDate_lte
+                  });
+                }
+                setSortQueryParameter(option?.value || "");
+              }}
+            />
+          </SelectFilterWrapper>
+        </Grid>
       </TopContainer>
-      {/* <SidebarContainer>
-        <h2>Filter</h2>
-        <FiltersContainer>
-          <BrandSelect
-            value={brandSelect}
-            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-              setBrandSelect(e.target.value);
-            }}
-          >
-            <option value="">Brand</option>
-            {brands &&
-              brands.map((brand: string) => (
-                <option key={brand} value={brand}>
-                  {brand}
-                </option>
-              ))}
-          </BrandSelect>
-
-          <CurrencyOrSellerSelect
-            value={selectedToken}
-            data-testid="currency"
-            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-              setSelectedToken(e.target.value);
-              setCurrencyQueryParameter(e.target.value);
-            }}
-          >
-            <option value="">Currency</option>
-            {tokens &&
-              tokens.map((token) => (
-                <option key={token.symbol} value={token.symbol}>
-                  {token.symbol}
-                </option>
-              ))}
-          </CurrencyOrSellerSelect>
-
-          <CurrencyOrSellerSelect
-            value={selectedSeller}
-            data-testid="seller"
-            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-              setSelectedSeller(e.target.value);
-              setSellerQueryParameter(e.target.value);
-            }}
-          >
-            <option value="">Seller</option>
-            {sellers &&
-              Array.isArray(sellers) &&
-              sellers?.map((seller) => (
-                <option key={seller?.id} value={seller?.id}>
-                  ID: {seller?.id}
-                </option>
-              ))}
-          </CurrencyOrSellerSelect>
-        </FiltersContainer>
-      </SidebarContainer> */}
       <ExploreOffersContainer>
         <ExploreOffers
           name={nameToSearch}
           exchangeTokenAddress={selectedToken}
           sellerId={selectedSeller}
-          // brand={brandSelect}
           hidePagination
           orderDirection={filter.orderDirection}
           orderBy={filter.orderBy}
+          exchangeOrderBy={filter.exchangeOrderBy}
         />
       </ExploreOffersContainer>
       <ExploreOffersContainer>

@@ -61,7 +61,8 @@ export const getOffers = async (props: UseOffersProps) => {
     offerCurationList: props.offerCurationList || [],
     first: props.first,
     skip: props.skip,
-    voided: props.voided
+    voided: props.voided,
+    exchangeOrderBy: props.exchangeOrderBy || ""
   };
 
   const getOffersQueryArgs = {
@@ -79,7 +80,8 @@ export const getOffers = async (props: UseOffersProps) => {
       props.quantityAvailable_gte as null
     ),
     offer: false,
-    voided: props.voided === true || props.voided === false
+    voided: props.voided === true || props.voided === false,
+    exchangeOrderBy: props.exchangeOrderBy || ""
   };
 
   return fetchCurationListOffers(props, getOffersQueryArgs, variables);
@@ -102,7 +104,8 @@ export async function getOfferById(
     sellerId: props.sellerId,
     sellerCurationList: props.sellerCurationList || [],
     offerCurationList: props.offerCurationList || [],
-    voided: props.voided
+    voided: props.voided,
+    exchangeOrderBy: props.exchangeOrderBy
   };
 
   const getOffersQueryArgs = {
@@ -116,7 +119,8 @@ export async function getOfferById(
     quantityAvailable_lte: false,
     quantityAvailable_gte: false,
     offer: true,
-    voided: props.voided === true || props.voided === false
+    voided: props.voided === true || props.voided === false,
+    exchangeOrderBy: props.exchangeOrderBy || ""
   };
 
   const [offer] = await fetchCurationListOffers(

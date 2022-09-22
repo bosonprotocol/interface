@@ -1,22 +1,75 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import ReactSelect, { StylesConfig } from "react-select";
 import styled from "styled-components";
 
 import Typography from "../../components/ui/Typography";
-import { ExploreQueryParameters } from "../../lib/routing/parameters";
+import {
+  CollectionsQueryParameters,
+  ExploreQueryParameters
+} from "../../lib/routing/parameters";
 import { useQueryParameter } from "../../lib/routing/useQueryParameter";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import ExploreOffers from "./ExploreOffers";
 
 interface FilterValue {
-  value: "asc" | "desc";
+  value: string;
+  orderDirection: "asc" | "desc";
+  orderBy: string;
   label: string;
+  exchangeOrderBy: string;
+  validFromDate_lte: string;
 }
 
 const selectOptions = [
-  { value: "asc", label: "Ascending" },
-  { value: "desc", label: "Descending" }
+  {
+    value: "0",
+    orderDirection: "asc",
+    orderBy: "priceHightToLow",
+    label: "Price Low to High ($)",
+    exchangeOrderBy: "",
+    validFromDate_lte: ""
+  },
+  {
+    value: "1",
+    orderDirection: "desc",
+    orderBy: "priceLowToHigh",
+    label: "Price High to Low ($)",
+    exchangeOrderBy: "",
+    validFromDate_lte: ""
+  },
+  {
+    value: "2",
+    orderDirection: "desc",
+    orderBy: "createdAt",
+    label: "Recently created",
+    exchangeOrderBy: "",
+    validFromDate_lte: ""
+  },
+  {
+    value: "3",
+    orderDirection: "desc",
+    orderBy: "validFromDate",
+    label: "Recently live",
+    exchangeOrderBy: "",
+    validFromDate_lte: `${Math.floor(Date.now() / 1000)}`
+  },
+  {
+    value: "4",
+    orderDirection: "desc",
+    orderBy: "createdAt",
+    label: "Recently Commited",
+    exchangeOrderBy: "committedDate",
+    validFromDate_lte: ""
+  },
+  {
+    value: "5",
+    orderDirection: "desc",
+    orderBy: "createdAt",
+    label: "Recently Redeemed",
+    exchangeOrderBy: "redeemedDate",
+    validFromDate_lte: ""
+  }
 ] as const;
 
 const ExploreOffersContainer = styled.div`
@@ -32,23 +85,44 @@ const SelectFilterWrapper = styled.div`
   display: flex;
   width: fit-content;
   position: absolute;
-  right: 0.75rem;
-  margin-top: 3.25rem;
+  right: 0;
+  margin-top: 2rem;
   align-items: center;
 `;
 
 function Products() {
-  const [filter, setFilter] = useState<FilterValue>(selectOptions[0]);
-  const [sortQueryParameter, setSortQueryParameter] = useQueryParameter(
-    ExploreQueryParameters.orderDirection
+  const [sortOrderByParameter, setSortOrderByParameter] = useQueryParameter(
+    CollectionsQueryParameters.orderBy
   );
-  useEffect(() => {
-    if (sortQueryParameter) {
-      setFilter(
-        selectOptions.filter((option) => option.value === sortQueryParameter)[0]
-      );
-    }
-  }, [sortQueryParameter]);
+  const [sortOrderDirectionParameter, setSortOrderDirectionParameter] =
+    useQueryParameter(CollectionsQueryParameters.orderDirection);
+
+  const [sortExchangeOrderByParameter, setSortExchangeOrderByParameter] =
+    useQueryParameter(CollectionsQueryParameters.exchangeOrderBy);
+
+  const [sortValidFromDate_lte, setValidFromDate_lte] = useQueryParameter(
+    CollectionsQueryParameters.validFromDate_lte
+  );
+
+  // const parseQueryParameter = useMemo(
+  //   () => (sortQueryParameter ? Number(sortQueryParameter) : 0),
+  //   [sortQueryParameter]
+  // );
+
+  const [filter, setFilter] = useState<FilterValue>(selectOptions[0]);
+
+  // useEffect(() => {
+  //   if (typeof selectOptions[parseQueryParameter] === "number") {
+  //     setFilter(selectOptions[parseQueryParameter]);
+  //   }
+  // }, [parseQueryParameter]);
+  // useEffect(() => {
+  //   if (sortQueryParameter) {
+  //     // setFilter(
+  //     //   selectOptions.filter((option) => option.value === sortQueryParameter)[0]
+  //     // );
+  //   }
+  // }, [sortQueryParameter]);
 
   const customStyles: StylesConfig<
     {
@@ -117,7 +191,6 @@ function Products() {
   const [nameToSearch] = useState<string>(nameQueryParameter);
 
   const [selectedSeller] = useState<string>(sellerQueryParameter);
-
   return (
     <Container>
       <SelectFilterWrapper>
@@ -130,9 +203,23 @@ function Products() {
           placeholder=""
           value={filter}
           options={selectOptions}
-          onChange={(option) => {
-            setFilter(option as typeof selectOptions[number]);
-            setSortQueryParameter(option?.value || "");
+          // eslint-disable-next-line
+          onChange={(option: any) => {
+            // eslint-disable-line
+            if (option !== null) {
+              setFilter({
+                value: option.value,
+                orderDirection: option.orderDirection,
+                orderBy: option.orderBy,
+                label: option.label,
+                exchangeOrderBy: option.exchangeOrderBy,
+                validFromDate_lte: option.validFromDate_lte
+              });
+            }
+            setSortOrderByParameter(option.orderBy);
+            setSortOrderDirectionParameter(option.orderDirection);
+            setSortExchangeOrderByParameter(option.exchangeOrderBy);
+            setValidFromDate_lte(option.validFromDate_lte);
           }}
         />
       </SelectFilterWrapper>
@@ -144,7 +231,13 @@ function Products() {
           brand={brandSelect}
           rows={2}
           breadcrumbs={true}
-          orderDirection={filter.value}
+          orderDirection={filter?.orderDirection}
+          orderBy={filter?.orderBy}
+          exchangeOrderBy={filter?.exchangeOrderBy}
+          sortOrderByParameter={sortOrderByParameter}
+          sortOrderDirectionParameter={sortOrderDirectionParameter}
+          sortExchangeOrderByParameter={sortExchangeOrderByParameter}
+          sortValidFromDate_lte={sortValidFromDate_lte}
         />
       </ExploreOffersContainer>
     </Container>

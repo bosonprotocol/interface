@@ -6,6 +6,13 @@ export const ExploreQueryParameters = {
   orderBy: "orderBy"
 } as const;
 
+export const CollectionsQueryParameters = {
+  orderDirection: "orderDirection",
+  orderBy: "orderBy",
+  exchangeOrderBy: "exchangeOrderBy",
+  validFromDate_lte: "validFromDate_lte"
+} as const;
+
 export const AccountQueryParameters = {
   tab: "tab"
 } as const;

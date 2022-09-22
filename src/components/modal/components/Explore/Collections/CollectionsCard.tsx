@@ -43,12 +43,15 @@ const CardContainer = styled.div`
 `;
 
 const OfferImage = styled.div`
-  width: 161.5px;
+  width: 153.5px;
   height: 191px;
   padding: 0;
   margin: 0;
-  img {
-    object-fit: cover;
+  div {
+    padding-top: 126.5%;
+    img {
+      object-fit: cover;
+    }
   }
 `;
 
@@ -90,7 +93,7 @@ function CollectionsCard({ collection }: Props) {
           collection.offers.slice(0, 4).map((offer) => (
             <>
               <OfferImage>
-                <Image key={offer.id} src={offer.metadata.image} />
+                <Image key={offer.id} src={offer?.metadata?.image} />
               </OfferImage>
             </>
           ))}

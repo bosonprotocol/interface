@@ -11,6 +11,8 @@ export function useCollections(
     orderBy?: string;
     validFromDate?: string;
     validUntilDate?: string;
+    exchangeOrderBy?: string;
+    validFromDate_lte?: string;
   },
   options: {
     enabled?: boolean;
@@ -27,6 +29,7 @@ export function useCollections(
             id: string;
             validFromDate: string;
             validUntilDate: string;
+            validFromDate_lte: string;
             metadata: {
               name: string;
               image: string;
@@ -43,6 +46,7 @@ export function useCollections(
             $first: Int
             $validFromDate: String
             $validUntilDate: String
+            $validFromDate_lte: String
           ) {
             sellers(skip: $skip, first: $first) {
               id
@@ -50,11 +54,11 @@ export function useCollections(
                 id
               }
               offers(
-                where: {
-                  voided: false
-                  validFromDate_lte: $validFromDate
-                  validUntilDate_lte: $validUntilDate
-                }
+                where: { voided: false, ${
+                  props?.validFromDate_lte
+                    ? "validFromDate_lte: $validFromDate_lte"
+                    : ""
+                } }
                 orderBy: $orderBy
                 orderDirection: $orderDirection
               ) {
@@ -67,7 +71,7 @@ export function useCollections(
                     image
                   }
                 }
-                exchanges {
+                exchanges(orderBy: $exchangeOrderBy) {
                   id
                   state
                   redeemedDate

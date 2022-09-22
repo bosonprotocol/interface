@@ -19,6 +19,7 @@ export const BosonRoutes = {
   BuyerPage: `/buyer/:${UrlParameters.buyerId}`,
   SellerPage: `/seller/:${UrlParameters.sellerId}`,
   Sellers: "/sellers",
+  SellersByIndex: `/sellers/page/:${UrlParameters.page}`,
   Products: "/products"
 } as const;
 

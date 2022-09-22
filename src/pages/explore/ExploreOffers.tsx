@@ -1,12 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { generatePath, useParams } from "react-router-dom";
 import styled from "styled-components";
 
 import OfferList from "../../components/offers/OfferList";
-import {
-  ExploreQueryParameters,
-  UrlParameters
-} from "../../lib/routing/parameters";
+import { useSortByPrice } from "../../components/price/useSortByPrice";
+import { UrlParameters } from "../../lib/routing/parameters";
+import { BosonRoutes } from "../../lib/routing/routes";
 import { Offer } from "../../lib/types/offer";
 import { useOffers } from "../../lib/utils/hooks/offers";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
@@ -28,7 +27,12 @@ interface Props {
   rows?: number;
   breadcrumbs?: boolean;
   orderDirection?: "asc" | "desc";
-  orderBy?: string;
+  orderBy: string;
+  exchangeOrderBy?: string;
+  sortOrderByParameter?: string;
+  sortOrderDirectionParameter?: string;
+  sortExchangeOrderByParameter?: string;
+  sortValidFromDate_lte?: string;
 }
 
 const updatePageIndexInUrl =
@@ -37,24 +41,30 @@ const updatePageIndexInUrl =
   ) =>
   (
     index: number,
-    queryParams: { [x in keyof typeof ExploreQueryParameters]: string }
+    queryParams: {
+      orderDirection: "asc" | "desc";
+      orderBy: string;
+      exchangeOrderBy: string;
+      validFromDate_lte: string;
+    }
   ): void => {
     const queryParamsUrl = new URLSearchParams( // eslint-disable-line
-      Object.entries(queryParams).filter(([, value]) => value !== "")
+      Object.entries(queryParams)
     ).toString();
-    // if (index === 0) {
-    //   navigate({
-    //     pathname: BosonRoutes.Products,
-    //     search: queryParamsUrl
-    //   });
-    // } else {
-    //   navigate({
-    //     pathname: generatePath(BosonRoutes.ExplorePageByIndex, {
-    //       [UrlParameters.page]: index + 1 + ""
-    //     }),
-    //     search: queryParamsUrl
-    //   });
-    // }
+
+    if (index === 0) {
+      navigate({
+        pathname: BosonRoutes.ExplorePage,
+        search: queryParamsUrl
+      });
+    } else {
+      navigate({
+        pathname: generatePath(BosonRoutes.ExplorePageByIndex, {
+          [UrlParameters.page]: index + 1 + ""
+        }),
+        search: queryParamsUrl
+      });
+    }
   };
 
 const DEFAULT_PAGE = 0;
@@ -66,10 +76,14 @@ const extractFiltersWithDefaults = (props: Props): Props => {
     exchangeTokenAddress: props.exchangeTokenAddress || "",
     sellerId: props.sellerId || "",
     orderDirection: props.orderDirection || undefined,
-    orderBy: props.orderBy || undefined
+    orderBy: props.orderBy || "",
+    exchangeOrderBy: props.exchangeOrderBy || "",
+    sortOrderDirectionParameter: props.sortOrderDirectionParameter,
+    sortOrderByParameter: props.sortOrderByParameter,
+    sortExchangeOrderByParameter: props.sortExchangeOrderByParameter,
+    sortValidFromDate_lte: props.sortValidFromDate_lte
   };
 };
-
 export default function ExploreOffers(props: Props) {
   const {
     brand,
@@ -82,15 +96,23 @@ export default function ExploreOffers(props: Props) {
   const params = useParams();
   const navigate = useKeepQueryParamsNavigate();
   const updateUrl = useCallback(
-    (index: number) =>
-      updatePageIndexInUrl(navigate)(index, {
-        name: name ?? "",
-        currency: exchangeTokenAddress ?? "",
-        seller: sellerId ?? "",
-        orderDirection: orderDirection ?? "",
-        orderBy: orderBy ?? ""
-      }),
-    [navigate, name, exchangeTokenAddress, sellerId, orderDirection, orderBy]
+    (index: number) => {
+      return updatePageIndexInUrl(navigate)(index, {
+        orderDirection:
+          (props.sortOrderDirectionParameter as "asc" | "desc") ?? "",
+        orderBy: props.sortOrderByParameter || "",
+        exchangeOrderBy: props.sortExchangeOrderByParameter || "",
+        validFromDate_lte: props.sortValidFromDate_lte || ""
+      });
+    },
+
+    [
+      navigate,
+      props.sortExchangeOrderByParameter,
+      props.sortOrderByParameter,
+      props.sortOrderDirectionParameter,
+      props.sortValidFromDate_lte
+    ]
   );
   const initialPageIndex = Math.max(
     0,
@@ -107,6 +129,18 @@ export default function ExploreOffers(props: Props) {
     return 4;
   }, [props.rows]);
 
+  const parseOrderBy = useMemo(() => {
+    if (
+      props.orderBy === "priceLowToHigh" ||
+      props.orderBy === "priceHightToLow" ||
+      props.orderBy === "committedDate" ||
+      props.orderBy === "redeemedDate"
+    ) {
+      return "createdAt";
+    }
+    return props.orderBy || "createdAt";
+  }, [props.orderBy]);
+
   const useOffersPayload = {
     brand,
     name,
@@ -117,12 +151,16 @@ export default function ExploreOffers(props: Props) {
     sellerId,
     // TODO: comment this out once we can request offers with valid metadata directly as requesting 1 extra offer should be enough
     // first: OFFERS_PER_PAGE + 1,
-    first: OFFERS_PER_PAGE * 2,
+    first:
+      props.orderBy === "priceLowToHigh" || props.orderBy === "priceHightToLow"
+        ? 99
+        : OFFERS_PER_PAGE * 2,
     skip: OFFERS_PER_PAGE * pageIndex,
-    orderBy: props.orderBy || "createdAt",
+    orderBy: parseOrderBy,
     orderDirection: props.orderDirection
       ? props.orderDirection
-      : ("asc" as const)
+      : ("asc" as const),
+    exchangeOrderBy: props.exchangeOrderBy !== "" ? props.exchangeOrderBy : ""
   };
   const {
     data: currentAndNextPageOffers,
@@ -185,12 +223,49 @@ export default function ExploreOffers(props: Props) {
       enabled: pageIndex > 0 && !currentAndNextPageOffers?.length
     }
   );
-  const offers = currentAndNextPageOffers?.slice(0, OFFERS_PER_PAGE);
 
+  const offers = useMemo(
+    () => currentAndNextPageOffers?.slice(0, OFFERS_PER_PAGE),
+    [OFFERS_PER_PAGE, currentAndNextPageOffers]
+  );
+
+  const sortingOrder = useMemo(() => {
+    if (props.orderBy === "priceHightToLow") {
+      return "desc";
+    }
+    if (props.orderBy === "priceLowToHigh") {
+      return "asc";
+    }
+    return "desc";
+  }, [props.orderBy]);
+
+  const { offerArray } = useSortByPrice({
+    offers,
+    order: sortingOrder,
+    isSortable:
+      props.orderBy === "priceLowToHigh" || props.orderBy === "priceHightToLow"
+  });
+  useEffect(() => {
+    if (
+      props.sortOrderByParameter ||
+      props.sortOrderDirectionParameter ||
+      props.sortExchangeOrderByParameter ||
+      props.sortValidFromDate_lte
+    ) {
+      updateUrl(pageIndex);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    pageIndex,
+    props.sortOrderByParameter,
+    props.sortOrderDirectionParameter,
+    props.sortExchangeOrderByParameter,
+    props.sortValidFromDate_lte
+  ]);
   return (
     <Container>
       <OfferList
-        offers={offers}
+        offers={offerArray}
         isError={isError}
         isLoading={isLoading}
         action="commit"
