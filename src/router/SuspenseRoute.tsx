@@ -1,9 +1,10 @@
-import { Suspense, useMemo } from "react";
+import { Suspense } from "react";
 
 import App from "../components/app";
 import Loading from "../components/ui/Loading";
 import GuardedRoute from "./GuardedRoute";
-import { baseAppProps, IRoutes, UserRoles } from "./routes";
+import { baseAppProps, IRoutes } from "./routes";
+import useUserRoles from "./useUserRoles";
 
 export default function SuspenseRoute({
   app,
@@ -11,30 +12,11 @@ export default function SuspenseRoute({
   componentProps,
   role
 }: IRoutes) {
-  const handleRoutesByRoles = useMemo(() => {
-    switch (role) {
-      case UserRoles.Guest:
-        return {
-          hide: []
-        };
-      case UserRoles.Buyer:
-        return {
-          hide: []
-        };
-      case UserRoles.Seller:
-        return {
-          hide: []
-        };
-      case UserRoles.DisputeResolver:
-        return {
-          hide: []
-        };
-    }
-  }, [role]);
+  const roles = useUserRoles({ role });
 
   if (role && role.length > 0) {
     return (
-      <GuardedRoute role={role}>
+      <GuardedRoute isAuth={roles.isAuth}>
         <Suspense
           fallback={
             <App {...baseAppProps}>
@@ -42,7 +24,7 @@ export default function SuspenseRoute({
             </App>
           }
         >
-          <App {...app} appProps={handleRoutesByRoles}>
+          <App {...app}>
             <Component {...componentProps} />
           </App>
         </Suspense>
@@ -58,7 +40,7 @@ export default function SuspenseRoute({
         </App>
       }
     >
-      <App {...app} appProps={handleRoutesByRoles}>
+      <App {...app}>
         <Component {...componentProps} />
       </App>
     </Suspense>

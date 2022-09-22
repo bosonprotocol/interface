@@ -9,6 +9,7 @@ import SocialLogo, {
   SocialLogoValues
 } from "../../pages/custom-store/SocialLogo";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
+import useUserRoles from "../../router/useUserRoles";
 import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
 import Layout from "../Layout";
 import Grid from "../ui/Grid";
@@ -136,6 +137,7 @@ function Socials() {
 }
 
 export default function FooterComponent() {
+  const { roles } = useUserRoles({ role: [] });
   const { isXXS } = useBreakpoints();
   const [year] = useState<number>(new Date().getFullYear());
   const logoUrl = useCustomStoreQueryParameter("logoUrl");
@@ -174,27 +176,41 @@ export default function FooterComponent() {
               <Typography tag="h5">Product</Typography>
               <NavigationLinks flexDirection="column">
                 {getProductRoutes({
+                  roles,
                   isSupportFunctionalityDefined,
                   onlyBuyer,
                   onlySeller
-                }).map(({ name, url }) => (
-                  <LinkWithQuery to={url} key={`product_nav_${name}`}>
-                    {name}
-                  </LinkWithQuery>
-                ))}
+                }).map(
+                  (nav) =>
+                    nav && (
+                      <LinkWithQuery
+                        to={nav.url}
+                        key={`product_nav_${nav.name}`}
+                      >
+                        {nav.name}
+                      </LinkWithQuery>
+                    )
+                )}
               </NavigationLinks>
             </div>
             <div>
               <Typography tag="h5">Navigation</Typography>
               <NavigationLinks flexDirection="column">
                 {getNavigationRoutes({
+                  roles,
                   isSupportFunctionalityDefined,
                   onlySeller
-                }).map(({ name, url }) => (
-                  <LinkWithQuery to={url} key={`navigation_nav_${name}`}>
-                    {name}
-                  </LinkWithQuery>
-                ))}
+                }).map(
+                  (nav) =>
+                    nav && (
+                      <LinkWithQuery
+                        to={nav.url}
+                        key={`navigation_nav_${nav.name}`}
+                      >
+                        {nav.name}
+                      </LinkWithQuery>
+                    )
+                )}
               </NavigationLinks>
             </div>
           </NavigationGrid>

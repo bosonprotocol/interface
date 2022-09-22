@@ -27,16 +27,13 @@ interface Props {
   withLayout?: boolean;
   withFooter?: boolean;
   fluidHeader?: boolean;
-  appProps?: any;
 }
 export default function App({
-  appProps = {},
   withLayout = true,
   withFooter = true,
   fluidHeader = false,
   children
 }: Props) {
-  // console.log("appProps", appProps);
   const headerBgColor = useCustomStoreQueryParameter("headerBgColor");
   const headerTextColor = useCustomStoreQueryParameter("headerTextColor");
   const primaryBgColor = useCustomStoreQueryParameter("primaryBgColor");
@@ -72,9 +69,9 @@ export default function App({
                 $footerTextColor={footerTextColor}
                 $fontFamily={fontFamily}
               />
-              <Header fluidHeader={fluidHeader} {...appProps} />
+              <Header fluidHeader={fluidHeader} />
               <Wrapper>{children}</Wrapper>
-              {showFooter && <Footer {...appProps} />}
+              {showFooter && <Footer />}
             </Container>
           </ModalProvider>
         </ChatProvider>

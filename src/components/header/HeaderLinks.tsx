@@ -8,6 +8,7 @@ import { BosonRoutes, SellerCenterRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { useBuyerSellerAccounts } from "../../lib/utils/hooks/useBuyerSellerAccounts";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
+import useUserRoles from "../../router/useUserRoles";
 import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
 import { DEFAULT_SELLER_PAGE } from "../seller/SellerPages";
 import Search from "./Search";
@@ -134,6 +135,7 @@ export default function HeaderLinks({
   isOpen,
   navigationBarPosition
 }: Props) {
+  const { roles } = useUserRoles({ role: [] });
   const { address } = useAccount();
   const supportFunctionality = useCustomStoreQueryParameter<
     ("buyer" | "seller" | "dr")[]
