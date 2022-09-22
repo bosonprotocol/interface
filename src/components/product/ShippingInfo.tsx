@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { FieldArray } from "formik";
 import { Plus } from "phosphor-react";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 
 import Collapse from "../../components/collapse/Collapse";
@@ -112,13 +112,39 @@ const AddSupportedJurisdictions = () => {
   );
 };
 
+const validJurisdiction = (
+  jurisdictionElements: Array<{
+    region: string;
+    time: string;
+  }>
+): boolean => {
+  const validation = jurisdictionElements.some(({ time, region }) => {
+    return (
+      (region.length === 0 && time.length > 0) ||
+      (time.length === 0 && region.length > 0)
+    );
+  });
+  return !validation;
+};
+
 export default function ShippingInfo() {
   const { values, nextIsDisabled } = useCreateForm();
+  const [isValidJurisdiction, setIsValidJurisdiction] = useState<boolean>(true);
 
   const unit = useMemo(
     () => (values?.shippingInfo?.measurementUnit?.value || "").toUpperCase(),
     [values?.shippingInfo?.measurementUnit?.value]
   );
+
+  const jurisdictionElements = useMemo(
+    () => values?.shippingInfo?.jurisdiction,
+    [values?.shippingInfo?.jurisdiction]
+  );
+
+  useEffect(() => {
+    const isValid = validJurisdiction(jurisdictionElements);
+    setIsValidJurisdiction(isValid);
+  }, [jurisdictionElements]);
 
   const lwh = useMemo(
     () =>
@@ -146,6 +172,7 @@ export default function ShippingInfo() {
             options={OPTIONS_COUNTRIES}
           />
         </FormField>
+        {/* roberto */}
         <AddSupportedJurisdictions />
       </RequiredContainer>
       <AdditionalContainer>
@@ -224,7 +251,11 @@ export default function ShippingInfo() {
         </Collapse>
       </AdditionalContainer>
       <ProductInformationButtonGroup>
-        <Button theme="primary" type="submit" disabled={nextIsDisabled}>
+        <Button
+          theme="primary"
+          type="submit"
+          disabled={nextIsDisabled || !isValidJurisdiction}
+        >
           Next
         </Button>
       </ProductInformationButtonGroup>
