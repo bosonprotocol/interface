@@ -7,6 +7,7 @@ import { useMemo, useState } from "react";
 import { CONFIG } from "../../../lib/config";
 import { Offer } from "../../../lib/types/offer";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
+import { ActiveEscalatedDisputes } from "../../../lib/utils/hooks/disputes/getDisputes";
 import SellerExport from "../../seller/SellerExport";
 import SellerFilters from "../../seller/SellerFilters";
 import SellerTags from "../../seller/SellerTags";
@@ -36,13 +37,24 @@ export const DisputesManage: React.FC<DisputeResolverProps> = () => {
   const [filter, setFilter] = useState<FilterValue | null>(null);
   const [selected, setSelected] = useState<Array<Offer | null>>([]);
 
-  const { data, isLoading, isError, refetch } = offersData;
+  // const { data, isLoading, isError, refetch } = offersData;
+
+  const { data, isLoading, isError, refetch } = ActiveEscalatedDisputes();
+  console.log(
+    "🚀  roberto --  ~ file: DisputesManage.tsx ~ line 43 ~ data",
+    data
+  );
+  // const data = null;
 
   // TODO: GET the data here - Roberto
 
   const allOffers = useMemo(() => {
     const filtered =
       data?.map((offer: Offer) => {
+        console.log(
+          "🚀  roberto --  ~ file: DisputesManage.tsx ~ line 50 ~ data?.map ~ offer",
+          offer
+        );
         const status = offers.getOfferStatus(offer);
 
         if (currentTag === "physical") {
