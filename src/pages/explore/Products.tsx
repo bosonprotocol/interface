@@ -104,25 +104,7 @@ function Products() {
     CollectionsQueryParameters.validFromDate_lte
   );
 
-  // const parseQueryParameter = useMemo(
-  //   () => (sortQueryParameter ? Number(sortQueryParameter) : 0),
-  //   [sortQueryParameter]
-  // );
-
   const [filter, setFilter] = useState<FilterValue>(selectOptions[0]);
-
-  // useEffect(() => {
-  //   if (typeof selectOptions[parseQueryParameter] === "number") {
-  //     setFilter(selectOptions[parseQueryParameter]);
-  //   }
-  // }, [parseQueryParameter]);
-  // useEffect(() => {
-  //   if (sortQueryParameter) {
-  //     // setFilter(
-  //     //   selectOptions.filter((option) => option.value === sortQueryParameter)[0]
-  //     // );
-  //   }
-  // }, [sortQueryParameter]);
 
   const customStyles: StylesConfig<
     {
