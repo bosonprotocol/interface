@@ -95,9 +95,9 @@ export default function MakeAProposalStep({
         >
           Next
         </Button>
-        <Button theme="outline" onClick={() => onBackClick()}>
+        {/* <Button theme="outline" onClick={() => onBackClick()}>
           Back
-        </Button>
+        </Button> */}
       </ButtonsSection>
     </>
   );

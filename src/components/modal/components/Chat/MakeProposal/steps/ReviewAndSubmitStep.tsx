@@ -97,10 +97,6 @@ export default function ReviewAndSubmitStep({
           Sign & Submit
           {isSubmitting && <Spinner />}
         </Button>
-
-        <Button theme="outline" onClick={() => onBackClick()}>
-          Back
-        </Button>
       </ButtonsSection>
     </>
   );
