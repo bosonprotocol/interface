@@ -15,7 +15,7 @@ function isOfferValidityDatesValid() {
         throw this.createError({
           path: "coreTermsOfSale.redemptionPeriod",
           message:
-            "Redemption period has to be after or equal to validity period"
+            "Redemption period has to end after or be equal to validity period"
         });
       }
       return true;
