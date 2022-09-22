@@ -39,10 +39,9 @@ const DescriptionInfo = styled.div`
 
 interface OfferProps {
   offer: Offer;
-  single?: boolean;
 }
 
-function CompleteOffer({ offer, single = false }: OfferProps) {
+function CompleteOffer({ offer }: OfferProps) {
   return (
     <>
       <CompleteExchangeWrapper>
@@ -77,36 +76,9 @@ function CompleteOffer({ offer, single = false }: OfferProps) {
                 decimals={offer.exchangeToken.decimals}
               />
             )}
-            {!single && (
-              <Typography
-                tag="p"
-                justifyContent="flex-end"
-                margin="0"
-                gap="0.5rem"
-              >
-                Qty:
-                <b>
-                  {offer.quantityAvailable}/{offer.quantityInitial}
-                </b>
-              </Typography>
-            )}
           </div>
         </Grid>
       </CompleteExchangeWrapper>
-      {single && (
-        <Grid flexDirection="column" gap="1rem">
-          <Grid>
-            <Typography tag="p" margin="0">
-              <b>Quantity</b>&nbsp;&nbsp;(available/total)
-            </Typography>
-            <Typography tag="p" margin="0">
-              <b>
-                {offer.quantityAvailable}/{offer.quantityInitial}
-              </b>
-            </Typography>
-          </Grid>
-        </Grid>
-      )}
     </>
   );
 }
@@ -139,13 +111,13 @@ export default function CompleteExchange({
         <DescriptionInfo>
           <Typography tag="h6">What is Complete?</Typography>
           <Typography tag="p" margin="0">
-            Exchange completion releases the funds involved in the exchange's to
-            the relevant parties.
+            Exchange completion releases the funds involved in the exchange(s)
+            to the relevant parties.
           </Typography>
         </DescriptionInfo>
       </Grid>
       <Break />
-      {exchange && <CompleteOffer offer={exchange.offer} single />}
+      {exchange && <CompleteOffer offer={exchange.offer} />}
       {exchanges && exchanges.length && (
         <OverflowCompleteExchangeWrapper>
           {exchanges?.map(
