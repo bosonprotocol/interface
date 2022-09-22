@@ -61,7 +61,7 @@ function DisputeResolverCenterWrapper() {
         >
           <WarningCircle size={112} color={colors.red} weight="thin" />
           <Typography tag="h5">
-            The disputeResolverId with that ID doesn't exist!
+            You need to be a dispute resolver to access this page!
           </Typography>
           <Button
             theme="secondary"
