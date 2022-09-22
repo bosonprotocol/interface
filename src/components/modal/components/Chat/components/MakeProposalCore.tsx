@@ -34,14 +34,12 @@ export default function MakeProposalCore({
         />
       ) : activeStep === 3 ? (
         <MakeAProposalStep
-          onBackClick={() => setActiveStep(activeStep - 1)}
           onNextClick={() => setActiveStep(activeStep + 1)}
           isValid={isMakeAProposalOK}
           exchange={exchange}
         />
       ) : (
         <ReviewAndSubmitStep
-          onBackClick={() => setActiveStep(activeStep - 1)}
           isValid={isFormValid}
           exchange={exchange}
           submitError={submitError}

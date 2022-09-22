@@ -20,7 +20,6 @@ const ButtonsSection = styled.div`
 `;
 
 interface Props {
-  onBackClick: () => void;
   onNextClick: () => void;
   isValid: boolean;
   exchange: Exchange;
@@ -32,7 +31,6 @@ export const proposals = [{ label: RefundLabel, value: "refund" }];
 export default function MakeAProposalStep({
   exchange,
   onNextClick,
-  onBackClick,
   isValid
 }: Props) {
   const { address } = useAccount();

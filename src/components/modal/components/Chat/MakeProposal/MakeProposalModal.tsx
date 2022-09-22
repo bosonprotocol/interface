@@ -141,14 +141,12 @@ export default function MakeProposalModal({
                 />
               ) : activeStep === 1 ? (
                 <MakeAProposalStep
-                  onBackClick={() => setActiveStep(0)}
                   onNextClick={() => setActiveStep(2)}
                   isValid={isMakeAProposalOK}
                   exchange={exchange}
                 />
               ) : (
                 <ReviewAndSubmitStep
-                  onBackClick={() => setActiveStep(1)}
                   isValid={isFormValid}
                   exchange={exchange}
                   submitError={submitError}
