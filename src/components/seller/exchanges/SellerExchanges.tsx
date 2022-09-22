@@ -9,6 +9,7 @@ import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import Loading from "../../ui/Loading";
 import { WithSellerDataProps } from "../common/WithSellerData";
+import SellerBatchComplete from "../SellerBatchComplete";
 import SellerExport from "../SellerExport";
 import SellerFilters from "../SellerFilters";
 import { SellerInsideProps } from "../SellerInside";
@@ -62,6 +63,7 @@ export default function SellerExchanges({
   );
   const [search, setSearch] = useState<string>("");
   const [filter, setFilter] = useState<FilterValue | null>(null);
+  const [selected, setSelected] = useState<Array<Exchange | null>>([]);
 
   const { data, isLoading, isError, refetch } = exchangesData;
 
@@ -142,6 +144,9 @@ export default function SellerExchanges({
   const filterButton = useMemo(() => {
     return (
       <>
+        {selected.length > 0 && (
+          <SellerBatchComplete selected={selected} refetch={refetch} />
+        )}
         <SellerExport
           csvProps={{
             data: prepareCSVData,
@@ -150,7 +155,7 @@ export default function SellerExchanges({
         />
       </>
     );
-  }, [prepareCSVData]);
+  }, [prepareCSVData, refetch, selected]);
 
   if (isLoading) {
     return <Loading />;
@@ -175,6 +180,7 @@ export default function SellerExchanges({
         isLoading={isLoading}
         isError={isError}
         refetch={refetch}
+        setSelected={setSelected}
       />
     </>
   );

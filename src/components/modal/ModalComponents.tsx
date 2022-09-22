@@ -3,6 +3,7 @@ import CancelExchangeModal from "./components/Chat/CancelExchangeModal";
 import EscalateModal from "./components/Chat/components/EscalateModal/EscalateModal";
 import MakeProposalModal from "./components/Chat/MakeProposal/MakeProposalModal";
 import ResolveDisputeModal from "./components/Chat/ResolveDisputeModal";
+import CompleteExchange from "./components/CompleteExchange";
 import CreateProductDraft from "./components/CreateProductDraft";
 import CustomStore from "./components/CustomStore";
 import DetailWidget from "./components/DetailWidget";
@@ -36,7 +37,8 @@ export const MODAL_TYPES = {
   FINANCE_DEPOSIT_MODAL: "FINANCE_DEPOSIT_MODAL",
   FINANCE_WITHDRAW_MODAL: "FINANCE_WITHDRAW_MODAL",
   ESCALATE_MODAL: "ESCALATE_MODAL",
-  MANAGE_FUNDS_MODAL: "MANAGE_FUNDS_MODAL"
+  MANAGE_FUNDS_MODAL: "MANAGE_FUNDS_MODAL",
+  COMPLETE_EXCHANGE: "COMPLETE_EXCHANGE"
 } as const;
 
 export const MODAL_COMPONENTS = {
@@ -57,5 +59,6 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.FINANCE_DEPOSIT_MODAL]: FinanceDeposit,
   [MODAL_TYPES.FINANCE_WITHDRAW_MODAL]: FinanceWithdraw,
   [MODAL_TYPES.ESCALATE_MODAL]: EscalateModal,
-  [MODAL_TYPES.MANAGE_FUNDS_MODAL]: ManageFunds
+  [MODAL_TYPES.MANAGE_FUNDS_MODAL]: ManageFunds,
+  [MODAL_TYPES.COMPLETE_EXCHANGE]: CompleteExchange
 } as const;
