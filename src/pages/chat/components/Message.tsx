@@ -5,7 +5,7 @@ import {
   StringContent
 } from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/definitions";
 import { BigNumber, utils } from "ethers";
-import { ArrowRight, Check } from "phosphor-react";
+import { ArrowRight, Check, Clock } from "phosphor-react";
 import React, { forwardRef, ReactNode } from "react";
 import styled from "styled-components";
 
@@ -18,7 +18,7 @@ import Typography from "../../../components/ui/Typography";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
-import { MessageDataWithIsValid } from "../types";
+import { MessageDataWithInfo } from "../types";
 import ErrorMessageBoundary from "./ErrorMessageBoundary";
 
 const width = "31.625rem";
@@ -86,14 +86,19 @@ const AvatarContainer = styled.div`
   }
 `;
 
-const DateStamp = styled.div<{ $isLeftAligned: boolean }>`
+const Bottom = styled.div<{ $isLeftAligned: boolean }>`
   position: absolute;
   bottom: 1rem;
   right: ${({ $isLeftAligned }) => ($isLeftAligned ? "auto" : "1rem")};
   left: ${({ $isLeftAligned }) => ($isLeftAligned ? "1rem" : "auto")};
-  font-size: 0.75rem;
-  color: ${({ $isLeftAligned }) =>
-    $isLeftAligned ? colors.lightGrey : colors.darkGrey};
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  * {
+    color: ${({ $isLeftAligned }) =>
+      $isLeftAligned ? colors.lightGrey : colors.darkGrey};
+    font-size: 0.75rem;
+  }
 `;
 
 const StyledGrid = styled(Grid)`
@@ -113,16 +118,19 @@ const BottomDateStamp = ({
 }) => {
   const sentDate = new Date(message.timestamp);
   return (
-    <DateStamp $isLeftAligned={isLeftAligned}>
-      {sentDate.getHours().toString().padStart(2, "0")}:
-      {sentDate.getMinutes().toString().padStart(2, "0")}
-    </DateStamp>
+    <Bottom $isLeftAligned={isLeftAligned}>
+      <span>
+        {sentDate.getHours().toString().padStart(2, "0")}:
+        {sentDate.getMinutes().toString().padStart(2, "0")}
+      </span>
+      {message.isPending && <Clock size={14} />}
+    </Bottom>
   );
 };
 
 interface Props {
   exchange: Exchange;
-  message: MessageDataWithIsValid;
+  message: MessageDataWithInfo;
   children: ReactNode;
   isLeftAligned: boolean;
 }
@@ -167,9 +175,9 @@ const MessageContent = ({
     messageContentType === MessageType.String;
   const isFileMessage = messageContentType === MessageType.File;
   const isProposalMessage = messageContentType === MessageType.Proposal;
-  const { isValid } = message;
+  const { isValid, isPending } = message;
 
-  if (!isValid) {
+  if (!isValid && !isPending) {
     return (
       <div>
         {isFileMessage

@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 dayjs.extend(isBetween);
 
-import React, { useMemo } from "react";
+import React from "react";
 import styled from "styled-components";
 
 import { Offer } from "../../../lib/types/offer";
@@ -94,16 +94,13 @@ export function WithSellerData<P>(
     );
     const funds = useFunds(sellerId, tokens);
 
-    const newProps = useMemo(
-      () => ({
-        offers,
-        exchanges,
-        exchangesTokens,
-        sellerDeposit,
-        funds
-      }),
-      [offers, exchanges, exchangesTokens, sellerDeposit, funds]
-    );
+    const newProps = {
+      offers,
+      exchanges,
+      exchangesTokens,
+      sellerDeposit,
+      funds
+    };
 
     const offersBacked = useOffersBacked({ ...newProps });
 

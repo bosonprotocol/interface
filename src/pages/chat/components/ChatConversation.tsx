@@ -9,8 +9,16 @@ import { validateMessage } from "@bosonprotocol/chat-sdk/dist/cjs/util/validator
 import dayjs from "dayjs";
 import { utils } from "ethers";
 import { ArrowLeft, PaperPlaneRight, UploadSimple } from "phosphor-react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
@@ -30,11 +38,7 @@ import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useChatContext } from "../ChatProvider/ChatContext";
-import {
-  BuyerOrSeller,
-  MessageDataWithIsValid,
-  ThreadObjectWithIsValid
-} from "../types";
+import { BuyerOrSeller, MessageDataWithInfo } from "../types";
 import { sendFilesToChat, sendProposalToChat } from "../utils/send";
 import ButtonProposal from "./ButtonProposal/ButtonProposal";
 import ExchangeSidePreview from "./ExchangeSidePreview";
@@ -112,11 +116,6 @@ const Header = styled.div`
   }
 `;
 
-const Loading = styled.div`
-  display: flex;
-  background-color: ${colors.lightGrey};
-  justify-content: center;
-`;
 const Messages = styled.div<{ $overflow: string }>`
   background-color: ${colors.lightGrey};
   overflow: ${({ $overflow }) => $overflow};
@@ -124,6 +123,15 @@ const Messages = styled.div<{ $overflow: string }>`
   flex-direction: column-reverse;
   flex-grow: 1;
 `;
+
+const LoadingContainer = styled.div`
+  display: flex;
+  background-color: ${colors.lightGrey};
+  justify-content: center;
+  width: 100%;
+  align-self: stretch;
+`;
+
 const Conversation = styled.div<{ $alignStart: boolean }>`
   display: flex;
   flex-direction: column;
@@ -242,6 +250,29 @@ const InputWrapper = styled.div`
   margin-left: 0.875rem;
 `;
 
+const NoMoreMessages = styled.button.attrs({ type: "button" })`
+  background-color: ${colors.white};
+  color: ${colors.black};
+  border-radius: 1rem;
+  margin: 0.5rem;
+  padding: 0.2rem 0.7rem;
+  pointer-events: none;
+`;
+
+const LoadMoreMessages = styled.button.attrs({ type: "button" })`
+  background-color: ${colors.white};
+  color: ${colors.black};
+  border-radius: 1rem;
+  margin: 0.5rem;
+  padding: 0.2rem 0.7rem;
+  transition: all 300ms;
+
+  :hover {
+    background-color: ${colors.black};
+    color: ${colors.white};
+  }
+`;
+
 const UploadButtonWrapper = styled.button`
   all: unset;
   cursor: pointer;
@@ -309,14 +340,19 @@ const ChatConversation = ({
   onTextAreaChange,
   textAreaValue
 }: Props) => {
+  const location = useLocation();
   const iAmTheBuyer = myBuyerId === exchange?.buyer.id;
   const iAmTheSeller = mySellerId === exchange?.offer.seller.id;
   const iAmBoth = iAmTheBuyer && iAmTheSeller;
-  const buyerOrSellerToShow: BuyerOrSeller = iAmBoth
-    ? exchange?.offer.seller
-    : iAmTheBuyer
-    ? exchange?.offer.seller
-    : exchange?.buyer || ({} as BuyerOrSeller);
+  const buyerOrSellerToShow: BuyerOrSeller = useMemo(
+    () =>
+      iAmBoth
+        ? exchange?.offer.seller
+        : iAmTheBuyer
+        ? exchange?.offer.seller
+        : exchange?.buyer || ({} as BuyerOrSeller),
+    [exchange?.buyer, exchange?.offer.seller, iAmBoth, iAmTheBuyer]
+  );
   const destinationAddressLowerCase = iAmTheBuyer
     ? exchange?.offer.seller.operator
     : exchange?.buyer.wallet;
@@ -324,13 +360,6 @@ const ChatConversation = ({
     ? utils.getAddress(destinationAddressLowerCase)
     : "";
   const { bosonXmtp } = useChatContext();
-  const [isMessageBeingSent, setIsMessageBeingSent] = useState<boolean>(false);
-  const [dateIndex, setDateIndex] = useState<number>(0);
-  const onFinishFetching = () => {
-    if (bosonXmtp && !isBeginningOfTimes && !areThreadsLoading && !lastThread) {
-      loadMoreMessages();
-    }
-  };
   const threadId = useMemo<ThreadId | null>(() => {
     if (!exchange) {
       return null;
@@ -341,19 +370,39 @@ const ChatConversation = ({
       sellerId: exchange.seller.id
     };
   }, [exchange]);
+
   const {
     data: thread,
     isLoading: areThreadsLoading,
     isBeginningOfTimes,
     isError: isErrorThread,
     lastData: lastThread,
-    appendMessages
+    setDateIndex,
+    addToDateIndex,
+    appendMessages,
+    removePendingMessage
   } = useInfiniteThread({
     threadId,
-    dateIndex,
     dateStep: "week",
+    dateStepValue: 1,
     counterParty: destinationAddress,
-    onFinishFetching
+    genesisDate: exchange?.committedDate
+      ? new Date(Number(exchange?.committedDate) * 1000)
+      : new Date("2022-08-25"),
+    onFinishFetching: ({
+      isBeginningOfTimes,
+      isLoading: areThreadsLoading,
+      lastData: lastThread
+    }) => {
+      if (
+        bosonXmtp &&
+        !isBeginningOfTimes &&
+        !areThreadsLoading &&
+        !lastThread
+      ) {
+        loadMoreMessages();
+      }
+    }
   });
   const loadMoreMessages = useCallback(
     (forceDateIndex?: number) => {
@@ -361,36 +410,29 @@ const ChatConversation = ({
         if (forceDateIndex !== undefined) {
           setDateIndex(forceDateIndex);
         } else {
-          setDateIndex(dateIndex - 1);
+          addToDateIndex(-1);
         }
       }
     },
-    [dateIndex, areThreadsLoading]
+    [areThreadsLoading, setDateIndex, addToDateIndex]
   );
 
   const addMessage = useCallback(
-    async (
-      threadId: ThreadObjectWithIsValid["threadId"] | null | undefined,
-      newMessageOrList: MessageDataWithIsValid | MessageDataWithIsValid[]
-    ) => {
+    async (newMessageOrList: MessageDataWithInfo | MessageDataWithInfo[]) => {
       const newMessages = Array.isArray(newMessageOrList)
         ? newMessageOrList
         : [newMessageOrList];
-      if (threadId) {
-        const messagesWithIsValid = await Promise.all(
-          newMessages.map(async (message) => {
-            if (message.isValid === undefined) {
-              message.isValid = await validateMessage(message.data);
-            }
-            return message;
-          })
-        );
-        await appendMessages(messagesWithIsValid);
-      } else {
-        loadMoreMessages(0); // trigger getting the thread
-      }
+      const messagesWithIsValid = await Promise.all(
+        newMessages.map(async (message) => {
+          if (message.isValid === undefined) {
+            message.isValid = await validateMessage(message.data);
+          }
+          return message;
+        })
+      );
+      appendMessages(messagesWithIsValid);
     },
-    [loadMoreMessages, appendMessages]
+    [appendMessages]
   );
   const previousThreadMessagesRef = useRef<MessageData[]>(
     thread?.messages || []
@@ -457,7 +499,7 @@ const ChatConversation = ({
           destinationAddress,
           stopGenerator
         )) {
-          await addMessage(threadId, { ...incomingMessage, isValid: true });
+          await addMessage({ ...incomingMessage, isValid: true });
         }
       } catch (error) {
         console.error(error);
@@ -480,9 +522,96 @@ const ChatConversation = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMonitorOk]);
 
+  const onSentMessage = useCallback(
+    async (messageData: MessageData, uuid: string) => {
+      removePendingMessage(uuid);
+      await addMessage({
+        ...messageData,
+        isValid: true,
+        isPending: false,
+        uuid
+      });
+    },
+    [addMessage, removePendingMessage]
+  );
+
+  const handleSendingRegularMessage = useCallback(async () => {
+    const value = textAreaValue?.trim() || "";
+    if (bosonXmtp && threadId && value && address) {
+      try {
+        const newMessage = {
+          threadId,
+          content: {
+            value
+          },
+          contentType: MessageType.String,
+          version
+        } as const;
+        const uuid = window.crypto.randomUUID();
+
+        await addMessage({
+          authorityId: "",
+          timestamp: Date.now(),
+          sender: address,
+          recipient: destinationAddress,
+          data: newMessage,
+          isValid: false,
+          isPending: true,
+          uuid
+        });
+        onTextAreaChange("");
+
+        const messageData = await bosonXmtp.encodeAndSendMessage(
+          newMessage,
+          destinationAddress
+        );
+
+        onSentMessage(messageData, uuid);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }, [
+    addMessage,
+    address,
+    bosonXmtp,
+    destinationAddress,
+    onSentMessage,
+    onTextAreaChange,
+    textAreaValue,
+    threadId
+  ]);
+
+  useEffect(() => {
+    async function backOnline() {
+      if (!thread?.messages || !bosonXmtp) {
+        return;
+      }
+      for (const message of thread.messages) {
+        if (!message.isPending || !message.uuid) {
+          continue;
+        }
+        try {
+          const messageData = await bosonXmtp.encodeAndSendMessage(
+            message.data,
+            destinationAddress
+          );
+          onSentMessage(messageData, message.uuid);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    }
+
+    window.addEventListener("online", backOnline);
+    return () => {
+      window.removeEventListener("online", backOnline);
+    };
+  }, [bosonXmtp, destinationAddress, onSentMessage, thread?.messages]);
+
   const sendFiles = useCallback(
     async (files: FileWithEncodedData[]) => {
-      if (!bosonXmtp || !threadId) {
+      if (!bosonXmtp || !threadId || !address) {
         return;
       }
 
@@ -491,12 +620,31 @@ const ChatConversation = ({
         files,
         destinationAddress,
         threadId,
-        callback: async (messageData) => {
-          await addMessage(thread?.threadId, { ...messageData, isValid: true });
+        callbackSendingMessage: async (newMessage, uuid) => {
+          await addMessage({
+            authorityId: "",
+            timestamp: Date.now(),
+            sender: address,
+            recipient: destinationAddress,
+            data: newMessage,
+            isValid: false,
+            isPending: true,
+            uuid
+          });
+        },
+        callback: async (messageData, uuid) => {
+          onSentMessage(messageData, uuid);
         }
       });
     },
-    [addMessage, bosonXmtp, destinationAddress, threadId, thread]
+    [
+      bosonXmtp,
+      threadId,
+      address,
+      destinationAddress,
+      addMessage,
+      onSentMessage
+    ]
   );
   const { isLteS, isLteM, isXXS, isS, isM, isL, isXL } = useBreakpoints();
   const { showModal } = useModal();
@@ -538,19 +686,9 @@ const ChatConversation = ({
     );
   }, [chatListOpen, isExchangePreviewOpen, isXXS, isS, isM]);
 
-  const isConversationBeingLoaded = !thread && areThreadsLoading;
-  const disableInputs = isErrorThread || isConversationBeingLoaded;
-  if (!exchange || !address) {
-    return (
-      <Container>
-        <SimpleMessage>Select a message</SimpleMessage>
-      </Container>
-    );
-  }
-  const canChat = !!bosonXmtp;
-  return (
-    <Container>
-      {canChat ? (
+  const ContainerWithSellerHeader = useCallback(
+    ({ children }: { children: ReactNode }) => {
+      return (
         <ConversationContainer>
           <GridHeader>
             <NavigationMobile>
@@ -568,7 +706,9 @@ const ChatConversation = ({
               >
                 {(isM || isL || isXL) &&
                   prevPath &&
-                  !prevPath.includes(`${BosonRoutes.Chat}/`) && (
+                  !prevPath.includes(BosonRoutes.Chat) &&
+                  !prevPath.includes(`${BosonRoutes.Chat}/`) &&
+                  !prevPath.includes(location.pathname) && (
                     <span>
                       <ArrowLeft size={14} />
                       Back
@@ -591,12 +731,50 @@ const ChatConversation = ({
             </Header>
             {isLteM && <Grid justifyContent="flex-end">{detailsButton}</Grid>}
           </GridHeader>
-          <Loading>
-            <Spinner
-              style={{ visibility: areThreadsLoading ? "initial" : "hidden" }}
-            />
-          </Loading>
+          {children}
+        </ConversationContainer>
+      );
+    },
+    [
+      buyerOrSellerToShow,
+      chatListOpen,
+      detailsButton,
+      exchange,
+      isL,
+      isLteM,
+      isLteS,
+      isM,
+      isXL,
+      navigate,
+      prevPath,
+      setChatListOpen,
+      location.pathname
+    ]
+  );
 
+  // const isConversationBeingLoaded = !thread && areThreadsLoading;
+  const disableInputs = isErrorThread;
+  if (!exchange) {
+    return (
+      <Container>
+        <SimpleMessage>Select a message</SimpleMessage>
+      </Container>
+    );
+  }
+
+  if (!address) {
+    return (
+      <Container>
+        <SimpleMessage>Connect your wallet</SimpleMessage>
+      </Container>
+    );
+  }
+
+  const canChat = !!bosonXmtp;
+  return (
+    <Container>
+      {canChat ? (
+        <ContainerWithSellerHeader>
           <Messages
             data-messages
             ref={dataMessagesRef}
@@ -611,8 +789,32 @@ const ChatConversation = ({
               dataLength={thread?.messages.length || 0}
               scrollableTarget="messages"
               scrollThreshold="200px"
+              refreshFunction={loadMoreMessages}
+              pullDownToRefresh
+              pullDownToRefreshThreshold={50}
+              pullDownToRefreshContent={
+                <h3 style={{ textAlign: "center" }}>
+                  &#8595; Pull down to refresh
+                </h3>
+              }
+              releaseToRefreshContent={
+                <h3 style={{ textAlign: "center" }}>
+                  &#8593; Release to refresh
+                </h3>
+              }
             >
               <>
+                <LoadingContainer>
+                  {areThreadsLoading ? (
+                    <Spinner />
+                  ) : isBeginningOfTimes ? (
+                    <NoMoreMessages>No earlier messages</NoMoreMessages>
+                  ) : (
+                    <LoadMoreMessages onClick={() => loadMoreMessages()}>
+                      Load more messages
+                    </LoadMoreMessages>
+                  )}
+                </LoadingContainer>
                 {thread?.messages.map((message, index) => {
                   const isFirstMessage = index === 0;
                   const isPreviousMessageInADifferentDay = isFirstMessage
@@ -674,7 +876,6 @@ const ChatConversation = ({
               </>
             </InfiniteScroll>
           </Messages>
-
           <TypeMessage>
             {exchange.disputed && (
               <Grid
@@ -697,11 +898,20 @@ const ChatConversation = ({
                         files: proposalFiles,
                         destinationAddress,
                         threadId,
-                        callback: async (messageData) => {
-                          await addMessage(thread?.threadId, {
-                            ...messageData,
-                            isValid: true
+                        callbackSendingMessage: async (newMessage, uuid) => {
+                          await addMessage({
+                            authorityId: "",
+                            timestamp: Date.now(),
+                            sender: address,
+                            recipient: destinationAddress,
+                            data: newMessage,
+                            isValid: false,
+                            isPending: true,
+                            uuid
                           });
+                        },
+                        callback: async (messageData, uuid) => {
+                          onSentMessage(messageData, uuid);
                         }
                       });
                     } catch (error) {
@@ -718,10 +928,12 @@ const ChatConversation = ({
                   placeholder="Write a message"
                   disabled={disableInputs}
                   value={textAreaValue}
-                  onChange={(e) => {
+                  onChange={async (e) => {
                     const value = e.target.value;
                     const didPressEnter = value[value.length - 1] === `\n`;
-                    if (!didPressEnter) {
+                    if (didPressEnter) {
+                      await handleSendingRegularMessage();
+                    } else {
                       onTextAreaChange(value);
                     }
                   }}
@@ -753,47 +965,19 @@ const ChatConversation = ({
             <SendButton
               data-testid="send"
               theme="primary"
-              disabled={disableInputs || isMessageBeingSent}
-              onClick={async () => {
-                const value = textAreaValue?.trim() || "";
-                if (bosonXmtp && threadId && value && !isMessageBeingSent) {
-                  try {
-                    setIsMessageBeingSent(true);
-                    const newMessage = {
-                      threadId,
-                      content: {
-                        value
-                      },
-                      contentType: MessageType.String,
-                      version
-                    } as const;
-                    const messageData = await bosonXmtp.encodeAndSendMessage(
-                      newMessage,
-                      destinationAddress
-                    );
-                    setIsMessageBeingSent(false);
-                    await addMessage(thread?.threadId, {
-                      ...messageData,
-                      isValid: true
-                    });
-                    onTextAreaChange("");
-                  } catch (error) {
-                    console.error(error);
-                    setIsMessageBeingSent(false);
-                  }
-                }
-              }}
+              disabled={disableInputs}
+              onClick={handleSendingRegularMessage}
             >
-              {isMessageBeingSent ? (
-                <Spinner size={24} />
-              ) : (
-                <PaperPlaneRight size={24} />
-              )}
+              <PaperPlaneRight size={24} />
             </SendButton>
           </TypeMessage>
-        </ConversationContainer>
+        </ContainerWithSellerHeader>
       ) : (
-        <InitializeChat />
+        <ContainerWithSellerHeader>
+          <div style={{ display: "flex", flexGrow: 1 }}>
+            <InitializeChat />
+          </div>
+        </ContainerWithSellerHeader>
       )}
       <ExchangeSidePreview
         exchange={exchange}

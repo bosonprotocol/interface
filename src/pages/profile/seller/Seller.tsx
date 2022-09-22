@@ -199,7 +199,7 @@ It is a long established fact that a reader will be distracted by the readable c
                     margin="0"
                     color={colors.darkGrey}
                   >
-                    Items
+                    Offers
                   </Typography>
                   <Typography
                     tag="p"

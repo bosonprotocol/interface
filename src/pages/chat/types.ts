@@ -15,12 +15,14 @@ export type Thread = ThreadObject & {
     | undefined;
 };
 
-export interface ThreadObjectWithIsValid extends ThreadObject {
-  messages: MessageDataWithIsValid[];
+export interface ThreadObjectWithInfo extends ThreadObject {
+  messages: MessageDataWithInfo[];
 }
 
-export interface MessageDataWithIsValid extends MessageData {
+export interface MessageDataWithInfo extends MessageData {
   isValid: boolean;
+  uuid?: string;
+  isPending?: boolean;
 }
 
 export type NewProposal = ProposalContent["value"];

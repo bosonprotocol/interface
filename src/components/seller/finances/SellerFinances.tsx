@@ -17,6 +17,7 @@ import { Currencies, CurrencyDisplay } from "@bosonprotocol/react-kit";
 
 import { colors } from "../../../lib/styles/colors";
 import { useModal } from "../../modal/useModal";
+import Tooltip from "../../tooltip/Tooltip";
 import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
 import Loading from "../../ui/Loading";
@@ -150,7 +151,7 @@ export default function SellerFinances({
   offersBacked
 }: SellerInsideProps & WithSellerDataProps) {
   const { showModal, modalTypes } = useModal();
-  const { funds: allFunds, reload, fundStatus } = fundsData;
+  const { funds, reload, fundStatus } = fundsData;
   const {
     isLoading: isLoadingExchangesTokens,
     isError: isErrorExchangesTokens,
@@ -233,16 +234,19 @@ export default function SellerFinances({
 
   const data = useMemo(
     () =>
-      allFunds?.map((fund) => {
-        const decimals = fund.token.decimals;
+      funds?.map((fund) => {
+        const decimals = Number(fund?.token?.decimals || 18);
         const lockedFunds = sellerLockedFunds?.[fund.token.symbol] ?? "0";
         const lockedFundsFormatted = utils.formatUnits(lockedFunds, decimals);
-        const withdrawable = processValue(fund.availableAmount, decimals);
+        const withdrawable = processValue(
+          fund.availableAmount,
+          decimals.toString()
+        );
         const allFunds = processValue(
           BigNumber.from(lockedFunds)
             .add(BigNumber.from(fund.availableAmount))
             .toString(),
-          decimals
+          decimals.toString()
         );
         const offersBackedFn = () => {
           let result = null;
@@ -261,10 +265,12 @@ export default function SellerFinances({
           token: (
             <CurrencyName tag="p" gap="0.5rem">
               {fund.token.symbol}
-              <CurrencyDisplay
-                currency={fund.token.symbol as Currencies}
-                height={18}
-              />
+              <Tooltip content={fund.token.symbol} wrap={false}>
+                <CurrencyDisplay
+                  currency={fund.token.symbol as Currencies}
+                  height={18}
+                />
+              </Tooltip>
             </CurrencyName>
           ),
           allFund: <Typography tag="p">{allFunds}</Typography>,
@@ -337,7 +343,7 @@ export default function SellerFinances({
       sellerId,
       sellerLockedFunds,
       showModal,
-      allFunds
+      funds
     ]
   );
 

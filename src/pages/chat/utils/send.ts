@@ -18,13 +18,18 @@ export const sendFilesToChat = async ({
   files,
   destinationAddress,
   threadId,
+  callbackSendingMessage,
   callback
 }: {
   bosonXmtp: BosonXmtpClient;
   files: FileWithEncodedData[];
   destinationAddress: string;
   threadId: ThreadId;
-  callback?: (messageData: MessageData) => Promise<unknown>;
+  callbackSendingMessage?: (
+    messageObject: MessageObject,
+    uuid: string
+  ) => Promise<unknown>;
+  callback?: (messageData: MessageData, uuid: string) => Promise<unknown>;
 }) => {
   const destinationAddressFormatted = utils.getAddress(destinationAddress);
 
@@ -43,11 +48,13 @@ export const sendFilesToChat = async ({
       contentType: MessageType.File,
       version
     } as const;
+    const uuid = window.crypto.randomUUID();
+    await callbackSendingMessage?.(newMessage, uuid);
     const messageData = await bosonXmtp.encodeAndSendMessage(
       newMessage,
       destinationAddressFormatted
     );
-    await callback?.(messageData);
+    await callback?.(messageData, uuid);
   }
 };
 
@@ -57,6 +64,7 @@ export const sendProposalToChat = async ({
   files,
   destinationAddress,
   threadId,
+  callbackSendingMessage,
   callback
 }: {
   bosonXmtp: BosonXmtpClient;
@@ -64,7 +72,11 @@ export const sendProposalToChat = async ({
   files: FileWithEncodedData[];
   destinationAddress: string;
   threadId: ThreadId;
-  callback?: (messageData: MessageData) => Promise<unknown>;
+  callbackSendingMessage?: (
+    messageObject: MessageObject,
+    uuid: string
+  ) => Promise<unknown>;
+  callback?: (messageData: MessageData, uuid: string) => Promise<unknown>;
 }) => {
   const destinationAddressFormatted = utils.getAddress(destinationAddress);
   const proposalContent: ProposalContent = {
@@ -76,17 +88,20 @@ export const sendProposalToChat = async ({
     contentType: MessageType.Proposal,
     version
   } as const;
+  const uuid = window.crypto.randomUUID();
+  await callbackSendingMessage?.(newMessage, uuid);
   const messageData = await bosonXmtp.encodeAndSendMessage(
     newMessage,
     destinationAddressFormatted
   );
-  await callback?.(messageData);
+  await callback?.(messageData, uuid);
   if (files.length) {
     await sendFilesToChat({
       bosonXmtp,
       destinationAddress: destinationAddressFormatted,
       files,
       threadId,
+      callbackSendingMessage,
       callback
     });
   }

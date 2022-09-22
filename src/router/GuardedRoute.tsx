@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useAccount } from "wagmi";
 
 import Navigate from "../components/customNavigation/Navigate";
@@ -10,19 +11,25 @@ interface Props {
   role: Array<keyof typeof UserRoles>;
 }
 export default function GuardedRoute({ role, children }: Props) {
-  const MOCK_ADMIN = true;
-  const { address, isConnected } = useAccount();
+  const MOCK_ADMIN = false;
+  const { address } = useAccount();
   const {
+    refetch,
     seller: { sellerId },
     buyer: { buyerId }
   } = useBuyerSellerAccounts(address || "");
 
+  useEffect(() => {
+    refetch();
+  }, [address]); // eslint-disable-line
+
   const auth = [
-    isConnected && UserRoles.Guest,
+    address && UserRoles.Guest,
     buyerId && UserRoles.Buyer,
     sellerId && UserRoles.Seller,
     MOCK_ADMIN && UserRoles.DisputeResolver
-  ];
+  ].filter((n) => n);
+
   const isAuth = role.some((r: string) => auth.includes(r));
 
   return isAuth ? children : <Navigate to={{ pathname: BosonRoutes.Root }} />;
