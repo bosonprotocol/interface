@@ -7,6 +7,7 @@ const theme = {
     light: {
       primary: colors.primary,
       secondary: colors.secondary,
+      orange: colors.orange,
       white: "#ffffff"
     }
   },

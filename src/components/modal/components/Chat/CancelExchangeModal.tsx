@@ -156,7 +156,7 @@ export default function CancelExchangeModal({
       {cancelError && <SimpleError />}
       <ButtonsSection>
         <CancelButton
-          variant="primary"
+          variant="secondary"
           exchangeId={exchange.id}
           envName={CONFIG.envName}
           disabled={isLoading}
