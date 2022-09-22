@@ -38,7 +38,7 @@
   },
   "dependencies": {
     "@bosonprotocol/chat-sdk": "^1.0.2-alpha.8",
-    "@bosonprotocol/react-kit": "^0.7.0-alpha.19",
+    "@bosonprotocol/react-kit": "^0.7.0-alpha.20",
     "@davatar/react": "^1.10.4",
     "@ethersproject/address": "^5.6.1",
     "@ethersproject/units": "^5.6.1",
@@ -50,6 +50,7 @@
     "@rainbow-me/rainbowkit": "^0.4.1",
     "@sentry/react": "^7.3.1",
     "@sentry/tracing": "^7.3.1",
+    "@shopify/react-web-worker": "^5.0.5",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/user-event": "^14.2.1",
     "@tippyjs/react": "^4.2.6",

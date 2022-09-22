@@ -69,6 +69,7 @@ export default function ConnectButton({ navigationBarPosition = "" }: Props) {
                   <Button
                     onClick={openConnectModal}
                     size={isLteXS ? "small" : "regular"}
+                    theme="primary"
                     style={{
                       whiteSpace: "pre",
                       ...buttonPropsWhenSideBar,
