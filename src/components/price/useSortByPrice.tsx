@@ -27,7 +27,6 @@ export const useSortByPrice = ({
   const prevOffers = usePrevious(offers);
 
   const itemPrice = (value: string, decimals: string) => {
-    console.log("value", value);
     try {
       return utils.formatUnits(
         BigNumber.from(value.toString()),

@@ -201,7 +201,6 @@ function Collections() {
         });
       }
     };
-  console.log("filter collections", filter);
   const updateUrl = useCallback(
     (index: number) => {
       return updatePageIndexInUrl(navigate)(index, {
@@ -220,14 +219,6 @@ function Collections() {
       sortValidFromDate_lte
     ]
   );
-
-  // useEffect(() => {
-  //   if (sortQueryParameter) {
-  //     setFilter(
-  //       selectOptions.filter((option) => option.value === sortQueryParameter)[0]
-  //     );
-  //   }
-  // }, [sortQueryParameter]);
 
   const initialPageIndex = Math.max(
     0,
@@ -284,7 +275,6 @@ function Collections() {
 
   useEffect(() => {
     if (isFetched && !data?.length) {
-      console.log("test");
       /**
        * if you go directly to a page without any offers,
        * you'll be redirected to the first page
@@ -333,11 +323,7 @@ function Collections() {
             value={filter}
             options={selectOptions}
             // eslint-disable-next-line
-            onInputChange={() => {
-              console.log("dupa");
-            }}
             onChange={(option: any) => {
-              console.log("dupa2");
               // eslint-disable-line
               if (option !== null) {
                 setFilter({
