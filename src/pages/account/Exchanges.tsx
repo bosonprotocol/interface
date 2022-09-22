@@ -1,5 +1,6 @@
 import OfferCard, { Action } from "../../components/offer/OfferCard";
 import GridContainer from "../../components/ui/GridContainer";
+import Loading from "../../components/ui/Loading";
 import { Offer } from "../../lib/types/offer";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useSellerToggle } from "./private/Toogle/SellerToggleContext";
@@ -44,7 +45,7 @@ export default function Exchanges({
   const exchanges = isTabSellerSelected ? exchangesSeller : exchangesBuyer;
 
   if (isLoadingSeller || isLoadingBuyer) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   if (isErrorSeller || isErrorBuyer) {

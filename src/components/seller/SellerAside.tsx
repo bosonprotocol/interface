@@ -59,7 +59,11 @@ export default function SellerAside(
 ) {
   const { [UrlParameters.sellerPage]: sellerPage } = useParams();
 
-  const handleUrl = useCallback((path: string) => {
+  const handleUrl = useCallback((path: string, externalPath: string | null) => {
+    if (externalPath !== null) {
+      return generatePath(externalPath);
+    }
+
     return generatePath(SellerCenterRoutes.SellerCenter, {
       [UrlParameters.sellerPage]: path
     });
@@ -72,13 +76,14 @@ export default function SellerAside(
           const {
             label,
             url,
+            externalPath,
             icon: Icon
           } = sellerPageTypes[key as keyof typeof sellerPageTypes];
           const isActive = sellerPage === url;
 
           return (
             <AsideLink key={`seller_aside_route_${label}`} $active={isActive}>
-              <LinkWithQuery to={handleUrl(url)}>
+              <LinkWithQuery to={handleUrl(url, externalPath)}>
                 <Grid
                   alignItems="center"
                   justifyContent="flex-start"

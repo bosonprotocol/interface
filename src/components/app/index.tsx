@@ -1,6 +1,5 @@
 import { IconContext } from "phosphor-react";
 import { Fragment } from "react";
-import { Outlet } from "react-router-dom";
 import styled, { ThemeProvider } from "styled-components";
 
 import Layout from "../../components/Layout";
@@ -24,15 +23,20 @@ const Container = styled.div`
 `;
 
 interface Props {
+  children: JSX.Element;
   withLayout?: boolean;
   withFooter?: boolean;
   fluidHeader?: boolean;
+  appProps?: any;
 }
 export default function App({
+  appProps = {},
   withLayout = true,
   withFooter = true,
-  fluidHeader = false
+  fluidHeader = false,
+  children
 }: Props) {
+  // console.log("appProps", appProps);
   const headerBgColor = useCustomStoreQueryParameter("headerBgColor");
   const headerTextColor = useCustomStoreQueryParameter("headerTextColor");
   const primaryBgColor = useCustomStoreQueryParameter("primaryBgColor");
@@ -68,11 +72,9 @@ export default function App({
                 $footerTextColor={footerTextColor}
                 $fontFamily={fontFamily}
               />
-              <Header fluidHeader={fluidHeader} />
-              <Wrapper>
-                <Outlet />
-              </Wrapper>
-              {showFooter && <Footer />}
+              <Header fluidHeader={fluidHeader} {...appProps} />
+              <Wrapper>{children}</Wrapper>
+              {showFooter && <Footer {...appProps} />}
             </Container>
           </ModalProvider>
         </ChatProvider>

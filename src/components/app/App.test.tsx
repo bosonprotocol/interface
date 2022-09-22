@@ -35,7 +35,9 @@ test("renders App and expects logo to be displayed", () => {
           chains={[]}
         >
           <QueryClientProvider client={queryClient} contextSharing>
-            <App />
+            <App>
+              <div>TODO:</div>
+            </App>
           </QueryClientProvider>
         </RainbowKitProvider>
       </WagmiConfig>

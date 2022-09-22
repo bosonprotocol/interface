@@ -14,6 +14,7 @@ import DetailSlider from "../../components/detail/DetailSlider";
 import DetailTable from "../../components/detail/DetailTable";
 import DetailWidget from "../../components/detail/DetailWidget/DetailWidget";
 import Image from "../../components/ui/Image";
+import Loading from "../../components/ui/Loading";
 import SellerID from "../../components/ui/SellerID";
 import Typography from "../../components/ui/Typography";
 import { UrlParameters } from "../../lib/routing/parameters";
@@ -52,7 +53,7 @@ export default function OfferDetail() {
   }
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   if (isError) {
