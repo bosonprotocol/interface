@@ -296,7 +296,8 @@ export default function SellerProductsTable({
           ),
           action: !(
             status === OffersKit.OfferState.EXPIRED ||
-            status === OffersKit.OfferState.VOIDED
+            status === OffersKit.OfferState.VOIDED ||
+            offer?.quantityAvailable === "0"
           ) && (
             <Button
               theme="orangeInverse"
