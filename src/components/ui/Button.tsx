@@ -123,6 +123,15 @@ const allThemes = {
       color: colors.white
     }
   },
+  orangeInverse: {
+    color: colors.orange,
+    borderColor: colors.orange,
+    borderWidth: 2,
+    hover: {
+      background: colors.orange,
+      color: colors.white
+    }
+  },
   bosonSecondaryInverse: {
     color: colors.white,
     borderColor: colors.secondary,
