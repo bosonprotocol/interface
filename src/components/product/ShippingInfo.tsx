@@ -172,7 +172,6 @@ export default function ShippingInfo() {
             options={OPTIONS_COUNTRIES}
           />
         </FormField>
-        {/* roberto */}
         <AddSupportedJurisdictions />
       </RequiredContainer>
       <AdditionalContainer>
