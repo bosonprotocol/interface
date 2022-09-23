@@ -53,12 +53,16 @@ export default function Upload({
     helpers.setValue(files);
 
     if (!multiple && accept === "image/*" && files.length !== 0) {
-      const reader = new FileReader();
-      reader.onloadend = (e: ProgressEvent<FileReader>) => {
-        const prev = e.target?.result?.toString() || null;
-        setPreview(prev as GetItemFromStorageKey | null);
-      };
-      reader.readAsDataURL(files[0]);
+      try {
+        const reader = new FileReader();
+        reader.onloadend = (e: ProgressEvent<FileReader>) => {
+          const prev = e.target?.result?.toString() || null;
+          setPreview(prev as GetItemFromStorageKey | null);
+        };
+        reader.readAsDataURL(files[0]);
+      } catch (e) {
+        console.error(e);
+      }
     }
   }, [files]); // eslint-disable-line
 
