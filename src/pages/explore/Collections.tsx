@@ -166,7 +166,23 @@ function Collections() {
     CollectionsQueryParameters.validFromDate_lte
   );
 
-  const [filter, setFilter] = useState<FilterValue>(selectOptions[0]);
+  const [sortValue, setSortValue] = useQueryParameter(
+    CollectionsQueryParameters.value
+  );
+
+  const [queryState, setQueryState] = useState({
+    sortValue: sortValue || "",
+    sortExchangeOrderByParameter: sortExchangeOrderByParameter || "",
+    sortOrderByParameter: sortOrderByParameter || "",
+    sortOrderDirectionParameter: sortOrderDirectionParameter || "",
+    sortValidFromDate_lte: sortValidFromDate_lte || ""
+  });
+
+  const [filter, setFilter] = useState<FilterValue>(
+    queryState.sortValue
+      ? selectOptions[parseInt(queryState.sortValue)]
+      : selectOptions[1]
+  );
 
   const params = useParams();
 
@@ -177,6 +193,7 @@ function Collections() {
     (
       index: number,
       queryParams: {
+        value: string;
         orderDirection: "asc" | "desc";
         orderBy: string;
         exchangeOrderBy: string;
@@ -204,15 +221,22 @@ function Collections() {
   const updateUrl = useCallback(
     (index: number) => {
       return updatePageIndexInUrl(navigate)(index, {
-        orderDirection: (sortOrderDirectionParameter as "asc" | "desc") ?? "",
-        orderBy: sortOrderByParameter,
-        exchangeOrderBy: sortExchangeOrderByParameter,
-        validFromDate_lte: sortValidFromDate_lte
+        value: queryState.sortValue || sortValue,
+        orderDirection:
+          (queryState.sortOrderDirectionParameter as "asc" | "desc") ||
+          (sortOrderDirectionParameter as "asc" | "desc"),
+        orderBy: queryState.sortOrderByParameter || sortOrderByParameter,
+        exchangeOrderBy:
+          queryState.sortExchangeOrderByParameter ||
+          sortExchangeOrderByParameter,
+        validFromDate_lte:
+          queryState.sortValidFromDate_lte || sortValidFromDate_lte
       });
     },
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
-      navigate,
+      queryState,
       sortExchangeOrderByParameter,
       sortOrderByParameter,
       sortOrderDirectionParameter,
@@ -237,6 +261,10 @@ function Collections() {
       return "createdAt";
     }
     return filter?.orderBy || "createdAt";
+  }, [filter]);
+
+  useEffect(() => {
+    console.log("filter!", filter);
   }, [filter]);
 
   const useCollectionPayload = {
@@ -285,22 +313,12 @@ function Collections() {
   }, [currentAndNextPageOffers, data, data?.length, isFetched, updateUrl]);
 
   useEffect(() => {
-    if (
-      sortOrderByParameter ||
-      sortOrderDirectionParameter ||
-      sortExchangeOrderByParameter ||
-      sortValidFromDate_lte
-    ) {
+    console.log(queryState);
+    if (queryState) {
       updateUrl(pageIndex);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    pageIndex,
-    sortOrderByParameter,
-    sortOrderDirectionParameter,
-    sortExchangeOrderByParameter,
-    sortValidFromDate_lte
-  ]);
+  }, [pageIndex, queryState]);
 
   return (
     <>
@@ -335,10 +353,13 @@ function Collections() {
                   validFromDate_lte: option.validFromDate_lte
                 });
               }
-              setSortOrderByParameter(option.orderBy);
-              setSortOrderDirectionParameter(option.orderDirection);
-              setSortExchangeOrderByParameter(option.exchangeOrderBy);
-              setValidFromDate_lte(option.validFromDate_lte);
+              setQueryState({
+                sortValue: option.value,
+                sortExchangeOrderByParameter: option.exchangeOrderBy,
+                sortOrderByParameter: option.orderBy,
+                sortOrderDirectionParameter: option.orderDirection,
+                sortValidFromDate_lte: option.validFromDate_lte
+              });
             }}
           />
         </SelectFilterWrapper>

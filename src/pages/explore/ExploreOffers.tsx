@@ -33,6 +33,14 @@ interface Props {
   sortOrderDirectionParameter?: string;
   sortExchangeOrderByParameter?: string;
   sortValidFromDate_lte?: string;
+  sortValue?: string | undefined;
+  queryState?: {
+    sortValue: string;
+    sortOrderByParameter: string;
+    sortOrderDirectionParameter: string;
+    sortExchangeOrderByParameter: string;
+    sortValidFromDate_lte: string;
+  };
 }
 
 const updatePageIndexInUrl =
@@ -42,6 +50,7 @@ const updatePageIndexInUrl =
   (
     index: number,
     queryParams: {
+      value: string;
       orderDirection: "asc" | "desc";
       orderBy: string;
       exchangeOrderBy: string;
@@ -75,13 +84,15 @@ const extractFiltersWithDefaults = (props: Props): Props => {
     name: props.name || "",
     exchangeTokenAddress: props.exchangeTokenAddress || "",
     sellerId: props.sellerId || "",
-    orderDirection: props.orderDirection || undefined,
+    orderDirection: props.orderDirection,
     orderBy: props.orderBy || "",
     exchangeOrderBy: props.exchangeOrderBy || "",
     sortOrderDirectionParameter: props.sortOrderDirectionParameter,
     sortOrderByParameter: props.sortOrderByParameter,
     sortExchangeOrderByParameter: props.sortExchangeOrderByParameter,
-    sortValidFromDate_lte: props.sortValidFromDate_lte
+    sortValidFromDate_lte: props.sortValidFromDate_lte || "",
+    sortValue: "",
+    queryState: props.queryState
   };
 };
 export default function ExploreOffers(props: Props) {
@@ -95,19 +106,32 @@ export default function ExploreOffers(props: Props) {
   } = extractFiltersWithDefaults(props);
   const params = useParams();
   const navigate = useKeepQueryParamsNavigate();
+
   const updateUrl = useCallback(
     (index: number) => {
       return updatePageIndexInUrl(navigate)(index, {
+        value: props?.queryState?.sortValue || props.sortValue || "",
         orderDirection:
-          (props.sortOrderDirectionParameter as "asc" | "desc") ?? "",
-        orderBy: props.sortOrderByParameter || "",
-        exchangeOrderBy: props.sortExchangeOrderByParameter || "",
-        validFromDate_lte: props.sortValidFromDate_lte || ""
+          (props?.queryState?.sortOrderDirectionParameter as "asc" | "desc") ||
+          (props.sortOrderDirectionParameter as "asc" | "desc || "),
+        orderBy:
+          props?.queryState?.sortOrderByParameter ||
+          props.sortOrderByParameter ||
+          "",
+        exchangeOrderBy:
+          props?.queryState?.sortExchangeOrderByParameter ||
+          props.sortExchangeOrderByParameter ||
+          "",
+        validFromDate_lte:
+          props?.queryState?.sortValidFromDate_lte ||
+          props.sortValidFromDate_lte ||
+          ""
       });
     },
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
-      navigate,
+      props.queryState,
       props.sortExchangeOrderByParameter,
       props.sortOrderByParameter,
       props.sortOrderDirectionParameter,
@@ -245,23 +269,14 @@ export default function ExploreOffers(props: Props) {
     isSortable:
       props.orderBy === "priceLowToHigh" || props.orderBy === "priceHightToLow"
   });
+
   useEffect(() => {
-    if (
-      props.sortOrderByParameter ||
-      props.sortOrderDirectionParameter ||
-      props.sortExchangeOrderByParameter ||
-      props.sortValidFromDate_lte
-    ) {
+    if (props.queryState) {
       updateUrl(pageIndex);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    pageIndex,
-    props.sortOrderByParameter,
-    props.sortOrderDirectionParameter,
-    props.sortExchangeOrderByParameter,
-    props.sortValidFromDate_lte
-  ]);
+  }, [pageIndex, props.queryState]);
+
   return (
     <Container>
       <OfferList

@@ -104,7 +104,23 @@ function Products() {
     CollectionsQueryParameters.validFromDate_lte
   );
 
-  const [filter, setFilter] = useState<FilterValue>(selectOptions[0]);
+  const [sortValue, setSortValue] = useQueryParameter(
+    CollectionsQueryParameters.value
+  );
+
+  const [queryState, setQueryState] = useState({
+    sortValue: sortValue || "",
+    sortExchangeOrderByParameter: sortExchangeOrderByParameter || "",
+    sortOrderByParameter: sortOrderByParameter || "",
+    sortOrderDirectionParameter: sortOrderDirectionParameter || "",
+    sortValidFromDate_lte: sortValidFromDate_lte || ""
+  });
+
+  const [filter, setFilter] = useState<FilterValue>(
+    queryState.sortValue
+      ? selectOptions[parseInt(queryState.sortValue)]
+      : selectOptions[3]
+  );
 
   const customStyles: StylesConfig<
     {
@@ -198,10 +214,17 @@ function Products() {
                 validFromDate_lte: option.validFromDate_lte
               });
             }
-            setSortOrderByParameter(option.orderBy);
-            setSortOrderDirectionParameter(option.orderDirection);
-            setSortExchangeOrderByParameter(option.exchangeOrderBy);
-            setValidFromDate_lte(option.validFromDate_lte);
+            setQueryState({
+              sortValue: option.value,
+              sortExchangeOrderByParameter: option.exchangeOrderBy,
+              sortOrderByParameter: option.orderBy,
+              sortOrderDirectionParameter: option.orderDirection,
+              sortValidFromDate_lte: option.validFromDate_lte
+            });
+            // setSortOrderByParameter(option.orderBy);
+            // setSortOrderDirectionParameter(option.orderDirection);
+            // setSortExchangeOrderByParameter(option.exchangeOrderBy);
+            // setValidFromDate_lte(option.validFromDate_lte);
           }}
         />
       </SelectFilterWrapper>
@@ -220,6 +243,8 @@ function Products() {
           sortOrderDirectionParameter={sortOrderDirectionParameter}
           sortExchangeOrderByParameter={sortExchangeOrderByParameter}
           sortValidFromDate_lte={sortValidFromDate_lte}
+          sortValue={sortValue}
+          queryState={queryState}
         />
       </ExploreOffersContainer>
     </Container>

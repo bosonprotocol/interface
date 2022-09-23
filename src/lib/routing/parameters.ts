@@ -7,6 +7,7 @@ export const ExploreQueryParameters = {
 } as const;
 
 export const CollectionsQueryParameters = {
+  value: "value",
   orderDirection: "orderDirection",
   orderBy: "orderBy",
   exchangeOrderBy: "exchangeOrderBy",

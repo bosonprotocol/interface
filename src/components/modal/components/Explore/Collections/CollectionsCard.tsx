@@ -7,8 +7,8 @@ import { BosonRoutes } from "../../../../../lib/routing/routes";
 import { colors } from "../../../../../lib/styles/colors";
 import { useKeepQueryParamsNavigate } from "../../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import Grid from "../../../../ui/Grid";
-import Image from "../../../../ui/Image";
 import Typography from "../../../../ui/Typography";
+import CollectionsCardImage from "./CollectionsCardImage";
 
 interface Props {
   collection: {
@@ -48,7 +48,7 @@ const OfferImage = styled.div`
   padding: 0;
   margin: 0;
   div {
-    padding-top: 126.5%;
+    padding-top: 126.1%;
     img {
       object-fit: cover;
     }
@@ -93,7 +93,10 @@ function CollectionsCard({ collection }: Props) {
           collection.offers.slice(0, 4).map((offer) => (
             <>
               <OfferImage>
-                <Image key={offer.id} src={offer?.metadata?.image} />
+                <CollectionsCardImage
+                  key={offer.id}
+                  imageSource={offer?.metadata?.image}
+                />
               </OfferImage>
             </>
           ))}

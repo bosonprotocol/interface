@@ -192,7 +192,7 @@ export default function Explore() {
   );
 
   const parseQueryParameter = useMemo(
-    () => (sortQueryParameter ? sortQueryParameter : 0),
+    () => (sortQueryParameter ? sortQueryParameter : 3),
     [sortQueryParameter]
   );
 
