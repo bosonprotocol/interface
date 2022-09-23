@@ -13,6 +13,8 @@ import {
   SellerCenterRoutes,
   SocialRoutes
 } from "../../lib/routing/routes";
+import { UserRoles } from "../../router/routes";
+import { checkIfUserHaveRole } from "../../router/useUserRoles";
 import { DEFAULT_SELLER_PAGE } from "./../seller/SellerPages";
 
 export const SOCIAL_ROUTES = [
@@ -44,10 +46,12 @@ export const SOCIAL_ROUTES = [
 ];
 
 export const getProductRoutes = ({
+  roles,
   isSupportFunctionalityDefined,
   onlyBuyer,
   onlySeller
 }: {
+  roles: string[];
   isSupportFunctionalityDefined: boolean;
   onlyBuyer: boolean;
   onlySeller: boolean;
@@ -67,20 +71,28 @@ export const getProductRoutes = ({
     !isSupportFunctionalityDefined ||
     (isSupportFunctionalityDefined && (!onlyBuyer || onlySeller))
   ) {
-    productRoutes.push({
-      name: "Sell",
-      url: generatePath(SellerCenterRoutes.SellerCenter, {
-        [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
-      })
-    });
+    if (checkIfUserHaveRole(roles, [UserRoles.Seller], false)) {
+      productRoutes.push({
+        name: "Sell",
+        url: generatePath(SellerCenterRoutes.SellerCenter, {
+          [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
+        })
+      });
+    } else if (checkIfUserHaveRole(roles, [UserRoles.Guest], false)) {
+      productRoutes.push({
+        name: "Sell",
+        url: generatePath(SellerCenterRoutes.CreateProduct)
+      });
+    }
   }
   return productRoutes;
 };
-
 export const getNavigationRoutes = ({
+  roles,
   isSupportFunctionalityDefined,
   onlySeller
 }: {
+  roles: string[];
   isSupportFunctionalityDefined: boolean;
   onlySeller: boolean;
 }) => {
@@ -90,15 +102,19 @@ export const getNavigationRoutes = ({
         name: "Custom Storefront",
         url: BosonRoutes.CreateStorefront
       },
-      {
+      checkIfUserHaveRole(
+        roles,
+        [UserRoles.Buyer, UserRoles.Seller, UserRoles.DisputeResolver],
+        false
+      ) && {
         name: "Chat",
         url: BosonRoutes.Chat
       }
-    ];
+    ].filter((n) => n);
   }
 
   return [
-    {
+    checkIfUserHaveRole(roles, [UserRoles.Buyer, UserRoles.Seller], false) && {
       name: "Profile",
       url: BosonRoutes.YourAccount
     },
@@ -106,13 +122,21 @@ export const getNavigationRoutes = ({
       name: "Custom Storefront",
       url: BosonRoutes.CreateStorefront
     },
-    {
+    checkIfUserHaveRole(
+      roles,
+      [UserRoles.Buyer, UserRoles.Seller, UserRoles.DisputeResolver],
+      false
+    ) && {
       name: "Chat",
       url: BosonRoutes.Chat
     },
-    {
+    checkIfUserHaveRole(
+      roles,
+      [UserRoles.Buyer, UserRoles.Seller, UserRoles.DisputeResolver],
+      false
+    ) && {
       name: "Dispute Center",
       url: BosonRoutes.DisputeCenter
     }
-  ];
+  ].filter((n) => n);
 };

@@ -24,6 +24,7 @@ export const sellerPageTypes = {
     url: "dashboard",
     label: "Dashboard",
     icon: GridFour,
+    externalPath: null,
     component: (props: SellerInsideProps & WithSellerDataProps) => (
       <SellerDashboard {...props} />
     ),
@@ -33,6 +34,7 @@ export const sellerPageTypes = {
     url: "products",
     label: "Products",
     icon: Storefront,
+    externalPath: null,
     component: (props: SellerInsideProps & WithSellerDataProps) => (
       <SellerProducts {...props} />
     )
@@ -41,6 +43,7 @@ export const sellerPageTypes = {
     url: "exchanges",
     label: "Exchanges",
     icon: ArrowsLeftRight,
+    externalPath: null,
     component: (props: SellerInsideProps & WithSellerDataProps) => (
       <SellerExchanges {...props} />
     )
@@ -49,12 +52,14 @@ export const sellerPageTypes = {
     url: "messages",
     label: "Messages",
     icon: Chats,
+    externalPath: BosonRoutes.Chat,
     component: () => <Navigate replace to={{ pathname: BosonRoutes.Chat }} />
   },
   finances: {
     url: "finances",
     label: "Finances",
     icon: Bank,
+    externalPath: null,
     component: (props: SellerInsideProps & WithSellerDataProps) => (
       <SellerFinances {...props} />
     )
@@ -63,6 +68,7 @@ export const sellerPageTypes = {
     url: "salesChannels",
     label: "Sales Channels",
     icon: Megaphone,
+    externalPath: BosonRoutes.CreateStorefront,
     component: () => (
       <Navigate replace to={{ pathname: BosonRoutes.CreateStorefront }} />
     )
@@ -73,6 +79,7 @@ export type SellerPageTypes = keyof typeof sellerPageTypes;
 
 export type SellerPage = {
   url: string;
+  externalPath: string;
   label: string;
   icon: React.ReactNode | JSX.Element;
   component: React.ReactNode | JSX.Element;

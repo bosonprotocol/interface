@@ -13,6 +13,7 @@ import { Action } from "../offer/OfferCard";
 import ProductCard from "../productCard/ProductCard";
 import Grid from "../ui/Grid";
 import { ItemsPerRow } from "../ui/GridContainer";
+import Loading from "../ui/Loading";
 import Typography from "../ui/Typography";
 
 interface Props {
@@ -71,7 +72,7 @@ export default function OfferList({
     [location]
   );
   if (isLoading) {
-    return loadingComponent || <div>Loading...</div>;
+    return loadingComponent || <Loading />;
   }
 
   if (isError) {
