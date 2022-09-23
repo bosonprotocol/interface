@@ -1,16 +1,20 @@
 import { utils } from "ethers";
 import { Info as InfoComponent } from "phosphor-react";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import styled from "styled-components";
 
+import { CONFIG } from "../../../../lib/config";
 import { colors } from "../../../../lib/styles/colors";
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
 import { useCoreSDK } from "../../../../lib/utils/useCoreSdk";
 import { ProposalItem } from "../../../../pages/chat/types";
 import SimpleError from "../../../error/SimpleError";
+import SuccessTransactionToast from "../../../toasts/SuccessTransactionToast";
 import Button from "../../../ui/Button";
 import Grid from "../../../ui/Grid";
 import { ModalProps } from "../../ModalContext";
+import { useModal } from "../../useModal";
 import ExchangePreview from "./components/ExchangePreview";
 import ProposalTypeSummary from "./components/ProposalTypeSummary";
 
@@ -53,6 +57,7 @@ export default function ResolveDisputeModal({
   hideModal,
   proposal
 }: Props) {
+  const { showModal } = useModal();
   const coreSDK = useCoreSDK();
   const [resolveDisputeError, setResolveDisputeError] = useState<Error | null>(
     null
@@ -77,6 +82,7 @@ export default function ResolveDisputeModal({
             try {
               setResolveDisputeError(null);
               const signature = utils.splitSignature(proposal.signature);
+              showModal("WAITING_FOR_CONFIRMATION");
               const tx = await coreSDK.resolveDispute({
                 exchangeId: exchange.id,
                 buyerPercent: proposal.percentageAmount,
@@ -84,9 +90,26 @@ export default function ResolveDisputeModal({
                 sigS: signature.s,
                 sigV: signature.v
               });
+              showModal("TRANSACTION_SUBMITTED", {
+                action: "Raise dispute",
+                txHash: tx.hash
+              });
               await tx.wait();
+              toast((t) => (
+                <SuccessTransactionToast
+                  t={t}
+                  action={`Raised dispute: ${exchange.offer.metadata.name}`}
+                  url={CONFIG.getTxExplorerUrl?.(tx.hash)}
+                />
+              ));
               hideModal();
             } catch (error) {
+              const hasUserRejectedTx =
+                (error as unknown as { code: string }).code ===
+                "ACTION_REJECTED";
+              if (hasUserRejectedTx) {
+                showModal("CONFIRMATION_FAILED");
+              }
               setResolveDisputeError(error as Error);
             }
           }}

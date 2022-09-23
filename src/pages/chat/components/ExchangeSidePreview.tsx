@@ -284,7 +284,7 @@ export default function ExchangeSidePreview({
               { name: "Raise dispute", steps: 1 },
               { name: "Resolve or Escalate", steps: 1 }
             ]}
-            active={isInDispute ? 1 : 2}
+            active={isInDispute ? 2 : 3}
           />
         </Section>
       )}
@@ -300,7 +300,8 @@ export default function ExchangeSidePreview({
                 "RETRACT_DISPUTE",
                 {
                   title: "Retract",
-                  exchangeId: exchange.id
+                  exchangeId: exchange.id,
+                  offerName: offer.metadata.name
                 },
                 "s"
               )
@@ -335,7 +336,13 @@ export default function ExchangeSidePreview({
                   title: "Raise a problem",
                   exchangeId: exchange.id
                 },
-                "s"
+                "auto",
+                undefined,
+                {
+                  xs: "80%",
+                  s: "50%",
+                  m: "1000px"
+                }
               )
             }
           >

@@ -68,7 +68,7 @@ const SellerID: React.FC<
     withBosonStyles?: boolean;
     onClick?: null | undefined | React.MouseEventHandler<HTMLDivElement>;
   } & IGrid &
-    React.HTMLAttributes<HTMLDivElement>
+    Omit<React.HTMLAttributes<HTMLDivElement>, "onClick">
 > = ({
   children,
   offer,

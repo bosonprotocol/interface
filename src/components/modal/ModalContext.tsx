@@ -1,7 +1,7 @@
 /* eslint @typescript-eslint/no-empty-function: "off" */
 /* eslint @typescript-eslint/no-explicit-any: "off" */
 import { subgraph } from "@bosonprotocol/react-kit";
-import { createContext, ReactNode } from "react";
+import React, { createContext, ReactNode } from "react";
 
 import { MODAL_COMPONENTS, MODAL_TYPES } from "./ModalComponents";
 
@@ -18,10 +18,14 @@ export type ModalProps = {
   closable?: boolean;
 };
 export type ModalType = keyof typeof MODAL_TYPES | null;
+type ModalSize = "xxs" | "xs" | "s" | "m" | "l" | "xl";
 export type Store = {
   modalType: ModalType;
   modalProps?: Parameters<ModalContextType["showModal"]>[1];
-  modalSize?: "xxs" | "xs" | "s" | "m" | "l" | "xl" | "auto";
+  modalSize?: ModalSize | "auto";
+  modalMaxWidth?: Partial<
+    Record<ModalSize, React.CSSProperties["maxWidth"]>
+  > | null;
   theme?: "light" | "dark";
 };
 
@@ -36,7 +40,8 @@ export interface ModalContextType {
       : Omit<ModalProps, "hideModal"> &
           Omit<Parameters<typeof MODAL_COMPONENTS[T]>[0], "hideModal">,
     modalSize?: Store["modalSize"],
-    theme?: Store["theme"]
+    theme?: Store["theme"],
+    modalMaxWidth?: Store["modalMaxWidth"]
   ) => void;
   hideModal: () => void;
 
@@ -52,6 +57,7 @@ export interface ModalContextType {
               Omit<Parameters<typeof MODAL_COMPONENTS[T]>[0], "hideModal">
           >;
       modalSize?: Store["modalSize"];
+      modalMaxWidth?: Store["modalMaxWidth"];
       theme?: Store["theme"];
     }
   ) => void;
@@ -67,6 +73,7 @@ export const initalState: ModalContextType = {
     modalType: null,
     modalProps: {} as any,
     modalSize: "l",
+    modalMaxWidth: null,
     theme: "light"
   } as const
 };

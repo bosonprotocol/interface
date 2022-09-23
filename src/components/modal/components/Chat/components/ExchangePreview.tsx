@@ -1,4 +1,4 @@
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 
 import { useBreakpoints } from "../../../../../lib/utils/hooks/useBreakpoints";
 import { Exchange } from "../../../../../lib/utils/hooks/useExchanges";
@@ -38,22 +38,13 @@ const ImageWrapper = styled.div`
   align-self: center;
 `;
 
-const StyledImage = styled(Image)<{ isLteS: boolean; isLteXS: boolean }>`
-  width: ${({ isLteXS }) => (isLteXS ? "50%" : "")};
-  img {
-    width: 80px;
-    width: ${({ isLteS }) => isLteS && css`calc(100% + 4rem)`};
-    margin: ${({ isLteS }) => isLteS && css`-2rem 0 0 -2rem`};
-  }
-`;
-
 const StyledGrid = styled(Grid)`
   position: relative;
 `;
 
 export default function ExchangePreview({ exchange }: Props) {
   const { offer } = exchange;
-  const { isLteS, isLteXS } = useBreakpoints();
+  const { isLteS } = useBreakpoints();
 
   return (
     <StyledGrid
@@ -62,12 +53,7 @@ export default function ExchangePreview({ exchange }: Props) {
     >
       <Grid flexDirection={isLteS ? "column" : "row"}>
         <ImageWrapper>
-          <StyledImage
-            isLteS={isLteS}
-            src={offer.metadata.imageUrl}
-            alt="Exchange image"
-            isLteXS={isLteXS}
-          />
+          <Image src={offer.metadata.imageUrl} alt="Exchange image" />
         </ImageWrapper>
         <Grid
           flexDirection="column"

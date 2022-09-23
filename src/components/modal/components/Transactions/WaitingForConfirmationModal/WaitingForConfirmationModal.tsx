@@ -1,13 +1,30 @@
+import { useEffect } from "react";
+
 import { colors } from "../../../../../lib/styles/colors";
 import Grid from "../../../../ui/Grid";
 import Loading from "../../../../ui/Loading";
 import Typography from "../../../../ui/Typography";
+import { useModal } from "../../../useModal";
 
 interface Props {
   action: string;
 }
 
 export default function WaitingForConfirmationModal({ action }: Props) {
+  const { updateProps, store } = useModal();
+  useEffect(() => {
+    updateProps<"WAITING_FOR_CONFIRMATION">({
+      ...store,
+      modalProps: {
+        ...store.modalProps
+      },
+      modalSize: "auto",
+      modalMaxWidth: {
+        xs: "400px"
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <Grid flexDirection="column" alignItems="center">
       <Loading

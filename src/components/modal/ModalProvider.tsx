@@ -31,6 +31,7 @@ const RenderModalComponent = ({
     <Modal
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       size={store.modalSize || initalState.store.modalSize!}
+      maxWidths={store.modalMaxWidth || initalState.store.modalMaxWidth}
       theme={
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         store.theme || initalState.store.theme!
@@ -62,16 +63,19 @@ export default function ModalProvider({ children }: Props) {
       modalType: ModalType,
       modalProps?: Store["modalProps"],
       modalSize?: Store["modalSize"],
-      theme?: Store["theme"]
+      theme?: Store["theme"],
+      modalMaxWidth?: Store["modalMaxWidth"]
     ) => {
       setStore({
         ...store,
         modalType,
         modalProps,
         modalSize,
+        modalMaxWidth,
         theme
       });
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [store]
   );
 

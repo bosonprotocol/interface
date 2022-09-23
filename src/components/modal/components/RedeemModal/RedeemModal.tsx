@@ -40,6 +40,7 @@ const validationSchemaPerStep = [
 
 interface Props {
   exchangeId: string;
+  offerName: string;
   buyerId: string;
   sellerId: string;
   sellerAddress: string;
@@ -51,6 +52,7 @@ interface Props {
 export default function RedeemModal({
   hideModal,
   exchangeId,
+  offerName,
   buyerId,
   sellerId,
   sellerAddress,
@@ -115,6 +117,7 @@ export default function RedeemModal({
               ) : (
                 <Confirmation
                   exchangeId={exchangeId}
+                  offerName={offerName}
                   buyerId={buyerId}
                   sellerId={sellerId}
                   sellerAddress={sellerAddress}

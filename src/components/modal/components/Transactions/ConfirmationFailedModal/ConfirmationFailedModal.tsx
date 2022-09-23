@@ -1,10 +1,26 @@
 import { WarningCircle } from "phosphor-react";
+import { useEffect } from "react";
 
 import { colors } from "../../../../../lib/styles/colors";
 import Grid from "../../../../ui/Grid";
 import Typography from "../../../../ui/Typography";
+import { useModal } from "../../../useModal";
 
 export default function ConfirmationFailedModal() {
+  const { updateProps, store } = useModal();
+  useEffect(() => {
+    updateProps<"CONFIRMATION_FAILED">({
+      ...store,
+      modalProps: {
+        ...store.modalProps
+      },
+      modalSize: "auto",
+      modalMaxWidth: {
+        xs: "550px"
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <Grid flexDirection="column" alignItems="center">
       <WarningCircle size={128} color={colors.orange} />
