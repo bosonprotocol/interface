@@ -23,6 +23,7 @@ interface Props {
   onNextClick: () => void;
   isValid: boolean;
   exchange: Exchange;
+  onSkip: () => void;
 }
 
 export const RefundLabel = "Refund";
@@ -31,7 +32,8 @@ export const proposals = [{ label: RefundLabel, value: "refund" }];
 export default function MakeAProposalStep({
   exchange,
   onNextClick,
-  isValid
+  isValid,
+  onSkip
 }: Props) {
   const { address } = useAccount();
   const { data: buyers = [] } = useBuyers({
@@ -45,14 +47,17 @@ export default function MakeAProposalStep({
   );
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { setFieldTouched, setFieldValue } = useFormikContext<any>();
+
   useEffect(() => {
     setFieldTouched(FormModel.formFields.proposalType.name, true);
   }, [setFieldTouched]);
+
   useEffect(() => {
     if (!proposalTypeField.value) {
       setFieldValue(FormModel.formFields.refundPercentage.name, "0", true);
     }
   }, [proposalTypeField.value, setFieldValue]);
+
   return (
     <>
       <Typography $fontSize="2rem" fontWeight="600">
@@ -93,9 +98,14 @@ export default function MakeAProposalStep({
         >
           Next
         </Button>
-        {/* <Button theme="outline" onClick={() => onBackClick()}>
-          Back
-        </Button> */}
+        <Button
+          theme="outline"
+          onClick={() => {
+            onSkip();
+          }}
+        >
+          Skip
+        </Button>
       </ButtonsSection>
     </>
   );

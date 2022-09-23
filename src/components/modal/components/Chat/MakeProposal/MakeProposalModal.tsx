@@ -1,4 +1,4 @@
-import { Form, Formik, FormikProps } from "formik";
+import { Form, Formik, FormikProps, useFormikContext } from "formik";
 import { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
@@ -45,6 +45,9 @@ export default function MakeProposalModal({
   const { data: sellers = [] } = useSellers({
     operator: address
   });
+  const { setFieldValue } =
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    useFormikContext<any>();
   const mySellerId = sellers[0]?.id || "";
   const iAmTheSeller = mySellerId === exchange.seller.id;
   const sellerOrBuyerId = iAmTheSeller ? exchange.seller.id : exchange.buyer.id;
@@ -69,6 +72,11 @@ export default function MakeProposalModal({
     ),
     [activeStep]
   );
+
+  const onSkipMethod = () => {
+    setFieldValue(FormModel.formFields.proposalType.name, null, true);
+    setActiveStep(2);
+  };
 
   useEffect(() => {
     updateProps<"MAKE_PROPOSAL">({
@@ -128,10 +136,6 @@ export default function MakeProposalModal({
         ) => {
           const isDescribeProblemOK = Object.keys(props.errors).length === 0;
 
-          const isMakeAProposalOK =
-            !props.errors[FormModel.formFields.proposalType.name] &&
-            !props.errors[FormModel.formFields.refundPercentage.name];
-          const isFormValid = isDescribeProblemOK && isMakeAProposalOK;
           return (
             <Form>
               {activeStep === 0 ? (
@@ -142,12 +146,13 @@ export default function MakeProposalModal({
               ) : activeStep === 1 ? (
                 <MakeAProposalStep
                   onNextClick={() => setActiveStep(2)}
-                  isValid={isMakeAProposalOK}
+                  isValid={isDescribeProblemOK}
                   exchange={exchange}
+                  onSkip={() => onSkipMethod()}
                 />
               ) : (
                 <ReviewAndSubmitStep
-                  isValid={isFormValid}
+                  isValid={isDescribeProblemOK}
                   exchange={exchange}
                   submitError={submitError}
                 />

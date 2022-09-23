@@ -1,3 +1,5 @@
+import { useFormikContext } from "formik";
+
 import { Exchange } from "../../../../../lib/utils/hooks/useExchanges";
 import { useCreateForm } from "../../../../product/utils/useCreateForm";
 import { FormModel } from "../MakeProposal/MakeProposalFormModel";
@@ -19,11 +21,16 @@ export default function MakeProposalCore({
   submitError
 }: Props) {
   const formValues = useCreateForm();
+  const { setFieldValue } =
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    useFormikContext<any>();
+
   const isDescribeProblemOK = Object.keys(formValues.errors).length === 0;
 
-  const isMakeAProposalOK =
-    !formValues.errors[FormModel.formFields.refundPercentage.name];
-  const isFormValid = isDescribeProblemOK && isMakeAProposalOK;
+  const onSkipMethod = () => {
+    setFieldValue(FormModel.formFields.proposalType.name, null, true);
+    setActiveStep(activeStep + 1);
+  };
 
   return (
     <>
@@ -34,13 +41,18 @@ export default function MakeProposalCore({
         />
       ) : activeStep === 3 ? (
         <MakeAProposalStep
-          onNextClick={() => setActiveStep(activeStep + 1)}
-          isValid={isMakeAProposalOK}
+          onNextClick={() => {
+            setActiveStep(activeStep + 1);
+          }}
+          isValid={isDescribeProblemOK}
           exchange={exchange}
+          onSkip={() => {
+            onSkipMethod();
+          }}
         />
       ) : (
         <ReviewAndSubmitStep
-          isValid={isFormValid}
+          isValid={isDescribeProblemOK}
           exchange={exchange}
           submitError={submitError}
         />

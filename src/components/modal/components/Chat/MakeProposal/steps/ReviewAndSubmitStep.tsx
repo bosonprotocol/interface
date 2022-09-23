@@ -92,7 +92,11 @@ export default function ReviewAndSubmitStep({
         <Button
           theme="primary"
           type="submit"
-          disabled={!isValid || !isChatInitialized || isSubmitting}
+          disabled={
+            !isValid ||
+            (!isChatInitialized && proposalTypeField.value) ||
+            isSubmitting
+          }
         >
           Sign & Submit
           {isSubmitting && <Spinner />}
