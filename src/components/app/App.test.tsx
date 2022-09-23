@@ -8,7 +8,6 @@ import { MemoryRouter } from "react-router-dom";
 import { WagmiConfig } from "wagmi";
 
 import { wagmiClient } from "../../lib/wallet-connection";
-import AppRouter from "./../../router/AppRouter";
 import App from "./index";
 
 jest.mock("@bosonprotocol/react-kit", () => {
@@ -37,7 +36,7 @@ test("renders App and expects logo to be displayed", () => {
         >
           <QueryClientProvider client={queryClient} contextSharing>
             <App>
-              <AppRouter />
+              <div />
             </App>
           </QueryClientProvider>
         </RainbowKitProvider>
