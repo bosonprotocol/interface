@@ -98,7 +98,7 @@ export default function ReviewAndSubmitStep({
             isSubmitting
           }
         >
-          Sign & Submit
+          Raise Dispute
           {isSubmitting && <Spinner />}
         </Button>
       </ButtonsSection>
