@@ -195,7 +195,7 @@ interface Props {
 export default function Modal({
   children,
   hideModal,
-  title = "modal",
+  title = "",
   headerComponent: HeaderComponent,
   size,
   theme,
