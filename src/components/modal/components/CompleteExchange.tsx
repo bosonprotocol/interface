@@ -5,6 +5,7 @@ import {
 } from "@bosonprotocol/react-kit";
 import { BigNumberish } from "ethers";
 import { useCallback, useMemo } from "react";
+import toast from "react-hot-toast";
 import styled from "styled-components";
 import { useSigner } from "wagmi";
 
@@ -13,6 +14,7 @@ import { Offer } from "../../../lib/types/offer";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { Break } from "../../detail/Detail.style";
 import Price from "../../price/index";
+import SuccessTransactionToast from "../../toasts/SuccessTransactionToast";
 import Grid from "../../ui/Grid";
 import Image from "../../ui/Image";
 import SellerID from "../../ui/SellerID";
@@ -94,7 +96,7 @@ export default function CompleteExchange({
   refetch
 }: Props) {
   const { data: signer } = useSigner();
-  const { hideModal } = useModal();
+  const { hideModal, showModal } = useModal();
 
   const handleSuccess = useCallback(() => {
     hideModal();
@@ -138,14 +140,35 @@ export default function CompleteExchange({
             variant="primary"
             exchangeId={exchange.id}
             envName={CONFIG.envName}
-            onError={(args) => {
-              // TODO: add to notification system
-              console.error("onError", args);
+            onError={(error) => {
+              console.error("onError", error);
+              const hasUserRejectedTx =
+                "code" in error &&
+                (error as unknown as { code: string }).code ===
+                  "ACTION_REJECTED";
+              if (hasUserRejectedTx) {
+                showModal("CONFIRMATION_FAILED");
+              }
             }}
             onPendingSignature={() => {
-              console.error("onPendingSignature");
+              showModal("WAITING_FOR_CONFIRMATION");
             }}
-            onSuccess={handleSuccess}
+            onPendingTransaction={(hash) => {
+              showModal("TRANSACTION_SUBMITTED", {
+                action: "Complete",
+                txHash: hash
+              });
+            }}
+            onSuccess={(receipt, { exchangeId }) => {
+              toast((t) => (
+                <SuccessTransactionToast
+                  t={t}
+                  action={`Completed exchange: ${exchangeId}`}
+                  url={CONFIG.getTxExplorerUrl?.(receipt.transactionHash)}
+                />
+              ));
+              handleSuccess();
+            }}
             web3Provider={signer?.provider as Provider}
           />
         </Grid>
@@ -156,14 +179,38 @@ export default function CompleteExchange({
             variant="primary"
             exchangeIds={exchangeIds}
             envName={CONFIG.envName}
-            onError={(args) => {
-              // TODO: add to notification system
-              console.error("onError", args);
+            onError={(error) => {
+              console.error("onError", error);
+              const hasUserRejectedTx =
+                "code" in error &&
+                (error as unknown as { code: string }).code ===
+                  "ACTION_REJECTED";
+              if (hasUserRejectedTx) {
+                showModal("CONFIRMATION_FAILED");
+              }
             }}
             onPendingSignature={() => {
-              console.error("onPendingSignature");
+              showModal("WAITING_FOR_CONFIRMATION");
             }}
-            onSuccess={handleSuccess}
+            onPendingTransaction={(hash) => {
+              showModal("TRANSACTION_SUBMITTED", {
+                action: "Complete",
+                txHash: hash
+              });
+            }}
+            onSuccess={(receipt) => {
+              toast((t) => (
+                <SuccessTransactionToast
+                  t={t}
+                  action={`Completed exchanges: ${exchanges
+                    .map((exchange) => exchange?.id)
+                    .filter((exchange) => exchange)
+                    .join(",")}`}
+                  url={CONFIG.getTxExplorerUrl?.(receipt.transactionHash)}
+                />
+              ));
+              handleSuccess();
+            }}
             web3Provider={signer?.provider as Provider}
           >
             Batch Complete

@@ -7,7 +7,6 @@ import Confirmation from "./Confirmation/Confirmation";
 import RedeemForm from "./RedeemForm/RedeemForm";
 import { FormModel } from "./RedeemModalFormModel";
 import StepsOverview from "./StepsOverview/StepsOverview";
-import Summary from "./Summary/Summary";
 
 const validationSchemaPerStep = [
   Yup.object({}),
@@ -113,18 +112,15 @@ export default function RedeemModal({
                   onNextClick={() => setActiveStep(2)}
                   isValid={isRedeemFormOK}
                 />
-              ) : activeStep === 2 ? (
+              ) : (
                 <Confirmation
                   exchangeId={exchangeId}
                   buyerId={buyerId}
                   sellerId={sellerId}
                   sellerAddress={sellerAddress}
                   onBackClick={() => setActiveStep(1)}
-                  onNextClick={() => setActiveStep(3)}
                   reload={reload}
                 />
-              ) : (
-                <Summary onNextClick={() => hideModal()} />
               )}
             </Form>
           );

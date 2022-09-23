@@ -1,5 +1,6 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
+import { Toaster } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from "react-query";
 
 import ConvertionRateProvider from "./components/convertion-rate/ConvertionRateProvider";
@@ -27,14 +28,28 @@ const StrictMode = ({
 };
 
 root.render(
-  <StrictMode enable={false}>
-    <WalletConnectionProvider>
-      <QueryClientProvider client={queryClient}>
-        <ConvertionRateProvider>
-          <AppRouter />
-        </ConvertionRateProvider>
-      </QueryClientProvider>
-    </WalletConnectionProvider>
+  <StrictMode enable={true}>
+    <>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 5000,
+          style: {
+            minWidth: "455px",
+            padding: "24px",
+            boxShadow: "0 3px 10px rgb(0 0 0 / 40%), 0 3px 3px rgb(0 0 0 / 5%)",
+            borderRadius: 0
+          }
+        }}
+      />
+      <WalletConnectionProvider>
+        <QueryClientProvider client={queryClient}>
+          <ConvertionRateProvider>
+            <AppRouter />
+          </ConvertionRateProvider>
+        </QueryClientProvider>
+      </WalletConnectionProvider>
+    </>
   </StrictMode>
 );
 

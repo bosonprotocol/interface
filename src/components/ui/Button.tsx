@@ -74,6 +74,7 @@ const BaseButton = styled.button<{
 const ChildWrapperButton = styled.div`
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 12px;
   position: relative;
   z-index: ${zIndex.Button};
@@ -178,12 +179,15 @@ const allThemes = {
       color: colors.black
     }
   },
-  blankWhite: {
-    color: colors.white,
-    padding: "1rem 2rem",
-    borderWidth: 0,
+  white: {
+    color: colors.black,
+    background: colors.white,
+    padding: "1rem",
+    borderWidth: 1,
+    borderColor: colors.border,
     hover: {
-      color: colors.primary
+      color: colors.white,
+      background: colors.black
     }
   },
   warning: {

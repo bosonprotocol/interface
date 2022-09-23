@@ -26,7 +26,7 @@ export const FormModel = {
       placeholder: "ZIP"
     },
     country: {
-      name: "refundPercentage",
+      name: "country",
       requiredErrorMessage: "This field is required",
       placeholder: "Country"
     },

@@ -7,6 +7,7 @@ import { utils } from "ethers";
 import { useField } from "formik";
 import { Warning } from "phosphor-react";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import styled from "styled-components";
 import { useSigner } from "wagmi";
 
@@ -16,9 +17,11 @@ import { useChatStatus } from "../../../../../lib/utils/hooks/chat/useChatStatus
 import { useChatContext } from "../../../../../pages/chat/ChatProvider/ChatContext";
 import SimpleError from "../../../../error/SimpleError";
 import { Spinner } from "../../../../loading/Spinner";
+import SuccessTransactionToast from "../../../../toasts/SuccessTransactionToast";
 import Button from "../../../../ui/Button";
 import Grid from "../../../../ui/Grid";
 import Typography from "../../../../ui/Typography";
+import { useModal } from "../../../useModal";
 import InitializeChatWithSuccess from "../../Chat/components/InitializeChatWithSuccess";
 import { FormModel } from "../RedeemModalFormModel";
 
@@ -31,13 +34,11 @@ interface Props {
   buyerId: string;
   sellerId: string;
   sellerAddress: string;
-  onNextClick: () => void;
   onBackClick: () => void;
   reload?: () => void;
 }
 
 export default function Confirmation({
-  onNextClick,
   onBackClick,
   exchangeId,
   buyerId,
@@ -45,6 +46,7 @@ export default function Confirmation({
   sellerAddress,
   reload
 }: Props) {
+  const { showModal } = useModal();
   const { bosonXmtp } = useChatContext();
   const [chatError, setChatError] = useState<Error | null>(null);
   const [redeemError, setRedeemError] = useState<Error | null>(null);
@@ -157,15 +159,46 @@ ${FormModel.formFields.email.placeholder}: ${emailField.value}`;
             console.error("Error while redeeming", error);
             setRedeemError(error);
             setIsLoading(false);
+            const hasUserRejectedTx =
+              "code" in error &&
+              (error as unknown as { code: string }).code === "ACTION_REJECTED";
+            if (hasUserRejectedTx) {
+              showModal("CONFIRMATION_FAILED");
+            }
           }}
-          onPendingSignature={() => {
+          onPendingSignature={async () => {
             setRedeemError(null);
             setIsLoading(true);
-            sendDeliveryDetailsToChat();
+            await sendDeliveryDetailsToChat();
+            showModal("WAITING_FOR_CONFIRMATION");
           }}
-          onSuccess={() => {
+          onPendingTransaction={(hash) => {
+            showModal("TRANSACTION_SUBMITTED", {
+              action: "Redeem",
+              txHash: hash
+            });
+          }}
+          onSuccess={(_, { exchangeId }) => {
             setIsLoading(false);
-            onNextClick();
+            toast((t) => (
+              <SuccessTransactionToast
+                t={t}
+                action={`Redeemed exchange: ${exchangeId}`}
+                onViewDetails={() => {
+                  showModal("REDEEM_SUCCESS", {
+                    title: "Congratulations!",
+                    name: nameField.value,
+                    streetNameAndNumber: streetNameAndNumberField.value,
+                    city: cityField.value,
+                    state: stateField.value,
+                    zip: zipField.value,
+                    country: countryField.value,
+                    email: emailField.value
+                  });
+                }}
+              />
+            ));
+
             reload?.();
           }}
           web3Provider={signer?.provider as Provider}
