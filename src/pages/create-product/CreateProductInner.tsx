@@ -60,6 +60,11 @@ function onKeyPress(event: React.KeyboardEvent<HTMLFormElement>) {
 interface Props {
   initial: CreateProductForm;
 }
+interface SupportedJuridiction {
+  label: string;
+  deliveryTime: string;
+}
+
 function CreateProductInner({ initial }: Props) {
   const navigate = useKeepQueryParamsNavigate();
   const { chatInitializationStatus } = useChatStatus();
@@ -232,14 +237,26 @@ function CreateProductInner({ initial }: Props) {
       }
     );
 
-    const supportedJurisdictions = shippingInfo.jurisdiction.map(
-      ({ region, time }: { region: string; time: string }) => {
-        return {
-          label: region,
-          deliveryTime: time
-        };
-      }
-    );
+    const supportedJurisdictions: Array<SupportedJuridiction> =
+      shippingInfo.jurisdiction.reduce(
+        (
+          prev: Array<SupportedJuridiction>,
+          { region, time }: { region: string; time: string }
+        ) => {
+          if (region.length === 0 || time.length === 0) {
+            return prev;
+          } else {
+            return [
+              ...prev,
+              {
+                label: region,
+                deliveryTime: time
+              }
+            ];
+          }
+        },
+        [{ label: "", deliveryTime: "" }]
+      );
 
     // filter empty attributes
     const additionalAttributes = productAttributes.filter((attribute) => {
