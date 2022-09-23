@@ -85,7 +85,7 @@ export const getProductRoutes = ({
       });
     }
   }
-  return productRoutes.filter((n) => n);
+  return productRoutes;
 };
 export const getNavigationRoutes = ({
   roles,

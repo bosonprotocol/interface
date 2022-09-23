@@ -5,15 +5,16 @@ import { useBuyerSellerAccounts } from "../lib/utils/hooks/useBuyerSellerAccount
 import { UserRoles } from "./routes";
 
 export const checkIfUserHaveRole = (
-  roles: string[],
-  userRoles: string[],
+  roles: Array<string | null>,
+  userRoles: Array<string | null>,
   fallback: boolean
-) => roles?.some((r: string) => userRoles.includes(r)) || fallback;
+) => roles?.some((r) => userRoles.includes(r)) || fallback;
 
 interface Props {
-  role: Array<keyof typeof UserRoles>;
+  role: Array<string | null>;
 }
 export default function useUserRoles({ role }: Props) {
+  // TODO: add admin role
   const MOCK_ADMIN = false;
   const { address } = useAccount();
   const {

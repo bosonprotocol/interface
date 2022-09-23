@@ -1,5 +1,4 @@
-/* eslint @typescript-eslint/no-explicit-any: "off" */
-import { lazy } from "react";
+import React, { lazy } from "react";
 import { RouteProps } from "react-router";
 
 import {
@@ -43,7 +42,8 @@ export const baseAppProps = {
 const base = {
   component: null,
   index: false,
-  app: baseAppProps
+  app: baseAppProps,
+  role: []
 };
 
 export const UserRoles = {
@@ -53,10 +53,11 @@ export const UserRoles = {
   DisputeResolver: "DisputeResolver"
 };
 export interface IRoutes extends RouteProps {
-  component: any;
-  role?: any;
+  // eslint-disable-next-line
+  component: React.LazyExoticComponent<React.ComponentType<any>>;
+  role: Array<string | null>;
   componentProps?: {
-    [key: string]: any;
+    [key: string]: string;
   };
   app?: {
     withLayout?: boolean;
