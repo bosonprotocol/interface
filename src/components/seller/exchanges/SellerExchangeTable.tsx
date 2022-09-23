@@ -341,7 +341,7 @@ export default function SellerExchangeTable({
                   </Button>
                 )}
                 <Button
-                  theme="orange"
+                  theme="ghostSecondary"
                   size="small"
                   onClick={() => {
                     if (element?.id) {

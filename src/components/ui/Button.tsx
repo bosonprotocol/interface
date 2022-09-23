@@ -143,6 +143,13 @@ const allThemes = {
       background: colors.white
     }
   },
+  orange: {
+    color: colors.orange,
+    borderColor: colors.border,
+    hover: {
+      background: colors.border
+    }
+  },
   outline: {
     color: colors.black,
     borderColor: colors.border,
@@ -152,13 +159,14 @@ const allThemes = {
       color: "var(--accent)"
     }
   },
-  orange: {
-    color: colors.orange,
+  ghostSecondary: {
+    color: colors.secondary,
     borderColor: colors.border,
     hover: {
       background: colors.border
     }
   },
+
   blank: {
     color: `${colors.black}4d`,
     padding: "0.75rem 0.5rem",
