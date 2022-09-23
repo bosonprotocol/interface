@@ -153,7 +153,7 @@ function EscalateModal({ exchange, hideModal }: Props) {
                   toast((t) => (
                     <SuccessTransactionToast
                       t={t}
-                      action={`Raised dispute: ${exchange.offer.metadata.name}`}
+                      action={`Escalated dispute: ${exchange.offer.metadata.name}`}
                       url={CONFIG.getTxExplorerUrl?.(tx.hash)}
                     />
                   ));

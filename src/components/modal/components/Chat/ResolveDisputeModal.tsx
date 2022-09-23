@@ -91,7 +91,7 @@ export default function ResolveDisputeModal({
                 sigV: signature.v
               });
               showModal("TRANSACTION_SUBMITTED", {
-                action: "Escalate dispute",
+                action: "Raise dispute",
                 txHash: tx.hash
               });
               await tx.wait();
