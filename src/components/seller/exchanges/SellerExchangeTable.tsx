@@ -356,7 +356,7 @@ export default function SellerExchangeTable({
                 </Button>
                 {status === subgraph.ExchangeState.Committed && (
                   <Button
-                    theme="bosonSecondary"
+                    theme="orangeInverse"
                     size="small"
                     onClick={() => {
                       if (element) {
