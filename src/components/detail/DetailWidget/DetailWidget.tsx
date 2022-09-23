@@ -23,6 +23,8 @@ import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { getItemFromStorage } from "../../../lib/utils/hooks/useLocalStorage";
+import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
+import { poll } from "../../../pages/create-product/utils";
 import { useModal } from "../../modal/useModal";
 import Price from "../../price/index";
 import { useConvertedPrice } from "../../price/useConvertedPrice";
@@ -211,6 +213,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   isPreview = false
 }) => {
   const { showModal, modalTypes } = useModal();
+  const coreSDK = useCoreSDK();
   const { isLteXS } = useBreakpoints();
   const navigate = useKeepQueryParamsNavigate();
   const { address } = useAccount();
@@ -368,12 +371,25 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                     txHash: hash
                   });
                 }}
-                onSuccess={(_, { exchangeId }) => {
+                onSuccess={async (_, { exchangeId }) => {
+                  let createdExchange: subgraph.ExchangeFieldsFragment;
+                  await poll(
+                    async () => {
+                      createdExchange = await coreSDK.getExchangeById(
+                        exchangeId
+                      );
+                      return createdExchange;
+                    },
+                    (createdExchange) => {
+                      return !createdExchange;
+                    },
+                    500
+                  );
                   setIsLoading(false);
                   toast((t) => (
                     <SuccessTransactionToast
                       t={t}
-                      action={`Commit to offer: ${offer.id}`}
+                      action={`Commit to offer: ${offer.metadata.name}`}
                       onViewDetails={() => {
                         showModal(modalTypes.DETAIL_WIDGET, {
                           title: "You have successfully committed!",
@@ -407,6 +423,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                     modalTypes.REDEEM,
                     {
                       title: "Redeem your item",
+                      offerName: offer.metadata.name,
                       exchangeId: exchange?.id || "",
                       buyerId: exchange?.buyer.id || "",
                       sellerId: exchange?.seller.id || "",

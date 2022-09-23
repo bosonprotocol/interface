@@ -418,7 +418,7 @@ function CreateProductInner({ initial }: Props) {
       toast((t) => (
         <SuccessTransactionToast
           t={t}
-          action={`Created offer: ${createdOffer?.id}`}
+          action={`Created offer: ${createdOffer?.metadata?.name}`}
           onViewDetails={() => {
             handleOpenSuccessModal({
               offerInfo: createdOffer || ({} as subgraph.OfferFieldsFragment)

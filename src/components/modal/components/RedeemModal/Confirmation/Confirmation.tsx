@@ -2,7 +2,7 @@ import {
   MessageType,
   version
 } from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/definitions";
-import { Provider, RedeemButton } from "@bosonprotocol/react-kit";
+import { Provider, RedeemButton, subgraph } from "@bosonprotocol/react-kit";
 import { utils } from "ethers";
 import { useField } from "formik";
 import { Warning } from "phosphor-react";
@@ -14,7 +14,9 @@ import { useSigner } from "wagmi";
 import { CONFIG } from "../../../../../lib/config";
 import { colors } from "../../../../../lib/styles/colors";
 import { useChatStatus } from "../../../../../lib/utils/hooks/chat/useChatStatus";
+import { useCoreSDK } from "../../../../../lib/utils/useCoreSdk";
 import { useChatContext } from "../../../../../pages/chat/ChatProvider/ChatContext";
+import { poll } from "../../../../../pages/create-product/utils";
 import SimpleError from "../../../../error/SimpleError";
 import { Spinner } from "../../../../loading/Spinner";
 import SuccessTransactionToast from "../../../../toasts/SuccessTransactionToast";
@@ -31,6 +33,7 @@ const StyledGrid = styled(Grid)`
 
 interface Props {
   exchangeId: string;
+  offerName: string;
   buyerId: string;
   sellerId: string;
   sellerAddress: string;
@@ -41,11 +44,13 @@ interface Props {
 export default function Confirmation({
   onBackClick,
   exchangeId,
+  offerName,
   buyerId,
   sellerId,
   sellerAddress,
   reload
 }: Props) {
+  const coreSDK = useCoreSDK();
   const { showModal } = useModal();
   const { bosonXmtp } = useChatContext();
   const [chatError, setChatError] = useState<Error | null>(null);
@@ -178,12 +183,23 @@ ${FormModel.formFields.email.placeholder}: ${emailField.value}`;
               txHash: hash
             });
           }}
-          onSuccess={(_, { exchangeId }) => {
+          onSuccess={async (_, { exchangeId }) => {
+            let createdExchange: subgraph.ExchangeFieldsFragment;
+            await poll(
+              async () => {
+                createdExchange = await coreSDK.getExchangeById(exchangeId);
+                return createdExchange.redeemedDate;
+              },
+              (redeemedDate) => {
+                return !redeemedDate;
+              },
+              500
+            );
             setIsLoading(false);
             toast((t) => (
               <SuccessTransactionToast
                 t={t}
-                action={`Redeemed exchange: ${exchangeId}`}
+                action={`Redeemed exchange: ${offerName}`}
                 onViewDetails={() => {
                   showModal("REDEEM_SUCCESS", {
                     title: "Congratulations!",

@@ -197,7 +197,7 @@ export default function CancelExchangeModal({
             toast((t) => (
               <SuccessTransactionToast
                 t={t}
-                action={`Cancelled exchange: ${exchangeId}`}
+                action={`Cancelled exchange: ${offer.metadata.name}`}
                 onViewDetails={() => {
                   showModal(modalTypes.DETAIL_WIDGET, {
                     title: "You have successfully cancelled!",

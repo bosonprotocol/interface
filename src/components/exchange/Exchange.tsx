@@ -138,6 +138,7 @@ export default function Exchange({ offer, exchange, reload }: Props) {
             {
               title: "Redeem your item",
               exchangeId: exchange?.id || "",
+              offerName: offer.metadata.name,
               buyerId: exchange?.buyer.id || "",
               sellerId: exchange?.seller.id || "",
               sellerAddress: exchange?.seller.operator || "",

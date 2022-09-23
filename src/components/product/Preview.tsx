@@ -142,6 +142,7 @@ export default function Preview({ togglePreview, seller }: Props) {
                   buyerOrSeller={offer?.seller}
                   justifyContent="flex-start"
                   withProfileImage
+                  onClick={null}
                 />
                 <Typography
                   tag="h1"
