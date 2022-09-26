@@ -32,8 +32,7 @@ export const proposals = [{ label: RefundLabel, value: "refund" }];
 export default function MakeAProposalStep({
   exchange,
   onNextClick,
-  isValid,
-  onSkip
+  isValid
 }: Props) {
   const { address } = useAccount();
   const { data: buyers = [] } = useBuyers({
@@ -97,15 +96,6 @@ export default function MakeAProposalStep({
           disabled={!isValid}
         >
           Next
-        </Button>
-        <Button
-          theme="outline"
-          onClick={() => {
-            setFieldValue(FormModel.formFields.proposalType.name, null, true);
-            onSkip();
-          }}
-        >
-          Skip
         </Button>
       </ButtonsSection>
     </>
