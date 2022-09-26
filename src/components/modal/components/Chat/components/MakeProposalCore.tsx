@@ -1,8 +1,5 @@
-import { useFormikContext } from "formik";
-
 import { Exchange } from "../../../../../lib/utils/hooks/useExchanges";
 import { useCreateForm } from "../../../../product/utils/useCreateForm";
-import { FormModel } from "../MakeProposal/MakeProposalFormModel";
 import DescribeProblemStep from "../MakeProposal/steps/DescribeProblemStep";
 import MakeAProposalStep from "../MakeProposal/steps/MakeAProposalStep/MakeAProposalStep";
 import ReviewAndSubmitStep from "../MakeProposal/steps/ReviewAndSubmitStep";
@@ -21,14 +18,10 @@ export default function MakeProposalCore({
   submitError
 }: Props) {
   const formValues = useCreateForm();
-  const { setFieldValue } =
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    useFormikContext<any>();
 
   const isDescribeProblemOK = Object.keys(formValues.errors).length === 0;
 
   const onSkipMethod = () => {
-    setFieldValue(FormModel.formFields.proposalType.name, null, true);
     setActiveStep(activeStep + 1);
   };
 

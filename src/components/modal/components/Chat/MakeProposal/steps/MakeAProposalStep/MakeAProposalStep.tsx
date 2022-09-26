@@ -101,6 +101,7 @@ export default function MakeAProposalStep({
         <Button
           theme="outline"
           onClick={() => {
+            setFieldValue(FormModel.formFields.proposalType.name, null, true);
             onSkip();
           }}
         >

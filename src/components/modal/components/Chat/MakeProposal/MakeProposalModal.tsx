@@ -1,4 +1,4 @@
-import { Form, Formik, FormikProps, useFormikContext } from "formik";
+import { Form, Formik, FormikProps } from "formik";
 import { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
@@ -45,9 +45,7 @@ export default function MakeProposalModal({
   const { data: sellers = [] } = useSellers({
     operator: address
   });
-  const { setFieldValue } =
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    useFormikContext<any>();
+
   const mySellerId = sellers[0]?.id || "";
   const iAmTheSeller = mySellerId === exchange.seller.id;
   const sellerOrBuyerId = iAmTheSeller ? exchange.seller.id : exchange.buyer.id;
@@ -72,11 +70,6 @@ export default function MakeProposalModal({
     ),
     [activeStep]
   );
-
-  const onSkipMethod = () => {
-    setFieldValue(FormModel.formFields.proposalType.name, null, true);
-    setActiveStep(2);
-  };
 
   useEffect(() => {
     updateProps<"MAKE_PROPOSAL">({
@@ -148,7 +141,9 @@ export default function MakeProposalModal({
                   onNextClick={() => setActiveStep(2)}
                   isValid={isDescribeProblemOK}
                   exchange={exchange}
-                  onSkip={() => onSkipMethod()}
+                  onSkip={() => {
+                    setActiveStep(2);
+                  }}
                 />
               ) : (
                 <ReviewAndSubmitStep
