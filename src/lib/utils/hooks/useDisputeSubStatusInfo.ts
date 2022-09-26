@@ -14,7 +14,6 @@ export function useDisputeSubStatusInfo(exchange: Exchange) {
     let color = "";
     let background = "";
     if (exchange?.disputed) {
-      // RESOLVING
       if (
         exchange?.dispute?.state === subgraph.DisputeState.Resolving &&
         exchange.redeemedDate &&
@@ -29,7 +28,6 @@ export function useDisputeSubStatusInfo(exchange: Exchange) {
         color = "";
         background = "";
       }
-      // RETRACTED
       if (
         exchange?.dispute?.state === subgraph.DisputeState.Retracted &&
         exchange.state !== subgraph.ExchangeState.Completed
@@ -38,7 +36,6 @@ export function useDisputeSubStatusInfo(exchange: Exchange) {
         color = "";
         background = "";
       }
-      // RESOLVED
       if (
         exchange?.dispute?.state === subgraph.DisputeState.Resolved &&
         exchange.state !== subgraph.ExchangeState.Completed
@@ -47,7 +44,6 @@ export function useDisputeSubStatusInfo(exchange: Exchange) {
         color = "";
         background = "";
       }
-      // DISPUTE EXPIRED
       if (
         exchange.state !== subgraph.ExchangeState.Completed &&
         exchange.redeemedDate &&
@@ -61,7 +57,6 @@ export function useDisputeSubStatusInfo(exchange: Exchange) {
         color = "";
         background = "";
       }
-      // ESCALATED
       if (
         exchange?.dispute?.state === subgraph.DisputeState.Escalated &&
         exchange.state !== subgraph.ExchangeState.Completed &&
@@ -78,7 +73,6 @@ export function useDisputeSubStatusInfo(exchange: Exchange) {
         color = "";
         background = "";
       }
-      // DECIDED
       if (
         exchange.dispute?.state === subgraph.DisputeState.Decided &&
         exchange.state !== subgraph.ExchangeState.Completed
@@ -87,16 +81,14 @@ export function useDisputeSubStatusInfo(exchange: Exchange) {
         color = "";
         background = "";
       }
-      // REFUSED
       if (
         exchange.dispute?.state === subgraph.DisputeState.Refused &&
         exchange.state !== subgraph.ExchangeState.Completed
       ) {
-        status = "Decided";
+        status = "Refused";
         color = "";
         background = "";
       }
-      // ESCALATION EXPIRED NOT FINISHED
       if (
         exchange.dispute?.state === subgraph.DisputeState.Escalated &&
         exchange.state !== subgraph.ExchangeState.Completed &&
