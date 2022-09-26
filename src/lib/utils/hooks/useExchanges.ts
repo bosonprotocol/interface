@@ -60,6 +60,11 @@ export function useExchanges(
                 : ""
             }
             }) {
+            dispute {
+              id
+              state
+              escalatedDate
+            }
             cancelledDate
             committedDate
             disputedDate

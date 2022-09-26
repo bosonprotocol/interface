@@ -16,7 +16,6 @@ import styled from "styled-components";
 import { UrlParameters } from "../../../lib/routing/parameters";
 import { BosonRoutes } from "../../../lib/routing/routes";
 import { colors } from "../../../lib/styles/colors";
-import { Offer } from "../../../lib/types/offer";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
@@ -278,8 +277,9 @@ export default function SellerExchangeTable({
               }
             >
               <ExchangeStatuses
+                isDisputeSubState
                 offer={element?.offer}
-                exchange={element as NonNullable<Offer["exchanges"]>[number]}
+                exchange={element}
                 size="small"
                 displayDot
                 showValid

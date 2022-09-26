@@ -7,6 +7,7 @@ import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes, OffersRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
+import { Exchange } from "../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import Image from "../ui/Image";
 import SellerID from "../ui/SellerID";
@@ -97,7 +98,7 @@ export type Action = "commit" | "redeem" | "contact-seller" | null;
 
 interface Props {
   offer: Offer;
-  exchange?: NonNullable<Offer["exchanges"]>[number];
+  exchange?: Exchange;
   showSeller?: boolean;
   action?: Action;
   dataTestId: string;
@@ -145,10 +146,7 @@ export default function OfferCard({
 
   const Status = isPrivateProfile ? (
     exchange ? (
-      <ExchangeStatuses
-        offer={offer}
-        exchange={exchange as NonNullable<Offer["exchanges"]>[number]}
-      />
+      <ExchangeStatuses offer={offer} exchange={exchange} />
     ) : (
       <OfferStatuses offer={offer} />
     )

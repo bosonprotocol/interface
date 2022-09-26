@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { BosonRoutes } from "../../../../lib/routing/routes";
 import { colors } from "../../../../lib/styles/colors";
 import { getDateTimestamp } from "../../../../lib/utils/getDateTimestamp";
+import { useDisputeSubStatusInfo } from "../../../../lib/utils/hooks/useDisputeSubStatusInfo";
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import Button from "../../../ui/Button";
@@ -49,6 +50,7 @@ const DisputeEndDate = styled(ClockClockwise)`
 `;
 
 function TableElement({ exchange }: { exchange: Exchange }) {
+  const { status } = useDisputeSubStatusInfo(exchange);
   const navigate = useKeepQueryParamsNavigate();
   const currentDate = dayjs();
 
@@ -92,7 +94,7 @@ function TableElement({ exchange }: { exchange: Exchange }) {
             </MessageInfo>
           </Grid>
         </td>
-        <DisputeRaised>{exchange?.state}</DisputeRaised>
+        <DisputeRaised>{status}</DisputeRaised>
         <td>
           <Grid alignItems="center" $width="max-content">
             <DisputeEndDate size={17} fontWeight="light" color={colors.black} />
