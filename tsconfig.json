@@ -20,7 +20,8 @@
       "stream": ["./node_modules/readable-stream"],
       "buffer": ["./node_modules/buffer"],
       "assert": ["./node_modules/assert"]
-    }
+    },
+    "types": ["react/experimental", "react-dom/next", "react/next"]
   },
   "include": ["src", "e2e-tests"]
 }

@@ -8,6 +8,7 @@ import { Form, Formik, FormikHelpers } from "formik";
 import isArray from "lodash/isArray";
 import keys from "lodash/keys";
 import { useCallback, useMemo, useState } from "react";
+import toast from "react-hot-toast";
 import { generatePath } from "react-router-dom";
 import { useAccount } from "wagmi";
 dayjs.extend(localizedFormat);
@@ -23,6 +24,7 @@ import {
   CreateProductForm
 } from "../../components/product/utils";
 import MultiSteps from "../../components/step/MultiSteps";
+import SuccessTransactionToast from "../../components/toasts/SuccessTransactionToast";
 import { CONFIG } from "../../lib/config";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { OffersRoutes } from "../../lib/routing/routes";
@@ -375,7 +377,7 @@ function CreateProductInner({ initial }: Props) {
         metadataUri: `ipfs://${metadataHash}`,
         metadataHash: metadataHash
       };
-
+      showModal("WAITING_FOR_CONFIRMATION");
       const txResponse =
         sellers?.length === 0 && address
           ? await coreSDK.createSellerAndOffer(
@@ -392,7 +394,10 @@ function CreateProductInner({ initial }: Props) {
               offerData
             )
           : await coreSDK.createOffer(offerData);
-
+      showModal("TRANSACTION_SUBMITTED", {
+        action: "Create offer",
+        txHash: txResponse.hash
+      });
       const txReceipt = await txResponse.wait();
 
       const offerId = coreSDK.getCreatedOfferIdFromLogs(txReceipt.logs);
@@ -410,11 +415,28 @@ function CreateProductInner({ initial }: Props) {
       if (!createdOffer) {
         return;
       }
-      handleOpenSuccessModal({ offerInfo: createdOffer });
+      toast((t) => (
+        <SuccessTransactionToast
+          t={t}
+          action={`Created offer: ${createdOffer?.metadata?.name}`}
+          onViewDetails={() => {
+            handleOpenSuccessModal({
+              offerInfo: createdOffer || ({} as subgraph.OfferFieldsFragment)
+            });
+          }}
+        />
+      ));
+
       formikBag.resetForm();
     } catch (error: any) {
       // TODO: FAILURE MODAL
       console.error("error->", error.errors ?? error.toString());
+      const hasUserRejectedTx =
+        "code" in error &&
+        (error as unknown as { code: string }).code === "ACTION_REJECTED";
+      if (hasUserRejectedTx) {
+        showModal("CONFIRMATION_FAILED");
+      }
     }
   };
 

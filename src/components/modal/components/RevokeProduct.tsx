@@ -1,4 +1,5 @@
 import { Provider, RevokeButton } from "@bosonprotocol/react-kit";
+import toast from "react-hot-toast";
 import styled from "styled-components";
 import { useSigner } from "wagmi";
 
@@ -7,6 +8,7 @@ import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { Break } from "../../detail/Detail.style";
 import Price from "../../price/index";
 import { useConvertedPrice } from "../../price/useConvertedPrice";
+import SuccessTransactionToast from "../../toasts/SuccessTransactionToast";
 import Grid from "../../ui/Grid";
 import Image from "../../ui/Image";
 import SellerID from "../../ui/SellerID";
@@ -29,7 +31,7 @@ export default function RevokeProduct({
   refetch
 }: Props) {
   const { data: signer } = useSigner();
-  const { hideModal } = useModal();
+  const { showModal, hideModal } = useModal();
 
   const convertedPrice = useConvertedPrice({
     value: exchange?.offer?.price,
@@ -110,14 +112,33 @@ export default function RevokeProduct({
           variant="secondaryOutline"
           exchangeId={exchangeId || 0}
           envName={CONFIG.envName}
-          onError={(args) => {
-            console.error("onError", args);
+          onError={(error) => {
+            console.error("onError", error);
+            const hasUserRejectedTx =
+              "code" in error &&
+              (error as unknown as { code: string }).code === "ACTION_REJECTED";
+            if (hasUserRejectedTx) {
+              showModal("CONFIRMATION_FAILED");
+            }
           }}
           onPendingSignature={() => {
-            console.error("onPendingSignature");
+            showModal("WAITING_FOR_CONFIRMATION");
           }}
-          onSuccess={() => {
+          onPendingTransaction={(hash) => {
+            showModal("TRANSACTION_SUBMITTED", {
+              action: "Revoke",
+              txHash: hash
+            });
+          }}
+          onSuccess={(receipt) => {
             hideModal();
+            toast((t) => (
+              <SuccessTransactionToast
+                t={t}
+                action={`Revoked exchange: ${exchange.offer.metadata.name}`}
+                url={CONFIG.getTxExplorerUrl?.(receipt.transactionHash)}
+              />
+            ));
             refetch();
           }}
           web3Provider={signer?.provider as Provider}

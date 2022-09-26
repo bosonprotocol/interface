@@ -1,7 +1,8 @@
 import { X } from "phosphor-react";
-import { forwardRef, useEffect, useState } from "react";
+import { forwardRef, useCallback, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import styled, { css } from "styled-components";
+import { useAccount } from "wagmi";
 
 import logo from "../../../src/assets/logo.svg";
 import { BosonRoutes } from "../../lib/routing/routes";
@@ -12,6 +13,7 @@ import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
 import Layout from "../Layout";
+import ViewTxButton from "../transactions/ViewTxButton";
 import Grid from "../ui/Grid";
 import ConnectButton from "./ConnectButton";
 import HeaderLinks, { HEADER_HEIGHT } from "./HeaderLinks";
@@ -223,6 +225,7 @@ interface Props {
 }
 const HeaderComponent = forwardRef<HTMLElement, Props>(
   ({ fluidHeader = false }, ref) => {
+    const { address } = useAccount();
     const [isOpen, setOpen] = useState(false);
     const { pathname, search } = useLocation();
     const { isLteS, isLteM, isM } = useBreakpoints();
@@ -250,6 +253,22 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
         setOpen(true);
       }
     }, [isLteM, isM, isOpen, setOpen, isSideNavBar]);
+
+    const Connect = useCallback(
+      (props: Parameters<typeof ConnectButton>[0]) => {
+        return (
+          <>
+            <ConnectButton {...props} showAddress={!address} />
+            {address && (
+              <Grid flexBasis="content">
+                <ViewTxButton />
+              </Grid>
+            )}
+          </>
+        );
+      },
+      [address]
+    );
 
     return (
       <Header
@@ -291,7 +310,7 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
               >
                 {burgerMenuBreakpoint && (
                   <>
-                    <ConnectButton />
+                    <Connect />
                     <Burger onClick={toggleMenu} />
                   </>
                 )}
@@ -301,9 +320,7 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
                   navigationBarPosition={navigationBarPosition}
                 />
                 {!burgerMenuBreakpoint && (
-                  <ConnectButton
-                    navigationBarPosition={navigationBarPosition}
-                  />
+                  <Connect navigationBarPosition={navigationBarPosition} />
                 )}
               </HeaderItems>
             </>

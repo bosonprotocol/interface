@@ -16,6 +16,7 @@ import DetailTransactions from "../../components/detail/DetailTransactions";
 import DetailWidget from "../../components/detail/DetailWidget/DetailWidget";
 // DETAILS COMPONENTS ABOVE
 import Image from "../../components/ui/Image";
+import Loading from "../../components/ui/Loading";
 import SellerID from "../../components/ui/SellerID";
 import Typography from "../../components/ui/Typography";
 import { UrlParameters } from "../../lib/routing/parameters";
@@ -60,7 +61,7 @@ export default function Exchange() {
   }
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   if (isError) {
