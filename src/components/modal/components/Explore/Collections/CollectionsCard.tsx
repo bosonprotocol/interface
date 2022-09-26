@@ -90,16 +90,18 @@ function CollectionsCard({ collection }: Props) {
     >
       <ImagesContainer>
         {collection &&
-          collection.offers.slice(0, 4).map((offer) => (
-            <>
-              <OfferImage>
-                <CollectionsCardImage
-                  key={offer.id}
-                  imageSource={offer?.metadata?.image}
-                />
-              </OfferImage>
-            </>
-          ))}
+          collection.offers.slice(0, 4).map((offer) =>
+            offer?.metadata?.image ? (
+              <>
+                <OfferImage>
+                  <CollectionsCardImage
+                    key={offer.id}
+                    imageSource={offer?.metadata?.image}
+                  />
+                </OfferImage>
+              </>
+            ) : null
+          )}
       </ImagesContainer>
       <DataContainer>
         <DataWrapper>

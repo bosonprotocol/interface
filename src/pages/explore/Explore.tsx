@@ -1,12 +1,16 @@
 import { ArrowRight } from "phosphor-react";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { generatePath } from "react-router-dom";
 import { default as ReactSelect, StylesConfig } from "react-select";
 import styled from "styled-components";
 
 import CollectionsCard from "../../components/modal/components/Explore/Collections/CollectionsCard";
 import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
-import { ExploreQueryParameters } from "../../lib/routing/parameters";
+import {
+  CollectionsQueryParameters,
+  ExploreQueryParameters
+} from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { useQueryParameter } from "../../lib/routing/useQueryParameter";
 import { breakpoint } from "../../lib/styles/breakpoint";
@@ -45,7 +49,7 @@ const selectOptions = [
     value: "2",
     orderDirection: "desc",
     orderBy: "createdAt",
-    label: "Recently created",
+    label: "Recently Created",
     exchangeOrderBy: "",
     validFromDate_lte: ""
   },
@@ -53,7 +57,7 @@ const selectOptions = [
     value: "3",
     orderDirection: "desc",
     orderBy: "validFromDate",
-    label: "Recently live",
+    label: "Recently Live",
     exchangeOrderBy: "",
     validFromDate_lte: `${Math.floor(Date.now() / 1000)}`
   },
@@ -196,8 +200,35 @@ export default function Explore() {
     [sortQueryParameter]
   );
 
+  const [sortOrderByParameter, setSortOrderByParameter] = useQueryParameter(
+    CollectionsQueryParameters.orderBy
+  );
+  const [sortOrderDirectionParameter, setSortOrderDirectionParameter] =
+    useQueryParameter(CollectionsQueryParameters.orderDirection);
+
+  const [sortExchangeOrderByParameter, setSortExchangeOrderByParameter] =
+    useQueryParameter(CollectionsQueryParameters.exchangeOrderBy);
+
+  const [sortValidFromDate_lte, setValidFromDate_lte] = useQueryParameter(
+    CollectionsQueryParameters.validFromDate_lte
+  );
+
+  const [sortValue, setSortValue] = useQueryParameter(
+    CollectionsQueryParameters.value
+  );
+
+  const [queryState, setQueryState] = useState({
+    sortValue: sortValue || "",
+    sortExchangeOrderByParameter: sortExchangeOrderByParameter || "",
+    sortOrderByParameter: sortOrderByParameter || "",
+    sortOrderDirectionParameter: sortOrderDirectionParameter || "",
+    sortValidFromDate_lte: sortValidFromDate_lte || ""
+  });
+
   const [filter, setFilter] = useState<FilterValue>(
-    selectOptions[parseQueryParameter as number]
+    queryState.sortValue
+      ? selectOptions[parseInt(queryState.sortValue)]
+      : selectOptions[3]
   );
   const navigate = useKeepQueryParamsNavigate();
 
@@ -208,6 +239,63 @@ export default function Explore() {
   const [selectedToken] = useState<string>(currencyQueryParameter);
 
   const [selectedSeller] = useState<string>(sellerQueryParameter);
+
+  const updatePageIndexInUrl =
+    (
+      navigate: ReturnType<typeof useKeepQueryParamsNavigate> // eslint-disable-line
+    ) =>
+    (
+      index: number,
+      queryParams: {
+        value: string;
+        orderDirection: "asc" | "desc";
+        orderBy: string;
+        exchangeOrderBy: string;
+        validFromDate_lte: string;
+      }
+    ): void => {
+      const queryParamsUrl = new URLSearchParams( // eslint-disable-line
+        Object.entries(queryParams)
+      ).toString();
+
+      if (index === 0) {
+        navigate({
+          pathname: BosonRoutes.Explore,
+          search: queryParamsUrl
+        });
+      } else {
+        navigate({
+          pathname: generatePath(BosonRoutes.Explore, {}),
+          search: queryParamsUrl
+        });
+      }
+    };
+
+  const updateUrl = useCallback(
+    (index: number) => {
+      return updatePageIndexInUrl(navigate)(index, {
+        value: queryState.sortValue || sortValue,
+        orderDirection:
+          (queryState.sortOrderDirectionParameter as "asc" | "desc") ||
+          (sortOrderDirectionParameter as "asc" | "desc"),
+        orderBy: queryState.sortOrderByParameter || sortOrderByParameter,
+        exchangeOrderBy:
+          queryState.sortExchangeOrderByParameter ||
+          sortExchangeOrderByParameter,
+        validFromDate_lte:
+          queryState.sortValidFromDate_lte || sortValidFromDate_lte
+      });
+    },
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      queryState,
+      sortExchangeOrderByParameter,
+      sortOrderByParameter,
+      sortOrderDirectionParameter,
+      sortValidFromDate_lte
+    ]
+  );
 
   const parseOrderBy = useMemo(() => {
     if (
@@ -242,6 +330,14 @@ export default function Explore() {
     }
   }, [data]);
 
+  useEffect(() => {
+    console.log(queryState);
+    if (queryState) {
+      updateUrl(0);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [queryState]);
+
   return (
     <ExploreContainer>
       <TopContainer>
@@ -272,7 +368,13 @@ export default function Explore() {
                     validFromDate_lte: option.validFromDate_lte
                   });
                 }
-                setSortQueryParameter(option?.value || "");
+                setQueryState({
+                  sortValue: option.value,
+                  sortExchangeOrderByParameter: option.exchangeOrderBy,
+                  sortOrderByParameter: option.orderBy,
+                  sortOrderDirectionParameter: option.orderDirection,
+                  sortValidFromDate_lte: option.validFromDate_lte
+                });
               }}
             />
           </SelectFilterWrapper>
@@ -299,11 +401,17 @@ export default function Explore() {
             Sellers
           </Typography>
           <ViewMoreButton
-            onClick={() =>
-              navigate({
-                pathname: `${BosonRoutes.Sellers}`
-              })
-            }
+            onClick={() => {
+              if (sortQueryParameter) {
+                navigate({
+                  pathname: `${BosonRoutes.Sellers}/selectedOption=${sortQueryParameter}`
+                });
+              } else {
+                navigate({
+                  pathname: `${BosonRoutes.Sellers}`
+                });
+              }
+            }}
           >
             View more <ArrowRight size={22} />
           </ViewMoreButton>

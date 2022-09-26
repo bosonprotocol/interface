@@ -34,7 +34,7 @@ const selectOptions = [
     value: "0",
     orderDirection: "desc",
     orderBy: "createdAt",
-    label: "Recently created",
+    label: "Recently Created",
     exchangeOrderBy: "",
     validFromDate_lte: ""
   },
@@ -42,7 +42,7 @@ const selectOptions = [
     value: "1",
     orderDirection: "desc",
     orderBy: "validFromDate",
-    label: "Recently live",
+    label: "Recently Live",
     exchangeOrderBy: "",
     validFromDate_lte: `${Math.floor(Date.now() / 1000)}`
   },

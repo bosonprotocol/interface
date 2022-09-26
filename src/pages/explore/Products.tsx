@@ -42,7 +42,7 @@ const selectOptions = [
     value: "2",
     orderDirection: "desc",
     orderBy: "createdAt",
-    label: "Recently created",
+    label: "Recently Created",
     exchangeOrderBy: "",
     validFromDate_lte: ""
   },
@@ -50,7 +50,7 @@ const selectOptions = [
     value: "3",
     orderDirection: "desc",
     orderBy: "validFromDate",
-    label: "Recently live",
+    label: "Recently Live",
     exchangeOrderBy: "",
     validFromDate_lte: `${Math.floor(Date.now() / 1000)}`
   },
@@ -74,7 +74,7 @@ const selectOptions = [
 
 const ExploreOffersContainer = styled.div`
   background: ${colors.lightGrey};
-  padding: 0 3.125rem 3.125rem 3.125rem;
+  padding: 0 50px 50px 50px;
 `;
 
 const Container = styled.div`
@@ -83,11 +83,16 @@ const Container = styled.div`
 
 const SelectFilterWrapper = styled.div`
   display: flex;
-  width: fit-content;
   position: absolute;
   right: 0;
-  margin-top: 2rem;
+  margin-top: 32px;
   align-items: center;
+  width: 158px;
+  div {
+    white-space: nowrap;
+    overflow: hidden;
+    width: unset;
+  }
 `;
 
 function Products() {

@@ -44,9 +44,9 @@ const ViewMoreButton = styled.button`
 
 const StyledGrid = styled(Grid)`
   background-color: ${colors.white};
-  margin-left: -3.125rem;
-  width: calc(100% + 6.25rem);
-  padding-right: 3.125rem;
+  margin-left: -50px;
+  width: calc(100% + 100px);
+  padding-right: 50px;
 `;
 
 export default function OfferList({

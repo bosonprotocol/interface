@@ -2,7 +2,7 @@ import { UrlParameters } from "./parameters";
 
 export const BosonRoutes = {
   Root: "/",
-  Explore: "/explore",
+  Explore: `/explore/`,
   ExplorePage: "/products/page",
   ExplorePageByIndex: `/products/page/:${UrlParameters.page}`,
   Sell: "/sell",

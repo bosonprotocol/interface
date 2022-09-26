@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { generatePath, useParams } from "react-router-dom";
 import styled from "styled-components";
 
@@ -8,6 +8,7 @@ import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { Offer } from "../../lib/types/offer";
 import { useOffers } from "../../lib/utils/hooks/offers";
+import { useInfiniteOffers } from "../../lib/utils/hooks/offers/useInfiniteOffers";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { usePrevious } from "../../lib/utils/hooks/usePrevious";
 import Pagination from "./Pagination";
@@ -78,6 +79,8 @@ const updatePageIndexInUrl =
 
 const DEFAULT_PAGE = 0;
 
+const OFFERS_PER_PAGE = 4;
+
 const extractFiltersWithDefaults = (props: Props): Props => {
   return {
     brand: props.brand || "",
@@ -106,6 +109,7 @@ export default function ExploreOffers(props: Props) {
   } = extractFiltersWithDefaults(props);
   const params = useParams();
   const navigate = useKeepQueryParamsNavigate();
+  const intersect = useRef(null);
 
   const updateUrl = useCallback(
     (index: number) => {
@@ -145,13 +149,14 @@ export default function ExploreOffers(props: Props) {
       : DEFAULT_PAGE
   );
   const [pageIndex, setPageIndex] = useState(initialPageIndex);
+  const [pageIndex2, setPageIndex2] = useState(initialPageIndex);
 
-  const OFFERS_PER_PAGE = useMemo(() => {
-    if (props.rows) {
-      return 4 * props.rows;
-    }
-    return 4;
-  }, [props.rows]);
+  // const OFFERS_PER_PAGE = useMemo(() => {
+  //   if (props.rows) {
+  //     return 4 * props.rows;
+  //   }
+  //   return 4;
+  // }, [props.rows]);
 
   const parseOrderBy = useMemo(() => {
     if (
@@ -248,9 +253,61 @@ export default function ExploreOffers(props: Props) {
     }
   );
 
+  const {
+    data: infinityOffersData,
+    isError: inifinityIsError,
+    isLoading: inifinityIsLoading,
+    isFetchingNextPage,
+    fetchNextPage
+  } = useInfiniteOffers(
+    {
+      voided: false,
+      valid: true,
+      sellerId,
+      first: OFFERS_PER_PAGE + 1,
+      orderBy: "createdAt",
+      orderDirection: "desc"
+    },
+    {
+      enabled: !!sellerId,
+      keepPreviousData: true
+    }
+  );
+
+  const offersWithOneExtra =
+    infinityOffersData?.pages[infinityOffersData.pages.length - 1];
+  const allOffers =
+    infinityOffersData?.pages.flatMap((page) => {
+      const allButLast =
+        page.length === OFFERS_PER_PAGE + 1
+          ? page.slice(0, page.length - 1)
+          : page;
+      return allButLast;
+    }) || [];
+  console.log("AllOffers", allOffers, infinityOffersData);
+  const thereAreMoreOffers =
+    (offersWithOneExtra?.length || 0) >= OFFERS_PER_PAGE + 1;
+
+  useEffect(() => {
+    if (inifinityIsLoading || !thereAreMoreOffers || isFetchingNextPage) {
+      return;
+    }
+    const nextPageIndex = pageIndex2 + 1;
+    setPageIndex2(nextPageIndex);
+    fetchNextPage({ pageParam: nextPageIndex * OFFERS_PER_PAGE });
+  }, [
+    inifinityIsLoading,
+    thereAreMoreOffers,
+    fetchNextPage,
+    pageIndex2,
+    isFetchingNextPage
+  ]);
+
+  console.log("currentAndNextPageOffers", currentAndNextPageOffers);
+
   const offers = useMemo(
     () => currentAndNextPageOffers?.slice(0, OFFERS_PER_PAGE),
-    [OFFERS_PER_PAGE, currentAndNextPageOffers]
+    [currentAndNextPageOffers]
   );
 
   const sortingOrder = useMemo(() => {
@@ -309,6 +366,7 @@ export default function ExploreOffers(props: Props) {
           />
         </PaginationWrapper>
       )}
+      <div ref={intersect}></div>
     </Container>
   );
 }
