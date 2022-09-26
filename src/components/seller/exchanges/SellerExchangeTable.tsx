@@ -306,7 +306,7 @@ export default function SellerExchangeTable({
           action:
             status === subgraph.ExchangeState.Disputed ? (
               <Button
-                theme="bosonSecondary"
+                theme="primary"
                 size="small"
                 onClick={() => {
                   if (element?.id) {
@@ -341,7 +341,7 @@ export default function SellerExchangeTable({
                   </Button>
                 )}
                 <Button
-                  theme="orange"
+                  theme="ghostSecondary"
                   size="small"
                   onClick={() => {
                     if (element?.id) {
@@ -356,7 +356,7 @@ export default function SellerExchangeTable({
                 </Button>
                 {status === subgraph.ExchangeState.Committed && (
                   <Button
-                    theme="bosonSecondary"
+                    theme="orangeInverse"
                     size="small"
                     onClick={() => {
                       if (element) {

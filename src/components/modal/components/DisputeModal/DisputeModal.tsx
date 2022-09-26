@@ -159,7 +159,7 @@ const SubmitStyledButton = styled.button`
   font-size: 1rem;
   border: none;
   margin-top: 1.25rem;
-  background-color: ${colors.green};
+  background-color: ${colors.orange};
   padding: 1rem 2rem 1rem 2rem;
   margin-left: 4.375rem;
 `;

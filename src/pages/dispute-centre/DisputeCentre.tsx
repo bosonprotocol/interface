@@ -200,7 +200,7 @@ function DisputeCentre() {
               initialValues={disputeCentreInitialValues}
               onSubmit={async (values) => {
                 try {
-                  if (!bosonXmtp) {
+                  if (!bosonXmtp && values.proposalType?.label) {
                     const err = new Error(
                       "You have to initialize the chat before raising a dispute"
                     );
@@ -208,37 +208,35 @@ function DisputeCentre() {
                     console.error(err.message);
                     return;
                   }
-                  setSubmitError(null);
-                  const { proposal, filesWithData } = await createProposal({
-                    isSeller: false,
-                    sellerOrBuyerId: exchange.buyer.id,
-                    proposalFields: {
-                      description: values.description,
-                      upload: values.upload,
-                      proposalTypeName: values.proposalType?.label || "",
-                      refundPercentage: values.refundPercentage,
-                      disputeContext: [values.getStarted, values.tellUsMore]
-                    },
-                    exchangeId: exchange.id,
-                    coreSDK
-                  });
-                  await sendProposalToChat({
-                    bosonXmtp,
-                    proposal,
-                    files: filesWithData,
-                    destinationAddress: exchange.seller.operator,
-                    threadId: {
-                      buyerId: exchange.buyer.id,
-                      sellerId: exchange.seller.id,
-                      exchangeId: exchange.id
-                    }
-                  });
-                  showModal("WAITING_FOR_CONFIRMATION");
+                  if (bosonXmtp) {
+                    setSubmitError(null);
+                    const { proposal, filesWithData } = await createProposal({
+                      isSeller: false,
+                      sellerOrBuyerId: exchange.buyer.id,
+                      proposalFields: {
+                        description: values.description,
+                        upload: values.upload,
+                        proposalTypeName: values.proposalType?.label || "",
+                        refundPercentage: values.refundPercentage,
+                        disputeContext: [values.getStarted, values.tellUsMore]
+                      },
+                      exchangeId: exchange.id,
+                      coreSDK
+                    });
+                    await sendProposalToChat({
+                      bosonXmtp,
+                      proposal,
+                      files: filesWithData,
+                      destinationAddress: exchange.seller.operator,
+                      threadId: {
+                        buyerId: exchange.buyer.id,
+                        sellerId: exchange.seller.id,
+                        exchangeId: exchange.id
+                      }
+                    });
+                  }
                   const tx = await coreSDK.raiseDispute(exchange.id);
-                  showModal("TRANSACTION_SUBMITTED", {
-                    action: "Raise dispute",
-                    txHash: tx.hash
-                  });
+                  showModal("WAITING_FOR_CONFIRMATION");
                   await tx.wait();
                   toast((t) => (
                     <SuccessTransactionToast

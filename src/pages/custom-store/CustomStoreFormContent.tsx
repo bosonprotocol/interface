@@ -65,7 +65,9 @@ const preAppendHttps = (url: string) => {
 export default function CustomStoreFormContent({ hasSubmitError }: Props) {
   const { setFieldValue, values, isValid, setFieldTouched } =
     useFormikContext<StoreFormFields>();
+
   const { sellerId } = useCurrentSellerId();
+
   const formValuesWithOneLogoUrl = Object.entries(values)
     .filter(
       ([key]) =>
