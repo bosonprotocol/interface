@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { generatePath, useParams } from "react-router-dom";
 import styled from "styled-components";
 
@@ -7,7 +7,6 @@ import { useSortByPrice } from "../../components/price/useSortByPrice";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { Offer } from "../../lib/types/offer";
-import { useOffers } from "../../lib/utils/hooks/offers";
 import { useInfiniteOffers } from "../../lib/utils/hooks/offers/useInfiniteOffers";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { usePrevious } from "../../lib/utils/hooks/usePrevious";
@@ -109,7 +108,6 @@ export default function ExploreOffers(props: Props) {
   } = extractFiltersWithDefaults(props);
   const params = useParams();
   const navigate = useKeepQueryParamsNavigate();
-  const intersect = useRef(null);
 
   const updateUrl = useCallback(
     (index: number) => {
@@ -148,6 +146,7 @@ export default function ExploreOffers(props: Props) {
       ? Number(params[UrlParameters.page]) - 1
       : DEFAULT_PAGE
   );
+  const [allOffers, setAllOffers] = useState<any>([]);
   const [pageIndex, setPageIndex] = useState(initialPageIndex);
   const [pageIndex2, setPageIndex2] = useState(initialPageIndex);
 
@@ -191,12 +190,6 @@ export default function ExploreOffers(props: Props) {
       : ("asc" as const),
     exchangeOrderBy: props.exchangeOrderBy !== "" ? props.exchangeOrderBy : ""
   };
-  const {
-    data: currentAndNextPageOffers,
-    isLoading,
-    isError,
-    isFetched
-  } = useOffers(useOffersPayload);
 
   const prevProps = usePrevious(props);
   const {
@@ -205,17 +198,6 @@ export default function ExploreOffers(props: Props) {
     exchangeTokenAddress: prevExchangeTokenAddress,
     sellerId: prevSellerId
   } = extractFiltersWithDefaults(prevProps || {});
-
-  useEffect(() => {
-    if (isFetched && !currentAndNextPageOffers?.length) {
-      /**
-       * if you go directly to a page without any offers,
-       * you'll be redirected to the first page
-       */
-      setPageIndex(DEFAULT_PAGE);
-      updateUrl(DEFAULT_PAGE);
-    }
-  }, [currentAndNextPageOffers, isFetched, updateUrl]);
 
   useEffect(() => {
     /**
@@ -241,74 +223,55 @@ export default function ExploreOffers(props: Props) {
     prevSellerId,
     updateUrl
   ]);
-  const { data: firstPageOffers } = useOffers(
-    {
-      ...useOffersPayload
-      // TODO: 1 offer should be enough once we can request offers with valid metadata directly
-      // first: 1,
-      // skip: 0
-    },
-    {
-      enabled: pageIndex > 0 && !currentAndNextPageOffers?.length
-    }
-  );
 
   const {
-    data: infinityOffersData,
-    isError: inifinityIsError,
-    isLoading: inifinityIsLoading,
+    data,
+    isLoading,
+    isError,
     isFetchingNextPage,
-    fetchNextPage
+    fetchNextPage,
+    ...rest
   } = useInfiniteOffers(
     {
-      voided: false,
-      valid: true,
-      sellerId,
-      first: OFFERS_PER_PAGE + 1,
-      orderBy: "createdAt",
-      orderDirection: "desc"
+      first: OFFERS_PER_PAGE + 1
     },
     {
-      enabled: !!sellerId,
       keepPreviousData: true
     }
   );
-
-  const offersWithOneExtra =
-    infinityOffersData?.pages[infinityOffersData.pages.length - 1];
-  const allOffers =
-    infinityOffersData?.pages.flatMap((page) => {
-      const allButLast =
-        page.length === OFFERS_PER_PAGE + 1
-          ? page.slice(0, page.length - 1)
-          : page;
-      return allButLast;
-    }) || [];
-  console.log("AllOffers", allOffers, infinityOffersData);
+  const offersWithOneExtra = data?.pages[data.pages.length - 1];
   const thereAreMoreOffers =
     (offersWithOneExtra?.length || 0) >= OFFERS_PER_PAGE + 1;
 
   useEffect(() => {
-    if (inifinityIsLoading || !thereAreMoreOffers || isFetchingNextPage) {
+    if (isLoading || !thereAreMoreOffers || isFetchingNextPage) {
       return;
+    } else {
+      const nextPageIndex = pageIndex2 + 1;
+      setPageIndex2(nextPageIndex);
+      fetchNextPage({ pageParam: nextPageIndex * OFFERS_PER_PAGE });
     }
-    const nextPageIndex = pageIndex2 + 1;
-    setPageIndex2(nextPageIndex);
-    fetchNextPage({ pageParam: nextPageIndex * OFFERS_PER_PAGE });
   }, [
-    inifinityIsLoading,
+    isLoading,
     thereAreMoreOffers,
     fetchNextPage,
     pageIndex2,
     isFetchingNextPage
   ]);
 
-  console.log("currentAndNextPageOffers", currentAndNextPageOffers);
-
-  const offers = useMemo(
-    () => currentAndNextPageOffers?.slice(0, OFFERS_PER_PAGE),
-    [currentAndNextPageOffers]
-  );
+  useEffect(() => {
+    if (thereAreMoreOffers === false) {
+      const allOffers =
+        data?.pages.flatMap((page) => {
+          const allButLast =
+            page.length === OFFERS_PER_PAGE + 1
+              ? page.slice(0, page.length - 1)
+              : page;
+          return allButLast;
+        }) || [];
+      setAllOffers(allOffers);
+    }
+  }, [thereAreMoreOffers]); // eslint-disable-line
 
   const sortingOrder = useMemo(() => {
     if (props.orderBy === "priceHightToLow") {
@@ -321,7 +284,7 @@ export default function ExploreOffers(props: Props) {
   }, [props.orderBy]);
 
   const { offerArray } = useSortByPrice({
-    offers,
+    offers: allOffers,
     order: sortingOrder,
     isSortable:
       props.orderBy === "priceLowToHigh" || props.orderBy === "priceHightToLow"
@@ -337,9 +300,9 @@ export default function ExploreOffers(props: Props) {
   return (
     <Container>
       <OfferList
-        offers={offerArray}
+        offers={offerArray?.slice(0, OFFERS_PER_PAGE)}
         isError={isError}
-        isLoading={isLoading}
+        isLoading={isLoading || isFetchingNextPage}
         action="commit"
         showInvalidOffers={false}
         itemsPerRow={{
@@ -355,10 +318,8 @@ export default function ExploreOffers(props: Props) {
         <PaginationWrapper>
           <Pagination
             defaultPage={pageIndex}
-            isNextEnabled={
-              (currentAndNextPageOffers?.length || 0) >= OFFERS_PER_PAGE + 1
-            }
-            isPreviousEnabled={(firstPageOffers?.length || 0) > 0}
+            isNextEnabled={(offerArray?.length || 0) >= OFFERS_PER_PAGE + 1}
+            isPreviousEnabled={(offerArray?.length || 0) > 0}
             onChangeIndex={(index) => {
               setPageIndex(index);
               updateUrl(index);
@@ -366,7 +327,6 @@ export default function ExploreOffers(props: Props) {
           />
         </PaginationWrapper>
       )}
-      <div ref={intersect}></div>
     </Container>
   );
 }
