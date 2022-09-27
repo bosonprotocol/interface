@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 import { breakpoint } from "../lib/styles/breakpoint";
 
-const Root = styled.div`
+export const LayoutRoot = styled.div`
   margin: 0 auto;
   padding: 0 1rem;
 
@@ -30,5 +30,5 @@ interface IProps {
 }
 
 export default function Layout({ children, ...props }: IProps) {
-  return <Root {...props}>{children}</Root>;
+  return <LayoutRoot {...props}>{children}</LayoutRoot>;
 }

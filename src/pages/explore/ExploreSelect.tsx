@@ -125,7 +125,6 @@ export default function ExploreSelect({ params, handleChange }: Props) {
 
   useEffect(() => {
     const defaultParams = params?.[ExploreQueryParameters.sortBy] || false;
-    console.log(defaultParams);
     if (filter?.value && defaultParams === false) {
       handleChange(ExploreQueryParameters.sortBy, filter?.value);
     }

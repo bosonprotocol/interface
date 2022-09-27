@@ -211,7 +211,7 @@ function Collections() {
         });
       } else {
         navigate({
-          pathname: generatePath(BosonRoutes.SellersByIndex, {
+          pathname: generatePath(BosonRoutes.Sellers, {
             [UrlParameters.page]: index + 1 + ""
           }),
           search: queryParamsUrl
@@ -309,7 +309,6 @@ function Collections() {
   }, [currentAndNextPageOffers, data, data?.length, isFetched, updateUrl]);
 
   useEffect(() => {
-    // console.log(queryState);
     if (queryState) {
       updateUrl(pageIndex);
     }

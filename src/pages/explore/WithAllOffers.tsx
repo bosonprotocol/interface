@@ -13,9 +13,11 @@ export interface WithAllOffersProps {
   offers?: Offer[];
   isLoading?: boolean;
   isError?: any;
+  showoffPage?: number;
+  offersPerPage?: number;
 }
 const DEFAULT_PAGE = 0;
-const OFFERS_PER_PAGE = 4;
+const OFFERS_PER_PAGE = 999;
 export function WithAllOffers<P>(
   WrappedComponent: React.ComponentType<WithAllOffersProps>
 ) {
@@ -65,7 +67,9 @@ export function WithAllOffers<P>(
         setAllProps({
           offers: allOffers,
           isLoading: isLoading || thereAreMoreOffers || isFetchingNextPage,
-          isError
+          isError,
+          showoffPage: 4,
+          offersPerPage: 10
         });
       }
     }, [thereAreMoreOffers]); // eslint-disable-line

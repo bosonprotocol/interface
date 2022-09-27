@@ -1,9 +1,12 @@
-import { ArrowRight } from "phosphor-react";
-import { useMemo } from "react";
+import qs from "query-string";
+import { Fragment, useMemo } from "react";
 import styled from "styled-components";
 
+import { LayoutRoot } from "../../components/Layout";
 import CollectionsCard from "../../components/modal/components/Explore/Collections/CollectionsCard";
+import ProductCard from "../../components/productCard/ProductCard";
 import Grid from "../../components/ui/Grid";
+import Loading from "../../components/ui/Loading";
 import Typography from "../../components/ui/Typography";
 import { ExploreQueryParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
@@ -11,8 +14,9 @@ import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { useCollections } from "../../lib/utils/hooks/useCollections";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import ExploreOffers from "./ExploreOffers";
+import { ProductGridContainer } from "../profile/ProfilePage.styles";
 import ExploreSelect from "./ExploreSelect";
+import ExploreViewMore from "./ExploreViewMore";
 import useSearchParams from "./useSearchParams";
 import { WithAllOffers, WithAllOffersProps } from "./WithAllOffers";
 
@@ -20,10 +24,12 @@ const ExploreContainer = styled.div`
   display: flex;
   justify-content: center;
   flex-direction: column;
-  margin: 0 auto 4rem auto;
+  padding: 0 auto 4rem auto;
   overflow: hidden;
 `;
-
+const GridInner = styled.div`
+  width: 100%;
+`;
 const TopContainer = styled.div`
   display: grid;
   grid-template-columns: 80% 20%;
@@ -33,30 +39,12 @@ const TopContainer = styled.div`
     flex-direction: row;
   }
 `;
-
 const ExploreOffersContainer = styled.div`
   background: ${colors.lightGrey};
-  padding: 0 3.125rem 3.125rem 3.125rem;
+  padding: 3rem 0 4rem 0;
 `;
 
-const CreatorsGrid = styled.div`
-  display: grid;
-  width: 100%;
-  grid-template-columns: 25% 25% 25% 25%;
-  grid-gap: 0.5rem;
-`;
-
-const ViewMoreButton = styled.button`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: ${colors.secondary};
-  width: 6.875rem;
-  font-size: 1rem;
-  font-weight: 600;
-`;
-
-function Explore(props: WithAllOffersProps) {
+function Explore({ offers, showoffPage, offersPerPage }: WithAllOffersProps) {
   const navigate = useKeepQueryParamsNavigate();
   const { params, handleChange } = useSearchParams();
 
@@ -87,7 +75,7 @@ function Explore(props: WithAllOffersProps) {
         payload = {
           ...payload,
           orderDirection: orderDirection,
-          orderBy: "createdAt",
+          orderBy: orderBy,
           validFromDate_lte: `${Math.floor(Date.now() / 1000)}`
         };
       } else {
@@ -101,15 +89,9 @@ function Explore(props: WithAllOffersProps) {
     return payload;
   }, [params]);
 
-  const { data } = useCollections(
-    {
-      ...filterOptions
-    },
-    {
-      // TODO: change that if needed
-      enabled: true
-    }
-  );
+  const { data, isLoading: collectionsIsLoading } = useCollections({
+    ...filterOptions
+  });
 
   const collections = useMemo(() => {
     const filtered = data?.filter((item) => item.offers.length > 0);
@@ -125,57 +107,82 @@ function Explore(props: WithAllOffersProps) {
 
   return (
     <ExploreContainer>
-      <TopContainer>
-        <Typography tag="h2" $fontSize="2.25rem">
-          Explore
-        </Typography>
-        <Grid justifyContent="flex-end">
-          <ExploreSelect params={params} handleChange={handleChange} />
-        </Grid>
-      </TopContainer>
-      <ExploreOffersContainer>
-        <ExploreOffers
-          hidePagination
-          name={params?.[ExploreQueryParameters.name] as string}
-          orderBy={filterOptions?.orderBy || ""}
-          orderDirection={filterOptions?.orderDirection || ""}
-          exchangeOrderBy={filterOptions?.exchangeOrderBy || ""}
-          // exchangeTokenAddress={""}
-          // sellerId={""}
-        />
-        <Grid>
-          <Typography
-            $fontSize="32px"
-            fontWeight="600"
-            margin="0.67em 0 0.67em 0"
-          >
-            Sellers
+      <LayoutRoot>
+        <TopContainer>
+          <Typography tag="h2" $fontSize="2.25rem">
+            Explore products
           </Typography>
-          <ViewMoreButton
-            onClick={() => {
-              // if (sortQueryParameter) {
-              //   navigate({
-              //     pathname: `${BosonRoutes.Sellers}/selectedOption=${sortQueryParameter}`
-              //   });
-              // } else {
-              // }
-              navigate({
-                pathname: `${BosonRoutes.Sellers}`
-              });
-            }}
-          >
-            View more <ArrowRight size={22} />
-          </ViewMoreButton>
-        </Grid>
-        <CreatorsGrid>
-          {collections &&
-            collections.map((collection) => (
-              <CollectionsCard
-                key={`CollectionsCard_${collection?.id}`}
-                collection={collection}
-              />
-            ))}
-        </CreatorsGrid>
+          <Grid justifyContent="flex-end">
+            <ExploreSelect params={params} handleChange={handleChange} />
+          </Grid>
+        </TopContainer>
+      </LayoutRoot>
+      <ExploreOffersContainer>
+        <LayoutRoot>
+          {collectionsIsLoading ? (
+            <Loading />
+          ) : (
+            <Grid flexDirection="column" gap="2rem" justifyContent="flex-start">
+              <GridInner>
+                <ExploreViewMore
+                  name="Products"
+                  onClick={() => {
+                    navigate({
+                      pathname: `${BosonRoutes.Products}`,
+                      search: qs.stringify(params)
+                    });
+                  }}
+                />
+                <ProductGridContainer
+                  itemsPerRow={{
+                    xs: 1,
+                    s: 2,
+                    m: 4,
+                    l: 4,
+                    xl: 4
+                  }}
+                >
+                  {offers &&
+                    offers.slice(0, showoffPage)?.map(
+                      (offer) =>
+                        offer.isValid && (
+                          <Fragment key={`ProductCard_${offer?.id}`}>
+                            <ProductCard offer={offer} dataTestId="offer" />
+                          </Fragment>
+                        )
+                    )}
+                </ProductGridContainer>
+              </GridInner>
+              <GridInner>
+                <ExploreViewMore
+                  name="Sellers"
+                  onClick={() => {
+                    navigate({
+                      pathname: `${BosonRoutes.Sellers}`,
+                      search: qs.stringify(params)
+                    });
+                  }}
+                />
+                <ProductGridContainer
+                  itemsPerRow={{
+                    xs: 1,
+                    s: 2,
+                    m: 4,
+                    l: 4,
+                    xl: 4
+                  }}
+                >
+                  {collections &&
+                    collections?.map((collection) => (
+                      <Fragment key={`CollectionsCard_${collection?.id}`}>
+                        <CollectionsCard collection={collection} />
+                      </Fragment>
+                    ))}
+                </ProductGridContainer>
+              </GridInner>
+            </Grid>
+          )}
+        </LayoutRoot>
       </ExploreOffersContainer>
     </ExploreContainer>
   );

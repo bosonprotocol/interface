@@ -2,9 +2,9 @@ import { UrlParameters } from "./parameters";
 
 export const BosonRoutes = {
   Root: "/",
-  Explore: `/explore/`,
-  ExplorePage: "/products/page",
-  ExplorePageByIndex: `/products/page/:${UrlParameters.page}`,
+  Explore: `/explore`,
+  Products: "/products",
+  Sellers: "/sellers",
   Sell: "/sell",
   Exchange: `/exchange/:${UrlParameters.exchangeId}`,
   YourAccount: `/account`,
@@ -18,9 +18,6 @@ export const BosonRoutes = {
   DisputeId: `/exchange/:${UrlParameters.exchangeId}/raise-dispute`,
   BuyerPage: `/buyer/:${UrlParameters.buyerId}`,
   SellerPage: `/seller/:${UrlParameters.sellerId}`,
-  Sellers: "/sellers",
-  SellersByIndex: `/sellers/page/:${UrlParameters.page}`,
-  Products: "/products",
   Error404: "*"
 } as const;
 
