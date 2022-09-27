@@ -16,9 +16,11 @@ const CardContainer = styled.div`
   display: flex;
   flex-direction: column;
   border: 1px solid ${colors.black}20;
+  transition: all 300ms ease-in-out;
+  box-shadow: 0px 4px 110px rgb(21 30 52 / 10%);
   &:hover {
-    box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.05), 4px 4px 4px rgba(0, 0, 0, 0.05),
-      8px 8px 8px rgba(0, 0, 0, 0.05), 16px 16px 16px rgba(0, 0, 0, 0.05);
+    box-shadow: 0px 0px 0px rgb(0 0 0 / 5%), 4px 4px 4px rgb(0 0 0 / 5%),
+      8px 8px 8px rgb(0 0 0 / 5%), 16px 16px 16px rgb(0 0 0 / 5%);
     img[data-testid] {
       transform: translate(-50%, -50%) scale(1.05);
     }
