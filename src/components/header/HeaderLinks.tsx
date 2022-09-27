@@ -161,10 +161,6 @@ export default function HeaderLinks({
   );
 
   const isSupportFunctionalityDefined = supportFunctionality !== "";
-  console.log(
-    "🚀  roberto --  ~ file: HeaderLinks.tsx ~ line 161 ~ isSupportFunctionalityDefined",
-    isSupportFunctionalityDefined
-  );
 
   const onlyBuyer =
     typeof supportFunctionality != "string" &&
@@ -176,10 +172,6 @@ export default function HeaderLinks({
     supportFunctionality?.length === 1 &&
     supportFunctionality?.[0] === "seller";
 
-  console.log(
-    "🚀  roberto --  ~ file: HeaderLinks.tsx ~ line 173 ~ supportFunctionality",
-    supportFunctionality
-  );
   return (
     <NavigationLinks
       isMobile={isMobile}

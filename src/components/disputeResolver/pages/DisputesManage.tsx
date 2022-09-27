@@ -37,8 +37,6 @@ export const DisputesManage: React.FC<DisputeResolverProps> = () => {
 
   const { data, isLoading, isError, refetch } = ActiveEscalatedDisputes();
 
-  // TODO: GET the data here - Roberto
-
   const allDisputes = useMemo(() => {
     const filtered =
       data?.map((dispute: any) => {
