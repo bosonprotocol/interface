@@ -97,3 +97,9 @@ export const Span = styled.span`
     margin-right: 1rem;
   }
 `;
+
+export const DisputeState = styled.div`
+  background-color: ${colors.cyan};
+  padding: 0.4rem;
+  border-radius: 5%;
+`;

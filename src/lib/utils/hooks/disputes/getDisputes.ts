@@ -26,12 +26,15 @@ export function ActiveEscalatedDisputes() {
             id
             state
             escalatedDate
+
             exchange {
               offer {
+                resolutionPeriodDuration
                 price
                 exchangeToken {
                   address
                   symbol
+                  decimals
                 }
                 metadata {
                   ... on ProductV1MetadataEntity {

@@ -11,7 +11,7 @@ export type Exchange = subgraph.ExchangeFieldsFragment & {
 };
 
 export type Disputes = subgraph.DisputeFieldsFragment & {
-  exchange: { offer: Offer };
+  exchange: { offer: Offer } & subgraph.ExchangeFieldsFragment;
 };
 
 interface Props {

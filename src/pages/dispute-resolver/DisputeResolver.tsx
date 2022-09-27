@@ -1,8 +1,8 @@
 import { House, WarningCircle } from "phosphor-react";
 import styled from "styled-components";
 
-// import DRAside from "../../components/disputeResolver/DisputeResolverAside";
-// import DisputeResolverInside from "../../components/disputeResolver/DisputeResolverInside";
+import DRAside from "../../components/disputeResolver/DisputeResolverAside";
+import DisputeResolverInside from "../../components/disputeResolver/DisputeResolverInside";
 import Button from "../../components/ui/Button";
 import Grid from "../../components/ui/Grid";
 import Loading from "../../components/ui/Loading";
@@ -32,9 +32,8 @@ export interface DisputeResolverInsideProps {
 const DisputeResolverCenter = (props: DisputeResolverInsideProps) => {
   return (
     <GridWrapper>
-      <h1>sample</h1>
-      {/* <DRAside {...props} />
-      <DisputeResolverInside {...props} /> */}
+      <DRAside {...props} />
+      <DisputeResolverInside {...props} />
     </GridWrapper>
   );
 };
