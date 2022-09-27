@@ -64,9 +64,9 @@ export const sellerPageTypes = {
       <SellerFinances {...props} />
     )
   },
-  salesChannels: {
-    url: "salesChannels",
-    label: "Sales Channels",
+  customStoreFront: {
+    url: "customStoreFront",
+    label: "Custom Storefront",
     icon: Megaphone,
     externalPath: BosonRoutes.CreateStorefront,
     component: () => (

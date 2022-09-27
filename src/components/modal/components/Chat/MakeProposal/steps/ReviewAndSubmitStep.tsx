@@ -23,14 +23,12 @@ const ButtonsSection = styled.div`
 `;
 
 interface Props {
-  onBackClick: () => void;
   isValid: boolean;
   exchange: Exchange;
   submitError: Error | null;
 }
 
 export default function ReviewAndSubmitStep({
-  onBackClick,
   isValid,
   exchange,
   submitError
@@ -68,38 +66,40 @@ export default function ReviewAndSubmitStep({
       />
       <Typography $fontSize="1.25rem" color={colors.darkGrey}></Typography>
       {proposalTypeField.value && (
-        <Grid flexDirection="column" margin="2rem 0" alignItems="flex-start">
-          <Typography fontWeight="600" tag="p" $fontSize="1.5rem">
-            Resolution proposal
-          </Typography>
-          <Grid flexDirection="column" gap="2rem">
-            <ProposalTypeSummary
-              exchange={exchange}
-              proposal={{
-                type: RefundLabel,
-                percentageAmount: (
-                  Number(refundPercentageField.value) * PERCENTAGE_FACTOR
-                ).toString(),
-                signature: ""
-              }}
-            />
+        <>
+          <Grid flexDirection="column" margin="2rem 0" alignItems="flex-start">
+            <Typography fontWeight="600" tag="p" $fontSize="1.5rem">
+              Resolution proposal
+            </Typography>
+            <Grid flexDirection="column" gap="2rem">
+              <ProposalTypeSummary
+                exchange={exchange}
+                proposal={{
+                  type: RefundLabel,
+                  percentageAmount: (
+                    Number(refundPercentageField.value) * PERCENTAGE_FACTOR
+                  ).toString(),
+                  signature: ""
+                }}
+              />
+            </Grid>
           </Grid>
-        </Grid>
+          <InitializeChatWithSuccess />
+        </>
       )}
-      <InitializeChatWithSuccess />
       {submitError && <SimpleError />}
       <ButtonsSection>
         <Button
           theme="primary"
           type="submit"
-          disabled={!isValid || !isChatInitialized || isSubmitting}
+          disabled={
+            !isValid ||
+            (!isChatInitialized && proposalTypeField.value) ||
+            isSubmitting
+          }
         >
-          Sign & Submit
+          Raise Dispute
           {isSubmitting && <Spinner />}
-        </Button>
-
-        <Button theme="outline" onClick={() => onBackClick()}>
-          Back
         </Button>
       </ButtonsSection>
     </>
