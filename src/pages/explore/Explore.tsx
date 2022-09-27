@@ -1,9 +1,11 @@
 import qs from "query-string";
-import { Fragment, useMemo } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
+import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 
 import { LayoutRoot } from "../../components/Layout";
 import CollectionsCard from "../../components/modal/components/Explore/Collections/CollectionsCard";
+import { useSortByPrice } from "../../components/price/useSortByPrice";
 import ProductCard from "../../components/productCard/ProductCard";
 import Grid from "../../components/ui/Grid";
 import Loading from "../../components/ui/Loading";
@@ -17,6 +19,7 @@ import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryPa
 import { ProductGridContainer } from "../profile/ProfilePage.styles";
 import ExploreSelect from "./ExploreSelect";
 import ExploreViewMore from "./ExploreViewMore";
+import Pagination from "./Pagination";
 import useSearchParams from "./useSearchParams";
 import { WithAllOffers, WithAllOffersProps } from "./WithAllOffers";
 
@@ -44,12 +47,47 @@ const ExploreOffersContainer = styled.div`
   padding: 3rem 0 4rem 0;
 `;
 
-function Explore({ offers, showoffPage, offersPerPage }: WithAllOffersProps) {
+function Explore({ offers, ...rest }: WithAllOffersProps) {
+  const location = useLocation();
   const navigate = useKeepQueryParamsNavigate();
   const { params, handleChange } = useSearchParams();
+  const [pageIndex, setPageIndex] = useState<number>(Number(params?.page || 0));
+
+  useEffect(() => {
+    window.scroll({ top: 0, behavior: "smooth" });
+    handleChange(ExploreQueryParameters.page, pageIndex.toString());
+  }, [pageIndex, handleChange]);
+
+  const pageOptions = useMemo(() => {
+    let options = {
+      pagination: true,
+      itemsPerPage: rest?.offersPerPage || 10,
+      type: ["Sellers", "Products"]
+    };
+    if (location?.pathname === BosonRoutes.Explore) {
+      options = {
+        ...options,
+        pagination: false,
+        itemsPerPage: rest?.showoffPage || 4
+      };
+    }
+    if (location?.pathname === BosonRoutes.Products) {
+      options = {
+        ...options,
+        type: ["Products"]
+      };
+    }
+    if (location?.pathname === BosonRoutes.Sellers) {
+      options = {
+        ...options,
+        type: ["Sellers"]
+      };
+    }
+
+    return options;
+  }, [location.pathname, rest]); // eslint-disable-line
 
   const filterOptions = useMemo(() => {
-    // const name = params?.[ExploreQueryParameters.name] || false;
     const sortBy = params?.[ExploreQueryParameters.sortBy] || false;
     let payload = {
       orderDirection: "",
@@ -97,14 +135,18 @@ function Explore({ offers, showoffPage, offersPerPage }: WithAllOffersProps) {
     const filtered = data?.filter((item) => item.offers.length > 0);
 
     if (filtered && filtered.length > 0) {
-      return filtered.slice(0, 4);
+      return filtered;
     }
 
-    if (data) {
-      return data.slice(0, 4);
-    }
+    return data;
   }, [data]);
 
+  const { offerArray } = useSortByPrice({
+    offers,
+    isSortable: true,
+    ...filterOptions
+  });
+  console.log("TEST", offers, offerArray);
   return (
     <ExploreContainer>
       <LayoutRoot>
@@ -123,63 +165,102 @@ function Explore({ offers, showoffPage, offersPerPage }: WithAllOffersProps) {
             <Loading />
           ) : (
             <Grid flexDirection="column" gap="2rem" justifyContent="flex-start">
-              <GridInner>
-                <ExploreViewMore
-                  name="Products"
-                  onClick={() => {
-                    navigate({
-                      pathname: `${BosonRoutes.Products}`,
-                      search: qs.stringify(params)
-                    });
-                  }}
-                />
-                <ProductGridContainer
-                  itemsPerRow={{
-                    xs: 1,
-                    s: 2,
-                    m: 4,
-                    l: 4,
-                    xl: 4
-                  }}
-                >
-                  {offers &&
-                    offers.slice(0, showoffPage)?.map(
-                      (offer) =>
-                        offer.isValid && (
-                          <Fragment key={`ProductCard_${offer?.id}`}>
-                            <ProductCard offer={offer} dataTestId="offer" />
-                          </Fragment>
+              {pageOptions.type.includes("Products") && (
+                <GridInner>
+                  <ExploreViewMore
+                    name="Products"
+                    url={BosonRoutes.Products}
+                    onClick={() => {
+                      navigate({
+                        pathname: `${BosonRoutes.Products}`,
+                        search: qs.stringify(params)
+                      });
+                    }}
+                    showMore={location?.pathname === BosonRoutes.Explore}
+                  />
+                  <ProductGridContainer
+                    itemsPerRow={{
+                      xs: 1,
+                      s: 2,
+                      m: 4,
+                      l: 4,
+                      xl: 4
+                    }}
+                  >
+                    {offerArray &&
+                      offerArray
+                        ?.slice(
+                          pageOptions.pagination
+                            ? pageIndex * pageOptions?.itemsPerPage
+                            : 0,
+                          pageOptions.pagination
+                            ? pageIndex * pageOptions?.itemsPerPage +
+                                pageOptions?.itemsPerPage
+                            : pageOptions?.itemsPerPage
                         )
-                    )}
-                </ProductGridContainer>
-              </GridInner>
-              <GridInner>
-                <ExploreViewMore
-                  name="Sellers"
-                  onClick={() => {
-                    navigate({
-                      pathname: `${BosonRoutes.Sellers}`,
-                      search: qs.stringify(params)
-                    });
+                        ?.map(
+                          (offer) =>
+                            offer.isValid && (
+                              <Fragment key={`ProductCard_${offer?.id}`}>
+                                <ProductCard offer={offer} dataTestId="offer" />
+                              </Fragment>
+                            )
+                        )}
+                  </ProductGridContainer>
+                </GridInner>
+              )}
+              {pageOptions.type.includes("Sellers") && (
+                <GridInner>
+                  <ExploreViewMore
+                    name="Sellers"
+                    url={BosonRoutes.Sellers}
+                    onClick={() => {
+                      navigate({
+                        pathname: `${BosonRoutes.Sellers}`,
+                        search: qs.stringify(params)
+                      });
+                    }}
+                    showMore={location?.pathname === BosonRoutes.Explore}
+                  />
+                  <ProductGridContainer
+                    itemsPerRow={{
+                      xs: 1,
+                      s: 2,
+                      m: 4,
+                      l: 4,
+                      xl: 4
+                    }}
+                  >
+                    {collections &&
+                      collections
+                        ?.slice(
+                          pageOptions.pagination
+                            ? pageIndex * pageOptions?.itemsPerPage
+                            : 0,
+                          pageOptions.pagination
+                            ? pageIndex * pageOptions?.itemsPerPage +
+                                pageOptions?.itemsPerPage
+                            : pageOptions?.itemsPerPage
+                        )
+                        ?.map((collection) => (
+                          <Fragment key={`CollectionsCard_${collection?.id}`}>
+                            <CollectionsCard collection={collection} />
+                          </Fragment>
+                        ))}
+                  </ProductGridContainer>
+                </GridInner>
+              )}
+              {pageOptions.pagination && (
+                <Pagination
+                  defaultPage={pageIndex}
+                  // TODO: add proper values based on real props
+                  isNextEnabled={true}
+                  isPreviousEnabled={true}
+                  onChangeIndex={(index: number) => {
+                    setPageIndex(index);
                   }}
                 />
-                <ProductGridContainer
-                  itemsPerRow={{
-                    xs: 1,
-                    s: 2,
-                    m: 4,
-                    l: 4,
-                    xl: 4
-                  }}
-                >
-                  {collections &&
-                    collections?.map((collection) => (
-                      <Fragment key={`CollectionsCard_${collection?.id}`}>
-                        <CollectionsCard collection={collection} />
-                      </Fragment>
-                    ))}
-                </ProductGridContainer>
-              </GridInner>
+              )}
             </Grid>
           )}
         </LayoutRoot>

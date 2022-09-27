@@ -1,5 +1,6 @@
 export const ExploreQueryParameters = {
   name: "name",
+  page: "page",
   seller: "seller",
   currency: "currency",
   orderDirection: "orderDirection",

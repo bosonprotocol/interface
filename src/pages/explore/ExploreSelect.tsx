@@ -15,11 +15,11 @@ interface FilterValue {
 }
 const selectOptions = [
   {
-    value: "price:asc",
+    value: "price:desc",
     label: "Price Low to High ($)"
   },
   {
-    value: "price:desc",
+    value: "price:asc",
     label: "Price High to Low ($)"
   },
   {

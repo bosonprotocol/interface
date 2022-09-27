@@ -22,7 +22,7 @@ export function WithAllOffers<P>(
   WrappedComponent: React.ComponentType<WithAllOffersProps>
 ) {
   const ComponentWithAllOffers = (props: P) => {
-    const [allProps, setAllProps] = useState<WithAllOffersProps>({});
+    const [allOffers, setAllOffers] = useState<any>([]);
     const [pageIndex, setPageIndex] = useState(DEFAULT_PAGE);
 
     const { data, isLoading, isError, isFetchingNextPage, fetchNextPage } =
@@ -64,15 +64,16 @@ export function WithAllOffers<P>(
                 : page;
             return allButLast;
           }) || [];
-        setAllProps({
-          offers: allOffers,
-          isLoading: isLoading || thereAreMoreOffers || isFetchingNextPage,
-          isError,
-          showoffPage: 4,
-          offersPerPage: 10
-        });
+        setAllOffers(allOffers);
       }
     }, [thereAreMoreOffers]); // eslint-disable-line
+
+    const allProps = {
+      isLoading: isLoading || thereAreMoreOffers || isFetchingNextPage,
+      isError,
+      showoffPage: 4,
+      offersPerPage: 10
+    };
 
     if (isLoading || thereAreMoreOffers || isFetchingNextPage) {
       return (
@@ -81,7 +82,7 @@ export function WithAllOffers<P>(
         </Wrapper>
       );
     }
-    return <WrappedComponent {...props} {...allProps} />;
+    return <WrappedComponent {...props} {...allProps} offers={allOffers} />;
   };
   return ComponentWithAllOffers;
 }

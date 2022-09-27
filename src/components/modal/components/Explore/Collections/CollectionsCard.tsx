@@ -90,11 +90,14 @@ export default function CollectionsCard({ collection }: Props) {
     >
       <ImagesContainer>
         {images &&
-          images?.slice(0, 4).map((offer) => (
-            <Fragment key={`CollectionsCardImage_${offer.id}`}>
-              <Image src={offer?.metadata?.image} />
-            </Fragment>
-          ))}
+          images?.slice(0, 4).map(
+            (offer) =>
+              offer?.metadata?.image && (
+                <Fragment key={`CollectionsCardImage_${offer.id}`}>
+                  <Image src={offer?.metadata?.image} />
+                </Fragment>
+              )
+          )}
       </ImagesContainer>
       <DataContainer>
         <DataWrapper>
