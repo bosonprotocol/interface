@@ -1,5 +1,5 @@
 import { ArrowRight } from "phosphor-react";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { generatePath } from "react-router-dom";
 import { default as ReactSelect, StylesConfig } from "react-select";
 import styled from "styled-components";
@@ -19,6 +19,7 @@ import { zIndex } from "../../lib/styles/zIndex";
 import { useCollections } from "../../lib/utils/hooks/useCollections";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import ExploreOffers from "./ExploreOffers";
+import { WithAllOffers, WithAllOffersProps } from "./WithAllOffers";
 
 interface FilterValue {
   value: string;
@@ -180,7 +181,9 @@ const ViewMoreButton = styled.button`
   font-weight: 600;
 `;
 
-export default function Explore() {
+function Explore(props: WithAllOffersProps) {
+  console.log("props ========", props);
+
   const [nameQueryParameter] = useQueryParameter(ExploreQueryParameters.name);
   const [currencyQueryParameter] = useQueryParameter(
     ExploreQueryParameters.currency
@@ -426,3 +429,10 @@ export default function Explore() {
     </ExploreContainer>
   );
 }
+
+const ExploreWithAllOffers = WithAllOffers(Explore);
+
+function ExploreWrapper() {
+  return <ExploreWithAllOffers />;
+}
+export default ExploreWrapper;
