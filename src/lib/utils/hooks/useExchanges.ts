@@ -10,6 +10,10 @@ export type Exchange = subgraph.ExchangeFieldsFragment & {
   offer: Offer;
 };
 
+export type Disputes = subgraph.DisputeFieldsFragment & {
+  exchange: { offer: Offer };
+};
+
 interface Props {
   disputed: boolean | null;
   sellerId?: string;
