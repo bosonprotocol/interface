@@ -2,17 +2,23 @@ import { subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { useMemo } from "react";
 
-// import { colors } from "../../styles/colors";
 import { getDateTimestamp } from "../getDateTimestamp";
 import { Exchange } from "./useExchanges";
 
 // TODO: ADD MISSING COLORS AND BACKGROUND FOR SPECIFIC DISPUTE SUB STATUS
-export function useDisputeSubStatusInfo(exchange: Exchange) {
+export function useDisputeSubStatusInfo(exchange: Exchange | null) {
   const disputeInfo = useMemo(() => {
     const currentTime = dayjs();
     let status = "";
     let color = "";
     let background = "";
+    if (!exchange) {
+      return {
+        status,
+        color,
+        background
+      };
+    }
     if (exchange?.disputed) {
       if (
         exchange?.dispute?.state === subgraph.DisputeState.Resolving &&
