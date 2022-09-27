@@ -7,11 +7,13 @@ import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { ProductGridContainer } from "../../pages/profile/ProfilePage.styles";
 import Breadcrumbs from "../breadcrumbs/Breadcrumbs";
 import { Action } from "../offer/OfferCard";
 import ProductCard from "../productCard/ProductCard";
 import Grid from "../ui/Grid";
-import GridContainer, { ItemsPerRow } from "../ui/GridContainer";
+import { ItemsPerRow } from "../ui/GridContainer";
+import Loading from "../ui/Loading";
 import Typography from "../ui/Typography";
 
 interface Props {
@@ -37,9 +39,9 @@ const ViewMoreButton = styled.button`
   justify-content: space-between;
   align-items: center;
   color: ${colors.secondary};
-  width: 6.875rem;
   font-size: 1rem;
   font-weight: 600;
+  width: auto;
 `;
 
 const StyledGrid = styled(Grid)`
@@ -65,9 +67,12 @@ export default function OfferList({
     () => location.pathname.includes(BosonRoutes.Products),
     [location]
   );
-
+  const isExplorePage = useMemo(
+    () => location.pathname.includes(BosonRoutes.Explore),
+    [location]
+  );
   if (isLoading) {
-    return loadingComponent || <div>Loading...</div>;
+    return loadingComponent || <Loading />;
   }
 
   if (isError) {
@@ -123,10 +128,10 @@ export default function OfferList({
         )}
         <Grid
           padding={
-            isProductPage ? "1.5625rem 3.125rem 1.5625rem 3.125rem" : "unset"
+            isExplorePage ? "1.5625rem 3.125rem 1.5625rem 3.125rem" : "unset"
           }
         >
-          {!isProductPage && (
+          {isExplorePage && (
             <>
               <Typography
                 $fontSize="32px"
@@ -147,7 +152,7 @@ export default function OfferList({
             </>
           )}
         </Grid>
-        <GridContainer itemsPerRow={itemsPerRow}>
+        <ProductGridContainer itemsPerRow={itemsPerRow}>
           {offers.map((offer: Offer) => {
             return (
               (offer.isValid || (showInvalidOffers && !offer.isValid)) && (
@@ -155,7 +160,7 @@ export default function OfferList({
               )
             );
           })}
-        </GridContainer>
+        </ProductGridContainer>
       </Container>
     </>
   );

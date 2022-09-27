@@ -18,6 +18,9 @@ export const offerGraphQl = (exchangeOrderBy?: string) => gql`
     voidedAt
     createdAt
     voucherRedeemableUntilDate
+    disputeResolver {
+      escalationResponsePeriod
+    }
     exchanges(orderBy: ${exchangeOrderBy ? `${exchangeOrderBy}` : null}) {
       cancelledDate
       committedDate

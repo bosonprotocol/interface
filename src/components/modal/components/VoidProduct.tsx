@@ -1,6 +1,7 @@
 import { Provider, VoidButton } from "@bosonprotocol/react-kit";
 import { BigNumberish } from "ethers";
 import { useCallback, useState } from "react";
+import toast from "react-hot-toast";
 import styled from "styled-components";
 import { useSigner } from "wagmi";
 
@@ -9,6 +10,7 @@ import { Offer } from "../../../lib/types/offer";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 import { Break } from "../../detail/Detail.style";
 import Price from "../../price/index";
+import SuccessTransactionToast from "../../toasts/SuccessTransactionToast";
 import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
 import Image from "../../ui/Image";
@@ -117,30 +119,66 @@ export default function VoidProduct({
   offers,
   refetch
 }: Props) {
+  const { showModal } = useModal();
   const coreSdk = useCoreSDK();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { data: signer } = useSigner();
   const { hideModal } = useModal();
 
-  const handleSuccess = useCallback(() => {
+  const handleFinish = useCallback(() => {
     hideModal();
     refetch();
     setIsLoading(false);
   }, [hideModal, refetch, setIsLoading]);
 
+  const handleSuccess = useCallback(
+    (
+      receipt: {
+        transactionHash: string;
+      },
+      payload: {
+        offerId?: BigNumberish;
+        offerIds?: BigNumberish[];
+      }
+    ) => {
+      const text = offer
+        ? `Voided offer: ${offer?.metadata.name}`
+        : `Voided offers: ${payload.offerIds?.join(",")}`;
+      toast((t) => (
+        <SuccessTransactionToast
+          t={t}
+          action={text}
+          url={CONFIG.getTxExplorerUrl?.(receipt.transactionHash)}
+        />
+      ));
+      handleFinish();
+    },
+    [handleFinish, offer]
+  );
+
   const handleBatchVoid = useCallback(async () => {
     const offerIds: BigNumberish[] =
       offers?.map((offer) => offer?.id as BigNumberish) || [];
+
     try {
       setIsLoading(true);
       const txResponse = await coreSdk.voidOfferBatch(offerIds);
+      const txHash = txResponse.hash;
       await txResponse.wait(offerIds.length);
+      handleSuccess(
+        {
+          transactionHash: txHash
+        },
+        {
+          offerIds
+        }
+      );
     } catch (error) {
       console.error("onError", error);
     } finally {
-      handleSuccess();
+      handleFinish();
     }
-  }, [offers, coreSdk, handleSuccess]);
+  }, [offers, coreSdk, handleSuccess, handleFinish]);
 
   return (
     <Grid flexDirection="column" alignItems="flex-start" gap="2rem">
@@ -173,12 +211,24 @@ export default function VoidProduct({
             variant="secondary"
             offerId={offerId || 0}
             envName={CONFIG.envName}
-            onError={(args) => {
-              // TODO: add to notification system
-              console.error("onError", args);
+            onError={(error) => {
+              console.error("onError", error);
+              const hasUserRejectedTx =
+                "code" in error &&
+                (error as unknown as { code: string }).code ===
+                  "ACTION_REJECTED";
+              if (hasUserRejectedTx) {
+                showModal("CONFIRMATION_FAILED");
+              }
             }}
             onPendingSignature={() => {
-              console.error("onPendingSignature");
+              showModal("WAITING_FOR_CONFIRMATION");
+            }}
+            onPendingTransaction={(hash) => {
+              showModal("TRANSACTION_SUBMITTED", {
+                action: "Void",
+                txHash: hash
+              });
             }}
             onSuccess={handleSuccess}
             web3Provider={signer?.provider as Provider}

@@ -1,6 +1,7 @@
 import { CancelButton, Provider } from "@bosonprotocol/react-kit";
 import { Info as InfoComponent } from "phosphor-react";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import styled from "styled-components";
 import { useSigner } from "wagmi";
 
@@ -12,6 +13,7 @@ import DetailTable from "../../../detail/DetailTable";
 import SimpleError from "../../../error/SimpleError";
 import { Spinner } from "../../../loading/Spinner";
 import { useConvertedPrice } from "../../../price/useConvertedPrice";
+import SuccessTransactionToast from "../../../toasts/SuccessTransactionToast";
 import Button from "../../../ui/Button";
 import Grid from "../../../ui/Grid";
 import { ModalProps } from "../../ModalContext";
@@ -154,7 +156,7 @@ export default function CancelExchangeModal({
       {cancelError && <SimpleError />}
       <ButtonsSection>
         <CancelButton
-          variant="primary"
+          variant="secondary"
           exchangeId={exchange.id}
           envName={CONFIG.envName}
           disabled={isLoading}
@@ -162,30 +164,52 @@ export default function CancelExchangeModal({
             console.error(error);
             setCancelError(error);
             setIsLoading(false);
-            showModal(modalTypes.DETAIL_WIDGET, {
-              title: "An error occurred",
-              message: "An error occurred when trying to cancel!",
-              type: "ERROR",
-              state: "Cancelled",
-              ...BASE_MODAL_DATA
-            });
+            const hasUserRejectedTx =
+              "code" in error &&
+              (error as unknown as { code: string }).code === "ACTION_REJECTED";
+            if (hasUserRejectedTx) {
+              showModal("CONFIRMATION_FAILED");
+            } else {
+              showModal(modalTypes.DETAIL_WIDGET, {
+                title: "An error occurred",
+                message: "An error occurred when trying to cancel!",
+                type: "ERROR",
+                state: "Cancelled",
+                ...BASE_MODAL_DATA
+              });
+            }
           }}
           onPendingSignature={() => {
             setIsLoading(true);
             setCancelError(null);
+            showModal("WAITING_FOR_CONFIRMATION");
           }}
-          onSuccess={(_, payload) => {
+          onPendingTransaction={(hash) => {
+            showModal("TRANSACTION_SUBMITTED", {
+              action: "Cancel",
+              txHash: hash
+            });
+          }}
+          onSuccess={(_, { exchangeId }) => {
             setIsLoading(false);
             setCancelError(null);
             reload?.();
-            showModal(modalTypes.DETAIL_WIDGET, {
-              title: "You have successfully cancelled!",
-              message: "You have successfully cancelled!",
-              type: "SUCCESS",
-              state: "Cancelled",
-              id: payload.exchangeId.toString(),
-              ...BASE_MODAL_DATA
-            });
+            toast((t) => (
+              <SuccessTransactionToast
+                t={t}
+                action={`Cancelled exchange: ${offer.metadata.name}`}
+                onViewDetails={() => {
+                  showModal(modalTypes.DETAIL_WIDGET, {
+                    title: "You have successfully cancelled!",
+                    message: "You have successfully cancelled!",
+                    type: "SUCCESS",
+                    state: "Cancelled",
+                    id: exchangeId.toString(),
+                    ...BASE_MODAL_DATA
+                  });
+                }}
+              />
+            ));
           }}
           web3Provider={signer?.provider as Provider}
         >

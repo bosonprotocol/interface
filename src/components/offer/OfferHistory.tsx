@@ -6,7 +6,7 @@ import Typography from "../ui/Typography";
 
 export const OfferHistoryStatuses = styled.div`
   padding: 0.5rem 0;
-  min-width: 10rem;
+  min-width: 13rem;
   > div {
     height: initial;
     margin-bottom: 3rem;

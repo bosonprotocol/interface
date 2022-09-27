@@ -17,6 +17,7 @@ import {
   useSellerDeposit
 } from "../../../lib/utils/hooks/useSellerDeposit";
 import useFunds, { FundsProps } from "../../../pages/account/funds/useFunds";
+import { useConvertionRate } from "../../convertion-rate/useConvertionRate";
 import Loading from "../../ui/Loading";
 import useOffersBacked from "./useOffersBacked";
 
@@ -68,6 +69,9 @@ export function WithSellerData<P>(
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const sellerId = props.sellerId;
+    const {
+      store: { tokens }
+    } = useConvertionRate();
 
     const offers = useOffers({
       sellerId,
@@ -88,7 +92,7 @@ export function WithSellerData<P>(
       },
       { enabled: !!sellerId }
     );
-    const funds = useFunds(sellerId);
+    const funds = useFunds(sellerId, tokens);
 
     const newProps = {
       offers,

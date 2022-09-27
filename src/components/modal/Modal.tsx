@@ -78,6 +78,7 @@ const Wrapper = styled.div<{
   $modalType: ModalType;
   $size: Props["size"];
   $theme: Props["theme"];
+  $maxWidths: Props["maxWidths"];
 }>`
   position: relative;
   z-index: ${zIndex.Modal};
@@ -93,6 +94,32 @@ const Wrapper = styled.div<{
     return background[$theme as keyof typeof background] || colors.white;
   }};
   border: var(--secondary);
+  ${({ $maxWidths }) => {
+    if (!$maxWidths) {
+      return "";
+    }
+
+    return css`
+      ${breakpoint.xxs} {
+        max-width: ${$maxWidths["xxs"]};
+      }
+      ${breakpoint.xs} {
+        max-width: ${$maxWidths["xs"]};
+      }
+      ${breakpoint.s} {
+        max-width: ${$maxWidths["s"]};
+      }
+      ${breakpoint.m} {
+        max-width: ${$maxWidths["m"]};
+      }
+      ${breakpoint.l} {
+        max-width: ${$maxWidths["l"]};
+      }
+      ${breakpoint.xl} {
+        max-width: ${$maxWidths["xl"]};
+      }
+    `;
+  }};
   ${({ $modalType }) => {
     switch ($modalType) {
       case "PRODUCT_CREATE_SUCCESS":
@@ -188,6 +215,7 @@ interface Props {
   modalType: ModalType;
   headerComponent?: ReactNode;
   size: NonNullable<Store["modalSize"]>;
+  maxWidths: Store["modalMaxWidth"];
   theme: NonNullable<Store["theme"]>;
   closable?: boolean;
 }
@@ -195,16 +223,22 @@ interface Props {
 export default function Modal({
   children,
   hideModal,
-  title = "modal",
+  title = "",
   headerComponent: HeaderComponent,
   size,
+  maxWidths,
   theme,
   closable = true,
   modalType
 }: Props) {
   return createPortal(
     <Root data-testid="modal">
-      <Wrapper $size={size} $modalType={modalType} $theme={theme}>
+      <Wrapper
+        $size={size}
+        $modalType={modalType}
+        $theme={theme}
+        $maxWidths={maxWidths}
+      >
         {HeaderComponent ? (
           <Header tag="div" margin="0">
             {HeaderComponent}

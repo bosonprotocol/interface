@@ -15,7 +15,7 @@ function isRedemptionDatesValid() {
         throw this.createError({
           path: this.path,
           message:
-            "Redemption period has to be after or equal to validity period"
+            "Redemption period has to end after or be equal to validity period"
         });
       }
       return true;

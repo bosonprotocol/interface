@@ -11,6 +11,38 @@ type JustifyContent =
   | "stretch";
 type AlignItems = "flex-start" | "center" | "flex-end" | "baseline" | "stretch";
 type FlexDirection = "row" | "column" | "row-reverse" | "column-reverse";
+type AlignSelf =
+  | "auto"
+  | "normal"
+  | "self-start"
+  | "self-end"
+  | "flex-start"
+  | "flex-end"
+  | "center"
+  | "baseline"
+  | "first baseline"
+  | "last baseline"
+  | "stretch"
+  | "safe"
+  | "unsafe";
+type JustifySelf =
+  | "auto"
+  | "normal"
+  | "start"
+  | "end"
+  | "flex-start"
+  | "flex-end"
+  | "self-start"
+  | "self-end"
+  | "center"
+  | "left"
+  | "right"
+  | "baseline"
+  | "first baseline"
+  | "last baseline"
+  | "stretch"
+  | "safe"
+  | "unsafe";
 export interface IGrid {
   $width?: string;
   $height?: string;
@@ -27,6 +59,8 @@ export interface IGrid {
   margin?: string;
   rowGap?: string;
   columnGap?: string;
+  alignSelf?: AlignSelf;
+  justifySelf?: JustifySelf;
 }
 
 const Container = styled.div<IGrid>`
@@ -47,6 +81,8 @@ const Container = styled.div<IGrid>`
   ${({ flex }) => (flex ? `> * { flex: ${flex}; }` : "")}
   ${({ padding }) => (padding ? `padding:${padding};` : "")}
   ${({ margin }) => (margin ? `margin:${margin};` : "")}
+  ${({ alignSelf }) => (alignSelf ? `align-self:${alignSelf};` : "")}
+  ${({ justifySelf }) => (justifySelf ? `justify-self:${justifySelf};` : "")}
 `;
 type Props = {
   children: React.ReactNode;

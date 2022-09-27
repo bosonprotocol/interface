@@ -14,6 +14,7 @@ import DetailSlider from "../../components/detail/DetailSlider";
 import DetailTable from "../../components/detail/DetailTable";
 import DetailWidget from "../../components/detail/DetailWidget/DetailWidget";
 import Image from "../../components/ui/Image";
+import Loading from "../../components/ui/Loading";
 import SellerID from "../../components/ui/SellerID";
 import Typography from "../../components/ui/Typography";
 import { UrlParameters } from "../../lib/routing/parameters";
@@ -52,7 +53,7 @@ export default function OfferDetail() {
   }
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   if (isError) {
@@ -122,14 +123,14 @@ export default function OfferDetail() {
       <DarkerBackground>
         <DetailGrid>
           <div>
-            <Typography tag="h3">Product data</Typography>
+            <Typography tag="h3">Product description</Typography>
             <Typography tag="p" data-testid="description">
               {description}
             </Typography>
             <DetailTable data={productData} tag="strong" inheritColor />
           </div>
           <div>
-            <Typography tag="h3">About the artist</Typography>
+            <Typography tag="h3">About the creator</Typography>
             <Typography tag="p">{artistDescription}</Typography>
           </div>
         </DetailGrid>

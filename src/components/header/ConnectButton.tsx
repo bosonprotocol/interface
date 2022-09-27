@@ -1,6 +1,5 @@
 import { ConnectButton as RainbowConnectButton } from "@rainbow-me/rainbowkit";
 import * as Sentry from "@sentry/browser";
-import { CaretDown } from "phosphor-react";
 import styled from "styled-components";
 
 import metamaskLogo from "../../../src/assets/metamask-logo.svg";
@@ -22,9 +21,13 @@ const ENSAvatar = styled.img`
 
 interface Props {
   navigationBarPosition?: string;
+  showAddress?: boolean;
 }
 
-export default function ConnectButton({ navigationBarPosition = "" }: Props) {
+export default function ConnectButton({
+  navigationBarPosition = "",
+  showAddress = true
+}: Props) {
   const { isLteXS } = useBreakpoints();
   const isSideBar = ["left", "right"].includes(navigationBarPosition);
   const buttonPadding = isSideBar ? "0.75rem 1rem" : "";
@@ -69,6 +72,7 @@ export default function ConnectButton({ navigationBarPosition = "" }: Props) {
                   <Button
                     onClick={openConnectModal}
                     size={isLteXS ? "small" : "regular"}
+                    theme="primary"
                     style={{
                       whiteSpace: "pre",
                       ...buttonPropsWhenSideBar,
@@ -95,7 +99,6 @@ export default function ConnectButton({ navigationBarPosition = "" }: Props) {
                     }}
                   >
                     Wrong network
-                    <CaretDown size={12} />
                   </Button>
                 );
               }
@@ -116,7 +119,8 @@ export default function ConnectButton({ navigationBarPosition = "" }: Props) {
                     style={{
                       whiteSpace: "pre",
                       ...buttonPropsWhenSideBar,
-                      color: "inherit"
+                      color: "inherit",
+                      ...(!showAddress && { borderColor: "transparent" })
                     }}
                   >
                     {account.ensAvatar ? (
@@ -124,8 +128,7 @@ export default function ConnectButton({ navigationBarPosition = "" }: Props) {
                     ) : (
                       <FallbackAvatar address={account.address} size={18} />
                     )}
-                    {account.displayName}
-                    <CaretDown size={12} />
+                    {showAddress && account.displayName}
                   </Button>
                 </div>
               );

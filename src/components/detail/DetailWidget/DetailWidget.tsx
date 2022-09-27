@@ -7,25 +7,28 @@ import {
 import dayjs from "dayjs";
 import { Check, Question } from "phosphor-react";
 import { useMemo, useState } from "react";
+import toast from "react-hot-toast";
 import styled from "styled-components";
 import { useAccount, useSigner } from "wagmi";
 
 import { CONFIG } from "../../../lib/config";
 import { BosonRoutes } from "../../../lib/routing/routes";
 import { breakpoint } from "../../../lib/styles/breakpoint";
-import { colors } from "../../../lib/styles/colors";
 import { Offer } from "../../../lib/types/offer";
 import { IPrice } from "../../../lib/utils/convertPrice";
 import { titleCase } from "../../../lib/utils/formatText";
-import { isOfferHot } from "../../../lib/utils/getOfferLabel";
+import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import { getBuyerCancelPenalty } from "../../../lib/utils/getPrices";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { getItemFromStorage } from "../../../lib/utils/hooks/useLocalStorage";
+import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
+import { poll } from "../../../pages/create-product/utils";
 import { useModal } from "../../modal/useModal";
 import Price from "../../price/index";
 import { useConvertedPrice } from "../../price/useConvertedPrice";
+import SuccessTransactionToast from "../../toasts/SuccessTransactionToast";
 import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
 import Typography from "../../ui/Typography";
@@ -42,6 +45,7 @@ import {
 import DetailTable from "../DetailTable";
 import { DetailDisputeResolver } from "./DetailDisputeResolver";
 import { DetailSellerDeposit } from "./DetailSellerDeposit";
+import { QuantityDisplay } from "./QuantityDisplay";
 
 const StyledPrice = styled(Price)`
   h3 {
@@ -209,6 +213,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   isPreview = false
 }) => {
   const { showModal, modalTypes } = useModal();
+  const coreSDK = useCoreSDK();
   const { isLteXS } = useBreakpoints();
   const navigate = useKeepQueryParamsNavigate();
   const { address } = useAccount();
@@ -241,22 +246,25 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     () => getOfferDetailData(offer, convertedPrice, true),
     [offer, convertedPrice]
   );
+
   const quantity = useMemo<number>(
-    () => Number(offer?.quantityAvailable),
+    () => Number(offer?.quantityAvailable || 0),
     [offer?.quantityAvailable]
   );
+
+  const quantityInitial = useMemo<number>(
+    () => Number(offer?.quantityInitial || 0),
+    [offer?.quantityInitial]
+  );
+
   const isExpiredOffer = useMemo<boolean>(
-    () => dayjs(Number(offer?.validUntilDate) * 1000).isBefore(dayjs()),
+    () => dayjs(getDateTimestamp(offer?.validUntilDate)).isBefore(dayjs()),
     [offer?.validUntilDate]
   );
   const isVoidedOffer = !!offer.voidedAt;
-  const isHotOffer = useMemo(
-    () => isOfferHot(offer?.quantityAvailable, offer?.quantityInitial),
-    [offer?.quantityAvailable, offer?.quantityInitial]
-  );
 
   const voucherRedeemableUntilDate = dayjs(
-    Number(offer.voucherRedeemableUntilDate) * 1000
+    getDateTimestamp(offer.voucherRedeemableUntilDate)
   );
   const nowDate = dayjs();
 
@@ -313,24 +321,12 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               convert
               withBosonStyles
             />
+
             {isOffer && (
-              <Grid
-                alignItems="center"
-                justifyContent="flex-end"
-                style={{ marginTop: isLteXS ? "-7rem" : "0" }}
-              >
-                <Typography tag="p" style={{ color: colors.orange, margin: 0 }}>
-                  {isHotOffer && (
-                    <>
-                      {quantity === 0 && "No items available!"}
-                      {quantity > 0 &&
-                        `Only ${quantity} ${
-                          quantity === 1 ? "item" : "items"
-                        } left!`}
-                    </>
-                  )}
-                </Typography>
-              </Grid>
+              <QuantityDisplay
+                quantityInitial={quantityInitial}
+                quantity={quantity}
+              />
             )}
             {isOffer && (
               <CommitButton
@@ -346,30 +342,66 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 }
                 offerId={offer.id}
                 envName={CONFIG.envName}
-                onError={(args) => {
-                  console.error("onError", args);
+                onError={(error) => {
+                  console.error("onError", error);
                   setIsLoading(false);
-                  showModal(modalTypes.DETAIL_WIDGET, {
-                    title: "An error occurred",
-                    message: "An error occurred when trying to commit!",
-                    type: "ERROR",
-                    state: "Committed",
-                    ...BASE_MODAL_DATA
-                  });
+                  const hasUserRejectedTx =
+                    "code" in error &&
+                    (error as unknown as { code: string }).code ===
+                      "ACTION_REJECTED";
+                  if (hasUserRejectedTx) {
+                    showModal("CONFIRMATION_FAILED");
+                  } else {
+                    showModal(modalTypes.DETAIL_WIDGET, {
+                      title: "An error occurred",
+                      message: "An error occurred when trying to commit!",
+                      type: "ERROR",
+                      state: "Committed",
+                      ...BASE_MODAL_DATA
+                    });
+                  }
                 }}
                 onPendingSignature={() => {
                   setIsLoading(true);
+                  showModal("WAITING_FOR_CONFIRMATION");
                 }}
-                onSuccess={(_args, { exchangeId }) => {
-                  setIsLoading(false);
-                  showModal(modalTypes.DETAIL_WIDGET, {
-                    title: "You have successfully committed!",
-                    message: "You now own the rNFT",
-                    type: "SUCCESS",
-                    id: exchangeId.toString(),
-                    state: "Committed",
-                    ...BASE_MODAL_DATA
+                onPendingTransaction={(hash) => {
+                  showModal("TRANSACTION_SUBMITTED", {
+                    action: "Commit",
+                    txHash: hash
                   });
+                }}
+                onSuccess={async (_, { exchangeId }) => {
+                  let createdExchange: subgraph.ExchangeFieldsFragment;
+                  await poll(
+                    async () => {
+                      createdExchange = await coreSDK.getExchangeById(
+                        exchangeId
+                      );
+                      return createdExchange;
+                    },
+                    (createdExchange) => {
+                      return !createdExchange;
+                    },
+                    500
+                  );
+                  setIsLoading(false);
+                  toast((t) => (
+                    <SuccessTransactionToast
+                      t={t}
+                      action={`Commit to offer: ${offer.metadata.name}`}
+                      onViewDetails={() => {
+                        showModal(modalTypes.DETAIL_WIDGET, {
+                          title: "You have successfully committed!",
+                          message: "You now own the rNFT",
+                          type: "SUCCESS",
+                          id: exchangeId.toString(),
+                          state: "Committed",
+                          ...BASE_MODAL_DATA
+                        });
+                      }}
+                    />
+                  ));
                 }}
                 extraInfo="Step 1/2"
                 web3Provider={signer?.provider as Provider}
@@ -391,6 +423,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                     modalTypes.REDEEM,
                     {
                       title: "Redeem your item",
+                      offerName: offer.metadata.name,
                       exchangeId: exchange?.id || "",
                       buyerId: exchange?.buyer.id || "",
                       sellerId: exchange?.seller.id || "",

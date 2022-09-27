@@ -12,6 +12,7 @@ import { CONFIG } from "../../lib/config";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { getLocalStorageItems } from "../../lib/utils/getLocalStorageItems";
+import { Token } from "../convertion-rate/ConvertionRateContext";
 import {
   DarkerBackground,
   DetailGrid,
@@ -44,6 +45,9 @@ const PreviewWrapperContent = styled.div`
 export default function Preview({ togglePreview, seller }: Props) {
   const { values } = useCreateForm();
 
+  const exchangeToken = CONFIG.defaultTokens.find(
+    (n: Token) => n.symbol === values.coreTermsOfSale.currency.value
+  );
   const previewImages = getLocalStorageItems({
     key: "create-product-image"
   });
@@ -114,11 +118,11 @@ export default function Preview({ togglePreview, seller }: Props) {
       }
     ],
     seller,
-    exchangeToken: {
-      address: "0x0000000000000000000000000000000000000000",
+    exchangeToken: exchangeToken || {
+      address: ethers.constants.AddressZero,
       decimals: CONFIG.nativeCoin?.decimals || "",
-      name: CONFIG.nativeCoin?.name || "",
-      symbol: CONFIG.nativeCoin?.symbol || ""
+      name: values.coreTermsOfSale.currency.value || "",
+      symbol: values.coreTermsOfSale.currency.value || ""
     },
     isValid: false
   } as Offer;
@@ -138,6 +142,7 @@ export default function Preview({ togglePreview, seller }: Props) {
                   buyerOrSeller={offer?.seller}
                   justifyContent="flex-start"
                   withProfileImage
+                  onClick={null}
                 />
                 <Typography
                   tag="h1"
@@ -161,7 +166,7 @@ export default function Preview({ togglePreview, seller }: Props) {
           <DarkerBackground>
             <DetailGrid>
               <div>
-                <Typography tag="h3">Product data</Typography>
+                <Typography tag="h3">Product description</Typography>
                 <Typography
                   tag="p"
                   color={colors.darkGrey}
@@ -174,7 +179,7 @@ export default function Preview({ togglePreview, seller }: Props) {
                 />
               </div>
               <div>
-                <Typography tag="h3">About the artist</Typography>
+                <Typography tag="h3">About the creator</Typography>
                 <Typography tag="p" color={colors.darkGrey}>
                   {values.createYourProfile.description}
                 </Typography>
@@ -208,7 +213,7 @@ export default function Preview({ togglePreview, seller }: Props) {
         <Button theme="primary" type="submit">
           Confirm
         </Button>
-        <Button theme="primary" type="button" onClick={handleClosePreview}>
+        <Button theme="secondary" type="button" onClick={handleClosePreview}>
           Back to overview
         </Button>
       </ProductButtonGroup>

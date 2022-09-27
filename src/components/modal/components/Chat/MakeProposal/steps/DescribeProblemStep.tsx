@@ -37,7 +37,7 @@ export default function DescribeProblemStep({ onNextClick, isValid }: Props) {
       </Typography>
       <Grid flexDirection="column" margin="2rem 0" alignItems="flex-start">
         <Typography fontWeight="600" tag="p">
-          Message
+          Message*
         </Typography>
         <TextArea name={FormModel.formFields.description.name} rows={5} />
       </Grid>

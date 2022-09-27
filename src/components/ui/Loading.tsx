@@ -25,13 +25,19 @@ const LoadingPlaceholder = styled.div<{ size: number }>`
 
 interface ILoading {
   size?: number;
+  wrapperStyle?: React.CSSProperties;
   style?: React.CSSProperties;
   [x: string]: unknown;
 }
 
-const Loading: React.FC<ILoading> = ({ style = {}, size = 5, ...props }) => {
+const Loading: React.FC<ILoading> = ({
+  style = {},
+  size = 5,
+  wrapperStyle,
+  ...props
+}) => {
   return (
-    <Grid justifyContent="center" padding="5rem">
+    <Grid justifyContent="center" padding="5rem" style={wrapperStyle}>
       <LoadingPlaceholder style={style} size={size} {...props} />
     </Grid>
   );

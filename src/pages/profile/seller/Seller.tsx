@@ -11,6 +11,9 @@ import AddressText from "../../../components/offer/AddressText";
 import Grid from "../../../components/ui/Grid";
 import Typography from "../../../components/ui/Typography";
 import { UrlParameters } from "../../../lib/routing/parameters";
+import { breakpoint } from "../../../lib/styles/breakpoint";
+import { colors } from "../../../lib/styles/colors";
+import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { useSellerCalculations } from "../../../lib/utils/hooks/useSellerCalculations";
 import { useSellers } from "../../../lib/utils/hooks/useSellers";
 import NotFound from "../../not-found/NotFound";
@@ -36,9 +39,20 @@ const SellerCalculationContainer = styled.div`
   width: 100%;
 `;
 
+const LensTitle = styled(Typography)`
+  font-weight: bold;
+  margin: 0.5rem 0 0 0;
+  color: ${colors.darkGrey};
+  ${breakpoint.s} {
+    margin: 0 0.5rem 0 0;
+    font-size: 1rem;
+  }
+`;
+
 export default function Seller() {
   const { address: currentWalletAddress = "" } = useAccount();
   const { [UrlParameters.sellerId]: sellerId = "" } = useParams();
+  const { isLteXS } = useBreakpoints();
   const {
     data: sellers = [],
     isError: isErrorSellers,
@@ -106,7 +120,10 @@ export default function Seller() {
           <BannerImage src={backgroundFluid} />
           <BannerImageLayer>
             <AvatarContainer>
-              <Avatar address={currentSellerAddress} size={160} />
+              <Avatar
+                address={currentSellerAddress}
+                size={!isLteXS ? 160 : 80}
+              />
             </AvatarContainer>
           </BannerImageLayer>
         </ProfileSectionWrapper>
@@ -120,13 +137,19 @@ export default function Seller() {
             >
               <AvatarEmptySpace />
               <div>
-                <Typography tag="h2" margin="0.5rem 0 0 0">
+                <Typography
+                  tag="h2"
+                  margin={!isLteXS ? "1rem 0 0 0" : "0.25rem 0 0.25rem 0"}
+                  $fontSize={!isLteXS ? "2rem" : "1.675rem"}
+                >
                   Placeholder Name (work in progress)
                 </Typography>
-                <Grid alignItems="center" justifyContent="flex-start">
-                  <Typography tag="p" margin="0 0.5rem 0 0">
-                    @placeholder.lens
-                  </Typography>
+                <Grid
+                  alignItems={!isLteXS ? "center" : "flex-start"}
+                  justifyContent="flex-start"
+                  flexDirection={!isLteXS ? "row" : "column"}
+                >
+                  <LensTitle tag="p">@placeholder.lens</LensTitle>
                   <AddressContainer>
                     <AddressText address={currentSellerAddress} />
                   </AddressContainer>
@@ -165,14 +188,22 @@ It is a long established fact that a reader will be distracted by the readable c
         <SellerCalculationContainer>
           <Grid justifyContent="space-between" alignItems="flex-end">
             <Grid justifyContent="flex-start" alignItems="flex-end">
-              <Grid justifyContent="flex-start" gap="4rem">
+              <Grid
+                justifyContent={!isLteXS ? "flex-start" : "space-between"}
+                gap="4rem"
+              >
                 <div>
-                  <Typography tag="p" $fontSize="0.75rem" margin="0">
-                    Items
+                  <Typography
+                    tag="p"
+                    $fontSize={!isLteXS ? "0.75rem" : "1.25rem"}
+                    margin="0"
+                    color={colors.darkGrey}
+                  >
+                    Offers
                   </Typography>
                   <Typography
                     tag="p"
-                    $fontSize="1.25rem"
+                    $fontSize={!isLteXS ? "1.25rem" : "1.7rem"}
                     margin="0"
                     fontWeight="bold"
                   >
@@ -180,12 +211,17 @@ It is a long established fact that a reader will be distracted by the readable c
                   </Typography>
                 </div>
                 <div>
-                  <Typography tag="p" $fontSize="0.75rem" margin="0">
+                  <Typography
+                    tag="p"
+                    $fontSize={!isLteXS ? "0.75rem" : "1.25rem"}
+                    margin="0"
+                    color={colors.darkGrey}
+                  >
                     Sold
                   </Typography>
                   <Typography
                     tag="p"
-                    $fontSize="1.25rem"
+                    $fontSize={!isLteXS ? "1.25rem" : "1.7rem"}
                     margin="0"
                     fontWeight="bold"
                   >
@@ -193,12 +229,17 @@ It is a long established fact that a reader will be distracted by the readable c
                   </Typography>
                 </div>
                 <div>
-                  <Typography tag="p" $fontSize="0.75rem" margin="0">
+                  <Typography
+                    tag="p"
+                    $fontSize={!isLteXS ? "0.75rem" : "1.25rem"}
+                    margin="0"
+                    color={colors.darkGrey}
+                  >
                     Owners
                   </Typography>
                   <Typography
                     tag="p"
-                    $fontSize="1.25rem"
+                    $fontSize={!isLteXS ? "1.25rem" : "1.7rem"}
                     margin="0"
                     fontWeight="bold"
                   >

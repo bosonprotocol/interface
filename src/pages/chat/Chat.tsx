@@ -153,6 +153,18 @@ export default function Chat() {
     setPreviousPath(prevPath);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  const onChangeConversation = useCallback(
+    (exchange: Exchange) => {
+      if (isXXS || isXS || isS) {
+        setChatListOpen(!chatListOpen);
+      }
+      selectExchange(exchange);
+      navigate({
+        pathname: `${BosonRoutes.Chat}/${exchange.id}`
+      });
+    },
+    [chatListOpen, isS, isXS, isXXS, navigate]
+  );
 
   const isSellerOrBuyer = !(
     !isLoadingSeller &&
@@ -173,15 +185,7 @@ export default function Chat() {
             location.pathname !== `${BosonRoutes.Chat}/` &&
             location.pathname !== `${BosonRoutes.Chat}`
           }
-          onChangeConversation={(exchange) => {
-            if (isXXS || isXS || isS) {
-              setChatListOpen(!chatListOpen);
-            }
-            selectExchange(exchange);
-            navigate({
-              pathname: `${BosonRoutes.Chat}/${exchange.id}`
-            });
-          }}
+          onChangeConversation={onChangeConversation}
           chatListOpen={chatListOpen}
           setChatListOpen={setChatListOpen}
           currentExchange={selectedExchange}

@@ -32,15 +32,10 @@ const StyledPrice = styled(Price)<{ isLteS: boolean }>`
   bottom: ${({ isLteS }) => isLteS && "2.8125rem"};
 `;
 
-const StyledImage = styled(Image)<{ isLteS: boolean; isLteXS: boolean }>`
-  all: unset;
-  width: ${({ isLteXS }) => (isLteXS ? "50%" : "unset")};
-  img {
-    all: unset;
-    width: 80px;
-    width: ${({ isLteS }) => isLteS && "calc(100% + 4rem)"};
-    margin: ${({ isLteS }) => isLteS && "-2rem 0 0 -2rem"};
-  }
+const ImageWrapper = styled.div`
+  position: relative;
+  min-width: 4rem;
+  align-self: center;
 `;
 
 const StyledGrid = styled(Grid)`
@@ -49,7 +44,7 @@ const StyledGrid = styled(Grid)`
 
 export default function ExchangePreview({ exchange }: Props) {
   const { offer } = exchange;
-  const { isLteS, isLteXS } = useBreakpoints();
+  const { isLteS } = useBreakpoints();
 
   return (
     <StyledGrid
@@ -57,12 +52,9 @@ export default function ExchangePreview({ exchange }: Props) {
       flexDirection={isLteS ? "column" : "row"}
     >
       <Grid flexDirection={isLteS ? "column" : "row"}>
-        <StyledImage
-          isLteS={isLteS}
-          src={offer.metadata.imageUrl}
-          alt="Exchange image"
-          isLteXS={isLteXS}
-        />
+        <ImageWrapper>
+          <Image src={offer.metadata.imageUrl} alt="Exchange image" />
+        </ImageWrapper>
         <Grid
           flexDirection="column"
           alignItems="flex-start"

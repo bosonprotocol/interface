@@ -28,6 +28,7 @@ const poolsQuery = gql`
   }
 `;
 
+const ETH_SWAP_ARRAY = ["WETH", "ETH"];
 interface QueryProps {
   query: string;
   variables: {
@@ -40,8 +41,8 @@ function generateQuery(tokens: Props["tokens"]): QueryProps[] | [] {
     ? tokens?.flatMap((token) => ({
         query: poolsQuery,
         variables: {
-          token0: token.symbol === "ETH" ? "USDC" : token.symbol,
-          token1: token.symbol === "ETH" ? token.symbol : "USDC"
+          token0: ETH_SWAP_ARRAY.includes(token.symbol) ? "USDC" : token.symbol,
+          token1: ETH_SWAP_ARRAY.includes(token.symbol) ? token.symbol : "USDC"
         }
       }))
     : [];

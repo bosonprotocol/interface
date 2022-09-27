@@ -81,9 +81,6 @@ const GlobalStyle = createGlobalStyle<{
     font-family: ${(props) => props.$fontFamily || "Plus Jakarta Sans"};
     font-style: normal;
 
-    overflow-y: auto;
-    overflow-x: hidden;
-
     max-height: 100vh;
   }
 

@@ -106,7 +106,7 @@ export default function DetailWidget({
               {id ? "View my item" : "View my items"}
             </Button>
             <Button
-              theme="primary"
+              theme="secondary"
               onClick={() => {
                 navigate({ pathname: BosonRoutes.Explore });
               }}

@@ -74,6 +74,7 @@ const BaseButton = styled.button<{
 const ChildWrapperButton = styled.div`
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 12px;
   position: relative;
   z-index: ${zIndex.Button};
@@ -122,6 +123,15 @@ const allThemes = {
       color: colors.white
     }
   },
+  orangeInverse: {
+    color: colors.orange,
+    borderColor: colors.orange,
+    borderWidth: 2,
+    hover: {
+      background: colors.orange,
+      color: colors.white
+    }
+  },
   bosonSecondaryInverse: {
     color: colors.white,
     borderColor: colors.secondary,
@@ -133,6 +143,13 @@ const allThemes = {
       background: colors.white
     }
   },
+  orange: {
+    color: colors.orange,
+    borderColor: colors.border,
+    hover: {
+      background: colors.border
+    }
+  },
   outline: {
     color: colors.black,
     borderColor: colors.border,
@@ -142,13 +159,14 @@ const allThemes = {
       color: "var(--accent)"
     }
   },
-  orange: {
-    color: colors.orange,
+  ghostSecondary: {
+    color: colors.secondary,
     borderColor: colors.border,
     hover: {
       background: colors.border
     }
   },
+
   blank: {
     color: `${colors.black}4d`,
     padding: "0.75rem 0.5rem",
@@ -178,12 +196,15 @@ const allThemes = {
       color: colors.black
     }
   },
-  blankWhite: {
-    color: colors.white,
-    padding: "1rem 2rem",
-    borderWidth: 0,
+  white: {
+    color: colors.black,
+    background: colors.white,
+    padding: "1rem",
+    borderWidth: 1,
+    borderColor: colors.border,
     hover: {
-      color: colors.primary
+      color: colors.white,
+      background: colors.black
     }
   },
   warning: {
@@ -232,7 +253,7 @@ const Button: React.FC<IButton> = ({
         {isLoading ? (
           <Loading />
         ) : (
-          <ChildWrapperButton>
+          <ChildWrapperButton data-child-wrapper-button>
             {children}
             {step !== 0 && (
               <Typography>

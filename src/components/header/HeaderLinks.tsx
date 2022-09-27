@@ -8,6 +8,8 @@ import { BosonRoutes, SellerCenterRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { useBuyerSellerAccounts } from "../../lib/utils/hooks/useBuyerSellerAccounts";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
+import { UserRoles } from "../../router/routes";
+import useUserRoles, { checkIfUserHaveRole } from "../../router/useUserRoles";
 import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
 import { DEFAULT_SELLER_PAGE } from "../seller/SellerPages";
 import Search from "./Search";
@@ -134,6 +136,7 @@ export default function HeaderLinks({
   isOpen,
   navigationBarPosition
 }: Props) {
+  const { roles } = useUserRoles({ role: [] });
   const { address } = useAccount();
   const supportFunctionality = useCustomStoreQueryParameter<
     ("buyer" | "seller" | "dr")[]
@@ -175,17 +178,23 @@ export default function HeaderLinks({
       />
       <Links isMobile={isMobile} $navigationBarPosition={navigationBarPosition}>
         {((isSupportFunctionalityDefined && !onlyBuyer) ||
-          !isSupportFunctionalityDefined) && (
-          <LinkWithQuery to={sellUrl}>Sell</LinkWithQuery>
-        )}
+          !isSupportFunctionalityDefined) &&
+          checkIfUserHaveRole(
+            roles,
+            [UserRoles.Guest, UserRoles.Seller],
+            false
+          ) && <LinkWithQuery to={sellUrl}>Sell</LinkWithQuery>}
         {!onlySeller && (
           <LinkWithQuery to={BosonRoutes.Explore}>
             Explore Products
           </LinkWithQuery>
         )}
-        {isAccountBuyer && !onlySeller && address && (
-          <LinkWithQuery to={BosonRoutes.YourAccount}>My Items</LinkWithQuery>
-        )}
+        {isAccountBuyer &&
+          !onlySeller &&
+          address &&
+          checkIfUserHaveRole(roles, [UserRoles.Buyer], false) && (
+            <LinkWithQuery to={BosonRoutes.YourAccount}>My Items</LinkWithQuery>
+          )}
       </Links>
     </NavigationLinks>
   );

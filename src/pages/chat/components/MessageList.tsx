@@ -233,7 +233,7 @@ export default function MessageList({
                 <MessageContent>
                   <StyledImage
                     src={exchange?.offer.metadata.imageUrl}
-                    alt="exchange image"
+                    alt={"exchange image" + exchange.id}
                     style={{
                       height: "3.125rem",
                       width: "3.125rem",

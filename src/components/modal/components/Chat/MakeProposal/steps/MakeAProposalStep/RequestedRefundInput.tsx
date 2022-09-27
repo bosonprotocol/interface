@@ -8,6 +8,7 @@ import { Input } from "../../../../../../form";
 import ConvertedPrice from "../../../../../../price/ConvertedPrice";
 import CurrencyIcon from "../../../../../../price/CurrencyIcon";
 import { useConvertedPrice } from "../../../../../../price/useConvertedPrice";
+import { MAX_PERCENTAGE_DECIMALS } from "../../../const";
 import { FormModel } from "../../MakeProposalFormModel";
 
 const RefundAmountWrapper = styled.div`
@@ -56,7 +57,7 @@ export default function RequestedRefundInput({
   const decimals = Number(exchangeToken.decimals);
   const formatDecimalsToIntValue = (value: string | number): BigNumber => {
     return utils.parseUnits(
-      typeof value === "number" ? value.toString() : value || "0",
+      typeof value === "number" ? value.toFixed(decimals) : value || "0",
       decimals
     );
   };
@@ -88,7 +89,7 @@ export default function RequestedRefundInput({
           const percentageFromInput = (
             (currentRefundAmount / Number(inEscrowWithDecimals)) *
             100
-          ).toFixed(3);
+          ).toFixed(MAX_PERCENTAGE_DECIMALS);
           setFieldValue(
             FormModel.formFields.refundPercentage.name,
             percentageFromInput,
@@ -101,7 +102,7 @@ export default function RequestedRefundInput({
           const percentageFromInput = (
             (Number(currentRefundAmount) / Number(inEscrow)) *
             100
-          ).toFixed(3);
+          ).toFixed(MAX_PERCENTAGE_DECIMALS);
           const refundAmountFromPercentage: string = (
             (Number(inEscrowWithDecimals) * Number(percentageFromInput)) /
             100
@@ -110,7 +111,7 @@ export default function RequestedRefundInput({
             (Number(refundAmountFromPercentage) /
               Number(inEscrowWithDecimals)) *
             100
-          ).toFixed(3);
+          ).toFixed(MAX_PERCENTAGE_DECIMALS);
           setFieldValue(
             FormModel.formFields.refundPercentage.name,
             percentageFromRoundedRefundAmount,

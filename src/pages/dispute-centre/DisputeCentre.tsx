@@ -1,11 +1,13 @@
 import { Formik } from "formik";
 import { ArrowLeft, ArrowRight } from "phosphor-react";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { generatePath, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
 import ExchangePreview from "../../components/modal/components/Chat/components/ExchangePreview";
+import { useModal } from "../../components/modal/useModal";
 import {
   disputeCentreInitialValues,
   disputeCentreValidationSchemaAdditionalInformation,
@@ -15,7 +17,9 @@ import {
   disputeCentreValidationSchemaTellUsMore
 } from "../../components/product/utils";
 import MultiSteps from "../../components/step/MultiSteps";
+import SuccessTransactionToast from "../../components/toasts/SuccessTransactionToast";
 import Grid from "../../components/ui/Grid";
+import { CONFIG } from "../../lib/config";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
@@ -75,14 +79,14 @@ const ItemPreview = styled(Grid)<{ isLteS: boolean }>`
 
 function DisputeCentre() {
   const { bosonXmtp } = useChatContext();
+  const { showModal } = useModal();
   const { address } = useAccount();
   const coreSDK = useCoreSDK();
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [submitError, setSubmitError] = useState<Error | null>(null);
   const [isRightArrowEnabled, setIsRightArrowEnabled] =
     useState<boolean>(false);
-  const params = useParams();
-  const exchangeId = params["id"];
+  const { [UrlParameters.exchangeId]: exchangeId } = useParams();
   const navigate = useKeepQueryParamsNavigate();
   const { isLteS } = useBreakpoints();
   const { data: buyers } = useBuyers({
@@ -146,7 +150,7 @@ function DisputeCentre() {
               } else {
                 navigate({
                   pathname: generatePath(BosonRoutes.Exchange, {
-                    [UrlParameters.exchangeId]: exchangeId
+                    [UrlParameters.exchangeId]: exchangeId as string
                   })
                 });
               }
@@ -196,7 +200,7 @@ function DisputeCentre() {
               initialValues={disputeCentreInitialValues}
               onSubmit={async (values) => {
                 try {
-                  if (!bosonXmtp) {
+                  if (!bosonXmtp && values.proposalType?.label) {
                     const err = new Error(
                       "You have to initialize the chat before raising a dispute"
                     );
@@ -204,38 +208,55 @@ function DisputeCentre() {
                     console.error(err.message);
                     return;
                   }
-                  setSubmitError(null);
-                  const { proposal, filesWithData } = await createProposal({
-                    isSeller: false,
-                    sellerOrBuyerId: exchange.buyer.id,
-                    proposalFields: {
-                      description: values.description,
-                      upload: values.upload,
-                      proposalTypeName: values.proposalType?.label || "",
-                      refundPercentage: values.refundPercentage,
-                      disputeContext: [values.getStarted, values.tellUsMore]
-                    },
-                    exchangeId: exchange.id,
-                    coreSDK
-                  });
-                  await sendProposalToChat({
-                    bosonXmtp,
-                    proposal,
-                    files: filesWithData,
-                    destinationAddress: exchange.seller.operator,
-                    threadId: {
-                      buyerId: exchange.buyer.id,
-                      sellerId: exchange.seller.id,
-                      exchangeId: exchange.id
-                    }
-                  });
+                  if (bosonXmtp) {
+                    setSubmitError(null);
+                    const { proposal, filesWithData } = await createProposal({
+                      isSeller: false,
+                      sellerOrBuyerId: exchange.buyer.id,
+                      proposalFields: {
+                        description: values.description,
+                        upload: values.upload,
+                        proposalTypeName: values.proposalType?.label || "",
+                        refundPercentage: values.refundPercentage,
+                        disputeContext: [values.getStarted, values.tellUsMore]
+                      },
+                      exchangeId: exchange.id,
+                      coreSDK
+                    });
+                    await sendProposalToChat({
+                      bosonXmtp,
+                      proposal,
+                      files: filesWithData,
+                      destinationAddress: exchange.seller.operator,
+                      threadId: {
+                        buyerId: exchange.buyer.id,
+                        sellerId: exchange.seller.id,
+                        exchangeId: exchange.id
+                      }
+                    });
+                  }
                   const tx = await coreSDK.raiseDispute(exchange.id);
+                  showModal("WAITING_FOR_CONFIRMATION");
                   await tx.wait();
+                  toast((t) => (
+                    <SuccessTransactionToast
+                      t={t}
+                      action={`Raised dispute: ${exchange.offer.metadata.name}`}
+                      url={CONFIG.getTxExplorerUrl?.(tx.hash)}
+                    />
+                  ));
                   navigate({
                     pathname: BosonRoutes.DisputeCenter
                   });
                 } catch (error) {
                   console.error(error);
+                  const hasUserRejectedTx =
+                    (error as unknown as { code: string }).code ===
+                    "ACTION_REJECTED";
+                  if (hasUserRejectedTx) {
+                    showModal("CONFIRMATION_FAILED");
+                  }
+
                   setSubmitError(error as Error);
                 }
               }}

@@ -4,20 +4,27 @@ import { parseUnits } from "@ethersproject/units";
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
-dayjs.extend(localizedFormat);
 import { Form, Formik, FormikHelpers } from "formik";
 import isArray from "lodash/isArray";
 import keys from "lodash/keys";
 import { useCallback, useMemo, useState } from "react";
+import toast from "react-hot-toast";
 import { generatePath } from "react-router-dom";
 import { useAccount } from "wagmi";
+dayjs.extend(localizedFormat);
 
+import { ethers } from "ethers";
+
+import { Token } from "../../components/convertion-rate/ConvertionRateContext";
 import { useModal } from "../../components/modal/useModal";
 import Help from "../../components/product/Help";
 import Preview from "../../components/product/Preview";
-import { CreateProductForm } from "../../components/product/utils";
-import { CREATE_PRODUCT_STEPS } from "../../components/product/utils";
+import {
+  CREATE_PRODUCT_STEPS,
+  CreateProductForm
+} from "../../components/product/utils";
 import MultiSteps from "../../components/step/MultiSteps";
+import SuccessTransactionToast from "../../components/toasts/SuccessTransactionToast";
 import { CONFIG } from "../../lib/config";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { OffersRoutes } from "../../lib/routing/routes";
@@ -53,6 +60,11 @@ function onKeyPress(event: React.KeyboardEvent<HTMLFormElement>) {
 interface Props {
   initial: CreateProductForm;
 }
+interface SupportedJuridiction {
+  label: string;
+  deliveryTime: string;
+}
+
 function CreateProductInner({ initial }: Props) {
   const navigate = useKeepQueryParamsNavigate();
   const { chatInitializationStatus } = useChatStatus();
@@ -225,14 +237,26 @@ function CreateProductInner({ initial }: Props) {
       }
     );
 
-    const supportedJurisdictions = shippingInfo.jurisdiction.map(
-      ({ region, time }: { region: string; time: string }) => {
-        return {
-          label: region,
-          deliveryTime: time
-        };
-      }
-    );
+    const supportedJurisdictions: Array<SupportedJuridiction> =
+      shippingInfo.jurisdiction.reduce(
+        (
+          prev: Array<SupportedJuridiction>,
+          { region, time }: { region: string; time: string }
+        ) => {
+          if (region.length === 0 || time.length === 0) {
+            return prev;
+          } else {
+            return [
+              ...prev,
+              {
+                label: region,
+                deliveryTime: time
+              }
+            ];
+          }
+        },
+        [{ label: "", deliveryTime: "" }]
+      );
 
     // filter empty attributes
     const additionalAttributes = productAttributes.filter((attribute) => {
@@ -321,7 +345,14 @@ function CreateProductInner({ initial }: Props) {
         }
       });
 
-      const priceBN = parseUnits(`${coreTermsOfSale.price}`, 18); // TODO: the number of decimals (here: 18) shall depend on the token
+      const exchangeToken = CONFIG.defaultTokens.find(
+        (n: Token) => n.symbol === coreTermsOfSale.currency.value
+      );
+
+      const priceBN = parseUnits(
+        `${coreTermsOfSale.price}`,
+        Number(exchangeToken?.decimals || 18)
+      );
 
       // TODO: change when more than percentage unit
       const buyerCancellationPenaltyValue = priceBN
@@ -332,7 +363,6 @@ function CreateProductInner({ initial }: Props) {
       const sellerCancellationPenaltyValue = priceBN
         .mul(parseFloat(termsOfExchange.sellerDeposit) * 1000)
         .div(100 * 1000);
-
       const {
         voucherRedeemableFromDateInMS,
         voucherRedeemableUntilDateInMS,
@@ -345,7 +375,6 @@ function CreateProductInner({ initial }: Props) {
 
       const resolutionPeriodDurationInMS =
         parseInt(termsOfExchange.disputePeriod) * 24 * 3600 * 1000; // day to msec
-
       const offerData = {
         price: priceBN.toString(),
         sellerDeposit: sellerCancellationPenaltyValue.toString(),
@@ -359,13 +388,13 @@ function CreateProductInner({ initial }: Props) {
         validUntilDateInMS: validUntilDateInMS.toString(),
         fulfillmentPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
         resolutionPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
-        exchangeToken: "0x0000000000000000000000000000000000000000",
+        exchangeToken: exchangeToken?.address || ethers.constants.AddressZero,
         disputeResolverId: CONFIG.envName === "testing" ? 1 : 2,
         agentId: 0, // no agent
         metadataUri: `ipfs://${metadataHash}`,
         metadataHash: metadataHash
       };
-
+      showModal("WAITING_FOR_CONFIRMATION");
       const txResponse =
         sellers?.length === 0 && address
           ? await coreSDK.createSellerAndOffer(
@@ -382,7 +411,10 @@ function CreateProductInner({ initial }: Props) {
               offerData
             )
           : await coreSDK.createOffer(offerData);
-
+      showModal("TRANSACTION_SUBMITTED", {
+        action: "Create offer",
+        txHash: txResponse.hash
+      });
       const txReceipt = await txResponse.wait();
 
       const offerId = coreSDK.getCreatedOfferIdFromLogs(txReceipt.logs);
@@ -400,11 +432,28 @@ function CreateProductInner({ initial }: Props) {
       if (!createdOffer) {
         return;
       }
-      handleOpenSuccessModal({ offerInfo: createdOffer });
+      toast((t) => (
+        <SuccessTransactionToast
+          t={t}
+          action={`Created offer: ${createdOffer?.metadata?.name}`}
+          onViewDetails={() => {
+            handleOpenSuccessModal({
+              offerInfo: createdOffer || ({} as subgraph.OfferFieldsFragment)
+            });
+          }}
+        />
+      ));
+
       formikBag.resetForm();
     } catch (error: any) {
       // TODO: FAILURE MODAL
       console.error("error->", error.errors ?? error.toString());
+      const hasUserRejectedTx =
+        "code" in error &&
+        (error as unknown as { code: string }).code === "ACTION_REJECTED";
+      if (hasUserRejectedTx) {
+        showModal("CONFIRMATION_FAILED");
+      }
     }
   };
 

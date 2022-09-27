@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useAccount } from "wagmi";
 
+import Loading from "../../../components/ui/Loading";
 import { UrlParameters } from "../../../lib/routing/parameters";
 import PrivateAccount from "../private/PrivateAccount";
 import PublicAccount from "./PublicAccount";
@@ -14,7 +15,7 @@ export default function PublicOrPrivateAccount() {
   const connectedAddress = account || "";
 
   if (isConnecting || isReconnecting) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   if (connectedAddress.toLowerCase() === address.toLowerCase()) {

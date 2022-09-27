@@ -20,7 +20,8 @@ export const BosonRoutes = {
   SellerPage: `/seller/:${UrlParameters.sellerId}`,
   Sellers: "/sellers",
   SellersByIndex: `/sellers/page/:${UrlParameters.page}`,
-  Products: "/products"
+  Products: "/products",
+  Error404: "*"
 } as const;
 
 export const SellerCenterRoutes = {

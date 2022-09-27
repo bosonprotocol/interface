@@ -1,35 +1,12 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
+import { Toaster } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { HashRouter, Route } from "react-router-dom";
 
-import App from "./components/app";
 import ConvertionRateProvider from "./components/convertion-rate/ConvertionRateProvider";
-import SentryProvider from "./components/SentryProvider";
-import ScrollToTop from "./components/utils/Scroll";
 import WalletConnectionProvider from "./components/WalletConnectionProvider";
-import {
-  BosonRoutes,
-  OffersRoutes,
-  SellerCenterRoutes
-} from "./lib/routing/routes";
-import PrivateAccount from "./pages/account/private/PrivateAccountContainer";
-import PublicOrPrivateAccount from "./pages/account/public/PublicOrPrivateAccount";
-import Chat from "./pages/chat/Chat";
-import CreateProduct from "./pages/create-product/CreateProduct";
-import CustomStore from "./pages/custom-store/CustomStore";
-import DisputeCentre from "./pages/dispute-centre/DisputeCentre";
-import DisputeList from "./pages/dispute-centre/DisputeList";
-import Exchange from "./pages/exchange/Exchange";
-import Collections from "./pages/explore/Collections";
-import Explore from "./pages/explore/Explore";
-import Products from "./pages/explore/Products";
-import Landing from "./pages/landing/Landing";
-import NotFound from "./pages/not-found/NotFound";
-import OfferDetail from "./pages/offers/OfferDetail";
-import ProfilePage from "./pages/profile/ProfilePage";
-import SellerCenter from "./pages/sell/SellerCenter";
 import reportWebVitals from "./reportWebVitals";
+import AppRouter from "./router/AppRouter";
 
 const rootElement = document.getElementById("root");
 if (!rootElement) throw new Error("Unable to find the root element");
@@ -52,95 +29,27 @@ const StrictMode = ({
 
 root.render(
   <StrictMode enable={true}>
-    <WalletConnectionProvider>
-      <QueryClientProvider client={queryClient}>
-        <ConvertionRateProvider>
-          <HashRouter>
-            <ScrollToTop />
-            <SentryProvider>
-              <>
-                <Route
-                  path={`${BosonRoutes.Chat}/*`}
-                  element={<App withLayout={false} withFooter={false} />}
-                >
-                  <Route path="*" element={<Chat />} />
-                </Route>
-                <Route
-                  path={`${SellerCenterRoutes.SellerCenter}/*`}
-                  element={
-                    <App
-                      withLayout={false}
-                      withFooter={false}
-                      fluidHeader={true}
-                    />
-                  }
-                >
-                  <Route path="*" element={<SellerCenter />} />
-                </Route>
-                <Route path="/" element={<App />}>
-                  <Route path={BosonRoutes.Root} element={<Landing />} />
-                  {[OffersRoutes.Root, BosonRoutes.Explore].map((route) => (
-                    <Route key={route} path={route} element={<Explore />} />
-                  ))}
-                  <Route
-                    path={SellerCenterRoutes.CreateProduct}
-                    element={<CreateProduct />}
-                  />
-                  <Route
-                    path={OffersRoutes.OfferDetail}
-                    element={<OfferDetail />}
-                  />
-                  <Route path={BosonRoutes.Exchange} element={<Exchange />} />
-                  <Route
-                    path={BosonRoutes.YourAccount}
-                    element={<PrivateAccount />}
-                  />
-                  <Route
-                    path={BosonRoutes.Account}
-                    element={<PublicOrPrivateAccount />}
-                  />
-                  <Route
-                    path={BosonRoutes.CreateStorefront}
-                    element={<CustomStore />}
-                  />
-                  <Route
-                    path={`${BosonRoutes.DisputeId}/*`}
-                    element={<DisputeCentre />}
-                  />
-                  <Route
-                    path={BosonRoutes.DisputeCenter}
-                    element={<DisputeList />}
-                  />
-                  <Route
-                    path={BosonRoutes.SellersByIndex}
-                    element={<Collections />}
-                  />
-                  <Route path={BosonRoutes.Sellers} element={<Collections />} />
-                  <Route path={BosonRoutes.Products} element={<Products />} />
-                  <Route
-                    path={BosonRoutes.ExplorePageByIndex}
-                    element={<Products />}
-                  />
-                  <Route
-                    path={BosonRoutes.ExplorePage}
-                    element={<Products />}
-                  />
-                  <Route
-                    path={BosonRoutes.BuyerPage}
-                    element={<ProfilePage profileType="buyer" />}
-                  />
-                  <Route
-                    path={BosonRoutes.SellerPage}
-                    element={<ProfilePage profileType="seller" />}
-                  />
-                  <Route path="*" element={<NotFound />} />
-                </Route>
-              </>
-            </SentryProvider>
-          </HashRouter>
-        </ConvertionRateProvider>
-      </QueryClientProvider>
-    </WalletConnectionProvider>
+    <>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 5000,
+          style: {
+            minWidth: "455px",
+            padding: "24px",
+            boxShadow: "0 3px 10px rgb(0 0 0 / 40%), 0 3px 3px rgb(0 0 0 / 5%)",
+            borderRadius: 0
+          }
+        }}
+      />
+      <WalletConnectionProvider>
+        <QueryClientProvider client={queryClient}>
+          <ConvertionRateProvider>
+            <AppRouter />
+          </ConvertionRateProvider>
+        </QueryClientProvider>
+      </WalletConnectionProvider>
+    </>
   </StrictMode>
 );
 
