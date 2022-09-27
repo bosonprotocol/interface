@@ -26,8 +26,8 @@ export function ActiveEscalatedDisputes() {
             id
             state
             escalatedDate
-
             exchange {
+              id
               offer {
                 resolutionPeriodDuration
                 price
