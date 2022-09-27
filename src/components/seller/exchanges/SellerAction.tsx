@@ -24,24 +24,55 @@ export const SellerResolveDisputeButton = ({
       useDisputeSubStatusInfo(exchange)
     : { status: "" };
   if (!exchange || status !== "Resolving") {
-    return null;
+    return (
+      <Button
+        theme="ghostSecondary"
+        size="small"
+        onClick={() => {
+          if (exchange?.id) {
+            const pathname = generatePath(BosonRoutes.ChatMessage, {
+              [UrlParameters.exchangeId]: exchange?.id ?? 0
+            });
+            navigate({ pathname });
+          }
+        }}
+      >
+        Chat <Chat size={14} />
+      </Button>
+    );
   }
 
   return (
-    <Button
-      theme="primary"
-      size="small"
-      onClick={() => {
-        if (exchange?.id) {
-          const pathname = generatePath(BosonRoutes.ChatMessage, {
-            [UrlParameters.exchangeId]: exchange?.id ?? 0
-          });
-          navigate({ pathname });
-        }
-      }}
-    >
-      Resolve dispute
-    </Button>
+    <>
+      <Button
+        theme="ghostSecondary"
+        size="small"
+        onClick={() => {
+          if (exchange?.id) {
+            const pathname = generatePath(BosonRoutes.ChatMessage, {
+              [UrlParameters.exchangeId]: exchange?.id ?? 0
+            });
+            navigate({ pathname });
+          }
+        }}
+      >
+        Chat <Chat size={14} />
+      </Button>
+      <Button
+        theme="primary"
+        size="small"
+        onClick={() => {
+          if (exchange?.id) {
+            const pathname = generatePath(BosonRoutes.ChatMessage, {
+              [UrlParameters.exchangeId]: exchange?.id ?? 0
+            });
+            navigate({ pathname });
+          }
+        }}
+      >
+        Resolve dispute
+      </Button>
+    </>
   );
 };
 
