@@ -34,6 +34,10 @@ const ContractualAgreementPage = lazy(
   () => import("../pages/contractualAgreement/ContractualAgreement")
 );
 
+const DisputeResolverPage = lazy(
+  () => import("../pages/dispute-resolver/DisputeResolver")
+);
+
 export const baseAppProps = {
   withLayout: true,
   withFooter: true,
@@ -224,6 +228,16 @@ export default [
     componentProps: {
       profileType: "seller"
     }
+  },
+  {
+    ...base,
+    path: BosonRoutes.DRAdminPage,
+    component: DisputeResolverPage
+  },
+  {
+    ...base,
+    path: BosonRoutes.DRAdmin,
+    component: DisputeResolverPage
   },
   {
     ...base,

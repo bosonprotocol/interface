@@ -13,7 +13,8 @@ export const CollectionsQueryParameters = {
   orderDirection: "orderDirection",
   orderBy: "orderBy",
   exchangeOrderBy: "exchangeOrderBy",
-  validFromDate_lte: "validFromDate_lte"
+  validFromDate_lte: "validFromDate_lte",
+  disputeResolver: "dr-admin"
 } as const;
 
 export const AccountQueryParameters = {
@@ -28,5 +29,6 @@ export const UrlParameters = {
   sellerPage: "sellerPage",
   buyerId: "id",
   sellerId: "id",
-  tokenId: "id"
+  tokenId: "id",
+  disputeResolverPageId: "disputeResolverPage"
 } as const;
