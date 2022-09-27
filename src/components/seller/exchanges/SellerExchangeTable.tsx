@@ -174,20 +174,23 @@ const Span = styled.span`
 
 export const isCompletable = (exchange: Exchange) => {
   let isRedeemedAndFulfillmentPeriodInPast = false;
-  if (
+
+  const isFulfilled =
     exchange.redeemedDate &&
     !exchange.disputedDate &&
     exchange.offer.fulfillmentPeriodDuration &&
-    exchange.state !== subgraph.ExchangeState.Completed
-  ) {
+    exchange.state !== subgraph.ExchangeState.Completed;
+
+  if (isFulfilled) {
     const fulfillmentPeriodTime = dayjs(
-      getDateTimestamp(exchange.redeemedDate) +
+      getDateTimestamp(exchange.redeemedDate || "") +
         getDateTimestamp(exchange.offer.fulfillmentPeriodDuration)
     );
     isRedeemedAndFulfillmentPeriodInPast = !!dayjs(
       fulfillmentPeriodTime
     ).isBefore(dayjs());
   }
+
   return isRedeemedAndFulfillmentPeriodInPast;
 };
 
