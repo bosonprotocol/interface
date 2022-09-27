@@ -1,4 +1,4 @@
-import { subgraph } from "@bosonprotocol/react-kit";
+import { exchanges as ExchangesKit, subgraph } from "@bosonprotocol/react-kit";
 import { Chat } from "phosphor-react";
 import { generatePath } from "react-router-dom";
 import { NavigateOptions, Path } from "react-router-dom";
@@ -48,11 +48,13 @@ export const SellerResolveDisputeButton = ({
 export const SellerActionButton = ({
   exchange,
   refetch,
-  navigate
+  navigate,
+  status
 }: {
   exchange: Exchange | null;
   refetch: () => void;
   navigate: (to: Partial<Path>, options?: NavigateOptions | undefined) => void;
+  status: ExchangesKit.AllExchangeStates | string;
 }) => {
   const { showModal, modalTypes } = useModal();
   if (!exchange) {

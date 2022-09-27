@@ -314,6 +314,7 @@ export default function SellerExchangeTable({
                 exchange={element}
                 refetch={refetch}
                 navigate={navigate}
+                status={status}
               />
             )
         };
