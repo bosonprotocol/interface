@@ -144,12 +144,14 @@ export default function MakeProposalModal({
                   onSkip={() => {
                     setActiveStep(2);
                   }}
+                  isModal
                 />
               ) : (
                 <ReviewAndSubmitStep
                   isValid={isDescribeProblemOK}
                   exchange={exchange}
                   submitError={submitError}
+                  isModal
                 />
               )}
             </Form>
