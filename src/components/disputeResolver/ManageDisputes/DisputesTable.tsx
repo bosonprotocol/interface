@@ -1,4 +1,4 @@
-import { offers as OffersKit } from "@bosonprotocol/react-kit";
+import { subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { Check } from "phosphor-react";
 import { CaretDown, CaretLeft, CaretRight, CaretUp } from "phosphor-react";
@@ -19,8 +19,8 @@ import { colors } from "../../../lib/styles/colors";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import { Disputes } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 import { CheckboxWrapper } from "../../form/Field.styles";
-import { useModal } from "../../modal/useModal";
 import OfferHistory from "../../offer/OfferHistory";
 import Price from "../../price";
 import PaginationPages from "../../seller/common/PaginationPages";
@@ -30,7 +30,7 @@ import Grid from "../../ui/Grid";
 import Image from "../../ui/Image";
 import Typography from "../../ui/Typography";
 import {
-  DisputeState,
+  DisputeStateWrapper,
   HeaderSorter,
   Pagination,
   Span,
@@ -85,7 +85,7 @@ const IndeterminateCheckbox = forwardRef<
 });
 
 export default function DisputesTable({ disputes, refetch }: Props) {
-  const { showModal, modalTypes } = useModal();
+  const coreSDK = useCoreSDK();
   const navigate = useKeepQueryParamsNavigate();
   const columns = useMemo(
     () => [
@@ -142,11 +142,6 @@ export default function DisputesTable({ disputes, refetch }: Props) {
           return <></>;
         }
 
-        console.log(
-          "🚀  roberto --  ~ file: DisputesTable.tsx ~ line 235 ~ disputes?.map ~ dispute",
-          dispute
-        );
-
         const offer = dispute.exchange.offer;
 
         return {
@@ -171,7 +166,7 @@ export default function DisputesTable({ disputes, refetch }: Props) {
           ),
           status: dispute && (
             <Tooltip interactive content={<OfferHistory offer={offer} />}>
-              <DisputeState>{dispute.state}</DisputeState>
+              <DisputeStateWrapper>{dispute.state}</DisputeStateWrapper>
             </Tooltip>
           ),
           price: (
@@ -204,18 +199,14 @@ export default function DisputesTable({ disputes, refetch }: Props) {
               </span>
             </Typography>
           ),
-          action: !(
-            status === OffersKit.OfferState.EXPIRED ||
-            status === OffersKit.OfferState.VOIDED
-          ) && (
+          action: dispute.state === subgraph.DisputeState.Escalated && (
             <>
               <Button
                 theme="bosonSecondary"
                 size="small"
                 style={{ "margin-right": "5px" }}
-                onClick={() => {
-                  // TODO: call the refuse action from the coreSDK
-                  console.log("call the refuse action from the coreSDK");
+                onClick={async () => {
+                  await coreSDK.refuseEscalatedDispute(dispute.exchange.id);
                 }}
               >
                 Refuse
@@ -223,9 +214,9 @@ export default function DisputesTable({ disputes, refetch }: Props) {
               <Button
                 theme="primary"
                 size="small"
-                onClick={() => {
-                  // TODO: call the decide action from the coreSDK
-                  console.log("call the decide action from the coreSDK");
+                onClick={async () => {
+                  // TODO: define the percentage when we decide 1/2 for now
+                  await coreSDK.decideDispute(dispute.exchange.id, "50");
                 }}
               >
                 Decide

@@ -98,7 +98,7 @@ export const Span = styled.span`
   }
 `;
 
-export const DisputeState = styled.div`
+export const DisputeStateWrapper = styled.div`
   background-color: ${colors.cyan};
   padding: 0.4rem;
   border-radius: 5%;
