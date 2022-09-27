@@ -56,7 +56,8 @@ function Explore({ offers, ...rest }: WithAllOffersProps) {
   useEffect(() => {
     window.scroll({ top: 0, behavior: "smooth" });
     handleChange(ExploreQueryParameters.page, pageIndex.toString());
-  }, [pageIndex, handleChange]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pageIndex]);
 
   const pageOptions = useMemo(() => {
     let options = {
@@ -146,7 +147,7 @@ function Explore({ offers, ...rest }: WithAllOffersProps) {
     isSortable: true,
     ...filterOptions
   });
-  console.log("TEST", offers, offerArray);
+
   return (
     <ExploreContainer>
       <LayoutRoot>

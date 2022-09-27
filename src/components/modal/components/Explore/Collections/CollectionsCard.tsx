@@ -32,7 +32,7 @@ const ImagesContainer = styled.div`
   padding: 0;
   margin: 0;
   overflow: hidden;
-  background-color: ${colors.grey2};
+  /* background-color: ${colors.grey2}; */
 `;
 const DataWrapper = styled.div`
   width: max-content;
