@@ -3,7 +3,8 @@ export const ExploreQueryParameters = {
   seller: "seller",
   currency: "currency",
   orderDirection: "orderDirection",
-  orderBy: "orderBy"
+  orderBy: "orderBy",
+  sortBy: "sortBy"
 } as const;
 
 export const CollectionsQueryParameters = {

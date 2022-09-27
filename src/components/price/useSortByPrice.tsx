@@ -51,7 +51,7 @@ export const useSortByPrice = ({
         return { ...offer, convertedPrice: offerPrice.converted };
       });
 
-      console.log("sortedArray", sortedArray);
+      // console.log("sortedArray", sortedArray);
       if (order === "desc") {
         setOfferArray(
           sortedArray.sort((a, b) => {

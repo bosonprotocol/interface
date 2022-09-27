@@ -26,7 +26,7 @@ interface Props {
   hidePagination?: boolean;
   rows?: number;
   breadcrumbs?: boolean;
-  orderDirection?: "asc" | "desc";
+  orderDirection?: string; //"asc" | "desc";
   orderBy: string;
   exchangeOrderBy?: string;
   sortOrderByParameter?: string;

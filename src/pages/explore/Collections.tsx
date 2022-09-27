@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { generatePath, useParams } from "react-router-dom";
 import ReactSelect, { StylesConfig } from "react-select";
 import styled from "styled-components";
@@ -263,10 +263,6 @@ function Collections() {
     return filter?.orderBy || "createdAt";
   }, [filter]);
 
-  useEffect(() => {
-    console.log("filter!", filter);
-  }, [filter]);
-
   const useCollectionPayload = {
     first: OFFERS_PER_PAGE * 2,
     skip: OFFERS_PER_PAGE * pageIndex,
@@ -313,7 +309,7 @@ function Collections() {
   }, [currentAndNextPageOffers, data, data?.length, isFetched, updateUrl]);
 
   useEffect(() => {
-    console.log(queryState);
+    // console.log(queryState);
     if (queryState) {
       updateUrl(pageIndex);
     }
