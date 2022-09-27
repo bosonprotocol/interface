@@ -16,6 +16,7 @@ export const offerGraphQl = gql`
     validFromDate
     validUntilDate
     voidedAt
+    voided
     createdAt
     voucherRedeemableUntilDate
     disputeResolver {
@@ -29,6 +30,9 @@ export const offerGraphQl = gql`
       finalizedDate
       redeemedDate
       revokedDate
+      buyer {
+        id
+      }
     }
     seller {
       id
