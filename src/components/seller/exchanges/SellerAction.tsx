@@ -32,10 +32,7 @@ export const SellerResolveDisputeButton = ({
   exchange: Exchange | null;
   navigate: (to: Partial<Path>, options?: NavigateOptions | undefined) => void;
 }) => {
-  const { status } = exchange
-    ? // eslint-disable-next-line react-hooks/rules-of-hooks
-      useDisputeSubStatusInfo(exchange)
-    : { status: "" };
+  const { status } = useDisputeSubStatusInfo(exchange);
   if (!exchange || status !== "Resolving") {
     return (
       <Button
