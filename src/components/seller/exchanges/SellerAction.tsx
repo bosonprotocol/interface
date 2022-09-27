@@ -12,6 +12,19 @@ import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
 import { isCompletable } from "./SellerExchangeTable";
 
+const generatePathAndNavigate = ({
+  exchangeId,
+  navigate
+}: {
+  exchangeId: string;
+  navigate: (to: Partial<Path>, options?: NavigateOptions | undefined) => void;
+}) => {
+  const pathname = generatePath(BosonRoutes.ChatMessage, {
+    [UrlParameters.exchangeId]: exchangeId ?? 0
+  });
+  navigate({ pathname });
+};
+
 export const SellerResolveDisputeButton = ({
   exchange,
   navigate
@@ -30,10 +43,7 @@ export const SellerResolveDisputeButton = ({
         size="small"
         onClick={() => {
           if (exchange?.id) {
-            const pathname = generatePath(BosonRoutes.ChatMessage, {
-              [UrlParameters.exchangeId]: exchange?.id ?? 0
-            });
-            navigate({ pathname });
+            generatePathAndNavigate({ exchangeId: exchange?.id, navigate });
           }
         }}
       >
@@ -48,10 +58,7 @@ export const SellerResolveDisputeButton = ({
       size="small"
       onClick={() => {
         if (exchange?.id) {
-          const pathname = generatePath(BosonRoutes.ChatMessage, {
-            [UrlParameters.exchangeId]: exchange?.id ?? 0
-          });
-          navigate({ pathname });
+          generatePathAndNavigate({ exchangeId: exchange?.id, navigate });
         }
       }}
     >
@@ -101,10 +108,7 @@ export const SellerActionButton = ({
         size="small"
         onClick={() => {
           if (exchange?.id) {
-            const pathname = generatePath(BosonRoutes.ChatMessage, {
-              [UrlParameters.exchangeId]: exchange?.id ?? 0
-            });
-            navigate({ pathname });
+            generatePathAndNavigate({ exchangeId: exchange?.id, navigate });
           }
         }}
       >
