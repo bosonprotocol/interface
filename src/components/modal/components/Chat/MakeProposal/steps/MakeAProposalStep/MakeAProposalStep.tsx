@@ -24,6 +24,7 @@ interface Props {
   isValid: boolean;
   exchange: Exchange;
   onSkip: () => void;
+  isModal?: boolean;
 }
 
 export const RefundLabel = "Refund";
@@ -33,7 +34,8 @@ export default function MakeAProposalStep({
   exchange,
   onNextClick,
   isValid,
-  onSkip
+  onSkip,
+  isModal = false
 }: Props) {
   const { address } = useAccount();
   const { data: buyers = [] } = useBuyers({
@@ -98,15 +100,17 @@ export default function MakeAProposalStep({
         >
           Next
         </Button>
-        <Button
-          theme="outline"
-          onClick={() => {
-            setFieldValue(FormModel.formFields.proposalType.name, null, true);
-            onSkip();
-          }}
-        >
-          Skip
-        </Button>
+        {!isModal && (
+          <Button
+            theme="outline"
+            onClick={() => {
+              setFieldValue(FormModel.formFields.proposalType.name, null, true);
+              onSkip();
+            }}
+          >
+            Skip
+          </Button>
+        )}
       </ButtonsSection>
     </>
   );
