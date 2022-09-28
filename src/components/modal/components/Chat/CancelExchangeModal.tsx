@@ -156,7 +156,7 @@ export default function CancelExchangeModal({
       {cancelError && <SimpleError />}
       <ButtonsSection>
         <CancelButton
-          variant="primary"
+          variant="secondary"
           exchangeId={exchange.id}
           envName={CONFIG.envName}
           disabled={isLoading}
@@ -197,7 +197,7 @@ export default function CancelExchangeModal({
             toast((t) => (
               <SuccessTransactionToast
                 t={t}
-                action={`Cancelled exchange: ${exchangeId}`}
+                action={`Cancelled exchange: ${offer.metadata.name}`}
                 onViewDetails={() => {
                   showModal(modalTypes.DETAIL_WIDGET, {
                     title: "You have successfully cancelled!",

@@ -159,11 +159,11 @@ export default function CompleteExchange({
                 txHash: hash
               });
             }}
-            onSuccess={(receipt, { exchangeId }) => {
+            onSuccess={(receipt) => {
               toast((t) => (
                 <SuccessTransactionToast
                   t={t}
-                  action={`Completed exchange: ${exchangeId}`}
+                  action={`Completed exchange: ${exchange.offer.metadata.name}`}
                   url={CONFIG.getTxExplorerUrl?.(receipt.transactionHash)}
                 />
               ));

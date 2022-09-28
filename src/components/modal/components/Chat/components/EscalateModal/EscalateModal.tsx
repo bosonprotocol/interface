@@ -1,7 +1,9 @@
 import { ArrowLeft, ArrowRight } from "phosphor-react";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import styled from "styled-components";
 
+import { CONFIG } from "../../../../../../lib/config";
 import { colors } from "../../../../../../lib/styles/colors";
 import { zIndex } from "../../../../../../lib/styles/zIndex";
 import { useBreakpoints } from "../../../../../../lib/utils/hooks/useBreakpoints";
@@ -9,8 +11,10 @@ import { Exchange } from "../../../../../../lib/utils/hooks/useExchanges";
 import { useCoreSDK } from "../../../../../../lib/utils/useCoreSdk";
 import SimpleError from "../../../../../error/SimpleError";
 import MultiSteps from "../../../../../step/MultiSteps";
+import SuccessTransactionToast from "../../../../../toasts/SuccessTransactionToast";
 import Button from "../../../../../ui/Button";
 import Grid from "../../../../../ui/Grid";
+import { useModal } from "../../../../useModal";
 import ExchangePreview from "../ExchangePreview";
 import EscalateFinalStep from "./steps/EscalateFinalStep";
 import EscalateStepOne from "./steps/EscalateStepOne";
@@ -68,6 +72,7 @@ const multiStepsData = [
 ];
 
 function EscalateModal({ exchange, hideModal }: Props) {
+  const { showModal } = useModal();
   const [activeStep, setActiveStep] = useState(0);
   const [error, setError] = useState(false);
   const { isLteS } = useBreakpoints();
@@ -137,11 +142,30 @@ function EscalateModal({ exchange, hideModal }: Props) {
               }
               if (activeStep + 1 === buttonSteps.length) {
                 try {
+                  showModal("WAITING_FOR_CONFIRMATION");
                   const tx = await coreSDK.escalateDispute(exchange.id);
+                  showModal("TRANSACTION_SUBMITTED", {
+                    action: "Escalate dispute",
+                    txHash: tx.hash
+                  });
                   await tx.wait();
+                  toast((t) => (
+                    <SuccessTransactionToast
+                      t={t}
+                      action={`Escalated dispute: ${exchange.offer.metadata.name}`}
+                      url={CONFIG.getTxExplorerUrl?.(tx.hash)}
+                    />
+                  ));
                   hideModal();
                 } catch (error) {
                   console.error(error);
+                  const hasUserRejectedTx =
+                    (error as unknown as { code: string }).code ===
+                    "ACTION_REJECTED";
+                  if (hasUserRejectedTx) {
+                    showModal("CONFIRMATION_FAILED");
+                  }
+
                   setError(true);
                 }
               }

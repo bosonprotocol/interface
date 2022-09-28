@@ -77,30 +77,11 @@ export const mergeThreads = (
     : null;
   if (matchingThread) {
     if (resultingThread.messages.length && matchingThread.messages.length) {
-      const afterFirst =
-        resultingThread.messages[0].timestamp >=
-        matchingThread.messages[0].timestamp;
-      const afterLast =
-        resultingThread.messages[resultingThread.messages.length - 1]
-          .timestamp >=
-        matchingThread.messages[matchingThread.messages.length - 1].timestamp;
-      if (afterFirst && afterLast) {
-        resultingThread.messages = [
-          ...matchingThread.messages,
-          ...resultingThread.messages
-        ];
-      } else if (!afterFirst && !afterLast) {
-        resultingThread.messages = [
-          ...resultingThread.messages,
-          ...matchingThread.messages
-        ];
-      } else {
-        const dedupSortedMessages = getDedupSortedMessages(
-          resultingThread.messages,
-          matchingThread.messages
-        );
-        resultingThread.messages = dedupSortedMessages;
-      }
+      const dedupSortedMessages = getDedupSortedMessages(
+        resultingThread.messages,
+        matchingThread.messages
+      );
+      resultingThread.messages = dedupSortedMessages;
     } else {
       resultingThread.messages = matchingThread.messages || [];
     }

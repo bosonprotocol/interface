@@ -141,8 +141,8 @@ export default function VoidProduct({
         offerIds?: BigNumberish[];
       }
     ) => {
-      const text = payload.offerId
-        ? `Voided offer: ${payload.offerId}`
+      const text = offer
+        ? `Voided offer: ${offer?.metadata.name}`
         : `Voided offers: ${payload.offerIds?.join(",")}`;
       toast((t) => (
         <SuccessTransactionToast
@@ -153,7 +153,7 @@ export default function VoidProduct({
       ));
       handleFinish();
     },
-    [handleFinish]
+    [handleFinish, offer]
   );
 
   const handleBatchVoid = useCallback(async () => {

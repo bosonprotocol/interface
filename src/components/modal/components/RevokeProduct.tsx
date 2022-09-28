@@ -109,7 +109,7 @@ export default function RevokeProduct({
       </Grid>
       <Grid justifyContent="center">
         <RevokeButton
-          variant="secondaryOutline"
+          variant="secondary"
           exchangeId={exchangeId || 0}
           envName={CONFIG.envName}
           onError={(error) => {
@@ -130,12 +130,12 @@ export default function RevokeProduct({
               txHash: hash
             });
           }}
-          onSuccess={(receipt, { exchangeId }) => {
+          onSuccess={(receipt) => {
             hideModal();
             toast((t) => (
               <SuccessTransactionToast
                 t={t}
-                action={`Revoked exchange: ${exchangeId}`}
+                action={`Revoked exchange: ${exchange.offer.metadata.name}`}
                 url={CONFIG.getTxExplorerUrl?.(receipt.transactionHash)}
               />
             ));

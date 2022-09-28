@@ -1,6 +1,5 @@
 import { Exchange } from "../../../../../lib/utils/hooks/useExchanges";
 import { useCreateForm } from "../../../../product/utils/useCreateForm";
-import { FormModel } from "../MakeProposal/MakeProposalFormModel";
 import DescribeProblemStep from "../MakeProposal/steps/DescribeProblemStep";
 import MakeAProposalStep from "../MakeProposal/steps/MakeAProposalStep/MakeAProposalStep";
 import ReviewAndSubmitStep from "../MakeProposal/steps/ReviewAndSubmitStep";
@@ -19,11 +18,12 @@ export default function MakeProposalCore({
   submitError
 }: Props) {
   const formValues = useCreateForm();
+
   const isDescribeProblemOK = Object.keys(formValues.errors).length === 0;
 
-  const isMakeAProposalOK =
-    !formValues.errors[FormModel.formFields.refundPercentage.name];
-  const isFormValid = isDescribeProblemOK && isMakeAProposalOK;
+  const onSkipMethod = () => {
+    setActiveStep(activeStep + 1);
+  };
 
   return (
     <>
@@ -34,15 +34,18 @@ export default function MakeProposalCore({
         />
       ) : activeStep === 3 ? (
         <MakeAProposalStep
-          onBackClick={() => setActiveStep(activeStep - 1)}
-          onNextClick={() => setActiveStep(activeStep + 1)}
-          isValid={isMakeAProposalOK}
+          onNextClick={() => {
+            setActiveStep(activeStep + 1);
+          }}
+          isValid={isDescribeProblemOK}
           exchange={exchange}
+          onSkip={() => {
+            onSkipMethod();
+          }}
         />
       ) : (
         <ReviewAndSubmitStep
-          onBackClick={() => setActiveStep(activeStep - 1)}
-          isValid={isFormValid}
+          isValid={isDescribeProblemOK}
           exchange={exchange}
           submitError={submitError}
         />

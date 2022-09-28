@@ -45,6 +45,7 @@ export default function MakeProposalModal({
   const { data: sellers = [] } = useSellers({
     operator: address
   });
+
   const mySellerId = sellers[0]?.id || "";
   const iAmTheSeller = mySellerId === exchange.seller.id;
   const sellerOrBuyerId = iAmTheSeller ? exchange.seller.id : exchange.buyer.id;
@@ -128,10 +129,6 @@ export default function MakeProposalModal({
         ) => {
           const isDescribeProblemOK = Object.keys(props.errors).length === 0;
 
-          const isMakeAProposalOK =
-            !props.errors[FormModel.formFields.proposalType.name] &&
-            !props.errors[FormModel.formFields.refundPercentage.name];
-          const isFormValid = isDescribeProblemOK && isMakeAProposalOK;
           return (
             <Form>
               {activeStep === 0 ? (
@@ -141,17 +138,20 @@ export default function MakeProposalModal({
                 />
               ) : activeStep === 1 ? (
                 <MakeAProposalStep
-                  onBackClick={() => setActiveStep(0)}
                   onNextClick={() => setActiveStep(2)}
-                  isValid={isMakeAProposalOK}
+                  isValid={isDescribeProblemOK}
                   exchange={exchange}
+                  onSkip={() => {
+                    setActiveStep(2);
+                  }}
+                  isModal
                 />
               ) : (
                 <ReviewAndSubmitStep
-                  onBackClick={() => setActiveStep(1)}
-                  isValid={isFormValid}
+                  isValid={isDescribeProblemOK}
                   exchange={exchange}
                   submitError={submitError}
+                  isModal
                 />
               )}
             </Form>

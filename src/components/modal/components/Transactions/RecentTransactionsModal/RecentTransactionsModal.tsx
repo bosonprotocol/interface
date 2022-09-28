@@ -4,9 +4,7 @@ import styled from "styled-components";
 
 import { colors } from "../../../../../lib/styles/colors";
 import { Spinner } from "../../../../loading/Spinner";
-import Button from "../../../../ui/Button";
 import Grid from "../../../../ui/Grid";
-import { ModalProps } from "../../../ModalContext";
 import Toggle from "./Toggle";
 
 const PendingGrid = styled(Grid)`
@@ -16,10 +14,6 @@ const PendingGrid = styled(Grid)`
 const CompletedGrid = styled(Grid)`
   color: ${colors.green};
 `;
-
-interface Props {
-  hideModal: NonNullable<ModalProps["hideModal"]>;
-}
 
 // TODO: get actual pending and complete local/meta transactions
 const pendingTx = [
@@ -35,7 +29,7 @@ const completedTx = [
   }
 ];
 
-function RecentTransactionsModal({ hideModal }: Props) {
+function RecentTransactionsModal() {
   const [transactions, setTransactions] = useState(pendingTx);
   return (
     <Grid flexDirection="column" alignItems="flex-start" gap="1rem">
@@ -78,7 +72,6 @@ function RecentTransactionsModal({ hideModal }: Props) {
           );
         })}
       </Grid>
-      <Button onClick={hideModal}>Close</Button>
     </Grid>
   );
 }

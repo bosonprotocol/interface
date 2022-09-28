@@ -5,6 +5,8 @@ import styled from "styled-components";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import { Offer } from "../../lib/types/offer";
+import { useDisputeSubStatusInfo } from "../../lib/utils/hooks/useDisputeSubStatusInfo";
+import { Exchange } from "../../lib/utils/hooks/useExchanges";
 
 const Statuses = styled.div`
   position: absolute;
@@ -79,24 +81,46 @@ const Status = styled.div<{
 
 interface Props {
   offer: Offer;
-  exchange: NonNullable<Offer["exchanges"]>[number];
+  exchange: Exchange;
   style?: React.CSSProperties;
   statusStyle?: React.CSSProperties;
   showValid?: boolean;
   displayDot?: boolean;
   size?: "small" | "regular" | "large";
+  isDisputeSubState?: boolean;
 }
 interface StatusToComponentProps {
   style?: React.CSSProperties;
   size?: "small" | "regular" | "large";
+  exchange: Exchange;
+  isDisputeSubState: boolean;
 }
 
 const StatusToComponent = (
-  { size, style }: StatusToComponentProps,
+  { size, style, exchange, isDisputeSubState }: StatusToComponentProps,
   type: string
 ) => {
-  const component = () =>
-    ({
+  const { status, color, background } = useDisputeSubStatusInfo(exchange);
+  const disputeStatus = () => {
+    return (
+      <Status
+        $color={color}
+        $background={background}
+        $size={size}
+        style={style}
+        className="status"
+        data-testid={`${status}-status`}
+      >
+        {status}
+      </Status>
+    );
+  };
+
+  if (exchange.disputed && isDisputeSubState) {
+    return disputeStatus();
+  }
+  const component = () => {
+    return {
       [subgraph.ExchangeState.Cancelled]: (
         <Status
           $color={colors.darkGrey}
@@ -194,7 +218,8 @@ const StatusToComponent = (
         </Status>
       )
       // eslint-disable-next-line
-    }[type]);
+    }[type];
+  };
 
   return component();
 };
@@ -205,14 +230,18 @@ export default function ExchangeStatuses({
   style,
   statusStyle,
   displayDot = false,
-  size = "regular"
+  size = "regular",
+  isDisputeSubState = false
 }: Props) {
   const status = useMemo(
     () =>
       exchanges.getExchangeState(exchange as subgraph.ExchangeFieldsFragment),
     [exchange]
   );
-  const Component = StatusToComponent({ size, style: statusStyle }, status);
+  const Component = StatusToComponent(
+    { size, style: statusStyle, exchange: exchange, isDisputeSubState },
+    status
+  );
   const isMetadataValid = offer.isValid;
 
   return (
