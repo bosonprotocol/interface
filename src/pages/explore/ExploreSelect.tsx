@@ -15,11 +15,11 @@ interface FilterValue {
 }
 const selectOptions = [
   {
-    value: "price:desc",
+    value: "price:asc",
     label: "Price Low to High ($)"
   },
   {
-    value: "price:asc",
+    value: "price:desc",
     label: "Price High to Low ($)"
   },
   {
@@ -108,13 +108,8 @@ const SelectFilterWrapper = styled.div`
 interface Props {
   params?: ParsedQuery<string>;
   handleChange: (name: string, value: string) => void;
-  refetch: () => void;
 }
-export default function ExploreSelect({
-  params,
-  handleChange,
-  refetch
-}: Props) {
+export default function ExploreSelect({ params, handleChange }: Props) {
   const location = useLocation();
   const DEFAULT_FILTER =
     params?.[ExploreQueryParameters.sortBy] || "validFromDate:desc";

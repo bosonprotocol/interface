@@ -1,6 +1,8 @@
+import orderBy from "lodash/orderBy";
 import { useMemo } from "react";
 
 import { Offer } from "../../lib/types/offer";
+import { FilterOptions } from "../../pages/explore/WithAllOffers";
 
 interface ExtendedOffer extends Offer {
   convertedPrice?: string;
@@ -8,37 +10,31 @@ interface ExtendedOffer extends Offer {
 
 interface Props {
   offers: ExtendedOffer[] | undefined;
-  isSortable: boolean;
-  [x: string]: any;
 }
-export const useSortByPrice = ({ offers, ...rest }: Props) => {
+export const useSortByPrice = ({
+  offers,
+  isSortable,
+  exchangeOrderBy,
+  orderDirection
+}: Props & FilterOptions) => {
   const offerArray = useMemo(() => {
-    if (rest.orderDirection === "desc") {
-      return offers?.sort((a, b) => {
-        if (a.convertedPrice && b.convertedPrice) {
-          return a.convertedPrice > b.convertedPrice
-            ? 1
-            : b.convertedPrice > a.convertedPrice
-            ? -1
-            : 0;
+    if (isSortable) {
+      if (exchangeOrderBy === "price") {
+        if (orderDirection === "desc") {
+          return orderBy(offers, "convertedPrice", "desc") as ExtendedOffer[];
+        } else {
+          return orderBy(offers, "convertedPrice", "asc") as ExtendedOffer[];
         }
-        return 0;
-      }) as ExtendedOffer[];
-    } else if (rest.orderDirection === "asc") {
-      return offers?.sort((a, b) => {
-        if (a.convertedPrice && b.convertedPrice) {
-          return a.convertedPrice < b.convertedPrice
-            ? 1
-            : b.convertedPrice < a.convertedPrice
-            ? -1
-            : 0;
-        }
-        return 0;
-      }) as ExtendedOffer[];
-    } else {
-      return offers;
+      }
+      if (exchangeOrderBy === "committedDate") {
+        return orderBy(offers, "committedDate", "desc") as ExtendedOffer[];
+      }
+      if (exchangeOrderBy === "redeemedDate") {
+        return orderBy(offers, "redeemedDate", "desc") as ExtendedOffer[];
+      }
     }
-  }, [offers, rest]); // eslint-disable-line
+    return offers;
+  }, [offers, isSortable, exchangeOrderBy, orderDirection]);
 
   return offerArray;
 };

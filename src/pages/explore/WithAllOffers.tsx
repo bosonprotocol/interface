@@ -1,41 +1,75 @@
 import { BigNumber, utils } from "ethers";
-import omit from "lodash/omit";
+import sortBy from "lodash/sortBy";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 
 import ConvertionRateContext from "../../components/convertion-rate/ConvertionRateContext";
+import { LayoutRoot } from "../../components/Layout";
+import Grid from "../../components/ui/Grid";
 import Loading from "../../components/ui/Loading";
+import Typography from "../../components/ui/Typography";
 import { CONFIG } from "../../lib/config";
 import { ExploreQueryParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
+import { breakpoint } from "../../lib/styles/breakpoint";
+import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { convertPrice } from "../../lib/utils/convertPrice";
 import { useInfiniteOffers } from "../../lib/utils/hooks/offers/useInfiniteOffers";
+import ExploreSelect from "./ExploreSelect";
 import useSearchParams from "./useSearchParams";
 
+const ExploreContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0 auto 4rem auto;
+  overflow: hidden;
+`;
+const TopContainer = styled.div`
+  display: grid;
+  grid-template-columns: 70% 30%;
+  align-items: center;
+  justify-content: center;
+  ${breakpoint.m} {
+    flex-direction: row;
+  }
+`;
+const ExploreOffersContainer = styled.div`
+  background: ${colors.lightGrey};
+  padding: 3rem 0 4rem 0;
+`;
 export const Wrapper = styled.div`
   text-align: center;
 `;
 interface ExtendedOffer extends Offer {
   convertedPrice?: string;
 }
+export interface FilterOptions {
+  orderDirection: string;
+  orderBy: string;
+  isSortable: boolean;
+  validFromDate?: string;
+  validUntilDate?: string;
+  exchangeOrderBy?: string;
+  validFromDate_lte?: string;
+}
 export interface WithAllOffersProps {
   offers?: ExtendedOffer[];
   isLoading?: boolean;
-  isError?: any;
+  isError?: boolean;
   showoffPage?: number;
   offersPerPage?: number;
   params?: any;
-  handleChange?: any;
+  handleChange: (name: string, value: string) => void;
   pageOptions?: any;
-  filterOptions?: any;
-  refetch?: any;
+  filterOptions?: FilterOptions;
 }
 const DEFAULT_PAGE = 0;
 const OFFERS_PER_PAGE = 999;
 const SHOWOFF_PAGE = 4;
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 12;
 export function WithAllOffers<P>(
   WrappedComponent: React.ComponentType<WithAllOffersProps>
 ) {
@@ -76,74 +110,75 @@ export function WithAllOffers<P>(
     }, [location.pathname]); // eslint-disable-line
 
     const filterOptions = useMemo(() => {
-      const sortBy = params?.[ExploreQueryParameters.sortBy] || false;
-      let payload = {
+      const filterByName = params?.[ExploreQueryParameters.name] || false;
+      const sortByParam = params?.[ExploreQueryParameters.sortBy] || false;
+      let payload;
+      const basePayload = {
         orderDirection: "",
         orderBy: "",
-        validFromDate: "",
-        validUntilDate: "",
-        exchangeOrderBy: "",
-        validFromDate_lte: ""
+        isSortable: false
       };
 
-      if (sortBy !== false) {
+      if (filterByName !== false) {
+        payload = {
+          ...basePayload,
+          name: filterByName
+        };
+      }
+      if (sortByParam !== false) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        const [orderBy, orderDirection] = sortBy.split(":");
+        const [orderBy, orderDirection] = sortByParam.split(":");
         if (orderBy === "committedDate" || orderBy === "redeemedDate") {
           payload = {
-            ...payload,
+            ...basePayload,
             orderDirection: orderDirection,
             orderBy: "createdAt",
-            exchangeOrderBy: orderBy
+            exchangeOrderBy: orderBy,
+            isSortable: true
           };
         } else if (orderBy === "validFromDate") {
           payload = {
-            ...payload,
+            ...basePayload,
             orderDirection: orderDirection,
             orderBy: orderBy,
             validFromDate_lte: `${Math.floor(Date.now() / 1000)}`
           };
         } else {
           payload = {
-            ...payload,
+            ...basePayload,
             orderDirection: orderDirection,
-            orderBy: orderBy
+            orderBy: orderBy === "price" ? "createdAt" : orderBy,
+            exchangeOrderBy: orderBy,
+            isSortable: orderBy === "price"
           };
         }
       }
-      return payload;
+      return payload as FilterOptions;
     }, [params]);
-
-    const infinityParams = useMemo(
-      () => ({
-        first: OFFERS_PER_PAGE + 1,
-        ...omit(filterOptions, ["validFromDate", "validUntilDate" ]) // prettier-ignore
-      }),
-      [filterOptions]
-    );
 
     const {
       data,
       isLoading,
       isError,
-      refetch,
       isFetchingNextPage,
+      refetch,
       fetchNextPage
     } = useInfiniteOffers(
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      infinityParams,
+      { first: OFFERS_PER_PAGE + 1, disableMemo: true, ...filterOptions }, // prettier-ignore
       {
-        keepPreviousData: true
+        enabled: !!filterOptions?.orderBy,
+        keepPreviousData: false
       }
     );
 
     useEffect(() => {
-      if (infinityParams.orderBy !== "price") {
+      if (filterOptions?.isSortable === false) {
         refetch();
       }
-    }, [infinityParams]); // eslint-disable-line
+    }, [filterOptions]); // eslint-disable-line
 
     const thereAreMoreOffers = useMemo(() => {
       const offersWithOneExtra = data?.pages[data.pages.length - 1];
@@ -195,33 +230,57 @@ export function WithAllOffers<P>(
             rates: store.rates,
             fixed: 8
           });
-          return { ...offer, convertedPrice: offerPrice.converted };
+          return {
+            ...offer,
+            convertedPrice: offerPrice.converted,
+            committedDate:
+              sortBy(offer.exchanges, "committedDate")[0]?.committedDate || "0",
+            redeemedDate:
+              sortBy(offer.exchanges, "redeemedDate")[0]?.redeemedDate || "0"
+          };
         }) || [];
 
       return sortedArray as ExtendedOffer[];
     }, [data, store.rates]);
 
-    const allProps = {
-      isLoading: isLoading || thereAreMoreOffers || isFetchingNextPage,
-      isError,
-      showoffPage: 4,
-      offersPerPage: 10,
-      offers: allOffers,
-      params,
-      handleChange,
-      pageOptions,
-      filterOptions,
-      refetch
-    };
-
-    if (allProps.isLoading) {
-      return (
-        <Wrapper>
-          <Loading />
-        </Wrapper>
-      );
-    }
-    return <WrappedComponent {...props} {...allProps} />;
+    return (
+      <ExploreContainer>
+        <LayoutRoot>
+          <TopContainer>
+            <Typography tag="h2" $fontSize="2.25rem">
+              Explore products
+            </Typography>
+            <Grid justifyContent="flex-end">
+              <ExploreSelect params={params} handleChange={handleChange} />
+            </Grid>
+          </TopContainer>
+        </LayoutRoot>
+        <ExploreOffersContainer>
+          <LayoutRoot>
+            {isLoading || thereAreMoreOffers || isFetchingNextPage ? (
+              <Wrapper>
+                <Loading />
+              </Wrapper>
+            ) : (
+              <WrappedComponent
+                {...props}
+                isLoading={
+                  isLoading || thereAreMoreOffers || isFetchingNextPage
+                }
+                isError={isError}
+                showoffPage={4}
+                offersPerPage={10}
+                params={params}
+                handleChange={handleChange}
+                pageOptions={pageOptions}
+                filterOptions={filterOptions}
+                offers={allOffers}
+              />
+            )}
+          </LayoutRoot>
+        </ExploreOffersContainer>
+      </ExploreContainer>
+    );
   };
   return ComponentWithAllOffers;
 }

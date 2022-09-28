@@ -61,8 +61,7 @@ export const getOffers = async (props: UseOffersProps) => {
     offerCurationList: props.offerCurationList || [],
     first: props.first,
     skip: props.skip,
-    voided: props.voided,
-    exchangeOrderBy: props.exchangeOrderBy || ""
+    voided: props.voided
   };
 
   const getOffersQueryArgs = {
@@ -80,8 +79,7 @@ export const getOffers = async (props: UseOffersProps) => {
       props.quantityAvailable_gte as null
     ),
     offer: false,
-    voided: props.voided === true || props.voided === false,
-    exchangeOrderBy: props.exchangeOrderBy || ""
+    voided: props.voided === true || props.voided === false
   };
 
   return fetchCurationListOffers(props, getOffersQueryArgs, variables);
@@ -104,8 +102,7 @@ export async function getOfferById(
     sellerId: props.sellerId,
     sellerCurationList: props.sellerCurationList || [],
     offerCurationList: props.offerCurationList || [],
-    voided: props.voided,
-    exchangeOrderBy: props.exchangeOrderBy
+    voided: props.voided
   };
 
   const getOffersQueryArgs = {
@@ -119,8 +116,7 @@ export async function getOfferById(
     quantityAvailable_lte: false,
     quantityAvailable_gte: false,
     offer: true,
-    voided: props.voided === true || props.voided === false,
-    exchangeOrderBy: props.exchangeOrderBy || ""
+    voided: props.voided === true || props.voided === false
   };
 
   const [offer] = await fetchCurationListOffers(
@@ -175,8 +171,13 @@ async function fetchCurationListOffers(
   const offers = memoizedMergeAndSortOffers(
     getMergedAndSortedCacheKey(props),
     sellerCurationListResult,
-    offerCurationListResult
+    offerCurationListResult,
+    props?.disableMemo || false
   );
+
+  // if (props?.disableMemo) {
+  //   return offers;
+  // }
 
   if (offerId) {
     const newOffer = offers.find((offer) => offer.id === offerId);

@@ -1,6 +1,6 @@
 import { gql } from "graphql-request";
 
-export const offerGraphQl = (exchangeOrderBy?: string) => gql`
+export const offerGraphQl = () => gql`
   {
     id
     createdAt
@@ -21,7 +21,7 @@ export const offerGraphQl = (exchangeOrderBy?: string) => gql`
     disputeResolver {
       escalationResponsePeriod
     }
-    exchanges(orderBy: ${exchangeOrderBy ? `${exchangeOrderBy}` : null}) {
+    exchanges {
       cancelledDate
       committedDate
       completedDate
@@ -149,8 +149,7 @@ export function buildGetOffersQuery({
   quantityAvailable_gte,
   sellerCurationList,
   offerCurationList,
-  voided,
-  exchangeOrderBy
+  voided
 }: {
   exchangeToken: boolean;
   sellerId: boolean;
@@ -165,7 +164,6 @@ export function buildGetOffersQuery({
   sellerCurationList: boolean;
   offerCurationList: boolean;
   voided: boolean;
-  exchangeOrderBy: string;
 }) {
   return gql`
   query GetOffers(
@@ -216,7 +214,7 @@ export function buildGetOffersQuery({
         name_contains_nocase: $name_contains_nocase
       }
     ) {
-      offer ${offerGraphQl(exchangeOrderBy)}
+      offer ${offerGraphQl()}
     }
   }
 `;
