@@ -1,5 +1,5 @@
 import { CaretDown, CaretUp } from "phosphor-react";
-import { Fragment, useReducer } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
@@ -32,25 +32,33 @@ interface CollapseProps {
   isInitiallyOpen?: boolean;
   title: React.ReactNode;
   wrap?: boolean;
+  disable?: boolean;
 }
 export default function Collapse({
   children,
   isInitiallyOpen = false,
   title,
-  wrap = false
+  wrap = false,
+  disable = false
 }: CollapseProps) {
-  const [isOpen, toggleCollapsible] = useReducer(
-    (state) => !state,
-    isInitiallyOpen
-  );
+  const [isOpen, setIsOpen] = useState<boolean>(isInitiallyOpen);
+
+  const toggleCollapsible = useCallback(() => {
+    setIsOpen(!isOpen);
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (isInitiallyOpen !== isOpen) {
+      setIsOpen(isInitiallyOpen);
+    }
+  }, [isInitiallyOpen]); // eslint-disable-line
 
   const Wrapper = wrap ? CollapseWrapper : Fragment;
   return (
     <Wrapper>
-      <CollapsibleButton onClick={toggleCollapsible}>
+      <CollapsibleButton onClick={disable ? () => null : toggleCollapsible}>
         <>
           <Title>{title}</Title>
-
           <ArrowContainer>
             {isOpen ? <CaretUp /> : <CaretDown />}
           </ArrowContainer>

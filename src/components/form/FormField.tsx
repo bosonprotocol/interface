@@ -1,5 +1,3 @@
-import React from "react";
-
 import Tooltip from "../tooltip/Tooltip";
 import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
@@ -12,7 +10,8 @@ export default function FormField({
   required = false,
   tooltip,
   children,
-  style = {}
+  style = {},
+  theme = ""
 }: FormFieldProps) {
   return (
     <FormFieldWrapper
@@ -21,6 +20,7 @@ export default function FormField({
       alignItems="flex-start"
       flexGrow="1"
       style={style}
+      theme={theme}
     >
       <Grid justifyContent="flex-start" margin="0 0 0.375rem 0">
         <Typography data-header tag="p">

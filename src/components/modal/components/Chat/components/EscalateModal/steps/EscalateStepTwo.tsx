@@ -1,8 +1,10 @@
 import { Form, Formik } from "formik";
+import { useState } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../../../../../../lib/styles/colors";
 import Collapse from "../../../../../../collapse/Collapse";
+import { Checkbox } from "../../../../../../form";
 import FormField from "../../../../../../form/FormField";
 import Input from "../../../../../../form/Input";
 import Button from "../../../../../../ui/Button";
@@ -10,6 +12,11 @@ import Grid from "../../../../../../ui/Grid";
 import Typography from "../../../../../../ui/Typography";
 
 const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+
   background: ${colors.white};
   margin-top: 2rem;
   padding: 2rem;
@@ -19,7 +26,9 @@ const Container = styled.div`
 `;
 
 function EscalateStepTwo() {
+  const [activeStep, setActiveStep] = useState<number>(0);
   const initialValues = {};
+
   return (
     <Formik<typeof initialValues>
       initialValues={{ ...initialValues }}
@@ -28,11 +37,14 @@ function EscalateStepTwo() {
         console.log(values);
       }}
     >
-      {() => {
+      {({ values }) => {
+        console.log(values);
         return (
           <Form>
             <Container>
               <Collapse
+                isInitiallyOpen={activeStep === 0}
+                disable={activeStep < 0}
                 wrap
                 title={
                   <Typography tag="h6" margin="0">
@@ -54,17 +66,26 @@ function EscalateStepTwo() {
                     your wallet. This will allow the dispute resolver to verify
                     your identity.
                   </Typography>
-                  <FormField title="Message">
+                  <FormField theme="white" title="Message">
                     <Input name="message" />
                   </FormField>
-                  <Button theme="bosonSecondaryInverse">Sign</Button>
+                  <Button
+                    theme="bosonSecondaryInverse"
+                    onClick={() => {
+                      setActiveStep(1);
+                    }}
+                  >
+                    Sign
+                  </Button>
                 </Grid>
               </Collapse>
               <Collapse
+                isInitiallyOpen={activeStep === 1}
+                disable={activeStep < 1}
                 wrap
                 title={
                   <Typography tag="h6" margin="0">
-                    2. Confirm Escalation
+                    2. Case Description and Evidence
                   </Typography>
                 }
               >
@@ -78,12 +99,44 @@ function EscalateStepTwo() {
                     fontWeight="400"
                     color={colors.darkGrey}
                   >
-                    Confirm the dispute escalation transaction.
+                    Email the dispute resolver by copying the below details and
+                    attaching any evidence (e.g. Chat Transcript, Files, etc)
                   </Typography>
-                  <Button theme="escalate">Escalate</Button>
+                  <FormField theme="white" title="Email Address">
+                    <Input
+                      name="email"
+                      placeholder="disputes@bosonprotocol.io"
+                    />
+                  </FormField>
+                  <FormField theme="white" title="Authentication message">
+                    <Input name="exchangeId" placeholder="XY" />
+                    <Input name="disputeId" placeholder="XY" />
+                    <Input
+                      name="Signature"
+                      placeholder="893984vgghjkjhlklkjkjljlkjlkjkljlhkjgjhgjhhgf"
+                    />
+                  </FormField>
+                  <FormField theme="white" title="Chat transcript">
+                    <Button
+                      theme="bosonSecondaryInverse"
+                      onClick={() => {
+                        setActiveStep(2);
+                      }}
+                    >
+                      Download CSV
+                    </Button>
+                  </FormField>
                 </Grid>
               </Collapse>
+              <div>
+                <Checkbox
+                  name="confirm"
+                  text="I confirm that I've sent the required email to the Dispute Resolver."
+                />
+              </div>
               <Collapse
+                isInitiallyOpen={activeStep === 2}
+                disable={activeStep < 2}
                 wrap
                 title={
                   <Typography tag="h6" margin="0">
@@ -101,15 +154,9 @@ function EscalateStepTwo() {
                     fontWeight="400"
                     color={colors.darkGrey}
                   >
-                    Email the dispute resolver by copying the below details and
-                    attaching any evidence (e.g. Chat Transcript, Files, etc)
+                    Confirm the dispute escalation transaction.
                   </Typography>
-                  <FormField title="Email Address">
-                    <Input name="email" />
-                  </FormField>
-                  <FormField title="Authentication message">
-                    Exchange ID Dispute ID Signature
-                  </FormField>
+                  <Button theme="escalate">Escalate</Button>
                 </Grid>
               </Collapse>
             </Container>

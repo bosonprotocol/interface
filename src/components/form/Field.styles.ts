@@ -222,11 +222,24 @@ export const FieldTextArea = styled.textarea.attrs((props: { error: any }) => ({
         `}
 `;
 
-export const FormFieldWrapper = styled(Grid)`
+export const FormFieldWrapper = styled(Grid).attrs(
+  (props: { theme: string }) => ({
+    theme: props.theme
+  })
+)`
   margin-bottom: 3.5rem;
   p {
     line-height: 150%;
   }
+
+  ${({ theme }) =>
+    theme === "white" &&
+    `
+    margin-bottom: 0.5rem;
+    input {
+      background: ${colors.white};
+    }
+  `}
 
   [data-header] {
     margin: 0;

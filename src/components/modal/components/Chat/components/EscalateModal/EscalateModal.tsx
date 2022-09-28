@@ -66,9 +66,8 @@ const StyledButton = styled.button`
 `;
 
 const multiStepsData = [
-  { steps: 1, name: "Dispute Overview" },
-  { steps: 1, name: "Escalate Dispute" },
-  { steps: 1, name: "Contact Dispute Resolver" }
+  { steps: 2, name: "Dispute Content" },
+  { steps: 1, name: "Escalate Dispute" }
 ];
 
 function EscalateModal({ exchange, hideModal }: Props) {
