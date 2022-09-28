@@ -16,7 +16,6 @@ import Button from "../../../../../ui/Button";
 import Grid from "../../../../../ui/Grid";
 import { useModal } from "../../../../useModal";
 import ExchangePreview from "../ExchangePreview";
-import EscalateFinalStep from "./steps/EscalateFinalStep";
 import EscalateStepOne from "./steps/EscalateStepOne";
 import EscalateStepTwo from "./steps/EscalateStepTwo";
 
@@ -55,7 +54,7 @@ const StyledButtonGrid = styled(Grid)<{ isLteS: boolean }>`
   }
 `;
 
-const buttonSteps = ["Next", "Escalate Dispute", "Done"];
+const buttonSteps = ["Next", "Done"];
 
 const StyledButton = styled.button`
   border: none;
@@ -66,7 +65,7 @@ const StyledButton = styled.button`
 `;
 
 const multiStepsData = [
-  { steps: 2, name: "Dispute Content" },
+  { steps: 1, name: "Dispute Content" },
   { steps: 1, name: "Escalate Dispute" }
 ];
 
@@ -82,9 +81,9 @@ function EscalateModal({ exchange, hideModal }: Props) {
       case 0:
         return <EscalateStepOne exchange={exchange} />;
       case 1:
-        return <EscalateStepTwo />;
-      case 2:
-        return <EscalateFinalStep exchange={exchange} />;
+        return <EscalateStepTwo exchange={exchange} />;
+      // case 2:
+      //   return <EscalateFinalStep exchange={exchange} />;
       default:
         return 0;
     }

@@ -13,7 +13,6 @@ import Typography from "../../../../../../ui/Typography";
 interface Props {
   exchange: Exchange;
 }
-
 const StyledGrid = styled(Grid)`
   background: ${colors.white};
 `;

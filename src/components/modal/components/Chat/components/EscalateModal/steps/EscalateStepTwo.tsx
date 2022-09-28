@@ -3,6 +3,7 @@ import { useState } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../../../../../../lib/styles/colors";
+import { Exchange } from "../../../../../../../lib/utils/hooks/useExchanges";
 import Collapse from "../../../../../../collapse/Collapse";
 import { Checkbox } from "../../../../../../form";
 import FormField from "../../../../../../form/FormField";
@@ -25,7 +26,10 @@ const Container = styled.div`
   }
 `;
 
-function EscalateStepTwo() {
+interface Props {
+  exchange: Exchange;
+}
+function EscalateStepTwo({ exchange }: Props) {
   const [activeStep, setActiveStep] = useState<number>(0);
   const initialValues = {};
 
@@ -55,6 +59,7 @@ function EscalateStepTwo() {
                 <Grid
                   flexDirection="column"
                   justifyContent="flex-start"
+                  align-items="flex-start"
                   gap="1rem"
                 >
                   <Typography
@@ -67,7 +72,10 @@ function EscalateStepTwo() {
                     your identity.
                   </Typography>
                   <FormField theme="white" title="Message">
-                    <Input name="message" />
+                    <Input
+                      name="message"
+                      placeholder="“I, 0xabc123, wish to escalate the dispute relating to exchange with ID: X”"
+                    />
                   </FormField>
                   <Button
                     theme="bosonSecondaryInverse"
@@ -92,6 +100,7 @@ function EscalateStepTwo() {
                 <Grid
                   flexDirection="column"
                   justifyContent="flex-start"
+                  align-items="flex-start"
                   gap="1rem"
                 >
                   <Typography
@@ -147,6 +156,7 @@ function EscalateStepTwo() {
                 <Grid
                   flexDirection="column"
                   justifyContent="flex-start"
+                  align-items="flex-start"
                   gap="1rem"
                 >
                   <Typography

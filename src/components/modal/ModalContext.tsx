@@ -22,7 +22,7 @@ type ModalSize = "xxs" | "xs" | "s" | "m" | "l" | "xl";
 export type Store = {
   modalType: ModalType;
   modalProps?: Parameters<ModalContextType["showModal"]>[1];
-  modalSize?: ModalSize | "auto";
+  modalSize?: ModalSize | "auto" | "fullscreen";
   modalMaxWidth?: Partial<
     Record<ModalSize, React.CSSProperties["maxWidth"]>
   > | null;

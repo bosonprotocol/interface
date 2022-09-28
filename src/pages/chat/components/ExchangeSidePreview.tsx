@@ -318,7 +318,7 @@ export default function ExchangeSidePreview({
                   title: "Escalate",
                   exchange: exchange
                 },
-                "auto"
+                "fullscreen"
               )
             }
           >

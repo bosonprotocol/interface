@@ -59,6 +59,13 @@ const sizeToMargin = {
     xl: "4rem 14rem"
   },
   auto: {
+    xs: "4rem auto",
+    s: "4rem auto",
+    m: "4rem auto",
+    l: "4rem auto",
+    xl: "4rem auto"
+  },
+  fullscreen: {
     xs: "0 auto",
     s: "0 auto",
     m: "0 auto",
@@ -156,10 +163,10 @@ const Wrapper = styled.div<{
       sizeToMargin[$size as keyof typeof sizeToMargin]["xl"] || "4rem 14rem"};
   }
   ${({ $size }) =>
-    $size === "auto" &&
+    $size === "fullscreen" &&
     `
-    min-height: 100vh;
-  `};
+      min-height: 100vh;
+    `};
 `;
 
 const Header = styled(Typography)<{ $title?: string }>`
@@ -202,7 +209,7 @@ const Content = styled.div<{
   }};
 
   ${({ $size }) =>
-    $size === "auto"
+    $size === "fullscreen"
       ? `
   max-height: calc(100vh - 4.25rem);
 
