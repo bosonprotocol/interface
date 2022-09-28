@@ -20,7 +20,6 @@ import { ProductGridContainer } from "../profile/ProfilePage.styles";
 import ExploreSelect from "./ExploreSelect";
 import ExploreViewMore from "./ExploreViewMore";
 import Pagination from "./Pagination";
-import useSearchParams from "./useSearchParams";
 import { WithAllOffers, WithAllOffersProps } from "./WithAllOffers";
 
 const ExploreContainer = styled.div`
@@ -47,86 +46,27 @@ const ExploreOffersContainer = styled.div`
   padding: 3rem 0 4rem 0;
 `;
 
-function Explore({ offers, ...rest }: WithAllOffersProps) {
+function Explore({
+  offers,
+  params,
+  handleChange,
+  pageOptions,
+  filterOptions,
+  refetch
+}: WithAllOffersProps) {
   const location = useLocation();
   const navigate = useKeepQueryParamsNavigate();
-  const { params, handleChange } = useSearchParams();
-  const [pageIndex, setPageIndex] = useState<number>(Number(params?.page || 0));
+  const [pageIndex, setPageIndex] = useState<number | null>(
+    Number(params?.page || 0)
+  );
 
   useEffect(() => {
-    window.scroll({ top: 0, behavior: "smooth" });
-    handleChange(ExploreQueryParameters.page, pageIndex.toString());
+    if (pageIndex !== null) {
+      window.scroll({ top: 0, behavior: "smooth" });
+      handleChange(ExploreQueryParameters.page, pageIndex.toString());
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageIndex]);
-
-  const pageOptions = useMemo(() => {
-    let options = {
-      pagination: true,
-      itemsPerPage: rest?.offersPerPage || 10,
-      type: ["Sellers", "Products"]
-    };
-    if (location?.pathname === BosonRoutes.Explore) {
-      options = {
-        ...options,
-        pagination: false,
-        itemsPerPage: rest?.showoffPage || 4
-      };
-    }
-    if (location?.pathname === BosonRoutes.Products) {
-      options = {
-        ...options,
-        type: ["Products"]
-      };
-    }
-    if (location?.pathname === BosonRoutes.Sellers) {
-      options = {
-        ...options,
-        type: ["Sellers"]
-      };
-    }
-
-    return options;
-  }, [location.pathname, rest]); // eslint-disable-line
-
-  const filterOptions = useMemo(() => {
-    const sortBy = params?.[ExploreQueryParameters.sortBy] || false;
-    let payload = {
-      orderDirection: "",
-      orderBy: "",
-      validFromDate: "",
-      validUntilDate: "",
-      exchangeOrderBy: "",
-      validFromDate_lte: ""
-    };
-
-    if (sortBy !== false) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      const [orderBy, orderDirection] = sortBy.split(":");
-      if (orderBy === "committedDate" || orderBy === "redeemedDate") {
-        payload = {
-          ...payload,
-          orderDirection: orderDirection,
-          orderBy: "createdAt",
-          exchangeOrderBy: orderBy
-        };
-      } else if (orderBy === "validFromDate") {
-        payload = {
-          ...payload,
-          orderDirection: orderDirection,
-          orderBy: orderBy,
-          validFromDate_lte: `${Math.floor(Date.now() / 1000)}`
-        };
-      } else {
-        payload = {
-          ...payload,
-          orderDirection: orderDirection,
-          orderBy: orderBy
-        };
-      }
-    }
-    return payload;
-  }, [params]);
 
   const { data, isLoading: collectionsIsLoading } = useCollections({
     ...filterOptions
@@ -142,9 +82,9 @@ function Explore({ offers, ...rest }: WithAllOffersProps) {
     return data;
   }, [data]);
 
-  const { offerArray } = useSortByPrice({
+  const offerArray = useSortByPrice({
     offers,
-    isSortable: true,
+    isSortable: filterOptions.orderBy === "price",
     ...filterOptions
   });
 
@@ -156,7 +96,11 @@ function Explore({ offers, ...rest }: WithAllOffersProps) {
             Explore products
           </Typography>
           <Grid justifyContent="flex-end">
-            <ExploreSelect params={params} handleChange={handleChange} />
+            <ExploreSelect
+              params={params}
+              handleChange={handleChange}
+              refetch={refetch}
+            />
           </Grid>
         </TopContainer>
       </LayoutRoot>
@@ -172,9 +116,10 @@ function Explore({ offers, ...rest }: WithAllOffersProps) {
                     name="Products"
                     url={BosonRoutes.Products}
                     onClick={() => {
+                      setPageIndex(0);
                       navigate({
                         pathname: `${BosonRoutes.Products}`,
-                        search: qs.stringify(params)
+                        search: qs.stringify({ ...params, page: 0 })
                       });
                     }}
                     showMore={location?.pathname === BosonRoutes.Explore}
@@ -192,10 +137,10 @@ function Explore({ offers, ...rest }: WithAllOffersProps) {
                       offerArray
                         ?.slice(
                           pageOptions.pagination
-                            ? pageIndex * pageOptions?.itemsPerPage
+                            ? (pageIndex || 0) * pageOptions?.itemsPerPage
                             : 0,
                           pageOptions.pagination
-                            ? pageIndex * pageOptions?.itemsPerPage +
+                            ? (pageIndex || 0) * pageOptions?.itemsPerPage +
                                 pageOptions?.itemsPerPage
                             : pageOptions?.itemsPerPage
                         )
@@ -216,9 +161,10 @@ function Explore({ offers, ...rest }: WithAllOffersProps) {
                     name="Sellers"
                     url={BosonRoutes.Sellers}
                     onClick={() => {
+                      setPageIndex(0);
                       navigate({
                         pathname: `${BosonRoutes.Sellers}`,
-                        search: qs.stringify(params)
+                        search: qs.stringify({ ...params, page: 0 })
                       });
                     }}
                     showMore={location?.pathname === BosonRoutes.Explore}
@@ -236,10 +182,10 @@ function Explore({ offers, ...rest }: WithAllOffersProps) {
                       collections
                         ?.slice(
                           pageOptions.pagination
-                            ? pageIndex * pageOptions?.itemsPerPage
+                            ? (pageIndex || 0) * pageOptions?.itemsPerPage
                             : 0,
                           pageOptions.pagination
-                            ? pageIndex * pageOptions?.itemsPerPage +
+                            ? (pageIndex || 0) * pageOptions?.itemsPerPage +
                                 pageOptions?.itemsPerPage
                             : pageOptions?.itemsPerPage
                         )
@@ -253,10 +199,18 @@ function Explore({ offers, ...rest }: WithAllOffersProps) {
               )}
               {pageOptions.pagination && (
                 <Pagination
-                  defaultPage={pageIndex}
-                  // TODO: add proper values based on real props
-                  isNextEnabled={true}
-                  isPreviousEnabled={true}
+                  defaultPage={pageIndex || 0}
+                  isNextEnabled={
+                    ((pageOptions.type.includes("Sellers")
+                      ? collections?.length
+                      : offerArray?.length) || 0) >=
+                    pageOptions.itemsPerPage * ((pageIndex || 0) + 1) + 1
+                  }
+                  isPreviousEnabled={
+                    ((pageOptions.type.includes("Sellers")
+                      ? collections?.length
+                      : offerArray?.length) || 0) > 0
+                  }
                   onChangeIndex={(index: number) => {
                     setPageIndex(index);
                   }}

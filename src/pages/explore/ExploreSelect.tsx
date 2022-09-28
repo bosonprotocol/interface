@@ -108,8 +108,13 @@ const SelectFilterWrapper = styled.div`
 interface Props {
   params?: ParsedQuery<string>;
   handleChange: (name: string, value: string) => void;
+  refetch: () => void;
 }
-export default function ExploreSelect({ params, handleChange }: Props) {
+export default function ExploreSelect({
+  params,
+  handleChange,
+  refetch
+}: Props) {
   const location = useLocation();
   const DEFAULT_FILTER =
     params?.[ExploreQueryParameters.sortBy] || "validFromDate:desc";
