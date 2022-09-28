@@ -1,5 +1,6 @@
 import { BigNumber, utils } from "ethers";
 import sortBy from "lodash/sortBy";
+import { ParsedQuery } from "query-string";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
@@ -61,9 +62,13 @@ export interface WithAllOffersProps {
   isError?: boolean;
   showoffPage?: number;
   offersPerPage?: number;
-  params?: any;
+  params?: ParsedQuery<string>;
   handleChange: (name: string, value: string) => void;
-  pageOptions?: any;
+  pageOptions: {
+    itemsPerPage: number;
+    pagination: boolean;
+    type: string[];
+  };
   filterOptions?: FilterOptions;
 }
 const DEFAULT_PAGE = 0;
