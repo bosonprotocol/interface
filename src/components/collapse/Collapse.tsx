@@ -1,6 +1,8 @@
 import { CaretDown, CaretUp } from "phosphor-react";
-import { ReactNode, useReducer } from "react";
+import { Fragment, useReducer } from "react";
 import styled from "styled-components";
+
+import { colors } from "../../lib/styles/colors";
 
 const CollapsibleButton = styled.button.attrs({ type: "button" })`
   all: unset;
@@ -18,26 +20,33 @@ const Title = styled.div`
 const ArrowContainer = styled.div`
   font-size: 1.5rem;
 `;
+const CollapseWrapper = styled.div`
+  background: ${colors.lightGrey};
+  padding: 1rem;
+`;
 
 const CollapsibleContent = styled.div``;
 
-interface Props {
-  title: ReactNode;
-  children: ReactNode;
+interface CollapseProps {
+  children: React.ReactNode;
   isInitiallyOpen?: boolean;
+  title: React.ReactNode;
+  wrap?: boolean;
 }
-
 export default function Collapse({
-  title,
   children,
-  isInitiallyOpen = false
-}: Props) {
+  isInitiallyOpen = false,
+  title,
+  wrap = false
+}: CollapseProps) {
   const [isOpen, toggleCollapsible] = useReducer(
     (state) => !state,
     isInitiallyOpen
   );
+
+  const Wrapper = wrap ? CollapseWrapper : Fragment;
   return (
-    <>
+    <Wrapper>
       <CollapsibleButton onClick={toggleCollapsible}>
         <>
           <Title>{title}</Title>
@@ -48,6 +57,6 @@ export default function Collapse({
         </>
       </CollapsibleButton>
       <CollapsibleContent hidden={!isOpen}>{children}</CollapsibleContent>
-    </>
+    </Wrapper>
   );
 }

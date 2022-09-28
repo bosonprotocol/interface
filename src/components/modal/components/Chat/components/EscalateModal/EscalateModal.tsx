@@ -1,5 +1,5 @@
 import { ArrowLeft, ArrowRight } from "phosphor-react";
-import React, { useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../../../../../lib/styles/colors";
@@ -34,9 +34,8 @@ const StyledMultiSteps = styled(MultiSteps)`
 const InnerContainer = styled.div`
   max-width: 50rem;
   display: block;
-  margin: 0 auto;
-  padding-bottom: 1.5625rem;
-  margin-bottom: 1.5625rem;
+  margin: 1.5rem auto;
+  padding: 0 0 1.5rem 0;
 `;
 
 const StyledGrid = styled(Grid)`

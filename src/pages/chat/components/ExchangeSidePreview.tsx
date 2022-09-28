@@ -317,7 +317,7 @@ export default function ExchangeSidePreview({
                   title: "Escalate",
                   exchange: exchange
                 },
-                "l"
+                "auto"
               )
             }
           >

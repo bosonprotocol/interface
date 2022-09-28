@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { ArrowSquareOut } from "phosphor-react";
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../../../../../../lib/styles/colors";
@@ -37,6 +37,7 @@ function EscalateStepOne({ exchange }: Props) {
   const currentDate = dayjs();
 
   const { data } = useDisputeResolvers();
+  console.log(exchange, data);
 
   const feeAmount = data?.disputeResolvers[0]?.fees[0]?.feeAmount;
 
@@ -70,7 +71,7 @@ function EscalateStepOne({ exchange }: Props) {
           Escalate Dispute
         </Typography>
         <Typography $fontSize="1rem" fontWeight="400" color={colors.darkGrey}>
-          Escalating a dispute will enable the dispute resolver to decide on the
+          Escalating a dispute will enable the dispite resolver to decide on the
           outcome of the dispute. The dispute resolver will decide based on the
           contractual agreement and evidence submitted by both parties.
         </Typography>

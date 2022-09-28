@@ -4,7 +4,7 @@ import { Action } from "../../../components/offer/OfferCard";
 import OfferList from "../../../components/offers/OfferList";
 import { useInfiniteOffers } from "../../../lib/utils/hooks/offers/useInfiniteOffers";
 
-const OFFERS_PER_PAGE = 10;
+const OFFERS_PER_PAGE = 2;
 
 interface Props {
   sellerId: string;
@@ -36,6 +36,8 @@ export default function Offers({
         keepPreviousData: true
       }
     );
+
+  console.log(data);
   const offersWithOneExtra = data?.pages[data.pages.length - 1];
   const allOffers =
     data?.pages.flatMap((page) => {
