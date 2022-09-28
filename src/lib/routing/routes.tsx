@@ -20,6 +20,7 @@ export const BosonRoutes = {
   SellerPage: `/seller/:${UrlParameters.sellerId}`,
   Sellers: "/sellers",
   Products: "/products",
+  License: `/license/:${UrlParameters.tokenId}`,
   Error404: "*"
 } as const;
 
