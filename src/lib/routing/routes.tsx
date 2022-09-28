@@ -21,6 +21,7 @@ export const BosonRoutes = {
   Sellers: "/sellers",
   Products: "/products",
   License: `/license/:${UrlParameters.tokenId}`,
+  ContractualAgreement: `/contractualAgreement/:${UrlParameters.offerId}`,
   Error404: "*"
 } as const;
 

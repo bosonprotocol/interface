@@ -11,8 +11,8 @@ interface Props {
   offerId: string;
 }
 
-export default function License({ offerId }: Props) {
-  const templateUrl = CONFIG.rNFTLicenseTemplate as string; // TODO: get the template from the offer metadata
+export default function ContractualAgreement({ offerId }: Props) {
+  const templateUrl = CONFIG.buyerSellerAgreementTemplate as string; // TODO: get the template from the offer metadata
   const { renderStatus, renderResult } = useRenderTemplate(
     offerId,
     templateUrl

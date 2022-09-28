@@ -1,38 +1,29 @@
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
-import LicenseComponent from "../../components/license/License";
+import ContractualAgreementComponent from "../../components/contractualAgreement/ContractualAgreement";
 import Loading from "../../components/ui/Loading";
 import { UrlParameters } from "../../lib/routing/parameters";
-import { useExchanges } from "../../lib/utils/hooks/useExchanges";
+import useOffer from "../../lib/utils/hooks/offer/useOffer";
 
 const Container = styled.div`
   display: block;
   overflow: auto;
 `;
 
-export default function License() {
-  const { [UrlParameters.tokenId]: tokenId } = useParams();
-  const exchangeId = tokenId;
+export default function ContractualAgreement() {
+  const { [UrlParameters.offerId]: offerId } = useParams();
+
   const {
-    data: exchanges,
+    data: offer,
     isError,
     isLoading
-  } = useExchanges(
+  } = useOffer(
     {
-      id: exchangeId,
-      disputed: null
+      offerId: offerId || ""
     },
-    {
-      enabled: !!exchangeId
-    }
+    { enabled: !!offerId }
   );
-  const exchange = exchanges?.[0];
-  const offer = exchange?.offer;
-
-  if (!exchangeId) {
-    return null;
-  }
 
   if (isLoading) {
     return <Loading />;
@@ -62,7 +53,9 @@ export default function License() {
   return (
     <>
       <Container>
-        <LicenseComponent offerId={offer.id}></LicenseComponent>
+        <ContractualAgreementComponent
+          offerId={offer.id}
+        ></ContractualAgreementComponent>
       </Container>
     </>
   );
