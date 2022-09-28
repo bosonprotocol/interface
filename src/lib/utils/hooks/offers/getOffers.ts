@@ -175,10 +175,6 @@ async function fetchCurationListOffers(
     props?.disableMemo || false
   );
 
-  // if (props?.disableMemo) {
-  //   return offers;
-  // }
-
   if (offerId) {
     const newOffer = offers.find((offer) => offer.id === offerId);
     return newOffer ? [newOffer] : [];

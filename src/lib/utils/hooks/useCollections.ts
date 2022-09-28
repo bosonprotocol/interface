@@ -35,6 +35,7 @@ export function useCollections(
               image: string;
             };
             exchanges: [];
+            duplicate?: boolean;
           }[];
         }[];
       }>(

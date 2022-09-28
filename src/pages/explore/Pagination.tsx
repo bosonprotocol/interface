@@ -49,9 +49,6 @@ export default function Pagination({
     setPageIndex(newIndex);
     onChangeIndex(newIndex);
   };
-  // useEffect(() => {
-  //   setPageIndex(defaultPage);
-  // }, [defaultPage]);
 
   return (
     <Container>

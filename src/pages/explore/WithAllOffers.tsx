@@ -40,6 +40,7 @@ const TopContainer = styled.div`
 const ExploreOffersContainer = styled.div`
   background: ${colors.lightGrey};
   padding: 3rem 0 4rem 0;
+  min-height: 55.5vh;
 `;
 export const Wrapper = styled.div`
   text-align: center;
@@ -48,9 +49,9 @@ interface ExtendedOffer extends Offer {
   convertedPrice?: string;
 }
 export interface FilterOptions {
-  orderDirection: string;
-  orderBy: string;
-  isSortable: boolean;
+  orderDirection?: "asc" | "desc";
+  orderBy?: string;
+  isSortable?: boolean;
   validFromDate?: string;
   validUntilDate?: string;
   exchangeOrderBy?: string;
@@ -131,9 +132,7 @@ export function WithAllOffers<P>(
         };
       }
       if (sortByParam !== false) {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        const [orderBy, orderDirection] = sortByParam.split(":");
+        const [orderBy, orderDirection] = (sortByParam as string).split(":");
         if (orderBy === "committedDate" || orderBy === "redeemedDate") {
           payload = {
             ...basePayload,
@@ -170,8 +169,6 @@ export function WithAllOffers<P>(
       refetch,
       fetchNextPage
     } = useInfiniteOffers(
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       { first: OFFERS_PER_PAGE + 1, disableMemo: true, ...filterOptions }, // prettier-ignore
       {
         enabled: !!filterOptions?.orderBy,

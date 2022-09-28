@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { UrlParameters } from "../../../../../lib/routing/parameters";
 import { BosonRoutes } from "../../../../../lib/routing/routes";
 import { colors } from "../../../../../lib/styles/colors";
+import { zIndex } from "../../../../../lib/styles/zIndex";
 import { useKeepQueryParamsNavigate } from "../../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import Grid from "../../../../ui/Grid";
 import Image from "../../../../ui/Image";
@@ -44,7 +45,7 @@ const DataContainer = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 2;
+  z-index: ${zIndex.OfferCard};
 `;
 
 interface Props {
@@ -60,6 +61,7 @@ interface Props {
         image: string;
       };
       exchanges: [];
+      duplicate?: boolean;
     }[];
   };
 }
@@ -70,14 +72,23 @@ export default function CollectionsCard({ collection }: Props) {
 
     if (array.length < 3) {
       for (let index = 0; index < 4; index++) {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        array.push({ id: index?.toString() });
+        array.push({
+          id: index?.toString(),
+          duplicate: true,
+          validFromDate: "",
+          validUntilDate: "",
+          metadata: {
+            name: "",
+            image: ""
+          },
+          exchanges: []
+        });
       }
     }
 
-    return array;
+    return array.slice(0, 4);
   }, [collection]);
+
   return (
     <CardContainer
       onClick={() => {
@@ -90,7 +101,7 @@ export default function CollectionsCard({ collection }: Props) {
     >
       <ImagesContainer>
         {images &&
-          images?.slice(0, 4).map(
+          images?.map(
             (offer) =>
               offer?.metadata?.image && (
                 <Fragment key={`CollectionsCardImage_${offer.id}`}>
@@ -128,7 +139,8 @@ export default function CollectionsCard({ collection }: Props) {
           </Grid>
           <Grid alignItems="flex-start">
             <Typography $fontSize="20px" fontWeight="600" color={colors.black}>
-              {collection?.offers.length || 0}
+              {collection?.offers.filter((offer) => !offer.duplicate).length ||
+                0}
             </Typography>
             <Typography
               $fontSize="20px"

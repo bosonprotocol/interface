@@ -42,8 +42,6 @@ function Explore({
   }, [pageIndex]);
 
   const { data, isLoading: collectionsIsLoading } = useCollections(
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     { ...filterOptions },
     {
       enabled: !!filterOptions?.orderBy
@@ -60,9 +58,7 @@ function Explore({
     return data;
   }, [data]);
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const offerArray = useSortByPrice({ offers, ...filterOptions }); // prettier-ignore
+  const offerArray = useSortByPrice({ offers, ...filterOptions });
 
   return (
     <>

@@ -1,6 +1,6 @@
 import { gql } from "graphql-request";
 
-export const offerGraphQl = () => gql`
+export const offerGraphQl = gql`
   {
     id
     createdAt
@@ -214,7 +214,7 @@ export function buildGetOffersQuery({
         name_contains_nocase: $name_contains_nocase
       }
     ) {
-      offer ${offerGraphQl()}
+      offer ${offerGraphQl}
     }
   }
 `;
