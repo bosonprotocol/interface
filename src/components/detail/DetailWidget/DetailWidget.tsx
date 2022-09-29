@@ -323,7 +323,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   };
 
   const userCommittedOffers = useMemo(
-    () => offer.exchanges?.filter((elem) => elem.buyer.id === buyerId),
+    () => offer.exchanges?.filter((elem) => elem?.buyer?.id === buyerId),
     [offer, buyerId]
   );
 
