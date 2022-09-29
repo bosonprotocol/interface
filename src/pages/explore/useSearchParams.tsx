@@ -1,5 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
 import qs from "query-string";
 import { useCallback, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
@@ -26,7 +24,7 @@ export default function useSearchParams() {
 
   useEffect(() => {
     navigate({
-      to: location.pathname,
+      pathname: location.pathname,
       search: qs.stringify(params)
     });
   }, [params]); // eslint-disable-line

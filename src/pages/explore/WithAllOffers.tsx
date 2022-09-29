@@ -190,7 +190,7 @@ export function WithAllOffers<P>(
       refetch,
       fetchNextPage
     } = useInfiniteOffers(
-      { first: OFFERS_PER_PAGE + 1, disableMemo: true, ...filterOptions }, // prettier-ignore
+      { first: OFFERS_PER_PAGE + 1, disableMemo: true, ...filterOptions },
       {
         enabled: !!filterOptions?.orderBy,
         keepPreviousData: false
