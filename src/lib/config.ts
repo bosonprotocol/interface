@@ -62,7 +62,11 @@ export const CONFIG = {
     process.env.REACT_APP_ENABLE_CURATION_LISTS
   ),
   defaultTokens: getDefaultTokens(),
-  mockSellerId: process.env.REACT_APP_MOCK_SELLER_ID
+  mockSellerId: process.env.REACT_APP_MOCK_SELLER_ID,
+  defaultDisputeResolverId:
+    process.env.REACT_APP_DEFAULT_DISPUTE_RESOLVER_ID || "1",
+  defaultDisputeResolutionPeriodDays:
+    process.env.REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS || "15"
 };
 
 function stringToBoolean(value?: string) {

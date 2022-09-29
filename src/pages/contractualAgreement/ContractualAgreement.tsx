@@ -55,6 +55,7 @@ export default function ContractualAgreement() {
       <Container>
         <ContractualAgreementComponent
           offerId={offer.id}
+          offerData={undefined}
         ></ContractualAgreementComponent>
       </Container>
     </>

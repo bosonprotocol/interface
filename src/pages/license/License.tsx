@@ -62,7 +62,10 @@ export default function License() {
   return (
     <>
       <Container>
-        <LicenseComponent offerId={offer.id}></LicenseComponent>
+        <LicenseComponent
+          offerId={offer.id}
+          offerData={undefined}
+        ></LicenseComponent>
       </Container>
     </>
   );

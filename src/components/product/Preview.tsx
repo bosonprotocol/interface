@@ -65,11 +65,10 @@ export default function Preview({ togglePreview, seller }: Props) {
   const sliderImages = slice(previewImages, 1);
   const name = values.productInformation.productTitle || "Untitled";
 
-  const weiPrice = parseUnits(`${values.coreTermsOfSale.price}`, 18);
-
-  const sellerDeposit = parseInt(values.termsOfExchange.sellerDeposit) / 100;
-  const buyerDeposit =
-    parseInt(values.termsOfExchange.buyerCancellationPenalty) / 100;
+  const priceBN = parseUnits(
+    `${values.coreTermsOfSale.price}`,
+    Number(exchangeToken?.decimals || 18)
+  );
 
   const validFromDateInMS = Date.parse(
     values.coreTermsOfSale.offerValidityPeriod[0]
@@ -87,30 +86,33 @@ export default function Preview({ togglePreview, seller }: Props) {
   const exchangeDate = Date.now().toString();
 
   const offer = {
-    price: weiPrice.toString(),
-
-    sellerDeposit: ethers.utils.formatUnits(
-      ethers.utils
-        .parseUnits(values.coreTermsOfSale.price.toString(), 18)
-        .mul(ethers.utils.parseUnits(sellerDeposit.toString(), 18))
-        .toString(),
-      18
-    ),
-    buyerCancelPenalty: ethers.utils.formatUnits(
-      ethers.utils
-        .parseUnits(values.coreTermsOfSale.price.toString(), 18)
-        .mul(ethers.utils.parseUnits(buyerDeposit.toString(), 18))
-        .toString(),
-      18
-    ),
+    price: priceBN.toString(),
+    sellerDeposit: priceBN
+      .mul(parseFloat(values.termsOfExchange.sellerDeposit) * 1000)
+      .div(100 * 1000)
+      .toString(),
+    protocolFee: "0",
+    agentFee: "0",
+    agentId: "0",
+    buyerCancelPenalty: priceBN
+      .mul(parseFloat(values.termsOfExchange.buyerCancellationPenalty) * 1000)
+      .div(100 * 1000)
+      .toString(),
+    quantityAvailable: values.coreTermsOfSale.quantity.toString(),
+    quantityInitial: values.coreTermsOfSale.quantity.toString(),
     validFromDate: validFromDateInMS.toString(),
     validUntilDate: validUntilDateInMS.toString(),
     voucherRedeemableFromDate: voucherRedeemableFromDateInMS.toString(),
     voucherRedeemableUntilDate: (
       voucherRedeemableUntilDateInMS / 1000
     ).toString(),
+    fulfillmentPeriodDuration: values.termsOfExchange.disputePeriod,
+    voucherValidDuration: "0", // we use redeemableFrom/redeemableUntil so should be 0
+    resolutionPeriodDuration: CONFIG.defaultDisputeResolutionPeriodDays,
+    metadataUri: "not-uploaded-yet", // can't be empty
+    metadataHash: "not-uploaded-yet", // can't be empty
     voidedAt: null,
-    voucherValidDuration: "21727820",
+    disputeResolverId: CONFIG.defaultDisputeResolverId,
     exchanges: [
       {
         committedDate: exchangeDate,
