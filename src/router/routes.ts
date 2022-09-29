@@ -232,11 +232,23 @@ export default [
   {
     ...base,
     path: BosonRoutes.DRAdminPage,
+    app: {
+      ...base.app,
+      withLayout: false,
+      withFooter: false,
+      fluidHeader: true
+    },
     component: DisputeResolverPage
   },
   {
     ...base,
     path: BosonRoutes.DRAdmin,
+    app: {
+      ...base.app,
+      withLayout: false,
+      withFooter: false,
+      fluidHeader: true
+    },
     component: DisputeResolverPage
   },
   {
