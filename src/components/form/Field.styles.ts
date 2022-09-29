@@ -243,9 +243,14 @@ export const FormFieldWrapper = styled(Grid).attrs(
     margin-bottom: 0.5rem;
     input, textarea {
       background: ${colors.white};
-      border-width: 0;
       :disabled {
         opacity: 1;
+      }
+    }
+    input {
+      border-width: 0;
+      &:hover {
+        border-width: 0;
       }
     }
     input + div {

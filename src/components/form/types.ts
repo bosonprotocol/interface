@@ -33,9 +33,11 @@ export interface FormFieldProps {
   children: React.ReactNode | string;
   style?: React.CSSProperties;
   theme?: string;
-  valueToCopy?: {
-    [key: string]: unknown;
-  };
+  valueToCopy?:
+    | string
+    | {
+        [key: string]: unknown;
+      };
 }
 
 export type InputColorProps = BaseProps;

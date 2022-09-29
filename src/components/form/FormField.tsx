@@ -1,3 +1,5 @@
+import isObject from "lodash/isObject";
+import mapValues from "lodash/mapValues";
 import { Copy } from "phosphor-react";
 import toast from "react-hot-toast";
 
@@ -36,7 +38,16 @@ export default function FormField({
             <CopyButton
               onClick={() => {
                 try {
-                  const copyThat = JSON.stringify(valueToCopy);
+                  const isItObject = isObject(valueToCopy);
+                  let copyThat = "";
+                  if (isItObject) {
+                    mapValues(valueToCopy, (value) => {
+                      copyThat += `${value}\n`;
+                    });
+                  } else {
+                    copyThat = valueToCopy;
+                  }
+
                   navigator.clipboard.writeText(copyThat);
                 } catch (error) {
                   console.error(error);

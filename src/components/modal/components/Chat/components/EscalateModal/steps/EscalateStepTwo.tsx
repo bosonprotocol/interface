@@ -106,7 +106,7 @@ function EscalateStepTwo({ exchange }: Props) {
   const [loading, setLoading] = useState<boolean>(false);
   const [signature, setSignature] = useState<string | null>(null);
   const { address } = useAccount();
-  const { isLoading, signMessage, ...rest } = useSignMessage({
+  const { isLoading, signMessage } = useSignMessage({
     onSuccess(data) {
       setActiveStep(1);
       setSignature(data);
@@ -117,7 +117,7 @@ function EscalateStepTwo({ exchange }: Props) {
   const initialValues = useMemo(
     () => ({
       [FormModel.formFields.message
-        .name]: `“I, ${address}, wish to escalate the dispute relating to exchange with ID: ${exchange.id}”`,
+        .name]: `I, ${address}, wish to escalate the dispute relating to exchange with ID: ${exchange.id}`,
       [FormModel.formFields.email.name]: FormModel.formFields.email.value,
       [FormModel.formFields.exchangeId.name]: `Exchange ID: ${exchange?.id}`,
       [FormModel.formFields.disputeId.name]: `Dispute ID: ${
@@ -184,7 +184,6 @@ function EscalateStepTwo({ exchange }: Props) {
             <Container>
               <Collapse
                 isInitiallyOpen={activeStep === 0}
-                disable={activeStep !== 0}
                 wrap
                 title={
                   <Typography tag="h6" margin="0">
@@ -225,7 +224,7 @@ function EscalateStepTwo({ exchange }: Props) {
               </Collapse>
               <Collapse
                 isInitiallyOpen={activeStep === 1 && values?.confirm !== true}
-                disable={activeStep !== 1}
+                disable={activeStep === 0}
                 wrap
                 title={
                   <Typography tag="h6" margin="0">
@@ -277,14 +276,14 @@ function EscalateStepTwo({ exchange }: Props) {
                       Download CSV
                     </Button>
                   </FormField>
+                  <FormField theme="white" title="">
+                    <Checkbox
+                      {...FormModel.formFields.confirm}
+                      disabled={activeStep === 0}
+                    />
+                  </FormField>
                 </Grid>
               </Collapse>
-              <FormField theme="white" title="">
-                <Checkbox
-                  {...FormModel.formFields.confirm}
-                  disabled={activeStep === 0}
-                />
-              </FormField>
               <Collapse
                 isInitiallyOpen={values.confirm === true}
                 disable={activeStep < 1 && values.confirm !== true}

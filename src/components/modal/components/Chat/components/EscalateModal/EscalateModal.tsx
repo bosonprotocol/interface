@@ -59,7 +59,7 @@ const StyledButton = styled.button`
 `;
 
 const multiStepsData = [
-  { steps: 1, name: "Dispute Content" },
+  { steps: 1, name: "Dispute Context" },
   { steps: 1, name: "Escalate Dispute" }
 ];
 

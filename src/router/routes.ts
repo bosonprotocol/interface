@@ -6,6 +6,7 @@ import {
   OffersRoutes,
   SellerCenterRoutes
 } from "../lib/routing/routes";
+import LandingPage from "../pages/landing/Landing";
 
 const ChatPage = lazy(() => import("../pages/chat/Chat"));
 const CollectionsPage = lazy(() => import("../pages/explore/Collections"));
@@ -21,7 +22,6 @@ const DisputeListPage = lazy(
 );
 const ExchangePage = lazy(() => import("../pages/exchange/Exchange"));
 const ExplorePage = lazy(() => import("../pages/explore/Explore"));
-const LandingPage = lazy(() => import("../pages/landing/Landing"));
 const NotFoundPage = lazy(() => import("../pages/not-found/NotFound"));
 const OfferDetailPage = lazy(() => import("../pages/offers/OfferDetail"));
 const PrivateAccountPage = lazy(
@@ -53,8 +53,9 @@ export const UserRoles = {
   DisputeResolver: "DisputeResolver"
 };
 export interface IRoutes extends RouteProps {
-  // eslint-disable-next-line
-  component: React.LazyExoticComponent<React.ComponentType<any>>;
+  component:
+    | React.ComponentType<any> // eslint-disable-line
+    | React.LazyExoticComponent<React.ComponentType<any>>; // eslint-disable-line
   role: Array<string | null>;
   componentProps?: {
     [key: string]: string;
