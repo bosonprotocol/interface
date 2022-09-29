@@ -32,13 +32,16 @@ export default function DisputeResolverModal({ exchangeId }: Props) {
     if (value <= 0 || value > 100) {
       setIsValidValue(true);
     }
-    setDisputePercentage(value.toFixed(0));
+    setDisputePercentage(value.toFixed(2));
   };
 
   const handleSolveDispute = async () => {
     try {
       setIsSubmitingDispute(true);
-      await coreSDK.decideDispute(exchangeId, disputePercentage);
+      await coreSDK.decideDispute(
+        exchangeId,
+        parseFloat(disputePercentage) * 100
+      );
       setIsSubmitingDispute(false);
       hideModal();
     } catch (error) {
@@ -53,13 +56,12 @@ export default function DisputeResolverModal({ exchangeId }: Props) {
       </Typography>
       <AmountWrapper>
         <InputWrapper $hasError={!!disputeError || isValidValue}>
-          <Input
-            type="number"
-            min={0}
-            max={100}
-            step="1"
-            onChange={handleChangeValue}
-          />
+          <Input type="number" min={0} max={100} onChange={handleChangeValue} />
+          <div>
+            <Typography $fontSize="0.875rem" margin="0" fontWeight="bold">
+              %
+            </Typography>
+          </div>
         </InputWrapper>
       </AmountWrapper>
       <Grid>
