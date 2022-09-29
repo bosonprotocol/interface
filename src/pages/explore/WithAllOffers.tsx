@@ -177,7 +177,8 @@ export function WithAllOffers<P>(
         "exchangeOrderBy",
         "isSortable",
         "orderBy",
-        "orderDirection"
+        "orderDirection",
+        "validFromDate_lte"
       ]) as FilterOptions;
     }, [params]);
 
