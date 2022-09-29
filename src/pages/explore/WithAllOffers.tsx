@@ -150,6 +150,7 @@ export function WithAllOffers<P>(
         if (orderBy === "committedDate" || orderBy === "redeemedDate") {
           payload = {
             ...basePayload,
+            ...payload,
             orderDirection: orderDirection,
             orderBy: "createdAt",
             exchangeOrderBy: orderBy,
@@ -158,6 +159,7 @@ export function WithAllOffers<P>(
         } else if (orderBy === "validFromDate") {
           payload = {
             ...basePayload,
+            ...payload,
             orderDirection: orderDirection,
             orderBy: orderBy,
             validFromDate_lte: `${Math.floor(Date.now() / 1000)}`
@@ -165,6 +167,7 @@ export function WithAllOffers<P>(
         } else {
           payload = {
             ...basePayload,
+            ...payload,
             orderDirection: orderDirection,
             orderBy: orderBy === "price" ? "createdAt" : orderBy,
             exchangeOrderBy: orderBy,
@@ -172,7 +175,6 @@ export function WithAllOffers<P>(
           };
         }
       }
-
       return pick(payload, [
         "name",
         "exchangeOrderBy",
