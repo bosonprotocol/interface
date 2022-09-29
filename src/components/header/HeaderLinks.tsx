@@ -148,7 +148,6 @@ export default function HeaderLinks({
   } = useBuyerSellerAccounts(address || "");
   const isAccountSeller = useMemo(() => !!sellerId, [sellerId]);
   const isAccountBuyer = useMemo(() => !!buyerId, [buyerId]);
-  // const isDisputeResolver = useMemo(() => !!buyerId, [buyerId]);
   const { disputeResolverId } = useCurrentDisputeResolverId();
   const sellUrl = useMemo(
     () =>
