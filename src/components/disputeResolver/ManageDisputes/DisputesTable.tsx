@@ -4,17 +4,11 @@ import { Check } from "phosphor-react";
 import { CaretDown, CaretLeft, CaretRight, CaretUp } from "phosphor-react";
 import { forwardRef, useEffect, useMemo, useRef } from "react";
 import { generatePath } from "react-router-dom";
-import {
-  CellProps,
-  usePagination,
-  useRowSelect,
-  useSortBy,
-  useTable
-} from "react-table";
+import { usePagination, useRowSelect, useSortBy, useTable } from "react-table";
 
 import { CONFIG } from "../../../lib/config";
 import { UrlParameters } from "../../../lib/routing/parameters";
-import { OffersRoutes } from "../../../lib/routing/routes";
+import { BosonRoutes } from "../../../lib/routing/routes";
 import { colors } from "../../../lib/styles/colors";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import { Disputes } from "../../../lib/utils/hooks/useExchanges";
@@ -41,8 +35,6 @@ interface Props {
   disputes: (Disputes | null)[];
   isError: boolean;
   isLoading?: boolean;
-  refetch: () => void;
-  setSelected: React.Dispatch<React.SetStateAction<Array<Disputes | null>>>;
 }
 
 interface IIndeterminateInputProps {
@@ -84,7 +76,7 @@ const IndeterminateCheckbox = forwardRef<
   );
 });
 
-export default function DisputesTable({ disputes, refetch }: Props) {
+export default function DisputesTable({ disputes }: Props) {
   const coreSDK = useCoreSDK();
   const navigate = useKeepQueryParamsNavigate();
   const columns = useMemo(
@@ -158,7 +150,7 @@ export default function DisputesTable({ disputes, refetch }: Props) {
               showPlaceholderText={false}
             />
           ),
-          sku: offer?.id,
+          sku: dispute.id,
           productName: (
             <Typography tag="p">
               <b>{offer?.metadata?.name}</b>
@@ -166,7 +158,9 @@ export default function DisputesTable({ disputes, refetch }: Props) {
           ),
           status: dispute && (
             <Tooltip interactive content={<OfferHistory offer={offer} />}>
-              <DisputeStateWrapper>{dispute.state}</DisputeStateWrapper>
+              <DisputeStateWrapper state={dispute.state}>
+                {dispute.state}
+              </DisputeStateWrapper>
             </Tooltip>
           ),
           price: (
@@ -236,27 +230,7 @@ export default function DisputesTable({ disputes, refetch }: Props) {
     },
     useSortBy,
     usePagination,
-    useRowSelect,
-    (hooks) => {
-      hooks.visibleColumns.push((columns) => [
-        {
-          id: "selection",
-          Header: ({ getToggleAllRowsSelectedProps }) => {
-            return (
-              <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
-            );
-          },
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          Cell: ({ row }: CellProps<any>) =>
-            !row?.original?.isSelectable ? (
-              <IndeterminateCheckbox disabled />
-            ) : (
-              <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
-            )
-        },
-        ...columns
-      ]);
-    }
+    useRowSelect
   );
   const {
     getTableProps,
@@ -339,9 +313,10 @@ export default function DisputesTable({ disputes, refetch }: Props) {
                             cell.column.id !== "status"
                           ) {
                             const pathname = generatePath(
-                              OffersRoutes.OfferDetail,
+                              BosonRoutes.Exchange,
                               {
-                                [UrlParameters.offerId]: row?.id ?? "0"
+                                [UrlParameters.exchangeId]:
+                                  row?.values?.sku ?? "0"
                               }
                             );
                             navigate({ pathname });
