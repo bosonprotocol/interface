@@ -32,7 +32,7 @@ export interface DisputeResolverInsideProps {
 const DisputeResolverCenter = (props: DisputeResolverInsideProps) => {
   return (
     <GridWrapper>
-      <DRAside {...props} />
+      <DRAside />
       <DisputeResolverInside {...props} />
     </GridWrapper>
   );

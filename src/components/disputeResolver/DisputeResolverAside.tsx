@@ -8,7 +8,6 @@ import { colors } from "../../lib/styles/colors";
 import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
 import Grid from "../ui/Grid";
 import { drPageTypes } from "./DisputeResolver";
-import { DisputeResolverProps } from "./DisputeResolverInside";
 
 const Aside = styled.aside`
   background: ${colors.white};
@@ -52,7 +51,7 @@ const AsideLink = styled.li<{ $active?: boolean }>`
   }
 `;
 
-export default function DRAside(props: DisputeResolverProps) {
+export default function DRAside() {
   const { [UrlParameters.disputeResolverPageId]: disputeResolverPage } =
     useParams();
 
