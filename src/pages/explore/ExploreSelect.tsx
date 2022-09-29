@@ -29,17 +29,14 @@ const selectOptions = [
   {
     value: "validFromDate:desc",
     label: "Recently Live"
-    // validFromDate_lte: `${Math.floor(Date.now() / 1000)}`
   },
   {
     value: "committedDate:desc",
     label: "Recently Commited"
-    // exchangeOrderBy: "committedDate",
   },
   {
     value: "redeemedDate:desc",
     label: "Recently Redeemed"
-    // exchangeOrderBy: "redeemedDate",
   }
 ] as const;
 

@@ -66,11 +66,12 @@ interface Props {
 }
 export default function CollectionsCard({ collection }: Props) {
   const navigate = useKeepQueryParamsNavigate();
+  const imagesNumber = 4;
   const images = useMemo(() => {
     const array = collection && collection.offers;
 
     if (array.length < 3) {
-      for (let index = 0; index < 4; index++) {
+      for (let index = 0; index < imagesNumber; index++) {
         array.push({
           id: index?.toString(),
           duplicate: true,
@@ -85,7 +86,7 @@ export default function CollectionsCard({ collection }: Props) {
       }
     }
 
-    return array.slice(0, 4);
+    return array.slice(0, imagesNumber);
   }, [collection]);
 
   return (
