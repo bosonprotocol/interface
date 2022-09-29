@@ -100,15 +100,21 @@ export default function Preview({ togglePreview, seller }: Props) {
       .toString(),
     quantityAvailable: values.coreTermsOfSale.quantity.toString(),
     quantityInitial: values.coreTermsOfSale.quantity.toString(),
-    validFromDate: validFromDateInMS.toString(),
-    validUntilDate: validUntilDateInMS.toString(),
-    voucherRedeemableFromDate: voucherRedeemableFromDateInMS.toString(),
+    validFromDate: (validFromDateInMS / 1000).toString(),
+    validUntilDate: (validUntilDateInMS / 1000).toString(),
+    voucherRedeemableFromDate: (
+      voucherRedeemableFromDateInMS / 1000
+    ).toString(),
     voucherRedeemableUntilDate: (
       voucherRedeemableUntilDateInMS / 1000
     ).toString(),
-    fulfillmentPeriodDuration: values.termsOfExchange.disputePeriod,
+    fulfillmentPeriodDuration: `${
+      parseInt(values.termsOfExchange.disputePeriod) * 24 * 3600
+    }`, // day to sec
     voucherValidDuration: "0", // we use redeemableFrom/redeemableUntil so should be 0
-    resolutionPeriodDuration: CONFIG.defaultDisputeResolutionPeriodDays,
+    resolutionPeriodDuration: `${
+      parseInt(CONFIG.defaultDisputeResolutionPeriodDays) * 24 * 3600
+    }`, // day to sec
     metadataUri: "not-uploaded-yet", // can't be empty
     metadataHash: "not-uploaded-yet", // can't be empty
     voidedAt: null,

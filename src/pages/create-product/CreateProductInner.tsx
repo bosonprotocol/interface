@@ -379,8 +379,10 @@ function CreateProductInner({ initial }: Props) {
         redemptionPeriod: coreTermsOfSale.redemptionPeriod
       });
 
-      const resolutionPeriodDurationInMS =
+      const fulfillmentPeriodDurationInMS =
         parseInt(termsOfExchange.disputePeriod) * 24 * 3600 * 1000; // day to msec
+      const resolutionPeriodDurationInMS =
+        parseInt(CONFIG.defaultDisputeResolutionPeriodDays) * 24 * 3600 * 1000; // day to msec
       const offerData = {
         price: priceBN.toString(),
         sellerDeposit: sellerCancellationPenaltyValue.toString(),
@@ -392,7 +394,7 @@ function CreateProductInner({ initial }: Props) {
         voucherValidDurationInMS: 0,
         validFromDateInMS: validFromDateInMS.toString(),
         validUntilDateInMS: validUntilDateInMS.toString(),
-        fulfillmentPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
+        fulfillmentPeriodDurationInMS: fulfillmentPeriodDurationInMS.toString(),
         resolutionPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
         exchangeToken: exchangeToken?.address || ethers.constants.AddressZero,
         disputeResolverId: CONFIG.defaultDisputeResolverId,

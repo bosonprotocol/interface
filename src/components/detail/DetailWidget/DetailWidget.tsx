@@ -119,10 +119,9 @@ export const getOfferDetailData = (
   const { buyerCancelationPenalty, convertedBuyerCancelationPenalty } =
     getBuyerCancelPenalty(offer, convertedPrice);
 
-  // TODO: is offer is in creation, offer.id does not exist
+  // if offer is in creation, offer.id does not exist
   const handleShowExchangePolicy = () => {
     const offerData = offer.id ? undefined : offer;
-    console.log("handleShowExchangePolicy", offer.id, offerData);
     if (modalTypes && showModal) {
       showModal(modalTypes.EXCHANGE_POLICY_DETAILS, {
         title: "Exchange Policy Details",

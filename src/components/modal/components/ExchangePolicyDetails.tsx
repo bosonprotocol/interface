@@ -1,7 +1,6 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import { CaretDown, CaretUp } from "phosphor-react";
 import { useState } from "react";
-import styled from "styled-components";
 
 import { CONFIG } from "../../../lib/config";
 import ContractualAgreement from "../../contractualAgreement/ContractualAgreement";
@@ -14,8 +13,6 @@ interface Props {
   offerId?: string;
   offerData?: subgraph.OfferFieldsFragment;
 }
-
-const ArrowContainer = styled(Grid)``;
 
 export default function ExchangePolicyDetails({ offerId, offerData }: Props) {
   const exchangePolicy = {
