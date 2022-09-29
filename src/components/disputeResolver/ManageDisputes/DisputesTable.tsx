@@ -75,7 +75,7 @@ export default function DisputesTable({ disputes }: Props) {
         disableSortBy: true
       } as const,
       {
-        Header: "Escalated Expires",
+        Header: "Escalation Expires",
         accessor: "expiresDate",
         disableSortBy: true
       } as const,
