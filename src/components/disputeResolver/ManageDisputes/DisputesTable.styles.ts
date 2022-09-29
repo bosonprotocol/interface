@@ -1,4 +1,5 @@
-import styled from "styled-components";
+import { subgraph } from "@bosonprotocol/react-kit";
+import styled, { css } from "styled-components";
 
 import { colors } from "../../../lib/styles/colors";
 
@@ -98,8 +99,27 @@ export const Span = styled.span`
   }
 `;
 
-export const DisputeStateWrapper = styled.div`
-  background-color: ${colors.cyan};
+export const DisputeStateWrapper = styled.button.attrs(
+  (props: { state: subgraph.DisputeState }) => ({
+    state: props.state
+  })
+)`
   padding: 0.4rem;
   border-radius: 5%;
+  color: ${colors.black};
+  ${({ state }) =>
+    state === subgraph.DisputeState.Escalated &&
+    css`
+      background-color: ${colors.green};
+    `}
+  ${({ state }) =>
+    state === subgraph.DisputeState.Decided &&
+    css`
+      background-color: ${colors.blue};
+    `}
+    ${({ state }) =>
+    state === subgraph.DisputeState.Refused &&
+    css`
+      background-color: ${colors.red};
+    `};
 `;
