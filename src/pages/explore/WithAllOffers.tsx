@@ -1,4 +1,5 @@
 import { BigNumber, utils } from "ethers";
+import pick from "lodash/pick";
 import sortBy from "lodash/sortBy";
 import { ParsedQuery } from "query-string";
 import React, { useContext, useEffect, useMemo, useState } from "react";
@@ -117,7 +118,20 @@ export function WithAllOffers<P>(
 
     const filterOptions = useMemo(() => {
       const filterByName = params?.[ExploreQueryParameters.name] || false;
-      const sortByParam = params?.[ExploreQueryParameters.sortBy] || false;
+      const sortByParam =
+        params?.[ExploreQueryParameters.sortBy]?.includes("price:asc") ||
+        params?.[ExploreQueryParameters.sortBy]?.includes("price:desc") ||
+        params?.[ExploreQueryParameters.sortBy]?.includes("createdAt:desc") ||
+        params?.[ExploreQueryParameters.sortBy]?.includes(
+          "validFromDate:desc"
+        ) ||
+        params?.[ExploreQueryParameters.sortBy]?.includes(
+          "committedDate:desc"
+        ) ||
+        params?.[ExploreQueryParameters.sortBy]?.includes("redeemedDate:desc")
+          ? params?.[ExploreQueryParameters.sortBy]
+          : false;
+
       let payload;
       const basePayload = {
         orderDirection: "",
@@ -158,7 +172,13 @@ export function WithAllOffers<P>(
           };
         }
       }
-      return payload as FilterOptions;
+
+      return pick(payload, [
+        "exchangeOrderBy",
+        "isSortable",
+        "orderBy",
+        "orderDirection"
+      ]) as FilterOptions;
     }, [params]);
 
     const {

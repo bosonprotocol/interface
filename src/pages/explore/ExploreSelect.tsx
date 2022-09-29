@@ -141,8 +141,7 @@ export default function ExploreSelect({ params, handleChange }: Props) {
         placeholder=""
         value={filter}
         options={selectOptions}
-        // eslint-disable-next-line
-        onChange={(option: any) => {
+        onChange={(option) => {
           if (option !== null) {
             setFilter(option);
           }
