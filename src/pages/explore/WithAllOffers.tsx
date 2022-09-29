@@ -174,6 +174,7 @@ export function WithAllOffers<P>(
       }
 
       return pick(payload, [
+        "name",
         "exchangeOrderBy",
         "isSortable",
         "orderBy",
