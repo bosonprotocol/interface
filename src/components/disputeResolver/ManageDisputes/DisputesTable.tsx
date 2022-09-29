@@ -14,7 +14,6 @@ import { Disputes } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 import { useModal } from "../../modal/useModal";
-import OfferHistory from "../../offer/OfferHistory";
 import Price from "../../price";
 import PaginationPages from "../../seller/common/PaginationPages";
 import Tooltip from "../../tooltip/Tooltip";
@@ -22,6 +21,7 @@ import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
 import Image from "../../ui/Image";
 import Typography from "../../ui/Typography";
+import { DisputeHistory } from "../DisputeHistory/DisputeHistory";
 import {
   DisputeStateWrapper,
   HeaderSorter,
@@ -118,7 +118,7 @@ export default function DisputesTable({ disputes }: Props) {
             </Typography>
           ),
           status: dispute && (
-            <Tooltip interactive content={<OfferHistory offer={offer} />}>
+            <Tooltip interactive content={<DisputeHistory offer={offer} />}>
               <DisputeStateWrapper state={dispute.state}>
                 {dispute.state}
               </DisputeStateWrapper>
