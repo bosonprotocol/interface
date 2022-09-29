@@ -7,9 +7,10 @@ export function memoMergeAndSortOffers() {
   function mergeAndSortCurationListResults(
     cacheKey: string,
     sellerCurationListResult: CurationListGetOffersResult,
-    offerCurationListResult: CurationListGetOffersResult
+    offerCurationListResult: CurationListGetOffersResult,
+    disableMemo: boolean
   ): Offer[] {
-    const cachedOffers = cache[cacheKey] || [];
+    const cachedOffers = disableMemo ? [] : cache[cacheKey] || [];
     const sellerCurationListOffers =
       sellerCurationListResult?.productV1MetadataEntities || [];
     const offerCurationListOffers =
@@ -33,6 +34,13 @@ export function memoMergeAndSortOffers() {
     const uniqueOffers = mergedOffers.filter(
       (offer, index) => !ids.includes(Number(offer.id), index + 1)
     );
+
+    if (disableMemo) {
+      cache[cacheKey] = uniqueOffers;
+
+      return uniqueOffers;
+    }
+
     const sortedOffers = uniqueOffers.sort((a, b) => {
       if (a.metadata.name && b.metadata.name) {
         return a.metadata.name.localeCompare(b.metadata.name);

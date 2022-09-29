@@ -26,12 +26,14 @@ interface Props {
   isValid: boolean;
   exchange: Exchange;
   submitError: Error | null;
+  isModal?: boolean;
 }
 
 export default function ReviewAndSubmitStep({
   isValid,
   exchange,
-  submitError
+  submitError,
+  isModal = false
 }: Props) {
   const { bosonXmtp } = useChatContext();
   const { isSubmitting } = useFormikContext();
@@ -98,7 +100,7 @@ export default function ReviewAndSubmitStep({
             isSubmitting
           }
         >
-          Raise Dispute
+          {isModal ? "Send Proposal" : "Raise Dispute"}
           {isSubmitting && <Spinner />}
         </Button>
       </ButtonsSection>

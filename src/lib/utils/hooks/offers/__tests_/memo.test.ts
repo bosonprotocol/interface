@@ -34,7 +34,8 @@ describe("#makeMemoizedMergeAndSortOffers()", () => {
     const mergedAndSortedOffers = memoizedMergeAndSortOffers(
       "key",
       sellerCurationListResult,
-      offerCurationListResult
+      offerCurationListResult,
+      false
     );
 
     // remove duplicates
@@ -66,17 +67,20 @@ describe("#makeMemoizedMergeAndSortOffers()", () => {
     const firstMergedAndSortedOffers = memoizedMergeAndSortOffers(
       "firstKey",
       sellerCurationListResult,
-      offerCurationListResult
+      offerCurationListResult,
+      false
     );
     const secondMergedAndSortedOffers = memoizedMergeAndSortOffers(
       "firstKey",
       { productV1MetadataEntities: [] },
-      { productV1MetadataEntities: [] }
+      { productV1MetadataEntities: [] },
+      false
     );
     const thirdMergedAndSortedOffers = memoizedMergeAndSortOffers(
       "thirdKey",
       { productV1MetadataEntities: [] },
-      { productV1MetadataEntities: [] }
+      { productV1MetadataEntities: [] },
+      false
     );
     expect(firstMergedAndSortedOffers.length).toBe(
       secondMergedAndSortedOffers.length

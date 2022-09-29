@@ -18,6 +18,7 @@ export function useInfiniteOffers(
     ...props,
     ...curationLists
   };
+
   return useInfiniteQuery(
     ["offers", "infinite", props.sellerId],
     async (context) => {

@@ -261,7 +261,7 @@ function CreateProductInner({ initial }: Props) {
             ];
           }
         },
-        [{ label: "", deliveryTime: "" }]
+        []
       );
 
     // filter empty attributes
@@ -345,7 +345,7 @@ function CreateProductInner({ initial }: Props) {
           defaultVersion: 1,
           countryOfOrigin: shippingInfo.country.label || "",
           supportedJurisdictions:
-            supportedJurisdictions[0].label.length > 0
+            supportedJurisdictions.length > 0
               ? supportedJurisdictions
               : undefined
         }
@@ -400,6 +400,7 @@ function CreateProductInner({ initial }: Props) {
         metadataUri: `ipfs://${metadataHash}`,
         metadataHash: metadataHash
       };
+
       showModal("WAITING_FOR_CONFIRMATION");
       const txResponse =
         sellers?.length === 0 && address
