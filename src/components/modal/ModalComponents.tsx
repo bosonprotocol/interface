@@ -15,6 +15,7 @@ import RedeemModal from "./components/RedeemModal/RedeemModal";
 import RedeemSuccessModal from "./components/RedeemModal/RedeemSuccessModal";
 import { RetractDisputeModal } from "./components/RetractDisputeModal";
 import RevokeProduct from "./components/RevokeProduct";
+import DisputeResolverModal from "./components/SellerFinance/DisputeResolverModal";
 import FinanceDeposit from "./components/SellerFinance/FinanceDeposit";
 import FinanceWithdraw from "./components/SellerFinance/FinanceWithdraw";
 import ConfirmationFailedModal from "./components/Transactions/ConfirmationFailedModal/ConfirmationFailedModal";
@@ -50,7 +51,8 @@ export const MODAL_TYPES = {
   WAITING_FOR_CONFIRMATION: "WAITING_FOR_CONFIRMATION",
   CONFIRMATION_FAILED: "CONFIRMATION_FAILED",
   TRANSACTION_SUBMITTED: "TRANSACTION_SUBMITTED",
-  EXCHANGE_POLICY_DETAILS: "EXCHANGE_POLICY_DETAILS"
+  EXCHANGE_POLICY_DETAILS: "EXCHANGE_POLICY_DETAILS",
+  DISPUTE_RESOLUTION_MODAL: "DISPUTE_RESOLUTION_MODAL"
 } as const;
 
 export const MODAL_COMPONENTS = {
@@ -78,5 +80,6 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.WAITING_FOR_CONFIRMATION]: WaitingForConfirmationModal,
   [MODAL_TYPES.CONFIRMATION_FAILED]: ConfirmationFailedModal,
   [MODAL_TYPES.TRANSACTION_SUBMITTED]: TransactionSubmittedModal,
-  [MODAL_TYPES.EXCHANGE_POLICY_DETAILS]: ExchangePolicyDetailsModal
+  [MODAL_TYPES.EXCHANGE_POLICY_DETAILS]: ExchangePolicyDetailsModal,
+  [MODAL_TYPES.DISPUTE_RESOLUTION_MODAL]: DisputeResolverModal
 } as const;
