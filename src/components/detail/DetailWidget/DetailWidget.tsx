@@ -120,8 +120,8 @@ export const getOfferDetailData = (
     const offerData = offer.id ? undefined : offer;
     console.log("handleShowExchangePolicy", offer.id, offerData);
     if (modalTypes && showModal) {
-      showModal(modalTypes.CONTRACTUAL_AGREEMENT, {
-        title: "Contractual Agreement",
+      showModal(modalTypes.EXCHANGE_POLICY_DETAILS, {
+        title: "Exchange Policy Details",
         offerId: offer.id,
         offerData
       });

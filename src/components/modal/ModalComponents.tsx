@@ -4,11 +4,11 @@ import EscalateModal from "./components/Chat/components/EscalateModal/EscalateMo
 import MakeProposalModal from "./components/Chat/MakeProposal/MakeProposalModal";
 import ResolveDisputeModal from "./components/Chat/ResolveDisputeModal";
 import CompleteExchange from "./components/CompleteExchange";
-import ContractualAgreementModal from "./components/ContractualAgreement";
 import CreateProductDraft from "./components/CreateProductDraft";
 import CustomStore from "./components/CustomStore";
 import DetailWidget from "./components/DetailWidget";
 import DisputeModal from "./components/DisputeModal/DisputeModal";
+import ExchangePolicyDetailsModal from "./components/ExchangePolicyDetails";
 import ManageFunds from "./components/ManageFunds";
 import ProductCreateSuccess from "./components/ProductCreateSuccess";
 import RedeemModal from "./components/RedeemModal/RedeemModal";
@@ -50,7 +50,7 @@ export const MODAL_TYPES = {
   WAITING_FOR_CONFIRMATION: "WAITING_FOR_CONFIRMATION",
   CONFIRMATION_FAILED: "CONFIRMATION_FAILED",
   TRANSACTION_SUBMITTED: "TRANSACTION_SUBMITTED",
-  CONTRACTUAL_AGREEMENT: "CONTRACTUAL_AGREEMENT"
+  EXCHANGE_POLICY_DETAILS: "EXCHANGE_POLICY_DETAILS"
 } as const;
 
 export const MODAL_COMPONENTS = {
@@ -78,5 +78,5 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.WAITING_FOR_CONFIRMATION]: WaitingForConfirmationModal,
   [MODAL_TYPES.CONFIRMATION_FAILED]: ConfirmationFailedModal,
   [MODAL_TYPES.TRANSACTION_SUBMITTED]: TransactionSubmittedModal,
-  [MODAL_TYPES.CONTRACTUAL_AGREEMENT]: ContractualAgreementModal
+  [MODAL_TYPES.EXCHANGE_POLICY_DETAILS]: ExchangePolicyDetailsModal
 } as const;
