@@ -46,9 +46,9 @@ const ViewMoreButton = styled.button`
 
 const StyledGrid = styled(Grid)`
   background-color: ${colors.white};
-  margin-left: -3.125rem;
-  width: calc(100% + 6.25rem);
-  padding-right: 3.125rem;
+  margin-left: -50px;
+  width: calc(100% + 100px);
+  padding-right: 50px;
 `;
 
 export default function OfferList({
@@ -98,9 +98,9 @@ export default function OfferList({
       {isProductPage && (
         <StyledGrid>
           <Typography
-            $fontSize="32px"
+            $fontSize="2.25rem"
             fontWeight="600"
-            margin="0.67em 0 0.67em 0"
+            margin="1.375rem 0 0.67em 0"
           >
             Products
           </Typography>
