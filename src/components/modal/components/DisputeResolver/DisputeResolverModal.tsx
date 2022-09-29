@@ -10,7 +10,7 @@ import {
   CTAButton,
   Input,
   InputWrapper
-} from "./FinancesStyles";
+} from "../SellerFinance/FinancesStyles";
 
 interface Props {
   exchangeId: string;
