@@ -1,16 +1,25 @@
-import { Form, Formik } from "formik";
-import { useState } from "react";
+import { Form, Formik, FormikProps, FormikState } from "formik";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import toast from "react-hot-toast";
 import styled from "styled-components";
+import { useAccount, useSignMessage } from "wagmi";
+import * as Yup from "yup";
 
+import { CONFIG } from "../../../../../../../lib/config";
 import { colors } from "../../../../../../../lib/styles/colors";
 import { Exchange } from "../../../../../../../lib/utils/hooks/useExchanges";
+import { useCoreSDK } from "../../../../../../../lib/utils/useCoreSdk";
 import Collapse from "../../../../../../collapse/Collapse";
 import { Checkbox } from "../../../../../../form";
 import FormField from "../../../../../../form/FormField";
 import Input from "../../../../../../form/Input";
+import Textarea from "../../../../../../form/Textarea";
+import ErrorToast from "../../../../../../toasts/common/ErrorToast";
+import SuccessTransactionToast from "../../../../../../toasts/SuccessTransactionToast";
 import Button from "../../../../../../ui/Button";
 import Grid from "../../../../../../ui/Grid";
 import Typography from "../../../../../../ui/Typography";
+import { useModal } from "../../../../../useModal";
 
 const Container = styled.div`
   display: flex;
@@ -25,30 +34,157 @@ const Container = styled.div`
     margin-bottom: 1rem;
   }
 `;
+export const FormModel = {
+  formFields: {
+    message: {
+      name: "message",
+      requiredErrorMessage: "This field is required",
+      placeholder:
+        "“I, 0xabc123, wish to escalate the dispute relating to exchange with ID: X”"
+    },
+    email: {
+      name: "email",
+      requiredErrorMessage: "This field is required",
+      value: "disputes@bosonprotocol.io",
+      disabled: true
+    },
+    exchangeId: {
+      name: "exchangeId",
+      requiredErrorMessage: "This field is required",
+      disabled: true
+    },
+    disputeId: {
+      name: "disputeId",
+      requiredErrorMessage: "This field is required",
+      disabled: true
+    },
+    signature: {
+      name: "signature",
+      requiredErrorMessage: "This field is required",
+      disabled: true
+    },
+    confirm: {
+      name: "confirm",
+      requiredErrorMessage: "This field must be checked",
+      text: "I confirm that I've sent the required email to the Dispute Resolver."
+    }
+  }
+};
+
+const validationSchemaPerStep = [
+  Yup.object({
+    [FormModel.formFields.message.name]: Yup.string()
+      .trim()
+      .required(FormModel.formFields.message.requiredErrorMessage)
+  }),
+  Yup.object({
+    [FormModel.formFields.exchangeId.name]: Yup.string()
+      .trim()
+      .required(FormModel.formFields.exchangeId.requiredErrorMessage),
+    [FormModel.formFields.disputeId.name]: Yup.string()
+      .trim()
+      .required(FormModel.formFields.disputeId.requiredErrorMessage),
+    [FormModel.formFields.signature.name]: Yup.string()
+      .trim()
+      .required(FormModel.formFields.signature.requiredErrorMessage),
+    [FormModel.formFields.confirm.name]: Yup.bool().oneOf(
+      [true],
+      FormModel.formFields.message.requiredErrorMessage
+    )
+  }),
+  Yup.object({})
+];
 
 interface Props {
   exchange: Exchange;
 }
 function EscalateStepTwo({ exchange }: Props) {
+  const { hideModal } = useModal();
+  const coreSDK = useCoreSDK();
+
   const [activeStep, setActiveStep] = useState<number>(0);
-  const initialValues = {};
+  const [loading, setLoading] = useState<boolean>(false);
+  const [signature, setSignature] = useState<string | null>(null);
+  const { address } = useAccount();
+  const { isLoading, signMessage, ...rest } = useSignMessage({
+    onSuccess(data) {
+      setActiveStep(1);
+      setSignature(data);
+    }
+  });
+
+  const validationSchema = validationSchemaPerStep[activeStep];
+  const initialValues = useMemo(
+    () => ({
+      [FormModel.formFields.message
+        .name]: `“I, ${address}, wish to escalate the dispute relating to exchange with ID: ${exchange.id}”`,
+      [FormModel.formFields.email.name]: FormModel.formFields.email.value,
+      [FormModel.formFields.exchangeId.name]: `Exchange ID: ${exchange?.id}`,
+      [FormModel.formFields.disputeId.name]: `Dispute ID: ${
+        exchange?.dispute?.id || exchange?.id
+      }`,
+      [FormModel.formFields.signature.name]: `Signature: ${signature}`,
+      [FormModel.formFields.confirm.name]: false
+    }),
+    [signature, exchange, address]
+  );
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const formRef = useRef<FormikProps<any> | null>(null);
+
+  useEffect(() => {
+    if (formRef.current) {
+      formRef.current.validateForm();
+    }
+  }, [activeStep]);
+
+  const handleEscalate = useCallback(async () => {
+    try {
+      setLoading(true);
+      const tx = await coreSDK.escalateDispute(exchange.id);
+      await tx.wait();
+      toast((t) => (
+        <SuccessTransactionToast
+          t={t}
+          action={`Escalated dispute: ${exchange?.offer?.metadata?.name}`}
+          url={CONFIG.getTxExplorerUrl?.(tx?.hash || "")}
+        />
+      ));
+    } catch (error) {
+      console.error(error);
+      const message = (error as unknown as { message: string }).message;
+      toast((t) => (
+        <ErrorToast t={t}>
+          <Typography tag="p" color={colors.red}>
+            {message
+              ? message?.split("[")?.[0]
+              : "An error occured. Please try again."}
+          </Typography>
+        </ErrorToast>
+      ));
+      setLoading(false);
+      return false;
+    }
+    hideModal();
+    setLoading(false);
+
+    return true;
+  }, [exchange, coreSDK, hideModal]);
 
   return (
     <Formik<typeof initialValues>
       initialValues={{ ...initialValues }}
-      validationSchema={null}
-      onSubmit={async (values) => {
-        console.log(values);
-      }}
+      validationSchema={validationSchema}
+      onSubmit={async (values) => values}
+      validateOnMount
+      enableReinitialize
     >
-      {({ values }) => {
-        console.log(values);
+      {({ values, errors }: FormikState<typeof initialValues>) => {
         return (
           <Form>
             <Container>
               <Collapse
                 isInitiallyOpen={activeStep === 0}
-                disable={activeStep < 0}
+                disable={activeStep !== 0}
                 wrap
                 title={
                   <Typography tag="h6" margin="0">
@@ -59,7 +195,7 @@ function EscalateStepTwo({ exchange }: Props) {
                 <Grid
                   flexDirection="column"
                   justifyContent="flex-start"
-                  align-items="flex-start"
+                  alignItems="flex-start"
                   gap="1rem"
                 >
                   <Typography
@@ -72,15 +208,15 @@ function EscalateStepTwo({ exchange }: Props) {
                     your identity.
                   </Typography>
                   <FormField theme="white" title="Message">
-                    <Input
-                      name="message"
-                      placeholder="“I, 0xabc123, wish to escalate the dispute relating to exchange with ID: X”"
-                    />
+                    <Textarea {...FormModel.formFields.message} />
                   </FormField>
                   <Button
                     theme="bosonSecondaryInverse"
+                    disabled={!!errors?.message || isLoading}
+                    isLoading={isLoading}
                     onClick={() => {
-                      setActiveStep(1);
+                      const message = values?.message as string;
+                      signMessage({ message });
                     }}
                   >
                     Sign
@@ -88,8 +224,8 @@ function EscalateStepTwo({ exchange }: Props) {
                 </Grid>
               </Collapse>
               <Collapse
-                isInitiallyOpen={activeStep === 1}
-                disable={activeStep < 1}
+                isInitiallyOpen={activeStep === 1 && values?.confirm !== true}
+                disable={activeStep !== 1}
                 wrap
                 title={
                   <Typography tag="h6" margin="0">
@@ -100,7 +236,7 @@ function EscalateStepTwo({ exchange }: Props) {
                 <Grid
                   flexDirection="column"
                   justifyContent="flex-start"
-                  align-items="flex-start"
+                  alignItems="flex-start"
                   gap="1rem"
                 >
                   <Typography
@@ -111,52 +247,58 @@ function EscalateStepTwo({ exchange }: Props) {
                     Email the dispute resolver by copying the below details and
                     attaching any evidence (e.g. Chat Transcript, Files, etc)
                   </Typography>
-                  <FormField theme="white" title="Email Address">
-                    <Input
-                      name="email"
-                      placeholder="disputes@bosonprotocol.io"
-                    />
+                  <FormField
+                    theme="white"
+                    title="Email Address"
+                    valueToCopy={{
+                      [FormModel.formFields.email.name]: values?.email || ""
+                    }}
+                  >
+                    <Input {...FormModel.formFields.email} />
                   </FormField>
-                  <FormField theme="white" title="Authentication message">
-                    <Input name="exchangeId" placeholder="XY" />
-                    <Input name="disputeId" placeholder="XY" />
-                    <Input
-                      name="Signature"
-                      placeholder="893984vgghjkjhlklkjkjljlkjlkjkljlhkjgjhgjhhgf"
-                    />
+                  <FormField
+                    theme="white"
+                    title="Authentication message"
+                    valueToCopy={{
+                      [FormModel.formFields.exchangeId.name]:
+                        values?.exchangeId || "",
+                      [FormModel.formFields.disputeId.name]:
+                        values?.disputeId || "",
+                      [FormModel.formFields.signature.name]:
+                        values?.signature || ""
+                    }}
+                  >
+                    <Input {...FormModel.formFields.exchangeId} />
+                    <Input {...FormModel.formFields.disputeId} />
+                    <Input {...FormModel.formFields.signature} />
                   </FormField>
                   <FormField theme="white" title="Chat transcript">
-                    <Button
-                      theme="bosonSecondaryInverse"
-                      onClick={() => {
-                        setActiveStep(2);
-                      }}
-                    >
+                    <Button theme="bosonSecondaryInverse" disabled>
                       Download CSV
                     </Button>
                   </FormField>
                 </Grid>
               </Collapse>
-              <div>
+              <FormField theme="white" title="">
                 <Checkbox
-                  name="confirm"
-                  text="I confirm that I've sent the required email to the Dispute Resolver."
+                  {...FormModel.formFields.confirm}
+                  disabled={activeStep === 0}
                 />
-              </div>
+              </FormField>
               <Collapse
-                isInitiallyOpen={activeStep === 2}
-                disable={activeStep < 2}
+                isInitiallyOpen={values.confirm === true}
+                disable={activeStep < 1 && values.confirm !== true}
                 wrap
                 title={
                   <Typography tag="h6" margin="0">
-                    3. Case Description and Evidence
+                    3. Confirm Escalation
                   </Typography>
                 }
               >
                 <Grid
                   flexDirection="column"
                   justifyContent="flex-start"
-                  align-items="flex-start"
+                  alignItems="flex-start"
                   gap="1rem"
                 >
                   <Typography
@@ -166,7 +308,14 @@ function EscalateStepTwo({ exchange }: Props) {
                   >
                     Confirm the dispute escalation transaction.
                   </Typography>
-                  <Button theme="escalate">Escalate</Button>
+                  <Button
+                    theme="escalate"
+                    onClick={handleEscalate}
+                    isLoading={loading}
+                    disabled={loading}
+                  >
+                    Escalate
+                  </Button>
                 </Grid>
               </Collapse>
             </Container>

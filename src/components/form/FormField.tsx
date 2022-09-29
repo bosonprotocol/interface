@@ -1,7 +1,11 @@
+import { Copy } from "phosphor-react";
+import toast from "react-hot-toast";
+
+import { colors } from "../../lib/styles/colors";
 import Tooltip from "../tooltip/Tooltip";
 import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
-import { FormFieldWrapper } from "./Field.styles";
+import { CopyButton, FormFieldWrapper } from "./Field.styles";
 import type { FormFieldProps } from "./types";
 
 export default function FormField({
@@ -11,7 +15,8 @@ export default function FormField({
   tooltip,
   children,
   style = {},
-  theme = ""
+  theme = "",
+  valueToCopy
 }: FormFieldProps) {
   return (
     <FormFieldWrapper
@@ -27,6 +32,22 @@ export default function FormField({
           {title}
           {"  "}
           {required && "*"}
+          {valueToCopy && (
+            <CopyButton
+              onClick={() => {
+                try {
+                  const copyThat = JSON.stringify(valueToCopy);
+                  navigator.clipboard.writeText(copyThat);
+                } catch (error) {
+                  console.error(error);
+                  return false;
+                }
+                toast(() => "Text has been copied to clipboard");
+              }}
+            >
+              <Copy size={24} color={colors.secondary} weight="light" />
+            </CopyButton>
+          )}
         </Typography>
         {tooltip && <Tooltip content={tooltip} size={16} />}
       </Grid>

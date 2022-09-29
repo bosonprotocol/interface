@@ -6,6 +6,11 @@ import { colors } from "../../lib/styles/colors";
 import { checkIfValueIsEmpty } from "../../lib/utils/checkIfValueIsEmpty";
 import Grid from "../ui/Grid";
 
+export const CopyButton = styled.button`
+  background: none;
+  border: none;
+`;
+
 export const FieldInput = styled.input.attrs((props: { error: any }) => ({
   error: props.error
 }))`
@@ -236,7 +241,14 @@ export const FormFieldWrapper = styled(Grid).attrs(
     theme === "white" &&
     `
     margin-bottom: 0.5rem;
-    input {
+    input, textarea {
+      background: ${colors.white};
+      border-width: 0;
+      :disabled {
+        opacity: 1;
+      }
+    }
+    input + div {
       background: ${colors.white};
     }
   `}

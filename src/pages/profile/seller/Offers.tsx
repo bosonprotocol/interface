@@ -37,7 +37,6 @@ export default function Offers({
       }
     );
 
-  console.log(data);
   const offersWithOneExtra = data?.pages[data.pages.length - 1];
   const allOffers =
     data?.pages.flatMap((page) => {

@@ -1,20 +1,14 @@
 import { ArrowLeft, ArrowRight } from "phosphor-react";
 import { useState } from "react";
-import toast from "react-hot-toast";
 import styled from "styled-components";
 
-import { CONFIG } from "../../../../../../lib/config";
 import { colors } from "../../../../../../lib/styles/colors";
 import { zIndex } from "../../../../../../lib/styles/zIndex";
 import { useBreakpoints } from "../../../../../../lib/utils/hooks/useBreakpoints";
 import { Exchange } from "../../../../../../lib/utils/hooks/useExchanges";
-import { useCoreSDK } from "../../../../../../lib/utils/useCoreSdk";
-import SimpleError from "../../../../../error/SimpleError";
 import MultiSteps from "../../../../../step/MultiSteps";
-import SuccessTransactionToast from "../../../../../toasts/SuccessTransactionToast";
 import Button from "../../../../../ui/Button";
 import Grid from "../../../../../ui/Grid";
-import { useModal } from "../../../../useModal";
 import ExchangePreview from "../ExchangePreview";
 import EscalateStepOne from "./steps/EscalateStepOne";
 import EscalateStepTwo from "./steps/EscalateStepTwo";
@@ -54,7 +48,7 @@ const StyledButtonGrid = styled(Grid)<{ isLteS: boolean }>`
   }
 `;
 
-const buttonSteps = ["Next", "Done"];
+const buttonSteps = ["Next"];
 
 const StyledButton = styled.button`
   border: none;
@@ -69,23 +63,16 @@ const multiStepsData = [
   { steps: 1, name: "Escalate Dispute" }
 ];
 
-function EscalateModal({ exchange, hideModal }: Props) {
-  const { showModal } = useModal();
+function EscalateModal({ exchange }: Props) {
   const [activeStep, setActiveStep] = useState(0);
-  const [error, setError] = useState(false);
   const { isLteS } = useBreakpoints();
-  const coreSDK = useCoreSDK();
 
   const escalateSteps = (activeStep: number) => {
     switch (activeStep) {
-      case 0:
-        return <EscalateStepOne exchange={exchange} />;
       case 1:
         return <EscalateStepTwo exchange={exchange} />;
-      // case 2:
-      //   return <EscalateFinalStep exchange={exchange} />;
       default:
-        return 0;
+        return <EscalateStepOne exchange={exchange} />;
     }
   };
 
@@ -131,48 +118,16 @@ function EscalateModal({ exchange, hideModal }: Props) {
           <ExchangePreview exchange={exchange} />
         </StyledGrid>
         {escalateSteps(activeStep)}
-        <StyledGrid padding="0 0 2rem 2rem">
-          <Button
-            theme="primary"
-            onClick={async () => {
-              if (activeStep + 1 < buttonSteps.length) {
-                setActiveStep(activeStep + 1);
-              }
-              if (activeStep + 1 === buttonSteps.length) {
-                try {
-                  showModal("WAITING_FOR_CONFIRMATION");
-                  const tx = await coreSDK.escalateDispute(exchange.id);
-                  showModal("TRANSACTION_SUBMITTED", {
-                    action: "Escalate dispute",
-                    txHash: tx.hash
-                  });
-                  await tx.wait();
-                  toast((t) => (
-                    <SuccessTransactionToast
-                      t={t}
-                      action={`Escalated dispute: ${exchange.offer.metadata.name}`}
-                      url={CONFIG.getTxExplorerUrl?.(tx.hash)}
-                    />
-                  ));
-                  hideModal();
-                } catch (error) {
-                  console.error(error);
-                  const hasUserRejectedTx =
-                    (error as unknown as { code: string }).code ===
-                    "ACTION_REJECTED";
-                  if (hasUserRejectedTx) {
-                    showModal("CONFIRMATION_FAILED");
-                  }
-
-                  setError(true);
-                }
-              }
-            }}
-          >
-            {buttonSteps[activeStep]}
-          </Button>
-        </StyledGrid>
-        {error && <SimpleError />}
+        {activeStep + 1 <= buttonSteps.length && (
+          <StyledGrid padding="0 0 2rem 2rem">
+            <Button
+              theme="primary"
+              onClick={() => setActiveStep(activeStep + 1)}
+            >
+              {buttonSteps[activeStep]}
+            </Button>
+          </StyledGrid>
+        )}
       </InnerContainer>
     </Container>
   );

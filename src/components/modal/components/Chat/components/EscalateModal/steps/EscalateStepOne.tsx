@@ -34,9 +34,7 @@ const StyledArrowSquare = styled(ArrowSquareOut)`
 
 function EscalateStepOne({ exchange }: Props) {
   const currentDate = dayjs();
-
   const { data } = useDisputeResolvers();
-  console.log(exchange, data);
 
   const feeAmount = data?.disputeResolvers[0]?.fees[0]?.feeAmount;
 
