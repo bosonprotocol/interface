@@ -79,6 +79,7 @@
     "omit-deep": "^0.3.0",
     "path-browserify": "^1.0.1",
     "phosphor-react": "^1.4.1",
+    "query-string": "^7.1.1",
     "react": "^18.2.0",
     "react-chartjs-2": "^4.2.0",
     "react-csv": "^2.2.2",

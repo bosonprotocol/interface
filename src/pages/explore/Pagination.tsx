@@ -1,5 +1,5 @@
 import { CaretLeft, CaretRight } from "phosphor-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 
 import Button from "../../components/ui/Button";
@@ -49,9 +49,6 @@ export default function Pagination({
     setPageIndex(newIndex);
     onChangeIndex(newIndex);
   };
-  useEffect(() => {
-    setPageIndex(defaultPage);
-  }, [defaultPage]);
 
   return (
     <Container>
