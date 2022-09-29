@@ -1,8 +1,7 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
-import { Check } from "phosphor-react";
 import { CaretDown, CaretLeft, CaretRight, CaretUp } from "phosphor-react";
-import { forwardRef, useEffect, useMemo, useRef } from "react";
+import { useMemo } from "react";
 import { generatePath } from "react-router-dom";
 import { usePagination, useRowSelect, useSortBy, useTable } from "react-table";
 
@@ -14,7 +13,7 @@ import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import { Disputes } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
-import { CheckboxWrapper } from "../../form/Field.styles";
+import { useModal } from "../../modal/useModal";
 import OfferHistory from "../../offer/OfferHistory";
 import Price from "../../price";
 import PaginationPages from "../../seller/common/PaginationPages";
@@ -37,48 +36,10 @@ interface Props {
   isLoading?: boolean;
 }
 
-interface IIndeterminateInputProps {
-  indeterminate?: boolean;
-  disabled?: boolean;
-}
-
-const IndeterminateCheckbox = forwardRef<
-  HTMLInputElement,
-  IIndeterminateInputProps
->(({ indeterminate, ...rest }, ref: React.Ref<HTMLInputElement>) => {
-  const defaultRef = useRef(null);
-  const resolvedRef = ref || defaultRef;
-  const checkboxId = `checkbox-${Math.random().toString().replace("0.", "")}`;
-
-  useEffect(() => {
-    if (
-      "current" in resolvedRef &&
-      resolvedRef.current !== null &&
-      "indeterminate" in resolvedRef.current
-    ) {
-      resolvedRef.current.indeterminate = !!indeterminate;
-    }
-  }, [resolvedRef, indeterminate]);
-
-  return (
-    <CheckboxWrapper htmlFor={checkboxId}>
-      <input
-        hidden
-        id={checkboxId}
-        type="checkbox"
-        ref={resolvedRef}
-        {...rest}
-      />
-      <div>
-        <Check size={16} />
-      </div>
-    </CheckboxWrapper>
-  );
-});
-
 export default function DisputesTable({ disputes }: Props) {
   const coreSDK = useCoreSDK();
   const navigate = useKeepQueryParamsNavigate();
+  const { showModal, modalTypes } = useModal();
   const columns = useMemo(
     () => [
       {
@@ -209,8 +170,15 @@ export default function DisputesTable({ disputes }: Props) {
                 theme="primary"
                 size="small"
                 onClick={async () => {
-                  // TODO: define the percentage when we decide 1/2 for now
-                  await coreSDK.decideDispute(dispute.exchange.id, "50");
+                  showModal(
+                    modalTypes.DISPUTE_RESOLUTION_MODAL,
+                    {
+                      title: `Resolve dispute ${dispute.exchange.id}`,
+                      exchangeId: dispute.exchange.id
+                    },
+                    "auto",
+                    "dark"
+                  );
                 }}
               >
                 Decide
