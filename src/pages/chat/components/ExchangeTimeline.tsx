@@ -100,13 +100,6 @@ export default function ExchangeTimeline({
           timestamp: Number(resolvedDate)
         });
       }
-      if (escalatedDate) {
-        timesteps.push({
-          text: "Dispute Escalated",
-          date: formatShortDate(escalatedDate),
-          timestamp: Number(escalatedDate)
-        });
-      }
       if (refusedDate) {
         timesteps.push({
           text: "Dispute refused",
