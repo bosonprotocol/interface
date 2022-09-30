@@ -40,7 +40,7 @@ const ViewMore = styled(LinkWithQuery)`
   align-items: center;
   cursor: pointer;
   ${() => buttonText};
-  color: var(--secondary);
+  color: ${colors.secondary};
 
   transition: all 150ms ease-in-out;
   > svg {
@@ -96,7 +96,7 @@ const FeaturedOffers: React.FC<IFeaturedOffers> = ({
         </Title>
         <ViewMore to={BosonRoutes.Explore}>
           <>
-            {isLteXS ? "" : "View more"}
+            View more
             <CaretRight size={24} />
           </>
         </ViewMore>
