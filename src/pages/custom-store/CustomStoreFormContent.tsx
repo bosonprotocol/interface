@@ -201,7 +201,6 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
       values.headerBgColor !== initialValues.headerBgColor &&
       values.headerTextColor !== initialValues.headerTextColor
     ) {
-      // TODO: ADD VALIDATION FOR THAT
       setFieldValue(storeFields.footerBgColor, values.headerBgColor, true);
       setFieldValue(storeFields.footerTextColor, values.headerTextColor, true);
     }
@@ -378,7 +377,6 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                     />
                   </Grid>
                 </Grid>
-                {/*  */}
                 <Grid gap={gapBetweenInputs}>
                   <Grid flexDirection="column" alignItems="flex-start">
                     <FieldDescription>Button background</FieldDescription>
