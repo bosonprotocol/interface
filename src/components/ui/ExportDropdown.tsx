@@ -61,6 +61,8 @@ const ButtonOptions = styled.div<{ disabled: boolean }>`
 `;
 
 const Container = styled.div`
+  position: relative;
+  z-index: ${zIndex.Notification};
   &:hover {
     [data-buttons-container] {
       display: block !important;
