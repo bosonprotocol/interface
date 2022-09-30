@@ -97,8 +97,9 @@ const validationSchemaPerStep = [
 
 interface Props {
   exchange: Exchange;
+  refetch: () => void;
 }
-function EscalateStepTwo({ exchange }: Props) {
+function EscalateStepTwo({ exchange, refetch }: Props) {
   const { hideModal } = useModal();
   const coreSDK = useCoreSDK();
 
@@ -149,6 +150,7 @@ function EscalateStepTwo({ exchange }: Props) {
           url={CONFIG.getTxExplorerUrl?.(tx?.hash || "")}
         />
       ));
+      refetch();
     } catch (error) {
       console.error(error);
       const message = (error as unknown as { message: string }).message;
@@ -168,7 +170,7 @@ function EscalateStepTwo({ exchange }: Props) {
     setLoading(false);
 
     return true;
-  }, [exchange, coreSDK, hideModal]);
+  }, [exchange, coreSDK, hideModal, refetch]);
 
   return (
     <Formik<typeof initialValues>
@@ -286,7 +288,7 @@ function EscalateStepTwo({ exchange }: Props) {
               </Collapse>
               <Collapse
                 isInitiallyOpen={values.confirm === true}
-                disable={activeStep < 1 && values.confirm !== true}
+                disable={activeStep < 1 && !values.confirm}
                 wrap
                 title={
                   <Typography tag="h6" margin="0">

@@ -49,11 +49,11 @@ export default function FormField({
                   }
 
                   navigator.clipboard.writeText(copyThat);
+                  toast(() => "Text has been copied to clipboard");
                 } catch (error) {
                   console.error(error);
                   return false;
                 }
-                toast(() => "Text has been copied to clipboard");
               }}
             >
               <Copy size={24} color={colors.secondary} weight="light" />

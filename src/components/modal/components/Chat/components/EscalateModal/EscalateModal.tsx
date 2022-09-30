@@ -16,6 +16,7 @@ import EscalateStepTwo from "./steps/EscalateStepTwo";
 interface Props {
   exchange: Exchange;
   hideModal: () => void;
+  refetch: () => void;
 }
 
 const Container = styled.div`
@@ -63,14 +64,14 @@ const multiStepsData = [
   { steps: 1, name: "Escalate Dispute" }
 ];
 
-function EscalateModal({ exchange }: Props) {
+function EscalateModal({ exchange, refetch }: Props) {
   const [activeStep, setActiveStep] = useState(0);
   const { isLteS } = useBreakpoints();
 
   const escalateSteps = (activeStep: number) => {
     switch (activeStep) {
       case 1:
-        return <EscalateStepTwo exchange={exchange} />;
+        return <EscalateStepTwo exchange={exchange} refetch={refetch} />;
       default:
         return <EscalateStepOne exchange={exchange} />;
     }

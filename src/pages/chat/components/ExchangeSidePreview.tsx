@@ -203,21 +203,25 @@ interface Props {
   exchange: Exchange | undefined;
   disputeOpen: boolean;
   iAmTheBuyer: boolean;
+  refetchExchanges: () => void;
 }
 export default function ExchangeSidePreview({
   exchange,
   disputeOpen,
-  iAmTheBuyer
+  iAmTheBuyer,
+  refetchExchanges
 }: Props) {
-  const { data: disputes = [{} as subgraph.DisputeFieldsFragment] } =
-    useDisputes(
-      {
-        disputesFilter: {
-          exchange: exchange?.id
-        }
-      },
-      { enabled: !!exchange }
-    );
+  const {
+    data: disputes = [{} as subgraph.DisputeFieldsFragment],
+    refetch: refetchDisputes
+  } = useDisputes(
+    {
+      disputesFilter: {
+        exchange: exchange?.id
+      }
+    },
+    { enabled: !!exchange }
+  );
   const [dispute] = disputes.length
     ? disputes
     : [{} as subgraph.DisputeFieldsFragment];
@@ -228,6 +232,12 @@ export default function ExchangeSidePreview({
     [offer]
   );
   const navigate = useKeepQueryParamsNavigate();
+
+  const refetchItAll = useCallback(() => {
+    refetchExchanges();
+    refetchDisputes();
+  }, [refetchExchanges, refetchDisputes]);
+
   const handleExchangeImageOnClick = useCallback(() => {
     if (!exchange) {
       return;
@@ -245,6 +255,7 @@ export default function ExchangeSidePreview({
   const isInDispute = exchange.disputed && !dispute.finalizedDate;
   const isResolved = !!dispute.resolvedDate;
   const isEscalated = !!dispute.escalatedDate;
+  const isRetracted = !!dispute.retractedDate;
   const raisedDisputeAt = new Date(Number(dispute.disputedDate) * 1000);
   const lastDayToResolveDispute = new Date(
     raisedDisputeAt.getTime() +
@@ -288,14 +299,14 @@ export default function ExchangeSidePreview({
               { name: "Raise dispute", steps: 1 },
               { name: "Resolve or Escalate", steps: 1 }
             ]}
-            active={isInDispute ? 2 : 3}
+            active={isInDispute && !isEscalated ? 2 : 3}
           />
         </Section>
       )}
       <Section>
         <DetailTable align noBorder data={OFFER_DETAIL_DATA ?? ({} as never)} />
       </Section>
-      {isInDispute && iAmTheBuyer ? (
+      {isInDispute && iAmTheBuyer && !isEscalated && !isRetracted ? (
         <CTASection>
           <Button
             theme="secondary"
@@ -305,7 +316,8 @@ export default function ExchangeSidePreview({
                 {
                   title: "Retract",
                   exchangeId: exchange.id,
-                  offerName: offer.metadata.name
+                  offerName: offer.metadata.name,
+                  refetch: refetchItAll
                 },
                 "s"
               )
@@ -313,23 +325,22 @@ export default function ExchangeSidePreview({
           >
             Retract
           </Button>
-          {!isEscalated && (
-            <Button
-              theme="orange"
-              onClick={() =>
-                showModal(
-                  "ESCALATE_MODAL",
-                  {
-                    title: "Escalate",
-                    exchange: exchange
-                  },
-                  "l"
-                )
-              }
-            >
-              Escalate
-            </Button>
-          )}
+          <Button
+            theme="orange"
+            onClick={() =>
+              showModal(
+                "ESCALATE_MODAL",
+                {
+                  title: "Escalate",
+                  exchange: exchange,
+                  refetch: refetchItAll
+                },
+                "l"
+              )
+            }
+          >
+            Escalate
+          </Button>
         </CTASection>
       ) : isInRedeemed && iAmTheBuyer ? (
         <CTASection>

@@ -14,7 +14,8 @@ const Table = styled.table`
   }
 `;
 
-const TableHeader = styled.td`
+const TableHeader = styled.th`
+  text-align: left;
   padding-top: 1.5625rem;
   color: ${colors.darkGrey};
   font-size: 0.75rem;
@@ -40,35 +41,31 @@ const TableElementContainer = styled.tr`
 const TableHeaderFields = [
   {
     label: "Product",
-    value: 0
+    value: 0,
+    colspan: 1
   },
   {
     label: "State",
-    value: 1
-  },
-  {
-    label: "",
-    value: 2
-  },
-  {
-    label: "",
-    value: 3
-  },
-  {
-    label: "",
-    value: 4
+    value: 1,
+    colspan: 3
   }
 ];
 
 function DisputeTable({ exchanges }: { exchanges: Exchange[] }) {
   return (
     <Table>
-      <tbody>
+      <thead>
         <tr>
           {TableHeaderFields.map((header) => {
-            return <TableHeader key={header.value}>{header.label}</TableHeader>;
+            return (
+              <TableHeader key={`TableHeader_${header.value}`} {...header}>
+                {header.label}
+              </TableHeader>
+            );
           })}
         </tr>
+      </thead>
+      <tbody>
         {exchanges.map((exchange) => {
           return (
             <TableElementContainer key={exchange.id}>

@@ -88,7 +88,7 @@ function TableElement({ exchange }: { exchange: Exchange }) {
     ? disputes
     : [{} as subgraph.DisputeFieldsFragment];
 
-  const isEscalated = !!dispute.escalatedDate;
+  const isNotEscalatedYet = dispute ? dispute?.escalatedDate === null : false;
 
   if (exchange) {
     return (
@@ -121,9 +121,25 @@ function TableElement({ exchange }: { exchange: Exchange }) {
           </Grid>
         </td>
         <td>
-          {!isEscalated && (
+          <Grid justifyContent="flex-end" gap="1rem">
+            {isNotEscalatedYet && (
+              <Button
+                theme="orange"
+                size="small"
+                onClick={() => {
+                  navigate({
+                    pathname: generatePath(BosonRoutes.ChatMessage, {
+                      [UrlParameters.exchangeId]: exchange?.id
+                    })
+                  });
+                }}
+              >
+                Escalate dispute
+              </Button>
+            )}
             <Button
-              theme="orange"
+              type="button"
+              theme="primary"
               size="small"
               onClick={() => {
                 navigate({
@@ -133,25 +149,9 @@ function TableElement({ exchange }: { exchange: Exchange }) {
                 });
               }}
             >
-              Escalate dispute
+              Open chat
             </Button>
-          )}
-        </td>
-        <td>
-          <Button
-            type="button"
-            theme="primary"
-            size="small"
-            onClick={() => {
-              navigate({
-                pathname: generatePath(BosonRoutes.ChatMessage, {
-                  [UrlParameters.exchangeId]: exchange?.id
-                })
-              });
-            }}
-          >
-            Open chat
-          </Button>
+          </Grid>
         </td>
       </>
     );

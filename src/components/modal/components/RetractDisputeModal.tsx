@@ -15,12 +15,14 @@ interface Props {
   hideModal: NonNullable<ModalProps["hideModal"]>;
   exchangeId: string;
   offerName: string;
+  refetch: () => void;
 }
 
 export function RetractDisputeModal({
   hideModal,
   exchangeId,
-  offerName
+  offerName,
+  refetch
 }: Props) {
   const coreSDK = useCoreSDK();
   const { showModal } = useModal();
@@ -58,6 +60,7 @@ export function RetractDisputeModal({
                   url={CONFIG.getTxExplorerUrl?.(tx.hash)}
                 />
               ));
+              refetch();
               hideModal();
             } catch (error) {
               console.error(error);
