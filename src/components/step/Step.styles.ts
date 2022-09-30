@@ -141,7 +141,7 @@ export const MultiStepStyle = styled.div<{ isLteS: boolean }>`
   flex-wrap: nowrap;
   justify-content: flex-start;
   width: 100%;
-  align-items: center;
+  align-items: flex-start;
   div div {
     display: ${({ isLteS }) => isLteS && "none"};
   }
@@ -151,7 +151,7 @@ export const MultiStepStyle = styled.div<{ isLteS: boolean }>`
     margin: 0;
     font-weight: 600;
     font-size: 12px;
-    line-height: 200%;
+    line-height: 1.5;
     color: ${colors.darkGrey};
   }
 `;

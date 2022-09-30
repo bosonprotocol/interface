@@ -329,6 +329,7 @@ interface Props {
   prevPath: string;
   onTextAreaChange: (textAreaTargetValue: string) => void;
   textAreaValue: string | undefined;
+  refetchExchanges: () => void;
 }
 const ChatConversation = ({
   myBuyerId,
@@ -338,7 +339,8 @@ const ChatConversation = ({
   setChatListOpen,
   prevPath,
   onTextAreaChange,
-  textAreaValue
+  textAreaValue,
+  refetchExchanges
 }: Props) => {
   const location = useLocation();
   const iAmTheBuyer = myBuyerId === exchange?.buyer.id;
@@ -981,6 +983,7 @@ const ChatConversation = ({
       )}
       <ExchangeSidePreview
         exchange={exchange}
+        refetchExchanges={refetchExchanges}
         disputeOpen={isExchangePreviewOpen}
         iAmTheBuyer={iAmTheBuyer}
       />

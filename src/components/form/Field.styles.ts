@@ -6,6 +6,11 @@ import { colors } from "../../lib/styles/colors";
 import { checkIfValueIsEmpty } from "../../lib/utils/checkIfValueIsEmpty";
 import Grid from "../ui/Grid";
 
+export const CopyButton = styled.button`
+  background: none;
+  border: none;
+`;
+
 export const FieldInput = styled.input.attrs((props: { error: any }) => ({
   error: props.error
 }))`
@@ -230,11 +235,36 @@ export const FieldTextArea = styled.textarea.attrs((props: { error: any }) => ({
         `}
 `;
 
-export const FormFieldWrapper = styled(Grid)`
+export const FormFieldWrapper = styled(Grid).attrs(
+  (props: { theme: string }) => ({
+    theme: props.theme
+  })
+)`
   margin-bottom: 3.5rem;
   p {
     line-height: 150%;
   }
+
+  ${({ theme }) =>
+    theme === "white" &&
+    `
+    margin-bottom: 0.5rem;
+    input, textarea {
+      background: ${colors.white};
+      :disabled {
+        opacity: 1;
+      }
+    }
+    input {
+      border-width: 0;
+      &:hover {
+        border-width: 0;
+      }
+    }
+    input + div {
+      background: ${colors.white};
+    }
+  `}
 
   [data-header] {
     margin: 0;

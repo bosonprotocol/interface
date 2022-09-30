@@ -13,7 +13,7 @@ export function useDisputes(
   return useQuery(
     ["disputes", props],
     async () => {
-      const disputes = await coreSDK.getDisputes(props);
+      const disputes = await coreSDK?.getDisputes(props);
 
       return disputes;
     },

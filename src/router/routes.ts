@@ -6,11 +6,12 @@ import {
   OffersRoutes,
   SellerCenterRoutes
 } from "../lib/routing/routes";
+import CreateProductPage from "../pages/create-product/CreateProduct";
+import ExplorePage from "../pages/explore/Explore";
+import LandingPage from "../pages/landing/Landing";
+import SellerCenterPage from "../pages/sell/SellerCenter";
 
 const ChatPage = lazy(() => import("../pages/chat/Chat"));
-const CreateProductPage = lazy(
-  () => import("../pages/create-product/CreateProduct")
-);
 const CustomStorePage = lazy(() => import("../pages/custom-store/CustomStore"));
 const DisputeCentrePage = lazy(
   () => import("../pages/dispute-centre/DisputeCentre")
@@ -19,8 +20,6 @@ const DisputeListPage = lazy(
   () => import("../pages/dispute-centre/DisputeList")
 );
 const ExchangePage = lazy(() => import("../pages/exchange/Exchange"));
-const ExplorePage = lazy(() => import("../pages/explore/Explore"));
-const LandingPage = lazy(() => import("../pages/landing/Landing"));
 const NotFoundPage = lazy(() => import("../pages/not-found/NotFound"));
 const OfferDetailPage = lazy(() => import("../pages/offers/OfferDetail"));
 const PrivateAccountPage = lazy(
@@ -30,7 +29,6 @@ const ProfilePagePage = lazy(() => import("../pages/profile/ProfilePage"));
 const PublicOrPrivateAccountPage = lazy(
   () => import("../pages/account/public/PublicOrPrivateAccount")
 );
-const SellerCenterPage = lazy(() => import("../pages/sell/SellerCenter"));
 
 export const baseAppProps = {
   withLayout: true,
@@ -51,8 +49,9 @@ export const UserRoles = {
   DisputeResolver: "DisputeResolver"
 };
 export interface IRoutes extends RouteProps {
-  // eslint-disable-next-line
-  component: React.LazyExoticComponent<React.ComponentType<any>>;
+  component:
+    | React.ComponentType<any> // eslint-disable-line
+    | React.LazyExoticComponent<React.ComponentType<any>>; // eslint-disable-line
   role: Array<string | null>;
   componentProps?: {
     [key: string]: string;

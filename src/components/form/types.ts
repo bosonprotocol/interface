@@ -32,6 +32,12 @@ export interface FormFieldProps {
   tooltip?: string;
   children: React.ReactNode | string;
   style?: React.CSSProperties;
+  theme?: string;
+  valueToCopy?:
+    | string
+    | {
+        [key: string]: unknown;
+      };
 }
 
 export type InputColorProps = BaseProps;

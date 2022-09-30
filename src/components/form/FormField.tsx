@@ -1,9 +1,13 @@
-import React from "react";
+import isObject from "lodash/isObject";
+import mapValues from "lodash/mapValues";
+import { Copy } from "phosphor-react";
+import toast from "react-hot-toast";
 
+import { colors } from "../../lib/styles/colors";
 import Tooltip from "../tooltip/Tooltip";
 import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
-import { FormFieldWrapper } from "./Field.styles";
+import { CopyButton, FormFieldWrapper } from "./Field.styles";
 import type { FormFieldProps } from "./types";
 
 export default function FormField({
@@ -12,7 +16,9 @@ export default function FormField({
   required = false,
   tooltip,
   children,
-  style = {}
+  style = {},
+  theme = "",
+  valueToCopy
 }: FormFieldProps) {
   return (
     <FormFieldWrapper
@@ -21,12 +27,38 @@ export default function FormField({
       alignItems="flex-start"
       flexGrow="1"
       style={style}
+      theme={theme}
     >
       <Grid justifyContent="flex-start" margin="0 0 0.375rem 0">
         <Typography data-header tag="p">
           {title}
           {"  "}
           {required && "*"}
+          {valueToCopy && (
+            <CopyButton
+              onClick={() => {
+                try {
+                  const isItObject = isObject(valueToCopy);
+                  let copyThat = "";
+                  if (isItObject) {
+                    mapValues(valueToCopy, (value) => {
+                      copyThat += `${value}\n`;
+                    });
+                  } else {
+                    copyThat = valueToCopy;
+                  }
+
+                  navigator.clipboard.writeText(copyThat);
+                  toast(() => "Text has been copied to clipboard");
+                } catch (error) {
+                  console.error(error);
+                  return false;
+                }
+              }}
+            >
+              <Copy size={24} color={colors.secondary} weight="light" />
+            </CopyButton>
+          )}
         </Typography>
         {tooltip && <Tooltip content={tooltip} size={16} />}
       </Grid>
