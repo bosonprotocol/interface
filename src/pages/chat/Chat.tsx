@@ -71,14 +71,16 @@ export default function Chat() {
     buyer: { buyerId, isError: isErrorBuyers, isLoading: isLoadingBuyer }
   } = useBuyerSellerAccounts(address || "");
 
-  const { data: exchangesAsTheBuyer } = useExchanges({
-    buyerId: buyerId,
-    disputed: null
-  });
-  const { data: exchangesAsTheSeller } = useExchanges({
-    sellerId: sellerId,
-    disputed: null
-  });
+  const { data: exchangesAsTheBuyer, refetch: refetchExchangesAsTheBuyer } =
+    useExchanges({
+      buyerId: buyerId,
+      disputed: null
+    });
+  const { data: exchangesAsTheSeller, refetch: refetchExchangesAsTheSeller } =
+    useExchanges({
+      sellerId: sellerId,
+      disputed: null
+    });
   const exchanges = useMemo(() => {
     return Array.from(
       new Map(
@@ -88,6 +90,11 @@ export default function Chat() {
       ).values()
     );
   }, [exchangesAsTheBuyer, exchangesAsTheSeller]);
+
+  const refetchExchanges = useCallback(() => {
+    refetchExchangesAsTheSeller();
+    refetchExchangesAsTheBuyer();
+  }, [refetchExchangesAsTheBuyer, refetchExchangesAsTheSeller]);
 
   const textAreaValueByThread = useMemo(
     () =>
@@ -217,6 +224,7 @@ export default function Chat() {
                   mySellerId={sellerId}
                   key={selectedExchange?.id || ""}
                   exchange={selectedExchange}
+                  refetchExchanges={refetchExchanges}
                   setChatListOpen={setChatListOpen}
                   chatListOpen={chatListOpen}
                   prevPath={previousPath}
