@@ -27,11 +27,13 @@ interface Props {
   withLayout?: boolean;
   withFooter?: boolean;
   fluidHeader?: boolean;
+  withBosonStyles?: boolean;
 }
 export default function App({
   withLayout = true,
   withFooter = true,
   fluidHeader = false,
+  withBosonStyles = true,
   children
 }: Props) {
   const headerBgColor = useCustomStoreQueryParameter("headerBgColor");
@@ -44,6 +46,8 @@ export default function App({
   const footerTextColor = useCustomStoreQueryParameter("footerTextColor");
   const showFooterValue = useCustomStoreQueryParameter("showFooter");
   const fontFamily = useCustomStoreQueryParameter("fontFamily");
+  const buttonBgColor = useCustomStoreQueryParameter("buttonBgColor");
+  const buttonTextColor = useCustomStoreQueryParameter("buttonTextColor");
   const showFooter = ["", "true"].includes(showFooterValue) && withFooter;
   const Wrapper = withLayout ? Layout : Fragment;
 
@@ -59,6 +63,7 @@ export default function App({
           <ModalProvider>
             <Container>
               <GlobalStyle
+                $withBosonStyles={withBosonStyles}
                 $headerBgColor={headerBgColor}
                 $headerTextColor={headerTextColor}
                 $primaryBgColor={primaryBgColor}
@@ -68,6 +73,8 @@ export default function App({
                 $footerBgColor={footerBgColor}
                 $footerTextColor={footerTextColor}
                 $fontFamily={fontFamily}
+                $buttonBgColor={buttonBgColor}
+                $buttonTextColor={buttonTextColor}
               />
               <Header fluidHeader={fluidHeader} />
               <Wrapper>{children}</Wrapper>

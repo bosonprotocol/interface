@@ -22,6 +22,8 @@ export type StoreFields = {
   textColor: string;
   footerBgColor: string;
   footerTextColor: string;
+  buttonBgColor: string;
+  buttonTextColor: string;
   fontFamily: string;
   navigationBarPosition: SelectType;
   copyright: string;
@@ -69,7 +71,9 @@ export const storeFields = {
   offerCurationList: "offerCurationList",
   withMetaTx: "withMetaTx",
   metaTransactionsApiKey: "metaTransactionsApiKey",
-  supportFunctionality: "supportFunctionality"
+  supportFunctionality: "supportFunctionality",
+  buttonBgColor: "buttonBgColor",
+  buttonTextColor: "buttonTextColor"
 } as const;
 
 const getYesNoOptions = (defaultValue: "yes" | "no") => {
@@ -260,6 +264,16 @@ export const formModel = {
         { label: "Seller", value: "seller" },
         { label: "Dispute Resolver", value: "dr" }
       ]
+    },
+    [storeFields.buttonBgColor]: {
+      name: storeFields.buttonBgColor,
+      requiredErrorMessage: standardRequiredErrorMessage,
+      placeholder: "Accent"
+    },
+    [storeFields.buttonTextColor]: {
+      name: storeFields.buttonTextColor,
+      requiredErrorMessage: standardRequiredErrorMessage,
+      placeholder: "Text"
     }
   }
 } as const;
@@ -285,8 +299,11 @@ export const validationSchema = Yup.object({
   [storeFields.secondaryBgColor]: Yup.string(),
   [storeFields.accentColor]: Yup.string(),
   [storeFields.textColor]: Yup.string(),
-  [storeFields.footerBgColor]: Yup.string(),
+  // NOTE: we may wish to show it again in the future
+  // [storeFields.footerBgColor]: Yup.string(),
   [storeFields.footerTextColor]: Yup.string(),
+  [storeFields.buttonBgColor]: Yup.string(),
+  [storeFields.buttonTextColor]: Yup.string(),
   [storeFields.textColor]: Yup.string(),
   [storeFields.fontFamily]: Yup.object({
     label: Yup.string().required(standardRequiredErrorMessage),
@@ -339,13 +356,14 @@ export const validationSchema = Yup.object({
     label: Yup.string().required(standardRequiredErrorMessage),
     value: Yup.string().required(standardRequiredErrorMessage)
   }).nullable(),
-  [storeFields.metaTransactionsApiKey]: Yup.string(),
-  [storeFields.supportFunctionality]: Yup.array(
-    Yup.object({
-      label: Yup.string().required(standardRequiredErrorMessage),
-      value: Yup.string().required(standardRequiredErrorMessage)
-    }).nullable()
-  )
+  [storeFields.metaTransactionsApiKey]: Yup.string()
+  // NOTE: we may wish to show it again in the future
+  // [storeFields.supportFunctionality]: Yup.array(
+  //   Yup.object({
+  //     label: Yup.string().required(standardRequiredErrorMessage),
+  //     value: Yup.string().required(standardRequiredErrorMessage)
+  //   }).nullable()
+  // )
 });
 
 export const initialValues = {
@@ -362,6 +380,8 @@ export const initialValues = {
   [storeFields.accentColor]: "",
   [storeFields.textColor]: colors.black,
   [storeFields.footerBgColor]: colors.black,
+  [storeFields.buttonBgColor]: colors.primary,
+  [storeFields.buttonTextColor]: colors.black,
   [storeFields.footerTextColor]: colors.white,
   [storeFields.fontFamily]: formModel.formFields.fontFamily.options.find(
     (option) => "default" in option && option.default

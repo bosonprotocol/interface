@@ -65,6 +65,12 @@ const OffersSection = styled.div`
   padding: 4rem 0;
 `;
 
+const ExploreProductsButton = styled(Button)`
+  background-color: var(--buttonBgColor);
+  border-color: var(--buttonBgColor);
+  color: var(--buttonTextColor);
+`;
+
 export default function Landing() {
   const { isLteS } = useBreakpoints();
   const navigate = useKeepQueryParamsNavigate();
@@ -101,13 +107,13 @@ export default function Landing() {
               "The first decentralized marketplace built on Boson Protocol"}
           </SubTitle>
           <ExploreContainer>
-            <Button
+            <ExploreProductsButton
               data-testid="explore-all-offers"
               onClick={() => navigateToExplore()}
               theme="primary"
             >
               Explore products
-            </Button>
+            </ExploreProductsButton>
           </ExploreContainer>
         </GridWithZindex>
         <Carousel />

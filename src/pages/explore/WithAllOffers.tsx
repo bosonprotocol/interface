@@ -19,6 +19,7 @@ import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { convertPrice } from "../../lib/utils/convertPrice";
 import { useInfiniteOffers } from "../../lib/utils/hooks/offers/useInfiniteOffers";
+import { useIsCustomStoreValueChanged } from "../custom-store/useIsCustomStoreValueChanged";
 import ExploreSelect from "./ExploreSelect";
 import useSearchParams from "./useSearchParams";
 
@@ -38,8 +39,9 @@ const TopContainer = styled.div`
     flex-direction: row;
   }
 `;
-const ExploreOffersContainer = styled.div`
-  background: ${colors.lightGrey};
+const ExploreOffersContainer = styled.div<{ $isPrimaryBgChanged: boolean }>`
+  background: ${({ $isPrimaryBgChanged }) =>
+    $isPrimaryBgChanged ? "var(--primaryBgColor)" : colors.lightGrey};
   padding: 3rem 0 4rem 0;
   min-height: 55.5vh;
 `;
@@ -86,6 +88,9 @@ export function WithAllOffers<P>(
     const location = useLocation();
     const [pageIndex, setPageIndex] = useState(DEFAULT_PAGE);
     const { params, handleChange } = useSearchParams();
+
+    const isPrimaryBgColorChanged =
+      useIsCustomStoreValueChanged("primaryBgColor");
 
     const pageOptions = useMemo(() => {
       let options = {
@@ -281,7 +286,7 @@ export function WithAllOffers<P>(
             </Grid>
           </TopContainer>
         </LayoutRoot>
-        <ExploreOffersContainer>
+        <ExploreOffersContainer $isPrimaryBgChanged={isPrimaryBgColorChanged}>
           <LayoutRoot>
             {isLoading || thereAreMoreOffers || isFetchingNextPage ? (
               <Wrapper>
