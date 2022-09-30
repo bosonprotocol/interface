@@ -28,7 +28,7 @@ import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQuer
 import { getItemFromStorage } from "../../../lib/utils/hooks/useLocalStorage";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 import { poll } from "../../../pages/create-product/utils";
-import { useModal } from "../../modal/useModal";
+import { ModalTypes, ShowModalFn, useModal } from "../../modal/useModal";
 import Price from "../../price/index";
 import { useConvertedPrice } from "../../price/useConvertedPrice";
 import SuccessTransactionToast from "../../toasts/SuccessTransactionToast";
@@ -105,10 +105,8 @@ export const getOfferDetailData = (
   offer: Offer,
   convertedPrice: IPrice | null,
   isModal: boolean,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  modalTypes?: any,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  showModal?: (_: any, __: any) => void
+  modalTypes?: ModalTypes,
+  showModal?: ShowModalFn
 ) => {
   const redeemableUntil = dayjs(
     Number(`${offer.voucherRedeemableUntilDate}000`)

@@ -8,7 +8,11 @@ import styled from "styled-components";
 import DetailTable from "../../../components/detail/DetailTable";
 import { DetailDisputeResolver } from "../../../components/detail/DetailWidget/DetailDisputeResolver";
 import { DetailSellerDeposit } from "../../../components/detail/DetailWidget/DetailSellerDeposit";
-import { useModal } from "../../../components/modal/useModal";
+import {
+  ModalTypes,
+  ShowModalFn,
+  useModal
+} from "../../../components/modal/useModal";
 import Price from "../../../components/price";
 import MultiSteps from "../../../components/step/MultiSteps";
 import Button from "../../../components/ui/Button";
@@ -169,9 +173,9 @@ const HistorySection = styled(Section)`
 const getOfferDetailData = (
   offer: Offer,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  modalTypes: any,
+  modalTypes: ModalTypes,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  showModal: (_: any, __: any) => void
+  showModal: ShowModalFn
 ) => {
   const handleShowExchangePolicy = () => {
     if (modalTypes && showModal) {
