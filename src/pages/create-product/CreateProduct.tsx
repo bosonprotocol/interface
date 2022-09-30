@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { useModal } from "../../components/modal/useModal";
 import { CreateProductForm } from "../../components/product/utils/types";
@@ -19,15 +19,15 @@ function CreateProduct() {
     hideModal();
   };
 
-  useEffect(() => {
-    if (store.shouldDisplayModal) {
-      showModal(modalTypes.CREATE_PRODUCT_DRAFT, {
-        title: "Draft",
-        chooseNew,
-        chooseDraft
-      });
-    }
-  }, []); // eslint-disable-line
+  // useEffect(() => {
+  //   if (store.shouldDisplayModal) {
+  //     showModal(modalTypes.CREATE_PRODUCT_DRAFT, {
+  //       title: "Draft",
+  //       chooseNew,
+  //       chooseDraft
+  //     });
+  //   }
+  // }, []); // eslint-disable-line
 
   return <CreateProductInner initial={initial} />;
 }

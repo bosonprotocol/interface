@@ -4,7 +4,7 @@ import bytesToSize from "../../../lib/utils/bytesToSize";
 import { SUPPORTED_FILE_FORMATS } from "./const";
 
 export const validationOfRequiredImage = (size: number) =>
-  Yup.mixed()
+  Yup.mixed<File[]>()
     .test(
       "fileUploaded",
       "You need to upload an image",

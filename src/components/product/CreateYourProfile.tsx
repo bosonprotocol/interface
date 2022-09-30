@@ -1,52 +1,38 @@
-import { websitePattern } from "../../lib/validation/regex/url";
-import { FormField, Input, Textarea, Upload } from "../form";
+import { useModal } from "../modal/useModal";
 import Button from "../ui/Button";
-import {
-  ContainerProductPage,
-  ProductButtonGroup,
-  SectionTitle
-} from "./Product.styles";
+import { ContainerProductPage, ProductButtonGroup } from "./Product.styles";
 import { useCreateForm } from "./utils/useCreateForm";
 
 export default function CreateYourProfile() {
+  const { showModal } = useModal();
   const { nextIsDisabled } = useCreateForm();
 
   return (
     <ContainerProductPage>
-      <SectionTitle tag="h2">Create your Profile</SectionTitle>
-      <FormField
-        title="Logo / profile picture"
-        subTitle="Upload a profile image with a max. size of 600Kb"
-        required
+      <Button
+        onClick={() =>
+          showModal(
+            "CREATE_PROFILE",
+            {
+              title: "Create your Profile",
+              initialRegularCreateProfile: {} as any,
+              onRegularProfileCreated: (regularProfile) => {
+                console.log("regularProfile", regularProfile);
+              },
+              onUseLensProfile: (lensProfile) => {
+                console.log("lensProfile", lensProfile);
+              }
+            },
+            "auto",
+            undefined,
+            {
+              s: "683px"
+            }
+          )
+        }
       >
-        <Upload name="createYourProfile.logo" />
-      </FormField>
-      <FormField title="Your brand / name" required>
-        <Input name="createYourProfile.name" placeholder="Name" />
-      </FormField>
-      <FormField title="Contact e-Mail" required>
-        <Input
-          name="createYourProfile.email"
-          placeholder="e-Mail"
-          pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-        />
-      </FormField>
-      <FormField title="Description" required>
-        <Textarea name="createYourProfile.description" placeholder="Describe" />
-      </FormField>
-      <FormField
-        title="Website / Social media link"
-        subTitle="Put your most frequently used online channel in here. Use the URL for Social media."
-        style={{
-          marginBottom: 0
-        }}
-      >
-        <Input
-          name="createYourProfile.website"
-          placeholder="www.example.com OR www.instagram.com/example"
-          pattern={websitePattern}
-        />
-      </FormField>
+        Profile
+      </Button>
       <ProductButtonGroup>
         <Button theme="primary" type="submit" disabled={nextIsDisabled}>
           Next

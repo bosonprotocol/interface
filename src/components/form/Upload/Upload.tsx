@@ -110,7 +110,7 @@ export default function Upload({
 
   return (
     <>
-      <FieldFileUploadWrapper {...wrapperProps}>
+      <FieldFileUploadWrapper {...wrapperProps} $disabled={!!disabled}>
         <FieldInput
           {...props}
           hidden
@@ -121,6 +121,7 @@ export default function Upload({
           ref={(ref) => {
             inputRef.current = ref;
           }}
+          disabled={disabled}
         />
         {trigger ? (
           <Button onClick={handleChooseFile} theme="secondary">
