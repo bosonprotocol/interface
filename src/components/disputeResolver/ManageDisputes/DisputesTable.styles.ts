@@ -37,7 +37,7 @@ export const Table = styled.table`
           padding-left: 0.5rem;
         }
         &:last-child {
-          text-align: right;
+          text-align: center;
         }
       }
     }
@@ -61,7 +61,10 @@ export const Table = styled.table`
         &:first-child {
         }
         &:last-child {
-          text-align: right;
+          text-align: center;
+          span {
+            width: 100%;
+          }
           > button {
             display: inline-block;
           }
