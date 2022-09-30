@@ -23,7 +23,6 @@ export function useRenderTemplate(
 
   useEffect(() => {
     async function fetchTemplate() {
-      console.log("fetchTemplate");
       setRenderStatus(ProgressStatus.LOADING);
       if (ipfsMetadataStorage && coreSDK) {
         try {
@@ -104,8 +103,7 @@ function buildOfferData(offerFields: OfferFieldsFragment): CreateOfferArgs {
     )
       .mul(1000)
       .toString(),
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    exchangeToken: (offerFields as any).exchangeToken.address as string,
+    exchangeToken: offerFields.exchangeToken.address as string,
     disputeResolverId: offerFields.disputeResolverId as string,
     metadataHash: offerFields.metadataHash as string,
     metadataUri: offerFields.metadataUri as string
