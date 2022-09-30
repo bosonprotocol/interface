@@ -1,3 +1,4 @@
+import { subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { CaretDown, CaretLeft, CaretRight, CaretUp } from "phosphor-react";
 import { useMemo } from "react";
@@ -142,9 +143,13 @@ export default function DisputesTablePast({ disputes }: Props) {
           actionTaken: offer?.resolutionPeriodDuration && (
             <Typography>
               <span>
-                {dayjs(getDateTimestamp(dispute?.decidedDate || "")).format(
-                  CONFIG.dateFormat
-                )}
+                {dayjs(
+                  getDateTimestamp(
+                    (dispute.state === subgraph.DisputeState.Decided
+                      ? dispute.decidedDate
+                      : dispute.refusedDate) || ""
+                  )
+                ).format(CONFIG.dateFormat)}
               </span>
             </Typography>
           )
