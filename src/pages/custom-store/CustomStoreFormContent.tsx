@@ -16,6 +16,7 @@ import { useCurrentSellerId } from "../../lib/utils/hooks/useCurrentSellerId";
 import SocialLogo from "./SocialLogo";
 import {
   formModel,
+  initialValues,
   SelectType,
   storeFields,
   StoreFormFields,
@@ -195,6 +196,16 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
     }
   }, [values.withOwnProducts?.value, setFieldValue, sellerId]);
 
+  useEffect(() => {
+    if (
+      values.headerBgColor !== initialValues.headerBgColor &&
+      values.headerTextColor !== initialValues.headerTextColor
+    ) {
+      setFieldValue(storeFields.footerBgColor, values.headerBgColor, true);
+      setFieldValue(storeFields.footerTextColor, values.headerTextColor, true);
+    }
+  }, [values.headerBgColor, setFieldValue, values.headerTextColor]);
+
   const removeEmptyRowsExceptOne = () => {
     const value = values.additionalFooterLinks;
     const onlyFilledValues = value.filter((v) => !!v?.label || !!v?.value);
@@ -366,8 +377,29 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                     />
                   </Grid>
                 </Grid>
+                <Grid gap={gapBetweenInputs}>
+                  <Grid flexDirection="column" alignItems="flex-start">
+                    <FieldDescription>Button background</FieldDescription>
+                    <InputColor
+                      name={storeFields.buttonBgColor}
+                      placeholder={
+                        formModel.formFields.buttonBgColor.placeholder
+                      }
+                    />
+                  </Grid>
+                  <Grid flexDirection="column" alignItems="flex-start">
+                    <FieldDescription>Button Text Color</FieldDescription>
+                    <InputColor
+                      name={storeFields.buttonTextColor}
+                      placeholder={
+                        formModel.formFields.buttonTextColor.placeholder
+                      }
+                    />
+                  </Grid>
+                </Grid>
               </Grid>
-              <Grid flexDirection="column" alignItems="flex-start">
+              {/* // NOTE: we may wish to show it again in the future */}
+              {/* <Grid flexDirection="column" alignItems="flex-start">
                 <FieldTitle>Footer Color</FieldTitle>
                 <Grid gap={gapBetweenInputs}>
                   <Grid flexDirection="column" alignItems="flex-start">
@@ -389,7 +421,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                     />
                   </Grid>
                 </Grid>
-              </Grid>
+              </Grid> */}
               <Grid flexDirection="column" alignItems="flex-start">
                 <FieldTitle>Font family</FieldTitle>
                 <FieldDescription>Choose your font type</FieldDescription>
@@ -673,7 +705,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                   </Grid>
                 </Grid>
               )}
-              <Grid flexDirection="column" alignItems="flex-start">
+              {/* <Grid flexDirection="column" alignItems="flex-start">
                 <FieldTitle>Toggle header/footer options</FieldTitle>
                 <FieldDescription>
                   Focus your user's attention exclusively on relevant actions
@@ -691,7 +723,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                   isClearable
                   isMulti
                 />
-              </Grid>
+              </Grid> */}
             </Grid>
           </CollapseWithTrigger>
         </Grid>

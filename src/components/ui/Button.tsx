@@ -215,6 +215,17 @@ const allThemes = {
       background: colors.orange,
       color: colors.white
     }
+  },
+  escalate: {
+    color: colors.black,
+    background: colors.orange,
+    borderColor: colors.orange,
+    borderWidth: 2,
+    hover: {
+      background: colors.black,
+      color: colors.white,
+      borderColor: colors.black
+    }
   }
 };
 

@@ -27,6 +27,7 @@ interface Props {
 const ProductCardWrapper = styled.div`
   [data-card="product-card"] {
     min-height: 500px;
+    color: ${colors.black};
   }
 `;
 

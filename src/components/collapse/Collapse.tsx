@@ -1,6 +1,8 @@
 import { CaretDown, CaretUp } from "phosphor-react";
-import { ReactNode, useReducer } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
+
+import { colors } from "../../lib/styles/colors";
 
 const CollapsibleButton = styled.button.attrs({ type: "button" })`
   all: unset;
@@ -18,36 +20,51 @@ const Title = styled.div`
 const ArrowContainer = styled.div`
   font-size: 1.5rem;
 `;
+const CollapseWrapper = styled.div`
+  background: ${colors.lightGrey};
+  padding: 1rem;
+`;
 
 const CollapsibleContent = styled.div``;
 
-interface Props {
-  title: ReactNode;
-  children: ReactNode;
+interface CollapseProps {
+  children: React.ReactNode;
   isInitiallyOpen?: boolean;
+  title: React.ReactNode;
+  wrap?: boolean;
+  disable?: boolean;
 }
-
 export default function Collapse({
-  title,
   children,
-  isInitiallyOpen = false
-}: Props) {
-  const [isOpen, toggleCollapsible] = useReducer(
-    (state) => !state,
-    isInitiallyOpen
-  );
+  isInitiallyOpen = false,
+  title,
+  wrap = false,
+  disable = false
+}: CollapseProps) {
+  const [isOpen, setIsOpen] = useState<boolean>(isInitiallyOpen);
+
+  const toggleCollapsible = useCallback(() => {
+    setIsOpen(!isOpen);
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (isInitiallyOpen !== isOpen) {
+      setIsOpen(isInitiallyOpen);
+    }
+  }, [isInitiallyOpen]); // eslint-disable-line
+
+  const Wrapper = wrap ? CollapseWrapper : Fragment;
   return (
-    <>
-      <CollapsibleButton onClick={toggleCollapsible}>
+    <Wrapper>
+      <CollapsibleButton onClick={disable ? () => null : toggleCollapsible}>
         <>
           <Title>{title}</Title>
-
           <ArrowContainer>
             {isOpen ? <CaretUp /> : <CaretDown />}
           </ArrowContainer>
         </>
       </CollapsibleButton>
       <CollapsibleContent hidden={!isOpen}>{children}</CollapsibleContent>
-    </>
+    </Wrapper>
   );
 }
