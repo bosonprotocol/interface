@@ -35,6 +35,7 @@ interface Props {
 const ExchangeCardWrapper = styled.div`
   [data-card="exchange-card"] {
     min-height: 500px;
+    color: ${colors.black};
   }
 `;
 

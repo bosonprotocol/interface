@@ -4,6 +4,7 @@ import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 
 const GlobalStyle = createGlobalStyle<{
+  $withBosonStyles: boolean;
   $headerBgColor: string;
   $headerTextColor: string;
   $primaryBgColor: string;
@@ -13,6 +14,8 @@ const GlobalStyle = createGlobalStyle<{
   $footerBgColor: string;
   $footerTextColor: string;
   $fontFamily: string;
+  $buttonBgColor: string;
+  $buttonTextColor: string;
 }>`
 
   * {
@@ -21,29 +24,59 @@ const GlobalStyle = createGlobalStyle<{
   :root {
     --l: 50%;
     --headerBgColor: ${(props) =>
-      props.$headerBgColor ? props.$headerBgColor : colors.white};
+      props.$headerBgColor && !props.$withBosonStyles
+        ? props.$headerBgColor
+        : colors.white};
     --headerTextColor: ${(props) =>
-      props.$headerTextColor ? props.$headerTextColor : colors.darkGrey};
+      props.$headerTextColor && !props.$withBosonStyles
+        ? props.$headerTextColor
+        : colors.darkGrey};
     --primary: ${(props) =>
-      props.$primaryBgColor ? props.$primaryBgColor : colors.primary};
+      props.$primaryBgColor && !props.$withBosonStyles
+        ? props.$primaryBgColor
+        : colors.primary};
     --secondary: ${(props) =>
-      props.$secondaryBgColor ? props.$secondaryBgColor : colors.lightGrey};
+      props.$secondaryBgColor && !props.$withBosonStyles
+        ? props.$secondaryBgColor
+        : colors.lightGrey};
     --accent: ${(props) =>
-      props.$accentColor ? props.$accentColor : colors.secondary};
+      props.$accentColor && !props.$withBosonStyles
+        ? props.$accentColor
+        : colors.secondary};
     --accentNoDefault : ${(props) =>
-      props.$accentColor ? props.$accentColor : ""};
+      props.$accentColor && !props.$withBosonStyles ? props.$accentColor : ""};
     --accentDark: ${(props) =>
-      props.$accentColor ? props.$accentColor : colors.arsenic};
+      props.$accentColor && !props.$withBosonStyles
+        ? props.$accentColor
+        : colors.arsenic};
     --textColor: ${(props) =>
-      props.$textColor ? props.$textColor : colors.black};
+      props.$textColor && !props.$withBosonStyles
+        ? props.$textColor
+        : colors.black};
     --primaryBgColor: ${(props) =>
-      props.$primaryBgColor ? props.$primaryBgColor : colors.primaryBgColor};
+      props.$primaryBgColor && !props.$withBosonStyles
+        ? props.$primaryBgColor
+        : colors.primaryBgColor};
     --secondaryBgColor: ${(props) =>
-      props.$secondaryBgColor ? props.$secondaryBgColor : colors.secondary};
+      props.$secondaryBgColor && !props.$withBosonStyles
+        ? props.$secondaryBgColor
+        : colors.secondary};
     --footerBgColor: ${(props) =>
-      props.$footerBgColor ? props.$footerBgColor : colors.black};
+      props.$footerBgColor && !props.$withBosonStyles
+        ? props.$footerBgColor
+        : colors.black};
     --footerTextColor: ${(props) =>
-      props.$footerTextColor ? props.$footerTextColor : colors.white};
+      props.$footerTextColor && !props.$withBosonStyles
+        ? props.$footerTextColor
+        : colors.white};
+    --buttonBgColor: ${(props) =>
+      props.$buttonBgColor && !props.$withBosonStyles
+        ? props.$buttonBgColor
+        : colors.primary};
+    --buttonTextColor: ${(props) =>
+      props.$buttonTextColor && !props.$withBosonStyles
+        ? props.$buttonTextColor
+        : colors.black};
 
     font-size: 12px;
     ${breakpoint.xs} {

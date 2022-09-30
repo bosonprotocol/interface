@@ -14,6 +14,7 @@ import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import { useCollections } from "../../lib/utils/hooks/useCollections";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { useIsCustomStoreValueChanged } from "../custom-store/useIsCustomStoreValueChanged";
 import ExploreOffers from "./ExploreOffers";
 
 interface FilterValue {
@@ -146,8 +147,9 @@ const TopContainer = styled.div`
 //   display: none;
 // `;
 
-const ExploreOffersContainer = styled.div`
-  background: ${colors.lightGrey};
+const ExploreOffersContainer = styled.div<{ $isPrimaryBgChanged: boolean }>`
+  background: ${({ $isPrimaryBgChanged }) =>
+    $isPrimaryBgChanged ? "var(--primaryBgColor)" : colors.lightGrey};
   padding: 0 3.125rem 3.125rem 3.125rem;
 `;
 
@@ -177,6 +179,8 @@ export default function Explore() {
     ExploreQueryParameters.seller
   );
 
+  const isPrimaryBgColorChanged =
+    useIsCustomStoreValueChanged("primaryBgColor");
   // const [brandInput, setBrandInput] = useState<string>(nameQueryParameter);
   // const [brandSelect, setBrandSelect] = useState<string>("");
   const [nameToSearch, setNameToSearch] = useState<string>(nameQueryParameter);
@@ -312,7 +316,7 @@ export default function Explore() {
           </CurrencyOrSellerSelect>
         </FiltersContainer>
       </SidebarContainer> */}
-      <ExploreOffersContainer>
+      <ExploreOffersContainer $isPrimaryBgChanged={isPrimaryBgColorChanged}>
         <ExploreOffers
           name={nameToSearch}
           exchangeTokenAddress={selectedToken}
@@ -323,7 +327,7 @@ export default function Explore() {
           orderBy={filter.orderBy}
         />
       </ExploreOffersContainer>
-      <ExploreOffersContainer>
+      <ExploreOffersContainer $isPrimaryBgChanged={isPrimaryBgColorChanged}>
         <Grid>
           <Typography
             $fontSize="32px"

@@ -7,6 +7,7 @@ import { ExploreQueryParameters } from "../../lib/routing/parameters";
 import { useQueryParameter } from "../../lib/routing/useQueryParameter";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
+import { useIsCustomStoreValueChanged } from "../custom-store/useIsCustomStoreValueChanged";
 import ExploreOffers from "./ExploreOffers";
 
 interface FilterValue {
@@ -19,8 +20,9 @@ const selectOptions = [
   { value: "desc", label: "Descending" }
 ] as const;
 
-const ExploreOffersContainer = styled.div`
-  background: ${colors.lightGrey};
+const ExploreOffersContainer = styled.div<{ $isPrimaryBgChanged: boolean }>`
+  background: ${({ $isPrimaryBgChanged }) =>
+    $isPrimaryBgChanged ? "var(--primaryBgColor)" : colors.lightGrey};
   padding: 0 3.125rem 3.125rem 3.125rem;
 `;
 
@@ -118,6 +120,8 @@ function Products() {
 
   const [selectedSeller] = useState<string>(sellerQueryParameter);
 
+  const isPrimaryBgColorChanged =
+    useIsCustomStoreValueChanged("primaryBgColor");
   return (
     <Container>
       <SelectFilterWrapper>
@@ -136,7 +140,7 @@ function Products() {
           }}
         />
       </SelectFilterWrapper>
-      <ExploreOffersContainer>
+      <ExploreOffersContainer $isPrimaryBgChanged={isPrimaryBgColorChanged}>
         <ExploreOffers
           name={nameToSearch}
           exchangeTokenAddress={selectedToken}

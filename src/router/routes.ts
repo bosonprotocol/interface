@@ -37,7 +37,8 @@ const SellerCenterPage = lazy(() => import("../pages/sell/SellerCenter"));
 export const baseAppProps = {
   withLayout: true,
   withFooter: true,
-  fluidHeader: false
+  fluidHeader: false,
+  withBosonStyles: true
 };
 const base = {
   component: null,
@@ -70,7 +71,11 @@ export default [
     ...base,
     index: true,
     path: BosonRoutes.Root,
-    component: LandingPage
+    component: LandingPage,
+    app: {
+      ...base.app,
+      withBosonStyles: false
+    }
   },
   {
     ...base,
@@ -108,7 +113,11 @@ export default [
   {
     ...base,
     path: BosonRoutes.Explore,
-    component: ExplorePage
+    component: ExplorePage,
+    app: {
+      ...base.app,
+      withBosonStyles: false
+    }
   },
   {
     ...base,
@@ -128,12 +137,20 @@ export default [
   {
     ...base,
     path: OffersRoutes.OfferDetail,
-    component: OfferDetailPage
+    component: OfferDetailPage,
+    app: {
+      ...base.app,
+      withBosonStyles: false
+    }
   },
   {
     ...base,
     path: BosonRoutes.Exchange,
     component: ExchangePage,
+    app: {
+      ...base.app,
+      withBosonStyles: false
+    },
     role: [
       UserRoles.Guest,
       UserRoles.Buyer,
@@ -145,6 +162,10 @@ export default [
     ...base,
     path: BosonRoutes.YourAccount,
     component: PrivateAccountPage,
+    app: {
+      ...base.app,
+      withBosonStyles: false
+    },
     role: [UserRoles.Buyer]
   },
   {

@@ -7,6 +7,7 @@ import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { useIsCustomStoreValueChanged } from "../../pages/custom-store/useIsCustomStoreValueChanged";
 import { ProductGridContainer } from "../../pages/profile/ProfilePage.styles";
 import Breadcrumbs from "../breadcrumbs/Breadcrumbs";
 import { Action } from "../offer/OfferCard";
@@ -30,8 +31,9 @@ interface Props {
   breadcrumbs?: boolean;
 }
 
-const Container = styled.div`
-  background: ${colors.lightGrey};
+const Container = styled.div<{ $isPrimaryBgChanged: boolean }>`
+  background: ${({ $isPrimaryBgChanged }) =>
+    $isPrimaryBgChanged ? "var(--primaryBgColor)" : colors.lightGrey};
 `;
 
 const ViewMoreButton = styled.button`
@@ -60,6 +62,7 @@ export default function OfferList({
   itemsPerRow,
   breadcrumbs
 }: Props) {
+  const isPrimaryBgChanged = useIsCustomStoreValueChanged("primaryBgColor");
   const navigate = useKeepQueryParamsNavigate();
   const location = useLocation();
 
@@ -106,7 +109,7 @@ export default function OfferList({
           </Typography>
         </StyledGrid>
       )}
-      <Container>
+      <Container $isPrimaryBgChanged={isPrimaryBgChanged}>
         {breadcrumbs && (
           <Breadcrumbs
             steps={[
