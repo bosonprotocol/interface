@@ -41,16 +41,12 @@ on:
         required: false
       REACT_APP_RNFT_LICENSE_TEMPLATE:
         required: true
-        type: string
       REACT_APP_BUYER_SELLER_AGREEMENT_TEMPLATE:
         required: true
-        type: string
       REACT_APP_DEFAULT_DISPUTE_RESOLVER_ID:
         required: true
-        type: string
       REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS:
         required: true
-        type: string
     outputs:
       JOB_LINT:
         value: ${{ jobs.build-test-deploy.outputs.jobLint }}
