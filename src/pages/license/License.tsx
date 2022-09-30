@@ -13,6 +13,8 @@ const Container = styled.div`
 
 export default function License() {
   const { [UrlParameters.tokenId]: tokenId } = useParams();
+  // The license is referring to a token (rNFT) identified by a tokenId (NFT convention)
+  // By convention, Boson Protocol uses the exchangeId as tokenId
   const exchangeId = tokenId;
   const {
     data: exchanges,
