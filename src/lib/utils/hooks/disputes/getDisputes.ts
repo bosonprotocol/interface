@@ -22,6 +22,10 @@ const buildQuery = (queryString: string, name: string) => {
         exchange {
           id
           completedDate
+          committedDate
+          redeemedDate
+          cancelledDate
+          revokedDate
           offer {
             resolutionPeriodDuration
             price

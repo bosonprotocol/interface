@@ -118,7 +118,10 @@ export default function DisputesTablePast({ disputes }: Props) {
             </Typography>
           ),
           status: dispute && (
-            <Tooltip interactive content={<DisputeHistory offer={offer} />}>
+            <Tooltip
+              interactive
+              content={<DisputeHistory exchange={dispute.exchange} />}
+            >
               <DisputeStateWrapper state={dispute.state}>
                 {dispute.state}
               </DisputeStateWrapper>

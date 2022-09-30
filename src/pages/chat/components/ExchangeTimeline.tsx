@@ -74,7 +74,6 @@ export default function ExchangeTimeline({
         disputedDate,
         retractedDate,
         resolvedDate,
-        finalizedDate,
         decidedDate,
         refusedDate,
         escalatedDate
@@ -122,11 +121,11 @@ export default function ExchangeTimeline({
           timestamp: Number(decidedDate)
         });
       }
-      if (finalizedDate) {
+      if (escalatedDate) {
         timesteps.push({
-          text: "Dispute finalized",
-          date: formatShortDate(finalizedDate),
-          timestamp: Number(finalizedDate)
+          text: "Dispute Escalated",
+          date: formatShortDate(escalatedDate),
+          timestamp: Number(escalatedDate)
         });
       }
     }

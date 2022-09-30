@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { Offer } from "../../../lib/types/offer";
+import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import ExchangeTimeline from "../../../pages/chat/components/ExchangeTimeline";
 import Typography from "../../ui/Typography";
 
@@ -14,25 +14,18 @@ export const OfferHistoryStatuses = styled.div`
 `;
 
 interface Props {
-  offer: Offer;
+  exchange: Exchange;
 }
 
-export const DisputeHistory = ({ offer }: Props) => {
-  const disputedExchange = offer?.exchanges?.filter((exchange) => {
-    return exchange.disputed === true;
-  });
-
-  if (!disputedExchange) {
+export const DisputeHistory = ({ exchange }: Props) => {
+  if (!exchange) {
     return null;
   }
 
   return (
     <OfferHistoryStatuses>
-      {disputedExchange ? (
-        <ExchangeTimeline
-          exchange={disputedExchange[disputedExchange.length - 1]}
-          showDispute={true}
-        >
+      {exchange ? (
+        <ExchangeTimeline exchange={exchange} showDispute={true}>
           <h4>History</h4>
         </ExchangeTimeline>
       ) : (
