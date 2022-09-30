@@ -16,6 +16,7 @@ dayjs.extend(isBetween);
 import { Currencies, CurrencyDisplay } from "@bosonprotocol/react-kit";
 
 import { colors } from "../../../lib/styles/colors";
+import { ProgressStatus } from "../../../lib/types/progressStatus";
 import { useModal } from "../../modal/useModal";
 import Tooltip from "../../tooltip/Tooltip";
 import Button from "../../ui/Button";
@@ -166,7 +167,7 @@ export default function SellerFinances({
   } = sellerDepositData;
 
   useEffect(() => {
-    if (fundStatus === "success" && !isFundsInitialized) {
+    if (fundStatus === ProgressStatus.SUCCESS && !isFundsInitialized) {
       setIsFundsInitialized(true);
     }
   }, [fundStatus, isFundsInitialized]);
@@ -385,7 +386,11 @@ export default function SellerFinances({
     return <Loading />;
   }
 
-  if (sellerDataIsError || fundStatus === "error" || isErrorExchangesTokens) {
+  if (
+    sellerDataIsError ||
+    fundStatus === ProgressStatus.ERROR ||
+    isErrorExchangesTokens
+  ) {
     // TODO: NO FIGMA REPRESENTATIONS
   }
 

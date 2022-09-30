@@ -18,6 +18,8 @@ export const BosonRoutes = {
   DisputeId: `/exchange/:${UrlParameters.exchangeId}/raise-dispute`,
   BuyerPage: `/buyer/:${UrlParameters.buyerId}`,
   SellerPage: `/seller/:${UrlParameters.sellerId}`,
+  License: `/license/:${UrlParameters.tokenId}`,
+  ContractualAgreement: `/contractualAgreement/:${UrlParameters.offerId}`,
   Error404: "*"
 } as const;
 
