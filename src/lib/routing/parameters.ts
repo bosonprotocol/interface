@@ -1,9 +1,19 @@
 export const ExploreQueryParameters = {
   name: "name",
+  page: "page",
   seller: "seller",
   currency: "currency",
   orderDirection: "orderDirection",
-  orderBy: "orderBy"
+  orderBy: "orderBy",
+  sortBy: "sortBy"
+} as const;
+
+export const CollectionsQueryParameters = {
+  value: "value",
+  orderDirection: "orderDirection",
+  orderBy: "orderBy",
+  exchangeOrderBy: "exchangeOrderBy",
+  validFromDate_lte: "validFromDate_lte"
 } as const;
 
 export const AccountQueryParameters = {

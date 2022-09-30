@@ -171,7 +171,8 @@ async function fetchCurationListOffers(
   const offers = memoizedMergeAndSortOffers(
     getMergedAndSortedCacheKey(props),
     sellerCurationListResult,
-    offerCurationListResult
+    offerCurationListResult,
+    props?.disableMemo || false
   );
 
   if (offerId) {
