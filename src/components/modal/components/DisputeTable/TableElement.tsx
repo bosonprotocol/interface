@@ -122,7 +122,7 @@ function TableElement({ exchange }: { exchange: Exchange }) {
         </td>
         <td>
           <Grid justifyContent="flex-end" gap="1rem">
-            {isNotEscalatedYet && (
+            {isNotEscalatedYet && status !== "Resolved" && (
               <Button
                 theme="orange"
                 size="small"
