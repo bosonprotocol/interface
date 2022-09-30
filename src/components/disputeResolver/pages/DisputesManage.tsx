@@ -9,6 +9,7 @@ import SellerTags from "../../seller/SellerTags";
 import Loading from "../../ui/Loading";
 import { DisputeResolverProps } from "../DisputeResolverInside";
 import DisputesTable from "../ManageDisputes/DisputesTable";
+import DisputesTablePast from "../ManageDisputes/DisputesTablePast";
 
 const productTags = [
   {
@@ -46,16 +47,20 @@ export const DisputesManage: React.FC<DisputeResolverProps> = () => {
         currentTag={currentTag}
         setCurrentTag={setCurrentTag}
       />
-
-      <DisputesTable
-        disputes={
-          currentTag === "active"
-            ? [...activeDisputes]
-            : [...disputesWithDecisions, ...disputesWithefusals]
-        }
-        isLoading={isLoading}
-        isError={isError}
-      />
+      {currentTag === "active" && (
+        <DisputesTable
+          disputes={activeDisputes}
+          isLoading={isLoading}
+          isError={isError}
+        />
+      )}
+      {currentTag === "past" && (
+        <DisputesTablePast
+          disputes={[...disputesWithDecisions, ...disputesWithefusals]}
+          isLoading={isLoading}
+          isError={isError}
+        />
+      )}
     </>
   );
 };
