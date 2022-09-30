@@ -309,21 +309,23 @@ export default function ExchangeSidePreview({
           >
             Retract
           </Button>
-          <Button
-            theme="orange"
-            onClick={() =>
-              showModal(
-                "ESCALATE_MODAL",
-                {
-                  title: "Escalate",
-                  exchange: exchange
-                },
-                "l"
-              )
-            }
-          >
-            Escalate
-          </Button>
+          {!isEscalated && (
+            <Button
+              theme="orange"
+              onClick={() =>
+                showModal(
+                  "ESCALATE_MODAL",
+                  {
+                    title: "Escalate",
+                    exchange: exchange
+                  },
+                  "l"
+                )
+              }
+            >
+              Escalate
+            </Button>
+          )}
         </CTASection>
       ) : isInRedeemed && iAmTheBuyer ? (
         <CTASection>

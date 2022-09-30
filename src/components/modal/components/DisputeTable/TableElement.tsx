@@ -1,11 +1,15 @@
+import { subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { ClockClockwise } from "phosphor-react";
-import React, { useMemo } from "react";
+import { useMemo } from "react";
+import { generatePath } from "react-router-dom";
 import styled from "styled-components";
 
+import { UrlParameters } from "../../../../lib/routing/parameters";
 import { BosonRoutes } from "../../../../lib/routing/routes";
 import { colors } from "../../../../lib/styles/colors";
 import { getDateTimestamp } from "../../../../lib/utils/getDateTimestamp";
+import { useDisputes } from "../../../../lib/utils/hooks/useDisputes";
 import { useDisputeSubStatusInfo } from "../../../../lib/utils/hooks/useDisputeSubStatusInfo";
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
@@ -71,6 +75,21 @@ function TableElement({ exchange }: { exchange: Exchange }) {
     } days ago`;
   }, [currentDate, parseDisputeDate]);
 
+  const { data: disputes = [{} as subgraph.DisputeFieldsFragment] } =
+    useDisputes(
+      {
+        disputesFilter: {
+          exchange: exchange?.id
+        }
+      },
+      { enabled: !!exchange }
+    );
+  const [dispute] = disputes.length
+    ? disputes
+    : [{} as subgraph.DisputeFieldsFragment];
+
+  const isEscalated = !!dispute.escalatedDate;
+
   if (exchange) {
     return (
       <>
@@ -102,17 +121,21 @@ function TableElement({ exchange }: { exchange: Exchange }) {
           </Grid>
         </td>
         <td>
-          <Button
-            theme="orange"
-            size="small"
-            onClick={() => {
-              navigate({
-                pathname: BosonRoutes.Chat
-              });
-            }}
-          >
-            Escalate dispute
-          </Button>
+          {!isEscalated && (
+            <Button
+              theme="orange"
+              size="small"
+              onClick={() => {
+                navigate({
+                  pathname: generatePath(BosonRoutes.ChatMessage, {
+                    [UrlParameters.exchangeId]: exchange?.id
+                  })
+                });
+              }}
+            >
+              Escalate dispute
+            </Button>
+          )}
         </td>
         <td>
           <Button
@@ -121,7 +144,9 @@ function TableElement({ exchange }: { exchange: Exchange }) {
             size="small"
             onClick={() => {
               navigate({
-                pathname: `${BosonRoutes.Chat}/${exchange.id}`
+                pathname: generatePath(BosonRoutes.ChatMessage, {
+                  [UrlParameters.exchangeId]: exchange?.id
+                })
               });
             }}
           >
