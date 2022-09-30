@@ -17,6 +17,7 @@ const buildQuery = (queryString: string, name: string) => {
         state
         escalatedDate
         retractedDate
+        decidedDate
         exchange {
           id
           completedDate
