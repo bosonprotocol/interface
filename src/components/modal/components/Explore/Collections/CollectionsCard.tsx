@@ -14,6 +14,7 @@ import Typography from "../../../../ui/Typography";
 const CardContainer = styled.div`
   position: relative;
   padding-bottom: 7.8125rem;
+  background: ${colors.lightGrey};
   display: flex;
   flex-direction: column;
   border: 1px solid ${colors.black}20;

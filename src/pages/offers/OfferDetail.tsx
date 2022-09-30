@@ -143,7 +143,7 @@ export default function OfferDetail() {
               <Typography tag="p" style={{ color: colors.darkGrey }}>
                 {shippingInfo.shipping}
               </Typography>
-              <DetailTable data={shippingInfo.shippingTable} />
+              <DetailTable data={shippingInfo.shippingTable} inheritColor />
             </div>
           )}
         </DetailGrid>
