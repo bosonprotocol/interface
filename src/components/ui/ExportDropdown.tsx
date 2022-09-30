@@ -10,25 +10,25 @@ const ExportButton = styled(Button)`
   color: ${colors.secondary};
   border: none;
   gap: 0.3125rem;
-  border: 1px solid ${colors.secondary};
-  padding-right: 34px;
-  padding-left: 12px;
+  border: 0.0625rem solid ${colors.secondary};
+  padding-right: 2.125rem;
+  padding-left: 0.75rem;
   position: relative;
   > div {
     gap: 0.625rem;
   }
 `;
 const ArrowContainer = styled.div`
-  border-left: 1px solid ${colors.secondary};
+  border-left: 0.0625rem solid ${colors.secondary};
   height: 128%;
-  width: 20px;
+  width: 1.25rem;
   position: absolute;
-  right: -30px;
+  right: -1.875rem;
 `;
 const ArrowDown = styled.div`
   clip-path: polygon(50% 100%, 0 0, 100% 0);
-  width: 11px;
-  height: 9px;
+  width: 0.6875rem;
+  height: 0.5625rem;
   background: ${colors.secondary};
   position: absolute;
   left: 60%;
@@ -37,22 +37,22 @@ const ArrowDown = styled.div`
 `;
 
 const ButtonsContainer = styled.div`
-  padding: 5px;
+  padding: 0.3125rem;
   position: absolute;
-  width: 125px;
-  margin-left: -5px;
-  margin-top: -5px;
+  width: 7.8125rem;
+  margin-left: -0.3125rem;
+  margin-top: -0.3125rem;
   display: none;
 `;
 
 const ButtonOptions = styled.div<{ disabled: boolean }>`
-  border: 1px solid ${colors.secondary};
-  border-top: 0px;
+  border: 0.0625rem solid ${colors.secondary};
+  border-top: 0rem;
   color: ${colors.black};
-  font-size: 12px;
-  max-width: 115px;
+  font-size: 0.75rem;
+  max-width: 7.1875rem;
   text-align: center;
-  padding: 5px;
+  padding: 0.3125rem;
   background-color: ${colors.white};
   text-decoration: ${({ disabled }) => (disabled ? "line-through;" : "none")};
 `;

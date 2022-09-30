@@ -159,7 +159,7 @@ export default function SellerExchanges({
             },
             {
               id: 1,
-              name: "Export all data(incl. delivery info",
+              name: "Export all data(incl. delivery info)",
               disabled: true,
               csvProps: {
                 data: prepareCSVData,
