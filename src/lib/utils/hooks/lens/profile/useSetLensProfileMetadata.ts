@@ -1,15 +1,18 @@
 import { BaseIpfsStorage } from "@bosonprotocol/react-kit";
-import { splitSignature } from "ethers/lib/utils";
 import { gql } from "graphql-request";
-import { useQuery, useQueryClient } from "react-query";
-import { useSigner, useSignTypedData } from "wagmi";
+import { useQuery } from "react-query";
+import { useSignTypedData } from "wagmi";
 
 import { useIpfsStorage } from "../../useIpfsStorage";
+import { broadcastRequest } from "../broadcast/broadcast";
 import { signedTypeData } from "../ethers";
 import { fetchLens } from "../fetchLens";
-import { CreatePublicSetProfileMetadataUriRequest } from "../graphql/generated";
+import {
+  CreatePublicSetProfileMetadataUriRequest,
+  CreateSetProfileMetadataViaDispatcherDocument
+} from "../graphql/generated";
 import { pollUntilIndexed } from "../indexer/has-transaction-been-indexed";
-import { getLensPeriphery } from "../lens-hub";
+import { getLensProfile } from "./useGetLensProfile";
 
 type SignTypedDataAsync = ReturnType<
   typeof useSignTypedData
@@ -27,25 +30,19 @@ export default function useSetLensProfileMetadata(
   }
 ) {
   const { signTypedDataAsync } = useSignTypedData();
-  const { data: signer } = useSigner();
   const { enabled, accessToken } = options;
   const storage = useIpfsStorage();
-  const queryClient = useQueryClient();
   return useQuery(
     ["set-lens-profile-metadata", props],
     async () => {
-      if (!signer) {
-        return;
-      }
       return setProfileMetadata(props, {
         signTypedDataAsync,
         storage,
-        signer,
         accessToken
       });
     },
     {
-      enabled: enabled && !!signer
+      enabled
     }
   );
 }
@@ -114,7 +111,88 @@ const signCreateSetProfileMetadataTypedData = async (
   return { result, signature };
 };
 
-async function setProfileMetadata(
+async function createSetProfileMetadataViaDispatcherRequest(
+  request: CreatePublicSetProfileMetadataUriRequest
+) {
+  return (
+    await fetchLens<any>(CreateSetProfileMetadataViaDispatcherDocument, {
+      request
+    })
+  ).createSetProfileMetadataViaDispatcher;
+}
+
+const setMetadata = async (
+  createMetadataRequest: CreatePublicSetProfileMetadataUriRequest,
+  {
+    signTypedDataAsync,
+    accessToken
+  }: {
+    signTypedDataAsync: SignTypedDataAsync;
+    accessToken: string;
+  }
+) => {
+  const profileResult = await getLensProfile({
+    profileId: createMetadataRequest.profileId
+  });
+  if (!profileResult) {
+    throw new Error("Could not find profile");
+  }
+
+  // this means it they have not setup the dispatcher, if its a no you must use broadcast
+  if (profileResult.dispatcher?.canUseRelay) {
+    const dispatcherResult = await createSetProfileMetadataViaDispatcherRequest(
+      createMetadataRequest
+    );
+    console.log(
+      "create profile metadata via dispatcher: createPostViaDispatcherRequest",
+      dispatcherResult
+    );
+
+    if (dispatcherResult.__typename !== "RelayerResult") {
+      console.error(
+        "create profile metadata via dispatcher: failed",
+        dispatcherResult
+      );
+      throw new Error("create profile metadata via dispatcher: failed");
+    }
+
+    return { txHash: dispatcherResult.txHash, txId: dispatcherResult.txId };
+  } else {
+    const signedResult = await signCreateSetProfileMetadataTypedData(
+      createMetadataRequest,
+      signTypedDataAsync,
+      accessToken
+    );
+    console.log(
+      "create profile metadata via broadcast: signedResult",
+      signedResult
+    );
+
+    const broadcastResult = await broadcastRequest(
+      {
+        id: signedResult.result.id,
+        signature: signedResult.signature
+      },
+      { accessToken }
+    );
+
+    if (broadcastResult.reason) {
+      console.error(
+        "create profile metadata via broadcast: failed",
+        broadcastResult
+      );
+      throw new Error("create profile metadata via broadcast: failed");
+    }
+
+    console.log(
+      "create profile metadata via broadcast: broadcastResult",
+      broadcastResult
+    );
+    return { txHash: broadcastResult.txHash, txId: broadcastResult.txId };
+  }
+};
+
+export const setProfileMetadata = async (
   args: {
     profileId: string;
     name: string;
@@ -131,15 +209,13 @@ async function setProfileMetadata(
   {
     signTypedDataAsync,
     storage,
-    signer,
     accessToken
   }: {
     signTypedDataAsync: SignTypedDataAsync;
     storage: BaseIpfsStorage;
-    signer: NonNullable<ReturnType<typeof useSigner>["data"]>;
     accessToken: string;
   }
-) {
+) => {
   const cid = await storage.add(JSON.stringify(args));
   console.log("create profile metadata: ipfs cid", cid);
 
@@ -147,39 +223,24 @@ async function setProfileMetadata(
     profileId: args.profileId,
     metadata: "ipfs://" + cid
   };
-  const signedResult = await signCreateSetProfileMetadataTypedData(
-    createProfileMetadataRequest,
+
+  const result = await setMetadata(createProfileMetadataRequest, {
     signTypedDataAsync,
     accessToken
-  );
-  console.log("create comment: signedResult", signedResult);
-
-  const typedData = signedResult.result.typedData;
-
-  const { v, r, s } = splitSignature(signedResult.signature);
-
-  const lensPeriphery = getLensPeriphery(signer);
-  const tx = await lensPeriphery.setProfileMetadataURIWithSig({
-    profileId: createProfileMetadataRequest.profileId,
-    metadata: createProfileMetadataRequest.metadata,
-    sig: {
-      v,
-      r,
-      s,
-      deadline: typedData.value.deadline
-    }
   });
-  console.log("create profile metadata: tx hash", tx.hash);
+  console.log("create comment gasless", result);
 
   console.log("create profile metadata: poll until indexed");
   const indexedResult = await pollUntilIndexed(
-    { txHash: tx.hash },
+    { txId: result.txId },
     { accessToken }
   );
 
-  console.log("create profile metadata: profile has been indexed");
+  console.log("create profile metadata: profile has been indexed", result);
 
   const logs = indexedResult.txReceipt!.logs;
 
   console.log("create profile metadata: logs", logs);
-}
+
+  return result;
+};

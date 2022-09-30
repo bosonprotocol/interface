@@ -1,8 +1,10 @@
-import { gql } from "graphql-request";
 import { useQuery } from "react-query";
 
 import { fetchLens } from "../fetchLens";
-import { SingleProfileQueryRequest } from "../graphql/generated";
+import {
+  ProfileDocument,
+  SingleProfileQueryRequest
+} from "../graphql/generated";
 
 type Params = Parameters<typeof getLensProfile>[0];
 
@@ -26,93 +28,9 @@ export default function useGetLensProfile(
   );
 }
 
-async function getLensProfile(
+export async function getLensProfile(
   request: Partial<Record<keyof SingleProfileQueryRequest, string>>
 ) {
-  const query = gql`
-    query Profile($handle: Handle, $profileId: ProfileId) {
-      profile(request: { handle: $handle, profileId: $profileId }) {
-        id
-        name
-        bio
-        attributes {
-          displayType
-          traitType
-          key
-          value
-        }
-        followNftAddress
-        metadata
-        isDefault
-        picture {
-          ... on NftImage {
-            contractAddress
-            tokenId
-            uri
-            verified
-          }
-          ... on MediaSet {
-            original {
-              url
-              mimeType
-            }
-          }
-          __typename
-        }
-        handle
-        coverPicture {
-          ... on NftImage {
-            contractAddress
-            tokenId
-            uri
-            verified
-          }
-          ... on MediaSet {
-            original {
-              url
-              mimeType
-            }
-          }
-          __typename
-        }
-        ownedBy
-        dispatcher {
-          address
-          canUseRelay
-        }
-        stats {
-          totalFollowers
-          totalFollowing
-          totalPosts
-          totalComments
-          totalMirrors
-          totalPublications
-          totalCollects
-        }
-        followModule {
-          ... on FeeFollowModuleSettings {
-            type
-            amount {
-              asset {
-                symbol
-                name
-                decimals
-                address
-              }
-              value
-            }
-            recipient
-          }
-          ... on ProfileFollowModuleSettings {
-            type
-          }
-          ... on RevertFollowModuleSettings {
-            type
-          }
-        }
-      }
-    }
-  `;
   return (
     await fetchLens<{
       profile: {
@@ -128,7 +46,8 @@ async function getLensProfile(
         metadata: unknown;
         isDefault: boolean;
         handle: string;
+        dispatcher: Record<string, any> | null;
       };
-    }>(query, request)
+    }>(ProfileDocument, { request })
   ).profile;
 }

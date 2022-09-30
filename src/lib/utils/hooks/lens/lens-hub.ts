@@ -10,7 +10,6 @@ export const getLensHub = (signer: ethers.Signer) =>
     CONFIG.lens.LENS_HUB_ABI,
     signer
   );
-console.log({ configLens: CONFIG.lens });
 export const getLensPeriphery = (signer: ethers.Signer) =>
   new ethers.Contract(
     CONFIG.lens.LENS_PERIPHERY_CONTRACT,

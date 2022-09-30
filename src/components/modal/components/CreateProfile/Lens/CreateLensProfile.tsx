@@ -57,7 +57,6 @@ export default function CreateLensProfile({ children }: Props) {
     }
   }, [values.coverPicture]);
 
-  console.log({ triggerLensProfileCreation });
   const {
     data: createdProfileId,
     isFetched,
@@ -87,7 +86,6 @@ export default function CreateLensProfile({ children }: Props) {
       enabled: false
     }
   );
-  // console.log({ createdProfileId, profileData });
   const {
     data: profileMetadataData,
     refetch: setMetadata,

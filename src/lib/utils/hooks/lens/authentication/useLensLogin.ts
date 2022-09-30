@@ -4,6 +4,8 @@ import { useSigner } from "wagmi";
 
 import { fetchLens } from "../fetchLens";
 
+type Signer = ReturnType<typeof useSigner>["data"];
+
 export const generateChallenge = async ({ address }: { address: string }) => {
   const result = await fetchLens<{
     challenge: { text: string };
@@ -48,6 +50,25 @@ const authenticate = async ({
   return result.authenticate;
 };
 
+async function login({
+  address = "",
+  signer
+}: {
+  address: string | undefined;
+  signer: Signer;
+}) {
+  // we request a challenge from the server
+  const challengeResponse = await generateChallenge({ address });
+
+  // sign the text with the wallet
+  const signature = (await signer?.signMessage(challengeResponse.text)) || "";
+
+  const authenticatedResult = await authenticate({ address, signature });
+  console.log("login: result", authenticatedResult);
+
+  return authenticatedResult;
+}
+
 export const useLensLogin = (
   props: { address: string | undefined },
   options: {
@@ -56,23 +77,13 @@ export const useLensLogin = (
 ) => {
   const { data: signer } = useSigner();
 
-  // return authenticationToken;
   return useQuery(
     ["lens-login", props],
     async () => {
-      const { address = "" } = props;
-
-      // we request a challenge from the server
-      const challengeResponse = await generateChallenge({ address });
-
-      // sign the text with the wallet
-      const signature =
-        (await signer?.signMessage(challengeResponse.text)) || "";
-
-      const authenticatedResult = await authenticate({ address, signature });
-      console.log("login: result", authenticatedResult);
-
-      return authenticatedResult;
+      return login({
+        address: props.address,
+        signer
+      });
     },
     {
       enabled: options.enabled && !!props.address && !!signer
