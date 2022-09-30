@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../../lib/styles/colors";
+import { ProgressStatus } from "../../../lib/types/progressStatus";
 import useFunds from "../../../pages/account/funds/useFunds";
 import { useConvertionRate } from "../../convertion-rate/useConvertionRate";
 import { Spinner } from "../../loading/Spinner";
@@ -78,12 +79,15 @@ export default function ManageFunds({ id }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [funds, id]);
 
-  if (fundStatus === "error") {
+  if (fundStatus === ProgressStatus.ERROR) {
     // TODO: NO FIGMA REPRESENTATIONS
     return <Typography tag="h2">There has been an error...</Typography>;
   }
 
-  if (fundStatus === "loading" || fundStatus === "idle") {
+  if (
+    fundStatus === ProgressStatus.LOADING ||
+    fundStatus === ProgressStatus.IDLE
+  ) {
     return (
       <SpinnerContainer>
         <Spinner size={32} />

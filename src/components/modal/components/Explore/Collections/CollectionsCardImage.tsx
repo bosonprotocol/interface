@@ -4,6 +4,7 @@ import React from "react";
 import styled from "styled-components";
 
 import { colors } from "../../../../../lib/styles/colors";
+import { ProgressStatus } from "../../../../../lib/types/progressStatus";
 import { useGetIpfsImage } from "../../../../../lib/utils/hooks/useGetIpfsImage";
 import { Spinner } from "../../../../loading/Spinner";
 
@@ -35,7 +36,7 @@ function CollectionsCardImage({ imageSource }: any) {
       errorIcon: <CameraSlash size={32} color={colors.white} />
     }
   };
-  if (imageStatus === "loading") {
+  if (imageStatus === ProgressStatus.LOADING) {
     return (
       <SpinnerContainer>
         <StyledSpinner />

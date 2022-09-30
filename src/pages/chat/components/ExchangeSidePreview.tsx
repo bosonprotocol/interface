@@ -1,5 +1,6 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
+import { ArrowSquareOut } from "phosphor-react";
 import { useCallback, useMemo } from "react";
 import { generatePath } from "react-router-dom";
 import styled from "styled-components";
@@ -7,7 +8,11 @@ import styled from "styled-components";
 import DetailTable from "../../../components/detail/DetailTable";
 import { DetailDisputeResolver } from "../../../components/detail/DetailWidget/DetailDisputeResolver";
 import { DetailSellerDeposit } from "../../../components/detail/DetailWidget/DetailSellerDeposit";
-import { useModal } from "../../../components/modal/useModal";
+import {
+  ModalTypes,
+  ShowModalFn,
+  useModal
+} from "../../../components/modal/useModal";
 import Price from "../../../components/price";
 import MultiSteps from "../../../components/step/MultiSteps";
 import Button from "../../../components/ui/Button";
@@ -169,7 +174,24 @@ const HistorySection = styled(Section)`
   }
 `;
 
-const getOfferDetailData = (offer: Offer) => {
+const getOfferDetailData = (
+  offer: Offer,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  modalTypes: ModalTypes,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  showModal: ShowModalFn
+) => {
+  const handleShowExchangePolicy = () => {
+    if (modalTypes && showModal) {
+      showModal(modalTypes.EXCHANGE_POLICY_DETAILS, {
+        title: "Exchange Policy Details",
+        offerId: offer.id
+      });
+    } else {
+      console.error("modalTypes and/or showModal undefined");
+    }
+  };
+
   return [
     {
       name: DetailSellerDeposit.name,
@@ -189,7 +211,16 @@ const getOfferDetailData = (offer: Offer) => {
           </Typography>
         </>
       ),
-      value: "Fair exchange policy"
+      value: (
+        <Typography tag="p">
+          Fair Exchange Policy{" "}
+          <ArrowSquareOut
+            size={20}
+            onClick={() => handleShowExchangePolicy()}
+            style={{ cursor: "pointer" }}
+          />
+        </Typography>
+      )
     },
     {
       name: DetailDisputeResolver.name,
@@ -226,10 +257,10 @@ export default function ExchangeSidePreview({
     ? disputes
     : [{} as subgraph.DisputeFieldsFragment];
   const offer = exchange?.offer;
-  const { showModal } = useModal();
+  const { showModal, modalTypes } = useModal();
   const OFFER_DETAIL_DATA = useMemo(
-    () => offer && getOfferDetailData(offer),
-    [offer]
+    () => offer && getOfferDetailData(offer, modalTypes, showModal),
+    [offer, modalTypes, showModal]
   );
   const navigate = useKeepQueryParamsNavigate();
 

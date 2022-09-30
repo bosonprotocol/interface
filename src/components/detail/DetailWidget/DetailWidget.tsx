@@ -6,7 +6,7 @@ import {
 } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { BigNumber, ethers } from "ethers";
-import { ArrowRight, Check, Question } from "phosphor-react";
+import { ArrowRight, ArrowSquareOut, Check, Question } from "phosphor-react";
 import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
@@ -28,7 +28,7 @@ import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQuer
 import { getItemFromStorage } from "../../../lib/utils/hooks/useLocalStorage";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 import { poll } from "../../../pages/create-product/utils";
-import { useModal } from "../../modal/useModal";
+import { ModalTypes, ShowModalFn, useModal } from "../../modal/useModal";
 import Price from "../../price/index";
 import { useConvertedPrice } from "../../price/useConvertedPrice";
 import SuccessTransactionToast from "../../toasts/SuccessTransactionToast";
@@ -104,7 +104,9 @@ interface IDetailWidget {
 export const getOfferDetailData = (
   offer: Offer,
   convertedPrice: IPrice | null,
-  isModal: boolean
+  isModal: boolean,
+  modalTypes?: ModalTypes,
+  showModal?: ShowModalFn
 ) => {
   const redeemableUntil = dayjs(
     Number(`${offer.voucherRedeemableUntilDate}000`)
@@ -114,6 +116,20 @@ export const getOfferDetailData = (
 
   const { buyerCancelationPenalty, convertedBuyerCancelationPenalty } =
     getBuyerCancelPenalty(offer, convertedPrice);
+
+  // if offer is in creation, offer.id does not exist
+  const handleShowExchangePolicy = () => {
+    const offerData = offer.id ? undefined : offer;
+    if (modalTypes && showModal) {
+      showModal(modalTypes.EXCHANGE_POLICY_DETAILS, {
+        title: "Exchange Policy Details",
+        offerId: offer.id,
+        offerData
+      });
+    } else {
+      console.error("modalTypes and/or showModal undefined");
+    }
+  };
 
   return [
     {
@@ -177,7 +193,7 @@ export const getOfferDetailData = (
       )
     },
     {
-      name: "Fair exchange policy",
+      name: "Exchange policy",
       info: (
         <>
           <Typography tag="h6">
@@ -189,7 +205,16 @@ export const getOfferDetailData = (
           </Typography>
         </>
       ),
-      value: <Check size={16} />
+      value: (
+        <Typography tag="p">
+          Fair Exchange Policy{" "}
+          <ArrowSquareOut
+            size={20}
+            onClick={() => handleShowExchangePolicy()}
+            style={{ cursor: "pointer" }}
+          />
+        </Typography>
+      )
     },
     {
       name: DetailDisputeResolver.name,
@@ -262,12 +287,14 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   });
 
   const OFFER_DETAIL_DATA = useMemo(
-    () => getOfferDetailData(offer, convertedPrice, false),
-    [offer, convertedPrice]
+    () =>
+      getOfferDetailData(offer, convertedPrice, false, modalTypes, showModal),
+    [offer, convertedPrice, modalTypes, showModal]
   );
   const OFFER_DETAIL_DATA_MODAL = useMemo(
-    () => getOfferDetailData(offer, convertedPrice, true),
-    [offer, convertedPrice]
+    () =>
+      getOfferDetailData(offer, convertedPrice, true, modalTypes, showModal),
+    [offer, convertedPrice, modalTypes, showModal]
   );
 
   const quantity = useMemo<number>(

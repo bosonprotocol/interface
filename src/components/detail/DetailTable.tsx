@@ -8,6 +8,7 @@ export interface Data {
   name?: React.ReactNode | string;
   info?: React.ReactNode | string;
   value?: React.ReactNode | string;
+  nextLine?: React.ReactNode | string;
 }
 
 interface Props {
@@ -31,19 +32,30 @@ export default function DetailTable({
         {data?.map(
           ({ hide = false, ...d }: Data, index: number) =>
             !hide && (
-              <tr key={`tr_${index}`}>
-                <td>
-                  <Grid justifyContent="flex-start">
-                    <Typography tag={tag}>{d.name}</Typography>
-                    {d.info && <Tooltip content={d.info} size={20} />}
-                  </Grid>
-                </td>
-                <td>
-                  <Grid justifyContent={align ? "flex-start" : "flex-end"}>
-                    {d.value}
-                  </Grid>
-                </td>
-              </tr>
+              <>
+                <tr key={`tr_${index}`}>
+                  <td>
+                    <Grid justifyContent="flex-start">
+                      <Typography tag={tag}>{d.name}</Typography>
+                      {d.info && <Tooltip content={d.info} size={20} />}
+                    </Grid>
+                  </td>
+                  <td>
+                    <Grid justifyContent={align ? "flex-start" : "flex-end"}>
+                      {d.value}
+                    </Grid>
+                  </td>
+                </tr>
+                {d.nextLine ? (
+                  <tr>
+                    <td key={`tr_${index}_next`} colSpan={2}>
+                      {d.nextLine}
+                    </td>
+                  </tr>
+                ) : (
+                  <></>
+                )}
+              </>
             )
         )}
       </tbody>

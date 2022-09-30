@@ -122,20 +122,26 @@ function CreateProductInner({ initial, showCreateProductDraftModal }: Props) {
           id: offerInfo.id,
           createdAt: offerInfo.createdAt,
           price: offerInfo.price,
-          metadataHash: offerInfo.metadataHash,
           sellerDeposit: offerInfo.sellerDeposit,
-          resolutionPeriodDuration: offerInfo.resolutionPeriodDuration,
-          metadataUri: offerInfo.metadataUri,
+          protocolFee: offerInfo.protocolFee,
+          agentFee: offerInfo.agentFee,
+          agentId: offerInfo.agentId,
           buyerCancelPenalty: offerInfo.buyerCancelPenalty,
           quantityAvailable: offerInfo.quantityAvailable,
           quantityInitial: offerInfo.quantityInitial,
-          fulfillmentPeriodDuration: offerInfo.fulfillmentPeriodDuration,
-          voucherRedeemableUntilDate: `${offerInfo.voucherRedeemableUntilDate}`,
           validFromDate: offerInfo.validFromDate,
-          voidedAt: offerInfo.voidedAt,
+          validUntilDate: offerInfo.validUntilDate,
+          voucherRedeemableFromDate: offerInfo.voucherRedeemableFromDate,
+          voucherRedeemableUntilDate: offerInfo.voucherRedeemableUntilDate,
+          fulfillmentPeriodDuration: offerInfo.fulfillmentPeriodDuration,
           voucherValidDuration: offerInfo.voucherValidDuration,
-          exchangeToken: offerInfo.exchangeToken,
-          seller: offerInfo.seller
+          resolutionPeriodDuration: offerInfo.resolutionPeriodDuration,
+          metadataUri: offerInfo.metadataUri,
+          metadataHash: offerInfo.metadataHash,
+          voidedAt: offerInfo.voidedAt,
+          disputeResolverId: offerInfo.disputeResolverId,
+          seller: offerInfo.seller,
+          exchangeToken: offerInfo.exchangeToken
         },
         // these are the ones that we already had before
         onCreateNewProject: onCreateNewProject,
@@ -375,8 +381,10 @@ function CreateProductInner({ initial, showCreateProductDraftModal }: Props) {
         redemptionPeriod: coreTermsOfSale.redemptionPeriod
       });
 
-      const resolutionPeriodDurationInMS =
+      const fulfillmentPeriodDurationInMS =
         parseInt(termsOfExchange.disputePeriod) * 24 * 3600 * 1000; // day to msec
+      const resolutionPeriodDurationInMS =
+        parseInt(CONFIG.defaultDisputeResolutionPeriodDays) * 24 * 3600 * 1000; // day to msec
       const offerData = {
         price: priceBN.toString(),
         sellerDeposit: sellerCancellationPenaltyValue.toString(),
@@ -388,10 +396,10 @@ function CreateProductInner({ initial, showCreateProductDraftModal }: Props) {
         voucherValidDurationInMS: 0,
         validFromDateInMS: validFromDateInMS.toString(),
         validUntilDateInMS: validUntilDateInMS.toString(),
-        fulfillmentPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
+        fulfillmentPeriodDurationInMS: fulfillmentPeriodDurationInMS.toString(),
         resolutionPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
         exchangeToken: exchangeToken?.address || ethers.constants.AddressZero,
-        disputeResolverId: CONFIG.envName === "testing" ? 1 : 2,
+        disputeResolverId: CONFIG.defaultDisputeResolverId,
         agentId: 0, // no agent
         metadataUri: `ipfs://${metadataHash}`,
         metadataHash: metadataHash

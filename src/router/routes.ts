@@ -29,6 +29,10 @@ const ProfilePagePage = lazy(() => import("../pages/profile/ProfilePage"));
 const PublicOrPrivateAccountPage = lazy(
   () => import("../pages/account/public/PublicOrPrivateAccount")
 );
+const LicensePage = lazy(() => import("../pages/license/License"));
+const ContractualAgreementPage = lazy(
+  () => import("../pages/contractualAgreement/ContractualAgreement")
+);
 
 export const baseAppProps = {
   withLayout: true,
@@ -147,6 +151,16 @@ export default [
       ...base.app,
       withBosonStyles: false
     }
+  },
+  {
+    ...base,
+    path: BosonRoutes.License,
+    component: LicensePage
+  },
+  {
+    ...base,
+    path: BosonRoutes.ContractualAgreement,
+    component: ContractualAgreementPage
   },
   {
     ...base,

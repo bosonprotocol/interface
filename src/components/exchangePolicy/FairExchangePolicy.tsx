@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import styled, { css, IntrinsicElementsKeys } from "styled-components";
 
+import { CONFIG } from "../../lib/config";
 import { colors } from "../../lib/styles/colors";
 import Typography from "../ui/Typography";
 
@@ -49,6 +50,7 @@ export default function FairExchangePolicy({
   titleTag = "p",
   bulletPointIcon
 }: Props) {
+  const disputeResolutionPeriodDays = CONFIG.defaultDisputeResolutionPeriodDays;
   return (
     <>
       <InfoTitleWrapper>
@@ -72,7 +74,9 @@ export default function FairExchangePolicy({
         </InfoListItem>
         <InfoListItem>
           {bulletPointIcon}
-          <Typography tag="p">15 days to resolve a raised dispute</Typography>
+          <Typography tag="p">
+            {disputeResolutionPeriodDays} days to resolve a raised dispute
+          </Typography>
         </InfoListItem>
       </InfoList>
     </>
