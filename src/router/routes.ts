@@ -9,7 +9,6 @@ import {
 import LandingPage from "../pages/landing/Landing";
 
 const ChatPage = lazy(() => import("../pages/chat/Chat"));
-const CollectionsPage = lazy(() => import("../pages/explore/Collections"));
 const CreateProductPage = lazy(
   () => import("../pages/create-product/CreateProduct")
 );
@@ -27,7 +26,6 @@ const OfferDetailPage = lazy(() => import("../pages/offers/OfferDetail"));
 const PrivateAccountPage = lazy(
   () => import("../pages/account/private/PrivateAccountContainer")
 );
-const ProductsPage = lazy(() => import("../pages/explore/Products"));
 const ProfilePagePage = lazy(() => import("../pages/profile/ProfilePage"));
 const PublicOrPrivateAccountPage = lazy(
   () => import("../pages/account/public/PublicOrPrivateAccount")
@@ -103,28 +101,39 @@ export default [
   },
   {
     ...base,
-    path: BosonRoutes.Products,
-    component: ProductsPage
+    path: BosonRoutes.Explore,
+    component: ExplorePage,
+    app: {
+      ...base.app,
+      withLayout: false
+    }
   },
   {
     ...base,
-    path: BosonRoutes.Explore,
-    component: ExplorePage
+    path: BosonRoutes.Products,
+    component: ExplorePage,
+    app: {
+      ...base.app,
+      withLayout: false
+    }
   },
   {
     ...base,
     path: OffersRoutes.Root,
-    component: ExplorePage
+    component: ExplorePage,
+    app: {
+      ...base.app,
+      withLayout: false
+    }
   },
   {
     ...base,
-    path: BosonRoutes.ExplorePage,
-    component: ProductsPage
-  },
-  {
-    ...base,
-    path: BosonRoutes.ExplorePageByIndex,
-    component: ProductsPage
+    path: BosonRoutes.Sellers,
+    component: ExplorePage,
+    app: {
+      ...base.app,
+      withLayout: false
+    }
   },
   {
     ...base,
@@ -169,11 +178,6 @@ export default [
     ...base,
     path: BosonRoutes.CreateStorefront,
     component: CustomStorePage
-  },
-  {
-    ...base,
-    path: BosonRoutes.Sellers,
-    component: CollectionsPage
   },
   {
     ...base,
