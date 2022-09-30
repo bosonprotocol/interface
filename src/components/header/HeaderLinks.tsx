@@ -7,6 +7,7 @@ import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes, SellerCenterRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { useBuyerSellerAccounts } from "../../lib/utils/hooks/useBuyerSellerAccounts";
+import { useCurrentDisputeResolverId } from "../../lib/utils/hooks/useCurrentDisputeResolverId";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import { UserRoles } from "../../router/routes";
 import useUserRoles, { checkIfUserHaveRole } from "../../router/useUserRoles";
@@ -147,7 +148,7 @@ export default function HeaderLinks({
   } = useBuyerSellerAccounts(address || "");
   const isAccountSeller = useMemo(() => !!sellerId, [sellerId]);
   const isAccountBuyer = useMemo(() => !!buyerId, [buyerId]);
-
+  const { disputeResolverId } = useCurrentDisputeResolverId();
   const sellUrl = useMemo(
     () =>
       isAccountSeller
@@ -157,15 +158,19 @@ export default function HeaderLinks({
         : SellerCenterRoutes.CreateProduct,
     [isAccountSeller]
   );
+
   const isSupportFunctionalityDefined = supportFunctionality !== "";
+
   const onlyBuyer =
     typeof supportFunctionality != "string" &&
     supportFunctionality?.length === 1 &&
     supportFunctionality?.[0] === "buyer";
+
   const onlySeller =
     typeof supportFunctionality != "string" &&
     supportFunctionality?.length === 1 &&
     supportFunctionality?.[0] === "seller";
+
   return (
     <NavigationLinks
       isMobile={isMobile}
@@ -194,6 +199,12 @@ export default function HeaderLinks({
           address &&
           checkIfUserHaveRole(roles, [UserRoles.Buyer], false) && (
             <LinkWithQuery to={BosonRoutes.YourAccount}>My Items</LinkWithQuery>
+          )}
+        {!!disputeResolverId &&
+          checkIfUserHaveRole(roles, [UserRoles.DisputeResolver], true) && (
+            <LinkWithQuery to={`${BosonRoutes.DRAdmin}/disputes`}>
+              Dispute Centre
+            </LinkWithQuery>
           )}
       </Links>
     </NavigationLinks>
