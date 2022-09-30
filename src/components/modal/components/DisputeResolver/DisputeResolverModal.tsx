@@ -29,7 +29,8 @@ export default function DisputeResolverModal({ exchangeId }: Props) {
     const value = e.target.valueAsNumber || 0;
     setIsValidValue(false);
     setDisputeError(null);
-    if (value <= 0 || value > 100) {
+
+    if (value <= 0 || value > 100 || !/^\d+(\.\d{1,2})?$/.test(`${value}`)) {
       setIsValidValue(true);
     }
     setDisputePercentage(value.toFixed(2));
@@ -52,7 +53,7 @@ export default function DisputeResolverModal({ exchangeId }: Props) {
   return (
     <Grid flexDirection="column" alignItems="flex-start" gap="1.5rem">
       <Typography tag="p" margin="0" $fontSize="0.75rem" fontWeight="bold">
-        Choose Amount To Deposit:
+        Choose the percentage of the dispute:
       </Typography>
       <AmountWrapper>
         <InputWrapper $hasError={!!disputeError || isValidValue}>

@@ -5,7 +5,7 @@ import { DisputeResolverProps } from "./DisputeResolverInside";
 import { DisputesManage } from "./pages/DisputesManage";
 import { DisputeWhiteList } from "./pages/DisputeWhiteList";
 
-export const DEFAULT_DR_PAGE = "manageWhitelist";
+export const DEFAULT_DR_PAGE = "disputes";
 
 export const drPageTypes = {
   whitelist: {
