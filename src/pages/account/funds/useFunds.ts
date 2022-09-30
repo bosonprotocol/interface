@@ -5,14 +5,13 @@ import { useCallback, useEffect, useReducer, useState } from "react";
 
 import { Token } from "../../../components/convertion-rate/ConvertionRateContext";
 import { CONFIG } from "../../../lib/config";
+import { ProgressStatus } from "../../../lib/types/progressStatus";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
-
-type FundStatus = "idle" | "loading" | "error" | "success";
 
 export interface FundsProps {
   funds: Array<subgraph.FundsEntityFieldsFragment>;
   reload: React.DispatchWithoutAction;
-  fundStatus: FundStatus;
+  fundStatus: ProgressStatus;
 }
 export default function useFunds(
   accountId: string,
@@ -23,7 +22,9 @@ export default function useFunds(
   const [funds, setFunds] = useState<Array<subgraph.FundsEntityFieldsFragment>>(
     []
   );
-  const [fundStatus, setFundStatus] = useState<FundStatus>("idle");
+  const [fundStatus, setFundStatus] = useState<ProgressStatus>(
+    ProgressStatus.IDLE
+  );
 
   const handleFunds = useCallback(
     (funds: Array<subgraph.FundsEntityFieldsFragment>) => {
@@ -67,7 +68,7 @@ export default function useFunds(
             }
             return acc;
           }, []) || [];
-      setFundStatus("success");
+      setFundStatus(ProgressStatus.SUCCESS);
       setFunds(allTokensParsed);
     },
     [tokens, accountId]
@@ -75,14 +76,14 @@ export default function useFunds(
 
   const getFunds = useCallback(() => {
     if (accountId && coreSdk) {
-      setFundStatus("loading");
+      setFundStatus(ProgressStatus.LOADING);
       coreSdk
         .getFunds({
           fundsFilter: { accountId }
         })
         .then((funds) => handleFunds(funds))
         .catch(() => {
-          setFundStatus("error");
+          setFundStatus(ProgressStatus.ERROR);
         });
     }
   }, [coreSdk, accountId, handleFunds]);

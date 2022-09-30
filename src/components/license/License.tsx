@@ -5,6 +5,7 @@ import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 
 import { CONFIG } from "../../lib/config";
+import { ProgressStatus } from "../../lib/types/progressStatus";
 import { useRenderTemplate } from "../../lib/utils/hooks/useRenderTemplate";
 import SimpleError from "../error/SimpleError";
 
@@ -21,8 +22,10 @@ export default function License({ offerId, offerData }: Props) {
     templateUrl
   );
 
-  const isLoading = renderStatus === "loading" || renderStatus === "idle";
-  const isError = renderStatus === "error";
+  const isLoading =
+    renderStatus === ProgressStatus.LOADING ||
+    renderStatus === ProgressStatus.IDLE;
+  const isError = renderStatus === ProgressStatus.ERROR;
 
   if (isError) {
     return <SimpleError />;

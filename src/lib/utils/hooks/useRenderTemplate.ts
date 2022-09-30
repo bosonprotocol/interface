@@ -3,10 +3,10 @@ import { subgraph } from "@bosonprotocol/react-kit";
 import { BigNumber } from "ethers";
 import { useEffect, useState } from "react";
 
+import { ProgressStatus } from "../../types/progressStatus";
 import { useCoreSDK } from "../useCoreSdk";
 import { useIpfsStorage } from "./useIpfsStorage";
 
-type RenderStatus = "idle" | "loading" | "success" | "error";
 type OfferFieldsFragment = subgraph.OfferFieldsFragment;
 
 export function useRenderTemplate(
@@ -14,7 +14,9 @@ export function useRenderTemplate(
   offerData: OfferFieldsFragment | undefined,
   templateUrl: string
 ) {
-  const [renderStatus, setRenderStatus] = useState<RenderStatus>("idle");
+  const [renderStatus, setRenderStatus] = useState<ProgressStatus>(
+    ProgressStatus.IDLE
+  );
   const [renderResult, setRenderResult] = useState<string>("");
   const ipfsMetadataStorage = useIpfsStorage();
   const coreSDK = useCoreSDK();
@@ -22,7 +24,7 @@ export function useRenderTemplate(
   useEffect(() => {
     async function fetchTemplate() {
       console.log("fetchTemplate");
-      setRenderStatus("loading");
+      setRenderStatus(ProgressStatus.LOADING);
       if (ipfsMetadataStorage && coreSDK) {
         try {
           const rawTemplate = await ipfsMetadataStorage.get<Uint8Array>(
@@ -45,14 +47,17 @@ export function useRenderTemplate(
             buildOfferData(theOfferData as OfferFieldsFragment)
           );
           setRenderResult(result);
-          setRenderStatus("success");
+          setRenderStatus(ProgressStatus.SUCCESS);
         } catch (e) {
           console.error(e);
-          setRenderStatus("error");
+          setRenderStatus(ProgressStatus.ERROR);
         }
       }
     }
-    if (renderStatus !== "success" && renderStatus !== "error") {
+    if (
+      renderStatus !== ProgressStatus.SUCCESS &&
+      renderStatus !== ProgressStatus.ERROR
+    ) {
       fetchTemplate();
     }
   }, [
