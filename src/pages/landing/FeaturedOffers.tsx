@@ -80,7 +80,7 @@ const FeaturedOffers: React.FC<IFeaturedOffers> = ({
   } = useOffers({
     voided: false,
     valid: true,
-    first: isLteXS ? 2 : 3,
+    first: isLteXS ? 2 : 12,
     quantityAvailable_lte: ["hot", "gone"].includes(type) ? 10 : null,
     quantityAvailable_gte: 1,
     type,
@@ -111,7 +111,7 @@ const FeaturedOffers: React.FC<IFeaturedOffers> = ({
         itemsPerRow={{
           xs: 1,
           s: 2,
-          m: 3,
+          m: 4,
           l: 4,
           xl: 4
         }}
