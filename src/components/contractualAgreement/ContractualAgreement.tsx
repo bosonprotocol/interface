@@ -15,7 +15,8 @@ interface Props {
 }
 
 export default function ContractualAgreement({ offerId, offerData }: Props) {
-  const templateUrl = CONFIG.buyerSellerAgreementTemplate as string; // TODO: get the template from the offer metadata
+  // TODO: get the template from the offer metadata (BP390 - https://app.asana.com/0/1200803815983047/1203080300620356)
+  const templateUrl = CONFIG.buyerSellerAgreementTemplate as string;
   const { renderStatus, renderResult } = useRenderTemplate(
     offerId,
     offerData,
