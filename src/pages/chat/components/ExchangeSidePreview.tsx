@@ -154,6 +154,10 @@ const StyledMultiSteps = styled(MultiSteps)`
 const CTASection = styled(Section)`
   display: flex;
   justify-content: space-between;
+  gap: 1rem;
+  > * {
+    flex: 1;
+  }
 `;
 
 const HistorySection = styled(Section)`
@@ -353,7 +357,7 @@ export default function ExchangeSidePreview({
         </CTASection>
       ) : null}
       <HistorySection>
-        <ExchangeTimeline exchange={exchange}>
+        <ExchangeTimeline exchange={exchange} showDispute={true}>
           <h4>History</h4>
         </ExchangeTimeline>
       </HistorySection>

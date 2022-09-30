@@ -69,7 +69,8 @@ export default function ExchangeTimeline({
       });
     }
     if (showDispute && dispute) {
-      const { disputedDate, retractedDate, resolvedDate } = dispute;
+      const { disputedDate, retractedDate, resolvedDate, escalatedDate } =
+        dispute;
       if (disputedDate) {
         timesteps.push({
           text: "Dispute Raised",
@@ -89,6 +90,13 @@ export default function ExchangeTimeline({
           text: "Dispute Mutually Resolved",
           date: formatShortDate(resolvedDate),
           timestamp: Number(resolvedDate)
+        });
+      }
+      if (escalatedDate) {
+        timesteps.push({
+          text: "Dispute Escalated",
+          date: formatShortDate(escalatedDate),
+          timestamp: Number(escalatedDate)
         });
       }
     }
