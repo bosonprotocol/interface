@@ -4,6 +4,7 @@ import { CommonPropTypes } from "react-csv/components/CommonPropTypes";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
+import { zIndex } from "../../lib/styles/zIndex";
 import Button, { IButton } from "../ui/Button";
 
 const ExportButton = styled(Button)`
@@ -43,6 +44,7 @@ const ButtonsContainer = styled.div`
   margin-left: -0.3125rem;
   margin-top: -0.3125rem;
   display: none;
+  z-index: ${zIndex.Notification};
 `;
 
 const ButtonOptions = styled.div<{ disabled: boolean }>`
@@ -55,6 +57,7 @@ const ButtonOptions = styled.div<{ disabled: boolean }>`
   padding: 0.3125rem;
   background-color: ${colors.white};
   text-decoration: ${({ disabled }) => (disabled ? "line-through;" : "none")};
+  z-index: ${zIndex.Notification};
 `;
 
 const Container = styled.div`
@@ -78,12 +81,20 @@ interface Props {
 function ExportDropdown({ buttonProps = {}, children }: Props) {
   return (
     <Container>
-      <ExportButton theme="outline" size="small" {...buttonProps}>
-        Export <DownloadSimple size={16} />
-        <ArrowContainer>
-          <ArrowDown>&nbsp;</ArrowDown>
-        </ArrowContainer>
-      </ExportButton>
+      {children && (
+        <CSVLink
+          {...children[0]?.csvProps}
+          filename={children[0].csvProps.filename ?? "filename"}
+          key={children[0].id}
+        >
+          <ExportButton theme="outline" size="small" {...buttonProps}>
+            Export <DownloadSimple size={16} />
+            <ArrowContainer>
+              <ArrowDown>&nbsp;</ArrowDown>
+            </ArrowContainer>
+          </ExportButton>
+        </CSVLink>
+      )}
       <ButtonsContainer data-buttons-container>
         {children?.map((child) => {
           if (child.disabled) {
