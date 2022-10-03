@@ -8,6 +8,13 @@ import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import Button, { IButton } from "../ui/Button";
 
+const ArrowContainer = styled.div`
+  border-left: 0.0625rem solid ${colors.secondary};
+  height: 128%;
+  width: 1.25rem;
+  position: absolute;
+  right: -1.875rem;
+`;
 const ExportButton = styled(Button)`
   color: ${colors.secondary};
   border: none;
@@ -24,23 +31,16 @@ const ExportButton = styled(Button)`
     button {
       color: ${colors.white};
     }
-    [data-arrow-container] {
+    ${ArrowContainer} {
       border-color: ${colors.white};
     }
-    [data-arrow-container] div {
+    ${ArrowContainer} div {
       background: ${colors.white};
     }
   }
   > div {
     gap: 0.625rem;
   }
-`;
-const ArrowContainer = styled.div`
-  border-left: 0.0625rem solid ${colors.secondary};
-  height: 128%;
-  width: 1.25rem;
-  position: absolute;
-  right: -1.875rem;
 `;
 const ArrowDown = styled.div`
   clip-path: polygon(50% 100%, 0 0, 100% 0);
@@ -117,7 +117,7 @@ function ExportDropdown({ buttonProps = {}, children }: Props) {
         >
           <ExportButton theme="outline" size="small" {...buttonProps}>
             Export <DownloadSimple size={16} />
-            <ArrowContainer data-arrow-container>
+            <ArrowContainer>
               <ArrowDown>&nbsp;</ArrowDown>
             </ArrowContainer>
           </ExportButton>
