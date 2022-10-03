@@ -126,6 +126,8 @@ export default function SellerProducts({
   }, [allOffers]);
 
   const filterButton = useMemo(() => {
+    const dateString = dayjs().format("YYYYMMDD");
+
     return (
       <>
         {selected.length > 0 && (
@@ -134,7 +136,7 @@ export default function SellerProducts({
         <SellerExport
           csvProps={{
             data: prepareCSVData,
-            filename: "products"
+            filename: `products-${dateString}`
           }}
         />
         <SellerAddNewProduct />

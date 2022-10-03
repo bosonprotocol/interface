@@ -142,6 +142,8 @@ export default function SellerExchanges({
   }, [allData]);
 
   const filterButton = useMemo(() => {
+    const dateString = dayjs().format("YYYYMMDD");
+
     return (
       <>
         {selected.length > 0 && (
@@ -154,7 +156,7 @@ export default function SellerExchanges({
               name: "Export only the data shown in table",
               csvProps: {
                 data: prepareCSVData,
-                filename: "products"
+                filename: `products-${dateString}`
               }
             },
             {
@@ -163,7 +165,7 @@ export default function SellerExchanges({
               disabled: true,
               csvProps: {
                 data: prepareCSVData,
-                filename: "products"
+                filename: `products-${dateString}`
               }
             }
           ]}
