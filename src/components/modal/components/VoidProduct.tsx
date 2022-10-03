@@ -1,4 +1,4 @@
-import { Provider, VoidButton } from "@bosonprotocol/react-kit";
+import { Provider, subgraph, VoidButton } from "@bosonprotocol/react-kit";
 import { BigNumberish } from "ethers";
 import { useCallback, useState } from "react";
 import toast from "react-hot-toast";
@@ -8,6 +8,7 @@ import { useSigner } from "wagmi";
 import { CONFIG } from "../../../lib/config";
 import { Offer } from "../../../lib/types/offer";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
+import { poll } from "../../../pages/create-product/utils";
 import { Break } from "../../detail/Detail.style";
 import Price from "../../price/index";
 import SuccessTransactionToast from "../../toasts/SuccessTransactionToast";
@@ -131,8 +132,51 @@ export default function VoidProduct({
     setIsLoading(false);
   }, [hideModal, refetch, setIsLoading]);
 
+  const voidPool = useCallback(
+    async (id: BigNumberish) => {
+      let createdOffer: subgraph.OfferFieldsFragment;
+      await poll(
+        async () => {
+          if (id) {
+            createdOffer = await coreSdk.getOfferById(id);
+            return createdOffer;
+          }
+        },
+        (offer) => {
+          return !offer?.voided;
+        },
+        500
+      );
+    },
+    [coreSdk]
+  );
+
+  const batchVoidPool = useCallback(
+    async (ids: BigNumberish[]) => {
+      let createdOffers: subgraph.OfferFieldsFragment[];
+      console.log(ids.length, "ids");
+      await poll(
+        async () => {
+          if (ids) {
+            createdOffers = await Promise.all(
+              ids.map(async (id) => {
+                return await coreSdk.getOfferById(id);
+              })
+            );
+            return createdOffers;
+          }
+        },
+        (createdOffers) => {
+          return !createdOffers?.every(({ voided }) => voided);
+        },
+        500
+      );
+    },
+    [coreSdk]
+  );
+
   const handleSuccess = useCallback(
-    (
+    async (
       receipt: {
         transactionHash: string;
       },
@@ -141,6 +185,12 @@ export default function VoidProduct({
         offerIds?: BigNumberish[];
       }
     ) => {
+      if (payload.offerId) {
+        await voidPool(payload.offerId);
+      }
+      if (payload.offerIds) {
+        await batchVoidPool(payload.offerIds);
+      }
       const text = offer
         ? `Voided offer: ${offer?.metadata.name}`
         : `Voided offers: ${payload.offerIds?.join(",")}`;
@@ -153,7 +203,7 @@ export default function VoidProduct({
       ));
       handleFinish();
     },
-    [handleFinish, offer]
+    [batchVoidPool, handleFinish, offer, voidPool]
   );
 
   const handleBatchVoid = useCallback(async () => {
@@ -175,10 +225,8 @@ export default function VoidProduct({
       );
     } catch (error) {
       console.error("onError", error);
-    } finally {
-      handleFinish();
     }
-  }, [offers, coreSdk, handleSuccess, handleFinish]);
+  }, [offers, coreSdk, handleSuccess]);
 
   return (
     <Grid flexDirection="column" alignItems="flex-start" gap="2rem">
