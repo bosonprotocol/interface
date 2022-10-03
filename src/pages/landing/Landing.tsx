@@ -144,9 +144,7 @@ export default function Landing() {
             width
           }}
         >
-          <FeaturedOffers type="hot" title="Hot products" />
-          <FeaturedOffers type="gone" title="Almost gone" />
-          <FeaturedOffers type="soon" title="Coming soon..." />
+          <FeaturedOffers title="Products" />
         </OffersSection>
       </DarkerBackground>
     </LandingPage>

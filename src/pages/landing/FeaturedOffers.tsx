@@ -58,18 +58,10 @@ const ViewMore = styled(LinkWithQuery)`
 
 interface IFeaturedOffers {
   title?: string;
-  type: "gone" | "hot" | "soon";
 }
 
-const orderMap = {
-  hot: "validUntilDate",
-  gone: "quantityAvailable",
-  soon: "validFromDate"
-} as const;
-
 const FeaturedOffers: React.FC<IFeaturedOffers> = ({
-  title = "Explore Offers",
-  type
+  title = "Explore Offers"
 }) => {
   const { isLteXS } = useBreakpoints();
 
@@ -81,15 +73,13 @@ const FeaturedOffers: React.FC<IFeaturedOffers> = ({
     voided: false,
     valid: true,
     first: isLteXS ? 2 : 12,
-    quantityAvailable_lte: ["hot", "gone"].includes(type) ? 10 : null,
     quantityAvailable_gte: 1,
-    type,
-    orderBy: orderMap[type],
-    orderDirection: "asc"
+    orderBy: "numberOfCommits",
+    orderDirection: "desc"
   });
 
   return (
-    <Root data-testid={type}>
+    <Root data-testid={"featureOffers"}>
       <TopContainer>
         <Title tag="h3" style={{ margin: "0" }}>
           {title}
@@ -107,7 +97,6 @@ const FeaturedOffers: React.FC<IFeaturedOffers> = ({
         isLoading={isLoading}
         action="commit"
         showInvalidOffers={false}
-        type={type}
         itemsPerRow={{
           xs: 1,
           s: 2,
