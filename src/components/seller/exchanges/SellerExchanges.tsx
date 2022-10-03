@@ -156,7 +156,7 @@ export default function SellerExchanges({
               name: "Export only the data shown in table",
               csvProps: {
                 data: prepareCSVData,
-                filename: `products-${dateString}`
+                filename: `exchanges-${dateString}`
               }
             },
             {
@@ -165,7 +165,7 @@ export default function SellerExchanges({
               disabled: true,
               csvProps: {
                 data: prepareCSVData,
-                filename: `products-${dateString}`
+                filename: `exchanges-${dateString}`
               }
             }
           ]}
