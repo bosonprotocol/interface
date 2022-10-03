@@ -11,7 +11,7 @@ export const BosonRoutes = {
   Account: `/account/:${UrlParameters.accountId}`,
   CreateStorefront: "/custom-store",
   TermsOfUse: "/terms-of-use", // TODO: add page to handle this route
-  LearnMore: "/learn-more", // TODO: add page to handle this route
+  LearnMore: "https://www.bosonprotocol.io/technology",
   Chat: "/chat",
   ChatMessage: `/chat/:${UrlParameters.exchangeId}`,
   DisputeCenter: "/dispute-center",
