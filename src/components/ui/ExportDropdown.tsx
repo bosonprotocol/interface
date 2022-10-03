@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { DownloadSimple } from "phosphor-react";
 import { CSVLink } from "react-csv";
 import { CommonPropTypes } from "react-csv/components/CommonPropTypes";
@@ -81,12 +82,17 @@ interface Props {
 }
 
 function ExportDropdown({ buttonProps = {}, children }: Props) {
+  const dateString = dayjs().format("YYYYMMDD");
   return (
     <Container>
       {children && (
         <CSVLink
           {...children[0]?.csvProps}
-          filename={children[0].csvProps.filename ?? "filename"}
+          filename={
+            children[0].csvProps.filename
+              ? `${children[0].csvProps.filename}-${dateString}`
+              : "filename"
+          }
           key={children[0].id}
         >
           <ExportButton theme="outline" size="small" {...buttonProps}>

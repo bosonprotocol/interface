@@ -1,4 +1,3 @@
-import { BaseIpfsStorage } from "@bosonprotocol/react-kit";
 import { Form, Formik } from "formik";
 import { useState } from "react";
 import styled from "styled-components";
@@ -6,8 +5,8 @@ import styled from "styled-components";
 import Layout from "../../components/Layout";
 import { useModal } from "../../components/modal/useModal";
 import Typography from "../../components/ui/Typography";
-import { CONFIG } from "../../lib/config";
 import { useCSSVariable } from "../../lib/utils/hooks/useCSSVariable";
+import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
 import CustomStoreFormContent from "./CustomStoreFormContent";
 import { initialValues, validationSchema } from "./store-fields";
 
@@ -22,7 +21,7 @@ export default function CustomStore() {
   const { showModal, modalTypes } = useModal();
   const [hasSubmitError, setHasSubmitError] = useState<boolean>(false);
   const primaryColor = useCSSVariable("--primary");
-
+  const storage = useIpfsStorage();
   return (
     <Root>
       <Typography
@@ -39,10 +38,6 @@ export default function CustomStore() {
         onSubmit={async (values) => {
           setHasSubmitError(false);
           try {
-            const storage = new BaseIpfsStorage({
-              url: CONFIG.ipfsMetadataUrl
-            });
-
             const queryParams = new URLSearchParams(
               Object.entries(values).map(([key, value]) => [
                 String(key),
