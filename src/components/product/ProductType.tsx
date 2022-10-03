@@ -1,7 +1,9 @@
+import { useEffect } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
 import { FormField } from "../form";
+import { useModal } from "../modal/useModal";
 import Button from "../ui/Button";
 import Grid from "../ui/Grid";
 import GridContainer from "../ui/GridContainer";
@@ -75,8 +77,39 @@ const ProductImage = styled(Image)`
   margin: auto;
 `;
 
-export default function ProductType() {
+interface Props {
+  showCreateProductDraftModal: () => void;
+}
+
+export default function ProductType({ showCreateProductDraftModal }: Props) {
   const { handleChange, values, nextIsDisabled } = useCreateForm();
+  const { showModal } = useModal();
+
+  useEffect(() => {
+    showModal(
+      "CREATE_PROFILE",
+      {
+        title: "Create your Profile",
+        initialRegularCreateProfile: {} as any,
+        onRegularProfileCreated: (regularProfile) => {
+          console.log("regularProfile", regularProfile);
+        },
+        onUseLensProfile: (lensProfile) => {
+          console.log("lensProfile", lensProfile);
+        },
+        closable: false,
+        onClose: () => {
+          showCreateProductDraftModal();
+        }
+      },
+      "auto",
+      undefined,
+      {
+        s: "683px"
+      }
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showCreateProductDraftModal]);
 
   return (
     <ContainerProductPage>

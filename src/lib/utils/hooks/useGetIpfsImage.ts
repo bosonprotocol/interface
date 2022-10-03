@@ -11,6 +11,9 @@ export function useGetIpfsImage(src: string) {
   const [imageSrc, setImageSrc] = useState<string>("");
 
   useEffect(() => {
+    if (!src) {
+      return;
+    }
     async function fetchData(src: string) {
       if (ipfsMetadataStorage) {
         setImageStatus("loading");

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import type { Profile } from "../../../../../lib/utils/hooks/lens/profile/useGetLensProfiles";
 import CreateOrChoose from "./CreateOrChoose";
@@ -17,6 +17,9 @@ const steps = {
 export default function LensProfile({ onSubmit }: Props) {
   const [step, setStep] = useState<number>(steps.CREATE_OR_CHOOSE);
   const [lensProfile, setLensProfile] = useState<Profile | null>(null);
+  const handleOnBackClick = useCallback(() => {
+    setStep(steps.CREATE_OR_CHOOSE);
+  }, []);
   return (
     <>
       {step === steps.CREATE_OR_CHOOSE ? (
@@ -28,9 +31,17 @@ export default function LensProfile({ onSubmit }: Props) {
           }}
         />
       ) : step === steps.CREATE ? (
-        <LensForm profile={null} onSubmit={onSubmit} />
+        <LensForm
+          profile={null}
+          onSubmit={onSubmit}
+          onBackClick={handleOnBackClick}
+        />
       ) : step === steps.USE ? (
-        <LensForm profile={lensProfile} onSubmit={onSubmit} />
+        <LensForm
+          profile={lensProfile}
+          onSubmit={onSubmit}
+          onBackClick={handleOnBackClick}
+        />
       ) : null}
     </>
   );

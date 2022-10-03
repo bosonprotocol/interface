@@ -9,9 +9,10 @@ import ViewLensProfile from "./ViewLensProfile";
 interface Props {
   onSubmit: (createValues: LensProfile) => void;
   profile: Profile | null;
+  onBackClick: () => void;
 }
 
-export default function LensForm({ onSubmit, profile }: Props) {
+export default function LensForm({ onSubmit, profile, onBackClick }: Props) {
   return (
     <Formik<LensProfile>
       initialValues={
@@ -33,11 +34,11 @@ export default function LensForm({ onSubmit, profile }: Props) {
     >
       <Form>
         {profile ? (
-          <ViewLensProfile profile={profile}>
+          <ViewLensProfile profile={profile} onBackClick={onBackClick}>
             <LensFormFields disable={true} />
           </ViewLensProfile>
         ) : (
-          <CreateLensProfile>
+          <CreateLensProfile onBackClick={onBackClick}>
             <LensFormFields disable={false} />
           </CreateLensProfile>
         )}

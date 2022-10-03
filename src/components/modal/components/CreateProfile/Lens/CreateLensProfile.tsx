@@ -7,8 +7,9 @@ import useCreateLensProfile from "../../../../../lib/utils/hooks/lens/profile/us
 import useGetLensProfile from "../../../../../lib/utils/hooks/lens/profile/useGetLensProfile";
 import useSetLensProfileMetadata from "../../../../../lib/utils/hooks/lens/profile/useSetLensProfileMetadata";
 import { useIpfsStorage } from "../../../../../lib/utils/hooks/useIpfsStorage";
-import { ProductButtonGroup } from "../../../../product/Product.styles";
 import Button from "../../../../ui/Button";
+import Grid from "../../../../ui/Grid";
+import { useModal } from "../../../useModal";
 import { LensProfile } from "./validationSchema";
 
 const loadAndSetImage = (
@@ -25,9 +26,10 @@ const loadAndSetImage = (
 
 interface Props {
   children: ReactNode;
+  onBackClick: () => void;
 }
 
-export default function CreateLensProfile({ children }: Props) {
+export default function CreateLensProfile({ children, onBackClick }: Props) {
   const [triggerLensProfileCreation, setTriggerLensProfileCreation] = useState<
     "start" | "fetch" | "triggered"
   >("start");
@@ -41,13 +43,24 @@ export default function CreateLensProfile({ children }: Props) {
     { enabled: false }
   );
   const { accessToken } = data || {};
+  const { updateProps, store } = useModal();
+  useEffect(() => {
+    updateProps<"CREATE_PROFILE">({
+      ...store,
+      modalProps: {
+        ...store.modalProps,
+        title: "Create your Profile"
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   useEffect(() => {
     if (values.logo?.length) {
       const [image] = values.logo;
-      loadAndSetImage(image, async (imgUrl) => {
-        const cid = await storage.add(imgUrl);
+      (async () => {
+        const cid = await storage.add(image);
         setProfileImageUrl("ipfs://" + cid);
-      });
+      })();
     }
   }, [storage, values.logo]);
   useEffect(() => {
@@ -160,7 +173,10 @@ export default function CreateLensProfile({ children }: Props) {
   return (
     <div>
       {children}
-      <ProductButtonGroup>
+      <Grid justifyContent="flex-start" gap="2rem">
+        <Button theme="bosonSecondary" type="button" onClick={onBackClick}>
+          Back
+        </Button>
         <Button
           theme="primary"
           type="submit"
@@ -174,7 +190,7 @@ export default function CreateLensProfile({ children }: Props) {
         >
           Next
         </Button>
-      </ProductButtonGroup>
+      </Grid>
     </div>
   );
 }

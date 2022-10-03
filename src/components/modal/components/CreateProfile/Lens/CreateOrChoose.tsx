@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useAccount } from "wagmi";
 
 import { ReactComponent as LensLogo } from "../../../../../../src/assets/lens-logo.svg";
@@ -7,6 +8,7 @@ import Button from "../../../../ui/Button";
 import Grid from "../../../../ui/Grid";
 import GridContainer from "../../../../ui/GridContainer";
 import Typography from "../../../../ui/Typography";
+import { useModal } from "../../../useModal";
 
 interface Props {
   onChooseCreateNew: () => void;
@@ -17,10 +19,22 @@ export default function CreateOrChoose({
   onChooseCreateNew,
   onChooseUseExisting
 }: Props) {
+  const { updateProps, store } = useModal();
+  useEffect(() => {
+    updateProps<"CREATE_PROFILE">({
+      ...store,
+      modalProps: {
+        ...store.modalProps,
+        title: "Create your Profile"
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const { address = "" } = useAccount();
   const { data: profileData } = useGetLensProfiles(
     {
-      ownedBy: [address]
+      ownedBy: [address],
+      limit: 50
     },
     {
       enabled: !!address
@@ -48,7 +62,7 @@ export default function CreateOrChoose({
             <Typography>Create new Profile</Typography>
           </Grid>
         </Button>
-        {profileData?.profiles.items.map((profile) => {
+        {profileData?.items.map((profile) => {
           return (
             <Button
               theme="white"
