@@ -16,6 +16,21 @@ const ExportButton = styled(Button)`
   padding-right: 2.125rem;
   padding-left: 0.75rem;
   position: relative;
+  transition: 700ms;
+  &:hover:not(:disabled) {
+    background: ${colors.secondary};
+    color: ${colors.white};
+    div,
+    button {
+      color: ${colors.white};
+    }
+    [data-arrow-container] {
+      border-color: ${colors.white};
+    }
+    [data-arrow-container] div {
+      background: ${colors.white};
+    }
+  }
   > div {
     gap: 0.625rem;
   }
@@ -51,7 +66,7 @@ const ButtonsContainer = styled.div`
 const ButtonOptions = styled.div<{ disabled: boolean }>`
   border: 0.0625rem solid ${colors.secondary};
   border-top: 0rem;
-  color: ${colors.black};
+  color: ${colors.secondary};
   font-size: 0.75rem;
   max-width: 7.1875rem;
   text-align: center;
@@ -59,6 +74,11 @@ const ButtonOptions = styled.div<{ disabled: boolean }>`
   background-color: ${colors.white};
   text-decoration: ${({ disabled }) => (disabled ? "line-through;" : "none")};
   z-index: ${zIndex.Notification};
+  transition: 700ms;
+  &:hover {
+    background-color: ${colors.secondary};
+    color: ${colors.white};
+  }
 `;
 
 const Container = styled.div`
@@ -97,7 +117,7 @@ function ExportDropdown({ buttonProps = {}, children }: Props) {
         >
           <ExportButton theme="outline" size="small" {...buttonProps}>
             Export <DownloadSimple size={16} />
-            <ArrowContainer>
+            <ArrowContainer data-arrow-container>
               <ArrowDown>&nbsp;</ArrowDown>
             </ArrowContainer>
           </ExportButton>
