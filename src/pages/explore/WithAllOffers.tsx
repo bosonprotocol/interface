@@ -202,6 +202,7 @@ export function WithAllOffers<P>(
         first: OFFERS_PER_PAGE + 1,
         disableMemo: true,
         voided: false,
+        valid: true,
         ...filterOptions
       },
       {
