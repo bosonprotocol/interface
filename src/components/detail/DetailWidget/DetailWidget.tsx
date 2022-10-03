@@ -7,12 +7,14 @@ import {
 import dayjs from "dayjs";
 import { BigNumber, ethers } from "ethers";
 import { ArrowRight, ArrowSquareOut, Check, Question } from "phosphor-react";
+import qs from "query-string";
 import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
 import { useAccount, useBalance, useSigner } from "wagmi";
 
 import { CONFIG } from "../../../lib/config";
+import { AccountQueryParameters } from "../../../lib/routing/parameters";
 import { BosonRoutes } from "../../../lib/routing/routes";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
@@ -272,6 +274,12 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   const isBeforeRedeem =
     !exchangeStatus || NOT_REDEEMED_YET.includes(exchangeStatus);
 
+  const isExchangeExpired =
+    exchangeStatus &&
+    [exchanges.ExtendedExchangeState.Expired].includes(
+      exchangeStatus as unknown as exchanges.ExtendedExchangeState
+    );
+
   const { data: signer } = useSigner();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -428,6 +436,30 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 {offer.metadata.name} rNFT
               </Typography>
               <ArrowRight size={18} color={colors.orange} />
+            </Grid>
+          )}
+          {isExchange && isExchangeExpired && (
+            <Grid
+              alignItems="center"
+              justifyContent="space-between"
+              style={{ margin: "-1rem 0 1rem 0", cursor: "pointer" }}
+              onClick={() =>
+                navigate({
+                  pathname: `${BosonRoutes.YourAccount}`,
+                  search: qs.stringify({
+                    [AccountQueryParameters.manageFunds]: "true"
+                  })
+                })
+              }
+            >
+              <Typography
+                tag="p"
+                style={{ color: colors.darkGrey, margin: 0 }}
+                $fontSize="0.75rem"
+              >
+                You can withdraw your funds here
+              </Typography>
+              <ArrowRight size={18} color={colors.darkGrey} />
             </Grid>
           )}
           <WidgetUpperGrid

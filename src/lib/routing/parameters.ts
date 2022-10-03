@@ -18,7 +18,8 @@ export const CollectionsQueryParameters = {
 } as const;
 
 export const AccountQueryParameters = {
-  tab: "tab"
+  tab: "tab",
+  manageFunds: "manageFunds"
 } as const;
 
 export const UrlParameters = {
