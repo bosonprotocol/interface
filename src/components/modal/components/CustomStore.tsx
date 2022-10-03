@@ -52,38 +52,34 @@ export default function CustomStore({ ipfsUrl = "", hideModal }: Props) {
         Congrats for creating your store front.
       </Typography>
       <CollapsibleContainer>
-        <Collapse
-          title={
-            <Grid justifyContent="flex-start" gap="0.5rem">
-              <Heading>Custom Store URL </Heading>
-              <Tooltip.Provider delayDuration={0}>
-                <Tooltip.Root>
-                  <Tooltip.TooltipTrigger asChild>
-                    <Info size="20" />
-                  </Tooltip.TooltipTrigger>
-                  <Tooltip.Content>
-                    <StyledTooltip>
-                      This shows the IPFS CID for your custom storefront website
-                      file. Extract this and access via any IPFS gateway (note:
-                      default URL points to a gateway where your content is
-                      pinned and therefore more highly available).
-                    </StyledTooltip>
-                  </Tooltip.Content>
-                </Tooltip.Root>
-              </Tooltip.Provider>
-            </Grid>
-          }
-        >
-          <Grid alignItems="center" justifyContent="flex-start" gap="0.5rem">
-            <a href={ipfsUrl} target="_blank">
-              {ipfsUrl}
-            </a>
-            <CopyIcon
-              size={20}
-              onClick={() => copyToClipboard(ipfsUrl).catch(console.error)}
-            />
-          </Grid>
-        </Collapse>
+        <Grid justifyContent="flex-start" gap="0.5rem">
+          <Heading>Custom Store URL </Heading>
+          <Tooltip.Provider delayDuration={0}>
+            <Tooltip.Root>
+              <Tooltip.TooltipTrigger asChild>
+                <Info size="20" />
+              </Tooltip.TooltipTrigger>
+              <Tooltip.Content>
+                <StyledTooltip>
+                  This shows the IPFS CID for your custom storefront website
+                  file. Extract this and access via any IPFS gateway (note:
+                  default URL points to a gateway where your content is pinned
+                  and therefore more highly available).
+                </StyledTooltip>
+              </Tooltip.Content>
+            </Tooltip.Root>
+          </Tooltip.Provider>
+        </Grid>
+
+        <Grid alignItems="center" justifyContent="flex-start" gap="0.5rem">
+          <a href={ipfsUrl} target="_blank">
+            {ipfsUrl}
+          </a>
+          <CopyIcon
+            size={20}
+            onClick={() => copyToClipboard(ipfsUrl).catch(console.error)}
+          />
+        </Grid>
       </CollapsibleContainer>
       <CollapsibleContainer>
         <Collapse title={<Heading>Link to ENS</Heading>}>
