@@ -19,6 +19,8 @@ export const offerGraphQl = gql`
     voided
     createdAt
     voucherRedeemableUntilDate
+    numberOfCommits
+    numberOfRedemptions
     disputeResolver {
       escalationResponsePeriod
     }
