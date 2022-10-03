@@ -1,5 +1,3 @@
-import dayjs from "dayjs";
-
 import { fetchSubgraph } from "../../core-components/subgraph";
 import { buildGetOffersQuery } from "./graphql";
 import { memoMergeAndSortOffers } from "./memo";
@@ -14,34 +12,15 @@ const memoizedMergeAndSortOffers = memoMergeAndSortOffers();
 export const getOffers = async (props: UseOffersProps) => {
   const dateNow = Date.now();
   const now = Math.floor(dateNow / 1000);
-  const in10days =
-    dayjs(dateNow).add(10, "day").startOf("day").toDate().getTime() / 1000;
 
   let validFromDate_lte: string | null = null;
-  let validFromDate_gte: string | null = null;
-  let validUntilDate_lte: string | null = null;
+  const validFromDate_gte: string | null = null;
+  const validUntilDate_lte: string | null = null;
   let validUntilDate_gte: string | null = null;
 
-  if (props.type) {
-    if (props.type === "hot") {
-      validFromDate_lte = now + "";
-      validUntilDate_gte = now + "";
-      validUntilDate_lte = in10days + "";
-    } else if (props.type === "gone") {
-      validFromDate_lte = now + "";
-      validUntilDate_gte = now + "";
-    } else if (props.type === "soon") {
-      validFromDate_gte = now + "";
-    } else {
-      throw new Error(`type not supported=${props.type}`);
-    }
-  } else {
-    if (props.valid) {
-      validFromDate_lte = now + "";
-      validUntilDate_gte = now + "";
-    } else {
-      // TODO: is there a use case for this?
-    }
+  if (props.valid) {
+    validFromDate_lte = now + "";
+    validUntilDate_gte = now + "";
   }
 
   const variables = {
