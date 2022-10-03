@@ -72,7 +72,6 @@ const FeaturedOffers: React.FC<IFeaturedOffers> = ({
   } = useOffers({
     voided: false,
     valid: true,
-    first: isLteXS ? 2 : 12,
     quantityAvailable_gte: 1,
     orderBy: "numberOfCommits",
     orderDirection: "desc"
@@ -92,7 +91,7 @@ const FeaturedOffers: React.FC<IFeaturedOffers> = ({
         </ViewMore>
       </TopContainer>
       <OfferList
-        offers={offers}
+        offers={offers?.slice(0, isLteXS ? 6 : 12)}
         isError={isError}
         isLoading={isLoading}
         action="commit"
