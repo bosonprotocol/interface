@@ -1,4 +1,4 @@
-import { CancelButton, Provider, subgraph } from "@bosonprotocol/react-kit";
+import { CancelButton, Provider } from "@bosonprotocol/react-kit";
 import { Info as InfoComponent } from "phosphor-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -194,10 +194,11 @@ export default function CancelExchangeModal({
             });
           }}
           onSuccess={async (_, { exchangeId }) => {
-            let canceledExchange: subgraph.ExchangeFieldsFragment;
             await poll(
               async () => {
-                canceledExchange = await coreSDK.getExchangeById(exchangeId);
+                const canceledExchange = await coreSDK.getExchangeById(
+                  exchangeId
+                );
                 return canceledExchange.cancelledDate;
               },
               (cancelledDate) => {

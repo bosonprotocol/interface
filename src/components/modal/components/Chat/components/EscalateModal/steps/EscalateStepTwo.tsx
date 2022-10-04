@@ -1,4 +1,3 @@
-import { subgraph } from "@bosonprotocol/react-kit";
 import { BigNumberish } from "ethers";
 import { Form, Formik, FormikProps, FormikState } from "formik";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -146,26 +145,23 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
       setLoading(true);
       showModal("WAITING_FOR_CONFIRMATION");
       const tx = await coreSDK.escalateDispute(exchange.id);
-      await tx.wait();
       showModal("TRANSACTION_SUBMITTED", {
         action: "Escalate dispute",
         txHash: tx.hash
       });
-      if (exchange.dispute?.id) {
-        let escalatedDispute: subgraph.DisputeFieldsFragment;
-        await poll(
-          async () => {
-            escalatedDispute = await coreSDK.getDisputeById(
-              exchange.dispute?.id as BigNumberish
-            );
-            return escalatedDispute.escalatedDate;
-          },
-          (escalatedDate) => {
-            return !escalatedDate;
-          },
-          500
-        );
-      }
+      await tx.wait();
+      await poll(
+        async () => {
+          const escalatedDispute = await coreSDK.getDisputeById(
+            exchange.dispute?.id as BigNumberish
+          );
+          return escalatedDispute.escalatedDate;
+        },
+        (escalatedDate) => {
+          return !escalatedDate;
+        },
+        500
+      );
       toast((t) => (
         <SuccessTransactionToast
           t={t}

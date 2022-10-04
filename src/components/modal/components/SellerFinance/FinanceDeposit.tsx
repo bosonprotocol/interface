@@ -106,19 +106,18 @@ export default function FinanceDeposit({
         showModal("WAITING_FOR_CONFIRMATION");
         await approveToken(amountToDeposit);
         const tx = await depositFunds();
-        await tx?.wait();
         showModal("TRANSACTION_SUBMITTED", {
           action: "Finance deposit",
           txHash: tx.hash
         });
-        let ballance;
+        await tx?.wait();
         await poll(
           async () => {
-            ballance = await refetch();
-            return ballance;
+            const balance = await refetch();
+            return balance;
           },
-          (ballance) => {
-            return dataBalance?.formatted === ballance.data?.formatted;
+          (balance) => {
+            return dataBalance?.formatted === balance.data?.formatted;
           },
           500
         );

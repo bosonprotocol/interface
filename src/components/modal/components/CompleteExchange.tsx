@@ -1,8 +1,7 @@
 import {
   BatchCompleteButton,
   CompleteButton,
-  Provider,
-  subgraph
+  Provider
 } from "@bosonprotocol/react-kit";
 import { BigNumberish } from "ethers";
 import { useCallback, useMemo } from "react";
@@ -104,13 +103,10 @@ export default function CompleteExchange({
 
   const completeExchangePool = useCallback(
     async (id: BigNumberish) => {
-      let batchedExchange: subgraph.ExchangeFieldsFragment;
       await poll(
         async () => {
-          if (id) {
-            batchedExchange = await coreSdk.getExchangeById(id);
-            return batchedExchange.completedDate;
-          }
+          const batchedExchange = await coreSdk.getExchangeById(id);
+          return batchedExchange.completedDate;
         },
         (completedDate) => {
           return !completedDate;
@@ -123,17 +119,14 @@ export default function CompleteExchange({
 
   const batchCompleteExchangePool = useCallback(
     async (ids: BigNumberish[]) => {
-      let completedOffers: subgraph.ExchangeFieldsFragment[];
       await poll(
         async () => {
-          if (ids) {
-            completedOffers = await Promise.all(
-              ids.map(async (id) => {
-                return await coreSdk.getExchangeById(id);
-              })
-            );
-            return completedOffers;
-          }
+          const completedOffers = await Promise.all(
+            ids.map(async (id) => {
+              return await coreSdk.getExchangeById(id);
+            })
+          );
+          return completedOffers;
         },
         (createdOffers) => {
           return !createdOffers?.every(({ completedDate }) => completedDate);
@@ -163,8 +156,7 @@ export default function CompleteExchange({
             url={CONFIG.getTxExplorerUrl?.(receipt.transactionHash)}
           />
         ));
-      }
-      if (payload.exchangeIds) {
+      } else if (payload.exchangeIds) {
         await batchCompleteExchangePool(payload.exchangeIds);
         toast((t) => (
           <SuccessTransactionToast

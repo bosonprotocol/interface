@@ -1,4 +1,3 @@
-import { subgraph } from "@bosonprotocol/react-kit";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -33,7 +32,6 @@ export function RetractDisputeModal({
   const [retractDisputeError, setRetractDisputeError] = useState<Error | null>(
     null
   );
-  console.log(disputeId, "disputeId");
   return (
     <Grid flexDirection="column" gap="5rem">
       <div>
@@ -53,24 +51,23 @@ export function RetractDisputeModal({
               setRetractDisputeError(null);
               showModal("WAITING_FOR_CONFIRMATION");
               const tx = await coreSDK.retractDispute(exchangeId);
-              await tx.wait();
               showModal("TRANSACTION_SUBMITTED", {
                 action: "Retract dispute",
                 txHash: tx.hash
               });
-              if (disputeId) {
-                let retractedDispute: subgraph.DisputeFieldsFragment;
-                await poll(
-                  async () => {
-                    retractedDispute = await coreSDK.getDisputeById(disputeId);
-                    return retractedDispute.retractedDate;
-                  },
-                  (retractedDate) => {
-                    return !retractedDate;
-                  },
-                  500
-                );
-              }
+              await tx.wait();
+              await poll(
+                async () => {
+                  const retractedDispute = await coreSDK.getDisputeById(
+                    disputeId
+                  );
+                  return retractedDispute.retractedDate;
+                },
+                (retractedDate) => {
+                  return !retractedDate;
+                },
+                500
+              );
               toast((t) => (
                 <SuccessTransactionToast
                   t={t}

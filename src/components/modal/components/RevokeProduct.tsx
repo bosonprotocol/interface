@@ -1,4 +1,4 @@
-import { Provider, RevokeButton, subgraph } from "@bosonprotocol/react-kit";
+import { Provider, RevokeButton } from "@bosonprotocol/react-kit";
 import toast from "react-hot-toast";
 import styled from "styled-components";
 import { useSigner } from "wagmi";
@@ -134,10 +134,11 @@ export default function RevokeProduct({
             });
           }}
           onSuccess={async (receipt, { exchangeId }) => {
-            let canceledExchange: subgraph.ExchangeFieldsFragment;
             await poll(
               async () => {
-                canceledExchange = await coreSDK.getExchangeById(exchangeId);
+                const canceledExchange = await coreSDK.getExchangeById(
+                  exchangeId
+                );
                 return canceledExchange.revokedDate;
               },
               (revokedDate) => {

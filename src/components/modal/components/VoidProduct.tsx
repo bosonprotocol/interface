@@ -1,4 +1,4 @@
-import { Provider, subgraph, VoidButton } from "@bosonprotocol/react-kit";
+import { Provider, VoidButton } from "@bosonprotocol/react-kit";
 import { BigNumberish } from "ethers";
 import { useCallback, useState } from "react";
 import toast from "react-hot-toast";
@@ -134,11 +134,10 @@ export default function VoidProduct({
 
   const voidPool = useCallback(
     async (id: BigNumberish) => {
-      let createdOffer: subgraph.OfferFieldsFragment;
       await poll(
         async () => {
           if (id) {
-            createdOffer = await coreSdk.getOfferById(id);
+            const createdOffer = await coreSdk.getOfferById(id);
             return createdOffer.voided;
           }
         },
@@ -153,17 +152,14 @@ export default function VoidProduct({
 
   const batchVoidPool = useCallback(
     async (ids: BigNumberish[]) => {
-      let createdOffers: subgraph.OfferFieldsFragment[];
       await poll(
         async () => {
-          if (ids) {
-            createdOffers = await Promise.all(
-              ids.map(async (id) => {
-                return await coreSdk.getOfferById(id);
-              })
-            );
-            return createdOffers;
-          }
+          const createdOffers = await Promise.all(
+            ids.map(async (id) => {
+              return await coreSdk.getOfferById(id);
+            })
+          );
+          return createdOffers;
         },
         (createdOffers) => {
           return !createdOffers?.every(({ voided }) => voided);
@@ -186,8 +182,7 @@ export default function VoidProduct({
     ) => {
       if (payload.offerId) {
         await voidPool(payload.offerId);
-      }
-      if (payload.offerIds) {
+      } else if (payload.offerIds) {
         await batchVoidPool(payload.offerIds);
       }
       const text = offer

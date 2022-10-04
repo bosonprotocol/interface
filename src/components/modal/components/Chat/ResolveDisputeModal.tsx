@@ -1,4 +1,3 @@
-import { subgraph } from "@bosonprotocol/react-kit";
 import { BigNumberish, utils } from "ethers";
 import { Info as InfoComponent } from "phosphor-react";
 import { useState } from "react";
@@ -92,26 +91,23 @@ export default function ResolveDisputeModal({
                 sigS: signature.s,
                 sigV: signature.v
               });
-              await tx.wait();
               showModal("TRANSACTION_SUBMITTED", {
                 action: "Raise dispute",
                 txHash: tx.hash
               });
-              let resolvedDispute: subgraph.DisputeFieldsFragment;
-              if (exchange.dispute?.id) {
-                await poll(
-                  async () => {
-                    resolvedDispute = await coreSDK.getDisputeById(
-                      exchange.dispute?.id as BigNumberish
-                    );
-                    return resolvedDispute.resolvedDate;
-                  },
-                  (resolvedDate) => {
-                    return !resolvedDate;
-                  },
-                  500
-                );
-              }
+              await tx.wait();
+              await poll(
+                async () => {
+                  const resolvedDispute = await coreSDK.getDisputeById(
+                    exchange.dispute?.id as BigNumberish
+                  );
+                  return resolvedDispute.resolvedDate;
+                },
+                (resolvedDate) => {
+                  return !resolvedDate;
+                },
+                500
+              );
               toast((t) => (
                 <SuccessTransactionToast
                   t={t}
