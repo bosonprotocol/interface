@@ -7,6 +7,7 @@ import disputePeriodValue from "./disputePeriodValue";
 import isItBeforeNow from "./isItBeforeNow";
 import isOfferValidityDatesValid from "./isOfferValidityDatesValid";
 import isRedemptionDatesValid from "./isRedemptionDatesValid";
+import returnPeriodValue from "./returnPeriodValue";
 
 Yup.addMethod<Yup.MixedSchema>(
   Yup.mixed,
@@ -23,6 +24,11 @@ Yup.addMethod<Yup.StringSchema>(
   Yup.string,
   "disputePeriodValue",
   disputePeriodValue
+);
+Yup.addMethod<Yup.StringSchema>(
+  Yup.string,
+  "returnPeriodValue",
+  returnPeriodValue
 );
 
 export default Yup;

@@ -4,6 +4,7 @@ import { validationOfFile } from "../../../pages/chat/components/UploadForm/cons
 import { MIN_VALUE } from "../../modal/components/Chat/const";
 import { FormModel } from "../../modal/components/Chat/MakeProposal/MakeProposalFormModel";
 import { DisputeFormModel } from "../../modal/components/DisputeModal/DisputeModalFormModel";
+import { CONFIG } from "./../../../lib/config";
 import { SelectDataProps } from "./../../form/types";
 import {
   MAX_IMAGE_SIZE,
@@ -133,7 +134,7 @@ export const termsOfExchangeValidationSchema = Yup.object({
         then: (schema) =>
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
-          schema.disputePeriodValue("The Dispute Period must be in line with the selected exchange policy (>=30 days)" ) // prettier-ignore
+          schema.disputePeriodValue(`The Dispute Period must be in line with the selected exchange policy (>=${CONFIG.minimumDisputePeriodInDays} days)` ) // prettier-ignore
       })
     // disputePeriodUnit: Yup.string().required(validationMessage.required)
   })
@@ -164,6 +165,9 @@ export const shippingInfoValidationSchema = Yup.object({
     returnPeriod: Yup.string()
       .matches(/^[0-9]+$/, "Must be only digits")
       .required(validationMessage.required)
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      .returnPeriodValue()
   })
 });
 

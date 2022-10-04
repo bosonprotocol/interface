@@ -1,3 +1,4 @@
+import { CONFIG } from "../../../lib/config";
 import { FormModel } from "../../modal/components/Chat/MakeProposal/MakeProposalFormModel";
 import { DisputeFormModel } from "../../modal/components/DisputeModal/DisputeModalFormModel";
 import {
@@ -106,7 +107,7 @@ export const shippingInfoInitialValues = {
     height: "",
     width: "",
     length: "",
-    returnPeriod: "30",
+    returnPeriod: CONFIG.minimumReturnPeriodInDays.toString(),
     returnPeriodUnit: OPTIONS_PERIOD[0]
   }
 } as const;
