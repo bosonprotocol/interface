@@ -40,7 +40,7 @@ const ViewMore = styled(LinkWithQuery)`
   align-items: center;
   cursor: pointer;
   ${() => buttonText};
-  color: var(--secondary);
+  color: ${colors.secondary};
 
   transition: all 150ms ease-in-out;
   > svg {
@@ -58,18 +58,10 @@ const ViewMore = styled(LinkWithQuery)`
 
 interface IFeaturedOffers {
   title?: string;
-  type: "gone" | "hot" | "soon";
 }
 
-const orderMap = {
-  hot: "validUntilDate",
-  gone: "quantityAvailable",
-  soon: "validFromDate"
-} as const;
-
 const FeaturedOffers: React.FC<IFeaturedOffers> = ({
-  title = "Explore Offers",
-  type
+  title = "Explore Offers"
 }) => {
   const { isLteXS } = useBreakpoints();
 
@@ -80,38 +72,34 @@ const FeaturedOffers: React.FC<IFeaturedOffers> = ({
   } = useOffers({
     voided: false,
     valid: true,
-    first: isLteXS ? 2 : 3,
-    quantityAvailable_lte: ["hot", "gone"].includes(type) ? 10 : null,
     quantityAvailable_gte: 1,
-    type,
-    orderBy: orderMap[type],
-    orderDirection: "asc"
+    orderBy: "numberOfCommits",
+    orderDirection: "desc"
   });
 
   return (
-    <Root data-testid={type}>
+    <Root data-testid={"featureOffers"}>
       <TopContainer>
         <Title tag="h3" style={{ margin: "0" }}>
           {title}
         </Title>
         <ViewMore to={BosonRoutes.Explore}>
           <>
-            {isLteXS ? "" : "View more"}
+            View more
             <CaretRight size={24} />
           </>
         </ViewMore>
       </TopContainer>
       <OfferList
-        offers={offers}
+        offers={offers?.slice(0, isLteXS ? 6 : 12)}
         isError={isError}
         isLoading={isLoading}
         action="commit"
         showInvalidOffers={false}
-        type={type}
         itemsPerRow={{
           xs: 1,
           s: 2,
-          m: 3,
+          m: 4,
           l: 4,
           xl: 4
         }}

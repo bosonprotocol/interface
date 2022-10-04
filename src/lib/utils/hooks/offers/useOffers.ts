@@ -1,5 +1,6 @@
 import { useQuery } from "react-query";
 
+import { useConvertedPriceFunction } from "../../../../components/price/useConvertedPriceFunction";
 import { useCurationLists } from "../useCurationLists";
 import { getOffers } from "./getOffers";
 import { UseOffersProps } from "./types";
@@ -11,6 +12,7 @@ export function useOffers(
   } = {}
 ) {
   const curationLists = useCurationLists();
+  const convertPrice = useConvertedPriceFunction();
 
   props = {
     ...props,
@@ -19,7 +21,19 @@ export function useOffers(
   return useQuery(
     ["offers", props],
     async () => {
-      return getOffers(props);
+      const offersList = await getOffers(props);
+
+      // sort the offers by price
+      const orderedOffers = offersList.sort((a, b) => {
+        const priceAInDolar = convertPrice(a)?.converted || "0";
+        const priceBInDolar = convertPrice(b)?.converted || "0";
+        return (
+          parseFloat(priceBInDolar) * parseInt(b.numberOfCommits) -
+          parseFloat(priceAInDolar) * parseInt(a.numberOfCommits)
+        );
+      });
+
+      return orderedOffers;
     },
     options
   );
