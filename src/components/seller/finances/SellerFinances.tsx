@@ -149,7 +149,8 @@ export default function SellerFinances({
   funds: fundsData,
   exchangesTokens: exchangesTokensData,
   sellerDeposit: sellerDepositData,
-  offersBacked
+  offersBacked,
+  sellerRoles
 }: SellerInsideProps & WithSellerDataProps) {
   const { showModal, modalTypes } = useModal();
   const { funds, reload, fundStatus } = fundsData;
@@ -289,6 +290,7 @@ export default function SellerFinances({
               <WithdrawButton
                 theme="outline"
                 size="small"
+                disabled={!sellerRoles.isClerk}
                 onClick={() => {
                   showModal(
                     modalTypes.FINANCE_WITHDRAW_MODAL,
@@ -344,7 +346,8 @@ export default function SellerFinances({
       sellerId,
       sellerLockedFunds,
       showModal,
-      funds
+      funds,
+      sellerRoles
     ]
   );
 

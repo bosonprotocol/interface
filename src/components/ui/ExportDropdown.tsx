@@ -60,7 +60,7 @@ const ButtonsContainer = styled.div`
   margin-left: -0.3125rem;
   margin-top: -0.3125rem;
   display: none;
-  z-index: ${zIndex.Notification};
+  z-index: ${zIndex.Select};
 `;
 
 const ButtonOptions = styled.div<{ disabled: boolean }>`
@@ -73,7 +73,7 @@ const ButtonOptions = styled.div<{ disabled: boolean }>`
   padding: 0.3125rem;
   background-color: ${colors.white};
   text-decoration: ${({ disabled }) => (disabled ? "line-through;" : "none")};
-  z-index: ${zIndex.Notification};
+  z-index: ${zIndex.Select};
   transition: 700ms;
   &:hover {
     background-color: ${colors.secondary};
@@ -83,7 +83,7 @@ const ButtonOptions = styled.div<{ disabled: boolean }>`
 
 const Container = styled.div`
   position: relative;
-  z-index: ${zIndex.Notification};
+  z-index: ${zIndex.Select};
   &:hover {
     [data-buttons-container] {
       display: block !important;
@@ -124,15 +124,22 @@ function ExportDropdown({ buttonProps = {}, children }: Props) {
         </CSVLink>
       )}
       <ButtonsContainer data-buttons-container>
-        {children?.map((child) => {
+        {children?.map((child, index) => {
           if (child.disabled) {
-            return <ButtonOptions disabled={true}>{child.name}</ButtonOptions>;
+            return (
+              <ButtonOptions
+                key={`CSVLink_${child.id}_${index}`}
+                disabled={true}
+              >
+                {child.name}
+              </ButtonOptions>
+            );
           }
           return (
             <CSVLink
+              key={`CSVLink_${child.id}_${index}`}
               {...child.csvProps}
               filename={child.csvProps.filename ?? "filename"}
-              key={child.id}
             >
               <ButtonOptions disabled={false}>{child.name}</ButtonOptions>
             </CSVLink>
