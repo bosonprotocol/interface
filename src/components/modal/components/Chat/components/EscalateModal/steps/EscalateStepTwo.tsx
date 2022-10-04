@@ -1,3 +1,4 @@
+import { BigNumberish } from "ethers";
 import { Form, Formik, FormikProps, FormikState } from "formik";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
@@ -9,6 +10,7 @@ import { CONFIG } from "../../../../../../../lib/config";
 import { colors } from "../../../../../../../lib/styles/colors";
 import { Exchange } from "../../../../../../../lib/utils/hooks/useExchanges";
 import { useCoreSDK } from "../../../../../../../lib/utils/useCoreSdk";
+import { poll } from "../../../../../../../pages/create-product/utils";
 import Collapse from "../../../../../../collapse/Collapse";
 import { Checkbox } from "../../../../../../form";
 import FormField from "../../../../../../form/FormField";
@@ -100,7 +102,7 @@ interface Props {
   refetch: () => void;
 }
 function EscalateStepTwo({ exchange, refetch }: Props) {
-  const { hideModal } = useModal();
+  const { hideModal, showModal } = useModal();
   const coreSDK = useCoreSDK();
 
   const [activeStep, setActiveStep] = useState<number>(0);
@@ -141,8 +143,25 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
   const handleEscalate = useCallback(async () => {
     try {
       setLoading(true);
+      showModal("WAITING_FOR_CONFIRMATION");
       const tx = await coreSDK.escalateDispute(exchange.id);
+      showModal("TRANSACTION_SUBMITTED", {
+        action: "Escalate dispute",
+        txHash: tx.hash
+      });
       await tx.wait();
+      await poll(
+        async () => {
+          const escalatedDispute = await coreSDK.getDisputeById(
+            exchange.dispute?.id as BigNumberish
+          );
+          return escalatedDispute.escalatedDate;
+        },
+        (escalatedDate) => {
+          return !escalatedDate;
+        },
+        500
+      );
       toast((t) => (
         <SuccessTransactionToast
           t={t}
@@ -163,14 +182,14 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
           </Typography>
         </ErrorToast>
       ));
-      setLoading(false);
       return false;
+    } finally {
+      hideModal();
+      setLoading(false);
     }
-    hideModal();
-    setLoading(false);
 
     return true;
-  }, [exchange, coreSDK, hideModal, refetch]);
+  }, [exchange, coreSDK, hideModal, refetch, showModal]);
 
   return (
     <Formik<typeof initialValues>

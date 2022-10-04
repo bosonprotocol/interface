@@ -12,6 +12,8 @@ import { useSigner } from "wagmi";
 import { CONFIG } from "../../../lib/config";
 import { Offer } from "../../../lib/types/offer";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
+import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
+import { poll } from "../../../pages/create-product/utils";
 import { Break } from "../../detail/Detail.style";
 import Price from "../../price/index";
 import SuccessTransactionToast from "../../toasts/SuccessTransactionToast";
@@ -95,13 +97,90 @@ export default function CompleteExchange({
   exchanges,
   refetch
 }: Props) {
+  const coreSdk = useCoreSDK();
   const { data: signer } = useSigner();
   const { hideModal, showModal } = useModal();
 
-  const handleSuccess = useCallback(() => {
-    hideModal();
-    refetch();
-  }, [hideModal, refetch]);
+  const completeExchangePool = useCallback(
+    async (id: BigNumberish) => {
+      await poll(
+        async () => {
+          const batchedExchange = await coreSdk.getExchangeById(id);
+          return batchedExchange.completedDate;
+        },
+        (completedDate) => {
+          return !completedDate;
+        },
+        500
+      );
+    },
+    [coreSdk]
+  );
+
+  const batchCompleteExchangePool = useCallback(
+    async (ids: BigNumberish[]) => {
+      await poll(
+        async () => {
+          const completedOffers = await Promise.all(
+            ids.map(async (id) => {
+              return await coreSdk.getExchangeById(id);
+            })
+          );
+          return completedOffers;
+        },
+        (createdOffers) => {
+          return !createdOffers?.every(({ completedDate }) => completedDate);
+        },
+        500
+      );
+    },
+    [coreSdk]
+  );
+
+  const handleSuccess = useCallback(
+    async (
+      receipt: {
+        transactionHash: string;
+      },
+      payload: {
+        exchangeId?: BigNumberish;
+        exchangeIds?: BigNumberish[];
+      }
+    ) => {
+      if (payload.exchangeId) {
+        await completeExchangePool(payload.exchangeId);
+        toast((t) => (
+          <SuccessTransactionToast
+            t={t}
+            action={`Completed exchange: ${exchange?.offer.metadata.name}`}
+            url={CONFIG.getTxExplorerUrl?.(receipt.transactionHash)}
+          />
+        ));
+      } else if (payload.exchangeIds) {
+        await batchCompleteExchangePool(payload.exchangeIds);
+        toast((t) => (
+          <SuccessTransactionToast
+            t={t}
+            action={`Completed exchanges: ${exchanges
+              ?.map((exchange) => exchange?.id)
+              .filter((exchange) => exchange)
+              .join(",")}`}
+            url={CONFIG.getTxExplorerUrl?.(receipt.transactionHash)}
+          />
+        ));
+      }
+      hideModal();
+      refetch();
+    },
+    [
+      completeExchangePool,
+      exchange,
+      exchanges,
+      hideModal,
+      refetch,
+      batchCompleteExchangePool
+    ]
+  );
 
   const exchangeIds = useMemo(() => {
     return exchanges?.map((exchange) => exchange?.id as BigNumberish) || [];
@@ -160,14 +239,14 @@ export default function CompleteExchange({
               });
             }}
             onSuccess={(receipt) => {
-              toast((t) => (
-                <SuccessTransactionToast
-                  t={t}
-                  action={`Completed exchange: ${exchange.offer.metadata.name}`}
-                  url={CONFIG.getTxExplorerUrl?.(receipt.transactionHash)}
-                />
-              ));
-              handleSuccess();
+              handleSuccess(
+                {
+                  transactionHash: receipt.transactionHash
+                },
+                {
+                  exchangeId: exchange.id
+                }
+              );
             }}
             web3Provider={signer?.provider as Provider}
           />
@@ -199,17 +278,14 @@ export default function CompleteExchange({
               });
             }}
             onSuccess={(receipt) => {
-              toast((t) => (
-                <SuccessTransactionToast
-                  t={t}
-                  action={`Completed exchanges: ${exchanges
-                    .map((exchange) => exchange?.id)
-                    .filter((exchange) => exchange)
-                    .join(",")}`}
-                  url={CONFIG.getTxExplorerUrl?.(receipt.transactionHash)}
-                />
-              ));
-              handleSuccess();
+              handleSuccess(
+                {
+                  transactionHash: receipt.transactionHash
+                },
+                {
+                  exchangeIds: exchangeIds
+                }
+              );
             }}
             web3Provider={signer?.provider as Provider}
           >

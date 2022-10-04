@@ -5,6 +5,8 @@ import { useSigner } from "wagmi";
 
 import { CONFIG } from "../../../lib/config";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
+import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
+import { poll } from "../../../pages/create-product/utils";
 import { Break } from "../../detail/Detail.style";
 import Price from "../../price/index";
 import { useConvertedPrice } from "../../price/useConvertedPrice";
@@ -32,6 +34,7 @@ export default function RevokeProduct({
 }: Props) {
   const { data: signer } = useSigner();
   const { showModal, hideModal } = useModal();
+  const coreSDK = useCoreSDK();
 
   const convertedPrice = useConvertedPrice({
     value: exchange?.offer?.price,
@@ -130,7 +133,19 @@ export default function RevokeProduct({
               txHash: hash
             });
           }}
-          onSuccess={(receipt) => {
+          onSuccess={async (receipt, { exchangeId }) => {
+            await poll(
+              async () => {
+                const canceledExchange = await coreSDK.getExchangeById(
+                  exchangeId
+                );
+                return canceledExchange.revokedDate;
+              },
+              (revokedDate) => {
+                return !revokedDate;
+              },
+              500
+            );
             hideModal();
             toast((t) => (
               <SuccessTransactionToast
