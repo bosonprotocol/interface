@@ -252,7 +252,7 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
                     your identity.
                   </Typography>
                   <FormField theme="white" title="Message">
-                    <Textarea {...FormModel.formFields.message} />
+                    <Textarea {...FormModel.formFields.message} disabled />
                   </FormField>
                   <Button
                     theme="bosonSecondaryInverse"
@@ -309,24 +309,24 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
                         values?.exchangeId || "",
                       [FormModel.formFields.disputeId.name]:
                         values?.disputeId || "",
+                      [FormModel.formFields.buyerAddress.name]:
+                        values?.buyerAddress ? values?.buyerAddress : "",
                       [`Unsigned message: ${FormModel.formFields.message.name}`]:
                         values?.message
                           ? `Unsigned message: ${values?.message}`
                           : "",
-                      [FormModel.formFields.buyerAddress.name]:
-                        values?.buyerAddress ? values?.buyerAddress : "",
                       [FormModel.formFields.signature.name]:
                         values?.signature || ""
                     }}
                   >
                     <Input {...FormModel.formFields.exchangeId} />
                     <Input {...FormModel.formFields.disputeId} />
+                    <Input {...FormModel.formFields.buyerAddress} disabled />
                     <Input
                       {...FormModel.formFields.message}
                       prefix="Unsigned message:"
                       disabled
                     />
-                    <Input {...FormModel.formFields.buyerAddress} disabled />
                     <Input {...FormModel.formFields.signature} />
                   </FormField>
                   <FormField theme="white" title="Chat transcript">
