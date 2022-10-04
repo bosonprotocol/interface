@@ -1,5 +1,5 @@
 import { CreateOfferArgs } from "@bosonprotocol/common";
-import { subgraph } from "@bosonprotocol/react-kit";
+import { offers, subgraph } from "@bosonprotocol/react-kit";
 import { BigNumber } from "ethers";
 import { useEffect, useState } from "react";
 
@@ -8,6 +8,7 @@ import { useCoreSDK } from "../useCoreSdk";
 import { useIpfsStorage } from "./useIpfsStorage";
 
 type OfferFieldsFragment = subgraph.OfferFieldsFragment;
+type AdditionalOfferMetadata = offers.AdditionalOfferMetadata;
 
 export function useRenderTemplate(
   offerId: string | undefined,
@@ -40,10 +41,14 @@ export function useRenderTemplate(
             // Get the offer fields from subgraph
             theOfferData = await coreSDK.getOfferById(offerId);
           }
+          // Convert offer fields format to offer data format
+          const { offerArgs, offerMetadata } = buildOfferData(
+            theOfferData as OfferFieldsFragment
+          );
           const result = await coreSDK.renderContractualAgreement(
             template,
-            // Convert offer fields format to offer data format
-            buildOfferData(theOfferData as OfferFieldsFragment)
+            offerArgs,
+            offerMetadata
           );
           setRenderResult(result);
           setRenderStatus(ProgressStatus.SUCCESS);
@@ -70,42 +75,56 @@ export function useRenderTemplate(
   return { renderStatus, renderResult };
 }
 
-function buildOfferData(offerFields: OfferFieldsFragment): CreateOfferArgs {
+function buildOfferData(offerFields: OfferFieldsFragment): {
+  offerArgs: CreateOfferArgs;
+  offerMetadata: AdditionalOfferMetadata;
+} {
   return {
-    price: offerFields.price as string,
-    sellerDeposit: offerFields.sellerDeposit as string,
-    agentId: offerFields.agentId as string,
-    buyerCancelPenalty: offerFields.buyerCancelPenalty as string,
-    quantityAvailable: offerFields.quantityAvailable as string,
-    validFromDateInMS: BigNumber.from(offerFields.validFromDate)
-      .mul(1000)
-      .toString(),
-    validUntilDateInMS: BigNumber.from(offerFields.validUntilDate)
-      .mul(1000)
-      .toString(),
-    voucherRedeemableFromDateInMS: BigNumber.from(
-      offerFields.voucherRedeemableFromDate
-    )
-      .mul(1000)
-      .toString(),
-    voucherRedeemableUntilDateInMS: BigNumber.from(
-      offerFields.voucherRedeemableUntilDate
-    )
-      .mul(1000)
-      .toString(),
-    fulfillmentPeriodDurationInMS: BigNumber.from(
-      offerFields.fulfillmentPeriodDuration
-    )
-      .mul(1000)
-      .toString(),
-    resolutionPeriodDurationInMS: BigNumber.from(
-      offerFields.resolutionPeriodDuration
-    )
-      .mul(1000)
-      .toString(),
-    exchangeToken: offerFields.exchangeToken.address as string,
-    disputeResolverId: offerFields.disputeResolverId as string,
-    metadataHash: offerFields.metadataHash as string,
-    metadataUri: offerFields.metadataUri as string
+    offerArgs: {
+      price: offerFields.price as string,
+      sellerDeposit: offerFields.sellerDeposit as string,
+      agentId: offerFields.agentId as string,
+      buyerCancelPenalty: offerFields.buyerCancelPenalty as string,
+      quantityAvailable: offerFields.quantityAvailable as string,
+      validFromDateInMS: BigNumber.from(offerFields.validFromDate)
+        .mul(1000)
+        .toString(),
+      validUntilDateInMS: BigNumber.from(offerFields.validUntilDate)
+        .mul(1000)
+        .toString(),
+      voucherRedeemableFromDateInMS: BigNumber.from(
+        offerFields.voucherRedeemableFromDate
+      )
+        .mul(1000)
+        .toString(),
+      voucherRedeemableUntilDateInMS: BigNumber.from(
+        offerFields.voucherRedeemableUntilDate
+      )
+        .mul(1000)
+        .toString(),
+      fulfillmentPeriodDurationInMS: BigNumber.from(
+        offerFields.fulfillmentPeriodDuration
+      )
+        .mul(1000)
+        .toString(),
+      resolutionPeriodDurationInMS: BigNumber.from(
+        offerFields.resolutionPeriodDuration
+      )
+        .mul(1000)
+        .toString(),
+      exchangeToken: offerFields.exchangeToken.address as string,
+      disputeResolverId: offerFields.disputeResolverId as string,
+      metadataHash: offerFields.metadataHash as string,
+      metadataUri: offerFields.metadataUri as string
+    },
+    offerMetadata: {
+      // TODO: to be completed in next PR (temporary fix to restore compatibility with CC)
+      sellerContactMethod: "TBD",
+      disputeResolverContactMethod: "TBD",
+      escalationDeposit: "0",
+      escalationResponsePeriodInSec: "0",
+      sellerTradingName: "TBD",
+      returnPeriodInDays: 0
+    }
   };
 }
