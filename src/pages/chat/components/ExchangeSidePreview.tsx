@@ -317,7 +317,8 @@ export default function ExchangeSidePreview({
                   title: "Retract",
                   exchangeId: exchange.id,
                   offerName: offer.metadata.name,
-                  refetch: refetchItAll
+                  refetch: refetchItAll,
+                  disputeId: exchange.dispute?.id ?? ""
                 },
                 "s"
               )

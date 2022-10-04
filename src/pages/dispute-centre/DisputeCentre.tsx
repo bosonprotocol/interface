@@ -1,3 +1,4 @@
+import { subgraph } from "@bosonprotocol/react-kit";
 import { Formik } from "formik";
 import { ArrowLeft, ArrowRight } from "phosphor-react";
 import { useState } from "react";
@@ -31,6 +32,7 @@ import { useCoreSDK } from "../../lib/utils/useCoreSdk";
 import { useChatContext } from "../chat/ChatProvider/ChatContext";
 import { createProposal } from "../chat/utils/create";
 import { sendProposalToChat } from "../chat/utils/send";
+import { poll } from "../create-product/utils";
 import DisputeCentreForm from "./DisputeCentreForm";
 
 const DISPUTE_STEPS = [
@@ -238,6 +240,23 @@ function DisputeCentre() {
                   const tx = await coreSDK.raiseDispute(exchange.id);
                   showModal("WAITING_FOR_CONFIRMATION");
                   await tx.wait();
+                  showModal("TRANSACTION_SUBMITTED", {
+                    action: "Cancel",
+                    txHash: tx.hash
+                  });
+                  let disputedExchange: subgraph.ExchangeFieldsFragment;
+                  await poll(
+                    async () => {
+                      disputedExchange = await coreSDK.getExchangeById(
+                        exchange.id
+                      );
+                      return disputedExchange.disputedDate;
+                    },
+                    (disputedDate) => {
+                      return !disputedDate;
+                    },
+                    500
+                  );
                   toast((t) => (
                     <SuccessTransactionToast
                       t={t}

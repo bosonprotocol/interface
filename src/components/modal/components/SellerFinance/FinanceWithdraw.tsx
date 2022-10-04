@@ -9,6 +9,7 @@ import {
   getNumberWithoutDecimals
 } from "../../../../pages/account/funds/FundItem";
 import useWithdrawFunds from "../../../../pages/account/funds/useWithdrawFunds";
+import { poll } from "../../../../pages/create-product/utils";
 import { Spinner } from "../../../loading/Spinner";
 import Grid from "../../../ui/Grid";
 import Typography from "../../../ui/Typography";
@@ -54,7 +55,7 @@ export default function FinanceWithdraw({
 
   const { address } = useAccount();
 
-  const { data: dataBalance } = useBalance(
+  const { data: dataBalance, refetch } = useBalance(
     exchangeToken !== ethers.constants.AddressZero
       ? {
           addressOrName: address,
@@ -62,8 +63,7 @@ export default function FinanceWithdraw({
         }
       : { addressOrName: address }
   );
-
-  const { hideModal } = useModal();
+  const { showModal } = useModal();
   const withdrawFunds = useWithdrawFunds({
     accountId,
     tokensToWithdraw: [
@@ -101,24 +101,41 @@ export default function FinanceWithdraw({
 
     setAmountToWithdraw(valueStr);
   };
-
   const handleWithdraw = async () => {
     {
       try {
         setWithdrawError(null);
         setIsBeingWithdrawn(true);
+        showModal("WAITING_FOR_CONFIRMATION");
         const tx = await withdrawFunds();
         await tx?.wait();
+        showModal("TRANSACTION_SUBMITTED", {
+          action: "Finance withdraw",
+          txHash: tx.hash
+        });
+        let ballance;
+        await poll(
+          async () => {
+            ballance = await refetch();
+            return ballance;
+          },
+          (ballance) => {
+            return dataBalance?.formatted === ballance.data?.formatted;
+          },
+          500
+        );
         setAmountToWithdraw("0");
         setIsWithdrawInvalid(true);
-        reload();
-        hideModal();
       } catch (error) {
         console.error(error);
+        const hasUserRejectedTx =
+          (error as unknown as { code: string }).code === "ACTION_REJECTED";
+        if (hasUserRejectedTx) {
+          showModal("CONFIRMATION_FAILED");
+        }
         setWithdrawError(error);
-        reload();
-        hideModal();
       } finally {
+        reload();
         setIsBeingWithdrawn(false);
       }
     }

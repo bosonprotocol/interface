@@ -5,6 +5,7 @@ import { useAccount, useBalance } from "wagmi";
 import { useCoreSDK } from "../../../../lib/utils/useCoreSdk";
 import { getNumberWithoutDecimals } from "../../../../pages/account/funds/FundItem";
 import useDepositFunds from "../../../../pages/account/funds/useDepositFunds";
+import { poll } from "../../../../pages/create-product/utils";
 import { Spinner } from "../../../loading/Spinner";
 import Grid from "../../../ui/Grid";
 import Typography from "../../../ui/Typography";
@@ -42,7 +43,7 @@ export default function FinanceDeposit({
   const [depositError, setDepositError] = useState<unknown>(null);
 
   const { address } = useAccount();
-  const { data: dataBalance } = useBalance(
+  const { data: dataBalance, refetch } = useBalance(
     exchangeToken !== ethers.constants.AddressZero
       ? {
           addressOrName: address,
@@ -51,7 +52,7 @@ export default function FinanceDeposit({
       : { addressOrName: address }
   );
 
-  const { hideModal } = useModal();
+  const { showModal } = useModal();
   const coreSDK = useCoreSDK();
   const depositFunds = useDepositFunds({
     accountId,
@@ -102,18 +103,37 @@ export default function FinanceDeposit({
       try {
         setDepositError(null);
         setIsBeingDeposit(true);
+        showModal("WAITING_FOR_CONFIRMATION");
         await approveToken(amountToDeposit);
         const tx = await depositFunds();
         await tx?.wait();
+        showModal("TRANSACTION_SUBMITTED", {
+          action: "Finance deposit",
+          txHash: tx.hash
+        });
+        let ballance;
+        await poll(
+          async () => {
+            ballance = await refetch();
+            return ballance;
+          },
+          (ballance) => {
+            return dataBalance?.formatted === ballance.data?.formatted;
+          },
+          500
+        );
         setAmountToDeposit("0");
         setIsDepositInvalid(true);
-        reload();
-        hideModal();
       } catch (error) {
         console.error(error);
+        const hasUserRejectedTx =
+          (error as unknown as { code: string }).code === "ACTION_REJECTED";
+        if (hasUserRejectedTx) {
+          showModal("CONFIRMATION_FAILED");
+        }
         setDepositError(error);
-        reload();
       } finally {
+        reload();
         setIsBeingDeposit(false);
       }
     }

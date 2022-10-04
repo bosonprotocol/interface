@@ -139,11 +139,11 @@ export default function VoidProduct({
         async () => {
           if (id) {
             createdOffer = await coreSdk.getOfferById(id);
-            return createdOffer;
+            return createdOffer.voided;
           }
         },
-        (offer) => {
-          return !offer?.voided;
+        (voided) => {
+          return !voided;
         },
         500
       );
@@ -154,7 +154,6 @@ export default function VoidProduct({
   const batchVoidPool = useCallback(
     async (ids: BigNumberish[]) => {
       let createdOffers: subgraph.OfferFieldsFragment[];
-      console.log(ids.length, "ids");
       await poll(
         async () => {
           if (ids) {

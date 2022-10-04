@@ -1,4 +1,5 @@
-import { utils } from "ethers";
+import { subgraph } from "@bosonprotocol/react-kit";
+import { BigNumberish, utils } from "ethers";
 import { Info as InfoComponent } from "phosphor-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -9,6 +10,7 @@ import { colors } from "../../../../lib/styles/colors";
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
 import { useCoreSDK } from "../../../../lib/utils/useCoreSdk";
 import { ProposalItem } from "../../../../pages/chat/types";
+import { poll } from "../../../../pages/create-product/utils";
 import SimpleError from "../../../error/SimpleError";
 import SuccessTransactionToast from "../../../toasts/SuccessTransactionToast";
 import Button from "../../../ui/Button";
@@ -90,11 +92,26 @@ export default function ResolveDisputeModal({
                 sigS: signature.s,
                 sigV: signature.v
               });
+              await tx.wait();
               showModal("TRANSACTION_SUBMITTED", {
                 action: "Raise dispute",
                 txHash: tx.hash
               });
-              await tx.wait();
+              let resolvedDispute: subgraph.DisputeFieldsFragment;
+              if (exchange.dispute?.id) {
+                await poll(
+                  async () => {
+                    resolvedDispute = await coreSDK.getDisputeById(
+                      exchange.dispute?.id as BigNumberish
+                    );
+                    return resolvedDispute.resolvedDate;
+                  },
+                  (resolvedDate) => {
+                    return !resolvedDate;
+                  },
+                  500
+                );
+              }
               toast((t) => (
                 <SuccessTransactionToast
                   t={t}
