@@ -1,7 +1,12 @@
 import { exchanges as ExchangesKit, subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
-import { Check } from "phosphor-react";
-import { CaretDown, CaretLeft, CaretRight, CaretUp } from "phosphor-react";
+import {
+  CaretDown,
+  CaretLeft,
+  CaretRight,
+  CaretUp,
+  Check
+} from "phosphor-react";
 import { forwardRef, useEffect, useMemo, useRef } from "react";
 import { generatePath } from "react-router-dom";
 import {
@@ -19,6 +24,7 @@ import { colors } from "../../../lib/styles/colors";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { SellerRolesProps } from "../../../lib/utils/hooks/useSellerRoles";
 import ExchangeTimeline from "../../../pages/chat/components/ExchangeTimeline";
 import { CheckboxWrapper } from "../../form/Field.styles";
 import ExchangeStatuses from "../../offer/ExchangeStatuses";
@@ -39,6 +45,7 @@ interface Props {
   isLoading?: boolean;
   refetch: () => void;
   setSelected: React.Dispatch<React.SetStateAction<Array<Exchange | null>>>;
+  sellerRoles: SellerRolesProps;
 }
 
 interface IIndeterminateInputProps {
@@ -197,7 +204,8 @@ export const isCompletable = (exchange: Exchange) => {
 export default function SellerExchangeTable({
   data,
   refetch,
-  setSelected
+  setSelected,
+  sellerRoles
 }: Props) {
   const navigate = useKeepQueryParamsNavigate();
   const columns = useMemo(
@@ -311,6 +319,7 @@ export default function SellerExchangeTable({
               <SellerResolveDisputeButton
                 exchange={element}
                 navigate={navigate}
+                sellerRoles={sellerRoles}
               />
             ) : (
               <SellerActionButton
@@ -318,11 +327,12 @@ export default function SellerExchangeTable({
                 refetch={refetch}
                 navigate={navigate}
                 status={status}
+                sellerRoles={sellerRoles}
               />
             )
         };
       }),
-    [data] // eslint-disable-line
+    [data, sellerRoles] // eslint-disable-line
   );
 
   const tableProps = useTable(

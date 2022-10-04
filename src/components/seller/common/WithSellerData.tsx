@@ -16,6 +16,10 @@ import {
   SellerProps,
   useSellerDeposit
 } from "../../../lib/utils/hooks/useSellerDeposit";
+import {
+  SellerRolesProps,
+  useSellerRoles
+} from "../../../lib/utils/hooks/useSellerRoles";
 import useFunds, { FundsProps } from "../../../pages/account/funds/useFunds";
 import { useConvertionRate } from "../../convertion-rate/useConvertionRate";
 import Loading from "../../ui/Loading";
@@ -61,6 +65,7 @@ export interface WithSellerDataProps {
   exchangesTokens: ExchangesTokensProps;
   sellerDeposit: SellerDepositProps;
   offersBacked: OffersBackedProps;
+  sellerRoles: SellerRolesProps;
 }
 export function WithSellerData<P>(
   WrappedComponent: React.ComponentType<P & WithSellerDataProps>
@@ -69,6 +74,7 @@ export function WithSellerData<P>(
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const sellerId = props.sellerId;
+    const sellerRoles = useSellerRoles(sellerId);
     const {
       store: { tokens }
     } = useConvertionRate();
@@ -99,7 +105,8 @@ export function WithSellerData<P>(
       exchanges,
       exchangesTokens,
       sellerDeposit,
-      funds
+      funds,
+      sellerRoles
     };
 
     const offersBacked = useOffersBacked({ ...newProps });
