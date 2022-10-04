@@ -208,7 +208,7 @@ export const coreTermsOfSaleHelp = [
   {
     title: "What is buyer cancel penalty?",
     description:
-      "If the buyer fails to redeem the item within the redemption period they will receive back the payment minus the buyer cancel penalty.This penalty is to cover the inconvenience caused to the seller."
+      "If the buyer fails to redeem the item within the redemption period they will receive back the payment minus the cancellation penalty.This penalty is to cover the inconvenience caused to the seller."
   } as const,
   {
     title: "How long should the dispute period be?",
