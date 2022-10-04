@@ -105,7 +105,9 @@ export const shippingInfoInitialValues = {
     measurementUnit: OPTIONS_LENGTH[1],
     height: "",
     width: "",
-    length: ""
+    length: "",
+    returnPeriod: "30",
+    returnPeriodUnit: OPTIONS_PERIOD[0]
   }
 } as const;
 

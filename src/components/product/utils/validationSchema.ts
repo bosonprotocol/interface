@@ -160,7 +160,10 @@ export const shippingInfoValidationSchema = Yup.object({
           time: Yup.string()
         })
       )
-      .default([{ region: "", time: "" }])
+      .default([{ region: "", time: "" }]),
+    returnPeriod: Yup.string()
+      .matches(/^[0-9]+$/, "Must be only digits")
+      .required(validationMessage.required)
   })
 });
 

@@ -66,7 +66,9 @@ export const CONFIG = {
   defaultDisputeResolverId:
     process.env.REACT_APP_DEFAULT_DISPUTE_RESOLVER_ID || "1",
   defaultDisputeResolutionPeriodDays:
-    process.env.REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS || "15"
+    process.env.REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS || "15",
+  defaultSellerContactMethod: "Chat App in the dApp",
+  defaultDisputeResolverContactMethod: "email to: disputes@redeemeum.com"
 };
 
 function stringToBoolean(value?: string) {

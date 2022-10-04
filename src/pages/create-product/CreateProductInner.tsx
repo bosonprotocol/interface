@@ -340,8 +340,9 @@ function CreateProductInner({ initial }: Props) {
           version: 1,
           label: termsOfExchange.exchangePolicy.value,
           template: termsOfExchange.exchangePolicy.value, // TODO: set the URL to the fairExchangePolicy contractual agreement
-          sellerContactMethod: "TBD",
-          disputeResolverContactMethod: "TBD"
+          sellerContactMethod: CONFIG.defaultSellerContactMethod,
+          disputeResolverContactMethod:
+            CONFIG.defaultDisputeResolverContactMethod
         },
         shipping: {
           defaultVersion: 1,
@@ -350,7 +351,7 @@ function CreateProductInner({ initial }: Props) {
             supportedJurisdictions.length > 0
               ? supportedJurisdictions
               : undefined,
-          returnPeriod: "0"
+          returnPeriod: shippingInfo.returnPeriod.toString()
         }
       });
 

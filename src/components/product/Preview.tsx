@@ -85,6 +85,7 @@ export default function Preview({ togglePreview, seller }: Props) {
 
   const exchangeDate = Date.now().toString();
 
+  // Build the Offer structure (in the shape of SubGraph request), based on temporary data (values)
   const offer = {
     price: priceBN.toString(),
     sellerDeposit: priceBN
@@ -132,8 +133,24 @@ export default function Preview({ togglePreview, seller }: Props) {
       name: values.coreTermsOfSale.currency.value || "",
       symbol: values.coreTermsOfSale.currency.value || ""
     },
-    isValid: false
-  } as Offer;
+    isValid: false,
+    disputeResolutionTerms: {
+      buyerEscalationDeposit: 0, // Find the escalationDeposit for CONFIG.defaultDisputeResolverId
+      escalationResponsePeriod: 0 // Find the escalationResponsePeriod for CONFIG.defaultDisputeResolverId
+    },
+    metadata: {
+      shipping: {
+        returnPeriodInDays: parseInt(values.shippingInfo.returnPeriod)
+      },
+      exchangePolicy: {
+        sellerContactMethod: CONFIG.defaultSellerContactMethod,
+        disputeResolverContactMethod: CONFIG.defaultDisputeResolverContactMethod
+      },
+      productV1Seller: {
+        name: values.createYourProfile.name
+      }
+    }
+  } as unknown as Offer;
 
   return (
     <PreviewWrapper>
