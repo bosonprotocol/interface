@@ -1,12 +1,12 @@
 import { exchanges as ExchangesKit, subgraph } from "@bosonprotocol/react-kit";
 import { Chat } from "phosphor-react";
-import { generatePath } from "react-router-dom";
-import { NavigateOptions, Path } from "react-router-dom";
+import { generatePath, NavigateOptions, Path } from "react-router-dom";
 
 import { UrlParameters } from "../../../lib/routing/parameters";
 import { BosonRoutes } from "../../../lib/routing/routes";
 import { useDisputeSubStatusInfo } from "../../../lib/utils/hooks/useDisputeSubStatusInfo";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
+import { SellerRolesProps } from "../../../lib/utils/hooks/useSellerRoles";
 import { useModal } from "../../modal/useModal";
 import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
@@ -27,10 +27,12 @@ const generatePathAndNavigate = ({
 
 export const SellerResolveDisputeButton = ({
   exchange,
-  navigate
+  navigate,
+  sellerRoles
 }: {
   exchange: Exchange | null;
   navigate: (to: Partial<Path>, options?: NavigateOptions | undefined) => void;
+  sellerRoles: SellerRolesProps;
 }) => {
   const { status } = useDisputeSubStatusInfo(exchange);
   if (!exchange || status !== "Resolving") {
@@ -53,6 +55,8 @@ export const SellerResolveDisputeButton = ({
     <Button
       theme="primary"
       size="small"
+      disabled={!sellerRoles?.isOperator}
+      tooltip="This action is restricted to only the operator wallet"
       onClick={() => {
         if (exchange?.id) {
           generatePathAndNavigate({ exchangeId: exchange?.id, navigate });
@@ -68,12 +72,14 @@ export const SellerActionButton = ({
   exchange,
   refetch,
   navigate,
-  status
+  status,
+  sellerRoles
 }: {
   exchange: Exchange | null;
   refetch: () => void;
   navigate: (to: Partial<Path>, options?: NavigateOptions | undefined) => void;
   status: ExchangesKit.AllExchangeStates | string;
+  sellerRoles: SellerRolesProps;
 }) => {
   const { showModal, modalTypes } = useModal();
   if (!exchange) {
@@ -85,6 +91,8 @@ export const SellerActionButton = ({
         <Button
           theme="bosonPrimary"
           size="small"
+          disabled={!sellerRoles?.isOperator}
+          tooltip="This action is restricted to only the operator wallet"
           onClick={() => {
             showModal(
               modalTypes.COMPLETE_EXCHANGE,
@@ -115,6 +123,8 @@ export const SellerActionButton = ({
         <Button
           theme="orangeInverse"
           size="small"
+          disabled={!sellerRoles?.isOperator}
+          tooltip="This action is restricted to only the operator wallet"
           onClick={() => {
             if (exchange) {
               showModal(

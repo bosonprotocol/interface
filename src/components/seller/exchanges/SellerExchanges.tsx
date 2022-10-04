@@ -47,7 +47,8 @@ interface MyLocationState {
   currentTag: string;
 }
 export default function SellerExchanges({
-  exchanges: exchangesData
+  exchanges: exchangesData,
+  sellerRoles
 }: SellerInsideProps & WithSellerDataProps) {
   const location = useLocation();
   const state = location.state as MyLocationState;
@@ -147,7 +148,11 @@ export default function SellerExchanges({
     return (
       <>
         {selected.length > 0 && (
-          <SellerBatchComplete selected={selected} refetch={refetch} />
+          <SellerBatchComplete
+            selected={selected}
+            refetch={refetch}
+            sellerRoles={sellerRoles}
+          />
         )}
         <ExportDropdown
           children={[
@@ -172,7 +177,7 @@ export default function SellerExchanges({
         />
       </>
     );
-  }, [prepareCSVData, refetch, selected]);
+  }, [prepareCSVData, refetch, selected, sellerRoles]);
 
   if (isLoading) {
     return <Loading />;
@@ -198,6 +203,7 @@ export default function SellerExchanges({
         isError={isError}
         refetch={refetch}
         setSelected={setSelected}
+        sellerRoles={sellerRoles}
       />
     </>
   );
