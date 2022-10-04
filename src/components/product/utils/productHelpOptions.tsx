@@ -170,8 +170,8 @@ export const coreTermsOfSaleHelp = [
     description: (
       <>
         <Typography tag="p" style={{ margin: "0 0 10px 0" }}>
-          The exchange policy covers the contractual terms of the exchange to
-          protect seller and buyer.
+          The exchange policy covers contractual and protocol terms of the
+          exchange to protect buyer and seller.
         </Typography>
         <Typography tag="p" style={{ margin: "0 0 10px 0" }}>
           This includes obligations of both parties to follow thru with their
