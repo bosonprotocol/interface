@@ -19,7 +19,7 @@ export interface SellerRolesProps {
 export function useSellerRoles(id: string) {
   const { address } = useAccount();
 
-  const { data } = useQuery(["sellers", { id }], async () => {
+  const { data } = useQuery(["seller-roles", { id }], async () => {
     const result = await fetchSubgraph<{
       sellers: {
         id: string;

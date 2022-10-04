@@ -291,6 +291,7 @@ export default function SellerFinances({
                 theme="outline"
                 size="small"
                 disabled={!sellerRoles.isClerk}
+                tooltip="This action is restricted to only the clerk wallet"
                 onClick={() => {
                   showModal(
                     modalTypes.FINANCE_WITHDRAW_MODAL,
