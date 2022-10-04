@@ -186,7 +186,6 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
           </Typography>
         </ErrorToast>
       ));
-      setLoading(false);
       return false;
     } finally {
       hideModal();
