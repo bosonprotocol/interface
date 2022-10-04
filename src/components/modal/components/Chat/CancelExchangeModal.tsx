@@ -9,6 +9,8 @@ import { CONFIG } from "../../../../lib/config";
 import { colors } from "../../../../lib/styles/colors";
 import { getBuyerCancelPenalty } from "../../../../lib/utils/getPrices";
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
+import { useCoreSDK } from "../../../../lib/utils/useCoreSdk";
+import { poll } from "../../../../pages/create-product/utils";
 import DetailTable from "../../../detail/DetailTable";
 import SimpleError from "../../../error/SimpleError";
 import { Spinner } from "../../../loading/Spinner";
@@ -89,6 +91,7 @@ export default function CancelExchangeModal({
   BASE_MODAL_DATA,
   reload
 }: Props) {
+  const coreSDK = useCoreSDK();
   const { offer } = exchange;
   const { data: signer } = useSigner();
   const { showModal, modalTypes } = useModal();
@@ -190,7 +193,19 @@ export default function CancelExchangeModal({
               txHash: hash
             });
           }}
-          onSuccess={(_, { exchangeId }) => {
+          onSuccess={async (_, { exchangeId }) => {
+            await poll(
+              async () => {
+                const canceledExchange = await coreSDK.getExchangeById(
+                  exchangeId
+                );
+                return canceledExchange.cancelledDate;
+              },
+              (cancelledDate) => {
+                return !cancelledDate;
+              },
+              500
+            );
             setIsLoading(false);
             setCancelError(null);
             reload?.();
