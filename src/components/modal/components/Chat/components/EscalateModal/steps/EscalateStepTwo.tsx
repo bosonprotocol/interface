@@ -76,6 +76,12 @@ export const FormModel = {
       name: "confirm",
       requiredErrorMessage: "This field must be checked",
       text: "I confirm that I've sent the required email to the Dispute Resolver."
+    },
+    buyerAddress: {
+      name: "buyerAddress",
+      requiredErrorMessage: "This field is required",
+      text: "0x000",
+      disabled: true
     }
   }
 };
@@ -90,6 +96,9 @@ const validationSchemaPerStep = [
     [FormModel.formFields.exchangeId.name]: Yup.string()
       .trim()
       .required(FormModel.formFields.exchangeId.requiredErrorMessage),
+    [FormModel.formFields.buyerAddress.name]: Yup.string()
+      .trim()
+      .required(FormModel.formFields.buyerAddress.requiredErrorMessage),
     [FormModel.formFields.disputeId.name]: Yup.string()
       .trim()
       .required(FormModel.formFields.disputeId.requiredErrorMessage),
@@ -139,6 +148,8 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
         exchange?.dispute?.id || exchange?.id
       }`,
       [FormModel.formFields.signature.name]: `Signature: ${signature}`,
+      [FormModel.formFields.buyerAddress
+        .name]: `Buyer address: ${exchange.buyer.wallet}`,
       [FormModel.formFields.confirm.name]: false
     }),
     [signature, exchange, address, emailFormField]
@@ -302,6 +313,8 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
                         values?.message
                           ? `Unsigned message: ${values?.message}`
                           : "",
+                      [FormModel.formFields.buyerAddress.name]:
+                        values?.buyerAddress ? values?.buyerAddress : "",
                       [FormModel.formFields.signature.name]:
                         values?.signature || ""
                     }}
@@ -313,6 +326,7 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
                       prefix="Unsigned message:"
                       disabled
                     />
+                    <Input {...FormModel.formFields.buyerAddress} disabled />
                     <Input {...FormModel.formFields.signature} />
                   </FormField>
                   <FormField theme="white" title="Chat transcript">
