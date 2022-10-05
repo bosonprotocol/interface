@@ -1,20 +1,23 @@
 import { Form, Formik } from "formik";
 
-import type { Profile } from "../../../../../lib/utils/hooks/lens/profile/useGetLensProfiles";
+import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
 import CreateLensProfile from "./CreateLensProfile";
 import LensFormFields from "./LensFormFields";
-import { LensProfile, lensProfileValidationSchema } from "./validationSchema";
+import {
+  LensProfileType,
+  lensProfileValidationSchema
+} from "./validationSchema";
 import ViewLensProfile from "./ViewLensProfile";
 
 interface Props {
-  onSubmit: (createValues: LensProfile) => void;
+  onSubmit: (createValues: LensProfileType) => void;
   profile: Profile | null;
   onBackClick: () => void;
 }
 
 export default function LensForm({ onSubmit, profile, onBackClick }: Props) {
   return (
-    <Formik<LensProfile>
+    <Formik<LensProfileType>
       initialValues={
         {
           logo: [],
@@ -25,7 +28,7 @@ export default function LensForm({ onSubmit, profile, onBackClick }: Props) {
           description: "",
           website: "",
           legalTradingName: ""
-        } as LensProfile
+        } as LensProfileType
       }
       onSubmit={(values) => {
         onSubmit(values);

@@ -2,6 +2,7 @@ import { useQuery } from "react-query";
 
 import { fetchLens } from "../fetchLens";
 import {
+  Profile,
   ProfileDocument,
   SingleProfileQueryRequest
 } from "../graphql/generated";
@@ -19,7 +20,7 @@ export default function useGetLensProfile(
   const { enabled } = options;
   return useQuery(
     ["get-lens-profile", props],
-    async () => {
+    () => {
       return getLensProfile(props);
     },
     {
@@ -33,21 +34,7 @@ export async function getLensProfile(
 ) {
   return (
     await fetchLens<{
-      profile: {
-        id: string;
-        name: string;
-        bio: string;
-        attributes: {
-          displayType: string;
-          traitType: string;
-          key: string;
-          value: string;
-        };
-        metadata: unknown;
-        isDefault: boolean;
-        handle: string;
-        dispatcher: Record<string, any> | null;
-      };
+      profile: Profile;
     }>(ProfileDocument, { request })
   ).profile;
 }

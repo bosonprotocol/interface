@@ -28,7 +28,7 @@ export default function LensFormFields({ disable }: Props) {
       <FormField title="Lens Handle" required>
         <Input name="handle" placeholder="Handle" disabled={disable} />
       </FormField>
-      <FormField title="Contact e-Mail" required>
+      <FormField title="Contact E-Mail" required>
         <Input
           name="email"
           placeholder="e-Mail"

@@ -1,36 +1,21 @@
 import { useFormikContext } from "formik";
 import { ReactNode, useEffect } from "react";
 
-import { Profile } from "../../../../../lib/utils/hooks/lens/profile/useGetLensProfiles";
+import { dataURItoBlob } from "../../../../../lib/utils/base64";
+import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
 import { useGetIpfsImage } from "../../../../../lib/utils/hooks/useGetIpfsImage";
 import Button from "../../../../ui/Button";
 import Grid from "../../../../ui/Grid";
 import { useModal } from "../../../useModal";
-import { LensProfile } from "./validationSchema";
-
-function dataURItoBlob(dataURI: string) {
-  // convert base64 to raw binary data held in a string
-  // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
-  const byteString = window.atob(dataURI.split(",")[1]);
-
-  // separate out the mime component
-  const mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
-
-  // write the bytes of the string to an ArrayBuffer
-  const ab = new ArrayBuffer(byteString.length);
-
-  // create a view into the buffer
-  const ia = new Uint8Array(ab);
-
-  // set the bytes of the buffer to the correct values
-  for (let i = 0; i < byteString.length; i++) {
-    ia[i] = byteString.charCodeAt(i);
-  }
-
-  // write the ArrayBuffer to a blob, and you're done
-  const blob = new Blob([ab], { type: mimeString });
-  return blob;
-}
+import ProfileMultiSteps from "./ProfileMultiSteps";
+import {
+  getLensCoverPictureUrl,
+  getLensEmail,
+  getLensLegalTradingName,
+  getLensProfilePictureUrl,
+  getLensWebsite
+} from "./utils";
+import { LensProfileType } from "./validationSchema";
 
 interface Props {
   profile: Profile;
@@ -43,18 +28,29 @@ export default function ViewLensProfile({
   children,
   onBackClick
 }: Props) {
-  const { setValues } = useFormikContext<LensProfile>();
-  const profilePicture = profile?.picture?.original?.url || "";
-  const coverPicture = profile?.coverPicture?.original?.url || "";
+  const { setValues } = useFormikContext<LensProfileType>();
+  const profilePicture = getLensProfilePictureUrl(profile);
+  const coverPicture = getLensCoverPictureUrl(profile);
+
   const { imageSrc: profilePictureBase64, imageStatus } =
     useGetIpfsImage(profilePicture);
   const { updateProps, store } = useModal();
+  const alreadyHasRoyaltiesDefined = false; // TODO: seller.royalties;
+
   useEffect(() => {
     updateProps<"CREATE_PROFILE">({
       ...store,
       modalProps: {
         ...store.modalProps,
-        title: "Use existing profile"
+        headerComponent: (
+          <ProfileMultiSteps
+            createOrSelect="select"
+            activeStep={1}
+            createOrViewRoyalties={
+              alreadyHasRoyaltiesDefined ? "view" : "create"
+            }
+          />
+        )
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -92,17 +88,10 @@ export default function ViewLensProfile({
             ? profile.handle.lastIndexOf(".link")
             : profile.handle.lastIndexOf(".test")
         ) || "",
-      email:
-        profile.attributes.find((attribute) => attribute.key === "email")
-          ?.value || "",
+      email: getLensEmail(profile) || "",
       description: profile.bio || "",
-      website:
-        profile.attributes.find((attribute) => attribute.key === "website")
-          ?.value || "",
-      legalTradingName:
-        profile.attributes.find(
-          (attribute) => attribute.key === "legalTradingName"
-        )?.value || ""
+      website: getLensWebsite(profile) || "",
+      legalTradingName: getLensLegalTradingName(profile) || ""
     });
   }, [setValues, profile, profilePictureBase64, coverPicture, imageStatus]);
   return (

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { ProgressStatus } from "../../types/progressStatus";
-import { blobToBase64 } from "../base64ImageConverter";
+import { blobToBase64 } from "../base64";
 import { useIpfsStorage } from "./useIpfsStorage";
 
 export function useGetIpfsImage(src: string) {

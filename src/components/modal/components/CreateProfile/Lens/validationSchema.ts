@@ -22,4 +22,11 @@ export const lensProfileValidationSchema = Yup.object({
   legalTradingName: Yup.string().trim().required(validationMessage.required)
 });
 
-export type LensProfile = Yup.InferType<typeof lensProfileValidationSchema>;
+export type LensProfileType = Yup.InferType<typeof lensProfileValidationSchema>;
+
+export const bosonAccountValidationSchema = Yup.object({
+  secondaryRoyalties: Yup.number().min(0).max(10),
+  addressForRoyaltyPayment: Yup.string().trim()
+});
+
+export type BosonAccount = Yup.InferType<typeof bosonAccountValidationSchema>;
