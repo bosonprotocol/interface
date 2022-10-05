@@ -79,10 +79,8 @@ export const CONFIG = {
   lens: {
     enabled: createProfileConfiguration === "LENS" && availableOnNetwork,
     availableOnNetwork,
-    // https://docs.lens.xyz/docs/deployed-contract-addresses
-    // TODO: move to CC
-    LENS_HUB_CONTRACT: "0x60Ae865ee4C725cd04353b5AAb364553f56ceF82",
-    LENS_PERIPHERY_CONTRACT: "0xD5037d72877808cdE7F669563e9389930AF404E8",
+    LENS_HUB_CONTRACT: config.lens.LENS_HUB_CONTRACT,
+    LENS_PERIPHERY_CONTRACT: config.lens.LENS_PERIPHERY_CONTRACT,
     LENS_HUB_ABI: lensHubContractAbi,
     LENS_PERIPHERY_ABI: lensPeripheryDataProvider,
     LENS_FOLLOW_NFT_ABI: lensFollowNftContractAbi
