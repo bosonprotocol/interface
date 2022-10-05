@@ -8,6 +8,7 @@ import { useSigner } from "wagmi";
 import { CONFIG } from "../../../lib/config";
 import { Offer } from "../../../lib/types/offer";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
+import { poll } from "../../../pages/create-product/utils";
 import { Break } from "../../detail/Detail.style";
 import Price from "../../price/index";
 import SuccessTransactionToast from "../../toasts/SuccessTransactionToast";
@@ -131,8 +132,46 @@ export default function VoidProduct({
     setIsLoading(false);
   }, [hideModal, refetch, setIsLoading]);
 
+  const voidPool = useCallback(
+    async (id: BigNumberish) => {
+      await poll(
+        async () => {
+          if (id) {
+            const createdOffer = await coreSdk.getOfferById(id);
+            return createdOffer.voided;
+          }
+        },
+        (voided) => {
+          return !voided;
+        },
+        500
+      );
+    },
+    [coreSdk]
+  );
+
+  const batchVoidPool = useCallback(
+    async (ids: BigNumberish[]) => {
+      await poll(
+        async () => {
+          const createdOffers = await Promise.all(
+            ids.map(async (id) => {
+              return await coreSdk.getOfferById(id);
+            })
+          );
+          return createdOffers;
+        },
+        (createdOffers) => {
+          return !createdOffers?.every(({ voided }) => voided);
+        },
+        500
+      );
+    },
+    [coreSdk]
+  );
+
   const handleSuccess = useCallback(
-    (
+    async (
       receipt: {
         transactionHash: string;
       },
@@ -141,6 +180,11 @@ export default function VoidProduct({
         offerIds?: BigNumberish[];
       }
     ) => {
+      if (payload.offerId) {
+        await voidPool(payload.offerId);
+      } else if (payload.offerIds) {
+        await batchVoidPool(payload.offerIds);
+      }
       const text = offer
         ? `Voided offer: ${offer?.metadata.name}`
         : `Voided offers: ${payload.offerIds?.join(",")}`;
@@ -153,7 +197,7 @@ export default function VoidProduct({
       ));
       handleFinish();
     },
-    [handleFinish, offer]
+    [batchVoidPool, handleFinish, offer, voidPool]
   );
 
   const handleBatchVoid = useCallback(async () => {
@@ -175,10 +219,8 @@ export default function VoidProduct({
       );
     } catch (error) {
       console.error("onError", error);
-    } finally {
-      handleFinish();
     }
-  }, [offers, coreSdk, handleSuccess, handleFinish]);
+  }, [offers, coreSdk, handleSuccess]);
 
   return (
     <Grid flexDirection="column" alignItems="flex-start" gap="2rem">

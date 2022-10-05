@@ -48,7 +48,7 @@ export default function WhatIsRedeem() {
               when redeeming you will either receive the physical good or your
               money back
             </Typography>
-            <LearnMore to={BosonRoutes.LearnMore}>
+            <LearnMore href={BosonRoutes.LearnMore} target="_blank">
               <>
                 Learn more
                 <CaretRight size={32} />

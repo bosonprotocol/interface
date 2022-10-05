@@ -6,12 +6,12 @@ import {
   OffersRoutes,
   SellerCenterRoutes
 } from "../lib/routing/routes";
+import CreateProductPage from "../pages/create-product/CreateProduct";
+import ExplorePage from "../pages/explore/Explore";
+import LandingPage from "../pages/landing/Landing";
+import SellerCenterPage from "../pages/sell/SellerCenter";
 
 const ChatPage = lazy(() => import("../pages/chat/Chat"));
-const CollectionsPage = lazy(() => import("../pages/explore/Collections"));
-const CreateProductPage = lazy(
-  () => import("../pages/create-product/CreateProduct")
-);
 const CustomStorePage = lazy(() => import("../pages/custom-store/CustomStore"));
 const DisputeCentrePage = lazy(
   () => import("../pages/dispute-centre/DisputeCentre")
@@ -20,24 +20,29 @@ const DisputeListPage = lazy(
   () => import("../pages/dispute-centre/DisputeList")
 );
 const ExchangePage = lazy(() => import("../pages/exchange/Exchange"));
-const ExplorePage = lazy(() => import("../pages/explore/Explore"));
-const LandingPage = lazy(() => import("../pages/landing/Landing"));
 const NotFoundPage = lazy(() => import("../pages/not-found/NotFound"));
 const OfferDetailPage = lazy(() => import("../pages/offers/OfferDetail"));
 const PrivateAccountPage = lazy(
   () => import("../pages/account/private/PrivateAccountContainer")
 );
-const ProductsPage = lazy(() => import("../pages/explore/Products"));
 const ProfilePagePage = lazy(() => import("../pages/profile/ProfilePage"));
 const PublicOrPrivateAccountPage = lazy(
   () => import("../pages/account/public/PublicOrPrivateAccount")
 );
-const SellerCenterPage = lazy(() => import("../pages/sell/SellerCenter"));
+const LicensePage = lazy(() => import("../pages/license/License"));
+const ContractualAgreementPage = lazy(
+  () => import("../pages/contractualAgreement/ContractualAgreement")
+);
+
+const DisputeResolverPage = lazy(
+  () => import("../pages/dispute-resolver/DisputeResolver")
+);
 
 export const baseAppProps = {
   withLayout: true,
   withFooter: true,
-  fluidHeader: false
+  fluidHeader: false,
+  withBosonStyles: true
 };
 const base = {
   component: null,
@@ -53,8 +58,9 @@ export const UserRoles = {
   DisputeResolver: "DisputeResolver"
 };
 export interface IRoutes extends RouteProps {
-  // eslint-disable-next-line
-  component: React.LazyExoticComponent<React.ComponentType<any>>;
+  component:
+    | React.ComponentType<any> // eslint-disable-line
+    | React.LazyExoticComponent<React.ComponentType<any>>; // eslint-disable-line
   role: Array<string | null>;
   componentProps?: {
     [key: string]: string;
@@ -70,7 +76,11 @@ export default [
     ...base,
     index: true,
     path: BosonRoutes.Root,
-    component: LandingPage
+    component: LandingPage,
+    app: {
+      ...base.app,
+      withBosonStyles: false
+    }
   },
   {
     ...base,
@@ -102,38 +112,68 @@ export default [
   },
   {
     ...base,
-    path: BosonRoutes.Products,
-    component: ProductsPage
+    path: BosonRoutes.Explore,
+    component: ExplorePage,
+    app: {
+      ...base.app,
+      withLayout: false,
+      withBosonStyles: false
+    }
   },
   {
     ...base,
-    path: BosonRoutes.Explore,
-    component: ExplorePage
+    path: BosonRoutes.Products,
+    component: ExplorePage,
+    app: {
+      ...base.app,
+      withLayout: false
+    }
   },
   {
     ...base,
     path: OffersRoutes.Root,
-    component: ExplorePage
+    component: ExplorePage,
+    app: {
+      ...base.app,
+      withLayout: false
+    }
   },
   {
     ...base,
-    path: BosonRoutes.ExplorePage,
-    component: ProductsPage
-  },
-  {
-    ...base,
-    path: BosonRoutes.ExplorePageByIndex,
-    component: ProductsPage
+    path: BosonRoutes.Sellers,
+    component: ExplorePage,
+    app: {
+      ...base.app,
+      withLayout: false
+    }
   },
   {
     ...base,
     path: OffersRoutes.OfferDetail,
-    component: OfferDetailPage
+    component: OfferDetailPage,
+    app: {
+      ...base.app,
+      withBosonStyles: false
+    }
+  },
+  {
+    ...base,
+    path: BosonRoutes.License,
+    component: LicensePage
+  },
+  {
+    ...base,
+    path: BosonRoutes.ContractualAgreement,
+    component: ContractualAgreementPage
   },
   {
     ...base,
     path: BosonRoutes.Exchange,
     component: ExchangePage,
+    app: {
+      ...base.app,
+      withBosonStyles: false
+    },
     role: [
       UserRoles.Guest,
       UserRoles.Buyer,
@@ -145,6 +185,10 @@ export default [
     ...base,
     path: BosonRoutes.YourAccount,
     component: PrivateAccountPage,
+    app: {
+      ...base.app,
+      withBosonStyles: false
+    },
     role: [UserRoles.Buyer]
   },
   {
@@ -171,11 +215,6 @@ export default [
   },
   {
     ...base,
-    path: BosonRoutes.Sellers,
-    component: CollectionsPage
-  },
-  {
-    ...base,
     path: BosonRoutes.BuyerPage,
     component: ProfilePagePage,
     componentProps: {
@@ -189,6 +228,28 @@ export default [
     componentProps: {
       profileType: "seller"
     }
+  },
+  {
+    ...base,
+    path: BosonRoutes.DRAdminPage,
+    app: {
+      ...base.app,
+      withLayout: false,
+      withFooter: false,
+      fluidHeader: true
+    },
+    component: DisputeResolverPage
+  },
+  {
+    ...base,
+    path: BosonRoutes.DRAdmin,
+    app: {
+      ...base.app,
+      withLayout: false,
+      withFooter: false,
+      fluidHeader: true
+    },
+    component: DisputeResolverPage
   },
   {
     ...base,

@@ -47,7 +47,7 @@ function Breadcrumbs({ steps, margin }: Props) {
           }}
         >
           <Typography
-            $fontSize="0.75rem"
+            $fontSize="0.875rem"
             fontWeight="600"
             color={step.hightlighted ? colors.secondary : colors.darkGrey}
             margin="0 0.3125rem 0 0"

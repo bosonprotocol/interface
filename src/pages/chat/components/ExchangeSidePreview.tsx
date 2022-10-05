@@ -1,5 +1,6 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
+import { ArrowSquareOut } from "phosphor-react";
 import { useCallback, useMemo } from "react";
 import { generatePath } from "react-router-dom";
 import styled from "styled-components";
@@ -7,7 +8,11 @@ import styled from "styled-components";
 import DetailTable from "../../../components/detail/DetailTable";
 import { DetailDisputeResolver } from "../../../components/detail/DetailWidget/DetailDisputeResolver";
 import { DetailSellerDeposit } from "../../../components/detail/DetailWidget/DetailSellerDeposit";
-import { useModal } from "../../../components/modal/useModal";
+import {
+  ModalTypes,
+  ShowModalFn,
+  useModal
+} from "../../../components/modal/useModal";
 import Price from "../../../components/price";
 import MultiSteps from "../../../components/step/MultiSteps";
 import Button from "../../../components/ui/Button";
@@ -154,6 +159,10 @@ const StyledMultiSteps = styled(MultiSteps)`
 const CTASection = styled(Section)`
   display: flex;
   justify-content: space-between;
+  gap: 1rem;
+  > * {
+    flex: 1;
+  }
 `;
 
 const HistorySection = styled(Section)`
@@ -165,7 +174,24 @@ const HistorySection = styled(Section)`
   }
 `;
 
-const getOfferDetailData = (offer: Offer) => {
+const getOfferDetailData = (
+  offer: Offer,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  modalTypes: ModalTypes,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  showModal: ShowModalFn
+) => {
+  const handleShowExchangePolicy = () => {
+    if (modalTypes && showModal) {
+      showModal(modalTypes.EXCHANGE_POLICY_DETAILS, {
+        title: "Exchange Policy Details",
+        offerId: offer.id
+      });
+    } else {
+      console.error("modalTypes and/or showModal undefined");
+    }
+  };
+
   return [
     {
       name: DetailSellerDeposit.name,
@@ -185,7 +211,16 @@ const getOfferDetailData = (offer: Offer) => {
           </Typography>
         </>
       ),
-      value: "Fair exchange policy"
+      value: (
+        <Typography tag="p">
+          Fair Exchange Policy{" "}
+          <ArrowSquareOut
+            size={20}
+            onClick={() => handleShowExchangePolicy()}
+            style={{ cursor: "pointer" }}
+          />
+        </Typography>
+      )
     },
     {
       name: DetailDisputeResolver.name,
@@ -199,31 +234,41 @@ interface Props {
   exchange: Exchange | undefined;
   disputeOpen: boolean;
   iAmTheBuyer: boolean;
+  refetchExchanges: () => void;
 }
 export default function ExchangeSidePreview({
   exchange,
   disputeOpen,
-  iAmTheBuyer
+  iAmTheBuyer,
+  refetchExchanges
 }: Props) {
-  const { data: disputes = [{} as subgraph.DisputeFieldsFragment] } =
-    useDisputes(
-      {
-        disputesFilter: {
-          exchange: exchange?.id
-        }
-      },
-      { enabled: !!exchange }
-    );
+  const {
+    data: disputes = [{} as subgraph.DisputeFieldsFragment],
+    refetch: refetchDisputes
+  } = useDisputes(
+    {
+      disputesFilter: {
+        exchange: exchange?.id
+      }
+    },
+    { enabled: !!exchange }
+  );
   const [dispute] = disputes.length
     ? disputes
     : [{} as subgraph.DisputeFieldsFragment];
   const offer = exchange?.offer;
-  const { showModal } = useModal();
+  const { showModal, modalTypes } = useModal();
   const OFFER_DETAIL_DATA = useMemo(
-    () => offer && getOfferDetailData(offer),
-    [offer]
+    () => offer && getOfferDetailData(offer, modalTypes, showModal),
+    [offer, modalTypes, showModal]
   );
   const navigate = useKeepQueryParamsNavigate();
+
+  const refetchItAll = useCallback(() => {
+    refetchExchanges();
+    refetchDisputes();
+  }, [refetchExchanges, refetchDisputes]);
+
   const handleExchangeImageOnClick = useCallback(() => {
     if (!exchange) {
       return;
@@ -241,6 +286,7 @@ export default function ExchangeSidePreview({
   const isInDispute = exchange.disputed && !dispute.finalizedDate;
   const isResolved = !!dispute.resolvedDate;
   const isEscalated = !!dispute.escalatedDate;
+  const isRetracted = !!dispute.retractedDate;
   const raisedDisputeAt = new Date(Number(dispute.disputedDate) * 1000);
   const lastDayToResolveDispute = new Date(
     raisedDisputeAt.getTime() +
@@ -284,14 +330,14 @@ export default function ExchangeSidePreview({
               { name: "Raise dispute", steps: 1 },
               { name: "Resolve or Escalate", steps: 1 }
             ]}
-            active={isInDispute ? 2 : 3}
+            active={isInDispute && !isEscalated ? 2 : 3}
           />
         </Section>
       )}
       <Section>
         <DetailTable align noBorder data={OFFER_DETAIL_DATA ?? ({} as never)} />
       </Section>
-      {isInDispute && iAmTheBuyer ? (
+      {isInDispute && iAmTheBuyer && !isEscalated && !isRetracted ? (
         <CTASection>
           <Button
             theme="secondary"
@@ -301,7 +347,9 @@ export default function ExchangeSidePreview({
                 {
                   title: "Retract",
                   exchangeId: exchange.id,
-                  offerName: offer.metadata.name
+                  offerName: offer.metadata.name,
+                  refetch: refetchItAll,
+                  disputeId: exchange.dispute?.id ?? ""
                 },
                 "s"
               )
@@ -316,7 +364,8 @@ export default function ExchangeSidePreview({
                 "ESCALATE_MODAL",
                 {
                   title: "Escalate",
-                  exchange: exchange
+                  exchange: exchange,
+                  refetch: refetchItAll
                 },
                 "l"
               )
@@ -351,7 +400,7 @@ export default function ExchangeSidePreview({
         </CTASection>
       ) : null}
       <HistorySection>
-        <ExchangeTimeline exchange={exchange}>
+        <ExchangeTimeline exchange={exchange} showDispute={true}>
           <h4>History</h4>
         </ExchangeTimeline>
       </HistorySection>

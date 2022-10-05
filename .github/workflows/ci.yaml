@@ -27,6 +27,10 @@ jobs:
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      REACT_APP_RNFT_LICENSE_TEMPLATE: ${{ secrets.REACT_APP_RNFT_LICENSE_TEMPLATE_TESTING }}
+      REACT_APP_BUYER_SELLER_AGREEMENT_TEMPLATE: ${{ secrets.REACT_APP_BUYER_SELLER_AGREEMENT_TEMPLATE_TESTING }}
+      REACT_APP_DEFAULT_DISPUTE_RESOLVER_ID: ${{ secrets.REACT_APP_DEFAULT_DISPUTE_RESOLVER_ID_TESTING }}
+      REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS: ${{ secrets.REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS_TESTING }}
   call-reusable-workflow-testing:
     uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
     if: github.event_name == 'push'
@@ -43,6 +47,10 @@ jobs:
       REACT_APP_DEFAULT_TOKENS_LIST_TESTING: ${{ secrets.REACT_APP_DEFAULT_TOKENS_LIST_TESTING }}
       REACT_APP_INFURA_IPFS_PROJECT_ID: ${{ secrets.REACT_APP_INFURA_IPFS_PROJECT_ID }}
       REACT_APP_INFURA_IPFS_PROJECT_SECRET: ${{ secrets.REACT_APP_INFURA_IPFS_PROJECT_SECRET }}
+      REACT_APP_RNFT_LICENSE_TEMPLATE: ${{ secrets.REACT_APP_RNFT_LICENSE_TEMPLATE_TESTING }}
+      REACT_APP_BUYER_SELLER_AGREEMENT_TEMPLATE: ${{ secrets.REACT_APP_BUYER_SELLER_AGREEMENT_TEMPLATE_TESTING }}
+      REACT_APP_DEFAULT_DISPUTE_RESOLVER_ID: ${{ secrets.REACT_APP_DEFAULT_DISPUTE_RESOLVER_ID_TESTING }}
+      REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS: ${{ secrets.REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS_TESTING }}
   call-reusable-workflow-staging:
     uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
     if: github.event_name == 'release' && github.event.action == 'created'
@@ -59,8 +67,12 @@ jobs:
       REACT_APP_INFURA_IPFS_PROJECT_ID: ${{ secrets.REACT_APP_INFURA_IPFS_PROJECT_ID }}
       REACT_APP_INFURA_IPFS_PROJECT_SECRET: ${{ secrets.REACT_APP_INFURA_IPFS_PROJECT_SECRET }}
       REACT_APP_DEFAULT_TOKENS_LIST_STAGING: ${{ secrets.REACT_APP_DEFAULT_TOKENS_LIST_STAGING }}
+      REACT_APP_RNFT_LICENSE_TEMPLATE: ${{ secrets.REACT_APP_RNFT_LICENSE_TEMPLATE_STAGING }}
+      REACT_APP_BUYER_SELLER_AGREEMENT_TEMPLATE: ${{ secrets.REACT_APP_BUYER_SELLER_AGREEMENT_TEMPLATE_STAGING }}
+      REACT_APP_DEFAULT_DISPUTE_RESOLVER_ID: ${{ secrets.REACT_APP_DEFAULT_DISPUTE_RESOLVER_ID_STAGING }}
+      REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS: ${{ secrets.REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS_STAGING }}
 
-  job-sumary:
+  job-summary:
     name: Create Job Summary
     runs-on: ubuntu-latest
     if: ${{ always() && contains(join(needs.*.result, ','), 'success') }}
@@ -80,10 +92,10 @@ jobs:
         env:
           OUTPUTS: ${{ toJSON(needs) }}
         run: |
-          succededJobOutput="$(
+          succeededJobOutput="$(
             echo '${{ env.OUTPUTS }}' | jq '.[] | select(.result | startswith("success")) | .outputs'
           )"
-          echo 'JOB_OUTPUT='$succededJobOutput >> $GITHUB_ENV
+          echo 'JOB_OUTPUT='$succeededJobOutput >> $GITHUB_ENV
       - name: Get job vars
         run: |
           jobLint="$(

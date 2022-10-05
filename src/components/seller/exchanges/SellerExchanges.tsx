@@ -7,10 +7,10 @@ import { useLocation } from "react-router-dom";
 import { CONFIG } from "../../../lib/config";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
+import ExportDropdown from "../../ui/ExportDropdown";
 import Loading from "../../ui/Loading";
 import { WithSellerDataProps } from "../common/WithSellerData";
 import SellerBatchComplete from "../SellerBatchComplete";
-import SellerExport from "../SellerExport";
 import SellerFilters from "../SellerFilters";
 import { SellerInsideProps } from "../SellerInside";
 import SellerTags from "../SellerTags";
@@ -47,7 +47,8 @@ interface MyLocationState {
   currentTag: string;
 }
 export default function SellerExchanges({
-  exchanges: exchangesData
+  exchanges: exchangesData,
+  sellerRoles
 }: SellerInsideProps & WithSellerDataProps) {
   const location = useLocation();
   const state = location.state as MyLocationState;
@@ -142,20 +143,41 @@ export default function SellerExchanges({
   }, [allData]);
 
   const filterButton = useMemo(() => {
+    const dateString = dayjs().format("YYYYMMDD");
+
     return (
       <>
         {selected.length > 0 && (
-          <SellerBatchComplete selected={selected} refetch={refetch} />
+          <SellerBatchComplete
+            selected={selected}
+            refetch={refetch}
+            sellerRoles={sellerRoles}
+          />
         )}
-        <SellerExport
-          csvProps={{
-            data: prepareCSVData,
-            filename: "exchanges"
-          }}
+        <ExportDropdown
+          children={[
+            {
+              id: 0,
+              name: "Export only the data shown in table",
+              csvProps: {
+                data: prepareCSVData,
+                filename: `exchanges-${dateString}`
+              }
+            },
+            {
+              id: 1,
+              name: "Export all data(incl. delivery info)",
+              disabled: true,
+              csvProps: {
+                data: prepareCSVData,
+                filename: `exchanges-${dateString}`
+              }
+            }
+          ]}
         />
       </>
     );
-  }, [prepareCSVData, refetch, selected]);
+  }, [prepareCSVData, refetch, selected, sellerRoles]);
 
   if (isLoading) {
     return <Loading />;
@@ -181,6 +203,7 @@ export default function SellerExchanges({
         isError={isError}
         refetch={refetch}
         setSelected={setSelected}
+        sellerRoles={sellerRoles}
       />
     </>
   );

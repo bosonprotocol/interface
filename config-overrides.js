@@ -57,7 +57,10 @@ module.exports = {
   jest: function (config) {
     // ...add your jest config customisation...
     config.moduleNameMapper = {
-      "\\.(css|less|scss|sass)$": "<rootDir>/styleMock.js"
+      "\\.(css|less|scss|sass)$": "<rootDir>/test/__mocks__/styleMock.js",
+      "react-markdown": "<rootDir>/test/__mocks__/react-markdown.js",
+      "remark-gfm": "<rootDir>/test/__mocks__/remark-gfm.js",
+      "rehype-raw": "<rootDir>/test/__mocks__/rehype-raw.js"
     };
     config.transformIgnorePatterns = [
       // '[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs|cjs|ts|tsx)$',

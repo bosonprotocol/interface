@@ -31,6 +31,7 @@ import { useCoreSDK } from "../../lib/utils/useCoreSdk";
 import { useChatContext } from "../chat/ChatProvider/ChatContext";
 import { createProposal } from "../chat/utils/create";
 import { sendProposalToChat } from "../chat/utils/send";
+import { poll } from "../create-product/utils";
 import DisputeCentreForm from "./DisputeCentreForm";
 
 const DISPUTE_STEPS = [
@@ -237,7 +238,23 @@ function DisputeCentre() {
                   }
                   const tx = await coreSDK.raiseDispute(exchange.id);
                   showModal("WAITING_FOR_CONFIRMATION");
+                  showModal("TRANSACTION_SUBMITTED", {
+                    action: "Cancel",
+                    txHash: tx.hash
+                  });
                   await tx.wait();
+                  await poll(
+                    async () => {
+                      const disputedExchange = await coreSDK.getExchangeById(
+                        exchange.id
+                      );
+                      return disputedExchange.disputedDate;
+                    },
+                    (disputedDate) => {
+                      return !disputedDate;
+                    },
+                    500
+                  );
                   toast((t) => (
                     <SuccessTransactionToast
                       t={t}

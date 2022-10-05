@@ -1,8 +1,10 @@
 import { Loading } from "@bosonprotocol/react-kit";
+import { Fragment } from "react";
 import styled, { css, ThemeProvider } from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
+import Tooltip from "../tooltip/Tooltip";
 import * as Styles from "./styles";
 import Typography from "./Typography";
 
@@ -215,6 +217,17 @@ const allThemes = {
       background: colors.orange,
       color: colors.white
     }
+  },
+  escalate: {
+    color: colors.black,
+    background: colors.orange,
+    borderColor: colors.orange,
+    borderWidth: 2,
+    hover: {
+      background: colors.black,
+      color: colors.white,
+      borderColor: colors.black
+    }
   }
 };
 
@@ -227,6 +240,7 @@ export interface IButton {
   fill?: boolean;
   step?: number;
   isLoading?: boolean;
+  tooltip?: string;
   [x: string]: unknown;
 }
 
@@ -239,30 +253,38 @@ const Button: React.FC<IButton> = ({
   step = 0,
   fill = false,
   isLoading = false,
+  tooltip = "",
   ...rest
 }) => {
+  const Wrapper = tooltip !== "" ? Tooltip : Fragment;
+  const wrapperParams = tooltip !== "" ? { wrap: false, content: tooltip } : {};
+
   return (
     <ThemeProvider theme={allThemes[theme as keyof typeof allThemes]}>
-      <BaseButton
-        onClick={onClick}
-        type={type}
-        size={size}
-        fill={fill ? fill : undefined}
-        {...rest}
-      >
-        {isLoading ? (
-          <Loading />
-        ) : (
-          <ChildWrapperButton data-child-wrapper-button>
-            {children}
-            {step !== 0 && (
-              <Typography>
-                <small>Step {step}</small>
-              </Typography>
-            )}
-          </ChildWrapperButton>
-        )}
-      </BaseButton>
+      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+      {/* @ts-ignore */}
+      <Wrapper {...wrapperParams}>
+        <BaseButton
+          onClick={onClick}
+          type={type}
+          size={size}
+          fill={fill ? fill : undefined}
+          {...rest}
+        >
+          {isLoading ? (
+            <Loading />
+          ) : (
+            <ChildWrapperButton data-child-wrapper-button>
+              {children}
+              {step !== 0 && (
+                <Typography>
+                  <small>Step {step}</small>
+                </Typography>
+              )}
+            </ChildWrapperButton>
+          )}
+        </BaseButton>
+      </Wrapper>
     </ThemeProvider>
   );
 };

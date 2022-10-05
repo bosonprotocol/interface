@@ -1,7 +1,12 @@
 import { offers as OffersKit } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
-import { Check } from "phosphor-react";
-import { CaretDown, CaretLeft, CaretRight, CaretUp } from "phosphor-react";
+import {
+  CaretDown,
+  CaretLeft,
+  CaretRight,
+  CaretUp,
+  Check
+} from "phosphor-react";
 import { forwardRef, useEffect, useMemo, useRef } from "react";
 import { generatePath } from "react-router-dom";
 import {
@@ -20,6 +25,7 @@ import { colors } from "../../../lib/styles/colors";
 import { Offer } from "../../../lib/types/offer";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { SellerRolesProps } from "../../../lib/utils/hooks/useSellerRoles";
 import { CheckboxWrapper } from "../../form/Field.styles";
 import { useModal } from "../../modal/useModal";
 import OfferHistory from "../../offer/OfferHistory";
@@ -38,6 +44,7 @@ interface Props {
   isLoading?: boolean;
   refetch: () => void;
   setSelected: React.Dispatch<React.SetStateAction<Array<Offer | null>>>;
+  sellerRoles: SellerRolesProps;
 }
 
 interface IIndeterminateInputProps {
@@ -174,7 +181,8 @@ const Span = styled.span`
 export default function SellerProductsTable({
   offers,
   refetch,
-  setSelected
+  setSelected,
+  sellerRoles
 }: Props) {
   const { showModal, modalTypes } = useModal();
   const navigate = useKeepQueryParamsNavigate();
@@ -302,6 +310,8 @@ export default function SellerProductsTable({
             <Button
               theme="orangeInverse"
               size="small"
+              disabled={!sellerRoles?.isOperator}
+              tooltip="This action is restricted to only the operator wallet"
               onClick={() => {
                 if (offer) {
                   showModal(
@@ -322,7 +332,7 @@ export default function SellerProductsTable({
           )
         };
       }),
-    [offers] // eslint-disable-line
+    [offers, sellerRoles] // eslint-disable-line
   );
 
   const tableProps = useTable(

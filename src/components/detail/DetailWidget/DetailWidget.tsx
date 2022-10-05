@@ -5,27 +5,30 @@ import {
   subgraph
 } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
-import { Check, Question } from "phosphor-react";
+import { BigNumber, ethers } from "ethers";
+import { ArrowRight, ArrowSquareOut, Check, Question } from "phosphor-react";
 import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
-import { useAccount, useSigner } from "wagmi";
+import { useAccount, useBalance, useSigner } from "wagmi";
 
 import { CONFIG } from "../../../lib/config";
 import { BosonRoutes } from "../../../lib/routing/routes";
 import { breakpoint } from "../../../lib/styles/breakpoint";
+import { colors } from "../../../lib/styles/colors";
 import { Offer } from "../../../lib/types/offer";
 import { IPrice } from "../../../lib/utils/convertPrice";
 import { titleCase } from "../../../lib/utils/formatText";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import { getBuyerCancelPenalty } from "../../../lib/utils/getPrices";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
+import { useBuyerSellerAccounts } from "../../../lib/utils/hooks/useBuyerSellerAccounts";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { getItemFromStorage } from "../../../lib/utils/hooks/useLocalStorage";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 import { poll } from "../../../pages/create-product/utils";
-import { useModal } from "../../modal/useModal";
+import { ModalTypes, ShowModalFn, useModal } from "../../modal/useModal";
 import Price from "../../price/index";
 import { useConvertedPrice } from "../../price/useConvertedPrice";
 import SuccessTransactionToast from "../../toasts/SuccessTransactionToast";
@@ -45,6 +48,7 @@ import {
 import DetailTable from "../DetailTable";
 import { DetailDisputeResolver } from "./DetailDisputeResolver";
 import { DetailSellerDeposit } from "./DetailSellerDeposit";
+import DetailTopRightLabel from "./DetailTopRightLabel";
 import { QuantityDisplay } from "./QuantityDisplay";
 
 const StyledPrice = styled(Price)`
@@ -100,7 +104,9 @@ interface IDetailWidget {
 export const getOfferDetailData = (
   offer: Offer,
   convertedPrice: IPrice | null,
-  isModal: boolean
+  isModal: boolean,
+  modalTypes?: ModalTypes,
+  showModal?: ShowModalFn
 ) => {
   const redeemableUntil = dayjs(
     Number(`${offer.voucherRedeemableUntilDate}000`)
@@ -110,6 +116,20 @@ export const getOfferDetailData = (
 
   const { buyerCancelationPenalty, convertedBuyerCancelationPenalty } =
     getBuyerCancelPenalty(offer, convertedPrice);
+
+  // if offer is in creation, offer.id does not exist
+  const handleShowExchangePolicy = () => {
+    const offerData = offer.id ? undefined : offer;
+    if (modalTypes && showModal) {
+      showModal(modalTypes.EXCHANGE_POLICY_DETAILS, {
+        title: "Exchange Policy Details",
+        offerId: offer.id,
+        offerData
+      });
+    } else {
+      console.error("modalTypes and/or showModal undefined");
+    }
+  };
 
   return [
     {
@@ -173,7 +193,7 @@ export const getOfferDetailData = (
       )
     },
     {
-      name: "Fair exchange policy",
+      name: "Exchange policy",
       info: (
         <>
           <Typography tag="h6">
@@ -185,7 +205,16 @@ export const getOfferDetailData = (
           </Typography>
         </>
       ),
-      value: <Check size={16} />
+      value: (
+        <Typography tag="p">
+          Fair Exchange Policy{" "}
+          <ArrowSquareOut
+            size={20}
+            onClick={() => handleShowExchangePolicy()}
+            style={{ cursor: "pointer" }}
+          />
+        </Typography>
+      )
     },
     {
       name: DetailDisputeResolver.name,
@@ -224,6 +253,19 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     ? exchanges.getExchangeState(exchange as subgraph.ExchangeFieldsFragment)
     : null;
 
+  const { data: dataBalance } = useBalance(
+    offer.exchangeToken.address !== ethers.constants.AddressZero
+      ? {
+          addressOrName: address,
+          token: offer.exchangeToken.address
+        }
+      : { addressOrName: address }
+  );
+
+  const {
+    buyer: { buyerId }
+  } = useBuyerSellerAccounts(address || "");
+
   const isToRedeem =
     !exchangeStatus || exchangeStatus === subgraph.ExchangeState.Committed;
 
@@ -232,6 +274,12 @@ const DetailWidget: React.FC<IDetailWidget> = ({
 
   const { data: signer } = useSigner();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const isBuyerInsufficientFunds = useMemo(
+    () => dataBalance?.value.lt(BigNumber.from(offer.price)),
+    [dataBalance, offer.price]
+  );
+
   const convertedPrice = useConvertedPrice({
     value: offer.price,
     decimals: offer.exchangeToken.decimals,
@@ -239,12 +287,14 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   });
 
   const OFFER_DETAIL_DATA = useMemo(
-    () => getOfferDetailData(offer, convertedPrice, false),
-    [offer, convertedPrice]
+    () =>
+      getOfferDetailData(offer, convertedPrice, false, modalTypes, showModal),
+    [offer, convertedPrice, modalTypes, showModal]
   );
   const OFFER_DETAIL_DATA_MODAL = useMemo(
-    () => getOfferDetailData(offer, convertedPrice, true),
-    [offer, convertedPrice]
+    () =>
+      getOfferDetailData(offer, convertedPrice, true, modalTypes, showModal),
+    [offer, convertedPrice, modalTypes, showModal]
   );
 
   const quantity = useMemo<number>(
@@ -298,6 +348,55 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       BASE_MODAL_DATA
     });
   };
+
+  const userCommittedOffers = useMemo(
+    () => offer.exchanges?.filter((elem) => elem?.buyer?.id === buyerId),
+    [offer, buyerId]
+  );
+
+  const isOfferEmpty = quantity < 1;
+  const isOfferNotValidYet = dayjs(
+    getDateTimestamp(offer?.validFromDate)
+  ).isAfter(nowDate);
+
+  const isNotCommittableOffer =
+    (isOfferEmpty ||
+      isOfferNotValidYet ||
+      isExpiredOffer ||
+      offer.voided ||
+      !hasSellerEnoughFunds ||
+      isBuyerInsufficientFunds) &&
+    isOffer;
+
+  const notCommittableOfferStatus = useMemo(() => {
+    if (isBuyerInsufficientFunds) {
+      return "Insufficient Funds";
+    }
+    if (offer.voided) {
+      return "Offer voided";
+    }
+    if (isExpiredOffer) {
+      return "Expired";
+    }
+    if (isOfferNotValidYet) {
+      return "Invalid";
+    }
+    if (isOfferEmpty) {
+      return "Offer empty";
+    }
+    if (!hasSellerEnoughFunds) {
+      return "Invalid";
+    }
+    return "";
+  }, [
+    hasSellerEnoughFunds,
+    isBuyerInsufficientFunds,
+    isExpiredOffer,
+    isOfferEmpty,
+    isOfferNotValidYet,
+    offer.voided
+  ]);
+
   return (
     <>
       <Widget>
@@ -309,6 +408,28 @@ const DetailWidget: React.FC<IDetailWidget> = ({
           </RedeemLeftButton>
         )}
         <div>
+          {isOffer && !!userCommittedOffers?.length && (
+            <Grid
+              alignItems="center"
+              justifyContent="space-between"
+              style={{ margin: "-1rem 0 1rem 0", cursor: "pointer" }}
+              onClick={() =>
+                navigate({
+                  pathname: `${BosonRoutes.YourAccount}`
+                })
+              }
+            >
+              <Typography
+                tag="p"
+                style={{ color: colors.orange, margin: 0 }}
+                $fontSize="0.75rem"
+              >
+                You already own {userCommittedOffers.length}{" "}
+                {offer.metadata.name} rNFT
+              </Typography>
+              <ArrowRight size={18} color={colors.orange} />
+            </Grid>
+          )}
           <WidgetUpperGrid
             style={{ paddingBottom: !isExchange || isLteXS ? "0.5rem" : "0" }}
           >
@@ -322,11 +443,17 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               withBosonStyles
             />
 
-            {isOffer && (
+            {isOffer && !isNotCommittableOffer && (
               <QuantityDisplay
                 quantityInitial={quantityInitial}
                 quantity={quantity}
               />
+            )}
+
+            {isOffer && isNotCommittableOffer && (
+              <DetailTopRightLabel>
+                {notCommittableOfferStatus}
+              </DetailTopRightLabel>
             )}
             {isOffer && (
               <CommitButton

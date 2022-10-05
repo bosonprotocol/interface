@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { ArrowSquareOut } from "phosphor-react";
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../../../../../../lib/styles/colors";
@@ -13,7 +13,6 @@ import Typography from "../../../../../../ui/Typography";
 interface Props {
   exchange: Exchange;
 }
-
 const StyledGrid = styled(Grid)`
   background: ${colors.white};
 `;
@@ -35,7 +34,6 @@ const StyledArrowSquare = styled(ArrowSquareOut)`
 
 function EscalateStepOne({ exchange }: Props) {
   const currentDate = dayjs();
-
   const { data } = useDisputeResolvers();
 
   const feeAmount = data?.disputeResolvers[0]?.fees[0]?.feeAmount;

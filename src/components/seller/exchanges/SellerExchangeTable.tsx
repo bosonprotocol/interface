@@ -1,7 +1,12 @@
 import { exchanges as ExchangesKit, subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
-import { Chat, Check } from "phosphor-react";
-import { CaretDown, CaretLeft, CaretRight, CaretUp } from "phosphor-react";
+import {
+  CaretDown,
+  CaretLeft,
+  CaretRight,
+  CaretUp,
+  Check
+} from "phosphor-react";
 import { forwardRef, useEffect, useMemo, useRef } from "react";
 import { generatePath } from "react-router-dom";
 import {
@@ -19,9 +24,9 @@ import { colors } from "../../../lib/styles/colors";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { SellerRolesProps } from "../../../lib/utils/hooks/useSellerRoles";
 import ExchangeTimeline from "../../../pages/chat/components/ExchangeTimeline";
 import { CheckboxWrapper } from "../../form/Field.styles";
-import { useModal } from "../../modal/useModal";
 import ExchangeStatuses from "../../offer/ExchangeStatuses";
 import { OfferHistoryStatuses } from "../../offer/OfferHistory";
 import Price from "../../price/index";
@@ -31,6 +36,7 @@ import Grid from "../../ui/Grid";
 import Image from "../../ui/Image";
 import Typography from "../../ui/Typography";
 import PaginationPages from "../common/PaginationPages";
+import { SellerActionButton, SellerResolveDisputeButton } from "./SellerAction";
 import SellerExchangeTimePeriod from "./SellerExchangeTimePeriod";
 
 interface Props {
@@ -39,6 +45,7 @@ interface Props {
   isLoading?: boolean;
   refetch: () => void;
   setSelected: React.Dispatch<React.SetStateAction<Array<Exchange | null>>>;
+  sellerRoles: SellerRolesProps;
 }
 
 interface IIndeterminateInputProps {
@@ -171,12 +178,35 @@ const Span = styled.span`
     margin-right: 1rem;
   }
 `;
+
+export const isCompletable = (exchange: Exchange) => {
+  let isRedeemedAndFulfillmentPeriodInPast = false;
+
+  const isFulfilled =
+    exchange.redeemedDate &&
+    !exchange.disputedDate &&
+    exchange.offer.fulfillmentPeriodDuration &&
+    exchange.state !== subgraph.ExchangeState.Completed;
+
+  if (isFulfilled) {
+    const fulfillmentPeriodTime = dayjs(
+      getDateTimestamp(exchange.redeemedDate || "") +
+        getDateTimestamp(exchange.offer.fulfillmentPeriodDuration)
+    );
+    isRedeemedAndFulfillmentPeriodInPast = !!dayjs(
+      fulfillmentPeriodTime
+    ).isBefore(dayjs());
+  }
+
+  return isRedeemedAndFulfillmentPeriodInPast;
+};
+
 export default function SellerExchangeTable({
   data,
   refetch,
-  setSelected
+  setSelected,
+  sellerRoles
 }: Props) {
-  const { showModal, modalTypes } = useModal();
   const navigate = useKeepQueryParamsNavigate();
   const columns = useMemo(
     () => [
@@ -220,25 +250,6 @@ export default function SellerExchangeTable({
     ],
     []
   );
-
-  const isCompletable = (exchange: Exchange) => {
-    let isRedeemedAndFulfillmentPeriodInPast = false;
-    if (
-      exchange.redeemedDate &&
-      !exchange.disputedDate &&
-      exchange.offer.fulfillmentPeriodDuration &&
-      exchange.state !== subgraph.ExchangeState.Completed
-    ) {
-      const fulfillmentPeriodTime = dayjs(
-        getDateTimestamp(exchange.redeemedDate) +
-          getDateTimestamp(exchange.offer.fulfillmentPeriodDuration)
-      );
-      isRedeemedAndFulfillmentPeriodInPast = !!dayjs(
-        fulfillmentPeriodTime
-      ).isBefore(dayjs());
-    }
-    return isRedeemedAndFulfillmentPeriodInPast;
-  };
 
   const tableData = useMemo(
     () =>
@@ -305,82 +316,23 @@ export default function SellerExchangeTable({
           ),
           action:
             status === subgraph.ExchangeState.Disputed ? (
-              <Button
-                theme="primary"
-                size="small"
-                onClick={() => {
-                  if (element?.id) {
-                    const pathname = generatePath(BosonRoutes.ChatMessage, {
-                      [UrlParameters.exchangeId]: element?.id ?? 0
-                    });
-                    navigate({ pathname });
-                  }
-                }}
-              >
-                Resolve dispute
-              </Button>
+              <SellerResolveDisputeButton
+                exchange={element}
+                navigate={navigate}
+                sellerRoles={sellerRoles}
+              />
             ) : (
-              <Grid justifyContent="flex-end" gap="1rem">
-                {element && isCompletable(element) && (
-                  <Button
-                    theme="bosonPrimary"
-                    size="small"
-                    onClick={() => {
-                      showModal(
-                        modalTypes.COMPLETE_EXCHANGE,
-                        {
-                          title: "Complete Confirmation",
-                          exchange: element,
-                          refetch
-                        },
-                        "xs"
-                      );
-                    }}
-                  >
-                    Complete exchange
-                  </Button>
-                )}
-                <Button
-                  theme="ghostSecondary"
-                  size="small"
-                  onClick={() => {
-                    if (element?.id) {
-                      const pathname = generatePath(BosonRoutes.ChatMessage, {
-                        [UrlParameters.exchangeId]: element?.id ?? 0
-                      });
-                      navigate({ pathname });
-                    }
-                  }}
-                >
-                  Chat <Chat size={14} />
-                </Button>
-                {status === subgraph.ExchangeState.Committed && (
-                  <Button
-                    theme="orangeInverse"
-                    size="small"
-                    onClick={() => {
-                      if (element) {
-                        showModal(
-                          modalTypes.REVOKE_PRODUCT,
-                          {
-                            title: "Revoke rNFT",
-                            exchangeId: element?.id,
-                            exchange: element,
-                            refetch
-                          },
-                          "xs"
-                        );
-                      }
-                    }}
-                  >
-                    Revoke
-                  </Button>
-                )}
-              </Grid>
+              <SellerActionButton
+                exchange={element}
+                refetch={refetch}
+                navigate={navigate}
+                status={status}
+                sellerRoles={sellerRoles}
+              />
             )
         };
       }),
-    [data] // eslint-disable-line
+    [data, sellerRoles] // eslint-disable-line
   );
 
   const tableProps = useTable(

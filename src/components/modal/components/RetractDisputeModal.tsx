@@ -3,6 +3,7 @@ import toast from "react-hot-toast";
 
 import { CONFIG } from "../../../lib/config";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
+import { poll } from "../../../pages/create-product/utils";
 import SimpleError from "../../error/SimpleError";
 import SuccessTransactionToast from "../../toasts/SuccessTransactionToast";
 import Button from "../../ui/Button";
@@ -15,12 +16,16 @@ interface Props {
   hideModal: NonNullable<ModalProps["hideModal"]>;
   exchangeId: string;
   offerName: string;
+  disputeId: string;
+  refetch: () => void;
 }
 
 export function RetractDisputeModal({
   hideModal,
   exchangeId,
-  offerName
+  offerName,
+  disputeId,
+  refetch
 }: Props) {
   const coreSDK = useCoreSDK();
   const { showModal } = useModal();
@@ -51,6 +56,18 @@ export function RetractDisputeModal({
                 txHash: tx.hash
               });
               await tx.wait();
+              await poll(
+                async () => {
+                  const retractedDispute = await coreSDK.getDisputeById(
+                    disputeId
+                  );
+                  return retractedDispute.retractedDate;
+                },
+                (retractedDate) => {
+                  return !retractedDate;
+                },
+                500
+              );
               toast((t) => (
                 <SuccessTransactionToast
                   t={t}
@@ -58,6 +75,7 @@ export function RetractDisputeModal({
                   url={CONFIG.getTxExplorerUrl?.(tx.hash)}
                 />
               ));
+              refetch();
               hideModal();
             } catch (error) {
               console.error(error);

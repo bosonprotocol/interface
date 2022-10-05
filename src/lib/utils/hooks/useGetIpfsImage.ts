@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 
+import { ProgressStatus } from "../../types/progressStatus";
 import { blobToBase64 } from "../base64ImageConverter";
 import { useIpfsStorage } from "./useIpfsStorage";
 
-type ImageStatus = "idle" | "loading" | "success" | "error";
-
 export function useGetIpfsImage(src: string) {
   const ipfsMetadataStorage = useIpfsStorage();
-  const [imageStatus, setImageStatus] = useState<ImageStatus>("idle");
+  const [imageStatus, setImageStatus] = useState<ProgressStatus>(
+    ProgressStatus.IDLE
+  );
   const [imageSrc, setImageSrc] = useState<string>("");
 
   useEffect(() => {
@@ -16,25 +17,28 @@ export function useGetIpfsImage(src: string) {
     }
     async function fetchData(src: string) {
       if (ipfsMetadataStorage) {
-        setImageStatus("loading");
+        setImageStatus(ProgressStatus.LOADING);
         const fetchPromises = await ipfsMetadataStorage.get(src, false);
         const [image] = await Promise.all([fetchPromises]);
         const base64str = await blobToBase64(new Blob([image as BlobPart]));
 
         if (!String(base64str).includes("base64")) {
-          setImageStatus("error");
+          setImageStatus(ProgressStatus.ERROR);
         } else {
           setImageSrc(base64str as string);
-          setImageStatus("success");
+          setImageStatus(ProgressStatus.SUCCESS);
         }
       }
     }
-    if (["idle", "loading"].includes(imageStatus) && !imageSrc) {
+    if (
+      [ProgressStatus.IDLE, ProgressStatus.LOADING].includes(imageStatus) &&
+      !imageSrc
+    ) {
       if (src?.includes("ipfs://")) {
         fetchData(src);
       } else {
         setImageSrc(src);
-        setImageStatus("success");
+        setImageStatus(ProgressStatus.SUCCESS);
       }
     }
   }, []); // eslint-disable-line

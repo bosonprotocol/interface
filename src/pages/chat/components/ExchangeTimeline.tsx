@@ -39,6 +39,7 @@ export default function ExchangeTimeline({
   const timesteps = useMemo(() => {
     const { committedDate, redeemedDate, cancelledDate, revokedDate } =
       exchange;
+
     const timesteps: { text: string; date: string; timestamp: number }[] = [];
     if (committedDate) {
       timesteps.push({
@@ -69,7 +70,15 @@ export default function ExchangeTimeline({
       });
     }
     if (showDispute && dispute) {
-      const { disputedDate, retractedDate, resolvedDate } = dispute;
+      const {
+        disputedDate,
+        retractedDate,
+        resolvedDate,
+        decidedDate,
+        refusedDate,
+        escalatedDate
+      } = dispute;
+
       if (disputedDate) {
         timesteps.push({
           text: "Dispute Raised",
@@ -91,10 +100,32 @@ export default function ExchangeTimeline({
           timestamp: Number(resolvedDate)
         });
       }
+      if (refusedDate) {
+        timesteps.push({
+          text: "Dispute refused",
+          date: formatShortDate(refusedDate),
+          timestamp: Number(refusedDate)
+        });
+      }
+      if (decidedDate) {
+        timesteps.push({
+          text: "Dispute decided",
+          date: formatShortDate(decidedDate),
+          timestamp: Number(decidedDate)
+        });
+      }
+      if (escalatedDate) {
+        timesteps.push({
+          text: "Dispute Escalated",
+          date: formatShortDate(escalatedDate),
+          timestamp: Number(escalatedDate)
+        });
+      }
     }
 
     return timesteps.sort((a, b) => a.timestamp - b.timestamp);
   }, [exchange, dispute, showDispute]);
+
   return (
     <>
       {!!timesteps.length && children}

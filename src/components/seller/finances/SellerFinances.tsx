@@ -16,6 +16,7 @@ dayjs.extend(isBetween);
 import { Currencies, CurrencyDisplay } from "@bosonprotocol/react-kit";
 
 import { colors } from "../../../lib/styles/colors";
+import { ProgressStatus } from "../../../lib/types/progressStatus";
 import { useModal } from "../../modal/useModal";
 import Tooltip from "../../tooltip/Tooltip";
 import Button from "../../ui/Button";
@@ -148,7 +149,8 @@ export default function SellerFinances({
   funds: fundsData,
   exchangesTokens: exchangesTokensData,
   sellerDeposit: sellerDepositData,
-  offersBacked
+  offersBacked,
+  sellerRoles
 }: SellerInsideProps & WithSellerDataProps) {
   const { showModal, modalTypes } = useModal();
   const { funds, reload, fundStatus } = fundsData;
@@ -166,7 +168,7 @@ export default function SellerFinances({
   } = sellerDepositData;
 
   useEffect(() => {
-    if (fundStatus === "success" && !isFundsInitialized) {
+    if (fundStatus === ProgressStatus.SUCCESS && !isFundsInitialized) {
       setIsFundsInitialized(true);
     }
   }, [fundStatus, isFundsInitialized]);
@@ -288,6 +290,8 @@ export default function SellerFinances({
               <WithdrawButton
                 theme="outline"
                 size="small"
+                disabled={!sellerRoles.isClerk}
+                tooltip="This action is restricted to only the clerk wallet"
                 onClick={() => {
                   showModal(
                     modalTypes.FINANCE_WITHDRAW_MODAL,
@@ -343,7 +347,8 @@ export default function SellerFinances({
       sellerId,
       sellerLockedFunds,
       showModal,
-      funds
+      funds,
+      sellerRoles
     ]
   );
 
@@ -385,7 +390,11 @@ export default function SellerFinances({
     return <Loading />;
   }
 
-  if (sellerDataIsError || fundStatus === "error" || isErrorExchangesTokens) {
+  if (
+    sellerDataIsError ||
+    fundStatus === ProgressStatus.ERROR ||
+    isErrorExchangesTokens
+  ) {
     // TODO: NO FIGMA REPRESENTATIONS
   }
 
