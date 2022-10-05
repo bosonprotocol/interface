@@ -27,6 +27,7 @@ const StyledMultiSteps = styled(MultiSteps)`
   background: ${colors.white};
   padding-bottom: 0.625rem;
   margin-bottom: 0.9375rem;
+  position: relative;
 `;
 
 const InnerContainer = styled.div`
@@ -44,9 +45,6 @@ const StyledGrid = styled(Grid)`
 const StyledButtonGrid = styled(Grid)<{ isLteS: boolean }>`
   background: ${colors.white};
   z-index: ${zIndex.Popper};
-  p {
-    margin-top: ${({ isLteS }) => isLteS && "1.8125rem"};
-  }
 `;
 
 const buttonSteps = ["Next"];
