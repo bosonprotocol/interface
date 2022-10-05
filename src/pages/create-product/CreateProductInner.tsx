@@ -382,7 +382,9 @@ function CreateProductInner({ initial, showCreateProductDraftModal }: Props) {
           uuid: Date.now().toString(),
           version: 1,
           label: termsOfExchange.exchangePolicy.value,
-          template: termsOfExchange.exchangePolicy.value // TODO: set the URL to the fairExchangePolicy contractual agreement
+          template: termsOfExchange.exchangePolicy.value, // TODO: set the URL to the fairExchangePolicy contractual agreement
+          sellerContactMethod: "TBD",
+          disputeResolverContactMethod: "TBD"
         },
         shipping: {
           defaultVersion: 1,
@@ -390,7 +392,8 @@ function CreateProductInner({ initial, showCreateProductDraftModal }: Props) {
           supportedJurisdictions:
             supportedJurisdictions.length > 0
               ? supportedJurisdictions
-              : undefined
+              : undefined,
+          returnPeriod: "0"
         }
       });
 
