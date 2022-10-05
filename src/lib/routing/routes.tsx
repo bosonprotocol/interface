@@ -36,7 +36,8 @@ export const DisputeResolverCenterRoutes = {
 
 export const OffersRoutes = {
   Root: "/offers",
-  OfferDetail: `/offers/:${UrlParameters.offerId}`
+  OfferDetail: `/offers/:${UrlParameters.offerId}`,
+  OfferUuid: `/offer-uuid/:${UrlParameters.uuid}`
 } as const;
 
 export const ExternalRoutes = {

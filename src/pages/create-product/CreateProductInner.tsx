@@ -10,6 +10,7 @@ import keys from "lodash/keys";
 import { useCallback, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { generatePath } from "react-router-dom";
+import uuid from "react-uuid";
 import { useAccount } from "wagmi";
 dayjs.extend(localizedFormat);
 
@@ -324,12 +325,16 @@ function CreateProductInner({ initial }: Props) {
       });
       // TODO: In case of variants: add Size and Colour as attributes
 
+      // Be sure the uuid is unique (for all users).
+      // Do NOT use Date.now() because nothing prevent 2 users to create 2 offers at the same time
+      const offerUuid = uuid();
+
       const metadataHash = await coreSDK.storeMetadata({
         schemaUrl: "https://schema.org/schema",
-        uuid: Date.now().toString(),
+        uuid: offerUuid,
         name: productInformation.productTitle,
         description: productInformation.description,
-        externalUrl: window.origin,
+        externalUrl: `${window.origin}/#/offer-uuid/${offerUuid}`,
         image: `ipfs://${productMainImageLink}`,
         type: MetadataType.PRODUCT_V1,
         attributes: [...nftAttributes, ...additionalAttributes],
