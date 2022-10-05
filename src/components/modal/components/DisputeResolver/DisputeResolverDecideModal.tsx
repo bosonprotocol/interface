@@ -1,5 +1,7 @@
 import { useState } from "react";
+import styled from "styled-components";
 
+import { colors } from "../../../../lib/styles/colors";
 import { useCoreSDK } from "../../../../lib/utils/useCoreSdk";
 import { Spinner } from "../../../loading/Spinner";
 import Grid from "../../../ui/Grid";
@@ -14,9 +16,13 @@ import {
 
 interface Props {
   exchangeId: string;
+  priceInDollar: string;
 }
 
-export default function DisputeResolverDecideModal({ exchangeId }: Props) {
+export default function DisputeResolverDecideModal({
+  exchangeId,
+  priceInDollar
+}: Props) {
   const [disputePercentage, setDisputePercentage] = useState<string>("0");
   const [isSubmitingDispute, setIsSubmitingDispute] = useState<boolean>(false);
   const [isValidValue, setIsValidValue] = useState<boolean>(true);
@@ -53,7 +59,8 @@ export default function DisputeResolverDecideModal({ exchangeId }: Props) {
   return (
     <Grid flexDirection="column" alignItems="flex-start" gap="1.5rem">
       <Typography tag="p" margin="0" $fontSize="0.75rem" fontWeight="bold">
-        Choose the percentage of the dispute:
+        Enter refund amount the buyer should receive (as a percentage of the
+        item price):
       </Typography>
       <AmountWrapper>
         <InputWrapper $hasError={!!disputeError || isValidValue}>
@@ -64,9 +71,16 @@ export default function DisputeResolverDecideModal({ exchangeId }: Props) {
             </Typography>
           </div>
         </InputWrapper>
+        <MaxLimit>Max Limit {priceInDollar} USDC</MaxLimit>
       </AmountWrapper>
       <Grid>
-        <div />
+        <div>
+          <RefundAmount>
+            Refund Amount:{" "}
+            {(parseFloat(priceInDollar) * parseFloat(disputePercentage)) / 100}{" "}
+            USDC
+          </RefundAmount>
+        </div>
         <CTAButton
           theme="primary"
           size="small"
@@ -79,10 +93,10 @@ export default function DisputeResolverDecideModal({ exchangeId }: Props) {
             <Typography
               tag="p"
               margin="0"
-              $fontSize="0.75rem"
+              $fontSize="0.873rem"
               fontWeight="bold"
             >
-              Resolve
+              Confirm Decision
             </Typography>
           )}
         </CTAButton>
@@ -90,3 +104,19 @@ export default function DisputeResolverDecideModal({ exchangeId }: Props) {
     </Grid>
   );
 }
+
+const RefundAmount = styled.span`
+  font-weight: 600;
+  font-size: 0.75rem;
+  line-height: 150%;
+  color: ${colors.white};
+`;
+
+const MaxLimit = styled.span`
+  font-weight: 400;
+  font-size: 0.75rem;
+  line-height: 15px;
+  text-align: right;
+  color: ${colors.white};
+  opacity: 0.4;
+`;
