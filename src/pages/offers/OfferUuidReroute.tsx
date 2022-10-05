@@ -8,8 +8,7 @@ import useOfferByUuid from "../../lib/utils/hooks/product/useOfferByUuid";
 export default function OfferUuidReroute() {
   const { [UrlParameters.uuid]: uuid } = useParams();
 
-  const result = useOfferByUuid(uuid);
-  const { offerId } = result;
+  const { offerId } = useOfferByUuid(uuid);
 
   if (!offerId) {
     return <div data-testid="notFound">This offer does not exist</div>;

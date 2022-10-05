@@ -18,7 +18,7 @@ export const BosonRoutes = {
   DisputeId: `/exchange/:${UrlParameters.exchangeId}/raise-dispute`,
   BuyerPage: `/buyer/:${UrlParameters.buyerId}`,
   SellerPage: `/seller/:${UrlParameters.sellerId}`,
-  License: `/license/:${UrlParameters.tokenId}`,
+  License: `/license/:${UrlParameters.uuid}`,
   ContractualAgreement: `/contractualAgreement/:${UrlParameters.offerId}`,
   DRAdmin: "/dr-admin",
   DRAdminPage: `/dr-admin/:${UrlParameters.disputeResolverPageId}`,

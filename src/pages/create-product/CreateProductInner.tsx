@@ -329,12 +329,15 @@ function CreateProductInner({ initial }: Props) {
       // Do NOT use Date.now() because nothing prevent 2 users to create 2 offers at the same time
       const offerUuid = uuid();
 
+      const externalUrl = `${window.origin}/#/offer-uuid/${offerUuid}`;
+      const licenseUrl = `${window.origin}/#/license/${offerUuid}`;
+
       const metadataHash = await coreSDK.storeMetadata({
         schemaUrl: "https://schema.org/schema",
         uuid: offerUuid,
         name: productInformation.productTitle,
-        description: productInformation.description,
-        externalUrl: `${window.origin}/#/offer-uuid/${offerUuid}`,
+        description: `${productInformation.description}\n\nTerms for the Boson rNFT Voucher: ${licenseUrl}`,
+        externalUrl,
         image: `ipfs://${productMainImageLink}`,
         type: MetadataType.PRODUCT_V1,
         attributes: [...nftAttributes, ...additionalAttributes],
