@@ -50,7 +50,9 @@ export default function FairExchangePolicy({
   titleTag = "p",
   bulletPointIcon
 }: Props) {
-  const disputeResolutionPeriodDays = CONFIG.defaultDisputeResolutionPeriodDays;
+  const minimumDisputeResolutionPeriodDays =
+    CONFIG.defaultDisputeResolutionPeriodDays;
+  const minimumDisputePeriodInDays = CONFIG.minimumDisputePeriodInDays;
   return (
     <>
       <InfoTitleWrapper>
@@ -62,7 +64,15 @@ export default function FairExchangePolicy({
       <InfoList withCustomMarker={!!bulletPointIcon}>
         <InfoListItem>
           {bulletPointIcon}
-          <Typography tag="p">30 days to raise a dispute</Typography>
+          <Typography tag="p">
+            Min. {minimumDisputePeriodInDays} days to raise a dispute
+          </Typography>
+        </InfoListItem>
+        <InfoListItem>
+          {bulletPointIcon}
+          <Typography tag="p">
+            Min. {minimumDisputeResolutionPeriodDays} days to resolve a dispute
+          </Typography>
         </InfoListItem>
         <InfoListItem>
           {bulletPointIcon}
@@ -74,9 +84,7 @@ export default function FairExchangePolicy({
         </InfoListItem>
         <InfoListItem>
           {bulletPointIcon}
-          <Typography tag="p">
-            {disputeResolutionPeriodDays} days to resolve a raised dispute
-          </Typography>
+          <Typography tag="p">Legally compliant in x jurisdictions</Typography>
         </InfoListItem>
       </InfoList>
     </>

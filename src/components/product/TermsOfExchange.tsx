@@ -76,7 +76,7 @@ export default function TermsOfExchange() {
           <FormField
             title="Exchange policy"
             required
-            subTitle="The exchange policy covers the contractual terms of the exchange to protect seller and buyer."
+            subTitle="The exchange policy covers contractual and protocol terms of the exchange to protect buyer and seller."
           >
             <Select
               placeholder="Choose exchange policy..."

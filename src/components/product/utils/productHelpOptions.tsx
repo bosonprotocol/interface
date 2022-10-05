@@ -170,8 +170,8 @@ export const coreTermsOfSaleHelp = [
     description: (
       <>
         <Typography tag="p" style={{ margin: "0 0 10px 0" }}>
-          The exchange policy covers the contractual terms of the exchange to
-          protect seller and buyer.
+          The exchange policy covers contractual and protocol terms of the
+          exchange to protect buyer and seller.
         </Typography>
         <Typography tag="p" style={{ margin: "0 0 10px 0" }}>
           This includes obligations of both parties to follow thru with their
@@ -208,7 +208,7 @@ export const coreTermsOfSaleHelp = [
   {
     title: "What is buyer cancel penalty?",
     description:
-      "If the buyer fails to redeem the item within the redemption period they will receive back the payment minus the buyer cancel penalty.This penalty is to cover the inconvenience caused to the seller."
+      "If the buyer fails to redeem the item within the redemption period they will receive back the payment minus the cancellation penalty.This penalty is to cover the inconvenience caused to the seller."
   } as const,
   {
     title: "How long should the dispute period be?",

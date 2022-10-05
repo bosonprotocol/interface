@@ -339,7 +339,10 @@ function CreateProductInner({ initial }: Props) {
           uuid: Date.now().toString(),
           version: 1,
           label: termsOfExchange.exchangePolicy.value,
-          template: termsOfExchange.exchangePolicy.value // TODO: set the URL to the fairExchangePolicy contractual agreement
+          template: termsOfExchange.exchangePolicy.value,
+          sellerContactMethod: CONFIG.defaultSellerContactMethod,
+          disputeResolverContactMethod:
+            CONFIG.defaultDisputeResolverContactMethod
         },
         shipping: {
           defaultVersion: 1,
@@ -347,7 +350,8 @@ function CreateProductInner({ initial }: Props) {
           supportedJurisdictions:
             supportedJurisdictions.length > 0
               ? supportedJurisdictions
-              : undefined
+              : undefined,
+          returnPeriod: shippingInfo.returnPeriod.toString()
         }
       });
 

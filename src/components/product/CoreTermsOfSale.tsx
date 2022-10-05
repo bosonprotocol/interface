@@ -53,7 +53,7 @@ export default function CoreTermsOfSale() {
       <FormField
         title="Quantity"
         required
-        subTitle="How many of this item do you want to sell? You can change this value for each variant."
+        subTitle="How many products do you want to sell?"
       >
         <Input
           placeholder="Input the amount"
