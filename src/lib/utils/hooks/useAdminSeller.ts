@@ -49,12 +49,6 @@ export function useAdminSeller({ showErrors }: Props) {
   const lensProfile = lensProfiles?.items.find(
     (lensProfile) => lensProfile.handle === lensAdminSeller?.admin
   );
-  if (CONFIG.lens.enabled && !lensProfile) {
-    showErrors &&
-      console.error(
-        "There are no seller with my handles, did you create a lens profile?"
-      );
-  }
   const adminSeller = CONFIG.lens.enabled ? lensAdminSeller : sellers?.[0];
 
   return {
