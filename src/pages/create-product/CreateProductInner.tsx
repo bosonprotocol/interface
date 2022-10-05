@@ -271,6 +271,12 @@ function CreateProductInner({ initial }: Props) {
     });
 
     try {
+      const redemptionPointUrl =
+        shippingInfo.redemptionPointUrl &&
+        shippingInfo.redemptionPointUrl.length > 0
+          ? shippingInfo.redemptionPointUrl
+          : window.origin;
+
       const exchangeToken = CONFIG.defaultTokens.find(
         (n: Token) => n.symbol === coreTermsOfSale.currency.value
       );
@@ -308,7 +314,7 @@ function CreateProductInner({ initial }: Props) {
       nftAttributes.push({ trait_type: "Token Type", value: "BOSON rNFT" });
       nftAttributes.push({
         trait_type: "Redeemable At",
-        value: shippingInfo.addUrl || window.origin
+        value: redemptionPointUrl
       });
       nftAttributes.push({
         trait_type: "Redeemable Until",
@@ -329,7 +335,7 @@ function CreateProductInner({ initial }: Props) {
       // Do NOT use Date.now() because nothing prevent 2 users to create 2 offers at the same time
       const offerUuid = uuid();
 
-      const externalUrl = `${window.origin}/#/offer-uuid/${offerUuid}`;
+      const externalUrl = `${redemptionPointUrl}/#/offer-uuid/${offerUuid}`;
       const licenseUrl = `${window.origin}/#/license/${offerUuid}`;
 
       const metadataHash = await coreSDK.storeMetadata({

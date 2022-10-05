@@ -46,6 +46,12 @@ const PreviewWrapperContent = styled.div`
 export default function Preview({ togglePreview, seller }: Props) {
   const { values } = useCreateForm();
 
+  const redemptionPointUrl =
+    values.shippingInfo.redemptionPointUrl &&
+    values.shippingInfo.redemptionPointUrl.length > 0
+      ? values.shippingInfo.redemptionPointUrl
+      : window.origin;
+
   const exchangeToken = CONFIG.defaultTokens.find(
     (n: Token) => n.symbol === values.coreTermsOfSale.currency.value
   );
@@ -182,7 +188,7 @@ export default function Preview({ togglePreview, seller }: Props) {
   productAttributes.push({ name: "Token Type", value: "BOSON rNFT" });
   productAttributes.push({
     name: "Redeemable At",
-    value: values.shippingInfo?.addUrl || window.origin
+    value: redemptionPointUrl
   });
   productAttributes.push({
     name: "Redeemable Until",
