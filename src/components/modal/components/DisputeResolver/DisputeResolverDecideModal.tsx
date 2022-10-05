@@ -1,4 +1,5 @@
 import { Currencies, CurrencyLogo } from "@bosonprotocol/react-kit";
+import { BigNumber } from "ethers";
 import { useState } from "react";
 import styled from "styled-components";
 
@@ -68,6 +69,14 @@ export default function DisputeResolverDecideModal({
     symbol: currencySymbol
   });
 
+  const refundAmmount = useConvertedPrice({
+    value: BigNumber.from(value)
+      .mul(BigNumber.from(parseFloat(disputePercentage) * 100))
+      .div(BigNumber.from(10000))
+      .toString(),
+    decimals,
+    symbol: currencySymbol
+  });
   return (
     <Grid flexDirection="column" alignItems="flex-start" gap="1.5rem">
       <Typography tag="p" margin="0" $fontSize="0.75rem" fontWeight="bold">
@@ -93,10 +102,7 @@ export default function DisputeResolverDecideModal({
       <Grid>
         <div>
           <RefundAmount>
-            Refund Amount:{" "}
-            {price.price &&
-              (parseFloat(price.price) * parseFloat(disputePercentage)) /
-                100}{" "}
+            Refund Amount: {price.price && `${refundAmmount.price}`}{" "}
             <CurrencyLogo currency={currencySymbol as Currencies} size={18} />
           </RefundAmount>
         </div>
