@@ -1,29 +1,37 @@
 import { gql } from "graphql-request";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useQuery } from "react-query";
 import { useAccount } from "wagmi";
 
 import { fetchSubgraph } from "../core-components/subgraph";
 import useGetLensProfile from "./lens/profile/useGetLensProfile";
+
 const MOCK_VALUES = {
-  admin: null,
+  admin: "postponed3.test",
   authTokenId: "1",
   authTokenType: 1,
-  clerk: "albert-handle.test",
-  operator: "albert-handle.test",
-  treasury: "albert-handle.test"
+  clerk: "postponed3.test",
+  operator: "postponed3.test",
+  treasury: "postponed3.test"
 };
 export function useCurrentSeller(address?: string) {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isError, setIsError] = useState<boolean>(false);
   const { address: loggedInUserAddress } = useAccount();
-  const sellerAddress = useMemo(
-    () => address || loggedInUserAddress,
-    [address, loggedInUserAddress]
-  );
+  const sellerAddress = address || loggedInUserAddress || null;
+  const sellerAddressType = useMemo(() => {
+    if (sellerAddress) {
+      if (/(0x[a-fA-F0-9]{40})/g.test(sellerAddress?.toString())) {
+        return "ETH";
+      }
+      if (isNaN(Number(sellerAddress))) {
+        return "LENS";
+      }
+      return "ID";
+    }
+    return null;
+  }, [sellerAddress]);
 
-  const result = useQuery(
-    ["current-seller-id", { address: sellerAddress }],
+  const resultByAddress = useQuery(
+    ["current-seller-data-by-address", { address: sellerAddress }],
     async () => {
       const result = await fetchSubgraph<{
         admin: {
@@ -65,23 +73,62 @@ export function useCurrentSeller(address?: string) {
       };
       return Object.fromEntries(
         Object.entries(allProps).filter(([, value]) => value !== null)
-      ) as Record<keyof typeof allProps, string | null>;
+      );
     },
     {
-      enabled: !!sellerAddress
+      enabled: !!sellerAddress && sellerAddressType !== "ID"
     }
   );
 
-  const sellerId = useMemo(
-    () => (result.data && Object.values(result.data)[0]) ?? null,
-    [result]
-  );
-  const sellerType = useMemo(
-    () => result.data && Object.keys(result.data),
-    [result]
+  const resultById = useQuery(
+    ["current-seller-data-by-id", { sellerId: sellerAddress }],
+    async () => {
+      const result = await fetchSubgraph<{
+        sellers: {
+          sellerId: string;
+          admin: string;
+          clerk: string;
+          operator: string;
+          treasury: string;
+        }[];
+      }>(
+        gql`
+          query GetSellerById($sellerId: String) {
+            sellers(where: { sellerId: $sellerId }) {
+              sellerId
+              admin
+              clerk
+              operator
+              treasury
+            }
+          }
+        `,
+        { sellerId: sellerAddress }
+      );
+      const allProps = {
+        admin: result?.sellers[0]?.admin || null,
+        clerk: result?.sellers[0]?.clerk || null,
+        operator: result?.sellers[0]?.operator || null,
+        treasury: result?.sellers[0]?.treasury || null
+      };
+      return Object.fromEntries(
+        Object.entries(allProps).filter(([, value]) => value !== null)
+      );
+    },
+    {
+      enabled: !!sellerAddress && sellerAddressType === "ID"
+    }
   );
 
-  const resultById = useQuery(
+  const results = resultById?.data || resultByAddress?.data;
+
+  const sellerId =
+    sellerAddressType === "ID"
+      ? sellerAddress
+      : (results && Object.values(results)[0]) ?? null;
+  const sellerType = useMemo(() => results && Object.keys(results), [results]);
+
+  const sellerById = useQuery(
     ["current-seller-by-id", { address }],
     async () => {
       const result = await fetchSubgraph<{
@@ -115,10 +162,10 @@ export function useCurrentSeller(address?: string) {
 
       const currentSellerRoles = MOCK_VALUES
         ? {
-            admin: null,
-            clerk: "albert-handle.test",
-            operator: "albert-handle.test",
-            treasury: "albert-handle.test"
+            admin: "postponed3.test",
+            clerk: "postponed3.test",
+            operator: "postponed3.test",
+            treasury: "postponed3.test"
           }
         : {
             admin: currentSeller?.admin || null,
@@ -142,36 +189,33 @@ export function useCurrentSeller(address?: string) {
       enabled: !!sellerId
     }
   );
-
-  const sellerVales = useMemo(() => resultById?.data, [resultById]);
+  const sellerVales = useMemo(() => sellerById?.data || null, [sellerById]);
 
   const resultLens = useGetLensProfile(
     {
-      handle: sellerVales?.sellerAddress || ""
+      handle:
+        sellerAddressType === "LENS"
+          ? sellerAddress || ""
+          : sellerAddressType === "ID"
+          ? sellerVales?.admin || ""
+          : sellerVales?.sellerAddress || ""
     },
     {
-      enabled:
-        (sellerVales?.authTokenType === 1 &&
-          sellerVales?.sellerAddress !== null) ||
-        false
+      enabled: !!sellerAddress && !!sellerVales && !!sellerAddressType
     }
   );
 
-  useEffect(() => {
-    if (result?.isLoading || resultById?.isLoading || resultLens?.isLoading) {
-      setIsLoading(false);
-    }
-  }, [result?.isLoading, resultById?.isLoading, resultLens?.isLoading]);
-
-  useEffect(() => {
-    if (result?.isError || resultById?.isError || resultLens?.isError) {
-      setIsError(true);
-    }
-  }, [result?.isError, resultById?.isError, resultLens?.isError]);
-
   return {
-    isLoading,
-    isError,
+    isLoading:
+      resultById?.isLoading ||
+      resultByAddress?.isLoading ||
+      sellerById?.isLoading ||
+      resultLens?.isLoading,
+    isError:
+      resultById?.isError ||
+      resultByAddress?.isError ||
+      sellerById?.isError ||
+      resultLens?.isError,
     sellerId,
     sellerType,
     seller: {
