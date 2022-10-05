@@ -12,7 +12,7 @@ import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
 import { colors } from "../../lib/styles/colors";
 import { getFilesWithEncodedData } from "../../lib/utils/files";
-import { useCurrentSellerId } from "../../lib/utils/hooks/useCurrentSellerId";
+import { useCurrentSeller } from "../../lib/utils/hooks/useCurrentSeller";
 import SocialLogo from "./SocialLogo";
 import {
   formModel,
@@ -67,7 +67,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
   const { setFieldValue, values, isValid, setFieldTouched } =
     useFormikContext<StoreFormFields>();
 
-  const { sellerId } = useCurrentSellerId();
+  const { sellerId } = useCurrentSeller();
 
   const formValuesWithOneLogoUrl = Object.entries(values)
     .filter(
