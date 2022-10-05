@@ -28,6 +28,11 @@ export function getDefaultTokens() {
   }
   return tokens;
 }
+const createProfileConfiguration: "LENS" | "NO_TOKEN" =
+  (process.env.REACT_APP_CREATE_PROFILE_CONFIGURATION as "LENS" | "NO_TOKEN") ??
+  "NO_TOKEN";
+
+const availableOnNetwork = [80001, 137].includes(config.chainId);
 
 export const CONFIG = {
   ...config,
@@ -70,7 +75,10 @@ export const CONFIG = {
     process.env.REACT_APP_DEFAULT_DISPUTE_RESOLVER_ID || "1",
   defaultDisputeResolutionPeriodDays:
     process.env.REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS || "15",
+  createProfileConfiguration,
   lens: {
+    enabled: createProfileConfiguration === "LENS" && availableOnNetwork,
+    availableOnNetwork,
     // https://docs.lens.xyz/docs/deployed-contract-addresses
     // TODO: move to CC
     LENS_HUB_CONTRACT: "0x60Ae865ee4C725cd04353b5AAb364553f56ceF82",

@@ -2,13 +2,14 @@ import { useEffect } from "react";
 import { useAccount } from "wagmi";
 
 import { ReactComponent as LensLogo } from "../../../../../../src/assets/lens-logo.svg";
-import type { Profile } from "../../../../../lib/utils/hooks/lens/profile/useGetLensProfiles";
+import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
 import useGetLensProfiles from "../../../../../lib/utils/hooks/lens/profile/useGetLensProfiles";
 import Button from "../../../../ui/Button";
 import Grid from "../../../../ui/Grid";
 import GridContainer from "../../../../ui/GridContainer";
 import Typography from "../../../../ui/Typography";
 import { useModal } from "../../../useModal";
+import ProfileMultiSteps from "./ProfileMultiSteps";
 
 interface Props {
   onChooseCreateNew: () => void;
@@ -25,7 +26,13 @@ export default function CreateOrChoose({
       ...store,
       modalProps: {
         ...store.modalProps,
-        title: "Create your Profile"
+        headerComponent: (
+          <ProfileMultiSteps
+            createOrSelect={null}
+            activeStep={0}
+            createOrViewRoyalties={null}
+          />
+        )
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -40,6 +47,7 @@ export default function CreateOrChoose({
       enabled: !!address
     }
   );
+
   return (
     <Grid flexDirection="column">
       <Typography>
@@ -66,7 +74,7 @@ export default function CreateOrChoose({
           return (
             <Button
               theme="white"
-              onClick={() => onChooseUseExisting(profile)}
+              onClick={() => onChooseUseExisting(profile as Profile)}
               key={profile.id}
             >
               <Grid flexDirection="column" gap="1rem" padding="1rem">

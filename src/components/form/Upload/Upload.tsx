@@ -3,6 +3,7 @@ import { Image, Trash } from "phosphor-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { colors } from "../../../lib/styles/colors";
+import { loadAndSetImage } from "../../../lib/utils/base64";
 import bytesToSize from "../../../lib/utils/bytesToSize";
 import Button from "../../ui/Button";
 import Typography from "../../ui/Typography";
@@ -15,22 +16,6 @@ import {
 } from "../Field.styles";
 import type { UploadProps } from "../types";
 import UploadedFiles from "./UploadedFiles";
-
-const loadImage = (
-  file: File,
-  onSuccess: (preview: string | null) => unknown
-) => {
-  try {
-    const reader = new FileReader();
-    reader.onloadend = (e: ProgressEvent<FileReader>) => {
-      const prev = e.target?.result?.toString() || null;
-      onSuccess(prev);
-    };
-    reader.readAsDataURL(file);
-  } catch (e) {
-    console.error(e);
-  }
-};
 
 export default function Upload({
   name,
@@ -66,19 +51,13 @@ export default function Upload({
     [helpers]
   );
   const files = field.value as File[];
-  // const [files, setFiles] = useState<File[]>(field.value || []);
-
-  // useEffect(() => {
-  //   console.log(field.value);
-  //   setFiles(field.value || []);
-  // }, [field.value]);
 
   useEffect(() => {
     onFilesSelect?.(files);
     helpers.setValue(files);
 
     if (!multiple && accept === "image/*" && files.length !== 0) {
-      loadImage(files[0], setPreview);
+      loadAndSetImage(files[0], setPreview);
     }
   }, [files]); // eslint-disable-line
 
@@ -95,7 +74,6 @@ export default function Upload({
     }
     setFiles([]);
     setPreview(null);
-    // removePreview(fileName);
   };
 
   const handleRemoveFile = (index: number) => {
@@ -126,7 +104,7 @@ export default function Upload({
     }
     setFiles(filesArray);
   };
-  console.log({ files, preview });
+
   return (
     <>
       <FieldFileUploadWrapper {...wrapperProps} $disabled={!!disabled}>

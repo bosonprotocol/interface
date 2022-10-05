@@ -1,8 +1,11 @@
 import { useEffect } from "react";
 import styled from "styled-components";
 
+import { breakpointNumbers } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
+import { useAdminSeller } from "../../lib/utils/hooks/useAdminSeller";
 import { FormField } from "../form";
+import ProfileMultiSteps from "../modal/components/CreateProfile/Lens/ProfileMultiSteps";
 import { useModal } from "../modal/useModal";
 import Button from "../ui/Button";
 import Grid from "../ui/Grid";
@@ -82,32 +85,51 @@ interface Props {
 }
 
 export default function ProductType({ showCreateProductDraftModal }: Props) {
-  const { handleChange, values, nextIsDisabled } = useCreateForm();
+  const { handleChange, values, nextIsDisabled, setFieldValue } =
+    useCreateForm();
   const { showModal } = useModal();
 
+  const { adminSeller } = useAdminSeller({ showErrors: false });
+  const hasSellerAccount = !!adminSeller;
   useEffect(() => {
-    showModal(
-      "CREATE_PROFILE",
-      {
-        title: "Create your Profile",
-        initialRegularCreateProfile: {} as any,
-        onRegularProfileCreated: (regularProfile) => {
-          console.log("regularProfile", regularProfile);
+    if (hasSellerAccount) {
+      showCreateProductDraftModal();
+    } else {
+      showModal(
+        "CREATE_PROFILE",
+        {
+          headerComponent: (
+            <ProfileMultiSteps
+              createOrSelect={null}
+              activeStep={0}
+              createOrViewRoyalties={null}
+            />
+          ),
+          initialRegularCreateProfile: values,
+          onRegularProfileCreated: (regularProfile) => {
+            console.log("regularProfile", regularProfile);
+            setFieldValue(
+              "createYourProfile",
+              regularProfile.createYourProfile
+            );
+          },
+          onUseLensProfile: (lensProfile) => {
+            // TODO: I think this is not needed
+            console.log("lensProfile", lensProfile);
+          },
+          closable: false,
+          onClose: () => {
+            showCreateProductDraftModal();
+          }
         },
-        onUseLensProfile: (lensProfile) => {
-          console.log("lensProfile", lensProfile);
-        },
-        closable: false,
-        onClose: () => {
-          showCreateProductDraftModal();
+        "auto",
+        undefined,
+        {
+          xs: `${breakpointNumbers.m + 1}px`
         }
-      },
-      "auto",
-      undefined,
-      {
-        s: "683px"
-      }
-    );
+      );
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showCreateProductDraftModal]);
 
