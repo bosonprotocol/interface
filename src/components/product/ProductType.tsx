@@ -1,9 +1,10 @@
 import { useEffect } from "react";
 import styled from "styled-components";
 
+import { CONFIG } from "../../lib/config";
 import { breakpointNumbers } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
-import { useAdminSeller } from "../../lib/utils/hooks/useAdminSeller";
+import { useCurrentSeller } from "../../lib/utils/hooks/useCurrentSeller";
 import { FormField } from "../form";
 import ProfileMultiSteps from "../modal/components/CreateProfile/Lens/ProfileMultiSteps";
 import { useModal } from "../modal/useModal";
@@ -82,19 +83,32 @@ const ProductImage = styled(Image)`
 
 interface Props {
   showCreateProductDraftModal: () => void;
+  showInvalidRoleModal: () => void;
 }
 
-export default function ProductType({ showCreateProductDraftModal }: Props) {
+export default function ProductType({
+  showCreateProductDraftModal,
+  showInvalidRoleModal
+}: Props) {
   const { handleChange, values, nextIsDisabled, setFieldValue } =
     useCreateForm();
   const { showModal } = useModal();
 
-  const { adminSeller } = useAdminSeller({ showErrors: false });
-  const hasSellerAccount = !!adminSeller;
+  // const { seller: adminSeller, lens } = useCurrentSeller(
+  //   adminAddressOfMySellerOrAdminLensHandle
+  // );
+  const { seller: currentSeller, sellerType: currentRoles } =
+    useCurrentSeller();
+  const isOperator = currentRoles?.find((role) => role === "operator");
+  const isAdminLinkedToLens = false; //adminSeller === lens.handle;
+  const hasValidAdminAccount =
+    (CONFIG.lens.enabled && isAdminLinkedToLens) || !CONFIG.lens.enabled;
+  // const { isOperator } = useSellerRoles({});
+  // console.log("useCurrentSellerId data", isOperator);
+  // const { adminSeller } = useAdminSeller({ showErrors: false });
+  // const hasAdminAccount = !!adminSeller; // correct lens admin account or regular admin account
   useEffect(() => {
-    if (hasSellerAccount) {
-      showCreateProductDraftModal();
-    } else {
+    if (!currentSeller || !hasValidAdminAccount) {
       showModal(
         "CREATE_PROFILE",
         {
@@ -128,6 +142,10 @@ export default function ProductType({ showCreateProductDraftModal }: Props) {
           xs: `${breakpointNumbers.m + 1}px`
         }
       );
+    } else if (isOperator && hasValidAdminAccount) {
+      showCreateProductDraftModal();
+    } else if (!isOperator) {
+      showInvalidRoleModal();
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

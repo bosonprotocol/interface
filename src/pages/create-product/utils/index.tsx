@@ -92,12 +92,14 @@ export type CreateProductStepsParams = {
   setIsPreviewVisible: React.Dispatch<React.SetStateAction<boolean>>;
   chatInitializationStatus: ChatInitializationStatus;
   showCreateProductDraftModal: () => void;
+  showInvalidRoleModal: () => void;
 };
 
 export const createProductSteps = ({
   setIsPreviewVisible,
   chatInitializationStatus,
-  showCreateProductDraftModal
+  showCreateProductDraftModal,
+  showInvalidRoleModal
 }: CreateProductStepsParams) => {
   return {
     // 0: {
@@ -116,6 +118,7 @@ export const createProductSteps = ({
           <ScroolToID id="multisteps_wrapper" />
           <ProductType
             showCreateProductDraftModal={showCreateProductDraftModal}
+            showInvalidRoleModal={showInvalidRoleModal}
           />
         </>
       ),

@@ -2,6 +2,7 @@ import { Warning } from "phosphor-react";
 import { useCallback, useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
+import { CONFIG } from "../../../../../lib/config";
 import { colors } from "../../../../../lib/styles/colors";
 import { loadAndSetImage } from "../../../../../lib/utils/base64";
 import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
@@ -10,11 +11,12 @@ import useCreateSeller from "../../../../../lib/utils/hooks/offer/useCreateSelle
 import useUpdateSeller from "../../../../../lib/utils/hooks/offer/useUpdateSeller";
 import { useSellers } from "../../../../../lib/utils/hooks/useSellers";
 import Collapse from "../../../../collapse/Collapse";
+import SimpleError from "../../../../error/SimpleError";
 import Button from "../../../../ui/Button";
 import Grid from "../../../../ui/Grid";
 import Typography from "../../../../ui/Typography";
 import { useModal } from "../../../useModal";
-import { authTokenType } from "./const";
+import { authTokenTypes } from "./const";
 import ProfileMultiSteps from "./ProfileMultiSteps";
 import { BosonAccount, LensProfileType } from "./validationSchema";
 
@@ -54,9 +56,9 @@ export default function CreateBosonLensAccountSummary({
   const { data: treasuries } = useSellers({
     treasury: address
   });
-  const seller = admins?.[0] || clerks?.[0] || operator?.[0] || treasuries?.[0];
+  const seller = admins?.[0] || operator?.[0] || clerks?.[0] || treasuries?.[0];
   const hasSellerAccount = !!seller;
-  const hasLensHandleLinked = seller?.authTokenType === authTokenType.Lens;
+  const hasLensHandleLinked = seller?.authTokenType === authTokenTypes.Lens;
   const alreadyHasRoyaltiesDefined = false; // TODO: seller.royalties;
   const {
     isFetched: isCreatedSellerAccount,
@@ -65,10 +67,10 @@ export default function CreateBosonLensAccountSummary({
   } = useCreateSeller(
     {
       address: address || "",
-      lensProfileId: lensProfileToSubmit?.id,
-      lensValues: values,
       royaltyPercentage: bosonAccount.secondaryRoyalties || 0,
-      setAdminToLensHandle: true
+      lensValues: values,
+      authTokenId: lensProfileToSubmit?.id,
+      authTokenType: authTokenTypes.Lens
     },
     {
       enabled: false
@@ -80,9 +82,12 @@ export default function CreateBosonLensAccountSummary({
     refetch: updateSellerAccountWithArgs
   } = useUpdateSeller(
     {
-      address: address || "",
-      lensProfileId: lensProfileToSubmit?.id,
-      lensValues: values,
+      admin: address || "",
+      clerk: seller?.clerk || "",
+      operator: seller?.operator || "",
+      treasury: seller?.treasury || "",
+      authTokenId: lensProfileToSubmit?.id,
+      authTokenType: authTokenTypes.Lens,
       sellerId: seller?.id || "0"
     },
     {
@@ -109,16 +114,19 @@ export default function CreateBosonLensAccountSummary({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const { create: createLensProfile, isLoading: isCreatingLensProfile } =
-    useCustomCreateLensProfile({
-      values: values,
-      onCreatedProfile: (profile: Profile) => {
-        console.log(profile);
-        setLensProfileToSubmit(profile);
-        setCreatedLensProfile(true);
-      },
-      enabled: !usingExistingLensProfile && !!values
-    });
+  const {
+    create: createLensProfile,
+    isLoading: isCreatingLensProfile,
+    isError: isCreateLensError
+  } = useCustomCreateLensProfile({
+    values: values,
+    onCreatedProfile: (profile: Profile) => {
+      console.log(profile);
+      setLensProfileToSubmit(profile);
+      setCreatedLensProfile(true);
+    },
+    enabled: !usingExistingLensProfile && !!values
+  });
 
   useEffect(() => {
     if (values.logo?.length) {
@@ -413,6 +421,14 @@ export default function CreateBosonLensAccountSummary({
             </Typography>
           </Grid>
         </Grid>
+        {isCreateLensError && (
+          <SimpleError
+            errorMessage={`There has been an error while creating your Lens profile, please
+          contact us on ${
+            CONFIG || "testing-dispute-resolver@redeemeum.com"
+          } to explain your issue`}
+          ></SimpleError>
+        )}
         <CTAs
           hasLensHandle={!!lensProfileToSubmit}
           hasSellerAccount={hasSellerAccount}
@@ -487,14 +503,14 @@ function CTAs({
         <Grid justifyContent="center" gap="2.5rem">
           <Button
             theme="primary"
-            onClick={async () => {
-              await createSellerAccount();
+            onClick={() => {
+              createLensProfile();
             }}
-            disabled={isCreatingSellerAccount || isCreatedSellerAccount}
+            disabled={isCreatingLensProfile || isCreatedLensProfile}
           >
             <Grid gap="1.0625rem">
               <Typography fontWeight="600" $fontSize="1rem" lineHeight="1.5rem">
-                Create Seller Account
+                Create Lens Profile
               </Typography>
               <Typography
                 fontWeight="600"
@@ -508,18 +524,18 @@ function CTAs({
           </Button>
           <Button
             theme="primary"
-            onClick={() => {
-              createLensProfile();
+            onClick={async () => {
+              await createSellerAccount();
             }}
             disabled={
-              isCreatingLensProfile ||
-              isCreatedLensProfile ||
-              !isCreatedSellerAccount
+              isCreatingSellerAccount ||
+              isCreatedSellerAccount ||
+              isCreatingLensProfile
             }
           >
             <Grid gap="1.0625rem">
               <Typography fontWeight="600" $fontSize="1rem" lineHeight="1.5rem">
-                Create Lens Profile
+                Create Seller Account
               </Typography>
               <Typography
                 fontWeight="600"
@@ -528,33 +544,6 @@ function CTAs({
                 opacity="0.5"
               >
                 Step 2/3
-              </Typography>
-            </Grid>
-          </Button>
-          <Button
-            theme="primary"
-            disabled={
-              isUpdatingSellerAccount ||
-              isUpdatedSellerAccount ||
-              !isCreatedSellerAccount ||
-              !isCreatedLensProfile
-            }
-            onClick={async () => {
-              await updateSellerAccount();
-              onSubmit();
-            }}
-          >
-            <Grid gap="1.0625rem">
-              <Typography fontWeight="600" $fontSize="1rem" lineHeight="1.5rem">
-                Update Seller Account
-              </Typography>
-              <Typography
-                fontWeight="600"
-                $fontSize="0.75rem"
-                lineHeight="1.125rem"
-                opacity="0.5"
-              >
-                Step 3/3
               </Typography>
             </Grid>
           </Button>

@@ -29,10 +29,15 @@ export function useAdminSeller({ showErrors }: Props) {
       enabled: !!address && CONFIG.lens.enabled
     }
   );
-  const handles = lensProfiles?.items.map((lensProfile) => lensProfile.handle);
+  const handles = lensProfiles?.items.map((lensProfile) =>
+    ((lensProfile.handle as string) || "").substring(
+      0,
+      ((lensProfile.handle as string) || "").lastIndexOf(".")
+    )
+  );
   const { data: lensAdminSellers } = useSellers(
     {
-      admin_in: handles,
+      admin_in: [address || ""], // TODO: change: handles,
       includeFunds: true
     },
     {

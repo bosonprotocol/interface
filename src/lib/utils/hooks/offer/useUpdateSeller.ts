@@ -1,17 +1,11 @@
 import { CoreSDK } from "@bosonprotocol/react-kit";
 import { useQuery } from "react-query";
 
-import { authTokenType } from "../../../../components/modal/components/CreateProfile/Lens/const";
+import { authTokenTypes } from "../../../../components/modal/components/CreateProfile/Lens/const";
 import { getLensTokenId } from "../../../../components/modal/components/CreateProfile/Lens/utils";
-import { LensProfileType } from "../../../../components/modal/components/CreateProfile/Lens/validationSchema";
 import { useCoreSDK } from "../../useCoreSdk";
 
-interface Props {
-  sellerId: string;
-  address: string;
-  lensValues: LensProfileType;
-  lensProfileId: string | null;
-}
+type Props = Parameters<typeof updateSellerAccount>[1];
 
 export default function useUpdateSeller(
   props: Props,
@@ -36,23 +30,32 @@ async function updateSellerAccount(
   coreSDK: CoreSDK,
   {
     sellerId,
-    address,
-    lensValues,
-    lensProfileId
+    admin,
+    clerk,
+    operator,
+    treasury,
+    authTokenId,
+    authTokenType
   }: {
     sellerId: string;
-    address: string;
-    lensValues: LensProfileType;
-    lensProfileId: string | null;
+    admin: string;
+    clerk: string;
+    operator: string;
+    treasury: string;
+    authTokenId: string | null;
+    authTokenType: typeof authTokenTypes[keyof typeof authTokenTypes];
   }
 ) {
   await coreSDK.updateSeller({
     id: sellerId,
-    admin: lensValues.handle,
-    authTokenId: getLensTokenId(lensProfileId || "0x0"),
-    authTokenType: authTokenType.Lens,
-    clerk: address,
-    operator: address,
-    treasury: address
+    admin,
+    authTokenId:
+      authTokenType === authTokenTypes.Lens
+        ? getLensTokenId(authTokenId || "0x0")
+        : "0",
+    authTokenType,
+    clerk,
+    operator,
+    treasury
   });
 }

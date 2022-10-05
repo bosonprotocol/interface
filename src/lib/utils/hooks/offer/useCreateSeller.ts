@@ -1,18 +1,12 @@
 import { CoreSDK } from "@bosonprotocol/react-kit";
 import { useQuery } from "react-query";
 
-import { authTokenType } from "../../../../components/modal/components/CreateProfile/Lens/const";
+import { authTokenTypes } from "../../../../components/modal/components/CreateProfile/Lens/const";
 import { getLensTokenId } from "../../../../components/modal/components/CreateProfile/Lens/utils";
 import { LensProfileType } from "../../../../components/modal/components/CreateProfile/Lens/validationSchema";
 import { useCoreSDK } from "../../useCoreSdk";
 
-interface Props {
-  address: string;
-  royaltyPercentage: number;
-  lensValues: LensProfileType;
-  lensProfileId: string | null;
-  setAdminToLensHandle: boolean;
-}
+type Props = Parameters<typeof createSellerAccount>[1];
 
 export default function useCreateSeller(
   props: Props,
@@ -39,23 +33,17 @@ async function createSellerAccount(
     address,
     royaltyPercentage,
     lensValues,
-    lensProfileId,
-    setAdminToLensHandle
+    authTokenId,
+    authTokenType
   }: {
     address: string;
     royaltyPercentage: number;
     lensValues: LensProfileType;
-    lensProfileId: string | null;
-    setAdminToLensHandle: boolean;
+    authTokenId: string | null;
+    authTokenType: typeof authTokenTypes[keyof typeof authTokenTypes];
   }
 ) {
-  if (setAdminToLensHandle && !lensValues.handle) {
-    throw new Error(
-      "[create seller]  Lens handle was going to be used but it is not provided"
-    );
-  }
-
-  if (setAdminToLensHandle && !lensProfileId) {
+  if (authTokenType === authTokenTypes.Lens && !authTokenId) {
     throw new Error(
       "[create seller] Lens profile id was going to be used but it is not provided"
     );
@@ -75,13 +63,12 @@ async function createSellerAccount(
   const contractUri = `data:application/json;base64,${contractUriBase64}`;
 
   const tx = await coreSDK.createSeller({
-    admin: setAdminToLensHandle ? lensValues.handle : address,
-    authTokenId: setAdminToLensHandle
-      ? getLensTokenId(lensProfileId || "0x0")
-      : "0",
-    authTokenType: setAdminToLensHandle
-      ? authTokenType.Lens
-      : authTokenType.None,
+    admin: address,
+    authTokenId:
+      authTokenType === authTokenTypes.Lens
+        ? getLensTokenId(authTokenId || "0x0")
+        : "0",
+    authTokenType,
     clerk: address,
     contractUri,
     operator: address,

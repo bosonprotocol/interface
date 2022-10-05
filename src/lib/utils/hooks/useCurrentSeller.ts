@@ -65,7 +65,7 @@ export function useCurrentSeller(address?: string) {
       };
       return Object.fromEntries(
         Object.entries(allProps).filter(([, value]) => value !== null)
-      );
+      ) as Record<keyof typeof allProps, string | null>;
     },
     {
       enabled: !!sellerAddress

@@ -30,10 +30,21 @@ function CreateProduct() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const showInvalidRoleModal = useCallback(() => {
+    showModal<"INVALID_ROLE">(modalTypes.INVALID_ROLE, {
+      title: "Invalid Role",
+      action: "create a product",
+      requiredRole: "operator"
+    });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <CreateProductInner
       initial={initial}
       showCreateProductDraftModal={showCreateProductDraftModal}
+      showInvalidRoleModal={showInvalidRoleModal}
     />
   );
 }

@@ -68,13 +68,18 @@ function onKeyPress(event: React.KeyboardEvent<HTMLFormElement>) {
 interface Props {
   initial: CreateProductForm;
   showCreateProductDraftModal: () => void;
+  showInvalidRoleModal: () => void;
 }
 interface SupportedJuridiction {
   label: string;
   deliveryTime: string;
 }
 
-function CreateProductInner({ initial, showCreateProductDraftModal }: Props) {
+function CreateProductInner({
+  initial,
+  showCreateProductDraftModal,
+  showInvalidRoleModal
+}: Props) {
   const navigate = useKeepQueryParamsNavigate();
   const { chatInitializationStatus } = useChatStatus();
   const [currentStep, setCurrentStep] = useState<number>(FIRST_STEP);
@@ -162,7 +167,8 @@ function CreateProductInner({ initial, showCreateProductDraftModal }: Props) {
     const wizard = createProductSteps({
       setIsPreviewVisible,
       chatInitializationStatus,
-      showCreateProductDraftModal
+      showCreateProductDraftModal,
+      showInvalidRoleModal
     });
     return {
       currentStep:
@@ -173,7 +179,12 @@ function CreateProductInner({ initial, showCreateProductDraftModal }: Props) {
         wizard?.[currentStep as keyof CreateProductSteps]?.helpSection || null,
       wizardLength: keys(wizard).length - 1
     };
-  }, [chatInitializationStatus, currentStep, showCreateProductDraftModal]);
+  }, [
+    chatInitializationStatus,
+    currentStep,
+    showCreateProductDraftModal,
+    showInvalidRoleModal
+  ]);
 
   const handleNextForm = useCallback(() => {
     if (isPreviewVisible) {

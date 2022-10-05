@@ -11,6 +11,7 @@ import DetailWidget from "./components/DetailWidget";
 import DisputeModal from "./components/DisputeModal/DisputeModal";
 import DisputeResolverModal from "./components/DisputeResolver/DisputeResolverModal";
 import ExchangePolicyDetailsModal from "./components/ExchangePolicyDetails";
+import InvalidRoleModal from "./components/InvalidRoleModal";
 import ManageFunds from "./components/ManageFunds";
 import ProductCreateSuccess from "./components/ProductCreateSuccess";
 import RedeemModal from "./components/RedeemModal/RedeemModal";
@@ -54,7 +55,8 @@ export const MODAL_TYPES = {
   TRANSACTION_SUBMITTED: "TRANSACTION_SUBMITTED",
   CREATE_PROFILE: "CREATE_PROFILE",
   EXCHANGE_POLICY_DETAILS: "EXCHANGE_POLICY_DETAILS",
-  DISPUTE_RESOLUTION_MODAL: "DISPUTE_RESOLUTION_MODAL"
+  DISPUTE_RESOLUTION_MODAL: "DISPUTE_RESOLUTION_MODAL",
+  INVALID_ROLE: "INVALID_ROLE"
 } as const;
 
 export const MODAL_COMPONENTS = {
@@ -84,5 +86,6 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.TRANSACTION_SUBMITTED]: TransactionSubmittedModal,
   [MODAL_TYPES.CREATE_PROFILE]: CreateProfileModal,
   [MODAL_TYPES.EXCHANGE_POLICY_DETAILS]: ExchangePolicyDetailsModal,
-  [MODAL_TYPES.DISPUTE_RESOLUTION_MODAL]: DisputeResolverModal
+  [MODAL_TYPES.DISPUTE_RESOLUTION_MODAL]: DisputeResolverModal,
+  [MODAL_TYPES.INVALID_ROLE]: InvalidRoleModal
 } as const;

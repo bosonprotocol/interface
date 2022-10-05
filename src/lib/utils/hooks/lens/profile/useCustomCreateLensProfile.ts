@@ -31,7 +31,8 @@ export default function useCustomCreateLensProfile({
   const {
     data,
     refetch: loginWithLens,
-    isLoading: lensLoginLoading
+    isLoading: lensLoginLoading,
+    isError: lensLoginError
   } = useLensLogin({ address }, { enabled: false });
   const { accessToken } = data || {};
 
@@ -61,7 +62,8 @@ export default function useCustomCreateLensProfile({
     data: createdProfileId,
     isFetched,
     refetch: createProfile,
-    isLoading: isCreatingLensProfile
+    isLoading: isCreatingLensProfile,
+    isError: isCreateLensProfileError
   } = useCreateLensProfile(
     {
       handle: values.handle || "",
@@ -93,7 +95,8 @@ export default function useCustomCreateLensProfile({
     data: profileMetadataData,
     refetch: setMetadata,
     isFetched: isMetadataFetched,
-    isLoading: isSettingLensMetadata
+    isLoading: isSettingLensMetadata,
+    isError: isSetLensMetadataError
   } = useSetLensProfileMetadata(
     {
       profileId: createdProfileId || "",
@@ -171,6 +174,8 @@ export default function useCustomCreateLensProfile({
     getProfile,
     profileData,
     isLoading:
-      lensLoginLoading || isCreatingLensProfile || isSettingLensMetadata
+      lensLoginLoading || isCreatingLensProfile || isSettingLensMetadata,
+    isError:
+      lensLoginError || isCreateLensProfileError || isSetLensMetadataError
   };
 }
