@@ -12,7 +12,6 @@ import { colors } from "../../../lib/styles/colors";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import { Disputes } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 import { useModal } from "../../modal/useModal";
 import Price from "../../price";
 import PaginationPages from "../../seller/common/PaginationPages";
@@ -37,7 +36,6 @@ interface Props {
 }
 
 export default function DisputesTable({ disputes }: Props) {
-  const coreSDK = useCoreSDK();
   const navigate = useKeepQueryParamsNavigate();
   const { showModal, modalTypes } = useModal();
   const columns = useMemo(
