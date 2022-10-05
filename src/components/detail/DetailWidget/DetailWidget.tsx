@@ -7,14 +7,12 @@ import {
 import dayjs from "dayjs";
 import { BigNumber, ethers } from "ethers";
 import { ArrowRight, ArrowSquareOut, Check, Question } from "phosphor-react";
-import qs from "query-string";
 import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
 import { useAccount, useBalance, useSigner } from "wagmi";
 
 import { CONFIG } from "../../../lib/config";
-import { AccountQueryParameters } from "../../../lib/routing/parameters";
 import { BosonRoutes } from "../../../lib/routing/routes";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
@@ -443,14 +441,18 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               alignItems="center"
               justifyContent="space-between"
               style={{ margin: "-1rem 0 1rem 0", cursor: "pointer" }}
-              onClick={() =>
-                navigate({
-                  pathname: `${BosonRoutes.YourAccount}`,
-                  search: qs.stringify({
-                    [AccountQueryParameters.manageFunds]: "true"
-                  })
-                })
-              }
+              onClick={() => {
+                if (exchange) {
+                  showModal(
+                    modalTypes.EXPIRE_VOUCHER_MODAL,
+                    {
+                      title: "Expire Voucher",
+                      exchange
+                    },
+                    "auto"
+                  );
+                }
+              }}
             >
               <Typography
                 tag="p"

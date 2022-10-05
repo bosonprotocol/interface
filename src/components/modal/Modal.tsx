@@ -136,6 +136,7 @@ const Wrapper = styled.div<{
       case "FINANCE_DEPOSIT_MODAL":
       case "MANAGE_FUNDS_MODAL":
       case "DISPUTE_RESOLUTION_MODAL":
+      case "EXPIRE_VOUCHER_MODAL":
         return css`
           ${breakpoint.xs} {
             max-width: 31.25rem;
@@ -205,6 +206,8 @@ const Content = styled.div<{
       case "MANAGE_FUNDS_MODAL":
       case "DISPUTE_RESOLUTION_MODAL":
         return "0 2rem 2rem 2rem";
+      case "EXPIRE_VOUCHER_MODAL":
+        return "2rem 0";
       default:
         return "2rem";
     }
