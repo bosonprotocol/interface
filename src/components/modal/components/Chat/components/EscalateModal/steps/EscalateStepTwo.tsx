@@ -36,6 +36,7 @@ const Container = styled.div`
     margin-bottom: 1rem;
   }
 `;
+
 export const FormModel = {
   formFields: {
     message: {
@@ -44,10 +45,16 @@ export const FormModel = {
       placeholder:
         "“I, 0xabc123, wish to escalate the dispute relating to exchange with ID: X”"
     },
+    email_test: {
+      name: "email",
+      requiredErrorMessage: "This field is required",
+      value: "disputes-test@redeemeum.com",
+      disabled: true
+    },
     email: {
       name: "email",
       requiredErrorMessage: "This field is required",
-      value: "disputes@bosonprotocol.io",
+      value: "disputes@redeemeum.com",
       disabled: true
     },
     exchangeId: {
@@ -69,6 +76,12 @@ export const FormModel = {
       name: "confirm",
       requiredErrorMessage: "This field must be checked",
       text: "I confirm that I've sent the required email to the Dispute Resolver."
+    },
+    buyerAddress: {
+      name: "buyerAddress",
+      requiredErrorMessage: "This field is required",
+      text: "0x000",
+      disabled: true
     }
   }
 };
@@ -83,6 +96,9 @@ const validationSchemaPerStep = [
     [FormModel.formFields.exchangeId.name]: Yup.string()
       .trim()
       .required(FormModel.formFields.exchangeId.requiredErrorMessage),
+    [FormModel.formFields.buyerAddress.name]: Yup.string()
+      .trim()
+      .required(FormModel.formFields.buyerAddress.requiredErrorMessage),
     [FormModel.formFields.disputeId.name]: Yup.string()
       .trim()
       .required(FormModel.formFields.disputeId.requiredErrorMessage),
@@ -103,6 +119,11 @@ interface Props {
 }
 function EscalateStepTwo({ exchange, refetch }: Props) {
   const { hideModal, showModal } = useModal();
+  const emailFormField =
+    CONFIG.envName === "production"
+      ? FormModel.formFields.email
+      : FormModel.formFields.email_test;
+
   const coreSDK = useCoreSDK();
 
   const [activeStep, setActiveStep] = useState<number>(0);
@@ -121,16 +142,19 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
     () => ({
       [FormModel.formFields.message
         .name]: `I, ${address}, wish to escalate the dispute relating to exchange with ID: ${exchange.id}`,
-      [FormModel.formFields.email.name]: FormModel.formFields.email.value,
+      [emailFormField.name]: emailFormField.value,
       [FormModel.formFields.exchangeId.name]: `Exchange ID: ${exchange?.id}`,
       [FormModel.formFields.disputeId.name]: `Dispute ID: ${
         exchange?.dispute?.id || exchange?.id
       }`,
       [FormModel.formFields.signature.name]: `Signature: ${signature}`,
+      [FormModel.formFields.buyerAddress
+        .name]: `Buyer address: ${exchange.buyer.wallet}`,
       [FormModel.formFields.confirm.name]: false
     }),
-    [signature, exchange, address]
+    [signature, exchange, address, emailFormField]
   );
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const formRef = useRef<FormikProps<any> | null>(null);
 
@@ -228,7 +252,7 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
                     your identity.
                   </Typography>
                   <FormField theme="white" title="Message">
-                    <Textarea {...FormModel.formFields.message} />
+                    <Textarea {...FormModel.formFields.message} disabled />
                   </FormField>
                   <Button
                     theme="bosonSecondaryInverse"
@@ -271,11 +295,12 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
                     theme="white"
                     title="Email Address"
                     valueToCopy={{
-                      [FormModel.formFields.email.name]: values?.email || ""
+                      [emailFormField.name]: values?.email || ""
                     }}
                   >
-                    <Input {...FormModel.formFields.email} />
+                    <Input {...emailFormField} />
                   </FormField>
+
                   <FormField
                     theme="white"
                     title="Authentication message"
@@ -284,12 +309,24 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
                         values?.exchangeId || "",
                       [FormModel.formFields.disputeId.name]:
                         values?.disputeId || "",
+                      [FormModel.formFields.buyerAddress.name]:
+                        values?.buyerAddress ? values?.buyerAddress : "",
+                      [`Unsigned message: ${FormModel.formFields.message.name}`]:
+                        values?.message
+                          ? `Unsigned message: ${values?.message}`
+                          : "",
                       [FormModel.formFields.signature.name]:
                         values?.signature || ""
                     }}
                   >
                     <Input {...FormModel.formFields.exchangeId} />
                     <Input {...FormModel.formFields.disputeId} />
+                    <Input {...FormModel.formFields.buyerAddress} disabled />
+                    <Input
+                      {...FormModel.formFields.message}
+                      prefix="Unsigned message:"
+                      disabled
+                    />
                     <Input {...FormModel.formFields.signature} />
                   </FormField>
                   <FormField theme="white" title="Chat transcript">

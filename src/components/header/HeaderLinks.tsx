@@ -203,7 +203,7 @@ export default function HeaderLinks({
         {!!disputeResolverId &&
           checkIfUserHaveRole(roles, [UserRoles.DisputeResolver], true) && (
             <LinkWithQuery to={`${BosonRoutes.DRAdmin}/disputes`}>
-              Dispute Centre
+              Dispute Admin
             </LinkWithQuery>
           )}
       </Links>

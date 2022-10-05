@@ -4,6 +4,7 @@ export interface BaseProps {
   name: string;
   placeholder?: string;
   disabled?: boolean;
+  prefix?: string;
 }
 
 export interface DatepickerProps extends BaseProps {

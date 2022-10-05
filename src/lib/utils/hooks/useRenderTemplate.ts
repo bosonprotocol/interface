@@ -9,6 +9,7 @@ import { useIpfsStorage } from "./useIpfsStorage";
 
 type OfferFieldsFragment = subgraph.OfferFieldsFragment;
 type AdditionalOfferMetadata = offers.AdditionalOfferMetadata;
+type ProductV1MetadataFields = subgraph.ProductV1MetadataEntity;
 
 export function useRenderTemplate(
   offerId: string | undefined,
@@ -118,13 +119,22 @@ function buildOfferData(offerFields: OfferFieldsFragment): {
       metadataUri: offerFields.metadataUri as string
     },
     offerMetadata: {
-      // TODO: to be completed in next PR (temporary fix to restore compatibility with CC)
-      sellerContactMethod: "TBD",
-      disputeResolverContactMethod: "TBD",
-      escalationDeposit: "0",
-      escalationResponsePeriodInSec: "0",
-      sellerTradingName: "TBD",
-      returnPeriodInDays: 0
+      sellerContactMethod:
+        (offerFields.metadata as ProductV1MetadataFields)?.exchangePolicy
+          ?.sellerContactMethod || "undefined",
+      disputeResolverContactMethod:
+        (offerFields.metadata as ProductV1MetadataFields)?.exchangePolicy
+          ?.disputeResolverContactMethod || "undefined",
+      escalationDeposit:
+        offerFields.disputeResolutionTerms.buyerEscalationDeposit,
+      escalationResponsePeriodInSec:
+        offerFields.disputeResolutionTerms.escalationResponsePeriod,
+      sellerTradingName:
+        (offerFields.metadata as ProductV1MetadataFields)?.productV1Seller
+          ?.name || "undefined",
+      returnPeriodInDays:
+        (offerFields.metadata as ProductV1MetadataFields)?.shipping
+          ?.returnPeriodInDays || 0
     }
   };
 }
