@@ -14,7 +14,6 @@ import { Disputes } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useModal } from "../../modal/useModal";
 import Price from "../../price";
-import { useConvertedPriceFunction } from "../../price/useConvertedPriceFunction";
 import PaginationPages from "../../seller/common/PaginationPages";
 import Tooltip from "../../tooltip/Tooltip";
 import Button from "../../ui/Button";
@@ -40,7 +39,6 @@ export default function DisputesTable({ disputes }: Props) {
   const navigate = useKeepQueryParamsNavigate();
   const { showModal, modalTypes } = useModal();
 
-  const convertPrice = useConvertedPriceFunction();
   const columns = useMemo(
     () => [
       {
@@ -182,14 +180,16 @@ export default function DisputesTable({ disputes }: Props) {
                 theme="primary"
                 size="small"
                 onClick={async () => {
-                  const priceInDollar =
-                    convertPrice(dispute.exchange.offer)?.converted || "0";
                   showModal(
                     modalTypes.DISPUTE_RESOLUTION_DECIDE_MODAL,
                     {
                       title: `Decide Dispute: ${dispute.exchange.id}`,
                       exchangeId: dispute.exchange.id,
-                      priceInDollar: priceInDollar
+                      currencySymbol:
+                        dispute.exchange.offer?.exchangeToken?.symbol ?? "",
+                      value: dispute.exchange.offer?.price ?? "",
+                      decimals:
+                        dispute.exchange.offer?.exchangeToken?.decimals ?? ""
                     },
                     "auto",
                     "dark"

@@ -1,9 +1,11 @@
+import { Currencies, CurrencyLogo } from "@bosonprotocol/react-kit";
 import { useState } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../../../lib/styles/colors";
 import { useCoreSDK } from "../../../../lib/utils/useCoreSdk";
 import { Spinner } from "../../../loading/Spinner";
+import { useConvertedPrice } from "../../../price/useConvertedPrice";
 import Grid from "../../../ui/Grid";
 import Typography from "../../../ui/Typography";
 import { useModal } from "../../useModal";
@@ -16,12 +18,16 @@ import {
 
 interface Props {
   exchangeId: string;
-  priceInDollar: string;
+  currencySymbol: string;
+  value: string;
+  decimals: string;
 }
 
 export default function DisputeResolverDecideModal({
   exchangeId,
-  priceInDollar
+  currencySymbol,
+  value,
+  decimals
 }: Props) {
   const [disputePercentage, setDisputePercentage] = useState<string>("0");
   const [isSubmitingDispute, setIsSubmitingDispute] = useState<boolean>(false);
@@ -56,6 +62,12 @@ export default function DisputeResolverDecideModal({
     }
   };
 
+  const price = useConvertedPrice({
+    value,
+    decimals,
+    symbol: currencySymbol
+  });
+
   return (
     <Grid flexDirection="column" alignItems="flex-start" gap="1.5rem">
       <Typography tag="p" margin="0" $fontSize="0.75rem" fontWeight="bold">
@@ -71,14 +83,21 @@ export default function DisputeResolverDecideModal({
             </Typography>
           </div>
         </InputWrapper>
-        <MaxLimit>Max Limit {priceInDollar} USDC</MaxLimit>
+        <MaxLimit>
+          <>
+            Max Limit {price.price}
+            <CurrencyLogo currency={currencySymbol as Currencies} size={18} />
+          </>
+        </MaxLimit>
       </AmountWrapper>
       <Grid>
         <div>
           <RefundAmount>
             Refund Amount:{" "}
-            {(parseFloat(priceInDollar) * parseFloat(disputePercentage)) / 100}{" "}
-            USDC
+            {price.price &&
+              (parseFloat(price.price) * parseFloat(disputePercentage)) /
+                100}{" "}
+            <CurrencyLogo currency={currencySymbol as Currencies} size={18} />
           </RefundAmount>
         </div>
         <CTAButton
@@ -110,6 +129,10 @@ const RefundAmount = styled.span`
   font-size: 0.75rem;
   line-height: 150%;
   color: ${colors.white};
+  svg {
+    vertical-align: bottom;
+    margin-left: 0.25rem;
+  }
 `;
 
 const MaxLimit = styled.span`
@@ -119,4 +142,8 @@ const MaxLimit = styled.span`
   text-align: right;
   color: ${colors.white};
   opacity: 0.4;
+  svg {
+    vertical-align: bottom;
+    margin-left: 0.25rem;
+  }
 `;
