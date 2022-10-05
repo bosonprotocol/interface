@@ -68,6 +68,7 @@ export default function CreateBosonLensAccountSummary({
     {
       address: address || "",
       royaltyPercentage: bosonAccount.secondaryRoyalties || 0,
+      addressForRoyaltyPayment: bosonAccount.addressForRoyaltyPayment || "",
       lensValues: values,
       authTokenId: lensProfileToSubmit?.id,
       authTokenType: authTokenTypes.Lens

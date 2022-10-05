@@ -12,7 +12,7 @@ export async function blobToBase64(blob: Blob): Promise<string> {
 
 export const loadAndSetImage = (
   image: File,
-  callback: (base64Uri: string) => unknown
+  callback: (base64Uri: string) => void
 ) => {
   const reader = new FileReader();
   reader.onloadend = (e: ProgressEvent<FileReader>) => {
@@ -20,6 +20,14 @@ export const loadAndSetImage = (
     callback(prev);
   };
   reader.readAsDataURL(image);
+};
+
+export const loadAndSetImagePromise = (image: File) => {
+  return new Promise<Parameters<Parameters<typeof loadAndSetImage>[1]>[0]>(
+    (resolve) => {
+      loadAndSetImage(image, resolve);
+    }
+  );
 };
 
 export function dataURItoBlob(dataURI: string) {

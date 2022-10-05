@@ -4,6 +4,7 @@ import { useQuery } from "react-query";
 import { authTokenTypes } from "../../../../components/modal/components/CreateProfile/Lens/const";
 import { getLensTokenId } from "../../../../components/modal/components/CreateProfile/Lens/utils";
 import { LensProfileType } from "../../../../components/modal/components/CreateProfile/Lens/validationSchema";
+import { loadAndSetImagePromise } from "../../base64";
 import { useCoreSDK } from "../../useCoreSdk";
 
 type Props = Parameters<typeof createSellerAccount>[1];
@@ -31,12 +32,14 @@ async function createSellerAccount(
   coreSDK: CoreSDK,
   {
     address,
+    addressForRoyaltyPayment,
     royaltyPercentage,
     lensValues,
     authTokenId,
     authTokenType
   }: {
     address: string;
+    addressForRoyaltyPayment: string;
     royaltyPercentage: number;
     lensValues: LensProfileType;
     authTokenId: string | null;
@@ -48,20 +51,24 @@ async function createSellerAccount(
       "[create seller] Lens profile id was going to be used but it is not provided"
     );
   }
+  const logoUrl = lensValues?.logo?.[0]
+    ? await loadAndSetImagePromise(lensValues.logo[0])
+    : "";
+
   // https://docs.opensea.io/docs/contract-level-metadata
   const contractUriBase64 = window.btoa(
     JSON.stringify({
       name: lensValues.name,
       description: lensValues.description,
-      image: "",
-      external_link: "",
-      seller_fee_basis_points: 0,
-      fee_recipient: ""
+      image: logoUrl,
+      external_link: window.origin,
+      seller_fee_basis_points: royaltyPercentage,
+      fee_recipient: addressForRoyaltyPayment
     })
   );
   // https://www.kevfoo.com/2022/05/opensea-contracturi/
   const contractUri = `data:application/json;base64,${contractUriBase64}`;
-
+  const royaltyPercentageTimes100 = royaltyPercentage * 100;
   const tx = await coreSDK.createSeller({
     admin: address,
     authTokenId:
@@ -72,7 +79,7 @@ async function createSellerAccount(
     clerk: address,
     contractUri,
     operator: address,
-    royaltyPercentage: royaltyPercentage.toString(),
+    royaltyPercentage: royaltyPercentageTimes100.toString(),
     treasury: address
   });
   await tx.wait();
