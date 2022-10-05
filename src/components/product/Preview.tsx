@@ -174,6 +174,30 @@ export default function Preview({ togglePreview, seller }: Props) {
     }
   } as unknown as Offer;
 
+  const productAttributes = values.productInformation?.attributes?.filter(
+    (attribute: { name: string; value: string }) => {
+      return attribute.name.length > 0;
+    }
+  );
+  productAttributes.push({ name: "Token Type", value: "BOSON rNFT" });
+  productAttributes.push({
+    name: "Redeemable At",
+    value: values.shippingInfo?.addUrl || window.origin
+  });
+  productAttributes.push({
+    name: "Redeemable Until",
+    value: new Date(voucherRedeemableUntilDateInMS).toString(),
+    display_type: "date"
+  });
+  productAttributes.push({
+    name: "Seller",
+    value: values.createYourProfile?.name || ""
+  });
+  productAttributes.push({
+    name: "Offer Category",
+    value: values.productType?.productType?.toUpperCase() || ""
+  });
+
   return (
     <PreviewWrapper>
       <PreviewWrapperContent>
@@ -221,9 +245,7 @@ export default function Preview({ togglePreview, seller }: Props) {
                 >
                   {values.productInformation.description}
                 </Typography>
-                <DetailTable
-                  data={values?.productInformation?.attributes ?? []}
-                />
+                <DetailTable data={productAttributes ?? []} />
               </div>
               <div>
                 <Typography tag="h3">About the creator</Typography>

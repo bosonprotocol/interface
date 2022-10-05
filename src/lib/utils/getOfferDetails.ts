@@ -41,7 +41,10 @@ export const getOfferDetails = (offer: Offer): IGetOfferDetails => {
   const productData =
     offer.metadata?.attributes?.map((attr: any) => ({
       name: attr.traitType,
-      value: attr.value
+      value:
+        attr.displayType === "date"
+          ? new Date(parseInt(attr.value)).toUTCString()
+          : attr.value
     })) || [];
   const artist = offer.metadata?.productV1Seller || null;
   const artistDescription = offer.metadata?.productV1Seller?.description || "";

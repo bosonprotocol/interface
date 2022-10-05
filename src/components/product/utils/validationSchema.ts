@@ -147,6 +147,7 @@ export const shippingInfoValidationSchema = Yup.object({
     height: Yup.string(),
     width: Yup.string(),
     length: Yup.string(),
+    addUrl: Yup.string(),
     measurementUnit: Yup.mixed().required(validationMessage.required),
     country: Yup.object()
       .shape({
