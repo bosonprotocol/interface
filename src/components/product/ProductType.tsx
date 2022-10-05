@@ -6,7 +6,9 @@ import { breakpointNumbers } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { useCurrentSeller } from "../../lib/utils/hooks/useCurrentSeller";
 import { FormField } from "../form";
+import { authTokenTypes } from "../modal/components/CreateProfile/Lens/const";
 import ProfileMultiSteps from "../modal/components/CreateProfile/Lens/ProfileMultiSteps";
+import { getLensTokenIdDecimal } from "../modal/components/CreateProfile/Lens/utils";
 import { useModal } from "../modal/useModal";
 import Button from "../ui/Button";
 import Grid from "../ui/Grid";
@@ -94,21 +96,42 @@ export default function ProductType({
     useCreateForm();
   const { showModal } = useModal();
 
-  // const { seller: adminSeller, lens } = useCurrentSeller(
-  //   adminAddressOfMySellerOrAdminLensHandle
-  // );
-  const { seller: currentSeller, sellerType: currentRoles } =
-    useCurrentSeller();
+  const {
+    seller: currentSeller,
+    sellerType: currentRoles,
+    isLoading
+  } = useCurrentSeller();
+  const {
+    seller: adminSeller,
+    lens,
+    isLoading: isAdminLoading
+  } = useCurrentSeller({
+    address: currentSeller.admin
+  });
+
   const isOperator = currentRoles?.find((role) => role === "operator");
-  const isAdminLinkedToLens = false; //adminSeller === lens.handle;
+  const isAdminLinkedToLens =
+    adminSeller.authTokenType === authTokenTypes.Lens &&
+    adminSeller.authTokenId === getLensTokenIdDecimal(lens.id).toString();
   const hasValidAdminAccount =
     (CONFIG.lens.enabled && isAdminLinkedToLens) || !CONFIG.lens.enabled;
   // const { isOperator } = useSellerRoles({});
   // console.log("useCurrentSellerId data", isOperator);
   // const { adminSeller } = useAdminSeller({ showErrors: false });
   // const hasAdminAccount = !!adminSeller; // correct lens admin account or regular admin account
+
+  const isSeller = !!Object.keys(currentSeller).length;
+  console.log({
+    currentSeller,
+    hasValidAdminAccount,
+    isOperator,
+    isSeller
+  });
   useEffect(() => {
-    if (!currentSeller || !hasValidAdminAccount) {
+    if (isLoading || isAdminLoading) {
+      return;
+    }
+    if (!isSeller || !hasValidAdminAccount) {
       showModal(
         "CREATE_PROFILE",
         {
@@ -147,9 +170,17 @@ export default function ProductType({
     } else if (!isOperator) {
       showInvalidRoleModal();
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showCreateProductDraftModal]);
+  }, [
+    hasValidAdminAccount,
+    isOperator,
+    isSeller,
+    isLoading,
+    isAdminLoading,
+    showCreateProductDraftModal,
+    showInvalidRoleModal,
+    values
+  ]);
 
   return (
     <ContainerProductPage>

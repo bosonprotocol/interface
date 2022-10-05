@@ -29,6 +29,10 @@ export const getLensCoverPictureUrl = (profile: Profile) => {
   return (profile?.coverPicture as MediaSet)?.original.url || "";
 };
 
-export const getLensTokenId = (lenseProfileId: Profile["id"]) => {
+export const getLensTokenIdDecimal = (lenseProfileId: Profile["id"]) => {
   return parseInt(lenseProfileId, 16);
+};
+
+export const getLensTokenIdHex = (lenseProfileIdDecimal: Profile["id"]) => {
+  return "0x" + Number(lenseProfileIdDecimal).toString(16).padStart(2, "0");
 };

@@ -1,8 +1,9 @@
 import { CoreSDK } from "@bosonprotocol/react-kit";
+import { ethers } from "ethers";
 import { useQuery } from "react-query";
 
 import { authTokenTypes } from "../../../../components/modal/components/CreateProfile/Lens/const";
-import { getLensTokenId } from "../../../../components/modal/components/CreateProfile/Lens/utils";
+import { getLensTokenIdDecimal } from "../../../../components/modal/components/CreateProfile/Lens/utils";
 import { LensProfileType } from "../../../../components/modal/components/CreateProfile/Lens/validationSchema";
 import { loadAndSetImagePromise } from "../../base64";
 import { useCoreSDK } from "../../useCoreSdk";
@@ -70,10 +71,13 @@ async function createSellerAccount(
   const contractUri = `data:application/json;base64,${contractUriBase64}`;
   const royaltyPercentageTimes100 = royaltyPercentage * 100;
   const tx = await coreSDK.createSeller({
-    admin: address,
+    admin:
+      authTokenType === authTokenTypes.Lens
+        ? ethers.constants.AddressZero
+        : address,
     authTokenId:
       authTokenType === authTokenTypes.Lens
-        ? getLensTokenId(authTokenId || "0x0")
+        ? getLensTokenIdDecimal(authTokenId || "0x0")
         : "0",
     authTokenType,
     clerk: address,

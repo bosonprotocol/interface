@@ -20,7 +20,7 @@ import {
   getLensCoverPictureUrl,
   getLensEmail,
   getLensProfilePictureUrl,
-  getLensTokenId,
+  getLensTokenIdDecimal,
   getLensWebsite
 } from "../../components/modal/components/CreateProfile/Lens/utils";
 import { useModal } from "../../components/modal/useModal";
@@ -345,7 +345,7 @@ function CreateProductInner({
                 ? getLensWebsite(lensProfile as Profile) || ""
                 : "",
               tokenId: lensProfile
-                ? getLensTokenId(lensProfile.id).toString()
+                ? getLensTokenIdDecimal(lensProfile.id).toString()
                 : "0",
               images: [
                 {

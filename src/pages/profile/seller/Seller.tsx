@@ -56,8 +56,9 @@ export default function Seller() {
   const { [UrlParameters.sellerId]: sellerId = "" } = useParams();
   const { isLteXS } = useBreakpoints();
 
-  const { isLoading, isError, ...currentSellerByID } =
-    useCurrentSeller(sellerId);
+  const { isLoading, isError, ...currentSellerByID } = useCurrentSeller({
+    sellerId
+  });
 
   const {
     data: sellers = [],

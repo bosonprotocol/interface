@@ -3,32 +3,30 @@ import { useMemo } from "react";
 import { useQuery } from "react-query";
 import { useAccount } from "wagmi";
 
+import { getLensTokenIdHex } from "../../../components/modal/components/CreateProfile/Lens/utils";
 import { fetchSubgraph } from "../core-components/subgraph";
 import useGetLensProfile from "./lens/profile/useGetLensProfile";
 
-const MOCK_VALUES = {
-  admin: "postponed3.test",
-  authTokenId: "1",
-  authTokenType: 1,
-  clerk: "postponed3.test",
-  operator: "postponed3.test",
-  treasury: "postponed3.test"
-};
-export function useCurrentSeller(address?: string) {
+interface Props {
+  address?: string;
+  sellerId?: string;
+}
+
+export function useCurrentSeller({ address, sellerId }: Props = {}) {
   const { address: loggedInUserAddress } = useAccount();
-  const sellerAddress = address || loggedInUserAddress || null;
+  const sellerAddress = address || sellerId || loggedInUserAddress || null;
   const sellerAddressType = useMemo(() => {
     if (sellerAddress) {
-      if (/(0x[a-fA-F0-9]{40})/g.test(sellerAddress?.toString())) {
-        return "ETH";
+      if (address) {
+        return "ADDRESS";
       }
-      if (isNaN(Number(sellerAddress))) {
-        return "LENS";
+      if (sellerId) {
+        return "SELLER_ID";
       }
-      return "ID";
+      return "ADDRESS";
     }
     return null;
-  }, [sellerAddress]);
+  }, [address, sellerAddress, sellerId]);
 
   const resultByAddress = useQuery(
     ["current-seller-data-by-address", { address: sellerAddress }],
@@ -76,7 +74,7 @@ export function useCurrentSeller(address?: string) {
       );
     },
     {
-      enabled: !!sellerAddress && sellerAddressType !== "ID"
+      enabled: !!sellerAddress && sellerAddressType === "ADDRESS"
     }
   );
 
@@ -106,30 +104,30 @@ export function useCurrentSeller(address?: string) {
         { sellerId: sellerAddress }
       );
       const allProps = {
-        admin: result?.sellers[0]?.admin || null,
-        clerk: result?.sellers[0]?.clerk || null,
-        operator: result?.sellers[0]?.operator || null,
-        treasury: result?.sellers[0]?.treasury || null
+        admin: result?.sellers[0]?.sellerId || null,
+        clerk: result?.sellers[0]?.sellerId || null,
+        operator: result?.sellers[0]?.sellerId || null,
+        treasury: result?.sellers[0]?.sellerId || null
       };
       return Object.fromEntries(
         Object.entries(allProps).filter(([, value]) => value !== null)
       );
     },
     {
-      enabled: !!sellerAddress && sellerAddressType === "ID"
+      enabled: !!sellerAddress && sellerAddressType === "SELLER_ID"
     }
   );
-
+  console.log("resultById", resultById, "resultByAddress", resultByAddress);
   const results = resultById?.data || resultByAddress?.data;
-
-  const sellerId =
-    sellerAddressType === "ID"
+  console.log("results", results);
+  const sellerIdToQuery =
+    sellerAddressType === "SELLER_ID"
       ? sellerAddress
-      : (results && Object.values(results)[0]) ?? null;
+      : (results && Object.values(results)[0]) /* seller id */ ?? null;
   const sellerType = useMemo(() => results && Object.keys(results), [results]);
 
   const sellerById = useQuery(
-    ["current-seller-by-id", { address }],
+    ["current-seller-by-id", { address: sellerIdToQuery }],
     async () => {
       const result = await fetchSubgraph<{
         sellers: {
@@ -153,26 +151,17 @@ export function useCurrentSeller(address?: string) {
             }
           }
         `,
-        { sellerId }
+        { sellerId: sellerIdToQuery }
       );
 
-      const currentSeller = MOCK_VALUES
-        ? MOCK_VALUES
-        : result?.sellers?.[0] || null;
+      const currentSeller = result?.sellers?.[0] || null;
 
-      const currentSellerRoles = MOCK_VALUES
-        ? {
-            admin: "postponed3.test",
-            clerk: "postponed3.test",
-            operator: "postponed3.test",
-            treasury: "postponed3.test"
-          }
-        : {
-            admin: currentSeller?.admin || null,
-            clerk: currentSeller?.clerk || null,
-            operator: currentSeller?.operator || null,
-            treasury: currentSeller?.treasury || null
-          };
+      const currentSellerRoles = {
+        admin: currentSeller?.admin || null,
+        clerk: currentSeller?.clerk || null,
+        operator: currentSeller?.operator || null,
+        treasury: currentSeller?.treasury || null
+      };
       const currentSellerRolesWithoutNull = Object.fromEntries(
         Object.entries(currentSellerRoles).filter(([, value]) => value !== null)
       );
@@ -186,22 +175,17 @@ export function useCurrentSeller(address?: string) {
       };
     },
     {
-      enabled: !!sellerId
+      enabled: !!sellerIdToQuery
     }
   );
-  const sellerVales = useMemo(() => sellerById?.data || null, [sellerById]);
+  const sellerValues = useMemo(() => sellerById?.data || null, [sellerById]);
 
   const resultLens = useGetLensProfile(
     {
-      handle:
-        sellerAddressType === "LENS"
-          ? sellerAddress || ""
-          : sellerAddressType === "ID"
-          ? sellerVales?.admin || ""
-          : sellerVales?.sellerAddress || ""
+      profileId: getLensTokenIdHex(sellerValues?.authTokenId)
     },
     {
-      enabled: !!sellerAddress && !!sellerVales && !!sellerAddressType
+      enabled: !!sellerAddress && !!sellerValues && !!sellerAddressType
     }
   );
 
@@ -219,7 +203,7 @@ export function useCurrentSeller(address?: string) {
     sellerId,
     sellerType,
     seller: {
-      ...sellerVales
+      ...sellerValues
     },
     lens: {
       ...(resultLens?.data ?? {})

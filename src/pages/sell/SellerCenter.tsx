@@ -44,12 +44,12 @@ const SellerCenterWithData = WithSellerData<SellerInsideProps>(SellerCenter);
 function SellerCenterWrapper() {
   const navigate = useKeepQueryParamsNavigate();
   const { isLoading, sellerId: userSellerId } = useCurrentSeller();
-  const mockSellerId = useCurrentSeller(
-    "0x6967d7AcD1EC5f210E9590666498e0cC5D13a843"
-  );
+  const mockSellerId = useCurrentSeller({
+    address: "0x6967d7AcD1EC5f210E9590666498e0cC5D13a843"
+  });
   console.log("mockSellerId", mockSellerId);
 
-  const sellerId = userSellerId;
+  const sellerId = userSellerId || "";
 
   if (isLoading) {
     return (

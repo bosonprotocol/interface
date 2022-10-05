@@ -1,8 +1,9 @@
 import { CoreSDK } from "@bosonprotocol/react-kit";
+import { ethers } from "ethers";
 import { useQuery } from "react-query";
 
 import { authTokenTypes } from "../../../../components/modal/components/CreateProfile/Lens/const";
-import { getLensTokenId } from "../../../../components/modal/components/CreateProfile/Lens/utils";
+import { getLensTokenIdDecimal } from "../../../../components/modal/components/CreateProfile/Lens/utils";
 import { useCoreSDK } from "../../useCoreSdk";
 
 type Props = Parameters<typeof updateSellerAccount>[1];
@@ -48,10 +49,13 @@ async function updateSellerAccount(
 ) {
   await coreSDK.updateSeller({
     id: sellerId,
-    admin,
+    admin:
+      authTokenType === authTokenTypes.Lens
+        ? ethers.constants.AddressZero
+        : admin,
     authTokenId:
       authTokenType === authTokenTypes.Lens
-        ? getLensTokenId(authTokenId || "0x0")
+        ? getLensTokenIdDecimal(authTokenId || "0x0")
         : "0",
     authTokenType,
     clerk,

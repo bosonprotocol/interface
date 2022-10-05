@@ -47,17 +47,8 @@ export default function CreateBosonLensAccountSummary({
   const { data: admins } = useSellers({
     admin: address
   });
-  const { data: clerks } = useSellers({
-    clerk: address
-  });
-  const { data: operator } = useSellers({
-    operator: address
-  });
-  const { data: treasuries } = useSellers({
-    treasury: address
-  });
-  const seller = admins?.[0] || operator?.[0] || clerks?.[0] || treasuries?.[0];
-  const hasSellerAccount = !!seller;
+  const seller = admins?.[0];
+  const hasAdminSellerAccount = !!seller;
   const hasLensHandleLinked = seller?.authTokenType === authTokenTypes.Lens;
   const alreadyHasRoyaltiesDefined = false; // TODO: seller.royalties;
   const {
@@ -80,7 +71,8 @@ export default function CreateBosonLensAccountSummary({
   const {
     isFetched: isUpdatedSellerAccount,
     isLoading: isUpdatingSellerAccount,
-    refetch: updateSellerAccountWithArgs
+    refetch: updateSellerAccountWithArgs,
+    isError: isUpdateSellerError
   } = useUpdateSeller(
     {
       admin: address || "",
@@ -422,7 +414,7 @@ export default function CreateBosonLensAccountSummary({
             </Typography>
           </Grid>
         </Grid>
-        {isCreateLensError && (
+        {(isCreateLensError || isUpdateSellerError) && (
           <SimpleError
             errorMessage={`There has been an error while creating your Lens profile, please
           contact us on ${
@@ -432,7 +424,7 @@ export default function CreateBosonLensAccountSummary({
         )}
         <CTAs
           hasLensHandle={!!lensProfileToSubmit}
-          hasSellerAccount={hasSellerAccount}
+          hasAdminSellerAccount={hasAdminSellerAccount}
           hasLensHandleLinked={hasLensHandleLinked}
           createSellerAccount={createSellerAccountWithArgs}
           createLensProfile={createLensProfile}
@@ -452,7 +444,7 @@ export default function CreateBosonLensAccountSummary({
 
 interface CTAsProps {
   hasLensHandle: boolean;
-  hasSellerAccount: boolean;
+  hasAdminSellerAccount: boolean;
   hasLensHandleLinked: boolean;
   createSellerAccount: () => Promise<unknown>;
   createLensProfile: () => void;
@@ -468,7 +460,7 @@ interface CTAsProps {
 
 function CTAs({
   hasLensHandle,
-  hasSellerAccount,
+  hasAdminSellerAccount,
   hasLensHandleLinked,
   createSellerAccount,
   createLensProfile,
@@ -482,7 +474,7 @@ function CTAs({
   onSubmit
 }: CTAsProps) {
   switch (true) {
-    case hasLensHandle && !hasSellerAccount:
+    case hasLensHandle && !hasAdminSellerAccount:
       return (
         <Grid justifyContent="center" gap="2.5rem">
           <Button
@@ -499,7 +491,7 @@ function CTAs({
           </Button>
         </Grid>
       );
-    case !hasLensHandle && !hasSellerAccount:
+    case !hasLensHandle && !hasAdminSellerAccount:
       return (
         <Grid justifyContent="center" gap="2.5rem">
           <Button
@@ -550,7 +542,7 @@ function CTAs({
           </Button>
         </Grid>
       );
-    case !hasLensHandle && hasSellerAccount:
+    case !hasLensHandle && hasAdminSellerAccount:
       return (
         <Grid justifyContent="center" gap="2.5rem">
           <Button
@@ -602,7 +594,7 @@ function CTAs({
           </Button>
         </Grid>
       );
-    case hasLensHandle && hasSellerAccount && !hasLensHandleLinked:
+    case hasLensHandle && hasAdminSellerAccount && !hasLensHandleLinked:
       return (
         <Grid justifyContent="center" gap="2.5rem">
           <Button
