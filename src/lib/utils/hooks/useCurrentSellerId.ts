@@ -7,7 +7,7 @@ import { fetchSubgraph } from "../core-components/subgraph";
 export function useCurrentSellerId() {
   const { address } = useAccount();
   const props = { address };
-  const result = useQuery(["sellers", props], async () => {
+  const result = useQuery(["current-seller-id", props], async () => {
     const result = await fetchSubgraph<{
       admin: {
         sellerId: string;
