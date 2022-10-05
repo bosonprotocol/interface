@@ -164,7 +164,15 @@ export default function DisputesTable({ disputes }: Props) {
                 size="small"
                 style={{ "margin-right": "5px" }}
                 onClick={async () => {
-                  await coreSDK.refuseEscalatedDispute(dispute.exchange.id);
+                  showModal(
+                    modalTypes.DISPUTE_RESOLUTION_REFUSE_MODAL,
+                    {
+                      title: `Refuse to Decide Dispute: ${dispute.exchange.id}`,
+                      exchangeId: dispute.exchange.id
+                    },
+                    "auto",
+                    "dark"
+                  );
                 }}
               >
                 Refuse
@@ -174,7 +182,7 @@ export default function DisputesTable({ disputes }: Props) {
                 size="small"
                 onClick={async () => {
                   showModal(
-                    modalTypes.DISPUTE_RESOLUTION_MODAL,
+                    modalTypes.DISPUTE_RESOLUTION_DECIDE_MODAL,
                     {
                       title: `Resolve dispute ${dispute.exchange.id}`,
                       exchangeId: dispute.exchange.id

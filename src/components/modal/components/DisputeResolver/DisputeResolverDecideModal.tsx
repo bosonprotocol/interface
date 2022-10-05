@@ -16,7 +16,7 @@ interface Props {
   exchangeId: string;
 }
 
-export default function DisputeResolverModal({ exchangeId }: Props) {
+export default function DisputeResolverDecideModal({ exchangeId }: Props) {
   const [disputePercentage, setDisputePercentage] = useState<string>("0");
   const [isSubmitingDispute, setIsSubmitingDispute] = useState<boolean>(false);
   const [isValidValue, setIsValidValue] = useState<boolean>(true);
