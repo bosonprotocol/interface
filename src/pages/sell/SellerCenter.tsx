@@ -43,8 +43,8 @@ const SellerCenterWithData = WithSellerData<SellerInsideProps>(SellerCenter);
 
 function SellerCenterWrapper() {
   const navigate = useKeepQueryParamsNavigate();
-  const { isLoading, sellerId: userSellerId } = useCurrentSeller();
-  const sellerId = userSellerId || "";
+  const currentUser = useCurrentSeller();
+  const { isLoading, sellerId } = currentUser;
 
   if (isLoading) {
     return (
