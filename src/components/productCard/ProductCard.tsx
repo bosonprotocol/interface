@@ -4,7 +4,7 @@ import {
 } from "@bosonprotocol/react-kit";
 import { BigNumber, utils } from "ethers";
 import { CameraSlash } from "phosphor-react";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { generatePath, useLocation } from "react-router-dom";
 import styled from "styled-components";
 
@@ -13,13 +13,11 @@ import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes, OffersRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
-import { ProgressStatus } from "../../lib/types/progressStatus";
 import { MediaSet } from "../../lib/utils/hooks/lens/graphql/generated";
 import { useCurrentSeller } from "../../lib/utils/hooks/useCurrentSeller";
 import { useGetIpfsImage } from "../../lib/utils/hooks/useGetIpfsImage";
 import { useHandleText } from "../../lib/utils/hooks/useHandleText";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import Loading from "../ui/Loading";
 
 interface Props {
   offer: Offer;
@@ -40,11 +38,10 @@ export default function ProductCard({
   dataTestId,
   isHoverDisabled = false
 }: Props) {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const { isLoading: lensIsLoading, lens } = useCurrentSeller({
+  const { lens } = useCurrentSeller({
     sellerId: offer.seller.id
   });
-  const { imageStatus: avatarStatus, imageSrc: avatar } = useGetIpfsImage(
+  const { imageSrc: avatar } = useGetIpfsImage(
     (lens?.picture as MediaSet)?.original?.url
   );
   const { imageStatus, imageSrc } = useGetIpfsImage(offer.metadata.imageUrl);
@@ -85,41 +82,31 @@ export default function ProductCard({
     });
   };
 
-  useEffect(() => {
-    if (!lensIsLoading && avatarStatus !== ProgressStatus.LOADING) {
-      setIsLoading(false);
-    }
-  }, [lensIsLoading, avatarStatus]);
-
   return (
     <ProductCardWrapper>
-      {isLoading ? (
-        <Loading />
-      ) : (
-        <BosonProductCard
-          dataCard="product-card"
-          dataTestId={dataTestId}
-          productId={offer.id}
-          onCardClick={handleOnCardClick}
-          title={offer.metadata.name}
-          avatarName={
-            lens?.handle ? lens?.handle : `Seller ID: ${offer.seller.id}`
+      <BosonProductCard
+        dataCard="product-card"
+        dataTestId={dataTestId}
+        productId={offer.id}
+        onCardClick={handleOnCardClick}
+        title={offer.metadata.name}
+        avatarName={
+          lens?.handle ? lens?.handle : `Seller ID: ${offer.seller.id}`
+        }
+        avatar={avatar || mockedAvatar}
+        price={Number(price)}
+        currency={offer.exchangeToken.symbol as Currencies}
+        onAvatarNameClick={handleOnAvatarClick}
+        imageProps={{
+          src: imageSrc,
+          preloadConfig: {
+            status: imageStatus,
+            errorIcon: <CameraSlash size={32} color={colors.white} />
           }
-          avatar={avatar || mockedAvatar}
-          price={Number(price)}
-          currency={offer.exchangeToken.symbol as Currencies}
-          onAvatarNameClick={handleOnAvatarClick}
-          imageProps={{
-            src: imageSrc,
-            preloadConfig: {
-              status: imageStatus,
-              errorIcon: <CameraSlash size={32} color={colors.white} />
-            }
-          }}
-          bottomText={handleText}
-          isHoverDisabled={isHoverDisabled}
-        />
-      )}
+        }}
+        bottomText={handleText}
+        isHoverDisabled={isHoverDisabled}
+      />
     </ProductCardWrapper>
   );
 }

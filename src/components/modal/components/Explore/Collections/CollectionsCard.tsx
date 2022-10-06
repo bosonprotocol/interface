@@ -6,6 +6,7 @@ import { UrlParameters } from "../../../../../lib/routing/parameters";
 import { BosonRoutes } from "../../../../../lib/routing/routes";
 import { colors } from "../../../../../lib/styles/colors";
 import { zIndex } from "../../../../../lib/styles/zIndex";
+import { useCurrentSeller } from "../../../../../lib/utils/hooks/useCurrentSeller";
 import { useKeepQueryParamsNavigate } from "../../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import Grid from "../../../../ui/Grid";
 import Image from "../../../../ui/Image";
@@ -66,6 +67,10 @@ interface Props {
   };
 }
 export default function CollectionsCard({ collection }: Props) {
+  const { lens } = useCurrentSeller({
+    sellerId: collection.id
+  });
+
   const navigate = useKeepQueryParamsNavigate();
   const imagesNumber = 4;
   const images = useMemo(() => {
@@ -119,7 +124,7 @@ export default function CollectionsCard({ collection }: Props) {
             fontWeight="600"
             margin="0 0 0.625rem 0"
           >
-            Seller ID: {collection.id}
+            {lens?.handle ? lens?.handle : `Seller ID: ${collection.id}`}
           </Typography>
           <Grid alignItems="flex-start" margin="0 0 0.3125rem 0">
             <Typography

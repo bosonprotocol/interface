@@ -12,7 +12,10 @@ import Typography from "../../../components/ui/Typography";
 import { UrlParameters } from "../../../lib/routing/parameters";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
-import { MediaSet } from "../../../lib/utils/hooks/lens/graphql/generated";
+import {
+  MediaSet,
+  ProfileFieldsFragment
+} from "../../../lib/utils/hooks/lens/graphql/generated";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { useCurrentSeller } from "../../../lib/utils/hooks/useCurrentSeller";
 import { useSellerCalculations } from "../../../lib/utils/hooks/useSellerCalculations";
@@ -184,7 +187,7 @@ export default function Seller() {
               $width="auto"
               margin="1.25rem 0 0 0"
             >
-              <SellerSocial sellerLens={sellerLens} />
+              <SellerSocial sellerLens={sellerLens as ProfileFieldsFragment} />
             </Grid>
           </Grid>
         </ProfileSectionWrapper>

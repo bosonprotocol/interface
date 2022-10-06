@@ -79,7 +79,7 @@ export const AvatarContainer = styled.div`
     top: 50%;
     z-index: ${zIndex.OfferStatus};
   }
-  div {
+  > div {
     width: 7.25rem !important;
     height: 7.25rem !important;
     overflow: hidden;
