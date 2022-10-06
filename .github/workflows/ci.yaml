@@ -71,6 +71,27 @@ jobs:
       REACT_APP_BUYER_SELLER_AGREEMENT_TEMPLATE: ${{ secrets.REACT_APP_BUYER_SELLER_AGREEMENT_TEMPLATE_STAGING }}
       REACT_APP_DEFAULT_DISPUTE_RESOLVER_ID: ${{ secrets.REACT_APP_DEFAULT_DISPUTE_RESOLVER_ID_STAGING }}
       REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS: ${{ secrets.REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS_STAGING }}
+  call-reusable-workflow-production:
+    uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
+    if: workflow_dispatch
+    with:
+      REACT_APP_ENV_NAME: "production"
+      DEPLOY_TO_FLEEK: true
+      ENV_NAME: "production"
+      UPDATE_COVERAGE: false
+      REACT_APP_ENABLE_CURATION_LISTS: false
+      REACT_APP_CREATE_PROFILE_CONFIGURATION: "LENS"
+    secrets:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      REACT_APP_INFURA_IPFS_PROJECT_ID: ${{ secrets.REACT_APP_INFURA_IPFS_PROJECT_ID }}
+      REACT_APP_INFURA_IPFS_PROJECT_SECRET: ${{ secrets.REACT_APP_INFURA_IPFS_PROJECT_SECRET }}
+      REACT_APP_DEFAULT_TOKENS_LIST_PRODUCTION: ${{ secrets.REACT_APP_DEFAULT_TOKENS_LIST_PRODUCTION }}
+      REACT_APP_RNFT_LICENSE_TEMPLATE: ${{ secrets.REACT_APP_RNFT_LICENSE_TEMPLATE_PRODUCTION }}
+      REACT_APP_BUYER_SELLER_AGREEMENT_TEMPLATE: ${{ secrets.REACT_APP_BUYER_SELLER_AGREEMENT_TEMPLATE_PRODUCTION }}
+      REACT_APP_DEFAULT_DISPUTE_RESOLVER_ID: ${{ secrets.REACT_APP_DEFAULT_DISPUTE_RESOLVER_ID_PRODUCTION }}
+      REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS: ${{ secrets.REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS_PRODUCTION }}
 
   job-summary:
     name: Create Job Summary
@@ -80,7 +101,8 @@ jobs:
       [
         call-reusable-workflow-PR,
         call-reusable-workflow-testing,
-        call-reusable-workflow-staging
+        call-reusable-workflow-staging,
+        call-reusable-workflow-production
       ]
     steps:
       - uses: actions/checkout@v3

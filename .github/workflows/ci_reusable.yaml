@@ -39,6 +39,8 @@ on:
         required: false
       REACT_APP_DEFAULT_TOKENS_LIST_STAGING:
         required: false
+      REACT_APP_DEFAULT_TOKENS_LIST_PRODUCTION:
+        required: false
       REACT_APP_RNFT_LICENSE_TEMPLATE:
         required: true
       REACT_APP_BUYER_SELLER_AGREEMENT_TEMPLATE:
@@ -75,6 +77,7 @@ jobs:
       REACT_APP_INFURA_IPFS_PROJECT_SECRET: ${{ secrets.REACT_APP_INFURA_IPFS_PROJECT_SECRET }}
       REACT_APP_DEFAULT_TOKENS_LIST_TESTING: ${{ secrets.REACT_APP_DEFAULT_TOKENS_LIST_TESTING }}
       REACT_APP_DEFAULT_TOKENS_LIST_STAGING: ${{ secrets.REACT_APP_DEFAULT_TOKENS_LIST_STAGING }}
+      REACT_APP_DEFAULT_TOKENS_LIST_PRODUCTION: ${{ secrets.REACT_APP_DEFAULT_TOKENS_LIST_PRODUCTION }}
     outputs:
       jobLint: ${{ steps.lint.outputs.pass }}
       jobBuild: ${{ steps.build.outputs.pass }}
@@ -119,9 +122,12 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./test-results.json
           flags: e2etests
-      - name: Copy contents from .fleek_staging.json to .fleek.json
+      - name: (if 'staging' env) Copy contents from .fleek_staging.json to .fleek.json
         if: ${{ inputs.ENV_NAME == 'staging' }}
         run: mv .fleek_staging.json .fleek.json
+      - name: (if 'production' env) Copy contents from .fleek_production.json to .fleek.json
+        if: ${{ inputs.ENV_NAME == 'production' }}
+        run: mv .fleek_production.json .fleek.json
       - uses: actions/upload-artifact@v3
         if: always()
         with:
