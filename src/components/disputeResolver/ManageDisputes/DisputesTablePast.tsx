@@ -88,14 +88,6 @@ export default function DisputesTablePast({ disputes }: Props) {
         }
 
         const offer = dispute.exchange.offer;
-        console.log(
-          "🚀  roberto --  ~ file: DisputesTablePast.tsx ~ line 90 ~ disputes?.map ~ dispute",
-          dispute
-        );
-        console.log(
-          "🚀  roberto --  ~ file: DisputesTablePast.tsx ~ line 90 ~ disputes?.map ~ offer",
-          offer
-        );
 
         return {
           offerId: offer?.id,
