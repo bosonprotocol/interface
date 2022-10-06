@@ -206,7 +206,9 @@ export function useCurrentSeller({ address, sellerId }: Props = {}) {
       resultByAddress?.isError ||
       sellerById?.isError ||
       resultLens?.isError,
-    sellerId,
+    sellerId:
+      (resultByAddress.data && Object.values(resultByAddress.data)[0]) ??
+      sellerAddress,
     sellerType,
     seller: {
       ...sellerValues
