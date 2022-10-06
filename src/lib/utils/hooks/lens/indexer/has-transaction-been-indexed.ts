@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // inspired by from https://github.dev/lens-protocol/api-examples/blob/master/src/indexer/has-transaction-been-indexed.ts
 
 import { fetchLens } from "../fetchLens";

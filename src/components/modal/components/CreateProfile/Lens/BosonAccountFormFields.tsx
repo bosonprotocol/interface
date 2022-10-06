@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useField } from "formik";
 import { useEffect } from "react";
 import { useAccount } from "wagmi";

@@ -144,6 +144,7 @@ export default function ProductType({
         loadAndSetImage(
           regularProfile.createYourProfile.logo[0],
           (base64Uri) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             setBase64(base64Uri as any); // TODO: check, as the image doesnt seem to be saved correctly
           }
         );

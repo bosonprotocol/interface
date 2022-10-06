@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { BaseIpfsStorage } from "@bosonprotocol/react-kit";
 import { gql } from "graphql-request";
 import { useState } from "react";

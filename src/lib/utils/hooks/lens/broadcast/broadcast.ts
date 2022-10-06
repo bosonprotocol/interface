@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { fetchLens } from "../fetchLens";
 import { BroadcastDocument, BroadcastRequest } from "../graphql/generated";
 

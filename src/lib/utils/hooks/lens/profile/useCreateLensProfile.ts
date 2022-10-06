@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { BigNumber, utils } from "ethers";
 import { gql } from "graphql-request";
 import { useQuery } from "react-query";
