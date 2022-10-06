@@ -39,7 +39,7 @@ import { fromBase64ToBinary } from "../../lib/utils/base64";
 import { getLocalStorageItems } from "../../lib/utils/getLocalStorageItems";
 import { useChatStatus } from "../../lib/utils/hooks/chat/useChatStatus";
 import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
-import { useAdminSeller } from "../../lib/utils/hooks/useAdminSeller";
+import { useCurrentSeller } from "../../lib/utils/hooks/useCurrentSeller";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { saveItemInStorage } from "../../lib/utils/hooks/useLocalStorage";
@@ -108,9 +108,9 @@ function CreateProductInner({
 
   const { address } = useAccount();
 
-  const { adminSeller, lensProfile } = useAdminSeller({ showErrors: false });
+  const { seller, lens: lensProfile } = useCurrentSeller();
 
-  const hasSellerAccount = !!adminSeller;
+  const hasSellerAccount = !!seller;
 
   const handleOpenSuccessModal = async ({
     offerInfo
