@@ -1,7 +1,7 @@
 import { Globe } from "phosphor-react";
 
 import DetailShare from "../../../components/detail/DetailShare";
-import { AttributeData } from "../../../lib/utils/hooks/lens/types/profile-metadata";
+import { ProfileFieldsFragment } from "../../../lib/utils/hooks/lens/graphql/generated";
 import {
   DetailShareWrapper,
   SocialIcon,
@@ -10,7 +10,7 @@ import {
 
 interface RenderSocialProps {
   href: string;
-  icon: any;
+  icon: React.ReactNode | JSX.Element;
   disabled?: boolean;
 }
 function RenderSocial({
@@ -20,23 +20,24 @@ function RenderSocial({
 }: RenderSocialProps) {
   return (
     <SocialIcon href={href} $isDisabled={disabled}>
-      {Icon ? <Icon size={24} /> : <Globe size={24} />}
+      {Icon ? Icon : <Globe size={24} />}
     </SocialIcon>
   );
 }
 
 interface Props {
-  sellerLens: any;
+  sellerLens: ProfileFieldsFragment;
 }
 export default function SellerSocial({ sellerLens }: Props) {
   const lensUrl =
-    sellerLens?.attributes?.find((a: AttributeData) => a?.key === "website") ||
-    false;
+    sellerLens?.attributes?.find((a) => a?.key === "website") || false;
   return (
     <SocialIconContainer>
       {/* TODO: Removed as we don't have discord in lens profile */}
       {/* <RenderSocial icon={DiscordLogo} href={""} /> */}
-      {lensUrl !== false && <RenderSocial icon={Globe} href={lensUrl?.value} />}
+      {lensUrl !== false && (
+        <RenderSocial icon={<Globe size={24} />} href={lensUrl?.value} />
+      )}
       <DetailShareWrapper>
         <DetailShare />
       </DetailShareWrapper>
