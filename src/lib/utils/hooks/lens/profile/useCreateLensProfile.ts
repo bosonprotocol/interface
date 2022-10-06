@@ -21,7 +21,7 @@ export default function useCreateLensProfile(
   return useQuery(
     ["create-lens-profile", props],
     async () => {
-      return createProfile(props, { accessToken });
+      return await createProfile(props, { accessToken });
     },
     {
       enabled
@@ -72,8 +72,11 @@ async function createProfile(
   });
 
   if (createProfileResult.__typename === "RelayError") {
-    console.error("create profile: failed");
-    return;
+    console.error("create profile: failed", createProfileResult);
+    throw new Error(
+      createProfileResult.reason ||
+        "There has been an error while creating your profile"
+    );
   }
 
   const result = await pollUntilIndexed(

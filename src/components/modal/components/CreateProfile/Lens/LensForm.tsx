@@ -31,7 +31,8 @@ export default function LensForm({ onSubmit, profile, onBackClick }: Props) {
           legalTradingName: ""
         } as LensProfileType
       }
-      onSubmit={(values) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      onSubmit={(values, _boson) => {
         if (profile) {
           onSubmit(values);
         } else {

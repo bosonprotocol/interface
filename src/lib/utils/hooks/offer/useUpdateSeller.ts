@@ -18,8 +18,8 @@ export default function useUpdateSeller(
 
   return useQuery(
     ["update-seller", props],
-    () => {
-      return updateSellerAccount(coreSDK, props);
+    async () => {
+      return await updateSellerAccount(coreSDK, props);
     },
     {
       ...options

@@ -1,15 +1,27 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 
 import { CONFIG } from "../../lib/config";
 import { breakpointNumbers } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
+import { loadAndSetImage } from "../../lib/utils/base64";
 import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
 import { useCurrentSeller } from "../../lib/utils/hooks/useCurrentSeller";
+import { useEffectDebugger } from "../../lib/utils/hooks/useEffectDebugger";
+import {
+  CreateProductImageCreteYourProfileLogo,
+  GetItemFromStorageKey,
+  useLocalStorage
+} from "../../lib/utils/hooks/useLocalStorage";
 import { FormField } from "../form";
 import { authTokenTypes } from "../modal/components/CreateProfile/Lens/const";
 import ProfileMultiSteps from "../modal/components/CreateProfile/Lens/ProfileMultiSteps";
-import { getLensTokenIdDecimal } from "../modal/components/CreateProfile/Lens/utils";
+import {
+  getLensEmail,
+  getLensProfilePictureUrl,
+  getLensTokenIdDecimal,
+  getLensWebsite
+} from "../modal/components/CreateProfile/Lens/utils";
 import { useModal } from "../modal/useModal";
 import Button from "../ui/Button";
 import Grid from "../ui/Grid";
@@ -97,7 +109,14 @@ export default function ProductType({
   const { handleChange, values, nextIsDisabled, setFieldValue } =
     useCreateForm();
   const { showModal } = useModal();
-
+  const fileName = useMemo<CreateProductImageCreteYourProfileLogo>(
+    () => `create-product-image_createYourProfile.logo`,
+    []
+  );
+  const [, setBase64] = useLocalStorage<GetItemFromStorageKey | null>(
+    fileName as GetItemFromStorageKey,
+    null
+  );
   const {
     seller: currentSeller,
     sellerType: currentRoles,
@@ -110,7 +129,7 @@ export default function ProductType({
   } = useCurrentSeller({
     address: currentSeller.admin
   });
-
+  const [isRegularSellerSet, setIsRegularSeller] = useState<boolean>(false);
   const isOperator = currentRoles?.find((role) => role === "operator");
   const isAdminLinkedToLens =
     adminSeller.authTokenType === authTokenTypes.Lens &&
@@ -121,8 +140,16 @@ export default function ProductType({
 
   const onRegularProfileCreated = useCallback(
     (regularProfile: CreateYourProfile) => {
-      console.log("regularProfile", regularProfile);
+      if (regularProfile.createYourProfile.logo) {
+        loadAndSetImage(
+          regularProfile.createYourProfile.logo[0],
+          (base64Uri) => {
+            setBase64(base64Uri as any); // TODO: check, as the image doesnt seem to be saved correctly
+          }
+        );
+      }
       setFieldValue("createYourProfile", regularProfile.createYourProfile);
+      setIsRegularSeller(true);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
@@ -130,16 +157,26 @@ export default function ProductType({
   const onUseLensProfile = useCallback(
     (lensProfile: Profile) => {
       // TODO: I think this is not needed
-      console.log("lensProfile", lensProfile);
+      setFieldValue("createYourProfile", {
+        logo: getLensProfilePictureUrl(lensProfile),
+        name: lensProfile.name,
+        email: getLensEmail(lensProfile),
+        description: lensProfile.bio,
+        website: getLensWebsite(lensProfile)
+      });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
-  useEffect(() => {
+  useEffectDebugger(() => {
     if (isLoading || isAdminLoading) {
       return;
     }
-    if (!isSeller || !hasValidAdminAccount) {
+    if (
+      (!isRegularSellerSet && !CONFIG.lens.enabled) ||
+      (CONFIG.lens.enabled &&
+        ((isSeller && !hasValidAdminAccount) || !isSeller))
+    ) {
       showModal(
         "CREATE_PROFILE",
         {
@@ -164,7 +201,10 @@ export default function ProductType({
           xs: `${breakpointNumbers.m + 1}px`
         }
       );
-    } else if (isOperator && hasValidAdminAccount) {
+    } else if (
+      (isOperator && hasValidAdminAccount) ||
+      (isRegularSellerSet && !CONFIG.lens.enabled)
+    ) {
       showCreateProductDraftModal();
     } else if (!isOperator) {
       showInvalidRoleModal();
@@ -174,6 +214,7 @@ export default function ProductType({
     hasValidAdminAccount,
     isOperator,
     isSeller,
+    isRegularSellerSet,
     isLoading,
     isAdminLoading,
     showCreateProductDraftModal,

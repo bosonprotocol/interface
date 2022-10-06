@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
 import { LensProfileType } from "../../../../../components/modal/components/CreateProfile/Lens/validationSchema";
+import { CONFIG } from "../../../../config";
 import { loadAndSetImage } from "../../../base64";
 import { useIpfsStorage } from "../../useIpfsStorage";
 import { useLensLogin } from "../authentication/useLensLogin";
@@ -31,8 +33,11 @@ export default function useCustomCreateLensProfile({
   const {
     data,
     refetch: loginWithLens,
-    isLoading: lensLoginLoading,
-    isError: lensLoginError
+    isRefetching: isLoginRefetching,
+    isLoading: isLoginLoading,
+    isFetching: isLoginFetching,
+    isSuccess: isLoginSuccess,
+    isError: isLoginError
   } = useLensLogin({ address }, { enabled: false });
   const { accessToken } = data || {};
 
@@ -62,8 +67,13 @@ export default function useCustomCreateLensProfile({
     data: createdProfileId,
     isFetched,
     refetch: createProfile,
-    isLoading: isCreatingLensProfile,
-    isError: isCreateLensProfileError
+    isLoading: isCreateLoading,
+    isRefetching: isCreateRefetching,
+    isFetching: isCreateFetching,
+    isSuccess: isCreateSuccess,
+    isError: isCreateError,
+    error: createError,
+    status: createStatus
   } = useCreateLensProfile(
     {
       handle: values.handle || "",
@@ -85,7 +95,7 @@ export default function useCustomCreateLensProfile({
   }, [accessToken, triggerLensProfileCreation, createProfile, enableCreation]);
   const { data: profileData, refetch: getProfile } = useGetLensProfile(
     {
-      handle: `${values.handle}.test`
+      handle: `${values.handle}${CONFIG.lens.lensHandleExtension}`
     },
     {
       enabled: false
@@ -94,9 +104,32 @@ export default function useCustomCreateLensProfile({
   const {
     data: profileMetadataData,
     refetch: setMetadata,
-    isFetched: isMetadataFetched,
-    isLoading: isSettingLensMetadata,
-    isError: isSetLensMetadataError
+    isLoading: isMetadataLoading,
+    isError: isMetadataError,
+    error: isSetLensProfileMetadataError,
+    isSuccess: isMetadataSuccess
+    // TODO: investigate why useSetLensProfileMetadata doesnt work well when used with useQuery
+    // data: profileMetadataData,
+    // refetch: setMetadata,
+    // isLoading: isMetadataLoading,
+    // isFetching: isMetadataFetching,
+    // isRefetching: isMetadataRefetching,
+    // isError: isMetadataError,
+    // error: isSetLensProfileMetadataError,
+    // isSuccess: isMetadataSuccess
+    // isFetched: isMetadataFetched,
+    // isRefetchError: isMetadataRefetchError,
+    // isIdle: isMetadataIdle,
+    // dataUpdatedAt: metadataDataUpdatedAt,
+    // isFetchedAfterMount: isMetadataFetchedAfterMount,
+    // errorUpdateCount: metadataErrorUpdateCount,
+    // isLoadingError: isMetadataLoadingError,
+    // isStale: isMetadataStale,
+    // isPreviousData: isMetadataPreviousData,
+    // errorUpdatedAt: metadataErrorUpdatedAt,
+    // failureCount: metadataFailureCount,
+    // isPlaceholderData: isMetadataPlaceholderData,
+    // status: metadataStatus
   } = useSetLensProfileMetadata(
     {
       profileId: createdProfileId || "",
@@ -135,21 +168,24 @@ export default function useCustomCreateLensProfile({
     }
     const isCreatedProfile = isFetched && createdProfileId;
     if (isCreatedProfile) {
+      console.log("trigger setMetadata!");
       setMetadata();
     }
-  }, [createdProfileId, enableCreation, isFetched, setMetadata]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [createdProfileId, enableCreation, isFetched]);
 
   useEffect(() => {
     if (!enableCreation) {
       return;
     }
-    if (isMetadataFetched && profileMetadataData) {
+    if (isMetadataSuccess && profileMetadataData) {
       getProfile();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     profileMetadataData,
-    isMetadataFetched,
-    getProfile,
+    isMetadataSuccess,
+    // getProfile,
     profileData,
     enableCreation
   ]);
@@ -158,24 +194,62 @@ export default function useCustomCreateLensProfile({
     if (!enableCreation) {
       return;
     }
-    if (isMetadataFetched && profileMetadataData && profileData) {
+    if (isMetadataSuccess && profileMetadataData && profileData) {
       onCreatedProfile(profileData);
     }
   }, [
     enableCreation,
-    isMetadataFetched,
+    isMetadataSuccess,
     onCreatedProfile,
     profileData,
     profileMetadataData
   ]);
-
+  // console.log("inside useCustomCreateLens", {
+  //   isLoginLoading,
+  //   isLoginFetching,
+  //   isLoginRefetching,
+  //   isCreateLoading,
+  //   isCreateFetching,
+  //   isCreateRefetching,
+  //   isMetadataFetching,
+  //   isMetadataLoading,
+  //   isMetadataRefetching,
+  //   isLoginSuccess,
+  //   isCreateSuccess,
+  //   isMetadataSuccess,
+  //   createStatus,
+  //   metadataStatus,
+  //   isMetadataFetched,
+  //   isMetadataRefetchError,
+  //   isMetadataIdle,
+  //   metadataDataUpdatedAt,
+  //   isMetadataFetchedAfterMount,
+  //   metadataErrorUpdateCount,
+  //   isMetadataLoadingError,
+  //   isMetadataStale,
+  //   isMetadataPreviousData,
+  //   metadataErrorUpdatedAt,
+  //   metadataFailureCount,
+  //   isMetadataPlaceholderData
+  // });
   return {
     create: loginWithLens,
     getProfile,
     profileData,
+    isSuccess: isLoginSuccess && isCreateSuccess && isMetadataSuccess,
     isLoading:
-      lensLoginLoading || isCreatingLensProfile || isSettingLensMetadata,
-    isError:
-      lensLoginError || isCreateLensProfileError || isSetLensMetadataError
+      isLoginLoading ||
+      isLoginFetching ||
+      isLoginRefetching ||
+      isCreateLoading ||
+      isCreateFetching ||
+      isCreateRefetching ||
+      // isMetadataFetching ||
+      isMetadataLoading,
+    // isMetadataRefetching
+    isError: isLoginError || isCreateError || isMetadataError,
+    createError,
+    isHandleTakenError: (createError as Error)?.message === "HANDLE_TAKEN",
+    isSetLensProfileMetadataError
   };
 }

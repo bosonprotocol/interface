@@ -10,6 +10,7 @@ import { CreateYourProfile as CreateYourProfileType } from "../../../product/uti
 import Button from "../../../ui/Button";
 import Grid from "../../../ui/Grid";
 import Typography from "../../../ui/Typography";
+import { useModal } from "../../useModal";
 import LensProfile from "./Lens/LensProfile";
 import CreateYourProfile from "./Regular/CreateYourProfile";
 
@@ -27,17 +28,27 @@ export default function CreateProfileModal({
   onRegularProfileCreated,
   onUseLensProfile
 }: Props) {
+  const { hideModal } = useModal();
   const { address = "" } = useAccount();
 
   const Component = useCallback(() => {
     return showLensVersion ? (
-      <LensProfile onSubmit={onUseLensProfile} />
+      <LensProfile
+        onSubmit={(lensValues) => {
+          onUseLensProfile(lensValues);
+          hideModal();
+        }}
+      />
     ) : (
       <CreateYourProfile
         initial={initialRegularCreateProfile}
-        onSubmit={onRegularProfileCreated}
+        onSubmit={(regularProfile) => {
+          onRegularProfileCreated(regularProfile);
+          hideModal();
+        }}
       />
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialRegularCreateProfile, onRegularProfileCreated, onUseLensProfile]);
 
   const navigate = useKeepQueryParamsNavigate();

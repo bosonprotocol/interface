@@ -60,7 +60,6 @@ export default function Seller() {
     sellerId
   });
 
-  console.log("sellerLens", sellerLens);
   const {
     data: sellers = [],
     isError: isErrorSellers,

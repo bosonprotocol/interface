@@ -76,12 +76,13 @@ export const CONFIG = {
   defaultDisputeResolutionPeriodDays:
     process.env.REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS || "15",
   defaultSellerContactMethod: "Chat App in the dApp",
-  defaultDisputeResolverContactMethod: "email to: disputes@redeemeum.com",
+  defaultDisputeResolverContactMethod: "disputes@redeemeum.com",
   minimumReturnPeriodInDays: 15,
   minimumDisputePeriodInDays: 30,
   createProfileConfiguration,
   lens: {
     enabled: createProfileConfiguration === "LENS" && availableOnNetwork,
+    lensHandleExtension: config.chainId === 137 ? ".lens" : ".test",
     availableOnNetwork,
     LENS_HUB_CONTRACT: config.lens.LENS_HUB_CONTRACT,
     LENS_PERIPHERY_CONTRACT: config.lens.LENS_PERIPHERY_CONTRACT,

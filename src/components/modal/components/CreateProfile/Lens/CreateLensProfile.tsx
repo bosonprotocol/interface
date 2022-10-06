@@ -1,6 +1,7 @@
 import { useField, useFormikContext } from "formik";
 import { cloneElement, ReactElement, useCallback, useEffect } from "react";
 
+import { CONFIG } from "../../../../../lib/config";
 import useGetLensProfile from "../../../../../lib/utils/hooks/lens/profile/useGetLensProfile";
 import Button from "../../../../ui/Button";
 import Grid from "../../../../ui/Grid";
@@ -37,22 +38,21 @@ export default function CreateLensProfile({ children, onBackClick }: Props) {
   const [fieldHandle, metaHandle, helpersHandle] = useField("handle");
   const { data: profileData, refetch: getProfile } = useGetLensProfile(
     {
-      handle: `${fieldHandle.value}.test`
+      handle: `${fieldHandle.value}${CONFIG.lens.lensHandleExtension}`
     },
     {
       enabled: false
     }
   );
 
-  const { setStatus, status, ...rest } = useFormikContext<LensProfileType>();
-  console.log({ rest });
+  const { setStatus, status } = useFormikContext<LensProfileType>();
   useEffect(() => {
     const checkHandle = fieldHandle.value && !metaHandle.error;
     if (checkHandle) {
       getProfile();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fieldHandle.value]);
+  }, [fieldHandle.value, metaHandle.error]);
   useEffect(() => {
     if (profileData) {
       setStatus({ handle: "Handle already taken" });
@@ -69,7 +69,7 @@ export default function CreateLensProfile({ children, onBackClick }: Props) {
     // The Lens handle field should be editable but should, by default, contain the same value as the "Brand Name" field
     if (fieldName.value && !metaHandle.touched) {
       helpersHandle.setValue(fieldName.value, true);
-      helpersHandle.setTouched(true);
+      helpersHandle.setTouched(true, false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fieldName.value, metaHandle.touched]);

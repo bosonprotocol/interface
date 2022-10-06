@@ -1,5 +1,6 @@
 import { Warning } from "phosphor-react";
 import { useCallback, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useAccount } from "wagmi";
 
 import { CONFIG } from "../../../../../lib/config";
@@ -12,6 +13,8 @@ import useUpdateSeller from "../../../../../lib/utils/hooks/offer/useUpdateSelle
 import { useSellers } from "../../../../../lib/utils/hooks/useSellers";
 import Collapse from "../../../../collapse/Collapse";
 import SimpleError from "../../../../error/SimpleError";
+import { Spinner } from "../../../../loading/Spinner";
+import SuccessTransactionToast from "../../../../toasts/SuccessTransactionToast";
 import Button from "../../../../ui/Button";
 import Grid from "../../../../ui/Grid";
 import Typography from "../../../../ui/Typography";
@@ -110,7 +113,10 @@ export default function CreateBosonLensAccountSummary({
   const {
     create: createLensProfile,
     isLoading: isCreatingLensProfile,
-    isError: isCreateLensError
+    isError: isCreateLensError,
+
+    isHandleTakenError,
+    isSetLensProfileMetadataError
   } = useCustomCreateLensProfile({
     values: values,
     onCreatedProfile: (profile: Profile) => {
@@ -119,7 +125,6 @@ export default function CreateBosonLensAccountSummary({
     },
     enabled: !usingExistingLensProfile && !!values
   });
-
   useEffect(() => {
     if (values.logo?.length) {
       loadAndSetImage(values.logo[0], setLogoImage);
@@ -131,13 +136,21 @@ export default function CreateBosonLensAccountSummary({
     }
   }, [values.coverPicture]);
 
-  const onSubmitWithArgs = useCallback(() => {
-    if (!lensProfileToSubmit) {
-      console.error("Lens profile is falsy onSubmit, not calling onSubmit...");
-      return;
-    }
-    onSubmit(lensProfileToSubmit, bosonAccount);
-  }, [bosonAccount, lensProfileToSubmit, onSubmit]);
+  const onSubmitWithArgs = useCallback(
+    (action: string) => {
+      if (!lensProfileToSubmit) {
+        console.error(
+          "Lens profile is falsy onSubmit, not calling onSubmit..."
+        );
+        return;
+      }
+
+      toast((t) => <SuccessTransactionToast t={t} action={action} />);
+
+      onSubmit(lensProfileToSubmit, bosonAccount);
+    },
+    [bosonAccount, lensProfileToSubmit, onSubmit]
+  );
   return (
     <>
       <div>
@@ -413,14 +426,35 @@ export default function CreateBosonLensAccountSummary({
             </Typography>
           </Grid>
         </Grid>
-        {(isCreateLensError || isUpdateSellerError) && (
-          <SimpleError
-            errorMessage={`There has been an error while creating your Lens profile, please
-          contact us on ${
-            CONFIG || "testing-dispute-resolver@redeemeum.com"
-          } to explain your issue`}
-          ></SimpleError>
-        )}
+        <>
+          {isHandleTakenError && (
+            <SimpleError
+              errorMessage={`The handle you chose before has just been taken, please go back and select another one`}
+            ></SimpleError>
+          )}
+          {isSetLensProfileMetadataError && (
+            <SimpleError>
+              <Typography fontWeight="600" $fontSize="1rem" lineHeight="1.5rem">
+                There has been an error while setting the metadata to your Lens
+                profile, please edit via the Lens application on{" "}
+                <a
+                  href={`https://www.lensfrens.xyz/${values.handle}/edit`}
+                  target="_blank"
+                >
+                  https://www.lensfrens.xyz/{values.handle}/edit
+                </a>
+              </Typography>
+            </SimpleError>
+          )}
+          {(isCreateLensError || isUpdateSellerError) &&
+            !isHandleTakenError &&
+            !isSetLensProfileMetadataError && (
+              <SimpleError
+                errorMessage={`There has been an error while creating your Lens profile, please
+          contact us on ${CONFIG.defaultDisputeResolverContactMethod} to explain your issue`}
+              ></SimpleError>
+            )}
+        </>
         <CTAs
           hasLensHandle={!!lensProfileToSubmit}
           hasAdminSellerAccount={hasAdminSellerAccount}
@@ -454,7 +488,7 @@ interface CTAsProps {
   isCreatedLensProfile: boolean;
   isUpdatingSellerAccount: boolean;
   isUpdatedSellerAccount: boolean;
-  onSubmit: () => void;
+  onSubmit: (action: string) => void;
 }
 
 function CTAs({
@@ -480,12 +514,15 @@ function CTAs({
             theme="primary"
             onClick={async () => {
               await createSellerAccount();
+              onSubmit("Create Seller Account");
             }}
+            disabled={isCreatingSellerAccount}
           >
             <Grid gap="1.0625rem">
               <Typography fontWeight="600" $fontSize="1rem" lineHeight="1.5rem">
                 Create Seller Account
               </Typography>
+              {isCreatingSellerAccount && <Spinner size={15} />}
             </Grid>
           </Button>
         </Grid>
@@ -504,39 +541,49 @@ function CTAs({
               <Typography fontWeight="600" $fontSize="1rem" lineHeight="1.5rem">
                 Create Lens Profile
               </Typography>
-              <Typography
-                fontWeight="600"
-                $fontSize="0.75rem"
-                lineHeight="1.125rem"
-                opacity="0.5"
-              >
-                Step 1/3
-              </Typography>
+              {isCreatingLensProfile ? (
+                <Spinner size={15} />
+              ) : (
+                <Typography
+                  fontWeight="600"
+                  $fontSize="0.75rem"
+                  lineHeight="1.125rem"
+                  opacity="0.5"
+                >
+                  Step 1/2
+                </Typography>
+              )}
             </Grid>
           </Button>
           <Button
             theme="primary"
             onClick={async () => {
               await createSellerAccount();
+              onSubmit("Create Seller Account");
             }}
             disabled={
               isCreatingSellerAccount ||
               isCreatedSellerAccount ||
-              isCreatingLensProfile
+              isCreatingLensProfile ||
+              !isCreatedLensProfile
             }
           >
             <Grid gap="1.0625rem">
               <Typography fontWeight="600" $fontSize="1rem" lineHeight="1.5rem">
                 Create Seller Account
               </Typography>
-              <Typography
-                fontWeight="600"
-                $fontSize="0.75rem"
-                lineHeight="1.125rem"
-                opacity="0.5"
-              >
-                Step 2/3
-              </Typography>
+              {isCreatingSellerAccount ? (
+                <Spinner size={15} />
+              ) : (
+                <Typography
+                  fontWeight="600"
+                  $fontSize="0.75rem"
+                  lineHeight="1.125rem"
+                  opacity="0.5"
+                >
+                  Step 2/2
+                </Typography>
+              )}
             </Grid>
           </Button>
         </Grid>
@@ -555,14 +602,18 @@ function CTAs({
               <Typography fontWeight="600" $fontSize="1rem" lineHeight="1.5rem">
                 Create Lens Profile
               </Typography>
-              <Typography
-                fontWeight="600"
-                $fontSize="0.75rem"
-                lineHeight="1.125rem"
-                opacity="0.5"
-              >
-                Step 1/2
-              </Typography>
+              {isCreatingLensProfile ? (
+                <Spinner size={15} />
+              ) : (
+                <Typography
+                  fontWeight="600"
+                  $fontSize="0.75rem"
+                  lineHeight="1.125rem"
+                  opacity="0.5"
+                >
+                  Step 1/2
+                </Typography>
+              )}
             </Grid>
           </Button>
           <Button
@@ -574,21 +625,25 @@ function CTAs({
             }
             onClick={async () => {
               await updateSellerAccount();
-              onSubmit();
+              onSubmit("Update Seller Account");
             }}
           >
             <Grid gap="1.0625rem">
               <Typography fontWeight="600" $fontSize="1rem" lineHeight="1.5rem">
                 Update Seller Account
               </Typography>
-              <Typography
-                fontWeight="600"
-                $fontSize="0.75rem"
-                lineHeight="1.125rem"
-                opacity="0.5"
-              >
-                Step 2/2
-              </Typography>
+              {isUpdatingSellerAccount ? (
+                <Spinner size={15} />
+              ) : (
+                <Typography
+                  fontWeight="600"
+                  $fontSize="0.75rem"
+                  lineHeight="1.125rem"
+                  opacity="0.5"
+                >
+                  Step 2/2
+                </Typography>
+              )}
             </Grid>
           </Button>
         </Grid>
@@ -600,13 +655,15 @@ function CTAs({
             theme="primary"
             onClick={async () => {
               await updateSellerAccount();
-              onSubmit();
+              onSubmit("Update Seller Account");
             }}
+            disabled={isUpdatingSellerAccount}
           >
             <Grid gap="1.0625rem">
               <Typography fontWeight="600" $fontSize="1rem" lineHeight="1.5rem">
                 Update Seller Account
               </Typography>
+              {isUpdatingSellerAccount && <Spinner size={15} />}
             </Grid>
           </Button>
         </Grid>

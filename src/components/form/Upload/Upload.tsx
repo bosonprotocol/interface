@@ -56,7 +56,7 @@ export default function Upload({
     onFilesSelect?.(files);
     helpers.setValue(files);
 
-    if (!multiple && accept === "image/*" && files.length !== 0) {
+    if (!multiple && accept === "image/*" && files && files?.length !== 0) {
       loadAndSetImage(files[0], setPreview);
     }
   }, [files]); // eslint-disable-line

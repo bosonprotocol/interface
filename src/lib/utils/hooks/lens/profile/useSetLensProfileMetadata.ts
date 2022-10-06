@@ -1,6 +1,6 @@
 import { BaseIpfsStorage } from "@bosonprotocol/react-kit";
 import { gql } from "graphql-request";
-import { useQuery } from "react-query";
+import { useState } from "react";
 import { useSignTypedData } from "wagmi";
 
 import { useIpfsStorage } from "../../useIpfsStorage";
@@ -30,21 +30,61 @@ export default function useSetLensProfileMetadata(
   }
 ) {
   const { signTypedDataAsync } = useSignTypedData();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { enabled, accessToken } = options;
   const storage = useIpfsStorage();
-  return useQuery(
-    ["set-lens-profile-metadata", props],
-    async () => {
-      return setProfileMetadata(props, {
-        signTypedDataAsync,
-        storage,
-        accessToken
-      });
+  const [data, setData] = useState<Awaited<
+    ReturnType<typeof setProfileMetadata>
+  > | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
+  // TODO: investigate why useSetLensProfileMetadata doesnt work well when used with useQuery
+  return {
+    refetch: () => {
+      (async () => {
+        setLoading(true);
+        setData(null);
+        setError(null);
+
+        try {
+          const result = await setProfileMetadata(props, {
+            signTypedDataAsync,
+            storage,
+            accessToken
+          });
+
+          setData(result);
+        } catch (error) {
+          setError(error as Error);
+        } finally {
+          setLoading(false);
+        }
+      })();
     },
-    {
-      enabled
-    }
-  );
+    isSuccess: !!data,
+    data,
+    error,
+    isLoading: loading,
+    isError: !!error
+  };
+
+  // return useQuery(
+  //   ["set-lens-profile-metadata", props],
+  //   async () => {
+  //     console.log("[metadata - in progress] setMetadata!");
+
+  //     const result = await setProfileMetadata(props, {
+  //       signTypedDataAsync,
+  //       storage,
+  //       accessToken
+  //     });
+  //     console.log("[metadata - finished] setMetadata! ");
+  //     return result;
+  //   },
+  //   {
+  //     enabled
+  //   }
+  // );
 }
 
 async function createSetProfileMetadataTypedData(
@@ -177,7 +217,7 @@ const setMetadata = async (
   }
 };
 
-export const setProfileMetadata = async (
+const setProfileMetadata = async (
   args: {
     profileId: string;
     name: string;
@@ -213,12 +253,6 @@ export const setProfileMetadata = async (
     accessToken
   });
 
-  const indexedResult = await pollUntilIndexed(
-    { txId: result.txId },
-    { accessToken }
-  );
-
-  const logs = indexedResult.txReceipt!.logs;
-
+  await pollUntilIndexed({ txId: result.txId }, { accessToken });
   return result;
 };

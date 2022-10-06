@@ -395,8 +395,7 @@ function CreateProductInner({
           label: termsOfExchange.exchangePolicy.value,
           template: termsOfExchange.exchangePolicy.value,
           sellerContactMethod: CONFIG.defaultSellerContactMethod,
-          disputeResolverContactMethod:
-            CONFIG.defaultDisputeResolverContactMethod
+          disputeResolverContactMethod: `email to: ${CONFIG.defaultDisputeResolverContactMethod}`
         },
         shipping: {
           defaultVersion: 1,
