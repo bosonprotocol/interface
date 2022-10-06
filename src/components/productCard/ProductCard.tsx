@@ -90,9 +90,7 @@ export default function ProductCard({
         productId={offer.id}
         onCardClick={handleOnCardClick}
         title={offer.metadata.name}
-        avatarName={
-          lens?.handle ? lens?.handle : `Seller ID: ${offer.seller.id}`
-        }
+        avatarName={lens?.name ? lens?.name : `Seller ID: ${offer.seller.id}`}
         avatar={avatar || mockedAvatar}
         price={Number(price)}
         currency={offer.exchangeToken.symbol as Currencies}

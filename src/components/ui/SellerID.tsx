@@ -155,8 +155,8 @@ const SellerID: React.FC<
             $withBosonStyles={withBosonStyles}
           >
             {isSeller
-              ? lens?.handle
-                ? lens?.handle
+              ? lens?.name
+                ? lens?.name
                 : `Seller ID: ${userId}`
               : `Buyer ID: ${userId}`}
           </SellerInfo>

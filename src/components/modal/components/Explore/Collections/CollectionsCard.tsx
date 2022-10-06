@@ -124,7 +124,7 @@ export default function CollectionsCard({ collection }: Props) {
             fontWeight="600"
             margin="0 0 0.625rem 0"
           >
-            {lens?.handle ? lens?.handle : `Seller ID: ${collection.id}`}
+            {lens?.name ? lens?.name : `Seller ID: ${collection.id}`}
           </Typography>
           <Grid alignItems="flex-start" margin="0 0 0.3125rem 0">
             <Typography

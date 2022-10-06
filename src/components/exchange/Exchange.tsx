@@ -195,9 +195,7 @@ export default function Exchange({ offer, exchange, reload }: Props) {
         dataCard="exchange-card"
         id={offer.id}
         title={offer.metadata.name}
-        avatarName={
-          lens?.handle ? lens?.handle : `Seller ID: ${offer.seller.id}`
-        }
+        avatarName={lens?.name ? lens?.name : `Seller ID: ${offer.seller.id}`}
         avatar={avatar || mockedAvatar}
         imageProps={{
           src: imageSrc,
