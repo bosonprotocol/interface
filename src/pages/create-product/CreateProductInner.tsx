@@ -581,7 +581,7 @@ function CreateProductInner({
                 {isPreviewVisible ? (
                   <Preview
                     togglePreview={setIsPreviewVisible}
-                    seller={adminSeller}
+                    seller={seller as any}
                   />
                 ) : (
                   wizardStep.currentStep

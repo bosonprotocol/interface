@@ -135,6 +135,9 @@ export function useCurrentSeller({ address, sellerId }: Props = {}) {
           clerk: string;
           treasury: string;
           operator: string;
+          id: string;
+          voucherCloneAddress: string;
+          active: boolean;
         }[];
       }>(
         gql`
@@ -146,6 +149,9 @@ export function useCurrentSeller({ address, sellerId }: Props = {}) {
               clerk
               treasury
               operator
+              id
+              voucherCloneAddress
+              active
             }
           }
         `,
