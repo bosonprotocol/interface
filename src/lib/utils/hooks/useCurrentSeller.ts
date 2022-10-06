@@ -207,7 +207,8 @@ export function useCurrentSeller({ address, sellerId }: Props = {}) {
       sellerById?.isError ||
       resultLens?.isError,
     sellerId:
-      (resultByAddress.data && Object.values(resultByAddress.data)[0]) ?? null,
+      (resultByAddress.data && Object.values(resultByAddress.data)[0]) ??
+      sellerAddress,
     sellerType,
     seller: {
       ...sellerValues
