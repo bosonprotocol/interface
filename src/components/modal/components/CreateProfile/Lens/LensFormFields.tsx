@@ -3,9 +3,10 @@ import { FormField, Input, Textarea, Upload } from "../../../../form";
 
 interface Props {
   disable: boolean;
+  onBlurName?: () => void;
 }
 
-export default function LensFormFields({ disable }: Props) {
+export default function LensFormFields({ disable, onBlurName }: Props) {
   return (
     <>
       <FormField
@@ -23,7 +24,12 @@ export default function LensFormFields({ disable }: Props) {
         <Upload name="coverPicture" multiple={false} disabled={disable} />
       </FormField>
       <FormField title="Your brand / name" required>
-        <Input name="name" placeholder="Name" disabled={disable} />
+        <Input
+          name="name"
+          placeholder="Name"
+          disabled={disable}
+          onBlur={onBlurName}
+        />
       </FormField>
       <FormField title="Lens Handle" required>
         <Input name="handle" placeholder="Handle" disabled={disable} />

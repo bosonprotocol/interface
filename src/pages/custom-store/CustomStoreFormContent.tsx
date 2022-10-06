@@ -13,6 +13,7 @@ import Typography from "../../components/ui/Typography";
 import { colors } from "../../lib/styles/colors";
 import { getFilesWithEncodedData } from "../../lib/utils/files";
 import { useCurrentSeller } from "../../lib/utils/hooks/useCurrentSeller";
+import { preAppendHttps } from "../../lib/validation/regex/url";
 import SocialLogo from "./SocialLogo";
 import {
   formModel,
@@ -56,12 +57,6 @@ const secondSubFieldBasis = "85%";
 interface Props {
   hasSubmitError: boolean;
 }
-
-const preAppendHttps = (url: string) => {
-  return url.startsWith("https://") || url.startsWith("http://")
-    ? url
-    : `https://${url}`;
-};
 
 export default function CustomStoreFormContent({ hasSubmitError }: Props) {
   const { setFieldValue, values, isValid, setFieldTouched } =

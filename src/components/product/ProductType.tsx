@@ -1,9 +1,10 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import styled from "styled-components";
 
 import { CONFIG } from "../../lib/config";
 import { breakpointNumbers } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
+import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
 import { useCurrentSeller } from "../../lib/utils/hooks/useCurrentSeller";
 import { FormField } from "../form";
 import { authTokenTypes } from "../modal/components/CreateProfile/Lens/const";
@@ -24,6 +25,7 @@ import {
   ProductButtonGroup,
   SectionTitle
 } from "./Product.styles";
+import { CreateYourProfile } from "./utils";
 import { useCreateForm } from "./utils/useCreateForm";
 
 const productTypeItemsPerRow = {
@@ -117,6 +119,22 @@ export default function ProductType({
     (CONFIG.lens.enabled && isAdminLinkedToLens) || !CONFIG.lens.enabled;
   const isSeller = !!Object.keys(currentSeller).length;
 
+  const onRegularProfileCreated = useCallback(
+    (regularProfile: CreateYourProfile) => {
+      console.log("regularProfile", regularProfile);
+      setFieldValue("createYourProfile", regularProfile.createYourProfile);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+  const onUseLensProfile = useCallback(
+    (lensProfile: Profile) => {
+      // TODO: I think this is not needed
+      console.log("lensProfile", lensProfile);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
   useEffect(() => {
     if (isLoading || isAdminLoading) {
       return;
@@ -133,16 +151,8 @@ export default function ProductType({
             />
           ),
           initialRegularCreateProfile: values,
-          onRegularProfileCreated: (regularProfile) => {
-            setFieldValue(
-              "createYourProfile",
-              regularProfile.createYourProfile
-            );
-          },
-          onUseLensProfile: (lensProfile) => {
-            // TODO: I think this is not needed
-            console.log("lensProfile", lensProfile);
-          },
+          onRegularProfileCreated,
+          onUseLensProfile,
           closable: false,
           onClose: () => {
             showCreateProductDraftModal();

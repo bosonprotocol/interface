@@ -1,6 +1,7 @@
 import { Form, Formik } from "formik";
 
 import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
+import { preAppendHttps } from "../../../../../lib/validation/regex/url";
 import CreateLensProfile from "./CreateLensProfile";
 import LensFormFields from "./LensFormFields";
 import {
@@ -31,7 +32,11 @@ export default function LensForm({ onSubmit, profile, onBackClick }: Props) {
         } as LensProfileType
       }
       onSubmit={(values) => {
-        onSubmit(values);
+        if (profile) {
+          onSubmit(values);
+        } else {
+          onSubmit({ ...values, website: preAppendHttps(values.website) });
+        }
       }}
       validationSchema={lensProfileValidationSchema}
     >

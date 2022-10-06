@@ -1,6 +1,7 @@
 import * as Yup from "yup";
 
 import { validationMessage } from "../../../../../lib/const/validationMessage";
+import { websitePattern } from "../../../../../lib/validation/regex/url";
 import { validationOfRequiredImage } from "../../../../product/utils/validationUtils";
 
 const MAX_LOGO_SIZE = 300 * 1024; // 300 KB
@@ -18,7 +19,10 @@ export const lensProfileValidationSchema = Yup.object({
     ),
   email: Yup.string().trim().required(validationMessage.required),
   description: Yup.string().trim().required(validationMessage.required),
-  website: Yup.string().trim().required(validationMessage.required),
+  website: Yup.string()
+    .trim()
+    .matches(new RegExp(websitePattern), "This is not a URL")
+    .required(validationMessage.required),
   legalTradingName: Yup.string().trim().required(validationMessage.required)
 });
 

@@ -1,5 +1,5 @@
 import { useField, useFormikContext } from "formik";
-import { ReactNode, useEffect } from "react";
+import { cloneElement, ReactElement, useCallback, useEffect } from "react";
 
 import useGetLensProfile from "../../../../../lib/utils/hooks/lens/profile/useGetLensProfile";
 import Button from "../../../../ui/Button";
@@ -9,7 +9,7 @@ import ProfileMultiSteps from "./ProfileMultiSteps";
 import { LensProfileType } from "./validationSchema";
 
 interface Props {
-  children: ReactNode;
+  children: ReactElement;
   onBackClick: () => void;
 }
 
@@ -44,15 +44,8 @@ export default function CreateLensProfile({ children, onBackClick }: Props) {
     }
   );
 
-  useEffect(() => {
-    // The Lens handle field should be editable but should, by default, contain the same value as the "Brand Name" field
-    if (fieldName.value && !metaHandle.touched) {
-      helpersHandle.setValue(fieldName.value);
-    }
-  }, [fieldName.value, helpersHandle, metaHandle.touched]);
-
-  const { setStatus, status } = useFormikContext<LensProfileType>();
-
+  const { setStatus, status, ...rest } = useFormikContext<LensProfileType>();
+  console.log({ rest });
   useEffect(() => {
     const checkHandle = fieldHandle.value && !metaHandle.error;
     if (checkHandle) {
@@ -72,10 +65,17 @@ export default function CreateLensProfile({ children, onBackClick }: Props) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profileData]);
-
+  const onBlurName = useCallback(() => {
+    // The Lens handle field should be editable but should, by default, contain the same value as the "Brand Name" field
+    if (fieldName.value && !metaHandle.touched) {
+      helpersHandle.setValue(fieldName.value, true);
+      helpersHandle.setTouched(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fieldName.value, metaHandle.touched]);
   return (
     <div>
-      {children}
+      {cloneElement(children, { onBlurName })}
       <Grid justifyContent="flex-start" gap="2rem">
         <Button theme="bosonSecondary" type="button" onClick={onBackClick}>
           Back

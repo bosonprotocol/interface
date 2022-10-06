@@ -11,6 +11,9 @@ export default function Input({ name, prefix, ...props }: InputProps) {
   const errorMessage = errorText && meta.touched ? errorText : "";
   const displayError =
     typeof errorMessage === typeof "string" && errorMessage !== "";
+  // if (name === "handle") {
+  //   console.log("meta", meta, "status", status);
+  // }
   return (
     <>
       <FieldInput

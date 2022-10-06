@@ -1,4 +1,5 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { useCallback } from "react";
 import { useAccount } from "wagmi";
 
 import { CONFIG } from "../../../../lib/config";
@@ -28,6 +29,17 @@ export default function CreateProfileModal({
 }: Props) {
   const { address = "" } = useAccount();
 
+  const Component = useCallback(() => {
+    return showLensVersion ? (
+      <LensProfile onSubmit={onUseLensProfile} />
+    ) : (
+      <CreateYourProfile
+        initial={initialRegularCreateProfile}
+        onSubmit={onRegularProfileCreated}
+      />
+    );
+  }, [initialRegularCreateProfile, onRegularProfileCreated, onUseLensProfile]);
+
   const navigate = useKeepQueryParamsNavigate();
   if (!address) {
     return (
@@ -49,12 +61,5 @@ export default function CreateProfileModal({
     );
   }
 
-  return showLensVersion ? (
-    <LensProfile onSubmit={onUseLensProfile} />
-  ) : (
-    <CreateYourProfile
-      initial={initialRegularCreateProfile}
-      onSubmit={onRegularProfileCreated}
-    />
-  );
+  return <Component />;
 }
