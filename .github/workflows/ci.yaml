@@ -13,6 +13,10 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:
+    secrets:
+      CODECOV_TOKEN:
+        required: true
 
 jobs:
   call-reusable-workflow-PR:
@@ -73,7 +77,7 @@ jobs:
       REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS: ${{ secrets.REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS_STAGING }}
   call-reusable-workflow-production:
     uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
-    if: workflow_dispatch
+    if: github.event_name == 'workflow_dispatch'
     with:
       REACT_APP_ENV_NAME: "production"
       DEPLOY_TO_FLEEK: true
@@ -102,7 +106,7 @@ jobs:
         call-reusable-workflow-PR,
         call-reusable-workflow-testing,
         call-reusable-workflow-staging,
-        call-reusable-workflow-production
+        call-reusable-workflow-production,
       ]
     steps:
       - uses: actions/checkout@v3
