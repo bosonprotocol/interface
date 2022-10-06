@@ -75,6 +75,11 @@ export default function DisputesTablePast({ disputes }: Props) {
         Header: "DR Action Taken",
         accessor: "actionTaken",
         disableSortBy: true
+      } as const,
+      {
+        Header: "Decision",
+        accessor: "decision",
+        disableSortBy: true
       } as const
     ],
     []
@@ -147,7 +152,13 @@ export default function DisputesTablePast({ disputes }: Props) {
                 ).format(CONFIG.dateFormat)}
               </span>
             </Typography>
-          )
+          ),
+          decision: dispute &&
+            dispute.state === subgraph.DisputeState.Decided && (
+              <Typography tag="p" style={{ justifyContent: "center" }}>
+                {parseInt(dispute.buyerPercent) / 100}%
+              </Typography>
+            )
         };
       }),
     [disputes] // eslint-disable-line
