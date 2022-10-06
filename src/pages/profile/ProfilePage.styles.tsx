@@ -3,6 +3,7 @@ import styled from "styled-components";
 import GridContainer from "../../components/ui/GridContainer";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
+import { zIndex } from "../../lib/styles/zIndex";
 
 export const ProfileSectionWrapper = styled.div`
   max-width: 68.75rem;
@@ -76,6 +77,7 @@ export const AvatarContainer = styled.div`
     margin-top: 0;
     position: absolute;
     top: 50%;
+    z-index: ${zIndex.OfferStatus};
   }
   div {
     width: 7.25rem !important;

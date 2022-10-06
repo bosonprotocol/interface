@@ -95,10 +95,8 @@ const signCreateSetProfileMetadataTypedData = async (
   accessToken: string
 ) => {
   const result = await createSetProfileMetadataTypedData(request, accessToken);
-  console.log("create profile metadata: createCommentTypedData", result);
 
   const typedData = result.typedData;
-  console.log("create profile metadata: typedData", typedData);
 
   const signature = await signedTypeData(
     signTypedDataAsync,
@@ -106,7 +104,6 @@ const signCreateSetProfileMetadataTypedData = async (
     typedData.types,
     typedData.value
   );
-  console.log("create profile metadata: signature", signature);
 
   return { result, signature };
 };
@@ -143,10 +140,6 @@ const setMetadata = async (
     const dispatcherResult = await createSetProfileMetadataViaDispatcherRequest(
       createMetadataRequest
     );
-    console.log(
-      "create profile metadata via dispatcher: createPostViaDispatcherRequest",
-      dispatcherResult
-    );
 
     if (dispatcherResult.__typename !== "RelayerResult") {
       console.error(
@@ -162,10 +155,6 @@ const setMetadata = async (
       createMetadataRequest,
       signTypedDataAsync,
       accessToken
-    );
-    console.log(
-      "create profile metadata via broadcast: signedResult",
-      signedResult
     );
 
     const broadcastResult = await broadcastRequest(
@@ -184,10 +173,6 @@ const setMetadata = async (
       throw new Error("create profile metadata via broadcast: failed");
     }
 
-    console.log(
-      "create profile metadata via broadcast: broadcastResult",
-      broadcastResult
-    );
     return { txHash: broadcastResult.txHash, txId: broadcastResult.txId };
   }
 };
@@ -217,7 +202,6 @@ export const setProfileMetadata = async (
   }
 ) => {
   const cid = await storage.add(JSON.stringify(args));
-  console.log("create profile metadata: ipfs cid", cid);
 
   const createProfileMetadataRequest = {
     profileId: args.profileId,
@@ -228,19 +212,13 @@ export const setProfileMetadata = async (
     signTypedDataAsync,
     accessToken
   });
-  console.log("create comment gasless", result);
 
-  console.log("create profile metadata: poll until indexed");
   const indexedResult = await pollUntilIndexed(
     { txId: result.txId },
     { accessToken }
   );
 
-  console.log("create profile metadata: profile has been indexed", result);
-
   const logs = indexedResult.txReceipt!.logs;
-
-  console.log("create profile metadata: logs", logs);
 
   return result;
 };

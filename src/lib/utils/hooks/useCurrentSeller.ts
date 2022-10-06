@@ -117,9 +117,7 @@ export function useCurrentSeller({ address, sellerId }: Props = {}) {
       enabled: !!sellerAddress && sellerAddressType === "SELLER_ID"
     }
   );
-  console.log("resultById", resultById, "resultByAddress", resultByAddress);
   const results = resultById?.data || resultByAddress?.data;
-  console.log("results", results);
   const sellerIdToQuery =
     sellerAddressType === "SELLER_ID"
       ? sellerAddress
@@ -179,13 +177,21 @@ export function useCurrentSeller({ address, sellerId }: Props = {}) {
     }
   );
   const sellerValues = useMemo(() => sellerById?.data || null, [sellerById]);
+  const profileId = useMemo(
+    () => getLensTokenIdHex(sellerValues?.authTokenId),
+    [sellerValues]
+  );
 
   const resultLens = useGetLensProfile(
     {
-      profileId: getLensTokenIdHex(sellerValues?.authTokenId)
+      profileId
     },
     {
-      enabled: !!sellerAddress && !!sellerValues && !!sellerAddressType
+      enabled:
+        !!sellerAddress &&
+        !!sellerValues &&
+        !!sellerAddressType &&
+        profileId !== ""
     }
   );
 

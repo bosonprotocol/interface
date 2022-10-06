@@ -115,18 +115,8 @@ export default function ProductType({
     adminSeller.authTokenId === getLensTokenIdDecimal(lens.id).toString();
   const hasValidAdminAccount =
     (CONFIG.lens.enabled && isAdminLinkedToLens) || !CONFIG.lens.enabled;
-  // const { isOperator } = useSellerRoles({});
-  // console.log("useCurrentSellerId data", isOperator);
-  // const { adminSeller } = useAdminSeller({ showErrors: false });
-  // const hasAdminAccount = !!adminSeller; // correct lens admin account or regular admin account
-
   const isSeller = !!Object.keys(currentSeller).length;
-  console.log({
-    currentSeller,
-    hasValidAdminAccount,
-    isOperator,
-    isSeller
-  });
+
   useEffect(() => {
     if (isLoading || isAdminLoading) {
       return;
@@ -144,7 +134,6 @@ export default function ProductType({
           ),
           initialRegularCreateProfile: values,
           onRegularProfileCreated: (regularProfile) => {
-            console.log("regularProfile", regularProfile);
             setFieldValue(
               "createYourProfile",
               regularProfile.createYourProfile

@@ -1,19 +1,18 @@
 import Avatar from "@davatar/react";
-import { DiscordLogo, Globe } from "phosphor-react";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
-import DetailShare from "../../../components/detail/DetailShare";
-import { Spinner } from "../../../components/loading/Spinner";
 import AddressText from "../../../components/offer/AddressText";
 import Grid from "../../../components/ui/Grid";
 import Image from "../../../components/ui/Image";
+import Loading from "../../../components/ui/Loading";
 import Typography from "../../../components/ui/Typography";
 import { UrlParameters } from "../../../lib/routing/parameters";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
+import { MediaSet } from "../../../lib/utils/hooks/lens/graphql/generated";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { useCurrentSeller } from "../../../lib/utils/hooks/useCurrentSeller";
 import { useSellerCalculations } from "../../../lib/utils/hooks/useSellerCalculations";
@@ -28,12 +27,9 @@ import {
   BannerImage,
   BannerImageLayer,
   BasicInfo,
-  DetailShareWrapper,
-  LoadingWrapper,
-  ProfileSectionWrapper,
-  SocialIcon,
-  SocialIconContainer
+  ProfileSectionWrapper
 } from "../ProfilePage.styles";
+import SellerSocial from "./SellerSocial";
 import Tabs from "./Tabs";
 
 const SellerCalculationContainer = styled.div`
@@ -56,10 +52,15 @@ export default function Seller() {
   const { [UrlParameters.sellerId]: sellerId = "" } = useParams();
   const { isLteXS } = useBreakpoints();
 
-  const { isLoading, isError, ...currentSellerByID } = useCurrentSeller({
+  const {
+    isLoading,
+    isError,
+    lens: sellerLens
+  } = useCurrentSeller({
     sellerId
   });
 
+  console.log("sellerLens", sellerLens);
   const {
     data: sellers = [],
     isError: isErrorSellers,
@@ -98,11 +99,7 @@ export default function Seller() {
   }, [exchanges]);
 
   if (isLoading || isLoadingSellers || isLoadingSellersCalculation) {
-    return (
-      <LoadingWrapper>
-        <Spinner size={44} />
-      </LoadingWrapper>
-    );
+    return <Loading />;
   }
 
   if (isError || isErrorSellers || isErrorSellerCalculation) {
@@ -120,29 +117,21 @@ export default function Seller() {
     return <NotFound />;
   }
 
-  console.log("currentSellerByID", currentSellerByID);
-
   return (
     <>
       <BasicInfo>
         <ProfileSectionWrapper>
           <BannerImage
             src={
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              currentSellerByID?.lens?.coverPicture?.original?.url ||
+              (sellerLens?.coverPicture as MediaSet)?.original?.url ||
               backgroundFluid
             }
           />
           <BannerImageLayer>
             <AvatarContainer>
-              {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-              {/* @ts-ignore */}
-              {currentSellerByID?.lens?.picture?.original?.url ? (
+              {(sellerLens?.picture as MediaSet) ? (
                 <Image
-                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                  // @ts-ignore
-                  src={currentSellerByID?.lens?.picture?.original?.url}
+                  src={(sellerLens?.picture as MediaSet)?.original?.url}
                   style={{
                     width: "160px !important",
                     height: "160px !important",
@@ -174,8 +163,7 @@ export default function Seller() {
                   margin={!isLteXS ? "1rem 0 0 0" : "0.25rem 0 0.25rem 0"}
                   $fontSize={!isLteXS ? "2rem" : "1.675rem"}
                 >
-                  {currentSellerByID?.lens?.name ||
-                    "Placeholder Name (work in progress)"}
+                  {sellerLens?.name || "Placeholder Name (work in progress)"}
                 </Typography>
                 <Grid
                   alignItems={!isLteXS ? "center" : "flex-start"}
@@ -183,7 +171,7 @@ export default function Seller() {
                   flexDirection={!isLteXS ? "row" : "column"}
                 >
                   <LensTitle tag="p">
-                    {currentSellerByID?.lens?.handle || "@placeholder.lens"}
+                    {sellerLens?.handle || "@placeholder.lens"}
                   </LensTitle>
                   <AddressContainer>
                     <AddressText address={currentSellerAddress} />
@@ -196,17 +184,7 @@ export default function Seller() {
               $width="auto"
               margin="1.25rem 0 0 0"
             >
-              <SocialIconContainer>
-                <SocialIcon href="" $isDisabled={true}>
-                  <DiscordLogo size={24} />
-                </SocialIcon>
-                <SocialIcon href="" $isDisabled={true}>
-                  <Globe size={24} />
-                </SocialIcon>
-                <DetailShareWrapper>
-                  <DetailShare />
-                </DetailShareWrapper>
-              </SocialIconContainer>
+              <SellerSocial sellerLens={sellerLens} />
             </Grid>
           </Grid>
         </ProfileSectionWrapper>
@@ -214,7 +192,7 @@ export default function Seller() {
           {/* TODO: ADD MISSING TEXT */}
           <ReadMore
             text={
-              currentSellerByID?.lens?.bio ||
+              sellerLens?.bio ||
               "is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Why do we use it? It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like)."
             }
           />

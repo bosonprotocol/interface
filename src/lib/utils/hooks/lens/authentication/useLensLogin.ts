@@ -64,7 +64,6 @@ async function login({
   const signature = (await signer?.signMessage(challengeResponse.text)) || "";
 
   const authenticatedResult = await authenticate({ address, signature });
-  console.log("login: result", authenticatedResult);
 
   return authenticatedResult;
 }

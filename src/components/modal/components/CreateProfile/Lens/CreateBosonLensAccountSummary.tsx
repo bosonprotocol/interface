@@ -114,7 +114,6 @@ export default function CreateBosonLensAccountSummary({
   } = useCustomCreateLensProfile({
     values: values,
     onCreatedProfile: (profile: Profile) => {
-      console.log(profile);
       setLensProfileToSubmit(profile);
       setCreatedLensProfile(true);
     },
