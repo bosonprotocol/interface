@@ -52,6 +52,7 @@ export default function LensFormFields({ disable, onBlurName }: Props) {
       <FormField
         title="Website / Social media link"
         subTitle="Put your most frequently used online channel in here. Use the URL for Social media."
+        required
       >
         <Input
           name="website"
@@ -63,6 +64,7 @@ export default function LensFormFields({ disable, onBlurName }: Props) {
       <FormField
         title="Legal trading name"
         subTitle="Input your legal trading name under which you will be selling items. This information is used for the contractual agreement underlying your exchanges."
+        required
       >
         <Input
           name="legalTradingName"
