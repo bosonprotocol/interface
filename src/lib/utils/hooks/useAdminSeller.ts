@@ -37,7 +37,7 @@ export function useAdminSeller({ showErrors }: Props) {
   );
   const { data: lensAdminSellers } = useSellers(
     {
-      admin_in: [address || ""], // TODO: change: handles,
+      admin_in: handles,
       includeFunds: true
     },
     {
