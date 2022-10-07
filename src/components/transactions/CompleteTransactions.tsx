@@ -1,6 +1,6 @@
 import {
   CompleteTransactionLogs,
-  GetCompletedTxLogsByWallet
+  useGetCompletedTxLogsByWallet
 } from "../../lib/utils/hooks/getTransactions/getTransactions";
 import Grid from "../ui/Grid";
 import TransactionsTable from "./TransactionsTable";
@@ -34,7 +34,8 @@ export enum TransctionTypes {
   FUNDS_WITHDRAWN = "FUNDS_WITHDRAWN", // other
   BUYER_CREATED = "BUYER_CREATED", // other
   EXCHANGE_COMPLETED = "EXCHANGE_COMPLETED", // exchange
-  FUNDS_DEPOSITED = "FUNDS_DEPOSITED"
+  FUNDS_DEPOSITED = "FUNDS_DEPOSITED",
+  SELLER_CREATED = "SELLER_CREATED"
 }
 
 const buildTransaction = (
@@ -76,6 +77,8 @@ const buildTransaction = (
       return `Redeemed voucher with id: ${offerExchangeId}`;
     case TransctionTypes.VOUCHER_REVOKED:
       return `Revoked voucher with id: ${offerExchangeId}`;
+    case TransctionTypes.SELLER_CREATED:
+      return `Seller created`;
   }
 };
 
@@ -143,7 +146,11 @@ const buildTableData = (data?: CompleteTransactionLogs) => {
 };
 
 export const CompletedTransactions = () => {
-  const { data } = GetCompletedTxLogsByWallet();
+  const { data } = useGetCompletedTxLogsByWallet();
+  console.log(
+    "🚀  roberto --  ~ file: CompleteTransactions.tsx ~ line 147 ~ CompletedTransactions ~ data",
+    data
+  );
 
   const tableData = buildTableData(data);
 

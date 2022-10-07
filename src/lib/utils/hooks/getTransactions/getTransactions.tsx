@@ -118,7 +118,7 @@ const buildQuery = (walletAddress: string, name: string) => {
   `;
 };
 
-export const GetCompletedTxLogsByWallet = () => {
+export const useGetCompletedTxLogsByWallet = () => {
   const { address: admin } = useAccount();
 
   const props = { admin };
