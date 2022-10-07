@@ -15,6 +15,7 @@ export default function Error({ display = false, message = "" }: ErrorProps) {
       margin="0.25rem"
       fontWeight="600"
       $fontSize="0.75rem"
+      style={{ whiteSpace: "pre-wrap" }}
     >
       {message}
     </Typography>

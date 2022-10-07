@@ -13,7 +13,7 @@ export default function CreateProductDraft({ chooseNew, chooseDraft }: Props) {
       <Grid flexDirection="column" alignItems="flex-start">
         <Typography tag="h5">We saved your unfinished product</Typography>
         <Typography tag="p">
-          Do you whish to continue editing this product or start fresh?
+          Do you wish to continue editing this product or start fresh?
         </Typography>
       </Grid>
       <Grid flexDirection="row" justifyContent="space-between">

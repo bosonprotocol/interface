@@ -138,10 +138,18 @@ export const FieldFileUpload = styled(FieldInput)`
   display: none;
 `;
 
-export const FieldFileUploadWrapper = styled.div`
+export const FieldFileUploadWrapper = styled.div<{ $disabled: boolean }>`
   position: relative;
   display: inline-block;
-  cursor: pointer;
+  ${({ $disabled }) =>
+    $disabled
+      ? css`
+          cursor: not-allowed;
+        `
+      : css`
+          cursor: pointer;
+        `}
+
   width: 8rem;
 
   :hover {

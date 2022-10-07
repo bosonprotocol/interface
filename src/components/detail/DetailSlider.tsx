@@ -8,7 +8,7 @@ import Button from "../../components/ui/Button";
 import Grid from "../../components/ui/Grid";
 import Image from "../../components/ui/Image";
 import Typography from "../../components/ui/Typography";
-import { blobToBase64 } from "../../lib/utils/base64ImageConverter";
+import { blobToBase64 } from "../../lib/utils/base64";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
 import { SLIDER_OPTIONS } from "./const";
 import { GlideSlide, GlideWrapper } from "./Detail.style";

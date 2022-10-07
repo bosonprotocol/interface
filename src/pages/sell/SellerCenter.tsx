@@ -15,7 +15,7 @@ import Loading from "../../components/ui/Loading";
 import Typography from "../../components/ui/Typography";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
-import { useCurrentSellerId } from "../../lib/utils/hooks/useCurrentSellerId";
+import { useCurrentSeller } from "../../lib/utils/hooks/useCurrentSeller";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 
 export const Wrapper = styled.div`
@@ -43,8 +43,8 @@ const SellerCenterWithData = WithSellerData<SellerInsideProps>(SellerCenter);
 
 function SellerCenterWrapper() {
   const navigate = useKeepQueryParamsNavigate();
-  const { isLoading, sellerId: userSellerId } = useCurrentSellerId();
-  const sellerId = userSellerId;
+  const currentUser = useCurrentSeller();
+  const { isLoading, sellerId } = currentUser;
 
   if (isLoading) {
     return (

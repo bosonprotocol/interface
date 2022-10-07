@@ -1,3 +1,3 @@
 export const validationMessage = {
-  required: "This fields is required"
+  required: "This field is required"
 } as const;

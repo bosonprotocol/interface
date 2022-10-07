@@ -1,19 +1,23 @@
 import Avatar from "@davatar/react";
-import { DiscordLogo, Globe } from "phosphor-react";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
-import DetailShare from "../../../components/detail/DetailShare";
-import { Spinner } from "../../../components/loading/Spinner";
 import AddressText from "../../../components/offer/AddressText";
 import Grid from "../../../components/ui/Grid";
+import Image from "../../../components/ui/Image";
+import Loading from "../../../components/ui/Loading";
 import Typography from "../../../components/ui/Typography";
 import { UrlParameters } from "../../../lib/routing/parameters";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
+import {
+  MediaSet,
+  ProfileFieldsFragment
+} from "../../../lib/utils/hooks/lens/graphql/generated";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
+import { useCurrentSeller } from "../../../lib/utils/hooks/useCurrentSeller";
 import { useSellerCalculations } from "../../../lib/utils/hooks/useSellerCalculations";
 import { useSellers } from "../../../lib/utils/hooks/useSellers";
 import NotFound from "../../not-found/NotFound";
@@ -26,12 +30,9 @@ import {
   BannerImage,
   BannerImageLayer,
   BasicInfo,
-  DetailShareWrapper,
-  LoadingWrapper,
-  ProfileSectionWrapper,
-  SocialIcon,
-  SocialIconContainer
+  ProfileSectionWrapper
 } from "../ProfilePage.styles";
+import SellerSocial from "./SellerSocial";
 import Tabs from "./Tabs";
 
 const SellerCalculationContainer = styled.div`
@@ -53,6 +54,15 @@ export default function Seller() {
   const { address: currentWalletAddress = "" } = useAccount();
   const { [UrlParameters.sellerId]: sellerId = "" } = useParams();
   const { isLteXS } = useBreakpoints();
+
+  const {
+    isLoading,
+    isError,
+    lens: sellerLens
+  } = useCurrentSeller({
+    sellerId
+  });
+
   const {
     data: sellers = [],
     isError: isErrorSellers,
@@ -90,15 +100,11 @@ export default function Seller() {
     ].length;
   }, [exchanges]);
 
-  if (isLoadingSellers || isLoadingSellersCalculation) {
-    return (
-      <LoadingWrapper>
-        <Spinner size={44} />
-      </LoadingWrapper>
-    );
+  if (isLoading || isLoadingSellers || isLoadingSellersCalculation) {
+    return <Loading />;
   }
 
-  if (isErrorSellers || isErrorSellerCalculation) {
+  if (isError || isErrorSellers || isErrorSellerCalculation) {
     // TODO: NO FIGMA REPRESENTATION
     return (
       <BasicInfo>
@@ -117,13 +123,30 @@ export default function Seller() {
     <>
       <BasicInfo>
         <ProfileSectionWrapper>
-          <BannerImage src={backgroundFluid} />
+          <BannerImage
+            src={
+              (sellerLens?.coverPicture as MediaSet)?.original?.url ||
+              backgroundFluid
+            }
+          />
           <BannerImageLayer>
             <AvatarContainer>
-              <Avatar
-                address={currentSellerAddress}
-                size={!isLteXS ? 160 : 80}
-              />
+              {(sellerLens?.picture as MediaSet) ? (
+                <Image
+                  src={(sellerLens?.picture as MediaSet)?.original?.url}
+                  style={{
+                    width: "160px !important",
+                    height: "160px !important",
+                    paddingTop: "0",
+                    borderRadius: "50%"
+                  }}
+                />
+              ) : (
+                <Avatar
+                  address={currentSellerAddress}
+                  size={!isLteXS ? 160 : 80}
+                />
+              )}
             </AvatarContainer>
           </BannerImageLayer>
         </ProfileSectionWrapper>
@@ -142,14 +165,16 @@ export default function Seller() {
                   margin={!isLteXS ? "1rem 0 0 0" : "0.25rem 0 0.25rem 0"}
                   $fontSize={!isLteXS ? "2rem" : "1.675rem"}
                 >
-                  Placeholder Name (work in progress)
+                  {sellerLens?.name || "Placeholder Name (work in progress)"}
                 </Typography>
                 <Grid
                   alignItems={!isLteXS ? "center" : "flex-start"}
                   justifyContent="flex-start"
                   flexDirection={!isLteXS ? "row" : "column"}
                 >
-                  <LensTitle tag="p">@placeholder.lens</LensTitle>
+                  <LensTitle tag="p">
+                    {sellerLens?.handle || "@placeholder.lens"}
+                  </LensTitle>
                   <AddressContainer>
                     <AddressText address={currentSellerAddress} />
                   </AddressContainer>
@@ -161,26 +186,17 @@ export default function Seller() {
               $width="auto"
               margin="1.25rem 0 0 0"
             >
-              <SocialIconContainer>
-                <SocialIcon href="" $isDisabled={true}>
-                  <DiscordLogo size={24} />
-                </SocialIcon>
-                <SocialIcon href="" $isDisabled={true}>
-                  <Globe size={24} />
-                </SocialIcon>
-                <DetailShareWrapper>
-                  <DetailShare />
-                </DetailShareWrapper>
-              </SocialIconContainer>
+              <SellerSocial sellerLens={sellerLens as ProfileFieldsFragment} />
             </Grid>
           </Grid>
         </ProfileSectionWrapper>
         <ProfileSectionWrapper>
           {/* TODO: ADD MISSING TEXT */}
           <ReadMore
-            text="is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-Why do we use it?
-It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like)."
+            text={
+              sellerLens?.bio ||
+              "is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Why do we use it? It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like)."
+            }
           />
         </ProfileSectionWrapper>
       </BasicInfo>

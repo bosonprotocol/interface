@@ -19,6 +19,7 @@ const buildQuery = (queryString: string, name: string) => {
         retractedDate
         decidedDate
         refusedDate
+        buyerPercent
         exchange {
           id
           completedDate
