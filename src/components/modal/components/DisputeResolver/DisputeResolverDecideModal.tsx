@@ -45,9 +45,10 @@ export default function DisputeResolverDecideModal({
     const { value } = e.target;
     setIsValidValue(false);
     setDisputeError(null);
+
     if (value.match(/\./g)) {
       const [num, decimal] = value.split(".");
-      if (Number(num) >= 100) {
+      if (Number(num) > 100) {
         setIsValidValue(true);
       }
       if (decimal?.length > 2) {
@@ -118,6 +119,7 @@ export default function DisputeResolverDecideModal({
             type="number"
             min={0}
             max={100}
+            step="0.01"
             onChange={handleChangeValue}
             value={disputePercentage}
           />
