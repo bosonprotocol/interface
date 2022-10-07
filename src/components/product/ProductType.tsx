@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 
 import { CONFIG } from "../../lib/config";
@@ -7,7 +7,6 @@ import { colors } from "../../lib/styles/colors";
 import { loadAndSetImage } from "../../lib/utils/base64";
 import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
 import { useCurrentSeller } from "../../lib/utils/hooks/useCurrentSeller";
-import { useEffectDebugger } from "../../lib/utils/hooks/useEffectDebugger";
 import {
   CreateProductImageCreteYourProfileLogo,
   GetItemFromStorageKey,
@@ -169,7 +168,7 @@ export default function ProductType({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
-  useEffectDebugger(() => {
+  useEffect(() => {
     if (isLoading || isAdminLoading) {
       return;
     }
