@@ -142,7 +142,18 @@ const buildTableData = (data?: CompleteTransactionLogs) => {
       };
     }) || [];
 
-  return [...buyers, ...sellers, ...disputeResolvers];
+  /**
+   * TODO: this is not the best performante sort algorithm, good enought for the
+   * amount of transaction that we have for
+   * launch
+   */
+  const mixedList = [...buyers, ...sellers, ...disputeResolvers].sort(
+    (a, b) => {
+      return parseInt(b.date) - parseInt(a.date);
+    }
+  );
+
+  return mixedList;
 };
 
 export const CompletedTransactions = () => {

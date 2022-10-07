@@ -143,10 +143,7 @@ export const useGetCompletedTxLogsByWallet = () => {
       operator,
       treasury
     } = await coreSDK.getSellerByAddress(admin || "");
-    // console.log(
-    //   "🚀  roberto --  ~ file: getTransactions.tsx ~ line 130 ~ result ~ sample",
-    //   sample
-    // );
+
     const result = await fetchSubgraph<CompleteTransactionLogs>(
       buildQuery(
         admin || "",
