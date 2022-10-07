@@ -125,7 +125,7 @@ export const GetCompletedTxLogsByWallet = () => {
 
   const result = useQuery(["GetCompletedTxLogsByWallet", props], async () => {
     const result = await fetchSubgraph<CompleteTransactionLogs>(
-      buildQuery(admin || "", `getTxLogsByWallet`),
+      buildQuery(admin || "", `GetCompletedTxLogsByWallet`),
       props
     );
     return result;
