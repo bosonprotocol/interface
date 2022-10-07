@@ -35,7 +35,8 @@ export enum TransctionTypes {
   BUYER_CREATED = "BUYER_CREATED", // other
   EXCHANGE_COMPLETED = "EXCHANGE_COMPLETED", // exchange
   FUNDS_DEPOSITED = "FUNDS_DEPOSITED",
-  SELLER_CREATED = "SELLER_CREATED"
+  SELLER_CREATED = "SELLER_CREATED",
+  UPDATE_SELLER = "UPDATE_SELLER"
 }
 
 const buildTransaction = (
@@ -79,6 +80,10 @@ const buildTransaction = (
       return `Revoked voucher with id: ${offerExchangeId}`;
     case TransctionTypes.SELLER_CREATED:
       return `Seller created`;
+    case TransctionTypes.UPDATE_SELLER:
+      return `Seller updated`;
+    default:
+      return `Not supported transaction ${type}`;
   }
 };
 

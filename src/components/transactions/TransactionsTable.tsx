@@ -7,8 +7,8 @@ import { CONFIG } from "../../lib/config";
 import { colors } from "../../lib/styles/colors";
 import { getDateTimestamp } from "../../lib/utils/getDateTimestamp";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
-import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import PaginationPages from "../seller/common/PaginationPages";
+import Tooltip from "../tooltip/Tooltip";
 import Button from "../ui/Button";
 import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
@@ -36,8 +36,6 @@ interface Props {
 }
 
 export default function TransactionsTable({ transactions }: Props) {
-  const navigate = useKeepQueryParamsNavigate();
-
   const { isLteS } = useBreakpoints();
 
   const columns = useMemo(
@@ -97,9 +95,18 @@ export default function TransactionsTable({ transactions }: Props) {
             </Typography>
           ),
           dateTime: (
-            <Typography $fontSize="0.75rem">
-              {dayjs(getDateTimestamp(tx.date)).format(CONFIG.dateFormat)}
-            </Typography>
+            <Tooltip
+              interactive
+              content={
+                <Typography $fontSize="0.75rem">
+                  {dayjs(getDateTimestamp(tx.date)).format("HH:mm:ss")}
+                </Typography>
+              }
+            >
+              <Typography $fontSize="0.75rem">
+                {dayjs(getDateTimestamp(tx.date)).format(CONFIG.dateFormat)}
+              </Typography>
+            </Tooltip>
           ),
           executedBy: (
             <Typography
@@ -212,6 +219,7 @@ export default function TransactionsTable({ transactions }: Props) {
                       <td
                         {...cell.getCellProps()}
                         key={`transaction_${row.id}-${cell.column.id}`}
+                        style={{ cursor: "default" }}
                         onClick={() => {
                           if (cell.column.id !== "linkToBlock") {
                             /**
