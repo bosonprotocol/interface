@@ -5,6 +5,7 @@ import { useAccount } from "wagmi";
 
 import { getLensTokenIdHex } from "../../../components/modal/components/CreateProfile/Lens/utils";
 import { fetchSubgraph } from "../core-components/subgraph";
+import { useCoreSDK } from "../useCoreSdk";
 import useGetLensProfile from "./lens/profile/useGetLensProfile";
 
 interface Props {
@@ -13,6 +14,7 @@ interface Props {
 }
 
 export function useCurrentSeller({ address, sellerId }: Props = {}) {
+  const coreSDK = useCoreSDK();
   const { address: loggedInUserAddress } = useAccount();
   const sellerAddress = address || sellerId || loggedInUserAddress || null;
   const sellerAddressType = useMemo(() => {
@@ -31,47 +33,11 @@ export function useCurrentSeller({ address, sellerId }: Props = {}) {
   const resultByAddress = useQuery(
     ["current-seller-data-by-address", { address: sellerAddress }],
     async () => {
-      const result = await fetchSubgraph<{
-        admin: {
-          sellerId: string;
-        }[];
-        clerk: {
-          sellerId: string;
-        }[];
-        operator: {
-          sellerId: string;
-        }[];
-        treasury: {
-          sellerId: string;
-        }[];
-      }>(
-        gql`
-          query GetSellerIdByAddress($address: String) {
-            admin: sellers(where: { admin: $address }) {
-              sellerId
-            }
-            clerk: sellers(where: { clerk: $address }) {
-              sellerId
-            }
-            operator: sellers(where: { operator: $address }) {
-              sellerId
-            }
-            treasury: sellers(where: { treasury: $address }) {
-              sellerId
-            }
-          }
-        `,
-        { address: sellerAddress }
-      );
-      const allProps = {
-        admin: result?.admin[0]?.sellerId || null,
-        clerk: result?.clerk[0]?.sellerId || null,
-        operator: result?.operator[0]?.sellerId || null,
-        treasury: result?.treasury[0]?.sellerId || null
-      };
-      return Object.fromEntries(
-        Object.entries(allProps).filter(([, value]) => value !== null)
-      );
+      if (!sellerAddress) {
+        return null;
+      }
+      const seller = await coreSDK.getSellerByAddress(sellerAddress);
+      return seller;
     },
     {
       enabled: !!sellerAddress && sellerAddressType === "ADDRESS"
@@ -117,7 +83,7 @@ export function useCurrentSeller({ address, sellerId }: Props = {}) {
       enabled: !!sellerAddress && sellerAddressType === "SELLER_ID"
     }
   );
-  const results = resultById?.data || resultByAddress?.data;
+  // const results = resultById?.data || resultByAddress?.data;
   const sellerIdToQuery =
     sellerAddressType === "SELLER_ID"
       ? sellerAddress
