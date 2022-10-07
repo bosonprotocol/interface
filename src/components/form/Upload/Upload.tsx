@@ -1,3 +1,4 @@
+import { Button } from "@bosonprotocol/react-kit";
 import { useField } from "formik";
 import { Image, Trash } from "phosphor-react";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -8,7 +9,6 @@ import {
   GetItemFromStorageKey,
   useLocalStorage
 } from "../../../lib/utils/hooks/useLocalStorage";
-import Button from "../../ui/Button";
 import Typography from "../../ui/Typography";
 import Error from "../Error";
 import {
@@ -19,7 +19,6 @@ import {
 } from "../Field.styles";
 import type { UploadProps } from "../types";
 import UploadedFiles from "./UploadedFiles";
-
 export default function Upload({
   name,
   accept = "image/*",
@@ -123,7 +122,7 @@ export default function Upload({
           }}
         />
         {trigger ? (
-          <Button onClick={handleChooseFile} theme="secondary">
+          <Button onClick={handleChooseFile} variant="accentInverted">
             {trigger}
           </Button>
         ) : (

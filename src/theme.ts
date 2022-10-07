@@ -1,14 +1,22 @@
 import "styled-components";
 
-import { colors } from "./lib/styles/colors";
-
 const theme = {
   colors: {
     light: {
-      primary: colors.primary,
-      secondary: colors.secondary,
-      orange: colors.orange,
-      white: "#ffffff"
+      primary: "#02F3A2",
+      secondary: "#FC6838",
+      accent: "#7829F9",
+      black: "#09182C",
+      lightGrey: "#F1F3F9",
+      darkGrey: "#556072",
+      white: "#ffffff",
+      green: "#02F3A2",
+      red: "#FC386A",
+      blue: "#0299EE",
+      orange: "#FC6838",
+      lime: "#B6F952",
+      torquise: "#06F7D5",
+      border: "#5560720f"
     }
   },
   mobile: "768px",
