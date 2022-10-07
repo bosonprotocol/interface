@@ -168,7 +168,6 @@ export default function useCustomCreateLensProfile({
     }
     const isCreatedProfile = isFetched && createdProfileId;
     if (isCreatedProfile) {
-      console.log("trigger setMetadata!");
       setMetadata();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

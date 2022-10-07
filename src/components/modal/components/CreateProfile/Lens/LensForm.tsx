@@ -13,23 +13,33 @@ import ViewLensProfile from "./ViewLensProfile";
 interface Props {
   onSubmit: (createValues: LensProfileType) => void;
   profile: Profile | null;
+  formValues: LensProfileType | null | undefined;
   onBackClick: () => void;
+  setStepBasedOnIndex: (index: number) => void;
 }
 
-export default function LensForm({ onSubmit, profile, onBackClick }: Props) {
+export default function LensForm({
+  onSubmit,
+  profile,
+  onBackClick,
+  formValues,
+  setStepBasedOnIndex
+}: Props) {
   return (
     <Formik<LensProfileType>
       initialValues={
-        {
-          logo: [],
-          coverPicture: [],
-          name: "",
-          handle: "",
-          email: "",
-          description: "",
-          website: "",
-          legalTradingName: ""
-        } as LensProfileType
+        formValues
+          ? formValues
+          : ({
+              logo: [],
+              coverPicture: [],
+              name: "",
+              handle: "",
+              email: "",
+              description: "",
+              website: "",
+              legalTradingName: ""
+            } as LensProfileType)
       }
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       onSubmit={(values, _boson) => {
@@ -43,11 +53,18 @@ export default function LensForm({ onSubmit, profile, onBackClick }: Props) {
     >
       <Form>
         {profile ? (
-          <ViewLensProfile profile={profile} onBackClick={onBackClick}>
+          <ViewLensProfile
+            profile={profile}
+            onBackClick={onBackClick}
+            setStepBasedOnIndex={setStepBasedOnIndex}
+          >
             <LensFormFields disable={true} />
           </ViewLensProfile>
         ) : (
-          <CreateLensProfile onBackClick={onBackClick}>
+          <CreateLensProfile
+            onBackClick={onBackClick}
+            setStepBasedOnIndex={setStepBasedOnIndex}
+          >
             <LensFormFields disable={false} />
           </CreateLensProfile>
         )}

@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import MultiSteps from "../../../../step/MultiSteps";
 import Grid from "../../../../ui/Grid";
 
@@ -5,13 +7,16 @@ interface Props {
   createOrSelect: "create" | "select" | null;
   createOrViewRoyalties: "create" | "view" | null;
   activeStep: 0 | 1 | 2 | 3;
+  setStepBasedOnIndex?: (index: number) => void;
 }
 
 export default function ProfileMultiSteps({
   createOrSelect,
   createOrViewRoyalties,
-  activeStep
+  activeStep: initialActiveStep,
+  setStepBasedOnIndex
 }: Props) {
+  const [activeStep, setActiveStep] = useState<number>(initialActiveStep);
   return (
     <Grid justifyContent="space-evently">
       <MultiSteps
@@ -40,6 +45,11 @@ export default function ProfileMultiSteps({
           { steps: 1, name: "Confirmation" }
         ]}
         active={activeStep}
+        callback={(step) => {
+          setStepBasedOnIndex?.(step);
+          setActiveStep(step);
+        }}
+        disableInactiveSteps
       />
     </Grid>
   );

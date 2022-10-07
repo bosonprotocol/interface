@@ -47,7 +47,7 @@ export default function MultiSteps({
           return (
             <MultiStepWrapper isLteS={isLteS} key={`multi_${i}`}>
               <StepWrapper>
-                {steps.map((step: number, key: number) => {
+                {steps.map((_: number, key: number) => {
                   const currentKey = previousLength + key;
                   const state =
                     currentKey === current

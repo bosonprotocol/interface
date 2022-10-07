@@ -154,20 +154,20 @@ export default function ProductType({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
-  const onUseLensProfile = useCallback(
-    (lensProfile: Profile) => {
-      // TODO: I think this is not needed
+
+  useEffect(() => {
+    if (CONFIG.lens.enabled && lens) {
       setFieldValue("createYourProfile", {
-        logo: getLensProfilePictureUrl(lensProfile),
-        name: lensProfile.name,
-        email: getLensEmail(lensProfile),
-        description: lensProfile.bio,
-        website: getLensWebsite(lensProfile)
+        logo: getLensProfilePictureUrl(lens as Profile),
+        name: lens.name,
+        email: getLensEmail(lens as Profile),
+        description: lens.bio,
+        website: getLensWebsite(lens as Profile)
       });
-    },
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
+  }, [lens]);
+
   useEffect(() => {
     if (isLoading || isAdminLoading) {
       return;
@@ -185,11 +185,11 @@ export default function ProductType({
               createOrSelect={null}
               activeStep={0}
               createOrViewRoyalties={null}
+              key="ProductType"
             />
           ),
           initialRegularCreateProfile: values,
           onRegularProfileCreated,
-          onUseLensProfile,
           closable: false,
           onClose: () => {
             showCreateProductDraftModal();

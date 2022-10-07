@@ -27,14 +27,16 @@ interface Props {
   profile?: Profile | null;
   values: LensProfileType;
   bosonAccount: BosonAccount;
-  onSubmit: (profile: Profile, bosonAccount: BosonAccount) => void;
+  onSubmit: () => void;
+  setStepBasedOnIndex: (index: number) => void;
 }
 
 export default function CreateBosonLensAccountSummary({
   profile,
   values,
   bosonAccount,
-  onSubmit
+  onSubmit,
+  setStepBasedOnIndex
 }: Props) {
   const isExistingLensAccount = !!profile;
   const [lensProfileToSubmit, setLensProfileToSubmit] = useState<
@@ -103,6 +105,7 @@ export default function CreateBosonLensAccountSummary({
             createOrViewRoyalties={
               alreadyHasRoyaltiesDefined ? "view" : "create"
             }
+            setStepBasedOnIndex={setStepBasedOnIndex}
           />
         )
       }
@@ -138,18 +141,11 @@ export default function CreateBosonLensAccountSummary({
 
   const onSubmitWithArgs = useCallback(
     (action: string) => {
-      if (!lensProfileToSubmit) {
-        console.error(
-          "Lens profile is falsy onSubmit, not calling onSubmit..."
-        );
-        return;
-      }
-
       toast((t) => <SuccessTransactionToast t={t} action={action} />);
 
-      onSubmit(lensProfileToSubmit, bosonAccount);
+      onSubmit();
     },
-    [bosonAccount, lensProfileToSubmit, onSubmit]
+    [onSubmit]
   );
   return (
     <>

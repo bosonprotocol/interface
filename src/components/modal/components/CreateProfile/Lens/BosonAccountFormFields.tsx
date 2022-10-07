@@ -15,10 +15,12 @@ import ProfileMultiSteps from "./ProfileMultiSteps";
 interface Props {
   onBackClick: () => void;
   isExistingProfile: boolean;
+  setStepBasedOnIndex: (index: number) => void;
 }
 
 export default function BosonAccountFormFields({
   onBackClick,
+  setStepBasedOnIndex,
   isExistingProfile
 }: Props) {
   const [fieldSecondaryRoyalties, , helpersSecondaryRoyalties] =
@@ -55,6 +57,8 @@ export default function BosonAccountFormFields({
             createOrViewRoyalties={
               alreadyHasRoyaltiesDefined ? "view" : "create"
             }
+            key="BosonAccountFormFields"
+            setStepBasedOnIndex={setStepBasedOnIndex}
           />
         )
       }

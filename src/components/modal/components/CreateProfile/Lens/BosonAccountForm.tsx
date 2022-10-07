@@ -9,11 +9,13 @@ interface Props {
   onSubmit: (createValues: BosonAccount) => void;
   onBackClick: () => void;
   isExistingProfile: boolean;
+  setStepBasedOnIndex: (index: number) => void;
 }
 
 export default function BosonAccountForm({
   onSubmit,
   onBackClick,
+  setStepBasedOnIndex,
   isExistingProfile
 }: Props) {
   return (
@@ -40,6 +42,7 @@ export default function BosonAccountForm({
         <Form style={{ width: "100%" }}>
           <BosonAccountFormFields
             onBackClick={onBackClick}
+            setStepBasedOnIndex={setStepBasedOnIndex}
             isExistingProfile={isExistingProfile}
           />
         </Form>

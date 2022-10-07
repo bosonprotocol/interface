@@ -31,6 +31,7 @@ export default function CreateOrChoose({
             createOrSelect={null}
             activeStep={0}
             createOrViewRoyalties={null}
+            key="CreateOrChoose"
           />
         )
       }

@@ -8,7 +8,7 @@ import LensForm from "./LensForm";
 import { BosonAccount, LensProfileType } from "./validationSchema";
 
 interface Props {
-  onSubmit: (profile: Profile, bosonAccount: BosonAccount) => void;
+  onSubmit: () => void;
 }
 
 const steps = {
@@ -29,7 +29,24 @@ export default function LensProfile({ onSubmit }: Props) {
   const handleOnBackClick = useCallback(() => {
     setStep(steps.CREATE_OR_CHOOSE);
   }, []);
-
+  const setStepBasedOnIndex = useCallback(
+    (index: number) => {
+      if (index === 0) {
+        setStep(steps.CREATE_OR_CHOOSE);
+      } else if (index === 1) {
+        if (lensProfile) {
+          setStep(steps.USE);
+        } else {
+          setStep(steps.CREATE);
+        }
+      } else if (index === 2) {
+        setStep(steps.BOSON_ACCOUNT);
+      } else if (index === 3) {
+        setStep(steps.SUMMARY);
+      }
+    },
+    [lensProfile]
+  );
   return (
     <>
       {step === steps.CREATE_OR_CHOOSE ? (
@@ -46,20 +63,24 @@ export default function LensProfile({ onSubmit }: Props) {
       ) : step === steps.CREATE ? (
         <LensForm
           profile={null}
+          formValues={lensFormValues}
           onSubmit={(formValues) => {
             setLensFormValues(formValues);
             setStep(steps.BOSON_ACCOUNT);
           }}
           onBackClick={handleOnBackClick}
+          setStepBasedOnIndex={setStepBasedOnIndex}
         />
       ) : step === steps.USE ? (
         <LensForm
           profile={lensProfile}
+          formValues={null}
           onSubmit={(formValues) => {
             setLensFormValues(formValues);
             setStep(steps.BOSON_ACCOUNT);
           }}
           onBackClick={handleOnBackClick}
+          setStepBasedOnIndex={setStepBasedOnIndex}
         />
       ) : step === steps.BOSON_ACCOUNT ? (
         <BosonAccountForm
@@ -69,14 +90,16 @@ export default function LensProfile({ onSubmit }: Props) {
             setStep(steps.SUMMARY);
           }}
           onBackClick={() => {
-            setStep(steps.USE);
+            setStepBasedOnIndex(2);
           }}
+          setStepBasedOnIndex={setStepBasedOnIndex}
         />
       ) : step === steps.SUMMARY && lensFormValues && bosonAccount ? (
         <CreateBosonLensAccountSummary
           profile={lensProfile}
           values={lensFormValues}
           bosonAccount={bosonAccount}
+          setStepBasedOnIndex={setStepBasedOnIndex}
           onSubmit={onSubmit}
         />
       ) : (

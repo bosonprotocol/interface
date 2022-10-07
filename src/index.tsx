@@ -28,7 +28,7 @@ const StrictMode = ({
 };
 
 root.render(
-  <StrictMode enable={true}>
+  <StrictMode enable={false}>
     <>
       <Toaster
         position="top-right"

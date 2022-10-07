@@ -12,9 +12,14 @@ import { LensProfileType } from "./validationSchema";
 interface Props {
   children: ReactElement;
   onBackClick: () => void;
+  setStepBasedOnIndex: (index: number) => void;
 }
 
-export default function CreateLensProfile({ children, onBackClick }: Props) {
+export default function CreateLensProfile({
+  children,
+  onBackClick,
+  setStepBasedOnIndex
+}: Props) {
   const { updateProps, store } = useModal();
 
   // TODO: get seller royalties to know what value to set to 'createOrViewRoyalties'
@@ -28,6 +33,8 @@ export default function CreateLensProfile({ children, onBackClick }: Props) {
             createOrSelect="create"
             activeStep={1}
             createOrViewRoyalties="create"
+            key="CreateLensProfile"
+            setStepBasedOnIndex={setStepBasedOnIndex}
           />
         )
       }

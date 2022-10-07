@@ -4,7 +4,6 @@ import { useAccount } from "wagmi";
 
 import { CONFIG } from "../../../../lib/config";
 import { BosonRoutes } from "../../../../lib/routing/routes";
-import { Profile } from "../../../../lib/utils/hooks/lens/graphql/generated";
 import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { CreateYourProfile as CreateYourProfileType } from "../../../product/utils";
 import Button from "../../../ui/Button";
@@ -17,7 +16,6 @@ import CreateYourProfile from "./Regular/CreateYourProfile";
 interface Props {
   initialRegularCreateProfile: CreateYourProfileType;
   onRegularProfileCreated: (createValues: CreateYourProfileType) => void;
-  onUseLensProfile: (lensValues: Profile) => void;
 }
 
 const showLensVersion =
@@ -25,8 +23,7 @@ const showLensVersion =
 
 export default function CreateProfileModal({
   initialRegularCreateProfile,
-  onRegularProfileCreated,
-  onUseLensProfile
+  onRegularProfileCreated
 }: Props) {
   const { hideModal } = useModal();
   const { address = "" } = useAccount();
@@ -34,8 +31,7 @@ export default function CreateProfileModal({
   const Component = useCallback(() => {
     return showLensVersion ? (
       <LensProfile
-        onSubmit={(lensValues) => {
-          onUseLensProfile(lensValues);
+        onSubmit={() => {
           hideModal();
         }}
       />
@@ -49,7 +45,7 @@ export default function CreateProfileModal({
       />
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialRegularCreateProfile, onRegularProfileCreated, onUseLensProfile]);
+  }, [initialRegularCreateProfile, onRegularProfileCreated]);
 
   const navigate = useKeepQueryParamsNavigate();
   if (!address) {

@@ -200,7 +200,11 @@ export function useCurrentSeller({ address, sellerId }: Props = {}) {
         profileId !== ""
     }
   );
-
+  const lens = useMemo(() => {
+    return {
+      ...(resultLens?.data ?? {})
+    };
+  }, [resultLens?.data]);
   return {
     isLoading:
       resultById?.isLoading ||
@@ -219,8 +223,6 @@ export function useCurrentSeller({ address, sellerId }: Props = {}) {
     seller: {
       ...sellerValues
     },
-    lens: {
-      ...(resultLens?.data ?? {})
-    }
+    lens
   };
 }

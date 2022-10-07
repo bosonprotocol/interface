@@ -21,12 +21,14 @@ interface Props {
   profile: Profile;
   children: ReactNode;
   onBackClick: () => void;
+  setStepBasedOnIndex: (index: number) => void;
 }
 
 export default function ViewLensProfile({
   profile,
   children,
-  onBackClick
+  onBackClick,
+  setStepBasedOnIndex
 }: Props) {
   const { setValues } = useFormikContext<LensProfileType>();
   const profilePicture = getLensProfilePictureUrl(profile);
@@ -49,6 +51,8 @@ export default function ViewLensProfile({
             createOrViewRoyalties={
               alreadyHasRoyaltiesDefined ? "view" : "create"
             }
+            key="ViewLensProfile"
+            setStepBasedOnIndex={setStepBasedOnIndex}
           />
         )
       }
