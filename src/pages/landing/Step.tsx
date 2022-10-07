@@ -57,7 +57,7 @@ interface IStep {
 const Step: React.FC<IStep> = ({ children, number, title, ...props }) => {
   return (
     <StepWrapper {...props}>
-      <Typography tag="div" data-testid="number">
+      <Typography tag="div" data-testid="number" data-step>
         0{number}
       </Typography>
       <Typography tag="h2" data-testid="step-title">

@@ -12,6 +12,12 @@ const StyledCommitStepWrapper = styled(CommitStepWrapper)`
   [data-testid="step-title"] {
     font-size: 1rem;
   }
+  [data-step] {
+    color: ${colors.secondary};
+    &:after {
+      background: ${colors.primary};
+    }
+  }
 `;
 
 interface Props {
@@ -37,7 +43,7 @@ export default function StepsOverview({ onNextClick }: Props) {
         bulletPointIcon={<Check size={16} color={colors.secondary} />}
       />
       <Grid padding="2rem 0 0 0" justifyContent="space-between">
-        <Button theme="primary" onClick={() => onNextClick()}>
+        <Button theme="primary" onClick={() => onNextClick()} withBosonStyle>
           Next
         </Button>
       </Grid>
