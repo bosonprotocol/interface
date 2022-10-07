@@ -1,12 +1,9 @@
 import dayjs from "dayjs";
 import { CaretDown, CaretLeft, CaretRight, CaretUp } from "phosphor-react";
 import { useMemo } from "react";
-import { generatePath } from "react-router";
 import { usePagination, useRowSelect, useSortBy, useTable } from "react-table";
 
 import { CONFIG } from "../../lib/config";
-import { UrlParameters } from "../../lib/routing/parameters";
-import { BosonRoutes, OffersRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { getDateTimestamp } from "../../lib/utils/getDateTimestamp";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
@@ -217,16 +214,20 @@ export default function TransactionsTable({ transactions }: Props) {
                         key={`transaction_${row.id}-${cell.column.id}`}
                         onClick={() => {
                           if (cell.column.id !== "linkToBlock") {
-                            const pathname = generatePath(
-                              row?.values?.isOffer
-                                ? OffersRoutes.OfferDetail
-                                : BosonRoutes.Exchange,
-                              {
-                                [UrlParameters.exchangeId]:
-                                  row?.values?.offerExchangeId ?? "0"
-                              }
-                            );
-                            navigate({ pathname });
+                            /**
+                             * TODO: leave the navigation commented until we can get the offer and
+                             * exchange id properly
+                             */
+                            // const pathname = generatePath(
+                            //   row?.values?.isOffer
+                            //     ? OffersRoutes.OfferDetail
+                            //     : BosonRoutes.Exchange,
+                            //   {
+                            //     [UrlParameters.exchangeId]:
+                            //       row?.values?.offerExchangeId ?? "0"
+                            //   }
+                            // );
+                            // navigate({ pathname });
                           }
                         }}
                       >
