@@ -135,6 +135,8 @@ export default function ProductType({
   } = useCurrentSeller({
     address: currentSeller.admin
   });
+  const [shownDraftModal, setShowDraftModal] = useState<boolean>(false);
+
   const [isRegularSellerSet, setIsRegularSeller] = useState<boolean>(false);
   const isOperator = currentRoles?.find((role) => role === "operator");
   const isAdminLinkedToLens =
@@ -189,7 +191,6 @@ export default function ProductType({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ipfsMetadataStorage, isLensFilled, lens]);
-
   useEffect(() => {
     if (isLoading || isAdminLoading) {
       return;
@@ -224,9 +225,11 @@ export default function ProductType({
         }
       );
     } else if (
-      (isOperator && hasValidAdminAccount) ||
-      (isRegularSellerSet && !CONFIG.lens.enabled)
+      ((isOperator && hasValidAdminAccount) ||
+        (isRegularSellerSet && !CONFIG.lens.enabled)) &&
+      !shownDraftModal
     ) {
+      setShowDraftModal(true);
       showCreateProductDraftModal();
     } else if (!isOperator) {
       showInvalidRoleModal();
@@ -239,8 +242,6 @@ export default function ProductType({
     isRegularSellerSet,
     isLoading,
     isAdminLoading,
-    showCreateProductDraftModal,
-    showInvalidRoleModal,
     values
   ]);
 
