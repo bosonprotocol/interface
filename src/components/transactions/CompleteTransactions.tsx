@@ -147,10 +147,6 @@ const buildTableData = (data?: CompleteTransactionLogs) => {
 
 export const CompletedTransactions = () => {
   const { data } = useGetCompletedTxLogsByWallet();
-  console.log(
-    "🚀  roberto --  ~ file: CompleteTransactions.tsx ~ line 147 ~ CompletedTransactions ~ data",
-    data
-  );
 
   const tableData = buildTableData(data);
 
