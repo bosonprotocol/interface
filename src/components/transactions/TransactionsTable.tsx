@@ -1,11 +1,5 @@
 import dayjs from "dayjs";
-import {
-  CaretDown,
-  CaretLeft,
-  CaretRight,
-  CaretUp
-  //   Table
-} from "phosphor-react";
+import { CaretDown, CaretLeft, CaretRight, CaretUp } from "phosphor-react";
 import { useMemo } from "react";
 import { generatePath } from "react-router";
 import { usePagination, useRowSelect, useSortBy, useTable } from "react-table";
