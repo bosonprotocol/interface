@@ -102,14 +102,14 @@ export default function ExchangeTimeline({
       }
       if (refusedDate) {
         timesteps.push({
-          text: "Dispute refused",
+          text: "Dispute Refused",
           date: formatShortDate(refusedDate),
           timestamp: Number(refusedDate)
         });
       }
       if (decidedDate) {
         timesteps.push({
-          text: "Dispute decided",
+          text: "Dispute Decided",
           date: formatShortDate(decidedDate),
           timestamp: Number(decidedDate)
         });

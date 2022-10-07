@@ -4,6 +4,7 @@ import { useState } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../../../lib/styles/colors";
+import { Offer } from "../../../../lib/types/offer";
 import { useCoreSDK } from "../../../../lib/utils/useCoreSdk";
 import { Spinner } from "../../../loading/Spinner";
 import { useConvertedPrice } from "../../../price/useConvertedPrice";
@@ -18,6 +19,7 @@ import {
 } from "../SellerFinance/FinancesStyles";
 
 interface Props {
+  offer: Offer;
   exchangeId: string;
   currencySymbol: string;
   value: string;
@@ -27,6 +29,7 @@ interface Props {
 export default function DisputeResolverDecideModal({
   exchangeId,
   currencySymbol,
+  offer,
   value,
   decimals
 }: Props) {
@@ -39,14 +42,27 @@ export default function DisputeResolverDecideModal({
   const coreSDK = useCoreSDK();
 
   const handleChangeValue = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.valueAsNumber || 0;
+    const { value } = e.target;
     setIsValidValue(false);
     setDisputeError(null);
+    if (value.match(/\./g)) {
+      const [num, decimal] = value.split(".");
+      if (Number(num) >= 100) {
+        setIsValidValue(true);
+      }
+      if (decimal?.length > 2) {
+        return;
+      }
+    }
 
-    if (value <= 0 || value > 100 || !/^\d+(\.\d{1,2})?$/.test(`${value}`)) {
+    if (
+      Number(value) <= 0 ||
+      Number(value) > 100 ||
+      !/^\d+(\.\d{1,2})?$/.test(value)
+    ) {
       setIsValidValue(true);
     }
-    setDisputePercentage(value.toFixed(2));
+    setDisputePercentage(value);
   };
 
   const handleSolveDispute = async () => {
@@ -69,23 +85,42 @@ export default function DisputeResolverDecideModal({
     symbol: currencySymbol
   });
 
+  const maxLimitPrice: string = BigNumber.from(offer.price)
+    .add(BigNumber.from(offer.sellerDeposit || "0"))
+    .toString();
+
+  const maxLimit = useConvertedPrice({
+    value: maxLimitPrice,
+    decimals,
+    symbol: currencySymbol
+  });
+
   const refundAmmount = useConvertedPrice({
     value: BigNumber.from(value)
-      .mul(BigNumber.from(parseFloat(disputePercentage) * 100))
+      .mul(
+        BigNumber.from((parseFloat(disputePercentage || "0") * 100).toFixed())
+      )
       .div(BigNumber.from(10000))
       .toString(),
     decimals,
     symbol: currencySymbol
   });
+
   return (
     <Grid flexDirection="column" alignItems="flex-start" gap="1.5rem">
       <Typography tag="p" margin="0" $fontSize="0.75rem" fontWeight="bold">
-        Enter refund amount the buyer should receive (as a percentage of the
-        item price):
+        Enter the refund amount the buyer should receive (as a percentage of the
+        total funds relating to this exchange)
       </Typography>
       <AmountWrapper>
         <InputWrapper $hasError={!!disputeError || isValidValue}>
-          <Input type="number" min={0} max={100} onChange={handleChangeValue} />
+          <Input
+            type="number"
+            min={0}
+            max={100}
+            onChange={handleChangeValue}
+            value={disputePercentage}
+          />
           <div>
             <Typography $fontSize="0.875rem" margin="0" fontWeight="bold">
               %
@@ -94,7 +129,7 @@ export default function DisputeResolverDecideModal({
         </InputWrapper>
         <MaxLimit>
           <>
-            Max Limit {price.price}
+            Max Limit {maxLimit.price}
             <CurrencyLogo currency={currencySymbol as Currencies} size={18} />
           </>
         </MaxLimit>
