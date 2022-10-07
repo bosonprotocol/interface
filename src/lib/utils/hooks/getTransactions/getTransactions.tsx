@@ -2,12 +2,26 @@ import { gql } from "graphql-request";
 import { useQuery } from "react-query";
 import { useAccount } from "wagmi";
 
+import { TransctionTypes } from "../../../../components/transactions/CompleteTransactions";
 import { fetchSubgraph } from "../../core-components/subgraph";
+
+interface Logs {
+  type: TransctionTypes;
+  timestamp: string;
+  executedBy: string;
+  hash: string;
+  id: string;
+}
+export interface CompleteTransactionLogs {
+  buyers: [{ logs: Logs[] }];
+  disputeResolvers: [{ logs: Logs[] }];
+  sellers: [{ logs: Logs[] }];
+}
 
 const buildQuery = (walletAddress: string, name: string) => {
   return gql`
     query ${name} {
-      buyers(where: { wallet: "0xE16955e95D088bd30746c7fb7d76cDA436b86F63" }) {
+      buyers(where: { wallet: "${walletAddress}" }) {
         logs {
           type
           timestamp
@@ -16,27 +30,7 @@ const buildQuery = (walletAddress: string, name: string) => {
           id
         }
       }
-      sellers(where: { admin: "0xE16955e95D088bd30746c7fb7d76cDA436b86F63" }) {
-        logs {
-          type
-          timestamp
-          executedBy
-          hash
-          id
-        }
-      }
-      sellers(
-        where: { operator: "0xE16955e95D088bd30746c7fb7d76cDA436b86F63" }
-      ) {
-        logs {
-          type
-          timestamp
-          executedBy
-          hash
-          id
-        }
-      }
-      sellers(where: { clerk: "0xE16955e95D088bd30746c7fb7d76cDA436b86F63" }) {
+      sellers(where: { admin: "${walletAddress}" }) {
         logs {
           type
           timestamp
@@ -46,7 +40,27 @@ const buildQuery = (walletAddress: string, name: string) => {
         }
       }
       sellers(
-        where: { treasury: "0xE16955e95D088bd30746c7fb7d76cDA436b86F63" }
+        where: { operator: "${walletAddress}" }
+      ) {
+        logs {
+          type
+          timestamp
+          executedBy
+          hash
+          id
+        }
+      }
+      sellers(where: { clerk: "${walletAddress}" }) {
+        logs {
+          type
+          timestamp
+          executedBy
+          hash
+          id
+        }
+      }
+      sellers(
+        where: { treasury: "${walletAddress}" }
       ) {
         logs {
           type
@@ -57,7 +71,7 @@ const buildQuery = (walletAddress: string, name: string) => {
         }
       }
       disputeResolvers(
-        where: { admin: "0xE16955e95D088bd30746c7fb7d76cDA436b86F63" }
+        where: { admin: "${walletAddress}" }
       ) {
         logs {
           type
@@ -68,7 +82,7 @@ const buildQuery = (walletAddress: string, name: string) => {
         }
       }
       disputeResolvers(
-        where: { operator: "0xE16955e95D088bd30746c7fb7d76cDA436b86F63" }
+        where: { operator: "${walletAddress}" }
       ) {
         logs {
           type
@@ -79,7 +93,7 @@ const buildQuery = (walletAddress: string, name: string) => {
         }
       }
       disputeResolvers(
-        where: { clerk: "0xE16955e95D088bd30746c7fb7d76cDA436b86F63" }
+        where: { clerk: "${walletAddress}" }
       ) {
         logs {
           type
@@ -90,7 +104,7 @@ const buildQuery = (walletAddress: string, name: string) => {
         }
       }
       disputeResolvers(
-        where: { treasury: "0xE16955e95D088bd30746c7fb7d76cDA436b86F63" }
+        where: { treasury: "${walletAddress}" }
       ) {
         logs {
           type
@@ -106,23 +120,16 @@ const buildQuery = (walletAddress: string, name: string) => {
 
 export const GetCompletedTxLogsByWallet = () => {
   const { address: admin } = useAccount();
-  console.log(
-    "🚀  roberto --  ~ file: getTransactions.tsx ~ line 109 ~ GetTxLogsByWal ~ admin",
-    admin
-  );
+
   const props = { admin };
 
   const result = useQuery(["getTransactionLogs", props], async () => {
-    const result = await fetchSubgraph(
+    const result = await fetchSubgraph<CompleteTransactionLogs>(
       buildQuery(admin || "", `getTxLogsByWallet`),
       props
     );
     return result;
   });
-  console.log(
-    "🚀  roberto --  ~ file: getTransactions.tsx ~ line 121 ~ result ~ result",
-    result
-  );
 
   return {
     ...result,
