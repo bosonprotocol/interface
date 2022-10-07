@@ -1,27 +1,9 @@
-import styled from "styled-components";
-
-import { colors } from "../../lib/styles/colors";
 import {
   CompleteTransactionLogs,
   GetCompletedTxLogsByWallet
 } from "../../lib/utils/hooks/getTransactions/getTransactions";
 import Grid from "../ui/Grid";
 import TransactionsTable from "./TransactionsTable";
-
-const CompletedGrid = styled(Grid)`
-  color: ${colors.green};
-`;
-
-interface Props {
-  transaction: {
-    type: TransctionTypes;
-    timestamp?: string;
-    executedBy?: string;
-    hash: string;
-    status: string;
-    text: string;
-  };
-}
 
 enum AccountType {
   BUYER = "Buyer",
