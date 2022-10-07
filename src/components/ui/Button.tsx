@@ -264,7 +264,8 @@ const Button: React.FC<IButton> = ({
   withBosonStyle = false,
   ...rest
 }) => {
-  const Wrapper = tooltip !== "" ? Tooltip : Fragment;
+  const Wrapper =
+    tooltip !== "" && rest?.disabled === true ? Tooltip : Fragment;
   const wrapperParams = tooltip !== "" ? { wrap: false, content: tooltip } : {};
 
   return (

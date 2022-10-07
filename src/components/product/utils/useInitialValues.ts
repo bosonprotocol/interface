@@ -1,5 +1,4 @@
 import { checkIfValueIsEmpty } from "../../../lib/utils/checkIfValueIsEmpty";
-import { convertToBlob } from "../../../lib/utils/convertToBlob";
 import { getLocalStorageItems } from "../../../lib/utils/getLocalStorageItems";
 import {
   clearLocalStorage,
@@ -7,19 +6,15 @@ import {
   removeItemInStorage,
   saveItemInStorage
 } from "../../../lib/utils/hooks/useLocalStorage";
+import { convertImageToFile } from "./../../../lib/utils/convertImageToFile";
 import { initialValues as baseValues } from "./initialValues";
 import type { CreateProductForm } from "./types";
-
-type Image = {
-  value: string;
-  key: string;
-};
 
 interface ConvertedObject {
   [key: string]: File;
 }
 
-function getConvertImagesFromLocalStorage() {
+export function getConvertImagesFromLocalStorage() {
   const images = getLocalStorageItems({
     key: IMAGES_KEY,
     returnObjects: true
@@ -29,7 +24,12 @@ function getConvertImagesFromLocalStorage() {
   for (let index = 0; index < images.length; index++) {
     const value = images[index];
     const key = images[index].key;
-    converted[key] = convertImageToFile(value);
+    if (value !== null) {
+      const file = convertImageToFile(value);
+      if (file !== null) {
+        converted[key] = file;
+      }
+    }
   }
 
   return {
@@ -37,22 +37,6 @@ function getConvertImagesFromLocalStorage() {
     converted
   };
 }
-const convertImageToFile = ({ value, key }: Image) => {
-  const extension = value.split(";")[0].split("/")[1];
-  const encoded = value.split(",")[1];
-
-  const data = convertToBlob(encoded, `image/${extension}`);
-  const blob = new Blob([data as BlobPart], {
-    type: `image/${extension}`
-  });
-
-  const file = new File([blob as BlobPart], `${key}.${extension}`, {
-    type: `image/${extension}`
-  });
-
-  return file;
-};
-
 const IMAGES_KEY = "create-product-image_";
 const MAIN_KEY = "create-product";
 

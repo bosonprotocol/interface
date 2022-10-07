@@ -1,10 +1,12 @@
 import { useCallback, useState } from "react";
 
 import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
+import { removeLocalStorageItems } from "../../../../../lib/utils/removeLocalStorageItems";
 import BosonAccountForm from "./BosonAccountForm";
 import CreateBosonLensAccountSummary from "./CreateBosonLensAccountSummary";
 import CreateOrChoose from "./CreateOrChoose";
 import LensForm from "./LensForm";
+import { IMAGES_KEY, useInitialValues } from "./useInitialValues";
 import { BosonAccount, LensProfileType } from "./validationSchema";
 
 interface Props {
@@ -20,6 +22,8 @@ const steps = {
 } as const;
 
 export default function LensProfile({ onSubmit }: Props) {
+  const initial = useInitialValues();
+  console.log("initial", initial);
   const [step, setStep] = useState<number>(steps.CREATE_OR_CHOOSE);
   const [lensProfile, setLensProfile] = useState<Profile | null>(null);
   const [lensFormValues, setLensFormValues] = useState<LensProfileType | null>(
@@ -63,10 +67,11 @@ export default function LensProfile({ onSubmit }: Props) {
       ) : step === steps.CREATE ? (
         <LensForm
           profile={null}
-          formValues={lensFormValues}
+          formValues={initial}
           onSubmit={(formValues) => {
             setLensFormValues(formValues);
             setStep(steps.BOSON_ACCOUNT);
+            removeLocalStorageItems({ key: `${IMAGES_KEY}_` });
           }}
           onBackClick={handleOnBackClick}
           setStepBasedOnIndex={setStepBasedOnIndex}
@@ -74,10 +79,11 @@ export default function LensProfile({ onSubmit }: Props) {
       ) : step === steps.USE ? (
         <LensForm
           profile={lensProfile}
-          formValues={null}
+          formValues={lensFormValues}
           onSubmit={(formValues) => {
             setLensFormValues(formValues);
             setStep(steps.BOSON_ACCOUNT);
+            removeLocalStorageItems({ key: `${IMAGES_KEY}_` });
           }}
           onBackClick={handleOnBackClick}
           setStepBasedOnIndex={setStepBasedOnIndex}

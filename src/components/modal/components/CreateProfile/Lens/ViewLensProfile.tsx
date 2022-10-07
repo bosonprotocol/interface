@@ -69,21 +69,29 @@ export default function ViewLensProfile({
     const profileFileType = profileType.includes("image")
       ? profileType
       : "image/jpg";
+    let lensLogo = [];
+    let lensCoverPicture = [];
+    try {
+      if (profilePictureBase64) {
+        lensLogo = [
+          new File([dataURItoBlob(profilePictureBase64)], "profilePicture", {
+            type: profileFileType
+          })
+        ];
+      }
+      if (profilePictureBase64) {
+        lensCoverPicture = [
+          new File([dataURItoBlob(coverPicture)], "coverPicture", {
+            type: coverPicture.split(";")[0].split(":")[1]
+          })
+        ];
+      }
+    } catch (e) {
+      console.error(e);
+    }
     setValues({
-      logo: profilePictureBase64
-        ? [
-            new File([dataURItoBlob(profilePictureBase64)], "profilePicture", {
-              type: profileFileType
-            })
-          ]
-        : [],
-      coverPicture: coverPicture
-        ? [
-            new File([dataURItoBlob(coverPicture)], "coverPicture", {
-              type: coverPicture.split(";")[0].split(":")[1]
-            })
-          ]
-        : [],
+      logo: lensLogo,
+      coverPicture: lensCoverPicture,
       name: profile.name || "",
       handle:
         profile.handle?.substring(

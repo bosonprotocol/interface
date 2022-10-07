@@ -1,5 +1,6 @@
 import { websitePattern } from "../../../../../lib/validation/regex/url";
 import { FormField, Input, Textarea, Upload } from "../../../../form";
+import { IMAGES_KEY } from "./useInitialValues";
 
 interface Props {
   disable: boolean;
@@ -14,14 +15,24 @@ export default function LensFormFields({ disable, onBlurName }: Props) {
         subTitle="Upload a profile image with a max. size of 300Kb"
         required
       >
-        <Upload name="logo" multiple={false} disabled={disable} />
+        <Upload
+          name="logo"
+          multiple={false}
+          disabled={disable}
+          withPreview={disable ? "" : IMAGES_KEY}
+        />
       </FormField>
       <FormField
         title="Cover picture"
         subTitle="Upload a profile image with a max. size of 300Kb"
         required
       >
-        <Upload name="coverPicture" multiple={false} disabled={disable} />
+        <Upload
+          name="coverPicture"
+          multiple={false}
+          disabled={disable}
+          withPreview={disable ? "" : IMAGES_KEY}
+        />
       </FormField>
       <FormField title="Your brand / name" required>
         <Input

@@ -16,8 +16,9 @@ import {
 } from "../Field.styles";
 import type { UploadProps } from "../types";
 import UploadedFiles from "./UploadedFiles";
+import { WithUploadPreview, WithUploadPreviewProps } from "./WithUploadPreview";
 
-export default function Upload({
+function Upload({
   name,
   accept = "image/*",
   disabled,
@@ -27,17 +28,23 @@ export default function Upload({
   onFilesSelect,
   placeholder,
   wrapperProps,
+  previewImage,
+  previewCallback,
   ...props
-}: UploadProps) {
-  // const fileName = useMemo(() => `create-product-image_${name}`, [name]);
-  // const [preview, setPreview, removePreview] =
-  //   useLocalStorage<GetItemFromStorageKey | null>(
-  //     fileName as GetItemFromStorageKey,
-  //     null
-  //   );
-  const [preview, setPreview] = useState<string | null>();
-
+}: UploadProps & WithUploadPreviewProps) {
+  const [preview, setPreview] = useState<string | null>(previewImage || null);
   const [field, meta, helpers] = useField(name);
+
+  const handlePreview = (v: string | null) => {
+    setPreview(v);
+    previewCallback?.(v);
+  };
+
+  useEffect(() => {
+    if (preview === null && previewImage !== null) {
+      setPreview((previewImage as string) || null);
+    }
+  }, [previewImage]); // eslint-disable-line
 
   const errorMessage = meta.error && meta.touched ? meta.error : "";
   const displayError =
@@ -57,7 +64,7 @@ export default function Upload({
     helpers.setValue(files);
 
     if (!multiple && accept === "image/*" && files && files?.length !== 0) {
-      loadAndSetImage(files[0], setPreview);
+      loadAndSetImage(files[0], handlePreview);
     }
   }, [files]); // eslint-disable-line
 
@@ -73,7 +80,7 @@ export default function Upload({
       return;
     }
     setFiles([]);
-    setPreview(null);
+    handlePreview(null);
   };
 
   const handleRemoveFile = (index: number) => {
@@ -155,3 +162,5 @@ export default function Upload({
     </>
   );
 }
+
+export default WithUploadPreview(Upload);

@@ -39,7 +39,7 @@ const SpaceContainer = styled.div`
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 `;
-
+const IMAGE_KEY = "create-product-image";
 export default function ProductImages() {
   const { nextIsDisabled } = useCreateForm();
   return (
@@ -54,34 +54,60 @@ export default function ProductImages() {
       >
         <SpaceContainer>
           <div>
-            <Upload name="productImages.thumbnail" placeholder="Thumbnail" />
+            <Upload
+              name="productImages.thumbnail"
+              placeholder="Thumbnail"
+              withPreview={IMAGE_KEY}
+            />
           </div>
           <div>
-            <Upload name="productImages.secondary" placeholder="Secondary" />
+            <Upload
+              name="productImages.secondary"
+              placeholder="Secondary"
+              withPreview={IMAGE_KEY}
+            />
           </div>
           <div>
-            <Upload name="productImages.everyAngle" placeholder="Every angle" />
+            <Upload
+              name="productImages.everyAngle"
+              placeholder="Every angle"
+              withPreview={IMAGE_KEY}
+            />
           </div>
           <div>
-            <Upload name="productImages.details" placeholder="Details" />
+            <Upload
+              name="productImages.details"
+              placeholder="Details"
+              withPreview={IMAGE_KEY}
+            />
           </div>
           <div>
-            <Upload name="productImages.inUse" placeholder="In Use" />
+            <Upload
+              name="productImages.inUse"
+              placeholder="In Use"
+              withPreview={IMAGE_KEY}
+            />
           </div>
           <div>
             <Upload
               name="productImages.styledScene"
               placeholder="Styled Scene"
+              withPreview={IMAGE_KEY}
             />
           </div>
           <div>
             <Upload
               name="productImages.sizeAndScale"
               placeholder="Size and scale"
+              withPreview={IMAGE_KEY}
             />
           </div>
           <div>
-            <Upload name="productImages.more" placeholder="More" />
+            <Upload
+              name="productImages.more"
+              placeholder="More"
+              withPreview={IMAGE_KEY}
+            />
           </div>
         </SpaceContainer>
       </FormField>

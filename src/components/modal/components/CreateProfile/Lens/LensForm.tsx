@@ -17,7 +17,6 @@ interface Props {
   onBackClick: () => void;
   setStepBasedOnIndex: (index: number) => void;
 }
-
 export default function LensForm({
   onSubmit,
   profile,
@@ -25,22 +24,10 @@ export default function LensForm({
   formValues,
   setStepBasedOnIndex
 }: Props) {
+  console.log("formValues", formValues);
   return (
     <Formik<LensProfileType>
-      initialValues={
-        formValues
-          ? formValues
-          : ({
-              logo: [],
-              coverPicture: [],
-              name: "",
-              handle: "",
-              email: "",
-              description: "",
-              website: "",
-              legalTradingName: ""
-            } as LensProfileType)
-      }
+      initialValues={formValues as LensProfileType}
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       onSubmit={(values, _boson) => {
         if (profile) {

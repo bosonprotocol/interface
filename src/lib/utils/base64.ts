@@ -1,3 +1,5 @@
+import isEmpty from "lodash/isEmpty";
+
 export function fromBase64ToBinary(base64: string): Buffer {
   return Buffer.from(base64.replace(/data:image\/.*;base64,/, ""), "base64");
 }
@@ -14,12 +16,14 @@ export const loadAndSetImage = (
   image: File,
   callback: (base64Uri: string) => void
 ) => {
-  const reader = new FileReader();
-  reader.onloadend = (e: ProgressEvent<FileReader>) => {
-    const prev = e.target?.result?.toString() || "";
-    callback(prev);
-  };
-  reader.readAsDataURL(image);
+  if (!isEmpty(image)) {
+    const reader = new FileReader();
+    reader.onloadend = (e: ProgressEvent<FileReader>) => {
+      const prev = e.target?.result?.toString() || "";
+      callback(prev);
+    };
+    reader.readAsDataURL(image);
+  }
 };
 
 export const loadAndSetImagePromise = (image: File) => {

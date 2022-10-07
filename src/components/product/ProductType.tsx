@@ -4,8 +4,6 @@ import styled from "styled-components";
 import { CONFIG } from "../../lib/config";
 import { breakpointNumbers } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
-import { loadAndSetImage } from "../../lib/utils/base64";
-import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
 import { useCurrentSeller } from "../../lib/utils/hooks/useCurrentSeller";
 import {
   CreateProductImageCreteYourProfileLogo,
@@ -15,12 +13,7 @@ import {
 import { FormField } from "../form";
 import { authTokenTypes } from "../modal/components/CreateProfile/Lens/const";
 import ProfileMultiSteps from "../modal/components/CreateProfile/Lens/ProfileMultiSteps";
-import {
-  getLensEmail,
-  getLensProfilePictureUrl,
-  getLensTokenIdDecimal,
-  getLensWebsite
-} from "../modal/components/CreateProfile/Lens/utils";
+import { getLensTokenIdDecimal } from "../modal/components/CreateProfile/Lens/utils";
 import { useModal } from "../modal/useModal";
 import Button from "../ui/Button";
 import Grid from "../ui/Grid";
@@ -139,16 +132,7 @@ export default function ProductType({
 
   const onRegularProfileCreated = useCallback(
     (regularProfile: CreateYourProfile) => {
-      if (regularProfile.createYourProfile.logo) {
-        loadAndSetImage(
-          regularProfile.createYourProfile.logo[0],
-          (base64Uri) => {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            setBase64(base64Uri as any); // TODO: check, as the image doesnt seem to be saved correctly
-          }
-        );
-      }
-      setFieldValue("createYourProfile", regularProfile.createYourProfile);
+      // setFieldValue("createYourProfile", regularProfile.createYourProfile);
       setIsRegularSeller(true);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -156,15 +140,15 @@ export default function ProductType({
   );
 
   useEffect(() => {
-    if (CONFIG.lens.enabled && lens) {
-      setFieldValue("createYourProfile", {
-        logo: getLensProfilePictureUrl(lens as Profile),
-        name: lens.name,
-        email: getLensEmail(lens as Profile),
-        description: lens.bio,
-        website: getLensWebsite(lens as Profile)
-      });
-    }
+    // if (CONFIG.lens.enabled && lens) {
+    //   setFieldValue("createYourProfile", {
+    //     logo: getLensProfilePictureUrl(lens as Profile),
+    //     name: lens.name,
+    //     email: getLensEmail(lens as Profile),
+    //     description: lens.bio,
+    //     website: getLensWebsite(lens as Profile)
+    //   });
+    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lens]);
 
