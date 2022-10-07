@@ -1,6 +1,8 @@
 // extracted from https://usehooks.com/useLocalStorage/
 import { useState } from "react";
 
+export const createProductImagePrefix = "create-product-image_";
+
 export type CreateProductImageCreteYourProfileLogo =
   "create-product-image_createYourProfile.logo";
 

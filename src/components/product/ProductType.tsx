@@ -1,12 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 
 import { CONFIG } from "../../lib/config";
 import { breakpointNumbers } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
-import { loadAndSetImage } from "../../lib/utils/base64";
+import {
+  dataURItoBlob,
+  fetchIpfsImage,
+  loadAndSetImage
+} from "../../lib/utils/base64";
 import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
 import { useCurrentSeller } from "../../lib/utils/hooks/useCurrentSeller";
+import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
 import {
   CreateProductImageCreteYourProfileLogo,
   GetItemFromStorageKey,
@@ -107,6 +113,7 @@ export default function ProductType({
 }: Props) {
   const { handleChange, values, nextIsDisabled, setFieldValue } =
     useCreateForm();
+  const ipfsMetadataStorage = useIpfsStorage();
   const { showModal } = useModal();
   const fileName = useMemo<CreateProductImageCreteYourProfileLogo>(
     () => `create-product-image_createYourProfile.logo`,
@@ -136,6 +143,7 @@ export default function ProductType({
   const hasValidAdminAccount =
     (CONFIG.lens.enabled && isAdminLinkedToLens) || !CONFIG.lens.enabled;
   const isSeller = !!Object.keys(currentSeller).length;
+  const isLensFilled = !!Object.keys(lens).length;
 
   const onRegularProfileCreated = useCallback(
     (regularProfile: CreateYourProfile) => {
@@ -154,19 +162,33 @@ export default function ProductType({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
-
   useEffect(() => {
-    if (CONFIG.lens.enabled && lens) {
-      setFieldValue("createYourProfile", {
-        logo: getLensProfilePictureUrl(lens as Profile),
-        name: lens.name,
-        email: getLensEmail(lens as Profile),
-        description: lens.bio,
-        website: getLensWebsite(lens as Profile)
-      });
+    if (CONFIG.lens.enabled && isLensFilled) {
+      (async () => {
+        try {
+          const logoUrl = getLensProfilePictureUrl(lens as Profile);
+          const logoBase64 = await fetchIpfsImage(logoUrl, ipfsMetadataStorage);
+          if (!logoBase64) {
+            return; // should never happened
+          }
+          setBase64(logoBase64 as any);
+
+          setFieldValue("createYourProfile", {
+            logo: new File([dataURItoBlob(logoBase64)], "logo", {
+              type: logoBase64.split(";")[0].split(":")[1]
+            }),
+            name: lens.name,
+            email: getLensEmail(lens as Profile),
+            description: lens.bio,
+            website: getLensWebsite(lens as Profile)
+          });
+        } catch (error) {
+          console.error(error);
+        }
+      })();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lens]);
+  }, [ipfsMetadataStorage, isLensFilled, lens]);
 
   useEffect(() => {
     if (isLoading || isAdminLoading) {

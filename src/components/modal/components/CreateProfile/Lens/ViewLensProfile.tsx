@@ -1,6 +1,7 @@
 import { useFormikContext } from "formik";
 import { ReactNode, useEffect } from "react";
 
+import { CONFIG } from "../../../../../lib/config";
 import { dataURItoBlob } from "../../../../../lib/utils/base64";
 import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
 import { useGetIpfsImage } from "../../../../../lib/utils/hooks/useGetIpfsImage";
@@ -88,9 +89,9 @@ export default function ViewLensProfile({
       handle:
         profile.handle?.substring(
           0,
-          profile.handle.lastIndexOf(".test") < 0
-            ? profile.handle.lastIndexOf(".link")
-            : profile.handle.lastIndexOf(".test")
+          profile.handle.lastIndexOf(CONFIG.lens.lensHandleExtension) < 0
+            ? profile.handle.lastIndexOf(CONFIG.lens.lensHandleExtension)
+            : profile.handle.lastIndexOf(".")
         ) || "",
       email: getLensEmail(profile) || "",
       description: profile.bio || "",
