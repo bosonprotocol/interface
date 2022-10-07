@@ -58,13 +58,8 @@ interface Props {
   hasSubmitError: boolean;
 }
 
-export default function CustomStoreFormContent({ hasSubmitError }: Props) {
-  const { setFieldValue, values, isValid, setFieldTouched } =
-    useFormikContext<StoreFormFields>();
-
-  const { sellerId } = useCurrentSeller();
-
-  const formValuesWithOneLogoUrl = Object.entries(values)
+export const formValuesWithOneLogoUrl = (values: StoreFormFields) => {
+  return Object.entries(values)
     .filter(
       ([key]) =>
         !(
@@ -143,7 +138,17 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
     })
     .filter((v) => !!v && !!v[0] && !!v[0][0] && !!v[0][1])
     .flat();
-  const queryParams = new URLSearchParams(formValuesWithOneLogoUrl).toString();
+};
+
+export default function CustomStoreFormContent({ hasSubmitError }: Props) {
+  const { setFieldValue, values, isValid, setFieldTouched } =
+    useFormikContext<StoreFormFields>();
+
+  const { sellerId } = useCurrentSeller();
+
+  const queryParams = new URLSearchParams(
+    formValuesWithOneLogoUrl(values)
+  ).toString();
   useEffect(() => {
     setFieldValue(storeFields.logoUrl, "", true);
     if (values.logoUpload.length) {

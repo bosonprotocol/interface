@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import styled from "styled-components";
 
 import logo from "../../../src/assets/logo-white.svg";
@@ -98,40 +98,36 @@ const LogoImg = styled.img`
 
 function Socials() {
   const { isXXS, isLteS } = useBreakpoints();
+  const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
   const socialMediaLinks = useCustomStoreQueryParameter<
     { value: SocialLogoValues; url: string }[]
   >("socialMediaLinks", { parseJson: true });
+  const renderSocialLinks = useMemo(() => {
+    if (isCustomStoreFront && typeof socialMediaLinks !== "string") {
+      return socialMediaLinks.map(({ url, value }) => {
+        return (
+          <a
+            href={url}
+            target="_blank"
+            rel="noopener"
+            key={`social_nav_${value}_${url}`}
+          >
+            <SocialLogo logo={value} />
+          </a>
+        );
+      });
+    } else if (!isCustomStoreFront) {
+      return SOCIAL_ROUTES.map(({ name, url, logo: Logo }) => (
+        <a href={url} target="_blank" rel="noopener" key={`social_nav_${name}`}>
+          <Logo size={isLteS && !isXXS ? 20 : 32} weight="regular" />
+        </a>
+      ));
+    }
+    return null;
+  }, [isCustomStoreFront, isLteS, isXXS, socialMediaLinks]);
   return (
     <NavigationLinks gap={isLteS && !isXXS ? "16px" : "32px"}>
-      {typeof socialMediaLinks !== "string" ? (
-        <>
-          {socialMediaLinks.map(({ url, value }) => {
-            return (
-              <a
-                href={url}
-                target="_blank"
-                rel="noopener"
-                key={`social_nav_${value}_${url}`}
-              >
-                <SocialLogo logo={value} />
-              </a>
-            );
-          })}
-        </>
-      ) : (
-        <>
-          {SOCIAL_ROUTES.map(({ name, url, logo: Logo }) => (
-            <a
-              href={url}
-              target="_blank"
-              rel="noopener"
-              key={`social_nav_${name}`}
-            >
-              <Logo size={isLteS && !isXXS ? 20 : 32} weight="regular" />
-            </a>
-          ))}
-        </>
-      )}
+      {renderSocialLinks}
     </NavigationLinks>
   );
 }
@@ -139,6 +135,7 @@ function Socials() {
 export default function FooterComponent() {
   const { roles } = useUserRoles({ role: [] });
   const { isXXS } = useBreakpoints();
+  const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
   const [year] = useState<number>(new Date().getFullYear());
   const logoUrl = useCustomStoreQueryParameter("logoUrl");
   const copyright = useCustomStoreQueryParameter("copyright");
@@ -180,17 +177,23 @@ export default function FooterComponent() {
                   isSupportFunctionalityDefined,
                   onlyBuyer,
                   onlySeller
-                }).map(
-                  (nav) =>
-                    nav && (
+                }).reduce<JSX.Element[]>((acc, nav) => {
+                  if (
+                    nav &&
+                    ((isCustomStoreFront && nav.name !== "Sell") ||
+                      !isCustomStoreFront)
+                  ) {
+                    acc.push(
                       <LinkWithQuery
                         to={nav.url}
                         key={`product_nav_${nav.name}`}
                       >
                         {nav.name}
                       </LinkWithQuery>
-                    )
-                )}
+                    );
+                  }
+                  return acc;
+                }, [])}
               </NavigationLinks>
             </div>
             <div>
@@ -222,7 +225,7 @@ export default function FooterComponent() {
         )}
         <Grid padding="2rem 0 0 0">
           <Typography tag="p">
-            {copyright ? copyright : `© ${year} Boson Protocol`}
+            {isCustomStoreFront ? copyright : `© ${year} Boson Protocol`}
           </Typography>
           {!isXXS && <Socials />}
           <>

@@ -7,8 +7,14 @@ import { useModal } from "../../components/modal/useModal";
 import Typography from "../../components/ui/Typography";
 import { useCSSVariable } from "../../lib/utils/hooks/useCSSVariable";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
-import CustomStoreFormContent from "./CustomStoreFormContent";
-import { initialValues, validationSchema } from "./store-fields";
+import CustomStoreFormContent, {
+  formValuesWithOneLogoUrl
+} from "./CustomStoreFormContent";
+import {
+  initialValues,
+  StoreFormFields,
+  validationSchema
+} from "./store-fields";
 
 const Root = styled(Layout)`
   display: flex;
@@ -39,10 +45,7 @@ export default function CustomStore() {
           setHasSubmitError(false);
           try {
             const queryParams = new URLSearchParams(
-              Object.entries(values).map(([key, value]) => [
-                String(key),
-                String(value)
-              ])
+              formValuesWithOneLogoUrl(values as unknown as StoreFormFields)
             ).toString();
             const html = `<!DOCTYPE html>
       <html lang="en">
