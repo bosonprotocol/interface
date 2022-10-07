@@ -1,4 +1,4 @@
-import { CoreSDK } from "@bosonprotocol/react-kit";
+import { CoreSDK, IpfsMetadataStorage } from "@bosonprotocol/react-kit";
 import { ethers } from "ethers";
 import { useQuery } from "react-query";
 
@@ -7,6 +7,7 @@ import { getLensTokenIdDecimal } from "../../../../components/modal/components/C
 import { LensProfileType } from "../../../../components/modal/components/CreateProfile/Lens/validationSchema";
 import { loadAndSetImagePromise } from "../../base64";
 import { useCoreSDK } from "../../useCoreSdk";
+import { useIpfsStorage } from "../useIpfsStorage";
 
 type Props = Parameters<typeof createSellerAccount>[1];
 
@@ -15,11 +16,12 @@ export default function useCreateSeller(
   options: Parameters<typeof useQuery>[2] = {}
 ) {
   const coreSDK = useCoreSDK();
+  const storage = useIpfsStorage();
 
   return useQuery(
     ["create-seller", props],
     () => {
-      return createSellerAccount(coreSDK, props);
+      return createSellerAccount(coreSDK, props, storage);
     },
     options
   );
@@ -41,7 +43,8 @@ async function createSellerAccount(
     lensValues: LensProfileType;
     authTokenId: string | null;
     authTokenType: typeof authTokenTypes[keyof typeof authTokenTypes];
-  }
+  },
+  storage: IpfsMetadataStorage
 ) {
   if (authTokenType === authTokenTypes.Lens && !authTokenId) {
     throw new Error(
@@ -53,7 +56,7 @@ async function createSellerAccount(
     : "";
 
   // https://docs.opensea.io/docs/contract-level-metadata
-  const contractUriBase64 = window.btoa(
+  const cid = await storage.add(
     JSON.stringify({
       name: lensValues.name,
       description: lensValues.description,
@@ -63,8 +66,8 @@ async function createSellerAccount(
       fee_recipient: addressForRoyaltyPayment
     })
   );
-  // https://www.kevfoo.com/2022/05/opensea-contracturi/
-  const contractUri = `data:application/json;base64,${contractUriBase64}`;
+
+  const contractUri = `ipfs://${cid}`;
   const royaltyPercentageTimes100 = royaltyPercentage * 100;
   const tx = await coreSDK.createSeller({
     admin:
