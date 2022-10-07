@@ -10,6 +10,8 @@ import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { getOfferDetails } from "../../lib/utils/getOfferDetails";
+import { MediaSet } from "../../lib/utils/hooks/lens/graphql/generated";
+import { useCurrentSeller } from "../../lib/utils/hooks/useCurrentSeller";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import Image from "./Image";
 
@@ -81,6 +83,10 @@ const SellerID: React.FC<
   ...rest
 }) => {
   const { address } = useAccount();
+  const { lens } = useCurrentSeller({
+    sellerId: offer.seller.id
+  });
+
   const navigate = useKeepQueryParamsNavigate();
   const { artist } = getOfferDetails(offer);
 
@@ -92,9 +98,6 @@ const SellerID: React.FC<
       : (buyerOrSeller as Buyer).wallet
     : address;
   const hasCursorPointer = !!onClick || onClick === undefined;
-
-  const artistImage =
-    artist?.images && artist?.images?.length > 0 ? artist?.images : false;
 
   return (
     <AddressContainer {...rest} data-address-container>
@@ -124,9 +127,13 @@ const SellerID: React.FC<
       >
         {withProfileImage && userId && (
           <ImageContainer>
-            {artistImage ? (
+            {(lens?.picture as MediaSet) ||
+            (artist?.images && artist?.images.length > 0) ? (
               <Image
-                src={artistImage[0].url}
+                src={
+                  (lens?.picture as MediaSet)?.original?.url ||
+                  ((artist?.images?.[0]?.url || "") as string)
+                }
                 style={{
                   height: "1rem",
                   width: "1rem",
@@ -147,7 +154,11 @@ const SellerID: React.FC<
             data-testid="seller-info"
             $withBosonStyles={withBosonStyles}
           >
-            {isSeller ? `Seller ID: ${userId}` : `Buyer ID: ${userId}`}
+            {isSeller
+              ? lens?.name
+                ? lens?.name
+                : `Seller ID: ${userId}`
+              : `Buyer ID: ${userId}`}
           </SellerInfo>
         )}
       </SellerContainer>

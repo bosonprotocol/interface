@@ -2,7 +2,10 @@ import * as Yup from "yup";
 
 import { SelectDataProps } from "../../components/form/types";
 import { colors } from "../../lib/styles/colors";
-import { websitePattern } from "../../lib/validation/regex/url";
+import {
+  socialLinkPattern,
+  websitePattern
+} from "../../lib/validation/regex/url";
 import { validationOfFile } from "../chat/components/UploadForm/const";
 import { SocialLogoValues } from "./SocialLogo";
 
@@ -10,6 +13,7 @@ export type SelectType<Value extends string = string> =
   SelectDataProps<Value> | null;
 
 export type StoreFields = {
+  isCustomStoreFront: string;
   storeName: string;
   title: string;
   description: string;
@@ -45,6 +49,7 @@ export type StoreFormFields = StoreFields & {
 };
 
 export const storeFields = {
+  isCustomStoreFront: "isCustomStoreFront",
   storeName: "storeName",
   title: "title",
   description: "description",
@@ -322,7 +327,7 @@ export const validationSchema = Yup.object({
       label: Yup.string().required(standardRequiredErrorMessage),
       value: Yup.string().required(standardRequiredErrorMessage),
       url: Yup.string()
-        .matches(new RegExp(websitePattern), notUrlErrorMessage)
+        .matches(new RegExp(socialLinkPattern), notUrlErrorMessage)
         .required(standardRequiredErrorMessage)
     })
   ),
@@ -367,6 +372,7 @@ export const validationSchema = Yup.object({
 });
 
 export const initialValues = {
+  [storeFields.isCustomStoreFront]: "true",
   [storeFields.storeName]: "",
   [storeFields.title]: "",
   [storeFields.description]: "",

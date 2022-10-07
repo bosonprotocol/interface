@@ -17,6 +17,13 @@ dayjs.extend(localizedFormat);
 import { ethers } from "ethers";
 
 import { Token } from "../../components/convertion-rate/ConvertionRateContext";
+import {
+  getLensCoverPictureUrl,
+  getLensEmail,
+  getLensProfilePictureUrl,
+  getLensTokenIdDecimal,
+  getLensWebsite
+} from "../../components/modal/components/CreateProfile/Lens/utils";
 import { useModal } from "../../components/modal/useModal";
 import Help from "../../components/product/Help";
 import Preview from "../../components/product/Preview";
@@ -29,13 +36,14 @@ import SuccessTransactionToast from "../../components/toasts/SuccessTransactionT
 import { CONFIG } from "../../lib/config";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { OffersRoutes } from "../../lib/routing/routes";
-import { fromBase64ToBinary } from "../../lib/utils/base64ImageConverter";
+import { fromBase64ToBinary } from "../../lib/utils/base64";
 import { getLocalStorageItems } from "../../lib/utils/getLocalStorageItems";
 import { useChatStatus } from "../../lib/utils/hooks/chat/useChatStatus";
+import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
+import { useCurrentSeller } from "../../lib/utils/hooks/useCurrentSeller";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { saveItemInStorage } from "../../lib/utils/hooks/useLocalStorage";
-import { useSellers } from "../../lib/utils/hooks/useSellers";
 import { useCoreSDK } from "../../lib/utils/useCoreSdk";
 import {
   CreateProductWrapper,
@@ -60,13 +68,19 @@ function onKeyPress(event: React.KeyboardEvent<HTMLFormElement>) {
 
 interface Props {
   initial: CreateProductForm;
+  showCreateProductDraftModal: () => void;
+  showInvalidRoleModal: () => void;
 }
 interface SupportedJuridiction {
   label: string;
   deliveryTime: string;
 }
 
-function CreateProductInner({ initial }: Props) {
+function CreateProductInner({
+  initial,
+  showCreateProductDraftModal,
+  showInvalidRoleModal
+}: Props) {
   const navigate = useKeepQueryParamsNavigate();
   const { chatInitializationStatus } = useChatStatus();
   const [currentStep, setCurrentStep] = useState<number>(FIRST_STEP);
@@ -95,10 +109,9 @@ function CreateProductInner({ initial }: Props) {
 
   const { address } = useAccount();
 
-  const { data: sellers } = useSellers({
-    admin: address,
-    includeFunds: true
-  });
+  const { seller, lens: lensProfile } = useCurrentSeller();
+
+  const hasSellerAccount = !!seller;
 
   const handleOpenSuccessModal = async ({
     offerInfo
@@ -154,7 +167,9 @@ function CreateProductInner({ initial }: Props) {
   const wizardStep = useMemo(() => {
     const wizard = createProductSteps({
       setIsPreviewVisible,
-      chatInitializationStatus
+      chatInitializationStatus,
+      showCreateProductDraftModal,
+      showInvalidRoleModal
     });
     return {
       currentStep:
@@ -165,7 +180,12 @@ function CreateProductInner({ initial }: Props) {
         wizard?.[currentStep as keyof CreateProductSteps]?.helpSection || null,
       wizardLength: keys(wizard).length - 1
     };
-  }, [chatInitializationStatus, currentStep]);
+  }, [
+    chatInitializationStatus,
+    currentStep,
+    showCreateProductDraftModal,
+    showInvalidRoleModal
+  ]);
 
   const handleNextForm = useCallback(() => {
     if (isPreviewVisible) {
@@ -380,33 +400,66 @@ function CreateProductInner({ initial }: Props) {
           packaging_weight_value: shippingInfo.weight,
           packaging_weight_unit: shippingInfo.weightUnit.value
         },
-        seller: {
-          defaultVersion: 1,
-          name: createYourProfile.name,
-          description: createYourProfile.description,
-          externalUrl: createYourProfile.website,
-          tokenId: undefined, // no entry in the UI
-          images: [
-            {
-              url: `ipfs://${profileImageLink}`,
-              tag: "profile"
+        seller: CONFIG.lens.enabled
+          ? {
+              defaultVersion: 1,
+              name: lensProfile?.name || "",
+              description: lensProfile?.bio || "",
+              externalUrl: lensProfile
+                ? getLensWebsite(lensProfile as Profile) || ""
+                : "",
+              tokenId: lensProfile
+                ? getLensTokenIdDecimal(lensProfile.id).toString()
+                : "0",
+              images: [
+                {
+                  url: lensProfile
+                    ? getLensProfilePictureUrl(lensProfile as Profile) || ""
+                    : "", // TODO: ipfslink or base64?
+                  tag: "profile"
+                },
+                {
+                  url: lensProfile
+                    ? getLensCoverPictureUrl(lensProfile as Profile) || ""
+                    : "", // TODO: ipfslink or base64? // TODO: ipfslink or base64? should I add it?
+                  tag: "cover"
+                }
+              ],
+              contactLinks: [
+                {
+                  url: lensProfile
+                    ? getLensEmail(lensProfile as Profile) || ""
+                    : "",
+                  tag: "email"
+                }
+              ]
             }
-          ],
-          contactLinks: [
-            {
-              url: createYourProfile.email,
-              tag: "email"
-            }
-          ]
-        },
+          : {
+              defaultVersion: 1,
+              name: createYourProfile.name,
+              description: createYourProfile.description,
+              externalUrl: createYourProfile.website,
+              tokenId: undefined, // no entry in the UI
+              images: [
+                {
+                  url: `ipfs://${profileImageLink}`,
+                  tag: "profile"
+                }
+              ],
+              contactLinks: [
+                {
+                  url: createYourProfile.email,
+                  tag: "email"
+                }
+              ]
+            },
         exchangePolicy: {
           uuid: Date.now().toString(),
           version: 1,
           label: termsOfExchange.exchangePolicy.value,
           template: termsOfExchange.exchangePolicy.value,
           sellerContactMethod: CONFIG.defaultSellerContactMethod,
-          disputeResolverContactMethod:
-            CONFIG.defaultDisputeResolverContactMethod
+          disputeResolverContactMethod: `email to: ${CONFIG.defaultDisputeResolverContactMethod}`
         },
         shipping: {
           defaultVersion: 1,
@@ -441,7 +494,7 @@ function CreateProductInner({ initial }: Props) {
 
       showModal("WAITING_FOR_CONFIRMATION");
       const txResponse =
-        sellers?.length === 0 && address
+        !hasSellerAccount && address
           ? await coreSDK.createSellerAndOffer(
               {
                 operator: address,
@@ -559,7 +612,7 @@ function CreateProductInner({ initial }: Props) {
                 {isPreviewVisible ? (
                   <Preview
                     togglePreview={setIsPreviewVisible}
-                    seller={sellers?.[0]}
+                    seller={seller as any}
                   />
                 ) : (
                   wizardStep.currentStep

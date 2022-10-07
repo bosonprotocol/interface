@@ -172,7 +172,7 @@ export default function Preview({ togglePreview, seller }: Props) {
       },
       exchangePolicy: {
         sellerContactMethod: CONFIG.defaultSellerContactMethod,
-        disputeResolverContactMethod: CONFIG.defaultDisputeResolverContactMethod
+        disputeResolverContactMethod: `email to: ${CONFIG.defaultDisputeResolverContactMethod}`
       },
       productV1Seller: {
         name: values.createYourProfile.name

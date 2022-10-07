@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { buttonText } from "../../components/ui/styles";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
-import { blobToBase64 } from "../../lib/utils/base64ImageConverter";
+import { blobToBase64 } from "../../lib/utils/base64";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
 import Typography from "./Typography";
 

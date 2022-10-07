@@ -17,6 +17,8 @@ import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
+import { MediaSet } from "../../lib/utils/hooks/lens/graphql/generated";
+import { useCurrentSeller } from "../../lib/utils/hooks/useCurrentSeller";
 import { Exchange as IExchange } from "../../lib/utils/hooks/useExchanges";
 import { useGetIpfsImage } from "../../lib/utils/hooks/useGetIpfsImage";
 import { useHandleText } from "../../lib/utils/hooks/useHandleText";
@@ -40,6 +42,13 @@ const ExchangeCardWrapper = styled.div`
 `;
 
 export default function Exchange({ offer, exchange, reload }: Props) {
+  const { lens } = useCurrentSeller({
+    sellerId: offer.seller.id
+  });
+  const { imageSrc: avatar } = useGetIpfsImage(
+    (lens?.picture as MediaSet)?.original?.url
+  );
+
   const { showModal, modalTypes } = useModal();
   const navigate = useKeepQueryParamsNavigate();
   const { imageStatus, imageSrc } = useGetIpfsImage(offer.metadata.imageUrl);
@@ -123,7 +132,8 @@ export default function Exchange({ offer, exchange, reload }: Props) {
           isCTAVisible: isBuyer,
           disputeButtonConfig: {
             onClick: handleDispute,
-            variant: "ghostOrange" as const
+            variant: "accentInverted" as const,
+            showBorder: false
           }
         };
       }
@@ -186,9 +196,8 @@ export default function Exchange({ offer, exchange, reload }: Props) {
         dataCard="exchange-card"
         id={offer.id}
         title={offer.metadata.name}
-        avatarName={`Seller ID: ${offer.seller.id}`}
-        // TODO: ADD AVATAR IMAGE FOR NOW HARDCODED
-        avatar={mockedAvatar}
+        avatarName={lens?.name ? lens?.name : `Seller ID: ${offer.seller.id}`}
+        avatar={avatar || mockedAvatar}
         imageProps={{
           src: imageSrc,
           preloadConfig: {

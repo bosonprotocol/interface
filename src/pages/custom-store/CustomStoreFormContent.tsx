@@ -12,7 +12,8 @@ import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
 import { colors } from "../../lib/styles/colors";
 import { getFilesWithEncodedData } from "../../lib/utils/files";
-import { useCurrentSellerId } from "../../lib/utils/hooks/useCurrentSellerId";
+import { useCurrentSeller } from "../../lib/utils/hooks/useCurrentSeller";
+import { preAppendHttps } from "../../lib/validation/regex/url";
 import SocialLogo from "./SocialLogo";
 import {
   formModel,
@@ -57,19 +58,8 @@ interface Props {
   hasSubmitError: boolean;
 }
 
-const preAppendHttps = (url: string) => {
-  return url.startsWith("https://") || url.startsWith("http://")
-    ? url
-    : `https://${url}`;
-};
-
-export default function CustomStoreFormContent({ hasSubmitError }: Props) {
-  const { setFieldValue, values, isValid, setFieldTouched } =
-    useFormikContext<StoreFormFields>();
-
-  const { sellerId } = useCurrentSellerId();
-
-  const formValuesWithOneLogoUrl = Object.entries(values)
+export const formValuesWithOneLogoUrl = (values: StoreFormFields) => {
+  return Object.entries(values)
     .filter(
       ([key]) =>
         !(
@@ -148,7 +138,17 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
     })
     .filter((v) => !!v && !!v[0] && !!v[0][0] && !!v[0][1])
     .flat();
-  const queryParams = new URLSearchParams(formValuesWithOneLogoUrl).toString();
+};
+
+export default function CustomStoreFormContent({ hasSubmitError }: Props) {
+  const { setFieldValue, values, isValid, setFieldTouched } =
+    useFormikContext<StoreFormFields>();
+
+  const { sellerId } = useCurrentSeller();
+
+  const queryParams = new URLSearchParams(
+    formValuesWithOneLogoUrl(values)
+  ).toString();
   useEffect(() => {
     setFieldValue(storeFields.logoUrl, "", true);
     if (values.logoUpload.length) {

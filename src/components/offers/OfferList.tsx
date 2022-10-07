@@ -33,7 +33,7 @@ interface Props {
 
 const Container = styled.div<{ $isPrimaryBgChanged: boolean }>`
   background: ${({ $isPrimaryBgChanged }) =>
-    $isPrimaryBgChanged ? "var(--primaryBgColor)" : colors.lightGrey};
+    $isPrimaryBgChanged ? "var(--secondaryBgColor)" : colors.lightGrey};
 `;
 
 const ViewMoreButton = styled.button`
