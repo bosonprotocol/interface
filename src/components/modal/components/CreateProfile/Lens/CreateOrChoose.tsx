@@ -57,6 +57,16 @@ export default function CreateOrChoose({
     }
   }, [isSuccess, profileData?.items.length, profileData?.pageInfo.next]);
 
+  const [lensProfiles, setLensProfiles] = useState<Profile[]>([]);
+
+  useEffect(() => {
+    if (profileData?.items.length) {
+      setLensProfiles((prev) => [
+        ...prev,
+        ...(profileData?.items as Profile[])
+      ]);
+    }
+  }, [profileData?.items]);
   return (
     <Grid flexDirection="column">
       <Typography>
@@ -79,7 +89,7 @@ export default function CreateOrChoose({
             <Typography>Create new Profile</Typography>
           </Grid>
         </Button>
-        {profileData?.items.map((profile) => {
+        {lensProfiles.map((profile) => {
           return (
             <Button
               theme="white"
