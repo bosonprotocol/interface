@@ -12,7 +12,7 @@ const StyledCommitStepWrapper = styled(CommitStepWrapper)`
   [data-testid="step-title"] {
     font-size: 1rem;
   }
-  [data-testid="number"] {
+  [data-step] {
     color: ${colors.secondary};
     &:after {
       background: ${colors.primary};
