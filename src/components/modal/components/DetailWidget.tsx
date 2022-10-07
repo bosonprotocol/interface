@@ -1,4 +1,5 @@
 import { subgraph } from "@bosonprotocol/react-kit";
+import { Button } from "@bosonprotocol/react-kit";
 import { generatePath } from "react-router-dom";
 
 import {
@@ -20,7 +21,6 @@ import { BosonRoutes } from "../../../lib/routing/routes";
 import { colors } from "../../../lib/styles/colors";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
 import Image from "../../ui/Image";
 import Typography from "../../ui/Typography";
@@ -84,7 +84,7 @@ export default function DetailWidget({
           </Widget>
           <WidgetButtonWrapper>
             <Button
-              theme="primary"
+              variant="primaryFill"
               onClick={() => {
                 const exchangeId = id || false;
                 hideModal();
@@ -106,7 +106,7 @@ export default function DetailWidget({
               {id ? "View my item" : "View my items"}
             </Button>
             <Button
-              theme="secondary"
+              variant="accentInverted"
               onClick={() => {
                 navigate({ pathname: BosonRoutes.Explore });
               }}
