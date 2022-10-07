@@ -28,6 +28,7 @@ jobs:
       ENV_NAME: "testing"
       UPDATE_COVERAGE: false
       REACT_APP_ENABLE_CURATION_LISTS: false
+      REACT_APP_CREATE_PROFILE_CONFIGURATION: "LENS"
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -44,6 +45,7 @@ jobs:
       ENV_NAME: "testing"
       UPDATE_COVERAGE: true
       REACT_APP_ENABLE_CURATION_LISTS: false
+      REACT_APP_CREATE_PROFILE_CONFIGURATION: "LENS"
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
@@ -64,6 +66,7 @@ jobs:
       ENV_NAME: "staging"
       UPDATE_COVERAGE: false
       REACT_APP_ENABLE_CURATION_LISTS: false
+      REACT_APP_CREATE_PROFILE_CONFIGURATION: "LENS"
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
@@ -84,6 +87,7 @@ jobs:
       ENV_NAME: "production"
       UPDATE_COVERAGE: false
       REACT_APP_ENABLE_CURATION_LISTS: false
+      REACT_APP_CREATE_PROFILE_CONFIGURATION: "LENS"
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 import { useModal } from "../../components/modal/useModal";
 import { CreateProductForm } from "../../components/product/utils/types";
@@ -19,7 +19,7 @@ function CreateProduct() {
     hideModal();
   };
 
-  useEffect(() => {
+  const showCreateProductDraftModal = useCallback(() => {
     if (store.shouldDisplayModal) {
       showModal(modalTypes.CREATE_PRODUCT_DRAFT, {
         title: "Draft",
@@ -27,9 +27,26 @@ function CreateProduct() {
         chooseDraft
       });
     }
-  }, []); // eslint-disable-line
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  return <CreateProductInner initial={initial} />;
+  const showInvalidRoleModal = useCallback(() => {
+    showModal<"INVALID_ROLE">(modalTypes.INVALID_ROLE, {
+      title: "Invalid Role",
+      action: "create a product",
+      requiredRole: "operator"
+    });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
+    <CreateProductInner
+      initial={initial}
+      showCreateProductDraftModal={showCreateProductDraftModal}
+      showInvalidRoleModal={showInvalidRoleModal}
+    />
+  );
 }
 
 export default CreateProduct;

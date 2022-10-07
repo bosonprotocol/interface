@@ -260,7 +260,7 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
           <>
             <ConnectButton {...props} showAddress={!address} />
             {address && (
-              <Grid flexBasis="content">
+              <Grid flexBasis="content" margin="0 0 0 1rem">
                 <ViewTxButton />
               </Grid>
             )}
