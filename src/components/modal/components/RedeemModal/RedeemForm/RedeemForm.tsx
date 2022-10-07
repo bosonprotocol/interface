@@ -104,6 +104,7 @@ export default function RedeemForm({
           theme="primary"
           onClick={() => onNextClick()}
           disabled={!isValid}
+          withBosonStyle
         >
           Next
         </Button>
