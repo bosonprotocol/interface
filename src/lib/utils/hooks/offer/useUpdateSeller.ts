@@ -10,9 +10,7 @@ type Props = Parameters<typeof updateSellerAccount>[1];
 
 export default function useUpdateSeller(
   props: Props,
-  options: {
-    enabled?: boolean;
-  } = {}
+  options: Parameters<typeof useQuery>[2] = {}
 ) {
   const coreSDK = useCoreSDK();
 
@@ -21,9 +19,7 @@ export default function useUpdateSeller(
     async () => {
       return await updateSellerAccount(coreSDK, props);
     },
-    {
-      ...options
-    }
+    options
   );
 }
 

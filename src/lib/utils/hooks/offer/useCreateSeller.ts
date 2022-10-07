@@ -12,9 +12,7 @@ type Props = Parameters<typeof createSellerAccount>[1];
 
 export default function useCreateSeller(
   props: Props,
-  options: {
-    enabled?: boolean;
-  } = {}
+  options: Parameters<typeof useQuery>[2] = {}
 ) {
   const coreSDK = useCoreSDK();
 
@@ -23,9 +21,7 @@ export default function useCreateSeller(
     () => {
       return createSellerAccount(coreSDK, props);
     },
-    {
-      ...options
-    }
+    options
   );
 }
 

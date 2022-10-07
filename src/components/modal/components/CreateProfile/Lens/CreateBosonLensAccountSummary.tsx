@@ -57,9 +57,10 @@ export default function CreateBosonLensAccountSummary({
   const hasLensHandleLinked = seller?.authTokenType === authTokenTypes.Lens;
   const alreadyHasRoyaltiesDefined = false; // TODO: seller.royalties;
   const {
-    isFetched: isCreatedSellerAccount,
+    isSuccess: isCreatedSellerAccount,
     isLoading: isCreatingSellerAccount,
-    refetch: createSellerAccountWithArgs
+    refetch: createSellerAccountWithArgs,
+    isError: isCreateSellerError
   } = useCreateSeller(
     {
       address: address || "",
@@ -70,11 +71,12 @@ export default function CreateBosonLensAccountSummary({
       authTokenType: authTokenTypes.Lens
     },
     {
-      enabled: false
+      enabled: false,
+      retry: false
     }
   );
   const {
-    isFetched: isUpdatedSellerAccount,
+    isSuccess: isUpdatedSellerAccount,
     isLoading: isUpdatingSellerAccount,
     refetch: updateSellerAccountWithArgs,
     isError: isUpdateSellerError
@@ -89,7 +91,8 @@ export default function CreateBosonLensAccountSummary({
       sellerId: seller?.id || "0"
     },
     {
-      enabled: false
+      enabled: false,
+      retry: false
     }
   );
   const { updateProps, store } = useModal();
@@ -442,13 +445,34 @@ export default function CreateBosonLensAccountSummary({
               </Typography>
             </SimpleError>
           )}
-          {(isCreateLensError || isUpdateSellerError) &&
+          {(isCreateLensError || isUpdateSellerError || isCreateSellerError) &&
             !isHandleTakenError &&
             !isSetLensProfileMetadataError && (
-              <SimpleError
-                errorMessage={`There has been an error while creating your Lens profile, please
-          contact us on ${CONFIG.defaultDisputeResolverContactMethod} to explain your issue`}
-              ></SimpleError>
+              <SimpleError>
+                <Typography
+                  fontWeight="600"
+                  $fontSize="1rem"
+                  lineHeight="1.5rem"
+                  style={{ display: "inline-block" }}
+                >
+                  There has been an error{" "}
+                  {isCreateLensError
+                    ? "while creating your Lens profile"
+                    : isUpdateSellerError
+                    ? "while updating your seller account"
+                    : isCreateSellerError
+                    ? "while creating your seller account"
+                    : ""}
+                  , please contact us on
+                  <a
+                    href={`mailto:${CONFIG.defaultDisputeResolverContactMethod}`}
+                  >
+                    {" "}
+                    {CONFIG.defaultDisputeResolverContactMethod}{" "}
+                  </a>
+                  to explain your issue
+                </Typography>
+              </SimpleError>
             )}
         </>
         <CTAs
@@ -510,7 +534,9 @@ function CTAs({
             theme="primary"
             onClick={async () => {
               await createSellerAccount();
-              onSubmit("Create Seller Account");
+              if (isCreatedSellerAccount) {
+                onSubmit("Create Seller Account");
+              }
             }}
             disabled={isCreatingSellerAccount}
           >
@@ -555,7 +581,9 @@ function CTAs({
             theme="primary"
             onClick={async () => {
               await createSellerAccount();
-              onSubmit("Create Seller Account");
+              if (isCreatedSellerAccount) {
+                onSubmit("Create Seller Account");
+              }
             }}
             disabled={
               isCreatingSellerAccount ||
@@ -621,7 +649,9 @@ function CTAs({
             }
             onClick={async () => {
               await updateSellerAccount();
-              onSubmit("Update Seller Account");
+              if (isUpdatedSellerAccount) {
+                onSubmit("Update Seller Account");
+              }
             }}
           >
             <Grid gap="1.0625rem">
@@ -651,7 +681,9 @@ function CTAs({
             theme="primary"
             onClick={async () => {
               await updateSellerAccount();
-              onSubmit("Update Seller Account");
+              if (isUpdatedSellerAccount) {
+                onSubmit("Update Seller Account");
+              }
             }}
             disabled={isUpdatingSellerAccount}
           >
