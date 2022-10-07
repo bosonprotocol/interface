@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import {
   CaretDown,
   CaretLeft,
@@ -6,9 +7,15 @@ import {
   //   Table
 } from "phosphor-react";
 import { useMemo } from "react";
+import { generatePath } from "react-router";
 import { usePagination, useRowSelect, useSortBy, useTable } from "react-table";
 
+import { CONFIG } from "../../lib/config";
+import { UrlParameters } from "../../lib/routing/parameters";
+import { BosonRoutes, OffersRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
+import { getDateTimestamp } from "../../lib/utils/getDateTimestamp";
+import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import PaginationPages from "../seller/common/PaginationPages";
 import Button from "../ui/Button";
 import Grid from "../ui/Grid";
@@ -25,6 +32,10 @@ interface Transaction {
   transaction: string;
   date: string;
   executed: string;
+  hash: string;
+  offerExchangeId: string;
+  buyerSellerID: string;
+  isOffer: boolean;
 }
 
 interface Props {
@@ -33,18 +44,17 @@ interface Props {
 }
 
 export default function TransactionsTable({ transactions }: Props) {
-  console.log(
-    "🚀  roberto --  ~ file: TransactionsTable.tsx ~ line 52 ~ TransactionsTable ~ transactions",
-    transactions
-  );
-  //   const navigate = useKeepQueryParamsNavigate();
-  //   const { showModal, modalTypes } = useModal();
+  const navigate = useKeepQueryParamsNavigate();
 
   const columns = useMemo(
     () => [
       {
-        Header: "Offer ID",
-        accessor: "offerId"
+        Header: "offerExchangeId",
+        accessor: "offerExchangeId"
+      } as const,
+      {
+        Header: "isOffer",
+        accessor: "isOffer"
       } as const,
       {
         Header: "Account",
@@ -63,6 +73,10 @@ export default function TransactionsTable({ transactions }: Props) {
         Header: "Executed By",
         accessor: "executedBy",
         disableSortBy: true
+      } as const,
+      {
+        Header: "Link to block",
+        accessor: "linkToBlock"
       } as const
     ],
     []
@@ -70,17 +84,47 @@ export default function TransactionsTable({ transactions }: Props) {
 
   const data = useMemo(
     () =>
-      transactions?.map((tx: any | null) => {
+      transactions?.map((tx: Transaction | null) => {
         if (!tx) {
           return <></>;
         }
 
         return {
-          offerId: <p>sample</p>,
-          account: <Typography tag="p">account</Typography>,
-          transaction: <Typography tag="p">transaction</Typography>,
-          dateTime: <Typography tag="p">date and Time</Typography>,
-          executedBy: <Typography tag="p">executedBy</Typography>
+          offerExchangeId: tx.offerExchangeId,
+          isOffer: tx.isOffer,
+          account: (
+            <Typography $fontSize="0.75rem" tag="p">
+              {tx.account}
+            </Typography>
+          ),
+          transaction: (
+            <Typography $fontSize="0.75rem" tag="p">
+              {tx.transaction}
+            </Typography>
+          ),
+          dateTime: (
+            <Typography $fontSize="0.75rem">
+              {dayjs(getDateTimestamp(tx.date)).format(CONFIG.dateFormat)}
+            </Typography>
+          ),
+          executedBy: (
+            <Typography $fontSize="0.75rem" tag="p">
+              {tx.executed}
+            </Typography>
+          ),
+          linkToBlock: (
+            <a href={CONFIG.getTxExplorerUrl?.(tx.hash)} target="_blank">
+              <Typography
+                fontWeight="600"
+                $fontSize="0.75rem"
+                lineHeight="150%"
+                margin="0.5rem 0 1.5rem 0"
+                color={colors.secondary}
+              >
+                View on Explorer
+              </Typography>
+            </a>
+          )
         };
       }),
     [transactions] // eslint-disable-line
@@ -90,7 +134,10 @@ export default function TransactionsTable({ transactions }: Props) {
     {
       columns,
       data,
-      initialState: { pageIndex: 0, hiddenColumns: [] }
+      initialState: {
+        pageIndex: 0,
+        hiddenColumns: ["offerExchangeId", "isOffer"]
+      }
     },
     useSortBy,
     usePagination,
@@ -168,7 +215,18 @@ export default function TransactionsTable({ transactions }: Props) {
                         {...cell.getCellProps()}
                         key={`transaction_${row.id}-${cell.column.id}`}
                         onClick={() => {
-                          console.log("should navigate to the correct path");
+                          if (cell.column.id !== "linkToBlock") {
+                            const pathname = generatePath(
+                              row?.values?.isOffer
+                                ? OffersRoutes.OfferDetail
+                                : BosonRoutes.Exchange,
+                              {
+                                [UrlParameters.exchangeId]:
+                                  row?.values?.offerExchangeId ?? "0"
+                              }
+                            );
+                            navigate({ pathname });
+                          }
                         }}
                       >
                         {cell.render("Cell")}
