@@ -433,7 +433,12 @@ export default function CreateBosonLensAccountSummary({
           )}
           {isSetLensProfileMetadataError && (
             <SimpleError>
-              <Typography fontWeight="600" $fontSize="1rem" lineHeight="1.5rem">
+              <Typography
+                fontWeight="600"
+                $fontSize="1rem"
+                lineHeight="1.5rem"
+                style={{ display: "inline-block" }}
+              >
                 There has been an error while setting the metadata to your Lens
                 profile, please edit via the Lens application on{" "}
                 <a
@@ -499,9 +504,9 @@ interface CTAsProps {
   hasLensHandle: boolean;
   hasAdminSellerAccount: boolean;
   hasLensHandleLinked: boolean;
-  createSellerAccount: () => Promise<unknown>;
+  createSellerAccount: ReturnType<typeof useCreateSeller>["refetch"];
   createLensProfile: () => void;
-  updateSellerAccount: () => Promise<unknown>;
+  updateSellerAccount: ReturnType<typeof useUpdateSeller>["refetch"];
   isCreatedSellerAccount: boolean;
   isCreatingSellerAccount: boolean;
   isCreatingLensProfile: boolean;
@@ -533,12 +538,12 @@ function CTAs({
           <Button
             theme="primary"
             onClick={async () => {
-              await createSellerAccount();
-              if (isCreatedSellerAccount) {
+              const { isSuccess } = await createSellerAccount();
+              if (isSuccess) {
                 onSubmit("Create Seller Account");
               }
             }}
-            disabled={isCreatingSellerAccount}
+            disabled={isCreatingSellerAccount || isCreatedSellerAccount}
           >
             <Grid gap="1.0625rem">
               <Typography fontWeight="600" $fontSize="1rem" lineHeight="1.5rem">
@@ -580,8 +585,8 @@ function CTAs({
           <Button
             theme="primary"
             onClick={async () => {
-              await createSellerAccount();
-              if (isCreatedSellerAccount) {
+              const { isSuccess } = await createSellerAccount();
+              if (isSuccess) {
                 onSubmit("Create Seller Account");
               }
             }}
@@ -648,8 +653,8 @@ function CTAs({
               !isCreatedLensProfile
             }
             onClick={async () => {
-              await updateSellerAccount();
-              if (isUpdatedSellerAccount) {
+              const { isSuccess } = await updateSellerAccount();
+              if (isSuccess) {
                 onSubmit("Update Seller Account");
               }
             }}
@@ -680,8 +685,8 @@ function CTAs({
           <Button
             theme="primary"
             onClick={async () => {
-              await updateSellerAccount();
-              if (isUpdatedSellerAccount) {
+              const { isSuccess } = await updateSellerAccount();
+              if (isSuccess) {
                 onSubmit("Update Seller Account");
               }
             }}

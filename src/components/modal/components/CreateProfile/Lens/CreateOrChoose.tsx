@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
 import { ReactComponent as LensLogo } from "../../../../../../src/assets/lens-logo.svg";
@@ -38,16 +38,24 @@ export default function CreateOrChoose({
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  const [cursor, setCursor] = useState<string>();
   const { address = "" } = useAccount();
-  const { data: profileData } = useGetLensProfiles(
+  const { data: profileData, isSuccess } = useGetLensProfiles(
     {
       ownedBy: [address],
-      limit: 50
+      limit: 50,
+      ...(cursor && { cursor })
     },
     {
       enabled: !!address
     }
   );
+
+  useEffect(() => {
+    if (isSuccess && profileData?.pageInfo.next && !!profileData.items.length) {
+      setCursor(profileData.pageInfo.next);
+    }
+  }, [isSuccess, profileData?.items.length, profileData?.pageInfo.next]);
 
   return (
     <Grid flexDirection="column">
