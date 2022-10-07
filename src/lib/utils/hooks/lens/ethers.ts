@@ -10,8 +10,11 @@ type SignTypedDataAsync = ReturnType<
 
 export const signedTypeData = (
   signTypedDataAsync: SignTypedDataAsync,
+  // eslint-disable-next-line
   domain: any, //TypedDataDomain,
+  // eslint-disable-next-line
   types: Record<string, any>,
+  // eslint-disable-next-line
   value: Record<string, any>
 ) => {
   // remove the __typedname from the signature!
