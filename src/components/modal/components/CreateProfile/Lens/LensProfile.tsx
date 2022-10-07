@@ -90,7 +90,7 @@ export default function LensProfile({ onSubmit }: Props) {
             setStep(steps.SUMMARY);
           }}
           onBackClick={() => {
-            setStepBasedOnIndex(2);
+            setStepBasedOnIndex(1);
           }}
           setStepBasedOnIndex={setStepBasedOnIndex}
         />
