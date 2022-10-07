@@ -4,6 +4,7 @@ import { useAccount } from "wagmi";
 
 import { TransctionTypes } from "../../../../components/transactions/CompleteTransactions";
 import { fetchSubgraph } from "../../core-components/subgraph";
+import { useCoreSDK } from "../../useCoreSdk";
 
 interface Logs {
   type: TransctionTypes;
@@ -18,7 +19,18 @@ export interface CompleteTransactionLogs {
   sellers: [{ logs: Logs[] }];
 }
 
-const buildQuery = (walletAddress: string, name: string) => {
+interface SellerAddresses {
+  sellerAdmin: string;
+  clerk: string;
+  operator: string;
+  treasury: string;
+}
+
+const buildQuery = (
+  walletAddress: string,
+  sellerAddresses: SellerAddresses,
+  name: string
+) => {
   return gql`
     query ${name} {
       buyers(where: { wallet: "${walletAddress}" }) {
@@ -30,7 +42,7 @@ const buildQuery = (walletAddress: string, name: string) => {
           id
         }
       }
-      sellers(where: { admin: "${walletAddress}" }) {
+      sellers(where: { admin: "${sellerAddresses.sellerAdmin}" }) {
         logs {
           type
           timestamp
@@ -40,7 +52,7 @@ const buildQuery = (walletAddress: string, name: string) => {
         }
       }
       sellers(
-        where: { operator: "${walletAddress}" }
+        where: { operator: "${sellerAddresses.operator}" }
       ) {
         logs {
           type
@@ -50,7 +62,7 @@ const buildQuery = (walletAddress: string, name: string) => {
           id
         }
       }
-      sellers(where: { clerk: "${walletAddress}" }) {
+      sellers(where: { clerk: "${sellerAddresses.clerk}" }) {
         logs {
           type
           timestamp
@@ -60,7 +72,7 @@ const buildQuery = (walletAddress: string, name: string) => {
         }
       }
       sellers(
-        where: { treasury: "${walletAddress}" }
+        where: { treasury: "${sellerAddresses.treasury}" }
       ) {
         logs {
           type
@@ -120,12 +132,27 @@ const buildQuery = (walletAddress: string, name: string) => {
 
 export const useGetCompletedTxLogsByWallet = () => {
   const { address: admin } = useAccount();
+  const coreSDK = useCoreSDK();
 
   const props = { admin };
 
   const result = useQuery(["GetCompletedTxLogsByWallet", props], async () => {
+    const {
+      admin: sellerAdmin,
+      clerk,
+      operator,
+      treasury
+    } = await coreSDK.getSellerByAddress(admin || "");
+    // console.log(
+    //   "🚀  roberto --  ~ file: getTransactions.tsx ~ line 130 ~ result ~ sample",
+    //   sample
+    // );
     const result = await fetchSubgraph<CompleteTransactionLogs>(
-      buildQuery(admin || "", `GetCompletedTxLogsByWallet`),
+      buildQuery(
+        admin || "",
+        { sellerAdmin, clerk, operator, treasury },
+        `GetCompletedTxLogsByWallet`
+      ),
       props
     );
     return result;

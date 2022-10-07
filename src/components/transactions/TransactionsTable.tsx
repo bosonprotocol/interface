@@ -9,6 +9,7 @@ import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes, OffersRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { getDateTimestamp } from "../../lib/utils/getDateTimestamp";
+import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import PaginationPages from "../seller/common/PaginationPages";
 import Button from "../ui/Button";
@@ -39,6 +40,8 @@ interface Props {
 
 export default function TransactionsTable({ transactions }: Props) {
   const navigate = useKeepQueryParamsNavigate();
+
+  const { isLteS } = useBreakpoints();
 
   const columns = useMemo(
     () => [
@@ -102,8 +105,12 @@ export default function TransactionsTable({ transactions }: Props) {
             </Typography>
           ),
           executedBy: (
-            <Typography $fontSize="0.75rem" tag="p">
-              {tx.executed}
+            <Typography
+              $fontSize="0.75rem"
+              tag="p"
+              style={{ overflow: "hidden", textOverflow: "ellipsis" }}
+            >
+              {isLteS ? `${tx.executed.substring(0, 7)}...` : tx.executed}
             </Typography>
           ),
           linkToBlock: (

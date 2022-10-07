@@ -58,7 +58,7 @@ const buildTransaction = (
     case TransctionTypes.ESCALATED_DISPUTE_REFUSED:
       return `Refused dispute with id: ${offerExchangeId}`;
     case TransctionTypes.EXCHANGE_COMPLETED:
-      return `Complete exchange with id:${offerExchangeId}`;
+      return `Complete exchange with id: ${offerExchangeId}`;
     case TransctionTypes.FUNDS_DEPOSITED:
       return `Funds deposited`;
     case TransctionTypes.FUNDS_ENCUMBERED:
