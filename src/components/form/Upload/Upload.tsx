@@ -26,6 +26,7 @@ export default function Upload({
   onFilesSelect,
   placeholder,
   wrapperProps,
+  onLoadSinglePreviewImage,
   ...props
 }: UploadProps) {
   // const fileName = useMemo(() => `create-product-image_${name}`, [name]);
@@ -56,7 +57,10 @@ export default function Upload({
     helpers.setValue(files);
 
     if (!multiple && accept === "image/*" && files && files?.length !== 0) {
-      loadAndSetImage(files[0], setPreview);
+      loadAndSetImage(files[0], (base64Uri) => {
+        setPreview(base64Uri);
+        onLoadSinglePreviewImage?.(base64Uri);
+      });
     }
   }, [files]); // eslint-disable-line
 

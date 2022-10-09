@@ -21,11 +21,11 @@ export const getLensLegalTradingName = (
   )?.value;
 };
 
-export const getLensProfilePictureUrl = (profile: Profile) => {
+export const getLensProfilePictureUrl = (profile: Profile): string => {
   return (profile?.picture as MediaSet)?.original.url || "";
 };
 
-export const getLensCoverPictureUrl = (profile: Profile) => {
+export const getLensCoverPictureUrl = (profile: Profile): string => {
   return (profile?.coverPicture as MediaSet)?.original.url || "";
 };
 

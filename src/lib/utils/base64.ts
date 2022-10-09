@@ -1,3 +1,5 @@
+import { IpfsMetadataStorage } from "@bosonprotocol/react-kit";
+
 export function fromBase64ToBinary(base64: string): Buffer {
   return Buffer.from(base64.replace(/data:image\/.*;base64,/, ""), "base64");
 }
@@ -28,6 +30,24 @@ export const loadAndSetImagePromise = (image: File) => {
       loadAndSetImage(image, resolve);
     }
   );
+};
+
+export const fetchIpfsImage = async (
+  ipfsLink: string,
+  ipfsMetadataStorage: IpfsMetadataStorage
+) => {
+  if (!ipfsMetadataStorage) {
+    return;
+  }
+
+  const fetchPromises = await ipfsMetadataStorage.get(ipfsLink, false);
+  const [image] = await Promise.all([fetchPromises]);
+  const base64str = await blobToBase64(new Blob([image as BlobPart]));
+
+  if (!String(base64str).includes("base64")) {
+    throw new Error("Decoded image is not in base64");
+  }
+  return base64str;
 };
 
 export function dataURItoBlob(dataURI: string) {
