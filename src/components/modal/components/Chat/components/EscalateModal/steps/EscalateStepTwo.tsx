@@ -396,7 +396,7 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
                     theme="escalate"
                     onClick={handleEscalate}
                     isLoading={loading}
-                    disabled={loading}
+                    disabled={loading || values?.confirm !== true}
                   >
                     Escalate
                   </Button>
