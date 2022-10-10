@@ -1,3 +1,4 @@
+import { Button } from "@bosonprotocol/react-kit";
 import { MagnifyingGlass } from "phosphor-react";
 import { useCallback, useState } from "react";
 import styled, { css } from "styled-components";
@@ -6,7 +7,6 @@ import { ExploreQueryParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import Button from "../ui/Button";
 import Grid from "../ui/Grid";
 
 const InputWrapper = styled(Grid)<{
@@ -98,7 +98,7 @@ export default function Search({ isMobile, navigationBarPosition }: Props) {
         placeholder="Search"
       />
       {isMobile && (
-        <Button onClick={navigateToExplore} theme="primary">
+        <Button onClick={navigateToExplore} variant="primaryFill">
           <MagnifyingGlass size={16} />
         </Button>
       )}

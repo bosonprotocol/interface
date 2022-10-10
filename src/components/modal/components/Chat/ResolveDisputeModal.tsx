@@ -1,3 +1,4 @@
+import { Button as ReactKitButton } from "@bosonprotocol/react-kit";
 import { BigNumberish, utils } from "ethers";
 import { Info as InfoComponent } from "phosphor-react";
 import { useState } from "react";
@@ -77,8 +78,8 @@ export default function ResolveDisputeModal({
       </Info>
       {resolveDisputeError && <SimpleError />}
       <ButtonsSection>
-        <Button
-          theme="primary"
+        <ReactKitButton
+          variant="primaryFill"
           onClick={async () => {
             try {
               setResolveDisputeError(null);
@@ -128,7 +129,7 @@ export default function ResolveDisputeModal({
           }}
         >
           Accept proposal
-        </Button>
+        </ReactKitButton>
         <Button theme="blankOutline" onClick={() => hideModal()}>
           Back
         </Button>

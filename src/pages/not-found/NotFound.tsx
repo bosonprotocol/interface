@@ -1,5 +1,6 @@
+import { Button } from "@bosonprotocol/react-kit";
+
 import frame404 from "../../assets/frame404.png";
-import Button from "../../components/ui/Button";
 import Grid from "../../components/ui/Grid";
 import GridContainer from "../../components/ui/GridContainer";
 import Typography from "../../components/ui/Typography";
@@ -35,7 +36,7 @@ function NotFound() {
           Let’s head back home and try again.
         </Typography>
         <Button
-          theme="primary"
+          variant="primaryFill"
           onClick={() => navigate({ pathname: BosonRoutes.Root })}
         >
           Go to Homepage

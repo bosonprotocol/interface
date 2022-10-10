@@ -1,3 +1,4 @@
+import { Button as ReactKitButton, ButtonSize } from "@bosonprotocol/react-kit";
 import { ConnectButton as RainbowConnectButton } from "@rainbow-me/rainbowkit";
 import * as Sentry from "@sentry/browser";
 import styled from "styled-components";
@@ -69,10 +70,10 @@ export default function ConnectButton({
                 Sentry.setTag("wallet_address", undefined);
 
                 return (
-                  <Button
+                  <ReactKitButton
                     onClick={openConnectModal}
-                    size={isLteXS ? "small" : "regular"}
-                    theme="primary"
+                    size={isLteXS ? ButtonSize.Small : ButtonSize.Medium}
+                    variant="primaryFill"
                     style={{
                       whiteSpace: "pre",
                       ...buttonPropsWhenSideBar,
@@ -81,7 +82,7 @@ export default function ConnectButton({
                   >
                     Connect Wallet
                     {!isLteXS && <MetaMaskLogo src={metamaskLogo} />}
-                  </Button>
+                  </ReactKitButton>
                 );
               }
 

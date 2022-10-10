@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { Button } from "@bosonprotocol/react-kit";
 import { useField } from "formik";
 import { useEffect } from "react";
 import { useAccount } from "wagmi";
@@ -7,7 +8,6 @@ import { colors } from "../../../../../lib/styles/colors";
 import { useSellers } from "../../../../../lib/utils/hooks/useSellers";
 import { FormField, Input } from "../../../../form";
 import Tooltip from "../../../../tooltip/Tooltip";
-import Button from "../../../../ui/Button";
 import Grid from "../../../../ui/Grid";
 import { useModal } from "../../../useModal";
 import ProfileMultiSteps from "./ProfileMultiSteps";
@@ -122,11 +122,11 @@ export default function BosonAccountFormFields({
         />
       </FormField>
       <Grid justifyContent="flex-start" gap="2rem">
-        <Button theme="bosonSecondary" type="button" onClick={onBackClick}>
+        <Button variant="accentInverted" type="button" onClick={onBackClick}>
           Back
         </Button>
         <Button
-          theme="bosonPrimary"
+          variant="primaryFill"
           type="submit"
           disabled={
             false

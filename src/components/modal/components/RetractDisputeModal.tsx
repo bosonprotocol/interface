@@ -1,3 +1,4 @@
+import { Button as ReactKitButton } from "@bosonprotocol/react-kit";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -44,8 +45,8 @@ export function RetractDisputeModal({
         {retractDisputeError && <SimpleError />}
       </div>
       <Grid justifyContent="space-between">
-        <Button
-          theme="primary"
+        <ReactKitButton
+          variant="primaryFill"
           onClick={async () => {
             try {
               setRetractDisputeError(null);
@@ -90,7 +91,7 @@ export function RetractDisputeModal({
           }}
         >
           Confirm Retract
-        </Button>
+        </ReactKitButton>
         <Button theme="blank" onClick={hideModal}>
           Back
         </Button>

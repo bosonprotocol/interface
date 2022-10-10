@@ -1,3 +1,4 @@
+import { Button } from "@bosonprotocol/react-kit";
 import { Form, Formik, FormikProps } from "formik";
 import styled from "styled-components";
 import * as Yup from "yup";
@@ -8,7 +9,6 @@ import {
 } from "../../../lib/utils/files";
 import { validationOfFile } from "../../../pages/chat/components/UploadForm/const";
 import UploadForm from "../../../pages/chat/components/UploadForm/UploadForm";
-import Button from "../../ui/Button";
 import { ModalProps } from "../ModalContext";
 import { FormModel } from "./Chat/MakeProposal/MakeProposalFormModel";
 
@@ -73,7 +73,11 @@ export default function Upload({
           <Form>
             <UploadForm />
             <ButtonsSection>
-              <Button type="submit" theme="primary" disabled={!isFormValid}>
+              <Button
+                type="submit"
+                variant="primaryFill"
+                disabled={!isFormValid}
+              >
                 Submit
               </Button>
             </ButtonsSection>

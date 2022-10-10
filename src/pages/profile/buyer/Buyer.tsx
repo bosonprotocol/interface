@@ -1,3 +1,4 @@
+import { Button } from "@bosonprotocol/react-kit";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
@@ -6,7 +7,6 @@ import DetailShare from "../../../components/detail/DetailShare";
 import { Spinner } from "../../../components/loading/Spinner";
 import { useModal } from "../../../components/modal/useModal";
 import AddressText from "../../../components/offer/AddressText";
-import Button from "../../../components/ui/Button";
 import Grid from "../../../components/ui/Grid";
 import Typography from "../../../components/ui/Typography";
 import { UrlParameters } from "../../../lib/routing/parameters";
@@ -171,7 +171,7 @@ export default function Buyer({ manageFundsId }: Props) {
               margin="1.25rem 0 0 0"
             >
               {manageFundsId && !isLteXS && (
-                <Button theme="secondary" onClick={handleManageFunds}>
+                <Button variant="accentInverted" onClick={handleManageFunds}>
                   Manage Funds
                 </Button>
               )}
@@ -185,7 +185,7 @@ export default function Buyer({ manageFundsId }: Props) {
           {manageFundsId && isLteXS && (
             <ManageFundMobileWrapper>
               <Button
-                theme="secondary"
+                variant="accentInverted"
                 onClick={handleManageFunds}
                 data-manage-funds-button
               >

@@ -1,4 +1,5 @@
-import Button from "../../ui/Button";
+import { Button } from "@bosonprotocol/react-kit";
+
 import Grid from "../../ui/Grid";
 import Typography from "../../ui/Typography";
 
@@ -17,10 +18,10 @@ export default function CreateProductDraft({ chooseNew, chooseDraft }: Props) {
         </Typography>
       </Grid>
       <Grid flexDirection="row" justifyContent="space-between">
-        <Button theme="bosonPrimary" onClick={chooseDraft}>
+        <Button variant="primaryFill" onClick={chooseDraft}>
           Edit draft
         </Button>
-        <Button theme="bosonSecondary" onClick={chooseNew}>
+        <Button variant="accentInverted" onClick={chooseNew}>
           Start Fresh
         </Button>
       </Grid>

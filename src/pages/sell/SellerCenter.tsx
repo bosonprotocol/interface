@@ -1,3 +1,4 @@
+import { Button } from "@bosonprotocol/react-kit";
 import { House, WarningCircle } from "phosphor-react";
 import styled from "styled-components";
 
@@ -9,7 +10,6 @@ import SellerAside from "../../components/seller/SellerAside";
 import SellerInside, {
   SellerInsideProps
 } from "../../components/seller/SellerInside";
-import Button from "../../components/ui/Button";
 import Grid from "../../components/ui/Grid";
 import Loading from "../../components/ui/Loading";
 import Typography from "../../components/ui/Typography";
@@ -68,7 +68,7 @@ function SellerCenterWrapper() {
             The seller with that ID doesn't exist!
           </Typography>
           <Button
-            theme="secondary"
+            variant="accentInverted"
             onClick={() => {
               navigate({
                 pathname: BosonRoutes.Root

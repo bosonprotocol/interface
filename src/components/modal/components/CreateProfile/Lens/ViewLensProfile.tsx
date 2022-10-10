@@ -1,10 +1,10 @@
+import { Button } from "@bosonprotocol/react-kit";
 import { useFormikContext } from "formik";
 import { ReactNode, useEffect } from "react";
 
 import { dataURItoBlob } from "../../../../../lib/utils/base64";
 import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
 import { useGetIpfsImage } from "../../../../../lib/utils/hooks/useGetIpfsImage";
-import Button from "../../../../ui/Button";
 import Grid from "../../../../ui/Grid";
 import { useModal } from "../../../useModal";
 import ProfileMultiSteps from "./ProfileMultiSteps";
@@ -102,10 +102,10 @@ export default function ViewLensProfile({
     <div>
       {children}
       <Grid justifyContent="flex-start" gap="2rem">
-        <Button theme="bosonSecondary" type="button" onClick={onBackClick}>
+        <Button variant="accentInverted" type="button" onClick={onBackClick}>
           Back
         </Button>
-        <Button theme="bosonPrimary" type="submit">
+        <Button variant="primaryFill" type="submit">
           Next
         </Button>
       </Grid>

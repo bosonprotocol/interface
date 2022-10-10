@@ -1,9 +1,11 @@
 import {
+  ButtonSize,
   CommitButton,
   exchanges,
   Provider,
   subgraph
 } from "@bosonprotocol/react-kit";
+import { Button as ReactKitButton } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { BigNumber, ethers } from "ethers";
 import { ArrowRight, ArrowSquareOut, Check, Question } from "phosphor-react";
@@ -60,7 +62,7 @@ const StyledPrice = styled(Price)`
   }
 `;
 
-const RedeemButton = styled(Button)`
+const RedeemButton = styled(ReactKitButton)`
   padding: 1rem;
   height: 3.5rem;
   display: flex;
@@ -536,8 +538,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
             )}
             {isToRedeem && (
               <RedeemButton
-                theme="bosonPrimary"
-                size="large"
+                variant="primaryFill"
+                size={ButtonSize.Large}
                 disabled={
                   isChainUnsupported ||
                   isLoading ||

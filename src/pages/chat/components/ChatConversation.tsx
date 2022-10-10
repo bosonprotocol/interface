@@ -6,6 +6,7 @@ import {
   version
 } from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/definitions";
 import { validateMessage } from "@bosonprotocol/chat-sdk/dist/cjs/util/validators";
+import { Button } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { utils } from "ethers";
 import { ArrowLeft, PaperPlaneRight, UploadSimple } from "phosphor-react";
@@ -25,7 +26,6 @@ import { useAccount } from "wagmi";
 import { Spinner } from "../../../components/loading/Spinner";
 import InitializeChat from "../../../components/modal/components/Chat/components/InitializeChat";
 import { useModal } from "../../../components/modal/useModal";
-import Button from "../../../components/ui/Button";
 import Grid from "../../../components/ui/Grid";
 import SellerID from "../../../components/ui/SellerID";
 import { BosonRoutes } from "../../../lib/routing/routes";
@@ -966,7 +966,7 @@ const ChatConversation = ({
             </InputWrapper>
             <SendButton
               data-testid="send"
-              theme="primary"
+              variant="primaryFill"
               disabled={disableInputs}
               onClick={handleSendingRegularMessage}
             >

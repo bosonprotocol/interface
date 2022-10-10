@@ -1,4 +1,4 @@
-import { subgraph } from "@bosonprotocol/react-kit";
+import { Button, ButtonSize, subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { ClockClockwise } from "phosphor-react";
 import { useMemo } from "react";
@@ -13,7 +13,6 @@ import { useDisputes } from "../../../../lib/utils/hooks/useDisputes";
 import { useDisputeSubStatusInfo } from "../../../../lib/utils/hooks/useDisputeSubStatusInfo";
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import Button from "../../../ui/Button";
 import Grid from "../../../ui/Grid";
 import Image from "../../../ui/Image";
 import SellerID from "../../../ui/SellerID";
@@ -124,8 +123,8 @@ function TableElement({ exchange }: { exchange: Exchange }) {
           <Grid justifyContent="flex-end" gap="1rem">
             {isNotEscalatedYet && status !== "Resolved" && (
               <Button
-                theme="orange"
-                size="small"
+                variant="secondaryInverted"
+                size={ButtonSize.Small}
                 onClick={() => {
                   navigate({
                     pathname: generatePath(BosonRoutes.ChatMessage, {
@@ -139,8 +138,8 @@ function TableElement({ exchange }: { exchange: Exchange }) {
             )}
             <Button
               type="button"
-              theme="primary"
-              size="small"
+              variant="primaryFill"
+              size={ButtonSize.Small}
               onClick={() => {
                 navigate({
                   pathname: generatePath(BosonRoutes.ChatMessage, {

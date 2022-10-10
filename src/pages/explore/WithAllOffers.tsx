@@ -1,3 +1,4 @@
+import { Button, ButtonSize } from "@bosonprotocol/react-kit";
 import { BigNumber, utils } from "ethers";
 import pick from "lodash/pick";
 import sortBy from "lodash/sortBy";
@@ -287,6 +288,13 @@ export function WithAllOffers<P>(
             <Typography tag="h2" $fontSize="2.25rem">
               Explore products
             </Typography>
+            <Button
+              variant="secondaryInverted"
+              showBorder={false}
+              size={ButtonSize.Small}
+            >
+              Escalate dispute
+            </Button>
             <Grid justifyContent="flex-end">
               <ExploreSelect params={params} handleChange={handleChange} />
             </Grid>

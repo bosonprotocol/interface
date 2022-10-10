@@ -1,4 +1,4 @@
-import { subgraph } from "@bosonprotocol/react-kit";
+import { Button, subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { ArrowSquareOut } from "phosphor-react";
 import { useCallback, useMemo } from "react";
@@ -15,7 +15,6 @@ import {
 } from "../../../components/modal/useModal";
 import Price from "../../../components/price";
 import MultiSteps from "../../../components/step/MultiSteps";
-import Button from "../../../components/ui/Button";
 import Image from "../../../components/ui/Image";
 import Typography from "../../../components/ui/Typography";
 import { UrlParameters } from "../../../lib/routing/parameters";
@@ -340,7 +339,7 @@ export default function ExchangeSidePreview({
       {isInDispute && iAmTheBuyer && !isEscalated && !isRetracted ? (
         <CTASection>
           <Button
-            theme="secondary"
+            variant="accentInverted"
             onClick={() =>
               showModal(
                 "RETRACT_DISPUTE",
@@ -358,7 +357,8 @@ export default function ExchangeSidePreview({
             Retract
           </Button>
           <Button
-            theme="orange"
+            variant="secondaryInverted"
+            showBorder={false}
             onClick={() =>
               showModal(
                 "ESCALATE_MODAL",
@@ -377,7 +377,7 @@ export default function ExchangeSidePreview({
       ) : isInRedeemed && iAmTheBuyer ? (
         <CTASection>
           <Button
-            theme="primary"
+            variant="primaryFill"
             onClick={() =>
               showModal(
                 "RAISE_DISPUTE",

@@ -1,4 +1,4 @@
-import { subgraph } from "@bosonprotocol/react-kit";
+import { Button, subgraph } from "@bosonprotocol/react-kit";
 import { parseUnits } from "@ethersproject/units";
 import { ethers } from "ethers";
 import map from "lodash/map";
@@ -24,7 +24,6 @@ import {
 } from "../detail/Detail.style";
 import DetailSlider from "../detail/DetailSlider";
 import DetailTable from "../detail/DetailTable";
-import Button from "../ui/Button";
 import Typography from "../ui/Typography";
 import { ProductButtonGroup } from "./Product.styles";
 import { useCreateForm } from "./utils/useCreateForm";
@@ -257,10 +256,14 @@ export default function Preview({ togglePreview, seller }: Props) {
         </DetailWrapper>
       </PreviewWrapperContent>
       <ProductButtonGroup>
-        <Button theme="primary" type="submit">
+        <Button variant="primaryFill" type="submit">
           Confirm
         </Button>
-        <Button theme="secondary" type="button" onClick={handleClosePreview}>
+        <Button
+          variant="accentInverted"
+          type="button"
+          onClick={handleClosePreview}
+        >
           Back to overview
         </Button>
       </ProductButtonGroup>

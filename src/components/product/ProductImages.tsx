@@ -1,10 +1,10 @@
+import { Button } from "@bosonprotocol/react-kit";
 import styled from "styled-components";
 
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { Upload } from "../form";
 import FormField from "../form/FormField";
-import Button from "../ui/Button";
 import { ProductButtonGroup, SectionTitle } from "./Product.styles";
 import { useCreateForm } from "./utils/useCreateForm";
 
@@ -86,7 +86,7 @@ export default function ProductImages() {
         </SpaceContainer>
       </FormField>
       <ProductButtonGroup>
-        <Button theme="primary" type="submit" disabled={nextIsDisabled}>
+        <Button variant="primaryFill" type="submit" disabled={nextIsDisabled}>
           Next
         </Button>
       </ProductButtonGroup>

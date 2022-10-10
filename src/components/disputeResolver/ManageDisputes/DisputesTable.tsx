@@ -1,9 +1,11 @@
-import { subgraph } from "@bosonprotocol/react-kit";
+import { ButtonSize, subgraph } from "@bosonprotocol/react-kit";
+import { Button as ReactKitButton } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { CaretDown, CaretLeft, CaretRight, CaretUp } from "phosphor-react";
 import { useMemo } from "react";
 import { generatePath } from "react-router-dom";
 import { usePagination, useRowSelect, useSortBy, useTable } from "react-table";
+import styled from "styled-components";
 
 import { CONFIG } from "../../../lib/config";
 import { UrlParameters } from "../../../lib/routing/parameters";
@@ -35,6 +37,9 @@ interface Props {
   isLoading?: boolean;
 }
 
+const StyledReactKitButton = styled(ReactKitButton)`
+  margin-right: 0.3125rem;
+`;
 export default function DisputesTable({ disputes }: Props) {
   const navigate = useKeepQueryParamsNavigate();
   const { showModal, modalTypes } = useModal();
@@ -158,10 +163,9 @@ export default function DisputesTable({ disputes }: Props) {
           ),
           action: dispute.state === subgraph.DisputeState.Escalated && (
             <>
-              <Button
-                theme="bosonSecondary"
-                size="small"
-                style={{ "margin-right": "5px" }}
+              <StyledReactKitButton
+                variant="accentInverted"
+                size={ButtonSize.Small}
                 onClick={async () => {
                   showModal(
                     modalTypes.DISPUTE_RESOLUTION_REFUSE_MODAL,
@@ -175,10 +179,10 @@ export default function DisputesTable({ disputes }: Props) {
                 }}
               >
                 Refuse
-              </Button>
-              <Button
-                theme="primary"
-                size="small"
+              </StyledReactKitButton>
+              <ReactKitButton
+                variant="primaryFill"
+                size={ButtonSize.Small}
                 onClick={async () => {
                   showModal(
                     modalTypes.DISPUTE_RESOLUTION_DECIDE_MODAL,
@@ -197,7 +201,7 @@ export default function DisputesTable({ disputes }: Props) {
                 }}
               >
                 Decide
-              </Button>
+              </ReactKitButton>
             </>
           )
         };
