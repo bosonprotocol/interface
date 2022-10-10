@@ -185,10 +185,10 @@ export default function ExchangePolicyDetails({ offerId, offerData }: Props) {
           noBorder
           data={[
             ...tableDetails,
+            licenseVisible ? licenseExpanded : licenseCollapsed,
             contractualAgreementVisible
               ? contractualAgreementExpanded
-              : contractualAgreementCollapsed,
-            licenseVisible ? licenseExpanded : licenseCollapsed
+              : contractualAgreementCollapsed
           ]}
           inheritColor={false}
         />
