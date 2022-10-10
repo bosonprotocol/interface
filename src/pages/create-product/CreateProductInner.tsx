@@ -10,6 +10,7 @@ import keys from "lodash/keys";
 import { useCallback, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { generatePath } from "react-router-dom";
+import uuid from "react-uuid";
 import { useAccount } from "wagmi";
 dayjs.extend(localizedFormat);
 
@@ -290,19 +291,82 @@ function CreateProductInner({
     });
 
     try {
+      const redemptionPointUrl =
+        shippingInfo.redemptionPointUrl &&
+        shippingInfo.redemptionPointUrl.length > 0
+          ? shippingInfo.redemptionPointUrl
+          : window.origin;
+
+      const exchangeToken = CONFIG.defaultTokens.find(
+        (n: Token) => n.symbol === coreTermsOfSale.currency.value
+      );
+
+      const priceBN = parseUnits(
+        `${coreTermsOfSale.price}`,
+        Number(exchangeToken?.decimals || 18)
+      );
+
+      // TODO: change when more than percentage unit
+      const buyerCancellationPenaltyValue = priceBN
+        .mul(parseFloat(termsOfExchange.buyerCancellationPenalty) * 1000)
+        .div(100 * 1000);
+
+      // TODO: change when more than percentage unit
+      const sellerCancellationPenaltyValue = priceBN
+        .mul(parseFloat(termsOfExchange.sellerDeposit) * 1000)
+        .div(100 * 1000);
+      const {
+        voucherRedeemableFromDateInMS,
+        voucherRedeemableUntilDateInMS,
+        validFromDateInMS,
+        validUntilDateInMS
+      } = ValidateDates({
+        offerValidityPeriod: coreTermsOfSale.offerValidityPeriod,
+        redemptionPeriod: coreTermsOfSale.redemptionPeriod
+      });
+
+      const disputePeriodDurationInMS =
+        parseInt(termsOfExchange.disputePeriod) * 24 * 3600 * 1000; // day to msec
+      const resolutionPeriodDurationInMS =
+        parseInt(CONFIG.defaultDisputeResolutionPeriodDays) * 24 * 3600 * 1000; // day to msec
+
+      const nftAttributes = [];
+      nftAttributes.push({ trait_type: "Token Type", value: "BOSON rNFT" });
+      nftAttributes.push({
+        trait_type: "Redeemable At",
+        value: redemptionPointUrl
+      });
+      nftAttributes.push({
+        trait_type: "Redeemable Until",
+        value: voucherRedeemableUntilDateInMS.toString(),
+        display_type: "date"
+      });
+      nftAttributes.push({
+        trait_type: "Seller",
+        value: createYourProfile.name
+      });
+      nftAttributes.push({
+        trait_type: "Offer Category",
+        value: productType.productType.toUpperCase()
+      });
+      // TODO: In case of variants: add Size and Colour as attributes
+
+      // Be sure the uuid is unique (for all users).
+      // Do NOT use Date.now() because nothing prevent 2 users to create 2 offers at the same time
+      const offerUuid = uuid();
+
+      const externalUrl = `${redemptionPointUrl}/#/offer-uuid/${offerUuid}`;
+      const licenseUrl = `${window.origin}/#/license/${offerUuid}`;
+
       const metadataHash = await coreSDK.storeMetadata({
         schemaUrl: "https://schema.org/schema",
-        uuid: Date.now().toString(),
+        uuid: offerUuid,
         name: productInformation.productTitle,
-        description: productInformation.description,
-        externalUrl: window.origin,
+        description: `${productInformation.description}\n\nTerms for the Boson rNFT Voucher: ${licenseUrl}`,
+        externalUrl,
         image: `ipfs://${productMainImageLink}`,
         type: MetadataType.PRODUCT_V1,
-        attributes: [
-          { trait_type: "productType", value: productType.productType },
-          { trait_type: "productVariant", value: productType.productVariant },
-          ...additionalAttributes
-        ],
+        attributes: [...nftAttributes, ...additionalAttributes],
         product: {
           uuid: Date.now().toString(),
           version: 1,
@@ -408,38 +472,6 @@ function CreateProductInner({
         }
       });
 
-      const exchangeToken = CONFIG.defaultTokens.find(
-        (n: Token) => n.symbol === coreTermsOfSale.currency.value
-      );
-
-      const priceBN = parseUnits(
-        `${coreTermsOfSale.price}`,
-        Number(exchangeToken?.decimals || 18)
-      );
-
-      // TODO: change when more than percentage unit
-      const buyerCancellationPenaltyValue = priceBN
-        .mul(parseFloat(termsOfExchange.buyerCancellationPenalty) * 1000)
-        .div(100 * 1000);
-
-      // TODO: change when more than percentage unit
-      const sellerCancellationPenaltyValue = priceBN
-        .mul(parseFloat(termsOfExchange.sellerDeposit) * 1000)
-        .div(100 * 1000);
-      const {
-        voucherRedeemableFromDateInMS,
-        voucherRedeemableUntilDateInMS,
-        validFromDateInMS,
-        validUntilDateInMS
-      } = ValidateDates({
-        offerValidityPeriod: coreTermsOfSale.offerValidityPeriod,
-        redemptionPeriod: coreTermsOfSale.redemptionPeriod
-      });
-
-      const disputePeriodDurationInMS =
-        parseInt(termsOfExchange.disputePeriod) * 24 * 3600 * 1000; // day to msec
-      const resolutionPeriodDurationInMS =
-        parseInt(CONFIG.defaultDisputeResolutionPeriodDays) * 24 * 3600 * 1000; // day to msec
       const offerData = {
         price: priceBN.toString(),
         sellerDeposit: sellerCancellationPenaltyValue.toString(),

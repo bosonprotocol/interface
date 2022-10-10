@@ -217,7 +217,20 @@ export default function ShippingInfo() {
             subTitle="The website from which buyers can redeem the rNFT.
               By default the redemption point will be the Boson dApp."
           >
-            <Input placeholder="Add URL" name="shippingInfo.addUrl" />
+            <FieldContainer>
+              <div>
+                <Input
+                  placeholder="Add Redemption Point Name..."
+                  name="shippingInfo.redemptionPointName"
+                />
+              </div>
+              <div>
+                <Input
+                  placeholder="Add Redemption Point Url..."
+                  name="shippingInfo.redemptionPointUrl"
+                />
+              </div>
+            </FieldContainer>
           </FormField>
           <FormField
             title={`Dimensions L x W x H in ${unit}`}

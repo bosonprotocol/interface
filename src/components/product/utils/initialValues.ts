@@ -99,7 +99,8 @@ export const shippingInfoInitialValues = {
         time: ""
       }
     ],
-    addUrl: "",
+    redemptionPointName: "Website",
+    redemptionPointUrl: "",
     dimensions: "",
     weight: "",
     weightUnit: OPTIONS_WEIGHT[1],

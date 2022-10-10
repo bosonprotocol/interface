@@ -18,7 +18,7 @@ export const BosonRoutes = {
   DisputeId: `/exchange/:${UrlParameters.exchangeId}/raise-dispute`,
   BuyerPage: `/buyer/:${UrlParameters.buyerId}`,
   SellerPage: `/seller/:${UrlParameters.sellerId}`,
-  License: `/license/:${UrlParameters.tokenId}`,
+  License: `/license/:${UrlParameters.uuid}`,
   ContractualAgreement: `/contractualAgreement/:${UrlParameters.offerId}`,
   DRAdmin: "/dr-admin",
   DRAdminPage: `/dr-admin/:${UrlParameters.disputeResolverPageId}`,
@@ -36,7 +36,8 @@ export const DisputeResolverCenterRoutes = {
 
 export const OffersRoutes = {
   Root: "/offers",
-  OfferDetail: `/offers/:${UrlParameters.offerId}`
+  OfferDetail: `/offers/:${UrlParameters.offerId}`,
+  OfferUuid: `/offer-uuid/:${UrlParameters.uuid}`
 } as const;
 
 export const ExternalRoutes = {

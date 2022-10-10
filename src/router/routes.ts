@@ -9,6 +9,7 @@ import {
 import CreateProductPage from "../pages/create-product/CreateProduct";
 import ExplorePage from "../pages/explore/Explore";
 import LandingPage from "../pages/landing/Landing";
+import OfferUuidReroute from "../pages/offers/OfferUuidReroute";
 import SellerCenterPage from "../pages/sell/SellerCenter";
 
 const ChatPage = lazy(() => import("../pages/chat/Chat"));
@@ -151,6 +152,15 @@ export default [
     ...base,
     path: OffersRoutes.OfferDetail,
     component: OfferDetailPage,
+    app: {
+      ...base.app,
+      withBosonStyles: false
+    }
+  },
+  {
+    ...base,
+    path: OffersRoutes.OfferUuid,
+    component: OfferUuidReroute,
     app: {
       ...base.app,
       withBosonStyles: false

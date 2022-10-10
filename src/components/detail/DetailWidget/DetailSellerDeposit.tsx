@@ -24,7 +24,9 @@ export const DetailSellerDeposit = {
     conversionRate?: number;
   }) => {
     const sellerDepositPercentage =
-      Number(offer.sellerDeposit) / Number(offer.price);
+      Number(offer.price) === 0
+        ? 0
+        : Number(offer.sellerDeposit) / Number(offer.price);
 
     const sellerDeposit = sellerDepositPercentage * 100;
     const sellerDepositDollars = conversionRate
