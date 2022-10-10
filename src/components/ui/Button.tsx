@@ -113,11 +113,11 @@ const allThemes = ({ withBosonStyle }: { withBosonStyle?: boolean }) => {
       }
     },
     secondary: {
-      color: "var(--accent)",
-      borderColor: "var(--accent)",
+      color: withBosonStyle ? colors.secondary : "var(--accent)",
+      borderColor: withBosonStyle ? colors.secondary : "var(--accent)",
       borderWidth: 2,
       hover: {
-        background: "var(--accent)",
+        background: withBosonStyle ? colors.secondary : "var(--accent)",
         color: colors.white
       }
     },
