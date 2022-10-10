@@ -10,6 +10,7 @@ export default function ViewTxButton() {
     <>
       <Button
         theme="secondary"
+        withBosonStyle
         onClick={(e) => {
           e.stopPropagation();
           showModal(
@@ -17,7 +18,7 @@ export default function ViewTxButton() {
             {
               title: "Recent Transactions"
             },
-            "s"
+            "m"
           );
         }}
       >

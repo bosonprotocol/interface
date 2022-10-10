@@ -137,7 +137,7 @@ export default function Preview({ togglePreview, seller }: Props) {
     voucherRedeemableUntilDate: (
       voucherRedeemableUntilDateInMS / 1000
     ).toString(),
-    fulfillmentPeriodDuration: `${
+    disputePeriodDuration: `${
       parseInt(values.termsOfExchange.disputePeriod) * 24 * 3600
     }`, // day to sec
     voucherValidDuration: "0", // we use redeemableFrom/redeemableUntil so should be 0

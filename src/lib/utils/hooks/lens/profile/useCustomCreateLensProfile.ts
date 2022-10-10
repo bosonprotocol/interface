@@ -4,7 +4,6 @@ import { useAccount } from "wagmi";
 
 import { LensProfileType } from "../../../../../components/modal/components/CreateProfile/Lens/validationSchema";
 import { CONFIG } from "../../../../config";
-import { loadAndSetImage } from "../../../base64";
 import { useIpfsStorage } from "../../useIpfsStorage";
 import { useLensLogin } from "../authentication/useLensLogin";
 import { Profile } from "../graphql/generated";
@@ -16,12 +15,16 @@ type Props = {
   values: LensProfileType;
   onCreatedProfile: (profile: Profile) => void;
   enabled: boolean;
+  onSetProfileLogoIpfsLink?: (ipfsLink: string) => void;
+  onSetCoverLogoIpfsLink?: (ipfsLink: string) => void;
 };
 
 export default function useCustomCreateLensProfile({
   values,
   onCreatedProfile,
-  enabled: enableCreation
+  enabled: enableCreation,
+  onSetProfileLogoIpfsLink,
+  onSetCoverLogoIpfsLink
 }: Props) {
   const [triggerLensProfileCreation, setTriggerLensProfileCreation] = useState<
     "start" | "fetch" | "triggered"
@@ -49,9 +52,12 @@ export default function useCustomCreateLensProfile({
       const [image] = values.logo;
       (async () => {
         const cid = await storage.add(image);
-        setProfileImageUrl("ipfs://" + cid);
+        const ipfsLink = "ipfs://" + cid;
+        setProfileImageUrl(ipfsLink);
+        onSetProfileLogoIpfsLink?.(ipfsLink);
       })();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enableCreation, storage, values.logo]);
   useEffect(() => {
     if (!enableCreation) {
@@ -59,9 +65,15 @@ export default function useCustomCreateLensProfile({
     }
     if (values.coverPicture?.length) {
       const [image] = values.coverPicture;
-      loadAndSetImage(image, setCoverPictureUrl);
+      (async () => {
+        const cid = await storage.add(image);
+        const ipfsLink = "ipfs://" + cid;
+        setCoverPictureUrl(ipfsLink);
+        onSetCoverLogoIpfsLink?.(ipfsLink);
+      })();
     }
-  }, [enableCreation, values.coverPicture]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [enableCreation, storage, values.coverPicture]);
 
   const {
     data: createdProfileId,

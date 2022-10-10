@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button } from "@bosonprotocol/react-kit";
 import { formatUnits } from "@ethersproject/units";
 import * as ProgressPrimitive from "@radix-ui/react-progress";
 import { BigNumber, FixedNumber } from "ethers";
@@ -20,6 +19,7 @@ import {
 } from "../../detail/Detail.style";
 import DetailTable from "../../detail/DetailTable";
 import Tooltip from "../../tooltip/Tooltip";
+import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
 import Image from "../../ui/Image";
 import Typography from "../../ui/Typography";
@@ -211,10 +211,20 @@ export default function ProductCreateSuccess({
             </Funds>
           )}
           <StyledWidgetButtonWrapper>
-            <Button variant="primaryFill" onClick={onViewMyItem}>
+            <Button
+              type="button"
+              theme="primary"
+              onClick={onViewMyItem}
+              withBosonStyle
+            >
               View my item
             </Button>
-            <Button variant="accentInverted" onClick={handleCreateNew}>
+            <Button
+              type="button"
+              theme="secondary"
+              onClick={handleCreateNew}
+              withBosonStyle
+            >
               Create new
               <Plus size={14} />
             </Button>

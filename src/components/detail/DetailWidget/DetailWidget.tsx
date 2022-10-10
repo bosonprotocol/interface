@@ -457,7 +457,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
             )}
             {isOffer && (
               <CommitButton
-                variant="primaryFill"
+                variant="primary"
                 disabled={
                   isChainUnsupported ||
                   !hasSellerEnoughFunds ||

@@ -103,8 +103,8 @@ function buildOfferData(offerFields: OfferFieldsFragment): {
       )
         .mul(1000)
         .toString(),
-      fulfillmentPeriodDurationInMS: BigNumber.from(
-        offerFields.fulfillmentPeriodDuration
+      disputePeriodDurationInMS: BigNumber.from(
+        offerFields.disputePeriodDuration
       )
         .mul(1000)
         .toString(),

@@ -6,7 +6,7 @@ import { BigNumber, utils } from "ethers";
 import { CameraSlash } from "phosphor-react";
 import { useMemo } from "react";
 import { generatePath, useLocation } from "react-router-dom";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import mockedAvatar from "../../assets/frame.png";
 import { UrlParameters } from "../../lib/routing/parameters";
@@ -18,6 +18,7 @@ import { useCurrentSeller } from "../../lib/utils/hooks/useCurrentSeller";
 import { useGetIpfsImage } from "../../lib/utils/hooks/useGetIpfsImage";
 import { useHandleText } from "../../lib/utils/hooks/useHandleText";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 
 interface Props {
   offer: Offer;
@@ -26,11 +27,22 @@ interface Props {
   isHoverDisabled?: boolean;
 }
 
-const ProductCardWrapper = styled.div`
+const ProductCardWrapper = styled.div<{ $isCustomStoreFront: boolean }>`
   [data-card="product-card"] {
     min-height: 500px;
     color: ${colors.black};
   }
+  ${({ $isCustomStoreFront }) => {
+    if (!$isCustomStoreFront) {
+      return "";
+    }
+
+    return css`
+      [data-avatarname="product-card"] {
+        color: ${colors.black};
+      }
+    `;
+  }};
 `;
 
 export default function ProductCard({
@@ -45,6 +57,7 @@ export default function ProductCard({
     (lens?.picture as MediaSet)?.original?.url
   );
   const { imageStatus, imageSrc } = useGetIpfsImage(offer.metadata.imageUrl);
+  const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
   const location = useLocation();
   const navigate = useKeepQueryParamsNavigate();
   const handleText = useHandleText(offer);
@@ -83,7 +96,7 @@ export default function ProductCard({
   };
 
   return (
-    <ProductCardWrapper>
+    <ProductCardWrapper $isCustomStoreFront={!!isCustomStoreFront}>
       <BosonProductCard
         dataCard="product-card"
         dataTestId={dataTestId}

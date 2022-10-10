@@ -1,8 +1,8 @@
-import { Button } from "@bosonprotocol/react-kit";
 import type { Dayjs } from "dayjs";
 import { CaretLeft, CaretRight } from "phosphor-react";
 import { useCallback } from "react";
 
+import Button from "../ui/Button";
 import Typography from "../ui/Typography";
 import { Selector } from "./DatePicker.style";
 import { changeMonth } from "./utils";
@@ -20,19 +20,11 @@ export default function SelectMonth({ month, setMonth }: Props) {
 
   return (
     <Selector>
-      <Button
-        variant="accentInverted"
-        showBorder={false}
-        onClick={() => handleMonthChange(false)}
-      >
+      <Button theme="blank" onClick={() => handleMonthChange(false)}>
         <CaretLeft size={18} />
       </Button>
       <Typography tag="p">{month.format("MMMM YYYY")}</Typography>
-      <Button
-        variant="accentInverted"
-        showBorder={false}
-        onClick={() => handleMonthChange(true)}
-      >
+      <Button theme="blank" onClick={() => handleMonthChange(true)}>
         <CaretRight size={18} />
       </Button>
     </Selector>

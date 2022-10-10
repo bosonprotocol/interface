@@ -23,10 +23,10 @@ export function useDisputeSubStatusInfo(exchange: Exchange | null) {
       if (
         exchange?.dispute?.state === subgraph.DisputeState.Resolving &&
         exchange.redeemedDate &&
-        exchange.offer.fulfillmentPeriodDuration &&
+        exchange.offer.disputePeriodDuration &&
         dayjs(
           getDateTimestamp(exchange.redeemedDate) +
-            getDateTimestamp(exchange.offer.fulfillmentPeriodDuration)
+            getDateTimestamp(exchange.offer.disputePeriodDuration)
         ).isAfter(currentTime) &&
         exchange.state !== subgraph.ExchangeState.Completed
       ) {
@@ -53,10 +53,10 @@ export function useDisputeSubStatusInfo(exchange: Exchange | null) {
       if (
         exchange.state !== subgraph.ExchangeState.Completed &&
         exchange.redeemedDate &&
-        exchange.offer.fulfillmentPeriodDuration &&
+        exchange.offer.disputePeriodDuration &&
         dayjs(
           getDateTimestamp(exchange.redeemedDate) +
-            getDateTimestamp(exchange.offer.fulfillmentPeriodDuration)
+            getDateTimestamp(exchange.offer.disputePeriodDuration)
         ).isBefore(currentTime)
       ) {
         status = "Dispute expired";

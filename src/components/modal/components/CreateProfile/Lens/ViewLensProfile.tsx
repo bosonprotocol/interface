@@ -35,8 +35,10 @@ export default function ViewLensProfile({
   const profilePicture = getLensProfilePictureUrl(profile);
   const coverPicture = getLensCoverPictureUrl(profile);
 
-  const { imageSrc: profilePictureBase64, imageStatus } =
+  const { imageSrc: profilePictureBase64, imageStatus: profilePictureStatus } =
     useGetIpfsImage(profilePicture);
+  const { imageSrc: coverPictureBase64, imageStatus: coverPictureStatus } =
+    useGetIpfsImage(coverPicture);
   const { updateProps, store } = useModal();
   const alreadyHasRoyaltiesDefined = false; // TODO: seller.royalties;
 
@@ -61,7 +63,10 @@ export default function ViewLensProfile({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
-    if (imageStatus === "loading") {
+    if (
+      profilePictureStatus === "loading" ||
+      coverPictureStatus === "loading"
+    ) {
       return;
     }
     const profileType = profilePictureBase64
@@ -70,6 +75,10 @@ export default function ViewLensProfile({
     const profileFileType = profileType.includes("image")
       ? profileType
       : "image/jpg";
+    const coverType = coverPictureBase64
+      ? coverPictureBase64.split(";")[0].split(":")[1]
+      : "";
+    const coverFileType = coverType.includes("image") ? coverType : "image/jpg";
     setValues({
       logo: profilePictureBase64
         ? [
@@ -78,10 +87,10 @@ export default function ViewLensProfile({
             })
           ]
         : [],
-      coverPicture: coverPicture
+      coverPicture: coverPictureBase64
         ? [
-            new File([dataURItoBlob(coverPicture)], "coverPicture", {
-              type: coverPicture.split(";")[0].split(":")[1]
+            new File([dataURItoBlob(coverPictureBase64)], "coverPicture", {
+              type: coverFileType
             })
           ]
         : [],
@@ -98,7 +107,14 @@ export default function ViewLensProfile({
       website: getLensWebsite(profile) || "",
       legalTradingName: getLensLegalTradingName(profile) || ""
     });
-  }, [setValues, profile, profilePictureBase64, coverPicture, imageStatus]);
+  }, [
+    coverPictureBase64,
+    coverPictureStatus,
+    profile,
+    profilePictureBase64,
+    profilePictureStatus,
+    setValues
+  ]);
   return (
     <div>
       {children}

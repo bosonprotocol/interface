@@ -8,6 +8,7 @@ import * as Yup from "yup";
 
 import { CONFIG } from "../../../../../../../lib/config";
 import { colors } from "../../../../../../../lib/styles/colors";
+import { useDisputeResolvers } from "../../../../../../../lib/utils/hooks/useDisputeResolvers";
 import { Exchange } from "../../../../../../../lib/utils/hooks/useExchanges";
 import { useCoreSDK } from "../../../../../../../lib/utils/useCoreSdk";
 import { poll } from "../../../../../../../pages/create-product/utils";
@@ -118,6 +119,8 @@ interface Props {
   refetch: () => void;
 }
 function EscalateStepTwo({ exchange, refetch }: Props) {
+  const { data } = useDisputeResolvers();
+  const feeAmount = data?.disputeResolvers[0]?.fees[0]?.feeAmount;
   const { hideModal, showModal } = useModal();
   const emailFormField =
     CONFIG.envName === "production"
@@ -363,7 +366,11 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
                     fontWeight="400"
                     color={colors.darkGrey}
                   >
-                    Confirm the dispute escalation transaction.
+                    Your Escalation deposit is {feeAmount} {""}
+                    {exchange.offer.exchangeToken.symbol}. This dispute resolver
+                    will decide on the distribution of all funds in escrow (item
+                    price, seller deposit and escalation deposit) between buyer
+                    and seller
                   </Typography>
                   <Button
                     theme="escalate"

@@ -250,7 +250,7 @@ export default function VoidProduct({
       {offer && (
         <Grid justifyContent="center">
           <VoidButton
-            variant="accentInverted"
+            variant="secondary"
             offerId={offerId || 0}
             envName={CONFIG.envName}
             onError={(error) => {
@@ -280,7 +280,7 @@ export default function VoidProduct({
       {offers && offers.length && (
         <Grid justifyContent="center">
           <Button
-            variant="accentInverted"
+            variant="secondary"
             isLoading={isLoading}
             disabled={isLoading}
             onClick={handleBatchVoid}

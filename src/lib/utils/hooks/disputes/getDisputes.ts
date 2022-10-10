@@ -30,6 +30,7 @@ const buildQuery = (queryString: string, name: string) => {
           offer {
             resolutionPeriodDuration
             price
+            sellerDeposit
             exchanges {
               id
               disputed
