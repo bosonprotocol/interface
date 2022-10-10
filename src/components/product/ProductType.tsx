@@ -129,6 +129,7 @@ export default function ProductType({
   const {
     sellers: currentSellers,
     sellerType: currentRoles,
+    lens,
     isLoading
   } = useCurrentSeller();
   const admin =
@@ -212,7 +213,7 @@ export default function ProductType({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ipfsMetadataStorage, operatorLens]);
   useEffect(() => {
-    if (isLoading || isAdminLoading) {
+    if (isLoading) {
       return;
     }
     if (
@@ -261,7 +262,6 @@ export default function ProductType({
     isSeller,
     isRegularSellerSet,
     isLoading,
-    isAdminLoading,
     values
   ]);
 

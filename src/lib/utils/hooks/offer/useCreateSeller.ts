@@ -47,7 +47,7 @@ async function createSellerAccount(
   },
   storage: IpfsMetadataStorage
 ) {
-  if (authTokenType === authTokenTypes.Lens && !authTokenId) {
+  if (authTokenType === authTokenTypes.LENS && !authTokenId) {
     throw new Error(
       "[create seller] Lens profile id was going to be used but it is not provided"
     );
@@ -69,11 +69,11 @@ async function createSellerAccount(
   const royaltyPercentageTimes100 = royaltyPercentage * 100;
   const tx = await coreSDK.createSeller({
     admin:
-      authTokenType === authTokenTypes.Lens
+      authTokenType === authTokenTypes.LENS
         ? ethers.constants.AddressZero
         : address,
     authTokenId:
-      authTokenType === authTokenTypes.Lens
+      authTokenType === authTokenTypes.LENS
         ? getLensTokenIdDecimal(authTokenId || "0x0")
         : "0",
     authTokenType,

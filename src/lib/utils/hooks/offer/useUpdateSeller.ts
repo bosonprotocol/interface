@@ -46,11 +46,11 @@ async function updateSellerAccount(
   await coreSDK.updateSeller({
     id: sellerId,
     admin:
-      authTokenType === authTokenTypes.Lens
+      authTokenType === authTokenTypes.LENS
         ? ethers.constants.AddressZero
         : admin,
     authTokenId:
-      authTokenType === authTokenTypes.Lens
+      authTokenType === authTokenTypes.LENS
         ? getLensTokenIdDecimal(authTokenId || "0x0")
         : "0",
     authTokenType,
