@@ -7,7 +7,7 @@ export const offerGraphQl = gql`
     price
     metadataHash
     sellerDeposit
-    fulfillmentPeriodDuration
+    disputePeriodDuration
     resolutionPeriodDuration
     metadataUri
     buyerCancelPenalty

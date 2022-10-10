@@ -40,7 +40,7 @@ function EscalateStepOne({ exchange }: Props) {
 
   const parseDisputePeriod = dayjs(
     getDateTimestamp(exchange.offer.validUntilDate) +
-      getDateTimestamp(exchange.offer.fulfillmentPeriodDuration)
+      getDateTimestamp(exchange.offer.disputePeriodDuration)
   );
 
   const deadlineTimeLeft = useMemo(() => {
