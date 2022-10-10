@@ -70,14 +70,14 @@ export default function ExchangePolicyDetails({ offerId, offerData }: Props) {
   ];
 
   const contractualAgreementCollapsed = {
-    name: "Contractual agreement",
+    name: "Buyer & Seller Agreement",
     info: (
       <>
         <Typography tag="h6">
-          <b>Contractual agreement</b>
+          <b>{"Buyer & Seller Agreement"}</b>
         </Typography>
         <Typography tag="p">
-          The Contractual agreement sets out the terms relating to the exchange.
+          The Contractual Agreement sets out the terms relating to the exchange.
         </Typography>
       </>
     ),
