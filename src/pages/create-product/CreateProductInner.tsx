@@ -110,7 +110,7 @@ function CreateProductInner({
 
   const { seller, lens: lensProfile } = useCurrentSeller();
 
-  const hasSellerAccount = !!seller;
+  const hasSellerAccount = !!seller && Object.keys(seller).length > 0;
 
   const handleOpenSuccessModal = async ({
     offerInfo
@@ -226,9 +226,9 @@ function CreateProductInner({
       return storage.add(fromBase64ToBinary(previewImage));
     });
 
-    const profileImageLink = await storage.add(
-      fromBase64ToBinary(profileImage[0])
-    );
+    const profileImageLink = profileImage[0]
+      ? await storage.add(fromBase64ToBinary(profileImage[0]))
+      : undefined;
     const productMainImageLink = await storage.add(
       fromBase64ToBinary(productMainImage[0])
     );
