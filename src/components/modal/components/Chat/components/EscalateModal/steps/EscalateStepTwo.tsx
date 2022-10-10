@@ -14,6 +14,7 @@ import { useCoreSDK } from "../../../../../../../lib/utils/useCoreSdk";
 import { poll } from "../../../../../../../pages/create-product/utils";
 import Collapse from "../../../../../../collapse/Collapse";
 import { Checkbox } from "../../../../../../form";
+import { FieldInput } from "../../../../../../form/Field.styles";
 import FormField from "../../../../../../form/FormField";
 import Input from "../../../../../../form/Input";
 import Textarea from "../../../../../../form/Textarea";
@@ -325,11 +326,10 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
                     <Input {...FormModel.formFields.exchangeId} />
                     <Input {...FormModel.formFields.disputeId} />
                     <Input {...FormModel.formFields.buyerAddress} disabled />
-                    <Input
-                      {...FormModel.formFields.message}
-                      prefix="Unsigned message:"
-                      disabled
-                    />
+                    <>
+                      <FieldInput value="Unsigned message:" disabled />
+                      <Input {...FormModel.formFields.message} disabled />
+                    </>
                     <Input {...FormModel.formFields.signature} />
                   </FormField>
                   <FormField theme="white" title="Chat transcript">
