@@ -4,21 +4,17 @@ import Error from "./Error";
 import { FieldInput } from "./Field.styles";
 import type { InputProps } from "./types";
 
-export default function Input({ name, prefix, ...props }: InputProps) {
+export default function Input({ name, ...props }: InputProps) {
   const { status } = useFormikContext();
   const [field, meta] = useField(name);
   const errorText = meta.error || status?.[name];
   const errorMessage = errorText && meta.touched ? errorText : "";
   const displayError =
     typeof errorMessage === typeof "string" && errorMessage !== "";
+
   return (
     <>
-      <FieldInput
-        error={errorMessage}
-        {...field}
-        {...props}
-        value={prefix ? `${prefix} ${field.value}` : `${field.value}`}
-      />
+      <FieldInput error={errorMessage} {...field} {...props} />
       <Error display={displayError} message={errorMessage} />
     </>
   );
