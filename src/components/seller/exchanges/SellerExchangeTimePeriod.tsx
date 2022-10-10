@@ -29,7 +29,7 @@ export default function SellerExchangeTimePeriod({ exchange }: Props) {
         },
         [subgraph.ExchangeState.Redeemed]: {
           text: "Dispute period ends",
-          // TODO: redeemedDate + fulfillmentPeriodDuration
+          // TODO: redeemedDate + disputePeriodDuration
           value: dayjs().format(CONFIG.dateFormat)
         },
         [subgraph.ExchangeState.Completed]: {

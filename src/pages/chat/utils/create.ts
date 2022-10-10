@@ -54,7 +54,7 @@ export const createProposal = async ({
   if (proposal.proposals.length) {
     const signature = await coreSDK.signDisputeResolutionProposal({
       exchangeId,
-      buyerPercent: proposal.proposals[0].percentageAmount
+      buyerPercentBasisPoints: proposal.proposals[0].percentageAmount
     });
     proposal.proposals[0].signature = utils.joinSignature(signature);
   }

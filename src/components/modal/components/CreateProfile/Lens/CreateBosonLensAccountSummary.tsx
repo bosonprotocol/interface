@@ -43,6 +43,7 @@ export default function CreateBosonLensAccountSummary({
     Profile | null | undefined
   >(profile);
   const [logoImage, setLogoImage] = useState<string>("");
+  const [profileImageUrl, setProfileImageUrl] = useState<string>("");
   const [coverPicture, setCoverPicture] = useState<string>("");
   const [isCreatedLensProfile, setCreatedLensProfile] =
     useState<boolean>(false);
@@ -54,7 +55,7 @@ export default function CreateBosonLensAccountSummary({
   });
   const seller = admins?.[0];
   const hasAdminSellerAccount = !!seller;
-  const hasLensHandleLinked = seller?.authTokenType === authTokenTypes.Lens;
+  const hasLensHandleLinked = seller?.authTokenType === authTokenTypes.LENS;
   const alreadyHasRoyaltiesDefined = false; // TODO: seller.royalties;
   const {
     isSuccess: isCreatedSellerAccount,
@@ -68,7 +69,8 @@ export default function CreateBosonLensAccountSummary({
       addressForRoyaltyPayment: bosonAccount.addressForRoyaltyPayment || "",
       lensValues: values,
       authTokenId: lensProfileToSubmit?.id,
-      authTokenType: authTokenTypes.Lens
+      authTokenType: authTokenTypes.LENS,
+      profileLogoUrl: profileImageUrl
     },
     {
       enabled: false,
@@ -87,7 +89,7 @@ export default function CreateBosonLensAccountSummary({
       operator: seller?.operator || "",
       treasury: seller?.treasury || "",
       authTokenId: lensProfileToSubmit?.id,
-      authTokenType: authTokenTypes.Lens,
+      authTokenType: authTokenTypes.LENS,
       sellerId: seller?.id || "0"
     },
     {
@@ -128,6 +130,9 @@ export default function CreateBosonLensAccountSummary({
     onCreatedProfile: (profile: Profile) => {
       setLensProfileToSubmit(profile);
       setCreatedLensProfile(true);
+    },
+    onSetProfileLogoIpfsLink: (profileIpfsLink) => {
+      setProfileImageUrl(profileIpfsLink);
     },
     enabled: !usingExistingLensProfile && !!values
   });
