@@ -1,4 +1,4 @@
-import { CancelButton, Provider } from "@bosonprotocol/react-kit";
+import { ExpireButton, Provider } from "@bosonprotocol/react-kit";
 import qs from "query-string";
 import { useState } from "react";
 import styled from "styled-components";
@@ -182,8 +182,7 @@ export default function ExpireVoucherModal({ exchange }: Props) {
             padding: "0 2rem"
           }}
         >
-          {/* TODO ADD EXPIRE BUTTON FROM REACT KIT */}
-          <CancelButton
+          <ExpireButton
             variant="secondary"
             exchangeId={exchange.id}
             envName={CONFIG.envName}
@@ -239,7 +238,7 @@ export default function ExpireVoucherModal({ exchange }: Props) {
               Expire Voucher
               {isLoading && <Spinner size="20" />}
             </Grid>
-          </CancelButton>
+          </ExpireButton>
           <Button theme="blankOutline" onClick={hideModal}>
             Back
           </Button>
