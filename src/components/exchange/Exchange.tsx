@@ -132,8 +132,7 @@ export default function Exchange({ offer, exchange, reload }: Props) {
           isCTAVisible: isBuyer,
           disputeButtonConfig: {
             onClick: handleDispute,
-            variant: "accentInverted" as const,
-            showBorder: false
+            variant: "ghostOrange" as const
           }
         };
       }
