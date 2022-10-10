@@ -1,4 +1,5 @@
 import { House, WarningCircle } from "phosphor-react";
+import { useState } from "react";
 import styled from "styled-components";
 
 import {
@@ -43,9 +44,10 @@ const SellerCenterWithData = WithSellerData<SellerInsideProps>(SellerCenter);
 
 function SellerCenterWrapper() {
   const navigate = useKeepQueryParamsNavigate();
-  const currentUser = useCurrentSeller();
-  const { isLoading, sellerId } = currentUser;
-
+  const { isLoading, sellerIds } = useCurrentSeller();
+  const [selectedSellerId, setSelectedSellerId] = useState<string>(
+    sellerIds.length === 1 ? sellerIds[0] : ""
+  );
   if (isLoading) {
     return (
       <Wrapper>
@@ -54,7 +56,7 @@ function SellerCenterWrapper() {
     );
   }
 
-  if (sellerId === null) {
+  if (!sellerIds.length) {
     return (
       <Wrapper>
         <Grid
@@ -83,7 +85,21 @@ function SellerCenterWrapper() {
     );
   }
 
-  return <SellerCenterWithData sellerId={sellerId} />;
+  if (sellerIds.length > 1 && !selectedSellerId) {
+    <select
+      onChange={(e) => {
+        setSelectedSellerId(e.target.value);
+      }}
+    >
+      {sellerIds.map((id: string) => (
+        <option value={id} key="id">
+          {id}
+        </option>
+      ))}
+    </select>;
+  }
+
+  return <SellerCenterWithData sellerId={selectedSellerId} />;
 }
 
 export default SellerCenterWrapper;

@@ -34,7 +34,8 @@ function CreateProduct() {
     showModal<"INVALID_ROLE">(modalTypes.INVALID_ROLE, {
       title: "Invalid Role",
       action: "create a product",
-      requiredRole: "operator"
+      requiredRole: "operator",
+      closable: false
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

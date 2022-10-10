@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { ethers } from "ethers";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
+import { useAccount } from "wagmi";
 
 import { CONFIG } from "../../lib/config";
 import { breakpointNumbers } from "../../lib/styles/breakpoint";
@@ -111,6 +113,7 @@ export default function ProductType({
   showCreateProductDraftModal,
   showInvalidRoleModal
 }: Props) {
+  const { address } = useAccount();
   const { handleChange, values, nextIsDisabled, setFieldValue } =
     useCreateForm();
   const ipfsMetadataStorage = useIpfsStorage();
@@ -124,28 +127,42 @@ export default function ProductType({
     null
   );
   const {
-    seller: currentSeller,
+    sellers: currentSellers,
     sellerType: currentRoles,
     isLoading
   } = useCurrentSeller();
+  const admin = currentSellers.find(
+    (seller) => seller.admin !== ethers.constants.AddressZero
+  );
   const {
-    seller: adminSeller,
+    sellers: adminSellers,
     lens,
     isLoading: isAdminLoading
   } = useCurrentSeller({
-    address: currentSeller.admin
+    address: admin
   });
   const [shownDraftModal, setShowDraftModal] = useState<boolean>(false);
 
   const [isRegularSellerSet, setIsRegularSeller] = useState<boolean>(false);
   const isOperator = currentRoles?.find((role) => role === "operator");
-  const isAdminLinkedToLens =
-    adminSeller.authTokenType === authTokenTypes.Lens &&
-    adminSeller.authTokenId === getLensTokenIdDecimal(lens.id).toString();
+  const isAdminLinkedToLens = adminSellers.some((adminSeller, index) => {
+    return (
+      adminSeller.authTokenType === authTokenTypes.Lens &&
+      adminSeller.authTokenId ===
+        getLensTokenIdDecimal(lens[index].id).toString()
+    );
+  });
   const hasValidAdminAccount =
     (CONFIG.lens.enabled && isAdminLinkedToLens) || !CONFIG.lens.enabled;
-  const isSeller = !!Object.keys(currentSeller).length;
-  const isLensFilled = !!Object.keys(lens).length;
+  const isSeller = currentSellers.length;
+  const currentOperator = currentSellers.find((seller) => {
+    return seller.operator === address;
+  }); // lens profile of the current user
+  const operatorLens: Profile = lens.find((lensProfile) => {
+    return (
+      getLensTokenIdDecimal(lensProfile.id) === currentOperator.authTokenId
+    );
+  });
 
   const onRegularProfileCreated = useCallback(
     (regularProfile: CreateYourProfile) => {
@@ -154,7 +171,7 @@ export default function ProductType({
           regularProfile.createYourProfile.logo[0],
           (base64Uri) => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            setBase64(base64Uri as any); // TODO: check, as the image doesnt seem to be saved correctly
+            setBase64(base64Uri as any);
           }
         );
       }
@@ -165,10 +182,10 @@ export default function ProductType({
     []
   );
   useEffect(() => {
-    if (CONFIG.lens.enabled && isLensFilled) {
+    if (CONFIG.lens.enabled && operatorLens) {
       (async () => {
         try {
-          const logoUrl = getLensProfilePictureUrl(lens as Profile);
+          const logoUrl = getLensProfilePictureUrl(operatorLens as Profile);
           const logoBase64 = await fetchIpfsImage(logoUrl, ipfsMetadataStorage);
           if (!logoBase64) {
             return; // should never happened
@@ -179,10 +196,10 @@ export default function ProductType({
             logo: new File([dataURItoBlob(logoBase64)], "logo", {
               type: logoBase64.split(";")[0].split(":")[1]
             }),
-            name: lens.name,
-            email: getLensEmail(lens as Profile),
-            description: lens.bio,
-            website: getLensWebsite(lens as Profile)
+            name: operatorLens.name,
+            email: getLensEmail(operatorLens as Profile),
+            description: operatorLens.bio,
+            website: getLensWebsite(operatorLens as Profile)
           });
         } catch (error) {
           console.error(error);
@@ -190,7 +207,7 @@ export default function ProductType({
       })();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ipfsMetadataStorage, isLensFilled, lens]);
+  }, [ipfsMetadataStorage, operatorLens]);
   useEffect(() => {
     if (isLoading || isAdminLoading) {
       return;
@@ -225,13 +242,13 @@ export default function ProductType({
         }
       );
     } else if (
-      ((isOperator && hasValidAdminAccount) ||
+      ((isOperator && hasValidAdminAccount && CONFIG.lens.enabled) ||
         (isRegularSellerSet && !CONFIG.lens.enabled)) &&
       !shownDraftModal
     ) {
       setShowDraftModal(true);
       showCreateProductDraftModal();
-    } else if (!isOperator) {
+    } else if (CONFIG.lens.enabled && !isOperator) {
       showInvalidRoleModal();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

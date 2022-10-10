@@ -108,9 +108,20 @@ function CreateProductInner({
 
   const { address } = useAccount();
 
-  const { seller, lens: lensProfile } = useCurrentSeller();
+  const { sellers, lens: lensProfiles } = useCurrentSeller();
 
-  const hasSellerAccount = !!seller;
+  const hasSellerAccount = !!sellers?.length;
+
+  const currentOperator = sellers.find((seller: any) => {
+    return seller.operator === address;
+  });
+  // lens profile of the current user
+  const operatorLens: Profile =
+    lensProfiles.find((lensProfile) => {
+      return (
+        getLensTokenIdDecimal(lensProfile.id) === currentOperator.authTokenId
+      );
+    }) || ({} as Profile);
 
   const handleOpenSuccessModal = async ({
     offerInfo
@@ -339,32 +350,32 @@ function CreateProductInner({
         seller: CONFIG.lens.enabled
           ? {
               defaultVersion: 1,
-              name: lensProfile?.name || "",
-              description: lensProfile?.bio || "",
-              externalUrl: lensProfile
-                ? getLensWebsite(lensProfile as Profile) || ""
+              name: operatorLens?.name || "",
+              description: operatorLens?.bio || "",
+              externalUrl: operatorLens
+                ? getLensWebsite(operatorLens as Profile) || ""
                 : "",
-              tokenId: lensProfile
-                ? getLensTokenIdDecimal(lensProfile.id).toString()
+              tokenId: operatorLens
+                ? getLensTokenIdDecimal(operatorLens.id).toString()
                 : "0",
               images: [
                 {
-                  url: lensProfile
-                    ? getLensProfilePictureUrl(lensProfile as Profile) || ""
+                  url: operatorLens
+                    ? getLensProfilePictureUrl(operatorLens as Profile) || ""
                     : "",
                   tag: "profile"
                 },
                 {
-                  url: lensProfile
-                    ? getLensCoverPictureUrl(lensProfile as Profile) || ""
+                  url: operatorLens
+                    ? getLensCoverPictureUrl(operatorLens as Profile) || ""
                     : "",
                   tag: "cover"
                 }
               ],
               contactLinks: [
                 {
-                  url: lensProfile
-                    ? getLensEmail(lensProfile as Profile) || ""
+                  url: operatorLens
+                    ? getLensEmail(operatorLens as Profile) || ""
                     : "",
                   tag: "email"
                 }
@@ -580,7 +591,7 @@ function CreateProductInner({
                 {isPreviewVisible ? (
                   <Preview
                     togglePreview={setIsPreviewVisible}
-                    seller={seller as any}
+                    seller={currentOperator as any}
                   />
                 ) : (
                   wizardStep.currentStep

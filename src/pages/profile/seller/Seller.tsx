@@ -58,10 +58,11 @@ export default function Seller() {
   const {
     isLoading,
     isError,
-    lens: sellerLens
+    lens: sellersLens
   } = useCurrentSeller({
     sellerId
   });
+  const [sellerLens] = sellersLens;
 
   const {
     data: sellers = [],

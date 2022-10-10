@@ -144,7 +144,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
   const { setFieldValue, values, isValid, setFieldTouched } =
     useFormikContext<StoreFormFields>();
 
-  const { sellerId } = useCurrentSeller();
+  const { sellerIds } = useCurrentSeller();
 
   const queryParams = new URLSearchParams(
     formValuesWithOneLogoUrl(values)
@@ -191,10 +191,10 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
     values.withOwnProducts?.value || ""
   );
   useEffect(() => {
-    if (sellerId && ["mine"].includes(values.withOwnProducts?.value || "")) {
-      setFieldValue(storeFields.sellerCurationList, sellerId, true);
+    if (sellerIds && ["mine"].includes(values.withOwnProducts?.value || "")) {
+      setFieldValue(storeFields.sellerCurationList, sellerIds.join(","), true);
     }
-  }, [values.withOwnProducts?.value, setFieldValue, sellerId]);
+  }, [values.withOwnProducts?.value, setFieldValue, sellerIds]);
 
   useEffect(() => {
     if (
