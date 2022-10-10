@@ -4,7 +4,6 @@ import { useAccount } from "wagmi";
 
 import { LensProfileType } from "../../../../../components/modal/components/CreateProfile/Lens/validationSchema";
 import { CONFIG } from "../../../../config";
-import { loadAndSetImage } from "../../../base64";
 import { useIpfsStorage } from "../../useIpfsStorage";
 import { useLensLogin } from "../authentication/useLensLogin";
 import { Profile } from "../graphql/generated";
@@ -59,9 +58,12 @@ export default function useCustomCreateLensProfile({
     }
     if (values.coverPicture?.length) {
       const [image] = values.coverPicture;
-      loadAndSetImage(image, setCoverPictureUrl);
+      (async () => {
+        const cid = await storage.add(image);
+        setCoverPictureUrl("ipfs://" + cid);
+      })();
     }
-  }, [enableCreation, values.coverPicture]);
+  }, [enableCreation, storage, values.coverPicture]);
 
   const {
     data: createdProfileId,

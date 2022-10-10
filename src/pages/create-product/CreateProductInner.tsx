@@ -351,13 +351,13 @@ function CreateProductInner({
                 {
                   url: lensProfile
                     ? getLensProfilePictureUrl(lensProfile as Profile) || ""
-                    : "", // TODO: ipfslink or base64?
+                    : "",
                   tag: "profile"
                 },
                 {
                   url: lensProfile
                     ? getLensCoverPictureUrl(lensProfile as Profile) || ""
-                    : "", // TODO: ipfslink or base64? // TODO: ipfslink or base64? should I add it?
+                    : "",
                   tag: "cover"
                 }
               ],
