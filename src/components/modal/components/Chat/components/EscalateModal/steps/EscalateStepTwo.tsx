@@ -39,6 +39,18 @@ const Container = styled.div`
   }
 `;
 
+const UnsignedMessageWrapper = styled.div`
+  display: inline-flex;
+  width: 100%;
+  #unsigned_prefix {
+    padding-right: 0;
+    width: auto;
+  }
+  #unsigned_message {
+    padding-left: 0;
+  }
+`;
+
 export const FormModel = {
   formFields: {
     message: {
@@ -326,10 +338,18 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
                     <Input {...FormModel.formFields.exchangeId} />
                     <Input {...FormModel.formFields.disputeId} />
                     <Input {...FormModel.formFields.buyerAddress} disabled />
-                    <>
-                      <FieldInput value="Unsigned message:" disabled />
-                      <Input {...FormModel.formFields.message} disabled />
-                    </>
+                    <UnsignedMessageWrapper>
+                      <FieldInput
+                        value="Unsigned message:"
+                        disabled
+                        id="unsigned_prefix"
+                      />
+                      <Input
+                        {...FormModel.formFields.message}
+                        disabled
+                        id="unsigned_message"
+                      />
+                    </UnsignedMessageWrapper>
                     <Input {...FormModel.formFields.signature} />
                   </FormField>
                   <FormField theme="white" title="Chat transcript">
