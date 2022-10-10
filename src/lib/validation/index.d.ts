@@ -16,6 +16,7 @@ declare module "Yup" {
     TDefault = undefined
   > extends BaseSchema<TType, TContext, TDefault> {
     disputePeriodValue(msg: string): this;
+    returnPeriodValue(msg: string): this;
   }
 }
 

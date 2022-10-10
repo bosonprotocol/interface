@@ -1,7 +1,33 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 
+import { CONFIG } from "../../lib/config";
+import { breakpointNumbers } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
+import {
+  dataURItoBlob,
+  fetchIpfsImage,
+  loadAndSetImage
+} from "../../lib/utils/base64";
+import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
+import { useCurrentSeller } from "../../lib/utils/hooks/useCurrentSeller";
+import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
+import {
+  CreateProductImageCreteYourProfileLogo,
+  GetItemFromStorageKey,
+  useLocalStorage
+} from "../../lib/utils/hooks/useLocalStorage";
 import { FormField } from "../form";
+import { authTokenTypes } from "../modal/components/CreateProfile/Lens/const";
+import ProfileMultiSteps from "../modal/components/CreateProfile/Lens/ProfileMultiSteps";
+import {
+  getLensEmail,
+  getLensProfilePictureUrl,
+  getLensTokenIdDecimal,
+  getLensWebsite
+} from "../modal/components/CreateProfile/Lens/utils";
+import { useModal } from "../modal/useModal";
 import Button from "../ui/Button";
 import Grid from "../ui/Grid";
 import GridContainer from "../ui/GridContainer";
@@ -16,6 +42,7 @@ import {
   ProductButtonGroup,
   SectionTitle
 } from "./Product.styles";
+import { CreateYourProfile } from "./utils";
 import { useCreateForm } from "./utils/useCreateForm";
 
 const productTypeItemsPerRow = {
@@ -75,8 +102,148 @@ const ProductImage = styled(Image)`
   margin: auto;
 `;
 
-export default function ProductType() {
-  const { handleChange, values, nextIsDisabled } = useCreateForm();
+interface Props {
+  showCreateProductDraftModal: () => void;
+  showInvalidRoleModal: () => void;
+}
+
+export default function ProductType({
+  showCreateProductDraftModal,
+  showInvalidRoleModal
+}: Props) {
+  const { handleChange, values, nextIsDisabled, setFieldValue } =
+    useCreateForm();
+  const ipfsMetadataStorage = useIpfsStorage();
+  const { showModal } = useModal();
+  const fileName = useMemo<CreateProductImageCreteYourProfileLogo>(
+    () => `create-product-image_createYourProfile.logo`,
+    []
+  );
+  const [, setBase64] = useLocalStorage<GetItemFromStorageKey | null>(
+    fileName as GetItemFromStorageKey,
+    null
+  );
+  const {
+    seller: currentSeller,
+    sellerType: currentRoles,
+    isLoading
+  } = useCurrentSeller();
+  const {
+    seller: adminSeller,
+    lens,
+    isLoading: isAdminLoading
+  } = useCurrentSeller({
+    address: currentSeller.admin
+  });
+  const [shownDraftModal, setShowDraftModal] = useState<boolean>(false);
+
+  const [isRegularSellerSet, setIsRegularSeller] = useState<boolean>(false);
+  const isOperator = currentRoles?.find((role) => role === "operator");
+  const isAdminLinkedToLens =
+    adminSeller.authTokenType === authTokenTypes.Lens &&
+    adminSeller.authTokenId === getLensTokenIdDecimal(lens.id).toString();
+  const hasValidAdminAccount =
+    (CONFIG.lens.enabled && isAdminLinkedToLens) || !CONFIG.lens.enabled;
+  const isSeller = !!Object.keys(currentSeller).length;
+  const isLensFilled = !!Object.keys(lens).length;
+
+  const onRegularProfileCreated = useCallback(
+    (regularProfile: CreateYourProfile) => {
+      if (regularProfile.createYourProfile.logo) {
+        loadAndSetImage(
+          regularProfile.createYourProfile.logo[0],
+          (base64Uri) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            setBase64(base64Uri as any); // TODO: check, as the image doesnt seem to be saved correctly
+          }
+        );
+      }
+      setFieldValue("createYourProfile", regularProfile.createYourProfile);
+      setIsRegularSeller(true);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+  useEffect(() => {
+    if (CONFIG.lens.enabled && isLensFilled) {
+      (async () => {
+        try {
+          const logoUrl = getLensProfilePictureUrl(lens as Profile);
+          const logoBase64 = await fetchIpfsImage(logoUrl, ipfsMetadataStorage);
+          if (!logoBase64) {
+            return; // should never happened
+          }
+          setBase64(logoBase64 as any);
+
+          setFieldValue("createYourProfile", {
+            logo: new File([dataURItoBlob(logoBase64)], "logo", {
+              type: logoBase64.split(";")[0].split(":")[1]
+            }),
+            name: lens.name,
+            email: getLensEmail(lens as Profile),
+            description: lens.bio,
+            website: getLensWebsite(lens as Profile)
+          });
+        } catch (error) {
+          console.error(error);
+        }
+      })();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ipfsMetadataStorage, isLensFilled, lens]);
+  useEffect(() => {
+    if (isLoading || isAdminLoading) {
+      return;
+    }
+    if (
+      (!isRegularSellerSet && !CONFIG.lens.enabled) ||
+      (CONFIG.lens.enabled &&
+        ((isSeller && !hasValidAdminAccount) || !isSeller))
+    ) {
+      showModal(
+        "CREATE_PROFILE",
+        {
+          headerComponent: (
+            <ProfileMultiSteps
+              createOrSelect={null}
+              activeStep={0}
+              createOrViewRoyalties={null}
+              key="ProductType"
+            />
+          ),
+          initialRegularCreateProfile: values,
+          onRegularProfileCreated,
+          closable: false,
+          onClose: () => {
+            showCreateProductDraftModal();
+          }
+        },
+        "auto",
+        undefined,
+        {
+          xs: `${breakpointNumbers.m + 1}px`
+        }
+      );
+    } else if (
+      ((isOperator && hasValidAdminAccount) ||
+        (isRegularSellerSet && !CONFIG.lens.enabled)) &&
+      !shownDraftModal
+    ) {
+      setShowDraftModal(true);
+      showCreateProductDraftModal();
+    } else if (!isOperator) {
+      showInvalidRoleModal();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    hasValidAdminAccount,
+    isOperator,
+    isSeller,
+    isRegularSellerSet,
+    isLoading,
+    isAdminLoading,
+    values
+  ]);
 
   return (
     <ContainerProductPage>

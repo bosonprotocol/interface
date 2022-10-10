@@ -1,8 +1,10 @@
 import { Loading } from "@bosonprotocol/react-kit";
+import { Fragment } from "react";
 import styled, { css, ThemeProvider } from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
+import Tooltip from "../tooltip/Tooltip";
 import * as Styles from "./styles";
 import Typography from "./Typography";
 
@@ -82,163 +84,171 @@ const ChildWrapperButton = styled.div`
   ${() => Styles.buttonText};
 `;
 
-const allThemes = {
-  primary: {
-    color: "var(--textColor)",
-    background: `var(--accentNoDefault, ${colors.green})`,
-    borderColor: `var(--accentNoDefault, ${colors.green})`,
-    borderWidth: 2,
-    hover: {
-      background: colors.black,
-      color: colors.white,
-      borderColor: colors.black
-    }
-  },
-  bosonPrimary: {
-    color: colors.black,
-    background: colors.primary,
-    borderColor: colors.primary,
-    borderWidth: 2,
-    hover: {
-      background: colors.black,
-      color: colors.white,
-      borderColor: colors.black
-    }
-  },
-  secondary: {
-    color: "var(--accent)",
-    borderColor: "var(--accent)",
-    borderWidth: 2,
-    hover: {
-      background: "var(--accent)",
-      color: colors.white
-    }
-  },
-  bosonSecondary: {
-    color: colors.secondary,
-    borderColor: colors.secondary,
-    borderWidth: 2,
-    hover: {
-      background: colors.secondary,
-      color: colors.white
-    }
-  },
-  orangeInverse: {
-    color: colors.orange,
-    borderColor: colors.orange,
-    borderWidth: 2,
-    hover: {
-      background: colors.orange,
-      color: colors.white
-    }
-  },
-  bosonSecondaryInverse: {
-    color: colors.white,
-    borderColor: colors.secondary,
-    background: colors.secondary,
-    borderWidth: 2,
-    hover: {
+const allThemes = ({ withBosonStyle }: { withBosonStyle?: boolean }) => {
+  return {
+    primary: {
+      color: withBosonStyle ? colors.black : "var(--textColor)",
+      background: withBosonStyle
+        ? colors.green
+        : `var(--accentNoDefault, ${colors.green})`,
+      borderColor: withBosonStyle
+        ? colors.green
+        : `var(--accentNoDefault, ${colors.green})`,
+      borderWidth: 2,
+      hover: {
+        background: colors.black,
+        color: colors.white,
+        borderColor: colors.black
+      }
+    },
+    bosonPrimary: {
+      color: colors.black,
+      background: colors.primary,
+      borderColor: colors.primary,
+      borderWidth: 2,
+      hover: {
+        background: colors.black,
+        color: colors.white,
+        borderColor: colors.black
+      }
+    },
+    secondary: {
+      color: "var(--accent)",
+      borderColor: "var(--accent)",
+      borderWidth: 2,
+      hover: {
+        background: "var(--accent)",
+        color: colors.white
+      }
+    },
+    bosonSecondary: {
       color: colors.secondary,
       borderColor: colors.secondary,
-      background: colors.white
-    }
-  },
-  orange: {
-    color: colors.orange,
-    borderColor: colors.border,
-    hover: {
-      background: colors.border
-    }
-  },
-  outline: {
-    color: colors.black,
-    borderColor: colors.border,
-    borderWidth: 1,
-    hover: {
-      background: colors.border,
-      color: "var(--accent)"
-    }
-  },
-  ghostSecondary: {
-    color: colors.secondary,
-    borderColor: colors.border,
-    hover: {
-      background: colors.border
-    }
-  },
-
-  blank: {
-    color: `${colors.black}4d`,
-    padding: "0.75rem 0.5rem",
-    hover: {
-      color: colors.black
+      borderWidth: 2,
+      hover: {
+        background: colors.secondary,
+        color: colors.white
+      }
     },
-    disabled: {
-      background: "transparent"
-    }
-  },
-  blankSecondary: {
-    color: "var(--accent)",
-    padding: "0.75rem 0.5rem",
-    hover: {
-      borderColor: colors.secondary,
-      background: colors.border,
-      color: colors.black
-    }
-  },
-  blankOutline: {
-    color: colors.black,
-    padding: "1rem 2rem",
-    borderWidth: 1,
-    hover: {
-      borderColor: colors.secondary,
-      background: colors.border,
-      color: colors.black
-    }
-  },
-  white: {
-    color: colors.black,
-    background: colors.white,
-    padding: "1rem",
-    borderWidth: 1,
-    borderColor: colors.border,
-    hover: {
+    orangeInverse: {
+      color: colors.orange,
+      borderColor: colors.orange,
+      borderWidth: 2,
+      hover: {
+        background: colors.orange,
+        color: colors.white
+      }
+    },
+    bosonSecondaryInverse: {
       color: colors.white,
-      background: colors.black
-    }
-  },
-  warning: {
-    color: colors.black,
-    borderColor: colors.orange,
-    borderWidth: 2,
-    hover: {
+      borderColor: colors.secondary,
+      background: colors.secondary,
+      borderWidth: 2,
+      hover: {
+        color: colors.secondary,
+        borderColor: colors.secondary,
+        background: colors.white
+      }
+    },
+    orange: {
+      color: colors.orange,
+      borderColor: colors.border,
+      hover: {
+        background: colors.border
+      }
+    },
+    outline: {
+      color: colors.black,
+      borderColor: colors.border,
+      borderWidth: 1,
+      hover: {
+        background: colors.border,
+        color: "var(--accent)"
+      }
+    },
+    ghostSecondary: {
+      color: colors.secondary,
+      borderColor: colors.border,
+      hover: {
+        background: colors.border
+      }
+    },
+
+    blank: {
+      color: `${colors.black}4d`,
+      padding: "0.75rem 0.5rem",
+      hover: {
+        color: colors.black
+      },
+      disabled: {
+        background: "transparent"
+      }
+    },
+    blankSecondary: {
+      color: "var(--accent)",
+      padding: "0.75rem 0.5rem",
+      hover: {
+        borderColor: colors.secondary,
+        background: colors.border,
+        color: colors.black
+      }
+    },
+    blankOutline: {
+      color: colors.black,
+      padding: "1rem 2rem",
+      borderWidth: 1,
+      hover: {
+        borderColor: colors.secondary,
+        background: colors.border,
+        color: colors.black
+      }
+    },
+    white: {
+      color: colors.black,
+      background: colors.white,
+      padding: "1rem",
+      borderWidth: 1,
+      borderColor: colors.border,
+      hover: {
+        color: colors.white,
+        background: colors.black
+      }
+    },
+    warning: {
+      color: colors.black,
+      borderColor: colors.orange,
+      borderWidth: 2,
+      hover: {
+        background: colors.orange,
+        color: colors.white
+      }
+    },
+    escalate: {
+      color: colors.black,
       background: colors.orange,
-      color: colors.white
+      borderColor: colors.orange,
+      borderWidth: 2,
+      hover: {
+        background: colors.black,
+        color: colors.white,
+        borderColor: colors.black
+      }
     }
-  },
-  escalate: {
-    color: colors.black,
-    background: colors.orange,
-    borderColor: colors.orange,
-    borderWidth: 2,
-    hover: {
-      background: colors.black,
-      color: colors.white,
-      borderColor: colors.black
-    }
-  }
+  };
 };
 
 export interface IButton {
   children?: string | React.ReactNode;
   onClick?: React.MouseEventHandler<HTMLButtonElement> | undefined;
   size?: "small" | "regular" | "large";
-  theme?: keyof typeof allThemes;
+  theme?: keyof ReturnType<typeof allThemes>;
   type?: "button" | "submit" | "reset" | undefined;
   fill?: boolean;
   step?: number;
   isLoading?: boolean;
+  tooltip?: string;
   [x: string]: unknown;
+  withBosonStyle?: boolean;
 }
 
 const Button: React.FC<IButton> = ({
@@ -250,30 +260,39 @@ const Button: React.FC<IButton> = ({
   step = 0,
   fill = false,
   isLoading = false,
+  tooltip = "",
+  withBosonStyle = false,
   ...rest
 }) => {
+  const Wrapper = tooltip !== "" ? Tooltip : Fragment;
+  const wrapperParams = tooltip !== "" ? { wrap: false, content: tooltip } : {};
+
   return (
-    <ThemeProvider theme={allThemes[theme as keyof typeof allThemes]}>
-      <BaseButton
-        onClick={onClick}
-        type={type}
-        size={size}
-        fill={fill ? fill : undefined}
-        {...rest}
-      >
-        {isLoading ? (
-          <Loading />
-        ) : (
-          <ChildWrapperButton data-child-wrapper-button>
-            {children}
-            {step !== 0 && (
-              <Typography>
-                <small>Step {step}</small>
-              </Typography>
-            )}
-          </ChildWrapperButton>
-        )}
-      </BaseButton>
+    <ThemeProvider theme={allThemes({ withBosonStyle })[theme]}>
+      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+      {/* @ts-ignore */}
+      <Wrapper {...wrapperParams}>
+        <BaseButton
+          onClick={onClick}
+          type={type}
+          size={size}
+          fill={fill ? fill : undefined}
+          {...rest}
+        >
+          {isLoading ? (
+            <Loading />
+          ) : (
+            <ChildWrapperButton data-child-wrapper-button>
+              {children}
+              {step !== 0 && (
+                <Typography>
+                  <small>Step {step}</small>
+                </Typography>
+              )}
+            </ChildWrapperButton>
+          )}
+        </BaseButton>
+      </Wrapper>
     </ThemeProvider>
   );
 };

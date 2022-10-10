@@ -1,19 +1,14 @@
-import { websitePattern } from "../../lib/validation/regex/url";
-import { FormField, Input, Textarea, Upload } from "../form";
-import Button from "../ui/Button";
-import {
-  ContainerProductPage,
-  ProductButtonGroup,
-  SectionTitle
-} from "./Product.styles";
-import { useCreateForm } from "./utils/useCreateForm";
+import { websitePattern } from "../../../../../lib/validation/regex/url";
+import { FormField, Input, Textarea, Upload } from "../../../../form";
+import { useCreateForm } from "../../../../product/utils/useCreateForm";
+import Button from "../../../../ui/Button";
+import Grid from "../../../../ui/Grid";
 
-export default function CreateYourProfile() {
+export default function CreateYourProfileForm() {
   const { nextIsDisabled } = useCreateForm();
 
   return (
-    <ContainerProductPage>
-      <SectionTitle tag="h2">Create your Profile</SectionTitle>
+    <>
       <FormField
         title="Logo / profile picture"
         subTitle="Upload a profile image with a max. size of 600Kb"
@@ -47,11 +42,11 @@ export default function CreateYourProfile() {
           pattern={websitePattern}
         />
       </FormField>
-      <ProductButtonGroup>
+      <Grid margin="2rem 0 0 0">
         <Button theme="primary" type="submit" disabled={nextIsDisabled}>
           Next
         </Button>
-      </ProductButtonGroup>
-    </ContainerProductPage>
+      </Grid>
+    </>
   );
 }

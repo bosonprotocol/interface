@@ -1,4 +1,5 @@
 import { Warning } from "phosphor-react";
+import { ReactNode } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
@@ -11,9 +12,10 @@ const StyledGrid = styled(Grid)`
 
 interface Props {
   errorMessage?: string;
+  children?: ReactNode;
 }
 
-export default function SimpleError({ errorMessage }: Props) {
+export default function SimpleError({ errorMessage, children }: Props) {
   return (
     <StyledGrid
       justifyContent="flex-start"
@@ -22,9 +24,13 @@ export default function SimpleError({ errorMessage }: Props) {
       padding="1.5rem"
     >
       <Warning color={colors.darkOrange} size={16} />
-      <Typography fontWeight="600" $fontSize="1rem" lineHeight="1.5rem">
-        {errorMessage || "There has been an error, please try again"}
-      </Typography>
+      {errorMessage ? (
+        <Typography fontWeight="600" $fontSize="1rem" lineHeight="1.5rem">
+          {errorMessage || "There has been an error, please try again"}
+        </Typography>
+      ) : (
+        children
+      )}
     </StyledGrid>
   );
 }

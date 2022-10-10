@@ -26,7 +26,8 @@
     "coverage:report": "npm run coverage:unit",
     "upgrade:corec:latest": "npm install @bosonprotocol/common@latest @bosonprotocol/core-sdk@latest @bosonprotocol/ethers-sdk@latest @bosonprotocol/ipfs-storage@latest @bosonprotocol/react-kit@latest @bosonprotocol/widgets-sdk@latest",
     "upgrade:corec:alpha": "npm install @bosonprotocol/common@alpha @bosonprotocol/core-sdk@alpha @bosonprotocol/ethers-sdk@alpha @bosonprotocol/ipfs-storage@alpha @bosonprotocol/react-kit@alpha @bosonprotocol/widgets-sdk@alpha",
-    "postinstall": "npx playwright install --with-deps chromium"
+    "postinstall": "npx playwright install --with-deps chromium",
+    "generate": "graphql-codegen"
   },
   "lint-staged": {
     "src/**/*.+(js|json|ts|tsx)": [
@@ -38,11 +39,12 @@
   },
   "dependencies": {
     "@bosonprotocol/chat-sdk": "^1.0.2-alpha.8",
-    "@bosonprotocol/react-kit": "^0.7.0-alpha.27",
+    "@bosonprotocol/react-kit": "^0.8.0",
     "@davatar/react": "^1.10.4",
     "@ethersproject/address": "^5.6.1",
     "@ethersproject/units": "^5.6.1",
     "@glidejs/glide": "^3.5.2",
+    "@graphql-codegen/fragment-matcher": "^3.3.1",
     "@popperjs/core": "^2.11.5",
     "@radix-ui/react-progress": "^1.0.0",
     "@radix-ui/react-toast": "^1.0.0",
@@ -74,6 +76,7 @@
     "i": "^0.3.7",
     "lodash.merge": "^4.6.2",
     "npm": "^8.16.0",
+    "omit-deep": "^0.3.0",
     "path-browserify": "^1.0.1",
     "phosphor-react": "^1.4.1",
     "query-string": "^7.1.1",
@@ -103,6 +106,10 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^2.13.1",
+    "@graphql-codegen/typed-document-node": "^2.3.3",
+    "@graphql-codegen/typescript": "^2.7.3",
+    "@graphql-codegen/typescript-operations": "^2.5.3",
     "@playwright/test": "^1.23.1",
     "@testing-library/react": "^13.3.0",
     "@types/lodash.merge": "^4.6.7",

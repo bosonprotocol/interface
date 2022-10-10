@@ -12,6 +12,7 @@ import { CONFIG } from "../../lib/config";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { getLocalStorageItems } from "../../lib/utils/getLocalStorageItems";
+import { useDisputeResolver } from "../../lib/utils/hooks/useDisputeResolver";
 import { Token } from "../convertion-rate/ConvertionRateContext";
 import {
   DarkerBackground,
@@ -54,6 +55,27 @@ export default function Preview({ togglePreview, seller }: Props) {
   const thumbnailImages = getLocalStorageItems({
     key: "create-product-image_productImages.thumbnail"
   });
+  const disputeResolverId = CONFIG.defaultDisputeResolverId;
+  const { disputeResolver } = useDisputeResolver(disputeResolverId);
+  const escalationResponsePeriod =
+    disputeResolver?.escalationResponsePeriod || "0";
+  const fee =
+    disputeResolver && exchangeToken?.address
+      ? disputeResolver.fees.find(
+          (f: {
+            feeAmount: string;
+            tokenAddress: string;
+            tokenName: string;
+            token: {
+              address: string;
+              decimals: string;
+              symbol: string;
+              name: string;
+            };
+          }) => f.tokenAddress === exchangeToken.address
+        )
+      : undefined;
+  const escalationDeposit = fee?.feeAmount || "0";
 
   const handleClosePreview = () => {
     togglePreview(false);
@@ -85,6 +107,7 @@ export default function Preview({ togglePreview, seller }: Props) {
 
   const exchangeDate = Date.now().toString();
 
+  // Build the Offer structure (in the shape of SubGraph request), based on temporary data (values)
   const offer = {
     price: priceBN.toString(),
     sellerDeposit: priceBN
@@ -118,7 +141,7 @@ export default function Preview({ togglePreview, seller }: Props) {
     metadataUri: "not-uploaded-yet", // can't be empty
     metadataHash: "not-uploaded-yet", // can't be empty
     voidedAt: null,
-    disputeResolverId: CONFIG.defaultDisputeResolverId,
+    disputeResolverId,
     exchanges: [
       {
         committedDate: exchangeDate,
@@ -132,8 +155,24 @@ export default function Preview({ togglePreview, seller }: Props) {
       name: values.coreTermsOfSale.currency.value || "",
       symbol: values.coreTermsOfSale.currency.value || ""
     },
-    isValid: false
-  } as Offer;
+    isValid: false,
+    disputeResolutionTerms: {
+      buyerEscalationDeposit: escalationDeposit,
+      escalationResponsePeriod: escalationResponsePeriod
+    },
+    metadata: {
+      shipping: {
+        returnPeriodInDays: parseInt(values.shippingInfo.returnPeriod)
+      },
+      exchangePolicy: {
+        sellerContactMethod: CONFIG.defaultSellerContactMethod,
+        disputeResolverContactMethod: `email to: ${CONFIG.defaultDisputeResolverContactMethod}`
+      },
+      productV1Seller: {
+        name: values.createYourProfile.name
+      }
+    }
+  } as unknown as Offer;
 
   return (
     <PreviewWrapper>

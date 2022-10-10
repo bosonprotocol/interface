@@ -142,6 +142,7 @@ export default function HeaderLinks({
   const supportFunctionality = useCustomStoreQueryParameter<
     ("buyer" | "seller" | "dr")[]
   >("supportFunctionality", { parseJson: true });
+  const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
   const {
     buyer: { buyerId },
     seller: { sellerId }
@@ -188,7 +189,10 @@ export default function HeaderLinks({
             roles,
             [UserRoles.Guest, UserRoles.Seller],
             false
-          ) && <LinkWithQuery to={sellUrl}>Sell</LinkWithQuery>}
+          ) &&
+          !isCustomStoreFront && (
+            <LinkWithQuery to={sellUrl}>Sell</LinkWithQuery>
+          )}
         {!onlySeller && (
           <LinkWithQuery to={BosonRoutes.Explore}>
             Explore Products
@@ -203,7 +207,7 @@ export default function HeaderLinks({
         {!!disputeResolverId &&
           checkIfUserHaveRole(roles, [UserRoles.DisputeResolver], true) && (
             <LinkWithQuery to={`${BosonRoutes.DRAdmin}/disputes`}>
-              Dispute Centre
+              Dispute Admin
             </LinkWithQuery>
           )}
       </Links>

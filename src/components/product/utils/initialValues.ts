@@ -1,3 +1,4 @@
+import { CONFIG } from "../../../lib/config";
 import { FormModel } from "../../modal/components/Chat/MakeProposal/MakeProposalFormModel";
 import { DisputeFormModel } from "../../modal/components/DisputeModal/DisputeModalFormModel";
 import {
@@ -14,7 +15,7 @@ import { CreateProductForm } from "./types";
 
 export const createYourProfileInitialValues = {
   createYourProfile: {
-    logo: null,
+    logo: undefined,
     name: "",
     email: "",
     description: "",
@@ -54,14 +55,14 @@ export const productInformationInitialValues = {
 
 export const productImagesInitialValues = {
   productImages: {
-    thumbnail: null,
-    secondary: null,
-    everyAngle: null,
-    details: null,
-    inUse: null,
-    styledScene: null,
-    sizeAndScale: null,
-    more: null
+    thumbnail: undefined,
+    secondary: undefined,
+    everyAngle: undefined,
+    details: undefined,
+    inUse: undefined,
+    styledScene: undefined,
+    sizeAndScale: undefined,
+    more: undefined
   }
 } as const;
 
@@ -105,7 +106,9 @@ export const shippingInfoInitialValues = {
     measurementUnit: OPTIONS_LENGTH[1],
     height: "",
     width: "",
-    length: ""
+    length: "",
+    returnPeriod: CONFIG.minimumReturnPeriodInDays.toString(),
+    returnPeriodUnit: OPTIONS_PERIOD[0]
   }
 } as const;
 

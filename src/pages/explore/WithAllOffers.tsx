@@ -198,7 +198,13 @@ export function WithAllOffers<P>(
       refetch,
       fetchNextPage
     } = useInfiniteOffers(
-      { first: OFFERS_PER_PAGE + 1, disableMemo: true, ...filterOptions },
+      {
+        first: OFFERS_PER_PAGE + 1,
+        disableMemo: true,
+        voided: false,
+        valid: true,
+        ...filterOptions
+      },
       {
         enabled: !!filterOptions?.orderBy,
         keepPreviousData: false

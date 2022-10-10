@@ -12,7 +12,6 @@ import { colors } from "../../../lib/styles/colors";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import { Disputes } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 import { useModal } from "../../modal/useModal";
 import Price from "../../price";
 import PaginationPages from "../../seller/common/PaginationPages";
@@ -37,9 +36,9 @@ interface Props {
 }
 
 export default function DisputesTable({ disputes }: Props) {
-  const coreSDK = useCoreSDK();
   const navigate = useKeepQueryParamsNavigate();
   const { showModal, modalTypes } = useModal();
+
   const columns = useMemo(
     () => [
       {
@@ -164,7 +163,16 @@ export default function DisputesTable({ disputes }: Props) {
                 size="small"
                 style={{ "margin-right": "5px" }}
                 onClick={async () => {
-                  await coreSDK.refuseEscalatedDispute(dispute.exchange.id);
+                  showModal(
+                    modalTypes.DISPUTE_RESOLUTION_REFUSE_MODAL,
+                    {
+                      title: `Refuse to Decide Dispute: ${dispute.exchange.id}`,
+                      exchangeId: dispute.exchange.id,
+                      offer: dispute.exchange.offer
+                    },
+                    "auto",
+                    "dark"
+                  );
                 }}
               >
                 Refuse
@@ -174,10 +182,16 @@ export default function DisputesTable({ disputes }: Props) {
                 size="small"
                 onClick={async () => {
                   showModal(
-                    modalTypes.DISPUTE_RESOLUTION_MODAL,
+                    modalTypes.DISPUTE_RESOLUTION_DECIDE_MODAL,
                     {
-                      title: `Resolve dispute ${dispute.exchange.id}`,
-                      exchangeId: dispute.exchange.id
+                      title: `Decide Dispute: ${dispute.exchange.id}`,
+                      exchangeId: dispute.exchange.id,
+                      offer: dispute.exchange.offer,
+                      currencySymbol:
+                        dispute.exchange.offer?.exchangeToken?.symbol ?? "",
+                      value: dispute.exchange.offer?.price ?? "",
+                      decimals:
+                        dispute.exchange.offer?.exchangeToken?.decimals ?? ""
                     },
                     "auto",
                     "dark"

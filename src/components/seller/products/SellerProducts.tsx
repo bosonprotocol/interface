@@ -46,7 +46,8 @@ interface FilterValue {
 }
 
 export default function SellerProducts({
-  offers: offersData
+  offers: offersData,
+  sellerRoles
 }: SellerInsideProps & WithSellerDataProps) {
   const [currentTag, setCurrentTag] = useState(productTags[0].value);
   const [search, setSearch] = useState<string>("");
@@ -131,7 +132,11 @@ export default function SellerProducts({
     return (
       <>
         {selected.length > 0 && (
-          <SellerBatchVoid selected={selected} refetch={refetch} />
+          <SellerBatchVoid
+            selected={selected}
+            refetch={refetch}
+            sellerRoles={sellerRoles}
+          />
         )}
         <SellerExport
           csvProps={{
@@ -139,10 +144,10 @@ export default function SellerProducts({
             filename: `products-${dateString}`
           }}
         />
-        <SellerAddNewProduct />
+        <SellerAddNewProduct sellerRoles={sellerRoles} />
       </>
     );
-  }, [prepareCSVData, selected, refetch]);
+  }, [prepareCSVData, selected, refetch, sellerRoles]);
 
   if (isLoading) {
     return <Loading />;
@@ -168,6 +173,7 @@ export default function SellerProducts({
         isError={isError}
         refetch={refetch}
         setSelected={setSelected}
+        sellerRoles={sellerRoles}
       />
     </>
   );

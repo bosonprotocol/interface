@@ -17,7 +17,7 @@ export default function ViewTxButton() {
             {
               title: "Recent Transactions"
             },
-            "s"
+            "m"
           );
         }}
       >

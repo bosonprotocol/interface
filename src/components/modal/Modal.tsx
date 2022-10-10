@@ -135,8 +135,9 @@ const Wrapper = styled.div<{
       case "FINANCE_WITHDRAW_MODAL":
       case "FINANCE_DEPOSIT_MODAL":
       case "MANAGE_FUNDS_MODAL":
-      case "DISPUTE_RESOLUTION_MODAL":
       case "EXPIRE_VOUCHER_MODAL":
+      case "DISPUTE_RESOLUTION_DECIDE_MODAL":
+      case "DISPUTE_RESOLUTION_REFUSE_MODAL":
         return css`
           ${breakpoint.xs} {
             max-width: 31.25rem;
@@ -204,7 +205,8 @@ const Content = styled.div<{
       case "FINANCE_WITHDRAW_MODAL":
       case "FINANCE_DEPOSIT_MODAL":
       case "MANAGE_FUNDS_MODAL":
-      case "DISPUTE_RESOLUTION_MODAL":
+      case "DISPUTE_RESOLUTION_DECIDE_MODAL":
+      case "DISPUTE_RESOLUTION_REFUSE_MODAL":
         return "0 2rem 2rem 2rem";
       case "EXPIRE_VOUCHER_MODAL":
         return "2rem 0";
@@ -249,6 +251,7 @@ interface Props {
   maxWidths: Store["modalMaxWidth"];
   theme: NonNullable<Store["theme"]>;
   closable?: boolean;
+  onClose?: () => void;
 }
 
 export default function Modal({
@@ -260,8 +263,15 @@ export default function Modal({
   maxWidths,
   theme,
   closable = true,
+  onClose,
   modalType
 }: Props) {
+  const handleOnClose = () => {
+    if (closable) {
+      hideModal();
+      onClose?.();
+    }
+  };
   return createPortal(
     <Root data-testid="modal">
       <Wrapper
@@ -274,7 +284,7 @@ export default function Modal({
           <Header tag="div" margin="0">
             {HeaderComponent}
             {closable && (
-              <Button data-close theme="blank" onClick={hideModal}>
+              <Button data-close theme="blank" onClick={handleOnClose}>
                 <Close />
               </Button>
             )}
@@ -283,7 +293,7 @@ export default function Modal({
           <HeaderWithTitle tag="h3" $title={title} margin="0">
             {title}
             {closable && (
-              <Button data-close theme="blank" onClick={hideModal}>
+              <Button data-close theme="blank" onClick={handleOnClose}>
                 <Close />
               </Button>
             )}
@@ -295,7 +305,7 @@ export default function Modal({
       </Wrapper>
       <RootBG
         onClick={() => {
-          closable && hideModal();
+          handleOnClose();
         }}
       />
     </Root>,

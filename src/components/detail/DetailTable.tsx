@@ -1,3 +1,5 @@
+import { Fragment } from "react";
+
 import Tooltip from "../tooltip/Tooltip";
 import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
@@ -32,8 +34,8 @@ export default function DetailTable({
         {data?.map(
           ({ hide = false, ...d }: Data, index: number) =>
             !hide && (
-              <>
-                <tr key={`tr_${index}`}>
+              <Fragment key={`tr_fragment_${index}`}>
+                <tr>
                   <td>
                     <Grid justifyContent="flex-start">
                       <Typography tag={tag}>{d.name}</Typography>
@@ -55,7 +57,7 @@ export default function DetailTable({
                 ) : (
                   <></>
                 )}
-              </>
+              </Fragment>
             )
         )}
       </tbody>

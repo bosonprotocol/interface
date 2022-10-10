@@ -74,7 +74,7 @@ export default function RedeemSuccessModal({
         contact the Dispute Resolver.
       </Typography>
       <Grid padding="2rem 0 0 0" justifyContent="space-between">
-        <Button theme="primary" onClick={() => hideModal()}>
+        <Button theme="primary" onClick={() => hideModal()} withBosonStyle>
           Done
         </Button>
       </Grid>

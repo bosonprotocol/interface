@@ -1,13 +1,10 @@
 import { useField } from "formik";
 import { Image, Trash } from "phosphor-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { colors } from "../../../lib/styles/colors";
+import { loadAndSetImage } from "../../../lib/utils/base64";
 import bytesToSize from "../../../lib/utils/bytesToSize";
-import {
-  GetItemFromStorageKey,
-  useLocalStorage
-} from "../../../lib/utils/hooks/useLocalStorage";
 import Button from "../../ui/Button";
 import Typography from "../../ui/Typography";
 import Error from "../Error";
@@ -30,14 +27,16 @@ export default function Upload({
   onFilesSelect,
   placeholder,
   wrapperProps,
+  onLoadSinglePreviewImage,
   ...props
 }: UploadProps) {
-  const fileName = useMemo(() => `create-product-image_${name}`, [name]);
-  const [preview, setPreview, removePreview] =
-    useLocalStorage<GetItemFromStorageKey | null>(
-      fileName as GetItemFromStorageKey,
-      null
-    );
+  // const fileName = useMemo(() => `create-product-image_${name}`, [name]);
+  // const [preview, setPreview, removePreview] =
+  //   useLocalStorage<GetItemFromStorageKey | null>(
+  //     fileName as GetItemFromStorageKey,
+  //     null
+  //   );
+  const [preview, setPreview] = useState<string | null>();
 
   const [field, meta, helpers] = useField(name);
 
@@ -46,23 +45,23 @@ export default function Upload({
     typeof errorMessage === typeof "string" && errorMessage !== "";
 
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [files, setFiles] = useState<File[]>(field.value || []);
+  const setFiles = useCallback(
+    (value: unknown) => {
+      helpers.setValue(value);
+    },
+    [helpers]
+  );
+  const files = field.value as File[];
 
   useEffect(() => {
     onFilesSelect?.(files);
     helpers.setValue(files);
 
-    if (!multiple && accept === "image/*" && files.length !== 0) {
-      try {
-        const reader = new FileReader();
-        reader.onloadend = (e: ProgressEvent<FileReader>) => {
-          const prev = e.target?.result?.toString() || null;
-          setPreview(prev as GetItemFromStorageKey | null);
-        };
-        reader.readAsDataURL(files[0]);
-      } catch (e) {
-        console.error(e);
-      }
+    if (!multiple && accept === "image/*" && files && files?.length !== 0) {
+      loadAndSetImage(files[0], (base64Uri) => {
+        setPreview(base64Uri);
+        onLoadSinglePreviewImage?.(base64Uri);
+      });
     }
   }, [files]); // eslint-disable-line
 
@@ -74,9 +73,11 @@ export default function Upload({
   };
 
   const handleRemoveAllFiles = () => {
+    if (disabled) {
+      return;
+    }
     setFiles([]);
     setPreview(null);
-    removePreview(fileName);
   };
 
   const handleRemoveFile = (index: number) => {
@@ -110,7 +111,7 @@ export default function Upload({
 
   return (
     <>
-      <FieldFileUploadWrapper {...wrapperProps}>
+      <FieldFileUploadWrapper {...wrapperProps} $disabled={!!disabled}>
         <FieldInput
           {...props}
           hidden
@@ -121,6 +122,7 @@ export default function Upload({
           ref={(ref) => {
             inputRef.current = ref;
           }}
+          disabled={disabled}
         />
         {trigger ? (
           <Button onClick={handleChooseFile} theme="secondary">
@@ -133,7 +135,7 @@ export default function Upload({
             onClick={handleChooseFile}
             error={errorMessage}
           >
-            {field.value && field.value?.length !== 0 && preview !== null && (
+            {field.value && field.value?.length !== 0 && preview && (
               <ImagePreview src={preview} />
             )}
             <Image size={24} />
@@ -144,7 +146,7 @@ export default function Upload({
             )}
           </FileUploadWrapper>
         )}
-        {field.value && field.value?.length !== 0 && preview !== null && (
+        {!disabled && field.value && field.value?.length !== 0 && preview && (
           <div onClick={handleRemoveAllFiles} data-remove>
             <Trash size={24} color={colors.white} />
           </div>

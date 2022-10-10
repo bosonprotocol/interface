@@ -1,5 +1,8 @@
 import { getDefaultConfig } from "@bosonprotocol/react-kit";
 
+import lensFollowNftContractAbi from "../lib/utils/hooks/lens/abis/lens-follow-nft-contract-abi.json";
+import lensHubContractAbi from "../lib/utils/hooks/lens/abis/lens-hub-contract-abi.json";
+import lensPeripheryDataProvider from "../lib/utils/hooks/lens/abis/lens-periphery-data-provider.json";
 import { parseCurationList } from "./utils/curationList";
 
 type EnvironmentType = "local" | "testing" | "staging" | "production"; // TODO: export EnvironmentType in react-kit
@@ -25,6 +28,11 @@ export function getDefaultTokens() {
   }
   return tokens;
 }
+const createProfileConfiguration: "LENS" | "NO_TOKEN" =
+  (process.env.REACT_APP_CREATE_PROFILE_CONFIGURATION as "LENS" | "NO_TOKEN") ??
+  "NO_TOKEN";
+
+const availableOnNetwork = [80001, 137].includes(config.chainId);
 
 export const CONFIG = {
   ...config,
@@ -66,7 +74,25 @@ export const CONFIG = {
   defaultDisputeResolverId:
     process.env.REACT_APP_DEFAULT_DISPUTE_RESOLVER_ID || "1",
   defaultDisputeResolutionPeriodDays:
-    process.env.REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS || "15"
+    process.env.REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS || "15",
+  defaultSellerContactMethod: "Chat App in the dApp",
+  defaultDisputeResolverContactMethod:
+    process.env.NODE_ENV === "production"
+      ? "disputes@redeemeum.com"
+      : "disputes-test@redeemeum.com",
+  minimumReturnPeriodInDays: 15,
+  minimumDisputePeriodInDays: 30,
+  createProfileConfiguration,
+  lens: {
+    enabled: createProfileConfiguration === "LENS" && availableOnNetwork,
+    lensHandleExtension: config.chainId === 137 ? ".lens" : ".test",
+    availableOnNetwork,
+    LENS_HUB_CONTRACT: config.lens.LENS_HUB_CONTRACT,
+    LENS_PERIPHERY_CONTRACT: config.lens.LENS_PERIPHERY_CONTRACT,
+    LENS_HUB_ABI: lensHubContractAbi,
+    LENS_PERIPHERY_ABI: lensPeripheryDataProvider,
+    LENS_FOLLOW_NFT_ABI: lensFollowNftContractAbi
+  }
 };
 
 function stringToBoolean(value?: string) {

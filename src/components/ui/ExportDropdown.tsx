@@ -8,6 +8,13 @@ import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import Button, { IButton } from "../ui/Button";
 
+const ArrowContainer = styled.div`
+  border-left: 0.0625rem solid ${colors.secondary};
+  height: 128%;
+  width: 1.25rem;
+  position: absolute;
+  right: -1.875rem;
+`;
 const ExportButton = styled(Button)`
   color: ${colors.secondary};
   border: none;
@@ -16,16 +23,24 @@ const ExportButton = styled(Button)`
   padding-right: 2.125rem;
   padding-left: 0.75rem;
   position: relative;
+  transition: 700ms;
+  &:hover:not(:disabled) {
+    background: ${colors.secondary};
+    color: ${colors.white};
+    div,
+    button {
+      color: ${colors.white};
+    }
+    ${ArrowContainer} {
+      border-color: ${colors.white};
+    }
+    ${ArrowContainer} div {
+      background: ${colors.white};
+    }
+  }
   > div {
     gap: 0.625rem;
   }
-`;
-const ArrowContainer = styled.div`
-  border-left: 0.0625rem solid ${colors.secondary};
-  height: 128%;
-  width: 1.25rem;
-  position: absolute;
-  right: -1.875rem;
 `;
 const ArrowDown = styled.div`
   clip-path: polygon(50% 100%, 0 0, 100% 0);
@@ -45,25 +60,30 @@ const ButtonsContainer = styled.div`
   margin-left: -0.3125rem;
   margin-top: -0.3125rem;
   display: none;
-  z-index: ${zIndex.Notification};
+  z-index: ${zIndex.Select};
 `;
 
 const ButtonOptions = styled.div<{ disabled: boolean }>`
   border: 0.0625rem solid ${colors.secondary};
   border-top: 0rem;
-  color: ${colors.black};
+  color: ${colors.secondary};
   font-size: 0.75rem;
   max-width: 7.1875rem;
   text-align: center;
   padding: 0.3125rem;
   background-color: ${colors.white};
   text-decoration: ${({ disabled }) => (disabled ? "line-through;" : "none")};
-  z-index: ${zIndex.Notification};
+  z-index: ${zIndex.Select};
+  transition: 700ms;
+  &:hover {
+    background-color: ${colors.secondary};
+    color: ${colors.white};
+  }
 `;
 
 const Container = styled.div`
   position: relative;
-  z-index: ${zIndex.Notification};
+  z-index: ${zIndex.Select};
   &:hover {
     [data-buttons-container] {
       display: block !important;
@@ -104,15 +124,22 @@ function ExportDropdown({ buttonProps = {}, children }: Props) {
         </CSVLink>
       )}
       <ButtonsContainer data-buttons-container>
-        {children?.map((child) => {
+        {children?.map((child, index) => {
           if (child.disabled) {
-            return <ButtonOptions disabled={true}>{child.name}</ButtonOptions>;
+            return (
+              <ButtonOptions
+                key={`CSVLink_${child.id}_${index}`}
+                disabled={true}
+              >
+                {child.name}
+              </ButtonOptions>
+            );
           }
           return (
             <CSVLink
+              key={`CSVLink_${child.id}_${index}`}
               {...child.csvProps}
               filename={child.csvProps.filename ?? "filename"}
-              key={child.id}
             >
               <ButtonOptions disabled={false}>{child.name}</ButtonOptions>
             </CSVLink>

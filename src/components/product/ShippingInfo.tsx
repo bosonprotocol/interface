@@ -14,7 +14,12 @@ import {
   ProductButtonGroup,
   SectionTitle
 } from "./Product.styles";
-import { OPTIONS_COUNTRIES, OPTIONS_LENGTH, OPTIONS_WEIGHT } from "./utils";
+import {
+  OPTIONS_COUNTRIES,
+  OPTIONS_LENGTH,
+  OPTIONS_PERIOD,
+  OPTIONS_WEIGHT
+} from "./utils";
 import { useCreateForm } from "./utils/useCreateForm";
 
 const FieldContainerJurisdictions = styled.div`
@@ -38,6 +43,12 @@ const RequiredContainer = styled.div`
   .FormField:first-of-type {
     margin-bottom: 3.5rem;
   }
+`;
+
+const FieldContainer = styled.div`
+  display: grid;
+  grid-template-columns: 3fr minmax(8.75rem, 1fr);
+  grid-gap: 1rem;
 `;
 
 const AdditionalContainer = styled.div`
@@ -173,6 +184,29 @@ export default function ShippingInfo() {
           />
         </FormField>
         <AddSupportedJurisdictions />
+        <FormField
+          title="Return Period"
+          subTitle="The period the Buyer must contact the Seller for a return after being delivered."
+        >
+          <FieldContainer>
+            <div>
+              <Input
+                placeholder="Return Period"
+                name="shippingInfo.returnPeriod"
+                type="number"
+                min="0"
+                step="1"
+              />
+            </div>
+            <div>
+              <Select
+                placeholder="Choose Return Period Unit..."
+                name="shippingInfo.returnPeriodUnit"
+                options={OPTIONS_PERIOD}
+              />
+            </div>
+          </FieldContainer>
+        </FormField>
       </RequiredContainer>
       <AdditionalContainer>
         <Collapse

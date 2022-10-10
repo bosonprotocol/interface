@@ -25,7 +25,9 @@ const CollapseWrapper = styled.div`
   padding: 1rem;
 `;
 
-const CollapsibleContent = styled.div``;
+const CollapsibleContent = styled.div`
+  width: 100%;
+`;
 
 interface CollapseProps {
   children: React.ReactNode;
