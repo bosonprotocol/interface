@@ -43,6 +43,7 @@ export default function CreateBosonLensAccountSummary({
     Profile | null | undefined
   >(profile);
   const [logoImage, setLogoImage] = useState<string>("");
+  const [profileImageUrl, setProfileImageUrl] = useState<string>("");
   const [coverPicture, setCoverPicture] = useState<string>("");
   const [isCreatedLensProfile, setCreatedLensProfile] =
     useState<boolean>(false);
@@ -68,7 +69,8 @@ export default function CreateBosonLensAccountSummary({
       addressForRoyaltyPayment: bosonAccount.addressForRoyaltyPayment || "",
       lensValues: values,
       authTokenId: lensProfileToSubmit?.id,
-      authTokenType: authTokenTypes.Lens
+      authTokenType: authTokenTypes.Lens,
+      profileLogoUrl: profileImageUrl
     },
     {
       enabled: false,
@@ -128,6 +130,9 @@ export default function CreateBosonLensAccountSummary({
     onCreatedProfile: (profile: Profile) => {
       setLensProfileToSubmit(profile);
       setCreatedLensProfile(true);
+    },
+    onSetProfileLogoIpfsLink: (profileIpfsLink) => {
+      setProfileImageUrl(profileIpfsLink);
     },
     enabled: !usingExistingLensProfile && !!values
   });
