@@ -140,7 +140,7 @@ export default function ProductType({
   const [isRegularSellerSet, setIsRegularSeller] = useState<boolean>(false);
   const isOperator = currentRoles?.find((role) => role === "operator");
   const isAdminLinkedToLens =
-    adminSeller.authTokenType === authTokenTypes.Lens &&
+    adminSeller.authTokenType === authTokenTypes.LENS &&
     adminSeller.authTokenId === getLensTokenIdDecimal(lens.id).toString();
   const hasValidAdminAccount =
     (CONFIG.lens.enabled && isAdminLinkedToLens) || !CONFIG.lens.enabled;
