@@ -22,11 +22,13 @@ const ENSAvatar = styled.img`
 interface Props {
   navigationBarPosition?: string;
   showAddress?: boolean;
+  withBosonStyle?: boolean;
 }
 
 export default function ConnectButton({
   navigationBarPosition = "",
-  showAddress = true
+  showAddress = true,
+  withBosonStyle = false
 }: Props) {
   const { isLteXS } = useBreakpoints();
   const isSideBar = ["left", "right"].includes(navigationBarPosition);
@@ -73,6 +75,7 @@ export default function ConnectButton({
                     onClick={openConnectModal}
                     size={isLteXS ? "small" : "regular"}
                     theme="primary"
+                    withBosonStyle={withBosonStyle}
                     style={{
                       whiteSpace: "pre",
                       ...buttonPropsWhenSideBar,

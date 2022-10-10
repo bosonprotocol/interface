@@ -85,6 +85,7 @@ export default function DetailWidget({
           <WidgetButtonWrapper>
             <Button
               theme="primary"
+              withBosonStyle
               onClick={() => {
                 const exchangeId = id || false;
                 hideModal();
@@ -107,6 +108,7 @@ export default function DetailWidget({
             </Button>
             <Button
               theme="secondary"
+              withBosonStyle
               onClick={() => {
                 navigate({ pathname: BosonRoutes.Explore });
               }}

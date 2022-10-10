@@ -211,10 +211,20 @@ export default function ProductCreateSuccess({
             </Funds>
           )}
           <StyledWidgetButtonWrapper>
-            <Button type="button" theme="primary" onClick={onViewMyItem}>
+            <Button
+              type="button"
+              theme="primary"
+              onClick={onViewMyItem}
+              withBosonStyle
+            >
               View my item
             </Button>
-            <Button type="button" theme="secondary" onClick={handleCreateNew}>
+            <Button
+              type="button"
+              theme="secondary"
+              onClick={handleCreateNew}
+              withBosonStyle
+            >
               Create new
               <Plus size={14} />
             </Button>
