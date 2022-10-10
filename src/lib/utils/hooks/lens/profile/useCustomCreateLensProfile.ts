@@ -15,12 +15,16 @@ type Props = {
   values: LensProfileType;
   onCreatedProfile: (profile: Profile) => void;
   enabled: boolean;
+  onSetProfileLogoIpfsLink?: (ipfsLink: string) => void;
+  onSetCoverLogoIpfsLink?: (ipfsLink: string) => void;
 };
 
 export default function useCustomCreateLensProfile({
   values,
   onCreatedProfile,
-  enabled: enableCreation
+  enabled: enableCreation,
+  onSetProfileLogoIpfsLink,
+  onSetCoverLogoIpfsLink
 }: Props) {
   const [triggerLensProfileCreation, setTriggerLensProfileCreation] = useState<
     "start" | "fetch" | "triggered"
@@ -48,9 +52,12 @@ export default function useCustomCreateLensProfile({
       const [image] = values.logo;
       (async () => {
         const cid = await storage.add(image);
-        setProfileImageUrl("ipfs://" + cid);
+        const ipfsLink = "ipfs://" + cid;
+        setProfileImageUrl(ipfsLink);
+        onSetProfileLogoIpfsLink?.(ipfsLink);
       })();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enableCreation, storage, values.logo]);
   useEffect(() => {
     if (!enableCreation) {
@@ -60,9 +67,12 @@ export default function useCustomCreateLensProfile({
       const [image] = values.coverPicture;
       (async () => {
         const cid = await storage.add(image);
-        setCoverPictureUrl("ipfs://" + cid);
+        const ipfsLink = "ipfs://" + cid;
+        setCoverPictureUrl(ipfsLink);
+        onSetCoverLogoIpfsLink?.(ipfsLink);
       })();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enableCreation, storage, values.coverPicture]);
 
   const {

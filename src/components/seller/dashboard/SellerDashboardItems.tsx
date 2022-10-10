@@ -75,12 +75,12 @@ const ItemDates = (item: Exchange, type: string) => {
         second: {
           label: "Dispute ends",
           value:
-            item?.disputedDate && item?.offer?.fulfillmentPeriodDuration
+            item?.disputedDate && item?.offer?.disputePeriodDuration
               ? dayjs(
                   getDateTimestamp(
                     (
                       Number(item?.disputedDate) +
-                      Number(item?.offer?.fulfillmentPeriodDuration)
+                      Number(item?.offer?.disputePeriodDuration)
                     ).toString()
                   )
                 ).format(CONFIG.dateFormat)

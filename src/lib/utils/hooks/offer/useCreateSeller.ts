@@ -5,7 +5,6 @@ import { useQuery } from "react-query";
 import { authTokenTypes } from "../../../../components/modal/components/CreateProfile/Lens/const";
 import { getLensTokenIdDecimal } from "../../../../components/modal/components/CreateProfile/Lens/utils";
 import { LensProfileType } from "../../../../components/modal/components/CreateProfile/Lens/validationSchema";
-import { loadAndSetImagePromise } from "../../base64";
 import { useCoreSDK } from "../../useCoreSdk";
 import { useIpfsStorage } from "../useIpfsStorage";
 
@@ -35,7 +34,8 @@ async function createSellerAccount(
     royaltyPercentage,
     lensValues,
     authTokenId,
-    authTokenType
+    authTokenType,
+    profileLogoUrl
   }: {
     address: string;
     addressForRoyaltyPayment: string;
@@ -43,6 +43,7 @@ async function createSellerAccount(
     lensValues: LensProfileType;
     authTokenId: string | null;
     authTokenType: typeof authTokenTypes[keyof typeof authTokenTypes];
+    profileLogoUrl: string;
   },
   storage: IpfsMetadataStorage
 ) {
@@ -51,16 +52,13 @@ async function createSellerAccount(
       "[create seller] Lens profile id was going to be used but it is not provided"
     );
   }
-  const logoUrl = lensValues?.logo?.[0]
-    ? await loadAndSetImagePromise(lensValues.logo[0])
-    : "";
 
   // https://docs.opensea.io/docs/contract-level-metadata
   const cid = await storage.add(
     JSON.stringify({
       name: lensValues.name,
       description: lensValues.description,
-      image: logoUrl,
+      image: profileLogoUrl,
       external_link: window.origin,
       seller_fee_basis_points: royaltyPercentage,
       fee_recipient: addressForRoyaltyPayment

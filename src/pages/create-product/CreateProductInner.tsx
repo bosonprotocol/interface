@@ -156,7 +156,7 @@ function CreateProductInner({
           validUntilDate: offerInfo.validUntilDate,
           voucherRedeemableFromDate: offerInfo.voucherRedeemableFromDate,
           voucherRedeemableUntilDate: offerInfo.voucherRedeemableUntilDate,
-          fulfillmentPeriodDuration: offerInfo.fulfillmentPeriodDuration,
+          disputePeriodDuration: offerInfo.disputePeriodDuration,
           voucherValidDuration: offerInfo.voucherValidDuration,
           resolutionPeriodDuration: offerInfo.resolutionPeriodDuration,
           metadataUri: offerInfo.metadataUri,
@@ -237,9 +237,9 @@ function CreateProductInner({
       return storage.add(fromBase64ToBinary(previewImage));
     });
 
-    const profileImageLink = await storage.add(
-      fromBase64ToBinary(profileImage[0])
-    );
+    const profileImageLink = profileImage[0]
+      ? await storage.add(fromBase64ToBinary(profileImage[0]))
+      : undefined;
     const productMainImageLink = await storage.add(
       fromBase64ToBinary(productMainImage[0])
     );
@@ -447,7 +447,7 @@ function CreateProductInner({
         redemptionPeriod: coreTermsOfSale.redemptionPeriod
       });
 
-      const fulfillmentPeriodDurationInMS =
+      const disputePeriodDurationInMS =
         parseInt(termsOfExchange.disputePeriod) * 24 * 3600 * 1000; // day to msec
       const resolutionPeriodDurationInMS =
         parseInt(CONFIG.defaultDisputeResolutionPeriodDays) * 24 * 3600 * 1000; // day to msec
@@ -462,7 +462,7 @@ function CreateProductInner({
         voucherValidDurationInMS: 0,
         validFromDateInMS: validFromDateInMS.toString(),
         validUntilDateInMS: validUntilDateInMS.toString(),
-        fulfillmentPeriodDurationInMS: fulfillmentPeriodDurationInMS.toString(),
+        disputePeriodDurationInMS: disputePeriodDurationInMS.toString(),
         resolutionPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
         exchangeToken: exchangeToken?.address || ethers.constants.AddressZero,
         disputeResolverId: CONFIG.defaultDisputeResolverId,

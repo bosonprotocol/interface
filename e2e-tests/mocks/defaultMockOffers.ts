@@ -7,7 +7,7 @@ export const defaultMockOffers: Offer[] = [
     createdAt: "",
     offerChecksum: "",
     sellerDeposit: "",
-    fulfillmentPeriodDuration: "",
+    disputePeriodDuration: "",
     metadataUri: "",
     buyerCancelPenalty: "",
     agentId: "0",
