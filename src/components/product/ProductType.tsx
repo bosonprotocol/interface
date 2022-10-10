@@ -131,9 +131,10 @@ export default function ProductType({
     sellerType: currentRoles,
     isLoading
   } = useCurrentSeller();
-  const admin = currentSellers.find(
-    (seller) => seller.admin !== ethers.constants.AddressZero
-  );
+  const admin =
+    currentSellers.find(
+      (seller) => seller.admin !== ethers.constants.AddressZero
+    )?.admin || "";
   const {
     sellers: adminSellers,
     lens,
@@ -158,11 +159,13 @@ export default function ProductType({
   const currentOperator = currentSellers.find((seller) => {
     return seller.operator === address;
   }); // lens profile of the current user
-  const operatorLens: Profile = lens.find((lensProfile) => {
-    return (
-      getLensTokenIdDecimal(lensProfile.id) === currentOperator.authTokenId
-    );
-  });
+  const operatorLens: Profile =
+    lens.find((lensProfile) => {
+      return (
+        getLensTokenIdDecimal(lensProfile.id).toString() ===
+        currentOperator?.authTokenId
+      );
+    }) || ({} as Profile);
 
   const onRegularProfileCreated = useCallback(
     (regularProfile: CreateYourProfile) => {

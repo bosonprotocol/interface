@@ -67,10 +67,10 @@ interface Props {
   };
 }
 export default function CollectionsCard({ collection }: Props) {
-  const { lens } = useCurrentSeller({
+  const { lens: lensProfiles } = useCurrentSeller({
     sellerId: collection.id
   });
-
+  const [lens] = lensProfiles;
   const navigate = useKeepQueryParamsNavigate();
   const imagesNumber = 4;
   const images = useMemo(() => {

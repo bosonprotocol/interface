@@ -45,7 +45,7 @@ export function useCurrentSeller({ address, sellerId }: Props = {}) {
       if (!sellerAddress) {
         return null;
       }
-      const sellers = await coreSDK.getSellerByAddress(sellerAddress);
+      const sellers = await coreSDK.getSellersByAddress(sellerAddress);
 
       const rolesWithSameAddress = sellers
         .flatMap((seller: any) => [
@@ -180,7 +180,7 @@ export function useCurrentSeller({ address, sellerId }: Props = {}) {
       enabled: !!sellerIdsToQuery?.length
     }
   );
-  const sellerValues = useMemo(
+  const sellerValues: NonNullable<typeof sellerById.data>[] = useMemo(
     () =>
       sellerAddressType === "ADDRESS"
         ? resultByAddress.data?.sellers || []

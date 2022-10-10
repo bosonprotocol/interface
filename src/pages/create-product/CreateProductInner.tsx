@@ -119,7 +119,8 @@ function CreateProductInner({
   const operatorLens: Profile =
     lensProfiles.find((lensProfile) => {
       return (
-        getLensTokenIdDecimal(lensProfile.id) === currentOperator.authTokenId
+        getLensTokenIdDecimal(lensProfile.id).toString() ===
+        currentOperator?.authTokenId
       );
     }) || ({} as Profile);
 

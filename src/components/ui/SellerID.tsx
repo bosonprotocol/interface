@@ -83,10 +83,10 @@ const SellerID: React.FC<
   ...rest
 }) => {
   const { address } = useAccount();
-  const { lens } = useCurrentSeller({
+  const { lens: lensProfiles } = useCurrentSeller({
     sellerId: offer.seller.id
   });
-
+  const [lens] = lensProfiles;
   const navigate = useKeepQueryParamsNavigate();
   const { artist } = getOfferDetails(offer);
 
