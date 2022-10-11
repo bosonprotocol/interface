@@ -12,6 +12,7 @@ import DisputeModal from "./components/DisputeModal/DisputeModal";
 import DisputeResolverDecideModal from "./components/DisputeResolver/DisputeResolverDecideModal";
 import DisputeResolverRefuseModal from "./components/DisputeResolver/DisputeResolverRefuseModal";
 import ExchangePolicyDetailsModal from "./components/ExchangePolicyDetails";
+import ExpireVoucherModal from "./components/ExpireVoucherModal";
 import InvalidRoleModal from "./components/InvalidRoleModal";
 import ManageFunds from "./components/ManageFunds";
 import ProductCreateSuccess from "./components/ProductCreateSuccess";
@@ -56,6 +57,7 @@ export const MODAL_TYPES = {
   TRANSACTION_SUBMITTED: "TRANSACTION_SUBMITTED",
   CREATE_PROFILE: "CREATE_PROFILE",
   EXCHANGE_POLICY_DETAILS: "EXCHANGE_POLICY_DETAILS",
+  EXPIRE_VOUCHER_MODAL: "EXPIRE_VOUCHER_MODAL",
   INVALID_ROLE: "INVALID_ROLE",
   DISPUTE_RESOLUTION_DECIDE_MODAL: "DISPUTE_RESOLUTION_DECIDE_MODAL",
   DISPUTE_RESOLUTION_REFUSE_MODAL: "DISPUTE_RESOLUTION_REFUSE_MODAL"
@@ -88,6 +90,7 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.TRANSACTION_SUBMITTED]: TransactionSubmittedModal,
   [MODAL_TYPES.CREATE_PROFILE]: CreateProfileModal,
   [MODAL_TYPES.EXCHANGE_POLICY_DETAILS]: ExchangePolicyDetailsModal,
+  [MODAL_TYPES.EXPIRE_VOUCHER_MODAL]: ExpireVoucherModal,
   [MODAL_TYPES.INVALID_ROLE]: InvalidRoleModal,
   [MODAL_TYPES.DISPUTE_RESOLUTION_DECIDE_MODAL]: DisputeResolverDecideModal,
   [MODAL_TYPES.DISPUTE_RESOLUTION_REFUSE_MODAL]: DisputeResolverRefuseModal

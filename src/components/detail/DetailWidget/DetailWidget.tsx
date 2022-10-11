@@ -272,6 +272,12 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   const isBeforeRedeem =
     !exchangeStatus || NOT_REDEEMED_YET.includes(exchangeStatus);
 
+  const isExchangeExpired =
+    exchangeStatus &&
+    [exchanges.ExtendedExchangeState.Expired].includes(
+      exchangeStatus as unknown as exchanges.ExtendedExchangeState
+    );
+
   const { data: signer } = useSigner();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -428,6 +434,34 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 {offer.metadata.name} rNFT
               </Typography>
               <ArrowRight size={18} color={colors.orange} />
+            </Grid>
+          )}
+          {isExchange && isExchangeExpired && (
+            <Grid
+              alignItems="center"
+              justifyContent="space-between"
+              style={{ margin: "-1rem 0 1rem 0", cursor: "pointer" }}
+              onClick={() => {
+                if (exchange) {
+                  showModal(
+                    modalTypes.EXPIRE_VOUCHER_MODAL,
+                    {
+                      title: "Expire Voucher",
+                      exchange
+                    },
+                    "auto"
+                  );
+                }
+              }}
+            >
+              <Typography
+                tag="p"
+                style={{ color: colors.darkGrey, margin: 0 }}
+                $fontSize="0.75rem"
+              >
+                You can withdraw your funds here
+              </Typography>
+              <ArrowRight size={18} color={colors.darkGrey} />
             </Grid>
           )}
           <WidgetUpperGrid
