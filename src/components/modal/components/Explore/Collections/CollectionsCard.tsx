@@ -6,7 +6,7 @@ import { UrlParameters } from "../../../../../lib/routing/parameters";
 import { BosonRoutes } from "../../../../../lib/routing/routes";
 import { colors } from "../../../../../lib/styles/colors";
 import { zIndex } from "../../../../../lib/styles/zIndex";
-import { useCurrentSeller } from "../../../../../lib/utils/hooks/useCurrentSeller";
+import { useCurrentSellers } from "../../../../../lib/utils/hooks/useCurrentSellers";
 import { useKeepQueryParamsNavigate } from "../../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import Grid from "../../../../ui/Grid";
 import Image from "../../../../ui/Image";
@@ -67,7 +67,7 @@ interface Props {
   };
 }
 export default function CollectionsCard({ collection }: Props) {
-  const { lens: lensProfiles } = useCurrentSeller({
+  const { lens: lensProfiles } = useCurrentSellers({
     sellerId: collection.id
   });
   const [lens] = lensProfiles;

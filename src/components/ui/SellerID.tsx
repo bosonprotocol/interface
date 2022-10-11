@@ -11,7 +11,7 @@ import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { getOfferDetails } from "../../lib/utils/getOfferDetails";
 import { MediaSet } from "../../lib/utils/hooks/lens/graphql/generated";
-import { useCurrentSeller } from "../../lib/utils/hooks/useCurrentSeller";
+import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import Image from "./Image";
 
@@ -83,7 +83,7 @@ const SellerID: React.FC<
   ...rest
 }) => {
   const { address } = useAccount();
-  const { lens: lensProfiles } = useCurrentSeller({
+  const { lens: lensProfiles } = useCurrentSellers({
     sellerId: offer.seller.id
   });
   const [lens] = lensProfiles;

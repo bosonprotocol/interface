@@ -13,7 +13,7 @@ import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes, OffersRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
-import { useCurrentSeller } from "../../lib/utils/hooks/useCurrentSeller";
+import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useGetIpfsImage } from "../../lib/utils/hooks/useGetIpfsImage";
 import { useHandleText } from "../../lib/utils/hooks/useHandleText";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
@@ -50,7 +50,7 @@ export default function ProductCard({
   dataTestId,
   isHoverDisabled = false
 }: Props) {
-  const { lens: lensProfiles } = useCurrentSeller({
+  const { lens: lensProfiles } = useCurrentSellers({
     sellerId: offer.seller.id
   });
   const [lens] = lensProfiles;

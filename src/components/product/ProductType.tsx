@@ -12,7 +12,7 @@ import {
   loadAndSetImage
 } from "../../lib/utils/base64";
 import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
-import { useCurrentSeller } from "../../lib/utils/hooks/useCurrentSeller";
+import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
 import {
   CreateProductImageCreteYourProfileLogo,
@@ -133,7 +133,7 @@ export default function ProductType({
     sellerType: currentRoles,
     lens,
     isLoading
-  } = useCurrentSeller();
+  } = useCurrentSellers();
 
   const [shownDraftModal, setShowDraftModal] = useState<boolean>(false);
 

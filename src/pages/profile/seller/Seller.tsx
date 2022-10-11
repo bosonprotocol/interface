@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
+import { getLensCoverPictureUrl } from "../../../components/modal/components/CreateProfile/Lens/utils";
 import AddressText from "../../../components/offer/AddressText";
 import Grid from "../../../components/ui/Grid";
 import Image from "../../../components/ui/Image";
@@ -17,7 +18,8 @@ import {
   ProfileFieldsFragment
 } from "../../../lib/utils/hooks/lens/graphql/generated";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
-import { useCurrentSeller } from "../../../lib/utils/hooks/useCurrentSeller";
+import { useCurrentSellers } from "../../../lib/utils/hooks/useCurrentSellers";
+import { useGetIpfsImage } from "../../../lib/utils/hooks/useGetIpfsImage";
 import { useSellerCalculations } from "../../../lib/utils/hooks/useSellerCalculations";
 import { useSellers } from "../../../lib/utils/hooks/useSellers";
 import NotFound from "../../not-found/NotFound";
@@ -54,15 +56,17 @@ export default function Seller() {
   const { address: currentWalletAddress = "" } = useAccount();
   const { [UrlParameters.sellerId]: sellerId = "" } = useParams();
   const { isLteXS } = useBreakpoints();
-
   const {
     isLoading,
     isError,
     lens: sellersLens
-  } = useCurrentSeller({
+  } = useCurrentSellers({
     sellerId
   });
   const [sellerLens] = sellersLens;
+  const { imageSrc: coverImage } = useGetIpfsImage(
+    getLensCoverPictureUrl(sellerLens)
+  );
 
   const {
     data: sellers = [],
@@ -124,12 +128,7 @@ export default function Seller() {
     <>
       <BasicInfo>
         <ProfileSectionWrapper>
-          <BannerImage
-            src={
-              (sellerLens?.coverPicture as MediaSet)?.original?.url ||
-              backgroundFluid
-            }
-          />
+          <BannerImage src={coverImage || backgroundFluid} />
           <BannerImageLayer>
             <AvatarContainer>
               {(sellerLens?.picture as MediaSet) ? (

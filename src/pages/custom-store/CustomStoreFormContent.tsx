@@ -12,7 +12,7 @@ import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
 import { colors } from "../../lib/styles/colors";
 import { getFilesWithEncodedData } from "../../lib/utils/files";
-import { useCurrentSeller } from "../../lib/utils/hooks/useCurrentSeller";
+import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { preAppendHttps } from "../../lib/validation/regex/url";
 import SocialLogo from "./SocialLogo";
 import {
@@ -144,7 +144,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
   const { setFieldValue, values, isValid, setFieldTouched } =
     useFormikContext<StoreFormFields>();
 
-  const { sellerIds } = useCurrentSeller();
+  const { sellerIds } = useCurrentSellers();
 
   const queryParams = new URLSearchParams(
     formValuesWithOneLogoUrl(values)
@@ -191,7 +191,10 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
     values.withOwnProducts?.value || ""
   );
   useEffect(() => {
-    if (sellerIds && ["mine"].includes(values.withOwnProducts?.value || "")) {
+    if (
+      sellerIds.length &&
+      ["mine"].includes(values.withOwnProducts?.value || "")
+    ) {
       setFieldValue(storeFields.sellerCurationList, sellerIds.join(","), true);
     }
   }, [values.withOwnProducts?.value, setFieldValue, sellerIds]);

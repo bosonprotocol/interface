@@ -40,7 +40,7 @@ import { fromBase64ToBinary } from "../../lib/utils/base64";
 import { getLocalStorageItems } from "../../lib/utils/getLocalStorageItems";
 import { useChatStatus } from "../../lib/utils/hooks/chat/useChatStatus";
 import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
-import { useCurrentSeller } from "../../lib/utils/hooks/useCurrentSeller";
+import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { saveItemInStorage } from "../../lib/utils/hooks/useLocalStorage";
@@ -111,7 +111,7 @@ function CreateProductInner({
 
   const { address } = useAccount();
 
-  const { sellers, lens: lensProfiles } = useCurrentSeller();
+  const { sellers, lens: lensProfiles } = useCurrentSellers();
 
   const hasSellerAccount = !!sellers?.length;
 

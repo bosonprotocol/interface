@@ -17,13 +17,13 @@ interface Props {
 }
 
 /**
- * This hook returns the current seller or sellers. It will return more than one
- * seller if you have more than one Lens profile and you send your Lens NFT that
+ * This hook returns the current seller or sellers in a list. It will return more than one
+ * seller if you have more than one Lens profile and you had sent your Lens NFT that
  * identifies your profile to another user.
- * @param param0
+ * @param
  * @returns
  */
-export function useCurrentSeller({ address, sellerId }: Props = {}) {
+export function useCurrentSellers({ address, sellerId }: Props = {}) {
   const coreSDK = useCoreSDK();
   const { address: loggedInUserAddress } = useAccount();
   const sellerAddress = address || sellerId || loggedInUserAddress || null;
