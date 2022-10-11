@@ -251,7 +251,8 @@ export default function Preview({ togglePreview, seller }: Props) {
                 >
                   {values.productInformation.description}
                 </Typography>
-                <DetailTable data={productAttributes ?? []} />
+                {/* TODO: hidden for now */}
+                {/* <DetailTable data={productAttributes ?? []} /> */}
               </div>
               <div>
                 <Typography tag="h3">About the creator</Typography>

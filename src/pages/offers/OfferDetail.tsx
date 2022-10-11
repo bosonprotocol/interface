@@ -82,7 +82,7 @@ export default function OfferDetail() {
     offerImg,
     shippingInfo,
     description,
-    productData,
+    // productData,
     artistDescription,
     images
   } = getOfferDetails(offer);
@@ -127,7 +127,8 @@ export default function OfferDetail() {
             <Typography tag="p" data-testid="description">
               {description}
             </Typography>
-            <DetailTable data={productData} tag="strong" inheritColor />
+            {/* TODO: hidden for now */}
+            {/* <DetailTable data={productData} tag="strong" inheritColor /> */}
           </div>
           <div>
             <Typography tag="h3">About the creator</Typography>
