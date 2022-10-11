@@ -126,22 +126,16 @@ export default function ProductType({
   const {
     seller: currentSeller,
     sellerType: currentRoles,
+    lens,
     isLoading
   } = useCurrentSeller();
-  const {
-    seller: adminSeller,
-    lens,
-    isLoading: isAdminLoading
-  } = useCurrentSeller({
-    address: currentSeller.admin
-  });
   const [shownDraftModal, setShowDraftModal] = useState<boolean>(false);
 
   const [isRegularSellerSet, setIsRegularSeller] = useState<boolean>(false);
   const isOperator = currentRoles?.find((role) => role === "operator");
   const isAdminLinkedToLens =
-    adminSeller.authTokenType === authTokenTypes.Lens &&
-    adminSeller.authTokenId === getLensTokenIdDecimal(lens.id).toString();
+    currentSeller.authTokenType === authTokenTypes.LENS &&
+    currentSeller.authTokenId === getLensTokenIdDecimal(lens.id).toString();
   const hasValidAdminAccount =
     (CONFIG.lens.enabled && isAdminLinkedToLens) || !CONFIG.lens.enabled;
   const isSeller = !!Object.keys(currentSeller).length;
@@ -192,7 +186,7 @@ export default function ProductType({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ipfsMetadataStorage, isLensFilled, lens]);
   useEffect(() => {
-    if (isLoading || isAdminLoading) {
+    if (isLoading) {
       return;
     }
     if (
@@ -241,7 +235,6 @@ export default function ProductType({
     isSeller,
     isRegularSellerSet,
     isLoading,
-    isAdminLoading,
     values
   ]);
 

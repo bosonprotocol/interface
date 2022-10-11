@@ -185,17 +185,17 @@ export const isCompletable = (exchange: Exchange) => {
   const isFulfilled =
     exchange.redeemedDate &&
     !exchange.disputedDate &&
-    exchange.offer.fulfillmentPeriodDuration &&
+    exchange.offer.disputePeriodDuration &&
     exchange.state !== subgraph.ExchangeState.Completed;
 
   if (isFulfilled) {
-    const fulfillmentPeriodTime = dayjs(
+    const disputePeriodTime = dayjs(
       getDateTimestamp(exchange.redeemedDate || "") +
-        getDateTimestamp(exchange.offer.fulfillmentPeriodDuration)
+        getDateTimestamp(exchange.offer.disputePeriodDuration)
     );
-    isRedeemedAndFulfillmentPeriodInPast = !!dayjs(
-      fulfillmentPeriodTime
-    ).isBefore(dayjs());
+    isRedeemedAndFulfillmentPeriodInPast = !!dayjs(disputePeriodTime).isBefore(
+      dayjs()
+    );
   }
 
   return isRedeemedAndFulfillmentPeriodInPast;

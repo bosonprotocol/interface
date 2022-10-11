@@ -14,6 +14,7 @@ import { useCoreSDK } from "../../../../../../../lib/utils/useCoreSdk";
 import { poll } from "../../../../../../../pages/create-product/utils";
 import Collapse from "../../../../../../collapse/Collapse";
 import { Checkbox } from "../../../../../../form";
+import { FieldInput } from "../../../../../../form/Field.styles";
 import FormField from "../../../../../../form/FormField";
 import Input from "../../../../../../form/Input";
 import Textarea from "../../../../../../form/Textarea";
@@ -35,6 +36,18 @@ const Container = styled.div`
   padding: 2rem;
   > div:not(:last-child) {
     margin-bottom: 1rem;
+  }
+`;
+
+const UnsignedMessageWrapper = styled.div`
+  display: inline-flex;
+  width: 100%;
+  #unsigned_prefix {
+    padding-right: 0;
+    width: auto;
+  }
+  #unsigned_message {
+    padding-left: 0;
   }
 `;
 
@@ -325,11 +338,18 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
                     <Input {...FormModel.formFields.exchangeId} />
                     <Input {...FormModel.formFields.disputeId} />
                     <Input {...FormModel.formFields.buyerAddress} disabled />
-                    <Input
-                      {...FormModel.formFields.message}
-                      prefix="Unsigned message:"
-                      disabled
-                    />
+                    <UnsignedMessageWrapper>
+                      <FieldInput
+                        value="Unsigned message:"
+                        disabled
+                        id="unsigned_prefix"
+                      />
+                      <Input
+                        {...FormModel.formFields.message}
+                        disabled
+                        id="unsigned_message"
+                      />
+                    </UnsignedMessageWrapper>
                     <Input {...FormModel.formFields.signature} />
                   </FormField>
                   <FormField theme="white" title="Chat transcript">
