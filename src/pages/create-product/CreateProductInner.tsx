@@ -69,6 +69,7 @@ interface Props {
   initial: CreateProductForm;
   showCreateProductDraftModal: () => void;
   showInvalidRoleModal: () => void;
+  isStartFreshDraft: boolean;
 }
 interface SupportedJuridiction {
   label: string;
@@ -78,7 +79,8 @@ interface SupportedJuridiction {
 function CreateProductInner({
   initial,
   showCreateProductDraftModal,
-  showInvalidRoleModal
+  showInvalidRoleModal,
+  isStartFreshDraft
 }: Props) {
   const navigate = useKeepQueryParamsNavigate();
   const { chatInitializationStatus } = useChatStatus();
@@ -112,17 +114,17 @@ function CreateProductInner({
 
   const hasSellerAccount = !!sellers?.length;
 
-  const currentOperator = sellers.find((seller: any) => {
-    return seller.operator === address;
+  const currentOperator = sellers.find((seller) => {
+    return seller.operator.toLowerCase() === address?.toLowerCase();
   });
   // lens profile of the current user
-  const operatorLens: Profile =
+  const operatorLens: Profile | null =
     lensProfiles.find((lensProfile) => {
       return (
         getLensTokenIdDecimal(lensProfile.id).toString() ===
         currentOperator?.authTokenId
       );
-    }) || ({} as Profile);
+    }) || null;
 
   const handleOpenSuccessModal = async ({
     offerInfo
@@ -180,6 +182,7 @@ function CreateProductInner({
       setIsPreviewVisible,
       chatInitializationStatus,
       showCreateProductDraftModal,
+      isStartFreshDraft,
       showInvalidRoleModal
     });
     return {
@@ -195,7 +198,8 @@ function CreateProductInner({
     chatInitializationStatus,
     currentStep,
     showCreateProductDraftModal,
-    showInvalidRoleModal
+    showInvalidRoleModal,
+    isStartFreshDraft
   ]);
 
   const handleNextForm = useCallback(() => {

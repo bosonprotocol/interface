@@ -1,3 +1,4 @@
+import { subgraph } from "@bosonprotocol/react-kit";
 import { gql } from "graphql-request";
 import { useMemo } from "react";
 import { useQuery } from "react-query";
@@ -38,7 +39,7 @@ export function useCurrentSeller({ address, sellerId }: Props = {}) {
     }
     return null;
   }, [address, sellerAddress, sellerId]);
-  console.log({ sellerAddressType });
+
   const resultByAddress = useQuery(
     ["current-seller-data-by-address", { address: sellerAddress }],
     async () => {
@@ -48,23 +49,24 @@ export function useCurrentSeller({ address, sellerId }: Props = {}) {
       const sellers = await coreSDK.getSellersByAddress(sellerAddress);
 
       const rolesWithSameAddress = sellers
-        .flatMap((seller: any) => [
+        .flatMap((seller) => [
           { admin: seller.admin },
           { clerk: seller.clerk },
           { treasury: seller.treasury },
           { operator: seller.operator }
         ])
-        .filter(
-          (role: any) =>
+        .filter((role) => {
+          return (
             ((Object.values(role)[0] as string) || "").toLowerCase() ==
-            sellerAddress
-        )
+            sellerAddress.toLowerCase()
+          );
+        })
         .map(
-          (role: any) =>
+          (role) =>
             Object.keys(role)[0] as "admin" | "clerk" | "treasury" | "operator"
         );
       const isLensSeller = sellers.find(
-        (seller: any) => seller.authTokenType === authTokenTypes.Lens
+        (seller) => seller.authTokenType === authTokenTypes.LENS
       );
       return {
         sellers,
@@ -120,6 +122,7 @@ export function useCurrentSeller({ address, sellerId }: Props = {}) {
   const sellerType: string[] = resultById?.data
     ? Object.keys(resultById.data)
     : resultByAddress?.data?.sellerType || [];
+
   const sellerIdsToQuery: string[] =
     sellerAddressType === "SELLER_ID" ? [sellerAddress as string] : [];
   const sellerById = useQuery(
@@ -140,7 +143,7 @@ export function useCurrentSeller({ address, sellerId }: Props = {}) {
       }>(
         gql`
           query GetSellerBySellerId($sellerIds: [String]) {
-            sellers(where: { sellerIds: $sellerIds }) {
+            sellers(where: { sellerId_in: $sellerIds }) {
               authTokenId
               authTokenType
               admin
@@ -180,17 +183,20 @@ export function useCurrentSeller({ address, sellerId }: Props = {}) {
       enabled: !!sellerIdsToQuery?.length
     }
   );
-  const sellerValues: NonNullable<typeof sellerById.data>[] = useMemo(
+  const sellerValues = useMemo(
     () =>
       sellerAddressType === "ADDRESS"
         ? resultByAddress.data?.sellers || []
-        : [sellerById?.data] || [],
+        : ([sellerById?.data] as unknown as subgraph.SellerFieldsFragment[]) ||
+          [],
 
     [resultByAddress.data?.sellers, sellerAddressType, sellerById?.data]
   );
   const profileIds = useMemo(
     () =>
-      sellerValues.map((seller: any) => getLensTokenIdHex(seller?.authTokenId)),
+      sellerValues
+        .map((seller) => getLensTokenIdHex(seller?.authTokenId))
+        .filter((value) => !!value),
     [sellerValues]
   );
 
@@ -207,12 +213,21 @@ export function useCurrentSeller({ address, sellerId }: Props = {}) {
     }
   );
   const lens: Profile[] = useMemo(() => {
-    return {
-      ...((resultLens?.data?.items as Profile[]) ?? [])
-    };
+    return (resultLens?.data?.items as Profile[]) ?? [];
   }, [resultLens?.data]);
-  // console.log({ sellerType, sellerValues });
+  const sellerIds = (
+    resultByAddress.data
+      ? resultByAddress.data.sellers.map((seller) => seller.id)
+      : sellerAddressType === "SELLER_ID"
+      ? [sellerAddress]
+      : []
+  ).filter((sellerId) => !!sellerId) as string[];
   return {
+    isSuccess:
+      resultById?.isSuccess ||
+      resultByAddress?.isSuccess ||
+      sellerById?.isSuccess ||
+      resultLens?.isSuccess,
     isLoading:
       resultById?.isLoading ||
       resultByAddress?.isLoading ||
@@ -223,9 +238,7 @@ export function useCurrentSeller({ address, sellerId }: Props = {}) {
       resultByAddress?.isError ||
       sellerById?.isError ||
       resultLens?.isError,
-    sellerIds: resultByAddress.data?.sellers.map(
-      (seller: any) => seller.id
-    ) ?? [sellerAddress],
+    sellerIds,
     sellerType,
     sellers: sellerValues,
     lens

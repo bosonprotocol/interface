@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ethers } from "ethers";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
@@ -14,6 +13,7 @@ import {
 } from "../../lib/utils/base64";
 import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
 import { useCurrentSeller } from "../../lib/utils/hooks/useCurrentSeller";
+import { useEffectDebugger } from "../../lib/utils/hooks/useEffectDebugger";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
 import {
   CreateProductImageCreteYourProfileLogo,
@@ -107,17 +107,20 @@ const ProductImage = styled(Image)`
 interface Props {
   showCreateProductDraftModal: () => void;
   showInvalidRoleModal: () => void;
+  isStartFreshDraft: boolean;
 }
 
 export default function ProductType({
   showCreateProductDraftModal,
-  showInvalidRoleModal
+  showInvalidRoleModal,
+  isStartFreshDraft: isDraftModalClosed
 }: Props) {
   const { address } = useAccount();
   const { handleChange, values, nextIsDisabled, setFieldValue } =
     useCreateForm();
+  console.log("values.createYourProfile", values.createYourProfile);
   const ipfsMetadataStorage = useIpfsStorage();
-  const { showModal } = useModal();
+  const { showModal, store, updateProps } = useModal();
   const fileName = useMemo<CreateProductImageCreteYourProfileLogo>(
     () => `create-product-image_createYourProfile.logo`,
     []
@@ -132,42 +135,36 @@ export default function ProductType({
     lens,
     isLoading
   } = useCurrentSeller();
-  const admin =
-    currentSellers.find(
-      (seller) => seller.admin !== ethers.constants.AddressZero
-    )?.admin || "";
-  const {
-    sellers: adminSellers,
-    lens,
-    isLoading: isAdminLoading
-  } = useCurrentSeller({
-    address: admin
-  });
+
   const [shownDraftModal, setShowDraftModal] = useState<boolean>(false);
 
   const [isRegularSellerSet, setIsRegularSeller] = useState<boolean>(false);
   const isOperator = currentRoles?.find((role) => role === "operator");
-  const isAdminLinkedToLens = adminSellers.some((adminSeller, index) => {
-    return (
-      adminSeller.authTokenType === authTokenTypes.Lens &&
-      adminSeller.authTokenId ===
-        getLensTokenIdDecimal(lens[index].id).toString()
-    );
-  });
+
+  const isAdminLinkedToLens =
+    !isLoading &&
+    !!currentSellers.some((seller, index) => {
+      return (
+        seller.authTokenType === authTokenTypes.LENS &&
+        seller.authTokenId === getLensTokenIdDecimal(lens[index].id).toString()
+      );
+    });
+
   const hasValidAdminAccount =
     (CONFIG.lens.enabled && isAdminLinkedToLens) || !CONFIG.lens.enabled;
-  const isSeller = currentSellers.length;
+  const isSeller = !!currentSellers.length;
   const currentOperator = currentSellers.find((seller) => {
-    return seller.operator === address;
+    return seller.operator.toLowerCase() === address?.toLowerCase();
   }); // lens profile of the current user
-  const operatorLens: Profile =
-    lens.find((lensProfile) => {
-      return (
-        getLensTokenIdDecimal(lensProfile.id).toString() ===
-        currentOperator?.authTokenId
-      );
-    }) || ({} as Profile);
-
+  const operatorLens: Profile | null = useMemo(
+    () =>
+      lens.find((lensProfile) => {
+        const lensIdDecimal = getLensTokenIdDecimal(lensProfile.id).toString();
+        const authTokenId = currentOperator?.authTokenId;
+        return lensIdDecimal === authTokenId;
+      }) || null,
+    [currentOperator?.authTokenId, lens]
+  );
   const onRegularProfileCreated = useCallback(
     (regularProfile: CreateYourProfile) => {
       if (regularProfile.createYourProfile.logo) {
@@ -195,8 +192,7 @@ export default function ProductType({
             return; // should never happened
           }
           setBase64(logoBase64 as any);
-
-          setFieldValue("createYourProfile", {
+          const createYourProfile = {
             logo: new File([dataURItoBlob(logoBase64)], "logo", {
               type: logoBase64.split(";")[0].split(":")[1]
             }),
@@ -204,7 +200,8 @@ export default function ProductType({
             email: getLensEmail(operatorLens as Profile),
             description: operatorLens.bio,
             website: getLensWebsite(operatorLens as Profile)
-          });
+          };
+          setFieldValue("createYourProfile", createYourProfile);
         } catch (error) {
           console.error(error);
         }
@@ -212,42 +209,59 @@ export default function ProductType({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ipfsMetadataStorage, operatorLens]);
-  useEffect(() => {
+  useEffectDebugger(() => {
     if (isLoading) {
       return;
     }
-    if (
-      (!isRegularSellerSet && !CONFIG.lens.enabled) ||
+    console.log({ isRegularSellerSet, shownDraftModal });
+    if (!CONFIG.lens.enabled && !shownDraftModal) {
+      setShowDraftModal(true);
+      showCreateProductDraftModal();
+    } else if (
+      (!isRegularSellerSet && !CONFIG.lens.enabled && isDraftModalClosed) ||
       (CONFIG.lens.enabled &&
         ((isSeller && !hasValidAdminAccount) || !isSeller))
     ) {
-      showModal(
-        "CREATE_PROFILE",
-        {
-          headerComponent: (
-            <ProfileMultiSteps
-              createOrSelect={null}
-              activeStep={0}
-              createOrViewRoyalties={null}
-              key="ProductType"
-            />
-          ),
-          initialRegularCreateProfile: values,
-          onRegularProfileCreated,
-          closable: false,
-          onClose: () => {
-            showCreateProductDraftModal();
+      console.log("modalType", store.modalType);
+      if (store.modalType) {
+        console.log("update create profile modal with values", values);
+        updateProps<"CREATE_PROFILE">({
+          ...store,
+          modalProps: {
+            ...store.modalProps,
+            initialRegularCreateProfile: values
           }
-        },
-        "auto",
-        undefined,
-        {
-          xs: `${breakpointNumbers.m + 1}px`
-        }
-      );
+        });
+      } else {
+        showModal(
+          "CREATE_PROFILE",
+          {
+            headerComponent: (
+              <ProfileMultiSteps
+                createOrSelect={null}
+                activeStep={0}
+                createOrViewRoyalties={null}
+                key="ProductType"
+              />
+            ),
+            initialRegularCreateProfile: values,
+            onRegularProfileCreated,
+            closable: false,
+            onClose: () => {
+              showCreateProductDraftModal();
+            }
+          },
+          "auto",
+          undefined,
+          {
+            xs: `${breakpointNumbers.m + 1}px`
+          }
+        );
+      }
     } else if (
-      ((isOperator && hasValidAdminAccount && CONFIG.lens.enabled) ||
-        (isRegularSellerSet && !CONFIG.lens.enabled)) &&
+      isOperator &&
+      hasValidAdminAccount &&
+      CONFIG.lens.enabled &&
       !shownDraftModal
     ) {
       setShowDraftModal(true);
@@ -261,8 +275,10 @@ export default function ProductType({
     isOperator,
     isSeller,
     isRegularSellerSet,
+    isDraftModalClosed,
+    shownDraftModal,
     isLoading,
-    values
+    values.createYourProfile
   ]);
 
   return (

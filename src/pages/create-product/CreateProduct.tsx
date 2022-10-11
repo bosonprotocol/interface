@@ -8,14 +8,17 @@ import CreateProductInner from "./CreateProductInner";
 function CreateProduct() {
   const store = useInitialValues();
   const [initial, setInitial] = useState<CreateProductForm>(store.base);
+  const [isDraftModalClosed, setDraftModalClosed] = useState<boolean>(false);
   const { showModal, modalTypes, hideModal } = useModal();
 
   const chooseNew = () => {
     store.remove(store.key);
+    setDraftModalClosed(true);
     hideModal();
   };
   const chooseDraft = () => {
     setInitial(store.draft);
+    setDraftModalClosed(true);
     hideModal();
   };
 
@@ -46,6 +49,7 @@ function CreateProduct() {
       initial={initial}
       showCreateProductDraftModal={showCreateProductDraftModal}
       showInvalidRoleModal={showInvalidRoleModal}
+      isStartFreshDraft={isDraftModalClosed}
     />
   );
 }

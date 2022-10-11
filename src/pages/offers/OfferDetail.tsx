@@ -38,10 +38,10 @@ export default function OfferDetail() {
   );
 
   const { data: sellers } = useSellers({
-    admin: offer?.seller.admin,
+    id: offer?.seller.id,
     includeFunds: true
   });
-  const sellerAvailableDeposit = sellers?.[0].funds?.find(
+  const sellerAvailableDeposit = sellers?.[0]?.funds?.find(
     (fund) => fund.token.address === offer?.exchangeToken.address
   )?.availableAmount;
   const offerRequiredDeposit = offer?.sellerDeposit;

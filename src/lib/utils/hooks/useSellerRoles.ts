@@ -19,18 +19,20 @@ export interface SellerRolesProps {
 export function useSellerRoles(id: string) {
   const { address } = useAccount();
 
-  const { data } = useQuery(["seller-roles", { id }], async () => {
-    const result = await fetchSubgraph<{
-      sellers: {
-        id: string;
-        admin: string;
-        clerk: string;
-        operator: string;
-        treasury: string;
-        active: boolean;
-      }[];
-    }>(
-      gql`
+  const { data } = useQuery(
+    ["seller-roles", { id }],
+    async () => {
+      const result = await fetchSubgraph<{
+        sellers: {
+          id: string;
+          admin: string;
+          clerk: string;
+          operator: string;
+          treasury: string;
+          active: boolean;
+        }[];
+      }>(
+        gql`
           query GetSellerByID(
             $id: String
           ) {
@@ -48,12 +50,16 @@ export function useSellerRoles(id: string) {
             }
           }
         `,
-      {
-        ...(id && { id })
-      }
-    );
-    return result?.sellers[0] ?? null;
-  });
+        {
+          id
+        }
+      );
+      return result?.sellers[0] ?? null;
+    },
+    {
+      enabled: !!id
+    }
+  );
 
   const sellerProps = useMemo(
     () => ({
