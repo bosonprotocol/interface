@@ -69,7 +69,7 @@ interface Props {
   initial: CreateProductForm;
   showCreateProductDraftModal: () => void;
   showInvalidRoleModal: () => void;
-  isStartFreshDraft: boolean;
+  isDraftModalClosed: boolean;
 }
 interface SupportedJuridiction {
   label: string;
@@ -80,7 +80,7 @@ function CreateProductInner({
   initial,
   showCreateProductDraftModal,
   showInvalidRoleModal,
-  isStartFreshDraft
+  isDraftModalClosed
 }: Props) {
   const navigate = useKeepQueryParamsNavigate();
   const { chatInitializationStatus } = useChatStatus();
@@ -115,7 +115,7 @@ function CreateProductInner({
   const hasSellerAccount = !!sellers?.length;
 
   const currentOperator = sellers.find((seller) => {
-    return seller.operator.toLowerCase() === address?.toLowerCase();
+    return seller?.operator.toLowerCase() === address?.toLowerCase();
   });
   // lens profile of the current user
   const operatorLens: Profile | null =
@@ -182,7 +182,7 @@ function CreateProductInner({
       setIsPreviewVisible,
       chatInitializationStatus,
       showCreateProductDraftModal,
-      isStartFreshDraft,
+      isDraftModalClosed,
       showInvalidRoleModal
     });
     return {
@@ -199,7 +199,7 @@ function CreateProductInner({
     currentStep,
     showCreateProductDraftModal,
     showInvalidRoleModal,
-    isStartFreshDraft
+    isDraftModalClosed
   ]);
 
   const handleNextForm = useCallback(() => {

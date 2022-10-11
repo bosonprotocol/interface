@@ -93,7 +93,7 @@ export type CreateProductStepsParams = {
   chatInitializationStatus: ChatInitializationStatus;
   showCreateProductDraftModal: () => void;
   showInvalidRoleModal: () => void;
-  isStartFreshDraft: boolean;
+  isDraftModalClosed: boolean;
 };
 
 export const createProductSteps = ({
@@ -101,7 +101,7 @@ export const createProductSteps = ({
   chatInitializationStatus,
   showCreateProductDraftModal,
   showInvalidRoleModal,
-  isStartFreshDraft
+  isDraftModalClosed
 }: CreateProductStepsParams) => {
   return {
     // 0: {
@@ -121,7 +121,7 @@ export const createProductSteps = ({
           <ProductType
             showCreateProductDraftModal={showCreateProductDraftModal}
             showInvalidRoleModal={showInvalidRoleModal}
-            isStartFreshDraft={isStartFreshDraft}
+            isDraftModalClosed={isDraftModalClosed}
           />
         </>
       ),

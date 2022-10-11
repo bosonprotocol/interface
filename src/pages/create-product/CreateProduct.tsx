@@ -29,6 +29,8 @@ function CreateProduct() {
         chooseNew,
         chooseDraft
       });
+    } else {
+      setDraftModalClosed(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -49,7 +51,7 @@ function CreateProduct() {
       initial={initial}
       showCreateProductDraftModal={showCreateProductDraftModal}
       showInvalidRoleModal={showInvalidRoleModal}
-      isStartFreshDraft={isDraftModalClosed}
+      isDraftModalClosed={isDraftModalClosed}
     />
   );
 }

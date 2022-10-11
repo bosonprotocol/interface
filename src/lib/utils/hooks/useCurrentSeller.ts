@@ -185,10 +185,11 @@ export function useCurrentSeller({ address, sellerId }: Props = {}) {
   );
   const sellerValues = useMemo(
     () =>
-      sellerAddressType === "ADDRESS"
+      (sellerAddressType === "ADDRESS"
         ? resultByAddress.data?.sellers || []
         : ([sellerById?.data] as unknown as subgraph.SellerFieldsFragment[]) ||
-          [],
+          []
+      ).filter((value) => !!value),
 
     [resultByAddress.data?.sellers, sellerAddressType, sellerById?.data]
   );

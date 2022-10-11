@@ -13,7 +13,6 @@ import {
 } from "../../lib/utils/base64";
 import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
 import { useCurrentSeller } from "../../lib/utils/hooks/useCurrentSeller";
-import { useEffectDebugger } from "../../lib/utils/hooks/useEffectDebugger";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
 import {
   CreateProductImageCreteYourProfileLogo,
@@ -107,18 +106,18 @@ const ProductImage = styled(Image)`
 interface Props {
   showCreateProductDraftModal: () => void;
   showInvalidRoleModal: () => void;
-  isStartFreshDraft: boolean;
+  isDraftModalClosed: boolean;
 }
 
 export default function ProductType({
   showCreateProductDraftModal,
   showInvalidRoleModal,
-  isStartFreshDraft: isDraftModalClosed
+  isDraftModalClosed
 }: Props) {
   const { address } = useAccount();
   const { handleChange, values, nextIsDisabled, setFieldValue } =
     useCreateForm();
-  console.log("values.createYourProfile", values.createYourProfile);
+
   const ipfsMetadataStorage = useIpfsStorage();
   const { showModal, store, updateProps } = useModal();
   const fileName = useMemo<CreateProductImageCreteYourProfileLogo>(
@@ -209,11 +208,11 @@ export default function ProductType({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ipfsMetadataStorage, operatorLens]);
-  useEffectDebugger(() => {
+  useEffect(() => {
     if (isLoading) {
       return;
     }
-    console.log({ isRegularSellerSet, shownDraftModal });
+
     if (!CONFIG.lens.enabled && !shownDraftModal) {
       setShowDraftModal(true);
       showCreateProductDraftModal();
@@ -222,28 +221,32 @@ export default function ProductType({
       (CONFIG.lens.enabled &&
         ((isSeller && !hasValidAdminAccount) || !isSeller))
     ) {
-      console.log("modalType", store.modalType);
       if (store.modalType) {
-        console.log("update create profile modal with values", values);
-        updateProps<"CREATE_PROFILE">({
-          ...store,
-          modalProps: {
-            ...store.modalProps,
-            initialRegularCreateProfile: values
-          }
-        });
+        if (!CONFIG.lens.enabled) {
+          updateProps<"CREATE_PROFILE">({
+            ...store,
+            modalProps: {
+              ...store.modalProps,
+              initialRegularCreateProfile: values
+            }
+          });
+        }
       } else {
         showModal(
           "CREATE_PROFILE",
           {
-            headerComponent: (
-              <ProfileMultiSteps
-                createOrSelect={null}
-                activeStep={0}
-                createOrViewRoyalties={null}
-                key="ProductType"
-              />
-            ),
+            ...(CONFIG.lens.enabled
+              ? {
+                  headerComponent: (
+                    <ProfileMultiSteps
+                      createOrSelect={null}
+                      activeStep={0}
+                      createOrViewRoyalties={null}
+                      key="ProductType"
+                    />
+                  )
+                }
+              : { title: "Create Profile" }),
             initialRegularCreateProfile: values,
             onRegularProfileCreated,
             closable: false,

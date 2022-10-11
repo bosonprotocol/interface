@@ -1,5 +1,5 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { useAccount } from "wagmi";
 
 import { CONFIG } from "../../../../lib/config";
@@ -25,10 +25,6 @@ export default function CreateProfileModal({
   initialRegularCreateProfile,
   onRegularProfileCreated
 }: Props) {
-  useEffect(() => {
-    console.log("mount profile modal");
-  }, []);
-  console.log("regular values inside modal", initialRegularCreateProfile);
   const { hideModal } = useModal();
   const { address = "" } = useAccount();
 
