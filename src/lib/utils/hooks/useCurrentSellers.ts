@@ -196,6 +196,7 @@ export function useCurrentSellers({ address, sellerId }: Props = {}) {
   const profileIds = useMemo(
     () =>
       sellerValues
+        .filter((seller) => !!Number(seller?.authTokenId))
         .map((seller) => getLensTokenIdHex(seller?.authTokenId))
         .filter((value) => !!value),
     [sellerValues]

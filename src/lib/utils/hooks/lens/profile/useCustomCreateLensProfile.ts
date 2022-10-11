@@ -151,17 +151,17 @@ export default function useCustomCreateLensProfile({
       attributes: [
         {
           traitType: "string",
-          value: values.email,
+          value: values.email || "",
           key: "email"
         },
         {
           traitType: "string",
-          value: values.website,
+          value: values.website || "",
           key: "website"
         },
         {
           traitType: "string",
-          value: values.legalTradingName,
+          value: values.legalTradingName || "",
           key: "legalTradingName"
         }
       ],
