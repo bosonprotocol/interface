@@ -23,6 +23,7 @@ export const AccountQueryParameters = {
 
 export const UrlParameters = {
   offerId: "id",
+  uuid: "uuid",
   exchangeId: "id",
   accountId: "id",
   page: "page",
