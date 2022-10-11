@@ -15,7 +15,10 @@ export default function Input({ name, ...props }: InputProps) {
   return (
     <>
       <FieldInput error={errorMessage} {...field} {...props} />
-      <Error display={displayError} message={errorMessage} />
+      <Error
+        display={!props.hideError && displayError}
+        message={errorMessage}
+      />
     </>
   );
 }

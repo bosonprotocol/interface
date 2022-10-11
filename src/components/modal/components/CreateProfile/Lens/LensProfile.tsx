@@ -85,6 +85,7 @@ export default function LensProfile({ onSubmit }: Props) {
       ) : step === steps.BOSON_ACCOUNT ? (
         <BosonAccountForm
           isExistingProfile={!!lensProfile}
+          formValues={bosonAccount}
           onSubmit={(values) => {
             setBosonAccount(values);
             setStep(steps.SUMMARY);

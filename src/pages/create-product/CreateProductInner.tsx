@@ -17,6 +17,7 @@ dayjs.extend(localizedFormat);
 import { ethers } from "ethers";
 
 import { Token } from "../../components/convertion-rate/ConvertionRateContext";
+import { authTokenTypes } from "../../components/modal/components/CreateProfile/Lens/const";
 import {
   getLensCoverPictureUrl,
   getLensEmail,
@@ -520,7 +521,7 @@ function CreateProductInner({
                 contractUri: "ipfs://sample",
                 royaltyPercentage: "0",
                 authTokenId: "0",
-                authTokenType: 0
+                authTokenType: authTokenTypes.NONE
               },
               offerData
             )
