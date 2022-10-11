@@ -1,7 +1,9 @@
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
+import { LinkWithQuery } from "../../components/customNavigation/LinkWithQuery";
 import LicenseComponent from "../../components/license/License";
+import Typography from "../../components/ui/Typography";
 import { UrlParameters } from "../../lib/routing/parameters";
 import useOfferByUuid from "../../lib/utils/hooks/product/useOfferByUuid";
 
@@ -32,6 +34,17 @@ export default function License() {
           offerData={undefined}
         ></LicenseComponent>
       </Container>
+      <Typography tag="p">
+        Click&nbsp;
+        <LinkWithQuery
+          to={`/contractualAgreement/${offerId}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {"here"}
+        </LinkWithQuery>
+        &nbsp;{"to read the Buyer & Seller Agreement"}
+      </Typography>
     </>
   );
 }
