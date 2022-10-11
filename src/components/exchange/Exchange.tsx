@@ -9,7 +9,7 @@ import { BigNumber, utils } from "ethers";
 import { CameraSlash } from "phosphor-react";
 import { useMemo } from "react";
 import { generatePath } from "react-router-dom";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { useAccount } from "wagmi";
 
 import mockedAvatar from "../../assets/frame.png";
@@ -17,13 +17,14 @@ import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
-import { MediaSet } from "../../lib/utils/hooks/lens/graphql/generated";
-import { useCurrentSeller } from "../../lib/utils/hooks/useCurrentSeller";
+import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { Exchange as IExchange } from "../../lib/utils/hooks/useExchanges";
 import { useGetIpfsImage } from "../../lib/utils/hooks/useGetIpfsImage";
 import { useHandleText } from "../../lib/utils/hooks/useHandleText";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import { getOfferDetailData } from "../detail/DetailWidget/DetailWidget";
+import { getLensProfilePictureUrl } from "../modal/components/CreateProfile/Lens/utils";
 import { useModal } from "../modal/useModal";
 import { useConvertedPrice } from "../price/useConvertedPrice";
 
@@ -34,24 +35,35 @@ interface Props {
   reload?: () => void;
 }
 
-const ExchangeCardWrapper = styled.div`
+const ExchangeCardWrapper = styled.div<{ $isCustomStoreFront: boolean }>`
   [data-card="exchange-card"] {
     min-height: 500px;
     color: ${colors.black};
   }
+  ${({ $isCustomStoreFront }) => {
+    if (!$isCustomStoreFront) {
+      return "";
+    }
+
+    return css`
+      [data-avatarname="exchange-card"] {
+        color: ${colors.black};
+      }
+    `;
+  }};
 `;
 
 export default function Exchange({ offer, exchange, reload }: Props) {
-  const { lens } = useCurrentSeller({
+  const { lens: lensProfiles } = useCurrentSellers({
     sellerId: offer.seller.id
   });
-  const { imageSrc: avatar } = useGetIpfsImage(
-    (lens?.picture as MediaSet)?.original?.url
-  );
+  const [lens] = lensProfiles;
+  const { imageSrc: avatar } = useGetIpfsImage(getLensProfilePictureUrl(lens));
 
   const { showModal, modalTypes } = useModal();
   const navigate = useKeepQueryParamsNavigate();
   const { imageStatus, imageSrc } = useGetIpfsImage(offer.metadata.imageUrl);
+  const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
   const { address } = useAccount();
   const isBuyer = exchange?.buyer.wallet === address?.toLowerCase();
 
@@ -190,7 +202,7 @@ export default function Exchange({ offer, exchange, reload }: Props) {
   };
 
   return (
-    <ExchangeCardWrapper>
+    <ExchangeCardWrapper $isCustomStoreFront={!!isCustomStoreFront}>
       <ExchangeCard
         onCardClick={handleOnCardClick}
         dataCard="exchange-card"

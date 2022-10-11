@@ -85,6 +85,7 @@ export default function DetailWidget({
           <WidgetButtonWrapper>
             <Button
               variant="primaryFill"
+              withBosonStyle
               onClick={() => {
                 const exchangeId = id || false;
                 hideModal();
@@ -107,6 +108,7 @@ export default function DetailWidget({
             </Button>
             <Button
               variant="accentInverted"
+              withBosonStyle
               onClick={() => {
                 navigate({ pathname: BosonRoutes.Explore });
               }}

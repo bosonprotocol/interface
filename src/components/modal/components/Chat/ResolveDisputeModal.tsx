@@ -87,7 +87,7 @@ export default function ResolveDisputeModal({
               showModal("WAITING_FOR_CONFIRMATION");
               const tx = await coreSDK.resolveDispute({
                 exchangeId: exchange.id,
-                buyerPercent: proposal.percentageAmount,
+                buyerPercentBasisPoints: proposal.percentageAmount,
                 sigR: signature.r,
                 sigS: signature.s,
                 sigV: signature.v

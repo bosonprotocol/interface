@@ -258,7 +258,11 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
       (props: Parameters<typeof ConnectButton>[0]) => {
         return (
           <>
-            <ConnectButton {...props} showAddress={!address} />
+            <ConnectButton
+              {...props}
+              showAddress={!address}
+              withBosonStyle={true}
+            />
             {address && (
               <Grid flexBasis="content" margin="0 0 0 1rem">
                 <ViewTxButton />

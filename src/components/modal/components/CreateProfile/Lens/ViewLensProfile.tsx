@@ -1,10 +1,13 @@
 import { Button } from "@bosonprotocol/react-kit";
 import { useFormikContext } from "formik";
 import { ReactNode, useEffect } from "react";
+import { useAccount } from "wagmi";
 
+import { CONFIG } from "../../../../../lib/config";
 import { dataURItoBlob } from "../../../../../lib/utils/base64";
 import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
 import { useGetIpfsImage } from "../../../../../lib/utils/hooks/useGetIpfsImage";
+import { useSellers } from "../../../../../lib/utils/hooks/useSellers";
 import Grid from "../../../../ui/Grid";
 import { useModal } from "../../../useModal";
 import ProfileMultiSteps from "./ProfileMultiSteps";
@@ -34,10 +37,17 @@ export default function ViewLensProfile({
   const profilePicture = getLensProfilePictureUrl(profile);
   const coverPicture = getLensCoverPictureUrl(profile);
 
-  const { imageSrc: profilePictureBase64, imageStatus } =
+  const { imageSrc: profilePictureBase64, imageStatus: profilePictureStatus } =
     useGetIpfsImage(profilePicture);
+  const { imageSrc: coverPictureBase64, imageStatus: coverPictureStatus } =
+    useGetIpfsImage(coverPicture);
   const { updateProps, store } = useModal();
-  const alreadyHasRoyaltiesDefined = false; // TODO: seller.royalties;
+  const { address } = useAccount();
+  const { data: admins } = useSellers({
+    admin: address
+  });
+  const seller = admins?.[0];
+  const alreadyHasRoyaltiesDefined = !!seller?.royaltyPercentage;
 
   useEffect(() => {
     updateProps<"CREATE_PROFILE">({
@@ -60,7 +70,10 @@ export default function ViewLensProfile({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
-    if (imageStatus === "loading") {
+    if (
+      profilePictureStatus === "loading" ||
+      coverPictureStatus === "loading"
+    ) {
       return;
     }
     const profileType = profilePictureBase64
@@ -69,6 +82,10 @@ export default function ViewLensProfile({
     const profileFileType = profileType.includes("image")
       ? profileType
       : "image/jpg";
+    const coverType = coverPictureBase64
+      ? coverPictureBase64.split(";")[0].split(":")[1]
+      : "";
+    const coverFileType = coverType.includes("image") ? coverType : "image/jpg";
     setValues({
       logo: profilePictureBase64
         ? [
@@ -77,10 +94,10 @@ export default function ViewLensProfile({
             })
           ]
         : [],
-      coverPicture: coverPicture
+      coverPicture: coverPictureBase64
         ? [
-            new File([dataURItoBlob(coverPicture)], "coverPicture", {
-              type: coverPicture.split(";")[0].split(":")[1]
+            new File([dataURItoBlob(coverPictureBase64)], "coverPicture", {
+              type: coverFileType
             })
           ]
         : [],
@@ -88,16 +105,23 @@ export default function ViewLensProfile({
       handle:
         profile.handle?.substring(
           0,
-          profile.handle.lastIndexOf(".test") < 0
-            ? profile.handle.lastIndexOf(".link")
-            : profile.handle.lastIndexOf(".test")
+          profile.handle.lastIndexOf(CONFIG.lens.lensHandleExtension) < 0
+            ? profile.handle.lastIndexOf(CONFIG.lens.lensHandleExtension)
+            : profile.handle.lastIndexOf(".")
         ) || "",
       email: getLensEmail(profile) || "",
       description: profile.bio || "",
       website: getLensWebsite(profile) || "",
       legalTradingName: getLensLegalTradingName(profile) || ""
     });
-  }, [setValues, profile, profilePictureBase64, coverPicture, imageStatus]);
+  }, [
+    coverPictureBase64,
+    coverPictureStatus,
+    profile,
+    profilePictureBase64,
+    profilePictureStatus,
+    setValues
+  ]);
   return (
     <div>
       {children}

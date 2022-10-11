@@ -45,6 +45,12 @@ const PreviewWrapperContent = styled.div`
 export default function Preview({ togglePreview, seller }: Props) {
   const { values } = useCreateForm();
 
+  const redemptionPointUrl =
+    values.shippingInfo.redemptionPointUrl &&
+    values.shippingInfo.redemptionPointUrl.length > 0
+      ? values.shippingInfo.redemptionPointUrl
+      : window.origin;
+
   const exchangeToken = CONFIG.defaultTokens.find(
     (n: Token) => n.symbol === values.coreTermsOfSale.currency.value
   );
@@ -130,7 +136,7 @@ export default function Preview({ togglePreview, seller }: Props) {
     voucherRedeemableUntilDate: (
       voucherRedeemableUntilDateInMS / 1000
     ).toString(),
-    fulfillmentPeriodDuration: `${
+    disputePeriodDuration: `${
       parseInt(values.termsOfExchange.disputePeriod) * 24 * 3600
     }`, // day to sec
     voucherValidDuration: "0", // we use redeemableFrom/redeemableUntil so should be 0
@@ -172,6 +178,30 @@ export default function Preview({ togglePreview, seller }: Props) {
       }
     }
   } as unknown as Offer;
+
+  const productAttributes = values.productInformation?.attributes?.filter(
+    (attribute: { name: string; value: string }) => {
+      return attribute.name.length > 0;
+    }
+  );
+  productAttributes.push({ name: "Token Type", value: "BOSON rNFT" });
+  productAttributes.push({
+    name: "Redeemable At",
+    value: redemptionPointUrl
+  });
+  productAttributes.push({
+    name: "Redeemable Until",
+    value: new Date(voucherRedeemableUntilDateInMS).toString(),
+    display_type: "date"
+  });
+  productAttributes.push({
+    name: "Seller",
+    value: values.createYourProfile?.name || ""
+  });
+  productAttributes.push({
+    name: "Offer Category",
+    value: values.productType?.productType?.toUpperCase() || ""
+  });
 
   return (
     <PreviewWrapper>
@@ -220,9 +250,8 @@ export default function Preview({ togglePreview, seller }: Props) {
                 >
                   {values.productInformation.description}
                 </Typography>
-                <DetailTable
-                  data={values?.productInformation?.attributes ?? []}
-                />
+                {/* TODO: hidden for now */}
+                {/* <DetailTable data={productAttributes ?? []} /> */}
               </div>
               <div>
                 <Typography tag="h3">About the creator</Typography>

@@ -171,7 +171,8 @@ export default function DisputesTable({ disputes }: Props) {
                     modalTypes.DISPUTE_RESOLUTION_REFUSE_MODAL,
                     {
                       title: `Refuse to Decide Dispute: ${dispute.exchange.id}`,
-                      exchangeId: dispute.exchange.id
+                      exchangeId: dispute.exchange.id,
+                      offer: dispute.exchange.offer
                     },
                     "auto",
                     "dark"
@@ -189,6 +190,7 @@ export default function DisputesTable({ disputes }: Props) {
                     {
                       title: `Decide Dispute: ${dispute.exchange.id}`,
                       exchangeId: dispute.exchange.id,
+                      offer: dispute.exchange.offer,
                       currencySymbol:
                         dispute.exchange.offer?.exchangeToken?.symbol ?? "",
                       value: dispute.exchange.offer?.price ?? "",

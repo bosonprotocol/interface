@@ -52,6 +52,8 @@ on:
         required: true
       REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS:
         required: true
+      REACT_APP_GOOGLE_TAG_ID:
+        required: false
     outputs:
       JOB_LINT:
         value: ${{ jobs.build-test-deploy.outputs.jobLint }}
@@ -82,6 +84,7 @@ jobs:
       REACT_APP_DEFAULT_TOKENS_LIST_STAGING: ${{ secrets.REACT_APP_DEFAULT_TOKENS_LIST_STAGING }}
       REACT_APP_CREATE_PROFILE_CONFIGURATION: ${{ inputs.REACT_APP_CREATE_PROFILE_CONFIGURATION }}
       REACT_APP_DEFAULT_TOKENS_LIST_PRODUCTION: ${{ secrets.REACT_APP_DEFAULT_TOKENS_LIST_PRODUCTION }}
+      REACT_APP_GOOGLE_TAG_ID: ${{ secrets.REACT_APP_GOOGLE_TAG_ID }}
     outputs:
       jobLint: ${{ steps.lint.outputs.pass }}
       jobBuild: ${{ steps.build.outputs.pass }}

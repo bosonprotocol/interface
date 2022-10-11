@@ -57,7 +57,7 @@ const calcRevenue = (
           const wasItDisputed = item?.disputed;
           const disputeUntil = dayjs(
             getDateTimestamp(item?.redeemedDate as string) +
-              getDateTimestamp(item?.offer?.fulfillmentPeriodDuration)
+              getDateTimestamp(item?.offer?.disputePeriodDuration)
           );
           const stillCanDispute = disputeUntil.isAfter(dayjs());
           if (wasItRedeemed && !wasItDisputed && !stillCanDispute) {

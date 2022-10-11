@@ -135,6 +135,7 @@ const Wrapper = styled.div<{
       case "FINANCE_WITHDRAW_MODAL":
       case "FINANCE_DEPOSIT_MODAL":
       case "MANAGE_FUNDS_MODAL":
+      case "EXPIRE_VOUCHER_MODAL":
       case "DISPUTE_RESOLUTION_DECIDE_MODAL":
       case "DISPUTE_RESOLUTION_REFUSE_MODAL":
         return css`
@@ -207,6 +208,8 @@ const Content = styled.div<{
       case "DISPUTE_RESOLUTION_DECIDE_MODAL":
       case "DISPUTE_RESOLUTION_REFUSE_MODAL":
         return "0 2rem 2rem 2rem";
+      case "EXPIRE_VOUCHER_MODAL":
+        return "2rem 0";
       default:
         return "2rem";
     }

@@ -18,11 +18,13 @@ export const CollectionsQueryParameters = {
 } as const;
 
 export const AccountQueryParameters = {
-  tab: "tab"
+  tab: "tab",
+  manageFunds: "manageFunds"
 } as const;
 
 export const UrlParameters = {
   offerId: "id",
+  uuid: "uuid",
   exchangeId: "id",
   accountId: "id",
   page: "page",

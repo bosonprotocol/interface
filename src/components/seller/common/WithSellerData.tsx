@@ -23,6 +23,7 @@ import {
 import useFunds, { FundsProps } from "../../../pages/account/funds/useFunds";
 import { useConvertionRate } from "../../convertion-rate/useConvertionRate";
 import Loading from "../../ui/Loading";
+import { SellerInsideProps } from "../SellerInside";
 import useOffersBacked from "./useOffersBacked";
 
 export const Wrapper = styled.div`
@@ -67,12 +68,10 @@ export interface WithSellerDataProps {
   offersBacked: OffersBackedProps;
   sellerRoles: SellerRolesProps;
 }
-export function WithSellerData<P>(
-  WrappedComponent: React.ComponentType<P & WithSellerDataProps>
+export function WithSellerData(
+  WrappedComponent: React.ComponentType<SellerInsideProps & WithSellerDataProps>
 ) {
-  const ComponentWithSellerData = (props: P) => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
+  const ComponentWithSellerData = (props: SellerInsideProps) => {
     const sellerId = props.sellerId;
     const sellerRoles = useSellerRoles(sellerId);
     const {
@@ -89,9 +88,14 @@ export function WithSellerData<P>(
       sellerId,
       disputed: null
     });
-    const exchangesTokens = useExchangeTokens({
-      sellerId
-    });
+    const exchangesTokens = useExchangeTokens(
+      {
+        sellerId
+      },
+      {
+        enabled: !!sellerId
+      }
+    );
     const sellerDeposit = useSellerDeposit(
       {
         sellerId

@@ -10,6 +10,7 @@ import keys from "lodash/keys";
 import { useCallback, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { generatePath } from "react-router-dom";
+import uuid from "react-uuid";
 import { useAccount } from "wagmi";
 dayjs.extend(localizedFormat);
 
@@ -39,7 +40,7 @@ import { fromBase64ToBinary } from "../../lib/utils/base64";
 import { getLocalStorageItems } from "../../lib/utils/getLocalStorageItems";
 import { useChatStatus } from "../../lib/utils/hooks/chat/useChatStatus";
 import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
-import { useCurrentSeller } from "../../lib/utils/hooks/useCurrentSeller";
+import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { saveItemInStorage } from "../../lib/utils/hooks/useLocalStorage";
@@ -69,6 +70,7 @@ interface Props {
   initial: CreateProductForm;
   showCreateProductDraftModal: () => void;
   showInvalidRoleModal: () => void;
+  isDraftModalClosed: boolean;
 }
 interface SupportedJuridiction {
   label: string;
@@ -78,7 +80,8 @@ interface SupportedJuridiction {
 function CreateProductInner({
   initial,
   showCreateProductDraftModal,
-  showInvalidRoleModal
+  showInvalidRoleModal,
+  isDraftModalClosed
 }: Props) {
   const navigate = useKeepQueryParamsNavigate();
   const { chatInitializationStatus } = useChatStatus();
@@ -108,9 +111,21 @@ function CreateProductInner({
 
   const { address } = useAccount();
 
-  const { seller, lens: lensProfile } = useCurrentSeller();
+  const { sellers, lens: lensProfiles } = useCurrentSellers();
 
-  const hasSellerAccount = !!seller;
+  const hasSellerAccount = !!sellers?.length;
+
+  const currentOperator = sellers.find((seller) => {
+    return seller?.operator.toLowerCase() === address?.toLowerCase();
+  });
+  // lens profile of the current user
+  const operatorLens: Profile | null =
+    lensProfiles.find((lensProfile) => {
+      return (
+        getLensTokenIdDecimal(lensProfile.id).toString() ===
+        currentOperator?.authTokenId
+      );
+    }) || null;
 
   const handleOpenSuccessModal = async ({
     offerInfo
@@ -145,7 +160,7 @@ function CreateProductInner({
           validUntilDate: offerInfo.validUntilDate,
           voucherRedeemableFromDate: offerInfo.voucherRedeemableFromDate,
           voucherRedeemableUntilDate: offerInfo.voucherRedeemableUntilDate,
-          fulfillmentPeriodDuration: offerInfo.fulfillmentPeriodDuration,
+          disputePeriodDuration: offerInfo.disputePeriodDuration,
           voucherValidDuration: offerInfo.voucherValidDuration,
           resolutionPeriodDuration: offerInfo.resolutionPeriodDuration,
           metadataUri: offerInfo.metadataUri,
@@ -168,6 +183,7 @@ function CreateProductInner({
       setIsPreviewVisible,
       chatInitializationStatus,
       showCreateProductDraftModal,
+      isDraftModalClosed,
       showInvalidRoleModal
     });
     return {
@@ -183,7 +199,8 @@ function CreateProductInner({
     chatInitializationStatus,
     currentStep,
     showCreateProductDraftModal,
-    showInvalidRoleModal
+    showInvalidRoleModal,
+    isDraftModalClosed
   ]);
 
   const handleNextForm = useCallback(() => {
@@ -226,9 +243,9 @@ function CreateProductInner({
       return storage.add(fromBase64ToBinary(previewImage));
     });
 
-    const profileImageLink = await storage.add(
-      fromBase64ToBinary(profileImage[0])
-    );
+    const profileImageLink = profileImage[0]
+      ? await storage.add(fromBase64ToBinary(profileImage[0]))
+      : undefined;
     const productMainImageLink = await storage.add(
       fromBase64ToBinary(productMainImage[0])
     );
@@ -290,19 +307,82 @@ function CreateProductInner({
     });
 
     try {
+      const redemptionPointUrl =
+        shippingInfo.redemptionPointUrl &&
+        shippingInfo.redemptionPointUrl.length > 0
+          ? shippingInfo.redemptionPointUrl
+          : window.origin;
+
+      const exchangeToken = CONFIG.defaultTokens.find(
+        (n: Token) => n.symbol === coreTermsOfSale.currency.value
+      );
+
+      const priceBN = parseUnits(
+        `${coreTermsOfSale.price}`,
+        Number(exchangeToken?.decimals || 18)
+      );
+
+      // TODO: change when more than percentage unit
+      const buyerCancellationPenaltyValue = priceBN
+        .mul(parseFloat(termsOfExchange.buyerCancellationPenalty) * 1000)
+        .div(100 * 1000);
+
+      // TODO: change when more than percentage unit
+      const sellerCancellationPenaltyValue = priceBN
+        .mul(parseFloat(termsOfExchange.sellerDeposit) * 1000)
+        .div(100 * 1000);
+      const {
+        voucherRedeemableFromDateInMS,
+        voucherRedeemableUntilDateInMS,
+        validFromDateInMS,
+        validUntilDateInMS
+      } = ValidateDates({
+        offerValidityPeriod: coreTermsOfSale.offerValidityPeriod,
+        redemptionPeriod: coreTermsOfSale.redemptionPeriod
+      });
+
+      const disputePeriodDurationInMS =
+        parseInt(termsOfExchange.disputePeriod) * 24 * 3600 * 1000; // day to msec
+      const resolutionPeriodDurationInMS =
+        parseInt(CONFIG.defaultDisputeResolutionPeriodDays) * 24 * 3600 * 1000; // day to msec
+
+      const nftAttributes = [];
+      nftAttributes.push({ trait_type: "Token Type", value: "BOSON rNFT" });
+      nftAttributes.push({
+        trait_type: "Redeemable At",
+        value: redemptionPointUrl
+      });
+      nftAttributes.push({
+        trait_type: "Redeemable Until",
+        value: voucherRedeemableUntilDateInMS.toString(),
+        display_type: "date"
+      });
+      nftAttributes.push({
+        trait_type: "Seller",
+        value: createYourProfile.name
+      });
+      nftAttributes.push({
+        trait_type: "Offer Category",
+        value: productType.productType.toUpperCase()
+      });
+      // TODO: In case of variants: add Size and Colour as attributes
+
+      // Be sure the uuid is unique (for all users).
+      // Do NOT use Date.now() because nothing prevent 2 users to create 2 offers at the same time
+      const offerUuid = uuid();
+
+      const externalUrl = `${redemptionPointUrl}/#/offer-uuid/${offerUuid}`;
+      const licenseUrl = `${window.origin}/#/license/${offerUuid}`;
+
       const metadataHash = await coreSDK.storeMetadata({
         schemaUrl: "https://schema.org/schema",
-        uuid: Date.now().toString(),
+        uuid: offerUuid,
         name: productInformation.productTitle,
-        description: productInformation.description,
-        externalUrl: window.origin,
+        description: `${productInformation.description}\n\nTerms for the Boson rNFT Voucher: ${licenseUrl}`,
+        externalUrl,
         image: `ipfs://${productMainImageLink}`,
         type: MetadataType.PRODUCT_V1,
-        attributes: [
-          { trait_type: "productType", value: productType.productType },
-          { trait_type: "productVariant", value: productType.productVariant },
-          ...additionalAttributes
-        ],
+        attributes: [...nftAttributes, ...additionalAttributes],
         product: {
           uuid: Date.now().toString(),
           version: 1,
@@ -339,32 +419,32 @@ function CreateProductInner({
         seller: CONFIG.lens.enabled
           ? {
               defaultVersion: 1,
-              name: lensProfile?.name || "",
-              description: lensProfile?.bio || "",
-              externalUrl: lensProfile
-                ? getLensWebsite(lensProfile as Profile) || ""
+              name: operatorLens?.name || "",
+              description: operatorLens?.bio || "",
+              externalUrl: operatorLens
+                ? getLensWebsite(operatorLens as Profile) || ""
                 : "",
-              tokenId: lensProfile
-                ? getLensTokenIdDecimal(lensProfile.id).toString()
+              tokenId: operatorLens
+                ? getLensTokenIdDecimal(operatorLens.id).toString()
                 : "0",
               images: [
                 {
-                  url: lensProfile
-                    ? getLensProfilePictureUrl(lensProfile as Profile) || ""
-                    : "", // TODO: ipfslink or base64?
+                  url: operatorLens
+                    ? getLensProfilePictureUrl(operatorLens as Profile) || ""
+                    : "",
                   tag: "profile"
                 },
                 {
-                  url: lensProfile
-                    ? getLensCoverPictureUrl(lensProfile as Profile) || ""
-                    : "", // TODO: ipfslink or base64? // TODO: ipfslink or base64? should I add it?
+                  url: operatorLens
+                    ? getLensCoverPictureUrl(operatorLens as Profile) || ""
+                    : "",
                   tag: "cover"
                 }
               ],
               contactLinks: [
                 {
-                  url: lensProfile
-                    ? getLensEmail(lensProfile as Profile) || ""
+                  url: operatorLens
+                    ? getLensEmail(operatorLens as Profile) || ""
                     : "",
                   tag: "email"
                 }
@@ -408,38 +488,6 @@ function CreateProductInner({
         }
       });
 
-      const exchangeToken = CONFIG.defaultTokens.find(
-        (n: Token) => n.symbol === coreTermsOfSale.currency.value
-      );
-
-      const priceBN = parseUnits(
-        `${coreTermsOfSale.price}`,
-        Number(exchangeToken?.decimals || 18)
-      );
-
-      // TODO: change when more than percentage unit
-      const buyerCancellationPenaltyValue = priceBN
-        .mul(parseFloat(termsOfExchange.buyerCancellationPenalty) * 1000)
-        .div(100 * 1000);
-
-      // TODO: change when more than percentage unit
-      const sellerCancellationPenaltyValue = priceBN
-        .mul(parseFloat(termsOfExchange.sellerDeposit) * 1000)
-        .div(100 * 1000);
-      const {
-        voucherRedeemableFromDateInMS,
-        voucherRedeemableUntilDateInMS,
-        validFromDateInMS,
-        validUntilDateInMS
-      } = ValidateDates({
-        offerValidityPeriod: coreTermsOfSale.offerValidityPeriod,
-        redemptionPeriod: coreTermsOfSale.redemptionPeriod
-      });
-
-      const fulfillmentPeriodDurationInMS =
-        parseInt(termsOfExchange.disputePeriod) * 24 * 3600 * 1000; // day to msec
-      const resolutionPeriodDurationInMS =
-        parseInt(CONFIG.defaultDisputeResolutionPeriodDays) * 24 * 3600 * 1000; // day to msec
       const offerData = {
         price: priceBN.toString(),
         sellerDeposit: sellerCancellationPenaltyValue.toString(),
@@ -451,7 +499,7 @@ function CreateProductInner({
         voucherValidDurationInMS: 0,
         validFromDateInMS: validFromDateInMS.toString(),
         validUntilDateInMS: validUntilDateInMS.toString(),
-        fulfillmentPeriodDurationInMS: fulfillmentPeriodDurationInMS.toString(),
+        disputePeriodDurationInMS: disputePeriodDurationInMS.toString(),
         resolutionPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
         exchangeToken: exchangeToken?.address || ethers.constants.AddressZero,
         disputeResolverId: CONFIG.defaultDisputeResolverId,
@@ -580,7 +628,7 @@ function CreateProductInner({
                 {isPreviewVisible ? (
                   <Preview
                     togglePreview={setIsPreviewVisible}
-                    seller={seller as any}
+                    seller={currentOperator as any}
                   />
                 ) : (
                   wizardStep.currentStep

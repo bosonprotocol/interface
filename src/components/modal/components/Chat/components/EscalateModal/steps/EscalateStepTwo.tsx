@@ -8,11 +8,13 @@ import * as Yup from "yup";
 
 import { CONFIG } from "../../../../../../../lib/config";
 import { colors } from "../../../../../../../lib/styles/colors";
+import { useDisputeResolvers } from "../../../../../../../lib/utils/hooks/useDisputeResolvers";
 import { Exchange } from "../../../../../../../lib/utils/hooks/useExchanges";
 import { useCoreSDK } from "../../../../../../../lib/utils/useCoreSdk";
 import { poll } from "../../../../../../../pages/create-product/utils";
 import Collapse from "../../../../../../collapse/Collapse";
 import { Checkbox } from "../../../../../../form";
+import { FieldInput } from "../../../../../../form/Field.styles";
 import FormField from "../../../../../../form/FormField";
 import Input from "../../../../../../form/Input";
 import Textarea from "../../../../../../form/Textarea";
@@ -34,6 +36,18 @@ const Container = styled.div`
   padding: 2rem;
   > div:not(:last-child) {
     margin-bottom: 1rem;
+  }
+`;
+
+const UnsignedMessageWrapper = styled.div`
+  display: inline-flex;
+  width: 100%;
+  #unsigned_prefix {
+    padding-right: 0;
+    width: auto;
+  }
+  #unsigned_message {
+    padding-left: 0;
   }
 `;
 
@@ -118,6 +132,8 @@ interface Props {
   refetch: () => void;
 }
 function EscalateStepTwo({ exchange, refetch }: Props) {
+  const { data } = useDisputeResolvers();
+  const feeAmount = data?.disputeResolvers[0]?.fees[0]?.feeAmount;
   const { hideModal, showModal } = useModal();
   const emailFormField =
     CONFIG.envName === "production"
@@ -322,11 +338,18 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
                     <Input {...FormModel.formFields.exchangeId} />
                     <Input {...FormModel.formFields.disputeId} />
                     <Input {...FormModel.formFields.buyerAddress} disabled />
-                    <Input
-                      {...FormModel.formFields.message}
-                      prefix="Unsigned message:"
-                      disabled
-                    />
+                    <UnsignedMessageWrapper>
+                      <FieldInput
+                        value="Unsigned message:"
+                        disabled
+                        id="unsigned_prefix"
+                      />
+                      <Input
+                        {...FormModel.formFields.message}
+                        disabled
+                        id="unsigned_message"
+                      />
+                    </UnsignedMessageWrapper>
                     <Input {...FormModel.formFields.signature} />
                   </FormField>
                   <FormField theme="white" title="Chat transcript">
@@ -363,13 +386,17 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
                     fontWeight="400"
                     color={colors.darkGrey}
                   >
-                    Confirm the dispute escalation transaction.
+                    Your Escalation deposit is {feeAmount} {""}
+                    {exchange.offer.exchangeToken.symbol}. This dispute resolver
+                    will decide on the distribution of all funds in escrow (item
+                    price, seller deposit and escalation deposit) between buyer
+                    and seller
                   </Typography>
                   <Button
                     theme="escalate"
                     onClick={handleEscalate}
                     isLoading={loading}
-                    disabled={loading}
+                    disabled={loading || values?.confirm !== true}
                   >
                     Escalate
                   </Button>

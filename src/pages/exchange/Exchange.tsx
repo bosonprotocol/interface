@@ -46,10 +46,10 @@ export default function Exchange() {
   const offer = exchange?.offer;
 
   const { data: sellers } = useSellers({
-    admin: offer?.seller.admin,
+    id: offer?.seller.id,
     includeFunds: true
   });
-  const sellerAvailableDeposit = sellers?.[0].funds?.find(
+  const sellerAvailableDeposit = sellers?.[0]?.funds?.find(
     (fund) => fund.token.address === offer?.exchangeToken.address
   )?.availableAmount;
   const offerRequiredDeposit = offer?.sellerDeposit;
@@ -91,7 +91,7 @@ export default function Exchange() {
     offerImg,
     shippingInfo,
     description,
-    productData,
+    // productData,
     artistDescription,
     images
   } = getOfferDetails(offer);
@@ -139,7 +139,8 @@ export default function Exchange() {
               <Typography tag="p" data-testid="description">
                 {description}
               </Typography>
-              <DetailTable data={productData} tag="strong" inheritColor />
+              {/* TODO: hidden for now */}
+              {/* <DetailTable data={productData} tag="strong" inheritColor /> */}
             </div>
             <div>
               <Typography tag="h3">About the creator</Typography>
@@ -161,7 +162,7 @@ export default function Exchange() {
                 <Typography tag="p" style={{ color: colors.darkGrey }}>
                   {shippingInfo.shipping}
                 </Typography>
-                <DetailTable data={shippingInfo.shippingTable} />
+                <DetailTable data={shippingInfo.shippingTable} inheritColor />
               </div>
             )}
           </DetailGrid>

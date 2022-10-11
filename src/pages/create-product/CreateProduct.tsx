@@ -8,14 +8,17 @@ import CreateProductInner from "./CreateProductInner";
 function CreateProduct() {
   const store = useInitialValues();
   const [initial, setInitial] = useState<CreateProductForm>(store.base);
+  const [isDraftModalClosed, setDraftModalClosed] = useState<boolean>(false);
   const { showModal, modalTypes, hideModal } = useModal();
 
   const chooseNew = () => {
     store.remove(store.key);
+    setDraftModalClosed(true);
     hideModal();
   };
   const chooseDraft = () => {
     setInitial(store.draft);
+    setDraftModalClosed(true);
     hideModal();
   };
 
@@ -26,6 +29,8 @@ function CreateProduct() {
         chooseNew,
         chooseDraft
       });
+    } else {
+      setDraftModalClosed(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -34,7 +39,8 @@ function CreateProduct() {
     showModal<"INVALID_ROLE">(modalTypes.INVALID_ROLE, {
       title: "Invalid Role",
       action: "create a product",
-      requiredRole: "operator"
+      requiredRole: "operator",
+      closable: false
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -45,6 +51,7 @@ function CreateProduct() {
       initial={initial}
       showCreateProductDraftModal={showCreateProductDraftModal}
       showInvalidRoleModal={showInvalidRoleModal}
+      isDraftModalClosed={isDraftModalClosed}
     />
   );
 }

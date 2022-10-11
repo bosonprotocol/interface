@@ -1,77 +1,38 @@
-import { CheckSquareOffset } from "phosphor-react";
 import { useState } from "react";
-import styled from "styled-components";
 
-import { colors } from "../../../../../lib/styles/colors";
-import { Spinner } from "../../../../loading/Spinner";
+import { CompletedTransactions } from "../../../../transactions/CompleteTransactions";
+import { PendingTransactions } from "../../../../transactions/PendingTransactions";
 import Grid from "../../../../ui/Grid";
 import Toggle from "./Toggle";
 
-const PendingGrid = styled(Grid)`
-  color: ${colors.orange};
-`;
-
-const CompletedGrid = styled(Grid)`
-  color: ${colors.green};
-`;
-
-// TODO: get actual pending and complete local/meta transactions
-const pendingTx = [
-  {
-    text: "Commit to X",
-    status: "Pending"
-  }
-];
-const completedTx = [
-  {
-    text: "Completed to X",
-    status: "Completed"
-  }
-];
+enum TransactionsToogleStates {
+  PENDING = "pending",
+  COMPLETED = "completed"
+}
 
 function RecentTransactionsModal() {
-  const [transactions, setTransactions] = useState(pendingTx);
+  const [transactionsToogle, setTransactionsToogle] =
+    useState<TransactionsToogleStates>(TransactionsToogleStates.PENDING);
+
   return (
     <Grid flexDirection="column" alignItems="flex-start" gap="1rem">
       <Toggle
         leftButtonText="Pending"
         rightButtonText="Completed"
         onLeftButtonClick={() => {
-          setTransactions(pendingTx);
+          setTransactionsToogle(TransactionsToogleStates.PENDING);
         }}
         onRightButtonClick={() => {
-          setTransactions(completedTx);
+          setTransactionsToogle(TransactionsToogleStates.COMPLETED);
         }}
         initiallySelected="left"
       />
-      <Grid
-        flexDirection="column"
-        alignItems="flex-start"
-        gap="0.75rem"
-        margin="0 0 2rem 0"
-      >
-        {transactions.map((tx) => {
-          return (
-            <Grid key={tx.text}>
-              <Grid>
-                <strong>{tx.text}</strong>
-              </Grid>
-              <a>
-                {tx.status === "Pending" ? (
-                  <PendingGrid justifyContent="flex-end" gap="0.5rem">
-                    <span>Pending</span>
-                    <Spinner size={20} />
-                  </PendingGrid>
-                ) : (
-                  <CompletedGrid gap="0.5rem">
-                    {tx.status} <CheckSquareOffset size={20} />
-                  </CompletedGrid>
-                )}
-              </a>
-            </Grid>
-          );
-        })}
-      </Grid>
+      {transactionsToogle === TransactionsToogleStates.PENDING && (
+        <PendingTransactions />
+      )}
+      {transactionsToogle === TransactionsToogleStates.COMPLETED && (
+        <CompletedTransactions />
+      )}
     </Grid>
   );
 }

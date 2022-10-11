@@ -211,10 +211,20 @@ export default function ProductCreateSuccess({
             </Funds>
           )}
           <StyledWidgetButtonWrapper>
-            <Button variant="primaryFill" onClick={onViewMyItem}>
+            <Button
+              type="button"
+              variant="primaryFill"
+              onClick={onViewMyItem}
+              withBosonStyle
+            >
               View my item
             </Button>
-            <Button variant="accentInverted" onClick={handleCreateNew}>
+            <Button
+              type="button"
+              variant="accentInverted"
+              onClick={handleCreateNew}
+              withBosonStyle
+            >
               Create new
               <Plus size={14} />
             </Button>

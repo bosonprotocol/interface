@@ -171,7 +171,7 @@ export const MOCK_MODAL_DATA = {
     price: "2000000000000000",
     metadataHash: "Qmf77HBcgxaiB2XT8fYSdDPMWo58VrMu1PVPXoBsBpgAko",
     sellerDeposit: "20000000000000",
-    fulfillmentPeriodDuration: "86400",
+    disputePeriodDuration: "86400",
     resolutionPeriodDuration: "86400",
     metadataUri: "ipfs://Qmf77HBcgxaiB2XT8fYSdDPMWo58VrMu1PVPXoBsBpgAko",
     buyerCancelPenalty: "10000000000000",

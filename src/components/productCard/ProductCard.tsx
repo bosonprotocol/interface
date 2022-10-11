@@ -6,18 +6,19 @@ import { BigNumber, utils } from "ethers";
 import { CameraSlash } from "phosphor-react";
 import { useMemo } from "react";
 import { generatePath, useLocation } from "react-router-dom";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import mockedAvatar from "../../assets/frame.png";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes, OffersRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
-import { MediaSet } from "../../lib/utils/hooks/lens/graphql/generated";
-import { useCurrentSeller } from "../../lib/utils/hooks/useCurrentSeller";
+import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useGetIpfsImage } from "../../lib/utils/hooks/useGetIpfsImage";
 import { useHandleText } from "../../lib/utils/hooks/useHandleText";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
+import { getLensProfilePictureUrl } from "../modal/components/CreateProfile/Lens/utils";
 
 interface Props {
   offer: Offer;
@@ -26,11 +27,22 @@ interface Props {
   isHoverDisabled?: boolean;
 }
 
-const ProductCardWrapper = styled.div`
+const ProductCardWrapper = styled.div<{ $isCustomStoreFront: boolean }>`
   [data-card="product-card"] {
     min-height: 500px;
     color: ${colors.black};
   }
+  ${({ $isCustomStoreFront }) => {
+    if (!$isCustomStoreFront) {
+      return "";
+    }
+
+    return css`
+      [data-avatarname="product-card"] {
+        color: ${colors.black};
+      }
+    `;
+  }};
 `;
 
 export default function ProductCard({
@@ -38,13 +50,13 @@ export default function ProductCard({
   dataTestId,
   isHoverDisabled = false
 }: Props) {
-  const { lens } = useCurrentSeller({
+  const { lens: lensProfiles } = useCurrentSellers({
     sellerId: offer.seller.id
   });
-  const { imageSrc: avatar } = useGetIpfsImage(
-    (lens?.picture as MediaSet)?.original?.url
-  );
+  const [lens] = lensProfiles;
+  const { imageSrc: avatar } = useGetIpfsImage(getLensProfilePictureUrl(lens));
   const { imageStatus, imageSrc } = useGetIpfsImage(offer.metadata.imageUrl);
+  const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
   const location = useLocation();
   const navigate = useKeepQueryParamsNavigate();
   const handleText = useHandleText(offer);
@@ -83,7 +95,7 @@ export default function ProductCard({
   };
 
   return (
-    <ProductCardWrapper>
+    <ProductCardWrapper $isCustomStoreFront={!!isCustomStoreFront}>
       <BosonProductCard
         dataCard="product-card"
         dataTestId={dataTestId}

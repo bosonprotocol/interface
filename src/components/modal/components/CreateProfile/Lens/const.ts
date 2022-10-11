@@ -1,5 +1,3 @@
-export const authTokenTypes = {
-  None: 0,
-  Lens: 1,
-  ENS: 2
-} as const;
+import { AuthTokenType } from "@bosonprotocol/react-kit";
+
+export const authTokenTypes = AuthTokenType;

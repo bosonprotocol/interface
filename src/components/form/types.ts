@@ -4,7 +4,6 @@ export interface BaseProps {
   name: string;
   placeholder?: string;
   disabled?: boolean;
-  prefix?: string;
 }
 
 export interface DatepickerProps extends BaseProps {
@@ -82,4 +81,5 @@ export interface UploadProps extends BaseProps {
   onFilesSelect?: (files: File[]) => void;
   files?: File[];
   wrapperProps?: React.HTMLAttributes<HTMLDivElement>;
+  onLoadSinglePreviewImage?: (base64Uri: string) => void;
 }
