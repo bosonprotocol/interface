@@ -4,6 +4,7 @@ import { useAccount } from "wagmi";
 import { ReactComponent as LensLogo } from "../../../../../../src/assets/lens-logo.svg";
 import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
 import useGetLensProfiles from "../../../../../lib/utils/hooks/lens/profile/useGetLensProfiles";
+import { useSellers } from "../../../../../lib/utils/hooks/useSellers";
 import Button from "../../../../ui/Button";
 import Grid from "../../../../ui/Grid";
 import GridContainer from "../../../../ui/GridContainer";
@@ -20,6 +21,12 @@ export default function CreateOrChoose({
   onChooseCreateNew,
   onChooseUseExisting
 }: Props) {
+  const { address = "" } = useAccount();
+  const { data: admins } = useSellers({
+    admin: address
+  });
+  const seller = admins?.[0];
+  const alreadyHasRoyaltiesDefined = !!seller?.royaltyPercentage;
   const { updateProps, store } = useModal();
   useEffect(() => {
     updateProps<"CREATE_PROFILE">({
@@ -30,7 +37,9 @@ export default function CreateOrChoose({
           <ProfileMultiSteps
             createOrSelect={null}
             activeStep={0}
-            createOrViewRoyalties={null}
+            createOrViewRoyalties={
+              alreadyHasRoyaltiesDefined ? "view" : "create"
+            }
             key="CreateOrChoose"
           />
         )
@@ -39,7 +48,6 @@ export default function CreateOrChoose({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const [cursor, setCursor] = useState<string>();
-  const { address = "" } = useAccount();
   const { data: profileData, isSuccess } = useGetLensProfiles(
     {
       ownedBy: [address],

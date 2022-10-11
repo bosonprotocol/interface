@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useField } from "formik";
 
-import { CONFIG } from "../../../../../lib/config";
 import { colors } from "../../../../../lib/styles/colors";
 import SimpleError from "../../../../error/SimpleError";
 import { FormField, Input } from "../../../../form";
@@ -89,13 +88,7 @@ export default function BosonAccountFormFields({
               lineHeight="1.5rem"
               style={{ display: "inline-block" }}
             >
-              There has been an error while getting your existing royalties
-              configuration as it's invalid , please contact us on
-              <a href={`mailto:${CONFIG.defaultDisputeResolverContactMethod}`}>
-                {" "}
-                {CONFIG.defaultDisputeResolverContactMethod}{" "}
-              </a>
-              to explain your issue
+              There was an error when fetching your royalties configuration.
             </Typography>
           </SimpleError>
         </Grid>
@@ -108,9 +101,9 @@ export default function BosonAccountFormFields({
           theme="bosonPrimary"
           type="submit"
           disabled={
-            !alreadyHasRoyaltiesDefined &&
-            (!fieldSecondaryRoyalties.value ||
-              !fieldAddressForRoyaltyPayment.value)
+            !fieldSecondaryRoyalties.value &&
+            !fieldAddressForRoyaltyPayment.value &&
+            !alreadyHasRoyaltiesDefined
           }
         >
           Next
