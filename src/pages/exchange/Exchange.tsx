@@ -139,7 +139,6 @@ export default function Exchange() {
               <Typography tag="p" data-testid="description">
                 {description}
               </Typography>
-              //
               {/* TODO: hidden for now */}
               {/* <DetailTable data={productData} tag="strong" inheritColor /> */}
             </div>
