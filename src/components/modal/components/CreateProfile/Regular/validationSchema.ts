@@ -6,7 +6,9 @@ import { validationOfRequiredImage } from "../../../../product/utils/validationU
 
 export const createYourProfileValidationSchema = Yup.object({
   createYourProfile: Yup.object({
-    logo: validationOfRequiredImage(MAX_LOGO_SIZE),
+    logo: validationOfRequiredImage(MAX_LOGO_SIZE).required(
+      "You need to upload an image"
+    ),
     name: Yup.string().trim().required(validationMessage.required),
     email: Yup.string()
       .trim()

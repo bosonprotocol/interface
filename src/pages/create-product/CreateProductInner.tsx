@@ -40,7 +40,7 @@ import { fromBase64ToBinary } from "../../lib/utils/base64";
 import { getLocalStorageItems } from "../../lib/utils/getLocalStorageItems";
 import { useChatStatus } from "../../lib/utils/hooks/chat/useChatStatus";
 import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
-import { useCurrentSeller } from "../../lib/utils/hooks/useCurrentSeller";
+import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { saveItemInStorage } from "../../lib/utils/hooks/useLocalStorage";
@@ -70,6 +70,7 @@ interface Props {
   initial: CreateProductForm;
   showCreateProductDraftModal: () => void;
   showInvalidRoleModal: () => void;
+  isDraftModalClosed: boolean;
 }
 interface SupportedJuridiction {
   label: string;
@@ -79,7 +80,8 @@ interface SupportedJuridiction {
 function CreateProductInner({
   initial,
   showCreateProductDraftModal,
-  showInvalidRoleModal
+  showInvalidRoleModal,
+  isDraftModalClosed
 }: Props) {
   const navigate = useKeepQueryParamsNavigate();
   const { chatInitializationStatus } = useChatStatus();
@@ -109,9 +111,21 @@ function CreateProductInner({
 
   const { address } = useAccount();
 
-  const { seller, lens: lensProfile } = useCurrentSeller();
+  const { sellers, lens: lensProfiles } = useCurrentSellers();
 
-  const hasSellerAccount = !!seller && Object.keys(seller).length > 0;
+  const hasSellerAccount = !!sellers?.length;
+
+  const currentOperator = sellers.find((seller) => {
+    return seller?.operator.toLowerCase() === address?.toLowerCase();
+  });
+  // lens profile of the current user
+  const operatorLens: Profile | null =
+    lensProfiles.find((lensProfile) => {
+      return (
+        getLensTokenIdDecimal(lensProfile.id).toString() ===
+        currentOperator?.authTokenId
+      );
+    }) || null;
 
   const handleOpenSuccessModal = async ({
     offerInfo
@@ -169,6 +183,7 @@ function CreateProductInner({
       setIsPreviewVisible,
       chatInitializationStatus,
       showCreateProductDraftModal,
+      isDraftModalClosed,
       showInvalidRoleModal
     });
     return {
@@ -184,7 +199,8 @@ function CreateProductInner({
     chatInitializationStatus,
     currentStep,
     showCreateProductDraftModal,
-    showInvalidRoleModal
+    showInvalidRoleModal,
+    isDraftModalClosed
   ]);
 
   const handleNextForm = useCallback(() => {
@@ -403,32 +419,32 @@ function CreateProductInner({
         seller: CONFIG.lens.enabled
           ? {
               defaultVersion: 1,
-              name: lensProfile?.name || "",
-              description: lensProfile?.bio || "",
-              externalUrl: lensProfile
-                ? getLensWebsite(lensProfile as Profile) || ""
+              name: operatorLens?.name || "",
+              description: operatorLens?.bio || "",
+              externalUrl: operatorLens
+                ? getLensWebsite(operatorLens as Profile) || ""
                 : "",
-              tokenId: lensProfile
-                ? getLensTokenIdDecimal(lensProfile.id).toString()
+              tokenId: operatorLens
+                ? getLensTokenIdDecimal(operatorLens.id).toString()
                 : "0",
               images: [
                 {
-                  url: lensProfile
-                    ? getLensProfilePictureUrl(lensProfile as Profile) || ""
+                  url: operatorLens
+                    ? getLensProfilePictureUrl(operatorLens as Profile) || ""
                     : "",
                   tag: "profile"
                 },
                 {
-                  url: lensProfile
-                    ? getLensCoverPictureUrl(lensProfile as Profile) || ""
+                  url: operatorLens
+                    ? getLensCoverPictureUrl(operatorLens as Profile) || ""
                     : "",
                   tag: "cover"
                 }
               ],
               contactLinks: [
                 {
-                  url: lensProfile
-                    ? getLensEmail(lensProfile as Profile) || ""
+                  url: operatorLens
+                    ? getLensEmail(operatorLens as Profile) || ""
                     : "",
                   tag: "email"
                 }
@@ -612,7 +628,7 @@ function CreateProductInner({
                 {isPreviewVisible ? (
                   <Preview
                     togglePreview={setIsPreviewVisible}
-                    seller={seller as any}
+                    seller={currentOperator as any}
                   />
                 ) : (
                   wizardStep.currentStep

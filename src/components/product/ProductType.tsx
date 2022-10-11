@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
+import { useAccount } from "wagmi";
 
 import { CONFIG } from "../../lib/config";
 import { breakpointNumbers } from "../../lib/styles/breakpoint";
@@ -11,7 +12,7 @@ import {
   loadAndSetImage
 } from "../../lib/utils/base64";
 import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
-import { useCurrentSeller } from "../../lib/utils/hooks/useCurrentSeller";
+import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
 import {
   CreateProductImageCreteYourProfileLogo,
@@ -105,16 +106,20 @@ const ProductImage = styled(Image)`
 interface Props {
   showCreateProductDraftModal: () => void;
   showInvalidRoleModal: () => void;
+  isDraftModalClosed: boolean;
 }
 
 export default function ProductType({
   showCreateProductDraftModal,
-  showInvalidRoleModal
+  showInvalidRoleModal,
+  isDraftModalClosed
 }: Props) {
+  const { address } = useAccount();
   const { handleChange, values, nextIsDisabled, setFieldValue } =
     useCreateForm();
+
   const ipfsMetadataStorage = useIpfsStorage();
-  const { showModal } = useModal();
+  const { showModal, store, updateProps } = useModal();
   const fileName = useMemo<CreateProductImageCreteYourProfileLogo>(
     () => `create-product-image_createYourProfile.logo`,
     []
@@ -124,23 +129,41 @@ export default function ProductType({
     null
   );
   const {
-    seller: currentSeller,
+    sellers: currentSellers,
     sellerType: currentRoles,
     lens,
     isLoading
-  } = useCurrentSeller();
+  } = useCurrentSellers();
+
   const [shownDraftModal, setShowDraftModal] = useState<boolean>(false);
 
   const [isRegularSellerSet, setIsRegularSeller] = useState<boolean>(false);
   const isOperator = currentRoles?.find((role) => role === "operator");
+
   const isAdminLinkedToLens =
-    currentSeller.authTokenType === authTokenTypes.LENS &&
-    currentSeller.authTokenId === getLensTokenIdDecimal(lens.id).toString();
+    !isLoading &&
+    !!currentSellers.some((seller, index) => {
+      return (
+        seller.authTokenType === authTokenTypes.LENS &&
+        seller.authTokenId === getLensTokenIdDecimal(lens[index].id).toString()
+      );
+    });
+
   const hasValidAdminAccount =
     (CONFIG.lens.enabled && isAdminLinkedToLens) || !CONFIG.lens.enabled;
-  const isSeller = !!Object.keys(currentSeller).length;
-  const isLensFilled = !!Object.keys(lens).length;
-
+  const isSeller = !!currentSellers.length;
+  const currentOperator = currentSellers.find((seller) => {
+    return seller.operator.toLowerCase() === address?.toLowerCase();
+  }); // lens profile of the current user
+  const operatorLens: Profile | null = useMemo(
+    () =>
+      lens.find((lensProfile) => {
+        const lensIdDecimal = getLensTokenIdDecimal(lensProfile.id).toString();
+        const authTokenId = currentOperator?.authTokenId;
+        return lensIdDecimal === authTokenId;
+      }) || null,
+    [currentOperator?.authTokenId, lens]
+  );
   const onRegularProfileCreated = useCallback(
     (regularProfile: CreateYourProfile) => {
       if (regularProfile.createYourProfile.logo) {
@@ -148,7 +171,7 @@ export default function ProductType({
           regularProfile.createYourProfile.logo[0],
           (base64Uri) => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            setBase64(base64Uri as any); // TODO: check, as the image doesnt seem to be saved correctly
+            setBase64(base64Uri as any);
           }
         );
       }
@@ -159,73 +182,94 @@ export default function ProductType({
     []
   );
   useEffect(() => {
-    if (CONFIG.lens.enabled && isLensFilled) {
+    if (CONFIG.lens.enabled && operatorLens) {
       (async () => {
         try {
-          const logoUrl = getLensProfilePictureUrl(lens as Profile);
+          const logoUrl = getLensProfilePictureUrl(operatorLens as Profile);
           const logoBase64 = await fetchIpfsImage(logoUrl, ipfsMetadataStorage);
           if (!logoBase64) {
             return; // should never happened
           }
           setBase64(logoBase64 as any);
-
-          setFieldValue("createYourProfile", {
+          const createYourProfile = {
             logo: new File([dataURItoBlob(logoBase64)], "logo", {
               type: logoBase64.split(";")[0].split(":")[1]
             }),
-            name: lens.name,
-            email: getLensEmail(lens as Profile),
-            description: lens.bio,
-            website: getLensWebsite(lens as Profile)
-          });
+            name: operatorLens.name,
+            email: getLensEmail(operatorLens as Profile),
+            description: operatorLens.bio,
+            website: getLensWebsite(operatorLens as Profile)
+          };
+          setFieldValue("createYourProfile", createYourProfile);
         } catch (error) {
           console.error(error);
         }
       })();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ipfsMetadataStorage, isLensFilled, lens]);
+  }, [ipfsMetadataStorage, operatorLens]);
   useEffect(() => {
     if (isLoading) {
       return;
     }
-    if (
-      (!isRegularSellerSet && !CONFIG.lens.enabled) ||
+
+    if (!CONFIG.lens.enabled && !shownDraftModal) {
+      setShowDraftModal(true);
+      showCreateProductDraftModal();
+    } else if (
+      (!isRegularSellerSet && !CONFIG.lens.enabled && isDraftModalClosed) ||
       (CONFIG.lens.enabled &&
         ((isSeller && !hasValidAdminAccount) || !isSeller))
     ) {
-      showModal(
-        "CREATE_PROFILE",
-        {
-          headerComponent: (
-            <ProfileMultiSteps
-              createOrSelect={null}
-              activeStep={0}
-              createOrViewRoyalties={null}
-              key="ProductType"
-            />
-          ),
-          initialRegularCreateProfile: values,
-          onRegularProfileCreated,
-          closable: false,
-          onClose: () => {
-            showCreateProductDraftModal();
-          }
-        },
-        "auto",
-        undefined,
-        {
-          xs: `${breakpointNumbers.m + 1}px`
+      if (store.modalType) {
+        if (!CONFIG.lens.enabled) {
+          updateProps<"CREATE_PROFILE">({
+            ...store,
+            modalProps: {
+              ...store.modalProps,
+              initialRegularCreateProfile: values
+            }
+          });
         }
-      );
+      } else {
+        showModal(
+          "CREATE_PROFILE",
+          {
+            ...(CONFIG.lens.enabled
+              ? {
+                  headerComponent: (
+                    <ProfileMultiSteps
+                      createOrSelect={null}
+                      activeStep={0}
+                      createOrViewRoyalties={null}
+                      key="ProductType"
+                    />
+                  )
+                }
+              : { title: "Create Profile" }),
+            initialRegularCreateProfile: values,
+            onRegularProfileCreated,
+            closable: false,
+            onClose: () => {
+              showCreateProductDraftModal();
+            }
+          },
+          "auto",
+          undefined,
+          {
+            xs: `${breakpointNumbers.m + 1}px`
+          }
+        );
+      }
     } else if (
-      ((isOperator && hasValidAdminAccount) ||
-        (isRegularSellerSet && !CONFIG.lens.enabled)) &&
+      isOperator &&
+      hasValidAdminAccount &&
+      CONFIG.lens.enabled &&
       !shownDraftModal
     ) {
       setShowDraftModal(true);
       showCreateProductDraftModal();
-    } else if (!isOperator) {
+    } else if (CONFIG.lens.enabled && !isOperator) {
       showInvalidRoleModal();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -234,8 +278,10 @@ export default function ProductType({
     isOperator,
     isSeller,
     isRegularSellerSet,
+    isDraftModalClosed,
+    shownDraftModal,
     isLoading,
-    values
+    values.createYourProfile
   ]);
 
   return (

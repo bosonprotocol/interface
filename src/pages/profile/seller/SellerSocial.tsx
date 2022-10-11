@@ -19,7 +19,7 @@ function RenderSocial({
   icon: Icon
 }: RenderSocialProps) {
   return (
-    <SocialIcon href={href} $isDisabled={disabled}>
+    <SocialIcon href={href} $isDisabled={disabled} target="_blank">
       {Icon ? Icon : <Globe size={24} />}
     </SocialIcon>
   );

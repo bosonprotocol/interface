@@ -137,13 +137,9 @@ export const useGetCompletedTxLogsByWallet = () => {
   const props = { admin };
 
   const result = useQuery(["GetCompletedTxLogsByWallet", props], async () => {
-    const {
-      admin: sellerAdmin,
-      clerk,
-      operator,
-      treasury
-    } = await coreSDK.getSellerByAddress(admin || "");
-
+    const sellers = await coreSDK.getSellersByAddress(admin || "");
+    const [seller] = sellers;
+    const { admin: sellerAdmin, clerk, operator, treasury } = seller;
     const result = await fetchSubgraph<CompleteTransactionLogs>(
       buildQuery(
         admin || "",

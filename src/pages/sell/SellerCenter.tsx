@@ -1,4 +1,5 @@
 import { House, WarningCircle } from "phosphor-react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 import {
@@ -15,7 +16,7 @@ import Loading from "../../components/ui/Loading";
 import Typography from "../../components/ui/Typography";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
-import { useCurrentSeller } from "../../lib/utils/hooks/useCurrentSeller";
+import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 
 export const Wrapper = styled.div`
@@ -39,12 +40,17 @@ function SellerCenter(props: SellerInsideProps & WithSellerDataProps) {
     </GridWrapper>
   );
 }
-const SellerCenterWithData = WithSellerData<SellerInsideProps>(SellerCenter);
+const SellerCenterWithData = WithSellerData(SellerCenter);
 
 function SellerCenterWrapper() {
   const navigate = useKeepQueryParamsNavigate();
-  const currentUser = useCurrentSeller();
-  const { isLoading, sellerId } = currentUser;
+  const { isLoading, sellerIds, isSuccess } = useCurrentSellers();
+  const [selectedSellerId, setSelectedSellerId] = useState<string>("");
+  useEffect(() => {
+    if (isSuccess) {
+      setSelectedSellerId(sellerIds.length === 1 ? sellerIds[0] : "");
+    }
+  }, [isSuccess, sellerIds]);
 
   if (isLoading) {
     return (
@@ -54,7 +60,7 @@ function SellerCenterWrapper() {
     );
   }
 
-  if (sellerId === null) {
+  if (!sellerIds.length) {
     return (
       <Wrapper>
         <Grid
@@ -83,7 +89,21 @@ function SellerCenterWrapper() {
     );
   }
 
-  return <SellerCenterWithData sellerId={sellerId} />;
+  if (sellerIds.length > 1 && !selectedSellerId) {
+    <select
+      onChange={(e) => {
+        setSelectedSellerId(e.target.value);
+      }}
+    >
+      {sellerIds.map((id: string) => (
+        <option value={id} key="id">
+          {id}
+        </option>
+      ))}
+    </select>;
+  }
+
+  return <SellerCenterWithData sellerId={selectedSellerId} />;
 }
 
 export default SellerCenterWrapper;

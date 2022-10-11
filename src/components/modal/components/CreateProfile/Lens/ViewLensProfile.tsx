@@ -1,10 +1,12 @@
 import { useFormikContext } from "formik";
 import { ReactNode, useEffect } from "react";
+import { useAccount } from "wagmi";
 
 import { CONFIG } from "../../../../../lib/config";
 import { dataURItoBlob } from "../../../../../lib/utils/base64";
 import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
 import { useGetIpfsImage } from "../../../../../lib/utils/hooks/useGetIpfsImage";
+import { useSellers } from "../../../../../lib/utils/hooks/useSellers";
 import Button from "../../../../ui/Button";
 import Grid from "../../../../ui/Grid";
 import { useModal } from "../../../useModal";
@@ -40,7 +42,12 @@ export default function ViewLensProfile({
   const { imageSrc: coverPictureBase64, imageStatus: coverPictureStatus } =
     useGetIpfsImage(coverPicture);
   const { updateProps, store } = useModal();
-  const alreadyHasRoyaltiesDefined = false; // TODO: seller.royalties;
+  const { address } = useAccount();
+  const { data: admins } = useSellers({
+    admin: address
+  });
+  const seller = admins?.[0];
+  const alreadyHasRoyaltiesDefined = !!seller?.royaltyPercentage;
 
   useEffect(() => {
     updateProps<"CREATE_PROFILE">({

@@ -17,14 +17,14 @@ import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
-import { MediaSet } from "../../lib/utils/hooks/lens/graphql/generated";
-import { useCurrentSeller } from "../../lib/utils/hooks/useCurrentSeller";
+import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { Exchange as IExchange } from "../../lib/utils/hooks/useExchanges";
 import { useGetIpfsImage } from "../../lib/utils/hooks/useGetIpfsImage";
 import { useHandleText } from "../../lib/utils/hooks/useHandleText";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import { getOfferDetailData } from "../detail/DetailWidget/DetailWidget";
+import { getLensProfilePictureUrl } from "../modal/components/CreateProfile/Lens/utils";
 import { useModal } from "../modal/useModal";
 import { useConvertedPrice } from "../price/useConvertedPrice";
 
@@ -54,12 +54,11 @@ const ExchangeCardWrapper = styled.div<{ $isCustomStoreFront: boolean }>`
 `;
 
 export default function Exchange({ offer, exchange, reload }: Props) {
-  const { lens } = useCurrentSeller({
+  const { lens: lensProfiles } = useCurrentSellers({
     sellerId: offer.seller.id
   });
-  const { imageSrc: avatar } = useGetIpfsImage(
-    (lens?.picture as MediaSet)?.original?.url
-  );
+  const [lens] = lensProfiles;
+  const { imageSrc: avatar } = useGetIpfsImage(getLensProfilePictureUrl(lens));
 
   const { showModal, modalTypes } = useModal();
   const navigate = useKeepQueryParamsNavigate();

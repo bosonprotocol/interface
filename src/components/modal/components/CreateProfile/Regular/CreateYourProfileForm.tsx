@@ -6,7 +6,6 @@ import Grid from "../../../../ui/Grid";
 
 export default function CreateYourProfileForm() {
   const { nextIsDisabled } = useCreateForm();
-
   return (
     <>
       <FormField
