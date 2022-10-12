@@ -11,8 +11,9 @@ import {
   TagContainer,
   TagWrapper
 } from "./styles/TagsInput.styles";
+import { TagsProps } from "./types";
 
-const TagsInput = ({ name }: { name: string }) => {
+const TagsInput = ({ name, placeholder }: TagsProps) => {
   const [field, meta, helpers] = useField(name);
   const [tags, setTags] = useState<string[]>(field.value || []);
 
@@ -58,7 +59,7 @@ const TagsInput = ({ name }: { name: string }) => {
         <FieldInput
           onKeyDown={handleKeyDown}
           type="text"
-          placeholder="Choose tags..."
+          placeholder={placeholder || "Choose tags..."}
           name={name}
           onBlur={handleBlur}
           error={errorMessage}

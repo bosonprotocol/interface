@@ -130,13 +130,11 @@ export default function ProductType({
     lens,
     isLoading
   } = useCurrentSellers();
-  console.log("useCurrentSellers", currentSellers, currentRoles);
 
   const [shownDraftModal, setShowDraftModal] = useState<boolean>(false);
 
   const [isRegularSellerSet, setIsRegularSeller] = useState<boolean>(false);
   const isOperator = currentRoles?.find((role) => role === "operator");
-  console.log("isOperator", isOperator);
 
   const isAdminLinkedToLens =
     !isLoading &&
@@ -147,10 +145,8 @@ export default function ProductType({
       );
     });
 
-  console.log("isAdminLinkedToLens", isAdminLinkedToLens);
   const hasValidAdminAccount =
     (CONFIG.lens.enabled && isAdminLinkedToLens) || !CONFIG.lens.enabled;
-  console.log("hasValidAdminAccount", hasValidAdminAccount);
   const isSeller = !!currentSellers.length;
   const currentOperator = currentSellers.find((seller) => {
     return seller.operator.toLowerCase() === address?.toLowerCase();
@@ -355,7 +351,6 @@ export default function ProductType({
                     values.productType.productVariant === "differentVariants"
                   }
                   onChange={handleChange}
-                  disabled
                 />
                 <Box>
                   <ProductImage

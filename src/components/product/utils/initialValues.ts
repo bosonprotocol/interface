@@ -53,6 +53,10 @@ export const productInformationInitialValues = {
   }
 } as const;
 
+export const productVariantsInitialValues = {
+  productVariants: {}
+} as const;
+
 export const productImagesInitialValues = {
   productImages: {
     thumbnail: undefined,
@@ -129,6 +133,7 @@ export const disputeCentreInitialValues = {
 export const initialValues: CreateProductForm = {
   ...createYourProfileInitialValues,
   ...productTypeInitialValues,
+  ...productVariantsInitialValues,
   ...productInformationInitialValues,
   ...productImagesInitialValues,
   ...coreTermsOfSaleInitialValues,
