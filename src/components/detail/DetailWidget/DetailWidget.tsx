@@ -4,10 +4,11 @@ import {
   Provider,
   subgraph
 } from "@bosonprotocol/react-kit";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import dayjs from "dayjs";
 import { BigNumber, ethers } from "ethers";
 import { ArrowRight, ArrowSquareOut, Check, Question } from "phosphor-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
 import { useAccount, useBalance, useSigner } from "wagmi";
@@ -241,6 +242,11 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   hasSellerEnoughFunds,
   isPreview = false
 }) => {
+  const { openConnectModal } = useConnectModal();
+  const [
+    isCommittingFromNotConnectedWallet,
+    setIsCommittingFromNotConnectedWallet
+  ] = useState(false);
   const { showModal, modalTypes } = useModal();
   const coreSDK = useCoreSDK();
   const { isLteXS } = useBreakpoints();
@@ -368,6 +374,18 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       isBuyerInsufficientFunds) &&
     isOffer;
 
+  const commitButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (isCommittingFromNotConnectedWallet) {
+      const commitButton = commitButtonRef.current;
+      if (commitButton) {
+        commitButton.click();
+        setIsCommittingFromNotConnectedWallet(false);
+      }
+    }
+  }, [isCommittingFromNotConnectedWallet]);
+
   const notCommittableOfferStatus = useMemo(() => {
     if (isBuyerInsufficientFunds) {
       return "Insufficient Funds";
@@ -456,83 +474,99 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               </DetailTopRightLabel>
             )}
             {isOffer && (
-              <CommitButton
-                variant="primary"
-                disabled={
-                  isChainUnsupported ||
-                  !hasSellerEnoughFunds ||
-                  isExpiredOffer ||
-                  isLoading ||
-                  !quantity ||
-                  isVoidedOffer ||
-                  isPreview
-                }
-                offerId={offer.id}
-                envName={CONFIG.envName}
-                onError={(error) => {
-                  console.error("onError", error);
-                  setIsLoading(false);
-                  const hasUserRejectedTx =
-                    "code" in error &&
-                    (error as unknown as { code: string }).code ===
-                      "ACTION_REJECTED";
-                  if (hasUserRejectedTx) {
-                    showModal("CONFIRMATION_FAILED");
-                  } else {
-                    showModal(modalTypes.DETAIL_WIDGET, {
-                      title: "An error occurred",
-                      message: "An error occurred when trying to commit!",
-                      type: "ERROR",
-                      state: "Committed",
-                      ...BASE_MODAL_DATA
-                    });
+              <button
+                type="button"
+                onClick={() => {
+                  if (
+                    !address &&
+                    openConnectModal &&
+                    !isCommittingFromNotConnectedWallet
+                  ) {
+                    setIsCommittingFromNotConnectedWallet(true);
+                    openConnectModal();
                   }
                 }}
-                onPendingSignature={() => {
-                  setIsLoading(true);
-                  showModal("WAITING_FOR_CONFIRMATION");
-                }}
-                onPendingTransaction={(hash) => {
-                  showModal("TRANSACTION_SUBMITTED", {
-                    action: "Commit",
-                    txHash: hash
-                  });
-                }}
-                onSuccess={async (_, { exchangeId }) => {
-                  let createdExchange: subgraph.ExchangeFieldsFragment;
-                  await poll(
-                    async () => {
-                      createdExchange = await coreSDK.getExchangeById(
-                        exchangeId
-                      );
-                      return createdExchange;
-                    },
-                    (createdExchange) => {
-                      return !createdExchange;
-                    },
-                    500
-                  );
-                  setIsLoading(false);
-                  toast((t) => (
-                    <SuccessTransactionToast
-                      t={t}
-                      action={`Commit to offer: ${offer.metadata.name}`}
-                      onViewDetails={() => {
-                        showModal(modalTypes.DETAIL_WIDGET, {
-                          title: "You have successfully committed!",
-                          message: "You now own the rNFT",
-                          type: "SUCCESS",
-                          id: exchangeId.toString(),
-                          state: "Committed",
-                          ...BASE_MODAL_DATA
-                        });
-                      }}
-                    />
-                  ));
-                }}
-                extraInfo="Step 1/2"
-                web3Provider={signer?.provider as Provider}
-              />
+              >
+                <CommitButton
+                  variant="primary"
+                  // isPauseCommitting={!address}
+                  // buttonRef={commitButtonRef}
+                  disabled={
+                    (address && isChainUnsupported) ||
+                    !hasSellerEnoughFunds ||
+                    isExpiredOffer ||
+                    isLoading ||
+                    !quantity ||
+                    isVoidedOffer ||
+                    isPreview
+                  }
+                  offerId={offer.id}
+                  envName={CONFIG.envName}
+                  onError={(error) => {
+                    console.error("onError", error);
+                    setIsLoading(false);
+                    const hasUserRejectedTx =
+                      "code" in error &&
+                      (error as unknown as { code: string }).code ===
+                        "ACTION_REJECTED";
+                    if (hasUserRejectedTx) {
+                      showModal("CONFIRMATION_FAILED");
+                    } else {
+                      showModal(modalTypes.DETAIL_WIDGET, {
+                        title: "An error occurred",
+                        message: "An error occurred when trying to commit!",
+                        type: "ERROR",
+                        state: "Committed",
+                        ...BASE_MODAL_DATA
+                      });
+                    }
+                  }}
+                  onPendingSignature={() => {
+                    setIsLoading(true);
+                    showModal("WAITING_FOR_CONFIRMATION");
+                  }}
+                  onPendingTransaction={(hash) => {
+                    showModal("TRANSACTION_SUBMITTED", {
+                      action: "Commit",
+                      txHash: hash
+                    });
+                  }}
+                  onSuccess={async (_, { exchangeId }) => {
+                    let createdExchange: subgraph.ExchangeFieldsFragment;
+                    await poll(
+                      async () => {
+                        createdExchange = await coreSDK.getExchangeById(
+                          exchangeId
+                        );
+                        return createdExchange;
+                      },
+                      (createdExchange) => {
+                        return !createdExchange;
+                      },
+                      500
+                    );
+                    setIsLoading(false);
+                    toast((t) => (
+                      <SuccessTransactionToast
+                        t={t}
+                        action={`Commit to offer: ${offer.metadata.name}`}
+                        onViewDetails={() => {
+                          showModal(modalTypes.DETAIL_WIDGET, {
+                            title: "You have successfully committed!",
+                            message: "You now own the rNFT",
+                            type: "SUCCESS",
+                            id: exchangeId.toString(),
+                            state: "Committed",
+                            ...BASE_MODAL_DATA
+                          });
+                        }}
+                      />
+                    ));
+                  }}
+                  extraInfo="Step 1/2"
+                  web3Provider={signer?.provider as Provider}
+                />
+              </button>
             )}
             {isToRedeem && (
               <RedeemButton
