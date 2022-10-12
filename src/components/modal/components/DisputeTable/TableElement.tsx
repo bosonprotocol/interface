@@ -1,7 +1,7 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { ClockClockwise } from "phosphor-react";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { generatePath } from "react-router-dom";
 import styled from "styled-components";
 
@@ -17,6 +17,7 @@ import Button from "../../../ui/Button";
 import Grid from "../../../ui/Grid";
 import Image from "../../../ui/Image";
 import SellerID from "../../../ui/SellerID";
+import { useModal } from "../../useModal";
 
 const OfferImage = styled.div`
   width: 3.75rem;
@@ -56,7 +57,21 @@ const DisputeEndDate = styled(ClockClockwise)`
 function TableElement({ exchange }: { exchange: Exchange }) {
   const { status } = useDisputeSubStatusInfo(exchange);
   const navigate = useKeepQueryParamsNavigate();
+  const { showModal } = useModal();
   const currentDate = dayjs();
+
+  const { refetch: refetchDisputes } = useDisputes(
+    {
+      disputesFilter: {
+        exchange: exchange?.id
+      }
+    },
+    { enabled: !!exchange }
+  );
+
+  const refetchItAll = useCallback(() => {
+    refetchDisputes();
+  }, [refetchDisputes]);
 
   const parseDisputeDate = dayjs(getDateTimestamp(exchange.validUntilDate));
 
@@ -127,11 +142,15 @@ function TableElement({ exchange }: { exchange: Exchange }) {
                 theme="orange"
                 size="small"
                 onClick={() => {
-                  navigate({
-                    pathname: generatePath(BosonRoutes.ChatMessage, {
-                      [UrlParameters.exchangeId]: exchange?.id
-                    })
-                  });
+                  showModal(
+                    "ESCALATE_MODAL",
+                    {
+                      title: "Escalate",
+                      exchange: exchange,
+                      refetch: refetchItAll
+                    },
+                    "l"
+                  );
                 }}
               >
                 Escalate dispute
