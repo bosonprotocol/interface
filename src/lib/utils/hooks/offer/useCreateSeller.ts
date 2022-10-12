@@ -53,7 +53,7 @@ async function createSellerAccount(
     );
   }
 
-  const royaltyPercentageTimes100 = royaltyPercentage * 100;
+  const royaltyPercentageTimes100 = Math.floor(royaltyPercentage * 100);
 
   // https://docs.opensea.io/docs/contract-level-metadata
   const cid = await storage.add(
