@@ -1,3 +1,4 @@
+import bytesToSize from "../../../../../lib/utils/bytesToSize";
 import { websitePattern } from "../../../../../lib/validation/regex/url";
 import { FormField, Input, Textarea, Upload } from "../../../../form";
 import { MAX_LOGO_SIZE } from "../../../../product/utils";
@@ -11,7 +12,9 @@ export default function CreateYourProfileForm() {
     <>
       <FormField
         title="Logo / profile picture"
-        subTitle="Upload a profile image with a max. size of 600Kb"
+        subTitle={`Upload a profile image with a max. size of ${bytesToSize(
+          MAX_LOGO_SIZE
+        )}`}
         required
       >
         <Upload name="createYourProfile.logo" maxSize={MAX_LOGO_SIZE} />
