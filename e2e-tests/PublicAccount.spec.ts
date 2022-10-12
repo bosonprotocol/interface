@@ -171,6 +171,7 @@ test.describe("Public Account page", () => {
         metadata: {
           name: "invalid offer",
           externalUrl: "invalid offer",
+          licenseUrl: "invalid offer",
           type: "BASE"
           // missing description among other fields
         }

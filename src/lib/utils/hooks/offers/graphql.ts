@@ -55,6 +55,7 @@ export const offerGraphQl = gql`
       name
       description
       externalUrl
+      licenseUrl
       schemaUrl
       type
       ... on ProductV1MetadataEntity {

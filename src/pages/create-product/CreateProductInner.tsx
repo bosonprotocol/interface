@@ -376,11 +376,12 @@ function CreateProductInner({
       const licenseUrl = `${window.origin}/#/license/${offerUuid}`;
 
       const metadataHash = await coreSDK.storeMetadata({
-        schemaUrl: "https://schema.org/schema",
+        schemaUrl: "https://schema.org/",
         uuid: offerUuid,
         name: productInformation.productTitle,
         description: `${productInformation.description}\n\nTerms for the Boson rNFT Voucher: ${licenseUrl}`,
         externalUrl,
+        licenseUrl,
         image: `ipfs://${productMainImageLink}`,
         type: MetadataType.PRODUCT_V1,
         attributes: [...nftAttributes, ...additionalAttributes],
