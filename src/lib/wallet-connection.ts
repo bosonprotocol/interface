@@ -81,11 +81,7 @@ export const { provider, chains } = configureChains(getChainForEnvironment(), [
 const connectors = connectorsForWallets([
   {
     groupName: "Popular",
-    wallets: [
-      wallet.rainbow({ chains }),
-      wallet.metaMask({ chains }),
-      wallet.walletConnect({ chains })
-    ]
+    wallets: [wallet.metaMask({ chains }), wallet.walletConnect({ chains })]
   }
 ]);
 
