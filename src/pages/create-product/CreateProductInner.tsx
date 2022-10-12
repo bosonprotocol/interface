@@ -51,13 +51,9 @@ import {
   HelpWrapper,
   ProductLayoutContainer
 } from "./CreateProductInner.styles";
-import {
-  CreateProductSteps,
-  createProductSteps,
-  FIRST_STEP,
-  poll
-} from "./utils";
+import { createProductSteps, FIRST_STEP, poll } from "./utils";
 import { ValidateDates } from "./utils/dataValidator";
+import { CreateProductSteps } from "./utils/index";
 
 type OfferFieldsFragment = subgraph.OfferFieldsFragment;
 
@@ -86,7 +82,15 @@ function CreateProductInner({
 }: Props) {
   const navigate = useKeepQueryParamsNavigate();
   const { chatInitializationStatus } = useChatStatus();
+  const [productVariant, setProductVariant] = useState<string>(
+    initial?.productType?.productVariant || "oneItemType"
+  );
+  const isMultiVariant = useMemo(
+    () => productVariant === "differentVariants" || false,
+    [productVariant]
+  );
   const [currentStep, setCurrentStep] = useState<number>(FIRST_STEP);
+
   const [isPreviewVisible, setIsPreviewVisible] = useState<boolean>(false);
   const { showModal, modalTypes, hideModal } = useModal();
   const coreSDK = useCoreSDK();
@@ -179,39 +183,27 @@ function CreateProductInner({
     );
   };
 
-  const wizardStep = useMemo(() => {
-    const wizard = createProductSteps({
-      setIsPreviewVisible,
-      chatInitializationStatus,
-      showCreateProductDraftModal,
-      isDraftModalClosed,
-      showInvalidRoleModal
-    });
-    return {
-      currentStep:
-        wizard?.[currentStep as keyof CreateProductSteps]?.ui || null,
-      currentValidation:
-        wizard?.[currentStep as keyof CreateProductSteps]?.validation || null,
-      helpSection:
-        wizard?.[currentStep as keyof CreateProductSteps]?.helpSection || null,
-      wizardLength: keys(wizard).length - 1
-    };
-  }, [
+  const wizardSteps = createProductSteps({
+    setIsPreviewVisible,
     chatInitializationStatus,
-    currentStep,
     showCreateProductDraftModal,
+    isDraftModalClosed,
     showInvalidRoleModal,
-    isDraftModalClosed
-  ]);
+    isMultiVariant
+  });
+  const wizardLength = keys(wizardSteps).length - 1;
+  const wizardStep = useMemo(() => {
+    return wizardSteps[currentStep as keyof CreateProductSteps];
+  }, [wizardSteps, currentStep]);
 
   const handleNextForm = useCallback(() => {
     if (isPreviewVisible) {
       setIsPreviewVisible(false);
     }
-    if (currentStep < wizardStep.wizardLength) {
-      setCurrentStep((prev) => prev + 1);
+    if (currentStep < wizardLength) {
+      setCurrentStep(currentStep + 1);
     }
-  }, [currentStep, isPreviewVisible, wizardStep.wizardLength, setCurrentStep]);
+  }, [currentStep, isPreviewVisible, wizardLength, setCurrentStep]);
 
   const handleClickStep = (val: number) => {
     if (isPreviewVisible) {
@@ -577,7 +569,7 @@ function CreateProductInner({
     values: CreateProductForm,
     formikBag: FormikHelpers<CreateProductForm>
   ) => {
-    if (currentStep === wizardStep.wizardLength) {
+    if (currentStep === wizardLength) {
       return handleSendData(values, formikBag);
     }
     formikBag.setTouched({});
@@ -607,7 +599,7 @@ function CreateProductInner({
   return (
     <CreateProductWrapper>
       <MultiSteps
-        data={CREATE_PRODUCT_STEPS}
+        data={CREATE_PRODUCT_STEPS(isMultiVariant)}
         active={currentStep}
         callback={handleClickStep}
         disableInactiveSteps
@@ -621,10 +613,13 @@ function CreateProductInner({
             saveItemInStorage("create-product", newValues);
             return handleSubmit(formikVal, formikBag);
           }}
-          validationSchema={wizardStep.currentValidation}
+          validationSchema={wizardStep.validation}
           enableReinitialize
         >
-          {() => {
+          {({ values }) => {
+            if (productVariant !== values?.productType?.productVariant) {
+              setProductVariant(values?.productType?.productVariant);
+            }
             return (
               <Form onKeyPress={onKeyPress}>
                 {isPreviewVisible ? (
@@ -633,7 +628,7 @@ function CreateProductInner({
                     seller={currentOperator as any}
                   />
                 ) : (
-                  wizardStep.currentStep
+                  wizardStep.ui
                 )}
               </Form>
             );

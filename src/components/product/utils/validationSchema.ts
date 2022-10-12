@@ -49,6 +49,10 @@ export const productImagesValidationSchema = Yup.object({
   })
 });
 
+export const productVariantsValidationSchema = Yup.object({
+  productVariants: Yup.object({})
+});
+
 export const productInformationValidationSchema = Yup.object({
   productInformation: Yup.object({
     productTitle: Yup.string().required(validationMessage.required),

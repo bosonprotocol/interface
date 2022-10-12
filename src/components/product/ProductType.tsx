@@ -364,7 +364,6 @@ export default function ProductType({
                     values.productType.productVariant === "differentVariants"
                   }
                   onChange={handleChange}
-                  disabled
                 />
                 <Box>
                   <ProductImage
