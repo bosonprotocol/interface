@@ -1,5 +1,6 @@
 import { websitePattern } from "../../../../../lib/validation/regex/url";
 import { FormField, Input, Textarea, Upload } from "../../../../form";
+import { MAX_LOGO_SIZE } from "../../../../product/utils";
 import { useCreateForm } from "../../../../product/utils/useCreateForm";
 import Button from "../../../../ui/Button";
 import Grid from "../../../../ui/Grid";
@@ -13,7 +14,7 @@ export default function CreateYourProfileForm() {
         subTitle="Upload a profile image with a max. size of 600Kb"
         required
       >
-        <Upload name="createYourProfile.logo" />
+        <Upload name="createYourProfile.logo" maxSize={MAX_LOGO_SIZE} />
       </FormField>
       <FormField title="Your brand / name" required>
         <Input name="createYourProfile.name" placeholder="Name" />

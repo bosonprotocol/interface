@@ -11,6 +11,7 @@ import Button from "../../components/ui/Button";
 import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
 import { colors } from "../../lib/styles/colors";
+import bytesToSize from "../../lib/utils/bytesToSize";
 import { getFilesWithEncodedData } from "../../lib/utils/files";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { preAppendHttps } from "../../lib/validation/regex/url";
@@ -18,10 +19,11 @@ import SocialLogo from "./SocialLogo";
 import {
   formModel,
   initialValues,
+  MAX_FILE_SIZE,
   SelectType,
   storeFields,
   StoreFormFields,
-  uploadMaxMB
+  SUPPORTED_FILE_FORMATS
 } from "./store-fields";
 
 const Section = styled.div`
@@ -296,11 +298,14 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                 }}
               />
               <FieldDescription margin="0.5rem 0 0 0">
-                or upload the image here (max. size {uploadMaxMB}MB)
+                or upload the image here (max. size {bytesToSize(MAX_FILE_SIZE)}
+                )
               </FieldDescription>
               <Upload
                 name={storeFields.logoUpload}
                 placeholder={formModel.formFields.logoUpload.placeholder}
+                maxSize={MAX_FILE_SIZE}
+                supportFormats={SUPPORTED_FILE_FORMATS}
               />
             </Grid>
           </Grid>

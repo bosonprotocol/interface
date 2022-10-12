@@ -1,6 +1,6 @@
 import * as Yup from "yup";
 
-import bytesToSize from "../../../../lib/utils/bytesToSize";
+import { FileProps } from "./../../../../components/form/Upload/Upload";
 
 export const SUPPORTED_FILE_FORMATS = [
   "image/jpg",
@@ -11,39 +11,14 @@ export const SUPPORTED_FILE_FORMATS = [
 
 export const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1 MB
 
-export const validationOfFile = ({
-  isOptional,
-  maxFileSizeInB,
-  supportedFormats
-}: {
-  isOptional: boolean;
-  maxFileSizeInB?: number;
-  supportedFormats?: string[];
-}) => {
-  const formats = supportedFormats || SUPPORTED_FILE_FORMATS;
+export const validationOfFile = ({ isOptional }: { isOptional: boolean }) => {
   return Yup.mixed()
     .nullable(isOptional ? true : undefined)
-    .test("numFiles", `Please upload one file`, (files: File[]) => {
-      return isOptional ? true : !!(files || []).length;
-    })
     .test(
-      "fileSize",
-      `File size cannot exceed ${bytesToSize(
-        maxFileSizeInB || MAX_FILE_SIZE
-      )} (for each file)`,
-      (files: File[]) => {
-        return (files || []).every(
-          (file) => file.size <= (maxFileSizeInB || MAX_FILE_SIZE)
-        );
-      }
-    )
-    .test(
-      "FILE_FORMAT",
-      `Uploaded files have unsupported format. Supported formats are: ${formats.join(
-        ","
-      )}`,
-      (files: File[]) => {
-        return (files || []).every((file) => formats.includes(file.type));
+      "numFiles",
+      `Please upload one file`,
+      (files: File[] | FileProps[]) => {
+        return isOptional ? true : !!(files || []).length;
       }
     );
 };

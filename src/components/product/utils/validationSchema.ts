@@ -6,11 +6,7 @@ import { FormModel } from "../../modal/components/Chat/MakeProposal/MakeProposal
 import { DisputeFormModel } from "../../modal/components/DisputeModal/DisputeModalFormModel";
 import { CONFIG } from "./../../../lib/config";
 import { SelectDataProps } from "./../../form/types";
-import {
-  MAX_IMAGE_SIZE,
-  MAX_LOGO_SIZE,
-  OPTIONS_EXCHANGE_POLICY
-} from "./const";
+import { OPTIONS_EXCHANGE_POLICY } from "./const";
 import {
   validationOfImage,
   validationOfRequiredImage
@@ -18,7 +14,7 @@ import {
 
 export const createYourProfileValidationSchema = Yup.object({
   createYourProfile: Yup.object({
-    logo: validationOfRequiredImage(MAX_LOGO_SIZE),
+    logo: validationOfRequiredImage(),
     name: Yup.string().trim().required(validationMessage.required),
     email: Yup.string().trim().required(validationMessage.required),
     description: Yup.string().trim().required(validationMessage.required),
@@ -38,14 +34,14 @@ export const productTypeValidationSchema = Yup.object({
 
 export const productImagesValidationSchema = Yup.object({
   productImages: Yup.object({
-    thumbnail: validationOfRequiredImage(MAX_IMAGE_SIZE),
-    secondary: validationOfImage(MAX_IMAGE_SIZE),
-    everyAngle: validationOfImage(MAX_IMAGE_SIZE),
-    details: validationOfImage(MAX_IMAGE_SIZE),
-    inUse: validationOfImage(MAX_IMAGE_SIZE),
-    styledScene: validationOfImage(MAX_IMAGE_SIZE),
-    sizeAndScale: validationOfImage(MAX_IMAGE_SIZE),
-    more: validationOfImage(MAX_IMAGE_SIZE)
+    thumbnail: validationOfRequiredImage(),
+    secondary: validationOfImage(),
+    everyAngle: validationOfImage(),
+    details: validationOfImage(),
+    inUse: validationOfImage(),
+    styledScene: validationOfImage(),
+    sizeAndScale: validationOfImage(),
+    more: validationOfImage()
   })
 });
 

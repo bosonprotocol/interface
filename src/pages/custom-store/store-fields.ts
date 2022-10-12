@@ -1,12 +1,12 @@
 import * as Yup from "yup";
 
 import { SelectDataProps } from "../../components/form/types";
+import { validationOfRequiredImage } from "../../components/product/utils/validationUtils";
 import { colors } from "../../lib/styles/colors";
 import {
   socialLinkPattern,
   websitePattern
 } from "../../lib/validation/regex/url";
-import { validationOfFile } from "../chat/components/UploadForm/const";
 import { SocialLogoValues } from "./SocialLogo";
 
 export type SelectType<Value extends string = string> =
@@ -284,8 +284,8 @@ export const formModel = {
 } as const;
 
 export const uploadMaxMB = 5;
-const MAX_FILE_SIZE = uploadMaxMB * 1024 * 1024; // 5 MB
-const SUPPORTED_FILE_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
+export const MAX_FILE_SIZE = uploadMaxMB * 1024 * 1024; // 5 MB
+export const SUPPORTED_FILE_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
 
 export const validationSchema = Yup.object({
   [storeFields.storeName]: Yup.string(),
@@ -293,11 +293,7 @@ export const validationSchema = Yup.object({
   [storeFields.description]: Yup.string(),
   [storeFields.logoUrl]: Yup.string(),
   [storeFields.logoUrlText]: Yup.string(),
-  [storeFields.logoUpload]: validationOfFile({
-    isOptional: true,
-    maxFileSizeInB: MAX_FILE_SIZE,
-    supportedFormats: SUPPORTED_FILE_FORMATS
-  }),
+  [storeFields.logoUpload]: validationOfRequiredImage(),
   [storeFields.headerBgColor]: Yup.string(),
   [storeFields.headerTextColor]: Yup.string(),
   [storeFields.primaryBgColor]: Yup.string(),

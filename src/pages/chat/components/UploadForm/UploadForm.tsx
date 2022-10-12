@@ -6,6 +6,7 @@ import { FormModel } from "../../../../components/modal/components/Chat/MakeProp
 import Grid from "../../../../components/ui/Grid";
 import Typography from "../../../../components/ui/Typography";
 import { colors } from "../../../../lib/styles/colors";
+import bytesToSize from "../../../../lib/utils/bytesToSize";
 import { MAX_FILE_SIZE, SUPPORTED_FILE_FORMATS } from "./const";
 
 export default function UploadForm() {
@@ -18,14 +19,18 @@ export default function UploadForm() {
       </Grid>
       <Grid margin="0.25rem 0 0.75rem 0">
         <Typography color={colors.darkGrey} $fontSize="0.75rem">
-          File format: PDF, PNG, JPG <br />
-          Max. file size: {MAX_FILE_SIZE / (1024 * 1024)}MB
+          File format:{" "}
+          {SUPPORTED_FILE_FORMATS.map((f) => f?.split("/")?.[1]?.toUpperCase())}{" "}
+          <br />
+          Max. file size: {bytesToSize(MAX_FILE_SIZE)}
         </Typography>
       </Grid>
       <Upload
         name={FormModel.formFields.upload.name}
         multiple
         accept={SUPPORTED_FILE_FORMATS.join(",")}
+        maxSize={MAX_FILE_SIZE}
+        supportFormats={SUPPORTED_FILE_FORMATS}
         trigger={
           <>
             Upload file <UploadSimple />

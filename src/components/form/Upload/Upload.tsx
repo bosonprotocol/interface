@@ -1,10 +1,12 @@
 import { useField } from "formik";
 import { Image, Trash } from "phosphor-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
 
 import { colors } from "../../../lib/styles/colors";
-import { loadAndSetImage } from "../../../lib/utils/base64";
 import bytesToSize from "../../../lib/utils/bytesToSize";
+import { useSaveImageToIpfs } from "../../../lib/utils/hooks/useSaveImageToIpfs";
+import ErrorToast from "../../toasts/common/ErrorToast";
 import Button from "../../ui/Button";
 import Typography from "../../ui/Typography";
 import Error from "../Error";
@@ -17,11 +19,27 @@ import {
 import type { UploadProps } from "../types";
 import UploadedFiles from "./UploadedFiles";
 
+export const MAX_FILE_SIZE = 600 * 1024;
+export const SUPPORTED_FORMATS = [
+  "image/jpg",
+  "image/jpeg",
+  "image/gif",
+  "image/png",
+  "application/pdf"
+];
+
+export interface FileProps {
+  src: string;
+  name?: string;
+  size?: number;
+  type?: string;
+}
 export default function Upload({
   name,
   accept = "image/*",
   disabled,
   maxSize,
+  supportFormats,
   multiple = false,
   trigger,
   onFilesSelect,
@@ -30,40 +48,41 @@ export default function Upload({
   onLoadSinglePreviewImage,
   ...props
 }: UploadProps) {
-  // const fileName = useMemo(() => `create-product-image_${name}`, [name]);
-  // const [preview, setPreview, removePreview] =
-  //   useLocalStorage<GetItemFromStorageKey | null>(
-  //     fileName as GetItemFromStorageKey,
-  //     null
-  //   );
-  const [preview, setPreview] = useState<string | null>();
-
   const [field, meta, helpers] = useField(name);
+  const { saveFile, loadImage, removeFile } = useSaveImageToIpfs();
+  const [preview, setPreview] = useState<string | null>();
+  const [files, setFiles] = useState<FileProps[]>(field.value || []);
 
   const errorMessage = meta.error && meta.touched ? meta.error : "";
   const displayError =
     typeof errorMessage === typeof "string" && errorMessage !== "";
-
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const setFiles = useCallback(
-    (value: unknown) => {
-      helpers.setValue(value);
-    },
-    [helpers]
-  );
-  const files = field.value as File[];
+
+  // useEffect(() => {
+  //   if (field.value.length > 0 && files.length === 0) {
+  //     setFiles(field.value);
+  //   }
+  // }, [field.value]); // eslint-disable-line
 
   useEffect(() => {
     onFilesSelect?.(files);
+    if (!meta.touched) {
+      helpers.setTouched(true);
+    }
     helpers.setValue(files);
-
     if (!multiple && accept === "image/*" && files && files?.length !== 0) {
-      loadAndSetImage(files[0], (base64Uri) => {
-        setPreview(base64Uri);
-        onLoadSinglePreviewImage?.(base64Uri);
-      });
+      loadImagePreview(files[0]);
     }
   }, [files]); // eslint-disable-line
+
+  const loadImagePreview = async (file: FileProps) => {
+    if (!file.src) {
+      return false;
+    }
+    const imagePreview = await loadImage(file?.src);
+    setPreview(imagePreview);
+    onLoadSinglePreviewImage?.(imagePreview as string);
+  };
 
   const handleChooseFile = () => {
     const input = inputRef.current;
@@ -72,41 +91,87 @@ export default function Upload({
     }
   };
 
-  const handleRemoveAllFiles = () => {
+  const handleRemoveAllFiles = async () => {
     if (disabled) {
       return;
     }
-    setFiles([]);
-    setPreview(null);
-  };
 
-  const handleRemoveFile = (index: number) => {
-    const newArray = files.filter((i, k) => k !== index);
-    setFiles(newArray);
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!meta.touched) {
-      helpers.setTouched(true);
+    try {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (file) {
+          await removeFile(file?.src);
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setFiles([]);
     }
+  };
 
+  const handleRemoveFile = async (index: number) => {
+    try {
+      const file = files.find((i, k) => k === index);
+      if (file) {
+        await removeFile(file?.src);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      const newArray = files.filter((i, k) => k !== index);
+      setFiles(newArray);
+    }
+  };
+
+  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) {
       return;
     }
     const { files } = e.target;
     const filesArray = Object.values(files);
+    const filesErrors: string[] = [];
+
     for (const file of filesArray) {
-      if (maxSize) {
-        if (file.size > maxSize) {
-          const error = `File size cannot exceed more than ${bytesToSize(
-            maxSize
-          )}`;
-          // TODO: change to notification
-          console.error(error);
-        }
+      const sizeValidation = maxSize || MAX_FILE_SIZE;
+      const formatValidation = supportFormats || SUPPORTED_FORMATS;
+      if (file.size > sizeValidation) {
+        const err = `File ${
+          file.name
+        } size cannot exceed more than ${bytesToSize(sizeValidation)}!`;
+        // helpers.setError(err);
+        filesErrors.push(err);
+      }
+      if (!formatValidation.includes(file.type)) {
+        const err = `Uploaded file has unsupported format of ${file.type}!`;
+        // helpers.setError(err);
+        filesErrors.push(err);
       }
     }
-    setFiles(filesArray);
+
+    if (filesErrors.length > 0) {
+      toast((t) => (
+        <ErrorToast t={t}>
+          <Typography tag="p" color={colors.red}>
+            {filesErrors?.map((fileError) => `${fileError}\n`)}
+          </Typography>
+        </ErrorToast>
+      ));
+      return false;
+    }
+
+    const ipfsArray = [];
+    for (let i = 0; i < filesArray.length; i++) {
+      const file = filesArray[i];
+      const cid = await saveFile(file);
+      ipfsArray.push({
+        src: `ipfs://${cid}`,
+        name: file.name,
+        size: file.size,
+        type: file.type
+      } as FileProps);
+    }
+    setFiles(ipfsArray as FileProps[]);
   };
 
   return (

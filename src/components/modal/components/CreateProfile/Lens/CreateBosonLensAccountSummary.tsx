@@ -5,7 +5,6 @@ import { useAccount } from "wagmi";
 
 import { CONFIG } from "../../../../../lib/config";
 import { colors } from "../../../../../lib/styles/colors";
-import { loadAndSetImage } from "../../../../../lib/utils/base64";
 import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
 import useCustomCreateLensProfile from "../../../../../lib/utils/hooks/lens/profile/useCustomCreateLensProfile";
 import useCreateSeller from "../../../../../lib/utils/hooks/offer/useCreateSeller";
@@ -17,6 +16,7 @@ import { Spinner } from "../../../../loading/Spinner";
 import SuccessTransactionToast from "../../../../toasts/SuccessTransactionToast";
 import Button from "../../../../ui/Button";
 import Grid from "../../../../ui/Grid";
+import Image from "../../../../ui/Image";
 import Typography from "../../../../ui/Typography";
 import { useModal } from "../../../useModal";
 import { authTokenTypes } from "./const";
@@ -42,9 +42,6 @@ export default function CreateBosonLensAccountSummary({
   const [lensProfileToSubmit, setLensProfileToSubmit] = useState<
     Profile | null | undefined
   >(profile);
-  const [logoImage, setLogoImage] = useState<string>("");
-  const [profileImageUrl, setProfileImageUrl] = useState<string>("");
-  const [coverPicture, setCoverPicture] = useState<string>("");
   const [isCreatedLensProfile, setCreatedLensProfile] =
     useState<boolean>(false);
 
@@ -70,7 +67,7 @@ export default function CreateBosonLensAccountSummary({
       lensValues: values,
       authTokenId: lensProfileToSubmit?.id,
       authTokenType: authTokenTypes.LENS,
-      profileLogoUrl: profileImageUrl
+      profileLogoUrl: values?.logo?.[0]?.src || ""
     },
     {
       enabled: false,
@@ -131,21 +128,8 @@ export default function CreateBosonLensAccountSummary({
       setLensProfileToSubmit(profile);
       setCreatedLensProfile(true);
     },
-    onSetProfileLogoIpfsLink: (profileIpfsLink) => {
-      setProfileImageUrl(profileIpfsLink);
-    },
     enabled: !usingExistingLensProfile && !!values
   });
-  useEffect(() => {
-    if (values.logo?.length) {
-      loadAndSetImage(values.logo[0], setLogoImage);
-    }
-  }, [values.logo]);
-  useEffect(() => {
-    if (values.coverPicture?.length) {
-      loadAndSetImage(values.coverPicture[0], setCoverPicture);
-    }
-  }, [values.coverPicture]);
 
   const onSubmitWithArgs = useCallback(
     (action: string) => {
@@ -197,7 +181,16 @@ export default function CreateBosonLensAccountSummary({
                     >
                       Logo / profile picture *
                     </Typography>
-                    <img src={logoImage} height="50px" />
+                    {values?.logo?.[0]?.src && (
+                      <Image
+                        src={values?.logo?.[0]?.src || ""}
+                        style={{
+                          width: "50px",
+                          height: "50px",
+                          paddingTop: "0"
+                        }}
+                      />
+                    )}
                   </Grid>
                   <Grid
                     flexDirection="column"
@@ -211,7 +204,16 @@ export default function CreateBosonLensAccountSummary({
                     >
                       Cover Picture *
                     </Typography>
-                    <img src={coverPicture} height="50px" />
+                    {values?.coverPicture?.[0]?.src && (
+                      <Image
+                        src={values?.coverPicture?.[0]?.src || ""}
+                        style={{
+                          width: "50px",
+                          height: "50px",
+                          paddingTop: "0"
+                        }}
+                      />
+                    )}
                   </Grid>
                 </Grid>
 

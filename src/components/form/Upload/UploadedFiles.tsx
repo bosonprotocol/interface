@@ -1,18 +1,19 @@
+import { FileProps } from "./Upload";
 import UploadedFile from "./UploadedFile";
 
 interface Props {
-  files: File[];
+  files: FileProps[] | File[];
   handleRemoveFile: (index: number) => void;
 }
 export default function UploadedFiles({ files, handleRemoveFile }: Props) {
   return (
     <>
-      {files.map((file: File, index: number) => {
+      {files.map((file: FileProps | File, index: number) => {
         return (
           <UploadedFile
-            key={`${file.name}_${index}`}
-            fileName={file.name}
-            fileSize={file.size}
+            key={`${file?.name || ""}_${index}`}
+            fileName={file?.name || `file_${index}`}
+            fileSize={Number(file?.size || 0)}
             color="white"
             handleRemoveFile={() => handleRemoveFile(index)}
             showSize

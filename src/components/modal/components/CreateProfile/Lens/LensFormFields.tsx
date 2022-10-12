@@ -1,3 +1,4 @@
+import bytesToSize from "../../../../../lib/utils/bytesToSize";
 import { websitePattern } from "../../../../../lib/validation/regex/url";
 import { FormField, Input, Textarea, Upload } from "../../../../form";
 
@@ -6,22 +7,31 @@ interface Props {
   onBlurName?: () => void;
 }
 
+const MAX_LOGO_SIZE = 300 * 1024; // 300 KB
 export default function LensFormFields({ disable, onBlurName }: Props) {
   return (
     <>
       <FormField
         title="Logo / profile picture"
-        subTitle="Upload a profile image with a max. size of 300Kb"
+        subTitle={`Upload a profile image with a max. size of ${bytesToSize(
+          MAX_LOGO_SIZE
+        )}`}
         required
       >
-        <Upload name="logo" multiple={false} disabled={disable} />
+        <Upload name="logo" disabled={disable} maxSize={MAX_LOGO_SIZE} />
       </FormField>
       <FormField
         title="Cover picture"
-        subTitle="Upload a profile image with a max. size of 300Kb"
+        subTitle={`Upload a profile image with a max. size of ${bytesToSize(
+          MAX_LOGO_SIZE
+        )}`}
         required
       >
-        <Upload name="coverPicture" multiple={false} disabled={disable} />
+        <Upload
+          name="coverPicture"
+          disabled={disable}
+          maxSize={MAX_LOGO_SIZE}
+        />
       </FormField>
       <FormField title="Your brand / name" required>
         <Input

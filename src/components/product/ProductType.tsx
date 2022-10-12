@@ -6,11 +6,7 @@ import { useAccount } from "wagmi";
 import { CONFIG } from "../../lib/config";
 import { breakpointNumbers } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
-import {
-  dataURItoBlob,
-  fetchIpfsImage,
-  loadAndSetImage
-} from "../../lib/utils/base64";
+import { dataURItoBlob, fetchIpfsImage } from "../../lib/utils/base64";
 import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
@@ -134,11 +130,13 @@ export default function ProductType({
     lens,
     isLoading
   } = useCurrentSellers();
+  console.log("useCurrentSellers", currentSellers, currentRoles);
 
   const [shownDraftModal, setShowDraftModal] = useState<boolean>(false);
 
   const [isRegularSellerSet, setIsRegularSeller] = useState<boolean>(false);
   const isOperator = currentRoles?.find((role) => role === "operator");
+  console.log("isOperator", isOperator);
 
   const isAdminLinkedToLens =
     !isLoading &&
@@ -149,8 +147,10 @@ export default function ProductType({
       );
     });
 
+  console.log("isAdminLinkedToLens", isAdminLinkedToLens);
   const hasValidAdminAccount =
     (CONFIG.lens.enabled && isAdminLinkedToLens) || !CONFIG.lens.enabled;
+  console.log("hasValidAdminAccount", hasValidAdminAccount);
   const isSeller = !!currentSellers.length;
   const currentOperator = currentSellers.find((seller) => {
     return seller.operator.toLowerCase() === address?.toLowerCase();
@@ -166,15 +166,6 @@ export default function ProductType({
   );
   const onRegularProfileCreated = useCallback(
     (regularProfile: CreateYourProfile) => {
-      if (regularProfile.createYourProfile.logo) {
-        loadAndSetImage(
-          regularProfile.createYourProfile.logo[0],
-          (base64Uri) => {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            setBase64(base64Uri as any);
-          }
-        );
-      }
       setFieldValue("createYourProfile", regularProfile.createYourProfile);
       setIsRegularSeller(true);
     },

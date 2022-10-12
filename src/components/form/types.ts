@@ -1,5 +1,7 @@
 import { SingleValue } from "react-select";
 
+import { FileProps } from "./Upload/Upload";
+
 export interface BaseProps {
   name: string;
   placeholder?: string;
@@ -79,7 +81,8 @@ export interface UploadProps extends BaseProps {
   multiple?: boolean;
   trigger?: React.ReactNode | JSX.Element;
   maxSize?: number;
-  onFilesSelect?: (files: File[]) => void;
+  supportFormats?: string[];
+  onFilesSelect?: (files: File[] | FileProps[]) => void;
   files?: File[];
   wrapperProps?: React.HTMLAttributes<HTMLDivElement>;
   onLoadSinglePreviewImage?: (base64Uri: string) => void;
