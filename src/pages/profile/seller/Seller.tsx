@@ -1,3 +1,4 @@
+// import { Button, ButtonSize } from "@bosonprotocol/react-kit";
 import Avatar from "@davatar/react";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
@@ -59,6 +60,28 @@ const StyledImage = styled(Image)`
     max-width: 100%;
     height: auto;
     max-height: 100%;
+  }
+`;
+
+const FollowLens = styled.div`
+  margin-left: 0.75rem;
+  padding: 0.25rem 1rem;
+  border: 2px solid ${colors.secondary};
+  color: ${colors.secondary};
+  cursor: pointer;
+  :hover {
+    color: ${colors.white};
+    background: ${colors.secondary};
+    a {
+      color: ${colors.white};
+    }
+  }
+  a {
+    color: ${colors.secondary};
+    :hover {
+      background: ${colors.secondary};
+      color: ${colors.white};
+    }
   }
 `;
 
@@ -199,6 +222,14 @@ export default function Seller() {
               margin="1.25rem 0 0 0"
             >
               <SellerSocial sellerLens={sellerLens as ProfileFieldsFragment} />
+              <FollowLens>
+                <a
+                  href={`https://lenster.xyz/u/${sellerLens?.handle}`}
+                  target="_blank"
+                >
+                  Follow
+                </a>
+              </FollowLens>
             </Grid>
           </Grid>
         </ProfileSectionWrapper>
