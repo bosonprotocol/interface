@@ -381,6 +381,7 @@ function CreateProductInner({
         name: productInformation.productTitle,
         description: `${productInformation.description}\n\nTerms for the Boson rNFT Voucher: ${licenseUrl}`,
         externalUrl,
+        licenseUrl,
         image: `ipfs://${productMainImageLink}`,
         type: MetadataType.PRODUCT_V1,
         attributes: [...nftAttributes, ...additionalAttributes],

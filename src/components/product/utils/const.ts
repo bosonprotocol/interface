@@ -225,6 +225,7 @@ export const MOCK_MODAL_DATA = {
       name: "Long-lived Test Item",
       description: "Lore ipsum",
       externalUrl: "https://interface-test.on.fleek.co",
+      licenseUrl: "https://interface-test.on.fleek.co/license",
       schemaUrl: "https://schema.org/",
       type: "BASE",
       imageUrl: "https://picsum.photos/seed/35/700"
