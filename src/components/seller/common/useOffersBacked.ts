@@ -6,6 +6,7 @@ import { useMemo } from "react";
 dayjs.extend(isBetween);
 
 import { Offer } from "../../../lib/types/offer";
+import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import { saveItemInStorage } from "../../../lib/utils/hooks/useLocalStorage";
 import { SellerExchangeProps } from "../../../lib/utils/hooks/useSellerDeposit";
 import { WithSellerDataProps } from "./WithSellerData";
@@ -31,18 +32,9 @@ export default function useOffersBacked({
       // TODO: BP416 - Offers Backed Filter Offers
       const notExpiredAndNotVoidedOffers = exchangeToken?.offers?.filter(
         (offer: Offer) => {
-          const validUntilDateParsed = dayjs(
-            Number(offer?.validUntilDate) * 1000
-          );
-          const validFromDateParsed = dayjs(
-            Number(offer?.validFromDate) * 1000
-          );
-          const isNotExpired = dayjs().isBetween(
-            validFromDateParsed,
-            validUntilDateParsed,
-            "day",
-            "[]"
-          );
+          const now = dayjs();
+          const validUntilDate = dayjs(getDateTimestamp(offer?.validUntilDate));
+          const isNotExpired = validUntilDate.isAfter(now);
           return isNotExpired && !offer.voided;
         }
       );
