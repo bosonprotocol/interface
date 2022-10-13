@@ -28,6 +28,7 @@ export default function useOffersBacked({
     }
     exchangesTokens?.forEach((exchangeToken) => {
       const key = exchangeToken?.symbol;
+      // TODO: BP416 - Offers Backed Filter Offers
       const notExpiredAndNotVoidedOffers = exchangeToken?.offers?.filter(
         (offer: Offer) => {
           const validUntilDateParsed = dayjs(
@@ -42,7 +43,7 @@ export default function useOffersBacked({
             "day",
             "[]"
           );
-          return isNotExpired && !offer.voidedAt;
+          return isNotExpired && !offer.voided;
         }
       );
       const sumValue = notExpiredAndNotVoidedOffers?.reduce((acc, data) => {
