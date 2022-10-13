@@ -63,7 +63,7 @@ export default function FinanceWithdraw({
         }
       : { addressOrName: address }
   );
-  const { showModal } = useModal();
+  const { showModal, hideModal } = useModal();
   const withdrawFunds = useWithdrawFunds({
     accountId,
     tokensToWithdraw: [
@@ -125,6 +125,7 @@ export default function FinanceWithdraw({
         );
         setAmountToWithdraw("0");
         setIsWithdrawInvalid(true);
+        hideModal();
       } catch (error) {
         console.error(error);
         const hasUserRejectedTx =

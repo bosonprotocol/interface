@@ -241,7 +241,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   hasSellerEnoughFunds,
   isPreview = false
 }) => {
-  const { showModal, modalTypes } = useModal();
+  const { showModal, hideModal, modalTypes } = useModal();
   const coreSDK = useCoreSDK();
   const { isLteXS } = useBreakpoints();
   const navigate = useKeepQueryParamsNavigate();
@@ -547,6 +547,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                     500
                   );
                   setIsLoading(false);
+                  hideModal();
                   toast((t) => (
                     <SuccessTransactionToast
                       t={t}

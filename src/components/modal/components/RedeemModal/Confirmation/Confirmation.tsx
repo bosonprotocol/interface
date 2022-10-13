@@ -51,7 +51,7 @@ export default function Confirmation({
   reload
 }: Props) {
   const coreSDK = useCoreSDK();
-  const { showModal } = useModal();
+  const { showModal, hideModal } = useModal();
   const { bosonXmtp } = useChatContext();
   const [chatError, setChatError] = useState<Error | null>(null);
   const [redeemError, setRedeemError] = useState<Error | null>(null);
@@ -196,6 +196,7 @@ ${FormModel.formFields.email.placeholder}: ${emailField.value}`;
               500
             );
             setIsLoading(false);
+            hideModal();
             toast((t) => (
               <SuccessTransactionToast
                 t={t}
