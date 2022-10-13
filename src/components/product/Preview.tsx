@@ -248,6 +248,7 @@ export default function Preview({ togglePreview, seller }: Props) {
                   tag="p"
                   color={colors.darkGrey}
                   data-testid="description"
+                  style={{ whiteSpace: "pre-wrap" }}
                 >
                   {values.productInformation.description}
                 </Typography>
@@ -256,7 +257,11 @@ export default function Preview({ togglePreview, seller }: Props) {
               </div>
               <div>
                 <Typography tag="h3">About the creator</Typography>
-                <Typography tag="p" color={colors.darkGrey}>
+                <Typography
+                  tag="p"
+                  color={colors.darkGrey}
+                  style={{ whiteSpace: "pre-wrap" }}
+                >
                   {values.createYourProfile.description}
                 </Typography>
               </div>

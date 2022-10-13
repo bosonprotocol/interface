@@ -87,6 +87,7 @@ export const CONFIG = {
     enabled: createProfileConfiguration === "LENS" && availableOnNetwork,
     lensHandleExtension: config.chainId === 137 ? ".lens" : ".test",
     availableOnNetwork,
+    apiLink: config.lens.apiLink,
     LENS_HUB_CONTRACT: config.lens.LENS_HUB_CONTRACT,
     LENS_PERIPHERY_CONTRACT: config.lens.LENS_PERIPHERY_CONTRACT,
     LENS_HUB_ABI: lensHubContractAbi,
