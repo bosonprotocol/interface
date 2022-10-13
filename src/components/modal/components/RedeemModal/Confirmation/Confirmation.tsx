@@ -38,6 +38,7 @@ interface Props {
   sellerId: string;
   sellerAddress: string;
   onBackClick: () => void;
+  setIsLoading?: React.Dispatch<React.SetStateAction<boolean>>;
   reload?: () => void;
 }
 
@@ -48,7 +49,8 @@ export default function Confirmation({
   buyerId,
   sellerId,
   sellerAddress,
-  reload
+  reload,
+  setIsLoading: setLoading
 }: Props) {
   const coreSDK = useCoreSDK();
   const { showModal, hideModal } = useModal();
@@ -164,6 +166,7 @@ ${FormModel.formFields.email.placeholder}: ${emailField.value}`;
             console.error("Error while redeeming", error);
             setRedeemError(error);
             setIsLoading(false);
+            setLoading?.(false);
             const hasUserRejectedTx =
               "code" in error &&
               (error as unknown as { code: string }).code === "ACTION_REJECTED";
@@ -174,6 +177,7 @@ ${FormModel.formFields.email.placeholder}: ${emailField.value}`;
           onPendingSignature={async () => {
             setRedeemError(null);
             setIsLoading(true);
+            setLoading?.(true);
             await sendDeliveryDetailsToChat();
             showModal("WAITING_FOR_CONFIRMATION");
           }}
@@ -196,6 +200,7 @@ ${FormModel.formFields.email.placeholder}: ${emailField.value}`;
               500
             );
             setIsLoading(false);
+            setLoading?.(false);
             hideModal();
             toast((t) => (
               <SuccessTransactionToast

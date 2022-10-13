@@ -20,6 +20,7 @@ export interface CompleteTransactionLogs {
 }
 
 interface SellerAddresses {
+  authTokenId: string;
   sellerAdmin: string;
   clerk: string;
   operator: string;
@@ -34,6 +35,15 @@ const buildQuery = (
   return gql`
     query ${name} {
       buyers(where: { wallet: "${walletAddress}" }) {
+        logs {
+          type
+          timestamp
+          executedBy
+          hash
+          id
+        }
+      }
+      sellers(where: { authTokenId: "${sellerAddresses.authTokenId}" }) {
         logs {
           type
           timestamp
@@ -134,25 +144,37 @@ export const useGetCompletedTxLogsByWallet = () => {
   const { address: admin } = useAccount();
   const coreSDK = useCoreSDK();
 
-  const props = { admin };
+  const { data: seller } = useQuery(
+    ["GetSellerPropsForCompletedTxLogs", { admin }],
+    async () => {
+      const sellers = await coreSDK.getSellersByAddress(admin || "");
+      const [seller] = sellers;
+      return seller;
+    }
+  );
 
-  const result = useQuery(["GetCompletedTxLogsByWallet", props], async () => {
-    const sellers = await coreSDK.getSellersByAddress(admin || "");
-    const [seller] = sellers;
-    const { admin: sellerAdmin, clerk, operator, treasury } = seller;
-    const result = await fetchSubgraph<CompleteTransactionLogs>(
-      buildQuery(
-        admin || "",
-        { sellerAdmin, clerk, operator, treasury },
-        `GetCompletedTxLogsByWallet`
-      ),
-      props
-    );
-    return result;
-  });
-
-  return {
-    ...result,
-    data: result?.data
-  };
+  return useQuery(
+    ["GetCompletedTxLogsByWallet", { admin, seller }],
+    async () => {
+      const result = await fetchSubgraph<CompleteTransactionLogs>(
+        buildQuery(
+          admin || "",
+          {
+            authTokenId: seller?.authTokenId || "",
+            sellerAdmin: seller?.admin || "",
+            clerk: seller?.clerk || "",
+            operator: seller?.operator || "",
+            treasury: seller?.treasury || ""
+          },
+          `GetCompletedTxLogsByWallet`
+        ),
+        { admin, seller }
+      );
+      return result;
+    },
+    {
+      enabled: !!admin && !!seller,
+      refetchOnMount: true
+    }
+  );
 };

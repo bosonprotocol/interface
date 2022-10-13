@@ -32,7 +32,8 @@ export default function Exchange() {
   const {
     data: exchanges,
     isError,
-    isLoading
+    isLoading,
+    refetch: reload
   } = useExchanges(
     {
       id: exchangeId,
@@ -127,6 +128,7 @@ export default function Exchange() {
                 name={name}
                 image={offerImg}
                 hasSellerEnoughFunds={hasSellerEnoughFunds}
+                reload={reload}
               />
             </div>
             <DetailShare />
