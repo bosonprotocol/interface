@@ -21,10 +21,14 @@ export default function BosonAccountFormFields({
   alreadyHasRoyaltiesDefined,
   isError
 }: Props) {
-  const [fieldSecondaryRoyalties, metaSecondaryRoyalties] =
-    useField("secondaryRoyalties");
+  const [
+    fieldSecondaryRoyalties,
+    metaSecondaryRoyalties,
+    helpersSecondaryRoyalties
+  ] = useField<number>("secondaryRoyalties");
 
-  const [fieldAddressForRoyaltyPayment] = useField("addressForRoyaltyPayment");
+  const [fieldAddressForRoyaltyPayment, , helpersAddressForRoyaltyPayment] =
+    useField<string>("addressForRoyaltyPayment");
 
   return (
     <>
@@ -55,6 +59,14 @@ export default function BosonAccountFormFields({
                   hideError
                   type="number"
                   step="0.01"
+                  onChange={(event) => {
+                    if (!event.target.valueAsNumber) {
+                      helpersAddressForRoyaltyPayment.setValue("");
+                    }
+                    helpersSecondaryRoyalties.setValue(
+                      event.target.valueAsNumber
+                    );
+                  }}
                 />
               </Grid>
               <div style={{ padding: "1rem" }}>%</div>
@@ -101,7 +113,7 @@ export default function BosonAccountFormFields({
           theme="bosonPrimary"
           type="submit"
           disabled={
-            !fieldSecondaryRoyalties.value &&
+            !!fieldSecondaryRoyalties.value &&
             !fieldAddressForRoyaltyPayment.value &&
             !alreadyHasRoyaltiesDefined
           }
