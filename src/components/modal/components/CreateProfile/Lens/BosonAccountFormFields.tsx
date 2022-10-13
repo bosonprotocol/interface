@@ -101,7 +101,7 @@ export default function BosonAccountFormFields({
           theme="bosonPrimary"
           type="submit"
           disabled={
-            !fieldSecondaryRoyalties.value &&
+            !!fieldSecondaryRoyalties.value &&
             !fieldAddressForRoyaltyPayment.value &&
             !alreadyHasRoyaltiesDefined
           }

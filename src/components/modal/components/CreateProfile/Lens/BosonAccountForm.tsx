@@ -102,7 +102,11 @@ export default function BosonAccountForm({
       <Formik<BosonAccount>
         initialValues={initialValues}
         onSubmit={(values) => {
-          onSubmit(values);
+          const percentage = values.secondaryRoyalties || 0;
+          onSubmit({
+            secondaryRoyalties: percentage,
+            addressForRoyaltyPayment: values.addressForRoyaltyPayment
+          });
         }}
         enableReinitialize
         validationSchema={bosonAccountValidationSchema}
