@@ -363,6 +363,7 @@ test.describe("Explore page", () => {
         metadata: {
           name: "first offer",
           externalUrl: "invalid offer",
+          licenseUrl: "invalid offer",
           type: "BASE"
           // missing description among other fields
         }

@@ -41,6 +41,7 @@ export const defaultMockOffers: Offer[] = [
       description: "Description",
       type: "BASE",
       externalUrl: "externalUrl",
+      licenseUrl: "licenseUrl",
       schemaUrl: "schemaUrl"
     }
   }
