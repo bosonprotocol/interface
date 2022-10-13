@@ -8,11 +8,16 @@ export async function fetchLens<T, V = Record<string, unknown>>(
   headers?: Record<string, unknown>
 ): Promise<T> {
   try {
-    const data = await request<T, V>(CONFIG.lens.apiLink, document, variables, {
-      ...headers,
-      Accept: "application/json",
-      "Content-Type": "application/json"
-    });
+    const data = await request<T, V>(
+      CONFIG.lens.apiLink || "",
+      document,
+      variables,
+      {
+        ...headers,
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      }
+    );
     return data;
   } catch (err) {
     console.error(err);
