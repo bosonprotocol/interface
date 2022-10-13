@@ -48,14 +48,6 @@ const StyledButtonGrid = styled(Grid)<{ isLteS: boolean }>`
 
 const buttonSteps = ["Next"];
 
-const StyledButton = styled.button`
-  border: none;
-  background: none;
-  &:disabled {
-    color: ${colors.lightGrey};
-  }
-`;
-
 const multiStepsData = [
   { steps: 1, name: "Dispute Context" },
   { steps: 1, name: "Escalate Dispute" }
