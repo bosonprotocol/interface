@@ -7,6 +7,7 @@ import { useAccount } from "wagmi";
 
 import { getLensCoverPictureUrl } from "../../../components/modal/components/CreateProfile/Lens/utils";
 import AddressText from "../../../components/offer/AddressText";
+import Button from "../../../components/ui/Button";
 import Grid from "../../../components/ui/Grid";
 import Image from "../../../components/ui/Image";
 import Loading from "../../../components/ui/Loading";
@@ -18,6 +19,11 @@ import {
   MediaSet,
   ProfileFieldsFragment
 } from "../../../lib/utils/hooks/lens/graphql/generated";
+import useGetLensProfiles from "../../../lib/utils/hooks/lens/profile/useGetLensProfiles";
+import {
+  useIsFollowing,
+  useSetFollow
+} from "../../../lib/utils/hooks/lens/profile/useIsFollowing";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { useCurrentSellers } from "../../../lib/utils/hooks/useCurrentSellers";
 import { useGetIpfsImage } from "../../../lib/utils/hooks/useGetIpfsImage";
@@ -115,8 +121,60 @@ export default function Seller() {
       enabled: !!sellerId
     }
   );
+
+  // const myProfile = await getLensProfiles({
+  //   ownedBy: [currentWalletAddress]
+  // });
+  // const sample = myProfile.isFollowing("");
+
   const isSellerExists = !!sellers?.length;
   const currentSellerAddress = sellers[0]?.operator || "";
+
+  const { data } = useIsFollowing(
+    {
+      // address: [currentWalletAddress]
+      followInfos: [
+        {
+          followerAddress: currentWalletAddress,
+          profileId: currentSellerAddress
+        }
+      ]
+    },
+    {
+      enabled: !!currentWalletAddress
+    }
+  );
+
+  const isFollowingProfile = data?.[0].follows || false;
+
+  const { data: followData } = useSetFollow({
+    follow: [{ profile: currentSellerAddress }]
+  });
+
+  console.log(
+    "🚀  roberto --  ~ file: Seller.tsx ~ line 161 ~ Seller ~ profileData",
+    followData
+  );
+
+  console.log(
+    "🚀  roberto --  ~ file: Seller.tsx ~ line 147 ~ Seller ~ isFollowingProfile",
+    isFollowingProfile
+  );
+
+  const { data: profileData } = useGetLensProfiles(
+    {
+      ownedBy: [currentWalletAddress]
+    },
+    {
+      enabled: !!currentWalletAddress
+    }
+  );
+
+  console.log(
+    "🚀  roberto --  ~ file: Seller.tsx ~ line 170 ~ Seller ~ profileData",
+    profileData
+  );
+
   const isMySeller =
     currentSellerAddress.toLowerCase() === currentWalletAddress.toLowerCase();
 
@@ -210,14 +268,21 @@ export default function Seller() {
               margin="1.25rem 0 0 0"
             >
               <SellerSocial sellerLens={sellerLens as ProfileFieldsFragment} />
-              <FollowLens>
+              <Button
+                onClick={() => {
+                  console.log("on click");
+                }}
+              >
+                {isFollowingProfile ? `Unfollow` : `Follow`}
+              </Button>
+              {/* <FollowLens>
                 <a
                   href={`https://lenster.xyz/u/${sellerLens?.handle}`}
                   target="_blank"
                 >
                   Follow
                 </a>
-              </FollowLens>
+              </FollowLens> */}
             </Grid>
           </Grid>
         </ProfileSectionWrapper>
@@ -305,4 +370,10 @@ export default function Seller() {
       </ProfileSectionWrapper>
     </>
   );
+}
+function useGeuseIsFollingtLensProfiles(
+  arg0: { ownedBy: string[] },
+  arg1: { enabled: boolean }
+): { data: any; isSuccess: any } {
+  throw new Error("Function not implemented.");
 }

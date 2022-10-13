@@ -29,7 +29,7 @@ export default function useGetLensProfiles(
   );
 }
 
-async function getLensProfiles(request: ProfileQueryRequest) {
+export async function getLensProfiles(request: ProfileQueryRequest) {
   return (await fetchLens<ProfilesQuery>(ProfilesDocument, { request }))
     .profiles;
 }
