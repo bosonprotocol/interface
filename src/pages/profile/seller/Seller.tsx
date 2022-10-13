@@ -1,4 +1,3 @@
-// import { Button, ButtonSize } from "@bosonprotocol/react-kit";
 import Avatar from "@davatar/react";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
