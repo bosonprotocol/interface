@@ -55,6 +55,7 @@ export default function useSetLensProfileMetadata(
             signTypedDataAsync,
             storage,
             accessToken,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             signer: signer!
           });
 
@@ -296,6 +297,7 @@ const setProfileMetadata = async (
 
     console.log("create profile metadata: profile has been indexed");
 
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const logs = indexedResult.txReceipt!.logs;
 
     console.log("create profile metadata: logs", logs);
