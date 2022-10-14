@@ -43,7 +43,8 @@ export default function useClaimHandle(
       });
     },
     {
-      enabled
+      enabled,
+      retry: false
     }
   );
 }
@@ -65,20 +66,35 @@ async function claimHandleRequest(
       }
     }
   `;
-  const { data, errors } = await fetchRawLens<{
-    claim:
-      | { txHash: string; __typename: "RelayerResult" }
-      | { reason: string; __typename: "RelayError" };
-  }>(query, { handle: request.handle }, { "x-access-token": accessToken });
+  try {
+    const { data, errors } = await fetchRawLens<{
+      claim:
+        | { txHash: string; __typename: "RelayerResult" }
+        | { reason: string; __typename: "RelayError" };
+    }>(query, { handle: request.handle }, { "x-access-token": accessToken });
 
-  const hasError = errors && errors.length;
-  const isCanNotFreeTextError = hasError
-    ? !!errors.find((error) => error.message === "CAN_NOT_FREE_TEXT")
-    : false;
-  if (hasError) {
-    throw new Error(errors[0].message);
+    const hasError = errors && errors.length;
+    const isCanNotFreeTextError = hasError
+      ? !!errors.find((error) => error.message === "CAN_NOT_FREE_TEXT")
+      : false;
+    if (hasError && !isCanNotFreeTextError) {
+      throw new Error(errors[0].message);
+    }
+    return { data, isCanNotFreeTextError };
+  } catch (error) {
+    const errors =
+      (error as { response: { data: null; errors: { message: string }[] } })
+        ?.response?.errors || [];
+    const hasError = errors && errors.length;
+    const isCanNotFreeTextError = hasError
+      ? !!errors.find((error) => error.message === "CAN_NOT_FREE_TEXT")
+      : false;
+    if (hasError && !isCanNotFreeTextError) {
+      throw error;
+    }
+
+    return { data: null, isCanNotFreeTextError };
   }
-  return { data, isCanNotFreeTextError };
 }
 
 async function claimHandle(
@@ -89,16 +105,16 @@ async function claimHandle(
     provider
   }: { accessToken: string; address: string; provider: Provider }
 ) {
+  const blockNumber = await provider.getBlockNumber();
   const { data, isCanNotFreeTextError } = await claimHandleRequest(request, {
     accessToken
   });
   if (isCanNotFreeTextError) {
     const contract = new ethers.Contract(
-      CONFIG.lens.LENS_PROFILES_CONTRACT_PARTIAL_ABI || "",
+      CONFIG.lens.LENS_PROFILES_CONTRACT_ADDRESS || "",
       CONFIG.lens.LENS_PROFILES_CONTRACT_PARTIAL_ABI || "",
       provider
     );
-
     const filter = contract.filters.Transfer(
       ethers.constants.AddressZero,
       address
@@ -106,13 +122,22 @@ async function claimHandle(
     let profile: Profile | null = null;
     await poll(
       async () => {
-        const events = await contract.queryFilter(filter);
-        const tokenId = events[events.length - 1].args?.tokenId;
-        profile = await getLensProfile({
-          // to make sure we have an odd number of digits (otherwise it'll fail)
-          profileId: getLensTokenIdHex(getLensTokenIdDecimal(tokenId))
-        });
-        return profile;
+        try {
+          const events = await contract.queryFilter(filter, blockNumber);
+          console.log("events in polling", events);
+          if (!events.length) {
+            return false;
+          }
+          const tokenId = events[events.length - 1].args?.tokenId;
+          profile = await getLensProfile({
+            // to make sure we have an odd number of digits (otherwise it'll fail)
+            profileId: getLensTokenIdHex(getLensTokenIdDecimal(tokenId))
+          });
+          return profile;
+        } catch (error) {
+          console.error("error while polling in useClaimHandle", error);
+          return true;
+        }
       },
       (profile) => {
         return !profile;
@@ -121,7 +146,7 @@ async function claimHandle(
     );
     return (profile as unknown as Profile)?.id || "";
   } else {
-    const claimHandleResult = data.claim;
+    const claimHandleResult = (data as any)?.claim;
     if (claimHandleResult.__typename === "RelayError") {
       console.error("claim handle: failed", claimHandleResult);
       throw new Error(
@@ -136,7 +161,7 @@ async function claimHandle(
     );
 
     const profile = await getLensProfile({
-      handle: request.handle
+      handle: `${request.handle}${CONFIG.lens.lensHandleExtension}`
     });
     return profile.id;
   }
