@@ -107,7 +107,7 @@ async function claimHandle(
     await poll(
       async () => {
         const events = await contract.queryFilter(filter);
-        const tokenId = events[0].args?.tokenId;
+        const tokenId = events[events.length - 1].args?.tokenId;
         profile = await getLensProfile({
           // to make sure we have an odd number of digits (otherwise it'll fail)
           profileId: getLensTokenIdHex(getLensTokenIdDecimal(tokenId))
