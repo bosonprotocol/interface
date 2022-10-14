@@ -4,7 +4,7 @@ import type { useSignTypedData } from "wagmi";
 
 import { omit } from "./helpers";
 
-type SignTypedDataAsync = ReturnType<
+export type SignTypedDataAsync = ReturnType<
   typeof useSignTypedData
 >["signTypedDataAsync"];
 
