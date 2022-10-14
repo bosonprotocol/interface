@@ -91,8 +91,11 @@ export const CONFIG = {
     apiLink: config.lens.apiLink,
     LENS_HUB_CONTRACT: config.lens.LENS_HUB_CONTRACT,
     LENS_PERIPHERY_CONTRACT: config.lens.LENS_PERIPHERY_CONTRACT,
+    LENS_PROFILES_CONTRACT_ADDRESS: config.lens.LENS_PROFILES_CONTRACT_ADDRESS,
     LENS_HUB_ABI: lensHubContractAbi,
     LENS_PERIPHERY_ABI: lensPeripheryDataProvider,
+    LENS_PROFILES_CONTRACT_PARTIAL_ABI:
+      config.lens.LENS_PROFILES_CONTRACT_PARTIAL_ABI,
     LENS_FOLLOW_NFT_ABI: lensFollowNftContractAbi
   }
 };
