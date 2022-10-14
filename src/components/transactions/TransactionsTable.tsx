@@ -1,12 +1,12 @@
 import dayjs from "dayjs";
 import { CaretDown, CaretLeft, CaretRight, CaretUp } from "phosphor-react";
 import { useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { usePagination, useRowSelect, useSortBy, useTable } from "react-table";
 
 import { CONFIG } from "../../lib/config";
 import { colors } from "../../lib/styles/colors";
 import { getDateTimestamp } from "../../lib/utils/getDateTimestamp";
-import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import PaginationPages from "../seller/common/PaginationPages";
 import Tooltip from "../tooltip/Tooltip";
 import Button from "../ui/Button";
@@ -20,14 +20,11 @@ import {
 } from "./TransactionsTable.styles";
 
 interface Transaction {
-  account: string;
-  transaction: string;
+  accountType: string;
+  transactionLabel: string;
   date: string;
-  executed: string;
   hash: string;
-  offerExchangeId: string;
-  buyerSellerID: string;
-  isOffer: boolean;
+  pathname?: string;
 }
 
 interface Props {
@@ -36,21 +33,11 @@ interface Props {
 }
 
 export default function TransactionsTable({ transactions }: Props) {
-  const { isLteS } = useBreakpoints();
-
   const columns = useMemo(
     () => [
       {
-        Header: "offerExchangeId",
-        accessor: "offerExchangeId"
-      } as const,
-      {
-        Header: "isOffer",
-        accessor: "isOffer"
-      } as const,
-      {
         Header: "Account",
-        accessor: "account"
+        accessor: "accountType"
       } as const,
       {
         Header: "Transaction",
@@ -62,9 +49,8 @@ export default function TransactionsTable({ transactions }: Props) {
         disableSortBy: true
       } as const,
       {
-        Header: "Executed By",
-        accessor: "executedBy",
-        disableSortBy: true
+        Header: "Go to",
+        accessor: "pathname"
       } as const,
       {
         Header: "Link to block",
@@ -82,16 +68,14 @@ export default function TransactionsTable({ transactions }: Props) {
         }
 
         return {
-          offerExchangeId: tx.offerExchangeId,
-          isOffer: tx.isOffer,
-          account: (
+          accountType: (
             <Typography $fontSize="0.75rem" tag="p">
-              {tx.account}
+              {tx.accountType}
             </Typography>
           ),
           transaction: (
             <Typography $fontSize="0.75rem" tag="p">
-              {tx.transaction}
+              {tx.transactionLabel}
             </Typography>
           ),
           dateTime: (
@@ -108,28 +92,19 @@ export default function TransactionsTable({ transactions }: Props) {
               </Typography>
             </Tooltip>
           ),
-          executedBy: (
-            <Typography
-              $fontSize="0.75rem"
-              tag="p"
-              style={{ overflow: "hidden", textOverflow: "ellipsis" }}
-            >
-              {isLteS ? `${tx.executed.substring(0, 7)}...` : tx.executed}
-            </Typography>
-          ),
           linkToBlock: (
             <a href={CONFIG.getTxExplorerUrl?.(tx.hash)} target="_blank">
               <Typography
                 fontWeight="600"
                 $fontSize="0.75rem"
                 lineHeight="150%"
-                margin="0.5rem 0 1.5rem 0"
                 color={colors.secondary}
               >
                 View on Explorer
               </Typography>
             </a>
-          )
+          ),
+          pathname: tx.pathname
         };
       }),
     [transactions] // eslint-disable-line
@@ -141,7 +116,7 @@ export default function TransactionsTable({ transactions }: Props) {
       data,
       initialState: {
         pageIndex: 0,
-        hiddenColumns: ["offerExchangeId", "isOffer"]
+        hiddenColumns: ["pathname"]
       }
     },
     useSortBy,
@@ -171,6 +146,8 @@ export default function TransactionsTable({ transactions }: Props) {
       pageIndex < 1 ? 3 : pageIndex + 2
     );
   }, [pageCount, pageIndex]);
+
+  const navigate = useNavigate();
 
   return (
     <>
@@ -221,21 +198,11 @@ export default function TransactionsTable({ transactions }: Props) {
                         key={`transaction_${row.id}-${cell.column.id}`}
                         style={{ cursor: "default" }}
                         onClick={() => {
-                          if (cell.column.id !== "linkToBlock") {
-                            /**
-                             * TODO: leave the navigation commented until we can get the offer and
-                             * exchange id properly
-                             */
-                            // const pathname = generatePath(
-                            //   row?.values?.isOffer
-                            //     ? OffersRoutes.OfferDetail
-                            //     : BosonRoutes.Exchange,
-                            //   {
-                            //     [UrlParameters.exchangeId]:
-                            //       row?.values?.offerExchangeId ?? "0"
-                            //   }
-                            // );
-                            // navigate({ pathname });
+                          if (
+                            cell.column.id !== "linkToBlock" &&
+                            row?.values?.pathname
+                          ) {
+                            navigate({ pathname: row.values.pathname });
                           }
                         }}
                       >
