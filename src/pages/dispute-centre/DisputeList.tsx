@@ -1,4 +1,5 @@
-import React from "react";
+import dayjs from "dayjs";
+import { useCallback } from "react";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
@@ -6,15 +7,22 @@ import DisputeListMobile from "../../components/modal/components/DisputeListMobi
 import DisputeTable from "../../components/modal/components/DisputeTable/DisputeTable";
 import { useModal } from "../../components/modal/useModal";
 import Button from "../../components/ui/Button";
+import ExportDropdown from "../../components/ui/ExportDropdown";
 import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
-import { AccountQueryParameters } from "../../lib/routing/parameters";
+import {
+  AccountQueryParameters,
+  TabQueryParameters
+} from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useBuyers } from "../../lib/utils/hooks/useBuyers";
+import type { Exchange } from "../../lib/utils/hooks/useExchanges";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+
+type CsvType = "all" | "active" | "past";
 
 const DisputeListContainer = styled.div`
   background: ${colors.lightGrey};
@@ -40,8 +48,6 @@ const DisputeListHeader = styled.div<{ isLteS: boolean }>`
 `;
 
 const SubmitButton = styled(Button)`
-  margin-top: 1.875rem;
-  margin-right: 0.9375rem;
   div {
     font-weight: 600;
   }
@@ -50,7 +56,6 @@ const SubmitButton = styled(Button)`
 const HowItWorksButton = styled(Button)`
   border: 2px solid ${colors.secondary};
   color: ${colors.secondary};
-  margin-top: 1.875rem;
   div {
     font-weight: 600;
   }
@@ -71,6 +76,29 @@ function DisputeList() {
     buyerId: myBuyerId
   });
 
+  const prepareCSVData = useCallback(
+    (type: CsvType) => {
+      const filteredExchanges =
+        exchanges?.filter((exchange: Exchange) => {
+          // TODO: BP417 - filter exchanges by type
+          console.log(type, exchange);
+          return exchange;
+        }) || [];
+
+      const csvData = filteredExchanges?.map((exchange: Exchange) => {
+        const state = "TODO:";
+
+        return {
+          ["ID/SKU"]: exchange?.id ? exchange?.id : "",
+          ["Product name"]: exchange?.offer?.metadata?.name ?? "",
+          ["State"]: state
+        };
+      });
+      return csvData;
+    },
+    [exchanges]
+  );
+
   return (
     <>
       <DisputeListHeader isLteS={isLteS}>
@@ -81,7 +109,13 @@ function DisputeList() {
           <Typography $fontSize="1.25rem" color={colors.darkGrey}>
             Raise and resolve problems of your exchanges.
           </Typography>
-          <Grid $width="max-content">
+          <Grid
+            $width="max-content"
+            gap="1rem"
+            justifyContent="flex-start"
+            alignItems="flex-start"
+            margin="1.875rem 0 0 0"
+          >
             <SubmitButton
               type="submit"
               theme="primary"
@@ -89,7 +123,7 @@ function DisputeList() {
               onClick={() => {
                 navigate({
                   pathname: BosonRoutes.YourAccount,
-                  search: `${AccountQueryParameters.tab}=exchange` // TODO CHANGE EXCHANGE TO CONST
+                  search: `${AccountQueryParameters.tab}=${TabQueryParameters.exchange}`
                 });
               }}
             >
@@ -107,6 +141,35 @@ function DisputeList() {
             >
               How it works?
             </HowItWorksButton>
+            <ExportDropdown
+              children={[
+                {
+                  id: 0,
+                  name: "Export all disputes",
+                  hidden: true,
+                  csvProps: {
+                    data: prepareCSVData("all"),
+                    filename: `disputes-all-${dayjs().format("YYYYMMDD")}`
+                  }
+                },
+                {
+                  id: 1,
+                  name: "Export active disputes",
+                  csvProps: {
+                    data: prepareCSVData("active"),
+                    filename: `disputes-active-${dayjs().format("YYYYMMDD")}`
+                  }
+                },
+                {
+                  id: 1,
+                  name: "Export past disputes",
+                  csvProps: {
+                    data: prepareCSVData("past"),
+                    filename: `disputes-past-${dayjs().format("YYYYMMDD")}`
+                  }
+                }
+              ]}
+            />
           </Grid>
         </span>
       </DisputeListHeader>

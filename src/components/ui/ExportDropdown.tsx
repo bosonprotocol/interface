@@ -8,22 +8,16 @@ import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import Button, { IButton } from "../ui/Button";
 
-const ArrowContainer = styled.div`
-  border-left: 0.0625rem solid ${colors.secondary};
-  height: 128%;
-  width: 1.25rem;
-  position: absolute;
-  right: -1.875rem;
-`;
 const ExportButton = styled(Button)`
   color: ${colors.secondary};
   border: none;
-  gap: 0.3125rem;
-  border: 0.0625rem solid ${colors.secondary};
+  gap: 0.5rem;
+  border: 2px solid ${colors.secondary};
   padding-right: 2.125rem;
   padding-left: 0.75rem;
   position: relative;
-  transition: 700ms;
+  transition: all 300ms ease-in-out;
+
   &:hover:not(:disabled) {
     background: ${colors.secondary};
     color: ${colors.white};
@@ -31,26 +25,43 @@ const ExportButton = styled(Button)`
     button {
       color: ${colors.white};
     }
-    ${ArrowContainer} {
-      border-color: ${colors.white};
-    }
-    ${ArrowContainer} div {
+    :after {
       background: ${colors.white};
+      opacity: 0.5;
+    }
+    :before {
+      opacity: 0.75;
+      border-top: 0.5rem solid ${colors.white};
     }
   }
   > div {
     gap: 0.625rem;
   }
-`;
-const ArrowDown = styled.div`
-  clip-path: polygon(50% 100%, 0 0, 100% 0);
-  width: 0.6875rem;
-  height: 0.5625rem;
-  background: ${colors.secondary};
-  position: absolute;
-  left: 60%;
-  top: 55%;
-  transform: translate(-50%, -50%);
+  padding-right: 2rem;
+  position: relative;
+  :after,
+  :before {
+    position: absolute;
+    content: "";
+  }
+  :after {
+    top: 0;
+    bottom: 0;
+    right: 1.5rem;
+    background: ${colors.secondary};
+    width: 1px;
+    height: 100%;
+  }
+  :before {
+    width: 0;
+    height: 0;
+    border-left: 0.25rem solid transparent;
+    border-right: 0.25rem solid transparent;
+    border-top: 0.5rem solid ${colors.secondary};
+    top: 50%;
+    right: 0.5rem;
+    transform: translate(0, -50%);
+  }
 `;
 
 const ButtonsContainer = styled.div`
@@ -72,13 +83,13 @@ const ButtonOptions = styled.div<{ disabled: boolean }>`
   text-align: center;
   padding: 0.3125rem;
   background-color: ${colors.white};
-  text-decoration: ${({ disabled }) => (disabled ? "line-through;" : "none")};
   z-index: ${zIndex.Select};
-  transition: 700ms;
+  transition: all 300ms ease-in-out;
   &:hover {
     background-color: ${colors.secondary};
     color: ${colors.white};
   }
+  text-decoration: ${({ disabled }) => (disabled ? "line-through;" : "none")};
 `;
 
 const Container = styled.div`
@@ -96,13 +107,13 @@ interface Props {
   children?: Array<{
     id: number;
     name: string;
+    hidden?: boolean;
     disabled?: boolean;
     csvProps: CommonPropTypes;
   }>;
 }
 
 function ExportDropdown({ buttonProps = {}, children }: Props) {
-  const dateString = dayjs().format("YYYYMMDD");
   return (
     <Container>
       {children && (
@@ -110,41 +121,40 @@ function ExportDropdown({ buttonProps = {}, children }: Props) {
           {...children[0]?.csvProps}
           filename={
             children[0].csvProps.filename
-              ? `${children[0].csvProps.filename}-${dateString}`
+              ? `${children[0].csvProps.filename}-${dayjs().format("YYYYMMDD")}`
               : "filename"
           }
           key={children[0].id}
         >
           <ExportButton theme="outline" size="small" {...buttonProps}>
             Export <DownloadSimple size={16} />
-            <ArrowContainer>
-              <ArrowDown>&nbsp;</ArrowDown>
-            </ArrowContainer>
           </ExportButton>
         </CSVLink>
       )}
       <ButtonsContainer data-buttons-container>
-        {children?.map((child, index) => {
-          if (child.disabled) {
+        {children
+          ?.filter((child) => child.hidden !== true)
+          ?.map((child, index) => {
+            if (child.disabled) {
+              return (
+                <ButtonOptions
+                  key={`CSVLink_${child.id}_${index}`}
+                  disabled={true}
+                >
+                  {child.name}
+                </ButtonOptions>
+              );
+            }
             return (
-              <ButtonOptions
+              <CSVLink
                 key={`CSVLink_${child.id}_${index}`}
-                disabled={true}
+                {...child.csvProps}
+                filename={child.csvProps.filename ?? "filename"}
               >
-                {child.name}
-              </ButtonOptions>
+                <ButtonOptions disabled={false}>{child.name}</ButtonOptions>
+              </CSVLink>
             );
-          }
-          return (
-            <CSVLink
-              key={`CSVLink_${child.id}_${index}`}
-              {...child.csvProps}
-              filename={child.csvProps.filename ?? "filename"}
-            >
-              <ButtonOptions disabled={false}>{child.name}</ButtonOptions>
-            </CSVLink>
-          );
-        })}
+          })}
       </ButtonsContainer>
     </Container>
   );
