@@ -16,8 +16,13 @@ import {
 } from "../Field.styles";
 import type { UploadProps } from "../types";
 import UploadedFiles from "./UploadedFiles";
+import {
+  FileProps,
+  WithUploadToIpfs,
+  WithUploadToIpfsProps
+} from "./WithUploadToIpfs";
 
-export default function Upload({
+function Upload({
   name,
   accept = "image/*",
   disabled,
@@ -28,16 +33,12 @@ export default function Upload({
   placeholder,
   wrapperProps,
   onLoadSinglePreviewImage,
+  withUpload,
+  saveToIpfs,
+  loadImage,
   ...props
-}: UploadProps) {
-  // const fileName = useMemo(() => `create-product-image_${name}`, [name]);
-  // const [preview, setPreview, removePreview] =
-  //   useLocalStorage<GetItemFromStorageKey | null>(
-  //     fileName as GetItemFromStorageKey,
-  //     null
-  //   );
+}: UploadProps & WithUploadToIpfsProps) {
   const [preview, setPreview] = useState<string | null>();
-
   const [field, meta, helpers] = useField(name);
 
   const errorMessage = meta.error && meta.touched ? meta.error : "";
@@ -51,19 +52,32 @@ export default function Upload({
     },
     [helpers]
   );
-  const files = field.value as File[];
+  const files = field.value as any;
 
   useEffect(() => {
     onFilesSelect?.(files);
     helpers.setValue(files);
 
     if (!multiple && accept === "image/*" && files && files?.length !== 0) {
-      loadAndSetImage(files[0], (base64Uri) => {
-        setPreview(base64Uri);
-        onLoadSinglePreviewImage?.(base64Uri);
-      });
+      if (withUpload) {
+        loadIpfsImagePreview(files[0]);
+      } else {
+        loadAndSetImage(files[0], (base64Uri) => {
+          setPreview(base64Uri);
+          onLoadSinglePreviewImage?.(base64Uri);
+        });
+      }
     }
   }, [files]); // eslint-disable-line
+
+  const loadIpfsImagePreview = async (file: FileProps) => {
+    if (!file.src) {
+      return false;
+    }
+    const imagePreview: string = await loadImage(file?.src);
+    setPreview(imagePreview);
+    onLoadSinglePreviewImage?.(imagePreview);
+  };
 
   const handleChooseFile = () => {
     const input = inputRef.current;
@@ -81,7 +95,7 @@ export default function Upload({
   };
 
   const handleRemoveFile = (index: number) => {
-    const newArray = files.filter((i, k) => k !== index);
+    const newArray = files.filter((i: any, k: number) => k !== index);
     setFiles(newArray);
   };
 
@@ -109,6 +123,14 @@ export default function Upload({
     setFiles(filesArray);
   };
 
+  const handleSave = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const files: FileProps[] = await saveToIpfs(e);
+      setFiles(files);
+    },
+    [saveToIpfs, setFiles]
+  );
+
   return (
     <>
       <FieldFileUploadWrapper {...wrapperProps} $disabled={!!disabled}>
@@ -118,7 +140,7 @@ export default function Upload({
           type="file"
           accept={accept}
           multiple={multiple}
-          onChange={handleChange}
+          onChange={withUpload ? handleSave : handleChange}
           ref={(ref) => {
             inputRef.current = ref;
           }}
@@ -159,3 +181,5 @@ export default function Upload({
     </>
   );
 }
+
+export default WithUploadToIpfs(Upload);

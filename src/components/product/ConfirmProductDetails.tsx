@@ -2,7 +2,7 @@ import { Currencies, CurrencyDisplay } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import map from "lodash/map";
 import { Warning } from "phosphor-react";
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 import { useAccount } from "wagmi";
 
 import Collapse from "../../components/collapse/Collapse";
@@ -10,15 +10,12 @@ import { Spinner } from "../../components/loading/Spinner";
 import InitializeChat from "../../components/modal/components/Chat/components/InitializeChat";
 import { CONFIG } from "../../lib/config";
 import { ChatInitializationStatus } from "../../lib/utils/hooks/chat/useChatStatus";
-import {
-  CreateProductImageProductImages,
-  getItemFromStorage
-} from "../../lib/utils/hooks/useLocalStorage";
 import { useChatContext } from "../../pages/chat/ChatProvider/ChatContext";
 import { FormField } from "../form";
 import Tooltip from "../tooltip/Tooltip";
 import Button from "../ui/Button";
 import Grid from "../ui/Grid";
+import Image from "../ui/Image";
 import Typography from "../ui/Typography";
 import {
   ChatDotsIcon,
@@ -36,12 +33,10 @@ import {
   Info,
   InfoMessage,
   InitializeChatContainer,
-  LogoImg,
   ProductBox,
   ProductInformationContent,
   ProductSubtitle,
   ProductTypeBox,
-  RenderProductImageWrapper,
   SpaceContainer,
   Tag,
   TagsWrapper,
@@ -75,11 +70,6 @@ export default function ConfirmProductDetails({
   const handleOpenPreview = () => {
     togglePreview(true);
   };
-
-  const logoImage = getItemFromStorage(
-    "create-product-image_createYourProfile.logo",
-    ""
-  );
 
   const renderProductType = useMemo(() => {
     let src = "";
@@ -133,26 +123,6 @@ export default function ConfirmProductDetails({
     );
   }, [values.productType.productVariant]);
 
-  const renderProductImage = useCallback(
-    ({
-      title,
-      key
-    }: {
-      title: string;
-      key: CreateProductImageProductImages;
-    }) => {
-      const src = getItemFromStorage(key, "");
-      if (!src) {
-        return null;
-      }
-      return (
-        <RenderProductImageWrapper>
-          <img src={src} alt={title} />
-        </RenderProductImageWrapper>
-      );
-    },
-    []
-  );
   return (
     <ConfirmProductDetailsContainer>
       <SectionTitle tag="h2">Confirm Product Details</SectionTitle>
@@ -177,7 +147,17 @@ export default function ConfirmProductDetails({
                 marginBottom: "2rem"
               }}
             >
-              <LogoImg src={logoImage} alt="logo/ profile picture" />
+              {values?.createYourProfile?.logo?.[0]?.src && (
+                <Image
+                  src={values?.createYourProfile?.logo?.[0]?.src || ""}
+                  style={{
+                    width: "80px",
+                    height: "80px",
+                    paddingTop: "0"
+                  }}
+                  alt="logo/ profile picture"
+                />
+              )}
             </FormField>
             <Grid
               justifyContent="flex-start"
@@ -297,38 +277,17 @@ export default function ConfirmProductDetails({
             <div>
               <ProductSubtitle tag="h4">Product Images</ProductSubtitle>
               <SpaceContainer>
-                {renderProductImage({
-                  key: "create-product-image_productImages.thumbnail",
-                  title: "Thumbnail"
-                })}
-                {renderProductImage({
-                  key: "create-product-image_productImages.secondary",
-                  title: "Secondary"
-                })}
-                {renderProductImage({
-                  key: "create-product-image_productImages.everyAngle",
-                  title: "Every angle"
-                })}
-                {renderProductImage({
-                  key: "create-product-image_productImages.details",
-                  title: "Details"
-                })}
-                {renderProductImage({
-                  key: "create-product-image_productImages.inUse",
-                  title: "In Use"
-                })}
-                {renderProductImage({
-                  key: "create-product-image_productImages.styledScene",
-                  title: "Styled Scene"
-                })}
-                {renderProductImage({
-                  key: "create-product-image_productImages.sizeAndScale",
-                  title: "Size and Scale"
-                })}
-                {renderProductImage({
-                  key: "create-product-image_productImages.more",
-                  title: "More"
-                })}
+                {map(
+                  values?.productImages,
+                  (v, i) =>
+                    v &&
+                    v?.[0]?.src && (
+                      <Image
+                        key={`Image_${v?.[0]?.src}_${i}`}
+                        src={v?.[0]?.src || ""}
+                      />
+                    )
+                )}
               </SpaceContainer>
             </div>
           </ProductInformationContent>
