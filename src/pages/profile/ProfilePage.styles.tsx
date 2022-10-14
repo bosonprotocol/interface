@@ -116,8 +116,10 @@ export const AvatarEmptySpace = styled.div`
 
 export const SocialIconContainer = styled.div`
   display: flex;
+  align-items: center;
   svg {
     color: ${colors.secondary};
+    vertical-align: bottom;
   }
 `;
 

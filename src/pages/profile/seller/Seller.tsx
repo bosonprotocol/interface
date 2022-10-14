@@ -220,7 +220,6 @@ export default function Seller() {
               $width="auto"
               margin="1.25rem 0 0 0"
             >
-              <SellerSocial sellerLens={sellerLens as ProfileFieldsFragment} />
               <FollowLens>
                 <a
                   href={`https://lenster.xyz/u/${sellerLens?.handle}`}
@@ -229,6 +228,7 @@ export default function Seller() {
                   Follow
                 </a>
               </FollowLens>
+              <SellerSocial sellerLens={sellerLens as ProfileFieldsFragment} />
             </Grid>
           </Grid>
         </ProfileSectionWrapper>
