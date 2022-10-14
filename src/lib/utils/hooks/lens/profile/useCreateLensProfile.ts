@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { BigNumber, utils } from "ethers";
-import { gql } from "graphql-request";
 import { useQuery } from "react-query";
 
 import { fetchLens } from "../fetchLens";
-import { CreateProfileRequest } from "../graphql/generated";
+import {
+  CreateProfileDocument,
+  CreateProfileRequest
+} from "../graphql/generated";
 import { pollUntilIndexed } from "../indexer/has-transaction-been-indexed";
 
 type Params = Parameters<typeof createProfile>[0];
@@ -32,33 +34,13 @@ export default function useCreateLensProfile(
 }
 
 async function createProfileRequest(
-  { handle, profilePictureUri }: CreateProfileRequest,
+  request: CreateProfileRequest,
   { accessToken }: { accessToken: string }
 ) {
-  const query = gql`
-    mutation CreateProfile($handle: CreateHandle!, $profilePictureUri: Url) {
-      createProfile(
-        request: {
-          handle: $handle
-          profilePictureUri: $profilePictureUri
-          followNFTURI: null
-          followModule: null
-        }
-      ) {
-        ... on RelayerResult {
-          txHash
-        }
-        ... on RelayError {
-          reason
-        }
-        __typename
-      }
-    }
-  `;
   return (
     (await fetchLens(
-      query,
-      { handle, profilePictureUri },
+      CreateProfileDocument,
+      { request },
       { "x-access-token": accessToken }
       // TODO: change any
     )) as any
