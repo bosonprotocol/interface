@@ -1,5 +1,7 @@
 import request, { RequestDocument } from "graphql-request";
 
+import { CONFIG } from "../../../config";
+
 export async function fetchLens<T, V = Record<string, unknown>>(
   document: RequestDocument,
   variables?: V,
@@ -7,7 +9,7 @@ export async function fetchLens<T, V = Record<string, unknown>>(
 ): Promise<T> {
   try {
     const data = await request<T, V>(
-      "https://api-mumbai.lens.dev", // TODO: change depending on chain
+      CONFIG.lens.apiLink || "",
       document,
       variables,
       {
