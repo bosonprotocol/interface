@@ -232,9 +232,13 @@ export function useCurrentSellers({ address, sellerId }: Props = {}) {
       resultLens?.isSuccess,
     isLoading:
       resultById?.isLoading ||
+      resultById?.isFetching ||
       resultByAddress?.isLoading ||
+      resultByAddress?.isFetching ||
       sellerById?.isLoading ||
-      resultLens?.isLoading,
+      sellerById?.isFetching ||
+      resultLens?.isLoading ||
+      resultLens?.isFetching,
     isError:
       resultById?.isError ||
       resultByAddress?.isError ||

@@ -138,7 +138,8 @@ export default function Seller() {
                     width: "160px !important",
                     height: "160px !important",
                     paddingTop: "0",
-                    borderRadius: "50%"
+                    borderRadius: "50%",
+                    backgroundColor: "var(--primaryBgColor)"
                   }}
                 />
               ) : (
@@ -157,9 +158,10 @@ export default function Seller() {
               justifyContent="flex-start"
               alignItems="flex-end"
               $width="auto"
+              flexGrow="1"
             >
               <AvatarEmptySpace />
-              <div>
+              <Grid flexDirection="column" alignItems="flex-start">
                 <Typography
                   tag="h2"
                   margin={!isLteXS ? "1rem 0 0 0" : "0.25rem 0 0.25rem 0"}
@@ -179,7 +181,7 @@ export default function Seller() {
                     <AddressText address={currentSellerAddress} />
                   </AddressContainer>
                 </Grid>
-              </div>
+              </Grid>
             </Grid>
             <Grid
               justifyContent="flex-end"
