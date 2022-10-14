@@ -52,6 +52,16 @@ const LensTitle = styled(Typography)`
   }
 `;
 
+const StyledImage = styled(Image)`
+  img {
+    object-fit: contain;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    max-height: 100%;
+  }
+`;
+
 export default function Seller() {
   const { address: currentWalletAddress = "" } = useAccount();
   const { [UrlParameters.sellerId]: sellerId = "" } = useParams();
@@ -132,7 +142,7 @@ export default function Seller() {
           <BannerImageLayer>
             <AvatarContainer>
               {(sellerLens?.picture as MediaSet) ? (
-                <Image
+                <StyledImage
                   src={(sellerLens?.picture as MediaSet)?.original?.url}
                   style={{
                     width: "160px !important",

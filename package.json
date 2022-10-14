@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "@bosonprotocol/chat-sdk": "^1.1.0",
-    "@bosonprotocol/react-kit": "^0.9.2",
+    "@bosonprotocol/react-kit": "^0.9.3-alpha.2",
     "@davatar/react": "^1.10.4",
     "@ethersproject/address": "^5.6.1",
     "@ethersproject/units": "^5.6.1",
