@@ -21,6 +21,7 @@ export function getDefaultTokens() {
     tokens = JSON.parse(
       process.env.REACT_APP_DEFAULT_TOKENS_LIST_TESTING ||
         process.env.REACT_APP_DEFAULT_TOKENS_LIST_STAGING ||
+        process.env.REACT_APP_DEFAULT_TOKENS_LIST_PRODUCTION ||
         "[]"
     );
   } catch (e) {
