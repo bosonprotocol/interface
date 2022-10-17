@@ -53,6 +53,8 @@ async function createSellerAccount(
     );
   }
 
+  const royaltyPercentageTimes100 = Math.floor(royaltyPercentage * 100);
+
   // https://docs.opensea.io/docs/contract-level-metadata
   const cid = await storage.add(
     JSON.stringify({
@@ -60,13 +62,12 @@ async function createSellerAccount(
       description: lensValues.description,
       image: profileLogoUrl,
       external_link: window.origin,
-      seller_fee_basis_points: royaltyPercentage,
+      seller_fee_basis_points: royaltyPercentageTimes100,
       fee_recipient: addressForRoyaltyPayment
     })
   );
 
   const contractUri = `ipfs://${cid}`;
-  const royaltyPercentageTimes100 = royaltyPercentage * 100;
   const tx = await coreSDK.createSeller({
     admin:
       authTokenType === authTokenTypes.LENS

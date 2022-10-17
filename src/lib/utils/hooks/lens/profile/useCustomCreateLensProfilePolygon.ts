@@ -7,9 +7,10 @@ import { CONFIG } from "../../../../config";
 import { useIpfsStorage } from "../../useIpfsStorage";
 import { useLensLogin } from "../authentication/useLensLogin";
 import { Profile } from "../graphql/generated";
-import useCreateLensProfile from "./useCreateLensProfile";
+import useClaimHandle from "./useClaimHandle";
 import useGetLensProfile from "./useGetLensProfile";
 import useSetLensProfileMetadata from "./useSetLensProfileMetadata";
+import useSetProfileImageUri from "./useSetProfileImageUri";
 
 type Props = {
   values: LensProfileType;
@@ -26,7 +27,7 @@ export default function useCustomCreateLensProfile({
   onSetProfileLogoIpfsLink,
   onSetCoverLogoIpfsLink
 }: Props) {
-  const [triggerLensProfileCreation, setTriggerLensProfileCreation] = useState<
+  const [triggerClaimHandle, setTriggerClaimHandle] = useState<
     "start" | "fetch" | "triggered"
   >("start");
   const { address } = useAccount();
@@ -78,7 +79,7 @@ export default function useCustomCreateLensProfile({
   const {
     data: createdProfileId,
     isFetched,
-    refetch: createProfile,
+    refetch: claimHandle,
     isLoading: isCreateLoading,
     isRefetching: isCreateRefetching,
     isFetching: isCreateFetching,
@@ -86,10 +87,10 @@ export default function useCustomCreateLensProfile({
     isError: isCreateError,
     error: createError,
     status: createStatus
-  } = useCreateLensProfile(
+  } = useClaimHandle(
     {
-      handle: values.handle || "",
-      profilePictureUri: profileImageUrl
+      handle: values.handle || ""
+      // profilePictureUri: profileImageUrl
     },
     {
       accessToken: accessToken || "",
@@ -100,16 +101,26 @@ export default function useCustomCreateLensProfile({
     if (!enableCreation) {
       return;
     }
-    if (accessToken && triggerLensProfileCreation === "start") {
-      setTriggerLensProfileCreation("fetch");
-      createProfile();
+    if (accessToken && triggerClaimHandle === "start") {
+      setTriggerClaimHandle("fetch");
+      claimHandle();
     }
-  }, [accessToken, triggerLensProfileCreation, createProfile, enableCreation]);
+  }, [accessToken, triggerClaimHandle, claimHandle, enableCreation]);
   const { data: profileData, refetch: getProfile } = useGetLensProfile(
     {
       handle: `${values.handle}${CONFIG.lens.lensHandleExtension}`
     },
     {
+      enabled: false
+    }
+  );
+  const { isSuccess: isUriSuccess, refetch: setUri } = useSetProfileImageUri(
+    {
+      profileId: createdProfileId,
+      url: profileImageUrl
+    },
+    {
+      accessToken: accessToken || "",
       enabled: false
     }
   );
@@ -151,17 +162,17 @@ export default function useCustomCreateLensProfile({
       attributes: [
         {
           traitType: "string",
-          value: values.email,
+          value: values.email || "",
           key: "email"
         },
         {
           traitType: "string",
-          value: values.website,
+          value: values.website || "",
           key: "website"
         },
         {
           traitType: "string",
-          value: values.legalTradingName,
+          value: values.legalTradingName || "",
           key: "legalTradingName"
         }
       ],
@@ -178,12 +189,22 @@ export default function useCustomCreateLensProfile({
     if (!enableCreation) {
       return;
     }
-    const isCreatedProfile = isFetched && createdProfileId;
-    if (isCreatedProfile) {
-      setMetadata();
+    const isClaimedHandle = isFetched && createdProfileId;
+    if (isClaimedHandle) {
+      setUri();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createdProfileId, enableCreation, isFetched]);
+
+  useEffect(() => {
+    if (!enableCreation) {
+      return;
+    }
+    if (isUriSuccess) {
+      setMetadata();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [enableCreation, isUriSuccess]);
 
   useEffect(() => {
     if (!enableCreation) {

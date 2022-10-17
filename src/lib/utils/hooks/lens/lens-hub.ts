@@ -6,12 +6,14 @@ import { CONFIG } from "../../../config";
 // contract address on polygon.
 export const getLensHub = (signer: ethers.Signer) =>
   new ethers.Contract(
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     CONFIG.lens.LENS_HUB_CONTRACT!,
     CONFIG.lens.LENS_HUB_ABI,
     signer
   );
 export const getLensPeriphery = (signer: ethers.Signer) =>
   new ethers.Contract(
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     CONFIG.lens.LENS_PERIPHERY_CONTRACT!,
     CONFIG.lens.LENS_PERIPHERY_ABI,
     signer

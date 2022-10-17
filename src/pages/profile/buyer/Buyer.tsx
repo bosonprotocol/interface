@@ -1,3 +1,4 @@
+import { useCallback, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
@@ -9,7 +10,11 @@ import AddressText from "../../../components/offer/AddressText";
 import Button from "../../../components/ui/Button";
 import Grid from "../../../components/ui/Grid";
 import Typography from "../../../components/ui/Typography";
-import { UrlParameters } from "../../../lib/routing/parameters";
+import {
+  AccountQueryParameters,
+  UrlParameters
+} from "../../../lib/routing/parameters";
+import { useQueryParameter } from "../../../lib/routing/useQueryParameter";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { useBuyers } from "../../../lib/utils/hooks/useBuyers";
@@ -77,6 +82,10 @@ export default function Buyer({ manageFundsId }: Props) {
   const { [UrlParameters.buyerId]: urlBuyerId = "" } = useParams();
   const { isLteXS } = useBreakpoints();
   const buyerId = manageFundsId || urlBuyerId;
+  const [manageFunds, setManageFundsQueryParam] = useQueryParameter(
+    AccountQueryParameters.manageFunds
+  );
+  const openManageFunds = manageFunds === "true";
   const {
     data: buyers,
     isError: isErrorBuyers,
@@ -93,7 +102,7 @@ export default function Buyer({ manageFundsId }: Props) {
   const isBuyerExists = !!buyers?.length;
   const currentBuyerAddress = buyers?.[0]?.wallet || "";
 
-  const handleManageFunds = () => {
+  const handleManageFunds = useCallback(() => {
     if (manageFundsId) {
       showModal(
         modalTypes.MANAGE_FUNDS_MODAL,
@@ -105,7 +114,15 @@ export default function Buyer({ manageFundsId }: Props) {
         "dark"
       );
     }
-  };
+  }, [manageFundsId, modalTypes.MANAGE_FUNDS_MODAL, showModal]);
+  useEffect(() => {
+    if (openManageFunds) {
+      setManageFundsQueryParam(null, {
+        replace: true
+      });
+      handleManageFunds();
+    }
+  }, [handleManageFunds, openManageFunds, setManageFundsQueryParam]);
   if (isLoadingBuyers) {
     return (
       <LoadingWrapper>

@@ -69,13 +69,7 @@ export const ConfirmProductDetailsButtonGroup = styled(ProductButtonGroup)`
 `;
 
 export const CollapseContent = styled.div`
-  margin-top 1.719rem;
-`;
-
-export const LogoImg = styled.img`
-  margin-top: 0.5rem;
-  width: 5.5rem;
-  height: 5.5rem;
+  margin-top: 1.719rem;
 `;
 
 export const GridBox = styled.div<{ $minWidth?: string }>`
@@ -96,7 +90,7 @@ export const ContentValue = styled(Typography)`
   font-size: 0.75rem;
   color: ${colors.darkGrey};
   word-break: break-all;
-  white-space: pre;
+  white-space: pre-wrap;
   gap: 0.5rem;
 `;
 

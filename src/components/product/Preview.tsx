@@ -2,7 +2,6 @@ import { subgraph } from "@bosonprotocol/react-kit";
 import { parseUnits } from "@ethersproject/units";
 import { ethers } from "ethers";
 import map from "lodash/map";
-import slice from "lodash/slice";
 import styled from "styled-components";
 
 import DetailWidget from "../../components/detail/DetailWidget/DetailWidget";
@@ -11,7 +10,6 @@ import SellerID from "../../components/ui/SellerID";
 import { CONFIG } from "../../lib/config";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
-import { getLocalStorageItems } from "../../lib/utils/getLocalStorageItems";
 import { useDisputeResolver } from "../../lib/utils/hooks/useDisputeResolver";
 import { Token } from "../convertion-rate/ConvertionRateContext";
 import {
@@ -55,12 +53,13 @@ export default function Preview({ togglePreview, seller }: Props) {
   const exchangeToken = CONFIG.defaultTokens.find(
     (n: Token) => n.symbol === values.coreTermsOfSale.currency.value
   );
-  const previewImages = getLocalStorageItems({
-    key: "create-product-image"
-  });
-  const thumbnailImages = getLocalStorageItems({
-    key: "create-product-image_productImages.thumbnail"
-  });
+  const thumbnailImg = values?.productImages?.thumbnail?.[0]?.src || "";
+  const sliderImages = map(
+    values?.productImages || [],
+    (v) => v?.[0]?.src || ""
+  );
+  const offerImg = sliderImages?.[0] || "";
+
   const disputeResolverId = CONFIG.defaultDisputeResolverId;
   const { disputeResolver } = useDisputeResolver(disputeResolverId);
   const escalationResponsePeriod =
@@ -86,11 +85,6 @@ export default function Preview({ togglePreview, seller }: Props) {
   const handleClosePreview = () => {
     togglePreview(false);
   };
-
-  const offerImg = previewImages?.[1] ?? null;
-  const thumbnailImg = thumbnailImages?.[0] ?? null;
-
-  const sliderImages = slice(previewImages, 1);
   const name = values.productInformation.productTitle || "Untitled";
 
   const priceBN = parseUnits(
@@ -248,20 +242,25 @@ export default function Preview({ togglePreview, seller }: Props) {
                   tag="p"
                   color={colors.darkGrey}
                   data-testid="description"
+                  style={{ whiteSpace: "pre-wrap" }}
                 >
                   {values.productInformation.description}
                 </Typography>
-                <DetailTable data={productAttributes ?? []} />
+                {/* TODO: hidden for now */}
+                {/* <DetailTable data={productAttributes ?? []} /> */}
               </div>
               <div>
                 <Typography tag="h3">About the creator</Typography>
-                <Typography tag="p" color={colors.darkGrey}>
+                <Typography
+                  tag="p"
+                  color={colors.darkGrey}
+                  style={{ whiteSpace: "pre-wrap" }}
+                >
                   {values.createYourProfile.description}
                 </Typography>
               </div>
             </DetailGrid>
-            createYourProfile
-            <DetailSlider images={sliderImages} isPreview />
+            <DetailSlider images={sliderImages} />
             <DetailGrid>
               {values?.shippingInfo?.jurisdiction?.length > 0 &&
                 values?.shippingInfo?.jurisdiction[0]?.region?.length > 0 && (

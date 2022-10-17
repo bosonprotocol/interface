@@ -1,3 +1,4 @@
+import { ethers } from "ethers";
 import * as Yup from "yup";
 
 import { CONFIG } from "../../../../../lib/config";
@@ -28,14 +29,20 @@ export const lensProfileValidationSchema = Yup.object({
     .trim()
     .matches(new RegExp(websitePattern), "This is not a URL")
     .required(validationMessage.required),
-  legalTradingName: Yup.string().trim().required(validationMessage.required)
+  legalTradingName: Yup.string().trim()
 });
 
 export type LensProfileType = Yup.InferType<typeof lensProfileValidationSchema>;
 
 export const bosonAccountValidationSchema = Yup.object({
-  secondaryRoyalties: Yup.number().min(0).max(10),
-  addressForRoyaltyPayment: Yup.string().trim()
+  secondaryRoyalties: Yup.number()
+    .min(0, "Must be greater than or equal to 0%")
+    .max(10, "Must be less than or equal to 10%"),
+  addressForRoyaltyPayment: Yup.string()
+    .trim()
+    .test("FORMAT", "Must be an address", (value) =>
+      value ? ethers.utils.isAddress(value) : true
+    )
 });
 
 export type BosonAccount = Yup.InferType<typeof bosonAccountValidationSchema>;

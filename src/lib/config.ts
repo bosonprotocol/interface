@@ -21,6 +21,7 @@ export function getDefaultTokens() {
     tokens = JSON.parse(
       process.env.REACT_APP_DEFAULT_TOKENS_LIST_TESTING ||
         process.env.REACT_APP_DEFAULT_TOKENS_LIST_STAGING ||
+        process.env.REACT_APP_DEFAULT_TOKENS_LIST_PRODUCTION ||
         "[]"
     );
   } catch (e) {
@@ -87,10 +88,14 @@ export const CONFIG = {
     enabled: createProfileConfiguration === "LENS" && availableOnNetwork,
     lensHandleExtension: config.chainId === 137 ? ".lens" : ".test",
     availableOnNetwork,
+    apiLink: config.lens.apiLink,
     LENS_HUB_CONTRACT: config.lens.LENS_HUB_CONTRACT,
     LENS_PERIPHERY_CONTRACT: config.lens.LENS_PERIPHERY_CONTRACT,
+    LENS_PROFILES_CONTRACT_ADDRESS: config.lens.LENS_PROFILES_CONTRACT_ADDRESS,
     LENS_HUB_ABI: lensHubContractAbi,
     LENS_PERIPHERY_ABI: lensPeripheryDataProvider,
+    LENS_PROFILES_CONTRACT_PARTIAL_ABI:
+      config.lens.LENS_PROFILES_CONTRACT_PARTIAL_ABI,
     LENS_FOLLOW_NFT_ABI: lensFollowNftContractAbi
   }
 };

@@ -4,6 +4,7 @@ export interface BaseProps {
   name: string;
   placeholder?: string;
   disabled?: boolean;
+  hideError?: boolean;
 }
 
 export interface DatepickerProps extends BaseProps {
@@ -82,4 +83,5 @@ export interface UploadProps extends BaseProps {
   files?: File[];
   wrapperProps?: React.HTMLAttributes<HTMLDivElement>;
   onLoadSinglePreviewImage?: (base64Uri: string) => void;
+  withUpload?: boolean;
 }

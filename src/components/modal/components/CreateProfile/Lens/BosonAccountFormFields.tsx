@@ -1,80 +1,35 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useField } from "formik";
-import { useEffect } from "react";
-import { useAccount } from "wagmi";
 
 import { colors } from "../../../../../lib/styles/colors";
-import { useSellers } from "../../../../../lib/utils/hooks/useSellers";
+import SimpleError from "../../../../error/SimpleError";
 import { FormField, Input } from "../../../../form";
+import Error from "../../../../form/Error";
 import Tooltip from "../../../../tooltip/Tooltip";
 import Button from "../../../../ui/Button";
 import Grid from "../../../../ui/Grid";
-import { useModal } from "../../../useModal";
-import ProfileMultiSteps from "./ProfileMultiSteps";
+import Typography from "../../../../ui/Typography";
 
 interface Props {
   onBackClick: () => void;
-  isExistingProfile: boolean;
-  setStepBasedOnIndex: (index: number) => void;
+  alreadyHasRoyaltiesDefined: boolean;
+  isError: boolean;
 }
 
 export default function BosonAccountFormFields({
   onBackClick,
-  setStepBasedOnIndex,
-  isExistingProfile
+  alreadyHasRoyaltiesDefined,
+  isError
 }: Props) {
-  const [fieldSecondaryRoyalties, , helpersSecondaryRoyalties] =
-    useField("secondaryRoyalties");
-  const [fieldAddressForRoyaltyPayment, , helpersAddressForRoyaltyPayment] =
-    useField("addressForRoyaltyPayment");
-  const { address } = useAccount();
-  const { data: admins } = useSellers({
-    admin: address
-  });
-  const { data: clerks } = useSellers({
-    clerk: address
-  });
-  const { data: operator } = useSellers({
-    operator: address
-  });
-  const { data: treasuries } = useSellers({
-    treasury: address
-  });
-  const seller = admins?.[0] || clerks?.[0] || operator?.[0] || treasuries?.[0];
-  const royaltyPercentage = "";
-  const royaltyAddress = "";
-  const alreadyHasRoyaltiesDefined = !!royaltyAddress && !!royaltyPercentage; // TODO: seller.royalties;
-  const { updateProps, store } = useModal();
-  useEffect(() => {
-    updateProps<"CREATE_PROFILE">({
-      ...store,
-      modalProps: {
-        ...store.modalProps,
-        headerComponent: (
-          <ProfileMultiSteps
-            createOrSelect={isExistingProfile ? "select" : "create"}
-            activeStep={2}
-            createOrViewRoyalties={
-              alreadyHasRoyaltiesDefined ? "view" : "create"
-            }
-            key="BosonAccountFormFields"
-            setStepBasedOnIndex={setStepBasedOnIndex}
-          />
-        )
-      }
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  useEffect(() => {
-    if (alreadyHasRoyaltiesDefined) {
-      helpersSecondaryRoyalties.setValue(royaltyPercentage);
-      helpersAddressForRoyaltyPayment.setValue(royaltyAddress);
-    }
-  }, [
-    alreadyHasRoyaltiesDefined,
-    helpersAddressForRoyaltyPayment,
+  const [
+    fieldSecondaryRoyalties,
+    metaSecondaryRoyalties,
     helpersSecondaryRoyalties
-  ]);
+  ] = useField<number>("secondaryRoyalties");
+
+  const [fieldAddressForRoyaltyPayment, , helpersAddressForRoyaltyPayment] =
+    useField<string>("addressForRoyaltyPayment");
+
   return (
     <>
       <FormField
@@ -82,31 +37,46 @@ export default function BosonAccountFormFields({
         subTitle="Boson Protocol implements EIP-2981 which enables secondary royalties across NFT marketplaces."
         required
       >
-        <Grid>
-          <Grid
-            style={{
-              background: colors.lightGrey,
-              border: `1px solid ${colors.border}`
-            }}
-            gap="0.5rem"
-            justifyContent="space-between"
-          >
-            <Grid flexDirection="column">
-              <Input
-                name="secondaryRoyalties"
-                placeholder=""
-                disabled={alreadyHasRoyaltiesDefined}
-                style={{
-                  border: "none",
-                  textAlign: "right"
-                }}
-                type="number"
-                step="0.01"
-              />
+        <Grid flexDirection="column" alignItems="flex-start">
+          <Grid>
+            <Grid
+              style={{
+                background: colors.lightGrey,
+                border: `1px solid ${colors.border}`
+              }}
+              gap="0.5rem"
+              justifyContent="space-between"
+            >
+              <Grid flexDirection="column">
+                <Input
+                  name="secondaryRoyalties"
+                  placeholder=""
+                  disabled={alreadyHasRoyaltiesDefined}
+                  style={{
+                    border: "none",
+                    textAlign: "right"
+                  }}
+                  hideError
+                  type="number"
+                  step="0.01"
+                  onChange={(event) => {
+                    if (!event.target.valueAsNumber) {
+                      helpersAddressForRoyaltyPayment.setValue("");
+                    }
+                    helpersSecondaryRoyalties.setValue(
+                      event.target.valueAsNumber
+                    );
+                  }}
+                />
+              </Grid>
+              <div style={{ padding: "1rem" }}>%</div>
             </Grid>
-            <div style={{ padding: "1rem" }}>%</div>
+            <Tooltip content="Royalties are limited to 10%" size={16} />
           </Grid>
-          <Tooltip content="Royalties are limited to 10%" size={16} />
+          <Error
+            display={!!metaSecondaryRoyalties.error}
+            message={metaSecondaryRoyalties.error}
+          />
         </Grid>
       </FormField>
       <FormField
@@ -121,6 +91,20 @@ export default function BosonAccountFormFields({
           }
         />
       </FormField>
+      {isError && (
+        <Grid margin="0 0 2rem 0">
+          <SimpleError>
+            <Typography
+              fontWeight="600"
+              $fontSize="1rem"
+              lineHeight="1.5rem"
+              style={{ display: "inline-block" }}
+            >
+              There was an error when fetching your royalties configuration.
+            </Typography>
+          </SimpleError>
+        </Grid>
+      )}
       <Grid justifyContent="flex-start" gap="2rem">
         <Button theme="bosonSecondary" type="button" onClick={onBackClick}>
           Back
@@ -129,9 +113,9 @@ export default function BosonAccountFormFields({
           theme="bosonPrimary"
           type="submit"
           disabled={
-            !alreadyHasRoyaltiesDefined &&
-            (!fieldSecondaryRoyalties.value ||
-              !fieldAddressForRoyaltyPayment.value)
+            !!fieldSecondaryRoyalties.value &&
+            !fieldAddressForRoyaltyPayment.value &&
+            !alreadyHasRoyaltiesDefined
           }
         >
           Next

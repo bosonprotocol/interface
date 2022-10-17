@@ -1,14 +1,11 @@
 import * as Yup from "yup";
 
 import { validationMessage } from "../../../../../lib/const/validationMessage";
-import { MAX_LOGO_SIZE } from "../../../../product/utils";
-import { validationOfRequiredImage } from "../../../../product/utils/validationUtils";
+import { validationOfRequiredIpfsImage } from "../../../../product/utils/validationUtils";
 
 export const createYourProfileValidationSchema = Yup.object({
   createYourProfile: Yup.object({
-    logo: validationOfRequiredImage(MAX_LOGO_SIZE).required(
-      "You need to upload an image"
-    ),
+    logo: validationOfRequiredIpfsImage(),
     name: Yup.string().trim().required(validationMessage.required),
     email: Yup.string()
       .trim()

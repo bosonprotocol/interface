@@ -27,9 +27,9 @@ For ease of use, each environment has a DNS name that always points to the lates
 
 | Env          | Network   | Endpoint                                                        |
 | ------------ | --------- | --------------------------------------------------------------- |
-| `testing`    | `ropsten` | https://interface-test.on.fleek.co/                             |
-| `staging`    | `ropsten` | https://interface-staging.on.fleek.co/                          |
-| `production` | `mainnet` | `TBD`                                                           |
+| `testing`    | `mumbai` | https://interface-test.on.fleek.co/                             |
+| `staging`    | `mumbai` | https://interface-staging.on.fleek.co/                          |
+| `production` | `polygon` | https://dapp-interface-production.on.fleek.co/                                                           |
 
 ## Local development
 

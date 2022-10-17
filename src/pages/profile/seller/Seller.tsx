@@ -52,6 +52,38 @@ const LensTitle = styled(Typography)`
   }
 `;
 
+const StyledImage = styled(Image)`
+  img {
+    object-fit: contain;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    max-height: 100%;
+  }
+`;
+
+const FollowLens = styled.div`
+  margin-left: 0.75rem;
+  padding: 0.25rem 1rem;
+  border: 2px solid ${colors.secondary};
+  color: ${colors.secondary};
+  cursor: pointer;
+  :hover {
+    color: ${colors.white};
+    background: ${colors.secondary};
+    a {
+      color: ${colors.white};
+    }
+  }
+  a {
+    color: ${colors.secondary};
+    :hover {
+      background: ${colors.secondary};
+      color: ${colors.white};
+    }
+  }
+`;
+
 export default function Seller() {
   const { address: currentWalletAddress = "" } = useAccount();
   const { [UrlParameters.sellerId]: sellerId = "" } = useParams();
@@ -132,13 +164,14 @@ export default function Seller() {
           <BannerImageLayer>
             <AvatarContainer>
               {(sellerLens?.picture as MediaSet) ? (
-                <Image
+                <StyledImage
                   src={(sellerLens?.picture as MediaSet)?.original?.url}
                   style={{
                     width: "160px !important",
                     height: "160px !important",
                     paddingTop: "0",
-                    borderRadius: "50%"
+                    borderRadius: "50%",
+                    backgroundColor: "var(--primaryBgColor)"
                   }}
                 />
               ) : (
@@ -157,9 +190,10 @@ export default function Seller() {
               justifyContent="flex-start"
               alignItems="flex-end"
               $width="auto"
+              flexGrow="1"
             >
               <AvatarEmptySpace />
-              <div>
+              <Grid flexDirection="column" alignItems="flex-start">
                 <Typography
                   tag="h2"
                   margin={!isLteXS ? "1rem 0 0 0" : "0.25rem 0 0.25rem 0"}
@@ -179,13 +213,22 @@ export default function Seller() {
                     <AddressText address={currentSellerAddress} />
                   </AddressContainer>
                 </Grid>
-              </div>
+              </Grid>
             </Grid>
             <Grid
               justifyContent="flex-end"
               $width="auto"
               margin="1.25rem 0 0 0"
             >
+              <FollowLens>
+                <a
+                  href={`https://lenster.xyz/u/${sellerLens?.handle}`}
+                  target="_blank"
+                  rel="noopener"
+                >
+                  Follow
+                </a>
+              </FollowLens>
               <SellerSocial sellerLens={sellerLens as ProfileFieldsFragment} />
             </Grid>
           </Grid>

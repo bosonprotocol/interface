@@ -108,6 +108,7 @@ export default function ResolveDisputeModal({
                 },
                 500
               );
+              hideModal();
               toast((t) => (
                 <SuccessTransactionToast
                   t={t}
@@ -115,7 +116,6 @@ export default function ResolveDisputeModal({
                   url={CONFIG.getTxExplorerUrl?.(tx.hash)}
                 />
               ));
-              hideModal();
             } catch (error) {
               const hasUserRejectedTx =
                 (error as unknown as { code: string }).code ===

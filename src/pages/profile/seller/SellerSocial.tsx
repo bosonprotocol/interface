@@ -1,7 +1,12 @@
 import { Globe } from "phosphor-react";
 
 import DetailShare from "../../../components/detail/DetailShare";
-import { ProfileFieldsFragment } from "../../../lib/utils/hooks/lens/graphql/generated";
+import { getLensWebsite } from "../../../components/modal/components/CreateProfile/Lens/utils";
+import {
+  Profile,
+  ProfileFieldsFragment
+} from "../../../lib/utils/hooks/lens/graphql/generated";
+import { preAppendHttps } from "../../../lib/validation/regex/url";
 import {
   DetailShareWrapper,
   SocialIcon,
@@ -29,14 +34,14 @@ interface Props {
   sellerLens: ProfileFieldsFragment;
 }
 export default function SellerSocial({ sellerLens }: Props) {
-  const lensUrl =
-    sellerLens?.attributes?.find((a) => a?.key === "website") || false;
+  const website = getLensWebsite(sellerLens as Profile);
+  const lensUrl = website ? preAppendHttps(website) || false : false;
   return (
     <SocialIconContainer>
       {/* TODO: Removed as we don't have discord in lens profile */}
       {/* <RenderSocial icon={DiscordLogo} href={""} /> */}
       {lensUrl !== false && (
-        <RenderSocial icon={<Globe size={24} />} href={lensUrl?.value} />
+        <RenderSocial icon={<Globe size={24} />} href={lensUrl} />
       )}
       <DetailShareWrapper>
         <DetailShare />

@@ -32,7 +32,8 @@ export default function Exchange() {
   const {
     data: exchanges,
     isError,
-    isLoading
+    isLoading,
+    refetch: reload
   } = useExchanges(
     {
       id: exchangeId,
@@ -91,7 +92,7 @@ export default function Exchange() {
     offerImg,
     shippingInfo,
     description,
-    productData,
+    // productData,
     artistDescription,
     images
   } = getOfferDetails(offer);
@@ -127,6 +128,7 @@ export default function Exchange() {
                 name={name}
                 image={offerImg}
                 hasSellerEnoughFunds={hasSellerEnoughFunds}
+                reload={reload}
               />
             </div>
             <DetailShare />
@@ -136,14 +138,21 @@ export default function Exchange() {
           <DetailGrid>
             <div>
               <Typography tag="h3">Product description</Typography>
-              <Typography tag="p" data-testid="description">
+              <Typography
+                tag="p"
+                data-testid="description"
+                style={{ whiteSpace: "pre-wrap" }}
+              >
                 {description}
               </Typography>
-              <DetailTable data={productData} tag="strong" inheritColor />
+              {/* TODO: hidden for now */}
+              {/* <DetailTable data={productData} tag="strong" inheritColor /> */}
             </div>
             <div>
               <Typography tag="h3">About the creator</Typography>
-              <Typography tag="p">{artistDescription}</Typography>
+              <Typography tag="p" style={{ whiteSpace: "pre-wrap" }}>
+                {artistDescription}
+              </Typography>
             </div>
           </DetailGrid>
           {images.length > 0 && <DetailSlider images={images} />}
