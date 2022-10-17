@@ -52,6 +52,8 @@ function Upload({
     },
     [helpers]
   );
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const files = field.value as any;
 
   useEffect(() => {
@@ -95,7 +97,9 @@ function Upload({
   };
 
   const handleRemoveFile = (index: number) => {
-    const newArray = files.filter((i: any, k: number) => k !== index);
+    const newArray = files.filter(
+      (i: File | FileProps, k: number) => k !== index
+    );
     setFiles(newArray);
   };
 
