@@ -1,7 +1,7 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { ClockClockwise } from "phosphor-react";
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 import { generatePath } from "react-router-dom";
 import styled from "styled-components";
 
@@ -68,10 +68,6 @@ function TableElement({ exchange }: { exchange: Exchange }) {
     },
     { enabled: !!exchange }
   );
-
-  const refetchItAll = useCallback(() => {
-    refetchDisputes();
-  }, [refetchDisputes]);
 
   const parseDisputeDate = dayjs(getDateTimestamp(exchange.validUntilDate));
 
@@ -147,7 +143,7 @@ function TableElement({ exchange }: { exchange: Exchange }) {
                     {
                       title: "Escalate",
                       exchange: exchange,
-                      refetch: refetchItAll
+                      refetch: refetchDisputes
                     },
                     "l"
                   );

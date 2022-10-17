@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { ClockClockwise } from "phosphor-react";
-import React, { useCallback, useMemo } from "react";
+import React, { useMemo } from "react";
 import styled from "styled-components";
 
 import { BosonRoutes } from "../../../../lib/routing/routes";
@@ -113,10 +113,6 @@ function DisputeListMobileElement({ exchange }: { exchange: Exchange }) {
     { enabled: !!exchange }
   );
 
-  const refetchItAll = useCallback(() => {
-    refetchDisputes();
-  }, [refetchDisputes]);
-
   const deadlineTimeLeft = useMemo(() => {
     if (parseDisputeDate.diff(currentDate, "days") === 0) {
       return "Dispute period ended today";
@@ -177,7 +173,7 @@ function DisputeListMobileElement({ exchange }: { exchange: Exchange }) {
               {
                 title: "Escalate",
                 exchange: exchange,
-                refetch: refetchItAll
+                refetch: refetchDisputes
               },
               "l"
             );
