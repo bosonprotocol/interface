@@ -1,7 +1,17 @@
 import * as Yup from "yup";
 
 import bytesToSize from "../../../lib/utils/bytesToSize";
+import { FileProps } from "../../form/Upload/WithUploadToIpfs";
 import { SUPPORTED_FILE_FORMATS } from "./const";
+
+export const validationOfRequiredIpfsImage = () =>
+  Yup.mixed<FileProps[]>().test(
+    "fileUploaded",
+    "You need to upload an image",
+    (value) => !value || (value && value.length !== 0)
+  );
+
+export const validationOfIpfsImage = () => Yup.mixed<FileProps[]>();
 
 export const validationOfRequiredImage = (size: number) =>
   Yup.mixed<File[]>()

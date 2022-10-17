@@ -55,7 +55,7 @@ const ExchangeCardWrapper = styled.div<{ $isCustomStoreFront: boolean }>`
 
 export default function Exchange({ offer, exchange, reload }: Props) {
   const { lens: lensProfiles } = useCurrentSellers({
-    sellerId: offer.seller.id
+    sellerId: offer?.seller?.id
   });
   const [lens] = lensProfiles;
   const { imageSrc: avatar } = useGetIpfsImage(getLensProfilePictureUrl(lens));
