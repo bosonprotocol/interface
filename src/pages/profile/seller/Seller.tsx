@@ -62,6 +62,28 @@ const StyledImage = styled(Image)`
   }
 `;
 
+const FollowLens = styled.div`
+  margin-left: 0.75rem;
+  padding: 0.25rem 1rem;
+  border: 2px solid ${colors.secondary};
+  color: ${colors.secondary};
+  cursor: pointer;
+  :hover {
+    color: ${colors.white};
+    background: ${colors.secondary};
+    a {
+      color: ${colors.white};
+    }
+  }
+  a {
+    color: ${colors.secondary};
+    :hover {
+      background: ${colors.secondary};
+      color: ${colors.white};
+    }
+  }
+`;
+
 export default function Seller() {
   const { address: currentWalletAddress = "" } = useAccount();
   const { [UrlParameters.sellerId]: sellerId = "" } = useParams();
@@ -198,6 +220,15 @@ export default function Seller() {
               $width="auto"
               margin="1.25rem 0 0 0"
             >
+              <FollowLens>
+                <a
+                  href={`https://lenster.xyz/u/${sellerLens?.handle}`}
+                  target="_blank"
+                  rel="noopener"
+                >
+                  Follow
+                </a>
+              </FollowLens>
               <SellerSocial sellerLens={sellerLens as ProfileFieldsFragment} />
             </Grid>
           </Grid>
