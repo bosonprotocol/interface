@@ -7,6 +7,7 @@ import localizedFormat from "dayjs/plugin/localizedFormat";
 import { Form, Formik, FormikHelpers } from "formik";
 import isArray from "lodash/isArray";
 import keys from "lodash/keys";
+import map from "lodash/map";
 import { useCallback, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { generatePath } from "react-router-dom";
@@ -37,12 +38,9 @@ import SuccessTransactionToast from "../../components/toasts/SuccessTransactionT
 import { CONFIG } from "../../lib/config";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { OffersRoutes } from "../../lib/routing/routes";
-import { fromBase64ToBinary } from "../../lib/utils/base64";
-import { getLocalStorageItems } from "../../lib/utils/getLocalStorageItems";
 import { useChatStatus } from "../../lib/utils/hooks/chat/useChatStatus";
 import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
-import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { saveItemInStorage } from "../../lib/utils/hooks/useLocalStorage";
 import { useCoreSDK } from "../../lib/utils/useCoreSdk";
@@ -94,7 +92,6 @@ function CreateProductInner({
   const [isPreviewVisible, setIsPreviewVisible] = useState<boolean>(false);
   const { showModal, modalTypes, hideModal } = useModal();
   const coreSDK = useCoreSDK();
-  const storage = useIpfsStorage();
 
   const onCreateNewProject = () => {
     hideModal();
@@ -218,48 +215,31 @@ function CreateProductInner({
     values: CreateProductForm,
     formikBag: FormikHelpers<CreateProductForm>
   ) => {
-    if (!storage) {
-      console.error("Storage is undefined. Unable to progress.");
-      return;
-    }
-    const profileImage = getLocalStorageItems({
-      key: "create-product-image_createYourProfile"
-    });
-    const previewImages = getLocalStorageItems({
-      key: "create-product-image_productImages"
-    });
-    const productMainImage = getLocalStorageItems({
-      key: "create-product-image_productImages.thumbnail"
-    });
-
-    const uploadPromises = previewImages.map((previewImage) => {
-      return storage.add(fromBase64ToBinary(previewImage));
-    });
-
-    const profileImageLink = profileImage[0]
-      ? await storage.add(fromBase64ToBinary(profileImage[0]))
-      : undefined;
-    const productMainImageLink = await storage.add(
-      fromBase64ToBinary(productMainImage[0])
-    );
-
-    const imagesIpfsLinks = await Promise.all(uploadPromises);
-
-    const visualImages = imagesIpfsLinks.map((link) => {
-      return {
-        url: `ipfs://${link}`,
-        tag: "product_image"
-      };
-    });
-
     const {
       coreTermsOfSale,
       createYourProfile,
       productInformation,
+      productImages,
       productType,
       termsOfExchange,
       shippingInfo
     } = values;
+
+    const profileImageLink = createYourProfile?.logo?.[0]?.src;
+    const productMainImageLink = productImages?.thumbnail?.[0]?.src;
+
+    const visualImages = Array.from(
+      new Set(
+        map(
+          productImages,
+          (v) =>
+            v?.[0]?.src && {
+              url: v?.[0]?.src,
+              tag: "product_image"
+            }
+        ).filter((n) => n)
+      ).values()
+    );
 
     const productAttributes: Array<{
       trait_type: string;
@@ -400,18 +380,18 @@ function CreateProductInner({
           details_tags: productInformation.tags,
           details_sections: undefined, // no entry in the UI
           details_personalisation: undefined, // no entry in the UI
-          visuals_images: visualImages,
+          visuals_images: visualImages as any,
           visuals_videos: undefined, // no entry in the UI
           packaging_packageQuantity: undefined, // no entry in the UI
           packaging_dimensions_length: shippingInfo.length,
           packaging_dimensions_width: shippingInfo.width,
           packaging_dimensions_height: shippingInfo.height,
           packaging_dimensions_unit: shippingInfo.measurementUnit.value,
-          packaging_weight_value: shippingInfo.weight,
-          packaging_weight_unit: shippingInfo.weightUnit.value
+          packaging_weight_value: shippingInfo?.weight || "",
+          packaging_weight_unit: shippingInfo?.weightUnit.value || ""
         },
         seller: CONFIG.lens.enabled
-          ? {
+          ? ({
               defaultVersion: 1,
               name: operatorLens?.name || "",
               description: operatorLens?.bio || "",
@@ -443,8 +423,8 @@ function CreateProductInner({
                   tag: "email"
                 }
               ]
-            }
-          : {
+            } as any)
+          : ({
               defaultVersion: 1,
               name: createYourProfile.name,
               description: createYourProfile.description,
@@ -452,7 +432,7 @@ function CreateProductInner({
               tokenId: undefined, // no entry in the UI
               images: [
                 {
-                  url: `ipfs://${profileImageLink}`,
+                  url: profileImageLink,
                   tag: "profile"
                 }
               ],
@@ -462,7 +442,7 @@ function CreateProductInner({
                   tag: "email"
                 }
               ]
-            },
+            } as any),
         exchangePolicy: {
           uuid: Date.now().toString(),
           version: 1,
@@ -551,7 +531,7 @@ function CreateProductInner({
           }}
         />
       ));
-
+      hideModal();
       formikBag.resetForm();
     } catch (error: any) {
       // TODO: FAILURE MODAL

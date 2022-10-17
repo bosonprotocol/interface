@@ -16,13 +16,12 @@ import { GlideSlide, GlideWrapper } from "./Detail.style";
 type Direction = "<" | ">";
 interface Props {
   images: Array<string>;
-  isPreview?: boolean;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let glide: any = null;
 
-export default function DetailSlider({ images, isPreview = false }: Props) {
+export default function DetailSlider({ images }: Props) {
   const [sliderImages, setSliderImages] = useState<Array<string>>([]);
   const ref = useRef();
   const ipfsMetadataStorage = useIpfsStorage();
@@ -48,7 +47,7 @@ export default function DetailSlider({ images, isPreview = false }: Props) {
   };
 
   useEffect(() => {
-    isPreview ? setSliderImages(images) : fetchData(images);
+    fetchData(images);
   }, [images]); // eslint-disable-line
 
   const handleSlider = (direction: Direction) => {

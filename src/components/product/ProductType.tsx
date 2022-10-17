@@ -6,11 +6,7 @@ import { useAccount } from "wagmi";
 import { CONFIG } from "../../lib/config";
 import { breakpointNumbers } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
-import {
-  dataURItoBlob,
-  fetchIpfsImage,
-  loadAndSetImage
-} from "../../lib/utils/base64";
+import { dataURItoBlob, fetchIpfsImage } from "../../lib/utils/base64";
 import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
@@ -132,7 +128,8 @@ export default function ProductType({
     sellers: currentSellers,
     sellerType: currentRoles,
     lens,
-    isLoading
+    isLoading,
+    isSuccess
   } = useCurrentSellers();
 
   const [shownDraftModal, setShowDraftModal] = useState<boolean>(false);
@@ -142,6 +139,7 @@ export default function ProductType({
 
   const isAdminLinkedToLens =
     !isLoading &&
+    isSuccess &&
     !!currentSellers.some((seller, index) => {
       return (
         seller.authTokenType === authTokenTypes.LENS &&
@@ -166,15 +164,6 @@ export default function ProductType({
   );
   const onRegularProfileCreated = useCallback(
     (regularProfile: CreateYourProfile) => {
-      if (regularProfile.createYourProfile.logo) {
-        loadAndSetImage(
-          regularProfile.createYourProfile.logo[0],
-          (base64Uri) => {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            setBase64(base64Uri as any);
-          }
-        );
-      }
       setFieldValue("createYourProfile", regularProfile.createYourProfile);
       setIsRegularSeller(true);
     },
@@ -208,8 +197,9 @@ export default function ProductType({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ipfsMetadataStorage, operatorLens]);
+
   useEffect(() => {
-    if (isLoading) {
+    if (!isSuccess || isLoading) {
       return;
     }
 
@@ -281,6 +271,7 @@ export default function ProductType({
     isDraftModalClosed,
     shownDraftModal,
     isLoading,
+    isSuccess,
     values.createYourProfile
   ]);
 

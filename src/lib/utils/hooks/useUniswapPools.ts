@@ -28,7 +28,6 @@ const poolsQuery = gql`
   }
 `;
 
-const ETH_SWAP_ARRAY = ["WETH", "ETH"];
 interface QueryProps {
   query: string;
   variables: {
@@ -36,13 +35,16 @@ interface QueryProps {
     token1: string;
   };
 }
-function generateQuery(tokens: Props["tokens"]): QueryProps[] | [] {
+function generateQuery(
+  tokens: Props["tokens"],
+  swap: boolean
+): QueryProps[] | [] {
   return tokens && tokens.length
     ? tokens?.flatMap((token) => ({
         query: poolsQuery,
         variables: {
-          token0: ETH_SWAP_ARRAY.includes(token.symbol) ? "USDC" : token.symbol,
-          token1: ETH_SWAP_ARRAY.includes(token.symbol) ? token.symbol : "USDC"
+          token0: swap ? "USDC" : token.symbol,
+          token1: swap ? token.symbol : "USDC"
         }
       }))
     : [];
@@ -51,7 +53,10 @@ interface Props {
   tokens: Pick<Offer["exchangeToken"], "address" | "symbol">[];
 }
 interface PromiseProps {
-  pools: Array<IPool>;
+  status: string;
+  value: {
+    pools: Array<IPool>;
+  };
 }
 export interface IPool {
   token0: {
@@ -66,7 +71,8 @@ export interface IPool {
 
 export function useUniswapPools({ tokens }: Props) {
   const isDev = process.env.NODE_ENV === "development";
-  const queries = generateQuery(tokens);
+  const queries = generateQuery(tokens, false);
+  const swapQueries = generateQuery(tokens, true);
 
   return useQuery(
     ["pools"],
@@ -75,11 +81,29 @@ export function useUniswapPools({ tokens }: Props) {
         async ({ query, variables }: QueryProps) =>
           await request(UNISWAP_API_URL, query, variables)
       );
-      const pools = await Promise.all(queriesPromises);
-      return pools?.flatMap((p: PromiseProps) => p?.pools) || [];
+      const swapQueriesPromises = swapQueries.map(
+        async ({ query, variables }: QueryProps) =>
+          await request(UNISWAP_API_URL, query, variables)
+      );
+      const pools = await Promise.allSettled(queriesPromises);
+      const swapPools = await Promise.allSettled(swapQueriesPromises);
+
+      const response = pools.filter(
+        (res) => res.status === "fulfilled"
+      ) as PromiseProps[];
+      const swapResponse = swapPools.filter(
+        (res) => res.status === "fulfilled"
+      ) as PromiseProps[];
+
+      const poolsValues =
+        response?.flatMap((p: PromiseProps) => p?.value?.pools) || [];
+      const swapPoolsValues =
+        swapResponse?.flatMap((p: PromiseProps) => p?.value?.pools) || [];
+
+      return poolsValues.concat(swapPoolsValues);
     },
     {
-      enabled: !!queries.length && !isDev
+      enabled: !!queries.length && !!swapQueries.length && !isDev
     }
   );
 }

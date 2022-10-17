@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { BaseIpfsStorage } from "@bosonprotocol/react-kit";
+import { Signer, utils } from "ethers";
 import { gql } from "graphql-request";
 import { useState } from "react";
-import { useSignTypedData } from "wagmi";
+import { useSigner, useSignTypedData } from "wagmi";
 
 import { useIpfsStorage } from "../../useIpfsStorage";
 import { broadcastRequest } from "../broadcast/broadcast";
@@ -13,6 +14,7 @@ import {
   CreateSetProfileMetadataViaDispatcherDocument
 } from "../graphql/generated";
 import { pollUntilIndexed } from "../indexer/has-transaction-been-indexed";
+import { getLensPeriphery } from "../lens-hub";
 import { getLensProfile } from "./useGetLensProfile";
 
 type SignTypedDataAsync = ReturnType<
@@ -33,6 +35,7 @@ export default function useSetLensProfileMetadata(
   const { signTypedDataAsync } = useSignTypedData();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { enabled, accessToken } = options;
+  const { data: signer } = useSigner();
   const storage = useIpfsStorage();
   const [data, setData] = useState<Awaited<
     ReturnType<typeof setProfileMetadata>
@@ -51,7 +54,9 @@ export default function useSetLensProfileMetadata(
           const result = await setProfileMetadata(props, {
             signTypedDataAsync,
             storage,
-            accessToken
+            accessToken,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            signer: signer!
           });
 
           setData(result);
@@ -235,11 +240,13 @@ const setProfileMetadata = async (
   {
     signTypedDataAsync,
     storage,
-    accessToken
+    accessToken,
+    signer
   }: {
     signTypedDataAsync: SignTypedDataAsync;
     storage: BaseIpfsStorage;
     accessToken: string;
+    signer: Signer;
   }
 ) => {
   const cid = await storage.add(JSON.stringify(args));
@@ -249,11 +256,51 @@ const setProfileMetadata = async (
     metadata: "ipfs://" + cid
   };
 
-  const result = await setMetadata(createProfileMetadataRequest, {
-    signTypedDataAsync,
-    accessToken
-  });
+  try {
+    const result = await setMetadata(createProfileMetadataRequest, {
+      signTypedDataAsync,
+      accessToken
+    });
 
-  await pollUntilIndexed({ txId: result.txId }, { accessToken });
-  return result;
+    await pollUntilIndexed({ txId: result.txId }, { accessToken });
+    return result;
+  } catch (error) {
+    console.error("useSetLensProfileMetadata error", error);
+    const signedResult = await signCreateSetProfileMetadataTypedData(
+      createProfileMetadataRequest,
+      signTypedDataAsync,
+      accessToken
+    );
+    console.log("create comment: signedResult", signedResult);
+
+    const typedData = signedResult.result.typedData;
+
+    const { v, r, s } = utils.splitSignature(signedResult.signature);
+
+    const tx = await getLensPeriphery(signer).setProfileMetadataURIWithSig({
+      profileId: createProfileMetadataRequest.profileId,
+      metadata: createProfileMetadataRequest.metadata,
+      sig: {
+        v,
+        r,
+        s,
+        deadline: typedData.value.deadline
+      }
+    });
+    console.log("create profile metadata: tx hash", tx.hash);
+
+    console.log("create profile metadata: poll until indexed");
+    const indexedResult = await pollUntilIndexed(
+      { txHash: tx.hash },
+      { accessToken }
+    );
+
+    console.log("create profile metadata: profile has been indexed");
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const logs = indexedResult.txReceipt!.logs;
+
+    console.log("create profile metadata: logs", logs);
+    return { indexedResult, logs };
+  }
 };

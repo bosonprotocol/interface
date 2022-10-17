@@ -80,7 +80,7 @@ const ItemPreview = styled(Grid)<{ isLteS: boolean }>`
 
 function DisputeCentre() {
   const { bosonXmtp } = useChatContext();
-  const { showModal } = useModal();
+  const { showModal, hideModal } = useModal();
   const { address } = useAccount();
   const coreSDK = useCoreSDK();
   const [currentStep, setCurrentStep] = useState<number>(0);
@@ -262,6 +262,7 @@ function DisputeCentre() {
                       url={CONFIG.getTxExplorerUrl?.(tx.hash)}
                     />
                   ));
+                  hideModal();
                   navigate({
                     pathname: BosonRoutes.DisputeCenter
                   });

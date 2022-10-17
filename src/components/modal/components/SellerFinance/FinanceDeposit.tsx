@@ -52,7 +52,7 @@ export default function FinanceDeposit({
       : { addressOrName: address }
   );
 
-  const { showModal } = useModal();
+  const { showModal, hideModal } = useModal();
   const coreSDK = useCoreSDK();
   const depositFunds = useDepositFunds({
     accountId,
@@ -123,6 +123,7 @@ export default function FinanceDeposit({
         );
         setAmountToDeposit("0");
         setIsDepositInvalid(true);
+        hideModal();
       } catch (error) {
         console.error(error);
         const hasUserRejectedTx =

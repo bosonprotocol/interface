@@ -51,7 +51,7 @@ export default function ProductCard({
   isHoverDisabled = false
 }: Props) {
   const { lens: lensProfiles } = useCurrentSellers({
-    sellerId: offer.seller.id
+    sellerId: offer?.seller?.id
   });
   const [lens] = lensProfiles;
   const { imageSrc: avatar } = useGetIpfsImage(getLensProfilePictureUrl(lens));

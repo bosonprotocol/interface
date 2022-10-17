@@ -224,6 +224,7 @@ export default function ExpireVoucherModal({ exchange }: Props) {
                 500
               );
               setIsLoading(false);
+              hideModal();
               setExpireError(null);
               navigate({
                 pathname: `${BosonRoutes.YourAccount}`,

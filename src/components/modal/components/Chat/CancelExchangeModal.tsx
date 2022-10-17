@@ -207,6 +207,7 @@ export default function CancelExchangeModal({
               500
             );
             setIsLoading(false);
+            hideModal();
             setCancelError(null);
             reload?.();
             toast((t) => (
