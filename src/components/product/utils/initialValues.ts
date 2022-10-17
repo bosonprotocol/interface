@@ -9,7 +9,9 @@ import {
   OPTIONS_PERIOD,
   OPTIONS_TOKEN_GATED,
   OPTIONS_UNIT,
-  OPTIONS_WEIGHT
+  OPTIONS_WEIGHT,
+  TOKEN_GATED_VARIANTS,
+  TOKEN_TYPES
 } from "./const";
 import { CreateProductForm } from "./types";
 
@@ -86,6 +88,10 @@ export const coreTermsOfSaleInitialValues = {
     currency: OPTIONS_CURRENCIES[0],
     quantity: 1,
     tokenGatedOffer: OPTIONS_TOKEN_GATED[0],
+    tokengatedvariants: TOKEN_GATED_VARIANTS[0],
+    tokencontract: "",
+    tokentype: TOKEN_TYPES[0],
+    minbalance: "",
     redemptionPeriod: [],
     offerValidityPeriod: []
   }

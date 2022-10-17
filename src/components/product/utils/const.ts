@@ -89,8 +89,28 @@ export const OPTIONS_TOKEN_GATED = [
   },
   {
     value: "true",
-    label: "Yes",
-    disabled: true
+    label: "Yes"
+  }
+];
+
+export const TOKEN_GATED_VARIANTS = [
+  {
+    value: "all",
+    label: "All"
+  }
+];
+export const TOKEN_TYPES = [
+  {
+    value: "ERC20",
+    label: "ERC20"
+  },
+  {
+    value: "ERC721",
+    label: "ERC721"
+  },
+  {
+    value: "ERC1155",
+    label: "ERC1155"
   }
 ];
 
