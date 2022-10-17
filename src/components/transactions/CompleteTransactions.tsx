@@ -149,7 +149,6 @@ const buildTableData = (
 ) => {
   return eventLogs.map((log) => {
     const { label, pathname } = buildTransactionLabelAndPath(log);
-    console.log({ label, pathname });
     return {
       accountType: log.accountType,
       transactionLabel: label,

@@ -3,13 +3,14 @@ import { useQuery } from "react-query";
 import { useAccount } from "wagmi";
 
 import { useCoreSDK } from "../../useCoreSdk";
-import { useBuyerSellerAccounts } from "../useBuyerSellerAccounts";
+import { useCurrentBuyer } from "../useCurrentBuyer";
+import { useCurrentSellers } from "../useCurrentSellers";
 
 export const useCompletedTransactions = (page = 0) => {
   const { address } = useAccount();
-  const { seller: sellerQuery, buyer: buyerQuery } = useBuyerSellerAccounts(
-    address || ""
-  );
+
+  const { sellerIds } = useCurrentSellers();
+  const { data: currentBuyer } = useCurrentBuyer();
   const coreSDK = useCoreSDK();
 
   return useQuery(
@@ -18,15 +19,14 @@ export const useCompletedTransactions = (page = 0) => {
       const logs = await coreSDK.getEventLogs({
         logsFilter: {
           executedBy: address?.toLowerCase(),
-          account_in: [sellerQuery.sellerId, buyerQuery.buyerId]
+          account_in: [...sellerIds, currentBuyer ? currentBuyer.id : ""]
         },
         logsOrderBy: subgraph.EventLog_OrderBy.Timestamp,
         logsOrderDirection: subgraph.OrderDirection.Desc
       });
       return logs.map((log) => ({
         ...log,
-        accountType:
-          log.account.id === sellerQuery.sellerId ? "Seller" : "Buyer"
+        accountType: sellerIds.includes(log.account.id) ? "Seller" : "Buyer"
       }));
     },
     {
