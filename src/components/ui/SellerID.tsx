@@ -84,7 +84,7 @@ const SellerID: React.FC<
 }) => {
   const { address } = useAccount();
   const { lens: lensProfiles } = useCurrentSellers({
-    sellerId: offer.seller.id
+    sellerId: offer?.seller?.id
   });
   const [lens] = lensProfiles;
   const navigate = useKeepQueryParamsNavigate();

@@ -7,7 +7,7 @@ import { CONFIG } from "../../../../../lib/config";
 import { colors } from "../../../../../lib/styles/colors";
 import { loadAndSetImage } from "../../../../../lib/utils/base64";
 import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
-import useCustomCreateLensProfile from "../../../../../lib/utils/hooks/lens/profile/useCustomCreateLensProfile";
+import useCustomCreateLensProfilePolygon from "../../../../../lib/utils/hooks/lens/profile/useCustomCreateLensProfilePolygon";
 import useCreateSeller from "../../../../../lib/utils/hooks/offer/useCreateSeller";
 import useUpdateSeller from "../../../../../lib/utils/hooks/offer/useUpdateSeller";
 import { useSellers } from "../../../../../lib/utils/hooks/useSellers";
@@ -125,7 +125,7 @@ export default function CreateBosonLensAccountSummary({
 
     isHandleTakenError,
     isSetLensProfileMetadataError
-  } = useCustomCreateLensProfile({
+  } = useCustomCreateLensProfilePolygon({
     values: values,
     onCreatedProfile: (profile: Profile) => {
       setLensProfileToSubmit(profile);

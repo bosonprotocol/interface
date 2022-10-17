@@ -44,6 +44,7 @@ interface Props {
   buyerId: string;
   sellerId: string;
   sellerAddress: string;
+  setIsLoading?: React.Dispatch<React.SetStateAction<boolean>>;
   // modal props
   hideModal: NonNullable<ModalProps["hideModal"]>;
   reload?: () => void;
@@ -56,7 +57,8 @@ export default function RedeemModal({
   buyerId,
   sellerId,
   sellerAddress,
-  reload
+  reload,
+  setIsLoading
 }: Props) {
   const [activeStep, setActiveStep] = useState<number>(0);
   const validationSchema = validationSchemaPerStep[activeStep];
@@ -123,6 +125,7 @@ export default function RedeemModal({
                   sellerAddress={sellerAddress}
                   onBackClick={() => setActiveStep(1)}
                   reload={reload}
+                  setIsLoading={setIsLoading}
                 />
               )}
             </Form>

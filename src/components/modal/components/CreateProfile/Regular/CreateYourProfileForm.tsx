@@ -13,7 +13,7 @@ export default function CreateYourProfileForm() {
         subTitle="Upload a profile image with a max. size of 600Kb"
         required
       >
-        <Upload name="createYourProfile.logo" />
+        <Upload name="createYourProfile.logo" withUpload />
       </FormField>
       <FormField title="Your brand / name" required>
         <Input name="createYourProfile.name" placeholder="Name" />

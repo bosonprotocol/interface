@@ -39,7 +39,12 @@ export const getLensTokenIdDecimal = (lenseProfileId: Profile["id"]) => {
 };
 
 export const getLensTokenIdHex = (lenseProfileIdDecimal: Profile["id"]) => {
-  return lenseProfileIdDecimal
-    ? "0x" + Number(lenseProfileIdDecimal).toString(16).padStart(2, "0")
-    : "";
+  if (!lenseProfileIdDecimal) {
+    return "";
+  }
+  const hex = Number(lenseProfileIdDecimal).toString(16);
+  if (hex.length % 2 === 0) {
+    return "0x" + hex;
+  }
+  return "0x0" + hex;
 };

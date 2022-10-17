@@ -75,8 +75,8 @@ export function RetractDisputeModal({
                   url={CONFIG.getTxExplorerUrl?.(tx.hash)}
                 />
               ));
-              refetch();
               hideModal();
+              refetch();
             } catch (error) {
               console.error(error);
               const hasUserRejectedTx =

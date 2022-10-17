@@ -2,14 +2,8 @@ import styled from "styled-components";
 
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
-import {
-  createProductImagePrefix,
-  CreateProductImageProductImages,
-  useLocalStorage
-} from "../../lib/utils/hooks/useLocalStorage";
 import { Upload } from "../form";
 import FormField from "../form/FormField";
-import { UploadProps } from "../form/types";
 import Button from "../ui/Button";
 import { ProductButtonGroup, SectionTitle } from "./Product.styles";
 import { useCreateForm } from "./utils/useCreateForm";
@@ -49,46 +43,6 @@ const SpaceContainer = styled.div`
 export default function ProductImages() {
   const { nextIsDisabled } = useCreateForm();
 
-  const [, setThumbnailBase64] =
-    useLocalStorage<CreateProductImageProductImages | null>(
-      `${createProductImagePrefix}productImages.thumbnail`,
-      null
-    );
-  const [, setSecondaryBase64] =
-    useLocalStorage<CreateProductImageProductImages | null>(
-      `${createProductImagePrefix}productImages.secondary`,
-      null
-    );
-  const [, setEveryAngleBase64] =
-    useLocalStorage<CreateProductImageProductImages | null>(
-      `${createProductImagePrefix}productImages.everyAngle`,
-      null
-    );
-  const [, setDetailsBase64] =
-    useLocalStorage<CreateProductImageProductImages | null>(
-      `${createProductImagePrefix}productImages.details`,
-      null
-    );
-  const [, setInUseBase64] =
-    useLocalStorage<CreateProductImageProductImages | null>(
-      `${createProductImagePrefix}productImages.inUse`,
-      null
-    );
-  const [, setStyledSceneBase64] =
-    useLocalStorage<CreateProductImageProductImages | null>(
-      `${createProductImagePrefix}productImages.styledScene`,
-      null
-    );
-  const [, setSizeAndScaleBase64] =
-    useLocalStorage<CreateProductImageProductImages | null>(
-      `${createProductImagePrefix}productImages.sizeAndScale`,
-      null
-    );
-  const [, setMoreBase64] =
-    useLocalStorage<CreateProductImageProductImages | null>(
-      `${createProductImagePrefix}productImages.more`,
-      null
-    );
   return (
     <ContainerProductImage>
       <SectionTitle tag="h2">Product Images</SectionTitle>
@@ -104,73 +58,53 @@ export default function ProductImages() {
             <Upload
               name="productImages.thumbnail"
               placeholder="Thumbnail"
-              onLoadSinglePreviewImage={
-                setThumbnailBase64 as UploadProps["onLoadSinglePreviewImage"]
-              }
+              withUpload
             />
           </div>
           <div>
             <Upload
               name="productImages.secondary"
               placeholder="Secondary"
-              onLoadSinglePreviewImage={
-                setSecondaryBase64 as UploadProps["onLoadSinglePreviewImage"]
-              }
+              withUpload
             />
           </div>
           <div>
             <Upload
               name="productImages.everyAngle"
               placeholder="Every angle"
-              onLoadSinglePreviewImage={
-                setEveryAngleBase64 as UploadProps["onLoadSinglePreviewImage"]
-              }
+              withUpload
             />
           </div>
           <div>
             <Upload
               name="productImages.details"
               placeholder="Details"
-              onLoadSinglePreviewImage={
-                setDetailsBase64 as UploadProps["onLoadSinglePreviewImage"]
-              }
+              withUpload
             />
           </div>
           <div>
             <Upload
               name="productImages.inUse"
               placeholder="In Use"
-              onLoadSinglePreviewImage={
-                setInUseBase64 as UploadProps["onLoadSinglePreviewImage"]
-              }
+              withUpload
             />
           </div>
           <div>
             <Upload
               name="productImages.styledScene"
               placeholder="Styled Scene"
-              onLoadSinglePreviewImage={
-                setStyledSceneBase64 as UploadProps["onLoadSinglePreviewImage"]
-              }
+              withUpload
             />
           </div>
           <div>
             <Upload
               name="productImages.sizeAndScale"
               placeholder="Size and scale"
-              onLoadSinglePreviewImage={
-                setSizeAndScaleBase64 as UploadProps["onLoadSinglePreviewImage"]
-              }
+              withUpload
             />
           </div>
           <div>
-            <Upload
-              name="productImages.more"
-              placeholder="More"
-              onLoadSinglePreviewImage={
-                setMoreBase64 as UploadProps["onLoadSinglePreviewImage"]
-              }
-            />
+            <Upload name="productImages.more" placeholder="More" withUpload />
           </div>
         </SpaceContainer>
       </FormField>
