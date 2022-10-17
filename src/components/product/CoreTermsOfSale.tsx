@@ -7,7 +7,12 @@ import {
   ProductButtonGroup,
   SectionTitle
 } from "./Product.styles";
-import { OPTIONS_CURRENCIES, OPTIONS_TOKEN_GATED } from "./utils";
+import {
+  OPTIONS_CURRENCIES,
+  OPTIONS_TOKEN_GATED,
+  TOKEN_GATED_VARIANTS,
+  TOKEN_TYPES
+} from "./utils";
 import { useCreateForm } from "./utils/useCreateForm";
 
 const PriceContainer = styled.div`
@@ -76,8 +81,45 @@ export default function CoreTermsOfSale({ isMultiVariant }: Props) {
         <Select
           name={`${prefix}.tokenGatedOffer`}
           options={OPTIONS_TOKEN_GATED}
-          disabled
         />
+
+        <TokengatedInfoWrapper>
+          <div>
+            <FormField title="Variant">
+              <Select
+                name="coreTermsOfSale.tokengatedvariants"
+                options={TOKEN_GATED_VARIANTS}
+              />
+            </FormField>
+          </div>
+          <div>
+            <FormField title="Token Contract">
+              <Input name="coreTermsOfSale.tokencontract" type="string" />
+            </FormField>
+          </div>
+
+          <div>
+            <FormField title="Token Type:">
+              <Select name="coreTermsOfSale.tokentype" options={TOKEN_TYPES} />
+            </FormField>
+          </div>
+          <div>
+            <FormField title="Min Balance">
+              <Input name="coreTermsOfSale.minBalance" type="string" />
+            </FormField>
+          </div>
+
+          <div>
+            <FormField title="Criteria:">
+              <Select name="coreTermsOfSale.tokenCriteria" options={} />
+            </FormField>
+          </div>
+          <div>
+            <FormField title="Min Balance">
+              <Input name="coreTermsOfSale.minBalance" type="string" />
+            </FormField>
+          </div>
+        </TokengatedInfoWrapper>
       </FormField>
       <FormField
         title="Redemption period"
@@ -105,3 +147,10 @@ export default function CoreTermsOfSale({ isMultiVariant }: Props) {
     </ContainerProductPage>
   );
 }
+
+const TokengatedInfoWrapper = styled.div`
+  display: grid;
+  grid-template-columns: minmax(8.75rem, 1fr) 4fr;
+  grid-gap: 1rem;
+  margin-top: 2rem;
+`;

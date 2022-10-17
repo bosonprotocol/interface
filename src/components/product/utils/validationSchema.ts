@@ -182,6 +182,7 @@ const commonCoreTermsOfSaleValidationSchema = {
   // @ts-ignore
   redemptionPeriod: Yup.mixed().isItBeforeNow().isRedemptionDatesValid() // prettier-ignore
 };
+
 export const coreTermsOfSaleValidationSchema = Yup.object({
   coreTermsOfSale: Yup.object({
     price: Yup.number().nullable().required(validationMessage.required).test({
@@ -198,9 +199,30 @@ export const coreTermsOfSaleValidationSchema = Yup.object({
     quantity: Yup.number()
       .min(1, "Quantity must be greater than or equal to 1")
       .required(validationMessage.required),
+    tokengatedvariants: Yup.object()
+      .shape({
+        value: Yup.string(),
+        label: Yup.string()
+      })
+      .required(validationMessage.required),
+    tokencontract: Yup.string().required(validationMessage.required),
+    tokentype: Yup.object()
+      .shape({
+        value: Yup.string(),
+        label: Yup.string()
+      })
+      .required(validationMessage.required),
+    minbalance: Yup.string().required(validationMessage.required),
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    offerValidityPeriod: Yup.mixed().isItBeforeNow().isOfferValidityDatesValid(), // prettier-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    redemptionPeriod: Yup.mixed().isItBeforeNow().isRedemptionDatesValid(),
     ...commonCoreTermsOfSaleValidationSchema
   })
 });
+
 export const variantsCoreTermsOfSaleValidationSchema = Yup.object({
   variantsCoreTermsOfSale: Yup.object({
     ...commonCoreTermsOfSaleValidationSchema
