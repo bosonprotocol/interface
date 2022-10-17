@@ -266,7 +266,6 @@ export default function Preview({ togglePreview, seller }: Props) {
                 </Typography>
               </div>
             </DetailGrid>
-            createYourProfile
             <DetailSlider images={sliderImages} isPreview />
             <DetailGrid>
               {values?.shippingInfo?.jurisdiction?.length > 0 &&

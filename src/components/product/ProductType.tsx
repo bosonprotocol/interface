@@ -128,7 +128,8 @@ export default function ProductType({
     sellers: currentSellers,
     sellerType: currentRoles,
     lens,
-    isLoading
+    isLoading,
+    isSuccess
   } = useCurrentSellers();
 
   const [shownDraftModal, setShowDraftModal] = useState<boolean>(false);
@@ -138,6 +139,7 @@ export default function ProductType({
 
   const isAdminLinkedToLens =
     !isLoading &&
+    isSuccess &&
     !!currentSellers.some((seller, index) => {
       return (
         seller.authTokenType === authTokenTypes.LENS &&
@@ -195,8 +197,9 @@ export default function ProductType({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ipfsMetadataStorage, operatorLens]);
+
   useEffect(() => {
-    if (isLoading) {
+    if (!isSuccess || isLoading) {
       return;
     }
 
@@ -268,6 +271,7 @@ export default function ProductType({
     isDraftModalClosed,
     shownDraftModal,
     isLoading,
+    isSuccess,
     values.createYourProfile
   ]);
 

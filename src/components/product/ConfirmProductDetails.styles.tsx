@@ -90,7 +90,7 @@ export const ContentValue = styled(Typography)`
   font-size: 0.75rem;
   color: ${colors.darkGrey};
   word-break: break-all;
-  white-space: pre;
+  white-space: pre-wrap;
   gap: 0.5rem;
 `;
 
