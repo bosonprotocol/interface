@@ -559,7 +559,7 @@ function CreateProductInner({
           }}
         />
       ));
-
+      hideModal();
       formikBag.resetForm();
     } catch (error: any) {
       // TODO: FAILURE MODAL

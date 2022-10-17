@@ -99,6 +99,7 @@ interface IDetailWidget {
   image?: string;
   hasSellerEnoughFunds: boolean;
   isPreview?: boolean;
+  reload?: () => void;
 }
 
 export const getOfferDetailData = (
@@ -239,9 +240,10 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   name = "",
   image = "",
   hasSellerEnoughFunds,
-  isPreview = false
+  isPreview = false,
+  reload
 }) => {
-  const { showModal, modalTypes } = useModal();
+  const { showModal, hideModal, modalTypes } = useModal();
   const coreSDK = useCoreSDK();
   const { isLteXS } = useBreakpoints();
   const navigate = useKeepQueryParamsNavigate();
@@ -547,6 +549,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                     500
                   );
                   setIsLoading(false);
+                  hideModal();
                   toast((t) => (
                     <SuccessTransactionToast
                       t={t}
@@ -588,7 +591,9 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                       exchangeId: exchange?.id || "",
                       buyerId: exchange?.buyer.id || "",
                       sellerId: exchange?.seller.id || "",
-                      sellerAddress: exchange?.seller.operator || ""
+                      sellerAddress: exchange?.seller.operator || "",
+                      setIsLoading: setIsLoading,
+                      reload
                     },
                     "s"
                   );

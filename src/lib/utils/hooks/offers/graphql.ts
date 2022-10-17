@@ -21,9 +21,10 @@ export const offerGraphQl = gql`
     voucherRedeemableUntilDate
     numberOfCommits
     numberOfRedemptions
-    disputeResolver {
-      escalationResponsePeriod
-    }
+    # TODO: BP416 - uncomment
+    # disputeResolver {
+    #   escalationResponsePeriod
+    # }
     exchanges {
       cancelledDate
       committedDate
