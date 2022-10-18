@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "@bosonprotocol/chat-sdk": "^1.1.0",
-    "@bosonprotocol/react-kit": "^0.9.3-alpha.2",
+    "@bosonprotocol/react-kit": "^0.10.0-alpha.1",
     "@davatar/react": "^1.10.4",
     "@ethersproject/address": "^5.6.1",
     "@ethersproject/units": "^5.6.1",
@@ -49,7 +49,7 @@
     "@radix-ui/react-progress": "^1.0.0",
     "@radix-ui/react-toast": "^1.0.0",
     "@radix-ui/react-tooltip": "^1.0.0",
-    "@rainbow-me/rainbowkit": "^0.4.1",
+    "@rainbow-me/rainbowkit": "^0.4.3",
     "@sentry/react": "^7.3.1",
     "@sentry/tracing": "^7.3.1",
     "@shopify/react-web-worker": "^5.0.5",
