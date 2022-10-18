@@ -551,7 +551,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                     !quantity ||
                     isVoidedOffer ||
                     isPreview ||
-                    isOfferNotValidYet
+                    isOfferNotValidYet ||
+                    isBuyerInsufficientFunds
                   }
                   offerId={offer.id}
                   envName={CONFIG.envName}
