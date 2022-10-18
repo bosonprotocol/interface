@@ -10,6 +10,7 @@ import {
   OPTIONS_TOKEN_GATED,
   OPTIONS_UNIT,
   OPTIONS_WEIGHT,
+  TOKEN_CRITERIA,
   TOKEN_GATED_VARIANTS,
   TOKEN_TYPES
 } from "./const";
@@ -91,7 +92,10 @@ export const coreTermsOfSaleInitialValues = {
     tokengatedvariants: TOKEN_GATED_VARIANTS[0],
     tokencontract: "",
     tokentype: TOKEN_TYPES[0],
-    minbalance: "",
+    minBalance: 1,
+    tokenId: 0,
+    tokenGatingDesc: "",
+    tokencriteria: TOKEN_CRITERIA[0],
     redemptionPeriod: [],
     offerValidityPeriod: []
   }
