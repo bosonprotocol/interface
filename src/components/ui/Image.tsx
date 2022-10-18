@@ -91,7 +91,7 @@ const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
 
   useEffect(() => {
     async function fetchData(src: string) {
-      if (ipfsMetadataStorage) {
+      if (ipfsMetadataStorage && !src?.includes("undefined")) {
         const fetchPromises = await ipfsMetadataStorage.get(src, false);
         const [image] = await Promise.all([fetchPromises]);
         const base64str = await blobToBase64(new Blob([image as BlobPart]));
@@ -102,13 +102,21 @@ const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
         } else {
           setImageSrc(base64str as string);
         }
+      } else {
+        setIsLoaded(true);
+        setIsError(true);
       }
     }
     if (!isLoaded && imageSrc === null) {
       if (src?.includes("ipfs://")) {
         const newString = src.split("//");
         const CID = newString[newString.length - 1];
-        fetchData(`ipfs://${CID}`);
+        if (typeof CID !== typeof undefined) {
+          fetchData(`ipfs://${CID}`);
+        } else {
+          setIsLoaded(true);
+          setIsError(true);
+        }
       } else {
         setImageSrc(src);
       }
