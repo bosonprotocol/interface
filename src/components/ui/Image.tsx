@@ -111,12 +111,7 @@ const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
       if (src?.includes("ipfs://")) {
         const newString = src.split("//");
         const CID = newString[newString.length - 1];
-        if (typeof CID !== typeof undefined) {
-          fetchData(`ipfs://${CID}`);
-        } else {
-          setIsLoaded(true);
-          setIsError(true);
-        }
+        fetchData(`ipfs://${CID}`);
       } else {
         setImageSrc(src);
       }
