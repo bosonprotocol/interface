@@ -16,7 +16,7 @@ export function useGetIpfsImage(src: string) {
       return;
     }
     async function fetchData(src: string) {
-      if (ipfsMetadataStorage) {
+      if (ipfsMetadataStorage && !src?.includes("undefined")) {
         setImageStatus(ProgressStatus.LOADING);
         const fetchPromises = await ipfsMetadataStorage.get(src, false);
         const [image] = await Promise.all([fetchPromises]);
@@ -28,6 +28,8 @@ export function useGetIpfsImage(src: string) {
           setImageSrc(base64str as string);
           setImageStatus(ProgressStatus.SUCCESS);
         }
+      } else {
+        setImageStatus(ProgressStatus.ERROR);
       }
     }
     if (
@@ -35,7 +37,9 @@ export function useGetIpfsImage(src: string) {
       !imageSrc
     ) {
       if (src?.includes("ipfs://")) {
-        fetchData(src);
+        const newString = src.split("//");
+        const CID = newString[newString.length - 1];
+        fetchData(`ipfs://${CID}`);
       } else {
         setImageSrc(src);
         setImageStatus(ProgressStatus.SUCCESS);

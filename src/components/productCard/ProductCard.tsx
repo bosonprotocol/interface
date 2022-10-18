@@ -55,7 +55,7 @@ export default function ProductCard({
   });
   const [lens] = lensProfiles;
   const { imageSrc: avatar } = useGetIpfsImage(getLensProfilePictureUrl(lens));
-  const { imageStatus, imageSrc } = useGetIpfsImage(offer.metadata.imageUrl);
+  const { imageStatus, imageSrc } = useGetIpfsImage(offer?.metadata?.imageUrl);
   const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
   const location = useLocation();
   const navigate = useKeepQueryParamsNavigate();
