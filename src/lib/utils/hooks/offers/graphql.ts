@@ -1,5 +1,7 @@
 import { gql } from "graphql-request";
 
+import { CONFIG } from "../../../config";
+
 export const offerGraphQl = gql`
   {
     id
@@ -21,10 +23,9 @@ export const offerGraphQl = gql`
     voucherRedeemableUntilDate
     numberOfCommits
     numberOfRedemptions
-    # TODO: BP416 - uncomment
-    # disputeResolver {
-    #   escalationResponsePeriod
-    # }
+    disputeResolver {
+      escalationResponsePeriod
+    }
     exchanges {
       cancelledDate
       committedDate
@@ -173,6 +174,9 @@ export function buildGetOffersQuery({
   offerCurationList: boolean;
   voided: boolean;
 }) {
+  // TODO: BP421 - Config dispute resolver value
+  const disputeResolverId = CONFIG.defaultDisputeResolverId;
+
   return gql`
   query GetOffers(
     $first: Int
@@ -220,6 +224,9 @@ export function buildGetOffersQuery({
         ${offerCurationList ? "offer_in: $offerCurationList" : ""}
         ${voided ? "voided: $voided" : ""}
         name_contains_nocase: $name_contains_nocase
+        offer_: {
+          disputeResolverId: "${disputeResolverId}"
+        }
       }
     ) {
       offer ${offerGraphQl}

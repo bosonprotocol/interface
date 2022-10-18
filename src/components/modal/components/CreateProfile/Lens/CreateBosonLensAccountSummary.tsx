@@ -7,6 +7,7 @@ import { CONFIG } from "../../../../../lib/config";
 import { colors } from "../../../../../lib/styles/colors";
 import { loadAndSetImage } from "../../../../../lib/utils/base64";
 import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
+import useCustomCreateLensProfileMumbai from "../../../../../lib/utils/hooks/lens/profile/useCustomCreateLensProfileMumbai";
 import useCustomCreateLensProfilePolygon from "../../../../../lib/utils/hooks/lens/profile/useCustomCreateLensProfilePolygon";
 import useCreateSeller from "../../../../../lib/utils/hooks/offer/useCreateSeller";
 import useUpdateSeller from "../../../../../lib/utils/hooks/offer/useUpdateSeller";
@@ -118,6 +119,11 @@ export default function CreateBosonLensAccountSummary({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const useCreateFunc =
+    CONFIG.chainId === 137
+      ? useCustomCreateLensProfilePolygon
+      : useCustomCreateLensProfileMumbai;
+
   const {
     create: createLensProfile,
     isLoading: isCreatingLensProfile,
@@ -125,7 +131,7 @@ export default function CreateBosonLensAccountSummary({
 
     isHandleTakenError,
     isSetLensProfileMetadataError
-  } = useCustomCreateLensProfilePolygon({
+  } = useCreateFunc({
     values: values,
     onCreatedProfile: (profile: Profile) => {
       setLensProfileToSubmit(profile);

@@ -99,7 +99,7 @@ export function useDisputeSubStatusInfo(exchange: Exchange | null) {
         exchange.dispute?.state === subgraph.DisputeState.Escalated &&
         exchange.state !== subgraph.ExchangeState.Completed &&
         exchange.dispute.escalatedDate &&
-        exchange.offer.disputeResolver.escalationResponsePeriod &&
+        exchange?.offer?.disputeResolver?.escalationResponsePeriod &&
         dayjs(
           getDateTimestamp(exchange.dispute.escalatedDate) +
             getDateTimestamp(

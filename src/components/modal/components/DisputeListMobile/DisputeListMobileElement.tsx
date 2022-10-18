@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { BosonRoutes } from "../../../../lib/routing/routes";
 import { colors } from "../../../../lib/styles/colors";
 import { getDateTimestamp } from "../../../../lib/utils/getDateTimestamp";
+import { useDisputes } from "../../../../lib/utils/hooks/useDisputes";
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import Button from "../../../ui/Button";
@@ -13,6 +14,7 @@ import Grid from "../../../ui/Grid";
 import Image from "../../../ui/Image";
 import SellerID from "../../../ui/SellerID";
 import Typography from "../../../ui/Typography";
+import { useModal } from "../../useModal";
 
 const Container = styled.div`
   background: ${colors.white};
@@ -98,8 +100,18 @@ const StyledChatButton = styled(Button)`
 function DisputeListMobileElement({ exchange }: { exchange: Exchange }) {
   const navigate = useKeepQueryParamsNavigate();
   const currentDate = dayjs();
+  const { showModal } = useModal();
 
   const parseDisputeDate = dayjs(getDateTimestamp(exchange.validUntilDate));
+
+  const { refetch: refetchDisputes } = useDisputes(
+    {
+      disputesFilter: {
+        exchange: exchange?.id
+      }
+    },
+    { enabled: !!exchange }
+  );
 
   const deadlineTimeLeft = useMemo(() => {
     if (parseDisputeDate.diff(currentDate, "days") === 0) {
@@ -156,9 +168,15 @@ function DisputeListMobileElement({ exchange }: { exchange: Exchange }) {
           theme="orange"
           size="small"
           onClick={() => {
-            navigate({
-              pathname: BosonRoutes.Chat
-            });
+            showModal(
+              "ESCALATE_MODAL",
+              {
+                title: "Escalate",
+                exchange: exchange,
+                refetch: refetchDisputes
+              },
+              "l"
+            );
           }}
         >
           Escalate dispute

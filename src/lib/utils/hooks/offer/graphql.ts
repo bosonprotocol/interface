@@ -1,5 +1,7 @@
 import { gql } from "graphql-request";
 
+import { CONFIG } from "../../../config";
+
 export const offerGraphQl = gql`
   {
     id
@@ -176,6 +178,9 @@ export function buildGetOffersQuery({
   offerCurationList: boolean;
   voided: boolean;
 }) {
+  // TODO: BP421 - Config dispute resolver value
+  const disputeResolverId = CONFIG.defaultDisputeResolverId;
+
   return gql`
   query GetOffers(
     $first: Int
@@ -199,6 +204,9 @@ export function buildGetOffersQuery({
     productV1MetadataEntities(
       where: {
         ${offer ? "offer: $offer" : ""}
+        offer_: {
+          disputeResolverId: "${disputeResolverId}"
+        }
       }
     ) {
       offer ${offerGraphQl}
