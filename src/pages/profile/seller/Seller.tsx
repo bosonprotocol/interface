@@ -225,6 +225,7 @@ export default function Seller() {
                 <a
                   href={`https://lenster.xyz/u/${sellerLens?.handle}`}
                   target="_blank"
+                  rel="noopener"
                 >
                   Follow
                 </a>
