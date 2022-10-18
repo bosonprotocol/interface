@@ -72,7 +72,10 @@ export default function ConnectButton({
 
                 return (
                   <Button
-                    onClick={openConnectModal}
+                    onClick={() => {
+                      saveItemInStorage("isConnectWalletFromCommit", false);
+                      openConnectModal();
+                    }}
                     size={isLteXS ? "small" : "regular"}
                     theme="primary"
                     withBosonStyle={withBosonStyle}

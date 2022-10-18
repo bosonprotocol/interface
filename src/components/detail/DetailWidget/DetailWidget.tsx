@@ -8,7 +8,7 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import dayjs from "dayjs";
 import { BigNumber, ethers } from "ethers";
 import { ArrowRight, ArrowSquareOut, Check, Question } from "phosphor-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
 import { useAccount, useBalance, useSigner } from "wagmi";
@@ -26,7 +26,10 @@ import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { useBuyerSellerAccounts } from "../../../lib/utils/hooks/useBuyerSellerAccounts";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import { getItemFromStorage } from "../../../lib/utils/hooks/useLocalStorage";
+import {
+  getItemFromStorage,
+  saveItemInStorage
+} from "../../../lib/utils/hooks/useLocalStorage";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 import { poll } from "../../../pages/create-product/utils";
 import { ModalTypes, ShowModalFn, useModal } from "../../modal/useModal";
@@ -352,6 +355,31 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     }),
     [OFFER_DETAIL_DATA_MODAL, exchange, image, name]
   );
+
+  const handleOnGetSignerAddress = useCallback(
+    (signerAddress: string | undefined) => {
+      const isConnectWalletFromCommit = getItemFromStorage(
+        "isConnectWalletFromCommit",
+        false
+      );
+      if (
+        isCommittingFromNotConnectedWallet &&
+        address &&
+        !isChainUnsupported &&
+        signerAddress &&
+        isConnectWalletFromCommit
+      ) {
+        const commitButton = commitButtonRef.current;
+        if (commitButton) {
+          commitButton.click();
+          setIsCommittingFromNotConnectedWallet(false);
+        }
+      }
+      return signerAddress;
+    },
+    [address, isChainUnsupported, isCommittingFromNotConnectedWallet]
+  );
+
   const handleCancel = () => {
     if (!exchange) {
       return;
@@ -383,16 +411,6 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     isOffer;
 
   const commitButtonRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    if (isCommittingFromNotConnectedWallet) {
-      const commitButton = commitButtonRef.current;
-      if (commitButton) {
-        commitButton.click();
-        setIsCommittingFromNotConnectedWallet(false);
-      }
-    }
-  }, [isCommittingFromNotConnectedWallet]);
 
   const notCommittableOfferStatus = useMemo(() => {
     if (isBuyerInsufficientFunds) {
@@ -510,14 +528,11 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               </DetailTopRightLabel>
             )}
             {isOffer && (
-              <button
-                type="button"
+              <div
+                role="button"
                 onClick={() => {
-                  if (
-                    !address &&
-                    openConnectModal &&
-                    !isCommittingFromNotConnectedWallet
-                  ) {
+                  if (!address && openConnectModal) {
+                    saveItemInStorage("isConnectWalletFromCommit", true);
                     setIsCommittingFromNotConnectedWallet(true);
                     openConnectModal();
                   }
@@ -525,8 +540,9 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               >
                 <CommitButton
                   variant="primary"
-                  // isPauseCommitting={!address}
-                  // buttonRef={commitButtonRef}
+                  isPauseCommitting={!address}
+                  buttonRef={commitButtonRef}
+                  onGetSignerAddress={handleOnGetSignerAddress}
                   disabled={
                     (address && isChainUnsupported) ||
                     !hasSellerEnoughFunds ||
@@ -603,7 +619,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                   extraInfo="Step 1/2"
                   web3Provider={signer?.provider as Provider}
                 />
-              </button>
+              </div>
             )}
             {isToRedeem && (
               <RedeemButton
