@@ -35,7 +35,9 @@ export function useGetIpfsImage(src: string) {
       !imageSrc
     ) {
       if (src?.includes("ipfs://")) {
-        fetchData(src);
+        const newString = src.split("//");
+        const CID = newString[newString.length - 1];
+        fetchData(`ipfs://${CID}`);
       } else {
         setImageSrc(src);
         setImageStatus(ProgressStatus.SUCCESS);
