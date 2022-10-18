@@ -31,6 +31,12 @@ const ProductCardWrapper = styled.div<{ $isCustomStoreFront: boolean }>`
   [data-card="product-card"] {
     min-height: 500px;
     color: ${colors.black};
+    [data-image-wrapper] {
+      img {
+        object-fit: contain;
+        padding-bottom: 5.25rem;
+      }
+    }
   }
   ${({ $isCustomStoreFront }) => {
     if (!$isCustomStoreFront) {
