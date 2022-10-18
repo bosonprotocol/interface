@@ -1,4 +1,5 @@
 import { parseUnits } from "@ethersproject/units";
+import { ethers } from "ethers";
 
 import { validationMessage } from "../../../lib/const/validationMessage";
 import { fixformattedString } from "../../../lib/utils/number";
@@ -204,15 +205,33 @@ export const coreTermsOfSaleValidationSchema = Yup.object({
         value: Yup.string(),
         label: Yup.string()
       })
-      .required(validationMessage.required),
-    tokencontract: Yup.string().required(validationMessage.required),
+      .default([{ value: "", label: "" }]),
+    tokencontract: Yup.string().test(
+      "FORMAT",
+      "Must be a valid address",
+      (value) => (value ? ethers.utils.isAddress(value) : true)
+    ),
     tokentype: Yup.object()
       .shape({
         value: Yup.string(),
         label: Yup.string()
       })
-      .required(validationMessage.required),
-    minbalance: Yup.string().required(validationMessage.required),
+      .default([{ value: "", label: "" }]),
+    tokencriteria: Yup.object()
+      .shape({
+        value: Yup.string(),
+        label: Yup.string()
+      })
+      .default([{ value: "", label: "" }]),
+    minBalance: Yup.number()
+      .min(1, "Min balance must be greater than or equal to 1")
+      .integer("Value must be an integer")
+      .typeError("Value must be an integer greater than or equal to 1"),
+    tokenId: Yup.number()
+      .min(0, "Value must greater than or equal to 0")
+      .integer("Value must be an integer")
+      .typeError("Value must be an integer greater than or equal to 0"),
+    tokenGatingDesc: Yup.string(),
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     offerValidityPeriod: Yup.mixed().isItBeforeNow().isOfferValidityDatesValid(), // prettier-ignore

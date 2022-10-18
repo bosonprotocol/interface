@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { Datepicker, FormField, Input, Select } from "../form";
+import { Datepicker, FormField, Input, Select, Textarea } from "../form";
 import BosonButton from "../ui/BosonButton";
 import {
   ContainerProductPage,
@@ -10,6 +10,7 @@ import {
 import {
   OPTIONS_CURRENCIES,
   OPTIONS_TOKEN_GATED,
+  TOKEN_CRITERIA,
   TOKEN_GATED_VARIANTS,
   TOKEN_TYPES
 } from "./utils";
@@ -29,7 +30,7 @@ interface Props {
   isMultiVariant: boolean;
 }
 export default function CoreTermsOfSale({ isMultiVariant }: Props) {
-  const { nextIsDisabled } = useCreateForm();
+  const { nextIsDisabled, values } = useCreateForm();
   const prefix = isMultiVariant ? "variantsCoreTermsOfSale" : "coreTermsOfSale";
   return (
     <ContainerProductPage>
@@ -83,43 +84,75 @@ export default function CoreTermsOfSale({ isMultiVariant }: Props) {
           options={OPTIONS_TOKEN_GATED}
         />
 
-        <TokengatedInfoWrapper>
-          <div>
-            <FormField title="Variant">
-              <Select
-                name="coreTermsOfSale.tokengatedvariants"
-                options={TOKEN_GATED_VARIANTS}
-              />
-            </FormField>
-          </div>
-          <div>
-            <FormField title="Token Contract">
-              <Input name="coreTermsOfSale.tokencontract" type="string" />
-            </FormField>
-          </div>
+        {values.coreTermsOfSale.tokenGatedOffer.value === "true" && (
+          <>
+            <TokengatedInfoWrapper>
+              <div>
+                <FormField title="Variant">
+                  <Select
+                    name="coreTermsOfSale.tokengatedvariants"
+                    options={TOKEN_GATED_VARIANTS}
+                  />
+                </FormField>
+              </div>
 
-          <div>
-            <FormField title="Token Type:">
-              <Select name="coreTermsOfSale.tokentype" options={TOKEN_TYPES} />
-            </FormField>
-          </div>
-          <div>
-            <FormField title="Min Balance">
-              <Input name="coreTermsOfSale.minBalance" type="string" />
-            </FormField>
-          </div>
+              <div>
+                <FormField title="Token Contract">
+                  <Input name="coreTermsOfSale.tokencontract" type="string" />
+                </FormField>
+              </div>
 
-          <div>
-            <FormField title="Criteria:">
-              <Select name="coreTermsOfSale.tokenCriteria" options={} />
-            </FormField>
-          </div>
-          <div>
-            <FormField title="Min Balance">
-              <Input name="coreTermsOfSale.minBalance" type="string" />
-            </FormField>
-          </div>
-        </TokengatedInfoWrapper>
+              <div>
+                <FormField title="Token Type:">
+                  <Select
+                    name="coreTermsOfSale.tokentype"
+                    options={TOKEN_TYPES}
+                  />
+                </FormField>
+              </div>
+              <div>
+                <FormField title="Token Gating Description:">
+                  <Textarea
+                    name="coreTermsOfSale.tokenGatingDesc"
+                    placeholder="Token Gating Description"
+                  />
+                </FormField>
+              </div>
+            </TokengatedInfoWrapper>
+            <>
+              {values.coreTermsOfSale.tokentype?.value ===
+                TOKEN_TYPES[1].value && (
+                <div>
+                  <FormField title="Criteria:">
+                    <Select
+                      name="coreTermsOfSale.tokencriteria"
+                      options={TOKEN_CRITERIA}
+                    />
+                  </FormField>
+                </div>
+              )}
+
+              {(values.coreTermsOfSale.tokencriteria?.value ===
+                TOKEN_CRITERIA[0].value ||
+                values.coreTermsOfSale.tokentype?.value ===
+                  TOKEN_TYPES[0].value ||
+                values.coreTermsOfSale.tokentype?.value ===
+                  TOKEN_TYPES[2].value) && (
+                <FormField title="Min Balance:">
+                  <Input name="coreTermsOfSale.minBalance" type="string" />
+                </FormField>
+              )}
+              {(values.coreTermsOfSale.tokencriteria?.value ===
+                TOKEN_CRITERIA[1].value ||
+                values.coreTermsOfSale.tokentype?.value ===
+                  TOKEN_TYPES[2].value) && (
+                <FormField title="TokenId:">
+                  <Input name="coreTermsOfSale.tokenID" type="string" />
+                </FormField>
+              )}
+            </>
+          </>
+        )}
       </FormField>
       <FormField
         title="Redemption period"

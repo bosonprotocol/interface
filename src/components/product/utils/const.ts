@@ -99,18 +99,30 @@ export const TOKEN_GATED_VARIANTS = [
     label: "All"
   }
 ];
+
 export const TOKEN_TYPES = [
   {
-    value: "ERC20",
+    value: "erc20",
     label: "ERC20"
   },
   {
-    value: "ERC721",
+    value: "erc721",
     label: "ERC721"
   },
   {
-    value: "ERC1155",
+    value: "erc1155",
     label: "ERC1155"
+  }
+];
+
+export const TOKEN_CRITERIA = [
+  {
+    value: "minbalance",
+    label: "minBalance"
+  },
+  {
+    value: "tokenid",
+    label: "tokenId"
   }
 ];
 
