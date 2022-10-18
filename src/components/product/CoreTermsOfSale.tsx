@@ -139,7 +139,7 @@ export default function CoreTermsOfSale({ isMultiVariant }: Props) {
                 values.coreTermsOfSale.tokentype?.value ===
                   TOKEN_TYPES[2].value) && (
                 <FormField title="Min Balance:">
-                  <Input name="coreTermsOfSale.minBalance" type="string" />
+                  <Input name="coreTermsOfSale.minBalance" type="number" />
                 </FormField>
               )}
               {((values.coreTermsOfSale.tokencriteria?.value ===
@@ -149,7 +149,7 @@ export default function CoreTermsOfSale({ isMultiVariant }: Props) {
                 values.coreTermsOfSale.tokentype?.value ===
                   TOKEN_TYPES[2].value) && (
                 <FormField title="TokenId:">
-                  <Input name="coreTermsOfSale.tokenID" type="string" />
+                  <Input name="coreTermsOfSale.tokenId" type="number" />
                 </FormField>
               )}
             </>
