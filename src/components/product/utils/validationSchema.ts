@@ -11,7 +11,12 @@ import { FormModel } from "../../modal/components/Chat/MakeProposal/MakeProposal
 import { DisputeFormModel } from "../../modal/components/DisputeModal/DisputeModalFormModel";
 import { CONFIG } from "./../../../lib/config";
 import { SelectDataProps } from "./../../form/types";
-import { OPTIONS_EXCHANGE_POLICY } from "./const";
+import {
+  OPTIONS_EXCHANGE_POLICY,
+  OPTIONS_TOKEN_GATED,
+  TOKEN_CRITERIA,
+  TOKEN_TYPES
+} from "./const";
 import {
   validationOfIpfsImage,
   validationOfRequiredIpfsImage
@@ -201,37 +206,125 @@ export const coreTermsOfSaleValidationSchema = Yup.object({
       .min(1, "Quantity must be greater than or equal to 1")
       .required(validationMessage.required),
     tokengatedvariants: Yup.object()
+      .when(["tokenGatedOffer"], {
+        is: (tokenGated: SelectDataProps) =>
+          tokenGated?.value === OPTIONS_TOKEN_GATED[1].value,
+        then: (schema) =>
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          schema.required(validationMessage.required)
+      })
       .shape({
         value: Yup.string(),
         label: Yup.string()
       })
       .default([{ value: "", label: "" }]),
-    tokencontract: Yup.string().test(
-      "FORMAT",
-      "Must be a valid address",
-      (value) => (value ? ethers.utils.isAddress(value) : true)
-    ),
+    tokencontract: Yup.string()
+      .when(["tokenGatedOffer"], {
+        is: (tokenGated: SelectDataProps) =>
+          tokenGated?.value === OPTIONS_TOKEN_GATED[1].value,
+        then: (schema) =>
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          schema.required(validationMessage.required)
+      })
+      .test("FORMAT", "Must be a valid address", (value) =>
+        value ? ethers.utils.isAddress(value) : true
+      ),
     tokentype: Yup.object()
+      .when(["tokenGatedOffer"], {
+        is: (tokenGated: SelectDataProps) =>
+          tokenGated?.value === OPTIONS_TOKEN_GATED[1].value,
+        then: (schema) =>
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          schema.required(validationMessage.required)
+      })
       .shape({
         value: Yup.string(),
         label: Yup.string()
       })
       .default([{ value: "", label: "" }]),
     tokencriteria: Yup.object()
+      .when(["tokenGatedOffer"], {
+        is: (tokenGated: SelectDataProps) =>
+          tokenGated?.value === OPTIONS_TOKEN_GATED[1].value,
+        then: (schema) =>
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          schema.required(validationMessage.required)
+      })
       .shape({
         value: Yup.string(),
         label: Yup.string()
       })
       .default([{ value: "", label: "" }]),
-    minBalance: Yup.number()
-      .min(1, "Min balance must be greater than or equal to 1")
-      .integer("Value must be an integer")
-      .typeError("Value must be an integer greater than or equal to 1"),
-    tokenId: Yup.number()
-      .min(0, "Value must greater than or equal to 0")
-      .integer("Value must be an integer")
-      .typeError("Value must be an integer greater than or equal to 0"),
-    tokenGatingDesc: Yup.string(),
+    minBalance: Yup.number().when(
+      ["tokenGatedOffer", "tokentype", "tokencriteria"],
+      {
+        is: (
+          tokenGated: SelectDataProps,
+          tokentype: SelectDataProps,
+          tokencriteria: SelectDataProps
+        ) => {
+          console.log("---------xxxxx start---------------");
+          console.log(
+            "value one->",
+            tokenGated?.value === OPTIONS_TOKEN_GATED[1].value &&
+              tokentype?.value === TOKEN_TYPES[0].value
+          );
+          console.log(
+            "value 2->",
+            tokenGated?.value === OPTIONS_TOKEN_GATED[1].value &&
+              tokentype?.value === TOKEN_TYPES[3].value
+          );
+          console.log(
+            "value 3->",
+            tokenGated?.value === OPTIONS_TOKEN_GATED[1].value &&
+              tokentype?.value === TOKEN_TYPES[2].value &&
+              tokencriteria?.value === TOKEN_CRITERIA[0].value
+          );
+          console.log("---------xxxxx end---------------");
+          return (
+            (tokenGated?.value === OPTIONS_TOKEN_GATED[1].value &&
+              tokentype?.value === TOKEN_TYPES[0].value) ||
+            (tokenGated?.value === OPTIONS_TOKEN_GATED[1].value &&
+              tokentype?.value === TOKEN_TYPES[3].value) ||
+            (tokenGated?.value === OPTIONS_TOKEN_GATED[1].value &&
+              tokentype?.value === TOKEN_TYPES[2].value &&
+              tokencriteria?.value === TOKEN_CRITERIA[0].value)
+          );
+        },
+        then: (schema) =>
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          schema
+            .required(validationMessage.required)
+            .min(1, "Min balance must be greater than or equal to 1")
+            .integer("Value must be an integer")
+            .typeError("Value must be an integer greater than or equal to 1")
+      }
+    ),
+    tokenId: Yup.number().when(["tokenGatedOffer"], {
+      is: (tokenGated: SelectDataProps) =>
+        tokenGated?.value === OPTIONS_TOKEN_GATED[1].value,
+      then: (schema) =>
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        schema
+          .min(0, "Value must greater than or equal to 0")
+          .integer("Value must be an integer")
+          .typeError("Value must be an integer greater than or equal to 0")
+          .required(validationMessage.required)
+    }),
+    tokenGatingDesc: Yup.string().when(["tokenGatedOffer"], {
+      is: (tokenGated: SelectDataProps) =>
+        tokenGated?.value === OPTIONS_TOKEN_GATED[1].value,
+      then: (schema) =>
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        schema.required(validationMessage.required)
+    }),
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     offerValidityPeriod: Yup.mixed().isItBeforeNow().isOfferValidityDatesValid(), // prettier-ignore
