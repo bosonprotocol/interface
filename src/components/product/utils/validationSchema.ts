@@ -266,35 +266,14 @@ export const coreTermsOfSaleValidationSchema = Yup.object({
           tokenGated: SelectDataProps,
           tokentype: SelectDataProps,
           tokencriteria: SelectDataProps
-        ) => {
-          console.log("---------xxxxx start---------------");
-          console.log(
-            "value one->",
-            tokenGated?.value === OPTIONS_TOKEN_GATED[1].value &&
-              tokentype?.value === TOKEN_TYPES[0].value
-          );
-          console.log(
-            "value 2->",
-            tokenGated?.value === OPTIONS_TOKEN_GATED[1].value &&
-              tokentype?.value === TOKEN_TYPES[3].value
-          );
-          console.log(
-            "value 3->",
-            tokenGated?.value === OPTIONS_TOKEN_GATED[1].value &&
-              tokentype?.value === TOKEN_TYPES[2].value &&
-              tokencriteria?.value === TOKEN_CRITERIA[0].value
-          );
-          console.log("---------xxxxx end---------------");
-          return (
-            (tokenGated?.value === OPTIONS_TOKEN_GATED[1].value &&
-              tokentype?.value === TOKEN_TYPES[0].value) ||
-            (tokenGated?.value === OPTIONS_TOKEN_GATED[1].value &&
-              tokentype?.value === TOKEN_TYPES[3].value) ||
-            (tokenGated?.value === OPTIONS_TOKEN_GATED[1].value &&
-              tokentype?.value === TOKEN_TYPES[2].value &&
-              tokencriteria?.value === TOKEN_CRITERIA[0].value)
-          );
-        },
+        ) =>
+          (tokenGated?.value === OPTIONS_TOKEN_GATED[1].value &&
+            tokentype?.value === TOKEN_TYPES[0].value) ||
+          (tokenGated?.value === OPTIONS_TOKEN_GATED[1].value &&
+            tokentype?.value === TOKEN_TYPES[2].value) ||
+          (tokenGated?.value === OPTIONS_TOKEN_GATED[1].value &&
+            tokentype?.value === TOKEN_TYPES[1].value &&
+            tokencriteria?.value === TOKEN_CRITERIA[0].value),
         then: (schema) =>
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
@@ -305,18 +284,29 @@ export const coreTermsOfSaleValidationSchema = Yup.object({
             .typeError("Value must be an integer greater than or equal to 1")
       }
     ),
-    tokenId: Yup.number().when(["tokenGatedOffer"], {
-      is: (tokenGated: SelectDataProps) =>
-        tokenGated?.value === OPTIONS_TOKEN_GATED[1].value,
-      then: (schema) =>
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        schema
-          .min(0, "Value must greater than or equal to 0")
-          .integer("Value must be an integer")
-          .typeError("Value must be an integer greater than or equal to 0")
-          .required(validationMessage.required)
-    }),
+    tokenId: Yup.number().when(
+      ["tokenGatedOffer", "tokentype", "tokencriteria"],
+      {
+        is: (
+          tokenGated: SelectDataProps,
+          tokentype: SelectDataProps,
+          tokencriteria: SelectDataProps
+        ) =>
+          (tokenGated?.value === OPTIONS_TOKEN_GATED[1].value &&
+            tokentype?.value === TOKEN_TYPES[2].value) ||
+          (tokenGated?.value === OPTIONS_TOKEN_GATED[1].value &&
+            tokentype?.value === TOKEN_TYPES[1].value &&
+            tokencriteria?.value === TOKEN_CRITERIA[1].value),
+        then: (schema) =>
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          schema
+            .min(0, "Value must greater than or equal to 0")
+            .integer("Value must be an integer")
+            .typeError("Value must be an integer greater than or equal to 0")
+            .required(validationMessage.required)
+      }
+    ),
     tokenGatingDesc: Yup.string().when(["tokenGatedOffer"], {
       is: (tokenGated: SelectDataProps) =>
         tokenGated?.value === OPTIONS_TOKEN_GATED[1].value,
