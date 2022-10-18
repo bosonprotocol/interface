@@ -33,7 +33,7 @@ const Table = styled.table`
 const getColorSizeKey = (color: string, size: string) => `${color}_${size}`;
 
 export default function ProductVariants() {
-  const { nextIsDisabled, values } = useCreateForm();
+  const { nextIsDisabled } = useCreateForm();
   const [fieldColors] =
     useField<ProductVariantsType["productVariants"]["colors"]>(
       variantsColorsKey
