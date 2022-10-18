@@ -416,7 +416,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
           </RedeemLeftButton>
         )}
         <div>
-          {isOffer && !!userCommittedOffers?.length && (
+          {isOffer && address && !!userCommittedOffers?.length && (
             <Grid
               alignItems="center"
               justifyContent="space-between"
