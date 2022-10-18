@@ -107,7 +107,7 @@ export default function useCustomCreateLensProfile({
   }, [accessToken, triggerLensProfileCreation, createProfile, enableCreation]);
   const { data: profileData, refetch: getProfile } = useGetLensProfile(
     {
-      handle: `${values.handle}${CONFIG.lens.lensHandleExtension}`
+      handle: `${values.handle.trim()}${CONFIG.lens.lensHandleExtension}`
     },
     {
       enabled: false

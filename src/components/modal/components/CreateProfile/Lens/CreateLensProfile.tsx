@@ -22,7 +22,6 @@ export default function CreateLensProfile({
 }: Props) {
   const { updateProps, store } = useModal();
 
-  // TODO: get seller royalties to know what value to set to 'createOrViewRoyalties'
   useEffect(() => {
     updateProps<"CREATE_PROFILE">({
       ...store,
@@ -41,17 +40,16 @@ export default function CreateLensProfile({
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const [fieldName] = useField("name");
-  const [fieldHandle, metaHandle, helpersHandle] = useField("handle");
+  const [fieldName] = useField<string>("name");
+  const [fieldHandle, metaHandle, helpersHandle] = useField<string>("handle");
   const { data: profileData, refetch: getProfile } = useGetLensProfile(
     {
-      handle: `${fieldHandle.value}${CONFIG.lens.lensHandleExtension}`
+      handle: `${fieldHandle.value.trim()}${CONFIG.lens.lensHandleExtension}`
     },
     {
       enabled: false
     }
   );
-
   const { setStatus, status } = useFormikContext<LensProfileType>();
   useEffect(() => {
     const checkHandle = fieldHandle.value && !metaHandle.error;

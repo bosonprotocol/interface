@@ -6,7 +6,8 @@ import CreateLensProfile from "./CreateLensProfile";
 import LensFormFields from "./LensFormFields";
 import {
   LensProfileType,
-  lensProfileValidationSchema
+  lensProfileValidationSchema,
+  viewLensProfileValidationSchema
 } from "./validationSchema";
 import ViewLensProfile from "./ViewLensProfile";
 
@@ -49,7 +50,9 @@ export default function LensForm({
           onSubmit({ ...values, website: preAppendHttps(values.website) });
         }
       }}
-      validationSchema={lensProfileValidationSchema}
+      validationSchema={
+        profile ? viewLensProfileValidationSchema : lensProfileValidationSchema
+      }
     >
       <Form>
         {profile ? (
@@ -58,14 +61,14 @@ export default function LensForm({
             onBackClick={onBackClick}
             setStepBasedOnIndex={setStepBasedOnIndex}
           >
-            <LensFormFields disable={true} />
+            <LensFormFields disable={true} mode="view" />
           </ViewLensProfile>
         ) : (
           <CreateLensProfile
             onBackClick={onBackClick}
             setStepBasedOnIndex={setStepBasedOnIndex}
           >
-            <LensFormFields disable={false} />
+            <LensFormFields disable={false} mode="edit" />
           </CreateLensProfile>
         )}
       </Form>
