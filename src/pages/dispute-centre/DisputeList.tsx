@@ -10,12 +10,14 @@ import Button from "../../components/ui/Button";
 import ExportDropdown from "../../components/ui/ExportDropdown";
 import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
+import { CONFIG } from "../../lib/config";
 import {
   AccountQueryParameters,
   TabQueryParameters
 } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
+import { getDateTimestamp } from "../../lib/utils/getDateTimestamp";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useBuyers } from "../../lib/utils/hooks/useBuyers";
 import type { Exchange } from "../../lib/utils/hooks/useExchanges";
@@ -80,18 +82,27 @@ function DisputeList() {
     (type: CsvType) => {
       const filteredExchanges =
         exchanges?.filter((exchange: Exchange) => {
+          // const state = exchange?.dispute?.state;
           // TODO: BP417 - filter exchanges by type
           console.log(type, exchange);
           return exchange;
         }) || [];
 
       const csvData = filteredExchanges?.map((exchange: Exchange) => {
-        const state = "TODO:";
-
         return {
-          ["ID/SKU"]: exchange?.id ? exchange?.id : "",
-          ["Product name"]: exchange?.offer?.metadata?.name ?? "",
-          ["State"]: state
+          ["ID/SKU"]: exchange?.id || "",
+          ["Product name"]: exchange?.offer?.metadata?.name || "",
+          ["Dispute State"]: exchange?.dispute?.state || "",
+          ["Disputed Date"]: exchange?.disputedDate
+            ? dayjs(getDateTimestamp(exchange.disputedDate)).format(
+                CONFIG.dateFormat
+              )
+            : "",
+          ["Dispute Until"]: exchange?.validUntilDate
+            ? dayjs(getDateTimestamp(exchange?.validUntilDate)).format(
+                CONFIG.dateFormat
+              )
+            : ""
         };
       });
       return csvData;

@@ -91,6 +91,10 @@ function TableElement({ exchange }: { exchange: Exchange }) {
     : [{} as subgraph.DisputeFieldsFragment];
 
   const isNotEscalatedYet = dispute ? dispute?.escalatedDate === null : false;
+  const emailAddress =
+    exchange?.offer?.metadata?.productV1Seller?.contactLinks?.find(
+      (e) => e.tag === "email"
+    )?.url || false;
 
   if (exchange) {
     return (
@@ -124,18 +128,20 @@ function TableElement({ exchange }: { exchange: Exchange }) {
         </td>
         <td>
           <Grid justifyContent="flex-end" gap="1rem">
-            <Button
-              type="button"
-              theme="primary"
-              size="small"
-              onClick={() => {
-                copyToClipboard(exchange?.seller?.id).then(() => {
-                  toast(() => "Seller e-mail has been copied to clipboard");
-                });
-              }}
-            >
-              Copy Seller E-Mail
-            </Button>
+            {emailAddress && (
+              <Button
+                type="button"
+                theme="primary"
+                size="small"
+                onClick={() => {
+                  copyToClipboard(emailAddress).then(() => {
+                    toast(() => "Seller e-mail has been copied to clipboard");
+                  });
+                }}
+              >
+                Copy Seller E-Mail
+              </Button>
+            )}
             {isNotEscalatedYet && status !== "Resolved" && (
               <Button
                 theme="orange"

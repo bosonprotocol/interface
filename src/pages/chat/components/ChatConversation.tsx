@@ -6,6 +6,7 @@ import {
   version
 } from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/definitions";
 import { validateMessage } from "@bosonprotocol/chat-sdk/dist/cjs/util/validators";
+import { subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { utils } from "ethers";
 import { ArrowLeft, PaperPlaneRight, UploadSimple } from "phosphor-react";
@@ -756,6 +757,22 @@ const ChatConversation = ({
 
   // const isConversationBeingLoaded = !thread && areThreadsLoading;
   const disableInputs = isErrorThread;
+
+  const hideProposal = useMemo(() => {
+    const disputeState =
+      exchange?.dispute?.state || subgraph.DisputeState.Resolving;
+    const badStates = [
+      subgraph.DisputeState.Decided,
+      subgraph.DisputeState.Escalated,
+      subgraph.DisputeState.Decided,
+      subgraph.DisputeState.Refused
+    ];
+
+    return (
+      badStates?.includes(disputeState) || exchange?.finalizedDate !== null
+    );
+  }, [exchange]);
+
   if (!exchange) {
     return (
       <Container>
@@ -886,41 +903,43 @@ const ChatConversation = ({
                 justifyContent="flex-start"
                 $height="100%"
               >
-                <ButtonProposal
-                  exchange={exchange}
-                  disabled={disableInputs}
-                  onSendProposal={async (proposal, proposalFiles) => {
-                    if (!threadId || !bosonXmtp) {
-                      return;
-                    }
-                    try {
-                      await sendProposalToChat({
-                        bosonXmtp,
-                        proposal,
-                        files: proposalFiles,
-                        destinationAddress,
-                        threadId,
-                        callbackSendingMessage: async (newMessage, uuid) => {
-                          await addMessage({
-                            authorityId: "",
-                            timestamp: Date.now(),
-                            sender: address,
-                            recipient: destinationAddress,
-                            data: newMessage,
-                            isValid: false,
-                            isPending: true,
-                            uuid
-                          });
-                        },
-                        callback: async (messageData, uuid) => {
-                          onSentMessage(messageData, uuid);
-                        }
-                      });
-                    } catch (error) {
-                      console.error(error);
-                    }
-                  }}
-                />
+                {!hideProposal && (
+                  <ButtonProposal
+                    exchange={exchange}
+                    disabled={disableInputs}
+                    onSendProposal={async (proposal, proposalFiles) => {
+                      if (!threadId || !bosonXmtp) {
+                        return;
+                      }
+                      try {
+                        await sendProposalToChat({
+                          bosonXmtp,
+                          proposal,
+                          files: proposalFiles,
+                          destinationAddress,
+                          threadId,
+                          callbackSendingMessage: async (newMessage, uuid) => {
+                            await addMessage({
+                              authorityId: "",
+                              timestamp: Date.now(),
+                              sender: address,
+                              recipient: destinationAddress,
+                              data: newMessage,
+                              isValid: false,
+                              isPending: true,
+                              uuid
+                            });
+                          },
+                          callback: async (messageData, uuid) => {
+                            onSentMessage(messageData, uuid);
+                          }
+                        });
+                      } catch (error) {
+                        console.error(error);
+                      }
+                    }}
+                  />
+                )}
               </Grid>
             )}
             <InputWrapper>
@@ -943,7 +962,6 @@ const ChatConversation = ({
                   {textAreaValue}
                 </TextArea>
               </Input>
-
               <UploadButtonWrapper
                 type="button"
                 disabled={disableInputs}
