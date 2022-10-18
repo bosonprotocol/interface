@@ -1,10 +1,13 @@
+import { ReactNode, useCallback, useMemo } from "react";
 import styled from "styled-components";
 
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
-import { Upload } from "../form";
+import { Select, Upload } from "../form";
 import FormField from "../form/FormField";
+import Tabs from "../tabs/Tabs";
 import Button from "../ui/Button";
+import Grid from "../ui/Grid";
 import { ProductButtonGroup, SectionTitle } from "./Product.styles";
 import { useCreateForm } from "./utils/useCreateForm";
 
@@ -40,12 +43,114 @@ const SpaceContainer = styled.div`
   }
 `;
 
-export default function ProductImages() {
-  const { nextIsDisabled } = useCreateForm();
+const StyledSelect = styled(Select)`
+  flex: 0 0 11.25rem;
+`;
 
+const StyledTabs = styled(Tabs)`
+  [data-tab-title] {
+    padding-right: 2rem;
+  }
+`;
+
+function UploadImages({ prefix }: { prefix: string }) {
+  return (
+    <>
+      <SpaceContainer>
+        <div>
+          <Upload
+            name={`${prefix}.thumbnail`}
+            placeholder="Thumbnail"
+            withUpload
+          />
+        </div>
+        <div>
+          <Upload
+            name={`${prefix}.secondary`}
+            placeholder="Secondary"
+            withUpload
+          />
+        </div>
+        <div>
+          <Upload
+            name={`${prefix}.everyAngle`}
+            placeholder="Every angle"
+            withUpload
+          />
+        </div>
+        <div>
+          <Upload name={`${prefix}.details`} placeholder="Details" withUpload />
+        </div>
+        <div>
+          <Upload name={`.inUse`} placeholder="In Use" withUpload />
+        </div>
+        <div>
+          <Upload
+            name={`${prefix}.styledScene`}
+            placeholder="Styled Scene"
+            withUpload
+          />
+        </div>
+        <div>
+          <Upload
+            name={`${prefix}.sizeAndScale`}
+            placeholder="Size and scale"
+            withUpload
+          />
+        </div>
+        <div>
+          <Upload name={`${prefix}.more`} placeholder="More" withUpload />
+        </div>
+      </SpaceContainer>
+    </>
+  );
+}
+
+export default function ProductImages() {
+  const { nextIsDisabled, values } = useCreateForm();
+  const hasVariants = values.productType.productVariant === "differentVariants";
+  const oneSetOfImages =
+    !hasVariants || values.imagesSpecificOrAll?.value === "all";
+  const tabsData = useMemo(() => {
+    return (
+      values.productVariants.variants?.map((variant, index) => {
+        return {
+          id: variant.name || index + "",
+          title: variant.name || `Variant ${index}`,
+          content: (
+            <UploadImages
+              prefix={`productVariants.variants[${index}].productImages`}
+            />
+          )
+        };
+      }) || []
+    );
+  }, [values.productVariants.variants]);
+  const TabsContent = useCallback(({ children }: { children: ReactNode }) => {
+    return <div>{children}</div>;
+  }, []);
   return (
     <ContainerProductImage>
-      <SectionTitle tag="h2">Product Images</SectionTitle>
+      <Grid>
+        <SectionTitle tag="h2">Product Images</SectionTitle>
+        {hasVariants && (
+          <>
+            <StyledSelect
+              name="imagesSpecificOrAll"
+              options={[
+                {
+                  value: "all",
+                  label: "All"
+                },
+                {
+                  value: "specific",
+                  label: "Specific"
+                }
+              ]}
+            />
+          </>
+        )}
+      </Grid>
       <FormField
         title="Upload your product images"
         subTitle="You can disable images for variants that shouldn't be shown. Use a max. size of 600Kb per image"
@@ -53,60 +158,11 @@ export default function ProductImages() {
           marginBottom: 0
         }}
       >
-        <SpaceContainer>
-          <div>
-            <Upload
-              name="productImages.thumbnail"
-              placeholder="Thumbnail"
-              withUpload
-            />
-          </div>
-          <div>
-            <Upload
-              name="productImages.secondary"
-              placeholder="Secondary"
-              withUpload
-            />
-          </div>
-          <div>
-            <Upload
-              name="productImages.everyAngle"
-              placeholder="Every angle"
-              withUpload
-            />
-          </div>
-          <div>
-            <Upload
-              name="productImages.details"
-              placeholder="Details"
-              withUpload
-            />
-          </div>
-          <div>
-            <Upload
-              name="productImages.inUse"
-              placeholder="In Use"
-              withUpload
-            />
-          </div>
-          <div>
-            <Upload
-              name="productImages.styledScene"
-              placeholder="Styled Scene"
-              withUpload
-            />
-          </div>
-          <div>
-            <Upload
-              name="productImages.sizeAndScale"
-              placeholder="Size and scale"
-              withUpload
-            />
-          </div>
-          <div>
-            <Upload name="productImages.more" placeholder="More" withUpload />
-          </div>
-        </SpaceContainer>
+        {oneSetOfImages ? (
+          <UploadImages prefix="productImages" />
+        ) : (
+          <StyledTabs tabsData={tabsData} Content={TabsContent} />
+        )}
       </FormField>
       <ProductButtonGroup>
         <Button theme="primary" type="submit" disabled={nextIsDisabled}>

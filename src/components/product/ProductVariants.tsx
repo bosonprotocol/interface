@@ -1,126 +1,109 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { FieldArray } from "formik";
-import { Plus } from "phosphor-react";
-import { useEffect, useMemo } from "react";
+import { useField } from "formik";
+import { useCallback } from "react";
 import styled from "styled-components";
 
-import { colors } from "../../lib/styles/colors";
-import { FormField, Input } from "../form";
-import Error from "../form/Error";
+import { FormField, Input, Select } from "../form";
 import TagsInput from "../form/TagsInput";
 import Button from "../ui/Button";
+import Typography from "../ui/Typography";
 import {
   ContainerProductPage,
   ProductButtonGroup,
   SectionTitle
 } from "./Product.styles";
+import {
+  OPTIONS_CURRENCIES,
+  ProductVariants as ProductVariantsType
+} from "./utils";
 import { useCreateForm } from "./utils/useCreateForm";
 
-const AddProductContainer = styled.div`
-  display: grid;
-  grid-template-columns: minmax(11.25rem, 1fr) 3fr;
-  grid-gap: 1rem;
-  margin-bottom: 1rem;
-`;
-
-const AdditionalContainer = styled.div`
-  margin-top: 1rem;
-`;
+const variantsColorsKey = "productVariants.colors";
+const variantsSizesKey = "productVariants.sizes";
+const variantsKey = `productVariants.variants`;
 
 const ProductInformationButtonGroup = styled(ProductButtonGroup)`
   margin-top: 1.563rem;
 `;
 
-const checkLastElementIsPristine = (elements: ElementType[]): boolean => {
-  const element = elements[elements.length - 1];
-  return element?.name.length === 0 || element?.value.length === 0;
-};
+const Table = styled.table`
+  width: 100%;
+`;
 
-const checkIfElementIsDuplicated = (elements: ElementType[]): boolean => {
-  const listElements = elements.map((element) => {
-    return `${element.name}_${element.value}`.toLowerCase();
-  });
-  return new Set(listElements).size !== listElements.length;
-};
-
-interface ElementType {
-  name: string;
-  value: string;
-}
-
-const AddAttributesContainer = ({
-  setHasDuplicated,
-  hasDuplicated
-}: {
-  setHasDuplicated: (hadDuplicated: boolean) => void;
-  hasDuplicated: boolean;
-}) => {
-  const { values } = useCreateForm();
-
-  const elements: ElementType[] = useMemo(
-    () => values?.productInformation?.attributes,
-    [values?.productInformation?.attributes]
-  );
-
-  useEffect(() => {
-    setHasDuplicated(checkIfElementIsDuplicated(elements));
-  }, [elements, setHasDuplicated]);
-
-  return (
-    <FormField
-      title="Add product attribute"
-      tooltip='Provide additional data about your product (e.g. materials; "Cotton": "60%")'
-    >
-      <FieldArray
-        name="productInformation.attributes"
-        render={(arrayHelpers) => {
-          const render = elements && elements.length > 0;
-          return (
-            <>
-              {render && (
-                <>
-                  {elements.map((_el: ElementType, key: number) => (
-                    <AddProductContainer key={`add_product_container_${key}`}>
-                      <div>
-                        <Input
-                          placeholder="Attribute"
-                          name={`productInformation.attributes[${key}].name`}
-                        />
-                      </div>
-                      <div>
-                        <Input
-                          placeholder="Attribute Value"
-                          name={`productInformation.attributes[${key}].value`}
-                        />
-                      </div>
-                    </AddProductContainer>
-                  ))}
-                </>
-              )}
-
-              <Error
-                display={hasDuplicated}
-                message={"You can’t have duplicate attributes!"}
-              />
-              {!checkLastElementIsPristine(elements) && (
-                <Button
-                  onClick={() => arrayHelpers.push({ name: "", value: "" })}
-                  theme="blankSecondary"
-                  style={{ borderBottom: `1px solid ${colors.border}` }}
-                >
-                  Add new <Plus size={18} />
-                </Button>
-              )}
-            </>
-          );
-        }}
-      />
-    </FormField>
-  );
-};
+const getColorSizeKey = (color: string, size: string) => `${color}_${size}`;
 
 export default function ProductVariants() {
-  const { nextIsDisabled } = useCreateForm();
+  const { nextIsDisabled, values } = useCreateForm();
+  const [fieldColors] =
+    useField<ProductVariantsType["productVariants"]["colors"]>(
+      variantsColorsKey
+    );
+  const [fieldSizes] =
+    useField<ProductVariantsType["productVariants"]["sizes"]>(variantsSizesKey);
+  const [fieldVariants, , helpersVariants] =
+    useField<ProductVariantsType["productVariants"]["variants"]>(variantsKey);
+  const variants = fieldVariants.value;
+  const onAddTagType = useCallback(
+    (type: "color" | "size", tag: string) => {
+      const existingVariants = new Set<string>();
+      const variants = fieldVariants?.value || [];
+      const colors = (fieldColors?.value || []).filter(
+        (value) => !!value
+      ) as string[];
+      const sizes = (fieldSizes?.value || []).filter(
+        (value) => !!value
+      ) as string[];
+      for (const variant of variants) {
+        existingVariants.add(getColorSizeKey(variant.color, variant.size));
+      }
+      const variantsToAdd: ProductVariantsType["productVariants"]["variants"] =
+        [];
+      const otherTags = type === "color" ? sizes : colors;
+      for (const otherTag of otherTags) {
+        const color = type === "color" ? tag : otherTag;
+        const size = type !== "color" ? tag : otherTag;
+        if (!existingVariants.has(getColorSizeKey(color, size))) {
+          variantsToAdd.push({
+            color,
+            size,
+            name: `${color} / ${size}`,
+            // TODO: yup doenst infer currency, price and quantity as nullable, even though they are are defined as such
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            currency:
+              OPTIONS_CURRENCIES.length === 1 ? OPTIONS_CURRENCIES[0] : null,
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            price: null,
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            quantity: null
+          });
+        }
+      }
+      const hasVariantsToAdd = !!variantsToAdd.length;
+      if (hasVariantsToAdd) {
+        helpersVariants.setValue([...variants, ...variantsToAdd]);
+      }
+    },
+    [
+      fieldColors?.value,
+      fieldSizes?.value,
+      fieldVariants?.value,
+      helpersVariants
+    ]
+  );
+  const onRemoveTagType = useCallback(
+    (type: "color" | "size", tag: string) => {
+      const variants = fieldVariants?.value || [];
+
+      const variantsToKeep = variants.filter((variant) => {
+        return variant[type] !== tag;
+      });
+      helpersVariants.setValue([...variantsToKeep]);
+    },
+    [fieldVariants?.value, helpersVariants]
+  );
 
   return (
     <ContainerProductPage>
@@ -129,11 +112,15 @@ export default function ProductVariants() {
         <>
           <TagsInput
             placeholder={"Add color variants"}
-            name="productVariants.colors"
+            name={variantsColorsKey}
+            onAddTag={(tag) => onAddTagType("color", tag)}
+            onRemoveTag={(tag) => onRemoveTagType("color", tag)}
           />
           <TagsInput
             placeholder={"Add size variants"}
-            name="productVariants.size"
+            name={variantsSizesKey}
+            onAddTag={(tag) => onAddTagType("size", tag)}
+            onRemoveTag={(tag) => onRemoveTagType("size", tag)}
           />
         </>
       </FormField>
@@ -143,6 +130,64 @@ export default function ProductVariants() {
         above. You can remove a combination by selecting the rightmost button on
         the relevant row.
       </SectionTitle>
+      <Table>
+        <thead>
+          <tr>
+            <th>Variant name</th>
+            <th>Currency</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {variants?.map((variant, idx) => {
+            // const currencySymbol =
+            //   values.productVariants.variants[idx].currency.value;
+            // const exchangeToken = CONFIG.defaultTokens.find(
+            //   (n: Token) => n.symbol === currencySymbol
+            // );
+            // const step = exchangeToken?.decimals
+            return (
+              <tr key={variant.name}>
+                <td>
+                  <Typography justifyContent="center">
+                    {variant.name}
+                  </Typography>
+                </td>
+                <td>
+                  <Select
+                    name={`${variantsKey}[${idx}].currency`}
+                    options={OPTIONS_CURRENCIES}
+                  />
+                </td>
+                <td>
+                  <Input name={`${variantsKey}[${idx}].price`} type="number" />
+                </td>
+                <td>
+                  <Input
+                    name={`${variantsKey}[${idx}].quantity`}
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <Button
+                    theme="orangeInverse"
+                    size="small"
+                    onClick={() => {
+                      helpersVariants.setValue([
+                        ...variants.filter((_, index) => index !== idx)
+                      ]);
+                    }}
+                  >
+                    Remove
+                  </Button>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </Table>
       <ProductInformationButtonGroup>
         <Button theme="primary" type="submit" disabled={nextIsDisabled}>
           Next

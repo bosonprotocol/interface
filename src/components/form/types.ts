@@ -46,7 +46,11 @@ export type InputColorProps = BaseProps;
 export type InputProps = BaseProps &
   React.InputHTMLAttributes<HTMLInputElement>;
 
-export type TagsProps = BaseProps & React.InputHTMLAttributes<HTMLInputElement>;
+export type TagsProps = BaseProps &
+  React.InputHTMLAttributes<HTMLInputElement> & {
+    onAddTag?: (value: string) => void;
+    onRemoveTag?: (value: string) => void;
+  };
 
 export interface SelectDataProps<Value extends string = string> {
   label: string;

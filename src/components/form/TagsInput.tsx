@@ -13,8 +13,8 @@ import {
 } from "./styles/TagsInput.styles";
 import { TagsProps } from "./types";
 
-const TagsInput = ({ name, placeholder }: TagsProps) => {
-  const [field, meta, helpers] = useField(name);
+const TagsInput = ({ name, placeholder, onAddTag, onRemoveTag }: TagsProps) => {
+  const [field, meta, helpers] = useField<string[]>(name);
   const [tags, setTags] = useState<string[]>(field.value || []);
 
   const errorMessage = meta.error && meta.touched ? meta.error : "";
@@ -41,16 +41,18 @@ const TagsInput = ({ name, placeholder }: TagsProps) => {
       const newTags = [...tags, value.toLowerCase()];
       setTags(newTags);
       helpers.setValue(newTags);
+      onAddTag?.(value);
     }
   }
 
   function removeTag(index: number) {
-    const filteredTags = tags.filter((el, i) => i !== index);
+    const filteredTags = tags.filter((_, i) => i !== index);
     setTags(filteredTags);
     helpers.setValue(filteredTags);
     if (!meta.touched) {
       helpers.setTouched(true);
     }
+    onRemoveTag?.(tags[index]);
   }
 
   return (

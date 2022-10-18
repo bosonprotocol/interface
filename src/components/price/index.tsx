@@ -86,7 +86,11 @@ export default function Price({
         >
           <Typography
             tag={tag}
-            style={{ fontWeight: "600", letterSpacing: "-1px", margin: "0" }}
+            style={{
+              fontWeight: "600",
+              letterSpacing: "-1px",
+              margin: "0"
+            }}
             data-icon-price
             {...(isSymbolShown && { "data-with-symbol": true })}
           >

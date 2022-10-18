@@ -1,5 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { MetadataType, subgraph } from "@bosonprotocol/react-kit";
+import {
+  CoreSDK,
+  MetadataType,
+  offers,
+  productV1,
+  subgraph
+} from "@bosonprotocol/react-kit";
 import { parseUnits } from "@ethersproject/units";
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
@@ -15,7 +21,7 @@ import uuid from "react-uuid";
 import { useAccount } from "wagmi";
 dayjs.extend(localizedFormat);
 
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 
 import { Token } from "../../components/convertion-rate/ConvertionRateContext";
 import { authTokenTypes } from "../../components/modal/components/CreateProfile/Lens/const";
@@ -43,6 +49,7 @@ import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { saveItemInStorage } from "../../lib/utils/hooks/useLocalStorage";
+import { fixformattedString } from "../../lib/utils/number";
 import { useCoreSDK } from "../../lib/utils/useCoreSdk";
 import {
   CreateProductWrapper,
@@ -59,6 +66,239 @@ function onKeyPress(event: React.KeyboardEvent<HTMLFormElement>) {
   if (event.key === "Enter") {
     event.preventDefault();
   }
+}
+type GetProductV1MetadataProps = {
+  offerUuid: string;
+  productInformation: CreateProductForm["productInformation"];
+  externalUrl: string;
+  licenseUrl: string;
+  productMainImageLink: string | undefined;
+  nftAttributes: {
+    trait_type: string;
+    value: string;
+    display_type?: string;
+  }[];
+  additionalAttributes: {
+    trait_type: string;
+    value: string;
+    display_type?: string;
+  }[];
+  createYourProfile: CreateProductForm["createYourProfile"];
+  productType: CreateProductForm["productType"];
+  visualImages: productV1.ProductBase["visuals_images"];
+  shippingInfo: CreateProductForm["shippingInfo"];
+  operatorLens: Profile | null;
+  profileImageLink: string | undefined;
+  termsOfExchange: CreateProductForm["termsOfExchange"];
+  supportedJurisdictions: Array<SupportedJuridiction>;
+};
+function getProductV1Metadata({
+  offerUuid,
+  productInformation,
+  externalUrl,
+  licenseUrl,
+  productMainImageLink,
+  nftAttributes,
+  additionalAttributes,
+  createYourProfile,
+  productType,
+  visualImages,
+  shippingInfo,
+  operatorLens,
+  profileImageLink,
+  termsOfExchange,
+  supportedJurisdictions
+}: GetProductV1MetadataProps): productV1.ProductV1Metadata {
+  return {
+    schemaUrl: "https://schema.org/",
+    uuid: offerUuid,
+    name: productInformation.productTitle,
+    description: `${productInformation.description}\n\nTerms for the Boson rNFT Voucher: ${licenseUrl}`,
+    externalUrl,
+    licenseUrl,
+    image: productMainImageLink ? `ipfs://${productMainImageLink}` : "",
+    type: MetadataType.PRODUCT_V1,
+    attributes: [...nftAttributes, ...additionalAttributes],
+    product: {
+      uuid: uuid(),
+      version: 1,
+      title: productInformation.productTitle,
+      description: productInformation.description,
+      identification_sKU: productInformation.sku,
+      identification_productId: productInformation.id,
+      identification_productIdType: productInformation.idType,
+      productionInformation_brandName:
+        productInformation.brandName || createYourProfile.name,
+      productionInformation_manufacturer: productInformation.manufacture,
+      productionInformation_manufacturerPartNumber:
+        productInformation.manufactureModelName,
+      productionInformation_modelNumber: productInformation.partNumber,
+      productionInformation_materials: productInformation.materials?.split(","),
+      details_category: productInformation.category.value,
+      details_subCategory: undefined, // no entry in the UI
+      details_subCategory2: undefined, // no entry in the UI
+      details_offerCategory: productType.productType.toUpperCase(),
+      details_tags: productInformation.tags,
+      details_sections: undefined, // no entry in the UI
+      details_personalisation: undefined, // no entry in the UI
+      visuals_images: visualImages,
+      visuals_videos: undefined, // no entry in the UI
+      packaging_packageQuantity: undefined, // no entry in the UI
+      packaging_dimensions_length: shippingInfo.length,
+      packaging_dimensions_width: shippingInfo.width,
+      packaging_dimensions_height: shippingInfo.height,
+      packaging_dimensions_unit: shippingInfo.measurementUnit.value,
+      packaging_weight_value: shippingInfo?.weight || "",
+      packaging_weight_unit: shippingInfo?.weightUnit.value || ""
+    },
+    seller: CONFIG.lens.enabled
+      ? ({
+          defaultVersion: 1,
+          name: operatorLens?.name || "",
+          description: operatorLens?.bio || "",
+          externalUrl: operatorLens
+            ? getLensWebsite(operatorLens as Profile) || ""
+            : "",
+          tokenId: operatorLens
+            ? getLensTokenIdDecimal(operatorLens.id).toString()
+            : "0",
+          images: [
+            {
+              url: operatorLens
+                ? getLensProfilePictureUrl(operatorLens as Profile) || ""
+                : "",
+              tag: "profile"
+            },
+            {
+              url: operatorLens
+                ? getLensCoverPictureUrl(operatorLens as Profile) || ""
+                : "",
+              tag: "cover"
+            }
+          ],
+          contactLinks: [
+            {
+              url: operatorLens
+                ? getLensEmail(operatorLens as Profile) || ""
+                : "",
+              tag: "email"
+            }
+          ]
+        } as any)
+      : ({
+          defaultVersion: 1,
+          name: createYourProfile.name,
+          description: createYourProfile.description,
+          externalUrl: createYourProfile.website,
+          tokenId: undefined, // no entry in the UI
+          images: [
+            {
+              url: profileImageLink,
+              tag: "profile"
+            }
+          ],
+          contactLinks: [
+            {
+              url: createYourProfile.email,
+              tag: "email"
+            }
+          ]
+        } as any),
+    exchangePolicy: {
+      uuid: Date.now().toString(),
+      version: 1,
+      label: termsOfExchange.exchangePolicy.value,
+      template: termsOfExchange.exchangePolicy.value,
+      sellerContactMethod: CONFIG.defaultSellerContactMethod,
+      disputeResolverContactMethod: `email to: ${CONFIG.defaultDisputeResolverContactMethod}`
+    },
+    shipping: {
+      defaultVersion: 1,
+      countryOfOrigin: shippingInfo.country.label || "",
+      supportedJurisdictions:
+        supportedJurisdictions.length > 0 ? supportedJurisdictions : undefined,
+      returnPeriod: shippingInfo.returnPeriod.toString()
+    }
+  };
+}
+
+type GetOfferDataFromMetadataProps = {
+  coreSDK: CoreSDK;
+  priceBN: BigNumber;
+  sellerCancellationPenaltyValue: BigNumber;
+  buyerCancellationPenaltyValue: BigNumber;
+  quantityAvailable: number;
+  voucherRedeemableFromDateInMS: number;
+  voucherRedeemableUntilDateInMS: number;
+  validFromDateInMS: number;
+  validUntilDateInMS: number;
+  disputePeriodDurationInMS: number;
+  resolutionPeriodDurationInMS: number;
+  exchangeToken: Token | undefined;
+};
+async function getOfferDataFromMetadata(
+  productV1Metadata: productV1.ProductV1Metadata,
+  {
+    coreSDK,
+    priceBN,
+    sellerCancellationPenaltyValue,
+    buyerCancellationPenaltyValue,
+    quantityAvailable,
+    voucherRedeemableFromDateInMS,
+    voucherRedeemableUntilDateInMS,
+    validFromDateInMS,
+    validUntilDateInMS,
+    disputePeriodDurationInMS,
+    resolutionPeriodDurationInMS,
+    exchangeToken
+  }: GetOfferDataFromMetadataProps
+): Promise<offers.CreateOfferArgs> {
+  const metadataHash = await coreSDK.storeMetadata(productV1Metadata);
+
+  const offerData = {
+    price: priceBN.toString(),
+    sellerDeposit: sellerCancellationPenaltyValue.toString(),
+    buyerCancelPenalty: buyerCancellationPenaltyValue.toString(),
+    quantityAvailable: quantityAvailable,
+    voucherRedeemableFromDateInMS: voucherRedeemableFromDateInMS.toString(),
+    voucherRedeemableUntilDateInMS: voucherRedeemableUntilDateInMS.toString(),
+    voucherValidDurationInMS: 0,
+    validFromDateInMS: validFromDateInMS.toString(),
+    validUntilDateInMS: validUntilDateInMS.toString(),
+    disputePeriodDurationInMS: disputePeriodDurationInMS.toString(),
+    resolutionPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
+    exchangeToken: exchangeToken?.address || ethers.constants.AddressZero,
+    disputeResolverId: CONFIG.defaultDisputeResolverId,
+    agentId: 0, // no agent
+    metadataUri: `ipfs://${metadataHash}`,
+    metadataHash: metadataHash
+  };
+  return offerData;
+}
+
+function extractVisualImages(
+  productImages: CreateProductForm["productImages"]
+): productV1.ProductBase["visuals_images"] {
+  const visualImages = Array.from(
+    new Set(
+      map(
+        productImages,
+        (v) =>
+          v?.[0]?.src && {
+            url: v?.[0]?.src,
+            tag: "product_image"
+          }
+      ).filter(
+        (
+          n
+        ): n is {
+          url: string;
+          tag: string;
+        } => !!n
+      )
+    ).values()
+  );
+  return visualImages;
 }
 
 interface Props {
@@ -222,24 +462,16 @@ function CreateProductInner({
       productImages,
       productType,
       termsOfExchange,
-      shippingInfo
+      shippingInfo,
+      productVariants
     } = values;
 
     const profileImageLink = createYourProfile?.logo?.[0]?.src;
-    const productMainImageLink = productImages?.thumbnail?.[0]?.src;
-
-    const visualImages = Array.from(
-      new Set(
-        map(
-          productImages,
-          (v) =>
-            v?.[0]?.src && {
-              url: v?.[0]?.src,
-              tag: "product_image"
-            }
-        ).filter((n) => n)
-      ).values()
-    );
+    const productMainImageLink: string | undefined = isMultiVariant
+      ? productVariants.variants.find((variant) => {
+          return variant.productImages?.thumbnail?.[0]?.src;
+        })?.productImages?.thumbnail?.[0]?.src
+      : productImages?.thumbnail?.[0]?.src;
 
     const productAttributes: Array<{
       trait_type: string;
@@ -289,9 +521,9 @@ function CreateProductInner({
       const exchangeToken = CONFIG.defaultTokens.find(
         (n: Token) => n.symbol === coreTermsOfSale.currency.value
       );
-
+      const { price } = coreTermsOfSale;
       const priceBN = parseUnits(
-        `${coreTermsOfSale.price}`,
+        price < 0.1 ? fixformattedString(price) : price.toString(),
         Number(exchangeToken?.decimals || 18)
       );
 
@@ -330,15 +562,19 @@ function CreateProductInner({
         value: voucherRedeemableUntilDateInMS.toString(),
         display_type: "date"
       });
-      nftAttributes.push({
-        trait_type: "Seller",
-        value: createYourProfile.name
-      });
-      nftAttributes.push({
-        trait_type: "Offer Category",
-        value: productType.productType.toUpperCase()
-      });
-      // TODO: In case of variants: add Size and Colour as attributes
+      if (CONFIG.lens.enabled) {
+        if (operatorLens?.name || operatorLens?.handle) {
+          nftAttributes.push({
+            trait_type: "Seller",
+            value: operatorLens?.name || operatorLens?.handle
+          });
+        }
+      } else {
+        nftAttributes.push({
+          trait_type: "Seller",
+          value: createYourProfile.name
+        });
+      }
 
       // Be sure the uuid is unique (for all users).
       // Do NOT use Date.now() because nothing prevent 2 users to create 2 offers at the same time
@@ -347,190 +583,224 @@ function CreateProductInner({
       const externalUrl = `${redemptionPointUrl}/#/offer-uuid/${offerUuid}`;
       const licenseUrl = `${window.origin}/#/license/${offerUuid}`;
 
-      const metadataHash = await coreSDK.storeMetadata({
-        schemaUrl: "https://schema.org/",
-        uuid: offerUuid,
-        name: productInformation.productTitle,
-        description: `${productInformation.description}\n\nTerms for the Boson rNFT Voucher: ${licenseUrl}`,
-        externalUrl,
-        licenseUrl,
-        image: `ipfs://${productMainImageLink}`,
-        type: MetadataType.PRODUCT_V1,
-        attributes: [...nftAttributes, ...additionalAttributes],
-        product: {
-          uuid: Date.now().toString(),
-          version: 1,
-          title: productInformation.productTitle,
-          description: productInformation.description,
-          identification_sKU: productInformation.sku,
-          identification_productId: productInformation.id,
-          identification_productIdType: productInformation.idType,
-          productionInformation_brandName:
-            productInformation.brandName || createYourProfile.name,
-          productionInformation_manufacturer: productInformation.manufacture,
-          productionInformation_manufacturerPartNumber:
-            productInformation.manufactureModelName,
-          productionInformation_modelNumber: productInformation.partNumber,
-          productionInformation_materials:
-            productInformation.materials?.split(","),
-          details_category: productInformation.category.value,
-          details_subCategory: undefined, // no entry in the UI
-          details_subCategory2: undefined, // no entry in the UI
-          details_offerCategory: productType.productType.toUpperCase(),
-          details_tags: productInformation.tags,
-          details_sections: undefined, // no entry in the UI
-          details_personalisation: undefined, // no entry in the UI
-          visuals_images: visualImages as any,
-          visuals_videos: undefined, // no entry in the UI
-          packaging_packageQuantity: undefined, // no entry in the UI
-          packaging_dimensions_length: shippingInfo.length,
-          packaging_dimensions_width: shippingInfo.width,
-          packaging_dimensions_height: shippingInfo.height,
-          packaging_dimensions_unit: shippingInfo.measurementUnit.value,
-          packaging_weight_value: shippingInfo?.weight || "",
-          packaging_weight_unit: shippingInfo?.weightUnit.value || ""
-        },
-        seller: CONFIG.lens.enabled
-          ? ({
-              defaultVersion: 1,
-              name: operatorLens?.name || "",
-              description: operatorLens?.bio || "",
-              externalUrl: operatorLens
-                ? getLensWebsite(operatorLens as Profile) || ""
-                : "",
-              tokenId: operatorLens
-                ? getLensTokenIdDecimal(operatorLens.id).toString()
-                : "0",
-              images: [
-                {
-                  url: operatorLens
-                    ? getLensProfilePictureUrl(operatorLens as Profile) || ""
-                    : "",
-                  tag: "profile"
-                },
-                {
-                  url: operatorLens
-                    ? getLensCoverPictureUrl(operatorLens as Profile) || ""
-                    : "",
-                  tag: "cover"
-                }
-              ],
-              contactLinks: [
-                {
-                  url: operatorLens
-                    ? getLensEmail(operatorLens as Profile) || ""
-                    : "",
-                  tag: "email"
-                }
-              ]
-            } as any)
-          : ({
-              defaultVersion: 1,
-              name: createYourProfile.name,
-              description: createYourProfile.description,
-              externalUrl: createYourProfile.website,
-              tokenId: undefined, // no entry in the UI
-              images: [
-                {
-                  url: profileImageLink,
-                  tag: "profile"
-                }
-              ],
-              contactLinks: [
-                {
-                  url: createYourProfile.email,
-                  tag: "email"
-                }
-              ]
-            } as any),
-        exchangePolicy: {
-          uuid: Date.now().toString(),
-          version: 1,
-          label: termsOfExchange.exchangePolicy.value,
-          template: termsOfExchange.exchangePolicy.value,
-          sellerContactMethod: CONFIG.defaultSellerContactMethod,
-          disputeResolverContactMethod: `email to: ${CONFIG.defaultDisputeResolverContactMethod}`
-        },
-        shipping: {
-          defaultVersion: 1,
-          countryOfOrigin: shippingInfo.country.label || "",
-          supportedJurisdictions:
-            supportedJurisdictions.length > 0
-              ? supportedJurisdictions
-              : undefined,
-          returnPeriod: shippingInfo.returnPeriod.toString()
-        }
-      });
+      const offersToCreate: offers.CreateOfferArgs[] = [];
+      if (isMultiVariant) {
+        const { variants = [] } = values.productVariants;
+        const variantsForMetadataCreation: {
+          productVariant: productV1.ProductV1Variant;
+        }[] = [];
+        const variations: productV1.ProductV1Variant = [];
+        const visualImages: productV1.ProductBase["visuals_images"] = [];
+        const allVariationsWithSameImages =
+          values.imagesSpecificOrAll?.value === "all";
+        if (allVariationsWithSameImages) {
+          const variantVisualImages = extractVisualImages(productImages);
 
-      const offerData = {
-        price: priceBN.toString(),
-        sellerDeposit: sellerCancellationPenaltyValue.toString(),
-        buyerCancelPenalty: buyerCancellationPenaltyValue.toString(),
-        quantityAvailable: coreTermsOfSale.quantity,
-        voucherRedeemableFromDateInMS: voucherRedeemableFromDateInMS.toString(),
-        voucherRedeemableUntilDateInMS:
-          voucherRedeemableUntilDateInMS.toString(),
-        voucherValidDurationInMS: 0,
-        validFromDateInMS: validFromDateInMS.toString(),
-        validUntilDateInMS: validUntilDateInMS.toString(),
-        disputePeriodDurationInMS: disputePeriodDurationInMS.toString(),
-        resolutionPeriodDurationInMS: resolutionPeriodDurationInMS.toString(),
-        exchangeToken: exchangeToken?.address || ethers.constants.AddressZero,
-        disputeResolverId: CONFIG.defaultDisputeResolverId,
-        agentId: 0, // no agent
-        metadataUri: `ipfs://${metadataHash}`,
-        metadataHash: metadataHash
-      };
+          visualImages.push(...variantVisualImages);
+        }
+        for (const variant of variants) {
+          // TODO: price, currency, quantity?
+          const { color, size, productImages } = variant;
+          const typeOptions = [
+            {
+              type: "size",
+              option: size
+            },
+            {
+              type: "color",
+              option: color
+            }
+          ];
+          variations.push(...typeOptions);
+          variantsForMetadataCreation.push({
+            productVariant: typeOptions
+          });
+          if (!allVariationsWithSameImages) {
+            const variantVisualImages = extractVisualImages(productImages);
+
+            visualImages.push(...variantVisualImages);
+          }
+        }
+        const productV1Metadata = getProductV1Metadata({
+          offerUuid,
+          productInformation,
+          externalUrl,
+          licenseUrl,
+          productMainImageLink,
+          nftAttributes,
+          additionalAttributes,
+          createYourProfile,
+          productType,
+          visualImages,
+          shippingInfo,
+          operatorLens,
+          profileImageLink,
+          termsOfExchange,
+          supportedJurisdictions
+        });
+        const variantsMetadata = productV1.createVariantProductMetadata(
+          productV1Metadata,
+          variantsForMetadataCreation
+        );
+        const offerDataPromises: Promise<offers.CreateOfferArgs>[] =
+          variantsMetadata.map((metadata, index) => {
+            const exchangeToken = CONFIG.defaultTokens.find(
+              (n: Token) => n.symbol === variants[index].currency.label
+            );
+            const price = variants[index].price;
+            return getOfferDataFromMetadata(metadata, {
+              coreSDK,
+              priceBN: parseUnits(
+                price < 0.1 ? fixformattedString(price) : price.toString(),
+                exchangeToken?.decimals || 18
+              ),
+              sellerCancellationPenaltyValue,
+              buyerCancellationPenaltyValue,
+              quantityAvailable: variants[index].quantity,
+              voucherRedeemableFromDateInMS,
+              voucherRedeemableUntilDateInMS,
+              validFromDateInMS,
+              validUntilDateInMS,
+              disputePeriodDurationInMS,
+              resolutionPeriodDurationInMS,
+              exchangeToken
+            });
+          });
+        offersToCreate.push(...(await Promise.all(offerDataPromises)));
+      } else {
+        const visualImages = extractVisualImages(productImages);
+        const productV1Metadata = getProductV1Metadata({
+          offerUuid,
+          productInformation,
+          externalUrl,
+          licenseUrl,
+          productMainImageLink,
+          nftAttributes,
+          additionalAttributes,
+          createYourProfile,
+          productType,
+          visualImages,
+          shippingInfo,
+          operatorLens,
+          profileImageLink,
+          termsOfExchange,
+          supportedJurisdictions
+        });
+        const offerData = await getOfferDataFromMetadata(productV1Metadata, {
+          coreSDK,
+          priceBN,
+          sellerCancellationPenaltyValue,
+          buyerCancellationPenaltyValue,
+          quantityAvailable: coreTermsOfSale.quantity,
+          voucherRedeemableFromDateInMS,
+          voucherRedeemableUntilDateInMS,
+          validFromDateInMS,
+          validUntilDateInMS,
+          disputePeriodDurationInMS,
+          resolutionPeriodDurationInMS,
+          exchangeToken
+        });
+        offersToCreate.push(offerData);
+      }
 
       showModal("WAITING_FOR_CONFIRMATION");
-      const txResponse =
-        !hasSellerAccount && address
-          ? await coreSDK.createSellerAndOffer(
-              {
-                operator: address,
-                admin: address,
-                treasury: address,
-                clerk: address,
-                contractUri: "ipfs://sample",
-                royaltyPercentage: "0",
-                authTokenId: "0",
-                authTokenType: authTokenTypes.NONE
-              },
-              offerData
-            )
-          : await coreSDK.createOffer(offerData);
-      showModal("TRANSACTION_SUBMITTED", {
-        action: "Create offer",
-        txHash: txResponse.hash
-      });
-      const txReceipt = await txResponse.wait();
-
-      const offerId = coreSDK.getCreatedOfferIdFromLogs(txReceipt.logs);
-      let createdOffer: OfferFieldsFragment | null = null;
-      await poll(
-        async () => {
-          createdOffer = await coreSDK.getOfferById(offerId as string);
-          return createdOffer;
-        },
-        (offer) => {
-          return !offer;
-        },
-        500
-      );
-      if (!createdOffer) {
-        return;
+      const seller = address
+        ? {
+            operator: address,
+            admin: address,
+            treasury: address,
+            clerk: address,
+            contractUri: "ipfs://sample",
+            royaltyPercentage: "0",
+            authTokenId: "0",
+            authTokenType: authTokenTypes.NONE
+          }
+        : null;
+      let txResponse;
+      if (isMultiVariant) {
+        if (!hasSellerAccount && seller) {
+          txResponse = await coreSDK.createSeller(seller);
+          showModal("TRANSACTION_SUBMITTED", {
+            action: "Create seller",
+            txHash: txResponse.hash
+          });
+        }
+        showModal("WAITING_FOR_CONFIRMATION");
+        txResponse = await coreSDK.createOfferBatch(offersToCreate);
+        showModal("TRANSACTION_SUBMITTED", {
+          action: "Create offer with variants",
+          txHash: txResponse.hash
+        });
+        const txReceipt = await txResponse.wait();
+        const offerIds = coreSDK.getCreatedOfferIdsFromLogs(txReceipt.logs);
+        let createdOffers: OfferFieldsFragment[] | null = null;
+        await poll(
+          async () => {
+            createdOffers = (
+              await Promise.all(
+                offerIds.map((offerId) =>
+                  coreSDK.getOfferById(offerId as string)
+                )
+              )
+            ).filter((offer) => !!offer);
+            return createdOffers;
+          },
+          (offers) => {
+            return offers.length !== offerIds.length;
+          },
+          500
+        );
+        const [firstOffer] = createdOffers as unknown as OfferFieldsFragment[];
+        toast((t) => (
+          <SuccessTransactionToast
+            t={t}
+            action={`Created offer with variants: ${firstOffer?.metadata?.name}`}
+            onViewDetails={() => {
+              handleOpenSuccessModal({
+                offerInfo: firstOffer || ({} as subgraph.OfferFieldsFragment)
+              });
+            }}
+          />
+        ));
+      } else {
+        const [offerData] = offersToCreate;
+        txResponse =
+          !hasSellerAccount && seller
+            ? await coreSDK.createSellerAndOffer(seller, offerData)
+            : await coreSDK.createOffer(offerData);
+        showModal("TRANSACTION_SUBMITTED", {
+          action: "Create offer",
+          txHash: txResponse.hash
+        });
+        const txReceipt = await txResponse.wait();
+        const offerId = coreSDK.getCreatedOfferIdFromLogs(txReceipt.logs);
+        let createdOffer: OfferFieldsFragment | null = null;
+        await poll(
+          async () => {
+            createdOffer = await coreSDK.getOfferById(offerId as string);
+            return createdOffer;
+          },
+          (offer) => {
+            return !offer;
+          },
+          500
+        );
+        if (!createdOffer) {
+          return;
+        }
+        toast((t) => (
+          <SuccessTransactionToast
+            t={t}
+            action={`Created offer: ${createdOffer?.metadata?.name}`}
+            onViewDetails={() => {
+              handleOpenSuccessModal({
+                offerInfo: createdOffer || ({} as subgraph.OfferFieldsFragment)
+              });
+            }}
+          />
+        ));
       }
-      toast((t) => (
-        <SuccessTransactionToast
-          t={t}
-          action={`Created offer: ${createdOffer?.metadata?.name}`}
-          onViewDetails={() => {
-            handleOpenSuccessModal({
-              offerInfo: createdOffer || ({} as subgraph.OfferFieldsFragment)
-            });
-          }}
-        />
-      ));
+
       hideModal();
       formikBag.resetForm();
     } catch (error: any) {

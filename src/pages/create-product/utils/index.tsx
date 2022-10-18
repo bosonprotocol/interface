@@ -218,8 +218,8 @@ export const createProductSteps = ({
     return {
       0: productType,
       1: productInformation,
-      2: productImages,
-      3: productVariants,
+      2: productVariants,
+      3: productImages,
       4: coreTermsOfSale,
       5: termsOfExchange,
       6: shippingInfo,

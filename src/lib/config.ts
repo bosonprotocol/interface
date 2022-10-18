@@ -1,5 +1,6 @@
 import { getDefaultConfig } from "@bosonprotocol/react-kit";
 
+import { Token } from "../components/convertion-rate/ConvertionRateContext";
 import lensFollowNftContractAbi from "../lib/utils/hooks/lens/abis/lens-follow-nft-contract-abi.json";
 import lensHubContractAbi from "../lib/utils/hooks/lens/abis/lens-hub-contract-abi.json";
 import lensPeripheryDataProvider from "../lib/utils/hooks/lens/abis/lens-periphery-data-provider.json";
@@ -16,7 +17,7 @@ const REACT_APP_ENABLE_SENTRY_LOGGING =
     : ["local", "testing"].includes(config.envName);
 
 export function getDefaultTokens() {
-  let tokens = [];
+  let tokens: Token[] = [];
   try {
     tokens = JSON.parse(
       process.env.REACT_APP_DEFAULT_TOKENS_LIST_TESTING ||

@@ -1,6 +1,10 @@
+import { parseUnits } from "@ethersproject/units";
+
 import { validationMessage } from "../../../lib/const/validationMessage";
+import { fixformattedString } from "../../../lib/utils/number";
 import Yup from "../../../lib/validation/index";
 import { validationOfFile } from "../../../pages/chat/components/UploadForm/const";
+import { Token } from "../../convertion-rate/ConvertionRateContext";
 import { MIN_VALUE } from "../../modal/components/Chat/const";
 import { FormModel } from "../../modal/components/Chat/MakeProposal/MakeProposalFormModel";
 import { DisputeFormModel } from "../../modal/components/DisputeModal/DisputeModalFormModel";
@@ -45,8 +49,70 @@ export const productImagesValidationSchema = Yup.object({
   })
 });
 
+function testPrice(price: number | null | undefined) {
+  if (!price) {
+    return true;
+  }
+  if (price < 1e-100) {
+    return false;
+  }
+  try {
+    const currencySymbol = this.parent.currency.value; // there has to be a sibling with the currency
+    const exchangeToken = CONFIG.defaultTokens.find(
+      (n: Token) => n.symbol === currencySymbol
+    );
+    const decimals = exchangeToken?.decimals || 18;
+    const priceWithoutEnotation =
+      price < 0.1 ? fixformattedString(price) : price.toString();
+    parseUnits(priceWithoutEnotation, decimals);
+    return true;
+  } catch (error) {
+    console.error(
+      `error in test function in price validation, price: ${price}`,
+      error
+    );
+    return false;
+  }
+}
+
 export const productVariantsValidationSchema = Yup.object({
-  productVariants: Yup.object({})
+  productVariants: Yup.object({
+    colors: Yup.array(Yup.string()),
+    sizes: Yup.array(Yup.string()),
+    variants: Yup.array(
+      Yup.object({
+        color: Yup.string().required("Color is required"),
+        size: Yup.string().required("Size is required"),
+        name: Yup.string(),
+        currency: Yup.object({
+          value: Yup.string(),
+          label: Yup.string()
+        })
+          .nullable()
+          .required("Currency is required"),
+        price: Yup.number()
+          .nullable()
+          .required("Price is required")
+          .min(0, "Should be 0 or more")
+          .test({
+            name: "valid_bigNumber",
+            message: "Price is not valid",
+            test: testPrice
+          }),
+        quantity: Yup.number()
+          .nullable()
+          .required("Quantity is required")
+          .min(1, "Must be greater than or equal to 1")
+      }).shape(productImagesValidationSchema.fields)
+    ).required()
+  })
+});
+
+export const imagesSpecificOrAllValidationSchema = Yup.object({
+  imagesSpecificOrAll: Yup.object({
+    label: Yup.string().required(),
+    value: Yup.string().oneOf(["all", "specific"]).required()
+  }).nullable()
 });
 
 export const productInformationValidationSchema = Yup.object({
@@ -84,7 +150,11 @@ export const productInformationValidationSchema = Yup.object({
 
 export const coreTermsOfSaleValidationSchema = Yup.object({
   coreTermsOfSale: Yup.object({
-    price: Yup.string().required(validationMessage.required),
+    price: Yup.number().nullable().required(validationMessage.required).test({
+      name: "valid_bigNumber",
+      message: "Price is not valid",
+      test: testPrice
+    }),
     currency: Yup.object()
       .shape({
         value: Yup.string(),

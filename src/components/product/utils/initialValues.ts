@@ -54,8 +54,12 @@ export const productInformationInitialValues = {
 } as const;
 
 export const productVariantsInitialValues = {
-  productVariants: {}
-} as const;
+  productVariants: {
+    colors: [] as string[],
+    sizes: [] as string[],
+    variants: []
+  }
+};
 
 export const productImagesInitialValues = {
   productImages: {
@@ -72,14 +76,14 @@ export const productImagesInitialValues = {
 
 export const coreTermsOfSaleInitialValues = {
   coreTermsOfSale: {
-    price: "",
+    price: null as unknown as number,
     currency: OPTIONS_CURRENCIES[0],
     quantity: 1,
     tokenGatedOffer: OPTIONS_TOKEN_GATED[0],
     redemptionPeriod: [],
     offerValidityPeriod: []
   }
-} as const;
+};
 
 export const termsOfExchangeInitialValues = {
   termsOfExchange: {
@@ -130,6 +134,13 @@ export const disputeCentreInitialValues = {
   [FormModel.formFields.upload.name]: [] as File[]
 } as const;
 
+export const imagesSpecificOrAllInitialValues = {
+  imagesSpecificOrAll: {
+    value: "all",
+    label: "All"
+  }
+};
+
 export const initialValues: CreateProductForm = {
   ...createYourProfileInitialValues,
   ...productTypeInitialValues,
@@ -139,5 +150,6 @@ export const initialValues: CreateProductForm = {
   ...coreTermsOfSaleInitialValues,
   ...termsOfExchangeInitialValues,
   ...shippingInfoInitialValues,
-  ...disputeCentreInitialValues
+  ...disputeCentreInitialValues,
+  ...imagesSpecificOrAllInitialValues
 } as const;
