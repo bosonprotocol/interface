@@ -67,7 +67,7 @@ export default function ProductVariants() {
             color,
             size,
             name: `${color} / ${size}`,
-            // TODO: yup doenst infer currency, price and quantity as nullable, even though they are are defined as such
+            // TODO: yup does not infer currency, price and quantity as nullable, even though they are are defined as such
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             currency:
@@ -85,11 +85,6 @@ export default function ProductVariants() {
       if (hasVariantsToAdd) {
         helpersVariants.setValue([...variants, ...variantsToAdd], true);
       }
-      // if (type === "color") {
-      //   validateField(variantsColorsKey);
-      // } else if (type === "size") {
-      //   validateField(variantsSizesKey);
-      // }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
