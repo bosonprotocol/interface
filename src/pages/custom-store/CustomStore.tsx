@@ -77,7 +77,7 @@ export default function CustomStore() {
 
             const cid = await storage.add(html);
 
-            const ipfsUrl = `https://ipfs.io/ipfs/${cid}`;
+            const ipfsUrl = `https://bosonprotocol.infura-ipfs.io/ipfs/${cid}`;
             showModal(modalTypes.CUSTOM_STORE, {
               title: "Congratulations!",
               ipfsUrl

@@ -217,13 +217,15 @@ export function useCurrentSellers({ address, sellerId }: Props = {}) {
   const lens: Profile[] = useMemo(() => {
     return (resultLens?.data?.items as Profile[]) ?? [];
   }, [resultLens?.data]);
-  const sellerIds = (
-    resultByAddress.data
-      ? resultByAddress.data.sellers.map((seller) => seller.id)
-      : sellerAddressType === "SELLER_ID"
-      ? [sellerAddress]
-      : []
-  ).filter((sellerId) => !!sellerId) as string[];
+  const sellerIds = useMemo(() => {
+    return (
+      resultByAddress.data
+        ? resultByAddress.data.sellers.map((seller) => seller.id)
+        : sellerAddressType === "SELLER_ID"
+        ? [sellerAddress]
+        : []
+    ).filter((sellerId) => !!sellerId) as string[];
+  }, [resultByAddress.data, sellerAddress, sellerAddressType]);
   return {
     isSuccess:
       resultById?.isSuccess ||
