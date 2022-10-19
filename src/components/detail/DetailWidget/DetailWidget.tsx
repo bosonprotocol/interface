@@ -4,10 +4,11 @@ import {
   Provider,
   subgraph
 } from "@bosonprotocol/react-kit";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import dayjs from "dayjs";
 import { BigNumber, ethers } from "ethers";
 import { ArrowRight, ArrowSquareOut, Check, Question } from "phosphor-react";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
 import { useAccount, useBalance, useSigner } from "wagmi";
@@ -25,7 +26,10 @@ import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { useBuyerSellerAccounts } from "../../../lib/utils/hooks/useBuyerSellerAccounts";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import { getItemFromStorage } from "../../../lib/utils/hooks/useLocalStorage";
+import {
+  getItemFromStorage,
+  saveItemInStorage
+} from "../../../lib/utils/hooks/useLocalStorage";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 import { poll } from "../../../pages/create-product/utils";
 import { ModalTypes, ShowModalFn, useModal } from "../../modal/useModal";
@@ -243,6 +247,11 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   isPreview = false,
   reload
 }) => {
+  const { openConnectModal } = useConnectModal();
+  const [
+    isCommittingFromNotConnectedWallet,
+    setIsCommittingFromNotConnectedWallet
+  ] = useState(false);
   const { showModal, hideModal, modalTypes } = useModal();
   const coreSDK = useCoreSDK();
   const { isLteXS } = useBreakpoints();
@@ -346,6 +355,31 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     }),
     [OFFER_DETAIL_DATA_MODAL, exchange, image, name]
   );
+
+  const handleOnGetSignerAddress = useCallback(
+    (signerAddress: string | undefined) => {
+      const isConnectWalletFromCommit = getItemFromStorage(
+        "isConnectWalletFromCommit",
+        false
+      );
+      if (
+        isCommittingFromNotConnectedWallet &&
+        address &&
+        !isChainUnsupported &&
+        signerAddress &&
+        isConnectWalletFromCommit
+      ) {
+        const commitButton = commitButtonRef.current;
+        if (commitButton) {
+          commitButton.click();
+          setIsCommittingFromNotConnectedWallet(false);
+        }
+      }
+      return signerAddress;
+    },
+    [address, isChainUnsupported, isCommittingFromNotConnectedWallet]
+  );
+
   const handleCancel = () => {
     if (!exchange) {
       return;
@@ -375,6 +409,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       !hasSellerEnoughFunds ||
       isBuyerInsufficientFunds) &&
     isOffer;
+
+  const commitButtonRef = useRef<HTMLButtonElement>(null);
 
   const notCommittableOfferStatus = useMemo(() => {
     if (isBuyerInsufficientFunds) {
@@ -492,84 +528,100 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               </DetailTopRightLabel>
             )}
             {isOffer && (
-              <CommitButton
-                variant="primary"
-                disabled={
-                  isChainUnsupported ||
-                  !hasSellerEnoughFunds ||
-                  isExpiredOffer ||
-                  isLoading ||
-                  !quantity ||
-                  isVoidedOffer ||
-                  isPreview
-                }
-                offerId={offer.id}
-                envName={CONFIG.envName}
-                onError={(error) => {
-                  console.error("onError", error);
-                  setIsLoading(false);
-                  const hasUserRejectedTx =
-                    "code" in error &&
-                    (error as unknown as { code: string }).code ===
-                      "ACTION_REJECTED";
-                  if (hasUserRejectedTx) {
-                    showModal("CONFIRMATION_FAILED");
-                  } else {
-                    showModal(modalTypes.DETAIL_WIDGET, {
-                      title: "An error occurred",
-                      message: "An error occurred when trying to commit!",
-                      type: "ERROR",
-                      state: "Committed",
-                      ...BASE_MODAL_DATA
-                    });
+              <div
+                role="button"
+                onClick={() => {
+                  if (!address && openConnectModal) {
+                    saveItemInStorage("isConnectWalletFromCommit", true);
+                    setIsCommittingFromNotConnectedWallet(true);
+                    openConnectModal();
                   }
                 }}
-                onPendingSignature={() => {
-                  setIsLoading(true);
-                  showModal("WAITING_FOR_CONFIRMATION");
-                }}
-                onPendingTransaction={(hash) => {
-                  showModal("TRANSACTION_SUBMITTED", {
-                    action: "Commit",
-                    txHash: hash
-                  });
-                }}
-                onSuccess={async (_, { exchangeId }) => {
-                  let createdExchange: subgraph.ExchangeFieldsFragment;
-                  await poll(
-                    async () => {
-                      createdExchange = await coreSDK.getExchangeById(
-                        exchangeId
-                      );
-                      return createdExchange;
-                    },
-                    (createdExchange) => {
-                      return !createdExchange;
-                    },
-                    500
-                  );
-                  setIsLoading(false);
-                  hideModal();
-                  toast((t) => (
-                    <SuccessTransactionToast
-                      t={t}
-                      action={`Commit to offer: ${offer.metadata.name}`}
-                      onViewDetails={() => {
-                        showModal(modalTypes.DETAIL_WIDGET, {
-                          title: "You have successfully committed!",
-                          message: "You now own the rNFT",
-                          type: "SUCCESS",
-                          id: exchangeId.toString(),
-                          state: "Committed",
-                          ...BASE_MODAL_DATA
-                        });
-                      }}
-                    />
-                  ));
-                }}
-                extraInfo="Step 1/2"
-                web3Provider={signer?.provider as Provider}
-              />
+              >
+                <CommitButton
+                  variant="primary"
+                  isPauseCommitting={!address}
+                  buttonRef={commitButtonRef}
+                  onGetSignerAddress={handleOnGetSignerAddress}
+                  disabled={
+                    (address && isChainUnsupported) ||
+                    !hasSellerEnoughFunds ||
+                    isExpiredOffer ||
+                    isLoading ||
+                    !quantity ||
+                    isVoidedOffer ||
+                    isPreview ||
+                    isOfferNotValidYet ||
+                    isBuyerInsufficientFunds
+                  }
+                  offerId={offer.id}
+                  envName={CONFIG.envName}
+                  onError={(error) => {
+                    console.error("onError", error);
+                    setIsLoading(false);
+                    const hasUserRejectedTx =
+                      "code" in error &&
+                      (error as unknown as { code: string }).code ===
+                        "ACTION_REJECTED";
+                    if (hasUserRejectedTx) {
+                      showModal("CONFIRMATION_FAILED");
+                    } else {
+                      showModal(modalTypes.DETAIL_WIDGET, {
+                        title: "An error occurred",
+                        message: "An error occurred when trying to commit!",
+                        type: "ERROR",
+                        state: "Committed",
+                        ...BASE_MODAL_DATA
+                      });
+                    }
+                  }}
+                  onPendingSignature={() => {
+                    setIsLoading(true);
+                    showModal("WAITING_FOR_CONFIRMATION");
+                  }}
+                  onPendingTransaction={(hash) => {
+                    showModal("TRANSACTION_SUBMITTED", {
+                      action: "Commit",
+                      txHash: hash
+                    });
+                  }}
+                  onSuccess={async (_, { exchangeId }) => {
+                    let createdExchange: subgraph.ExchangeFieldsFragment;
+                    await poll(
+                      async () => {
+                        createdExchange = await coreSDK.getExchangeById(
+                          exchangeId
+                        );
+                        return createdExchange;
+                      },
+                      (createdExchange) => {
+                        return !createdExchange;
+                      },
+                      500
+                    );
+                    setIsLoading(false);
+                    hideModal();
+                    toast((t) => (
+                      <SuccessTransactionToast
+                        t={t}
+                        action={`Commit to offer: ${offer.metadata.name}`}
+                        onViewDetails={() => {
+                          showModal(modalTypes.DETAIL_WIDGET, {
+                            title: "You have successfully committed!",
+                            message: "You now own the rNFT",
+                            type: "SUCCESS",
+                            id: exchangeId.toString(),
+                            state: "Committed",
+                            ...BASE_MODAL_DATA
+                          });
+                        }}
+                      />
+                    ));
+                  }}
+                  extraInfo="Step 1/2"
+                  web3Provider={signer?.provider as Provider}
+                />
+              </div>
             )}
             {isToRedeem && (
               <RedeemButton

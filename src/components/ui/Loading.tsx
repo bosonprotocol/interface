@@ -6,6 +6,8 @@ import Grid from "./Grid";
 const LoadingPlaceholder = styled.div<{ size: number }>`
   height: ${({ size }) => size}rem;
   width: ${({ size }) => size}rem;
+  min-height: ${({ size }) => size}rem;
+  min-width: ${({ size }) => size}rem;
   border: 5px solid ${colors.secondary};
   border-bottom-color: transparent;
   border-radius: 50%;

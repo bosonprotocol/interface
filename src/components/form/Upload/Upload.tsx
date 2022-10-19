@@ -6,6 +6,7 @@ import { colors } from "../../../lib/styles/colors";
 import { loadAndSetImage } from "../../../lib/utils/base64";
 import bytesToSize from "../../../lib/utils/bytesToSize";
 import Button from "../../ui/Button";
+import Loading from "../../ui/Loading";
 import Typography from "../../ui/Typography";
 import Error from "../Error";
 import {
@@ -38,6 +39,7 @@ function Upload({
   loadImage,
   ...props
 }: UploadProps & WithUploadToIpfsProps) {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [preview, setPreview] = useState<string | null>();
   const [field, meta, helpers] = useField(name);
 
@@ -78,6 +80,7 @@ function Upload({
     }
     const imagePreview: string = await loadImage(file?.src);
     setPreview(imagePreview);
+    setIsLoading(false);
     onLoadSinglePreviewImage?.(imagePreview);
   };
 
@@ -129,10 +132,11 @@ function Upload({
 
   const handleSave = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
+      setIsLoading(true);
       const files: FileProps[] = await saveToIpfs(e);
       setFiles(files);
     },
-    [saveToIpfs, setFiles]
+    [saveToIpfs, setFiles, setIsLoading]
   );
 
   return (
@@ -161,14 +165,20 @@ function Upload({
             onClick={handleChooseFile}
             error={errorMessage}
           >
-            {field.value && field.value?.length !== 0 && preview && (
-              <ImagePreview src={preview} />
-            )}
-            <Image size={24} />
-            {placeholder && (
-              <Typography tag="p" style={{ marginBottom: "0" }}>
-                {placeholder}
-              </Typography>
+            {isLoading ? (
+              <Loading size={2} />
+            ) : (
+              <>
+                {field.value && field.value?.length !== 0 && preview && (
+                  <ImagePreview src={preview} />
+                )}
+                <Image size={24} />
+                {placeholder && (
+                  <Typography tag="p" style={{ marginBottom: "0" }}>
+                    {placeholder}
+                  </Typography>
+                )}
+              </>
             )}
           </FileUploadWrapper>
         )}

@@ -264,8 +264,9 @@ const Button: React.FC<IButton> = ({
   withBosonStyle = false,
   ...rest
 }) => {
-  const Wrapper = tooltip !== "" ? Tooltip : Fragment;
-  const wrapperParams = tooltip !== "" ? { wrap: false, content: tooltip } : {};
+  const Wrapper = tooltip !== "" && rest?.disabled ? Tooltip : Fragment;
+  const wrapperParams =
+    tooltip !== "" && rest?.disabled ? { wrap: false, content: tooltip } : {};
 
   return (
     <ThemeProvider theme={allThemes({ withBosonStyle })[theme]}>

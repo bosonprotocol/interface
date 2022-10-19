@@ -23,6 +23,7 @@ export type GetItemFromStorageKey =
   | "tracing-url"
   | "convertionRates"
   | "shouldDisplayOfferBackedWarning"
+  | "isConnectWalletFromCommit"
   | CreateProductImageProductImages
   | CreateProductImageCreteYourProfileLogo;
 
