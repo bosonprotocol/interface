@@ -70,37 +70,25 @@ export interface IPool {
 }
 
 export function useUniswapPools({ tokens }: Props) {
-  const isDev = process.env.NODE_ENV === "development";
+  // TODO BPNO_TASK: change !== to ===
+  const isDev = process.env.NODE_ENV !== "development";
   const queries = generateQuery(tokens, false);
   const swapQueries = generateQuery(tokens, true);
+  const allQueries = [...queries, ...swapQueries];
 
   return useQuery(
     ["pools"],
     async () => {
-      const queriesPromises = queries.map(
+      const allPromises = allQueries.map(
         async ({ query, variables }: QueryProps) =>
           await request(UNISWAP_API_URL, query, variables)
       );
-      const swapQueriesPromises = swapQueries.map(
-        async ({ query, variables }: QueryProps) =>
-          await request(UNISWAP_API_URL, query, variables)
-      );
-      const pools = await Promise.allSettled(queriesPromises);
-      const swapPools = await Promise.allSettled(swapQueriesPromises);
-
-      const response = pools.filter(
-        (res) => res.status === "fulfilled"
-      ) as PromiseProps[];
-      const swapResponse = swapPools.filter(
+      const allPools = await Promise.allSettled(allPromises);
+      const response = allPools.filter(
         (res) => res.status === "fulfilled"
       ) as PromiseProps[];
 
-      const poolsValues =
-        response?.flatMap((p: PromiseProps) => p?.value?.pools) || [];
-      const swapPoolsValues =
-        swapResponse?.flatMap((p: PromiseProps) => p?.value?.pools) || [];
-
-      return poolsValues.concat(swapPoolsValues);
+      return response?.flatMap((p: PromiseProps) => p?.value?.pools) || [];
     },
     {
       enabled: !!queries.length && !!swapQueries.length && !isDev
