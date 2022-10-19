@@ -98,6 +98,8 @@ export type CreateProductStepsParams = {
   showInvalidRoleModal: () => void;
   isDraftModalClosed: boolean;
   isMultiVariant: boolean;
+  onChangeOneSetOfImages: (oneSetOfImages: boolean) => void;
+  isOneSetOfImages: boolean;
 };
 
 export const createProductSteps = ({
@@ -106,7 +108,9 @@ export const createProductSteps = ({
   showCreateProductDraftModal,
   showInvalidRoleModal,
   isDraftModalClosed,
-  isMultiVariant
+  isMultiVariant,
+  onChangeOneSetOfImages,
+  isOneSetOfImages
 }: CreateProductStepsParams) => {
   const productType = {
     ui: (
@@ -138,10 +142,12 @@ export const createProductSteps = ({
     ui: (
       <>
         <ScroolToID id="multisteps_wrapper" />
-        <ProductImages />
+        <ProductImages onChangeOneSetOfImages={onChangeOneSetOfImages} />
       </>
     ),
-    validation: productImagesValidationSchema,
+    validation: isOneSetOfImages
+      ? productImagesValidationSchema
+      : productVariantsValidationSchema,
     helpSection: productImagesHelp,
     stepNo: "productImages"
   };

@@ -350,7 +350,7 @@ function CreateProductInner({
       : generatePath(OffersRoutes.Root);
     navigate({ pathname });
   };
-
+  const [isOneSetOfImages, setIsOneSetOfImages] = useState<boolean>(false);
   const { address } = useAccount();
 
   const { sellers, lens: lensProfiles } = useCurrentSellers();
@@ -426,7 +426,9 @@ function CreateProductInner({
     showCreateProductDraftModal,
     isDraftModalClosed,
     showInvalidRoleModal,
-    isMultiVariant
+    isMultiVariant,
+    onChangeOneSetOfImages: setIsOneSetOfImages,
+    isOneSetOfImages
   });
   const wizardLength = keys(wizardSteps).length - 1;
   const wizardStep = useMemo(() => {

@@ -7,7 +7,7 @@ import Grid from "../ui/Grid";
 
 const Headers = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 2rem;
   overflow-x: auto;
   padding: 0.5rem 0;

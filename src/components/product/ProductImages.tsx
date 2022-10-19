@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useMemo } from "react";
+import { ReactNode, useCallback, useEffect, useMemo } from "react";
 import styled from "styled-components";
 
 import { breakpoint } from "../../lib/styles/breakpoint";
@@ -105,9 +105,12 @@ function UploadImages({ prefix }: { prefix: string }) {
     </>
   );
 }
-
-export default function ProductImages() {
-  const { nextIsDisabled, values } = useCreateForm();
+interface Props {
+  onChangeOneSetOfImages: (oneSetOfImages: boolean) => void;
+}
+const productImagesPrefix = "productImages";
+export default function ProductImages({ onChangeOneSetOfImages }: Props) {
+  const { nextIsDisabled, values, errors } = useCreateForm();
   const hasVariants = values.productType.productVariant === "differentVariants";
   const oneSetOfImages =
     !hasVariants || values.imagesSpecificOrAll?.value === "all";
@@ -129,6 +132,12 @@ export default function ProductImages() {
   const TabsContent = useCallback(({ children }: { children: ReactNode }) => {
     return <div>{children}</div>;
   }, []);
+  useEffect(() => {
+    console.log({ oneSetOfImages });
+    onChangeOneSetOfImages(oneSetOfImages);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [oneSetOfImages]);
+  console.log("productimages", "errors", errors);
   return (
     <ContainerProductImage>
       <Grid>
@@ -159,7 +168,7 @@ export default function ProductImages() {
         }}
       >
         {oneSetOfImages ? (
-          <UploadImages prefix="productImages" />
+          <UploadImages prefix={productImagesPrefix} />
         ) : (
           <StyledTabs tabsData={tabsData} Content={TabsContent} />
         )}

@@ -103,7 +103,7 @@ export const productVariantsValidationSchema = Yup.object({
           .nullable()
           .required("Quantity is required")
           .min(1, "Must be greater than or equal to 1")
-      }).shape(productImagesValidationSchema.fields)
+      }).concat(productImagesValidationSchema)
     ).required()
   })
 });
