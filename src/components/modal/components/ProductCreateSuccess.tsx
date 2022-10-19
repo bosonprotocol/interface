@@ -2,7 +2,7 @@
 import { formatUnits } from "@ethersproject/units";
 import * as ProgressPrimitive from "@radix-ui/react-progress";
 import { BigNumber, FixedNumber } from "ethers";
-import { Plus } from "phosphor-react";
+import { Plus, Warning } from "phosphor-react";
 import { useMemo } from "react";
 import styled from "styled-components";
 
@@ -86,6 +86,9 @@ const FundTile = styled(Typography)`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  > span {
+    line-height: 2;
+  }
 `;
 
 const Amount = styled.span`
@@ -180,14 +183,24 @@ export default function ProductCreateSuccess({
           {hasDeposit && (
             <Funds>
               <FundTile tag="p">
-                Please provide
-                {/* TODO: */}
-                <Tooltip content="NEED TO BE ADDED" size={16} />
+                <span>
+                  <Warning
+                    color={colors.green}
+                    size={20}
+                    style={{ marginRight: "0.5rem" }}
+                  />
+                  Deposit funds to activate offer
+                </span>
+                <Tooltip
+                  content="In order for your offer to go live you must first provide funds to cover your seller deposit. When a buyer commits to your offer, your deposit will be put into escrow as part of the exchange."
+                  size={16}
+                />
               </FundTile>
               <Typography tag="p" $fontSize="0.75rem">
-                Describe here why seller should provide funds ..
-                <br />
-                alos in multiple lines possible.
+                In order for your offer to go live you must first provide funds
+                to cover your seller deposit. When a buyer commits to your
+                offer, your deposit will be put into escrow as part of the
+                exchange.
               </Typography>
               <Typography
                 tag="p"

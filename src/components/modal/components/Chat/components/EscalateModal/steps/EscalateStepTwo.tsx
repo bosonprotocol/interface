@@ -338,7 +338,7 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
                   </FormField>
                   <FormField
                     theme="white"
-                    title="Authentication message"
+                    title="Email Body"
                     valueToCopy={{
                       [FormModel.formFields.exchangeId.name]:
                         values?.exchangeId || "",

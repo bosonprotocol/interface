@@ -163,11 +163,11 @@ export default function DisputesTable({ disputes }: Props) {
             </Typography>
           ),
           action: (
-            <Grid gap="0.5rem">
+            <>
               {emailAddress && (
                 <Button
                   type="button"
-                  theme="outline"
+                  theme="ghostSecondary"
                   size="small"
                   style={{
                     whiteSpace: "pre"
@@ -184,7 +184,7 @@ export default function DisputesTable({ disputes }: Props) {
               {dispute.state === subgraph.DisputeState.Escalated && (
                 <>
                   <Button
-                    theme="bosonSecondary"
+                    theme="orangeInverse"
                     size="small"
                     onClick={async () => {
                       showModal(
@@ -227,7 +227,7 @@ export default function DisputesTable({ disputes }: Props) {
                   </Button>
                 </>
               )}
-            </Grid>
+            </>
           )
         };
       }),
