@@ -1,5 +1,3 @@
-import dayjs from "dayjs";
-import { useCallback } from "react";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
@@ -7,24 +5,18 @@ import DisputeListMobile from "../../components/modal/components/DisputeListMobi
 import DisputeTable from "../../components/modal/components/DisputeTable/DisputeTable";
 import { useModal } from "../../components/modal/useModal";
 import Button from "../../components/ui/Button";
-import ExportDropdown from "../../components/ui/ExportDropdown";
 import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
-import { CONFIG } from "../../lib/config";
 import {
   AccountQueryParameters,
   TabQueryParameters
 } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
-import { getDateTimestamp } from "../../lib/utils/getDateTimestamp";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useBuyers } from "../../lib/utils/hooks/useBuyers";
-import type { Exchange } from "../../lib/utils/hooks/useExchanges";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
-
-type CsvType = "all" | "active" | "past";
 
 const DisputeListContainer = styled.div`
   background: ${colors.lightGrey};
@@ -78,38 +70,6 @@ function DisputeList() {
     buyerId: myBuyerId
   });
 
-  const prepareCSVData = useCallback(
-    (type: CsvType) => {
-      const filteredExchanges =
-        exchanges?.filter((exchange: Exchange) => {
-          // const state = exchange?.dispute?.state;
-          // TODO: BP417 - filter exchanges by type
-          console.log(type, exchange);
-          return exchange;
-        }) || [];
-
-      const csvData = filteredExchanges?.map((exchange: Exchange) => {
-        return {
-          ["ID/SKU"]: exchange?.id || "",
-          ["Product name"]: exchange?.offer?.metadata?.name || "",
-          ["Dispute State"]: exchange?.dispute?.state || "",
-          ["Disputed Date"]: exchange?.disputedDate
-            ? dayjs(getDateTimestamp(exchange.disputedDate)).format(
-                CONFIG.dateFormat
-              )
-            : "",
-          ["Dispute Until"]: exchange?.validUntilDate
-            ? dayjs(getDateTimestamp(exchange?.validUntilDate)).format(
-                CONFIG.dateFormat
-              )
-            : ""
-        };
-      });
-      return csvData;
-    },
-    [exchanges]
-  );
-
   return (
     <>
       <DisputeListHeader isLteS={isLteS}>
@@ -152,35 +112,6 @@ function DisputeList() {
             >
               How it works?
             </HowItWorksButton>
-            <ExportDropdown
-              children={[
-                {
-                  id: 0,
-                  name: "Export all disputes",
-                  hidden: true,
-                  csvProps: {
-                    data: prepareCSVData("all"),
-                    filename: `disputes-all-${dayjs().format("YYYYMMDD")}`
-                  }
-                },
-                {
-                  id: 1,
-                  name: "Export active disputes",
-                  csvProps: {
-                    data: prepareCSVData("active"),
-                    filename: `disputes-active-${dayjs().format("YYYYMMDD")}`
-                  }
-                },
-                {
-                  id: 1,
-                  name: "Export past disputes",
-                  csvProps: {
-                    data: prepareCSVData("past"),
-                    filename: `disputes-past-${dayjs().format("YYYYMMDD")}`
-                  }
-                }
-              ]}
-            />
           </Grid>
         </span>
       </DisputeListHeader>

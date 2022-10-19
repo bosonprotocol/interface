@@ -57,6 +57,13 @@ const buildQuery = (queryString: string, name: string) => {
               ... on ProductV1MetadataEntity {
                 name
                 image
+                productV1Seller {
+                  contactLinks {
+                    id
+                    url
+                    tag
+                  }
+                }
               }
             }
             disputeResolver {

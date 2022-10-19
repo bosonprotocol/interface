@@ -2,14 +2,12 @@ import { subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { ClockClockwise } from "phosphor-react";
 import { useMemo } from "react";
-import toast from "react-hot-toast";
 import { generatePath } from "react-router-dom";
 import styled from "styled-components";
 
 import { UrlParameters } from "../../../../lib/routing/parameters";
 import { BosonRoutes } from "../../../../lib/routing/routes";
 import { colors } from "../../../../lib/styles/colors";
-import copyToClipboard from "../../../../lib/utils/copyToClipboard";
 import { getDateTimestamp } from "../../../../lib/utils/getDateTimestamp";
 import { useDisputes } from "../../../../lib/utils/hooks/useDisputes";
 import { useDisputeSubStatusInfo } from "../../../../lib/utils/hooks/useDisputeSubStatusInfo";
@@ -102,10 +100,6 @@ function TableElement({ exchange }: { exchange: Exchange }) {
     : [{} as subgraph.DisputeFieldsFragment];
 
   const isNotEscalatedYet = dispute ? dispute?.escalatedDate === null : false;
-  const emailAddress =
-    exchange?.offer?.metadata?.productV1Seller?.contactLinks?.find(
-      (e) => e.tag === "email"
-    )?.url || false;
 
   if (exchange) {
     return (
@@ -139,20 +133,6 @@ function TableElement({ exchange }: { exchange: Exchange }) {
         </td>
         <td>
           <Grid justifyContent="flex-end" gap="1rem">
-            {emailAddress && (
-              <Button
-                type="button"
-                theme="primary"
-                size="small"
-                onClick={() => {
-                  copyToClipboard(emailAddress).then(() => {
-                    toast(() => "Seller e-mail has been copied to clipboard");
-                  });
-                }}
-              >
-                Copy Seller E-Mail
-              </Button>
-            )}
             {isNotEscalatedYet && status !== "Resolved" && (
               <Button
                 theme="orange"
