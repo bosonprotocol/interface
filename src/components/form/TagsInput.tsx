@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useField } from "formik";
+import { useField, useFormikContext } from "formik";
 import { KeyReturn } from "phosphor-react";
-import { useState } from "react";
+import { useEffect } from "react";
 
 import Error from "./Error";
 import { FieldInput } from "./Field.styles";
@@ -14,8 +14,9 @@ import {
 import { TagsProps } from "./types";
 
 const TagsInput = ({ name, placeholder, onAddTag, onRemoveTag }: TagsProps) => {
+  const { validateForm } = useFormikContext();
   const [field, meta, helpers] = useField<string[]>(name);
-  const [tags, setTags] = useState<string[]>(field.value || []);
+  const tags = field.value || [];
 
   const errorMessage = meta.error && meta.touched ? meta.error : "";
   const displayError =
@@ -39,7 +40,6 @@ const TagsInput = ({ name, placeholder, onAddTag, onRemoveTag }: TagsProps) => {
 
     if (!tags.includes(value.toLowerCase())) {
       const newTags = [...tags, value.toLowerCase()];
-      setTags(newTags);
       helpers.setValue(newTags);
       onAddTag?.(value);
     }
@@ -47,14 +47,16 @@ const TagsInput = ({ name, placeholder, onAddTag, onRemoveTag }: TagsProps) => {
 
   function removeTag(index: number) {
     const filteredTags = tags.filter((_, i) => i !== index);
-    setTags(filteredTags);
     helpers.setValue(filteredTags);
     if (!meta.touched) {
       helpers.setTouched(true);
     }
     onRemoveTag?.(tags[index]);
   }
-
+  useEffect(() => {
+    validateForm();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [field.value]);
   return (
     <>
       <TagContainer>

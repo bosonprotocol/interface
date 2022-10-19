@@ -33,12 +33,12 @@ const Table = styled.table`
 const getColorSizeKey = (color: string, size: string) => `${color}_${size}`;
 
 export default function ProductVariants() {
-  const { nextIsDisabled } = useCreateForm();
-  const [fieldColors] =
+  const { nextIsDisabled, validateField, validateForm } = useCreateForm();
+  const [fieldColors, , helpersColors] =
     useField<ProductVariantsType["productVariants"]["colors"]>(
       variantsColorsKey
     );
-  const [fieldSizes] =
+  const [fieldSizes, metaSizes, helpersSizes] =
     useField<ProductVariantsType["productVariants"]["sizes"]>(variantsSizesKey);
   const [fieldVariants, , helpersVariants] =
     useField<ProductVariantsType["productVariants"]["variants"]>(variantsKey);
@@ -74,10 +74,10 @@ export default function ProductVariants() {
               OPTIONS_CURRENCIES.length === 1 ? OPTIONS_CURRENCIES[0] : null,
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
-            price: null,
+            price: undefined,
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
-            quantity: null
+            quantity: undefined
           });
         }
       }
@@ -85,7 +85,13 @@ export default function ProductVariants() {
       if (hasVariantsToAdd) {
         helpersVariants.setValue([...variants, ...variantsToAdd], true);
       }
+      // if (type === "color") {
+      //   validateField(variantsColorsKey);
+      // } else if (type === "size") {
+      //   validateField(variantsSizesKey);
+      // }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       fieldColors?.value,
       fieldSizes?.value,
@@ -104,7 +110,6 @@ export default function ProductVariants() {
     },
     [fieldVariants?.value, helpersVariants]
   );
-
   return (
     <ContainerProductPage>
       <SectionTitle tag="h2">Product Variants</SectionTitle>
