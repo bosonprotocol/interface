@@ -434,7 +434,6 @@ function CreateProductInner({
   const wizardStep = useMemo(() => {
     return wizardSteps[currentStep as keyof CreateProductSteps];
   }, [wizardSteps, currentStep]);
-  console.log("wizardStep", wizardStep);
   const handleNextForm = useCallback(() => {
     if (isPreviewVisible) {
       setIsPreviewVisible(false);
@@ -471,8 +470,8 @@ function CreateProductInner({
     const profileImageLink = createYourProfile?.logo?.[0]?.src;
     const productMainImageLink: string | undefined = isMultiVariant
       ? productVariantsImages?.find((variant) => {
-          return variant.images?.thumbnail?.[0]?.src;
-        })?.images?.thumbnail?.[0]?.src
+          return variant.productImages?.thumbnail?.[0]?.src;
+        })?.productImages?.thumbnail?.[0]?.src
       : productImages?.thumbnail?.[0]?.src;
 
     const productAttributes: Array<{
@@ -601,7 +600,8 @@ function CreateProductInner({
           visualImages.push(...variantVisualImages);
         }
         for (const [index, variant] of Object.entries(variants)) {
-          const productImages = productVariantsImages?.[Number(index)].images;
+          const productImages =
+            productVariantsImages?.[Number(index)].productImages;
           const { color, size } = variant;
           const typeOptions = [
             {
@@ -872,11 +872,10 @@ function CreateProductInner({
           validationSchema={wizardStep.validation}
           enableReinitialize
         >
-          {({ values, errors }) => {
+          {({ values }) => {
             if (productVariant !== values?.productType?.productVariant) {
               setProductVariant(values?.productType?.productVariant);
             }
-            console.log("errors", errors);
             return (
               <Form onKeyPress={onKeyPress}>
                 {isPreviewVisible ? (

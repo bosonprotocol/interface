@@ -118,26 +118,7 @@ export const productImagesValidationSchema = Yup.object({
 
 export const productVariantsImagesValidationSchema = Yup.object({
   productVariantsImages: Yup.array(
-    // Yup.object().concat(productImagesValidationSchema)
-    Yup.object({
-      images: Yup.object({
-        thumbnail: validationOfRequiredIpfsImage(),
-        secondary: validationOfIpfsImage(),
-        everyAngle: validationOfIpfsImage(),
-        details: validationOfIpfsImage(),
-        inUse: validationOfIpfsImage(),
-        styledScene: validationOfIpfsImage(),
-        sizeAndScale: validationOfIpfsImage(),
-        more: validationOfIpfsImage()
-      })
-    })
-    // .test({
-    //   name: "test1",
-    //   test: function (value, context) {
-    //     console.log("valueee", value, context, this);
-    //     return true;
-    //   }
-    // })
+    Yup.object().concat(productImagesValidationSchema)
   ).test({
     name: "minLength",
     test: function (value) {
