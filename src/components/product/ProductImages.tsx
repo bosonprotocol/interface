@@ -2,8 +2,10 @@ import styled from "styled-components";
 
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
+import bytesToSize from "../../lib/utils/bytesToSize";
 import { Upload } from "../form";
 import FormField from "../form/FormField";
+import { MAX_FILE_SIZE } from "../form/Upload/WithUploadToIpfs";
 import Button from "../ui/Button";
 import { ProductButtonGroup, SectionTitle } from "./Product.styles";
 import { useCreateForm } from "./utils/useCreateForm";

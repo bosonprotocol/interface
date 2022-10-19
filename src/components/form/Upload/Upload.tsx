@@ -23,6 +23,8 @@ import {
   WithUploadToIpfsProps
 } from "./WithUploadToIpfs";
 
+export type UploadFileType = File | FileProps;
+
 function Upload({
   name,
   accept = "image/*",
@@ -55,8 +57,7 @@ function Upload({
     [helpers]
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const files = field.value as any;
+  const files = field.value as UploadFileType[];
 
   useEffect(() => {
     onFilesSelect?.(files);
@@ -64,9 +65,9 @@ function Upload({
 
     if (!multiple && accept === "image/*" && files && files?.length !== 0) {
       if (withUpload) {
-        loadIpfsImagePreview(files[0]);
+        loadIpfsImagePreview(files[0] as FileProps);
       } else {
-        loadAndSetImage(files[0], (base64Uri) => {
+        loadAndSetImage(files[0] as File, (base64Uri) => {
           setPreview(base64Uri);
           onLoadSinglePreviewImage?.(base64Uri);
         });
@@ -75,10 +76,11 @@ function Upload({
   }, [files]); // eslint-disable-line
 
   const loadIpfsImagePreview = async (file: FileProps) => {
-    if (!file.src) {
+    const fileSrc = file && file?.src ? file?.src : false;
+    if (!fileSrc) {
       return false;
     }
-    const imagePreview: string = await loadImage(file?.src);
+    const imagePreview: string = await loadImage(fileSrc || "");
     setPreview(imagePreview);
     setIsLoading(false);
     onLoadSinglePreviewImage?.(imagePreview);
