@@ -82,7 +82,7 @@ function UploadImages({ prefix }: { prefix: string }) {
           <Upload name={`${prefix}.details`} placeholder="Details" withUpload />
         </div>
         <div>
-          <Upload name={`.inUse`} placeholder="In Use" withUpload />
+          <Upload name={`${prefix}.inUse`} placeholder="In Use" withUpload />
         </div>
         <div>
           <Upload
@@ -110,7 +110,7 @@ interface Props {
 }
 const productImagesPrefix = "productImages";
 export default function ProductImages({ onChangeOneSetOfImages }: Props) {
-  const { nextIsDisabled, values, errors } = useCreateForm();
+  const { nextIsDisabled, values, errors, validateForm } = useCreateForm();
   const hasVariants = values.productType.productVariant === "differentVariants";
   const oneSetOfImages =
     !hasVariants || values.imagesSpecificOrAll?.value === "all";
@@ -122,7 +122,7 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
           title: variant.name || `Variant ${index}`,
           content: (
             <UploadImages
-              prefix={`productVariants.variants[${index}].productImages`}
+              prefix={`productVariantsImages[${index}].productImages`}
             />
           )
         };
@@ -137,7 +137,7 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
     onChangeOneSetOfImages(oneSetOfImages);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [oneSetOfImages]);
-  console.log("productimages", "errors", errors);
+  console.log("productimages", "errors", errors, "values", values);
   return (
     <ContainerProductImage>
       <Grid>

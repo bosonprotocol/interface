@@ -434,7 +434,7 @@ function CreateProductInner({
   const wizardStep = useMemo(() => {
     return wizardSteps[currentStep as keyof CreateProductSteps];
   }, [wizardSteps, currentStep]);
-
+  console.log("wizardStep", wizardStep);
   const handleNextForm = useCallback(() => {
     if (isPreviewVisible) {
       setIsPreviewVisible(false);
@@ -462,15 +462,15 @@ function CreateProductInner({
       createYourProfile,
       productInformation,
       productImages,
+      productVariantsImages,
       productType,
       termsOfExchange,
-      shippingInfo,
-      productVariants
+      shippingInfo
     } = values;
 
     const profileImageLink = createYourProfile?.logo?.[0]?.src;
     const productMainImageLink: string | undefined = isMultiVariant
-      ? productVariants.variants.find((variant) => {
+      ? productVariantsImages?.find((variant) => {
           return variant.productImages?.thumbnail?.[0]?.src;
         })?.productImages?.thumbnail?.[0]?.src
       : productImages?.thumbnail?.[0]?.src;
@@ -600,9 +600,10 @@ function CreateProductInner({
 
           visualImages.push(...variantVisualImages);
         }
-        for (const variant of variants) {
-          // TODO: price, currency, quantity?
-          const { color, size, productImages } = variant;
+        for (const [index, variant] of Object.entries(variants)) {
+          const productImages =
+            productVariantsImages?.[Number(index)].productImages;
+          const { color, size } = variant;
           const typeOptions = [
             {
               type: "size",
@@ -617,7 +618,7 @@ function CreateProductInner({
           variantsForMetadataCreation.push({
             productVariant: typeOptions
           });
-          if (!allVariationsWithSameImages) {
+          if (!allVariationsWithSameImages && productImages) {
             const variantVisualImages = extractVisualImages(productImages);
 
             visualImages.push(...variantVisualImages);
@@ -868,10 +869,11 @@ function CreateProductInner({
           validationSchema={wizardStep.validation}
           enableReinitialize
         >
-          {({ values }) => {
+          {({ values, errors }) => {
             if (productVariant !== values?.productType?.productVariant) {
               setProductVariant(values?.productType?.productVariant);
             }
+            console.log("errors", errors);
             return (
               <Form onKeyPress={onKeyPress}>
                 {isPreviewVisible ? (

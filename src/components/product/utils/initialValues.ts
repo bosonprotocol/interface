@@ -61,6 +61,10 @@ export const productVariantsInitialValues = {
   }
 };
 
+export const productVariantsImagesInitialValues = {
+  productVariantsImages: []
+};
+
 export const productImagesInitialValues = {
   productImages: {
     thumbnail: undefined,
@@ -147,6 +151,7 @@ export const initialValues: CreateProductForm = {
   ...productVariantsInitialValues,
   ...productInformationInitialValues,
   ...productImagesInitialValues,
+  ...productVariantsImagesInitialValues,
   ...coreTermsOfSaleInitialValues,
   ...termsOfExchangeInitialValues,
   ...shippingInfoInitialValues,

@@ -36,19 +36,6 @@ export const productTypeValidationSchema = Yup.object({
   })
 });
 
-export const productImagesValidationSchema = Yup.object({
-  productImages: Yup.object({
-    thumbnail: validationOfRequiredIpfsImage(),
-    secondary: validationOfIpfsImage(),
-    everyAngle: validationOfIpfsImage(),
-    details: validationOfIpfsImage(),
-    inUse: validationOfIpfsImage(),
-    styledScene: validationOfIpfsImage(),
-    sizeAndScale: validationOfIpfsImage(),
-    more: validationOfIpfsImage()
-  })
-});
-
 function testPrice(price: number | null | undefined) {
   if (!price) {
     return true;
@@ -77,8 +64,14 @@ function testPrice(price: number | null | undefined) {
 
 export const productVariantsValidationSchema = Yup.object({
   productVariants: Yup.object({
-    colors: Yup.array(Yup.string()),
-    sizes: Yup.array(Yup.string()),
+    colors: Yup.array(Yup.string()).min(
+      1,
+      "You have to define at least one color"
+    ),
+    sizes: Yup.array(Yup.string()).min(
+      1,
+      "You have to define at least one size"
+    ),
     variants: Yup.array(
       Yup.object({
         color: Yup.string().required("Color is required"),
@@ -103,8 +96,41 @@ export const productVariantsValidationSchema = Yup.object({
           .nullable()
           .required("Quantity is required")
           .min(1, "Must be greater than or equal to 1")
-      }).concat(productImagesValidationSchema)
-    ).required()
+      })
+    )
+      .required()
+      .min(1, "You have to define at least one variant")
+  })
+});
+
+export const productImagesValidationSchema = Yup.object({
+  productImages: Yup.object({
+    thumbnail: validationOfRequiredIpfsImage(),
+    secondary: validationOfIpfsImage(),
+    everyAngle: validationOfIpfsImage(),
+    details: validationOfIpfsImage(),
+    inUse: validationOfIpfsImage(),
+    styledScene: validationOfIpfsImage(),
+    sizeAndScale: validationOfIpfsImage(),
+    more: validationOfIpfsImage()
+  })
+});
+
+export const productVariantsImagesValidationSchema = Yup.object({
+  productVariantsImages: Yup.array(
+    Yup.object().concat(productImagesValidationSchema)
+    // .test({
+    //   name: "test1",
+    //   test: function (value, context) {
+    //     console.log("valueee", value, context, this);
+    //     return true;
+    //   }
+    // })
+  ).test({
+    name: "minLength",
+    test: function (value) {
+      return value?.length === this.parent.productVariants.variants.length;
+    }
   })
 });
 

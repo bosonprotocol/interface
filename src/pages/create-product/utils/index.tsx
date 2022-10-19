@@ -13,6 +13,7 @@ import {
   productImagesValidationSchema,
   productInformationValidationSchema,
   productTypeValidationSchema,
+  productVariantsImagesValidationSchema,
   productVariantsValidationSchema,
   shippingInfoValidationSchema,
   termsOfExchangeValidationSchema
@@ -147,7 +148,7 @@ export const createProductSteps = ({
     ),
     validation: isOneSetOfImages
       ? productImagesValidationSchema
-      : productVariantsValidationSchema,
+      : productVariantsImagesValidationSchema,
     helpSection: productImagesHelp,
     stepNo: "productImages"
   };

@@ -33,7 +33,7 @@ const Table = styled.table`
 const getColorSizeKey = (color: string, size: string) => `${color}_${size}`;
 
 export default function ProductVariants() {
-  const { nextIsDisabled, values, errors } = useCreateForm();
+  const { nextIsDisabled } = useCreateForm();
   const [fieldColors] =
     useField<ProductVariantsType["productVariants"]["colors"]>(
       variantsColorsKey
@@ -77,17 +77,7 @@ export default function ProductVariants() {
             price: null,
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
-            quantity: null,
-            productImages: {
-              thumbnail: null as unknown as undefined,
-              secondary: null as unknown as undefined,
-              everyAngle: null as unknown as undefined,
-              details: null as unknown as undefined,
-              inUse: null as unknown as undefined,
-              styledScene: null as unknown as undefined,
-              sizeAndScale: null as unknown as undefined,
-              more: null as unknown as undefined
-            }
+            quantity: null
           });
         }
       }
