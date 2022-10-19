@@ -20,7 +20,7 @@ interface Props {
   refetch: () => void;
 }
 
-export function RetractDisputeModal({
+export default function RetractDisputeModal({
   hideModal,
   exchangeId,
   offerName,

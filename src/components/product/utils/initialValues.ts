@@ -120,7 +120,7 @@ export const shippingInfoInitialValues = {
     height: "",
     width: "",
     length: "",
-    returnPeriod: CONFIG.minimumReturnPeriodInDays.toString(),
+    returnPeriod: CONFIG.defaultReturnPeriodInDays.toString(),
     returnPeriodUnit: OPTIONS_PERIOD[0]
   }
 } as const;

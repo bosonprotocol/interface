@@ -29,7 +29,6 @@ export default function useOffersBacked({
     }
     exchangesTokens?.forEach((exchangeToken) => {
       const key = exchangeToken?.symbol;
-      // TODO: BP416 - Offers Backed Filter Offers
       const notExpiredAndNotVoidedOffers = exchangeToken?.offers?.filter(
         (offer: Offer) => {
           const now = dayjs();

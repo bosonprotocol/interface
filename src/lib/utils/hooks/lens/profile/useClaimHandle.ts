@@ -124,7 +124,7 @@ async function claimHandle(
       async () => {
         try {
           const events = await contract.queryFilter(filter, blockNumber);
-          console.log("events in polling", events);
+          console.log("[useClaimHandle] events in polling", events);
           if (!events.length) {
             return false;
           }
@@ -161,7 +161,7 @@ async function claimHandle(
     );
 
     const profile = await getLensProfile({
-      handle: `${request.handle}${CONFIG.lens.lensHandleExtension}`
+      handle: `${request.handle.trim()}${CONFIG.lens.lensHandleExtension}`
     });
     return profile.id;
   }

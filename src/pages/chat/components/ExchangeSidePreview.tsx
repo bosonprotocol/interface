@@ -331,6 +331,7 @@ export default function ExchangeSidePreview({
               { name: "Resolve or Escalate", steps: 1 }
             ]}
             active={isInDispute && !isEscalated ? 2 : 3}
+            hideArrows
           />
         </Section>
       )}

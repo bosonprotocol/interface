@@ -6,6 +6,7 @@ import { colors } from "../../../lib/styles/colors";
 import { loadAndSetImage } from "../../../lib/utils/base64";
 import bytesToSize from "../../../lib/utils/bytesToSize";
 import Button from "../../ui/Button";
+import Loading from "../../ui/Loading";
 import Typography from "../../ui/Typography";
 import Error from "../Error";
 import {
@@ -21,6 +22,8 @@ import {
   WithUploadToIpfs,
   WithUploadToIpfsProps
 } from "./WithUploadToIpfs";
+
+export type UploadFileType = File | FileProps;
 
 function Upload({
   name,
@@ -38,6 +41,7 @@ function Upload({
   loadImage,
   ...props
 }: UploadProps & WithUploadToIpfsProps) {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [preview, setPreview] = useState<string | null>();
   const [field, meta, helpers] = useField(name);
 
@@ -53,8 +57,7 @@ function Upload({
     [helpers]
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const files = field.value as any;
+  const files = field.value as UploadFileType[];
 
   useEffect(() => {
     onFilesSelect?.(files);
@@ -62,9 +65,9 @@ function Upload({
 
     if (!multiple && accept === "image/*" && files && files?.length !== 0) {
       if (withUpload) {
-        loadIpfsImagePreview(files[0]);
+        loadIpfsImagePreview(files[0] as FileProps);
       } else {
-        loadAndSetImage(files[0], (base64Uri) => {
+        loadAndSetImage(files[0] as File, (base64Uri) => {
           setPreview(base64Uri);
           onLoadSinglePreviewImage?.(base64Uri);
         });
@@ -73,11 +76,13 @@ function Upload({
   }, [files]); // eslint-disable-line
 
   const loadIpfsImagePreview = async (file: FileProps) => {
-    if (!file.src) {
+    const fileSrc = file && file?.src ? file?.src : false;
+    if (!fileSrc) {
       return false;
     }
-    const imagePreview: string = await loadImage(file?.src);
+    const imagePreview: string = await loadImage(fileSrc || "");
     setPreview(imagePreview);
+    setIsLoading(false);
     onLoadSinglePreviewImage?.(imagePreview);
   };
 
@@ -129,10 +134,11 @@ function Upload({
 
   const handleSave = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
+      setIsLoading(true);
       const files: FileProps[] = await saveToIpfs(e);
       setFiles(files);
     },
-    [saveToIpfs, setFiles]
+    [saveToIpfs, setFiles, setIsLoading]
   );
 
   return (
@@ -161,14 +167,20 @@ function Upload({
             onClick={handleChooseFile}
             error={errorMessage}
           >
-            {field.value && field.value?.length !== 0 && preview && (
-              <ImagePreview src={preview} />
-            )}
-            <Image size={24} />
-            {placeholder && (
-              <Typography tag="p" style={{ marginBottom: "0" }}>
-                {placeholder}
-              </Typography>
+            {isLoading ? (
+              <Loading size={2} />
+            ) : (
+              <>
+                {field.value && field.value?.length !== 0 && preview && (
+                  <ImagePreview src={preview} />
+                )}
+                <Image size={24} />
+                {placeholder && (
+                  <Typography tag="p" style={{ marginBottom: "0" }}>
+                    {placeholder}
+                  </Typography>
+                )}
+              </>
             )}
           </FileUploadWrapper>
         )}

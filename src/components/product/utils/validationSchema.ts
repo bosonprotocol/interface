@@ -75,12 +75,6 @@ export const productVariantsValidationSchema = Yup.object({
       name: "minLength",
       message: "You have to define at least one size",
       test: function (value) {
-        console.log(
-          "sizes validation",
-          value,
-          "ok?",
-          !!value && (value.length || 0) > 0
-        );
         return !!value && (value.length || 0) > 0;
       }
     }),

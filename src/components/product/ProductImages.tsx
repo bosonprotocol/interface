@@ -3,8 +3,10 @@ import styled from "styled-components";
 
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
+import bytesToSize from "../../lib/utils/bytesToSize";
 import { Select, Upload } from "../form";
 import FormField from "../form/FormField";
+import { MAX_FILE_SIZE } from "../form/Upload/WithUploadToIpfs";
 import Tabs from "../tabs/Tabs";
 import Button from "../ui/Button";
 import Grid from "../ui/Grid";
@@ -160,7 +162,9 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
       </Grid>
       <FormField
         title="Upload your product images"
-        subTitle="You can disable images for variants that shouldn't be shown. Use a max. size of 600Kb per image"
+        subTitle={`You can disable images for variants that shouldn't be shown. Use a max. size of ${bytesToSize(
+          MAX_FILE_SIZE
+        )} per image`}
         style={{
           marginBottom: 0
         }}

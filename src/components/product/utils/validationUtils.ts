@@ -24,19 +24,35 @@ export const validationOfRequiredImage = (size: number) =>
     )
     .test(
       "fileSize",
-      `File size cannot exceed more than ${bytesToSize(size)}!`,
+      `Image size cannot exceed more than ${bytesToSize(size)}!`,
       (value) =>
         !value || (value && value.length !== 0 && value[0].size <= size)
     )
     .test(
       "FILE_FORMAT",
-      "Uploaded file has unsupported format!",
+      "Image has unsupported format!",
       (value) =>
         !value ||
         (value &&
           value.length !== 0 &&
           SUPPORTED_FILE_FORMATS.includes(value[0].type))
     );
+
+export const validationOfImageFormatIfPresent = () =>
+  Yup.mixed<File[]>()
+    .test(
+      "fileUploaded",
+      "You need to upload an image",
+      (value) => !value || (value && value.length !== 0)
+    )
+    .test("FILE_FORMAT", "Image has unsupported format!", (value) => {
+      return (
+        !(value && value.length > 0) ||
+        (value &&
+          value.length !== 0 &&
+          SUPPORTED_FILE_FORMATS.includes(value[0].type))
+      );
+    });
 
 export const validationOfImage = (size: number) =>
   Yup.mixed()
@@ -50,7 +66,7 @@ export const validationOfImage = (size: number) =>
     )
     .test(
       "FILE_FORMAT",
-      "Uploaded file has unsupported format!",
+      "File has unsupported format!",
       (value) =>
         !(value && value.length > 0) ||
         (value &&

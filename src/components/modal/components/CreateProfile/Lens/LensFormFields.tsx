@@ -4,21 +4,27 @@ import { FormField, Input, Textarea, Upload } from "../../../../form";
 interface Props {
   disable: boolean;
   onBlurName?: () => void;
+  mode: "view" | "edit";
 }
 
-export default function LensFormFields({ disable, onBlurName }: Props) {
+export default function LensFormFields({ disable, onBlurName, mode }: Props) {
+  const isEdit = mode === "edit";
   return (
     <>
       <FormField
         title="Logo / profile picture"
-        subTitle="Upload a profile image with a max. size of 300Kb"
+        subTitle={
+          isEdit ? "Upload a profile image with a max. size of 300Kb" : ""
+        }
         required
       >
         <Upload name="logo" multiple={false} disabled={disable} />
       </FormField>
       <FormField
         title="Cover picture"
-        subTitle="Upload a profile image with a max. size of 300Kb"
+        subTitle={
+          isEdit ? "Upload a profile image with a max. size of 300Kb" : ""
+        }
         required
       >
         <Upload name="coverPicture" multiple={false} disabled={disable} />

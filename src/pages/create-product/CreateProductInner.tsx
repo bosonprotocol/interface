@@ -420,28 +420,44 @@ function CreateProductInner({
     );
   };
   const formikRef = useRef<FormikProps<CreateProductForm>>(null);
-  const wizardSteps = createProductSteps({
-    setIsPreviewVisible,
+
+  const wizardStep = useMemo(() => {
+    const wizard = createProductSteps({
+      setIsPreviewVisible,
+      chatInitializationStatus,
+      showCreateProductDraftModal,
+      isDraftModalClosed,
+      showInvalidRoleModal,
+      isMultiVariant,
+      onChangeOneSetOfImages: setIsOneSetOfImages,
+      isOneSetOfImages
+    });
+    return {
+      currentStep:
+        wizard?.[currentStep as keyof CreateProductSteps]?.ui || null,
+      currentValidation:
+        wizard?.[currentStep as keyof CreateProductSteps]?.validation || null,
+      helpSection:
+        wizard?.[currentStep as keyof CreateProductSteps]?.helpSection || null,
+      wizardLength: keys(wizard).length - 1
+    };
+  }, [
     chatInitializationStatus,
     showCreateProductDraftModal,
     isDraftModalClosed,
     showInvalidRoleModal,
     isMultiVariant,
-    onChangeOneSetOfImages: setIsOneSetOfImages,
-    isOneSetOfImages
-  });
-  const wizardLength = keys(wizardSteps).length - 1;
-  const wizardStep = useMemo(() => {
-    return wizardSteps[currentStep as keyof CreateProductSteps];
-  }, [wizardSteps, currentStep]);
+    isOneSetOfImages,
+    currentStep
+  ]);
   const handleNextForm = useCallback(() => {
     if (isPreviewVisible) {
       setIsPreviewVisible(false);
     }
-    if (currentStep < wizardLength) {
-      setCurrentStep(currentStep + 1);
+    if (currentStep < wizardStep.wizardLength) {
+      setCurrentStep((prev) => prev + 1);
     }
-  }, [currentStep, isPreviewVisible, wizardLength, setCurrentStep]);
+  }, [currentStep, isPreviewVisible, wizardStep.wizardLength, setCurrentStep]);
 
   const handleClickStep = (val: number) => {
     if (isPreviewVisible) {
@@ -452,10 +468,7 @@ function CreateProductInner({
     }
   };
 
-  const handleSendData = async (
-    values: CreateProductForm,
-    formikBag: FormikHelpers<CreateProductForm>
-  ) => {
+  const handleSendData = async (values: CreateProductForm) => {
     const {
       coreTermsOfSale,
       createYourProfile,
@@ -804,7 +817,6 @@ function CreateProductInner({
       }
 
       hideModal();
-      formikBag.resetForm();
     } catch (error: any) {
       // TODO: FAILURE MODAL
       console.error("error->", error.errors ?? error.toString());
@@ -821,8 +833,8 @@ function CreateProductInner({
     values: CreateProductForm,
     formikBag: FormikHelpers<CreateProductForm>
   ) => {
-    if (currentStep === wizardLength) {
-      return handleSendData(values, formikBag);
+    if (currentStep === wizardStep.wizardLength) {
+      return handleSendData(values);
     }
     formikBag.setTouched({});
     return handleNextForm();
@@ -869,7 +881,7 @@ function CreateProductInner({
             saveItemInStorage("create-product", newValues);
             return handleSubmit(formikVal, formikBag);
           }}
-          validationSchema={wizardStep.validation}
+          validationSchema={wizardStep.currentValidation}
           enableReinitialize
         >
           {({ values }) => {
@@ -884,7 +896,7 @@ function CreateProductInner({
                     seller={currentOperator as any}
                   />
                 ) : (
-                  wizardStep.ui
+                  wizardStep.currentStep
                 )}
               </Form>
             );

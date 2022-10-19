@@ -1,5 +1,5 @@
 import { Formik } from "formik";
-import { ArrowLeft, ArrowRight } from "phosphor-react";
+import { ArrowLeft } from "phosphor-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { generatePath, useParams } from "react-router-dom";
@@ -141,46 +141,32 @@ function DisputeCentre() {
   return (
     <>
       <Grid alignItems="center" gap="2.5rem" flex="1 0">
-        <Grid alignItems="center">
-          <ArrowLeft
-            size={32}
-            color={currentStep === 0 ? colors.lightArrowColor : colors.darkGrey}
-            onClick={() => {
-              if (isLteS) {
-                setCurrentStep(currentStep - 1);
-              } else {
+        {!isLteS && (
+          <Grid alignItems="center">
+            <ArrowLeft
+              size={32}
+              color={
+                currentStep === 0 ? colors.lightArrowColor : colors.darkGrey
+              }
+              onClick={() => {
                 navigate({
                   pathname: generatePath(BosonRoutes.Exchange, {
                     [UrlParameters.exchangeId]: exchangeId as string
                   })
                 });
-              }
-            }}
-          />
-        </Grid>
+              }}
+            />
+          </Grid>
+        )}
         <Grid padding={isLteS ? "2.5rem 0" : "0.5rem 0"}>
           <MultiSteps
             data={DISPUTE_STEPS}
             active={currentStep}
             callback={handleClickStep}
             disableInactiveSteps
+            isRightArrowEnabled={isRightArrowEnabled}
           />
         </Grid>
-        {isLteS && (
-          <Grid alignItems="center">
-            <ArrowRight
-              size={32}
-              color={
-                isRightArrowEnabled ? colors.darkGrey : colors.lightArrowColor
-              }
-              onClick={() => {
-                if (isRightArrowEnabled) {
-                  setCurrentStep(currentStep + 1);
-                }
-              }}
-            />
-          </Grid>
-        )}
       </Grid>
       <DisputeContainer
         flexDirection="column"

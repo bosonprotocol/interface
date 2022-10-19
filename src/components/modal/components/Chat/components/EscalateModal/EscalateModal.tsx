@@ -1,4 +1,3 @@
-import { ArrowLeft, ArrowRight } from "phosphor-react";
 import { useState } from "react";
 import styled from "styled-components";
 
@@ -49,14 +48,6 @@ const StyledButtonGrid = styled(Grid)<{ isLteS: boolean }>`
 
 const buttonSteps = ["Next"];
 
-const StyledButton = styled.button`
-  border: none;
-  background: none;
-  &:disabled {
-    color: ${colors.lightGrey};
-  }
-`;
-
 const multiStepsData = [
   { steps: 1, name: "Dispute Context" },
   { steps: 1, name: "Escalate Dispute" }
@@ -83,16 +74,6 @@ function EscalateModal({ exchange, refetch }: Props) {
         isLteS={isLteS}
         padding={isLteS ? "0 0 0.625rem 0" : "0"}
       >
-        {isLteS && (
-          <StyledButton
-            onClick={() => {
-              setActiveStep(activeStep - 1);
-            }}
-            disabled={activeStep === 0}
-          >
-            <ArrowLeft size={27} />
-          </StyledButton>
-        )}
         <StyledMultiSteps
           data={multiStepsData}
           callback={(step) => {
@@ -101,16 +82,6 @@ function EscalateModal({ exchange, refetch }: Props) {
           active={activeStep}
           disableInactiveSteps
         />
-        {isLteS && (
-          <StyledButton
-            onClick={() => {
-              setActiveStep(activeStep + 1);
-            }}
-            disabled={activeStep === 2}
-          >
-            <ArrowRight size={27} />
-          </StyledButton>
-        )}
       </StyledButtonGrid>
       <InnerContainer>
         <StyledGrid padding="2rem">

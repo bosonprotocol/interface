@@ -22,6 +22,10 @@ export const AccountQueryParameters = {
   manageFunds: "manageFunds"
 } as const;
 
+export const TabQueryParameters = {
+  exchange: "exchange"
+} as const;
+
 export const UrlParameters = {
   offerId: "id",
   uuid: "uuid",
