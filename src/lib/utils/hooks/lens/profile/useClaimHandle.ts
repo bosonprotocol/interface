@@ -161,7 +161,7 @@ async function claimHandle(
     );
 
     const profile = await getLensProfile({
-      handle: `${request.handle}${CONFIG.lens.lensHandleExtension}`
+      handle: `${request.handle.trim()}${CONFIG.lens.lensHandleExtension}`
     });
     return profile.id;
   }
