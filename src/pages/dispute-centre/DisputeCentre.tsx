@@ -239,7 +239,7 @@ function DisputeCentre() {
                   const tx = await coreSDK.raiseDispute(exchange.id);
                   showModal("WAITING_FOR_CONFIRMATION");
                   showModal("TRANSACTION_SUBMITTED", {
-                    action: "Cancel",
+                    action: "Raise dispute",
                     txHash: tx.hash
                   });
                   await tx.wait();
