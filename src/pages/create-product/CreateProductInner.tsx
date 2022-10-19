@@ -488,10 +488,18 @@ function CreateProductInner({
       };
 
       showModal("WAITING_FOR_CONFIRMATION");
-      const txResponse =
-        !hasSellerAccount && address
-          ? await coreSDK.createSellerAndOffer(
-              {
+
+      const isMetaTx = Boolean(coreSDK.isMetaTxConfigSet && address);
+
+      let txReceipt;
+      if (isMetaTx) {
+        // meta-transaction
+        if (!hasSellerAccount && address) {
+          // createSeller with meta-transaction
+          const nonce = Date.now();
+          const { r, s, v, functionName, functionSignature } =
+            await coreSDK.signMetaTxCreateSeller({
+              createSellerArgs: {
                 operator: address,
                 admin: address,
                 treasury: address,
@@ -501,14 +509,67 @@ function CreateProductInner({
                 authTokenId: "0",
                 authTokenType: authTokenTypes.NONE
               },
-              offerData
-            )
-          : await coreSDK.createOffer(offerData);
-      showModal("TRANSACTION_SUBMITTED", {
-        action: "Create offer",
-        txHash: txResponse.hash
-      });
-      const txReceipt = await txResponse.wait();
+              nonce,
+              chainId: CONFIG.chainId
+            });
+          const createSellerResponse = await coreSDK.relayMetaTransaction({
+            functionName,
+            functionSignature,
+            sigR: r,
+            sigS: s,
+            sigV: v,
+            nonce
+          });
+          showModal("TRANSACTION_SUBMITTED", {
+            action: "Create seller",
+            txHash: createSellerResponse.hash
+          });
+          await createSellerResponse.wait();
+        }
+        // createOffer with meta-transaction
+        const nonce = Date.now();
+        const { r, s, v, functionName, functionSignature } =
+          await coreSDK.signMetaTxCreateOffer({
+            createOfferArgs: offerData,
+            nonce,
+            chainId: CONFIG.chainId
+          });
+        const createOfferResponse = await coreSDK.relayMetaTransaction({
+          functionName,
+          functionSignature,
+          sigR: r,
+          sigS: s,
+          sigV: v,
+          nonce
+        });
+        showModal("TRANSACTION_SUBMITTED", {
+          action: "Create offer",
+          txHash: createOfferResponse.hash
+        });
+        txReceipt = await createOfferResponse.wait();
+      } else {
+        const txResponse =
+          !hasSellerAccount && address
+            ? await coreSDK.createSellerAndOffer(
+                {
+                  operator: address,
+                  admin: address,
+                  treasury: address,
+                  clerk: address,
+                  contractUri: "ipfs://sample",
+                  royaltyPercentage: "0",
+                  authTokenId: "0",
+                  authTokenType: authTokenTypes.NONE
+                },
+                offerData
+              )
+            : await coreSDK.createOffer(offerData);
+        showModal("TRANSACTION_SUBMITTED", {
+          action: "Create offer",
+          txHash: txResponse.hash
+        });
+        txReceipt = await txResponse.wait();
+      }
 
       const offerId = coreSDK.getCreatedOfferIdFromLogs(txReceipt.logs);
       let createdOffer: OfferFieldsFragment | null = null;
