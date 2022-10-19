@@ -42,9 +42,6 @@ const SpaceContainer = styled.div`
   }
 `;
 
-import bytesToSize from "../../lib/utils/bytesToSize";
-import { MAX_FILE_SIZE } from "../form/Upload/WithUploadToIpfs";
-
 export default function ProductImages() {
   const { nextIsDisabled } = useCreateForm();
 
