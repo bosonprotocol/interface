@@ -3,8 +3,10 @@ import { CONFIG } from "./../config";
 function returnPeriodValue(msg: string) {
   return this.test("returnPeriodValue", function (value: string) {
     const numberValue = value && Number(value);
-
-    if (numberValue && numberValue < CONFIG.minimumReturnPeriodInDays) {
+    if (
+      numberValue !== undefined &&
+      numberValue < CONFIG.minimumReturnPeriodInDays
+    ) {
       throw this.createError({
         path: this.path,
         message:
