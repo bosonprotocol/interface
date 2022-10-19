@@ -7,7 +7,7 @@ import { useSaveImageToIpfs } from "../../../lib/utils/hooks/useSaveImageToIpfs"
 import ErrorToast from "../../toasts/common/ErrorToast";
 import Typography from "../../ui/Typography";
 
-export const MAX_FILE_SIZE = 600 * 1024;
+export const MAX_FILE_SIZE = 20 * 1024 * 1024;
 export const SUPPORTED_FORMATS = [
   "image/jpg",
   "image/jpeg",

@@ -40,6 +40,9 @@ const SpaceContainer = styled.div`
   }
 `;
 
+import bytesToSize from "../../lib/utils/bytesToSize";
+import { MAX_FILE_SIZE } from "../form/Upload/WithUploadToIpfs";
+
 export default function ProductImages() {
   const { nextIsDisabled } = useCreateForm();
 
@@ -48,7 +51,9 @@ export default function ProductImages() {
       <SectionTitle tag="h2">Product Images</SectionTitle>
       <FormField
         title="Upload your product images"
-        subTitle="You can disable images for variants that shouldn't be shown. Use a max. size of 600Kb per image"
+        subTitle={`You can disable images for variants that shouldn't be shown. Use a max. size of ${bytesToSize(
+          MAX_FILE_SIZE
+        )} per image`}
         style={{
           marginBottom: 0
         }}
