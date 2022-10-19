@@ -33,8 +33,11 @@ export const createProposal = async ({
   const userName = isSeller
     ? `Seller ID: ${sellerOrBuyerId}`
     : `Buyer ID: ${sellerOrBuyerId}`; // TODO: change to get real username
+  const isItProposal = proposalFields?.proposalTypeName !== "";
   const proposal: NewProposal = {
-    title: `${userName} made a proposal`,
+    title: isItProposal
+      ? `${userName} made a proposal`
+      : `${userName} raised a dispute`,
     description: proposalFields.description,
     proposals:
       proposalFields.proposalTypeName && proposalFields.refundPercentage
@@ -58,7 +61,6 @@ export const createProposal = async ({
     });
     proposal.proposals[0].signature = utils.joinSignature(signature);
   }
-
   const proposalFiles = proposalFields.upload;
   const filesWithData = await getFilesWithEncodedData(proposalFiles);
   return {

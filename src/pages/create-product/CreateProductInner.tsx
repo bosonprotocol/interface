@@ -219,10 +219,7 @@ function CreateProductInner({
     }
   };
 
-  const handleSendData = async (
-    values: CreateProductForm,
-    formikBag: FormikHelpers<CreateProductForm>
-  ) => {
+  const handleSendData = async (values: CreateProductForm) => {
     const {
       coreTermsOfSale,
       createYourProfile,
@@ -540,7 +537,6 @@ function CreateProductInner({
         />
       ));
       hideModal();
-      formikBag.resetForm();
     } catch (error: any) {
       // TODO: FAILURE MODAL
       console.error("error->", error.errors ?? error.toString());
@@ -558,7 +554,7 @@ function CreateProductInner({
     formikBag: FormikHelpers<CreateProductForm>
   ) => {
     if (currentStep === wizardStep.wizardLength) {
-      return handleSendData(values, formikBag);
+      return handleSendData(values);
     }
     formikBag.setTouched({});
     return handleNextForm();

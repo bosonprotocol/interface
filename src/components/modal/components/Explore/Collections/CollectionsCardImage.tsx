@@ -1,6 +1,5 @@
 import { Image } from "@bosonprotocol/react-kit";
 import { CameraSlash } from "phosphor-react";
-import React from "react";
 import styled from "styled-components";
 
 import { colors } from "../../../../../lib/styles/colors";

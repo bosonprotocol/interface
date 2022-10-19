@@ -2,8 +2,10 @@ import styled from "styled-components";
 
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
+import bytesToSize from "../../lib/utils/bytesToSize";
 import { Upload } from "../form";
 import FormField from "../form/FormField";
+import { MAX_FILE_SIZE } from "../form/Upload/WithUploadToIpfs";
 import Button from "../ui/Button";
 import { ProductButtonGroup, SectionTitle } from "./Product.styles";
 import { useCreateForm } from "./utils/useCreateForm";
@@ -48,7 +50,9 @@ export default function ProductImages() {
       <SectionTitle tag="h2">Product Images</SectionTitle>
       <FormField
         title="Upload your product images"
-        subTitle="You can disable images for variants that shouldn't be shown. Use a max. size of 600Kb per image"
+        subTitle={`You can disable images for variants that shouldn't be shown. Use a max. size of ${bytesToSize(
+          MAX_FILE_SIZE
+        )} per image`}
         style={{
           marginBottom: 0
         }}

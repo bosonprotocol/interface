@@ -21,7 +21,7 @@ export const loadAndSetImage = (
     const prev = e.target?.result?.toString() || "";
     callback(prev);
   };
-  reader.readAsDataURL(image);
+  reader.readAsDataURL(image as File);
 };
 
 export const loadAndSetImagePromise = (image: File) => {

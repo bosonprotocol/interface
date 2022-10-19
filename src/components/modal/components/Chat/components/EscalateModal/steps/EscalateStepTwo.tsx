@@ -71,6 +71,11 @@ export const FormModel = {
       value: "disputes@redeemeum.com",
       disabled: true
     },
+    subject: {
+      name: "subject",
+      requiredErrorMessage: "This field is required",
+      disabled: true
+    },
     exchangeId: {
       name: "exchangeId",
       requiredErrorMessage: "This field is required",
@@ -110,6 +115,9 @@ const validationSchemaPerStep = [
     [FormModel.formFields.exchangeId.name]: Yup.string()
       .trim()
       .required(FormModel.formFields.exchangeId.requiredErrorMessage),
+    [FormModel.formFields.subject.name]: Yup.string()
+      .trim()
+      .required(FormModel.formFields.subject.requiredErrorMessage),
     [FormModel.formFields.buyerAddress.name]: Yup.string()
       .trim()
       .required(FormModel.formFields.buyerAddress.requiredErrorMessage),
@@ -160,6 +168,8 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
         .name]: `I, ${address}, wish to escalate the dispute relating to exchange with ID: ${exchange.id}`,
       [emailFormField.name]: emailFormField.value,
       [FormModel.formFields.exchangeId.name]: `Exchange ID: ${exchange?.id}`,
+      [FormModel.formFields.subject
+        .name]: `Escalated Dispute (ID: ${exchange?.id})`,
       [FormModel.formFields.disputeId.name]: `Dispute ID: ${
         exchange?.dispute?.id || exchange?.id
       }`,
@@ -316,10 +326,19 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
                   >
                     <Input {...emailFormField} />
                   </FormField>
-
                   <FormField
                     theme="white"
-                    title="Authentication message"
+                    title="Email Subject"
+                    valueToCopy={{
+                      [FormModel.formFields.subject
+                        .name]: `Escalated Dispute (ID: ${exchange.id})`
+                    }}
+                  >
+                    <Input {...FormModel.formFields.subject} />
+                  </FormField>
+                  <FormField
+                    theme="white"
+                    title="Email Body"
                     valueToCopy={{
                       [FormModel.formFields.exchangeId.name]:
                         values?.exchangeId || "",

@@ -71,7 +71,7 @@ export function useDisputeSubStatusInfo(exchange: Exchange | null) {
         dayjs(
           getDateTimestamp(exchange.dispute.escalatedDate) +
             getDateTimestamp(
-              exchange.offer.disputeResolver.escalationResponsePeriod
+              exchange.offer?.disputeResolver?.escalationResponsePeriod
             )
         ).isAfter(currentTime)
       ) {
@@ -103,7 +103,7 @@ export function useDisputeSubStatusInfo(exchange: Exchange | null) {
         dayjs(
           getDateTimestamp(exchange.dispute.escalatedDate) +
             getDateTimestamp(
-              exchange.offer.disputeResolver.escalationResponsePeriod
+              exchange.offer?.disputeResolver?.escalationResponsePeriod
             )
         ).isBefore(currentTime)
       ) {

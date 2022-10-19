@@ -2,6 +2,7 @@ import { subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { CaretDown, CaretLeft, CaretRight, CaretUp } from "phosphor-react";
 import { useMemo } from "react";
+import toast from "react-hot-toast";
 import { generatePath } from "react-router-dom";
 import { usePagination, useRowSelect, useSortBy, useTable } from "react-table";
 
@@ -9,6 +10,7 @@ import { CONFIG } from "../../../lib/config";
 import { UrlParameters } from "../../../lib/routing/parameters";
 import { BosonRoutes } from "../../../lib/routing/routes";
 import { colors } from "../../../lib/styles/colors";
+import copyToClipboard from "../../../lib/utils/copyToClipboard";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import { Disputes } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
@@ -95,6 +97,10 @@ export default function DisputesTable({ disputes }: Props) {
         }
 
         const offer = dispute.exchange.offer;
+        const emailAddress =
+          dispute?.exchange?.offer?.metadata?.productV1Seller?.contactLinks?.find(
+            (e) => e.tag === "email"
+          )?.url || false;
 
         return {
           offerId: offer?.id,
@@ -156,50 +162,71 @@ export default function DisputesTable({ disputes }: Props) {
               </span>
             </Typography>
           ),
-          action: dispute.state === subgraph.DisputeState.Escalated && (
+          action: (
             <>
-              <Button
-                theme="bosonSecondary"
-                size="small"
-                style={{ "margin-right": "5px" }}
-                onClick={async () => {
-                  showModal(
-                    modalTypes.DISPUTE_RESOLUTION_REFUSE_MODAL,
-                    {
-                      title: `Refuse to Decide Dispute: ${dispute.exchange.id}`,
-                      exchangeId: dispute.exchange.id,
-                      offer: dispute.exchange.offer
-                    },
-                    "auto",
-                    "dark"
-                  );
-                }}
-              >
-                Refuse
-              </Button>
-              <Button
-                theme="primary"
-                size="small"
-                onClick={async () => {
-                  showModal(
-                    modalTypes.DISPUTE_RESOLUTION_DECIDE_MODAL,
-                    {
-                      title: `Decide Dispute: ${dispute.exchange.id}`,
-                      exchangeId: dispute.exchange.id,
-                      offer: dispute.exchange.offer,
-                      currencySymbol:
-                        dispute.exchange.offer?.exchangeToken?.symbol ?? "",
-                      value: dispute.exchange.offer?.price ?? "",
-                      decimals:
-                        dispute.exchange.offer?.exchangeToken?.decimals ?? ""
-                    },
-                    "auto",
-                    "dark"
-                  );
-                }}
-              >
-                Decide
-              </Button>
+              {emailAddress && (
+                <Button
+                  type="button"
+                  theme="ghostSecondary"
+                  size="small"
+                  style={{
+                    whiteSpace: "pre"
+                  }}
+                  onClick={() => {
+                    copyToClipboard(emailAddress).then(() => {
+                      toast(() => "Seller e-mail has been copied to clipboard");
+                    });
+                  }}
+                >
+                  Copy E-Mail
+                </Button>
+              )}
+              {dispute.state === subgraph.DisputeState.Escalated && (
+                <>
+                  <Button
+                    theme="orangeInverse"
+                    size="small"
+                    onClick={async () => {
+                      showModal(
+                        modalTypes.DISPUTE_RESOLUTION_REFUSE_MODAL,
+                        {
+                          title: `Refuse to Decide Dispute: ${dispute.exchange.id}`,
+                          exchangeId: dispute.exchange.id,
+                          offer: dispute.exchange.offer
+                        },
+                        "auto",
+                        "dark"
+                      );
+                    }}
+                  >
+                    Refuse
+                  </Button>
+                  <Button
+                    theme="primary"
+                    size="small"
+                    onClick={async () => {
+                      showModal(
+                        modalTypes.DISPUTE_RESOLUTION_DECIDE_MODAL,
+                        {
+                          title: `Decide Dispute: ${dispute.exchange.id}`,
+                          exchangeId: dispute.exchange.id,
+                          offer: dispute.exchange.offer,
+                          currencySymbol:
+                            dispute.exchange.offer?.exchangeToken?.symbol ?? "",
+                          value: dispute.exchange.offer?.price ?? "",
+                          decimals:
+                            dispute.exchange.offer?.exchangeToken?.decimals ??
+                            ""
+                        },
+                        "auto",
+                        "dark"
+                      );
+                    }}
+                  >
+                    Decide
+                  </Button>
+                </>
+              )}
             </>
           )
         };
