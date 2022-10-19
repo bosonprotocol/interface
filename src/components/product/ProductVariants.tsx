@@ -108,7 +108,11 @@ export default function ProductVariants() {
   return (
     <ContainerProductPage>
       <SectionTitle tag="h2">Product Variants</SectionTitle>
-      <FormField title="Create new variants" required subTitle="Lorem ipsum">
+      <FormField
+        title="Create new variants"
+        required
+        subTitle="Add color & size variants to your product."
+      >
         <>
           <TagsInput
             placeholder={"Add color variants"}

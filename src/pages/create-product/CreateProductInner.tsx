@@ -600,9 +600,9 @@ function CreateProductInner({
       const offersToCreate: offers.CreateOfferArgs[] = [];
       if (isMultiVariant) {
         const { variants = [] } = values.productVariants;
-        const variantsForMetadataCreation: {
-          productVariant: productV1.ProductV1Variant;
-        }[] = [];
+        const variantsForMetadataCreation: Parameters<
+          typeof productV1["createVariantProductMetadata"]
+        >[1] = [];
         const variations: productV1.ProductV1Variant = [];
         const visualImages: productV1.ProductBase["visuals_images"] = [];
         const allVariationsWithSameImages =
@@ -618,22 +618,33 @@ function CreateProductInner({
           const { color, size } = variant;
           const typeOptions = [
             {
-              type: "size",
+              type: "Size",
               option: size
             },
             {
-              type: "color",
+              type: "Color",
               option: color
             }
           ];
           variations.push(...typeOptions);
-          variantsForMetadataCreation.push({
-            productVariant: typeOptions
-          });
+
           if (!allVariationsWithSameImages && productImages) {
             const variantVisualImages = extractVisualImages(productImages);
 
+            variantsForMetadataCreation.push({
+              productVariant: typeOptions,
+              productOverrides: {
+                visuals_images: variantVisualImages
+              }
+            });
             visualImages.push(...variantVisualImages);
+          } else {
+            variantsForMetadataCreation.push({
+              productVariant: typeOptions,
+              productOverrides: {
+                visuals_images: visualImages
+              }
+            });
           }
         }
         const productV1Metadata = getProductV1Metadata({
