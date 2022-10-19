@@ -36,7 +36,7 @@ export const getOffers = async (props: UseOffersProps) => {
     quantityAvailable_lte: props.quantityAvailable_lte,
     quantityAvailable_gte: props.quantityAvailable_gte,
     type: props.type,
-    sellerCurationList: props.sellerCurationList || [],
+    sellerCurationList: props?.sellerCurationList || [],
     offerCurationList: props.offerCurationList || [],
     first: props.first,
     skip: props.skip,
@@ -61,6 +61,10 @@ export const getOffers = async (props: UseOffersProps) => {
     voided: props.voided === true || props.voided === false
   };
 
+  console.log(
+    "🚀  roberto --  ~ file: getOffers.ts ~ line 65 ~ getOffers ~ variables",
+    variables
+  );
   return fetchCurationListOffers(props, getOffersQueryArgs, variables);
 };
 
@@ -98,6 +102,10 @@ export async function getOfferById(
     voided: props.voided === true || props.voided === false
   };
 
+  console.log(
+    "🚀  roberto --  ~ file: getOffers.ts ~ line 113 ~ variables",
+    variables
+  );
   const [offer] = await fetchCurationListOffers(
     props,
     getOffersQueryArgs,
@@ -123,6 +131,10 @@ async function fetchCurationListOffers(
     ? props.offerCurationList || []
     : null;
 
+  console.log(
+    "🚀  roberto --  ~ file: getOffers.ts ~ line 120 ~ sellerCurationList",
+    sellerCurationList
+  );
   const getSellerCurationListOffersQuery = buildGetOffersQuery({
     ...getOffersQueryArgs,
     sellerCurationList: !!sellerCurationList,

@@ -13,6 +13,10 @@ const Container = styled.div`
 
 export default function ContractualAgreement() {
   const { [UrlParameters.offerId]: offerId } = useParams();
+  console.log(
+    "🚀  roberto --  ~ file: ContractualAgreement.tsx ~ line 16 ~ ContractualAgreement ~ offerId",
+    offerId
+  );
 
   const {
     data: offer,

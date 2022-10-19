@@ -123,6 +123,12 @@ export function WithAllOffers<P>(
 
     const filterOptions = useMemo(() => {
       const filterByName = params?.[ExploreQueryParameters.name] || false;
+      const sellerCurationList =
+        params?.[ExploreQueryParameters.sellerCurationList] || false;
+      console.log(
+        "🚀  roberto --  ~ file: WithAllOffers.tsx ~ line 126 ~ filterOptions ~ params",
+        params
+      );
       const sortByParam =
         params?.[ExploreQueryParameters.sortBy]?.includes("price:asc") ||
         params?.[ExploreQueryParameters.sortBy]?.includes("price:desc") ||
@@ -148,6 +154,12 @@ export function WithAllOffers<P>(
         payload = {
           ...basePayload,
           name: filterByName
+        };
+      }
+      if (sellerCurationList !== false) {
+        payload = {
+          ...basePayload,
+          sellerCurationList: sellerCurationList
         };
       }
       if (sortByParam !== false) {
@@ -179,6 +191,10 @@ export function WithAllOffers<P>(
             isSortable: orderBy === "price"
           };
         }
+        console.log(
+          "🚀  roberto --  ~ file: WithAllOffers.tsx ~ line 192 ~ filterOptions ~ payload",
+          payload
+        );
       }
       return pick(payload, [
         "name",
@@ -186,7 +202,8 @@ export function WithAllOffers<P>(
         "isSortable",
         "orderBy",
         "orderDirection",
-        "validFromDate_lte"
+        "validFromDate_lte",
+        "sellerCurationList"
       ]) as FilterOptions;
     }, [params]);
 
