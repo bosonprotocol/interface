@@ -31,7 +31,9 @@ interface Props {
 }
 export default function CoreTermsOfSale({ isMultiVariant }: Props) {
   const { nextIsDisabled, values } = useCreateForm();
+
   const prefix = isMultiVariant ? "variantsCoreTermsOfSale" : "coreTermsOfSale";
+
   return (
     <ContainerProductPage>
       <SectionTitle tag="h2">Core Terms of Sale</SectionTitle>
@@ -87,31 +89,31 @@ export default function CoreTermsOfSale({ isMultiVariant }: Props) {
         {values.coreTermsOfSale.tokenGatedOffer.value === "true" && (
           <>
             <TokengatedInfoWrapper>
-              <div>
-                <FormField title="Variant">
-                  <Select
-                    name="coreTermsOfSale.tokengatedvariants"
-                    options={TOKEN_GATED_VARIANTS}
-                  />
-                </FormField>
-              </div>
+              <FormField title="Variant" style={{ margin: "1rem 0 0 0" }}>
+                <Select
+                  name="coreTermsOfSale.tokengatedvariants"
+                  options={TOKEN_GATED_VARIANTS}
+                />
+              </FormField>
+            </TokengatedInfoWrapper>
+
+            <FormField title="Token Contract" style={{ margin: "1rem 0 0 0" }}>
+              <Input name="coreTermsOfSale.tokencontract" type="string" />
+            </FormField>
+
+            <TokengatedInfoWrapper>
+              <FormField title="Token Type:" style={{ margin: "1rem 0 0 0" }}>
+                <Select
+                  name="coreTermsOfSale.tokentype"
+                  options={TOKEN_TYPES}
+                />
+              </FormField>
 
               <div>
-                <FormField title="Token Contract">
-                  <Input name="coreTermsOfSale.tokencontract" type="string" />
-                </FormField>
-              </div>
-
-              <div>
-                <FormField title="Token Type:">
-                  <Select
-                    name="coreTermsOfSale.tokentype"
-                    options={TOKEN_TYPES}
-                  />
-                </FormField>
-              </div>
-              <div>
-                <FormField title="Token Gating Description:">
+                <FormField
+                  title="Token Gating Description:"
+                  style={{ margin: "1rem 0 0 0" }}
+                >
                   <Textarea
                     name="coreTermsOfSale.tokenGatingDesc"
                     placeholder="Token Gating Description"
@@ -123,7 +125,7 @@ export default function CoreTermsOfSale({ isMultiVariant }: Props) {
               {values.coreTermsOfSale.tokentype?.value ===
                 TOKEN_TYPES[1].value && (
                 <div>
-                  <FormField title="Criteria:">
+                  <FormField title="Criteria:" style={{ margin: "1rem 0 0 0" }}>
                     <Select
                       name="coreTermsOfSale.tokencriteria"
                       options={TOKEN_CRITERIA}
@@ -138,7 +140,10 @@ export default function CoreTermsOfSale({ isMultiVariant }: Props) {
                   TOKEN_TYPES[0].value ||
                 values.coreTermsOfSale.tokentype?.value ===
                   TOKEN_TYPES[2].value) && (
-                <FormField title="Min Balance:">
+                <FormField
+                  title="Min Balance:"
+                  style={{ margin: "1rem 0 0 0" }}
+                >
                   <Input name="coreTermsOfSale.minBalance" type="number" />
                 </FormField>
               )}
@@ -148,7 +153,7 @@ export default function CoreTermsOfSale({ isMultiVariant }: Props) {
                   TOKEN_TYPES[1].value) ||
                 values.coreTermsOfSale.tokentype?.value ===
                   TOKEN_TYPES[2].value) && (
-                <FormField title="TokenId:">
+                <FormField title="TokenId:" style={{ margin: "1rem 0 0 0" }}>
                   <Input name="coreTermsOfSale.tokenId" type="number" />
                 </FormField>
               )}
@@ -187,5 +192,4 @@ const TokengatedInfoWrapper = styled.div`
   display: grid;
   grid-template-columns: minmax(8.75rem, 1fr) 4fr;
   grid-gap: 1rem;
-  margin-top: 2rem;
 `;
