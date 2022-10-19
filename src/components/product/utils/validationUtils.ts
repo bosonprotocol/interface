@@ -9,21 +9,7 @@ export const validationOfRequiredIpfsImage = () =>
     "fileUploaded",
     "You need to upload an image",
     function (value) {
-      console.log(
-        "validationOfRequiredIpfsImage value",
-        value,
-        this.path,
-        this,
-        { isInvalid: !value || (value && value.length !== 0) }
-      );
-      if (!value || (value && value.length !== 0)) {
-        throw this.createError({
-          path: this.path,
-          message: "You need to upload an image"
-        });
-      }
-      return true;
-      // return !(!value || (value && value.length !== 0));
+      return !!(value && value?.[0]?.src);
     }
   );
 

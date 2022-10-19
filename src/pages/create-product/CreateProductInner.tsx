@@ -10,11 +10,11 @@ import { parseUnits } from "@ethersproject/units";
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
-import { Form, Formik, FormikHelpers } from "formik";
+import { Form, Formik, FormikHelpers, FormikProps } from "formik";
 import isArray from "lodash/isArray";
 import keys from "lodash/keys";
 import map from "lodash/map";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { generatePath } from "react-router-dom";
 import uuid from "react-uuid";
@@ -419,7 +419,7 @@ function CreateProductInner({
       "auto"
     );
   };
-
+  const formikRef = useRef<FormikProps<CreateProductForm>>(null);
   const wizardSteps = createProductSteps({
     setIsPreviewVisible,
     chatInitializationStatus,
@@ -471,8 +471,8 @@ function CreateProductInner({
     const profileImageLink = createYourProfile?.logo?.[0]?.src;
     const productMainImageLink: string | undefined = isMultiVariant
       ? productVariantsImages?.find((variant) => {
-          return variant.productImages?.thumbnail?.[0]?.src;
-        })?.productImages?.thumbnail?.[0]?.src
+          return variant.images?.thumbnail?.[0]?.src;
+        })?.images?.thumbnail?.[0]?.src
       : productImages?.thumbnail?.[0]?.src;
 
     const productAttributes: Array<{
@@ -601,8 +601,7 @@ function CreateProductInner({
           visualImages.push(...variantVisualImages);
         }
         for (const [index, variant] of Object.entries(variants)) {
-          const productImages =
-            productVariantsImages?.[Number(index)].productImages;
+          const productImages = productVariantsImages?.[Number(index)].images;
           const { color, size } = variant;
           const typeOptions = [
             {
@@ -848,7 +847,10 @@ function CreateProductInner({
     },
     []
   );
-
+  useEffect(() => {
+    formikRef?.current?.validateForm();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOneSetOfImages]);
   return (
     <CreateProductWrapper>
       <MultiSteps
@@ -860,6 +862,7 @@ function CreateProductInner({
 
       <ProductLayoutContainer isPreviewVisible={isPreviewVisible}>
         <Formik<CreateProductForm>
+          innerRef={formikRef}
           initialValues={initial}
           onSubmit={(formikVal, formikBag) => {
             const newValues = handleFormikValuesBeforeSave(formikVal);

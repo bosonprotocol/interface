@@ -110,7 +110,7 @@ interface Props {
 }
 const productImagesPrefix = "productImages";
 export default function ProductImages({ onChangeOneSetOfImages }: Props) {
-  const { nextIsDisabled, values, errors, validateForm } = useCreateForm();
+  const { nextIsDisabled, values, errors, setErrors } = useCreateForm();
   const hasVariants = values.productType.productVariant === "differentVariants";
   const oneSetOfImages =
     !hasVariants || values.imagesSpecificOrAll?.value === "all";
@@ -121,9 +121,7 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
           id: variant.name || index + "",
           title: variant.name || `Variant ${index}`,
           content: (
-            <UploadImages
-              prefix={`productVariantsImages[${index}].productImages`}
-            />
+            <UploadImages prefix={`productVariantsImages[${index}].images`} />
           )
         };
       }) || []
@@ -133,11 +131,10 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
     return <div>{children}</div>;
   }, []);
   useEffect(() => {
-    console.log({ oneSetOfImages });
+    setErrors({});
     onChangeOneSetOfImages(oneSetOfImages);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [oneSetOfImages]);
-  console.log("productimages", "errors", errors, "values", values);
   return (
     <ContainerProductImage>
       <Grid>
