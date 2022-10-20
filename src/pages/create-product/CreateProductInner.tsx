@@ -284,6 +284,7 @@ function CreateProductInner({
       return attribute.trait_type.length > 0;
     });
 
+    let offerData = undefined;
     try {
       const redemptionPointUrl =
         shippingInfo.redemptionPointUrl &&
@@ -467,7 +468,7 @@ function CreateProductInner({
         }
       });
 
-      const offerData = {
+      offerData = {
         price: priceBN.toString(),
         sellerDeposit: sellerCancellationPenaltyValue.toString(),
         buyerCancelPenalty: buyerCancellationPenaltyValue.toString(),
@@ -486,64 +487,122 @@ function CreateProductInner({
         metadataUri: `ipfs://${metadataHash}`,
         metadataHash: metadataHash
       };
-
-      showModal("WAITING_FOR_CONFIRMATION");
-      const txResponse =
-        !hasSellerAccount && address
-          ? await coreSDK.createSellerAndOffer(
-              {
-                operator: address,
-                admin: address,
-                treasury: address,
-                clerk: address,
-                contractUri: "ipfs://sample",
-                royaltyPercentage: "0",
-                authTokenId: "0",
-                authTokenType: authTokenTypes.NONE
-              },
-              offerData
-            )
-          : await coreSDK.createOffer(offerData);
-      showModal("TRANSACTION_SUBMITTED", {
-        action: "Create offer",
-        txHash: txResponse.hash
-      });
-      const txReceipt = await txResponse.wait();
-
-      const offerId = coreSDK.getCreatedOfferIdFromLogs(txReceipt.logs);
-      let createdOffer: OfferFieldsFragment | null = null;
-      await poll(
-        async () => {
-          createdOffer = await coreSDK.getOfferById(offerId as string);
-          return createdOffer;
-        },
-        (offer) => {
-          return !offer;
-        },
-        500
-      );
-      if (!createdOffer) {
-        return;
-      }
-      toast((t) => (
-        <SuccessTransactionToast
-          t={t}
-          action={`Created offer: ${createdOffer?.metadata?.name}`}
-          onViewDetails={() => {
-            handleOpenSuccessModal({
-              offerInfo: createdOffer || ({} as subgraph.OfferFieldsFragment)
-            });
-          }}
-        />
-      ));
-      hideModal();
     } catch (error: any) {
       // TODO: FAILURE MODAL
-      console.error("error->", error.errors ?? error.toString());
-      const hasUserRejectedTx =
-        "code" in error &&
-        (error as unknown as { code: string }).code === "ACTION_REJECTED";
-      if (hasUserRejectedTx) {
+      console.error("error->", error.errors ?? error);
+    }
+
+    if (offerData) {
+      try {
+        showModal("WAITING_FOR_CONFIRMATION");
+        const isMetaTx = Boolean(coreSDK.isMetaTxConfigSet && address);
+        let txReceipt;
+        if (isMetaTx) {
+          // meta-transaction
+          if (!hasSellerAccount && address) {
+            // createSeller with meta-transaction
+            const nonce = Date.now();
+            const { r, s, v, functionName, functionSignature } =
+              await coreSDK.signMetaTxCreateSeller({
+                createSellerArgs: {
+                  operator: address,
+                  admin: address,
+                  treasury: address,
+                  clerk: address,
+                  contractUri: "ipfs://sample",
+                  royaltyPercentage: "0",
+                  authTokenId: "0",
+                  authTokenType: authTokenTypes.NONE
+                },
+                nonce
+              });
+            const createSellerResponse = await coreSDK.relayMetaTransaction({
+              functionName,
+              functionSignature,
+              sigR: r,
+              sigS: s,
+              sigV: v,
+              nonce
+            });
+            showModal("TRANSACTION_SUBMITTED", {
+              action: "Create seller",
+              txHash: createSellerResponse.hash
+            });
+            await createSellerResponse.wait();
+          }
+          // createOffer with meta-transaction
+          const nonce = Date.now();
+          const { r, s, v, functionName, functionSignature } =
+            await coreSDK.signMetaTxCreateOffer({
+              createOfferArgs: offerData,
+              nonce
+            });
+          const createOfferResponse = await coreSDK.relayMetaTransaction({
+            functionName,
+            functionSignature,
+            sigR: r,
+            sigS: s,
+            sigV: v,
+            nonce
+          });
+          showModal("TRANSACTION_SUBMITTED", {
+            action: "Create offer",
+            txHash: createOfferResponse.hash
+          });
+          txReceipt = await createOfferResponse.wait();
+        } else {
+          const txResponse =
+            !hasSellerAccount && address
+              ? await coreSDK.createSellerAndOffer(
+                  {
+                    operator: address,
+                    admin: address,
+                    treasury: address,
+                    clerk: address,
+                    contractUri: "ipfs://sample",
+                    royaltyPercentage: "0",
+                    authTokenId: "0",
+                    authTokenType: authTokenTypes.NONE
+                  },
+                  offerData
+                )
+              : await coreSDK.createOffer(offerData);
+          showModal("TRANSACTION_SUBMITTED", {
+            action: "Create offer",
+            txHash: txResponse.hash
+          });
+          txReceipt = await txResponse.wait();
+        }
+        const offerId = coreSDK.getCreatedOfferIdFromLogs(txReceipt.logs);
+        let createdOffer: OfferFieldsFragment | null = null;
+        await poll(
+          async () => {
+            createdOffer = await coreSDK.getOfferById(offerId as string);
+            return createdOffer;
+          },
+          (offer) => {
+            return !offer;
+          },
+          500
+        );
+        if (!createdOffer) {
+          return;
+        }
+        toast((t) => (
+          <SuccessTransactionToast
+            t={t}
+            action={`Created offer: ${createdOffer?.metadata?.name}`}
+            onViewDetails={() => {
+              handleOpenSuccessModal({
+                offerInfo: createdOffer || ({} as subgraph.OfferFieldsFragment)
+              });
+            }}
+          />
+        ));
+        hideModal();
+      } catch (error: any) {
+        console.error("error->", error);
+        // show error in all cases
         showModal("CONFIRMATION_FAILED");
       }
     }
