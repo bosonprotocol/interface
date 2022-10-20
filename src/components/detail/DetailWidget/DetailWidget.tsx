@@ -539,10 +539,12 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 }}
               >
                 <CommitButton
-                  variant="primary"
+                  variant="primaryFill"
                   isPauseCommitting={!address}
                   buttonRef={commitButtonRef}
                   onGetSignerAddress={handleOnGetSignerAddress}
+                  price="123"
+                  exchangeToken=""
                   disabled={
                     (address && isChainUnsupported) ||
                     !hasSellerEnoughFunds ||

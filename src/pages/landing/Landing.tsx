@@ -1,8 +1,8 @@
+import { Button, ButtonSize } from "@bosonprotocol/react-kit";
 import { useState } from "react";
 import styled from "styled-components";
 import useResizeObserver from "use-resize-observer";
 
-import Button from "../../components/ui/Button";
 import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
 import { ExploreQueryParameters } from "../../lib/routing/parameters";
@@ -110,7 +110,8 @@ export default function Landing() {
             <ExploreProductsButton
               data-testid="explore-all-offers"
               onClick={() => navigateToExplore()}
-              theme="primary"
+              variant="primaryFill"
+              size={ButtonSize.Large}
             >
               Explore products
             </ExploreProductsButton>

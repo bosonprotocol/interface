@@ -1,3 +1,4 @@
+import { Button } from "@bosonprotocol/react-kit";
 import { BigNumberish } from "ethers";
 import { Form, Formik, FormikProps, FormikState } from "formik";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -20,7 +21,6 @@ import Input from "../../../../../../form/Input";
 import Textarea from "../../../../../../form/Textarea";
 import ErrorToast from "../../../../../../toasts/common/ErrorToast";
 import SuccessTransactionToast from "../../../../../../toasts/SuccessTransactionToast";
-import Button from "../../../../../../ui/Button";
 import Grid from "../../../../../../ui/Grid";
 import Typography from "../../../../../../ui/Typography";
 import { useModal } from "../../../../../useModal";
@@ -281,9 +281,10 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
                     <Textarea {...FormModel.formFields.message} disabled />
                   </FormField>
                   <Button
-                    theme="bosonSecondaryInverse"
+                    variant="accentFill"
+                    style={{ color: "white" }}
                     disabled={!!errors?.message || isLoading}
-                    isLoading={isLoading}
+                    loading={isLoading}
                     onClick={() => {
                       const message = values?.message as string;
                       signMessage({ message });
@@ -372,7 +373,11 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
                     <Input {...FormModel.formFields.signature} />
                   </FormField>
                   <FormField theme="white" title="Chat transcript">
-                    <Button theme="bosonSecondaryInverse" disabled>
+                    <Button
+                      variant="accentFill"
+                      style={{ color: "white" }}
+                      disabled
+                    >
                       Download CSV
                     </Button>
                   </FormField>
@@ -412,9 +417,10 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
                     and seller
                   </Typography>
                   <Button
-                    theme="escalate"
+                    variant="secondaryFill"
+                    style={{ color: "black" }}
                     onClick={handleEscalate}
-                    isLoading={loading}
+                    loading={loading}
                     disabled={loading || values?.confirm !== true}
                   >
                     Escalate
