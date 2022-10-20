@@ -15,7 +15,8 @@ import {
   productVariantsImagesValidationSchema,
   productVariantsValidationSchema,
   shippingInfoValidationSchema,
-  termsOfExchangeValidationSchema
+  termsOfExchangeValidationSchema,
+  variantsCoreTermsOfSaleValidationSchema
 } from "./validationSchema";
 
 export type CreateYourProfile = Yup.InferType<
@@ -34,6 +35,10 @@ export type ProductVariants = Yup.InferType<
 
 export type CoreTermsOfSale = Yup.InferType<
   typeof coreTermsOfSaleValidationSchema
+>;
+
+export type VariantsCoreTermsOfSale = Yup.InferType<
+  typeof variantsCoreTermsOfSaleValidationSchema
 >;
 
 export type TermsOfExchange = Yup.InferType<
@@ -78,6 +83,7 @@ export type CreateProductForm = CreateYourProfile &
   ProductVariants &
   ShippingInfo &
   CoreTermsOfSale &
+  VariantsCoreTermsOfSale &
   TermsOfExchange &
   ProductImages &
   ProductVariantsImages &

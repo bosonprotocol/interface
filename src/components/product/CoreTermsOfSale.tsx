@@ -25,7 +25,7 @@ interface Props {
 }
 export default function CoreTermsOfSale({ isMultiVariant }: Props) {
   const { nextIsDisabled } = useCreateForm();
-
+  const prefix = isMultiVariant ? "variantsCoreTermsOfSale" : "coreTermsOfSale";
   return (
     <ContainerProductPage>
       <SectionTitle tag="h2">Core Terms of Sale</SectionTitle>
@@ -40,7 +40,7 @@ export default function CoreTermsOfSale({ isMultiVariant }: Props) {
               <div>
                 <Input
                   placeholder="Token amount"
-                  name="coreTermsOfSale.price"
+                  name={`${prefix}.price`}
                   type="number"
                   min="0"
                   step="0.0000000001"
@@ -49,7 +49,7 @@ export default function CoreTermsOfSale({ isMultiVariant }: Props) {
               <div>
                 <Select
                   placeholder="Choose currency"
-                  name="coreTermsOfSale.currency"
+                  name={`${prefix}.currency`}
                   options={OPTIONS_CURRENCIES}
                 />
               </div>
@@ -62,7 +62,7 @@ export default function CoreTermsOfSale({ isMultiVariant }: Props) {
           >
             <Input
               placeholder="Input the amount"
-              name="coreTermsOfSale.quantity"
+              name={`${prefix}.quantity`}
               type="number"
               min="1"
             />
@@ -74,7 +74,7 @@ export default function CoreTermsOfSale({ isMultiVariant }: Props) {
         subTitle="Limit the purchase of your item to users holding a specific token."
       >
         <Select
-          name="coreTermsOfSale.tokenGatedOffer"
+          name={`${prefix}.tokenGatedOffer`}
           options={OPTIONS_TOKEN_GATED}
           disabled
         />
@@ -84,18 +84,14 @@ export default function CoreTermsOfSale({ isMultiVariant }: Props) {
         required
         subTitle="Redemption period is the time in which buyers can redeem the rNFT for the physical item."
       >
-        <Datepicker name="coreTermsOfSale.redemptionPeriod" period selectTime />
+        <Datepicker name={`${prefix}.redemptionPeriod`} period selectTime />
       </FormField>
       <FormField
         title="Offer Validity period"
         required
         subTitle="The Offer validity period is the time in which buyers can commit to your offer."
       >
-        <Datepicker
-          name="coreTermsOfSale.offerValidityPeriod"
-          period
-          selectTime
-        />
+        <Datepicker name={`${prefix}.offerValidityPeriod`} period selectTime />
       </FormField>
       <ProductInformationButtonGroup>
         <Button theme="primary" type="submit" disabled={nextIsDisabled}>

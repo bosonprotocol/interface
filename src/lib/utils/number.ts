@@ -8,7 +8,7 @@
  * @param num
  * @returns
  */
-export const fixformattedString = (num: number) => {
+export const fixformattedString = (num: number): string => {
   const numStr = num + "";
   const indexEMinus = numStr.lastIndexOf("e-");
   if (numStr.includes(".") || indexEMinus === -1 || num < 1e-100) {

@@ -15,10 +15,6 @@ export const SUPPORTED_FILE_FORMATS = [
 
 export const CREATE_PRODUCT_STEPS = (isMultiVariant: boolean) => [
   {
-    name: "Profile info",
-    steps: 1
-  } as const,
-  {
     name: "Product Data",
     steps: isMultiVariant ? 4 : 3
   } as const,

@@ -57,7 +57,7 @@ import {
   ProductLayoutContainer
 } from "./CreateProductInner.styles";
 import { createProductSteps, FIRST_STEP, poll } from "./utils";
-import { ValidateDates } from "./utils/dataValidator";
+import { validateDates } from "./utils/dataValidator";
 import { CreateProductSteps } from "./utils/index";
 
 type OfferFieldsFragment = subgraph.OfferFieldsFragment;
@@ -225,7 +225,7 @@ function getProductV1Metadata({
 type GetOfferDataFromMetadataProps = {
   coreSDK: CoreSDK;
   priceBN: BigNumber;
-  sellerCancellationPenaltyValue: BigNumber;
+  sellerDeposit: BigNumber;
   buyerCancellationPenaltyValue: BigNumber;
   quantityAvailable: number;
   voucherRedeemableFromDateInMS: number;
@@ -241,7 +241,7 @@ async function getOfferDataFromMetadata(
   {
     coreSDK,
     priceBN,
-    sellerCancellationPenaltyValue,
+    sellerDeposit,
     buyerCancellationPenaltyValue,
     quantityAvailable,
     voucherRedeemableFromDateInMS,
@@ -257,7 +257,7 @@ async function getOfferDataFromMetadata(
 
   const offerData = {
     price: priceBN.toString(),
-    sellerDeposit: sellerCancellationPenaltyValue.toString(),
+    sellerDeposit: sellerDeposit.toString(),
     buyerCancelPenalty: buyerCancellationPenaltyValue.toString(),
     quantityAvailable: quantityAvailable,
     voucherRedeemableFromDateInMS: voucherRedeemableFromDateInMS.toString(),
@@ -481,11 +481,12 @@ function CreateProductInner({
     } = values;
 
     const profileImageLink = createYourProfile?.logo?.[0]?.src;
-    const productMainImageLink: string | undefined = isMultiVariant
-      ? productVariantsImages?.find((variant) => {
-          return variant.productImages?.thumbnail?.[0]?.src;
-        })?.productImages?.thumbnail?.[0]?.src
-      : productImages?.thumbnail?.[0]?.src;
+    const productMainImageLink: string | undefined =
+      isMultiVariant && !isOneSetOfImages
+        ? productVariantsImages?.find((variant) => {
+            return variant.productImages?.thumbnail?.[0]?.src;
+          })?.productImages?.thumbnail?.[0]?.src
+        : productImages?.thumbnail?.[0]?.src;
 
     const productAttributes: Array<{
       trait_type: string;
@@ -533,32 +534,30 @@ function CreateProductInner({
           ? shippingInfo.redemptionPointUrl
           : window.origin;
 
+      // if we have variants defined, then we show the first one in the preview
+      const variantIndex = 0;
+      const firstVariant = values.productVariants.variants[variantIndex];
+
+      const exchangeSymbol = isMultiVariant
+        ? firstVariant.currency.value
+        : values.coreTermsOfSale.currency.value;
       const exchangeToken = CONFIG.defaultTokens.find(
-        (n: Token) => n.symbol === coreTermsOfSale.currency.value
-      );
-      const { price } = coreTermsOfSale;
-      const priceBN = parseUnits(
-        price < 0.1 ? fixformattedString(price) : price.toString(),
-        Number(exchangeToken?.decimals || 18)
+        (n: Token) => n.symbol === exchangeSymbol
       );
 
-      // TODO: change when more than percentage unit
-      const buyerCancellationPenaltyValue = priceBN
-        .mul(parseFloat(termsOfExchange.buyerCancellationPenalty) * 1000)
-        .div(100 * 1000);
+      const commonTermsOfSale = isMultiVariant
+        ? values.variantsCoreTermsOfSale
+        : values.coreTermsOfSale;
+      const { offerValidityPeriod, redemptionPeriod } = commonTermsOfSale;
 
-      // TODO: change when more than percentage unit
-      const sellerCancellationPenaltyValue = priceBN
-        .mul(parseFloat(termsOfExchange.sellerDeposit) * 1000)
-        .div(100 * 1000);
       const {
         voucherRedeemableFromDateInMS,
         voucherRedeemableUntilDateInMS,
         validFromDateInMS,
         validUntilDateInMS
-      } = ValidateDates({
-        offerValidityPeriod: coreTermsOfSale.offerValidityPeriod,
-        redemptionPeriod: coreTermsOfSale.redemptionPeriod
+      } = validateDates({
+        offerValidityPeriod: offerValidityPeriod,
+        redemptionPeriod: redemptionPeriod
       });
 
       const disputePeriodDurationInMS =
@@ -615,7 +614,7 @@ function CreateProductInner({
         }
         for (const [index, variant] of Object.entries(variants)) {
           const productImages =
-            productVariantsImages?.[Number(index)].productImages;
+            productVariantsImages?.[Number(index)]?.productImages;
           const { color, size } = variant;
           const typeOptions = [
             {
@@ -665,23 +664,36 @@ function CreateProductInner({
           termsOfExchange,
           supportedJurisdictions
         });
-        const variantsMetadata = productV1.createVariantProductMetadata(
-          productV1Metadata,
-          variantsForMetadataCreation
-        );
+        const metadatas = isOneSetOfImages
+          ? [productV1Metadata]
+          : productV1.createVariantProductMetadata(
+              productV1Metadata,
+              variantsForMetadataCreation
+            );
         const offerDataPromises: Promise<offers.CreateOfferArgs>[] =
-          variantsMetadata.map((metadata, index) => {
+          metadatas.map((metadata, index) => {
             const exchangeToken = CONFIG.defaultTokens.find(
               (n: Token) => n.symbol === variants[index].currency.label
             );
             const price = variants[index].price;
+            const priceBN = parseUnits(
+              price < 0.1 ? fixformattedString(price) : price.toString(),
+              Number(exchangeToken?.decimals || 18)
+            );
+
+            // TODO: change when more than percentage unit
+            const buyerCancellationPenaltyValue = priceBN
+              .mul(parseFloat(termsOfExchange.buyerCancellationPenalty) * 1000)
+              .div(100 * 1000);
+
+            // TODO: change when more than percentage unit
+            const sellerDeposit = priceBN
+              .mul(parseFloat(termsOfExchange.sellerDeposit) * 1000)
+              .div(100 * 1000);
             return getOfferDataFromMetadata(metadata, {
               coreSDK,
-              priceBN: parseUnits(
-                price < 0.1 ? fixformattedString(price) : price.toString(),
-                exchangeToken?.decimals || 18
-              ),
-              sellerCancellationPenaltyValue,
+              priceBN,
+              sellerDeposit,
               buyerCancellationPenaltyValue,
               quantityAvailable: variants[index].quantity,
               voucherRedeemableFromDateInMS,
@@ -713,10 +725,25 @@ function CreateProductInner({
           termsOfExchange,
           supportedJurisdictions
         });
+        const price = coreTermsOfSale.price;
+        const priceBN = parseUnits(
+          price < 0.1 ? fixformattedString(price) : price.toString(),
+          Number(exchangeToken?.decimals || 18)
+        );
+
+        // TODO: change when more than percentage unit
+        const buyerCancellationPenaltyValue = priceBN
+          .mul(parseFloat(termsOfExchange.buyerCancellationPenalty) * 1000)
+          .div(100 * 1000);
+
+        // TODO: change when more than percentage unit
+        const sellerDeposit = priceBN
+          .mul(parseFloat(termsOfExchange.sellerDeposit) * 1000)
+          .div(100 * 1000);
         const offerData = await getOfferDataFromMetadata(productV1Metadata, {
           coreSDK,
           priceBN,
-          sellerCancellationPenaltyValue,
+          sellerDeposit,
           buyerCancellationPenaltyValue,
           quantityAvailable: coreTermsOfSale.quantity,
           voucherRedeemableFromDateInMS,
@@ -963,22 +990,25 @@ function CreateProductInner({
 
   const handleFormikValuesBeforeSave = useCallback(
     (values: CreateProductForm) => {
+      const coreTermsOfSaleKey = isMultiVariant
+        ? "variantsCoreTermsOfSale"
+        : "coreTermsOfSale";
       return {
         ...values,
-        coreTermsOfSale: {
-          ...values.coreTermsOfSale,
+        [coreTermsOfSaleKey]: {
+          ...values[coreTermsOfSaleKey],
           redemptionPeriod:
-            values?.coreTermsOfSale?.redemptionPeriod?.map((d: Dayjs) =>
+            values?.[coreTermsOfSaleKey]?.redemptionPeriod?.map((d: Dayjs) =>
               dayjs(d).format()
             ) ?? [],
           offerValidityPeriod:
-            values?.coreTermsOfSale?.offerValidityPeriod?.map((d: Dayjs) =>
+            values?.[coreTermsOfSaleKey]?.offerValidityPeriod?.map((d: Dayjs) =>
               dayjs(d).format()
             ) ?? []
         }
       };
     },
-    []
+    [isMultiVariant]
   );
   useEffect(() => {
     formikRef?.current?.validateForm();
@@ -1005,16 +1035,19 @@ function CreateProductInner({
           validationSchema={wizardStep.currentValidation}
           enableReinitialize
         >
-          {({ values }) => {
+          {({ values, errors }) => {
             if (productVariant !== values?.productType?.productVariant) {
               setProductVariant(values?.productType?.productVariant);
             }
+            console.log({ values, errors });
             return (
               <Form onKeyPress={onKeyPress}>
                 {isPreviewVisible ? (
                   <Preview
                     togglePreview={setIsPreviewVisible}
                     seller={currentOperator as any}
+                    isMultiVariant={isMultiVariant}
+                    isOneSetOfImages={isOneSetOfImages}
                   />
                 ) : (
                   wizardStep.currentStep

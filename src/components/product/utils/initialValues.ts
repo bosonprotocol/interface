@@ -89,6 +89,14 @@ export const coreTermsOfSaleInitialValues = {
   }
 };
 
+export const variantsCoreTermsOfSaleInitialValues = {
+  variantsCoreTermsOfSale: {
+    tokenGatedOffer: OPTIONS_TOKEN_GATED[0],
+    redemptionPeriod: [],
+    offerValidityPeriod: []
+  }
+};
+
 export const termsOfExchangeInitialValues = {
   termsOfExchange: {
     exchangePolicy: OPTIONS_EXCHANGE_POLICY[0],
@@ -153,6 +161,7 @@ export const initialValues: CreateProductForm = {
   ...productImagesInitialValues,
   ...productVariantsImagesInitialValues,
   ...coreTermsOfSaleInitialValues,
+  ...variantsCoreTermsOfSaleInitialValues,
   ...termsOfExchangeInitialValues,
   ...shippingInfoInitialValues,
   ...disputeCentreInitialValues,

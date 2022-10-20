@@ -73,12 +73,14 @@ interface Props {
   togglePreview: React.Dispatch<React.SetStateAction<boolean>>;
   chatInitializationStatus: ChatInitializationStatus;
   isMultiVariant: boolean;
+  isOneSetOfImages: boolean;
 }
 
 export default function ConfirmProductDetails({
   togglePreview,
   chatInitializationStatus,
-  isMultiVariant
+  isMultiVariant,
+  isOneSetOfImages
 }: Props) {
   const { bosonXmtp } = useChatContext();
 
@@ -147,6 +149,17 @@ export default function ConfirmProductDetails({
     );
   }, [values.productType.productVariant]);
 
+  const variantIndex = 0;
+  const firstVariant = values.productVariants.variants[variantIndex];
+  const quantity = isMultiVariant
+    ? firstVariant.quantity
+    : values.coreTermsOfSale?.quantity;
+  const commonTermsOfSale = isMultiVariant
+    ? values.variantsCoreTermsOfSale
+    : values.coreTermsOfSale;
+  const { offerValidityPeriod, redemptionPeriod, tokenGatedOffer } =
+    commonTermsOfSale;
+  // TODO: check if profile info is displayed correctly while using a lens profile
   return (
     <ConfirmProductDetailsContainer>
       <SectionTitle tag="h2">Confirm Product Details</SectionTitle>
@@ -298,7 +311,7 @@ export default function ConfirmProductDetails({
                 </TagsWrapper>
               </FormField>
             </FormFieldContainer>
-            {isMultiVariant ? (
+            {isMultiVariant && (
               <div>
                 <ProductSubtitle tag="h4">Variants</ProductSubtitle>
                 <VariantsTable>
@@ -308,13 +321,13 @@ export default function ConfirmProductDetails({
                       <th data-price>Price</th>
                       <th data-currency>Currency</th>
                       <th data-quantity>Quantity</th>
-                      <th data-images>Images</th>
+                      {!isOneSetOfImages && <th data-images>Images</th>}
                     </tr>
                   </thead>
                   <tbody>
                     {values.productVariants.variants.map((variant, idx) => {
                       const variantImages =
-                        values.productVariantsImages?.[idx].productImages;
+                        values.productVariantsImages?.[idx]?.productImages;
                       return (
                         <tr key={variant.name}>
                           <td data-name>
@@ -337,34 +350,37 @@ export default function ConfirmProductDetails({
                               {variant.quantity}
                             </Typography>
                           </td>
-                          <td data-images>
-                            <Grid justifyContent="flex-start" gap="0.5rem">
-                              {variantImages &&
-                                Object.entries(variantImages).map(
-                                  ([name, images]) => {
-                                    if (
-                                      !images ||
-                                      !images.length ||
-                                      !images?.[0]?.src
-                                    ) {
-                                      return null;
+                          {!isOneSetOfImages && (
+                            <td data-images>
+                              <Grid justifyContent="flex-start" gap="0.5rem">
+                                {variantImages &&
+                                  Object.entries(variantImages).map(
+                                    ([name, images]) => {
+                                      if (
+                                        !images ||
+                                        !images.length ||
+                                        !images?.[0]?.src
+                                      ) {
+                                        return null;
+                                      }
+                                      const [img] = images;
+                                      const imgSrc = img.src;
+                                      return (
+                                        <VariantImage src={imgSrc} key={name} />
+                                      );
                                     }
-                                    const [img] = images;
-                                    const imgSrc = img.src;
-                                    return (
-                                      <VariantImage src={imgSrc} key={name} />
-                                    );
-                                  }
-                                )}
-                            </Grid>
-                          </td>
+                                  )}
+                              </Grid>
+                            </td>
+                          )}
                         </tr>
                       );
                     })}
                   </tbody>
                 </VariantsTable>
               </div>
-            ) : (
+            )}
+            {(!isMultiVariant || (isMultiVariant && isOneSetOfImages)) && (
               <div>
                 <ProductSubtitle tag="h4">Product Images</ProductSubtitle>
                 <SpaceContainer>
@@ -427,9 +443,7 @@ export default function ConfirmProductDetails({
                   <GridBox $minWidth="9.5rem">
                     <FormFieldContainer>
                       <FormField title="Quantity" required>
-                        <ContentValue tag="p">
-                          {values.coreTermsOfSale.quantity}
-                        </ContentValue>
+                        <ContentValue tag="p">{quantity}</ContentValue>
                       </FormField>
                     </FormFieldContainer>
                   </GridBox>
@@ -437,7 +451,7 @@ export default function ConfirmProductDetails({
                     <FormFieldContainer>
                       <FormField title="Token Gated Offer" required>
                         <ContentValue tag="p">
-                          {values.coreTermsOfSale?.tokenGatedOffer?.label}
+                          {tokenGatedOffer?.label}
                         </ContentValue>
                       </FormField>
                     </FormFieldContainer>
@@ -454,18 +468,12 @@ export default function ConfirmProductDetails({
                 >
                   <FormField title="Redemption period" required>
                     <ContentValue tag="p">
-                      {values.coreTermsOfSale?.redemptionPeriod[0] &&
-                        values.coreTermsOfSale?.redemptionPeriod[1] && (
-                          <>
-                            {dayjs(
-                              values.coreTermsOfSale.redemptionPeriod[0]
-                            ).format("MMM DD")}{" "}
-                            -{" "}
-                            {dayjs(
-                              values.coreTermsOfSale.redemptionPeriod[1]
-                            ).format("MMM DD")}
-                          </>
-                        )}
+                      {redemptionPeriod[0] && redemptionPeriod[1] && (
+                        <>
+                          {dayjs(redemptionPeriod[0]).format("MMM DD")} -{" "}
+                          {dayjs(redemptionPeriod[1]).format("MMM DD")}
+                        </>
+                      )}
                     </ContentValue>
                   </FormField>
                 </FormFieldContainer>
@@ -478,18 +486,17 @@ export default function ConfirmProductDetails({
                 >
                   <FormField title="Offer Validity period" required>
                     <ContentValue tag="p">
-                      {values.coreTermsOfSale?.offerValidityPeriod[0] &&
-                        values.coreTermsOfSale?.offerValidityPeriod[1] && (
-                          <>
-                            {dayjs(
-                              values.coreTermsOfSale.offerValidityPeriod[0]
-                            ).format(CONFIG.shortMonthWithDay)}{" "}
-                            -{" "}
-                            {dayjs(
-                              values.coreTermsOfSale.offerValidityPeriod[1]
-                            ).format(CONFIG.shortMonthWithDay)}
-                          </>
-                        )}
+                      {offerValidityPeriod[0] && offerValidityPeriod[1] && (
+                        <>
+                          {dayjs(offerValidityPeriod[0]).format(
+                            CONFIG.shortMonthWithDay
+                          )}{" "}
+                          -{" "}
+                          {dayjs(offerValidityPeriod[1]).format(
+                            CONFIG.shortMonthWithDay
+                          )}
+                        </>
+                      )}
                     </ContentValue>
                   </FormField>
                 </FormFieldContainer>

@@ -173,6 +173,20 @@ export const productInformationValidationSchema = Yup.object({
   })
 });
 
+const commonCoreTermsOfSaleValidationSchema = {
+  tokenGatedOffer: Yup.object()
+    .shape({
+      value: Yup.string(),
+      label: Yup.string()
+    })
+    .default([{ value: "", label: "" }]),
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  offerValidityPeriod: Yup.mixed().isItBeforeNow().isOfferValidityDatesValid(), // prettier-ignore
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  redemptionPeriod: Yup.mixed().isItBeforeNow().isRedemptionDatesValid() // prettier-ignore
+};
 export const coreTermsOfSaleValidationSchema = Yup.object({
   coreTermsOfSale: Yup.object({
     price: Yup.number().nullable().required(validationMessage.required).test({
@@ -186,23 +200,15 @@ export const coreTermsOfSaleValidationSchema = Yup.object({
         label: Yup.string()
       })
       .required(validationMessage.required),
-    // currency: Yup.string().required(validationMessage.required),
-    // TODO: ADD Use price for all variants FILED
     quantity: Yup.number()
       .min(1, "Quantity must be greater than or equal to 1")
       .required(validationMessage.required),
-    tokenGatedOffer: Yup.object()
-      .shape({
-        value: Yup.string(),
-        label: Yup.string()
-      })
-      .default([{ value: "", label: "" }]),
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    offerValidityPeriod: Yup.mixed().isItBeforeNow().isOfferValidityDatesValid(), // prettier-ignore
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    redemptionPeriod: Yup.mixed().isItBeforeNow().isRedemptionDatesValid() // prettier-ignore
+    ...commonCoreTermsOfSaleValidationSchema
+  })
+});
+export const variantsCoreTermsOfSaleValidationSchema = Yup.object({
+  variantsCoreTermsOfSale: Yup.object({
+    ...commonCoreTermsOfSaleValidationSchema
   })
 });
 

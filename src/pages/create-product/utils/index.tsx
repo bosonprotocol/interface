@@ -16,7 +16,8 @@ import {
   productVariantsImagesValidationSchema,
   productVariantsValidationSchema,
   shippingInfoValidationSchema,
-  termsOfExchangeValidationSchema
+  termsOfExchangeValidationSchema,
+  variantsCoreTermsOfSaleValidationSchema
 } from "../../../components/product/utils";
 import {
   coreTermsOfSaleHelp,
@@ -125,8 +126,7 @@ export const createProductSteps = ({
       </>
     ),
     validation: productTypeValidationSchema,
-    helpSection: productTypeHelp,
-    stepNo: "productType"
+    helpSection: productTypeHelp
   };
   const productInformation = {
     ui: (
@@ -136,8 +136,7 @@ export const createProductSteps = ({
       </>
     ),
     validation: productInformationValidationSchema,
-    helpSection: productInformationHelp,
-    stepNo: "productInformation"
+    helpSection: productInformationHelp
   };
   const productImages = {
     ui: (
@@ -149,8 +148,7 @@ export const createProductSteps = ({
     validation: isOneSetOfImages
       ? productImagesValidationSchema
       : productVariantsImagesValidationSchema,
-    helpSection: productImagesHelp,
-    stepNo: "productImages"
+    helpSection: productImagesHelp
   };
   const coreTermsOfSale = {
     ui: (
@@ -159,9 +157,10 @@ export const createProductSteps = ({
         <CoreTermsOfSale isMultiVariant={isMultiVariant} />
       </>
     ),
-    validation: coreTermsOfSaleValidationSchema,
-    helpSection: coreTermsOfSaleHelp,
-    stepNo: "coreTermsOfSale"
+    validation: isMultiVariant
+      ? variantsCoreTermsOfSaleValidationSchema
+      : coreTermsOfSaleValidationSchema,
+    helpSection: coreTermsOfSaleHelp
   };
   const termsOfExchange = {
     ui: (
@@ -171,8 +170,7 @@ export const createProductSteps = ({
       </>
     ),
     validation: termsOfExchangeValidationSchema,
-    helpSection: termsOfExchangeHelp,
-    stepNo: "termsOfExchange"
+    helpSection: termsOfExchangeHelp
   };
   const shippingInfo = {
     ui: (
@@ -182,8 +180,7 @@ export const createProductSteps = ({
       </>
     ),
     validation: shippingInfoValidationSchema,
-    helpSection: shippingInfoHelp,
-    stepNo: "shippingInfo"
+    helpSection: shippingInfoHelp
   };
   const preview = {
     ui: (
@@ -193,12 +190,12 @@ export const createProductSteps = ({
           togglePreview={setIsPreviewVisible}
           chatInitializationStatus={chatInitializationStatus}
           isMultiVariant={isMultiVariant}
+          isOneSetOfImages={isOneSetOfImages}
         />
       </>
     ),
     validation: null,
-    helpSection: null,
-    stepNo: "preview"
+    helpSection: null
   };
 
   const defaultSteps = {
