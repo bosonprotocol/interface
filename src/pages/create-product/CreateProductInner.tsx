@@ -116,7 +116,7 @@ function getProductV1Metadata({
     description: `${productInformation.description}\n\nTerms for the Boson rNFT Voucher: ${licenseUrl}`,
     externalUrl,
     licenseUrl,
-    image: productMainImageLink ? `ipfs://${productMainImageLink}` : "",
+    image: productMainImageLink ? productMainImageLink : "",
     type: MetadataType.PRODUCT_V1,
     attributes: [...nftAttributes, ...additionalAttributes],
     product: {
