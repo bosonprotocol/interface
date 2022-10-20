@@ -41,15 +41,15 @@ function getMetaTxApiIds(protocolAddress: string) {
     const tokens = getDefaultTokens();
     Object.keys(apiIdsInput).forEach((key) => {
       if (key.toLowerCase() === "protocol") {
-        apiIds[protocolAddress] = {};
-        apiIds[protocolAddress][method] = apiIdsInput[key];
+        apiIds[protocolAddress.toLowerCase()] = {};
+        apiIds[protocolAddress.toLowerCase()][method] = apiIdsInput[key];
       } else {
         const token = tokens.find(
           (t: Token) => t.name.toLowerCase() === key.toLowerCase()
         );
         if (token) {
-          apiIds[token.address] = {};
-          apiIds[token.address][method] = apiIdsInput[key];
+          apiIds[token.address.toLowerCase()] = {};
+          apiIds[token.address.toLowerCase()][method] = apiIdsInput[key];
         } else {
           console.error(`Unable to resolve token with name ${key}`);
         }
