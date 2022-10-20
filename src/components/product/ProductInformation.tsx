@@ -167,7 +167,10 @@ export default function ProductInformation() {
         required
         subTitle="Input any relevant tags to make your offer stand out."
       >
-        <TagsInput name="productInformation.tags" />
+        <TagsInput
+          name="productInformation.tags"
+          transform={(tag: string) => tag.toLowerCase()}
+        />
       </FormField>
       <AddAttributesContainer
         setHasDuplicated={setHasDuplicated}

@@ -192,6 +192,7 @@ export const createProductSteps = ({
         <ConfirmProductDetails
           togglePreview={setIsPreviewVisible}
           chatInitializationStatus={chatInitializationStatus}
+          isMultiVariant={isMultiVariant}
         />
       </>
     ),

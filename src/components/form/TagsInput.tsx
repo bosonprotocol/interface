@@ -20,6 +20,9 @@ const TagsInput = ({
   placeholder,
   onAddTag,
   onRemoveTag,
+  compareTags = (tagA: string, tagB: string) =>
+    tagA.toLowerCase() === tagB.toLowerCase(),
+  transform = (tag: string) => tag,
   label
 }: TagsProps) => {
   const { validateForm } = useFormikContext();
@@ -46,10 +49,11 @@ const TagsInput = ({
       helpers.setTouched(true);
     }
 
-    if (!tags.includes(value.toLowerCase())) {
-      const newTags = [...tags, value.toLowerCase()];
+    if (!tags.find((tag) => compareTags(tag, value))) {
+      const transformedValue = transform(value);
+      const newTags = [...tags, transformedValue];
       helpers.setValue(newTags);
-      onAddTag?.(value);
+      onAddTag?.(transformedValue);
     }
   }
 

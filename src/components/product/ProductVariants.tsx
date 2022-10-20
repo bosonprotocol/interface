@@ -34,7 +34,8 @@ const Table = styled.table`
     width: 80px;
   }
 `;
-
+const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
+const capitalizeAll = (str: string) => str.toUpperCase();
 const getColorSizeKey = (color: string, size: string) => `${color}_${size}`;
 
 export default function ProductVariants() {
@@ -64,6 +65,7 @@ export default function ProductVariants() {
       const variantsToAdd: ProductVariantsType["productVariants"]["variants"] =
         [];
       const otherTags = type === "color" ? sizes : colors;
+
       for (const otherTag of otherTags) {
         const color = type === "color" ? tag : otherTag;
         const size = type !== "color" ? tag : otherTag;
@@ -125,6 +127,7 @@ export default function ProductVariants() {
               name={variantsColorsKey}
               onAddTag={(tag) => onAddTagType("color", tag)}
               onRemoveTag={(tag) => onRemoveTagType("color", tag)}
+              transform={capitalize}
               label="Color:"
             />
           </Grid>
@@ -134,6 +137,7 @@ export default function ProductVariants() {
               name={variantsSizesKey}
               onAddTag={(tag) => onAddTagType("size", tag)}
               onRemoveTag={(tag) => onRemoveTagType("size", tag)}
+              transform={capitalizeAll}
               label="Size:"
             />
           </Grid>
@@ -149,8 +153,8 @@ export default function ProductVariants() {
         <thead>
           <tr>
             <th data-name>Variant name</th>
-            <th data-currency>Currency</th>
             <th data-price>Price</th>
+            <th data-currency>Currency</th>
             <th data-quantity>Quantity</th>
             <th data-action>Action</th>
           </tr>
@@ -164,14 +168,14 @@ export default function ProductVariants() {
                     {variant.name}
                   </Typography>
                 </td>
+                <td data-price>
+                  <Input name={`${variantsKey}[${idx}].price`} type="number" />
+                </td>
                 <td data-currency>
                   <Select
                     name={`${variantsKey}[${idx}].currency`}
                     options={OPTIONS_CURRENCIES}
                   />
-                </td>
-                <td data-price>
-                  <Input name={`${variantsKey}[${idx}].price`} type="number" />
                 </td>
                 <td data-quantity>
                   <Input

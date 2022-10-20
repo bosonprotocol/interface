@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import map from "lodash/map";
 import { Warning } from "phosphor-react";
 import { useMemo } from "react";
+import styled from "styled-components";
 import { useAccount } from "wagmi";
 
 import Collapse from "../../components/collapse/Collapse";
@@ -42,19 +43,42 @@ import {
   TagsWrapper,
   TermsOfSaleContent
 } from "./ConfirmProductDetails.styles";
+import differentVariantsProduct from "./img/different-variants-product.png";
 import oneItemTypeProductSmall from "./img/one-item-product-small.png";
 import physicalProductSmall from "./img/physical-product-small.png";
 import { SectionTitle } from "./Product.styles";
 import { useCreateForm } from "./utils/useCreateForm";
 
+const VariantsTable = styled.table`
+  th:not(:first-child),
+  td:not(:first-child) {
+    padding: 5px;
+  }
+  th[data-images] {
+    text-align: left;
+  }
+`;
+
+const VariantImage = styled(Image)`
+  all: unset;
+  height: 50px;
+  width: 50px;
+  img {
+    all: unset;
+    height: 50px;
+    width: 50px;
+  }
+`;
 interface Props {
   togglePreview: React.Dispatch<React.SetStateAction<boolean>>;
   chatInitializationStatus: ChatInitializationStatus;
+  isMultiVariant: boolean;
 }
 
 export default function ConfirmProductDetails({
   togglePreview,
-  chatInitializationStatus
+  chatInitializationStatus,
+  isMultiVariant
 }: Props) {
   const { bosonXmtp } = useChatContext();
 
@@ -87,7 +111,7 @@ export default function ConfirmProductDetails({
           Product Type*
         </Typography>
         <ProductBox>
-          <img src={src} alt={description} />
+          <img src={src} alt={description} height="41" />
           <Typography tag="p">{description}</Typography>
         </ProductBox>
       </>
@@ -101,8 +125,8 @@ export default function ConfirmProductDetails({
       src = oneItemTypeProductSmall;
       description = "One Item Type";
     } else if (values.productType.productVariant === "differentVariants") {
-      // MISSING UI AND FOR NOW ONLY oneItemType available
-      // TODO: description = "Different Variants";
+      src = differentVariantsProduct;
+      description = "Different Variants";
     }
     return (
       <>
@@ -116,7 +140,7 @@ export default function ConfirmProductDetails({
           Product Variant*
         </Typography>
         <ProductBox>
-          <img src={src} alt={description} />
+          <img src={src} alt={description} height="41" />
           <Typography tag="p">{description}</Typography>
         </ProductBox>
       </>
@@ -274,22 +298,90 @@ export default function ConfirmProductDetails({
                 </TagsWrapper>
               </FormField>
             </FormFieldContainer>
-            <div>
-              <ProductSubtitle tag="h4">Product Images</ProductSubtitle>
-              <SpaceContainer>
-                {map(
-                  values?.productImages,
-                  (v, i) =>
-                    v &&
-                    v?.[0]?.src && (
-                      <Image
-                        key={`Image_${v?.[0]?.src}_${i}`}
-                        src={v?.[0]?.src || ""}
-                      />
-                    )
-                )}
-              </SpaceContainer>
-            </div>
+            {isMultiVariant ? (
+              <div>
+                <ProductSubtitle tag="h4">Variants</ProductSubtitle>
+                <VariantsTable>
+                  <thead>
+                    <tr>
+                      <th data-name>Variant name</th>
+                      <th data-price>Price</th>
+                      <th data-currency>Currency</th>
+                      <th data-quantity>Quantity</th>
+                      <th data-images>Images</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {values.productVariants.variants.map((variant, idx) => {
+                      const variantImages =
+                        values.productVariantsImages?.[idx].productImages;
+                      return (
+                        <tr key={variant.name}>
+                          <td data-name>
+                            <Typography justifyContent="center">
+                              {variant.name}
+                            </Typography>
+                          </td>
+                          <td data-price>
+                            <Typography justifyContent="center">
+                              {variant.price}
+                            </Typography>
+                          </td>
+                          <td data-currency>
+                            <Typography justifyContent="center">
+                              {variant.currency.label}
+                            </Typography>
+                          </td>
+                          <td data-quantity>
+                            <Typography justifyContent="center">
+                              {variant.quantity}
+                            </Typography>
+                          </td>
+                          <td data-images>
+                            <Grid justifyContent="flex-start" gap="0.5rem">
+                              {variantImages &&
+                                Object.entries(variantImages).map(
+                                  ([name, images]) => {
+                                    if (
+                                      !images ||
+                                      !images.length ||
+                                      !images?.[0]?.src
+                                    ) {
+                                      return null;
+                                    }
+                                    const [img] = images;
+                                    const imgSrc = img.src;
+                                    return (
+                                      <VariantImage src={imgSrc} key={name} />
+                                    );
+                                  }
+                                )}
+                            </Grid>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </VariantsTable>
+              </div>
+            ) : (
+              <div>
+                <ProductSubtitle tag="h4">Product Images</ProductSubtitle>
+                <SpaceContainer>
+                  {map(
+                    values?.productImages,
+                    (v, i) =>
+                      v &&
+                      v?.[0]?.src && (
+                        <Image
+                          key={`Image_${v?.[0]?.src}_${i}`}
+                          src={v?.[0]?.src || ""}
+                        />
+                      )
+                  )}
+                </SpaceContainer>
+              </div>
+            )}
           </ProductInformationContent>
         </Collapse>
       </CollapseContainer>
@@ -301,51 +393,57 @@ export default function ConfirmProductDetails({
               alignItems="flex-start"
               flexWrap="wrap"
             >
-              <GridBox $minWidth="16rem">
-                <FormFieldContainer>
-                  <FormField title="Price" required>
-                    <ContentValue tag="p">
-                      {values.coreTermsOfSale.price &&
-                        values.coreTermsOfSale.currency?.value &&
-                        values.coreTermsOfSale.currency?.label && (
-                          <>
-                            <Tooltip
-                              content={values.coreTermsOfSale.currency.value}
-                              wrap={false}
-                            >
-                              <CurrencyDisplay
-                                currency={
-                                  values.coreTermsOfSale.currency
-                                    .value as Currencies
-                                }
-                                height={18}
-                              />
-                            </Tooltip>
-                            {`${values.coreTermsOfSale.price} ${values.coreTermsOfSale.currency.label}`}
-                          </>
-                        )}
-                    </ContentValue>
-                  </FormField>
-                </FormFieldContainer>
-              </GridBox>
-              <GridBox $minWidth="9.5rem">
-                <FormFieldContainer>
-                  <FormField title="Quantity" required>
-                    <ContentValue tag="p">
-                      {values.coreTermsOfSale.quantity}
-                    </ContentValue>
-                  </FormField>
-                </FormFieldContainer>
-              </GridBox>
-              <GridBox>
-                <FormFieldContainer>
-                  <FormField title="Token Gated Offer" required>
-                    <ContentValue tag="p">
-                      {values.coreTermsOfSale?.tokenGatedOffer?.label}
-                    </ContentValue>
-                  </FormField>
-                </FormFieldContainer>
-              </GridBox>
+              {!isMultiVariant && (
+                <>
+                  <GridBox $minWidth="16rem">
+                    <FormFieldContainer>
+                      <FormField title="Price" required>
+                        <ContentValue tag="p">
+                          {values.coreTermsOfSale.price &&
+                            values.coreTermsOfSale.currency?.value &&
+                            values.coreTermsOfSale.currency?.label && (
+                              <>
+                                <Tooltip
+                                  content={
+                                    values.coreTermsOfSale.currency.value
+                                  }
+                                  wrap={false}
+                                >
+                                  <CurrencyDisplay
+                                    currency={
+                                      values.coreTermsOfSale.currency
+                                        .value as Currencies
+                                    }
+                                    height={18}
+                                  />
+                                </Tooltip>
+                                {`${values.coreTermsOfSale.price} ${values.coreTermsOfSale.currency.label}`}
+                              </>
+                            )}
+                        </ContentValue>
+                      </FormField>
+                    </FormFieldContainer>
+                  </GridBox>
+                  <GridBox $minWidth="9.5rem">
+                    <FormFieldContainer>
+                      <FormField title="Quantity" required>
+                        <ContentValue tag="p">
+                          {values.coreTermsOfSale.quantity}
+                        </ContentValue>
+                      </FormField>
+                    </FormFieldContainer>
+                  </GridBox>
+                  <GridBox>
+                    <FormFieldContainer>
+                      <FormField title="Token Gated Offer" required>
+                        <ContentValue tag="p">
+                          {values.coreTermsOfSale?.tokenGatedOffer?.label}
+                        </ContentValue>
+                      </FormField>
+                    </FormFieldContainer>
+                  </GridBox>
+                </>
+              )}
             </Grid>
             <Grid justifyContent="flex-start" alignItems="flex-start">
               <GridBox $minWidth="16rem">
