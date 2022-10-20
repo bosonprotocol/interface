@@ -1,3 +1,4 @@
+import { subgraph } from "@bosonprotocol/react-kit";
 import { Formik } from "formik";
 import { ArrowLeft } from "phosphor-react";
 import { useState } from "react";
@@ -23,6 +24,10 @@ import { CONFIG } from "../../lib/config";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
+import {
+  createPendingTx,
+  usePendingTransactionsStore
+} from "../../lib/utils/hooks/transactions/usePendingTransactions";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useBuyers } from "../../lib/utils/hooks/useBuyers";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
@@ -102,6 +107,7 @@ function DisputeCentre() {
     id: exchangeId,
     disputed: null
   });
+  const { addPendingTransaction } = usePendingTransactionsStore();
 
   const [exchange] = exchanges;
 
@@ -228,6 +234,16 @@ function DisputeCentre() {
                     action: "Cancel",
                     txHash: tx.hash
                   });
+                  addPendingTransaction(
+                    createPendingTx({
+                      type: subgraph.EventType.DisputeRaised,
+                      executedBy: address,
+                      accountId: exchange.buyer.id,
+                      accountType: "Buyer",
+                      hash: tx.hash
+                    })
+                  );
+
                   await tx.wait();
                   await poll(
                     async () => {
