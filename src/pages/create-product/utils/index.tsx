@@ -156,7 +156,7 @@ export const createProductSteps = ({
     ui: (
       <>
         <ScroolToID id="multisteps_wrapper" />
-        <CoreTermsOfSale />
+        <CoreTermsOfSale isMultiVariant={isMultiVariant} />
       </>
     ),
     validation: coreTermsOfSaleValidationSchema,
