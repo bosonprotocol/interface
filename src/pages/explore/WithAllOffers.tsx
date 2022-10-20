@@ -123,6 +123,9 @@ export function WithAllOffers<P>(
 
     const filterOptions = useMemo(() => {
       const filterByName = params?.[ExploreQueryParameters.name] || false;
+      const sellerCurationList =
+        params?.[ExploreQueryParameters.sellerCurationList] || false;
+
       const sortByParam =
         params?.[ExploreQueryParameters.sortBy]?.includes("price:asc") ||
         params?.[ExploreQueryParameters.sortBy]?.includes("price:desc") ||
@@ -148,6 +151,12 @@ export function WithAllOffers<P>(
         payload = {
           ...basePayload,
           name: filterByName
+        };
+      }
+      if (sellerCurationList) {
+        payload = {
+          ...basePayload,
+          sellerCurationList: sellerCurationList
         };
       }
       if (sortByParam !== false) {
@@ -186,7 +195,8 @@ export function WithAllOffers<P>(
         "isSortable",
         "orderBy",
         "orderDirection",
-        "validFromDate_lte"
+        "validFromDate_lte",
+        "sellerCurationList"
       ]) as FilterOptions;
     }, [params]);
 

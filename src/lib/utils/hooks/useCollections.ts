@@ -13,13 +13,15 @@ export function useCollections(
     validUntilDate?: string;
     exchangeOrderBy?: string;
     validFromDate_lte?: string;
+    sellerCurationList?: string;
   },
   options: {
     enabled?: boolean;
   } = {}
 ) {
+  const sellerCurationList = props?.sellerCurationList?.split(",");
   return useQuery(
-    ["sellers", props],
+    ["sellers", props, sellerCurationList],
     async () => {
       const result = await fetchSubgraph<{
         sellers: {
@@ -48,8 +50,11 @@ export function useCollections(
             $validFromDate: String
             $validUntilDate: String
             $validFromDate_lte: String
+            ${sellerCurationList ? "$sellerCurationList: [String!]" : ""}
           ) {
-            sellers(skip: $skip, first: $first) {
+            sellers(skip: $skip, first: $first where: {${
+              sellerCurationList ? "sellerId_in: $sellerCurationList" : ""
+            }}) {
               id
               exchanges {
                 id
@@ -90,7 +95,8 @@ export function useCollections(
           }
         `,
         {
-          ...props
+          ...props,
+          sellerCurationList: sellerCurationList
         }
       );
       return result?.sellers ?? [];
