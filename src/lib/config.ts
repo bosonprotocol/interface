@@ -16,7 +16,7 @@ const REACT_APP_ENABLE_SENTRY_LOGGING =
     ? stringToBoolean(process.env.REACT_APP_ENABLE_SENTRY_LOGGING)
     : ["local", "testing"].includes(config.envName);
 
-export function getDefaultTokens() {
+export function getDefaultTokens(): Token[] {
   let tokens: Token[] = [];
   try {
     tokens = JSON.parse(
@@ -30,6 +30,37 @@ export function getDefaultTokens() {
   }
   return tokens;
 }
+
+function getMetaTxApiIds(protocolAddress: string) {
+  const apiIds: Record<string, Record<string, string>> = {};
+  try {
+    const apiIdsInput = JSON.parse(
+      process.env.REACT_APP_META_TX_PROTOCOL_API_IDS || "[]"
+    );
+    const method = "executeMetaTransaction"; // At the moment, both protocol and tokens have the same method
+    const tokens = getDefaultTokens();
+    Object.keys(apiIdsInput).forEach((key) => {
+      if (key.toLowerCase() === "protocol") {
+        apiIds[protocolAddress] = {};
+        apiIds[protocolAddress][method] = apiIdsInput[key];
+      } else {
+        const token = tokens.find(
+          (t: Token) => t.name.toLowerCase() === key.toLowerCase()
+        );
+        if (token) {
+          apiIds[token.address] = {};
+          apiIds[token.address][method] = apiIdsInput[key];
+        } else {
+          console.error(`Unable to resolve token with name ${key}`);
+        }
+      }
+    });
+  } catch (e) {
+    console.error(e);
+  }
+  return apiIds;
+}
+
 const createProfileConfiguration: "LENS" | "NO_TOKEN" =
   (process.env.REACT_APP_CREATE_PROFILE_CONFIGURATION as "LENS" | "NO_TOKEN") ??
   "NO_TOKEN";
@@ -59,6 +90,11 @@ export const CONFIG = {
   sentryDSNUrl:
     "https://ff9c04ed823a4658bc5de78945961937@o992661.ingest.sentry.io/6455090",
   metaTransactionsApiKey: process.env.REACT_APP_META_TX_API_KEY,
+  metaTx: {
+    ...config.metaTx,
+    apiKey: process.env.REACT_APP_META_TX_API_KEY,
+    apiIds: getMetaTxApiIds(config.contracts.protocolDiamond)
+  },
   sellerCurationList: parseCurationList(
     process.env.REACT_APP_SELLER_CURATION_LIST
   ),

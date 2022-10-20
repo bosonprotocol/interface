@@ -555,6 +555,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                     isBuyerInsufficientFunds
                   }
                   offerId={offer.id}
+                  exchangeToken={offer.exchangeToken.address}
+                  price={offer.price}
                   envName={CONFIG.envName}
                   onError={(error) => {
                     console.error("onError", error);
