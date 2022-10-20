@@ -153,7 +153,7 @@ export function WithAllOffers<P>(
           name: filterByName
         };
       }
-      if (sellerCurationList !== false) {
+      if (sellerCurationList) {
         payload = {
           ...basePayload,
           sellerCurationList: sellerCurationList
