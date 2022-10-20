@@ -47,6 +47,7 @@ import { useCoreSDK } from "../../lib/utils/useCoreSdk";
 import {
   CreateProductWrapper,
   HelpWrapper,
+  MultiStepsContainer,
   ProductLayoutContainer
 } from "./CreateProductInner.styles";
 import {
@@ -641,12 +642,14 @@ function CreateProductInner({
 
   return (
     <CreateProductWrapper>
-      <MultiSteps
-        data={CREATE_PRODUCT_STEPS}
-        active={currentStep}
-        callback={handleClickStep}
-        disableInactiveSteps
-      />
+      <MultiStepsContainer>
+        <MultiSteps
+          data={CREATE_PRODUCT_STEPS}
+          active={currentStep}
+          callback={handleClickStep}
+          disableInactiveSteps
+        />
+      </MultiStepsContainer>
 
       <ProductLayoutContainer isPreviewVisible={isPreviewVisible}>
         <Formik<CreateProductForm>
