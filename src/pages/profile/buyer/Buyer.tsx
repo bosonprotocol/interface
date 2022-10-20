@@ -1,13 +1,13 @@
+import { Button, ButtonSize } from "@bosonprotocol/react-kit";
 import { useCallback, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import Avatar from "../../../components/avatar";
 import DetailShare from "../../../components/detail/DetailShare";
 import { Spinner } from "../../../components/loading/Spinner";
 import { useModal } from "../../../components/modal/useModal";
 import AddressText from "../../../components/offer/AddressText";
-import Button from "../../../components/ui/Button";
 import Grid from "../../../components/ui/Grid";
 import Typography from "../../../components/ui/Typography";
 import {
@@ -18,6 +18,7 @@ import { useQueryParameter } from "../../../lib/routing/useQueryParameter";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { useBuyers } from "../../../lib/utils/hooks/useBuyers";
+import { useCustomStoreQueryParameter } from "../../custom-store/useCustomStoreQueryParameter";
 import NotFound from "../../not-found/NotFound";
 import backgroundFluid from "../common/background-img.png";
 import ReadMore from "../common/ReadMore";
@@ -77,9 +78,24 @@ const ExchangesWrapper = styled(Typography)`
     padding-right: 0;
   }
 `;
+const MenageFundsButton = styled(Button)<{ $isCustomStoreFront: boolean }>`
+  ${({ $isCustomStoreFront }) => {
+    if (!$isCustomStoreFront) {
+      return "";
+    }
+    return css`
+      color: var(--accent);
+      border-color: var(--accent);
+      hover: {
+        background: var(--accent);
+      }
+    `;
+  }};
+`;
 
 export default function Buyer({ manageFundsId }: Props) {
   const { [UrlParameters.buyerId]: urlBuyerId = "" } = useParams();
+  const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
   const { isLteXS } = useBreakpoints();
   const buyerId = manageFundsId || urlBuyerId;
   const [manageFunds, setManageFundsQueryParam] = useQueryParameter(
@@ -188,9 +204,14 @@ export default function Buyer({ manageFundsId }: Props) {
               margin="1.25rem 0 0 0"
             >
               {manageFundsId && !isLteXS && (
-                <Button theme="secondary" onClick={handleManageFunds}>
+                <MenageFundsButton
+                  $isCustomStoreFront={!!isCustomStoreFront}
+                  variant="accentInverted"
+                  onClick={handleManageFunds}
+                  size={ButtonSize.Large}
+                >
                   Manage Funds
-                </Button>
+                </MenageFundsButton>
               )}
               <SocialIconContainer>
                 <DetailShareWrapper>
@@ -201,13 +222,15 @@ export default function Buyer({ manageFundsId }: Props) {
           </Grid>
           {manageFundsId && isLteXS && (
             <ManageFundMobileWrapper>
-              <Button
-                theme="secondary"
+              <MenageFundsButton
+                $isCustomStoreFront={!!isCustomStoreFront}
+                variant="accentInverted"
                 onClick={handleManageFunds}
+                size={ButtonSize.Large}
                 data-manage-funds-button
               >
                 Manage Funds
-              </Button>
+              </MenageFundsButton>
             </ManageFundMobileWrapper>
           )}
         </ProfileSectionWrapper>
