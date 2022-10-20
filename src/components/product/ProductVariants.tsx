@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { FormField, Input, Select } from "../form";
 import TagsInput from "../form/TagsInput";
 import Button from "../ui/Button";
+import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
 import {
   ContainerProductPage,
@@ -28,6 +29,10 @@ const ProductInformationButtonGroup = styled(ProductButtonGroup)`
 
 const Table = styled.table`
   width: 100%;
+  [data-price],
+  [data-quantity] {
+    width: 80px;
+  }
 `;
 
 const getColorSizeKey = (color: string, size: string) => `${color}_${size}`;
@@ -113,20 +118,26 @@ export default function ProductVariants() {
         required
         subTitle="Add color & size variants to your product."
       >
-        <>
-          <TagsInput
-            placeholder={"Add color variants"}
-            name={variantsColorsKey}
-            onAddTag={(tag) => onAddTagType("color", tag)}
-            onRemoveTag={(tag) => onRemoveTagType("color", tag)}
-          />
-          <TagsInput
-            placeholder={"Add size variants"}
-            name={variantsSizesKey}
-            onAddTag={(tag) => onAddTagType("size", tag)}
-            onRemoveTag={(tag) => onRemoveTagType("size", tag)}
-          />
-        </>
+        <Grid flexDirection="column" gap="2rem">
+          <Grid flexDirection="column">
+            <TagsInput
+              placeholder={"Add color variants"}
+              name={variantsColorsKey}
+              onAddTag={(tag) => onAddTagType("color", tag)}
+              onRemoveTag={(tag) => onRemoveTagType("color", tag)}
+              label="Color:"
+            />
+          </Grid>
+          <Grid flexDirection="column">
+            <TagsInput
+              placeholder={"Add size variants"}
+              name={variantsSizesKey}
+              onAddTag={(tag) => onAddTagType("size", tag)}
+              onRemoveTag={(tag) => onRemoveTagType("size", tag)}
+              label="Size:"
+            />
+          </Grid>
+        </Grid>
       </FormField>
       <SectionTitle tag="h2">Define Variants</SectionTitle>
       <SectionTitle tag="p">
@@ -137,49 +148,51 @@ export default function ProductVariants() {
       <Table>
         <thead>
           <tr>
-            <th>Variant name</th>
-            <th>Currency</th>
-            <th>Price</th>
-            <th>Quantity</th>
-            <th>Action</th>
+            <th data-name>Variant name</th>
+            <th data-currency>Currency</th>
+            <th data-price>Price</th>
+            <th data-quantity>Quantity</th>
+            <th data-action>Action</th>
           </tr>
         </thead>
         <tbody>
           {variants?.map((variant, idx) => {
             return (
               <tr key={variant.name}>
-                <td>
+                <td data-name>
                   <Typography justifyContent="center">
                     {variant.name}
                   </Typography>
                 </td>
-                <td>
+                <td data-currency>
                   <Select
                     name={`${variantsKey}[${idx}].currency`}
                     options={OPTIONS_CURRENCIES}
                   />
                 </td>
-                <td>
+                <td data-price>
                   <Input name={`${variantsKey}[${idx}].price`} type="number" />
                 </td>
-                <td>
+                <td data-quantity>
                   <Input
                     name={`${variantsKey}[${idx}].quantity`}
                     type="number"
                   />
                 </td>
-                <td>
-                  <Button
-                    theme="orangeInverse"
-                    size="small"
-                    onClick={() => {
-                      helpersVariants.setValue([
-                        ...variants.filter((_, index) => index !== idx)
-                      ]);
-                    }}
-                  >
-                    Remove
-                  </Button>
+                <td data-action>
+                  <Grid justifyContent="center">
+                    <Button
+                      theme="orangeInverse"
+                      size="small"
+                      onClick={() => {
+                        helpersVariants.setValue([
+                          ...variants.filter((_, index) => index !== idx)
+                        ]);
+                      }}
+                    >
+                      Remove
+                    </Button>
+                  </Grid>
                 </td>
               </tr>
             );

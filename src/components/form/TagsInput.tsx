@@ -3,6 +3,8 @@ import { useField, useFormikContext } from "formik";
 import { KeyReturn } from "phosphor-react";
 import { useEffect } from "react";
 
+import Grid from "../ui/Grid";
+import Typography from "../ui/Typography";
 import Error from "./Error";
 import { FieldInput } from "./Field.styles";
 import {
@@ -13,7 +15,13 @@ import {
 } from "./styles/TagsInput.styles";
 import { TagsProps } from "./types";
 
-const TagsInput = ({ name, placeholder, onAddTag, onRemoveTag }: TagsProps) => {
+const TagsInput = ({
+  name,
+  placeholder,
+  onAddTag,
+  onRemoveTag,
+  label
+}: TagsProps) => {
   const { validateForm } = useFormikContext();
   const [field, meta, helpers] = useField<string[]>(name);
   const tags = field.value || [];
@@ -59,20 +67,23 @@ const TagsInput = ({ name, placeholder, onAddTag, onRemoveTag }: TagsProps) => {
   }, [field.value]);
   return (
     <>
-      <TagContainer>
-        <FieldInput
-          onKeyDown={handleKeyDown}
-          type="text"
-          placeholder={placeholder || "Choose tags..."}
-          name={name}
-          onBlur={handleBlur}
-          error={errorMessage}
-        />
-        <Helper>
-          Hit Enter <KeyReturn size={16} />
-        </Helper>
-      </TagContainer>
-      <TagContainer>
+      <Grid gap="0.5rem" alignItems="center">
+        {label && <Typography>{label}</Typography>}
+        <TagContainer>
+          <FieldInput
+            onKeyDown={handleKeyDown}
+            type="text"
+            placeholder={placeholder || "Choose tags..."}
+            name={name}
+            onBlur={handleBlur}
+            error={errorMessage}
+          />
+          <Helper>
+            Hit Enter <KeyReturn size={16} />
+          </Helper>
+        </TagContainer>
+      </Grid>
+      <TagContainer style={{ marginTop: "1em" }}>
         {tags.map((tag: string, index: number) => (
           <TagWrapper key={`tags-wrapper_${tag}`}>
             <span className="text">{tag}</span>

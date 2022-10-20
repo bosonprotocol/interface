@@ -52,6 +52,7 @@ export type TagsProps = BaseProps &
   React.InputHTMLAttributes<HTMLInputElement> & {
     onAddTag?: (value: string) => void;
     onRemoveTag?: (value: string) => void;
+    label?: string;
   };
 
 export interface SelectDataProps<Value extends string = string> {

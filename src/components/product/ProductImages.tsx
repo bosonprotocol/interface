@@ -35,13 +35,14 @@ const SpaceContainer = styled.div`
   display: grid;
   grid-column-gap: 2rem;
   grid-row-gap: 2rem;
+  justify-content: space-between;
 
-  grid-template-columns: repeat(1, minmax(0, 1fr));
+  grid-template-columns: repeat(1, max-content);
   ${breakpoint.xs} {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, max-content);
   }
   ${breakpoint.m} {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(4, max-content);
   }
 `;
 
