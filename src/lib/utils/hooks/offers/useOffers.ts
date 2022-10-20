@@ -22,10 +22,6 @@ export function useOffers(
     ["offers", props],
     async () => {
       const offersList = await getOffers(props);
-      console.log(
-        "🚀  roberto --  ~ file: useOffers.ts ~ line 25 ~ offersList",
-        offersList
-      );
 
       // sort the offers by price
       const orderedOffers = offersList.sort((a, b) => {

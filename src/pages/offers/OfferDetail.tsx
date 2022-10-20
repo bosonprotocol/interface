@@ -25,10 +25,6 @@ import { useSellers } from "../../lib/utils/hooks/useSellers";
 
 export default function OfferDetail() {
   const { [UrlParameters.offerId]: offerId } = useParams();
-  console.log(
-    "🚀  roberto --  ~ file: OfferDetail.tsx ~ line 28 ~ OfferDetail ~ offerId",
-    offerId
-  );
 
   const {
     data: offer,

@@ -27,11 +27,6 @@ function Explore({
   pageOptions,
   filterOptions
 }: WithAllOffersProps) {
-  console.log("🚀  roberto --  ~ file: Explore.tsx ~ line 30 ~ params", params);
-  console.log(
-    "🚀  roberto --  ~ file: Explore.tsx ~ line 30 ~ filterOptions",
-    filterOptions
-  );
   const location = useLocation();
   const navigate = useKeepQueryParamsNavigate();
   const [pageIndex, setPageIndex] = useState<number | null>(
@@ -46,19 +41,12 @@ function Explore({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageIndex]);
 
-  // const sellerCurationList = filterOptions?.sellerCurationList?.split(",");
-  // console.log(
-  //   "🚀  roberto --  ~ file: useCollections.ts ~ line 38 ~ sample",
-  //   sellerCurationList
-  // );
-
   const { data, isLoading: collectionsIsLoading } = useCollections(
     { ...filterOptions },
     {
       enabled: !!filterOptions?.orderBy
     }
   );
-  console.log("🚀  roberto --  ~ file: Explore.tsx ~ line 45 ~ data", data);
 
   const collections = useMemo(() => {
     const filtered = data?.filter((item) => item.offers.length > 0);

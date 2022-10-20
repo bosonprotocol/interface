@@ -76,10 +76,6 @@ const FeaturedOffers: React.FC<IFeaturedOffers> = ({
     orderBy: "numberOfCommits",
     orderDirection: "desc"
   });
-  console.log(
-    "🚀  roberto --  ~ file: FeaturedOffers.tsx ~ line 79 ~ offers",
-    offers
-  );
 
   return (
     <Root data-testid={"featureOffers"}>
