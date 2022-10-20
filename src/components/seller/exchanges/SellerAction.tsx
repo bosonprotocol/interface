@@ -1,9 +1,15 @@
-import { exchanges as ExchangesKit, subgraph } from "@bosonprotocol/react-kit";
+import {
+  Button as ReactKitButton,
+  ButtonSize,
+  exchanges as ExchangesKit,
+  subgraph
+} from "@bosonprotocol/react-kit";
 import { Chat } from "phosphor-react";
 import { generatePath, NavigateOptions, Path } from "react-router-dom";
 
 import { UrlParameters } from "../../../lib/routing/parameters";
 import { BosonRoutes } from "../../../lib/routing/routes";
+import { colors } from "../../../lib/styles/colors";
 import { useDisputeSubStatusInfo } from "../../../lib/utils/hooks/useDisputeSubStatusInfo";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { SellerRolesProps } from "../../../lib/utils/hooks/useSellerRoles";
@@ -37,9 +43,12 @@ export const SellerResolveDisputeButton = ({
   const { status } = useDisputeSubStatusInfo(exchange);
   if (!exchange || status !== "Resolving") {
     return (
-      <Button
-        theme="ghostSecondary"
-        size="small"
+      <ReactKitButton
+        variant="accentInverted"
+        style={{
+          borderColor: colors.border
+        }}
+        size={ButtonSize.Small}
         onClick={() => {
           if (exchange?.id) {
             generatePathAndNavigate({ exchangeId: exchange?.id, navigate });
@@ -47,13 +56,13 @@ export const SellerResolveDisputeButton = ({
         }}
       >
         Chat <Chat size={14} />
-      </Button>
+      </ReactKitButton>
     );
   }
 
   return (
     <Button
-      theme="primary"
+      variant="primary"
       size="small"
       disabled={!sellerRoles?.isOperator}
       tooltip="This action is restricted to only the operator wallet"
@@ -89,7 +98,7 @@ export const SellerActionButton = ({
     <Grid justifyContent="flex-end" gap="1rem">
       {exchange && isCompletable(exchange) && (
         <Button
-          theme="bosonPrimary"
+          theme="primary"
           size="small"
           disabled={!sellerRoles?.isOperator}
           tooltip="This action is restricted to only the operator wallet"
@@ -121,7 +130,7 @@ export const SellerActionButton = ({
       </Button>
       {status === subgraph.ExchangeState.Committed && (
         <Button
-          theme="orangeInverse"
+          theme="ghostSecondary"
           size="small"
           disabled={!sellerRoles?.isOperator}
           tooltip="This action is restricted to only the operator wallet"

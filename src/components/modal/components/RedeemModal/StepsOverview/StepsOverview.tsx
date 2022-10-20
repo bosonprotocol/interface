@@ -1,3 +1,4 @@
+import { Button } from "@bosonprotocol/react-kit";
 import { Check } from "phosphor-react";
 import styled from "styled-components";
 
@@ -5,7 +6,6 @@ import { colors } from "../../../../../lib/styles/colors";
 import Step from "../../../../../pages/landing/Step";
 import { CommitStep, CommitStepWrapper } from "../../../../detail/Detail.style";
 import FairExchangePolicy from "../../../../exchangePolicy/FairExchangePolicy";
-import Button from "../../../../ui/Button";
 import Grid from "../../../../ui/Grid";
 
 const StyledCommitStepWrapper = styled(CommitStepWrapper)`
@@ -43,7 +43,11 @@ export default function StepsOverview({ onNextClick }: Props) {
         bulletPointIcon={<Check size={16} color={colors.secondary} />}
       />
       <Grid padding="2rem 0 0 0" justifyContent="space-between">
-        <Button theme="primary" onClick={() => onNextClick()} withBosonStyle>
+        <Button
+          variant="primaryFill"
+          onClick={() => onNextClick()}
+          withBosonStyle
+        >
           Next
         </Button>
       </Grid>

@@ -1,3 +1,4 @@
+import { Button as ReactKitButton, ButtonSize } from "@bosonprotocol/react-kit";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
@@ -41,7 +42,7 @@ const DisputeListHeader = styled.div<{ isLteS: boolean }>`
   }
 `;
 
-const SubmitButton = styled(Button)`
+const SubmitButton = styled(ReactKitButton)`
   div {
     font-weight: 600;
   }
@@ -89,8 +90,8 @@ function DisputeList() {
           >
             <SubmitButton
               type="submit"
-              theme="primary"
-              size="small"
+              variant="primaryFill"
+              size={ButtonSize.Small}
               onClick={() => {
                 navigate({
                   pathname: BosonRoutes.YourAccount,

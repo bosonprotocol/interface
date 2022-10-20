@@ -1,3 +1,4 @@
+import { Button } from "@bosonprotocol/react-kit";
 import { Warning } from "phosphor-react";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -16,7 +17,6 @@ import Collapse from "../../../../collapse/Collapse";
 import SimpleError from "../../../../error/SimpleError";
 import { Spinner } from "../../../../loading/Spinner";
 import SuccessTransactionToast from "../../../../toasts/SuccessTransactionToast";
-import Button from "../../../../ui/Button";
 import Grid from "../../../../ui/Grid";
 import Typography from "../../../../ui/Typography";
 import { useModal } from "../../../useModal";
@@ -547,7 +547,7 @@ function CTAs({
       return (
         <Grid justifyContent="center" gap="2.5rem">
           <Button
-            theme="primary"
+            variant="primaryFill"
             onClick={async () => {
               const { isSuccess } = await createSellerAccount();
               if (isSuccess) {
@@ -569,7 +569,7 @@ function CTAs({
       return (
         <Grid justifyContent="center" gap="2.5rem">
           <Button
-            theme="primary"
+            variant="primaryFill"
             onClick={() => {
               createLensProfile();
             }}
@@ -594,7 +594,7 @@ function CTAs({
             </Grid>
           </Button>
           <Button
-            theme="primary"
+            variant="primaryFill"
             onClick={async () => {
               const { isSuccess } = await createSellerAccount();
               if (isSuccess) {
@@ -632,7 +632,7 @@ function CTAs({
       return (
         <Grid justifyContent="center" gap="2.5rem">
           <Button
-            theme="primary"
+            variant="primaryFill"
             onClick={() => {
               createLensProfile();
             }}
@@ -657,7 +657,7 @@ function CTAs({
             </Grid>
           </Button>
           <Button
-            theme="primary"
+            variant="primaryFill"
             disabled={
               isUpdatingSellerAccount ||
               isUpdatedSellerAccount ||
@@ -694,7 +694,7 @@ function CTAs({
       return (
         <Grid justifyContent="center" gap="2.5rem">
           <Button
-            theme="primary"
+            variant="primaryFill"
             onClick={async () => {
               const { isSuccess } = await updateSellerAccount();
               if (isSuccess) {

@@ -1,10 +1,10 @@
+import { Button } from "@bosonprotocol/react-kit";
 import styled from "styled-components";
 
 import { colors } from "../../../../../../lib/styles/colors";
 // import { Exchange } from "../../../../../../lib/utils/hooks/useExchanges";
 import UploadForm from "../../../../../../pages/chat/components/UploadForm/UploadForm";
 import { Textarea } from "../../../../../form";
-import Button from "../../../../../ui/Button";
 import Grid from "../../../../../ui/Grid";
 import Typography from "../../../../../ui/Typography";
 import { FormModel } from "../MakeProposalFormModel";
@@ -44,7 +44,7 @@ export default function DescribeProblemStep({ onNextClick, isValid }: Props) {
       <UploadForm />
       <ButtonsSection>
         <Button
-          theme="primary"
+          variant="primaryFill"
           onClick={() => onNextClick()}
           disabled={!isValid}
         >

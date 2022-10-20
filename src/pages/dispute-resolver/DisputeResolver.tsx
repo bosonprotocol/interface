@@ -1,9 +1,9 @@
+import { Button } from "@bosonprotocol/react-kit";
 import { House, WarningCircle } from "phosphor-react";
 import styled from "styled-components";
 
 import DRAside from "../../components/disputeResolver/DisputeResolverAside";
 import DisputeResolverInside from "../../components/disputeResolver/DisputeResolverInside";
-import Button from "../../components/ui/Button";
 import Grid from "../../components/ui/Grid";
 import Loading from "../../components/ui/Loading";
 import Typography from "../../components/ui/Typography";
@@ -64,7 +64,7 @@ function DisputeResolverCenterWrapper() {
             You need to be a dispute resolver to access this page!
           </Typography>
           <Button
-            theme="secondary"
+            variant="accentInverted"
             onClick={() => {
               navigate({
                 pathname: BosonRoutes.Root

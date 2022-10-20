@@ -1,10 +1,14 @@
-import { CoreSDK, subgraph } from "@bosonprotocol/react-kit";
+import {
+  Button,
+  ButtonSize,
+  CoreSDK,
+  subgraph
+} from "@bosonprotocol/react-kit";
 import { BigNumber, constants, utils } from "ethers";
 import { CircleNotch } from "phosphor-react";
 import { useState } from "react";
 import styled from "styled-components";
 
-import Button from "../../../components/ui/Button";
 import { colors } from "../../../lib/styles/colors";
 import useDepositFunds from "./useDepositFunds";
 import useWithdrawFunds from "./useWithdrawFunds";
@@ -310,8 +314,8 @@ export default function FundItem({
               reload();
             }
           }}
-          theme="primary"
-          size="small"
+          variant="primaryFill"
+          size={ButtonSize.Small}
           disabled={isBeingWithdrawn || isWithdrawInvalid}
         >
           Withdraw
@@ -355,8 +359,8 @@ export default function FundItem({
                 reload();
               }
             }}
-            theme="primary"
-            size="small"
+            variant="primaryFill"
+            size={ButtonSize.Small}
             disabled={isBeingDeposit || isDepositInvalid}
           >
             Deposit

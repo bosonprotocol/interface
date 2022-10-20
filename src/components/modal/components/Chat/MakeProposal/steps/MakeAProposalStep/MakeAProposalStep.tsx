@@ -1,3 +1,4 @@
+import { Button as ReactKitButton } from "@bosonprotocol/react-kit";
 import { useField, useFormikContext } from "formik";
 import { useEffect } from "react";
 import styled from "styled-components";
@@ -93,13 +94,13 @@ export default function MakeAProposalStep({
           )}
       </Grid>
       <ButtonsSection>
-        <Button
-          theme="primary"
+        <ReactKitButton
+          variant="primaryFill"
           onClick={() => onNextClick()}
           disabled={!isValid}
         >
           Next
-        </Button>
+        </ReactKitButton>
         {!isModal && (
           <Button
             theme="outline"

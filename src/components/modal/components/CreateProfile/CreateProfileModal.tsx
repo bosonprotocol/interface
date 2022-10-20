@@ -1,3 +1,4 @@
+import { Button } from "@bosonprotocol/react-kit";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useCallback } from "react";
 import { useAccount } from "wagmi";
@@ -6,7 +7,6 @@ import { CONFIG } from "../../../../lib/config";
 import { BosonRoutes } from "../../../../lib/routing/routes";
 import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { CreateYourProfile as CreateYourProfileType } from "../../../product/utils";
-import Button from "../../../ui/Button";
 import Grid from "../../../ui/Grid";
 import Typography from "../../../ui/Typography";
 import { useModal } from "../../useModal";
@@ -58,7 +58,7 @@ export default function CreateProfileModal({
           <ConnectButton />
 
           <Button
-            theme="bosonSecondary"
+            variant="accentInverted"
             onClick={() => navigate({ pathname: BosonRoutes.Root })}
           >
             Go back to the home page

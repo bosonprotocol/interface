@@ -13,7 +13,12 @@ import { usePagination, useRowSelect, useSortBy, useTable } from "react-table";
 import styled from "styled-components";
 dayjs.extend(isBetween);
 
-import { Currencies, CurrencyDisplay } from "@bosonprotocol/react-kit";
+import {
+  Button as ReactKitButton,
+  ButtonSize,
+  Currencies,
+  CurrencyDisplay
+} from "@bosonprotocol/react-kit";
 
 import { colors } from "../../../lib/styles/colors";
 import { ProgressStatus } from "../../../lib/types/progressStatus";
@@ -312,9 +317,9 @@ export default function SellerFinances({
               >
                 Withdraw
               </WithdrawButton>
-              <Button
-                theme="bosonSecondary"
-                size="small"
+              <ReactKitButton
+                variant="accentInverted"
+                size={ButtonSize.Small}
                 onClick={() => {
                   showModal(
                     modalTypes.FINANCE_DEPOSIT_MODAL,
@@ -333,7 +338,7 @@ export default function SellerFinances({
                 }}
               >
                 Deposit
-              </Button>
+              </ReactKitButton>
             </Grid>
           )
         };

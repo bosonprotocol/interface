@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { Button as ReactKitButton } from "@bosonprotocol/react-kit";
 import { FieldArray } from "formik";
 import { Plus } from "phosphor-react";
 import { useEffect, useMemo, useState } from "react";
@@ -297,13 +298,13 @@ export default function ShippingInfo() {
         </Collapse>
       </AdditionalContainer>
       <ProductInformationButtonGroup>
-        <Button
-          theme="primary"
+        <ReactKitButton
+          variant="primaryFill"
           type="submit"
           disabled={nextIsDisabled || !isValidJurisdiction}
         >
           Next
-        </Button>
+        </ReactKitButton>
       </ProductInformationButtonGroup>
     </ContainerProductPage>
   );

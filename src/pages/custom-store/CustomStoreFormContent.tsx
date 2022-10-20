@@ -1,3 +1,4 @@
+import { Button } from "@bosonprotocol/react-kit";
 import { useFormikContext } from "formik";
 import { useEffect } from "react";
 import styled from "styled-components";
@@ -7,7 +8,6 @@ import SimpleError from "../../components/error/SimpleError";
 import { Input, Select, Upload } from "../../components/form";
 import InputColor from "../../components/form/InputColor";
 import { SelectDataProps } from "../../components/form/types";
-import Button from "../../components/ui/Button";
 import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
 import { colors } from "../../lib/styles/colors";
@@ -613,7 +613,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                         <Button
                           disabled={!allFilledOut}
                           onClick={addFooterLink}
-                          theme="primary"
+                          variant="primaryFill"
                         >
                           + Add
                         </Button>
@@ -731,7 +731,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
           </CollapseWithTrigger>
         </Grid>
         {hasSubmitError && <SimpleError />}
-        <Button type="submit" theme="primary" disabled={!isValid}>
+        <Button type="submit" variant="primaryFill" disabled={!isValid}>
           Create
         </Button>
       </Grid>
