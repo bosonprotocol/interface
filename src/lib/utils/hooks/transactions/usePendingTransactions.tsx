@@ -82,7 +82,6 @@ export const usePendingTransactionsStore = create<PendingTransactionsState>(
         transactions: [pendingTx, ...state.transactions]
       })),
     reconcilePendingTransactions: async (coreSDK: CoreSDK) => {
-      console.log("RECONCILE");
       set((state) => ({
         ...state,
         isLoading: true
