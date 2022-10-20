@@ -2,6 +2,7 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { Toaster } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
 
 import ConvertionRateProvider from "./components/convertion-rate/ConvertionRateProvider";
 import WalletConnectionProvider from "./components/WalletConnectionProvider";
@@ -47,6 +48,7 @@ root.render(
           <ConvertionRateProvider>
             <AppRouter />
           </ConvertionRateProvider>
+          <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
       </WalletConnectionProvider>
     </>
