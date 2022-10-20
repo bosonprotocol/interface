@@ -70,16 +70,16 @@ export interface IPool {
 }
 
 export function useUniswapPools({ tokens }: Props) {
+  const tokensWithoutBoson = tokens?.filter((t) => t.symbol !== "BOSON") || [];
   // TODO BPNO_TASK: change !== to ===
   const isDev = process.env.NODE_ENV !== "development";
-  const queries = generateQuery(tokens, false);
-  const swapQueries = generateQuery(tokens, true);
-  const allQueries = [...queries, ...swapQueries];
+  const queries = generateQuery(tokensWithoutBoson, false);
+  const swapQueries = generateQuery(tokensWithoutBoson, true);
 
-  return useQuery(
-    ["pools"],
+  const allTokens = useQuery(
+    ["pools-all"],
     async () => {
-      const allPromises = allQueries.map(
+      const allPromises = [...queries, ...swapQueries].map(
         async ({ query, variables }: QueryProps) =>
           await request(UNISWAP_API_URL, query, variables)
       );
@@ -94,4 +94,49 @@ export function useUniswapPools({ tokens }: Props) {
       enabled: !!queries.length && !!swapQueries.length && !isDev
     }
   );
+
+  const bosonToken = useQuery(
+    ["pools-boson"],
+    async () => {
+      const allPromises = [
+        {
+          query: poolsQuery,
+          variables: {
+            token0: "WETH",
+            token1: "BOSON"
+          }
+        },
+        {
+          query: poolsQuery,
+          variables: {
+            token0: "USDC",
+            token1: "WETH"
+          }
+        }
+      ].map(
+        async ({ query, variables }: QueryProps) =>
+          await request(UNISWAP_API_URL, query, variables)
+      );
+      const allPools = await Promise.allSettled(allPromises);
+      console.log("allPools - boson", allPools);
+      const response = allPools.filter(
+        (res) => res.status === "fulfilled"
+      ) as PromiseProps[];
+
+      return response?.flatMap((p: PromiseProps) => p?.value?.pools) || [];
+    },
+    {
+      enabled: !isDev
+    }
+  );
+
+  return {
+    data: {
+      all: allTokens?.data || [],
+      boson: bosonToken?.data || []
+    },
+    isSuccess: allTokens?.data && bosonToken?.data,
+    allTokens,
+    bosonToken
+  };
 }
