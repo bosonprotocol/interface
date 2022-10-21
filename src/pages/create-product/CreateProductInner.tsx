@@ -54,6 +54,7 @@ import { useCoreSDK } from "../../lib/utils/useCoreSdk";
 import {
   CreateProductWrapper,
   HelpWrapper,
+  MultiStepsContainer,
   ProductLayoutContainer
 } from "./CreateProductInner.styles";
 import { createProductSteps, FIRST_STEP, poll } from "./utils";
@@ -1045,12 +1046,14 @@ function CreateProductInner({
   }, [isOneSetOfImages]);
   return (
     <CreateProductWrapper>
-      <MultiSteps
-        data={CREATE_PRODUCT_STEPS(isMultiVariant)}
-        active={currentStep}
-        callback={handleClickStep}
-        disableInactiveSteps
-      />
+      <MultiStepsContainer>
+        <MultiSteps
+          data={CREATE_PRODUCT_STEPS(isMultiVariant)}
+          active={currentStep}
+          callback={handleClickStep}
+          disableInactiveSteps
+        />
+      </MultiStepsContainer>
 
       <ProductLayoutContainer isPreviewVisible={isPreviewVisible}>
         <Formik<CreateProductForm>

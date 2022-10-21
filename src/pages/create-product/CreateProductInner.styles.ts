@@ -26,3 +26,8 @@ export const CreateProductWrapper = styled.div`
     margin-bottom: 2rem;
   }
 `;
+
+export const MultiStepsContainer = styled.div`
+  display: flex;
+  padding-top: 1rem;
+`;
