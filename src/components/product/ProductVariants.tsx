@@ -39,13 +39,46 @@ const capitalizeAll = (str: string) => str.toUpperCase();
 const getColorSizeKey = (color: string, size?: string) =>
   size ? `${color}_${size}` : color;
 
+type ListType = (string | undefined)[] | undefined;
+const deleteTagsIfNoVariants = (
+  variantToDelete: ProductVariantsType["productVariants"]["variants"][number],
+  variants: ProductVariantsType["productVariants"]["variants"],
+  colors: ProductVariantsType["productVariants"]["colors"],
+  setColors: (colors: ListType) => void,
+  sizes: ProductVariantsType["productVariants"]["sizes"],
+  setSizes: (sizes: ListType) => void
+): void => {
+  const { color, size } = variantToDelete;
+  if (colors?.length) {
+    const variantsWithSameColor = variants.filter(
+      (variant) => variant.color === color
+    );
+    if (variantsWithSameColor.length <= 1) {
+      // 1 because the variantToDelete is still there
+      const filtered = colors.filter((item) => item !== color);
+      setColors(filtered);
+    }
+  }
+  if (sizes?.length) {
+    const variantsWithSameSize = variants.filter(
+      (variant) => variant.size === size
+    );
+    if (variantsWithSameSize.length <= 1) {
+      // 1 because the variantToDelete is still there
+      const filtered = sizes.filter((item) => item !== size);
+      setSizes(filtered);
+    }
+  }
+};
+
 export default function ProductVariants() {
   const { nextIsDisabled } = useCreateForm();
-  const [fieldColors] =
+  const [fieldColors, , helpersColors] =
     useField<ProductVariantsType["productVariants"]["colors"]>(
       variantsColorsKey
     );
-  const [fieldSizes] =
+  helpersColors.setValue;
+  const [fieldSizes, , helpersSizes] =
     useField<ProductVariantsType["productVariants"]["sizes"]>(variantsSizesKey);
   const [fieldVariants, , helpersVariants] =
     useField<ProductVariantsType["productVariants"]["variants"]>(variantsKey);
@@ -213,6 +246,14 @@ export default function ProductVariants() {
                       theme="orangeInverse"
                       size="small"
                       onClick={() => {
+                        deleteTagsIfNoVariants(
+                          variant,
+                          variants,
+                          fieldColors.value,
+                          helpersColors.setValue,
+                          fieldSizes.value,
+                          helpersSizes.setValue
+                        );
                         helpersVariants.setValue([
                           ...variants.filter((_, index) => index !== idx)
                         ]);
