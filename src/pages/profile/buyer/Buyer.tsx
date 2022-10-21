@@ -1,4 +1,3 @@
-import { ButtonSize } from "@bosonprotocol/react-kit";
 import { useCallback, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import styled, { css } from "styled-components";
@@ -209,7 +208,6 @@ export default function Buyer({ manageFundsId }: Props) {
                   $isCustomStoreFront={!!isCustomStoreFront}
                   variant="accentInverted"
                   onClick={handleManageFunds}
-                  size={ButtonSize.Large}
                 >
                   Manage Funds
                 </MenageFundsButton>
@@ -227,7 +225,6 @@ export default function Buyer({ manageFundsId }: Props) {
                 $isCustomStoreFront={!!isCustomStoreFront}
                 variant="accentInverted"
                 onClick={handleManageFunds}
-                size={ButtonSize.Large}
                 data-manage-funds-button
               >
                 Manage Funds

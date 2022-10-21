@@ -1,4 +1,3 @@
-import { ButtonSize } from "@bosonprotocol/react-kit";
 import { useState } from "react";
 import styled from "styled-components";
 import useResizeObserver from "use-resize-observer";
@@ -112,7 +111,6 @@ export default function Landing() {
               data-testid="explore-all-offers"
               onClick={() => navigateToExplore()}
               variant="primaryFill"
-              size={ButtonSize.Large}
             >
               Explore products
             </ExploreProductsButton>
