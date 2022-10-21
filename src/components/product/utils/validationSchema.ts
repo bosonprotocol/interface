@@ -64,20 +64,8 @@ function testPrice(price: number | null | undefined) {
 
 export const productVariantsValidationSchema = Yup.object({
   productVariants: Yup.object({
-    colors: Yup.array(Yup.string()).test({
-      name: "minLength",
-      message: "You have to define at least one color",
-      test: function (value) {
-        return !!value && (value.length || 0) > 0;
-      }
-    }),
-    sizes: Yup.array(Yup.string()).test({
-      name: "minLength",
-      message: "You have to define at least one size",
-      test: function (value) {
-        return !!value && (value.length || 0) > 0;
-      }
-    }),
+    colors: Yup.array(Yup.string()),
+    sizes: Yup.array(Yup.string()),
     variants: Yup.array(
       Yup.object({
         color: Yup.string().required("Color is required"),

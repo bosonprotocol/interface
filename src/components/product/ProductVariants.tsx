@@ -36,7 +36,8 @@ const Table = styled.table`
 `;
 const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 const capitalizeAll = (str: string) => str.toUpperCase();
-const getColorSizeKey = (color: string, size: string) => `${color}_${size}`;
+const getColorSizeKey = (color: string, size?: string) =>
+  size ? `${color}_${size}` : color;
 
 export default function ProductVariants() {
   const { nextIsDisabled } = useCreateForm();
@@ -60,11 +61,34 @@ export default function ProductVariants() {
         (value) => !!value
       ) as string[];
       for (const variant of variants) {
+        existingVariants.add(getColorSizeKey(variant.color));
+        existingVariants.add(getColorSizeKey(variant.size));
         existingVariants.add(getColorSizeKey(variant.color, variant.size));
       }
       const variantsToAdd: ProductVariantsType["productVariants"]["variants"] =
         [];
       const otherTags = type === "color" ? sizes : colors;
+
+      if (!existingVariants.has(getColorSizeKey(tag))) {
+        const color = type === "color" ? tag : "";
+        const size = type === "color" ? "" : tag;
+        variantsToAdd.push({
+          color,
+          size,
+          name: tag,
+          // TODO: yup does not infer currency, price and quantity as nullable, even though they are are defined as such
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          currency:
+            OPTIONS_CURRENCIES.length === 1 ? OPTIONS_CURRENCIES[0] : null,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          price: undefined,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          quantity: undefined
+        });
+      }
 
       for (const otherTag of otherTags) {
         const color = type === "color" ? tag : otherTag;
@@ -121,7 +145,7 @@ export default function ProductVariants() {
         subTitle="Add color & size variants to your product."
       >
         <Grid flexDirection="column" gap="2rem">
-          <Grid flexDirection="column">
+          <Grid flexDirection="column" alignItems="flex-start">
             <TagsInput
               placeholder={"Add color variants"}
               name={variantsColorsKey}
@@ -131,7 +155,7 @@ export default function ProductVariants() {
               label="Color:"
             />
           </Grid>
-          <Grid flexDirection="column">
+          <Grid flexDirection="column" alignItems="flex-start">
             <TagsInput
               placeholder={"Add size variants"}
               name={variantsSizesKey}
