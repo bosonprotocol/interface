@@ -177,7 +177,7 @@ export default function ProductType({
           const logoUrl = getLensProfilePictureUrl(operatorLens as Profile);
           const logoBase64 = await fetchIpfsImage(logoUrl, ipfsMetadataStorage);
           if (!logoBase64) {
-            return; // should never happened
+            return; // should never happen
           }
           setBase64(logoBase64 as any);
           const createYourProfile = {
@@ -355,7 +355,6 @@ export default function ProductType({
                     values.productType.productVariant === "differentVariants"
                   }
                   onChange={handleChange}
-                  disabled
                 />
                 <Box>
                   <ProductImage

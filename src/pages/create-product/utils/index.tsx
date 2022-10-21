@@ -5,6 +5,7 @@ import CoreTermsOfSale from "../../../components/product/CoreTermsOfSale";
 import ProductImages from "../../../components/product/ProductImages";
 import ProductInformation from "../../../components/product/ProductInformation";
 import ProductType from "../../../components/product/ProductType";
+import ProductVariants from "../../../components/product/ProductVariants";
 import ShippingInfo from "../../../components/product/ShippingInfo";
 import TermsOfExchange from "../../../components/product/TermsOfExchange";
 import {
@@ -12,14 +13,18 @@ import {
   productImagesValidationSchema,
   productInformationValidationSchema,
   productTypeValidationSchema,
+  productVariantsImagesValidationSchema,
+  productVariantsValidationSchema,
   shippingInfoValidationSchema,
-  termsOfExchangeValidationSchema
+  termsOfExchangeValidationSchema,
+  variantsCoreTermsOfSaleValidationSchema
 } from "../../../components/product/utils";
 import {
   coreTermsOfSaleHelp,
   productImagesHelp,
   productInformationHelp,
   productTypeHelp,
+  productVariantsHelp,
   shippingInfoHelp,
   termsOfExchangeHelp
 } from "../../../components/product/utils/productHelpOptions";
@@ -94,6 +99,9 @@ export type CreateProductStepsParams = {
   showCreateProductDraftModal: () => void;
   showInvalidRoleModal: () => void;
   isDraftModalClosed: boolean;
+  isMultiVariant: boolean;
+  onChangeOneSetOfImages: (oneSetOfImages: boolean) => void;
+  isOneSetOfImages: boolean;
 };
 
 export const createProductSteps = ({
@@ -101,97 +109,130 @@ export const createProductSteps = ({
   chatInitializationStatus,
   showCreateProductDraftModal,
   showInvalidRoleModal,
-  isDraftModalClosed
+  isDraftModalClosed,
+  isMultiVariant,
+  onChangeOneSetOfImages,
+  isOneSetOfImages
 }: CreateProductStepsParams) => {
-  return {
-    // 0: {
-    //   ui: (
-    //     <>
-    //       <ScroolToID id="multisteps_wrapper" />
-    //       <CreateYourProfile />
-    //     </>
-    //   ),
-    //   validation: createYourProfileValidationSchema,
-    //   helpSection: createYourProfileHelp
-    // },
-    0: {
-      ui: (
-        <>
-          <ScroolToID id="multisteps_wrapper" />
-          <ProductType
-            showCreateProductDraftModal={showCreateProductDraftModal}
-            showInvalidRoleModal={showInvalidRoleModal}
-            isDraftModalClosed={isDraftModalClosed}
-          />
-        </>
-      ),
-      validation: productTypeValidationSchema,
-      helpSection: productTypeHelp
-    },
-    1: {
-      ui: (
-        <>
-          <ScroolToID id="multisteps_wrapper" />
-          <ProductInformation />
-        </>
-      ),
-      validation: productInformationValidationSchema,
-      helpSection: productInformationHelp
-    },
-    2: {
-      ui: (
-        <>
-          <ScroolToID id="multisteps_wrapper" />
-          <ProductImages />
-        </>
-      ),
-      validation: productImagesValidationSchema,
-      helpSection: productImagesHelp
-    },
-    3: {
-      ui: (
-        <>
-          <ScroolToID id="multisteps_wrapper" />
-          <CoreTermsOfSale />
-        </>
-      ),
-      validation: coreTermsOfSaleValidationSchema,
-      helpSection: coreTermsOfSaleHelp
-    },
-    4: {
-      ui: (
-        <>
-          <ScroolToID id="multisteps_wrapper" />
-          <TermsOfExchange />
-        </>
-      ),
-      validation: termsOfExchangeValidationSchema,
-      helpSection: termsOfExchangeHelp
-    },
-    5: {
-      ui: (
-        <>
-          <ScroolToID id="multisteps_wrapper" />
-          <ShippingInfo />
-        </>
-      ),
-      validation: shippingInfoValidationSchema,
-      helpSection: shippingInfoHelp
-    },
-    6: {
-      ui: (
-        <>
-          <ScroolToID id="multisteps_wrapper" />
-          <ConfirmProductDetails
-            togglePreview={setIsPreviewVisible}
-            chatInitializationStatus={chatInitializationStatus}
-          />
-        </>
-      ),
-      validation: null,
-      helpSection: null
-    }
+  const productType = {
+    ui: (
+      <>
+        <ScroolToID id="multisteps_wrapper" />
+        <ProductType
+          showCreateProductDraftModal={showCreateProductDraftModal}
+          showInvalidRoleModal={showInvalidRoleModal}
+          isDraftModalClosed={isDraftModalClosed}
+        />
+      </>
+    ),
+    validation: productTypeValidationSchema,
+    helpSection: productTypeHelp
+  };
+  const productInformation = {
+    ui: (
+      <>
+        <ScroolToID id="multisteps_wrapper" />
+        <ProductInformation />
+      </>
+    ),
+    validation: productInformationValidationSchema,
+    helpSection: productInformationHelp
+  };
+  const productImages = {
+    ui: (
+      <>
+        <ScroolToID id="multisteps_wrapper" />
+        <ProductImages onChangeOneSetOfImages={onChangeOneSetOfImages} />
+      </>
+    ),
+    validation: isOneSetOfImages
+      ? productImagesValidationSchema
+      : productVariantsImagesValidationSchema,
+    helpSection: productImagesHelp
+  };
+  const coreTermsOfSale = {
+    ui: (
+      <>
+        <ScroolToID id="multisteps_wrapper" />
+        <CoreTermsOfSale isMultiVariant={isMultiVariant} />
+      </>
+    ),
+    validation: isMultiVariant
+      ? variantsCoreTermsOfSaleValidationSchema
+      : coreTermsOfSaleValidationSchema,
+    helpSection: coreTermsOfSaleHelp
+  };
+  const termsOfExchange = {
+    ui: (
+      <>
+        <ScroolToID id="multisteps_wrapper" />
+        <TermsOfExchange />
+      </>
+    ),
+    validation: termsOfExchangeValidationSchema,
+    helpSection: termsOfExchangeHelp
+  };
+  const shippingInfo = {
+    ui: (
+      <>
+        <ScroolToID id="multisteps_wrapper" />
+        <ShippingInfo />
+      </>
+    ),
+    validation: shippingInfoValidationSchema,
+    helpSection: shippingInfoHelp
+  };
+  const preview = {
+    ui: (
+      <>
+        <ScroolToID id="multisteps_wrapper" />
+        <ConfirmProductDetails
+          togglePreview={setIsPreviewVisible}
+          chatInitializationStatus={chatInitializationStatus}
+          isMultiVariant={isMultiVariant}
+          isOneSetOfImages={isOneSetOfImages}
+        />
+      </>
+    ),
+    validation: null,
+    helpSection: null
+  };
+
+  const defaultSteps = {
+    0: productType,
+    1: productInformation,
+    2: productImages,
+    3: coreTermsOfSale,
+    4: termsOfExchange,
+    5: shippingInfo,
+    6: preview
   } as const;
+
+  if (isMultiVariant) {
+    const productVariants = {
+      ui: (
+        <>
+          <ScroolToID id="multisteps_wrapper" />
+          <ProductVariants />
+        </>
+      ),
+      validation: productVariantsValidationSchema,
+      helpSection: productVariantsHelp,
+      stepNo: "productVariants"
+    };
+    return {
+      0: productType,
+      1: productInformation,
+      2: productVariants,
+      3: productImages,
+      4: coreTermsOfSale,
+      5: termsOfExchange,
+      6: shippingInfo,
+      7: preview
+    };
+  }
+
+  return defaultSteps;
 };
 
 export const FIRST_STEP = 0;

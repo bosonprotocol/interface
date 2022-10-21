@@ -57,6 +57,7 @@ interface IProps {
   isExchange?: boolean;
   withBosonStyles?: boolean;
   tag?: keyof JSX.IntrinsicElements;
+  withAsterisk?: boolean;
 }
 
 export default function Price({
@@ -67,6 +68,7 @@ export default function Price({
   isExchange = false,
   tag = "h4",
   withBosonStyles = false,
+  withAsterisk,
   ...rest
 }: IProps) {
   const [isSymbolShown] = useState<boolean>(false); // TODO: remove once CSS :has is supported
@@ -86,7 +88,11 @@ export default function Price({
         >
           <Typography
             tag={tag}
-            style={{ fontWeight: "600", letterSpacing: "-1px", margin: "0" }}
+            style={{
+              fontWeight: "600",
+              letterSpacing: "-1px",
+              margin: "0"
+            }}
             data-icon-price
             {...(isSymbolShown && { "data-with-symbol": true })}
           >
@@ -105,6 +111,7 @@ export default function Price({
             ) : (
               price.price
             )}
+            {withAsterisk && <div>*</div>}
           </Typography>
           {convert && price?.currency && (
             <ConvertedPrice price={price} isExchange={isExchange} />

@@ -28,7 +28,7 @@ const Headers = styled.div`
     left: 0;
     right: 0;
     width: 100%;
-    margin 0;
+    margin: 0;
     justify-content: flex-start;
     margin-top: 0;
     font-size: 1rem;
