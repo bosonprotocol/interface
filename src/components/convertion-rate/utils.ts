@@ -49,11 +49,6 @@ export function handleRates(
       Number(bosonToEth?.token0Price || 0) * Number(ethToUsd?.token0Price || 0)
   };
 
-  if (bosonRate?.value === 0) {
-    // TODO: work no that MOCK if value of second pool is rejected
-    bosonRate.value = 0.229;
-  }
-
   const filteredRates = tokens?.map(
     (t: Pick<Offer["exchangeToken"], "address" | "symbol">) => {
       return allRates?.find((d: RateProps) => d?.to === t?.symbol) || null;
