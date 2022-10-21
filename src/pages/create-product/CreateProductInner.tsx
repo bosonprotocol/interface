@@ -621,22 +621,15 @@ function CreateProductInner({
             productVariantsImages?.[Number(index)]?.productImages;
           const { color, size } = variant;
           const typeOptions = [
-            !!size && {
+            {
               type: "Size",
-              option: size
+              option: size || ""
             },
-            !!color && {
+            {
               type: "Color",
-              option: color
+              option: color || ""
             }
-          ].filter(
-            (
-              v
-            ): v is {
-              type: string;
-              option: string;
-            } => !!v
-          );
+          ];
           variations.push(...typeOptions);
 
           if (!allVariationsWithSameImages && productImages) {
