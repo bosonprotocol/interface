@@ -33,6 +33,7 @@ interface Props {
   seller?: subgraph.SellerFieldsFragment;
   isMultiVariant: boolean;
   isOneSetOfImages: boolean;
+  hasMultipleVariants: boolean;
 }
 
 const PreviewWrapper = styled.div`
@@ -48,7 +49,8 @@ export default function Preview({
   togglePreview,
   seller,
   isMultiVariant,
-  isOneSetOfImages
+  isOneSetOfImages,
+  hasMultipleVariants
 }: Props) {
   const { values } = useCreateForm();
 
@@ -256,6 +258,7 @@ export default function Preview({
                   name={name}
                   image={offerImg}
                   hasSellerEnoughFunds={true}
+                  hasMultipleVariants={hasMultipleVariants}
                 />
               </div>
             </MainDetailGrid>

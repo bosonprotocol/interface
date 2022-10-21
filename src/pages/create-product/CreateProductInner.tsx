@@ -370,9 +370,11 @@ function CreateProductInner({
     }) || null;
 
   const handleOpenSuccessModal = async ({
-    offerInfo
+    offerInfo,
+    values
   }: {
     offerInfo: OfferFieldsFragment;
+    values: CreateProductForm;
   }) => {
     const offerId = offerInfo.id;
     const metadataInfo = (await coreSDK.getMetadata(
@@ -412,6 +414,7 @@ function CreateProductInner({
           seller: offerInfo.seller,
           exchangeToken: offerInfo.exchangeToken
         },
+        hasMultipleVariants: !!values.productVariants.variants.length,
         // these are the ones that we already had before
         onCreateNewProject: onCreateNewProject,
         onViewMyItem: () => onViewMyItem(offerId)
@@ -827,7 +830,8 @@ function CreateProductInner({
             action={`Created offer with variants: ${firstOffer?.metadata?.name}`}
             onViewDetails={() => {
               handleOpenSuccessModal({
-                offerInfo: firstOffer || ({} as subgraph.OfferFieldsFragment)
+                offerInfo: firstOffer || ({} as subgraph.OfferFieldsFragment),
+                values
               });
             }}
           />
@@ -864,7 +868,8 @@ function CreateProductInner({
             action={`Created offer: ${createdOffer?.metadata?.name}`}
             onViewDetails={() => {
               handleOpenSuccessModal({
-                offerInfo: createdOffer || ({} as subgraph.OfferFieldsFragment)
+                offerInfo: createdOffer || ({} as subgraph.OfferFieldsFragment),
+                values
               });
             }}
           />
@@ -979,7 +984,8 @@ function CreateProductInner({
             action={`Created offer: ${createdOffer?.metadata?.name}`}
             onViewDetails={() => {
               handleOpenSuccessModal({
-                offerInfo: createdOffer || ({} as subgraph.OfferFieldsFragment)
+                offerInfo: createdOffer || ({} as subgraph.OfferFieldsFragment),
+                values
               });
             }}
           />
@@ -1064,6 +1070,9 @@ function CreateProductInner({
                     seller={currentOperator as any}
                     isMultiVariant={isMultiVariant}
                     isOneSetOfImages={isOneSetOfImages}
+                    hasMultipleVariants={
+                      !!values.productVariants.variants.length
+                    }
                   />
                 ) : (
                   wizardStep.currentStep
