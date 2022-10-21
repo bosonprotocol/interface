@@ -45,13 +45,13 @@ function getMetaTxApiIds(protocolAddress: string) {
         apiIds[protocolAddress.toLowerCase()][method] = apiIdsInput[key];
       } else {
         const token = tokens.find(
-          (t: Token) => t.name.toLowerCase() === key.toLowerCase()
+          (t: Token) => t.symbol.toLowerCase() === key.toLowerCase()
         );
         if (token) {
           apiIds[token.address.toLowerCase()] = {};
           apiIds[token.address.toLowerCase()][method] = apiIdsInput[key];
         } else {
-          console.error(`Unable to resolve token with name ${key}`);
+          console.error(`Unable to resolve token with symbol ${key}`);
         }
       }
     });
