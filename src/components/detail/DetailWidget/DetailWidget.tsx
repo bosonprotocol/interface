@@ -542,7 +542,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 }}
               >
                 <CommitButton
-                  variant="primary"
+                  variant="primaryFill"
                   isPauseCommitting={!address}
                   buttonRef={commitButtonRef}
                   onGetSignerAddress={handleOnGetSignerAddress}
@@ -645,6 +645,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                     {
                       title: "Redeem your item",
                       offerName: offer.metadata.name,
+                      offerId: offer.id,
                       exchangeId: exchange?.id || "",
                       buyerId: exchange?.buyer.id || "",
                       sellerId: exchange?.seller.id || "",
