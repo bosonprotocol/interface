@@ -68,8 +68,8 @@ export const productVariantsValidationSchema = Yup.object({
     sizes: Yup.array(Yup.string()),
     variants: Yup.array(
       Yup.object({
-        color: Yup.string().required("Color is required"),
-        size: Yup.string().required("Size is required"),
+        color: Yup.string(),
+        size: Yup.string(),
         name: Yup.string(),
         currency: Yup.object({
           value: Yup.string(),

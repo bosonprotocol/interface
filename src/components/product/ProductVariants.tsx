@@ -94,9 +94,11 @@ export default function ProductVariants() {
         (value) => !!value
       ) as string[];
       for (const variant of variants) {
-        existingVariants.add(getColorSizeKey(variant.color));
-        existingVariants.add(getColorSizeKey(variant.size));
-        existingVariants.add(getColorSizeKey(variant.color, variant.size));
+        variant.color && existingVariants.add(getColorSizeKey(variant.color));
+        variant.size && existingVariants.add(getColorSizeKey(variant.size));
+        if (variant.color && variant.size) {
+          existingVariants.add(getColorSizeKey(variant.color, variant.size));
+        }
       }
       const variantsToAdd: ProductVariantsType["productVariants"]["variants"] =
         [];
