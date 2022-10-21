@@ -35,7 +35,7 @@ function getMetaTxApiIds(protocolAddress: string) {
   const apiIds: Record<string, Record<string, string>> = {};
   try {
     const apiIdsInput = JSON.parse(
-      process.env.REACT_APP_META_TX_PROTOCOL_API_IDS || "[]"
+      process.env.REACT_APP_META_TX_API_IDS || "[]"
     );
     const method = "executeMetaTransaction"; // At the moment, both protocol and tokens have the same method
     const tokens = getDefaultTokens();
