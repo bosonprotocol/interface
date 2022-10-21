@@ -668,12 +668,10 @@ function CreateProductInner({
           termsOfExchange,
           supportedJurisdictions
         });
-        const metadatas = isOneSetOfImages
-          ? [productV1Metadata]
-          : productV1.createVariantProductMetadata(
-              productV1Metadata,
-              variantsForMetadataCreation
-            );
+        const metadatas = productV1.createVariantProductMetadata(
+          productV1Metadata,
+          variantsForMetadataCreation
+        );
         if (!isOneSetOfImages) {
           // fix main variant image as it should be the variant's thumbnail
           metadatas.forEach((variantMetadata, index) => {
