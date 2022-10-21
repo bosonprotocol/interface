@@ -75,7 +75,9 @@ export default function Preview({
       ? values.productVariantsImages?.[variantIndex]?.productImages
       : values?.productImages;
   const thumbnailImg = productImages?.thumbnail?.[0]?.src || "";
-  const sliderImages = map(productImages, (v) => v?.[0]?.src || "");
+  const sliderImages = map(productImages, (v) => v?.[0]?.src || "").filter(
+    (ipfsLink) => ipfsLink
+  );
   const offerImg = sliderImages?.[0] || "";
 
   const disputeResolverId = CONFIG.defaultDisputeResolverId;
