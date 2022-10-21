@@ -545,8 +545,6 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                   isPauseCommitting={!address}
                   buttonRef={commitButtonRef}
                   onGetSignerAddress={handleOnGetSignerAddress}
-                  price="123"
-                  exchangeToken=""
                   disabled={
                     (address && isChainUnsupported) ||
                     !hasSellerEnoughFunds ||
@@ -559,6 +557,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                     isBuyerInsufficientFunds
                   }
                   offerId={offer.id}
+                  exchangeToken={offer.exchangeToken.address}
+                  price={offer.price}
                   envName={CONFIG.envName}
                   onError={(error) => {
                     console.error("onError", error);
