@@ -101,8 +101,7 @@ export interface IPool {
 
 export function useUniswapPools({ tokens }: Props) {
   const tokensWithoutBoson = tokens?.filter((t) => t.symbol !== "BOSON") || [];
-  // TODO BPNO_TASK: change !== to ===
-  const isDev = process.env.NODE_ENV !== "development";
+  const isDev = process.env.NODE_ENV === "development";
   const queries = generateQuery(tokensWithoutBoson, false);
   const swapQueries = generateQuery(tokensWithoutBoson, true);
 
