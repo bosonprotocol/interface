@@ -670,6 +670,22 @@ function CreateProductInner({
               productV1Metadata,
               variantsForMetadataCreation
             );
+        if (!isOneSetOfImages) {
+          // fix main variant image as it should be the variant's thumbnail
+          metadatas.forEach((variantMetadata, index) => {
+            const productImages =
+              productVariantsImages?.[Number(index)]?.productImages;
+            if (productImages?.thumbnail?.[0]?.src) {
+              variantMetadata.image = productImages.thumbnail[0].src;
+            } else {
+              // this else clause should never occur
+              if (variantMetadata.productOverrides?.visuals_images?.[0]?.url) {
+                variantMetadata.image =
+                  variantMetadata.productOverrides?.visuals_images[0].url;
+              }
+            }
+          });
+        }
         const offerDataPromises: Promise<offers.CreateOfferArgs>[] =
           metadatas.map((metadata, index) => {
             const exchangeToken = CONFIG.defaultTokens.find(
