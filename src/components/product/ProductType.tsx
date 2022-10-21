@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useField } from "formik";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
@@ -6,7 +7,7 @@ import { useAccount } from "wagmi";
 import { CONFIG } from "../../lib/config";
 import { breakpointNumbers } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
-import { dataURItoBlob, fetchIpfsImage } from "../../lib/utils/base64";
+import { fetchIpfsImages } from "../../lib/utils/base64";
 import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
@@ -111,9 +112,9 @@ export default function ProductType({
   isDraftModalClosed
 }: Props) {
   const { address } = useAccount();
-  const { handleChange, values, nextIsDisabled, setFieldValue } =
-    useCreateForm();
-
+  const { handleChange, values, nextIsDisabled } = useCreateForm();
+  const [, , helpersCreateYourProfile] =
+    useField<CreateYourProfile["createYourProfile"]>("createYourProfile");
   const ipfsMetadataStorage = useIpfsStorage();
   const { showModal, store, updateProps } = useModal();
   const fileName = useMemo<CreateProductImageCreteYourProfileLogo>(
@@ -164,7 +165,7 @@ export default function ProductType({
   );
   const onRegularProfileCreated = useCallback(
     (regularProfile: CreateYourProfile) => {
-      setFieldValue("createYourProfile", regularProfile.createYourProfile);
+      helpersCreateYourProfile.setValue(regularProfile.createYourProfile);
       setIsRegularSeller(true);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -175,21 +176,29 @@ export default function ProductType({
       (async () => {
         try {
           const logoUrl = getLensProfilePictureUrl(operatorLens as Profile);
-          const logoBase64 = await fetchIpfsImage(logoUrl, ipfsMetadataStorage);
+          const [logoBase64] = await fetchIpfsImages(
+            [logoUrl],
+            ipfsMetadataStorage
+          );
           if (!logoBase64) {
             return; // should never happen
           }
           setBase64(logoBase64 as any);
           const createYourProfile = {
-            logo: new File([dataURItoBlob(logoBase64)], "logo", {
-              type: logoBase64.split(";")[0].split(":")[1]
-            }),
-            name: operatorLens.name,
-            email: getLensEmail(operatorLens as Profile),
-            description: operatorLens.bio,
-            website: getLensWebsite(operatorLens as Profile)
+            logo: [
+              {
+                src: logoBase64
+              }
+              // new File([dataURItoBlob(logoBase64)], "logo", {
+              //   type: logoBase64.split(";")[0].split(":")[1]
+              // }),
+            ],
+            name: operatorLens.name || "",
+            email: getLensEmail(operatorLens as Profile) || "",
+            description: operatorLens.bio || "",
+            website: getLensWebsite(operatorLens as Profile) || ""
           };
-          setFieldValue("createYourProfile", createYourProfile);
+          helpersCreateYourProfile.setValue(createYourProfile);
         } catch (error) {
           console.error(error);
         }

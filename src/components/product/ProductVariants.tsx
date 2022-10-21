@@ -104,7 +104,8 @@ export default function ProductVariants() {
         [];
       const otherTags = type === "color" ? sizes : colors;
 
-      if (!existingVariants.has(getColorSizeKey(tag))) {
+      if (!otherTags.length && !existingVariants.has(getColorSizeKey(tag))) {
+        // add variant with single tag
         const color = type === "color" ? tag : "";
         const size = type === "color" ? "" : tag;
         variantsToAdd.push({
@@ -124,7 +125,15 @@ export default function ProductVariants() {
           quantity: undefined
         });
       }
+      // remove variants with single tags of the other type
+      const variantsToKeep = variants.filter((variant) => {
+        const { color, size } = variant;
+        const hasOnlyTheOtherTag =
+          type === "color" ? !!size && !color : !!color && !size;
+        return !hasOnlyTheOtherTag;
+      });
 
+      // add variants with pair Color / Size
       for (const otherTag of otherTags) {
         const color = type === "color" ? tag : otherTag;
         const size = type !== "color" ? tag : otherTag;
@@ -147,9 +156,8 @@ export default function ProductVariants() {
           });
         }
       }
-      const hasVariantsToAdd = !!variantsToAdd.length;
-      if (hasVariantsToAdd) {
-        helpersVariants.setValue([...variants, ...variantsToAdd], true);
+      if (!!variantsToAdd.length || !!variantsToKeep.length) {
+        helpersVariants.setValue([...variantsToKeep, ...variantsToAdd], true);
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
