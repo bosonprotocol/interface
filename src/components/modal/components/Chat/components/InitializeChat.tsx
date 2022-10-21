@@ -6,7 +6,7 @@ import { colors } from "../../../../../lib/styles/colors";
 import { useChatContext } from "../../../../../pages/chat/ChatProvider/ChatContext";
 import ConnectButton from "../../../../header/ConnectButton";
 import { Spinner } from "../../../../loading/Spinner";
-import Button from "../../../../ui/Button";
+import BosonButton from "../../../../ui/BosonButton";
 import Grid from "../../../../ui/Grid";
 import Typography from "../../../../ui/Typography";
 
@@ -57,9 +57,12 @@ export default function InitializeChat({ isError = false }: Props) {
       </Grid>
       <div>
         {isInitializeButtonVisible ? (
-          <Button
+          <BosonButton
             type="button"
-            theme="bosonSecondaryInverse"
+            variant="accentFill"
+            style={{
+              color: colors.white
+            }}
             disabled={isInitializing}
             onClick={() => {
               initialize();
@@ -73,7 +76,7 @@ export default function InitializeChat({ isError = false }: Props) {
             ) : (
               <>Initialize</>
             )}
-          </Button>
+          </BosonButton>
         ) : !address ? (
           <ConnectButton />
         ) : null}

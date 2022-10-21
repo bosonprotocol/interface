@@ -1,14 +1,10 @@
-import {
-  Button,
-  ButtonSize,
-  CoreSDK,
-  subgraph
-} from "@bosonprotocol/react-kit";
+import { ButtonSize, CoreSDK, subgraph } from "@bosonprotocol/react-kit";
 import { BigNumber, constants, utils } from "ethers";
 import { CircleNotch } from "phosphor-react";
 import { useState } from "react";
 import styled from "styled-components";
 
+import BosonButton from "../../../components/ui/BosonButton";
 import { colors } from "../../../lib/styles/colors";
 import useDepositFunds from "./useDepositFunds";
 import useWithdrawFunds from "./useWithdrawFunds";
@@ -94,7 +90,7 @@ export const Input = styled.input<{ $hasError?: boolean }>`
   ${shakeKeyframes}
 `;
 
-const CustomButton = styled(Button)`
+const CustomButton = styled(BosonButton)`
   border-radius: ${fundsBorderRadius};
   width: 25%;
   justify-content: center;

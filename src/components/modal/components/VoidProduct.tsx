@@ -12,7 +12,7 @@ import { poll } from "../../../pages/create-product/utils";
 import { Break } from "../../detail/Detail.style";
 import Price from "../../price/index";
 import SuccessTransactionToast from "../../toasts/SuccessTransactionToast";
-import Button from "../../ui/Button";
+import BosonButton from "../../ui/BosonButton";
 import Grid from "../../ui/Grid";
 import Image from "../../ui/Image";
 import SellerID from "../../ui/SellerID";
@@ -279,14 +279,14 @@ export default function VoidProduct({
       )}
       {offers && offers.length && (
         <Grid justifyContent="center">
-          <Button
+          <BosonButton
             variant="accentInverted"
-            isLoading={isLoading}
+            loading={isLoading}
             disabled={isLoading}
             onClick={handleBatchVoid}
           >
             Batch Void
-          </Button>
+          </BosonButton>
         </Grid>
       )}
     </Grid>

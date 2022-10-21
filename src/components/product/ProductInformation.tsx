@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button as ReactKitButton } from "@bosonprotocol/react-kit";
 import { FieldArray } from "formik";
 import { Plus } from "phosphor-react";
 import { useEffect, useMemo, useState } from "react";
@@ -9,6 +8,7 @@ import Collapse from "../../components/collapse/Collapse";
 import { colors } from "../../lib/styles/colors";
 import { FormField, Input, Select, TagsInput, Textarea } from "../form";
 import Error from "../form/Error";
+import BosonButton from "../ui/BosonButton";
 import Button from "../ui/Button";
 import Typography from "../ui/Typography";
 import {
@@ -217,13 +217,13 @@ export default function ProductInformation() {
         </Collapse>
       </AdditionalContainer>
       <ProductInformationButtonGroup>
-        <ReactKitButton
+        <BosonButton
           variant="primaryFill"
           type="submit"
           disabled={nextIsDisabled || hasDuplicated}
         >
           Next
-        </ReactKitButton>
+        </BosonButton>
       </ProductInformationButtonGroup>
     </ContainerProductPage>
   );

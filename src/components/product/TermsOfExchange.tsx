@@ -1,10 +1,10 @@
-import { Button } from "@bosonprotocol/react-kit";
 import { Check } from "phosphor-react";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
 import FairExchangePolicy from "../exchangePolicy/FairExchangePolicy";
 import { FormField, Input, Select } from "../form";
+import BosonButton from "../ui/BosonButton";
 import {
   ContainerProductPage,
   ProductButtonGroup,
@@ -172,13 +172,13 @@ export default function TermsOfExchange() {
             </FieldContainer>
           </FormField>
           <ProductInformationButtonGroup>
-            <Button
+            <BosonButton
               variant="primaryFill"
               type="submit"
               disabled={nextIsDisabled}
             >
               Next
-            </Button>
+            </BosonButton>
           </ProductInformationButtonGroup>
         </FormWrapper>
         <InfoWrapper>

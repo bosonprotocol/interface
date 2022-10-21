@@ -1,7 +1,7 @@
-import { Button } from "@bosonprotocol/react-kit";
 import styled from "styled-components";
 
 import { Datepicker, FormField, Input, Select } from "../form";
+import BosonButton from "../ui/BosonButton";
 import {
   ContainerProductPage,
   ProductButtonGroup,
@@ -91,9 +91,13 @@ export default function CoreTermsOfSale() {
         />
       </FormField>
       <ProductInformationButtonGroup>
-        <Button variant="primaryFill" type="submit" disabled={nextIsDisabled}>
+        <BosonButton
+          variant="primaryFill"
+          type="submit"
+          disabled={nextIsDisabled}
+        >
           Next
-        </Button>
+        </BosonButton>
       </ProductInformationButtonGroup>
     </ContainerProductPage>
   );

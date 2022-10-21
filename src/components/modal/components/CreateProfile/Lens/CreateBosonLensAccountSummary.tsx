@@ -1,4 +1,3 @@
-import { Button } from "@bosonprotocol/react-kit";
 import { Warning } from "phosphor-react";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -17,6 +16,7 @@ import Collapse from "../../../../collapse/Collapse";
 import SimpleError from "../../../../error/SimpleError";
 import { Spinner } from "../../../../loading/Spinner";
 import SuccessTransactionToast from "../../../../toasts/SuccessTransactionToast";
+import BosonButton from "../../../../ui/BosonButton";
 import Grid from "../../../../ui/Grid";
 import Typography from "../../../../ui/Typography";
 import { useModal } from "../../../useModal";
@@ -546,7 +546,7 @@ function CTAs({
     case hasLensHandle && !hasAdminSellerAccount:
       return (
         <Grid justifyContent="center" gap="2.5rem">
-          <Button
+          <BosonButton
             variant="primaryFill"
             onClick={async () => {
               const { isSuccess } = await createSellerAccount();
@@ -562,13 +562,13 @@ function CTAs({
               </Typography>
               {isCreatingSellerAccount && <Spinner size={15} />}
             </Grid>
-          </Button>
+          </BosonButton>
         </Grid>
       );
     case !hasLensHandle && !hasAdminSellerAccount:
       return (
         <Grid justifyContent="center" gap="2.5rem">
-          <Button
+          <BosonButton
             variant="primaryFill"
             onClick={() => {
               createLensProfile();
@@ -592,8 +592,8 @@ function CTAs({
                 </Typography>
               )}
             </Grid>
-          </Button>
-          <Button
+          </BosonButton>
+          <BosonButton
             variant="primaryFill"
             onClick={async () => {
               const { isSuccess } = await createSellerAccount();
@@ -625,13 +625,13 @@ function CTAs({
                 </Typography>
               )}
             </Grid>
-          </Button>
+          </BosonButton>
         </Grid>
       );
     case !hasLensHandle && hasAdminSellerAccount:
       return (
         <Grid justifyContent="center" gap="2.5rem">
-          <Button
+          <BosonButton
             variant="primaryFill"
             onClick={() => {
               createLensProfile();
@@ -655,8 +655,8 @@ function CTAs({
                 </Typography>
               )}
             </Grid>
-          </Button>
-          <Button
+          </BosonButton>
+          <BosonButton
             variant="primaryFill"
             disabled={
               isUpdatingSellerAccount ||
@@ -687,13 +687,13 @@ function CTAs({
                 </Typography>
               )}
             </Grid>
-          </Button>
+          </BosonButton>
         </Grid>
       );
     case hasLensHandle && hasAdminSellerAccount && !hasLensHandleLinked:
       return (
         <Grid justifyContent="center" gap="2.5rem">
-          <Button
+          <BosonButton
             variant="primaryFill"
             onClick={async () => {
               const { isSuccess } = await updateSellerAccount();
@@ -709,7 +709,7 @@ function CTAs({
               </Typography>
               {isUpdatingSellerAccount && <Spinner size={15} />}
             </Grid>
-          </Button>
+          </BosonButton>
         </Grid>
       );
     default:

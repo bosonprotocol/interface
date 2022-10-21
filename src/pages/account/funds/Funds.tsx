@@ -1,9 +1,10 @@
-import { Button, ButtonSize, subgraph } from "@bosonprotocol/react-kit";
+import { ButtonSize, subgraph } from "@bosonprotocol/react-kit";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 import { useConvertionRate } from "../../../components/convertion-rate/useConvertionRate";
+import BosonButton from "../../../components/ui/BosonButton";
 import { CONFIG } from "../../../lib/config";
 import { colors } from "../../../lib/styles/colors";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
@@ -50,7 +51,7 @@ const TokenInput = styled(Input)`
   width: 100%;
 `;
 
-const CustomButton = styled(Button)`
+const CustomButton = styled(BosonButton)`
   padding: 0;
   border-radius: ${fundsBorderRadius};
   * {

@@ -1,9 +1,9 @@
-import { Button } from "@bosonprotocol/react-kit";
 import { House, WarningCircle } from "phosphor-react";
 import styled from "styled-components";
 
 import DRAside from "../../components/disputeResolver/DisputeResolverAside";
 import DisputeResolverInside from "../../components/disputeResolver/DisputeResolverInside";
+import BosonButton from "../../components/ui/BosonButton";
 import Grid from "../../components/ui/Grid";
 import Loading from "../../components/ui/Loading";
 import Typography from "../../components/ui/Typography";
@@ -63,7 +63,7 @@ function DisputeResolverCenterWrapper() {
           <Typography tag="h5">
             You need to be a dispute resolver to access this page!
           </Typography>
-          <Button
+          <BosonButton
             variant="accentInverted"
             onClick={() => {
               navigate({
@@ -73,7 +73,7 @@ function DisputeResolverCenterWrapper() {
           >
             Back home
             <House size={16} />
-          </Button>
+          </BosonButton>
         </Grid>
       </Wrapper>
     );

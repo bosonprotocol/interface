@@ -14,7 +14,6 @@ import styled from "styled-components";
 dayjs.extend(isBetween);
 
 import {
-  Button as ReactKitButton,
   ButtonSize,
   Currencies,
   CurrencyDisplay
@@ -24,6 +23,7 @@ import { colors } from "../../../lib/styles/colors";
 import { ProgressStatus } from "../../../lib/types/progressStatus";
 import { useModal } from "../../modal/useModal";
 import Tooltip from "../../tooltip/Tooltip";
+import BosonButton from "../../ui/BosonButton";
 import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
 import Loading from "../../ui/Loading";
@@ -317,7 +317,7 @@ export default function SellerFinances({
               >
                 Withdraw
               </WithdrawButton>
-              <ReactKitButton
+              <BosonButton
                 variant="accentInverted"
                 size={ButtonSize.Small}
                 onClick={() => {
@@ -338,7 +338,7 @@ export default function SellerFinances({
                 }}
               >
                 Deposit
-              </ReactKitButton>
+              </BosonButton>
             </Grid>
           )
         };

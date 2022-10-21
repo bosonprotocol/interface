@@ -1,4 +1,4 @@
-import { Button, ButtonSize } from "@bosonprotocol/react-kit";
+import { ButtonSize } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { ClockClockwise } from "phosphor-react";
 import React, { useMemo } from "react";
@@ -10,6 +10,7 @@ import { getDateTimestamp } from "../../../../lib/utils/getDateTimestamp";
 import { useDisputes } from "../../../../lib/utils/hooks/useDisputes";
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import BosonButton from "../../../ui/BosonButton";
 import Grid from "../../../ui/Grid";
 import Image from "../../../ui/Image";
 import SellerID from "../../../ui/SellerID";
@@ -82,7 +83,7 @@ const DisputeEndDate = styled(ClockClockwise)`
   font-weight: 400;
 `;
 
-const StyledDisputeButton = styled(Button)`
+const StyledDisputeButton = styled(BosonButton)`
   padding-left: 0;
   div {
     font-weight: 600;
@@ -90,7 +91,7 @@ const StyledDisputeButton = styled(Button)`
   }
 `;
 
-const StyledChatButton = styled(Button)`
+const StyledChatButton = styled(BosonButton)`
   font-size: 0.875rem;
   div {
     font-weight: 600;

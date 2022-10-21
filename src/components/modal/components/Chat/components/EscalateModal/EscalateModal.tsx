@@ -1,4 +1,3 @@
-import { Button } from "@bosonprotocol/react-kit";
 import { useState } from "react";
 import styled from "styled-components";
 
@@ -7,6 +6,7 @@ import { zIndex } from "../../../../../../lib/styles/zIndex";
 import { useBreakpoints } from "../../../../../../lib/utils/hooks/useBreakpoints";
 import { Exchange } from "../../../../../../lib/utils/hooks/useExchanges";
 import MultiSteps from "../../../../../step/MultiSteps";
+import BosonButton from "../../../../../ui/BosonButton";
 import Grid from "../../../../../ui/Grid";
 import ExchangePreview from "../ExchangePreview";
 import EscalateStepOne from "./steps/EscalateStepOne";
@@ -90,12 +90,12 @@ function EscalateModal({ exchange, refetch }: Props) {
         {escalateSteps(activeStep)}
         {activeStep + 1 <= buttonSteps.length && (
           <StyledGrid padding="0 0 2rem 2rem">
-            <Button
+            <BosonButton
               variant="primaryFill"
               onClick={() => setActiveStep(activeStep + 1)}
             >
               {buttonSteps[activeStep]}
-            </Button>
+            </BosonButton>
           </StyledGrid>
         )}
       </InnerContainer>

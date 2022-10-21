@@ -1,9 +1,10 @@
+import { ButtonSize } from "@bosonprotocol/react-kit";
 import { PlusCircle } from "phosphor-react";
 
 import { SellerCenterRoutes } from "../../lib/routing/routes";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { SellerRolesProps } from "../../lib/utils/hooks/useSellerRoles";
-import Button from "../ui/Button";
+import BosonButton from "../ui/BosonButton";
 
 interface Props {
   sellerRoles: SellerRolesProps;
@@ -11,9 +12,9 @@ interface Props {
 function SellerAddNewProduct({ sellerRoles }: Props) {
   const navigate = useKeepQueryParamsNavigate();
   return (
-    <Button
-      theme="bosonPrimary"
-      size="small"
+    <BosonButton
+      variant="primaryFill"
+      size={ButtonSize.Small}
       disabled={!sellerRoles?.isOperator}
       tooltip="This action is restricted to only the operator wallet"
       onClick={() => {
@@ -21,7 +22,7 @@ function SellerAddNewProduct({ sellerRoles }: Props) {
       }}
     >
       Add product <PlusCircle size={16} />
-    </Button>
+    </BosonButton>
   );
 }
 

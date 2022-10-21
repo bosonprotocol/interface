@@ -1,4 +1,4 @@
-import { Button, ButtonSize } from "@bosonprotocol/react-kit";
+import { ButtonSize } from "@bosonprotocol/react-kit";
 import { useCallback, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import styled, { css } from "styled-components";
@@ -8,6 +8,7 @@ import DetailShare from "../../../components/detail/DetailShare";
 import { Spinner } from "../../../components/loading/Spinner";
 import { useModal } from "../../../components/modal/useModal";
 import AddressText from "../../../components/offer/AddressText";
+import BosonButton from "../../../components/ui/BosonButton";
 import Grid from "../../../components/ui/Grid";
 import Typography from "../../../components/ui/Typography";
 import {
@@ -78,7 +79,7 @@ const ExchangesWrapper = styled(Typography)`
     padding-right: 0;
   }
 `;
-const MenageFundsButton = styled(Button)<{ $isCustomStoreFront: boolean }>`
+const MenageFundsButton = styled(BosonButton)<{ $isCustomStoreFront: boolean }>`
   ${({ $isCustomStoreFront }) => {
     if (!$isCustomStoreFront) {
       return "";

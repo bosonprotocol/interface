@@ -1,10 +1,10 @@
-import { Button } from "@bosonprotocol/react-kit";
 import styled from "styled-components";
 
 import { colors } from "../../../../../../lib/styles/colors";
 // import { Exchange } from "../../../../../../lib/utils/hooks/useExchanges";
 import UploadForm from "../../../../../../pages/chat/components/UploadForm/UploadForm";
 import { Textarea } from "../../../../../form";
+import BosonButton from "../../../../../ui/BosonButton";
 import Grid from "../../../../../ui/Grid";
 import Typography from "../../../../../ui/Typography";
 import { FormModel } from "../MakeProposalFormModel";
@@ -43,13 +43,13 @@ export default function DescribeProblemStep({ onNextClick, isValid }: Props) {
       </Grid>
       <UploadForm />
       <ButtonsSection>
-        <Button
+        <BosonButton
           variant="primaryFill"
           onClick={() => onNextClick()}
           disabled={!isValid}
         >
           Next
-        </Button>
+        </BosonButton>
       </ButtonsSection>
     </>
   );

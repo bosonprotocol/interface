@@ -1,4 +1,3 @@
-import { Button as ReactKitButton } from "@bosonprotocol/react-kit";
 import { useField, useFormikContext } from "formik";
 import { useEffect } from "react";
 import styled from "styled-components";
@@ -8,6 +7,7 @@ import { colors } from "../../../../../../../lib/styles/colors";
 import { useBuyers } from "../../../../../../../lib/utils/hooks/useBuyers";
 import { Exchange } from "../../../../../../../lib/utils/hooks/useExchanges";
 import { Select } from "../../../../../../form";
+import BosonButton from "../../../../../../ui/BosonButton";
 import Button from "../../../../../../ui/Button";
 import Grid from "../../../../../../ui/Grid";
 import Typography from "../../../../../../ui/Typography";
@@ -94,13 +94,13 @@ export default function MakeAProposalStep({
           )}
       </Grid>
       <ButtonsSection>
-        <ReactKitButton
+        <BosonButton
           variant="primaryFill"
           onClick={() => onNextClick()}
           disabled={!isValid}
         >
           Next
-        </ReactKitButton>
+        </BosonButton>
         {!isModal && (
           <Button
             theme="outline"

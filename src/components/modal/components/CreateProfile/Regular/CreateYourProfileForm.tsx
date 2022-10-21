@@ -1,8 +1,7 @@
-import { Button } from "@bosonprotocol/react-kit";
-
 import { websitePattern } from "../../../../../lib/validation/regex/url";
 import { FormField, Input, Textarea, Upload } from "../../../../form";
 import { useCreateForm } from "../../../../product/utils/useCreateForm";
+import BosonButton from "../../../../ui/BosonButton";
 import Grid from "../../../../ui/Grid";
 
 export default function CreateYourProfileForm() {
@@ -43,9 +42,13 @@ export default function CreateYourProfileForm() {
         />
       </FormField>
       <Grid margin="2rem 0 0 0">
-        <Button variant="primaryFill" type="submit" disabled={nextIsDisabled}>
+        <BosonButton
+          variant="primaryFill"
+          type="submit"
+          disabled={nextIsDisabled}
+        >
           Next
-        </Button>
+        </BosonButton>
       </Grid>
     </>
   );

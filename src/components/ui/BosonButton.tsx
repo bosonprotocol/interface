@@ -1,7 +1,14 @@
 import { Button, ButtonProps, ButtonSize } from "@bosonprotocol/react-kit";
+import { Fragment } from "react";
 import styled, { css } from "styled-components";
 
 import { breakpoint } from "../../lib/styles/breakpoint";
+import { zIndex } from "../../lib/styles/zIndex";
+import Tooltip from "../tooltip/Tooltip";
+
+interface IBosonButton extends ButtonProps {
+  tooltip?: string;
+}
 
 const StyledBosonButton = styled(Button)`
   ${(props) => {
@@ -42,8 +49,34 @@ const StyledBosonButton = styled(Button)`
   height: auto;
 `;
 
-function BosonButton(props: ButtonProps) {
-  return <StyledBosonButton {...props} />;
+const ChildWrapperButton = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  position: relative;
+  z-index: ${zIndex.Button};
+`;
+
+function BosonButton(props: IBosonButton) {
+  const { tooltip, disabled, ...restProps } = props;
+  const Wrapper = tooltip !== "" && disabled ? Tooltip : Fragment;
+  const wrapperParams =
+    tooltip !== "" && disabled ? { wrap: false, content: tooltip } : {};
+
+  return (
+    <>
+      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+      {/* @ts-ignore */}
+      <Wrapper {...wrapperParams}>
+        <StyledBosonButton {...restProps} disabled={disabled}>
+          <ChildWrapperButton data-child-wrapper-button>
+            {props.children}
+          </ChildWrapperButton>
+        </StyledBosonButton>
+      </Wrapper>
+    </>
+  );
 }
 
 export default BosonButton;

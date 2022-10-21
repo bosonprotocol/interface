@@ -8,7 +8,7 @@ import {
 } from "../../../lib/utils/files";
 import { validationOfFile } from "../../../pages/chat/components/UploadForm/const";
 import UploadForm from "../../../pages/chat/components/UploadForm/UploadForm";
-import Button from "../../ui/Button";
+import BosonButton from "../../ui/BosonButton";
 import { ModalProps } from "../ModalContext";
 import { FormModel } from "./Chat/MakeProposal/MakeProposalFormModel";
 
@@ -73,9 +73,13 @@ export default function Upload({
           <Form>
             <UploadForm />
             <ButtonsSection>
-              <Button type="submit" theme="primary" disabled={!isFormValid}>
+              <BosonButton
+                type="submit"
+                variant="primaryFill"
+                disabled={!isFormValid}
+              >
                 Submit
-              </Button>
+              </BosonButton>
             </ButtonsSection>
           </Form>
         );

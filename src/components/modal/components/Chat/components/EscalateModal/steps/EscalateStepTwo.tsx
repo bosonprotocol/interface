@@ -1,4 +1,3 @@
-import { Button } from "@bosonprotocol/react-kit";
 import { BigNumberish } from "ethers";
 import { Form, Formik, FormikProps, FormikState } from "formik";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -21,6 +20,7 @@ import Input from "../../../../../../form/Input";
 import Textarea from "../../../../../../form/Textarea";
 import ErrorToast from "../../../../../../toasts/common/ErrorToast";
 import SuccessTransactionToast from "../../../../../../toasts/SuccessTransactionToast";
+import BosonButton from "../../../../../../ui/BosonButton";
 import Grid from "../../../../../../ui/Grid";
 import Typography from "../../../../../../ui/Typography";
 import { useModal } from "../../../../../useModal";
@@ -280,7 +280,7 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
                   <FormField theme="white" title="Message">
                     <Textarea {...FormModel.formFields.message} disabled />
                   </FormField>
-                  <Button
+                  <BosonButton
                     variant="accentFill"
                     style={{ color: "white" }}
                     disabled={!!errors?.message || isLoading}
@@ -291,7 +291,7 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
                     }}
                   >
                     Sign
-                  </Button>
+                  </BosonButton>
                 </Grid>
               </Collapse>
               <Collapse
@@ -373,13 +373,13 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
                     <Input {...FormModel.formFields.signature} />
                   </FormField>
                   <FormField theme="white" title="Chat transcript">
-                    <Button
+                    <BosonButton
                       variant="accentFill"
                       style={{ color: "white" }}
                       disabled
                     >
                       Download CSV
-                    </Button>
+                    </BosonButton>
                   </FormField>
                   <FormField theme="white" title="">
                     <Checkbox
@@ -416,7 +416,7 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
                     price, seller deposit and escalation deposit) between buyer
                     and seller
                   </Typography>
-                  <Button
+                  <BosonButton
                     variant="secondaryFill"
                     style={{ color: "black" }}
                     onClick={handleEscalate}
@@ -424,7 +424,7 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
                     disabled={loading || values?.confirm !== true}
                   >
                     Escalate
-                  </Button>
+                  </BosonButton>
                 </Grid>
               </Collapse>
             </Container>

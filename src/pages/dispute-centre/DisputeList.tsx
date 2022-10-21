@@ -1,10 +1,11 @@
-import { Button as ReactKitButton, ButtonSize } from "@bosonprotocol/react-kit";
+import { ButtonSize } from "@bosonprotocol/react-kit";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
 import DisputeListMobile from "../../components/modal/components/DisputeListMobile/DisputeListMobile";
 import DisputeTable from "../../components/modal/components/DisputeTable/DisputeTable";
 import { useModal } from "../../components/modal/useModal";
+import BosonButton from "../../components/ui/BosonButton";
 import Button from "../../components/ui/Button";
 import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
@@ -42,7 +43,7 @@ const DisputeListHeader = styled.div<{ isLteS: boolean }>`
   }
 `;
 
-const SubmitButton = styled(ReactKitButton)`
+const SubmitButton = styled(BosonButton)`
   div {
     font-weight: 600;
   }

@@ -1,5 +1,4 @@
 import {
-  Button as ReactKitButton,
   ButtonSize,
   exchanges as ExchangesKit,
   subgraph
@@ -9,11 +8,11 @@ import { generatePath, NavigateOptions, Path } from "react-router-dom";
 
 import { UrlParameters } from "../../../lib/routing/parameters";
 import { BosonRoutes } from "../../../lib/routing/routes";
-import { colors } from "../../../lib/styles/colors";
 import { useDisputeSubStatusInfo } from "../../../lib/utils/hooks/useDisputeSubStatusInfo";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { SellerRolesProps } from "../../../lib/utils/hooks/useSellerRoles";
 import { useModal } from "../../modal/useModal";
+import BosonButton from "../../ui/BosonButton";
 import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
 import { isCompletable } from "./SellerExchangeTable";
@@ -43,11 +42,9 @@ export const SellerResolveDisputeButton = ({
   const { status } = useDisputeSubStatusInfo(exchange);
   if (!exchange || status !== "Resolving") {
     return (
-      <ReactKitButton
+      <BosonButton
         variant="accentInverted"
-        style={{
-          borderColor: colors.border
-        }}
+        showBorder={false}
         size={ButtonSize.Small}
         onClick={() => {
           if (exchange?.id) {
@@ -56,14 +53,14 @@ export const SellerResolveDisputeButton = ({
         }}
       >
         Chat <Chat size={14} />
-      </ReactKitButton>
+      </BosonButton>
     );
   }
 
   return (
-    <Button
-      variant="primary"
-      size="small"
+    <BosonButton
+      variant="primaryFill"
+      size={ButtonSize.Small}
       disabled={!sellerRoles?.isOperator}
       tooltip="This action is restricted to only the operator wallet"
       onClick={() => {
@@ -73,7 +70,7 @@ export const SellerResolveDisputeButton = ({
       }}
     >
       Resolve dispute
-    </Button>
+    </BosonButton>
   );
 };
 
@@ -117,9 +114,10 @@ export const SellerActionButton = ({
           Complete exchange
         </Button>
       )}
-      <Button
-        theme="ghostSecondary"
-        size="small"
+      <BosonButton
+        variant="accentInverted"
+        showBorder={false}
+        size={ButtonSize.Small}
         onClick={() => {
           if (exchange?.id) {
             generatePathAndNavigate({ exchangeId: exchange?.id, navigate });
@@ -127,11 +125,12 @@ export const SellerActionButton = ({
         }}
       >
         Chat <Chat size={14} />
-      </Button>
+      </BosonButton>
       {status === subgraph.ExchangeState.Committed && (
-        <Button
-          theme="ghostSecondary"
-          size="small"
+        <BosonButton
+          variant="accentInverted"
+          showBorder={false}
+          size={ButtonSize.Small}
           disabled={!sellerRoles?.isOperator}
           tooltip="This action is restricted to only the operator wallet"
           onClick={() => {
@@ -150,7 +149,7 @@ export const SellerActionButton = ({
           }}
         >
           Revoke
-        </Button>
+        </BosonButton>
       )}
     </Grid>
   );

@@ -1,4 +1,3 @@
-import { Button } from "@bosonprotocol/react-kit";
 import styled from "styled-components";
 
 import { breakpoint } from "../../lib/styles/breakpoint";
@@ -7,6 +6,7 @@ import bytesToSize from "../../lib/utils/bytesToSize";
 import { Upload } from "../form";
 import FormField from "../form/FormField";
 import { MAX_FILE_SIZE } from "../form/Upload/WithUploadToIpfs";
+import BosonButton from "../ui/BosonButton";
 import { ProductButtonGroup, SectionTitle } from "./Product.styles";
 import { useCreateForm } from "./utils/useCreateForm";
 
@@ -113,9 +113,13 @@ export default function ProductImages() {
         </SpaceContainer>
       </FormField>
       <ProductButtonGroup>
-        <Button variant="primaryFill" type="submit" disabled={nextIsDisabled}>
+        <BosonButton
+          variant="primaryFill"
+          type="submit"
+          disabled={nextIsDisabled}
+        >
           Next
-        </Button>
+        </BosonButton>
       </ProductButtonGroup>
     </ContainerProductImage>
   );

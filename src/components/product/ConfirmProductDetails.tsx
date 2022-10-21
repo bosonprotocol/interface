@@ -1,4 +1,4 @@
-import { Button, Currencies, CurrencyDisplay } from "@bosonprotocol/react-kit";
+import { Currencies, CurrencyDisplay } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import map from "lodash/map";
 import { Warning } from "phosphor-react";
@@ -13,6 +13,7 @@ import { ChatInitializationStatus } from "../../lib/utils/hooks/chat/useChatStat
 import { useChatContext } from "../../pages/chat/ChatProvider/ChatContext";
 import { FormField } from "../form";
 import Tooltip from "../tooltip/Tooltip";
+import BosonButton from "../ui/BosonButton";
 import Grid from "../ui/Grid";
 import Image from "../ui/Image";
 import Typography from "../ui/Typography";
@@ -436,7 +437,7 @@ export default function ConfirmProductDetails({
         </InitializeChatContainer>
       )}
       <ConfirmProductDetailsButtonGroup>
-        <Button
+        <BosonButton
           variant="primaryFill"
           type="submit"
           disabled={
@@ -450,14 +451,14 @@ export default function ConfirmProductDetails({
           ) : (
             "Confirm"
           )}
-        </Button>
-        <Button
+        </BosonButton>
+        <BosonButton
           variant="accentInverted"
           type="button"
           onClick={handleOpenPreview}
         >
           Preview product detail page
-        </Button>
+        </BosonButton>
       </ConfirmProductDetailsButtonGroup>
     </ConfirmProductDetailsContainer>
   );

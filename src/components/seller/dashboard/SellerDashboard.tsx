@@ -1,8 +1,4 @@
-import {
-  Button,
-  exchanges as ExchangesKit,
-  subgraph
-} from "@bosonprotocol/react-kit";
+import { exchanges as ExchangesKit, subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { useMemo } from "react";
 import { generatePath } from "react-router-dom";
@@ -16,6 +12,7 @@ import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useConvertedPriceFunction } from "../../price/useConvertedPriceFunction";
+import BosonButton from "../../ui/BosonButton";
 import Grid from "../../ui/Grid";
 import GridContainer from "../../ui/GridContainer";
 import Loading from "../../ui/Loading";
@@ -162,7 +159,7 @@ export default function SellerDashboard({
               </Typography>
             </div>
             <Grid justifyContent="flex-end" alignItems="center">
-              <Button
+              <BosonButton
                 variant="primaryFill"
                 onClick={() => {
                   const pathname = generatePath(
@@ -175,7 +172,7 @@ export default function SellerDashboard({
                 }}
               >
                 Deposit funds
-              </Button>
+              </BosonButton>
             </Grid>
           </Grid>
         </SellerInner>

@@ -1,4 +1,4 @@
-import { Button, subgraph } from "@bosonprotocol/react-kit";
+import { subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { ArrowSquareOut } from "phosphor-react";
 import { useCallback, useMemo } from "react";
@@ -15,6 +15,7 @@ import {
 } from "../../../components/modal/useModal";
 import Price from "../../../components/price";
 import MultiSteps from "../../../components/step/MultiSteps";
+import BosonButton from "../../../components/ui/BosonButton";
 import Image from "../../../components/ui/Image";
 import Typography from "../../../components/ui/Typography";
 import { UrlParameters } from "../../../lib/routing/parameters";
@@ -339,7 +340,7 @@ export default function ExchangeSidePreview({
       </Section>
       {isInDispute && iAmTheBuyer && !isEscalated && !isRetracted ? (
         <CTASection>
-          <Button
+          <BosonButton
             variant="accentInverted"
             onClick={() =>
               showModal(
@@ -356,8 +357,8 @@ export default function ExchangeSidePreview({
             }
           >
             Retract
-          </Button>
-          <Button
+          </BosonButton>
+          <BosonButton
             variant="secondaryInverted"
             showBorder={false}
             onClick={() =>
@@ -373,11 +374,11 @@ export default function ExchangeSidePreview({
             }
           >
             Escalate
-          </Button>
+          </BosonButton>
         </CTASection>
       ) : isInRedeemed && iAmTheBuyer ? (
         <CTASection>
-          <Button
+          <BosonButton
             variant="primaryFill"
             onClick={() =>
               showModal(
@@ -397,7 +398,7 @@ export default function ExchangeSidePreview({
             }
           >
             Raise a Problem
-          </Button>
+          </BosonButton>
         </CTASection>
       ) : null}
       <HistorySection>

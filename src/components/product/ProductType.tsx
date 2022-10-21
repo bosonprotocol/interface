@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button } from "@bosonprotocol/react-kit";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
@@ -26,6 +25,7 @@ import {
   getLensWebsite
 } from "../modal/components/CreateProfile/Lens/utils";
 import { useModal } from "../modal/useModal";
+import BosonButton from "../ui/BosonButton";
 import Grid from "../ui/Grid";
 import GridContainer from "../ui/GridContainer";
 import Image from "../ui/Image";
@@ -374,9 +374,13 @@ export default function ProductType({
           </FormField>
         </GridContainer>
         <ProductButtonGroup>
-          <Button variant="primaryFill" type="submit" disabled={nextIsDisabled}>
+          <BosonButton
+            variant="primaryFill"
+            type="submit"
+            disabled={nextIsDisabled}
+          >
             Next
-          </Button>
+          </BosonButton>
         </ProductButtonGroup>
       </Container>
     </ContainerProductPage>

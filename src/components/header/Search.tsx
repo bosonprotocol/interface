@@ -6,7 +6,7 @@ import { ExploreQueryParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import Button from "../ui/Button";
+import BosonButton from "../ui/BosonButton";
 import Grid from "../ui/Grid";
 
 const InputWrapper = styled(Grid)<{
@@ -98,9 +98,9 @@ export default function Search({ isMobile, navigationBarPosition }: Props) {
         placeholder="Search"
       />
       {isMobile && (
-        <Button onClick={navigateToExplore} theme="primary">
+        <BosonButton onClick={navigateToExplore} variant="primaryFill">
           <MagnifyingGlass size={16} />
-        </Button>
+        </BosonButton>
       )}
     </InputWrapper>
   );
