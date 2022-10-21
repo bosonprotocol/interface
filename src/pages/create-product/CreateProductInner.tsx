@@ -499,7 +499,7 @@ function CreateProductInner({
       ({ name, value }: { name: string; value: string }) => {
         return {
           trait_type: name,
-          value: value
+          value: value || ""
         };
       }
     );
@@ -623,11 +623,11 @@ function CreateProductInner({
           const typeOptions = [
             {
               type: "Size",
-              option: size || ""
+              option: size || "-"
             },
             {
               type: "Color",
-              option: color || ""
+              option: color || "-"
             }
           ];
           variations.push(...typeOptions);
