@@ -72,7 +72,7 @@ export function WithSellerData(
   WrappedComponent: React.ComponentType<SellerInsideProps & WithSellerDataProps>
 ) {
   const ComponentWithSellerData = (props: SellerInsideProps) => {
-    const sellerId = "14";
+    const sellerId = props.sellerId;
     const sellerRoles = useSellerRoles(sellerId);
     const {
       store: { tokens }
