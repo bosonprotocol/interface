@@ -1057,11 +1057,10 @@ function CreateProductInner({
           validationSchema={wizardStep.currentValidation}
           enableReinitialize
         >
-          {({ values, errors }) => {
+          {({ values }) => {
             if (productVariant !== values?.productType?.productVariant) {
               setProductVariant(values?.productType?.productVariant);
             }
-            console.log({ values, errors });
             return (
               <Form onKeyPress={onKeyPress}>
                 {isPreviewVisible ? (
