@@ -274,6 +274,7 @@ export default function VoidProduct({
             }}
             onSuccess={handleSuccess}
             web3Provider={signer?.provider as Provider}
+            metaTx={CONFIG.metaTx}
           />
         </Grid>
       )}
