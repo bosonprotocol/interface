@@ -37,10 +37,10 @@ export const productTypeValidationSchema = Yup.object({
 });
 
 function testPrice(price: number | null | undefined) {
-  if (!price) {
+  if (!this.parent.currency?.value) {
     return true;
   }
-  if (price < 1e-100) {
+  if (!price || price < 1e-100) {
     return false;
   }
   try {
