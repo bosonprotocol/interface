@@ -224,6 +224,7 @@ ${FormModel.formFields.email.placeholder}: ${emailField.value}`;
             reload?.();
           }}
           web3Provider={signer?.provider as Provider}
+          metaTx={CONFIG.metaTx}
         >
           <Grid gap="0.5rem">
             Confirm address and redeem
