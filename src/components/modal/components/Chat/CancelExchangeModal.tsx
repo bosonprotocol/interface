@@ -228,6 +228,7 @@ export default function CancelExchangeModal({
             ));
           }}
           web3Provider={signer?.provider as Provider}
+          metaTx={CONFIG.metaTx}
         >
           <Grid gap="0.5rem">
             Confirm cancellation
