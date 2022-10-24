@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 
-import { fetchIpfsImages } from "../base64";
+import { fetchIpfsBase64Media } from "../base64";
 import { useIpfsStorage } from "./useIpfsStorage";
 
 export function useSaveImageToIpfs() {
@@ -22,7 +22,10 @@ export function useSaveImageToIpfs() {
       if (!image && !ipfsMetadataStorage) {
         return;
       }
-      const [loadPromise] = await fetchIpfsImages([image], ipfsMetadataStorage);
+      const [loadPromise] = await fetchIpfsBase64Media(
+        [image],
+        ipfsMetadataStorage
+      );
       return loadPromise;
     },
     [ipfsMetadataStorage]

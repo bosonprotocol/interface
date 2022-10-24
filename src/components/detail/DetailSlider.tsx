@@ -8,7 +8,7 @@ import Button from "../../components/ui/Button";
 import Grid from "../../components/ui/Grid";
 import Image from "../../components/ui/Image";
 import Typography from "../../components/ui/Typography";
-import { fetchIpfsImages } from "../../lib/utils/base64";
+import { fetchIpfsBase64Media } from "../../lib/utils/base64";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
 import { SLIDER_OPTIONS } from "./const";
 import { GlideSlide, GlideWrapper } from "./Detail.style";
@@ -38,7 +38,7 @@ export default function DetailSlider({ images }: Props) {
   useEffect(() => {
     (async () => {
       try {
-        const imagesFromIpfs = await fetchIpfsImages(
+        const imagesFromIpfs = await fetchIpfsBase64Media(
           images,
           ipfsMetadataStorage
         );

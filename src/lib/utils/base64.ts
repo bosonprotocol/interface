@@ -32,7 +32,7 @@ export const loadAndSetImagePromise = (image: File) => {
   );
 };
 
-export const fetchIpfsImages = async (
+export const fetchIpfsBase64Media = async (
   ipfsLinks: string[],
   ipfsMetadataStorage: IpfsMetadataStorage
 ): Promise<string[]> => {

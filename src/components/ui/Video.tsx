@@ -1,16 +1,16 @@
 import { Loading } from "@bosonprotocol/react-kit";
-import { CameraSlash, Image as ImageIcon } from "phosphor-react";
-import { useEffect, useState } from "react";
+import { VideoCamera as VideoIcon, VideoCameraSlash } from "phosphor-react";
+import { useEffect, useState, VideoHTMLAttributes } from "react";
 import styled from "styled-components";
 
-import { buttonText } from "../../components/ui/styles";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import { fetchIpfsBase64Media } from "../../lib/utils/base64";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
+import { buttonText } from "./styles";
 import Typography from "./Typography";
 
-const ImageWrapper = styled.div`
+const VideoWrapper = styled.div`
   overflow: hidden;
   position: relative;
   z-index: ${zIndex.OfferCard};
@@ -18,8 +18,8 @@ const ImageWrapper = styled.div`
   padding-top: 120%;
   font-size: inherit;
 
-  > img,
-  > div[data-testid="image"] {
+  > video,
+  > div[data-testid="video"] {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -38,13 +38,13 @@ const ImageWrapper = styled.div`
   }
 `;
 
-const ImageContainer = styled.img`
+const VideoContainer = styled.video`
   width: 100%;
   height: 100%;
   object-fit: cover;
 `;
 
-const ImagePlaceholder = styled.div`
+const VideoPlaceholder = styled.div`
   position: absolute;
   top: 0;
   height: 100%;
@@ -65,26 +65,26 @@ const ImagePlaceholder = styled.div`
   }
 `;
 
-interface IImage {
+interface IVideo {
   src: string;
   children?: React.ReactNode;
   dataTestId?: string;
-  alt?: string;
   showPlaceholderText?: boolean;
   noPreload?: boolean;
+  videoProps?: VideoHTMLAttributes<HTMLElement>;
 }
-const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
+const Video: React.FC<IVideo & React.HTMLAttributes<HTMLDivElement>> = ({
   src,
   children,
-  dataTestId = "image",
-  alt = "",
+  dataTestId = "video",
   showPlaceholderText = true,
   noPreload = false,
+  videoProps,
   ...rest
 }) => {
   const [isLoaded, setIsLoaded] = useState<boolean>(noPreload);
   const [isError, setIsError] = useState<boolean>(false);
-  const [imageSrc, setImageSrc] = useState<string | null>(
+  const [videoSrc, setVideoSrc] = useState<string | null>(
     noPreload ? src : null
   );
   const ipfsMetadataStorage = useIpfsStorage();
@@ -97,9 +97,9 @@ const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
             [src],
             ipfsMetadataStorage
           );
-          setImageSrc(base64str as string);
+          setVideoSrc(base64str as string);
         } catch (error) {
-          console.error("error in Image", error);
+          console.error("error in Video", error);
           setIsLoaded(true);
           setIsError(true);
         }
@@ -108,60 +108,64 @@ const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
         setIsError(true);
       }
     }
-    if (!isLoaded && imageSrc === null) {
+    if (!isLoaded && videoSrc === null) {
       if (src?.includes("ipfs://")) {
         const newString = src.split("//");
         const CID = newString[newString.length - 1];
         fetchData(`ipfs://${CID}`);
       } else {
-        setImageSrc(src);
+        setVideoSrc(src);
       }
     }
   }, []); // eslint-disable-line
 
   useEffect(() => {
-    if (imageSrc !== null) {
+    if (videoSrc !== null) {
       setTimeout(() => setIsLoaded(true), 100);
     }
-  }, [imageSrc]);
+  }, [videoSrc]);
 
   if (!isLoaded && !isError) {
     return (
-      <ImageWrapper {...rest}>
-        <ImagePlaceholder>
+      <VideoWrapper {...rest}>
+        <VideoPlaceholder>
           <Typography tag="div">
             <Loading />
           </Typography>
-        </ImagePlaceholder>
-      </ImageWrapper>
+        </VideoPlaceholder>
+      </VideoWrapper>
     );
   }
 
   if (isLoaded && isError) {
     return (
-      <ImageWrapper {...rest}>
-        <ImagePlaceholder data-image-placeholder>
+      <VideoWrapper {...rest}>
+        <VideoPlaceholder data-video-placeholder>
           {showPlaceholderText ? (
-            <ImageIcon size={50} color={colors.white} />
+            <VideoIcon size={50} color={colors.white} />
           ) : (
-            <CameraSlash size={20} color={colors.white} />
+            <VideoCameraSlash size={20} color={colors.white} />
           )}
           {showPlaceholderText && (
-            <Typography tag="span">IMAGE NOT AVAILABLE</Typography>
+            <Typography tag="span">VIDEO NOT AVAILABLE</Typography>
           )}
-        </ImagePlaceholder>
-      </ImageWrapper>
+        </VideoPlaceholder>
+      </VideoWrapper>
     );
   }
 
   return (
-    <ImageWrapper {...rest}>
+    <VideoWrapper {...rest}>
       {children || ""}
-      {imageSrc && (
-        <ImageContainer data-testid={dataTestId} src={imageSrc} alt={alt} />
+      {videoSrc && (
+        <VideoContainer
+          data-testid={dataTestId}
+          {...videoProps}
+          src={videoSrc}
+        />
       )}
-    </ImageWrapper>
+    </VideoWrapper>
   );
 };
 
-export default Image;
+export default Video;

@@ -7,7 +7,7 @@ import { useAccount } from "wagmi";
 import { CONFIG } from "../../lib/config";
 import { breakpointNumbers } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
-import { fetchIpfsImages } from "../../lib/utils/base64";
+import { fetchIpfsBase64Media } from "../../lib/utils/base64";
 import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
@@ -176,7 +176,7 @@ export default function ProductType({
       (async () => {
         try {
           const logoUrl = getLensProfilePictureUrl(operatorLens as Profile);
-          const [logoBase64] = await fetchIpfsImages(
+          const [logoBase64] = await fetchIpfsBase64Media(
             [logoUrl],
             ipfsMetadataStorage
           );
