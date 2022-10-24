@@ -1,28 +1,37 @@
 import { CONFIG } from "../../../lib/config";
 import { colors } from "../../../lib/styles/colors";
-import { ProfileFieldsFragment } from "../../../lib/utils/hooks/lens/graphql/generated";
 
-export async function getOpenSeaUrl(sellerLens: ProfileFieldsFragment) {
+export async function getOpenSeaUrl(
+  address: string,
+  ownedBy: string | boolean
+) {
   const isProd = CONFIG.envName === "production";
-  const ownedBy = sellerLens?.ownedBy || false;
 
-  if (isProd && ownedBy) {
-    return new Promise((resolve) => {
-      fetch(`https://api.opensea.io/api/v1/asset_contract/${ownedBy}`, {
+  return new Promise((resolve) => {
+    fetch(
+      `https://${
+        isProd ? "" : "testnets-"
+      }api.opensea.io/api/v1/asset_contract/${address}`,
+      {
         method: "GET"
-      })
-        .then((response) => response.json())
-        .then((response) =>
-          resolve(
-            response?.collection?.slug
-              ? `https://opensea.io/collection/${response?.collection?.slug}`
-              : false
-          )
+      }
+    )
+      .then((response) => response.json())
+      .then((response) =>
+        resolve(
+          response?.collection?.slug
+            ? `https://${isProd ? "" : "testnets."}opensea.io/collection/${
+                response?.collection?.slug
+              }`
+            : ownedBy
+            ? `https://${
+                isProd ? "" : "testnets."
+              }opensea.io/${ownedBy}?tab=created`
+            : false
         )
-        .catch((err) => console.error(err));
-    });
-  }
-  return ownedBy ? `https://testnets.opensea.io/${ownedBy}` : false;
+      )
+      .catch((err) => console.error(err));
+  });
 }
 
 export default function OpenSeaLogo() {

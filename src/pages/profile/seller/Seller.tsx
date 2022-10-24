@@ -91,7 +91,8 @@ export default function Seller() {
   const {
     isLoading,
     isError,
-    lens: sellersLens
+    lens: sellersLens,
+    sellers: sellersData
   } = useCurrentSellers({
     sellerId
   });
@@ -229,7 +230,10 @@ export default function Seller() {
                   Follow
                 </a>
               </FollowLens>
-              <SellerSocial sellerLens={sellerLens as ProfileFieldsFragment} />
+              <SellerSocial
+                sellerLens={sellerLens as ProfileFieldsFragment}
+                voucherCloneAddress={sellersData?.[0]?.voucherCloneAddress}
+              />
             </Grid>
           </Grid>
         </ProfileSectionWrapper>

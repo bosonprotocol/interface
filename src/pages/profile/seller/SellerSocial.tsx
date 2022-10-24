@@ -34,21 +34,27 @@ function RenderSocial({
 
 interface Props {
   sellerLens: ProfileFieldsFragment;
+  voucherCloneAddress?: string;
 }
-export default function SellerSocial({ sellerLens }: Props) {
+export default function SellerSocial({
+  sellerLens,
+  voucherCloneAddress
+}: Props) {
   const [openSeaUrl, setOpenSeaUrl] = useState<string | null>(null);
   const website = getLensWebsite(sellerLens as Profile);
   const lensUrl = website ? preAppendHttps(website) || false : false;
 
   useEffect(() => {
-    if (openSeaUrl === null) {
-      getOpenSeaUrl(sellerLens).then((value) => {
-        if (value) {
-          setOpenSeaUrl(value as string);
+    if (openSeaUrl === null && voucherCloneAddress) {
+      getOpenSeaUrl(voucherCloneAddress, sellerLens?.ownedBy || false).then(
+        (value) => {
+          if (value) {
+            setOpenSeaUrl(value as string);
+          }
         }
-      });
+      );
     }
-  }, [openSeaUrl, sellerLens]);
+  }, [openSeaUrl, voucherCloneAddress, sellerLens?.ownedBy]);
 
   return (
     <SocialIconContainer>
