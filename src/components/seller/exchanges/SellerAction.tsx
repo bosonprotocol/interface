@@ -13,7 +13,6 @@ import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { SellerRolesProps } from "../../../lib/utils/hooks/useSellerRoles";
 import { useModal } from "../../modal/useModal";
 import BosonButton from "../../ui/BosonButton";
-import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
 import { isCompletable } from "./SellerExchangeTable";
 
@@ -94,9 +93,9 @@ export const SellerActionButton = ({
   return (
     <Grid justifyContent="flex-end" gap="1rem">
       {exchange && isCompletable(exchange) && (
-        <Button
-          theme="primary"
-          size="small"
+        <BosonButton
+          variant="primaryFill"
+          size={ButtonSize.Small}
           disabled={!sellerRoles?.isOperator}
           tooltip="This action is restricted to only the operator wallet"
           onClick={() => {
@@ -112,7 +111,7 @@ export const SellerActionButton = ({
           }}
         >
           Complete exchange
-        </Button>
+        </BosonButton>
       )}
       <BosonButton
         variant="accentInverted"
