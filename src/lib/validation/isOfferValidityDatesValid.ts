@@ -12,8 +12,10 @@ function isOfferValidityDatesValid() {
           : dayjs(rpValue[1])?.isBefore(value[1]);
 
       if (rpValue && doesItEndBefore) {
+        const coreTermsKey: "variantsCoreTermsOfSale" | "coreTermsOfSale" =
+          this.path.split(".")[0];
         throw this.createError({
-          path: "coreTermsOfSale.redemptionPeriod",
+          path: `${coreTermsKey}.redemptionPeriod`,
           message:
             "Redemption period has to end after or be equal to validity period"
         });

@@ -183,7 +183,7 @@ export default function ExpireVoucherModal({ exchange }: Props) {
           }}
         >
           <ExpireButton
-            variant="primary"
+            variant="primaryFill"
             exchangeId={exchange.id}
             envName={CONFIG.envName}
             disabled={isLoading}

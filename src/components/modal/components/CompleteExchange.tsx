@@ -216,7 +216,7 @@ export default function CompleteExchange({
       {exchange?.id && (
         <Grid justifyContent="center">
           <CompleteButton
-            variant="primary"
+            variant="primaryFill"
             exchangeId={exchange.id}
             envName={CONFIG.envName}
             onError={(error) => {
@@ -255,7 +255,7 @@ export default function CompleteExchange({
       {exchanges && exchanges.length && (
         <Grid justifyContent="center">
           <BatchCompleteButton
-            variant="primary"
+            variant="primaryFill"
             exchangeIds={exchangeIds}
             envName={CONFIG.envName}
             onError={(error) => {

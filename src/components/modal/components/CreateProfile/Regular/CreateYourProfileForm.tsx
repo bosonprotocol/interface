@@ -34,6 +34,7 @@ export default function CreateYourProfileForm() {
         style={{
           marginBottom: 0
         }}
+        required
       >
         <Input
           name="createYourProfile.website"

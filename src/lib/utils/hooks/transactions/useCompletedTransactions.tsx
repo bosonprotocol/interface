@@ -13,6 +13,8 @@ export const useCompletedTransactions = (page = 0) => {
   const { data: currentBuyer } = useCurrentBuyer();
   const coreSDK = useCoreSDK();
 
+  const accountIds = [...sellerIds, currentBuyer?.id].filter(Boolean);
+
   return useQuery(
     ["transactions", "completed", address, page],
     async () => {
@@ -30,7 +32,8 @@ export const useCompletedTransactions = (page = 0) => {
       }));
     },
     {
-      enabled: !!address
+      enabled: !!address && accountIds.length > 0,
+      refetchInterval: 5_000
     }
   );
 };
