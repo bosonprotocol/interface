@@ -1,21 +1,44 @@
-import { Spinner } from "phosphor-react";
-import styled from "styled-components";
+import { useEffect, useMemo } from "react";
 
-import { colors } from "../../lib/styles/colors";
+import { usePendingTransactionsStore } from "../../lib/utils/hooks/transactions/usePendingTransactions";
+import { buildTableData } from "../../lib/utils/transactions";
+import { useCoreSDK } from "../../lib/utils/useCoreSdk";
 import Grid from "../ui/Grid";
-
-const PendingGrid = styled(Grid)`
-  color: ${colors.orange};
-`;
-
-const pendingTx = [
-  {
-    text: "Commit to X",
-    status: "Pending"
-  }
-];
+import Loading from "../ui/Loading";
+import TransactionsTable from "./TransactionsTable";
 
 export const PendingTransactions = () => {
+  const coreSDK = useCoreSDK();
+  const {
+    transactions,
+    reconcilePendingTransactions,
+    isLoading,
+    didInitiallyReconcile,
+    resetInitialReconcile
+  } = usePendingTransactionsStore();
+
+  useEffect(() => {
+    resetInitialReconcile();
+    reconcilePendingTransactions(coreSDK);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (didInitiallyReconcile) {
+      const intervalId = setInterval(() => {
+        reconcilePendingTransactions(coreSDK);
+      }, 5_000);
+      return () => clearInterval(intervalId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [didInitiallyReconcile]);
+
+  const tableData = useMemo(() => buildTableData(transactions), [transactions]);
+
+  if (isLoading && !didInitiallyReconcile) {
+    return <Loading />;
+  }
+
   return (
     <Grid
       flexDirection="column"
@@ -23,21 +46,7 @@ export const PendingTransactions = () => {
       gap="0.75rem"
       margin="0 0 2rem 0"
     >
-      {pendingTx.map((tx) => {
-        return (
-          <Grid key={tx.text}>
-            <Grid>
-              <strong>{tx.text}</strong>
-            </Grid>
-            <a>
-              <PendingGrid justifyContent="flex-end" gap="0.5rem">
-                <span>Pending</span>
-                <Spinner size={20} />
-              </PendingGrid>
-            </a>
-          </Grid>
-        );
-      })}
+      <TransactionsTable transactions={tableData} />
     </Grid>
   );
 };

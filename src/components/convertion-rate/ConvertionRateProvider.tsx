@@ -27,7 +27,7 @@ export default function ConvertionRateProvider({ children }: Props) {
     [tokens, defaultTokens]
   );
 
-  const { data } = useUniswapPools({
+  const { data, isSuccess } = useUniswapPools({
     tokens: !isTokensLoading && appTokens?.length > 0 ? appTokens : []
   });
 
@@ -47,12 +47,12 @@ export default function ConvertionRateProvider({ children }: Props) {
   }, [isTokensLoading, store?.tokens]); //eslint-disable-line
 
   useEffect(() => {
-    if (data && store?.isLoading === true) {
-      const rates = handleRates(data);
+    if (isSuccess && store?.isLoading === true) {
+      const rates = handleRates(data, appTokens);
       saveItemInStorage("convertionRates", rates);
       updateProps({ ...store, rates, isLoading: false });
     }
-  }, [data]); //eslint-disable-line
+  }, [data, isSuccess]); //eslint-disable-line
 
   const value: ConvertionRateContextType = {
     store,

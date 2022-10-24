@@ -11,6 +11,7 @@ import { CONFIG } from "../../lib/config";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { useDisputeResolver } from "../../lib/utils/hooks/useDisputeResolver";
+import { fixformattedString } from "../../lib/utils/number";
 import { Token } from "../convertion-rate/ConvertionRateContext";
 import {
   DarkerBackground,
@@ -30,6 +31,9 @@ import { useCreateForm } from "./utils/useCreateForm";
 interface Props {
   togglePreview: React.Dispatch<React.SetStateAction<boolean>>;
   seller?: subgraph.SellerFieldsFragment;
+  isMultiVariant: boolean;
+  isOneSetOfImages: boolean;
+  hasMultipleVariants: boolean;
 }
 
 const PreviewWrapper = styled.div`
@@ -41,7 +45,13 @@ const PreviewWrapperContent = styled.div`
   box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1), 0px 0px 8px rgba(0, 0, 0, 0.1),
     0px 0px 16px rgba(0, 0, 0, 0.1), 0px 0px 32px rgba(0, 0, 0, 0.1);
 `;
-export default function Preview({ togglePreview, seller }: Props) {
+export default function Preview({
+  togglePreview,
+  seller,
+  isMultiVariant,
+  isOneSetOfImages,
+  hasMultipleVariants
+}: Props) {
   const { values } = useCreateForm();
 
   const redemptionPointUrl =
@@ -50,13 +60,23 @@ export default function Preview({ togglePreview, seller }: Props) {
       ? values.shippingInfo.redemptionPointUrl
       : window.origin;
 
+  // if we have variants defined, then we show the first one in the preview
+  const variantIndex = 0;
+  const firstVariant = values.productVariants.variants[variantIndex];
+  const exchangeSymbol = isMultiVariant
+    ? firstVariant.currency.value
+    : values.coreTermsOfSale.currency.value;
   const exchangeToken = CONFIG.defaultTokens.find(
-    (n: Token) => n.symbol === values.coreTermsOfSale.currency.value
+    (n: Token) => n.symbol === exchangeSymbol
   );
-  const thumbnailImg = values?.productImages?.thumbnail?.[0]?.src || "";
-  const sliderImages = map(
-    values?.productImages || [],
-    (v) => v?.[0]?.src || ""
+
+  const productImages =
+    isMultiVariant && !isOneSetOfImages
+      ? values.productVariantsImages?.[variantIndex]?.productImages
+      : values?.productImages;
+  const thumbnailImg = productImages?.thumbnail?.[0]?.src || "";
+  const sliderImages = map(productImages, (v) => v?.[0]?.src || "").filter(
+    (ipfsLink) => ipfsLink
   );
   const offerImg = sliderImages?.[0] || "";
 
@@ -87,23 +107,32 @@ export default function Preview({ togglePreview, seller }: Props) {
   };
   const name = values.productInformation.productTitle || "Untitled";
 
+  const price = isMultiVariant
+    ? firstVariant.price
+    : values.coreTermsOfSale.price;
   const priceBN = parseUnits(
-    `${values.coreTermsOfSale.price}`,
+    price < 0.1 ? fixformattedString(price) : price.toString(),
     Number(exchangeToken?.decimals || 18)
   );
 
+  const commonTermsOfSale = isMultiVariant
+    ? values.variantsCoreTermsOfSale
+    : values.coreTermsOfSale;
   const validFromDateInMS = Date.parse(
-    values.coreTermsOfSale.offerValidityPeriod[0]
+    commonTermsOfSale.offerValidityPeriod[0]
   );
   const validUntilDateInMS = Date.parse(
-    values.coreTermsOfSale.offerValidityPeriod[1]
+    commonTermsOfSale.offerValidityPeriod[1]
   );
   const voucherRedeemableFromDateInMS = Date.parse(
-    values.coreTermsOfSale.redemptionPeriod[0]
+    commonTermsOfSale.redemptionPeriod[0]
   );
   const voucherRedeemableUntilDateInMS = Date.parse(
-    values.coreTermsOfSale.redemptionPeriod[1]
+    commonTermsOfSale.redemptionPeriod[1]
   );
+  const quantityAvailable = isMultiVariant
+    ? firstVariant.quantity
+    : values.coreTermsOfSale.quantity;
 
   const exchangeDate = Date.now().toString();
 
@@ -121,8 +150,8 @@ export default function Preview({ togglePreview, seller }: Props) {
       .mul(parseFloat(values.termsOfExchange.buyerCancellationPenalty) * 1000)
       .div(100 * 1000)
       .toString(),
-    quantityAvailable: values.coreTermsOfSale.quantity.toString(),
-    quantityInitial: values.coreTermsOfSale.quantity.toString(),
+    quantityAvailable: quantityAvailable.toString(),
+    quantityInitial: quantityAvailable.toString(),
     validFromDate: (validFromDateInMS / 1000).toString(),
     validUntilDate: (validUntilDateInMS / 1000).toString(),
     voucherRedeemableFromDate: (
@@ -150,6 +179,7 @@ export default function Preview({ togglePreview, seller }: Props) {
     ],
     seller,
     exchangeToken: exchangeToken || {
+      // this 'or' should never occurr
       address: ethers.constants.AddressZero,
       decimals: CONFIG.nativeCoin?.decimals || "",
       name: values.coreTermsOfSale.currency.value || "",
@@ -230,6 +260,7 @@ export default function Preview({ togglePreview, seller }: Props) {
                   name={name}
                   image={offerImg}
                   hasSellerEnoughFunds={true}
+                  hasMultipleVariants={hasMultipleVariants}
                 />
               </div>
             </MainDetailGrid>

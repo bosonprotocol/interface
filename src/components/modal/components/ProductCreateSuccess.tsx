@@ -30,6 +30,7 @@ interface Props {
   offer: any;
   onCreateNewProject: () => void;
   onViewMyItem: () => void;
+  hasMultipleVariants: boolean;
 }
 const Funds = styled.div`
   margin: 2rem auto;
@@ -108,7 +109,8 @@ export default function ProductCreateSuccess({
   image,
   offer,
   onCreateNewProject,
-  onViewMyItem
+  onViewMyItem,
+  hasMultipleVariants
 }: Props) {
   const convertedPrice = useConvertedPrice({
     value: offer?.price,
@@ -173,6 +175,7 @@ export default function ProductCreateSuccess({
                 decimals={offer.exchangeToken.decimals}
                 tag="h3"
                 convert
+                withAsterisk={hasMultipleVariants}
               />
             </Grid>
             <Break />

@@ -32,22 +32,25 @@ export const loadAndSetImagePromise = (image: File) => {
   );
 };
 
-export const fetchIpfsImage = async (
-  ipfsLink: string,
+export const fetchIpfsImages = async (
+  ipfsLinks: string[],
   ipfsMetadataStorage: IpfsMetadataStorage
-) => {
+): Promise<string[]> => {
   if (!ipfsMetadataStorage) {
-    return;
+    return [];
   }
-
-  const fetchPromises = await ipfsMetadataStorage.get(ipfsLink, false);
-  const [image] = await Promise.all([fetchPromises]);
-  const base64str = await blobToBase64(new Blob([image as BlobPart]));
-
-  if (!String(base64str).includes("base64")) {
-    throw new Error("Decoded image is not in base64");
-  }
-  return base64str;
+  const fetchPromises = ipfsLinks.map(async (src) => {
+    const imgData = await ipfsMetadataStorage.get(src, false);
+    const base64str = await blobToBase64(
+      new Blob([imgData as unknown as BlobPart])
+    );
+    if (!String(base64str).includes("base64")) {
+      throw new Error("Decoded image is not in base64");
+    }
+    return base64str;
+  });
+  const base64strList = await Promise.all(fetchPromises);
+  return base64strList;
 };
 
 export function dataURItoBlob(dataURI: string) {

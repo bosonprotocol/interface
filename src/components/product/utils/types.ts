@@ -8,11 +8,15 @@ import {
   disputeCentreValidationSchemaMakeProposal,
   disputeCentreValidationSchemaProposalSummary,
   disputeCentreValidationSchemaTellUsMore,
+  imagesSpecificOrAllValidationSchema,
   productImagesValidationSchema,
   productInformationValidationSchema,
   productTypeValidationSchema,
+  productVariantsImagesValidationSchema,
+  productVariantsValidationSchema,
   shippingInfoValidationSchema,
-  termsOfExchangeValidationSchema
+  termsOfExchangeValidationSchema,
+  variantsCoreTermsOfSaleValidationSchema
 } from "./validationSchema";
 
 export type CreateYourProfile = Yup.InferType<
@@ -25,8 +29,16 @@ export type ProductInformation = Yup.InferType<
   typeof productInformationValidationSchema
 >;
 
+export type ProductVariants = Yup.InferType<
+  typeof productVariantsValidationSchema
+>;
+
 export type CoreTermsOfSale = Yup.InferType<
   typeof coreTermsOfSaleValidationSchema
+>;
+
+export type VariantsCoreTermsOfSale = Yup.InferType<
+  typeof variantsCoreTermsOfSaleValidationSchema
 >;
 
 export type TermsOfExchange = Yup.InferType<
@@ -36,6 +48,10 @@ export type TermsOfExchange = Yup.InferType<
 export type ShippingInfo = Yup.InferType<typeof shippingInfoValidationSchema>;
 
 export type ProductImages = Yup.InferType<typeof productImagesValidationSchema>;
+
+export type ProductVariantsImages = Yup.InferType<
+  typeof productVariantsImagesValidationSchema
+>;
 
 export type DisputeCentreGetStarted = Yup.InferType<
   typeof disputeCentreValidationSchemaGetStarted
@@ -57,15 +73,23 @@ export type DisputeCentreValidationSchemaProposalSummary = Yup.InferType<
   typeof disputeCentreValidationSchemaProposalSummary
 >;
 
+export type ImagesSpecificOrAll = Yup.InferType<
+  typeof imagesSpecificOrAllValidationSchema
+>;
+
 export type CreateProductForm = CreateYourProfile &
   ProductType &
   ProductInformation &
+  ProductVariants &
   ShippingInfo &
   CoreTermsOfSale &
+  VariantsCoreTermsOfSale &
   TermsOfExchange &
   ProductImages &
+  ProductVariantsImages &
   DisputeCentreGetStarted &
   DisputeCentreTellUsMore &
   DisputeCentreAdditionalInformation &
   DisputeCentreMakeProposal &
-  DisputeCentreValidationSchemaProposalSummary;
+  DisputeCentreValidationSchemaProposalSummary &
+  ImagesSpecificOrAll;

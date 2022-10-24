@@ -4,7 +4,7 @@ interface ReturnValues {
   voucherRedeemableFromDateInMS: number;
   voucherRedeemableUntilDateInMS: number;
 }
-export const ValidateDates = ({
+export const validateDates = ({
   offerValidityPeriod,
   redemptionPeriod
 }: {

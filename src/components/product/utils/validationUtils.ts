@@ -8,7 +8,9 @@ export const validationOfRequiredIpfsImage = () =>
   Yup.mixed<FileProps[]>().test(
     "fileUploaded",
     "You need to upload an image",
-    (value) => !value || (value && value.length !== 0)
+    function (value) {
+      return !!(value && value?.[0]?.src);
+    }
   );
 
 export const validationOfIpfsImage = () => Yup.mixed<FileProps[]>();

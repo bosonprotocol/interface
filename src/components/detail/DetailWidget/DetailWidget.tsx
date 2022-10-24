@@ -106,6 +106,7 @@ interface IDetailWidget {
   hasSellerEnoughFunds: boolean;
   isPreview?: boolean;
   reload?: () => void;
+  hasMultipleVariants?: boolean;
 }
 
 export const getOfferDetailData = (
@@ -247,6 +248,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   image = "",
   hasSellerEnoughFunds,
   isPreview = false,
+  hasMultipleVariants,
   reload
 }) => {
   const { openConnectModal } = useConnectModal();
@@ -515,6 +517,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               tag="h3"
               convert
               withBosonStyles
+              withAsterisk={isPreview && hasMultipleVariants}
             />
 
             {isOffer && !isNotCommittableOffer && (
@@ -644,6 +647,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                     {
                       title: "Redeem your item",
                       offerName: offer.metadata.name,
+                      offerId: offer.id,
                       exchangeId: exchange?.id || "",
                       buyerId: exchange?.buyer.id || "",
                       sellerId: exchange?.seller.id || "",

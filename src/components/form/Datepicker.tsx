@@ -1,6 +1,5 @@
 import type { Dayjs } from "dayjs";
 import { useField } from "formik";
-import React from "react";
 
 import DatePicker from "../datepicker/DatePicker";
 import Error from "./Error";

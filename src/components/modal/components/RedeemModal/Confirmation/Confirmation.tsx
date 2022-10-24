@@ -14,6 +14,7 @@ import { useSigner } from "wagmi";
 import { CONFIG } from "../../../../../lib/config";
 import { colors } from "../../../../../lib/styles/colors";
 import { useChatStatus } from "../../../../../lib/utils/hooks/chat/useChatStatus";
+import { useAddPendingTransaction } from "../../../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { useCoreSDK } from "../../../../../lib/utils/useCoreSdk";
 import { useChatContext } from "../../../../../pages/chat/ChatProvider/ChatContext";
 import { poll } from "../../../../../pages/create-product/utils";
@@ -34,6 +35,7 @@ const StyledGrid = styled(Grid)`
 interface Props {
   exchangeId: string;
   offerName: string;
+  offerId: string;
   buyerId: string;
   sellerId: string;
   sellerAddress: string;
@@ -46,6 +48,7 @@ export default function Confirmation({
   onBackClick,
   exchangeId,
   offerName,
+  offerId,
   buyerId,
   sellerId,
   sellerAddress,
@@ -53,6 +56,7 @@ export default function Confirmation({
   setIsLoading: setLoading
 }: Props) {
   const coreSDK = useCoreSDK();
+  const addPendingTransaction = useAddPendingTransaction();
   const { showModal, hideModal } = useModal();
   const { bosonXmtp } = useChatContext();
   const [chatError, setChatError] = useState<Error | null>(null);
@@ -181,10 +185,22 @@ ${FormModel.formFields.email.placeholder}: ${emailField.value}`;
             await sendDeliveryDetailsToChat();
             showModal("WAITING_FOR_CONFIRMATION");
           }}
-          onPendingTransaction={(hash) => {
+          onPendingTransaction={(hash, isMetaTx) => {
             showModal("TRANSACTION_SUBMITTED", {
               action: "Redeem",
               txHash: hash
+            });
+            addPendingTransaction({
+              type: subgraph.EventType.VoucherRedeemed,
+              hash,
+              isMetaTx,
+              accountType: "Buyer",
+              exchange: {
+                id: exchangeId,
+                offer: {
+                  id: offerId
+                }
+              }
             });
           }}
           onSuccess={async (_, { exchangeId }) => {
