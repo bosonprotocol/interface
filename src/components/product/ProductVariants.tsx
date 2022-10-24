@@ -3,7 +3,7 @@ import { useField } from "formik";
 import { useCallback } from "react";
 import styled from "styled-components";
 
-import { FormField, Input, Select } from "../form";
+import { Error, FormField, Input, Select } from "../form";
 import TagsInput from "../form/TagsInput";
 import Button from "../ui/Button";
 import Grid from "../ui/Grid";
@@ -80,7 +80,7 @@ export default function ProductVariants() {
   helpersColors.setValue;
   const [fieldSizes, , helpersSizes] =
     useField<ProductVariantsType["productVariants"]["sizes"]>(variantsSizesKey);
-  const [fieldVariants, , helpersVariants] =
+  const [fieldVariants, metaVariants, helpersVariants] =
     useField<ProductVariantsType["productVariants"]["variants"]>(variantsKey);
   const variants = fieldVariants.value;
   const onAddTagType = useCallback(
@@ -278,6 +278,9 @@ export default function ProductVariants() {
           })}
         </tbody>
       </Table>
+      {metaVariants.error && typeof metaVariants.error === "string" && (
+        <Error display message={metaVariants.error} />
+      )}
       <ProductInformationButtonGroup>
         <Button theme="primary" type="submit" disabled={nextIsDisabled}>
           Next
