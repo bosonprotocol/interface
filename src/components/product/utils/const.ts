@@ -104,7 +104,7 @@ export const OPTIONS_EXCHANGE_POLICY = [
 export const OPTIONS_DISPUTE_RESOLVER = [
   {
     value: "redeemeum",
-    label: "Redemeeum"
+    label: "Redeemeum"
   }
 ];
 
