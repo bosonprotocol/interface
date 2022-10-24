@@ -95,11 +95,9 @@ export default function ReviewAndSubmitStep({
           variant="primaryFill"
           type="submit"
           disabled={
-            !!(
-              !isValid ||
-              (!isChatInitialized && proposalTypeField.value) ||
-              isSubmitting
-            )
+            !isValid ||
+            (!isChatInitialized && !!proposalTypeField.value) ||
+            isSubmitting
           }
         >
           {isModal ? "Send Proposal" : "Raise Dispute"}
