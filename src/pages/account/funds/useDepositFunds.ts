@@ -1,6 +1,6 @@
 import { TransactionResponse } from "@bosonprotocol/common";
 import { CoreSDK } from "@bosonprotocol/react-kit";
-import { BigNumberish } from "ethers";
+import { BigNumberish, ethers } from "ethers";
 import { useCallback } from "react";
 import { useAccount } from "wagmi";
 
@@ -22,7 +22,11 @@ export default function useDepositFunds({
 
   return useCallback(() => {
     let depositFundsResponse: Promise<TransactionResponse>;
-    const isMetaTx = Boolean(coreSdk?.isMetaTxConfigSet && address);
+    const isMetaTx = Boolean(
+      coreSdk?.isMetaTxConfigSet &&
+        address &&
+        tokenAddress !== ethers.constants.AddressZero
+    );
     if (isMetaTx) {
       // call depositFunds with meta-transaction
       depositFundsResponse = depositFundWithMetaTx(
