@@ -64,7 +64,8 @@ import { CreateProductSteps } from "./utils/index";
 type OfferFieldsFragment = subgraph.OfferFieldsFragment;
 
 function onKeyPress(event: React.KeyboardEvent<HTMLFormElement>) {
-  if (event.key === "Enter") {
+  const isTargetTextArea = (event.target as any)?.type === "textarea";
+  if (!isTargetTextArea && event.key === "Enter") {
     event.preventDefault();
   }
 }
