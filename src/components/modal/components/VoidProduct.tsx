@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { useSigner } from "wagmi";
 
 import { CONFIG } from "../../../lib/config";
+import { colors } from "../../../lib/styles/colors";
 import { Offer } from "../../../lib/types/offer";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 import { poll } from "../../../pages/create-product/utils";
@@ -32,6 +33,30 @@ const OverflowOfferWrapper = styled.div`
   flex-direction: column;
   gap: 1rem;
   padding-right: 1rem;
+`;
+
+const VoidButtonWrapper = styled.div`
+  button {
+    background: transparent;
+    border-color: ${colors.orange};
+    color: ${colors.orange};
+    &:hover {
+      background: ${colors.orange};
+      border-color: ${colors.orange};
+      color: ${colors.white};
+    }
+  }
+`;
+
+const StyledBatchVoidButton = styled(BosonButton)`
+  background: transparent;
+  border-color: ${colors.orange};
+  color: ${colors.orange};
+  &:hover {
+    background: ${colors.orange};
+    border-color: ${colors.orange};
+    color: ${colors.white};
+  }
 `;
 
 interface OfferProps {
@@ -249,44 +274,46 @@ export default function VoidProduct({
       <Break />
       {offer && (
         <Grid justifyContent="center">
-          <VoidButton
-            variant="accentInverted"
-            offerId={offerId || 0}
-            envName={CONFIG.envName}
-            onError={(error) => {
-              console.error("onError", error);
-              const hasUserRejectedTx =
-                "code" in error &&
-                (error as unknown as { code: string }).code ===
-                  "ACTION_REJECTED";
-              if (hasUserRejectedTx) {
-                showModal("CONFIRMATION_FAILED");
-              }
-            }}
-            onPendingSignature={() => {
-              showModal("WAITING_FOR_CONFIRMATION");
-            }}
-            onPendingTransaction={(hash) => {
-              showModal("TRANSACTION_SUBMITTED", {
-                action: "Void",
-                txHash: hash
-              });
-            }}
-            onSuccess={handleSuccess}
-            web3Provider={signer?.provider as Provider}
-          />
+          <VoidButtonWrapper>
+            <VoidButton
+              variant="accentInverted"
+              offerId={offerId || 0}
+              envName={CONFIG.envName}
+              onError={(error) => {
+                console.error("onError", error);
+                const hasUserRejectedTx =
+                  "code" in error &&
+                  (error as unknown as { code: string }).code ===
+                    "ACTION_REJECTED";
+                if (hasUserRejectedTx) {
+                  showModal("CONFIRMATION_FAILED");
+                }
+              }}
+              onPendingSignature={() => {
+                showModal("WAITING_FOR_CONFIRMATION");
+              }}
+              onPendingTransaction={(hash) => {
+                showModal("TRANSACTION_SUBMITTED", {
+                  action: "Void",
+                  txHash: hash
+                });
+              }}
+              onSuccess={handleSuccess}
+              web3Provider={signer?.provider as Provider}
+            />
+          </VoidButtonWrapper>
         </Grid>
       )}
       {offers && offers.length && (
         <Grid justifyContent="center">
-          <BosonButton
+          <StyledBatchVoidButton
             variant="accentInverted"
             loading={isLoading}
             disabled={isLoading}
             onClick={handleBatchVoid}
           >
             Batch Void
-          </BosonButton>
+          </StyledBatchVoidButton>
         </Grid>
       )}
     </Grid>

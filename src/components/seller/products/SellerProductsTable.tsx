@@ -39,6 +39,17 @@ import Image from "../../ui/Image";
 import Typography from "../../ui/Typography";
 import PaginationPages from "../common/PaginationPages";
 
+const VoidButton = styled(BosonButton)`
+  background: transparent;
+  border-color: ${colors.orange};
+  color: ${colors.orange};
+  &:hover {
+    background: ${colors.orange};
+    border-color: ${colors.orange};
+    color: ${colors.white};
+  }
+`;
+
 interface Props {
   offers: (Offer | null)[];
   isError: boolean;
@@ -308,7 +319,7 @@ export default function SellerProductsTable({
             status === OffersKit.OfferState.VOIDED ||
             offer?.quantityAvailable === "0"
           ) && (
-            <BosonButton
+            <VoidButton
               variant="secondaryInverted"
               size={ButtonSize.Small}
               disabled={!sellerRoles?.isOperator}
@@ -329,7 +340,7 @@ export default function SellerProductsTable({
               }}
             >
               Void
-            </BosonButton>
+            </VoidButton>
           )
         };
       }),

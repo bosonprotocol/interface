@@ -155,7 +155,7 @@ ${FormModel.formFields.email.placeholder}: ${emailField.value}`;
           >
             <Warning color={colors.darkOrange} size={16} />
             <Typography fontWeight="600" $fontSize="1rem" lineHeight="1.5rem">
-              Your rNFT will be destroyed after redeeming!
+              rNFTs are burned upon redemption to prevent double spend
             </Typography>
           </StyledGrid>
         </div>
