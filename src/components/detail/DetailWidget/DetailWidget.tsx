@@ -196,7 +196,9 @@ export const getOfferDetailData = (
       value: (
         <Typography tag="p">
           {buyerCancelationPenalty}%
-          <small>(${convertedBuyerCancelationPenalty})</small>
+          {convertedPrice?.converted && (
+            <small>(${convertedBuyerCancelationPenalty})</small>
+          )}
         </Typography>
       )
     },
