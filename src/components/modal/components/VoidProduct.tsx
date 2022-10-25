@@ -35,14 +35,16 @@ const OverflowOfferWrapper = styled.div`
   padding-right: 1rem;
 `;
 
-const StyledVoidButton = styled(VoidButton)`
-  background: transparent;
-  border-color: ${colors.orange};
-  color: ${colors.orange};
-  &:hover {
-    background: ${colors.orange};
+const VoidButtonWrapper = styled.div`
+  button {
+    background: transparent;
     border-color: ${colors.orange};
-    color: ${colors.white};
+    color: ${colors.orange};
+    &:hover {
+      background: ${colors.orange};
+      border-color: ${colors.orange};
+      color: ${colors.white};
+    }
   }
 `;
 
@@ -272,32 +274,34 @@ export default function VoidProduct({
       <Break />
       {offer && (
         <Grid justifyContent="center">
-          <StyledVoidButton
-            variant="accentInverted"
-            offerId={offerId || 0}
-            envName={CONFIG.envName}
-            onError={(error) => {
-              console.error("onError", error);
-              const hasUserRejectedTx =
-                "code" in error &&
-                (error as unknown as { code: string }).code ===
-                  "ACTION_REJECTED";
-              if (hasUserRejectedTx) {
-                showModal("CONFIRMATION_FAILED");
-              }
-            }}
-            onPendingSignature={() => {
-              showModal("WAITING_FOR_CONFIRMATION");
-            }}
-            onPendingTransaction={(hash) => {
-              showModal("TRANSACTION_SUBMITTED", {
-                action: "Void",
-                txHash: hash
-              });
-            }}
-            onSuccess={handleSuccess}
-            web3Provider={signer?.provider as Provider}
-          />
+          <VoidButtonWrapper>
+            <VoidButton
+              variant="accentInverted"
+              offerId={offerId || 0}
+              envName={CONFIG.envName}
+              onError={(error) => {
+                console.error("onError", error);
+                const hasUserRejectedTx =
+                  "code" in error &&
+                  (error as unknown as { code: string }).code ===
+                    "ACTION_REJECTED";
+                if (hasUserRejectedTx) {
+                  showModal("CONFIRMATION_FAILED");
+                }
+              }}
+              onPendingSignature={() => {
+                showModal("WAITING_FOR_CONFIRMATION");
+              }}
+              onPendingTransaction={(hash) => {
+                showModal("TRANSACTION_SUBMITTED", {
+                  action: "Void",
+                  txHash: hash
+                });
+              }}
+              onSuccess={handleSuccess}
+              web3Provider={signer?.provider as Provider}
+            />
+          </VoidButtonWrapper>
         </Grid>
       )}
       {offers && offers.length && (
