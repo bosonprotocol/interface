@@ -143,6 +143,7 @@ export const productTypeHelp = [
 ];
 
 export const productInformationHelp = [...productTypeHelp];
+export const productVariantsHelp = [...productTypeHelp];
 export const productImagesHelp = [...productTypeHelp];
 export const coreTermsOfSaleHelp = [
   {

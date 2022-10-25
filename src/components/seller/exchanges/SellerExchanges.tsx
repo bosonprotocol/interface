@@ -1,10 +1,10 @@
 import { exchanges as ExchangesKit, subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
-import { BigNumber, utils } from "ethers";
 import { useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 import { CONFIG } from "../../../lib/config";
+import { calcPrice } from "../../../lib/utils/calcPrice";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import ExportDropdown from "../../ui/ExportDropdown";
@@ -114,14 +114,6 @@ export default function SellerExchanges({
     const csvData = allData?.map((exchange) => {
       const status = exchange ? ExchangesKit.getExchangeState(exchange) : "";
       subgraph.ExchangeState;
-      const price = (value: string, decimals: string) => {
-        try {
-          return utils.formatUnits(BigNumber.from(value), Number(decimals));
-        } catch (e) {
-          console.error(e);
-          return "";
-        }
-      };
 
       return {
         ["ID/SKU"]: exchange?.id ? exchange?.id : "",
@@ -129,7 +121,10 @@ export default function SellerExchanges({
         ["Status"]: status,
         ["Price"]:
           exchange?.offer?.price && exchange?.offer?.exchangeToken?.decimals
-            ? price(exchange.offer.price, exchange.offer.exchangeToken.decimals)
+            ? calcPrice(
+                exchange.offer.price,
+                exchange.offer.exchangeToken.decimals
+              )
             : "",
         ["Token"]: exchange?.offer?.exchangeToken?.symbol ?? "",
         ["Redeemable Until"]: exchange?.offer?.voucherRedeemableUntilDate

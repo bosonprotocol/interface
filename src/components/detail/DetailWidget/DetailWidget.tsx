@@ -1,4 +1,5 @@
 import {
+  ButtonSize,
   CommitButton,
   exchanges,
   Provider,
@@ -36,6 +37,7 @@ import { ModalTypes, ShowModalFn, useModal } from "../../modal/useModal";
 import Price from "../../price/index";
 import { useConvertedPrice } from "../../price/useConvertedPrice";
 import SuccessTransactionToast from "../../toasts/SuccessTransactionToast";
+import BosonButton from "../../ui/BosonButton";
 import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
 import Typography from "../../ui/Typography";
@@ -64,7 +66,7 @@ const StyledPrice = styled(Price)`
   }
 `;
 
-const RedeemButton = styled(Button)`
+const RedeemButton = styled(BosonButton)`
   padding: 1rem;
   height: 3.5rem;
   display: flex;
@@ -104,6 +106,7 @@ interface IDetailWidget {
   hasSellerEnoughFunds: boolean;
   isPreview?: boolean;
   reload?: () => void;
+  hasMultipleVariants?: boolean;
 }
 
 export const getOfferDetailData = (
@@ -193,7 +196,9 @@ export const getOfferDetailData = (
       value: (
         <Typography tag="p">
           {buyerCancelationPenalty}%
-          <small>(${convertedBuyerCancelationPenalty})</small>
+          {convertedPrice?.converted && (
+            <small>(${convertedBuyerCancelationPenalty})</small>
+          )}
         </Typography>
       )
     },
@@ -245,6 +250,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   image = "",
   hasSellerEnoughFunds,
   isPreview = false,
+  hasMultipleVariants,
   reload
 }) => {
   const { openConnectModal } = useConnectModal();
@@ -513,6 +519,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               tag="h3"
               convert
               withBosonStyles
+              withAsterisk={isPreview && hasMultipleVariants}
             />
 
             {isOffer && !isNotCommittableOffer && (
@@ -539,7 +546,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 }}
               >
                 <CommitButton
-                  variant="primary"
+                  variant="primaryFill"
                   isPauseCommitting={!address}
                   buttonRef={commitButtonRef}
                   onGetSignerAddress={handleOnGetSignerAddress}
@@ -628,8 +635,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
             )}
             {isToRedeem && (
               <RedeemButton
-                theme="bosonPrimary"
-                size="large"
+                variant="primaryFill"
+                size={ButtonSize.Large}
                 disabled={
                   isChainUnsupported ||
                   isLoading ||
@@ -643,6 +650,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                     {
                       title: "Redeem your item",
                       offerName: offer.metadata.name,
+                      offerId: offer.id,
                       exchangeId: exchange?.id || "",
                       buyerId: exchange?.buyer.id || "",
                       sellerId: exchange?.seller.id || "",

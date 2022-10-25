@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { colors } from "../../../lib/styles/colors";
 import { loadAndSetImage } from "../../../lib/utils/base64";
 import bytesToSize from "../../../lib/utils/bytesToSize";
-import Button from "../../ui/Button";
+import BosonButton from "../../ui/BosonButton";
 import Loading from "../../ui/Loading";
 import Typography from "../../ui/Typography";
 import Error from "../Error";
@@ -22,6 +22,8 @@ import {
   WithUploadToIpfs,
   WithUploadToIpfsProps
 } from "./WithUploadToIpfs";
+
+export type UploadFileType = File | FileProps;
 
 function Upload({
   name,
@@ -55,8 +57,7 @@ function Upload({
     [helpers]
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const files = field.value as any;
+  const files = field.value as UploadFileType[];
 
   useEffect(() => {
     onFilesSelect?.(files);
@@ -64,9 +65,9 @@ function Upload({
 
     if (!multiple && accept === "image/*" && files && files?.length !== 0) {
       if (withUpload) {
-        loadIpfsImagePreview(files[0]);
+        loadIpfsImagePreview(files[0] as FileProps);
       } else {
-        loadAndSetImage(files[0], (base64Uri) => {
+        loadAndSetImage(files[0] as File, (base64Uri) => {
           setPreview(base64Uri);
           onLoadSinglePreviewImage?.(base64Uri);
         });
@@ -75,10 +76,11 @@ function Upload({
   }, [files]); // eslint-disable-line
 
   const loadIpfsImagePreview = async (file: FileProps) => {
-    if (!file.src) {
+    const fileSrc = file && file?.src ? file?.src : false;
+    if (!fileSrc) {
       return false;
     }
-    const imagePreview: string = await loadImage(file?.src);
+    const imagePreview: string = await loadImage(fileSrc || "");
     setPreview(imagePreview);
     setIsLoading(false);
     onLoadSinglePreviewImage?.(imagePreview);
@@ -155,9 +157,9 @@ function Upload({
           disabled={disabled}
         />
         {trigger ? (
-          <Button onClick={handleChooseFile} theme="secondary">
+          <BosonButton onClick={handleChooseFile} variant="accentInverted">
             {trigger}
-          </Button>
+          </BosonButton>
         ) : (
           <FileUploadWrapper
             choosen={files !== null}

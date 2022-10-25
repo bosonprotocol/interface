@@ -20,7 +20,7 @@ import Input from "../../../../../../form/Input";
 import Textarea from "../../../../../../form/Textarea";
 import ErrorToast from "../../../../../../toasts/common/ErrorToast";
 import SuccessTransactionToast from "../../../../../../toasts/SuccessTransactionToast";
-import Button from "../../../../../../ui/Button";
+import BosonButton from "../../../../../../ui/BosonButton";
 import Grid from "../../../../../../ui/Grid";
 import Typography from "../../../../../../ui/Typography";
 import { useModal } from "../../../../../useModal";
@@ -71,6 +71,11 @@ export const FormModel = {
       value: "disputes@redeemeum.com",
       disabled: true
     },
+    subject: {
+      name: "subject",
+      requiredErrorMessage: "This field is required",
+      disabled: true
+    },
     exchangeId: {
       name: "exchangeId",
       requiredErrorMessage: "This field is required",
@@ -110,6 +115,9 @@ const validationSchemaPerStep = [
     [FormModel.formFields.exchangeId.name]: Yup.string()
       .trim()
       .required(FormModel.formFields.exchangeId.requiredErrorMessage),
+    [FormModel.formFields.subject.name]: Yup.string()
+      .trim()
+      .required(FormModel.formFields.subject.requiredErrorMessage),
     [FormModel.formFields.buyerAddress.name]: Yup.string()
       .trim()
       .required(FormModel.formFields.buyerAddress.requiredErrorMessage),
@@ -160,6 +168,8 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
         .name]: `I, ${address}, wish to escalate the dispute relating to exchange with ID: ${exchange.id}`,
       [emailFormField.name]: emailFormField.value,
       [FormModel.formFields.exchangeId.name]: `Exchange ID: ${exchange?.id}`,
+      [FormModel.formFields.subject
+        .name]: `Escalated Dispute (ID: ${exchange?.id})`,
       [FormModel.formFields.disputeId.name]: `Dispute ID: ${
         exchange?.dispute?.id || exchange?.id
       }`,
@@ -270,17 +280,18 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
                   <FormField theme="white" title="Message">
                     <Textarea {...FormModel.formFields.message} disabled />
                   </FormField>
-                  <Button
-                    theme="bosonSecondaryInverse"
+                  <BosonButton
+                    variant="accentFill"
+                    style={{ color: "white" }}
                     disabled={!!errors?.message || isLoading}
-                    isLoading={isLoading}
+                    loading={isLoading}
                     onClick={() => {
                       const message = values?.message as string;
                       signMessage({ message });
                     }}
                   >
                     Sign
-                  </Button>
+                  </BosonButton>
                 </Grid>
               </Collapse>
               <Collapse
@@ -316,10 +327,19 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
                   >
                     <Input {...emailFormField} />
                   </FormField>
-
                   <FormField
                     theme="white"
-                    title="Authentication message"
+                    title="Email Subject"
+                    valueToCopy={{
+                      [FormModel.formFields.subject
+                        .name]: `Escalated Dispute (ID: ${exchange.id})`
+                    }}
+                  >
+                    <Input {...FormModel.formFields.subject} />
+                  </FormField>
+                  <FormField
+                    theme="white"
+                    title="Email Body"
                     valueToCopy={{
                       [FormModel.formFields.exchangeId.name]:
                         values?.exchangeId || "",
@@ -353,9 +373,13 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
                     <Input {...FormModel.formFields.signature} />
                   </FormField>
                   <FormField theme="white" title="Chat transcript">
-                    <Button theme="bosonSecondaryInverse" disabled>
+                    <BosonButton
+                      variant="accentFill"
+                      style={{ color: "white" }}
+                      disabled
+                    >
                       Download CSV
-                    </Button>
+                    </BosonButton>
                   </FormField>
                   <FormField theme="white" title="">
                     <Checkbox
@@ -392,14 +416,15 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
                     price, seller deposit and escalation deposit) between buyer
                     and seller
                   </Typography>
-                  <Button
-                    theme="escalate"
+                  <BosonButton
+                    variant="secondaryFill"
+                    style={{ color: "black" }}
                     onClick={handleEscalate}
-                    isLoading={loading}
+                    loading={loading}
                     disabled={loading || values?.confirm !== true}
                   >
                     Escalate
-                  </Button>
+                  </BosonButton>
                 </Grid>
               </Collapse>
             </Container>

@@ -22,7 +22,10 @@ export const ContainerProductPage = styled.div`
 `;
 
 export const SectionTitle = styled(Typography)`
-  margin 1rem 0 3rem 0;
+  margin: 1rem 0 3rem 0;
+`;
+export const SectionSubTitle = styled(Typography)`
+  margin: 1rem 0 1rem 0;
 `;
 
 export const StyledImage = styled(Image)`

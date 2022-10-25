@@ -1,11 +1,11 @@
 import { offers } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
-import { BigNumber, utils } from "ethers";
 import map from "lodash/map";
 import { useMemo, useState } from "react";
 
 import { CONFIG } from "../../../lib/config";
 import { Offer } from "../../../lib/types/offer";
+import { calcPrice } from "../../../lib/utils/calcPrice";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import Loading from "../../ui/Loading";
 import { WithSellerDataProps } from "../common/WithSellerData";
@@ -97,14 +97,6 @@ export default function SellerProducts({
 
   const prepareCSVData = useMemo(() => {
     const csvData = map(allOffers, (offer) => {
-      const price = (value: string, decimals: string) => {
-        try {
-          return utils.formatUnits(BigNumber.from(value), Number(decimals));
-        } catch (e) {
-          console.error(e);
-          return "";
-        }
-      };
       return {
         ["ID/SKU"]: offer?.id ? offer?.id : "",
         ["Product name"]: offer?.metadata?.name ?? "",
@@ -113,7 +105,7 @@ export default function SellerProducts({
         ["Initial Quantity"]: offer?.quantityInitial ?? "",
         ["Price"]:
           offer?.price && offer?.exchangeToken?.decimals
-            ? price(offer.price, offer.exchangeToken.decimals)
+            ? calcPrice(offer.price, offer.exchangeToken.decimals)
             : "",
         ["Token"]: offer?.exchangeToken?.symbol ?? "",
         ["Offer validity"]: offer?.validUntilDate

@@ -150,7 +150,8 @@ export default function Exchange({ offer, exchange, reload }: Props) {
           isCTAVisible: isBuyer,
           disputeButtonConfig: {
             onClick: handleDispute,
-            variant: "ghostOrange" as const
+            variant: "secondaryInverted" as const,
+            showBorder: false
           }
         };
       }
@@ -167,6 +168,7 @@ export default function Exchange({ offer, exchange, reload }: Props) {
               title: "Redeem your item",
               exchangeId: exchange?.id || "",
               offerName: offer.metadata.name,
+              offerId: offer.id,
               buyerId: exchange?.buyer.id || "",
               sellerId: exchange?.seller.id || "",
               sellerAddress: exchange?.seller.operator || "",

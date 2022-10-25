@@ -61,12 +61,17 @@ export const Table = styled.table`
         &:first-child {
         }
         &:last-child {
-          text-align: center;
+          text-align: right;
           span {
             width: 100%;
           }
           > button {
             display: inline-block;
+          }
+        }
+        > button {
+          &:not(:last-child) {
+            margin-right: 0.5rem;
           }
         }
       }

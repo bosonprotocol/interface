@@ -2,7 +2,7 @@
 import { formatUnits } from "@ethersproject/units";
 import * as ProgressPrimitive from "@radix-ui/react-progress";
 import { BigNumber, FixedNumber } from "ethers";
-import { Plus } from "phosphor-react";
+import { Plus, Warning } from "phosphor-react";
 import { useMemo } from "react";
 import styled from "styled-components";
 
@@ -19,7 +19,7 @@ import {
 } from "../../detail/Detail.style";
 import DetailTable from "../../detail/DetailTable";
 import Tooltip from "../../tooltip/Tooltip";
-import Button from "../../ui/Button";
+import BosonButton from "../../ui/BosonButton";
 import Grid from "../../ui/Grid";
 import Image from "../../ui/Image";
 import Typography from "../../ui/Typography";
@@ -30,6 +30,7 @@ interface Props {
   offer: any;
   onCreateNewProject: () => void;
   onViewMyItem: () => void;
+  hasMultipleVariants: boolean;
 }
 const Funds = styled.div`
   margin: 2rem auto;
@@ -86,6 +87,9 @@ const FundTile = styled(Typography)`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  > span {
+    line-height: 2;
+  }
 `;
 
 const Amount = styled.span`
@@ -105,7 +109,8 @@ export default function ProductCreateSuccess({
   image,
   offer,
   onCreateNewProject,
-  onViewMyItem
+  onViewMyItem,
+  hasMultipleVariants
 }: Props) {
   const convertedPrice = useConvertedPrice({
     value: offer?.price,
@@ -170,6 +175,7 @@ export default function ProductCreateSuccess({
                 decimals={offer.exchangeToken.decimals}
                 tag="h3"
                 convert
+                withAsterisk={hasMultipleVariants}
               />
             </Grid>
             <Break />
@@ -180,14 +186,24 @@ export default function ProductCreateSuccess({
           {hasDeposit && (
             <Funds>
               <FundTile tag="p">
-                Please provide
-                {/* TODO: */}
-                <Tooltip content="NEED TO BE ADDED" size={16} />
+                <span>
+                  <Warning
+                    color={colors.green}
+                    size={20}
+                    style={{ marginRight: "0.5rem" }}
+                  />
+                  Deposit funds to activate offer
+                </span>
+                <Tooltip
+                  content="In order for your offer to go live you must first provide funds to cover your seller deposit. When a buyer commits to your offer, your deposit will be put into escrow as part of the exchange."
+                  size={16}
+                />
               </FundTile>
               <Typography tag="p" $fontSize="0.75rem">
-                Describe here why seller should provide funds ..
-                <br />
-                alos in multiple lines possible.
+                In order for your offer to go live you must first provide funds
+                to cover your seller deposit. When a buyer commits to your
+                offer, your deposit will be put into escrow as part of the
+                exchange.
               </Typography>
               <Typography
                 tag="p"
@@ -211,23 +227,21 @@ export default function ProductCreateSuccess({
             </Funds>
           )}
           <StyledWidgetButtonWrapper>
-            <Button
+            <BosonButton
               type="button"
-              theme="primary"
+              variant="primaryFill"
               onClick={onViewMyItem}
-              withBosonStyle
             >
               View my item
-            </Button>
-            <Button
+            </BosonButton>
+            <BosonButton
               type="button"
-              theme="secondary"
+              variant="accentInverted"
               onClick={handleCreateNew}
-              withBosonStyle
             >
               Create new
               <Plus size={14} />
-            </Button>
+            </BosonButton>
           </StyledWidgetButtonWrapper>
         </div>
       </ModalGrid>

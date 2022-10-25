@@ -1,7 +1,9 @@
+import { ButtonSize } from "@bosonprotocol/react-kit";
+
 import { Exchange } from "../../lib/utils/hooks/useExchanges";
 import { SellerRolesProps } from "../../lib/utils/hooks/useSellerRoles";
 import { useModal } from "../modal/useModal";
-import Button from "../ui/Button";
+import BosonButton from "../ui/BosonButton";
 
 interface Props {
   selected: Array<Exchange | null>;
@@ -11,9 +13,9 @@ interface Props {
 function SellerBatchComplete({ selected, refetch, sellerRoles }: Props) {
   const { showModal, modalTypes } = useModal();
   return (
-    <Button
-      theme="bosonPrimary"
-      size="small"
+    <BosonButton
+      variant="primaryFill"
+      size={ButtonSize.Small}
       disabled={!sellerRoles?.isOperator}
       tooltip="This action is restricted to only the operator wallet"
       onClick={() => {
@@ -29,7 +31,7 @@ function SellerBatchComplete({ selected, refetch, sellerRoles }: Props) {
       }}
     >
       Batch Complete
-    </Button>
+    </BosonButton>
   );
 }
 

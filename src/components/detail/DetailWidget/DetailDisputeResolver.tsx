@@ -1,7 +1,10 @@
-import portalLogo from "../../../assets/portal.svg";
-import Typography from "../../ui/Typography";
-import { PortalLogoImg } from "../Detail.style";
+import styled from "styled-components";
 
+import redeemeumLogo from "../../../assets/redeemeum.png";
+import Typography from "../../ui/Typography";
+const DisputeResolverImg = styled.img`
+  height: 18px;
+`;
 export const DetailDisputeResolver = {
   name: "Dispute resolver",
   info: (
@@ -16,6 +19,6 @@ export const DetailDisputeResolver = {
     </>
   ),
   value: () => {
-    return <PortalLogoImg src={portalLogo} alt="Portal logo" />;
+    return <DisputeResolverImg src={redeemeumLogo} alt="Redeemeum logo" />;
   }
 };

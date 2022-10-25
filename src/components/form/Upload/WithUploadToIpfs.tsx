@@ -6,6 +6,7 @@ import bytesToSize from "../../../lib/utils/bytesToSize";
 import { useSaveImageToIpfs } from "../../../lib/utils/hooks/useSaveImageToIpfs";
 import ErrorToast from "../../toasts/common/ErrorToast";
 import Typography from "../../ui/Typography";
+import { UploadProps } from "../types";
 
 export const MAX_FILE_SIZE = 20 * 1024 * 1024;
 export const SUPPORTED_FORMATS = [
@@ -30,11 +31,9 @@ export function WithUploadToIpfs<P extends WithUploadToIpfsProps>(
   WrappedComponent: React.ComponentType<P>
 ) {
   const ComponentWithUploadToIpfs = (
-    props: Omit<P, keyof WithUploadToIpfsProps>
+    props: Omit<P & UploadProps, keyof WithUploadToIpfsProps>
   ) => {
-    // eslint-disable-next-line
-    // @ts-ignore
-    const { withUpload } = props;
+    const withUpload = props?.withUpload || false;
 
     const { saveFile, loadImage, removeFile } = useSaveImageToIpfs();
 

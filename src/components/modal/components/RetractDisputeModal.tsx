@@ -6,6 +6,7 @@ import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 import { poll } from "../../../pages/create-product/utils";
 import SimpleError from "../../error/SimpleError";
 import SuccessTransactionToast from "../../toasts/SuccessTransactionToast";
+import BosonButton from "../../ui/BosonButton";
 import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
 import Typography from "../../ui/Typography";
@@ -20,7 +21,7 @@ interface Props {
   refetch: () => void;
 }
 
-export function RetractDisputeModal({
+export default function RetractDisputeModal({
   hideModal,
   exchangeId,
   offerName,
@@ -44,8 +45,8 @@ export function RetractDisputeModal({
         {retractDisputeError && <SimpleError />}
       </div>
       <Grid justifyContent="space-between">
-        <Button
-          theme="primary"
+        <BosonButton
+          variant="primaryFill"
           onClick={async () => {
             try {
               setRetractDisputeError(null);
@@ -90,7 +91,7 @@ export function RetractDisputeModal({
           }}
         >
           Confirm Retract
-        </Button>
+        </BosonButton>
         <Button theme="blank" onClick={hideModal}>
           Back
         </Button>

@@ -50,7 +50,7 @@ function CompleteOffer({ offer }: OfferProps) {
     <>
       <CompleteExchangeWrapper>
         <Grid justifyContent="space-between" alignItems="center" gap="1rem">
-          <Grid justifyContent="flex-start" gap="1rem">
+          <Grid justifyContent="flex-start" gap="1rem" style={{ flex: "1 1" }}>
             <Image
               src={offer?.metadata?.image}
               showPlaceholderText={false}
@@ -216,7 +216,7 @@ export default function CompleteExchange({
       {exchange?.id && (
         <Grid justifyContent="center">
           <CompleteButton
-            variant="primary"
+            variant="primaryFill"
             exchangeId={exchange.id}
             envName={CONFIG.envName}
             onError={(error) => {
@@ -255,7 +255,7 @@ export default function CompleteExchange({
       {exchanges && exchanges.length && (
         <Grid justifyContent="center">
           <BatchCompleteButton
-            variant="primary"
+            variant="primaryFill"
             exchangeIds={exchangeIds}
             envName={CONFIG.envName}
             onError={(error) => {

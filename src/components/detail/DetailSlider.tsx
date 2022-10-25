@@ -8,7 +8,7 @@ import Button from "../../components/ui/Button";
 import Grid from "../../components/ui/Grid";
 import Image from "../../components/ui/Image";
 import Typography from "../../components/ui/Typography";
-import { blobToBase64 } from "../../lib/utils/base64";
+import { fetchIpfsImages } from "../../lib/utils/base64";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
 import { SLIDER_OPTIONS } from "./const";
 import { GlideSlide, GlideWrapper } from "./Detail.style";
@@ -35,19 +35,18 @@ export default function DetailSlider({ images }: Props) {
     }
   }, [ref, sliderImages]);
 
-  const fetchData = async (images: Array<string>) => {
-    if (ipfsMetadataStorage) {
-      const fetchPromises = images.map(async (src) => {
-        const imgData = await ipfsMetadataStorage.get(src, false);
-        return await blobToBase64(new Blob([imgData as unknown as BlobPart]));
-      });
-      const imagesFromIpfs = await Promise.all(fetchPromises);
-      setSliderImages(imagesFromIpfs);
-    }
-  };
-
   useEffect(() => {
-    fetchData(images);
+    (async () => {
+      try {
+        const imagesFromIpfs = await fetchIpfsImages(
+          images,
+          ipfsMetadataStorage
+        );
+        setSliderImages(imagesFromIpfs);
+      } catch (error) {
+        console.error(error);
+      }
+    })();
   }, [images]); // eslint-disable-line
 
   const handleSlider = (direction: Direction) => {

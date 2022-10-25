@@ -1,15 +1,14 @@
 {
   "site": {
-    "id": "d098b7df-6b04-4afc-b859-bc45752db00d",
+    "id": "2405e13e-0262-4afa-a808-ba92cf36609f",
     "team": "3fb24a6e-7168-438e-848a-8b706e8bb76a",
     "platform": "ipfs",
     "source": "ipfs",
-    "name": "interface-staging"
+    "name": "dapp-interface-staging"
   },
   "build": {
     "baseDir": "",
     "publicDir": "build",
-    "command": "npm run build",
     "rootDir": ""
   }
 }

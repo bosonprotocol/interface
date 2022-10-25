@@ -13,14 +13,10 @@ export const SUPPORTED_FILE_FORMATS = [
   "image/png"
 ];
 
-export const CREATE_PRODUCT_STEPS = [
-  {
-    name: "Profile info",
-    steps: 1
-  } as const,
+export const CREATE_PRODUCT_STEPS = (isMultiVariant: boolean) => [
   {
     name: "Product Data",
-    steps: 3 // NOTE: FOR CURRENT SCOPE PRODUCTS VARIANTS ARE EXCLUDED
+    steps: isMultiVariant ? 4 : 3
   } as const,
   {
     name: "Terms of Sale",
@@ -107,8 +103,8 @@ export const OPTIONS_EXCHANGE_POLICY = [
 
 export const OPTIONS_DISPUTE_RESOLVER = [
   {
-    value: "portal",
-    label: "PORTAL"
+    value: "redeemeum",
+    label: "Redeemeum"
   }
 ];
 

@@ -5,7 +5,8 @@ export const ExploreQueryParameters = {
   currency: "currency",
   orderDirection: "orderDirection",
   orderBy: "orderBy",
-  sortBy: "sortBy"
+  sortBy: "sortBy",
+  sellerCurationList: "sellerCurationList"
 } as const;
 
 export const CollectionsQueryParameters = {
@@ -20,6 +21,10 @@ export const CollectionsQueryParameters = {
 export const AccountQueryParameters = {
   tab: "tab",
   manageFunds: "manageFunds"
+} as const;
+
+export const TabQueryParameters = {
+  exchange: "exchange"
 } as const;
 
 export const UrlParameters = {

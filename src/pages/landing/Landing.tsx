@@ -2,7 +2,7 @@ import { useState } from "react";
 import styled from "styled-components";
 import useResizeObserver from "use-resize-observer";
 
-import Button from "../../components/ui/Button";
+import BosonButton from "../../components/ui/BosonButton";
 import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
 import { ExploreQueryParameters } from "../../lib/routing/parameters";
@@ -65,7 +65,7 @@ const OffersSection = styled.div`
   padding: 4rem 0;
 `;
 
-const ExploreProductsButton = styled(Button)`
+const ExploreProductsButton = styled(BosonButton)`
   background-color: var(--buttonBgColor);
   border-color: var(--buttonBgColor);
   color: var(--buttonTextColor);
@@ -110,7 +110,7 @@ export default function Landing() {
             <ExploreProductsButton
               data-testid="explore-all-offers"
               onClick={() => navigateToExplore()}
-              theme="primary"
+              variant="primaryFill"
             >
               Explore products
             </ExploreProductsButton>

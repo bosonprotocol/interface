@@ -3,7 +3,7 @@ import { cloneElement, ReactElement, useCallback, useEffect } from "react";
 
 import { CONFIG } from "../../../../../lib/config";
 import useGetLensProfile from "../../../../../lib/utils/hooks/lens/profile/useGetLensProfile";
-import Button from "../../../../ui/Button";
+import BosonButton from "../../../../ui/BosonButton";
 import Grid from "../../../../ui/Grid";
 import { useModal } from "../../../useModal";
 import ProfileMultiSteps from "./ProfileMultiSteps";
@@ -82,12 +82,16 @@ export default function CreateLensProfile({
     <div>
       {cloneElement(children, { onBlurName })}
       <Grid justifyContent="flex-start" gap="2rem">
-        <Button theme="bosonSecondary" type="button" onClick={onBackClick}>
+        <BosonButton
+          variant="accentInverted"
+          type="button"
+          onClick={onBackClick}
+        >
           Back
-        </Button>
-        <Button theme="bosonPrimary" type="submit">
+        </BosonButton>
+        <BosonButton variant="primaryFill" type="submit">
           Next
-        </Button>
+        </BosonButton>
       </Grid>
     </div>
   );

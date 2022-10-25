@@ -7,7 +7,7 @@ import { useChatContext } from "../../../../../../pages/chat/ChatProvider/ChatCo
 import SimpleError from "../../../../../error/SimpleError";
 import UploadedFiles from "../../../../../form/Upload/UploadedFiles";
 import { Spinner } from "../../../../../loading/Spinner";
-import Button from "../../../../../ui/Button";
+import BosonButton from "../../../../../ui/BosonButton";
 import Grid from "../../../../../ui/Grid";
 import Typography from "../../../../../ui/Typography";
 import InitializeChatWithSuccess from "../../components/InitializeChatWithSuccess";
@@ -91,18 +91,18 @@ export default function ReviewAndSubmitStep({
       )}
       {submitError && <SimpleError />}
       <ButtonsSection>
-        <Button
-          theme="primary"
+        <BosonButton
+          variant="primaryFill"
           type="submit"
           disabled={
             !isValid ||
-            (!isChatInitialized && proposalTypeField.value) ||
+            (!isChatInitialized && !!proposalTypeField.value) ||
             isSubmitting
           }
         >
           {isModal ? "Send Proposal" : "Raise Dispute"}
           {isSubmitting && <Spinner />}
-        </Button>
+        </BosonButton>
       </ButtonsSection>
     </>
   );

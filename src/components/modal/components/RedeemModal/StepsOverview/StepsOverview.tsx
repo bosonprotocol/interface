@@ -5,7 +5,7 @@ import { colors } from "../../../../../lib/styles/colors";
 import Step from "../../../../../pages/landing/Step";
 import { CommitStep, CommitStepWrapper } from "../../../../detail/Detail.style";
 import FairExchangePolicy from "../../../../exchangePolicy/FairExchangePolicy";
-import Button from "../../../../ui/Button";
+import BosonButton from "../../../../ui/BosonButton";
 import Grid from "../../../../ui/Grid";
 
 const StyledCommitStepWrapper = styled(CommitStepWrapper)`
@@ -43,9 +43,9 @@ export default function StepsOverview({ onNextClick }: Props) {
         bulletPointIcon={<Check size={16} color={colors.secondary} />}
       />
       <Grid padding="2rem 0 0 0" justifyContent="space-between">
-        <Button theme="primary" onClick={() => onNextClick()} withBosonStyle>
+        <BosonButton variant="primaryFill" onClick={() => onNextClick()}>
           Next
-        </Button>
+        </BosonButton>
       </Grid>
     </>
   );

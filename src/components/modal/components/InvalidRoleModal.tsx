@@ -1,6 +1,6 @@
 import { BosonRoutes } from "../../../lib/routing/routes";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import Button from "../../ui/Button";
+import BosonButton from "../../ui/BosonButton";
 import Grid from "../../ui/Grid";
 import Typography from "../../ui/Typography";
 
@@ -20,14 +20,14 @@ export default function InvalidRoleModal({ requiredRole, action }: Props) {
         </Typography>
       </Grid>
       <Grid flexDirection="row" justifyContent="space-between">
-        <Button
-          theme="bosonSecondary"
+        <BosonButton
+          variant="accentInverted"
           onClick={() => {
             navigate({ pathname: BosonRoutes.Root });
           }}
         >
           Go back to the home page
-        </Button>
+        </BosonButton>
       </Grid>
     </>
   );

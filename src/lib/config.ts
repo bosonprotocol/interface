@@ -17,7 +17,7 @@ const REACT_APP_ENABLE_SENTRY_LOGGING =
     : ["local", "testing"].includes(config.envName);
 
 export function getDefaultTokens(): Token[] {
-  let tokens = [];
+  let tokens: Token[] = [];
   try {
     tokens = JSON.parse(
       process.env.REACT_APP_DEFAULT_TOKENS_LIST_TESTING ||

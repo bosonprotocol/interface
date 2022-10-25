@@ -6,7 +6,6 @@ export const TagContainer = styled.div`
   position: relative;
   width: 100%;
   border-radius: 3px;
-  margin-top: 1em;
   display: flex;
   align-items: center;
   flex-wrap: wrap;

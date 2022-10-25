@@ -1,5 +1,7 @@
 import { SingleValue } from "react-select";
 
+import { UploadFileType } from "./Upload/Upload";
+
 export interface BaseProps {
   name: string;
   placeholder?: string;
@@ -46,6 +48,15 @@ export type InputColorProps = BaseProps;
 export type InputProps = BaseProps &
   React.InputHTMLAttributes<HTMLInputElement>;
 
+export type TagsProps = BaseProps &
+  React.InputHTMLAttributes<HTMLInputElement> & {
+    onAddTag?: (tag: string) => void;
+    onRemoveTag?: (tag: string) => void;
+    label?: string;
+    compareTags?: (tagA: string, tagB: string) => boolean;
+    transform?: (tag: string) => string;
+  };
+
 export interface SelectDataProps<Value extends string = string> {
   label: string;
   value: Value;
@@ -79,7 +90,7 @@ export interface UploadProps extends BaseProps {
   multiple?: boolean;
   trigger?: React.ReactNode | JSX.Element;
   maxSize?: number;
-  onFilesSelect?: (files: File[]) => void;
+  onFilesSelect?: (files: UploadFileType[]) => void;
   files?: File[];
   wrapperProps?: React.HTMLAttributes<HTMLDivElement>;
   onLoadSinglePreviewImage?: (base64Uri: string) => void;

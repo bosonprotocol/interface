@@ -36,7 +36,7 @@ export const getOffers = async (props: UseOffersProps) => {
     quantityAvailable_lte: props.quantityAvailable_lte,
     quantityAvailable_gte: props.quantityAvailable_gte,
     type: props.type,
-    sellerCurationList: props.sellerCurationList || [],
+    sellerCurationList: props?.sellerCurationList || [],
     offerCurationList: props.offerCurationList || [],
     first: props.first,
     skip: props.skip,
@@ -119,6 +119,7 @@ async function fetchCurationListOffers(
   const sellerCurationList = props.enableCurationLists
     ? props.sellerCurationList || []
     : null;
+
   const offerCurationList = props.enableCurationLists
     ? props.offerCurationList || []
     : null;
@@ -128,6 +129,7 @@ async function fetchCurationListOffers(
     sellerCurationList: !!sellerCurationList,
     offerCurationList: false
   });
+
   const getOfferCurationListOffersQuery = buildGetOffersQuery({
     ...getOffersQueryArgs,
     sellerCurationList: false,

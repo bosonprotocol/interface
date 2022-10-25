@@ -8,6 +8,7 @@ import Collapse from "../../components/collapse/Collapse";
 import { colors } from "../../lib/styles/colors";
 import { FormField, Input, Select, TagsInput, Textarea } from "../form";
 import Error from "../form/Error";
+import BosonButton from "../ui/BosonButton";
 import Button from "../ui/Button";
 import Typography from "../ui/Typography";
 import {
@@ -167,7 +168,10 @@ export default function ProductInformation() {
         required
         subTitle="Input any relevant tags to make your offer stand out."
       >
-        <TagsInput name="productInformation.tags" />
+        <TagsInput
+          name="productInformation.tags"
+          transform={(tag: string) => tag.toLowerCase()}
+        />
       </FormField>
       <AddAttributesContainer
         setHasDuplicated={setHasDuplicated}
@@ -216,13 +220,13 @@ export default function ProductInformation() {
         </Collapse>
       </AdditionalContainer>
       <ProductInformationButtonGroup>
-        <Button
-          theme="primary"
+        <BosonButton
+          variant="primaryFill"
           type="submit"
           disabled={nextIsDisabled || hasDuplicated}
         >
           Next
-        </Button>
+        </BosonButton>
       </ProductInformationButtonGroup>
     </ContainerProductPage>
   );
