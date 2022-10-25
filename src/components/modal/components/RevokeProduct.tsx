@@ -25,10 +25,12 @@ const OfferWrapper = styled.div`
 const StyledRevokeButton = styled(RevokeButton)`
   background: transparent;
   border-color: ${colors.orange};
+  border: 1px solid ${colors.orange};
   color: ${colors.orange};
   &:hover {
     background: ${colors.orange};
     border-color: ${colors.orange};
+    border: 1px solid ${colors.orange};
     color: ${colors.white};
   }
 `;

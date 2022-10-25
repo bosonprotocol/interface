@@ -35,10 +35,12 @@ const RevokeButton = styled(BosonButton)`
   background: transparent;
   border-color: ${colors.orange};
   color: ${colors.orange};
+  border: 1px solid ${colors.orange};
   &:hover {
     background: ${colors.orange};
     border-color: ${colors.orange};
     color: ${colors.white};
+    border: 1px solid ${colors.orange};
   }
 `;
 
