@@ -5,9 +5,11 @@ import {
 } from "@bosonprotocol/react-kit";
 import { Chat } from "phosphor-react";
 import { generatePath, NavigateOptions, Path } from "react-router-dom";
+import styled from "styled-components";
 
 import { UrlParameters } from "../../../lib/routing/parameters";
 import { BosonRoutes } from "../../../lib/routing/routes";
+import { colors } from "../../../lib/styles/colors";
 import { isExchangeCompletableBySeller } from "../../../lib/utils/exchange";
 import { useDisputeSubStatusInfo } from "../../../lib/utils/hooks/useDisputeSubStatusInfo";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
@@ -28,6 +30,17 @@ const generatePathAndNavigate = ({
   });
   navigate({ pathname });
 };
+
+const RevokeButton = styled(BosonButton)`
+  background: transparent;
+  border-color: ${colors.orange};
+  color: ${colors.orange};
+  &:hover {
+    background: ${colors.orange};
+    border-color: ${colors.orange};
+    color: ${colors.white};
+  }
+`;
 
 export const SellerResolveDisputeButton = ({
   exchange,
@@ -126,7 +139,7 @@ export const SellerActionButton = ({
         Chat <Chat size={14} />
       </BosonButton>
       {status === subgraph.ExchangeState.Committed && (
-        <BosonButton
+        <RevokeButton
           variant="accentInverted"
           showBorder={false}
           size={ButtonSize.Small}
@@ -148,7 +161,7 @@ export const SellerActionButton = ({
           }}
         >
           Revoke
-        </BosonButton>
+        </RevokeButton>
       )}
     </Grid>
   );

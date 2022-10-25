@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { useSigner } from "wagmi";
 
 import { CONFIG } from "../../../lib/config";
+import { colors } from "../../../lib/styles/colors";
 import { Offer } from "../../../lib/types/offer";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 import { poll } from "../../../pages/create-product/utils";
@@ -32,6 +33,17 @@ const OverflowOfferWrapper = styled.div`
   flex-direction: column;
   gap: 1rem;
   padding-right: 1rem;
+`;
+
+const StyledVoidButton = styled(VoidButton)`
+  background: transparent;
+  border-color: ${colors.orange};
+  color: ${colors.orange};
+  &:hover {
+    background: ${colors.orange};
+    border-color: ${colors.orange};
+    color: ${colors.white};
+  }
 `;
 
 interface OfferProps {
@@ -249,7 +261,7 @@ export default function VoidProduct({
       <Break />
       {offer && (
         <Grid justifyContent="center">
-          <VoidButton
+          <StyledVoidButton
             variant="accentInverted"
             offerId={offerId || 0}
             envName={CONFIG.envName}
