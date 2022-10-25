@@ -1,4 +1,4 @@
-import { subgraph } from "@bosonprotocol/react-kit";
+import { ButtonSize, subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { CaretDown, CaretLeft, CaretRight, CaretUp } from "phosphor-react";
 import { useMemo } from "react";
@@ -18,6 +18,7 @@ import { useModal } from "../../modal/useModal";
 import Price from "../../price";
 import PaginationPages from "../../seller/common/PaginationPages";
 import Tooltip from "../../tooltip/Tooltip";
+import BosonButton from "../../ui/BosonButton";
 import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
 import Image from "../../ui/Image";
@@ -165,10 +166,11 @@ export default function DisputesTable({ disputes }: Props) {
           action: (
             <>
               {emailAddress && (
-                <Button
+                <BosonButton
                   type="button"
-                  theme="ghostSecondary"
-                  size="small"
+                  variant="accentInverted"
+                  showBorder={false}
+                  size={ButtonSize.Small}
                   style={{
                     whiteSpace: "pre"
                   }}
@@ -179,13 +181,13 @@ export default function DisputesTable({ disputes }: Props) {
                   }}
                 >
                   Copy E-Mail
-                </Button>
+                </BosonButton>
               )}
               {dispute.state === subgraph.DisputeState.Escalated && (
                 <>
-                  <Button
-                    theme="orangeInverse"
-                    size="small"
+                  <BosonButton
+                    variant="secondaryInverted"
+                    size={ButtonSize.Small}
                     onClick={async () => {
                       showModal(
                         modalTypes.DISPUTE_RESOLUTION_REFUSE_MODAL,
@@ -200,10 +202,10 @@ export default function DisputesTable({ disputes }: Props) {
                     }}
                   >
                     Refuse
-                  </Button>
-                  <Button
-                    theme="primary"
-                    size="small"
+                  </BosonButton>
+                  <BosonButton
+                    variant="primaryFill"
+                    size={ButtonSize.Small}
                     onClick={async () => {
                       showModal(
                         modalTypes.DISPUTE_RESOLUTION_DECIDE_MODAL,
@@ -224,7 +226,7 @@ export default function DisputesTable({ disputes }: Props) {
                     }}
                   >
                     Decide
-                  </Button>
+                  </BosonButton>
                 </>
               )}
             </>

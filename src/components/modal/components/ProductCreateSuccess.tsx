@@ -19,7 +19,7 @@ import {
 } from "../../detail/Detail.style";
 import DetailTable from "../../detail/DetailTable";
 import Tooltip from "../../tooltip/Tooltip";
-import Button from "../../ui/Button";
+import BosonButton from "../../ui/BosonButton";
 import Grid from "../../ui/Grid";
 import Image from "../../ui/Image";
 import Typography from "../../ui/Typography";
@@ -227,23 +227,21 @@ export default function ProductCreateSuccess({
             </Funds>
           )}
           <StyledWidgetButtonWrapper>
-            <Button
+            <BosonButton
               type="button"
-              theme="primary"
+              variant="primaryFill"
               onClick={onViewMyItem}
-              withBosonStyle
             >
               View my item
-            </Button>
-            <Button
+            </BosonButton>
+            <BosonButton
               type="button"
-              theme="secondary"
+              variant="accentInverted"
               onClick={handleCreateNew}
-              withBosonStyle
             >
               Create new
               <Plus size={14} />
-            </Button>
+            </BosonButton>
           </StyledWidgetButtonWrapper>
         </div>
       </ModalGrid>

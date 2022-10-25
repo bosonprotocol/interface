@@ -1,5 +1,5 @@
 import frame404 from "../../assets/frame404.png";
-import Button from "../../components/ui/Button";
+import BosonButton from "../../components/ui/BosonButton";
 import Grid from "../../components/ui/Grid";
 import GridContainer from "../../components/ui/GridContainer";
 import Typography from "../../components/ui/Typography";
@@ -34,12 +34,12 @@ function NotFound() {
           <br />
           Let’s head back home and try again.
         </Typography>
-        <Button
-          theme="primary"
+        <BosonButton
+          variant="primaryFill"
           onClick={() => navigate({ pathname: BosonRoutes.Root })}
         >
           Go to Homepage
-        </Button>
+        </BosonButton>
       </Grid>
       <img src={frame404} alt="404 - Page doesn’t exist" />
     </GridContainer>

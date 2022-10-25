@@ -7,6 +7,7 @@ import styled from "styled-components";
 import Collapse from "../../components/collapse/Collapse";
 import { colors } from "../../lib/styles/colors";
 import { FormField, Input, Select } from "../form";
+import BosonButton from "../ui/BosonButton";
 import Button from "../ui/Button";
 import Typography from "../ui/Typography";
 import {
@@ -297,13 +298,13 @@ export default function ShippingInfo() {
         </Collapse>
       </AdditionalContainer>
       <ProductInformationButtonGroup>
-        <Button
-          theme="primary"
+        <BosonButton
+          variant="primaryFill"
           type="submit"
           disabled={nextIsDisabled || !isValidJurisdiction}
         >
           Next
-        </Button>
+        </BosonButton>
       </ProductInformationButtonGroup>
     </ContainerProductPage>
   );

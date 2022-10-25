@@ -14,7 +14,7 @@ import { ChatInitializationStatus } from "../../lib/utils/hooks/chat/useChatStat
 import { useChatContext } from "../../pages/chat/ChatProvider/ChatContext";
 import { FormField } from "../form";
 import Tooltip from "../tooltip/Tooltip";
-import Button from "../ui/Button";
+import BosonButton from "../ui/BosonButton";
 import Grid from "../ui/Grid";
 import Image from "../ui/Image";
 import Typography from "../ui/Typography";
@@ -542,8 +542,8 @@ export default function ConfirmProductDetails({
         </InitializeChatContainer>
       )}
       <ConfirmProductDetailsButtonGroup>
-        <Button
-          theme="primary"
+        <BosonButton
+          variant="primaryFill"
           type="submit"
           disabled={
             !["INITIALIZED", "ALREADY_INITIALIZED"].includes(
@@ -556,10 +556,14 @@ export default function ConfirmProductDetails({
           ) : (
             "Confirm"
           )}
-        </Button>
-        <Button theme="secondary" type="button" onClick={handleOpenPreview}>
+        </BosonButton>
+        <BosonButton
+          variant="accentInverted"
+          type="button"
+          onClick={handleOpenPreview}
+        >
           Preview product detail page
-        </Button>
+        </BosonButton>
       </ConfirmProductDetailsButtonGroup>
     </ConfirmProductDetailsContainer>
   );
