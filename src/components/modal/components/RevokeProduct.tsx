@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { useSigner } from "wagmi";
 
 import { CONFIG } from "../../../lib/config";
+import { colors } from "../../../lib/styles/colors";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 import { poll } from "../../../pages/create-product/utils";
@@ -19,6 +20,17 @@ import { useModal } from "../useModal";
 
 const OfferWrapper = styled.div`
   width: 100%;
+`;
+
+const StyledRevokeButton = styled(RevokeButton)`
+  background: transparent;
+  border-color: ${colors.orange};
+  color: ${colors.orange};
+  &:hover {
+    background: ${colors.orange};
+    border-color: ${colors.orange};
+    color: ${colors.white};
+  }
 `;
 
 interface Props {
@@ -111,7 +123,7 @@ export default function RevokeProduct({
         </Grid>
       </Grid>
       <Grid justifyContent="center">
-        <RevokeButton
+        <StyledRevokeButton
           variant="accentInverted"
           exchangeId={exchangeId || 0}
           envName={CONFIG.envName}
