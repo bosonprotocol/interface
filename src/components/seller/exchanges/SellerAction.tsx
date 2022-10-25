@@ -8,13 +8,13 @@ import { generatePath, NavigateOptions, Path } from "react-router-dom";
 
 import { UrlParameters } from "../../../lib/routing/parameters";
 import { BosonRoutes } from "../../../lib/routing/routes";
+import { isExchangeCompletableBySeller } from "../../../lib/utils/exchange";
 import { useDisputeSubStatusInfo } from "../../../lib/utils/hooks/useDisputeSubStatusInfo";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { SellerRolesProps } from "../../../lib/utils/hooks/useSellerRoles";
 import { useModal } from "../../modal/useModal";
 import BosonButton from "../../ui/BosonButton";
 import Grid from "../../ui/Grid";
-import { isCompletable } from "./SellerExchangeTable";
 
 const generatePathAndNavigate = ({
   exchangeId,
@@ -92,7 +92,7 @@ export const SellerActionButton = ({
   }
   return (
     <Grid justifyContent="flex-end" gap="1rem">
-      {exchange && isCompletable(exchange) && (
+      {exchange && isExchangeCompletableBySeller(exchange) && (
         <BosonButton
           variant="primaryFill"
           size={ButtonSize.Small}

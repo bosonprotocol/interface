@@ -487,10 +487,6 @@ export const ModalGrid = styled.div`
   }
 `;
 
-export const PortalLogoImg = styled.img`
-  height: 16px;
-`;
-
 export const WidgetButtonWrapper = styled(Grid)`
   gap: 1rem;
   margin-top: 1rem;

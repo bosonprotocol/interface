@@ -82,7 +82,7 @@ function EscalateStepOne({ exchange }: Props) {
             color={colors.darkGrey}
             justifyContent="flex-end"
           >
-            Portal
+            Redeemeum
           </Typography>
           <Typography fontWeight="400" $fontSize="1rem" color={colors.darkGrey}>
             Exchange policy

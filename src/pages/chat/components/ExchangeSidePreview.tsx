@@ -24,9 +24,14 @@ import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
 import { zIndex } from "../../../lib/styles/zIndex";
 import { Offer } from "../../../lib/types/offer";
+import {
+  isExchangeCompletableByBuyer,
+  isExchangeCompletableBySeller
+} from "../../../lib/utils/exchange";
 import { useDisputes } from "../../../lib/utils/hooks/useDisputes";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { useSellerRoles } from "../../../lib/utils/hooks/useSellerRoles";
 import ExchangeTimeline from "./ExchangeTimeline";
 
 const Container = styled.div<{ $disputeOpen: boolean }>`
@@ -279,6 +284,39 @@ export default function ExchangeSidePreview({
       })
     });
   }, [exchange, navigate]);
+  const sellerRoles = useSellerRoles(iAmTheBuyer ? "" : offer?.seller.id || "");
+  const CompleteExchangeButton = useCallback(() => {
+    if (!exchange) {
+      return null;
+    }
+    const isVisible = iAmTheBuyer
+      ? isExchangeCompletableByBuyer(exchange)
+      : isExchangeCompletableBySeller(exchange);
+    if (!isVisible) {
+      return null;
+    }
+    const isDisabled = iAmTheBuyer ? false : sellerRoles.isOperator;
+    return (
+      <BosonButton
+        variant="primaryFill"
+        disabled={isDisabled}
+        onClick={() =>
+          showModal(
+            modalTypes.COMPLETE_EXCHANGE,
+            {
+              title: "Complete Confirmation",
+              exchange: exchange,
+              refetch: refetchItAll
+            },
+            "xs"
+          )
+        }
+      >
+        Complete exchange
+      </BosonButton>
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [exchange, iAmTheBuyer, sellerRoles.isOperator]);
   if (!exchange || !offer) {
     return null;
   }
@@ -375,6 +413,7 @@ export default function ExchangeSidePreview({
           >
             Escalate
           </BosonButton>
+          <CompleteExchangeButton />
         </CTASection>
       ) : isInRedeemed && iAmTheBuyer ? (
         <CTASection>
@@ -399,8 +438,13 @@ export default function ExchangeSidePreview({
           >
             Raise a Problem
           </BosonButton>
+          <CompleteExchangeButton />
         </CTASection>
-      ) : null}
+      ) : (
+        <CTASection>
+          <CompleteExchangeButton />
+        </CTASection>
+      )}
       <HistorySection>
         <ExchangeTimeline exchange={exchange} showDispute={true}>
           <h4>History</h4>

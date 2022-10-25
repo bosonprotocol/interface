@@ -82,10 +82,6 @@ export default function FairExchangePolicy({
           {bulletPointIcon}
           <Typography tag="p">Standard evidence requirements</Typography>
         </InfoListItem>
-        <InfoListItem>
-          {bulletPointIcon}
-          <Typography tag="p">Legally compliant in x jurisdictions</Typography>
-        </InfoListItem>
       </InfoList>
     </>
   );
