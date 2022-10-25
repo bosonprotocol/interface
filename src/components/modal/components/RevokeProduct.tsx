@@ -22,16 +22,18 @@ const OfferWrapper = styled.div`
   width: 100%;
 `;
 
-const StyledRevokeButton = styled(RevokeButton)`
-  background: transparent;
-  border-color: ${colors.orange};
-  border: 2px solid ${colors.orange};
-  color: ${colors.orange};
-  &:hover {
-    background: ${colors.orange};
+const RevokeButtonWrapper = styled.div`
+  button {
+    background: transparent;
     border-color: ${colors.orange};
     border: 2px solid ${colors.orange};
-    color: ${colors.white};
+    color: ${colors.orange};
+    &:hover {
+      background: ${colors.orange};
+      border-color: ${colors.orange};
+      border: 2px solid ${colors.orange};
+      color: ${colors.white};
+    }
   }
 `;
 
@@ -125,53 +127,56 @@ export default function RevokeProduct({
         </Grid>
       </Grid>
       <Grid justifyContent="center">
-        <StyledRevokeButton
-          variant="accentInverted"
-          exchangeId={exchangeId || 0}
-          envName={CONFIG.envName}
-          onError={(error) => {
-            console.error("onError", error);
-            const hasUserRejectedTx =
-              "code" in error &&
-              (error as unknown as { code: string }).code === "ACTION_REJECTED";
-            if (hasUserRejectedTx) {
-              showModal("CONFIRMATION_FAILED");
-            }
-          }}
-          onPendingSignature={() => {
-            showModal("WAITING_FOR_CONFIRMATION");
-          }}
-          onPendingTransaction={(hash) => {
-            showModal("TRANSACTION_SUBMITTED", {
-              action: "Revoke",
-              txHash: hash
-            });
-          }}
-          onSuccess={async (receipt, { exchangeId }) => {
-            await poll(
-              async () => {
-                const canceledExchange = await coreSDK.getExchangeById(
-                  exchangeId
-                );
-                return canceledExchange.revokedDate;
-              },
-              (revokedDate) => {
-                return !revokedDate;
-              },
-              500
-            );
-            hideModal();
-            toast((t) => (
-              <SuccessTransactionToast
-                t={t}
-                action={`Revoked exchange: ${exchange.offer.metadata.name}`}
-                url={CONFIG.getTxExplorerUrl?.(receipt.transactionHash)}
-              />
-            ));
-            refetch();
-          }}
-          web3Provider={signer?.provider as Provider}
-        />
+        <RevokeButtonWrapper>
+          <RevokeButton
+            variant="accentInverted"
+            exchangeId={exchangeId || 0}
+            envName={CONFIG.envName}
+            onError={(error) => {
+              console.error("onError", error);
+              const hasUserRejectedTx =
+                "code" in error &&
+                (error as unknown as { code: string }).code ===
+                  "ACTION_REJECTED";
+              if (hasUserRejectedTx) {
+                showModal("CONFIRMATION_FAILED");
+              }
+            }}
+            onPendingSignature={() => {
+              showModal("WAITING_FOR_CONFIRMATION");
+            }}
+            onPendingTransaction={(hash) => {
+              showModal("TRANSACTION_SUBMITTED", {
+                action: "Revoke",
+                txHash: hash
+              });
+            }}
+            onSuccess={async (receipt, { exchangeId }) => {
+              await poll(
+                async () => {
+                  const canceledExchange = await coreSDK.getExchangeById(
+                    exchangeId
+                  );
+                  return canceledExchange.revokedDate;
+                },
+                (revokedDate) => {
+                  return !revokedDate;
+                },
+                500
+              );
+              hideModal();
+              toast((t) => (
+                <SuccessTransactionToast
+                  t={t}
+                  action={`Revoked exchange: ${exchange.offer.metadata.name}`}
+                  url={CONFIG.getTxExplorerUrl?.(receipt.transactionHash)}
+                />
+              ));
+              refetch();
+            }}
+            web3Provider={signer?.provider as Provider}
+          />
+        </RevokeButtonWrapper>
       </Grid>
     </Grid>
   );

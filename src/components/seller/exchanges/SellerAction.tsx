@@ -5,11 +5,9 @@ import {
 } from "@bosonprotocol/react-kit";
 import { Chat } from "phosphor-react";
 import { generatePath, NavigateOptions, Path } from "react-router-dom";
-import styled from "styled-components";
 
 import { UrlParameters } from "../../../lib/routing/parameters";
 import { BosonRoutes } from "../../../lib/routing/routes";
-import { colors } from "../../../lib/styles/colors";
 import { isExchangeCompletableBySeller } from "../../../lib/utils/exchange";
 import { useDisputeSubStatusInfo } from "../../../lib/utils/hooks/useDisputeSubStatusInfo";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
@@ -30,21 +28,6 @@ const generatePathAndNavigate = ({
   });
   navigate({ pathname });
 };
-
-const RevokeButtonWrapper = styled.div`
-  button {
-    background: transparent;
-    border-color: ${colors.orange};
-    color: ${colors.orange};
-    border: 2px solid ${colors.orange};
-    &:hover {
-      background: ${colors.orange};
-      border-color: ${colors.orange};
-      color: ${colors.white};
-      border: 2px solid ${colors.orange};
-    }
-  }
-`;
 
 export const SellerResolveDisputeButton = ({
   exchange,
@@ -143,31 +126,29 @@ export const SellerActionButton = ({
         Chat <Chat size={14} />
       </BosonButton>
       {status === subgraph.ExchangeState.Committed && (
-        <RevokeButtonWrapper>
-          <BosonButton
-            variant="accentInverted"
-            showBorder={false}
-            size={ButtonSize.Small}
-            disabled={!sellerRoles?.isOperator}
-            tooltip="This action is restricted to only the operator wallet"
-            onClick={() => {
-              if (exchange) {
-                showModal(
-                  modalTypes.REVOKE_PRODUCT,
-                  {
-                    title: "Revoke rNFT",
-                    exchangeId: exchange?.id,
-                    exchange: exchange,
-                    refetch
-                  },
-                  "xs"
-                );
-              }
-            }}
-          >
-            Revoke
-          </BosonButton>
-        </RevokeButtonWrapper>
+        <BosonButton
+          variant="accentInverted"
+          showBorder={false}
+          size={ButtonSize.Small}
+          disabled={!sellerRoles?.isOperator}
+          tooltip="This action is restricted to only the operator wallet"
+          onClick={() => {
+            if (exchange) {
+              showModal(
+                modalTypes.REVOKE_PRODUCT,
+                {
+                  title: "Revoke rNFT",
+                  exchangeId: exchange?.id,
+                  exchange: exchange,
+                  refetch
+                },
+                "xs"
+              );
+            }
+          }}
+        >
+          Revoke
+        </BosonButton>
       )}
     </Grid>
   );
