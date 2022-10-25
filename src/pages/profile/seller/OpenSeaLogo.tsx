@@ -1,10 +1,7 @@
 import { CONFIG } from "../../../lib/config";
 import { colors } from "../../../lib/styles/colors";
 
-export async function getOpenSeaUrl(
-  address: string,
-  ownedBy: string | boolean
-) {
+export async function getOpenSeaUrl(address: string) {
   const isProd = CONFIG.envName === "production";
 
   return new Promise((resolve) => {

@@ -46,15 +46,13 @@ export default function SellerSocial({
 
   useEffect(() => {
     if (openSeaUrl === null && voucherCloneAddress) {
-      getOpenSeaUrl(voucherCloneAddress, sellerLens?.ownedBy || false).then(
-        (value) => {
-          if (value) {
-            setOpenSeaUrl(value as string);
-          }
+      getOpenSeaUrl(voucherCloneAddress).then((value) => {
+        if (value) {
+          setOpenSeaUrl(value as string);
         }
-      );
+      });
     }
-  }, [openSeaUrl, voucherCloneAddress, sellerLens?.ownedBy]);
+  }, [openSeaUrl, voucherCloneAddress]);
 
   return (
     <SocialIconContainer>
