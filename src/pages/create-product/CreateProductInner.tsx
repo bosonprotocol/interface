@@ -416,7 +416,10 @@ function CreateProductInner({
           voidedAt: offerInfo.voidedAt,
           disputeResolverId: offerInfo.disputeResolverId,
           seller: offerInfo.seller,
-          exchangeToken: offerInfo.exchangeToken
+          exchangeToken: offerInfo.exchangeToken,
+          metadata: {
+            animationUrl: values.productAnimation?.[0]?.src
+          }
         },
         hasMultipleVariants: !!values.productVariants.variants.length,
         // these are the ones that we already had before
