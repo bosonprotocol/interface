@@ -85,6 +85,21 @@ const ButtonsSection = styled.div`
   justify-content: space-between;
 `;
 
+const CancelButtonWrapper = styled.div`
+  button {
+    background: transparent;
+    border-color: ${colors.orange};
+    border: 2px solid ${colors.orange};
+    color: ${colors.orange};
+    &:hover {
+      background: ${colors.orange};
+      border-color: ${colors.orange};
+      border: 2px solid ${colors.orange};
+      color: ${colors.white};
+    }
+  }
+`;
+
 export default function CancelExchangeModal({
   exchange,
   hideModal,
@@ -158,82 +173,85 @@ export default function CancelExchangeModal({
       </Info>
       {cancelError && <SimpleError />}
       <ButtonsSection>
-        <CancelButton
-          variant="accentInverted"
-          exchangeId={exchange.id}
-          envName={CONFIG.envName}
-          disabled={isLoading}
-          onError={(error) => {
-            console.error(error);
-            setCancelError(error);
-            setIsLoading(false);
-            const hasUserRejectedTx =
-              "code" in error &&
-              (error as unknown as { code: string }).code === "ACTION_REJECTED";
-            if (hasUserRejectedTx) {
-              showModal("CONFIRMATION_FAILED");
-            } else {
-              showModal(modalTypes.DETAIL_WIDGET, {
-                title: "An error occurred",
-                message: "An error occurred when trying to cancel!",
-                type: "ERROR",
-                state: "Cancelled",
-                ...BASE_MODAL_DATA
+        <CancelButtonWrapper>
+          <CancelButton
+            variant="accentInverted"
+            exchangeId={exchange.id}
+            envName={CONFIG.envName}
+            disabled={isLoading}
+            onError={(error) => {
+              console.error(error);
+              setCancelError(error);
+              setIsLoading(false);
+              const hasUserRejectedTx =
+                "code" in error &&
+                (error as unknown as { code: string }).code ===
+                  "ACTION_REJECTED";
+              if (hasUserRejectedTx) {
+                showModal("CONFIRMATION_FAILED");
+              } else {
+                showModal(modalTypes.DETAIL_WIDGET, {
+                  title: "An error occurred",
+                  message: "An error occurred when trying to cancel!",
+                  type: "ERROR",
+                  state: "Cancelled",
+                  ...BASE_MODAL_DATA
+                });
+              }
+            }}
+            onPendingSignature={() => {
+              setIsLoading(true);
+              setCancelError(null);
+              showModal("WAITING_FOR_CONFIRMATION");
+            }}
+            onPendingTransaction={(hash) => {
+              showModal("TRANSACTION_SUBMITTED", {
+                action: "Cancel",
+                txHash: hash
               });
-            }
-          }}
-          onPendingSignature={() => {
-            setIsLoading(true);
-            setCancelError(null);
-            showModal("WAITING_FOR_CONFIRMATION");
-          }}
-          onPendingTransaction={(hash) => {
-            showModal("TRANSACTION_SUBMITTED", {
-              action: "Cancel",
-              txHash: hash
-            });
-          }}
-          onSuccess={async (_, { exchangeId }) => {
-            await poll(
-              async () => {
-                const canceledExchange = await coreSDK.getExchangeById(
-                  exchangeId
-                );
-                return canceledExchange.cancelledDate;
-              },
-              (cancelledDate) => {
-                return !cancelledDate;
-              },
-              500
-            );
-            setIsLoading(false);
-            hideModal();
-            setCancelError(null);
-            reload?.();
-            toast((t) => (
-              <SuccessTransactionToast
-                t={t}
-                action={`Cancelled exchange: ${offer.metadata.name}`}
-                onViewDetails={() => {
-                  showModal(modalTypes.DETAIL_WIDGET, {
-                    title: "You have successfully cancelled!",
-                    message: "You have successfully cancelled!",
-                    type: "SUCCESS",
-                    state: "Cancelled",
-                    id: exchangeId.toString(),
-                    ...BASE_MODAL_DATA
-                  });
-                }}
-              />
-            ));
-          }}
-          web3Provider={signer?.provider as Provider}
-        >
-          <Grid gap="0.5rem">
-            Confirm cancellation
-            {isLoading && <Spinner size="20" />}
-          </Grid>
-        </CancelButton>
+            }}
+            onSuccess={async (_, { exchangeId }) => {
+              await poll(
+                async () => {
+                  const canceledExchange = await coreSDK.getExchangeById(
+                    exchangeId
+                  );
+                  return canceledExchange.cancelledDate;
+                },
+                (cancelledDate) => {
+                  return !cancelledDate;
+                },
+                500
+              );
+              setIsLoading(false);
+              hideModal();
+              setCancelError(null);
+              reload?.();
+              toast((t) => (
+                <SuccessTransactionToast
+                  t={t}
+                  action={`Cancelled exchange: ${offer.metadata.name}`}
+                  onViewDetails={() => {
+                    showModal(modalTypes.DETAIL_WIDGET, {
+                      title: "You have successfully cancelled!",
+                      message: "You have successfully cancelled!",
+                      type: "SUCCESS",
+                      state: "Cancelled",
+                      id: exchangeId.toString(),
+                      ...BASE_MODAL_DATA
+                    });
+                  }}
+                />
+              ));
+            }}
+            web3Provider={signer?.provider as Provider}
+          >
+            <Grid gap="0.5rem">
+              Confirm cancellation
+              {isLoading && <Spinner size="20" />}
+            </Grid>
+          </CancelButton>
+        </CancelButtonWrapper>
         <Button theme="blankOutline" onClick={() => hideModal()}>
           Back
         </Button>
