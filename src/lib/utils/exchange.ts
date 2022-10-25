@@ -16,9 +16,7 @@ export const isExchangeCompletableBySeller = (exchange: Exchange) => {
       getDateTimestamp(exchange.redeemedDate || "") +
         getDateTimestamp(exchange.offer.disputePeriodDuration)
     );
-                 return  !!dayjs(disputePeriodTime).isBefore(
-      dayjs()
-    );
+    return !!dayjs(disputePeriodTime).isBefore(dayjs());
   }
 
   return false;

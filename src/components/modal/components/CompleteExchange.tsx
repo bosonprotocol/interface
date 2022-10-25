@@ -50,7 +50,7 @@ function CompleteOffer({ offer }: OfferProps) {
     <>
       <CompleteExchangeWrapper>
         <Grid justifyContent="space-between" alignItems="center" gap="1rem">
-          <Grid justifyContent="flex-start" gap="1rem">
+          <Grid justifyContent="flex-start" gap="1rem" style={{ flex: "1 1" }}>
             <Image
               src={offer?.metadata?.image}
               showPlaceholderText={false}
