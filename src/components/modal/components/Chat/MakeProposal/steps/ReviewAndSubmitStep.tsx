@@ -22,6 +22,19 @@ const ButtonsSection = styled.div`
   justify-content: space-between;
 `;
 
+const StyledButtonsSection = styled(BosonButton)<{ isModal: boolean }>`
+  background: ${({ isModal }) => !isModal && "transparent"};
+  border-color: ${({ isModal }) => !isModal && colors.orange};
+  border: ${({ isModal }) => !isModal && `2px solid ${colors.orange}`};
+  color: ${({ isModal }) => !isModal && colors.orange};
+  &:hover {
+    background: ${({ isModal }) => !isModal && colors.orange};
+    border-color: ${({ isModal }) => !isModal && colors.orange};
+    border: ${({ isModal }) => !isModal && `2px solid ${colors.orange}`};
+    color: ${({ isModal }) => !isModal && colors.white};
+  }
+`;
+
 interface Props {
   isValid: boolean;
   exchange: Exchange;
@@ -91,9 +104,10 @@ export default function ReviewAndSubmitStep({
       )}
       {submitError && <SimpleError />}
       <ButtonsSection>
-        <BosonButton
+        <StyledButtonsSection
           variant="primaryFill"
           type="submit"
+          isModal={isModal}
           disabled={
             !isValid ||
             (!isChatInitialized && !!proposalTypeField.value) ||
@@ -102,7 +116,7 @@ export default function ReviewAndSubmitStep({
         >
           {isModal ? "Send Proposal" : "Raise Dispute"}
           {isSubmitting && <Spinner />}
-        </BosonButton>
+        </StyledButtonsSection>
       </ButtonsSection>
     </>
   );
