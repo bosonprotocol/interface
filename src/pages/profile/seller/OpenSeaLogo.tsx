@@ -23,10 +23,6 @@ export async function getOpenSeaUrl(
             ? `https://${isProd ? "" : "testnets."}opensea.io/collection/${
                 response?.collection?.slug
               }`
-            : ownedBy
-            ? `https://${
-                isProd ? "" : "testnets."
-              }opensea.io/${ownedBy}?tab=created`
             : false
         )
       )
