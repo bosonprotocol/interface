@@ -32,17 +32,15 @@ const generatePathAndNavigate = ({
 };
 
 const StyledBosonButton = styled(BosonButton)`
-  button {
-    background: transparent;
+  background: transparent;
+  border-color: ${colors.orange};
+  color: ${colors.orange};
+  border: 2px solid ${colors.orange};
+  &:hover {
+    background: ${colors.orange};
     border-color: ${colors.orange};
-    color: ${colors.orange};
+    color: ${colors.white};
     border: 2px solid ${colors.orange};
-    &:hover {
-      background: ${colors.orange};
-      border-color: ${colors.orange};
-      color: ${colors.white};
-      border: 2px solid ${colors.orange};
-    }
   }
 `;
 
