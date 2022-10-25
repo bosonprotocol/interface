@@ -4,7 +4,7 @@ import { colors } from "../../../../../../lib/styles/colors";
 // import { Exchange } from "../../../../../../lib/utils/hooks/useExchanges";
 import UploadForm from "../../../../../../pages/chat/components/UploadForm/UploadForm";
 import { Textarea } from "../../../../../form";
-import Button from "../../../../../ui/Button";
+import BosonButton from "../../../../../ui/BosonButton";
 import Grid from "../../../../../ui/Grid";
 import Typography from "../../../../../ui/Typography";
 import { FormModel } from "../MakeProposalFormModel";
@@ -43,13 +43,13 @@ export default function DescribeProblemStep({ onNextClick, isValid }: Props) {
       </Grid>
       <UploadForm />
       <ButtonsSection>
-        <Button
-          theme="primary"
+        <BosonButton
+          variant="primaryFill"
           onClick={() => onNextClick()}
           disabled={!isValid}
         >
           Next
-        </Button>
+        </BosonButton>
       </ButtonsSection>
     </>
   );

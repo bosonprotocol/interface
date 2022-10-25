@@ -1,4 +1,5 @@
 import {
+  ButtonSize,
   CommitButton,
   exchanges,
   Provider,
@@ -36,6 +37,7 @@ import { ModalTypes, ShowModalFn, useModal } from "../../modal/useModal";
 import Price from "../../price/index";
 import { useConvertedPrice } from "../../price/useConvertedPrice";
 import SuccessTransactionToast from "../../toasts/SuccessTransactionToast";
+import BosonButton from "../../ui/BosonButton";
 import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
 import Typography from "../../ui/Typography";
@@ -64,7 +66,7 @@ const StyledPrice = styled(Price)`
   }
 `;
 
-const RedeemButton = styled(Button)`
+const RedeemButton = styled(BosonButton)`
   padding: 1rem;
   height: 3.5rem;
   display: flex;
@@ -630,8 +632,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
             )}
             {isToRedeem && (
               <RedeemButton
-                theme="bosonPrimary"
-                size="large"
+                variant="primaryFill"
+                size={ButtonSize.Large}
                 disabled={
                   isChainUnsupported ||
                   isLoading ||

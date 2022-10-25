@@ -26,7 +26,7 @@ import { useAccount } from "wagmi";
 import { Spinner } from "../../../components/loading/Spinner";
 import InitializeChat from "../../../components/modal/components/Chat/components/InitializeChat";
 import { useModal } from "../../../components/modal/useModal";
-import Button from "../../../components/ui/Button";
+import BosonButton from "../../../components/ui/BosonButton";
 import Grid from "../../../components/ui/Grid";
 import SellerID from "../../../components/ui/SellerID";
 import { BosonRoutes } from "../../../lib/routing/routes";
@@ -287,7 +287,7 @@ const UploadButtonWrapper = styled.button`
   }
 `;
 
-const SendButton = styled(Button)`
+const SendButton = styled(BosonButton)`
   padding: 0.75rem;
   min-width: 3rem;
 `;
@@ -984,7 +984,7 @@ const ChatConversation = ({
             </InputWrapper>
             <SendButton
               data-testid="send"
-              theme="primary"
+              variant="primaryFill"
               disabled={disableInputs}
               onClick={handleSendingRegularMessage}
             >

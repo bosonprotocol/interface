@@ -1,4 +1,5 @@
 import {
+  ButtonSize,
   Currencies,
   CurrencyDisplay,
   subgraph
@@ -13,7 +14,7 @@ import useFunds from "../../../pages/account/funds/useFunds";
 import { useConvertionRate } from "../../convertion-rate/useConvertionRate";
 import { Spinner } from "../../loading/Spinner";
 import Tooltip from "../../tooltip/Tooltip";
-import Button from "../../ui/Button";
+import BosonButton from "../../ui/BosonButton";
 import Grid from "../../ui/Grid";
 import Typography from "../../ui/Typography";
 import { useModal } from "../useModal";
@@ -27,7 +28,7 @@ const processValue = (value: string, decimals: string) => {
   }
 };
 
-const WithdrawButton = styled(Button)`
+const WithdrawButton = styled(BosonButton)`
   padding: 0.25rem 1rem;
   background: transparent;
   color: ${colors.green};
@@ -128,8 +129,8 @@ export default function ManageFunds({ id }: Props) {
             <WithdrawableWrapper>
               <AmountWrapper>{withdrawable}</AmountWrapper>
               <WithdrawButton
-                theme="primary"
-                size="small"
+                variant="primaryFill"
+                size={ButtonSize.Small}
                 onClick={() => {
                   showModal(
                     modalTypes.FINANCE_WITHDRAW_MODAL,

@@ -15,7 +15,7 @@ import {
 } from "../../../components/modal/useModal";
 import Price from "../../../components/price";
 import MultiSteps from "../../../components/step/MultiSteps";
-import Button from "../../../components/ui/Button";
+import BosonButton from "../../../components/ui/BosonButton";
 import Image from "../../../components/ui/Image";
 import Typography from "../../../components/ui/Typography";
 import { UrlParameters } from "../../../lib/routing/parameters";
@@ -340,8 +340,8 @@ export default function ExchangeSidePreview({
       </Section>
       {isInDispute && iAmTheBuyer && !isEscalated && !isRetracted ? (
         <CTASection>
-          <Button
-            theme="secondary"
+          <BosonButton
+            variant="accentInverted"
             onClick={() =>
               showModal(
                 "RETRACT_DISPUTE",
@@ -357,9 +357,10 @@ export default function ExchangeSidePreview({
             }
           >
             Retract
-          </Button>
-          <Button
-            theme="orange"
+          </BosonButton>
+          <BosonButton
+            variant="secondaryInverted"
+            showBorder={false}
             onClick={() =>
               showModal(
                 "ESCALATE_MODAL",
@@ -373,12 +374,12 @@ export default function ExchangeSidePreview({
             }
           >
             Escalate
-          </Button>
+          </BosonButton>
         </CTASection>
       ) : isInRedeemed && iAmTheBuyer ? (
         <CTASection>
-          <Button
-            theme="primary"
+          <BosonButton
+            variant="primaryFill"
             onClick={() =>
               showModal(
                 "RAISE_DISPUTE",
@@ -397,7 +398,7 @@ export default function ExchangeSidePreview({
             }
           >
             Raise a Problem
-          </Button>
+          </BosonButton>
         </CTASection>
       ) : null}
       <HistorySection>

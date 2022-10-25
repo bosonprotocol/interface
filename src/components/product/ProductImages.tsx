@@ -8,7 +8,7 @@ import { Select, Upload } from "../form";
 import FormField from "../form/FormField";
 import { MAX_FILE_SIZE } from "../form/Upload/WithUploadToIpfs";
 import Tabs from "../tabs/Tabs";
-import Button from "../ui/Button";
+import BosonButton from "../ui/BosonButton";
 import Grid from "../ui/Grid";
 import { ProductButtonGroup, SectionTitle } from "./Product.styles";
 import { useCreateForm } from "./utils/useCreateForm";
@@ -177,9 +177,13 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
         )}
       </FormField>
       <ProductButtonGroup>
-        <Button theme="primary" type="submit" disabled={nextIsDisabled}>
+        <BosonButton
+          variant="primaryFill"
+          type="submit"
+          disabled={nextIsDisabled}
+        >
           Next
-        </Button>
+        </BosonButton>
       </ProductButtonGroup>
     </ContainerProductImage>
   );
