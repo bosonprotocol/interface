@@ -31,16 +31,18 @@ const generatePathAndNavigate = ({
   navigate({ pathname });
 };
 
-const RevokeButton = styled(BosonButton)`
-  background: transparent;
-  border-color: ${colors.orange};
-  color: ${colors.orange};
-  border: 2px solid ${colors.orange};
-  &:hover {
-    background: ${colors.orange};
+const RevokeButtonWrapper = styled.div`
+  button {
+    background: transparent;
     border-color: ${colors.orange};
-    color: ${colors.white};
-    border: 1px solid ${colors.orange};
+    color: ${colors.orange};
+    border: 2px solid ${colors.orange};
+    &:hover {
+      background: ${colors.orange};
+      border-color: ${colors.orange};
+      color: ${colors.white};
+      border: 2px solid ${colors.orange};
+    }
   }
 `;
 
@@ -141,29 +143,31 @@ export const SellerActionButton = ({
         Chat <Chat size={14} />
       </BosonButton>
       {status === subgraph.ExchangeState.Committed && (
-        <RevokeButton
-          variant="accentInverted"
-          showBorder={false}
-          size={ButtonSize.Small}
-          disabled={!sellerRoles?.isOperator}
-          tooltip="This action is restricted to only the operator wallet"
-          onClick={() => {
-            if (exchange) {
-              showModal(
-                modalTypes.REVOKE_PRODUCT,
-                {
-                  title: "Revoke rNFT",
-                  exchangeId: exchange?.id,
-                  exchange: exchange,
-                  refetch
-                },
-                "xs"
-              );
-            }
-          }}
-        >
-          Revoke
-        </RevokeButton>
+        <RevokeButtonWrapper>
+          <BosonButton
+            variant="accentInverted"
+            showBorder={false}
+            size={ButtonSize.Small}
+            disabled={!sellerRoles?.isOperator}
+            tooltip="This action is restricted to only the operator wallet"
+            onClick={() => {
+              if (exchange) {
+                showModal(
+                  modalTypes.REVOKE_PRODUCT,
+                  {
+                    title: "Revoke rNFT",
+                    exchangeId: exchange?.id,
+                    exchange: exchange,
+                    refetch
+                  },
+                  "xs"
+                );
+              }
+            }}
+          >
+            Revoke
+          </BosonButton>
+        </RevokeButtonWrapper>
       )}
     </Grid>
   );
