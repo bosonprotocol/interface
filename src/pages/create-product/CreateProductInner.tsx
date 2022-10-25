@@ -531,7 +531,6 @@ function CreateProductInner({
       return attribute.trait_type.length > 0;
     });
 
-    const offerData = undefined;
     try {
       const redemptionPointUrl =
         shippingInfo.redemptionPointUrl &&
