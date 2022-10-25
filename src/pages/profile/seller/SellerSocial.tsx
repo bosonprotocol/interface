@@ -1,4 +1,5 @@
 import { Globe } from "phosphor-react";
+import { useEffect, useState } from "react";
 
 import DetailShare from "../../../components/detail/DetailShare";
 import { getLensWebsite } from "../../../components/modal/components/CreateProfile/Lens/utils";
@@ -12,6 +13,7 @@ import {
   SocialIcon,
   SocialIconContainer
 } from "../ProfilePage.styles";
+import OpenSeaLogo, { getOpenSeaUrl } from "./OpenSeaLogo";
 
 interface RenderSocialProps {
   href: string;
@@ -32,12 +34,29 @@ function RenderSocial({
 
 interface Props {
   sellerLens: ProfileFieldsFragment;
+  voucherCloneAddress?: string;
 }
-export default function SellerSocial({ sellerLens }: Props) {
+export default function SellerSocial({
+  sellerLens,
+  voucherCloneAddress
+}: Props) {
+  const [openSeaUrl, setOpenSeaUrl] = useState<string | null>(null);
   const website = getLensWebsite(sellerLens as Profile);
   const lensUrl = website ? preAppendHttps(website) || false : false;
+
+  useEffect(() => {
+    if (openSeaUrl === null && voucherCloneAddress) {
+      getOpenSeaUrl(voucherCloneAddress).then((value) => {
+        if (value) {
+          setOpenSeaUrl(value as string);
+        }
+      });
+    }
+  }, [openSeaUrl, voucherCloneAddress]);
+
   return (
     <SocialIconContainer>
+      {openSeaUrl && <RenderSocial icon={<OpenSeaLogo />} href={openSeaUrl} />}
       {/* TODO: Removed as we don't have discord in lens profile */}
       {/* <RenderSocial icon={DiscordLogo} href={""} /> */}
       {lensUrl !== false && (
