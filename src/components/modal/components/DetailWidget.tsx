@@ -20,7 +20,7 @@ import { BosonRoutes } from "../../../lib/routing/routes";
 import { colors } from "../../../lib/styles/colors";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import Button from "../../ui/Button";
+import BosonButton from "../../ui/BosonButton";
 import Grid from "../../ui/Grid";
 import Image from "../../ui/Image";
 import Typography from "../../ui/Typography";
@@ -83,9 +83,8 @@ export default function DetailWidget({
             </div>
           </Widget>
           <WidgetButtonWrapper>
-            <Button
-              theme="primary"
-              withBosonStyle
+            <BosonButton
+              variant="primaryFill"
               onClick={() => {
                 const exchangeId = id || false;
                 hideModal();
@@ -105,16 +104,15 @@ export default function DetailWidget({
               }}
             >
               {id ? "View my item" : "View my items"}
-            </Button>
-            <Button
-              theme="secondary"
-              withBosonStyle
+            </BosonButton>
+            <BosonButton
+              variant="accentInverted"
               onClick={() => {
                 navigate({ pathname: BosonRoutes.Explore });
               }}
             >
               Discover more
-            </Button>
+            </BosonButton>
           </WidgetButtonWrapper>
         </div>
       </ModalGrid>

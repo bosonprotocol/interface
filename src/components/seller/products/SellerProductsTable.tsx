@@ -1,4 +1,4 @@
-import { offers as OffersKit } from "@bosonprotocol/react-kit";
+import { ButtonSize, offers as OffersKit } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import {
   CaretDown,
@@ -32,6 +32,7 @@ import OfferHistory from "../../offer/OfferHistory";
 import OfferStatuses from "../../offer/OfferStatuses";
 import Price from "../../price/index";
 import Tooltip from "../../tooltip/Tooltip";
+import BosonButton from "../../ui/BosonButton";
 import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
 import Image from "../../ui/Image";
@@ -307,9 +308,9 @@ export default function SellerProductsTable({
             status === OffersKit.OfferState.VOIDED ||
             offer?.quantityAvailable === "0"
           ) && (
-            <Button
-              theme="orangeInverse"
-              size="small"
+            <BosonButton
+              variant="secondaryInverted"
+              size={ButtonSize.Small}
               disabled={!sellerRoles?.isOperator}
               tooltip="This action is restricted to only the operator wallet"
               onClick={() => {
@@ -328,7 +329,7 @@ export default function SellerProductsTable({
               }}
             >
               Void
-            </Button>
+            </BosonButton>
           )
         };
       }),

@@ -12,6 +12,7 @@ import { ProposalItem } from "../../../../pages/chat/types";
 import { poll } from "../../../../pages/create-product/utils";
 import SimpleError from "../../../error/SimpleError";
 import SuccessTransactionToast from "../../../toasts/SuccessTransactionToast";
+import BosonButton from "../../../ui/BosonButton";
 import Button from "../../../ui/Button";
 import Grid from "../../../ui/Grid";
 import { ModalProps } from "../../ModalContext";
@@ -77,8 +78,8 @@ export default function ResolveDisputeModal({
       </Info>
       {resolveDisputeError && <SimpleError />}
       <ButtonsSection>
-        <Button
-          theme="primary"
+        <BosonButton
+          variant="primaryFill"
           onClick={async () => {
             try {
               setResolveDisputeError(null);
@@ -128,7 +129,7 @@ export default function ResolveDisputeModal({
           }}
         >
           Accept proposal
-        </Button>
+        </BosonButton>
         <Button theme="blankOutline" onClick={() => hideModal()}>
           Back
         </Button>

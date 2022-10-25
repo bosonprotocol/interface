@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 import { Datepicker, FormField, Input, Select } from "../form";
-import Button from "../ui/Button";
+import BosonButton from "../ui/BosonButton";
 import {
   ContainerProductPage,
   ProductButtonGroup,
@@ -94,9 +94,13 @@ export default function CoreTermsOfSale({ isMultiVariant }: Props) {
         <Datepicker name={`${prefix}.offerValidityPeriod`} period selectTime />
       </FormField>
       <ProductInformationButtonGroup>
-        <Button theme="primary" type="submit" disabled={nextIsDisabled}>
+        <BosonButton
+          variant="primaryFill"
+          type="submit"
+          disabled={nextIsDisabled}
+        >
           Next
-        </Button>
+        </BosonButton>
       </ProductInformationButtonGroup>
     </ContainerProductPage>
   );

@@ -1,10 +1,10 @@
-import { subgraph } from "@bosonprotocol/react-kit";
+import { ButtonSize, subgraph } from "@bosonprotocol/react-kit";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 import { useConvertionRate } from "../../../components/convertion-rate/useConvertionRate";
-import Button from "../../../components/ui/Button";
+import BosonButton from "../../../components/ui/BosonButton";
 import { CONFIG } from "../../../lib/config";
 import { colors } from "../../../lib/styles/colors";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
@@ -51,7 +51,7 @@ const TokenInput = styled(Input)`
   width: 100%;
 `;
 
-const CustomButton = styled(Button)`
+const CustomButton = styled(BosonButton)`
   padding: 0;
   border-radius: ${fundsBorderRadius};
   * {
@@ -259,8 +259,8 @@ export default function Funds({ sellerId, buyerId }: Props) {
           >
             <CustomButton
               onClick={addNew}
-              theme="primary"
-              size="small"
+              variant="primaryFill"
+              size={ButtonSize.Small}
               disabled={!newTokenAddress.length}
             >
               Add
@@ -274,7 +274,11 @@ export default function Funds({ sellerId, buyerId }: Props) {
             <Cell $flexBasis={sellerFlexBasisCells[0]} />
             <Cell $flexBasis={sellerFlexBasisCells[1]} />
             <ButtonCell $flexBasis={sellerFlexBasisCells[2]}>
-              <CustomButton onClick={withdrawAll} theme="primary" size="small">
+              <CustomButton
+                onClick={withdrawAll}
+                variant="primaryFill"
+                size={ButtonSize.Small}
+              >
                 Withdraw All Funds
               </CustomButton>
             </ButtonCell>
@@ -285,7 +289,11 @@ export default function Funds({ sellerId, buyerId }: Props) {
             <Cell $flexBasis={buyerFlexBasisCells[0]} />
             <Cell $flexBasis={buyerFlexBasisCells[1]} />
             <ButtonCell $flexBasis={buyerFlexBasisCells[2]}>
-              <CustomButton onClick={withdrawAll} theme="primary" size="small">
+              <CustomButton
+                onClick={withdrawAll}
+                variant="primaryFill"
+                size={ButtonSize.Small}
+              >
                 Withdraw All Funds
               </CustomButton>
             </ButtonCell>

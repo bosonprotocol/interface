@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { colors } from "../../../lib/styles/colors";
 import { loadAndSetImage } from "../../../lib/utils/base64";
 import bytesToSize from "../../../lib/utils/bytesToSize";
-import Button from "../../ui/Button";
+import BosonButton from "../../ui/BosonButton";
 import Loading from "../../ui/Loading";
 import Typography from "../../ui/Typography";
 import Error from "../Error";
@@ -157,9 +157,9 @@ function Upload({
           disabled={disabled}
         />
         {trigger ? (
-          <Button onClick={handleChooseFile} theme="secondary">
+          <BosonButton onClick={handleChooseFile} variant="accentInverted">
             {trigger}
-          </Button>
+          </BosonButton>
         ) : (
           <FileUploadWrapper
             choosen={files !== null}

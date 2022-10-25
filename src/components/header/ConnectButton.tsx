@@ -1,3 +1,4 @@
+import { ButtonSize } from "@bosonprotocol/react-kit";
 import { ConnectButton as RainbowConnectButton } from "@rainbow-me/rainbowkit";
 import * as Sentry from "@sentry/browser";
 import styled from "styled-components";
@@ -7,6 +8,7 @@ import Button from "../../components/ui/Button";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { saveItemInStorage } from "../../lib/utils/hooks/useLocalStorage";
 import FallbackAvatar from "../avatar/fallback-avatar";
+import BosonButton from "../ui/BosonButton";
 
 const MetaMaskLogo = styled.img`
   height: 15px;
@@ -22,13 +24,11 @@ const ENSAvatar = styled.img`
 interface Props {
   navigationBarPosition?: string;
   showAddress?: boolean;
-  withBosonStyle?: boolean;
 }
 
 export default function ConnectButton({
   navigationBarPosition = "",
-  showAddress = true,
-  withBosonStyle = false
+  showAddress = true
 }: Props) {
   const { isLteXS } = useBreakpoints();
   const isSideBar = ["left", "right"].includes(navigationBarPosition);
@@ -71,14 +71,13 @@ export default function ConnectButton({
                 Sentry.setTag("wallet_address", undefined);
 
                 return (
-                  <Button
+                  <BosonButton
                     onClick={() => {
                       saveItemInStorage("isConnectWalletFromCommit", false);
                       openConnectModal();
                     }}
-                    size={isLteXS ? "small" : "regular"}
-                    theme="primary"
-                    withBosonStyle={withBosonStyle}
+                    size={isLteXS ? ButtonSize.Small : ButtonSize.Medium}
+                    variant="primaryFill"
                     style={{
                       whiteSpace: "pre",
                       ...buttonPropsWhenSideBar,
@@ -87,7 +86,7 @@ export default function ConnectButton({
                   >
                     Connect Wallet
                     {!isLteXS && <MetaMaskLogo src={metamaskLogo} />}
-                  </Button>
+                  </BosonButton>
                 );
               }
 

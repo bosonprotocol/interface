@@ -2,7 +2,7 @@ import { Info } from "phosphor-react";
 import styled from "styled-components";
 
 import { colors } from "../../../../lib/styles/colors";
-import Button from "../../../ui/Button";
+import BosonButton from "../../../ui/BosonButton";
 import Grid from "../../../ui/Grid";
 import Typography from "../../../ui/Typography";
 import { ModalProps } from "../../ModalContext";
@@ -74,9 +74,9 @@ export default function RedeemSuccessModal({
         contact the Dispute Resolver.
       </Typography>
       <Grid padding="2rem 0 0 0" justifyContent="space-between">
-        <Button theme="primary" onClick={() => hideModal()} withBosonStyle>
+        <BosonButton variant="primaryFill" onClick={() => hideModal()}>
           Done
-        </Button>
+        </BosonButton>
       </Grid>
     </>
   );
