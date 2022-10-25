@@ -160,6 +160,7 @@ export default function ConfirmProductDetails({
   const { offerValidityPeriod, redemptionPeriod, tokenGatedOffer } =
     commonTermsOfSale;
   // TODO: check if profile info is displayed correctly while using a lens profile
+
   return (
     <ConfirmProductDetailsContainer>
       <SectionTitle tag="h2">Confirm Product Details</SectionTitle>
@@ -497,6 +498,32 @@ export default function ConfirmProductDetails({
                           )}
                         </>
                       )}
+                    </ContentValue>
+                  </FormField>
+                </FormFieldContainer>
+              </GridBox>
+              <GridBox $minWidth="16rem">
+                <FormFieldContainer
+                  style={{
+                    marginBottom: 0
+                  }}
+                >
+                  <FormField title="Buyer Cancel Penalty" required>
+                    <ContentValue tag="p">
+                      {values?.termsOfExchange?.buyerCancellationPenalty || 0}%
+                    </ContentValue>
+                  </FormField>
+                </FormFieldContainer>
+              </GridBox>
+              <GridBox>
+                <FormFieldContainer
+                  style={{
+                    marginBottom: 0
+                  }}
+                >
+                  <FormField title="Seller Deposit" required>
+                    <ContentValue tag="p">
+                      {values?.termsOfExchange?.sellerDeposit || 0}%
                     </ContentValue>
                   </FormField>
                 </FormFieldContainer>
