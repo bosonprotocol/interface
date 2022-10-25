@@ -40,11 +40,20 @@ function Upload({
   withUpload,
   saveToIpfs,
   loadMedia,
+  onLoading,
   ...props
 }: UploadProps & WithUploadToIpfsProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [preview, setPreview] = useState<string | null>();
   const [field, meta, helpers] = useField(name);
+
+  const handleLoading = useCallback(
+    (loadingValue: boolean) => {
+      onLoading?.(loadingValue);
+      setIsLoading(loadingValue);
+    },
+    [onLoading]
+  );
 
   const errorMessage = meta.error && meta.touched ? meta.error : "";
   const displayError =
@@ -98,14 +107,14 @@ function Upload({
     if (!fileSrc) {
       return false;
     }
-    setIsLoading(true);
+    handleLoading(true);
     try {
       const imagePreview: string = await loadMedia(fileSrc || "");
       setPreview(imagePreview);
     } catch (error) {
       console.error(error);
     } finally {
-      setIsLoading(false);
+      handleLoading(false);
     }
   };
 
@@ -115,14 +124,14 @@ function Upload({
       return false;
     }
     try {
-      setIsLoading(true);
+      handleLoading(true);
       const imagePreview: string = await loadMedia(fileSrc || "");
       setPreview(imagePreview);
       onLoadSinglePreviewImage?.(imagePreview);
     } catch (error) {
       console.error(error);
     } finally {
-      setIsLoading(false);
+      handleLoading(false);
     }
   };
 
@@ -174,11 +183,11 @@ function Upload({
 
   const handleSave = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
-      setIsLoading(true);
+      handleLoading(true);
       const files: FileProps[] = await saveToIpfs(e);
       setFiles(files);
     },
-    [saveToIpfs, setFiles, setIsLoading]
+    [saveToIpfs, setFiles, handleLoading]
   );
 
   return (

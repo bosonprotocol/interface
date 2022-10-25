@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useEffect, useMemo } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 
 import { breakpoint } from "../../lib/styles/breakpoint";
@@ -116,6 +116,7 @@ interface Props {
 const productImagesPrefix = "productImages";
 export default function ProductImages({ onChangeOneSetOfImages }: Props) {
   const { nextIsDisabled, values } = useCreateForm();
+  const [isVideoLoading, setVideoLoading] = useState<boolean>();
   const hasVariants = values.productType.productVariant === "differentVariants";
   const oneSetOfImages =
     !hasVariants || values.imagesSpecificOrAll?.value === "all";
@@ -202,10 +203,15 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
           accept="video/mp4"
           maxSize={MAX_VIDEO_FILE_SIZE}
           withUpload
+          onLoading={(loading) => setVideoLoading(loading)}
         />
       </FormField>
       <ProductButtonGroup>
-        <Button theme="primary" type="submit" disabled={nextIsDisabled}>
+        <Button
+          theme="primary"
+          type="submit"
+          disabled={nextIsDisabled || isVideoLoading}
+        >
           Next
         </Button>
       </ProductButtonGroup>
