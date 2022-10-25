@@ -898,6 +898,7 @@ function CreateProductInner({
               txHash: createSellerResponse.hash
             });
             await createSellerResponse.wait();
+            showModal("WAITING_FOR_CONFIRMATION");
           }
           // createOffer with meta-transaction
           const nonce = Date.now();
