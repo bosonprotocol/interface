@@ -46,6 +46,17 @@ const StyledVoidButton = styled(VoidButton)`
   }
 `;
 
+const StyledBatchVoidButton = styled(BosonButton)`
+  background: transparent;
+  border-color: ${colors.orange};
+  color: ${colors.orange};
+  &:hover {
+    background: ${colors.orange};
+    border-color: ${colors.orange};
+    color: ${colors.white};
+  }
+`;
+
 interface OfferProps {
   offer: Offer;
   single?: boolean;
@@ -291,14 +302,14 @@ export default function VoidProduct({
       )}
       {offers && offers.length && (
         <Grid justifyContent="center">
-          <BosonButton
+          <StyledBatchVoidButton
             variant="accentInverted"
             loading={isLoading}
             disabled={isLoading}
             onClick={handleBatchVoid}
           >
             Batch Void
-          </BosonButton>
+          </StyledBatchVoidButton>
         </Grid>
       )}
     </Grid>
