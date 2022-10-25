@@ -5,8 +5,6 @@ import { getDateTimestamp } from "./getDateTimestamp";
 import { Exchange } from "./hooks/useExchanges";
 
 export const isExchangeCompletableBySeller = (exchange: Exchange) => {
-  let isRedeemedAndFulfillmentPeriodInPast = false;
-
   const isFulfilled =
     exchange.redeemedDate &&
     !exchange.disputedDate &&
@@ -18,12 +16,12 @@ export const isExchangeCompletableBySeller = (exchange: Exchange) => {
       getDateTimestamp(exchange.redeemedDate || "") +
         getDateTimestamp(exchange.offer.disputePeriodDuration)
     );
-    isRedeemedAndFulfillmentPeriodInPast = !!dayjs(disputePeriodTime).isBefore(
+                 return  !!dayjs(disputePeriodTime).isBefore(
       dayjs()
     );
   }
 
-  return isRedeemedAndFulfillmentPeriodInPast;
+  return false;
 };
 
 export const isExchangeCompletableByBuyer = (exchange: Exchange) => {
