@@ -71,6 +71,7 @@ function onKeyPress(event: React.KeyboardEvent<HTMLFormElement>) {
 type GetProductV1MetadataProps = {
   offerUuid: string;
   productInformation: CreateProductForm["productInformation"];
+  animationUrl: string;
   externalUrl: string;
   licenseUrl: string;
   productMainImageLink: string | undefined;
@@ -96,6 +97,7 @@ type GetProductV1MetadataProps = {
 function getProductV1Metadata({
   offerUuid,
   productInformation,
+  animationUrl,
   externalUrl,
   licenseUrl,
   productMainImageLink,
@@ -115,6 +117,7 @@ function getProductV1Metadata({
     uuid: offerUuid,
     name: productInformation.productTitle,
     description: `${productInformation.description}\n\nTerms for the Boson rNFT Voucher: ${licenseUrl}`,
+    animationUrl,
     externalUrl,
     licenseUrl,
     image: productMainImageLink ? productMainImageLink : "",
@@ -602,6 +605,9 @@ function CreateProductInner({
       const licenseUrl = `${window.origin}/#/license/${offerUuid}`;
 
       const offersToCreate: offers.CreateOfferArgs[] = [];
+      const animationUrl = values.productAnimation
+        ? values.productAnimation[0]?.src || ""
+        : "";
       if (isMultiVariant) {
         const { variants = [] } = values.productVariants;
         const variantsForMetadataCreation: Parameters<
@@ -654,6 +660,7 @@ function CreateProductInner({
         const productV1Metadata = getProductV1Metadata({
           offerUuid,
           productInformation,
+          animationUrl,
           externalUrl,
           licenseUrl,
           productMainImageLink,
@@ -729,6 +736,7 @@ function CreateProductInner({
         const productV1Metadata = getProductV1Metadata({
           offerUuid,
           productInformation,
+          animationUrl,
           externalUrl,
           licenseUrl,
           productMainImageLink,

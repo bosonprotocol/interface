@@ -6,14 +6,12 @@ export function fromBase64ToBinary(base64: string): Buffer {
 
 export async function blobToBase64(blob: Blob): Promise<string> {
   return new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result as string);
-    reader.readAsDataURL(blob);
+    loadAndSetMedia(blob, resolve);
   });
 }
 
-export const loadAndSetImage = (
-  image: File,
+export const loadAndSetMedia = (
+  fileOrBlob: File | Blob,
   callback: (base64Uri: string) => void
 ) => {
   const reader = new FileReader();
@@ -21,13 +19,13 @@ export const loadAndSetImage = (
     const prev = e.target?.result?.toString() || "";
     callback(prev);
   };
-  reader.readAsDataURL(image as File);
+  reader.readAsDataURL(fileOrBlob);
 };
 
 export const loadAndSetImagePromise = (image: File) => {
-  return new Promise<Parameters<Parameters<typeof loadAndSetImage>[1]>[0]>(
+  return new Promise<Parameters<Parameters<typeof loadAndSetMedia>[1]>[0]>(
     (resolve) => {
-      loadAndSetImage(image, resolve);
+      loadAndSetMedia(image, resolve);
     }
   );
 };

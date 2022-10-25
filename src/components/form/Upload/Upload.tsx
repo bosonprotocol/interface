@@ -1,9 +1,9 @@
 import { useField } from "formik";
-import { Image, Trash } from "phosphor-react";
+import { Image, Trash, VideoCamera } from "phosphor-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { colors } from "../../../lib/styles/colors";
-import { loadAndSetImage } from "../../../lib/utils/base64";
+import { loadAndSetMedia } from "../../../lib/utils/base64";
 import bytesToSize from "../../../lib/utils/bytesToSize";
 import Button from "../../ui/Button";
 import Loading from "../../ui/Loading";
@@ -13,7 +13,8 @@ import {
   FieldFileUploadWrapper,
   FieldInput,
   FileUploadWrapper,
-  ImagePreview
+  ImagePreview,
+  VideoPreview
 } from "../Field.styles";
 import type { UploadProps } from "../types";
 import UploadedFiles from "./UploadedFiles";
@@ -38,7 +39,7 @@ function Upload({
   onLoadSinglePreviewImage,
   withUpload,
   saveToIpfs,
-  loadImage,
+  loadMedia,
   ...props
 }: UploadProps & WithUploadToIpfsProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -58,32 +59,71 @@ function Upload({
   );
 
   const files = field.value as UploadFileType[];
+  const mimetypes = accept.split(",").map((acc) => acc.trim());
+  const isImageOnly = mimetypes.every((mimetype) =>
+    mimetype.startsWith("image/")
+  );
+  const isVideoOnly = mimetypes.every((mimetype) =>
+    mimetype.startsWith("video/")
+  );
 
   useEffect(() => {
     onFilesSelect?.(files);
     helpers.setValue(files);
 
-    if (!multiple && accept === "image/*" && files && files?.length !== 0) {
-      if (withUpload) {
-        loadIpfsImagePreview(files[0] as FileProps);
-      } else {
-        loadAndSetImage(files[0] as File, (base64Uri) => {
-          setPreview(base64Uri);
-          onLoadSinglePreviewImage?.(base64Uri);
-        });
+    if (!multiple && files && files?.length !== 0) {
+      if (isImageOnly) {
+        if (withUpload) {
+          loadIpfsImagePreview(files[0] as FileProps);
+        } else {
+          loadAndSetMedia(files[0] as File, (base64Uri) => {
+            setPreview(base64Uri);
+            onLoadSinglePreviewImage?.(base64Uri);
+          });
+        }
+      } else if (isVideoOnly) {
+        if (withUpload) {
+          loadIpfsVideo(files[0] as FileProps);
+        } else {
+          loadAndSetMedia(files[0] as File, (base64Uri) => {
+            setPreview(base64Uri);
+          });
+        }
       }
     }
   }, [files]); // eslint-disable-line
+
+  const loadIpfsVideo = async (file: FileProps) => {
+    const fileSrc = file && file?.src ? file?.src : false;
+    if (!fileSrc) {
+      return false;
+    }
+    setIsLoading(true);
+    try {
+      const imagePreview: string = await loadMedia(fileSrc || "");
+      setPreview(imagePreview);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const loadIpfsImagePreview = async (file: FileProps) => {
     const fileSrc = file && file?.src ? file?.src : false;
     if (!fileSrc) {
       return false;
     }
-    const imagePreview: string = await loadImage(fileSrc || "");
-    setPreview(imagePreview);
-    setIsLoading(false);
-    onLoadSinglePreviewImage?.(imagePreview);
+    try {
+      setIsLoading(true);
+      const imagePreview: string = await loadMedia(fileSrc || "");
+      setPreview(imagePreview);
+      onLoadSinglePreviewImage?.(imagePreview);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleChooseFile = () => {
@@ -171,10 +211,29 @@ function Upload({
               <Loading size={2} />
             ) : (
               <>
-                {field.value && field.value?.length !== 0 && preview && (
-                  <ImagePreview src={preview} />
+                {field.value && field.value?.length !== 0 && preview ? (
+                  <>
+                    {isVideoOnly ? (
+                      <VideoPreview
+                        src={
+                          "data:video/mp4;base64," +
+                          preview?.substring(
+                            "data:application/octet-stream;base64,".length
+                          )
+                        }
+                        autoPlay
+                        muted
+                        loop
+                      />
+                    ) : (
+                      <ImagePreview src={preview} />
+                    )}
+                  </>
+                ) : isVideoOnly ? (
+                  <VideoCamera size={24} />
+                ) : (
+                  <Image size={24} />
                 )}
-                <Image size={24} />
                 {placeholder && (
                   <Typography tag="p" style={{ marginBottom: "0" }}>
                     {placeholder}

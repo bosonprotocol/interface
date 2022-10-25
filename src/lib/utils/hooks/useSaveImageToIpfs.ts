@@ -17,7 +17,7 @@ export function useSaveImageToIpfs() {
     [ipfsMetadataStorage]
   );
 
-  const loadImage = useCallback(
+  const loadMedia = useCallback(
     async (image: string) => {
       if (!image && !ipfsMetadataStorage) {
         return;
@@ -44,7 +44,7 @@ export function useSaveImageToIpfs() {
 
   return {
     saveFile,
-    loadImage,
+    loadMedia,
     removeFile
   };
 }

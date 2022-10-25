@@ -5,7 +5,7 @@ import { useAccount } from "wagmi";
 
 import { CONFIG } from "../../../../../lib/config";
 import { colors } from "../../../../../lib/styles/colors";
-import { loadAndSetImage } from "../../../../../lib/utils/base64";
+import { loadAndSetMedia } from "../../../../../lib/utils/base64";
 import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
 import useCustomCreateLensProfileMumbai from "../../../../../lib/utils/hooks/lens/profile/useCustomCreateLensProfileMumbai";
 import useCustomCreateLensProfilePolygon from "../../../../../lib/utils/hooks/lens/profile/useCustomCreateLensProfilePolygon";
@@ -144,12 +144,12 @@ export default function CreateBosonLensAccountSummary({
   });
   useEffect(() => {
     if (values.logo?.length) {
-      loadAndSetImage(values.logo[0], setLogoImage);
+      loadAndSetMedia(values.logo[0], setLogoImage);
     }
   }, [values.logo]);
   useEffect(() => {
     if (values.coverPicture?.length) {
-      loadAndSetImage(values.coverPicture[0], setCoverPicture);
+      loadAndSetMedia(values.coverPicture[0], setCoverPicture);
     }
   }, [values.coverPicture]);
 

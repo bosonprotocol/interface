@@ -41,7 +41,7 @@ const VideoWrapper = styled.div`
 const VideoContainer = styled.video`
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 `;
 
 const VideoPlaceholder = styled.div`
@@ -153,7 +153,11 @@ const Video: React.FC<IVideo & React.HTMLAttributes<HTMLDivElement>> = ({
       </VideoWrapper>
     );
   }
-
+  const mp4Src =
+    videoSrc && videoSrc.startsWith("data:application/octet-stream;base64,")
+      ? "data:video/mp4;base64," +
+        videoSrc.substring("data:application/octet-stream;base64,".length)
+      : videoSrc;
   return (
     <VideoWrapper {...rest}>
       {children || ""}
@@ -161,7 +165,7 @@ const Video: React.FC<IVideo & React.HTMLAttributes<HTMLDivElement>> = ({
         <VideoContainer
           data-testid={dataTestId}
           {...videoProps}
-          src={videoSrc}
+          src={mp4Src || ""}
         />
       )}
     </VideoWrapper>
