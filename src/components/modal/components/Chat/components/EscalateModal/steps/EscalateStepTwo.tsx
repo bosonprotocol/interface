@@ -1,4 +1,6 @@
-import { BigNumberish } from "ethers";
+import { TransactionResponse } from "@bosonprotocol/common";
+import { CoreSDK } from "@bosonprotocol/react-kit";
+import { BigNumber, BigNumberish, ethers } from "ethers";
 import { Form, Formik, FormikProps, FormikState } from "formik";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
@@ -193,8 +195,23 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
   const handleEscalate = useCallback(async () => {
     try {
       setLoading(true);
+      let tx: TransactionResponse;
       showModal("WAITING_FOR_CONFIRMATION");
-      const tx = await coreSDK.escalateDispute(exchange.id);
+      const buyerEscalationDeposit =
+        exchange.offer.disputeResolutionTerms.buyerEscalationDeposit;
+      const exchangeTokenAddress = exchange.offer.exchangeToken.address;
+      const isMetaTx = Boolean(
+        coreSDK?.isMetaTxConfigSet &&
+          address &&
+          (exchangeTokenAddress !== ethers.constants.AddressZero ||
+            BigNumber.from(buyerEscalationDeposit).eq(0))
+      );
+      // in case buyerEscalationDeposit is > 0 and in native currency, meta-tx is not possible (because escalation requires a payment)
+      if (isMetaTx) {
+        tx = await escalateDisputeWithMetaTx(coreSDK, exchange.id);
+      } else {
+        tx = await await coreSDK.escalateDispute(exchange.id);
+      }
       showModal("TRANSACTION_SUBMITTED", {
         action: "Escalate dispute",
         txHash: tx.hash
@@ -239,7 +256,7 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
     }
 
     return true;
-  }, [exchange, coreSDK, hideModal, refetch, showModal]);
+  }, [exchange, coreSDK, address, hideModal, refetch, showModal]);
 
   return (
     <Formik<typeof initialValues>
@@ -433,6 +450,26 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
       }}
     </Formik>
   );
+}
+
+async function escalateDisputeWithMetaTx(
+  coreSdk: CoreSDK,
+  exchangeId: BigNumberish
+): Promise<TransactionResponse> {
+  const nonce = Date.now();
+  const { r, s, v, functionName, functionSignature } =
+    await coreSdk.signMetaTxEscalateDispute({
+      exchangeId,
+      nonce
+    });
+  return coreSdk.relayMetaTransaction({
+    functionName,
+    functionSignature,
+    sigR: r,
+    sigS: s,
+    sigV: v,
+    nonce
+  });
 }
 
 export default EscalateStepTwo;
