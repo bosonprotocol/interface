@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { sellerPageTypes } from "../../../components/seller/SellerPages";
 import Image from "../../../components/ui/Image";
 import SellerID from "../../../components/ui/SellerID";
+import Video from "../../../components/ui/Video";
 import { UrlParameters } from "../../../lib/routing/parameters";
 import { BosonRoutes, SellerCenterRoutes } from "../../../lib/routing/routes";
 import { breakpoint } from "../../../lib/styles/breakpoint";
@@ -218,6 +219,20 @@ export default function MessageList({
               : iAmTheBuyer
               ? exchange?.offer.seller
               : exchange?.buyer;
+            const animationUrl = exchange?.offer.metadata.animationUrl || "";
+            const renderProductImage = () => {
+              return (
+                <StyledImage
+                  src={exchange?.offer.metadata.imageUrl}
+                  alt={"exchange image" + exchange.id}
+                  style={{
+                    height: "3.125rem",
+                    width: "3.125rem",
+                    padding: 0
+                  }}
+                />
+              );
+            };
             return (
               <MessageItem
                 $active={messageKey === activeMessageKey}
@@ -231,15 +246,26 @@ export default function MessageList({
                 key={messageKey}
               >
                 <MessageContent>
-                  <StyledImage
-                    src={exchange?.offer.metadata.imageUrl}
-                    alt={"exchange image" + exchange.id}
-                    style={{
-                      height: "3.125rem",
-                      width: "3.125rem",
-                      padding: 0
-                    }}
-                  />
+                  {animationUrl ? (
+                    <Video
+                      src={animationUrl}
+                      dataTestId="exchangeAnimationUrl"
+                      style={{
+                        height: "3.125rem",
+                        width: "3.125rem",
+                        padding: 0
+                      }}
+                      videoProps={{
+                        muted: true,
+                        loop: true,
+                        autoPlay: true
+                      }}
+                      componentWhileLoading={renderProductImage}
+                    />
+                  ) : (
+                    renderProductImage()
+                  )}
+
                   <MessageInfo>
                     <ExchangeName>{exchange?.offer.metadata.name}</ExchangeName>
                     <SellerID

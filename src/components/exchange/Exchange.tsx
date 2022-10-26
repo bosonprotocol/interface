@@ -125,6 +125,7 @@ export default function Exchange({ offer, exchange, reload }: Props) {
       data: OFFER_DETAIL_DATA_MODAL,
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       exchange: exchange!,
+      animationUrl: offer.metadata.animationUrl || "",
       image: offer.metadata.imageUrl,
       name: offer.metadata.name
     }),
@@ -132,7 +133,8 @@ export default function Exchange({ offer, exchange, reload }: Props) {
       OFFER_DETAIL_DATA_MODAL,
       exchange,
       offer.metadata.imageUrl,
-      offer.metadata.name
+      offer.metadata.name,
+      offer.metadata.animationUrl
     ]
   );
 

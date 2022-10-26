@@ -23,6 +23,7 @@ import { IPrice } from "../../../lib/utils/convertPrice";
 import { titleCase } from "../../../lib/utils/formatText";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import { getBuyerCancelPenalty } from "../../../lib/utils/getPrices";
+import { useAddPendingTransaction } from "../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { useBuyerSellerAccounts } from "../../../lib/utils/hooks/useBuyerSellerAccounts";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
@@ -260,6 +261,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   ] = useState(false);
   const { showModal, hideModal, modalTypes } = useModal();
   const coreSDK = useCoreSDK();
+  const addPendingTransaction = useAddPendingTransaction();
   const { isLteXS } = useBreakpoints();
   const navigate = useKeepQueryParamsNavigate();
   const { address } = useAccount();
@@ -354,12 +356,19 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   const BASE_MODAL_DATA = useMemo(
     () => ({
       data: OFFER_DETAIL_DATA_MODAL,
+      animationUrl: offer.metadata.animationUrl || "",
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       exchange: exchange!,
       image,
       name
     }),
-    [OFFER_DETAIL_DATA_MODAL, exchange, image, name]
+    [
+      OFFER_DETAIL_DATA_MODAL,
+      exchange,
+      image,
+      name,
+      offer.metadata.animationUrl
+    ]
   );
 
   const handleOnGetSignerAddress = useCallback(
@@ -588,10 +597,19 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                     setIsLoading(true);
                     showModal("WAITING_FOR_CONFIRMATION");
                   }}
-                  onPendingTransaction={(hash) => {
+                  onPendingTransaction={(hash, isMetaTx) => {
                     showModal("TRANSACTION_SUBMITTED", {
                       action: "Commit",
                       txHash: hash
+                    });
+                    addPendingTransaction({
+                      type: subgraph.EventType.BuyerCommitted,
+                      hash,
+                      isMetaTx,
+                      accountType: "Buyer",
+                      offer: {
+                        id: offer.id
+                      }
                     });
                   }}
                   onSuccess={async (_, { exchangeId }) => {
