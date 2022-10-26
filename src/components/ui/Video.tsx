@@ -1,7 +1,13 @@
 import { Loading } from "@bosonprotocol/react-kit";
 import { VideoCamera as VideoIcon, VideoCameraSlash } from "phosphor-react";
-import { useEffect, useState, VideoHTMLAttributes } from "react";
-import styled from "styled-components";
+import React, {
+  ReactElement,
+  ReactNode,
+  useEffect,
+  useState,
+  VideoHTMLAttributes
+} from "react";
+import styled, { css } from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
@@ -10,13 +16,18 @@ import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
 import { buttonText } from "./styles";
 import Typography from "./Typography";
 
-const VideoWrapper = styled.div`
+const VideoWrapper = styled.div<{ $hasOnClick?: boolean }>`
   overflow: hidden;
   position: relative;
   z-index: ${zIndex.OfferCard};
   height: 0;
   padding-top: 120%;
   font-size: inherit;
+  ${({ $hasOnClick }) =>
+    $hasOnClick &&
+    css`
+      cursor: pointer;
+    `}
 
   > video,
   > div[data-testid="video"] {
@@ -67,11 +78,12 @@ const VideoPlaceholder = styled.div`
 
 interface IVideo {
   src: string;
-  children?: React.ReactNode;
+  children?: ReactNode;
   dataTestId?: string;
   showPlaceholderText?: boolean;
   noPreload?: boolean;
   videoProps?: VideoHTMLAttributes<HTMLElement>;
+  componentWhileLoading?: () => ReactElement;
 }
 const Video: React.FC<IVideo & React.HTMLAttributes<HTMLDivElement>> = ({
   src,
@@ -80,6 +92,7 @@ const Video: React.FC<IVideo & React.HTMLAttributes<HTMLDivElement>> = ({
   showPlaceholderText = true,
   noPreload = false,
   videoProps,
+  componentWhileLoading: ComponentWhileLoading,
   ...rest
 }) => {
   const [isLoaded, setIsLoaded] = useState<boolean>(noPreload);
@@ -88,7 +101,6 @@ const Video: React.FC<IVideo & React.HTMLAttributes<HTMLDivElement>> = ({
     noPreload ? src : null
   );
   const ipfsMetadataStorage = useIpfsStorage();
-
   useEffect(() => {
     async function fetchData(src: string) {
       if (ipfsMetadataStorage && !src?.includes("undefined")) {
@@ -126,6 +138,9 @@ const Video: React.FC<IVideo & React.HTMLAttributes<HTMLDivElement>> = ({
   }, [videoSrc]);
 
   if (!isLoaded && !isError) {
+    if (ComponentWhileLoading) {
+      return <ComponentWhileLoading />;
+    }
     return (
       <VideoWrapper {...rest}>
         <VideoPlaceholder>
@@ -159,7 +174,7 @@ const Video: React.FC<IVideo & React.HTMLAttributes<HTMLDivElement>> = ({
         videoSrc.substring("data:application/octet-stream;base64,".length)
       : videoSrc;
   return (
-    <VideoWrapper {...rest}>
+    <VideoWrapper {...rest} $hasOnClick={!!rest.onClick}>
       {children || ""}
       {videoSrc && (
         <VideoContainer

@@ -117,7 +117,9 @@ function getProductV1Metadata({
     uuid: offerUuid,
     name: productInformation.productTitle,
     description: `${productInformation.description}\n\nTerms for the Boson rNFT Voucher: ${licenseUrl}`,
-    animationUrl,
+    animationUrl: animationUrl.startsWith("ipfs://")
+      ? `${CONFIG.ipfsGateway}${animationUrl.substring("ipfs://".length)}`
+      : animationUrl,
     externalUrl,
     licenseUrl,
     image: productMainImageLink ? productMainImageLink : "",

@@ -99,6 +99,9 @@ export default function OfferDetail() {
                 src={animationUrl}
                 dataTestId="offerAnimationUrl"
                 videoProps={{ muted: true, loop: true, autoPlay: true }}
+                componentWhileLoading={() => (
+                  <Image src={offerImg} dataTestId="offerImage" />
+                )}
               />
             ) : (
               <Image src={offerImg} dataTestId="offerImage" />

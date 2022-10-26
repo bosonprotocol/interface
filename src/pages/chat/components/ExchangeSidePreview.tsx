@@ -18,6 +18,7 @@ import MultiSteps from "../../../components/step/MultiSteps";
 import Button from "../../../components/ui/Button";
 import Image from "../../../components/ui/Image";
 import Typography from "../../../components/ui/Typography";
+import Video from "../../../components/ui/Video";
 import { UrlParameters } from "../../../lib/routing/parameters";
 import { BosonRoutes } from "../../../lib/routing/routes";
 import { breakpoint } from "../../../lib/styles/breakpoint";
@@ -300,14 +301,36 @@ export default function ExchangeSidePreview({
     new Date().getTime(),
     "day"
   );
+  const animationUrl = exchange?.offer.metadata.animationUrl || "";
   return (
     <Container $disputeOpen={disputeOpen}>
-      <StyledImage
-        src={exchange?.offer.metadata.imageUrl}
-        alt="exchange image"
-        dataTestId="exchange-image"
-        onClick={handleExchangeImageOnClick}
-      />
+      {animationUrl ? (
+        <Video
+          src={animationUrl}
+          dataTestId="exchangeAnimationUrl"
+          onClick={handleExchangeImageOnClick}
+          videoProps={{
+            muted: true,
+            loop: true,
+            autoPlay: true
+          }}
+          componentWhileLoading={() => (
+            <StyledImage
+              src={exchange?.offer.metadata.imageUrl}
+              alt="exchange image"
+              dataTestId="exchange-image"
+              onClick={handleExchangeImageOnClick}
+            />
+          )}
+        />
+      ) : (
+        <StyledImage
+          src={exchange?.offer.metadata.imageUrl}
+          alt="exchange image"
+          dataTestId="exchange-image"
+          onClick={handleExchangeImageOnClick}
+        />
+      )}
       {isInDispute && (
         <InfoMessage>{`${daysLeftToResolveDispute} / ${totalDaysToResolveDispute} days left to resolve dispute`}</InfoMessage>
       )}

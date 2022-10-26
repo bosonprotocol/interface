@@ -48,6 +48,7 @@ interface Props {
         }
     )[];
     exchange: Exchange;
+    animationUrl: string;
     image: string;
     name: string;
   };

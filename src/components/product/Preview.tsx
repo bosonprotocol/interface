@@ -241,6 +241,9 @@ export default function Preview({
                     src={animationUrl}
                     dataTestId="offerAnimationUrl"
                     videoProps={{ muted: true, loop: true, autoPlay: true }}
+                    componentWhileLoading={() => (
+                      <Image src={thumbnailImg} dataTestId="offerImage" />
+                    )}
                   />
                 ) : (
                   <Image src={thumbnailImg} dataTestId="offerImage" />
