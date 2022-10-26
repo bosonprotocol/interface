@@ -210,7 +210,7 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
       if (isMetaTx) {
         tx = await escalateDisputeWithMetaTx(coreSDK, exchange.id);
       } else {
-        tx = await await coreSDK.escalateDispute(exchange.id);
+        tx = await coreSDK.escalateDispute(exchange.id);
       }
       showModal("TRANSACTION_SUBMITTED", {
         action: "Escalate dispute",

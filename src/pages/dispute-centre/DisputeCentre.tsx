@@ -258,7 +258,7 @@ function DisputeCentre() {
                   if (isMetaTx) {
                     tx = await raiseDisputeWithMetaTx(coreSDK, exchange.id);
                   } else {
-                    tx = await await coreSDK.raiseDispute(exchange.id);
+                    tx = await coreSDK.raiseDispute(exchange.id);
                   }
                   showModal("TRANSACTION_SUBMITTED", {
                     action: "Raise dispute",

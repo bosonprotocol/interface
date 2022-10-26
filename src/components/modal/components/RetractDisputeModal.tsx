@@ -81,7 +81,7 @@ export default function RetractDisputeModal({
               if (isMetaTx) {
                 tx = await retractDisputeWithMetaTx(coreSDK, exchangeId);
               } else {
-                tx = await await coreSDK.retractDispute(exchangeId);
+                tx = await coreSDK.retractDispute(exchangeId);
               }
               showModal("TRANSACTION_SUBMITTED", {
                 action: "Retract dispute",
