@@ -1,5 +1,9 @@
+import { TransactionResponse } from "@bosonprotocol/common";
+import { CoreSDK } from "@bosonprotocol/react-kit";
+import { BigNumberish } from "ethers";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { useAccount } from "wagmi";
 
 import { CONFIG } from "../../../lib/config";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
@@ -21,6 +25,26 @@ interface Props {
   refetch: () => void;
 }
 
+async function retractDisputeWithMetaTx(
+  coreSdk: CoreSDK,
+  exchangeId: BigNumberish
+): Promise<TransactionResponse> {
+  const nonce = Date.now();
+  const { r, s, v, functionName, functionSignature } =
+    await coreSdk.signMetaTxRetractDispute({
+      exchangeId,
+      nonce
+    });
+  return coreSdk.relayMetaTransaction({
+    functionName,
+    functionSignature,
+    sigR: r,
+    sigS: s,
+    sigV: v,
+    nonce
+  });
+}
+
 export default function RetractDisputeModal({
   hideModal,
   exchangeId,
@@ -30,6 +54,7 @@ export default function RetractDisputeModal({
 }: Props) {
   const coreSDK = useCoreSDK();
   const { showModal } = useModal();
+  const { address } = useAccount();
   const [retractDisputeError, setRetractDisputeError] = useState<Error | null>(
     null
   );
@@ -50,8 +75,14 @@ export default function RetractDisputeModal({
           onClick={async () => {
             try {
               setRetractDisputeError(null);
+              let tx: TransactionResponse;
               showModal("WAITING_FOR_CONFIRMATION");
-              const tx = await coreSDK.retractDispute(exchangeId);
+              const isMetaTx = Boolean(coreSDK?.isMetaTxConfigSet && address);
+              if (isMetaTx) {
+                tx = await retractDisputeWithMetaTx(coreSDK, exchangeId);
+              } else {
+                tx = await await coreSDK.retractDispute(exchangeId);
+              }
               showModal("TRANSACTION_SUBMITTED", {
                 action: "Retract dispute",
                 txHash: tx.hash
