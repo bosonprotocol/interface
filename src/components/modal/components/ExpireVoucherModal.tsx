@@ -1,4 +1,4 @@
-import { ExpireButton, Provider } from "@bosonprotocol/react-kit";
+import { ExpireButton, Provider, subgraph } from "@bosonprotocol/react-kit";
 import qs from "query-string";
 import { useState } from "react";
 import styled from "styled-components";
@@ -9,6 +9,7 @@ import { AccountQueryParameters } from "../../../lib/routing/parameters";
 import { BosonRoutes } from "../../../lib/routing/routes";
 import { colors } from "../../../lib/styles/colors";
 import { getBuyerCancelPenalty } from "../../../lib/utils/getPrices";
+import { useAddPendingTransaction } from "../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
@@ -59,6 +60,7 @@ interface Props {
 }
 export default function ExpireVoucherModal({ exchange }: Props) {
   const coreSDK = useCoreSDK();
+  const addPendingTransaction = useAddPendingTransaction();
   const { hideModal, showModal } = useModal();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [expireError, setExpireError] = useState<Error | null>(null);
@@ -204,10 +206,19 @@ export default function ExpireVoucherModal({ exchange }: Props) {
               setExpireError(null);
               showModal("WAITING_FOR_CONFIRMATION");
             }}
-            onPendingTransaction={(hash) => {
+            onPendingTransaction={(hash, isMetaTx) => {
               showModal("TRANSACTION_SUBMITTED", {
                 action: "Expire",
                 txHash: hash
+              });
+              addPendingTransaction({
+                type: subgraph.EventType.VoucherExpired,
+                hash,
+                isMetaTx,
+                accountType: "Buyer",
+                exchange: {
+                  id: exchange.id
+                }
               });
             }}
             onSuccess={async (_, { exchangeId }) => {
