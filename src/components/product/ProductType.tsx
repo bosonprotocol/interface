@@ -26,7 +26,7 @@ import {
   getLensWebsite
 } from "../modal/components/CreateProfile/Lens/utils";
 import { useModal } from "../modal/useModal";
-import Button from "../ui/Button";
+import BosonButton from "../ui/BosonButton";
 import Grid from "../ui/Grid";
 import GridContainer from "../ui/GridContainer";
 import Image from "../ui/Image";
@@ -382,9 +382,13 @@ export default function ProductType({
           </FormField>
         </GridContainer>
         <ProductButtonGroup>
-          <Button theme="primary" type="submit" disabled={nextIsDisabled}>
+          <BosonButton
+            variant="primaryFill"
+            type="submit"
+            disabled={nextIsDisabled}
+          >
             Next
-          </Button>
+          </BosonButton>
         </ProductButtonGroup>
       </Container>
     </ContainerProductPage>

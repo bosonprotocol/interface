@@ -1,4 +1,4 @@
-import Button from "../../ui/Button";
+import BosonButton from "../../ui/BosonButton";
 import Grid from "../../ui/Grid";
 import Typography from "../../ui/Typography";
 
@@ -17,12 +17,12 @@ export default function CreateProductDraft({ chooseNew, chooseDraft }: Props) {
         </Typography>
       </Grid>
       <Grid flexDirection="row" justifyContent="space-between">
-        <Button theme="bosonPrimary" onClick={chooseDraft}>
+        <BosonButton variant="primaryFill" onClick={chooseDraft}>
           Edit draft
-        </Button>
-        <Button theme="bosonSecondary" onClick={chooseNew}>
+        </BosonButton>
+        <BosonButton variant="accentInverted" onClick={chooseNew}>
           Start Fresh
-        </Button>
+        </BosonButton>
       </Grid>
     </>
   );

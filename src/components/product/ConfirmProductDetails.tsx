@@ -14,7 +14,7 @@ import { ChatInitializationStatus } from "../../lib/utils/hooks/chat/useChatStat
 import { useChatContext } from "../../pages/chat/ChatProvider/ChatContext";
 import { FormField } from "../form";
 import Tooltip from "../tooltip/Tooltip";
-import Button from "../ui/Button";
+import BosonButton from "../ui/BosonButton";
 import Grid from "../ui/Grid";
 import Image from "../ui/Image";
 import Typography from "../ui/Typography";
@@ -161,6 +161,7 @@ export default function ConfirmProductDetails({
   const { offerValidityPeriod, redemptionPeriod, tokenGatedOffer } =
     commonTermsOfSale;
   // TODO: check if profile info is displayed correctly while using a lens profile
+
   return (
     <ConfirmProductDetailsContainer>
       <SectionTitle tag="h2">Confirm Product Details</SectionTitle>
@@ -517,6 +518,32 @@ export default function ConfirmProductDetails({
                   </FormField>
                 </FormFieldContainer>
               </GridBox>
+              <GridBox $minWidth="16rem">
+                <FormFieldContainer
+                  style={{
+                    marginBottom: 0
+                  }}
+                >
+                  <FormField title="Buyer Cancel Penalty" required>
+                    <ContentValue tag="p">
+                      {values?.termsOfExchange?.buyerCancellationPenalty || 0}%
+                    </ContentValue>
+                  </FormField>
+                </FormFieldContainer>
+              </GridBox>
+              <GridBox>
+                <FormFieldContainer
+                  style={{
+                    marginBottom: 0
+                  }}
+                >
+                  <FormField title="Seller Deposit" required>
+                    <ContentValue tag="p">
+                      {values?.termsOfExchange?.sellerDeposit || 0}%
+                    </ContentValue>
+                  </FormField>
+                </FormFieldContainer>
+              </GridBox>
             </Grid>
           </TermsOfSaleContent>
         </Collapse>
@@ -558,8 +585,8 @@ export default function ConfirmProductDetails({
         </InitializeChatContainer>
       )}
       <ConfirmProductDetailsButtonGroup>
-        <Button
-          theme="primary"
+        <BosonButton
+          variant="primaryFill"
           type="submit"
           disabled={
             !["INITIALIZED", "ALREADY_INITIALIZED"].includes(
@@ -572,10 +599,14 @@ export default function ConfirmProductDetails({
           ) : (
             "Confirm"
           )}
-        </Button>
-        <Button theme="secondary" type="button" onClick={handleOpenPreview}>
+        </BosonButton>
+        <BosonButton
+          variant="accentInverted"
+          type="button"
+          onClick={handleOpenPreview}
+        >
           Preview product detail page
-        </Button>
+        </BosonButton>
       </ConfirmProductDetailsButtonGroup>
     </ConfirmProductDetailsContainer>
   );

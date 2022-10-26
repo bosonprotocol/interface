@@ -7,6 +7,7 @@ import { colors } from "../../../../../../../lib/styles/colors";
 import { useBuyers } from "../../../../../../../lib/utils/hooks/useBuyers";
 import { Exchange } from "../../../../../../../lib/utils/hooks/useExchanges";
 import { Select } from "../../../../../../form";
+import BosonButton from "../../../../../../ui/BosonButton";
 import Button from "../../../../../../ui/Button";
 import Grid from "../../../../../../ui/Grid";
 import Typography from "../../../../../../ui/Typography";
@@ -93,13 +94,13 @@ export default function MakeAProposalStep({
           )}
       </Grid>
       <ButtonsSection>
-        <Button
-          theme="primary"
+        <BosonButton
+          variant="primaryFill"
           onClick={() => onNextClick()}
           disabled={!isValid}
         >
           Next
-        </Button>
+        </BosonButton>
         {!isModal && (
           <Button
             theme="outline"

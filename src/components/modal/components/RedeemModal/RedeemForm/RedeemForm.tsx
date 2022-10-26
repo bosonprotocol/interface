@@ -1,5 +1,6 @@
 import { useBreakpoints } from "../../../../../lib/utils/hooks/useBreakpoints";
 import { Input } from "../../../../form";
+import BosonButton from "../../../../ui/BosonButton";
 import Button from "../../../../ui/Button";
 import Grid from "../../../../ui/Grid";
 import Typography from "../../../../ui/Typography";
@@ -100,14 +101,13 @@ export default function RedeemForm({
         </Grid>
       </Grid>
       <Grid padding="2rem 0 0 0" justifyContent="space-between">
-        <Button
-          theme="primary"
+        <BosonButton
+          variant="primaryFill"
           onClick={() => onNextClick()}
           disabled={!isValid}
-          withBosonStyle
         >
           Next
-        </Button>
+        </BosonButton>
         <Button theme="outline" onClick={() => onBackClick()}>
           Back
         </Button>

@@ -7,7 +7,7 @@ import SimpleError from "../../components/error/SimpleError";
 import { Input, Select, Upload } from "../../components/form";
 import InputColor from "../../components/form/InputColor";
 import { SelectDataProps } from "../../components/form/types";
-import Button from "../../components/ui/Button";
+import BosonButton from "../../components/ui/BosonButton";
 import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
 import { colors } from "../../lib/styles/colors";
@@ -610,13 +610,13 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                             );
                           }
                         )}
-                        <Button
+                        <BosonButton
                           disabled={!allFilledOut}
                           onClick={addFooterLink}
-                          theme="primary"
+                          variant="primaryFill"
                         >
                           + Add
-                        </Button>
+                        </BosonButton>
                       </>
                     )}
                   </Grid>
@@ -731,9 +731,9 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
           </CollapseWithTrigger>
         </Grid>
         {hasSubmitError && <SimpleError />}
-        <Button type="submit" theme="primary" disabled={!isValid}>
+        <BosonButton type="submit" variant="primaryFill" disabled={!isValid}>
           Create
-        </Button>
+        </BosonButton>
       </Grid>
       <iframe
         src={`${window.location.origin}/#/?${queryParams}`}

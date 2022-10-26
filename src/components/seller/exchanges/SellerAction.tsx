@@ -1,16 +1,22 @@
-import { exchanges as ExchangesKit, subgraph } from "@bosonprotocol/react-kit";
+import {
+  ButtonSize,
+  exchanges as ExchangesKit,
+  subgraph
+} from "@bosonprotocol/react-kit";
 import { Chat } from "phosphor-react";
 import { generatePath, NavigateOptions, Path } from "react-router-dom";
+import styled from "styled-components";
 
 import { UrlParameters } from "../../../lib/routing/parameters";
 import { BosonRoutes } from "../../../lib/routing/routes";
+import { colors } from "../../../lib/styles/colors";
+import { isExchangeCompletableBySeller } from "../../../lib/utils/exchange";
 import { useDisputeSubStatusInfo } from "../../../lib/utils/hooks/useDisputeSubStatusInfo";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { SellerRolesProps } from "../../../lib/utils/hooks/useSellerRoles";
 import { useModal } from "../../modal/useModal";
-import Button from "../../ui/Button";
+import BosonButton from "../../ui/BosonButton";
 import Grid from "../../ui/Grid";
-import { isCompletable } from "./SellerExchangeTable";
 
 const generatePathAndNavigate = ({
   exchangeId,
@@ -25,6 +31,19 @@ const generatePathAndNavigate = ({
   navigate({ pathname });
 };
 
+const StyledBosonButton = styled(BosonButton)`
+  background: transparent;
+  border-color: ${colors.orange};
+  color: ${colors.orange};
+  border: 2px solid ${colors.orange};
+  &:hover {
+    background: ${colors.orange};
+    border-color: ${colors.orange};
+    color: ${colors.white};
+    border: 2px solid ${colors.orange};
+  }
+`;
+
 export const SellerResolveDisputeButton = ({
   exchange,
   navigate,
@@ -37,9 +56,10 @@ export const SellerResolveDisputeButton = ({
   const { status } = useDisputeSubStatusInfo(exchange);
   if (!exchange || status !== "Resolving") {
     return (
-      <Button
-        theme="ghostSecondary"
-        size="small"
+      <BosonButton
+        variant="accentInverted"
+        showBorder={false}
+        size={ButtonSize.Small}
         onClick={() => {
           if (exchange?.id) {
             generatePathAndNavigate({ exchangeId: exchange?.id, navigate });
@@ -47,14 +67,14 @@ export const SellerResolveDisputeButton = ({
         }}
       >
         Chat <Chat size={14} />
-      </Button>
+      </BosonButton>
     );
   }
 
   return (
-    <Button
-      theme="primary"
-      size="small"
+    <BosonButton
+      variant="primaryFill"
+      size={ButtonSize.Small}
       disabled={!sellerRoles?.isOperator}
       tooltip="This action is restricted to only the operator wallet"
       onClick={() => {
@@ -64,7 +84,7 @@ export const SellerResolveDisputeButton = ({
       }}
     >
       Resolve dispute
-    </Button>
+    </BosonButton>
   );
 };
 
@@ -87,10 +107,10 @@ export const SellerActionButton = ({
   }
   return (
     <Grid justifyContent="flex-end" gap="1rem">
-      {exchange && isCompletable(exchange) && (
-        <Button
-          theme="bosonPrimary"
-          size="small"
+      {exchange && isExchangeCompletableBySeller(exchange) && (
+        <BosonButton
+          variant="primaryFill"
+          size={ButtonSize.Small}
           disabled={!sellerRoles?.isOperator}
           tooltip="This action is restricted to only the operator wallet"
           onClick={() => {
@@ -106,11 +126,12 @@ export const SellerActionButton = ({
           }}
         >
           Complete exchange
-        </Button>
+        </BosonButton>
       )}
-      <Button
-        theme="ghostSecondary"
-        size="small"
+      <BosonButton
+        variant="accentInverted"
+        showBorder={false}
+        size={ButtonSize.Small}
         onClick={() => {
           if (exchange?.id) {
             generatePathAndNavigate({ exchangeId: exchange?.id, navigate });
@@ -118,11 +139,12 @@ export const SellerActionButton = ({
         }}
       >
         Chat <Chat size={14} />
-      </Button>
+      </BosonButton>
       {status === subgraph.ExchangeState.Committed && (
-        <Button
-          theme="orangeInverse"
-          size="small"
+        <StyledBosonButton
+          variant="accentInverted"
+          showBorder={false}
+          size={ButtonSize.Small}
           disabled={!sellerRoles?.isOperator}
           tooltip="This action is restricted to only the operator wallet"
           onClick={() => {
@@ -141,7 +163,7 @@ export const SellerActionButton = ({
           }}
         >
           Revoke
-        </Button>
+        </StyledBosonButton>
       )}
     </Grid>
   );

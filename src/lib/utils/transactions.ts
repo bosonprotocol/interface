@@ -91,22 +91,24 @@ export const buildTransactionLabelAndPath = (
         label: `Voided offer with id: ${offerId}`,
         pathname: offerPath
       };
-
     case subgraph.EventType.VoucherCanceled:
       return {
         label: `Canceled offer with id: ${offerId}`,
         pathname: offerPath
       };
-
     case subgraph.EventType.VoucherRedeemed:
       return {
         label: `Redeemed offer with id: ${offerId}`,
         pathname: offerPath
       };
-
     case subgraph.EventType.VoucherRevoked:
       return {
         label: `Revoked voucher with id: ${exchangeOrDisputeId}`,
+        pathname: exchangeOrDisputePath
+      };
+    case subgraph.EventType.VoucherExpired:
+      return {
+        label: `Expired voucher with id: ${exchangeOrDisputeId}`,
         pathname: exchangeOrDisputePath
       };
     case subgraph.EventType.SellerUpdated:

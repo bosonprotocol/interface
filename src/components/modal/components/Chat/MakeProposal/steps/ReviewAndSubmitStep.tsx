@@ -7,7 +7,7 @@ import { useChatContext } from "../../../../../../pages/chat/ChatProvider/ChatCo
 import SimpleError from "../../../../../error/SimpleError";
 import UploadedFiles from "../../../../../form/Upload/UploadedFiles";
 import { Spinner } from "../../../../../loading/Spinner";
-import Button from "../../../../../ui/Button";
+import BosonButton from "../../../../../ui/BosonButton";
 import Grid from "../../../../../ui/Grid";
 import Typography from "../../../../../ui/Typography";
 import InitializeChatWithSuccess from "../../components/InitializeChatWithSuccess";
@@ -20,6 +20,19 @@ const ButtonsSection = styled.div`
   padding-top: 2rem;
   display: flex;
   justify-content: space-between;
+`;
+
+const StyledButtonsSection = styled(BosonButton)<{ isModal: boolean }>`
+  background: ${({ isModal }) => !isModal && "transparent"};
+  border-color: ${({ isModal }) => !isModal && colors.orange};
+  border: ${({ isModal }) => !isModal && `2px solid ${colors.orange}`};
+  color: ${({ isModal }) => !isModal && colors.orange};
+  &:hover {
+    background: ${({ isModal }) => !isModal && colors.orange};
+    border-color: ${({ isModal }) => !isModal && colors.orange};
+    border: ${({ isModal }) => !isModal && `2px solid ${colors.orange}`};
+    color: ${({ isModal }) => !isModal && colors.white};
+  }
 `;
 
 interface Props {
@@ -91,18 +104,19 @@ export default function ReviewAndSubmitStep({
       )}
       {submitError && <SimpleError />}
       <ButtonsSection>
-        <Button
-          theme="primary"
+        <StyledButtonsSection
+          variant="primaryFill"
           type="submit"
+          isModal={isModal}
           disabled={
             !isValid ||
-            (!isChatInitialized && proposalTypeField.value) ||
+            (!isChatInitialized && !!proposalTypeField.value) ||
             isSubmitting
           }
         >
           {isModal ? "Send Proposal" : "Raise Dispute"}
           {isSubmitting && <Spinner />}
-        </Button>
+        </StyledButtonsSection>
       </ButtonsSection>
     </>
   );

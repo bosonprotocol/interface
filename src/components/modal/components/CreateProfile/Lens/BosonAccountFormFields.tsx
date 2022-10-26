@@ -6,7 +6,7 @@ import SimpleError from "../../../../error/SimpleError";
 import { FormField, Input } from "../../../../form";
 import Error from "../../../../form/Error";
 import Tooltip from "../../../../tooltip/Tooltip";
-import Button from "../../../../ui/Button";
+import BosonButton from "../../../../ui/BosonButton";
 import Grid from "../../../../ui/Grid";
 import Typography from "../../../../ui/Typography";
 
@@ -106,11 +106,15 @@ export default function BosonAccountFormFields({
         </Grid>
       )}
       <Grid justifyContent="flex-start" gap="2rem">
-        <Button theme="bosonSecondary" type="button" onClick={onBackClick}>
+        <BosonButton
+          variant="accentInverted"
+          type="button"
+          onClick={onBackClick}
+        >
           Back
-        </Button>
-        <Button
-          theme="bosonPrimary"
+        </BosonButton>
+        <BosonButton
+          variant="primaryFill"
           type="submit"
           disabled={
             !!fieldSecondaryRoyalties.value &&
@@ -119,7 +123,7 @@ export default function BosonAccountFormFields({
           }
         >
           Next
-        </Button>
+        </BosonButton>
       </Grid>
     </>
   );

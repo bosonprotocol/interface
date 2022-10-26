@@ -1,3 +1,4 @@
+import { ButtonSize } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { ClockClockwise } from "phosphor-react";
 import React, { useMemo } from "react";
@@ -9,7 +10,7 @@ import { getDateTimestamp } from "../../../../lib/utils/getDateTimestamp";
 import { useDisputes } from "../../../../lib/utils/hooks/useDisputes";
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import Button from "../../../ui/Button";
+import BosonButton from "../../../ui/BosonButton";
 import Grid from "../../../ui/Grid";
 import Image from "../../../ui/Image";
 import SellerID from "../../../ui/SellerID";
@@ -82,7 +83,7 @@ const DisputeEndDate = styled(ClockClockwise)`
   font-weight: 400;
 `;
 
-const StyledDisputeButton = styled(Button)`
+const StyledDisputeButton = styled(BosonButton)`
   padding-left: 0;
   div {
     font-weight: 600;
@@ -90,7 +91,7 @@ const StyledDisputeButton = styled(Button)`
   }
 `;
 
-const StyledChatButton = styled(Button)`
+const StyledChatButton = styled(BosonButton)`
   font-size: 0.875rem;
   div {
     font-weight: 600;
@@ -165,8 +166,9 @@ function DisputeListMobileElement({ exchange }: { exchange: Exchange }) {
       </Grid>
       <Grid margin="0.9375rem 0 0.9375rem 0">
         <StyledDisputeButton
-          theme="orange"
-          size="small"
+          variant="secondaryInverted"
+          style={{ borderColor: colors.border }}
+          size={ButtonSize.Small}
           onClick={() => {
             showModal(
               "ESCALATE_MODAL",
@@ -183,8 +185,8 @@ function DisputeListMobileElement({ exchange }: { exchange: Exchange }) {
         </StyledDisputeButton>
         <StyledChatButton
           type="button"
-          theme="primary"
-          size="small"
+          variant="primaryFill"
+          size={ButtonSize.Small}
           onClick={() => {
             navigate({
               pathname: `${BosonRoutes.Chat}/${exchange.id}`

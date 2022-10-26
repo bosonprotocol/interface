@@ -15,7 +15,7 @@ import {
 } from "../../../components/modal/useModal";
 import Price from "../../../components/price";
 import MultiSteps from "../../../components/step/MultiSteps";
-import Button from "../../../components/ui/Button";
+import BosonButton from "../../../components/ui/BosonButton";
 import Image from "../../../components/ui/Image";
 import Typography from "../../../components/ui/Typography";
 import Video from "../../../components/ui/Video";
@@ -25,9 +25,14 @@ import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
 import { zIndex } from "../../../lib/styles/zIndex";
 import { Offer } from "../../../lib/types/offer";
+import {
+  isExchangeCompletableByBuyer,
+  isExchangeCompletableBySeller
+} from "../../../lib/utils/exchange";
 import { useDisputes } from "../../../lib/utils/hooks/useDisputes";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { useSellerRoles } from "../../../lib/utils/hooks/useSellerRoles";
 import ExchangeTimeline from "./ExchangeTimeline";
 
 const Container = styled.div<{ $disputeOpen: boolean }>`
@@ -280,6 +285,39 @@ export default function ExchangeSidePreview({
       })
     });
   }, [exchange, navigate]);
+  const sellerRoles = useSellerRoles(iAmTheBuyer ? "" : offer?.seller.id || "");
+  const CompleteExchangeButton = useCallback(() => {
+    if (!exchange) {
+      return null;
+    }
+    const isVisible = iAmTheBuyer
+      ? isExchangeCompletableByBuyer(exchange)
+      : isExchangeCompletableBySeller(exchange);
+    if (!isVisible) {
+      return null;
+    }
+    const isDisabled = iAmTheBuyer ? false : sellerRoles.isOperator;
+    return (
+      <BosonButton
+        variant="primaryFill"
+        disabled={isDisabled}
+        onClick={() =>
+          showModal(
+            modalTypes.COMPLETE_EXCHANGE,
+            {
+              title: "Complete Confirmation",
+              exchange: exchange,
+              refetch: refetchItAll
+            },
+            "xs"
+          )
+        }
+      >
+        Complete exchange
+      </BosonButton>
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [exchange, iAmTheBuyer, sellerRoles.isOperator]);
   if (!exchange || !offer) {
     return null;
   }
@@ -363,8 +401,8 @@ export default function ExchangeSidePreview({
       </Section>
       {isInDispute && iAmTheBuyer && !isEscalated && !isRetracted ? (
         <CTASection>
-          <Button
-            theme="secondary"
+          <BosonButton
+            variant="accentInverted"
             onClick={() =>
               showModal(
                 "RETRACT_DISPUTE",
@@ -380,9 +418,10 @@ export default function ExchangeSidePreview({
             }
           >
             Retract
-          </Button>
-          <Button
-            theme="orange"
+          </BosonButton>
+          <BosonButton
+            variant="secondaryInverted"
+            showBorder={false}
             onClick={() =>
               showModal(
                 "ESCALATE_MODAL",
@@ -396,12 +435,13 @@ export default function ExchangeSidePreview({
             }
           >
             Escalate
-          </Button>
+          </BosonButton>
+          <CompleteExchangeButton />
         </CTASection>
       ) : isInRedeemed && iAmTheBuyer ? (
         <CTASection>
-          <Button
-            theme="primary"
+          <BosonButton
+            variant="primaryFill"
             onClick={() =>
               showModal(
                 "RAISE_DISPUTE",
@@ -420,9 +460,14 @@ export default function ExchangeSidePreview({
             }
           >
             Raise a Problem
-          </Button>
+          </BosonButton>
+          <CompleteExchangeButton />
         </CTASection>
-      ) : null}
+      ) : (
+        <CTASection>
+          <CompleteExchangeButton />
+        </CTASection>
+      )}
       <HistorySection>
         <ExchangeTimeline exchange={exchange} showDispute={true}>
           <h4>History</h4>

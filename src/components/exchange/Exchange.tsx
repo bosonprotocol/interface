@@ -152,7 +152,8 @@ export default function Exchange({ offer, exchange, reload }: Props) {
           isCTAVisible: isBuyer,
           disputeButtonConfig: {
             onClick: handleDispute,
-            variant: "secondaryInverted" as const
+            variant: "secondaryInverted" as const,
+            showBorder: false
           }
         };
       }

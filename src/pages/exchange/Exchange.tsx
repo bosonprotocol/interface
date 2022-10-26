@@ -54,9 +54,11 @@ export default function Exchange() {
   const sellerAvailableDeposit = sellers?.[0]?.funds?.find(
     (fund) => fund.token.address === offer?.exchangeToken.address
   )?.availableAmount;
-  const offerRequiredDeposit = offer?.sellerDeposit;
+  const offerRequiredDeposit = Number(offer?.sellerDeposit || 0);
   const hasSellerEnoughFunds =
-    Number(sellerAvailableDeposit) >= Number(offerRequiredDeposit);
+    offerRequiredDeposit > 0
+      ? Number(sellerAvailableDeposit) >= offerRequiredDeposit
+      : true;
 
   if (!exchangeId) {
     return null;

@@ -1,7 +1,8 @@
 import {
   BatchCompleteButton,
   CompleteButton,
-  Provider
+  Provider,
+  subgraph
 } from "@bosonprotocol/react-kit";
 import { BigNumberish } from "ethers";
 import { useCallback, useMemo } from "react";
@@ -11,6 +12,7 @@ import { useSigner } from "wagmi";
 
 import { CONFIG } from "../../../lib/config";
 import { Offer } from "../../../lib/types/offer";
+import { useAddPendingTransaction } from "../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 import { poll } from "../../../pages/create-product/utils";
@@ -50,7 +52,7 @@ function CompleteOffer({ offer }: OfferProps) {
     <>
       <CompleteExchangeWrapper>
         <Grid justifyContent="space-between" alignItems="center" gap="1rem">
-          <Grid justifyContent="flex-start" gap="1rem">
+          <Grid justifyContent="flex-start" gap="1rem" style={{ flex: "1 1" }}>
             <Image
               src={offer?.metadata?.image}
               showPlaceholderText={false}
@@ -98,6 +100,7 @@ export default function CompleteExchange({
   refetch
 }: Props) {
   const coreSdk = useCoreSDK();
+  const addPendingTransaction = useAddPendingTransaction();
   const { data: signer } = useSigner();
   const { hideModal, showModal } = useModal();
 
@@ -232,10 +235,19 @@ export default function CompleteExchange({
             onPendingSignature={() => {
               showModal("WAITING_FOR_CONFIRMATION");
             }}
-            onPendingTransaction={(hash) => {
+            onPendingTransaction={(hash, isMetaTx) => {
               showModal("TRANSACTION_SUBMITTED", {
                 action: "Complete",
                 txHash: hash
+              });
+              addPendingTransaction({
+                type: subgraph.EventType.ExchangeCompleted,
+                hash,
+                isMetaTx,
+                accountType: "Seller",
+                exchange: {
+                  id: exchange.id
+                }
               });
             }}
             onSuccess={(receipt) => {
@@ -271,10 +283,23 @@ export default function CompleteExchange({
             onPendingSignature={() => {
               showModal("WAITING_FOR_CONFIRMATION");
             }}
-            onPendingTransaction={(hash) => {
+            onPendingTransaction={(hash, isMetaTx) => {
               showModal("TRANSACTION_SUBMITTED", {
                 action: "Complete",
                 txHash: hash
+              });
+              exchanges.forEach((exchange) => {
+                if (exchange) {
+                  addPendingTransaction({
+                    type: subgraph.EventType.ExchangeCompleted,
+                    hash,
+                    isMetaTx,
+                    accountType: "Seller",
+                    exchange: {
+                      id: exchange.id
+                    }
+                  });
+                }
               });
             }}
             onSuccess={(receipt) => {

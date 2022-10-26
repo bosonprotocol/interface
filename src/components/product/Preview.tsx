@@ -23,7 +23,7 @@ import {
 } from "../detail/Detail.style";
 import DetailSlider from "../detail/DetailSlider";
 import DetailTable from "../detail/DetailTable";
-import Button from "../ui/Button";
+import BosonButton from "../ui/BosonButton";
 import Typography from "../ui/Typography";
 import Video from "../ui/Video";
 import { ProductButtonGroup } from "./Product.styles";
@@ -327,12 +327,16 @@ export default function Preview({
         </DetailWrapper>
       </PreviewWrapperContent>
       <ProductButtonGroup>
-        <Button theme="primary" type="submit">
+        <BosonButton variant="primaryFill" type="submit">
           Confirm
-        </Button>
-        <Button theme="secondary" type="button" onClick={handleClosePreview}>
+        </BosonButton>
+        <BosonButton
+          variant="accentInverted"
+          type="button"
+          onClick={handleClosePreview}
+        >
           Back to overview
-        </Button>
+        </BosonButton>
       </ProductButtonGroup>
     </PreviewWrapper>
   );

@@ -1,4 +1,5 @@
 import {
+  ButtonSize,
   CommitButton,
   exchanges,
   Provider,
@@ -22,6 +23,7 @@ import { IPrice } from "../../../lib/utils/convertPrice";
 import { titleCase } from "../../../lib/utils/formatText";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import { getBuyerCancelPenalty } from "../../../lib/utils/getPrices";
+import { useAddPendingTransaction } from "../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { useBuyerSellerAccounts } from "../../../lib/utils/hooks/useBuyerSellerAccounts";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
@@ -36,6 +38,7 @@ import { ModalTypes, ShowModalFn, useModal } from "../../modal/useModal";
 import Price from "../../price/index";
 import { useConvertedPrice } from "../../price/useConvertedPrice";
 import SuccessTransactionToast from "../../toasts/SuccessTransactionToast";
+import BosonButton from "../../ui/BosonButton";
 import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
 import Typography from "../../ui/Typography";
@@ -64,7 +67,7 @@ const StyledPrice = styled(Price)`
   }
 `;
 
-const RedeemButton = styled(Button)`
+const RedeemButton = styled(BosonButton)`
   padding: 1rem;
   height: 3.5rem;
   display: flex;
@@ -194,7 +197,9 @@ export const getOfferDetailData = (
       value: (
         <Typography tag="p">
           {buyerCancelationPenalty}%
-          <small>(${convertedBuyerCancelationPenalty})</small>
+          {convertedPrice?.converted && (
+            <small>(${convertedBuyerCancelationPenalty})</small>
+          )}
         </Typography>
       )
     },
@@ -256,6 +261,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   ] = useState(false);
   const { showModal, hideModal, modalTypes } = useModal();
   const coreSDK = useCoreSDK();
+  const addPendingTransaction = useAddPendingTransaction();
   const { isLteXS } = useBreakpoints();
   const navigate = useKeepQueryParamsNavigate();
   const { address } = useAccount();
@@ -591,10 +597,19 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                     setIsLoading(true);
                     showModal("WAITING_FOR_CONFIRMATION");
                   }}
-                  onPendingTransaction={(hash) => {
+                  onPendingTransaction={(hash, isMetaTx) => {
                     showModal("TRANSACTION_SUBMITTED", {
                       action: "Commit",
                       txHash: hash
+                    });
+                    addPendingTransaction({
+                      type: subgraph.EventType.BuyerCommitted,
+                      hash,
+                      isMetaTx,
+                      accountType: "Buyer",
+                      offer: {
+                        id: offer.id
+                      }
                     });
                   }}
                   onSuccess={async (_, { exchangeId }) => {
@@ -637,8 +652,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
             )}
             {isToRedeem && (
               <RedeemButton
-                theme="bosonPrimary"
-                size="large"
+                variant="primaryFill"
+                size={ButtonSize.Large}
                 disabled={
                   isChainUnsupported ||
                   isLoading ||

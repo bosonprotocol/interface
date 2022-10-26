@@ -1,5 +1,4 @@
 import { exchanges as ExchangesKit, subgraph } from "@bosonprotocol/react-kit";
-import dayjs from "dayjs";
 import {
   CaretDown,
   CaretLeft,
@@ -21,7 +20,7 @@ import styled from "styled-components";
 import { UrlParameters } from "../../../lib/routing/parameters";
 import { BosonRoutes } from "../../../lib/routing/routes";
 import { colors } from "../../../lib/styles/colors";
-import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
+import { isExchangeCompletableBySeller } from "../../../lib/utils/exchange";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { SellerRolesProps } from "../../../lib/utils/hooks/useSellerRoles";
@@ -179,28 +178,6 @@ const Span = styled.span`
   }
 `;
 
-export const isCompletable = (exchange: Exchange) => {
-  let isRedeemedAndFulfillmentPeriodInPast = false;
-
-  const isFulfilled =
-    exchange.redeemedDate &&
-    !exchange.disputedDate &&
-    exchange.offer.disputePeriodDuration &&
-    exchange.state !== subgraph.ExchangeState.Completed;
-
-  if (isFulfilled) {
-    const disputePeriodTime = dayjs(
-      getDateTimestamp(exchange.redeemedDate || "") +
-        getDateTimestamp(exchange.offer.disputePeriodDuration)
-    );
-    isRedeemedAndFulfillmentPeriodInPast = !!dayjs(disputePeriodTime).isBefore(
-      dayjs()
-    );
-  }
-
-  return isRedeemedAndFulfillmentPeriodInPast;
-};
-
 export default function SellerExchangeTable({
   data,
   refetch,
@@ -257,7 +234,7 @@ export default function SellerExchangeTable({
         const status = element ? ExchangesKit.getExchangeState(element) : "";
         return {
           exchangeId: element?.id,
-          isSelectable: element && isCompletable(element),
+          isSelectable: element && isExchangeCompletableBySeller(element),
           image: (
             <Image
               src={element?.offer?.metadata?.image ?? ""}
@@ -400,7 +377,7 @@ export default function SellerExchangeTable({
           const exchange = data?.find(
             (exchange) => exchange?.id === exchangeId
           );
-          if (exchange && isCompletable(exchange)) {
+          if (exchange && isExchangeCompletableBySeller(exchange)) {
             return exchange || null;
           }
 

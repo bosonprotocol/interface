@@ -5,7 +5,7 @@ import styled from "styled-components";
 import Collapse from "../../../components/collapse/Collapse";
 import { colors } from "../../../lib/styles/colors";
 import copyToClipboard from "../../../lib/utils/copyToClipboard";
-import Button from "../../ui/Button";
+import BosonButton from "../../ui/BosonButton";
 import Grid from "../../ui/Grid";
 import Typography from "../../ui/Typography";
 import { ModalProps } from "../ModalContext";
@@ -130,9 +130,13 @@ export default function CustomStore({ ipfsUrl = "", hideModal }: Props) {
         </div>
       </CollapsibleContainer>
       <Grid margin={`${marginBetweenContainers} 0 0 0`}>
-        <Button theme="primary" type="button" onClick={() => hideModal()}>
+        <BosonButton
+          variant="primaryFill"
+          type="button"
+          onClick={() => hideModal()}
+        >
           Done
-        </Button>
+        </BosonButton>
       </Grid>
     </>
   );

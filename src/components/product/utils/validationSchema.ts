@@ -96,8 +96,9 @@ export const productVariantsValidationSchema = Yup.object({
           .min(1, "Must be greater than or equal to 1")
       })
     )
-      .required()
+      .required("Variants are required")
       .min(1, "You have to define at least one variant")
+      .max(12, "Maximum 12 variants per product")
   })
 });
 
