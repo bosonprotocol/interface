@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { ProgressStatus } from "../../types/progressStatus";
-import { blobToBase64 } from "../base64";
+import { fetchIpfsBase64Media } from "../base64";
 import { useIpfsStorage } from "./useIpfsStorage";
 
 export function useGetIpfsImage(src: string) {
@@ -18,15 +18,16 @@ export function useGetIpfsImage(src: string) {
     async function fetchData(src: string) {
       if (ipfsMetadataStorage && !src?.includes("undefined")) {
         setImageStatus(ProgressStatus.LOADING);
-        const fetchPromises = await ipfsMetadataStorage.get(src, false);
-        const [image] = await Promise.all([fetchPromises]);
-        const base64str = await blobToBase64(new Blob([image as BlobPart]));
-
-        if (!String(base64str).includes("base64")) {
-          setImageStatus(ProgressStatus.ERROR);
-        } else {
+        try {
+          const [base64str] = await fetchIpfsBase64Media(
+            [src],
+            ipfsMetadataStorage
+          );
           setImageSrc(base64str as string);
           setImageStatus(ProgressStatus.SUCCESS);
+        } catch (error) {
+          console.error("error in useGetIpfsImage", error);
+          setImageStatus(ProgressStatus.ERROR);
         }
       } else {
         setImageStatus(ProgressStatus.ERROR);

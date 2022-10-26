@@ -56,6 +56,7 @@ export const offerGraphQl = gql`
       id
       name
       description
+      animationUrl
       externalUrl
       licenseUrl
       schemaUrl

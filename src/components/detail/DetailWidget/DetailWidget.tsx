@@ -356,12 +356,19 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   const BASE_MODAL_DATA = useMemo(
     () => ({
       data: OFFER_DETAIL_DATA_MODAL,
+      animationUrl: offer.metadata.animationUrl || "",
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       exchange: exchange!,
       image,
       name
     }),
-    [OFFER_DETAIL_DATA_MODAL, exchange, image, name]
+    [
+      OFFER_DETAIL_DATA_MODAL,
+      exchange,
+      image,
+      name,
+      offer.metadata.animationUrl
+    ]
   );
 
   const handleOnGetSignerAddress = useCallback(

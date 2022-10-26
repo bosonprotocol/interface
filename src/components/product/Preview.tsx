@@ -25,6 +25,7 @@ import DetailSlider from "../detail/DetailSlider";
 import DetailTable from "../detail/DetailTable";
 import BosonButton from "../ui/BosonButton";
 import Typography from "../ui/Typography";
+import Video from "../ui/Video";
 import { ProductButtonGroup } from "./Product.styles";
 import { useCreateForm } from "./utils/useCreateForm";
 
@@ -227,7 +228,7 @@ export default function Preview({
     name: "Offer Category",
     value: values.productType?.productType?.toUpperCase() || ""
   });
-
+  const animationUrl = values.productAnimation?.[0]?.src;
   return (
     <PreviewWrapper>
       <PreviewWrapperContent>
@@ -235,7 +236,18 @@ export default function Preview({
           <LightBackground>
             <MainDetailGrid>
               <ImageWrapper>
-                <Image src={thumbnailImg} dataTestId="offerImage" />
+                {animationUrl ? (
+                  <Video
+                    src={animationUrl}
+                    dataTestId="offerAnimationUrl"
+                    videoProps={{ muted: true, loop: true, autoPlay: true }}
+                    componentWhileLoading={() => (
+                      <Image src={thumbnailImg} dataTestId="offerImage" />
+                    )}
+                  />
+                ) : (
+                  <Image src={thumbnailImg} dataTestId="offerImage" />
+                )}
               </ImageWrapper>
               <div>
                 <SellerID

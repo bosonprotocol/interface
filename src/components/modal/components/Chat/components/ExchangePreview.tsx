@@ -6,6 +6,7 @@ import Price from "../../../../price";
 import Grid from "../../../../ui/Grid";
 import Image from "../../../../ui/Image";
 import SellerID from "../../../../ui/SellerID";
+import Video from "../../../../ui/Video";
 
 interface Props {
   exchange: Exchange;
@@ -45,6 +46,7 @@ const StyledGrid = styled(Grid)`
 export default function ExchangePreview({ exchange }: Props) {
   const { offer } = exchange;
   const { isLteS } = useBreakpoints();
+  const animationUrl = exchange?.offer.metadata.animationUrl || "";
 
   return (
     <StyledGrid
@@ -53,7 +55,21 @@ export default function ExchangePreview({ exchange }: Props) {
     >
       <Grid flexDirection={isLteS ? "column" : "row"}>
         <ImageWrapper>
-          <Image src={offer.metadata.imageUrl} alt="Exchange image" />
+          {animationUrl ? (
+            <Video
+              src={animationUrl}
+              videoProps={{
+                muted: true,
+                loop: true,
+                autoPlay: true
+              }}
+              componentWhileLoading={() => (
+                <Image src={offer.metadata.imageUrl} alt="Exchange image" />
+              )}
+            />
+          ) : (
+            <Image src={offer.metadata.imageUrl} alt="Exchange image" />
+          )}
         </ImageWrapper>
         <Grid
           flexDirection="column"
