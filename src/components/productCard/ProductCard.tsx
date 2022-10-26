@@ -2,7 +2,6 @@ import {
   Currencies,
   ProductCard as BosonProductCard
 } from "@bosonprotocol/react-kit";
-import { BigNumber, utils } from "ethers";
 import { CameraSlash } from "phosphor-react";
 import { useMemo } from "react";
 import { generatePath, useLocation } from "react-router-dom";
@@ -13,6 +12,7 @@ import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes, OffersRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
+import { calcPrice } from "../../lib/utils/calcPrice";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useGetIpfsImage } from "../../lib/utils/hooks/useGetIpfsImage";
 import { useHandleText } from "../../lib/utils/hooks/useHandleText";
@@ -21,7 +21,7 @@ import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustom
 import { getLensProfilePictureUrl } from "../modal/components/CreateProfile/Lens/utils";
 
 interface Props {
-  offer: Offer;
+  offer: any;
   exchange?: NonNullable<Offer["exchanges"]>[number];
   dataTestId: string;
   isHoverDisabled?: boolean;
@@ -61,22 +61,20 @@ export default function ProductCard({
   });
   const [lens] = lensProfiles;
   const { imageSrc: avatar } = useGetIpfsImage(getLensProfilePictureUrl(lens));
-  const { imageStatus, imageSrc } = useGetIpfsImage(offer?.metadata?.imageUrl);
+  const { imageStatus, imageSrc } = useGetIpfsImage(
+    offer?.metadata?.imageUrl || offer?.metadata?.image
+  );
   const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
   const location = useLocation();
   const navigate = useKeepQueryParamsNavigate();
   const handleText = useHandleText(offer);
-  const price = useMemo(() => {
-    try {
-      return utils.formatUnits(
-        BigNumber.from(offer.price),
-        Number(offer.exchangeToken.decimals)
-      );
-    } catch (e) {
-      console.error(e);
-      return null;
-    }
-  }, [offer.exchangeToken.decimals, offer.price]);
+  const price = useMemo(
+    () =>
+      offer?.price && offer?.exchangeToken?.decimals
+        ? calcPrice(offer?.price, offer?.exchangeToken?.decimals)
+        : 0,
+    [offer.exchangeToken.decimals, offer.price]
+  );
 
   const handleOnCardClick = () => {
     navigate(
@@ -99,18 +97,23 @@ export default function ProductCard({
       })
     });
   };
-
   return (
     <ProductCardWrapper $isCustomStoreFront={!!isCustomStoreFront}>
       <BosonProductCard
         dataCard="product-card"
         dataTestId={dataTestId}
-        productId={offer.id}
+        productId={offer?.id}
         onCardClick={handleOnCardClick}
-        title={offer.metadata.name}
+        title={offer?.metadata?.name}
         avatarName={lens?.name ? lens?.name : `Seller ID: ${offer.seller.id}`}
         avatar={avatar || mockedAvatar}
         price={Number(price)}
+        asterisk={offer?.additional?.variants?.length > 1 ? true : false}
+        tooltip={
+          offer?.additional?.variants?.length > 1
+            ? "Price may be different on variants"
+            : ""
+        }
         currency={offer.exchangeToken.symbol as Currencies}
         onAvatarNameClick={handleOnAvatarClick}
         imageProps={{

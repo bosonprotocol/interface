@@ -9,8 +9,9 @@ interface ExtendedOffer extends Offer {
 }
 
 interface Props {
-  offers: ExtendedOffer[] | undefined;
+  offers: any; // ExtendedOffer[] | undefined;
 }
+
 export const useSortByPrice = ({
   offers,
   isSortable,

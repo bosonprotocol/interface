@@ -22,11 +22,13 @@ const GridInner = styled.div`
 `;
 function Explore({
   offers,
+  products,
   params,
   handleChange,
   pageOptions,
   filterOptions
 }: WithAllOffersProps) {
+  // console.log("products", products, offers);
   const location = useLocation();
   const navigate = useKeepQueryParamsNavigate();
   const [pageIndex, setPageIndex] = useState<number | null>(
@@ -49,17 +51,24 @@ function Explore({
   );
 
   const collections = useMemo(() => {
-    const filtered = data?.filter((item) => item.offers.length > 0);
+    const filtered =
+      products?.sellers?.filter((item: any) => item?.offers?.length > 0) || [];
 
     if (filtered && filtered.length > 0) {
       return filtered;
     }
 
-    return data;
-  }, [data]);
+    return products?.sellers || [];
+  }, [products?.sellers]);
 
-  const offerArray = useSortByPrice({ offers, ...filterOptions });
+  console.log("collections", collections, products?.sellers);
 
+  const offerArray = useSortByPrice({
+    offers: products?.products || [],
+    ...filterOptions
+  });
+
+  console.log("offerArray", offerArray);
   return (
     <>
       {collectionsIsLoading ? (
@@ -100,17 +109,14 @@ function Explore({
                             pageOptions?.itemsPerPage
                         : pageOptions?.itemsPerPage
                     )
-                    ?.map(
-                      (offer) =>
-                        offer.isValid && (
-                          <div
-                            key={`ProductCard_${offer?.id}`}
-                            id={`offer_${offer.id}`}
-                          >
-                            <ProductCard offer={offer} dataTestId="offer" />
-                          </div>
-                        )
-                    )}
+                    ?.map((offer: any) => (
+                      <div
+                        key={`ProductCard_${offer?.id}`}
+                        id={`offer_${offer?.id}`}
+                      >
+                        <ProductCard offer={offer} dataTestId="offer" />
+                      </div>
+                    ))}
               </ProductGridContainer>
             </GridInner>
           )}
@@ -148,8 +154,12 @@ function Explore({
                             pageOptions?.itemsPerPage
                         : pageOptions?.itemsPerPage
                     )
-                    ?.map((collection) => (
-                      <Fragment key={`CollectionsCard_${collection?.id}`}>
+                    ?.map((collection: any) => (
+                      <Fragment
+                        key={`CollectionsCard_${
+                          collection?.brandName || collection?.id
+                        }`}
+                      >
                         <CollectionsCard collection={collection} />
                       </Fragment>
                     ))}

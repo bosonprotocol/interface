@@ -52,6 +52,7 @@ const DataContainer = styled.div`
 interface Props {
   collection: {
     id: string;
+    brandName?: string;
     exchanges: [];
     offers: {
       id: string;
@@ -124,7 +125,8 @@ export default function CollectionsCard({ collection }: Props) {
             fontWeight="600"
             margin="0 0 0.625rem 0"
           >
-            {lens?.name ? lens?.name : `Seller ID: ${collection.id}`}
+            {collection?.brandName ||
+              (lens?.name ? lens?.name : `Seller ID: ${collection.id}`)}
           </Typography>
           <Grid alignItems="flex-start" margin="0 0 0.3125rem 0">
             <Typography
@@ -145,7 +147,7 @@ export default function CollectionsCard({ collection }: Props) {
           </Grid>
           <Grid alignItems="flex-start">
             <Typography $fontSize="20px" fontWeight="600" color={colors.black}>
-              {collection?.offers.filter((offer) => !offer.duplicate).length ||
+              {collection?.offers?.filter((offer) => !offer.duplicate).length ||
                 0}
             </Typography>
             <Typography
@@ -154,7 +156,7 @@ export default function CollectionsCard({ collection }: Props) {
               color={colors.black}
               margin="0 0 0 25px"
             >
-              {collection?.exchanges.length || 0}
+              {collection?.exchanges?.length || 0}
             </Typography>
           </Grid>
         </DataWrapper>

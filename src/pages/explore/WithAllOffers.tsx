@@ -1,4 +1,3 @@
-import { BigNumber, utils } from "ethers";
 import pick from "lodash/pick";
 import sortBy from "lodash/sortBy";
 import { ParsedQuery } from "query-string";
@@ -17,8 +16,10 @@ import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
+import { calcPrice } from "../../lib/utils/calcPrice";
 import { convertPrice } from "../../lib/utils/convertPrice";
 import { useInfiniteOffers } from "../../lib/utils/hooks/offers/useInfiniteOffers";
+import useProducts from "../../lib/utils/hooks/product/useProducts";
 import { useIsCustomStoreValueChanged } from "../custom-store/useIsCustomStoreValueChanged";
 import ExploreSelect from "./ExploreSelect";
 import useSearchParams from "./useSearchParams";
@@ -62,6 +63,7 @@ export interface FilterOptions {
 }
 export interface WithAllOffersProps {
   offers?: ExtendedOffer[];
+  products?: any; // TODO: BP437 add proper types
   isLoading?: boolean;
   isError?: boolean;
   showoffPage?: number;
@@ -200,6 +202,7 @@ export function WithAllOffers<P>(
       ]) as FilterOptions;
     }, [params]);
 
+    const products = useProducts();
     const {
       data,
       isLoading,
@@ -248,17 +251,6 @@ export function WithAllOffers<P>(
       isFetchingNextPage
     ]);
 
-    const itemPrice = (value: string, decimals: string) => {
-      try {
-        return utils.formatUnits(
-          BigNumber.from(value.toString()),
-          Number(decimals)
-        );
-      } catch (e) {
-        return null;
-      }
-    };
-
     const allOffers = useMemo(() => {
       const items = data?.pages.flatMap((page) => {
         const allButLast =
@@ -271,7 +263,7 @@ export function WithAllOffers<P>(
       const sortedArray =
         items?.map((offer: Offer) => {
           const offerPrice = convertPrice({
-            price: itemPrice(offer.price, offer.exchangeToken.decimals),
+            price: calcPrice(offer.price, offer.exchangeToken.decimals),
             symbol: offer.exchangeToken.symbol.toUpperCase(),
             currency: CONFIG.defaultCurrency,
             rates: store.rates,
@@ -322,6 +314,7 @@ export function WithAllOffers<P>(
                 pageOptions={pageOptions}
                 filterOptions={filterOptions}
                 offers={allOffers}
+                products={products}
               />
             )}
           </LayoutRoot>
