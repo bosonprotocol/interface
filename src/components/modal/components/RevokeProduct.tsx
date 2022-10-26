@@ -1,10 +1,11 @@
-import { Provider, RevokeButton } from "@bosonprotocol/react-kit";
+import { Provider, RevokeButton, subgraph } from "@bosonprotocol/react-kit";
 import toast from "react-hot-toast";
 import styled from "styled-components";
 import { useSigner } from "wagmi";
 
 import { CONFIG } from "../../../lib/config";
 import { colors } from "../../../lib/styles/colors";
+import { useAddPendingTransaction } from "../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 import { poll } from "../../../pages/create-product/utils";
@@ -51,6 +52,7 @@ export default function RevokeProduct({
   const { data: signer } = useSigner();
   const { showModal, hideModal } = useModal();
   const coreSDK = useCoreSDK();
+  const addPendingTransaction = useAddPendingTransaction();
 
   const convertedPrice = useConvertedPrice({
     value: exchange?.offer?.price,
@@ -145,10 +147,19 @@ export default function RevokeProduct({
             onPendingSignature={() => {
               showModal("WAITING_FOR_CONFIRMATION");
             }}
-            onPendingTransaction={(hash) => {
+            onPendingTransaction={(hash, isMetaTx) => {
               showModal("TRANSACTION_SUBMITTED", {
                 action: "Revoke",
                 txHash: hash
+              });
+              addPendingTransaction({
+                type: subgraph.EventType.VoucherRevoked,
+                hash,
+                isMetaTx,
+                accountType: "Seller",
+                exchange: {
+                  id: exchange.id
+                }
               });
             }}
             onSuccess={async (receipt, { exchangeId }) => {

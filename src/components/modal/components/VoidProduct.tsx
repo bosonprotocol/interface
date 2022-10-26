@@ -1,4 +1,4 @@
-import { Provider, VoidButton } from "@bosonprotocol/react-kit";
+import { Provider, subgraph, VoidButton } from "@bosonprotocol/react-kit";
 import { BigNumberish } from "ethers";
 import { useCallback, useState } from "react";
 import toast from "react-hot-toast";
@@ -8,6 +8,7 @@ import { useSigner } from "wagmi";
 import { CONFIG } from "../../../lib/config";
 import { colors } from "../../../lib/styles/colors";
 import { Offer } from "../../../lib/types/offer";
+import { useAddPendingTransaction } from "../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 import { poll } from "../../../pages/create-product/utils";
 import { Break } from "../../detail/Detail.style";
@@ -147,6 +148,7 @@ export default function VoidProduct({
 }: Props) {
   const { showModal } = useModal();
   const coreSdk = useCoreSDK();
+  const addPendingTransaction = useAddPendingTransaction();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { data: signer } = useSigner();
   const { hideModal } = useModal();
@@ -292,10 +294,19 @@ export default function VoidProduct({
               onPendingSignature={() => {
                 showModal("WAITING_FOR_CONFIRMATION");
               }}
-              onPendingTransaction={(hash) => {
+              onPendingTransaction={(hash, isMetaTx) => {
                 showModal("TRANSACTION_SUBMITTED", {
                   action: "Void",
                   txHash: hash
+                });
+                addPendingTransaction({
+                  type: subgraph.EventType.OfferVoided,
+                  hash,
+                  isMetaTx,
+                  accountType: "Seller",
+                  offer: {
+                    id: offer.id
+                  }
                 });
               }}
               onSuccess={handleSuccess}
