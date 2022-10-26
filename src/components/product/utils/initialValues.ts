@@ -89,13 +89,13 @@ export const coreTermsOfSaleInitialValues = {
     currency: OPTIONS_CURRENCIES[0],
     quantity: 1,
     tokenGatedOffer: OPTIONS_TOKEN_GATED[0],
-    tokengatedvariants: TOKEN_GATED_VARIANTS[0],
-    tokencontract: "",
-    tokentype: TOKEN_TYPES[0],
+    tokenGatedVariants: TOKEN_GATED_VARIANTS[0],
+    tokenContract: "",
+    tokenType: TOKEN_TYPES[0],
     minBalance: undefined,
     tokenId: undefined,
     tokenGatingDesc: "",
-    tokencriteria: TOKEN_CRITERIA[0],
+    tokenCriteria: TOKEN_CRITERIA[0],
     redemptionPeriod: [],
     offerValidityPeriod: []
   }

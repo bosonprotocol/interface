@@ -205,7 +205,7 @@ export const coreTermsOfSaleValidationSchema = Yup.object({
     quantity: Yup.number()
       .min(1, "Quantity must be greater than or equal to 1")
       .required(validationMessage.required),
-    tokengatedvariants: Yup.object()
+    tokenGatedVariants: Yup.object()
       .when(["tokenGatedOffer"], {
         is: (tokenGated: SelectDataProps) =>
           tokenGated?.value === OPTIONS_TOKEN_GATED[1].value,
@@ -219,7 +219,7 @@ export const coreTermsOfSaleValidationSchema = Yup.object({
         label: Yup.string()
       })
       .default([{ value: "", label: "" }]),
-    tokencontract: Yup.string()
+    tokenContract: Yup.string()
       .when(["tokenGatedOffer"], {
         is: (tokenGated: SelectDataProps) =>
           tokenGated?.value === OPTIONS_TOKEN_GATED[1].value,
@@ -231,7 +231,7 @@ export const coreTermsOfSaleValidationSchema = Yup.object({
       .test("FORMAT", "Must be a valid address", (value) =>
         value ? ethers.utils.isAddress(value) : true
       ),
-    tokentype: Yup.object()
+    tokenType: Yup.object()
       .when(["tokenGatedOffer"], {
         is: (tokenGated: SelectDataProps) =>
           tokenGated?.value === OPTIONS_TOKEN_GATED[1].value,
@@ -245,7 +245,7 @@ export const coreTermsOfSaleValidationSchema = Yup.object({
         label: Yup.string()
       })
       .default([{ value: "", label: "" }]),
-    tokencriteria: Yup.object()
+    tokenCriteria: Yup.object()
       .when(["tokenGatedOffer"], {
         is: (tokenGated: SelectDataProps) =>
           tokenGated?.value === OPTIONS_TOKEN_GATED[1].value,
@@ -260,20 +260,20 @@ export const coreTermsOfSaleValidationSchema = Yup.object({
       })
       .default([{ value: "", label: "" }]),
     minBalance: Yup.number().when(
-      ["tokenGatedOffer", "tokentype", "tokencriteria"],
+      ["tokenGatedOffer", "tokenType", "tokenCriteria"],
       {
         is: (
           tokenGated: SelectDataProps,
-          tokentype: SelectDataProps,
-          tokencriteria: SelectDataProps
+          tokenType: SelectDataProps,
+          tokenCriteria: SelectDataProps
         ) =>
           (tokenGated?.value === OPTIONS_TOKEN_GATED[1].value &&
-            tokentype?.value === TOKEN_TYPES[0].value) ||
+            tokenType?.value === TOKEN_TYPES[0].value) ||
           (tokenGated?.value === OPTIONS_TOKEN_GATED[1].value &&
-            tokentype?.value === TOKEN_TYPES[2].value) ||
+            tokenType?.value === TOKEN_TYPES[2].value) ||
           (tokenGated?.value === OPTIONS_TOKEN_GATED[1].value &&
-            tokentype?.value === TOKEN_TYPES[1].value &&
-            tokencriteria?.value === TOKEN_CRITERIA[0].value),
+            tokenType?.value === TOKEN_TYPES[1].value &&
+            tokenCriteria?.value === TOKEN_CRITERIA[0].value),
         then: (schema) =>
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
@@ -285,18 +285,18 @@ export const coreTermsOfSaleValidationSchema = Yup.object({
       }
     ),
     tokenId: Yup.number().when(
-      ["tokenGatedOffer", "tokentype", "tokencriteria"],
+      ["tokenGatedOffer", "tokenType", "tokenCriteria"],
       {
         is: (
           tokenGated: SelectDataProps,
-          tokentype: SelectDataProps,
-          tokencriteria: SelectDataProps
+          tokenType: SelectDataProps,
+          tokenCriteria: SelectDataProps
         ) =>
           (tokenGated?.value === OPTIONS_TOKEN_GATED[1].value &&
-            tokentype?.value === TOKEN_TYPES[2].value) ||
+            tokenType?.value === TOKEN_TYPES[2].value) ||
           (tokenGated?.value === OPTIONS_TOKEN_GATED[1].value &&
-            tokentype?.value === TOKEN_TYPES[1].value &&
-            tokencriteria?.value === TOKEN_CRITERIA[1].value),
+            tokenType?.value === TOKEN_TYPES[1].value &&
+            tokenCriteria?.value === TOKEN_CRITERIA[1].value),
         then: (schema) =>
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore

@@ -11,7 +11,6 @@ import {
   OPTIONS_CURRENCIES,
   OPTIONS_TOKEN_GATED,
   TOKEN_CRITERIA,
-  TOKEN_GATED_VARIANTS,
   TOKEN_TYPES
 } from "./utils";
 import { useCreateForm } from "./utils/useCreateForm";
@@ -24,6 +23,10 @@ const PriceContainer = styled.div`
 
 const ProductInformationButtonGroup = styled(ProductButtonGroup)`
   margin-top: 1.563px;
+`;
+
+const TokengatedTextarea = styled(Textarea)`
+  padding: 0.5rem;
 `;
 
 interface Props {
@@ -88,23 +91,24 @@ export default function CoreTermsOfSale({ isMultiVariant }: Props) {
 
         {values.coreTermsOfSale.tokenGatedOffer.value === "true" && (
           <>
-            <TokengatedInfoWrapper>
+            {/* TODO: enable once we have more than one variant */}
+            {/* <TokengatedInfoWrapper>
               <FormField title="Variant" style={{ margin: "1rem 0 0 0" }}>
                 <Select
-                  name="coreTermsOfSale.tokengatedvariants"
+                  name="coreTermsOfSale.tokenGatedVariants"
                   options={TOKEN_GATED_VARIANTS}
                 />
               </FormField>
-            </TokengatedInfoWrapper>
+            </TokengatedInfoWrapper> */}
 
             <FormField title="Token Contract" style={{ margin: "1rem 0 0 0" }}>
-              <Input name="coreTermsOfSale.tokencontract" type="string" />
+              <Input name="coreTermsOfSale.tokenContract" type="string" />
             </FormField>
 
             <TokengatedInfoWrapper>
               <FormField title="Token Type:" style={{ margin: "1rem 0 0 0" }}>
                 <Select
-                  name="coreTermsOfSale.tokentype"
+                  name="coreTermsOfSale.tokenType"
                   options={TOKEN_TYPES}
                 />
               </FormField>
@@ -114,7 +118,7 @@ export default function CoreTermsOfSale({ isMultiVariant }: Props) {
                   title="Token Gating Description:"
                   style={{ margin: "1rem 0 0 0" }}
                 >
-                  <Textarea
+                  <TokengatedTextarea
                     name="coreTermsOfSale.tokenGatingDesc"
                     placeholder="Token Gating Description"
                   />
@@ -122,23 +126,23 @@ export default function CoreTermsOfSale({ isMultiVariant }: Props) {
               </div>
             </TokengatedInfoWrapper>
             <>
-              {values.coreTermsOfSale.tokentype?.value ===
+              {values.coreTermsOfSale.tokenType?.value ===
                 TOKEN_TYPES[1].value && (
                 <div>
                   <FormField title="Criteria:" style={{ margin: "1rem 0 0 0" }}>
                     <Select
-                      name="coreTermsOfSale.tokencriteria"
+                      name="coreTermsOfSale.tokenCriteria"
                       options={TOKEN_CRITERIA}
                     />
                   </FormField>
                 </div>
               )}
 
-              {(values.coreTermsOfSale.tokencriteria?.value ===
+              {(values.coreTermsOfSale.tokenCriteria?.value ===
                 TOKEN_CRITERIA[0].value ||
-                values.coreTermsOfSale.tokentype?.value ===
+                values.coreTermsOfSale.tokenType?.value ===
                   TOKEN_TYPES[0].value ||
-                values.coreTermsOfSale.tokentype?.value ===
+                values.coreTermsOfSale.tokenType?.value ===
                   TOKEN_TYPES[2].value) && (
                 <FormField
                   title="Min Balance:"
@@ -147,11 +151,11 @@ export default function CoreTermsOfSale({ isMultiVariant }: Props) {
                   <Input name="coreTermsOfSale.minBalance" type="number" />
                 </FormField>
               )}
-              {((values.coreTermsOfSale.tokencriteria?.value ===
+              {((values.coreTermsOfSale.tokenCriteria?.value ===
                 TOKEN_CRITERIA[1].value &&
-                values.coreTermsOfSale.tokentype?.value ===
+                values.coreTermsOfSale.tokenType?.value ===
                   TOKEN_TYPES[1].value) ||
-                values.coreTermsOfSale.tokentype?.value ===
+                values.coreTermsOfSale.tokenType?.value ===
                   TOKEN_TYPES[2].value) && (
                 <FormField title="TokenId:" style={{ margin: "1rem 0 0 0" }}>
                   <Input name="coreTermsOfSale.tokenId" type="number" />
