@@ -1,24 +1,18 @@
 import pick from "lodash/pick";
-import sortBy from "lodash/sortBy";
 import { ParsedQuery } from "query-string";
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 
-import ConvertionRateContext from "../../components/convertion-rate/ConvertionRateContext";
 import { LayoutRoot } from "../../components/Layout";
 import Grid from "../../components/ui/Grid";
 import Loading from "../../components/ui/Loading";
 import Typography from "../../components/ui/Typography";
-import { CONFIG } from "../../lib/config";
 import { ExploreQueryParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
-import { calcPrice } from "../../lib/utils/calcPrice";
-import { convertPrice } from "../../lib/utils/convertPrice";
-import { useInfiniteOffers } from "../../lib/utils/hooks/offers/useInfiniteOffers";
 import useProducts from "../../lib/utils/hooks/product/useProducts";
 import { useIsCustomStoreValueChanged } from "../custom-store/useIsCustomStoreValueChanged";
 import ExploreSelect from "./ExploreSelect";
@@ -55,7 +49,6 @@ interface ExtendedOffer extends Offer {
 export interface FilterOptions {
   orderDirection?: "asc" | "desc";
   orderBy?: string;
-  isSortable?: boolean;
   validFromDate?: string;
   validUntilDate?: string;
   exchangeOrderBy?: string;
@@ -78,17 +71,13 @@ export interface WithAllOffersProps {
   filterOptions?: FilterOptions;
 }
 const DEFAULT_PAGE = 0;
-const OFFERS_PER_PAGE = 999;
 const SHOWOFF_PAGE = 4;
 const ITEMS_PER_PAGE = 12;
 export function WithAllOffers<P>(
   WrappedComponent: React.ComponentType<WithAllOffersProps>
 ) {
   const ComponentWithAllOffers = (props: P) => {
-    const { store } = useContext(ConvertionRateContext);
-
     const location = useLocation();
-    const [pageIndex, setPageIndex] = useState(DEFAULT_PAGE);
     const { params, handleChange } = useSearchParams();
 
     const isPrimaryBgColorChanged =
@@ -145,8 +134,7 @@ export function WithAllOffers<P>(
       let payload;
       const basePayload = {
         orderDirection: "",
-        orderBy: "",
-        isSortable: false
+        orderBy: ""
       };
 
       if (filterByName !== false) {
@@ -169,8 +157,7 @@ export function WithAllOffers<P>(
             ...payload,
             orderDirection: orderDirection,
             orderBy: "createdAt",
-            exchangeOrderBy: orderBy,
-            isSortable: true
+            exchangeOrderBy: orderBy
           };
         } else if (orderBy === "validFromDate") {
           payload = {
@@ -186,15 +173,13 @@ export function WithAllOffers<P>(
             ...payload,
             orderDirection: orderDirection,
             orderBy: orderBy === "price" ? "createdAt" : orderBy,
-            exchangeOrderBy: orderBy,
-            isSortable: orderBy === "price"
+            exchangeOrderBy: orderBy
           };
         }
       }
       return pick(payload, [
         "name",
         "exchangeOrderBy",
-        "isSortable",
         "orderBy",
         "orderDirection",
         "validFromDate_lte",
@@ -203,84 +188,7 @@ export function WithAllOffers<P>(
     }, [params]);
 
     const products = useProducts();
-    const {
-      data,
-      isLoading,
-      isError,
-      isFetchingNextPage,
-      refetch,
-      fetchNextPage
-    } = useInfiniteOffers(
-      {
-        first: OFFERS_PER_PAGE + 1,
-        disableMemo: true,
-        voided: false,
-        valid: true,
-        ...filterOptions
-      },
-      {
-        enabled: !!filterOptions?.orderBy,
-        keepPreviousData: false
-      }
-    );
-
-    useEffect(() => {
-      if (filterOptions?.isSortable === false) {
-        refetch();
-      }
-    }, [filterOptions]); // eslint-disable-line
-
-    const thereAreMoreOffers = useMemo(() => {
-      const offersWithOneExtra = data?.pages[data.pages.length - 1];
-      return (offersWithOneExtra?.length || 0) >= OFFERS_PER_PAGE + 1;
-    }, [data]);
-
-    useEffect(() => {
-      if (isLoading || !thereAreMoreOffers || isFetchingNextPage) {
-        return;
-      } else {
-        const nextPageIndex = pageIndex + 1;
-        setPageIndex(nextPageIndex);
-        fetchNextPage({ pageParam: nextPageIndex * OFFERS_PER_PAGE });
-      }
-    }, [
-      isLoading,
-      thereAreMoreOffers,
-      fetchNextPage,
-      pageIndex,
-      isFetchingNextPage
-    ]);
-
-    const allOffers = useMemo(() => {
-      const items = data?.pages.flatMap((page) => {
-        const allButLast =
-          page.length === OFFERS_PER_PAGE + 1
-            ? page.slice(0, page.length - 1)
-            : page;
-        return allButLast;
-      });
-
-      const sortedArray =
-        items?.map((offer: Offer) => {
-          const offerPrice = convertPrice({
-            price: calcPrice(offer.price, offer.exchangeToken.decimals),
-            symbol: offer.exchangeToken.symbol.toUpperCase(),
-            currency: CONFIG.defaultCurrency,
-            rates: store.rates,
-            fixed: 8
-          });
-          return {
-            ...offer,
-            convertedPrice: offerPrice.converted,
-            committedDate:
-              sortBy(offer.exchanges, "committedDate")[0]?.committedDate || "0",
-            redeemedDate:
-              sortBy(offer.exchanges, "redeemedDate")[0]?.redeemedDate || "0"
-          };
-        }) || [];
-
-      return sortedArray as ExtendedOffer[];
-    }, [data, store.rates]);
+    const { isLoading, isError } = products;
 
     return (
       <ExploreContainer>
@@ -296,16 +204,14 @@ export function WithAllOffers<P>(
         </LayoutRoot>
         <ExploreOffersContainer $isPrimaryBgChanged={isPrimaryBgColorChanged}>
           <LayoutRoot>
-            {isLoading || thereAreMoreOffers || isFetchingNextPage ? (
+            {isLoading ? (
               <Wrapper>
                 <Loading />
               </Wrapper>
             ) : (
               <WrappedComponent
                 {...props}
-                isLoading={
-                  isLoading || thereAreMoreOffers || isFetchingNextPage
-                }
+                isLoading={isLoading}
                 isError={isError}
                 showoffPage={4}
                 offersPerPage={10}
@@ -313,7 +219,6 @@ export function WithAllOffers<P>(
                 handleChange={handleChange}
                 pageOptions={pageOptions}
                 filterOptions={filterOptions}
-                offers={allOffers}
                 products={products}
               />
             )}

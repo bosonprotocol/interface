@@ -9,33 +9,59 @@ interface ExtendedOffer extends Offer {
 }
 
 interface Props {
-  offers: any; // ExtendedOffer[] | undefined;
+  data: any; // ExtendedOffer[] | undefined;
 }
-
 export const useSortByPrice = ({
-  offers,
-  isSortable,
+  data,
   exchangeOrderBy,
   orderDirection
 }: Props & FilterOptions) => {
   const offerArray = useMemo(() => {
-    if (isSortable) {
-      if (exchangeOrderBy === "price") {
-        if (orderDirection === "desc") {
-          return orderBy(offers, "convertedPrice", "desc") as ExtendedOffer[];
-        } else {
-          return orderBy(offers, "convertedPrice", "asc") as ExtendedOffer[];
-        }
-      }
-      if (exchangeOrderBy === "committedDate") {
-        return orderBy(offers, "committedDate", "desc") as ExtendedOffer[];
-      }
-      if (exchangeOrderBy === "redeemedDate") {
-        return orderBy(offers, "redeemedDate", "desc") as ExtendedOffer[];
+    if (exchangeOrderBy === "price") {
+      if (orderDirection === "desc") {
+        return orderBy(
+          data,
+          "additional.sortBy.lowPrice",
+          "desc"
+        ) as ExtendedOffer[];
+      } else {
+        return orderBy(
+          data,
+          "additional.sortBy.highPrice",
+          "asc"
+        ) as ExtendedOffer[];
       }
     }
-    return offers;
-  }, [offers, isSortable, exchangeOrderBy, orderDirection]);
+    if (exchangeOrderBy === "createdAt") {
+      return orderBy(
+        data,
+        "additional.sortBy.createdAt",
+        "desc"
+      ) as ExtendedOffer[];
+    }
+    if (exchangeOrderBy === "validFromDate") {
+      return orderBy(
+        data,
+        "additional.sortBy.validFromDate",
+        "desc"
+      ) as ExtendedOffer[];
+    }
+    if (exchangeOrderBy === "committedDate") {
+      return orderBy(
+        data,
+        "additional.sortBy.committedDate",
+        "asc"
+      ) as ExtendedOffer[];
+    }
+    if (exchangeOrderBy === "redeemedDate") {
+      return orderBy(
+        data,
+        "additional.sortBy.redeemedDate",
+        "asc"
+      ) as ExtendedOffer[];
+    }
+    return data;
+  }, [data, exchangeOrderBy, orderDirection]);
 
   return offerArray;
 };

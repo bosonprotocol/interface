@@ -54,6 +54,17 @@ interface Props {
     id: string;
     brandName?: string;
     exchanges: [];
+    additional: {
+      images: string[];
+      sortBy: {
+        createdAt: string | null;
+        committedDate: string | null;
+        redeemedDate: string | null;
+        validFromDate: string | null;
+        lowPrice: string | null;
+        highPrice: string | null;
+      };
+    };
     offers: {
       id: string;
       validFromDate: string;
@@ -75,21 +86,11 @@ export default function CollectionsCard({ collection }: Props) {
   const navigate = useKeepQueryParamsNavigate();
   const imagesNumber = 4;
   const images = useMemo(() => {
-    const array = collection && collection.offers;
+    const array = collection && collection.additional.images;
 
     if (array.length < 3) {
       for (let index = 0; index < imagesNumber; index++) {
-        array.push({
-          id: index?.toString(),
-          duplicate: true,
-          validFromDate: "",
-          validUntilDate: "",
-          metadata: {
-            name: "",
-            image: ""
-          },
-          exchanges: []
-        });
+        array.push("");
       }
     }
 
@@ -109,10 +110,10 @@ export default function CollectionsCard({ collection }: Props) {
       <ImagesContainer>
         {images &&
           images?.map(
-            (offer) =>
-              offer?.metadata?.image && (
-                <Fragment key={`CollectionsCardImage_${offer.id}`}>
-                  <Image src={offer?.metadata?.image} />
+            (img: string, index: number) =>
+              img !== "" && (
+                <Fragment key={`CollectionsCardImage_${index}`}>
+                  <Image src={img} />
                 </Fragment>
               )
           )}
@@ -125,8 +126,7 @@ export default function CollectionsCard({ collection }: Props) {
             fontWeight="600"
             margin="0 0 0.625rem 0"
           >
-            {collection?.brandName ||
-              (lens?.name ? lens?.name : `Seller ID: ${collection.id}`)}
+            {lens?.name ? lens?.name : `Seller ID: ${collection.id}`}
           </Typography>
           <Grid alignItems="flex-start" margin="0 0 0.3125rem 0">
             <Typography

@@ -1,5 +1,5 @@
 import qs from "query-string";
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 
@@ -7,10 +7,8 @@ import CollectionsCard from "../../components/modal/components/Explore/Collectio
 import { useSortByPrice } from "../../components/price/useSortByPrice";
 import ProductCard from "../../components/productCard/ProductCard";
 import Grid from "../../components/ui/Grid";
-import Loading from "../../components/ui/Loading";
 import { ExploreQueryParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
-import { useCollections } from "../../lib/utils/hooks/useCollections";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { ProductGridContainer } from "../profile/ProfilePage.styles";
 import ExploreViewMore from "./ExploreViewMore";
@@ -21,14 +19,12 @@ const GridInner = styled.div`
   width: 100%;
 `;
 function Explore({
-  offers,
   products,
   params,
   handleChange,
   pageOptions,
   filterOptions
 }: WithAllOffersProps) {
-  // console.log("products", products, offers);
   const location = useLocation();
   const navigate = useKeepQueryParamsNavigate();
   const [pageIndex, setPageIndex] = useState<number | null>(
@@ -43,151 +39,132 @@ function Explore({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageIndex]);
 
-  const { data, isLoading: collectionsIsLoading } = useCollections(
-    { ...filterOptions },
-    {
-      enabled: !!filterOptions?.orderBy
-    }
-  );
-
-  const collections = useMemo(() => {
-    const filtered =
-      products?.sellers?.filter((item: any) => item?.offers?.length > 0) || [];
-
-    if (filtered && filtered.length > 0) {
-      return filtered;
-    }
-
-    return products?.sellers || [];
-  }, [products?.sellers]);
-
-  console.log("collections", collections, products?.sellers);
-
   const offerArray = useSortByPrice({
-    offers: products?.products || [],
+    data: products?.products || [],
+    ...filterOptions
+  });
+  const collections = useSortByPrice({
+    data: products?.sellers || [],
     ...filterOptions
   });
 
-  console.log("offerArray", offerArray);
+  useEffect(() => {
+    console.log("offerArray", offerArray);
+  }, [offerArray]);
+
   return (
-    <>
-      {collectionsIsLoading ? (
-        <Loading />
-      ) : (
-        <Grid flexDirection="column" gap="2rem" justifyContent="flex-start">
-          {pageOptions.type.includes("Products") && (
-            <GridInner>
-              <ExploreViewMore
-                name="Products"
-                url={BosonRoutes.Products}
-                onClick={() => {
-                  setPageIndex(0);
-                  navigate({
-                    pathname: `${BosonRoutes.Products}`,
-                    search: qs.stringify({ ...params, page: 0 })
-                  });
-                }}
-                showMore={location?.pathname === BosonRoutes.Explore}
-              />
-              <ProductGridContainer
-                itemsPerRow={{
-                  xs: 1,
-                  s: 2,
-                  m: 4,
-                  l: 4,
-                  xl: 4
-                }}
-              >
-                {offerArray &&
-                  offerArray
-                    ?.slice(
-                      pageOptions.pagination
-                        ? (pageIndex || 0) * pageOptions?.itemsPerPage
-                        : 0,
-                      pageOptions.pagination
-                        ? (pageIndex || 0) * pageOptions?.itemsPerPage +
-                            pageOptions?.itemsPerPage
-                        : pageOptions?.itemsPerPage
-                    )
-                    ?.map((offer: any) => (
-                      <div
-                        key={`ProductCard_${offer?.id}`}
-                        id={`offer_${offer?.id}`}
-                      >
-                        <ProductCard offer={offer} dataTestId="offer" />
-                      </div>
-                    ))}
-              </ProductGridContainer>
-            </GridInner>
-          )}
-          {pageOptions.type.includes("Sellers") && (
-            <GridInner>
-              <ExploreViewMore
-                name="Sellers"
-                url={BosonRoutes.Sellers}
-                onClick={() => {
-                  setPageIndex(0);
-                  navigate({
-                    pathname: `${BosonRoutes.Sellers}`,
-                    search: qs.stringify({ ...params, page: 0 })
-                  });
-                }}
-                showMore={location?.pathname === BosonRoutes.Explore}
-              />
-              <ProductGridContainer
-                itemsPerRow={{
-                  xs: 1,
-                  s: 2,
-                  m: 4,
-                  l: 4,
-                  xl: 4
-                }}
-              >
-                {collections &&
-                  collections
-                    ?.slice(
-                      pageOptions.pagination
-                        ? (pageIndex || 0) * pageOptions?.itemsPerPage
-                        : 0,
-                      pageOptions.pagination
-                        ? (pageIndex || 0) * pageOptions?.itemsPerPage +
-                            pageOptions?.itemsPerPage
-                        : pageOptions?.itemsPerPage
-                    )
-                    ?.map((collection: any) => (
-                      <Fragment
-                        key={`CollectionsCard_${
-                          collection?.brandName || collection?.id
-                        }`}
-                      >
-                        <CollectionsCard collection={collection} />
-                      </Fragment>
-                    ))}
-              </ProductGridContainer>
-            </GridInner>
-          )}
-          {pageOptions.pagination && (
-            <Pagination
-              defaultPage={pageIndex || 0}
-              isNextEnabled={
-                ((pageOptions.type.includes("Sellers")
-                  ? collections?.length
-                  : offerArray?.length) || 0) >=
-                pageOptions.itemsPerPage * ((pageIndex || 0) + 1) + 1
-              }
-              isPreviousEnabled={
-                ((pageOptions.type.includes("Sellers")
-                  ? collections?.length
-                  : offerArray?.length) || 0) > 0
-              }
-              onChangeIndex={(index: number) => {
-                setPageIndex(index);
-              }}
-            />
-          )}
-        </Grid>
+    <Grid flexDirection="column" gap="2rem" justifyContent="flex-start">
+      {pageOptions.type.includes("Products") && (
+        <GridInner>
+          <ExploreViewMore
+            name="Products"
+            url={BosonRoutes.Products}
+            onClick={() => {
+              setPageIndex(0);
+              navigate({
+                pathname: `${BosonRoutes.Products}`,
+                search: qs.stringify({ ...params, page: 0 })
+              });
+            }}
+            showMore={location?.pathname === BosonRoutes.Explore}
+          />
+          <ProductGridContainer
+            itemsPerRow={{
+              xs: 1,
+              s: 2,
+              m: 4,
+              l: 4,
+              xl: 4
+            }}
+          >
+            {offerArray &&
+              offerArray
+                ?.slice(
+                  pageOptions.pagination
+                    ? (pageIndex || 0) * pageOptions?.itemsPerPage
+                    : 0,
+                  pageOptions.pagination
+                    ? (pageIndex || 0) * pageOptions?.itemsPerPage +
+                        pageOptions?.itemsPerPage
+                    : pageOptions?.itemsPerPage
+                )
+                ?.map((offer: any) => (
+                  <div
+                    key={`ProductCard_${offer?.id}`}
+                    id={`offer_${offer?.id}`}
+                  >
+                    <ProductCard offer={offer} dataTestId="offer" />
+                  </div>
+                ))}
+          </ProductGridContainer>
+        </GridInner>
       )}
-    </>
+      {pageOptions.type.includes("Sellers") && (
+        <GridInner>
+          <ExploreViewMore
+            name="Sellers"
+            url={BosonRoutes.Sellers}
+            onClick={() => {
+              setPageIndex(0);
+              navigate({
+                pathname: `${BosonRoutes.Sellers}`,
+                search: qs.stringify({ ...params, page: 0 })
+              });
+            }}
+            showMore={location?.pathname === BosonRoutes.Explore}
+          />
+          <ProductGridContainer
+            itemsPerRow={{
+              xs: 1,
+              s: 2,
+              m: 4,
+              l: 4,
+              xl: 4
+            }}
+          >
+            {collections &&
+              collections
+                ?.slice(
+                  pageOptions.pagination
+                    ? (pageIndex || 0) * pageOptions?.itemsPerPage
+                    : 0,
+                  pageOptions.pagination
+                    ? (pageIndex || 0) * pageOptions?.itemsPerPage +
+                        pageOptions?.itemsPerPage
+                    : pageOptions?.itemsPerPage
+                )
+                ?.map((collection: any) => (
+                  <Fragment
+                    key={`CollectionsCard_${
+                      collection?.brandName || collection?.id
+                    }`}
+                  >
+                    <CollectionsCard collection={collection} />
+                  </Fragment>
+                ))}
+          </ProductGridContainer>
+        </GridInner>
+      )}
+      {pageOptions.pagination && (
+        <Pagination
+          defaultPage={pageIndex || 0}
+          isNextEnabled={
+            ((pageOptions.type.includes("Sellers")
+              ? collections?.length
+              : offerArray?.length) || 0) >=
+            pageOptions.itemsPerPage * ((pageIndex || 0) + 1) + 1
+          }
+          isPreviousEnabled={
+            ((pageOptions.type.includes("Sellers")
+              ? collections?.length
+              : offerArray?.length) || 0) > 0
+          }
+          onChangeIndex={(index: number) => {
+            setPageIndex(index);
+          }}
+        />
+      )}
+    </Grid>
   );
 }
 
