@@ -89,7 +89,6 @@ export const CONFIG = {
   ),
   sentryDSNUrl:
     "https://ff9c04ed823a4658bc5de78945961937@o992661.ingest.sentry.io/6455090",
-  metaTransactionsApiKey: process.env.REACT_APP_META_TX_API_KEY,
   metaTx: {
     ...config.metaTx,
     apiKey: process.env.REACT_APP_META_TX_API_KEY,
