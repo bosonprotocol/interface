@@ -12,16 +12,17 @@ import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes, OffersRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
-import { calcPrice } from "../../lib/utils/calcPrice";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useGetIpfsImage } from "../../lib/utils/hooks/useGetIpfsImage";
 import { useHandleText } from "../../lib/utils/hooks/useHandleText";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import { getLensProfilePictureUrl } from "../modal/components/CreateProfile/Lens/utils";
+import { useConvertedPrice } from "../price/useConvertedPrice";
 
 interface Props {
   offer: any;
+  filterOptions?: any;
   exchange?: NonNullable<Offer["exchanges"]>[number];
   dataTestId: string;
   isHoverDisabled?: boolean;
@@ -54,7 +55,8 @@ const ProductCardWrapper = styled.div<{ $isCustomStoreFront: boolean }>`
 export default function ProductCard({
   offer,
   dataTestId,
-  isHoverDisabled = false
+  isHoverDisabled = false,
+  filterOptions
 }: Props) {
   const { lens: lensProfiles } = useCurrentSellers({
     sellerId: offer?.seller?.id
@@ -68,19 +70,27 @@ export default function ProductCard({
   const location = useLocation();
   const navigate = useKeepQueryParamsNavigate();
   const handleText = useHandleText(offer);
-  const price = useMemo(
-    () =>
-      offer?.price && offer?.exchangeToken?.decimals
-        ? calcPrice(offer?.price, offer?.exchangeToken?.decimals)
-        : 0,
-    [offer.exchangeToken.decimals, offer.price]
-  );
+
+  const priceValue = useMemo(() => {
+    if (filterOptions?.orderBy === "price") {
+      return filterOptions?.orderDirection === "asc"
+        ? offer?.priceLow
+        : offer?.priceHigh;
+    }
+    return offer?.price;
+  }, [offer, filterOptions]);
+
+  const price = useConvertedPrice({
+    value: priceValue,
+    decimals: offer?.exchangeToken?.decimals,
+    symbol: offer?.exchangeToken?.symbol
+  });
 
   const handleOnCardClick = () => {
     navigate(
       {
-        pathname: generatePath(OffersRoutes.OfferDetail, {
-          [UrlParameters.offerId]: offer.id
+        pathname: generatePath(OffersRoutes.OfferUuid, {
+          [UrlParameters.uuid]: offer.uuid
         })
       },
       {
@@ -107,7 +117,7 @@ export default function ProductCard({
         title={offer?.metadata?.name}
         avatarName={lens?.name ? lens?.name : `Seller ID: ${offer.seller.id}`}
         avatar={avatar || mockedAvatar}
-        price={Number(price)}
+        price={Number(price?.price || 0)}
         asterisk={offer?.additional?.variants?.length > 1 ? true : false}
         tooltip={
           offer?.additional?.variants?.length > 1

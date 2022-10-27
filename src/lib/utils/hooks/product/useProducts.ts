@@ -1,8 +1,5 @@
 import { offers as offersSdk, subgraph } from "@bosonprotocol/react-kit";
-import dayjs from "dayjs";
 import groupBy from "lodash/groupBy";
-import orderBy from "lodash/orderBy";
-import sortBy from "lodash/sortBy";
 import { useContext, useMemo } from "react";
 import { useQuery } from "react-query";
 
@@ -10,8 +7,16 @@ import ConvertionRateContext from "../../../../components/convertion-rate/Conver
 import { CONFIG } from "../../../config";
 import { calcPrice } from "../../calcPrice";
 import { convertPrice } from "../../convertPrice";
-import { getDateTimestamp } from "../../getDateTimestamp";
 import { useCoreSDK } from "../../useCoreSdk";
+
+const sortByFn = (arr: any, key: string, reverse: boolean) => {
+  const newArr = arr.sort((a: any, b: any) => a[key] - b[key]);
+
+  if (reverse) {
+    return newArr.reverse().find((a: any) => a[key] !== null)?.[key] || null;
+  }
+  return newArr.find((a: any) => a[key] !== null)?.[key] || null;
+};
 
 interface PromiseProps {
   status: string;
@@ -36,7 +41,8 @@ export default function useProducts(
       return products;
     },
     {
-      enabled: !!coreSDK
+      enabled: !!coreSDK,
+      refetchOnMount: true
     }
   );
   const productsIds =
@@ -58,10 +64,10 @@ export default function useProducts(
       );
     },
     {
-      enabled: !!coreSDK && productsIds?.length > 0
+      enabled: !!coreSDK && productsIds?.length > 0,
+      refetchOnMount: true
     }
   );
-  console.log("productsWithVariants", productsWithVariants);
 
   const allProducts = useMemo(() => {
     return (
@@ -81,57 +87,31 @@ export default function useProducts(
                 fixed: 8
               });
               return {
-                date: {
-                  createdAt: dayjs(getDateTimestamp(offer?.createdAt)).format(),
-                  validFromDate: dayjs(
-                    getDateTimestamp(offer?.validFromDate)
-                  ).format()
-                },
                 ...offer,
                 status,
-                convertedPrice: offerPrice.converted,
-                committedDate:
-                  sortBy(offer.exchanges, "committedDate")[0]?.committedDate ||
-                  null,
-                redeemedDate:
-                  sortBy(offer.exchanges, "redeemedDate")[0]?.redeemedDate ||
-                  null
+                convertedPrice: offerPrice?.converted || null,
+                committedDate: sortByFn(offer.exchanges, "committedDate", true),
+                redeemedDate: sortByFn(offer.exchanges, "redeemedDate", true)
               };
             })
             .filter(
               (n: any) =>
+                n &&
                 n?.voided === false &&
                 n?.status !== offersSdk.OfferState.EXPIRED
             );
-          const lowerPriceOffer = sortBy(offers, "convertedPrice");
 
           if (offers.length > 0) {
             return {
               uuid: product?.uuid,
               title: product?.title,
-              ...(lowerPriceOffer?.[0] || offers?.[0] || []),
+              ...(offers?.[0] || []),
               brandName: product?.brand?.name,
+              lowPrice: sortByFn(offers, "convertedPrice", false),
+              highPrice: sortByFn(offers, "convertedPrice", true),
+              priceLow: sortByFn(offers, "price", false),
+              priceHigh: sortByFn(offers, "price", true),
               additional: {
-                sortBy: {
-                  createdAt:
-                    orderBy(offers, ["createdAt"], ["desc"])?.[0]?.createdAt ||
-                    null,
-                  committedDate:
-                    orderBy(offers, ["committedDate"], ["desc"])?.[0]
-                      ?.committedDate || null,
-                  redeemedDate:
-                    orderBy(offers, ["redeemedDate"], ["desc"])?.[0]
-                      ?.redeemedDate || null,
-                  validFromDate:
-                    orderBy(offers, ["validFromDate"], ["desc"])?.[0]
-                      ?.validFromDate || null,
-                  lowPrice:
-                    orderBy(offers, ["convertedPrice"], ["asc"])?.[0]
-                      ?.convertedPrice || null,
-                  highPrice:
-                    orderBy(offers, ["convertedPrice"], ["desc"])?.[0]
-                      ?.convertedPrice || null
-                },
                 variants: offers,
                 product
               }
@@ -144,44 +124,31 @@ export default function useProducts(
     );
   }, [productsWithVariants?.data, store?.rates]);
 
+  console.log("allProducts", allProducts);
+
   const allSellers = useMemo(() => {
     const grouped = groupBy(allProducts, "seller.id") || {};
-    console.log("allProducts", allProducts, grouped);
     return (
       Object.keys(grouped)?.map((brandName) => {
         const offers = grouped[brandName as keyof typeof grouped];
         const seller = offers?.[0]?.seller || {};
-        const sortBy = offers?.map((offer: any) => offer?.additional?.sortBy);
         return {
           ...seller,
           brandName,
+          createdAt: sortByFn(offers, "createdAt", true),
+          validFromDate: sortByFn(offers, "validFromDate", true),
+          committedDate: sortByFn(offers, "committedDate", true),
+          redeemedDate: sortByFn(offers, "redeemedDate", true),
+          lowPrice: sortByFn(offers, "convertedPrice", false),
+          highPrice: sortByFn(offers, "convertedPrice", true),
           additional: {
-            images: offers?.map((offer: any) => offer?.metadata?.image),
-            sortBy: {
-              createdAt:
-                orderBy(sortBy, ["createdAt"], ["desc"])?.[0]?.createdAt ||
-                null,
-              committedDate:
-                orderBy(sortBy, ["committedDate"], ["desc"])?.[0]
-                  ?.committedDate || null,
-              redeemedDate:
-                orderBy(sortBy, ["redeemedDate"], ["desc"])?.[0]
-                  ?.redeemedDate || null,
-              validFromDate:
-                orderBy(sortBy, ["validFromDate"], ["desc"])?.[0]
-                  ?.validFromDate || null,
-              lowPrice:
-                orderBy(sortBy, ["lowPrice"], ["asc"])?.[0]?.lowPrice || null,
-              highPrice:
-                orderBy(sortBy, ["highPrice"], ["desc"])?.[0]?.highPrice || null
-            }
+            images: offers?.map((offer: any) => offer?.metadata?.image)
           },
           offers
         };
       }) || []
     );
   }, [allProducts]);
-  console.log("allSellers", allSellers);
 
   const values = {
     isLoading: products.isLoading || productsWithVariants.isLoading,

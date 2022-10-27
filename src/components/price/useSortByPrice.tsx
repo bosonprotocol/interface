@@ -1,15 +1,21 @@
-import orderBy from "lodash/orderBy";
 import { useMemo } from "react";
 
 import { Offer } from "../../lib/types/offer";
 import { FilterOptions } from "../../pages/explore/WithAllOffers";
 
 interface ExtendedOffer extends Offer {
+  uuid: string;
+  title: string;
+  brandName: string;
+  lowPrice: string;
+  highPrice: string;
+  committedDate: string;
+  redeemedDate: string;
   convertedPrice?: string;
 }
 
 interface Props {
-  data: any; // ExtendedOffer[] | undefined;
+  data: ExtendedOffer[];
 }
 export const useSortByPrice = ({
   data,
@@ -19,48 +25,52 @@ export const useSortByPrice = ({
   const offerArray = useMemo(() => {
     if (exchangeOrderBy === "price") {
       if (orderDirection === "desc") {
-        return orderBy(
-          data,
-          "additional.sortBy.lowPrice",
-          "desc"
-        ) as ExtendedOffer[];
+        return data
+          .sort(
+            (a: ExtendedOffer, b: ExtendedOffer) =>
+              parseFloat(a.highPrice) - parseFloat(b.highPrice)
+          )
+          .reverse();
       } else {
-        return orderBy(
-          data,
-          "additional.sortBy.highPrice",
-          "asc"
-        ) as ExtendedOffer[];
+        return data.sort(
+          (a: ExtendedOffer, b: ExtendedOffer) =>
+            parseFloat(a.lowPrice) - parseFloat(b.lowPrice)
+        );
       }
     }
     if (exchangeOrderBy === "createdAt") {
-      return orderBy(
-        data,
-        "additional.sortBy.createdAt",
-        "desc"
-      ) as ExtendedOffer[];
+      return data
+        .sort(
+          (a: ExtendedOffer, b: ExtendedOffer) =>
+            Number(a.createdAt) - Number(b.createdAt)
+        )
+        .reverse();
     }
     if (exchangeOrderBy === "validFromDate") {
-      return orderBy(
-        data,
-        "additional.sortBy.validFromDate",
-        "desc"
-      ) as ExtendedOffer[];
+      return data
+        .sort(
+          (a: ExtendedOffer, b: ExtendedOffer) =>
+            Number(a.validFromDate) - Number(b.validFromDate)
+        )
+        .reverse();
     }
     if (exchangeOrderBy === "committedDate") {
-      return orderBy(
-        data,
-        "additional.sortBy.committedDate",
-        "asc"
-      ) as ExtendedOffer[];
+      return data
+        .sort(
+          (a: ExtendedOffer, b: ExtendedOffer) =>
+            Number(a.committedDate) - Number(b.committedDate)
+        )
+        .reverse();
     }
     if (exchangeOrderBy === "redeemedDate") {
-      return orderBy(
-        data,
-        "additional.sortBy.redeemedDate",
-        "asc"
-      ) as ExtendedOffer[];
+      return data
+        .sort(
+          (a: ExtendedOffer, b: ExtendedOffer) =>
+            Number(a.redeemedDate) - Number(b.redeemedDate)
+        )
+        .reverse();
     }
-    return data;
+    return data as ExtendedOffer[];
   }, [data, exchangeOrderBy, orderDirection]);
 
   return offerArray;

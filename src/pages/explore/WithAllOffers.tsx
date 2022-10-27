@@ -70,7 +70,6 @@ export interface WithAllOffersProps {
   };
   filterOptions?: FilterOptions;
 }
-const DEFAULT_PAGE = 0;
 const SHOWOFF_PAGE = 4;
 const ITEMS_PER_PAGE = 12;
 export function WithAllOffers<P>(
@@ -137,6 +136,7 @@ export function WithAllOffers<P>(
         orderBy: ""
       };
 
+      // TODO: BP437 work on that
       if (filterByName !== false) {
         payload = {
           ...basePayload,
@@ -151,31 +151,13 @@ export function WithAllOffers<P>(
       }
       if (sortByParam !== false) {
         const [orderBy, orderDirection] = (sortByParam as string).split(":");
-        if (orderBy === "committedDate" || orderBy === "redeemedDate") {
-          payload = {
-            ...basePayload,
-            ...payload,
-            orderDirection: orderDirection,
-            orderBy: "createdAt",
-            exchangeOrderBy: orderBy
-          };
-        } else if (orderBy === "validFromDate") {
-          payload = {
-            ...basePayload,
-            ...payload,
-            orderDirection: orderDirection,
-            orderBy: orderBy,
-            validFromDate_lte: `${Math.floor(Date.now() / 1000)}`
-          };
-        } else {
-          payload = {
-            ...basePayload,
-            ...payload,
-            orderDirection: orderDirection,
-            orderBy: orderBy === "price" ? "createdAt" : orderBy,
-            exchangeOrderBy: orderBy
-          };
-        }
+        payload = {
+          ...basePayload,
+          ...payload,
+          orderBy,
+          exchangeOrderBy: orderBy,
+          orderDirection
+        };
       }
       return pick(payload, [
         "name",

@@ -48,10 +48,6 @@ function Explore({
     ...filterOptions
   });
 
-  useEffect(() => {
-    console.log("offerArray", offerArray);
-  }, [offerArray]);
-
   return (
     <Grid flexDirection="column" gap="2rem" justifyContent="flex-start">
       {pageOptions.type.includes("Products") && (
@@ -93,7 +89,11 @@ function Explore({
                     key={`ProductCard_${offer?.id}`}
                     id={`offer_${offer?.id}`}
                   >
-                    <ProductCard offer={offer} dataTestId="offer" />
+                    <ProductCard
+                      offer={offer}
+                      filterOptions={filterOptions}
+                      dataTestId="offer"
+                    />
                   </div>
                 ))}
           </ProductGridContainer>
