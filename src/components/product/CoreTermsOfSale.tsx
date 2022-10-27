@@ -80,6 +80,7 @@ export default function CoreTermsOfSale({ isMultiVariant }: Props) {
           </FormField>
         </>
       )}
+
       <FormField
         title="Token gated offer"
         subTitle="Limit the purchase of your item to users holding a specific token."
@@ -89,7 +90,7 @@ export default function CoreTermsOfSale({ isMultiVariant }: Props) {
           options={OPTIONS_TOKEN_GATED}
         />
 
-        {values.coreTermsOfSale.tokenGatedOffer.value === "true" && (
+        {values[prefix].tokenGatedOffer.value === "true" && (
           <>
             {/* TODO: enable once we have more than one variant */}
             {/* <TokengatedInfoWrapper>
@@ -102,15 +103,12 @@ export default function CoreTermsOfSale({ isMultiVariant }: Props) {
             </TokengatedInfoWrapper> */}
 
             <FormField title="Token Contract" style={{ margin: "1rem 0 0 0" }}>
-              <Input name="coreTermsOfSale.tokenContract" type="string" />
+              <Input name={`${prefix}.tokenContract`} type="string" />
             </FormField>
 
             <TokengatedInfoWrapper>
               <FormField title="Token Type:" style={{ margin: "1rem 0 0 0" }}>
-                <Select
-                  name="coreTermsOfSale.tokenType"
-                  options={TOKEN_TYPES}
-                />
+                <Select name={`${prefix}.tokenType`} options={TOKEN_TYPES} />
               </FormField>
 
               <div>
@@ -119,46 +117,41 @@ export default function CoreTermsOfSale({ isMultiVariant }: Props) {
                   style={{ margin: "1rem 0 0 0" }}
                 >
                   <TokengatedTextarea
-                    name="coreTermsOfSale.tokenGatingDesc"
+                    name={`${prefix}.tokenGatingDesc`}
                     placeholder="Token Gating Description"
                   />
                 </FormField>
               </div>
             </TokengatedInfoWrapper>
             <>
-              {values.coreTermsOfSale.tokenType?.value ===
-                TOKEN_TYPES[1].value && (
+              {values[prefix].tokenType?.value === TOKEN_TYPES[1].value && (
                 <div>
                   <FormField title="Criteria:" style={{ margin: "1rem 0 0 0" }}>
                     <Select
-                      name="coreTermsOfSale.tokenCriteria"
+                      name={`${prefix}.tokenCriteria`}
                       options={TOKEN_CRITERIA}
                     />
                   </FormField>
                 </div>
               )}
 
-              {(values.coreTermsOfSale.tokenCriteria?.value ===
+              {(values[prefix].tokenCriteria?.value ===
                 TOKEN_CRITERIA[0].value ||
-                values.coreTermsOfSale.tokenType?.value ===
-                  TOKEN_TYPES[0].value ||
-                values.coreTermsOfSale.tokenType?.value ===
-                  TOKEN_TYPES[2].value) && (
+                values[prefix].tokenType?.value === TOKEN_TYPES[0].value ||
+                values[prefix].tokenType?.value === TOKEN_TYPES[2].value) && (
                 <FormField
                   title="Min Balance:"
                   style={{ margin: "1rem 0 0 0" }}
                 >
-                  <Input name="coreTermsOfSale.minBalance" type="number" />
+                  <Input name={`${prefix}.minBalance`} type="number" />
                 </FormField>
               )}
-              {((values.coreTermsOfSale.tokenCriteria?.value ===
+              {((values[prefix].tokenCriteria?.value ===
                 TOKEN_CRITERIA[1].value &&
-                values.coreTermsOfSale.tokenType?.value ===
-                  TOKEN_TYPES[1].value) ||
-                values.coreTermsOfSale.tokenType?.value ===
-                  TOKEN_TYPES[2].value) && (
+                values[prefix].tokenType?.value === TOKEN_TYPES[1].value) ||
+                values[prefix].tokenType?.value === TOKEN_TYPES[2].value) && (
                 <FormField title="TokenId:" style={{ margin: "1rem 0 0 0" }}>
-                  <Input name="coreTermsOfSale.tokenId" type="number" />
+                  <Input name={`${prefix}.tokenId`} type="number" />
                 </FormField>
               )}
             </>

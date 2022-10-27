@@ -104,6 +104,13 @@ export const coreTermsOfSaleInitialValues = {
 export const variantsCoreTermsOfSaleInitialValues = {
   variantsCoreTermsOfSale: {
     tokenGatedOffer: OPTIONS_TOKEN_GATED[0],
+    tokenGatedVariants: TOKEN_GATED_VARIANTS[0],
+    tokenContract: "",
+    tokenType: TOKEN_TYPES[0],
+    minBalance: undefined,
+    tokenId: undefined,
+    tokenGatingDesc: "",
+    tokenCriteria: TOKEN_CRITERIA[0],
     redemptionPeriod: [],
     offerValidityPeriod: []
   }
