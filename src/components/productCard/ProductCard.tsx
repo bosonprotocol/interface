@@ -73,18 +73,25 @@ export default function ProductCard({
 
   const priceValue = useMemo(() => {
     if (filterOptions?.orderBy === "price") {
-      return filterOptions?.orderDirection === "asc"
-        ? offer?.priceLow
-        : offer?.priceHigh;
+      const selected =
+        filterOptions?.orderDirection === "asc"
+          ? offer?.priceDetails?.low
+          : offer?.priceDetails?.high;
+
+      return {
+        value: selected?.value,
+        decimals: selected?.exchangeToken?.decimals,
+        symbol: selected?.exchangeToken?.symbol
+      };
     }
-    return offer?.price;
+    return {
+      value: offer?.price,
+      decimals: offer?.exchangeToken?.decimals,
+      symbol: offer?.exchangeToken?.symbol
+    };
   }, [offer, filterOptions]);
 
-  const price = useConvertedPrice({
-    value: priceValue,
-    decimals: offer?.exchangeToken?.decimals,
-    symbol: offer?.exchangeToken?.symbol
-  });
+  const price = useConvertedPrice(priceValue);
 
   const handleOnCardClick = () => {
     navigate(
@@ -124,7 +131,7 @@ export default function ProductCard({
             ? "Price may be different on variants"
             : ""
         }
-        currency={offer.exchangeToken.symbol as Currencies}
+        currency={priceValue?.symbol as Currencies}
         onAvatarNameClick={handleOnAvatarClick}
         imageProps={{
           src: imageSrc,

@@ -17,6 +17,14 @@ const sortByFn = (arr: any, key: string, reverse: boolean) => {
   }
   return newArr.find((a: any) => a[key] !== null)?.[key] || null;
 };
+const sortByFnReturn = (arr: any, key: string, reverse: boolean) => {
+  const newArr = arr.sort((a: any, b: any) => a[key] - b[key]);
+
+  if (reverse) {
+    return newArr.reverse().find((a: any) => a[key] !== null);
+  }
+  return newArr.find((a: any) => a[key] !== null);
+};
 
 interface PromiseProps {
   status: string;
@@ -109,8 +117,19 @@ export default function useProducts(
               brandName: product?.brand?.name,
               lowPrice: sortByFn(offers, "convertedPrice", false),
               highPrice: sortByFn(offers, "convertedPrice", true),
-              priceLow: sortByFn(offers, "price", false),
-              priceHigh: sortByFn(offers, "price", true),
+              priceDetails: {
+                low: {
+                  value: sortByFnReturn(offers, "price", false)?.price || null,
+                  exchangeToken:
+                    sortByFnReturn(offers, "price", false)?.exchangeToken ||
+                    null
+                },
+                high: {
+                  value: sortByFnReturn(offers, "price", true)?.price || null,
+                  exchangeToken:
+                    sortByFnReturn(offers, "price", true)?.exchangeToken || null
+                }
+              },
               additional: {
                 variants: offers,
                 product
