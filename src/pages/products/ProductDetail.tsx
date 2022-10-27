@@ -35,7 +35,7 @@ export default function ProductDetail() {
     isError,
     isLoading
   } = useProductByUuid(productUuid, { enabled: !!productUuid });
-
+  console.log({ productResult });
   const product = productResult?.product;
   const variants = productResult?.variants;
   const variantsWithV1 = variants?.filter(
@@ -104,11 +104,7 @@ export default function ProductDetail() {
     );
   }
 
-  if (!selectedOffer) {
-    return null;
-  }
-
-  if (!product || !product.id) {
+  if (!productResult || !selectedOffer || !product || !product.id) {
     return <div data-testid="notFound">This product does not exist</div>;
   }
 

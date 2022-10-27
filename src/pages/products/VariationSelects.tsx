@@ -9,6 +9,41 @@ import Grid from "../../components/ui/Grid";
 import { isTruthy } from "../../lib/types/helpers";
 import { VariantV1, Variation } from "./types";
 
+const sizes = [
+  "xxxxxs",
+  "extra extra extra extra extra small",
+  "xxxxs",
+  "extra extra extra extra small",
+  "xxxs",
+  "extra extra extra small",
+  "xxs",
+  "extra extra small",
+  "xs",
+  "extra small",
+  "s",
+  "small",
+  "m",
+  "medium",
+  "l",
+  "large",
+  "xl",
+  "extra large",
+  "xxl",
+  "extra extra large",
+  "xxxl",
+  "extra extra extra large",
+  "xxxxl",
+  "extra extra extra extra large",
+  "xxxxxl",
+  "extra extra extra extra extra large"
+] as const;
+
+const sizesMapWithWeights = Object.fromEntries(
+  Object.entries(Object.values(sizes)).map(([key, value]) => [value, +key])
+);
+
+const emptyLabel = "Please select...";
+
 const getVariationOption = (
   variation: Pick<Variation, "id" | "option"> | undefined
 ) => {
@@ -16,7 +51,7 @@ const getVariationOption = (
     return;
   }
   return {
-    label: variation.option,
+    label: variation.option === "-" ? emptyLabel : variation.option,
     value: variation.id
   };
 };
@@ -38,12 +73,8 @@ const existsVariationWithSizeAndColor = (
 
 const getVariationsByType = (
   variants: VariantV1[] | undefined,
-  type: Variation["type"],
-  selectedOtherType: SelectDataProps<string> | undefined
+  type: Variation["type"]
 ) => {
-  // type = 'Color', variations = Red, Blue
-  // selectedOtherType = 'S'
-  // return = [{option: Red, type: Color, disabled: false}, {option: Blue, type: Color, disabled: true}]
   return variants
     ? uniqBy(
         variants
@@ -54,32 +85,31 @@ const getVariationsByType = (
         (variation) => variation.id
       )
         .map((variation) => {
-          // const isVariationEnabled = variants.some((variant) =>
-          //   existsVariationWithSizeAndColor(variant, {
-          //     color:
-          //       type === "Size" ? selectedOtherType?.value || "" : variation.id,
-          //     size:
-          //       type === "Color" ? selectedOtherType?.value || "" : variation.id
-          //   })
-          // );
-          // console.log(
-          //   "is there any variant in",
-          //   variants,
-          //   "with color=",
-          //   type === "Size" ? selectedOtherType?.value || "" : variation.id,
-          //   "and size=",
-          //   type === "Color" ? selectedOtherType?.value || "" : variation.id
-          // );
-
           return getVariationOption({
             ...variation
-            // option: `${variation.option} ${
-            //   isVariationEnabled ? "" : "(not applicable)"
-            // }`,
-            // disabled: false //!isVariationEnabled
           });
         })
         .filter(isTruthy)
+        .sort((a, b) => {
+          if (type === "Size") {
+            if (a.label === emptyLabel) {
+              return -1;
+            }
+            const aWeight = sizesMapWithWeights[a.label.toLowerCase().trim()];
+            const bWeight = sizesMapWithWeights[b.label.toLowerCase().trim()];
+            if (aWeight !== -1 && bWeight !== -1) {
+              return aWeight < bWeight ? -1 : 1;
+            }
+            if (aWeight !== -1) {
+              return -1;
+            }
+            if (bWeight !== -1) {
+              return 1;
+            }
+            return a.label.localeCompare(b.label);
+          }
+          return a.label === emptyLabel ? -1 : a.label.localeCompare(b.label);
+        })
     : [];
 };
 
@@ -91,7 +121,9 @@ const getIsEmptyOption = (
     !option.label ||
     !option.value ||
     option.label === "-" ||
-    option.value === "-"
+    option.value === "-" ||
+    option.label === emptyLabel ||
+    option.value === emptyLabel
   );
 };
 
@@ -109,6 +141,7 @@ export default function VariationSelects({
   const [dropdownVariant, setDropdownVariant] = useState<
     Pick<VariantV1, "variations"> | undefined
   >(selectedVariant);
+  console.log({ selectedVariant, dropdownVariant });
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [lastChangedVariation, setLastChangedVariation] = useState<
     "" | "color" | "size"
@@ -120,7 +153,7 @@ export default function VariationSelects({
       initialValues={{
         color:
           showDashInColor || !dropdownVariant
-            ? getVariationOption({ id: "-", option: "-" })
+            ? getVariationOption({ id: "", option: emptyLabel })
             : getVariationOption(
                 dropdownVariant.variations.find(
                   (variation) => variation.type === "Color"
@@ -128,7 +161,7 @@ export default function VariationSelects({
               ),
         size:
           showDashInSize || !dropdownVariant
-            ? getVariationOption({ id: "-", option: "-" })
+            ? getVariationOption({ id: "", option: emptyLabel })
             : getVariationOption(
                 dropdownVariant.variations.find(
                   (variation) => variation.type === "Size"
@@ -162,28 +195,29 @@ export default function VariationSelects({
               }
             ]
           });
-
-          if (
-            !getIsEmptyOption(values.color) &&
-            !getIsEmptyOption(values.size)
-          ) {
-            const color = values.color?.label || "";
-            const size = values.size?.label || "";
+          const isEmptyColor = getIsEmptyOption(values.color);
+          const isEmptySize = getIsEmptyOption(values.size);
+          if (!isEmptyColor && !isEmptySize) {
+            const color = values.color?.label || "-";
+            const size = values.size?.label || "-";
             setErrorMessage(
               `The variant with color '${color}' and size '${size}' does not exist. Please select another combination.`
+            );
+          } else if (isEmptyColor && isEmptySize) {
+            setErrorMessage(
+              `This combination does not exist, please select another one.`
             );
           }
         }
       }}
     >
-      {({ submitForm, values }) => {
-        const { color: selectedColor, size: selectedSize } = values;
+      {({ submitForm }) => {
         return (
           <Form>
             <Grid gap="2rem" margin="1rem 0 2.5rem 0">
               <Select
                 name="color"
-                options={getVariationsByType(variants, "Color", selectedSize)}
+                options={getVariationsByType(variants, "Color")}
                 placeholder="Color"
                 onChange={() => {
                   setLastChangedVariation("color");
@@ -192,7 +226,7 @@ export default function VariationSelects({
               />
               <Select
                 name="size"
-                options={getVariationsByType(variants, "Size", selectedColor)}
+                options={getVariationsByType(variants, "Size")}
                 placeholder="Size"
                 onChange={() => {
                   setLastChangedVariation("size");
