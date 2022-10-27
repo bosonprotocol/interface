@@ -57,6 +57,10 @@ on:
         required: true
       REACT_APP_GOOGLE_TAG_ID:
         required: false
+      REACT_APP_META_TX_API_KEY:
+        required: true
+      REACT_APP_META_TX_API_IDS:
+        required: true
     outputs:
       JOB_LINT:
         value: ${{ jobs.build-test-deploy.outputs.jobLint }}
@@ -89,6 +93,8 @@ jobs:
       REACT_APP_CREATE_PROFILE_CONFIGURATION: ${{ inputs.REACT_APP_CREATE_PROFILE_CONFIGURATION }}
       REACT_APP_DEFAULT_TOKENS_LIST_PRODUCTION: ${{ secrets.REACT_APP_DEFAULT_TOKENS_LIST_PRODUCTION }}
       REACT_APP_GOOGLE_TAG_ID: ${{ secrets.REACT_APP_GOOGLE_TAG_ID }}
+      REACT_APP_META_TX_API_KEY: ${{ secrets.REACT_APP_META_TX_API_KEY }}
+      REACT_APP_META_TX_API_IDS: ${{ secrets.REACT_APP_META_TX_API_IDS }}
     outputs:
       jobLint: ${{ steps.lint.outputs.pass }}
       jobBuild: ${{ steps.build.outputs.pass }}

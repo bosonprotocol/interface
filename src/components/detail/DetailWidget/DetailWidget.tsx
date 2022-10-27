@@ -647,6 +647,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                   }}
                   extraInfo="Step 1/2"
                   web3Provider={signer?.provider as Provider}
+                  metaTx={CONFIG.metaTx}
                 />
               </div>
             )}
