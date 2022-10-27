@@ -56,7 +56,7 @@ function groupDates(exchanges: any) {
   const listOfDates = exchanges?.map((exchange: any) =>
     formatDate(exchange.committedDate)
   );
-  if (!listOfDates.length) {
+  if (!listOfDates?.length) {
     return false;
   }
 

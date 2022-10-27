@@ -13,15 +13,21 @@ const StyledGrid = styled(Grid)`
 interface Props {
   errorMessage?: string;
   children?: ReactNode;
+  [x: string]: any;
 }
 
-export default function SimpleError({ errorMessage, children }: Props) {
+export default function SimpleError({
+  errorMessage,
+  children,
+  ...rest
+}: Props) {
   return (
     <StyledGrid
       justifyContent="flex-start"
       gap="0.5rem"
       margin="1.5rem 0 0 0"
       padding="1.5rem"
+      {...rest}
     >
       <Warning color={colors.darkOrange} size={16} />
       {errorMessage ? (

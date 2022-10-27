@@ -6,7 +6,7 @@ import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import { checkIfValueIsEmpty } from "../../lib/utils/checkIfValueIsEmpty";
 import Error from "./Error";
-import type { SelectProps } from "./types";
+import type { SelectDataProps, SelectProps } from "./types";
 
 const customStyles = (error: any) => ({
   control: (provided: any, state: any) => ({
@@ -57,6 +57,7 @@ export default function SelectComponent({
   isSearchable = true,
   disabled = false,
   errorMessage,
+  onChange,
   ...props
 }: SelectProps) {
   const [field, meta, helpers] = useField(name);
@@ -71,11 +72,12 @@ export default function SelectComponent({
     typeof displayErrorMessage === typeof "string" &&
     displayErrorMessage !== "";
 
-  const handleChange = (option: any) => {
+  const handleChange = (option: SelectDataProps<string>) => {
     if (!meta.touched) {
       helpers.setTouched(true);
     }
     helpers.setValue(option);
+    onChange?.(option);
   };
   const handleBlur = () => {
     if (!meta.touched) {

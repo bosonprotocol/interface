@@ -23,6 +23,7 @@ interface Props {
   id_in?: string[];
   orderBy?: string | null | undefined;
   orderDirection?: string | null | undefined;
+  offerId?: string;
 }
 
 export function useExchanges(
@@ -39,7 +40,8 @@ export function useExchanges(
     id,
     id_in,
     orderBy = "id",
-    orderDirection = "desc"
+    orderDirection = "desc",
+    offerId
   } = props;
   return useQuery(
     ["exchanges", props],
@@ -48,7 +50,7 @@ export function useExchanges(
         exchanges: Exchange[];
       }>(
         gql`
-        query GetExchanges($disputed: Boolean, $sellerId: String, $buyerId: String, $orderBy: String, $orderDirection: String) {
+        query GetExchanges($disputed: Boolean, $sellerId: String, $buyerId: String, $orderBy: String, $orderDirection: String, $offerId: String) {
           exchanges(
             ${orderBy ? `orderBy: "${orderBy}"` : ""}
             ${orderDirection ? `orderDirection: "${orderDirection}"` : ""}
@@ -63,6 +65,7 @@ export function useExchanges(
                 ? "disputed: $disputed"
                 : ""
             }
+            ${offerId ? "offer: $offerId" : ""}
             }) {
             dispute {
               id
@@ -105,7 +108,8 @@ export function useExchanges(
           sellerId: sellerId?.length ? sellerId : null,
           buyerId: buyerId?.length ? buyerId : null,
           orderBy,
-          orderDirection
+          orderDirection,
+          offerId
         }
       );
       return (
