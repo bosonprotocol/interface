@@ -19,7 +19,6 @@ export const offerGraphQl = gql`
     validUntilDate
     voidedAt
     voided
-    createdAt
     voucherRedeemableUntilDate
     numberOfCommits
     numberOfRedemptions
@@ -109,6 +108,9 @@ export const offerGraphQl = gql`
           packaging_dimensions_unit
           packaging_weight_value
           packaging_weight_unit
+          visuals_images {
+            url
+          }
         }
         productV1Seller {
           id
