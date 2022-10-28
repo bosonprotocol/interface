@@ -1,9 +1,11 @@
+import { subgraph } from "@bosonprotocol/react-kit";
 import { BigNumber, ethers } from "ethers";
 import { useState } from "react";
 import styled from "styled-components";
 import { useAccount, useBalance } from "wagmi";
 
 import { colors } from "../../../../lib/styles/colors";
+import { useAddPendingTransaction } from "../../../../lib/utils/hooks/transactions/usePendingTransactions";
 import {
   getNumberWithDecimals,
   getNumberWithoutDecimals
@@ -54,6 +56,7 @@ export default function FinanceWithdraw({
   const [withdrawError, setWithdrawError] = useState<unknown>(null);
 
   const { address } = useAccount();
+  const addPendingTransaction = useAddPendingTransaction();
 
   const { data: dataBalance, refetch } = useBalance(
     exchangeToken !== ethers.constants.AddressZero
@@ -111,6 +114,12 @@ export default function FinanceWithdraw({
         showModal("TRANSACTION_SUBMITTED", {
           action: "Finance withdraw",
           txHash: tx.hash
+        });
+        addPendingTransaction({
+          type: subgraph.EventType.FundsWithdrawn,
+          hash: tx.hash,
+          isMetaTx: false, // / TODO: use correct value if meta tx supported
+          accountType: "Account"
         });
         await tx?.wait();
         await poll(

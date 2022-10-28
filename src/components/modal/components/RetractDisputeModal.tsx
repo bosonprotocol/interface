@@ -1,11 +1,12 @@
 import { TransactionResponse } from "@bosonprotocol/common";
-import { CoreSDK } from "@bosonprotocol/react-kit";
+import { CoreSDK, subgraph } from "@bosonprotocol/react-kit";
 import { BigNumberish } from "ethers";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useAccount } from "wagmi";
 
 import { CONFIG } from "../../../lib/config";
+import { useAddPendingTransaction } from "../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 import { poll } from "../../../pages/create-product/utils";
 import SimpleError from "../../error/SimpleError";
@@ -53,6 +54,7 @@ export default function RetractDisputeModal({
   refetch
 }: Props) {
   const coreSDK = useCoreSDK();
+  const addPendingTransaction = useAddPendingTransaction();
   const { showModal } = useModal();
   const { address } = useAccount();
   const [retractDisputeError, setRetractDisputeError] = useState<Error | null>(
@@ -87,6 +89,15 @@ export default function RetractDisputeModal({
                 action: "Retract dispute",
                 txHash: tx.hash
               });
+              addPendingTransaction({
+                type: subgraph.EventType.DisputeRetracted,
+                hash: tx.hash,
+                isMetaTx,
+                accountType: "Buyer",
+                exchange: {
+                  id: exchangeId
+                }
+              });
               await tx.wait();
               await poll(
                 async () => {
@@ -103,7 +114,7 @@ export default function RetractDisputeModal({
               toast((t) => (
                 <SuccessTransactionToast
                   t={t}
-                  action={`Raised dispute: ${offerName}`}
+                  action={`Retracted dispute: ${offerName}`}
                   url={CONFIG.getTxExplorerUrl?.(tx.hash)}
                 />
               ));

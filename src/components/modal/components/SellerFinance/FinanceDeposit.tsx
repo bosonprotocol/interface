@@ -1,7 +1,9 @@
+import { subgraph } from "@bosonprotocol/react-kit";
 import { BigNumber, constants, ethers } from "ethers";
 import { useState } from "react";
 import { useAccount, useBalance } from "wagmi";
 
+import { useAddPendingTransaction } from "../../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { useCoreSDK } from "../../../../lib/utils/useCoreSdk";
 import { getNumberWithoutDecimals } from "../../../../pages/account/funds/FundItem";
 import useDepositFunds from "../../../../pages/account/funds/useDepositFunds";
@@ -54,6 +56,7 @@ export default function FinanceDeposit({
 
   const { showModal, hideModal } = useModal();
   const coreSDK = useCoreSDK();
+  const addPendingTransaction = useAddPendingTransaction();
   const depositFunds = useDepositFunds({
     accountId,
     amount:
@@ -115,6 +118,7 @@ export default function FinanceDeposit({
             constants.MaxInt256
           );
         }
+        // TODO: add pending approve token tx if even type supported by subgraph
         showModal("TRANSACTION_SUBMITTED", {
           action: "Approve ERC20 Token",
           txHash: approveTx.hash
@@ -141,6 +145,12 @@ export default function FinanceDeposit({
         showModal("TRANSACTION_SUBMITTED", {
           action: "Finance deposit",
           txHash: tx.hash
+        });
+        addPendingTransaction({
+          type: subgraph.EventType.FundsDeposited,
+          hash: tx.hash,
+          isMetaTx: false, // TODO: use correct value if meta tx supported
+          accountType: "Seller"
         });
         await tx?.wait();
         await poll(

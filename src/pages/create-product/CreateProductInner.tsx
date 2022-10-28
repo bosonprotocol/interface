@@ -46,6 +46,7 @@ import { UrlParameters } from "../../lib/routing/parameters";
 import { OffersRoutes } from "../../lib/routing/routes";
 import { useChatStatus } from "../../lib/utils/hooks/chat/useChatStatus";
 import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
+import { useAddPendingTransaction } from "../../lib/utils/hooks/transactions/usePendingTransactions";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { saveItemInStorage } from "../../lib/utils/hooks/useLocalStorage";
@@ -361,6 +362,7 @@ function CreateProductInner({
   const { address } = useAccount();
 
   const { sellers, lens: lensProfiles } = useCurrentSellers();
+  const addPendingTransaction = useAddPendingTransaction();
 
   const hasSellerAccount = !!sellers?.length;
 
@@ -828,6 +830,12 @@ function CreateProductInner({
             action: "Create seller",
             txHash: txResponse.hash
           });
+          addPendingTransaction({
+            type: subgraph.EventType.SellerCreated,
+            hash: txResponse.hash,
+            isMetaTx,
+            accountType: "Seller"
+          });
           await txResponse.wait();
           showModal("WAITING_FOR_CONFIRMATION");
         }
@@ -853,6 +861,12 @@ function CreateProductInner({
         showModal("TRANSACTION_SUBMITTED", {
           action: "Create offer with variants",
           txHash: txResponse.hash
+        });
+        addPendingTransaction({
+          type: subgraph.EventType.OfferCreated,
+          hash: txResponse.hash,
+          isMetaTx,
+          accountType: "Seller"
         });
         const txReceipt = await txResponse.wait();
         const offerIds = coreSDK.getCreatedOfferIdsFromLogs(txReceipt.logs);
@@ -910,6 +924,12 @@ function CreateProductInner({
               action: "Create seller",
               txHash: createSellerResponse.hash
             });
+            addPendingTransaction({
+              type: subgraph.EventType.SellerCreated,
+              hash: createSellerResponse.hash,
+              isMetaTx,
+              accountType: "Seller"
+            });
             await createSellerResponse.wait();
             showModal("WAITING_FOR_CONFIRMATION");
           }
@@ -938,6 +958,22 @@ function CreateProductInner({
           action: "Create offer",
           txHash: txResponse.hash
         });
+
+        addPendingTransaction({
+          type: subgraph.EventType.OfferCreated,
+          hash: txResponse.hash,
+          isMetaTx,
+          accountType: "Seller"
+        });
+        if (!hasSellerAccount && seller) {
+          addPendingTransaction({
+            type: subgraph.EventType.SellerCreated,
+            hash: txResponse.hash,
+            isMetaTx,
+            accountType: "Seller"
+          });
+        }
+
         const txReceipt = await txResponse.wait();
         const offerId = coreSDK.getCreatedOfferIdFromLogs(txReceipt.logs);
         let createdOffer: OfferFieldsFragment | null = null;

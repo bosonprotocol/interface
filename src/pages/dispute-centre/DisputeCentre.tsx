@@ -268,7 +268,6 @@ function DisputeCentre() {
                     createPendingTx({
                       type: subgraph.EventType.DisputeRaised,
                       executedBy: address,
-                      accountId: exchange.buyer.id,
                       accountType: "Buyer",
                       hash: tx.hash
                     })
