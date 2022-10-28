@@ -155,7 +155,6 @@ export default function VariationSelects({
   const [dropdownVariant, setDropdownVariant] = useState<
     Pick<VariantV1, "variations"> | undefined
   >(selectedVariant);
-  console.log({ selectedVariant, dropdownVariant });
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [lastChangedVariation, setLastChangedVariation] = useState<
     "" | "color" | "size"
