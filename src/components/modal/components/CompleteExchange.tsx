@@ -261,6 +261,7 @@ export default function CompleteExchange({
               );
             }}
             web3Provider={signer?.provider as Provider}
+            metaTx={CONFIG.metaTx}
           />
         </Grid>
       )}
