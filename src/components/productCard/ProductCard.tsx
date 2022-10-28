@@ -9,7 +9,7 @@ import styled, { css } from "styled-components";
 
 import mockedAvatar from "../../assets/frame.png";
 import { UrlParameters } from "../../lib/routing/parameters";
-import { BosonRoutes, OffersRoutes } from "../../lib/routing/routes";
+import { BosonRoutes, ProductRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
@@ -100,7 +100,7 @@ export default function ProductCard({
   const handleOnCardClick = () => {
     navigate(
       {
-        pathname: generatePath(OffersRoutes.OfferUuid, {
+        pathname: generatePath(ProductRoutes.ProductDetail, {
           [UrlParameters.uuid]: offer.uuid
         })
       },
