@@ -66,18 +66,6 @@ const FeaturedOffers: React.FC<IFeaturedOffers> = ({
   const { isLteXS } = useBreakpoints();
 
   const { products: offers, isLoading, isError } = useProducts();
-  // const {
-  //   data: offers,
-  //   isLoading,
-  //   isError
-  // } = useOffers({
-  //   voided: false,
-  //   valid: true,
-  //   quantityAvailable_gte: 1,
-  //   orderBy: "numberOfCommits",
-  //   orderDirection: "desc"
-  // });
-  console.log("offers", offers);
 
   return (
     <Root data-testid={"featureOffers"}>
