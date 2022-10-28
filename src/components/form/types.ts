@@ -98,4 +98,5 @@ export interface UploadProps extends BaseProps {
   wrapperProps?: React.HTMLAttributes<HTMLDivElement>;
   onLoadSinglePreviewImage?: (base64Uri: string) => void;
   withUpload?: boolean;
+  onLoading?: (loading: boolean) => void;
 }

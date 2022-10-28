@@ -116,7 +116,7 @@ function determineDataset(dates: any) {
     datasets: [
       {
         data: commitedData.length <= 1 ? [0, commitedData] : commitedData,
-        label: "Commited",
+        label: "Committed",
         backgroundColor: colors.blue,
         borderColor: colors.blue,
         fill: "start",

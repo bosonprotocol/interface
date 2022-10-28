@@ -1,4 +1,10 @@
-import { Provider, subgraph, VoidButton } from "@bosonprotocol/react-kit";
+import { TransactionResponse } from "@bosonprotocol/common";
+import {
+  CoreSDK,
+  Provider,
+  subgraph,
+  VoidButton
+} from "@bosonprotocol/react-kit";
 import { BigNumberish } from "ethers";
 import { useCallback, useState } from "react";
 import toast from "react-hot-toast";
@@ -134,6 +140,26 @@ function VoidProductOffer({ offer, single = false }: OfferProps) {
   );
 }
 
+async function voidOfferBatchWithMetaTx(
+  coreSdk: CoreSDK,
+  offerIds: BigNumberish[]
+): Promise<TransactionResponse> {
+  const nonce = Date.now();
+  const { r, s, v, functionName, functionSignature } =
+    await coreSdk.signMetaTxVoidOfferBatch({
+      offerIds,
+      nonce
+    });
+  return coreSdk.relayMetaTransaction({
+    functionName,
+    functionSignature,
+    sigR: r,
+    sigS: s,
+    sigV: v,
+    nonce
+  });
+}
+
 interface Props {
   offer?: Offer;
   offers?: Array<Offer | null>;
@@ -233,9 +259,15 @@ export default function VoidProduct({
 
     try {
       setIsLoading(true);
-      const txResponse = await coreSdk.voidOfferBatch(offerIds);
+      let txResponse: TransactionResponse;
+      const isMetaTx = Boolean(coreSdk?.isMetaTxConfigSet && signer);
+      if (isMetaTx) {
+        txResponse = await voidOfferBatchWithMetaTx(coreSdk, offerIds);
+      } else {
+        txResponse = await coreSdk.voidOfferBatch(offerIds);
+      }
       const txHash = txResponse.hash;
-      await txResponse.wait(offerIds.length);
+      await txResponse.wait();
       handleSuccess(
         {
           transactionHash: txHash
@@ -247,7 +279,7 @@ export default function VoidProduct({
     } catch (error) {
       console.error("onError", error);
     }
-  }, [offers, coreSdk, handleSuccess]);
+  }, [offers, coreSdk, signer, handleSuccess]);
 
   return (
     <Grid flexDirection="column" alignItems="flex-start" gap="2rem">
@@ -311,6 +343,7 @@ export default function VoidProduct({
               }}
               onSuccess={handleSuccess}
               web3Provider={signer?.provider as Provider}
+              metaTx={CONFIG.metaTx}
             />
           </VoidButtonWrapper>
         </Grid>

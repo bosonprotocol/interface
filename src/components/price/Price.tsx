@@ -14,6 +14,7 @@ const Root = styled.div<{ $withBosonStyles: boolean }>`
   display: flex;
   gap: 0.25rem;
   align-items: center;
+  width: inherit;
   ${({ $withBosonStyles }) =>
     $withBosonStyles
       ? css`

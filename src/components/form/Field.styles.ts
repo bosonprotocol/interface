@@ -354,6 +354,12 @@ export const CheckboxWrapper = styled.label.attrs((props: { error: any }) => ({
         `}
 `;
 
+export const VideoPreview = styled.video`
+  background: ${colors.lightGrey};
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+`;
 export const ImagePreview = styled.img`
   background: ${colors.lightGrey};
 `;

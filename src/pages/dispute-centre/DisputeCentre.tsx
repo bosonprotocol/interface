@@ -1,4 +1,6 @@
-import { subgraph } from "@bosonprotocol/react-kit";
+import { TransactionResponse } from "@bosonprotocol/common";
+import { CoreSDK, subgraph } from "@bosonprotocol/react-kit";
+import { BigNumberish } from "ethers";
 import { Formik } from "formik";
 import { ArrowLeft } from "phosphor-react";
 import { useState } from "react";
@@ -82,6 +84,26 @@ const ItemPreview = styled(Grid)<{ isLteS: boolean }>`
   width: ${({ isLteS }) => (isLteS ? "calc(100% - 3.125rem)" : "41.75rem")};
   background-color: ${colors.white};
 `;
+
+async function raiseDisputeWithMetaTx(
+  coreSdk: CoreSDK,
+  exchangeId: BigNumberish
+): Promise<TransactionResponse> {
+  const nonce = Date.now();
+  const { r, s, v, functionName, functionSignature } =
+    await coreSdk.signMetaTxRaiseDispute({
+      exchangeId,
+      nonce
+    });
+  return coreSdk.relayMetaTransaction({
+    functionName,
+    functionSignature,
+    sigR: r,
+    sigS: s,
+    sigV: v,
+    nonce
+  });
+}
 
 function DisputeCentre() {
   const { bosonXmtp } = useChatContext();
@@ -228,8 +250,16 @@ function DisputeCentre() {
                       }
                     });
                   }
-                  const tx = await coreSDK.raiseDispute(exchange.id);
+                  let tx: TransactionResponse;
                   showModal("WAITING_FOR_CONFIRMATION");
+                  const isMetaTx = Boolean(
+                    coreSDK?.isMetaTxConfigSet && address
+                  );
+                  if (isMetaTx) {
+                    tx = await raiseDisputeWithMetaTx(coreSDK, exchange.id);
+                  } else {
+                    tx = await coreSDK.raiseDispute(exchange.id);
+                  }
                   showModal("TRANSACTION_SUBMITTED", {
                     action: "Raise dispute",
                     txHash: tx.hash

@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useEffect, useMemo } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 
 import { breakpoint } from "../../lib/styles/breakpoint";
@@ -12,6 +12,8 @@ import BosonButton from "../ui/BosonButton";
 import Grid from "../ui/Grid";
 import { ProductButtonGroup, SectionTitle } from "./Product.styles";
 import { useCreateForm } from "./utils/useCreateForm";
+
+const MAX_VIDEO_FILE_SIZE = 65 * 1024 * 1024;
 
 export const Box = styled.div`
   padding: 1.625rem 0;
@@ -114,6 +116,7 @@ interface Props {
 const productImagesPrefix = "productImages";
 export default function ProductImages({ onChangeOneSetOfImages }: Props) {
   const { nextIsDisabled, values } = useCreateForm();
+  const [isVideoLoading, setVideoLoading] = useState<boolean>();
   const hasVariants = values.productType.productVariant === "differentVariants";
   const oneSetOfImages =
     !hasVariants || values.imagesSpecificOrAll?.value === "all";
@@ -166,9 +169,6 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
         subTitle={`You can disable images for variants that shouldn't be shown. Use a max. size of ${bytesToSize(
           MAX_FILE_SIZE
         )} per image`}
-        style={{
-          marginBottom: 0
-        }}
       >
         {oneSetOfImages ? (
           <UploadImages prefix={productImagesPrefix} />
@@ -176,11 +176,41 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
           <StyledTabs tabsData={tabsData} Content={TabsContent} />
         )}
       </FormField>
+      <FormField
+        title="Upload your product animation video"
+        // subTitle={`${
+        //   hasVariants
+        //     ? "This will apply across all variants of your product."
+        //     : ""
+        // } . GLTF, GLB, WEBM, MP4, M4V, OGV, and OGG are supported. Use a max. size of ${bytesToSize(
+        //   MAX_VIDEO_FILE_SIZE
+        // )} for the video`}
+        subTitle={`${
+          hasVariants
+            ? "This will apply across all variants of your product"
+            : ""
+        }. Only MP4 is supported. Use a max. size of ${bytesToSize(
+          MAX_VIDEO_FILE_SIZE
+        )} for the video`}
+        style={{
+          marginBottom: 0
+        }}
+      >
+        <Upload
+          name="productAnimation"
+          placeholder="Video"
+          // accept="video/webm, video/mp4, video/m4v, video/ogv, video/ogg"
+          accept="video/mp4"
+          maxSize={MAX_VIDEO_FILE_SIZE}
+          withUpload
+          onLoading={(loading) => setVideoLoading(loading)}
+        />
+      </FormField>
       <ProductButtonGroup>
         <BosonButton
           variant="primaryFill"
           type="submit"
-          disabled={nextIsDisabled}
+          disabled={nextIsDisabled || isVideoLoading}
         >
           Next
         </BosonButton>

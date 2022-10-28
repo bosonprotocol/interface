@@ -17,6 +17,7 @@ import Image from "../../components/ui/Image";
 import Loading from "../../components/ui/Loading";
 import SellerID from "../../components/ui/SellerID";
 import Typography from "../../components/ui/Typography";
+import Video from "../../components/ui/Video";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { colors } from "../../lib/styles/colors";
 import { getOfferDetails } from "../../lib/utils/getOfferDetails";
@@ -82,6 +83,7 @@ export default function OfferDetail() {
   const {
     name,
     offerImg,
+    animationUrl,
     shippingInfo,
     description,
     // productData,
@@ -94,7 +96,18 @@ export default function OfferDetail() {
       <LightBackground>
         <MainDetailGrid>
           <ImageWrapper>
-            <Image src={offerImg} dataTestId="offerImage" />
+            {animationUrl ? (
+              <Video
+                src={animationUrl}
+                dataTestId="offerAnimationUrl"
+                videoProps={{ muted: true, loop: true, autoPlay: true }}
+                componentWhileLoading={() => (
+                  <Image src={offerImg} dataTestId="offerImage" />
+                )}
+              />
+            ) : (
+              <Image src={offerImg} dataTestId="offerImage" />
+            )}
           </ImageWrapper>
           <div>
             <SellerID

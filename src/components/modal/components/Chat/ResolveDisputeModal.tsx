@@ -1,8 +1,11 @@
+import { TransactionResponse } from "@bosonprotocol/common";
+import { CoreSDK } from "@bosonprotocol/react-kit";
 import { BigNumberish, utils } from "ethers";
 import { Info as InfoComponent } from "phosphor-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
+import { useAccount } from "wagmi";
 
 import { CONFIG } from "../../../../lib/config";
 import { colors } from "../../../../lib/styles/colors";
@@ -54,6 +57,34 @@ const ButtonsSection = styled.div`
   justify-content: space-between;
 `;
 
+async function resolveDisputeWithMetaTx(
+  coreSdk: CoreSDK,
+  exchangeId: BigNumberish,
+  buyerPercent: BigNumberish,
+  counterpartySig: {
+    r: string;
+    s: string;
+    v: number;
+  }
+): Promise<TransactionResponse> {
+  const nonce = Date.now();
+  const { r, s, v, functionName, functionSignature } =
+    await coreSdk.signMetaTxResolveDispute({
+      exchangeId,
+      buyerPercent,
+      counterpartySig,
+      nonce
+    });
+  return coreSdk.relayMetaTransaction({
+    functionName,
+    functionSignature,
+    sigR: r,
+    sigS: s,
+    sigV: v,
+    nonce
+  });
+}
+
 export default function ResolveDisputeModal({
   exchange,
   hideModal,
@@ -61,6 +92,7 @@ export default function ResolveDisputeModal({
 }: Props) {
   const { showModal } = useModal();
   const coreSDK = useCoreSDK();
+  const { address } = useAccount();
   const [resolveDisputeError, setResolveDisputeError] = useState<Error | null>(
     null
   );
@@ -84,14 +116,25 @@ export default function ResolveDisputeModal({
             try {
               setResolveDisputeError(null);
               const signature = utils.splitSignature(proposal.signature);
+              let tx: TransactionResponse;
               showModal("WAITING_FOR_CONFIRMATION");
-              const tx = await coreSDK.resolveDispute({
-                exchangeId: exchange.id,
-                buyerPercentBasisPoints: proposal.percentageAmount,
-                sigR: signature.r,
-                sigS: signature.s,
-                sigV: signature.v
-              });
+              const isMetaTx = Boolean(coreSDK?.isMetaTxConfigSet && address);
+              if (isMetaTx) {
+                tx = await resolveDisputeWithMetaTx(
+                  coreSDK,
+                  exchange.id,
+                  proposal.percentageAmount,
+                  signature
+                );
+              } else {
+                tx = await coreSDK.resolveDispute({
+                  exchangeId: exchange.id,
+                  buyerPercentBasisPoints: proposal.percentageAmount,
+                  sigR: signature.r,
+                  sigS: signature.s,
+                  sigV: signature.v
+                });
+              }
               showModal("TRANSACTION_SUBMITTED", {
                 action: "Raise dispute",
                 txHash: tx.hash

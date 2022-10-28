@@ -24,6 +24,7 @@ import BosonButton from "../../ui/BosonButton";
 import Grid from "../../ui/Grid";
 import Image from "../../ui/Image";
 import Typography from "../../ui/Typography";
+import Video from "../../ui/Video";
 import { useModal } from "../useModal";
 
 interface Props {
@@ -35,6 +36,7 @@ interface Props {
   name: string;
   image: string;
   exchange: Exchange;
+  animationUrl: string;
 }
 export default function DetailWidget({
   id,
@@ -44,7 +46,8 @@ export default function DetailWidget({
   data,
   name,
   image,
-  exchange
+  exchange,
+  animationUrl
 }: Props) {
   const navigate = useKeepQueryParamsNavigate();
   const { hideModal } = useModal();
@@ -56,7 +59,18 @@ export default function DetailWidget({
           {type === "SUCCESS" && state === subgraph.ExchangeState.Committed && (
             <DetailOpenSea exchange={exchange} />
           )}
-          <Image src={image} dataTestId="offerImage" />
+          {animationUrl ? (
+            <Video
+              src={animationUrl}
+              dataTestId="offerAnimationUrl"
+              videoProps={{ muted: true, loop: true, autoPlay: true }}
+              componentWhileLoading={() => (
+                <Image src={image} dataTestId="offerImage" />
+              )}
+            />
+          ) : (
+            <Image src={image} dataTestId="offerImage" />
+          )}
         </ModalImageWrapper>
         <div>
           <Widget>

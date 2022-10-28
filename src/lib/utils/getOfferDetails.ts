@@ -15,6 +15,7 @@ interface IGetOfferDetails {
   display: boolean;
   name: string;
   offerImg: string;
+  animationUrl: string;
   shippingInfo: IShippingInfo;
   description: string;
   productData: Array<ITable>;
@@ -26,6 +27,8 @@ export const getOfferDetails = (offer: Offer): IGetOfferDetails => {
   const name =
     offer.metadata?.product?.title || offer.metadata?.name || "Untitled";
   const offerImg = offer.metadata?.image;
+
+  const animationUrl = offer.metadata?.animationUrl || "";
   const shippingInfo = {
     // shipping: "Shipping details", // TODO
     shippingTable:
@@ -57,6 +60,7 @@ export const getOfferDetails = (offer: Offer): IGetOfferDetails => {
     display: false,
     name,
     offerImg,
+    animationUrl,
     shippingInfo,
     description,
     productData,
