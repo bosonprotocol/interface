@@ -35,7 +35,7 @@ export default function ProductDetail() {
     isError,
     isLoading
   } = useProductByUuid(productUuid, { enabled: !!productUuid });
-  console.log({ productResult });
+
   const product = productResult?.product;
   const variants = productResult?.variants;
   const variantsWithV1 = variants?.filter(
