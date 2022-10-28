@@ -17,7 +17,11 @@ const GlobalStyle = createGlobalStyle<{
   $buttonBgColor: string;
   $buttonTextColor: string;
 }>`
-
+  @font-face {
+    font-family: barlow;
+    src: url(src/assets/fonts/Barlow-Regular.ttf);
+    font-weight: normal;
+  }
   * {
     box-sizing: border-box;
   }
