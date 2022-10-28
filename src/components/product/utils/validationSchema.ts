@@ -276,10 +276,7 @@ const commonCoreTermsOfSaleValidationSchema = {
   tokenGatingDesc: Yup.string().when(["tokenGatedOffer"], {
     is: (tokenGated: SelectDataProps) =>
       tokenGated?.value === OPTIONS_TOKEN_GATED[1].value,
-    then: (schema) =>
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      schema.required(validationMessage.required)
+    then: (schema) => schema.required(validationMessage.required)
   })
 };
 
