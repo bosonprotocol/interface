@@ -49,6 +49,10 @@ const DataContainer = styled.div`
   z-index: ${zIndex.OfferCard};
 `;
 
+const StyledGrid = styled(Grid)`
+  max-width: 6.5625rem;
+`;
+
 interface Props {
   collection: {
     id: string;
@@ -126,7 +130,7 @@ export default function CollectionsCard({ collection }: Props) {
           >
             {lens?.name ? lens?.name : `Seller ID: ${collection.id}`}
           </Typography>
-          <Grid alignItems="flex-start" margin="0 0 0.3125rem 0">
+          <StyledGrid alignItems="flex-start" margin="0 0 0.3125rem 0">
             <Typography
               $fontSize="12px"
               fontWeight="400"
@@ -142,8 +146,8 @@ export default function CollectionsCard({ collection }: Props) {
             >
               Sold
             </Typography>
-          </Grid>
-          <Grid alignItems="flex-start">
+          </StyledGrid>
+          <StyledGrid alignItems="flex-start">
             <Typography $fontSize="20px" fontWeight="600" color={colors.black}>
               {collection?.offers.filter((offer) => !offer.duplicate).length ||
                 0}
@@ -156,7 +160,7 @@ export default function CollectionsCard({ collection }: Props) {
             >
               {collection?.exchanges.length || 0}
             </Typography>
-          </Grid>
+          </StyledGrid>
         </DataWrapper>
       </DataContainer>
     </CardContainer>
