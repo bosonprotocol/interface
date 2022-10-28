@@ -1,4 +1,3 @@
-/* eslint @typescript-eslint/no-explicit-any: "off" */
 import {
   Currencies,
   ProductCard as BosonProductCard
@@ -26,7 +25,7 @@ import { getLensProfilePictureUrl } from "../modal/components/CreateProfile/Lens
 import { useConvertedPrice } from "../price/useConvertedPrice";
 
 interface Props {
-  offer: ExtendedOffer | any; // TODO: BP437 for now until change to useProducts globally
+  offer: ExtendedOffer;
   filterOptions?: FilterOptions;
   exchange?: NonNullable<Offer["exchanges"]>[number];
   dataTestId: string;
@@ -84,15 +83,15 @@ export default function ProductCard({
           : offer?.priceDetails?.high;
 
       return {
-        value: selected?.value,
-        decimals: selected?.exchangeToken?.decimals,
-        symbol: selected?.exchangeToken?.symbol
+        value: selected?.value || "",
+        decimals: selected?.exchangeToken?.decimals || "",
+        symbol: selected?.exchangeToken?.symbol || ""
       };
     }
     return {
-      value: offer?.price,
-      decimals: offer?.exchangeToken?.decimals,
-      symbol: offer?.exchangeToken?.symbol
+      value: offer?.price || "",
+      decimals: offer?.exchangeToken?.decimals || "",
+      symbol: offer?.exchangeToken?.symbol || ""
     };
   }, [offer, filterOptions]);
 
@@ -102,7 +101,7 @@ export default function ProductCard({
     navigate(
       {
         pathname: generatePath(ProductRoutes.ProductDetail, {
-          [UrlParameters.uuid]: offer.uuid
+          [UrlParameters.uuid]: offer?.uuid || ""
         })
       },
       {
@@ -136,7 +135,7 @@ export default function ProductCard({
             : false
         }
         tooltip={
-          offer?.additional?.variants?.length > 1
+          ((offer?.additional && offer?.additional?.variants) || [])?.length > 1
             ? "Price may be different on variants"
             : ""
         }

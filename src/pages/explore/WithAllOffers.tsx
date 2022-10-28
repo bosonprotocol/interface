@@ -14,7 +14,7 @@ import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { isTruthy } from "../../lib/types/helpers";
-import { Offer } from "../../lib/types/offer";
+import type { Offer } from "../../lib/types/offer";
 import useProducts from "../../lib/utils/hooks/product/useProducts";
 import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
 import { useIsCustomStoreValueChanged } from "../custom-store/useIsCustomStoreValueChanged";
@@ -47,10 +47,13 @@ export const Wrapper = styled.div`
   text-align: center;
 `;
 interface PriceDetails {
-  value: Pick<Offer, "price">;
-  exchangeToken: Pick<Offer, "exchangeToken">;
+  value: string;
+  exchangeToken: {
+    decimals: string;
+    symbol: string;
+  };
 }
-export interface ExtendedOffer extends subgraph.OfferFieldsFragment {
+export interface OfferAdditional {
   isValid?: boolean;
   status?: string;
   uuid?: string;
@@ -59,14 +62,21 @@ export interface ExtendedOffer extends subgraph.OfferFieldsFragment {
   lowPrice?: string;
   highPrice?: string;
   priceDetails?: {
-    low: PriceDetails;
-    high: PriceDetails;
+    low?: PriceDetails;
+    high?: PriceDetails;
   };
   committedDate?: string;
   redeemedDate?: string;
   convertedPrice?: string;
+  additional?: {
+    variants: {
+      offer: subgraph.OfferFieldsFragment;
+      variations: subgraph.ProductV1Variation[];
+    }[];
+  };
 }
-export interface ExtendedSeller extends subgraph.ProductV1Seller {
+export type ExtendedOffer = OfferAdditional & Offer;
+export interface SellerAdditional {
   title?: string;
   brandName?: string;
   createdAt?: string;
@@ -80,6 +90,7 @@ export interface ExtendedSeller extends subgraph.ProductV1Seller {
   };
   offers?: ExtendedOffer[];
 }
+export type ExtendedSeller = SellerAdditional & subgraph.ProductV1Seller;
 export interface FilterOptions {
   name?: string;
   sellerCurationList?: string[];
