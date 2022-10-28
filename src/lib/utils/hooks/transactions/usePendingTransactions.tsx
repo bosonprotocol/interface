@@ -4,11 +4,9 @@ import { useAccount } from "wagmi";
 import create from "zustand";
 
 import { EventLog } from "../../transactions";
-import { useCurrentBuyer } from "../useCurrentBuyer";
-import { useCurrentSellers } from "../useCurrentSellers";
 
-type PendingTransaction = Omit<EventLog, "__typename"> & {
-  accountType: "Buyer" | "Seller";
+type PendingTransaction = Omit<EventLog, "__typename" | "account"> & {
+  accountType: "Buyer" | "Seller" | string;
   isMetaTx?: boolean;
   newHash?: string; // only exists on meta transactions after first reconcile
 };
@@ -23,15 +21,11 @@ type PendingTransactionsState = {
 };
 
 export function createPendingTx(
-  args: Omit<PendingTransaction, "id" | "timestamp" | "account"> & {
-    accountId: string;
-  }
+  args: Omit<PendingTransaction, "id" | "timestamp" | "account">
 ): PendingTransaction {
   return {
     ...args,
-    account: {
-      id: args.accountId
-    },
+
     id: Date.now().toString(),
     timestamp: Math.floor(Date.now() / 1000).toString()
   };
@@ -39,8 +33,6 @@ export function createPendingTx(
 
 export function useAddPendingTransaction() {
   const { address } = useAccount();
-  const { data: currentBuyer } = useCurrentBuyer();
-  const { sellerIds } = useCurrentSellers();
   const { addPendingTransaction } = usePendingTransactionsStore();
 
   const addPendingTx = useCallback(
@@ -50,20 +42,16 @@ export function useAddPendingTransaction() {
         "executedBy" | "accountId"
       >
     ) => {
-      const accountId =
-        args.accountType === "Buyer" ? currentBuyer?.id : sellerIds[0];
-
-      if (address && accountId) {
+      if (address) {
         addPendingTransaction(
           createPendingTx({
             executedBy: address,
-            accountId,
             ...args
           })
         );
       }
     },
-    [address, addPendingTransaction, currentBuyer?.id, sellerIds]
+    [address, addPendingTransaction]
   );
 
   return addPendingTx;

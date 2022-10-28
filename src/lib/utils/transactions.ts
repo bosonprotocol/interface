@@ -3,7 +3,7 @@ import { generatePath } from "react-router-dom";
 
 import { BosonRoutes, OffersRoutes } from "../routing/routes";
 
-export type EventLog = subgraph.BaseEventLogFieldsFragment & {
+export type EventLog = Omit<subgraph.BaseEventLogFieldsFragment, "account"> & {
   exchange?: {
     id: string;
     offer?: {
@@ -83,7 +83,7 @@ export const buildTransactionLabelAndPath = (
       return { label: `Funds withdrawn` };
     case subgraph.EventType.OfferCreated:
       return {
-        label: `Created offer with id: ${offerId}`,
+        label: `Created offer with id: ${offerId || "pending"}`,
         pathname: offerPath
       };
     case subgraph.EventType.OfferVoided:
@@ -121,9 +121,7 @@ export const buildTransactionLabelAndPath = (
 };
 
 export const buildTableData = (
-  eventLogs: Array<
-    subgraph.BaseEventLogFieldsFragment & { accountType: string }
-  >
+  eventLogs: Array<EventLog & { accountType: string }>
 ) => {
   return eventLogs.map((log) => {
     const { label, pathname } = buildTransactionLabelAndPath(log);

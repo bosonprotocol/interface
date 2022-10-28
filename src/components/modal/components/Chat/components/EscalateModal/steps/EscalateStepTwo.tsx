@@ -1,5 +1,5 @@
 import { TransactionResponse } from "@bosonprotocol/common";
-import { CoreSDK } from "@bosonprotocol/react-kit";
+import { CoreSDK, subgraph } from "@bosonprotocol/react-kit";
 import { BigNumber, BigNumberish, ethers } from "ethers";
 import { Form, Formik, FormikProps, FormikState } from "formik";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -10,6 +10,7 @@ import * as Yup from "yup";
 
 import { CONFIG } from "../../../../../../../lib/config";
 import { colors } from "../../../../../../../lib/styles/colors";
+import { useAddPendingTransaction } from "../../../../../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { useDisputeResolvers } from "../../../../../../../lib/utils/hooks/useDisputeResolvers";
 import { Exchange } from "../../../../../../../lib/utils/hooks/useExchanges";
 import { useCoreSDK } from "../../../../../../../lib/utils/useCoreSdk";
@@ -151,6 +152,7 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
       : FormModel.formFields.email_test;
 
   const coreSDK = useCoreSDK();
+  const addPendingTransaction = useAddPendingTransaction();
 
   const [activeStep, setActiveStep] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
@@ -216,6 +218,15 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
         action: "Escalate dispute",
         txHash: tx.hash
       });
+      addPendingTransaction({
+        type: subgraph.EventType.DisputeEscalated,
+        hash: tx.hash,
+        isMetaTx,
+        accountType: "Buyer",
+        exchange: {
+          id: exchange.id
+        }
+      });
       await tx.wait();
       await poll(
         async () => {
@@ -256,7 +267,15 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
     }
 
     return true;
-  }, [exchange, coreSDK, address, hideModal, refetch, showModal]);
+  }, [
+    exchange,
+    coreSDK,
+    address,
+    hideModal,
+    refetch,
+    showModal,
+    addPendingTransaction
+  ]);
 
   return (
     <Formik<typeof initialValues>

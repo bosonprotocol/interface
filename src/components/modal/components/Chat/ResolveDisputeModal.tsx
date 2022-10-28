@@ -1,5 +1,5 @@
 import { TransactionResponse } from "@bosonprotocol/common";
-import { CoreSDK } from "@bosonprotocol/react-kit";
+import { CoreSDK, subgraph } from "@bosonprotocol/react-kit";
 import { BigNumberish, utils } from "ethers";
 import { Info as InfoComponent } from "phosphor-react";
 import { useState } from "react";
@@ -9,6 +9,7 @@ import { useAccount } from "wagmi";
 
 import { CONFIG } from "../../../../lib/config";
 import { colors } from "../../../../lib/styles/colors";
+import { useAddPendingTransaction } from "../../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
 import { useCoreSDK } from "../../../../lib/utils/useCoreSdk";
 import { ProposalItem } from "../../../../pages/chat/types";
@@ -92,6 +93,7 @@ export default function ResolveDisputeModal({
 }: Props) {
   const { showModal } = useModal();
   const coreSDK = useCoreSDK();
+  const addPendingTransaction = useAddPendingTransaction();
   const { address } = useAccount();
   const [resolveDisputeError, setResolveDisputeError] = useState<Error | null>(
     null
@@ -138,6 +140,15 @@ export default function ResolveDisputeModal({
               showModal("TRANSACTION_SUBMITTED", {
                 action: "Raise dispute",
                 txHash: tx.hash
+              });
+              addPendingTransaction({
+                type: subgraph.EventType.DisputeRaised,
+                hash: tx.hash,
+                isMetaTx,
+                accountType: "Buyer",
+                exchange: {
+                  id: exchange.id
+                }
               });
               await tx.wait();
               await poll(
