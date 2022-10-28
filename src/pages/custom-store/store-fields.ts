@@ -173,6 +173,10 @@ export const formModel = {
         {
           label: "Times New Roman",
           value: "Times New Roman"
+        },
+        {
+          label: "Barlow",
+          value: "barlow" // defined in src/lib/styles/GlobalStyle.tsx
         }
       ]
     },
