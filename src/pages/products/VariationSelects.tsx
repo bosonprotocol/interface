@@ -143,14 +143,17 @@ const getIsEmptyOption = (
 
 interface Props {
   selectedVariant: VariantV1;
-  setSelectedVariant: Dispatch<SetStateAction<VariantV1 | undefined>>;
+  setSelectedVariant?: Dispatch<SetStateAction<VariantV1 | undefined>>;
   variants: VariantV1[];
+  disabled?: boolean;
 }
 
 export default function VariationSelects({
   selectedVariant,
   setSelectedVariant,
-  variants
+  variants,
+  disabled,
+  ...rest
 }: Props) {
   const [dropdownVariant, setDropdownVariant] = useState<
     Pick<VariantV1, "variations"> | undefined
@@ -191,7 +194,7 @@ export default function VariationSelects({
         );
         setErrorMessage("");
         if (selectedVariant) {
-          setSelectedVariant(selectedVariant as VariantV1);
+          setSelectedVariant?.(selectedVariant as VariantV1);
           setDropdownVariant(selectedVariant);
         } else {
           setDropdownVariant({
@@ -226,7 +229,7 @@ export default function VariationSelects({
     >
       {({ submitForm }) => {
         return (
-          <Form>
+          <Form {...rest}>
             <Grid gap="2rem" margin="1rem 0 2.5rem 0">
               <Select
                 name="color"
@@ -237,6 +240,7 @@ export default function VariationSelects({
                   setLastChangedVariation("color");
                   submitForm();
                 }}
+                disabled={disabled}
               />
               <Select
                 name="size"
@@ -247,6 +251,7 @@ export default function VariationSelects({
                   setLastChangedVariation("size");
                   submitForm();
                 }}
+                disabled={disabled}
               />
             </Grid>
             {errorMessage && (

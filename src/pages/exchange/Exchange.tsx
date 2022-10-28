@@ -1,4 +1,5 @@
 import { useParams } from "react-router-dom";
+import styled from "styled-components";
 
 import {
   DarkerBackground,
@@ -26,6 +27,14 @@ import { Offer } from "../../lib/types/offer";
 import { getOfferDetails } from "../../lib/utils/getOfferDetails";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useSellers } from "../../lib/utils/hooks/useSellers";
+import { VariantV1 } from "../products/types";
+import VariationSelects from "../products/VariationSelects";
+
+const marginBottom = "4rem";
+
+const StyledVariationSelects = styled(VariationSelects)`
+  margin-bottom: ${marginBottom};
+`;
 
 export default function Exchange() {
   const { [UrlParameters.exchangeId]: exchangeId } = useParams();
@@ -46,6 +55,14 @@ export default function Exchange() {
   );
   const exchange = exchanges?.[0];
   const offer = exchange?.offer;
+  const metadata = offer?.metadata;
+  const variations = metadata?.variations;
+  const hasVariations = !!variations?.length;
+
+  const variant = {
+    offer,
+    variations
+  };
 
   const { data: sellers } = useSellers({
     id: offer?.seller.id,
@@ -60,15 +77,11 @@ export default function Exchange() {
       ? Number(sellerAvailableDeposit) >= offerRequiredDeposit
       : true;
 
-  if (!exchangeId) {
-    return null;
-  }
-
   if (isLoading) {
     return <Loading />;
   }
 
-  if (isError) {
+  if (isError || !exchangeId) {
     return (
       <div data-testid="errorExchange">
         There has been an error, please try again later...
@@ -131,10 +144,21 @@ export default function Exchange() {
               <Typography
                 tag="h1"
                 data-testid="name"
-                style={{ fontSize: "2rem", marginBottom: "4rem" }}
+                style={{
+                  fontSize: "2rem",
+                  ...(!hasVariations && { marginBottom })
+                }}
               >
                 {name}
               </Typography>
+
+              {hasVariations && (
+                <StyledVariationSelects
+                  selectedVariant={variant as VariantV1}
+                  variants={[variant] as VariantV1[]}
+                  disabled
+                />
+              )}
 
               <DetailWidget
                 pageType="exchange"
