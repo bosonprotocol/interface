@@ -1,3 +1,4 @@
+/* eslint @typescript-eslint/no-explicit-any: "off" */
 import {
   Currencies,
   ProductCard as BosonProductCard

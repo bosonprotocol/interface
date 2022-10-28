@@ -1,3 +1,4 @@
+/* eslint @typescript-eslint/no-explicit-any: "off" */
 import { offers as offersSdk, subgraph } from "@bosonprotocol/react-kit";
 import groupBy from "lodash/groupBy";
 import orderBy from "lodash/orderBy";
