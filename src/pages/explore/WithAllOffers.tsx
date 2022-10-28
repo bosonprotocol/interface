@@ -168,32 +168,32 @@ export function WithAllOffers<P>(
           ? params?.[ExploreQueryParameters.sortBy]
           : false;
 
-      let payload;
-      const basePayload = {
+      let payload = {
         name: "",
-        sellerCurationList: [],
+        sellerCurationList: [""],
         orderDirection: "",
+        exchangeOrderBy: "",
         orderBy: ""
       };
 
       if (filterByName !== false) {
         payload = {
-          ...basePayload,
-          name: filterByName
+          ...payload,
+          name: filterByName as string
         };
       }
       if (sellerCurationList) {
         payload = {
-          ...basePayload,
-          sellerCurationList: sellerCurationList
+          ...payload,
+          sellerCurationList: sellerCurationList as string[]
         };
       }
       if (sortByParam !== false) {
         const [orderBy, orderDirection] = (sortByParam as string).split(":");
         payload = {
-          ...basePayload,
+          ...payload,
           orderBy,
-          exchangeOrderBy: orderBy,
+          exchangeOrderBy: orderBy as string,
           orderDirection
         };
       }

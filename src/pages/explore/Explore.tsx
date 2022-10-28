@@ -45,10 +45,12 @@ function Explore({
   }, [pageIndex]);
 
   const offerArray = useSortOffers({
+    type: "products",
     data: products?.products || [],
     ...filterOptions
   });
   const collections = useSortOffers({
+    type: "sellers",
     data: products?.sellers || [],
     ...filterOptions
   });

@@ -8,25 +8,28 @@ import {
 } from "../../pages/explore/WithAllOffers";
 
 interface Props {
+  type: "products" | "sellers";
   data: ExtendedOffer[] | ExtendedSeller[];
 }
 export const useSortOffers = ({
+  type,
   data: newData,
-  name = "",
-  sellerCurationList = [],
-  exchangeOrderBy,
-  orderDirection
+  ...filters
 }: Props & FilterOptions) => {
   const offerArray = useMemo(() => {
-    const data = newData || [];
-    if (name !== "") {
-      console.log("name", name);
-      const filteredByName =
-        filter(newData, (n: ExtendedOffer | ExtendedSeller) => {
-          return n?.title && n?.title.includes(name?.toLowerCase());
-        }) || ([] as ExtendedOffer[] | ExtendedSeller[]);
-      console.log("filteredByName", filteredByName);
-      // data = filteredByName;
+    let data = newData || [];
+    const { name, sellerCurationList, exchangeOrderBy, orderDirection } =
+      filters;
+
+    if (name && name !== "") {
+      let filteredByName;
+      if (type === "products") {
+        filteredByName =
+          filter(newData, (n: ExtendedOffer) => {
+            return n?.title && n?.title.includes(name?.toLowerCase());
+          }) || [];
+        data = (filteredByName || []) as ExtendedOffer[] | ExtendedSeller[];
+      }
     }
     if (sellerCurationList && sellerCurationList.length > 0) {
       // TODO: BP437 add filtering
@@ -93,7 +96,7 @@ export const useSortOffers = ({
         .reverse();
     }
     return data;
-  }, [newData, exchangeOrderBy, orderDirection, name, sellerCurationList]);
+  }, [newData, type, filters]);
 
   return offerArray;
 };
