@@ -168,7 +168,7 @@ export default function MessageList({
       setActiveMessageKey(getMessageItemKey(currentExchange));
     }
   }, [currentExchange]);
-  const comesFromSellerCenter = !!prevPath?.startsWith(BosonRoutes.Sell);
+  const comesFromSellerCenter = !!prevPath?.startsWith(`${BosonRoutes.Sell}/`);
   return (
     <Container
       $chatListOpen={chatListOpen}
