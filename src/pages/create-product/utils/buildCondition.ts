@@ -22,10 +22,10 @@ export const buildCondition = (commonTermsOfSale: any): ConditionStruct => {
         method = EvaluationMethod.SpecificToken;
         // if erc721 and SpecificToken we should set the threshold as zero
         threshold = "0";
-        tokenId = "0";
       } else {
         method = EvaluationMethod.Threshold;
         threshold = commonTermsOfSale.minBalance;
+        tokenId = "0";
       }
       break;
     default:
