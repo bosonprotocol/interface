@@ -1010,6 +1010,7 @@ function CreateProductInner({
           isMetaTx,
           accountType: "Seller"
         });
+
         if (!hasSellerAccount && seller) {
           addPendingTransaction({
             type: subgraph.EventType.SellerCreated,
