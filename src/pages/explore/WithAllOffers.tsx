@@ -1,24 +1,20 @@
-import { BigNumber, utils } from "ethers";
+import { subgraph } from "@bosonprotocol/react-kit";
 import pick from "lodash/pick";
-import sortBy from "lodash/sortBy";
 import { ParsedQuery } from "query-string";
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 
-import ConvertionRateContext from "../../components/convertion-rate/ConvertionRateContext";
 import { LayoutRoot } from "../../components/Layout";
 import Grid from "../../components/ui/Grid";
 import Loading from "../../components/ui/Loading";
 import Typography from "../../components/ui/Typography";
-import { CONFIG } from "../../lib/config";
 import { ExploreQueryParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
-import { convertPrice } from "../../lib/utils/convertPrice";
-import { useInfiniteOffers } from "../../lib/utils/hooks/offers/useInfiniteOffers";
+import useProducts from "../../lib/utils/hooks/product/useProducts";
 import { useIsCustomStoreValueChanged } from "../custom-store/useIsCustomStoreValueChanged";
 import ExploreSelect from "./ExploreSelect";
 import useSearchParams from "./useSearchParams";
@@ -48,20 +44,58 @@ const ExploreOffersContainer = styled.div<{ $isPrimaryBgChanged: boolean }>`
 export const Wrapper = styled.div`
   text-align: center;
 `;
-interface ExtendedOffer extends Offer {
+interface PriceDetails {
+  value: Pick<Offer, "price">;
+  exchangeToken: Pick<Offer, "exchangeToken">;
+}
+export interface ExtendedOffer extends subgraph.OfferFieldsFragment {
+  isValid?: boolean;
+  status?: string;
+  uuid?: string;
+  title?: string;
+  brandName?: string;
+  lowPrice?: string;
+  highPrice?: string;
+  priceDetails?: {
+    low: PriceDetails;
+    high: PriceDetails;
+  };
+  committedDate?: string;
+  redeemedDate?: string;
   convertedPrice?: string;
 }
+export interface ExtendedSeller extends subgraph.ProductV1Seller {
+  title?: string;
+  brandName?: string;
+  createdAt?: string;
+  validFromDate?: string;
+  committedDate?: string;
+  redeemedDate?: string;
+  lowPrice?: string;
+  highPrice?: string;
+  additional?: {
+    images: string[];
+  };
+  offers?: ExtendedOffer[];
+}
 export interface FilterOptions {
+  name?: string;
+  sellerCurationList?: string[];
   orderDirection?: "asc" | "desc";
   orderBy?: string;
-  isSortable?: boolean;
   validFromDate?: string;
   validUntilDate?: string;
   exchangeOrderBy?: string;
   validFromDate_lte?: string;
 }
+export interface ExtendedProducts {
+  products?: ExtendedOffer[];
+  sellers?: ExtendedSeller[];
+  isLoading?: boolean;
+  isError?: boolean;
+}
 export interface WithAllOffersProps {
-  offers?: ExtendedOffer[];
+  products?: ExtendedProducts;
   isLoading?: boolean;
   isError?: boolean;
   showoffPage?: number;
@@ -75,18 +109,13 @@ export interface WithAllOffersProps {
   };
   filterOptions?: FilterOptions;
 }
-const DEFAULT_PAGE = 0;
-const OFFERS_PER_PAGE = 999;
 const SHOWOFF_PAGE = 4;
 const ITEMS_PER_PAGE = 12;
 export function WithAllOffers<P>(
   WrappedComponent: React.ComponentType<WithAllOffersProps>
 ) {
   const ComponentWithAllOffers = (props: P) => {
-    const { store } = useContext(ConvertionRateContext);
-
     const location = useLocation();
-    const [pageIndex, setPageIndex] = useState(DEFAULT_PAGE);
     const { params, handleChange } = useSearchParams();
 
     const isPrimaryBgColorChanged =
@@ -140,59 +169,38 @@ export function WithAllOffers<P>(
           ? params?.[ExploreQueryParameters.sortBy]
           : false;
 
-      let payload;
-      const basePayload = {
+      let payload = {
+        name: "",
+        sellerCurationList: [""],
         orderDirection: "",
-        orderBy: "",
-        isSortable: false
+        exchangeOrderBy: "",
+        orderBy: ""
       };
 
       if (filterByName !== false) {
         payload = {
-          ...basePayload,
-          name: filterByName
+          ...payload,
+          name: filterByName as string
         };
       }
       if (sellerCurationList) {
         payload = {
-          ...basePayload,
-          sellerCurationList: sellerCurationList
+          ...payload,
+          sellerCurationList: sellerCurationList as string[]
         };
       }
       if (sortByParam !== false) {
         const [orderBy, orderDirection] = (sortByParam as string).split(":");
-        if (orderBy === "committedDate" || orderBy === "redeemedDate") {
-          payload = {
-            ...basePayload,
-            ...payload,
-            orderDirection: orderDirection,
-            orderBy: "createdAt",
-            exchangeOrderBy: orderBy,
-            isSortable: true
-          };
-        } else if (orderBy === "validFromDate") {
-          payload = {
-            ...basePayload,
-            ...payload,
-            orderDirection: orderDirection,
-            orderBy: orderBy,
-            validFromDate_lte: `${Math.floor(Date.now() / 1000)}`
-          };
-        } else {
-          payload = {
-            ...basePayload,
-            ...payload,
-            orderDirection: orderDirection,
-            orderBy: orderBy === "price" ? "createdAt" : orderBy,
-            exchangeOrderBy: orderBy,
-            isSortable: orderBy === "price"
-          };
-        }
+        payload = {
+          ...payload,
+          orderBy,
+          exchangeOrderBy: orderBy as string,
+          orderDirection
+        };
       }
       return pick(payload, [
         "name",
         "exchangeOrderBy",
-        "isSortable",
         "orderBy",
         "orderDirection",
         "validFromDate_lte",
@@ -200,95 +208,8 @@ export function WithAllOffers<P>(
       ]) as FilterOptions;
     }, [params]);
 
-    const {
-      data,
-      isLoading,
-      isError,
-      isFetchingNextPage,
-      refetch,
-      fetchNextPage
-    } = useInfiniteOffers(
-      {
-        first: OFFERS_PER_PAGE + 1,
-        disableMemo: true,
-        voided: false,
-        valid: true,
-        ...filterOptions
-      },
-      {
-        enabled: !!filterOptions?.orderBy,
-        keepPreviousData: false
-      }
-    );
-
-    useEffect(() => {
-      if (filterOptions?.isSortable === false) {
-        refetch();
-      }
-    }, [filterOptions]); // eslint-disable-line
-
-    const thereAreMoreOffers = useMemo(() => {
-      const offersWithOneExtra = data?.pages[data.pages.length - 1];
-      return (offersWithOneExtra?.length || 0) >= OFFERS_PER_PAGE + 1;
-    }, [data]);
-
-    useEffect(() => {
-      if (isLoading || !thereAreMoreOffers || isFetchingNextPage) {
-        return;
-      } else {
-        const nextPageIndex = pageIndex + 1;
-        setPageIndex(nextPageIndex);
-        fetchNextPage({ pageParam: nextPageIndex * OFFERS_PER_PAGE });
-      }
-    }, [
-      isLoading,
-      thereAreMoreOffers,
-      fetchNextPage,
-      pageIndex,
-      isFetchingNextPage
-    ]);
-
-    const itemPrice = (value: string, decimals: string) => {
-      try {
-        return utils.formatUnits(
-          BigNumber.from(value.toString()),
-          Number(decimals)
-        );
-      } catch (e) {
-        return null;
-      }
-    };
-
-    const allOffers = useMemo(() => {
-      const items = data?.pages.flatMap((page) => {
-        const allButLast =
-          page.length === OFFERS_PER_PAGE + 1
-            ? page.slice(0, page.length - 1)
-            : page;
-        return allButLast;
-      });
-
-      const sortedArray =
-        items?.map((offer: Offer) => {
-          const offerPrice = convertPrice({
-            price: itemPrice(offer.price, offer.exchangeToken.decimals),
-            symbol: offer.exchangeToken.symbol.toUpperCase(),
-            currency: CONFIG.defaultCurrency,
-            rates: store.rates,
-            fixed: 8
-          });
-          return {
-            ...offer,
-            convertedPrice: offerPrice.converted,
-            committedDate:
-              sortBy(offer.exchanges, "committedDate")[0]?.committedDate || "0",
-            redeemedDate:
-              sortBy(offer.exchanges, "redeemedDate")[0]?.redeemedDate || "0"
-          };
-        }) || [];
-
-      return sortedArray as ExtendedOffer[];
-    }, [data, store.rates]);
+    const products = useProducts();
+    const { isLoading, isError } = products;
 
     return (
       <ExploreContainer>
@@ -304,16 +225,14 @@ export function WithAllOffers<P>(
         </LayoutRoot>
         <ExploreOffersContainer $isPrimaryBgChanged={isPrimaryBgColorChanged}>
           <LayoutRoot>
-            {isLoading || thereAreMoreOffers || isFetchingNextPage ? (
+            {isLoading ? (
               <Wrapper>
                 <Loading />
               </Wrapper>
             ) : (
               <WrappedComponent
                 {...props}
-                isLoading={
-                  isLoading || thereAreMoreOffers || isFetchingNextPage
-                }
+                isLoading={isLoading}
                 isError={isError}
                 showoffPage={4}
                 offersPerPage={10}
@@ -321,7 +240,7 @@ export function WithAllOffers<P>(
                 handleChange={handleChange}
                 pageOptions={pageOptions}
                 filterOptions={filterOptions}
-                offers={allOffers}
+                products={products}
               />
             )}
           </LayoutRoot>

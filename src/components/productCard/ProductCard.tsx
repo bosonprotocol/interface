@@ -2,7 +2,6 @@ import {
   Currencies,
   ProductCard as BosonProductCard
 } from "@bosonprotocol/react-kit";
-import { BigNumber, utils } from "ethers";
 import { CameraSlash } from "phosphor-react";
 import { useMemo } from "react";
 import { generatePath, useLocation } from "react-router-dom";
@@ -18,10 +17,16 @@ import { useGetIpfsImage } from "../../lib/utils/hooks/useGetIpfsImage";
 import { useHandleText } from "../../lib/utils/hooks/useHandleText";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
+import {
+  ExtendedOffer,
+  FilterOptions
+} from "../../pages/explore/WithAllOffers";
 import { getLensProfilePictureUrl } from "../modal/components/CreateProfile/Lens/utils";
+import { useConvertedPrice } from "../price/useConvertedPrice";
 
 interface Props {
-  offer: Offer;
+  offer: ExtendedOffer | any; // TODO: BP437 for now until change to useProducts globally
+  filterOptions?: FilterOptions;
   exchange?: NonNullable<Offer["exchanges"]>[number];
   dataTestId: string;
   isHoverDisabled?: boolean;
@@ -54,35 +59,49 @@ const ProductCardWrapper = styled.div<{ $isCustomStoreFront: boolean }>`
 export default function ProductCard({
   offer,
   dataTestId,
-  isHoverDisabled = false
+  isHoverDisabled = false,
+  filterOptions
 }: Props) {
   const { lens: lensProfiles } = useCurrentSellers({
     sellerId: offer?.seller?.id
   });
   const [lens] = lensProfiles;
   const { imageSrc: avatar } = useGetIpfsImage(getLensProfilePictureUrl(lens));
-  const { imageStatus, imageSrc } = useGetIpfsImage(offer?.metadata?.imageUrl);
+  const { imageStatus, imageSrc } = useGetIpfsImage(
+    offer?.metadata?.imageUrl || offer?.metadata?.image
+  );
   const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
   const location = useLocation();
   const navigate = useKeepQueryParamsNavigate();
   const handleText = useHandleText(offer);
-  const price = useMemo(() => {
-    try {
-      return utils.formatUnits(
-        BigNumber.from(offer.price),
-        Number(offer.exchangeToken.decimals)
-      );
-    } catch (e) {
-      console.error(e);
-      return null;
+
+  const priceValue = useMemo(() => {
+    if (filterOptions?.orderBy === "price") {
+      const selected =
+        filterOptions?.orderDirection === "asc"
+          ? offer?.priceDetails?.low
+          : offer?.priceDetails?.high;
+
+      return {
+        value: selected?.value,
+        decimals: selected?.exchangeToken?.decimals,
+        symbol: selected?.exchangeToken?.symbol
+      };
     }
-  }, [offer.exchangeToken.decimals, offer.price]);
+    return {
+      value: offer?.price,
+      decimals: offer?.exchangeToken?.decimals,
+      symbol: offer?.exchangeToken?.symbol
+    };
+  }, [offer, filterOptions]);
+
+  const price = useConvertedPrice(priceValue);
 
   const handleOnCardClick = () => {
     navigate(
       {
-        pathname: generatePath(OffersRoutes.OfferDetail, {
-          [UrlParameters.offerId]: offer.id
+        pathname: generatePath(OffersRoutes.OfferUuid, {
+          [UrlParameters.uuid]: offer.uuid
         })
       },
       {
@@ -99,19 +118,28 @@ export default function ProductCard({
       })
     });
   };
-
   return (
     <ProductCardWrapper $isCustomStoreFront={!!isCustomStoreFront}>
       <BosonProductCard
         dataCard="product-card"
         dataTestId={dataTestId}
-        productId={offer.id}
+        productId={offer?.id}
         onCardClick={handleOnCardClick}
-        title={offer.metadata.name}
+        title={offer?.metadata?.name}
         avatarName={lens?.name ? lens?.name : `Seller ID: ${offer.seller.id}`}
         avatar={avatar || mockedAvatar}
-        price={Number(price)}
-        currency={offer.exchangeToken.symbol as Currencies}
+        price={Number(price?.price || 0)}
+        asterisk={
+          offer?.additional && offer?.additional?.variants?.length > 1
+            ? true
+            : false
+        }
+        tooltip={
+          offer?.additional?.variants?.length > 1
+            ? "Price may be different on variants"
+            : ""
+        }
+        currency={priceValue?.symbol as Currencies}
         onAvatarNameClick={handleOnAvatarClick}
         imageProps={{
           src: imageSrc,

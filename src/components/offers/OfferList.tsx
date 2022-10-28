@@ -8,6 +8,7 @@ import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useIsCustomStoreValueChanged } from "../../pages/custom-store/useIsCustomStoreValueChanged";
+import { ExtendedOffer } from "../../pages/explore/WithAllOffers";
 import { ProductGridContainer } from "../../pages/profile/ProfilePage.styles";
 import Breadcrumbs from "../breadcrumbs/Breadcrumbs";
 import { Action } from "../offer/OfferCard";
@@ -18,7 +19,7 @@ import Loading from "../ui/Loading";
 import Typography from "../ui/Typography";
 
 interface Props {
-  offers?: Array<Offer>;
+  offers?: Offer[] | ExtendedOffer[];
   isError: boolean;
   isLoading?: boolean;
   loadingComponent?: ReactElement;
@@ -156,7 +157,7 @@ export default function OfferList({
           )}
         </Grid>
         <ProductGridContainer itemsPerRow={itemsPerRow}>
-          {offers.map((offer: Offer) => {
+          {offers.map((offer: Offer | ExtendedOffer) => {
             return (
               (offer.isValid || (showInvalidOffers && !offer.isValid)) && (
                 <ProductCard key={offer.id} offer={offer} dataTestId="offer" />
