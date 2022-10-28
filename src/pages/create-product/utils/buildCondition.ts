@@ -8,6 +8,7 @@ export const buildCondition = (commonTermsOfSale: any): ConditionStruct => {
   let tokenType: TokenType = TokenType.FungibleToken;
   let method: EvaluationMethod = EvaluationMethod.None;
   let threshold;
+  let tokenId = commonTermsOfSale.tokenId;
 
   switch (commonTermsOfSale.tokenType.value) {
     case "erc1155":
@@ -21,6 +22,7 @@ export const buildCondition = (commonTermsOfSale: any): ConditionStruct => {
         method = EvaluationMethod.SpecificToken;
         // if erc721 and SpecificToken we should set the threshold as zero
         threshold = "0";
+        tokenId = "0";
       } else {
         method = EvaluationMethod.Threshold;
         threshold = commonTermsOfSale.minBalance;
@@ -36,7 +38,7 @@ export const buildCondition = (commonTermsOfSale: any): ConditionStruct => {
     method,
     tokenType,
     tokenAddress: commonTermsOfSale.tokenContract,
-    tokenId: commonTermsOfSale.tokenId,
+    tokenId,
     threshold,
     maxCommits: "1"
   };
