@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 
 import CollectionsCard from "../../components/modal/components/Explore/Collections/CollectionsCard";
-import { useSortByPrice } from "../../components/price/useSortByPrice";
+import { useSortOffers } from "../../components/price/useSortOffers";
 import ProductCard from "../../components/productCard/ProductCard";
 import Grid from "../../components/ui/Grid";
 import { ExploreQueryParameters } from "../../lib/routing/parameters";
@@ -13,7 +13,12 @@ import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryPa
 import { ProductGridContainer } from "../profile/ProfilePage.styles";
 import ExploreViewMore from "./ExploreViewMore";
 import Pagination from "./Pagination";
-import { WithAllOffers, WithAllOffersProps } from "./WithAllOffers";
+import {
+  ExtendedOffer,
+  ExtendedSeller,
+  WithAllOffers,
+  WithAllOffersProps
+} from "./WithAllOffers";
 
 const GridInner = styled.div`
   width: 100%;
@@ -39,11 +44,11 @@ function Explore({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageIndex]);
 
-  const offerArray = useSortByPrice({
+  const offerArray = useSortOffers({
     data: products?.products || [],
     ...filterOptions
   });
-  const collections = useSortByPrice({
+  const collections = useSortOffers({
     data: products?.sellers || [],
     ...filterOptions
   });
@@ -84,13 +89,13 @@ function Explore({
                         pageOptions?.itemsPerPage
                     : pageOptions?.itemsPerPage
                 )
-                ?.map((offer: any) => (
+                ?.map((offer) => (
                   <div
                     key={`ProductCard_${offer?.id}`}
                     id={`offer_${offer?.id}`}
                   >
                     <ProductCard
-                      offer={offer}
+                      offer={offer as ExtendedOffer}
                       filterOptions={filterOptions}
                       dataTestId="offer"
                     />
@@ -133,13 +138,15 @@ function Explore({
                         pageOptions?.itemsPerPage
                     : pageOptions?.itemsPerPage
                 )
-                ?.map((collection: any) => (
+                ?.map((collection) => (
                   <Fragment
                     key={`CollectionsCard_${
                       collection?.brandName || collection?.id
                     }`}
                   >
-                    <CollectionsCard collection={collection} />
+                    <CollectionsCard
+                      collection={collection as ExtendedSeller}
+                    />
                   </Fragment>
                 ))}
           </ProductGridContainer>

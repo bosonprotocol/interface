@@ -1,30 +1,17 @@
 import { offers as offersSdk, subgraph } from "@bosonprotocol/react-kit";
 import groupBy from "lodash/groupBy";
+import orderBy from "lodash/orderBy";
 import { useContext, useMemo } from "react";
 import { useQuery } from "react-query";
 
 import ConvertionRateContext from "../../../../components/convertion-rate/ConvertionRateContext";
+import type { ExtendedOffer } from "../../../../pages/explore/WithAllOffers";
 import { CONFIG } from "../../../config";
+import { Offer } from "../../../types/offer";
 import { calcPrice } from "../../calcPrice";
 import { convertPrice } from "../../convertPrice";
 import { useCoreSDK } from "../../useCoreSdk";
-
-const sortByFn = (arr: any, key: string, reverse: boolean) => {
-  const newArr = arr.sort((a: any, b: any) => a[key] - b[key]);
-
-  if (reverse) {
-    return newArr.reverse().find((a: any) => a[key] !== null)?.[key] || null;
-  }
-  return newArr.find((a: any) => a[key] !== null)?.[key] || null;
-};
-const sortByFnReturn = (arr: any, key: string, reverse: boolean) => {
-  const newArr = arr.sort((a: any, b: any) => a[key] - b[key]);
-
-  if (reverse) {
-    return newArr.reverse().find((a: any) => a[key] !== null);
-  }
-  return newArr.find((a: any) => a[key] !== null);
-};
+import type { Exchange } from "../useExchanges";
 
 interface PromiseProps {
   status: string;
@@ -35,6 +22,14 @@ interface PromiseProps {
       variations: subgraph.ProductV1Variation[];
     }[];
   };
+}
+interface Variant {
+  offer: subgraph.OfferFieldsFragment;
+  variations: subgraph.ProductV1Variation[];
+}
+interface ProductWithVariants {
+  product: subgraph.BaseProductV1ProductFieldsFragment;
+  variants: Variant[];
 }
 export default function useProducts(
   props: subgraph.GetProductV1ProductsQueryQueryVariables = {}
@@ -69,7 +64,7 @@ export default function useProducts(
       ) as PromiseProps[];
       return (response?.flatMap((p) => p?.value || null) || []).filter(
         (n) => n
-      );
+      ) as ProductWithVariants[];
     },
     {
       enabled: !!coreSDK && productsIds?.length > 0,
@@ -79,15 +74,15 @@ export default function useProducts(
 
   const allProducts = useMemo(() => {
     return (
-      productsWithVariants?.data
+      (productsWithVariants?.data || [])
         ?.map(({ product, variants }: any) => {
           const offers = variants
             ?.map(({ offer }: any) => {
               const status = offersSdk.getOfferStatus(offer);
               const offerPrice = convertPrice({
                 price: calcPrice(
-                  offer?.price || 0,
-                  offer?.exchangeToken.decimals || 0
+                  offer?.price || "0",
+                  offer?.exchangeToken.decimals || "0"
                 ),
                 symbol: offer?.exchangeToken.symbol.toUpperCase(),
                 currency: CONFIG.defaultCurrency,
@@ -98,12 +93,29 @@ export default function useProducts(
                 ...offer,
                 status,
                 convertedPrice: offerPrice?.converted || null,
-                committedDate: sortByFn(offer.exchanges, "committedDate", true),
-                redeemedDate: sortByFn(offer.exchanges, "redeemedDate", true)
+                committedDate:
+                  (offer?.exchanges || [])
+                    .sort(
+                      (a: Exchange, b: Exchange) =>
+                        Number(a?.committedDate || "0") -
+                        Number(b?.committedDate || "0")
+                    )
+                    .reverse()
+                    .find((n: Exchange) => n.committedDate !== null)
+                    ?.committedDate || null,
+                redeemedDate:
+                  (offer?.exchanges || [])
+                    .sort(
+                      (a: Exchange, b: Exchange) =>
+                        Number(a?.redeemedDate) - Number(b?.redeemedDate)
+                    )
+                    .reverse()
+                    .find((n: Exchange) => n.redeemedDate !== null)
+                    ?.redeemedDate || null
               };
             })
             .filter(
-              (n: any) =>
+              (n: ExtendedOffer) =>
                 n &&
                 n?.voided === false &&
                 n?.status !== offersSdk.OfferState.EXPIRED
@@ -115,19 +127,38 @@ export default function useProducts(
               title: product?.title,
               ...(offers?.[0] || []),
               brandName: product?.brand?.name,
-              lowPrice: sortByFn(offers, "convertedPrice", false),
-              highPrice: sortByFn(offers, "convertedPrice", true),
+              lowPrice:
+                orderBy(offers, "convertedPrice", "asc").find(
+                  (n) =>
+                    n?.convertedPrice !== null &&
+                    Number(n?.convertedPrice || 0) !== 0
+                )?.convertedPrice || null,
+              highPrice:
+                orderBy(offers, "convertedPrice", "desc").find(
+                  (n) =>
+                    n?.convertedPrice !== null &&
+                    Number(n?.convertedPrice || 0) !== 0
+                )?.convertedPrice || null,
               priceDetails: {
                 low: {
-                  value: sortByFnReturn(offers, "price", false)?.price || null,
+                  value:
+                    orderBy(offers, "price", "asc").find(
+                      (n) => n?.price !== null && Number(n?.price || 0) !== 0
+                    )?.price || null,
                   exchangeToken:
-                    sortByFnReturn(offers, "price", false)?.exchangeToken ||
-                    null
+                    orderBy(offers, "price", "asc").find(
+                      (n) => n?.price !== null && Number(n?.price || 0) !== 0
+                    )?.exchangeToken || null
                 },
                 high: {
-                  value: sortByFnReturn(offers, "price", true)?.price || null,
+                  value:
+                    orderBy(offers, "price", "desc").find(
+                      (n) => n?.price !== null && Number(n?.price || 0) !== 0
+                    )?.price || null,
                   exchangeToken:
-                    sortByFnReturn(offers, "price", true)?.exchangeToken || null
+                    orderBy(offers, "price", "desc").find(
+                      (n) => n?.price !== null && Number(n?.price || 0) !== 0
+                    )?.exchangeToken || null
                 }
               },
               additional: {
@@ -143,25 +174,43 @@ export default function useProducts(
     );
   }, [productsWithVariants?.data, store?.rates]);
 
-  console.log("allProducts", allProducts);
-
   const allSellers = useMemo(() => {
     const grouped = groupBy(allProducts, "seller.id") || {};
     return (
       Object.keys(grouped)?.map((brandName) => {
         const offers = grouped[brandName as keyof typeof grouped];
         const seller = offers?.[0]?.seller || {};
+        const title = offers?.[0]?.title || {};
         return {
           ...seller,
+          title,
           brandName,
-          createdAt: sortByFn(offers, "createdAt", true),
-          validFromDate: sortByFn(offers, "validFromDate", true),
-          committedDate: sortByFn(offers, "committedDate", true),
-          redeemedDate: sortByFn(offers, "redeemedDate", true),
-          lowPrice: sortByFn(offers, "convertedPrice", false),
-          highPrice: sortByFn(offers, "convertedPrice", true),
+          createdAt:
+            orderBy(offers, "createdAt", "desc").find(
+              (n) => n?.createdAt !== null
+            )?.createdAt || null,
+          validFromDate:
+            orderBy(offers, "validFromDate", "desc").find(
+              (n) => n?.validFromDate !== null
+            )?.validFromDate || null,
+          committedDate:
+            orderBy(offers, "committedDate", "desc").find(
+              (n) => n?.committedDate !== null
+            )?.committedDate || null,
+          redeemedDate:
+            orderBy(offers, "redeemedDate", "desc").find(
+              (n) => n?.redeemedDate !== null
+            )?.redeemedDate || null,
+          lowPrice:
+            orderBy(offers, "lowPrice", "asc").find(
+              (n) => n?.lowPrice !== null && Number(n?.lowPrice || 0) !== 0
+            )?.lowPrice || null,
+          highPrice:
+            orderBy(offers, "highPrice", "desc").find(
+              (n) => n?.highPrice !== null && Number(n?.highPrice || 0) !== 0
+            )?.highPrice || null,
           additional: {
-            images: offers?.map((offer: any) => offer?.metadata?.image)
+            images: offers?.map((offer: Offer) => offer?.metadata?.image)
           },
           offers
         };
@@ -169,16 +218,10 @@ export default function useProducts(
     );
   }, [allProducts]);
 
-  const values = {
+  return {
     isLoading: products.isLoading || productsWithVariants.isLoading,
     isError: products.isError || productsWithVariants.isError,
     products: allProducts,
-    sellers: allSellers,
-    data: {
-      products,
-      productsWithVariants
-    }
+    sellers: allSellers
   };
-
-  return values;
 }

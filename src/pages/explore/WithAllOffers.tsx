@@ -1,3 +1,4 @@
+import { subgraph } from "@bosonprotocol/react-kit";
 import pick from "lodash/pick";
 import { ParsedQuery } from "query-string";
 import React, { useMemo } from "react";
@@ -43,10 +44,42 @@ const ExploreOffersContainer = styled.div<{ $isPrimaryBgChanged: boolean }>`
 export const Wrapper = styled.div`
   text-align: center;
 `;
-interface ExtendedOffer extends Offer {
+interface PriceDetails {
+  value: Pick<Offer, "price">;
+  exchangeToken: Pick<Offer, "exchangeToken">;
+}
+export interface ExtendedOffer extends subgraph.OfferFieldsFragment {
+  status?: string;
+  uuid?: string;
+  title?: string;
+  brandName?: string;
+  lowPrice?: string;
+  highPrice?: string;
+  priceDetails?: {
+    low: PriceDetails;
+    high: PriceDetails;
+  };
+  committedDate?: string;
+  redeemedDate?: string;
   convertedPrice?: string;
 }
+export interface ExtendedSeller extends subgraph.ProductV1Seller {
+  title?: string;
+  brandName?: string;
+  createdAt?: string;
+  validFromDate?: string;
+  committedDate?: string;
+  redeemedDate?: string;
+  lowPrice?: string;
+  highPrice?: string;
+  additional?: {
+    images: string[];
+  };
+  offers?: ExtendedOffer[];
+}
 export interface FilterOptions {
+  name?: string;
+  sellerCurationList?: string[];
   orderDirection?: "asc" | "desc";
   orderBy?: string;
   validFromDate?: string;
@@ -54,9 +87,14 @@ export interface FilterOptions {
   exchangeOrderBy?: string;
   validFromDate_lte?: string;
 }
+export interface ExtendedProducts {
+  products?: ExtendedOffer[];
+  sellers?: ExtendedSeller[];
+  isLoading?: boolean;
+  isError?: boolean;
+}
 export interface WithAllOffersProps {
-  offers?: ExtendedOffer[];
-  products?: any; // TODO: BP437 add proper types
+  products?: ExtendedProducts;
   isLoading?: boolean;
   isError?: boolean;
   showoffPage?: number;
@@ -132,11 +170,12 @@ export function WithAllOffers<P>(
 
       let payload;
       const basePayload = {
+        name: "",
+        sellerCurationList: [],
         orderDirection: "",
         orderBy: ""
       };
 
-      // TODO: BP437 work on that
       if (filterByName !== false) {
         payload = {
           ...basePayload,
@@ -153,7 +192,6 @@ export function WithAllOffers<P>(
         const [orderBy, orderDirection] = (sortByParam as string).split(":");
         payload = {
           ...basePayload,
-          ...payload,
           orderBy,
           exchangeOrderBy: orderBy,
           orderDirection

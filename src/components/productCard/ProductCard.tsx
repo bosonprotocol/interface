@@ -17,12 +17,16 @@ import { useGetIpfsImage } from "../../lib/utils/hooks/useGetIpfsImage";
 import { useHandleText } from "../../lib/utils/hooks/useHandleText";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
+import {
+  ExtendedOffer,
+  FilterOptions
+} from "../../pages/explore/WithAllOffers";
 import { getLensProfilePictureUrl } from "../modal/components/CreateProfile/Lens/utils";
 import { useConvertedPrice } from "../price/useConvertedPrice";
 
 interface Props {
-  offer: any;
-  filterOptions?: any;
+  offer: ExtendedOffer | any; // TODO: BP437 for now until change to useProducts globally
+  filterOptions?: FilterOptions;
   exchange?: NonNullable<Offer["exchanges"]>[number];
   dataTestId: string;
   isHoverDisabled?: boolean;
@@ -125,7 +129,11 @@ export default function ProductCard({
         avatarName={lens?.name ? lens?.name : `Seller ID: ${offer.seller.id}`}
         avatar={avatar || mockedAvatar}
         price={Number(price?.price || 0)}
-        asterisk={offer?.additional?.variants?.length > 1 ? true : false}
+        asterisk={
+          offer?.additional && offer?.additional?.variants?.length > 1
+            ? true
+            : false
+        }
         tooltip={
           offer?.additional?.variants?.length > 1
             ? "Price may be different on variants"

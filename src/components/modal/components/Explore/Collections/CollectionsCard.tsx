@@ -8,6 +8,7 @@ import { colors } from "../../../../../lib/styles/colors";
 import { zIndex } from "../../../../../lib/styles/zIndex";
 import { useCurrentSellers } from "../../../../../lib/utils/hooks/useCurrentSellers";
 import { useKeepQueryParamsNavigate } from "../../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { ExtendedSeller } from "../../../../../pages/explore/WithAllOffers";
 import Grid from "../../../../ui/Grid";
 import Image from "../../../../ui/Image";
 import Typography from "../../../../ui/Typography";
@@ -50,33 +51,7 @@ const DataContainer = styled.div`
 `;
 
 interface Props {
-  collection: {
-    id: string;
-    brandName?: string;
-    exchanges: [];
-    additional: {
-      images: string[];
-      sortBy: {
-        createdAt: string | null;
-        committedDate: string | null;
-        redeemedDate: string | null;
-        validFromDate: string | null;
-        lowPrice: string | null;
-        highPrice: string | null;
-      };
-    };
-    offers: {
-      id: string;
-      validFromDate: string;
-      validUntilDate: string;
-      metadata: {
-        name: string;
-        image: string;
-      };
-      exchanges: [];
-      duplicate?: boolean;
-    }[];
-  };
+  collection: ExtendedSeller;
 }
 export default function CollectionsCard({ collection }: Props) {
   const { lens: lensProfiles } = useCurrentSellers({
@@ -86,7 +61,7 @@ export default function CollectionsCard({ collection }: Props) {
   const navigate = useKeepQueryParamsNavigate();
   const imagesNumber = 4;
   const images = useMemo(() => {
-    const array = collection && collection.additional.images;
+    const array = (collection && collection?.additional?.images) || [];
 
     if (array.length < 3) {
       for (let index = 0; index < imagesNumber; index++) {
@@ -147,8 +122,7 @@ export default function CollectionsCard({ collection }: Props) {
           </Grid>
           <Grid alignItems="flex-start">
             <Typography $fontSize="20px" fontWeight="600" color={colors.black}>
-              {collection?.offers?.filter((offer) => !offer.duplicate).length ||
-                0}
+              {collection?.offers?.length || 0}
             </Typography>
             <Typography
               $fontSize="20px"
@@ -156,7 +130,8 @@ export default function CollectionsCard({ collection }: Props) {
               color={colors.black}
               margin="0 0 0 25px"
             >
-              {collection?.exchanges?.length || 0}
+              {/* TODO: BP437 Get the exchanges ammount */}
+              {/* {collection?.exchanges?.length || 0} */}0
             </Typography>
           </Grid>
         </DataWrapper>
