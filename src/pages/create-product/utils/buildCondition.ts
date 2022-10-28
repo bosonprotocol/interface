@@ -9,7 +9,7 @@ export const buildCondition = (commonTermsOfSale: any): ConditionStruct => {
   let method: EvaluationMethod = EvaluationMethod.None;
   let threshold;
 
-  switch (commonTermsOfSale.tokenType) {
+  switch (commonTermsOfSale.tokenType.value) {
     case "erc1155":
       tokenType = TokenType.MultiToken;
       method = EvaluationMethod.Threshold;
