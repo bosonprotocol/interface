@@ -32,8 +32,13 @@ interface ProductWithVariants {
   product: subgraph.BaseProductV1ProductFieldsFragment;
   variants: Variant[];
 }
+interface AdditionalFiltering {
+  quantityAvailable_gte?: number;
+  productsIds?: string[];
+}
 export default function useProducts(
-  props: subgraph.GetProductV1ProductsQueryQueryVariables = {}
+  props: subgraph.GetProductV1ProductsQueryQueryVariables &
+    AdditionalFiltering = {}
 ) {
   const coreSDK = useCoreSDK();
   const { store } = useContext(ConvertionRateContext);
@@ -45,12 +50,17 @@ export default function useProducts(
       return products;
     },
     {
-      enabled: !!coreSDK,
+      enabled: !!coreSDK && !!props?.productsIds,
       refetchOnMount: true
     }
   );
-  const productsIds =
-    products?.data?.map((p) => p?.uuid || "")?.filter((n) => n !== "") || [];
+  const productsIds = useMemo(
+    () =>
+      props?.productsIds ||
+      products?.data?.map((p) => p?.uuid || "")?.filter((n) => n !== "") ||
+      [],
+    [props?.productsIds, products?.data]
+  );
 
   const productsWithVariants = useQuery(
     ["get-all-products-by-uuid", { productsIds }],
@@ -125,7 +135,19 @@ export default function useProducts(
 
           if (offers.length > 0) {
             const lowerPriceOffer = sortBy(offers, "convertedPrice");
+            const itemsAvailable = offers.reduce(
+              (acc: number, e: ExtendedOffer) =>
+                e && e.quantityAvailable
+                  ? (acc += Number(e.quantityAvailable))
+                  : acc,
+              0
+            );
 
+            if (props?.quantityAvailable_gte) {
+              if (itemsAvailable < props?.quantityAvailable_gte) {
+                return null;
+              }
+            }
             return {
               uuid: product?.uuid,
               title: product?.title,
@@ -176,7 +198,7 @@ export default function useProducts(
         })
         .filter((n) => n) || []
     );
-  }, [productsWithVariants?.data, store?.rates]);
+  }, [productsWithVariants?.data, store?.rates, props?.quantityAvailable_gte]);
 
   const allSellers = useMemo(() => {
     const grouped = groupBy(allProducts, "seller.id") || {};

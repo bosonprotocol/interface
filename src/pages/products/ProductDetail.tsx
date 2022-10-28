@@ -104,7 +104,12 @@ export default function ProductDetail() {
     );
   }
 
-  if (!productResult || !selectedOffer || !product || !product.id) {
+  if (
+    (!productResult && !isLoading && !isError) ||
+    !selectedOffer ||
+    !product ||
+    !product.id
+  ) {
     return <div data-testid="notFound">This product does not exist</div>;
   }
 
