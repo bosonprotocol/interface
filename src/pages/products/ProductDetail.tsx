@@ -186,11 +186,13 @@ export default function ProductDetail() {
         {images.length > 0 && <DetailSlider images={images} />}
         <DetailGrid>
           <DetailChart offer={selectedOffer} title="Inventory graph" />
-          {(!!shippingInfo.shipping || !!shippingInfo.shippingTable.length) && (
+          {(shippingInfo.returnPeriodInDays !== undefined ||
+            !!shippingInfo.shippingTable.length) && (
             <div>
               <Typography tag="h3">Shipping information</Typography>
               <Typography tag="p" style={{ color: colors.darkGrey }}>
-                {shippingInfo.shipping}
+                Return period: {shippingInfo.returnPeriodInDays}{" "}
+                {shippingInfo.returnPeriodInDays === 1 ? "day" : "days"}
               </Typography>
               <DetailTable data={shippingInfo.shippingTable} inheritColor />
             </div>

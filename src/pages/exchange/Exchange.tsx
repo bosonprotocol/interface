@@ -178,12 +178,13 @@ export default function Exchange() {
               offer={offer}
               buyerAddress={buyerAddress}
             />
-            {(!!shippingInfo.shipping ||
+            {(shippingInfo.returnPeriodInDays !== undefined ||
               !!shippingInfo.shippingTable.length) && (
               <div>
                 <Typography tag="h3">Shipping information</Typography>
                 <Typography tag="p" style={{ color: colors.darkGrey }}>
-                  {shippingInfo.shipping}
+                  Return period: {shippingInfo.returnPeriodInDays}{" "}
+                  {shippingInfo.returnPeriodInDays === 1 ? "day" : "days"}
                 </Typography>
                 <DetailTable data={shippingInfo.shippingTable} inheritColor />
               </div>

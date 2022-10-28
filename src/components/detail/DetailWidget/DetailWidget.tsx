@@ -540,7 +540,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
 
             {isOffer && isNotCommittableOffer && (
               <DetailTopRightLabel>
-                {notCommittableOfferStatus}
+                {!isPreview && notCommittableOfferStatus}
               </DetailTopRightLabel>
             )}
             {isOffer && (
