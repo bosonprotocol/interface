@@ -59,6 +59,7 @@ import {
   ProductLayoutContainer
 } from "./CreateProductInner.styles";
 import { createProductSteps, FIRST_STEP, poll } from "./utils";
+import { buildCondition } from "./utils/buildCondition";
 import { validateDates } from "./utils/dataValidator";
 import { CreateProductSteps } from "./utils/index";
 
@@ -562,6 +563,10 @@ function CreateProductInner({
       const commonTermsOfSale = isMultiVariant
         ? values.variantsCoreTermsOfSale
         : values.coreTermsOfSale;
+      console.log(
+        "🚀  roberto --  ~ file: CreateProductInner.tsx ~ line 561 ~ handleSendData ~ commonTermsOfSale",
+        commonTermsOfSale.tokenCriteria
+      );
       const { offerValidityPeriod, redemptionPeriod } = commonTermsOfSale;
 
       const {
@@ -773,6 +778,7 @@ function CreateProductInner({
         const sellerDeposit = priceBN
           .mul(parseFloat(termsOfExchange.sellerDeposit) * 1000)
           .div(100 * 1000);
+
         const offerData = await getOfferDataFromMetadata(productV1Metadata, {
           coreSDK,
           priceBN,
@@ -804,6 +810,7 @@ function CreateProductInner({
             authTokenType: authTokenTypes.NONE
           }
         : null;
+      const isTokenGated = commonTermsOfSale.tokenGatedOffer.value === "true";
       let txResponse;
       if (isMultiVariant) {
         if (!hasSellerAccount && seller) {
@@ -870,6 +877,14 @@ function CreateProductInner({
         });
         const txReceipt = await txResponse.wait();
         const offerIds = coreSDK.getCreatedOfferIdsFromLogs(txReceipt.logs);
+        if (isTokenGated) {
+          // TODO
+          if (isMetaTx) {
+            // TODO
+          } else {
+            // TODO
+          }
+        }
         let createdOffers: OfferFieldsFragment[] | null = null;
         await poll(
           async () => {
@@ -935,24 +950,54 @@ function CreateProductInner({
           }
           // createOffer with meta-transaction
           const nonce = Date.now();
-          const { r, s, v, functionName, functionSignature } =
-            await coreSDK.signMetaTxCreateOffer({
-              createOfferArgs: offerData,
+          if (!isTokenGated) {
+            const { r, s, v, functionName, functionSignature } =
+              await coreSDK.signMetaTxCreateOffer({
+                createOfferArgs: offerData,
+                nonce
+              });
+            txResponse = await coreSDK.relayMetaTransaction({
+              functionName,
+              functionSignature,
+              sigR: r,
+              sigS: s,
+              sigV: v,
               nonce
             });
-          txResponse = await coreSDK.relayMetaTransaction({
-            functionName,
-            functionSignature,
-            sigR: r,
-            sigS: s,
-            sigV: v,
-            nonce
-          });
+          } else {
+            const condition = buildCondition(commonTermsOfSale);
+            const { r, s, v, functionName, functionSignature } =
+              await coreSDK.signMetaTxCreateOfferWithCondition({
+                offerToCreate: offerData,
+                condition,
+                nonce
+              });
+            txResponse = await coreSDK.relayMetaTransaction({
+              functionName,
+              functionSignature,
+              sigR: r,
+              sigS: s,
+              sigV: v,
+              nonce
+            });
+          }
         } else {
-          txResponse =
-            !hasSellerAccount && seller
-              ? await coreSDK.createSellerAndOffer(seller, offerData)
-              : await coreSDK.createOffer(offerData);
+          if (isTokenGated) {
+            const condition = buildCondition(commonTermsOfSale);
+            txResponse =
+              !hasSellerAccount && seller
+                ? await coreSDK.createSellerAndOfferWithCondition(
+                    seller,
+                    offerData,
+                    condition
+                  )
+                : await coreSDK.createOfferWithCondition(offerData, condition);
+          } else {
+            txResponse =
+              !hasSellerAccount && seller
+                ? await coreSDK.createSellerAndOffer(seller, offerData)
+                : await coreSDK.createOffer(offerData);
+          }
         }
         showModal("TRANSACTION_SUBMITTED", {
           action: "Create offer",
