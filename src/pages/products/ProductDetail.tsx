@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import {
@@ -18,6 +18,7 @@ import Image from "../../components/ui/Image";
 import Loading from "../../components/ui/Loading";
 import SellerID from "../../components/ui/SellerID";
 import Typography from "../../components/ui/Typography";
+import Video from "../../components/ui/Video";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { colors } from "../../lib/styles/colors";
 import { getOfferDetails } from "../../lib/utils/getOfferDetails";
@@ -47,6 +48,11 @@ export default function ProductDetail() {
     defaultVariant
   );
   const selectedOffer = selectedVariant?.offer;
+
+  const animationUrl = useMemo(
+    () => selectedOffer?.metadata.animationUrl || "",
+    [selectedOffer]
+  );
   const hasVariants =
     !!variantsWithV1?.length &&
     variantsWithV1.every((variant) => !!variant.variations.length);
@@ -126,7 +132,21 @@ export default function ProductDetail() {
       <LightBackground>
         <MainDetailGrid>
           <ImageWrapper>
-            <Image src={offerImg} dataTestId="offerImage" />
+            {animationUrl ? (
+              <Video
+                src={animationUrl}
+                videoProps={{
+                  muted: true,
+                  loop: true,
+                  autoPlay: true
+                }}
+                componentWhileLoading={() => (
+                  <Image src={offerImg} alt="Offer image" />
+                )}
+              />
+            ) : (
+              <Image src={offerImg} dataTestId="offerImage" />
+            )}
           </ImageWrapper>
           <div>
             <SellerID

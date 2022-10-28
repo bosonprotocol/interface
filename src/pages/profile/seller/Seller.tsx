@@ -23,6 +23,7 @@ import { useCurrentSellers } from "../../../lib/utils/hooks/useCurrentSellers";
 import { useGetIpfsImage } from "../../../lib/utils/hooks/useGetIpfsImage";
 import { useSellerCalculations } from "../../../lib/utils/hooks/useSellerCalculations";
 import { useSellers } from "../../../lib/utils/hooks/useSellers";
+import { ExtendedSeller } from "../../explore/WithAllOffers";
 import NotFound from "../../not-found/NotFound";
 import backgroundFluid from "../common/background-img.png";
 import ReadMore from "../common/ReadMore";
@@ -132,7 +133,8 @@ export default function Seller() {
     }
   );
   const products = useMemo(() => {
-    return sellerProducts.find((s) => s.id === sellerId) || [];
+    return (sellerProducts.filter((s) => s.id === sellerId) ||
+      []) as ExtendedSeller[];
   }, [sellerProducts, sellerId]);
 
   const isSellerExists = !!sellers?.length;
@@ -290,7 +292,7 @@ export default function Seller() {
                     margin="0"
                     fontWeight="bold"
                   >
-                    {products?.offers?.length || 0}
+                    {(products?.[0]?.offers || [])?.length || 0}
                   </Typography>
                 </div>
                 <div>
@@ -334,7 +336,7 @@ export default function Seller() {
           </Grid>
         </SellerCalculationContainer>
         <Tabs
-          products={products}
+          products={products?.[0]}
           isPrivateProfile={isMySeller}
           sellerId={sellerId}
           isErrorSellers={isErrorSellers}

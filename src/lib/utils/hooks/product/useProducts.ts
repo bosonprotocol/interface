@@ -1,4 +1,3 @@
-/* eslint @typescript-eslint/no-explicit-any: "off" */
 import { offers as offersSdk, subgraph } from "@bosonprotocol/react-kit";
 import groupBy from "lodash/groupBy";
 import orderBy from "lodash/orderBy";
@@ -8,8 +7,8 @@ import { useQuery } from "react-query";
 
 import ConvertionRateContext from "../../../../components/convertion-rate/ConvertionRateContext";
 import type { ExtendedOffer } from "../../../../pages/explore/WithAllOffers";
+import { ExtendedSeller } from "../../../../pages/explore/WithAllOffers";
 import { CONFIG } from "../../../config";
-import { Offer } from "../../../types/offer";
 import { calcPrice } from "../../calcPrice";
 import { convertPrice } from "../../convertPrice";
 import { useCoreSDK } from "../../useCoreSdk";
@@ -26,7 +25,7 @@ interface PromiseProps {
   };
 }
 interface Variant {
-  offer: subgraph.OfferFieldsFragment;
+  offer: ExtendedOffer;
   variations: subgraph.ProductV1Variation[];
 }
 interface ProductWithVariants {
@@ -88,9 +87,9 @@ export default function useProducts(
   const allProducts = useMemo(() => {
     return (
       (productsWithVariants?.data || [])
-        ?.map(({ product, variants }: any) => {
+        ?.map(({ product, variants }: ProductWithVariants) => {
           const offers = variants
-            ?.map(({ offer }: any) => {
+            ?.map(({ offer }: Variant) => {
               const status = offersSdk.getOfferStatus(offer);
               const offerPrice = convertPrice({
                 price: calcPrice(
@@ -108,7 +107,7 @@ export default function useProducts(
                 status,
                 convertedPrice: offerPrice?.converted || null,
                 committedDate:
-                  (offer?.exchanges || [])
+                  ((offer?.exchanges || []) as Exchange[])
                     .sort(
                       (a: Exchange, b: Exchange) =>
                         Number(a?.committedDate || "0") -
@@ -118,7 +117,7 @@ export default function useProducts(
                     .find((n: Exchange) => n.committedDate !== null)
                     ?.committedDate || null,
                 redeemedDate:
-                  (offer?.exchanges || [])
+                  ((offer?.exchanges || []) as Exchange[])
                     .sort(
                       (a: Exchange, b: Exchange) =>
                         Number(a?.redeemedDate) - Number(b?.redeemedDate)
@@ -129,11 +128,11 @@ export default function useProducts(
               };
             })
             .filter(
-              (n: ExtendedOffer) =>
+              (n: { voided: boolean; status: string }) =>
                 n &&
                 n?.voided === false &&
                 n?.status !== offersSdk.OfferState.EXPIRED
-            );
+            ) as ExtendedOffer[];
 
           if (offers.length > 0) {
             const lowerPriceOffer = sortBy(offers, "convertedPrice");
@@ -238,7 +237,7 @@ export default function useProducts(
               (n) => n?.highPrice !== null && Number(n?.highPrice || 0) !== 0
             )?.highPrice || null,
           additional: {
-            images: offers?.map((offer: Offer) => offer?.metadata?.image)
+            images: offers?.map((offer) => offer?.metadata?.image) || []
           },
           offers
         };
@@ -246,10 +245,12 @@ export default function useProducts(
     );
   }, [allProducts]);
 
+  console.log("allProducts", allProducts);
+
   return {
     isLoading: products.isLoading || productsWithVariants.isLoading,
     isError: products.isError || productsWithVariants.isError,
-    products: allProducts,
-    sellers: allSellers
+    products: allProducts as unknown as ExtendedOffer[],
+    sellers: allSellers as unknown as ExtendedSeller[]
   };
 }
