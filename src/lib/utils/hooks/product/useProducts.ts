@@ -51,10 +51,11 @@ export default function useProducts(
       return products;
     },
     {
-      enabled: !!coreSDK && !!props?.productsIds,
+      enabled: !!coreSDK && !(props?.productsIds || false),
       refetchOnMount: true
     }
   );
+
   const productsIds = useMemo(
     () =>
       props?.productsIds ||
