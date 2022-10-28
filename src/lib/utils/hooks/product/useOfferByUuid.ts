@@ -8,7 +8,7 @@ export default function useOfferByUuid(uuid: string | undefined): {
 } {
   const props = { uuid };
 
-  const result = useQuery(["productV1MetadataEntities", props], async () => {
+  const result = useQuery(["useOfferByUuid", props], async () => {
     const result = await fetchSubgraph<{
       productV1MetadataEntities: {
         offer: {

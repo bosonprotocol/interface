@@ -200,14 +200,16 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
   }, [values.withOwnProducts?.value, setFieldValue, sellerIds]);
 
   useEffect(() => {
-    if (
-      values.headerBgColor !== initialValues.headerBgColor &&
-      values.headerTextColor !== initialValues.headerTextColor
-    ) {
+    if (values.headerBgColor !== initialValues.headerBgColor) {
       setFieldValue(storeFields.footerBgColor, values.headerBgColor, true);
+    }
+  }, [values.headerBgColor, setFieldValue]);
+
+  useEffect(() => {
+    if (values.headerTextColor !== initialValues.headerTextColor) {
       setFieldValue(storeFields.footerTextColor, values.headerTextColor, true);
     }
-  }, [values.headerBgColor, setFieldValue, values.headerTextColor]);
+  }, [setFieldValue, values.headerTextColor]);
 
   const removeEmptyRowsExceptOne = () => {
     const value = values.additionalFooterLinks;

@@ -34,6 +34,11 @@ export const DisputeResolverCenterRoutes = {
   DisputeResolverCenter: `${BosonRoutes.DRAdmin}/:${UrlParameters.disputeResolverPageId}`
 };
 
+export const ProductRoutes = {
+  Root: "/products",
+  ProductDetail: `/products/:${UrlParameters.uuid}`
+} as const;
+
 export const OffersRoutes = {
   Root: "/offers",
   OfferDetail: `/offers/:${UrlParameters.offerId}`,

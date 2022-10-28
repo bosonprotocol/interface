@@ -56,7 +56,7 @@ function groupDates(exchanges: any) {
   const listOfDates = exchanges?.map((exchange: any) =>
     formatDate(exchange.committedDate)
   );
-  if (!listOfDates.length) {
+  if (!listOfDates?.length) {
     return false;
   }
 
@@ -116,7 +116,7 @@ function determineDataset(dates: any) {
     datasets: [
       {
         data: commitedData.length <= 1 ? [0, commitedData] : commitedData,
-        label: "Commited",
+        label: "Committed",
         backgroundColor: colors.blue,
         borderColor: colors.blue,
         fill: "start",

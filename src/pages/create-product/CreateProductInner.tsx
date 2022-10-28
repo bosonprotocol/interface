@@ -72,6 +72,7 @@ function onKeyPress(event: React.KeyboardEvent<HTMLFormElement>) {
 type GetProductV1MetadataProps = {
   offerUuid: string;
   productInformation: CreateProductForm["productInformation"];
+  animationUrl: string;
   externalUrl: string;
   licenseUrl: string;
   productMainImageLink: string | undefined;
@@ -97,6 +98,7 @@ type GetProductV1MetadataProps = {
 function getProductV1Metadata({
   offerUuid,
   productInformation,
+  animationUrl,
   externalUrl,
   licenseUrl,
   productMainImageLink,
@@ -116,6 +118,9 @@ function getProductV1Metadata({
     uuid: offerUuid,
     name: productInformation.productTitle,
     description: `${productInformation.description}\n\nTerms for the Boson rNFT Voucher: ${licenseUrl}`,
+    animationUrl: animationUrl.startsWith("ipfs://")
+      ? `${CONFIG.ipfsGateway}${animationUrl.substring("ipfs://".length)}`
+      : animationUrl,
     externalUrl,
     licenseUrl,
     image: productMainImageLink ? productMainImageLink : "",
@@ -414,7 +419,10 @@ function CreateProductInner({
           voidedAt: offerInfo.voidedAt,
           disputeResolverId: offerInfo.disputeResolverId,
           seller: offerInfo.seller,
-          exchangeToken: offerInfo.exchangeToken
+          exchangeToken: offerInfo.exchangeToken,
+          metadata: {
+            animationUrl: values.productAnimation?.[0]?.src
+          }
         },
         hasMultipleVariants: !!values.productVariants.variants.length,
         // these are the ones that we already had before
@@ -602,6 +610,9 @@ function CreateProductInner({
       const licenseUrl = `${window.origin}/#/license/${offerUuid}`;
 
       const offersToCreate: offers.CreateOfferArgs[] = [];
+      const animationUrl = values.productAnimation
+        ? values.productAnimation[0]?.src || ""
+        : "";
       if (isMultiVariant) {
         const { variants = [] } = values.productVariants;
         const variantsForMetadataCreation: Parameters<
@@ -654,6 +665,7 @@ function CreateProductInner({
         const productV1Metadata = getProductV1Metadata({
           offerUuid,
           productInformation,
+          animationUrl,
           externalUrl,
           licenseUrl,
           productMainImageLink,
@@ -729,6 +741,7 @@ function CreateProductInner({
         const productV1Metadata = getProductV1Metadata({
           offerUuid,
           productInformation,
+          animationUrl,
           externalUrl,
           licenseUrl,
           productMainImageLink,

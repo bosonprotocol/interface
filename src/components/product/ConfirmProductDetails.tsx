@@ -18,6 +18,7 @@ import BosonButton from "../ui/BosonButton";
 import Grid from "../ui/Grid";
 import Image from "../ui/Image";
 import Typography from "../ui/Typography";
+import Video from "../ui/Video";
 import {
   ChatDotsIcon,
   CheckIcon,
@@ -396,6 +397,21 @@ export default function ConfirmProductDetails({
                         />
                       )
                   )}
+                </SpaceContainer>
+              </div>
+            )}
+            {values.productAnimation?.[0]?.src && (
+              <div>
+                <ProductSubtitle tag="h4">Product Animation</ProductSubtitle>
+                <SpaceContainer>
+                  <Video
+                    src={values.productAnimation?.[0]?.src}
+                    videoProps={{
+                      autoPlay: true,
+                      loop: true,
+                      muted: true
+                    }}
+                  />
                 </SpaceContainer>
               </div>
             )}

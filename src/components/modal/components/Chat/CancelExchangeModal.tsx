@@ -1,4 +1,4 @@
-import { CancelButton, Provider } from "@bosonprotocol/react-kit";
+import { CancelButton, Provider, subgraph } from "@bosonprotocol/react-kit";
 import { Info as InfoComponent } from "phosphor-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -8,6 +8,7 @@ import { useSigner } from "wagmi";
 import { CONFIG } from "../../../../lib/config";
 import { colors } from "../../../../lib/styles/colors";
 import { getBuyerCancelPenalty } from "../../../../lib/utils/getPrices";
+import { useAddPendingTransaction } from "../../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
 import { useCoreSDK } from "../../../../lib/utils/useCoreSdk";
 import { poll } from "../../../../pages/create-product/utils";
@@ -48,6 +49,7 @@ interface Props {
         }
     )[];
     exchange: Exchange;
+    animationUrl: string;
     image: string;
     name: string;
   };
@@ -107,6 +109,7 @@ export default function CancelExchangeModal({
   reload
 }: Props) {
   const coreSDK = useCoreSDK();
+  const addPendingTransaction = useAddPendingTransaction();
   const { offer } = exchange;
   const { data: signer } = useSigner();
   const { showModal, modalTypes } = useModal();
@@ -204,10 +207,19 @@ export default function CancelExchangeModal({
               setCancelError(null);
               showModal("WAITING_FOR_CONFIRMATION");
             }}
-            onPendingTransaction={(hash) => {
+            onPendingTransaction={(hash, isMetaTx) => {
               showModal("TRANSACTION_SUBMITTED", {
                 action: "Cancel",
                 txHash: hash
+              });
+              addPendingTransaction({
+                type: subgraph.EventType.VoucherCanceled,
+                hash,
+                isMetaTx,
+                accountType: "Buyer",
+                exchange: {
+                  id: exchange.id
+                }
               });
             }}
             onSuccess={async (_, { exchangeId }) => {
@@ -245,6 +257,7 @@ export default function CancelExchangeModal({
               ));
             }}
             web3Provider={signer?.provider as Provider}
+            metaTx={CONFIG.metaTx}
           >
             <Grid gap="0.5rem">
               Confirm cancellation

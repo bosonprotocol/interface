@@ -62,6 +62,10 @@ function testPrice(price: number | null | undefined) {
   }
 }
 
+const productAnimation = {
+  productAnimation: validationOfIpfsImage()
+};
+
 export const productVariantsValidationSchema = Yup.object({
   productVariants: Yup.object({
     colors: Yup.array(Yup.string()),
@@ -93,7 +97,7 @@ export const productVariantsValidationSchema = Yup.object({
       })
     )
       .required("Variants are required")
-      .min(1, "You have to define at least one variant")
+      .min(2, "You have to define at least two variants")
       .max(12, "Maximum 12 variants per product")
   })
 });
@@ -108,7 +112,8 @@ export const productImagesValidationSchema = Yup.object({
     styledScene: validationOfIpfsImage(),
     sizeAndScale: validationOfIpfsImage(),
     more: validationOfIpfsImage()
-  })
+  }),
+  ...productAnimation
 });
 
 export const productVariantsImagesValidationSchema = Yup.object({
@@ -119,7 +124,8 @@ export const productVariantsImagesValidationSchema = Yup.object({
     test: function (value) {
       return value?.length === this.parent.productVariants.variants.length;
     }
-  })
+  }),
+  ...productAnimation
 });
 
 export const imagesSpecificOrAllValidationSchema = Yup.object({

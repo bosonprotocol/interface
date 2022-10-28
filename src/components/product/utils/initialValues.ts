@@ -62,7 +62,8 @@ export const productVariantsInitialValues = {
 };
 
 export const productVariantsImagesInitialValues = {
-  productVariantsImages: []
+  productVariantsImages: [],
+  productAnimation: []
 };
 
 export const productImagesInitialValues = {
@@ -75,7 +76,8 @@ export const productImagesInitialValues = {
     styledScene: undefined,
     sizeAndScale: undefined,
     more: undefined
-  }
+  },
+  productAnimation: []
 } as const;
 
 export const coreTermsOfSaleInitialValues = {

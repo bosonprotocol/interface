@@ -23,6 +23,12 @@ export const offerGraphQl = gql`
     voucherRedeemableUntilDate
     numberOfCommits
     numberOfRedemptions
+    disputeResolutionTerms {
+      disputeResolverId
+      escalationResponsePeriod
+      feeAmount
+      buyerEscalationDeposit
+    }
     disputeResolver {
       escalationResponsePeriod
     }
@@ -56,6 +62,7 @@ export const offerGraphQl = gql`
       id
       name
       description
+      animationUrl
       externalUrl
       licenseUrl
       schemaUrl

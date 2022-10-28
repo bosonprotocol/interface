@@ -1,4 +1,10 @@
-import { Provider, VoidButton } from "@bosonprotocol/react-kit";
+import { TransactionResponse } from "@bosonprotocol/common";
+import {
+  CoreSDK,
+  Provider,
+  subgraph,
+  VoidButton
+} from "@bosonprotocol/react-kit";
 import { BigNumberish } from "ethers";
 import { useCallback, useState } from "react";
 import toast from "react-hot-toast";
@@ -8,6 +14,7 @@ import { useSigner } from "wagmi";
 import { CONFIG } from "../../../lib/config";
 import { colors } from "../../../lib/styles/colors";
 import { Offer } from "../../../lib/types/offer";
+import { useAddPendingTransaction } from "../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 import { poll } from "../../../pages/create-product/utils";
 import { Break } from "../../detail/Detail.style";
@@ -133,6 +140,26 @@ function VoidProductOffer({ offer, single = false }: OfferProps) {
   );
 }
 
+async function voidOfferBatchWithMetaTx(
+  coreSdk: CoreSDK,
+  offerIds: BigNumberish[]
+): Promise<TransactionResponse> {
+  const nonce = Date.now();
+  const { r, s, v, functionName, functionSignature } =
+    await coreSdk.signMetaTxVoidOfferBatch({
+      offerIds,
+      nonce
+    });
+  return coreSdk.relayMetaTransaction({
+    functionName,
+    functionSignature,
+    sigR: r,
+    sigS: s,
+    sigV: v,
+    nonce
+  });
+}
+
 interface Props {
   offer?: Offer;
   offers?: Array<Offer | null>;
@@ -147,6 +174,7 @@ export default function VoidProduct({
 }: Props) {
   const { showModal } = useModal();
   const coreSdk = useCoreSDK();
+  const addPendingTransaction = useAddPendingTransaction();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { data: signer } = useSigner();
   const { hideModal } = useModal();
@@ -231,9 +259,15 @@ export default function VoidProduct({
 
     try {
       setIsLoading(true);
-      const txResponse = await coreSdk.voidOfferBatch(offerIds);
+      let txResponse: TransactionResponse;
+      const isMetaTx = Boolean(coreSdk?.isMetaTxConfigSet && signer);
+      if (isMetaTx) {
+        txResponse = await voidOfferBatchWithMetaTx(coreSdk, offerIds);
+      } else {
+        txResponse = await coreSdk.voidOfferBatch(offerIds);
+      }
       const txHash = txResponse.hash;
-      await txResponse.wait(offerIds.length);
+      await txResponse.wait();
       handleSuccess(
         {
           transactionHash: txHash
@@ -245,7 +279,7 @@ export default function VoidProduct({
     } catch (error) {
       console.error("onError", error);
     }
-  }, [offers, coreSdk, handleSuccess]);
+  }, [offers, coreSdk, signer, handleSuccess]);
 
   return (
     <Grid flexDirection="column" alignItems="flex-start" gap="2rem">
@@ -292,14 +326,24 @@ export default function VoidProduct({
               onPendingSignature={() => {
                 showModal("WAITING_FOR_CONFIRMATION");
               }}
-              onPendingTransaction={(hash) => {
+              onPendingTransaction={(hash, isMetaTx) => {
                 showModal("TRANSACTION_SUBMITTED", {
                   action: "Void",
                   txHash: hash
                 });
+                addPendingTransaction({
+                  type: subgraph.EventType.OfferVoided,
+                  hash,
+                  isMetaTx,
+                  accountType: "Seller",
+                  offer: {
+                    id: offer.id
+                  }
+                });
               }}
               onSuccess={handleSuccess}
               web3Provider={signer?.provider as Provider}
+              metaTx={CONFIG.metaTx}
             />
           </VoidButtonWrapper>
         </Grid>

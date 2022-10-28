@@ -23,6 +23,7 @@ import BosonButton from "../../ui/BosonButton";
 import Grid from "../../ui/Grid";
 import Image from "../../ui/Image";
 import Typography from "../../ui/Typography";
+import Video from "../../ui/Video";
 interface Props {
   message: string;
   name: string;
@@ -138,6 +139,8 @@ export default function ProductCreateSuccess({
   const fifteenOfAmmount = suggestedAmount.mulUnsafe(mulBy);
 
   const hasDeposit = offer?.sellerDeposit !== "0";
+  const animationUrl = offer?.metadata?.animationUrl;
+
   return (
     <>
       <ModalGrid>
@@ -146,13 +149,21 @@ export default function ProductCreateSuccess({
             height: "100%"
           }}
         >
-          <Image
-            src={image}
-            dataTestId="offerImage"
-            style={{
-              height: "100%"
-            }}
-          />
+          {animationUrl ? (
+            <Video
+              src={animationUrl}
+              dataTestId="offerAnimationUrl"
+              videoProps={{ muted: true, loop: true, autoPlay: true }}
+            />
+          ) : (
+            <Image
+              src={image}
+              dataTestId="offerImage"
+              style={{
+                height: "100%"
+              }}
+            />
+          )}
         </ModalImageWrapper>
         <div>
           <Widget>

@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import {
@@ -17,43 +18,79 @@ import Image from "../../components/ui/Image";
 import Loading from "../../components/ui/Loading";
 import SellerID from "../../components/ui/SellerID";
 import Typography from "../../components/ui/Typography";
-import Video from "../../components/ui/Video";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { colors } from "../../lib/styles/colors";
 import { getOfferDetails } from "../../lib/utils/getOfferDetails";
-import useOffer from "../../lib/utils/hooks/offer/useOffer";
+import useProductByUuid from "../../lib/utils/hooks/product/useProductByUuid";
+import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useSellers } from "../../lib/utils/hooks/useSellers";
+import { VariantV1 } from "./types";
+import VariationSelects from "./VariationSelects";
 
-export default function OfferDetail() {
-  const { [UrlParameters.offerId]: offerId } = useParams();
+export default function ProductDetail() {
+  const { [UrlParameters.uuid]: productUuid = "" } = useParams();
 
   const {
-    data: offer,
+    data: productResult,
     isError,
     isLoading
-  } = useOffer(
+  } = useProductByUuid(productUuid, { enabled: !!productUuid });
+  console.log({ productResult });
+  const product = productResult?.product;
+  const variants = productResult?.variants;
+  const variantsWithV1 = variants?.filter(
+    ({ offer: { metadata } }) => metadata?.type === "PRODUCT_V1"
+  ) as VariantV1[] | undefined;
+  const defaultVariant = variantsWithV1?.[0];
+
+  const [selectedVariant, setSelectedVariant] = useState<VariantV1 | undefined>(
+    defaultVariant
+  );
+  const selectedOffer = selectedVariant?.offer;
+  const hasVariants =
+    !!variantsWithV1?.length &&
+    variantsWithV1.every((variant) => !!variant.variations.length);
+  useEffect(() => {
+    if (defaultVariant) {
+      setSelectedVariant(defaultVariant);
+    }
+  }, [defaultVariant]);
+
+  const seller = product?.productV1Seller?.seller;
+  const sellerId = seller?.id;
+
+  const { data: exchanges } = useExchanges(
     {
-      offerId: offerId || ""
+      offerId: selectedOffer?.id || "",
+      disputed: null
     },
-    { enabled: !!offerId }
+    {
+      enabled: !!selectedOffer?.id
+    }
   );
 
-  const { data: sellers } = useSellers({
-    id: offer?.seller.id,
-    includeFunds: true
-  });
+  if (selectedOffer) {
+    selectedOffer.exchanges = exchanges;
+  }
+
+  const { data: sellers } = useSellers(
+    {
+      id: sellerId,
+      includeFunds: true
+    },
+    {
+      enabled: !!sellerId
+    }
+  );
+
   const sellerAvailableDeposit = sellers?.[0]?.funds?.find(
-    (fund) => fund.token.address === offer?.exchangeToken.address
+    (fund) => fund.token.address === selectedOffer?.exchangeToken.address
   )?.availableAmount;
-  const offerRequiredDeposit = Number(offer?.sellerDeposit || 0);
+  const offerRequiredDeposit = Number(selectedOffer?.sellerDeposit || 0);
   const hasSellerEnoughFunds =
     offerRequiredDeposit > 0
       ? Number(sellerAvailableDeposit) >= offerRequiredDeposit
       : true;
-
-  if (!offerId) {
-    return null;
-  }
 
   if (isLoading) {
     return <Loading />;
@@ -61,58 +98,35 @@ export default function OfferDetail() {
 
   if (isError) {
     return (
-      <div data-testid="errorOffer">
+      <div data-testid="errorProduct">
         There has been an error, please try again later...
       </div>
     );
   }
 
-  if (!offer) {
-    return <div data-testid="notFound">This offer does not exist</div>;
-  }
-
-  if (!offer.isValid) {
-    return (
-      <div data-testid="invalidMetadata">
-        This offer does not match the expected metadata standard this
-        application enforces
-      </div>
-    );
+  if (!productResult || !selectedOffer || !product || !product.id) {
+    return <div data-testid="notFound">This product does not exist</div>;
   }
 
   const {
     name,
     offerImg,
-    animationUrl,
     shippingInfo,
     description,
-    // productData,
     artistDescription,
     images
-  } = getOfferDetails(offer);
-
+  } = getOfferDetails(selectedOffer);
   return (
     <DetailWrapper>
       <LightBackground>
         <MainDetailGrid>
           <ImageWrapper>
-            {animationUrl ? (
-              <Video
-                src={animationUrl}
-                dataTestId="offerAnimationUrl"
-                videoProps={{ muted: true, loop: true, autoPlay: true }}
-                componentWhileLoading={() => (
-                  <Image src={offerImg} dataTestId="offerImage" />
-                )}
-              />
-            ) : (
-              <Image src={offerImg} dataTestId="offerImage" />
-            )}
+            <Image src={offerImg} dataTestId="offerImage" />
           </ImageWrapper>
           <div>
             <SellerID
-              offer={offer}
-              buyerOrSeller={offer?.seller}
+              offer={selectedOffer}
+              buyerOrSeller={selectedOffer?.seller}
               justifyContent="flex-start"
               withProfileImage
             />
@@ -124,9 +138,17 @@ export default function OfferDetail() {
               {name}
             </Typography>
 
+            {hasVariants && (
+              <VariationSelects
+                selectedVariant={selectedVariant}
+                setSelectedVariant={setSelectedVariant}
+                variants={variantsWithV1}
+              />
+            )}
+
             <DetailWidget
               pageType="offer"
-              offer={offer}
+              offer={selectedOffer}
               name={name}
               image={offerImg}
               hasSellerEnoughFunds={hasSellerEnoughFunds}
@@ -158,7 +180,7 @@ export default function OfferDetail() {
         </DetailGrid>
         {images.length > 0 && <DetailSlider images={images} />}
         <DetailGrid>
-          <DetailChart offer={offer} title="Inventory graph" />
+          <DetailChart offer={selectedOffer} title="Inventory graph" />
           {(!!shippingInfo.shipping || !!shippingInfo.shippingTable.length) && (
             <div>
               <Typography tag="h3">Shipping information</Typography>

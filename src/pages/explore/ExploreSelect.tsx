@@ -32,7 +32,7 @@ const selectOptions = [
   },
   {
     value: "committedDate:desc",
-    label: "Recently Commited"
+    label: "Recently Committed"
   },
   {
     value: "redeemedDate:desc",

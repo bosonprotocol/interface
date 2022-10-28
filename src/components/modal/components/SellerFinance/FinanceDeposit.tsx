@@ -89,12 +89,44 @@ export default function FinanceDeposit({
     }
     const allowance = await coreSDK.getExchangeTokenAllowance(exchangeToken);
 
-    if (Number(allowance) < Number(value)) {
-      const tx = await coreSDK.approveExchangeToken(
-        exchangeToken,
-        constants.MaxInt256
-      );
-      await tx.wait();
+    try {
+      if (Number(allowance) < Number(value)) {
+        let approveTx;
+        // If metaTx, then call metaTx for approval
+        const isMetaTx = Boolean(
+          coreSDK.checkMetaTxConfigSet({ contractAddress: exchangeToken }) &&
+            address
+        );
+        if (isMetaTx) {
+          const { r, s, v, functionSignature } =
+            await coreSDK.signNativeMetaTxApproveExchangeToken(
+              exchangeToken,
+              constants.MaxInt256
+            );
+          approveTx = await coreSDK.relayNativeMetaTransaction(exchangeToken, {
+            functionSignature,
+            sigR: r,
+            sigS: s,
+            sigV: v
+          });
+        } else {
+          approveTx = await coreSDK.approveExchangeToken(
+            exchangeToken,
+            constants.MaxInt256
+          );
+        }
+        showModal("TRANSACTION_SUBMITTED", {
+          action: "Approve ERC20 Token",
+          txHash: approveTx.hash
+        });
+        await approveTx.wait();
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.error("error->", error);
+      // show error in all cases
+      showModal("CONFIRMATION_FAILED");
+      throw error; // do not go on with the deposit
     }
   };
 
