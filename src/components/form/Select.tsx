@@ -9,22 +9,34 @@ import Error from "./Error";
 import type { SelectDataProps, SelectProps } from "./types";
 
 const customStyles = (error: any) => ({
-  control: (provided: any, state: any) => ({
-    ...provided,
-    borderRadius: 0,
-    padding: "0.4rem 0.25rem",
-    boxShadow: "none",
-    ":hover": {
-      borderColor: colors.secondary,
-      borderWidth: "1px"
-    },
-    background: colors.lightGrey,
-    border: state.isFocused
-      ? `1px solid ${colors.secondary}`
-      : !checkIfValueIsEmpty(error)
-      ? `1px solid ${colors.orange}`
-      : `1px solid ${colors.border}`
-  }),
+  control: (provided: any, state: any) => {
+    const before = state.selectProps.label
+      ? {
+          ":before": {
+            content: `"${state.selectProps.label}"`,
+            fontWeight: "600",
+            paddingLeft: "1rem"
+          }
+        }
+      : null;
+    return {
+      ...provided,
+      borderRadius: 0,
+      padding: "0.4rem 0.25rem",
+      boxShadow: "none",
+      ":hover": {
+        borderColor: colors.secondary,
+        borderWidth: "1px"
+      },
+      background: colors.lightGrey,
+      border: state.isFocused
+        ? `1px solid ${colors.secondary}`
+        : !checkIfValueIsEmpty(error)
+        ? `1px solid ${colors.orange}`
+        : `1px solid ${colors.border}`,
+      ...before
+    };
+  },
   container: (provided: any, state: any) => ({
     ...provided,
     zIndex: state.isFocused ? zIndex.Select + 1 : zIndex.Select,

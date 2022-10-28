@@ -7,18 +7,24 @@ import { Select } from "../../components/form";
 import { SelectDataProps } from "../../components/form/types";
 import Grid from "../../components/ui/Grid";
 import { isTruthy } from "../../lib/types/helpers";
+import { isNumeric } from "../../lib/utils/number";
 import { VariantV1, Variation } from "./types";
 
 const sizes = [
   "xxxxxs",
+  "x-x-x-x-x-small",
   "extra extra extra extra extra small",
   "xxxxs",
+  "x-x-x-x-small",
   "extra extra extra extra small",
   "xxxs",
+  "x-x-x-small",
   "extra extra extra small",
   "xxs",
+  "x-x-small",
   "extra extra small",
   "xs",
+  "x-small",
   "extra small",
   "s",
   "small",
@@ -27,14 +33,19 @@ const sizes = [
   "l",
   "large",
   "xl",
+  "x-large",
   "extra large",
   "xxl",
+  "x-x-large",
   "extra extra large",
   "xxxl",
+  "x-x-x-large",
   "extra extra extra large",
   "xxxxl",
+  "x-x-x-x-large",
   "extra extra extra extra large",
   "xxxxxl",
+  "x-x-x-x-x-large",
   "extra extra extra extra extra large"
 ] as const;
 
@@ -95,15 +106,18 @@ const getVariationsByType = (
             if (a.label === emptyLabel) {
               return -1;
             }
+            if (isNumeric(a.label) && isNumeric(b.label)) {
+              return parseFloat(a.label) - parseFloat(b.label);
+            }
             const aWeight = sizesMapWithWeights[a.label.toLowerCase().trim()];
             const bWeight = sizesMapWithWeights[b.label.toLowerCase().trim()];
-            if (aWeight !== -1 && bWeight !== -1) {
+            if (aWeight !== undefined && bWeight !== undefined) {
               return aWeight < bWeight ? -1 : 1;
             }
-            if (aWeight !== -1) {
+            if (aWeight !== undefined) {
               return -1;
             }
-            if (bWeight !== -1) {
+            if (bWeight !== undefined) {
               return 1;
             }
             return a.label.localeCompare(b.label);
@@ -219,6 +233,7 @@ export default function VariationSelects({
                 name="color"
                 options={getVariationsByType(variants, "Color")}
                 placeholder="Color"
+                label="Color:"
                 onChange={() => {
                   setLastChangedVariation("color");
                   submitForm();
@@ -228,6 +243,7 @@ export default function VariationSelects({
                 name="size"
                 options={getVariationsByType(variants, "Size")}
                 placeholder="Size"
+                label="Size:"
                 onChange={() => {
                   setLastChangedVariation("size");
                   submitForm();
