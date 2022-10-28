@@ -6,25 +6,37 @@ import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import { checkIfValueIsEmpty } from "../../lib/utils/checkIfValueIsEmpty";
 import Error from "./Error";
-import type { SelectProps } from "./types";
+import type { SelectDataProps, SelectProps } from "./types";
 
 const customStyles = (error: any) => ({
-  control: (provided: any, state: any) => ({
-    ...provided,
-    borderRadius: 0,
-    padding: "0.4rem 0.25rem",
-    boxShadow: "none",
-    ":hover": {
-      borderColor: colors.secondary,
-      borderWidth: "1px"
-    },
-    background: colors.lightGrey,
-    border: state.isFocused
-      ? `1px solid ${colors.secondary}`
-      : !checkIfValueIsEmpty(error)
-      ? `1px solid ${colors.orange}`
-      : `1px solid ${colors.border}`
-  }),
+  control: (provided: any, state: any) => {
+    const before = state.selectProps.label
+      ? {
+          ":before": {
+            content: `"${state.selectProps.label}"`,
+            fontWeight: "600",
+            paddingLeft: "1rem"
+          }
+        }
+      : null;
+    return {
+      ...provided,
+      borderRadius: 0,
+      padding: "0.4rem 0.25rem",
+      boxShadow: "none",
+      ":hover": {
+        borderColor: colors.secondary,
+        borderWidth: "1px"
+      },
+      background: colors.lightGrey,
+      border: state.isFocused
+        ? `1px solid ${colors.secondary}`
+        : !checkIfValueIsEmpty(error)
+        ? `1px solid ${colors.orange}`
+        : `1px solid ${colors.border}`,
+      ...before
+    };
+  },
   container: (provided: any, state: any) => ({
     ...provided,
     zIndex: state.isFocused ? zIndex.Select + 1 : zIndex.Select,
@@ -57,6 +69,7 @@ export default function SelectComponent({
   isSearchable = true,
   disabled = false,
   errorMessage,
+  onChange,
   ...props
 }: SelectProps) {
   const [field, meta, helpers] = useField(name);
@@ -71,11 +84,12 @@ export default function SelectComponent({
     typeof displayErrorMessage === typeof "string" &&
     displayErrorMessage !== "";
 
-  const handleChange = (option: any) => {
+  const handleChange = (option: SelectDataProps<string>) => {
     if (!meta.touched) {
       helpers.setTouched(true);
     }
     helpers.setValue(option);
+    onChange?.(option);
   };
   const handleBlur = () => {
     if (!meta.touched) {

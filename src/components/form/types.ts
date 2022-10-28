@@ -60,6 +60,7 @@ export type TagsProps = BaseProps &
 export interface SelectDataProps<Value extends string = string> {
   label: string;
   value: Value;
+  disabled?: boolean;
   [others: string]: unknown;
 }
 
@@ -83,6 +84,8 @@ export interface SelectProps extends BaseProps {
   isSearchable?: boolean;
   options: Array<SelectDataProps>;
   errorMessage?: string;
+  onChange?: (option: SelectDataProps<string>) => void;
+  label?: string;
 }
 
 export interface UploadProps extends BaseProps {

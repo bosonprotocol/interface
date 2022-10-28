@@ -51,6 +51,9 @@ const StyledPrice = styled(Price)`
     font-size: 1rem;
   }
   margin-bottom: 2rem;
+  [data-testid="price-grid"] {
+    justify-content: center;
+  }
 `;
 
 const StyledProgress = styled(ProgressPrimitive.Root)`

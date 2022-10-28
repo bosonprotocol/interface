@@ -17,11 +17,13 @@ import {
   MediaSet,
   ProfileFieldsFragment
 } from "../../../lib/utils/hooks/lens/graphql/generated";
+import useProducts from "../../../lib/utils/hooks/product/useProducts";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { useCurrentSellers } from "../../../lib/utils/hooks/useCurrentSellers";
 import { useGetIpfsImage } from "../../../lib/utils/hooks/useGetIpfsImage";
 import { useSellerCalculations } from "../../../lib/utils/hooks/useSellerCalculations";
 import { useSellers } from "../../../lib/utils/hooks/useSellers";
+import { ExtendedSeller } from "../../explore/WithAllOffers";
 import NotFound from "../../not-found/NotFound";
 import backgroundFluid from "../common/background-img.png";
 import ReadMore from "../common/ReadMore";
@@ -114,7 +116,12 @@ export default function Seller() {
     }
   );
   const {
-    data: { exchanges, offers = [] } = {},
+    sellers: sellerProducts,
+    isLoading: isLoadingProducts,
+    isError: isErrorProducts
+  } = useProducts();
+  const {
+    data: { exchanges } = {},
     isError: isErrorSellerCalculation,
     isLoading: isLoadingSellersCalculation
   } = useSellerCalculations(
@@ -125,6 +132,11 @@ export default function Seller() {
       enabled: !!sellerId
     }
   );
+  const products = useMemo(() => {
+    return (sellerProducts.filter((s) => s.id === sellerId) ||
+      []) as ExtendedSeller[];
+  }, [sellerProducts, sellerId]);
+
   const isSellerExists = !!sellers?.length;
   const currentSellerAddress = sellers[0]?.operator || "";
   const isMySeller =
@@ -138,11 +150,21 @@ export default function Seller() {
     ].length;
   }, [exchanges]);
 
-  if (isLoading || isLoadingSellers || isLoadingSellersCalculation) {
+  if (
+    isLoading ||
+    isLoadingSellers ||
+    isLoadingSellersCalculation ||
+    isLoadingProducts
+  ) {
     return <Loading />;
   }
 
-  if (isError || isErrorSellers || isErrorSellerCalculation) {
+  if (
+    isError ||
+    isErrorSellers ||
+    isErrorSellerCalculation ||
+    isErrorProducts
+  ) {
     // TODO: NO FIGMA REPRESENTATION
     return (
       <BasicInfo>
@@ -262,7 +284,7 @@ export default function Seller() {
                     margin="0"
                     color={colors.darkGrey}
                   >
-                    Offers
+                    Products
                   </Typography>
                   <Typography
                     tag="p"
@@ -270,7 +292,7 @@ export default function Seller() {
                     margin="0"
                     fontWeight="bold"
                   >
-                    {offers.length}
+                    {(products?.[0]?.offers || [])?.length || 0}
                   </Typography>
                 </div>
                 <div>
@@ -314,6 +336,7 @@ export default function Seller() {
           </Grid>
         </SellerCalculationContainer>
         <Tabs
+          products={products?.[0]}
           isPrivateProfile={isMySeller}
           sellerId={sellerId}
           isErrorSellers={isErrorSellers}

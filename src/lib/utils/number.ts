@@ -18,3 +18,12 @@ export const fixformattedString = (num: number): string => {
   const decimals = Math.min(100, Number(numStr.substring(indexEMinus + 2)));
   return num.toFixed(decimals);
 };
+
+export const isNumeric = (strNumber: string) => {
+  if (typeof strNumber != "string") return false; // we only process strings!
+  return (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    !isNaN(strNumber as any) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+    !isNaN(parseFloat(strNumber))
+  ); // ...and ensure strings of whitespace fail
+};
