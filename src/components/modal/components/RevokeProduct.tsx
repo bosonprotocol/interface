@@ -186,6 +186,7 @@ export default function RevokeProduct({
               refetch();
             }}
             web3Provider={signer?.provider as Provider}
+            metaTx={CONFIG.metaTx}
           />
         </RevokeButtonWrapper>
       </Grid>
