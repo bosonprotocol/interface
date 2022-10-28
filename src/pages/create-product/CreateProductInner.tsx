@@ -877,13 +877,13 @@ function CreateProductInner({
         });
         const txReceipt = await txResponse.wait();
         const offerIds = coreSDK.getCreatedOfferIdsFromLogs(txReceipt.logs);
-        if (isTokenGated) {
-          // TODO
-          if (isMetaTx) {
-            // TODO
-          } else {
-            // TODO
-          }
+        if (isTokenGated && isMetaTx) {
+          const condition = buildCondition(commonTermsOfSale);
+          const nonce = Date.now();
+          coreSDK.signMetaTxCreateGroup({
+            createGroupArgs: { offerIds, ...condition },
+            nonce
+          });
         }
         let createdOffers: OfferFieldsFragment[] | null = null;
         await poll(
