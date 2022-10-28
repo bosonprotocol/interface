@@ -60,6 +60,16 @@ export default function CollectionsCard({ collection }: Props) {
   const [lens] = lensProfiles;
   const navigate = useKeepQueryParamsNavigate();
   const imagesNumber = 4;
+
+  const allExchanges = useMemo(
+    () =>
+      collection.offers?.reduce(
+        (acc, e) =>
+          e && e.exchanges ? (acc += Number(e.exchanges.length)) : acc,
+        0
+      ),
+    [collection]
+  );
   const images = useMemo(() => {
     const array = (collection && collection?.additional?.images) || [];
 
@@ -130,8 +140,7 @@ export default function CollectionsCard({ collection }: Props) {
               color={colors.black}
               margin="0 0 0 25px"
             >
-              {/* TODO: BP437 Get the exchanges ammount */}
-              {/* {collection?.exchanges?.length || 0} */}0
+              {allExchanges}
             </Typography>
           </Grid>
         </DataWrapper>
