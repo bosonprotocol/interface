@@ -13,8 +13,10 @@ import { ExploreQueryParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
+import { isTruthy } from "../../lib/types/helpers";
 import { Offer } from "../../lib/types/offer";
 import useProducts from "../../lib/utils/hooks/product/useProducts";
+import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
 import { useIsCustomStoreValueChanged } from "../custom-store/useIsCustomStoreValueChanged";
 import ExploreSelect from "./ExploreSelect";
 import useSearchParams from "./useSearchParams";
@@ -120,6 +122,8 @@ export function WithAllOffers<P>(
 
     const isPrimaryBgColorChanged =
       useIsCustomStoreValueChanged("primaryBgColor");
+    const sellerCurationListString =
+      useCustomStoreQueryParameter("sellerCurationList");
 
     const pageOptions = useMemo(() => {
       let options = {
@@ -152,8 +156,9 @@ export function WithAllOffers<P>(
 
     const filterOptions = useMemo(() => {
       const filterByName = params?.[ExploreQueryParameters.name] || false;
-      const sellerCurationList =
-        params?.[ExploreQueryParameters.sellerCurationList] || false;
+      const sellerCurationList = sellerCurationListString
+        .split(",")
+        .filter(isTruthy);
 
       const sortByParam =
         params?.[ExploreQueryParameters.sortBy]?.includes("price:asc") ||
@@ -171,7 +176,7 @@ export function WithAllOffers<P>(
 
       let payload = {
         name: "",
-        sellerCurationList: [""],
+        sellerCurationList,
         orderDirection: "",
         exchangeOrderBy: "",
         orderBy: ""
@@ -186,7 +191,7 @@ export function WithAllOffers<P>(
       if (sellerCurationList) {
         payload = {
           ...payload,
-          sellerCurationList: sellerCurationList as string[]
+          sellerCurationList
         };
       }
       if (sortByParam !== false) {
@@ -206,7 +211,7 @@ export function WithAllOffers<P>(
         "validFromDate_lte",
         "sellerCurationList"
       ]) as FilterOptions;
-    }, [params]);
+    }, [params, sellerCurationListString]);
 
     const products = useProducts();
     const { isLoading, isError } = products;
