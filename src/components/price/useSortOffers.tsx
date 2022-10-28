@@ -7,10 +7,15 @@ import {
   FilterOptions
 } from "../../pages/explore/WithAllOffers";
 
-interface Props {
-  type: "products" | "sellers";
-  data: ExtendedOffer[] | ExtendedSeller[];
-}
+type Props =
+  | {
+      type: "products";
+      data: ExtendedOffer[];
+    }
+  | {
+      type: "sellers";
+      data: ExtendedSeller[];
+    };
 export const useSortOffers = ({
   type,
   data: newData,
@@ -25,14 +30,22 @@ export const useSortOffers = ({
       let filteredByName;
       if (type === "products") {
         filteredByName =
-          filter(newData, (n: ExtendedOffer) => {
+          filter(data, (n: ExtendedOffer) => {
             return n?.title && n?.title.includes(name?.toLowerCase());
           }) || [];
         data = (filteredByName || []) as ExtendedOffer[] | ExtendedSeller[];
       }
     }
     if (sellerCurationList && sellerCurationList.length > 0) {
-      // TODO: BP437 add filtering
+      if (type === "products") {
+        data = (filter(data, (n: ExtendedOffer) => {
+          return n.seller?.id && sellerCurationList.includes(n.seller.id);
+        }) || []) as ExtendedOffer[] | ExtendedSeller[];
+      } else if (type === "sellers") {
+        data = (filter(data, (n: ExtendedSeller) => {
+          return n.id && sellerCurationList.includes(n.id);
+        }) || []) as ExtendedOffer[] | ExtendedSeller[];
+      }
     }
 
     if (exchangeOrderBy === "price") {
