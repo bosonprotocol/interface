@@ -49,6 +49,7 @@ interface PriceDetails {
   exchangeToken: Pick<Offer, "exchangeToken">;
 }
 export interface ExtendedOffer extends subgraph.OfferFieldsFragment {
+  isValid?: boolean;
   status?: string;
   uuid?: string;
   title?: string;

@@ -1,6 +1,7 @@
 import { offers as offersSdk, subgraph } from "@bosonprotocol/react-kit";
 import groupBy from "lodash/groupBy";
 import orderBy from "lodash/orderBy";
+import sortBy from "lodash/sortBy";
 import { useContext, useMemo } from "react";
 import { useQuery } from "react-query";
 
@@ -91,6 +92,7 @@ export default function useProducts(
               });
               return {
                 ...offer,
+                isValid: true,
                 status,
                 convertedPrice: offerPrice?.converted || null,
                 committedDate:
@@ -122,10 +124,12 @@ export default function useProducts(
             );
 
           if (offers.length > 0) {
+            const lowerPriceOffer = sortBy(offers, "convertedPrice");
+
             return {
               uuid: product?.uuid,
               title: product?.title,
-              ...(offers?.[0] || []),
+              ...(lowerPriceOffer?.[0] || offers?.[0] || []),
               brandName: product?.brand?.name,
               lowPrice:
                 orderBy(offers, "convertedPrice", "asc").find(
