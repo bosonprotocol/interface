@@ -245,6 +245,8 @@ export default function useProducts(
     );
   }, [allProducts]);
 
+  console.log("allProducts", allProducts);
+
   return {
     isLoading: products.isLoading || productsWithVariants.isLoading,
     isError: products.isError || productsWithVariants.isError,
