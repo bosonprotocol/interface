@@ -43,7 +43,7 @@ import MultiSteps from "../../components/step/MultiSteps";
 import SuccessTransactionToast from "../../components/toasts/SuccessTransactionToast";
 import { CONFIG } from "../../lib/config";
 import { UrlParameters } from "../../lib/routing/parameters";
-import { OffersRoutes } from "../../lib/routing/routes";
+import { ProductRoutes } from "../../lib/routing/routes";
 import { useChatStatus } from "../../lib/utils/hooks/chat/useChatStatus";
 import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
 import { useAddPendingTransaction } from "../../lib/utils/hooks/transactions/usePendingTransactions";
@@ -352,10 +352,10 @@ function CreateProductInner({
     setCurrentStep(FIRST_STEP);
     setIsPreviewVisible(false);
     const pathname = id
-      ? generatePath(OffersRoutes.OfferDetail, {
-          [UrlParameters.offerId]: id
+      ? generatePath(ProductRoutes.ProductDetail, {
+          [UrlParameters.uuid]: id
         })
-      : generatePath(OffersRoutes.Root);
+      : generatePath(ProductRoutes.Root);
     navigate({ pathname });
   };
   const [isOneSetOfImages, setIsOneSetOfImages] = useState<boolean>(false);
@@ -429,7 +429,7 @@ function CreateProductInner({
         hasMultipleVariants: !!values.productVariants.variants.length,
         // these are the ones that we already had before
         onCreateNewProject: onCreateNewProject,
-        onViewMyItem: () => onViewMyItem(offerId)
+        onViewMyItem: () => onViewMyItem(metadataInfo.product?.uuid)
       },
       "auto"
     );
