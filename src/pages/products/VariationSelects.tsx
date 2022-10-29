@@ -155,6 +155,14 @@ export default function VariationSelects({
   disabled,
   ...rest
 }: Props) {
+  const numValidColorVariants: number = getVariationsByType(
+    variants,
+    "Color"
+  ).filter((entry) => entry?.label !== "Please select...").length;
+  const numValidSizeVariants: number = getVariationsByType(
+    variants,
+    "Size"
+  ).filter((entry) => entry?.label !== "Please select...").length;
   const [dropdownVariant, setDropdownVariant] = useState<
     Pick<VariantV1, "variations"> | undefined
   >(selectedVariant);
@@ -231,28 +239,36 @@ export default function VariationSelects({
         return (
           <Form {...rest}>
             <Grid gap="2rem" margin="1rem 0 2.5rem 0">
-              <Select
-                name="color"
-                options={getVariationsByType(variants, "Color")}
-                placeholder="Color"
-                label="Color:"
-                onChange={() => {
-                  setLastChangedVariation("color");
-                  submitForm();
-                }}
-                disabled={disabled}
-              />
-              <Select
-                name="size"
-                options={getVariationsByType(variants, "Size")}
-                placeholder="Size"
-                label="Size:"
-                onChange={() => {
-                  setLastChangedVariation("size");
-                  submitForm();
-                }}
-                disabled={disabled}
-              />
+              {numValidColorVariants > 0 && (
+                <>
+                  <Select
+                    name="color"
+                    options={getVariationsByType(variants, "Color")}
+                    placeholder="Color"
+                    label="Color:"
+                    onChange={() => {
+                      setLastChangedVariation("color");
+                      submitForm();
+                    }}
+                    disabled={disabled}
+                  />
+                </>
+              )}
+              {numValidSizeVariants > 0 && (
+                <>
+                  <Select
+                    name="size"
+                    options={getVariationsByType(variants, "Size")}
+                    placeholder="Size"
+                    label="Size:"
+                    onChange={() => {
+                      setLastChangedVariation("size");
+                      submitForm();
+                    }}
+                    disabled={disabled}
+                  />
+                </>
+              )}
             </Grid>
             {errorMessage && (
               <SimpleError style={{ marginBottom: "2.5rem" }}>
