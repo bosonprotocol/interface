@@ -43,7 +43,6 @@ export default function useProducts(
 ) {
   const coreSDK = useCoreSDK();
   const { store } = useContext(ConvertionRateContext);
-  console.log("on the use Prod component");
 
   const products = useQuery(
     ["get-all-products", props],
