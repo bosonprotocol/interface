@@ -204,9 +204,11 @@ export default function Carousel() {
         .filter((n) => n !== null) || []) as string[],
     [data]
   );
+
   const { products: offers } = useProducts({
     productsIds: productsIds
   });
+
   const uiOffers = useMemo(() => {
     if (offers?.length) {
       const numOffersToAdd = numCells - offers.length;

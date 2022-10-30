@@ -36,6 +36,7 @@ interface AdditionalFiltering {
   quantityAvailable_gte?: number;
   productsIds?: string[];
 }
+
 export default function useProducts(
   props: subgraph.GetProductV1ProductsQueryQueryVariables &
     AdditionalFiltering = {}
@@ -70,6 +71,7 @@ export default function useProducts(
         const product = await coreSDK?.getProductWithVariants(id);
         return product;
       });
+
       const allProducts = await Promise.allSettled(allPromises);
       const response = allProducts.filter(
         (res) => res.status === "fulfilled"
