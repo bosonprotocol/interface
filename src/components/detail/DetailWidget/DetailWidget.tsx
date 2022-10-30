@@ -438,10 +438,10 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       return "Expired";
     }
     if (isOfferNotValidYet) {
-      return "Invalid";
+      return "Sale starting soon™️";
     }
     if (isOfferEmpty) {
-      return "Offer empty";
+      return "Sold out";
     }
     if (!hasSellerEnoughFunds) {
       return "Invalid";
