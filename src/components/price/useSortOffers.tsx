@@ -69,47 +69,60 @@ export const useSortOffers = ({
       }
     }
     if (exchangeOrderBy === "createdAt") {
-      return data
-        .sort(
-          (
-            a: ExtendedOffer | ExtendedSeller,
-            b: ExtendedOffer | ExtendedSeller
-          ) => Number(a?.createdAt) - Number(b?.createdAt)
-        )
-        .reverse();
+      return data.sort(
+        (
+          a: ExtendedOffer | ExtendedSeller,
+          b: ExtendedOffer | ExtendedSeller
+        ) => {
+          if (!a.createdAt || !b.createdAt) {
+            return 0;
+          }
+          return Number(b.createdAt) - Number(a.createdAt);
+        }
+      );
     }
+    // recently created
     if (exchangeOrderBy === "validFromDate") {
-      return data
-        .sort(
-          (
-            a: ExtendedOffer | ExtendedSeller,
-            b: ExtendedOffer | ExtendedSeller
-          ) => Number(a?.validFromDate) - Number(b?.validFromDate)
-        )
-        .reverse();
+      return data.sort(
+        (
+          a: ExtendedOffer | ExtendedSeller,
+          b: ExtendedOffer | ExtendedSeller
+        ) => {
+          if (!a.validFromDate || !b.validFromDate) {
+            return 0;
+          }
+          return Number(b.validFromDate) - Number(a.validFromDate);
+        }
+      );
     }
     if (exchangeOrderBy === "committedDate") {
-      return data
-        .sort(
-          (
-            a: ExtendedOffer | ExtendedSeller,
-            b: ExtendedOffer | ExtendedSeller
-          ) => Number(a?.committedDate) - Number(b?.committedDate)
-        )
-        .reverse();
+      return data.sort(
+        (
+          a: ExtendedOffer | ExtendedSeller,
+          b: ExtendedOffer | ExtendedSeller
+        ) => {
+          if (!a.committedDate || !b.committedDate) {
+            return 0;
+          }
+          return Number(b.committedDate) - Number(a.committedDate);
+        }
+      );
     }
     if (exchangeOrderBy === "redeemedDate") {
-      return data
-        .sort(
-          (
-            a: ExtendedOffer | ExtendedSeller,
-            b: ExtendedOffer | ExtendedSeller
-          ) => Number(a?.redeemedDate) - Number(b?.redeemedDate)
-        )
-        .reverse();
+      return data.sort(
+        (
+          a: ExtendedOffer | ExtendedSeller,
+          b: ExtendedOffer | ExtendedSeller
+        ) => {
+          if (!a.redeemedDate || !b.redeemedDate) {
+            return 0;
+          }
+          return Number(b.redeemedDate) - Number(a.redeemedDate);
+        }
+      );
     }
     return data;
-  }, [newData, type, filters]);
+  }, [newData, filters, type]);
 
   return offerArray;
 };
