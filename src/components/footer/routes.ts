@@ -45,6 +45,17 @@ export const SOCIAL_ROUTES = [
   }
 ];
 
+export const ADDITIONAL_LINKS: Array<{ label: string; value: string }> = [
+  {
+    label: "Privacy Policy",
+    value: BosonRoutes.PrivacyPolicy
+  },
+  {
+    label: "Terms & Conditions",
+    value: BosonRoutes.TermsAndConditions
+  }
+];
+
 export const getProductRoutes = ({
   roles,
   isSupportFunctionalityDefined,
