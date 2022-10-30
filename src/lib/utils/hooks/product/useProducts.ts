@@ -36,17 +36,29 @@ interface AdditionalFiltering {
   quantityAvailable_gte?: number;
   productsIds?: string[];
 }
+
 export default function useProducts(
   props: subgraph.GetProductV1ProductsQueryQueryVariables &
     AdditionalFiltering = {}
 ) {
   const coreSDK = useCoreSDK();
   const { store } = useContext(ConvertionRateContext);
+  console.log("on the use Prod component");
 
   const products = useQuery(
     ["get-all-products", props],
     async () => {
+      console.log(
+        "🚀  roberto --  ~ file: useProducts.ts ~ line 268 ~ props",
+        props
+      );
+
       const products = await coreSDK.getProductV1Products(props);
+
+      console.log(
+        "🚀  roberto --  ~ file: useProducts.ts ~ line 50 ~ products",
+        products
+      );
       return products;
     },
     {
@@ -70,6 +82,10 @@ export default function useProducts(
         const product = await coreSDK?.getProductWithVariants(id);
         return product;
       });
+      console.log(
+        "🚀  roberto --  ~ file: useProducts.ts ~ line 78 ~ allPromises ~ allPromises",
+        allPromises
+      );
       const allProducts = await Promise.allSettled(allPromises);
       const response = allProducts.filter(
         (res) => res.status === "fulfilled"
