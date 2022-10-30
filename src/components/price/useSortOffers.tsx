@@ -81,7 +81,6 @@ export const useSortOffers = ({
         }
       );
     }
-    // recently created
     if (exchangeOrderBy === "validFromDate") {
       return data.sort(
         (
