@@ -2,6 +2,7 @@ import { useEffect, useMemo } from "react";
 import { useAccount } from "wagmi";
 
 import { useBuyerSellerAccounts } from "../lib/utils/hooks/useBuyerSellerAccounts";
+import { useIsSellerInCuractionList } from "../lib/utils/hooks/useSellers";
 import { UserRoles } from "./routes";
 
 export const checkIfUserHaveRole = (
@@ -22,6 +23,7 @@ export default function useUserRoles({ role }: Props) {
     seller: { sellerId },
     buyer: { buyerId }
   } = useBuyerSellerAccounts(address || "");
+  const isSellerInCurationList = useIsSellerInCuractionList(sellerId);
 
   useEffect(() => {
     refetch();
@@ -48,6 +50,7 @@ export default function useUserRoles({ role }: Props) {
 
   return {
     roles: userRoles,
+    isSellerInCurationList,
     isAuth
   };
 }

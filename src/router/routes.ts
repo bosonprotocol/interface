@@ -7,6 +7,7 @@ import {
   ProductRoutes,
   SellerCenterRoutes
 } from "../lib/routing/routes";
+import ClosedBetaPage from "../pages/closed-beta/ClosedBeta";
 import CreateProductPage from "../pages/create-product/CreateProduct";
 import ExplorePage from "../pages/explore/Explore";
 import LandingPage from "../pages/landing/Landing";
@@ -271,6 +272,16 @@ export default [
       fluidHeader: true
     },
     component: DisputeResolverPage
+  },
+  {
+    ...base,
+    path: BosonRoutes.ClosedBeta,
+    app: {
+      ...base.app,
+      withLayout: false,
+      withFooter: false
+    },
+    component: ClosedBetaPage
   },
   {
     ...base,
