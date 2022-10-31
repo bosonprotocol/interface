@@ -8,6 +8,7 @@ import GlobalStyle from "../../lib/styles/GlobalStyle";
 import ChatProvider from "../../pages/chat/ChatProvider/ChatProvider";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import theme from "../../theme";
+import CookieBanner from "../cookie/CookieBanner";
 import Footer from "../footer/Footer";
 import Header from "../header/Header";
 
@@ -61,25 +62,28 @@ export default function App({
       >
         <ChatProvider>
           <ModalProvider>
-            <Container>
-              <GlobalStyle
-                $withBosonStyles={withBosonStyles}
-                $headerBgColor={headerBgColor}
-                $headerTextColor={headerTextColor}
-                $primaryBgColor={primaryBgColor}
-                $secondaryBgColor={secondaryBgColor}
-                $accentColor={accentColor}
-                $textColor={textColor}
-                $footerBgColor={footerBgColor}
-                $footerTextColor={footerTextColor}
-                $fontFamily={fontFamily}
-                $buttonBgColor={buttonBgColor}
-                $buttonTextColor={buttonTextColor}
-              />
-              <Header fluidHeader={fluidHeader} />
-              <Wrapper>{children}</Wrapper>
-              {showFooter && <Footer />}
-            </Container>
+            <>
+              <Container>
+                <GlobalStyle
+                  $withBosonStyles={withBosonStyles}
+                  $headerBgColor={headerBgColor}
+                  $headerTextColor={headerTextColor}
+                  $primaryBgColor={primaryBgColor}
+                  $secondaryBgColor={secondaryBgColor}
+                  $accentColor={accentColor}
+                  $textColor={textColor}
+                  $footerBgColor={footerBgColor}
+                  $footerTextColor={footerTextColor}
+                  $fontFamily={fontFamily}
+                  $buttonBgColor={buttonBgColor}
+                  $buttonTextColor={buttonTextColor}
+                />
+                <Header fluidHeader={fluidHeader} />
+                <Wrapper>{children}</Wrapper>
+                {showFooter && <Footer />}
+              </Container>
+              <CookieBanner />
+            </>
           </ModalProvider>
         </ChatProvider>
       </IconContext.Provider>
