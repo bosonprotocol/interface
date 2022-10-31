@@ -4,6 +4,7 @@ import {
   TokenType
 } from "@bosonprotocol/common";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const buildCondition = (commonTermsOfSale: any): ConditionStruct => {
   let tokenType: TokenType = TokenType.FungibleToken;
   let method: EvaluationMethod = EvaluationMethod.None;
