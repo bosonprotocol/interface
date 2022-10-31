@@ -79,6 +79,11 @@ export const offerGraphQl = gql`
         validFromDate
         validUntilDate
         uuid
+        variations {
+          id
+          type
+          option
+        }
         product {
           id
           uuid

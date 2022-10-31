@@ -7,14 +7,13 @@ export const getBuyerCancelPenalty = (
 ) => {
   const priceNumber = Number(convertedPrice?.converted || 0);
   const buyerCancelationPenaltyPercentage =
-    priceNumber === 0
-      ? 0
-      : Number(offer.buyerCancelPenalty) / Number(offer.price);
+    Number(offer.buyerCancelPenalty) / Number(offer.price);
   const buyerCancelationPenalty = buyerCancelationPenaltyPercentage * 100;
   const convertedBuyerCancelationPenalty =
     priceNumber === 0
       ? 0
       : (buyerCancelationPenaltyPercentage * priceNumber).toFixed(2);
+
   return {
     buyerCancelationPenalty,
     convertedBuyerCancelationPenalty

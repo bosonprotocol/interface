@@ -11,6 +11,8 @@ export const BosonRoutes = {
   Account: `/account/:${UrlParameters.accountId}`,
   CreateStorefront: "/custom-store",
   TermsOfUse: "/terms-of-use", // TODO: add page to handle this route
+  PrivacyPolicy: "/", // TODO: replace with real link
+  TermsAndConditions: "/", // TODO: replace with real link
   LearnMore: "https://www.bosonprotocol.io/technology",
   Chat: "/chat",
   ChatMessage: `/chat/:${UrlParameters.exchangeId}`,
@@ -22,6 +24,7 @@ export const BosonRoutes = {
   ContractualAgreement: `/contractualAgreement/:${UrlParameters.offerId}`,
   DRAdmin: "/dr-admin",
   DRAdminPage: `/dr-admin/:${UrlParameters.disputeResolverPageId}`,
+  ClosedBeta: "/closed-beta",
   Error404: "*"
 } as const;
 
@@ -34,6 +37,11 @@ export const DisputeResolverCenterRoutes = {
   DisputeResolverCenter: `${BosonRoutes.DRAdmin}/:${UrlParameters.disputeResolverPageId}`
 };
 
+export const ProductRoutes = {
+  Root: "/products",
+  ProductDetail: `/products/:${UrlParameters.uuid}`
+} as const;
+
 export const OffersRoutes = {
   Root: "/offers",
   OfferDetail: `/offers/:${UrlParameters.offerId}`,
@@ -41,7 +49,8 @@ export const OffersRoutes = {
 } as const;
 
 export const ExternalRoutes = {
-  TermsOfUse: BosonRoutes.TermsOfUse
+  PrivacyPolicy: BosonRoutes.PrivacyPolicy,
+  TermsAndConditions: BosonRoutes.TermsAndConditions
 } as const;
 
 export const SocialRoutes = {

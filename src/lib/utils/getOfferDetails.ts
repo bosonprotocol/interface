@@ -8,7 +8,7 @@ interface ITable {
   value: string;
 }
 interface IShippingInfo {
-  shipping?: string;
+  returnPeriodInDays: number | undefined;
   shippingTable: Array<ITable>;
 }
 interface IGetOfferDetails {
@@ -30,7 +30,7 @@ export const getOfferDetails = (offer: Offer): IGetOfferDetails => {
 
   const animationUrl = offer.metadata?.animationUrl || "";
   const shippingInfo = {
-    // shipping: "Shipping details", // TODO
+    returnPeriodInDays: offer.metadata?.shipping?.returnPeriodInDays,
     shippingTable:
       offer.metadata?.shipping?.supportedJurisdictions?.map(
         (jurisdiction: any) => ({

@@ -124,7 +124,6 @@ async function claimHandle(
       async () => {
         try {
           const events = await contract.queryFilter(filter, blockNumber);
-          console.log("[useClaimHandle] events in polling", events);
           if (!events.length) {
             return false;
           }

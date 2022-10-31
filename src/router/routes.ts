@@ -4,8 +4,10 @@ import { RouteProps } from "react-router";
 import {
   BosonRoutes,
   OffersRoutes,
+  ProductRoutes,
   SellerCenterRoutes
 } from "../lib/routing/routes";
+import ClosedBetaPage from "../pages/closed-beta/ClosedBeta";
 import CreateProductPage from "../pages/create-product/CreateProduct";
 import ExplorePage from "../pages/explore/Explore";
 import LandingPage from "../pages/landing/Landing";
@@ -23,6 +25,7 @@ const DisputeListPage = lazy(
 const ExchangePage = lazy(() => import("../pages/exchange/Exchange"));
 const NotFoundPage = lazy(() => import("../pages/not-found/NotFound"));
 const OfferDetailPage = lazy(() => import("../pages/offers/OfferDetail"));
+const ProductDetailPage = lazy(() => import("../pages/products/ProductDetail"));
 const PrivateAccountPage = lazy(
   () => import("../pages/account/private/PrivateAccountContainer")
 );
@@ -159,6 +162,15 @@ export default [
   },
   {
     ...base,
+    path: ProductRoutes.ProductDetail,
+    component: ProductDetailPage,
+    app: {
+      ...base.app,
+      withBosonStyles: false
+    }
+  },
+  {
+    ...base,
     path: OffersRoutes.OfferUuid,
     component: OfferUuidReroute,
     app: {
@@ -260,6 +272,16 @@ export default [
       fluidHeader: true
     },
     component: DisputeResolverPage
+  },
+  {
+    ...base,
+    path: BosonRoutes.ClosedBeta,
+    app: {
+      ...base.app,
+      withLayout: false,
+      withFooter: false
+    },
+    component: ClosedBetaPage
   },
   {
     ...base,

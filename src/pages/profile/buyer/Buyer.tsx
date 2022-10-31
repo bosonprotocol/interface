@@ -21,7 +21,6 @@ import { useBuyers } from "../../../lib/utils/hooks/useBuyers";
 import { useCustomStoreQueryParameter } from "../../custom-store/useCustomStoreQueryParameter";
 import NotFound from "../../not-found/NotFound";
 import backgroundFluid from "../common/background-img.png";
-import ReadMore from "../common/ReadMore";
 import {
   AddressContainer,
   AvatarContainer,
@@ -233,7 +232,6 @@ export default function Buyer({ manageFundsId }: Props) {
           )}
         </ProfileSectionWrapper>
         <ProfileSectionWrapper>
-          <ReadMore text="Designs unclear. Where should this text come from as the buyer has no metadata and no Lens profile for us to get this from." />
           <AllExchangesTitle tag="h2">All exchanges</AllExchangesTitle>
         </ProfileSectionWrapper>
       </BasicInfo>

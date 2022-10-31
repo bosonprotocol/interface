@@ -24,6 +24,7 @@ export type GetItemFromStorageKey =
   | "convertionRates"
   | "shouldDisplayOfferBackedWarning"
   | "isConnectWalletFromCommit"
+  | "showCookies"
   | CreateProductImageProductImages
   | CreateProductImageCreteYourProfileLogo;
 

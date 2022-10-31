@@ -60,10 +60,9 @@ const ChildWrapperButton = styled.div`
 
 function BosonButton(props: IBosonButton) {
   const { tooltip, disabled, ...restProps } = props;
-  const Wrapper = tooltip !== "" && disabled ? Tooltip : Fragment;
+  const Wrapper = tooltip && disabled ? Tooltip : Fragment;
   const wrapperParams =
-    tooltip !== "" && disabled ? { wrap: false, content: tooltip } : {};
-
+    tooltip && disabled ? { wrap: false, content: tooltip } : {};
   return (
     <>
       {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}

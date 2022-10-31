@@ -8,6 +8,7 @@ import { BosonRoutes, SellerCenterRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { useBuyerSellerAccounts } from "../../lib/utils/hooks/useBuyerSellerAccounts";
 import { useCurrentDisputeResolverId } from "../../lib/utils/hooks/useCurrentDisputeResolverId";
+import { useIsSellerInCuractionList } from "../../lib/utils/hooks/useSellers";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import { UserRoles } from "../../router/routes";
 import useUserRoles, { checkIfUserHaveRole } from "../../router/useUserRoles";
@@ -149,16 +150,19 @@ export default function HeaderLinks({
   } = useBuyerSellerAccounts(address || "");
   const isAccountSeller = useMemo(() => !!sellerId, [sellerId]);
   const isAccountBuyer = useMemo(() => !!buyerId, [buyerId]);
+  const isSellerInCurationList = useIsSellerInCuractionList(sellerId);
   const { disputeResolverId } = useCurrentDisputeResolverId();
-  const sellUrl = useMemo(
-    () =>
-      isAccountSeller
-        ? generatePath(SellerCenterRoutes.SellerCenter, {
-            [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
-          })
-        : SellerCenterRoutes.CreateProduct,
-    [isAccountSeller]
-  );
+
+  const sellUrl = useMemo(() => {
+    const closedBetaUrl = generatePath(BosonRoutes.ClosedBeta);
+
+    if (isAccountSeller && isSellerInCurationList) {
+      return generatePath(SellerCenterRoutes.SellerCenter, {
+        [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
+      });
+    }
+    return closedBetaUrl;
+  }, [isAccountSeller, isSellerInCurationList]);
 
   const isSupportFunctionalityDefined = supportFunctionality !== "";
 

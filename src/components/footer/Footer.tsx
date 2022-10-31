@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import styled from "styled-components";
 
 import logo from "../../../src/assets/logo-white.svg";
-import { BosonRoutes, ExternalRoutes } from "../../lib/routing/routes";
+import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import SocialLogo, {
@@ -14,7 +14,12 @@ import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
 import Layout from "../Layout";
 import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
-import { getNavigationRoutes, getProductRoutes, SOCIAL_ROUTES } from "./routes";
+import {
+  ADDITIONAL_LINKS,
+  getNavigationRoutes,
+  getProductRoutes,
+  SOCIAL_ROUTES
+} from "./routes";
 
 const Footer = styled.footer`
   width: 100%;
@@ -133,7 +138,7 @@ function Socials() {
 }
 
 export default function FooterComponent() {
-  const { roles } = useUserRoles({ role: [] });
+  const { roles, isSellerInCurationList } = useUserRoles({ role: [] });
   const { isXXS } = useBreakpoints();
   const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
   const [year] = useState<number>(new Date().getFullYear());
@@ -174,6 +179,7 @@ export default function FooterComponent() {
               <NavigationLinks flexDirection="column">
                 {getProductRoutes({
                   roles,
+                  isSellerInCurationList,
                   isSupportFunctionalityDefined,
                   onlyBuyer,
                   onlySeller
@@ -225,11 +231,11 @@ export default function FooterComponent() {
         )}
         <Grid padding="2rem 0 0 0">
           <Typography tag="p">
-            {isCustomStoreFront ? copyright : `© ${year} Boson Protocol`}
+            {isCustomStoreFront ? copyright : `© ${year} Bosonapp.io`}
           </Typography>
           {!isXXS && <Socials />}
           <>
-            {typeof additionalFooterLinks !== "string" ? (
+            {isCustomStoreFront && typeof additionalFooterLinks !== "string" ? (
               <NavigationLinks>
                 {additionalFooterLinks.map((footerLink, index) => {
                   return (
@@ -246,18 +252,18 @@ export default function FooterComponent() {
               </NavigationLinks>
             ) : (
               <NavigationLinks>
-                {!isSupportFunctionalityDefined ||
-                  (isSupportFunctionalityDefined && !onlySeller && (
-                    <>
-                      <LinkWithQuery to={BosonRoutes.Root}>Home</LinkWithQuery>
-                      <LinkWithQuery to={BosonRoutes.Explore}>
-                        Explore
-                      </LinkWithQuery>
-                      <LinkWithQuery to={ExternalRoutes.TermsOfUse}>
-                        Terms of use
-                      </LinkWithQuery>
-                    </>
-                  ))}
+                {ADDITIONAL_LINKS.map((footerLink, index) => {
+                  return (
+                    <a
+                      key={`${footerLink.label}-${footerLink.value}-${index}`}
+                      href={footerLink.value}
+                      target="_blank"
+                      style={{ textAlign: "center" }}
+                    >
+                      {footerLink.label}
+                    </a>
+                  );
+                })}
               </NavigationLinks>
             )}
           </>

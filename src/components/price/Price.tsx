@@ -87,6 +87,7 @@ export default function Price({
           justifyContent="flex-start"
           flexDirection={isExchange ? "column" : "row"}
           flexWrap="wrap"
+          data-testid="price-grid"
         >
           <Typography
             tag={tag}

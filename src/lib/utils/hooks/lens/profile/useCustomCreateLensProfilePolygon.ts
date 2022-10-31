@@ -236,34 +236,6 @@ export default function useCustomCreateLensProfile({
     profileData,
     profileMetadataData
   ]);
-  // console.log("inside useCustomCreateLens", {
-  //   isLoginLoading,
-  //   isLoginFetching,
-  //   isLoginRefetching,
-  //   isCreateLoading,
-  //   isCreateFetching,
-  //   isCreateRefetching,
-  //   isMetadataFetching,
-  //   isMetadataLoading,
-  //   isMetadataRefetching,
-  //   isLoginSuccess,
-  //   isCreateSuccess,
-  //   isMetadataSuccess,
-  //   createStatus,
-  //   metadataStatus,
-  //   isMetadataFetched,
-  //   isMetadataRefetchError,
-  //   isMetadataIdle,
-  //   metadataDataUpdatedAt,
-  //   isMetadataFetchedAfterMount,
-  //   metadataErrorUpdateCount,
-  //   isMetadataLoadingError,
-  //   isMetadataStale,
-  //   isMetadataPreviousData,
-  //   metadataErrorUpdatedAt,
-  //   metadataFailureCount,
-  //   isMetadataPlaceholderData
-  // });
   return {
     create: loginWithLens,
     getProfile,
@@ -276,9 +248,7 @@ export default function useCustomCreateLensProfile({
       isCreateLoading ||
       isCreateFetching ||
       isCreateRefetching ||
-      // isMetadataFetching ||
       isMetadataLoading,
-    // isMetadataRefetching
     isError: isLoginError || isCreateError || isMetadataError,
     createError,
     isHandleTakenError: (createError as Error)?.message === "HANDLE_TAKEN",

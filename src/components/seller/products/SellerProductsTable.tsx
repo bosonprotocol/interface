@@ -20,7 +20,7 @@ import styled from "styled-components";
 
 import { CONFIG } from "../../../lib/config";
 import { UrlParameters } from "../../../lib/routing/parameters";
-import { OffersRoutes } from "../../../lib/routing/routes";
+import { ProductRoutes } from "../../../lib/routing/routes";
 import { colors } from "../../../lib/styles/colors";
 import { Offer } from "../../../lib/types/offer";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
@@ -253,6 +253,7 @@ export default function SellerProductsTable({
 
         return {
           offerId: offer?.id,
+          uuid: offer?.metadata?.product?.uuid,
           isSelectable: !(
             status === OffersKit.OfferState.EXPIRED ||
             status === OffersKit.OfferState.VOIDED
@@ -351,7 +352,10 @@ export default function SellerProductsTable({
     {
       columns,
       data,
-      initialState: { pageIndex: 0, hiddenColumns: ["offerId", "isSelectable"] }
+      initialState: {
+        pageIndex: 0,
+        hiddenColumns: ["offerId", "uuid", "isSelectable"]
+      }
     },
     useSortBy,
     usePagination,
@@ -485,10 +489,9 @@ export default function SellerProductsTable({
                             cell.column.id !== "status"
                           ) {
                             const pathname = generatePath(
-                              OffersRoutes.OfferDetail,
+                              ProductRoutes.ProductDetail,
                               {
-                                [UrlParameters.offerId]:
-                                  row?.original?.offerId ?? "0"
+                                [UrlParameters.uuid]: row?.original?.uuid ?? ""
                               }
                             );
                             navigate({ pathname });

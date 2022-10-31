@@ -6,6 +6,7 @@ import { AccountQueryParameters } from "../../../lib/routing/parameters";
 import { useQueryParameter } from "../../../lib/routing/useQueryParameter";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
+import { ExtendedSeller } from "../../explore/WithAllOffers";
 import { ProfileSectionWrapper } from "../ProfilePage.styles";
 import Exchanges from "./Exchanges";
 import Offers from "./Offers";
@@ -107,11 +108,13 @@ type TabsData = {
 const tabIdentifier = "id" as const;
 
 interface Props {
+  products: ExtendedSeller;
   sellerId: string;
   isErrorSellers: boolean;
   isPrivateProfile: boolean;
 }
 export default function Tabs({
+  products,
   isPrivateProfile,
   sellerId,
   isErrorSellers
@@ -123,6 +126,7 @@ export default function Tabs({
         title: "Offers",
         content: (
           <Offers
+            products={products}
             sellerId={sellerId}
             action={isPrivateProfile ? null : "commit"}
             showInvalidOffers={isPrivateProfile}
@@ -142,7 +146,7 @@ export default function Tabs({
       }
     ];
     return tabsData;
-  }, [sellerId, isPrivateProfile]);
+  }, [sellerId, isPrivateProfile, products]);
   const [currentTab, setCurrentTab] = useQueryParameter(
     AccountQueryParameters.tab
   );

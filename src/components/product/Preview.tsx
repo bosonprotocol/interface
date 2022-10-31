@@ -305,23 +305,29 @@ export default function Preview({
             </DetailGrid>
             <DetailSlider images={sliderImages} />
             <DetailGrid>
-              {values?.shippingInfo?.jurisdiction?.length > 0 &&
-                values?.shippingInfo?.jurisdiction[0]?.region?.length > 0 && (
-                  <div>
-                    <Typography tag="h3">Shipping information</Typography>
-                    <DetailTable
-                      data={map(
-                        values?.shippingInfo?.jurisdiction,
-                        ({ region, time }) => {
-                          return {
-                            name: region,
-                            value: time
-                          };
-                        }
-                      )}
-                    />
-                  </div>
-                )}
+              {(values.shippingInfo.returnPeriod ||
+                (values?.shippingInfo?.jurisdiction?.length > 0 &&
+                  values?.shippingInfo?.jurisdiction[0]?.region?.length >
+                    0)) && (
+                <div>
+                  <Typography tag="h3">Shipping information</Typography>
+                  <Typography tag="p" style={{ color: colors.darkGrey }}>
+                    Return period: {values.shippingInfo.returnPeriod}{" "}
+                    {values.shippingInfo.returnPeriod === 1 ? "day" : "days"}
+                  </Typography>
+                  <DetailTable
+                    data={map(
+                      values?.shippingInfo?.jurisdiction,
+                      ({ region, time }) => {
+                        return {
+                          name: region,
+                          value: time
+                        };
+                      }
+                    )}
+                  />
+                </div>
+              )}
             </DetailGrid>
           </DarkerBackground>
         </DetailWrapper>
