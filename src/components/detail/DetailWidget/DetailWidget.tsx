@@ -66,10 +66,11 @@ const StyledPrice = styled(Price)`
     font-size: 1rem;
   }
 `;
-const CommitButtonWrapper = styled.div`
+const CommitButtonWrapper = styled.div<{ pointerEvents: string }>`
   width: 100%;
   > button {
     width: 100%;
+    pointer-events: ${({ pointerEvents }) => pointerEvents};
   }
 `;
 
@@ -552,6 +553,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
             {isOffer && (
               <CommitButtonWrapper
                 role="button"
+                pointerEvents={!address && openConnectModal ? "none" : "all"}
                 onClick={() => {
                   if (!address && openConnectModal) {
                     saveItemInStorage("isConnectWalletFromCommit", true);
