@@ -10,9 +10,8 @@ export const BosonRoutes = {
   YourAccount: `/account`,
   Account: `/account/:${UrlParameters.accountId}`,
   CreateStorefront: "/custom-store",
-  TermsOfUse: "/terms-of-use", // TODO: add page to handle this route
-  PrivacyPolicy: "/", // TODO: replace with real link
-  TermsAndConditions: "/", // TODO: replace with real link
+  PrivacyPolicy: "/privacy-policy",
+  TermsAndConditions: "/terms-and-conditions",
   LearnMore: "https://www.bosonprotocol.io/technology",
   Chat: "/chat",
   ChatMessage: `/chat/:${UrlParameters.exchangeId}`,
@@ -46,11 +45,6 @@ export const OffersRoutes = {
   Root: "/offers",
   OfferDetail: `/offers/:${UrlParameters.offerId}`,
   OfferUuid: `/offer-uuid/:${UrlParameters.uuid}`
-} as const;
-
-export const ExternalRoutes = {
-  PrivacyPolicy: BosonRoutes.PrivacyPolicy,
-  TermsAndConditions: BosonRoutes.TermsAndConditions
 } as const;
 
 export const SocialRoutes = {
