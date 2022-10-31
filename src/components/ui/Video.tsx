@@ -4,6 +4,7 @@ import React, {
   ReactElement,
   ReactNode,
   useEffect,
+  useMemo,
   useState,
   VideoHTMLAttributes
 } from "react";
@@ -125,6 +126,9 @@ const Video: React.FC<IVideo & React.HTMLAttributes<HTMLDivElement>> = ({
         const newString = src.split("//");
         const CID = newString[newString.length - 1];
         fetchData(`ipfs://${CID}`);
+      } else if (src?.startsWith("undefined") && src?.length > 9) {
+        const CID = src.replace("undefined", "");
+        fetchData(`ipfs://${CID}`);
       } else {
         setVideoSrc(src);
       }
@@ -135,6 +139,19 @@ const Video: React.FC<IVideo & React.HTMLAttributes<HTMLDivElement>> = ({
     if (videoSrc !== null) {
       setTimeout(() => setIsLoaded(true), 100);
     }
+  }, [videoSrc]);
+
+  const mp4Src = useMemo(() => {
+    const octetSrc =
+      videoSrc?.startsWith("data:application/octet-stream;base64,") || false;
+
+    if (videoSrc && octetSrc) {
+      return `data:video/mp4;base64,${videoSrc?.replace(
+        "data:application/octet-stream;base64,",
+        ""
+      )}`;
+    }
+    return videoSrc || "";
   }, [videoSrc]);
 
   if (!isLoaded && !isError) {
@@ -168,11 +185,7 @@ const Video: React.FC<IVideo & React.HTMLAttributes<HTMLDivElement>> = ({
       </VideoWrapper>
     );
   }
-  const mp4Src =
-    videoSrc && videoSrc.startsWith("data:application/octet-stream;base64,")
-      ? "data:video/mp4;base64," +
-        videoSrc.substring("data:application/octet-stream;base64,".length)
-      : videoSrc;
+
   return (
     <VideoWrapper {...rest} $hasOnClick={!!rest.onClick}>
       {children || ""}

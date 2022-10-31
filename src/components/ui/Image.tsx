@@ -113,6 +113,9 @@ const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
         const newString = src.split("//");
         const CID = newString[newString.length - 1];
         fetchData(`ipfs://${CID}`);
+      } else if (src?.startsWith("undefined") && src?.length > 9) {
+        const CID = src.replace("undefined", "");
+        fetchData(`ipfs://${CID}`);
       } else {
         setImageSrc(src);
       }
