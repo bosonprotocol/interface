@@ -229,7 +229,7 @@ const commonCoreTermsOfSaleValidationSchema = {
       label: Yup.string()
     })
     .default([{ value: "", label: "" }]),
-  minBalance: Yup.number().when(
+  minBalance: Yup.string().when(
     ["tokenGatedOffer", "tokenType", "tokenCriteria"],
     {
       is: (
@@ -247,12 +247,14 @@ const commonCoreTermsOfSaleValidationSchema = {
       then: (schema) =>
         schema
           .required(validationMessage.required)
-          .min(1, "Min balance must be greater than or equal to 1")
-          .integer("Value must be an integer")
+          .matches(
+            /^\+?[1-9]\d*$/,
+            "Min balance must be greater than or equal to 1"
+          )
           .typeError("Value must be an integer greater than or equal to 1")
     }
   ),
-  tokenId: Yup.number().when(
+  tokenId: Yup.string().when(
     ["tokenGatedOffer", "tokenType", "tokenCriteria"],
     {
       is: (
@@ -267,8 +269,7 @@ const commonCoreTermsOfSaleValidationSchema = {
           tokenCriteria?.value === TOKEN_CRITERIA[1].value),
       then: (schema) =>
         schema
-          .min(0, "Value must greater than or equal to 0")
-          .integer("Value must be an integer")
+          .matches(/^(0|\+?[1-9]\d*)$/, "Value must greater than or equal to 0")
           .typeError("Value must be an integer greater than or equal to 0")
           .required(validationMessage.required)
     }
