@@ -8,7 +8,7 @@ export const buildCondition = (commonTermsOfSale: any): ConditionStruct => {
   let tokenType: TokenType = TokenType.FungibleToken;
   let method: EvaluationMethod = EvaluationMethod.None;
   let threshold;
-  let tokenId = commonTermsOfSale.tokenId;
+  let tokenId = commonTermsOfSale.tokenId || "0";
 
   switch (commonTermsOfSale.tokenType.value) {
     case "erc1155":
