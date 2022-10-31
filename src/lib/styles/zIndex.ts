@@ -12,6 +12,7 @@ export const zIndex = {
   Select: 40,
   Header: 1000,
   Notification: 1001,
+  Modal: 2000,
   Popper: 2001,
-  Modal: 2000
+  Cookie: 2001
 };
