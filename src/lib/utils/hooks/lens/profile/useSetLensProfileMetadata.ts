@@ -73,24 +73,6 @@ export default function useSetLensProfileMetadata(
     isLoading: loading,
     isError: !!error
   };
-
-  // return useQuery(
-  //   ["set-lens-profile-metadata", props],
-  //   async () => {
-  //     console.log("[metadata - in progress] setMetadata!");
-
-  //     const result = await setProfileMetadata(props, {
-  //       signTypedDataAsync,
-  //       storage,
-  //       accessToken
-  //     });
-  //     console.log("[metadata - finished] setMetadata! ");
-  //     return result;
-  //   },
-  //   {
-  //     enabled
-  //   }
-  // );
 }
 
 async function createSetProfileMetadataTypedData(
@@ -271,7 +253,6 @@ const setProfileMetadata = async (
       signTypedDataAsync,
       accessToken
     );
-    console.log("create comment: signedResult", signedResult);
 
     const typedData = signedResult.result.typedData;
 
@@ -287,20 +268,14 @@ const setProfileMetadata = async (
         deadline: typedData.value.deadline
       }
     });
-    console.log("create profile metadata: tx hash", tx.hash);
-
-    console.log("create profile metadata: poll until indexed");
     const indexedResult = await pollUntilIndexed(
       { txHash: tx.hash },
       { accessToken }
     );
 
-    console.log("create profile metadata: profile has been indexed");
-
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const logs = indexedResult.txReceipt!.logs;
 
-    console.log("create profile metadata: logs", logs);
     return { indexedResult, logs };
   }
 };

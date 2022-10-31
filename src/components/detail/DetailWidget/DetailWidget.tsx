@@ -133,6 +133,16 @@ export const getOfferDetailData = (
   const { buyerCancelationPenalty, convertedBuyerCancelationPenalty } =
     getBuyerCancelPenalty(offer, convertedPrice);
 
+  const sellerDepositPercentage =
+    Number(offer.price) === 0
+      ? 0
+      : Number(offer.sellerDeposit) / Number(offer.price);
+
+  const sellerDeposit = sellerDepositPercentage * 100;
+  const sellerDepositDollars = priceNumber
+    ? (sellerDepositPercentage * priceNumber).toFixed(2)
+    : "";
+
   // if offer is in creation, offer.id does not exist
   const handleShowExchangePolicy = () => {
     const offerData = offer.id ? undefined : offer;
@@ -185,7 +195,14 @@ export const getOfferDetailData = (
       name: DetailSellerDeposit.name,
       info: DetailSellerDeposit.info,
       value: (
-        <DetailSellerDeposit.value offer={offer} conversionRate={priceNumber} />
+        <Typography tag="p">
+          {isNaN(sellerDeposit) ? "-" : sellerDeposit}%
+          {convertedPrice?.converted && sellerDepositDollars ? (
+            <small>(${sellerDepositDollars})</small>
+          ) : (
+            ""
+          )}
+        </Typography>
       )
     },
     {
@@ -204,8 +221,10 @@ export const getOfferDetailData = (
       value: (
         <Typography tag="p">
           {buyerCancelationPenalty}%
-          {convertedPrice?.converted && (
+          {convertedPrice?.converted && convertedBuyerCancelationPenalty ? (
             <small>(${convertedBuyerCancelationPenalty})</small>
+          ) : (
+            ""
           )}
         </Typography>
       )

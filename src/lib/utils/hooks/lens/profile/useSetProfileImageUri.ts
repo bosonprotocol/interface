@@ -98,13 +98,8 @@ const signCreateSetProfileImageUriTypedData = async (
   const result = await createSetProfileImageUriTypedData(request, {
     accessToken
   });
-  console.log(
-    "set profile image uri: createSetProfileImageUriTypedData",
-    result
-  );
 
   const typedData = result.typedData;
-  console.log("set profile image uri: typedData", typedData);
 
   const signature = await signedTypeData(
     signTypedDataAsync,
@@ -112,7 +107,6 @@ const signCreateSetProfileImageUriTypedData = async (
     typedData.types,
     typedData.value
   );
-  console.log("set profile image uri: signature", signature);
 
   return { result, signature };
 };
@@ -146,10 +140,8 @@ const setProfileImage = async (
       },
       { accessToken }
     );
-    console.log("set dispatcher: enableDispatcherWithTypedData", result);
 
     const typedData = result.typedData;
-    console.log("set dispatcher: typedData", typedData);
 
     const signature = await signedTypeData(
       signTypedDataAsync,
@@ -157,11 +149,10 @@ const setProfileImage = async (
       typedData.types,
       typedData.value
     );
-    console.log("set dispatcher: signature", signature);
 
     const { v, r, s } = utils.splitSignature(signature);
 
-    const tx = await getLensHub(signer).setDispatcherWithSig({
+    await getLensHub(signer).setDispatcherWithSig({
       profileId: typedData.value.profileId,
       dispatcher: typedData.value.dispatcher,
       sig: {
@@ -171,7 +162,6 @@ const setProfileImage = async (
         deadline: typedData.value.deadline
       }
     });
-    console.log("set dispatcher: tx hash", tx.hash);
   }
 
   profileResult = await getLensProfile({
@@ -183,10 +173,6 @@ const setProfileImage = async (
     const dispatcherResult = await createSetProfileUriViaDispatcherRequest(
       createProfileImageRequest,
       { accessToken }
-    );
-    console.log(
-      "set profile image url via dispatcher: createPostViaDispatcherRequest",
-      dispatcherResult
     );
 
     if (dispatcherResult.__typename !== "RelayerResult") {
@@ -202,10 +188,6 @@ const setProfileImage = async (
     const signedResult = await signCreateSetProfileImageUriTypedData(
       createProfileImageRequest,
       { signTypedDataAsync, accessToken }
-    );
-    console.log(
-      "set profile image url via broadcast: signedResult",
-      signedResult
     );
 
     const broadcastResult = await broadcastRequest(
@@ -224,10 +206,6 @@ const setProfileImage = async (
       throw new Error("set profile image url via broadcast: failed");
     }
 
-    console.log(
-      "set profile image url via broadcast: broadcastResult",
-      broadcastResult
-    );
     return { txHash: broadcastResult.txHash, txId: broadcastResult.txId };
   }
 };
@@ -254,19 +232,7 @@ async function setProfileImageUri(
       signTypedDataAsync,
       signer
     });
-    console.log("set profile image url gasless", result);
-
-    console.log("set profile image url: poll until indexed");
-    const indexedResult = await pollUntilIndexed(
-      { txId: result.txId },
-      { accessToken }
-    );
-
-    console.log("set profile image url: profile has been indexed", result);
-
-    const logs = indexedResult.txReceipt!.logs;
-
-    console.log("set profile image url: logs", logs);
+    await pollUntilIndexed({ txId: result.txId }, { accessToken });
   } catch (error) {
     console.error("useSetProfileImageUri error", error);
     const signedResult = await signCreateSetProfileImageUriTypedData(
@@ -276,13 +242,12 @@ async function setProfileImageUri(
         signTypedDataAsync
       }
     );
-    console.log("set profile image uri: signedResult", signedResult);
 
     const typedData = signedResult.result.typedData;
 
     const { v, r, s } = utils.splitSignature(signedResult.signature);
 
-    const tx = await getLensHub(signer).setProfileImageURIWithSig({
+    await getLensHub(signer).setProfileImageURIWithSig({
       profileId: typedData.value.profileId,
       imageURI: typedData.value.imageURI,
       sig: {
@@ -292,7 +257,6 @@ async function setProfileImageUri(
         deadline: typedData.value.deadline
       }
     });
-    console.log("set profile image uri: tx hash", tx.hash);
   }
   return true;
 }
