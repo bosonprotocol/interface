@@ -563,10 +563,7 @@ function CreateProductInner({
       const commonTermsOfSale = isMultiVariant
         ? values.variantsCoreTermsOfSale
         : values.coreTermsOfSale;
-      console.log(
-        "🚀  roberto --  ~ file: CreateProductInner.tsx ~ line 561 ~ handleSendData ~ commonTermsOfSale",
-        commonTermsOfSale.tokenCriteria
-      );
+
       const { offerValidityPeriod, redemptionPeriod } = commonTermsOfSale;
 
       const {
