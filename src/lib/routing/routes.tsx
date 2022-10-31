@@ -24,6 +24,7 @@ export const BosonRoutes = {
   ContractualAgreement: `/contractualAgreement/:${UrlParameters.offerId}`,
   DRAdmin: "/dr-admin",
   DRAdminPage: `/dr-admin/:${UrlParameters.disputeResolverPageId}`,
+  ClosedBeta: "/closed-beta",
   Error404: "*"
 } as const;
 

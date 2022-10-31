@@ -58,11 +58,13 @@ export const ADDITIONAL_LINKS: Array<{ label: string; value: string }> = [
 
 export const getProductRoutes = ({
   roles,
+  isSellerInCurationList,
   isSupportFunctionalityDefined,
   onlyBuyer,
   onlySeller
 }: {
   roles: string[];
+  isSellerInCurationList: boolean;
   isSupportFunctionalityDefined: boolean;
   onlyBuyer: boolean;
   onlySeller: boolean;
@@ -82,7 +84,10 @@ export const getProductRoutes = ({
     !isSupportFunctionalityDefined ||
     (isSupportFunctionalityDefined && (!onlyBuyer || onlySeller))
   ) {
-    if (checkIfUserHaveRole(roles, [UserRoles.Seller], false)) {
+    if (
+      checkIfUserHaveRole(roles, [UserRoles.Seller], false) &&
+      isSellerInCurationList
+    ) {
       productRoutes.push({
         name: "Sell",
         url: generatePath(SellerCenterRoutes.SellerCenter, {
@@ -92,7 +97,7 @@ export const getProductRoutes = ({
     } else if (checkIfUserHaveRole(roles, [UserRoles.Guest], false)) {
       productRoutes.push({
         name: "Sell",
-        url: generatePath(SellerCenterRoutes.CreateProduct)
+        url: generatePath(BosonRoutes.ClosedBeta)
       });
     }
   }
