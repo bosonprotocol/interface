@@ -66,6 +66,12 @@ const StyledPrice = styled(Price)`
     font-size: 1rem;
   }
 `;
+const CommitButtonWrapper = styled.div`
+  width: 100%;
+  > button {
+    width: 100%;
+  }
+`;
 
 const RedeemButton = styled(BosonButton)`
   padding: 1rem;
@@ -544,7 +550,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               </DetailTopRightLabel>
             )}
             {isOffer && (
-              <div
+              <CommitButtonWrapper
                 role="button"
                 onClick={() => {
                   if (!address && openConnectModal) {
@@ -649,7 +655,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                   web3Provider={signer?.provider as Provider}
                   metaTx={CONFIG.metaTx}
                 />
-              </div>
+              </CommitButtonWrapper>
             )}
             {isToRedeem && (
               <RedeemButton
