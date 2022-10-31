@@ -2,7 +2,7 @@ import { offers as offersSdk, subgraph } from "@bosonprotocol/react-kit";
 import groupBy from "lodash/groupBy";
 import orderBy from "lodash/orderBy";
 import sortBy from "lodash/sortBy";
-import { useContext, useMemo } from "react";
+import { useContext, useMemo, useState } from "react";
 import { useQuery } from "react-query";
 
 import ConvertionRateContext from "../../../../components/convertion-rate/ConvertionRateContext";
@@ -36,11 +36,11 @@ interface AdditionalFiltering {
   quantityAvailable_gte?: number;
   productsIds?: string[];
 }
-
 export default function useProducts(
   props: subgraph.GetProductV1ProductsQueryQueryVariables &
     AdditionalFiltering = {}
 ) {
+  const [fetched, setFetched] = useState(false);
   const coreSDK = useCoreSDK();
   const { store } = useContext(ConvertionRateContext);
 
@@ -51,8 +51,7 @@ export default function useProducts(
       return products;
     },
     {
-      enabled: !!coreSDK && !(props?.productsIds || false),
-      refetchOnMount: true
+      enabled: !!coreSDK && !(props?.productsIds || false) && !fetched
     }
   );
 
@@ -67,6 +66,7 @@ export default function useProducts(
   const productsWithVariants = useQuery(
     ["get-all-products-by-uuid", { productsIds }],
     async () => {
+      setFetched(true);
       const allPromises = productsIds?.map(async (id) => {
         const product = await coreSDK?.getProductWithVariants(id);
         return product;
@@ -81,8 +81,7 @@ export default function useProducts(
       ) as ProductWithVariants[];
     },
     {
-      enabled: !!coreSDK && productsIds?.length > 0,
-      refetchOnMount: true
+      enabled: !!coreSDK && productsIds?.length > 0 && !fetched
     }
   );
 
@@ -246,8 +245,6 @@ export default function useProducts(
       }) || []
     );
   }, [allProducts]);
-
-  console.log("allProducts", allProducts);
 
   return {
     isLoading: products.isLoading || productsWithVariants.isLoading,
