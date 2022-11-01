@@ -30,10 +30,7 @@ test("renders App and expects logo to be displayed", () => {
   render(
     <MemoryRouter>
       <WagmiConfig client={wagmiClient}>
-        <RainbowKitProvider
-          appInfo={{ appName: "Boson Interface" }}
-          chains={[]}
-        >
+        <RainbowKitProvider appInfo={{ appName: "Boson dApp" }} chains={[]}>
           <QueryClientProvider client={queryClient} contextSharing>
             <App>
               <div />
