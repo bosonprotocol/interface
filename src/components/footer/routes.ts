@@ -57,8 +57,6 @@ export const ADDITIONAL_LINKS: Array<{ label: string; value: string }> = [
 ];
 
 export const getProductRoutes = ({
-  roles,
-  isSellerInCurationList,
   isSupportFunctionalityDefined,
   onlyBuyer,
   onlySeller
