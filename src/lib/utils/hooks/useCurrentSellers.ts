@@ -5,7 +5,10 @@ import { useQuery } from "react-query";
 import { useAccount } from "wagmi";
 
 import { authTokenTypes } from "../../../components/modal/components/CreateProfile/Lens/const";
-import { getLensTokenIdHex } from "../../../components/modal/components/CreateProfile/Lens/utils";
+import {
+  getLensTokenIdDecimal,
+  getLensTokenIdHex
+} from "../../../components/modal/components/CreateProfile/Lens/utils";
 import { fetchSubgraph } from "../core-components/subgraph";
 import { useCoreSDK } from "../useCoreSdk";
 import { Profile } from "./lens/graphql/generated";
@@ -14,6 +17,7 @@ import useGetLensProfiles from "./lens/profile/useGetLensProfiles";
 interface Props {
   address?: string;
   sellerId?: string;
+  lensTokenId?: string;
 }
 
 /**
@@ -23,10 +27,15 @@ interface Props {
  * @param
  * @returns
  */
-export function useCurrentSellers({ address, sellerId }: Props = {}) {
+export function useCurrentSellers({
+  address,
+  sellerId,
+  lensTokenId
+}: Props = {}) {
   const coreSDK = useCoreSDK();
   const { address: loggedInUserAddress } = useAccount();
-  const sellerAddress = address || sellerId || loggedInUserAddress || null;
+  const sellerAddress =
+    address || sellerId || lensTokenId || loggedInUserAddress || null;
   const sellerAddressType = useMemo(() => {
     if (sellerAddress) {
       if (address) {
@@ -35,10 +44,13 @@ export function useCurrentSellers({ address, sellerId }: Props = {}) {
       if (sellerId) {
         return "SELLER_ID";
       }
+      if (lensTokenId) {
+        return "LENS_TOKEN_ID";
+      }
       return "ADDRESS";
     }
     return null;
-  }, [address, sellerAddress, sellerId]);
+  }, [address, sellerAddress, sellerId, lensTokenId]);
 
   const resultByAddress = useQuery(
     ["current-seller-data-by-address", { address: sellerAddress }],
@@ -106,10 +118,10 @@ export function useCurrentSellers({ address, sellerId }: Props = {}) {
         { sellerId: sellerAddress }
       );
       const allProps = {
-        admin: result?.sellers[0]?.sellerId || null,
-        clerk: result?.sellers[0]?.sellerId || null,
-        operator: result?.sellers[0]?.sellerId || null,
-        treasury: result?.sellers[0]?.sellerId || null
+        admin: result?.sellers[0]?.admin || null,
+        clerk: result?.sellers[0]?.clerk || null,
+        operator: result?.sellers[0]?.operator || null,
+        treasury: result?.sellers[0]?.treasury || null
       };
       return Object.fromEntries(
         Object.entries(allProps).filter(([, value]) => value !== null)
@@ -119,12 +131,71 @@ export function useCurrentSellers({ address, sellerId }: Props = {}) {
       enabled: !!sellerAddress && sellerAddressType === "SELLER_ID"
     }
   );
+
+  const decimalLensTokenId = lensTokenId
+    ? getLensTokenIdDecimal(lensTokenId)?.toString()
+    : null;
+  const resultByLensId = useQuery(
+    [
+      "current-seller-data-by-lens-id",
+      { authTokenId: decimalLensTokenId, authTokenType: authTokenTypes.LENS }
+    ],
+    async () => {
+      const result = await fetchSubgraph<{
+        sellers: {
+          sellerId: string;
+          admin: string;
+          clerk: string;
+          operator: string;
+          treasury: string;
+        }[];
+      }>(
+        gql`
+          query GetSellerByLensId($authTokenId: String, $authTokenType: Int) {
+            sellers(
+              where: {
+                authTokenId: $authTokenId
+                authTokenType: $authTokenType
+              }
+            ) {
+              sellerId
+              admin
+              clerk
+              operator
+              treasury
+            }
+          }
+        `,
+        { authTokenId: decimalLensTokenId, authTokenType: authTokenTypes.LENS }
+      );
+      const allProps = {
+        sellerId: result?.sellers[0]?.sellerId || null,
+        admin: result?.sellers[0]?.admin || null,
+        clerk: result?.sellers[0]?.clerk || null,
+        operator: result?.sellers[0]?.operator || null,
+        treasury: result?.sellers[0]?.treasury || null
+      };
+      return Object.fromEntries(
+        Object.entries(allProps).filter(([, value]) => value !== null)
+      );
+    },
+    {
+      enabled: !!decimalLensTokenId && sellerAddressType === "LENS_TOKEN_ID"
+    }
+  );
+
   const sellerType: string[] = resultById?.data
     ? Object.keys(resultById.data)
+    : resultByLensId?.data
+    ? Object.keys(resultByLensId.data)
     : resultByAddress?.data?.sellerType || [];
 
   const sellerIdsToQuery: string[] =
-    sellerAddressType === "SELLER_ID" ? [sellerAddress as string] : [];
+    sellerAddressType === "SELLER_ID"
+      ? [sellerAddress as string]
+      : sellerAddressType === "LENS_TOKEN_ID" && resultByLensId?.data?.sellerId
+      ? [resultByLensId?.data.sellerId]
+      : [];
   const sellerById = useQuery(
     ["current-seller-by-id", { sellerIds: sellerIdsToQuery }],
     async () => {
@@ -230,16 +301,19 @@ export function useCurrentSellers({ address, sellerId }: Props = {}) {
     isSuccess:
       resultById?.isSuccess ||
       resultByAddress?.isSuccess ||
+      resultByLensId?.isSuccess ||
       sellerById?.isSuccess ||
       resultLens?.isSuccess,
     isLoading:
       resultById?.isLoading ||
       resultByAddress?.isLoading ||
+      resultByLensId?.isLoading ||
       sellerById?.isLoading ||
       resultLens?.isLoading,
     isError:
       resultById?.isError ||
       resultByAddress?.isError ||
+      resultByLensId?.isError ||
       sellerById?.isError ||
       resultLens?.isError,
     sellerIds,
