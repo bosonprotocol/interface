@@ -19,7 +19,7 @@ export const buildCondition = (commonTermsOfSale: any): ConditionStruct => {
       break;
     case "erc721":
       tokenType = TokenType.NonFungibleToken;
-      if (commonTermsOfSale.tokenCriteria === "tokenid") {
+      if (commonTermsOfSale.tokenCriteria.value === "tokenid") {
         method = EvaluationMethod.SpecificToken;
         // if erc721 and SpecificToken we should set the threshold as zero
         threshold = "0";
