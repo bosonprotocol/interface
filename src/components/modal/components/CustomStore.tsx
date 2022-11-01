@@ -38,9 +38,18 @@ const StyledTooltip = styled.div`
 
 interface Props {
   ipfsUrl: string;
+  htmlString: string;
   hideModal: NonNullable<ModalProps["hideModal"]>;
 }
-export default function CustomStore({ ipfsUrl = "", hideModal }: Props) {
+export default function CustomStore({
+  ipfsUrl = "",
+  htmlString = "",
+  hideModal
+}: Props) {
+  const iframeString = htmlString.substring(
+    htmlString.indexOf("<iframe"),
+    htmlString.indexOf("</body")
+  );
   return (
     <>
       <Typography
@@ -49,7 +58,8 @@ export default function CustomStore({ ipfsUrl = "", hideModal }: Props) {
         $fontSize="1.25rem"
         lineHeight="1.875rem"
       >
-        Congrats for creating your store front.
+        Congrats for creating your storefront. See the URL and further options
+        below:
       </Typography>
       <CollapsibleContainer>
         <Grid justifyContent="flex-start" gap="0.5rem">
@@ -62,9 +72,7 @@ export default function CustomStore({ ipfsUrl = "", hideModal }: Props) {
               <Tooltip.Content>
                 <StyledTooltip>
                   This shows the IPFS CID for your custom storefront website
-                  file. Extract this and access via any IPFS gateway (note:
-                  default URL points to a gateway where your content is pinned
-                  and therefore more highly available).
+                  file. The store can be directly accessed using the URL.
                 </StyledTooltip>
               </Tooltip.Content>
             </Tooltip.Root>
@@ -104,6 +112,14 @@ export default function CustomStore({ ipfsUrl = "", hideModal }: Props) {
                 <ol type="a">
                   <li>
                     Where CID is the last part of the above Custom Store URL
+                    (i.e.
+                    {ipfsUrl
+                      .toString()
+                      .substring(
+                        ipfsUrl.toString().indexOf("ipfs/") + 5,
+                        ipfsUrl.toString().indexOf("ipfs/") + 9
+                      )
+                      .concat("...)")}
                   </li>
                 </ol>
               </li>
@@ -120,14 +136,32 @@ export default function CustomStore({ ipfsUrl = "", hideModal }: Props) {
         </Collapse>
       </CollapsibleContainer>
       <CollapsibleContainer>
-        <Heading>Pin IPFS redirect</Heading>
-        <div>
+        <Collapse title={<Heading>Integrate iFrame into your website</Heading>}>
           <p>
-            To improve your users' experience, you can pin the IPFS file (i.e.
-            the above Custom Store URL) to your IPFS node gateway. This enables
-            guaranteed and faster loading times.
+            To improve your users' experience, your custom storefront can be
+            integrated directly into your website using an iframe. The steps to
+            do this are described below:
           </p>
-        </div>
+          <div>
+            <ol style={{ padding: "0 1rem" }}>
+              <li>Go to your website code or to your web builder interface</li>
+              <li>
+                Create a new page (e.g. your-website.com/store) and add the
+                following HTML code within the page body (i.e. in the HTML body
+                tag)
+                <ol type="a">
+                  <li>{iframeString}</li>
+                </ol>
+              </li>
+              <li>
+                For example, this is what a simple HTML page would look like:
+                <ol type="a">
+                  <li>{htmlString}</li>
+                </ol>
+              </li>
+            </ol>
+          </div>
+        </Collapse>
       </CollapsibleContainer>
       <Grid margin={`${marginBetweenContainers} 0 0 0`}>
         <BosonButton
