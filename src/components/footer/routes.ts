@@ -84,22 +84,22 @@ export const getProductRoutes = ({
     !isSupportFunctionalityDefined ||
     (isSupportFunctionalityDefined && (!onlyBuyer || onlySeller))
   ) {
-    if (
-      checkIfUserHaveRole(roles, [UserRoles.Seller], false) &&
-      isSellerInCurationList
-    ) {
-      productRoutes.push({
-        name: "Sell",
-        url: generatePath(SellerCenterRoutes.SellerCenter, {
-          [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
-        })
-      });
-    } else if (checkIfUserHaveRole(roles, [UserRoles.Guest], false)) {
-      productRoutes.push({
-        name: "Sell",
-        url: generatePath(BosonRoutes.ClosedBeta)
-      });
-    }
+    // if (
+    //   checkIfUserHaveRole(roles, [UserRoles.Seller], false) &&
+    //   isSellerInCurationList
+    // ) {
+    productRoutes.push({
+      name: "Sell",
+      url: generatePath(SellerCenterRoutes.SellerCenter, {
+        [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
+      })
+    });
+    // } else if (checkIfUserHaveRole(roles, [UserRoles.Guest], false)) {
+    //   productRoutes.push({
+    //     name: "Sell",
+    //     url: generatePath(BosonRoutes.ClosedBeta)
+    //   });
+    // }
   }
   return productRoutes;
 };

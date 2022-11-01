@@ -154,14 +154,15 @@ export default function HeaderLinks({
   const { disputeResolverId } = useCurrentDisputeResolverId();
 
   const sellUrl = useMemo(() => {
-    const closedBetaUrl = generatePath(BosonRoutes.ClosedBeta);
+    // const closedBetaUrl = generatePath(BosonRoutes.ClosedBeta);
+    const createProductUrl = generatePath(SellerCenterRoutes.CreateProduct);
 
     if (isAccountSeller && isSellerInCurationList) {
       return generatePath(SellerCenterRoutes.SellerCenter, {
         [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
       });
     }
-    return closedBetaUrl;
+    return createProductUrl;
   }, [isAccountSeller, isSellerInCurationList]);
 
   const isSupportFunctionalityDefined = supportFunctionality !== "";
