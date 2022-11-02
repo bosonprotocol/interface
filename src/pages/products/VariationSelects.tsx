@@ -158,11 +158,11 @@ export default function VariationSelects({
   const numValidColorVariants: number = getVariationsByType(
     variants,
     "Color"
-  ).filter((entry) => entry?.label !== "Please select...").length;
+  ).filter((entry) => entry?.label !== emptyLabel).length;
   const numValidSizeVariants: number = getVariationsByType(
     variants,
     "Size"
-  ).filter((entry) => entry?.label !== "Please select...").length;
+  ).filter((entry) => entry?.label !== emptyLabel).length;
   const [dropdownVariant, setDropdownVariant] = useState<
     Pick<VariantV1, "variations"> | undefined
   >(selectedVariant);
