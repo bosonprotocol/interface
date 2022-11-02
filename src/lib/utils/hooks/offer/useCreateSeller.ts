@@ -1,3 +1,4 @@
+import { TransactionResponse } from "@bosonprotocol/common";
 import { CoreSDK, IpfsMetadataStorage } from "@bosonprotocol/react-kit";
 import { ethers } from "ethers";
 import { useQuery } from "react-query";
@@ -68,7 +69,7 @@ async function createSellerAccount(
   );
 
   const contractUri = `ipfs://${cid}`;
-  const tx = await coreSDK.createSeller({
+  const sellerData = {
     admin:
       authTokenType === authTokenTypes.LENS
         ? ethers.constants.AddressZero
@@ -83,7 +84,28 @@ async function createSellerAccount(
     operator: address,
     royaltyPercentage: royaltyPercentageTimes100.toString(),
     treasury: address
-  });
-  await tx.wait();
-  return true;
+  };
+  let tx: TransactionResponse;
+  if (coreSDK.isMetaTxConfigSet) {
+    // createSeller with meta-transaction
+    const nonce = Date.now();
+    const { r, s, v, functionName, functionSignature } =
+      await coreSDK.signMetaTxCreateSeller({
+        createSellerArgs: sellerData,
+        nonce
+      });
+    tx = await coreSDK.relayMetaTransaction({
+      functionName,
+      functionSignature,
+      sigR: r,
+      sigS: s,
+      sigV: v,
+      nonce
+    });
+  } else {
+    tx = await coreSDK.createSeller(sellerData);
+  }
+  const txReceipt = await tx.wait();
+  const createdSellerId = coreSDK.getCreatedSellerIdFromLogs(txReceipt?.logs);
+  return createdSellerId;
 }

@@ -245,6 +245,7 @@ export default function ExpireVoucherModal({ exchange }: Props) {
               });
             }}
             web3Provider={signer?.provider as Provider}
+            metaTx={CONFIG.metaTx}
           >
             <Grid gap="0.5rem">
               Expire Voucher

@@ -11,6 +11,7 @@ import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
+import Banner from "../banner/Banner";
 import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
 import Layout from "../Layout";
 import ViewTxButton from "../transactions/ViewTxButton";
@@ -222,9 +223,10 @@ const Burger = ({ onClick }: { onClick: () => void }) => {
 
 interface Props {
   fluidHeader: boolean;
+  withBanner: boolean;
 }
 const HeaderComponent = forwardRef<HTMLElement, Props>(
-  ({ fluidHeader = false }, ref) => {
+  ({ fluidHeader = false, withBanner = false }, ref) => {
     const { address } = useAccount();
     const [isOpen, setOpen] = useState(false);
     const { pathname, search } = useLocation();
@@ -276,6 +278,7 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
         $isSideBarOpen={isOpen}
         ref={ref}
       >
+        {withBanner && <Banner />}
         <HeaderContainer
           fluidHeader={fluidHeader}
           $navigationBarPosition={navigationBarPosition}

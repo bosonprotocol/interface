@@ -58,11 +58,13 @@ export const ADDITIONAL_LINKS: Array<{ label: string; value: string }> = [
 
 export const getProductRoutes = ({
   roles,
+  isSellerInCurationList,
   isSupportFunctionalityDefined,
   onlyBuyer,
   onlySeller
 }: {
   roles: string[];
+  isSellerInCurationList: boolean;
   isSupportFunctionalityDefined: boolean;
   onlyBuyer: boolean;
   onlySeller: boolean;
@@ -83,16 +85,23 @@ export const getProductRoutes = ({
     (isSupportFunctionalityDefined && (!onlyBuyer || onlySeller))
   ) {
     if (checkIfUserHaveRole(roles, [UserRoles.Seller], false)) {
-      productRoutes.push({
-        name: "Sell",
-        url: generatePath(SellerCenterRoutes.SellerCenter, {
-          [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
-        })
-      });
+      if (isSellerInCurationList) {
+        productRoutes.push({
+          name: "Sell",
+          url: generatePath(SellerCenterRoutes.SellerCenter, {
+            [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
+          })
+        });
+      } else {
+        productRoutes.push({
+          name: "Sell",
+          url: BosonRoutes.ClosedBeta
+        });
+      }
     } else if (checkIfUserHaveRole(roles, [UserRoles.Guest], false)) {
       productRoutes.push({
         name: "Sell",
-        url: generatePath(SellerCenterRoutes.CreateProduct)
+        url: SellerCenterRoutes.CreateProduct
       });
     }
   }

@@ -48,3 +48,8 @@ export const getLensTokenIdHex = (lenseProfileIdDecimal: Profile["id"]) => {
   }
   return "0x0" + hex;
 };
+
+export const isMatchingLensHandle = (handle: string): boolean => {
+  const lensHandleRegex = /^.+\.(lens|test)$/;
+  return handle.match(lensHandleRegex) !== null;
+};

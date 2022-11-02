@@ -1,10 +1,14 @@
 import Avatar from "@davatar/react";
+import { BigNumber } from "ethers";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
-import { getLensCoverPictureUrl } from "../../../components/modal/components/CreateProfile/Lens/utils";
+import {
+  getLensCoverPictureUrl,
+  isMatchingLensHandle
+} from "../../../components/modal/components/CreateProfile/Lens/utils";
 import AddressText from "../../../components/offer/AddressText";
 import Grid from "../../../components/ui/Grid";
 import Image from "../../../components/ui/Image";
@@ -15,8 +19,10 @@ import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
 import {
   MediaSet,
+  Profile,
   ProfileFieldsFragment
 } from "../../../lib/utils/hooks/lens/graphql/generated";
+import useGetLensProfiles from "../../../lib/utils/hooks/lens/profile/useGetLensProfiles";
 import useProducts from "../../../lib/utils/hooks/product/useProducts";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { useCurrentSellers } from "../../../lib/utils/hooks/useCurrentSellers";
@@ -88,16 +94,43 @@ const FollowLens = styled.div`
 
 export default function Seller() {
   const { address: currentWalletAddress = "" } = useAccount();
-  const { [UrlParameters.sellerId]: sellerId = "" } = useParams();
+  let { [UrlParameters.sellerId]: sellerId = "" } = useParams();
+  let lensHandle: string | null = null;
+  if (isMatchingLensHandle(sellerId)) {
+    // Find sellerId based on LENS handle
+    lensHandle = sellerId;
+  }
+  // Check the sellerID has correct format
+  try {
+    BigNumber.from(sellerId);
+  } catch (e) {
+    sellerId = "";
+  }
+  const resultLens = useGetLensProfiles(
+    {
+      handles: [lensHandle]
+    },
+    {
+      enabled: !!lensHandle
+    }
+  );
+  const lensProfiles: Profile[] = useMemo(() => {
+    return (resultLens?.data?.items as Profile[]) ?? [];
+  }, [resultLens?.data]);
+  const lensTokenId = useMemo(() => {
+    if (lensProfiles && lensProfiles.length > 0) {
+      return lensProfiles[0].id;
+    }
+    return null;
+  }, [lensProfiles]);
   const { isLteXS } = useBreakpoints();
   const {
     isLoading,
     isError,
     lens: sellersLens,
     sellers: sellersData
-  } = useCurrentSellers({
-    sellerId
-  });
+  } = useCurrentSellers(lensTokenId ? { lensTokenId } : { sellerId });
+  sellerId = sellersData?.length ? sellersData[0].id : sellerId;
   const [sellerLens] = sellersLens;
   const { imageSrc: coverImage } = useGetIpfsImage(
     getLensCoverPictureUrl(sellerLens)
