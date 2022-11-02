@@ -1,5 +1,5 @@
 import { useFormikContext } from "formik";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import styled from "styled-components";
 
 import CollapseWithTrigger from "../../components/collapse/CollapseWithTrigger";
@@ -11,6 +11,7 @@ import BosonButton from "../../components/ui/BosonButton";
 import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
 import { colors } from "../../lib/styles/colors";
+import { isTruthy } from "../../lib/types/helpers";
 import { getFilesWithEncodedData } from "../../lib/utils/files";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { preAppendHttps } from "../../lib/validation/regex/url";
@@ -236,6 +237,21 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
       }
     });
   };
+
+  const CommitProxyField = useCallback(() => {
+    return (
+      <Grid flexDirection="column" alignItems="flex-start">
+        <FieldTitle>Commit Proxy Address</FieldTitle>
+        <FieldDescription>
+          Careful: This will override the commit function for your buyers.
+        </FieldDescription>
+        <Input
+          name={storeFields.commitProxyAddress}
+          placeholder={formModel.formFields.commitProxyAddress.placeholder}
+        />
+      </Grid>
+    );
+  }, []);
 
   return (
     <Grid alignItems="flex-start" gap="2.875rem">
@@ -639,7 +655,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                   isClearable
                 />
               </Grid>
-              {["custom"].includes(values.withOwnProducts?.value || "") && (
+              {["custom"].includes(values.withOwnProducts?.value || "") ? (
                 <Grid
                   flexDirection="column"
                   margin={`0 0 0 ${subFieldsMarginLeft}`}
@@ -672,8 +688,23 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                       }
                     />
                   </Grid>
+                  {new Set(
+                    values.sellerCurationList
+                      .split(",")
+                      .map((str) => str.trim())
+                      .filter(isTruthy)
+                  ).size === 1 && <CommitProxyField />}
                 </Grid>
-              )}
+              ) : ["mine"].includes(values.withOwnProducts?.value || "") ? (
+                <Grid
+                  flexDirection="column"
+                  margin={`0 0 0 ${subFieldsMarginLeft}`}
+                  $width={`calc(100% - ${subFieldsMarginLeft})`}
+                  gap={gapBetweenInputs}
+                >
+                  <CommitProxyField />
+                </Grid>
+              ) : null}
               <Grid flexDirection="column" alignItems="flex-start">
                 <FieldTitle>Meta Transactions</FieldTitle>
                 <FieldDescription>

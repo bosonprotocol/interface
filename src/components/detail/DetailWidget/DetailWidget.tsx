@@ -5,9 +5,10 @@ import {
   Provider,
   subgraph
 } from "@bosonprotocol/react-kit";
+import { Interface } from "@ethersproject/abi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import dayjs from "dayjs";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber, ContractTransaction, ethers } from "ethers";
 import { ArrowRight, ArrowSquareOut, Check, Question } from "phosphor-react";
 import { useCallback, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
@@ -18,6 +19,7 @@ import { CONFIG } from "../../../lib/config";
 import { BosonRoutes } from "../../../lib/routing/routes";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
+import { isTruthy } from "../../../lib/types/helpers";
 import { Offer } from "../../../lib/types/offer";
 import { IPrice } from "../../../lib/utils/convertPrice";
 import { titleCase } from "../../../lib/utils/formatText";
@@ -34,6 +36,7 @@ import {
 } from "../../../lib/utils/hooks/useLocalStorage";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 import { poll } from "../../../pages/create-product/utils";
+import { useCustomStoreQueryParameter } from "../../../pages/custom-store/useCustomStoreQueryParameter";
 import { ModalTypes, ShowModalFn, useModal } from "../../modal/useModal";
 import Price from "../../price/index";
 import { useConvertedPrice } from "../../price/useConvertedPrice";
@@ -53,6 +56,7 @@ import {
   WidgetUpperGrid
 } from "../Detail.style";
 import DetailTable from "../DetailTable";
+import * as bosonSnapshotGateAbi from "./BosonSnapshotGate.json";
 import { DetailDisputeResolver } from "./DetailDisputeResolver";
 import { DetailSellerDeposit } from "./DetailSellerDeposit";
 import DetailTopRightLabel from "./DetailTopRightLabel";
@@ -481,6 +485,54 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     isOfferNotValidYet,
     offer.voided
   ]);
+  const commitProxyAddress = useCustomStoreQueryParameter("commitProxyAddress");
+  const sellerCurationList = useCustomStoreQueryParameter("sellerCurationList");
+  const numSellers = new Set(
+    sellerCurationList
+      .split(",")
+      .map((str) => str.trim())
+      .filter(isTruthy)
+  ).size;
+  const showCommitProxyButton = numSellers === 1 && !!commitProxyAddress;
+  const CommitProxyButton = useCallback(() => {
+    const disabled = !signer || !offer.condition;
+    const onClick = async () => {
+      if (!signer || !offer.condition) {
+        return;
+      }
+      const mumbaiContractAddress =
+        "0xc01A8455E1c7644E6793D030C6C8D8d35a5Cb8C5";
+      try {
+        const proxyContract = new ethers.Contract(
+          mumbaiContractAddress,
+          new Interface(JSON.stringify(bosonSnapshotGateAbi)),
+          signer
+        );
+        const buyerAddress = await signer.getAddress();
+        const tx: ContractTransaction = await proxyContract.commitToGatedOffer(
+          buyerAddress,
+          offer.id,
+          offer.condition.tokenId
+        );
+        await tx.wait();
+      } catch (error) {
+        console.error(
+          "something went wrong while calling the proxy contract",
+          error
+        );
+      }
+    };
+    return (
+      <BosonButton
+        variant="primaryFill"
+        onClick={onClick}
+        disabled={disabled}
+        data-commit-proxy-address
+      >
+        Commit <small>Step 1/2</small>
+      </BosonButton>
+    );
+  }, [offer.condition, offer.id, signer]);
 
   return (
     <>
@@ -581,101 +633,105 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                   }
                 }}
               >
-                <CommitButton
-                  variant="primaryFill"
-                  isPauseCommitting={!address}
-                  buttonRef={commitButtonRef}
-                  onGetSignerAddress={handleOnGetSignerAddress}
-                  disabled={
-                    (address && isChainUnsupported) ||
-                    !hasSellerEnoughFunds ||
-                    isExpiredOffer ||
-                    isLoading ||
-                    !quantity ||
-                    isVoidedOffer ||
-                    isPreview ||
-                    isOfferNotValidYet ||
-                    isBuyerInsufficientFunds
-                  }
-                  offerId={offer.id}
-                  exchangeToken={offer.exchangeToken.address}
-                  price={offer.price}
-                  envName={CONFIG.envName}
-                  onError={(error) => {
-                    console.error("onError", error);
-                    setIsLoading(false);
-                    const hasUserRejectedTx =
-                      "code" in error &&
-                      (error as unknown as { code: string }).code ===
-                        "ACTION_REJECTED";
-                    if (hasUserRejectedTx) {
-                      showModal("CONFIRMATION_FAILED");
-                    } else {
-                      showModal(modalTypes.DETAIL_WIDGET, {
-                        title: "An error occurred",
-                        message: "An error occurred when trying to commit!",
-                        type: "ERROR",
-                        state: "Committed",
-                        ...BASE_MODAL_DATA
-                      });
+                {showCommitProxyButton ? (
+                  <CommitProxyButton />
+                ) : (
+                  <CommitButton
+                    variant="primaryFill"
+                    isPauseCommitting={!address}
+                    buttonRef={commitButtonRef}
+                    onGetSignerAddress={handleOnGetSignerAddress}
+                    disabled={
+                      (address && isChainUnsupported) ||
+                      !hasSellerEnoughFunds ||
+                      isExpiredOffer ||
+                      isLoading ||
+                      !quantity ||
+                      isVoidedOffer ||
+                      isPreview ||
+                      isOfferNotValidYet ||
+                      isBuyerInsufficientFunds
                     }
-                  }}
-                  onPendingSignature={() => {
-                    setIsLoading(true);
-                    showModal("WAITING_FOR_CONFIRMATION");
-                  }}
-                  onPendingTransaction={(hash, isMetaTx) => {
-                    showModal("TRANSACTION_SUBMITTED", {
-                      action: "Commit",
-                      txHash: hash
-                    });
-                    addPendingTransaction({
-                      type: subgraph.EventType.BuyerCommitted,
-                      hash,
-                      isMetaTx,
-                      accountType: "Buyer",
-                      offer: {
-                        id: offer.id
+                    offerId={offer.id}
+                    exchangeToken={offer.exchangeToken.address}
+                    price={offer.price}
+                    envName={CONFIG.envName}
+                    onError={(error) => {
+                      console.error("onError", error);
+                      setIsLoading(false);
+                      const hasUserRejectedTx =
+                        "code" in error &&
+                        (error as unknown as { code: string }).code ===
+                          "ACTION_REJECTED";
+                      if (hasUserRejectedTx) {
+                        showModal("CONFIRMATION_FAILED");
+                      } else {
+                        showModal(modalTypes.DETAIL_WIDGET, {
+                          title: "An error occurred",
+                          message: "An error occurred when trying to commit!",
+                          type: "ERROR",
+                          state: "Committed",
+                          ...BASE_MODAL_DATA
+                        });
                       }
-                    });
-                  }}
-                  onSuccess={async (_, { exchangeId }) => {
-                    let createdExchange: subgraph.ExchangeFieldsFragment;
-                    await poll(
-                      async () => {
-                        createdExchange = await coreSDK.getExchangeById(
-                          exchangeId
-                        );
-                        return createdExchange;
-                      },
-                      (createdExchange) => {
-                        return !createdExchange;
-                      },
-                      500
-                    );
-                    setIsLoading(false);
-                    hideModal();
-                    toast((t) => (
-                      <SuccessTransactionToast
-                        t={t}
-                        action={`Commit to offer: ${offer.metadata.name}`}
-                        onViewDetails={() => {
-                          showModal(modalTypes.DETAIL_WIDGET, {
-                            title: "You have successfully committed!",
-                            message: "You now own the rNFT",
-                            type: "SUCCESS",
-                            id: exchangeId.toString(),
-                            state: "Committed",
-                            ...BASE_MODAL_DATA
-                          });
-                        }}
-                      />
-                    ));
-                  }}
-                  extraInfo="Step 1/2"
-                  web3Provider={signer?.provider as Provider}
-                  metaTx={CONFIG.metaTx}
-                />
+                    }}
+                    onPendingSignature={() => {
+                      setIsLoading(true);
+                      showModal("WAITING_FOR_CONFIRMATION");
+                    }}
+                    onPendingTransaction={(hash, isMetaTx) => {
+                      showModal("TRANSACTION_SUBMITTED", {
+                        action: "Commit",
+                        txHash: hash
+                      });
+                      addPendingTransaction({
+                        type: subgraph.EventType.BuyerCommitted,
+                        hash,
+                        isMetaTx,
+                        accountType: "Buyer",
+                        offer: {
+                          id: offer.id
+                        }
+                      });
+                    }}
+                    onSuccess={async (_, { exchangeId }) => {
+                      let createdExchange: subgraph.ExchangeFieldsFragment;
+                      await poll(
+                        async () => {
+                          createdExchange = await coreSDK.getExchangeById(
+                            exchangeId
+                          );
+                          return createdExchange;
+                        },
+                        (createdExchange) => {
+                          return !createdExchange;
+                        },
+                        500
+                      );
+                      setIsLoading(false);
+                      hideModal();
+                      toast((t) => (
+                        <SuccessTransactionToast
+                          t={t}
+                          action={`Commit to offer: ${offer.metadata.name}`}
+                          onViewDetails={() => {
+                            showModal(modalTypes.DETAIL_WIDGET, {
+                              title: "You have successfully committed!",
+                              message: "You now own the rNFT",
+                              type: "SUCCESS",
+                              id: exchangeId.toString(),
+                              state: "Committed",
+                              ...BASE_MODAL_DATA
+                            });
+                          }}
+                        />
+                      ));
+                    }}
+                    extraInfo="Step 1/2"
+                    web3Provider={signer?.provider as Provider}
+                    metaTx={CONFIG.metaTx}
+                  />
+                )}
               </CommitButtonWrapper>
             )}
             {isToRedeem && (

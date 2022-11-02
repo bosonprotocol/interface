@@ -117,6 +117,7 @@ export const CONFIG = {
     process.env.NODE_ENV === "production"
       ? "disputes@redeemeum.com"
       : "disputes-test@redeemeum.com",
+  defaultSupportEmail: "info@bosonapp.io",
   minimumReturnPeriodInDays: 1,
   defaultReturnPeriodInDays: 15,
   minimumDisputePeriodInDays: 30,
