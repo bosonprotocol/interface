@@ -254,14 +254,12 @@ export default function FooterComponent() {
               <NavigationLinks>
                 {ADDITIONAL_LINKS.map((footerLink, index) => {
                   return (
-                    <a
+                    <LinkWithQuery
+                      to={footerLink.value}
                       key={`${footerLink.label}-${footerLink.value}-${index}`}
-                      href={footerLink.value}
-                      target="_blank"
-                      style={{ textAlign: "center" }}
                     >
                       {footerLink.label}
-                    </a>
+                    </LinkWithQuery>
                   );
                 })}
               </NavigationLinks>
