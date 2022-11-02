@@ -5,7 +5,6 @@ import {
   Provider,
   subgraph
 } from "@bosonprotocol/react-kit";
-import { Interface } from "@ethersproject/abi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import dayjs from "dayjs";
 import { BigNumber, BigNumberish, ContractTransaction, ethers } from "ethers";
@@ -56,7 +55,8 @@ import {
   WidgetUpperGrid
 } from "../Detail.style";
 import DetailTable from "../DetailTable";
-import bosonSnapshotGateAbi from "./BosonSnapshotGate.json";
+import bosonSnapshotGateAbi from "./BosonSnapshotGate/BosonSnapshotGate.json";
+import { BosonSnapshotGate__factory } from "./BosonSnapshotGate/typechain/factories";
 import { DetailDisputeResolver } from "./DetailDisputeResolver";
 import { DetailSellerDeposit } from "./DetailSellerDeposit";
 import DetailTopRightLabel from "./DetailTopRightLabel";
@@ -597,16 +597,18 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       }
       try {
         onCommitPendingSignature();
-        const proxyContract = new ethers.Contract(
+        const proxyContract = BosonSnapshotGate__factory.connect(
           commitProxyAddress,
-          new Interface(JSON.stringify(bosonSnapshotGateAbi.abi)),
           signer
         );
         const buyerAddress = await signer.getAddress();
         const tx: ContractTransaction = await proxyContract.commitToGatedOffer(
           buyerAddress,
           offer.id,
-          offer.condition.tokenId
+          offer.condition.tokenId,
+          {
+            value: offer.price
+          }
         );
         onCommitPendingTransaction(tx.hash, false);
         const receipt = await tx.wait();
