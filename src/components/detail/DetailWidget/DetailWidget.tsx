@@ -135,20 +135,13 @@ export const getOfferDetailData = (
     convertedPrice
   );
 
-  const sellerDepositPercentage =
-    Number(offer.price) === 0
-      ? 0
-      : Number(offer.sellerDeposit) / Number(offer.price);
-
-  const sellerDeposit = sellerDepositPercentage * 100;
-  const sellerDepositFormatted = utils.formatUnits(
-    offer.sellerDeposit,
-    offer.exchangeToken.decimals
-  );
-  const buyerCancelationPenaltyFormatted = utils.formatUnits(
-    offer.buyerCancelPenalty,
-    offer.exchangeToken.decimals
-  );
+  const buyerCancelationPenaltyFormatted =
+    offer.buyerCancelPenalty === "0"
+      ? "0"
+      : utils.formatUnits(
+          offer.buyerCancelPenalty,
+          offer.exchangeToken.decimals
+        );
 
   // if offer is in creation, offer.id does not exist
   const handleShowExchangePolicy = () => {
@@ -201,16 +194,7 @@ export const getOfferDetailData = (
     {
       name: DetailSellerDeposit.name,
       info: DetailSellerDeposit.info,
-      value: (
-        <Typography tag="p">
-          <CurrencyDisplay
-            currency={offer.exchangeToken.symbol as Currencies}
-            value={sellerDepositFormatted}
-            height={20}
-          />
-          <small>({isNaN(sellerDeposit) ? "-" : sellerDeposit}%)</small>
-        </Typography>
-      )
+      value: DetailSellerDeposit.value({ offer })
     },
     {
       name: "Buyer cancel. pen.",
