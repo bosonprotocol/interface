@@ -52,6 +52,8 @@ const ProductCardWrapper = styled.div<{ $isCustomStoreFront: boolean }>`
     return css`
       [data-avatarname="product-card"] {
         color: ${colors.black};
+        max-width: 100%;
+        word-break: break-word;
       }
     `;
   }};
