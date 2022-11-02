@@ -627,7 +627,10 @@ const DetailWidget: React.FC<IDetailWidget> = ({
           offer.id,
           offer.condition.tokenId,
           {
-            value: offer.price
+            value:
+              offer.exchangeToken.address === constants.AddressZero
+                ? offer.price
+                : "0"
           }
         );
         onCommitPendingTransaction(tx.hash, false);
