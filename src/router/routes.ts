@@ -48,7 +48,8 @@ export const baseAppProps = {
   withLayout: true,
   withFooter: true,
   fluidHeader: false,
-  withBosonStyles: true
+  withBosonStyles: true,
+  withBanner: false
 };
 const base = {
   component: null,
@@ -75,6 +76,7 @@ export interface IRoutes extends RouteProps {
     withLayout?: boolean;
     withFooter?: boolean;
     fluidHeader?: boolean;
+    withBanner?: boolean;
   };
 }
 export default [
@@ -85,7 +87,8 @@ export default [
     component: LandingPage,
     app: {
       ...base.app,
-      withBosonStyles: false
+      withBosonStyles: false,
+      withBanner: true
     }
   },
   {
