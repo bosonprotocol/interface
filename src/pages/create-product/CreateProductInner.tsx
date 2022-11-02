@@ -882,16 +882,31 @@ function CreateProductInner({
         const txReceipt = await txResponse.wait();
         const offerIds = coreSDK.getCreatedOfferIdsFromLogs(txReceipt.logs);
         if (isTokenGated) {
+          showModal("WAITING_FOR_CONFIRMATION");
           const condition = buildCondition(commonTermsOfSale);
           if (isMetaTx) {
             const nonce = Date.now();
-            coreSDK.signMetaTxCreateGroup({
-              createGroupArgs: { offerIds, ...condition },
+            const { r, s, v, functionName, functionSignature } =
+              await coreSDK.signMetaTxCreateGroup({
+                createGroupArgs: { offerIds, ...condition },
+                nonce
+              });
+            txResponse = await coreSDK.relayMetaTransaction({
+              functionName,
+              functionSignature,
+              sigR: r,
+              sigS: s,
+              sigV: v,
               nonce
             });
           } else {
-            coreSDK.createGroup({ offerIds, ...condition });
+            txResponse = await coreSDK.createGroup({ offerIds, ...condition });
           }
+          showModal("TRANSACTION_SUBMITTED", {
+            action: "Create condition group for offers",
+            txHash: txResponse.hash
+          });
+          await txResponse.wait();
         }
         let createdOffers: OfferFieldsFragment[] | null = null;
         await poll(
