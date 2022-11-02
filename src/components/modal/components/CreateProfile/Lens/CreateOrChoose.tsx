@@ -69,10 +69,7 @@ export default function CreateOrChoose({
 
   useEffect(() => {
     if (profileData?.items.length) {
-      setLensProfiles((prev) => [
-        ...prev,
-        ...(profileData?.items as Profile[])
-      ]);
+      setLensProfiles([...(profileData?.items as Profile[])]);
     }
   }, [profileData?.items]);
   return (
@@ -97,12 +94,12 @@ export default function CreateOrChoose({
             <Typography>Create new Profile</Typography>
           </Grid>
         </Button>
-        {lensProfiles.map((profile) => {
+        {lensProfiles.map((profile, index) => {
           return (
             <Button
               theme="white"
               onClick={() => onChooseUseExisting(profile as Profile)}
-              key={profile.id}
+              key={`lens_profile_${profile.id}_${index}`}
             >
               <Grid flexDirection="column" gap="1rem" padding="1rem">
                 <Typography

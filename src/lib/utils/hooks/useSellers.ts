@@ -1,4 +1,5 @@
 import { accounts, subgraph } from "@bosonprotocol/react-kit";
+import { useCallback } from "react";
 import { useQuery } from "react-query";
 
 import { CONFIG } from "../../../lib/config";
@@ -30,6 +31,32 @@ export const useIsSellerInCuractionList = (sellerID: string) => {
   }
 
   return false;
+};
+
+export const useSellerCurationListFn = () => {
+  const curationLists = useCurationLists();
+
+  const isSellerInCurationList = useCallback(
+    (sellerID: string) => {
+      if (curationLists?.enableCurationLists && sellerID !== "") {
+        if (
+          (curationLists?.sellerCurationList || [])?.length > 0 &&
+          (curationLists?.sellerCurationList || [])?.indexOf(
+            sellerID as string
+          ) > -1
+        ) {
+          return true;
+        }
+      } else if (!curationLists?.enableCurationLists) {
+        return true;
+      }
+
+      return false;
+    },
+    [curationLists]
+  );
+
+  return isSellerInCurationList;
 };
 
 export function useSellers(

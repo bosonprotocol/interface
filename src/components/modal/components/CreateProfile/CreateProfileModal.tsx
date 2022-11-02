@@ -5,6 +5,7 @@ import { useAccount } from "wagmi";
 import { CONFIG } from "../../../../lib/config";
 import { BosonRoutes } from "../../../../lib/routing/routes";
 import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { useSellerCurationListFn } from "../../../../lib/utils/hooks/useSellers";
 import { CreateYourProfile as CreateYourProfileType } from "../../../product/utils";
 import BosonButton from "../../../ui/BosonButton";
 import Grid from "../../../ui/Grid";
@@ -25,14 +26,31 @@ export default function CreateProfileModal({
   initialRegularCreateProfile,
   onRegularProfileCreated
 }: Props) {
+  const navigate = useKeepQueryParamsNavigate();
   const { hideModal } = useModal();
   const { address = "" } = useAccount();
+  const checkIfSellerIsInCurationList = useSellerCurationListFn();
+
+  const shouldRedirectToCustomBetaPage = useCallback(
+    (sellerId: string) => {
+      const isAccountSeller = !!sellerId;
+      const isSellerInCurationList = checkIfSellerIsInCurationList(sellerId);
+
+      if (isAccountSeller && !isSellerInCurationList) {
+        return navigate({ pathname: BosonRoutes.ClosedBeta });
+      }
+    },
+    [checkIfSellerIsInCurationList, navigate]
+  );
 
   const Component = useCallback(() => {
     return showLensVersion ? (
       <LensProfile
-        onSubmit={() => {
+        onSubmit={(id) => {
           hideModal();
+          if (id !== "") {
+            shouldRedirectToCustomBetaPage(id);
+          }
         }}
       />
     ) : (
@@ -47,7 +65,6 @@ export default function CreateProfileModal({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialRegularCreateProfile, onRegularProfileCreated]);
 
-  const navigate = useKeepQueryParamsNavigate();
   if (!address) {
     return (
       <>
