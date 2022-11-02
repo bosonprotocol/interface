@@ -1,13 +1,15 @@
 import {
   ButtonSize,
   CommitButton,
+  Currencies,
+  CurrencyDisplay,
   exchanges,
   Provider,
   subgraph
 } from "@bosonprotocol/react-kit";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import dayjs from "dayjs";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber, ethers, utils } from "ethers";
 import { ArrowRight, ArrowSquareOut, Check, Question } from "phosphor-react";
 import { useCallback, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
@@ -128,10 +130,10 @@ export const getOfferDetailData = (
     Number(`${offer.voucherRedeemableUntilDate}000`)
   ).format(CONFIG.dateFormat);
 
-  const priceNumber = Number(convertedPrice?.converted);
-
-  const { buyerCancelationPenalty, convertedBuyerCancelationPenalty } =
-    getBuyerCancelPenalty(offer, convertedPrice);
+  const { buyerCancelationPenalty } = getBuyerCancelPenalty(
+    offer,
+    convertedPrice
+  );
 
   const sellerDepositPercentage =
     Number(offer.price) === 0
@@ -139,9 +141,14 @@ export const getOfferDetailData = (
       : Number(offer.sellerDeposit) / Number(offer.price);
 
   const sellerDeposit = sellerDepositPercentage * 100;
-  const sellerDepositDollars = priceNumber
-    ? (sellerDepositPercentage * priceNumber).toFixed(2)
-    : "";
+  const sellerDepositFormatted = utils.formatUnits(
+    offer.sellerDeposit,
+    offer.exchangeToken.decimals
+  );
+  const buyerCancelationPenaltyFormatted = utils.formatUnits(
+    offer.buyerCancelPenalty,
+    offer.exchangeToken.decimals
+  );
 
   // if offer is in creation, offer.id does not exist
   const handleShowExchangePolicy = () => {
@@ -196,12 +203,12 @@ export const getOfferDetailData = (
       info: DetailSellerDeposit.info,
       value: (
         <Typography tag="p">
-          {isNaN(sellerDeposit) ? "-" : sellerDeposit}%
-          {convertedPrice?.converted && sellerDepositDollars ? (
-            <small>(${sellerDepositDollars})</small>
-          ) : (
-            ""
-          )}
+          <CurrencyDisplay
+            currency={offer.exchangeToken.symbol as Currencies}
+            value={sellerDepositFormatted}
+            height={20}
+          />
+          <small>({isNaN(sellerDeposit) ? "-" : sellerDeposit}%)</small>
         </Typography>
       )
     },
@@ -220,12 +227,14 @@ export const getOfferDetailData = (
       ),
       value: (
         <Typography tag="p">
-          {buyerCancelationPenalty}%
-          {convertedPrice?.converted && convertedBuyerCancelationPenalty ? (
-            <small>(${convertedBuyerCancelationPenalty})</small>
-          ) : (
-            ""
-          )}
+          <CurrencyDisplay
+            currency={offer.exchangeToken.symbol as Currencies}
+            value={buyerCancelationPenaltyFormatted}
+            height={20}
+          />
+          <small>
+            ({isNaN(buyerCancelationPenalty) ? "-" : buyerCancelationPenalty}%)
+          </small>
         </Typography>
       )
     },
