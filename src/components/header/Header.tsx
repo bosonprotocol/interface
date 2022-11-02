@@ -181,23 +181,22 @@ const HeaderContainer = styled(Layout)<{
 `;
 
 const HeaderItems = styled.nav<{
-  isMobile: boolean;
   fluidHeader?: boolean;
   $navigationBarPosition: string;
 }>`
-  ${({ $navigationBarPosition, isMobile, fluidHeader }) => {
+  ${({ $navigationBarPosition, fluidHeader }) => {
     if (["left", "right"].includes($navigationBarPosition)) {
       return css`
         display: flex;
         flex-direction: column;
-        align-items: ${isMobile ? "center" : "stretch"};
+        align-items: center;
         justify-content: end;
         width: 100%;
       `;
     }
     return css`
       display: flex;
-      align-items: ${isMobile ? "center" : "stretch"};
+      align-items: center;
       justify-content: end;
       width: 100%;
       margin-left: ${fluidHeader ? "2.3rem" : "0"};
@@ -260,14 +259,18 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
           <>
             <ConnectButton {...props} showAddress={!address} />
             {address && (
-              <Grid flexBasis="content" margin="0 0 0 1rem">
+              <Grid
+                flexBasis="content"
+                margin={isSideNavBar ? "0" : "0 0 0 1rem"}
+                {...(isSideNavBar && { justifyContent: "center" })}
+              >
                 <ViewTxButton />
               </Grid>
             )}
           </>
         );
       },
-      [address]
+      [address, isSideNavBar]
     );
 
     return (
@@ -304,7 +307,6 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
                 )}
               </Grid>
               <HeaderItems
-                isMobile={burgerMenuBreakpoint}
                 fluidHeader={fluidHeader}
                 $navigationBarPosition={navigationBarPosition}
               >
