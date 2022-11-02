@@ -1,10 +1,13 @@
 import * as Tooltip from "@radix-ui/react-tooltip";
-import { CopySimple, Info } from "phosphor-react";
+import { Copy, CopySimple, Info } from "phosphor-react";
+import * as pretty from "pretty";
+import toast from "react-hot-toast";
 import styled from "styled-components";
 
 import Collapse from "../../../components/collapse/Collapse";
 import { colors } from "../../../lib/styles/colors";
 import copyToClipboard from "../../../lib/utils/copyToClipboard";
+import { CopyButton } from "../../form/Field.styles";
 import BosonButton from "../../ui/BosonButton";
 import Grid from "../../ui/Grid";
 import Typography from "../../ui/Typography";
@@ -34,6 +37,21 @@ const StyledTooltip = styled.div`
   padding: 1rem;
   border: 1px solid ${colors.darkGrey};
   max-width: 20rem;
+`;
+
+const StyledPre = styled.pre`
+  word-break: break-word;
+  white-space: pre-wrap;
+  background-color: #454545;
+  color: whitesmoke;
+  padding: 0.5rem;
+  position: relative;
+`;
+
+const StyledCopyButton = styled(CopyButton)`
+  position: absolute;
+  bottom: 0;
+  right: 0.4375rem;
 `;
 
 interface Props {
@@ -149,14 +167,31 @@ export default function CustomStore({
                 Create a new page (e.g. your-website.com/store) and add the
                 following HTML code within the page body (i.e. in the HTML body
                 tag)
-                <ol type="a">
-                  <li>{iframeString}</li>
+                <ol type="a" style={{ padding: 0 }}>
+                  <StyledPre>
+                    <code>{pretty(iframeString)}</code>
+                    <StyledCopyButton
+                      onClick={() => {
+                        try {
+                          navigator.clipboard.writeText(iframeString);
+                          toast(() => "Text has been copied to clipboard");
+                        } catch (error) {
+                          console.error(error);
+                          return false;
+                        }
+                      }}
+                    >
+                      <Copy size={24} color={colors.orange} weight="light" />
+                    </StyledCopyButton>
+                  </StyledPre>
                 </ol>
               </li>
               <li>
                 For example, this is what a simple HTML page would look like:
-                <ol type="a">
-                  <li>{htmlString}</li>
+                <ol type="a" style={{ padding: 0 }}>
+                  <StyledPre>
+                    <code>{pretty(htmlString)}</code>
+                  </StyledPre>
                 </ol>
               </li>
             </ol>
