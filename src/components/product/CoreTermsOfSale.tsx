@@ -1,13 +1,18 @@
 import styled from "styled-components";
 
-import { Datepicker, FormField, Input, Select } from "../form";
+import { Datepicker, FormField, Input, Select, Textarea } from "../form";
 import BosonButton from "../ui/BosonButton";
 import {
   ContainerProductPage,
   ProductButtonGroup,
   SectionTitle
 } from "./Product.styles";
-import { OPTIONS_CURRENCIES, OPTIONS_TOKEN_GATED } from "./utils";
+import {
+  OPTIONS_CURRENCIES,
+  OPTIONS_TOKEN_GATED,
+  TOKEN_CRITERIA,
+  TOKEN_TYPES
+} from "./utils";
 import { useCreateForm } from "./utils/useCreateForm";
 
 const PriceContainer = styled.div`
@@ -20,12 +25,18 @@ const ProductInformationButtonGroup = styled(ProductButtonGroup)`
   margin-top: 1.563px;
 `;
 
+const TokengatedTextarea = styled(Textarea)`
+  padding: 0.5rem;
+`;
+
 interface Props {
   isMultiVariant: boolean;
 }
 export default function CoreTermsOfSale({ isMultiVariant }: Props) {
-  const { nextIsDisabled } = useCreateForm();
+  const { nextIsDisabled, values } = useCreateForm();
+
   const prefix = isMultiVariant ? "variantsCoreTermsOfSale" : "coreTermsOfSale";
+
   return (
     <ContainerProductPage>
       <SectionTitle tag="h2">Core Terms of Sale</SectionTitle>
@@ -69,6 +80,7 @@ export default function CoreTermsOfSale({ isMultiVariant }: Props) {
           </FormField>
         </>
       )}
+
       <FormField
         title="Token gated offer"
         subTitle="Limit the purchase of your item to users holding a specific token."
@@ -76,8 +88,79 @@ export default function CoreTermsOfSale({ isMultiVariant }: Props) {
         <Select
           name={`${prefix}.tokenGatedOffer`}
           options={OPTIONS_TOKEN_GATED}
-          disabled
         />
+
+        {values[prefix].tokenGatedOffer.value === "true" && (
+          <>
+            {/* TODO: enable once we have more than one variant */}
+            {/* <TokengatedInfoWrapper>
+              <FormField title="Variant" style={{ margin: "1rem 0 0 0" }}>
+                <Select
+                  name="coreTermsOfSale.tokenGatedVariants"
+                  options={TOKEN_GATED_VARIANTS}
+                />
+              </FormField>
+            </TokengatedInfoWrapper> */}
+
+            <FormField title="Token Contract" style={{ margin: "1rem 0 0 0" }}>
+              <Input name={`${prefix}.tokenContract`} type="string" />
+            </FormField>
+
+            <TokengatedInfoWrapper>
+              <FormField title="Token Type:" style={{ margin: "1rem 0 0 0" }}>
+                <Select name={`${prefix}.tokenType`} options={TOKEN_TYPES} />
+              </FormField>
+
+              <div>
+                <FormField
+                  title="Token Gating Description:"
+                  style={{ margin: "1rem 0 0 0" }}
+                  tooltip="This offer requires to own at least one NFT of Makersplace collection: https://opensea.io/collection/makersplace"
+                >
+                  <TokengatedTextarea
+                    name={`${prefix}.tokenGatingDesc`}
+                    placeholder="Token Gating Description"
+                  />
+                </FormField>
+              </div>
+            </TokengatedInfoWrapper>
+            <FormField title="Max commits:" style={{ margin: "1rem 0 0 0" }}>
+              <Input name={`${prefix}.maxCommits`} type="string" />
+            </FormField>
+            <>
+              {values[prefix].tokenType?.value === TOKEN_TYPES[1].value && (
+                <div>
+                  <FormField title="Criteria:" style={{ margin: "1rem 0 0 0" }}>
+                    <Select
+                      name={`${prefix}.tokenCriteria`}
+                      options={TOKEN_CRITERIA}
+                    />
+                  </FormField>
+                </div>
+              )}
+
+              {(values[prefix].tokenCriteria?.value ===
+                TOKEN_CRITERIA[0].value ||
+                values[prefix].tokenType?.value === TOKEN_TYPES[0].value ||
+                values[prefix].tokenType?.value === TOKEN_TYPES[2].value) && (
+                <FormField
+                  title="Min Balance:"
+                  style={{ margin: "1rem 0 0 0" }}
+                >
+                  <Input name={`${prefix}.minBalance`} type="string" />
+                </FormField>
+              )}
+              {((values[prefix].tokenCriteria?.value ===
+                TOKEN_CRITERIA[1].value &&
+                values[prefix].tokenType?.value === TOKEN_TYPES[1].value) ||
+                values[prefix].tokenType?.value === TOKEN_TYPES[2].value) && (
+                <FormField title="TokenId:" style={{ margin: "1rem 0 0 0" }}>
+                  <Input name={`${prefix}.tokenId`} type="string" />
+                </FormField>
+              )}
+            </>
+          </>
+        )}
       </FormField>
       <FormField
         title="Redemption period"
@@ -105,3 +188,9 @@ export default function CoreTermsOfSale({ isMultiVariant }: Props) {
     </ContainerProductPage>
   );
 }
+
+const TokengatedInfoWrapper = styled.div`
+  display: grid;
+  grid-template-columns: minmax(8.75rem, 1fr) 4fr;
+  grid-gap: 1rem;
+`;

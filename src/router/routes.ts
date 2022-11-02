@@ -8,6 +8,8 @@ import {
   SellerCenterRoutes
 } from "../lib/routing/routes";
 import ClosedBetaPage from "../pages/closed-beta/ClosedBeta";
+import PrivacyPolicyPage from "../pages/common/PrivacyPolicy";
+import TermsAndConditionsPage from "../pages/common/TermsAndConditions";
 import CreateProductPage from "../pages/create-product/CreateProduct";
 import ExplorePage from "../pages/explore/Explore";
 import LandingPage from "../pages/landing/Landing";
@@ -46,7 +48,8 @@ export const baseAppProps = {
   withLayout: true,
   withFooter: true,
   fluidHeader: false,
-  withBosonStyles: true
+  withBosonStyles: true,
+  withBanner: false
 };
 const base = {
   component: null,
@@ -73,6 +76,7 @@ export interface IRoutes extends RouteProps {
     withLayout?: boolean;
     withFooter?: boolean;
     fluidHeader?: boolean;
+    withBanner?: boolean;
   };
 }
 export default [
@@ -83,7 +87,8 @@ export default [
     component: LandingPage,
     app: {
       ...base.app,
-      withBosonStyles: false
+      withBosonStyles: false,
+      withBanner: true
     }
   },
   {
@@ -282,6 +287,22 @@ export default [
       withFooter: false
     },
     component: ClosedBetaPage
+  },
+  {
+    ...base,
+    path: BosonRoutes.PrivacyPolicy,
+    app: {
+      ...base.app
+    },
+    component: PrivacyPolicyPage
+  },
+  {
+    ...base,
+    path: BosonRoutes.TermsAndConditions,
+    app: {
+      ...base.app
+    },
+    component: TermsAndConditionsPage
   },
   {
     ...base,

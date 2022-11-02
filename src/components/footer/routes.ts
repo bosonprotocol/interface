@@ -57,6 +57,8 @@ export const ADDITIONAL_LINKS: Array<{ label: string; value: string }> = [
 ];
 
 export const getProductRoutes = ({
+  roles,
+  isSellerInCurationList,
   isSupportFunctionalityDefined,
   onlyBuyer,
   onlySeller
@@ -82,22 +84,26 @@ export const getProductRoutes = ({
     !isSupportFunctionalityDefined ||
     (isSupportFunctionalityDefined && (!onlyBuyer || onlySeller))
   ) {
-    // if (
-    //   checkIfUserHaveRole(roles, [UserRoles.Seller], false) &&
-    //   isSellerInCurationList
-    // ) {
-    productRoutes.push({
-      name: "Sell",
-      url: generatePath(SellerCenterRoutes.SellerCenter, {
-        [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
-      })
-    });
-    // } else if (checkIfUserHaveRole(roles, [UserRoles.Guest], false)) {
-    //   productRoutes.push({
-    //     name: "Sell",
-    //     url: generatePath(BosonRoutes.ClosedBeta)
-    //   });
-    // }
+    if (checkIfUserHaveRole(roles, [UserRoles.Seller], false)) {
+      if (isSellerInCurationList) {
+        productRoutes.push({
+          name: "Sell",
+          url: generatePath(SellerCenterRoutes.SellerCenter, {
+            [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
+          })
+        });
+      } else {
+        productRoutes.push({
+          name: "Sell",
+          url: BosonRoutes.ClosedBeta
+        });
+      }
+    } else if (checkIfUserHaveRole(roles, [UserRoles.Guest], false)) {
+      productRoutes.push({
+        name: "Sell",
+        url: SellerCenterRoutes.CreateProduct
+      });
+    }
   }
   return productRoutes;
 };

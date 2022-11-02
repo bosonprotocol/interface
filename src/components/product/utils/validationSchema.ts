@@ -1,4 +1,5 @@
 import { parseUnits } from "@ethersproject/units";
+import { ethers } from "ethers";
 
 import { validationMessage } from "../../../lib/const/validationMessage";
 import { fixformattedString } from "../../../lib/utils/number";
@@ -10,7 +11,12 @@ import { FormModel } from "../../modal/components/Chat/MakeProposal/MakeProposal
 import { DisputeFormModel } from "../../modal/components/DisputeModal/DisputeModalFormModel";
 import { CONFIG } from "./../../../lib/config";
 import { SelectDataProps } from "./../../form/types";
-import { OPTIONS_EXCHANGE_POLICY } from "./const";
+import {
+  OPTIONS_EXCHANGE_POLICY,
+  OPTIONS_TOKEN_GATED,
+  TOKEN_CRITERIA,
+  TOKEN_TYPES
+} from "./const";
 import {
   validationOfIpfsImage,
   validationOfRequiredIpfsImage
@@ -180,8 +186,121 @@ const commonCoreTermsOfSaleValidationSchema = {
   offerValidityPeriod: Yup.mixed().isItBeforeNow().isOfferValidityDatesValid(), // prettier-ignore
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  redemptionPeriod: Yup.mixed().isItBeforeNow().isRedemptionDatesValid() // prettier-ignore
+  redemptionPeriod: Yup.mixed().isItBeforeNow().isRedemptionDatesValid(), // prettier-ignore
+  tokenGatedVariants: Yup.object()
+    .when(["tokenGatedOffer"], {
+      is: (tokenGated: SelectDataProps) =>
+        tokenGated?.value === OPTIONS_TOKEN_GATED[1].value,
+      then: (schema) => schema.required(validationMessage.required)
+    })
+    .shape({
+      value: Yup.string(),
+      label: Yup.string()
+    })
+    .default([{ value: "", label: "" }]),
+  tokenContract: Yup.string()
+    .when(["tokenGatedOffer"], {
+      is: (tokenGated: SelectDataProps) =>
+        tokenGated?.value === OPTIONS_TOKEN_GATED[1].value,
+      then: (schema) => schema.required(validationMessage.required)
+    })
+    .test("FORMAT", "Must be a valid address", (value) =>
+      value ? ethers.utils.isAddress(value) : true
+    ),
+  maxCommits: Yup.string()
+    .when(["tokenGatedOffer"], {
+      is: (tokenGated: SelectDataProps) =>
+        tokenGated?.value === OPTIONS_TOKEN_GATED[1].value,
+      then: (schema) => schema.required(validationMessage.required)
+    })
+    .matches(/^\+?[1-9]\d*$/, "Value must greater than or equal to 0"),
+  tokenType: Yup.object()
+    .when(["tokenGatedOffer"], {
+      is: (tokenGated: SelectDataProps) =>
+        tokenGated?.value === OPTIONS_TOKEN_GATED[1].value,
+      then: (schema) => schema.required(validationMessage.required)
+    })
+    .shape({
+      value: Yup.string(),
+      label: Yup.string()
+    })
+    .default([{ value: "", label: "" }]),
+  tokenCriteria: Yup.object()
+    .when(["tokenGatedOffer"], {
+      is: (tokenGated: SelectDataProps) =>
+        tokenGated?.value === OPTIONS_TOKEN_GATED[1].value,
+      then: (schema) => schema.required(validationMessage.required)
+    })
+    .shape({
+      value: Yup.string(),
+      label: Yup.string()
+    })
+    .default([{ value: "", label: "" }]),
+  minBalance: Yup.string().when(
+    ["tokenGatedOffer", "tokenType", "tokenCriteria"],
+    {
+      is: (
+        tokenGated: SelectDataProps,
+        tokenType: SelectDataProps,
+        tokenCriteria: SelectDataProps
+      ) =>
+        (tokenGated?.value === OPTIONS_TOKEN_GATED[1].value &&
+          tokenType?.value === TOKEN_TYPES[0].value) ||
+        (tokenGated?.value === OPTIONS_TOKEN_GATED[1].value &&
+          tokenType?.value === TOKEN_TYPES[2].value) ||
+        (tokenGated?.value === OPTIONS_TOKEN_GATED[1].value &&
+          tokenType?.value === TOKEN_TYPES[1].value &&
+          tokenCriteria?.value === TOKEN_CRITERIA[0].value),
+      then: (schema) =>
+        schema
+          .required(validationMessage.required)
+          .matches(
+            /^\+?[1-9]\d*$/,
+            "Min balance must be greater than or equal to 1"
+          )
+          .typeError("Value must be an integer greater than or equal to 1")
+    }
+  ),
+  tokenId: Yup.string().when(
+    ["tokenGatedOffer", "tokenType", "tokenCriteria"],
+    {
+      is: (
+        tokenGated: SelectDataProps,
+        tokenType: SelectDataProps,
+        tokenCriteria: SelectDataProps
+      ) =>
+        (tokenGated?.value === OPTIONS_TOKEN_GATED[1].value &&
+          tokenType?.value === TOKEN_TYPES[2].value) ||
+        (tokenGated?.value === OPTIONS_TOKEN_GATED[1].value &&
+          tokenType?.value === TOKEN_TYPES[1].value &&
+          tokenCriteria?.value === TOKEN_CRITERIA[1].value),
+      then: (schema) =>
+        schema
+          .test(
+            "",
+            "Value must greater than or equal to 0 or a hex value up to 64 chars",
+            (value) => {
+              if (!value) {
+                return false;
+              }
+              return (
+                /0[xX][0-9a-fA-F]{1,64}$/.test(value) ||
+                /^(0|\+?[1-9]\d*)$/.test(value)
+              );
+            }
+          )
+          .typeError("Value must be an integer greater than or equal to 0")
+          .required(validationMessage.required)
+    }
+  ),
+
+  tokenGatingDesc: Yup.string().when(["tokenGatedOffer"], {
+    is: (tokenGated: SelectDataProps) =>
+      tokenGated?.value === OPTIONS_TOKEN_GATED[1].value,
+    then: (schema) => schema.required(validationMessage.required)
+  })
 };
+
 export const coreTermsOfSaleValidationSchema = Yup.object({
   coreTermsOfSale: Yup.object({
     price: Yup.number().nullable().required(validationMessage.required).test({
@@ -201,6 +320,7 @@ export const coreTermsOfSaleValidationSchema = Yup.object({
     ...commonCoreTermsOfSaleValidationSchema
   })
 });
+
 export const variantsCoreTermsOfSaleValidationSchema = Yup.object({
   variantsCoreTermsOfSale: Yup.object({
     ...commonCoreTermsOfSaleValidationSchema

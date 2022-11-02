@@ -8,7 +8,7 @@ import LensForm from "./LensForm";
 import { BosonAccount, LensProfileType } from "./validationSchema";
 
 interface Props {
-  onSubmit: () => void;
+  onSubmit: (id: string) => void;
 }
 
 const steps = {

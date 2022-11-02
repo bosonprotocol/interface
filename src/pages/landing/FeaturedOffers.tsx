@@ -7,7 +7,7 @@ import { buttonText } from "../../components/ui/styles";
 import Typography from "../../components/ui/Typography";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
-import useProducts from "../../lib/utils/hooks/product/useProducts";
+import useProductsByFilteredOffers from "../../lib/utils/hooks/product/useProductsByFilteredOffers";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 
 const Root = styled.div`
@@ -65,7 +65,16 @@ const FeaturedOffers: React.FC<IFeaturedOffers> = ({
 }) => {
   const { isLteXS } = useBreakpoints();
 
-  const { products: offers, isLoading, isError } = useProducts();
+  const {
+    products: offers,
+    isLoading,
+    isError
+  } = useProductsByFilteredOffers({
+    voided: false,
+    valid: true,
+    first: isLteXS ? 6 : 12,
+    quantityAvailable_gte: 1
+  });
 
   return (
     <Root data-testid={"featureOffers"}>

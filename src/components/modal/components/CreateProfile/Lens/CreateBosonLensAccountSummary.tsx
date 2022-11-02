@@ -28,7 +28,7 @@ interface Props {
   profile?: Profile | null;
   values: LensProfileType;
   bosonAccount: BosonAccount;
-  onSubmit: () => void;
+  onSubmit: (id: string) => void;
   setStepBasedOnIndex: (index: number) => void;
 }
 
@@ -154,10 +154,9 @@ export default function CreateBosonLensAccountSummary({
   }, [values.coverPicture]);
 
   const onSubmitWithArgs = useCallback(
-    (action: string) => {
+    (action: string, id?: string) => {
       toast((t) => <SuccessTransactionToast t={t} action={action} />);
-
-      onSubmit();
+      onSubmit(id || "");
     },
     [onSubmit]
   );
@@ -522,7 +521,7 @@ interface CTAsProps {
   isCreatedLensProfile: boolean;
   isUpdatingSellerAccount: boolean;
   isUpdatedSellerAccount: boolean;
-  onSubmit: (action: string) => void;
+  onSubmit: (action: string, id?: string) => void;
 }
 
 function CTAs({
@@ -547,9 +546,10 @@ function CTAs({
           <BosonButton
             variant="primaryFill"
             onClick={async () => {
-              const { isSuccess } = await createSellerAccount();
+              const { isSuccess, data } = await createSellerAccount();
               if (isSuccess) {
-                onSubmit("Create Seller Account");
+                const createdSellerId = (data || "") as string;
+                onSubmit("Create Seller Account", createdSellerId);
               }
             }}
             disabled={isCreatingSellerAccount || isCreatedSellerAccount}
@@ -594,9 +594,10 @@ function CTAs({
           <BosonButton
             variant="primaryFill"
             onClick={async () => {
-              const { isSuccess } = await createSellerAccount();
+              const { isSuccess, data } = await createSellerAccount();
               if (isSuccess) {
-                onSubmit("Create Seller Account");
+                const createdSellerId = (data || "") as string;
+                onSubmit("Create Seller Account", createdSellerId);
               }
             }}
             disabled={

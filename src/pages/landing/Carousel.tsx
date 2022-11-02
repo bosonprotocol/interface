@@ -8,8 +8,7 @@ import ProductCard from "../../components/productCard/ProductCard";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { zIndex } from "../../lib/styles/zIndex";
 import { Offer } from "../../lib/types/offer";
-import { useOffers } from "../../lib/utils/hooks/offers/useOffers";
-import useProducts from "../../lib/utils/hooks/product/useProducts";
+import useProductsByFilteredOffers from "../../lib/utils/hooks/product/useProductsByFilteredOffers";
 
 const cellSize = 300;
 const numCells = 8; // or number of max offers
@@ -191,22 +190,11 @@ export default function Carousel() {
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const carouselRef = useRef<HTMLDivElement | null>(null);
 
-  const { data } = useOffers({
+  const { products: offers } = useProductsByFilteredOffers({
     voided: false,
     valid: true,
     first: numCells,
     quantityAvailable_gte: 1
-  });
-  const productsIds = useMemo(
-    () =>
-      (data
-        ?.map((d) => d?.metadata?.product?.uuid || null)
-        .filter((n) => n !== null) || []) as string[],
-    [data]
-  );
-
-  const { products: offers } = useProducts({
-    productsIds: productsIds
   });
 
   const uiOffers = useMemo(() => {
