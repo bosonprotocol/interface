@@ -17,6 +17,12 @@ const PDFDocumentWrapper = styled.div`
   canvas {
     width: 100% !important;
     height: auto !important;
+    + div {
+      display: none;
+      + div {
+        display: none;
+      }
+    }
   }
 `;
 
@@ -25,8 +31,13 @@ const FIRST_PAGE = 1;
 interface Props {
   filePath: string;
   title: string;
+  scrollable?: boolean;
 }
-export default function RenderPdf({ filePath, title }: Props) {
+export default function RenderPdf({
+  filePath,
+  title,
+  scrollable = true
+}: Props) {
   const [numPages, setNumPages] = useState<number>(0);
   const [pageNumber, setPageNumber] = useState<number>(FIRST_PAGE);
 
@@ -49,10 +60,16 @@ export default function RenderPdf({ filePath, title }: Props) {
       </Typography>
       <PDFDocumentWrapper>
         <Document file={filePath} onLoadSuccess={onDocumentLoadSuccess}>
-          <Page pageNumber={pageNumber} />
+          {scrollable ? (
+            Array.from(Array(numPages).keys()).map((n) => (
+              <Page pageNumber={n + 1} width={2000} key={`page_${n}`} />
+            ))
+          ) : (
+            <Page pageNumber={pageNumber} width={2000} />
+          )}
         </Document>
       </PDFDocumentWrapper>
-      {numPages > 0 && (
+      {numPages > 0 && !scrollable && (
         <Grid>
           <Button
             onClick={handlePrev}
