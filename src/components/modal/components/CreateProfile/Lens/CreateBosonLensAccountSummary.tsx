@@ -479,11 +479,9 @@ export default function CreateBosonLensAccountSummary({
                     ? "while creating your seller account"
                     : ""}
                   , please contact us on
-                  <a
-                    href={`mailto:${CONFIG.defaultDisputeResolverContactMethod}`}
-                  >
+                  <a href={`mailto:${CONFIG.defaultSupportEmail}`}>
                     {" "}
-                    {CONFIG.defaultDisputeResolverContactMethod}{" "}
+                    {CONFIG.defaultSupportEmail}{" "}
                   </a>
                   to explain your issue
                 </Typography>

@@ -1,3 +1,4 @@
+import { ethers } from "ethers";
 import * as Yup from "yup";
 
 import { SelectDataProps } from "../../components/form/types";
@@ -37,6 +38,7 @@ export type StoreFields = {
   withOwnProducts: SelectType;
   sellerCurationList: string;
   offerCurationList: string;
+  commitProxyAddress: string;
   metaTransactionsApiKey: string;
   supportFunctionality: SelectType[];
 };
@@ -74,6 +76,7 @@ export const storeFields = {
   withOwnProducts: "withOwnProducts",
   sellerCurationList: "sellerCurationList",
   offerCurationList: "offerCurationList",
+  commitProxyAddress: "commitProxyAddress",
   withMetaTx: "withMetaTx",
   metaTransactionsApiKey: "metaTransactionsApiKey",
   supportFunctionality: "supportFunctionality",
@@ -259,6 +262,11 @@ export const formModel = {
       placeholder: "",
       options: getYesNoOptions("no")
     },
+    [storeFields.commitProxyAddress]: {
+      name: storeFields.commitProxyAddress,
+      requiredErrorMessage: standardRequiredErrorMessage,
+      placeholder: "0x0000000000000000000000000000000000000000"
+    },
     [storeFields.metaTransactionsApiKey]: {
       name: storeFields.metaTransactionsApiKey,
       requiredErrorMessage: standardRequiredErrorMessage,
@@ -361,6 +369,11 @@ export const validationSchema = Yup.object({
   }).nullable(),
   [storeFields.sellerCurationList]: Yup.string(),
   [storeFields.offerCurationList]: Yup.string(),
+  [storeFields.commitProxyAddress]: Yup.string()
+    .trim()
+    .test("FORMAT", "Must be an address", (value) =>
+      value ? ethers.utils.isAddress(value) : true
+    ),
   [storeFields.withMetaTx]: Yup.object({
     label: Yup.string().required(standardRequiredErrorMessage),
     value: Yup.string().required(standardRequiredErrorMessage)
@@ -413,6 +426,7 @@ export const initialValues = {
     ) as SelectDataProps,
   [storeFields.sellerCurationList]: "",
   [storeFields.offerCurationList]: "",
+  [storeFields.commitProxyAddress]: "",
   [storeFields.withMetaTx]: formModel.formFields.withMetaTx.options.find(
     (option) => "default" in option && option.default
   ) as SelectDataProps,

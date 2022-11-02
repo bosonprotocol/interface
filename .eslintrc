@@ -40,5 +40,5 @@
       "typescript": {}
     }
   },
-  "ignorePatterns": ["src/lib/utils/hooks/lens/graphql/generated.ts"]
+  "ignorePatterns": ["src/lib/utils/hooks/lens/graphql/generated.ts", "src/components/detail/DetailWidget/BosonSnapshotGate"]
 }

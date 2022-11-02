@@ -22,6 +22,15 @@ export const offerGraphQl = gql`
     createdAt
     voucherRedeemableUntilDate
     voucherValidDuration
+    condition {
+      id
+      method
+      tokenType
+      tokenAddress
+      tokenId
+      threshold
+      maxCommits
+    }
     exchanges {
       cancelledDate
       committedDate
