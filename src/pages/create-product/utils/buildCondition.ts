@@ -41,6 +41,6 @@ export const buildCondition = (commonTermsOfSale: any): ConditionStruct => {
     tokenAddress: commonTermsOfSale.tokenContract,
     tokenId,
     threshold,
-    maxCommits: "1"
+    maxCommits: commonTermsOfSale.maxCommits
   };
 };

@@ -207,6 +207,13 @@ const commonCoreTermsOfSaleValidationSchema = {
     .test("FORMAT", "Must be a valid address", (value) =>
       value ? ethers.utils.isAddress(value) : true
     ),
+  maxCommits: Yup.string()
+    .when(["tokenGatedOffer"], {
+      is: (tokenGated: SelectDataProps) =>
+        tokenGated?.value === OPTIONS_TOKEN_GATED[1].value,
+      then: (schema) => schema.required(validationMessage.required)
+    })
+    .matches(/^\+?[1-9]\d*$/, "Value must greater than or equal to 0"),
   tokenType: Yup.object()
     .when(["tokenGatedOffer"], {
       is: (tokenGated: SelectDataProps) =>
@@ -269,11 +276,24 @@ const commonCoreTermsOfSaleValidationSchema = {
           tokenCriteria?.value === TOKEN_CRITERIA[1].value),
       then: (schema) =>
         schema
-          .matches(/^(0|\+?[1-9]\d*)$/, "Value must greater than or equal to 0")
+          .test(
+            "",
+            "Value must greater than or equal to 0 or a hex value up to 64 chars",
+            (value) => {
+              if (!value) {
+                return false;
+              }
+              return (
+                /0[xX][0-9a-fA-F]{1,64}$/.test(value) ||
+                /^(0|\+?[1-9]\d*)$/.test(value)
+              );
+            }
+          )
           .typeError("Value must be an integer greater than or equal to 0")
           .required(validationMessage.required)
     }
   ),
+
   tokenGatingDesc: Yup.string().when(["tokenGatedOffer"], {
     is: (tokenGated: SelectDataProps) =>
       tokenGated?.value === OPTIONS_TOKEN_GATED[1].value,

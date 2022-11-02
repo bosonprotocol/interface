@@ -115,6 +115,7 @@ export default function CoreTermsOfSale({ isMultiVariant }: Props) {
                 <FormField
                   title="Token Gating Description:"
                   style={{ margin: "1rem 0 0 0" }}
+                  tooltip="This offer requires to own at least one NFT of Makersplace collection: https://opensea.io/collection/makersplace"
                 >
                   <TokengatedTextarea
                     name={`${prefix}.tokenGatingDesc`}
@@ -123,6 +124,9 @@ export default function CoreTermsOfSale({ isMultiVariant }: Props) {
                 </FormField>
               </div>
             </TokengatedInfoWrapper>
+            <FormField title="Max commits:" style={{ margin: "1rem 0 0 0" }}>
+              <Input name={`${prefix}.maxCommits`} type="string" />
+            </FormField>
             <>
               {values[prefix].tokenType?.value === TOKEN_TYPES[1].value && (
                 <div>

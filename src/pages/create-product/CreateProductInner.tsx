@@ -96,6 +96,9 @@ type GetProductV1MetadataProps = {
   profileImageLink: string | undefined;
   termsOfExchange: CreateProductForm["termsOfExchange"];
   supportedJurisdictions: Array<SupportedJuridiction>;
+  commonTermsOfSale:
+    | CreateProductForm["coreTermsOfSale"]
+    | CreateProductForm["variantsCoreTermsOfSale"];
 };
 function getProductV1Metadata({
   offerUuid,
@@ -113,7 +116,8 @@ function getProductV1Metadata({
   operatorLens,
   profileImageLink,
   termsOfExchange,
-  supportedJurisdictions
+  supportedJurisdictions,
+  commonTermsOfSale
 }: GetProductV1MetadataProps): productV1.ProductV1Metadata {
   return {
     schemaUrl: "https://schema.org/",
@@ -128,6 +132,7 @@ function getProductV1Metadata({
     image: productMainImageLink ? productMainImageLink : "",
     type: MetadataType.PRODUCT_V1,
     attributes: [...nftAttributes, ...additionalAttributes],
+    condition: commonTermsOfSale?.tokenGatingDesc || undefined,
     product: {
       uuid: uuid(),
       version: 1,
@@ -682,7 +687,8 @@ function CreateProductInner({
           operatorLens,
           profileImageLink,
           termsOfExchange,
-          supportedJurisdictions
+          supportedJurisdictions,
+          commonTermsOfSale
         });
         const metadatas = productV1.createVariantProductMetadata(
           productV1Metadata,
@@ -758,7 +764,8 @@ function CreateProductInner({
           operatorLens,
           profileImageLink,
           termsOfExchange,
-          supportedJurisdictions
+          supportedJurisdictions,
+          commonTermsOfSale
         });
         const price = coreTermsOfSale.price;
         const priceBN = parseUnits(
