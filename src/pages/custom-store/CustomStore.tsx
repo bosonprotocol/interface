@@ -81,7 +81,8 @@ export default function CustomStore() {
             const ipfsUrl = `${CONFIG.ipfsGateway}${cid}`;
             showModal(modalTypes.CUSTOM_STORE, {
               title: "Congratulations!",
-              ipfsUrl
+              ipfsUrl,
+              htmlString: html
             });
           } catch (error) {
             console.error(error);
