@@ -8,7 +8,8 @@ import { BosonRoutes, SellerCenterRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { useBuyerSellerAccounts } from "../../lib/utils/hooks/useBuyerSellerAccounts";
 import { useCurrentDisputeResolverId } from "../../lib/utils/hooks/useCurrentDisputeResolverId";
-import { useIsSellerInCuractionList } from "../../lib/utils/hooks/useSellers";
+import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
+import { useSellerCurationListFn } from "../../lib/utils/hooks/useSellers";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import { UserRoles } from "../../router/routes";
 import useUserRoles, { checkIfUserHaveRole } from "../../router/useUserRoles";
@@ -145,25 +146,29 @@ export default function HeaderLinks({
   >("supportFunctionality", { parseJson: true });
   const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
   const {
-    buyer: { buyerId },
-    seller: { sellerId }
+    buyer: { buyerId }
   } = useBuyerSellerAccounts(address || "");
-  const isAccountSeller = useMemo(() => !!sellerId, [sellerId]);
+  const { sellerIds } = useCurrentSellers();
+  const isAccountSeller = useMemo(() => !!sellerIds?.[0], [sellerIds]);
   const isAccountBuyer = useMemo(() => !!buyerId, [buyerId]);
-  const isSellerInCurationList = useIsSellerInCuractionList(sellerId);
+  const checkIfSellerIsInCurationList = useSellerCurationListFn();
   const { disputeResolverId } = useCurrentDisputeResolverId();
 
   const sellUrl = useMemo(() => {
-    // const closedBetaUrl = generatePath(BosonRoutes.ClosedBeta);
-    const createProductUrl = generatePath(SellerCenterRoutes.CreateProduct);
-
-    if (isAccountSeller && isSellerInCurationList) {
-      return generatePath(SellerCenterRoutes.SellerCenter, {
-        [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
-      });
+    if (isAccountSeller) {
+      const isSellerInCurationList = checkIfSellerIsInCurationList(
+        sellerIds?.[0]
+      );
+      if (isSellerInCurationList) {
+        return generatePath(SellerCenterRoutes.SellerCenter, {
+          [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
+        });
+      } else {
+        return BosonRoutes.ClosedBeta;
+      }
     }
-    return createProductUrl;
-  }, [isAccountSeller, isSellerInCurationList]);
+    return SellerCenterRoutes.CreateProduct;
+  }, [isAccountSeller, checkIfSellerIsInCurationList, sellerIds]);
 
   const isSupportFunctionalityDefined = supportFunctionality !== "";
 
