@@ -127,6 +127,8 @@ const Links = styled.div<{ isMobile: boolean; $navigationBarPosition: string }>`
     isMobile || ["left", "right"].includes($navigationBarPosition)
       ? "column"
       : "row"};
+  align-items: ${({ $navigationBarPosition }) =>
+    ["left", "right"].includes($navigationBarPosition) ? "center" : ""};
 `;
 
 interface Props {

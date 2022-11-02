@@ -1,3 +1,6 @@
+import { Currencies, CurrencyDisplay } from "@bosonprotocol/react-kit";
+import { utils } from "ethers";
+
 import { Offer } from "../../../lib/types/offer";
 import Typography from "../../ui/Typography";
 
@@ -16,26 +19,25 @@ export const DetailSellerDeposit = {
       </Typography>
     </>
   ),
-  value: ({
-    offer,
-    conversionRate
-  }: {
-    offer: Offer;
-    conversionRate?: number;
-  }) => {
+  value: ({ offer }: { offer: Offer }) => {
     const sellerDepositPercentage =
       Number(offer.price) === 0
         ? 0
         : Number(offer.sellerDeposit) / Number(offer.price);
 
     const sellerDeposit = sellerDepositPercentage * 100;
-    const sellerDepositDollars = conversionRate
-      ? (sellerDepositPercentage * conversionRate).toFixed(2)
-      : "";
+    const sellerDepositFormatted =
+      offer.sellerDeposit === "0"
+        ? "0"
+        : utils.formatUnits(offer.sellerDeposit, offer.exchangeToken.decimals);
     return (
       <Typography tag="p">
-        {isNaN(sellerDeposit) ? "-" : sellerDeposit}%
-        {sellerDepositDollars && <small>(${sellerDepositDollars})</small>}
+        <CurrencyDisplay
+          currency={offer.exchangeToken.symbol as Currencies}
+          value={sellerDepositFormatted}
+          height={20}
+        />
+        <small>({isNaN(sellerDeposit) ? "-" : sellerDeposit}%)</small>
       </Typography>
     );
   }
