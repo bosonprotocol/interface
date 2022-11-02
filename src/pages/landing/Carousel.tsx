@@ -7,6 +7,7 @@ import styled, { css } from "styled-components";
 import ProductCard from "../../components/productCard/ProductCard";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { zIndex } from "../../lib/styles/zIndex";
+import { isTruthy } from "../../lib/types/helpers";
 import { Offer } from "../../lib/types/offer";
 import { useOffers } from "../../lib/utils/hooks/offers/useOffers";
 import useProducts from "../../lib/utils/hooks/product/useProducts";
@@ -199,9 +200,8 @@ export default function Carousel() {
   });
   const productsIds = useMemo(
     () =>
-      (data
-        ?.map((d) => d?.metadata?.product?.uuid || null)
-        .filter((n) => n !== null) || []) as string[],
+      data?.map((d) => d?.metadata?.product?.uuid || null).filter(isTruthy) ||
+      [],
     [data]
   );
 

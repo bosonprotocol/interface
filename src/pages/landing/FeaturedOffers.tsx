@@ -1,4 +1,5 @@
 import { CaretRight } from "phosphor-react";
+import { useMemo } from "react";
 import styled from "styled-components";
 
 import { LinkWithQuery } from "../../components/customNavigation/LinkWithQuery";
@@ -7,6 +8,8 @@ import { buttonText } from "../../components/ui/styles";
 import Typography from "../../components/ui/Typography";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
+import { isTruthy } from "../../lib/types/helpers";
+import { useOffers } from "../../lib/utils/hooks/offers";
 import useProducts from "../../lib/utils/hooks/product/useProducts";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 
@@ -65,7 +68,26 @@ const FeaturedOffers: React.FC<IFeaturedOffers> = ({
 }) => {
   const { isLteXS } = useBreakpoints();
 
-  const { products: offers, isLoading, isError } = useProducts();
+  const { data } = useOffers({
+    voided: false,
+    valid: true,
+    first: isLteXS ? 6 : 12,
+    quantityAvailable_gte: 1
+  });
+  const productsIds = useMemo(
+    () =>
+      data?.map((d) => d?.metadata?.product?.uuid || null).filter(isTruthy) ||
+      [],
+    [data]
+  );
+
+  const {
+    products: offers,
+    isLoading,
+    isError
+  } = useProducts({
+    productsIds: productsIds
+  });
 
   return (
     <Root data-testid={"featureOffers"}>
