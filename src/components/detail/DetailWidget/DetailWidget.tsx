@@ -12,6 +12,7 @@ import dayjs from "dayjs";
 import {
   BigNumber,
   BigNumberish,
+  constants,
   ContractTransaction,
   ethers,
   utils
@@ -600,7 +601,27 @@ const DetailWidget: React.FC<IDetailWidget> = ({
           commitProxyAddress,
           signer
         );
+
+        const allowance = await coreSDK.getExchangeTokenAllowance(
+          offer.exchangeToken.address,
+          {
+            spender: commitProxyAddress
+          }
+        );
+
+        if (BigNumber.from(allowance).lt(offer.price)) {
+          const tx = await coreSDK.approveExchangeToken(
+            offer.exchangeToken.address,
+            constants.MaxInt256,
+            {
+              spender: commitProxyAddress
+            }
+          );
+          await tx.wait();
+        }
+
         const buyerAddress = await signer.getAddress();
+
         const tx: ContractTransaction = await proxyContract.commitToGatedOffer(
           buyerAddress,
           offer.id,
