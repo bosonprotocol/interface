@@ -10,12 +10,22 @@ const BannerContainer = styled.a`
   text-align: center;
   background-color: ${colors.secondary};
   color: ${colors.white};
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  &:hover {
+    background-color: ${colors.black};
+    [data-arrow-right] {
+      transform: translate(1rem, 0);
+    }
+  }
 `;
 const ArrowWrapper = styled(Grid)`
   background-color: ${colors.primary};
   padding: 0.315rem;
   color: ${colors.black};
   width: auto;
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
 `;
 
 function Banner() {
@@ -25,7 +35,7 @@ function Banner() {
         <Typography margin="0" $fontSize="1.125rem">
           Get 50% of the purchase price of any item as a $BOSON reward
         </Typography>
-        <ArrowWrapper>
+        <ArrowWrapper data-arrow-right>
           <ArrowRight size={13} />
         </ArrowWrapper>
       </Grid>
