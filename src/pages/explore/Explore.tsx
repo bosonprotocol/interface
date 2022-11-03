@@ -49,6 +49,12 @@ function Explore({
     data: products?.products || [],
     ...filterOptions
   });
+
+  console.log(
+    "🚀  roberto --  ~ file: Explore.tsx ~ line 52 ~ offerArray",
+    offerArray
+  );
+
   const collections = useSortOffers({
     type: "sellers",
     data: products?.sellers || [],

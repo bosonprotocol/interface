@@ -11,6 +11,14 @@ export default function useSearchParams() {
 
   const handleChange = useCallback(
     (name: string, value: string) => {
+      console.log(
+        "🚀  roberto --  ~ file: useSearchParams.tsx ~ line 14 ~ useSearchParams ~ value",
+        value
+      );
+      console.log(
+        "🚀  roberto --  ~ file: useSearchParams.tsx ~ line 14 ~ useSearchParams ~ name",
+        name
+      );
       const oldParams = qs.parse(location.search);
 
       const newParams = {

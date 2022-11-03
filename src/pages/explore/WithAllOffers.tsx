@@ -97,6 +97,7 @@ export interface FilterOptions {
   validUntilDate?: string;
   exchangeOrderBy?: string;
   validFromDate_lte?: string;
+  voided?: boolean;
 }
 export interface ExtendedProducts {
   products?: ExtendedOffer[];
@@ -121,6 +122,7 @@ export interface WithAllOffersProps {
 }
 const SHOWOFF_PAGE = 4;
 const ITEMS_PER_PAGE = 12;
+
 export function WithAllOffers<P>(
   WrappedComponent: React.ComponentType<WithAllOffersProps>
 ) {
@@ -221,7 +223,11 @@ export function WithAllOffers<P>(
       ]) as FilterOptions;
     }, [params, sellerCurationListString]);
 
-    const products = useProducts();
+    const products = useProducts({ productsFirst: 12, voided: false });
+    console.log(
+      "🚀  roberto --  ~ file: WithAllOffers.tsx ~ line 226 ~ ComponentWithAllOffers ~ products",
+      products
+    );
     const { isLoading, isError } = products;
 
     return (

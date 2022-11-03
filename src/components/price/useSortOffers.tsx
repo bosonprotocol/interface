@@ -21,6 +21,10 @@ export const useSortOffers = ({
   data: newData,
   ...filters
 }: Props & FilterOptions) => {
+  console.log(
+    "🚀  roberto --  ~ file: useSortOffers.tsx ~ line 24 ~ newData",
+    newData
+  );
   const offerArray = useMemo(() => {
     let data = newData || [];
     const { name, sellerCurationList, exchangeOrderBy, orderDirection } =

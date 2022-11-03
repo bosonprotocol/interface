@@ -35,6 +35,7 @@ interface ProductWithVariants {
 interface AdditionalFiltering {
   quantityAvailable_gte?: number;
   productsIds?: string[];
+  voided?: boolean;
 }
 
 export default function useProducts(
@@ -55,6 +56,10 @@ export default function useProducts(
       refetchOnMount: true
     }
   );
+  console.log(
+    "🚀  roberto --  ~ file: useProducts.ts ~ line 58 ~ products",
+    products
+  );
 
   const productsIds = useMemo(
     () =>
@@ -63,7 +68,12 @@ export default function useProducts(
       [],
     [props?.productsIds, products?.data]
   );
+  console.log(
+    "🚀  roberto --  ~ file: useProducts.ts ~ line 70 ~ productsIds",
+    productsIds
+  );
 
+  // need to filter the prodicts
   const productsWithVariants = useQuery(
     ["get-all-products-by-uuid", { productsIds }],
     async () => {
@@ -73,6 +83,12 @@ export default function useProducts(
       });
 
       const allProducts = await Promise.allSettled(allPromises);
+      const sample = await coreSDK?.getProductListWithVariants(productsIds);
+      console.log(
+        "🚀  roberto --  ~ file: useProducts.ts ~ line 87 ~ sample",
+        sample
+      );
+      // const product = await coreSDK?.getProductV1MetadataEntities(id);
       const response = allProducts.filter(
         (res) => res.status === "fulfilled"
       ) as PromiseProps[];
@@ -84,6 +100,10 @@ export default function useProducts(
       enabled: !!coreSDK && productsIds?.length > 0,
       refetchOnMount: true
     }
+  );
+  console.log(
+    "🚀  roberto --  ~ file: useProducts.ts ~ line 96 ~ productsWithVariants",
+    productsWithVariants
   );
 
   const allProducts = useMemo(() => {
@@ -103,6 +123,7 @@ export default function useProducts(
                 rates: store.rates,
                 fixed: 8
               });
+              console.log("roberto 118 -->", offer);
               return {
                 ...offer,
                 isValid: true,
@@ -246,6 +267,10 @@ export default function useProducts(
       }) || []
     );
   }, [allProducts]);
+  console.log(
+    "🚀  roberto --  ~ file: useProducts.ts ~ line 257 ~ allProducts",
+    allProducts
+  );
 
   return {
     isLoading: products.isLoading || productsWithVariants.isLoading,
