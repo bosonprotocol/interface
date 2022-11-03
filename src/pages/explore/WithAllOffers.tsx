@@ -15,7 +15,7 @@ import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { isTruthy } from "../../lib/types/helpers";
 import type { Offer } from "../../lib/types/offer";
-import useProducts from "../../lib/utils/hooks/product/useProducts";
+import useProductsByFilteredOffers from "../../lib/utils/hooks/product/useProductsByFilteredOffers";
 import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
 import { useIsCustomStoreValueChanged } from "../custom-store/useIsCustomStoreValueChanged";
 import ExploreSelect from "./ExploreSelect";
@@ -221,7 +221,7 @@ export function WithAllOffers<P>(
       ]) as FilterOptions;
     }, [params, sellerCurationListString]);
 
-    const products = useProducts();
+    const products = useProductsByFilteredOffers();
     const { isLoading, isError } = products;
 
     return (

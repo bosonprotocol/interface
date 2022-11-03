@@ -1,4 +1,3 @@
-import { Currencies, CurrencyDisplay } from "@bosonprotocol/react-kit";
 import { utils } from "ethers";
 
 import { Offer } from "../../../lib/types/offer";
@@ -32,11 +31,7 @@ export const DetailSellerDeposit = {
         : utils.formatUnits(offer.sellerDeposit, offer.exchangeToken.decimals);
     return (
       <Typography tag="p">
-        <CurrencyDisplay
-          currency={offer.exchangeToken.symbol as Currencies}
-          value={sellerDepositFormatted}
-          height={20}
-        />
+        {sellerDepositFormatted} {offer.exchangeToken.symbol}
         <small>({isNaN(sellerDeposit) ? "-" : sellerDeposit}%)</small>
       </Typography>
     );
