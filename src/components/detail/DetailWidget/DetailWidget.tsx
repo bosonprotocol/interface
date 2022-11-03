@@ -1,8 +1,6 @@
 import {
   ButtonSize,
   CommitButton,
-  Currencies,
-  CurrencyDisplay,
   exchanges,
   Provider,
   subgraph
@@ -222,11 +220,7 @@ export const getOfferDetailData = (
       ),
       value: (
         <Typography tag="p">
-          <CurrencyDisplay
-            currency={offer.exchangeToken.symbol as Currencies}
-            value={buyerCancelationPenaltyFormatted}
-            height={20}
-          />
+          {buyerCancelationPenaltyFormatted} {offer.exchangeToken.symbol}
           <small>
             ({isNaN(buyerCancelationPenalty) ? "-" : buyerCancelationPenalty}%)
           </small>
