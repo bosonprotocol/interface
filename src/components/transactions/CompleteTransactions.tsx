@@ -1,15 +1,15 @@
 import { useMemo } from "react";
 
-import { useCompletedTransactions } from "../../lib/utils/hooks/transactions/useCompletedTransactions";
-import { buildTableData } from "../../lib/utils/transactions";
+import { buildTableData, EventLog } from "../../lib/utils/transactions";
 import Grid from "../ui/Grid";
 import Loading from "../ui/Loading";
 import TransactionsTable from "./TransactionsTable";
 
-export const CompletedTransactions = () => {
-  // TODO: implement infinite scroll for table
-  const { data, isLoading } = useCompletedTransactions();
-
+interface Props {
+  data?: Array<EventLog & { accountType: string }>;
+  isLoading: boolean;
+}
+export const CompletedTransactions = ({ data, isLoading }: Props) => {
   const tableData = useMemo(() => buildTableData(data || []), [data]);
 
   if (isLoading) {

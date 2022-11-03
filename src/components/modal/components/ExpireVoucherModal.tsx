@@ -60,7 +60,11 @@ interface Props {
 }
 export default function ExpireVoucherModal({ exchange }: Props) {
   const coreSDK = useCoreSDK();
-  const addPendingTransaction = useAddPendingTransaction();
+  const {
+    addPendingTransaction,
+    removePendingTransaction,
+    reconcilePendingTransactions
+  } = useAddPendingTransaction();
   const { hideModal, showModal } = useModal();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [expireError, setExpireError] = useState<Error | null>(null);
@@ -200,6 +204,7 @@ export default function ExpireVoucherModal({ exchange }: Props) {
               if (hasUserRejectedTx) {
                 showModal("CONFIRMATION_FAILED");
               }
+              reconcilePendingTransactions();
             }}
             onPendingSignature={() => {
               setIsLoading(true);
@@ -237,6 +242,7 @@ export default function ExpireVoucherModal({ exchange }: Props) {
               setIsLoading(false);
               hideModal();
               setExpireError(null);
+              removePendingTransaction(_?.transactionHash);
               navigate({
                 pathname: `${BosonRoutes.YourAccount}`,
                 search: qs.stringify({

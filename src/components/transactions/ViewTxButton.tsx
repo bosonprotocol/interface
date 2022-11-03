@@ -10,12 +10,8 @@ import Grid from "../ui/Grid";
 export default function ViewTxButton() {
   const { showModal } = useModal();
   const coreSDK = useCoreSDK();
-  const {
-    transactions,
-    reconcilePendingTransactions,
-    didInitiallyReconcile,
-    resetInitialReconcile
-  } = usePendingTransactionsStore();
+  const { transactions, reconcilePendingTransactions, resetInitialReconcile } =
+    usePendingTransactionsStore();
 
   useEffect(() => {
     resetInitialReconcile();
@@ -23,15 +19,15 @@ export default function ViewTxButton() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    if (didInitiallyReconcile) {
-      const intervalId = setInterval(() => {
-        reconcilePendingTransactions(coreSDK);
-      }, 5_000);
-      return () => clearInterval(intervalId);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [didInitiallyReconcile]);
+  // useEffect(() => {
+  //   if (didInitiallyReconcile) {
+  //     const intervalId = setInterval(() => {
+  //       reconcilePendingTransactions(coreSDK);
+  //     }, 5_000);
+  //     return () => clearInterval(intervalId);
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [didInitiallyReconcile]);
 
   const numPendingTx = transactions.length;
 

@@ -1,14 +1,17 @@
 import { CoreSDK } from "@bosonprotocol/react-kit";
 import { useCallback } from "react";
+import { v4 as uuidv4 } from "uuid";
 import { useAccount } from "wagmi";
 import create from "zustand";
 
 import { EventLog } from "../../transactions";
+import { useCoreSDK } from "../../useCoreSdk";
 
 type PendingTransaction = Omit<EventLog, "__typename" | "account"> & {
   accountType: "Buyer" | "Seller" | string;
   isMetaTx?: boolean;
   newHash?: string; // only exists on meta transactions after first reconcile
+  uuid?: string;
 };
 
 type PendingTransactionsState = {
@@ -17,6 +20,7 @@ type PendingTransactionsState = {
   isLoading: boolean;
   resetInitialReconcile: () => void;
   addPendingTransaction: (pendingTx: PendingTransaction) => void;
+  removePendingTransaction: (txHash: string) => void;
   reconcilePendingTransactions: (coreSDK: CoreSDK) => Promise<void>;
 };
 
@@ -25,15 +29,20 @@ export function createPendingTx(
 ): PendingTransaction {
   return {
     ...args,
-
     id: Date.now().toString(),
+    uuid: uuidv4(),
     timestamp: Math.floor(Date.now() / 1000).toString()
   };
 }
 
 export function useAddPendingTransaction() {
   const { address } = useAccount();
-  const { addPendingTransaction } = usePendingTransactionsStore();
+  const coreSDK = useCoreSDK();
+  const {
+    addPendingTransaction,
+    removePendingTransaction,
+    reconcilePendingTransactions
+  } = usePendingTransactionsStore();
 
   const addPendingTx = useCallback(
     (
@@ -54,7 +63,22 @@ export function useAddPendingTransaction() {
     [address, addPendingTransaction]
   );
 
-  return addPendingTx;
+  const removePendingTx = useCallback(
+    (txHash: string) => {
+      removePendingTransaction(txHash);
+    },
+    [removePendingTransaction]
+  );
+
+  const reconcilePendingTx = useCallback(() => {
+    reconcilePendingTransactions(coreSDK);
+  }, [reconcilePendingTransactions, coreSDK]);
+
+  return {
+    addPendingTransaction: addPendingTx,
+    removePendingTransaction: removePendingTx,
+    reconcilePendingTransactions: reconcilePendingTx
+  };
 }
 
 export const usePendingTransactionsStore = create<PendingTransactionsState>(
@@ -68,6 +92,11 @@ export const usePendingTransactionsStore = create<PendingTransactionsState>(
       set((state) => ({
         ...state,
         transactions: [pendingTx, ...state.transactions]
+      })),
+    removePendingTransaction: (txHash: string) =>
+      set((state) => ({
+        ...state,
+        transactions: [...state.transactions.filter((tx) => tx.hash !== txHash)]
       })),
     reconcilePendingTransactions: async (coreSDK: CoreSDK) => {
       set((state) => ({

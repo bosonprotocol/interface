@@ -1,16 +1,24 @@
 import { useMemo } from "react";
 
-import { usePendingTransactionsStore } from "../../lib/utils/hooks/transactions/usePendingTransactions";
-import { buildTableData } from "../../lib/utils/transactions";
+import { buildTableData, EventLog } from "../../lib/utils/transactions";
 import Grid from "../ui/Grid";
 import Loading from "../ui/Loading";
 import TransactionsTable from "./TransactionsTable";
 
-export const PendingTransactions = () => {
-  const { transactions, isLoading, didInitiallyReconcile } =
-    usePendingTransactionsStore();
-
-  const tableData = useMemo(() => buildTableData(transactions), [transactions]);
+interface Props {
+  transactions?: Array<EventLog & { accountType: string }>;
+  isLoading: boolean;
+  didInitiallyReconcile: boolean;
+}
+export const PendingTransactions = ({
+  transactions,
+  isLoading,
+  didInitiallyReconcile
+}: Props) => {
+  const tableData = useMemo(
+    () => buildTableData(transactions || []),
+    [transactions]
+  );
 
   if (isLoading && !didInitiallyReconcile) {
     return <Loading />;

@@ -109,7 +109,11 @@ export default function CancelExchangeModal({
   reload
 }: Props) {
   const coreSDK = useCoreSDK();
-  const addPendingTransaction = useAddPendingTransaction();
+  const {
+    addPendingTransaction,
+    removePendingTransaction,
+    reconcilePendingTransactions
+  } = useAddPendingTransaction();
   const { offer } = exchange;
   const { data: signer } = useSigner();
   const { showModal, modalTypes } = useModal();
@@ -201,6 +205,7 @@ export default function CancelExchangeModal({
                   ...BASE_MODAL_DATA
                 });
               }
+              reconcilePendingTransactions();
             }}
             onPendingSignature={() => {
               setIsLoading(true);
@@ -255,6 +260,7 @@ export default function CancelExchangeModal({
                   }}
                 />
               ));
+              removePendingTransaction(_?.transactionHash);
             }}
             web3Provider={signer?.provider as Provider}
             metaTx={CONFIG.metaTx}

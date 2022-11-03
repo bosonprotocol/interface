@@ -152,8 +152,11 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
       : FormModel.formFields.email_test;
 
   const coreSDK = useCoreSDK();
-  const addPendingTransaction = useAddPendingTransaction();
-
+  const {
+    addPendingTransaction,
+    removePendingTransaction,
+    reconcilePendingTransactions
+  } = useAddPendingTransaction();
   const [activeStep, setActiveStep] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [signature, setSignature] = useState<string | null>(null);
@@ -248,6 +251,7 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
         />
       ));
       refetch();
+      removePendingTransaction(tx.hash);
     } catch (error) {
       console.error(error);
       const message = (error as unknown as { message: string }).message;
@@ -260,6 +264,7 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
           </Typography>
         </ErrorToast>
       ));
+      reconcilePendingTransactions();
       return false;
     } finally {
       hideModal();
@@ -274,7 +279,9 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
     hideModal,
     refetch,
     showModal,
-    addPendingTransaction
+    addPendingTransaction,
+    removePendingTransaction,
+    reconcilePendingTransactions
   ]);
 
   return (

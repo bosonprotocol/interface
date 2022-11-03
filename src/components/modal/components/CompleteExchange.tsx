@@ -100,7 +100,11 @@ export default function CompleteExchange({
   refetch
 }: Props) {
   const coreSdk = useCoreSDK();
-  const addPendingTransaction = useAddPendingTransaction();
+  const {
+    addPendingTransaction,
+    removePendingTransaction,
+    reconcilePendingTransactions
+  } = useAddPendingTransaction();
   const { data: signer } = useSigner();
   const { hideModal, showModal } = useModal();
 
@@ -174,6 +178,7 @@ export default function CompleteExchange({
       }
       hideModal();
       refetch();
+      removePendingTransaction(receipt?.transactionHash);
     },
     [
       completeExchangePool,
@@ -181,7 +186,8 @@ export default function CompleteExchange({
       exchanges,
       hideModal,
       refetch,
-      batchCompleteExchangePool
+      batchCompleteExchangePool,
+      removePendingTransaction
     ]
   );
 
@@ -231,6 +237,7 @@ export default function CompleteExchange({
               if (hasUserRejectedTx) {
                 showModal("CONFIRMATION_FAILED");
               }
+              reconcilePendingTransactions();
             }}
             onPendingSignature={() => {
               showModal("WAITING_FOR_CONFIRMATION");

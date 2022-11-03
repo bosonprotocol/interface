@@ -174,7 +174,11 @@ export default function VoidProduct({
 }: Props) {
   const { showModal } = useModal();
   const coreSdk = useCoreSDK();
-  const addPendingTransaction = useAddPendingTransaction();
+  const {
+    addPendingTransaction,
+    removePendingTransaction,
+    reconcilePendingTransactions
+  } = useAddPendingTransaction();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { data: signer } = useSigner();
   const { hideModal } = useModal();
@@ -249,8 +253,9 @@ export default function VoidProduct({
         />
       ));
       handleFinish();
+      removePendingTransaction(receipt?.transactionHash);
     },
-    [batchVoidPool, handleFinish, offer, voidPool]
+    [batchVoidPool, handleFinish, offer, voidPool, removePendingTransaction]
   );
 
   const handleBatchVoid = useCallback(async () => {
@@ -322,6 +327,7 @@ export default function VoidProduct({
                 if (hasUserRejectedTx) {
                   showModal("CONFIRMATION_FAILED");
                 }
+                reconcilePendingTransactions();
               }}
               onPendingSignature={() => {
                 showModal("WAITING_FOR_CONFIRMATION");

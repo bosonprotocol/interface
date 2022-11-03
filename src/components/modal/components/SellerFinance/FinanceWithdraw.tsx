@@ -56,7 +56,11 @@ export default function FinanceWithdraw({
   const [withdrawError, setWithdrawError] = useState<unknown>(null);
 
   const { address } = useAccount();
-  const addPendingTransaction = useAddPendingTransaction();
+  const {
+    addPendingTransaction,
+    removePendingTransaction,
+    reconcilePendingTransactions
+  } = useAddPendingTransaction();
 
   const { data: dataBalance, refetch } = useBalance(
     exchangeToken !== ethers.constants.AddressZero
@@ -135,6 +139,8 @@ export default function FinanceWithdraw({
         setAmountToWithdraw("0");
         setIsWithdrawInvalid(true);
         hideModal();
+        reload();
+        removePendingTransaction(tx.hash);
       } catch (error) {
         console.error(error);
         const hasUserRejectedTx =
@@ -143,8 +149,8 @@ export default function FinanceWithdraw({
           showModal("CONFIRMATION_FAILED");
         }
         setWithdrawError(error);
+        reconcilePendingTransactions();
       } finally {
-        reload();
         setIsBeingWithdrawn(false);
       }
     }

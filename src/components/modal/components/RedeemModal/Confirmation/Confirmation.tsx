@@ -56,7 +56,11 @@ export default function Confirmation({
   setIsLoading: setLoading
 }: Props) {
   const coreSDK = useCoreSDK();
-  const addPendingTransaction = useAddPendingTransaction();
+  const {
+    addPendingTransaction,
+    removePendingTransaction,
+    reconcilePendingTransactions
+  } = useAddPendingTransaction();
   const { showModal, hideModal } = useModal();
   const { bosonXmtp } = useChatContext();
   const [chatError, setChatError] = useState<Error | null>(null);
@@ -177,6 +181,7 @@ ${FormModel.formFields.email.placeholder}: ${emailField.value}`;
             if (hasUserRejectedTx) {
               showModal("CONFIRMATION_FAILED");
             }
+            reconcilePendingTransactions();
           }}
           onPendingSignature={async () => {
             setRedeemError(null);
@@ -236,8 +241,8 @@ ${FormModel.formFields.email.placeholder}: ${emailField.value}`;
                 }}
               />
             ));
-
             reload?.();
+            removePendingTransaction(_?.transactionHash);
           }}
           web3Provider={signer?.provider as Provider}
           metaTx={CONFIG.metaTx}

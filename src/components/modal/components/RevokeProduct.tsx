@@ -52,8 +52,11 @@ export default function RevokeProduct({
   const { data: signer } = useSigner();
   const { showModal, hideModal } = useModal();
   const coreSDK = useCoreSDK();
-  const addPendingTransaction = useAddPendingTransaction();
-
+  const {
+    addPendingTransaction,
+    removePendingTransaction,
+    reconcilePendingTransactions
+  } = useAddPendingTransaction();
   const convertedPrice = useConvertedPrice({
     value: exchange?.offer?.price,
     decimals: exchange?.offer?.exchangeToken?.decimals,
@@ -143,6 +146,7 @@ export default function RevokeProduct({
               if (hasUserRejectedTx) {
                 showModal("CONFIRMATION_FAILED");
               }
+              reconcilePendingTransactions();
             }}
             onPendingSignature={() => {
               showModal("WAITING_FOR_CONFIRMATION");
@@ -184,6 +188,7 @@ export default function RevokeProduct({
                 />
               ));
               refetch();
+              removePendingTransaction(receipt?.transactionHash);
             }}
             web3Provider={signer?.provider as Provider}
             metaTx={CONFIG.metaTx}

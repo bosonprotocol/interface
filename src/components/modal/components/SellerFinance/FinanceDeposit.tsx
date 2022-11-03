@@ -56,7 +56,11 @@ export default function FinanceDeposit({
 
   const { showModal, hideModal } = useModal();
   const coreSDK = useCoreSDK();
-  const addPendingTransaction = useAddPendingTransaction();
+  const {
+    addPendingTransaction,
+    removePendingTransaction,
+    reconcilePendingTransactions
+  } = useAddPendingTransaction();
   const depositFunds = useDepositFunds({
     accountId,
     amount:
@@ -166,6 +170,8 @@ export default function FinanceDeposit({
         setAmountToDeposit("0");
         setIsDepositInvalid(true);
         hideModal();
+        reload();
+        removePendingTransaction(tx.hash);
       } catch (error) {
         console.error(error);
         const hasUserRejectedTx =
@@ -174,8 +180,8 @@ export default function FinanceDeposit({
           showModal("CONFIRMATION_FAILED");
         }
         setDepositError(error);
+        reconcilePendingTransactions();
       } finally {
-        reload();
         setIsBeingDeposit(false);
       }
     }

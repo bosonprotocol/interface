@@ -368,7 +368,11 @@ function CreateProductInner({
   const { address } = useAccount();
 
   const { sellers, lens: lensProfiles } = useCurrentSellers();
-  const addPendingTransaction = useAddPendingTransaction();
+  const {
+    addPendingTransaction,
+    removePendingTransaction,
+    reconcilePendingTransactions
+  } = useAddPendingTransaction();
 
   const hasSellerAccount = !!sellers?.length;
 
@@ -848,6 +852,7 @@ function CreateProductInner({
             accountType: "Seller"
           });
           await txResponse.wait();
+          removePendingTransaction(txResponse.hash);
           showModal("WAITING_FOR_CONFIRMATION");
         }
         if (isMetaTx) {
@@ -880,6 +885,7 @@ function CreateProductInner({
           accountType: "Seller"
         });
         const txReceipt = await txResponse.wait();
+        removePendingTransaction(txResponse.hash);
         const offerIds = coreSDK.getCreatedOfferIdsFromLogs(txReceipt.logs);
         if (isTokenGated) {
           showModal("WAITING_FOR_CONFIRMATION");
@@ -938,6 +944,7 @@ function CreateProductInner({
             }}
           />
         ));
+        removePendingTransaction(txResponse.hash);
       } else {
         const [offerData] = offersToCreate;
         if (isMetaTx) {
@@ -970,6 +977,7 @@ function CreateProductInner({
             });
             await createSellerResponse.wait();
             showModal("WAITING_FOR_CONFIRMATION");
+            removePendingTransaction(createSellerResponse.hash);
           }
           // createOffer with meta-transaction
           const nonce = Date.now();
@@ -1071,6 +1079,7 @@ function CreateProductInner({
             }}
           />
         ));
+        removePendingTransaction(txResponse.hash);
       }
 
       hideModal();
@@ -1078,6 +1087,7 @@ function CreateProductInner({
       // TODO: FAILURE MODAL
       console.error("error->", error.errors ?? error);
       showModal("CONFIRMATION_FAILED");
+      reconcilePendingTransactions();
     }
   };
 

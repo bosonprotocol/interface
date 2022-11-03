@@ -54,7 +54,11 @@ export default function RetractDisputeModal({
   refetch
 }: Props) {
   const coreSDK = useCoreSDK();
-  const addPendingTransaction = useAddPendingTransaction();
+  const {
+    addPendingTransaction,
+    removePendingTransaction,
+    reconcilePendingTransactions
+  } = useAddPendingTransaction();
   const { showModal } = useModal();
   const { address } = useAccount();
   const [retractDisputeError, setRetractDisputeError] = useState<Error | null>(
@@ -120,6 +124,7 @@ export default function RetractDisputeModal({
               ));
               hideModal();
               refetch();
+              removePendingTransaction(tx.hash);
             } catch (error) {
               console.error(error);
               const hasUserRejectedTx =
@@ -129,6 +134,7 @@ export default function RetractDisputeModal({
                 showModal("CONFIRMATION_FAILED");
               }
               setRetractDisputeError(error as Error);
+              reconcilePendingTransactions();
             }
           }}
         >

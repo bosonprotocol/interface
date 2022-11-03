@@ -285,7 +285,11 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   ] = useState(false);
   const { showModal, hideModal, modalTypes } = useModal();
   const coreSDK = useCoreSDK();
-  const addPendingTransaction = useAddPendingTransaction();
+  const {
+    addPendingTransaction,
+    removePendingTransaction,
+    reconcilePendingTransactions
+  } = useAddPendingTransaction();
   const { isLteXS } = useBreakpoints();
   const navigate = useKeepQueryParamsNavigate();
   const { address } = useAccount();
@@ -553,6 +557,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
         }}
       />
     ));
+    removePendingTransaction(_receipt.transactionHash);
   };
   const onCommitError = (error: Error) => {
     console.error("onError", error);
@@ -571,6 +576,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
         ...BASE_MODAL_DATA
       });
     }
+    reconcilePendingTransactions();
   };
   const CommitProxyButton = () => {
     const disabled =

@@ -26,10 +26,7 @@ import { CONFIG } from "../../lib/config";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
-import {
-  createPendingTx,
-  usePendingTransactionsStore
-} from "../../lib/utils/hooks/transactions/usePendingTransactions";
+import { useAddPendingTransaction } from "../../lib/utils/hooks/transactions/usePendingTransactions";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useBuyers } from "../../lib/utils/hooks/useBuyers";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
@@ -129,7 +126,11 @@ function DisputeCentre() {
     id: exchangeId,
     disputed: null
   });
-  const { addPendingTransaction } = usePendingTransactionsStore();
+  const {
+    addPendingTransaction,
+    removePendingTransaction,
+    reconcilePendingTransactions
+  } = useAddPendingTransaction();
 
   const [exchange] = exchanges;
 
@@ -264,14 +265,11 @@ function DisputeCentre() {
                     action: "Raise dispute",
                     txHash: tx.hash
                   });
-                  addPendingTransaction(
-                    createPendingTx({
-                      type: subgraph.EventType.DisputeRaised,
-                      executedBy: address,
-                      accountType: "Buyer",
-                      hash: tx.hash
-                    })
-                  );
+                  addPendingTransaction({
+                    type: subgraph.EventType.DisputeRaised,
+                    accountType: "Buyer",
+                    hash: tx.hash
+                  });
 
                   await tx.wait();
                   await poll(
@@ -294,6 +292,7 @@ function DisputeCentre() {
                     />
                   ));
                   hideModal();
+                  removePendingTransaction(tx.hash);
                   navigate({
                     pathname: BosonRoutes.DisputeCenter
                   });
@@ -305,8 +304,8 @@ function DisputeCentre() {
                   if (hasUserRejectedTx) {
                     showModal("CONFIRMATION_FAILED");
                   }
-
                   setSubmitError(error as Error);
+                  reconcilePendingTransactions();
                 }
               }}
               validationSchema={validationSchema[currentStep]}

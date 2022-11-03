@@ -33,6 +33,7 @@ export const useCompletedTransactions = (page = 0) => {
     },
     {
       enabled: !!address && accountIds.length > 0,
+      refetchOnMount: true,
       refetchInterval: 5_000
     }
   );

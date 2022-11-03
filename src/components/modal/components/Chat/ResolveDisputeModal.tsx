@@ -93,7 +93,11 @@ export default function ResolveDisputeModal({
 }: Props) {
   const { showModal } = useModal();
   const coreSDK = useCoreSDK();
-  const addPendingTransaction = useAddPendingTransaction();
+  const {
+    addPendingTransaction,
+    removePendingTransaction,
+    reconcilePendingTransactions
+  } = useAddPendingTransaction();
   const { address } = useAccount();
   const [resolveDisputeError, setResolveDisputeError] = useState<Error | null>(
     null
@@ -171,6 +175,7 @@ export default function ResolveDisputeModal({
                   url={CONFIG.getTxExplorerUrl?.(tx.hash)}
                 />
               ));
+              removePendingTransaction(tx.hash);
             } catch (error) {
               const hasUserRejectedTx =
                 (error as unknown as { code: string }).code ===
@@ -179,6 +184,7 @@ export default function ResolveDisputeModal({
                 showModal("CONFIRMATION_FAILED");
               }
               setResolveDisputeError(error as Error);
+              reconcilePendingTransactions();
             }
           }}
         >
