@@ -1,5 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
+import { useCoreSDK } from "../useCoreSdk";
+
 interface Props {
   address?: string;
   sellerId?: string;
@@ -18,7 +20,8 @@ export function useCurrentSellers({
   sellerId,
   lensTokenId
 }: Props = {}) {
-  // const coreSDK = useCoreSDK();
+  const coreSDK = useCoreSDK();
+  console.log("coreSDK", coreSDK);
   return {
     isSuccess: true,
     isLoading: false,

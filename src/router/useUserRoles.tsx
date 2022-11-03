@@ -1,6 +1,3 @@
-import { useAccount } from "wagmi";
-
-import { useBuyerSellerAccounts } from "../lib/utils/hooks/useBuyerSellerAccounts";
 import { useCurrentSellers } from "../lib/utils/hooks/useCurrentSellers";
 
 export const checkIfUserHaveRole = (
@@ -15,12 +12,12 @@ interface Props {
 export default function useUserRoles({ role }: Props) {
   // TODO: add admin role
   const MOCK_ADMIN = false;
-  const { address } = useAccount();
+  // const { address } = useAccount();
 
-  const {
-    refetch,
-    buyer: { buyerId }
-  } = useBuyerSellerAccounts(address || "");
+  // const {
+  //   refetch,
+  //   buyer: { buyerId }
+  // } = useBuyerSellerAccounts(address || "");
 
   const { sellerIds } = useCurrentSellers();
   return {} as any;
