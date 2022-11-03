@@ -1,20 +1,8 @@
 import React, { lazy } from "react";
 import { RouteProps } from "react-router";
 
-import {
-  BosonRoutes,
-  OffersRoutes,
-  ProductRoutes,
-  SellerCenterRoutes
-} from "../lib/routing/routes";
-import ClosedBetaPage from "../pages/closed-beta/ClosedBeta";
-import PrivacyPolicyPage from "../pages/common/PrivacyPolicy";
-import TermsAndConditionsPage from "../pages/common/TermsAndConditions";
-import CreateProductPage from "../pages/create-product/CreateProduct";
-import ExplorePage from "../pages/explore/Explore";
+import { BosonRoutes } from "../lib/routing/routes";
 import LandingPage from "../pages/landing/Landing";
-import OfferUuidReroute from "../pages/offers/OfferUuidReroute";
-import SellerCenterPage from "../pages/sell/SellerCenter";
 
 const ChatPage = lazy(() => import("../pages/chat/Chat"));
 const CustomStorePage = lazy(() => import("../pages/custom-store/CustomStore"));
@@ -90,224 +78,225 @@ export default [
       withBosonStyles: false,
       withBanner: true
     }
-  },
-  {
-    ...base,
-    path: `${BosonRoutes.Chat}/*`,
-    component: ChatPage,
-    app: {
-      ...base.app,
-      withLayout: false,
-      withFooter: false
-    },
-    role: [UserRoles.Buyer, UserRoles.Seller, UserRoles.DisputeResolver]
-  },
-  {
-    ...base,
-    path: `${SellerCenterRoutes.SellerCenter}/*`,
-    component: SellerCenterPage,
-    app: {
-      ...base.app,
-      withLayout: false,
-      withFooter: false,
-      fluidHeader: true
-    },
-    role: [UserRoles.Seller, UserRoles.DisputeResolver]
-  },
-  {
-    ...base,
-    path: SellerCenterRoutes.CreateProduct,
-    component: CreateProductPage
-  },
-  {
-    ...base,
-    path: BosonRoutes.Explore,
-    component: ExplorePage,
-    app: {
-      ...base.app,
-      withLayout: false,
-      withBosonStyles: false
-    }
-  },
-  {
-    ...base,
-    path: BosonRoutes.Products,
-    component: ExplorePage,
-    app: {
-      ...base.app,
-      withLayout: false
-    }
-  },
-  {
-    ...base,
-    path: OffersRoutes.Root,
-    component: ExplorePage,
-    app: {
-      ...base.app,
-      withLayout: false
-    }
-  },
-  {
-    ...base,
-    path: BosonRoutes.Sellers,
-    component: ExplorePage,
-    app: {
-      ...base.app,
-      withLayout: false
-    }
-  },
-  {
-    ...base,
-    path: OffersRoutes.OfferDetail,
-    component: OfferDetailPage,
-    app: {
-      ...base.app,
-      withBosonStyles: false
-    }
-  },
-  {
-    ...base,
-    path: ProductRoutes.ProductDetail,
-    component: ProductDetailPage,
-    app: {
-      ...base.app,
-      withBosonStyles: false
-    }
-  },
-  {
-    ...base,
-    path: OffersRoutes.OfferUuid,
-    component: OfferUuidReroute,
-    app: {
-      ...base.app,
-      withBosonStyles: false
-    }
-  },
-  {
-    ...base,
-    path: BosonRoutes.License,
-    component: LicensePage
-  },
-  {
-    ...base,
-    path: BosonRoutes.ContractualAgreement,
-    component: ContractualAgreementPage
-  },
-  {
-    ...base,
-    path: BosonRoutes.Exchange,
-    component: ExchangePage,
-    app: {
-      ...base.app,
-      withBosonStyles: false
-    },
-    role: [
-      UserRoles.Guest,
-      UserRoles.Buyer,
-      UserRoles.Seller,
-      UserRoles.DisputeResolver
-    ]
-  },
-  {
-    ...base,
-    path: BosonRoutes.YourAccount,
-    component: PrivateAccountPage,
-    app: {
-      ...base.app,
-      withBosonStyles: false
-    },
-    role: [UserRoles.Buyer]
-  },
-  {
-    ...base,
-    path: `${BosonRoutes.DisputeId}/*`,
-    component: DisputeCentrePage,
-    role: [UserRoles.Buyer, UserRoles.Seller, UserRoles.DisputeResolver]
-  },
-  {
-    ...base,
-    path: BosonRoutes.DisputeCenter,
-    component: DisputeListPage,
-    role: [UserRoles.Buyer, UserRoles.Seller, UserRoles.DisputeResolver]
-  },
-  {
-    ...base,
-    path: BosonRoutes.Account,
-    component: PublicOrPrivateAccountPage
-  },
-  {
-    ...base,
-    path: BosonRoutes.CreateStorefront,
-    component: CustomStorePage
-  },
-  {
-    ...base,
-    path: BosonRoutes.BuyerPage,
-    component: ProfilePagePage,
-    componentProps: {
-      profileType: "buyer"
-    }
-  },
-  {
-    ...base,
-    path: BosonRoutes.SellerPage,
-    component: ProfilePagePage,
-    componentProps: {
-      profileType: "seller"
-    }
-  },
-  {
-    ...base,
-    path: BosonRoutes.DRAdminPage,
-    app: {
-      ...base.app,
-      withLayout: false,
-      withFooter: false,
-      fluidHeader: true
-    },
-    component: DisputeResolverPage
-  },
-  {
-    ...base,
-    path: BosonRoutes.DRAdmin,
-    app: {
-      ...base.app,
-      withLayout: false,
-      withFooter: false,
-      fluidHeader: true
-    },
-    component: DisputeResolverPage
-  },
-  {
-    ...base,
-    path: BosonRoutes.ClosedBeta,
-    app: {
-      ...base.app,
-      withLayout: false,
-      withFooter: false
-    },
-    component: ClosedBetaPage
-  },
-  {
-    ...base,
-    path: BosonRoutes.PrivacyPolicy,
-    app: {
-      ...base.app
-    },
-    component: PrivacyPolicyPage
-  },
-  {
-    ...base,
-    path: BosonRoutes.TermsAndConditions,
-    app: {
-      ...base.app
-    },
-    component: TermsAndConditionsPage
-  },
-  {
-    ...base,
-    exact: false,
-    path: BosonRoutes.Error404,
-    component: NotFoundPage
   }
 ];
+//   {
+//     ...base,
+//     path: `${BosonRoutes.Chat}/*`,
+//     component: ChatPage,
+//     app: {
+//       ...base.app,
+//       withLayout: false,
+//       withFooter: false
+//     },
+//     role: [UserRoles.Buyer, UserRoles.Seller, UserRoles.DisputeResolver]
+//   },
+//   {
+//     ...base,
+//     path: `${SellerCenterRoutes.SellerCenter}/*`,
+//     component: SellerCenterPage,
+//     app: {
+//       ...base.app,
+//       withLayout: false,
+//       withFooter: false,
+//       fluidHeader: true
+//     },
+//     role: [UserRoles.Seller, UserRoles.DisputeResolver]
+//   },
+//   {
+//     ...base,
+//     path: SellerCenterRoutes.CreateProduct,
+//     component: CreateProductPage
+//   },
+//   {
+//     ...base,
+//     path: BosonRoutes.Explore,
+//     component: ExplorePage,
+//     app: {
+//       ...base.app,
+//       withLayout: false,
+//       withBosonStyles: false
+//     }
+//   },
+//   {
+//     ...base,
+//     path: BosonRoutes.Products,
+//     component: ExplorePage,
+//     app: {
+//       ...base.app,
+//       withLayout: false
+//     }
+//   },
+//   {
+//     ...base,
+//     path: OffersRoutes.Root,
+//     component: ExplorePage,
+//     app: {
+//       ...base.app,
+//       withLayout: false
+//     }
+//   },
+//   {
+//     ...base,
+//     path: BosonRoutes.Sellers,
+//     component: ExplorePage,
+//     app: {
+//       ...base.app,
+//       withLayout: false
+//     }
+//   },
+//   {
+//     ...base,
+//     path: OffersRoutes.OfferDetail,
+//     component: OfferDetailPage,
+//     app: {
+//       ...base.app,
+//       withBosonStyles: false
+//     }
+//   },
+//   {
+//     ...base,
+//     path: ProductRoutes.ProductDetail,
+//     component: ProductDetailPage,
+//     app: {
+//       ...base.app,
+//       withBosonStyles: false
+//     }
+//   },
+//   {
+//     ...base,
+//     path: OffersRoutes.OfferUuid,
+//     component: OfferUuidReroute,
+//     app: {
+//       ...base.app,
+//       withBosonStyles: false
+//     }
+//   },
+//   {
+//     ...base,
+//     path: BosonRoutes.License,
+//     component: LicensePage
+//   },
+//   {
+//     ...base,
+//     path: BosonRoutes.ContractualAgreement,
+//     component: ContractualAgreementPage
+//   },
+//   {
+//     ...base,
+//     path: BosonRoutes.Exchange,
+//     component: ExchangePage,
+//     app: {
+//       ...base.app,
+//       withBosonStyles: false
+//     },
+//     role: [
+//       UserRoles.Guest,
+//       UserRoles.Buyer,
+//       UserRoles.Seller,
+//       UserRoles.DisputeResolver
+//     ]
+//   },
+//   {
+//     ...base,
+//     path: BosonRoutes.YourAccount,
+//     component: PrivateAccountPage,
+//     app: {
+//       ...base.app,
+//       withBosonStyles: false
+//     },
+//     role: [UserRoles.Buyer]
+//   },
+//   {
+//     ...base,
+//     path: `${BosonRoutes.DisputeId}/*`,
+//     component: DisputeCentrePage,
+//     role: [UserRoles.Buyer, UserRoles.Seller, UserRoles.DisputeResolver]
+//   },
+//   {
+//     ...base,
+//     path: BosonRoutes.DisputeCenter,
+//     component: DisputeListPage,
+//     role: [UserRoles.Buyer, UserRoles.Seller, UserRoles.DisputeResolver]
+//   },
+//   {
+//     ...base,
+//     path: BosonRoutes.Account,
+//     component: PublicOrPrivateAccountPage
+//   },
+//   {
+//     ...base,
+//     path: BosonRoutes.CreateStorefront,
+//     component: CustomStorePage
+//   },
+//   {
+//     ...base,
+//     path: BosonRoutes.BuyerPage,
+//     component: ProfilePagePage,
+//     componentProps: {
+//       profileType: "buyer"
+//     }
+//   },
+//   {
+//     ...base,
+//     path: BosonRoutes.SellerPage,
+//     component: ProfilePagePage,
+//     componentProps: {
+//       profileType: "seller"
+//     }
+//   },
+//   {
+//     ...base,
+//     path: BosonRoutes.DRAdminPage,
+//     app: {
+//       ...base.app,
+//       withLayout: false,
+//       withFooter: false,
+//       fluidHeader: true
+//     },
+//     component: DisputeResolverPage
+//   },
+//   {
+//     ...base,
+//     path: BosonRoutes.DRAdmin,
+//     app: {
+//       ...base.app,
+//       withLayout: false,
+//       withFooter: false,
+//       fluidHeader: true
+//     },
+//     component: DisputeResolverPage
+//   },
+//   {
+//     ...base,
+//     path: BosonRoutes.ClosedBeta,
+//     app: {
+//       ...base.app,
+//       withLayout: false,
+//       withFooter: false
+//     },
+//     component: ClosedBetaPage
+//   },
+//   {
+//     ...base,
+//     path: BosonRoutes.PrivacyPolicy,
+//     app: {
+//       ...base.app
+//     },
+//     component: PrivacyPolicyPage
+//   },
+//   {
+//     ...base,
+//     path: BosonRoutes.TermsAndConditions,
+//     app: {
+//       ...base.app
+//     },
+//     component: TermsAndConditionsPage
+//   },
+//   {
+//     ...base,
+//     exact: false,
+//     path: BosonRoutes.Error404,
+//     component: NotFoundPage
+//   }
+// ];

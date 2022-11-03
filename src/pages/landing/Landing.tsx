@@ -1,20 +1,10 @@
-import { useState } from "react";
 import styled from "styled-components";
-import useResizeObserver from "use-resize-observer";
 
 import BosonButton from "../../components/ui/BosonButton";
 import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
-import { ExploreQueryParameters } from "../../lib/routing/parameters";
-import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { zIndex } from "../../lib/styles/zIndex";
-import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
-import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import FeaturedOffers from "../../pages/landing/FeaturedOffers";
-import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
-import Carousel from "./Carousel";
-import Step from "./Step";
 
 const LandingPage = styled.div`
   padding: 0 0.5rem 0 0.5rem;
@@ -72,81 +62,82 @@ const ExploreProductsButton = styled(BosonButton)`
 `;
 
 export default function Landing() {
-  const { isLteS } = useBreakpoints();
-  const navigate = useKeepQueryParamsNavigate();
-  const title = useCustomStoreQueryParameter("title");
-  const description = useCustomStoreQueryParameter("description");
-  const [name] = useState("");
-  const { ref, width } = useResizeObserver<HTMLDivElement>();
-  const navigateToExplore = () =>
-    navigate({
-      pathname: BosonRoutes.Explore,
-      search: name ? `${ExploreQueryParameters.name}=${name}` : ""
-    });
-  return (
-    <LandingPage ref={ref}>
-      <Grid
-        flexBasis="50%"
-        flexDirection={isLteS ? "column-reverse" : "row"}
-        gap="2.5rem"
-        data-hero-wrapper
-      >
-        <GridWithZindex alignItems="flex-start" flexDirection="column">
-          <Title tag="h1">
-            {title ? (
-              title
-            ) : (
-              <>
-                Tokenize, transfer and trade any physical asset
-                as&nbsp;an&nbsp;NFT
-              </>
-            )}
-          </Title>
-          <SubTitle tag="h4">
-            {description ||
-              "The first decentralized marketplace built on Boson Protocol"}
-          </SubTitle>
-          <ExploreContainer>
-            <ExploreProductsButton
-              data-testid="explore-all-offers"
-              onClick={() => navigateToExplore()}
-              variant="primaryFill"
-            >
-              Explore products
-            </ExploreProductsButton>
-          </ExploreContainer>
-        </GridWithZindex>
-        <Carousel />
-      </Grid>
-      <Grid
-        alignItems="flex-start"
-        flexDirection={isLteS ? "column" : "row"}
-        gap="50px"
-        margin="5rem 0"
-      >
-        <Step number={1} title="Commit">
-          Commit to an Offer to receive a Redeemable NFT (rNFT) that can be
-          exchanged for the real-world item it represents
-        </Step>
-        <Step number={2} title="Hold, Trade or Transfer ">
-          You can hold, transfer or easily trade your rNFT on the secondary
-          market
-        </Step>
-        <Step number={3} title="Redeem">
-          Redeem your rNFT to receive the underlying item. The rNFT will be
-          destroyed in the process.
-        </Step>
-      </Grid>
+  return <p>landing</p>;
+  // const { isLteS } = useBreakpoints();
+  // const navigate = useKeepQueryParamsNavigate();
+  // const title = useCustomStoreQueryParameter("title");
+  // const description = useCustomStoreQueryParameter("description");
+  // const [name] = useState("");
+  // const { ref, width } = useResizeObserver<HTMLDivElement>();
+  // const navigateToExplore = () =>
+  //   navigate({
+  //     pathname: BosonRoutes.Explore,
+  //     search: name ? `${ExploreQueryParameters.name}=${name}` : ""
+  //   });
+  // return (
+  //   <LandingPage ref={ref}>
+  //     <Grid
+  //       flexBasis="50%"
+  //       flexDirection={isLteS ? "column-reverse" : "row"}
+  //       gap="2.5rem"
+  //       data-hero-wrapper
+  //     >
+  //       <GridWithZindex alignItems="flex-start" flexDirection="column">
+  //         <Title tag="h1">
+  //           {title ? (
+  //             title
+  //           ) : (
+  //             <>
+  //               Tokenize, transfer and trade any physical asset
+  //               as&nbsp;an&nbsp;NFT
+  //             </>
+  //           )}
+  //         </Title>
+  //         <SubTitle tag="h4">
+  //           {description ||
+  //             "The first decentralized marketplace built on Boson Protocol"}
+  //         </SubTitle>
+  //         <ExploreContainer>
+  //           <ExploreProductsButton
+  //             data-testid="explore-all-offers"
+  //             onClick={() => navigateToExplore()}
+  //             variant="primaryFill"
+  //           >
+  //             Explore products
+  //           </ExploreProductsButton>
+  //         </ExploreContainer>
+  //       </GridWithZindex>
+  //       <Carousel />
+  //     </Grid>
+  //     <Grid
+  //       alignItems="flex-start"
+  //       flexDirection={isLteS ? "column" : "row"}
+  //       gap="50px"
+  //       margin="5rem 0"
+  //     >
+  //       <Step number={1} title="Commit">
+  //         Commit to an Offer to receive a Redeemable NFT (rNFT) that can be
+  //         exchanged for the real-world item it represents
+  //       </Step>
+  //       <Step number={2} title="Hold, Trade or Transfer ">
+  //         You can hold, transfer or easily trade your rNFT on the secondary
+  //         market
+  //       </Step>
+  //       <Step number={3} title="Redeem">
+  //         Redeem your rNFT to receive the underlying item. The rNFT will be
+  //         destroyed in the process.
+  //       </Step>
+  //     </Grid>
 
-      <DarkerBackground>
-        <OffersSection
-          style={{
-            width
-          }}
-        >
-          <FeaturedOffers title="Products" />
-        </OffersSection>
-      </DarkerBackground>
-    </LandingPage>
-  );
+  //     <DarkerBackground>
+  //       <OffersSection
+  //         style={{
+  //           width
+  //         }}
+  //       >
+  //         <FeaturedOffers title="Products" />
+  //       </OffersSection>
+  //     </DarkerBackground>
+  //   </LandingPage>
+  // );
 }

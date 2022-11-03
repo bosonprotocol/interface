@@ -372,12 +372,12 @@ function CreateProductInner({
 
   const hasSellerAccount = !!sellers?.length;
 
-  const currentOperator = sellers.find((seller) => {
+  const currentOperator = sellers.find((seller: any) => {
     return seller?.operator.toLowerCase() === address?.toLowerCase();
   });
   // lens profile of the current user
   const operatorLens: Profile | null =
-    lensProfiles.find((lensProfile) => {
+    lensProfiles.find((lensProfile: any) => {
       return (
         getLensTokenIdDecimal(lensProfile.id).toString() ===
         currentOperator?.authTokenId

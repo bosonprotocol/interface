@@ -136,12 +136,12 @@ export default function ProductType({
   const [shownDraftModal, setShowDraftModal] = useState<boolean>(false);
 
   const [isRegularSellerSet, setIsRegularSeller] = useState<boolean>(false);
-  const isOperator = currentRoles?.find((role) => role === "operator");
+  const isOperator = false; //currentRoles?.find((role: any) => role === "operator");
 
   const isAdminLinkedToLens =
     !isLoading &&
     isSuccess &&
-    !!currentSellers.some((seller, index) => {
+    !!currentSellers.some((seller: any, index: any) => {
       return (
         seller.authTokenType === authTokenTypes.LENS &&
         seller.authTokenId === getLensTokenIdDecimal(lens[index].id).toString()
@@ -151,12 +151,12 @@ export default function ProductType({
   const hasValidAdminAccount =
     (CONFIG.lens.enabled && isAdminLinkedToLens) || !CONFIG.lens.enabled;
   const isSeller = !!currentSellers.length;
-  const currentOperator = currentSellers.find((seller) => {
+  const currentOperator = currentSellers.find((seller: any) => {
     return seller.operator.toLowerCase() === address?.toLowerCase();
   }); // lens profile of the current user
   const operatorLens: Profile | null = useMemo(
     () =>
-      lens.find((lensProfile) => {
+      lens.find((lensProfile: any) => {
         const lensIdDecimal = getLensTokenIdDecimal(lensProfile.id).toString();
         const authTokenId = currentOperator?.authTokenId;
         return lensIdDecimal === authTokenId;
