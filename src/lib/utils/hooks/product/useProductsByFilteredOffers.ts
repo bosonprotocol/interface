@@ -7,7 +7,7 @@ import useProducts from "./useProducts";
 export default function useProductsByFilteredOffers(
   props: Parameters<typeof useOffers>[0] = {}
 ) {
-  const { data } = useOffers({ ...props, first: 200 });
+  const { data } = useOffers(props);
   const productsIds = useMemo(
     () =>
       Array.from(
@@ -18,7 +18,6 @@ export default function useProductsByFilteredOffers(
     [data]
   );
   return useProducts({
-    ...(props.first && { productsFirst: props.first }),
     productsIds: productsIds
   });
 }
