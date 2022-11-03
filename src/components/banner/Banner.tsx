@@ -30,10 +30,7 @@ const ArrowWrapper = styled(Grid)`
 
 function Banner() {
   return (
-    <BannerContainer
-      href="https://www.bosonprotocol.io/blog/buy-on-boson-and-get-50-back/"
-      target="_blank"
-    >
+    <BannerContainer href="https://medium.com/bosonprotocol" target="_blank">
       <Grid justifyContent="center" gap="1rem" padding="0.535rem 1rem">
         <Typography margin="0" $fontSize="1.125rem">
           Get 50% of the purchase price of any item as a $BOSON reward
