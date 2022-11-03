@@ -24,7 +24,7 @@ const openSeaUrlMap = new Map([
   [
     "production", // Polygon
     (exchangeId: string, contractAddress: string) =>
-      `https://opensea.io/assets/polygon/${contractAddress}/${exchangeId}`
+      `https://opensea.io/assets/matic/${contractAddress}/${exchangeId}`
   ]
 ]);
 
