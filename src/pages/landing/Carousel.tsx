@@ -212,7 +212,7 @@ export default function Carousel() {
       }
       const numOffersToAdd = numCells - uiOffers.length;
       let offerIdx = 0;
-      // if we dont need more products than what we got from the request, we add some duplicate products
+      // if we need more products than what we got from the request, we add some duplicate products
       for (let index = 0; index < numOffersToAdd; index++) {
         const offerIdxToAdd = offerIdx % products.length;
         uiOffers.push(products[offerIdxToAdd]);
