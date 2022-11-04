@@ -77,19 +77,20 @@ export default function useProducts(
   const productsWithVariants = useQuery(
     ["get-all-products-by-uuid", { productsIds }],
     async () => {
-      const allPromises = productsIds?.map(async (id) => {
-        const product = await coreSDK?.getProductWithVariants(id);
-        return product;
-      });
+      // const allPromises = productsIds?.map(async (id) => {
+      //   const product = await coreSDK?.getProductWithVariants(id);
+      //   return product;
+      // });
 
-      const allProducts = await Promise.allSettled(allPromises);
+      // const allProducts = await Promise.allSettled(allPromises);
       const sample = await coreSDK?.getProductListWithVariants(productsIds);
       console.log(
         "🚀  roberto --  ~ file: useProducts.ts ~ line 87 ~ sample",
-        sample
+        allProducts
       );
+      allProducts;
       // const product = await coreSDK?.getProductV1MetadataEntities(id);
-      const response = allProducts.filter(
+      const response = sample.filter(
         (res) => res.status === "fulfilled"
       ) as PromiseProps[];
       return (response?.flatMap((p) => p?.value || null) || []).filter(

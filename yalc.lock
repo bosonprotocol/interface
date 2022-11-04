@@ -1,0 +1,10 @@
+{
+  "version": "v1",
+  "packages": {
+    "@bosonprotocol/react-kit": {
+      "version": "0.14.0-alpha.4",
+      "signature": "76b9e78ce26203dcc805be006ff4b39d",
+      "replaced": "^0.14.0-alpha.4"
+    }
+  }
+}
