@@ -1,4 +1,5 @@
 import { CaretRight } from "phosphor-react";
+import { useMemo } from "react";
 import styled from "styled-components";
 
 import { LinkWithQuery } from "../../components/customNavigation/LinkWithQuery";
@@ -9,6 +10,7 @@ import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import useProductsByFilteredOffers from "../../lib/utils/hooks/product/useProductsByFilteredOffers";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
+import extractUniqueRandomProducts from "../../lib/utils/product/extractUniqueRandomProducts";
 
 const Root = styled.div`
   display: flex;
@@ -65,17 +67,23 @@ const FeaturedOffers: React.FC<IFeaturedOffers> = ({
 }) => {
   const { isLteXS } = useBreakpoints();
 
-  const {
-    products: offers,
-    isLoading,
-    isError
-  } = useProductsByFilteredOffers({
+  const { products, isLoading, isError } = useProductsByFilteredOffers({
     voided: false,
     valid: true,
     first: isLteXS ? 6 : 12,
     quantityAvailable_gte: 1
   });
-
+  const shuffledOffers = useMemo(() => {
+    try {
+      return extractUniqueRandomProducts({
+        products,
+        quantity: isLteXS ? 6 : 12
+      });
+    } catch (error) {
+      console.error(error);
+      return products;
+    }
+  }, [products, isLteXS]);
   return (
     <Root data-testid={"featureOffers"}>
       <TopContainer>
@@ -90,7 +98,7 @@ const FeaturedOffers: React.FC<IFeaturedOffers> = ({
         </ViewMore>
       </TopContainer>
       <OfferList
-        offers={offers?.slice(0, isLteXS ? 6 : 12)}
+        offers={shuffledOffers?.slice(0, isLteXS ? 6 : 12)}
         isError={isError}
         isLoading={isLoading}
         action="commit"

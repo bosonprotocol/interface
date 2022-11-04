@@ -35,14 +35,17 @@ interface Props {
 
 const ProductCardWrapper = styled.div<{ $isCustomStoreFront: boolean }>`
   [data-card="product-card"] {
-    min-height: 500px;
+    height: 500px;
     color: ${colors.black};
     [data-image-wrapper] {
       img {
         object-fit: contain;
-        padding-bottom: 5.25rem;
       }
     }
+  }
+  [data-avatarname="product-card"] {
+    max-width: 100%;
+    word-break: break-word;
   }
   ${({ $isCustomStoreFront }) => {
     if (!$isCustomStoreFront) {
@@ -52,8 +55,6 @@ const ProductCardWrapper = styled.div<{ $isCustomStoreFront: boolean }>`
     return css`
       [data-avatarname="product-card"] {
         color: ${colors.black};
-        max-width: 100%;
-        word-break: break-word;
       }
     `;
   }};
@@ -133,6 +134,10 @@ export default function ProductCard({
       new Set(variantsAddresses).size === 1
     );
   }, [offer?.additional?.variants]);
+  const hasVariantsWithDifferentPrice =
+    offer?.additional &&
+    offer?.additional?.variants?.length > 1 &&
+    !allVariantsHaveSamePrice;
   return (
     <ProductCardWrapper $isCustomStoreFront={!!isCustomStoreFront}>
       <BosonProductCard
@@ -144,13 +149,9 @@ export default function ProductCard({
         avatarName={lens?.name ? lens?.name : `Seller ID: ${offer.seller.id}`}
         avatar={avatar || mockedAvatar}
         price={Number(price?.price || 0)}
-        asterisk={
-          offer?.additional &&
-          offer?.additional?.variants?.length > 1 &&
-          !allVariantsHaveSamePrice
-        }
+        asterisk={hasVariantsWithDifferentPrice}
         tooltip={
-          ((offer?.additional && offer?.additional?.variants) || [])?.length > 1
+          hasVariantsWithDifferentPrice
             ? "Price may be different on variants"
             : ""
         }

@@ -9,6 +9,8 @@ import { breakpoint } from "../../lib/styles/breakpoint";
 import { zIndex } from "../../lib/styles/zIndex";
 import { Offer } from "../../lib/types/offer";
 import useProductsByFilteredOffers from "../../lib/utils/hooks/product/useProductsByFilteredOffers";
+import extractUniqueRandomProducts from "../../lib/utils/product/extractUniqueRandomProducts";
+import { ExtendedOffer } from "../explore/WithAllOffers";
 
 const cellSize = 300;
 const numCells = 8; // or number of max offers
@@ -190,7 +192,7 @@ export default function Carousel() {
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const carouselRef = useRef<HTMLDivElement | null>(null);
 
-  const { products: offers } = useProductsByFilteredOffers({
+  const { products } = useProductsByFilteredOffers({
     voided: false,
     valid: true,
     first: numCells,
@@ -198,21 +200,29 @@ export default function Carousel() {
   });
 
   const uiOffers = useMemo(() => {
-    if (offers?.length) {
-      const numOffersToAdd = numCells - offers.length;
-
-      const uiOffers = [...offers];
+    if (products?.length) {
+      let uiOffers: ExtendedOffer[] = [];
+      try {
+        uiOffers = extractUniqueRandomProducts({
+          products,
+          quantity: numCells
+        });
+      } catch (error) {
+        console.error(error);
+      }
+      const numOffersToAdd = numCells - uiOffers.length;
       let offerIdx = 0;
+      // if we need more products than what we got from the request, we add some duplicate products
       for (let index = 0; index < numOffersToAdd; index++) {
-        const offerIdxToAdd = offerIdx % offers.length;
-        uiOffers.push(offers[offerIdxToAdd]);
+        const offerIdxToAdd = offerIdx % products.length;
+        uiOffers.push(products[offerIdxToAdd]);
 
         offerIdx++;
       }
       return uiOffers;
     }
     return [];
-  }, [offers]);
+  }, [products]);
 
   const onPreviousClick = () => {
     const newIndex = selectedIndex - 1;
