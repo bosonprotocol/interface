@@ -40,7 +40,8 @@ export default function PublicAccount() {
   const { [UrlParameters.accountId]: accountParameter } = useParams();
   const address = accountParameter || "";
   const { data: ensName } = useEnsName({
-    address: address
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    address: address as any
   });
 
   if (!address) {

@@ -49,7 +49,8 @@ export default function FinanceDeposit({
     exchangeToken !== ethers.constants.AddressZero
       ? {
           addressOrName: address,
-          token: exchangeToken
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          token: exchangeToken as any
         }
       : { addressOrName: address }
   );

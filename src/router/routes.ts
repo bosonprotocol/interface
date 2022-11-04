@@ -64,7 +64,7 @@ export const UserRoles = {
   Seller: "Seller",
   DisputeResolver: "DisputeResolver"
 };
-export interface IRoutes extends RouteProps {
+export type IRoutes = RouteProps & {
   component:
     | React.ComponentType<any> // eslint-disable-line
     | React.LazyExoticComponent<React.ComponentType<any>>; // eslint-disable-line
@@ -78,7 +78,7 @@ export interface IRoutes extends RouteProps {
     fluidHeader?: boolean;
     withBanner?: boolean;
   };
-}
+};
 export default [
   {
     ...base,

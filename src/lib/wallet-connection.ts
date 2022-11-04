@@ -1,5 +1,6 @@
-import { Chain, connectorsForWallets, wallet } from "@rainbow-me/rainbowkit";
+import { Chain } from "@rainbow-me/rainbowkit";
 import { chain, configureChains, createClient } from "wagmi";
+import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 
 import ethIcon from "./assets/ethereum-chain-icon.svg";
@@ -72,21 +73,34 @@ function getChainForEnvironment(): Array<Chain> {
   return [chain];
 }
 
-export const { provider, chains } = configureChains(getChainForEnvironment(), [
-  jsonRpcProvider({
-    rpc: (chain: Chain) => ({ http: chain.rpcUrls.default })
-  })
-]);
+export const { provider, chains } = configureChains(
+  getChainForEnvironment(),
+  [
+    jsonRpcProvider({
+      rpc: (chain: Chain) => ({ http: chain.rpcUrls.default }),
+      static: true,
+      stallTimeout: 9999999
+    })
+  ],
+  { pollingInterval: 1000000 }
+);
 
-const connectors = connectorsForWallets([
-  {
-    groupName: "Popular",
-    wallets: [wallet.metaMask({ chains }), wallet.walletConnect({ chains })]
+const connector = new MetaMaskConnector({
+  chains,
+  options: {
+    shimChainChangedDisconnect: true
   }
-]);
+});
+
+// const connectors = connectorsForWallets([
+//   {
+//     groupName: "Popular",
+//     wallets: [wallet.metaMask({ chains }), wallet.walletConnect({ chains })]
+//   }
+// ]);
 
 export const wagmiClient = createClient({
   autoConnect: true,
-  connectors,
+  connectors: [connector],
   provider
 });

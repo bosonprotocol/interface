@@ -52,7 +52,8 @@ const SettingsWrapper = styled.div`
 
 export default function PrivateAccount({ account }: { account: string }) {
   const { data: ensName } = useEnsName({
-    address: account
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    address: account as any
   });
   const [isTabSellerSelected, setTabSellerSelected] = useState<boolean>(false);
 

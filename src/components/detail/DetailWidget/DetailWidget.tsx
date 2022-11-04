@@ -300,7 +300,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     offer.exchangeToken.address !== ethers.constants.AddressZero
       ? {
           addressOrName: address,
-          token: offer.exchangeToken.address
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          token: offer.exchangeToken.address as any
         }
       : { addressOrName: address }
   );
