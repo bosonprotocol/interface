@@ -171,6 +171,11 @@ function Explore({
           onChangeIndex={(index: number) => {
             setPageIndex(index);
           }}
+          pageCount={Math.ceil(
+            ((pageOptions.type.includes("Sellers")
+              ? collections?.length
+              : offerArray?.length) || 0) / pageOptions.itemsPerPage
+          )}
         />
       )}
     </Grid>
