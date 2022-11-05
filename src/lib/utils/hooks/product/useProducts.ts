@@ -9,7 +9,6 @@ import ConvertionRateContext from "../../../../components/convertion-rate/Conver
 import type { ExtendedOffer } from "../../../../pages/explore/WithAllOffers";
 import { ExtendedSeller } from "../../../../pages/explore/WithAllOffers";
 import { CONFIG } from "../../../config";
-import { isTruthy } from "../../../types/helpers";
 import { calcPrice } from "../../calcPrice";
 import { convertPrice } from "../../convertPrice";
 import { useCoreSDK } from "../../useCoreSdk";
@@ -68,14 +67,26 @@ export default function useProducts(
   const productsWithVariants = useQuery(
     ["get-all-products-by-uuid", { productsIds }],
     async () => {
-      const allPromises = productsIds?.map(async (id) => {
-        const product = await coreSDK?.getProductWithVariants(id);
-        return product;
-      });
+      // const allPromises = productsIds?.map(async (id) => {
+      //   const product = await coreSDK?.getProductWithVariants(id);
+      //   return product;
+      // });
 
-      const allProducts = await Promise.allSettled(allPromises);
+      // const allProducts = await Promise.allSettled(allPromises);
+      // console.log(
+      //   "🚀  roberto --  ~ file: useProducts.ts ~ line 77 ~ productsIds",
+      //   productsIds
+      // );
+      const allProducts: any = [];
+      const dataSample = ["2008cba-ec-1cb1-0e5e-386ea0e28065"];
+      const sample = await coreSDK?.getProductListWithVariants(dataSample);
+      // const sample = await coreSDK?.getProductListWithVariants(productsIds);
+      console.log(
+        "🚀  roberto --  ~ file: useProducts.ts ~ line 87 ~ sample",
+        sample
+      );
       const response = allProducts.filter(
-        (res) => res.status === "fulfilled"
+        (res: any) => res.status === "fulfilled"
       ) as PromiseProps[];
       return (response?.flatMap((p) => p?.value || null) || []).filter(
         (n) => n
@@ -200,7 +211,7 @@ export default function useProducts(
 
           return null;
         })
-        .filter(isTruthy) || []
+        .filter((n) => n) || []
     );
   }, [productsWithVariants?.data, store?.rates, props?.quantityAvailable_gte]);
 
