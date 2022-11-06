@@ -35,6 +35,7 @@ interface ProductWithVariants {
 interface AdditionalFiltering {
   quantityAvailable_gte?: number;
   productsIds?: string[];
+  showVoided?: boolean;
 }
 
 export default function useProducts(
@@ -90,55 +91,59 @@ export default function useProducts(
     return (
       (productsWithVariants?.data || [])
         ?.map(({ product, variants }: ProductWithVariants) => {
-          const offers = variants
-            ?.map(({ offer }: Variant) => {
-              const status = offersSdk.getOfferStatus(offer);
-              const offerPrice = convertPrice({
-                price: calcPrice(
-                  offer?.price || "0",
-                  offer?.exchangeToken.decimals || "0"
-                ),
-                symbol: offer?.exchangeToken.symbol.toUpperCase(),
-                currency: CONFIG.defaultCurrency,
-                rates: store.rates,
-                fixed: 8
-              });
-              return {
-                ...offer,
-                isValid: true,
-                status,
-                convertedPrice: offerPrice?.converted || null,
-                committedDate:
-                  ((offer?.exchanges || []) as Exchange[])
-                    .sort(
-                      (a: Exchange, b: Exchange) =>
-                        Number(a?.committedDate || "0") -
-                        Number(b?.committedDate || "0")
-                    )
-                    .reverse()
-                    .find((n: Exchange) => n.committedDate !== null)
-                    ?.committedDate || null,
-                redeemedDate:
-                  ((offer?.exchanges || []) as Exchange[])
-                    .sort(
-                      (a: Exchange, b: Exchange) =>
-                        Number(a?.redeemedDate) - Number(b?.redeemedDate)
-                    )
-                    .reverse()
-                    .find((n: Exchange) => n.redeemedDate !== null)
-                    ?.redeemedDate || null
-              };
-            })
-            .filter(
+          let offers = (variants || [])?.map(({ offer }: Variant) => {
+            const status = offersSdk.getOfferStatus(offer);
+            const offerPrice = convertPrice({
+              price: calcPrice(
+                offer?.price || "0",
+                offer?.exchangeToken.decimals || "0"
+              ),
+              symbol: offer?.exchangeToken.symbol.toUpperCase(),
+              currency: CONFIG.defaultCurrency,
+              rates: store.rates,
+              fixed: 8
+            });
+            return {
+              ...offer,
+              isValid: true,
+              status,
+              convertedPrice: offerPrice?.converted || null,
+              committedDate:
+                ((offer?.exchanges || []) as Exchange[])
+                  .sort(
+                    (a: Exchange, b: Exchange) =>
+                      Number(a?.committedDate || "0") -
+                      Number(b?.committedDate || "0")
+                  )
+                  .reverse()
+                  .find((n: Exchange) => n.committedDate !== null)
+                  ?.committedDate || null,
+              redeemedDate:
+                ((offer?.exchanges || []) as Exchange[])
+                  .sort(
+                    (a: Exchange, b: Exchange) =>
+                      Number(a?.redeemedDate) - Number(b?.redeemedDate)
+                  )
+                  .reverse()
+                  .find((n: Exchange) => n.redeemedDate !== null)
+                  ?.redeemedDate || null
+            };
+          });
+
+          if (props?.showVoided) {
+            offers = offers.filter(
               (n: { voided: boolean; status: string }) =>
                 n &&
                 n?.voided === false &&
                 n?.status !== offersSdk.OfferState.EXPIRED
-            ) as ExtendedOffer[];
+            );
+          }
 
           if (offers.length > 0) {
             const lowerPriceOffer = sortBy(offers, "convertedPrice");
             const itemsAvailable = offers.reduce(
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
               (acc: number, e: ExtendedOffer) =>
                 e && e.quantityAvailable
                   ? (acc += Number(e.quantityAvailable))
@@ -147,6 +152,8 @@ export default function useProducts(
             );
 
             if (props?.quantityAvailable_gte) {
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
               if (itemsAvailable < props?.quantityAvailable_gte) {
                 return null;
               }
@@ -201,7 +208,12 @@ export default function useProducts(
         })
         .filter((n) => n) || []
     );
-  }, [productsWithVariants?.data, store?.rates, props?.quantityAvailable_gte]);
+  }, [
+    productsWithVariants?.data,
+    props?.showVoided,
+    props?.quantityAvailable_gte,
+    store.rates
+  ]);
 
   const allSellers = useMemo(() => {
     const grouped = groupBy(allProducts, "seller.id") || {};
