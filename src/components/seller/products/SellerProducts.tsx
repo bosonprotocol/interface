@@ -85,9 +85,19 @@ export default function SellerProducts({
               : null;
           }
           if (currentTag === "expired") {
+            if (offer && offer.additional) {
+              offer.additional.variants = offer.additional.variants.filter(
+                (e) => e
+              );
+            }
             return status === offers.OfferState.EXPIRED ? offer : null;
           }
           if (currentTag === "voided") {
+            if (offer && offer.additional) {
+              offer.additional.variants = offer.additional.variants.filter(
+                (e) => e
+              );
+            }
             return status === offers.OfferState.VOIDED ? offer : null;
           }
           return offer;

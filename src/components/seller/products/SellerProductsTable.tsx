@@ -252,6 +252,7 @@ export default function SellerProductsTable({
     () =>
       offers?.map((offer) => {
         const status = offer ? OffersKit.getOfferStatus(offer) : "";
+        console.log(offer, "offer");
         return {
           offerId: offer?.id,
           uuid: offer?.metadata?.product?.uuid,
@@ -412,12 +413,22 @@ export default function SellerProductsTable({
     state: { pageIndex, pageSize, selectedRowIds }
   } = tableProps;
 
+  const pageCountFilter = useMemo(() => {
+    const filteredPages = page.filter((e) => {
+      return !e.id.includes(".");
+    });
+    if (filteredPages.length < 1) {
+      return 0;
+    }
+    return Math.round(filteredPages.length / 10);
+  }, [page]);
+
   const paginate = useMemo(() => {
-    return Array.from(Array(pageCount).keys()).slice(
+    return Array.from(Array(pageCountFilter).keys()).slice(
       pageIndex < 1 ? 0 : pageIndex - 1,
       pageIndex < 1 ? 3 : pageIndex + 2
     );
-  }, [pageCount, pageIndex]);
+  }, [pageCountFilter, pageIndex]);
 
   useEffect(() => {
     const arr = Object.keys(selectedRowIds);
@@ -560,7 +571,7 @@ export default function SellerProductsTable({
               allItems={rows.length}
             />
           </Grid>
-          {pageCount > 1 && (
+          {pageCountFilter > 1 && (
             <Grid justifyContent="flex-end" gap="1rem">
               <Button
                 size="small"
