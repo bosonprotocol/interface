@@ -8,7 +8,7 @@ export function getImageUrl(uri: string) {
 
   try {
     CID.parse(cid);
-    return [...CONFIG.ipfsGateway.split("/"), cid].join("/");
+    return `${CONFIG.ipfsGateway}/${cid}`.replace(/([^:]\/)\/+/g, "$1"); // remove double slash
   } catch (error) {
     // If CID.parse throws, then it it either not a valid CID or just an URL
     return sanitizeUrl(uri);
