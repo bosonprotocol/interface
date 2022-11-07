@@ -606,22 +606,24 @@ const DetailWidget: React.FC<IDetailWidget> = ({
           signer
         );
 
-        const allowance = await coreSDK.getExchangeTokenAllowance(
-          offer.exchangeToken.address,
-          {
-            spender: commitProxyAddress
-          }
-        );
-
-        if (BigNumber.from(allowance).lt(offer.price)) {
-          const tx = await coreSDK.approveExchangeToken(
+        if (offer.exchangeToken.address !== constants.AddressZero) {
+          const allowance = await coreSDK.getExchangeTokenAllowance(
             offer.exchangeToken.address,
-            constants.MaxInt256,
             {
               spender: commitProxyAddress
             }
           );
-          await tx.wait();
+
+          if (BigNumber.from(allowance).lt(offer.price)) {
+            const tx = await coreSDK.approveExchangeToken(
+              offer.exchangeToken.address,
+              constants.MaxInt256,
+              {
+                spender: commitProxyAddress
+              }
+            );
+            await tx.wait();
+          }
         }
 
         const buyerAddress = await signer.getAddress();
