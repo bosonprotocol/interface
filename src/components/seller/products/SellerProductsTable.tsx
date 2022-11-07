@@ -11,6 +11,7 @@ import { forwardRef, useEffect, useMemo, useRef } from "react";
 import { generatePath } from "react-router-dom";
 import {
   CellProps,
+  useExpanded,
   usePagination,
   useRowSelect,
   useSortBy,
@@ -26,6 +27,7 @@ import { Offer } from "../../../lib/types/offer";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { SellerRolesProps } from "../../../lib/utils/hooks/useSellerRoles";
+import { ExtendedOffer } from "../../../pages/explore/WithAllOffers";
 import { CheckboxWrapper } from "../../form/Field.styles";
 import { useModal } from "../../modal/useModal";
 import OfferHistory from "../../offer/OfferHistory";
@@ -51,7 +53,7 @@ const VoidButton = styled(BosonButton)`
 `;
 
 interface Props {
-  offers: (Offer | null)[];
+  offers: (ExtendedOffer | null)[];
   isError: boolean;
   isLoading?: boolean;
   refetch: () => void;
@@ -250,10 +252,14 @@ export default function SellerProductsTable({
     () =>
       offers?.map((offer) => {
         const status = offer ? OffersKit.getOfferStatus(offer) : "";
-
         return {
           offerId: offer?.id,
           uuid: offer?.metadata?.product?.uuid,
+          // TODO: ADJUST subRows
+          subRows:
+            offer?.additional?.variants?.length > 1
+              ? offer?.additional?.variants
+              : [],
           isSelectable: !(
             status === OffersKit.OfferState.EXPIRED ||
             status === OffersKit.OfferState.VOIDED
@@ -347,6 +353,12 @@ export default function SellerProductsTable({
       }),
     [offers, sellerRoles] // eslint-disable-line
   );
+  const initialExpanded = useMemo(() => {
+    return data.reduce((acc, _elem, index) => {
+      acc[index] = true;
+      return acc;
+    }, {});
+  }, [data]);
 
   const tableProps = useTable(
     {
@@ -354,10 +366,12 @@ export default function SellerProductsTable({
       data,
       initialState: {
         pageIndex: 0,
-        hiddenColumns: ["offerId", "uuid", "isSelectable"]
+        hiddenColumns: ["offerId", "uuid", "isSelectable"],
+        expanded: initialExpanded
       }
     },
     useSortBy,
+    useExpanded,
     usePagination,
     useRowSelect,
     (hooks) => {
@@ -471,6 +485,7 @@ export default function SellerProductsTable({
         <tbody {...getTableBodyProps()}>
           {(page.length > 0 &&
             page.map((row) => {
+              console.log(row.id, "row");
               prepareRow(row);
               return (
                 <tr

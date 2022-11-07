@@ -259,6 +259,7 @@ export default function useProducts(
     isLoading: products.isLoading || productsWithVariants.isLoading,
     isError: products.isError || productsWithVariants.isError,
     products: allProducts as unknown as ExtendedOffer[],
-    sellers: allSellers as unknown as ExtendedSeller[]
+    sellers: allSellers as unknown as ExtendedSeller[],
+    refetch: products.refetch
   };
 }
