@@ -20,8 +20,8 @@ export default function ChatProvider({ children }: Props) {
       setLoading(true);
       BosonXmtpClient.initialise(
         signer,
-        envName,
-        config.envName === "production" ? "production" : "dev"
+        config.envName === "production" ? "production" : "dev",
+        envName
       )
         .then((bosonClient) => {
           setBosonXmtp(bosonClient);
