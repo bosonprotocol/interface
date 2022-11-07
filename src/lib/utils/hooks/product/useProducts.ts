@@ -130,7 +130,7 @@ export default function useProducts(
             };
           });
 
-          if (props?.showVoided) {
+          if (!props?.showVoided) {
             offers = offers.filter(
               (n: { voided: boolean; status: string }) =>
                 n &&
@@ -142,9 +142,7 @@ export default function useProducts(
           if (offers.length > 0) {
             const lowerPriceOffer = sortBy(offers, "convertedPrice");
             const itemsAvailable = offers.reduce(
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              (acc: number, e: ExtendedOffer) =>
+              (acc: number, e) =>
                 e && e.quantityAvailable
                   ? (acc += Number(e.quantityAvailable))
                   : acc,
@@ -152,8 +150,6 @@ export default function useProducts(
             );
 
             if (props?.quantityAvailable_gte) {
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
               if (itemsAvailable < props?.quantityAvailable_gte) {
                 return null;
               }
