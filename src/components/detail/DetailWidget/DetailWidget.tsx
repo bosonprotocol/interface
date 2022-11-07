@@ -7,7 +7,14 @@ import {
 } from "@bosonprotocol/react-kit";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import dayjs from "dayjs";
-import { BigNumber, BigNumberish, ContractTransaction, ethers } from "ethers";
+import {
+  BigNumber,
+  BigNumberish,
+  constants,
+  ContractTransaction,
+  ethers,
+  utils
+} from "ethers";
 import { ArrowRight, ArrowSquareOut, Check, Question } from "phosphor-react";
 import { useCallback, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
@@ -132,20 +139,18 @@ export const getOfferDetailData = (
     Number(`${offer.voucherRedeemableUntilDate}000`)
   ).format(CONFIG.dateFormat);
 
-  const priceNumber = Number(convertedPrice?.converted);
+  const { buyerCancelationPenalty } = getBuyerCancelPenalty(
+    offer,
+    convertedPrice
+  );
 
-  const { buyerCancelationPenalty, convertedBuyerCancelationPenalty } =
-    getBuyerCancelPenalty(offer, convertedPrice);
-
-  const sellerDepositPercentage =
-    Number(offer.price) === 0
-      ? 0
-      : Number(offer.sellerDeposit) / Number(offer.price);
-
-  const sellerDeposit = sellerDepositPercentage * 100;
-  const sellerDepositDollars = priceNumber
-    ? (sellerDepositPercentage * priceNumber).toFixed(2)
-    : "";
+  const buyerCancelationPenaltyFormatted =
+    offer.buyerCancelPenalty === "0"
+      ? "0"
+      : utils.formatUnits(
+          offer.buyerCancelPenalty,
+          offer.exchangeToken.decimals
+        );
 
   // if offer is in creation, offer.id does not exist
   const handleShowExchangePolicy = () => {
@@ -198,16 +203,7 @@ export const getOfferDetailData = (
     {
       name: DetailSellerDeposit.name,
       info: DetailSellerDeposit.info,
-      value: (
-        <Typography tag="p">
-          {isNaN(sellerDeposit) ? "-" : sellerDeposit}%
-          {convertedPrice?.converted && sellerDepositDollars ? (
-            <small>(${sellerDepositDollars})</small>
-          ) : (
-            ""
-          )}
-        </Typography>
-      )
+      value: DetailSellerDeposit.value({ offer })
     },
     {
       name: "Buyer cancel. pen.",
@@ -224,12 +220,10 @@ export const getOfferDetailData = (
       ),
       value: (
         <Typography tag="p">
-          {buyerCancelationPenalty}%
-          {convertedPrice?.converted && convertedBuyerCancelationPenalty ? (
-            <small>(${convertedBuyerCancelationPenalty})</small>
-          ) : (
-            ""
-          )}
+          {buyerCancelationPenaltyFormatted} {offer.exchangeToken.symbol}
+          <small>
+            ({isNaN(buyerCancelationPenalty) ? "-" : buyerCancelationPenalty}%)
+          </small>
         </Typography>
       )
     },
@@ -601,13 +595,36 @@ const DetailWidget: React.FC<IDetailWidget> = ({
           commitProxyAddress,
           signer
         );
+
+        const allowance = await coreSDK.getExchangeTokenAllowance(
+          offer.exchangeToken.address,
+          {
+            spender: commitProxyAddress
+          }
+        );
+
+        if (BigNumber.from(allowance).lt(offer.price)) {
+          const tx = await coreSDK.approveExchangeToken(
+            offer.exchangeToken.address,
+            constants.MaxInt256,
+            {
+              spender: commitProxyAddress
+            }
+          );
+          await tx.wait();
+        }
+
         const buyerAddress = await signer.getAddress();
+
         const tx: ContractTransaction = await proxyContract.commitToGatedOffer(
           buyerAddress,
           offer.id,
           offer.condition.tokenId,
           {
-            value: offer.price
+            value:
+              offer.exchangeToken.address === constants.AddressZero
+                ? offer.price
+                : "0"
           }
         );
         onCommitPendingTransaction(tx.hash, false);

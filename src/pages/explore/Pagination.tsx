@@ -24,7 +24,7 @@ const PaginationButton = styled(Button).attrs({
 
 const Page = styled.p`
   font-weight: 600;
-  color: ${colors.black}
+  color: ${colors.black};
   border: 1px solid var(--secondary);
   border-radius: 50%;
   min-width: 3rem;
@@ -37,14 +37,17 @@ interface Props {
   isNextEnabled: boolean;
   isPreviousEnabled: boolean;
   onChangeIndex: (index: number) => void;
+  pageCount: number;
 }
 export default function Pagination({
   defaultPage,
   isNextEnabled,
   isPreviousEnabled,
-  onChangeIndex
+  onChangeIndex,
+  pageCount
 }: Props) {
   const [pageIndex, setPageIndex] = useState(defaultPage || 0);
+
   const onClick = (newIndex: number) => () => {
     setPageIndex(newIndex);
     onChangeIndex(newIndex);
@@ -62,7 +65,9 @@ export default function Pagination({
         <CaretLeft size={24} />
       </PaginationButton>
 
-      <Page>{pageIndex + 1}</Page>
+      <Page>
+        {pageIndex + 1} / {pageCount}
+      </Page>
 
       <PaginationButton
         data-testid="next"

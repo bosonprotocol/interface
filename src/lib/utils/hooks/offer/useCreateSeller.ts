@@ -105,6 +105,7 @@ async function createSellerAccount(
   } else {
     tx = await coreSDK.createSeller(sellerData);
   }
-  await tx.wait();
-  return true;
+  const txReceipt = await tx.wait();
+  const createdSellerId = coreSDK.getCreatedSellerIdFromLogs(txReceipt?.logs);
+  return createdSellerId;
 }

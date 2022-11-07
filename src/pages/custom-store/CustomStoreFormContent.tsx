@@ -736,42 +736,6 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                   <CommitProxyField />
                 </Grid>
               ) : null}
-              <Grid flexDirection="column" alignItems="flex-start">
-                <FieldTitle>Meta Transactions</FieldTitle>
-                <FieldDescription>
-                  Pay for your users' transaction fees
-                </FieldDescription>
-                <Select
-                  options={
-                    formModel.formFields.withMetaTx
-                      .options as unknown as SelectDataProps<string>[]
-                  }
-                  name={storeFields.withMetaTx}
-                  placeholder={formModel.formFields.withMetaTx.placeholder}
-                  isClearable
-                  disabled
-                />
-              </Grid>
-              {values.withMetaTx?.value === "true" && (
-                <Grid
-                  flexDirection="column"
-                  margin={`0 0 0 ${subFieldsMarginLeft}`}
-                  $width={`calc(100% - ${subFieldsMarginLeft})`}
-                  gap={gapBetweenInputs}
-                >
-                  <Grid flexDirection="column" alignItems="flex-start">
-                    <FieldTitle>Meta Transactions API Key</FieldTitle>
-                    <FieldDescription>Enter Biconomy API Key</FieldDescription>
-                    <Input
-                      name={storeFields.metaTransactionsApiKey}
-                      placeholder={
-                        formModel.formFields.metaTransactionsApiKey.placeholder
-                      }
-                      disabled
-                    />
-                  </Grid>
-                </Grid>
-              )}
               {/* <Grid flexDirection="column" alignItems="flex-start">
                 <FieldTitle>Toggle header/footer options</FieldTitle>
                 <FieldDescription>

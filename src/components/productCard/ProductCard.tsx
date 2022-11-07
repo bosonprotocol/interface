@@ -11,6 +11,7 @@ import mockedAvatar from "../../assets/frame.png";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes, ProductRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
+import { isTruthy } from "../../lib/types/helpers";
 import { Offer } from "../../lib/types/offer";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useGetIpfsImage } from "../../lib/utils/hooks/useGetIpfsImage";
@@ -34,14 +35,17 @@ interface Props {
 
 const ProductCardWrapper = styled.div<{ $isCustomStoreFront: boolean }>`
   [data-card="product-card"] {
-    min-height: 500px;
+    height: 500px;
     color: ${colors.black};
     [data-image-wrapper] {
       img {
         object-fit: contain;
-        padding-bottom: 5.25rem;
       }
     }
+  }
+  [data-avatarname="product-card"] {
+    max-width: 100%;
+    word-break: break-word;
   }
   ${({ $isCustomStoreFront }) => {
     if (!$isCustomStoreFront) {
@@ -118,6 +122,22 @@ export default function ProductCard({
       })
     });
   };
+  const allVariantsHaveSamePrice = useMemo(() => {
+    const variantsPrices = offer?.additional?.variants
+      .map((variant) => variant.price)
+      .filter(isTruthy);
+    const variantsAddresses = offer?.additional?.variants
+      .map((variant) => variant.exchangeToken.address)
+      .filter(isTruthy);
+    return (
+      new Set(variantsPrices).size === 1 &&
+      new Set(variantsAddresses).size === 1
+    );
+  }, [offer?.additional?.variants]);
+  const hasVariantsWithDifferentPrice =
+    offer?.additional &&
+    offer?.additional?.variants?.length > 1 &&
+    !allVariantsHaveSamePrice;
   return (
     <ProductCardWrapper $isCustomStoreFront={!!isCustomStoreFront}>
       <BosonProductCard
@@ -129,13 +149,9 @@ export default function ProductCard({
         avatarName={lens?.name ? lens?.name : `Seller ID: ${offer.seller.id}`}
         avatar={avatar || mockedAvatar}
         price={Number(price?.price || 0)}
-        asterisk={
-          offer?.additional && offer?.additional?.variants?.length > 1
-            ? true
-            : false
-        }
+        asterisk={hasVariantsWithDifferentPrice}
         tooltip={
-          ((offer?.additional && offer?.additional?.variants) || [])?.length > 1
+          hasVariantsWithDifferentPrice
             ? "Price may be different on variants"
             : ""
         }

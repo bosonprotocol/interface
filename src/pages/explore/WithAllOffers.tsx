@@ -69,10 +69,7 @@ export interface OfferAdditional {
   redeemedDate?: string;
   convertedPrice?: string;
   additional?: {
-    variants: {
-      offer: subgraph.OfferFieldsFragment;
-      variations: subgraph.ProductV1Variation[];
-    }[];
+    variants: subgraph.OfferFieldsFragment[];
   };
 }
 export type ExtendedOffer = OfferAdditional & Offer;

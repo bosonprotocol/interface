@@ -37,14 +37,17 @@ interface Props {
 
 const ExchangeCardWrapper = styled.div<{ $isCustomStoreFront: boolean }>`
   [data-card="exchange-card"] {
-    min-height: 500px;
+    height: 500px;
     color: ${colors.black};
     [data-image-wrapper] {
       img {
         object-fit: contain;
-        padding-bottom: 5.25rem;
       }
     }
+  }
+  [data-avatarname="product-card"] {
+    max-width: 100%;
+    word-break: break-word;
   }
   ${({ $isCustomStoreFront }) => {
     if (!$isCustomStoreFront) {

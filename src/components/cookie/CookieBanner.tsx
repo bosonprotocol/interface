@@ -9,6 +9,7 @@ import {
   getItemFromStorage,
   saveItemInStorage
 } from "../../lib/utils/hooks/useLocalStorage";
+import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
 import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
 
@@ -60,21 +61,19 @@ export default function CookieBanner() {
           <span>
             This website uses cookies to improve user experience. By using our
             website you consent to all cookies in accordance with our&nbsp;
-            <a
-              href={BosonRoutes.PrivacyPolicy}
-              target="_blank"
+            <LinkWithQuery
+              to={BosonRoutes.PrivacyPolicy}
               style={{ textAlign: "center" }}
             >
               Privacy&nbsp;Policy
-            </a>
+            </LinkWithQuery>
             &nbsp;and agree to be bound by our&nbsp;
-            <a
-              href={BosonRoutes.TermsAndConditions}
-              target="_blank"
+            <LinkWithQuery
+              to={BosonRoutes.TermsAndConditions}
               style={{ textAlign: "center" }}
             >
               Terms&nbsp;and&nbsp;Conditions
-            </a>
+            </LinkWithQuery>
             .
           </span>
         </Typography>
