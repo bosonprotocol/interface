@@ -1,5 +1,11 @@
 import { IpfsMetadataStorage } from "@bosonprotocol/react-kit";
 
+export async function fetchImageAsBase64(imageUrl: string) {
+  const response = await fetch(imageUrl);
+  const blob = await response.blob();
+  return blobToBase64(blob);
+}
+
 export function fromBase64ToBinary(base64: string): Buffer {
   return Buffer.from(base64.replace(/data:image\/.*;base64,/, ""), "base64");
 }

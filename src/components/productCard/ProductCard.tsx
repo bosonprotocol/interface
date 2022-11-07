@@ -14,9 +14,9 @@ import { colors } from "../../lib/styles/colors";
 import { isTruthy } from "../../lib/types/helpers";
 import { Offer } from "../../lib/types/offer";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
-import { useGetIpfsImage } from "../../lib/utils/hooks/useGetIpfsImage";
 import { useHandleText } from "../../lib/utils/hooks/useHandleText";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { getImageUrl } from "../../lib/utils/images";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import {
   ExtendedOffer,
@@ -70,8 +70,8 @@ export default function ProductCard({
     sellerId: offer?.seller?.id
   });
   const [lens] = lensProfiles;
-  const { imageSrc: avatar } = useGetIpfsImage(getLensProfilePictureUrl(lens));
-  const { imageStatus, imageSrc } = useGetIpfsImage(
+  const avatar = getImageUrl(getLensProfilePictureUrl(lens));
+  const imageSrc = getImageUrl(
     offer?.metadata?.image || offer?.metadata?.imageUrl
   );
   const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
@@ -159,8 +159,8 @@ export default function ProductCard({
         onAvatarNameClick={handleOnAvatarClick}
         imageProps={{
           src: imageSrc,
-          preloadConfig: {
-            status: imageStatus,
+          withLoading: true,
+          errorConfig: {
             errorIcon: <CameraSlash size={32} color={colors.white} />
           }
         }}

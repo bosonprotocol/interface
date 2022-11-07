@@ -122,7 +122,7 @@ export const CONFIG = {
   defaultReturnPeriodInDays: 15,
   minimumDisputePeriodInDays: 30,
   createProfileConfiguration,
-  ipfsGateway: process.env.REACT_APP_IPFS_GATEWAY,
+  ipfsGateway: process.env.REACT_APP_IPFS_GATEWAY || "https://ipfs.io/ipfs",
   lens: {
     enabled: createProfileConfiguration === "LENS" && availableOnNetwork,
     lensHandleExtension: config.chainId === 137 ? ".lens" : ".test",
