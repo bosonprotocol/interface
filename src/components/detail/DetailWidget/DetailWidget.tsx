@@ -481,13 +481,23 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   ]);
   const commitProxyAddress = useCustomStoreQueryParameter("commitProxyAddress");
   const sellerCurationList = useCustomStoreQueryParameter("sellerCurationList");
+  const offerCurationList = useCustomStoreQueryParameter("offerCurationList");
   const numSellers = new Set(
     sellerCurationList
       .split(",")
       .map((str) => str.trim())
       .filter(isTruthy)
   ).size;
-  const showCommitProxyButton = numSellers === 1 && !!commitProxyAddress;
+  const numOffers = new Set(
+    offerCurationList
+      .split(",")
+      .map((str) => str.trim())
+      .filter(isTruthy)
+  ).size;
+  const showCommitProxyButton =
+    ((numSellers === 1 && numOffers === 0) ||
+      (numSellers === 0 && numOffers === 1)) &&
+    !!commitProxyAddress;
   const isCommitDisabled =
     (address && isChainUnsupported) ||
     !hasSellerEnoughFunds ||
@@ -643,6 +653,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
         onClick={onClick}
         disabled={disabled}
         data-commit-proxy-address
+        style={{ height: "3.5rem" }}
       >
         Commit <small>Step 1/2</small>
       </BosonButton>
