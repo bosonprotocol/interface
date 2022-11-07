@@ -72,10 +72,16 @@ const Text = styled.p`
     margin-top: 0.5rem;
   }
 `;
-const Table = styled.table`
+const TableWrapper = styled.div`
+  width: 100%;
+  overflow-y: hidden;
+  overflow-x: auto;
   margin: 4rem 0;
+`;
+const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
+  min-width: 600px;
 
   th,
   td {
@@ -1399,110 +1405,112 @@ export default function PrivacyPolicy() {
       <Typography color={colors.grey} tag="h6" fontWeight="400" margin="0">
         LIST OF COOKIES USED
       </Typography>
-      <Table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Function</th>
-            <th>Expiry</th>
-            <th>Place By</th>
-            <th>Used By</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>_ga</td>
-            <td>Analytics</td>
-            <td>1 year</td>
-            <td>sentry.io</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>_ga</td>
-            <td>Analytics</td>
-            <td>1 year</td>
-            <td>infura.io</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>_ga</td>
-            <td>Analytics</td>
-            <td>2 years</td>
-            <td>fleek.co</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>_uetvid</td>
-            <td>Tracking/Marketing</td>
-            <td>1 year</td>
-            <td>infura.io</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>_uestid</td>
-            <td>Tracking/Marketing</td>
-            <td>1 month</td>
-            <td>infura.io</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>__stripe_mid</td>
-            <td>Functional (fraud protection)</td>
-            <td>1 year</td>
-            <td>infura.io</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>__stripe_mid</td>
-            <td>Functional (fraud protection)</td>
-            <td>1 year</td>
-            <td>sentry.io</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>_gcl_au</td>
-            <td>Tracking/Marketing</td>
-            <td>1 month</td>
-            <td>infura.io</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>_hjSessionUser_*</td>
-            <td>Statistics</td>
-            <td>1 year</td>
-            <td>infura.io</td>
-            <td>Hotjar</td>
-          </tr>
-          <tr>
-            <td>__hstc</td>
-            <td>Tracking/Marketing</td>
-            <td>6 months</td>
-            <td>infura.io</td>
-            <td>HubSpot</td>
-          </tr>
-          <tr>
-            <td>hubspotutk</td>
-            <td>Tracking/Marketing</td>
-            <td>6 months</td>
-            <td>infura.io</td>
-            <td>HubSpot</td>
-          </tr>
-          <tr>
-            <td>HostedServiceExplorerAPI</td>
-            <td>Functional</td>
-            <td>3 months</td>
-            <td>thegraph.com</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>ajs_anonymous_id</td>
-            <td>Statistics</td>
-            <td>1 year</td>
-            <td>thegraph.com</td>
-            <td></td>
-          </tr>
-        </tbody>
-      </Table>
+      <TableWrapper>
+        <Table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Function</th>
+              <th>Expiry</th>
+              <th>Place By</th>
+              <th>Used By</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>_ga</td>
+              <td>Analytics</td>
+              <td>1 year</td>
+              <td>sentry.io</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>_ga</td>
+              <td>Analytics</td>
+              <td>1 year</td>
+              <td>infura.io</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>_ga</td>
+              <td>Analytics</td>
+              <td>2 years</td>
+              <td>fleek.co</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>_uetvid</td>
+              <td>Tracking/Marketing</td>
+              <td>1 year</td>
+              <td>infura.io</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>_uestid</td>
+              <td>Tracking/Marketing</td>
+              <td>1 month</td>
+              <td>infura.io</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>__stripe_mid</td>
+              <td>Functional (fraud protection)</td>
+              <td>1 year</td>
+              <td>infura.io</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>__stripe_mid</td>
+              <td>Functional (fraud protection)</td>
+              <td>1 year</td>
+              <td>sentry.io</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>_gcl_au</td>
+              <td>Tracking/Marketing</td>
+              <td>1 month</td>
+              <td>infura.io</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>_hjSessionUser_*</td>
+              <td>Statistics</td>
+              <td>1 year</td>
+              <td>infura.io</td>
+              <td>Hotjar</td>
+            </tr>
+            <tr>
+              <td>__hstc</td>
+              <td>Tracking/Marketing</td>
+              <td>6 months</td>
+              <td>infura.io</td>
+              <td>HubSpot</td>
+            </tr>
+            <tr>
+              <td>hubspotutk</td>
+              <td>Tracking/Marketing</td>
+              <td>6 months</td>
+              <td>infura.io</td>
+              <td>HubSpot</td>
+            </tr>
+            <tr>
+              <td>HostedServiceExplorerAPI</td>
+              <td>Functional</td>
+              <td>3 months</td>
+              <td>thegraph.com</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>ajs_anonymous_id</td>
+              <td>Statistics</td>
+              <td>1 year</td>
+              <td>thegraph.com</td>
+              <td></td>
+            </tr>
+          </tbody>
+        </Table>
+      </TableWrapper>
     </Wrapper>
   );
 }
