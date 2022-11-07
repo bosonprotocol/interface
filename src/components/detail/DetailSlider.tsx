@@ -2,14 +2,12 @@ import "@glidejs/glide/dist/css/glide.core.min.css";
 
 import Glide from "@glidejs/glide";
 import { CaretLeft, CaretRight } from "phosphor-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 import Button from "../../components/ui/Button";
 import Grid from "../../components/ui/Grid";
 import Image from "../../components/ui/Image";
 import Typography from "../../components/ui/Typography";
-import { fetchIpfsBase64Media } from "../../lib/utils/base64";
-import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
 import { SLIDER_OPTIONS } from "./const";
 import { GlideSlide, GlideWrapper } from "./Detail.style";
 
@@ -22,38 +20,22 @@ interface Props {
 let glide: any = null;
 
 export default function DetailSlider({ images }: Props) {
-  const [sliderImages, setSliderImages] = useState<Array<string>>([]);
   const ref = useRef();
-  const ipfsMetadataStorage = useIpfsStorage();
 
   useEffect(() => {
-    if (sliderImages.length !== 0 && ref.current) {
+    if (images.length !== 0 && ref.current) {
       glide = new Glide(ref.current, {
         ...SLIDER_OPTIONS
       });
       glide.mount();
     }
-  }, [ref, sliderImages]);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const imagesFromIpfs = await fetchIpfsBase64Media(
-          images,
-          ipfsMetadataStorage
-        );
-        setSliderImages(imagesFromIpfs);
-      } catch (error) {
-        console.error(error);
-      }
-    })();
-  }, [images]); // eslint-disable-line
+  }, [ref, images]);
 
   const handleSlider = (direction: Direction) => {
     glide.go(direction);
   };
 
-  if (sliderImages.length === 0) {
+  if (images.length === 0) {
     return null;
   }
 
@@ -81,10 +63,9 @@ export default function DetailSlider({ images }: Props) {
       >
         <div className="glide__track" data-glide-el="track">
           <div className="glide__slides">
-            {sliderImages?.map((image: string, index: number) => (
+            {images?.map((image: string, index: number) => (
               <GlideSlide className="glide__slide" key={`Slide_${index}`}>
                 <Image
-                  noPreload
                   src={image}
                   style={{ paddingTop: "130%" }}
                   dataTestId="sliderImage"

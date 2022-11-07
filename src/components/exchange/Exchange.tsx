@@ -19,9 +19,9 @@ import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { Exchange as IExchange } from "../../lib/utils/hooks/useExchanges";
-import { useGetIpfsImage } from "../../lib/utils/hooks/useGetIpfsImage";
 import { useHandleText } from "../../lib/utils/hooks/useHandleText";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { getImageUrl } from "../../lib/utils/images";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import { getOfferDetailData } from "../detail/DetailWidget/DetailWidget";
 import { getLensProfilePictureUrl } from "../modal/components/CreateProfile/Lens/utils";
@@ -67,11 +67,11 @@ export default function Exchange({ offer, exchange, reload }: Props) {
     sellerId: offer?.seller?.id
   });
   const [lens] = lensProfiles;
-  const { imageSrc: avatar } = useGetIpfsImage(getLensProfilePictureUrl(lens));
+  const avatar = getImageUrl(getLensProfilePictureUrl(lens));
 
   const { showModal, modalTypes } = useModal();
   const navigate = useKeepQueryParamsNavigate();
-  const { imageStatus, imageSrc } = useGetIpfsImage(offer.metadata.imageUrl);
+  const imageSrc = getImageUrl(offer.metadata.imageUrl);
   const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
   const { address } = useAccount();
   const isBuyer = exchange?.buyer.wallet === address?.toLowerCase();
@@ -224,8 +224,8 @@ export default function Exchange({ offer, exchange, reload }: Props) {
         avatar={avatar || mockedAvatar}
         imageProps={{
           src: imageSrc,
-          preloadConfig: {
-            status: imageStatus,
+          withLoading: true,
+          errorConfig: {
             errorIcon: <CameraSlash size={32} color={colors.white} />
           }
         }}

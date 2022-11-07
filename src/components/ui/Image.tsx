@@ -1,16 +1,18 @@
 import { Loading } from "@bosonprotocol/react-kit";
 import { CameraSlash, Image as ImageIcon } from "phosphor-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 
 import { buttonText } from "../../components/ui/styles";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
-import { fetchIpfsBase64Media } from "../../lib/utils/base64";
-import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
+import { getImageUrl } from "../../lib/utils/images";
 import Typography from "./Typography";
 
-const ImageWrapper = styled.div`
+type LoadingStatus = "loading" | "success" | "error";
+
+const ImageWrapper = styled.div<{ hide?: boolean }>`
+  display: ${({ hide }) => (hide ? "none !important" : undefined)};
   overflow: hidden;
   position: relative;
   z-index: ${zIndex.OfferCard};
@@ -71,7 +73,7 @@ interface IImage {
   dataTestId?: string;
   alt?: string;
   showPlaceholderText?: boolean;
-  noPreload?: boolean;
+  withLoading?: boolean;
 }
 const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
   src,
@@ -79,70 +81,27 @@ const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
   dataTestId = "image",
   alt = "",
   showPlaceholderText = true,
-  noPreload = false,
+  withLoading,
   ...rest
 }) => {
-  const [isLoaded, setIsLoaded] = useState<boolean>(noPreload);
-  const [isError, setIsError] = useState<boolean>(false);
-  const [imageSrc, setImageSrc] = useState<string | null>(
-    noPreload ? src : null
+  const [status, setStatus] = useState<LoadingStatus>(
+    withLoading ? "loading" : "success"
   );
-  const ipfsMetadataStorage = useIpfsStorage();
 
-  useEffect(() => {
-    async function fetchData(src: string) {
-      if (ipfsMetadataStorage && !src?.includes("undefined")) {
-        try {
-          const [base64str] = await fetchIpfsBase64Media(
-            [src],
-            ipfsMetadataStorage
-          );
-          setImageSrc(base64str as string);
-        } catch (error) {
-          console.error("error in Image", error);
-          setIsLoaded(true);
-          setIsError(true);
-        }
-      } else {
-        setIsLoaded(true);
-        setIsError(true);
-      }
-    }
-    if (!isLoaded && imageSrc === null) {
-      if (src?.includes("ipfs://")) {
-        const newString = src.split("//");
-        const CID = newString[newString.length - 1];
-        fetchData(`ipfs://${CID}`);
-      } else if (src?.startsWith("undefined") && src?.length > 9) {
-        const CID = src.replace("undefined", "");
-        fetchData(`ipfs://${CID}`);
-      } else {
-        setImageSrc(src);
-      }
-    }
-  }, []); // eslint-disable-line
+  const isError = status === "error";
+  const isLoading = status === "loading";
+  const isSuccess = status === "success";
 
-  useEffect(() => {
-    if (imageSrc !== null) {
-      setTimeout(() => setIsLoaded(true), 100);
-    }
-  }, [imageSrc]);
-
-  if (!isLoaded && !isError) {
-    return (
-      <ImageWrapper {...rest}>
+  return (
+    <>
+      <ImageWrapper {...rest} hide={!isLoading}>
         <ImagePlaceholder>
           <Typography tag="div">
             <Loading />
           </Typography>
         </ImagePlaceholder>
       </ImageWrapper>
-    );
-  }
-
-  if (isLoaded && isError) {
-    return (
-      <ImageWrapper {...rest}>
+      <ImageWrapper {...rest} hide={!isError}>
         <ImagePlaceholder data-image-placeholder>
           {showPlaceholderText ? (
             <ImageIcon size={50} color={colors.white} />
@@ -154,16 +113,17 @@ const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
           )}
         </ImagePlaceholder>
       </ImageWrapper>
-    );
-  }
-
-  return (
-    <ImageWrapper {...rest}>
-      {children || ""}
-      {imageSrc && (
-        <ImageContainer data-testid={dataTestId} src={imageSrc} alt={alt} />
-      )}
-    </ImageWrapper>
+      <ImageWrapper {...rest} hide={!isSuccess}>
+        {children || ""}
+        <ImageContainer
+          data-testid={dataTestId}
+          src={getImageUrl(src)}
+          alt={alt}
+          onLoad={() => setStatus("success")}
+          onError={() => setStatus("error")}
+        />
+      </ImageWrapper>
+    </>
   );
 };
 
