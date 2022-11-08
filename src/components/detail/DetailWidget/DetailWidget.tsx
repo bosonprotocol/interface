@@ -68,6 +68,7 @@ import { DetailDisputeResolver } from "./DetailDisputeResolver";
 import { DetailSellerDeposit } from "./DetailSellerDeposit";
 import DetailTopRightLabel from "./DetailTopRightLabel";
 import { QuantityDisplay } from "./QuantityDisplay";
+import TokenGated from "./TokenGated";
 
 const StyledPrice = styled(Price)`
   h3 {
@@ -932,6 +933,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
             </Grid>
           </>
         )}
+        {offer.condition && <TokenGated offer={offer} />}
       </Widget>
     </>
   );
