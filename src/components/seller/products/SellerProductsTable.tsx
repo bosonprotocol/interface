@@ -286,11 +286,28 @@ export default function SellerProductsTable({
                       showPlaceholderText={false}
                     />
                   ),
-                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                  // @ts-ignore
-                  sku: variant?.metadata.uuid.substring(0, 3) + "...",
+
+                  sku: (
+                    <Typography
+                      $fontSize="0.75rem"
+                      style={{
+                        marginLeft: "2rem"
+                      }}
+                    >
+                      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+                      {/* @ts-ignore */}
+                      {variant?.metadata.uuid.substring(0, 3) + "..."}
+                    </Typography>
+                  ),
                   productName: (
-                    <Typography tag="p">{variant?.metadata?.name}</Typography>
+                    <Typography
+                      style={{
+                        marginLeft: "2rem"
+                      }}
+                      tag="p"
+                    >
+                      {variant?.metadata?.name}
+                    </Typography>
                   ),
                   status: variant && (
                     <Tooltip
@@ -376,7 +393,8 @@ export default function SellerProductsTable({
                 width: "2.5rem",
                 height: "2.5rem",
                 paddingTop: "0%",
-                fontSize: "0.75rem"
+                fontSize: "0.75rem",
+                marginLeft: "-2rem"
               }}
               showPlaceholderText={false}
             />
@@ -514,14 +532,18 @@ export default function SellerProductsTable({
               <IndeterminateCheckbox
                 disabled
                 style={{
-                  paddingLeft: row.original.isSubRow ? "2rem" : "0"
+                  paddingLeft: row.original.isSubRow ? "2rem" : "0",
+                  position: "absolute",
+                  marginTop: "-12px"
                 }}
               />
             ) : (
               <IndeterminateCheckbox
                 {...row.getToggleRowSelectedProps()}
                 style={{
-                  paddingLeft: row.original.isSubRow ? "2rem" : "0"
+                  paddingLeft: row.original.isSubRow ? "2rem" : "0",
+                  position: "absolute",
+                  marginTop: "-12px"
                 }}
               />
             );
