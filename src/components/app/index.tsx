@@ -62,8 +62,8 @@ export default function App({
           weight: "bold"
         }}
       >
-        <ChatProvider>
-          <ModalProvider>
+        <ModalProvider>
+          <ChatProvider>
             <>
               <Container>
                 <GlobalStyle
@@ -86,8 +86,8 @@ export default function App({
               </Container>
               <CookieBanner />
             </>
-          </ModalProvider>
-        </ChatProvider>
+          </ChatProvider>
+        </ModalProvider>
       </IconContext.Provider>
     </ThemeProvider>
   );
