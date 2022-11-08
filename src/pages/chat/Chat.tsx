@@ -81,6 +81,7 @@ export default function Chat() {
       sellerId: sellerId,
       disputed: null
     });
+
   const exchanges = useMemo(() => {
     return Array.from(
       new Map(

@@ -9,7 +9,12 @@ import { validateMessage } from "@bosonprotocol/chat-sdk/dist/cjs/util/validator
 import { subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import { utils } from "ethers";
-import { ArrowLeft, PaperPlaneRight, UploadSimple } from "phosphor-react";
+import {
+  ArrowLeft,
+  PaperPlaneRight,
+  UploadSimple,
+  WarningCircle
+} from "phosphor-react";
 import {
   ReactNode,
   useCallback,
@@ -29,6 +34,7 @@ import { useModal } from "../../../components/modal/useModal";
 import BosonButton from "../../../components/ui/BosonButton";
 import Grid from "../../../components/ui/Grid";
 import SellerID from "../../../components/ui/SellerID";
+import Typography from "../../../components/ui/Typography";
 import { BosonRoutes } from "../../../lib/routing/routes";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
@@ -129,8 +135,10 @@ const LoadingContainer = styled.div`
   display: flex;
   background-color: ${colors.lightGrey};
   justify-content: center;
+  align-items: center;
   width: 100%;
   align-self: stretch;
+  gap: 0.25rem;
 `;
 
 const Conversation = styled.div<{ $alignStart: boolean }>`
@@ -343,6 +351,7 @@ const ChatConversation = ({
   textAreaValue,
   refetchExchanges
 }: Props) => {
+  const [hasError, setHasError] = useState<boolean>(false);
   const location = useLocation();
   const iAmTheBuyer = myBuyerId === exchange?.buyer.id;
   const iAmTheSeller = mySellerId === exchange?.offer.seller.id;
@@ -407,6 +416,9 @@ const ChatConversation = ({
       }
     }
   });
+  useEffect(() => {
+    setHasError(isErrorThread);
+  }, [isErrorThread]);
   const loadMoreMessages = useCallback(
     (forceDateIndex?: number) => {
       if (!areThreadsLoading) {
@@ -497,6 +509,7 @@ const ChatConversation = ({
       destinationAddress: string;
     }) => {
       try {
+        setHasError(false);
         for await (const incomingMessage of bosonXmtp.monitorThread(
           threadId,
           destinationAddress,
@@ -506,6 +519,7 @@ const ChatConversation = ({
         }
       } catch (error) {
         console.error(error);
+        setHasError(true);
       }
     };
 
@@ -542,6 +556,7 @@ const ChatConversation = ({
     const value = textAreaValue?.trim() || "";
     if (bosonXmtp && threadId && value && address) {
       try {
+        setHasError(false);
         const newMessage = {
           threadId,
           content: {
@@ -572,6 +587,7 @@ const ChatConversation = ({
         onSentMessage(messageData, uuid);
       } catch (error) {
         console.error(error);
+        setHasError(true);
       }
     }
   }, [
@@ -595,6 +611,7 @@ const ChatConversation = ({
           continue;
         }
         try {
+          setHasError(false);
           const messageData = await bosonXmtp.encodeAndSendMessage(
             message.data,
             destinationAddress
@@ -602,6 +619,7 @@ const ChatConversation = ({
           onSentMessage(messageData, message.uuid);
         } catch (error) {
           console.error(error);
+          setHasError(true);
         }
       }
     }
@@ -617,28 +635,33 @@ const ChatConversation = ({
       if (!bosonXmtp || !threadId || !address) {
         return;
       }
-
-      await sendFilesToChat({
-        bosonXmtp,
-        files,
-        destinationAddress,
-        threadId,
-        callbackSendingMessage: async (newMessage, uuid) => {
-          await addMessage({
-            authorityId: "",
-            timestamp: Date.now(),
-            sender: address,
-            recipient: destinationAddress,
-            data: newMessage,
-            isValid: false,
-            isPending: true,
-            uuid
-          });
-        },
-        callback: async (messageData, uuid) => {
-          onSentMessage(messageData, uuid);
-        }
-      });
+      try {
+        setHasError(false);
+        await sendFilesToChat({
+          bosonXmtp,
+          files,
+          destinationAddress,
+          threadId,
+          callbackSendingMessage: async (newMessage, uuid) => {
+            await addMessage({
+              authorityId: "",
+              timestamp: Date.now(),
+              sender: address,
+              recipient: destinationAddress,
+              data: newMessage,
+              isValid: false,
+              isPending: true,
+              uuid
+            });
+          },
+          callback: async (messageData, uuid) => {
+            onSentMessage(messageData, uuid);
+          }
+        });
+      } catch (error) {
+        console.error(error);
+        setHasError(true);
+      }
     },
     [
       bosonXmtp,
@@ -834,6 +857,14 @@ const ChatConversation = ({
                     </LoadMoreMessages>
                   )}
                 </LoadingContainer>
+                {hasError && (
+                  <LoadingContainer>
+                    <WarningCircle color={colors.red} size={14} />
+                    <Typography color={colors.red}>
+                      There has been an error, please try again...
+                    </Typography>
+                  </LoadingContainer>
+                )}
                 {thread?.messages.map((message, index) => {
                   const isFirstMessage = index === 0;
                   const isPreviousMessageInADifferentDay = isFirstMessage
@@ -912,6 +943,7 @@ const ChatConversation = ({
                         return;
                       }
                       try {
+                        setHasError(false);
                         await sendProposalToChat({
                           bosonXmtp,
                           proposal,
@@ -936,6 +968,7 @@ const ChatConversation = ({
                         });
                       } catch (error) {
                         console.error(error);
+                        setHasError(true);
                       }
                     }}
                   />

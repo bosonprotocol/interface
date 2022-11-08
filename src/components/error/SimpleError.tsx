@@ -31,12 +31,12 @@ export default function SimpleError({
       {...rest}
     >
       <Warning color={colors.darkOrange} size={16} />
-      {errorMessage ? (
+      {children ? (
+        children
+      ) : (
         <Typography fontWeight="600" $fontSize="1rem" lineHeight="1.5rem">
           {errorMessage || "There has been an error, please try again"}
         </Typography>
-      ) : (
-        children
       )}
     </StyledGrid>
   );

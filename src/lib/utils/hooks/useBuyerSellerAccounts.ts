@@ -8,18 +8,28 @@ export const useBuyerSellerAccounts = (address: string) => {
     data: sellers,
     refetch: refetchSellers,
     ...restSellers
-  } = useSellers({
-    operator: address
-  });
+  } = useSellers(
+    {
+      operator: address
+    },
+    {
+      enabled: !!address
+    }
+  );
   const {
     data: buyers,
     refetch: refetchBuyers,
     ...restBuyers
-  } = useBuyers({
-    wallet: address
-  });
-  const sellerId = sellers?.[0]?.id || "";
-  const buyerId = buyers?.[0]?.id || "";
+  } = useBuyers(
+    {
+      wallet: address
+    },
+    {
+      enabled: !!address
+    }
+  );
+  const sellerId = address ? sellers?.[0]?.id || "" : "";
+  const buyerId = address ? buyers?.[0]?.id || "" : "";
 
   const refetch = useCallback(() => {
     refetchSellers();
