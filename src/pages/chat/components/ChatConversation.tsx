@@ -7,6 +7,7 @@ import {
 } from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/definitions";
 import { validateMessage } from "@bosonprotocol/chat-sdk/dist/cjs/util/validators";
 import { subgraph } from "@bosonprotocol/react-kit";
+import * as Sentry from "@sentry/browser";
 import dayjs from "dayjs";
 import { utils } from "ethers";
 import {
@@ -520,6 +521,14 @@ const ChatConversation = ({
       } catch (error) {
         console.error(error);
         setHasError(true);
+        Sentry.captureException(error, {
+          extra: {
+            ...threadId,
+            destinationAddress,
+            action: "monitor",
+            location: "chat-conversation"
+          }
+        });
       }
     };
 
@@ -529,8 +538,6 @@ const ChatConversation = ({
       destinationAddress,
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
       threadId: thread?.threadId!
-    }).catch((error) => {
-      console.error(error);
     });
 
     return () => {
@@ -588,6 +595,14 @@ const ChatConversation = ({
       } catch (error) {
         console.error(error);
         setHasError(true);
+        Sentry.captureException(error, {
+          extra: {
+            ...threadId,
+            destinationAddress,
+            action: "handleSendingRegularMessage",
+            location: "chat-conversation"
+          }
+        });
       }
     }
   }, [
@@ -620,6 +635,14 @@ const ChatConversation = ({
         } catch (error) {
           console.error(error);
           setHasError(true);
+          Sentry.captureException(error, {
+            extra: {
+              ...threadId,
+              destinationAddress,
+              action: "backOnline",
+              location: "chat-conversation"
+            }
+          });
         }
       }
     }
@@ -628,7 +651,13 @@ const ChatConversation = ({
     return () => {
       window.removeEventListener("online", backOnline);
     };
-  }, [bosonXmtp, destinationAddress, onSentMessage, thread?.messages]);
+  }, [
+    bosonXmtp,
+    destinationAddress,
+    onSentMessage,
+    thread?.messages,
+    threadId
+  ]);
 
   const sendFiles = useCallback(
     async (files: FileWithEncodedData[]) => {
@@ -661,6 +690,14 @@ const ChatConversation = ({
       } catch (error) {
         console.error(error);
         setHasError(true);
+        Sentry.captureException(error, {
+          extra: {
+            ...threadId,
+            destinationAddress,
+            action: "sendFiles",
+            location: "chat-conversation"
+          }
+        });
       }
     },
     [
@@ -967,6 +1004,14 @@ const ChatConversation = ({
                           }
                         });
                       } catch (error) {
+                        Sentry.captureException(error, {
+                          extra: {
+                            ...threadId,
+                            destinationAddress,
+                            action: "onSendProposal",
+                            location: "chat-conversation"
+                          }
+                        });
                         console.error(error);
                         setHasError(true);
                       }
@@ -1007,6 +1052,14 @@ const ChatConversation = ({
                         await sendFiles(files);
                       } catch (error) {
                         console.error(error);
+                        Sentry.captureException(error, {
+                          extra: {
+                            ...threadId,
+                            destinationAddress,
+                            action: "onUploadedFilesWithData",
+                            location: "chat-conversation"
+                          }
+                        });
                       }
                     }
                   })

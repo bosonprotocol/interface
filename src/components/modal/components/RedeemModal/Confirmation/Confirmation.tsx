@@ -3,6 +3,7 @@ import {
   version
 } from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/definitions";
 import { Provider, RedeemButton, subgraph } from "@bosonprotocol/react-kit";
+import * as Sentry from "@sentry/browser";
 import { utils } from "ethers";
 import { useField } from "formik";
 import { Warning } from "phosphor-react";
@@ -93,6 +94,13 @@ export default function Confirmation({
         child.click();
       }
     } catch (error) {
+      Sentry.captureException(error, {
+        extra: {
+          action: "redeem",
+          location: "redeem-modal",
+          exchangeId
+        }
+      });
       console.error(
         "Error while sending a message with the delivery details",
         error
