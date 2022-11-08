@@ -6,7 +6,7 @@ import { Provider, RedeemButton, subgraph } from "@bosonprotocol/react-kit";
 import { utils } from "ethers";
 import { useField } from "formik";
 import { Warning } from "phosphor-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
 import { useSigner } from "wagmi";
@@ -21,6 +21,7 @@ import { poll } from "../../../../../pages/create-product/utils";
 import SimpleError from "../../../../error/SimpleError";
 import { Spinner } from "../../../../loading/Spinner";
 import SuccessTransactionToast from "../../../../toasts/SuccessTransactionToast";
+import BosonButton from "../../../../ui/BosonButton";
 import Button from "../../../../ui/Button";
 import Grid from "../../../../ui/Grid";
 import Typography from "../../../../ui/Typography";
@@ -31,6 +32,8 @@ import { FormModel } from "../RedeemModalFormModel";
 const StyledGrid = styled(Grid)`
   background-color: ${colors.lightGrey};
 `;
+
+const StyledRedeemButton = styled(BosonButton)``;
 
 interface Props {
   exchangeId: string;
@@ -56,6 +59,7 @@ export default function Confirmation({
   setIsLoading: setLoading
 }: Props) {
   const coreSDK = useCoreSDK();
+  const redeemRef = useRef<HTMLDivElement | null>(null);
   const addPendingTransaction = useAddPendingTransaction();
   const { showModal, hideModal } = useModal();
   const { bosonXmtp } = useChatContext();
@@ -78,7 +82,25 @@ export default function Confirmation({
   const [zipField] = useField(FormModel.formFields.zip.name);
   const [countryField] = useField(FormModel.formFields.country.name);
   const [emailField] = useField(FormModel.formFields.email.name);
-
+  const handleRedeem = async () => {
+    try {
+      await sendDeliveryDetailsToChat();
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const child = redeemRef.current!.children[0] ?? null;
+      if (child) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        child.click();
+      }
+    } catch (error) {
+      console.error(
+        "Error while sending a message with the delivery details",
+        error
+      );
+      setChatError(error as Error);
+      throw error;
+    }
+  };
   const sendDeliveryDetailsToChat = async () => {
     const value = `DELIVERY ADDRESS:
 
@@ -103,17 +125,8 @@ ${FormModel.formFields.email.placeholder}: ${emailField.value}`;
       version
     } as const;
     const destinationAddress = utils.getAddress(sellerAddress);
-    try {
-      setChatError(null);
-      await bosonXmtp?.encodeAndSendMessage(newMessage, destinationAddress);
-    } catch (error) {
-      console.error(
-        "Error while sending a message with the delivery details",
-        error
-      );
-      setChatError(error as Error);
-      throw error;
-    }
+    setChatError(null);
+    await bosonXmtp?.encodeAndSendMessage(newMessage, destinationAddress);
   };
   return (
     <>
@@ -163,91 +176,109 @@ ${FormModel.formFields.email.placeholder}: ${emailField.value}`;
       )}
       {(chatError || redeemError) && <SimpleError />}
       <Grid padding="2rem 0 0 0" justifyContent="space-between">
-        <RedeemButton
+        <StyledRedeemButton
+          type="button"
+          onClick={() => handleRedeem()}
           disabled={isLoading || !isInitializationValid}
-          exchangeId={exchangeId}
-          envName={CONFIG.envName}
-          onError={(error) => {
-            console.error("Error while redeeming", error);
-            setRedeemError(error);
-            setIsLoading(false);
-            setLoading?.(false);
-            const hasUserRejectedTx =
-              "code" in error &&
-              (error as unknown as { code: string }).code === "ACTION_REJECTED";
-            if (hasUserRejectedTx) {
-              showModal("CONFIRMATION_FAILED");
-            }
-          }}
-          onPendingSignature={async () => {
-            setRedeemError(null);
-            setIsLoading(true);
-            setLoading?.(true);
-            await sendDeliveryDetailsToChat();
-            showModal("WAITING_FOR_CONFIRMATION");
-          }}
-          onPendingTransaction={(hash, isMetaTx) => {
-            showModal("TRANSACTION_SUBMITTED", {
-              action: "Redeem",
-              txHash: hash
-            });
-            addPendingTransaction({
-              type: subgraph.EventType.VoucherRedeemed,
-              hash,
-              isMetaTx,
-              accountType: "Buyer",
-              exchange: {
-                id: exchangeId,
-                offer: {
-                  id: offerId
-                }
-              }
-            });
-          }}
-          onSuccess={async (_, { exchangeId }) => {
-            let createdExchange: subgraph.ExchangeFieldsFragment;
-            await poll(
-              async () => {
-                createdExchange = await coreSDK.getExchangeById(exchangeId);
-                return createdExchange.redeemedDate;
-              },
-              (redeemedDate) => {
-                return !redeemedDate;
-              },
-              500
-            );
-            setIsLoading(false);
-            setLoading?.(false);
-            hideModal();
-            toast((t) => (
-              <SuccessTransactionToast
-                t={t}
-                action={`Redeemed exchange: ${offerName}`}
-                onViewDetails={() => {
-                  showModal("REDEEM_SUCCESS", {
-                    title: "Congratulations!",
-                    name: nameField.value,
-                    streetNameAndNumber: streetNameAndNumberField.value,
-                    city: cityField.value,
-                    state: stateField.value,
-                    zip: zipField.value,
-                    country: countryField.value,
-                    email: emailField.value
-                  });
-                }}
-              />
-            ));
-
-            reload?.();
-          }}
-          web3Provider={signer?.provider as Provider}
-          metaTx={CONFIG.metaTx}
         >
           <Grid gap="0.5rem">
             Confirm address and redeem
             {isLoading && <Spinner size="20" />}
           </Grid>
-        </RedeemButton>
+        </StyledRedeemButton>
+        <div
+          style={{ display: "none" }}
+          ref={(ref) => {
+            redeemRef.current = ref;
+          }}
+        >
+          <RedeemButton
+            disabled={isLoading || !isInitializationValid}
+            exchangeId={exchangeId}
+            envName={CONFIG.envName}
+            onError={(error) => {
+              console.error("Error while redeeming", error);
+              setRedeemError(error);
+              setIsLoading(false);
+              setLoading?.(false);
+              const hasUserRejectedTx =
+                "code" in error &&
+                (error as unknown as { code: string }).code ===
+                  "ACTION_REJECTED";
+              if (hasUserRejectedTx) {
+                showModal("CONFIRMATION_FAILED");
+              }
+            }}
+            onPendingSignature={async () => {
+              setRedeemError(null);
+              setIsLoading(true);
+              setLoading?.(true);
+              await sendDeliveryDetailsToChat();
+              showModal("WAITING_FOR_CONFIRMATION");
+            }}
+            onPendingTransaction={(hash, isMetaTx) => {
+              showModal("TRANSACTION_SUBMITTED", {
+                action: "Redeem",
+                txHash: hash
+              });
+              addPendingTransaction({
+                type: subgraph.EventType.VoucherRedeemed,
+                hash,
+                isMetaTx,
+                accountType: "Buyer",
+                exchange: {
+                  id: exchangeId,
+                  offer: {
+                    id: offerId
+                  }
+                }
+              });
+            }}
+            onSuccess={async (_, { exchangeId }) => {
+              let createdExchange: subgraph.ExchangeFieldsFragment;
+              await poll(
+                async () => {
+                  createdExchange = await coreSDK.getExchangeById(exchangeId);
+                  return createdExchange.redeemedDate;
+                },
+                (redeemedDate) => {
+                  return !redeemedDate;
+                },
+                500
+              );
+              setIsLoading(false);
+              setLoading?.(false);
+              hideModal();
+              toast((t) => (
+                <SuccessTransactionToast
+                  t={t}
+                  action={`Redeemed exchange: ${offerName}`}
+                  onViewDetails={() => {
+                    showModal("REDEEM_SUCCESS", {
+                      title: "Congratulations!",
+                      name: nameField.value,
+                      streetNameAndNumber: streetNameAndNumberField.value,
+                      city: cityField.value,
+                      state: stateField.value,
+                      zip: zipField.value,
+                      country: countryField.value,
+                      email: emailField.value
+                    });
+                  }}
+                />
+              ));
+
+              reload?.();
+            }}
+            web3Provider={signer?.provider as Provider}
+            metaTx={CONFIG.metaTx}
+          >
+            <Grid gap="0.5rem">
+              Confirm address and redeem
+              {isLoading && <Spinner size="20" />}
+            </Grid>
+          </RedeemButton>
+        </div>
         <Button theme="outline" onClick={() => onBackClick()}>
           Back
         </Button>
