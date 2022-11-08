@@ -25,8 +25,8 @@ export default function ReinitializeChatModal() {
   return (
     <Grid flexDirection="column" alignItems="flex-start" gap="1rem">
       <Typography>
-        Good news! We have upgraded our chat so before proceeding you have to
-        initialize it again. You should not see this modal again.
+        Good news! We have upgraded our chat so before proceeding you must
+        re-initialize it again. This modal will not be shown again.
       </Typography>
       <InitializeChat />
     </Grid>

@@ -272,7 +272,6 @@ export default function Modal({
       onClose?.();
     }
   };
-  console.log({ HeaderComponent, title });
   return createPortal(
     <Root data-testid="modal">
       <Wrapper

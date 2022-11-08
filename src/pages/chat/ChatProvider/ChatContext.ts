@@ -8,7 +8,7 @@ export const Context = createContext<{
   isInitializing: boolean;
 }>({
   bosonXmtp: undefined,
-  initialize: () => null,
+  initialize: () => console.log("initialize has not been defined"),
   envName: "",
   isInitializing: false
 });

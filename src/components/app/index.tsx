@@ -11,6 +11,7 @@ import theme from "../../theme";
 import CookieBanner from "../cookie/CookieBanner";
 import Footer from "../footer/Footer";
 import Header from "../header/Header";
+import { ReinitializeChat } from "./ReinitializeChat";
 
 const Container = styled.div`
   width: 100%;
@@ -62,9 +63,10 @@ export default function App({
           weight: "bold"
         }}
       >
-        <ModalProvider>
-          <ChatProvider>
+        <ChatProvider>
+          <ModalProvider>
             <>
+              <ReinitializeChat />
               <Container>
                 <GlobalStyle
                   $withBosonStyles={withBosonStyles}
@@ -86,8 +88,8 @@ export default function App({
               </Container>
               <CookieBanner />
             </>
-          </ChatProvider>
-        </ModalProvider>
+          </ModalProvider>
+        </ChatProvider>
       </IconContext.Provider>
     </ThemeProvider>
   );
