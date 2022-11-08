@@ -7,7 +7,7 @@ import useProducts from "./useProducts";
 export default function useProductsByFilteredOffers(
   props: Parameters<typeof useOffers>[0] = {}
 ) {
-  const { data } = useOffers({ ...props, first: 200 });
+  const { data, isLoading, isError } = useOffers({ ...props, first: 200 });
   const productsIds = useMemo(
     () =>
       Array.from(
@@ -17,8 +17,13 @@ export default function useProductsByFilteredOffers(
       ) || [],
     [data]
   );
-  return useProducts({
+  const result = useProducts({
     ...(props.first && { productsFirst: props.first }),
     productsIds: productsIds
   });
+  return {
+    ...result,
+    isLoading: isLoading || result.isLoading,
+    isError: isError || result.isError
+  };
 }

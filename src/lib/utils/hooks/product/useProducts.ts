@@ -9,6 +9,7 @@ import ConvertionRateContext from "../../../../components/convertion-rate/Conver
 import type { ExtendedOffer } from "../../../../pages/explore/WithAllOffers";
 import { ExtendedSeller } from "../../../../pages/explore/WithAllOffers";
 import { CONFIG } from "../../../config";
+import { isTruthy } from "../../../types/helpers";
 import { calcPrice } from "../../calcPrice";
 import { convertPrice } from "../../convertPrice";
 import { useCoreSDK } from "../../useCoreSdk";
@@ -208,7 +209,7 @@ export default function useProducts(
 
           return null;
         })
-        .filter((n) => n) || []
+        .filter(isTruthy) || []
     );
   }, [
     productsWithVariants?.data,

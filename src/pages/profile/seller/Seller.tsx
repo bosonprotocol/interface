@@ -26,9 +26,9 @@ import useGetLensProfiles from "../../../lib/utils/hooks/lens/profile/useGetLens
 import useProducts from "../../../lib/utils/hooks/product/useProducts";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { useCurrentSellers } from "../../../lib/utils/hooks/useCurrentSellers";
-import { useGetIpfsImage } from "../../../lib/utils/hooks/useGetIpfsImage";
 import { useSellerCalculations } from "../../../lib/utils/hooks/useSellerCalculations";
 import { useSellers } from "../../../lib/utils/hooks/useSellers";
+import { getImageUrl } from "../../../lib/utils/images";
 import { ExtendedSeller } from "../../explore/WithAllOffers";
 import NotFound from "../../not-found/NotFound";
 import backgroundFluid from "../common/background-img.png";
@@ -132,9 +132,7 @@ export default function Seller() {
   } = useCurrentSellers(lensTokenId ? { lensTokenId } : { sellerId });
   sellerId = sellersData?.length ? sellersData[0].id : sellerId;
   const [sellerLens] = sellersLens;
-  const { imageSrc: coverImage } = useGetIpfsImage(
-    getLensCoverPictureUrl(sellerLens)
-  );
+  const coverImage = getImageUrl(getLensCoverPictureUrl(sellerLens));
 
   const {
     data: sellers = [],

@@ -1,5 +1,5 @@
 import { useFormikContext } from "formik";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import styled from "styled-components";
 
 import CollapseWithTrigger from "../../components/collapse/CollapseWithTrigger";
@@ -238,7 +238,36 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
     });
   };
 
+  const renderCommitProxyField = useMemo(() => {
+    const numSellers = new Set(
+      values.sellerCurationList
+        .split(",")
+        .map((str) => str.trim())
+        .filter(isTruthy)
+    ).size;
+    const numOffers = new Set(
+      values.offerCurationList
+        .split(",")
+        .map((str) => str.trim())
+        .filter(isTruthy)
+    ).size;
+    // TODO: render field if 1 seller and many offers but all of them are from the same seller
+    return (
+      (["custom"].includes(values.withOwnProducts?.value || "") &&
+        ((numSellers === 1 && numOffers === 0) ||
+          (numSellers === 0 && numOffers === 1))) ||
+      ["mine"].includes(values.withOwnProducts?.value || "")
+    );
+  }, [
+    values.offerCurationList,
+    values.sellerCurationList,
+    values.withOwnProducts?.value
+  ]);
+
   const CommitProxyField = useCallback(() => {
+    if (!renderCommitProxyField) {
+      return null;
+    }
     return (
       <Grid flexDirection="column" alignItems="flex-start">
         <FieldTitle>Commit Proxy Address</FieldTitle>
@@ -251,7 +280,14 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
         />
       </Grid>
     );
-  }, []);
+  }, [renderCommitProxyField]);
+
+  useEffect(() => {
+    if (!renderCommitProxyField) {
+      setFieldValue(storeFields.commitProxyAddress, "");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [renderCommitProxyField]);
 
   return (
     <Grid alignItems="flex-start" gap="2.875rem">
@@ -688,12 +724,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                       }
                     />
                   </Grid>
-                  {new Set(
-                    values.sellerCurationList
-                      .split(",")
-                      .map((str) => str.trim())
-                      .filter(isTruthy)
-                  ).size === 1 && <CommitProxyField />}
+                  <CommitProxyField />
                 </Grid>
               ) : ["mine"].includes(values.withOwnProducts?.value || "") ? (
                 <Grid

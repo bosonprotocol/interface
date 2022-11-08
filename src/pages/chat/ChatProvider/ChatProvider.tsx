@@ -18,7 +18,11 @@ export default function ChatProvider({ children }: Props) {
   useEffect(() => {
     if (signer && initialize && !bosonXmtp) {
       setLoading(true);
-      BosonXmtpClient.initialise(signer, envName)
+      BosonXmtpClient.initialise(
+        signer,
+        config.envName === "production" ? "production" : "dev",
+        envName
+      )
         .then((bosonClient) => {
           setBosonXmtp(bosonClient);
         })
