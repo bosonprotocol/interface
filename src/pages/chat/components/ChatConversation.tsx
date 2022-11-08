@@ -693,7 +693,6 @@ const ChatConversation = ({
         Sentry.captureException(error, {
           extra: {
             ...threadId,
-            address,
             destinationAddress,
             action: "sendFiles",
             location: "chat-conversation"
@@ -1008,7 +1007,6 @@ const ChatConversation = ({
                         Sentry.captureException(error, {
                           extra: {
                             ...threadId,
-                            address,
                             destinationAddress,
                             action: "onSendProposal",
                             location: "chat-conversation"
@@ -1058,7 +1056,6 @@ const ChatConversation = ({
                           extra: {
                             ...threadId,
                             destinationAddress,
-                            address,
                             action: "onUploadedFilesWithData",
                             location: "chat-conversation"
                           }
