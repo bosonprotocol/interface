@@ -103,16 +103,17 @@ ${FormModel.formFields.email.placeholder}: ${emailField.value}`;
       version
     } as const;
     const destinationAddress = utils.getAddress(sellerAddress);
-    setChatError(null);
-    bosonXmtp
-      ?.encodeAndSendMessage(newMessage, destinationAddress)
-      .catch((error) => {
-        console.error(
-          "Error while sending a message with the delivery details",
-          error
-        );
-        setChatError(error);
-      });
+    try {
+      setChatError(null);
+      await bosonXmtp?.encodeAndSendMessage(newMessage, destinationAddress);
+    } catch (error) {
+      console.error(
+        "Error while sending a message with the delivery details",
+        error
+      );
+      setChatError(error as Error);
+      throw error;
+    }
   };
   return (
     <>
