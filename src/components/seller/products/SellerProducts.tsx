@@ -56,15 +56,20 @@ export default function SellerProducts({
   const [filter, setFilter] = useState<FilterValue | null>(null);
   const [selected, setSelected] = useState<Array<Offer | null>>([]);
 
-  // const { data, isLoading, isError, refetch } = offersData;
+  // TODO: CLEAN UP commented code
+  // const { data } = offersData;
   const { products, isLoading, isError, refetch } = productsData;
 
+  // const ownProducts = products?.filter(
+  //   (product) => product.seller.id === sellerId
+  // );
   // console.log({
   //   data,
-  //   // products,
-  //   sellers,
-  //   sellerId,
-  //   newOffers
+  //   products,
+  //   ownProducts
+  //   // sellers,
+  //   // sellerId,
+  //   // newOffers
   // });
 
   const allOffers = useMemo(() => {
@@ -87,7 +92,12 @@ export default function SellerProducts({
           if (currentTag === "expired") {
             if (offer && offer.additional) {
               offer.additional.variants = offer.additional.variants.filter(
-                (e) => e
+                (elem) => {
+                  const current = dayjs();
+                  return dayjs(getDateTimestamp(elem?.validUntilDate)).isBefore(
+                    current
+                  );
+                }
               );
             }
             return status === offers.OfferState.EXPIRED ? offer : null;
@@ -95,7 +105,7 @@ export default function SellerProducts({
           if (currentTag === "voided") {
             if (offer && offer.additional) {
               offer.additional.variants = offer.additional.variants.filter(
-                (e) => e
+                ({ voided }) => voided
               );
             }
             return status === offers.OfferState.VOIDED ? offer : null;

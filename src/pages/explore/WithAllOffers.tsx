@@ -69,6 +69,8 @@ export interface OfferAdditional {
   redeemedDate?: string;
   convertedPrice?: string;
   additional?: {
+    // TODO: ADD MISSING type here
+    product: any;
     variants: subgraph.OfferFieldsFragment[];
   };
 }

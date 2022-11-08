@@ -64,12 +64,13 @@ interface Props {
 interface IIndeterminateInputProps {
   indeterminate?: boolean;
   disabled?: boolean;
+  style?: React.CSSProperties;
 }
 
 const IndeterminateCheckbox = forwardRef<
   HTMLInputElement,
   IIndeterminateInputProps
->(({ indeterminate, ...rest }, ref: React.Ref<HTMLInputElement>) => {
+>(({ indeterminate, style, ...rest }, ref: React.Ref<HTMLInputElement>) => {
   const defaultRef = useRef(null);
   const resolvedRef = ref || defaultRef;
   const checkboxId = `checkbox-${Math.random().toString().replace("0.", "")}`;
@@ -85,7 +86,7 @@ const IndeterminateCheckbox = forwardRef<
   }, [resolvedRef, indeterminate]);
 
   return (
-    <CheckboxWrapper htmlFor={checkboxId}>
+    <CheckboxWrapper htmlFor={checkboxId} style={style}>
       <input
         hidden
         id={checkboxId}
@@ -252,15 +253,118 @@ export default function SellerProductsTable({
     () =>
       offers?.map((offer) => {
         const status = offer ? OffersKit.getOfferStatus(offer) : "";
-        console.log(offer, "offer");
+        const showVariant =
+          offer?.additional?.variants && offer?.additional?.variants.length > 1;
         return {
           offerId: offer?.id,
           uuid: offer?.metadata?.product?.uuid,
-          // TODO: ADJUST subRows
-          subRows:
-            offer?.additional?.variants?.length > 1
-              ? offer?.additional?.variants
-              : [],
+          isSubRow: false,
+          subRows: showVariant
+            ? offer?.additional?.variants.map((variant) => {
+                const variantStatus = offer
+                  ? OffersKit.getOfferStatus(variant)
+                  : "";
+                return {
+                  isSubRow: true,
+                  offerId: variant.id,
+                  uuid: offer.additional?.product?.uuid ?? "",
+                  isSelectable: !(
+                    variantStatus === OffersKit.OfferState.EXPIRED ||
+                    variantStatus === OffersKit.OfferState.VOIDED
+                  ),
+                  image: (
+                    <Image
+                      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                      // @ts-ignore
+                      src={variant.metadata?.image}
+                      style={{
+                        width: "2.5rem",
+                        height: "2.5rem",
+                        paddingTop: "0%",
+                        fontSize: "0.75rem"
+                      }}
+                      showPlaceholderText={false}
+                    />
+                  ),
+                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                  // @ts-ignore
+                  sku: variant?.metadata.uuid.substring(0, 3) + "...",
+                  productName: (
+                    <Typography tag="p">{variant?.metadata?.name}</Typography>
+                  ),
+                  status: variant && (
+                    <Tooltip
+                      interactive
+                      content={<OfferHistory offer={variant as Offer} />}
+                    >
+                      <OfferStatuses
+                        offer={variant as Offer}
+                        size="small"
+                        displayDot
+                        showValid
+                        style={{
+                          display: "inline-block",
+                          position: "relative",
+                          top: "unset",
+                          left: "unset",
+                          right: "unset"
+                        }}
+                      />
+                    </Tooltip>
+                  ),
+                  quantity: (
+                    <Typography>
+                      {variant?.quantityAvailable}/{variant?.quantityInitial}
+                    </Typography>
+                  ),
+                  price: (
+                    <Price
+                      currencySymbol={variant?.exchangeToken?.symbol ?? ""}
+                      value={variant?.price ?? ""}
+                      decimals={variant?.exchangeToken?.decimals ?? ""}
+                    />
+                  ),
+                  offerValidity: variant?.validUntilDate && (
+                    <Typography>
+                      <span>
+                        <small style={{ margin: "0" }}>Until</small> <br />
+                        {dayjs(getDateTimestamp(variant.validUntilDate)).format(
+                          CONFIG.dateFormat
+                        )}
+                      </span>
+                    </Typography>
+                  ),
+                  action: !(
+                    variantStatus === OffersKit.OfferState.EXPIRED ||
+                    variantStatus === OffersKit.OfferState.VOIDED ||
+                    variant?.quantityAvailable === "0"
+                  ) && (
+                    <VoidButton
+                      variant="secondaryInverted"
+                      size={ButtonSize.Small}
+                      disabled={!sellerRoles?.isOperator}
+                      tooltip="This action is restricted to only the operator wallet"
+                      onClick={() => {
+                        if (variant) {
+                          showModal(
+                            modalTypes.VOID_PRODUCT,
+                            {
+                              title: "Void Confirmation",
+                              offerId: variant.id,
+                              offer: variant as Offer,
+                              refetch
+                            },
+                            "xs"
+                          );
+                        }
+                      }}
+                    >
+                      Void
+                    </VoidButton>
+                  )
+                };
+              })
+            : [],
           isSelectable: !(
             status === OffersKit.OfferState.EXPIRED ||
             status === OffersKit.OfferState.VOIDED
@@ -279,9 +383,35 @@ export default function SellerProductsTable({
           ),
           sku: offer?.id,
           productName: (
-            <Typography tag="p">
-              <b>{offer?.metadata?.name}</b>
-            </Typography>
+            <Grid justifyContent="flex-start" alignItems="center">
+              <div>
+                <Typography
+                  tag="p"
+                  style={{
+                    marginBottom: 0
+                  }}
+                >
+                  <b>{offer?.metadata?.name}</b>
+                </Typography>
+                {showVariant && (
+                  <Typography
+                    tag="span"
+                    $fontSize="0.75rem"
+                    color={colors.darkGrey}
+                  >
+                    {offer?.additional?.variants.length} variants
+                  </Typography>
+                )}
+              </div>
+              {showVariant && (
+                <CaretDown
+                  size={14}
+                  style={{
+                    marginLeft: "0.5rem"
+                  }}
+                />
+              )}
+            </Grid>
           ),
           status: offer && (
             <Tooltip interactive content={<OfferHistory offer={offer} />}>
@@ -354,12 +484,6 @@ export default function SellerProductsTable({
       }),
     [offers, sellerRoles] // eslint-disable-line
   );
-  const initialExpanded = useMemo(() => {
-    return data.reduce((acc, _elem, index) => {
-      acc[index] = true;
-      return acc;
-    }, {});
-  }, [data]);
 
   const tableProps = useTable(
     {
@@ -367,9 +491,9 @@ export default function SellerProductsTable({
       data,
       initialState: {
         pageIndex: 0,
-        hiddenColumns: ["offerId", "uuid", "isSelectable"],
-        expanded: initialExpanded
-      }
+        hiddenColumns: ["offerId", "uuid", "isSelectable"]
+      },
+      paginateExpandedRows: false
     },
     useSortBy,
     useExpanded,
@@ -385,12 +509,23 @@ export default function SellerProductsTable({
             );
           },
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          Cell: ({ row }: CellProps<any>) =>
-            !row?.original?.isSelectable ? (
-              <IndeterminateCheckbox disabled />
+          Cell: ({ row }: CellProps<any>) => {
+            return !row?.original?.isSelectable ? (
+              <IndeterminateCheckbox
+                disabled
+                style={{
+                  paddingLeft: row.original.isSubRow ? "2rem" : "0"
+                }}
+              />
             ) : (
-              <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
-            )
+              <IndeterminateCheckbox
+                {...row.getToggleRowSelectedProps()}
+                style={{
+                  paddingLeft: row.original.isSubRow ? "2rem" : "0"
+                }}
+              />
+            );
+          }
         },
         ...columns
       ]);
@@ -413,22 +548,12 @@ export default function SellerProductsTable({
     state: { pageIndex, pageSize, selectedRowIds }
   } = tableProps;
 
-  const pageCountFilter = useMemo(() => {
-    const filteredPages = page.filter((e) => {
-      return !e.id.includes(".");
-    });
-    if (filteredPages.length < 1) {
-      return 0;
-    }
-    return Math.round(filteredPages.length / 10);
-  }, [page]);
-
   const paginate = useMemo(() => {
-    return Array.from(Array(pageCountFilter).keys()).slice(
+    return Array.from(Array(pageCount).keys()).slice(
       pageIndex < 1 ? 0 : pageIndex - 1,
       pageIndex < 1 ? 3 : pageIndex + 2
     );
-  }, [pageCountFilter, pageIndex]);
+  }, [pageCount, pageIndex]);
 
   useEffect(() => {
     const arr = Object.keys(selectedRowIds);
@@ -496,7 +621,6 @@ export default function SellerProductsTable({
         <tbody {...getTableBodyProps()}>
           {(page.length > 0 &&
             page.map((row) => {
-              console.log(row.id, "row");
               prepareRow(row);
               return (
                 <tr
@@ -504,12 +628,15 @@ export default function SellerProductsTable({
                   key={`seller_table_tbody_tr_${row.original.offerId}`}
                 >
                   {row.cells.map((cell) => {
+                    const hasSubRows = cell.row.subRows.length > 1;
                     return (
                       <td
                         {...cell.getCellProps()}
                         key={`seller_table_tbody_td_${row.original.offerId}-${cell.column.id}`}
                         onClick={() => {
-                          if (
+                          if (hasSubRows && cell.column.id !== "action") {
+                            cell.row.toggleRowExpanded();
+                          } else if (
                             cell.column.id !== "action" &&
                             cell.column.id !== "selection" &&
                             cell.column.id !== "status"
@@ -571,7 +698,7 @@ export default function SellerProductsTable({
               allItems={rows.length}
             />
           </Grid>
-          {pageCountFilter > 1 && (
+          {pageCount > 1 && (
             <Grid justifyContent="flex-end" gap="1rem">
               <Button
                 size="small"

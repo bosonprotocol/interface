@@ -36,6 +36,7 @@ interface AdditionalFiltering {
   quantityAvailable_gte?: number;
   productsIds?: string[];
   showVoided?: boolean;
+  showExpired?: boolean;
 }
 
 export default function useProducts(
@@ -133,9 +134,14 @@ export default function useProducts(
           if (!props?.showVoided) {
             offers = offers.filter(
               (n: { voided: boolean; status: string }) =>
-                n &&
-                n?.voided === false &&
-                n?.status !== offersSdk.OfferState.EXPIRED
+                n && n?.voided === false
+            );
+          }
+
+          if (!props?.showExpired) {
+            offers = offers.filter(
+              (n: { voided: boolean; status: string }) =>
+                n && n?.status !== offersSdk.OfferState.EXPIRED
             );
           }
 
@@ -207,6 +213,7 @@ export default function useProducts(
   }, [
     productsWithVariants?.data,
     props?.showVoided,
+    props?.showExpired,
     props?.quantityAvailable_gte,
     store.rates
   ]);
@@ -260,6 +267,9 @@ export default function useProducts(
     isError: products.isError || productsWithVariants.isError,
     products: allProducts as unknown as ExtendedOffer[],
     sellers: allSellers as unknown as ExtendedSeller[],
-    refetch: products.refetch
+    refetch: () => {
+      products.refetch();
+      productsWithVariants.refetch();
+    }
   };
 }

@@ -81,7 +81,8 @@ export function WithSellerData(
     } = useConvertionRate();
 
     const products = useProducts({
-      showVoided: true
+      showVoided: true,
+      showExpired: true
     });
     const offers = useOffers({
       sellerId,
