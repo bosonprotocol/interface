@@ -3,7 +3,7 @@ import {
   ProductCard as BosonProductCard
 } from "@bosonprotocol/react-kit";
 import { CameraSlash } from "phosphor-react";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { generatePath, useLocation } from "react-router-dom";
 import styled, { css } from "styled-components";
 
@@ -71,6 +71,23 @@ export default function ProductCard({
   });
   const [lens] = lensProfiles;
   const avatar = getImageUrl(getLensProfilePictureUrl(lens));
+  const [avatarObj, setAvatarObj] = useState<{
+    avatarUrl: string | null | undefined;
+    status: "lens" | "fallback" | "mocked";
+  }>({
+    avatarUrl: avatar,
+    status: "lens"
+  });
+  const fallbackSellerAvatar: string | null = // TODO: fix types
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    offer.additional?.product.productV1Seller.images.find(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (img: any) => img.tag === "profile"
+    )?.url;
+  const fallbackSellerAvatarUrl = fallbackSellerAvatar
+    ? getImageUrl(fallbackSellerAvatar)
+    : fallbackSellerAvatar;
   const imageSrc = getImageUrl(
     offer?.metadata?.image || offer?.metadata?.imageUrl
   );
@@ -147,7 +164,21 @@ export default function ProductCard({
         onCardClick={handleOnCardClick}
         title={offer?.metadata?.name}
         avatarName={lens?.name ? lens?.name : `Seller ID: ${offer.seller.id}`}
-        avatar={avatar || mockedAvatar}
+        avatar={avatarObj.avatarUrl || fallbackSellerAvatarUrl || mockedAvatar}
+        onAvatarError={() => {
+          // to avoid infinite loop
+          if (avatarObj.status === "lens") {
+            setAvatarObj({
+              avatarUrl: fallbackSellerAvatarUrl,
+              status: "fallback"
+            });
+          } else if (avatarObj.status === "fallback") {
+            setAvatarObj({
+              avatarUrl: mockedAvatar,
+              status: "mocked"
+            });
+          }
+        }}
         price={Number(price?.price || 0)}
         asterisk={hasVariantsWithDifferentPrice}
         tooltip={
