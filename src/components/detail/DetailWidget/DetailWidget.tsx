@@ -892,7 +892,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 <>
                   {![
                     exchanges.ExtendedExchangeState.Expired,
-                    subgraph.ExchangeState.Cancelled
+                    subgraph.ExchangeState.Cancelled,
+                    subgraph.ExchangeState.Revoked
                   ].includes(
                     exchangeStatus as
                       | exchanges.ExtendedExchangeState
