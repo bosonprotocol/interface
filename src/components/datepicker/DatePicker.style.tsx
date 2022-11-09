@@ -127,7 +127,7 @@ export const CalendarHeader = styled(CalendarFlex)`
   > div {
     color: ${colors.darkGrey};
     font-size: 0.875rem;
-    font-weight: bold;
+    font-weight: 600;
   }
 `;
 
@@ -205,7 +205,7 @@ export const CalendarDay = styled(CalendarCell).attrs(
       }
       span {
         color: ${colors.white};
-        font-weight: bold;
+        font-weight: 600;
       }
     `}
   ${({ active, between }) =>
@@ -221,7 +221,7 @@ export const CalendarDay = styled(CalendarCell).attrs(
       }
       span {
         color: ${colors.white};
-        font-weight: bold;
+        font-weight: 600;
       }
     `}
 `;

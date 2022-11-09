@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Typography from "../../ui/Typography";
 
 const ClickHereButton = styled.span`
-  font-weight: bold;
+  font-weight: 600;
   text-decoration: underline;
   cursor: pointer;
 `;

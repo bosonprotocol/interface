@@ -66,7 +66,7 @@ const Name = styled(Typography)`
 
 const Price = styled(RootPrice)`
   font-size: 1rem;
-  font-weight: bold;
+  font-weight: 600;
 `;
 
 const PriceText = styled(Typography)`

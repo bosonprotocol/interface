@@ -51,7 +51,7 @@ const SellerCalculationContainer = styled.div`
 `;
 
 const LensTitle = styled(Typography)`
-  font-weight: bold;
+  font-weight: 600;
   margin: 0.5rem 0 0 0;
   color: ${colors.darkGrey};
   ${breakpoint.s} {

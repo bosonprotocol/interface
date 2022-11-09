@@ -87,7 +87,7 @@ const StyledWidgetButtonWrapper = styled(WidgetButtonWrapper)`
 `;
 
 const FundTile = styled(Typography)`
-  font-weight: bold;
+  font-weight: 600;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -101,7 +101,7 @@ const Amount = styled.span`
   top: 50%;
   right: 1rem;
   font-size: 0.75rem;
-  font-weight: bold;
+  font-weight: 600;
   transform: translate(0, -50%);
 `;
 
