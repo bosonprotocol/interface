@@ -59,7 +59,7 @@ export const ConfirmationContent = styled.div`
     line-height: 1.5rem;
   }
   p:first-child {
-    font-weight: bold;
+    font-weight: 600;
     margin-bottom: 0.5rem;
   }
 `;

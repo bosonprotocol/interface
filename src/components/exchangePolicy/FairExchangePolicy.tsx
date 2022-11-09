@@ -8,7 +8,7 @@ import Typography from "../ui/Typography";
 const InfoTitleWrapper = styled.div`
   display: flex;
   align-items: center;
-  font-weight: bold;
+  font-weight: 600;
   margin-bottom: 0.25rem;
   > p {
     margin: 0;
