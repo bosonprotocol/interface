@@ -46,7 +46,6 @@ interface FilterValue {
 }
 
 export default function SellerProducts({
-  // offers: offersData,
   products: productsData,
   sellerRoles,
   sellerId
@@ -56,21 +55,7 @@ export default function SellerProducts({
   const [filter, setFilter] = useState<FilterValue | null>(null);
   const [selected, setSelected] = useState<Array<Offer | null>>([]);
 
-  // TODO: CLEAN UP commented code
-  // const { data } = offersData;
   const { products, isLoading, isError, refetch } = productsData;
-
-  // const ownProducts = products?.filter(
-  //   (product) => product.seller.id === sellerId
-  // );
-  // console.log({
-  //   data,
-  //   products,
-  //   ownProducts
-  //   // sellers,
-  //   // sellerId,
-  //   // newOffers
-  // });
 
   const allOffers = useMemo(() => {
     const filtered =
@@ -129,6 +114,7 @@ export default function SellerProducts({
   }, [products, search, sellerId, currentTag]);
 
   const prepareCSVData = useMemo(() => {
+    // TODO: ADD CSV FOR VARIANTS
     const csvData = map(allOffers, (offer) => {
       return {
         ["ID/SKU"]: offer?.id ? offer?.id : "",

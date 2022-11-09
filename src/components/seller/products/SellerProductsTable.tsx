@@ -482,16 +482,31 @@ export default function SellerProductsTable({
               tooltip="This action is restricted to only the operator wallet"
               onClick={() => {
                 if (offer) {
-                  showModal(
-                    modalTypes.VOID_PRODUCT,
-                    {
-                      title: "Void Confirmation",
-                      offerId: offer.id,
-                      offer,
-                      refetch
-                    },
-                    "xs"
-                  );
+                  if (showVariant) {
+                    console.log(offer, "offer");
+                    console.log(subRows, "subRows");
+                    // toggleRowExpanded()
+                    showModal(
+                      modalTypes.VOID_PRODUCT,
+                      {
+                        title: "Void Confirmation",
+                        offers: offer.additional?.variants as Offer[],
+                        refetch
+                      },
+                      "s"
+                    );
+                  } else {
+                    showModal(
+                      modalTypes.VOID_PRODUCT,
+                      {
+                        title: "Void Confirmation",
+                        offerId: offer.id,
+                        offer,
+                        refetch
+                      },
+                      "xs"
+                    );
+                  }
                 }
               }}
             >
@@ -511,7 +526,8 @@ export default function SellerProductsTable({
         pageIndex: 0,
         hiddenColumns: ["offerId", "uuid", "isSelectable"]
       },
-      paginateExpandedRows: false
+      paginateExpandedRows: false,
+      autoResetExpanded: false
     },
     useSortBy,
     useExpanded,
@@ -567,6 +583,7 @@ export default function SellerProductsTable({
     previousPage,
     setPageSize,
     pageCount,
+    toggleRowExpanded,
     state: { pageIndex, pageSize, selectedRowIds }
   } = tableProps;
 
@@ -577,16 +594,42 @@ export default function SellerProductsTable({
     );
   }, [pageCount, pageIndex]);
 
+  const subRows = useMemo(() => {
+    return rows.reduce((acc, row) => {
+      if (row.subRows.length > 1) {
+        row.subRows.forEach((sub) => {
+          acc.push(sub);
+        });
+      }
+      return acc;
+    }, [] as typeof rows);
+  }, [rows]);
+
   useEffect(() => {
     const arr = Object.keys(selectedRowIds);
+    const flatRows = [...rows, ...subRows];
+
     if (arr.length) {
       const selectedOffers = arr
         .map((index: string) => {
-          const el = rows[Number(index)];
+          const el = flatRows.find((elem) => elem.id === index);
           const offerId = el?.original?.offerId;
-          const offer = offers?.find((offer) => offer?.id === offerId);
+          const subOffers = offers
+            .map((offer) => {
+              if (
+                offer?.additional?.variants &&
+                offer?.additional?.variants?.length > 1
+              ) {
+                return offer?.additional?.variants;
+              }
+              return [];
+            })
+            .flat()
+            .filter(Boolean);
+          const offer = [...subOffers, ...offers]?.find(
+            (offer) => offer?.id === offerId
+          );
           const status = offer ? OffersKit.getOfferStatus(offer) : "";
-
           if (
             !(
               status === OffersKit.OfferState.EXPIRED ||
@@ -599,11 +642,11 @@ export default function SellerProductsTable({
           return null;
         })
         .filter((n): boolean => n !== null);
-      setSelected(selectedOffers);
+      setSelected(selectedOffers as (Offer | null)[]);
     } else {
       setSelected([]);
     }
-  }, [selectedRowIds]); // eslint-disable-line
+  }, [selectedRowIds, subRows]); // eslint-disable-line
   return (
     <>
       <Table {...getTableProps()}>
@@ -642,12 +685,12 @@ export default function SellerProductsTable({
         </thead>
         <tbody {...getTableBodyProps()}>
           {(page.length > 0 &&
-            page.map((row) => {
+            page.map((row, index) => {
               prepareRow(row);
               return (
                 <tr
                   {...row.getRowProps()}
-                  key={`seller_table_tbody_tr_${row.original.offerId}`}
+                  key={`seller_table_tbody_tr_${row.original.offerId}-${index}`}
                 >
                   {row.cells.map((cell) => {
                     const hasSubRows = cell.row.subRows.length > 1;
