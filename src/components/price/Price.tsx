@@ -4,6 +4,7 @@ import styled, { css } from "styled-components";
 
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
+import { displayFloat } from "../../lib/utils/calcPrice";
 import Tooltip from "../tooltip/Tooltip";
 import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
@@ -106,15 +107,7 @@ export default function Price({
                 height={18}
               />
             </Tooltip>
-            {price?.currency ? (
-              <>
-                {price.fractions === "0"
-                  ? price.integer
-                  : `${price.integer}.${price.fractions}`}
-              </>
-            ) : (
-              price.price
-            )}
+            {displayFloat(price.price)}
             {withAsterisk && <div>*</div>}
           </Typography>
           {convert && price?.currency && (

@@ -21,6 +21,7 @@ import {
 
 import { colors } from "../../../lib/styles/colors";
 import { ProgressStatus } from "../../../lib/types/progressStatus";
+import { calcPrice } from "../../../lib/utils/calcPrice";
 import { useModal } from "../../modal/useModal";
 import Tooltip from "../../tooltip/Tooltip";
 import BosonButton from "../../ui/BosonButton";
@@ -140,15 +141,6 @@ const WarningWrapper = styled(Grid)`
   }
 `;
 
-const processValue = (value: string, decimals: string) => {
-  try {
-    return utils.formatUnits(BigNumber.from(value), Number(decimals));
-  } catch (e) {
-    console.error(e);
-    return "";
-  }
-};
-
 export default function SellerFinances({
   sellerId,
   funds: fundsData,
@@ -245,11 +237,11 @@ export default function SellerFinances({
         const decimals = Number(fund?.token?.decimals || 18);
         const lockedFunds = sellerLockedFunds?.[fund.token.symbol] ?? "0";
         const lockedFundsFormatted = utils.formatUnits(lockedFunds, decimals);
-        const withdrawable = processValue(
+        const withdrawable = calcPrice(
           fund.availableAmount,
           decimals.toString()
         );
-        const allFunds = processValue(
+        const allFunds = calcPrice(
           BigNumber.from(lockedFunds)
             .add(BigNumber.from(fund.availableAmount))
             .toString(),
