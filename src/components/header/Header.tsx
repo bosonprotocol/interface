@@ -323,6 +323,7 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
                   isMobile={burgerMenuBreakpoint}
                   isOpen={isOpen}
                   navigationBarPosition={navigationBarPosition}
+                  hasTopBanner={withBanner}
                 />
                 {!burgerMenuBreakpoint && (
                   <Connect navigationBarPosition={navigationBarPosition} />
