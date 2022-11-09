@@ -7,6 +7,7 @@ import { useAccount } from "wagmi";
 
 import {
   getLensCoverPictureUrl,
+  getLensProfilePictureUrl,
   isMatchingLensHandle
 } from "../../../components/modal/components/CreateProfile/Lens/utils";
 import AddressText from "../../../components/offer/AddressText";
@@ -28,7 +29,7 @@ import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { useCurrentSellers } from "../../../lib/utils/hooks/useCurrentSellers";
 import { useSellerCalculations } from "../../../lib/utils/hooks/useSellerCalculations";
 import { useSellers } from "../../../lib/utils/hooks/useSellers";
-import { getImageUrl } from "../../../lib/utils/images";
+import { getLensImageUrl } from "../../../lib/utils/images";
 import { ExtendedSeller } from "../../explore/WithAllOffers";
 import NotFound from "../../not-found/NotFound";
 import backgroundFluid from "../common/background-img.png";
@@ -132,7 +133,7 @@ export default function Seller() {
   } = useCurrentSellers(lensTokenId ? { lensTokenId } : { sellerId });
   sellerId = sellersData?.length ? sellersData[0].id : sellerId;
   const [sellerLens] = sellersLens;
-  const coverImage = getImageUrl(getLensCoverPictureUrl(sellerLens));
+  const coverImage = getLensImageUrl(getLensCoverPictureUrl(sellerLens));
 
   const {
     data: sellers = [],
@@ -209,7 +210,7 @@ export default function Seller() {
   if (!isSellerExists) {
     return <NotFound />;
   }
-
+  const avatar = getLensImageUrl(getLensProfilePictureUrl(sellerLens));
   return (
     <>
       <BasicInfo>
@@ -219,7 +220,7 @@ export default function Seller() {
             <AvatarContainer>
               {(sellerLens?.picture as MediaSet) ? (
                 <StyledImage
-                  src={(sellerLens?.picture as MediaSet)?.original?.url}
+                  src={avatar}
                   style={{
                     width: "160px !important",
                     height: "160px !important",

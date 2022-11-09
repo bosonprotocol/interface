@@ -9,7 +9,7 @@ import {
 } from "../../../../../lib/utils/base64";
 import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
 import { useSellers } from "../../../../../lib/utils/hooks/useSellers";
-import { getImageUrl } from "../../../../../lib/utils/images";
+import { getLensImageUrl } from "../../../../../lib/utils/images";
 import BosonButton from "../../../../ui/BosonButton";
 import Grid from "../../../../ui/Grid";
 import { useModal } from "../../../useModal";
@@ -37,8 +37,8 @@ export default function ViewLensProfile({
   setStepBasedOnIndex
 }: Props) {
   const { setValues } = useFormikContext<LensProfileType>();
-  const profilePictureUrl = getImageUrl(getLensProfilePictureUrl(profile));
-  const coverPictureUrl = getImageUrl(getLensCoverPictureUrl(profile));
+  const profilePictureUrl = getLensImageUrl(getLensProfilePictureUrl(profile));
+  const coverPictureUrl = getLensImageUrl(getLensCoverPictureUrl(profile));
 
   const { updateProps, store } = useModal();
   const { address } = useAccount();

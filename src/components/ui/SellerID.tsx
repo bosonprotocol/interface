@@ -13,6 +13,8 @@ import { getOfferDetails } from "../../lib/utils/getOfferDetails";
 import { MediaSet } from "../../lib/utils/hooks/lens/graphql/generated";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { getLensImageUrl } from "../../lib/utils/images";
+import { getLensProfilePictureUrl } from "../modal/components/CreateProfile/Lens/utils";
 import Image from "./Image";
 
 const AddressContainer = styled(Grid)`
@@ -130,10 +132,10 @@ const SellerID: React.FC<
             {(lens?.picture as MediaSet) ||
             (artist?.images && artist?.images.length > 0) ? (
               <Image
-                src={
-                  (lens?.picture as MediaSet)?.original?.url ||
-                  ((artist?.images?.[0]?.url || "") as string)
-                }
+                src={getLensImageUrl(
+                  getLensProfilePictureUrl(lens) ||
+                    ((artist?.images?.[0]?.url || "") as string)
+                )}
                 style={{
                   height: "1rem",
                   width: "1rem",
