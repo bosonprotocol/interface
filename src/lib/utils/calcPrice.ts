@@ -2,7 +2,8 @@ import { BigNumber, utils } from "ethers";
 
 import { Offer } from "../types/offer";
 
-export const displayFloat = (value: number | string | null | undefined) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const displayFloat = (value: any): string => {
   try {
     const parsedValue = value || 0;
     if (parsedValue > 0) {
@@ -11,7 +12,7 @@ export const displayFloat = (value: number | string | null | undefined) => {
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if ((valueToDisplay as any) % 1 === 0) {
-        return Number(parsedValue);
+        return Number(parsedValue).toString();
       }
       return valueToDisplay;
     } else {
@@ -25,7 +26,7 @@ export const displayFloat = (value: number | string | null | undefined) => {
 
 export const calcPrice = (value: string, decimals: string) => {
   try {
-    return utils.formatUnits(BigNumber.from(value), BigNumber.from(decimals));
+    return utils.formatUnits(value, decimals);
   } catch (e) {
     console.error(e);
     return "";
@@ -34,20 +35,27 @@ export const calcPrice = (value: string, decimals: string) => {
 
 export const calcPercentage = (offer: Offer, key: string) => {
   try {
-    const value = offer?.[key as keyof Offer] || 0;
-    const percentage = Number(Number(value) / Number(offer?.price || 0)) || 0;
-    const deposit = percentage * 100;
-    const formatted =
-      Number(value) === 0
-        ? 0
-        : utils.formatUnits(
-            BigNumber.from(value),
-            BigNumber.from(offer.exchangeToken.decimals)
-          );
+    const value = offer?.[key as keyof Offer] || "0";
+    const percentage =
+      (BigNumber.from(value).mul(1000000).div(offer.price).toNumber() /
+        1000000) *
+      100;
+    const formatted = BigNumber.from(value).eq(0)
+      ? "0"
+      : utils.formatUnits(
+          BigNumber.from(value),
+          BigNumber.from(offer.exchangeToken.decimals)
+        );
 
-    return {
-      deposit: displayFloat(deposit),
+    console.log({
+      offer,
       percentage,
+      formatted,
+      value
+    });
+    return {
+      percentage: percentage || 0,
+      deposit: displayFloat(percentage || 0),
       formatted: displayFloat(formatted)
     };
   } catch (e) {

@@ -121,17 +121,29 @@ export default function CancelExchangeModal({
     symbol: offer.exchangeToken.symbol
   });
 
-  const { buyerCancelationPenalty, convertedBuyerCancelationPenalty } =
-    getBuyerCancelPenalty(offer, convertedPrice);
+  const {
+    price: buyerCancelPenaltyPrice,
+    percentage: buyerCancelationPenaltyPercentage
+  } = getBuyerCancelPenalty(offer);
+
+  const convertedBuyerCancelationPenalty = useConvertedPrice({
+    value: buyerCancelPenaltyPrice.toString(),
+    decimals: exchange.offer.exchangeToken.decimals,
+    symbol: exchange.offer.exchangeToken.symbol
+  });
 
   const refund =
-    Number(offer.price) - (Number(offer.price) * buyerCancelationPenalty) / 100;
+    Number(offer.price) -
+    (Number(offer.price) * Number(buyerCancelationPenaltyPercentage || 0)) /
+      100;
   const convertedRefund = useConvertedPrice({
     value: refund.toString(),
     decimals: offer.exchangeToken.decimals,
     symbol: offer.exchangeToken.symbol
   });
   const showConvertedPrice = !!convertedPrice?.converted;
+  const showConvertedCancelationPenaltyPrice =
+    !!convertedBuyerCancelationPenalty?.converted;
   return (
     <>
       <DetailTable
@@ -147,9 +159,9 @@ export default function CancelExchangeModal({
           },
           {
             name: "Buyer Cancel. Penalty",
-            value: `-${buyerCancelationPenalty}% ${
-              showConvertedPrice
-                ? `(${convertedRefund.currency?.symbol} ${convertedBuyerCancelationPenalty})`
+            value: `-${buyerCancelationPenaltyPercentage}% ${
+              showConvertedCancelationPenaltyPrice
+                ? `(${convertedRefund.currency?.symbol} ${convertedBuyerCancelationPenalty?.converted})`
                 : ""
             }`
           }

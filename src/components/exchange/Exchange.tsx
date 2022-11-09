@@ -84,9 +84,10 @@ export default function Exchange({ offer, exchange, reload }: Props) {
     [exchange]
   );
 
-  const price = useMemo(() => {
-    calcPrice(offer.price, offer.exchangeToken.decimals);
-  }, [offer.exchangeToken.decimals, offer.price]);
+  const price = useMemo(
+    () => calcPrice(offer.price, offer.exchangeToken.decimals),
+    [offer.exchangeToken.decimals, offer.price]
+  );
 
   const handleOnCardClick = () => {
     navigate({

@@ -66,18 +66,30 @@ export default function ExpireVoucherModal({ exchange }: Props) {
   const [expireError, setExpireError] = useState<Error | null>(null);
   const { data: signer } = useSigner();
   const navigate = useKeepQueryParamsNavigate();
+
   const convertedPrice = useConvertedPrice({
     value: exchange.offer.price,
     decimals: exchange.offer.exchangeToken.decimals,
     symbol: exchange.offer.exchangeToken.symbol
   });
-  const { buyerCancelationPenalty, convertedBuyerCancelationPenalty } =
-    getBuyerCancelPenalty(exchange.offer, convertedPrice);
+
+  const {
+    price: buyerCancelPenaltyPrice,
+    percentage: buyerCancelationPenaltyPercentage
+  } = getBuyerCancelPenalty(exchange.offer);
+
+  const convertedBuyerCancelationPenalty = useConvertedPrice({
+    value: buyerCancelPenaltyPrice.toString(),
+    decimals: exchange.offer.exchangeToken.decimals,
+    symbol: exchange.offer.exchangeToken.symbol
+  });
 
   const refund =
     Number(exchange.offer.price) -
-    (Number(exchange.offer.price) * buyerCancelationPenalty) / 100;
-
+    (Number(exchange.offer.price) *
+      Number(buyerCancelationPenaltyPercentage || 0)) /
+      100;
+  convertedPrice;
   const convertedRefund = useConvertedPrice({
     value: refund.toString(),
     decimals: exchange.offer.exchangeToken.decimals,
@@ -140,11 +152,11 @@ export default function ExpireVoucherModal({ exchange }: Props) {
                 name: "Buyer Cancel. Penalty",
                 value: (
                   <>
-                    -{buyerCancelationPenalty}%
+                    -{buyerCancelationPenaltyPercentage}%
                     {showConvertedPrice && (
                       <ConvertedValueWrapper>
                         ({convertedRefund.currency?.symbol}
-                        {convertedBuyerCancelationPenalty})
+                        {convertedBuyerCancelationPenalty?.converted})
                       </ConvertedValueWrapper>
                     )}
                   </>

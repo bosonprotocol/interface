@@ -181,7 +181,7 @@ export default function ProductCard({
             });
           }
         }}
-        price={displayFloat(price?.price || 0) as number}
+        price={Number(displayFloat(price?.price || 0))}
         asterisk={hasVariantsWithDifferentPrice}
         tooltip={
           hasVariantsWithDifferentPrice

@@ -1,36 +1,32 @@
 import { BigNumber } from "ethers";
 
 import { Offer } from "../types/offer";
-import { IPrice } from "./convertPrice";
+import { calcPercentage } from "./calcPrice";
 
-export const getBuyerCancelPenalty = (
-  offer: Offer,
-  convertedPrice: IPrice | null
-) => {
+export const getBuyerCancelPenalty = (offer: Offer) => {
   try {
-    const priceNumber = Number(convertedPrice?.converted) || 0;
-    const buyerCancelationPenaltyPercentage =
-      Number(
-        Number(offer?.buyerCancelPenalty || 0) / Number(offer?.price || 0)
-      ) || 0;
-    const buyerCancelationPenalty = BigNumber.from(
-      buyerCancelationPenaltyPercentage
-    ).mul(100);
-    const convertedBuyerCancelationPenalty =
-      priceNumber === 0
-        ? BigNumber.from(0)
-        : BigNumber.from(buyerCancelationPenaltyPercentage).mul(priceNumber);
+    const { deposit: buyerCancelationPenaltyPercentage, formatted } =
+      calcPercentage(offer, "buyerCancelPenalty");
+    const buyerCancelationPenaltyPrice =
+      BigNumber.from(offer.price)
+        .mul(BigNumber.from(buyerCancelationPenaltyPercentage))
+        .toNumber() / 100;
 
+    console.log({
+      offer,
+      buyerCancelationPenaltyPercentage,
+      buyerCancelationPenaltyPrice,
+      formatted
+    });
     return {
-      buyerCancelationPenalty: buyerCancelationPenalty.toNumber(),
-      convertedBuyerCancelationPenalty:
-        convertedBuyerCancelationPenalty.toNumber()
+      price: buyerCancelationPenaltyPrice,
+      percentage: formatted
     };
   } catch (e) {
     console.error(e);
     return {
-      buyerCancelationPenalty: 0,
-      convertedBuyerCancelationPenalty: 0
+      price: 0,
+      percentage: 0
     };
   }
 };
