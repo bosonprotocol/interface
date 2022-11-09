@@ -220,4 +220,7 @@ const LockIcon = styled.div`
   height: 2.5rem;
   margin-top: 1.063rem;
   margin-left: 1.063rem;
+  display: grid;
+  justify-content: center;
+  align-content: center;
 `;
