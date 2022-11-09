@@ -1,4 +1,3 @@
-import { Currencies, CurrencyDisplay } from "@bosonprotocol/react-kit";
 import { Lock } from "phosphor-react";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
@@ -48,7 +47,7 @@ const buildMessage = (condition: Condition, tokenInfo: TokenInfo) => {
     return (
       <>
         {tokenInfo.convertedValue.price} {tokenInfo.symbol} tokens (
-        <a href={CONFIG.getTxExplorerUrl?.(tokenAddress)} target="_blank">
+        <a href={CONFIG.getTxExplorerUrl?.(tokenAddress, true)} target="_blank">
           {tokenAddress.slice(0, 10)}...
         </a>
         )
@@ -60,7 +59,10 @@ const buildMessage = (condition: Condition, tokenInfo: TokenInfo) => {
       return (
         <>
           Token ID: {tokenId} from{" "}
-          <a href={CONFIG.getTxExplorerUrl?.(tokenAddress)} target="_blank">
+          <a
+            href={CONFIG.getTxExplorerUrl?.(tokenAddress, true)}
+            target="_blank"
+          >
             {tokenAddress.slice(0, 15)}...
           </a>
         </>
@@ -70,7 +72,10 @@ const buildMessage = (condition: Condition, tokenInfo: TokenInfo) => {
       return (
         <>
           {threshold} tokens from{" "}
-          <a href={CONFIG.getTxExplorerUrl?.(tokenAddress)} target="_blank">
+          <a
+            href={CONFIG.getTxExplorerUrl?.(tokenAddress, true)}
+            target="_blank"
+          >
             {tokenAddress.slice(0, 10)}...
           </a>
         </>
@@ -81,7 +86,7 @@ const buildMessage = (condition: Condition, tokenInfo: TokenInfo) => {
     return (
       <>
         {threshold} x Token ID: {tokenId} tokens from{" "}
-        <a href={CONFIG.getTxExplorerUrl?.(tokenAddress)} target="_blank">
+        <a href={CONFIG.getTxExplorerUrl?.(tokenAddress, true)} target="_blank">
           {tokenAddress.slice(0, 10)}...
         </a>
       </>
@@ -126,12 +131,7 @@ const TokenGated = ({ offer }: Props) => {
     <Grid as="section" padding="0 0">
       <TokenGatedInfo>
         <TokenIconWrapper>
-          <TokenIcon>
-            <CurrencyDisplay
-              currency={tokenInfo.symbol as Currencies}
-              height={18}
-            />
-          </TokenIcon>
+          <TokenIcon />
           <LockIcon>
             <Lock size={25} color={colors.grey} />
           </LockIcon>
@@ -183,7 +183,7 @@ const TokenIcon = styled.div`
   padding: 0.5rem;
   z-index: 3;
   position: relative;
-  left: 22px;
+  left: 1.375rem;
   border: 0.125rem solid ${colors.black};
   width: 3rem;
   height: 3rem;
