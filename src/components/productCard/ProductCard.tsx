@@ -66,16 +66,8 @@ export default function ProductCard({
   isHoverDisabled = false,
   filterOptions
 }: Props) {
-  console.log(
-    "🚀  roberto --  ~ file: ProductCard.tsx ~ line 69 ~ offer",
-    offer
-  );
-
   const isTokenGated = !!offer.condition?.id;
-  console.log(
-    "🚀  roberto --  ~ file: ProductCard.tsx ~ line 75 ~ isTokenGated",
-    isTokenGated
-  );
+
   const { lens: lensProfiles } = useCurrentSellers({
     sellerId: offer?.seller?.id
   });

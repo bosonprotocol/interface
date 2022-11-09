@@ -42,10 +42,6 @@ interface TokenInfo {
 
 const buildMessage = (condition: Condition, tokenInfo: TokenInfo) => {
   const { method, tokenType, tokenId, tokenAddress, threshold } = condition;
-  console.log(
-    "🚀  roberto --  ~ file: TokenGated.tsx ~ line 45 ~ buildMessage ~ condition",
-    condition
-  );
 
   if (tokenType === 0) {
     return (
