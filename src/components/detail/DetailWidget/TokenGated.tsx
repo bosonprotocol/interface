@@ -42,6 +42,10 @@ interface TokenInfo {
 
 const buildMessage = (condition: Condition, tokenInfo: TokenInfo) => {
   const { method, tokenType, tokenId, tokenAddress, threshold } = condition;
+  console.log(
+    "🚀  roberto --  ~ file: TokenGated.tsx ~ line 45 ~ buildMessage ~ condition",
+    condition
+  );
 
   if (tokenType === 0) {
     return (
@@ -58,12 +62,12 @@ const buildMessage = (condition: Condition, tokenInfo: TokenInfo) => {
     if (method === 1) {
       return (
         <>
-          Token ID: {tokenId} from{" "}
+          {threshold} tokens from{" "}
           <a
             href={CONFIG.getTxExplorerUrl?.(tokenAddress, true)}
             target="_blank"
           >
-            {tokenAddress.slice(0, 15)}...
+            {tokenAddress.slice(0, 10)}...
           </a>
         </>
       );
@@ -71,12 +75,12 @@ const buildMessage = (condition: Condition, tokenInfo: TokenInfo) => {
     if (method === 2) {
       return (
         <>
-          {threshold} tokens from{" "}
+          Token ID: {tokenId} from{" "}
           <a
             href={CONFIG.getTxExplorerUrl?.(tokenAddress, true)}
             target="_blank"
           >
-            {tokenAddress.slice(0, 10)}...
+            {tokenAddress.slice(0, 15)}...
           </a>
         </>
       );
