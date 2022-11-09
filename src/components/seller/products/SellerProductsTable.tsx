@@ -482,9 +482,12 @@ export default function SellerProductsTable({
               onClick={() => {
                 if (offer) {
                   if (showVariant) {
-                    console.log(offer, "offer");
-                    console.log(subRows, "subRows");
-                    // toggleRowExpanded()
+                    const expandedRow = rows.find(
+                      (elem) => elem.original.offerId === offer.id
+                    );
+                    if (expandedRow) {
+                      toggleRowExpanded([expandedRow.id]);
+                    }
                     showModal(
                       modalTypes.VOID_PRODUCT,
                       {
