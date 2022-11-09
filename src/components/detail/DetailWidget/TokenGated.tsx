@@ -85,7 +85,7 @@ const buildMessage = (condition: Condition, tokenInfo: TokenInfo) => {
   if (tokenType === 2) {
     return (
       <>
-        {threshold} x Token ID: {tokenId} tokens from{" "}
+        {threshold} tokens with id: {tokenId} from{" "}
         <a href={CONFIG.getTxExplorerUrl?.(tokenAddress, true)} target="_blank">
           {tokenAddress.slice(0, 10)}...
         </a>
