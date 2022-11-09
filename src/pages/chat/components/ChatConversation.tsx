@@ -7,9 +7,15 @@ import {
 } from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/definitions";
 import { validateMessage } from "@bosonprotocol/chat-sdk/dist/cjs/util/validators";
 import { subgraph } from "@bosonprotocol/react-kit";
+import * as Sentry from "@sentry/browser";
 import dayjs from "dayjs";
 import { utils } from "ethers";
-import { ArrowLeft, PaperPlaneRight, UploadSimple } from "phosphor-react";
+import {
+  ArrowLeft,
+  PaperPlaneRight,
+  UploadSimple,
+  WarningCircle
+} from "phosphor-react";
 import {
   ReactNode,
   useCallback,
@@ -29,6 +35,7 @@ import { useModal } from "../../../components/modal/useModal";
 import BosonButton from "../../../components/ui/BosonButton";
 import Grid from "../../../components/ui/Grid";
 import SellerID from "../../../components/ui/SellerID";
+import Typography from "../../../components/ui/Typography";
 import { BosonRoutes } from "../../../lib/routing/routes";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
@@ -129,8 +136,10 @@ const LoadingContainer = styled.div`
   display: flex;
   background-color: ${colors.lightGrey};
   justify-content: center;
+  align-items: center;
   width: 100%;
   align-self: stretch;
+  gap: 0.25rem;
 `;
 
 const Conversation = styled.div<{ $alignStart: boolean }>`
@@ -343,6 +352,7 @@ const ChatConversation = ({
   textAreaValue,
   refetchExchanges
 }: Props) => {
+  const [hasError, setHasError] = useState<boolean>(false);
   const location = useLocation();
   const iAmTheBuyer = myBuyerId === exchange?.buyer.id;
   const iAmTheSeller = mySellerId === exchange?.offer.seller.id;
@@ -407,6 +417,9 @@ const ChatConversation = ({
       }
     }
   });
+  useEffect(() => {
+    setHasError(isErrorThread);
+  }, [isErrorThread]);
   const loadMoreMessages = useCallback(
     (forceDateIndex?: number) => {
       if (!areThreadsLoading) {
@@ -497,6 +510,7 @@ const ChatConversation = ({
       destinationAddress: string;
     }) => {
       try {
+        setHasError(false);
         for await (const incomingMessage of bosonXmtp.monitorThread(
           threadId,
           destinationAddress,
@@ -506,6 +520,15 @@ const ChatConversation = ({
         }
       } catch (error) {
         console.error(error);
+        setHasError(true);
+        Sentry.captureException(error, {
+          extra: {
+            ...threadId,
+            destinationAddress,
+            action: "monitor",
+            location: "chat-conversation"
+          }
+        });
       }
     };
 
@@ -515,8 +538,6 @@ const ChatConversation = ({
       destinationAddress,
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
       threadId: thread?.threadId!
-    }).catch((error) => {
-      console.error(error);
     });
 
     return () => {
@@ -542,6 +563,7 @@ const ChatConversation = ({
     const value = textAreaValue?.trim() || "";
     if (bosonXmtp && threadId && value && address) {
       try {
+        setHasError(false);
         const newMessage = {
           threadId,
           content: {
@@ -572,6 +594,15 @@ const ChatConversation = ({
         onSentMessage(messageData, uuid);
       } catch (error) {
         console.error(error);
+        setHasError(true);
+        Sentry.captureException(error, {
+          extra: {
+            ...threadId,
+            destinationAddress,
+            action: "handleSendingRegularMessage",
+            location: "chat-conversation"
+          }
+        });
       }
     }
   }, [
@@ -595,6 +626,7 @@ const ChatConversation = ({
           continue;
         }
         try {
+          setHasError(false);
           const messageData = await bosonXmtp.encodeAndSendMessage(
             message.data,
             destinationAddress
@@ -602,6 +634,15 @@ const ChatConversation = ({
           onSentMessage(messageData, message.uuid);
         } catch (error) {
           console.error(error);
+          setHasError(true);
+          Sentry.captureException(error, {
+            extra: {
+              ...threadId,
+              destinationAddress,
+              action: "backOnline",
+              location: "chat-conversation"
+            }
+          });
         }
       }
     }
@@ -610,35 +651,54 @@ const ChatConversation = ({
     return () => {
       window.removeEventListener("online", backOnline);
     };
-  }, [bosonXmtp, destinationAddress, onSentMessage, thread?.messages]);
+  }, [
+    bosonXmtp,
+    destinationAddress,
+    onSentMessage,
+    thread?.messages,
+    threadId
+  ]);
 
   const sendFiles = useCallback(
     async (files: FileWithEncodedData[]) => {
       if (!bosonXmtp || !threadId || !address) {
         return;
       }
-
-      await sendFilesToChat({
-        bosonXmtp,
-        files,
-        destinationAddress,
-        threadId,
-        callbackSendingMessage: async (newMessage, uuid) => {
-          await addMessage({
-            authorityId: "",
-            timestamp: Date.now(),
-            sender: address,
-            recipient: destinationAddress,
-            data: newMessage,
-            isValid: false,
-            isPending: true,
-            uuid
-          });
-        },
-        callback: async (messageData, uuid) => {
-          onSentMessage(messageData, uuid);
-        }
-      });
+      try {
+        setHasError(false);
+        await sendFilesToChat({
+          bosonXmtp,
+          files,
+          destinationAddress,
+          threadId,
+          callbackSendingMessage: async (newMessage, uuid) => {
+            await addMessage({
+              authorityId: "",
+              timestamp: Date.now(),
+              sender: address,
+              recipient: destinationAddress,
+              data: newMessage,
+              isValid: false,
+              isPending: true,
+              uuid
+            });
+          },
+          callback: async (messageData, uuid) => {
+            onSentMessage(messageData, uuid);
+          }
+        });
+      } catch (error) {
+        console.error(error);
+        setHasError(true);
+        Sentry.captureException(error, {
+          extra: {
+            ...threadId,
+            destinationAddress,
+            action: "sendFiles",
+            location: "chat-conversation"
+          }
+        });
+      }
     },
     [
       bosonXmtp,
@@ -834,6 +894,14 @@ const ChatConversation = ({
                     </LoadMoreMessages>
                   )}
                 </LoadingContainer>
+                {hasError && (
+                  <LoadingContainer>
+                    <WarningCircle color={colors.red} size={14} />
+                    <Typography color={colors.red}>
+                      There has been an error, please try again...
+                    </Typography>
+                  </LoadingContainer>
+                )}
                 {thread?.messages.map((message, index) => {
                   const isFirstMessage = index === 0;
                   const isPreviousMessageInADifferentDay = isFirstMessage
@@ -912,6 +980,7 @@ const ChatConversation = ({
                         return;
                       }
                       try {
+                        setHasError(false);
                         await sendProposalToChat({
                           bosonXmtp,
                           proposal,
@@ -935,7 +1004,16 @@ const ChatConversation = ({
                           }
                         });
                       } catch (error) {
+                        Sentry.captureException(error, {
+                          extra: {
+                            ...threadId,
+                            destinationAddress,
+                            action: "onSendProposal",
+                            location: "chat-conversation"
+                          }
+                        });
                         console.error(error);
+                        setHasError(true);
                       }
                     }}
                   />
@@ -974,6 +1052,14 @@ const ChatConversation = ({
                         await sendFiles(files);
                       } catch (error) {
                         console.error(error);
+                        Sentry.captureException(error, {
+                          extra: {
+                            ...threadId,
+                            destinationAddress,
+                            action: "onUploadedFilesWithData",
+                            location: "chat-conversation"
+                          }
+                        });
                       }
                     }
                   })

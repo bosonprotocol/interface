@@ -4,12 +4,12 @@ import { useSigner } from "wagmi";
 
 import { config } from "../../../lib/config";
 import { Context } from "./ChatContext";
+import { envName } from "./const";
 
 interface Props {
   children: ReactNode;
 }
 
-const envName = `${config.envName}-${config.contracts.protocolDiamond}`;
 export default function ChatProvider({ children }: Props) {
   const { data: signer } = useSigner();
   const [initialize, setInitialized] = useState<number>(0);
@@ -18,7 +18,11 @@ export default function ChatProvider({ children }: Props) {
   useEffect(() => {
     if (signer && initialize && !bosonXmtp) {
       setLoading(true);
-      BosonXmtpClient.initialise(signer, envName)
+      BosonXmtpClient.initialise(
+        signer,
+        config.envName === "production" ? "production" : "dev",
+        envName
+      )
         .then((bosonClient) => {
           setBosonXmtp(bosonClient);
         })
@@ -31,7 +35,9 @@ export default function ChatProvider({ children }: Props) {
     <Context.Provider
       value={{
         bosonXmtp,
-        initialize: () => setInitialized((prev) => prev + 1),
+        initialize: () => {
+          setInitialized((prev) => prev + 1);
+        },
         envName,
         isInitializing: isLoading
       }}

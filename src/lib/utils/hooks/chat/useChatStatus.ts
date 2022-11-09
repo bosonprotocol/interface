@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
 import { useChatContext } from "../../../../pages/chat/ChatProvider/ChatContext";
+import { config } from "../../../config";
 
 export type ChatInitializationStatus =
   | "PENDING"
@@ -28,7 +29,11 @@ export const useChatStatus = (): {
     } else if (address && chatInitializationStatus !== "ALREADY_INITIALIZED") {
       setError(null);
 
-      BosonXmtpClient.isXmtpEnabled(address, envName)
+      BosonXmtpClient.isXmtpEnabled(
+        address,
+        config.envName === "production" ? "production" : "dev",
+        envName
+      )
         .then((isEnabled) => {
           if (isEnabled) {
             setChatInitializationStatus("INITIALIZED");
