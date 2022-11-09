@@ -393,8 +393,7 @@ export default function SellerProductsTable({
                 width: "2.5rem",
                 height: "2.5rem",
                 paddingTop: "0%",
-                fontSize: "0.75rem",
-                marginLeft: "-2rem"
+                fontSize: "0.75rem"
               }}
               showPlaceholderText={false}
             />
@@ -548,18 +547,14 @@ export default function SellerProductsTable({
               <IndeterminateCheckbox
                 disabled
                 style={{
-                  paddingLeft: row.original.isSubRow ? "2rem" : "0",
-                  position: "absolute",
-                  marginTop: "-12px"
+                  paddingLeft: row.original.isSubRow ? "2rem" : "0"
                 }}
               />
             ) : (
               <IndeterminateCheckbox
                 {...row.getToggleRowSelectedProps()}
                 style={{
-                  paddingLeft: row.original.isSubRow ? "2rem" : "0",
-                  position: "absolute",
-                  marginTop: "-12px"
+                  paddingLeft: row.original.isSubRow ? "2rem" : "0"
                 }}
               />
             );
