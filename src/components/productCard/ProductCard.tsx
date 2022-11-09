@@ -16,7 +16,7 @@ import { Offer } from "../../lib/types/offer";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useHandleText } from "../../lib/utils/hooks/useHandleText";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import { getImageUrl } from "../../lib/utils/images";
+import { getImageUrl, getLensImageUrl } from "../../lib/utils/images";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import {
   ExtendedOffer,
@@ -70,7 +70,7 @@ export default function ProductCard({
     sellerId: offer?.seller?.id
   });
   const [lens] = lensProfiles;
-  const avatar = getImageUrl(getLensProfilePictureUrl(lens));
+  const avatar = getLensImageUrl(getLensProfilePictureUrl(lens));
   const [avatarObj, setAvatarObj] = useState<{
     avatarUrl: string | null | undefined;
     status: "lens" | "fallback" | "mocked";
@@ -86,7 +86,7 @@ export default function ProductCard({
       (img: any) => img.tag === "profile"
     )?.url;
   const fallbackSellerAvatarUrl = fallbackSellerAvatar
-    ? getImageUrl(fallbackSellerAvatar)
+    ? getLensImageUrl(fallbackSellerAvatar)
     : fallbackSellerAvatar;
   const imageSrc = getImageUrl(
     offer?.metadata?.image || offer?.metadata?.imageUrl
