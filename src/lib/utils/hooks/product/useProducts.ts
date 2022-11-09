@@ -1,4 +1,5 @@
 import { offers as offersSdk, subgraph } from "@bosonprotocol/react-kit";
+import { gql } from "graphql-request";
 import groupBy from "lodash/groupBy";
 import orderBy from "lodash/orderBy";
 import sortBy from "lodash/sortBy";
@@ -12,6 +13,7 @@ import { CONFIG } from "../../../config";
 import { isTruthy } from "../../../types/helpers";
 import { calcPrice } from "../../calcPrice";
 import { convertPrice } from "../../convertPrice";
+import { fetchSubgraph } from "../../core-components/subgraph";
 import { useCoreSDK } from "../../useCoreSdk";
 import type { Exchange } from "../useExchanges";
 
@@ -36,6 +38,7 @@ interface ProductWithVariants {
 interface AdditionalFiltering {
   quantityAvailable_gte?: number;
   productsIds?: string[];
+  withNumExchanges?: boolean;
 }
 
 export default function useProducts(
@@ -60,7 +63,7 @@ export default function useProducts(
   const productsIds = useMemo(
     () =>
       props?.productsIds ||
-      products?.data?.map((p) => p?.uuid || "")?.filter((n) => n !== "") ||
+      products?.data?.map((p) => p?.uuid || "")?.filter(isTruthy) ||
       [],
     [props?.productsIds, products?.data]
   );
@@ -204,11 +207,69 @@ export default function useProducts(
     );
   }, [productsWithVariants?.data, store?.rates, props?.quantityAvailable_gte]);
 
+  const groupedSellers = useMemo(() => {
+    return groupBy(allProducts, "seller.id") || {};
+  }, [allProducts]);
+  const sellerIds = Object.keys(groupedSellers);
+
+  const exchangesBySellers = useQuery(
+    ["get-all-exchanges-from-sellers", props],
+    async () => {
+      const numItemsPerRequest = 1000;
+      let skip = 0;
+      let result;
+      const allExchanges: {
+        seller: {
+          id: string;
+        };
+      }[] = [];
+      while (!result || result.exchanges.length === numItemsPerRequest) {
+        result = await fetchSubgraph<{
+          exchanges: {
+            seller: {
+              id: string;
+            };
+          }[];
+        }>(
+          gql`
+            query GetSellersExchanges(
+              $sellerIds: [String]
+              $first: Int
+              $skip: Int
+            ) {
+              exchanges(
+                where: { seller_in: $sellerIds }
+                first: $first
+                skip: $skip
+              ) {
+                seller {
+                  id
+                }
+              }
+            }
+          `,
+          {
+            sellerIds,
+            first: numItemsPerRequest,
+            skip: skip
+          }
+        );
+        skip += numItemsPerRequest;
+        allExchanges.push(...result.exchanges);
+      }
+
+      return groupBy(allExchanges, "seller.id") || {};
+    },
+    {
+      enabled: props.withNumExchanges && !!coreSDK && sellerIds?.length > 0,
+      refetchOnMount: true
+    }
+  );
   const allSellers = useMemo(() => {
-    const grouped = groupBy(allProducts, "seller.id") || {};
     return (
-      Object.keys(grouped)?.map((brandName) => {
-        const offers = grouped[brandName as keyof typeof grouped];
+      sellerIds?.map((brandName) => {
+        const sellerId = brandName;
+        const offers = groupedSellers[brandName as keyof typeof groupedSellers];
         const seller = offers?.[0]?.seller || {};
         const title = offers?.[0]?.title || {};
         return {
@@ -242,11 +303,12 @@ export default function useProducts(
           additional: {
             images: offers?.map((offer) => offer?.metadata?.image) || []
           },
-          offers
+          offers,
+          numExchanges: exchangesBySellers.data?.[sellerId]?.length
         };
       }) || []
     );
-  }, [allProducts]);
+  }, [sellerIds, groupedSellers, exchangesBySellers.data]);
 
   return {
     isLoading: products.isLoading || productsWithVariants.isLoading,

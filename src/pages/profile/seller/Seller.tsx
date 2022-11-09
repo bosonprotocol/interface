@@ -253,16 +253,14 @@ export default function Seller() {
                   margin={!isLteXS ? "1rem 0 0 0" : "0.25rem 0 0.25rem 0"}
                   $fontSize={!isLteXS ? "2rem" : "1.675rem"}
                 >
-                  {sellerLens?.name || "Placeholder Name (work in progress)"}
+                  {sellerLens?.name}
                 </Typography>
                 <Grid
                   alignItems={!isLteXS ? "center" : "flex-start"}
                   justifyContent="flex-start"
                   flexDirection={!isLteXS ? "row" : "column"}
                 >
-                  <LensTitle tag="p">
-                    {sellerLens?.handle || "@placeholder.lens"}
-                  </LensTitle>
+                  <LensTitle tag="p">{sellerLens?.handle}</LensTitle>
                   <AddressContainer>
                     <AddressText address={currentSellerAddress} />
                   </AddressContainer>

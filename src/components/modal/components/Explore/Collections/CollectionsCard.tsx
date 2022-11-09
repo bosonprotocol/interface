@@ -57,21 +57,16 @@ const StyledGrid = styled(Grid)`
 interface Props {
   collection: ExtendedSeller;
 }
+const imagesNumber = 4;
 export default function CollectionsCard({ collection }: Props) {
   const { lens: lensProfiles } = useCurrentSellers({
     sellerId: collection.id
   });
   const [lens] = lensProfiles;
   const navigate = useKeepQueryParamsNavigate();
-  const imagesNumber = 4;
 
   const allExchanges = useMemo(
-    () =>
-      collection.offers?.reduce(
-        (acc, e) =>
-          e && e.exchanges ? (acc += Number(e.exchanges.length)) : acc,
-        0
-      ),
+    () => collection.numExchanges || 0,
     [collection]
   );
   const images = useMemo(() => {
