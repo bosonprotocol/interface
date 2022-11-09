@@ -92,7 +92,7 @@ export default function Landing() {
         data-hero-wrapper
       >
         <GridWithZindex alignItems="flex-start" flexDirection="column">
-          <Title tag="h1">
+          <Title tag="h1" fontWeight="600">
             {title ? (
               title
             ) : (
@@ -102,7 +102,7 @@ export default function Landing() {
               </>
             )}
           </Title>
-          <SubTitle tag="h4">
+          <SubTitle tag="h4" fontWeight="400">
             {description ||
               "The first decentralized marketplace built on Boson Protocol"}
           </SubTitle>
