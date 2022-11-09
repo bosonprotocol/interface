@@ -315,7 +315,7 @@ export default function Seller() {
                     tag="p"
                     $fontSize={!isLteXS ? "1.25rem" : "1.7rem"}
                     margin="0"
-                    fontWeight="bold"
+                    fontWeight="600"
                   >
                     {(products?.[0]?.offers || [])?.length || 0}
                   </Typography>
@@ -333,7 +333,7 @@ export default function Seller() {
                     tag="p"
                     $fontSize={!isLteXS ? "1.25rem" : "1.7rem"}
                     margin="0"
-                    fontWeight="bold"
+                    fontWeight="600"
                   >
                     {exchanges?.length ?? 0}
                   </Typography>
@@ -351,7 +351,7 @@ export default function Seller() {
                     tag="p"
                     $fontSize={!isLteXS ? "1.25rem" : "1.7rem"}
                     margin="0"
-                    fontWeight="bold"
+                    fontWeight="600"
                   >
                     {owners}
                   </Typography>

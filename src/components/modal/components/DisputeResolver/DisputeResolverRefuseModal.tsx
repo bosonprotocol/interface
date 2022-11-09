@@ -34,7 +34,7 @@ export default function DisputeResolverRefuseModal({ exchangeId }: Props) {
 
   return (
     <Grid flexDirection="column" alignItems="flex-start" gap="1.5rem">
-      <Typography tag="p" margin="0" $fontSize="0.75rem" fontWeight="bold">
+      <Typography tag="p" margin="0" $fontSize="0.75rem" fontWeight="600">
         Confirm that you refuse to provide a decision for the dispute with ID:{" "}
         {exchangeId}
       </Typography>
@@ -49,7 +49,7 @@ export default function DisputeResolverRefuseModal({ exchangeId }: Props) {
               tag="p"
               margin="0"
               $fontSize="0.875rem"
-              fontWeight="bold"
+              fontWeight="600"
             >
               Refuse
             </Typography>

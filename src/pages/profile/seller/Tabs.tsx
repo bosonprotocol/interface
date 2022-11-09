@@ -79,7 +79,7 @@ const TabTitle = styled.div<{ $isActive: boolean }>`
     border-bottom: 3px solid;
     border-color: ${({ $isActive }) =>
       $isActive ? colors.black : "transparent"};
-    font-weight: ${({ $isActive }) => ($isActive ? "bold" : "normal")};
+    font-weight: ${({ $isActive }) => ($isActive ? "600" : "normal")};
     width: 100%;
     display: block;
     text-align: center;

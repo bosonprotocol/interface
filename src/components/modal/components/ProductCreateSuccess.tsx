@@ -223,7 +223,7 @@ export default function ProductCreateSuccess({
                 tag="p"
                 margin="1rem 0 0 0"
                 $fontSize="0.75rem"
-                fontWeight="bold"
+                fontWeight="600"
               >
                 Suggested pool amount: 15%
               </Typography>

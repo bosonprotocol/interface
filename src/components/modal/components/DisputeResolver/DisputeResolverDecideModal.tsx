@@ -109,7 +109,7 @@ export default function DisputeResolverDecideModal({
 
   return (
     <Grid flexDirection="column" alignItems="flex-start" gap="1.5rem">
-      <Typography tag="p" margin="0" $fontSize="0.75rem" fontWeight="bold">
+      <Typography tag="p" margin="0" $fontSize="0.75rem" fontWeight="600">
         Enter the refund amount the buyer should receive (as a percentage of the
         total funds relating to this exchange)
       </Typography>
@@ -124,7 +124,7 @@ export default function DisputeResolverDecideModal({
             value={disputePercentage}
           />
           <div>
-            <Typography $fontSize="0.875rem" margin="0" fontWeight="bold">
+            <Typography $fontSize="0.875rem" margin="0" fontWeight="600">
               %
             </Typography>
           </div>
@@ -156,7 +156,7 @@ export default function DisputeResolverDecideModal({
               tag="p"
               margin="0"
               $fontSize="0.873rem"
-              fontWeight="bold"
+              fontWeight="600"
             >
               Confirm Decision
             </Typography>
