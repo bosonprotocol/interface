@@ -1,5 +1,6 @@
 import { ButtonSize, offers as OffersKit } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
+import _ from "lodash";
 import {
   CaretDown,
   CaretLeft,
@@ -65,41 +66,48 @@ interface IIndeterminateInputProps {
   indeterminate?: boolean;
   disabled?: boolean;
   style?: React.CSSProperties;
+  onClick?: () => void;
 }
 
 const IndeterminateCheckbox = forwardRef<
   HTMLInputElement,
   IIndeterminateInputProps
->(({ indeterminate, style, ...rest }, ref: React.Ref<HTMLInputElement>) => {
-  const defaultRef = useRef(null);
-  const resolvedRef = ref || defaultRef;
-  const checkboxId = `checkbox-${Math.random().toString().replace("0.", "")}`;
+>(
+  (
+    { indeterminate, style, onClick, ...rest },
+    ref: React.Ref<HTMLInputElement>
+  ) => {
+    const defaultRef = useRef(null);
+    const resolvedRef = ref || defaultRef;
+    const checkboxId = `checkbox-${Math.random().toString().replace("0.", "")}`;
 
-  useEffect(() => {
-    if (
-      "current" in resolvedRef &&
-      resolvedRef.current !== null &&
-      "indeterminate" in resolvedRef.current
-    ) {
-      resolvedRef.current.indeterminate = !!indeterminate;
-    }
-  }, [resolvedRef, indeterminate]);
+    useEffect(() => {
+      if (
+        "current" in resolvedRef &&
+        resolvedRef.current !== null &&
+        "indeterminate" in resolvedRef.current
+      ) {
+        resolvedRef.current.indeterminate = !!indeterminate;
+      }
+    }, [resolvedRef, indeterminate]);
 
-  return (
-    <CheckboxWrapper htmlFor={checkboxId} style={style}>
-      <input
-        hidden
-        id={checkboxId}
-        type="checkbox"
-        ref={resolvedRef}
-        {...rest}
-      />
-      <div>
-        <Check size={16} />
-      </div>
-    </CheckboxWrapper>
-  );
-});
+    return (
+      <CheckboxWrapper htmlFor={checkboxId} style={style}>
+        <input
+          hidden
+          id={checkboxId}
+          type="checkbox"
+          ref={resolvedRef}
+          onClick={onClick}
+          {...rest}
+        />
+        <div>
+          <Check size={16} />
+        </div>
+      </CheckboxWrapper>
+    );
+  }
+);
 
 const Table = styled.table`
   width: 100%;
@@ -288,16 +296,24 @@ export default function SellerProductsTable({
                   ),
 
                   sku: (
-                    <Typography
-                      $fontSize="0.75rem"
-                      style={{
-                        marginLeft: "2rem"
-                      }}
+                    <Tooltip
+                      content={
+                        <Typography
+                          $fontSize="0.75rem"
+                          style={{
+                            marginLeft: "2rem"
+                          }}
+                        >
+                          {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+                          {/* @ts-ignore */}
+                          {variant?.metadata.uuid}
+                        </Typography>
+                      }
                     >
                       {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
                       {/* @ts-ignore */}
                       {variant?.metadata.uuid.substring(0, 3) + "..."}
-                    </Typography>
+                    </Tooltip>
                   ),
                   productName: (
                     <Typography
@@ -547,17 +563,22 @@ export default function SellerProductsTable({
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           Cell: ({ row }: CellProps<any>) => {
             return !row?.original?.isSelectable ? (
-              <IndeterminateCheckbox
-                disabled
-                style={{
-                  paddingLeft: row.original.isSubRow ? "2rem" : "0"
-                }}
-              />
+              <>
+                <IndeterminateCheckbox
+                  disabled
+                  style={{
+                    paddingLeft: row.original.isSubRow ? "2rem" : "0"
+                  }}
+                />
+              </>
             ) : (
               <IndeterminateCheckbox
                 {...row.getToggleRowSelectedProps()}
                 style={{
                   paddingLeft: row.original.isSubRow ? "2rem" : "0"
+                }}
+                onClick={() => {
+                  toggleRowExpanded([row.id]);
                 }}
               />
             );
@@ -639,8 +660,9 @@ export default function SellerProductsTable({
 
           return null;
         })
-        .filter((n): boolean => n !== null);
-      setSelected(selectedOffers as (Offer | null)[]);
+        .filter((n): boolean => n !== null)
+        .filter((n) => n?.voided !== true);
+      setSelected(_.uniqBy(selectedOffers, "id") as (Offer | null)[]);
     } else {
       setSelected([]);
     }
