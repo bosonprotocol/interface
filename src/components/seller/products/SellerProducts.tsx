@@ -1,12 +1,14 @@
 import { offers } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import map from "lodash/map";
+import uniqBy from "lodash/uniqBy";
 import { useMemo, useState } from "react";
 
 import { CONFIG } from "../../../lib/config";
 import { Offer } from "../../../lib/types/offer";
 import { calcPrice } from "../../../lib/utils/calcPrice";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
+import { ExtendedOffer } from "../../../pages/explore/WithAllOffers";
 import Loading from "../../ui/Loading";
 import { WithSellerDataProps } from "../common/WithSellerData";
 import SellerAddNewProduct from "../SellerAddNewProduct";
@@ -114,8 +116,18 @@ export default function SellerProducts({
   }, [products, search, sellerId, currentTag]);
 
   const prepareCSVData = useMemo(() => {
-    // TODO: ADD CSV FOR VARIANTS
-    const csvData = map(allOffers, (offer) => {
+    const allOffersWithVariants = allOffers.reduce((acc, elem) => {
+      if (elem?.additional?.variants.length) {
+        elem.additional.variants.forEach((variant) => {
+          acc.push(variant as ExtendedOffer);
+        });
+      }
+      if (elem) {
+        acc.push(elem);
+      }
+      return acc;
+    }, [] as ExtendedOffer[]);
+    const csvData = map(uniqBy(allOffersWithVariants, "id"), (offer) => {
       return {
         ["ID/SKU"]: offer?.id ? offer?.id : "",
         ["Product name"]: offer?.metadata?.name ?? "",
