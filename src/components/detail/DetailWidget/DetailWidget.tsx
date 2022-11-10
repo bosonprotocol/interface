@@ -576,7 +576,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
         }}
       />
     ));
-    removePendingTransaction("hash", _receipt.transactionHash);
+    removePendingTransaction("offerId", offer.id);
   };
   const onCommitError = (error: Error) => {
     console.error("onError", error);
