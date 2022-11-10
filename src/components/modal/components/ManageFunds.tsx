@@ -91,12 +91,12 @@ export default function ManageFunds({ id }: Props) {
     <>
       <Grid justifyContent="flex-start">
         <TokenWrapper>
-          <Typography tag="p" $fontSize="0.75rem" fontWeight="bold">
+          <Typography tag="p" $fontSize="0.75rem" fontWeight="600">
             Token
           </Typography>
         </TokenWrapper>
         <WithdrawableWrapper>
-          <Typography tag="p" $fontSize="0.75rem" fontWeight="bold">
+          <Typography tag="p" $fontSize="0.75rem" fontWeight="600">
             Withdrawable
           </Typography>
         </WithdrawableWrapper>

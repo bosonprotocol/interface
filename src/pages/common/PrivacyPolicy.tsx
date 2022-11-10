@@ -93,7 +93,7 @@ const Table = styled.table`
   thead {
     tr {
       th {
-        font-weight: bold;
+        font-weight: 600;
         border-top: 1px solid ${colors.border};
         border-right: 1px solid ${colors.border};
         border-bottom: 4px solid ${colors.border};

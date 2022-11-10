@@ -21,7 +21,7 @@ const TabTitle = styled.div<{ $isActive: boolean }>`
   border-bottom: 3px solid;
   border-color: ${({ $isActive }) =>
     $isActive ? colors.secondary : "transparent"};
-  font-weight: ${({ $isActive }) => ($isActive ? "bold" : "normal")};
+  font-weight: ${({ $isActive }) => ($isActive ? "600" : "normal")};
 `;
 
 type TabsData = {

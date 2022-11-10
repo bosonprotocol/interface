@@ -7,6 +7,7 @@ import { useAccount } from "wagmi";
 
 import {
   getLensCoverPictureUrl,
+  getLensProfilePictureUrl,
   isMatchingLensHandle
 } from "../../../components/modal/components/CreateProfile/Lens/utils";
 import AddressText from "../../../components/offer/AddressText";
@@ -28,7 +29,7 @@ import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { useCurrentSellers } from "../../../lib/utils/hooks/useCurrentSellers";
 import { useSellerCalculations } from "../../../lib/utils/hooks/useSellerCalculations";
 import { useSellers } from "../../../lib/utils/hooks/useSellers";
-import { getImageUrl } from "../../../lib/utils/images";
+import { getLensImageUrl } from "../../../lib/utils/images";
 import { ExtendedSeller } from "../../explore/WithAllOffers";
 import NotFound from "../../not-found/NotFound";
 import backgroundFluid from "../common/background-img.png";
@@ -51,7 +52,7 @@ const SellerCalculationContainer = styled.div`
 `;
 
 const LensTitle = styled(Typography)`
-  font-weight: bold;
+  font-weight: 600;
   margin: 0.5rem 0 0 0;
   color: ${colors.darkGrey};
   ${breakpoint.s} {
@@ -132,7 +133,7 @@ export default function Seller() {
   } = useCurrentSellers(lensTokenId ? { lensTokenId } : { sellerId });
   sellerId = sellersData?.length ? sellersData[0].id : sellerId;
   const [sellerLens] = sellersLens;
-  const coverImage = getImageUrl(getLensCoverPictureUrl(sellerLens));
+  const coverImage = getLensImageUrl(getLensCoverPictureUrl(sellerLens));
 
   const {
     data: sellers = [],
@@ -209,7 +210,7 @@ export default function Seller() {
   if (!isSellerExists) {
     return <NotFound />;
   }
-
+  const avatar = getLensImageUrl(getLensProfilePictureUrl(sellerLens));
   return (
     <>
       <BasicInfo>
@@ -219,7 +220,7 @@ export default function Seller() {
             <AvatarContainer>
               {(sellerLens?.picture as MediaSet) ? (
                 <StyledImage
-                  src={(sellerLens?.picture as MediaSet)?.original?.url}
+                  src={avatar}
                   style={{
                     width: "160px !important",
                     height: "160px !important",
@@ -253,16 +254,14 @@ export default function Seller() {
                   margin={!isLteXS ? "1rem 0 0 0" : "0.25rem 0 0.25rem 0"}
                   $fontSize={!isLteXS ? "2rem" : "1.675rem"}
                 >
-                  {sellerLens?.name || "Placeholder Name (work in progress)"}
+                  {sellerLens?.name}
                 </Typography>
                 <Grid
                   alignItems={!isLteXS ? "center" : "flex-start"}
                   justifyContent="flex-start"
                   flexDirection={!isLteXS ? "row" : "column"}
                 >
-                  <LensTitle tag="p">
-                    {sellerLens?.handle || "@placeholder.lens"}
-                  </LensTitle>
+                  <LensTitle tag="p">{sellerLens?.handle}</LensTitle>
                   <AddressContainer>
                     <AddressText address={currentSellerAddress} />
                   </AddressContainer>
@@ -315,7 +314,7 @@ export default function Seller() {
                     tag="p"
                     $fontSize={!isLteXS ? "1.25rem" : "1.7rem"}
                     margin="0"
-                    fontWeight="bold"
+                    fontWeight="600"
                   >
                     {(products?.[0]?.offers || [])?.length || 0}
                   </Typography>
@@ -333,7 +332,7 @@ export default function Seller() {
                     tag="p"
                     $fontSize={!isLteXS ? "1.25rem" : "1.7rem"}
                     margin="0"
-                    fontWeight="bold"
+                    fontWeight="600"
                   >
                     {exchanges?.length ?? 0}
                   </Typography>
@@ -351,7 +350,7 @@ export default function Seller() {
                     tag="p"
                     $fontSize={!isLteXS ? "1.25rem" : "1.7rem"}
                     margin="0"
-                    fontWeight="bold"
+                    fontWeight="600"
                   >
                     {owners}
                   </Typography>

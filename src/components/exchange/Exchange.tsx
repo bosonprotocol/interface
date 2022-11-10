@@ -21,7 +21,7 @@ import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { Exchange as IExchange } from "../../lib/utils/hooks/useExchanges";
 import { useHandleText } from "../../lib/utils/hooks/useHandleText";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import { getImageUrl } from "../../lib/utils/images";
+import { getImageUrl, getLensImageUrl } from "../../lib/utils/images";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import { getOfferDetailData } from "../detail/DetailWidget/DetailWidget";
 import { getLensProfilePictureUrl } from "../modal/components/CreateProfile/Lens/utils";
@@ -67,7 +67,7 @@ export default function Exchange({ offer, exchange, reload }: Props) {
     sellerId: offer?.seller?.id
   });
   const [lens] = lensProfiles;
-  const avatar = getImageUrl(getLensProfilePictureUrl(lens));
+  const avatar = getLensImageUrl(getLensProfilePictureUrl(lens));
 
   const { showModal, modalTypes } = useModal();
   const navigate = useKeepQueryParamsNavigate();

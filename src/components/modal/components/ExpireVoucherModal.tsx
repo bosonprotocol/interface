@@ -80,7 +80,7 @@ export default function ExpireVoucherModal({ exchange }: Props) {
       >
         <Typography
           tag="p"
-          fontWeight="bold"
+          fontWeight="600"
           textAlign="left"
           margin="0 0 0.25rem 0"
           style={{
