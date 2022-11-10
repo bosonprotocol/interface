@@ -496,12 +496,6 @@ export default function SellerProductsTable({
               onClick={() => {
                 if (offer) {
                   if (showVariant) {
-                    const expandedRow = rows.find(
-                      (elem) => elem.original.offerId === offer.id
-                    );
-                    if (expandedRow && !expandedRow.isExpanded) {
-                      toggleRowExpanded([expandedRow.id]);
-                    }
                     showModal(
                       modalTypes.VOID_PRODUCT,
                       {
@@ -584,7 +578,7 @@ export default function SellerProductsTable({
                   paddingLeft: row.original.isSubRow ? "2rem" : "0"
                 }}
                 onClick={() => {
-                  if (row.isExpanded) {
+                  if (!row.isExpanded) {
                     toggleRowExpanded([row.id]);
                   }
                 }}
@@ -727,8 +721,15 @@ export default function SellerProductsTable({
                         {...cell.getCellProps()}
                         key={`seller_table_tbody_td_${row.original.offerId}-${cell.column.id}`}
                         onClick={() => {
-                          if (hasSubRows && cell.column.id !== "action") {
-                            cell.row.toggleRowExpanded();
+                          if (hasSubRows) {
+                            console.log(cell, "cell");
+                            if (
+                              (!cell.row.isExpanded &&
+                                cell.column.id === "action") ||
+                              cell.column.id === "productName"
+                            ) {
+                              cell.row.toggleRowExpanded();
+                            }
                           } else if (
                             cell.column.id !== "action" &&
                             cell.column.id !== "selection" &&
