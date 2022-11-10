@@ -886,9 +886,26 @@ function CreateProductInner({
         });
         const txReceipt = await txResponse.wait();
         const offerIds = coreSDK.getCreatedOfferIdsFromLogs(txReceipt.logs);
+
         if (isTokenGated) {
           showModal("WAITING_FOR_CONFIRMATION");
-          const condition = buildCondition(commonTermsOfSale);
+          let decimals: number | undefined = undefined;
+          if (commonTermsOfSale?.tokenContract) {
+            try {
+              const { decimals: decimalsLocal } =
+                await coreSDK.getExchangeTokenInfo(
+                  commonTermsOfSale.tokenContract
+                );
+              decimals = decimalsLocal;
+            } catch (error) {
+              decimals = undefined;
+            }
+          }
+          const condition = buildCondition(commonTermsOfSale, decimals);
+          console.log(
+            "🚀  roberto --  ~ file: CreateProductInner.tsx ~ line 887 ~ handleSendData ~ condition",
+            condition
+          );
           if (isMetaTx) {
             const nonce = Date.now();
             const { r, s, v, functionName, functionSignature } =
@@ -993,7 +1010,19 @@ function CreateProductInner({
               nonce
             });
           } else {
-            const condition = buildCondition(commonTermsOfSale);
+            let decimals: number | undefined = undefined;
+            if (commonTermsOfSale?.tokenContract) {
+              try {
+                const { decimals: decimalsLocal } =
+                  await coreSDK.getExchangeTokenInfo(
+                    commonTermsOfSale.tokenContract
+                  );
+                decimals = decimalsLocal;
+              } catch (error) {
+                decimals = undefined;
+              }
+            }
+            const condition = buildCondition(commonTermsOfSale, decimals);
             const { r, s, v, functionName, functionSignature } =
               await coreSDK.signMetaTxCreateOfferWithCondition({
                 offerToCreate: offerData,
@@ -1011,7 +1040,19 @@ function CreateProductInner({
           }
         } else {
           if (isTokenGated) {
-            const condition = buildCondition(commonTermsOfSale);
+            let decimals: number | undefined = undefined;
+            if (commonTermsOfSale?.tokenContract) {
+              try {
+                const { decimals: decimalsLocal } =
+                  await coreSDK.getExchangeTokenInfo(
+                    commonTermsOfSale.tokenContract
+                  );
+                decimals = decimalsLocal;
+              } catch (error) {
+                decimals = undefined;
+              }
+            }
+            const condition = buildCondition(commonTermsOfSale, decimals);
             txResponse =
               !hasSellerAccount && seller
                 ? await coreSDK.createSellerAndOfferWithCondition(
