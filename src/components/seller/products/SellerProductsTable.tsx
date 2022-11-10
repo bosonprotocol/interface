@@ -280,11 +280,9 @@ export default function SellerProductsTable({
                     variantStatus === OffersKit.OfferState.EXPIRED ||
                     variantStatus === OffersKit.OfferState.VOIDED
                   ),
-                  image: (
+                  image: variant.metadata && "image" in variant.metadata && (
                     <Image
-                      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                      // @ts-ignore
-                      src={variant.metadata?.image}
+                      src={variant.metadata.image}
                       style={{
                         width: "2.5rem",
                         height: "2.5rem",
@@ -304,15 +302,15 @@ export default function SellerProductsTable({
                             marginLeft: "2rem"
                           }}
                         >
-                          {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-                          {/* @ts-ignore */}
-                          {variant?.metadata.uuid}
+                          {variant.metadata && "uuid" in variant.metadata
+                            ? variant.metadata.uuid
+                            : ""}
                         </Typography>
                       }
                     >
-                      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-                      {/* @ts-ignore */}
-                      {variant?.metadata.uuid.substring(0, 3) + "..."}
+                      {variant.metadata && "uuid" in variant.metadata
+                        ? variant.metadata.uuid.substring(0, 3) + "..."
+                        : ""}
                     </Tooltip>
                   ),
                   productName: (
@@ -501,14 +499,21 @@ export default function SellerProductsTable({
                     const expandedRow = rows.find(
                       (elem) => elem.original.offerId === offer.id
                     );
-                    if (expandedRow) {
+                    if (expandedRow && !expandedRow.isExpanded) {
                       toggleRowExpanded([expandedRow.id]);
                     }
                     showModal(
                       modalTypes.VOID_PRODUCT,
                       {
                         title: "Void Confirmation",
-                        offers: offer.additional?.variants as Offer[],
+                        offers: offer.additional?.variants.filter((variant) => {
+                          return ![
+                            OffersKit.OfferState.EXPIRED,
+                            OffersKit.OfferState.VOIDED
+                            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                            // @ts-ignore
+                          ].includes(variant.status);
+                        }) as Offer[],
                         refetch
                       },
                       "s"
@@ -578,7 +583,9 @@ export default function SellerProductsTable({
                   paddingLeft: row.original.isSubRow ? "2rem" : "0"
                 }}
                 onClick={() => {
-                  toggleRowExpanded([row.id]);
+                  if (row.isExpanded) {
+                    toggleRowExpanded([row.id]);
+                  }
                 }}
               />
             );
@@ -660,13 +667,13 @@ export default function SellerProductsTable({
 
           return null;
         })
-        .filter((n): boolean => n !== null)
-        .filter((n) => n?.voided !== true);
+        .filter((n): boolean => n !== null);
       setSelected(_.uniqBy(selectedOffers, "id") as (Offer | null)[]);
     } else {
       setSelected([]);
     }
   }, [selectedRowIds, subRows]); // eslint-disable-line
+
   return (
     <>
       <Table {...getTableProps()}>
