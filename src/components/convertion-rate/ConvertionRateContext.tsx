@@ -40,7 +40,7 @@ export const initalState: ConvertionRateContextType = {
       process.env.NODE_ENV === "development"
         ? MOCK_RATES
         : getItemFromStorage("convertionRates", null),
-    fixed: 2,
+    fixed: 20,
     isLoading: true
   } as const
 };

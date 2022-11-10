@@ -1,7 +1,8 @@
-import { BigNumber, utils } from "ethers";
+import { BigNumber } from "ethers";
 import { useFormikContext } from "formik";
 import styled from "styled-components";
 
+import { calcPrice } from "../../../../../../../lib/utils/calcPrice";
 import { useBreakpoints } from "../../../../../../../lib/utils/hooks/useBreakpoints";
 import { Exchange } from "../../../../../../../lib/utils/hooks/useExchanges";
 import { Input } from "../../../../../../form";
@@ -63,8 +64,8 @@ export default function RefundRequest({ exchange }: Props) {
   const { offer } = exchange;
   const { isLteS } = useBreakpoints();
   const decimals = Number(offer.exchangeToken.decimals);
-  const formatIntValueToDecimals = (value: string | BigNumber) => {
-    return utils.formatUnits(BigNumber.from(value), decimals);
+  const formatIntValueToDecimals = (value: string) => {
+    return calcPrice(value, decimals.toString());
   };
   const inEscrow: string = BigNumber.from(offer.price)
     .add(BigNumber.from(offer.sellerDeposit || "0"))
@@ -166,6 +167,7 @@ export default function RefundRequest({ exchange }: Props) {
                 BigNumber.from(inEscrow)
                   .mul(valueAsNumber * 1000)
                   .div(100 * 1000)
+                  .toString()
               );
               setFieldValue(
                 FormModel.formFields.refundAmount.name,

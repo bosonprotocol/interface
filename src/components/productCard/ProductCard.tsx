@@ -13,6 +13,7 @@ import { BosonRoutes, ProductRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { isTruthy } from "../../lib/types/helpers";
 import { Offer } from "../../lib/types/offer";
+import { displayFloat } from "../../lib/utils/calcPrice";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useHandleText } from "../../lib/utils/hooks/useHandleText";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
@@ -157,6 +158,7 @@ export default function ProductCard({
     offer?.additional &&
     offer?.additional?.variants?.length > 1 &&
     !allVariantsHaveSamePrice;
+
   return (
     <ProductCardWrapper $isCustomStoreFront={!!isCustomStoreFront}>
       {isTokenGated && (
@@ -186,7 +188,7 @@ export default function ProductCard({
             });
           }
         }}
-        price={Number(price?.price || 0)}
+        price={Number(displayFloat(price?.price || 0))}
         asterisk={hasVariantsWithDifferentPrice}
         tooltip={
           hasVariantsWithDifferentPrice

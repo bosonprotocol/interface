@@ -7,7 +7,6 @@ import styled from "styled-components";
 
 import DetailTable from "../../../components/detail/DetailTable";
 import { DetailDisputeResolver } from "../../../components/detail/DetailWidget/DetailDisputeResolver";
-import { DetailSellerDeposit } from "../../../components/detail/DetailWidget/DetailSellerDeposit";
 import {
   ModalTypes,
   ShowModalFn,
@@ -25,6 +24,7 @@ import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
 import { zIndex } from "../../../lib/styles/zIndex";
 import { Offer } from "../../../lib/types/offer";
+import { calcPercentage } from "../../../lib/utils/calcPrice";
 import {
   isExchangeCompletableByBuyer,
   isExchangeCompletableBySeller
@@ -187,6 +187,8 @@ const getOfferDetailData = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   showModal: ShowModalFn
 ) => {
+  const { deposit, formatted } = calcPercentage(offer, "sellerDeposit");
+
   const handleShowExchangePolicy = () => {
     if (modalTypes && showModal) {
       showModal(modalTypes.EXCHANGE_POLICY_DETAILS, {
@@ -200,9 +202,26 @@ const getOfferDetailData = (
 
   return [
     {
-      name: DetailSellerDeposit.name,
-      info: DetailSellerDeposit.info,
-      value: <DetailSellerDeposit.value offer={offer} />
+      name: "Seller deposit",
+      info: (
+        <>
+          <Typography tag="h6">
+            <b>Seller deposit</b>
+          </Typography>
+          <Typography tag="p">
+            The Seller deposit is used to hold the seller accountable to follow
+            through with their commitment to deliver the physical item. If the
+            seller breaks their commitment, the deposit will be transferred to
+            the buyer.
+          </Typography>
+        </>
+      ),
+      value: (
+        <Typography tag="p">
+          {formatted} {offer.exchangeToken.symbol}
+          <small>({deposit}%)</small>
+        </Typography>
+      )
     },
     {
       name: "Exchange policy",

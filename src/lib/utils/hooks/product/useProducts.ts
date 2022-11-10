@@ -105,7 +105,7 @@ export default function useProducts(
                 symbol: offer?.exchangeToken.symbol.toUpperCase(),
                 currency: CONFIG.defaultCurrency,
                 rates: store.rates,
-                fixed: 8
+                fixed: 20
               });
               return {
                 ...offer,
