@@ -3,6 +3,7 @@ import { House, WarningCircle } from "phosphor-react";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
+import Navigate from "../../components/customNavigation/Navigate";
 import {
   WithSellerData,
   WithSellerDataProps
@@ -45,12 +46,16 @@ const SellerCenterWithData = WithSellerData(SellerCenter);
 function SellerCenterWrapper() {
   const navigate = useKeepQueryParamsNavigate();
   const { isLoading, sellerIds, isSuccess } = useCurrentSellers();
-  const [selectedSellerId, setSelectedSellerId] = useState<string>("");
+  const [selectedSellerId, setSelectedSellerId] = useState<string>(
+    sellerIds?.length === 1 ? sellerIds[0] : ""
+  );
   useEffect(() => {
     if (isSuccess) {
       setSelectedSellerId(sellerIds.length === 1 ? sellerIds[0] : "");
     }
   }, [isSuccess, sellerIds]);
+
+  const isAccountSeller = !!selectedSellerId;
 
   if (isLoading) {
     return (
@@ -58,6 +63,10 @@ function SellerCenterWrapper() {
         <Loading />
       </Wrapper>
     );
+  }
+
+  if (!isAccountSeller) {
+    return <Navigate replace to={{ pathname: BosonRoutes.ClosedBeta }} />;
   }
 
   if (!sellerIds.length) {
