@@ -1,3 +1,4 @@
+import { EvaluationMethod, TokenType } from "@bosonprotocol/common";
 import { Lock } from "phosphor-react";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
@@ -43,7 +44,7 @@ interface TokenInfo {
 const buildMessage = (condition: Condition, tokenInfo: TokenInfo) => {
   const { method, tokenType, tokenId, tokenAddress, threshold } = condition;
 
-  if (tokenType === 0) {
+  if (tokenType === TokenType.FungibleToken) {
     return (
       <>
         {tokenInfo.convertedValue.price} {tokenInfo.symbol} tokens (
@@ -54,8 +55,8 @@ const buildMessage = (condition: Condition, tokenInfo: TokenInfo) => {
       </>
     );
   }
-  if (tokenType === 1) {
-    if (method === 1) {
+  if (tokenType === TokenType.NonFungibleToken) {
+    if (method === EvaluationMethod.Threshold) {
       return (
         <>
           {threshold} tokens from{" "}
@@ -68,7 +69,7 @@ const buildMessage = (condition: Condition, tokenInfo: TokenInfo) => {
         </>
       );
     }
-    if (method === 2) {
+    if (method === EvaluationMethod.SpecificToken) {
       return (
         <>
           Token ID: {tokenId} from{" "}
@@ -82,7 +83,7 @@ const buildMessage = (condition: Condition, tokenInfo: TokenInfo) => {
       );
     }
   }
-  if (tokenType === 2) {
+  if (tokenType === TokenType.MultiToken) {
     return (
       <>
         {threshold} x token(s) with id: {tokenId} from{" "}
@@ -106,12 +107,14 @@ const TokenGated = ({ offer }: Props) => {
 
   useEffect(() => {
     (async () => {
-      const { name, decimals, symbol } = await core.getExchangeTokenInfo(
-        offer.condition?.tokenAddress || ""
-      );
-      setTokenInfo({ name, decimals: decimals.toString(), symbol });
+      if (condition?.tokenAddress) {
+        const { name, decimals, symbol } = await core.getExchangeTokenInfo(
+          condition.tokenAddress
+        );
+        setTokenInfo({ name, decimals: decimals?.toString(), symbol });
+      }
     })();
-  }, [offer, core]);
+  }, [condition, core]);
 
   const convertedValue = useConvertedPrice({
     value: condition?.threshold || "",
