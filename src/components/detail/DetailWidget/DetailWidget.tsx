@@ -133,8 +133,13 @@ export const getOfferDetailData = (
   convertedPrice: IPrice | null,
   isModal: boolean,
   modalTypes?: ModalTypes,
-  showModal?: ShowModalFn
+  showModal?: ShowModalFn,
+  isExchange?: boolean
 ) => {
+  const redeemableFromDayJs = dayjs(
+    Number(`${offer.voucherRedeemableFromDate}000`)
+  );
+  const redeemableFrom = redeemableFromDayJs.format(CONFIG.dateFormat);
   const redeemableUntil = dayjs(
     Number(`${offer.voucherRedeemableUntilDate}000`)
   ).format(CONFIG.dateFormat);
@@ -165,8 +170,31 @@ export const getOfferDetailData = (
       console.error("modalTypes and/or showModal undefined");
     }
   };
-
+  const redeemableFromValues =
+    isExchange &&
+    offer.voucherRedeemableFromDate &&
+    redeemableFromDayJs.isAfter(Date.now())
+      ? [
+          {
+            name: "Redeemable from",
+            info: (
+              <>
+                <Typography tag="h6">
+                  <b>Redeemable</b>
+                </Typography>
+                <Typography tag="p">
+                  If you don’t redeem your NFT during the redemption period, it
+                  will expire and you will receive back the price minus the
+                  Buyer cancel penalty
+                </Typography>
+              </>
+            ),
+            value: <Typography tag="p">{redeemableFrom}</Typography>
+          }
+        ]
+      : [];
   return [
+    ...redeemableFromValues,
     {
       name: "Redeemable until",
       info: (
@@ -337,13 +365,27 @@ const DetailWidget: React.FC<IDetailWidget> = ({
 
   const OFFER_DETAIL_DATA = useMemo(
     () =>
-      getOfferDetailData(offer, convertedPrice, false, modalTypes, showModal),
-    [offer, convertedPrice, modalTypes, showModal]
+      getOfferDetailData(
+        offer,
+        convertedPrice,
+        false,
+        modalTypes,
+        showModal,
+        isExchange
+      ),
+    [offer, convertedPrice, modalTypes, showModal, isExchange]
   );
   const OFFER_DETAIL_DATA_MODAL = useMemo(
     () =>
-      getOfferDetailData(offer, convertedPrice, true, modalTypes, showModal),
-    [offer, convertedPrice, modalTypes, showModal]
+      getOfferDetailData(
+        offer,
+        convertedPrice,
+        true,
+        modalTypes,
+        showModal,
+        isExchange
+      ),
+    [offer, convertedPrice, modalTypes, showModal, isExchange]
   );
 
   const quantity = useMemo<number>(
