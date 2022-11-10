@@ -578,9 +578,7 @@ export default function SellerProductsTable({
                   paddingLeft: row.original.isSubRow ? "2rem" : "0"
                 }}
                 onClick={() => {
-                  if (!row.isExpanded) {
-                    toggleRowExpanded([row.id]);
-                  }
+                  row.toggleRowExpanded(true);
                 }}
               />
             );
@@ -604,7 +602,6 @@ export default function SellerProductsTable({
     previousPage,
     setPageSize,
     pageCount,
-    toggleRowExpanded,
     state: { pageIndex, pageSize, selectedRowIds }
   } = tableProps;
 
@@ -722,7 +719,6 @@ export default function SellerProductsTable({
                         key={`seller_table_tbody_td_${row.original.offerId}-${cell.column.id}`}
                         onClick={() => {
                           if (hasSubRows) {
-                            console.log(cell, "cell");
                             if (
                               (!cell.row.isExpanded &&
                                 cell.column.id === "action") ||
