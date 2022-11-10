@@ -8,16 +8,16 @@ import { CONFIG } from "../../../lib/config";
 import { AccountQueryParameters } from "../../../lib/routing/parameters";
 import { BosonRoutes } from "../../../lib/routing/routes";
 import { colors } from "../../../lib/styles/colors";
-import { getBuyerCancelPenalty } from "../../../lib/utils/getPrices";
+import { displayFloat } from "../../../lib/utils/calcPrice";
 import { useAddPendingTransaction } from "../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import useRefundData from "../../../lib/utils/hooks/useRefundData";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 import { poll } from "../../../pages/create-product/utils";
 import DetailTable from "../../detail/DetailTable";
 import SimpleError from "../../error/SimpleError";
 import { Spinner } from "../../loading/Spinner";
-import { useConvertedPrice } from "../../price/useConvertedPrice";
 import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
 import Typography from "../../ui/Typography";
@@ -51,39 +51,25 @@ const Line = styled.hr`
   border-bottom: 2px solid ${colors.black};
   margin: 1rem 0;
 `;
-const ConvertedValueWrapper = styled.span`
-  margin-left: 0.15rem;
-  font-weight: normal;
-`;
+
 interface Props {
   exchange: Exchange;
 }
 export default function ExpireVoucherModal({ exchange }: Props) {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [expireError, setExpireError] = useState<Error | null>(null);
+
   const coreSDK = useCoreSDK();
   const addPendingTransaction = useAddPendingTransaction();
   const { hideModal, showModal } = useModal();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [expireError, setExpireError] = useState<Error | null>(null);
   const { data: signer } = useSigner();
   const navigate = useKeepQueryParamsNavigate();
-  const convertedPrice = useConvertedPrice({
-    value: exchange.offer.price,
-    decimals: exchange.offer.exchangeToken.decimals,
-    symbol: exchange.offer.exchangeToken.symbol
-  });
-  const { buyerCancelationPenalty, convertedBuyerCancelationPenalty } =
-    getBuyerCancelPenalty(exchange.offer, convertedPrice);
 
-  const refund =
-    Number(exchange.offer.price) -
-    (Number(exchange.offer.price) * buyerCancelationPenalty) / 100;
+  const { currency, price, penalty, refund } = useRefundData(
+    exchange,
+    exchange.offer.price
+  );
 
-  const convertedRefund = useConvertedPrice({
-    value: refund.toString(),
-    decimals: exchange.offer.exchangeToken.decimals,
-    symbol: exchange.offer.exchangeToken.symbol
-  });
-  const showConvertedPrice = !!convertedPrice?.converted;
   return (
     <>
       <Grid
@@ -122,30 +108,34 @@ export default function ExpireVoucherModal({ exchange }: Props) {
           <DetailTable
             noBorder
             data={[
-              {
+              price && {
                 name: "Item price",
                 value: (
                   <>
-                    {convertedPrice.price} {exchange.offer.exchangeToken.symbol}
-                    {showConvertedPrice && (
-                      <ConvertedValueWrapper>
-                        ({convertedPrice.currency?.symbol}
-                        {convertedPrice?.converted})
-                      </ConvertedValueWrapper>
+                    {displayFloat(price.value)} {currency}
+                    {price.show ? (
+                      <small>
+                        ({price.converted.currency}{" "}
+                        {displayFloat(price.converted.value)})
+                      </small>
+                    ) : (
+                      ""
                     )}
                   </>
                 )
               },
-              {
+              penalty && {
                 name: "Buyer Cancel. Penalty",
                 value: (
                   <>
-                    -{buyerCancelationPenalty}%
-                    {showConvertedPrice && (
-                      <ConvertedValueWrapper>
-                        ({convertedRefund.currency?.symbol}
-                        {convertedBuyerCancelationPenalty})
-                      </ConvertedValueWrapper>
+                    -{displayFloat(penalty.value)}%
+                    {penalty.show ? (
+                      <small>
+                        ({penalty.converted.currency}{" "}
+                        {displayFloat(penalty.converted.value)})
+                      </small>
+                    ) : (
+                      ""
                     )}
                   </>
                 )
@@ -157,17 +147,18 @@ export default function ExpireVoucherModal({ exchange }: Props) {
             noBorder
             tag="strong"
             data={[
-              {
+              refund && {
                 name: "Your refund",
                 value: (
                   <>
-                    {convertedRefund.price}{" "}
-                    {exchange.offer.exchangeToken.symbol}
-                    {showConvertedPrice && (
-                      <ConvertedValueWrapper>
-                        ({convertedPrice.currency?.symbol}
-                        {convertedRefund?.converted})
-                      </ConvertedValueWrapper>
+                    {displayFloat(refund.value)} {currency}
+                    {refund.show ? (
+                      <small>
+                        ({refund.converted.currency}{" "}
+                        {displayFloat(refund.converted.value)})
+                      </small>
+                    ) : (
+                      ""
                     )}
                   </>
                 )

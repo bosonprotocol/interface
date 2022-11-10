@@ -17,12 +17,12 @@ import Carousel from "./Carousel";
 import Step from "./Step";
 
 const LandingPage = styled.div`
-  padding: 0 0.5rem 0 0.5rem;
+  padding: 2rem 0.5rem 0 0.5rem;
   ${breakpoint.m} {
-    padding: 0 2rem 0 2rem;
+    padding: 2rem 2rem 0 2rem;
   }
   ${breakpoint.xl} {
-    padding: 0 4rem 0 4rem;
+    padding: 2rem 5.5rem 0 5.5rem;
   }
 `;
 

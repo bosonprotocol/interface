@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 
 import { CONFIG } from "../../lib/config";
+import { displayFloat } from "../../lib/utils/calcPrice";
 import { IPrice } from "../../lib/utils/convertPrice";
 
 interface Props {
@@ -27,7 +28,7 @@ export default function ConvertedPrice({
             {CONFIG.defaultCurrency.symbol}
           </span>{" "}
           <span>
-            {price.converted}
+            {displayFloat(price?.converted)}
             {withParethensis ? ")" : ""}
           </span>
         </small>
