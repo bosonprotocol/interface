@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { buttonText } from "../../components/ui/styles";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
-import { getImageUrl } from "../../lib/utils/images";
+import { getImageUrl, ImageOptimizationOpts } from "../../lib/utils/images";
 import Typography from "./Typography";
 
 type LoadingStatus = "loading" | "success" | "error";
@@ -74,6 +74,7 @@ interface IImage {
   alt?: string;
   showPlaceholderText?: boolean;
   withLoading?: boolean;
+  optimizationOpts?: Partial<ImageOptimizationOpts>;
 }
 const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
   src,
@@ -82,6 +83,7 @@ const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
   alt = "",
   showPlaceholderText = true,
   withLoading,
+  optimizationOpts,
   ...rest
 }) => {
   const [status, setStatus] = useState<LoadingStatus>(
@@ -117,7 +119,7 @@ const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
         {children || ""}
         <ImageContainer
           data-testid={dataTestId}
-          src={getImageUrl(src)}
+          src={getImageUrl(src, optimizationOpts)}
           alt={alt}
           onLoad={() => setStatus("success")}
           onError={() => setStatus("error")}

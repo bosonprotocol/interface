@@ -71,7 +71,9 @@ export default function Exchange({ offer, exchange, reload }: Props) {
 
   const { showModal, modalTypes } = useModal();
   const navigate = useKeepQueryParamsNavigate();
-  const imageSrc = getImageUrl(offer.metadata.imageUrl);
+  const imageSrc = getImageUrl(offer.metadata.imageUrl, {
+    height: 500
+  });
   const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
   const { address } = useAccount();
   const isBuyer = exchange?.buyer.wallet === address?.toLowerCase();

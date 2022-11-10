@@ -69,6 +69,9 @@ export default function DetailSlider({ images }: Props) {
                   src={image}
                   style={{ paddingTop: "130%" }}
                   dataTestId="sliderImage"
+                  optimizationOpts={{
+                    height: 500
+                  }}
                 />
               </GlideSlide>
             ))}

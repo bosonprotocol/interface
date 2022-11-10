@@ -5,7 +5,7 @@ import { colors } from "../../../../../lib/styles/colors";
 import { getImageUrl } from "../../../../../lib/utils/images";
 
 function CollectionsCardImage({ imageSource }: any) {
-  const imageUrl = getImageUrl(imageSource);
+  const imageUrl = getImageUrl(imageSource, { height: 500 });
 
   const imageProps = {
     src: imageUrl,
