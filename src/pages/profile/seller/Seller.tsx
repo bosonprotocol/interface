@@ -141,7 +141,8 @@ export default function Seller() {
     isLoading: isLoadingSellers
   } = useSellers(
     {
-      id: sellerId
+      id: sellerId,
+      enableCurationList: false
     },
     {
       enabled: !!sellerId
