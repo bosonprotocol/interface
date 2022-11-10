@@ -3,6 +3,7 @@ import { House, WarningCircle } from "phosphor-react";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
+import Navigate from "../../components/customNavigation/Navigate";
 import {
   WithSellerData,
   WithSellerDataProps
@@ -18,6 +19,7 @@ import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { useSellerCurationListFn } from "../../lib/utils/hooks/useSellers";
 
 export const Wrapper = styled.div`
   text-align: center;
@@ -45,12 +47,23 @@ const SellerCenterWithData = WithSellerData(SellerCenter);
 function SellerCenterWrapper() {
   const navigate = useKeepQueryParamsNavigate();
   const { isLoading, sellerIds, isSuccess } = useCurrentSellers();
-  const [selectedSellerId, setSelectedSellerId] = useState<string>("");
+  const [selectedSellerId, setSelectedSellerId] = useState<string>(
+    sellerIds?.length === 1 ? sellerIds[0] : ""
+  );
   useEffect(() => {
     if (isSuccess) {
       setSelectedSellerId(sellerIds.length === 1 ? sellerIds[0] : "");
     }
   }, [isSuccess, sellerIds]);
+  const checkIfSellerIsInCurationList = useSellerCurationListFn();
+
+  const isAccountSeller = !!selectedSellerId;
+  const isSellerInCurationList =
+    checkIfSellerIsInCurationList(selectedSellerId);
+
+  if (isAccountSeller && !isSellerInCurationList) {
+    return <Navigate replace to={{ pathname: BosonRoutes.ClosedBeta }} />;
+  }
 
   if (isLoading) {
     return (
