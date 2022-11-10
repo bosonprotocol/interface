@@ -537,6 +537,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       hash,
       isMetaTx,
       accountType: "Buyer",
+      offerId: offer.id,
       offer: {
         id: offer.id
       }
@@ -575,7 +576,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
         }}
       />
     ));
-    removePendingTransaction(_receipt.transactionHash);
+    removePendingTransaction("hash", _receipt.transactionHash);
   };
   const onCommitError = (error: Error) => {
     console.error("onError", error);
@@ -594,6 +595,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
         ...BASE_MODAL_DATA
       });
     }
+    removePendingTransaction("offerId", offer.id);
   };
   const CommitProxyButton = () => {
     const disabled =

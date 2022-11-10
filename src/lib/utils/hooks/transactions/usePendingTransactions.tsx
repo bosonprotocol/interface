@@ -8,6 +8,7 @@ import { EventLog } from "../../transactions";
 type PendingTransaction = Omit<EventLog, "__typename" | "account"> & {
   accountType: "Buyer" | "Seller" | string;
   isMetaTx?: boolean;
+  offerId?: string;
   newHash?: string; // only exists on meta transactions after first reconcile
 };
 
@@ -17,7 +18,10 @@ type PendingTransactionsState = {
   isLoading: boolean;
   resetInitialReconcile: () => void;
   addPendingTransaction: (pendingTx: PendingTransaction) => void;
-  removePendingTransaction: (txHash: string) => void;
+  removePendingTransaction: (
+    key: keyof PendingTransaction,
+    value: string
+  ) => void;
   reconcilePendingTransactions: (coreSDK: CoreSDK) => Promise<void>;
 };
 
@@ -62,8 +66,8 @@ export function useRemovePendingTransaction() {
   const { removePendingTransaction } = usePendingTransactionsStore();
 
   const removePendingTx = useCallback(
-    (txHash: string) => {
-      removePendingTransaction(txHash);
+    (key: keyof PendingTransaction, value: string) => {
+      removePendingTransaction(key, value);
     },
     [removePendingTransaction]
   );
@@ -83,10 +87,12 @@ export const usePendingTransactionsStore = create<PendingTransactionsState>(
         ...state,
         transactions: [pendingTx, ...state.transactions]
       })),
-    removePendingTransaction: (txHash: string) =>
+    removePendingTransaction: (key: keyof PendingTransaction, value: string) =>
       set((state) => ({
         ...state,
-        transactions: [...state.transactions.filter((tx) => tx.hash !== txHash)]
+        transactions: [
+          ...state.transactions.filter((tx) => tx?.[key] !== value)
+        ]
       })),
     reconcilePendingTransactions: async (coreSDK: CoreSDK) => {
       set((state) => ({
