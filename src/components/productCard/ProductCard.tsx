@@ -2,7 +2,7 @@ import {
   Currencies,
   ProductCard as BosonProductCard
 } from "@bosonprotocol/react-kit";
-import { CameraSlash } from "phosphor-react";
+import { CameraSlash, Lock } from "phosphor-react";
 import { useMemo, useState } from "react";
 import { generatePath, useLocation } from "react-router-dom";
 import styled, { css } from "styled-components";
@@ -66,6 +66,8 @@ export default function ProductCard({
   isHoverDisabled = false,
   filterOptions
 }: Props) {
+  const isTokenGated = !!offer.condition?.id;
+
   const { lens: lensProfiles } = useCurrentSellers({
     sellerId: offer?.seller?.id
   });
@@ -157,6 +159,11 @@ export default function ProductCard({
     !allVariantsHaveSamePrice;
   return (
     <ProductCardWrapper $isCustomStoreFront={!!isCustomStoreFront}>
+      {isTokenGated && (
+        <LockIcon>
+          <Lock size={20} color={colors.grey} />
+        </LockIcon>
+      )}
       <BosonProductCard
         dataCard="product-card"
         dataTestId={dataTestId}
@@ -201,3 +208,19 @@ export default function ProductCard({
     </ProductCardWrapper>
   );
 }
+
+const LockIcon = styled.div`
+  position: absolute;
+  z-index: 4;
+  background-color: ${colors.white};
+  padding: 0.5rem;
+  border-radius: 50%;
+  border: 0.125rem solid ${colors.black};
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-top: 1.063rem;
+  margin-left: 1.063rem;
+  display: grid;
+  justify-content: center;
+  align-content: center;
+`;
