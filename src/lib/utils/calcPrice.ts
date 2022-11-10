@@ -47,12 +47,6 @@ export const calcPercentage = (offer: Offer, key: string) => {
           BigNumber.from(offer.exchangeToken.decimals)
         );
 
-    console.log({
-      offer,
-      percentage,
-      formatted,
-      value
-    });
     return {
       percentage: percentage || 0,
       deposit: displayFloat(percentage || 0),
