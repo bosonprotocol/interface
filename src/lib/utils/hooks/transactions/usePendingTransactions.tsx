@@ -1,4 +1,4 @@
-import { CoreSDK } from "@bosonprotocol/react-kit";
+import { CoreSDK, subgraph } from "@bosonprotocol/react-kit";
 import { useCallback } from "react";
 import { useAccount } from "wagmi";
 import create from "zustand";
@@ -17,6 +17,7 @@ type PendingTransactionsState = {
   isLoading: boolean;
   resetInitialReconcile: () => void;
   addPendingTransaction: (pendingTx: PendingTransaction) => void;
+  removePendingTransaction: (txHash: string) => void;
   reconcilePendingTransactions: (coreSDK: CoreSDK) => Promise<void>;
 };
 
@@ -57,6 +58,19 @@ export function useAddPendingTransaction() {
   return addPendingTx;
 }
 
+export function useRemovePendingTransaction() {
+  const { removePendingTransaction } = usePendingTransactionsStore();
+
+  const removePendingTx = useCallback(
+    (txHash: string) => {
+      removePendingTransaction(txHash);
+    },
+    [removePendingTransaction]
+  );
+
+  return removePendingTx;
+}
+
 export const usePendingTransactionsStore = create<PendingTransactionsState>(
   (set, get) => ({
     transactions: [],
@@ -69,17 +83,25 @@ export const usePendingTransactionsStore = create<PendingTransactionsState>(
         ...state,
         transactions: [pendingTx, ...state.transactions]
       })),
+    removePendingTransaction: (txHash: string) =>
+      set((state) => ({
+        ...state,
+        transactions: [...state.transactions.filter((tx) => tx.hash !== txHash)]
+      })),
     reconcilePendingTransactions: async (coreSDK: CoreSDK) => {
       set((state) => ({
         ...state,
         isLoading: true
       }));
 
+      const commitTransactions = get().transactions.filter(
+        (tx) => tx.type === subgraph.EventType.BuyerCommitted
+      );
       const pendingTransactions = get().transactions.filter(
-        (tx) => !tx.isMetaTx
+        (tx) => !tx.isMetaTx && tx.type !== subgraph.EventType.BuyerCommitted
       );
       const pendingMetaTransactions = get().transactions.filter(
-        (tx) => tx.isMetaTx
+        (tx) => tx.isMetaTx && tx.type !== subgraph.EventType.BuyerCommitted
       );
 
       const [reconciledPendingTransactions, reconciledPendingMetaTransactions] =
@@ -93,6 +115,7 @@ export const usePendingTransactionsStore = create<PendingTransactionsState>(
         didInitiallyReconcile: true,
         isLoading: false,
         transactions: [
+          ...commitTransactions,
           ...reconciledPendingTransactions,
           ...reconciledPendingMetaTransactions
         ].sort((a, b) => Number(b.timestamp) - Number(a.timestamp))
