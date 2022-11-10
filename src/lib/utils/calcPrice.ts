@@ -38,6 +38,7 @@ interface CalcPercentage {
   deposit: string;
   formatted: string;
 }
+const MUL_VALUE = 100000000;
 export const calcPercentage = (offer: Offer, key: string): CalcPercentage => {
   try {
     const value = offer?.[key as keyof Offer] || "0";
@@ -51,9 +52,9 @@ export const calcPercentage = (offer: Offer, key: string): CalcPercentage => {
     const percentage =
       offer.price === "0"
         ? 0
-        : (BigNumber.from(value).mul(1000000).div(offer.price).toNumber() /
-            1000000) *
-          10000;
+        : (BigNumber.from(value).mul(MUL_VALUE).div(offer.price).toNumber() /
+            MUL_VALUE) *
+          100;
 
     return {
       percentage: percentage || 0,
