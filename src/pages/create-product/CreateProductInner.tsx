@@ -342,6 +342,7 @@ function CreateProductInner({
     [productVariant]
   );
   const [currentStep, setCurrentStep] = useState<number>(FIRST_STEP);
+  const [decimals, setDecimals] = useState<number | undefined>(undefined);
 
   const [isPreviewVisible, setIsPreviewVisible] = useState<boolean>(false);
   const { showModal, modalTypes, hideModal } = useModal();
@@ -889,23 +890,19 @@ function CreateProductInner({
 
         if (isTokenGated) {
           showModal("WAITING_FOR_CONFIRMATION");
-          let decimals: number | undefined = undefined;
           if (commonTermsOfSale?.tokenContract) {
             try {
               const { decimals: decimalsLocal } =
                 await coreSDK.getExchangeTokenInfo(
                   commonTermsOfSale.tokenContract
                 );
-              decimals = decimalsLocal;
+              setDecimals(decimalsLocal);
             } catch (error) {
-              decimals = undefined;
+              setDecimals(undefined);
             }
           }
           const condition = buildCondition(commonTermsOfSale, decimals);
-          console.log(
-            "🚀  roberto --  ~ file: CreateProductInner.tsx ~ line 887 ~ handleSendData ~ condition",
-            condition
-          );
+
           if (isMetaTx) {
             const nonce = Date.now();
             const { r, s, v, functionName, functionSignature } =
@@ -1010,16 +1007,16 @@ function CreateProductInner({
               nonce
             });
           } else {
-            let decimals: number | undefined = undefined;
+            // let decimals: number | undefined = undefined;
             if (commonTermsOfSale?.tokenContract) {
               try {
                 const { decimals: decimalsLocal } =
                   await coreSDK.getExchangeTokenInfo(
                     commonTermsOfSale.tokenContract
                   );
-                decimals = decimalsLocal;
+                setDecimals(decimalsLocal);
               } catch (error) {
-                decimals = undefined;
+                setDecimals(undefined);
               }
             }
             const condition = buildCondition(commonTermsOfSale, decimals);
@@ -1040,16 +1037,16 @@ function CreateProductInner({
           }
         } else {
           if (isTokenGated) {
-            let decimals: number | undefined = undefined;
             if (commonTermsOfSale?.tokenContract) {
               try {
                 const { decimals: decimalsLocal } =
                   await coreSDK.getExchangeTokenInfo(
                     commonTermsOfSale.tokenContract
                   );
-                decimals = decimalsLocal;
+
+                setDecimals(decimalsLocal);
               } catch (error) {
-                decimals = undefined;
+                setDecimals(undefined);
               }
             }
             const condition = buildCondition(commonTermsOfSale, decimals);
@@ -1143,6 +1140,7 @@ function CreateProductInner({
       const coreTermsOfSaleKey = isMultiVariant
         ? "variantsCoreTermsOfSale"
         : "coreTermsOfSale";
+
       return {
         ...values,
         [coreTermsOfSaleKey]: {
@@ -1164,6 +1162,23 @@ function CreateProductInner({
     formikRef?.current?.validateForm();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOneSetOfImages]);
+
+  const getDecimalOnPreview = async (values: CreateProductForm) => {
+    const coreTermsOfSaleKey = isMultiVariant
+      ? "variantsCoreTermsOfSale"
+      : "coreTermsOfSale";
+    const tokenContract = values?.[coreTermsOfSaleKey]?.tokenContract;
+
+    if (tokenContract && tokenContract.length > 0) {
+      try {
+        const { decimals } = await coreSDK.getExchangeTokenInfo(tokenContract);
+        setDecimals(decimals);
+      } catch (error) {
+        setDecimals(undefined);
+      }
+    }
+  };
+
   return (
     <CreateProductWrapper>
       <MultiStepsContainer>
@@ -1191,6 +1206,8 @@ function CreateProductInner({
             if (productVariant !== values?.productType?.productVariant) {
               setProductVariant(values?.productType?.productVariant);
             }
+            getDecimalOnPreview(values);
+
             return (
               <Form onKeyPress={onKeyPress}>
                 {isPreviewVisible ? (
@@ -1202,6 +1219,7 @@ function CreateProductInner({
                     hasMultipleVariants={
                       !!values.productVariants.variants.length
                     }
+                    decimals={decimals}
                   />
                 ) : (
                   wizardStep.currentStep

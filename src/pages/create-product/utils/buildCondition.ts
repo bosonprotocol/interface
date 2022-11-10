@@ -10,28 +10,16 @@ export const buildCondition = (
   commonTermsOfSale: any,
   decimals?: number
 ): ConditionStruct => {
-  console.log(
-    "🚀  roberto --  ~ file: buildCondition.ts ~ line 13 ~ decimals",
-    decimals
-  );
-  console.log(
-    "🚀  roberto --  ~ file: buildCondition.ts ~ line 10 ~ buildCondition ~ commonTermsOfSale",
-    commonTermsOfSale
-  );
-
   let tokenType: TokenType = TokenType.FungibleToken;
   let method: EvaluationMethod = EvaluationMethod.None;
   let threshold;
   let tokenId = commonTermsOfSale.tokenId || "0";
 
-  let formatedValue = undefined;
+  let formatedValue = commonTermsOfSale.minBalance;
   if (decimals) {
+    console.log("inside the if");
     formatedValue = utils.parseUnits(commonTermsOfSale.minBalance, decimals);
   }
-  console.log(
-    "🚀  roberto --  ~ file: buildCondition.ts ~ line 28 ~ formatedValue",
-    formatedValue
-  );
 
   switch (commonTermsOfSale.tokenType.value) {
     case "erc1155":
@@ -54,7 +42,7 @@ export const buildCondition = (
     default:
       tokenType = TokenType.FungibleToken;
       method = EvaluationMethod.Threshold;
-      threshold = formatedValue || commonTermsOfSale.minBalance;
+      threshold = formatedValue;
       break;
   }
   return {
