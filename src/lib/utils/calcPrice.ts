@@ -24,7 +24,7 @@ export const displayFloat = (value: any): string => {
   }
 };
 
-export const calcPrice = (value: string, decimals: string) => {
+export const calcPrice = (value: string, decimals: string): string => {
   try {
     return utils.formatUnits(value, decimals);
   } catch (e) {
@@ -33,19 +33,27 @@ export const calcPrice = (value: string, decimals: string) => {
   }
 };
 
-export const calcPercentage = (offer: Offer, key: string) => {
+interface CalcPercentage {
+  percentage: number;
+  deposit: string;
+  formatted: string;
+}
+export const calcPercentage = (offer: Offer, key: string): CalcPercentage => {
   try {
     const value = offer?.[key as keyof Offer] || "0";
-    const percentage =
-      (BigNumber.from(value).mul(1000000).div(offer.price).toNumber() /
-        1000000) *
-      100;
     const formatted = BigNumber.from(value).eq(0)
       ? "0"
       : utils.formatUnits(
           BigNumber.from(value),
           BigNumber.from(offer.exchangeToken.decimals)
         );
+
+    const percentage =
+      offer.price === "0"
+        ? 0
+        : (BigNumber.from(value).mul(1000000).div(offer.price).toNumber() /
+            1000000) *
+          10000;
 
     return {
       percentage: percentage || 0,
@@ -55,9 +63,9 @@ export const calcPercentage = (offer: Offer, key: string) => {
   } catch (e) {
     console.error(e);
     return {
-      deposit: 0,
       percentage: 0,
-      formatted: 0
+      deposit: "0",
+      formatted: "0"
     };
   }
 };

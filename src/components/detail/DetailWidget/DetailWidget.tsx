@@ -210,7 +210,7 @@ export const getOfferDetailData = (
       value: (
         <Typography tag="p">
           {sellerFormatted} {offer.exchangeToken.symbol}
-          <small>({sellerDeposit}%)</small>
+          {sellerDeposit !== "0" ? <small>({sellerDeposit}%)</small> : ""}
         </Typography>
       )
     },
@@ -230,7 +230,7 @@ export const getOfferDetailData = (
       value: (
         <Typography tag="p">
           {formatted} {offer.exchangeToken.symbol}
-          <small>({deposit}%)</small>
+          {deposit !== "0" ? <small>({deposit}%)</small> : ""}
         </Typography>
       )
     },
