@@ -507,12 +507,13 @@ export default function SellerProductsTable({
                       {
                         title: "Void Confirmation",
                         offers: offer.additional?.variants.filter((variant) => {
-                          return ![
-                            OffersKit.OfferState.EXPIRED,
-                            OffersKit.OfferState.VOIDED
-                            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                            // @ts-ignore
-                          ].includes(variant.status);
+                          variant.validUntilDate;
+                          return (
+                            !variant.voided &&
+                            !dayjs(
+                              getDateTimestamp(offer?.validUntilDate)
+                            ).isBefore(dayjs())
+                          );
                         }) as Offer[],
                         refetch
                       },
