@@ -151,7 +151,12 @@ const TokenGated = ({
             <>
               <LockInfoDesc>You must hold token(s) from</LockInfoDesc>
               <LockInfoDesc>
-                {openseaLinkToOriginalMainnetCollection}
+                <a
+                  href={openseaLinkToOriginalMainnetCollection}
+                  target="_blank"
+                >
+                  {openseaLinkToOriginalMainnetCollection}
+                </a>
               </LockInfoDesc>
             </>
           ) : (
