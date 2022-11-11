@@ -10,10 +10,11 @@ import { IPrice } from "../../../lib/utils/convertPrice";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 import { useConvertedPrice } from "../../price/useConvertedPrice";
 import Grid from "../../ui/Grid";
-// import { useConvertedPriceFunction } from "../../price/useConvertedPriceFunction";
 
 interface Props {
   offer: Offer;
+  commitProxyAddress?: string;
+  openseaLinkToOriginalMainnetCollection?: string;
 }
 
 interface Condition {
@@ -96,7 +97,11 @@ const buildMessage = (condition: Condition, tokenInfo: TokenInfo) => {
   return "";
 };
 
-const TokenGated = ({ offer }: Props) => {
+const TokenGated = ({
+  offer,
+  commitProxyAddress,
+  openseaLinkToOriginalMainnetCollection
+}: Props) => {
   const { condition } = offer;
   const core = useCoreSDK();
   const [tokenInfo, setTokenInfo] = useState({
@@ -142,10 +147,21 @@ const TokenGated = ({ offer }: Props) => {
 
         <LockInfo>
           <LockInfoTitle>Token Gated Offer</LockInfoTitle>
-          <LockInfoDesc>
-            You need to own the following token(s) to Commit:
-          </LockInfoDesc>
-          <LockInfoDesc>{displayMessage}</LockInfoDesc>
+          {commitProxyAddress && openseaLinkToOriginalMainnetCollection ? (
+            <>
+              <LockInfoDesc>You must hold token(s) from</LockInfoDesc>
+              <LockInfoDesc>
+                {openseaLinkToOriginalMainnetCollection}
+              </LockInfoDesc>
+            </>
+          ) : (
+            <>
+              <LockInfoDesc>
+                You need to own the following token(s) to Commit:
+              </LockInfoDesc>
+              <LockInfoDesc>{displayMessage}</LockInfoDesc>
+            </>
+          )}
         </LockInfo>
       </TokenGatedInfo>
     </Grid>
