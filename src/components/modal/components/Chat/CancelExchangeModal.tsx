@@ -7,15 +7,15 @@ import { useSigner } from "wagmi";
 
 import { CONFIG } from "../../../../lib/config";
 import { colors } from "../../../../lib/styles/colors";
-import { getBuyerCancelPenalty } from "../../../../lib/utils/getPrices";
+import { displayFloat } from "../../../../lib/utils/calcPrice";
 import { useAddPendingTransaction } from "../../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { Exchange } from "../../../../lib/utils/hooks/useExchanges";
+import useRefundData from "../../../../lib/utils/hooks/useRefundData";
 import { useCoreSDK } from "../../../../lib/utils/useCoreSdk";
 import { poll } from "../../../../pages/create-product/utils";
 import DetailTable from "../../../detail/DetailTable";
 import SimpleError from "../../../error/SimpleError";
 import { Spinner } from "../../../loading/Spinner";
-import { useConvertedPrice } from "../../../price/useConvertedPrice";
 import SuccessTransactionToast from "../../../toasts/SuccessTransactionToast";
 import Button from "../../../ui/Button";
 import Grid from "../../../ui/Grid";
@@ -108,50 +108,56 @@ export default function CancelExchangeModal({
   BASE_MODAL_DATA,
   reload
 }: Props) {
-  const coreSDK = useCoreSDK();
-  const addPendingTransaction = useAddPendingTransaction();
-  const { offer } = exchange;
-  const { data: signer } = useSigner();
-  const { showModal, modalTypes } = useModal();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [cancelError, setCancelError] = useState<Error | null>(null);
-  const convertedPrice = useConvertedPrice({
-    value: offer.price,
-    decimals: offer.exchangeToken.decimals,
-    symbol: offer.exchangeToken.symbol
-  });
+  const { offer } = exchange;
 
-  const { buyerCancelationPenalty, convertedBuyerCancelationPenalty } =
-    getBuyerCancelPenalty(offer, convertedPrice);
+  const coreSDK = useCoreSDK();
+  const addPendingTransaction = useAddPendingTransaction();
+  const { data: signer } = useSigner();
+  const { showModal, modalTypes } = useModal();
 
-  const refund =
-    Number(offer.price) - (Number(offer.price) * buyerCancelationPenalty) / 100;
-  const convertedRefund = useConvertedPrice({
-    value: refund.toString(),
-    decimals: offer.exchangeToken.decimals,
-    symbol: offer.exchangeToken.symbol
-  });
-  const showConvertedPrice = !!convertedPrice?.converted;
+  const { currency, price, penalty, refund } = useRefundData(
+    exchange,
+    exchange.offer.price
+  );
+
   return (
     <>
       <DetailTable
         noBorder
         data={[
-          {
+          price && {
             name: "Item price",
-            value: `${convertedPrice.price} ${offer.exchangeToken.symbol} ${
-              showConvertedPrice
-                ? `(${convertedPrice.currency?.symbol} ${convertedPrice?.converted})`
-                : ""
-            }`
+            value: (
+              <>
+                {displayFloat(price.value)} {currency}
+                {price.show ? (
+                  <small>
+                    ({price.converted.currency}{" "}
+                    {displayFloat(price.converted.value)})
+                  </small>
+                ) : (
+                  ""
+                )}
+              </>
+            )
           },
-          {
+          penalty && {
             name: "Buyer Cancel. Penalty",
-            value: `-${buyerCancelationPenalty}% ${
-              showConvertedPrice
-                ? `(${convertedRefund.currency?.symbol} ${convertedBuyerCancelationPenalty})`
-                : ""
-            }`
+            value: (
+              <>
+                -{displayFloat(penalty.value)}%
+                {penalty.show ? (
+                  <small>
+                    ({penalty.converted.currency}{" "}
+                    {displayFloat(penalty.converted.value)})
+                  </small>
+                ) : (
+                  ""
+                )}
+              </>
+            )
           }
         ]}
       />
@@ -160,13 +166,21 @@ export default function CancelExchangeModal({
         noBorder
         tag="strong"
         data={[
-          {
+          refund && {
             name: "Your refund",
-            value: `${convertedRefund.price} ${offer.exchangeToken.symbol} ${
-              showConvertedPrice
-                ? `(${convertedPrice.currency?.symbol} ${convertedRefund?.converted})`
-                : ""
-            }`
+            value: (
+              <>
+                {displayFloat(refund.value)} {currency}
+                {refund.show ? (
+                  <small>
+                    ({refund.converted.currency}{" "}
+                    {displayFloat(refund.converted.value)})
+                  </small>
+                ) : (
+                  ""
+                )}
+              </>
+            )
           }
         ]}
       />

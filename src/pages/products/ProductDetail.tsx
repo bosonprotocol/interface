@@ -1,3 +1,4 @@
+import { BigNumber } from "ethers";
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -92,11 +93,12 @@ export default function ProductDetail() {
   const sellerAvailableDeposit = sellers?.[0]?.funds?.find(
     (fund) => fund.token.address === selectedOffer?.exchangeToken.address
   )?.availableAmount;
-  const offerRequiredDeposit = Number(selectedOffer?.sellerDeposit || 0);
-  const hasSellerEnoughFunds =
-    offerRequiredDeposit > 0
-      ? Number(sellerAvailableDeposit) >= offerRequiredDeposit
-      : true;
+  const offerRequiredDeposit = BigNumber.from(
+    selectedOffer?.sellerDeposit || 0
+  );
+  const hasSellerEnoughFunds = offerRequiredDeposit.gt(0)
+    ? BigNumber.from(sellerAvailableDeposit || 0).gte(offerRequiredDeposit)
+    : true;
 
   if (isLoading) {
     return <Loading />;

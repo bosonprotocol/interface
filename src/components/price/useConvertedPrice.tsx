@@ -1,7 +1,7 @@
-import { BigNumber, utils } from "ethers";
 import { useContext, useEffect, useMemo, useState } from "react";
 
 import { CONFIG } from "../../lib/config";
+import { calcPrice } from "../../lib/utils/calcPrice";
 import {
   convertPrice,
   IPrice,
@@ -23,14 +23,7 @@ export const useConvertedPrice = ({
   const [convertedPrice, setConvertedPrice] =
     useState<IPricePassedAsAProp | null>(null);
 
-  const price = useMemo(() => {
-    try {
-      return utils.formatUnits(BigNumber.from(value), Number(decimals));
-    } catch (e) {
-      console.error(e);
-      return null;
-    }
-  }, [value, decimals]);
+  const price = useMemo(() => calcPrice(value, decimals), [value, decimals]);
 
   useEffect(() => {
     const newPrice = convertPrice({
