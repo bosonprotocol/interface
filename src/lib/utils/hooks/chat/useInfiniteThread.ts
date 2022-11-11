@@ -1,8 +1,8 @@
 import {
   ThreadId,
   ThreadObject
-} from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/definitions";
-import { validateMessage } from "@bosonprotocol/chat-sdk/dist/cjs/util/validators";
+} from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
+import { validateMessage } from "@bosonprotocol/chat-sdk/dist/esm/util/validators";
 import { createWorkerFactory, useWorker } from "@shopify/react-web-worker";
 import { utils } from "ethers";
 import { useCallback, useEffect, useState } from "react";

@@ -3,7 +3,7 @@ import {
   MessageType,
   ProposalContent,
   StringContent
-} from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/definitions";
+} from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { BigNumber, utils } from "ethers";
 import { ArrowRight, Check, Clock } from "phosphor-react";
 import React, { forwardRef, ReactNode } from "react";

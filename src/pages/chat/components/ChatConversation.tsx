@@ -1,11 +1,11 @@
-import { BosonXmtpClient } from "@bosonprotocol/chat-sdk";
+import { BosonXmtpClient } from "@bosonprotocol/chat-sdk/dist/esm/index";
 import {
   MessageData,
   MessageType,
   ThreadId,
   version
-} from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/definitions";
-import { validateMessage } from "@bosonprotocol/chat-sdk/dist/cjs/util/validators";
+} from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
+import { validateMessage } from "@bosonprotocol/chat-sdk/dist/esm/util/validators";
 import { subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import dayjs from "dayjs";

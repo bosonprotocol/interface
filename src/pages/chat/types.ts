@@ -2,7 +2,7 @@ import {
   MessageData,
   ProposalContent,
   ThreadObject
-} from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/definitions";
+} from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 
 import type SellerID from "../../components/ui/SellerID";
 import { Exchange } from "../../lib/utils/hooks/useExchanges";

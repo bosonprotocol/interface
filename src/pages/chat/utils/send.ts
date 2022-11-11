@@ -8,7 +8,7 @@ import {
   SupportedFileMimeTypes,
   ThreadId,
   version
-} from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/definitions";
+} from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { utils } from "ethers";
 
 import { FileWithEncodedData } from "../../../lib/utils/files";
