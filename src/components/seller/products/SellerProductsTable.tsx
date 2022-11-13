@@ -13,6 +13,7 @@ import { generatePath } from "react-router-dom";
 import {
   CellProps,
   useExpanded,
+  useFlexLayout,
   usePagination,
   useRowSelect,
   useSortBy,
@@ -53,6 +54,8 @@ const VoidButton = styled(BosonButton)`
   }
 `;
 
+const StyledCheckboxWrapper = styled(CheckboxWrapper)``;
+
 interface Props {
   offers: (ExtendedOffer | null)[];
   isError: boolean;
@@ -92,7 +95,7 @@ const IndeterminateCheckbox = forwardRef<
     }, [resolvedRef, indeterminate]);
 
     return (
-      <CheckboxWrapper htmlFor={checkboxId} style={style}>
+      <StyledCheckboxWrapper htmlFor={checkboxId} style={style}>
         <input
           hidden
           id={checkboxId}
@@ -104,7 +107,7 @@ const IndeterminateCheckbox = forwardRef<
         <div>
           <Check size={16} />
         </div>
-      </CheckboxWrapper>
+      </StyledCheckboxWrapper>
     );
   }
 );
@@ -121,10 +124,18 @@ const Table = styled.table`
     [data-sortable] {
       cursor: pointer !important;
     }
+    td {
+      &:nth-of-type(1) {
+        max-width: 100px;
+      }
+    }
   }
   td {
     font-weight: 400;
     color: ${colors.black};
+    &:nth-of-type(1) {
+      max-width: 40px;
+    }
   }
   th,
   td {
@@ -145,6 +156,15 @@ const Table = styled.table`
         &:last-child {
           text-align: right;
         }
+        &:nth-of-type(1) {
+          max-width: 50px;
+        }
+        &:nth-of-type(2) {
+          width: 20px !important;
+        }
+        &:nth-of-type(3) {
+          width: min-content !important;
+        }
       }
     }
   }
@@ -164,10 +184,22 @@ const Table = styled.table`
       td {
         text-align: left;
         padding: 0.5rem;
+        align-items: center;
+        display: flex;
+        &:nth-of-type(2) {
+          width: min-content !important;
+        }
+        &:nth-of-type(3) {
+          width: min-content !important;
+        }
+        &:nth-of-type(4) {
+          width: min-content !important;
+        }
         &:first-child {
         }
         &:last-child {
-          text-align: right;
+          display: flex;
+          justify-content: flex-end;
           > button {
             display: inline-block;
           }
@@ -287,7 +319,8 @@ export default function SellerProductsTable({
                         width: "2.5rem",
                         height: "2.5rem",
                         paddingTop: "0%",
-                        fontSize: "0.75rem"
+                        fontSize: "0.75rem",
+                        marginLeft: "35px"
                       }}
                       showPlaceholderText={false}
                     />
@@ -308,15 +341,22 @@ export default function SellerProductsTable({
                         </Typography>
                       }
                     >
-                      {variant.metadata && "uuid" in variant.metadata
-                        ? variant.metadata.uuid.substring(0, 3) + "..."
-                        : ""}
+                      <Typography
+                        $fontSize="0.75rem"
+                        style={{
+                          paddingLeft: "2rem"
+                        }}
+                      >
+                        {variant.metadata && "uuid" in variant.metadata
+                          ? variant.metadata.uuid.substring(0, 3) + "..."
+                          : ""}
+                      </Typography>
                     </Tooltip>
                   ),
                   productName: (
                     <Typography
                       style={{
-                        marginLeft: "2rem"
+                        textTransform: "uppercase"
                       }}
                       tag="p"
                     >
@@ -551,6 +591,7 @@ export default function SellerProductsTable({
     useExpanded,
     usePagination,
     useRowSelect,
+    useFlexLayout,
     (hooks) => {
       hooks.visibleColumns.push((columns) => [
         {
@@ -567,7 +608,7 @@ export default function SellerProductsTable({
                 <IndeterminateCheckbox
                   disabled
                   style={{
-                    paddingLeft: row.original.isSubRow ? "2rem" : "0"
+                    paddingLeft: row.original.isSubRow ? "2.375rem" : "0"
                   }}
                 />
               </>
@@ -575,7 +616,8 @@ export default function SellerProductsTable({
               <IndeterminateCheckbox
                 {...row.getToggleRowSelectedProps()}
                 style={{
-                  paddingLeft: row.original.isSubRow ? "2rem" : "0"
+                  paddingLeft: row.original.isSubRow ? "2.375rem" : "0",
+                  width: "100px"
                 }}
                 onClick={() => {
                   row.toggleRowExpanded(true);
