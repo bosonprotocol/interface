@@ -1,6 +1,6 @@
 import { EvaluationMethod, TokenType } from "@bosonprotocol/common";
-import { Lock } from "phosphor-react";
-import { useEffect, useState } from "react";
+import { Check, Lock } from "phosphor-react";
+import { CSSProperties, useEffect, useState } from "react";
 import styled from "styled-components";
 
 import { CONFIG } from "../../../lib/config";
@@ -15,6 +15,8 @@ interface Props {
   offer: Offer;
   commitProxyAddress?: string;
   openseaLinkToOriginalMainnetCollection?: string;
+  isConditionMet?: boolean;
+  style?: CSSProperties;
 }
 
 interface Condition {
@@ -100,7 +102,9 @@ const buildMessage = (condition: Condition, tokenInfo: TokenInfo) => {
 const TokenGated = ({
   offer,
   commitProxyAddress,
-  openseaLinkToOriginalMainnetCollection
+  openseaLinkToOriginalMainnetCollection,
+  isConditionMet,
+  style
 }: Props) => {
   const { condition } = offer;
   const core = useCoreSDK();
@@ -136,12 +140,17 @@ const TokenGated = ({
   });
 
   return (
-    <Grid as="section" padding="0 0">
+    <Grid as="section" padding="0 0" style={style}>
       <TokenGatedInfo>
         <TokenIconWrapper>
-          <TokenIcon />
-          <LockIcon>
-            <Lock size={25} color={colors.grey} />
+          <TokenIcon $conditionMet={isConditionMet} />
+
+          <LockIcon $conditionMet={isConditionMet}>
+            {isConditionMet ? (
+              <Check size={25} color={colors.black} />
+            ) : (
+              <Lock size={25} color={colors.grey} />
+            )}
           </LockIcon>
         </TokenIconWrapper>
 
@@ -149,7 +158,9 @@ const TokenGated = ({
           <LockInfoTitle>Token Gated Offer</LockInfoTitle>
           {commitProxyAddress && openseaLinkToOriginalMainnetCollection ? (
             <>
-              <LockInfoDesc>You must hold token(s) from</LockInfoDesc>
+              <LockInfoDesc>
+                You {!isConditionMet && " must "} hold token(s) from
+              </LockInfoDesc>
               <LockInfoDesc>
                 <a
                   href={openseaLinkToOriginalMainnetCollection}
@@ -162,7 +173,8 @@ const TokenGated = ({
           ) : (
             <>
               <LockInfoDesc>
-                You need to own the following token(s) to Commit:
+                You {!isConditionMet && " need to "} own the following token(s)
+                to Commit:
               </LockInfoDesc>
               <LockInfoDesc>{displayMessage}</LockInfoDesc>
             </>
@@ -189,7 +201,7 @@ const TokenIconWrapper = styled.div`
   display: flex;
 `;
 
-const LockIcon = styled.div`
+const LockIcon = styled.div<{ $conditionMet?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -199,11 +211,13 @@ const LockIcon = styled.div`
   width: 3rem;
   height: 3rem;
   border-radius: 50%;
-  background-color: ${colors.white};
+  background-color: ${({ $conditionMet }) =>
+    $conditionMet ? colors.green : colors.white};
 `;
 
-const TokenIcon = styled.div`
-  background-color: ${colors.white};
+const TokenIcon = styled.div<{ $conditionMet?: boolean }>`
+  background-color: ${({ $conditionMet }) =>
+    $conditionMet ? colors.green : colors.white};
   padding: 0.5rem;
   z-index: 3;
   position: relative;
@@ -212,7 +226,8 @@ const TokenIcon = styled.div`
   width: 3rem;
   height: 3rem;
   border-radius: 50%;
-  background-color: ${colors.white};
+  background-color: ${({ $conditionMet }) =>
+    $conditionMet ? colors.green : colors.white};
 `;
 
 const LockInfo = styled.div`
