@@ -30,6 +30,7 @@ import { calcPercentage, displayFloat } from "../../../lib/utils/calcPrice";
 import { IPrice } from "../../../lib/utils/convertPrice";
 import { titleCase } from "../../../lib/utils/formatText";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
+import useCheckTokenGatedOffer from "../../../lib/utils/hooks/offer/useCheckTokenGatedOffer";
 import { useAddPendingTransaction } from "../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { useBuyerSellerAccounts } from "../../../lib/utils/hooks/useBuyerSellerAccounts";
@@ -493,6 +494,10 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   );
   const sellerCurationList = useCustomStoreQueryParameter("sellerCurationList");
   const offerCurationList = useCustomStoreQueryParameter("offerCurationList");
+  const { isConditionMet } = useCheckTokenGatedOffer({
+    commitProxyAddress,
+    condition: offer.condition
+  });
   const numSellers = new Set(
     sellerCurationList
       .split(",")
@@ -518,7 +523,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     isVoidedOffer ||
     isPreview ||
     isOfferNotValidYet ||
-    isBuyerInsufficientFunds;
+    isBuyerInsufficientFunds ||
+    (offer.condition && !isConditionMet);
   const onCommitPendingSignature = () => {
     setIsLoading(true);
     showModal("WAITING_FOR_CONFIRMATION");
@@ -599,14 +605,16 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       !offer.condition ||
       !commitProxyAddress ||
       !bosonSnapshotGateAbi.abi ||
-      isCommitDisabled;
+      isCommitDisabled ||
+      (offer.condition && !isConditionMet);
     const onClick = async () => {
       if (
         !signer ||
         !offer.condition ||
         !commitProxyAddress ||
         !bosonSnapshotGateAbi.abi ||
-        isCommitDisabled
+        isCommitDisabled ||
+        (offer.condition && !isConditionMet)
       ) {
         return;
       }
@@ -672,7 +680,6 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       </BosonButton>
     );
   };
-
   return (
     <>
       <Widget>
@@ -874,6 +881,16 @@ const DetailWidget: React.FC<IDetailWidget> = ({
           )}
         </Grid>
         <Break />
+        {isConditionMet && offer.condition && (
+          <TokenGated
+            offer={offer}
+            commitProxyAddress={commitProxyAddress}
+            openseaLinkToOriginalMainnetCollection={
+              openseaLinkToOriginalMainnetCollection
+            }
+            isConditionMet
+          />
+        )}
         <div>
           <DetailTable
             align
@@ -943,13 +960,14 @@ const DetailWidget: React.FC<IDetailWidget> = ({
             </Grid>
           </>
         )}
-        {offer.condition && (
+        {!isConditionMet && offer.condition && (
           <TokenGated
             offer={offer}
             commitProxyAddress={commitProxyAddress}
             openseaLinkToOriginalMainnetCollection={
               openseaLinkToOriginalMainnetCollection
             }
+            isConditionMet={false}
           />
         )}
       </Widget>
