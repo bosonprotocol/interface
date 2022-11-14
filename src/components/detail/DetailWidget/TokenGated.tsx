@@ -1,5 +1,5 @@
 import { EvaluationMethod, TokenType } from "@bosonprotocol/common";
-import { Check, Lock } from "phosphor-react";
+import { Check, X } from "phosphor-react";
 import { CSSProperties, useEffect, useState } from "react";
 import styled from "styled-components";
 
@@ -145,13 +145,13 @@ const TokenGated = ({
         <TokenIconWrapper>
           <TokenIcon $conditionMet={isConditionMet} />
 
-          <LockIcon $conditionMet={isConditionMet}>
+          <IconWrapper $conditionMet={isConditionMet}>
             {isConditionMet ? (
               <Check size={25} color={colors.black} />
             ) : (
-              <Lock size={25} color={colors.grey} />
+              <X size={25} color={colors.red} />
             )}
-          </LockIcon>
+          </IconWrapper>
         </TokenIconWrapper>
 
         <LockInfo>
@@ -201,33 +201,33 @@ const TokenIconWrapper = styled.div`
   display: flex;
 `;
 
-const LockIcon = styled.div<{ $conditionMet?: boolean }>`
+const IconWrapper = styled.div<{ $conditionMet?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0.5rem;
   z-index: 5;
-  border: 0.125rem solid ${colors.black};
+  border: 0.125rem solid
+    ${({ $conditionMet }) => ($conditionMet ? colors.black : colors.red)};
   width: 3rem;
   height: 3rem;
   border-radius: 50%;
   background-color: ${({ $conditionMet }) =>
-    $conditionMet ? colors.green : colors.white};
+    $conditionMet ? colors.green : colors.black};
 `;
 
 const TokenIcon = styled.div<{ $conditionMet?: boolean }>`
   background-color: ${({ $conditionMet }) =>
-    $conditionMet ? colors.green : colors.white};
+    $conditionMet ? colors.green : colors.black};
   padding: 0.5rem;
   z-index: 3;
   position: relative;
   left: 1.375rem;
-  border: 0.125rem solid ${colors.black};
+  border: 0.125rem solid
+    ${({ $conditionMet }) => ($conditionMet ? colors.black : colors.red)};
   width: 3rem;
   height: 3rem;
   border-radius: 50%;
-  background-color: ${({ $conditionMet }) =>
-    $conditionMet ? colors.green : colors.white};
 `;
 
 const LockInfo = styled.div`
