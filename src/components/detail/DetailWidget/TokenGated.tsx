@@ -1,6 +1,6 @@
 import { EvaluationMethod, TokenType } from "@bosonprotocol/common";
 import { Check, Lock } from "phosphor-react";
-import { useEffect, useState } from "react";
+import { CSSProperties, useEffect, useState } from "react";
 import styled from "styled-components";
 
 import { CONFIG } from "../../../lib/config";
@@ -16,6 +16,7 @@ interface Props {
   commitProxyAddress?: string;
   openseaLinkToOriginalMainnetCollection?: string;
   isConditionMet?: boolean;
+  style?: CSSProperties;
 }
 
 interface Condition {
@@ -102,7 +103,8 @@ const TokenGated = ({
   offer,
   commitProxyAddress,
   openseaLinkToOriginalMainnetCollection,
-  isConditionMet
+  isConditionMet,
+  style
 }: Props) => {
   const { condition } = offer;
   const core = useCoreSDK();
@@ -138,7 +140,7 @@ const TokenGated = ({
   });
 
   return (
-    <Grid as="section" padding="0 0">
+    <Grid as="section" padding="0 0" style={style}>
       <TokenGatedInfo>
         <TokenIconWrapper>
           <TokenIcon $conditionMet={isConditionMet} />

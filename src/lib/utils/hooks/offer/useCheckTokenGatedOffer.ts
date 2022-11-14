@@ -36,12 +36,11 @@ export default function useCheckTokenGatedOffer({
             commitProxyAddress,
             signer
           );
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const [owned, used] = await proxyContract.checkSnapshot(
             condition.tokenId,
             utils.getAddress(address)
           );
-          setConditionMet(owned.eq("1"));
+          setConditionMet(owned.sub(used).gt("0"));
         } catch (error) {
           console.error(error);
           setConditionMet(false);
@@ -54,6 +53,7 @@ export default function useCheckTokenGatedOffer({
             }
           });
         }
+        return;
       }
 
       try {
@@ -71,7 +71,8 @@ export default function useCheckTokenGatedOffer({
         });
       }
     })();
-  }, [condition, address, core, commitProxyAddress, signer]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [condition, address, commitProxyAddress]);
   return {
     isConditionMet
   };

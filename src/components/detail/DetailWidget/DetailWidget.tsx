@@ -881,7 +881,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
           )}
         </Grid>
         <Break />
-        {isConditionMet && offer.condition && (
+        {offer.condition && (
           <TokenGated
             offer={offer}
             commitProxyAddress={commitProxyAddress}
@@ -889,6 +889,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               openseaLinkToOriginalMainnetCollection
             }
             isConditionMet
+            style={isConditionMet ? {} : { display: "none" }}
           />
         )}
         <div>
@@ -960,7 +961,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
             </Grid>
           </>
         )}
-        {!isConditionMet && offer.condition && (
+        {offer.condition && (
           <TokenGated
             offer={offer}
             commitProxyAddress={commitProxyAddress}
@@ -968,6 +969,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
               openseaLinkToOriginalMainnetCollection
             }
             isConditionMet={false}
+            style={isConditionMet ? { display: "none" } : {}}
           />
         )}
       </Widget>
