@@ -1,6 +1,6 @@
 import { ButtonSize, offers as OffersKit } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
-import _ from "lodash";
+import uniqBy from "lodash/uniqBy";
 import {
   CaretDown,
   CaretLeft,
@@ -115,7 +115,7 @@ const IndeterminateCheckbox = forwardRef<
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
-  th {
+  .th {
     font-weight: 600;
     color: ${colors.darkGrey};
     :not([data-sortable]) {
@@ -124,29 +124,29 @@ const Table = styled.table`
     [data-sortable] {
       cursor: pointer !important;
     }
-    td {
+    .td {
       &:nth-of-type(1) {
         max-width: 100px;
       }
     }
   }
-  td {
+  .td {
     font-weight: 400;
     color: ${colors.black};
     &:nth-of-type(1) {
       max-width: 40px;
     }
   }
-  th,
-  td {
+  .th,
+  .td {
     font-family: "Plus Jakarta Sans";
     font-style: normal;
     font-size: 0.75rem;
     line-height: 1.5;
   }
-  thead {
-    tr {
-      th {
+  .thead {
+    .tr {
+      .th {
         border-bottom: 2px solid ${colors.border};
         text-align: left;
         padding: 0.5rem;
@@ -156,45 +156,34 @@ const Table = styled.table`
         &:last-child {
           text-align: right;
         }
-        &:nth-of-type(1) {
-          max-width: 50px;
-        }
-        &:nth-of-type(2) {
-          width: 20px !important;
-        }
-        &:nth-of-type(3) {
-          width: min-content !important;
-        }
       }
     }
   }
-  tbody {
-    tr {
+  .tbody {
+    padding-top: 5px;
+    padding-left: 8px;
+    .row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .tr {
       :hover {
-        td {
+        .td {
           background-color: ${colors.darkGrey}08;
           cursor: pointer;
         }
       }
       &:not(:last-child) {
-        td {
+        .td {
           border-bottom: 1px solid ${colors.border};
         }
       }
-      td {
+      .td {
         text-align: left;
         padding: 0.5rem;
         align-items: center;
         display: flex;
-        &:nth-of-type(2) {
-          width: min-content !important;
-        }
-        &:nth-of-type(3) {
-          width: min-content !important;
-        }
-        &:nth-of-type(4) {
-          width: min-content !important;
-        }
         &:first-child {
         }
         &:last-child {
@@ -250,11 +239,13 @@ export default function SellerProductsTable({
       {
         Header: "",
         accessor: "image",
-        disableSortBy: true
+        disableSortBy: true,
+        maxWidth: 50
       } as const,
       {
         Header: "ID/SKU",
-        accessor: "sku"
+        accessor: "sku",
+        maxWidth: 100
       } as const,
       {
         Header: "Product name",
@@ -329,12 +320,7 @@ export default function SellerProductsTable({
                   sku: (
                     <Tooltip
                       content={
-                        <Typography
-                          $fontSize="0.75rem"
-                          style={{
-                            marginLeft: "2rem"
-                          }}
-                        >
+                        <Typography $fontSize="0.75rem">
                           {variant.metadata && "uuid" in variant.metadata
                             ? variant.metadata.uuid
                             : ""}
@@ -356,7 +342,8 @@ export default function SellerProductsTable({
                   productName: (
                     <Typography
                       style={{
-                        textTransform: "uppercase"
+                        textTransform: "uppercase",
+                        marginLeft: "2rem"
                       }}
                       tag="p"
                     >
@@ -452,7 +439,7 @@ export default function SellerProductsTable({
               showPlaceholderText={false}
             />
           ),
-          sku: offer?.id,
+          sku: <Typography $fontSize="0.75rem">{offer?.id}</Typography>,
           productName: (
             <Grid justifyContent="flex-start" alignItems="center">
               <div>
@@ -596,6 +583,7 @@ export default function SellerProductsTable({
       hooks.visibleColumns.push((columns) => [
         {
           id: "selection",
+          width: 70,
           Header: ({ getToggleAllRowsSelectedProps }) => {
             return (
               <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
@@ -616,8 +604,7 @@ export default function SellerProductsTable({
               <IndeterminateCheckbox
                 {...row.getToggleRowSelectedProps()}
                 style={{
-                  paddingLeft: row.original.isSubRow ? "2.375rem" : "0",
-                  width: "100px"
+                  paddingLeft: row.original.isSubRow ? "2.375rem" : "0"
                 }}
                 onClick={() => {
                   row.toggleRowExpanded(true);
@@ -702,7 +689,7 @@ export default function SellerProductsTable({
           return null;
         })
         .filter((n): boolean => n !== null);
-      setSelected(_.uniqBy(selectedOffers, "id") as (Offer | null)[]);
+      setSelected(uniqBy(selectedOffers, "id") as (Offer | null)[]);
     } else {
       setSelected([]);
     }
@@ -711,18 +698,20 @@ export default function SellerProductsTable({
   return (
     <>
       <Table {...getTableProps()}>
-        <thead>
+        <div className="thead">
           {headerGroups.map((headerGroup, key) => (
-            <tr
+            <div
               {...headerGroup.getHeaderGroupProps()}
               key={`seller_table_thead_tr_${key}`}
+              className="tr"
             >
               {headerGroup.headers.map((column, i) => {
                 return (
-                  <th
+                  <div
                     data-sortable={column.disableSortBy}
                     {...column.getHeaderProps(column.getSortByToggleProps())}
                     key={`seller_table_thead_th_${i}`}
+                    className="th"
                   >
                     {column.render("Header")}
                     {i > 0 && !column.disableSortBy && (
@@ -738,25 +727,26 @@ export default function SellerProductsTable({
                         )}
                       </HeaderSorter>
                     )}
-                  </th>
+                  </div>
                 );
               })}
-            </tr>
+            </div>
           ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
+        </div>
+        <div {...getTableBodyProps()} className="tbody">
           {(page.length > 0 &&
             page.map((row, index) => {
               prepareRow(row);
               return (
-                <tr
+                <div
                   {...row.getRowProps()}
                   key={`seller_table_tbody_tr_${row.original.offerId}-${index}`}
+                  className="row"
                 >
                   {row.cells.map((cell) => {
                     const hasSubRows = cell.row.subRows.length > 1;
                     return (
-                      <td
+                      <div
                         {...cell.getCellProps()}
                         key={`seller_table_tbody_td_${row.original.offerId}-${cell.column.id}`}
                         onClick={() => {
@@ -784,14 +774,14 @@ export default function SellerProductsTable({
                         }}
                       >
                         {cell.render("Cell")}
-                      </td>
+                      </div>
                     );
                   })}
-                </tr>
+                </div>
               );
             })) || (
-            <tr>
-              <td colSpan={columns.length}>
+            <div>
+              <div>
                 <Typography
                   tag="h6"
                   justifyContent="center"
@@ -800,10 +790,10 @@ export default function SellerProductsTable({
                 >
                   No data to display
                 </Typography>
-              </td>
-            </tr>
+              </div>
+            </div>
           )}
-        </tbody>
+        </div>
       </Table>
       <Pagination>
         <Grid>
