@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 
 import { useCoreSDK } from "../../lib/utils/useCoreSdk";
@@ -41,25 +41,6 @@ export default function CoreTermsOfSale({ isMultiVariant }: Props) {
   const [symbol, setSymbol] = useState<string | undefined>(undefined);
 
   const prefix = isMultiVariant ? "variantsCoreTermsOfSale" : "coreTermsOfSale";
-
-  const status = useMemo(async () => {
-    const tokenContract = values[prefix].tokenContract;
-    const tokenType = values[prefix].tokenType;
-    if (
-      tokenContract &&
-      tokenContract?.length > 0 &&
-      tokenType?.value === TOKEN_TYPES[0].value
-    ) {
-      const { symbol: symbolLocal } = await core.getExchangeTokenInfo(
-        tokenContract
-      );
-      if (symbolLocal.length > 0) {
-        setSymbol(symbolLocal);
-      } else {
-        setSymbol(undefined);
-      }
-    }
-  }, [core, prefix, values]);
 
   return (
     <ContainerProductPage>
