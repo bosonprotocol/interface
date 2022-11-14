@@ -151,14 +151,18 @@ export default function Preview({
   const offer = {
     price: priceBN.toString(),
     sellerDeposit: priceBN
-      .mul(parseFloat(values.termsOfExchange.sellerDeposit) * 1000)
+      .mul(Math.round(parseFloat(values.termsOfExchange.sellerDeposit) * 1000))
       .div(100 * 1000)
       .toString(),
     protocolFee: "0",
     agentFee: "0",
     agentId: "0",
     buyerCancelPenalty: priceBN
-      .mul(parseFloat(values.termsOfExchange.buyerCancellationPenalty) * 1000)
+      .mul(
+        Math.round(
+          parseFloat(values.termsOfExchange.buyerCancellationPenalty) * 1000
+        )
+      )
       .div(100 * 1000)
       .toString(),
     quantityAvailable: quantityAvailable.toString(),
