@@ -530,6 +530,9 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     offer.voided
   ]);
   const commitProxyAddress = useCustomStoreQueryParameter("commitProxyAddress");
+  const openseaLinkToOriginalMainnetCollection = useCustomStoreQueryParameter(
+    "openseaLinkToOriginalMainnetCollection"
+  );
   const sellerCurationList = useCustomStoreQueryParameter("sellerCurationList");
   const offerCurationList = useCustomStoreQueryParameter("offerCurationList");
   const numSellers = new Set(
@@ -983,7 +986,15 @@ const DetailWidget: React.FC<IDetailWidget> = ({
             </Grid>
           </>
         )}
-        {offer.condition && <TokenGated offer={offer} />}
+        {offer.condition && (
+          <TokenGated
+            offer={offer}
+            commitProxyAddress={commitProxyAddress}
+            openseaLinkToOriginalMainnetCollection={
+              openseaLinkToOriginalMainnetCollection
+            }
+          />
+        )}
       </Widget>
     </>
   );

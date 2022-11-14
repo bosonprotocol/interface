@@ -183,15 +183,21 @@ export default function ProductType({
           if (!logoBase64) {
             return; // should never happen
           }
-          setBase64(logoBase64 as any);
+          const wrongDataFormat = "data:application/octet-stream;base64,";
+          const indexWrongDataFormat = logoBase64.indexOf(wrongDataFormat);
+          const fixedBase64 =
+            indexWrongDataFormat === -1
+              ? logoBase64
+              : "data:image/jpeg;base64," +
+                logoBase64.substring(
+                  indexWrongDataFormat + wrongDataFormat.length
+                );
+          setBase64(fixedBase64 as any);
           const createYourProfile = {
             logo: [
               {
-                src: logoBase64
+                src: fixedBase64
               }
-              // new File([dataURItoBlob(logoBase64)], "logo", {
-              //   type: logoBase64.split(";")[0].split(":")[1]
-              // }),
             ],
             name: operatorLens.name || "",
             email: getLensEmail(operatorLens as Profile) || "",
