@@ -430,7 +430,8 @@ function CreateProductInner({
           exchangeToken: offerInfo.exchangeToken,
           metadata: {
             animationUrl: values.productAnimation?.[0]?.src
-          }
+          },
+          condition: offerInfo.condition ?? null
         },
         hasMultipleVariants: !!values.productVariants.variants.length,
         // these are the ones that we already had before
