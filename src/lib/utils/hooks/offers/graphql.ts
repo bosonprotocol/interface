@@ -153,6 +153,7 @@ export const offerGraphQl = gql`
             deliveryTime
           }
           redemptionPoint
+          returnPeriodInDays
         }
       }
     }
