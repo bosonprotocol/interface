@@ -1007,7 +1007,6 @@ function CreateProductInner({
               nonce
             });
           } else {
-            // let decimals: number | undefined = undefined;
             if (commonTermsOfSale?.tokenContract) {
               try {
                 const { decimals: decimalsLocal } =

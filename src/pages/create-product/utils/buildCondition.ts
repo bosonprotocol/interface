@@ -5,9 +5,12 @@ import {
 } from "@bosonprotocol/common";
 import { utils } from "ethers";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+import { CreateProductForm } from "../../../components/product/utils";
+
 export const buildCondition = (
-  commonTermsOfSale: any,
+  commonTermsOfSale:
+    | CreateProductForm["coreTermsOfSale"]
+    | CreateProductForm["variantsCoreTermsOfSale"],
   decimals?: number
 ): ConditionStruct => {
   let tokenType: TokenType = TokenType.FungibleToken;
@@ -15,9 +18,8 @@ export const buildCondition = (
   let threshold;
   let tokenId = commonTermsOfSale.tokenId || "0";
 
-  let formatedValue = commonTermsOfSale.minBalance;
-  if (decimals) {
-    console.log("inside the if");
+  let formatedValue = null;
+  if (decimals && commonTermsOfSale.minBalance) {
     formatedValue = utils.parseUnits(commonTermsOfSale.minBalance, decimals);
   }
 
@@ -42,15 +44,15 @@ export const buildCondition = (
     default:
       tokenType = TokenType.FungibleToken;
       method = EvaluationMethod.Threshold;
-      threshold = formatedValue;
+      threshold = formatedValue || commonTermsOfSale.minBalance;
       break;
   }
   return {
     method,
     tokenType,
-    tokenAddress: commonTermsOfSale.tokenContract,
+    tokenAddress: commonTermsOfSale.tokenContract || "",
     tokenId,
-    threshold,
-    maxCommits: commonTermsOfSale.maxCommits
+    threshold: threshold || "",
+    maxCommits: commonTermsOfSale.maxCommits || ""
   };
 };
