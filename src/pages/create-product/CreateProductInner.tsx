@@ -775,12 +775,16 @@ function CreateProductInner({
 
         // TODO: change when more than percentage unit
         const buyerCancellationPenaltyValue = priceBN
-          .mul(parseFloat(termsOfExchange.buyerCancellationPenalty) * 1000)
+          .mul(
+            Math.round(
+              parseFloat(termsOfExchange.buyerCancellationPenalty) * 1000
+            )
+          )
           .div(100 * 1000);
 
         // TODO: change when more than percentage unit
         const sellerDeposit = priceBN
-          .mul(parseFloat(termsOfExchange.sellerDeposit) * 1000)
+          .mul(Math.round(parseFloat(termsOfExchange.sellerDeposit) * 1000))
           .div(100 * 1000);
 
         const offerData = await getOfferDataFromMetadata(productV1Metadata, {
