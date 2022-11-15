@@ -5,7 +5,6 @@ import {
   exchanges,
   subgraph
 } from "@bosonprotocol/react-kit";
-import { BigNumber, utils } from "ethers";
 import { CameraSlash } from "phosphor-react";
 import { useMemo } from "react";
 import { generatePath } from "react-router-dom";
@@ -17,11 +16,12 @@ import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
+import { calcPrice } from "../../lib/utils/calcPrice";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { Exchange as IExchange } from "../../lib/utils/hooks/useExchanges";
 import { useHandleText } from "../../lib/utils/hooks/useHandleText";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import { getImageUrl } from "../../lib/utils/images";
+import { getImageUrl, getLensImageUrl } from "../../lib/utils/images";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import { getOfferDetailData } from "../detail/DetailWidget/DetailWidget";
 import { getLensProfilePictureUrl } from "../modal/components/CreateProfile/Lens/utils";
@@ -67,7 +67,7 @@ export default function Exchange({ offer, exchange, reload }: Props) {
     sellerId: offer?.seller?.id
   });
   const [lens] = lensProfiles;
-  const avatar = getImageUrl(getLensProfilePictureUrl(lens));
+  const avatar = getLensImageUrl(getLensProfilePictureUrl(lens));
 
   const { showModal, modalTypes } = useModal();
   const navigate = useKeepQueryParamsNavigate();
@@ -84,17 +84,10 @@ export default function Exchange({ offer, exchange, reload }: Props) {
     [exchange]
   );
 
-  const price = useMemo(() => {
-    try {
-      return utils.formatUnits(
-        BigNumber.from(offer.price),
-        Number(offer.exchangeToken.decimals)
-      );
-    } catch (e) {
-      console.error(e);
-      return null;
-    }
-  }, [offer.exchangeToken.decimals, offer.price]);
+  const price = useMemo(
+    () => calcPrice(offer.price, offer.exchangeToken.decimals),
+    [offer.exchangeToken.decimals, offer.price]
+  );
 
   const handleOnCardClick = () => {
     navigate({

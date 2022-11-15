@@ -128,6 +128,7 @@ export const CONFIG = {
     lensHandleExtension: config.chainId === 137 ? ".lens" : ".test",
     availableOnNetwork,
     apiLink: config.lens.apiLink,
+    ipfsGateway: config.lens.ipfsGateway,
     LENS_HUB_CONTRACT: config.lens.LENS_HUB_CONTRACT,
     LENS_PERIPHERY_CONTRACT: config.lens.LENS_PERIPHERY_CONTRACT,
     LENS_PROFILES_CONTRACT_ADDRESS: config.lens.LENS_PROFILES_CONTRACT_ADDRESS,

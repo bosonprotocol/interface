@@ -12,8 +12,7 @@ import {
   BigNumberish,
   constants,
   ContractTransaction,
-  ethers,
-  utils
+  ethers
 } from "ethers";
 import { ArrowRight, ArrowSquareOut, Check, Question } from "phosphor-react";
 import { useCallback, useMemo, useRef, useState } from "react";
@@ -27,10 +26,11 @@ import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
 import { isTruthy } from "../../../lib/types/helpers";
 import { Offer } from "../../../lib/types/offer";
+import { calcPercentage, displayFloat } from "../../../lib/utils/calcPrice";
 import { IPrice } from "../../../lib/utils/convertPrice";
 import { titleCase } from "../../../lib/utils/formatText";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
-import { getBuyerCancelPenalty } from "../../../lib/utils/getPrices";
+import useCheckTokenGatedOffer from "../../../lib/utils/hooks/offer/useCheckTokenGatedOffer";
 import { useAddPendingTransaction } from "../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { useBuyerSellerAccounts } from "../../../lib/utils/hooks/useBuyerSellerAccounts";
@@ -65,9 +65,9 @@ import DetailTable from "../DetailTable";
 import bosonSnapshotGateAbi from "./BosonSnapshotGate/BosonSnapshotGate.json";
 import { BosonSnapshotGate__factory } from "./BosonSnapshotGate/typechain/factories";
 import { DetailDisputeResolver } from "./DetailDisputeResolver";
-import { DetailSellerDeposit } from "./DetailSellerDeposit";
 import DetailTopRightLabel from "./DetailTopRightLabel";
 import { QuantityDisplay } from "./QuantityDisplay";
+import TokenGated from "./TokenGated";
 
 const StyledPrice = styled(Price)`
   h3 {
@@ -139,18 +139,11 @@ export const getOfferDetailData = (
     Number(`${offer.voucherRedeemableUntilDate}000`)
   ).format(CONFIG.dateFormat);
 
-  const { buyerCancelationPenalty } = getBuyerCancelPenalty(
+  const { deposit, formatted } = calcPercentage(offer, "buyerCancelPenalty");
+  const { deposit: sellerDeposit, formatted: sellerFormatted } = calcPercentage(
     offer,
-    convertedPrice
+    "sellerDeposit"
   );
-
-  const buyerCancelationPenaltyFormatted =
-    offer.buyerCancelPenalty === "0"
-      ? "0"
-      : utils.formatUnits(
-          offer.buyerCancelPenalty,
-          offer.exchangeToken.decimals
-        );
 
   // if offer is in creation, offer.id does not exist
   const handleShowExchangePolicy = () => {
@@ -188,22 +181,40 @@ export const getOfferDetailData = (
           name: "Price",
           value: convertedPrice?.currency ? (
             <Typography tag="p">
-              {convertedPrice?.price} {offer.exchangeToken.symbol}
+              {displayFloat(convertedPrice?.price)} {offer.exchangeToken.symbol}
               <small>
-                ({convertedPrice?.currency?.symbol} {convertedPrice?.converted})
+                ({convertedPrice?.currency?.symbol}{" "}
+                {displayFloat(convertedPrice?.converted)})
               </small>
             </Typography>
           ) : (
             <Typography tag="p">
-              {convertedPrice?.price} {offer.exchangeToken.symbol}
+              {displayFloat(convertedPrice?.price)} {offer.exchangeToken.symbol}
             </Typography>
           )
         }
       : { hide: true },
     {
-      name: DetailSellerDeposit.name,
-      info: DetailSellerDeposit.info,
-      value: DetailSellerDeposit.value({ offer })
+      name: "Seller deposit",
+      info: (
+        <>
+          <Typography tag="h6">
+            <b>Seller deposit</b>
+          </Typography>
+          <Typography tag="p">
+            The Seller deposit is used to hold the seller accountable to follow
+            through with their commitment to deliver the physical item. If the
+            seller breaks their commitment, the deposit will be transferred to
+            the buyer.
+          </Typography>
+        </>
+      ),
+      value: (
+        <Typography tag="p">
+          {sellerFormatted} {offer.exchangeToken.symbol}
+          {sellerDeposit !== "0" ? <small>({sellerDeposit}%)</small> : ""}
+        </Typography>
+      )
     },
     {
       name: "Buyer cancel. pen.",
@@ -220,10 +231,8 @@ export const getOfferDetailData = (
       ),
       value: (
         <Typography tag="p">
-          {buyerCancelationPenaltyFormatted} {offer.exchangeToken.symbol}
-          <small>
-            ({isNaN(buyerCancelationPenalty) ? "-" : buyerCancelationPenalty}%)
-          </small>
+          {formatted} {offer.exchangeToken.symbol}
+          {deposit !== "0" ? <small>({deposit}%)</small> : ""}
         </Typography>
       )
     },
@@ -480,8 +489,15 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     offer.voided
   ]);
   const commitProxyAddress = useCustomStoreQueryParameter("commitProxyAddress");
+  const openseaLinkToOriginalMainnetCollection = useCustomStoreQueryParameter(
+    "openseaLinkToOriginalMainnetCollection"
+  );
   const sellerCurationList = useCustomStoreQueryParameter("sellerCurationList");
   const offerCurationList = useCustomStoreQueryParameter("offerCurationList");
+  const { isConditionMet } = useCheckTokenGatedOffer({
+    commitProxyAddress,
+    condition: offer.condition
+  });
   const numSellers = new Set(
     sellerCurationList
       .split(",")
@@ -507,7 +523,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     isVoidedOffer ||
     isPreview ||
     isOfferNotValidYet ||
-    isBuyerInsufficientFunds;
+    isBuyerInsufficientFunds ||
+    (offer.condition && !isConditionMet);
   const onCommitPendingSignature = () => {
     setIsLoading(true);
     showModal("WAITING_FOR_CONFIRMATION");
@@ -588,14 +605,16 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       !offer.condition ||
       !commitProxyAddress ||
       !bosonSnapshotGateAbi.abi ||
-      isCommitDisabled;
+      isCommitDisabled ||
+      (offer.condition && !isConditionMet);
     const onClick = async () => {
       if (
         !signer ||
         !offer.condition ||
         !commitProxyAddress ||
         !bosonSnapshotGateAbi.abi ||
-        isCommitDisabled
+        isCommitDisabled ||
+        (offer.condition && !isConditionMet)
       ) {
         return;
       }
@@ -661,7 +680,6 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       </BosonButton>
     );
   };
-
   return (
     <>
       <Widget>
@@ -863,6 +881,16 @@ const DetailWidget: React.FC<IDetailWidget> = ({
           )}
         </Grid>
         <Break />
+        {offer.condition && (
+          <TokenGated
+            offer={offer}
+            commitProxyAddress={commitProxyAddress}
+            openseaLinkToOriginalMainnetCollection={
+              openseaLinkToOriginalMainnetCollection
+            }
+            isConditionMet={isConditionMet}
+          />
+        )}
         <div>
           <DetailTable
             align

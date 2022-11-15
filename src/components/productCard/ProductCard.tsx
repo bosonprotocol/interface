@@ -2,8 +2,8 @@ import {
   Currencies,
   ProductCard as BosonProductCard
 } from "@bosonprotocol/react-kit";
-import { CameraSlash } from "phosphor-react";
-import { useMemo } from "react";
+import { CameraSlash, Lock } from "phosphor-react";
+import { useMemo, useState } from "react";
 import { generatePath, useLocation } from "react-router-dom";
 import styled, { css } from "styled-components";
 
@@ -13,10 +13,11 @@ import { BosonRoutes, ProductRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { isTruthy } from "../../lib/types/helpers";
 import { Offer } from "../../lib/types/offer";
+import { displayFloat } from "../../lib/utils/calcPrice";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useHandleText } from "../../lib/utils/hooks/useHandleText";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import { getImageUrl } from "../../lib/utils/images";
+import { getImageUrl, getLensImageUrl } from "../../lib/utils/images";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import {
   ExtendedOffer,
@@ -66,11 +67,30 @@ export default function ProductCard({
   isHoverDisabled = false,
   filterOptions
 }: Props) {
+  const isTokenGated = !!offer.condition?.id;
+
   const { lens: lensProfiles } = useCurrentSellers({
     sellerId: offer?.seller?.id
   });
   const [lens] = lensProfiles;
-  const avatar = getImageUrl(getLensProfilePictureUrl(lens));
+  const avatar = getLensImageUrl(getLensProfilePictureUrl(lens));
+  const [avatarObj, setAvatarObj] = useState<{
+    avatarUrl: string | null | undefined;
+    status: "lens" | "fallback" | "mocked";
+  }>({
+    avatarUrl: avatar,
+    status: "lens"
+  });
+  const fallbackSellerAvatar: string | undefined | null = // TODO: fix types
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    offer.additional?.product.productV1Seller.images.find(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (img: any) => img.tag === "profile"
+    )?.url;
+  const fallbackSellerAvatarUrl = fallbackSellerAvatar
+    ? getLensImageUrl(fallbackSellerAvatar)
+    : fallbackSellerAvatar;
   const imageSrc = getImageUrl(
     offer?.metadata?.image || offer?.metadata?.imageUrl
   );
@@ -138,8 +158,14 @@ export default function ProductCard({
     offer?.additional &&
     offer?.additional?.variants?.length > 1 &&
     !allVariantsHaveSamePrice;
+
   return (
     <ProductCardWrapper $isCustomStoreFront={!!isCustomStoreFront}>
+      {isTokenGated && (
+        <LockIcon>
+          <Lock size={20} color={colors.grey} />
+        </LockIcon>
+      )}
       <BosonProductCard
         dataCard="product-card"
         dataTestId={dataTestId}
@@ -147,8 +173,22 @@ export default function ProductCard({
         onCardClick={handleOnCardClick}
         title={offer?.metadata?.name}
         avatarName={lens?.name ? lens?.name : `Seller ID: ${offer.seller.id}`}
-        avatar={avatar || mockedAvatar}
-        price={Number(price?.price || 0)}
+        avatar={avatarObj.avatarUrl || fallbackSellerAvatarUrl || mockedAvatar}
+        onAvatarError={() => {
+          // to avoid infinite loop
+          if (avatarObj.status === "lens") {
+            setAvatarObj({
+              avatarUrl: fallbackSellerAvatarUrl,
+              status: "fallback"
+            });
+          } else if (avatarObj.status === "fallback") {
+            setAvatarObj({
+              avatarUrl: mockedAvatar,
+              status: "mocked"
+            });
+          }
+        }}
+        price={Number(displayFloat(price?.price || 0))}
         asterisk={hasVariantsWithDifferentPrice}
         tooltip={
           hasVariantsWithDifferentPrice
@@ -170,3 +210,19 @@ export default function ProductCard({
     </ProductCardWrapper>
   );
 }
+
+const LockIcon = styled.div`
+  position: absolute;
+  z-index: 4;
+  background-color: ${colors.white};
+  padding: 0.5rem;
+  border-radius: 50%;
+  border: 0.125rem solid ${colors.black};
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-top: 1.063rem;
+  margin-left: 1.063rem;
+  display: grid;
+  justify-content: center;
+  align-content: center;
+`;

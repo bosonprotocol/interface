@@ -23,6 +23,7 @@ const NavigationLinks = styled.div<{
   isMobile: boolean;
   isOpen: boolean;
   $navigationBarPosition: string;
+  hasTopBanner: boolean;
 }>`
   background-color: var(--headerBgColor);
   color: var(--headerTextColor);
@@ -37,11 +38,21 @@ const NavigationLinks = styled.div<{
       color: var(--accent);
     }
   }
-  ${({ isMobile, isOpen, $navigationBarPosition }) =>
+  ${({ isMobile, isOpen, $navigationBarPosition, hasTopBanner }) =>
     isMobile
       ? css`
           position: absolute;
-          top: calc(${HEADER_HEIGHT} + 2px);
+          ${() => {
+            if (hasTopBanner) {
+              return css`
+                top: calc(${HEADER_HEIGHT} + 3rem);
+              `;
+            } else {
+              return css`
+                top: calc(${HEADER_HEIGHT} + 2px);
+              `;
+            }
+          }}
           left: 0;
           right: 0;
           bottom: 0;
@@ -135,11 +146,13 @@ interface Props {
   isMobile: boolean;
   isOpen: boolean;
   navigationBarPosition: string;
+  hasTopBanner?: boolean;
 }
 export default function HeaderLinks({
   isMobile,
   isOpen,
-  navigationBarPosition
+  navigationBarPosition,
+  hasTopBanner = false
 }: Props) {
   const { roles } = useUserRoles({ role: [] });
   const { address } = useAccount();
@@ -147,9 +160,11 @@ export default function HeaderLinks({
     ("buyer" | "seller" | "dr")[]
   >("supportFunctionality", { parseJson: true });
   const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
+
   const {
     buyer: { buyerId }
   } = useBuyerSellerAccounts(address || "");
+
   const { sellerIds } = useCurrentSellers();
   const isAccountSeller = useMemo(() => !!sellerIds?.[0], [sellerIds]);
   const isAccountBuyer = useMemo(() => !!buyerId, [buyerId]);
@@ -189,6 +204,7 @@ export default function HeaderLinks({
       isMobile={isMobile}
       isOpen={isOpen}
       $navigationBarPosition={navigationBarPosition}
+      hasTopBanner={hasTopBanner}
     >
       <Search
         isMobile={isMobile}

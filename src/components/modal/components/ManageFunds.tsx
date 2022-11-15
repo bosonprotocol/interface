@@ -4,12 +4,12 @@ import {
   CurrencyDisplay,
   subgraph
 } from "@bosonprotocol/react-kit";
-import { BigNumber, utils } from "ethers";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../../lib/styles/colors";
 import { ProgressStatus } from "../../../lib/types/progressStatus";
+import { calcPrice } from "../../../lib/utils/calcPrice";
 import useFunds from "../../../pages/account/funds/useFunds";
 import { useConvertionRate } from "../../convertion-rate/useConvertionRate";
 import { Spinner } from "../../loading/Spinner";
@@ -18,15 +18,6 @@ import BosonButton from "../../ui/BosonButton";
 import Grid from "../../ui/Grid";
 import Typography from "../../ui/Typography";
 import { useModal } from "../useModal";
-
-const processValue = (value: string, decimals: string) => {
-  try {
-    return utils.formatUnits(BigNumber.from(value), Number(decimals));
-  } catch (e) {
-    console.error(e);
-    return "";
-  }
-};
 
 const WithdrawButton = styled(BosonButton)`
   padding: 0.25rem 1rem;
@@ -100,18 +91,18 @@ export default function ManageFunds({ id }: Props) {
     <>
       <Grid justifyContent="flex-start">
         <TokenWrapper>
-          <Typography tag="p" $fontSize="0.75rem" fontWeight="bold">
+          <Typography tag="p" $fontSize="0.75rem" fontWeight="600">
             Token
           </Typography>
         </TokenWrapper>
         <WithdrawableWrapper>
-          <Typography tag="p" $fontSize="0.75rem" fontWeight="bold">
+          <Typography tag="p" $fontSize="0.75rem" fontWeight="600">
             Withdrawable
           </Typography>
         </WithdrawableWrapper>
       </Grid>
       {uiFunds?.map((fund) => {
-        const withdrawable = processValue(
+        const withdrawable = calcPrice(
           fund.availableAmount,
           fund.token.decimals
         );

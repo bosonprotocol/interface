@@ -12,6 +12,7 @@ import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { useDisputeResolver } from "../../lib/utils/hooks/useDisputeResolver";
 import { fixformattedString } from "../../lib/utils/number";
+import { buildCondition } from "../../pages/create-product/utils/buildCondition";
 import { Token } from "../convertion-rate/ConvertionRateContext";
 import {
   DarkerBackground,
@@ -137,18 +138,31 @@ export default function Preview({
 
   const exchangeDate = Date.now().toString();
 
+  const termsOfSale = hasMultipleVariants
+    ? values.variantsCoreTermsOfSale
+    : values.coreTermsOfSale;
+
+  const condition =
+    termsOfSale.tokenType && termsOfSale.tokenGatedOffer.value === "true"
+      ? buildCondition(termsOfSale)
+      : undefined;
+
   // Build the Offer structure (in the shape of SubGraph request), based on temporary data (values)
   const offer = {
     price: priceBN.toString(),
     sellerDeposit: priceBN
-      .mul(parseFloat(values.termsOfExchange.sellerDeposit) * 1000)
+      .mul(Math.round(parseFloat(values.termsOfExchange.sellerDeposit) * 1000))
       .div(100 * 1000)
       .toString(),
     protocolFee: "0",
     agentFee: "0",
     agentId: "0",
     buyerCancelPenalty: priceBN
-      .mul(parseFloat(values.termsOfExchange.buyerCancellationPenalty) * 1000)
+      .mul(
+        Math.round(
+          parseFloat(values.termsOfExchange.buyerCancellationPenalty) * 1000
+        )
+      )
       .div(100 * 1000)
       .toString(),
     quantityAvailable: quantityAvailable.toString(),
@@ -202,7 +216,8 @@ export default function Preview({
       productV1Seller: {
         name: values.createYourProfile.name
       }
-    }
+    },
+    condition: condition
   } as unknown as Offer;
 
   const productAttributes = values.productInformation?.attributes?.filter(
@@ -229,6 +244,7 @@ export default function Preview({
     value: values.productType?.productType?.toUpperCase() || ""
   });
   const animationUrl = values.productAnimation?.[0]?.src;
+
   return (
     <PreviewWrapper>
       <PreviewWrapperContent>

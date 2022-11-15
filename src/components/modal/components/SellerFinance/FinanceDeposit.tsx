@@ -187,7 +187,7 @@ export default function FinanceDeposit({
         <ProtocolStrong>Protocol Balance:</ProtocolStrong> {protocolBalance}{" "}
         {symbol}
       </Typography>
-      <Typography tag="p" margin="0" $fontSize="0.75rem" fontWeight="bold">
+      <Typography tag="p" margin="0" $fontSize="0.75rem" fontWeight="600">
         Choose Amount To Deposit:
       </Typography>
       <AmountWrapper>
@@ -208,7 +208,7 @@ export default function FinanceDeposit({
             <Typography
               $fontSize="0.875rem"
               margin="0"
-              fontWeight="bold"
+              fontWeight="600"
               textAlign="right"
               style={{
                 display: "block"
@@ -233,12 +233,7 @@ export default function FinanceDeposit({
           {isBeingDeposit ? (
             <Spinner size={20} />
           ) : (
-            <Typography
-              tag="p"
-              margin="0"
-              $fontSize="0.75rem"
-              fontWeight="bold"
-            >
+            <Typography tag="p" margin="0" $fontSize="0.75rem" fontWeight="600">
               Deposit {symbol}
             </Typography>
           )}

@@ -17,12 +17,12 @@ import Carousel from "./Carousel";
 import Step from "./Step";
 
 const LandingPage = styled.div`
-  padding: 0 0.5rem 0 0.5rem;
+  padding: 2rem 0.5rem 0 0.5rem;
   ${breakpoint.m} {
-    padding: 0 2rem 0 2rem;
+    padding: 2rem 2rem 0 2rem;
   }
   ${breakpoint.xl} {
-    padding: 0 4rem 0 4rem;
+    padding: 2rem 5.5rem 0 5.5rem;
   }
 `;
 
@@ -92,7 +92,7 @@ export default function Landing() {
         data-hero-wrapper
       >
         <GridWithZindex alignItems="flex-start" flexDirection="column">
-          <Title tag="h1">
+          <Title tag="h1" fontWeight="600">
             {title ? (
               title
             ) : (
@@ -102,7 +102,7 @@ export default function Landing() {
               </>
             )}
           </Title>
-          <SubTitle tag="h4">
+          <SubTitle tag="h4" fontWeight="400">
             {description ||
               "The first decentralized marketplace built on Boson Protocol"}
           </SubTitle>

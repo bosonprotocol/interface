@@ -430,7 +430,8 @@ function CreateProductInner({
           exchangeToken: offerInfo.exchangeToken,
           metadata: {
             animationUrl: values.productAnimation?.[0]?.src
-          }
+          },
+          condition: offerInfo.condition ?? null
         },
         hasMultipleVariants: !!values.productVariants.variants.length,
         // these are the ones that we already had before
@@ -775,12 +776,16 @@ function CreateProductInner({
 
         // TODO: change when more than percentage unit
         const buyerCancellationPenaltyValue = priceBN
-          .mul(parseFloat(termsOfExchange.buyerCancellationPenalty) * 1000)
+          .mul(
+            Math.round(
+              parseFloat(termsOfExchange.buyerCancellationPenalty) * 1000
+            )
+          )
           .div(100 * 1000);
 
         // TODO: change when more than percentage unit
         const sellerDeposit = priceBN
-          .mul(parseFloat(termsOfExchange.sellerDeposit) * 1000)
+          .mul(Math.round(parseFloat(termsOfExchange.sellerDeposit) * 1000))
           .div(100 * 1000);
 
         const offerData = await getOfferDataFromMetadata(productV1Metadata, {

@@ -87,6 +87,7 @@ export interface SellerAdditional {
     images: string[];
   };
   offers?: ExtendedOffer[];
+  numExchanges?: number;
 }
 export type ExtendedSeller = SellerAdditional & subgraph.ProductV1Seller;
 export interface FilterOptions {
@@ -222,7 +223,9 @@ export function WithAllOffers<P>(
       ]) as FilterOptions;
     }, [params, sellerCurationListString]);
 
-    const products = useProducts();
+    const products = useProducts({
+      withNumExchanges: true
+    });
     const { isLoading, isError } = products;
 
     return (

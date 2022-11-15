@@ -269,16 +269,32 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
       return null;
     }
     return (
-      <Grid flexDirection="column" alignItems="flex-start">
-        <FieldTitle>Commit Proxy Address</FieldTitle>
-        <FieldDescription>
-          Careful: This will override the commit function for your buyers.
-        </FieldDescription>
-        <Input
-          name={storeFields.commitProxyAddress}
-          placeholder={formModel.formFields.commitProxyAddress.placeholder}
-        />
-      </Grid>
+      <>
+        <Grid flexDirection="column" alignItems="flex-start">
+          <FieldTitle>Commit Proxy Address</FieldTitle>
+          <FieldDescription>
+            Careful: This will override the commit function for your buyers.
+          </FieldDescription>
+          <Input
+            name={storeFields.commitProxyAddress}
+            placeholder={formModel.formFields.commitProxyAddress.placeholder}
+          />
+        </Grid>
+        <Grid flexDirection="column" alignItems="flex-start">
+          <FieldTitle>Link to collection/contract</FieldTitle>
+          <FieldDescription>
+            Users who view your product are shown a message which will include
+            this link
+          </FieldDescription>
+          <Input
+            name={storeFields.openseaLinkToOriginalMainnetCollection}
+            placeholder={
+              formModel.formFields.openseaLinkToOriginalMainnetCollection
+                .placeholder
+            }
+          />
+        </Grid>
+      </>
     );
   }, [renderCommitProxyField]);
 

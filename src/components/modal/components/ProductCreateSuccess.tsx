@@ -10,6 +10,7 @@ import { getOfferDetailData } from "../../../components/detail/DetailWidget/Deta
 import Price from "../../../components/price/index";
 import { useConvertedPrice } from "../../../components/price/useConvertedPrice";
 import { colors } from "../../../lib/styles/colors";
+import { useCustomStoreQueryParameter } from "../../../pages/custom-store/useCustomStoreQueryParameter";
 import {
   Break,
   ModalGrid,
@@ -18,6 +19,7 @@ import {
   WidgetButtonWrapper
 } from "../../detail/Detail.style";
 import DetailTable from "../../detail/DetailTable";
+import TokenGated from "../../detail/DetailWidget/TokenGated";
 import Tooltip from "../../tooltip/Tooltip";
 import BosonButton from "../../ui/BosonButton";
 import Grid from "../../ui/Grid";
@@ -87,7 +89,7 @@ const StyledWidgetButtonWrapper = styled(WidgetButtonWrapper)`
 `;
 
 const FundTile = styled(Typography)`
-  font-weight: bold;
+  font-weight: 600;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -101,7 +103,7 @@ const Amount = styled.span`
   top: 50%;
   right: 1rem;
   font-size: 0.75rem;
-  font-weight: bold;
+  font-weight: 600;
   transform: translate(0, -50%);
 `;
 
@@ -116,6 +118,10 @@ export default function ProductCreateSuccess({
   onViewMyItem,
   hasMultipleVariants
 }: Props) {
+  const commitProxyAddress = useCustomStoreQueryParameter("commitProxyAddress");
+  const openseaLinkToOriginalMainnetCollection = useCustomStoreQueryParameter(
+    "openseaLinkToOriginalMainnetCollection"
+  );
   const convertedPrice = useConvertedPrice({
     value: offer?.price,
     decimals: offer?.exchangeToken.decimals,
@@ -196,6 +202,14 @@ export default function ProductCreateSuccess({
             <div>
               <DetailTable align noBorder data={OFFER_DETAIL_DATA} />
             </div>
+            <TokenGated
+              offer={offer}
+              commitProxyAddress={commitProxyAddress}
+              openseaLinkToOriginalMainnetCollection={
+                openseaLinkToOriginalMainnetCollection
+              }
+              isConditionMet={false}
+            />
           </Widget>
           {hasDeposit && (
             <Funds>
@@ -223,7 +237,7 @@ export default function ProductCreateSuccess({
                 tag="p"
                 margin="1rem 0 0 0"
                 $fontSize="0.75rem"
-                fontWeight="bold"
+                fontWeight="600"
               >
                 Suggested pool amount: 15%
               </Typography>

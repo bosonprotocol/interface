@@ -23,7 +23,7 @@ const TagItem = styled.li<{ $active: boolean; $disabled: boolean }>`
   display: flex;
   list-style-type: none;
   font-size: 1rem;
-  font-weight: bold;
+  font-weight: 600;
   cursor: ${(props) => (props.$disabled ? "not-allowed" : "pointer")};
   opacity ${(props) => (props.$disabled ? "0.5" : "1")};
   &:not(:last-child) {
