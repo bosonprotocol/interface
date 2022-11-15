@@ -27,7 +27,7 @@ export default function ViewTxButton() {
     if (didInitiallyReconcile && transactions.length > 0) {
       const intervalId = setInterval(() => {
         reconcilePendingTransactions(coreSDK);
-      }, 10000);
+      }, 5_000);
       return () => clearInterval(intervalId);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
