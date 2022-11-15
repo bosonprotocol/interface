@@ -31,7 +31,7 @@ export default function ViewTxButton() {
       return () => clearInterval(intervalId);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [didInitiallyReconcile]);
+  }, [didInitiallyReconcile, transactions]);
 
   const numPendingTx = transactions.length;
 
