@@ -334,6 +334,11 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     ? exchanges.getExchangeState(exchange as subgraph.ExchangeFieldsFragment)
     : null;
 
+  const disabledRedeemText =
+    exchangeStatus === exchanges.ExtendedExchangeState.NotRedeemableYet
+      ? "Redeem"
+      : titleCase(exchangeStatus || "Unsupported");
+
   const { data: dataBalance } = useBalance(
     offer.exchangeToken.address !== ethers.constants.AddressZero
       ? {
@@ -889,7 +894,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
             )}
             {!isToRedeem && (
               <Button theme="outline" disabled>
-                {titleCase(exchangeStatus)}
+                {disabledRedeemText}
                 <Check size={24} />
               </Button>
             )}
