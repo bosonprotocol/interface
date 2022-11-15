@@ -110,7 +110,7 @@ const TokenGated = ({
   const core = useCoreSDK();
   const [tokenInfo, setTokenInfo] = useState({
     name: "",
-    decimals: "",
+    decimals: "18",
     symbol: ""
   });
 
@@ -131,7 +131,7 @@ const TokenGated = ({
 
   const convertedValue = useConvertedPrice({
     value: condition?.threshold || "",
-    decimals: tokenInfo?.decimals || "",
+    decimals: tokenInfo?.decimals || "18",
     symbol: tokenInfo?.symbol || ""
   });
 
