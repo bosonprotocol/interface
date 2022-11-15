@@ -23,6 +23,21 @@ import { offerGraphQl } from "./../offer/graphql";
 
 const OFFERS_PER_PAGE = 1000;
 
+const chunk = <T>(arr: T[], size: number): T[][] =>
+  [...Array(Math.ceil(arr.length / size))].map((_, i) =>
+    arr.slice(size * i, size + size * i)
+  );
+
+interface PromiseProps {
+  status: string;
+  value: null | {
+    product: subgraph.BaseProductV1ProductFieldsFragment;
+    variants: {
+      offer: subgraph.OfferFieldsFragment;
+      variations: subgraph.ProductV1Variation[];
+    }[];
+  };
+}
 interface Variant {
   offer: Offer;
   variations: subgraph.ProductV1Variation[];
@@ -103,141 +118,153 @@ export default function useInifinityProducts(
 
   const productsIds = useMemo(
     () =>
-      isSuccess
+      isSuccess && !isLoading && !isFetchingNextPage
         ? (data?.pages || [])
             .flatMap((p) => p || null)
             .map((p) => p?.uuid || null)
             .filter(isTruthy)
         : [],
-    [isSuccess, data]
+    [isSuccess, isLoading, isFetchingNextPage, data]
   );
 
   const productsVariants = useQuery(
-    ["get-all-products-by-uuid-v2", { productsIds }],
+    ["get-all-products-by-uuid-v2"],
     async () => {
-      const result = await fetchSubgraph<{
-        productV1Products: ProductWithVariants[];
-      }>(
-        gql`
-          query GetAllProductsByUUID($productsIds: [String]) {
-            productV1Products(where: { uuid_in: $productsIds }, first: ${OFFERS_PER_PAGE}) {
-              variants {
-                offer ${offerGraphQl}
-                variations {
-                  id
-                  option
-                  type
+      const productIdsSplitToChunks = chunk(productsIds, OFFERS_PER_PAGE);
+      const allProductPromises = productIdsSplitToChunks.map(
+        async (ids: string[]) => {
+          const result = await fetchSubgraph<{
+            productV1Products: ProductWithVariants[];
+          }>(
+            gql`
+            query GetAllProductsByUUID($productsIds: [String]) {
+              productV1Products(where: { uuid_in: $productsIds }, first: ${OFFERS_PER_PAGE}) {
+                variants {
+                  offer ${offerGraphQl}
+                  variations {
+                    id
+                    option
+                    type
+                  }
                 }
-              }
-              id
-              uuid
-              version
-              title
-              description
-              identification_sKU
-              identification_productId
-              identification_productIdType
-              productionInformation_brandName
-              productionInformation_manufacturer
-              productionInformation_manufacturerPartNumber
-              productionInformation_modelNumber
-              productionInformation_materials
-              details_category
-              details_subCategory
-              details_subCategory2
-              details_offerCategory
-              offerCategory
-              details_tags
-              details_sections
-              details_personalisation
-              packaging_packageQuantity
-              packaging_dimensions_length
-              packaging_dimensions_width
-              packaging_dimensions_height
-              packaging_dimensions_unit
-              packaging_weight_value
-              packaging_weight_unit
-              brand {
                 id
-                name
-              }
-              category {
-                id
-                name
-              }
-              subCategory {
-                id
-                name
-              }
-              subCategory2 {
-                id
-                name
-              }
-              tags {
-                id
-                name
-              }
-              sections {
-                id
-                name
-              }
-              personalisation {
-                id
-                name
-              }
-              visuals_images {
-                id
-                url
-                tag
-                type
-              }
-              visuals_videos {
-                id
-                url
-                tag
-                type
-              }
-              productV1Seller {
-                id
-                defaultVersion
-                name
+                uuid
+                version
+                title
                 description
-                externalUrl
-                tokenId
-                sellerId
-                images {
+                identification_sKU
+                identification_productId
+                identification_productIdType
+                productionInformation_brandName
+                productionInformation_manufacturer
+                productionInformation_manufacturerPartNumber
+                productionInformation_modelNumber
+                productionInformation_materials
+                details_category
+                details_subCategory
+                details_subCategory2
+                details_offerCategory
+                offerCategory
+                details_tags
+                details_sections
+                details_personalisation
+                packaging_packageQuantity
+                packaging_dimensions_length
+                packaging_dimensions_width
+                packaging_dimensions_height
+                packaging_dimensions_unit
+                packaging_weight_value
+                packaging_weight_unit
+                brand {
+                  id
+                  name
+                }
+                category {
+                  id
+                  name
+                }
+                subCategory {
+                  id
+                  name
+                }
+                subCategory2 {
+                  id
+                  name
+                }
+                tags {
+                  id
+                  name
+                }
+                sections {
+                  id
+                  name
+                }
+                personalisation {
+                  id
+                  name
+                }
+                visuals_images {
                   id
                   url
                   tag
                   type
                 }
-                contactLinks {
+                visuals_videos {
                   id
                   url
                   tag
+                  type
                 }
-                seller {
+                productV1Seller {
                   id
-                  operator
-                  admin
-                  clerk
-                  treasury
-                  authTokenId
-                  authTokenType
-                  voucherCloneAddress
-                  active
-                  contractURI
-                  royaltyPercentage
+                  defaultVersion
+                  name
+                  description
+                  externalUrl
+                  tokenId
+                  sellerId
+                  images {
+                    id
+                    url
+                    tag
+                    type
+                  }
+                  contactLinks {
+                    id
+                    url
+                    tag
+                  }
+                  seller {
+                    id
+                    operator
+                    admin
+                    clerk
+                    treasury
+                    authTokenId
+                    authTokenType
+                    voucherCloneAddress
+                    active
+                    contractURI
+                    royaltyPercentage
+                  }
                 }
               }
             }
-          }
-        `,
-        {
-          productsIds
+          `,
+            {
+              productsIds: ids
+            }
+          );
+          return result?.productV1Products;
         }
       );
-      return result?.productV1Products;
+      const allProducts = await Promise.allSettled(allProductPromises);
+      const response = allProducts.filter(
+        (res) => res.status === "fulfilled"
+      ) as unknown as PromiseProps[];
+      return (response?.flatMap((p) => p?.value || null) || []).filter(
+        (n) => n
+      ) as unknown as ProductWithVariants[];
     },
     {
       enabled: !!coreSDK && productsIds?.length > 0,
