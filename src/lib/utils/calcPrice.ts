@@ -68,7 +68,7 @@ export const calcPercentage = (offer: Offer, key: string): CalcPercentage => {
     return {
       percentage: percentage || 0,
       deposit: displayFloat(percentage || 0),
-      formatted: displayFloat(formatted)
+      formatted
     };
   } catch (e) {
     console.error(e);
