@@ -90,7 +90,9 @@ export default function useInfinityProducts(
         productsFirst: OFFERS_PER_PAGE,
         productsFilter: {
           productV1Seller_in:
-            options.enableCurationList && curationLists.enableCurationLists
+            options.enableCurationList &&
+            curationLists.enableCurationLists &&
+            !!curationLists.sellerCurationList?.length
               ? curationLists.sellerCurationList?.map(
                   (sellerId) => `${sellerId}-product-v1`
                 )
