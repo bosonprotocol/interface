@@ -14,7 +14,7 @@ import { Form, Formik, FormikHelpers, FormikProps } from "formik";
 import isArray from "lodash/isArray";
 import keys from "lodash/keys";
 import map from "lodash/map";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { generatePath } from "react-router-dom";
 import uuid from "react-uuid";
@@ -22,6 +22,7 @@ import { useAccount } from "wagmi";
 dayjs.extend(localizedFormat);
 
 import { BigNumber, ethers } from "ethers";
+import { useEffect } from "react";
 
 import { Token } from "../../components/convertion-rate/ConvertionRateContext";
 import { authTokenTypes } from "../../components/modal/components/CreateProfile/Lens/const";
@@ -37,7 +38,8 @@ import Help from "../../components/product/Help";
 import Preview from "../../components/product/Preview";
 import {
   CREATE_PRODUCT_STEPS,
-  CreateProductForm
+  CreateProductForm,
+  TOKEN_TYPES
 } from "../../components/product/utils";
 import MultiSteps from "../../components/step/MultiSteps";
 import SuccessTransactionToast from "../../components/toasts/SuccessTransactionToast";
@@ -890,7 +892,10 @@ function CreateProductInner({
 
         if (isTokenGated) {
           showModal("WAITING_FOR_CONFIRMATION");
-          if (commonTermsOfSale?.tokenContract) {
+          if (
+            commonTermsOfSale?.tokenContract &&
+            commonTermsOfSale.tokenType?.value === TOKEN_TYPES[0].value
+          ) {
             try {
               const { decimals: decimalsLocal } =
                 await coreSDK.getExchangeTokenInfo(
@@ -1007,7 +1012,10 @@ function CreateProductInner({
               nonce
             });
           } else {
-            if (commonTermsOfSale?.tokenContract) {
+            if (
+              commonTermsOfSale?.tokenContract &&
+              commonTermsOfSale.tokenType?.value === TOKEN_TYPES[0].value
+            ) {
               try {
                 const { decimals: decimalsLocal } =
                   await coreSDK.getExchangeTokenInfo(
@@ -1036,7 +1044,10 @@ function CreateProductInner({
           }
         } else {
           if (isTokenGated) {
-            if (commonTermsOfSale?.tokenContract) {
+            if (
+              commonTermsOfSale?.tokenContract &&
+              commonTermsOfSale.tokenType?.value === TOKEN_TYPES[0].value
+            ) {
               try {
                 const { decimals: decimalsLocal } =
                   await coreSDK.getExchangeTokenInfo(
@@ -1157,6 +1168,7 @@ function CreateProductInner({
     },
     [isMultiVariant]
   );
+
   useEffect(() => {
     formikRef?.current?.validateForm();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1167,8 +1179,13 @@ function CreateProductInner({
       ? "variantsCoreTermsOfSale"
       : "coreTermsOfSale";
     const tokenContract = values?.[coreTermsOfSaleKey]?.tokenContract;
+    const tokenType = values?.[coreTermsOfSaleKey]?.tokenType;
 
-    if (tokenContract && tokenContract.length > 0) {
+    if (
+      tokenContract &&
+      tokenContract.length > 0 &&
+      tokenType?.value === TOKEN_TYPES[0].value
+    ) {
       try {
         const { decimals } = await coreSDK.getExchangeTokenInfo(tokenContract);
         setDecimals(decimals);

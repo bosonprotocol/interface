@@ -680,6 +680,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       </BosonButton>
     );
   };
+
   return (
     <>
       <Widget>

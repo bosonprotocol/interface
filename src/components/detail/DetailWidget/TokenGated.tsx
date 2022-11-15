@@ -116,11 +116,15 @@ const TokenGated = ({
 
   useEffect(() => {
     (async () => {
-      if (condition?.tokenAddress) {
-        const { name, decimals, symbol } = await core.getExchangeTokenInfo(
-          condition.tokenAddress
-        );
-        setTokenInfo({ name, decimals: decimals?.toString(), symbol });
+      if (condition?.tokenAddress && condition?.tokenType === 0) {
+        try {
+          const { name, decimals, symbol } = await core.getExchangeTokenInfo(
+            condition.tokenAddress
+          );
+          setTokenInfo({ name, decimals: decimals?.toString(), symbol });
+        } catch (error) {
+          setTokenInfo({ name: "", decimals: "", symbol: "" });
+        }
       }
     })();
   }, [condition, core]);
