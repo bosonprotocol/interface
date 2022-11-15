@@ -291,9 +291,6 @@ export default function SellerProductsTable({
         const showVariant =
           offer?.additional?.variants && offer?.additional?.variants.length > 1;
 
-        if (offer?.metadata?.name === "ABI Variants") {
-          console.log({ showVariant, offer });
-        }
         return {
           offerId: offer?.id,
           uuid: offer?.metadata?.product?.uuid,
@@ -309,14 +306,10 @@ export default function SellerProductsTable({
                     const isExpired = dayjs(
                       getDateTimestamp(variant?.validUntilDate)
                     ).isBefore(dayjs());
-
-                    console.log({ currentTag, isExpired });
                     if (isExpired) return null;
                   }
                   if (currentTag === "voided") {
                     const isVoided = variant.voided;
-
-                    console.log({ currentTag, isVoided });
                     if (isVoided) return null;
                   }
 
