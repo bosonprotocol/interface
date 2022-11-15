@@ -301,7 +301,8 @@ const NOT_REDEEMED_YET = [
   subgraph.ExchangeState.Revoked,
   subgraph.ExchangeState.Cancelled,
   exchanges.ExtendedExchangeState.Expired,
-  subgraph.ExchangeState.Completed
+  subgraph.ExchangeState.Completed,
+  exchanges.ExtendedExchangeState.NotRedeemableYet
 ];
 
 const DetailWidget: React.FC<IDetailWidget> = ({
