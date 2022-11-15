@@ -98,8 +98,6 @@ const IndeterminateCheckbox = forwardRef<
       }
     }, [resolvedRef, indeterminate]);
 
-    // console.log({ rest, isChecked });
-
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       onClick?.();
       onChange?.(e);
@@ -113,7 +111,7 @@ const IndeterminateCheckbox = forwardRef<
           type="checkbox"
           ref={resolvedRef}
           {...rest}
-          checked={(isChecked || false) as boolean}
+          checked={isChecked as boolean}
           onChange={handleChange}
         />
         <div>
@@ -621,7 +619,8 @@ export default function SellerProductsTable({
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           Cell: ({ row, state }: CellProps<any>) => {
             const isChecked =
-              (state?.selectedRowIds?.[row?.id] || false) === true;
+              (state?.selectedRowIds?.[row?.id] || false) === true &&
+              row.original.isSelectable;
             return !row?.original?.isSelectable ? (
               <>
                 <IndeterminateCheckbox
