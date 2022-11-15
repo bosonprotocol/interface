@@ -189,7 +189,7 @@ export default function CoreTermsOfSale({ isMultiVariant }: Props) {
                       <SymbolInput
                         type="string"
                         name={`${prefix}.symbol`}
-                        value={symbol}
+                        defaultValue={symbol}
                         disabled
                       />
                     )}
