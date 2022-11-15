@@ -98,7 +98,7 @@ const IndeterminateCheckbox = forwardRef<
       }
     }, [resolvedRef, indeterminate]);
 
-    console.log({ rest, isChecked });
+    // console.log({ rest, isChecked });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       onClick?.();
@@ -300,7 +300,19 @@ export default function SellerProductsTable({
         const status = offer ? OffersKit.getOfferStatus(offer) : "";
         const showVariant =
           offer?.additional?.variants && offer?.additional?.variants.length > 1;
-
+        if (currentTag === "voided" && offer !== null && offer.additional) {
+          offer.additional.variants = offer.additional.variants.filter(
+            (variant) => variant.voided
+          );
+        }
+        if (currentTag === "expired" && offer !== null && offer.additional) {
+          offer.additional.variants = offer.additional.variants.filter(
+            (variant) =>
+              dayjs(getDateTimestamp(variant?.validUntilDate)).isBefore(
+                dayjs()
+              ) && !variant.voided
+          );
+        }
         return {
           offerId: offer?.id,
           uuid: offer?.metadata?.product?.uuid,
@@ -311,18 +323,6 @@ export default function SellerProductsTable({
                   const variantStatus = offer
                     ? OffersKit.getOfferStatus(variant)
                     : "";
-
-                  if (currentTag === "expired") {
-                    const isExpired = dayjs(
-                      getDateTimestamp(variant?.validUntilDate)
-                    ).isBefore(dayjs());
-                    if (isExpired) return null;
-                  }
-                  if (currentTag === "voided") {
-                    const isVoided = variant.voided;
-                    if (isVoided) return null;
-                  }
-
                   return {
                     isSubRow: true,
                     offerId: variant.id,
@@ -784,6 +784,9 @@ export default function SellerProductsTable({
                         {...cell.getCellProps()}
                         key={`seller_table_tbody_td_${row.original.offerId}-${cell.column.id}`}
                         onClick={() => {
+                          console.log(hasSubRows, "hasSubRows");
+                          console.log(cell, "cell");
+
                           if (hasSubRows) {
                             if (
                               (!cell.row.isExpanded &&
