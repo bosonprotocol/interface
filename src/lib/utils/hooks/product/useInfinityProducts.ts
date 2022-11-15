@@ -135,7 +135,7 @@ export default function useInfinityProducts(
             productV1Products: ProductWithVariants[];
           }>(
             gql`
-            query GetAllProductsByUUID($productsIds: [String], $first: Number) {
+            query GetAllProductsByUUID($productsIds: [String], $first: Int) {
               productV1Products(where: { uuid_in: $productsIds }, first: $first) {
                 variants {
                   offer ${offerGraphQl}
