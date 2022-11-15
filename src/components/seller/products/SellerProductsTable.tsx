@@ -25,6 +25,7 @@ import { CONFIG } from "../../../lib/config";
 import { UrlParameters } from "../../../lib/routing/parameters";
 import { ProductRoutes } from "../../../lib/routing/routes";
 import { colors } from "../../../lib/styles/colors";
+import { isTruthy } from "../../../lib/types/helpers";
 import { Offer } from "../../../lib/types/offer";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
@@ -63,6 +64,7 @@ interface Props {
   refetch: () => void;
   setSelected: React.Dispatch<React.SetStateAction<Array<Offer | null>>>;
   sellerRoles: SellerRolesProps;
+  currentTag: string;
 }
 
 interface IIndeterminateInputProps {
@@ -222,11 +224,13 @@ const Span = styled.span`
     margin-right: 1rem;
   }
 `;
+
 export default function SellerProductsTable({
   offers,
   refetch,
   setSelected,
-  sellerRoles
+  sellerRoles,
+  currentTag
 }: Props) {
   const { showModal, modalTypes } = useModal();
   const navigate = useKeepQueryParamsNavigate();
@@ -286,142 +290,164 @@ export default function SellerProductsTable({
         const status = offer ? OffersKit.getOfferStatus(offer) : "";
         const showVariant =
           offer?.additional?.variants && offer?.additional?.variants.length > 1;
+
+        if (offer?.metadata?.name === "ABI Variants") {
+          console.log({ showVariant, offer });
+        }
         return {
           offerId: offer?.id,
           uuid: offer?.metadata?.product?.uuid,
           isSubRow: false,
           subRows: showVariant
-            ? offer?.additional?.variants.map((variant) => {
-                const variantStatus = offer
-                  ? OffersKit.getOfferStatus(variant)
-                  : "";
-                return {
-                  isSubRow: true,
-                  offerId: variant.id,
-                  uuid: offer.additional?.product?.uuid ?? "",
-                  isSelectable: !(
-                    variantStatus === OffersKit.OfferState.EXPIRED ||
-                    variantStatus === OffersKit.OfferState.VOIDED
-                  ),
-                  image: variant.metadata && "image" in variant.metadata && (
-                    <Image
-                      src={variant.metadata.image}
-                      style={{
-                        width: "2.5rem",
-                        height: "2.5rem",
-                        paddingTop: "0%",
-                        fontSize: "0.75rem",
-                        marginLeft: "35px"
-                      }}
-                      showPlaceholderText={false}
-                    />
-                  ),
+            ? (offer?.additional?.variants || [])
+                .map((variant) => {
+                  const variantStatus = offer
+                    ? OffersKit.getOfferStatus(variant)
+                    : "";
 
-                  sku: (
-                    <Tooltip
-                      content={
-                        <Typography $fontSize="0.75rem">
+                  if (currentTag === "expired") {
+                    const isExpired = dayjs(
+                      getDateTimestamp(variant?.validUntilDate)
+                    ).isBefore(dayjs());
+
+                    console.log({ currentTag, isExpired });
+                    if (isExpired) return null;
+                  }
+                  if (currentTag === "voided") {
+                    const isVoided = variant.voided;
+
+                    console.log({ currentTag, isVoided });
+                    if (isVoided) return null;
+                  }
+
+                  return {
+                    isSubRow: true,
+                    offerId: variant.id,
+                    uuid: offer.additional?.product?.uuid ?? "",
+                    isSelectable: !(
+                      variantStatus === OffersKit.OfferState.EXPIRED ||
+                      variantStatus === OffersKit.OfferState.VOIDED
+                    ),
+                    image: variant.metadata && "image" in variant.metadata && (
+                      <Image
+                        src={variant.metadata.image}
+                        style={{
+                          width: "2.5rem",
+                          height: "2.5rem",
+                          paddingTop: "0%",
+                          fontSize: "0.75rem",
+                          marginLeft: "35px"
+                        }}
+                        showPlaceholderText={false}
+                      />
+                    ),
+
+                    sku: (
+                      <Tooltip
+                        content={
+                          <Typography $fontSize="0.75rem">
+                            {variant.metadata && "uuid" in variant.metadata
+                              ? variant.metadata.uuid
+                              : ""}
+                          </Typography>
+                        }
+                      >
+                        <Typography
+                          $fontSize="0.75rem"
+                          style={{
+                            paddingLeft: "2rem"
+                          }}
+                        >
                           {variant.metadata && "uuid" in variant.metadata
-                            ? variant.metadata.uuid
+                            ? variant.metadata.uuid.substring(0, 3) + "..."
                             : ""}
                         </Typography>
-                      }
-                    >
+                      </Tooltip>
+                    ),
+                    productName: (
                       <Typography
-                        $fontSize="0.75rem"
                         style={{
-                          paddingLeft: "2rem"
+                          textTransform: "uppercase",
+                          marginLeft: "2rem"
+                        }}
+                        tag="p"
+                      >
+                        {variant?.metadata?.name}
+                      </Typography>
+                    ),
+                    status: variant && (
+                      <Tooltip
+                        interactive
+                        content={<OfferHistory offer={variant as Offer} />}
+                      >
+                        <OfferStatuses
+                          offer={variant as Offer}
+                          size="small"
+                          displayDot
+                          showValid
+                          style={{
+                            display: "inline-block",
+                            position: "relative",
+                            top: "unset",
+                            left: "unset",
+                            right: "unset"
+                          }}
+                        />
+                      </Tooltip>
+                    ),
+                    quantity: (
+                      <Typography>
+                        {variant?.quantityAvailable}/{variant?.quantityInitial}
+                      </Typography>
+                    ),
+                    price: (
+                      <Price
+                        currencySymbol={variant?.exchangeToken?.symbol ?? ""}
+                        value={variant?.price ?? ""}
+                        decimals={variant?.exchangeToken?.decimals ?? ""}
+                      />
+                    ),
+                    offerValidity: variant?.validUntilDate && (
+                      <Typography>
+                        <span>
+                          <small style={{ margin: "0" }}>Until</small> <br />
+                          {dayjs(
+                            getDateTimestamp(variant.validUntilDate)
+                          ).format(CONFIG.dateFormat)}
+                        </span>
+                      </Typography>
+                    ),
+                    action: !(
+                      variantStatus === OffersKit.OfferState.EXPIRED ||
+                      variantStatus === OffersKit.OfferState.VOIDED ||
+                      variant?.quantityAvailable === "0"
+                    ) && (
+                      <VoidButton
+                        variant="secondaryInverted"
+                        size={ButtonSize.Small}
+                        disabled={!sellerRoles?.isOperator}
+                        tooltip="This action is restricted to only the operator wallet"
+                        onClick={() => {
+                          if (variant) {
+                            showModal(
+                              modalTypes.VOID_PRODUCT,
+                              {
+                                title: "Void Confirmation",
+                                offerId: variant.id,
+                                offer: variant as Offer,
+                                refetch
+                              },
+                              "xs"
+                            );
+                          }
                         }}
                       >
-                        {variant.metadata && "uuid" in variant.metadata
-                          ? variant.metadata.uuid.substring(0, 3) + "..."
-                          : ""}
-                      </Typography>
-                    </Tooltip>
-                  ),
-                  productName: (
-                    <Typography
-                      style={{
-                        textTransform: "uppercase",
-                        marginLeft: "2rem"
-                      }}
-                      tag="p"
-                    >
-                      {variant?.metadata?.name}
-                    </Typography>
-                  ),
-                  status: variant && (
-                    <Tooltip
-                      interactive
-                      content={<OfferHistory offer={variant as Offer} />}
-                    >
-                      <OfferStatuses
-                        offer={variant as Offer}
-                        size="small"
-                        displayDot
-                        showValid
-                        style={{
-                          display: "inline-block",
-                          position: "relative",
-                          top: "unset",
-                          left: "unset",
-                          right: "unset"
-                        }}
-                      />
-                    </Tooltip>
-                  ),
-                  quantity: (
-                    <Typography>
-                      {variant?.quantityAvailable}/{variant?.quantityInitial}
-                    </Typography>
-                  ),
-                  price: (
-                    <Price
-                      currencySymbol={variant?.exchangeToken?.symbol ?? ""}
-                      value={variant?.price ?? ""}
-                      decimals={variant?.exchangeToken?.decimals ?? ""}
-                    />
-                  ),
-                  offerValidity: variant?.validUntilDate && (
-                    <Typography>
-                      <span>
-                        <small style={{ margin: "0" }}>Until</small> <br />
-                        {dayjs(getDateTimestamp(variant.validUntilDate)).format(
-                          CONFIG.dateFormat
-                        )}
-                      </span>
-                    </Typography>
-                  ),
-                  action: !(
-                    variantStatus === OffersKit.OfferState.EXPIRED ||
-                    variantStatus === OffersKit.OfferState.VOIDED ||
-                    variant?.quantityAvailable === "0"
-                  ) && (
-                    <VoidButton
-                      variant="secondaryInverted"
-                      size={ButtonSize.Small}
-                      disabled={!sellerRoles?.isOperator}
-                      tooltip="This action is restricted to only the operator wallet"
-                      onClick={() => {
-                        if (variant) {
-                          showModal(
-                            modalTypes.VOID_PRODUCT,
-                            {
-                              title: "Void Confirmation",
-                              offerId: variant.id,
-                              offer: variant as Offer,
-                              refetch
-                            },
-                            "xs"
-                          );
-                        }
-                      }}
-                    >
-                      Void
-                    </VoidButton>
-                  )
-                };
-              })
+                        Void
+                      </VoidButton>
+                    )
+                  };
+                })
+                .filter(isTruthy)
             : [],
           isSelectable: !(
             status === OffersKit.OfferState.EXPIRED ||

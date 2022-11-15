@@ -60,45 +60,31 @@ export default function SellerProducts({
   const { products, isLoading, isError, refetch } = productsData;
 
   const allOffers = useMemo(() => {
-    const filtered =
-      products
-        .filter((product) => product.seller.id === sellerId)
-        ?.map((offer) => {
-          const status = offers.getOfferStatus(offer);
+    const allOffers =
+      products?.filter((product) => product.seller.id === sellerId) || [];
 
-          if (currentTag === "physical") {
-            return offer?.metadata?.product?.offerCategory === "PHYSICAL"
-              ? offer
-              : null;
-          }
-          if (currentTag === "phygital") {
-            return offer?.metadata?.product?.offerCategory === "PHYGITAL"
-              ? offer
-              : null;
-          }
-          if (currentTag === "expired") {
-            if (offer && offer.additional) {
-              offer.additional.variants = offer.additional.variants.filter(
-                (elem) => {
-                  const current = dayjs();
-                  return dayjs(getDateTimestamp(elem?.validUntilDate)).isBefore(
-                    current
-                  );
-                }
-              );
-            }
-            return status === offers.OfferState.EXPIRED ? offer : null;
-          }
-          if (currentTag === "voided") {
-            if (offer && offer.additional) {
-              offer.additional.variants = offer.additional.variants.filter(
-                ({ voided }) => voided
-              );
-            }
-            return status === offers.OfferState.VOIDED ? offer : null;
-          }
-          return offer;
-        }) || [];
+    const filtered =
+      allOffers?.map((offer) => {
+        const status = offers.getOfferStatus(offer);
+
+        if (currentTag === "physical") {
+          return offer?.metadata?.product?.offerCategory === "PHYSICAL"
+            ? offer
+            : null;
+        }
+        if (currentTag === "phygital") {
+          return offer?.metadata?.product?.offerCategory === "PHYGITAL"
+            ? offer
+            : null;
+        }
+        if (currentTag === "expired") {
+          return status === offers.OfferState.EXPIRED ? offer : null;
+        }
+        if (currentTag === "voided") {
+          return status === offers.OfferState.VOIDED ? offer : null;
+        }
+        return offer;
+      }) || [];
 
     if (search && search.length > 0) {
       return filtered.filter((n): boolean => {
@@ -191,6 +177,7 @@ export default function SellerProducts({
         buttons={filterButton}
       />
       <SellerProductsTable
+        currentTag={currentTag}
         offers={allOffers}
         isLoading={isLoading}
         isError={isError}
