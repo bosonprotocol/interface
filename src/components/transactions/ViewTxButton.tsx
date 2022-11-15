@@ -24,14 +24,14 @@ export default function ViewTxButton() {
   }, []);
 
   useEffect(() => {
-    if (didInitiallyReconcile) {
+    if (didInitiallyReconcile && transactions.length > 0) {
       const intervalId = setInterval(() => {
         reconcilePendingTransactions(coreSDK);
       }, 5_000);
       return () => clearInterval(intervalId);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [didInitiallyReconcile]);
+  }, [didInitiallyReconcile, transactions]);
 
   const numPendingTx = transactions.length;
 
