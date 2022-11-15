@@ -2,22 +2,31 @@ import { BigNumber, utils } from "ethers";
 
 import { Offer } from "../types/offer";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const displayFloat = (value: any): string => {
+interface Options {
+  fixed?: number;
+}
+
+export const displayFloat = (
+  value: number | string | null | undefined,
+  { fixed }: Options = {}
+): string => {
   try {
-    const parsedValue = value || 0;
+    const parsedValue = Number(value) || 0;
     if (parsedValue > 0) {
       const valueToDisplay =
-        parsedValue.toString().match(/^-?\d*\.?0*\d{0,2}/)?.[0] || 0;
+        parsedValue.toString().match(/^-?\d*\.?0*\d{0,2}/)?.[0] || "0";
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      if ((valueToDisplay as any) % 1 === 0) {
+      const isInteger = Number(valueToDisplay) % 1 === 0;
+      if (isInteger) {
         return Number(parsedValue).toString();
       }
-      return valueToDisplay;
-    } else {
-      return "0";
+      return fixed !== undefined
+        ? Number(valueToDisplay).toFixed(fixed) === (0).toFixed(fixed)
+          ? `<${10 ** -fixed}`
+          : Number(valueToDisplay).toFixed(fixed)
+        : valueToDisplay + "";
     }
+    return "0";
   } catch (e) {
     console.error(e);
     return "0";
