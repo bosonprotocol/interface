@@ -70,8 +70,10 @@ interface Props {
 interface IIndeterminateInputProps {
   indeterminate?: boolean;
   disabled?: boolean;
+  isChecked?: boolean;
   style?: React.CSSProperties;
   onClick?: () => void;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const IndeterminateCheckbox = forwardRef<
@@ -79,7 +81,7 @@ const IndeterminateCheckbox = forwardRef<
   IIndeterminateInputProps
 >(
   (
-    { indeterminate, style, onClick, ...rest },
+    { indeterminate, style, onClick, onChange, isChecked, ...rest },
     ref: React.Ref<HTMLInputElement>
   ) => {
     const defaultRef = useRef(null);
@@ -96,6 +98,13 @@ const IndeterminateCheckbox = forwardRef<
       }
     }, [resolvedRef, indeterminate]);
 
+    console.log({ rest, isChecked });
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      onClick?.();
+      onChange?.(e);
+    };
+
     return (
       <StyledCheckboxWrapper htmlFor={checkboxId} style={style}>
         <input
@@ -103,8 +112,9 @@ const IndeterminateCheckbox = forwardRef<
           id={checkboxId}
           type="checkbox"
           ref={resolvedRef}
-          onClick={onClick}
           {...rest}
+          checked={(isChecked || false) as boolean}
+          onChange={handleChange}
         />
         <div>
           <Check size={16} />
@@ -609,7 +619,9 @@ export default function SellerProductsTable({
             );
           },
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          Cell: ({ row }: CellProps<any>) => {
+          Cell: ({ row, state }: CellProps<any>) => {
+            const isChecked =
+              (state?.selectedRowIds?.[row?.id] || false) === true;
             return !row?.original?.isSelectable ? (
               <>
                 <IndeterminateCheckbox
@@ -617,17 +629,20 @@ export default function SellerProductsTable({
                   style={{
                     paddingLeft: row.original.isSubRow ? "2.375rem" : "0"
                   }}
+                  isChecked={isChecked}
+                  {...row.getToggleRowSelectedProps()}
                 />
               </>
             ) : (
               <IndeterminateCheckbox
-                {...row.getToggleRowSelectedProps()}
                 style={{
                   paddingLeft: row.original.isSubRow ? "2.375rem" : "0"
                 }}
                 onClick={() => {
                   row.toggleRowExpanded(true);
                 }}
+                isChecked={isChecked}
+                {...row.getToggleRowSelectedProps()}
               />
             );
           }
