@@ -18,8 +18,8 @@ import { calcPrice } from "../../calcPrice";
 import { convertPrice } from "../../convertPrice";
 import { fetchSubgraph } from "../../core-components/subgraph";
 import { useCoreSDK } from "../../useCoreSdk";
+import { offerGraphQl } from "../offer/graphql";
 import { Exchange } from "../useExchanges";
-import { offerGraphQl } from "./../offer/graphql";
 
 const OFFERS_PER_PAGE = 1000;
 
@@ -55,7 +55,7 @@ interface AdditionalFiltering {
   showExpired?: boolean;
 }
 
-export default function useInifinityProducts(
+export default function useInfinityProducts(
   props: subgraph.GetProductV1ProductsQueryQueryVariables &
     AdditionalFiltering = {},
   options: {
@@ -100,12 +100,10 @@ export default function useInifinityProducts(
   useEffect(() => {
     if (!isSuccess || isLoading || isFetchingNextPage) {
       return;
-    } else {
-      if (hasNextPage === true) {
-        const nextPageIndex = pageIndex + 1;
-        setPageIndex(nextPageIndex);
-        fetchNextPage({ pageParam: nextPageIndex * OFFERS_PER_PAGE });
-      }
+    } else if (hasNextPage === true) {
+      const nextPageIndex = pageIndex + 1;
+      setPageIndex(nextPageIndex);
+      fetchNextPage({ pageParam: nextPageIndex * OFFERS_PER_PAGE });
     }
   }, [
     isSuccess,
@@ -137,8 +135,8 @@ export default function useInifinityProducts(
             productV1Products: ProductWithVariants[];
           }>(
             gql`
-            query GetAllProductsByUUID($productsIds: [String]) {
-              productV1Products(where: { uuid_in: $productsIds }, first: ${OFFERS_PER_PAGE}) {
+            query GetAllProductsByUUID($productsIds: [String], $first: Number) {
+              productV1Products(where: { uuid_in: $productsIds }, first: $first) {
                 variants {
                   offer ${offerGraphQl}
                   variations {
@@ -252,7 +250,8 @@ export default function useInifinityProducts(
             }
           `,
             {
-              productsIds: ids
+              productsIds: ids,
+              first: OFFERS_PER_PAGE
             }
           );
           return result?.productV1Products;
@@ -263,7 +262,7 @@ export default function useInifinityProducts(
         (res) => res.status === "fulfilled"
       ) as unknown as PromiseProps[];
       return (response?.flatMap((p) => p?.value || null) || []).filter(
-        (n) => n
+        isTruthy
       ) as unknown as ProductWithVariants[];
     },
     {
@@ -286,7 +285,7 @@ export default function useInifinityProducts(
               symbol: offer?.exchangeToken.symbol.toUpperCase(),
               currency: CONFIG.defaultCurrency,
               rates: store.rates,
-              fixed: 8
+              fixed: store.fixed
             });
             return {
               ...offer,
@@ -317,8 +316,7 @@ export default function useInifinityProducts(
 
           if (!props?.showVoided) {
             offers = offers.filter(
-              (n: { voided: boolean; status: string }) =>
-                n && n?.voided === false
+              (n: { voided: boolean; status: string }) => n && !n?.voided
             );
           }
 
@@ -399,6 +397,7 @@ export default function useInifinityProducts(
     props?.showVoided,
     props?.showExpired,
     props?.quantityAvailable_gte,
+    store.fixed,
     store.rates
   ]);
 
