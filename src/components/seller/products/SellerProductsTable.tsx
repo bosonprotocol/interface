@@ -560,7 +560,7 @@ export default function SellerProductsTable({
           )
         };
       }),
-    [offers, sellerRoles] // eslint-disable-line
+    [offers] // eslint-disable-line
   );
 
   const tableProps = useTable(
