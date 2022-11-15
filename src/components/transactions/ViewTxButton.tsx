@@ -16,9 +16,6 @@ export default function ViewTxButton() {
     didInitiallyReconcile,
     resetInitialReconcile
   } = usePendingTransactionsStore();
-  console.log(
-    "🚀  roberto --  ~ file: ViewTxButton.tsx ~ line 19 ~ ViewTxButton ~ transactions"
-  );
 
   useEffect(() => {
     resetInitialReconcile();
