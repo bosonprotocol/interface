@@ -135,8 +135,8 @@ export default function useInfinityProducts(
             productV1Products: ProductWithVariants[];
           }>(
             gql`
-            query GetAllProductsByUUID($productsIds: [String]) {
-              productV1Products(where: { uuid_in: $productsIds }, first: ${OFFERS_PER_PAGE}) {
+            query GetAllProductsByUUID($productsIds: [String], $first: Int) {
+              productV1Products(where: { uuid_in: $productsIds }, first: $first) {
                 variants {
                   offer ${offerGraphQl}
                   variations {
@@ -250,7 +250,8 @@ export default function useInfinityProducts(
             }
           `,
             {
-              productsIds: ids
+              productsIds: ids,
+              first: OFFERS_PER_PAGE
             }
           );
           return result?.productV1Products;
