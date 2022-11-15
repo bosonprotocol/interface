@@ -80,10 +80,15 @@ export function WithSellerData(
       store: { tokens }
     } = useConvertionRate();
 
-    const products = useInfinityProducts({
-      showVoided: true,
-      showExpired: true
-    });
+    const products = useInfinityProducts(
+      {
+        showVoided: true,
+        showExpired: true
+      },
+      {
+        enableCurationList: false
+      }
+    );
 
     const offers = useOffers({
       sellerId,

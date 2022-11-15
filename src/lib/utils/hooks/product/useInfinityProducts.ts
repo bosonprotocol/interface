@@ -19,6 +19,7 @@ import { convertPrice } from "../../convertPrice";
 import { fetchSubgraph } from "../../core-components/subgraph";
 import { useCoreSDK } from "../../useCoreSdk";
 import { offerGraphQl } from "../offer/graphql";
+import { useCurationLists } from "../useCurationLists";
 import { Exchange } from "../useExchanges";
 
 const OFFERS_PER_PAGE = 1000;
@@ -62,11 +63,13 @@ export default function useInfinityProducts(
     enabled?: boolean;
     keepPreviousData?: boolean;
     refetchOnMount?: boolean;
-  } = {}
+    enableCurationList: boolean;
+  }
 ) {
   const [pageIndex, setPageIndex] = useState(0);
   const coreSDK = useCoreSDK();
   const { store } = useContext(ConvertionRateContext);
+  const curationLists = useCurationLists();
 
   const {
     data,
@@ -84,7 +87,16 @@ export default function useInfinityProducts(
       const page = await coreSDK.getProductV1Products({
         ...props,
         productsSkip: skip,
-        productsFirst: OFFERS_PER_PAGE
+        productsFirst: OFFERS_PER_PAGE,
+        productsFilter: {
+          productV1Seller_in:
+            options.enableCurationList && curationLists.enableCurationLists
+              ? curationLists.sellerCurationList?.map(
+                  (sellerId) => `${sellerId}-product-v1`
+                )
+              : undefined,
+          ...props.productsFilter
+        }
       });
       return page;
     },
@@ -100,7 +112,8 @@ export default function useInfinityProducts(
   useEffect(() => {
     if (!isSuccess || isLoading || isFetchingNextPage) {
       return;
-    } else if (hasNextPage === true) {
+    }
+    if (hasNextPage) {
       const nextPageIndex = pageIndex + 1;
       setPageIndex(nextPageIndex);
       fetchNextPage({ pageParam: nextPageIndex * OFFERS_PER_PAGE });
