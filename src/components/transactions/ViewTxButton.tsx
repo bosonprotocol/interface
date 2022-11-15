@@ -16,6 +16,10 @@ export default function ViewTxButton() {
     didInitiallyReconcile,
     resetInitialReconcile
   } = usePendingTransactionsStore();
+  console.log(
+    "🚀  roberto --  ~ file: ViewTxButton.tsx ~ line 19 ~ ViewTxButton ~ transactions",
+    transactions
+  );
 
   useEffect(() => {
     resetInitialReconcile();
@@ -24,10 +28,10 @@ export default function ViewTxButton() {
   }, []);
 
   useEffect(() => {
-    if (didInitiallyReconcile) {
+    if (didInitiallyReconcile && transactions.length > 0) {
       const intervalId = setInterval(() => {
         reconcilePendingTransactions(coreSDK);
-      }, 5_000);
+      }, 10000);
       return () => clearInterval(intervalId);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
