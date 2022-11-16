@@ -39,6 +39,7 @@ export type StoreFields = {
   sellerCurationList: string;
   offerCurationList: string;
   commitProxyAddress: string;
+  openseaLinkToOriginalMainnetCollection: string;
   metaTransactionsApiKey: string;
   supportFunctionality: SelectType[];
 };
@@ -77,6 +78,8 @@ export const storeFields = {
   sellerCurationList: "sellerCurationList",
   offerCurationList: "offerCurationList",
   commitProxyAddress: "commitProxyAddress",
+  openseaLinkToOriginalMainnetCollection:
+    "openseaLinkToOriginalMainnetCollection",
   withMetaTx: "withMetaTx",
   metaTransactionsApiKey: "metaTransactionsApiKey",
   supportFunctionality: "supportFunctionality",
@@ -267,6 +270,11 @@ export const formModel = {
       requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: "0x0000000000000000000000000000000000000000"
     },
+    [storeFields.openseaLinkToOriginalMainnetCollection]: {
+      name: storeFields.openseaLinkToOriginalMainnetCollection,
+      requiredErrorMessage: standardRequiredErrorMessage,
+      placeholder: ""
+    },
     [storeFields.metaTransactionsApiKey]: {
       name: storeFields.metaTransactionsApiKey,
       requiredErrorMessage: standardRequiredErrorMessage,
@@ -374,6 +382,10 @@ export const validationSchema = Yup.object({
     .test("FORMAT", "Must be an address", (value) =>
       value ? ethers.utils.isAddress(value) : true
     ),
+  [storeFields.openseaLinkToOriginalMainnetCollection]: Yup.string().matches(
+    new RegExp(websitePattern),
+    notUrlErrorMessage
+  ),
   [storeFields.withMetaTx]: Yup.object({
     label: Yup.string().required(standardRequiredErrorMessage),
     value: Yup.string().required(standardRequiredErrorMessage)
@@ -427,6 +439,7 @@ export const initialValues = {
   [storeFields.sellerCurationList]: "",
   [storeFields.offerCurationList]: "",
   [storeFields.commitProxyAddress]: "",
+  [storeFields.openseaLinkToOriginalMainnetCollection]: "",
   [storeFields.withMetaTx]: formModel.formFields.withMetaTx.options.find(
     (option) => "default" in option && option.default
   ) as SelectDataProps,

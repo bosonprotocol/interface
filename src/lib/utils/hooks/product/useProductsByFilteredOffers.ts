@@ -2,7 +2,7 @@ import { useMemo } from "react";
 
 import { isTruthy } from "../../../types/helpers";
 import { useOffers } from "../offers";
-import useProducts from "./useProducts";
+import useInfinityProducts from "./useInfinityProducts";
 
 export default function useProductsByFilteredOffers(
   props: Parameters<typeof useOffers>[0] = {}
@@ -17,10 +17,13 @@ export default function useProductsByFilteredOffers(
       ) || [],
     [data]
   );
-  const result = useProducts({
-    ...(props.first && { productsFirst: props.first }),
-    productsIds: productsIds
-  });
+  const result = useInfinityProducts(
+    {
+      ...(props.first && { productsFirst: props.first }),
+      productsIds: productsIds
+    },
+    { enableCurationList: true }
+  );
   return {
     ...result,
     isLoading: isLoading || result.isLoading,

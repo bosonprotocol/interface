@@ -1,23 +1,51 @@
 import { BigNumber, utils } from "ethers";
 
+import { CONFIG } from "../config";
 import { Offer } from "../types/offer";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const displayFloat = (value: any): string => {
+interface Options {
+  fixed?: number;
+}
+
+export const displayFloat = (
+  value: number | string | null | undefined,
+  { fixed }: Options = {}
+): string => {
   try {
     const parsedValue = value || 0;
-    if (parsedValue > 0) {
+    if (typeof parsedValue === "string" || parsedValue > 0) {
+      const currencySymbolIndex = parsedValue
+        .toString()
+        .indexOf(CONFIG.defaultCurrency.symbol);
+      const addSymbol = (value: string) => {
+        return currencySymbolIndex === -1
+          ? value
+          : currencySymbolIndex === 0
+          ? `${CONFIG.defaultCurrency.symbol} ${value}`
+          : `${value} ${CONFIG.defaultCurrency.symbol}`;
+      };
       const valueToDisplay =
-        parsedValue.toString().match(/^-?\d*\.?0*\d{0,2}/)?.[0] || 0;
+        parsedValue
+          .toString()
+          .replaceAll(CONFIG.defaultCurrency.symbol, "")
+          .trim()
+          .match(
+            new RegExp(
+              `^-?\\d*\\.?0*\\d{0,${fixed === undefined ? "" : fixed}}`
+            )
+          )?.[0] || "0";
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      if ((valueToDisplay as any) % 1 === 0) {
-        return Number(parsedValue).toString();
+      const isInteger = Number(valueToDisplay) % 1 === 0;
+      if (isInteger) {
+        return addSymbol(Number(parsedValue).toString());
       }
-      return valueToDisplay;
-    } else {
-      return "0";
+      return fixed !== undefined
+        ? Number(valueToDisplay).toFixed(fixed) === (0).toFixed(fixed)
+          ? addSymbol(`<${10 ** -fixed}`)
+          : addSymbol(Number(valueToDisplay).toFixed(fixed))
+        : addSymbol(valueToDisplay + "");
     }
+    return "0";
   } catch (e) {
     console.error(e);
     return "0";
@@ -38,6 +66,7 @@ interface CalcPercentage {
   deposit: string;
   formatted: string;
 }
+const MUL_VALUE = 100000000;
 export const calcPercentage = (offer: Offer, key: string): CalcPercentage => {
   try {
     const value = offer?.[key as keyof Offer] || "0";
@@ -51,14 +80,14 @@ export const calcPercentage = (offer: Offer, key: string): CalcPercentage => {
     const percentage =
       offer.price === "0"
         ? 0
-        : (BigNumber.from(value).mul(1000000).div(offer.price).toNumber() /
-            1000000) *
-          10000;
+        : (BigNumber.from(value).mul(MUL_VALUE).div(offer.price).toNumber() /
+            MUL_VALUE) *
+          100;
 
     return {
       percentage: percentage || 0,
       deposit: displayFloat(percentage || 0),
-      formatted: displayFloat(formatted)
+      formatted
     };
   } catch (e) {
     console.error(e);
