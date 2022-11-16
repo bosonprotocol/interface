@@ -1,5 +1,6 @@
 import { BigNumber, utils } from "ethers";
 
+import { CONFIG } from "../config";
 import { Offer } from "../types/offer";
 
 interface Options {
@@ -11,20 +12,38 @@ export const displayFloat = (
   { fixed }: Options = {}
 ): string => {
   try {
-    const parsedValue = Number(value) || 0;
-    if (parsedValue > 0) {
+    const parsedValue = value || 0;
+    if (typeof parsedValue === "string" || parsedValue > 0) {
+      const currencySymbolIndex = parsedValue
+        .toString()
+        .indexOf(CONFIG.defaultCurrency.symbol);
+      const addSymbol = (value: string) => {
+        return currencySymbolIndex === -1
+          ? value
+          : currencySymbolIndex === 0
+          ? `${CONFIG.defaultCurrency.symbol} ${value}`
+          : `${value} ${CONFIG.defaultCurrency.symbol}`;
+      };
       const valueToDisplay =
-        parsedValue.toString().match(/^-?\d*\.?0*\d{0,2}/)?.[0] || "0";
+        parsedValue
+          .toString()
+          .replaceAll(CONFIG.defaultCurrency.symbol, "")
+          .trim()
+          .match(
+            new RegExp(
+              `^-?\\d*\\.?0*\\d{0,${fixed === undefined ? "" : fixed}}`
+            )
+          )?.[0] || "0";
 
       const isInteger = Number(valueToDisplay) % 1 === 0;
       if (isInteger) {
-        return Number(parsedValue).toString();
+        return addSymbol(Number(parsedValue).toString());
       }
       return fixed !== undefined
         ? Number(valueToDisplay).toFixed(fixed) === (0).toFixed(fixed)
-          ? `<${10 ** -fixed}`
-          : Number(valueToDisplay).toFixed(fixed)
-        : valueToDisplay + "";
+          ? addSymbol(`<${10 ** -fixed}`)
+          : addSymbol(Number(valueToDisplay).toFixed(fixed))
+        : addSymbol(valueToDisplay + "");
     }
     return "0";
   } catch (e) {
