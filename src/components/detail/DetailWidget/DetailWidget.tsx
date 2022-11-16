@@ -133,8 +133,13 @@ export const getOfferDetailData = (
   convertedPrice: IPrice | null,
   isModal: boolean,
   modalTypes?: ModalTypes,
-  showModal?: ShowModalFn
+  showModal?: ShowModalFn,
+  isExchange?: boolean
 ) => {
+  const redeemableFromDayJs = dayjs(
+    Number(`${offer.voucherRedeemableFromDate}000`)
+  );
+  const redeemableFrom = redeemableFromDayJs.format(CONFIG.dateFormat);
   const redeemableUntil = dayjs(
     Number(`${offer.voucherRedeemableUntilDate}000`)
   ).format(CONFIG.dateFormat);
@@ -158,8 +163,31 @@ export const getOfferDetailData = (
       console.error("modalTypes and/or showModal undefined");
     }
   };
-
+  const redeemableFromValues =
+    isExchange &&
+    offer.voucherRedeemableFromDate &&
+    redeemableFromDayJs.isAfter(Date.now())
+      ? [
+          {
+            name: "Redeemable from",
+            info: (
+              <>
+                <Typography tag="h6">
+                  <b>Redeemable</b>
+                </Typography>
+                <Typography tag="p">
+                  If you don’t redeem your NFT during the redemption period, it
+                  will expire and you will receive back the price minus the
+                  Buyer cancel penalty
+                </Typography>
+              </>
+            ),
+            value: <Typography tag="p">{redeemableFrom}</Typography>
+          }
+        ]
+      : [];
   return [
+    ...redeemableFromValues,
     {
       name: "Redeemable until",
       info: (
@@ -273,7 +301,8 @@ const NOT_REDEEMED_YET = [
   subgraph.ExchangeState.Revoked,
   subgraph.ExchangeState.Cancelled,
   exchanges.ExtendedExchangeState.Expired,
-  subgraph.ExchangeState.Completed
+  subgraph.ExchangeState.Completed,
+  exchanges.ExtendedExchangeState.NotRedeemableYet
 ];
 
 const DetailWidget: React.FC<IDetailWidget> = ({
@@ -304,6 +333,11 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   const exchangeStatus = exchange
     ? exchanges.getExchangeState(exchange as subgraph.ExchangeFieldsFragment)
     : null;
+
+  const disabledRedeemText =
+    exchangeStatus === exchanges.ExtendedExchangeState.NotRedeemableYet
+      ? "Redeem"
+      : titleCase(exchangeStatus || "Unsupported");
 
   const { data: dataBalance } = useBalance(
     offer.exchangeToken.address !== ethers.constants.AddressZero
@@ -346,13 +380,27 @@ const DetailWidget: React.FC<IDetailWidget> = ({
 
   const OFFER_DETAIL_DATA = useMemo(
     () =>
-      getOfferDetailData(offer, convertedPrice, false, modalTypes, showModal),
-    [offer, convertedPrice, modalTypes, showModal]
+      getOfferDetailData(
+        offer,
+        convertedPrice,
+        false,
+        modalTypes,
+        showModal,
+        isExchange
+      ),
+    [offer, convertedPrice, modalTypes, showModal, isExchange]
   );
   const OFFER_DETAIL_DATA_MODAL = useMemo(
     () =>
-      getOfferDetailData(offer, convertedPrice, true, modalTypes, showModal),
-    [offer, convertedPrice, modalTypes, showModal]
+      getOfferDetailData(
+        offer,
+        convertedPrice,
+        true,
+        modalTypes,
+        showModal,
+        isExchange
+      ),
+    [offer, convertedPrice, modalTypes, showModal, isExchange]
   );
 
   const quantity = useMemo<number>(
@@ -846,7 +894,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
             )}
             {!isToRedeem && (
               <Button theme="outline" disabled>
-                {titleCase(exchangeStatus)}
+                {disabledRedeemText}
                 <Check size={24} />
               </Button>
             )}
@@ -920,7 +968,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 <>
                   {![
                     exchanges.ExtendedExchangeState.Expired,
-                    subgraph.ExchangeState.Cancelled
+                    subgraph.ExchangeState.Cancelled,
+                    subgraph.ExchangeState.Revoked
                   ].includes(
                     exchangeStatus as
                       | exchanges.ExtendedExchangeState

@@ -26,11 +26,13 @@ import { getOfferDetails } from "../../lib/utils/getOfferDetails";
 import useProductByUuid from "../../lib/utils/hooks/product/useProductByUuid";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useSellers } from "../../lib/utils/hooks/useSellers";
+import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
 import { VariantV1 } from "./types";
 import VariationSelects from "./VariationSelects";
 
 export default function ProductDetail() {
   const { [UrlParameters.uuid]: productUuid = "" } = useParams();
+  const textColor = useCustomStoreQueryParameter("textColor");
 
   const {
     data: productResult,
@@ -212,7 +214,10 @@ export default function ProductDetail() {
             !!shippingInfo.shippingTable.length) && (
             <div>
               <Typography tag="h3">Shipping information</Typography>
-              <Typography tag="p" style={{ color: colors.darkGrey }}>
+              <Typography
+                tag="p"
+                style={{ color: textColor || colors.darkGrey }}
+              >
                 Return period: {shippingInfo.returnPeriodInDays}{" "}
                 {shippingInfo.returnPeriodInDays === 1 ? "day" : "days"}
               </Typography>

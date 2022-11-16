@@ -34,7 +34,6 @@ const StyledPrice = styled(Price)`
   position: absolute;
   top: 0;
   right: 1rem;
-  left: 0.5rem;
   bottom: 0;
 
   > div {

@@ -222,9 +222,12 @@ export function WithAllOffers<P>(
       ]) as FilterOptions;
     }, [params, sellerCurationListString]);
 
-    const products = useInfinityProducts({
-      withNumExchanges: true
-    });
+    const products = useInfinityProducts(
+      {
+        withNumExchanges: true
+      },
+      { enableCurationList: true }
+    );
     const { isLoading, isError } = products;
 
     return (
