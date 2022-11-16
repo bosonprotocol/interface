@@ -31,7 +31,10 @@ import { IPrice } from "../../../lib/utils/convertPrice";
 import { titleCase } from "../../../lib/utils/formatText";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import useCheckTokenGatedOffer from "../../../lib/utils/hooks/offer/useCheckTokenGatedOffer";
-import { useAddPendingTransaction } from "../../../lib/utils/hooks/transactions/usePendingTransactions";
+import {
+  useAddPendingTransaction,
+  useRemovePendingTransaction
+} from "../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { useBuyerSellerAccounts } from "../../../lib/utils/hooks/useBuyerSellerAccounts";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
@@ -324,6 +327,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   const { showModal, hideModal, modalTypes } = useModal();
   const coreSDK = useCoreSDK();
   const addPendingTransaction = useAddPendingTransaction();
+  const removePendingTransaction = useRemovePendingTransaction();
   const { isLteXS } = useBreakpoints();
   const navigate = useKeepQueryParamsNavigate();
   const { address } = useAccount();
@@ -590,6 +594,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       hash,
       isMetaTx,
       accountType: "Buyer",
+      offerId: offer.id,
       offer: {
         id: offer.id
       }
@@ -628,6 +633,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
         }}
       />
     ));
+    removePendingTransaction("offerId", offer.id);
   };
   const onCommitError = (error: Error) => {
     console.error("onError", error);
@@ -646,6 +652,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
         ...BASE_MODAL_DATA
       });
     }
+    removePendingTransaction("offerId", offer.id);
   };
   const CommitProxyButton = () => {
     const disabled =
