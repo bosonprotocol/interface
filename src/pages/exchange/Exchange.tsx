@@ -27,7 +27,6 @@ import { Offer } from "../../lib/types/offer";
 import { getOfferDetails } from "../../lib/utils/getOfferDetails";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useSellers } from "../../lib/utils/hooks/useSellers";
-import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
 import { VariantV1 } from "../products/types";
 import VariationSelects from "../products/VariationSelects";
 
@@ -64,7 +63,6 @@ export default function Exchange() {
     offer,
     variations
   };
-  const textColor = useCustomStoreQueryParameter("textColor");
 
   const { data: sellers } = useSellers({
     id: offer?.seller.id,
@@ -208,10 +206,7 @@ export default function Exchange() {
               !!shippingInfo.shippingTable.length) && (
               <div>
                 <Typography tag="h3">Shipping information</Typography>
-                <Typography
-                  tag="p"
-                  style={{ color: textColor || colors.darkGrey }}
-                >
+                <Typography tag="p" style={{ color: colors.darkGrey }}>
                   Return period: {shippingInfo.returnPeriodInDays}{" "}
                   {shippingInfo.returnPeriodInDays === 1 ? "day" : "days"}
                 </Typography>

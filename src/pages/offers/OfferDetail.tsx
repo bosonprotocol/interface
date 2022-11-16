@@ -23,7 +23,6 @@ import { colors } from "../../lib/styles/colors";
 import { getOfferDetails } from "../../lib/utils/getOfferDetails";
 import useOffer from "../../lib/utils/hooks/offer/useOffer";
 import { useSellers } from "../../lib/utils/hooks/useSellers";
-import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
 
 export default function OfferDetail() {
   const { [UrlParameters.offerId]: offerId } = useParams();
@@ -38,7 +37,7 @@ export default function OfferDetail() {
     },
     { enabled: !!offerId }
   );
-  const textColor = useCustomStoreQueryParameter("textColor");
+
   const { data: sellers } = useSellers({
     id: offer?.seller.id,
     includeFunds: true
@@ -164,10 +163,7 @@ export default function OfferDetail() {
             !!shippingInfo.shippingTable.length) && (
             <div>
               <Typography tag="h3">Shipping information</Typography>
-              <Typography
-                tag="p"
-                style={{ color: textColor || colors.darkGrey }}
-              >
+              <Typography tag="p" style={{ color: colors.darkGrey }}>
                 Return period: {shippingInfo.returnPeriodInDays}{" "}
                 {shippingInfo.returnPeriodInDays === 1 ? "day" : "days"}
               </Typography>

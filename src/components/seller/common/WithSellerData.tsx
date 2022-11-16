@@ -2,12 +2,11 @@ import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 dayjs.extend(isBetween);
 
-import React, { useMemo } from "react";
+import React from "react";
 import styled from "styled-components";
 
 import { Offer } from "../../../lib/types/offer";
 import { useOffers } from "../../../lib/utils/hooks/offers/useOffers";
-import useInfinityProducts from "../../../lib/utils/hooks/product/useInfinityProducts";
 import { Exchange, useExchanges } from "../../../lib/utils/hooks/useExchanges";
 import {
   ExchangeTokensProps,
@@ -63,7 +62,6 @@ interface OffersBackedProps {
 export interface WithSellerDataProps {
   exchanges: ExchangesProps;
   offers: OffersProps;
-  products: ReturnType<typeof useInfinityProducts>;
   funds: FundsProps;
   exchangesTokens: ExchangesTokensProps;
   sellerDeposit: SellerDepositProps;
@@ -79,16 +77,6 @@ export function WithSellerData(
     const {
       store: { tokens }
     } = useConvertionRate();
-
-    const products = useInfinityProducts(
-      {
-        showVoided: true,
-        showExpired: true
-      },
-      {
-        enableCurationList: false
-      }
-    );
 
     const offers = useOffers({
       sellerId,
@@ -115,34 +103,20 @@ export function WithSellerData(
       { enabled: !!sellerId }
     );
     const funds = useFunds(sellerId, tokens);
-    const newProps = useMemo(
-      () => ({
-        sellerId,
-        offers,
-        products,
-        exchanges,
-        exchangesTokens,
-        sellerDeposit,
-        funds,
-        sellerRoles
-      }),
-      [
-        sellerId,
-        offers,
-        products,
-        exchanges,
-        exchangesTokens,
-        sellerDeposit,
-        funds,
-        sellerRoles
-      ]
-    );
+
+    const newProps = {
+      offers,
+      exchanges,
+      exchangesTokens,
+      sellerDeposit,
+      funds,
+      sellerRoles
+    };
 
     const offersBacked = useOffersBacked({ ...newProps });
 
     if (
       offers.isLoading ||
-      products.isLoading ||
       exchanges.isLoading ||
       exchangesTokens.isLoading ||
       sellerDeposit.isLoading

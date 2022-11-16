@@ -1,5 +1,4 @@
 import { colors } from "../../../lib/styles/colors";
-import { displayFloat } from "../../../lib/utils/calcPrice";
 import Tooltip from "../../tooltip/Tooltip";
 import Typography from "../../ui/Typography";
 import { BaseElement, DashboardBaseInfo } from "./SellerDashboard.styles";
@@ -93,9 +92,7 @@ export default function SellerDashboardInfo({
           <Tooltip content="This relates to completed exchanges only. Those currently in the redeemed state are not considered as this may lead to a misleading value." />
         </Typography>
         <Typography margin="0" tag="h2">
-          {revenue?.value && revenue?.value !== 0
-            ? displayFloat(revenue?.value, { fixed: 2 })
-            : "-"}
+          {revenue?.value && revenue?.value !== 0 ? revenue?.value : "-"}
         </Typography>
         {revenue?.percent ? (
           <Typography margin="0" tag="p">
