@@ -215,7 +215,7 @@ export const getOfferDetailData = (
               {displayFloat(convertedPrice?.price)} {offer.exchangeToken.symbol}
               <small>
                 ({convertedPrice?.currency?.symbol}{" "}
-                {displayFloat(convertedPrice?.converted)})
+                {displayFloat(convertedPrice?.converted, { fixed: 2 })})
               </small>
             </Typography>
           ) : (
