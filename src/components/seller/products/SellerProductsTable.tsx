@@ -337,7 +337,7 @@ export default function SellerProductsTable({
                           height: "2.5rem",
                           paddingTop: "0%",
                           fontSize: "0.75rem",
-                          marginLeft: "35px"
+                          marginLeft: "2.1875rem"
                         }}
                         showPlaceholderText={false}
                       />
@@ -783,9 +783,6 @@ export default function SellerProductsTable({
                         {...cell.getCellProps()}
                         key={`seller_table_tbody_td_${row.original.offerId}-${cell.column.id}`}
                         onClick={() => {
-                          console.log(hasSubRows, "hasSubRows");
-                          console.log(cell, "cell");
-
                           if (hasSubRows) {
                             if (
                               (!cell.row.isExpanded &&
