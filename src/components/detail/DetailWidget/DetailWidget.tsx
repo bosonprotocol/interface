@@ -950,7 +950,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
             isConditionMet={isConditionMet}
           />
         )}
-        <div>
+        <div style={{ paddingTop: "2rem" }}>
           <DetailTable
             align
             noBorder
