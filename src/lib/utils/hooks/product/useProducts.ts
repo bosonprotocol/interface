@@ -38,6 +38,8 @@ interface ProductWithVariants {
 interface AdditionalFiltering {
   quantityAvailable_gte?: number;
   productsIds?: string[];
+  showVoided?: boolean;
+  showExpired?: boolean;
   withNumExchanges?: boolean;
 }
 
@@ -94,56 +96,63 @@ export default function useProducts(
     return (
       (productsWithVariants?.data || [])
         ?.map(({ product, variants }: ProductWithVariants) => {
-          const offers = variants
-            ?.map(({ offer }: Variant) => {
-              const status = offersSdk.getOfferStatus(offer);
-              const offerPrice = convertPrice({
-                price: calcPrice(
-                  offer?.price || "0",
-                  offer?.exchangeToken.decimals || "0"
-                ),
-                symbol: offer?.exchangeToken.symbol.toUpperCase(),
-                currency: CONFIG.defaultCurrency,
-                rates: store.rates,
-                fixed: 20
-              });
-              return {
-                ...offer,
-                isValid: true,
-                status,
-                convertedPrice: offerPrice?.converted || null,
-                committedDate:
-                  ((offer?.exchanges || []) as Exchange[])
-                    .sort(
-                      (a: Exchange, b: Exchange) =>
-                        Number(a?.committedDate || "0") -
-                        Number(b?.committedDate || "0")
-                    )
-                    .reverse()
-                    .find((n: Exchange) => n.committedDate !== null)
-                    ?.committedDate || null,
-                redeemedDate:
-                  ((offer?.exchanges || []) as Exchange[])
-                    .sort(
-                      (a: Exchange, b: Exchange) =>
-                        Number(a?.redeemedDate) - Number(b?.redeemedDate)
-                    )
-                    .reverse()
-                    .find((n: Exchange) => n.redeemedDate !== null)
-                    ?.redeemedDate || null
-              };
-            })
-            .filter(
+          let offers = (variants || [])?.map(({ offer }: Variant) => {
+            const status = offersSdk.getOfferStatus(offer);
+            const offerPrice = convertPrice({
+              price: calcPrice(
+                offer?.price || "0",
+                offer?.exchangeToken.decimals || "0"
+              ),
+              symbol: offer?.exchangeToken.symbol.toUpperCase(),
+              currency: CONFIG.defaultCurrency,
+              rates: store.rates,
+              fixed: 20
+            });
+            return {
+              ...offer,
+              isValid: true,
+              status,
+              convertedPrice: offerPrice?.converted || null,
+              committedDate:
+                ((offer?.exchanges || []) as Exchange[])
+                  .sort(
+                    (a: Exchange, b: Exchange) =>
+                      Number(a?.committedDate || "0") -
+                      Number(b?.committedDate || "0")
+                  )
+                  .reverse()
+                  .find((n: Exchange) => n.committedDate !== null)
+                  ?.committedDate || null,
+              redeemedDate:
+                ((offer?.exchanges || []) as Exchange[])
+                  .sort(
+                    (a: Exchange, b: Exchange) =>
+                      Number(a?.redeemedDate) - Number(b?.redeemedDate)
+                  )
+                  .reverse()
+                  .find((n: Exchange) => n.redeemedDate !== null)
+                  ?.redeemedDate || null
+            };
+          });
+
+          if (!props?.showVoided) {
+            offers = offers.filter(
               (n: { voided: boolean; status: string }) =>
-                n &&
-                n?.voided === false &&
-                n?.status !== offersSdk.OfferState.EXPIRED
-            ) as ExtendedOffer[];
+                n && n?.voided === false
+            );
+          }
+
+          if (!props?.showExpired) {
+            offers = offers.filter(
+              (n: { voided: boolean; status: string }) =>
+                n && n?.status !== offersSdk.OfferState.EXPIRED
+            );
+          }
 
           if (offers.length > 0) {
             const lowerPriceOffer = sortBy(offers, "convertedPrice");
             const itemsAvailable = offers.reduce(
-              (acc: number, e: ExtendedOffer) =>
+              (acc: number, e) =>
                 e && e.quantityAvailable
                   ? (acc += Number(e.quantityAvailable))
                   : acc,
@@ -205,7 +214,13 @@ export default function useProducts(
         })
         .filter(isTruthy) || []
     );
-  }, [productsWithVariants?.data, store?.rates, props?.quantityAvailable_gte]);
+  }, [
+    productsWithVariants?.data,
+    props?.showVoided,
+    props?.showExpired,
+    props?.quantityAvailable_gte,
+    store.rates
+  ]);
 
   const groupedSellers = useMemo(() => {
     return groupBy(allProducts, "seller.id") || {};
@@ -314,6 +329,10 @@ export default function useProducts(
     isLoading: products.isLoading || productsWithVariants.isLoading,
     isError: products.isError || productsWithVariants.isError,
     products: allProducts as unknown as ExtendedOffer[],
-    sellers: allSellers as unknown as ExtendedSeller[]
+    sellers: allSellers as unknown as ExtendedSeller[],
+    refetch: () => {
+      products.refetch();
+      productsWithVariants.refetch();
+    }
   };
 }
