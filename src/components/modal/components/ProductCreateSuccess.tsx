@@ -199,9 +199,6 @@ export default function ProductCreateSuccess({
               />
             </Grid>
             <Break />
-            <div>
-              <DetailTable align noBorder data={OFFER_DETAIL_DATA} />
-            </div>
             <TokenGated
               offer={offer}
               commitProxyAddress={commitProxyAddress}
@@ -210,6 +207,9 @@ export default function ProductCreateSuccess({
               }
               isConditionMet={false}
             />
+            <div style={{ paddingTop: "2rem" }}>
+              <DetailTable align noBorder data={OFFER_DETAIL_DATA} />
+            </div>
           </Widget>
           {hasDeposit && (
             <Funds>

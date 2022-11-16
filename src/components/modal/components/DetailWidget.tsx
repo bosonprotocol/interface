@@ -92,7 +92,7 @@ export default function DetailWidget({
               </Typography>
             </Grid>
             <Break />
-            <div>
+            <div style={{ paddingTop: "2rem" }}>
               <DetailTable align noBorder data={data} />
             </div>
           </Widget>
