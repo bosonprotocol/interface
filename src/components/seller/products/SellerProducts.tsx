@@ -1,14 +1,12 @@
 import { offers } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import map from "lodash/map";
-import uniqBy from "lodash/uniqBy";
 import { useMemo, useState } from "react";
 
 import { CONFIG } from "../../../lib/config";
 import { Offer } from "../../../lib/types/offer";
 import { calcPrice } from "../../../lib/utils/calcPrice";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
-import { ExtendedOffer } from "../../../pages/explore/WithAllOffers";
 import Loading from "../../ui/Loading";
 import { WithSellerDataProps } from "../common/WithSellerData";
 import SellerAddNewProduct from "../SellerAddNewProduct";
@@ -48,23 +46,19 @@ interface FilterValue {
 }
 
 export default function SellerProducts({
-  products: productsData,
-  sellerRoles,
-  sellerId
+  offers: offersData,
+  sellerRoles
 }: SellerInsideProps & WithSellerDataProps) {
   const [currentTag, setCurrentTag] = useState(productTags[0].value);
   const [search, setSearch] = useState<string>("");
   const [filter, setFilter] = useState<FilterValue | null>(null);
   const [selected, setSelected] = useState<Array<Offer | null>>([]);
 
-  const { products, isLoading, isError, refetch } = productsData;
+  const { data, isLoading, isError, refetch } = offersData;
 
   const allOffers = useMemo(() => {
-    const allOffers =
-      products?.filter((product) => product.seller.id === sellerId) || [];
-
     const filtered =
-      allOffers?.map((offer) => {
+      data?.map((offer: Offer) => {
         const status = offers.getOfferStatus(offer);
 
         if (currentTag === "physical") {
@@ -99,21 +93,10 @@ export default function SellerProducts({
     return filtered.filter((n): boolean => {
       return n !== null;
     });
-  }, [products, search, sellerId, currentTag]);
+  }, [data, search, currentTag]);
 
   const prepareCSVData = useMemo(() => {
-    const allOffersWithVariants = allOffers.reduce((acc, elem) => {
-      if (elem?.additional?.variants.length) {
-        elem.additional.variants.forEach((variant) => {
-          acc.push(variant as ExtendedOffer);
-        });
-      }
-      if (elem) {
-        acc.push(elem);
-      }
-      return acc;
-    }, [] as ExtendedOffer[]);
-    const csvData = map(uniqBy(allOffersWithVariants, "id"), (offer) => {
+    const csvData = map(allOffers, (offer) => {
       return {
         ["ID/SKU"]: offer?.id ? offer?.id : "",
         ["Product name"]: offer?.metadata?.name ?? "",
@@ -177,7 +160,6 @@ export default function SellerProducts({
         buttons={filterButton}
       />
       <SellerProductsTable
-        currentTag={currentTag}
         offers={allOffers}
         isLoading={isLoading}
         isError={isError}

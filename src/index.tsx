@@ -11,13 +11,7 @@ import AppRouter from "./router/AppRouter";
 
 const rootElement = document.getElementById("root");
 if (!rootElement) throw new Error("Unable to find the root element");
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false
-    }
-  }
-});
+const queryClient = new QueryClient();
 
 const root = createRoot(rootElement);
 

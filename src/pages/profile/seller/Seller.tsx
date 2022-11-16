@@ -24,7 +24,7 @@ import {
   ProfileFieldsFragment
 } from "../../../lib/utils/hooks/lens/graphql/generated";
 import useGetLensProfiles from "../../../lib/utils/hooks/lens/profile/useGetLensProfiles";
-import useInfinityProducts from "../../../lib/utils/hooks/product/useInfinityProducts";
+import useProducts from "../../../lib/utils/hooks/product/useProducts";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { useCurrentSellers } from "../../../lib/utils/hooks/useCurrentSellers";
 import { useSellerCalculations } from "../../../lib/utils/hooks/useSellerCalculations";
@@ -141,8 +141,7 @@ export default function Seller() {
     isLoading: isLoadingSellers
   } = useSellers(
     {
-      id: sellerId,
-      enableCurationList: false
+      id: sellerId
     },
     {
       enabled: !!sellerId
@@ -152,12 +151,7 @@ export default function Seller() {
     sellers: sellerProducts,
     isLoading: isLoadingProducts,
     isError: isErrorProducts
-  } = useInfinityProducts(
-    {},
-    {
-      enableCurationList: false
-    }
-  );
+  } = useProducts();
   const {
     data: { exchanges } = {},
     isError: isErrorSellerCalculation,

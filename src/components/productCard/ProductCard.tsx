@@ -81,7 +81,7 @@ export default function ProductCard({
     avatarUrl: avatar,
     status: "lens"
   });
-  const fallbackSellerAvatar: string | undefined | null = // TODO: fix types
+  const fallbackSellerAvatar: string | null = // TODO: fix types
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     offer.additional?.product.productV1Seller.images.find(

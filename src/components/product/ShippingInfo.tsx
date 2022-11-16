@@ -15,7 +15,12 @@ import {
   ProductButtonGroup,
   SectionTitle
 } from "./Product.styles";
-import { OPTIONS_LENGTH, OPTIONS_PERIOD, OPTIONS_WEIGHT } from "./utils";
+import {
+  OPTIONS_COUNTRIES,
+  OPTIONS_LENGTH,
+  OPTIONS_PERIOD,
+  OPTIONS_WEIGHT
+} from "./utils";
 import { useCreateForm } from "./utils/useCreateForm";
 
 const FieldContainerJurisdictions = styled.div`
@@ -169,8 +174,7 @@ export default function ShippingInfo() {
     <ContainerProductPage>
       <SectionTitle tag="h2">Shipping Info</SectionTitle>
       <RequiredContainer>
-        {/* NOTE: we might add it back in the future */}
-        {/* <FormField
+        <FormField
           title="Country of Origin"
           subTitle="The country you're dispatching from."
         >
@@ -179,7 +183,7 @@ export default function ShippingInfo() {
             name="shippingInfo.country"
             options={OPTIONS_COUNTRIES}
           />
-        </FormField> */}
+        </FormField>
         <AddSupportedJurisdictions />
         <FormField
           title="Return Period"
