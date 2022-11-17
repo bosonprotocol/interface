@@ -1,5 +1,7 @@
+import { useState } from "react";
 import styled from "styled-components";
 
+import { useCoreSDK } from "../../lib/utils/useCoreSdk";
 import { Datepicker, FormField, Input, Select, Textarea } from "../form";
 import BosonButton from "../ui/BosonButton";
 import {
@@ -32,8 +34,11 @@ const TokengatedTextarea = styled(Textarea)`
 interface Props {
   isMultiVariant: boolean;
 }
+
 export default function CoreTermsOfSale({ isMultiVariant }: Props) {
   const { nextIsDisabled, values } = useCreateForm();
+  const core = useCoreSDK();
+  const [symbol, setSymbol] = useState<string | undefined>(undefined);
 
   const prefix = isMultiVariant ? "variantsCoreTermsOfSale" : "coreTermsOfSale";
 
@@ -103,7 +108,31 @@ export default function CoreTermsOfSale({ isMultiVariant }: Props) {
             </TokengatedInfoWrapper> */}
 
             <FormField title="Token Contract" style={{ margin: "1rem 0 0 0" }}>
-              <Input name={`${prefix}.tokenContract`} type="string" />
+              <Input
+                name={`${prefix}.tokenContract`}
+                type="string"
+                onBlur={async () => {
+                  const tokenContract = values[prefix].tokenContract;
+                  const tokenType = values[prefix].tokenType;
+                  if (
+                    tokenContract &&
+                    tokenContract?.length > 0 &&
+                    tokenType?.value === TOKEN_TYPES[0].value
+                  ) {
+                    try {
+                      const { symbol: symbolLocal } =
+                        await core.getExchangeTokenInfo(tokenContract);
+                      if (symbolLocal.length > 0) {
+                        setSymbol(symbolLocal);
+                      } else {
+                        setSymbol(undefined);
+                      }
+                    } catch (error) {
+                      setSymbol(undefined);
+                    }
+                  }
+                }}
+              />
             </FormField>
 
             <TokengatedInfoWrapper>
@@ -143,12 +172,28 @@ export default function CoreTermsOfSale({ isMultiVariant }: Props) {
                 TOKEN_CRITERIA[0].value ||
                 values[prefix].tokenType?.value === TOKEN_TYPES[0].value ||
                 values[prefix].tokenType?.value === TOKEN_TYPES[2].value) && (
-                <FormField
-                  title="Min Balance:"
-                  style={{ margin: "1rem 0 0 0" }}
-                >
-                  <Input name={`${prefix}.minBalance`} type="string" />
-                </FormField>
+                <TokengatedBalanceWrapper>
+                  <FormField
+                    title="Min Balance:"
+                    style={{ margin: "1rem 0 0 0" }}
+                  >
+                    <Input
+                      style={{ width: "100%" }}
+                      name={`${prefix}.minBalance`}
+                      type="string"
+                    />
+                  </FormField>
+                  {symbol &&
+                    values[prefix].tokenType?.value ===
+                      TOKEN_TYPES[0].value && (
+                      <SymbolInput
+                        type="string"
+                        name={`${prefix}.symbol`}
+                        value={symbol}
+                        disabled
+                      />
+                    )}
+                </TokengatedBalanceWrapper>
               )}
               {((values[prefix].tokenCriteria?.value ===
                 TOKEN_CRITERIA[1].value &&
@@ -193,4 +238,16 @@ const TokengatedInfoWrapper = styled.div`
   display: grid;
   grid-template-columns: minmax(8.75rem, 1fr) 4fr;
   grid-gap: 1rem;
+`;
+
+const TokengatedBalanceWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  align-items: flex-end;
+`;
+
+const SymbolInput = styled(Input)`
+  width: 20%;
+  height: 100%;
+  margin-top: 20px;
 `;

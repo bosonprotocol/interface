@@ -14,7 +14,7 @@ import { Form, Formik, FormikHelpers, FormikProps } from "formik";
 import isArray from "lodash/isArray";
 import keys from "lodash/keys";
 import map from "lodash/map";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { generatePath } from "react-router-dom";
 import uuid from "react-uuid";
@@ -22,6 +22,7 @@ import { useAccount } from "wagmi";
 dayjs.extend(localizedFormat);
 
 import { BigNumber, ethers } from "ethers";
+import { useEffect } from "react";
 
 import { Token } from "../../components/convertion-rate/ConvertionRateContext";
 import { authTokenTypes } from "../../components/modal/components/CreateProfile/Lens/const";
@@ -37,7 +38,8 @@ import Help from "../../components/product/Help";
 import Preview from "../../components/product/Preview";
 import {
   CREATE_PRODUCT_STEPS,
-  CreateProductForm
+  CreateProductForm,
+  TOKEN_TYPES
 } from "../../components/product/utils";
 import MultiSteps from "../../components/step/MultiSteps";
 import SuccessTransactionToast from "../../components/toasts/SuccessTransactionToast";
@@ -342,6 +344,7 @@ function CreateProductInner({
     [productVariant]
   );
   const [currentStep, setCurrentStep] = useState<number>(FIRST_STEP);
+  const [decimals, setDecimals] = useState<number | undefined>(undefined);
 
   const [isPreviewVisible, setIsPreviewVisible] = useState<boolean>(false);
   const { showModal, modalTypes, hideModal } = useModal();
@@ -886,9 +889,25 @@ function CreateProductInner({
         });
         const txReceipt = await txResponse.wait();
         const offerIds = coreSDK.getCreatedOfferIdsFromLogs(txReceipt.logs);
+
         if (isTokenGated) {
           showModal("WAITING_FOR_CONFIRMATION");
-          const condition = buildCondition(commonTermsOfSale);
+          if (
+            commonTermsOfSale?.tokenContract &&
+            commonTermsOfSale.tokenType?.value === TOKEN_TYPES[0].value
+          ) {
+            try {
+              const { decimals: decimalsLocal } =
+                await coreSDK.getExchangeTokenInfo(
+                  commonTermsOfSale.tokenContract
+                );
+              setDecimals(decimalsLocal);
+            } catch (error) {
+              setDecimals(undefined);
+            }
+          }
+          const condition = buildCondition(commonTermsOfSale, decimals);
+
           if (isMetaTx) {
             const nonce = Date.now();
             const { r, s, v, functionName, functionSignature } =
@@ -993,7 +1012,21 @@ function CreateProductInner({
               nonce
             });
           } else {
-            const condition = buildCondition(commonTermsOfSale);
+            if (
+              commonTermsOfSale?.tokenContract &&
+              commonTermsOfSale.tokenType?.value === TOKEN_TYPES[0].value
+            ) {
+              try {
+                const { decimals: decimalsLocal } =
+                  await coreSDK.getExchangeTokenInfo(
+                    commonTermsOfSale.tokenContract
+                  );
+                setDecimals(decimalsLocal);
+              } catch (error) {
+                setDecimals(undefined);
+              }
+            }
+            const condition = buildCondition(commonTermsOfSale, decimals);
             const { r, s, v, functionName, functionSignature } =
               await coreSDK.signMetaTxCreateOfferWithCondition({
                 offerToCreate: offerData,
@@ -1011,7 +1044,22 @@ function CreateProductInner({
           }
         } else {
           if (isTokenGated) {
-            const condition = buildCondition(commonTermsOfSale);
+            if (
+              commonTermsOfSale?.tokenContract &&
+              commonTermsOfSale.tokenType?.value === TOKEN_TYPES[0].value
+            ) {
+              try {
+                const { decimals: decimalsLocal } =
+                  await coreSDK.getExchangeTokenInfo(
+                    commonTermsOfSale.tokenContract
+                  );
+
+                setDecimals(decimalsLocal);
+              } catch (error) {
+                setDecimals(undefined);
+              }
+            }
+            const condition = buildCondition(commonTermsOfSale, decimals);
             txResponse =
               !hasSellerAccount && seller
                 ? await coreSDK.createSellerAndOfferWithCondition(
@@ -1102,6 +1150,7 @@ function CreateProductInner({
       const coreTermsOfSaleKey = isMultiVariant
         ? "variantsCoreTermsOfSale"
         : "coreTermsOfSale";
+
       return {
         ...values,
         [coreTermsOfSaleKey]: {
@@ -1119,10 +1168,33 @@ function CreateProductInner({
     },
     [isMultiVariant]
   );
+
   useEffect(() => {
     formikRef?.current?.validateForm();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOneSetOfImages]);
+
+  const getDecimalOnPreview = async (values: CreateProductForm) => {
+    const coreTermsOfSaleKey = isMultiVariant
+      ? "variantsCoreTermsOfSale"
+      : "coreTermsOfSale";
+    const tokenContract = values?.[coreTermsOfSaleKey]?.tokenContract;
+    const tokenType = values?.[coreTermsOfSaleKey]?.tokenType;
+
+    if (
+      tokenContract &&
+      tokenContract.length > 0 &&
+      tokenType?.value === TOKEN_TYPES[0].value
+    ) {
+      try {
+        const { decimals } = await coreSDK.getExchangeTokenInfo(tokenContract);
+        setDecimals(decimals);
+      } catch (error) {
+        setDecimals(undefined);
+      }
+    }
+  };
+
   return (
     <CreateProductWrapper>
       <MultiStepsContainer>
@@ -1150,6 +1222,8 @@ function CreateProductInner({
             if (productVariant !== values?.productType?.productVariant) {
               setProductVariant(values?.productType?.productVariant);
             }
+            getDecimalOnPreview(values);
+
             return (
               <Form onKeyPress={onKeyPress}>
                 {isPreviewVisible ? (
@@ -1161,6 +1235,7 @@ function CreateProductInner({
                     hasMultipleVariants={
                       !!values.productVariants.variants.length
                     }
+                    decimals={decimals}
                   />
                 ) : (
                   wizardStep.currentStep

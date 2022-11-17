@@ -36,6 +36,7 @@ interface Props {
   isMultiVariant: boolean;
   isOneSetOfImages: boolean;
   hasMultipleVariants: boolean;
+  decimals?: number;
 }
 
 const PreviewWrapper = styled.div`
@@ -52,7 +53,8 @@ export default function Preview({
   seller,
   isMultiVariant,
   isOneSetOfImages,
-  hasMultipleVariants
+  hasMultipleVariants,
+  decimals
 }: Props) {
   const { values } = useCreateForm();
 
@@ -86,6 +88,7 @@ export default function Preview({
   const { disputeResolver } = useDisputeResolver(disputeResolverId);
   const escalationResponsePeriod =
     disputeResolver?.escalationResponsePeriod || "0";
+
   const fee =
     disputeResolver && exchangeToken?.address
       ? disputeResolver.fees.find(
@@ -144,7 +147,7 @@ export default function Preview({
 
   const condition =
     termsOfSale.tokenType && termsOfSale.tokenGatedOffer.value === "true"
-      ? buildCondition(termsOfSale)
+      ? buildCondition(termsOfSale, decimals)
       : undefined;
 
   // Build the Offer structure (in the shape of SubGraph request), based on temporary data (values)

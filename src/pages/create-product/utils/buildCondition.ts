@@ -3,13 +3,25 @@ import {
   EvaluationMethod,
   TokenType
 } from "@bosonprotocol/common";
+import { utils } from "ethers";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const buildCondition = (commonTermsOfSale: any): ConditionStruct => {
+import { CreateProductForm } from "../../../components/product/utils";
+
+export const buildCondition = (
+  commonTermsOfSale:
+    | CreateProductForm["coreTermsOfSale"]
+    | CreateProductForm["variantsCoreTermsOfSale"],
+  decimals?: number
+): ConditionStruct => {
   let tokenType: TokenType = TokenType.FungibleToken;
   let method: EvaluationMethod = EvaluationMethod.None;
   let threshold;
   let tokenId = commonTermsOfSale.tokenId || "0";
+
+  let formatedValue = null;
+  if (decimals && commonTermsOfSale.minBalance) {
+    formatedValue = utils.parseUnits(commonTermsOfSale.minBalance, decimals);
+  }
 
   switch (commonTermsOfSale.tokenType.value) {
     case "erc1155":
@@ -32,15 +44,15 @@ export const buildCondition = (commonTermsOfSale: any): ConditionStruct => {
     default:
       tokenType = TokenType.FungibleToken;
       method = EvaluationMethod.Threshold;
-      threshold = commonTermsOfSale.minBalance;
+      threshold = formatedValue || commonTermsOfSale.minBalance;
       break;
   }
   return {
     method,
     tokenType,
-    tokenAddress: commonTermsOfSale.tokenContract,
+    tokenAddress: commonTermsOfSale.tokenContract || "",
     tokenId,
-    threshold,
-    maxCommits: commonTermsOfSale.maxCommits
+    threshold: threshold || "",
+    maxCommits: commonTermsOfSale.maxCommits || ""
   };
 };
