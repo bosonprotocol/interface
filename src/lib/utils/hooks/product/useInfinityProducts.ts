@@ -3,19 +3,31 @@ import { gql } from "graphql-request";
 import groupBy from "lodash/groupBy";
 import orderBy from "lodash/orderBy";
 import sortBy from "lodash/sortBy";
-import { useContext, useMemo } from "react";
-import { useQuery } from "react-query";
+import { useContext, useEffect, useMemo, useState } from "react";
+import { useInfiniteQuery, useQuery } from "react-query";
 
 import ConvertionRateContext from "../../../../components/convertion-rate/ConvertionRateContext";
-import type { ExtendedOffer } from "../../../../pages/explore/WithAllOffers";
-import { ExtendedSeller } from "../../../../pages/explore/WithAllOffers";
+import type {
+  ExtendedOffer,
+  ExtendedSeller
+} from "../../../../pages/explore/WithAllOffers";
 import { CONFIG } from "../../../config";
 import { isTruthy } from "../../../types/helpers";
+import { Offer } from "../../../types/offer";
 import { calcPrice } from "../../calcPrice";
 import { convertPrice } from "../../convertPrice";
 import { fetchSubgraph } from "../../core-components/subgraph";
 import { useCoreSDK } from "../../useCoreSdk";
-import type { Exchange } from "../useExchanges";
+import { offerGraphQl } from "../offer/graphql";
+import { useCurationLists } from "../useCurationLists";
+import { Exchange } from "../useExchanges";
+
+const OFFERS_PER_PAGE = 1000;
+
+const chunk = <T>(arr: T[], size: number): T[][] =>
+  [...Array(Math.ceil(arr.length / size))].map((_, i) =>
+    arr.slice(size * i, size + size * i)
+  );
 
 interface PromiseProps {
   status: string;
@@ -28,63 +40,245 @@ interface PromiseProps {
   };
 }
 interface Variant {
-  offer: ExtendedOffer;
+  offer: Offer;
   variations: subgraph.ProductV1Variation[];
 }
-interface ProductWithVariants {
-  product: subgraph.BaseProductV1ProductFieldsFragment;
+type Product = subgraph.BaseProductV1ProductFieldsFragment;
+interface ProductWithVariants extends Product {
   variants: Variant[];
 }
+
 interface AdditionalFiltering {
   quantityAvailable_gte?: number;
   productsIds?: string[];
+  withNumExchanges?: boolean;
   showVoided?: boolean;
   showExpired?: boolean;
-  withNumExchanges?: boolean;
 }
 
-export default function useProducts(
+export default function useInfinityProducts(
   props: subgraph.GetProductV1ProductsQueryQueryVariables &
-    AdditionalFiltering = {}
+    AdditionalFiltering = {},
+  options: {
+    enabled?: boolean;
+    keepPreviousData?: boolean;
+    refetchOnMount?: boolean;
+    enableCurationList: boolean;
+  }
 ) {
+  const [pageIndex, setPageIndex] = useState(0);
   const coreSDK = useCoreSDK();
   const { store } = useContext(ConvertionRateContext);
+  const curationLists = useCurationLists();
 
-  const products = useQuery(
-    ["get-all-products", props],
-    async () => {
-      const products = await coreSDK.getProductV1Products(props);
-      return products;
+  const {
+    data,
+    isError,
+    isSuccess,
+    isLoading,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage,
+    refetch: refetchProductIds
+  } = useInfiniteQuery(
+    ["get-all-product-ids", "infinite", props],
+    async (context) => {
+      const skip = context.pageParam || 0;
+      const page = await coreSDK.getProductV1Products({
+        ...props,
+        productsSkip: skip,
+        productsFirst: OFFERS_PER_PAGE,
+        productsFilter: {
+          productV1Seller_in:
+            options.enableCurationList &&
+            curationLists.enableCurationLists &&
+            !!curationLists.sellerCurationList?.length
+              ? curationLists.sellerCurationList?.map(
+                  (sellerId) => `${sellerId}-product-v1`
+                )
+              : undefined,
+          ...props.productsFilter
+        }
+      });
+      return page;
     },
     {
-      enabled: !!coreSDK && !(props?.productsIds || false),
-      refetchOnMount: true
+      ...options,
+      enabled: !!coreSDK,
+      getNextPageParam: (lastPage) => lastPage.length === OFFERS_PER_PAGE,
+      refetchOnWindowFocus: false,
+      refetchOnMount: options.refetchOnMount || false
     }
   );
 
+  useEffect(() => {
+    if (!isSuccess || isLoading || isFetchingNextPage) {
+      return;
+    }
+    if (hasNextPage) {
+      const nextPageIndex = pageIndex + 1;
+      setPageIndex(nextPageIndex);
+      fetchNextPage({ pageParam: nextPageIndex * OFFERS_PER_PAGE });
+    }
+  }, [
+    isSuccess,
+    isLoading,
+    isFetchingNextPage,
+    hasNextPage,
+    fetchNextPage,
+    pageIndex
+  ]);
+
   const productsIds = useMemo(
     () =>
-      props?.productsIds ||
-      products?.data?.map((p) => p?.uuid || "")?.filter(isTruthy) ||
-      [],
-    [props?.productsIds, products?.data]
+      isSuccess && !isLoading && !isFetchingNextPage
+        ? (data?.pages || [])
+            .flatMap((p) => p || null)
+            .map((p) => p?.uuid || null)
+            .filter(isTruthy)
+        : [],
+    [isSuccess, isLoading, isFetchingNextPage, data]
   );
 
-  const productsWithVariants = useQuery(
-    ["get-all-products-by-uuid", { productsIds }],
+  const productsVariants = useQuery(
+    ["get-all-products-by-uuid-v2"],
     async () => {
-      const allPromises = productsIds?.map(async (id) => {
-        const product = await coreSDK?.getProductWithVariants(id);
-        return product;
-      });
-
-      const allProducts = await Promise.allSettled(allPromises);
+      const productIdsSplitToChunks = chunk(productsIds, OFFERS_PER_PAGE);
+      const allProductPromises = productIdsSplitToChunks.map(
+        async (ids: string[]) => {
+          const result = await fetchSubgraph<{
+            productV1Products: ProductWithVariants[];
+          }>(
+            gql`
+            query GetAllProductsByUUID($productsIds: [String], $first: Int) {
+              productV1Products(where: { uuid_in: $productsIds }, first: $first) {
+                variants {
+                  offer ${offerGraphQl}
+                  variations {
+                    id
+                    option
+                    type
+                  }
+                }
+                id
+                uuid
+                version
+                title
+                description
+                identification_sKU
+                identification_productId
+                identification_productIdType
+                productionInformation_brandName
+                productionInformation_manufacturer
+                productionInformation_manufacturerPartNumber
+                productionInformation_modelNumber
+                productionInformation_materials
+                details_category
+                details_subCategory
+                details_subCategory2
+                details_offerCategory
+                offerCategory
+                details_tags
+                details_sections
+                details_personalisation
+                packaging_packageQuantity
+                packaging_dimensions_length
+                packaging_dimensions_width
+                packaging_dimensions_height
+                packaging_dimensions_unit
+                packaging_weight_value
+                packaging_weight_unit
+                brand {
+                  id
+                  name
+                }
+                category {
+                  id
+                  name
+                }
+                subCategory {
+                  id
+                  name
+                }
+                subCategory2 {
+                  id
+                  name
+                }
+                tags {
+                  id
+                  name
+                }
+                sections {
+                  id
+                  name
+                }
+                personalisation {
+                  id
+                  name
+                }
+                visuals_images {
+                  id
+                  url
+                  tag
+                  type
+                }
+                visuals_videos {
+                  id
+                  url
+                  tag
+                  type
+                }
+                productV1Seller {
+                  id
+                  defaultVersion
+                  name
+                  description
+                  externalUrl
+                  tokenId
+                  sellerId
+                  images {
+                    id
+                    url
+                    tag
+                    type
+                  }
+                  contactLinks {
+                    id
+                    url
+                    tag
+                  }
+                  seller {
+                    id
+                    operator
+                    admin
+                    clerk
+                    treasury
+                    authTokenId
+                    authTokenType
+                    voucherCloneAddress
+                    active
+                    contractURI
+                    royaltyPercentage
+                  }
+                }
+              }
+            }
+          `,
+            {
+              productsIds: ids,
+              first: OFFERS_PER_PAGE
+            }
+          );
+          return result?.productV1Products;
+        }
+      );
+      const allProducts = await Promise.allSettled(allProductPromises);
       const response = allProducts.filter(
         (res) => res.status === "fulfilled"
-      ) as PromiseProps[];
+      ) as unknown as PromiseProps[];
       return (response?.flatMap((p) => p?.value || null) || []).filter(
-        (n) => n
-      ) as ProductWithVariants[];
+        isTruthy
+      ) as unknown as ProductWithVariants[];
     },
     {
       enabled: !!coreSDK && productsIds?.length > 0,
@@ -94,8 +288,8 @@ export default function useProducts(
 
   const allProducts = useMemo(() => {
     return (
-      (productsWithVariants?.data || [])
-        ?.map(({ product, variants }: ProductWithVariants) => {
+      (productsVariants?.data || [])
+        ?.map(({ variants, ...product }: ProductWithVariants) => {
           let offers = (variants || [])?.map(({ offer }: Variant) => {
             const status = offersSdk.getOfferStatus(offer);
             const offerPrice = convertPrice({
@@ -106,7 +300,7 @@ export default function useProducts(
               symbol: offer?.exchangeToken.symbol.toUpperCase(),
               currency: CONFIG.defaultCurrency,
               rates: store.rates,
-              fixed: 20
+              fixed: store.fixed
             });
             return {
               ...offer,
@@ -137,8 +331,7 @@ export default function useProducts(
 
           if (!props?.showVoided) {
             offers = offers.filter(
-              (n: { voided: boolean; status: string }) =>
-                n && n?.voided === false
+              (n: { voided: boolean; status: string }) => n && !n?.voided
             );
           }
 
@@ -215,17 +408,23 @@ export default function useProducts(
         .filter(isTruthy) || []
     );
   }, [
-    productsWithVariants?.data,
+    productsVariants?.data,
     props?.showVoided,
     props?.showExpired,
     props?.quantityAvailable_gte,
+    store.fixed,
     store.rates
   ]);
 
-  const groupedSellers = useMemo(() => {
-    return groupBy(allProducts, "seller.id") || {};
-  }, [allProducts]);
-  const sellerIds = Object.keys(groupedSellers);
+  const groupedSellers = useMemo(
+    () => groupBy(allProducts, "seller.id") || {},
+    [allProducts]
+  );
+
+  const sellerIds = useMemo(
+    () => Object.keys(groupedSellers),
+    [groupedSellers]
+  );
 
   const exchangesBySellers = useQuery(
     ["get-all-exchanges-from-sellers", props],
@@ -280,6 +479,7 @@ export default function useProducts(
       refetchOnMount: true
     }
   );
+
   const allSellers = useMemo(() => {
     return (
       sellerIds?.map((brandName) => {
@@ -326,13 +526,13 @@ export default function useProducts(
   }, [sellerIds, groupedSellers, exchangesBySellers.data]);
 
   return {
-    isLoading: products.isLoading || productsWithVariants.isLoading,
-    isError: products.isError || productsWithVariants.isError,
+    isLoading: !isSuccess || isLoading || productsVariants.isLoading,
+    isError: isError || productsVariants.isError,
     products: allProducts as unknown as ExtendedOffer[],
     sellers: allSellers as unknown as ExtendedSeller[],
     refetch: () => {
-      products.refetch();
-      productsWithVariants.refetch();
+      refetchProductIds();
+      productsVariants.refetch();
     }
   };
 }

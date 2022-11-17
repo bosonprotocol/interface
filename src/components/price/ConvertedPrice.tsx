@@ -28,7 +28,9 @@ export default function ConvertedPrice({
             {CONFIG.defaultCurrency.symbol}
           </span>{" "}
           <span>
-            {displayFloat(price?.converted)}
+            {displayFloat(price?.converted, {
+              fixed: 2
+            })}
             {withParethensis ? ")" : ""}
           </span>
         </small>

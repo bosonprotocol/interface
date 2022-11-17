@@ -13,6 +13,7 @@ interface Props {
   treasury?: string;
   id?: string;
   includeFunds?: boolean;
+  enableCurationList?: boolean;
 }
 
 export const useIsSellerInCuractionList = (sellerID: string) => {
@@ -65,6 +66,8 @@ export function useSellers(
     enabled?: boolean;
   } = {}
 ) {
+  const enableCurationList =
+    props.enableCurationList === undefined ? true : props.enableCurationList;
   const curationLists = useCurationLists();
   const filter = {
     ...(props.admin && { admin: props.admin }),
@@ -80,9 +83,10 @@ export function useSellers(
       return accounts.subgraph.getSellers(CONFIG.subgraphUrl, {
         sellersFilter: {
           ...filter,
-          id_in: curationLists.enableCurationLists
-            ? curationLists.sellerCurationList
-            : undefined
+          id_in:
+            enableCurationList && curationLists.enableCurationLists
+              ? curationLists.sellerCurationList
+              : undefined
         },
         sellersOrderBy: subgraph.Seller_OrderBy.SellerId,
         sellersOrderDirection: subgraph.OrderDirection.Asc,
