@@ -1,10 +1,6 @@
-import styled from "styled-components";
-
-import redeemeumLogo from "../../../assets/redeemeum.png";
+import { ReactComponent } from "../../../assets/redeemeum.svg";
 import Typography from "../../ui/Typography";
-const DisputeResolverImg = styled.img`
-  height: 18px;
-`;
+
 export const DetailDisputeResolver = {
   name: "Dispute resolver",
   info: (
@@ -19,6 +15,6 @@ export const DetailDisputeResolver = {
     </>
   ),
   value: () => {
-    return <DisputeResolverImg src={redeemeumLogo} alt="Redeemeum logo" />;
+    return <ReactComponent width="100" height="18" />;
   }
 };

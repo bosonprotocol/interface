@@ -54,7 +54,9 @@ export function useHandleText(offer: Offer) {
       utcOffset === 0 ? "" : utcOffset < 0 ? `-${utcOffset}` : `+${utcOffset}`;
 
     if (optionQuantity) {
-      return `Only ${offer?.quantityAvailable}/${offer?.quantityInitial} left`;
+      return offer?.quantityAvailable === "0"
+        ? "Sold out"
+        : `Only ${offer?.quantityAvailable}/${offer?.quantityInitial} left`;
     } else if (optionRelease) {
       return release.diff.days <= 10
         ? release.diff.days <= 0
