@@ -46,7 +46,7 @@ export type StoreFields = {
 
 export type StoreFormFields = StoreFields & {
   logoUrlText: string;
-  logoUpload: File[];
+  logoUpload: { name: string; size: number; src: string; type: string }[];
   withAdditionalFooterLinks: SelectType;
   withMetaTx: SelectType;
 };

@@ -10,9 +10,9 @@ import { SelectDataProps } from "../../components/form/types";
 import BosonButton from "../../components/ui/BosonButton";
 import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
+import { CONFIG } from "../../lib/config";
 import { colors } from "../../lib/styles/colors";
 import { isTruthy } from "../../lib/types/helpers";
-import { getFilesWithEncodedData } from "../../lib/utils/files";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { preAppendHttps } from "../../lib/validation/regex/url";
 import SocialLogo from "./SocialLogo";
@@ -121,7 +121,11 @@ export const formValuesWithOneLogoUrl = (values: StoreFormFields) => {
                 url: preAppendHttps((val.url as string)?.trim())
               };
             }
-            if (Object.values(val).every((v) => !!v)) {
+            if (
+              "label" in val &&
+              "value" in val &&
+              Object.values(val).every((v) => !!v)
+            ) {
               return {
                 label: val.label,
                 value: preAppendHttps(val.value || "")
@@ -154,13 +158,14 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
     setFieldValue(storeFields.logoUrl, "", true);
     if (values.logoUpload.length) {
       setFieldValue(storeFields.logoUrlText, "", true);
-      getFilesWithEncodedData(values.logoUpload)
-        .then(([file]) => {
-          setFieldValue(storeFields.logoUrl, file.encodedData, true);
-        })
-        .catch(console.error);
+      const ipfsWithoutPrefix = values.logoUpload[0].src.replace("ipfs://", "");
+      setFieldValue(
+        storeFields.logoUrl,
+        `${CONFIG.ipfsGateway}${ipfsWithoutPrefix}`,
+        true
+      );
     } else if (values.logoUrlText) {
-      setFieldValue(storeFields.logoUpload, "", true);
+      setFieldValue(storeFields.logoUpload, [], true);
       setFieldValue(storeFields.logoUrl, values.logoUrlText, true);
     }
   }, [values.logoUpload, values.logoUrlText, setFieldValue]);
@@ -371,6 +376,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
               <Upload
                 name={storeFields.logoUpload}
                 placeholder={formModel.formFields.logoUpload.placeholder}
+                withUpload
               />
             </Grid>
           </Grid>
