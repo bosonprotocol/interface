@@ -416,7 +416,7 @@ export const initialValues = {
   [storeFields.description]: "",
   [storeFields.logoUrl]: "",
   [storeFields.logoUrlText]: "",
-  [storeFields.logoUpload]: "",
+  [storeFields.logoUpload]: [],
   [storeFields.headerBgColor]: colors.white,
   [storeFields.headerTextColor]: colors.black,
   [storeFields.primaryBgColor]: colors.white,

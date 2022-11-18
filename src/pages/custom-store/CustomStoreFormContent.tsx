@@ -1,5 +1,5 @@
 import { useFormikContext } from "formik";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import styled from "styled-components";
 
 import CollapseWithTrigger from "../../components/collapse/CollapseWithTrigger";
@@ -158,18 +158,40 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
   const queryParams = new URLSearchParams(
     formValuesWithOneLogoUrl(values)
   ).toString();
+  const lastLogoUpdated = useRef<"logoUrlText" | "logoUpload" | null>(null);
   useEffect(() => {
+    const logoUploadWasUpdated = lastLogoUpdated.current === "logoUpload";
+    if (logoUploadWasUpdated) {
+      lastLogoUpdated.current = null;
+      return;
+    }
+    lastLogoUpdated.current = "logoUrlText";
     setFieldValue(storeFields.logoUrl, "", true);
     if (values.logoUrlText) {
-      setFieldValue(storeFields.logoUpload, [], true);
+      if (Array.isArray(values.logoUpload) && !values.logoUpload.length) {
+        lastLogoUpdated.current = null;
+      } else {
+        setFieldValue(storeFields.logoUpload, [], true);
+      }
       setFieldValue(storeFields.logoUrl, values.logoUrlText, true);
     }
-  }, [values.logoUrlText, setFieldValue]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values.logoUrlText]);
 
   useEffect(() => {
+    const logoUrlTextWasUpdated = lastLogoUpdated.current === "logoUrlText";
+    if (logoUrlTextWasUpdated) {
+      lastLogoUpdated.current = null;
+      return;
+    }
+    lastLogoUpdated.current = "logoUpload";
     setFieldValue(storeFields.logoUrl, "", true);
     if (values.logoUpload?.length) {
-      setFieldValue(storeFields.logoUrlText, "", true);
+      if (values.logoUrlText === "") {
+        lastLogoUpdated.current = null;
+      } else {
+        setFieldValue(storeFields.logoUrlText, "", true);
+      }
       const ipfsWithoutPrefix = values.logoUpload[0].src.replace("ipfs://", "");
       setFieldValue(
         storeFields.logoUrl,
@@ -177,7 +199,8 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
         true
       );
     }
-  }, [values.logoUpload, setFieldValue]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values.logoUpload]);
 
   const allFilledOut = values.additionalFooterLinks?.every((footerLink) => {
     const { label, value } = footerLink || {};
@@ -506,11 +529,6 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
               <Input
                 name={storeFields.logoUrlText}
                 placeholder={formModel.formFields.logoUrlText.placeholder}
-                onChange={(e) => {
-                  const { value } = e.target;
-                  setFieldValue(storeFields.logoUrlText, value, true);
-                  setFieldValue(storeFields.logoUpload, "", true);
-                }}
               />
               <FieldDescription margin="0.5rem 0 0 0">
                 or upload the image here (max. size {uploadMaxMB}MB)
