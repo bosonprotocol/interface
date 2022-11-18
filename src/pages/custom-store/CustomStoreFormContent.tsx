@@ -480,9 +480,9 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
             gap={gapBetweenInputs}
           >
             <Grid flexDirection="column" alignItems="flex-start">
-              <FieldTitle>Fill out form from existing custom store</FieldTitle>
+              <FieldTitle>Load data from an existing storefront</FieldTitle>
               <FieldDescription>
-                Paste here a URL from another custom store
+                Paste the URL to an existing custom storefront here
               </FieldDescription>
               <Input
                 name={storeFields.customStoreUrl}
