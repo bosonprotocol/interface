@@ -354,26 +354,31 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
     (async () => {
       try {
         let iframeSrc = values.customStoreUrl;
-        try {
-          const response = await fetch(values.customStoreUrl);
-          const html = await response.text();
-          const parser = new DOMParser();
-          const doc = parser.parseFromString(html, "text/html");
-          const src = doc.querySelector("iframe")?.getAttribute("src");
-          if (src) {
-            iframeSrc = src;
-          }
-        } catch (error) {
-          console.error(error);
-        }
-
         const urlWithoutHash = iframeSrc.replace("/#/", "/");
         const urlWithoutTrailingQuotationMarks = urlWithoutHash.startsWith(
           "http"
         )
           ? urlWithoutHash
           : urlWithoutHash.substring(urlWithoutHash.indexOf("http"));
-        const url = new URL(urlWithoutTrailingQuotationMarks);
+        let url = new URL(urlWithoutTrailingQuotationMarks);
+        if (!url.searchParams.has(storeFields.isCustomStoreFront)) {
+          try {
+            const response = await fetch(urlWithoutHash);
+            const html = await response.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, "text/html");
+            const src = Array.from(doc.querySelectorAll("iframe"))
+              .filter(isTruthy)
+              .map((iframe) => iframe.getAttribute("src"))
+              .find((src) => src?.includes(storeFields.isCustomStoreFront));
+            if (src) {
+              iframeSrc = src;
+            }
+          } catch (error) {
+            console.error(error);
+          }
+        }
+        url = new URL(iframeSrc);
         const entries = Array.from(url.searchParams.entries());
 
         const allKeys = Object.keys(storeFields);
@@ -503,7 +508,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
             <Grid flexDirection="column" alignItems="flex-start">
               <FieldTitle>Title</FieldTitle>
               <FieldDescription>
-                You can set landing page Headline
+                You can set the landing page Headline
               </FieldDescription>
               <Input
                 name={storeFields.title}
