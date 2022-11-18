@@ -245,10 +245,10 @@ const compareOffersSortByStatus = (
   { offerStatus: offerStatusB }: { offerStatus: OffersKit.OfferState | string }
 ): number => {
   if (!offerStatusA) {
-    return 1;
+    return -1;
   }
   if (!offerStatusB) {
-    return -1;
+    return 1;
   }
   return (
     statusOrder.indexOf(offerStatusA as OffersKit.OfferState) -
