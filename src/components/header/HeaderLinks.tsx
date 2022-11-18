@@ -180,9 +180,8 @@ export default function HeaderLinks({
       return generatePath(SellerCenterRoutes.SellerCenter, {
         [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
       });
-    } else {
-      return SellerCenterRoutes.CreateProduct;
     }
+    return SellerCenterRoutes.CreateProduct;
   }, [isAccountSeller, sellerWalletAddress]);
 
   const isSupportFunctionalityDefined = supportFunctionality !== "";
