@@ -1,4 +1,8 @@
-import { ButtonSize, subgraph } from "@bosonprotocol/react-kit";
+import {
+  ButtonSize,
+  subgraph,
+  WithdrawAllFundsButton
+} from "@bosonprotocol/react-kit";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
@@ -274,13 +278,19 @@ export default function Funds({ sellerId, buyerId }: Props) {
             <Cell $flexBasis={sellerFlexBasisCells[0]} />
             <Cell $flexBasis={sellerFlexBasisCells[1]} />
             <ButtonCell $flexBasis={sellerFlexBasisCells[2]}>
-              <CustomButton
+              {/* <CustomButton
                 onClick={withdrawAll}
                 variant="primaryFill"
                 size={ButtonSize.Small}
               >
                 Withdraw All Funds
-              </CustomButton>
+              </CustomButton> */}
+              <WithdrawAllFundsButton
+                accountId={accountId}
+                envName={CONFIG.envName}
+              >
+                Withdraw All Funds
+              </WithdrawAllFundsButton>
             </ButtonCell>
             <Cell $flexBasis={sellerFlexBasisCells[3]} />
           </Row>
@@ -289,13 +299,19 @@ export default function Funds({ sellerId, buyerId }: Props) {
             <Cell $flexBasis={buyerFlexBasisCells[0]} />
             <Cell $flexBasis={buyerFlexBasisCells[1]} />
             <ButtonCell $flexBasis={buyerFlexBasisCells[2]}>
-              <CustomButton
+              {/* <CustomButton
                 onClick={withdrawAll}
                 variant="primaryFill"
                 size={ButtonSize.Small}
               >
                 Withdraw All Funds
-              </CustomButton>
+              </CustomButton> */}
+              <WithdrawAllFundsButton
+                accountId={accountId}
+                envName={CONFIG.envName}
+              >
+                Withdraw All Funds
+              </WithdrawAllFundsButton>
             </ButtonCell>
           </Row>
         )

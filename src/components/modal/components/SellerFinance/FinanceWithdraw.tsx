@@ -1,9 +1,10 @@
-import { subgraph } from "@bosonprotocol/react-kit";
+import { WithdrawFundsButton } from "@bosonprotocol/react-kit";
 import { BigNumber, ethers } from "ethers";
 import { useState } from "react";
 import styled from "styled-components";
 import { useAccount, useBalance } from "wagmi";
 
+import { config } from "../../../../lib/config";
 import { colors } from "../../../../lib/styles/colors";
 import { useAddPendingTransaction } from "../../../../lib/utils/hooks/transactions/usePendingTransactions";
 import {
@@ -11,14 +12,12 @@ import {
   getNumberWithoutDecimals
 } from "../../../../pages/account/funds/FundItem";
 import useWithdrawFunds from "../../../../pages/account/funds/useWithdrawFunds";
-import { poll } from "../../../../pages/create-product/utils";
 import { Spinner } from "../../../loading/Spinner";
 import Grid from "../../../ui/Grid";
 import Typography from "../../../ui/Typography";
 import { useModal } from "../../useModal";
 import {
   AmountWrapper,
-  CTAButton,
   Input,
   InputWrapper,
   ProtocolStrong
@@ -104,51 +103,51 @@ export default function FinanceWithdraw({
 
     setAmountToWithdraw(valueStr);
   };
-  const handleWithdraw = async () => {
-    {
-      try {
-        setWithdrawError(null);
-        setIsBeingWithdrawn(true);
-        showModal("WAITING_FOR_CONFIRMATION");
-        const tx = await withdrawFunds();
-        showModal("TRANSACTION_SUBMITTED", {
-          action: "Finance withdraw",
-          txHash: tx.hash
-        });
-        addPendingTransaction({
-          type: subgraph.EventType.FundsWithdrawn,
-          hash: tx.hash,
-          isMetaTx: false, // / TODO: use correct value if meta tx supported
-          accountType: "Account"
-        });
-        await tx?.wait();
-        await poll(
-          async () => {
-            const balance = await refetch();
-            return balance;
-          },
-          (balance) => {
-            return dataBalance?.formatted === balance.data?.formatted;
-          },
-          500
-        );
-        setAmountToWithdraw("0");
-        setIsWithdrawInvalid(true);
-        hideModal();
-      } catch (error) {
-        console.error(error);
-        const hasUserRejectedTx =
-          (error as unknown as { code: string }).code === "ACTION_REJECTED";
-        if (hasUserRejectedTx) {
-          showModal("CONFIRMATION_FAILED");
-        }
-        setWithdrawError(error);
-      } finally {
-        reload();
-        setIsBeingWithdrawn(false);
-      }
-    }
-  };
+  // const handleWithdraw = async () => {
+  //   {
+  //     try {
+  //       setWithdrawError(null);
+  //       setIsBeingWithdrawn(true);
+  //       showModal("WAITING_FOR_CONFIRMATION");
+  //       const tx = await withdrawFunds();
+  //       showModal("TRANSACTION_SUBMITTED", {
+  //         action: "Finance withdraw",
+  //         txHash: tx.hash
+  //       });
+  //       addPendingTransaction({
+  //         type: subgraph.EventType.FundsWithdrawn,
+  //         hash: tx.hash,
+  //         isMetaTx: false, // / TODO: use correct value if meta tx supported
+  //         accountType: "Account"
+  //       });
+  //       await tx?.wait();
+  //       await poll(
+  //         async () => {
+  //           const balance = await refetch();
+  //           return balance;
+  //         },
+  //         (balance) => {
+  //           return dataBalance?.formatted === balance.data?.formatted;
+  //         },
+  //         500
+  //       );
+  //       setAmountToWithdraw("0");
+  //       setIsWithdrawInvalid(true);
+  //       hideModal();
+  //     } catch (error) {
+  //       console.error(error);
+  //       const hasUserRejectedTx =
+  //         (error as unknown as { code: string }).code === "ACTION_REJECTED";
+  //       if (hasUserRejectedTx) {
+  //         showModal("CONFIRMATION_FAILED");
+  //       }
+  //       setWithdrawError(error);
+  //     } finally {
+  //       reload();
+  //       setIsBeingWithdrawn(false);
+  //     }
+  //   }
+  // };
 
   return (
     <Grid flexDirection="column" alignItems="flex-start" gap="1.5rem">
@@ -193,7 +192,7 @@ export default function FinanceWithdraw({
         ) : (
           <div />
         )}
-        <CTAButton
+        {/* <CTAButton
           theme="primary"
           size="small"
           onClick={handleWithdraw}
@@ -206,7 +205,22 @@ export default function FinanceWithdraw({
               Withdraw {symbol}
             </Typography>
           )}
-        </CTAButton>
+        </CTAButton> */}
+        <WithdrawFundsButton
+          accountId={accountId}
+          tokensToWithdraw={[
+            { address: exchangeToken, amount: amountToWithdraw }
+          ]}
+          envName={config.envName}
+        >
+          {isBeingWithdrawn ? (
+            <Spinner size={20} />
+          ) : (
+            <Typography tag="p" margin="0" $fontSize="0.75rem" fontWeight="600">
+              Withdraw {symbol}
+            </Typography>
+          )}
+        </WithdrawFundsButton>
       </Grid>
     </Grid>
   );

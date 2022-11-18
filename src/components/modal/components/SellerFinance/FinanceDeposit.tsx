@@ -1,20 +1,19 @@
-import { subgraph } from "@bosonprotocol/react-kit";
+import { DepositFundsButton } from "@bosonprotocol/react-kit";
 import { BigNumber, constants, ethers } from "ethers";
 import { useState } from "react";
 import { useAccount, useBalance } from "wagmi";
 
+import { config } from "../../../../lib/config";
 import { useAddPendingTransaction } from "../../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { useCoreSDK } from "../../../../lib/utils/useCoreSdk";
 import { getNumberWithoutDecimals } from "../../../../pages/account/funds/FundItem";
 import useDepositFunds from "../../../../pages/account/funds/useDepositFunds";
-import { poll } from "../../../../pages/create-product/utils";
 import { Spinner } from "../../../loading/Spinner";
 import Grid from "../../../ui/Grid";
 import Typography from "../../../ui/Typography";
 import { useModal } from "../../useModal";
 import {
   AmountWrapper,
-  CTAButton,
   Input,
   InputWrapper,
   ProtocolStrong
@@ -134,53 +133,6 @@ export default function FinanceDeposit({
     }
   };
 
-  const handleSubmitDeposit = async () => {
-    {
-      try {
-        setDepositError(null);
-        setIsBeingDeposit(true);
-        showModal("WAITING_FOR_CONFIRMATION");
-        await approveToken(amountToDeposit);
-        const tx = await depositFunds();
-        showModal("TRANSACTION_SUBMITTED", {
-          action: "Finance deposit",
-          txHash: tx.hash
-        });
-        addPendingTransaction({
-          type: subgraph.EventType.FundsDeposited,
-          hash: tx.hash,
-          isMetaTx: false, // TODO: use correct value if meta tx supported
-          accountType: "Seller"
-        });
-        await tx?.wait();
-        await poll(
-          async () => {
-            const balance = await refetch();
-            return balance;
-          },
-          (balance) => {
-            return dataBalance?.formatted === balance.data?.formatted;
-          },
-          500
-        );
-        setAmountToDeposit("0");
-        setIsDepositInvalid(true);
-        hideModal();
-      } catch (error) {
-        console.error(error);
-        const hasUserRejectedTx =
-          (error as unknown as { code: string }).code === "ACTION_REJECTED";
-        if (hasUserRejectedTx) {
-          showModal("CONFIRMATION_FAILED");
-        }
-        setDepositError(error);
-      } finally {
-        reload();
-        setIsBeingDeposit(false);
-      }
-    }
-  };
-
   return (
     <Grid flexDirection="column" alignItems="flex-start" gap="1.5rem">
       <Typography tag="p" margin="0" $fontSize="0.75rem">
@@ -224,10 +176,11 @@ export default function FinanceDeposit({
       </AmountWrapper>
       <Grid>
         <div />
-        <CTAButton
-          theme="primary"
-          size="small"
-          onClick={handleSubmitDeposit}
+        <DepositFundsButton
+          exchangeToken={exchangeToken}
+          accountId={accountId}
+          amountToDeposit={amountToDeposit}
+          envName={config.envName}
           disabled={isBeingDeposit || isDepositInvalid}
         >
           {isBeingDeposit ? (
@@ -237,7 +190,7 @@ export default function FinanceDeposit({
               Deposit {symbol}
             </Typography>
           )}
-        </CTAButton>
+        </DepositFundsButton>
       </Grid>
     </Grid>
   );
