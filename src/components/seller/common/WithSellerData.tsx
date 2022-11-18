@@ -7,7 +7,7 @@ import styled from "styled-components";
 
 import { Offer } from "../../../lib/types/offer";
 import { useOffers } from "../../../lib/utils/hooks/offers/useOffers";
-import useInfinityProducts from "../../../lib/utils/hooks/product/useInfinityProducts";
+import useProducts from "../../../lib/utils/hooks/product/useProducts";
 import { Exchange, useExchanges } from "../../../lib/utils/hooks/useExchanges";
 import {
   ExchangeTokensProps,
@@ -63,7 +63,7 @@ interface OffersBackedProps {
 export interface WithSellerDataProps {
   exchanges: ExchangesProps;
   offers: OffersProps;
-  products: ReturnType<typeof useInfinityProducts>;
+  products: ReturnType<typeof useProducts>;
   funds: FundsProps;
   exchangesTokens: ExchangesTokensProps;
   sellerDeposit: SellerDepositProps;
@@ -80,10 +80,11 @@ export function WithSellerData(
       store: { tokens }
     } = useConvertionRate();
 
-    const products = useInfinityProducts(
+    const products = useProducts(
       {
-        showVoided: true,
-        showExpired: true
+        productsFilter: {
+          sellerId
+        }
       },
       {
         enableCurationList: false
