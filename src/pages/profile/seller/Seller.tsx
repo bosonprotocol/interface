@@ -160,7 +160,8 @@ export default function Seller() {
       }
     },
     {
-      enableCurationList: false
+      enableCurationList: false,
+      withNumExchanges: true
     }
   );
   const {
@@ -345,7 +346,7 @@ export default function Seller() {
                     margin="0"
                     fontWeight="600"
                   >
-                    {exchanges?.length ?? 0}
+                    {sellerProducts?.[0]?.numExchanges ?? 0}
                   </Typography>
                 </div>
                 <div>
