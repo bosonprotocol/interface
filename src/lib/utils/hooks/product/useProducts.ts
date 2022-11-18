@@ -316,7 +316,6 @@ export default function useProducts(
     );
   }, [sellerIds, groupedSellers, exchangesBySellers.data]);
 
-  console.log({ allProducts, allSellers });
   return {
     isLoading: productsVariants.isLoading || exchangesBySellers.isLoading,
     isError: productsVariants.isError || exchangesBySellers.isError,
