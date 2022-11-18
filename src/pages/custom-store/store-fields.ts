@@ -49,10 +49,12 @@ export type StoreFormFields = StoreFields & {
   logoUpload: { name: string; size: number; src: string; type: string }[];
   withAdditionalFooterLinks: SelectType;
   withMetaTx: SelectType;
+  customStoreUrl: string;
 };
 
 export const storeFields = {
   isCustomStoreFront: "isCustomStoreFront",
+  customStoreUrl: "customStoreUrl",
   storeName: "storeName",
   title: "title",
   description: "description",
@@ -98,6 +100,11 @@ const standardRequiredErrorMessage = "This field is required";
 const notUrlErrorMessage = "This is not a URL like: www.example.com";
 export const formModel = {
   formFields: {
+    [storeFields.customStoreUrl]: {
+      name: storeFields.customStoreUrl,
+      requiredErrorMessage: standardRequiredErrorMessage,
+      placeholder: "https://bosonapp.io/#/?isCustomStoreFront=true"
+    },
     [storeFields.storeName]: {
       name: storeFields.storeName,
       requiredErrorMessage: standardRequiredErrorMessage,
@@ -308,6 +315,7 @@ const MAX_FILE_SIZE = uploadMaxMB * 1024 * 1024; // 5 MB
 const SUPPORTED_FILE_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
 
 export const validationSchema = Yup.object({
+  [storeFields.customStoreUrl]: Yup.string(),
   [storeFields.storeName]: Yup.string(),
   [storeFields.title]: Yup.string(),
   [storeFields.description]: Yup.string(),
@@ -402,6 +410,7 @@ export const validationSchema = Yup.object({
 
 export const initialValues = {
   [storeFields.isCustomStoreFront]: "true",
+  [storeFields.customStoreUrl]: "",
   [storeFields.storeName]: "",
   [storeFields.title]: "",
   [storeFields.description]: "",

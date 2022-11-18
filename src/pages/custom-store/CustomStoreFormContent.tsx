@@ -64,7 +64,11 @@ export const formValuesWithOneLogoUrl = (values: StoreFormFields) => {
     .filter(
       ([key]) =>
         !(
-          [storeFields.logoUrlText, storeFields.logoUpload] as string[]
+          [
+            storeFields.logoUrlText,
+            storeFields.logoUpload,
+            storeFields.customStoreUrl
+          ] as string[]
         ).includes(key)
     )
     .map(([key, value]) => {
@@ -91,7 +95,7 @@ export const formValuesWithOneLogoUrl = (values: StoreFormFields) => {
         return [[key, val]];
       }
       if (Array.isArray(value)) {
-        if (!value.length) {
+        if (!value?.length) {
           return [[key, ""]];
         }
         if (([storeFields.supportFunctionality] as string[]).includes(key)) {
@@ -134,7 +138,7 @@ export const formValuesWithOneLogoUrl = (values: StoreFormFields) => {
             return null;
           })
           .filter((v) => !!v);
-        if (!valueListWithoutExtraKeys.length) {
+        if (!valueListWithoutExtraKeys?.length) {
           return [[key, ""]];
         }
         return [[key, JSON.stringify(valueListWithoutExtraKeys)]];
@@ -146,7 +150,7 @@ export const formValuesWithOneLogoUrl = (values: StoreFormFields) => {
 };
 
 export default function CustomStoreFormContent({ hasSubmitError }: Props) {
-  const { setFieldValue, values, isValid, setFieldTouched } =
+  const { setFieldValue, values, isValid, setFieldTouched, setValues } =
     useFormikContext<StoreFormFields>();
 
   const { sellerIds } = useCurrentSellers();
@@ -156,7 +160,15 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
   ).toString();
   useEffect(() => {
     setFieldValue(storeFields.logoUrl, "", true);
-    if (values.logoUpload.length) {
+    if (values.logoUrlText) {
+      setFieldValue(storeFields.logoUpload, [], true);
+      setFieldValue(storeFields.logoUrl, values.logoUrlText, true);
+    }
+  }, [values.logoUrlText, setFieldValue]);
+
+  useEffect(() => {
+    setFieldValue(storeFields.logoUrl, "", true);
+    if (values.logoUpload?.length) {
       setFieldValue(storeFields.logoUrlText, "", true);
       const ipfsWithoutPrefix = values.logoUpload[0].src.replace("ipfs://", "");
       setFieldValue(
@@ -164,12 +176,10 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
         `${CONFIG.ipfsGateway}${ipfsWithoutPrefix}`,
         true
       );
-    } else if (values.logoUrlText) {
-      setFieldValue(storeFields.logoUpload, [], true);
-      setFieldValue(storeFields.logoUrl, values.logoUrlText, true);
     }
-  }, [values.logoUpload, values.logoUrlText, setFieldValue]);
-  const allFilledOut = values.additionalFooterLinks.every((footerLink) => {
+  }, [values.logoUpload, setFieldValue]);
+
+  const allFilledOut = values.additionalFooterLinks?.every((footerLink) => {
     const { label, value } = footerLink || {};
     return !!label && !!value;
   });
@@ -184,21 +194,28 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
   };
 
   useEffect(() => {
-    if (values.withAdditionalFooterLinks?.value) {
+    if (
+      values.withAdditionalFooterLinks?.value &&
+      !values.additionalFooterLinks?.length
+    ) {
       setFieldValue(
         storeFields.additionalFooterLinks,
         [{ label: "", value: "" }],
         true
       );
     }
-  }, [values.withAdditionalFooterLinks?.value, setFieldValue]);
+  }, [
+    values.withAdditionalFooterLinks?.value,
+    setFieldValue,
+    values.additionalFooterLinks?.length
+  ]);
 
   const disableCurationLists = ["mine"].includes(
     values.withOwnProducts?.value || ""
   );
   useEffect(() => {
     if (
-      sellerIds.length &&
+      sellerIds?.length &&
       ["mine"].includes(values.withOwnProducts?.value || "")
     ) {
       setFieldValue(storeFields.sellerCurationList, sellerIds.join(","), true);
@@ -221,8 +238,8 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
     const value = values.additionalFooterLinks;
     const onlyFilledValues = value.filter((v) => !!v?.label || !!v?.value);
     const valueToSet =
-      onlyFilledValues.length !== value.length
-        ? onlyFilledValues.length - 1 < value.length
+      onlyFilledValues?.length !== value?.length
+        ? onlyFilledValues.length - 1 < value?.length
           ? [...onlyFilledValues, { label: "", value: "" }]
           : onlyFilledValues
         : value;
@@ -246,15 +263,15 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
   const renderCommitProxyField = useMemo(() => {
     const numSellers = new Set(
       values.sellerCurationList
-        .split(",")
+        ?.split(",")
         .map((str) => str.trim())
-        .filter(isTruthy)
+        .filter(isTruthy) || []
     ).size;
     const numOffers = new Set(
       values.offerCurationList
-        .split(",")
+        ?.split(",")
         .map((str) => str.trim())
-        .filter(isTruthy)
+        .filter(isTruthy) || []
     ).size;
     // TODO: render field if 1 seller and many offers but all of them are from the same seller
     return (
@@ -310,6 +327,100 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [renderCommitProxyField]);
 
+  useEffect(() => {
+    if (!values.customStoreUrl) {
+      return;
+    }
+    try {
+      const urlWithoutHash = values.customStoreUrl.replace("/#/", "/");
+      const urlWithoutTrailingQuotationMarks = urlWithoutHash.startsWith("http")
+        ? urlWithoutHash
+        : urlWithoutHash.substring(urlWithoutHash.indexOf("http"));
+      const url = new URL(urlWithoutTrailingQuotationMarks);
+      const entries = Array.from(url.searchParams.entries());
+
+      const allKeys = Object.keys(storeFields);
+      const cleanedEntries = entries
+        .filter(([key]) => {
+          return (
+            key !== storeFields.isCustomStoreFront || !allKeys.includes(key)
+          );
+        })
+        .map(([keyWithMaybeAmp, value]) => {
+          const key = keyWithMaybeAmp.replace("amp;", "");
+          try {
+            switch (key) {
+              case storeFields.fontFamily:
+              case storeFields.navigationBarPosition:
+              case storeFields.showFooter:
+              case storeFields.withAdditionalFooterLinks:
+              case storeFields.withOwnProducts: {
+                const options = formModel.formFields[key]
+                  .options as unknown as {
+                  value: typeof value;
+                }[];
+                const option = options.find((option) => option.value === value);
+                if (option) {
+                  return [key, option];
+                }
+                return null;
+              }
+              case storeFields.socialMediaLinks: {
+                const socialMediaLinks = JSON.parse(value) as {
+                  value: string;
+                  url: string;
+                }[];
+                const values = socialMediaLinks
+                  .map((socialMediaObject) => {
+                    const option =
+                      formModel.formFields.socialMediaLinks.options.find(
+                        (opt) => {
+                          return opt.value === socialMediaObject.value;
+                        }
+                      );
+                    if (option) {
+                      return {
+                        ...option,
+                        url: socialMediaObject.url
+                      };
+                    }
+                    return null;
+                  })
+                  .filter(isTruthy);
+                if (values?.length) {
+                  return [key, values];
+                }
+                return null;
+              }
+
+              case storeFields.additionalFooterLinks:
+                return [key, JSON.parse(value)];
+              case storeFields.logoUrl:
+                return [storeFields.logoUrlText, value];
+            }
+          } catch (error) {
+            console.error(error);
+            return null;
+          }
+
+          return [key, value];
+        })
+        .filter(isTruthy);
+      setValues({ ...values, ...Object.fromEntries(cleanedEntries) }, true);
+    } catch (error) {
+      console.error(error);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values.customStoreUrl]);
+
+  const AdvancedTrigger = useCallback(() => {
+    return <Section>Advanced</Section>;
+  }, []);
+
+  const StyleTrigger = useCallback(() => {
+    return <Section>Style</Section>;
+  }, []);
+
   return (
     <Grid alignItems="flex-start" gap="2.875rem">
       <Grid
@@ -325,6 +436,16 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
             alignItems="flex-start"
             gap={gapBetweenInputs}
           >
+            <Grid flexDirection="column" alignItems="flex-start">
+              <FieldTitle>Fill out form from existing custom store</FieldTitle>
+              <FieldDescription>
+                Paste here a URL from another custom store
+              </FieldDescription>
+              <Input
+                name={storeFields.customStoreUrl}
+                placeholder={formModel.formFields.customStoreUrl.placeholder}
+              />
+            </Grid>
             <Grid flexDirection="column" alignItems="flex-start">
               <FieldTitle>Store Name</FieldTitle>
               <FieldDescription>
@@ -382,10 +503,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
           </Grid>
         </Grid>
         <Grid flexDirection="column" alignItems="flex-start">
-          <CollapseWithTrigger
-            isInitiallyOpen
-            trigger={() => <Section>Style</Section>}
-          >
+          <CollapseWithTrigger isInitiallyOpen trigger={StyleTrigger}>
             <Grid
               flexDirection="column"
               alignItems="flex-start"
@@ -518,10 +636,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
           </CollapseWithTrigger>
         </Grid>
         <Grid flexDirection="column" alignItems="flex-start">
-          <CollapseWithTrigger
-            isInitiallyOpen
-            trigger={() => <Section>Advanced</Section>}
-          >
+          <CollapseWithTrigger isInitiallyOpen trigger={AdvancedTrigger}>
             <Grid
               flexDirection="column"
               alignItems="flex-start"
@@ -593,7 +708,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                     alignItems="flex-start"
                     gap="0.5rem"
                   >
-                    {!!values.socialMediaLinks.length && (
+                    {!!values.socialMediaLinks?.length && (
                       <Grid gap={gap}>
                         <Grid flexBasis={firstSubFieldBasis}>
                           <Typography>Logo</Typography>
