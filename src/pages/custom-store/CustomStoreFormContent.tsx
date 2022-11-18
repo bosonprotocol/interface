@@ -353,17 +353,11 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
     }
     (async () => {
       try {
-        let iframeSrc = values.customStoreUrl;
-        const urlWithoutHash = iframeSrc.replace("/#/", "/");
-        const urlWithoutTrailingQuotationMarks = urlWithoutHash.startsWith(
-          "http"
-        )
-          ? urlWithoutHash
-          : urlWithoutHash.substring(urlWithoutHash.indexOf("http"));
-        let url = new URL(urlWithoutTrailingQuotationMarks);
+        let iframeSrc = values.customStoreUrl.replace("/#/", "/");
+        let url = new URL(iframeSrc);
         if (!url.searchParams.has(storeFields.isCustomStoreFront)) {
           try {
-            const response = await fetch(urlWithoutHash);
+            const response = await fetch(iframeSrc);
             const html = await response.text();
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, "text/html");
@@ -378,7 +372,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
             console.error(error);
           }
         }
-        url = new URL(iframeSrc);
+        url = new URL(iframeSrc.replace("/#/", "/"));
         const entries = Array.from(url.searchParams.entries());
 
         const allKeys = Object.keys(storeFields);
@@ -480,7 +474,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
         <Grid flexDirection="column" alignItems="flex-start">
           <FieldTitle>Load data from an existing storefront</FieldTitle>
           <FieldDescription>
-            Paste the URL to an existing custom storefront here
+            Paste the URL of an existing custom storefront here
           </FieldDescription>
           <Input
             name={storeFields.customStoreUrl}
