@@ -233,6 +233,29 @@ const Span = styled.span`
   }
 `;
 
+const statusOrder = [
+  OffersKit.OfferState.NOT_YET_VALID,
+  OffersKit.OfferState.VALID,
+  OffersKit.OfferState.VOIDED,
+  OffersKit.OfferState.EXPIRED
+] as const;
+
+const compareOffersSortByStatus = (
+  { offerStatus: offerStatusA }: { offerStatus: OffersKit.OfferState | string },
+  { offerStatus: offerStatusB }: { offerStatus: OffersKit.OfferState | string }
+): number => {
+  if (!offerStatusA) {
+    return 1;
+  }
+  if (!offerStatusB) {
+    return -1;
+  }
+  return (
+    statusOrder.indexOf(offerStatusA as OffersKit.OfferState) -
+    statusOrder.indexOf(offerStatusB as OffersKit.OfferState)
+  );
+};
+
 export default function SellerProductsTable({
   offers,
   refetch,
@@ -294,299 +317,309 @@ export default function SellerProductsTable({
 
   const data = useMemo(
     () =>
-      offers?.map((offer) => {
-        const status = offer ? OffersKit.getOfferStatus(offer) : "";
-        const showVariant =
-          offer?.additional?.variants && offer?.additional?.variants.length > 1;
-        if (currentTag === "voided" && offer !== null && offer.additional) {
-          offer.additional.variants = offer.additional.variants.filter(
-            (variant) => variant.voided
-          );
-        }
-        if (currentTag === "expired" && offer !== null && offer.additional) {
-          offer.additional.variants = offer.additional.variants.filter(
-            (variant) =>
-              dayjs(getDateTimestamp(variant?.validUntilDate)).isBefore(
-                dayjs()
-              ) && !variant.voided
-          );
-        }
-        return {
-          offerId: offer?.id,
-          uuid: offer?.metadata?.product?.uuid,
-          isSubRow: false,
-          subRows: showVariant
-            ? (offer?.additional?.variants || [])
-                .map((variant) => {
-                  const variantStatus = offer
-                    ? OffersKit.getOfferStatus(variant)
-                    : "";
-                  return {
-                    isSubRow: true,
-                    offerId: variant.id,
-                    uuid: offer.additional?.product?.uuid ?? "",
-                    isSelectable: !(
-                      variantStatus === OffersKit.OfferState.EXPIRED ||
-                      variantStatus === OffersKit.OfferState.VOIDED
-                    ),
-                    image: variant.metadata && "image" in variant.metadata && (
-                      <Image
-                        src={variant.metadata.image}
-                        style={{
-                          width: "2.5rem",
-                          height: "2.5rem",
-                          paddingTop: "0%",
-                          fontSize: "0.75rem",
-                          marginLeft: "2.1875rem"
-                        }}
-                        showPlaceholderText={false}
-                      />
-                    ),
+      offers
+        ?.map((offer) => {
+          const status = offer ? OffersKit.getOfferStatus(offer) : "";
+          const showVariant =
+            offer?.additional?.variants &&
+            offer?.additional?.variants.length > 1;
+          if (currentTag === "voided" && offer !== null && offer.additional) {
+            offer.additional.variants = offer.additional.variants.filter(
+              (variant) => variant.voided
+            );
+          }
+          if (currentTag === "expired" && offer !== null && offer.additional) {
+            offer.additional.variants = offer.additional.variants.filter(
+              (variant) =>
+                dayjs(getDateTimestamp(variant?.validUntilDate)).isBefore(
+                  dayjs()
+                ) && !variant.voided
+            );
+          }
+          return {
+            offerStatus: status,
+            offerId: offer?.id,
+            uuid: offer?.metadata?.product?.uuid,
+            isSubRow: false,
+            subRows: showVariant
+              ? (offer?.additional?.variants || [])
+                  .map((variant) => {
+                    const variantStatus = offer
+                      ? OffersKit.getOfferStatus(variant)
+                      : "";
+                    return {
+                      offerStatus: variantStatus,
+                      isSubRow: true,
+                      offerId: variant.id,
+                      uuid: offer.additional?.product?.uuid ?? "",
+                      isSelectable: !(
+                        variantStatus === OffersKit.OfferState.EXPIRED ||
+                        variantStatus === OffersKit.OfferState.VOIDED
+                      ),
+                      image: variant.metadata &&
+                        "image" in variant.metadata && (
+                          <Image
+                            src={variant.metadata.image}
+                            style={{
+                              width: "2.5rem",
+                              height: "2.5rem",
+                              paddingTop: "0%",
+                              fontSize: "0.75rem",
+                              marginLeft: "2.1875rem"
+                            }}
+                            showPlaceholderText={false}
+                          />
+                        ),
 
-                    sku: (
-                      <Tooltip
-                        content={
-                          <Typography $fontSize="0.75rem">
+                      sku: (
+                        <Tooltip
+                          content={
+                            <Typography $fontSize="0.75rem">
+                              {variant.metadata && "uuid" in variant.metadata
+                                ? variant.metadata.uuid
+                                : ""}
+                            </Typography>
+                          }
+                        >
+                          <Typography
+                            $fontSize="0.75rem"
+                            style={{
+                              paddingLeft: "2rem"
+                            }}
+                          >
                             {variant.metadata && "uuid" in variant.metadata
-                              ? variant.metadata.uuid
+                              ? variant.metadata.uuid.substring(0, 3) + "..."
                               : ""}
                           </Typography>
-                        }
-                      >
+                        </Tooltip>
+                      ),
+                      productName: (
                         <Typography
-                          $fontSize="0.75rem"
                           style={{
-                            paddingLeft: "2rem"
+                            textTransform: "uppercase",
+                            marginLeft: "2rem"
+                          }}
+                          tag="p"
+                        >
+                          {variant?.metadata?.name}
+                        </Typography>
+                      ),
+                      status: variant && (
+                        <Tooltip
+                          interactive
+                          content={<OfferHistory offer={variant as Offer} />}
+                        >
+                          <OfferStatuses
+                            offer={variant as Offer}
+                            size="small"
+                            displayDot
+                            showValid
+                            style={{
+                              display: "inline-block",
+                              position: "relative",
+                              top: "unset",
+                              left: "unset",
+                              right: "unset"
+                            }}
+                          />
+                        </Tooltip>
+                      ),
+                      quantity: (
+                        <Typography>
+                          {variant?.quantityAvailable}/
+                          {variant?.quantityInitial}
+                        </Typography>
+                      ),
+                      price: (
+                        <Price
+                          currencySymbol={variant?.exchangeToken?.symbol ?? ""}
+                          value={variant?.price ?? ""}
+                          decimals={variant?.exchangeToken?.decimals ?? ""}
+                        />
+                      ),
+                      offerValidity: variant?.validUntilDate && (
+                        <Typography>
+                          <span>
+                            <small style={{ margin: "0" }}>Until</small> <br />
+                            {dayjs(
+                              getDateTimestamp(variant.validUntilDate)
+                            ).format(CONFIG.dateFormat)}
+                          </span>
+                        </Typography>
+                      ),
+                      action: !(
+                        variantStatus === OffersKit.OfferState.EXPIRED ||
+                        variantStatus === OffersKit.OfferState.VOIDED ||
+                        variant?.quantityAvailable === "0"
+                      ) && (
+                        <VoidButton
+                          variant="secondaryInverted"
+                          size={ButtonSize.Small}
+                          disabled={!sellerRoles?.isOperator}
+                          tooltip="This action is restricted to only the operator wallet"
+                          onClick={() => {
+                            if (variant) {
+                              showModal(
+                                modalTypes.VOID_PRODUCT,
+                                {
+                                  title: "Void Confirmation",
+                                  offerId: variant.id,
+                                  offer: variant as Offer,
+                                  refetch
+                                },
+                                "xs"
+                              );
+                            }
                           }}
                         >
-                          {variant.metadata && "uuid" in variant.metadata
-                            ? variant.metadata.uuid.substring(0, 3) + "..."
-                            : ""}
-                        </Typography>
-                      </Tooltip>
-                    ),
-                    productName: (
-                      <Typography
-                        style={{
-                          textTransform: "uppercase",
-                          marginLeft: "2rem"
-                        }}
-                        tag="p"
-                      >
-                        {variant?.metadata?.name}
-                      </Typography>
-                    ),
-                    status: variant && (
-                      <Tooltip
-                        interactive
-                        content={<OfferHistory offer={variant as Offer} />}
-                      >
-                        <OfferStatuses
-                          offer={variant as Offer}
-                          size="small"
-                          displayDot
-                          showValid
-                          style={{
-                            display: "inline-block",
-                            position: "relative",
-                            top: "unset",
-                            left: "unset",
-                            right: "unset"
-                          }}
-                        />
-                      </Tooltip>
-                    ),
-                    quantity: (
-                      <Typography>
-                        {variant?.quantityAvailable}/{variant?.quantityInitial}
-                      </Typography>
-                    ),
-                    price: (
-                      <Price
-                        currencySymbol={variant?.exchangeToken?.symbol ?? ""}
-                        value={variant?.price ?? ""}
-                        decimals={variant?.exchangeToken?.decimals ?? ""}
-                      />
-                    ),
-                    offerValidity: variant?.validUntilDate && (
-                      <Typography>
-                        <span>
-                          <small style={{ margin: "0" }}>Until</small> <br />
-                          {dayjs(
-                            getDateTimestamp(variant.validUntilDate)
-                          ).format(CONFIG.dateFormat)}
-                        </span>
-                      </Typography>
-                    ),
-                    action: !(
-                      variantStatus === OffersKit.OfferState.EXPIRED ||
-                      variantStatus === OffersKit.OfferState.VOIDED ||
-                      variant?.quantityAvailable === "0"
-                    ) && (
-                      <VoidButton
-                        variant="secondaryInverted"
-                        size={ButtonSize.Small}
-                        disabled={!sellerRoles?.isOperator}
-                        tooltip="This action is restricted to only the operator wallet"
-                        onClick={() => {
-                          if (variant) {
-                            showModal(
-                              modalTypes.VOID_PRODUCT,
-                              {
-                                title: "Void Confirmation",
-                                offerId: variant.id,
-                                offer: variant as Offer,
-                                refetch
-                              },
-                              "xs"
-                            );
-                          }
-                        }}
-                      >
-                        Void
-                      </VoidButton>
-                    )
-                  };
-                })
-                .filter(isTruthy)
-            : [],
-          isSelectable: !(
-            status === OffersKit.OfferState.EXPIRED ||
-            status === OffersKit.OfferState.VOIDED
-          ),
-          image: (
-            <Image
-              src={offer?.metadata?.image ?? ""}
-              style={{
-                width: "2.5rem",
-                height: "2.5rem",
-                paddingTop: "0%",
-                fontSize: "0.75rem"
-              }}
-              showPlaceholderText={false}
-            />
-          ),
-          sku: <Typography $fontSize="0.75rem">{offer?.id}</Typography>,
-          productName: (
-            <Grid justifyContent="flex-start" alignItems="center">
-              <div>
-                <Typography
-                  tag="p"
-                  style={{
-                    marginBottom: 0
-                  }}
-                >
-                  <b>{offer?.metadata?.name}</b>
-                </Typography>
-                {showVariant && (
+                          Void
+                        </VoidButton>
+                      )
+                    };
+                  })
+                  .filter(isTruthy)
+                  .sort(compareOffersSortByStatus)
+              : [],
+            isSelectable: !(
+              status === OffersKit.OfferState.EXPIRED ||
+              status === OffersKit.OfferState.VOIDED
+            ),
+            image: (
+              <Image
+                src={offer?.metadata?.image ?? ""}
+                style={{
+                  width: "2.5rem",
+                  height: "2.5rem",
+                  paddingTop: "0%",
+                  fontSize: "0.75rem"
+                }}
+                showPlaceholderText={false}
+              />
+            ),
+            sku: <Typography $fontSize="0.75rem">{offer?.id}</Typography>,
+            productName: (
+              <Grid justifyContent="flex-start" alignItems="center">
+                <div>
                   <Typography
-                    tag="span"
-                    $fontSize="0.75rem"
-                    color={colors.darkGrey}
+                    tag="p"
+                    style={{
+                      marginBottom: 0
+                    }}
                   >
-                    {offer?.additional?.variants.length} variants
+                    <b>{offer?.metadata?.name}</b>
                   </Typography>
+                  {showVariant && (
+                    <Typography
+                      tag="span"
+                      $fontSize="0.75rem"
+                      color={colors.darkGrey}
+                    >
+                      {offer?.additional?.variants.length} variants
+                    </Typography>
+                  )}
+                </div>
+                {showVariant && (
+                  <CaretDown
+                    size={14}
+                    style={{
+                      marginLeft: "0.5rem"
+                    }}
+                  />
                 )}
-              </div>
-              {showVariant && (
-                <CaretDown
-                  size={14}
+              </Grid>
+            ),
+            status: offer && (
+              <Tooltip interactive content={<OfferHistory offer={offer} />}>
+                <OfferStatuses
+                  offer={offer}
+                  size="small"
+                  displayDot
+                  showValid
                   style={{
-                    marginLeft: "0.5rem"
+                    display: "inline-block",
+                    position: "relative",
+                    top: "unset",
+                    left: "unset",
+                    right: "unset"
                   }}
                 />
-              )}
-            </Grid>
-          ),
-          status: offer && (
-            <Tooltip interactive content={<OfferHistory offer={offer} />}>
-              <OfferStatuses
-                offer={offer}
-                size="small"
-                displayDot
-                showValid
-                style={{
-                  display: "inline-block",
-                  position: "relative",
-                  top: "unset",
-                  left: "unset",
-                  right: "unset"
-                }}
+              </Tooltip>
+            ),
+            quantity: (
+              <Typography>
+                {offer?.quantityAvailable}/{offer?.quantityInitial}
+              </Typography>
+            ),
+            price: (
+              <Price
+                currencySymbol={offer?.exchangeToken?.symbol ?? ""}
+                value={offer?.price ?? ""}
+                decimals={offer?.exchangeToken?.decimals ?? ""}
               />
-            </Tooltip>
-          ),
-          quantity: (
-            <Typography>
-              {offer?.quantityAvailable}/{offer?.quantityInitial}
-            </Typography>
-          ),
-          price: (
-            <Price
-              currencySymbol={offer?.exchangeToken?.symbol ?? ""}
-              value={offer?.price ?? ""}
-              decimals={offer?.exchangeToken?.decimals ?? ""}
-            />
-          ),
-          offerValidity: offer?.validUntilDate && (
-            <Typography>
-              <span>
-                <small style={{ margin: "0" }}>Until</small> <br />
-                {dayjs(getDateTimestamp(offer.validUntilDate)).format(
-                  CONFIG.dateFormat
-                )}
-              </span>
-            </Typography>
-          ),
-          action: !(
-            status === OffersKit.OfferState.EXPIRED ||
-            status === OffersKit.OfferState.VOIDED ||
-            offer?.quantityAvailable === "0"
-          ) && (
-            <VoidButton
-              variant="secondaryInverted"
-              size={ButtonSize.Small}
-              disabled={!sellerRoles?.isOperator}
-              tooltip="This action is restricted to only the operator wallet"
-              onClick={() => {
-                if (offer) {
-                  if (showVariant) {
-                    showModal(
-                      modalTypes.VOID_PRODUCT,
-                      {
-                        title: "Void Confirmation",
-                        offers: offer.additional?.variants.filter((variant) => {
-                          variant.validUntilDate;
-                          return (
-                            !variant.voided &&
-                            !dayjs(
-                              getDateTimestamp(offer?.validUntilDate)
-                            ).isBefore(dayjs())
-                          );
-                        }) as Offer[],
-                        refetch
-                      },
-                      "s"
-                    );
-                  } else {
-                    showModal(
-                      modalTypes.VOID_PRODUCT,
-                      {
-                        title: "Void Confirmation",
-                        offerId: offer.id,
-                        offer,
-                        refetch
-                      },
-                      "xs"
-                    );
+            ),
+            offerValidity: offer?.validUntilDate && (
+              <Typography>
+                <span>
+                  <small style={{ margin: "0" }}>Until</small> <br />
+                  {dayjs(getDateTimestamp(offer.validUntilDate)).format(
+                    CONFIG.dateFormat
+                  )}
+                </span>
+              </Typography>
+            ),
+            action: !(
+              status === OffersKit.OfferState.EXPIRED ||
+              status === OffersKit.OfferState.VOIDED ||
+              offer?.quantityAvailable === "0"
+            ) && (
+              <VoidButton
+                variant="secondaryInverted"
+                size={ButtonSize.Small}
+                disabled={!sellerRoles?.isOperator}
+                tooltip="This action is restricted to only the operator wallet"
+                onClick={() => {
+                  if (offer) {
+                    if (showVariant) {
+                      showModal(
+                        modalTypes.VOID_PRODUCT,
+                        {
+                          title: "Void Confirmation",
+                          offers: offer.additional?.variants.filter(
+                            (variant) => {
+                              variant.validUntilDate;
+                              return (
+                                !variant.voided &&
+                                !dayjs(
+                                  getDateTimestamp(offer?.validUntilDate)
+                                ).isBefore(dayjs())
+                              );
+                            }
+                          ) as Offer[],
+                          refetch
+                        },
+                        "s"
+                      );
+                    } else {
+                      showModal(
+                        modalTypes.VOID_PRODUCT,
+                        {
+                          title: "Void Confirmation",
+                          offerId: offer.id,
+                          offer,
+                          refetch
+                        },
+                        "xs"
+                      );
+                    }
                   }
-                }
-              }}
-            >
-              Void
-            </VoidButton>
-          )
-        };
-      }),
+                }}
+              >
+                Void
+              </VoidButton>
+            )
+          };
+        })
+        .sort(compareOffersSortByStatus),
     [offers] // eslint-disable-line
   );
 
