@@ -50,13 +50,11 @@ export default function useProducts(
       productsFilter: {
         uuid_in: props?.productsIds || undefined,
         disputeResolverId: CONFIG.defaultDisputeResolverId,
-        productV1Seller_in:
+        sellerId_in:
           options.enableCurationList &&
           curationLists.enableCurationLists &&
           !!curationLists.sellerCurationList?.length
-            ? curationLists.sellerCurationList?.map(
-                (sellerId) => `${sellerId}-product-v1`
-              )
+            ? curationLists.sellerCurationList
             : undefined,
         ...props.productsFilter
       }
