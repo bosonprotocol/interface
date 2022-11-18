@@ -1,12 +1,14 @@
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { Copy, CopySimple, Info } from "phosphor-react";
 import * as pretty from "pretty";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
 
 import Collapse from "../../../components/collapse/Collapse";
 import { colors } from "../../../lib/styles/colors";
 import copyToClipboard from "../../../lib/utils/copyToClipboard";
+import { Notify } from "../../detail/Detail.style";
 import { CopyButton } from "../../form/Field.styles";
 import BosonButton from "../../ui/BosonButton";
 import Grid from "../../ui/Grid";
@@ -64,6 +66,8 @@ export default function CustomStore({
   htmlString = "",
   hideModal
 }: Props) {
+  const [show, setShow] = useState<boolean>(false);
+
   const iframeString = htmlString.substring(
     htmlString.indexOf("<iframe"),
     htmlString.indexOf("</body")
@@ -103,8 +107,21 @@ export default function CustomStore({
           </a>
           <CopyIcon
             size={20}
-            onClick={() => copyToClipboard(ipfsUrl).catch(console.error)}
+            onClick={async () => {
+              try {
+                await copyToClipboard(ipfsUrl);
+                setShow(true);
+                setTimeout(() => {
+                  setShow(false);
+                }, 3000);
+              } catch (error) {
+                console.error(error);
+              }
+            }}
           />
+          <Notify $show={show}>
+            <Typography tag="p">URL has been copied to clipboard</Typography>
+          </Notify>
         </Grid>
       </CollapsibleContainer>
       <CollapsibleContainer>
