@@ -331,85 +331,110 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
     if (!values.customStoreUrl) {
       return;
     }
-    try {
-      const urlWithoutHash = values.customStoreUrl.replace("/#/", "/");
-      const urlWithoutTrailingQuotationMarks = urlWithoutHash.startsWith("http")
-        ? urlWithoutHash
-        : urlWithoutHash.substring(urlWithoutHash.indexOf("http"));
-      const url = new URL(urlWithoutTrailingQuotationMarks);
-      const entries = Array.from(url.searchParams.entries());
-
-      const allKeys = Object.keys(storeFields);
-      const cleanedEntries = entries
-        .filter(([key]) => {
-          return (
-            key !== storeFields.isCustomStoreFront || !allKeys.includes(key)
-          );
-        })
-        .map(([keyWithMaybeAmp, value]) => {
-          const key = keyWithMaybeAmp.replace("amp;", "");
-          try {
-            switch (key) {
-              case storeFields.fontFamily:
-              case storeFields.navigationBarPosition:
-              case storeFields.showFooter:
-              case storeFields.withAdditionalFooterLinks:
-              case storeFields.withOwnProducts: {
-                const options = formModel.formFields[key]
-                  .options as unknown as {
-                  value: typeof value;
-                }[];
-                const option = options.find((option) => option.value === value);
-                if (option) {
-                  return [key, option];
-                }
-                return null;
-              }
-              case storeFields.socialMediaLinks: {
-                const socialMediaLinks = JSON.parse(value) as {
-                  value: string;
-                  url: string;
-                }[];
-                const values = socialMediaLinks
-                  .map((socialMediaObject) => {
-                    const option =
-                      formModel.formFields.socialMediaLinks.options.find(
-                        (opt) => {
-                          return opt.value === socialMediaObject.value;
-                        }
-                      );
-                    if (option) {
-                      return {
-                        ...option,
-                        url: socialMediaObject.url
-                      };
-                    }
-                    return null;
-                  })
-                  .filter(isTruthy);
-                if (values?.length) {
-                  return [key, values];
-                }
-                return null;
-              }
-
-              case storeFields.additionalFooterLinks:
-                return [key, JSON.parse(value)];
-              case storeFields.logoUrl:
-                return [storeFields.logoUrlText, value];
+    (async () => {
+      try {
+        const isCustomStoreInsteadOfIframeSrc =
+          values.customStoreUrl.startsWith(CONFIG.ipfsGateway);
+        let iframeSrc = values.customStoreUrl;
+        try {
+          if (isCustomStoreInsteadOfIframeSrc) {
+            const response = await fetch(values.customStoreUrl);
+            const html = await response.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, "text/html");
+            const src = doc.querySelector("iframe")?.getAttribute("src");
+            if (src) {
+              iframeSrc = src;
             }
-          } catch (error) {
-            console.error(error);
-            return null;
           }
+        } catch (error) {
+          console.error(error);
+        }
 
-          return [key, value];
-        })
-        .filter(isTruthy);
-      setValues({ ...values, ...Object.fromEntries(cleanedEntries) }, true);
-    } catch (error) {
-      console.error(error);
-    }
+        const urlWithoutHash = iframeSrc.replace("/#/", "/");
+        const urlWithoutTrailingQuotationMarks = urlWithoutHash.startsWith(
+          "http"
+        )
+          ? urlWithoutHash
+          : urlWithoutHash.substring(urlWithoutHash.indexOf("http"));
+        const url = new URL(urlWithoutTrailingQuotationMarks);
+        const entries = Array.from(url.searchParams.entries());
+
+        const allKeys = Object.keys(storeFields);
+        const cleanedEntries = entries
+          .filter(([key]) => {
+            return (
+              key !== storeFields.isCustomStoreFront || !allKeys.includes(key)
+            );
+          })
+          .map(([keyWithMaybeAmp, value]) => {
+            const key = keyWithMaybeAmp.replace("amp;", "");
+            try {
+              switch (key) {
+                case storeFields.fontFamily:
+                case storeFields.navigationBarPosition:
+                case storeFields.showFooter:
+                case storeFields.withAdditionalFooterLinks:
+                case storeFields.withOwnProducts: {
+                  const options = formModel.formFields[key]
+                    .options as unknown as {
+                    value: typeof value;
+                  }[];
+                  const option = options.find(
+                    (option) => option.value === value
+                  );
+                  if (option) {
+                    return [key, option];
+                  }
+                  return null;
+                }
+                case storeFields.socialMediaLinks: {
+                  const socialMediaLinks = JSON.parse(value) as {
+                    value: string;
+                    url: string;
+                  }[];
+                  const values = socialMediaLinks
+                    .map((socialMediaObject) => {
+                      const option =
+                        formModel.formFields.socialMediaLinks.options.find(
+                          (opt) => {
+                            return opt.value === socialMediaObject.value;
+                          }
+                        );
+                      if (option) {
+                        return {
+                          ...option,
+                          url: socialMediaObject.url
+                        };
+                      }
+                      return null;
+                    })
+                    .filter(isTruthy);
+                  if (values?.length) {
+                    return [key, values];
+                  }
+                  return null;
+                }
+
+                case storeFields.additionalFooterLinks:
+                  return [key, JSON.parse(value)];
+                case storeFields.logoUrl:
+                  return [storeFields.logoUrlText, value];
+              }
+            } catch (error) {
+              console.error(error);
+              return null;
+            }
+
+            return [key, value];
+          })
+          .filter(isTruthy);
+        setValues({ ...values, ...Object.fromEntries(cleanedEntries) }, true);
+      } catch (error) {
+        console.error(error);
+      }
+    })();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values.customStoreUrl]);
 
