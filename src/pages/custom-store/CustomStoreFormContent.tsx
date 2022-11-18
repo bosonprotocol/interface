@@ -333,19 +333,15 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
     }
     (async () => {
       try {
-        const isCustomStoreInsteadOfIframeSrc =
-          values.customStoreUrl.startsWith(CONFIG.ipfsGateway);
         let iframeSrc = values.customStoreUrl;
         try {
-          if (isCustomStoreInsteadOfIframeSrc) {
-            const response = await fetch(values.customStoreUrl);
-            const html = await response.text();
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, "text/html");
-            const src = doc.querySelector("iframe")?.getAttribute("src");
-            if (src) {
-              iframeSrc = src;
-            }
+          const response = await fetch(values.customStoreUrl);
+          const html = await response.text();
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, "text/html");
+          const src = doc.querySelector("iframe")?.getAttribute("src");
+          if (src) {
+            iframeSrc = src;
           }
         } catch (error) {
           console.error(error);
