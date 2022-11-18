@@ -9,7 +9,7 @@ import { colors } from "../../lib/styles/colors";
 import { useBuyerSellerAccounts } from "../../lib/utils/hooks/useBuyerSellerAccounts";
 import { useCurrentDisputeResolverId } from "../../lib/utils/hooks/useCurrentDisputeResolverId";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
-import { useSellerCurationListFn } from "../../lib/utils/hooks/useSellers";
+import { isInEligibleWalletList } from "../../lib/utils/isInEligibleWalletList";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import { UserRoles } from "../../router/routes";
 import useUserRoles, { checkIfUserHaveRole } from "../../router/useUserRoles";
@@ -165,27 +165,25 @@ export default function HeaderLinks({
     buyer: { buyerId }
   } = useBuyerSellerAccounts(address || "");
 
-  const { sellerIds } = useCurrentSellers();
+  const { sellerIds, sellers } = useCurrentSellers();
   const isAccountSeller = useMemo(() => !!sellerIds?.[0], [sellerIds]);
   const isAccountBuyer = useMemo(() => !!buyerId, [buyerId]);
-  const checkIfSellerIsInCurationList = useSellerCurationListFn();
+  const sellerWalletAddress = useMemo(() => {
+    return sellers?.length ? sellers[0].operator : "";
+  }, [sellers]);
   const { disputeResolverId } = useCurrentDisputeResolverId();
 
   const sellUrl = useMemo(() => {
-    if (isAccountSeller) {
-      const isSellerInCurationList = checkIfSellerIsInCurationList(
-        sellerIds?.[0]
-      );
-      if (isSellerInCurationList) {
-        return generatePath(SellerCenterRoutes.SellerCenter, {
-          [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
-        });
-      } else {
-        return BosonRoutes.ClosedBeta;
-      }
+    if (!isInEligibleWalletList(sellerWalletAddress) && !isAccountSeller) {
+      return BosonRoutes.ClosedBeta;
+    } else if (isAccountSeller) {
+      return generatePath(SellerCenterRoutes.SellerCenter, {
+        [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
+      });
+    } else {
+      return SellerCenterRoutes.CreateProduct;
     }
-    return SellerCenterRoutes.CreateProduct;
-  }, [isAccountSeller, checkIfSellerIsInCurationList, sellerIds]);
+  }, [isAccountSeller, sellerWalletAddress]);
 
   const isSupportFunctionalityDefined = supportFunctionality !== "";
 

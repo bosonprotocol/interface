@@ -19,6 +19,7 @@ import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { isInEligibleWalletList } from "../../lib/utils/isInEligibleWalletList";
 
 export const Wrapper = styled.div`
   text-align: center;
@@ -45,15 +46,25 @@ const SellerCenterWithData = WithSellerData(SellerCenter);
 
 function SellerCenterWrapper() {
   const navigate = useKeepQueryParamsNavigate();
-  const { isLoading, sellerIds, isSuccess } = useCurrentSellers();
+  const { isLoading, sellerIds, isSuccess, sellers } = useCurrentSellers();
   const [selectedSellerId, setSelectedSellerId] = useState<string>(
     sellerIds?.length === 1 ? sellerIds[0] : ""
   );
+  const [selectedSellerWallet, setSelectedSellerWallet] = useState<string>(
+    sellers?.length ? sellers[0].operator : ""
+  );
+
   useEffect(() => {
     if (isSuccess) {
       setSelectedSellerId(sellerIds.length === 1 ? sellerIds[0] : "");
     }
   }, [isSuccess, sellerIds]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      setSelectedSellerWallet(sellers.length ? sellers[0].operator : "");
+    }
+  }, [isSuccess, sellers]);
 
   const isAccountSeller = !!selectedSellerId;
 
@@ -65,7 +76,7 @@ function SellerCenterWrapper() {
     );
   }
 
-  if (!isAccountSeller) {
+  if (!isAccountSeller && !isInEligibleWalletList(selectedSellerWallet)) {
     return <Navigate replace to={{ pathname: BosonRoutes.ClosedBeta }} />;
   }
 
