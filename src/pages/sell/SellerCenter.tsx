@@ -2,6 +2,7 @@ import { Button } from "@bosonprotocol/react-kit";
 import { House, WarningCircle } from "phosphor-react";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
+import { useAccount } from "wagmi";
 
 import Navigate from "../../components/customNavigation/Navigate";
 import {
@@ -46,25 +47,18 @@ const SellerCenterWithData = WithSellerData(SellerCenter);
 
 function SellerCenterWrapper() {
   const navigate = useKeepQueryParamsNavigate();
-  const { isLoading, sellerIds, isSuccess, sellers } = useCurrentSellers();
+  const { isLoading, sellerIds, isSuccess } = useCurrentSellers();
   const [selectedSellerId, setSelectedSellerId] = useState<string>(
     sellerIds?.length === 1 ? sellerIds[0] : ""
   );
-  const [selectedSellerWallet, setSelectedSellerWallet] = useState<string>(
-    sellers?.length ? sellers[0].operator : ""
-  );
+
+  const { address } = useAccount();
 
   useEffect(() => {
     if (isSuccess) {
       setSelectedSellerId(sellerIds.length === 1 ? sellerIds[0] : "");
     }
   }, [isSuccess, sellerIds]);
-
-  useEffect(() => {
-    if (isSuccess) {
-      setSelectedSellerWallet(sellers.length ? sellers[0].operator : "");
-    }
-  }, [isSuccess, sellers]);
 
   const isAccountSeller = !!selectedSellerId;
 
@@ -76,7 +70,10 @@ function SellerCenterWrapper() {
     );
   }
 
-  if (!isAccountSeller && !isInEligibleWalletList(selectedSellerWallet)) {
+  if (
+    !isAccountSeller &&
+    !isInEligibleWalletList(address?.toLowerCase() ?? "")
+  ) {
     return <Navigate replace to={{ pathname: BosonRoutes.ClosedBeta }} />;
   }
 

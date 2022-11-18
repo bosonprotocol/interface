@@ -165,16 +165,16 @@ export default function HeaderLinks({
     buyer: { buyerId }
   } = useBuyerSellerAccounts(address || "");
 
-  const { sellerIds, sellers } = useCurrentSellers();
+  const { sellerIds } = useCurrentSellers();
   const isAccountSeller = useMemo(() => !!sellerIds?.[0], [sellerIds]);
   const isAccountBuyer = useMemo(() => !!buyerId, [buyerId]);
-  const sellerWalletAddress = useMemo(() => {
-    return sellers?.length ? sellers[0].operator : "";
-  }, [sellers]);
   const { disputeResolverId } = useCurrentDisputeResolverId();
 
   const sellUrl = useMemo(() => {
-    if (!isInEligibleWalletList(sellerWalletAddress) && !isAccountSeller) {
+    if (
+      !isInEligibleWalletList(address?.toLowerCase() ?? "") &&
+      !isAccountSeller
+    ) {
       return BosonRoutes.ClosedBeta;
     } else if (isAccountSeller) {
       return generatePath(SellerCenterRoutes.SellerCenter, {
@@ -182,7 +182,7 @@ export default function HeaderLinks({
       });
     }
     return SellerCenterRoutes.CreateProduct;
-  }, [isAccountSeller, sellerWalletAddress]);
+  }, [address, isAccountSeller]);
 
   const isSupportFunctionalityDefined = supportFunctionality !== "";
 
