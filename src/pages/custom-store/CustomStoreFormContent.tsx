@@ -473,22 +473,22 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
         gap="2rem"
       >
         <Grid flexDirection="column" alignItems="flex-start">
+          <FieldTitle>Load data from an existing storefront</FieldTitle>
+          <FieldDescription>
+            Paste the URL to an existing custom storefront here
+          </FieldDescription>
+          <Input
+            name={storeFields.customStoreUrl}
+            placeholder={formModel.formFields.customStoreUrl.placeholder}
+          />
+        </Grid>
+        <Grid flexDirection="column" alignItems="flex-start">
           <Section>General</Section>
           <Grid
             flexDirection="column"
             alignItems="flex-start"
             gap={gapBetweenInputs}
           >
-            <Grid flexDirection="column" alignItems="flex-start">
-              <FieldTitle>Load data from an existing storefront</FieldTitle>
-              <FieldDescription>
-                Paste the URL to an existing custom storefront here
-              </FieldDescription>
-              <Input
-                name={storeFields.customStoreUrl}
-                placeholder={formModel.formFields.customStoreUrl.placeholder}
-              />
-            </Grid>
             <Grid flexDirection="column" alignItems="flex-start">
               <FieldTitle>Store Name</FieldTitle>
               <FieldDescription>
