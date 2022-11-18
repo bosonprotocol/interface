@@ -31,7 +31,10 @@ import { IPrice } from "../../../lib/utils/convertPrice";
 import { titleCase } from "../../../lib/utils/formatText";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import useCheckTokenGatedOffer from "../../../lib/utils/hooks/offer/useCheckTokenGatedOffer";
-import { useAddPendingTransaction } from "../../../lib/utils/hooks/transactions/usePendingTransactions";
+import {
+  useAddPendingTransaction,
+  useRemovePendingTransaction
+} from "../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { useBuyerSellerAccounts } from "../../../lib/utils/hooks/useBuyerSellerAccounts";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
@@ -212,7 +215,7 @@ export const getOfferDetailData = (
               {displayFloat(convertedPrice?.price)} {offer.exchangeToken.symbol}
               <small>
                 ({convertedPrice?.currency?.symbol}{" "}
-                {displayFloat(convertedPrice?.converted)})
+                {displayFloat(convertedPrice?.converted, { fixed: 2 })})
               </small>
             </Typography>
           ) : (
@@ -324,6 +327,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   const { showModal, hideModal, modalTypes } = useModal();
   const coreSDK = useCoreSDK();
   const addPendingTransaction = useAddPendingTransaction();
+  const removePendingTransaction = useRemovePendingTransaction();
   const { isLteXS } = useBreakpoints();
   const navigate = useKeepQueryParamsNavigate();
   const { address } = useAccount();
@@ -590,6 +594,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       hash,
       isMetaTx,
       accountType: "Buyer",
+      offerId: offer.id,
       offer: {
         id: offer.id
       }
@@ -612,22 +617,27 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     );
     setIsLoading(false);
     hideModal();
+    const showDetailWidgetModal = () => {
+      showModal(modalTypes.DETAIL_WIDGET, {
+        title: "You have successfully committed!",
+        message: "You now own the rNFT",
+        type: "SUCCESS",
+        id: exchangeId.toString(),
+        state: "Committed",
+        ...BASE_MODAL_DATA
+      });
+    };
+    showDetailWidgetModal();
     toast((t) => (
       <SuccessTransactionToast
         t={t}
         action={`Commit to offer: ${offer.metadata.name}`}
         onViewDetails={() => {
-          showModal(modalTypes.DETAIL_WIDGET, {
-            title: "You have successfully committed!",
-            message: "You now own the rNFT",
-            type: "SUCCESS",
-            id: exchangeId.toString(),
-            state: "Committed",
-            ...BASE_MODAL_DATA
-          });
+          showDetailWidgetModal();
         }}
       />
     ));
+    removePendingTransaction("offerId", offer.id);
   };
   const onCommitError = (error: Error) => {
     console.error("onError", error);
@@ -646,6 +656,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
         ...BASE_MODAL_DATA
       });
     }
+    removePendingTransaction("offerId", offer.id);
   };
   const CommitProxyButton = () => {
     const disabled =
@@ -728,6 +739,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       </BosonButton>
     );
   };
+
   return (
     <>
       <Widget>
@@ -939,7 +951,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
             isConditionMet={isConditionMet}
           />
         )}
-        <div>
+        <div style={{ paddingTop: "2rem" }}>
           <DetailTable
             align
             noBorder

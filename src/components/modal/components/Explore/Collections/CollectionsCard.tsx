@@ -37,9 +37,7 @@ const ImagesContainer = styled.div`
   margin: 0;
   overflow: hidden;
 `;
-const DataWrapper = styled.div`
-  width: max-content;
-`;
+
 const DataContainer = styled.div`
   padding: 1rem 1.5rem 1rem 1.5rem;
   background: ${colors.white};
@@ -103,7 +101,7 @@ export default function CollectionsCard({ collection }: Props) {
           )}
       </ImagesContainer>
       <DataContainer>
-        <DataWrapper>
+        <div>
           <Typography
             color={colors.black}
             $fontSize="1.25rem"
@@ -142,7 +140,7 @@ export default function CollectionsCard({ collection }: Props) {
               {allExchanges}
             </Typography>
           </StyledGrid>
-        </DataWrapper>
+        </div>
       </DataContainer>
     </CardContainer>
   );

@@ -110,24 +110,28 @@ const TokenGated = ({
   const core = useCoreSDK();
   const [tokenInfo, setTokenInfo] = useState({
     name: "",
-    decimals: "",
+    decimals: "18",
     symbol: ""
   });
 
   useEffect(() => {
     (async () => {
-      if (condition?.tokenAddress) {
-        const { name, decimals, symbol } = await core.getExchangeTokenInfo(
-          condition.tokenAddress
-        );
-        setTokenInfo({ name, decimals: decimals?.toString(), symbol });
+      if (condition?.tokenAddress && condition?.tokenType === 0) {
+        try {
+          const { name, decimals, symbol } = await core.getExchangeTokenInfo(
+            condition.tokenAddress
+          );
+          setTokenInfo({ name, decimals: decimals?.toString(), symbol });
+        } catch (error) {
+          setTokenInfo({ name: "", decimals: "", symbol: "" });
+        }
       }
     })();
   }, [condition, core]);
 
   const convertedValue = useConvertedPrice({
     value: condition?.threshold || "",
-    decimals: tokenInfo?.decimals || "",
+    decimals: tokenInfo?.decimals || "18",
     symbol: tokenInfo?.symbol || ""
   });
 

@@ -23,7 +23,7 @@ export default function ConvertedPrice({
           data-converted-price
         >
           {"   "}
-          <span style={{ color: "#556072", opacity: "0.5" }}>
+          <span>
             {withParethensis ? "(" : ""}
             {CONFIG.defaultCurrency.symbol}
           </span>{" "}
