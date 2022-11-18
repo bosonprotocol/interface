@@ -1,102 +1,100 @@
 import { offers as offersSdk, subgraph } from "@bosonprotocol/react-kit";
 import { gql } from "graphql-request";
 import groupBy from "lodash/groupBy";
+import omit from "lodash/omit";
 import orderBy from "lodash/orderBy";
 import sortBy from "lodash/sortBy";
 import { useContext, useMemo } from "react";
 import { useQuery } from "react-query";
 
 import ConvertionRateContext from "../../../../components/convertion-rate/ConvertionRateContext";
-import type { ExtendedOffer } from "../../../../pages/explore/WithAllOffers";
-import { ExtendedSeller } from "../../../../pages/explore/WithAllOffers";
+import type {
+  ExtendedOffer,
+  ExtendedSeller
+} from "../../../../pages/explore/WithAllOffers";
 import { CONFIG } from "../../../config";
 import { isTruthy } from "../../../types/helpers";
 import { calcPrice } from "../../calcPrice";
 import { convertPrice } from "../../convertPrice";
 import { fetchSubgraph } from "../../core-components/subgraph";
 import { useCoreSDK } from "../../useCoreSdk";
-import type { Exchange } from "../useExchanges";
+import { useCurationLists } from "../useCurationLists";
+import { Exchange } from "../useExchanges";
 
-interface PromiseProps {
-  status: string;
-  value: null | {
-    product: subgraph.BaseProductV1ProductFieldsFragment;
-    variants: {
-      offer: subgraph.OfferFieldsFragment;
-      variations: subgraph.ProductV1Variation[];
-    }[];
-  };
-}
-interface Variant {
-  offer: ExtendedOffer;
-  variations: subgraph.ProductV1Variation[];
-}
-interface ProductWithVariants {
-  product: subgraph.BaseProductV1ProductFieldsFragment;
-  variants: Variant[];
-}
+const OFFERS_PER_PAGE = 1000;
+
+type ProductWithVariants =
+  subgraph.BaseProductV1ProductWithVariantsFieldsFragment;
+
 interface AdditionalFiltering {
   quantityAvailable_gte?: number;
   productsIds?: string[];
-  showVoided?: boolean;
-  showExpired?: boolean;
-  withNumExchanges?: boolean;
 }
 
 export default function useProducts(
   props: subgraph.GetProductV1ProductsQueryQueryVariables &
-    AdditionalFiltering = {}
+    AdditionalFiltering = {},
+  options: {
+    enabled?: boolean;
+    keepPreviousData?: boolean;
+    refetchOnMount?: boolean;
+    enableCurationList: boolean;
+    withNumExchanges?: boolean;
+  }
 ) {
+  const curationLists = useCurationLists();
+  const baseProps = useMemo(
+    () => ({
+      ...omit(props, ["productsIds", "quantityAvailable_gte"]),
+      productsFirst: OFFERS_PER_PAGE,
+      productsFilter: {
+        uuid_in: props?.productsIds || undefined,
+        disputeResolverId: CONFIG.defaultDisputeResolverId,
+        sellerId_in:
+          options.enableCurationList &&
+          curationLists.enableCurationLists &&
+          !!curationLists.sellerCurationList?.length
+            ? curationLists.sellerCurationList
+            : undefined,
+        ...props.productsFilter
+      }
+    }),
+    [props, options, curationLists]
+  );
+
   const coreSDK = useCoreSDK();
   const { store } = useContext(ConvertionRateContext);
 
-  const products = useQuery(
-    ["get-all-products", props],
+  const productsVariants = useQuery(
+    ["get-all-products-variants", baseProps],
     async () => {
-      const products = await coreSDK.getProductV1Products(props);
-      return products;
+      const data = await coreSDK.getAllProductsWithVariants({ ...baseProps });
+      let loop = data.length === OFFERS_PER_PAGE;
+      let productsSkip = OFFERS_PER_PAGE;
+      while (loop) {
+        const data_to_add = await coreSDK.getAllProductsWithVariants({
+          ...baseProps,
+          productsSkip
+        });
+        data.push(...data_to_add);
+        loop = data_to_add.length === OFFERS_PER_PAGE;
+        productsSkip += OFFERS_PER_PAGE;
+      }
+      return data;
     },
     {
-      enabled: !!coreSDK && !(props?.productsIds || false),
-      refetchOnMount: true
-    }
-  );
-
-  const productsIds = useMemo(
-    () =>
-      props?.productsIds ||
-      products?.data?.map((p) => p?.uuid || "")?.filter(isTruthy) ||
-      [],
-    [props?.productsIds, products?.data]
-  );
-
-  const productsWithVariants = useQuery(
-    ["get-all-products-by-uuid", { productsIds }],
-    async () => {
-      const allPromises = productsIds?.map(async (id) => {
-        const product = await coreSDK?.getProductWithVariants(id);
-        return product;
-      });
-
-      const allProducts = await Promise.allSettled(allPromises);
-      const response = allProducts.filter(
-        (res) => res.status === "fulfilled"
-      ) as PromiseProps[];
-      return (response?.flatMap((p) => p?.value || null) || []).filter(
-        (n) => n
-      ) as ProductWithVariants[];
-    },
-    {
-      enabled: !!coreSDK && productsIds?.length > 0,
-      refetchOnMount: true
+      ...options,
+      enabled: !!coreSDK,
+      refetchOnWindowFocus: false,
+      refetchOnMount: options.refetchOnMount || false
     }
   );
 
   const allProducts = useMemo(() => {
     return (
-      (productsWithVariants?.data || [])
-        ?.map(({ product, variants }: ProductWithVariants) => {
-          let offers = (variants || [])?.map(({ offer }: Variant) => {
+      (productsVariants?.data || [])
+        ?.map(({ variants, ...product }: ProductWithVariants) => {
+          const offers = (variants || [])?.map(({ offer }) => {
             const status = offersSdk.getOfferStatus(offer);
             const offerPrice = convertPrice({
               price: calcPrice(
@@ -106,7 +104,7 @@ export default function useProducts(
               symbol: offer?.exchangeToken.symbol.toUpperCase(),
               currency: CONFIG.defaultCurrency,
               rates: store.rates,
-              fixed: 20
+              fixed: store.fixed
             });
             return {
               ...offer,
@@ -133,21 +131,7 @@ export default function useProducts(
                   .find((n: Exchange) => n.redeemedDate !== null)
                   ?.redeemedDate || null
             };
-          });
-
-          if (!props?.showVoided) {
-            offers = offers.filter(
-              (n: { voided: boolean; status: string }) =>
-                n && n?.voided === false
-            );
-          }
-
-          if (!props?.showExpired) {
-            offers = offers.filter(
-              (n: { voided: boolean; status: string }) =>
-                n && n?.status !== offersSdk.OfferState.EXPIRED
-            );
-          }
+          }) as ExtendedOffer[];
 
           if (offers.length > 0) {
             const lowerPriceOffer = sortBy(offers, "convertedPrice");
@@ -215,17 +199,21 @@ export default function useProducts(
         .filter(isTruthy) || []
     );
   }, [
-    productsWithVariants?.data,
-    props?.showVoided,
-    props?.showExpired,
+    productsVariants?.data,
     props?.quantityAvailable_gte,
+    store.fixed,
     store.rates
   ]);
 
-  const groupedSellers = useMemo(() => {
-    return groupBy(allProducts, "seller.id") || {};
-  }, [allProducts]);
-  const sellerIds = Object.keys(groupedSellers);
+  const groupedSellers = useMemo(
+    () => groupBy(allProducts, "seller.id") || {},
+    [allProducts]
+  );
+
+  const sellerIds = useMemo(
+    () => Object.keys(groupedSellers),
+    [groupedSellers]
+  );
 
   const exchangesBySellers = useQuery(
     ["get-all-exchanges-from-sellers", props],
@@ -276,10 +264,11 @@ export default function useProducts(
       return groupBy(allExchanges, "seller.id") || {};
     },
     {
-      enabled: props.withNumExchanges && !!coreSDK && sellerIds?.length > 0,
+      enabled: options.withNumExchanges && !!coreSDK && sellerIds?.length > 0,
       refetchOnMount: true
     }
   );
+
   const allSellers = useMemo(() => {
     return (
       sellerIds?.map((brandName) => {
@@ -326,13 +315,15 @@ export default function useProducts(
   }, [sellerIds, groupedSellers, exchangesBySellers.data]);
 
   return {
-    isLoading: products.isLoading || productsWithVariants.isLoading,
-    isError: products.isError || productsWithVariants.isError,
+    isLoading: productsVariants.isLoading || exchangesBySellers.isLoading,
+    isError: productsVariants.isError || exchangesBySellers.isError,
     products: allProducts as unknown as ExtendedOffer[],
     sellers: allSellers as unknown as ExtendedSeller[],
     refetch: () => {
-      products.refetch();
-      productsWithVariants.refetch();
+      productsVariants.refetch();
+      if (options.withNumExchanges) {
+        exchangesBySellers.refetch();
+      }
     }
   };
 }
