@@ -59,18 +59,15 @@ interface Props {
   hasSubmitError: boolean;
 }
 
+const ignoreStoreFields = [
+  storeFields.logoUrlText,
+  storeFields.logoUpload,
+  storeFields.customStoreUrl
+] as string[];
+
 export const formValuesWithOneLogoUrl = (values: StoreFormFields) => {
   return Object.entries(values)
-    .filter(
-      ([key]) =>
-        !(
-          [
-            storeFields.logoUrlText,
-            storeFields.logoUpload,
-            storeFields.customStoreUrl
-          ] as string[]
-        ).includes(key)
-    )
+    .filter(([key]) => !ignoreStoreFields.includes(key))
     .map(([key, value]) => {
       if (typeof value === "string") {
         let val = value.trim();
@@ -383,7 +380,9 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
         const cleanedEntries = entries
           .filter(([key]) => {
             return (
-              key !== storeFields.isCustomStoreFront || !allKeys.includes(key)
+              key !== storeFields.isCustomStoreFront &&
+              allKeys.includes(key) &&
+              !ignoreStoreFields.includes(key)
             );
           })
           .map(([keyWithMaybeAmp, value]) => {
