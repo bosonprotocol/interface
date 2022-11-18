@@ -22,6 +22,7 @@ const StyledCookie = styled.div`
     position: relative;
     z-index: ${zIndex.Cookie};
     background-color: ${colors.white};
+    color: ${colors.black};
     padding: 2rem;
   }
   &:before {

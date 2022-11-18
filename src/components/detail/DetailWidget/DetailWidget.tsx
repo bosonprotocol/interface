@@ -215,7 +215,7 @@ export const getOfferDetailData = (
               {displayFloat(convertedPrice?.price)} {offer.exchangeToken.symbol}
               <small>
                 ({convertedPrice?.currency?.symbol}{" "}
-                {displayFloat(convertedPrice?.converted)})
+                {displayFloat(convertedPrice?.converted, { fixed: 2 })})
               </small>
             </Typography>
           ) : (
@@ -617,19 +617,23 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     );
     setIsLoading(false);
     hideModal();
+    const showDetailWidgetModal = () => {
+      showModal(modalTypes.DETAIL_WIDGET, {
+        title: "You have successfully committed!",
+        message: "You now own the rNFT",
+        type: "SUCCESS",
+        id: exchangeId.toString(),
+        state: "Committed",
+        ...BASE_MODAL_DATA
+      });
+    };
+    showDetailWidgetModal();
     toast((t) => (
       <SuccessTransactionToast
         t={t}
         action={`Commit to offer: ${offer.metadata.name}`}
         onViewDetails={() => {
-          showModal(modalTypes.DETAIL_WIDGET, {
-            title: "You have successfully committed!",
-            message: "You now own the rNFT",
-            type: "SUCCESS",
-            id: exchangeId.toString(),
-            state: "Committed",
-            ...BASE_MODAL_DATA
-          });
+          showDetailWidgetModal();
         }}
       />
     ));
@@ -947,7 +951,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
             isConditionMet={isConditionMet}
           />
         )}
-        <div>
+        <div style={{ paddingTop: "2rem" }}>
           <DetailTable
             align
             noBorder

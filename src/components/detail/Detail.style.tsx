@@ -522,9 +522,6 @@ export const Widget = styled.div`
       padding-bottom: 2rem;
     }
   }
-  > span + div {
-    padding-top: 2rem !important;
-  }
 
   box-shadow: 0px 4.318px 107.946px rgba(21, 30, 52, 0.1);
   box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.05), 0px 0px 16px rgba(0, 0, 0, 0.05),
