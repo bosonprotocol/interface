@@ -2,7 +2,7 @@ import { BosonXmtpClient } from "@bosonprotocol/chat-sdk";
 import {
   ThreadId,
   ThreadObject
-} from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/definitions";
+} from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import dayjs from "dayjs";
 
 import { DateStep, getSmallerDateStep, getTimes, mergeThreads } from "./common";
