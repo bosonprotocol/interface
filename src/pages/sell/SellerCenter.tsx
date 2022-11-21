@@ -2,7 +2,9 @@ import { Button } from "@bosonprotocol/react-kit";
 import { House, WarningCircle } from "phosphor-react";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
+import { useAccount } from "wagmi";
 
+import Navigate from "../../components/customNavigation/Navigate";
 import {
   WithSellerData,
   WithSellerDataProps
@@ -18,6 +20,7 @@ import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { isInEligibleWalletList } from "../../lib/utils/isInEligibleWalletList";
 
 export const Wrapper = styled.div`
   text-align: center;
@@ -45,12 +48,19 @@ const SellerCenterWithData = WithSellerData(SellerCenter);
 function SellerCenterWrapper() {
   const navigate = useKeepQueryParamsNavigate();
   const { isLoading, sellerIds, isSuccess } = useCurrentSellers();
-  const [selectedSellerId, setSelectedSellerId] = useState<string>("");
+  const [selectedSellerId, setSelectedSellerId] = useState<string>(
+    sellerIds?.length === 1 ? sellerIds[0] : ""
+  );
+
+  const { address } = useAccount();
+
   useEffect(() => {
     if (isSuccess) {
       setSelectedSellerId(sellerIds.length === 1 ? sellerIds[0] : "");
     }
   }, [isSuccess, sellerIds]);
+
+  const isAccountSeller = !!selectedSellerId;
 
   if (isLoading) {
     return (
@@ -58,6 +68,13 @@ function SellerCenterWrapper() {
         <Loading />
       </Wrapper>
     );
+  }
+
+  if (
+    !isAccountSeller &&
+    !isInEligibleWalletList(address?.toLowerCase() ?? "")
+  ) {
+    return <Navigate replace to={{ pathname: BosonRoutes.ClosedBeta }} />;
   }
 
   if (!sellerIds.length) {

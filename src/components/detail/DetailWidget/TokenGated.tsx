@@ -1,6 +1,6 @@
 import { EvaluationMethod, TokenType } from "@bosonprotocol/common";
-import { Lock } from "phosphor-react";
-import { useEffect, useState } from "react";
+import { Check, X } from "phosphor-react";
+import { CSSProperties, useEffect, useState } from "react";
 import styled from "styled-components";
 
 import { CONFIG } from "../../../lib/config";
@@ -10,10 +10,13 @@ import { IPrice } from "../../../lib/utils/convertPrice";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 import { useConvertedPrice } from "../../price/useConvertedPrice";
 import Grid from "../../ui/Grid";
-// import { useConvertedPriceFunction } from "../../price/useConvertedPriceFunction";
 
 interface Props {
   offer: Offer;
+  commitProxyAddress?: string;
+  openseaLinkToOriginalMainnetCollection?: string;
+  isConditionMet?: boolean;
+  style?: CSSProperties;
 }
 
 interface Condition {
@@ -96,29 +99,39 @@ const buildMessage = (condition: Condition, tokenInfo: TokenInfo) => {
   return "";
 };
 
-const TokenGated = ({ offer }: Props) => {
+const TokenGated = ({
+  offer,
+  commitProxyAddress,
+  openseaLinkToOriginalMainnetCollection,
+  isConditionMet,
+  style
+}: Props) => {
   const { condition } = offer;
   const core = useCoreSDK();
   const [tokenInfo, setTokenInfo] = useState({
     name: "",
-    decimals: "",
+    decimals: "18",
     symbol: ""
   });
 
   useEffect(() => {
     (async () => {
-      if (condition?.tokenAddress) {
-        const { name, decimals, symbol } = await core.getExchangeTokenInfo(
-          condition.tokenAddress
-        );
-        setTokenInfo({ name, decimals: decimals?.toString(), symbol });
+      if (condition?.tokenAddress && condition?.tokenType === 0) {
+        try {
+          const { name, decimals, symbol } = await core.getExchangeTokenInfo(
+            condition.tokenAddress
+          );
+          setTokenInfo({ name, decimals: decimals?.toString(), symbol });
+        } catch (error) {
+          setTokenInfo({ name: "", decimals: "", symbol: "" });
+        }
       }
     })();
   }, [condition, core]);
 
   const convertedValue = useConvertedPrice({
     value: condition?.threshold || "",
-    decimals: tokenInfo?.decimals || "",
+    decimals: tokenInfo?.decimals || "18",
     symbol: tokenInfo?.symbol || ""
   });
 
@@ -131,21 +144,45 @@ const TokenGated = ({ offer }: Props) => {
   });
 
   return (
-    <Grid as="section" padding="0 0">
+    <Grid as="section" padding="0 0" style={style}>
       <TokenGatedInfo>
         <TokenIconWrapper>
-          <TokenIcon />
-          <LockIcon>
-            <Lock size={25} color={colors.grey} />
-          </LockIcon>
+          <TokenIcon $conditionMet={isConditionMet} />
+
+          <IconWrapper $conditionMet={isConditionMet}>
+            {isConditionMet ? (
+              <Check size={25} color={colors.black} />
+            ) : (
+              <X size={25} color={colors.red} />
+            )}
+          </IconWrapper>
         </TokenIconWrapper>
 
         <LockInfo>
           <LockInfoTitle>Token Gated Offer</LockInfoTitle>
-          <LockInfoDesc>
-            You need to own the following token(s) to Commit:
-          </LockInfoDesc>
-          <LockInfoDesc>{displayMessage}</LockInfoDesc>
+          {commitProxyAddress && openseaLinkToOriginalMainnetCollection ? (
+            <>
+              <LockInfoDesc>
+                You {!isConditionMet && " must "} hold token(s) from
+              </LockInfoDesc>
+              <LockInfoDesc>
+                <a
+                  href={openseaLinkToOriginalMainnetCollection}
+                  target="_blank"
+                >
+                  {openseaLinkToOriginalMainnetCollection}
+                </a>
+              </LockInfoDesc>
+            </>
+          ) : (
+            <>
+              <LockInfoDesc>
+                You {!isConditionMet && " need to "} own the following token(s)
+                to Commit:
+              </LockInfoDesc>
+              <LockInfoDesc>{displayMessage}</LockInfoDesc>
+            </>
+          )}
         </LockInfo>
       </TokenGatedInfo>
     </Grid>
@@ -168,30 +205,33 @@ const TokenIconWrapper = styled.div`
   display: flex;
 `;
 
-const LockIcon = styled.div`
+const IconWrapper = styled.div<{ $conditionMet?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0.5rem;
   z-index: 5;
-  border: 0.125rem solid ${colors.black};
+  border: 0.125rem solid
+    ${({ $conditionMet }) => ($conditionMet ? colors.black : colors.red)};
   width: 3rem;
   height: 3rem;
   border-radius: 50%;
-  background-color: ${colors.white};
+  background-color: ${({ $conditionMet }) =>
+    $conditionMet ? colors.green : colors.black};
 `;
 
-const TokenIcon = styled.div`
-  background-color: ${colors.white};
+const TokenIcon = styled.div<{ $conditionMet?: boolean }>`
+  background-color: ${({ $conditionMet }) =>
+    $conditionMet ? colors.green : colors.black};
   padding: 0.5rem;
   z-index: 3;
   position: relative;
   left: 1.375rem;
-  border: 0.125rem solid ${colors.black};
+  border: 0.125rem solid
+    ${({ $conditionMet }) => ($conditionMet ? colors.black : colors.red)};
   width: 3rem;
   height: 3rem;
   border-radius: 50%;
-  background-color: ${colors.white};
 `;
 
 const LockInfo = styled.div`

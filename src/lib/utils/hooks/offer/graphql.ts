@@ -20,6 +20,7 @@ export const offerGraphQl = gql`
     voidedAt
     voided
     createdAt
+    voucherRedeemableFromDate
     voucherRedeemableUntilDate
     voucherValidDuration
     condition {

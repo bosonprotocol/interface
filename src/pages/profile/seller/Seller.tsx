@@ -141,7 +141,8 @@ export default function Seller() {
     isLoading: isLoadingSellers
   } = useSellers(
     {
-      id: sellerId
+      id: sellerId,
+      enableCurationList: false
     },
     {
       enabled: !!sellerId
@@ -151,7 +152,18 @@ export default function Seller() {
     sellers: sellerProducts,
     isLoading: isLoadingProducts,
     isError: isErrorProducts
-  } = useProducts();
+  } = useProducts(
+    {
+      productsFilter: {
+        sellerId,
+        allVariantsVoided: true
+      }
+    },
+    {
+      enableCurationList: false,
+      withNumExchanges: true
+    }
+  );
   const {
     data: { exchanges } = {},
     isError: isErrorSellerCalculation,
@@ -334,7 +346,7 @@ export default function Seller() {
                     margin="0"
                     fontWeight="600"
                   >
-                    {exchanges?.length ?? 0}
+                    {sellerProducts?.[0]?.numExchanges ?? 0}
                   </Typography>
                 </div>
                 <div>

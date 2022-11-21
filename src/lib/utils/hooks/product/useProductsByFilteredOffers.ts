@@ -17,10 +17,13 @@ export default function useProductsByFilteredOffers(
       ) || [],
     [data]
   );
-  const result = useProducts({
-    ...(props.first && { productsFirst: props.first }),
-    productsIds: productsIds
-  });
+  const result = useProducts(
+    {
+      ...(props.first && { productsFirst: props.first }),
+      productsIds: productsIds
+    },
+    { enableCurationList: true }
+  );
   return {
     ...result,
     isLoading: isLoading || result.isLoading,

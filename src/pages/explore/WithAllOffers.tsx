@@ -69,6 +69,7 @@ export interface OfferAdditional {
   redeemedDate?: string;
   convertedPrice?: string;
   additional?: {
+    product: subgraph.ProductV1Product;
     variants: subgraph.OfferFieldsFragment[];
   };
 }
@@ -222,9 +223,17 @@ export function WithAllOffers<P>(
       ]) as FilterOptions;
     }, [params, sellerCurationListString]);
 
-    const products = useProducts({
-      withNumExchanges: true
-    });
+    const products = useProducts(
+      {
+        productsFilter: {
+          allVariantsVoided: true
+        }
+      },
+      {
+        enableCurationList: true,
+        withNumExchanges: true
+      }
+    );
     const { isLoading, isError } = products;
 
     return (

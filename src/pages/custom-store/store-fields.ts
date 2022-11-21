@@ -39,19 +39,22 @@ export type StoreFields = {
   sellerCurationList: string;
   offerCurationList: string;
   commitProxyAddress: string;
+  openseaLinkToOriginalMainnetCollection: string;
   metaTransactionsApiKey: string;
   supportFunctionality: SelectType[];
 };
 
 export type StoreFormFields = StoreFields & {
   logoUrlText: string;
-  logoUpload: File[];
+  logoUpload: { name: string; size: number; src: string; type: string }[];
   withAdditionalFooterLinks: SelectType;
   withMetaTx: SelectType;
+  customStoreUrl: string;
 };
 
 export const storeFields = {
   isCustomStoreFront: "isCustomStoreFront",
+  customStoreUrl: "customStoreUrl",
   storeName: "storeName",
   title: "title",
   description: "description",
@@ -77,6 +80,8 @@ export const storeFields = {
   sellerCurationList: "sellerCurationList",
   offerCurationList: "offerCurationList",
   commitProxyAddress: "commitProxyAddress",
+  openseaLinkToOriginalMainnetCollection:
+    "openseaLinkToOriginalMainnetCollection",
   withMetaTx: "withMetaTx",
   metaTransactionsApiKey: "metaTransactionsApiKey",
   supportFunctionality: "supportFunctionality",
@@ -95,6 +100,11 @@ const standardRequiredErrorMessage = "This field is required";
 const notUrlErrorMessage = "This is not a URL like: www.example.com";
 export const formModel = {
   formFields: {
+    [storeFields.customStoreUrl]: {
+      name: storeFields.customStoreUrl,
+      requiredErrorMessage: standardRequiredErrorMessage,
+      placeholder: "https://bosonapp.io/#/?isCustomStoreFront=true"
+    },
     [storeFields.storeName]: {
       name: storeFields.storeName,
       requiredErrorMessage: standardRequiredErrorMessage,
@@ -267,6 +277,11 @@ export const formModel = {
       requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: "0x0000000000000000000000000000000000000000"
     },
+    [storeFields.openseaLinkToOriginalMainnetCollection]: {
+      name: storeFields.openseaLinkToOriginalMainnetCollection,
+      requiredErrorMessage: standardRequiredErrorMessage,
+      placeholder: ""
+    },
     [storeFields.metaTransactionsApiKey]: {
       name: storeFields.metaTransactionsApiKey,
       requiredErrorMessage: standardRequiredErrorMessage,
@@ -300,6 +315,7 @@ const MAX_FILE_SIZE = uploadMaxMB * 1024 * 1024; // 5 MB
 const SUPPORTED_FILE_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
 
 export const validationSchema = Yup.object({
+  [storeFields.customStoreUrl]: Yup.string(),
   [storeFields.storeName]: Yup.string(),
   [storeFields.title]: Yup.string(),
   [storeFields.description]: Yup.string(),
@@ -374,6 +390,10 @@ export const validationSchema = Yup.object({
     .test("FORMAT", "Must be an address", (value) =>
       value ? ethers.utils.isAddress(value) : true
     ),
+  [storeFields.openseaLinkToOriginalMainnetCollection]: Yup.string().matches(
+    new RegExp(websitePattern),
+    notUrlErrorMessage
+  ),
   [storeFields.withMetaTx]: Yup.object({
     label: Yup.string().required(standardRequiredErrorMessage),
     value: Yup.string().required(standardRequiredErrorMessage)
@@ -390,12 +410,13 @@ export const validationSchema = Yup.object({
 
 export const initialValues = {
   [storeFields.isCustomStoreFront]: "true",
+  [storeFields.customStoreUrl]: "",
   [storeFields.storeName]: "",
   [storeFields.title]: "",
   [storeFields.description]: "",
   [storeFields.logoUrl]: "",
   [storeFields.logoUrlText]: "",
-  [storeFields.logoUpload]: "",
+  [storeFields.logoUpload]: [],
   [storeFields.headerBgColor]: colors.white,
   [storeFields.headerTextColor]: colors.black,
   [storeFields.primaryBgColor]: colors.white,
@@ -427,6 +448,7 @@ export const initialValues = {
   [storeFields.sellerCurationList]: "",
   [storeFields.offerCurationList]: "",
   [storeFields.commitProxyAddress]: "",
+  [storeFields.openseaLinkToOriginalMainnetCollection]: "",
   [storeFields.withMetaTx]: formModel.formFields.withMetaTx.options.find(
     (option) => "default" in option && option.default
   ) as SelectDataProps,

@@ -10,6 +10,7 @@ import { getOfferDetailData } from "../../../components/detail/DetailWidget/Deta
 import Price from "../../../components/price/index";
 import { useConvertedPrice } from "../../../components/price/useConvertedPrice";
 import { colors } from "../../../lib/styles/colors";
+import { useCustomStoreQueryParameter } from "../../../pages/custom-store/useCustomStoreQueryParameter";
 import {
   Break,
   ModalGrid,
@@ -18,6 +19,7 @@ import {
   WidgetButtonWrapper
 } from "../../detail/Detail.style";
 import DetailTable from "../../detail/DetailTable";
+import TokenGated from "../../detail/DetailWidget/TokenGated";
 import Tooltip from "../../tooltip/Tooltip";
 import BosonButton from "../../ui/BosonButton";
 import Grid from "../../ui/Grid";
@@ -116,6 +118,10 @@ export default function ProductCreateSuccess({
   onViewMyItem,
   hasMultipleVariants
 }: Props) {
+  const commitProxyAddress = useCustomStoreQueryParameter("commitProxyAddress");
+  const openseaLinkToOriginalMainnetCollection = useCustomStoreQueryParameter(
+    "openseaLinkToOriginalMainnetCollection"
+  );
   const convertedPrice = useConvertedPrice({
     value: offer?.price,
     decimals: offer?.exchangeToken.decimals,
@@ -193,7 +199,15 @@ export default function ProductCreateSuccess({
               />
             </Grid>
             <Break />
-            <div>
+            <TokenGated
+              offer={offer}
+              commitProxyAddress={commitProxyAddress}
+              openseaLinkToOriginalMainnetCollection={
+                openseaLinkToOriginalMainnetCollection
+              }
+              isConditionMet={false}
+            />
+            <div style={{ paddingTop: "2rem" }}>
               <DetailTable align noBorder data={OFFER_DETAIL_DATA} />
             </div>
           </Widget>

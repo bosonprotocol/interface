@@ -23,12 +23,14 @@ export default function ConvertedPrice({
           data-converted-price
         >
           {"   "}
-          <span style={{ color: "#556072", opacity: "0.5" }}>
+          <span>
             {withParethensis ? "(" : ""}
             {CONFIG.defaultCurrency.symbol}
           </span>{" "}
           <span>
-            {displayFloat(price?.converted)}
+            {displayFloat(price?.converted, {
+              fixed: 2
+            })}
             {withParethensis ? ")" : ""}
           </span>
         </small>

@@ -30,7 +30,11 @@ import { calcPercentage, displayFloat } from "../../../lib/utils/calcPrice";
 import { IPrice } from "../../../lib/utils/convertPrice";
 import { titleCase } from "../../../lib/utils/formatText";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
-import { useAddPendingTransaction } from "../../../lib/utils/hooks/transactions/usePendingTransactions";
+import useCheckTokenGatedOffer from "../../../lib/utils/hooks/offer/useCheckTokenGatedOffer";
+import {
+  useAddPendingTransaction,
+  useRemovePendingTransaction
+} from "../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
 import { useBuyerSellerAccounts } from "../../../lib/utils/hooks/useBuyerSellerAccounts";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
@@ -132,8 +136,13 @@ export const getOfferDetailData = (
   convertedPrice: IPrice | null,
   isModal: boolean,
   modalTypes?: ModalTypes,
-  showModal?: ShowModalFn
+  showModal?: ShowModalFn,
+  isExchange?: boolean
 ) => {
+  const redeemableFromDayJs = dayjs(
+    Number(`${offer.voucherRedeemableFromDate}000`)
+  );
+  const redeemableFrom = redeemableFromDayJs.format(CONFIG.dateFormat);
   const redeemableUntil = dayjs(
     Number(`${offer.voucherRedeemableUntilDate}000`)
   ).format(CONFIG.dateFormat);
@@ -157,8 +166,31 @@ export const getOfferDetailData = (
       console.error("modalTypes and/or showModal undefined");
     }
   };
-
+  const redeemableFromValues =
+    isExchange &&
+    offer.voucherRedeemableFromDate &&
+    redeemableFromDayJs.isAfter(Date.now())
+      ? [
+          {
+            name: "Redeemable from",
+            info: (
+              <>
+                <Typography tag="h6">
+                  <b>Redeemable</b>
+                </Typography>
+                <Typography tag="p">
+                  If you don’t redeem your NFT during the redemption period, it
+                  will expire and you will receive back the price minus the
+                  Buyer cancel penalty
+                </Typography>
+              </>
+            ),
+            value: <Typography tag="p">{redeemableFrom}</Typography>
+          }
+        ]
+      : [];
   return [
+    ...redeemableFromValues,
     {
       name: "Redeemable until",
       info: (
@@ -183,7 +215,7 @@ export const getOfferDetailData = (
               {displayFloat(convertedPrice?.price)} {offer.exchangeToken.symbol}
               <small>
                 ({convertedPrice?.currency?.symbol}{" "}
-                {displayFloat(convertedPrice?.converted)})
+                {displayFloat(convertedPrice?.converted, { fixed: 2 })})
               </small>
             </Typography>
           ) : (
@@ -272,7 +304,8 @@ const NOT_REDEEMED_YET = [
   subgraph.ExchangeState.Revoked,
   subgraph.ExchangeState.Cancelled,
   exchanges.ExtendedExchangeState.Expired,
-  subgraph.ExchangeState.Completed
+  subgraph.ExchangeState.Completed,
+  exchanges.ExtendedExchangeState.NotRedeemableYet
 ];
 
 const DetailWidget: React.FC<IDetailWidget> = ({
@@ -294,6 +327,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   const { showModal, hideModal, modalTypes } = useModal();
   const coreSDK = useCoreSDK();
   const addPendingTransaction = useAddPendingTransaction();
+  const removePendingTransaction = useRemovePendingTransaction();
   const { isLteXS } = useBreakpoints();
   const navigate = useKeepQueryParamsNavigate();
   const { address } = useAccount();
@@ -303,6 +337,11 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   const exchangeStatus = exchange
     ? exchanges.getExchangeState(exchange as subgraph.ExchangeFieldsFragment)
     : null;
+
+  const disabledRedeemText =
+    exchangeStatus === exchanges.ExtendedExchangeState.NotRedeemableYet
+      ? "Redeem"
+      : titleCase(exchangeStatus || "Unsupported");
 
   const { data: dataBalance } = useBalance(
     offer.exchangeToken.address !== ethers.constants.AddressZero
@@ -345,13 +384,27 @@ const DetailWidget: React.FC<IDetailWidget> = ({
 
   const OFFER_DETAIL_DATA = useMemo(
     () =>
-      getOfferDetailData(offer, convertedPrice, false, modalTypes, showModal),
-    [offer, convertedPrice, modalTypes, showModal]
+      getOfferDetailData(
+        offer,
+        convertedPrice,
+        false,
+        modalTypes,
+        showModal,
+        isExchange
+      ),
+    [offer, convertedPrice, modalTypes, showModal, isExchange]
   );
   const OFFER_DETAIL_DATA_MODAL = useMemo(
     () =>
-      getOfferDetailData(offer, convertedPrice, true, modalTypes, showModal),
-    [offer, convertedPrice, modalTypes, showModal]
+      getOfferDetailData(
+        offer,
+        convertedPrice,
+        true,
+        modalTypes,
+        showModal,
+        isExchange
+      ),
+    [offer, convertedPrice, modalTypes, showModal, isExchange]
   );
 
   const quantity = useMemo<number>(
@@ -488,8 +541,15 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     offer.voided
   ]);
   const commitProxyAddress = useCustomStoreQueryParameter("commitProxyAddress");
+  const openseaLinkToOriginalMainnetCollection = useCustomStoreQueryParameter(
+    "openseaLinkToOriginalMainnetCollection"
+  );
   const sellerCurationList = useCustomStoreQueryParameter("sellerCurationList");
   const offerCurationList = useCustomStoreQueryParameter("offerCurationList");
+  const { isConditionMet } = useCheckTokenGatedOffer({
+    commitProxyAddress,
+    condition: offer.condition
+  });
   const numSellers = new Set(
     sellerCurationList
       .split(",")
@@ -515,7 +575,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     isVoidedOffer ||
     isPreview ||
     isOfferNotValidYet ||
-    isBuyerInsufficientFunds;
+    isBuyerInsufficientFunds ||
+    (offer.condition && !isConditionMet);
   const onCommitPendingSignature = () => {
     setIsLoading(true);
     showModal("WAITING_FOR_CONFIRMATION");
@@ -533,6 +594,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       hash,
       isMetaTx,
       accountType: "Buyer",
+      offerId: offer.id,
       offer: {
         id: offer.id
       }
@@ -555,22 +617,27 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     );
     setIsLoading(false);
     hideModal();
+    const showDetailWidgetModal = () => {
+      showModal(modalTypes.DETAIL_WIDGET, {
+        title: "You have successfully committed!",
+        message: "You now own the rNFT",
+        type: "SUCCESS",
+        id: exchangeId.toString(),
+        state: "Committed",
+        ...BASE_MODAL_DATA
+      });
+    };
+    showDetailWidgetModal();
     toast((t) => (
       <SuccessTransactionToast
         t={t}
         action={`Commit to offer: ${offer.metadata.name}`}
         onViewDetails={() => {
-          showModal(modalTypes.DETAIL_WIDGET, {
-            title: "You have successfully committed!",
-            message: "You now own the rNFT",
-            type: "SUCCESS",
-            id: exchangeId.toString(),
-            state: "Committed",
-            ...BASE_MODAL_DATA
-          });
+          showDetailWidgetModal();
         }}
       />
     ));
+    removePendingTransaction("offerId", offer.id);
   };
   const onCommitError = (error: Error) => {
     console.error("onError", error);
@@ -589,6 +656,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
         ...BASE_MODAL_DATA
       });
     }
+    removePendingTransaction("offerId", offer.id);
   };
   const CommitProxyButton = () => {
     const disabled =
@@ -596,14 +664,16 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       !offer.condition ||
       !commitProxyAddress ||
       !bosonSnapshotGateAbi.abi ||
-      isCommitDisabled;
+      isCommitDisabled ||
+      (offer.condition && !isConditionMet);
     const onClick = async () => {
       if (
         !signer ||
         !offer.condition ||
         !commitProxyAddress ||
         !bosonSnapshotGateAbi.abi ||
-        isCommitDisabled
+        isCommitDisabled ||
+        (offer.condition && !isConditionMet)
       ) {
         return;
       }
@@ -836,7 +906,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
             )}
             {!isToRedeem && (
               <Button theme="outline" disabled>
-                {titleCase(exchangeStatus)}
+                {disabledRedeemText}
                 <Check size={24} />
               </Button>
             )}
@@ -871,7 +941,17 @@ const DetailWidget: React.FC<IDetailWidget> = ({
           )}
         </Grid>
         <Break />
-        <div>
+        {offer.condition && (
+          <TokenGated
+            offer={offer}
+            commitProxyAddress={commitProxyAddress}
+            openseaLinkToOriginalMainnetCollection={
+              openseaLinkToOriginalMainnetCollection
+            }
+            isConditionMet={isConditionMet}
+          />
+        )}
+        <div style={{ paddingTop: "2rem" }}>
           <DetailTable
             align
             noBorder
@@ -900,7 +980,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                 <>
                   {![
                     exchanges.ExtendedExchangeState.Expired,
-                    subgraph.ExchangeState.Cancelled
+                    subgraph.ExchangeState.Cancelled,
+                    subgraph.ExchangeState.Revoked
                   ].includes(
                     exchangeStatus as
                       | exchanges.ExtendedExchangeState
@@ -940,7 +1021,6 @@ const DetailWidget: React.FC<IDetailWidget> = ({
             </Grid>
           </>
         )}
-        {offer.condition && <TokenGated offer={offer} />}
       </Widget>
     </>
   );
