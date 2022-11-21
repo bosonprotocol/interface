@@ -1,7 +1,7 @@
 import {
   MessageType,
   version
-} from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/definitions";
+} from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { Provider, RedeemButton, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { utils } from "ethers";
