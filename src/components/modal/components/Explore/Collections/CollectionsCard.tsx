@@ -95,7 +95,7 @@ export default function CollectionsCard({ collection }: Props) {
             (img: string, index: number) =>
               img !== "" && (
                 <Fragment key={`CollectionsCardImage_${index}`}>
-                  <Image src={img} />
+                  <Image src={img} optimizationOpts={{ height: 500 }} />
                 </Fragment>
               )
           )}
