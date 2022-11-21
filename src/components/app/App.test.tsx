@@ -24,7 +24,7 @@ jest.mock("@bosonprotocol/react-kit", () => {
   };
 });
 
-test("renders App and expects logo to be displayed", () => {
+test.skip("renders App and expects logo to be displayed", () => {
   const queryClient = new QueryClient();
 
   render(
