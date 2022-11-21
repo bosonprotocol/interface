@@ -1,13 +1,15 @@
-import { DepositFundsButton } from "@bosonprotocol/react-kit";
+import { subgraph } from "@bosonprotocol/react-kit";
+import { DepositFundsButton, Provider } from "@bosonprotocol/react-kit";
 import { BigNumber, constants, ethers } from "ethers";
 import { useState } from "react";
-import { useAccount, useBalance } from "wagmi";
+import { useAccount, useBalance, useSigner } from "wagmi";
 
-import { config } from "../../../../lib/config";
+import { CONFIG, config } from "../../../../lib/config";
 import { useAddPendingTransaction } from "../../../../lib/utils/hooks/transactions/usePendingTransactions";
 import { useCoreSDK } from "../../../../lib/utils/useCoreSdk";
 import { getNumberWithoutDecimals } from "../../../../pages/account/funds/FundItem";
-import useDepositFunds from "../../../../pages/account/funds/useDepositFunds";
+// import useDepositFunds from "../../../../pages/account/funds/useDepositFunds";
+import { poll } from "../../../../pages/create-product/utils";
 import { Spinner } from "../../../loading/Spinner";
 import Grid from "../../../ui/Grid";
 import Typography from "../../../ui/Typography";
@@ -43,6 +45,7 @@ export default function FinanceDeposit({
   const [isDepositInvalid, setIsDepositInvalid] = useState<boolean>(true);
   const [depositError, setDepositError] = useState<unknown>(null);
 
+  const { data: signer } = useSigner();
   const { address } = useAccount();
   const { data: dataBalance, refetch } = useBalance(
     exchangeToken !== ethers.constants.AddressZero
@@ -56,16 +59,16 @@ export default function FinanceDeposit({
   const { showModal, hideModal } = useModal();
   const coreSDK = useCoreSDK();
   const addPendingTransaction = useAddPendingTransaction();
-  const depositFunds = useDepositFunds({
-    accountId,
-    amount:
-      isDepositInvalid || !Number(amountToDeposit)
-        ? BigNumber.from("0")
-        : BigNumber.from(
-            getNumberWithoutDecimals(amountToDeposit, tokenDecimals)
-          ),
-    tokenAddress: exchangeToken
-  });
+  // const depositFunds = useDepositFunds({
+  //   accountId,
+  //   amount:
+  //     isDepositInvalid || !Number(amountToDeposit)
+  //       ? BigNumber.from("0")
+  //       : BigNumber.from(
+  //           getNumberWithoutDecimals(amountToDeposit, tokenDecimals)
+  //         ),
+  //   tokenAddress: exchangeToken
+  // });
 
   const tokenStep = 10 ** -Number(tokenDecimals);
   const step = 0.01;
@@ -179,9 +182,63 @@ export default function FinanceDeposit({
         <DepositFundsButton
           exchangeToken={exchangeToken}
           accountId={accountId}
-          amountToDeposit={amountToDeposit}
+          amountToDeposit={
+            isDepositInvalid || !Number(amountToDeposit)
+              ? BigNumber.from("0")
+              : BigNumber.from(
+                  getNumberWithoutDecimals(amountToDeposit, tokenDecimals)
+                )
+          }
           envName={config.envName}
           disabled={isBeingDeposit || isDepositInvalid}
+          web3Provider={signer?.provider as Provider}
+          metaTx={CONFIG.metaTx}
+          onError={(error) => {
+            console.error("onError", error);
+            const hasUserRejectedTx =
+              "code" in error &&
+              (error as unknown as { code: string }).code === "ACTION_REJECTED";
+            if (hasUserRejectedTx) {
+              showModal("CONFIRMATION_FAILED");
+            }
+            reload();
+            setDepositError(error);
+            setIsBeingDeposit(false);
+          }}
+          onPendingSignature={() => {
+            setDepositError(null);
+            setIsBeingDeposit(true);
+            showModal("WAITING_FOR_CONFIRMATION");
+          }}
+          onPendingTransaction={(hash, isMetaTx) => {
+            showModal("TRANSACTION_SUBMITTED", {
+              action: "Finance deposit",
+              txHash: hash
+            });
+            addPendingTransaction({
+              type: subgraph.EventType.FundsDeposited,
+              hash: hash,
+              isMetaTx,
+              accountType: "Seller"
+            });
+          }}
+          onSuccess={async () => {
+            await poll(
+              async () => {
+                const balance = await refetch();
+                return balance;
+              },
+              (balance) => {
+                return dataBalance?.formatted === balance.data?.formatted;
+              },
+              500
+            );
+            setAmountToDeposit("0");
+            setIsDepositInvalid(true);
+            reload();
+            setIsBeingDeposit(false);
+            hideModal();
+          }}
         >
           {isBeingDeposit ? (
             <Spinner size={20} />
