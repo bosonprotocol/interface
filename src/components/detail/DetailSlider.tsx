@@ -20,15 +20,17 @@ interface Props {
 let glide: any = null;
 
 export default function DetailSlider({ images }: Props) {
-  const ref = useRef();
+  const ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (images.length !== 0 && ref.current) {
-      glide = new Glide(ref.current, {
+    if (images.length !== 0 && ref.current !== null) {
+      glide = new Glide(ref.current as any, {
         ...SLIDER_OPTIONS
       });
       glide.mount();
     }
+
+    return () => glide.destroy();
   }, [ref, images]);
 
   const handleSlider = (direction: Direction) => {
@@ -54,13 +56,7 @@ export default function DetailSlider({ images }: Props) {
           </Button>
         </Grid>
       </Grid>
-      <GlideWrapper
-        className="glide"
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ref={(r: any) => {
-          ref.current = r;
-        }}
-      >
+      <GlideWrapper className="glide" ref={ref}>
         <div className="glide__track" data-glide-el="track">
           <div className="glide__slides">
             {images?.map((image: string, index: number) => (

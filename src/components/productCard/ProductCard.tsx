@@ -17,7 +17,11 @@ import { displayFloat } from "../../lib/utils/calcPrice";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useHandleText } from "../../lib/utils/hooks/useHandleText";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import { getImageUrl, getLensImageUrl } from "../../lib/utils/images";
+import {
+  getFallbackImageUrl,
+  getImageUrl,
+  getLensImageUrl
+} from "../../lib/utils/images";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import {
   ExtendedOffer,
@@ -200,6 +204,7 @@ export default function ProductCard({
         onAvatarNameClick={handleOnAvatarClick}
         imageProps={{
           src: imageSrc,
+          fallbackSrc: getFallbackImageUrl(imageSrc),
           withLoading: true,
           errorConfig: {
             errorIcon: <CameraSlash size={32} color={colors.white} />

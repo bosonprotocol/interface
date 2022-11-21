@@ -1,12 +1,16 @@
 import { Loading } from "@bosonprotocol/react-kit";
 import { CameraSlash, Image as ImageIcon } from "phosphor-react";
-import { useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 import { buttonText } from "../../components/ui/styles";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
-import { getImageUrl, ImageOptimizationOpts } from "../../lib/utils/images";
+import {
+  getFallbackImageUrl,
+  getImageUrl,
+  ImageOptimizationOpts
+} from "../../lib/utils/images";
 import Typography from "./Typography";
 
 type LoadingStatus = "loading" | "success" | "error";
@@ -82,17 +86,23 @@ const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
   dataTestId = "image",
   alt = "",
   showPlaceholderText = true,
-  withLoading,
+  withLoading = true,
   optimizationOpts,
   ...rest
 }) => {
   const [status, setStatus] = useState<LoadingStatus>(
     withLoading ? "loading" : "success"
   );
+  const [currentSrc, setCurrentSrc] = useState<string>(
+    getImageUrl(src, optimizationOpts)
+  );
+  const [didOriginalSrcFail, setDidOriginalSrcFail] = useState<boolean>(false);
 
   const isError = status === "error";
   const isLoading = status === "loading";
   const isSuccess = status === "success";
+
+  console.log({ currentSrc, status, didOriginalSrcFail });
 
   return (
     <>
@@ -119,10 +129,17 @@ const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
         {children || ""}
         <ImageContainer
           data-testid={dataTestId}
-          src={getImageUrl(src, optimizationOpts)}
+          src={currentSrc}
           alt={alt}
           onLoad={() => setStatus("success")}
-          onError={() => setStatus("error")}
+          onError={() => {
+            if (didOriginalSrcFail) {
+              setStatus("error");
+            } else {
+              setDidOriginalSrcFail(true);
+              setCurrentSrc(getFallbackImageUrl(src, optimizationOpts));
+            }
+          }}
         />
       </ImageWrapper>
     </>
