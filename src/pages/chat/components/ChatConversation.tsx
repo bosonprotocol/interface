@@ -590,7 +590,9 @@ const ChatConversation = ({
           newMessage,
           destinationAddress
         );
-
+        if (!messageData) {
+          throw new Error("Something went wrong while sending a message");
+        }
         onSentMessage(messageData, uuid);
       } catch (error) {
         console.error(error);
@@ -631,6 +633,9 @@ const ChatConversation = ({
             message.data,
             destinationAddress
           );
+          if (!messageData) {
+            throw new Error("Something went wrong while sending a message");
+          }
           onSentMessage(messageData, message.uuid);
         } catch (error) {
           console.error(error);

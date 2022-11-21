@@ -54,6 +54,9 @@ export const sendFilesToChat = async ({
       newMessage,
       destinationAddressFormatted
     );
+    if (!messageData) {
+      throw new Error("Something went wrong while sending a message");
+    }
     await callback?.(messageData, uuid);
   }
 };
@@ -94,6 +97,9 @@ export const sendProposalToChat = async ({
     newMessage,
     destinationAddressFormatted
   );
+  if (!messageData) {
+    throw new Error("Something went wrong while sending a message");
+  }
   await callback?.(messageData, uuid);
   if (files.length) {
     await sendFilesToChat({
