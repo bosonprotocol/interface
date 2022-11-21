@@ -24,6 +24,7 @@ export default function DetailSlider({ images }: Props) {
 
   useEffect(() => {
     if (images.length !== 0 && ref.current !== null) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       glide = new Glide(ref.current as any, {
         ...SLIDER_OPTIONS
       });
