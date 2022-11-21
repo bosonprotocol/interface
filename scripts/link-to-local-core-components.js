@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const { program } = require("commander");
 const { symlinkSync, existsSync, rmSync, cpSync } = require("fs");
 const { resolve } = require("path");
