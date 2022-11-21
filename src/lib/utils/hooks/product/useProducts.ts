@@ -23,12 +23,10 @@ import { Exchange } from "../useExchanges";
 
 const OFFERS_PER_PAGE = 1000;
 
-type ProductWithVariants =
-  subgraph.BaseProductV1ProductWithVariantsFieldsFragment;
-
 interface AdditionalFiltering {
   quantityAvailable_gte?: number;
   productsIds?: string[];
+  onlyNotVoided?: boolean;
 }
 
 export default function useProducts(
@@ -68,14 +66,21 @@ export default function useProducts(
   const productsVariants = useQuery(
     ["get-all-products-variants", baseProps],
     async () => {
-      const data = await coreSDK.getAllProductsWithVariants({ ...baseProps });
+      const data = props.onlyNotVoided
+        ? await coreSDK.getAllProductsWithNotVoidedVariants({ ...baseProps })
+        : await coreSDK.getAllProductsWithVariants({ ...baseProps });
       let loop = data.length === OFFERS_PER_PAGE;
       let productsSkip = OFFERS_PER_PAGE;
       while (loop) {
-        const data_to_add = await coreSDK.getAllProductsWithVariants({
-          ...baseProps,
-          productsSkip
-        });
+        const data_to_add = props.onlyNotVoided
+          ? await coreSDK.getAllProductsWithNotVoidedVariants({
+              ...baseProps,
+              productsSkip
+            })
+          : await coreSDK.getAllProductsWithVariants({
+              ...baseProps,
+              productsSkip
+            });
         data.push(...data_to_add);
         loop = data_to_add.length === OFFERS_PER_PAGE;
         productsSkip += OFFERS_PER_PAGE;
@@ -93,45 +98,53 @@ export default function useProducts(
   const allProducts = useMemo(() => {
     return (
       (productsVariants?.data || [])
-        ?.map(({ variants, ...product }: ProductWithVariants) => {
-          const offers = (variants || [])?.map(({ offer }) => {
-            const status = offersSdk.getOfferStatus(offer);
-            const offerPrice = convertPrice({
-              price: calcPrice(
-                offer?.price || "0",
-                offer?.exchangeToken.decimals || "0"
-              ),
-              symbol: offer?.exchangeToken.symbol.toUpperCase(),
-              currency: CONFIG.defaultCurrency,
-              rates: store.rates,
-              fixed: store.fixed
-            });
-            return {
-              ...offer,
-              isValid: true,
-              status,
-              convertedPrice: offerPrice?.converted || null,
-              committedDate:
-                ((offer?.exchanges || []) as Exchange[])
-                  .sort(
-                    (a: Exchange, b: Exchange) =>
-                      Number(a?.committedDate || "0") -
-                      Number(b?.committedDate || "0")
-                  )
-                  .reverse()
-                  .find((n: Exchange) => n.committedDate !== null)
-                  ?.committedDate || null,
-              redeemedDate:
-                ((offer?.exchanges || []) as Exchange[])
-                  .sort(
-                    (a: Exchange, b: Exchange) =>
-                      Number(a?.redeemedDate) - Number(b?.redeemedDate)
-                  )
-                  .reverse()
-                  .find((n: Exchange) => n.redeemedDate !== null)
-                  ?.redeemedDate || null
-            };
-          }) as ExtendedOffer[];
+        ?.map((product) => {
+          const allVariantsOrOnlyNotVoided:
+            | subgraph.ProductV1Variant[]
+            | undefined
+            | null = props.onlyNotVoided
+            ? (product as subgraph.ProductV1Product).notVoidedVariants
+            : (product as subgraph.ProductV1Product).variants;
+          const offers = (allVariantsOrOnlyNotVoided || [])?.map(
+            ({ offer }) => {
+              const status = offersSdk.getOfferStatus(offer);
+              const offerPrice = convertPrice({
+                price: calcPrice(
+                  offer?.price || "0",
+                  offer?.exchangeToken.decimals || "0"
+                ),
+                symbol: offer?.exchangeToken.symbol.toUpperCase(),
+                currency: CONFIG.defaultCurrency,
+                rates: store.rates,
+                fixed: store.fixed
+              });
+              return {
+                ...offer,
+                isValid: true,
+                status,
+                convertedPrice: offerPrice?.converted || null,
+                committedDate:
+                  ((offer?.exchanges || []) as unknown as Exchange[])
+                    .sort(
+                      (a: Exchange, b: Exchange) =>
+                        Number(a?.committedDate || "0") -
+                        Number(b?.committedDate || "0")
+                    )
+                    .reverse()
+                    .find((n: Exchange) => n.committedDate !== null)
+                    ?.committedDate || null,
+                redeemedDate:
+                  ((offer?.exchanges || []) as unknown as Exchange[])
+                    .sort(
+                      (a: Exchange, b: Exchange) =>
+                        Number(a?.redeemedDate) - Number(b?.redeemedDate)
+                    )
+                    .reverse()
+                    .find((n: Exchange) => n.redeemedDate !== null)
+                    ?.redeemedDate || null
+              };
+            }
+          );
 
           if (offers.length > 0) {
             const lowerPriceOffer = sortBy(offers, "convertedPrice");
@@ -201,6 +214,7 @@ export default function useProducts(
   }, [
     productsVariants?.data,
     props?.quantityAvailable_gte,
+    props?.onlyNotVoided,
     store.fixed,
     store.rates
   ]);

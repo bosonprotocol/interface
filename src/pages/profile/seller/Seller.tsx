@@ -154,9 +154,9 @@ export default function Seller() {
     isError: isErrorProducts
   } = useProducts(
     {
+      onlyNotVoided: true,
       productsFilter: {
-        sellerId,
-        allVariantsVoided: true
+        sellerId
       }
     },
     {
