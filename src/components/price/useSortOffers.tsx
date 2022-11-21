@@ -31,7 +31,9 @@ export const useSortOffers = ({
       if (type === "products") {
         filteredByName =
           filter(data, (n: ExtendedOffer) => {
-            return n?.title && n?.title.includes(name?.toLowerCase());
+            return (
+              n?.title && n?.title.toLowerCase().includes(name?.toLowerCase())
+            );
           }) || [];
         data = (filteredByName || []) as ExtendedOffer[] | ExtendedSeller[];
       }
