@@ -33,9 +33,6 @@ on:
       REACT_APP_IPFS_IMAGE_GATEWAY:
         required: true
         type: string
-      REACT_APP_ELIGIBLE_SELLER_WALLET_ADDRESSES:
-        required: false
-        type: string
     secrets:
       NPM_TOKEN:
         required: true
