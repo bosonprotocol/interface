@@ -4,9 +4,7 @@ module.exports = {
       numberOfRuns: 3,
       url: "https://interface-test.on.fleek.co/",
       settings: {
-        onlyCategories: ["seo", "performance"],
-        verbose: true,
-        maxWaiForLoad: 50000
+        onlyCategories: ["seo", "performance", "accessibility"]
       },
       assert: {
         assertions: {

@@ -99,17 +99,10 @@ jobs:
           node-version: "16.16.0"
           registry-url: "https://registry.npmjs.org"
           cache: "npm"
-      - name: Install Packages
-        run: npm install
       - name: Install lhci
         run: npm install --location=global @lhci/cli@0.9.x
-      - name: Run Build
-        run: npm run build
       - name: Lauch lhci
-        run: |
-          npm run serve &
-          ls build/
-          lhci autorun
+        run: lhci autorun
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
