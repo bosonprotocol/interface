@@ -5,6 +5,7 @@ import lensFollowNftContractAbi from "../lib/utils/hooks/lens/abis/lens-follow-n
 import lensHubContractAbi from "../lib/utils/hooks/lens/abis/lens-hub-contract-abi.json";
 import lensPeripheryDataProvider from "../lib/utils/hooks/lens/abis/lens-periphery-data-provider.json";
 import { parseCurationList } from "./utils/curationList";
+import { parseEligibleSellerWalletAddress } from "./utils/eligibleSellerWalletAddress";
 
 type EnvironmentType = "local" | "testing" | "staging" | "production"; // TODO: export EnvironmentType in react-kit
 
@@ -123,6 +124,10 @@ export const CONFIG = {
   minimumDisputePeriodInDays: 30,
   createProfileConfiguration,
   ipfsGateway: process.env.REACT_APP_IPFS_GATEWAY || "https://ipfs.io/ipfs",
+  ipfsImageGateway:
+    process.env.REACT_APP_IPFS_IMAGE_GATEWAY ||
+    process.env.REACT_APP_IPFS_GATEWAY ||
+    "https://ipfs.io/ipfs",
   lens: {
     enabled: createProfileConfiguration === "LENS" && availableOnNetwork,
     lensHandleExtension: config.chainId === 137 ? ".lens" : ".test",
@@ -137,7 +142,11 @@ export const CONFIG = {
     LENS_PROFILES_CONTRACT_PARTIAL_ABI:
       config.lens.LENS_PROFILES_CONTRACT_PARTIAL_ABI,
     LENS_FOLLOW_NFT_ABI: lensFollowNftContractAbi
-  }
+  },
+  eligibleSellerWalletAddresses:
+    parseEligibleSellerWalletAddress(
+      process.env.REACT_APP_ELIGIBLE_SELLER_WALLET_ADDRESSES
+    ) || []
 };
 
 function stringToBoolean(value?: string) {

@@ -2,7 +2,7 @@ import { useMemo } from "react";
 
 import { isTruthy } from "../../../types/helpers";
 import { useOffers } from "../offers";
-import useInfinityProducts from "./useInfinityProducts";
+import useProducts from "./useProducts";
 
 export default function useProductsByFilteredOffers(
   props: Parameters<typeof useOffers>[0] = {}
@@ -17,7 +17,7 @@ export default function useProductsByFilteredOffers(
       ) || [],
     [data]
   );
-  const result = useInfinityProducts(
+  const result = useProducts(
     {
       ...(props.first && { productsFirst: props.first }),
       productsIds: productsIds

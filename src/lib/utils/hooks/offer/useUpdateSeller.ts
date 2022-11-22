@@ -43,7 +43,7 @@ async function updateSellerAccount(
     authTokenType: typeof authTokenTypes[keyof typeof authTokenTypes];
   }
 ) {
-  await coreSDK.updateSeller({
+  await coreSDK.updateSellerAndOptIn({
     id: sellerId,
     admin:
       authTokenType === authTokenTypes.LENS
