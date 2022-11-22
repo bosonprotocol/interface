@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import { DownloadSimple } from "phosphor-react";
+import { forwardRef, RefObject } from "react";
 import { CSVLink } from "react-csv";
 import { CommonPropTypes } from "react-csv/components/CommonPropTypes";
 import styled from "styled-components";
@@ -67,14 +68,18 @@ const ExportButton = styled(Button)`
 const ButtonsContainer = styled.div`
   padding: 0.3125rem;
   position: absolute;
-  width: 7.8125rem;
+  width: 100%;
   margin-left: -0.3125rem;
   margin-top: -0.3125rem;
   display: none;
   z-index: ${zIndex.Select};
+  > * {
+    width: 100%;
+  }
 `;
 
 const ButtonOptions = styled.div<{ disabled: boolean }>`
+  display: inline-block;
   border: 0.0625rem solid ${colors.secondary};
   border-top: 0rem;
   color: ${colors.secondary};
@@ -102,16 +107,36 @@ const Container = styled.div`
   }
 `;
 
+interface ChildProps {
+  id: number;
+  name: string;
+  hidden?: boolean;
+  disabled?: boolean;
+  onClick?: () => void;
+  ref?: RefObject<CSVLink>;
+  loading?: boolean;
+  csvProps: CommonPropTypes;
+}
 interface Props {
   buttonProps?: IButton;
-  children?: Array<{
-    id: number;
-    name: string;
-    hidden?: boolean;
-    disabled?: boolean;
-    csvProps: CommonPropTypes;
-  }>;
+  children?: Array<ChildProps>;
 }
+
+const CSVLinkRef = forwardRef(({ child }: { child: ChildProps }, ref) => {
+  return (
+    <CSVLink
+      // eslint-disable-next-line
+      // @ts-ignore
+      ref={ref}
+      {...child.csvProps}
+      filename={child.csvProps.filename ?? "filename"}
+    >
+      <ButtonOptions disabled={false}>
+        {child?.loading ? "Loading..." : child.name}
+      </ButtonOptions>
+    </CSVLink>
+  );
+});
 
 function ExportDropdown({ buttonProps = {}, children }: Props) {
   return (
@@ -146,13 +171,30 @@ function ExportDropdown({ buttonProps = {}, children }: Props) {
               );
             }
             return (
-              <CSVLink
+              <div
                 key={`CSVLink_${child.id}_${index}`}
-                {...child.csvProps}
-                filename={child.csvProps.filename ?? "filename"}
+                onClick={() => {
+                  child?.onClick?.();
+                }}
               >
-                <ButtonOptions disabled={false}>{child.name}</ButtonOptions>
-              </CSVLink>
+                {child.ref ? (
+                  <CSVLinkRef
+                    key={`CSVLink_${child.id}_${index}`}
+                    child={child}
+                    ref={child?.ref}
+                  />
+                ) : (
+                  <CSVLink
+                    key={`CSVLink_${child.id}_${index}`}
+                    {...child.csvProps}
+                    filename={child.csvProps.filename ?? "filename"}
+                  >
+                    <ButtonOptions disabled={false}>
+                      {child?.loading ? "Loading..." : child.name}
+                    </ButtonOptions>
+                  </CSVLink>
+                )}
+              </div>
             );
           })}
       </ButtonsContainer>
