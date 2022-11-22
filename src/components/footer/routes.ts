@@ -5,17 +5,11 @@ import {
   TwitterLogo,
   YoutubeLogo
 } from "phosphor-react";
-import { generatePath } from "react-router-dom";
 
-import { UrlParameters } from "../../lib/routing/parameters";
-import {
-  BosonRoutes,
-  SellerCenterRoutes,
-  SocialRoutes
-} from "../../lib/routing/routes";
+import { BosonRoutes, SocialRoutes } from "../../lib/routing/routes";
+import { getSellLink } from "../../lib/utils/link";
 import { UserRoles } from "../../router/routes";
 import { checkIfUserHaveRole } from "../../router/useUserRoles";
-import { DEFAULT_SELLER_PAGE } from "./../seller/SellerPages";
 
 export const SOCIAL_ROUTES = [
   {
@@ -58,17 +52,18 @@ export const ADDITIONAL_LINKS: Array<{ label: string; value: string }> = [
 
 export const getProductRoutes = ({
   roles,
-  isSellerInCurationList,
+  address,
   isSupportFunctionalityDefined,
   onlyBuyer,
   onlySeller
 }: {
-  roles: string[];
-  isSellerInCurationList: boolean;
+  roles: (keyof typeof UserRoles)[];
+  address: string | undefined;
   isSupportFunctionalityDefined: boolean;
   onlyBuyer: boolean;
   onlySeller: boolean;
 }) => {
+  const isAccountSeller = roles.some((role) => role === UserRoles.Seller);
   const productRoutes: { name: string; url: string }[] = [];
   if (
     !isSupportFunctionalityDefined ||
@@ -84,26 +79,14 @@ export const getProductRoutes = ({
     !isSupportFunctionalityDefined ||
     (isSupportFunctionalityDefined && (!onlyBuyer || onlySeller))
   ) {
-    if (checkIfUserHaveRole(roles, [UserRoles.Seller], false)) {
-      if (isSellerInCurationList) {
-        productRoutes.push({
-          name: "Sell",
-          url: generatePath(SellerCenterRoutes.SellerCenter, {
-            [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
-          })
-        });
-      } else {
-        productRoutes.push({
-          name: "Sell",
-          url: BosonRoutes.ClosedBeta
-        });
-      }
-    } else if (checkIfUserHaveRole(roles, [UserRoles.Guest], false)) {
-      productRoutes.push({
-        name: "Sell",
-        url: SellerCenterRoutes.CreateProduct
-      });
-    }
+    const sellLink = getSellLink({
+      isAccountSeller,
+      address
+    });
+    productRoutes.push({
+      name: "Sell",
+      url: sellLink
+    });
   }
   return productRoutes;
 };
