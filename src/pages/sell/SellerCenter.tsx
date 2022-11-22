@@ -16,6 +16,7 @@ import SellerInside, {
 import Grid from "../../components/ui/Grid";
 import Loading from "../../components/ui/Loading";
 import Typography from "../../components/ui/Typography";
+import { CONFIG } from "../../lib/config";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
@@ -71,8 +72,9 @@ function SellerCenterWrapper() {
   }
 
   if (
+    !CONFIG.enableCurationLists &&
     !isAccountSeller &&
-    !isInEligibleWalletList(address?.toLowerCase() ?? "")
+    !isInEligibleWalletList(address ?? "")
   ) {
     return <Navigate replace to={{ pathname: BosonRoutes.ClosedBeta }} />;
   }
