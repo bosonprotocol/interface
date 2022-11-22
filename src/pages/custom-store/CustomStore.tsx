@@ -5,9 +5,9 @@ import styled from "styled-components";
 import Layout from "../../components/Layout";
 import { useModal } from "../../components/modal/useModal";
 import Typography from "../../components/ui/Typography";
-import { CONFIG } from "../../lib/config";
 import { useCSSVariable } from "../../lib/utils/hooks/useCSSVariable";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
+import { getIpfsGatewayUrl } from "../../lib/utils/ipfs";
 import CustomStoreFormContent, {
   formValuesWithOneLogoUrl
 } from "./CustomStoreFormContent";
@@ -78,7 +78,7 @@ export default function CustomStore() {
 
             const cid = await storage.add(html);
 
-            const ipfsUrl = `${CONFIG.ipfsGateway}${cid}`;
+            const ipfsUrl = getIpfsGatewayUrl(cid);
             showModal(modalTypes.CUSTOM_STORE, {
               title: "Congratulations!",
               ipfsUrl,

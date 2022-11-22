@@ -10,10 +10,10 @@ import { SelectDataProps } from "../../components/form/types";
 import BosonButton from "../../components/ui/BosonButton";
 import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
-import { CONFIG } from "../../lib/config";
 import { colors } from "../../lib/styles/colors";
 import { isTruthy } from "../../lib/types/helpers";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
+import { getIpfsGatewayUrl } from "../../lib/utils/ipfs";
 import { preAppendHttps } from "../../lib/validation/regex/url";
 import SocialLogo from "./SocialLogo";
 import {
@@ -192,7 +192,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
       const ipfsWithoutPrefix = values.logoUpload[0].src.replace("ipfs://", "");
       setFieldValue(
         storeFields.logoUrl,
-        `${CONFIG.ipfsGateway}${ipfsWithoutPrefix}`,
+        getIpfsGatewayUrl(ipfsWithoutPrefix),
         true
       );
     }
