@@ -164,6 +164,13 @@ export default function Seller() {
       withNumExchanges: true
     }
   );
+  // TODO: clarify what products should be shown on the seller page:
+  //  - all products that have still valid offers
+  //  - all products that have been fully voided, only and only if there exist at least 1 exchange
+  //        for at least 1 offer (whatever the status of this exchange)
+  //  - all products whose all offers are not yet valid
+  //  - all products whose all offers are expired, only and only if there exist at least 1 exchange
+  //        for at least 1 offer (whatever the status of this exchange)
   const {
     data: { exchanges } = {},
     isError: isErrorSellerCalculation,
