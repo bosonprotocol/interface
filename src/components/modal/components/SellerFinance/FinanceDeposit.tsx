@@ -1,14 +1,12 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import { DepositFundsButton, Provider } from "@bosonprotocol/react-kit";
-import { BigNumber, constants, ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { useState } from "react";
 import { useAccount, useBalance, useSigner } from "wagmi";
 
 import { CONFIG, config } from "../../../../lib/config";
 import { useAddPendingTransaction } from "../../../../lib/utils/hooks/transactions/usePendingTransactions";
-import { useCoreSDK } from "../../../../lib/utils/useCoreSdk";
 import { getNumberWithoutDecimals } from "../../../../pages/account/funds/FundItem";
-// import useDepositFunds from "../../../../pages/account/funds/useDepositFunds";
 import { poll } from "../../../../pages/create-product/utils";
 import { Spinner } from "../../../loading/Spinner";
 import Grid from "../../../ui/Grid";
@@ -57,18 +55,7 @@ export default function FinanceDeposit({
   );
 
   const { showModal, hideModal } = useModal();
-  const coreSDK = useCoreSDK();
   const addPendingTransaction = useAddPendingTransaction();
-  // const depositFunds = useDepositFunds({
-  //   accountId,
-  //   amount:
-  //     isDepositInvalid || !Number(amountToDeposit)
-  //       ? BigNumber.from("0")
-  //       : BigNumber.from(
-  //           getNumberWithoutDecimals(amountToDeposit, tokenDecimals)
-  //         ),
-  //   tokenAddress: exchangeToken
-  // });
 
   const tokenStep = 10 ** -Number(tokenDecimals);
   const step = 0.01;
@@ -85,55 +72,6 @@ export default function FinanceDeposit({
       setIsDepositInvalid(true);
     }
     setAmountToDeposit(valueStr);
-  };
-
-  const approveToken = async (value: string) => {
-    const isNativeCoin = constants.AddressZero === exchangeToken;
-    if (isNativeCoin) {
-      return;
-    }
-    const allowance = await coreSDK.getExchangeTokenAllowance(exchangeToken);
-
-    try {
-      if (Number(allowance) < Number(value)) {
-        let approveTx;
-        // If metaTx, then call metaTx for approval
-        const isMetaTx = Boolean(
-          coreSDK.checkMetaTxConfigSet({ contractAddress: exchangeToken }) &&
-            address
-        );
-        if (isMetaTx) {
-          const { r, s, v, functionSignature } =
-            await coreSDK.signNativeMetaTxApproveExchangeToken(
-              exchangeToken,
-              constants.MaxInt256
-            );
-          approveTx = await coreSDK.relayNativeMetaTransaction(exchangeToken, {
-            functionSignature,
-            sigR: r,
-            sigS: s,
-            sigV: v
-          });
-        } else {
-          approveTx = await coreSDK.approveExchangeToken(
-            exchangeToken,
-            constants.MaxInt256
-          );
-        }
-        // TODO: add pending approve token tx if even type supported by subgraph
-        showModal("TRANSACTION_SUBMITTED", {
-          action: "Approve ERC20 Token",
-          txHash: approveTx.hash
-        });
-        await approveTx.wait();
-      }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      console.error("error->", error);
-      // show error in all cases
-      showModal("CONFIRMATION_FAILED");
-      throw error; // do not go on with the deposit
-    }
   };
 
   return (
@@ -193,34 +131,34 @@ export default function FinanceDeposit({
           disabled={isBeingDeposit || isDepositInvalid}
           web3Provider={signer?.provider as Provider}
           metaTx={CONFIG.metaTx}
-          onError={(error) => {
-            console.error("onError", error);
-            const hasUserRejectedTx =
-              "code" in error &&
-              (error as unknown as { code: string }).code === "ACTION_REJECTED";
-            if (hasUserRejectedTx) {
-              showModal("CONFIRMATION_FAILED");
-            }
-            reload();
-            setDepositError(error);
-            setIsBeingDeposit(false);
-          }}
           onPendingSignature={() => {
             setDepositError(null);
             setIsBeingDeposit(true);
             showModal("WAITING_FOR_CONFIRMATION");
           }}
-          onPendingTransaction={(hash, isMetaTx) => {
-            showModal("TRANSACTION_SUBMITTED", {
-              action: "Finance deposit",
-              txHash: hash
-            });
-            addPendingTransaction({
-              type: subgraph.EventType.FundsDeposited,
-              hash: hash,
-              isMetaTx,
-              accountType: "Seller"
-            });
+          onPendingTransaction={(hash, isMetaTx, actionName) => {
+            switch (actionName) {
+              case "approveExchangeToken":
+                showModal("TRANSACTION_SUBMITTED", {
+                  action: "Approve ERC20 Token",
+                  txHash: hash
+                });
+                break;
+              case "depositFound":
+                showModal("TRANSACTION_SUBMITTED", {
+                  action: "Finance deposit",
+                  txHash: hash
+                });
+                addPendingTransaction({
+                  type: subgraph.EventType.FundsDeposited,
+                  hash: hash,
+                  isMetaTx,
+                  accountType: "Seller"
+                });
+                break;
+              default:
+                break;
+            }
           }}
           onSuccess={async () => {
             await poll(
@@ -238,6 +176,18 @@ export default function FinanceDeposit({
             reload();
             setIsBeingDeposit(false);
             hideModal();
+          }}
+          onError={(error) => {
+            console.error("onError", error);
+            const hasUserRejectedTx =
+              "code" in error &&
+              (error as unknown as { code: string }).code === "ACTION_REJECTED";
+            if (hasUserRejectedTx) {
+              showModal("CONFIRMATION_FAILED");
+            }
+            setDepositError(error);
+            reload();
+            setIsBeingDeposit(false);
           }}
         >
           {isBeingDeposit ? (
