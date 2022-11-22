@@ -31,7 +31,7 @@ on:
         required: true
         type: string
       REACT_APP_IPFS_IMAGE_GATEWAY:
-        required: true
+        required: false
         type: string
     secrets:
       NPM_TOKEN:
