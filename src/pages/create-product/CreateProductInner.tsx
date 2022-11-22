@@ -52,6 +52,7 @@ import { useAddPendingTransaction } from "../../lib/utils/hooks/transactions/use
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { saveItemInStorage } from "../../lib/utils/hooks/useLocalStorage";
+import { getIpfsGatewayUrl } from "../../lib/utils/ipfs";
 import { fixformattedString } from "../../lib/utils/number";
 import { useCoreSDK } from "../../lib/utils/useCoreSdk";
 import {
@@ -126,9 +127,7 @@ function getProductV1Metadata({
     uuid: offerUuid,
     name: productInformation.productTitle,
     description: `${productInformation.description}\n\nTerms for the Boson rNFT Voucher: ${licenseUrl}`,
-    animationUrl: animationUrl.startsWith("ipfs://")
-      ? `${CONFIG.ipfsGateway}${animationUrl.substring("ipfs://".length)}`
-      : animationUrl,
+    animationUrl: getIpfsGatewayUrl(animationUrl),
     externalUrl,
     licenseUrl,
     image: productMainImageLink ? productMainImageLink : "",
