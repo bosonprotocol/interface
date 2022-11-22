@@ -33,6 +33,7 @@ export function useHandleText(offer: Offer) {
         diff: {
           days: expiry.diff(current, "days"),
           isToday: expiry.isSame(current, "day"),
+          isExpired: expiry.isBefore(current),
           hours: expiry.diff(current, "hours"),
           time: expiry.format("HH:mm")
         }
@@ -68,7 +69,9 @@ export function useHandleText(offer: Offer) {
             }`
         : `Releases on ${release.date}`;
     } else {
-      return expiry.diff.days <= 10
+      return expiry.diff.isExpired
+        ? `Expired`
+        : expiry.diff.days <= 10
         ? expiry.diff.days <= 0
           ? `Expires ${expiry.diff.isToday ? "today" : "tomorrow"} at ${
               expiry.diff.time
