@@ -92,6 +92,7 @@ jobs:
       REACT_APP_GOOGLE_TAG_ID: ${{ secrets.REACT_APP_GOOGLE_TAG_ID_STAGING }}
       REACT_APP_META_TX_API_KEY: ${{ secrets.REACT_APP_META_TX_API_KEY_STAGING }}
       REACT_APP_META_TX_API_IDS: ${{ secrets.REACT_APP_META_TX_API_IDS_STAGING }}
+      REACT_APP_ELIGIBLE_SELLER_WALLET_ADDRESSES: ${{ secrets.REACT_APP_ELIGIBLE_SELLER_WALLET_ADDRESSES }}
 
   call-reusable-workflow-production:
     uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main

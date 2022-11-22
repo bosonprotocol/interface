@@ -30,9 +30,6 @@ on:
       REACT_APP_IPFS_GATEWAY:
         required: true
         type: string
-      REACT_APP_ELIGIBLE_SELLER_WALLET_ADDRESSES:
-        required: false
-        type: string
     secrets:
       NPM_TOKEN:
         required: true
@@ -64,6 +61,8 @@ on:
         required: true
       REACT_APP_META_TX_API_IDS:
         required: true
+      REACT_APP_ELIGIBLE_SELLER_WALLET_ADDRESSES:
+        required: false
     outputs:
       JOB_LINT:
         value: ${{ jobs.build-test-deploy.outputs.jobLint }}
@@ -98,7 +97,7 @@ jobs:
       REACT_APP_GOOGLE_TAG_ID: ${{ secrets.REACT_APP_GOOGLE_TAG_ID }}
       REACT_APP_META_TX_API_KEY: ${{ secrets.REACT_APP_META_TX_API_KEY }}
       REACT_APP_META_TX_API_IDS: ${{ secrets.REACT_APP_META_TX_API_IDS }}
-      REACT_APP_ELIGIBLE_SELLER_WALLET_ADDRESSES: ${{ inputs.REACT_APP_ELIGIBLE_SELLER_WALLET_ADDRESSES }}
+      REACT_APP_ELIGIBLE_SELLER_WALLET_ADDRESSES: ${{ secrets.REACT_APP_ELIGIBLE_SELLER_WALLET_ADDRESSES }}
     outputs:
       jobLint: ${{ steps.lint.outputs.pass }}
       jobBuild: ${{ steps.build.outputs.pass }}
