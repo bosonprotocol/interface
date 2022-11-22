@@ -2,7 +2,7 @@ module.exports = {
   ci: {
     collect: {
       numberOfRuns: 3,
-      url: "http://localhost:3000",
+      url: "https://interface-test.on.fleek.co/",
       settings: {
         onlyCategories: ["seo", "performance"],
         verbose: true,
