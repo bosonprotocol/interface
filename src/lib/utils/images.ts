@@ -1,7 +1,5 @@
-import { CID } from "multiformats/cid";
-
 import { CONFIG } from "../config";
-import { sanitizeUrl } from "./url";
+import { getIpfsGatewayUrl } from "./ipfs";
 
 // See https://docs.pinata.cloud/gateways/image-optimization
 export type ImageOptimizationOpts = {
@@ -23,29 +21,14 @@ export function getImageUrl(
       gateway: string;
     }
   > = {}
-): string {
-  const { gateway = CONFIG.ipfsGateway, ...optimizationOpts } = opts;
-  const cid = uri.replaceAll("ipfs://", "");
-
-  try {
-    CID.parse(cid);
-    return `${gateway}/${cid}?${optsToQueryParams(optimizationOpts)}`.replace(
-      /([^:]\/)\/+/g,
-      "$1"
-    ); // remove double slash
-  } catch (error) {
-    // If CID.parse throws, then it is either not a valid CID or just an URL
-    const cidFromUrl = uri.split("/ipfs/")[1];
-    if (cidFromUrl) {
-      return getImageUrl(cidFromUrl.split("?")[0], opts);
-    }
-
-    return sanitizeUrl(uri);
-  }
+) {
+  const { gateway = CONFIG.ipfsImageGateway, ...optimizationOpts } = opts;
+  const ipfsGatewayUrl = getIpfsGatewayUrl(uri, { gateway });
+  return `${ipfsGatewayUrl}?${optsToQueryParams(optimizationOpts)}`;
 }
 
 export function getLensImageUrl(uri: string) {
-  return getImageUrl(uri, { gateway: CONFIG.lens.ipfsGateway });
+  return getIpfsGatewayUrl(uri, { gateway: CONFIG.lens.ipfsGateway });
 }
 
 export function getFallbackImageUrl(
@@ -53,12 +36,12 @@ export function getFallbackImageUrl(
   opts?: Partial<ImageOptimizationOpts>
 ) {
   return getImageUrl(uri, {
-    gateway: CONFIG.fallbackIpfsGateway,
+    gateway: CONFIG.ipfsGateway,
     ...opts
   });
 }
 
-function optsToQueryParams(opts: Partial<ImageOptimizationOpts>) {
+function optsToQueryParams(opts: Partial<ImageOptimizationOpts> = {}) {
   const transformedOpts = Object.keys(opts).reduce(
     (transformed, oldKey) => {
       return {
