@@ -225,7 +225,8 @@ export function WithAllOffers<P>(
 
     const products = useProducts(
       {
-        onlyNotVoided: true
+        onlyNotVoided: true,
+        onlyValid: true
       },
       {
         enableCurationList: true,

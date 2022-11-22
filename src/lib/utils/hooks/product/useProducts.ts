@@ -27,6 +27,7 @@ interface AdditionalFiltering {
   quantityAvailable_gte?: number;
   productsIds?: string[];
   onlyNotVoided?: boolean;
+  onlyValid?: boolean;
 }
 
 export default function useProducts(
@@ -41,6 +42,13 @@ export default function useProducts(
   }
 ) {
   const curationLists = useCurationLists();
+  const now = Math.floor(Date.now() / 1000);
+  const validityFilter = props.onlyValid
+    ? {
+        minValidFromDate_lte: now + "",
+        maxValidUntilDate_gte: now + ""
+      }
+    : {};
   const baseProps = useMemo(
     () => ({
       ...omit(props, ["productsIds", "quantityAvailable_gte"]),
@@ -66,19 +74,26 @@ export default function useProducts(
   const productsVariants = useQuery(
     ["get-all-products-variants", baseProps],
     async () => {
+      const newProps = {
+        ...baseProps,
+        productsFilter: {
+          ...validityFilter,
+          ...baseProps.productsFilter
+        }
+      };
       const data = props.onlyNotVoided
-        ? await coreSDK.getAllProductsWithNotVoidedVariants({ ...baseProps })
-        : await coreSDK.getAllProductsWithVariants({ ...baseProps });
+        ? await coreSDK.getAllProductsWithNotVoidedVariants({ ...newProps })
+        : await coreSDK.getAllProductsWithVariants({ ...newProps });
       let loop = data.length === OFFERS_PER_PAGE;
       let productsSkip = OFFERS_PER_PAGE;
       while (loop) {
         const data_to_add = props.onlyNotVoided
           ? await coreSDK.getAllProductsWithNotVoidedVariants({
-              ...baseProps,
+              ...newProps,
               productsSkip
             })
           : await coreSDK.getAllProductsWithVariants({
-              ...baseProps,
+              ...newProps,
               productsSkip
             });
         data.push(...data_to_add);
