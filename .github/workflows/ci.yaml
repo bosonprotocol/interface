@@ -77,7 +77,6 @@ jobs:
       REACT_APP_ENABLE_CURATION_LISTS: false
       REACT_APP_CREATE_PROFILE_CONFIGURATION: "LENS"
       REACT_APP_IPFS_GATEWAY: "https://bosonprotocol.infura-ipfs.io/ipfs/"
-      REACT_APP_ELIGIBLE_SELLER_WALLET_ADDRESSES: "0x27207e60FAB9F4e18697bE4Ba21D631EA00de5Fd"
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
