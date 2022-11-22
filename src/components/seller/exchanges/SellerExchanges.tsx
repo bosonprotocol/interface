@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import { utils } from "ethers";
 import { camelCase } from "lodash";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { CSVLink } from "react-csv";
 import { useLocation } from "react-router-dom";
 
 import { CONFIG } from "../../../lib/config";
@@ -73,7 +74,9 @@ export default function SellerExchanges({
   exchanges: exchangesData,
   sellerRoles
 }: SellerInsideProps & WithSellerDataProps) {
-  const csvBtn = useRef(null);
+  const csvBtn = useRef<
+    CSVLink & HTMLAnchorElement & { link: HTMLAnchorElement }
+  >(null);
   const [csvData, setCsvData] = useState<CSVData[]>([] as CSVData[]);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -263,8 +266,6 @@ export default function SellerExchanges({
     if (csvBtn?.current) {
       setTimeout(() => {
         setLoading(false);
-        // eslint-disable-next-line
-        // @ts-ignore
         csvBtn.current?.link?.click?.();
       }, 250);
     }
