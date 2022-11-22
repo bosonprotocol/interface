@@ -74,7 +74,8 @@ jobs:
       DEPLOY_TO_FLEEK: true
       ENV_NAME: "staging"
       UPDATE_COVERAGE: false
-      REACT_APP_ENABLE_CURATION_LISTS: false
+      REACT_APP_ENABLE_CURATION_LISTS: true
+      REACT_APP_SELLER_CURATION_LIST: "2,5,7,8,10,11,15,16,17,22,26,28"
       REACT_APP_CREATE_PROFILE_CONFIGURATION: "LENS"
       REACT_APP_IPFS_GATEWAY: "https://bosonprotocol.infura-ipfs.io/ipfs/"
     secrets:
