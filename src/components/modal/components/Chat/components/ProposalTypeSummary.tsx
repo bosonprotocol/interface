@@ -3,6 +3,7 @@ import { Check as CheckComponent } from "phosphor-react";
 import styled from "styled-components";
 
 import { colors } from "../../../../../lib/styles/colors";
+import { displayFloat } from "../../../../../lib/utils/calcPrice";
 import { Exchange } from "../../../../../lib/utils/hooks/useExchanges";
 import { ProposalItem } from "../../../../../pages/chat/types";
 import { useConvertedPrice } from "../../../../price/useConvertedPrice";
@@ -59,7 +60,8 @@ export default function ProposalTypeSummary({ proposal, exchange }: Props) {
               <>
                 <Line />
                 <span>
-                  {convertedRefund.currency?.symbol} {convertedRefund.converted}
+                  {convertedRefund.currency?.symbol}{" "}
+                  {displayFloat(convertedRefund.converted, { fixed: 2 })}
                 </span>
               </>
             )}
