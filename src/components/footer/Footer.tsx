@@ -138,7 +138,7 @@ function Socials() {
 }
 
 export default function FooterComponent() {
-  const { roles, isSellerInCurationList } = useUserRoles({ role: [] });
+  const { roles, address } = useUserRoles({ role: [] });
   const { isXXS } = useBreakpoints();
   const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
   const [year] = useState<number>(new Date().getFullYear());
@@ -179,7 +179,7 @@ export default function FooterComponent() {
               <NavigationLinks flexDirection="column">
                 {getProductRoutes({
                   roles,
-                  isSellerInCurationList,
+                  address,
                   isSupportFunctionalityDefined,
                   onlyBuyer,
                   onlySeller

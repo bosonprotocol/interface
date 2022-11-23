@@ -3,7 +3,6 @@ import { useAccount } from "wagmi";
 
 import { useBuyerSellerAccounts } from "../lib/utils/hooks/useBuyerSellerAccounts";
 import { useCurrentSellers } from "../lib/utils/hooks/useCurrentSellers";
-import { useIsSellerInCuractionList } from "../lib/utils/hooks/useSellers";
 import { UserRoles } from "./routes";
 
 export const checkIfUserHaveRole = (
@@ -25,14 +24,13 @@ export default function useUserRoles({ role }: Props) {
   } = useBuyerSellerAccounts(address || "");
   const { sellerIds } = useCurrentSellers();
   const sellerId = useMemo(() => sellerIds?.[0], [sellerIds]);
-  const isSellerInCurationList = useIsSellerInCuractionList(sellerId);
 
   useEffect(() => {
     refetch();
   }, [address]); // eslint-disable-line
 
-  const userRoles: Array<string> = useMemo(() => {
-    const roles = [];
+  const userRoles: (keyof typeof UserRoles)[] = useMemo(() => {
+    const roles: (keyof typeof UserRoles)[] = [];
     if (address) {
       roles.push(UserRoles.Guest);
       if (buyerId) {
@@ -52,7 +50,7 @@ export default function useUserRoles({ role }: Props) {
 
   return {
     roles: userRoles,
-    isSellerInCurationList,
+    address,
     isAuth
   };
 }

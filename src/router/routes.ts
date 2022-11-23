@@ -63,7 +63,7 @@ export const UserRoles = {
   Buyer: "Buyer",
   Seller: "Seller",
   DisputeResolver: "DisputeResolver"
-};
+} as const;
 export interface IRoutes extends RouteProps {
   component:
     | React.ComponentType<any> // eslint-disable-line

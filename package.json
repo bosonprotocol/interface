@@ -26,7 +26,6 @@
     "coverage:report": "npm run coverage:unit",
     "upgrade:corec:latest": "npm install @bosonprotocol/common@latest @bosonprotocol/core-sdk@latest @bosonprotocol/ethers-sdk@latest @bosonprotocol/ipfs-storage@latest @bosonprotocol/react-kit@latest @bosonprotocol/widgets-sdk@latest",
     "upgrade:corec:alpha": "npm install @bosonprotocol/common@alpha @bosonprotocol/core-sdk@alpha @bosonprotocol/ethers-sdk@alpha @bosonprotocol/ipfs-storage@alpha @bosonprotocol/react-kit@alpha @bosonprotocol/widgets-sdk@alpha",
-    "postinstall": "npx playwright install --with-deps chromium",
     "generate": "graphql-codegen",
     "clean-react-cache": "run-script-os",
     "clean-react-cache:default": "rm -rf node_modules/.cache",
