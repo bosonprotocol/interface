@@ -238,9 +238,6 @@ export default function SellerExchanges({
           ? await getExchangeAddressDetails(exchange as Exchange)
           : "";
 
-      console.log({
-        deliveryInfo
-      });
       return {
         ["ID/SKU"]: exchange?.id ? exchange?.id : "",
         ["Product name"]: exchange?.offer?.metadata?.name ?? "",
@@ -321,7 +318,9 @@ export default function SellerExchanges({
                     if (!bosonXmtp) {
                       setLoading(true);
                       initialize();
+                      return true;
                     }
+                    return false;
                   },
                   csvProps: {
                     data: csvData,

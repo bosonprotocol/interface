@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { DownloadSimple } from "phosphor-react";
-import { forwardRef, RefObject } from "react";
+import { RefObject } from "react";
 import { CSVLink } from "react-csv";
 import { CommonPropTypes } from "react-csv/components/CommonPropTypes";
 import styled from "styled-components";
@@ -8,6 +8,7 @@ import styled from "styled-components";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import Button, { IButton } from "../ui/Button";
+import Loading from "./Loading";
 
 const ExportButton = styled(Button)`
   color: ${colors.secondary};
@@ -79,6 +80,8 @@ const ButtonsContainer = styled.div`
 `;
 
 const ButtonOptions = styled.div<{ disabled: boolean }>`
+  position: relative;
+
   display: inline-block;
   border: 0.0625rem solid ${colors.secondary};
   border-top: 0rem;
@@ -95,6 +98,22 @@ const ButtonOptions = styled.div<{ disabled: boolean }>`
     color: ${colors.white};
   }
   text-decoration: ${({ disabled }) => (disabled ? "line-through;" : "none")};
+
+  > div[data-loader] {
+    padding: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    > div {
+      display: inline;
+      width: 1rem;
+      height: 1rem;
+    }
+    + span {
+      opacity: 0;
+    }
+  }
 `;
 
 const Container = styled.div`
@@ -105,6 +124,12 @@ const Container = styled.div`
       display: block !important;
     }
   }
+  a {
+    display: inline-block;
+    > span {
+      font-size: 0.875rem;
+    }
+  }
 `;
 
 interface ChildProps {
@@ -112,8 +137,8 @@ interface ChildProps {
   name: string;
   hidden?: boolean;
   disabled?: boolean;
-  onClick?: () => void;
-  ref?: RefObject<CSVLink>;
+  onClick?: () => boolean;
+  ref?: RefObject<CSVLink & HTMLAnchorElement & { link: HTMLAnchorElement }>;
   loading?: boolean;
   csvProps: CommonPropTypes;
 }
@@ -121,22 +146,6 @@ interface Props {
   buttonProps?: IButton;
   children?: Array<ChildProps>;
 }
-
-const CSVLinkRef = forwardRef(({ child }: { child: ChildProps }, ref) => {
-  return (
-    <CSVLink
-      // eslint-disable-next-line
-      // @ts-ignore
-      ref={ref}
-      {...child.csvProps}
-      filename={child.csvProps.filename ?? "filename"}
-    >
-      <ButtonOptions disabled={false}>
-        {child?.loading ? "Loading..." : child.name}
-      </ButtonOptions>
-    </CSVLink>
-  );
-});
 
 function ExportDropdown({ buttonProps = {}, children }: Props) {
   return (
@@ -173,27 +182,32 @@ function ExportDropdown({ buttonProps = {}, children }: Props) {
             return (
               <div
                 key={`CSVLink_${child.id}_${index}`}
-                onClick={() => {
-                  child?.onClick?.();
+                onClick={(e) => {
+                  if (child?.onClick) {
+                    const val = child?.onClick?.();
+                    if (val) {
+                      e.preventDefault();
+                    }
+                  }
                 }}
               >
-                {child.ref ? (
-                  <CSVLinkRef
-                    key={`CSVLink_${child.id}_${index}`}
-                    child={child}
-                    ref={child?.ref}
-                  />
-                ) : (
-                  <CSVLink
-                    key={`CSVLink_${child.id}_${index}`}
-                    {...child.csvProps}
-                    filename={child.csvProps.filename ?? "filename"}
-                  >
-                    <ButtonOptions disabled={false}>
-                      {child?.loading ? "Loading..." : child.name}
-                    </ButtonOptions>
-                  </CSVLink>
-                )}
+                <CSVLink
+                  key={`CSVLink_${child.id}_${index}`}
+                  ref={child?.ref || null}
+                  {...child.csvProps}
+                  filename={child.csvProps.filename ?? "filename"}
+                >
+                  <ButtonOptions disabled={false}>
+                    {child?.loading ? (
+                      <div data-loader>
+                        <Loading size={1} />
+                      </div>
+                    ) : (
+                      ""
+                    )}
+                    <span>{child.name}</span>
+                  </ButtonOptions>
+                </CSVLink>
               </div>
             );
           })}
