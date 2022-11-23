@@ -1,11 +1,11 @@
-import { BosonXmtpClient } from "@bosonprotocol/chat-sdk";
+import { BosonXmtpClient } from "@bosonprotocol/chat-sdk/dist/esm/index";
 import {
   MessageData,
   MessageType,
   ThreadId,
   version
-} from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/definitions";
-import { validateMessage } from "@bosonprotocol/chat-sdk/dist/cjs/util/validators";
+} from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
+import { validateMessage } from "@bosonprotocol/chat-sdk/dist/esm/util/validators";
 import { subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import dayjs from "dayjs";
@@ -590,7 +590,9 @@ const ChatConversation = ({
           newMessage,
           destinationAddress
         );
-
+        if (!messageData) {
+          throw new Error("Something went wrong while sending a message");
+        }
         onSentMessage(messageData, uuid);
       } catch (error) {
         console.error(error);
@@ -631,6 +633,9 @@ const ChatConversation = ({
             message.data,
             destinationAddress
           );
+          if (!messageData) {
+            throw new Error("Something went wrong while sending a message");
+          }
           onSentMessage(messageData, message.uuid);
         } catch (error) {
           console.error(error);

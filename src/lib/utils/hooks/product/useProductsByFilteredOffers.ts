@@ -20,7 +20,9 @@ export default function useProductsByFilteredOffers(
   const result = useProducts(
     {
       ...(props.first && { productsFirst: props.first }),
-      productsIds: productsIds
+      productsIds: productsIds,
+      onlyNotVoided: !props.voided,
+      onlyValid: props.valid
     },
     { enableCurationList: true }
   );

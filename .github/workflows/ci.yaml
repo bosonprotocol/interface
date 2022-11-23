@@ -50,7 +50,8 @@ jobs:
       UPDATE_COVERAGE: true
       REACT_APP_ENABLE_CURATION_LISTS: false
       REACT_APP_CREATE_PROFILE_CONFIGURATION: "LENS"
-      REACT_APP_IPFS_GATEWAY: "https://bosonprotocol.infura-ipfs.io/ipfs/"
+      REACT_APP_IPFS_GATEWAY: "https://bosonprotocol.infura-ipfs.io/ipfs"
+      REACT_APP_IPFS_IMAGE_GATEWAY: "https://fuchsia-payable-smelt-901.mypinata.cloud/ipfs"
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
@@ -76,7 +77,8 @@ jobs:
       UPDATE_COVERAGE: false
       REACT_APP_ENABLE_CURATION_LISTS: false
       REACT_APP_CREATE_PROFILE_CONFIGURATION: "LENS"
-      REACT_APP_IPFS_GATEWAY: "https://bosonprotocol.infura-ipfs.io/ipfs/"
+      REACT_APP_IPFS_GATEWAY: "https://bosonprotocol.infura-ipfs.io/ipfs"
+      REACT_APP_IPFS_IMAGE_GATEWAY: "https://fuchsia-payable-smelt-901.mypinata.cloud/ipfs"
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
@@ -91,6 +93,7 @@ jobs:
       REACT_APP_GOOGLE_TAG_ID: ${{ secrets.REACT_APP_GOOGLE_TAG_ID_STAGING }}
       REACT_APP_META_TX_API_KEY: ${{ secrets.REACT_APP_META_TX_API_KEY_STAGING }}
       REACT_APP_META_TX_API_IDS: ${{ secrets.REACT_APP_META_TX_API_IDS_STAGING }}
+      REACT_APP_ELIGIBLE_SELLER_WALLET_ADDRESSES: ${{ secrets.REACT_APP_ELIGIBLE_SELLER_WALLET_ADDRESSES }}
 
   call-reusable-workflow-production:
     uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
@@ -103,7 +106,8 @@ jobs:
       REACT_APP_ENABLE_CURATION_LISTS: true
       REACT_APP_SELLER_CURATION_LIST: "2,4,5,6,7,8,9,11,12,13,14,16,27"
       REACT_APP_CREATE_PROFILE_CONFIGURATION: "LENS"
-      REACT_APP_IPFS_GATEWAY: "https://bosonprotocol.infura-ipfs.io/ipfs/"
+      REACT_APP_IPFS_GATEWAY: "https://bosonprotocol.infura-ipfs.io/ipfs"
+      REACT_APP_IPFS_IMAGE_GATEWAY: "https://bosonprotocol.infura-ipfs.io/ipfs"
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}

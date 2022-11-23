@@ -21,7 +21,11 @@ import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { Exchange as IExchange } from "../../lib/utils/hooks/useExchanges";
 import { useHandleText } from "../../lib/utils/hooks/useHandleText";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import { getImageUrl, getLensImageUrl } from "../../lib/utils/images";
+import {
+  getFallbackImageUrl,
+  getImageUrl,
+  getLensImageUrl
+} from "../../lib/utils/images";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import { getOfferDetailData } from "../detail/DetailWidget/DetailWidget";
 import { getLensProfilePictureUrl } from "../modal/components/CreateProfile/Lens/utils";
@@ -71,7 +75,9 @@ export default function Exchange({ offer, exchange, reload }: Props) {
 
   const { showModal, modalTypes } = useModal();
   const navigate = useKeepQueryParamsNavigate();
-  const imageSrc = getImageUrl(offer.metadata.imageUrl);
+  const imageSrc = getImageUrl(offer.metadata.imageUrl, {
+    height: 500
+  });
   const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
   const { address } = useAccount();
   const isBuyer = exchange?.buyer.wallet === address?.toLowerCase();
@@ -217,6 +223,7 @@ export default function Exchange({ offer, exchange, reload }: Props) {
         avatar={avatar || mockedAvatar}
         imageProps={{
           src: imageSrc,
+          fallbackSrc: getFallbackImageUrl(imageSrc),
           withLoading: true,
           errorConfig: {
             errorIcon: <CameraSlash size={32} color={colors.white} />

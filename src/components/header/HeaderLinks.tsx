@@ -1,20 +1,17 @@
 import { useMemo } from "react";
-import { generatePath } from "react-router-dom";
 import styled, { css } from "styled-components";
 import { useAccount } from "wagmi";
 
-import { UrlParameters } from "../../lib/routing/parameters";
-import { BosonRoutes, SellerCenterRoutes } from "../../lib/routing/routes";
+import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { useBuyerSellerAccounts } from "../../lib/utils/hooks/useBuyerSellerAccounts";
 import { useCurrentDisputeResolverId } from "../../lib/utils/hooks/useCurrentDisputeResolverId";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
-import { isInEligibleWalletList } from "../../lib/utils/isInEligibleWalletList";
+import { getSellLink } from "../../lib/utils/link";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import { UserRoles } from "../../router/routes";
 import useUserRoles, { checkIfUserHaveRole } from "../../router/useUserRoles";
 import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
-import { DEFAULT_SELLER_PAGE } from "../seller/SellerPages";
 import Search from "./Search";
 
 export const HEADER_HEIGHT = "5.4rem";
@@ -171,17 +168,10 @@ export default function HeaderLinks({
   const { disputeResolverId } = useCurrentDisputeResolverId();
 
   const sellUrl = useMemo(() => {
-    if (
-      !isInEligibleWalletList(address?.toLowerCase() ?? "") &&
-      !isAccountSeller
-    ) {
-      return BosonRoutes.ClosedBeta;
-    } else if (isAccountSeller) {
-      return generatePath(SellerCenterRoutes.SellerCenter, {
-        [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
-      });
-    }
-    return SellerCenterRoutes.CreateProduct;
+    return getSellLink({
+      isAccountSeller,
+      address
+    });
   }, [address, isAccountSeller]);
 
   const isSupportFunctionalityDefined = supportFunctionality !== "";
