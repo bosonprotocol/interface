@@ -1,5 +1,6 @@
 import { ThreadId } from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/definitions";
 import { exchanges as ExchangesKit, subgraph } from "@bosonprotocol/react-kit";
+import * as Sentry from "@sentry/browser";
 import dayjs from "dayjs";
 import { utils } from "ethers";
 import { camelCase } from "lodash";
@@ -144,58 +145,76 @@ export default function SellerExchanges({
 
   const getExchangeAddressDetails = useCallback(
     async (exchange: Exchange) => {
-      const threadId: ThreadId = {
-        exchangeId: exchange.id,
-        buyerId: exchange.buyer.id,
-        sellerId: exchange.seller.id
-      };
-      const destinationAddressLowerCase = exchange?.offer.seller.operator;
-      const destinationAddress = utils.getAddress(destinationAddressLowerCase);
-      const startTime = dayjs(
-        getDateTimestamp(exchange?.committedDate)
-      ).toDate();
-      const endTime = dayjs().toDate();
-
-      if (!bosonXmtp) {
-        return "Address not found. Please initialize chat first";
-      }
-      const result = await bosonXmtp?.getThread(threadId, destinationAddress, {
-        startTime,
-        endTime
-      });
-      const messageWithDeliveryInfo = result?.messages?.find((message) => {
-        const deliveryInfo = JSON.stringify(
-          message?.data?.content?.value || ""
+      try {
+        const threadId: ThreadId = {
+          exchangeId: exchange.id,
+          buyerId: exchange.buyer.id,
+          sellerId: exchange.seller.id
+        };
+        const destinationAddressLowerCase = exchange?.offer.seller.operator;
+        const destinationAddress = utils.getAddress(
+          destinationAddressLowerCase
         );
-        if (deliveryInfo?.includes("DELIVERY ADDRESS")) {
-          return message;
+        const startTime = dayjs(
+          getDateTimestamp(exchange?.committedDate)
+        ).toDate();
+        const endTime = dayjs().toDate();
+
+        if (!bosonXmtp) {
+          return "Address not found. Please initialize chat first";
         }
-        return undefined;
-      });
+        const result = await bosonXmtp?.getThread(
+          threadId,
+          destinationAddress,
+          {
+            startTime,
+            endTime
+          }
+        );
+        const messageWithDeliveryInfo = result?.messages?.find((message) => {
+          const deliveryInfo = JSON.stringify(
+            message?.data?.content?.value || ""
+          );
+          if (deliveryInfo?.includes("DELIVERY ADDRESS")) {
+            return message;
+          }
+          return undefined;
+        });
 
-      if (!messageWithDeliveryInfo) {
-        return "Address not found. Please see this exchange's chat history";
+        if (!messageWithDeliveryInfo) {
+          return "Address not found. Please see this exchange's chat history";
+        }
+
+        const deliveryInfo: DeliveryInfo = (
+          (messageWithDeliveryInfo?.data?.content?.value || "") as string
+        )
+          ?.split("\n")
+          .reduce((acc, item) => {
+            const [key, value] = item.split(":");
+            return {
+              ...acc,
+              [camelCase(key)]: (value || "").trim()
+            };
+          }, {});
+
+        return `${deliveryInfo?.name || "name"}, ${
+          deliveryInfo.email || "email"
+        }, ${deliveryInfo?.streetNameAndNumber || "streetNameAndNumber"}, ${
+          deliveryInfo?.city || "city"
+        }, ${deliveryInfo?.state || "state"}, ${deliveryInfo?.zip || "zip"}, ${
+          deliveryInfo?.country || "country"
+        }`;
+      } catch (error) {
+        Sentry.captureException(error, {
+          extra: {
+            action: "export-with-delivery-info",
+            location: "seller-center-exchanges",
+            id: exchange.id
+          }
+        });
+        console.error("Error while fetching exchange chat history", error);
+        return "";
       }
-
-      const deliveryInfo: DeliveryInfo = (
-        (messageWithDeliveryInfo?.data?.content?.value || "") as string
-      )
-        ?.split("\n")
-        .reduce((acc, item) => {
-          const [key, value] = item.split(":");
-          return {
-            ...acc,
-            [camelCase(key)]: (value || "").trim()
-          };
-        }, {});
-
-      return `${deliveryInfo?.name || "name"}, ${
-        deliveryInfo.email || "email"
-      }, ${deliveryInfo?.streetNameAndNumber || "streetNameAndNumber"}, ${
-        deliveryInfo?.city || "city"
-      }, ${deliveryInfo?.state || "state"}, ${deliveryInfo?.zip || "zip"}, ${
-        deliveryInfo?.country || "country"
-      }`;
     },
     [bosonXmtp]
   );
