@@ -1,5 +1,6 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import { DepositFundsButton, Provider } from "@bosonprotocol/react-kit";
+import * as Sentry from "@sentry/browser";
 import { BigNumber, ethers } from "ethers";
 import { useState } from "react";
 import { useAccount, useBalance, useSigner } from "wagmi";
@@ -144,7 +145,7 @@ export default function FinanceDeposit({
                   txHash: hash
                 });
                 break;
-              case "depositFound":
+              case "depositFunds":
                 showModal("TRANSACTION_SUBMITTED", {
                   action: "Finance deposit",
                   txHash: hash
@@ -157,6 +158,7 @@ export default function FinanceDeposit({
                 });
                 break;
               default:
+                Sentry.captureException(actionName);
                 break;
             }
           }}
@@ -179,6 +181,7 @@ export default function FinanceDeposit({
           }}
           onError={(error) => {
             console.error("onError", error);
+            Sentry.captureException(error);
             const hasUserRejectedTx =
               "code" in error &&
               (error as unknown as { code: string }).code === "ACTION_REJECTED";

@@ -1,5 +1,6 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import { Provider, WithdrawFundsButton } from "@bosonprotocol/react-kit";
+import * as Sentry from "@sentry/browser";
 import { BigNumber, ethers } from "ethers";
 import { useState } from "react";
 import styled from "styled-components";
@@ -188,6 +189,7 @@ export default function FinanceWithdraw({
           }}
           onError={(error) => {
             console.error("onError", error);
+            Sentry.captureException(error);
             const hasUserRejectedTx =
               "code" in error &&
               (error as unknown as { code: string }).code === "ACTION_REJECTED";
