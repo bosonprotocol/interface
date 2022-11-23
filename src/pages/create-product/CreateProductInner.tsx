@@ -16,7 +16,7 @@ import keys from "lodash/keys";
 import map from "lodash/map";
 import { useCallback, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { generatePath } from "react-router-dom";
+import { generatePath, useLocation, useNavigate } from "react-router-dom";
 import uuid from "react-uuid";
 import { useAccount } from "wagmi";
 dayjs.extend(localizedFormat);
@@ -333,6 +333,9 @@ function CreateProductInner({
   showInvalidRoleModal,
   isDraftModalClosed
 }: Props) {
+  const history = useNavigate();
+  const location = useLocation();
+
   const navigate = useKeepQueryParamsNavigate();
   const { chatInitializationStatus } = useChatStatus();
   const [productVariant, setProductVariant] = useState<string>(
@@ -342,22 +345,47 @@ function CreateProductInner({
     () => productVariant === "differentVariants" || false,
     [productVariant]
   );
-  const [currentStep, setCurrentStep] = useState<number>(FIRST_STEP);
+  const [currentStep, setCurrentStep] = useState<number>(
+    location?.state?.step || FIRST_STEP
+  );
   const [decimals, setDecimals] = useState<number | undefined>(undefined);
 
   const [isPreviewVisible, setIsPreviewVisible] = useState<boolean>(false);
   const { showModal, modalTypes, hideModal } = useModal();
   const coreSDK = useCoreSDK();
 
+  useEffect(() => {
+    function onBackButtonEvent(e: any) {
+      const currentStep = e.state?.usr?.step || 0;
+      if (currentStep !== 0) {
+        e.preventDefault();
+        setCurrentStep(currentStep - 1);
+      }
+    }
+    window.addEventListener("popstate", onBackButtonEvent);
+    return () => {
+      window.removeEventListener("popstate", onBackButtonEvent);
+    };
+  }, []);
+
+  const setCurrentStepWithHistory = useCallback(
+    (step: number) => {
+      setCurrentStep(step);
+      history(".", { replace: true, state: { ...location.state, step } });
+      window.history.pushState(null, "", window.location.href);
+    },
+    [history, location, setCurrentStep]
+  );
+
   const onCreateNewProject = () => {
     hideModal();
-    setCurrentStep(FIRST_STEP);
+    setCurrentStepWithHistory(FIRST_STEP);
     setIsPreviewVisible(false);
   };
 
   const onViewMyItem = (id: string | null) => {
     hideModal();
-    setCurrentStep(FIRST_STEP);
+    setCurrentStepWithHistory(FIRST_STEP);
     setIsPreviewVisible(false);
     const pathname = id
       ? generatePath(ProductRoutes.ProductDetail, {
@@ -479,9 +507,15 @@ function CreateProductInner({
       setIsPreviewVisible(false);
     }
     if (currentStep < wizardStep.wizardLength) {
-      setCurrentStep((prev) => prev + 1);
+      const nextStep = currentStep + 1;
+      setCurrentStepWithHistory(nextStep);
     }
-  }, [currentStep, isPreviewVisible, wizardStep.wizardLength, setCurrentStep]);
+  }, [
+    isPreviewVisible,
+    wizardStep.wizardLength,
+    currentStep,
+    setCurrentStepWithHistory
+  ]);
 
   const handleClickStep = (val: number) => {
     if (isPreviewVisible) {
