@@ -123,6 +123,8 @@ jobs:
           key: npm-${{ hashFiles('package-lock.json') }}
           restore-keys: npm-
       - run: npm ci
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
       - run: npm run prettier
       - run: npm run lint
       - id: lint
