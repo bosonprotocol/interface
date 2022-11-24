@@ -9,6 +9,7 @@ import { CSVLink } from "react-csv";
 import { useLocation } from "react-router-dom";
 
 import { CONFIG } from "../../../lib/config";
+import { isTruthy } from "../../../lib/types/helpers";
 import { calcPrice } from "../../../lib/utils/calcPrice";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
@@ -64,6 +65,93 @@ const productTags = [
   }
 ];
 
+const statusOrder = [
+  ExchangesKit.ExtendedExchangeState.NotRedeemableYet,
+  subgraph.ExchangeState.Committed,
+  subgraph.ExchangeState.Redeemed,
+  subgraph.ExchangeState.Disputed,
+  subgraph.ExchangeState.Cancelled,
+  subgraph.ExchangeState.Completed,
+  subgraph.ExchangeState.Revoked,
+  ExchangesKit.ExtendedExchangeState.Expired
+] as ExchangesKit.AllExchangeStates[];
+
+const compareExchangesSortByStatus = (
+  exchangeA: Exchange,
+  exchangeB: Exchange
+): number => {
+  const {
+    committedDate: committedDateA,
+    redeemedDate: redeemedDateA,
+    disputedDate: disputedDateA,
+    cancelledDate: cancelledDateA,
+    completedDate: completedDateA,
+    revokedDate: revokedDateA,
+    validUntilDate: validUntilDateA,
+    id: idA
+  } = exchangeA;
+  const {
+    committedDate: committedDateB,
+    redeemedDate: redeemedDateB,
+    disputedDate: disputedDateB,
+    cancelledDate: cancelledDateB,
+    completedDate: completedDateB,
+    revokedDate: revokedDateB,
+    validUntilDate: validUntilDateB,
+    id: idB
+  } = exchangeB;
+  const stateA = ExchangesKit.getExchangeState(exchangeA);
+  const stateB = ExchangesKit.getExchangeState(exchangeB);
+  if (
+    stateA === stateB ||
+    ([
+      ExchangesKit.ExtendedExchangeState.NotRedeemableYet,
+      subgraph.ExchangeState.Committed
+    ].includes(stateA) &&
+      [
+        ExchangesKit.ExtendedExchangeState.NotRedeemableYet,
+        subgraph.ExchangeState.Committed
+      ].includes(stateB))
+  ) {
+    switch (true) {
+      case (
+        [
+          ExchangesKit.ExtendedExchangeState.NotRedeemableYet,
+          subgraph.ExchangeState.Committed
+        ] as ExchangesKit.AllExchangeStates[]
+      ).includes(stateA):
+        return Number(committedDateB) - Number(committedDateA);
+      case stateA === subgraph.ExchangeState.Redeemed:
+        return Number(redeemedDateB) - Number(redeemedDateA);
+      case stateA === subgraph.ExchangeState.Disputed:
+        return Number(disputedDateB) - Number(disputedDateA);
+      case stateA === subgraph.ExchangeState.Cancelled:
+        return Number(cancelledDateB) - Number(cancelledDateA);
+      case stateA === subgraph.ExchangeState.Completed:
+        return Number(completedDateB) - Number(completedDateA);
+      case stateA === subgraph.ExchangeState.Revoked:
+        return Number(revokedDateB) - Number(revokedDateA);
+      case stateA === ExchangesKit.ExtendedExchangeState.Expired:
+        return Number(validUntilDateB) - Number(validUntilDateA);
+      default: {
+        const errorMessage = `Case not supported, stateA=${stateA}, stateB=${stateB}, exchange.idA=${idA}, exchange.idB=${idB}`;
+        console.error(errorMessage);
+        Sentry.captureException(new Error(errorMessage), {
+          extra: {
+            stateA,
+            stateB,
+            idA,
+            idB,
+            action: "compareExchangesSortByStatus",
+            location: "seller-exchanges"
+          }
+        });
+      }
+    }
+  }
+  return statusOrder.indexOf(stateA) - statusOrder.indexOf(stateB);
+};
+
 interface FilterValue {
   value: string;
   label: string;
@@ -103,25 +191,30 @@ export default function SellerExchanges({
 
   const allData = useMemo(() => {
     const filtered =
-      data?.map((exchange: Exchange) => {
-        const status = ExchangesKit.getExchangeState(exchange);
-        if (currentTag === "live-rnfts") {
-          return status === subgraph.ExchangeState.Committed ? exchange : null;
-        }
-        if (currentTag === "redemptions") {
-          return status === subgraph.ExchangeState.Redeemed ? exchange : null;
-        }
-        if (currentTag === "disputes") {
-          return status === subgraph.ExchangeState.Disputed ? exchange : null;
-        }
-        if (currentTag === "past-exchanges") {
-          return status === ExchangesKit.ExtendedExchangeState.Expired ||
-            status === subgraph.ExchangeState.Completed
-            ? exchange
-            : null;
-        }
-        return exchange;
-      }) || [];
+      data
+        ?.map((exchange: Exchange) => {
+          const status = ExchangesKit.getExchangeState(exchange);
+          if (currentTag === "live-rnfts") {
+            return status === subgraph.ExchangeState.Committed
+              ? exchange
+              : null;
+          }
+          if (currentTag === "redemptions") {
+            return status === subgraph.ExchangeState.Redeemed ? exchange : null;
+          }
+          if (currentTag === "disputes") {
+            return status === subgraph.ExchangeState.Disputed ? exchange : null;
+          }
+          if (currentTag === "past-exchanges") {
+            return status === ExchangesKit.ExtendedExchangeState.Expired ||
+              status === subgraph.ExchangeState.Completed
+              ? exchange
+              : null;
+          }
+          return exchange;
+        })
+        .filter(isTruthy)
+        .sort(compareExchangesSortByStatus) || [];
 
     if (search && search.length > 0) {
       return (
