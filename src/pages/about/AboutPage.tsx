@@ -5,7 +5,7 @@ import Typography from "../../components/ui/Typography";
 import { CONFIG } from "../../lib/config";
 
 function AboutPage() {
-  console.log(CONFIG.metaTx.apiIds);
+  console.log(CONFIG.metaTx.apiIds, "apiIDs");
   return (
     <>
       <Typography margin="0 0 0.5rem 0">
@@ -43,13 +43,6 @@ function AboutPage() {
       <Grid margin="0 0 0.5rem 0">
         <>
           <Typography>Default token list:</Typography>
-          {CONFIG.defaultTokens.map((token, index) => {
-            return (
-              <Typography margin="0 0 0 1rem" key={index}>
-                {token.toString()}
-              </Typography>
-            );
-          })}
           {Object.keys(CONFIG.metaTx.apiIds).forEach(function (key, index) {
             return (
               <Typography key={index}>
