@@ -5,6 +5,7 @@ import Typography from "../../components/ui/Typography";
 import { CONFIG } from "../../lib/config";
 
 function AboutPage() {
+  console.log(CONFIG.metaTx.apiIds);
   return (
     <>
       <Typography margin="0 0 0.5rem 0">
