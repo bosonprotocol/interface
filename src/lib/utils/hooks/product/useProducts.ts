@@ -337,7 +337,7 @@ export default function useProducts(
           additional: {
             images: products?.map((offer) => offer?.metadata?.image) || []
           },
-          offers: products,
+          offers: products, // REASSIGN OFFERS for compatibility with previous code
           products,
           numExchanges: exchangesBySellers.data?.[sellerId]?.length
         };

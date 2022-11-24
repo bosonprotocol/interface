@@ -240,6 +240,8 @@ export default function Seller() {
           },
           [] as ExtendedOffer[]
         );
+        // REASSIGN OFFERS for compatibility with previous code
+        sellerProducts.offers = sellerProducts.products;
         return sellerProducts;
       }
     );
