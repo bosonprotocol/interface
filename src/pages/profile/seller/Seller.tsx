@@ -188,21 +188,20 @@ export default function Seller() {
           const nowDate = dayjs();
 
           // all products that still have valid variants/offers
-          const isStillHaveValidAndBought =
-            elem.additional?.variants.some((variant) => {
-              const validFromDateParsed = dayjs(
-                Number(variant?.validFromDate) * 1000
-              );
-              const validUntilDateParsed = dayjs(
-                Number(variant?.validUntilDate) * 1000
-              );
-              return nowDate.isBetween(
-                validFromDateParsed,
-                validUntilDateParsed,
-                "day",
-                "[]"
-              );
-            }) && isHasBeenBought;
+          const isStillHaveValid = elem.additional?.variants.some((variant) => {
+            const validFromDateParsed = dayjs(
+              Number(variant?.validFromDate) * 1000
+            );
+            const validUntilDateParsed = dayjs(
+              Number(variant?.validUntilDate) * 1000
+            );
+            return nowDate.isBetween(
+              validFromDateParsed,
+              validUntilDateParsed,
+              "day",
+              "[]"
+            );
+          });
 
           // all products that have been fully voided, only and only if there exist at least 1 exchange for at least 1 of the variants/offer (whatever the status of this exchange)
           const isFullyVoidedAndBought =
@@ -227,7 +226,7 @@ export default function Seller() {
             }) && isHasBeenBought;
 
           if (
-            isStillHaveValidAndBought ||
+            isStillHaveValid ||
             isFullyVoidedAndBought ||
             isAllVariantsInProductNotValidYet ||
             isAllVariantsInProductAreExpiredAndBought
