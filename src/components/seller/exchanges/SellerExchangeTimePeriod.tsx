@@ -24,25 +24,35 @@ export default function SellerExchangeTimePeriod({ exchange }: Props) {
         },
         [subgraph.ExchangeState.Disputed]: {
           text: "Resolution period ends",
-          value: dayjs(
-            getDateTimestamp(
-              `${
-                parseInt(exchange?.disputedDate || "") +
-                parseInt(exchange?.offer?.resolutionPeriodDuration)
-              }`
-            )
-          ).format(CONFIG.dateFormat)
+          value: () => {
+            if (exchange?.disputedDate) {
+              return dayjs(
+                getDateTimestamp(
+                  `${
+                    parseInt(exchange?.disputedDate) +
+                    parseInt(exchange?.offer?.resolutionPeriodDuration)
+                  }`
+                )
+              ).format(CONFIG.dateFormat);
+            }
+            return "";
+          }
         },
         [subgraph.ExchangeState.Redeemed]: {
           text: "Dispute period ends",
-          value: dayjs(
-            getDateTimestamp(
-              `${
-                parseInt(exchange?.redeemedDate || "") +
-                parseInt(exchange?.offer?.disputePeriodDuration)
-              }`
-            )
-          ).format(CONFIG.dateFormat)
+          value: () => {
+            if (exchange?.redeemedDate) {
+              return dayjs(
+                getDateTimestamp(
+                  `${
+                    parseInt(exchange?.redeemedDate) +
+                    parseInt(exchange?.offer?.disputePeriodDuration)
+                  }`
+                )
+              ).format(CONFIG.dateFormat);
+            }
+            return "";
+          }
         },
         [subgraph.ExchangeState.Completed]: {
           text: "Expired on",
