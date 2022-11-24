@@ -87,6 +87,7 @@ export interface SellerAdditional {
     images: string[];
   };
   offers?: ExtendedOffer[];
+  products?: ExtendedOffer[];
   numExchanges?: number;
 }
 export type ExtendedSeller = SellerAdditional & subgraph.ProductV1Seller;

@@ -153,7 +153,7 @@ export default function Seller() {
     }
   );
   const {
-    sellers: sellerProducts,
+    sellers: sellersProducts,
     isLoading: isLoadingProducts,
     isError: isErrorProducts
   } = useProducts(
@@ -181,64 +181,69 @@ export default function Seller() {
   );
 
   const products = useMemo(() => {
-    return (sellerProducts.filter((s) => s.id === sellerId) || []).map(
-      (product) => {
-        product.offers = product.offers?.reduce((acc, elem) => {
-          const isHasBeenBought = elem.exchanges?.length;
-          const nowDate = dayjs();
+    return (sellersProducts.filter((s) => s.id === sellerId) || []).map(
+      (sellerProducts) => {
+        sellerProducts.products = sellerProducts.products?.reduce(
+          (acc, elem) => {
+            const isHasBeenBought = !!elem.exchanges?.length;
+            const nowDate = dayjs();
 
-          // all products that still have valid variants/offers
-          const isStillHaveValid = elem.additional?.variants.some((variant) => {
-            const validFromDateParsed = dayjs(
-              Number(variant?.validFromDate) * 1000
+            // all products that still have valid variants/offers
+            const isStillHaveValid = elem.additional?.variants.some(
+              (variant) => {
+                const validFromDateParsed = dayjs(
+                  Number(variant?.validFromDate) * 1000
+                );
+                const validUntilDateParsed = dayjs(
+                  Number(variant?.validUntilDate) * 1000
+                );
+                return nowDate.isBetween(
+                  validFromDateParsed,
+                  validUntilDateParsed,
+                  "day",
+                  "[]"
+                );
+              }
             );
-            const validUntilDateParsed = dayjs(
-              Number(variant?.validUntilDate) * 1000
-            );
-            return nowDate.isBetween(
-              validFromDateParsed,
-              validUntilDateParsed,
-              "day",
-              "[]"
-            );
-          });
 
-          // all products that have been fully voided, only and only if there exist at least 1 exchange for at least 1 of the variants/offer (whatever the status of this exchange)
-          const isFullyVoidedAndBought =
-            elem.additional?.variants.every((variant) => {
-              return !!variant.voidedAt;
-            }) && isHasBeenBought;
+            // all products that have been fully voided, only and only if there exist at least 1 exchange for at least 1 of the variants/offer (whatever the status of this exchange)
+            const isFullyVoidedAndBought =
+              elem.additional?.variants.every((variant) => {
+                return !!variant.voidedAt;
+              }) && isHasBeenBought;
 
-          // all products where all variants are not yet valid
-          const isAllVariantsInProductNotValidYet =
-            elem.additional?.variants.every((variant) => {
-              return dayjs(getDateTimestamp(variant?.validFromDate)).isAfter(
-                nowDate
-              );
-            });
+            // all products where all variants are not yet valid
+            const isAllVariantsInProductNotValidYet =
+              elem.additional?.variants.every((variant) => {
+                return dayjs(getDateTimestamp(variant?.validFromDate)).isAfter(
+                  nowDate
+                );
+              });
 
-          // all products where all variants are expired, only and only if there exist at least 1 exchange for at least 1 offer (whatever the status of this exchange)
-          const isAllVariantsInProductAreExpiredAndBought =
-            elem.additional?.variants.every((variant) => {
-              return dayjs(getDateTimestamp(variant?.validUntilDate)).isBefore(
-                nowDate
-              );
-            }) && isHasBeenBought;
+            // all products where all variants are expired, only and only if there exist at least 1 exchange for at least 1 offer (whatever the status of this exchange)
+            const isAllVariantsInProductAreExpiredAndBought =
+              elem.additional?.variants.every((variant) => {
+                return dayjs(
+                  getDateTimestamp(variant?.validUntilDate)
+                ).isBefore(nowDate);
+              }) && isHasBeenBought;
 
-          if (
-            isStillHaveValid ||
-            isFullyVoidedAndBought ||
-            isAllVariantsInProductNotValidYet ||
-            isAllVariantsInProductAreExpiredAndBought
-          ) {
-            acc.push(elem);
-          }
-          return acc;
-        }, [] as ExtendedOffer[]);
-        return product;
+            if (
+              isStillHaveValid ||
+              isFullyVoidedAndBought ||
+              isAllVariantsInProductNotValidYet ||
+              isAllVariantsInProductAreExpiredAndBought
+            ) {
+              acc.push(elem);
+            }
+            return acc;
+          },
+          [] as ExtendedOffer[]
+        );
+        return sellerProducts;
       }
     );
-  }, [sellerId, sellerProducts]);
+  }, [sellerId, sellersProducts]);
 
   const isSellerExists = !!sellers?.length;
   const currentSellerAddress = sellers[0]?.operator || "";
@@ -387,7 +392,7 @@ export default function Seller() {
                     margin="0"
                     fontWeight="600"
                   >
-                    {(products?.[0]?.offers || [])?.length || 0}
+                    {(products?.[0]?.products || [])?.length || 0}
                   </Typography>
                 </div>
                 <div>
@@ -405,7 +410,7 @@ export default function Seller() {
                     margin="0"
                     fontWeight="600"
                   >
-                    {sellerProducts?.[0]?.numExchanges ?? 0}
+                    {sellersProducts?.[0]?.numExchanges ?? 0}
                   </Typography>
                 </div>
                 <div>
