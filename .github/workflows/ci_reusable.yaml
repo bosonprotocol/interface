@@ -119,7 +119,6 @@ jobs:
         uses: "WyriHaximus/github-action-get-previous-tag@v1"
         env:
           REACT_APP_RELEASE_NAME: ${{ steps.previoustag.outputs.tag }}
-        run: echo 'REACT_APP_RELEASE_NAME='$REACT_APP_RELEASE_TAG >> $GITHUB_ENV
       - uses: actions/setup-node@v3
         with:
           node-version: "17"
