@@ -102,6 +102,7 @@ jobs:
       REACT_APP_META_TX_API_KEY: ${{ secrets.REACT_APP_META_TX_API_KEY }}
       REACT_APP_META_TX_API_IDS: ${{ secrets.REACT_APP_META_TX_API_IDS }}
       REACT_APP_ELIGIBLE_SELLER_WALLET_ADDRESSES: ${{ secrets.REACT_APP_ELIGIBLE_SELLER_WALLET_ADDRESSES }}
+      REACT_APP_RELEASE_NAME: $GITHUB_REF
     outputs:
       jobLint: ${{ steps.lint.outputs.pass }}
       jobBuild: ${{ steps.build.outputs.pass }}
@@ -111,16 +112,6 @@ jobs:
       - uses: actions/checkout@v3
         with:
           ref: ${{ github.event.pull_request.head.ref }}
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
-      - name: Show GitHub ref
-        run: echo "$GITHUB_REF"
-      - name: Dump event JSON
-        env:
-          EVENT_JSON_FILENAME: ${{ github.event_path }}
-        run: cat "$EVENT_JSON_FILENAME"
       - uses: actions/setup-node@v3
         with:
           node-version: "17"
