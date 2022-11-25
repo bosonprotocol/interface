@@ -169,7 +169,7 @@ export default function SellerExchanges({
   const [csvData, setCsvData] = useState<CSVData[]>([] as CSVData[]);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const { initialize, bosonXmtp } = useChatContext();
+  const { initialize, bosonXmtp, isInitializing } = useChatContext();
 
   const location = useLocation();
   const state = location.state as MyLocationState;
@@ -334,6 +334,9 @@ export default function SellerExchanges({
           ? dayjs(
               getDateTimestamp(exchange?.offer?.voucherRedeemableUntilDate)
             ).format(CONFIG.dateFormat)
+          : "",
+        ["Redeemed Date"]: exchange?.redeemedDate
+          ? dayjs(getDateTimestamp(exchange?.redeemedDate)).format()
           : ""
       };
     }) as CSVData[];
@@ -367,6 +370,9 @@ export default function SellerExchanges({
               getDateTimestamp(exchange?.offer?.voucherRedeemableUntilDate)
             ).format(CONFIG.dateFormat)
           : "",
+        ["Redeemed Date"]: exchange?.redeemedDate
+          ? dayjs(getDateTimestamp(exchange?.redeemedDate)).format()
+          : "",
         ["Delivery Info"]: (deliveryInfo || "").toString()
       };
     });
@@ -375,7 +381,15 @@ export default function SellerExchanges({
     if (csvBtn?.current) {
       setTimeout(() => {
         setLoading(false);
-        csvBtn.current?.link?.click?.();
+        const a = document.createElement("a");
+        a.href = csvBtn.current?.link?.href || "";
+        a.download = `${
+          csvBtn.current?.props?.filename ||
+          `exchanges-with-delivery-info-${dayjs().format("YYYYMMDD")}`
+        }.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
       }, 250);
     }
   }, [allData, getExchangeAddressDetails, csvBtn]);
@@ -426,13 +440,14 @@ export default function SellerExchanges({
                   name: "Export all data(incl. delivery info)",
                   loading: loading,
                   ref: csvBtn,
-                  onClick: () => {
-                    if (!bosonXmtp) {
+                  onClick: (e: React.MouseEvent<HTMLElement>) => {
+                    e.preventDefault();
+                    if (!bosonXmtp && !isInitializing) {
                       setLoading(true);
                       initialize();
-                      return true;
+                    } else if (bosonXmtp) {
+                      prepareWithDelivery();
                     }
-                    return false;
                   },
                   csvProps: {
                     data: csvData,
