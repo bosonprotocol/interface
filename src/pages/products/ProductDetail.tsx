@@ -22,7 +22,10 @@ import Typography from "../../components/ui/Typography";
 import Video from "../../components/ui/Video";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { colors } from "../../lib/styles/colors";
-import { getOfferDetails } from "../../lib/utils/getOfferDetails";
+import {
+  getOfferAnimationUrl,
+  getOfferDetails
+} from "../../lib/utils/getOfferDetails";
 import useProductByUuid from "../../lib/utils/hooks/product/useProductByUuid";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useSellers } from "../../lib/utils/hooks/useSellers";
@@ -53,7 +56,7 @@ export default function ProductDetail() {
   const selectedOffer = selectedVariant?.offer;
 
   const animationUrl = useMemo(
-    () => selectedOffer?.metadata.animationUrl || "",
+    () => getOfferAnimationUrl(selectedOffer),
     [selectedOffer]
   );
   const hasVariants =
