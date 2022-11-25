@@ -43,6 +43,7 @@ export function useHandleText(offer: Offer) {
   const handleText = useMemo(() => {
     const { release, expiry } = handleDate(offer);
     const aspectRatio = 1 / 2;
+    const optionVoided = offer.voided;
     const optionQuantity =
       Number(offer?.quantityAvailable) / Number(offer?.quantityInitial) <
       aspectRatio;
@@ -54,7 +55,9 @@ export function useHandleText(offer: Offer) {
     const utcValue =
       utcOffset === 0 ? "" : utcOffset < 0 ? `-${utcOffset}` : `+${utcOffset}`;
 
-    if (optionQuantity) {
+    if (optionVoided) {
+      return "Voided";
+    } else if (optionQuantity) {
       return offer?.quantityAvailable === "0"
         ? "Sold out"
         : `Only ${offer?.quantityAvailable}/${offer?.quantityInitial} left`;
