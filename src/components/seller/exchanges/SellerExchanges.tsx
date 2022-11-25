@@ -334,6 +334,9 @@ export default function SellerExchanges({
           ? dayjs(
               getDateTimestamp(exchange?.offer?.voucherRedeemableUntilDate)
             ).format(CONFIG.dateFormat)
+          : "",
+        ["Redeemed Date"]: exchange?.redeemedDate
+          ? dayjs(getDateTimestamp(exchange?.redeemedDate)).format()
           : ""
       };
     }) as CSVData[];
@@ -366,6 +369,9 @@ export default function SellerExchanges({
           ? dayjs(
               getDateTimestamp(exchange?.offer?.voucherRedeemableUntilDate)
             ).format(CONFIG.dateFormat)
+          : "",
+        ["Redeemed Date"]: exchange?.redeemedDate
+          ? dayjs(getDateTimestamp(exchange?.redeemedDate)).format()
           : "",
         ["Delivery Info"]: (deliveryInfo || "").toString()
       };
