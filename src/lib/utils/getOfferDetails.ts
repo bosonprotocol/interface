@@ -23,12 +23,21 @@ interface IGetOfferDetails {
   artistDescription: string;
   images: Array<string>;
 }
+
+export const getOfferAnimationUrl = (
+  offer: Offer | undefined | null
+): string => {
+  return offer?.metadata?.animationUrl === "about:blank"
+    ? ""
+    : offer?.metadata?.animationUrl || "";
+};
+
 export const getOfferDetails = (offer: Offer): IGetOfferDetails => {
   const name =
     offer.metadata?.product?.title || offer.metadata?.name || "Untitled";
   const offerImg = offer.metadata?.image;
 
-  const animationUrl = offer.metadata?.animationUrl || "";
+  const animationUrl = getOfferAnimationUrl(offer);
   const shippingInfo = {
     returnPeriodInDays: offer.metadata?.shipping?.returnPeriodInDays,
     shippingTable:
