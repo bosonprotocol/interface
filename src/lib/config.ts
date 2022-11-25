@@ -8,7 +8,7 @@ import { parseCurationList } from "./utils/curationList";
 import { parseEligibleSellerWalletAddress } from "./utils/eligibleSellerWalletAddress";
 
 type EnvironmentType = "local" | "testing" | "staging" | "production"; // TODO: export EnvironmentType in react-kit
-
+console.log("process.env process.env", process.env);
 const REACT_APP_ENV_NAME = process.env.REACT_APP_ENV_NAME;
 export const config = getDefaultConfig(REACT_APP_ENV_NAME as EnvironmentType);
 
