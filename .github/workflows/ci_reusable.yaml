@@ -112,7 +112,10 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.ref }}
       - name: Read Ref from Github
-        run: echo 'REACT_APP_RELEASE_NAME='$GITHUB_REF >> $GITHUB_ENV
+        run: |
+          echo 'REACT_APP_RELEASE_NAME='$GITHUB_REF >> $GITHUB_ENV
+          echo 'REACT_APP_RELEASE_REF_NAME='$GITHUB_REF_NAME >> $GITHUB_ENV
+          echo 'REACT_APP_RELEASE_NAME_TRIM='$GITHUB_REF:10 >> $GITHUB_ENV
       - uses: actions/setup-node@v3
         with:
           node-version: "17"
