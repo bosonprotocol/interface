@@ -20,7 +20,7 @@ on:
 
 jobs:
   call-reusable-workflow-PR:
-    uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
+    uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@test-github-release
     if: github.event_name == 'pull_request'
     with:
       REACT_APP_ENV_NAME: "testing"
