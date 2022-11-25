@@ -79,7 +79,7 @@ export const CONFIG = {
     ticker: process.env.DEFAULT_CURRENCY || "USD",
     symbol: process.env.DEFAULT_CURRENCY_SYMBOL || "$"
   },
-  releaseName: process.env.REACT_APP_RELEASE_NAME,
+  releaseName: process.env.REACT_APP_RELEASE_TAG,
   envName: REACT_APP_ENV_NAME as EnvironmentType,
   theGraphIpfsUrl:
     process.env.REACT_APP_THE_GRAPH_IPFS_URL || config.theGraphIpfsUrl,
