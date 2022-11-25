@@ -112,32 +112,13 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
-      - name: Set env
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-      - name: Test
-        run: |
-          echo $RELEASE_VERSION
-          echo ${{ env.RELEASE_VERSION }}
-      - name: Set output
-        id: vars
-        run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
-      - name: Check output
-        env:
-          RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
-        run: |
-          echo $RELEASE_VERSION
-          echo ${{ steps.vars.outputs.tag }}
       - name: 'Get Previous tag'
         id: previoustag
         uses: "WyriHaximus/github-action-get-previous-tag@v1"
-        with:
-          fallback: 1.0.0 # Optional fallback tag to use when no tag can be found
+      - name: Get seconds from previous tag to now
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
         env:
-          RELEASE_VERSION_PREVIOUS: ${{ steps.previoustag.outputs.tag }}
-      - name: Test2
-        run: |
-          echo $RELEASE_VERSION_PREVIOUS
-          echo ${{ env.RELEASE_VERSION_PREVIOUS }}
+          RELEASE_TAG: ${{ steps.previoustag.outputs.tag }}
       - uses: actions/setup-node@v3
         with:
           node-version: "17"
