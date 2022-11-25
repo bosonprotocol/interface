@@ -6,9 +6,10 @@ import {
   CaretLeft,
   CaretRight,
   CaretUp,
-  Check
+  Check,
+  WarningCircle
 } from "phosphor-react";
-import { forwardRef, useEffect, useMemo, useRef } from "react";
+import { forwardRef, useCallback, useEffect, useMemo, useRef } from "react";
 import { generatePath } from "react-router-dom";
 import {
   CellProps,
@@ -33,7 +34,6 @@ import { SellerRolesProps } from "../../../lib/utils/hooks/useSellerRoles";
 import { ExtendedOffer } from "../../../pages/explore/WithAllOffers";
 import { CheckboxWrapper } from "../../form/Field.styles";
 import { useModal } from "../../modal/useModal";
-import OfferHistory from "../../offer/OfferHistory";
 import OfferStatuses from "../../offer/OfferStatuses";
 import Price from "../../price/index";
 import Tooltip from "../../tooltip/Tooltip";
@@ -43,6 +43,7 @@ import Grid from "../../ui/Grid";
 import Image from "../../ui/Image";
 import Typography from "../../ui/Typography";
 import PaginationPages from "../common/PaginationPages";
+import { BackedProps, OffersBackedProps } from "../common/WithSellerData";
 
 const VoidButton = styled(BosonButton)`
   background: transparent;
@@ -65,6 +66,7 @@ interface Props {
   setSelected: React.Dispatch<React.SetStateAction<Array<Offer | null>>>;
   sellerRoles: SellerRolesProps;
   currentTag: string;
+  offersBacked: OffersBackedProps;
 }
 
 interface IIndeterminateInputProps {
@@ -261,7 +263,8 @@ export default function SellerProductsTable({
   refetch,
   setSelected,
   sellerRoles,
-  currentTag
+  currentTag,
+  offersBacked
 }: Props) {
   const { showModal, modalTypes } = useModal();
   const navigate = useKeepQueryParamsNavigate();
@@ -273,6 +276,12 @@ export default function SellerProductsTable({
       } as const,
       {
         Header: "",
+        accessor: "warningIcon",
+        disableSortBy: true,
+        maxWidth: 30
+      } as const,
+      {
+        Header: "",
         accessor: "image",
         disableSortBy: true,
         maxWidth: 50
@@ -280,16 +289,18 @@ export default function SellerProductsTable({
       {
         Header: "ID/SKU",
         accessor: "sku",
-        maxWidth: 100
+        maxWidth: 80
       } as const,
       {
         Header: "Product name",
-        accessor: "productName"
+        accessor: "productName",
+        maxWidth: 150
       } as const,
       {
         Header: "Status",
         accessor: "status",
-        disableSortBy: true
+        disableSortBy: true,
+        maxWidth: 100
       } as const,
       {
         Header: "Quantity (available/total)",
@@ -313,6 +324,40 @@ export default function SellerProductsTable({
       } as const
     ],
     []
+  );
+
+  const shouldDisplayFundWarning = useCallback(
+    (token: string | undefined) => {
+      if (token) {
+        const { offersBacked: offers, threshold } = offersBacked;
+        const backedFund = offers.find(
+          (v: BackedProps) =>
+            v.token === token &&
+            v?.value !== null &&
+            Number(v?.value) < threshold
+        );
+
+        if (backedFund !== undefined) {
+          return (
+            <Tooltip
+              content={
+                <Typography
+                  $fontSize="0.75rem"
+                  color={colors.red}
+                  fontWeight="600"
+                >
+                  Please deposit {token} via the Finances page.
+                </Typography>
+              }
+            >
+              <WarningCircle size={20} color={colors.orange} />
+            </Tooltip>
+          );
+        }
+      }
+      return null;
+    },
+    [offersBacked]
   );
 
   const data = useMemo(
@@ -356,6 +401,9 @@ export default function SellerProductsTable({
                         variantStatus === OffersKit.OfferState.EXPIRED ||
                         variantStatus === OffersKit.OfferState.VOIDED
                       ),
+                      warningIcon: shouldDisplayFundWarning(
+                        offer?.exchangeToken?.symbol
+                      ),
                       image: variant.metadata &&
                         "image" in variant.metadata && (
                           <Image
@@ -370,7 +418,6 @@ export default function SellerProductsTable({
                             showPlaceholderText={false}
                           />
                         ),
-
                       sku: (
                         <Tooltip
                           content={
@@ -405,24 +452,19 @@ export default function SellerProductsTable({
                         </Typography>
                       ),
                       status: variant && (
-                        <Tooltip
-                          interactive
-                          content={<OfferHistory offer={variant as Offer} />}
-                        >
-                          <OfferStatuses
-                            offer={variant as Offer}
-                            size="small"
-                            displayDot
-                            showValid
-                            style={{
-                              display: "inline-block",
-                              position: "relative",
-                              top: "unset",
-                              left: "unset",
-                              right: "unset"
-                            }}
-                          />
-                        </Tooltip>
+                        <OfferStatuses
+                          offer={variant as Offer}
+                          size="small"
+                          displayDot
+                          showValid
+                          style={{
+                            display: "inline-block",
+                            position: "relative",
+                            top: "unset",
+                            left: "unset",
+                            right: "unset"
+                          }}
+                        />
                       ),
                       quantity: (
                         <Typography>
@@ -484,6 +526,7 @@ export default function SellerProductsTable({
               status === OffersKit.OfferState.EXPIRED ||
               status === OffersKit.OfferState.VOIDED
             ),
+            warningIcon: shouldDisplayFundWarning(offer?.exchangeToken?.symbol),
             image: (
               <Image
                 src={offer?.metadata?.image ?? ""}
@@ -529,21 +572,19 @@ export default function SellerProductsTable({
               </Grid>
             ),
             status: offer && (
-              <Tooltip interactive content={<OfferHistory offer={offer} />}>
-                <OfferStatuses
-                  offer={offer}
-                  size="small"
-                  displayDot
-                  showValid
-                  style={{
-                    display: "inline-block",
-                    position: "relative",
-                    top: "unset",
-                    left: "unset",
-                    right: "unset"
-                  }}
-                />
-              </Tooltip>
+              <OfferStatuses
+                offer={offer}
+                size="small"
+                displayDot
+                showValid
+                style={{
+                  display: "inline-block",
+                  position: "relative",
+                  top: "unset",
+                  left: "unset",
+                  right: "unset"
+                }}
+              />
             ),
             quantity: (
               <Typography>
@@ -643,7 +684,7 @@ export default function SellerProductsTable({
       hooks.visibleColumns.push((columns) => [
         {
           id: "selection",
-          width: 70,
+          width: 35,
           Header: ({ getToggleAllRowsSelectedProps }) => {
             return (
               <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />

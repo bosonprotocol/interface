@@ -2,6 +2,7 @@ import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 dayjs.extend(isBetween);
 
+import { subgraph } from "@bosonprotocol/react-kit";
 import React, { useMemo } from "react";
 import styled from "styled-components";
 
@@ -48,8 +49,12 @@ interface ExchangesTokensProps extends QueryProps {
 interface SellerDepositProps extends QueryProps {
   data: SellerProps | undefined;
 }
-interface OffersBackedProps {
-  offersBacked: (number | null)[];
+export interface BackedProps {
+  token: string;
+  value: number | null;
+}
+export interface OffersBackedProps {
+  offersBacked: BackedProps[];
   calcOffersBacked: {
     [x: string]: string;
   };
@@ -58,6 +63,7 @@ interface OffersBackedProps {
   };
   threshold: number;
   displayWarning: boolean;
+  offersBackedFn: (fund: subgraph.FundsEntityFieldsFragment) => number | null;
 }
 
 export interface WithSellerDataProps {
