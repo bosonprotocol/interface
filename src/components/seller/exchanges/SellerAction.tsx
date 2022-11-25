@@ -102,32 +102,37 @@ export const SellerActionButton = ({
   sellerRoles: SellerRolesProps;
 }) => {
   const { showModal, modalTypes } = useModal();
+  const { status: disputeSubStatus } = useDisputeSubStatusInfo(exchange);
+
   if (!exchange) {
     return null;
   }
+
   return (
     <Grid justifyContent="flex-end" gap="1rem">
-      {exchange && isExchangeCompletableBySeller(exchange) && (
-        <BosonButton
-          variant="primaryFill"
-          size={ButtonSize.Small}
-          disabled={!sellerRoles?.isOperator}
-          tooltip="This action is restricted to only the operator wallet"
-          onClick={() => {
-            showModal(
-              modalTypes.COMPLETE_EXCHANGE,
-              {
-                title: "Complete Confirmation",
-                exchange: exchange,
-                refetch
-              },
-              "xs"
-            );
-          }}
-        >
-          Complete exchange
-        </BosonButton>
-      )}
+      {exchange &&
+        (isExchangeCompletableBySeller(exchange) ||
+          disputeSubStatus === "Dispute expired") && (
+          <BosonButton
+            variant="primaryFill"
+            size={ButtonSize.Small}
+            disabled={!sellerRoles?.isOperator}
+            tooltip="This action is restricted to only the operator wallet"
+            onClick={() => {
+              showModal(
+                modalTypes.COMPLETE_EXCHANGE,
+                {
+                  title: "Complete Confirmation",
+                  exchange: exchange,
+                  refetch
+                },
+                "xs"
+              );
+            }}
+          >
+            Complete exchange
+          </BosonButton>
+        )}
       <BosonButton
         variant="accentInverted"
         showBorder={false}
