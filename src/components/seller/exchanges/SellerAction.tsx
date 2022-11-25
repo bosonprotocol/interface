@@ -180,8 +180,6 @@ export const SellerCompleteActionButton = ({
   const shouldShowCompleteCTA =
     (exchange && isExchangeCompletableBySeller(exchange)) || isDisputeExpired;
 
-  console.log({ shouldShowCompleteCTA, id: exchange?.id });
-
   return exchange && shouldShowCompleteCTA ? (
     <BosonButton
       variant="primaryFill"
