@@ -1,9 +1,12 @@
 import Avatar from "@davatar/react";
+import dayjs from "dayjs";
+import isBetween from "dayjs/plugin/isBetween";
 import { BigNumber } from "ethers";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
+dayjs.extend(isBetween);
 
 import {
   getLensCoverPictureUrl,
@@ -18,6 +21,7 @@ import Typography from "../../../components/ui/Typography";
 import { UrlParameters } from "../../../lib/routing/parameters";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
+import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import {
   MediaSet,
   Profile,
@@ -30,7 +34,7 @@ import { useCurrentSellers } from "../../../lib/utils/hooks/useCurrentSellers";
 import { useSellerCalculations } from "../../../lib/utils/hooks/useSellerCalculations";
 import { useSellers } from "../../../lib/utils/hooks/useSellers";
 import { getLensImageUrl } from "../../../lib/utils/images";
-import { ExtendedSeller } from "../../explore/WithAllOffers";
+import { ExtendedOffer } from "../../explore/WithAllOffers";
 import NotFound from "../../not-found/NotFound";
 import backgroundFluid from "../common/background-img.png";
 import ReadMore from "../common/ReadMore";
@@ -149,12 +153,11 @@ export default function Seller() {
     }
   );
   const {
-    sellers: sellerProducts,
+    sellers: sellersProducts,
     isLoading: isLoadingProducts,
     isError: isErrorProducts
   } = useProducts(
     {
-      onlyNotVoided: true,
       productsFilter: {
         sellerId
       }
@@ -164,13 +167,6 @@ export default function Seller() {
       withNumExchanges: true
     }
   );
-  // TODO: clarify what products should be shown on the seller page:
-  //  - all products that have still valid offers
-  //  - all products that have been fully voided, only and only if there exist at least 1 exchange
-  //        for at least 1 offer (whatever the status of this exchange)
-  //  - all products whose all offers are not yet valid
-  //  - all products whose all offers are expired, only and only if there exist at least 1 exchange
-  //        for at least 1 offer (whatever the status of this exchange)
   const {
     data: { exchanges } = {},
     isError: isErrorSellerCalculation,
@@ -183,10 +179,73 @@ export default function Seller() {
       enabled: !!sellerId
     }
   );
+
   const products = useMemo(() => {
-    return (sellerProducts.filter((s) => s.id === sellerId) ||
-      []) as ExtendedSeller[];
-  }, [sellerProducts, sellerId]);
+    return (sellersProducts.filter((s) => s.id === sellerId) || []).map(
+      (sellerProducts) => {
+        sellerProducts.products = sellerProducts.products?.reduce(
+          (acc, elem) => {
+            const isHasBeenBought = !!elem.exchanges?.length;
+            const nowDate = dayjs();
+
+            // all products that still have valid variants/offers
+            const isStillHaveValid = elem.additional?.variants.some(
+              (variant) => {
+                const validFromDateParsed = dayjs(
+                  Number(variant?.validFromDate) * 1000
+                );
+                const validUntilDateParsed = dayjs(
+                  Number(variant?.validUntilDate) * 1000
+                );
+                return nowDate.isBetween(
+                  validFromDateParsed,
+                  validUntilDateParsed,
+                  "day",
+                  "[]"
+                );
+              }
+            );
+
+            // all products that have been fully voided, only and only if there exist at least 1 exchange for at least 1 of the variants/offer (whatever the status of this exchange)
+            const isFullyVoidedAndBought =
+              elem.additional?.variants.every((variant) => {
+                return !!variant.voidedAt;
+              }) && isHasBeenBought;
+
+            // all products where all variants are not yet valid
+            const isAllVariantsInProductNotValidYet =
+              elem.additional?.variants.every((variant) => {
+                return dayjs(getDateTimestamp(variant?.validFromDate)).isAfter(
+                  nowDate
+                );
+              });
+
+            // all products where all variants are expired, only and only if there exist at least 1 exchange for at least 1 offer (whatever the status of this exchange)
+            const isAllVariantsInProductAreExpiredAndBought =
+              elem.additional?.variants.every((variant) => {
+                return dayjs(
+                  getDateTimestamp(variant?.validUntilDate)
+                ).isBefore(nowDate);
+              }) && isHasBeenBought;
+
+            if (
+              isStillHaveValid ||
+              isFullyVoidedAndBought ||
+              isAllVariantsInProductNotValidYet ||
+              isAllVariantsInProductAreExpiredAndBought
+            ) {
+              acc.push(elem);
+            }
+            return acc;
+          },
+          [] as ExtendedOffer[]
+        );
+        // REASSIGN OFFERS for compatibility with previous code
+        sellerProducts.offers = sellerProducts.products;
+        return sellerProducts;
+      }
+    );
+  }, [sellerId, sellersProducts]);
 
   const isSellerExists = !!sellers?.length;
   const currentSellerAddress = sellers[0]?.operator || "";
@@ -335,7 +394,7 @@ export default function Seller() {
                     margin="0"
                     fontWeight="600"
                   >
-                    {(products?.[0]?.offers || [])?.length || 0}
+                    {(products?.[0]?.products || [])?.length || 0}
                   </Typography>
                 </div>
                 <div>
@@ -353,7 +412,7 @@ export default function Seller() {
                     margin="0"
                     fontWeight="600"
                   >
-                    {sellerProducts?.[0]?.numExchanges ?? 0}
+                    {sellersProducts?.[0]?.numExchanges ?? 0}
                   </Typography>
                 </div>
                 <div>
