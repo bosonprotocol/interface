@@ -178,6 +178,13 @@ const Table = styled.table`
       display: flex;
       justify-content: center;
       align-items: center;
+      margin: 0.5rem 0;
+      [role="cell"] {
+        p {
+          padding: 0;
+          margin: 0;
+        }
+      }
     }
     .tr {
       :hover {
@@ -294,7 +301,7 @@ export default function SellerProductsTable({
       {
         Header: "Product name",
         accessor: "productName",
-        maxWidth: 150
+        maxWidth: 200
       } as const,
       {
         Header: "Status",
