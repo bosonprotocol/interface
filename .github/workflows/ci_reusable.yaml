@@ -112,15 +112,14 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
-      - name: 'Get Previous tag'
+      - name: "Get Previous tag"
         id: previoustag
         uses: "WyriHaximus/github-action-get-previous-tag@v1"
       - name: Get seconds from previous tag to now
         uses: "WyriHaximus/github-action-get-previous-tag@v1"
         env:
-          REACT_APP_RELEASE_TAG: ${{ steps.previoustag.outputs.tag }}
-      - name: Save Ref Name from Github
-        run: echo 'REACT_APP_RELEASE_NAME='$GITHUB_REF_NAME >> $GITHUB_ENV
+          REACT_APP_RELEASE_NAME: ${{ steps.previoustag.outputs.tag }}
+        run: echo 'REACT_APP_RELEASE_NAME='$REACT_APP_RELEASE_TAG >> $GITHUB_ENV
       - uses: actions/setup-node@v3
         with:
           node-version: "17"
