@@ -80,7 +80,6 @@ export const CONFIG = {
     symbol: process.env.DEFAULT_CURRENCY_SYMBOL || "$"
   },
   releaseTag: process.env.REACT_APP_RELEASE_TAG,
-  releaseName: process.env.REACT_APP_RELEASE_NAME,
   envName: REACT_APP_ENV_NAME as EnvironmentType,
   theGraphIpfsUrl:
     process.env.REACT_APP_THE_GRAPH_IPFS_URL || config.theGraphIpfsUrl,

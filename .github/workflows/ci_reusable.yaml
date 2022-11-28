@@ -112,9 +112,6 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
-      - name: "Get Previous tag"
-        id: previoustag
-        uses: "WyriHaximus/github-action-get-previous-tag@v1"
       - uses: actions/setup-node@v3
         with:
           node-version: "17"
@@ -133,11 +130,7 @@ jobs:
       - run: npm run lint
       - id: lint
         run: echo "::set-output name=pass::success"
-      - name: Save Tag Name from Github
-        run: |
-          echo REACT_APP_RELEASE_TAG=${{ steps.previoustag.outputs.tag }} >> $GITHUB_ENV
-          echo "REACT_APP_RELEASE_NAME=$(git describe --tags)" >> $GITHUB_ENV
-      - run: npm run build
+      - run: REACT_APP_RELEASE_TAG=$(git describe --tags) npm run build
       - id: build
         run: echo "::set-output name=pass::success"
       - name: Run Tests & Generate coverage reports
