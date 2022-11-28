@@ -19,9 +19,19 @@ on:
         required: true
 
 jobs:
+  prejob:
+    name: Get Latest Tag
+    runs-on: ubuntu-latest
+    outputs:
+      releaseName: ${{ steps.step1.outputs.releaseName }}
+    steps:
+      - id: step1
+        run: echo "releaseName=$(git describe --tags)" >> $GITHUB_OUTPUT
+
   call-reusable-workflow-PR:
     uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@bp504-add-about-page
     if: github.event_name == 'pull_request'
+    needs: prejob
     with:
       REACT_APP_ENV_NAME: "testing"
       DEPLOY_TO_FLEEK: false
@@ -30,7 +40,7 @@ jobs:
       REACT_APP_ENABLE_CURATION_LISTS: false
       REACT_APP_CREATE_PROFILE_CONFIGURATION: "LENS"
       REACT_APP_IPFS_GATEWAY: "https://bosonprotocol.infura-ipfs.io/ipfs/"
-      REACT_APP_RELEASE_NAME: git describe --tags
+      REACT_APP_RELEASE_NAME: ${{needs.prejob.outputs.releaseName}}
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
