@@ -22,6 +22,8 @@ jobs:
   call-reusable-workflow-PR:
     uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@bp504-add-about-page
     if: github.event_name == 'pull_request'
+    before_script:
+      - echo "RELEASE_NAME=$(git describe --tags)" >> $GITHUB_ENV
     with:
       REACT_APP_ENV_NAME: "testing"
       DEPLOY_TO_FLEEK: false
@@ -30,7 +32,9 @@ jobs:
       REACT_APP_ENABLE_CURATION_LISTS: false
       REACT_APP_CREATE_PROFILE_CONFIGURATION: "LENS"
       REACT_APP_IPFS_GATEWAY: "https://bosonprotocol.infura-ipfs.io/ipfs/"
-      REACT_APP_RELEASE_NAME: ${{ $(git describe --tags) }}
+      REACT_APP_RELEASE_NAME: $RELEASE_NAME
+      REACT_APP_RELEASE_NAME2: ${{ env.RELEASE_NAME }}
+      REACT_APP_RELEASE_NAME3: ${{ $RELEASE_NAME }}
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
