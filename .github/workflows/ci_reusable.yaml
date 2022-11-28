@@ -36,6 +36,12 @@ on:
       REACT_APP_RELEASE_NAME:
         required: true
         type: string
+      OUTPUT_1:
+        required: true
+        type: string
+      OUTPUT_2:
+        required: true
+        type: string
     secrets:
       NPM_TOKEN:
         required: true
