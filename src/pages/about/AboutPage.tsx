@@ -1,13 +1,9 @@
-import React from "react";
-
 import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
 import { CONFIG } from "../../lib/config";
 
 function AboutPage() {
-  console.log(CONFIG.releaseName, "releaseName");
-  console.log(CONFIG.enableCurationLists, "curationListEnable");
-  console.log(CONFIG.metaTx.apiIds, "apiIDs");
+  console.log({ CONFIG, env: process.env });
 
   return (
     <>
@@ -15,7 +11,7 @@ function AboutPage() {
         Environment name: {CONFIG.envName}
       </Typography>
       <Typography margin="0 0 0.5rem 0">
-        Release version: {CONFIG.releaseName}
+        Release version: {CONFIG.releaseTag}
       </Typography>
       <Typography margin="0 0 0.5rem 0">
         Curation Lists Enabled: {CONFIG.enableCurationLists}
