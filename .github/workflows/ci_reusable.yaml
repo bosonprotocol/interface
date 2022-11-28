@@ -33,6 +33,12 @@ on:
       REACT_APP_IPFS_IMAGE_GATEWAY:
         required: false
         type: string
+      REACT_APP_RELEASE_TAG:
+        required: false
+        type: string
+      REACT_APP_RELEASE_NAME:
+        required: false
+        type: string
     secrets:
       NPM_TOKEN:
         required: true
@@ -102,6 +108,8 @@ jobs:
       REACT_APP_META_TX_API_KEY: ${{ secrets.REACT_APP_META_TX_API_KEY }}
       REACT_APP_META_TX_API_IDS: ${{ secrets.REACT_APP_META_TX_API_IDS }}
       REACT_APP_ELIGIBLE_SELLER_WALLET_ADDRESSES: ${{ secrets.REACT_APP_ELIGIBLE_SELLER_WALLET_ADDRESSES }}
+      REACT_APP_RELEASE_TAG: ${{ inputs.REACT_APP_RELEASE_TAG }}
+      REACT_APP_RELEASE_NAME: ${{ inputs.REACT_APP_RELEASE_NAME }}
     outputs:
       jobLint: ${{ steps.lint.outputs.pass }}
       jobBuild: ${{ steps.build.outputs.pass }}
@@ -111,6 +119,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
       - uses: actions/setup-node@v3
         with:
           node-version: "17"
