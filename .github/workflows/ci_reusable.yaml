@@ -36,12 +36,6 @@ on:
       REACT_APP_RELEASE_NAME:
         required: true
         type: string
-      OUTPUT_1:
-        required: true
-        type: string
-      OUTPUT_2:
-        required: true
-        type: string
     secrets:
       NPM_TOKEN:
         required: true
@@ -122,9 +116,6 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
-      - name: "Get Previous tag"
-        id: previoustag
-        uses: "WyriHaximus/github-action-get-previous-tag@v1"
       - uses: actions/setup-node@v3
         with:
           node-version: "17"
