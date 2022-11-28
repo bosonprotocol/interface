@@ -23,10 +23,13 @@ jobs:
     name: Get Latest Tag
     runs-on: ubuntu-latest
     outputs:
-      releaseName: ${{ steps.step1.outputs.releaseName }}
+      output1: ${{ steps.step1.outputs.test }}
+      output2: ${{ steps.step2.outputs.test }}
     steps:
       - id: step1
-        run: echo "releaseName=$(git describe --tags)" >> $GITHUB_OUTPUT
+        run: echo "test="$(git describe --tags) >> $GITHUB_OUTPUT
+      - id: step2
+        run: echo "test=$(git describe --tags)" >> $GITHUB_OUTPUT
 
   call-reusable-workflow-PR:
     uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@bp504-add-about-page
@@ -40,7 +43,9 @@ jobs:
       REACT_APP_ENABLE_CURATION_LISTS: false
       REACT_APP_CREATE_PROFILE_CONFIGURATION: "LENS"
       REACT_APP_IPFS_GATEWAY: "https://bosonprotocol.infura-ipfs.io/ipfs/"
-      REACT_APP_RELEASE_NAME: ${{needs.prejob.outputs.releaseName}}
+      REACT_APP_RELEASE_NAME: ${{ needs.prejob.outputs.releaseName }}
+      OUTPUT_1: ${{ needs.prejob.outputs.output1 }}
+      OUTPUT_2: ${{ needs.prejob.outputs.output2 }}
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
