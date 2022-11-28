@@ -133,10 +133,11 @@ jobs:
       - run: npm run lint
       - id: lint
         run: echo "::set-output name=pass::success"
-      - run: |
+      - name: Save Tag Name from Github
+        run: |
           echo REACT_APP_RELEASE_TAG=${{ steps.previoustag.outputs.tag }} >> $GITHUB_ENV
           echo "REACT_APP_RELEASE_NAME=$(git describe --tags)" >> $GITHUB_ENV
-          npm run build
+      - run: npm run build
       - id: build
         run: echo "::set-output name=pass::success"
       - name: Run Tests & Generate coverage reports
