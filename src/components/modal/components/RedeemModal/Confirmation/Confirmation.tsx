@@ -221,7 +221,6 @@ ${FormModel.formFields.email.placeholder}: ${emailField.value}`;
               setRedeemError(null);
               setIsLoading(true);
               setLoading?.(true);
-              await sendDeliveryDetailsToChat();
               showModal("WAITING_FOR_CONFIRMATION");
             }}
             onPendingTransaction={(hash, isMetaTx) => {
