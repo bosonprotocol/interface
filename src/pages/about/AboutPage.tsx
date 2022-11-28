@@ -34,8 +34,6 @@ const Text = styled(Typography)`
 `;
 
 function AboutPage() {
-  console.log({ CONFIG, env: process.env });
-
   return (
     <Wrapper
       flexDirection="column"

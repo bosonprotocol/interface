@@ -33,6 +33,9 @@ on:
       REACT_APP_IPFS_IMAGE_GATEWAY:
         required: false
         type: string
+      REACT_APP_RELEASE_NAME:
+        required: true
+        type: string
     secrets:
       NPM_TOKEN:
         required: true
@@ -102,6 +105,7 @@ jobs:
       REACT_APP_META_TX_API_KEY: ${{ secrets.REACT_APP_META_TX_API_KEY }}
       REACT_APP_META_TX_API_IDS: ${{ secrets.REACT_APP_META_TX_API_IDS }}
       REACT_APP_ELIGIBLE_SELLER_WALLET_ADDRESSES: ${{ secrets.REACT_APP_ELIGIBLE_SELLER_WALLET_ADDRESSES }}
+      REACT_APP_RELEASE_NAME: ${{ inputs.REACT_APP_RELEASE_NAME }}
     outputs:
       jobLint: ${{ steps.lint.outputs.pass }}
       jobBuild: ${{ steps.build.outputs.pass }}
@@ -112,6 +116,9 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
+      - name: "Get Previous tag"
+        id: previoustag
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
       - uses: actions/setup-node@v3
         with:
           node-version: "17"
@@ -130,7 +137,7 @@ jobs:
       - run: npm run lint
       - id: lint
         run: echo "::set-output name=pass::success"
-      - run: REACT_APP_RELEASE_TAG=$(git describe --tags) npm run build
+      - run: npm run build
       - id: build
         run: echo "::set-output name=pass::success"
       - name: Run Tests & Generate coverage reports
