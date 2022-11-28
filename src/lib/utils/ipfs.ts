@@ -9,6 +9,9 @@ export function getIpfsGatewayUrl(
     gateway: string;
   }> = {}
 ): string {
+  if (!uri) {
+    return uri;
+  }
   const { gateway = CONFIG.ipfsGateway } = opts;
   const cid = uri.replaceAll("ipfs://", "");
 
