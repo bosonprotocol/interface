@@ -116,7 +116,9 @@ jobs:
         id: previoustag
         uses: "WyriHaximus/github-action-get-previous-tag@v1"
       - name: Save Tag Name from Github
-        run: echo REACT_APP_RELEASE_TAG=’${{ steps.previoustag.outputs.tag }} >> $GITHUB_ENV
+        run: |
+          echo REACT_APP_RELEASE_TAG=${{ steps.previoustag.outputs.tag }} >> $GITHUB_ENV
+          echo "REACT_APP_RELEASE_NAME=$(git describe --tags)" >> $GITHUB_ENV
       - uses: actions/setup-node@v3
         with:
           node-version: "17"

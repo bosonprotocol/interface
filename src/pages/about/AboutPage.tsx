@@ -1,71 +1,130 @@
+import { CheckCircle, XCircle } from "phosphor-react";
+import styled from "styled-components";
+
 import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
 import { CONFIG } from "../../lib/config";
+import { breakpoint } from "../../lib/styles/breakpoint";
+import { colors } from "../../lib/styles/colors";
+
+const Wrapper = styled(Grid)`
+  padding: 4rem 0;
+`;
+const Text = styled(Typography)`
+  flex-direction: column;
+  ${breakpoint.s} {
+    flex-direction: row;
+  }
+
+  > span {
+    word-break: break-word;
+    max-width: 100%;
+
+    :first-child {
+      ${breakpoint.s} {
+        min-width: 15rem;
+        max-width: 15rem;
+      }
+      margin-right: 1rem;
+    }
+    :last-child {
+      font-weight: bold;
+    }
+  }
+`;
 
 function AboutPage() {
   console.log({ CONFIG, env: process.env });
 
   return (
-    <>
-      <Typography margin="0 0 0.5rem 0">
-        Environment name: {CONFIG.envName}
-      </Typography>
-      <Typography margin="0 0 0.5rem 0">
-        Release version: {CONFIG.releaseTag}
-      </Typography>
-      <Typography margin="0 0 0.5rem 0">
-        Curation Lists Enabled: {CONFIG.enableCurationLists}
-      </Typography>
+    <Wrapper
+      flexDirection="column"
+      alignItems="flex-start"
+      justifyContent="flex-start"
+      gap="0.5rem"
+    >
+      <Text margin="0 0 0.5rem 0">
+        <span>Environment name:</span>
+        <span>{CONFIG.envName || "-"}</span>
+      </Text>
+      <Text margin="0 0 0.5rem 0">
+        <span>Release version:</span>
+        <span>{CONFIG.releaseTag || "-"}</span>
+      </Text>
+      <Text margin="0 0 0.5rem 0">
+        <span>Release name:</span>
+        <span>{CONFIG.releaseName || "-"}</span>
+      </Text>
+      <Text margin="0 0 0.5rem 0">
+        <span>Curation Lists Enabled:</span>
+        {CONFIG.enableCurationLists ? (
+          <CheckCircle size={20} color={colors.green} />
+        ) : (
+          <XCircle size={20} color={colors.red} />
+        )}
+      </Text>
       {CONFIG.enableCurationLists && (
         <>
-          <Typography margin="0 0 0.5rem 0">
-            Seller Curation List: {CONFIG.sellerCurationList}
-          </Typography>
-          <Typography margin="0 0 0.5rem 0">
-            Offer Curation List: {CONFIG.offerCurationList}
-          </Typography>
-          <Typography margin="0 0 0.5rem 0">
-            Eligible Wallets List: {CONFIG.eligibleSellerWalletAddresses}
-          </Typography>
+          <Text margin="0 0 0.5rem 0">
+            <span>Seller Curation List:</span>
+            <span>{CONFIG.sellerCurationList || "-"}</span>
+          </Text>
+          <Text margin="0 0 0.5rem 0">
+            <span>Offer Curation List:</span>
+            <span>{CONFIG.offerCurationList || "-"}</span>
+          </Text>
+          <Text margin="0 0 0.5rem 0">
+            <span>Eligible Wallets List:</span>
+            <span>{CONFIG.eligibleSellerWalletAddresses || "-"}</span>
+          </Text>
         </>
       )}
-      <Typography margin="0 0 0.5rem 0">
-        Create Profile Configuration: {CONFIG.createProfileConfiguration}
-      </Typography>
-      <Typography margin="0 0 0.5rem 0">
-        Link to Buyer/Seller Agreement Template:{" "}
-        {CONFIG.buyerSellerAgreementTemplate}
-      </Typography>
-      <Typography margin="0 0 0.5rem 0">
-        Link to rNFT License Template: {CONFIG.rNFTLicenseTemplate}
-      </Typography>
+      <Text margin="0 0 0.5rem 0">
+        <span>Create Profile Configuration:</span>
+        <span>{CONFIG.createProfileConfiguration || "-"}</span>
+      </Text>
+      <Text margin="0 0 0.5rem 0">
+        <span>Link to Buyer/Seller Agreement Template:</span>
+        <span>{CONFIG.buyerSellerAgreementTemplate || "-"}</span>
+      </Text>
+      <Text margin="0 0 0.5rem 0">
+        <span>Link to rNFT License Template:</span>
+        <span>{CONFIG.rNFTLicenseTemplate || "-"}</span>
+      </Text>
       <Grid margin="0 0 0.5rem 0">
         <>
-          <Typography>Default token list:</Typography>
-          {Object.keys(CONFIG.metaTx.apiIds).forEach(function (key, index) {
-            return (
-              <Typography key={index}>
-                {CONFIG.metaTx.apiIds[key].toString()}
-              </Typography>
-            );
-          })}
+          <Text>
+            <span>Default token list:</span>
+            <span>
+              {CONFIG.defaultTokens.map((token, index) => {
+                return (
+                  <span key={`token_${token.symbol}_${index}`}>
+                    {JSON.stringify(token)}
+                  </span>
+                );
+              })}
+            </span>
+          </Text>
         </>
       </Grid>
-      <Typography margin="0 0 0.5rem 0">
-        Default resolution period: {CONFIG.defaultDisputeResolutionPeriodDays}{" "}
-        days
-      </Typography>
-      <Typography margin="0 0 0.5rem 0">
-        Default Dispute Resolver ID: {CONFIG.defaultDisputeResolverId}
-      </Typography>
-      <Typography margin="0 0 0.5rem 0">
-        IPFS GATEWAY:{" "}
+      <Text margin="0 0 0.5rem 0">
+        <span>Default resolution period:</span>
+        <span>{`${
+          CONFIG.defaultDisputeResolutionPeriodDays || "0"
+        } days`}</span>
+      </Text>
+      <Text margin="0 0 0.5rem 0">
+        <span>Default Dispute Resolver ID:</span>
+        <span>{CONFIG.defaultDisputeResolverId || "-"}</span>
+      </Text>
+      <Text margin="0 0 0.5rem 0">
+        <span>IPFS GATEWAY:</span>
         <a href={CONFIG.ipfsGateway} target="_blank" rel="noopener noreferrer">
           {CONFIG.ipfsGateway}
         </a>
-      </Typography>
-      <Typography margin="0 0 0.5rem 0">
-        IPFS IMAGE GATEWAY:{" "}
+      </Text>
+      <Text margin="0 0 0.5rem 0">
+        <span>IPFS IMAGE GATEWAY:</span>
         <a
           href={CONFIG.ipfsImageGateway}
           target="_blank"
@@ -73,8 +132,8 @@ function AboutPage() {
         >
           {CONFIG.ipfsImageGateway}
         </a>
-      </Typography>
-    </>
+      </Text>
+    </Wrapper>
   );
 }
 
