@@ -50,6 +50,10 @@ function AboutPage() {
         <span>{CONFIG.releaseTag || "-"}</span>
       </Text>
       <Text margin="0 0 0.5rem 0">
+        <span>Release name:</span>
+        <span>{CONFIG.releaseName || "-"}</span>
+      </Text>
+      <Text margin="0 0 0.5rem 0">
         <span>Curation Lists Enabled:</span>
         {CONFIG.enableCurationLists ? (
           <CheckCircle size={20} color={colors.green} />

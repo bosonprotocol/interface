@@ -33,6 +33,9 @@ on:
       REACT_APP_IPFS_IMAGE_GATEWAY:
         required: false
         type: string
+      REACT_APP_RELEASE_TAG:
+        required: true
+        type: string
       REACT_APP_RELEASE_NAME:
         required: true
         type: string
