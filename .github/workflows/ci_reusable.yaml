@@ -108,6 +108,7 @@ jobs:
       REACT_APP_META_TX_API_KEY: ${{ secrets.REACT_APP_META_TX_API_KEY }}
       REACT_APP_META_TX_API_IDS: ${{ secrets.REACT_APP_META_TX_API_IDS }}
       REACT_APP_ELIGIBLE_SELLER_WALLET_ADDRESSES: ${{ secrets.REACT_APP_ELIGIBLE_SELLER_WALLET_ADDRESSES }}
+      REACT_APP_RELEASE_TAG: ${{ inputs.REACT_APP_RELEASE_TAG }}
       REACT_APP_RELEASE_NAME: ${{ inputs.REACT_APP_RELEASE_NAME }}
     outputs:
       jobLint: ${{ steps.lint.outputs.pass }}
