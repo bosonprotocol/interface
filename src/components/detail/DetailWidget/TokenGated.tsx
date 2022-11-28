@@ -1,6 +1,6 @@
 import { EvaluationMethod, TokenType } from "@bosonprotocol/common";
 import { Check, X } from "phosphor-react";
-import { CSSProperties, useEffect, useState } from "react";
+import { CSSProperties, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 
 import { CONFIG } from "../../../lib/config";
@@ -10,6 +10,7 @@ import { IPrice } from "../../../lib/utils/convertPrice";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 import { useConvertedPrice } from "../../price/useConvertedPrice";
 import Grid from "../../ui/Grid";
+import Image from "../../ui/Image";
 
 interface Props {
   offer: Offer;
@@ -114,6 +115,14 @@ const TokenGated = ({
     symbol: ""
   });
 
+  const sellerAvatar: string | undefined = useMemo(
+    () =>
+      (offer?.metadata?.productV1Seller?.images || []).find(
+        (img) => img.tag === "profile"
+      )?.url,
+    [offer?.metadata?.productV1Seller?.images]
+  );
+
   useEffect(() => {
     (async () => {
       if (condition?.tokenAddress && condition?.tokenType === 0) {
@@ -147,8 +156,9 @@ const TokenGated = ({
     <Grid as="section" padding="0 0" style={style}>
       <TokenGatedInfo>
         <TokenIconWrapper>
-          <TokenIcon $conditionMet={isConditionMet} />
-
+          <TokenIcon $conditionMet={isConditionMet}>
+            {sellerAvatar && <Image src={sellerAvatar} />}
+          </TokenIcon>
           <IconWrapper $conditionMet={isConditionMet}>
             {isConditionMet ? (
               <Check size={25} color={colors.black} />
@@ -157,7 +167,6 @@ const TokenGated = ({
             )}
           </IconWrapper>
         </TokenIconWrapper>
-
         <LockInfo>
           <LockInfoTitle>Token Gated Offer</LockInfoTitle>
           {commitProxyAddress && openseaLinkToOriginalMainnetCollection ? (
@@ -232,6 +241,25 @@ const TokenIcon = styled.div<{ $conditionMet?: boolean }>`
   width: 3rem;
   height: 3rem;
   border-radius: 50%;
+
+  position: relative;
+  overflow: hidden;
+  > div {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    padding-top: 0;
+    height: 100%;
+    width: 100%;
+    transform: translate(-50%, -50%);
+    background: ${colors.white};
+    > img {
+      position: relative;
+      top: 0;
+      left: 0;
+      transform: none;
+    }
+  }
 `;
 
 const LockInfo = styled.div`
