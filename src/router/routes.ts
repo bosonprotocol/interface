@@ -7,7 +7,6 @@ import {
   ProductRoutes,
   SellerCenterRoutes
 } from "../lib/routing/routes";
-import AboutPage from "../pages/about/AboutPage";
 import ClosedBetaPage from "../pages/closed-beta/ClosedBeta";
 import PrivacyPolicyPage from "../pages/common/PrivacyPolicy";
 import TermsAndConditionsPage from "../pages/common/TermsAndConditions";
@@ -17,6 +16,7 @@ import LandingPage from "../pages/landing/Landing";
 import OfferUuidReroute from "../pages/offers/OfferUuidReroute";
 import SellerCenterPage from "../pages/sell/SellerCenter";
 
+const AboutPage = lazy(() => import("../pages/about/AboutPage"));
 const ChatPage = lazy(() => import("../pages/chat/Chat"));
 const CustomStorePage = lazy(() => import("../pages/custom-store/CustomStore"));
 const DisputeCentrePage = lazy(
