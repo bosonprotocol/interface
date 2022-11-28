@@ -22,6 +22,9 @@ export function getImageUrl(
     }
   > = {}
 ) {
+  if (uri.startsWith("data:")) {
+    return uri;
+  }
   const { gateway = CONFIG.ipfsImageGateway, ...optimizationOpts } = opts;
   const ipfsGatewayUrl = getIpfsGatewayUrl(uri, { gateway });
   return `${ipfsGatewayUrl}?${optsToQueryParams(optimizationOpts)}`;

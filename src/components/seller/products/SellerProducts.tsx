@@ -50,7 +50,8 @@ interface FilterValue {
 export default function SellerProducts({
   products: productsData,
   sellerRoles,
-  sellerId
+  sellerId,
+  offersBacked
 }: SellerInsideProps & WithSellerDataProps) {
   const [currentTag, setCurrentTag] = useState(productTags[0].value);
   const [search, setSearch] = useState<string>("");
@@ -184,6 +185,7 @@ export default function SellerProducts({
         refetch={refetch}
         setSelected={setSelected}
         sellerRoles={sellerRoles}
+        offersBacked={offersBacked}
       />
     </>
   );

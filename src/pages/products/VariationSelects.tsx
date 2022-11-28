@@ -1,6 +1,6 @@
 import { Form, Formik } from "formik";
 import uniqBy from "lodash.uniqby";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 
 import SimpleError from "../../components/error/SimpleError";
 import { Select } from "../../components/form";
@@ -10,6 +10,11 @@ import { isTruthy } from "../../lib/types/helpers";
 import { isNumeric } from "../../lib/utils/number";
 import { VariantV1, Variation } from "./types";
 
+interface Quantity {
+  type: string[];
+  quantityAvailable: string;
+  soldOut: boolean;
+}
 const sizes = [
   "xxxxxs",
   "x-x-x-x-x-small",
@@ -56,13 +61,22 @@ const sizesMapWithWeights = Object.fromEntries(
 const emptyLabel = "Please select...";
 
 const getVariationOption = (
-  variation: Pick<Variation, "id" | "option"> | undefined
+  variation: Pick<Variation, "id" | "option"> | undefined,
+  quantity?: Quantity[]
 ) => {
   if (!variation) {
     return;
   }
+  const allVariants =
+    quantity?.filter((q) => q.type.find((t) => t === variation?.id)) || [];
+  const soldOut = allVariants.every((el) => el?.soldOut);
+  const additionalLabel = soldOut ? " (Sold Out)" : "";
+
   return {
-    label: variation.option === "-" ? emptyLabel : variation.option,
+    label:
+      variation.option === "-"
+        ? emptyLabel
+        : `${variation.option}${additionalLabel}`,
     value: variation.id
   };
 };
@@ -84,7 +98,8 @@ const existsVariationWithSizeAndColor = (
 
 const getVariationsByType = (
   variants: VariantV1[] | undefined,
-  type: Variation["type"]
+  type: Variation["type"],
+  quantity?: Quantity[]
 ) => {
   return variants
     ? uniqBy(
@@ -96,9 +111,12 @@ const getVariationsByType = (
         (variation) => variation.id
       )
         .map((variation) => {
-          return getVariationOption({
-            ...variation
-          });
+          return getVariationOption(
+            {
+              ...variation
+            },
+            quantity
+          );
         })
         .filter(isTruthy)
         .sort((a, b) => {
@@ -155,13 +173,38 @@ export default function VariationSelects({
   disabled,
   ...rest
 }: Props) {
+  useEffect(() => {
+    const quantityAvailable = Number(
+      selectedVariant?.offer?.quantityAvailable || 0
+    );
+    if (quantityAvailable === 0) {
+      const newVariant = variants.find(
+        (variant) => Number(variant?.offer?.quantityAvailable || 0) > 0
+      );
+      if (newVariant) {
+        setDropdownVariant(newVariant);
+        setSelectedVariant?.(newVariant);
+      }
+    }
+  }, []); // eslint-disable-line
+
+  const quantityAvailable: Quantity[] = useMemo(() => {
+    return variants.map((v) => ({
+      type: v.variations.map((el) => el.id),
+      quantityAvailable: v.offer.quantityAvailable,
+      soldOut: Number(v.offer.quantityAvailable || 0) === 0
+    }));
+  }, [variants]);
+
   const numValidColorVariants: number = getVariationsByType(
     variants,
-    "Color"
+    "Color",
+    quantityAvailable
   ).filter((entry) => entry?.label !== emptyLabel).length;
   const numValidSizeVariants: number = getVariationsByType(
     variants,
-    "Size"
+    "Size",
+    quantityAvailable
   ).filter((entry) => entry?.label !== emptyLabel).length;
   const [dropdownVariant, setDropdownVariant] = useState<
     Pick<VariantV1, "variations"> | undefined
@@ -177,19 +220,27 @@ export default function VariationSelects({
       initialValues={{
         color:
           showDashInColor || !dropdownVariant
-            ? getVariationOption({ id: "", option: emptyLabel })
+            ? getVariationOption(
+                { id: "", option: emptyLabel },
+                quantityAvailable
+              )
             : getVariationOption(
                 dropdownVariant.variations.find(
                   (variation) => variation.type === "Color"
-                )
+                ),
+                quantityAvailable
               ),
         size:
           showDashInSize || !dropdownVariant
-            ? getVariationOption({ id: "", option: emptyLabel })
+            ? getVariationOption(
+                { id: "", option: emptyLabel },
+                quantityAvailable
+              )
             : getVariationOption(
                 dropdownVariant.variations.find(
                   (variation) => variation.type === "Size"
-                )
+                ),
+                quantityAvailable
               )
       }}
       enableReinitialize
@@ -243,7 +294,11 @@ export default function VariationSelects({
                 <>
                   <Select
                     name="color"
-                    options={getVariationsByType(variants, "Color")}
+                    options={getVariationsByType(
+                      variants,
+                      "Color",
+                      quantityAvailable
+                    )}
                     placeholder="Color"
                     label="Color:"
                     onChange={() => {
@@ -258,7 +313,11 @@ export default function VariationSelects({
                 <>
                   <Select
                     name="size"
-                    options={getVariationsByType(variants, "Size")}
+                    options={getVariationsByType(
+                      variants,
+                      "Size",
+                      quantityAvailable
+                    )}
                     placeholder="Size"
                     label="Size:"
                     onChange={() => {

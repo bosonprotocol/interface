@@ -302,41 +302,43 @@ export default function useProducts(
     return (
       sellerIds?.map((brandName) => {
         const sellerId = brandName;
-        const offers = groupedSellers[brandName as keyof typeof groupedSellers];
-        const seller = offers?.[0]?.seller || {};
-        const title = offers?.[0]?.title || {};
+        const products =
+          groupedSellers[brandName as keyof typeof groupedSellers];
+        const seller = products?.[0]?.seller || {};
+        const title = products?.[0]?.title || {};
         return {
           ...seller,
           title,
           brandName,
           createdAt:
-            orderBy(offers, "createdAt", "desc").find(
+            orderBy(products, "createdAt", "desc").find(
               (n) => n?.createdAt !== null
             )?.createdAt || null,
           validFromDate:
-            orderBy(offers, "validFromDate", "desc").find(
+            orderBy(products, "validFromDate", "desc").find(
               (n) => n?.validFromDate !== null
             )?.validFromDate || null,
           committedDate:
-            orderBy(offers, "committedDate", "desc").find(
+            orderBy(products, "committedDate", "desc").find(
               (n) => n?.committedDate !== null
             )?.committedDate || null,
           redeemedDate:
-            orderBy(offers, "redeemedDate", "desc").find(
+            orderBy(products, "redeemedDate", "desc").find(
               (n) => n?.redeemedDate !== null
             )?.redeemedDate || null,
           lowPrice:
-            orderBy(offers, "lowPrice", "asc").find(
+            orderBy(products, "lowPrice", "asc").find(
               (n) => n?.lowPrice !== null && Number(n?.lowPrice || 0) !== 0
             )?.lowPrice || null,
           highPrice:
-            orderBy(offers, "highPrice", "desc").find(
+            orderBy(products, "highPrice", "desc").find(
               (n) => n?.highPrice !== null && Number(n?.highPrice || 0) !== 0
             )?.highPrice || null,
           additional: {
-            images: offers?.map((offer) => offer?.metadata?.image) || []
+            images: products?.map((offer) => offer?.metadata?.image) || []
           },
-          offers,
+          offers: products, // REASSIGN OFFERS for compatibility with previous code
+          products,
           numExchanges: exchangesBySellers.data?.[sellerId]?.length
         };
       }) || []
