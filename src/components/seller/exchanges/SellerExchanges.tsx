@@ -244,7 +244,7 @@ export default function SellerExchanges({
           buyerId: exchange.buyer.id,
           sellerId: exchange.seller.id
         };
-        const destinationAddressLowerCase = exchange?.offer.seller.operator;
+        const destinationAddressLowerCase = exchange?.buyer.wallet;
         const destinationAddress = utils.getAddress(
           destinationAddressLowerCase
         );
