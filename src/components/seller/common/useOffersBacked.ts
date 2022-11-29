@@ -2,8 +2,10 @@ import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 import { BigNumber } from "ethers";
 import groupBy from "lodash/groupBy";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 dayjs.extend(isBetween);
+
+import { subgraph } from "@bosonprotocol/react-kit";
 
 import { Offer } from "../../../lib/types/offer";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
@@ -91,27 +93,38 @@ export default function useOffersBacked({
     return lockedFundsByGroup;
   }, [sellersData]);
 
+  const offersBackedFn = useCallback(
+    (fund: subgraph.FundsEntityFieldsFragment) => {
+      let result = null;
+      const backedFund = calcOffersBacked[fund.token.symbol];
+      if (fund.availableAmount && backedFund !== "") {
+        result = Number(
+          (
+            (Number(fund.availableAmount) /
+              Number(calcOffersBacked[fund.token.symbol])) *
+            100
+          ).toFixed(2)
+        );
+      }
+      return result;
+    },
+    [calcOffersBacked]
+  );
+
   const offersBacked = useMemo(
     () =>
-      funds?.map((fund) => {
-        let result = null;
-        if (fund.availableAmount && calcOffersBacked[fund.token.symbol]) {
-          result = Number(
-            (
-              (Number(fund.availableAmount) /
-                Number(calcOffersBacked[fund.token.symbol])) *
-              100
-            ).toFixed(2)
-          );
-        }
-        return result;
-      }),
-    [calcOffersBacked, funds]
+      funds?.map((fund) => ({
+        token: fund?.token?.symbol,
+        value: offersBackedFn(fund)
+      })),
+    [funds, offersBackedFn]
   );
 
   const displayWarning = useMemo(() => {
-    const shouldDisplay =
-      (offersBacked[0] && offersBacked[0] < THRESHOLD) || false;
+    const anyValue = offersBacked.find(
+      (v) => v?.value !== null && Number(v?.value) < THRESHOLD
+    );
+    const shouldDisplay = anyValue !== undefined;
     saveItemInStorage("shouldDisplayOfferBackedWarning", shouldDisplay);
     return shouldDisplay;
   }, [offersBacked]);
@@ -122,7 +135,8 @@ export default function useOffersBacked({
       calcOffersBacked: {},
       sellerLockedFunds: {},
       threshold: THRESHOLD,
-      displayWarning
+      displayWarning,
+      offersBackedFn
     };
   }
 
@@ -131,6 +145,7 @@ export default function useOffersBacked({
     calcOffersBacked,
     sellerLockedFunds,
     threshold: THRESHOLD,
-    displayWarning
+    displayWarning,
+    offersBackedFn
   };
 }

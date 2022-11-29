@@ -137,7 +137,7 @@ interface ChildProps {
   name: string;
   hidden?: boolean;
   disabled?: boolean;
-  onClick?: () => boolean;
+  onClick?: (e: React.MouseEvent<HTMLElement>) => void;
   ref?: RefObject<CSVLink & HTMLAnchorElement & { link: HTMLAnchorElement }>;
   loading?: boolean;
   csvProps: CommonPropTypes;
@@ -182,12 +182,10 @@ function ExportDropdown({ buttonProps = {}, children }: Props) {
             return (
               <div
                 key={`CSVLink_${child.id}_${index}`}
-                onClick={(e) => {
+                onClick={(e: React.MouseEvent<HTMLElement>) => {
+                  e.preventDefault();
                   if (child?.onClick) {
-                    const val = child?.onClick?.();
-                    if (val) {
-                      e.preventDefault();
-                    }
+                    child?.onClick?.(e);
                   }
                 }}
               >

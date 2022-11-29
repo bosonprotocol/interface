@@ -206,7 +206,7 @@ export default function SellerFinances({
     []
   );
 
-  const { calcOffersBacked, sellerLockedFunds, threshold } = offersBacked;
+  const { offersBackedFn, sellerLockedFunds, threshold } = offersBacked;
 
   const reloadData = useCallback(() => {
     reload();
@@ -219,7 +219,7 @@ export default function SellerFinances({
       if (value === null) {
         return "";
       }
-      if (value < threshold) {
+      if (Number(value) < threshold) {
         return (
           <>
             <WarningCircle size={15} /> {value} %
@@ -247,19 +247,6 @@ export default function SellerFinances({
             .toString(),
           decimals.toString()
         );
-        const offersBackedFn = () => {
-          let result = null;
-          if (fund.availableAmount && calcOffersBacked[fund.token.symbol]) {
-            result = Number(
-              (
-                (Number(fund.availableAmount) /
-                  Number(calcOffersBacked[fund.token.symbol])) *
-                100
-              ).toFixed(2)
-            );
-          }
-          return result;
-        };
         return {
           token: (
             <CurrencyName tag="p" gap="0.5rem">
@@ -278,7 +265,7 @@ export default function SellerFinances({
           offersBacked: (
             <Typography tag="p">
               <WarningWrapper gap="0.2rem" justifyContent="flex-start">
-                {offersBackedCell(offersBackedFn())}
+                {offersBackedCell(offersBackedFn(fund))}
               </WarningWrapper>
             </Typography>
           ),
@@ -336,7 +323,6 @@ export default function SellerFinances({
         };
       }),
     [
-      calcOffersBacked,
       modalTypes.FINANCE_DEPOSIT_MODAL,
       modalTypes.FINANCE_WITHDRAW_MODAL,
       offersBackedCell,
@@ -345,7 +331,8 @@ export default function SellerFinances({
       sellerLockedFunds,
       showModal,
       funds,
-      sellerRoles
+      sellerRoles,
+      offersBackedFn
     ]
   );
 
