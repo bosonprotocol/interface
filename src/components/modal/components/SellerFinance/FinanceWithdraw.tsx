@@ -1,16 +1,18 @@
 import { subgraph } from "@bosonprotocol/react-kit";
+import { Provider, WithdrawFundsButton } from "@bosonprotocol/react-kit";
+import * as Sentry from "@sentry/browser";
 import { BigNumber, ethers } from "ethers";
 import { useState } from "react";
 import styled from "styled-components";
-import { useAccount, useBalance } from "wagmi";
+import { useAccount, useBalance, useSigner } from "wagmi";
 
+import { CONFIG, config } from "../../../../lib/config";
 import { colors } from "../../../../lib/styles/colors";
 import { useAddPendingTransaction } from "../../../../lib/utils/hooks/transactions/usePendingTransactions";
 import {
   getNumberWithDecimals,
   getNumberWithoutDecimals
 } from "../../../../pages/account/funds/FundItem";
-import useWithdrawFunds from "../../../../pages/account/funds/useWithdrawFunds";
 import { poll } from "../../../../pages/create-product/utils";
 import { Spinner } from "../../../loading/Spinner";
 import Grid from "../../../ui/Grid";
@@ -18,7 +20,6 @@ import Typography from "../../../ui/Typography";
 import { useModal } from "../../useModal";
 import {
   AmountWrapper,
-  CTAButton,
   Input,
   InputWrapper,
   ProtocolStrong
@@ -55,6 +56,7 @@ export default function FinanceWithdraw({
   const [isWithdrawInvalid, setIsWithdrawInvalid] = useState<boolean>(true);
   const [withdrawError, setWithdrawError] = useState<unknown>(null);
 
+  const { data: signer } = useSigner();
   const { address } = useAccount();
   const addPendingTransaction = useAddPendingTransaction();
 
@@ -67,20 +69,6 @@ export default function FinanceWithdraw({
       : { addressOrName: address }
   );
   const { showModal, hideModal } = useModal();
-  const withdrawFunds = useWithdrawFunds({
-    accountId,
-    tokensToWithdraw: [
-      {
-        address: exchangeToken,
-        amount:
-          isWithdrawInvalid || !Number(amountToWithdraw)
-            ? BigNumber.from("0")
-            : BigNumber.from(
-                getNumberWithoutDecimals(amountToWithdraw, tokenDecimals)
-              )
-      }
-    ]
-  });
 
   const tokenStep = 10 ** -Number(tokenDecimals);
   const step = 0.01;
@@ -103,51 +91,6 @@ export default function FinanceWithdraw({
     }
 
     setAmountToWithdraw(valueStr);
-  };
-  const handleWithdraw = async () => {
-    {
-      try {
-        setWithdrawError(null);
-        setIsBeingWithdrawn(true);
-        showModal("WAITING_FOR_CONFIRMATION");
-        const tx = await withdrawFunds();
-        showModal("TRANSACTION_SUBMITTED", {
-          action: "Finance withdraw",
-          txHash: tx.hash
-        });
-        addPendingTransaction({
-          type: subgraph.EventType.FundsWithdrawn,
-          hash: tx.hash,
-          isMetaTx: false, // / TODO: use correct value if meta tx supported
-          accountType: "Account"
-        });
-        await tx?.wait();
-        await poll(
-          async () => {
-            const balance = await refetch();
-            return balance;
-          },
-          (balance) => {
-            return dataBalance?.formatted === balance.data?.formatted;
-          },
-          500
-        );
-        setAmountToWithdraw("0");
-        setIsWithdrawInvalid(true);
-        hideModal();
-      } catch (error) {
-        console.error(error);
-        const hasUserRejectedTx =
-          (error as unknown as { code: string }).code === "ACTION_REJECTED";
-        if (hasUserRejectedTx) {
-          showModal("CONFIRMATION_FAILED");
-        }
-        setWithdrawError(error);
-      } finally {
-        reload();
-        setIsBeingWithdrawn(false);
-      }
-    }
   };
 
   return (
@@ -193,11 +136,70 @@ export default function FinanceWithdraw({
         ) : (
           <div />
         )}
-        <CTAButton
-          theme="primary"
-          size="small"
-          onClick={handleWithdraw}
+        <WithdrawFundsButton
+          accountId={accountId}
+          tokensToWithdraw={[
+            {
+              address: exchangeToken,
+              amount:
+                isWithdrawInvalid || !Number(amountToWithdraw)
+                  ? BigNumber.from("0")
+                  : BigNumber.from(
+                      getNumberWithoutDecimals(amountToWithdraw, tokenDecimals)
+                    )
+            }
+          ]}
+          envName={config.envName}
           disabled={isBeingWithdrawn || isWithdrawInvalid}
+          web3Provider={signer?.provider as Provider}
+          metaTx={CONFIG.metaTx}
+          onPendingSignature={() => {
+            setWithdrawError(null);
+            setIsBeingWithdrawn(true);
+            showModal("WAITING_FOR_CONFIRMATION");
+          }}
+          onPendingTransaction={(hash, isMetaTx) => {
+            showModal("TRANSACTION_SUBMITTED", {
+              action: "Finance withdraw",
+              txHash: hash
+            });
+            addPendingTransaction({
+              type: subgraph.EventType.FundsWithdrawn,
+              hash: hash,
+              isMetaTx: isMetaTx,
+              accountType: "Account"
+            });
+          }}
+          onSuccess={async () => {
+            await poll(
+              async () => {
+                const balance = await refetch();
+                return balance;
+              },
+              (balance) => {
+                return dataBalance?.formatted === balance.data?.formatted;
+              },
+              500
+            );
+            setAmountToWithdraw("0");
+            setIsWithdrawInvalid(true);
+            hideModal();
+            reload();
+            setIsBeingWithdrawn(false);
+          }}
+          onError={(error) => {
+            console.error("onError", error);
+            Sentry.captureException(error);
+            const hasUserRejectedTx =
+              "code" in error &&
+              (error as unknown as { code: string }).code === "ACTION_REJECTED";
+            if (hasUserRejectedTx) {
+              showModal("CONFIRMATION_FAILED");
+            }
+            setWithdrawError(error);
+            reload();
+            setIsBeingWithdrawn(false);
+          }}
         >
           {isBeingWithdrawn ? (
             <Spinner size={20} />
@@ -206,7 +208,7 @@ export default function FinanceWithdraw({
               Withdraw {symbol}
             </Typography>
           )}
-        </CTAButton>
+        </WithdrawFundsButton>
       </Grid>
     </Grid>
   );
