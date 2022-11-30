@@ -3,7 +3,9 @@ import {
   exchanges as ExchangesKit,
   subgraph
 } from "@bosonprotocol/react-kit";
+import dayjs from "dayjs";
 import { Chat } from "phosphor-react";
+import { useMemo } from "react";
 import { generatePath, NavigateOptions, Path } from "react-router-dom";
 import styled from "styled-components";
 
@@ -11,12 +13,12 @@ import { UrlParameters } from "../../../lib/routing/parameters";
 import { BosonRoutes } from "../../../lib/routing/routes";
 import { colors } from "../../../lib/styles/colors";
 import { isExchangeCompletableBySeller } from "../../../lib/utils/exchange";
+import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import { useDisputeSubStatusInfo } from "../../../lib/utils/hooks/useDisputeSubStatusInfo";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { SellerRolesProps } from "../../../lib/utils/hooks/useSellerRoles";
 import { useModal } from "../../modal/useModal";
 import BosonButton from "../../ui/BosonButton";
-import Grid from "../../ui/Grid";
 
 const generatePathAndNavigate = ({
   exchangeId,
@@ -102,32 +104,13 @@ export const SellerActionButton = ({
   sellerRoles: SellerRolesProps;
 }) => {
   const { showModal, modalTypes } = useModal();
+
   if (!exchange) {
     return null;
   }
+
   return (
-    <Grid justifyContent="flex-end" gap="1rem">
-      {exchange && isExchangeCompletableBySeller(exchange) && (
-        <BosonButton
-          variant="primaryFill"
-          size={ButtonSize.Small}
-          disabled={!sellerRoles?.isOperator}
-          tooltip="This action is restricted to only the operator wallet"
-          onClick={() => {
-            showModal(
-              modalTypes.COMPLETE_EXCHANGE,
-              {
-                title: "Complete Confirmation",
-                exchange: exchange,
-                refetch
-              },
-              "xs"
-            );
-          }}
-        >
-          Complete exchange
-        </BosonButton>
-      )}
+    <>
       <BosonButton
         variant="accentInverted"
         showBorder={false}
@@ -165,6 +148,57 @@ export const SellerActionButton = ({
           Revoke
         </StyledBosonButton>
       )}
-    </Grid>
+    </>
   );
+};
+
+export const SellerCompleteActionButton = ({
+  exchange,
+  refetch,
+  sellerRoles
+}: {
+  exchange: Exchange | null;
+  refetch: () => void;
+  navigate: (to: Partial<Path>, options?: NavigateOptions | undefined) => void;
+  status: ExchangesKit.AllExchangeStates | string;
+  sellerRoles: SellerRolesProps;
+}) => {
+  const { showModal, modalTypes } = useModal();
+
+  const isDisputeExpired = useMemo(
+    () =>
+      exchange &&
+      exchange?.state !== subgraph.ExchangeState.Completed &&
+      exchange?.redeemedDate &&
+      exchange?.offer.disputePeriodDuration &&
+      dayjs(
+        getDateTimestamp(exchange?.redeemedDate) +
+          getDateTimestamp(exchange?.offer?.disputePeriodDuration)
+      ).isBefore(dayjs()),
+    [exchange]
+  );
+  const shouldShowCompleteCTA =
+    (exchange && isExchangeCompletableBySeller(exchange)) || isDisputeExpired;
+
+  return exchange && shouldShowCompleteCTA ? (
+    <BosonButton
+      variant="primaryFill"
+      size={ButtonSize.Small}
+      disabled={!sellerRoles?.isOperator}
+      tooltip="This action is restricted to only the operator wallet"
+      onClick={() => {
+        showModal(
+          modalTypes.COMPLETE_EXCHANGE,
+          {
+            title: "Complete Confirmation",
+            exchange: exchange,
+            refetch
+          },
+          "xs"
+        );
+      }}
+    >
+      Complete exchange
+    </BosonButton>
+  ) : null;
 };

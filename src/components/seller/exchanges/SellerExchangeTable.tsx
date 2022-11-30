@@ -35,7 +35,11 @@ import Grid from "../../ui/Grid";
 import Image from "../../ui/Image";
 import Typography from "../../ui/Typography";
 import PaginationPages from "../common/PaginationPages";
-import { SellerActionButton, SellerResolveDisputeButton } from "./SellerAction";
+import {
+  SellerActionButton,
+  SellerCompleteActionButton,
+  SellerResolveDisputeButton
+} from "./SellerAction";
 import SellerExchangeTimePeriod from "./SellerExchangeTimePeriod";
 
 interface Props {
@@ -291,22 +295,32 @@ export default function SellerExchangeTable({
           timePeriod: element && (
             <SellerExchangeTimePeriod exchange={element} />
           ),
-          action:
-            status === subgraph.ExchangeState.Disputed ? (
-              <SellerResolveDisputeButton
-                exchange={element}
-                navigate={navigate}
-                sellerRoles={sellerRoles}
-              />
-            ) : (
-              <SellerActionButton
+          action: (
+            <>
+              <SellerCompleteActionButton
                 exchange={element}
                 refetch={refetch}
                 navigate={navigate}
                 status={status}
                 sellerRoles={sellerRoles}
               />
-            )
+              {status === subgraph.ExchangeState.Disputed ? (
+                <SellerResolveDisputeButton
+                  exchange={element}
+                  navigate={navigate}
+                  sellerRoles={sellerRoles}
+                />
+              ) : (
+                <SellerActionButton
+                  exchange={element}
+                  refetch={refetch}
+                  navigate={navigate}
+                  status={status}
+                  sellerRoles={sellerRoles}
+                />
+              )}
+            </>
+          )
         };
       }),
     [data, sellerRoles] // eslint-disable-line
