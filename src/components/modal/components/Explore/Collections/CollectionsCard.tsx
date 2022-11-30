@@ -1,14 +1,22 @@
-import { Fragment, useMemo } from "react";
+import dayjs from "dayjs";
+import isBetween from "dayjs/plugin/isBetween";
+import { Fragment, useMemo, useState } from "react";
 import { generatePath } from "react-router-dom";
 import styled from "styled-components";
+dayjs.extend(isBetween);
 
 import { UrlParameters } from "../../../../../lib/routing/parameters";
 import { BosonRoutes } from "../../../../../lib/routing/routes";
 import { colors } from "../../../../../lib/styles/colors";
 import { zIndex } from "../../../../../lib/styles/zIndex";
+import { getDateTimestamp } from "../../../../../lib/utils/getDateTimestamp";
+import useProducts from "../../../../../lib/utils/hooks/product/useProducts";
 import { useCurrentSellers } from "../../../../../lib/utils/hooks/useCurrentSellers";
 import { useKeepQueryParamsNavigate } from "../../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import { ExtendedSeller } from "../../../../../pages/explore/WithAllOffers";
+import {
+  ExtendedOffer,
+  ExtendedSeller
+} from "../../../../../pages/explore/WithAllOffers";
 import Grid from "../../../../ui/Grid";
 import Image from "../../../../ui/Image";
 import Typography from "../../../../ui/Typography";
@@ -57,11 +65,92 @@ interface Props {
 }
 const imagesNumber = 4;
 export default function CollectionsCard({ collection }: Props) {
+  const [sellerId] = useState<string>(collection.id);
   const { lens: lensProfiles } = useCurrentSellers({
-    sellerId: collection.id
+    sellerId
   });
   const [lens] = lensProfiles;
   const navigate = useKeepQueryParamsNavigate();
+
+  const { sellers: sellersProducts } = useProducts(
+    {
+      productsFilter: {
+        sellerId
+      }
+    },
+    {
+      enableCurationList: false,
+      withNumExchanges: true
+    }
+  );
+
+  const products = useMemo(() => {
+    return (sellersProducts.filter((s) => s.id === sellerId) || []).map(
+      (sellerProducts) => {
+        sellerProducts.products = sellerProducts.products?.reduce(
+          (acc, elem) => {
+            const isHasBeenBought = !!elem.exchanges?.length;
+            const nowDate = dayjs();
+
+            const isFullyVoided = elem.additional?.variants.every((variant) => {
+              return !!variant.voidedAt;
+            });
+
+            // all products that are not fully voided and still have valid variants/offers
+            const isStillHaveValid =
+              !isFullyVoided &&
+              elem.additional?.variants.some((variant) => {
+                const validFromDateParsed = dayjs(
+                  Number(variant?.validFromDate) * 1000
+                );
+                const validUntilDateParsed = dayjs(
+                  Number(variant?.validUntilDate) * 1000
+                );
+                return nowDate.isBetween(
+                  validFromDateParsed,
+                  validUntilDateParsed,
+                  "day",
+                  "[]"
+                );
+              });
+
+            // all products that have been fully voided, only and only if there exist at least 1 exchange for at least 1 of the variants/offer (whatever the status of this exchange)
+            const isFullyVoidedAndBought = isFullyVoided && isHasBeenBought;
+
+            // all products where all variants are not yet valid
+            const isAllVariantsInProductNotValidYet =
+              elem.additional?.variants.every((variant) => {
+                return dayjs(getDateTimestamp(variant?.validFromDate)).isAfter(
+                  nowDate
+                );
+              });
+
+            // all products where all variants are expired, only and only if there exist at least 1 exchange for at least 1 offer (whatever the status of this exchange)
+            const isAllVariantsInProductAreExpiredAndBought =
+              elem.additional?.variants.every((variant) => {
+                return dayjs(
+                  getDateTimestamp(variant?.validUntilDate)
+                ).isBefore(nowDate);
+              }) && isHasBeenBought;
+
+            if (
+              isStillHaveValid ||
+              isFullyVoidedAndBought ||
+              isAllVariantsInProductNotValidYet ||
+              isAllVariantsInProductAreExpiredAndBought
+            ) {
+              acc.push(elem);
+            }
+            return acc;
+          },
+          [] as ExtendedOffer[]
+        );
+        // REASSIGN OFFERS for compatibility with previous code
+        sellerProducts.offers = sellerProducts.products;
+        return sellerProducts;
+      }
+    );
+  }, [sellerId, sellersProducts]);
 
   const allExchanges = useMemo(
     () => collection.numExchanges || 0,
@@ -129,7 +218,7 @@ export default function CollectionsCard({ collection }: Props) {
           </StyledGrid>
           <StyledGrid alignItems="flex-start">
             <Typography $fontSize="20px" fontWeight="600" color={colors.black}>
-              {collection?.offers?.length || 0}
+              {(products?.[0]?.products || [])?.length || 0}
             </Typography>
             <Typography
               $fontSize="20px"
