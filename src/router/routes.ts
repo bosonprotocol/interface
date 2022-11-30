@@ -16,6 +16,7 @@ import LandingPage from "../pages/landing/Landing";
 import OfferUuidReroute from "../pages/offers/OfferUuidReroute";
 import SellerCenterPage from "../pages/sell/SellerCenter";
 
+const AboutPage = lazy(() => import("../pages/about/AboutPage"));
 const ChatPage = lazy(() => import("../pages/chat/Chat"));
 const CustomStorePage = lazy(() => import("../pages/custom-store/CustomStore"));
 const DisputeCentrePage = lazy(
@@ -303,6 +304,14 @@ export default [
       ...base.app
     },
     component: TermsAndConditionsPage
+  },
+  {
+    ...base,
+    path: BosonRoutes.AboutPage,
+    app: {
+      ...base.app
+    },
+    component: AboutPage
   },
   {
     ...base,

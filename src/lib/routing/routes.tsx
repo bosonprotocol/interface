@@ -24,7 +24,8 @@ export const BosonRoutes = {
   DRAdmin: "/dr-admin",
   DRAdminPage: `/dr-admin/:${UrlParameters.disputeResolverPageId}`,
   ClosedBeta: "/closed-beta",
-  Error404: "*"
+  Error404: "*",
+  AboutPage: "/about"
 } as const;
 
 export const SellerCenterRoutes = {

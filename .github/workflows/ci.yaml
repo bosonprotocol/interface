@@ -19,9 +19,26 @@ on:
         required: true
 
 jobs:
+  prejob:
+    name: Get Latest Tag
+    runs-on: ubuntu-latest
+    outputs:
+      releaseTag: ${{ steps.tag.outputs.tag }}
+      releaseName: ${{ steps.name.outputs.name }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+      - uses: "WyriHaximus/github-action-get-previous-tag@v1"
+        id: tag
+      - run: echo "name=$(git describe --tags)" >> $GITHUB_OUTPUT
+        id: name
+
   call-reusable-workflow-PR:
     uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
     if: github.event_name == 'pull_request'
+    needs: prejob
     with:
       REACT_APP_ENV_NAME: "testing"
       DEPLOY_TO_FLEEK: false
@@ -30,6 +47,8 @@ jobs:
       REACT_APP_ENABLE_CURATION_LISTS: false
       REACT_APP_CREATE_PROFILE_CONFIGURATION: "LENS"
       REACT_APP_IPFS_GATEWAY: "https://bosonprotocol.infura-ipfs.io/ipfs/"
+      REACT_APP_RELEASE_TAG: ${{ needs.prejob.outputs.releaseTag }}
+      REACT_APP_RELEASE_NAME: ${{ needs.prejob.outputs.releaseName }}
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -43,6 +62,7 @@ jobs:
   call-reusable-workflow-testing:
     uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
     if: github.event_name == 'push'
+    needs: prejob
     with:
       REACT_APP_ENV_NAME: "testing"
       DEPLOY_TO_FLEEK: true
@@ -52,6 +72,8 @@ jobs:
       REACT_APP_CREATE_PROFILE_CONFIGURATION: "LENS"
       REACT_APP_IPFS_GATEWAY: "https://bosonprotocol.infura-ipfs.io/ipfs"
       REACT_APP_IPFS_IMAGE_GATEWAY: "https://fuchsia-payable-smelt-901.mypinata.cloud/ipfs"
+      REACT_APP_RELEASE_TAG: ${{ needs.prejob.outputs.releaseTag }}
+      REACT_APP_RELEASE_NAME: ${{ needs.prejob.outputs.releaseName }}
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
@@ -70,6 +92,7 @@ jobs:
   call-reusable-workflow-staging:
     uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
     if: github.event_name == 'release' && github.event.action == 'created'
+    needs: prejob
     with:
       REACT_APP_ENV_NAME: "staging"
       DEPLOY_TO_FLEEK: true
@@ -79,6 +102,8 @@ jobs:
       REACT_APP_CREATE_PROFILE_CONFIGURATION: "LENS"
       REACT_APP_IPFS_GATEWAY: "https://bosonprotocol.infura-ipfs.io/ipfs"
       REACT_APP_IPFS_IMAGE_GATEWAY: "https://fuchsia-payable-smelt-901.mypinata.cloud/ipfs"
+      REACT_APP_RELEASE_TAG: ${{ needs.prejob.outputs.releaseTag }}
+      REACT_APP_RELEASE_NAME: ${{ needs.prejob.outputs.releaseName }}
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
@@ -98,6 +123,7 @@ jobs:
   call-reusable-workflow-production:
     uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
     if: github.event_name == 'workflow_dispatch'
+    needs: prejob
     with:
       REACT_APP_ENV_NAME: "production"
       DEPLOY_TO_FLEEK: true
@@ -108,6 +134,8 @@ jobs:
       REACT_APP_CREATE_PROFILE_CONFIGURATION: "LENS"
       REACT_APP_IPFS_GATEWAY: "https://bosonprotocol.infura-ipfs.io/ipfs"
       REACT_APP_IPFS_IMAGE_GATEWAY: "https://bosonprotocol.infura-ipfs.io/ipfs"
+      REACT_APP_RELEASE_TAG: ${{ needs.prejob.outputs.releaseTag }}
+      REACT_APP_RELEASE_NAME: ${{ needs.prejob.outputs.releaseName }}
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
