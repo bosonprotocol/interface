@@ -277,6 +277,7 @@ const MessageContent = ({
                   const { offer } = exchange;
 
                   const refundAmount = BigNumber.from(offer.price)
+                    .add(offer.sellerDeposit || "0")
                     .div(BigNumber.from(100 * PERCENTAGE_FACTOR))
                     .mul(BigNumber.from(Number(proposal.percentageAmount)));
 
