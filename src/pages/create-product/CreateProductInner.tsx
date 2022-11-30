@@ -747,6 +747,10 @@ function CreateProductInner({
             }
           });
         }
+        // Fix description as the licenseUrl has changed
+        metadatas.forEach((variantMetadata) => {
+          variantMetadata.description = `${productInformation.description}\n\nTerms for the Boson rNFT Voucher: ${variantMetadata.licenseUrl}`;
+        });
         const offerDataPromises: Promise<offers.CreateOfferArgs>[] =
           metadatas.map((metadata, index) => {
             const exchangeToken = CONFIG.defaultTokens.find(
