@@ -2,7 +2,7 @@ import "@glidejs/glide/dist/css/glide.core.min.css";
 
 import Glide from "@glidejs/glide";
 import { CaretLeft, CaretRight } from "phosphor-react";
-import { useEffect, useRef } from "react";
+import { useEffect, useReducer, useRef } from "react";
 
 import Button from "../../components/ui/Button";
 import Grid from "../../components/ui/Grid";
@@ -21,6 +21,10 @@ let glide: any = null;
 
 export default function DetailSlider({ images }: Props) {
   const ref = useRef<HTMLDivElement | null>(null);
+  const [reinitializeGlide, reinitiliazeGlide] = useReducer(
+    (state) => state + 1,
+    0
+  );
 
   useEffect(() => {
     if (images.length !== 0 && ref.current !== null) {
@@ -31,11 +35,13 @@ export default function DetailSlider({ images }: Props) {
       glide.mount();
     }
 
-    return () => glide.destroy();
-  }, [ref, images]);
+    return () => {
+      glide?.destroy();
+    };
+  }, [ref, images, reinitializeGlide]);
 
   const handleSlider = (direction: Direction) => {
-    glide.go(direction);
+    glide?.go(direction);
   };
 
   if (images.length === 0) {
@@ -68,6 +74,14 @@ export default function DetailSlider({ images }: Props) {
                   dataTestId="sliderImage"
                   optimizationOpts={{
                     height: 500
+                  }}
+                  onSetStatus={(status) => {
+                    if (status === "success") {
+                      // we need to reinitilize the glide in case an image doesnt load correctly the first
+                      // time (before trying the second time with a different gateway),
+                      // so that the loading state is not shown indefinitely
+                      reinitiliazeGlide();
+                    }
                   }}
                 />
               </GlideSlide>
