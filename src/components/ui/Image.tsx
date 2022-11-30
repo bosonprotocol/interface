@@ -79,6 +79,7 @@ interface IImage {
   showPlaceholderText?: boolean;
   withLoading?: boolean;
   optimizationOpts?: Partial<ImageOptimizationOpts>;
+  onSetStatus?: (status: LoadingStatus) => void;
 }
 const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
   src,
@@ -88,11 +89,16 @@ const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
   showPlaceholderText = true,
   withLoading = true,
   optimizationOpts,
+  onSetStatus,
   ...rest
 }) => {
   const [status, setStatus] = useState<LoadingStatus>(
     withLoading ? "loading" : "success"
   );
+  const handleSetStatus = (innerStatus: LoadingStatus) => {
+    setStatus(innerStatus);
+    onSetStatus?.(innerStatus);
+  };
   const [currentSrc, setCurrentSrc] = useState<string>(
     getImageUrl(src, optimizationOpts)
   );
@@ -129,10 +135,10 @@ const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
           data-testid={dataTestId}
           src={currentSrc}
           alt={alt}
-          onLoad={() => setStatus("success")}
+          onLoad={() => handleSetStatus("success")}
           onError={() => {
             if (didOriginalSrcFail) {
-              setStatus("error");
+              handleSetStatus("error");
             } else {
               setDidOriginalSrcFail(true);
               setCurrentSrc(getFallbackImageUrl(src, optimizationOpts));
