@@ -18,7 +18,6 @@ import ManageFunds from "./components/ManageFunds";
 import ProductCreateSuccess from "./components/ProductCreateSuccess";
 import RedeemModal from "./components/RedeemModal/RedeemModal";
 import RedeemSuccessModal from "./components/RedeemModal/RedeemSuccessModal";
-import ReinitializeChatModal from "./components/ReinitializeChatModal";
 import RetractDisputeModal from "./components/RetractDisputeModal";
 import RevokeProduct from "./components/RevokeProduct";
 import FinanceDeposit from "./components/SellerFinance/FinanceDeposit";
@@ -61,8 +60,7 @@ export const MODAL_TYPES = {
   UPLOAD_MODAL: "UPLOAD_MODAL",
   VOID_PRODUCT: "VOID_PRODUCT",
   WAITING_FOR_CONFIRMATION: "WAITING_FOR_CONFIRMATION",
-  WHAT_IS_REDEEM: "WHAT_IS_REDEEM",
-  REINITIALIZE_CHAT: "REINITIALIZE_CHAT"
+  WHAT_IS_REDEEM: "WHAT_IS_REDEEM"
 } as const;
 
 export const MODAL_COMPONENTS = {
@@ -95,6 +93,5 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.UPLOAD_MODAL]: Upload,
   [MODAL_TYPES.VOID_PRODUCT]: VoidProduct,
   [MODAL_TYPES.WAITING_FOR_CONFIRMATION]: WaitingForConfirmationModal,
-  [MODAL_TYPES.WHAT_IS_REDEEM]: WhatIsRedeem,
-  [MODAL_TYPES.REINITIALIZE_CHAT]: ReinitializeChatModal
+  [MODAL_TYPES.WHAT_IS_REDEEM]: WhatIsRedeem
 } as const;
