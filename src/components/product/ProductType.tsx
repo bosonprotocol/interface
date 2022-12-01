@@ -130,6 +130,7 @@ export default function ProductType({
     sellerType: currentRoles,
     lens,
     isLoading,
+    isRefetching,
     isSuccess,
     refetch
   } = useCurrentSellers();
@@ -215,7 +216,7 @@ export default function ProductType({
   }, [ipfsMetadataStorage, operatorLens]);
 
   useEffect(() => {
-    if (!isSuccess || isLoading) {
+    if (!isSuccess || isLoading || isRefetching) {
       return;
     }
 
@@ -288,6 +289,7 @@ export default function ProductType({
     isDraftModalClosed,
     shownDraftModal,
     isLoading,
+    isRefetching,
     isSuccess,
     values.createYourProfile
   ]);

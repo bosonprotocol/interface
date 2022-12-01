@@ -315,6 +315,12 @@ export function useCurrentSellers({
       resultByLensId?.isLoading ||
       sellerById?.isLoading ||
       resultLens?.isLoading,
+    isRefetching:
+      resultById?.isRefetching ||
+      resultByAddress?.isRefetching ||
+      resultByLensId?.isRefetching ||
+      sellerById?.isRefetching ||
+      resultLens?.isRefetching,
     isError:
       resultById?.isError ||
       resultByAddress?.isError ||
