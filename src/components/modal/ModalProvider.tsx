@@ -41,7 +41,6 @@ const RenderModalComponent = ({
       headerComponent={store.modalProps?.headerComponent}
       closable={store.modalProps?.closable}
       modalType={store.modalType}
-      onClose={store.modalProps?.onClose}
     >
       <ModalComponent
         id="modal"
@@ -80,13 +79,17 @@ export default function ModalProvider({ children }: Props) {
     [store]
   );
 
-  const hideModal = useCallback(() => {
-    setStore({
-      ...store,
-      modalType: null,
-      modalProps: {} as Store["modalProps"]
-    });
-  }, [store]);
+  const hideModal = useCallback(
+    (data?: unknown | undefined | null) => {
+      setStore({
+        ...store,
+        modalType: null,
+        modalProps: {} as Store["modalProps"]
+      });
+      store?.modalProps?.onClose?.(data);
+    },
+    [store]
+  );
 
   const updateProps = useCallback((store: Store) => {
     setStore({

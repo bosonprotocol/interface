@@ -46,8 +46,8 @@ export default function CreateProfileModal({
   const Component = useCallback(() => {
     return showLensVersion ? (
       <LensProfile
-        onSubmit={(id) => {
-          hideModal();
+        onSubmit={(id, lensProfile) => {
+          hideModal(lensProfile);
           if (id !== "") {
             shouldRedirectToCustomBetaPage(id);
           }

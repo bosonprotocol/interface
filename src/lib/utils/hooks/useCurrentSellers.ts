@@ -52,6 +52,8 @@ export function useCurrentSellers({
     return null;
   }, [address, sellerAddress, sellerId, lensTokenId]);
 
+  const enableResultByAddress =
+    !!sellerAddress && sellerAddressType === "ADDRESS";
   const resultByAddress = useQuery(
     ["current-seller-data-by-address", { address: sellerAddress }],
     async () => {
@@ -88,10 +90,10 @@ export function useCurrentSellers({
       };
     },
     {
-      enabled: !!sellerAddress && sellerAddressType === "ADDRESS"
+      enabled: enableResultByAddress
     }
   );
-
+  const enableResultById = !!sellerAddress && sellerAddressType === "SELLER_ID";
   const resultById = useQuery(
     ["current-seller-data-by-id", { sellerId: sellerAddress }],
     async () => {
@@ -128,13 +130,15 @@ export function useCurrentSellers({
       );
     },
     {
-      enabled: !!sellerAddress && sellerAddressType === "SELLER_ID"
+      enabled: enableResultById
     }
   );
 
   const decimalLensTokenId = lensTokenId
     ? getLensTokenIdDecimal(lensTokenId)?.toString()
     : null;
+  const enableResultLensId =
+    !!decimalLensTokenId && sellerAddressType === "LENS_TOKEN_ID";
   const resultByLensId = useQuery(
     [
       "current-seller-data-by-lens-id",
@@ -180,7 +184,7 @@ export function useCurrentSellers({
       );
     },
     {
-      enabled: !!decimalLensTokenId && sellerAddressType === "LENS_TOKEN_ID"
+      enabled: enableResultLensId
     }
   );
 
@@ -196,6 +200,7 @@ export function useCurrentSellers({
       : sellerAddressType === "LENS_TOKEN_ID" && resultByLensId?.data?.sellerId
       ? [resultByLensId?.data.sellerId]
       : [];
+  const enableSellerById = !!sellerIdsToQuery?.length;
   const sellerById = useQuery(
     ["current-seller-by-id", { sellerIds: sellerIdsToQuery }],
     async () => {
@@ -251,7 +256,7 @@ export function useCurrentSellers({
       };
     },
     {
-      enabled: !!sellerIdsToQuery?.length
+      enabled: enableSellerById
     }
   );
   const sellerValues = useMemo(
@@ -272,17 +277,17 @@ export function useCurrentSellers({
         .filter((value) => !!value),
     [sellerValues]
   );
-
+  const enableResultLens =
+    !!sellerAddress &&
+    !!sellerValues &&
+    !!sellerAddressType &&
+    !!profileIds.length;
   const resultLens = useGetLensProfiles(
     {
       profileIds
     },
     {
-      enabled:
-        !!sellerAddress &&
-        !!sellerValues &&
-        !!sellerAddressType &&
-        !!profileIds.length
+      enabled: enableResultLens
     }
   );
   const lens: Profile[] = useMemo(() => {
@@ -319,6 +324,13 @@ export function useCurrentSellers({
     sellerIds,
     sellerType,
     sellers: sellerValues,
-    lens
+    lens,
+    refetch: async () => {
+      enableResultByAddress && (await resultByAddress.refetch());
+      enableResultById && (await resultById.refetch());
+      enableResultLensId && (await resultByLensId.refetch());
+      enableSellerById && (await sellerById.refetch());
+      enableResultLens && (await resultLens.refetch());
+    }
   };
 }

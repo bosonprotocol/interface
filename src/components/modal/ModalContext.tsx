@@ -43,7 +43,7 @@ export interface ModalContextType {
     theme?: Store["theme"],
     modalMaxWidth?: Store["modalMaxWidth"]
   ) => void;
-  hideModal: () => void;
+  hideModal: (data?: unknown | undefined | null) => void;
 
   updateProps: <T extends keyof typeof MODAL_TYPES>(
     store: Store & {

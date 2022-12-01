@@ -242,7 +242,7 @@ const Content = styled.div<{
 
 interface Props {
   children: React.ReactNode;
-  hideModal: () => void;
+  hideModal: (data?: unknown | undefined | null) => void;
   title?: string;
   noCloseIcon?: boolean;
   modalType: ModalType;
@@ -251,7 +251,6 @@ interface Props {
   maxWidths: Store["modalMaxWidth"];
   theme: NonNullable<Store["theme"]>;
   closable?: boolean;
-  onClose?: () => void;
 }
 
 export default function Modal({
@@ -263,13 +262,11 @@ export default function Modal({
   maxWidths,
   theme,
   closable = true,
-  onClose,
   modalType
 }: Props) {
   const handleOnClose = () => {
     if (closable) {
       hideModal();
-      onClose?.();
     }
   };
   return createPortal(

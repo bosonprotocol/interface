@@ -130,7 +130,8 @@ export default function ProductType({
     sellerType: currentRoles,
     lens,
     isLoading,
-    isSuccess
+    isSuccess,
+    refetch
   } = useCurrentSellers();
 
   const [shownDraftModal, setShowDraftModal] = useState<boolean>(false);
@@ -255,7 +256,8 @@ export default function ProductType({
             initialRegularCreateProfile: values,
             onRegularProfileCreated,
             closable: false,
-            onClose: () => {
+            onClose: async () => {
+              await refetch();
               showCreateProductDraftModal();
             }
           },
