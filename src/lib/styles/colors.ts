@@ -30,6 +30,7 @@ export const colors = {
   darkGreyTimeStamp: "#E8EAF1",
   lightGrey: "#F1F3F9",
   border: "#5560720f",
+  borderDarker: "#55607233",
   white: "#FFFFFF",
   primaryBgColor: "#FFFFFF"
 } as const;

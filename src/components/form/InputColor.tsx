@@ -13,8 +13,8 @@ const Container = styled.div`
   align-items: center;
   width: 100%;
   padding: 0.5rem 1rem;
-  background: ${colors.lightGrey};
-  border: 1px solid ${colors.border};
+  background: ${colors.white};
+  border: 1px solid ${colors.borderDarker};
   border-radius: 0;
   outline: none;
 

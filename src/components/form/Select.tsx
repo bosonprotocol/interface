@@ -28,12 +28,12 @@ const customStyles = (error: any) => ({
         borderColor: colors.secondary,
         borderWidth: "1px"
       },
-      background: colors.lightGrey,
+      background: colors.white,
       border: state.isFocused
         ? `1px solid ${colors.secondary}`
         : !checkIfValueIsEmpty(error)
         ? `1px solid ${colors.orange}`
-        : `1px solid ${colors.border}`,
+        : `1px solid ${colors.borderDarker}`,
       ...before
     };
   },

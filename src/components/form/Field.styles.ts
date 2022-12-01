@@ -18,8 +18,8 @@ export const FieldInput = styled.input.attrs((props: { error: any }) => ({
   padding: 1rem;
   gap: 0.5rem;
 
-  background: ${colors.lightGrey};
-  border: 1px solid ${colors.border};
+  background: ${colors.white};
+  border: 1px solid ${colors.borderDarker};
   border-radius: 0;
   outline: none;
   font-family: "Plus Jakarta Sans";
@@ -107,7 +107,7 @@ export const FileUploadWrapper = styled.div.attrs(
     }
   }
 
-  background: ${colors.lightGrey};
+  background: ${colors.white};
   border-radius: 0;
   outline: none;
 
@@ -117,7 +117,7 @@ export const FileUploadWrapper = styled.div.attrs(
           border: 1px solid ${colors.orange};
         `
       : css`
-          border: 1px solid ${colors.border};
+          border: 1px solid ${colors.borderDarker};
         `}
 
   ${transition};
@@ -181,8 +181,8 @@ export const FieldTextArea = styled.textarea.attrs((props: { error: any }) => ({
   gap: 0.5rem;
   font-family: "Plus Jakarta Sans";
 
-  background: ${colors.lightGrey};
-  border: 1px solid ${colors.border};
+  background: ${colors.white};
+  border: 1px solid ${colors.borderDarker};
   border-radius: 0;
   outline: none;
 
@@ -322,7 +322,7 @@ export const CheckboxWrapper = styled.label.attrs((props: { error: any }) => ({
     width: 1.5rem;
     height: 1.5rem;
 
-    background: ${colors.lightGrey};
+    background: ${colors.white};
 
     margin-right: 0.5rem;
   }
@@ -349,7 +349,7 @@ export const CheckboxWrapper = styled.label.attrs((props: { error: any }) => ({
         `
       : css`
           > div {
-            border: 1px solid ${colors.border};
+            border: 1px solid ${colors.borderDarker};
           }
         `}
 `;
