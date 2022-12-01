@@ -1,4 +1,4 @@
-import { Fragment, useMemo } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { generatePath } from "react-router-dom";
 import styled from "styled-components";
 
@@ -8,6 +8,7 @@ import { colors } from "../../../../../lib/styles/colors";
 import { zIndex } from "../../../../../lib/styles/zIndex";
 import { useCurrentSellers } from "../../../../../lib/utils/hooks/useCurrentSellers";
 import { useKeepQueryParamsNavigate } from "../../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import useSellerNumbers from "../../../../../lib/utils/hooks/useSellerNumbers";
 import { ExtendedSeller } from "../../../../../pages/explore/WithAllOffers";
 import Grid from "../../../../ui/Grid";
 import Image from "../../../../ui/Image";
@@ -57,16 +58,18 @@ interface Props {
 }
 const imagesNumber = 4;
 export default function CollectionsCard({ collection }: Props) {
+  const [sellerId] = useState<string>(collection.id);
+
+  const {
+    numbers: { exchanges: numExchanges, products: numProducts }
+  } = useSellerNumbers(sellerId);
+
   const { lens: lensProfiles } = useCurrentSellers({
-    sellerId: collection.id
+    sellerId
   });
   const [lens] = lensProfiles;
   const navigate = useKeepQueryParamsNavigate();
 
-  const allExchanges = useMemo(
-    () => collection.numExchanges || 0,
-    [collection]
-  );
   const images = useMemo(() => {
     const array = (collection && collection?.additional?.images) || [];
 
@@ -129,7 +132,7 @@ export default function CollectionsCard({ collection }: Props) {
           </StyledGrid>
           <StyledGrid alignItems="flex-start">
             <Typography $fontSize="20px" fontWeight="600" color={colors.black}>
-              {collection?.offers?.length || 0}
+              {numProducts}
             </Typography>
             <Typography
               $fontSize="20px"
@@ -137,7 +140,7 @@ export default function CollectionsCard({ collection }: Props) {
               color={colors.black}
               margin="0 0 0 25px"
             >
-              {allExchanges}
+              {numExchanges}
             </Typography>
           </StyledGrid>
         </div>
