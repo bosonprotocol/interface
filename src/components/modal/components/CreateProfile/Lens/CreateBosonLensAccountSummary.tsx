@@ -28,7 +28,7 @@ interface Props {
   profile?: Profile | null;
   values: LensProfileType;
   bosonAccount: BosonAccount;
-  onSubmit: (id: string) => void;
+  onSubmit: (id: string, lensProfile: Profile | null | undefined) => void;
   setStepBasedOnIndex: (index: number) => void;
 }
 
@@ -156,9 +156,9 @@ export default function CreateBosonLensAccountSummary({
   const onSubmitWithArgs = useCallback(
     (action: string, id?: string) => {
       toast((t) => <SuccessTransactionToast t={t} action={action} />);
-      onSubmit(id || "");
+      onSubmit(id || "", lensProfileToSubmit);
     },
-    [onSubmit]
+    [onSubmit, lensProfileToSubmit]
   );
   return (
     <>
