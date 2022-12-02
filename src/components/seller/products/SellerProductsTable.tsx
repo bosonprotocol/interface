@@ -563,7 +563,19 @@ export default function SellerProductsTable({
                 showPlaceholderText={false}
               />
             ),
-            sku: <Typography $fontSize="0.75rem">{offer?.id}</Typography>,
+            sku: (
+              <Tooltip
+                content={
+                  <Typography $fontSize="0.75rem">
+                    {offer?.metadata?.product?.uuid || ""}
+                  </Typography>
+                }
+              >
+                <Typography $fontSize="0.75rem">
+                  {offer?.metadata?.product?.uuid?.substring(0, 4) + "..."}
+                </Typography>
+              </Tooltip>
+            ),
             productName: (
               <Grid justifyContent="flex-start" alignItems="center">
                 <div>
