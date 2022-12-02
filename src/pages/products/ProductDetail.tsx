@@ -48,7 +48,9 @@ export default function ProductDetail() {
   const variantsWithV1 = variants?.filter(
     ({ offer: { metadata } }) => metadata?.type === "PRODUCT_V1"
   ) as VariantV1[] | undefined;
-  const defaultVariant = variantsWithV1?.[0];
+  const defaultVariant =
+    variantsWithV1?.find((variant) => !variant.offer.voided) ||
+    variantsWithV1?.[0];
 
   const [selectedVariant, setSelectedVariant] = useState<VariantV1 | undefined>(
     defaultVariant
