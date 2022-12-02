@@ -1,0 +1,44 @@
+name: "Lighthouse"
+
+on:
+  push:
+    branches:
+      - main
+  release:
+    types: [created]
+
+jobs:
+  lighthouseci:
+    runs-on: ubuntu-latest
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      REACT_APP_RNFT_LICENSE_TEMPLATE: ${{ secrets.REACT_APP_RNFT_LICENSE_TEMPLATE }}
+      REACT_APP_BUYER_SELLER_AGREEMENT_TEMPLATE: ${{ secrets.REACT_APP_BUYER_SELLER_AGREEMENT_TEMPLATE }}
+      REACT_APP_DEFAULT_DISPUTE_RESOLVER_ID: ${{ secrets.REACT_APP_DEFAULT_DISPUTE_RESOLVER_ID }}
+      REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS: ${{ secrets.REACT_APP_DEFAULT_RESOLUTION_PERIOD_DAYS }}
+      REACT_APP_INFURA_IPFS_PROJECT_ID: ${{ secrets.REACT_APP_INFURA_IPFS_PROJECT_ID }}
+      REACT_APP_INFURA_IPFS_PROJECT_SECRET: ${{ secrets.REACT_APP_INFURA_IPFS_PROJECT_SECRET }}
+      REACT_APP_DEFAULT_TOKENS_LIST_TESTING: ${{ secrets.REACT_APP_DEFAULT_TOKENS_LIST_TESTING }}
+      REACT_APP_DEFAULT_TOKENS_LIST_STAGING: ${{ secrets.REACT_APP_DEFAULT_TOKENS_LIST_STAGING }}
+      REACT_APP_CREATE_PROFILE_CONFIGURATION: ${{ inputs.REACT_APP_CREATE_PROFILE_CONFIGURATION }}
+      REACT_APP_DEFAULT_TOKENS_LIST_PRODUCTION: ${{ secrets.REACT_APP_DEFAULT_TOKENS_LIST_PRODUCTION }}
+      REACT_APP_GOOGLE_TAG_ID: ${{ secrets.REACT_APP_GOOGLE_TAG_ID }}
+      REACT_APP_META_TX_API_KEY: ${{ secrets.REACT_APP_META_TX_API_KEY }}
+      REACT_APP_META_TX_API_IDS: ${{ secrets.REACT_APP_META_TX_API_IDS }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+      - uses: actions/setup-node@v3
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          node-version: "16.16.0"
+          registry-url: "https://registry.npmjs.org"
+          cache: "npm"
+      - name: Install lhci
+        run: npm install --location=global @lhci/cli@0.9.x
+      - name: Lauch lhci
+        run: lhci autorun
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
