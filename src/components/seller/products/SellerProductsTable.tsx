@@ -1,4 +1,5 @@
 import { ButtonSize, offers as OffersKit } from "@bosonprotocol/react-kit";
+import { subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import uniqBy from "lodash/uniqBy";
 import {
@@ -44,6 +45,7 @@ import Image from "../../ui/Image";
 import Typography from "../../ui/Typography";
 import PaginationPages from "../common/PaginationPages";
 import { BackedProps, OffersBackedProps } from "../common/WithSellerData";
+import OfferVariation from "./OfferVariation";
 
 const VoidButton = styled(BosonButton)`
   background: transparent;
@@ -242,6 +244,12 @@ const Span = styled.span`
   }
 `;
 
+const VariationsGrid = styled(Grid)`
+  * {
+    font-size: 0.7rem;
+  }
+`;
+
 const statusOrder = [
   OffersKit.OfferState.NOT_YET_VALID,
   OffersKit.OfferState.VALID,
@@ -399,6 +407,18 @@ export default function SellerProductsTable({
                     const variantStatus = offer
                       ? OffersKit.getOfferStatus(variant)
                       : "";
+                    const color = (
+                      variant.metadata as subgraph.ProductV1MetadataEntity
+                    )?.attributes?.find(
+                      (attribute) =>
+                        attribute?.traitType?.toLowerCase() === "color"
+                    )?.value;
+                    const size = (
+                      variant.metadata as subgraph.ProductV1MetadataEntity
+                    )?.attributes?.find(
+                      (attribute) =>
+                        attribute?.traitType?.toLowerCase() === "size"
+                    )?.value;
                     return {
                       offerStatus: variantStatus,
                       isSubRow: true,
@@ -426,37 +446,34 @@ export default function SellerProductsTable({
                           />
                         ),
                       sku: (
-                        <Tooltip
-                          content={
-                            <Typography $fontSize="0.75rem">
-                              {variant.metadata && "uuid" in variant.metadata
-                                ? variant.metadata.uuid
-                                : ""}
-                            </Typography>
-                          }
+                        <Typography
+                          $fontSize="0.75rem"
+                          style={{
+                            paddingLeft: "2rem"
+                          }}
                         >
-                          <Typography
-                            $fontSize="0.75rem"
-                            style={{
-                              paddingLeft: "2rem"
-                            }}
-                          >
-                            {variant.metadata && "uuid" in variant.metadata
-                              ? variant.metadata.uuid.substring(0, 3) + "..."
-                              : ""}
-                          </Typography>
-                        </Tooltip>
+                          {variant.id}
+                        </Typography>
                       ),
                       productName: (
-                        <Typography
+                        <Grid
+                          flexDirection="column"
+                          alignItems="flex-start"
                           style={{
-                            textTransform: "uppercase",
-                            marginLeft: "2rem"
+                            paddingLeft: "2rem",
+                            paddingRight: "0.5rem"
                           }}
-                          tag="p"
                         >
-                          {variant?.metadata?.name}
-                        </Typography>
+                          <Typography
+                            style={{
+                              textTransform: "uppercase"
+                            }}
+                            tag="p"
+                          >
+                            {variant?.metadata?.name}
+                          </Typography>
+                          <OfferVariation color={color} size={size} />
+                        </Grid>
                       ),
                       status: variant && (
                         <OfferStatuses
