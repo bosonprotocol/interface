@@ -244,12 +244,6 @@ const Span = styled.span`
   }
 `;
 
-const VariationsGrid = styled(Grid)`
-  * {
-    font-size: 0.7rem;
-  }
-`;
-
 const statusOrder = [
   OffersKit.OfferState.NOT_YET_VALID,
   OffersKit.OfferState.VALID,
