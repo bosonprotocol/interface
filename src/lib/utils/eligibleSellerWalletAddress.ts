@@ -5,5 +5,5 @@ export function parseEligibleSellerWalletAddress(
     return value.split(",").map((address) => address.trim().toLowerCase());
   }
 
-  return [];
+  return undefined;
 }

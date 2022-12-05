@@ -31,10 +31,12 @@ const Text = styled(Typography)`
       font-weight: bold;
     }
   }
+  ul {
+    word-break: break-word;
+  }
 `;
 
 function AboutPage() {
-  console.log({ CONFIG, env: process.env });
   return (
     <Wrapper
       flexDirection="column"
@@ -66,15 +68,54 @@ function AboutPage() {
         <>
           <Text margin="0 0 0.5rem 0">
             <span>Seller Curation List:</span>
-            <span>{CONFIG.sellerCurationList || "-"}</span>
+            <span>
+              {CONFIG.sellerCurationList && CONFIG.sellerCurationList.length
+                ? (CONFIG.sellerCurationList || []).map((s, i) => {
+                    const lastElem =
+                      i === (CONFIG.sellerCurationList || []).length - 1;
+                    return (
+                      <span key={`sellerCurationList_${s}_${i}`}>
+                        {s}
+                        {!lastElem ? "," : ""}
+                      </span>
+                    );
+                  })
+                : "-"}
+            </span>
           </Text>
           <Text margin="0 0 0.5rem 0">
             <span>Offer Curation List:</span>
-            <span>{CONFIG.offerCurationList || "-"}</span>
+            <span>
+              {CONFIG.offerCurationList && CONFIG.offerCurationList.length
+                ? (CONFIG.offerCurationList || []).map((s, i) => {
+                    const lastElem =
+                      i === (CONFIG.offerCurationList || []).length - 1;
+                    return (
+                      <span key={`offerCurationList_${s}_${i}`}>
+                        {s}
+                        {!lastElem ? "," : ""}
+                      </span>
+                    );
+                  })
+                : "-"}
+            </span>
           </Text>
           <Text margin="0 0 0.5rem 0">
             <span>Eligible Wallets List:</span>
-            <span>{CONFIG.eligibleSellerWalletAddresses || "-"}</span>
+            {CONFIG.eligibleSellerWalletAddresses &&
+            CONFIG.eligibleSellerWalletAddresses.length ? (
+              <ul>
+                {(CONFIG.eligibleSellerWalletAddresses || []).map((s, i) => {
+                  return (
+                    <li key={`eligibleSellerWalletAddresses_${s}_${i}`}>
+                      <b>{s}</b>
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : (
+              <span>{"-"}</span>
+            )}
           </Text>
         </>
       )}
@@ -94,15 +135,15 @@ function AboutPage() {
         <>
           <Text>
             <span>Default token list:</span>
-            <span>
+            <ul>
               {CONFIG.defaultTokens.map((token, index) => {
                 return (
-                  <span key={`token_${token.symbol}_${index}`}>
-                    {JSON.stringify(token)}
-                  </span>
+                  <li key={`token_${token.symbol}_${index}`}>
+                    <b>{JSON.stringify(token)}</b>
+                  </li>
                 );
               })}
-            </span>
+            </ul>
           </Text>
         </>
       </Grid>
