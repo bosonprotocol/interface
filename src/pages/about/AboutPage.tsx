@@ -85,7 +85,20 @@ function AboutPage() {
           </Text>
           <Text margin="0 0 0.5rem 0">
             <span>Offer Curation List:</span>
-            <span>{CONFIG.offerCurationList || "-"}</span>
+            <span>
+              {CONFIG.offerCurationList && CONFIG.offerCurationList.length
+                ? (CONFIG.offerCurationList || []).map((s, i) => {
+                    const lastElem =
+                      i === (CONFIG.offerCurationList || []).length - 1;
+                    return (
+                      <span key={`offerCurationList_${s}_${i}`}>
+                        {s}
+                        {!lastElem ? "," : ""}
+                      </span>
+                    );
+                  })
+                : "-"}
+            </span>
           </Text>
           <Text margin="0 0 0.5rem 0">
             <span>Eligible Wallets List:</span>
