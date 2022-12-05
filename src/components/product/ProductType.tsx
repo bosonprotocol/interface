@@ -132,6 +132,7 @@ export default function ProductType({
     isLoading,
     isRefetching,
     isSuccess,
+    isFetching,
     refetch
   } = useCurrentSellers();
 
@@ -216,7 +217,7 @@ export default function ProductType({
   }, [ipfsMetadataStorage, operatorLens]);
 
   useEffect(() => {
-    if (!isSuccess || isLoading || isRefetching) {
+    if (!(isSuccess && !isRefetching && !isLoading && !isFetching)) {
       return;
     }
 
