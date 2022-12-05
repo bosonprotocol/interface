@@ -145,10 +145,9 @@ export const CONFIG = {
       config.lens.LENS_PROFILES_CONTRACT_PARTIAL_ABI,
     LENS_FOLLOW_NFT_ABI: lensFollowNftContractAbi
   },
-  eligibleSellerWalletAddresses:
-    parseEligibleSellerWalletAddress(
-      process.env.REACT_APP_ELIGIBLE_SELLER_WALLET_ADDRESSES
-    ) || []
+  eligibleSellerWalletAddresses: parseEligibleSellerWalletAddress(
+    process.env.REACT_APP_ELIGIBLE_SELLER_WALLET_ADDRESSES
+  )
 };
 
 function stringToBoolean(value?: string) {

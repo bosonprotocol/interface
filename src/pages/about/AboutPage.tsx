@@ -86,22 +86,20 @@ function AboutPage() {
           </Text>
           <Text margin="0 0 0.5rem 0">
             <span>Eligible Wallets List:</span>
-            <span>
-              {CONFIG.eligibleSellerWalletAddresses &&
-              CONFIG.eligibleSellerWalletAddresses.length
-                ? (CONFIG.eligibleSellerWalletAddresses || []).map((s, i) => {
-                    const lastElem =
-                      i ===
-                      (CONFIG.eligibleSellerWalletAddresses || []).length - 1;
-                    return (
-                      <span key={`eligibleSellerWalletAddresses_${s}_${i}`}>
-                        {s}
-                        {!lastElem ? "," : ""}
-                      </span>
-                    );
-                  })
-                : "-"}
-            </span>
+            {CONFIG.eligibleSellerWalletAddresses &&
+            CONFIG.eligibleSellerWalletAddresses.length ? (
+              <ul>
+                {(CONFIG.eligibleSellerWalletAddresses || []).map((s, i) => {
+                  return (
+                    <li key={`eligibleSellerWalletAddresses_${s}_${i}`}>
+                      <b>{s}</b>
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : (
+              <span>{"-"}</span>
+            )}
           </Text>
         </>
       )}
@@ -121,15 +119,15 @@ function AboutPage() {
         <>
           <Text>
             <span>Default token list:</span>
-            <span>
+            <ul>
               {CONFIG.defaultTokens.map((token, index) => {
                 return (
-                  <span key={`token_${token.symbol}_${index}`}>
-                    {JSON.stringify(token)}
-                  </span>
+                  <li key={`token_${token.symbol}_${index}`}>
+                    <b>{JSON.stringify(token)}</b>
+                  </li>
                 );
               })}
-            </span>
+            </ul>
           </Text>
         </>
       </Grid>
