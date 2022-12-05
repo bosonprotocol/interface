@@ -152,7 +152,6 @@ export function useExchanges(
         loop = dataToAdd?.length === OFFERS_PER_PAGE;
         productsSkip += OFFERS_PER_PAGE;
       }
-      console.log({ data });
       return (
         data?.map((exchange) => {
           return {
