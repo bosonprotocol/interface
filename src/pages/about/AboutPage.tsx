@@ -34,7 +34,6 @@ const Text = styled(Typography)`
 `;
 
 function AboutPage() {
-  console.log({ CONFIG, env: process.env });
   return (
     <Wrapper
       flexDirection="column"
@@ -66,7 +65,20 @@ function AboutPage() {
         <>
           <Text margin="0 0 0.5rem 0">
             <span>Seller Curation List:</span>
-            <span>{CONFIG.sellerCurationList || "-"}</span>
+            <span>
+              {CONFIG.sellerCurationList && CONFIG.sellerCurationList.length
+                ? (CONFIG.sellerCurationList || []).map((s, i) => {
+                    const lastElem =
+                      i === (CONFIG.sellerCurationList || []).length - 1;
+                    return (
+                      <span key={`sellerCurationList_${s}_${i}`}>
+                        {s}
+                        {!lastElem ? "," : ""}
+                      </span>
+                    );
+                  })
+                : "-"}
+            </span>
           </Text>
           <Text margin="0 0 0.5rem 0">
             <span>Offer Curation List:</span>
@@ -74,7 +86,22 @@ function AboutPage() {
           </Text>
           <Text margin="0 0 0.5rem 0">
             <span>Eligible Wallets List:</span>
-            <span>{CONFIG.eligibleSellerWalletAddresses || "-"}</span>
+            <span>
+              {CONFIG.eligibleSellerWalletAddresses &&
+              CONFIG.eligibleSellerWalletAddresses.length
+                ? (CONFIG.eligibleSellerWalletAddresses || []).map((s, i) => {
+                    const lastElem =
+                      i ===
+                      (CONFIG.eligibleSellerWalletAddresses || []).length - 1;
+                    return (
+                      <span key={`eligibleSellerWalletAddresses_${s}_${i}`}>
+                        {s}
+                        {!lastElem ? "," : ""}
+                      </span>
+                    );
+                  })
+                : "-"}
+            </span>
           </Text>
         </>
       )}
