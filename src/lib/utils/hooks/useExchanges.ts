@@ -140,7 +140,6 @@ export function useExchanges(
       const data = result?.exchanges;
       let loop = data?.length === OFFERS_PER_PAGE;
       let productsSkip = OFFERS_PER_PAGE;
-      console.log({ data, loop, productsSkip });
       while (loop) {
         const newResults = await getExchangesFunction({
           ...props,
