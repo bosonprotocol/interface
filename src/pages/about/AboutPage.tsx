@@ -31,6 +31,9 @@ const Text = styled(Typography)`
       font-weight: bold;
     }
   }
+  ul {
+    word-break: break-word;
+  }
 `;
 
 function AboutPage() {
