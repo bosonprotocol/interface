@@ -590,7 +590,6 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     isMetaTx?: boolean | undefined,
     actionName?: ActionName | undefined
   ) => {
-    console.log({ hash, isMetaTx, actionName });
     setCommitType(actionName);
     if (actionName && actionName === "approveExchangeToken") {
       showModal("TRANSACTION_SUBMITTED", {
