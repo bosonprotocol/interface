@@ -1,6 +1,6 @@
 import { Button } from "@bosonprotocol/react-kit";
 import { House, WarningCircle } from "phosphor-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
@@ -48,7 +48,18 @@ const SellerCenterWithData = WithSellerData(SellerCenter);
 
 function SellerCenterWrapper() {
   const navigate = useKeepQueryParamsNavigate();
-  const { isLoading, sellerIds, isSuccess } = useCurrentSellers();
+  const {
+    isLoading,
+    sellerIds: currentSellerIds,
+    isSuccess
+  } = useCurrentSellers();
+  const sellerIds = useMemo(
+    () =>
+      CONFIG.mockSellerId
+        ? [CONFIG.mockSellerId, ...currentSellerIds]
+        : currentSellerIds,
+    [currentSellerIds]
+  );
   const [selectedSellerId, setSelectedSellerId] = useState<string>(
     sellerIds?.length === 1 ? sellerIds[0] : ""
   );
