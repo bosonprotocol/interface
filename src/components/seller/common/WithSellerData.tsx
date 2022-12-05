@@ -6,7 +6,6 @@ import { subgraph } from "@bosonprotocol/react-kit";
 import React, { useMemo } from "react";
 import styled from "styled-components";
 
-import { CONFIG } from "../../../lib/config";
 import { Offer } from "../../../lib/types/offer";
 import { useOffers } from "../../../lib/utils/hooks/offers/useOffers";
 import useProducts from "../../../lib/utils/hooks/product/useProducts";
@@ -81,7 +80,7 @@ export function WithSellerData(
   WrappedComponent: React.ComponentType<SellerInsideProps & WithSellerDataProps>
 ) {
   const ComponentWithSellerData = (props: SellerInsideProps) => {
-    const sellerId = CONFIG.mockSellerId || props.sellerId;
+    const sellerId = props.sellerId;
     const sellerRoles = useSellerRoles(sellerId);
     const {
       store: { tokens }

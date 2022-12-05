@@ -24,11 +24,14 @@ interface Props {
   orderBy?: string | null | undefined;
   orderDirection?: string | null | undefined;
   offerId?: string;
-  first?: number;
-  skip?: number;
 }
 
-const getExchangesFunction = async (props: Props) => {
+export function useExchanges(
+  props: Props,
+  options: {
+    enabled?: boolean;
+  } = {}
+) {
   const {
     disputed,
     sellerId,
@@ -38,123 +41,79 @@ const getExchangesFunction = async (props: Props) => {
     id_in,
     orderBy = "id",
     orderDirection = "desc",
-    offerId,
-    first,
-    skip
+    offerId
   } = props;
-
-  return await fetchSubgraph<{
-    exchanges: Exchange[];
-  }>(
-    gql`
-    query GetExchanges(
-      $disputed: Boolean
-      $sellerId: String
-      $buyerId: String
-      $orderBy: String
-      $orderDirection: String
-      $offerId: String
-      ${first ? "$first: Int" : ""}
-      ${skip ? "$skip: Int" : ""}
-    ) {
-      exchanges(
-        ${orderBy ? `orderBy: "${orderBy}"` : ""}
-        ${orderDirection ? `orderDirection: "${orderDirection}"` : ""}
-        ${first ? `first: ${first}` : ""}
-        ${skip ? `skip: ${skip}` : ""}
-        where: {
-        ${id ? `id: "${id}"` : ""}
-        ${state ? `state: "${state}"` : ""}
-        ${id_in ? `id_in: [${id_in.join(",")}]` : ""}
-        ${sellerId !== undefined ? "seller: $sellerId" : ""}
-        ${buyerId !== undefined ? "buyer: $buyerId" : ""}
-        ${
-          [true, false].includes(disputed as boolean)
-            ? "disputed: $disputed"
-            : ""
-        }
-        ${offerId ? "offer: $offerId" : ""}
-        }) {
-        dispute {
-          id
-          state
-          escalatedDate
-        }
-        cancelledDate
-        committedDate
-        disputedDate
-        disputed
-        expired
-        finalizedDate
-        id
-        redeemedDate
-        revokedDate
-        state
-        validUntilDate
-        seller {
-          id
-          operator
-          admin
-          clerk
-          treasury
-          authTokenId
-          authTokenType
-          voucherCloneAddress
-          active
-        }
-        buyer {
-          id
-          wallet
-          active
-        }
-        offer ${offerGraphQl}
-      }
-    }
-  `,
-    {
-      disputed,
-      sellerId: sellerId?.length ? sellerId : null,
-      buyerId: buyerId?.length ? buyerId : null,
-      orderBy,
-      orderDirection,
-      offerId,
-      skip
-    }
-  );
-};
-
-const OFFERS_PER_PAGE = 1000;
-export function useExchanges(
-  props: Props,
-  options: {
-    enabled?: boolean;
-  } = {}
-) {
   return useQuery(
     ["exchanges", props],
     async () => {
-      const result = await getExchangesFunction({
-        ...props,
-        first: OFFERS_PER_PAGE
-      });
-      const data = result?.exchanges;
-      let loop = data?.length === OFFERS_PER_PAGE;
-      let productsSkip = OFFERS_PER_PAGE;
-      console.log({ data, loop, productsSkip });
-      while (loop) {
-        const newResults = await getExchangesFunction({
-          ...props,
-          first: OFFERS_PER_PAGE,
-          skip: productsSkip
-        });
-        const dataToAdd = newResults?.exchanges || [];
-        data.push(...dataToAdd);
-        loop = dataToAdd?.length === OFFERS_PER_PAGE;
-        productsSkip += OFFERS_PER_PAGE;
-      }
-      console.log({ data });
+      const result = await fetchSubgraph<{
+        exchanges: Exchange[];
+      }>(
+        gql`
+        query GetExchanges($disputed: Boolean, $sellerId: String, $buyerId: String, $orderBy: String, $orderDirection: String, $offerId: String) {
+          exchanges(
+            ${orderBy ? `orderBy: "${orderBy}"` : ""}
+            ${orderDirection ? `orderDirection: "${orderDirection}"` : ""}
+            where: {
+            ${id ? `id: "${id}"` : ""}
+            ${state ? `state: "${state}"` : ""}
+            ${id_in ? `id_in: [${id_in.join(",")}]` : ""}
+            ${sellerId !== undefined ? "seller: $sellerId" : ""}
+            ${buyerId !== undefined ? "buyer: $buyerId" : ""}
+            ${
+              [true, false].includes(disputed as boolean)
+                ? "disputed: $disputed"
+                : ""
+            }
+            ${offerId ? "offer: $offerId" : ""}
+            }) {
+            dispute {
+              id
+              state
+              escalatedDate
+            }
+            cancelledDate
+            committedDate
+            disputedDate
+            disputed
+            expired
+            finalizedDate
+            id
+            redeemedDate
+            revokedDate
+            state
+            validUntilDate
+            seller {
+              id
+              operator
+              admin
+              clerk
+              treasury
+              authTokenId
+              authTokenType
+              voucherCloneAddress
+              active
+            }
+            buyer {
+              id
+              wallet
+              active
+            }
+            offer ${offerGraphQl}
+          }
+        }
+      `,
+        {
+          disputed,
+          sellerId: sellerId?.length ? sellerId : null,
+          buyerId: buyerId?.length ? buyerId : null,
+          orderBy,
+          orderDirection,
+          offerId
+        }
+      );
       return (
-        data?.map((exchange) => {
+        result?.exchanges.map((exchange) => {
           return {
             ...exchange,
             offer: {
