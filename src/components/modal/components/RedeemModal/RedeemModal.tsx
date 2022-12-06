@@ -32,7 +32,10 @@ const validationSchemaPerStep = [
     [FormModel.formFields.email.name]: Yup.string()
       .trim()
       .required(FormModel.formFields.email.requiredErrorMessage)
-      .email(FormModel.formFields.email.mustBeEmail)
+      .email(FormModel.formFields.email.mustBeEmail),
+    [FormModel.formFields.phone.name]: Yup.string()
+      .trim()
+      .required(FormModel.formFields.phone.requiredErrorMessage)
   }),
   Yup.object({}),
   Yup.object({})
@@ -92,7 +95,8 @@ export default function RedeemModal({
           [FormModel.formFields.state.name]: "",
           [FormModel.formFields.zip.name]: "",
           [FormModel.formFields.country.name]: "",
-          [FormModel.formFields.email.name]: ""
+          [FormModel.formFields.email.name]: "",
+          [FormModel.formFields.phone.name]: ""
         }}
         validateOnMount
       >
@@ -107,7 +111,8 @@ export default function RedeemModal({
             !props.errors[FormModel.formFields.state.name] &&
             !props.errors[FormModel.formFields.zip.name] &&
             !props.errors[FormModel.formFields.country.name] &&
-            !props.errors[FormModel.formFields.email.name];
+            !props.errors[FormModel.formFields.email.name] &&
+            !props.errors[FormModel.formFields.phone.name];
           return (
             <Form>
               {activeStep === 0 ? (

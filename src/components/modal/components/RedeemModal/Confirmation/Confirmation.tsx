@@ -83,6 +83,7 @@ export default function Confirmation({
   const [zipField] = useField(FormModel.formFields.zip.name);
   const [countryField] = useField(FormModel.formFields.country.name);
   const [emailField] = useField(FormModel.formFields.email.name);
+  const [phoneField] = useField(FormModel.formFields.phone.name);
   const handleRedeem = async () => {
     try {
       await sendDeliveryDetailsToChat();
@@ -118,7 +119,8 @@ ${FormModel.formFields.city.placeholder}: ${cityField.value}
 ${FormModel.formFields.state.placeholder}: ${stateField.value}
 ${FormModel.formFields.zip.placeholder}: ${zipField.value}
 ${FormModel.formFields.country.placeholder}: ${countryField.value}
-${FormModel.formFields.email.placeholder}: ${emailField.value}`;
+${FormModel.formFields.email.placeholder}: ${emailField.value}
+${FormModel.formFields.phone.placeholder}: ${phoneField.value}`;
 
     const newMessage = {
       threadId: {
@@ -159,6 +161,7 @@ ${FormModel.formFields.email.placeholder}: ${emailField.value}`;
           <div>{zipField.value}</div>
           <div>{countryField.value}</div>
           <div>{emailField.value}</div>
+          <div>{phoneField.value}</div>
         </Grid>
         <Grid flexDirection="row" flexBasis="0">
           <Button theme="blankSecondary" onClick={() => onBackClick()}>
