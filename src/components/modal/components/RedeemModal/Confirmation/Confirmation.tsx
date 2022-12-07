@@ -136,6 +136,7 @@ ${FormModel.formFields.email.placeholder}: ${emailField.value}`;
     setChatError(null);
     await bosonXmtp?.encodeAndSendMessage(newMessage, destinationAddress);
   };
+
   return (
     <>
       <Typography

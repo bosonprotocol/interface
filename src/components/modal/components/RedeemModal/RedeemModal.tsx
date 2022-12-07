@@ -52,7 +52,6 @@ interface Props {
 }
 
 export default function RedeemModal({
-  hideModal,
   exchangeId,
   offerName,
   offerId,
@@ -78,13 +77,7 @@ export default function RedeemModal({
       <Formik
         innerRef={formRef}
         validationSchema={validationSchema}
-        onSubmit={async () => {
-          try {
-            hideModal();
-          } catch (error) {
-            console.error(error);
-          }
-        }}
+        onSubmit={() => {}} // eslint-disable-line @typescript-eslint/no-empty-function
         initialValues={{
           [FormModel.formFields.name.name]: "",
           [FormModel.formFields.streetNameAndNumber.name]: "",
