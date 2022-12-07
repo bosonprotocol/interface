@@ -19,6 +19,7 @@ import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 import { poll } from "../../../pages/create-product/utils";
 import { Break } from "../../detail/Detail.style";
 import Price from "../../price/index";
+import OfferVariation from "../../seller/products/OfferVariation";
 import SuccessTransactionToast from "../../toasts/SuccessTransactionToast";
 import BosonButton from "../../ui/BosonButton";
 import Grid from "../../ui/Grid";
@@ -72,11 +73,27 @@ interface OfferProps {
 }
 
 function VoidProductOffer({ offer, single = false }: OfferProps) {
+  const color = (
+    offer.metadata as subgraph.ProductV1MetadataEntity
+  )?.attributes?.find(
+    (attribute) => attribute?.traitType?.toLowerCase() === "color"
+  )?.value;
+  const size = (
+    offer.metadata as subgraph.ProductV1MetadataEntity
+  )?.attributes?.find(
+    (attribute) => attribute?.traitType?.toLowerCase() === "size"
+  )?.value;
   return (
     <>
       <OfferWrapper>
         <Grid justifyContent="space-between" alignItems="center" gap="1rem">
-          <Grid justifyContent="flex-start" gap="1rem">
+          <Grid
+            justifyContent="flex-start"
+            gap="1rem"
+            flexGrow="1"
+            flexShrink="1"
+            flexBasis="0%"
+          >
             <Image
               src={offer?.metadata?.image}
               showPlaceholderText={false}
@@ -88,14 +105,17 @@ function VoidProductOffer({ offer, single = false }: OfferProps) {
               }}
             />
             <div>
-              <Typography tag="h5">
+              <Typography tag="h5" margin="0">
                 <b>{offer.metadata?.name}</b>
               </Typography>
-              <SellerID
-                offer={offer}
-                buyerOrSeller={offer?.seller}
-                withProfileImage
-              />
+              <OfferVariation color={color} size={size} />
+              <div style={{ marginTop: "0.5rem" }}>
+                <SellerID
+                  offer={offer}
+                  buyerOrSeller={offer?.seller}
+                  withProfileImage
+                />
+              </div>
             </div>
           </Grid>
           <div>
