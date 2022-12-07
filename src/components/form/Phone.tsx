@@ -122,13 +122,15 @@ export const PhoneWrapper = styled.div`
 const handleCountry = () => {
   const countryCode = (navigator?.language || "")?.toUpperCase() as CountryCode;
   if (isSupportedCountry(countryCode as CountryCode)) return countryCode;
-  return "ZW" as CountryCode;
+  return undefined;
 };
 
 export default function Phone({ name, ...props }: InputProps) {
   const [initialized, setInitialized] = useState<boolean>(false);
   const [phone, setPhone] = useState<string | undefined>(undefined);
-  const [countryCode, setCountryCode] = useState<CountryCode>(handleCountry());
+  const [countryCode, setCountryCode] = useState<CountryCode | undefined>(
+    handleCountry()
+  );
 
   const { status } = useFormikContext();
   const [field, meta, helpers] = useField(name);
