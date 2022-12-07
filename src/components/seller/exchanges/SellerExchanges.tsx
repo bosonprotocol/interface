@@ -31,6 +31,7 @@ interface DeliveryInfo {
   zip?: string;
   country?: string;
   email?: string;
+  phone?: string;
 }
 interface CSVData {
   "ID/SKU": string;
@@ -296,6 +297,7 @@ export default function SellerExchanges({
           deliveryInfo?.city || "city"
         }, ${deliveryInfo?.state || "state"}, ${deliveryInfo?.zip || "zip"}, ${
           deliveryInfo?.country || "country"
+        }, ${deliveryInfo?.phone || "phone"}
         }`;
       } catch (error) {
         Sentry.captureException(error, {
