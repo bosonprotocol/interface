@@ -7,7 +7,8 @@ import PhoneInput, {
   formatPhoneNumberIntl,
   getCountryCallingCode,
   isSupportedCountry,
-  isValidPhoneNumber
+  isValidPhoneNumber,
+  parsePhoneNumber
 } from "react-phone-number-input";
 import Select, { components } from "react-select";
 import styled from "styled-components";
@@ -17,6 +18,7 @@ import { zIndex } from "../../lib/styles/zIndex";
 import Error from "./Error";
 import { FieldInput } from "./Field.styles";
 import type { InputProps } from "./types";
+import { SelectDataProps } from "./types";
 const customStyles = {
   control: (provided: any, state: any) => {
     const before = state.selectProps.label
@@ -120,13 +122,13 @@ export const PhoneWrapper = styled.div`
 const handleCountry = () => {
   const countryCode = (navigator?.language || "")?.toUpperCase() as CountryCode;
   if (isSupportedCountry(countryCode as CountryCode)) return countryCode;
-  return undefined;
+  return "ZW" as CountryCode;
 };
 
 export default function Phone({ name, ...props }: InputProps) {
-  const [phone, setPhone] = useState<any>(undefined);
-  const [country, setCountry] = useState<any>();
-  const defaultCountry = handleCountry();
+  const [initialized, setInitialized] = useState<boolean>(false);
+  const [phone, setPhone] = useState<string | undefined>(undefined);
+  const [countryCode, setCountryCode] = useState<CountryCode>(handleCountry());
 
   const { status } = useFormikContext();
   const [field, meta, helpers] = useField(name);
@@ -137,8 +139,8 @@ export default function Phone({ name, ...props }: InputProps) {
 
   const handlePhoneChange = useCallback(
     (value: string) => {
-      const callingCode = country?.value
-        ? getCountryCallingCode(country?.value)
+      const callingCode = countryCode
+        ? getCountryCallingCode(countryCode as CountryCode)
         : false;
       const newValue = formatPhoneNumberIntl(
         `${callingCode ? `+${callingCode}` : ""}${value}`
@@ -156,20 +158,31 @@ export default function Phone({ name, ...props }: InputProps) {
       }
       helpers.setValue(newValue);
     },
-    [helpers, country, meta.touched]
+    [helpers, countryCode, meta.touched]
   );
 
   useEffect(() => {
     if (phone !== undefined) {
       handlePhoneChange(phone);
     }
-  }, [country, phone]); // eslint-disable-line
+  }, [countryCode, phone]); // eslint-disable-line
+
+  useEffect(() => {
+    if (!initialized && field.value) {
+      const parsed = parsePhoneNumber(field.value);
+      setInitialized(true);
+      setPhone(parsed?.nationalNumber || "");
+      if (parsed?.country) {
+        setCountryCode(parsed?.country as CountryCode);
+      }
+    }
+  }, [field.value, initialized]); // eslint-disable-line
 
   return (
     <>
       <PhoneWrapper>
         <PhoneInput
-          country={country?.value || defaultCountry}
+          country={countryCode}
           value={phone}
           onChange={(value) => setPhone((value || "").replace(/\+/g, ""))}
           countrySelectComponent={({ iconComponent: Icon, ...props }) => (
@@ -179,8 +192,12 @@ export default function Phone({ name, ...props }: InputProps) {
                   {...props}
                   styles={customStyles}
                   name="phoneCountry"
-                  value={country}
-                  onChange={setCountry}
+                  value={(props?.options || []).find(
+                    (o: SelectDataProps) => o.value === countryCode
+                  )}
+                  onChange={(o: SelectDataProps) =>
+                    setCountryCode(o.value as CountryCode)
+                  }
                   components={{
                     Control: (props) => {
                       const country =
