@@ -1,6 +1,8 @@
+import { offers as OffersKit, subgraph } from "@bosonprotocol/react-kit";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
+
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.tz.setDefault("Europe/Greenwich");
@@ -11,10 +13,28 @@ import { Offer } from "../../types/offer";
 import { getDateTimestamp } from "../getDateTimestamp";
 
 export function useHandleText(offer: Offer) {
-  const handleDate = (offer: Offer) => {
+  const handleDate = (
+    offer: Offer,
+    validVariants: subgraph.OfferFieldsFragment[]
+  ) => {
     const current = dayjs();
-    const release = dayjs(getDateTimestamp(offer?.validFromDate));
-    const expiry = dayjs(getDateTimestamp(offer?.validUntilDate));
+    const hasVariants = !!validVariants.length;
+    const earliestValidFromDate = hasVariants
+      ? Math.min(
+          ...(validVariants.map((variant) =>
+            getDateTimestamp(variant.validFromDate)
+          ) || [0])
+        )
+      : offer?.validFromDate;
+    const latestValidFromDate = hasVariants
+      ? Math.max(
+          ...(validVariants.map((variant) =>
+            getDateTimestamp(variant.validUntilDate)
+          ) || [0])
+        )
+      : offer?.validFromDate;
+    const release = dayjs(earliestValidFromDate);
+    const expiry = dayjs(latestValidFromDate);
 
     return {
       current,
@@ -41,12 +61,31 @@ export function useHandleText(offer: Offer) {
     };
   };
   const handleText = useMemo(() => {
-    const { release, expiry } = handleDate(offer);
+    const validVariants =
+      offer.additional?.variants.filter(
+        (variant) =>
+          OffersKit.getOfferStatus(variant) === OffersKit.OfferState.VALID
+      ) || [];
+    const { release, expiry } = handleDate(offer, validVariants);
     const aspectRatio = 1 / 2;
-    const optionVoided = offer.voided;
-    const optionQuantity =
-      Number(offer?.quantityAvailable) / Number(offer?.quantityInitial) <
-      aspectRatio;
+    const hasVariants = !!offer.additional?.variants.length;
+    const optionVoided = hasVariants
+      ? offer.additional?.variants.every(
+          (variant) =>
+            OffersKit.getOfferStatus(variant) === OffersKit.OfferState.VOIDED
+        )
+      : offer.voided;
+    const quantityAvailable = hasVariants
+      ? validVariants
+          .map((variant) => Number(variant.quantityAvailable))
+          .reduce((prev, a) => prev + a, 0) || 0
+      : Number(offer?.quantityAvailable);
+    const quantityInitial = hasVariants
+      ? validVariants
+          .map((variant) => Number(variant.quantityInitial))
+          .reduce((prev, a) => prev + a, 0) || 0
+      : Number(offer?.quantityInitial);
+    const optionQuantity = quantityAvailable / quantityInitial < aspectRatio;
     const optionRelease =
       !release.diff.isReleased &&
       release.diff.days >= 0 &&
@@ -55,12 +94,10 @@ export function useHandleText(offer: Offer) {
     const utcValue =
       utcOffset === 0 ? "" : utcOffset < 0 ? `-${utcOffset}` : `+${utcOffset}`;
 
-    if (optionVoided) {
-      return "Voided";
-    } else if (optionQuantity) {
-      return offer?.quantityAvailable === "0"
+    if (optionQuantity) {
+      return quantityAvailable === 0
         ? "Sold out"
-        : `Only ${offer?.quantityAvailable}/${offer?.quantityInitial} left`;
+        : `Only ${quantityAvailable}/${quantityInitial} left`;
     } else if (optionRelease) {
       return release.diff.days <= 10
         ? release.diff.days <= 0
@@ -71,7 +108,7 @@ export function useHandleText(offer: Offer) {
               release.diff.days === 1 ? "day" : "days"
             }`
         : `Releases on ${release.date}`;
-    } else {
+    } else if (!optionVoided) {
       return expiry.diff.isExpired
         ? `Expired`
         : expiry.diff.days <= 10
@@ -83,7 +120,10 @@ export function useHandleText(offer: Offer) {
               expiry.diff.days === 1 ? "day" : "days"
             }`
         : `Expires on ${expiry.date}`;
+    } else if (optionVoided) {
+      return "Voided";
     }
+    return "";
   }, [offer]);
 
   return handleText;

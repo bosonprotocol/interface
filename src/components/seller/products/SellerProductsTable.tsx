@@ -30,6 +30,7 @@ import { colors } from "../../../lib/styles/colors";
 import { isTruthy } from "../../../lib/types/helpers";
 import { Offer } from "../../../lib/types/offer";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
+import { getProductStatusBasedOnVariants } from "../../../lib/utils/getProductStatusBasedOnVariants";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { SellerRolesProps } from "../../../lib/utils/hooks/useSellerRoles";
 import { ExtendedOffer } from "../../../pages/explore/WithAllOffers";
@@ -373,7 +374,12 @@ export default function SellerProductsTable({
     () =>
       offers
         ?.map((offer) => {
-          const status = offer ? OffersKit.getOfferStatus(offer) : "";
+          const status = offer
+            ? offer?.additional?.variants?.length
+              ? getProductStatusBasedOnVariants(offer?.additional?.variants)
+              : OffersKit.getOfferStatus(offer)
+            : "";
+
           const showVariant =
             offer?.additional?.variants &&
             offer?.additional?.variants.length > 1;
