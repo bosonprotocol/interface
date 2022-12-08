@@ -272,7 +272,8 @@ ${FormModel.formFields.phone.placeholder}: ${phoneField.value}`;
                       state: stateField.value,
                       zip: zipField.value,
                       country: countryField.value,
-                      email: emailField.value
+                      email: emailField.value,
+                      phone: phoneField.value
                     });
                   }}
                 />

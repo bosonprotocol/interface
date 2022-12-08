@@ -23,6 +23,7 @@ interface Props {
   [FormModel.formFields.zip.name]: string;
   [FormModel.formFields.country.name]: string;
   [FormModel.formFields.email.name]: string;
+  [FormModel.formFields.phone.name]: string;
 }
 
 export default function RedeemSuccessModal({
@@ -33,7 +34,8 @@ export default function RedeemSuccessModal({
   state,
   zip,
   country,
-  email
+  email,
+  phone
 }: Props) {
   return (
     <>
@@ -59,6 +61,7 @@ export default function RedeemSuccessModal({
         <Typography>{zip}</Typography>
         <Typography>{country}</Typography>
         <Typography>{email}</Typography>
+        <Typography>{phone}</Typography>
       </Grid>
       <Typography
         fontWeight="600"
