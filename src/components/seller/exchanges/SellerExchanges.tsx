@@ -395,10 +395,10 @@ export default function SellerExchanges({
   }, [allData, getExchangeAddressDetails, csvBtn]);
 
   useEffect(() => {
-    if (bosonXmtp && csvData.length === 0) {
+    if (bosonXmtp && loading && csvData.length === 0) {
       prepareWithDelivery();
     }
-  }, [bosonXmtp, csvData]); // eslint-disable-line
+  }, [bosonXmtp, csvData, loading]); // eslint-disable-line
 
   if (isLoading) {
     return <Loading />;
