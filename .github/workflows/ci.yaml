@@ -71,7 +71,7 @@ jobs:
       REACT_APP_ENABLE_CURATION_LISTS: false
       REACT_APP_CREATE_PROFILE_CONFIGURATION: "LENS"
       REACT_APP_IPFS_GATEWAY: "https://bosonprotocol.infura-ipfs.io/ipfs"
-      REACT_APP_IPFS_IMAGE_GATEWAY: "https://fuchsia-payable-smelt-901.mypinata.cloud/ipfs"
+      REACT_APP_IPFS_IMAGE_GATEWAY: "https://test-permanent-fly-490.mypinata.cloud/ipfs"
       REACT_APP_RELEASE_TAG: ${{ needs.prejob.outputs.releaseTag }}
       REACT_APP_RELEASE_NAME: ${{ needs.prejob.outputs.releaseName }}
     secrets:
@@ -101,7 +101,7 @@ jobs:
       REACT_APP_ENABLE_CURATION_LISTS: false
       REACT_APP_CREATE_PROFILE_CONFIGURATION: "LENS"
       REACT_APP_IPFS_GATEWAY: "https://bosonprotocol.infura-ipfs.io/ipfs"
-      REACT_APP_IPFS_IMAGE_GATEWAY: "https://fuchsia-payable-smelt-901.mypinata.cloud/ipfs"
+      REACT_APP_IPFS_IMAGE_GATEWAY: "https://test-permanent-fly-490.mypinata.cloud/ipfs"
       REACT_APP_RELEASE_TAG: ${{ needs.prejob.outputs.releaseTag }}
       REACT_APP_RELEASE_NAME: ${{ needs.prejob.outputs.releaseName }}
     secrets:
