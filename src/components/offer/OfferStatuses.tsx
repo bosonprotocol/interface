@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import { Offer } from "../../lib/types/offer";
+import { getProductStatusBasedOnVariants } from "../../lib/utils/getProductStatusBasedOnVariants";
 
 const Statuses = styled.div`
   position: absolute;
@@ -159,7 +160,11 @@ export default function OfferStatuses({
   displayDot = false,
   size = "regular"
 }: Props) {
-  const status = useMemo(() => offers.getOfferStatus(offer), [offer]);
+  const status = useMemo(() => {
+    return offer?.additional?.variants?.length
+      ? getProductStatusBasedOnVariants(offer?.additional?.variants)
+      : offers.getOfferStatus(offer);
+  }, [offer]);
   const displayComponent = showValid
     ? true
     : status !== offers.OfferState.VALID;
