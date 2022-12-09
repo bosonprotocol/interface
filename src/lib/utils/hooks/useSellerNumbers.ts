@@ -69,8 +69,9 @@ export default function useSellerNumbers(sellerId: string): ReturnProps {
             // all products that have been fully voided, only and only if there exist at least 1 exchange for at least 1 of the variants/offer (whatever the status of this exchange)
             const isFullyVoidedAndBought = isFullyVoided && isHasBeenBought;
 
-            // all products where all variants are not yet valid
+            // all fully voided products where all variants are not yet valid
             const isAllVariantsInProductNotValidYet =
+              !isFullyVoided &&
               elem.additional?.variants.every((variant) => {
                 return dayjs(getDateTimestamp(variant?.validFromDate)).isAfter(
                   nowDate
