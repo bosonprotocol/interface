@@ -237,7 +237,18 @@ const Content = styled.div<{
     max-height: calc(100vh - 8rem - 4.25rem);
   }
   `};
-  overflow: auto;
+  ${({ $modalType }) => {
+    switch ($modalType) {
+      case "REDEEM":
+        return css`
+          overflow: visible;
+        `;
+      default:
+        return css`
+          overflow: auto;
+        `;
+    }
+  }};
 `;
 
 interface Props {

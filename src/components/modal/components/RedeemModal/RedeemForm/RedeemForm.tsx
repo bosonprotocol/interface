@@ -1,5 +1,5 @@
 import { useBreakpoints } from "../../../../../lib/utils/hooks/useBreakpoints";
-import { Input } from "../../../../form";
+import { Input, Phone } from "../../../../form";
 import BosonButton from "../../../../ui/BosonButton";
 import Button from "../../../../ui/Button";
 import Grid from "../../../../ui/Grid";
@@ -97,6 +97,12 @@ export default function RedeemForm({
           <Input
             name={FormModel.formFields.email.name}
             placeholder={FormModel.formFields.email.placeholder}
+          />
+        </Grid>
+        <Grid flexDirection="column" alignItems="flex-start">
+          <Phone
+            name={FormModel.formFields.phone.name}
+            placeholder={FormModel.formFields.phone.placeholder}
           />
         </Grid>
       </Grid>

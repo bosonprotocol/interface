@@ -35,6 +35,11 @@ export const FormModel = {
       requiredErrorMessage: "This field is required",
       placeholder: "Email",
       mustBeEmail: "This is not an e-mail"
+    },
+    phone: {
+      name: "phone",
+      requiredErrorMessage: "This field is required",
+      placeholder: "Phone Number"
     }
   }
 } as const;
