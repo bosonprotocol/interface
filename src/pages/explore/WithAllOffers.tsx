@@ -231,7 +231,8 @@ export function WithAllOffers<P>(
       },
       {
         enableCurationList: true,
-        withNumExchanges: true
+        withNumExchanges: true,
+        refetchOnMount: true
       }
     );
     const { isLoading, isError } = products;

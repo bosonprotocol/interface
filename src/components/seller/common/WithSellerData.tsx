@@ -94,7 +94,8 @@ export function WithSellerData(
         }
       },
       {
-        enableCurationList: false
+        enableCurationList: false,
+        refetchOnMount: true
       }
     );
 
@@ -123,6 +124,7 @@ export function WithSellerData(
       { enabled: !!sellerId }
     );
     const funds = useFunds(sellerId, tokens);
+
     const newProps = useMemo(
       () => ({
         sellerId,
