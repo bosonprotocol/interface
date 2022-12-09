@@ -208,18 +208,18 @@ export default function CoreTermsOfSale({ isMultiVariant }: Props) {
         )}
       </FormField>
       <FormField
-        title="Redemption period"
-        required
-        subTitle="Redemption period is the time in which buyers can redeem the rNFT for the physical item."
-      >
-        <Datepicker name={`${prefix}.redemptionPeriod`} period selectTime />
-      </FormField>
-      <FormField
         title="Offer Validity period"
         required
         subTitle="The Offer validity period is the time in which buyers can commit to your offer."
       >
         <Datepicker name={`${prefix}.offerValidityPeriod`} period selectTime />
+      </FormField>
+      <FormField
+        title="Redemption period"
+        required
+        subTitle="Redemption period is the time in which buyers can redeem the rNFT for the physical item."
+      >
+        <Datepicker name={`${prefix}.redemptionPeriod`} period selectTime />
       </FormField>
       <ProductInformationButtonGroup>
         <BosonButton
