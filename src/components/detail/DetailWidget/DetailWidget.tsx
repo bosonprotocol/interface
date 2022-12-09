@@ -119,6 +119,7 @@ const RedeemButton = styled(BosonButton)`
   }
 `;
 
+type ActionName = "approveExchangeToken" | "depositFunds" | "commit";
 interface IDetailWidget {
   pageType?: "exchange" | "offer";
   offer: Offer;
@@ -319,6 +320,9 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   hasMultipleVariants,
   reload
 }) => {
+  const [commitType, setCommitType] = useState<ActionName | undefined | null>(
+    null
+  );
   const { openConnectModal } = useConnectModal();
   const [
     isCommittingFromNotConnectedWallet,
@@ -583,22 +587,31 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   };
   const onCommitPendingTransaction = (
     hash: string,
-    isMetaTx?: boolean | undefined
+    isMetaTx?: boolean | undefined,
+    actionName?: ActionName | undefined
   ) => {
-    showModal("TRANSACTION_SUBMITTED", {
-      action: "Commit",
-      txHash: hash
-    });
-    addPendingTransaction({
-      type: subgraph.EventType.BuyerCommitted,
-      hash,
-      isMetaTx,
-      accountType: "Buyer",
-      offerId: offer.id,
-      offer: {
-        id: offer.id
-      }
-    });
+    setCommitType(actionName);
+    if (actionName && actionName === "approveExchangeToken") {
+      showModal("TRANSACTION_SUBMITTED", {
+        action: "Approve ERC20 Token",
+        txHash: hash
+      });
+    } else {
+      showModal("TRANSACTION_SUBMITTED", {
+        action: "Commit",
+        txHash: hash
+      });
+      addPendingTransaction({
+        type: subgraph.EventType.BuyerCommitted,
+        hash,
+        isMetaTx,
+        accountType: "Buyer",
+        offerId: offer.id,
+        offer: {
+          id: offer.id
+        }
+      });
+    }
   };
   const onCommitSuccess = async (
     _receipt: ethers.providers.TransactionReceipt,
@@ -617,26 +630,36 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     );
     setIsLoading(false);
     hideModal();
-    const showDetailWidgetModal = () => {
-      showModal(modalTypes.DETAIL_WIDGET, {
-        title: "You have successfully committed!",
-        message: "You now own the rNFT",
-        type: "SUCCESS",
-        id: exchangeId.toString(),
-        state: "Committed",
-        ...BASE_MODAL_DATA
-      });
-    };
-    showDetailWidgetModal();
-    toast((t) => (
-      <SuccessTransactionToast
-        t={t}
-        action={`Commit to offer: ${offer.metadata.name}`}
-        onViewDetails={() => {
-          showDetailWidgetModal();
-        }}
-      />
-    ));
+    if (commitType === "approveExchangeToken") {
+      toast((t) => (
+        <SuccessTransactionToast
+          t={t}
+          action={"Token approval transaction submitted"}
+        />
+      ));
+    } else {
+      const showDetailWidgetModal = () => {
+        showModal(modalTypes.DETAIL_WIDGET, {
+          title: "You have successfully committed!",
+          message: "You now own the rNFT",
+          type: "SUCCESS",
+          id: exchangeId.toString(),
+          state: "Committed",
+          ...BASE_MODAL_DATA
+        });
+      };
+      showDetailWidgetModal();
+      toast((t) => (
+        <SuccessTransactionToast
+          t={t}
+          action={`Commit to offer: ${offer.metadata.name}`}
+          onViewDetails={() => {
+            showDetailWidgetModal();
+          }}
+        />
+      ));
+    }
+    setCommitType(null);
     removePendingTransaction("offerId", offer.id);
   };
   const onCommitError = (error: Error) => {
@@ -656,6 +679,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
         ...BASE_MODAL_DATA
       });
     }
+    setCommitType(null);
     removePendingTransaction("offerId", offer.id);
   };
   const CommitProxyButton = () => {
