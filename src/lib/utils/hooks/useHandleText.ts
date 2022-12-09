@@ -85,7 +85,10 @@ export function useHandleText(offer: Offer) {
           .map((variant) => Number(variant.quantityInitial))
           .reduce((prev, a) => prev + a, 0) || 0
       : Number(offer?.quantityInitial);
-    const optionQuantity = quantityInitial > 0 ? quantityAvailable / quantityInitial < aspectRatio : false;
+    const optionQuantity =
+      quantityInitial > 0
+        ? quantityAvailable / quantityInitial < aspectRatio
+        : false;
     const optionRelease =
       !release.diff.isReleased &&
       release.diff.days >= 0 &&
