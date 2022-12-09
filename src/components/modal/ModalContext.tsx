@@ -12,7 +12,6 @@ export type ModalProps = {
   state?: keyof typeof subgraph.ExchangeState;
   noCloseIcon?: boolean;
   [x: string]: any;
-
   headerComponent?: ReactNode;
   hideModal?: () => void;
   closable?: boolean;
