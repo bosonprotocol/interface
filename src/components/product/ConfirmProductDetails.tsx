@@ -604,6 +604,11 @@ export default function ConfirmProductDetails({
           variant="accentInverted"
           type="button"
           onClick={handleOpenPreview}
+          disabled={
+            !["INITIALIZED", "ALREADY_INITIALIZED"].includes(
+              chatInitializationStatus
+            )
+          }
         >
           Preview product detail page
         </BosonButton>
