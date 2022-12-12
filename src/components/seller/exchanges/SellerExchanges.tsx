@@ -1,11 +1,14 @@
 import { ThreadId } from "@bosonprotocol/chat-sdk/dist/cjs/util/v0.0.1/definitions";
+import { ThreadObject } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/definitions";
 import { exchanges as ExchangesKit, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
+import { createWorkerFactory, useWorker } from "@shopify/react-web-worker";
 import dayjs from "dayjs";
 import { utils } from "ethers";
 import { camelCase } from "lodash";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CSVLink } from "react-csv";
+import toast from "react-hot-toast";
 import { useLocation } from "react-router-dom";
 
 import { CONFIG } from "../../../lib/config";
@@ -14,6 +17,8 @@ import { calcPrice } from "../../../lib/utils/calcPrice";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useChatContext } from "../../../pages/chat/ChatProvider/ChatContext";
+import { useModal } from "../../modal/useModal";
+import SuccessTransactionToast from "../../toasts/SuccessTransactionToast";
 import ExportDropdown from "../../ui/ExportDropdown";
 import Loading from "../../ui/Loading";
 import { WithSellerDataProps } from "../common/WithSellerData";
@@ -153,6 +158,10 @@ const compareExchangesSortByStatus = (
   return statusOrder.indexOf(stateA) - statusOrder.indexOf(stateB);
 };
 
+const createWorker = createWorkerFactory(
+  () => import("../../../lib/utils/hooks/chat/getThreadWorker")
+);
+
 interface FilterValue {
   value: string;
   label: string;
@@ -164,6 +173,7 @@ export default function SellerExchanges({
   exchanges: exchangesData,
   sellerRoles
 }: SellerInsideProps & WithSellerDataProps) {
+  const { showModal, updateProps, store, modalTypes, hideModal } = useModal();
   const csvBtn = useRef<
     CSVLink & HTMLAnchorElement & { link: HTMLAnchorElement }
   >(null);
@@ -171,6 +181,7 @@ export default function SellerExchanges({
   const [loading, setLoading] = useState<boolean>(false);
 
   const { initialize, bosonXmtp, isInitializing } = useChatContext();
+  const worker = useWorker(createWorker);
 
   const location = useLocation();
   const state = location.state as MyLocationState;
@@ -257,14 +268,52 @@ export default function SellerExchanges({
         if (!bosonXmtp) {
           return "Address not found. Please initialize chat first";
         }
-        const result = await bosonXmtp?.getThread(
-          threadId,
-          destinationAddress,
-          {
-            startTime,
-            endTime
+
+        const result = await new Promise<ThreadObject | null>(
+          (resolve, reject) => {
+            let mergedThread: ThreadObject | null = null;
+            worker
+              .getThread({
+                bosonXmtp,
+                threadId,
+                counterParty: destinationAddress,
+                dateIndex: 0,
+                dateStep: "week",
+                dateStepValue: 1,
+                now: endTime,
+                genesisDate: startTime,
+                onMessageReceived: async (th) => {
+                  console.log(exchange.id, "th", th);
+                  mergedThread = th;
+                },
+                checkCustomCondition: (mergedThread) => {
+                  if (!mergedThread) {
+                    return false;
+                  }
+                  return mergedThread.messages.some((message) => {
+                    const deliveryInfo = JSON.stringify(
+                      message?.data?.content?.value || ""
+                    );
+                    return deliveryInfo?.includes("DELIVERY ADDRESS");
+                  });
+                }
+              })
+              .then(() => {
+                resolve(mergedThread);
+              })
+              .catch(reject);
           }
         );
+
+        console.log(exchange.id, "result", result);
+        // const result = await bosonXmtp?.getThread(
+        //   threadId,
+        //   destinationAddress,
+        //   {
+        //     startTime,
+        //     endTime
+        //   }
+        // );
         const messageWithDeliveryInfo = result?.messages?.find((message) => {
           const deliveryInfo = JSON.stringify(
             message?.data?.content?.value || ""
@@ -297,8 +346,7 @@ export default function SellerExchanges({
           deliveryInfo?.city || "city"
         }, ${deliveryInfo?.state || "state"}, ${deliveryInfo?.zip || "zip"}, ${
           deliveryInfo?.country || "country"
-        }, ${deliveryInfo?.phoneNumber || "phoneNumber"}
-        }`;
+        }, ${deliveryInfo?.phoneNumber || "phoneNumber"}`;
       } catch (error) {
         Sentry.captureException(error, {
           extra: {
@@ -311,7 +359,7 @@ export default function SellerExchanges({
         return "";
       }
     },
-    [bosonXmtp]
+    [bosonXmtp, worker]
   );
 
   const prepareWithoutDelivery = useMemo(() => {
@@ -345,8 +393,43 @@ export default function SellerExchanges({
   }, [allData]);
 
   const prepareWithDelivery = useCallback(async () => {
+    let isModalClosed = false;
+    let cancelDownload = false;
+    const onCancel = () => {
+      cancelDownload = true;
+      isModalClosed = true;
+      hideModal();
+    };
+    showModal(modalTypes.PROGRESS_BAR, {
+      progress: 0,
+      title: "Export exchanges with delivery info",
+      text: "Initializing export... \n(if you close this modal, the export will be performed in the background)",
+      onCancel
+    });
+    if (cancelDownload) {
+      return;
+    }
     setLoading(true);
-    const allPromises = allData?.map(async (exchange) => {
+    const csvData: CSVData[] = [];
+    for (const [index, exchange] of Object.entries(allData)) {
+      !isModalClosed &&
+        updateProps<"PROGRESS_BAR">({
+          ...store,
+          modalType: "PROGRESS_BAR",
+          modalProps: {
+            ...store.modalProps,
+            title: "Export exchanges with delivery info",
+            text: `Processing exchange with id = ${exchange.id} \n(if you close this modal, the export will be performed in the background)`,
+            progress: Math.round(((Number(index) + 1) / allData.length) * 100),
+            onClose: () => {
+              isModalClosed = true;
+            },
+            onCancel
+          }
+        });
+      if (cancelDownload) {
+        return;
+      }
       const status = (
         exchange ? ExchangesKit.getExchangeState(exchange) : ""
       ) as subgraph.ExchangeState;
@@ -355,7 +438,7 @@ export default function SellerExchanges({
           ? await getExchangeAddressDetails(exchange as Exchange)
           : "";
 
-      return {
+      csvData.push({
         ["ID/SKU"]: exchange?.id ? exchange?.id : "",
         ["Product name"]: exchange?.offer?.metadata?.name ?? "",
         ["Status"]: status,
@@ -376,9 +459,50 @@ export default function SellerExchanges({
           ? dayjs(getDateTimestamp(exchange?.redeemedDate)).format()
           : "",
         ["Delivery Info"]: (deliveryInfo || "").toString()
-      };
-    });
-    const csvData = (await Promise.all(allPromises)) as CSVData[];
+      } as CSVData);
+      !isModalClosed &&
+        updateProps<"PROGRESS_BAR">({
+          ...store,
+          modalType: "PROGRESS_BAR",
+          modalProps: {
+            ...store.modalProps,
+            title: "Export exchanges with delivery info",
+            text: `Processed exchange with id = ${exchange.id} \n(if you close this modal, the export will be performed in the background)`,
+            progress: Math.round(((Number(index) + 1) / allData.length) * 100),
+            onClose: () => {
+              isModalClosed = true;
+            },
+            onCancel
+          }
+        });
+      if (cancelDownload) {
+        return;
+      }
+    }
+    !isModalClosed &&
+      updateProps<"PROGRESS_BAR">({
+        ...store,
+        modalType: "PROGRESS_BAR",
+        modalProps: {
+          ...store.modalProps,
+          title: "Export exchanges with delivery info",
+          text: `Success! The CSV file should have been automatically downloaded.`,
+          progress: 100,
+          onClose: () => {
+            isModalClosed = true;
+          },
+          onCancel
+        }
+      });
+    if (cancelDownload) {
+      return;
+    }
+    toast((t) => (
+      <SuccessTransactionToast
+        t={t}
+        action={"Exchanges data with delivery info has been downloaded"}
+      />
+    ));
     setCsvData(csvData);
     if (csvBtn?.current) {
       setTimeout(() => {
@@ -394,7 +518,15 @@ export default function SellerExchanges({
         document.body.removeChild(a);
       }, 250);
     }
-  }, [allData, getExchangeAddressDetails, csvBtn]);
+  }, [
+    showModal,
+    modalTypes.PROGRESS_BAR,
+    allData,
+    getExchangeAddressDetails,
+    updateProps,
+    store,
+    hideModal
+  ]);
 
   useEffect(() => {
     if (bosonXmtp && loading && csvData.length === 0) {

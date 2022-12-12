@@ -24,7 +24,8 @@ export async function getThread({
   dateStepValue,
   now,
   genesisDate,
-  onMessageReceived
+  onMessageReceived,
+  checkCustomCondition
 }: {
   bosonXmtp: BosonXmtpClient;
   threadId: ThreadId;
@@ -34,7 +35,8 @@ export async function getThread({
   dateStepValue: number;
   now: Date;
   genesisDate: Date;
-  onMessageReceived: (currentThread: ThreadObject | null) => Promise<unknown>;
+  onMessageReceived: (currentThread: ThreadObject | null) => Promise<void>;
+  checkCustomCondition?: (mergedThread: ThreadObject | null) => boolean;
 }): Promise<{
   thread: ThreadObject | null;
   dateIndex: number;
@@ -49,6 +51,7 @@ export async function getThread({
   let anyMessage = false;
   let failedTimesArray: Time[] = [];
   let oldestThread: ThreadObject | null = null;
+  let customConditionMet = false;
   do {
     const failedTimes = getTimesInFailedPeriod(failedTimesArray)
       .flat()
@@ -120,12 +123,15 @@ export async function getThread({
     if (threadsWithMessages.length) {
       const merged = mergeListOfThreads(threadsWithMessages);
       onMessageReceived(merged);
+      if (checkCustomCondition) {
+        customConditionMet = checkCustomCondition(merged);
+      }
     }
-
     anyMessage = anyMessage || !!threadsWithMessages.length;
     iDateIndex -= concurrency;
   } while (
     window.navigator.onLine &&
+    !customConditionMet &&
     (failedTimesArray.length ||
       (!failedTimesArray.length && !isBeginning && !anyMessage))
   );
