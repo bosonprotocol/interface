@@ -20,6 +20,8 @@ interface Props {
   error?: string;
   period: boolean;
   selectTime: boolean;
+  minDate?: Dayjs | null;
+  maxDate?: Dayjs | null;
   [x: string]: any;
 }
 export interface ChoosenTime {
@@ -52,6 +54,8 @@ export default function DatePicker({
   onChange,
   period,
   selectTime,
+  maxDate,
+  minDate = dayjs(),
   ...props
 }: Props) {
   const ref = useRef<HTMLDivElement | null>(null);
@@ -184,6 +188,8 @@ export default function DatePicker({
               month={month}
               period={period}
               onChange={handleDateChange}
+              minDate={minDate}
+              maxDate={maxDate}
             />
           </div>
           {selectTime && showTime && (

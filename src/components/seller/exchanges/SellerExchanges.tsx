@@ -3,7 +3,7 @@ import { ThreadObject } from "@bosonprotocol/chat-sdk/dist/esm/util/v0.0.1/defin
 import { exchanges as ExchangesKit, subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { createWorkerFactory, useWorker } from "@shopify/react-web-worker";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { utils } from "ethers";
 import { camelCase } from "lodash";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -249,7 +249,7 @@ export default function SellerExchanges({
   }, [data, search, currentTag]);
 
   const getExchangeAddressDetails = useCallback(
-    async (exchange: Exchange) => {
+    async (exchange: Exchange, from?: Dayjs) => {
       try {
         const threadId: ThreadId = {
           exchangeId: exchange.id,
@@ -260,13 +260,19 @@ export default function SellerExchanges({
         const destinationAddress = utils.getAddress(
           destinationAddressLowerCase
         );
-        const startTime = dayjs(
-          getDateTimestamp(exchange?.committedDate)
-        ).toDate();
+        const startTime =
+          from?.toDate() || exchange?.redeemedDate
+            ? dayjs(getDateTimestamp(exchange?.redeemedDate || "")).toDate()
+            : dayjs(getDateTimestamp(exchange?.committedDate)).toDate();
+
         const endTime = dayjs().toDate();
 
         if (!bosonXmtp) {
           return "Address not found. Please initialize chat first";
+        }
+
+        if (!startTime) {
+          return "Invalid start time to export data";
         }
 
         const result = await new Promise<ThreadObject | null>(
@@ -283,7 +289,6 @@ export default function SellerExchanges({
                 now: endTime,
                 genesisDate: startTime,
                 onMessageReceived: async (th) => {
-                  console.log(exchange.id, "th", th);
                   mergedThread = th;
                 },
                 checkCustomCondition: (mergedThread) => {
@@ -305,15 +310,6 @@ export default function SellerExchanges({
           }
         );
 
-        console.log(exchange.id, "result", result);
-        // const result = await bosonXmtp?.getThread(
-        //   threadId,
-        //   destinationAddress,
-        //   {
-        //     startTime,
-        //     endTime
-        //   }
-        // );
         const messageWithDeliveryInfo = result?.messages?.find((message) => {
           const deliveryInfo = JSON.stringify(
             message?.data?.content?.value || ""
@@ -392,145 +388,166 @@ export default function SellerExchanges({
     }) as CSVData[];
   }, [allData]);
 
-  const prepareWithDelivery = useCallback(async () => {
-    let isModalClosed = false;
-    let cancelDownload = false;
-    const onCancel = () => {
-      cancelDownload = true;
-      isModalClosed = true;
-      hideModal();
-    };
-    showModal(modalTypes.PROGRESS_BAR, {
-      progress: 0,
-      title: "Export exchanges with delivery info",
-      text: "Initializing export... \n(if you close this modal, the export will be performed in the background)",
-      onCancel
-    });
-    if (cancelDownload) {
-      return;
-    }
-    setLoading(true);
-    const csvData: CSVData[] = [];
-    for (const [index, exchange] of Object.entries(allData)) {
-      !isModalClosed &&
-        updateProps<"PROGRESS_BAR">({
-          ...store,
-          modalType: "PROGRESS_BAR",
-          modalProps: {
-            ...store.modalProps,
-            title: "Export exchanges with delivery info",
-            text: `Processing exchange with id = ${exchange.id} \n(if you close this modal, the export will be performed in the background)`,
-            progress: Math.round(((Number(index) + 1) / allData.length) * 100),
-            onClose: () => {
-              isModalClosed = true;
-            },
-            onCancel
-          }
-        });
-      if (cancelDownload) {
-        return;
-      }
-      const status = (
-        exchange ? ExchangesKit.getExchangeState(exchange) : ""
-      ) as subgraph.ExchangeState;
-      const deliveryInfo =
-        exchange?.redeemedDate !== null
-          ? await getExchangeAddressDetails(exchange as Exchange)
-          : "";
-
-      csvData.push({
-        ["ID/SKU"]: exchange?.id ? exchange?.id : "",
-        ["Product name"]: exchange?.offer?.metadata?.name ?? "",
-        ["Status"]: status,
-        ["Price"]:
-          exchange?.offer?.price && exchange?.offer?.exchangeToken?.decimals
-            ? calcPrice(
-                exchange.offer.price,
-                exchange.offer.exchangeToken.decimals
-              )
-            : "",
-        ["Token"]: exchange?.offer?.exchangeToken?.symbol ?? "",
-        ["Redeemable Until"]: exchange?.offer?.voucherRedeemableUntilDate
-          ? dayjs(
-              getDateTimestamp(exchange?.offer?.voucherRedeemableUntilDate)
-            ).format(CONFIG.dateFormat)
-          : "",
-        ["Redeemed Date"]: exchange?.redeemedDate
-          ? dayjs(getDateTimestamp(exchange?.redeemedDate)).format()
-          : "",
-        ["Delivery Info"]: (deliveryInfo || "").toString()
-      } as CSVData);
-      !isModalClosed &&
-        updateProps<"PROGRESS_BAR">({
-          ...store,
-          modalType: "PROGRESS_BAR",
-          modalProps: {
-            ...store.modalProps,
-            title: "Export exchanges with delivery info",
-            text: `Processed exchange with id = ${exchange.id} \n(if you close this modal, the export will be performed in the background)`,
-            progress: Math.round(((Number(index) + 1) / allData.length) * 100),
-            onClose: () => {
-              isModalClosed = true;
-            },
-            onCancel
-          }
-        });
-      if (cancelDownload) {
-        return;
-      }
-    }
-    !isModalClosed &&
-      updateProps<"PROGRESS_BAR">({
-        ...store,
-        modalType: "PROGRESS_BAR",
-        modalProps: {
-          ...store.modalProps,
-          title: "Export exchanges with delivery info",
-          text: `Success! The CSV file should have been automatically downloaded.`,
-          progress: 100,
-          onClose: () => {
-            isModalClosed = true;
-          },
-          onCancel
-        }
+  const prepareWithDelivery = useCallback(
+    async (from?: Dayjs) => {
+      let isModalClosed = false;
+      let cancelDownload = false;
+      const onCancel = () => {
+        cancelDownload = true;
+        isModalClosed = true;
+        hideModal();
+      };
+      showModal(modalTypes.PROGRESS_BAR, {
+        progress: 0,
+        title: "Export exchanges with delivery info",
+        text: "Initializing export... \n(if you close this modal, the export will be performed in the background)",
+        onCancel
       });
-    if (cancelDownload) {
-      return;
-    }
-    toast((t) => (
-      <SuccessTransactionToast
-        t={t}
-        action={"Exchanges data with delivery info has been downloaded"}
-      />
-    ));
-    setCsvData(csvData);
-    if (csvBtn?.current) {
-      setTimeout(() => {
-        setLoading(false);
-        const a = document.createElement("a");
-        a.href = csvBtn.current?.link?.href || "";
-        a.download = `${
-          csvBtn.current?.props?.filename ||
-          `exchanges-with-delivery-info-${dayjs().format("YYYYMMDD")}`
-        }.csv`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-      }, 250);
-    }
-  }, [
-    showModal,
-    modalTypes.PROGRESS_BAR,
-    allData,
-    getExchangeAddressDetails,
-    updateProps,
-    store,
-    hideModal
-  ]);
+      if (cancelDownload) {
+        return;
+      }
+      setLoading(true);
+      const csvData: CSVData[] = [];
+      for (const [index, exchange] of Object.entries(allData)) {
+        !isModalClosed &&
+          updateProps<"PROGRESS_BAR">({
+            ...store,
+            modalType: "PROGRESS_BAR",
+            modalProps: {
+              ...store.modalProps,
+              title: "Export exchanges with delivery info",
+              text: `Processing exchange with id = ${exchange.id} \n(if you close this modal, the export will be performed in the background)`,
+              progress: Math.round(
+                ((Number(index) + 1) / allData.length) * 100
+              ),
+              onClose: () => {
+                isModalClosed = true;
+              },
+              onCancel
+            }
+          });
+        if (cancelDownload) {
+          return;
+        }
+        const status = (
+          exchange ? ExchangesKit.getExchangeState(exchange) : ""
+        ) as subgraph.ExchangeState;
+        const deliveryInfo =
+          exchange?.redeemedDate !== null
+            ? await getExchangeAddressDetails(exchange as Exchange, from)
+            : "";
+
+        csvData.push({
+          ["ID/SKU"]: exchange?.id ? exchange?.id : "",
+          ["Product name"]: exchange?.offer?.metadata?.name ?? "",
+          ["Status"]: status,
+          ["Price"]:
+            exchange?.offer?.price && exchange?.offer?.exchangeToken?.decimals
+              ? calcPrice(
+                  exchange.offer.price,
+                  exchange.offer.exchangeToken.decimals
+                )
+              : "",
+          ["Token"]: exchange?.offer?.exchangeToken?.symbol ?? "",
+          ["Redeemable Until"]: exchange?.offer?.voucherRedeemableUntilDate
+            ? dayjs(
+                getDateTimestamp(exchange?.offer?.voucherRedeemableUntilDate)
+              ).format(CONFIG.dateFormat)
+            : "",
+          ["Redeemed Date"]: exchange?.redeemedDate
+            ? dayjs(getDateTimestamp(exchange?.redeemedDate)).format()
+            : "",
+          ["Delivery Info"]: (deliveryInfo || "").toString()
+        } as CSVData);
+        !isModalClosed &&
+          updateProps<"PROGRESS_BAR">({
+            ...store,
+            modalType: "PROGRESS_BAR",
+            modalProps: {
+              ...store.modalProps,
+              title: "Export exchanges with delivery info",
+              text: `Processed exchange with id = ${exchange.id} \n(if you close this modal, the export will be performed in the background)`,
+              progress: Math.round(
+                ((Number(index) + 1) / allData.length) * 100
+              ),
+              onClose: () => {
+                isModalClosed = true;
+              },
+              onCancel
+            }
+          });
+        if (cancelDownload) {
+          return;
+        }
+      }
+      !isModalClosed &&
+        updateProps<"PROGRESS_BAR">({
+          ...store,
+          modalType: "PROGRESS_BAR",
+          modalProps: {
+            ...store.modalProps,
+            title: "Export exchanges with delivery info",
+            text: `Success! The CSV file should have been automatically downloaded.`,
+            progress: 100,
+            onClose: () => {
+              isModalClosed = true;
+            },
+            onCancel
+          }
+        });
+      if (cancelDownload) {
+        return;
+      }
+      toast((t) => (
+        <SuccessTransactionToast
+          t={t}
+          action={"Exchanges data with delivery info has been downloaded"}
+        />
+      ));
+      setCsvData(csvData);
+      if (csvBtn?.current) {
+        setTimeout(() => {
+          setLoading(false);
+          const a = document.createElement("a");
+          a.href = csvBtn.current?.link?.href || "";
+          a.download = `${
+            csvBtn.current?.props?.filename ||
+            `exchanges-with-delivery-info-${dayjs().format("YYYYMMDD")}`
+          }.csv`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        }, 250);
+      }
+    },
+    [
+      showModal,
+      modalTypes.PROGRESS_BAR,
+      allData,
+      getExchangeAddressDetails,
+      updateProps,
+      store,
+      hideModal
+    ]
+  );
+
+  const showExchangesExportModal = () =>
+    showModal(
+      "EXPORT_EXCHANGES_WITH_DELIVERY",
+      {
+        title: "Export exchanges with delivery info",
+        onExport: prepareWithDelivery
+      },
+      "auto",
+      undefined,
+      {
+        xl: "700px"
+      }
+    );
 
   useEffect(() => {
     if (bosonXmtp && loading && csvData.length === 0) {
-      prepareWithDelivery();
+      showExchangesExportModal();
     }
   }, [bosonXmtp, csvData, loading]); // eslint-disable-line
 
@@ -580,7 +597,7 @@ export default function SellerExchanges({
                       setLoading(true);
                       initialize();
                     } else if (bosonXmtp) {
-                      prepareWithDelivery();
+                      showExchangesExportModal();
                     }
                   },
                   csvProps: {

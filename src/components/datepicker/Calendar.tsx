@@ -2,7 +2,7 @@ import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 dayjs.extend(isBetween);
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 
 import {
   CalendarCell,
@@ -18,6 +18,8 @@ export interface Props {
   month: Dayjs;
   period: boolean;
   onChange: (newDate: Dayjs | null) => void;
+  minDate: Dayjs | null | undefined;
+  maxDate: Dayjs | null | undefined;
 }
 
 export default function Calendar({
@@ -25,20 +27,27 @@ export default function Calendar({
   secondDate,
   month,
   period,
-  onChange
+  onChange,
+  minDate,
+  maxDate
 }: Props) {
   const firstDay = date ? dayjs(date) : null;
   const secondDay = secondDate ? dayjs(secondDate) : null;
-  const today = dayjs();
+
   const handleSelectDate = (value: Dayjs) => {
-    if (value?.isBefore(today, "day")) {
+    const isDateWithinMinMax =
+      (minDate
+        ? value?.isSame(minDate, "day") || value?.isAfter(minDate, "day")
+        : true) &&
+      (maxDate
+        ? value?.isSame(maxDate, "day") || value?.isBefore(maxDate, "day")
+        : true);
+
+    if (!isDateWithinMinMax) {
       return onChange(null);
     }
 
-    if (
-      period &&
-      (value?.isBefore(firstDay, "day") || value?.isBefore(today, "day"))
-    ) {
+    if (period && (value?.isBefore(firstDay, "day") || !isDateWithinMinMax)) {
       return onChange(null);
     }
 
@@ -61,7 +70,8 @@ export default function Calendar({
       <CalendarRow>
         {rows.map(({ text, value, current }: ICalendarCell, i: number) => {
           const disabled = period
-            ? value?.isBefore(firstDay, "day") || value?.isBefore(today, "day")
+            ? value?.isBefore(firstDay, "day") ||
+              value?.isBefore(minDate, "day")
             : false;
 
           return (
