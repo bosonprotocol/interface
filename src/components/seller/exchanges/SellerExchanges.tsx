@@ -395,6 +395,7 @@ export default function SellerExchanges({
       const onCancel = () => {
         cancelDownload = true;
         isModalClosed = true;
+        setLoading(false);
         hideModal();
       };
       showModal(modalTypes.PROGRESS_BAR, {
@@ -408,17 +409,17 @@ export default function SellerExchanges({
       }
       setLoading(true);
       const csvData: CSVData[] = [];
-      for (const [index, exchange] of Object.entries(allData)) {
-        if (
+      const filteredExchanges = allData.filter((exchange) => {
+        return !(
           from &&
           ((exchange?.redeemedDate &&
             dayjs(getDateTimestamp(exchange.redeemedDate || "")).isBefore(
               from
             )) ||
             !exchange?.redeemedDate)
-        ) {
-          continue;
-        }
+        );
+      });
+      for (const [index, exchange] of Object.entries(filteredExchanges)) {
         !isModalClosed &&
           updateProps<"PROGRESS_BAR">({
             ...store,
@@ -428,7 +429,7 @@ export default function SellerExchanges({
               title: "Export exchanges with delivery info",
               text: `Processing exchange with id = ${exchange.id} \n(if you close this modal, the export will be performed in the background)`,
               progress: Math.round(
-                ((Number(index) + 1) / allData.length) * 100
+                ((Number(index) + 1) / filteredExchanges.length) * 100
               ),
               onClose: () => {
                 isModalClosed = true;
@@ -478,7 +479,7 @@ export default function SellerExchanges({
               title: "Export exchanges with delivery info",
               text: `Processed exchange with id = ${exchange.id} \n(if you close this modal, the export will be performed in the background)`,
               progress: Math.round(
-                ((Number(index) + 1) / allData.length) * 100
+                ((Number(index) + 1) / filteredExchanges.length) * 100
               ),
               onClose: () => {
                 isModalClosed = true;
