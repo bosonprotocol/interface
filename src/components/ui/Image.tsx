@@ -141,7 +141,12 @@ const Image: React.FC<IImage & React.HTMLAttributes<HTMLDivElement>> = ({
               handleSetStatus("error");
             } else {
               setDidOriginalSrcFail(true);
-              setCurrentSrc(getFallbackImageUrl(src, optimizationOpts));
+              const fallbackUrl = getFallbackImageUrl(src, optimizationOpts);
+              if (fallbackUrl.startsWith("unsafe:")) {
+                handleSetStatus("error");
+              } else {
+                setCurrentSrc(fallbackUrl);
+              }
             }
           }}
         />
