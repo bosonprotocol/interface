@@ -1,0 +1,65 @@
+import dayjs, { Dayjs } from "dayjs";
+import { useState } from "react";
+
+import DatePicker from "../../datepicker/DatePicker";
+import BosonButton from "../../ui/BosonButton";
+import Grid from "../../ui/Grid";
+import Typography from "../../ui/Typography";
+
+export default function ExportExchangesWithDeliveryModal({
+  onExport
+}: {
+  onExport: (from?: Dayjs) => void;
+}) {
+  const [from, setFrom] = useState<Dayjs | null>(dayjs());
+  return (
+    <Grid
+      flexDirection="column"
+      alignItems="flex-start"
+      gap="0.5rem"
+      $height="550px"
+    >
+      <Grid flexDirection="column" alignItems="flex-start" gap="0.5rem">
+        <Typography tag="h4">Option 1</Typography>
+        <Typography tag="p">
+          You can choose to export exchanges with delivery information from a
+          specific date. This option is useful if you have a rough idea of when
+          the delivery information was sent in the chat conversation.
+        </Typography>
+        <Grid flexDirection="column" alignItems="flex-start">
+          <Typography tag="div">From date:</Typography>
+          <Grid gap="0.5rem">
+            <DatePicker
+              period={false}
+              selectTime
+              minDate={null}
+              maxDate={dayjs()}
+              initialValue={dayjs()}
+              onChange={(date) => {
+                setFrom(date as Dayjs);
+              }}
+            />
+            <BosonButton
+              disabled={!from}
+              onClick={() => onExport(from as Dayjs)}
+            >
+              Export
+            </BosonButton>
+          </Grid>
+        </Grid>
+      </Grid>
+      <Grid flexDirection="column" alignItems="flex-start">
+        <Typography tag="h4">Option 2</Typography>
+        <Typography tag="p">
+          Alternatively, you can export the exchanges using the redemption date
+          for each exchange as the origin date for the delivery information.This
+          option will always include, if it exists in the chat conversation, the
+          delivery information.
+        </Typography>
+        <BosonButton disabled={!from} onClick={() => onExport()}>
+          Export
+        </BosonButton>
+      </Grid>
+    </Grid>
+  );
+}
