@@ -21,11 +21,12 @@ export default function ExportExchangesWithDeliveryModal({
     >
       <Grid flexDirection="column" alignItems="flex-start" gap="0.5rem">
         <Typography tag="h4">Option 1</Typography>
-        <Typography tag="p">
-          You can choose to export exchanges with delivery information from a
-          specific date. This option is useful if you have a rough idea of when
-          the delivery information was sent in the chat conversation.
-        </Typography>
+        <p>
+          You can choose to export <strong>only</strong> the exchanges with
+          delivery information from a specific date. This option is useful if
+          you have a rough idea of when the delivery information was sent in the
+          chat conversation.
+        </p>
         <Grid flexDirection="column" alignItems="flex-start">
           <Typography tag="div">From date:</Typography>
           <Grid gap="0.5rem">
@@ -50,12 +51,12 @@ export default function ExportExchangesWithDeliveryModal({
       </Grid>
       <Grid flexDirection="column" alignItems="flex-start">
         <Typography tag="h4">Option 2</Typography>
-        <Typography tag="p">
-          Alternatively, you can export the exchanges using the redemption date
-          for each exchange as the origin date for the delivery information.This
-          option will always include, if it exists in the chat conversation, the
-          delivery information.
-        </Typography>
+        <p>
+          Alternatively, you can export <strong>all</strong> your exchanges
+          using the redemption date for each exchange as the origin date for the
+          delivery information.This option will always include, if it exists in
+          the chat conversation, the delivery information.
+        </p>
         <BosonButton disabled={!from} onClick={() => onExport()}>
           Export
         </BosonButton>

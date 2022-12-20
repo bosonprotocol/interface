@@ -409,6 +409,16 @@ export default function SellerExchanges({
       setLoading(true);
       const csvData: CSVData[] = [];
       for (const [index, exchange] of Object.entries(allData)) {
+        if (
+          from &&
+          ((exchange?.redeemedDate &&
+            dayjs(getDateTimestamp(exchange.redeemedDate || "")).isBefore(
+              from
+            )) ||
+            !exchange?.redeemedDate)
+        ) {
+          continue;
+        }
         !isModalClosed &&
           updateProps<"PROGRESS_BAR">({
             ...store,
@@ -492,19 +502,31 @@ export default function SellerExchanges({
             onClose: () => {
               isModalClosed = true;
             },
-            onCancel
+            onCancel: undefined
           }
         });
-      if (cancelDownload) {
-        return;
-      }
       toast((t) => (
         <SuccessTransactionToast
           t={t}
           action={"Exchanges data with delivery info has been downloaded"}
         />
       ));
-      setCsvData(csvData);
+      setCsvData(
+        csvData.length
+          ? csvData
+          : [
+              {
+                ["ID/SKU"]: "",
+                ["Product name"]: "",
+                ["Status"]: "",
+                ["Price"]: "",
+                ["Token"]: "",
+                ["Redeemable Until"]: "",
+                ["Redeemed Date"]: "",
+                ["Delivery Info"]: ""
+              } as unknown as CSVData
+            ]
+      );
       if (csvBtn?.current) {
         setTimeout(() => {
           setLoading(false);
