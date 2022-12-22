@@ -13,9 +13,11 @@ import DisputeResolverDecideModal from "./components/DisputeResolver/DisputeReso
 import DisputeResolverRefuseModal from "./components/DisputeResolver/DisputeResolverRefuseModal";
 import ExchangePolicyDetailsModal from "./components/ExchangePolicyDetails";
 import ExpireVoucherModal from "./components/ExpireVoucherModal";
+import ExportExchangesWithDeliveryModal from "./components/ExportExchangesWithDeliveryModal";
 import InvalidRoleModal from "./components/InvalidRoleModal";
 import ManageFunds from "./components/ManageFunds";
 import ProductCreateSuccess from "./components/ProductCreateSuccess";
+import ProgressBarModal from "./components/ProgressBarModal";
 import RedeemModal from "./components/RedeemModal/RedeemModal";
 import RedeemSuccessModal from "./components/RedeemModal/RedeemSuccessModal";
 import RetractDisputeModal from "./components/RetractDisputeModal";
@@ -60,7 +62,9 @@ export const MODAL_TYPES = {
   UPLOAD_MODAL: "UPLOAD_MODAL",
   VOID_PRODUCT: "VOID_PRODUCT",
   WAITING_FOR_CONFIRMATION: "WAITING_FOR_CONFIRMATION",
-  WHAT_IS_REDEEM: "WHAT_IS_REDEEM"
+  WHAT_IS_REDEEM: "WHAT_IS_REDEEM",
+  PROGRESS_BAR: "PROGRESS_BAR",
+  EXPORT_EXCHANGES_WITH_DELIVERY: "EXPORT_EXCHANGES_WITH_DELIVERY"
 } as const;
 
 export const MODAL_COMPONENTS = {
@@ -93,5 +97,7 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.UPLOAD_MODAL]: Upload,
   [MODAL_TYPES.VOID_PRODUCT]: VoidProduct,
   [MODAL_TYPES.WAITING_FOR_CONFIRMATION]: WaitingForConfirmationModal,
-  [MODAL_TYPES.WHAT_IS_REDEEM]: WhatIsRedeem
+  [MODAL_TYPES.WHAT_IS_REDEEM]: WhatIsRedeem,
+  [MODAL_TYPES.PROGRESS_BAR]: ProgressBarModal,
+  [MODAL_TYPES.EXPORT_EXCHANGES_WITH_DELIVERY]: ExportExchangesWithDeliveryModal
 } as const;
