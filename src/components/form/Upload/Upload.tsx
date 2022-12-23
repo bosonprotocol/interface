@@ -206,7 +206,11 @@ function Upload({
           disabled={disabled}
         />
         {trigger ? (
-          <BosonButton onClick={handleChooseFile} variant="accentInverted">
+          <BosonButton
+            onClick={handleChooseFile}
+            variant="accentInverted"
+            type="button"
+          >
             {trigger}
           </BosonButton>
         ) : (
