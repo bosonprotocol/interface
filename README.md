@@ -44,27 +44,6 @@ Installing the correct versions of node and npm can be done by installing [`volt
 4. Start the application: i.e. Run `npm run dev`
 5. Navigate to `http://localhost:3000/` in a browser.
 
-## Running the tests
-
-### E2E
-
-Ensure Playwright browsers need to be installed on your system:
-
-```bash
-npx playwright install
-```
-
-Run the tests:
-```bash
-npm run test:e2e
-```
-
-### Unit & Integration
-
-Run the tests:
-```bash
-npm run test
-```
 
 ## Contributing
 
