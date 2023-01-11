@@ -1167,7 +1167,7 @@ function CreateProductInner({
     } catch (error: any) {
       // TODO: FAILURE MODAL
       console.error("error->", error.errors ?? error);
-      showModal("CONFIRMATION_FAILED");
+      showModal("TRANSACTION_FAILED");
     }
   };
 
