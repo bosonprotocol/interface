@@ -304,6 +304,10 @@ function DisputeCentre() {
                     "ACTION_REJECTED";
                   if (hasUserRejectedTx) {
                     showModal("TRANSACTION_FAILED");
+                  } else {
+                    showModal("TRANSACTION_FAILED", {
+                      errorMessage: "Something went wrong"
+                    });
                   }
 
                   setSubmitError(error as Error);
