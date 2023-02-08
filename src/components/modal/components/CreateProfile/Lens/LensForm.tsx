@@ -61,7 +61,7 @@ export default function LensForm({
             onBackClick={onBackClick}
             setStepBasedOnIndex={setStepBasedOnIndex}
           >
-            <LensFormFields disable={true} mode="view" />
+            <LensFormFields disable={false} mode="view" />
           </ViewLensProfile>
         ) : (
           <CreateLensProfile

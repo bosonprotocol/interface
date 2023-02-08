@@ -13,7 +13,9 @@ import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
 import {
   CreateProductImageCreteYourProfileLogo,
+  getItemFromStorage,
   GetItemFromStorageKey,
+  saveItemInStorage,
   useLocalStorage
 } from "../../lib/utils/hooks/useLocalStorage";
 import { FormField } from "../form";
@@ -40,7 +42,7 @@ import {
   ProductButtonGroup,
   SectionTitle
 } from "./Product.styles";
-import { CreateYourProfile } from "./utils";
+import { CreateProductForm, CreateYourProfile, initialValues } from "./utils";
 import { useCreateForm } from "./utils/useCreateForm";
 
 const productTypeItemsPerRow = {
@@ -140,6 +142,9 @@ export default function ProductType({
 
   const [isRegularSellerSet, setIsRegularSeller] = useState<boolean>(false);
   const isOperator = currentRoles?.find((role) => role === "operator");
+  const isClerk = currentRoles?.find((role) => role === "clerk");
+  const isAdmin = currentRoles?.find((role) => role === "admin");
+  const isSellerNotOperator = (isClerk || isAdmin) && !isOperator;
 
   const isAdminLinkedToLens =
     !isLoading &&
@@ -169,6 +174,17 @@ export default function ProductType({
   const onRegularProfileCreated = useCallback(
     (regularProfile: CreateYourProfile) => {
       helpersCreateYourProfile.setValue(regularProfile.createYourProfile);
+      // Save values in local storage in case Edit draft is chosen in the next step
+      const currentValues = getItemFromStorage<CreateProductForm | null>(
+        "create-product",
+        null
+      );
+      const newValues: CreateProductForm = {
+        ...initialValues,
+        ...currentValues,
+        createYourProfile: regularProfile.createYourProfile
+      };
+      saveItemInStorage("create-product", newValues);
       setIsRegularSeller(true);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -224,18 +240,15 @@ export default function ProductType({
     if (!CONFIG.lens.enabled && !shownDraftModal) {
       setShowDraftModal(true);
       showCreateProductDraftModal();
-    } else if (
-      (!isRegularSellerSet && !CONFIG.lens.enabled && isDraftModalClosed) ||
-      (CONFIG.lens.enabled &&
-        ((isSeller && !hasValidAdminAccount) || !isSeller))
-    ) {
+    } else if (!isRegularSellerSet && isDraftModalClosed) {
       if (store.modalType) {
         if (!CONFIG.lens.enabled) {
           updateProps<"CREATE_PROFILE">({
             ...store,
             modalProps: {
               ...store.modalProps,
-              initialRegularCreateProfile: values
+              initialRegularCreateProfile: values,
+              isSeller: !!isSeller
             }
           });
         }
@@ -243,7 +256,8 @@ export default function ProductType({
         showModal(
           "CREATE_PROFILE",
           {
-            ...(CONFIG.lens.enabled
+            ...(CONFIG.lens.enabled &&
+            ((isSeller && !hasValidAdminAccount) || !isSeller)
               ? {
                   headerComponent: (
                     <ProfileMultiSteps
@@ -256,11 +270,11 @@ export default function ProductType({
                 }
               : { title: "Create Profile" }),
             initialRegularCreateProfile: values,
+            isSeller: !!isSeller,
             onRegularProfileCreated,
             closable: false,
             onClose: async () => {
               await refetch();
-              showCreateProductDraftModal();
             }
           },
           "auto",
@@ -270,25 +284,21 @@ export default function ProductType({
           }
         );
       }
-    } else if (
-      isOperator &&
-      hasValidAdminAccount &&
-      CONFIG.lens.enabled &&
-      !shownDraftModal
-    ) {
+    } else if (isSellerNotOperator) {
+      showInvalidRoleModal();
+    } else if (CONFIG.lens.enabled && !shownDraftModal && !isRegularSellerSet) {
       setShowDraftModal(true);
       showCreateProductDraftModal();
-    } else if (CONFIG.lens.enabled && !isOperator) {
-      showInvalidRoleModal();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     hasValidAdminAccount,
-    isOperator,
+    isSellerNotOperator,
     isSeller,
     isRegularSellerSet,
     isDraftModalClosed,
     shownDraftModal,
+    isFetching,
     isLoading,
     isRefetching,
     isSuccess,
