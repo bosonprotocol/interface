@@ -12,11 +12,14 @@ import Grid from "../../../ui/Grid";
 import Typography from "../../../ui/Typography";
 import { useModal } from "../../useModal";
 import LensProfile from "./Lens/LensProfile";
+import { getLensProfileInfo } from "./Lens/utils";
+import { LensProfileType } from "./Lens/validationSchema";
 import CreateYourProfile from "./Regular/CreateYourProfile";
 
 interface Props {
   initialRegularCreateProfile: CreateYourProfileType;
   onRegularProfileCreated: (createValues: CreateYourProfileType) => void;
+  isSeller: boolean;
 }
 
 const showLensVersion =
@@ -24,7 +27,8 @@ const showLensVersion =
 
 export default function CreateProfileModal({
   initialRegularCreateProfile,
-  onRegularProfileCreated
+  onRegularProfileCreated,
+  isSeller
 }: Props) {
   const navigate = useKeepQueryParamsNavigate();
   const { hideModal } = useModal();
@@ -46,12 +50,22 @@ export default function CreateProfileModal({
   const Component = useCallback(() => {
     return showLensVersion ? (
       <LensProfile
-        onSubmit={(id, lensProfile) => {
+        onSubmit={(id, lensProfile, overrides?: LensProfileType) => {
           hideModal(lensProfile);
+          if (lensProfile) {
+            onRegularProfileCreated({
+              createYourProfile: {
+                ...getLensProfileInfo(lensProfile),
+                ...overrides,
+                logo: undefined
+              }
+            });
+          }
           if (id !== "") {
             shouldRedirectToCustomBetaPage(id);
           }
         }}
+        isSeller={isSeller}
       />
     ) : (
       <CreateYourProfile

@@ -8,7 +8,12 @@ import LensForm from "./LensForm";
 import { BosonAccount, LensProfileType } from "./validationSchema";
 
 interface Props {
-  onSubmit: (id: string, lensProfile: Profile | null | undefined) => void;
+  onSubmit: (
+    id: string,
+    lensProfile: Profile | null | undefined,
+    overrides?: LensProfileType
+  ) => void;
+  isSeller: boolean;
 }
 
 const steps = {
@@ -19,7 +24,7 @@ const steps = {
   SUMMARY: 4
 } as const;
 
-export default function LensProfile({ onSubmit }: Props) {
+export default function LensProfile({ onSubmit, isSeller }: Props) {
   const [step, setStep] = useState<number>(steps.CREATE_OR_CHOOSE);
   const [lensProfile, setLensProfile] = useState<Profile | null>(null);
   const [lensFormValues, setLensFormValues] = useState<LensProfileType | null>(
@@ -77,7 +82,12 @@ export default function LensProfile({ onSubmit }: Props) {
           formValues={null}
           onSubmit={(formValues) => {
             setLensFormValues(formValues);
-            setStep(steps.BOSON_ACCOUNT);
+            if (isSeller) {
+              // In case the boson seller already exists, go next
+              onSubmit("", lensProfile, formValues);
+            } else {
+              setStep(steps.BOSON_ACCOUNT);
+            }
           }}
           onBackClick={handleOnBackClick}
           setStepBasedOnIndex={setStepBasedOnIndex}
