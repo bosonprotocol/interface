@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { useAccount } from "wagmi";
 
 import { CONFIG } from "../../lib/config";
+import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpointNumbers } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { fetchIpfsBase64Media } from "../../lib/utils/base64";
@@ -18,6 +19,7 @@ import {
   saveItemInStorage,
   useLocalStorage
 } from "../../lib/utils/hooks/useLocalStorage";
+import Navigate from "../customNavigation/Navigate";
 import { FormField } from "../form";
 import { authTokenTypes } from "../modal/components/CreateProfile/Lens/const";
 import ProfileMultiSteps from "../modal/components/CreateProfile/Lens/ProfileMultiSteps";
@@ -304,6 +306,10 @@ export default function ProductType({
     isSuccess,
     values.createYourProfile
   ]);
+
+  if (!address) {
+    return <Navigate to={{ pathname: BosonRoutes.Root }} />;
+  }
 
   return (
     <ContainerProductPage>
