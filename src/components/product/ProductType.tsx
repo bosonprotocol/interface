@@ -5,7 +5,6 @@ import styled from "styled-components";
 import { useAccount } from "wagmi";
 
 import { CONFIG } from "../../lib/config";
-import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpointNumbers } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { fetchIpfsBase64Media } from "../../lib/utils/base64";
@@ -14,12 +13,9 @@ import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
 import {
   CreateProductImageCreteYourProfileLogo,
-  getItemFromStorage,
   GetItemFromStorageKey,
-  saveItemInStorage,
   useLocalStorage
 } from "../../lib/utils/hooks/useLocalStorage";
-import Navigate from "../customNavigation/Navigate";
 import { FormField } from "../form";
 import { authTokenTypes } from "../modal/components/CreateProfile/Lens/const";
 import ProfileMultiSteps from "../modal/components/CreateProfile/Lens/ProfileMultiSteps";
@@ -44,7 +40,7 @@ import {
   ProductButtonGroup,
   SectionTitle
 } from "./Product.styles";
-import { CreateProductForm, CreateYourProfile, initialValues } from "./utils";
+import { CreateYourProfile } from "./utils";
 import { useCreateForm } from "./utils/useCreateForm";
 
 const productTypeItemsPerRow = {
@@ -144,9 +140,6 @@ export default function ProductType({
 
   const [isRegularSellerSet, setIsRegularSeller] = useState<boolean>(false);
   const isOperator = currentRoles?.find((role) => role === "operator");
-  const isClerk = currentRoles?.find((role) => role === "clerk");
-  const isAdmin = currentRoles?.find((role) => role === "admin");
-  const isSellerNotOperator = (isClerk || isAdmin) && !isOperator;
 
   const isAdminLinkedToLens =
     !isLoading &&
@@ -176,17 +169,6 @@ export default function ProductType({
   const onRegularProfileCreated = useCallback(
     (regularProfile: CreateYourProfile) => {
       helpersCreateYourProfile.setValue(regularProfile.createYourProfile);
-      // Save values in local storage in case Edit draft is chosen in the next step
-      const currentValues = getItemFromStorage<CreateProductForm | null>(
-        "create-product",
-        null
-      );
-      const newValues: CreateProductForm = {
-        ...initialValues,
-        ...currentValues,
-        createYourProfile: regularProfile.createYourProfile
-      };
-      saveItemInStorage("create-product", newValues);
       setIsRegularSeller(true);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -242,15 +224,18 @@ export default function ProductType({
     if (!CONFIG.lens.enabled && !shownDraftModal) {
       setShowDraftModal(true);
       showCreateProductDraftModal();
-    } else if (!isRegularSellerSet && isDraftModalClosed) {
+    } else if (
+      (!isRegularSellerSet && !CONFIG.lens.enabled && isDraftModalClosed) ||
+      (CONFIG.lens.enabled &&
+        ((isSeller && !hasValidAdminAccount) || !isSeller))
+    ) {
       if (store.modalType) {
         if (!CONFIG.lens.enabled) {
           updateProps<"CREATE_PROFILE">({
             ...store,
             modalProps: {
               ...store.modalProps,
-              initialRegularCreateProfile: values,
-              isSeller: !!isSeller
+              initialRegularCreateProfile: values
             }
           });
         }
@@ -258,8 +243,7 @@ export default function ProductType({
         showModal(
           "CREATE_PROFILE",
           {
-            ...(CONFIG.lens.enabled &&
-            ((isSeller && !hasValidAdminAccount) || !isSeller)
+            ...(CONFIG.lens.enabled
               ? {
                   headerComponent: (
                     <ProfileMultiSteps
@@ -272,11 +256,11 @@ export default function ProductType({
                 }
               : { title: "Create Profile" }),
             initialRegularCreateProfile: values,
-            isSeller: !!isSeller,
             onRegularProfileCreated,
             closable: false,
             onClose: async () => {
               await refetch();
+              showCreateProductDraftModal();
             }
           },
           "auto",
@@ -286,30 +270,30 @@ export default function ProductType({
           }
         );
       }
-    } else if (isSellerNotOperator) {
-      showInvalidRoleModal();
-    } else if (CONFIG.lens.enabled && !shownDraftModal && !isRegularSellerSet) {
+    } else if (
+      isOperator &&
+      hasValidAdminAccount &&
+      CONFIG.lens.enabled &&
+      !shownDraftModal
+    ) {
       setShowDraftModal(true);
       showCreateProductDraftModal();
+    } else if (CONFIG.lens.enabled && !isOperator) {
+      showInvalidRoleModal();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     hasValidAdminAccount,
-    isSellerNotOperator,
+    isOperator,
     isSeller,
     isRegularSellerSet,
     isDraftModalClosed,
     shownDraftModal,
-    isFetching,
     isLoading,
     isRefetching,
     isSuccess,
     values.createYourProfile
   ]);
-
-  if (!address) {
-    return <Navigate to={{ pathname: BosonRoutes.Root }} />;
-  }
 
   return (
     <ContainerProductPage>
