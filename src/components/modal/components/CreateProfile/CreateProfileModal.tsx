@@ -1,9 +1,10 @@
+import { subgraph } from "@bosonprotocol/react-kit";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useCallback } from "react";
 import { useAccount } from "wagmi";
 
-import { CONFIG } from "../../../../lib/config";
 import { BosonRoutes } from "../../../../lib/routing/routes";
+import { Profile } from "../../../../lib/utils/hooks/lens/graphql/generated";
 import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useSellerCurationListFn } from "../../../../lib/utils/hooks/useSellers";
 import { CreateYourProfile as CreateYourProfileType } from "../../../product/utils";
@@ -19,16 +20,17 @@ import CreateYourProfile from "./Regular/CreateYourProfile";
 interface Props {
   initialRegularCreateProfile: CreateYourProfileType;
   onRegularProfileCreated: (createValues: CreateYourProfileType) => void;
-  isSeller: boolean;
+  useLens: boolean;
+  seller?: subgraph.SellerFieldsFragment;
+  lensProfile?: Profile;
 }
-
-const showLensVersion =
-  [80001, 137].includes(CONFIG.chainId) && CONFIG.lens.enabled;
 
 export default function CreateProfileModal({
   initialRegularCreateProfile,
   onRegularProfileCreated,
-  isSeller
+  useLens,
+  seller,
+  lensProfile: selectedProfile
 }: Props) {
   const navigate = useKeepQueryParamsNavigate();
   const { hideModal } = useModal();
@@ -48,7 +50,7 @@ export default function CreateProfileModal({
   );
 
   const Component = useCallback(() => {
-    return showLensVersion ? (
+    return useLens ? (
       <LensProfile
         onSubmit={(id, lensProfile, overrides?: LensProfileType) => {
           hideModal(lensProfile);
@@ -65,7 +67,8 @@ export default function CreateProfileModal({
             shouldRedirectToCustomBetaPage(id);
           }
         }}
-        isSeller={isSeller}
+        seller={seller || null}
+        lensProfile={selectedProfile}
       />
     ) : (
       <CreateYourProfile

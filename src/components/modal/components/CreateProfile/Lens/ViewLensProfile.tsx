@@ -1,6 +1,6 @@
+import { subgraph } from "@bosonprotocol/react-kit";
 import { useFormikContext } from "formik";
 import { ReactNode, useEffect } from "react";
-import { useAccount } from "wagmi";
 
 import { CONFIG } from "../../../../../lib/config";
 import {
@@ -8,7 +8,6 @@ import {
   fetchImageAsBase64
 } from "../../../../../lib/utils/base64";
 import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
-import { useSellers } from "../../../../../lib/utils/hooks/useSellers";
 import { getLensImageUrl } from "../../../../../lib/utils/images";
 import BosonButton from "../../../../ui/BosonButton";
 import Grid from "../../../../ui/Grid";
@@ -25,6 +24,7 @@ import { LensProfileType } from "./validationSchema";
 
 interface Props {
   profile: Profile;
+  seller: subgraph.SellerFieldsFragment;
   children: ReactNode;
   onBackClick: () => void;
   setStepBasedOnIndex: (index: number) => void;
@@ -32,6 +32,7 @@ interface Props {
 
 export default function ViewLensProfile({
   profile,
+  seller,
   children,
   onBackClick,
   setStepBasedOnIndex
@@ -41,12 +42,7 @@ export default function ViewLensProfile({
   const coverPictureUrl = getLensImageUrl(getLensCoverPictureUrl(profile));
 
   const { updateProps, store } = useModal();
-  const { address } = useAccount();
-  const { data: admins } = useSellers({
-    admin: address
-  });
-  const seller = admins?.[0];
-  const alreadyHasRoyaltiesDefined = !!seller?.royaltyPercentage;
+  const bosonSellerExists = !!seller;
 
   useEffect(() => {
     updateProps<"CREATE_PROFILE">({
@@ -57,9 +53,7 @@ export default function ViewLensProfile({
           <ProfileMultiSteps
             createOrSelect="select"
             activeStep={1}
-            createOrViewRoyalties={
-              alreadyHasRoyaltiesDefined ? "view" : "create"
-            }
+            createOrViewRoyalties={bosonSellerExists ? "view" : "create"}
             key="ViewLensProfile"
             setStepBasedOnIndex={setStepBasedOnIndex}
           />

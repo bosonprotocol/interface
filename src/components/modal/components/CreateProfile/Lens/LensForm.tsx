@@ -1,3 +1,4 @@
+import { subgraph } from "@bosonprotocol/react-kit";
 import { Form, Formik } from "formik";
 
 import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
@@ -14,6 +15,7 @@ import ViewLensProfile from "./ViewLensProfile";
 interface Props {
   onSubmit: (createValues: LensProfileType) => void;
   profile: Profile | null;
+  seller: subgraph.SellerFieldsFragment | null;
   formValues: LensProfileType | null | undefined;
   onBackClick: () => void;
   setStepBasedOnIndex: (index: number) => void;
@@ -22,6 +24,7 @@ interface Props {
 export default function LensForm({
   onSubmit,
   profile,
+  seller,
   onBackClick,
   formValues,
   setStepBasedOnIndex
@@ -58,6 +61,7 @@ export default function LensForm({
         {profile ? (
           <ViewLensProfile
             profile={profile}
+            seller={seller as subgraph.SellerFieldsFragment}
             onBackClick={onBackClick}
             setStepBasedOnIndex={setStepBasedOnIndex}
           >

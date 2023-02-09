@@ -148,6 +148,10 @@ export default function ProductType({
   const isAdmin = currentRoles?.find((role) => role === "admin");
   const isSellerNotOperator = (isClerk || isAdmin) && !isOperator;
 
+  // If the seller exists but no LENS profile attached to it, it's a regular seller
+  const isRegularSeller =
+    currentSellers && currentSellers?.length > 0 && !lens?.length;
+
   const isAdminLinkedToLens =
     !isLoading &&
     isSuccess &&
@@ -239,10 +243,15 @@ export default function ProductType({
       return;
     }
 
-    if (!CONFIG.lens.enabled && !shownDraftModal) {
+    if (isSellerNotOperator) {
+      // The current wallet is not the operator of the seller
+      showInvalidRoleModal();
+    } else if (!shownDraftModal) {
+      // Show the draft modal to let the user choosing if they wants to use Draft
       setShowDraftModal(true);
       showCreateProductDraftModal();
     } else if (!isRegularSellerSet && isDraftModalClosed) {
+      // Seller needs to set their profile
       if (store.modalType) {
         if (!CONFIG.lens.enabled) {
           updateProps<"CREATE_PROFILE">({
@@ -255,11 +264,11 @@ export default function ProductType({
           });
         }
       } else {
+        // Show create profile popup
         showModal(
           "CREATE_PROFILE",
           {
-            ...(CONFIG.lens.enabled &&
-            ((isSeller && !hasValidAdminAccount) || !isSeller)
+            ...(CONFIG.lens.enabled && !isRegularSeller
               ? {
                   headerComponent: (
                     <ProfileMultiSteps
@@ -272,7 +281,9 @@ export default function ProductType({
                 }
               : { title: "Create Profile" }),
             initialRegularCreateProfile: values,
-            isSeller: !!isSeller,
+            useLens: CONFIG.lens.enabled && !isRegularSeller,
+            seller: currentSellers?.length ? currentSellers[0] : undefined,
+            lensProfile: lens?.length ? lens[0] : undefined,
             onRegularProfileCreated,
             closable: false,
             onClose: async () => {
@@ -286,11 +297,6 @@ export default function ProductType({
           }
         );
       }
-    } else if (isSellerNotOperator) {
-      showInvalidRoleModal();
-    } else if (CONFIG.lens.enabled && !shownDraftModal && !isRegularSellerSet) {
-      setShowDraftModal(true);
-      showCreateProductDraftModal();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
