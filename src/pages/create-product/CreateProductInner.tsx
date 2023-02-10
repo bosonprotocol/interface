@@ -28,10 +28,8 @@ import { Token } from "../../components/convertion-rate/ConvertionRateContext";
 import { authTokenTypes } from "../../components/modal/components/CreateProfile/Lens/const";
 import {
   getLensCoverPictureUrl,
-  getLensEmail,
   getLensProfilePictureUrl,
-  getLensTokenIdDecimal,
-  getLensWebsite
+  getLensTokenIdDecimal
 } from "../../components/modal/components/CreateProfile/Lens/utils";
 import { useModal } from "../../components/modal/useModal";
 import Help from "../../components/product/Help";
@@ -166,18 +164,20 @@ function getProductV1Metadata({
       packaging_weight_value: shippingInfo?.weight || "",
       packaging_weight_unit: shippingInfo?.weightUnit.value || ""
     },
-    seller: CONFIG.lens.enabled
-      ? ({
-          defaultVersion: 1,
-          name: operatorLens?.name || "",
-          description: operatorLens?.bio || "",
-          externalUrl: operatorLens
-            ? getLensWebsite(operatorLens as Profile) || ""
-            : "",
-          tokenId: operatorLens
-            ? getLensTokenIdDecimal(operatorLens.id).toString()
-            : "0",
-          images: [
+    seller: {
+      defaultVersion: 1,
+      name: createYourProfile.name,
+      description: createYourProfile.description,
+      externalUrl: createYourProfile.website,
+      tokenId: undefined, // no entry in the UI
+      contactLinks: [
+        {
+          url: createYourProfile.email,
+          tag: "email"
+        }
+      ],
+      images: CONFIG.lens.enabled
+        ? [
             {
               url: operatorLens
                 ? getLensProfilePictureUrl(operatorLens as Profile) || ""
@@ -190,35 +190,14 @@ function getProductV1Metadata({
                 : "",
               tag: "cover"
             }
-          ],
-          contactLinks: [
-            {
-              url: operatorLens
-                ? getLensEmail(operatorLens as Profile) || ""
-                : "",
-              tag: "email"
-            }
           ]
-        } as any)
-      : ({
-          defaultVersion: 1,
-          name: createYourProfile.name,
-          description: createYourProfile.description,
-          externalUrl: createYourProfile.website,
-          tokenId: undefined, // no entry in the UI
-          images: [
+        : [
             {
-              url: profileImageLink,
+              url: profileImageLink || "",
               tag: "profile"
             }
-          ],
-          contactLinks: [
-            {
-              url: createYourProfile.email,
-              tag: "email"
-            }
           ]
-        } as any),
+    },
     exchangePolicy: {
       uuid: Date.now().toString(),
       version: 1,
