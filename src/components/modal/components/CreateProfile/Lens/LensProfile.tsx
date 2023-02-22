@@ -112,7 +112,7 @@ export default function LensProfile({
           onSubmit={async (formValues, { touched }) => {
             setLensFormValues(formValues);
             if (seller) {
-              if (touched && lensProfile && formValues.coverPicture) {
+              if (touched && lensProfile) {
                 await setMetadata({
                   profileId: lensProfile.id || "",
                   name: formValues.name,
