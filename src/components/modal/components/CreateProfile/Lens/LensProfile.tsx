@@ -8,6 +8,7 @@ import BosonAccountForm from "./BosonAccountForm";
 import CreateBosonLensAccountSummary from "./CreateBosonLensAccountSummary";
 import CreateOrChoose from "./CreateOrChoose";
 import LensForm from "./LensForm";
+import { getLensCoverPictureUrl } from "./utils";
 import { BosonAccount, LensProfileType } from "./validationSchema";
 
 interface Props {
@@ -112,14 +113,11 @@ export default function LensProfile({
             setLensFormValues(formValues);
             if (seller) {
               if (touched && lensProfile && formValues.coverPicture) {
-                // TODO: improve this so that the coverPicture is uploaded to ipfs if it has been changed
-                const cid = await storage.add(formValues.coverPicture[0]);
-                const ipfsLink = "ipfs://" + cid;
                 await setMetadata({
                   profileId: lensProfile.id || "",
                   name: formValues.name,
                   bio: formValues.description,
-                  cover_picture: ipfsLink,
+                  cover_picture: getLensCoverPictureUrl(lensProfile) || "", // is disabled in the form so we set the same cover picture
                   attributes: [
                     {
                       traitType: "string",
