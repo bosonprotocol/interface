@@ -171,8 +171,14 @@ export default function ViewOrEditLensProfile({
           type="submit"
           disabled={isSubmitting}
         >
+          {isEditViewOnly
+            ? hasChanged
+              ? "Save & close"
+              : "Close"
+            : hasChanged
+            ? "Save & continue"
+            : "Next"}
           {isSubmitting && <Spinner size="20" />}
-          {isEditViewOnly ? (hasChanged ? "Save & close" : "Close") : "Next"}
         </BosonButton>
       </Grid>
     </div>

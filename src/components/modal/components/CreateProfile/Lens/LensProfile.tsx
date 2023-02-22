@@ -1,9 +1,10 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import { useCallback, useState } from "react";
+import toast from "react-hot-toast";
 
 import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
 import useSetLensProfileMetadata from "../../../../../lib/utils/hooks/lens/profile/useSetLensProfileMetadata";
-import { useIpfsStorage } from "../../../../../lib/utils/hooks/useIpfsStorage";
+import SuccessToast from "../../../../toasts/common/SuccessToast";
 import BosonAccountForm from "./BosonAccountForm";
 import CreateBosonLensAccountSummary from "./CreateBosonLensAccountSummary";
 import CreateOrChoose from "./CreateOrChoose";
@@ -35,15 +36,9 @@ export default function LensProfile({
   seller,
   lensProfile: selectedProfile
 }: Props) {
-  const storage = useIpfsStorage();
-  const [step, setCurrentStep] = useState<number>(steps.CREATE_OR_CHOOSE);
-  const [visitedStepsSet, setVisitedStepsSet] = useState<Set<Step>>(new Set());
-  const setStep = useCallback((step: Step) => {
-    setCurrentStep(step);
-    setVisitedStepsSet(
-      (prevSteps) => new Set([...Array.from(prevSteps), step])
-    );
-  }, []);
+  const [step, setStep] = useState<Step>(steps.CREATE_OR_CHOOSE);
+  const [isEditViewOnly, setIsEditView] = useState<boolean>(false);
+
   const [lensProfile, setLensProfile] = useState<Profile | null>(null);
   const [lensFormValues, setLensFormValues] = useState<LensProfileType | null>(
     null
@@ -71,9 +66,11 @@ export default function LensProfile({
     [lensProfile, setStep]
   );
   const { mutateAsync: setMetadata } = useSetLensProfileMetadata();
+
   if ((step === steps.CREATE_OR_CHOOSE || !lensProfile) && selectedProfile) {
     setLensProfile(selectedProfile);
     setStep(steps.USE);
+    setIsEditView(true);
   }
   return (
     <>
@@ -106,40 +103,40 @@ export default function LensProfile({
           profile={lensProfile}
           seller={seller}
           formValues={null}
-          isEditViewOnly={
-            visitedStepsSet.size === 1 && visitedStepsSet.has(steps.USE)
-          }
+          isEditViewOnly={isEditViewOnly}
           onSubmit={async (formValues, { touched }) => {
             setLensFormValues(formValues);
+            if (touched && lensProfile) {
+              await setMetadata({
+                profileId: lensProfile.id || "",
+                name: formValues.name,
+                bio: formValues.description,
+                cover_picture: getLensCoverPictureUrl(lensProfile) || "", // is disabled in the form so we set the same cover picture
+                attributes: [
+                  {
+                    traitType: "string",
+                    value: formValues.email || "",
+                    key: "email"
+                  },
+                  {
+                    traitType: "string",
+                    value: formValues.website || "",
+                    key: "website"
+                  },
+                  {
+                    traitType: "string",
+                    value: formValues.legalTradingName || "",
+                    key: "legalTradingName"
+                  }
+                ],
+                version: "1.0.0",
+                metadata_id: window.crypto.randomUUID()
+              });
+              toast((t) => (
+                <SuccessToast t={t}>Lens profile has been updated</SuccessToast>
+              ));
+            }
             if (seller) {
-              if (touched && lensProfile) {
-                await setMetadata({
-                  profileId: lensProfile.id || "",
-                  name: formValues.name,
-                  bio: formValues.description,
-                  cover_picture: getLensCoverPictureUrl(lensProfile) || "", // is disabled in the form so we set the same cover picture
-                  attributes: [
-                    {
-                      traitType: "string",
-                      value: formValues.email || "",
-                      key: "email"
-                    },
-                    {
-                      traitType: "string",
-                      value: formValues.website || "",
-                      key: "website"
-                    },
-                    {
-                      traitType: "string",
-                      value: formValues.legalTradingName || "",
-                      key: "legalTradingName"
-                    }
-                  ],
-                  version: "1.0.0",
-                  metadata_id: window.crypto.randomUUID()
-                });
-              }
-
               // In case the boson seller already exists, go next
               onSubmit("", lensProfile, formValues);
             } else {
