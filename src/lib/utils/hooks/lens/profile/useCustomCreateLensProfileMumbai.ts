@@ -35,13 +35,11 @@ export default function useCustomCreateLensProfile({
   const [coverPictureUrl, setCoverPictureUrl] = useState<string>("");
   const {
     data,
-    refetch: loginWithLens,
-    isRefetching: isLoginRefetching,
+    mutate: loginWithLens,
     isLoading: isLoginLoading,
-    isFetching: isLoginFetching,
     isSuccess: isLoginSuccess,
     isError: isLoginError
-  } = useLensLogin({ address }, { enabled: false });
+  } = useLensLogin();
   const { accessToken } = data || {};
 
   useEffect(() => {
@@ -115,64 +113,14 @@ export default function useCustomCreateLensProfile({
   );
   const {
     data: profileMetadataData,
-    refetch: setMetadata,
+    mutate: setMetadata,
     isLoading: isMetadataLoading,
     isError: isMetadataError,
     error: isSetLensProfileMetadataError,
     isSuccess: isMetadataSuccess
-    // TODO: investigate why useSetLensProfileMetadata doesnt work well when used with useQuery
-    // data: profileMetadataData,
-    // refetch: setMetadata,
-    // isLoading: isMetadataLoading,
-    // isFetching: isMetadataFetching,
-    // isRefetching: isMetadataRefetching,
-    // isError: isMetadataError,
-    // error: isSetLensProfileMetadataError,
-    // isSuccess: isMetadataSuccess
-    // isFetched: isMetadataFetched,
-    // isRefetchError: isMetadataRefetchError,
-    // isIdle: isMetadataIdle,
-    // dataUpdatedAt: metadataDataUpdatedAt,
-    // isFetchedAfterMount: isMetadataFetchedAfterMount,
-    // errorUpdateCount: metadataErrorUpdateCount,
-    // isLoadingError: isMetadataLoadingError,
-    // isStale: isMetadataStale,
-    // isPreviousData: isMetadataPreviousData,
-    // errorUpdatedAt: metadataErrorUpdatedAt,
-    // failureCount: metadataFailureCount,
-    // isPlaceholderData: isMetadataPlaceholderData,
-    // status: metadataStatus
-  } = useSetLensProfileMetadata(
-    {
-      profileId: createdProfileId || "",
-      name: values.name,
-      bio: values.description,
-      cover_picture: coverPictureUrl,
-      attributes: [
-        {
-          traitType: "string",
-          value: values.email || "",
-          key: "email"
-        },
-        {
-          traitType: "string",
-          value: values.website || "",
-          key: "website"
-        },
-        {
-          traitType: "string",
-          value: values.legalTradingName || "",
-          key: "legalTradingName"
-        }
-      ],
-      version: "1.0.0",
-      metadata_id: window.crypto.randomUUID()
-    },
-    {
-      accessToken: accessToken || "",
-      enabled: false
-    }
-  );
+  } = useSetLensProfileMetadata({
+    accessToken: accessToken || ""
+  });
 
   useEffect(() => {
     if (!enableCreation) {
@@ -180,7 +128,31 @@ export default function useCustomCreateLensProfile({
     }
     const isCreatedProfile = isFetched && createdProfileId;
     if (isCreatedProfile) {
-      setMetadata();
+      setMetadata({
+        profileId: createdProfileId || "",
+        name: values.name,
+        bio: values.description,
+        cover_picture: coverPictureUrl,
+        attributes: [
+          {
+            traitType: "string",
+            value: values.email || "",
+            key: "email"
+          },
+          {
+            traitType: "string",
+            value: values.website || "",
+            key: "website"
+          },
+          {
+            traitType: "string",
+            value: values.legalTradingName || "",
+            key: "legalTradingName"
+          }
+        ],
+        version: "1.0.0",
+        metadata_id: window.crypto.randomUUID()
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createdProfileId, enableCreation, isFetched]);
@@ -216,14 +188,12 @@ export default function useCustomCreateLensProfile({
     profileMetadataData
   ]);
   return {
-    create: loginWithLens,
+    create: () => loginWithLens({ address }),
     getProfile,
     profileData,
     isSuccess: isLoginSuccess && isCreateSuccess && isMetadataSuccess,
     isLoading:
       isLoginLoading ||
-      isLoginFetching ||
-      isLoginRefetching ||
       isCreateLoading ||
       isCreateFetching ||
       isCreateRefetching ||

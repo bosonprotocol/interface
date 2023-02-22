@@ -1,5 +1,5 @@
 import { gql } from "graphql-request";
-import { useQuery } from "react-query";
+import { useMutation } from "react-query";
 import { useSigner } from "wagmi";
 
 import { fetchLens } from "../fetchLens";
@@ -68,24 +68,13 @@ async function login({
   return authenticatedResult;
 }
 
-export const useLensLogin = (
-  props: { address: string | undefined },
-  options: {
-    enabled?: boolean;
-  } = {}
-) => {
+export const useLensLogin = () => {
   const { data: signer } = useSigner();
 
-  return useQuery(
-    ["lens-login", props],
-    async () => {
-      return login({
-        address: props.address,
-        signer
-      });
-    },
-    {
-      enabled: options.enabled && !!props.address && !!signer
-    }
-  );
+  return useMutation(async ({ address }: { address: string | undefined }) => {
+    return login({
+      address,
+      signer
+    });
+  });
 };

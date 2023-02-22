@@ -2,10 +2,11 @@
 import { BaseIpfsStorage } from "@bosonprotocol/react-kit";
 import { Signer, utils } from "ethers";
 import { gql } from "graphql-request";
-import { useState } from "react";
+import { useMutation } from "react-query";
 import { useSigner, useSignTypedData } from "wagmi";
 
 import { useIpfsStorage } from "../../useIpfsStorage";
+import { useLensLogin } from "../authentication/useLensLogin";
 import { broadcastRequest } from "../broadcast/broadcast";
 import { signedTypeData } from "../ethers";
 import { fetchLens } from "../fetchLens";
@@ -23,56 +24,34 @@ type SignTypedDataAsync = ReturnType<
 
 type Params = Parameters<typeof setProfileMetadata>[0];
 
-type Props = Params;
-
 export default function useSetLensProfileMetadata(
-  props: Props,
   options: {
-    enabled?: boolean;
-    accessToken: string;
-  }
+    accessToken?: string;
+  } = {}
 ) {
   const { signTypedDataAsync } = useSignTypedData();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { enabled, accessToken } = options;
+  const { accessToken } = options;
+  const { mutateAsync: loginWithLens } = useLensLogin();
+
   const { data: signer } = useSigner();
   const storage = useIpfsStorage();
-  const [data, setData] = useState<Awaited<
-    ReturnType<typeof setProfileMetadata>
-  > | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<Error | null>(null);
-  // TODO: investigate why useSetLensProfileMetadata doesnt work well when used with useQuery
-  return {
-    refetch: () => {
-      (async () => {
-        setLoading(true);
-        setData(null);
-        setError(null);
-
-        try {
-          const result = await setProfileMetadata(props, {
-            signTypedDataAsync,
-            storage,
-            accessToken,
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            signer: signer!
-          });
-
-          setData(result);
-        } catch (error) {
-          setError(error as Error);
-        } finally {
-          setLoading(false);
-        }
-      })();
-    },
-    isSuccess: !!data,
-    data,
-    error,
-    isLoading: loading,
-    isError: !!error
-  };
+  return useMutation(async (variables: Params) => {
+    const accessTokenToUse = accessToken
+      ? accessToken
+      : (
+          await loginWithLens({
+            address: await signer?.getAddress()
+          })
+        )?.["accessToken"];
+    return await setProfileMetadata(variables, {
+      signTypedDataAsync,
+      storage,
+      accessToken: accessTokenToUse,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      signer: signer!
+    });
+  });
 }
 
 async function createSetProfileMetadataTypedData(

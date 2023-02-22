@@ -2,6 +2,8 @@ import { subgraph } from "@bosonprotocol/react-kit";
 import { useCallback, useState } from "react";
 
 import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
+import useSetLensProfileMetadata from "../../../../../lib/utils/hooks/lens/profile/useSetLensProfileMetadata";
+import { useIpfsStorage } from "../../../../../lib/utils/hooks/useIpfsStorage";
 import BosonAccountForm from "./BosonAccountForm";
 import CreateBosonLensAccountSummary from "./CreateBosonLensAccountSummary";
 import CreateOrChoose from "./CreateOrChoose";
@@ -25,13 +27,22 @@ const steps = {
   BOSON_ACCOUNT: 3,
   SUMMARY: 4
 } as const;
+type Step = typeof steps[keyof typeof steps];
 
 export default function LensProfile({
   onSubmit,
   seller,
   lensProfile: selectedProfile
 }: Props) {
-  const [step, setStep] = useState<number>(steps.CREATE_OR_CHOOSE);
+  const storage = useIpfsStorage();
+  const [step, setCurrentStep] = useState<number>(steps.CREATE_OR_CHOOSE);
+  const [visitedStepsSet, setVisitedStepsSet] = useState<Set<Step>>(new Set());
+  const setStep = useCallback((step: Step) => {
+    setCurrentStep(step);
+    setVisitedStepsSet(
+      (prevSteps) => new Set([...Array.from(prevSteps), step])
+    );
+  }, []);
   const [lensProfile, setLensProfile] = useState<Profile | null>(null);
   const [lensFormValues, setLensFormValues] = useState<LensProfileType | null>(
     null
@@ -39,7 +50,7 @@ export default function LensProfile({
   const [bosonAccount, setBosonAccount] = useState<BosonAccount | null>(null);
   const handleOnBackClick = useCallback(() => {
     setStep(steps.CREATE_OR_CHOOSE);
-  }, []);
+  }, [setStep]);
   const setStepBasedOnIndex = useCallback(
     (index: number) => {
       if (index === 0) {
@@ -56,8 +67,9 @@ export default function LensProfile({
         setStep(steps.SUMMARY);
       }
     },
-    [lensProfile]
+    [lensProfile, setStep]
   );
+  const { mutateAsync: setMetadata } = useSetLensProfileMetadata();
   if ((step === steps.CREATE_OR_CHOOSE || !lensProfile) && selectedProfile) {
     setLensProfile(selectedProfile);
     setStep(steps.USE);
@@ -80,6 +92,7 @@ export default function LensProfile({
           profile={null}
           seller={seller}
           formValues={lensFormValues}
+          isEditViewOnly={false}
           onSubmit={(formValues) => {
             setLensFormValues(formValues);
             setStep(steps.BOSON_ACCOUNT);
@@ -92,9 +105,43 @@ export default function LensProfile({
           profile={lensProfile}
           seller={seller}
           formValues={null}
-          onSubmit={(formValues) => {
+          isEditViewOnly={
+            visitedStepsSet.size === 1 && visitedStepsSet.has(steps.USE)
+          }
+          onSubmit={async (formValues, { touched }) => {
             setLensFormValues(formValues);
             if (seller) {
+              if (touched && lensProfile && formValues.coverPicture) {
+                // TODO: improve this so that the coverPicture is uploaded to ipfs if it has been changed
+                const cid = await storage.add(formValues.coverPicture[0]);
+                const ipfsLink = "ipfs://" + cid;
+                await setMetadata({
+                  profileId: lensProfile.id || "",
+                  name: formValues.name,
+                  bio: formValues.description,
+                  cover_picture: ipfsLink,
+                  attributes: [
+                    {
+                      traitType: "string",
+                      value: formValues.email || "",
+                      key: "email"
+                    },
+                    {
+                      traitType: "string",
+                      value: formValues.website || "",
+                      key: "website"
+                    },
+                    {
+                      traitType: "string",
+                      value: formValues.legalTradingName || "",
+                      key: "legalTradingName"
+                    }
+                  ],
+                  version: "1.0.0",
+                  metadata_id: window.crypto.randomUUID()
+                });
+              }
+
               // In case the boson seller already exists, go next
               onSubmit("", lensProfile, formValues);
             } else {

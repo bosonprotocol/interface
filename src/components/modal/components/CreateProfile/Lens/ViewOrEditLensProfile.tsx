@@ -1,6 +1,6 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import { useFormikContext } from "formik";
-import { ReactNode, useEffect } from "react";
+import { Dispatch, ReactNode, SetStateAction, useEffect, useMemo } from "react";
 
 import { CONFIG } from "../../../../../lib/config";
 import {
@@ -9,6 +9,7 @@ import {
 } from "../../../../../lib/utils/base64";
 import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
 import { getLensImageUrl } from "../../../../../lib/utils/images";
+import { Spinner } from "../../../../loading/Spinner";
 import BosonButton from "../../../../ui/BosonButton";
 import Grid from "../../../../ui/Grid";
 import { useModal } from "../../../useModal";
@@ -28,21 +29,56 @@ interface Props {
   children: ReactNode;
   onBackClick: () => void;
   setStepBasedOnIndex: (index: number) => void;
+  setFormChanged: Dispatch<SetStateAction<boolean>>;
+  isEditViewOnly: boolean;
 }
-
-export default function ViewLensProfile({
+const disabledFields = ["coverPicture", "handle", "logo"];
+export default function ViewOrEditLensProfile({
   profile,
   seller,
   children,
   onBackClick,
-  setStepBasedOnIndex
+  setStepBasedOnIndex,
+  setFormChanged,
+  isEditViewOnly
 }: Props) {
-  const { setValues } = useFormikContext<LensProfileType>();
+  const { setValues, setTouched, initialValues, values, isSubmitting } =
+    useFormikContext<LensProfileType>();
+
   const profilePictureUrl = getLensImageUrl(getLensProfilePictureUrl(profile));
   const coverPictureUrl = getLensImageUrl(getLensCoverPictureUrl(profile));
 
   const { updateProps, store } = useModal();
   const bosonSellerExists = !!seller;
+  const changedFields = useMemo(() => {
+    if (!profile || values === initialValues) {
+      return {};
+    }
+    // all undefined fields are disabled fields also found in 'disabledFields' array
+    const t = {
+      coverPicture: undefined,
+      description: values.description !== profile.bio,
+      email: values.email !== getLensEmail(profile),
+      handle: undefined,
+      legalTradingName:
+        values.legalTradingName !== getLensLegalTradingName(profile),
+      logo: undefined,
+      name: values.name !== profile.name,
+      website: values.website !== getLensWebsite(profile)
+    };
+    return t;
+  }, [values, profile, initialValues]);
+  const hasChanged = !!Object.entries(changedFields).filter(
+    ([key, value]) => !disabledFields.includes(key) && value
+  ).length;
+  useEffect(() => {
+    setFormChanged(hasChanged);
+  }, [setFormChanged, hasChanged]);
+  useEffect(() => {
+    if (changedFields) {
+      setTouched(changedFields);
+    }
+  }, [setTouched, changedFields]);
 
   useEffect(() => {
     updateProps<"CREATE_PROFILE">({
@@ -121,15 +157,22 @@ export default function ViewLensProfile({
     <div>
       {children}
       <Grid justifyContent="flex-start" gap="2rem">
+        {!isEditViewOnly && (
+          <BosonButton
+            variant="accentInverted"
+            type="button"
+            onClick={onBackClick}
+          >
+            Back
+          </BosonButton>
+        )}
         <BosonButton
-          variant="accentInverted"
-          type="button"
-          onClick={onBackClick}
+          variant="primaryFill"
+          type="submit"
+          disabled={isSubmitting}
         >
-          Back
-        </BosonButton>
-        <BosonButton variant="primaryFill" type="submit">
-          Next
+          {isSubmitting && <Spinner size="20" />}
+          {isEditViewOnly ? (hasChanged ? "Save & close" : "Close") : "Next"}
         </BosonButton>
       </Grid>
     </div>
