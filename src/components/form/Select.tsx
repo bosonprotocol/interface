@@ -9,6 +9,13 @@ import Error from "./Error";
 import type { SelectDataProps, SelectProps } from "./types";
 
 const customStyles = (error: any) => ({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  singleValue: (provided: any, state: any) => {
+    return {
+      ...provided,
+      fontSize: "13.33px"
+    };
+  },
   control: (provided: any, state: any) => {
     const before = state.selectProps.label
       ? {
