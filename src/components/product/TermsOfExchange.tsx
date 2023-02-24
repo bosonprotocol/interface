@@ -1,3 +1,4 @@
+import { useFormikContext } from "formik";
 import { Check } from "phosphor-react";
 import styled from "styled-components";
 
@@ -10,11 +11,13 @@ import {
   ProductButtonGroup,
   SectionTitle
 } from "./Product.styles";
+import type { CreateProductForm } from "./utils";
 import {
   OPTIONS_DISPUTE_RESOLVER,
   OPTIONS_EXCHANGE_POLICY,
   OPTIONS_PERIOD,
-  OPTIONS_UNIT
+  OPTIONS_UNIT,
+  optionUnitKeys
 } from "./utils/const";
 import { useCreateForm } from "./utils/useCreateForm";
 
@@ -67,7 +70,7 @@ const InfoWrapperList = styled.div`
 
 export default function TermsOfExchange() {
   const { nextIsDisabled } = useCreateForm();
-
+  const { values } = useFormikContext<CreateProductForm>();
   return (
     <TermsOfExchangeContainer>
       <MainContainer>
@@ -92,14 +95,24 @@ export default function TermsOfExchange() {
           >
             <FieldContainer>
               <div>
-                <Input
-                  placeholder="Buyer cancellation penalty"
-                  name="termsOfExchange.buyerCancellationPenalty"
-                  type="number"
-                  min="0"
-                  max="100"
-                  step="0.001"
-                />
+                {values.termsOfExchange.buyerCancellationPenaltyUnit.value ===
+                optionUnitKeys["%"] ? (
+                  <Input
+                    placeholder="Buyer cancellation penalty"
+                    name="termsOfExchange.buyerCancellationPenalty"
+                    type="number"
+                    min="0"
+                    max="100"
+                    step="0.001"
+                  />
+                ) : (
+                  <Input
+                    placeholder="Buyer cancellation penalty"
+                    name="termsOfExchange.buyerCancellationPenalty"
+                    type="number"
+                    min="0"
+                  />
+                )}
               </div>
               <div>
                 <Select
@@ -117,14 +130,23 @@ export default function TermsOfExchange() {
           >
             <FieldContainer>
               <div>
-                <Input
-                  placeholder="Seller deposit"
-                  name="termsOfExchange.sellerDeposit"
-                  type="number"
-                  min="0"
-                  max="100"
-                  step="0.001"
-                />
+                {values.termsOfExchange.sellerDepositUnit.value === "%" ? (
+                  <Input
+                    placeholder="Seller deposit"
+                    name="termsOfExchange.sellerDeposit"
+                    type="number"
+                    min="0"
+                    max="100"
+                    step="0.001"
+                  />
+                ) : (
+                  <Input
+                    placeholder="Seller deposit"
+                    name="termsOfExchange.sellerDeposit"
+                    type="number"
+                    min="0"
+                  />
+                )}
               </div>
               <div>
                 <Select

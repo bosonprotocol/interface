@@ -37,8 +37,10 @@ import Preview from "../../components/product/Preview";
 import {
   CREATE_PRODUCT_STEPS,
   CreateProductForm,
+  optionUnitKeys,
   TOKEN_TYPES
 } from "../../components/product/utils";
+import { getFixedOrPercentageVal } from "../../components/product/utils/termsOfExchange";
 import MultiSteps from "../../components/step/MultiSteps";
 import SuccessTransactionToast from "../../components/toasts/SuccessTransactionToast";
 import { CONFIG } from "../../lib/config";
@@ -219,8 +221,8 @@ function getProductV1Metadata({
 type GetOfferDataFromMetadataProps = {
   coreSDK: CoreSDK;
   priceBN: BigNumber;
-  sellerDeposit: BigNumber;
-  buyerCancellationPenaltyValue: BigNumber;
+  sellerDeposit: BigNumber | string;
+  buyerCancellationPenaltyValue: BigNumber | string;
   quantityAvailable: number;
   voucherRedeemableFromDateInMS: number;
   voucherRedeemableUntilDateInMS: number;
@@ -638,6 +640,7 @@ function CreateProductInner({
       const animationUrl = values.productAnimation
         ? values.productAnimation[0]?.src || ""
         : "";
+
       if (isMultiVariant) {
         const { variants = [] } = values.productVariants;
         const variantsForMetadataCreation: Parameters<
@@ -710,6 +713,7 @@ function CreateProductInner({
           productV1Metadata,
           variantsForMetadataCreation
         );
+
         if (!isOneSetOfImages) {
           // fix main variant image as it should be the variant's thumbnail
           metadatas.forEach((variantMetadata, index) => {
@@ -741,15 +745,19 @@ function CreateProductInner({
               Number(exchangeToken?.decimals || 18)
             );
 
-            // TODO: change when more than percentage unit
-            const buyerCancellationPenaltyValue = priceBN
-              .mul(parseFloat(termsOfExchange.buyerCancellationPenalty) * 1000)
-              .div(100 * 1000);
+            const buyerCancellationPenaltyValue = getFixedOrPercentageVal(
+              priceBN,
+              termsOfExchange.buyerCancellationPenalty,
+              termsOfExchange.buyerCancellationPenaltyUnit
+                .value as keyof typeof optionUnitKeys
+            );
 
-            // TODO: change when more than percentage unit
-            const sellerDeposit = priceBN
-              .mul(parseFloat(termsOfExchange.sellerDeposit) * 1000)
-              .div(100 * 1000);
+            const sellerDeposit = getFixedOrPercentageVal(
+              priceBN,
+              termsOfExchange.sellerDeposit,
+              termsOfExchange.sellerDepositUnit
+                .value as keyof typeof optionUnitKeys
+            );
             return getOfferDataFromMetadata(metadata, {
               coreSDK,
               priceBN,
@@ -793,19 +801,18 @@ function CreateProductInner({
           Number(exchangeToken?.decimals || 18)
         );
 
-        // TODO: change when more than percentage unit
-        const buyerCancellationPenaltyValue = priceBN
-          .mul(
-            Math.round(
-              parseFloat(termsOfExchange.buyerCancellationPenalty) * 1000
-            )
-          )
-          .div(100 * 1000);
+        const buyerCancellationPenaltyValue = getFixedOrPercentageVal(
+          priceBN,
+          termsOfExchange.buyerCancellationPenalty,
+          termsOfExchange.buyerCancellationPenaltyUnit
+            .value as keyof typeof optionUnitKeys
+        );
 
-        // TODO: change when more than percentage unit
-        const sellerDeposit = priceBN
-          .mul(Math.round(parseFloat(termsOfExchange.sellerDeposit) * 1000))
-          .div(100 * 1000);
+        const sellerDeposit = getFixedOrPercentageVal(
+          priceBN,
+          termsOfExchange.sellerDeposit,
+          termsOfExchange.sellerDepositUnit.value as keyof typeof optionUnitKeys
+        );
 
         const offerData = await getOfferDataFromMetadata(productV1Metadata, {
           coreSDK,
