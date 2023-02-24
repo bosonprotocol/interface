@@ -160,8 +160,6 @@ export default function ConfirmProductDetails({
     : values.coreTermsOfSale;
   const { offerValidityPeriod, redemptionPeriod, tokenGatedOffer } =
     commonTermsOfSale;
-  // TODO: check if profile info is displayed correctly while using a lens profile
-
   return (
     <ConfirmProductDetailsContainer>
       <SectionTitle tag="h2">Confirm Product Details</SectionTitle>
@@ -566,6 +564,10 @@ export default function ConfirmProductDetails({
       </ConfirmationAlert>
       {showInitializeChat && (
         <InitializeChatContainer>
+          <Typography tag={"p"}>
+            Allow 2-way communication with buyers via a chat with you and get
+            delivery details.
+          </Typography>
           <InitializeChat isError={chatInitializationStatus === "ERROR"} />
         </InitializeChatContainer>
       )}
