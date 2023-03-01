@@ -4,6 +4,8 @@ import toast from "react-hot-toast";
 import { colors } from "../../../lib/styles/colors";
 import bytesToSize from "../../../lib/utils/bytesToSize";
 import { useSaveImageToIpfs } from "../../../lib/utils/hooks/useSaveImageToIpfs";
+import { getImageMetadata } from "../../../lib/utils/images";
+import { getVideoMetadata } from "../../../lib/utils/videos";
 import ErrorToast from "../../toasts/common/ErrorToast";
 import Typography from "../../ui/Typography";
 import { UploadProps } from "../types";
@@ -18,9 +20,11 @@ export const SUPPORTED_FORMATS = [
 
 export interface FileProps {
   src: string;
-  name?: string;
+  name?: string; // for example: "redeemeum.png"
   size?: number;
-  type?: string;
+  type?: string; // for example: "image/png"
+  width?: number;
+  height?: number;
 }
 export interface WithUploadToIpfsProps {
   saveToIpfs: (e: React.ChangeEvent<HTMLInputElement>) => FileProps[];
@@ -79,12 +83,24 @@ export function WithUploadToIpfs<P extends WithUploadToIpfsProps>(
         for (let i = 0; i < filesArray.length; i++) {
           const file = filesArray[i];
           const cid = await saveFile(file);
-          ipfsArray.push({
+          const fileProps: FileProps = {
             src: `ipfs://${cid}`,
             name: file.name,
             size: file.size,
             type: file.type
-          } as FileProps);
+          };
+          const isImage = file.type.startsWith("image");
+          const isVideo = file.type.startsWith("video");
+          if (isImage) {
+            const { width, height } = await getImageMetadata(file);
+            fileProps.width = width;
+            fileProps.height = height;
+          } else if (isVideo) {
+            const { width, height } = await getVideoMetadata(file);
+            fileProps.width = width;
+            fileProps.height = height;
+          }
+          ipfsArray.push(fileProps);
         }
 
         return ipfsArray as FileProps[];
