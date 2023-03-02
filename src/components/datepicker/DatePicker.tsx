@@ -94,6 +94,13 @@ export default function DatePicker({
       if (date === null || (date !== null && secondDate !== null)) {
         setDate(inputDate);
         setSecondDate(null);
+      } else if (
+        date !== null &&
+        secondDate === null &&
+        inputDate?.isBefore(date, "day")
+      ) {
+        setDate(inputDate);
+        setSecondDate(date);
       } else if (secondDate === null) {
         setSecondDate(inputDate);
       }
