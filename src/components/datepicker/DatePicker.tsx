@@ -91,13 +91,11 @@ export default function DatePicker({
     }
 
     if (period) {
-      if (date === null) {
+      if (date === null || (date !== null && secondDate !== null)) {
         setDate(inputDate);
         setSecondDate(null);
       } else if (secondDate === null) {
         setSecondDate(inputDate);
-      } else if (date !== null && secondDate !== null) {
-        reset();
       }
     } else {
       setDate(inputDate);
