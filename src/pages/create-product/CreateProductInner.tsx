@@ -182,7 +182,7 @@ async function getProductV1Metadata({
       ? {
           height: productAnimation.height,
           width: productAnimation.width,
-          name: productAnimation.name
+          type: productAnimation.type
         }
       : undefined,
     externalUrl,
