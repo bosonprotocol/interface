@@ -355,6 +355,9 @@ export default function ProductType({
                 <Box>
                   <ProductImage src={phygitalProduct} />
                   <Typography tag="p">Phygital</Typography>
+                  <Typography tag="p" $fontSize="0.7rem">
+                    COMING SOON
+                  </Typography>
                 </Box>
               </Label>
             </Grid>

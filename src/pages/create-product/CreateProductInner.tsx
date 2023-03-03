@@ -39,8 +39,10 @@ import Preview from "../../components/product/Preview";
 import {
   CREATE_PRODUCT_STEPS,
   CreateProductForm,
+  optionUnitKeys,
   TOKEN_TYPES
 } from "../../components/product/utils";
+import { getFixedOrPercentageVal } from "../../components/product/utils/termsOfExchange";
 import MultiSteps from "../../components/step/MultiSteps";
 import SuccessTransactionToast from "../../components/toasts/SuccessTransactionToast";
 import { CONFIG } from "../../lib/config";
@@ -257,8 +259,8 @@ async function getProductV1Metadata({
 type GetOfferDataFromMetadataProps = {
   coreSDK: CoreSDK;
   priceBN: BigNumber;
-  sellerDeposit: BigNumber;
-  buyerCancellationPenaltyValue: BigNumber;
+  sellerDeposit: BigNumber | string;
+  buyerCancellationPenaltyValue: BigNumber | string;
   quantityAvailable: number;
   voucherRedeemableFromDateInMS: number;
   voucherRedeemableUntilDateInMS: number;
@@ -745,6 +747,7 @@ function CreateProductInner({
           productV1Metadata,
           variantsForMetadataCreation
         );
+
         if (!isOneSetOfImages) {
           // fix main variant image as it should be the variant's thumbnail
           metadatas.forEach((variantMetadata, index) => {
@@ -770,21 +773,28 @@ function CreateProductInner({
             const exchangeToken = CONFIG.defaultTokens.find(
               (n: Token) => n.symbol === variants[index].currency.label
             );
+            const decimals = Number(exchangeToken?.decimals || 18);
             const price = variants[index].price;
             const priceBN = parseUnits(
               price < 0.1 ? fixformattedString(price) : price.toString(),
-              Number(exchangeToken?.decimals || 18)
+              decimals
             );
 
-            // TODO: change when more than percentage unit
-            const buyerCancellationPenaltyValue = priceBN
-              .mul(parseFloat(termsOfExchange.buyerCancellationPenalty) * 1000)
-              .div(100 * 1000);
+            const buyerCancellationPenaltyValue = getFixedOrPercentageVal(
+              priceBN,
+              termsOfExchange.buyerCancellationPenalty,
+              termsOfExchange.buyerCancellationPenaltyUnit
+                .value as keyof typeof optionUnitKeys,
+              decimals
+            );
 
-            // TODO: change when more than percentage unit
-            const sellerDeposit = priceBN
-              .mul(parseFloat(termsOfExchange.sellerDeposit) * 1000)
-              .div(100 * 1000);
+            const sellerDeposit = getFixedOrPercentageVal(
+              priceBN,
+              termsOfExchange.sellerDeposit,
+              termsOfExchange.sellerDepositUnit
+                .value as keyof typeof optionUnitKeys,
+              decimals
+            );
             return getOfferDataFromMetadata(metadata, {
               coreSDK,
               priceBN,
@@ -824,24 +834,27 @@ function CreateProductInner({
           ipfsMetadataStorage
         });
         const price = coreTermsOfSale.price;
+        const decimals = Number(exchangeToken?.decimals || 18);
         const priceBN = parseUnits(
           price < 0.1 ? fixformattedString(price) : price.toString(),
-          Number(exchangeToken?.decimals || 18)
+          decimals
         );
 
-        // TODO: change when more than percentage unit
-        const buyerCancellationPenaltyValue = priceBN
-          .mul(
-            Math.round(
-              parseFloat(termsOfExchange.buyerCancellationPenalty) * 1000
-            )
-          )
-          .div(100 * 1000);
+        const buyerCancellationPenaltyValue = getFixedOrPercentageVal(
+          priceBN,
+          termsOfExchange.buyerCancellationPenalty,
+          termsOfExchange.buyerCancellationPenaltyUnit
+            .value as keyof typeof optionUnitKeys,
+          decimals
+        );
 
-        // TODO: change when more than percentage unit
-        const sellerDeposit = priceBN
-          .mul(Math.round(parseFloat(termsOfExchange.sellerDeposit) * 1000))
-          .div(100 * 1000);
+        const sellerDeposit = getFixedOrPercentageVal(
+          priceBN,
+          termsOfExchange.sellerDeposit,
+          termsOfExchange.sellerDepositUnit
+            .value as keyof typeof optionUnitKeys,
+          decimals
+        );
 
         const offerData = await getOfferDataFromMetadata(productV1Metadata, {
           coreSDK,
