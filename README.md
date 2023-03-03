@@ -6,8 +6,6 @@
 
 <a href="">![](https://img.shields.io/badge/license-Apache--2.0-brightgreen?style=flat-square)</a>
 <a href="https://discord.com/invite/QSdtKRaap6">![](https://img.shields.io/badge/Chat%20on-Discord-%235766f2?style=flat-square)</a>
-<a href="https://twitter.com/BosonProtocol">![](https://img.shields.io/twitter/follow/BosonProtocol?style=social)</a>
-
 
 
 <a href="https://github.com/bosonprotocol/interface/actions/workflows/ci.yaml">[![Build Status](https://github.com/bosonprotocol/interface/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/bosonprotocol/interface/actions/workflows/ci.yaml)</a>
@@ -16,7 +14,7 @@
 
 <div align="center">
 
-🛠️ **The official dApp built on top of [Boson Protocol](https://bosonprotocol.io).**
+🛠️ **An example dApp built on top of [Boson Protocol](https://bosonprotocol.io/).**
 
 </div>
 

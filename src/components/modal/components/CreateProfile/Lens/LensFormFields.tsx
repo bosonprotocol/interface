@@ -18,7 +18,7 @@ export default function LensFormFields({ disable, onBlurName, mode }: Props) {
         }
         required
       >
-        <Upload name="logo" multiple={false} disabled={disable} />
+        <Upload name="logo" multiple={false} disabled={disable || !isEdit} />
       </FormField>
       <FormField
         title="Cover picture"
@@ -27,7 +27,11 @@ export default function LensFormFields({ disable, onBlurName, mode }: Props) {
         }
         required
       >
-        <Upload name="coverPicture" multiple={false} disabled={disable} />
+        <Upload
+          name="coverPicture"
+          multiple={false}
+          disabled={disable || !isEdit}
+        />
       </FormField>
       <FormField title="Your brand / name" required>
         <Input
@@ -38,7 +42,11 @@ export default function LensFormFields({ disable, onBlurName, mode }: Props) {
         />
       </FormField>
       <FormField title="Lens Handle" required>
-        <Input name="handle" placeholder="Handle" disabled={disable} />
+        <Input
+          name="handle"
+          placeholder="Handle"
+          disabled={disable || !isEdit}
+        />
       </FormField>
       <FormField title="Contact E-Mail" required>
         <Input

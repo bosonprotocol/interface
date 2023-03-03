@@ -272,19 +272,23 @@ export default function Seller() {
               $width="auto"
               margin="1.25rem 0 0 0"
             >
-              <FollowLens>
-                <a
-                  href={`https://lenster.xyz/u/${sellerLens?.handle}`}
-                  target="_blank"
-                  rel="noopener"
-                >
-                  Follow
-                </a>
-              </FollowLens>
-              <SellerSocial
-                sellerLens={sellerLens as ProfileFieldsFragment}
-                voucherCloneAddress={sellersData?.[0]?.voucherCloneAddress}
-              />
+              {sellerLens && (
+                <>
+                  <FollowLens>
+                    <a
+                      href={`https://lenster.xyz/u/${sellerLens?.handle}`}
+                      target="_blank"
+                      rel="noopener"
+                    >
+                      Follow
+                    </a>
+                  </FollowLens>
+                  <SellerSocial
+                    sellerLens={sellerLens as ProfileFieldsFragment}
+                    voucherCloneAddress={sellersData?.[0]?.voucherCloneAddress}
+                  />
+                </>
+              )}
             </Grid>
           </Grid>
         </ProfileSectionWrapper>

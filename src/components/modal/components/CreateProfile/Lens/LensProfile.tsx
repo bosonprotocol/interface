@@ -1,3 +1,4 @@
+import { subgraph } from "@bosonprotocol/react-kit";
 import { useCallback, useState } from "react";
 
 import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
@@ -8,7 +9,13 @@ import LensForm from "./LensForm";
 import { BosonAccount, LensProfileType } from "./validationSchema";
 
 interface Props {
-  onSubmit: (id: string, lensProfile: Profile | null | undefined) => void;
+  onSubmit: (
+    id: string,
+    lensProfile: Profile | null | undefined,
+    overrides?: LensProfileType
+  ) => void;
+  seller: subgraph.SellerFieldsFragment | null;
+  lensProfile?: Profile;
 }
 
 const steps = {
@@ -19,7 +26,11 @@ const steps = {
   SUMMARY: 4
 } as const;
 
-export default function LensProfile({ onSubmit }: Props) {
+export default function LensProfile({
+  onSubmit,
+  seller,
+  lensProfile: selectedProfile
+}: Props) {
   const [step, setStep] = useState<number>(steps.CREATE_OR_CHOOSE);
   const [lensProfile, setLensProfile] = useState<Profile | null>(null);
   const [lensFormValues, setLensFormValues] = useState<LensProfileType | null>(
@@ -47,6 +58,10 @@ export default function LensProfile({ onSubmit }: Props) {
     },
     [lensProfile]
   );
+  if ((step === steps.CREATE_OR_CHOOSE || !lensProfile) && selectedProfile) {
+    setLensProfile(selectedProfile);
+    setStep(steps.USE);
+  }
   return (
     <>
       {step === steps.CREATE_OR_CHOOSE ? (
@@ -63,6 +78,7 @@ export default function LensProfile({ onSubmit }: Props) {
       ) : step === steps.CREATE ? (
         <LensForm
           profile={null}
+          seller={seller}
           formValues={lensFormValues}
           onSubmit={(formValues) => {
             setLensFormValues(formValues);
@@ -74,10 +90,16 @@ export default function LensProfile({ onSubmit }: Props) {
       ) : step === steps.USE ? (
         <LensForm
           profile={lensProfile}
+          seller={seller}
           formValues={null}
           onSubmit={(formValues) => {
             setLensFormValues(formValues);
-            setStep(steps.BOSON_ACCOUNT);
+            if (seller) {
+              // In case the boson seller already exists, go next
+              onSubmit("", lensProfile, formValues);
+            } else {
+              setStep(steps.BOSON_ACCOUNT);
+            }
           }}
           onBackClick={handleOnBackClick}
           setStepBasedOnIndex={setStepBasedOnIndex}
