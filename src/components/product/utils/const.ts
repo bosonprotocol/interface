@@ -133,7 +133,7 @@ type Entries<T> = {
 }[keyof T][];
 
 const optionUnitValues = {
-  "%": "Percent",
+  "%": "%",
   fixed: "Fixed"
 } as const;
 export const optionUnitKeys = (
@@ -152,7 +152,7 @@ export const OPTIONS_UNIT = (
 export const PERCENT_OPTIONS_UNIT = [
   {
     value: "%",
-    label: "Percent"
+    label: "%"
   }
 ] as const;
 export const OPTIONS_PERIOD = [

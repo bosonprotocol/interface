@@ -524,7 +524,11 @@ export default function ConfirmProductDetails({
                 >
                   <FormField title="Buyer Cancel Penalty" required>
                     <ContentValue tag="p">
-                      {values?.termsOfExchange?.buyerCancellationPenalty || 0}%
+                      {values?.termsOfExchange?.buyerCancellationPenalty || 0}{" "}
+                      {
+                        values?.termsOfExchange?.buyerCancellationPenaltyUnit
+                          .label
+                      }
                     </ContentValue>
                   </FormField>
                 </FormFieldContainer>
@@ -537,7 +541,8 @@ export default function ConfirmProductDetails({
                 >
                   <FormField title="Seller Deposit" required>
                     <ContentValue tag="p">
-                      {values?.termsOfExchange?.sellerDeposit || 0}%
+                      {values?.termsOfExchange?.sellerDeposit || 0}{" "}
+                      {values?.termsOfExchange?.sellerDepositUnit.label}
                     </ContentValue>
                   </FormField>
                 </FormFieldContainer>

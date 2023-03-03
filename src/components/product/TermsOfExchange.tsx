@@ -3,7 +3,9 @@ import { Check } from "phosphor-react";
 import { useEffect, useMemo } from "react";
 import styled from "styled-components";
 
+import { CONFIG } from "../../lib/config";
 import { colors } from "../../lib/styles/colors";
+import { Token } from "../convertion-rate/ConvertionRateContext";
 import FairExchangePolicy from "../exchangePolicy/FairExchangePolicy";
 import { FormField, Input, Select } from "../form";
 import BosonButton from "../ui/BosonButton";
@@ -78,10 +80,25 @@ export default function TermsOfExchange() {
     new Set(
       values.productVariants.variants.map((variant) => variant.currency.value)
     ).size > 1;
+  const maxPricePenOrSellerDeposit =
+    values.productType.productVariant === "differentVariants"
+      ? Math.min(
+          ...values.productVariants.variants.map((variant) => variant.price)
+        )
+      : values.coreTermsOfSale.price;
   const currency =
     values.productType.productVariant === "differentVariants"
       ? values.productVariants.variants[0].currency.label
       : values.coreTermsOfSale.currency;
+  const exchangeToken = CONFIG.defaultTokens.find(
+    (n: Token) =>
+      n.symbol ===
+      (values.productType.productVariant === "differentVariants"
+        ? values.productVariants.variants[0].currency.label
+        : values.coreTermsOfSale.currency.label)
+  );
+  const decimals = exchangeToken?.decimals;
+  const step = 10 ** -(decimals || 0);
   const optionsUnitWithCurrency = useMemo(
     () =>
       OPTIONS_UNIT.map((option) => {
@@ -190,6 +207,8 @@ export default function TermsOfExchange() {
                     name="termsOfExchange.buyerCancellationPenalty"
                     type="number"
                     min="0"
+                    max={maxPricePenOrSellerDeposit}
+                    step={step}
                   />
                 )}
               </div>
@@ -224,6 +243,8 @@ export default function TermsOfExchange() {
                     name="termsOfExchange.sellerDeposit"
                     type="number"
                     min="0"
+                    max={maxPricePenOrSellerDeposit}
+                    step={step}
                   />
                 )}
               </div>

@@ -117,9 +117,10 @@ export default function Preview({
   const price = isMultiVariant
     ? firstVariant.price
     : values.coreTermsOfSale.price;
+  const exchangeTokenDecimals = Number(exchangeToken?.decimals || 18);
   const priceBN = parseUnits(
     price < 0.1 ? fixformattedString(price) : price.toString(),
-    Number(exchangeToken?.decimals || 18)
+    exchangeTokenDecimals
   );
 
   const commonTermsOfSale = isMultiVariant
@@ -159,7 +160,8 @@ export default function Preview({
       priceBN,
       values.termsOfExchange.sellerDeposit,
       values.termsOfExchange.sellerDepositUnit
-        .value as keyof typeof optionUnitKeys
+        .value as keyof typeof optionUnitKeys,
+      exchangeTokenDecimals
     ),
     protocolFee: "0",
     agentFee: "0",
@@ -168,7 +170,8 @@ export default function Preview({
       priceBN,
       values.termsOfExchange.buyerCancellationPenalty,
       values.termsOfExchange.buyerCancellationPenaltyUnit
-        .value as keyof typeof optionUnitKeys
+        .value as keyof typeof optionUnitKeys,
+      exchangeTokenDecimals
     ),
     quantityAvailable: quantityAvailable.toString(),
     quantityInitial: quantityAvailable.toString(),

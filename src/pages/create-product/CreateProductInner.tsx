@@ -739,24 +739,27 @@ function CreateProductInner({
             const exchangeToken = CONFIG.defaultTokens.find(
               (n: Token) => n.symbol === variants[index].currency.label
             );
+            const decimals = Number(exchangeToken?.decimals || 18);
             const price = variants[index].price;
             const priceBN = parseUnits(
               price < 0.1 ? fixformattedString(price) : price.toString(),
-              Number(exchangeToken?.decimals || 18)
+              decimals
             );
 
             const buyerCancellationPenaltyValue = getFixedOrPercentageVal(
               priceBN,
               termsOfExchange.buyerCancellationPenalty,
               termsOfExchange.buyerCancellationPenaltyUnit
-                .value as keyof typeof optionUnitKeys
+                .value as keyof typeof optionUnitKeys,
+              decimals
             );
 
             const sellerDeposit = getFixedOrPercentageVal(
               priceBN,
               termsOfExchange.sellerDeposit,
               termsOfExchange.sellerDepositUnit
-                .value as keyof typeof optionUnitKeys
+                .value as keyof typeof optionUnitKeys,
+              decimals
             );
             return getOfferDataFromMetadata(metadata, {
               coreSDK,
@@ -796,22 +799,26 @@ function CreateProductInner({
           commonTermsOfSale
         });
         const price = coreTermsOfSale.price;
+        const decimals = Number(exchangeToken?.decimals || 18);
         const priceBN = parseUnits(
           price < 0.1 ? fixformattedString(price) : price.toString(),
-          Number(exchangeToken?.decimals || 18)
+          decimals
         );
 
         const buyerCancellationPenaltyValue = getFixedOrPercentageVal(
           priceBN,
           termsOfExchange.buyerCancellationPenalty,
           termsOfExchange.buyerCancellationPenaltyUnit
-            .value as keyof typeof optionUnitKeys
+            .value as keyof typeof optionUnitKeys,
+          decimals
         );
 
         const sellerDeposit = getFixedOrPercentageVal(
           priceBN,
           termsOfExchange.sellerDeposit,
-          termsOfExchange.sellerDepositUnit.value as keyof typeof optionUnitKeys
+          termsOfExchange.sellerDepositUnit
+            .value as keyof typeof optionUnitKeys,
+          decimals
         );
 
         const offerData = await getOfferDataFromMetadata(productV1Metadata, {
