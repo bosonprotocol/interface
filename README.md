@@ -6,16 +6,15 @@
 
 <a href="">![](https://img.shields.io/badge/license-Apache--2.0-brightgreen?style=flat-square)</a>
 <a href="https://discord.com/invite/QSdtKRaap6">![](https://img.shields.io/badge/Chat%20on-Discord-%235766f2?style=flat-square)</a>
-<a href="https://twitter.com/BosonProtocol">![](https://img.shields.io/twitter/follow/BosonProtocol?style=social)</a>
 
-[![codecov](https://codecov.io/gh/bosonprotocol/interface/branch/main/graph/badge.svg?token=X52bEA3Bf6)](https://codecov.io/gh/bosonprotocol/interface)
+
 <a href="https://github.com/bosonprotocol/interface/actions/workflows/ci.yaml">[![Build Status](https://github.com/bosonprotocol/interface/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/bosonprotocol/interface/actions/workflows/ci.yaml)</a>
 
 </div>
 
 <div align="center">
 
-🛠️ **The official dApp built on top of [Boson Protocol](https://bosonprotocol.io).**
+🛠️ **An example dApp built on top of [Boson Protocol](https://bosonprotocol.io/).**
 
 </div>
 
@@ -43,24 +42,9 @@ Installing the correct versions of node and npm can be done by installing [`volt
 4. Start the application: i.e. Run `npm run dev`
 5. Navigate to `http://localhost:3000/` in a browser.
 
-## Running the tests
 
-### E2E
+## Contributing
 
-Ensure Playwright browsers need to be installed on your system:
+We welcome contributions! The ultimate goal is for all of the Boson Protocol repositories to be fully owned by the community and contributors. Issues, pull requests, suggestions, and any sort of involvement are more than welcome.
 
-```bash
-npx playwright install
-```
-
-Run the tests:
-```bash
-npm run test:e2e
-```
-
-### Unit & Integration
-
-Run the tests:
-```bash
-npm run test
-```
+By being in this community, you agree to the [Code of Conduct](/docs/code-of-conduct.md). Take a look at it, if you haven't already.

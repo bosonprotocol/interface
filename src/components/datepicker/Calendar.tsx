@@ -47,7 +47,7 @@ export default function Calendar({
       return onChange(null);
     }
 
-    if (period && (value?.isBefore(firstDay, "day") || !isDateWithinMinMax)) {
+    if (period && !isDateWithinMinMax) {
       return onChange(null);
     }
 
@@ -69,9 +69,8 @@ export default function Calendar({
       </CalendarHeader>
       <CalendarRow>
         {rows.map(({ text, value, current }: ICalendarCell, i: number) => {
-          const disabled = period
-            ? value?.isBefore(firstDay, "day") ||
-              value?.isBefore(minDate, "day")
+          const disabled: boolean = period
+            ? value?.isBefore(minDate, "day")
             : false;
 
           return (

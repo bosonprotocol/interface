@@ -11,27 +11,31 @@ export function fromBase64ToBinary(base64: string): Buffer {
 }
 
 export async function blobToBase64(blob: Blob): Promise<string> {
-  return new Promise((resolve) => {
-    loadAndSetMedia(blob, resolve);
+  return new Promise((resolve, reject) => {
+    loadAndSetMedia(blob, resolve, reject);
   });
 }
 
 export const loadAndSetMedia = (
   fileOrBlob: File | Blob,
-  callback: (base64Uri: string) => void
+  callback: (base64Uri: string) => void,
+  errorCallback?: (...errorArgs: unknown[]) => void
 ) => {
   const reader = new FileReader();
   reader.onloadend = (e: ProgressEvent<FileReader>) => {
     const prev = e.target?.result?.toString() || "";
     callback(prev);
   };
+  reader.onerror = (...errorArgs) => {
+    errorCallback?.(errorArgs);
+  };
   reader.readAsDataURL(fileOrBlob);
 };
 
 export const loadAndSetImagePromise = (image: File) => {
   return new Promise<Parameters<Parameters<typeof loadAndSetMedia>[1]>[0]>(
-    (resolve) => {
-      loadAndSetMedia(image, resolve);
+    (resolve, reject) => {
+      loadAndSetMedia(image, resolve, reject);
     }
   );
 };

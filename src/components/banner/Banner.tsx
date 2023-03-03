@@ -31,7 +31,7 @@ const ArrowWrapper = styled(Grid)`
 function Banner() {
   return (
     <BannerContainer
-      href="https://www.bosonprotocol.io/blog/buy-on-boson-and-get-50-back/"
+      href="https://www.bosonprotocol.io/blog/buy-on-boson-and-get-50-back-extended-to-march-31st-2023/"
       target="_blank"
     >
       <Grid justifyContent="center" gap="1rem" padding="0.535rem 1rem">

@@ -27,7 +27,8 @@ function CreateProduct() {
       showModal(modalTypes.CREATE_PRODUCT_DRAFT, {
         title: "Draft",
         chooseNew,
-        chooseDraft
+        chooseDraft,
+        closable: false
       });
     } else {
       setDraftModalClosed(true);
