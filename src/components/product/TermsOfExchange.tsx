@@ -1,5 +1,6 @@
 import { useFormikContext } from "formik";
 import { Check } from "phosphor-react";
+import { useEffect, useMemo } from "react";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
@@ -17,7 +18,8 @@ import {
   OPTIONS_EXCHANGE_POLICY,
   OPTIONS_PERIOD,
   OPTIONS_UNIT,
-  optionUnitKeys
+  optionUnitKeys,
+  PERCENT_OPTIONS_UNIT
 } from "./utils/const";
 import { useCreateForm } from "./utils/useCreateForm";
 
@@ -70,7 +72,84 @@ const InfoWrapperList = styled.div`
 
 export default function TermsOfExchange() {
   const { nextIsDisabled } = useCreateForm();
-  const { values } = useFormikContext<CreateProductForm>();
+  const { values, setFieldValue } = useFormikContext<CreateProductForm>();
+  const isMultiVariant =
+    values.productType.productVariant === "differentVariants" &&
+    new Set(
+      values.productVariants.variants.map((variant) => variant.currency.value)
+    ).size > 1;
+  const currency =
+    values.productType.productVariant === "differentVariants"
+      ? values.productVariants.variants[0].currency.label
+      : values.coreTermsOfSale.currency;
+  const optionsUnitWithCurrency = useMemo(
+    () =>
+      OPTIONS_UNIT.map((option) => {
+        if (option.value === optionUnitKeys.fixed) {
+          return {
+            value: option.value,
+            label: currency
+          };
+        }
+        return option;
+      }),
+    [currency]
+  );
+  const optionsUnitToShow = useMemo(() => {
+    return isMultiVariant ? PERCENT_OPTIONS_UNIT : optionsUnitWithCurrency;
+  }, [isMultiVariant, optionsUnitWithCurrency]);
+  useEffect(() => {
+    const buyerUnit = (
+      optionsUnitToShow as { value: string; label: string }[]
+    ).find(
+      (option) =>
+        option.value ===
+        values.termsOfExchange.buyerCancellationPenaltyUnit?.value
+    );
+    if (optionsUnitToShow.length === 1 && !buyerUnit) {
+      setFieldValue(
+        "termsOfExchange.buyerCancellationPenaltyUnit",
+        optionsUnitToShow[0]
+      );
+      setFieldValue("termsOfExchange.buyerCancellationPenalty", "");
+    } else if (
+      buyerUnit &&
+      values.termsOfExchange.buyerCancellationPenaltyUnit?.label !==
+        buyerUnit.label
+    ) {
+      setFieldValue("termsOfExchange.buyerCancellationPenaltyUnit", buyerUnit);
+      setFieldValue("termsOfExchange.buyerCancellationPenalty", "");
+    }
+  }, [
+    optionsUnitToShow,
+    setFieldValue,
+    values.termsOfExchange.buyerCancellationPenaltyUnit?.label,
+    values.termsOfExchange.buyerCancellationPenaltyUnit?.value
+  ]);
+
+  useEffect(() => {
+    const sellerUnit = (
+      optionsUnitToShow as { value: string; label: string }[]
+    ).find(
+      (option) =>
+        option.value === values.termsOfExchange.sellerDepositUnit?.value
+    );
+    if (optionsUnitToShow.length === 1 && !sellerUnit) {
+      setFieldValue("termsOfExchange.sellerDepositUnit", optionsUnitToShow[0]);
+      setFieldValue("termsOfExchange.sellerDeposit", "");
+    } else if (
+      sellerUnit &&
+      values.termsOfExchange.sellerDepositUnit?.label !== sellerUnit.label
+    ) {
+      setFieldValue("termsOfExchange.sellerDepositUnit", sellerUnit);
+      setFieldValue("termsOfExchange.sellerDeposit", "");
+    }
+  }, [
+    optionsUnitToShow,
+    setFieldValue,
+    values.termsOfExchange.sellerDepositUnit?.label,
+    values.termsOfExchange.sellerDepositUnit?.value
+  ]);
   return (
     <TermsOfExchangeContainer>
       <MainContainer>
@@ -118,7 +197,7 @@ export default function TermsOfExchange() {
                 <Select
                   placeholder="Choose unit..."
                   name="termsOfExchange.buyerCancellationPenaltyUnit"
-                  options={OPTIONS_UNIT}
+                  options={optionsUnitToShow}
                 />
               </div>
             </FieldContainer>
@@ -152,7 +231,7 @@ export default function TermsOfExchange() {
                 <Select
                   placeholder="Choose unit..."
                   name="termsOfExchange.sellerDepositUnit"
-                  options={OPTIONS_UNIT}
+                  options={optionsUnitToShow}
                 />
               </div>
             </FieldContainer>

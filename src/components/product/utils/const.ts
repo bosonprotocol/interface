@@ -149,6 +149,12 @@ export const OPTIONS_UNIT = (
   value: key,
   label: value as typeof optionUnitValues[typeof key]
 }));
+export const PERCENT_OPTIONS_UNIT = [
+  {
+    value: "%",
+    label: "Percent"
+  }
+] as const;
 export const OPTIONS_PERIOD = [
   {
     value: "days",
