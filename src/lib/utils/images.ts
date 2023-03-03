@@ -1,4 +1,5 @@
 import { CONFIG } from "../config";
+import { blobToBase64 } from "./base64";
 import { getIpfsGatewayUrl } from "./ipfs";
 
 // See https://docs.pinata.cloud/gateways/image-optimization
@@ -57,4 +58,32 @@ function optsToQueryParams(opts: Partial<ImageOptimizationOpts> = {}) {
     }
   );
   return new URLSearchParams(transformedOpts).toString();
+}
+
+type ImageMetadata = {
+  width: number;
+  height: number;
+};
+export function getImageMetadata(image: File): Promise<ImageMetadata>;
+export function getImageMetadata(image: string): Promise<ImageMetadata>;
+export function getImageMetadata(image: File | string): Promise<ImageMetadata> {
+  // eslint-disable-next-line no-async-promise-executor
+  return new Promise<ImageMetadata>(async (resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      resolve({
+        height: img.height,
+        width: img.width
+      });
+    };
+    img.onerror = (...errorArgs) => {
+      reject(errorArgs);
+    };
+    if (typeof image === "string") {
+      img.src = image;
+    } else {
+      const base64 = await blobToBase64(image);
+      img.src = base64;
+    }
+  });
 }

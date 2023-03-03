@@ -48,7 +48,7 @@ const handleInitialDates = (
     endDate
   };
 };
-
+const dateTimeFormat = "LLL";
 export default function DatePicker({
   initialValue,
   onChange,
@@ -91,13 +91,18 @@ export default function DatePicker({
     }
 
     if (period) {
-      if (date === null) {
+      if (date === null || (date !== null && secondDate !== null)) {
         setDate(inputDate);
         setSecondDate(null);
+      } else if (
+        date !== null &&
+        secondDate === null &&
+        inputDate?.isBefore(date, "day")
+      ) {
+        setDate(inputDate);
+        setSecondDate(date);
       } else if (secondDate === null) {
         setSecondDate(inputDate);
-      } else if (date !== null && secondDate !== null) {
-        reset();
       }
     } else {
       setDate(inputDate);
@@ -136,7 +141,11 @@ export default function DatePicker({
             .set("hour", Number(time.hour[1]))
             .set("minute", Number(time.minute[1]));
         }
-        setShownDate(`${newDate?.format()} - ${newSecondDate?.format()}`);
+        setShownDate(
+          `${newDate?.format(dateTimeFormat)} - ${newSecondDate?.format(
+            dateTimeFormat
+          )}`
+        );
         onChange?.([newDate, newSecondDate]);
       }
     } else {
@@ -148,7 +157,7 @@ export default function DatePicker({
             .set("hour", Number(time.hour))
             .set("minute", Number(time.minute));
         }
-        setShownDate(newDate?.format());
+        setShownDate(newDate?.format(dateTimeFormat));
         onChange?.(newDate);
       }
     }

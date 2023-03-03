@@ -213,7 +213,10 @@ export default function TermsAndConditions() {
           </Text>
           <Text>
             <b>“Redeemable NFT (rNFT / NFT Voucher)”</b> means a voucher using
-            NFT technology, representing the right to redeem an Item.
+            NFT technology, representing the right to redeem an Item. It is
+            important to note that an rNFT is a voucher that can be redeemed for
+            a Digital and/or Physical good and it is subject to the rNFTs T&Cs.
+            It is NOT a digital representation of said good.
           </Text>
         </li>
         <li>
