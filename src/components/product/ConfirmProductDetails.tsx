@@ -48,6 +48,7 @@ import differentVariantsProduct from "./img/different-variants-product.png";
 import oneItemTypeProductSmall from "./img/one-item-product-small.png";
 import physicalProductSmall from "./img/physical-product-small.png";
 import { SectionTitle } from "./Product.styles";
+import { optionUnitValues } from "./utils";
 import { useCreateForm } from "./utils/useCreateForm";
 
 const VariantsTable = styled.table`
@@ -525,10 +526,11 @@ export default function ConfirmProductDetails({
                   <FormField title="Buyer Cancel Penalty" required>
                     <ContentValue tag="p">
                       {values?.termsOfExchange?.buyerCancellationPenalty || 0}{" "}
-                      {
-                        values?.termsOfExchange?.buyerCancellationPenaltyUnit
-                          .label
-                      }
+                      {values?.termsOfExchange?.buyerCancellationPenaltyUnit
+                        .label === optionUnitValues["%"]
+                        ? "%"
+                        : values?.termsOfExchange?.buyerCancellationPenaltyUnit
+                            .label}
                     </ContentValue>
                   </FormField>
                 </FormFieldContainer>
@@ -542,7 +544,10 @@ export default function ConfirmProductDetails({
                   <FormField title="Seller Deposit" required>
                     <ContentValue tag="p">
                       {values?.termsOfExchange?.sellerDeposit || 0}{" "}
-                      {values?.termsOfExchange?.sellerDepositUnit.label}
+                      {values?.termsOfExchange?.sellerDepositUnit.label ===
+                      optionUnitValues["%"]
+                        ? "%"
+                        : values?.termsOfExchange?.sellerDepositUnit.label}
                     </ContentValue>
                   </FormField>
                 </FormFieldContainer>

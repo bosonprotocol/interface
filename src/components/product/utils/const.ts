@@ -132,8 +132,8 @@ type Entries<T> = {
   [K in keyof T]: [K, T[K]];
 }[keyof T][];
 
-const optionUnitValues = {
-  "%": "%",
+export const optionUnitValues = {
+  "%": "Percent",
   fixed: "Fixed"
 } as const;
 export const optionUnitKeys = (
