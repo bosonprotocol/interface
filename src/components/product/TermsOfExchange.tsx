@@ -86,10 +86,10 @@ export default function TermsOfExchange() {
           ...values.productVariants.variants.map((variant) => variant.price)
         )
       : values.coreTermsOfSale.price;
-  const currency =
+  const currency: string =
     values.productType.productVariant === "differentVariants"
       ? values.productVariants.variants[0].currency.label
-      : values.coreTermsOfSale.currency;
+      : values.coreTermsOfSale.currency.label;
   const exchangeToken = CONFIG.defaultTokens.find(
     (n: Token) =>
       n.symbol ===
