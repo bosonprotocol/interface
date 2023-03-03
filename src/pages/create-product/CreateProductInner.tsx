@@ -133,7 +133,6 @@ async function getProductV1Metadata({
       tag: "profile",
       height: profileImage?.height,
       width: profileImage?.width,
-      name: profileImage?.name,
       type: profileImage?.type
     }
   ];
