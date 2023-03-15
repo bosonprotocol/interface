@@ -17,7 +17,7 @@ export async function mockGetSellers({ postData }: MockProps) {
       sellers: [
         {
           id: "1",
-          operator: "0x1",
+          assistant: "0x1",
           admin: "0x1",
           clerk: "0x1",
           treasury: "0x1",
@@ -25,7 +25,7 @@ export async function mockGetSellers({ postData }: MockProps) {
         },
         {
           id: "2",
-          operator: "0x2",
+          assistant: "0x2",
           admin: "0x2",
           clerk: "0x2",
           treasury: "0x2",
@@ -33,7 +33,7 @@ export async function mockGetSellers({ postData }: MockProps) {
         }
       ] as Pick<
         Offer["seller"],
-        "id" | "operator" | "admin" | "clerk" | "treasury" | "active"
+        "id" | "assistant" | "admin" | "clerk" | "treasury" | "active"
       >[]
     }
   };

@@ -315,7 +315,7 @@ export default function ExchangeSidePreview({
     if (!isVisible) {
       return null;
     }
-    const isDisabled = iAmTheBuyer ? false : sellerRoles.isOperator;
+    const isDisabled = iAmTheBuyer ? false : sellerRoles.isAssistant;
     return (
       <BosonButton
         variant="primaryFill"
@@ -336,7 +336,7 @@ export default function ExchangeSidePreview({
       </BosonButton>
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [exchange, iAmTheBuyer, sellerRoles.isOperator]);
+  }, [exchange, iAmTheBuyer, sellerRoles.isAssistant]);
   if (!exchange || !offer) {
     return null;
   }

@@ -43,7 +43,7 @@ export default function MakeProposalModal({
   const coreSDK = useCoreSDK();
   const { address } = useAccount();
   const { data: sellers = [] } = useSellers({
-    operator: address
+    assistant: address
   });
 
   const mySellerId = sellers[0]?.id || "";
