@@ -296,7 +296,7 @@ test.describe("Root page (Landing page)", () => {
         const url = await page.url();
         const { hash } = new URL(url);
         expect(hash).toStrictEqual(
-          `#/account/${expectedOffer.seller.operator}`
+          `#/account/${expectedOffer.seller.assistant}`
         );
       });
 

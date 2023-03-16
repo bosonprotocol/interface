@@ -59,7 +59,7 @@ const ImageContainer = styled.div`
 `;
 
 type Buyer = Pick<subgraph.Buyer, "id" | "wallet">;
-type Seller = Pick<subgraph.Seller, "id" | "operator">;
+type Seller = Pick<subgraph.Seller, "id" | "assistant">;
 
 const SellerID: React.FC<
   {
@@ -93,10 +93,10 @@ const SellerID: React.FC<
   const { artist } = getOfferDetails(offer);
 
   const userId = buyerOrSeller?.id;
-  const isSeller = buyerOrSeller ? "operator" in buyerOrSeller : false;
+  const isSeller = buyerOrSeller ? "assistant" in buyerOrSeller : false;
   const userAddress = buyerOrSeller
     ? isSeller
-      ? (buyerOrSeller as Seller).operator
+      ? (buyerOrSeller as Seller).assistant
       : (buyerOrSeller as Buyer).wallet
     : address;
   const hasCursorPointer = !!onClick || onClick === undefined;

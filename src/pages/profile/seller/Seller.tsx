@@ -169,7 +169,7 @@ export default function Seller() {
   } = useSellerNumbers(sellerId);
 
   const isSellerExists = !!sellers?.length;
-  const currentSellerAddress = sellers[0]?.operator || "";
+  const currentSellerAddress = sellers[0]?.assistant || "";
   const isMySeller =
     currentSellerAddress.toLowerCase() === currentWalletAddress.toLowerCase();
 

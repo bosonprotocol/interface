@@ -93,7 +93,7 @@ const getExchangesFunction = async (props: Props) => {
         validUntilDate
         seller {
           id
-          operator
+          assistant
           admin
           clerk
           treasury

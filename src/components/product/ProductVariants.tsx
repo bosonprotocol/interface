@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ButtonSize } from "@bosonprotocol/react-kit";
 import { useField } from "formik";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import styled from "styled-components";
 
+import { isTruthy } from "../../lib/types/helpers";
 import { Error, FormField, Input, Select } from "../form";
 import TagsInput from "../form/TagsInput";
 import BosonButton from "../ui/BosonButton";
@@ -24,6 +25,11 @@ import { useCreateForm } from "./utils/useCreateForm";
 const variantsColorsKey = "productVariants.colors";
 const variantsSizesKey = "productVariants.sizes";
 const variantsKey = `productVariants.variants`;
+
+const TdFlex = styled("td")`
+  display: flex;
+  flex-direction: column;
+`;
 
 const ProductInformationButtonGroup = styled(ProductButtonGroup)`
   margin-top: 1.563rem;
@@ -79,16 +85,21 @@ export default function ProductVariants() {
     useField<ProductVariantsType["productVariants"]["colors"]>(
       variantsColorsKey
     );
-  helpersColors.setValue;
   const [fieldSizes, , helpersSizes] =
     useField<ProductVariantsType["productVariants"]["sizes"]>(variantsSizesKey);
   const [fieldVariants, metaVariants, helpersVariants] =
     useField<ProductVariantsType["productVariants"]["variants"]>(variantsKey);
   const variants = fieldVariants.value;
   const onAddTagType = useCallback(
-    (type: "color" | "size", tag: string) => {
-      const existingVariants = new Set<string>();
+    (type: "color" | "size", tags: string[]) => {
+      if (tags.length === 0) {
+        return;
+      }
       const variants = fieldVariants?.value || [];
+      if (tags.length > 1 && variants.length) {
+        return;
+      }
+      const existingVariants = new Set<string>();
       const colors = (fieldColors?.value || []).filter(
         (value) => !!value
       ) as string[];
@@ -106,27 +117,30 @@ export default function ProductVariants() {
         [];
       const otherTags = type === "color" ? sizes : colors;
 
-      if (!otherTags.length && !existingVariants.has(getColorSizeKey(tag))) {
-        // add variant with single tag
-        const color = type === "color" ? tag : "";
-        const size = type === "color" ? "" : tag;
-        variantsToAdd.push({
-          color,
-          size,
-          name: tag,
-          // TODO: yup does not infer currency, price and quantity as nullable, even though they are are defined as such
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          currency:
-            OPTIONS_CURRENCIES.length === 1 ? OPTIONS_CURRENCIES[0] : null,
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          price: undefined,
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          quantity: undefined
-        });
-      }
+      tags.forEach((tag) => {
+        if (!otherTags.length && !existingVariants.has(getColorSizeKey(tag))) {
+          // add variant with single tag
+          const color = type === "color" ? tag : "";
+          const size = type === "color" ? "" : tag;
+          variantsToAdd.push({
+            color,
+            size,
+            name: tag,
+            // TODO: yup does not infer currency, price and quantity as nullable, even though they are are defined as such
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            currency:
+              OPTIONS_CURRENCIES.length === 1 ? OPTIONS_CURRENCIES[0] : null,
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            price: undefined,
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            quantity: undefined
+          });
+        }
+      });
+
       // remove variants with single tags of the other type
       const variantsToKeep = variants.filter((variant) => {
         const { color, size } = variant;
@@ -137,8 +151,8 @@ export default function ProductVariants() {
 
       // add variants with pair Color / Size
       for (const otherTag of otherTags) {
-        const color = type === "color" ? tag : otherTag;
-        const size = type !== "color" ? tag : otherTag;
+        const color = type === "color" ? tags[0] : otherTag;
+        const size = type !== "color" ? tags[0] : otherTag;
         if (!existingVariants.has(getColorSizeKey(color, size))) {
           variantsToAdd.push({
             color,
@@ -159,6 +173,7 @@ export default function ProductVariants() {
         }
       }
       if (!!variantsToAdd.length || !!variantsToKeep.length) {
+        helpersVariants.setTouched(false);
         helpersVariants.setValue([...variantsToKeep, ...variantsToAdd], true);
       }
     },
@@ -181,6 +196,20 @@ export default function ProductVariants() {
     },
     [fieldVariants?.value, helpersVariants]
   );
+  useEffect(() => {
+    const sizes = fieldSizes.value?.filter(isTruthy) || [];
+    const colors = fieldColors.value?.filter(isTruthy) || [];
+    const hasSizes = !!sizes.length;
+    const hasColors = !!colors.length;
+    if (!fieldVariants.value.length) {
+      if (!hasColors && hasSizes) {
+        onAddTagType("size", sizes);
+      } else if (!hasSizes && hasColors) {
+        onAddTagType("color", colors);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fieldVariants.value]);
   return (
     <ContainerProductPage>
       <SectionTitle tag="h2">Product Variants</SectionTitle>
@@ -194,7 +223,7 @@ export default function ProductVariants() {
             <TagsInput
               placeholder={"Add color variants"}
               name={variantsColorsKey}
-              onAddTag={(tag) => onAddTagType("color", tag)}
+              onAddTag={(tag) => onAddTagType("color", [tag])}
               onRemoveTag={(tag) => onRemoveTagType("color", tag)}
               transform={capitalize}
               label="Color:"
@@ -204,7 +233,7 @@ export default function ProductVariants() {
             <TagsInput
               placeholder={"Add size variants"}
               name={variantsSizesKey}
-              onAddTag={(tag) => onAddTagType("size", tag)}
+              onAddTag={(tag) => onAddTagType("size", [tag])}
               onRemoveTag={(tag) => onRemoveTagType("size", tag)}
               transform={capitalizeAll}
               label="Size:"
@@ -240,12 +269,12 @@ export default function ProductVariants() {
                 <td data-price>
                   <Input name={`${variantsKey}[${idx}].price`} type="number" />
                 </td>
-                <td data-currency>
+                <TdFlex data-currency>
                   <Select
                     name={`${variantsKey}[${idx}].currency`}
                     options={OPTIONS_CURRENCIES}
                   />
-                </td>
+                </TdFlex>
                 <td data-quantity>
                   <Input
                     name={`${variantsKey}[${idx}].quantity`}

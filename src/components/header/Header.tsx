@@ -23,6 +23,41 @@ const smallWidth = "180px";
 const mediumWidth = "225px";
 const sideMargin = "1rem";
 const closedHeaderWidth = "75px";
+const SideBannerContainer = styled.div<{
+  $navigationBarPosition: string;
+  $isSideBarOpen: boolean;
+}>`
+  ${({ $navigationBarPosition, $isSideBarOpen }) => {
+    if ("left" === $navigationBarPosition) {
+      return css`
+        ${$isSideBarOpen
+          ? css`
+              margin-left: ${smallWidth};
+              ${breakpoint.m} {
+                margin-left: ${mediumWidth};
+              }
+            `
+          : css`
+              margin-left: ${closedHeaderWidth};
+            `}
+      `;
+    } else if ("right" === $navigationBarPosition) {
+      return css`
+        ${$isSideBarOpen
+          ? css`
+              margin-right: ${smallWidth};
+              ${breakpoint.m} {
+                margin-right: ${mediumWidth};
+              }
+            `
+          : css`
+              margin-right: ${closedHeaderWidth};
+            `}
+      `;
+    }
+  }}
+`;
+
 const Header = styled.header<{
   $navigationBarPosition: string;
   $isSideBarOpen: boolean;
@@ -276,63 +311,73 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
     );
 
     return (
-      <Header
-        $navigationBarPosition={navigationBarPosition}
-        $isSideBarOpen={isOpen}
-        ref={ref}
-      >
-        {withBanner && <Banner />}
-        <HeaderContainer
-          fluidHeader={fluidHeader}
+      <>
+        {withBanner && isSideNavBar && (
+          <SideBannerContainer
+            $navigationBarPosition={navigationBarPosition}
+            $isSideBarOpen={isOpen}
+          >
+            <Banner />
+          </SideBannerContainer>
+        )}
+        <Header
           $navigationBarPosition={navigationBarPosition}
+          $isSideBarOpen={isOpen}
+          ref={ref}
         >
-          {isSideBurgerVisible ? (
-            <Grid justifyContent="center">
-              <Burger onClick={toggleMenu} />
-            </Grid>
-          ) : (
-            <>
-              <Grid flexDirection="row" alignItems="center" $width="initial">
-                <LinkWithQuery to={BosonRoutes.Root}>
-                  <LogoImg
-                    src={logoUrl || logo}
-                    alt="logo image"
-                    data-testid="logo"
-                  />
-                </LinkWithQuery>
-                {isSideCrossVisible && (
-                  <X
-                    color={colors.secondary}
-                    onClick={toggleMenu}
-                    style={{ cursor: "pointer" }}
-                    size="24"
-                  />
-                )}
+          {withBanner && !isSideNavBar && <Banner />}
+          <HeaderContainer
+            fluidHeader={fluidHeader}
+            $navigationBarPosition={navigationBarPosition}
+          >
+            {isSideBurgerVisible ? (
+              <Grid justifyContent="center">
+                <Burger onClick={toggleMenu} />
               </Grid>
-              <HeaderItems
-                fluidHeader={fluidHeader}
-                $navigationBarPosition={navigationBarPosition}
-              >
-                {burgerMenuBreakpoint && (
-                  <>
-                    <Connect />
-                    <Burger onClick={toggleMenu} />
-                  </>
-                )}
-                <HeaderLinks
-                  isMobile={burgerMenuBreakpoint}
-                  isOpen={isOpen}
-                  navigationBarPosition={navigationBarPosition}
-                  hasTopBanner={withBanner}
-                />
-                {!burgerMenuBreakpoint && (
-                  <Connect navigationBarPosition={navigationBarPosition} />
-                )}
-              </HeaderItems>
-            </>
-          )}
-        </HeaderContainer>
-      </Header>
+            ) : (
+              <>
+                <Grid flexDirection="row" alignItems="center" $width="initial">
+                  <LinkWithQuery to={BosonRoutes.Root}>
+                    <LogoImg
+                      src={logoUrl || logo}
+                      alt="logo image"
+                      data-testid="logo"
+                    />
+                  </LinkWithQuery>
+                  {isSideCrossVisible && (
+                    <X
+                      color={colors.secondary}
+                      onClick={toggleMenu}
+                      style={{ cursor: "pointer" }}
+                      size="24"
+                    />
+                  )}
+                </Grid>
+                <HeaderItems
+                  fluidHeader={fluidHeader}
+                  $navigationBarPosition={navigationBarPosition}
+                >
+                  {burgerMenuBreakpoint && (
+                    <>
+                      <Connect />
+                      <Burger onClick={toggleMenu} />
+                    </>
+                  )}
+                  <HeaderLinks
+                    isMobile={burgerMenuBreakpoint}
+                    isOpen={isOpen}
+                    navigationBarPosition={navigationBarPosition}
+                    hasTopBanner={withBanner}
+                  />
+                  {!burgerMenuBreakpoint && (
+                    <Connect navigationBarPosition={navigationBarPosition} />
+                  )}
+                </HeaderItems>
+              </>
+            )}
+          </HeaderContainer>
+        </Header>
+      </>
     );
   }
 );

@@ -49,7 +49,7 @@ export const offerGraphQl = gql`
       admin
       clerk
       treasury
-      operator
+      assistant
       active
     }
     exchangeToken {

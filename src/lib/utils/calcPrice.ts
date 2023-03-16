@@ -66,7 +66,7 @@ interface CalcPercentage {
   deposit: string;
   formatted: string;
 }
-const MUL_VALUE = 100000000;
+const MUL_VALUE = 100_000_000;
 export const calcPercentage = (offer: Offer, key: string): CalcPercentage => {
   try {
     const value = offer?.[key as keyof Offer] || "0";

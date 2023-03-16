@@ -88,6 +88,9 @@ const TagsInput = ({
         </TagContainer>
       </Grid>
       <TagContainer style={{ marginTop: "1em" }}>
+        {label && (
+          <Typography style={{ visibility: "hidden" }}>{label}</Typography>
+        )}
         {tags.map((tag: string, index: number) => (
           <TagWrapper key={`tags-wrapper_${tag}`}>
             <span className="text">{tag}</span>

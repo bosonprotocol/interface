@@ -28,6 +28,8 @@ import BosonButton from "../ui/BosonButton";
 import Typography from "../ui/Typography";
 import Video from "../ui/Video";
 import { ProductButtonGroup } from "./Product.styles";
+import { optionUnitKeys } from "./utils";
+import { getFixedOrPercentageVal } from "./utils/termsOfExchange";
 import { useCreateForm } from "./utils/useCreateForm";
 
 interface Props {
@@ -115,9 +117,10 @@ export default function Preview({
   const price = isMultiVariant
     ? firstVariant.price
     : values.coreTermsOfSale.price;
+  const exchangeTokenDecimals = Number(exchangeToken?.decimals || 18);
   const priceBN = parseUnits(
     price < 0.1 ? fixformattedString(price) : price.toString(),
-    Number(exchangeToken?.decimals || 18)
+    exchangeTokenDecimals
   );
 
   const commonTermsOfSale = isMultiVariant
@@ -153,21 +156,23 @@ export default function Preview({
   // Build the Offer structure (in the shape of SubGraph request), based on temporary data (values)
   const offer = {
     price: priceBN.toString(),
-    sellerDeposit: priceBN
-      .mul(Math.round(parseFloat(values.termsOfExchange.sellerDeposit) * 1000))
-      .div(100 * 1000)
-      .toString(),
+    sellerDeposit: getFixedOrPercentageVal(
+      priceBN,
+      values.termsOfExchange.sellerDeposit,
+      values.termsOfExchange.sellerDepositUnit
+        .value as keyof typeof optionUnitKeys,
+      exchangeTokenDecimals
+    ),
     protocolFee: "0",
     agentFee: "0",
     agentId: "0",
-    buyerCancelPenalty: priceBN
-      .mul(
-        Math.round(
-          parseFloat(values.termsOfExchange.buyerCancellationPenalty) * 1000
-        )
-      )
-      .div(100 * 1000)
-      .toString(),
+    buyerCancelPenalty: getFixedOrPercentageVal(
+      priceBN,
+      values.termsOfExchange.buyerCancellationPenalty,
+      values.termsOfExchange.buyerCancellationPenaltyUnit
+        .value as keyof typeof optionUnitKeys,
+      exchangeTokenDecimals
+    ),
     quantityAvailable: quantityAvailable.toString(),
     quantityInitial: quantityAvailable.toString(),
     validFromDate: (validFromDateInMS / 1000).toString(),
