@@ -367,7 +367,7 @@ const ChatConversation = ({
     [exchange?.buyer, exchange?.offer.seller, iAmBoth, iAmTheBuyer]
   );
   const destinationAddressLowerCase = iAmTheBuyer
-    ? exchange?.offer.seller.operator
+    ? exchange?.offer.seller.assistant
     : exchange?.buyer.wallet;
   const destinationAddress = destinationAddressLowerCase
     ? utils.getAddress(destinationAddressLowerCase)

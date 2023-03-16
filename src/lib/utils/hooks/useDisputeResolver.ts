@@ -10,7 +10,7 @@ interface Props {
     admin: string;
     clerk: string;
     treasury: string;
-    operator: string;
+    assistant: string;
     metadataUri: string;
     active: boolean;
     sellerAllowList: string[];
@@ -41,7 +41,7 @@ export function useDisputeResolver(id: string) {
             admin
             clerk
             treasury
-            operator
+            assistant
             metadataUri
             active
             sellerAllowList

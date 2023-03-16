@@ -81,7 +81,7 @@ async function createSellerAccount(
     authTokenType,
     clerk: address,
     contractUri,
-    operator: address,
+    assistant: address,
     royaltyPercentage: royaltyPercentageTimes100.toString(),
     treasury: address
   };

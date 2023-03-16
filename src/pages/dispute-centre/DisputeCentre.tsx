@@ -242,7 +242,7 @@ function DisputeCentre() {
                       bosonXmtp,
                       proposal,
                       files: filesWithData,
-                      destinationAddress: exchange.seller.operator,
+                      destinationAddress: exchange.seller.assistant,
                       threadId: {
                         buyerId: exchange.buyer.id,
                         sellerId: exchange.seller.id,
