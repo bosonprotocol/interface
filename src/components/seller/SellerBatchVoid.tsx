@@ -31,8 +31,8 @@ function SellerBatchVoid({ selected, refetch, sellerRoles }: Props) {
     <BatchVoidButton
       variant="secondaryInverted"
       size={ButtonSize.Small}
-      disabled={!sellerRoles?.isOperator}
-      tooltip="This action is restricted to only the operator wallet"
+      disabled={!sellerRoles?.isAssistant}
+      tooltip="This action is restricted to only the assistant wallet"
       onClick={() => {
         showModal(
           modalTypes.VOID_PRODUCT,

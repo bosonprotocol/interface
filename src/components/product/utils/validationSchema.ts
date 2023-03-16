@@ -14,6 +14,7 @@ import { SelectDataProps } from "./../../form/types";
 import {
   OPTIONS_EXCHANGE_POLICY,
   OPTIONS_TOKEN_GATED,
+  OPTIONS_UNIT,
   TOKEN_CRITERIA,
   TOKEN_TYPES
 } from "./const";
@@ -336,9 +337,15 @@ export const termsOfExchangeValidationSchema = Yup.object({
       })
       .required(validationMessage.required),
     buyerCancellationPenalty: Yup.string().required(validationMessage.required),
-    // buyerCancellationPenaltyUnit: Yup.string().required( validationMessage.required ),
+    buyerCancellationPenaltyUnit: Yup.object({
+      value: Yup.string().oneOf(OPTIONS_UNIT.map(({ value }) => value)),
+      label: Yup.string()
+    }),
     sellerDeposit: Yup.string().required(validationMessage.required),
-    // sellerDepositUnit: Yup.string().required(validationMessage.required),
+    sellerDepositUnit: Yup.object({
+      value: Yup.string(),
+      label: Yup.string()
+    }),
     // disputeResolver: Yup.string().required(validationMessage.required),
     disputePeriod: Yup.string()
       .matches(/^[0-9]+$/, "Must be only digits")

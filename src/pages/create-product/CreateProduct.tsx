@@ -40,7 +40,7 @@ function CreateProduct() {
     showModal<"INVALID_ROLE">(modalTypes.INVALID_ROLE, {
       title: "Invalid Role",
       action: "create a product",
-      requiredRole: "operator",
+      requiredRole: "assistant",
       closable: false
     });
 

@@ -8,7 +8,7 @@ import { useCurationLists } from "./useCurationLists";
 interface Props {
   admin?: string;
   admin_in?: string[];
-  operator?: string;
+  assistant?: string;
   clerk?: string;
   treasury?: string;
   id?: string;
@@ -72,7 +72,7 @@ export function useSellers(
   const filter = {
     ...(props.admin && { admin: props.admin }),
     ...(props.admin_in && { admin_in: props.admin_in }),
-    ...(props.operator && { operator: props.operator }),
+    ...(props.assistant && { assistant: props.assistant }),
     ...(props.clerk && { clerk: props.clerk }),
     ...(props.treasury && { treasury: props.treasury }),
     ...(props.id && { id: props.id })

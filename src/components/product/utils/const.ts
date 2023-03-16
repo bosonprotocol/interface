@@ -128,13 +128,33 @@ export const OPTIONS_DISPUTE_RESOLVER = [
   }
 ];
 
-export const OPTIONS_UNIT = [
+type Entries<T> = {
+  [K in keyof T]: [K, T[K]];
+}[keyof T][];
+
+export const optionUnitValues = {
+  "%": "Percent",
+  fixed: "Fixed"
+} as const;
+export const optionUnitKeys = (
+  Object.keys(optionUnitValues) as Array<keyof typeof optionUnitValues>
+).reduce((prev, key) => {
+  prev[key] = key;
+  return prev;
+}, {} as Record<keyof typeof optionUnitValues, keyof typeof optionUnitValues>);
+
+export const OPTIONS_UNIT = (
+  Object.entries(optionUnitValues) as Entries<typeof optionUnitValues>
+).map(([key, value]) => ({
+  value: key,
+  label: value as typeof optionUnitValues[typeof key]
+}));
+export const PERCENT_OPTIONS_UNIT = [
   {
     value: "%",
-    label: "Percent"
+    label: "%"
   }
-];
-
+] as const;
 export const OPTIONS_PERIOD = [
   {
     value: "days",

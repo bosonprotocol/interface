@@ -92,7 +92,7 @@ export const productTypeHelp = [
     )
   } as const,
   {
-    title: "What are tag used for?",
+    title: "What are tags used for?",
     description: (
       <>
         <Typography tag="p" style={{ margin: "0" }}>

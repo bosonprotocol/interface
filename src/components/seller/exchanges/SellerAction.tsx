@@ -77,8 +77,8 @@ export const SellerResolveDisputeButton = ({
     <BosonButton
       variant="primaryFill"
       size={ButtonSize.Small}
-      disabled={!sellerRoles?.isOperator}
-      tooltip="This action is restricted to only the operator wallet"
+      disabled={!sellerRoles?.isAssistant}
+      tooltip="This action is restricted to only the assistant wallet"
       onClick={() => {
         if (exchange?.id) {
           generatePathAndNavigate({ exchangeId: exchange?.id, navigate });
@@ -128,8 +128,8 @@ export const SellerActionButton = ({
           variant="accentInverted"
           showBorder={false}
           size={ButtonSize.Small}
-          disabled={!sellerRoles?.isOperator}
-          tooltip="This action is restricted to only the operator wallet"
+          disabled={!sellerRoles?.isAssistant}
+          tooltip="This action is restricted to only the assistant wallet"
           onClick={() => {
             if (exchange) {
               showModal(
@@ -184,8 +184,8 @@ export const SellerCompleteActionButton = ({
     <BosonButton
       variant="primaryFill"
       size={ButtonSize.Small}
-      disabled={!sellerRoles?.isOperator}
-      tooltip="This action is restricted to only the operator wallet"
+      disabled={!sellerRoles?.isAssistant}
+      tooltip="This action is restricted to only the assistant wallet"
       onClick={() => {
         showModal(
           modalTypes.COMPLETE_EXCHANGE,

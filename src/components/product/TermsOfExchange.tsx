@@ -1,7 +1,11 @@
+import { useFormikContext } from "formik";
 import { Check } from "phosphor-react";
+import { useEffect, useMemo } from "react";
 import styled from "styled-components";
 
+import { CONFIG } from "../../lib/config";
 import { colors } from "../../lib/styles/colors";
+import { Token } from "../convertion-rate/ConvertionRateContext";
 import FairExchangePolicy from "../exchangePolicy/FairExchangePolicy";
 import { FormField, Input, Select } from "../form";
 import BosonButton from "../ui/BosonButton";
@@ -10,11 +14,14 @@ import {
   ProductButtonGroup,
   SectionTitle
 } from "./Product.styles";
+import type { CreateProductForm } from "./utils";
 import {
   OPTIONS_DISPUTE_RESOLVER,
   OPTIONS_EXCHANGE_POLICY,
   OPTIONS_PERIOD,
-  OPTIONS_UNIT
+  OPTIONS_UNIT,
+  optionUnitKeys,
+  PERCENT_OPTIONS_UNIT
 } from "./utils/const";
 import { useCreateForm } from "./utils/useCreateForm";
 
@@ -67,7 +74,99 @@ const InfoWrapperList = styled.div`
 
 export default function TermsOfExchange() {
   const { nextIsDisabled } = useCreateForm();
+  const { values, setFieldValue } = useFormikContext<CreateProductForm>();
+  const isMultiVariant =
+    values.productType.productVariant === "differentVariants" &&
+    new Set(
+      values.productVariants.variants.map((variant) => variant.currency.value)
+    ).size > 1;
+  const maxPricePenOrSellerDeposit =
+    values.productType.productVariant === "differentVariants"
+      ? Math.min(
+          ...values.productVariants.variants.map((variant) => variant.price)
+        )
+      : values.coreTermsOfSale.price;
+  const currency: string =
+    values.productType.productVariant === "differentVariants"
+      ? values.productVariants.variants[0].currency.label
+      : values.coreTermsOfSale.currency.label;
+  const exchangeToken = CONFIG.defaultTokens.find(
+    (n: Token) =>
+      n.symbol ===
+      (values.productType.productVariant === "differentVariants"
+        ? values.productVariants.variants[0].currency.label
+        : values.coreTermsOfSale.currency.label)
+  );
+  const decimals = exchangeToken?.decimals;
+  const step = 10 ** -(decimals || 0);
+  const optionsUnitWithCurrency = useMemo(
+    () =>
+      OPTIONS_UNIT.map((option) => {
+        if (option.value === optionUnitKeys.fixed) {
+          return {
+            value: option.value,
+            label: currency
+          };
+        }
+        return option;
+      }),
+    [currency]
+  );
+  const optionsUnitToShow = useMemo(() => {
+    return isMultiVariant ? PERCENT_OPTIONS_UNIT : optionsUnitWithCurrency;
+  }, [isMultiVariant, optionsUnitWithCurrency]);
+  useEffect(() => {
+    const buyerUnit = (
+      optionsUnitToShow as { value: string; label: string }[]
+    ).find(
+      (option) =>
+        option.value ===
+        values.termsOfExchange.buyerCancellationPenaltyUnit?.value
+    );
+    if (optionsUnitToShow.length === 1 && !buyerUnit) {
+      setFieldValue(
+        "termsOfExchange.buyerCancellationPenaltyUnit",
+        optionsUnitToShow[0]
+      );
+      setFieldValue("termsOfExchange.buyerCancellationPenalty", "");
+    } else if (
+      buyerUnit &&
+      values.termsOfExchange.buyerCancellationPenaltyUnit?.label !==
+        buyerUnit.label
+    ) {
+      setFieldValue("termsOfExchange.buyerCancellationPenaltyUnit", buyerUnit);
+      setFieldValue("termsOfExchange.buyerCancellationPenalty", "");
+    }
+  }, [
+    optionsUnitToShow,
+    setFieldValue,
+    values.termsOfExchange.buyerCancellationPenaltyUnit?.label,
+    values.termsOfExchange.buyerCancellationPenaltyUnit?.value
+  ]);
 
+  useEffect(() => {
+    const sellerUnit = (
+      optionsUnitToShow as { value: string; label: string }[]
+    ).find(
+      (option) =>
+        option.value === values.termsOfExchange.sellerDepositUnit?.value
+    );
+    if (optionsUnitToShow.length === 1 && !sellerUnit) {
+      setFieldValue("termsOfExchange.sellerDepositUnit", optionsUnitToShow[0]);
+      setFieldValue("termsOfExchange.sellerDeposit", "");
+    } else if (
+      sellerUnit &&
+      values.termsOfExchange.sellerDepositUnit?.label !== sellerUnit.label
+    ) {
+      setFieldValue("termsOfExchange.sellerDepositUnit", sellerUnit);
+      setFieldValue("termsOfExchange.sellerDeposit", "");
+    }
+  }, [
+    optionsUnitToShow,
+    setFieldValue,
+    values.termsOfExchange.sellerDepositUnit?.label,
+    values.termsOfExchange.sellerDepositUnit?.value
+  ]);
   return (
     <TermsOfExchangeContainer>
       <MainContainer>
@@ -92,20 +191,32 @@ export default function TermsOfExchange() {
           >
             <FieldContainer>
               <div>
-                <Input
-                  placeholder="Buyer cancellation penalty"
-                  name="termsOfExchange.buyerCancellationPenalty"
-                  type="number"
-                  min="0"
-                  max="100"
-                  step="0.001"
-                />
+                {values.termsOfExchange.buyerCancellationPenaltyUnit.value ===
+                optionUnitKeys["%"] ? (
+                  <Input
+                    placeholder="Buyer cancellation penalty"
+                    name="termsOfExchange.buyerCancellationPenalty"
+                    type="number"
+                    min="0"
+                    max="100"
+                    step="0.001"
+                  />
+                ) : (
+                  <Input
+                    placeholder="Buyer cancellation penalty"
+                    name="termsOfExchange.buyerCancellationPenalty"
+                    type="number"
+                    min="0"
+                    max={maxPricePenOrSellerDeposit}
+                    step={step}
+                  />
+                )}
               </div>
               <div>
                 <Select
                   placeholder="Choose unit..."
                   name="termsOfExchange.buyerCancellationPenaltyUnit"
-                  options={OPTIONS_UNIT}
+                  options={optionsUnitToShow}
                 />
               </div>
             </FieldContainer>
@@ -117,20 +228,31 @@ export default function TermsOfExchange() {
           >
             <FieldContainer>
               <div>
-                <Input
-                  placeholder="Seller deposit"
-                  name="termsOfExchange.sellerDeposit"
-                  type="number"
-                  min="0"
-                  max="100"
-                  step="0.001"
-                />
+                {values.termsOfExchange.sellerDepositUnit.value === "%" ? (
+                  <Input
+                    placeholder="Seller deposit"
+                    name="termsOfExchange.sellerDeposit"
+                    type="number"
+                    min="0"
+                    max="100"
+                    step="0.001"
+                  />
+                ) : (
+                  <Input
+                    placeholder="Seller deposit"
+                    name="termsOfExchange.sellerDeposit"
+                    type="number"
+                    min="0"
+                    max={maxPricePenOrSellerDeposit}
+                    step={step}
+                  />
+                )}
               </div>
               <div>
                 <Select
                   placeholder="Choose unit..."
                   name="termsOfExchange.sellerDepositUnit"
-                  options={OPTIONS_UNIT}
+                  options={optionsUnitToShow}
                 />
               </div>
             </FieldContainer>

@@ -175,7 +175,7 @@ export default function Exchange({ offer, exchange, reload }: Props) {
               offerId: offer.id,
               buyerId: exchange?.buyer.id || "",
               sellerId: exchange?.seller.id || "",
-              sellerAddress: exchange?.seller.operator || "",
+              sellerAddress: exchange?.seller.assistant || "",
               reload
             },
             "s"

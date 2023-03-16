@@ -27,7 +27,7 @@ export const defaultMockOffers: Offer[] = [
       active: true,
       admin: "0x57fafe1fb7c682216fce44e50946c5249192b9d5",
       clerk: "0x57fafe1fb7c682216fce44e50946c5249192b9d5",
-      operator: "0x57fafe1fb7c682216fce44e50946c5249192b9d5",
+      assistant: "0x57fafe1fb7c682216fce44e50946c5249192b9d5",
       treasury: "0x57fafe1fb7c682216fce44e50946c5249192b9d5"
     },
     exchangeToken: {

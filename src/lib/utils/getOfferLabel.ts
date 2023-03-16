@@ -48,8 +48,8 @@ export const OFFER_LABEL_TYPES = {
 };
 
 export const isOfferHot = (available: string, initial: string) => {
-  const ASPECT_RATIO = 1 / 2;
-  return Number(available) / Number(initial) < ASPECT_RATIO;
+  const OFFER_HOT_RATIO = 1 / 2;
+  return Number(available) / Number(initial) < OFFER_HOT_RATIO;
 };
 
 export const getOfferLabel = (offer: Offer) => {
