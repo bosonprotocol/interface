@@ -908,7 +908,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                       exchangeId: exchange?.id || "",
                       buyerId: exchange?.buyer.id || "",
                       sellerId: exchange?.seller.id || "",
-                      sellerAddress: exchange?.seller.operator || "",
+                      sellerAddress: exchange?.seller.assistant || "",
                       setIsLoading: setIsLoading,
                       reload
                     },

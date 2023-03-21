@@ -39,8 +39,10 @@ import Preview from "../../components/product/Preview";
 import {
   CREATE_PRODUCT_STEPS,
   CreateProductForm,
+  optionUnitKeys,
   TOKEN_TYPES
 } from "../../components/product/utils";
+import { getFixedOrPercentageVal } from "../../components/product/utils/termsOfExchange";
 import MultiSteps from "../../components/step/MultiSteps";
 import SuccessTransactionToast from "../../components/toasts/SuccessTransactionToast";
 import { CONFIG } from "../../lib/config";
@@ -98,7 +100,7 @@ type GetProductV1MetadataProps = {
   productType: CreateProductForm["productType"];
   visualImages: productV1.ProductBase["visuals_images"];
   shippingInfo: CreateProductForm["shippingInfo"];
-  operatorLens: Profile | null;
+  assistantLens: Profile | null;
   profileImage: FileProps | undefined;
   termsOfExchange: CreateProductForm["termsOfExchange"];
   supportedJurisdictions: Array<SupportedJuridiction>;
@@ -120,7 +122,7 @@ async function getProductV1Metadata({
   productType,
   visualImages,
   shippingInfo,
-  operatorLens,
+  assistantLens,
   profileImage,
   termsOfExchange,
   supportedJurisdictions,
@@ -138,12 +140,12 @@ async function getProductV1Metadata({
   ];
   if (CONFIG.lens.enabled) {
     const ipfsLinks = [];
-    const pictureUrl = operatorLens
-      ? getLensProfilePictureUrl(operatorLens as Profile) || ""
+    const pictureUrl = assistantLens
+      ? getLensProfilePictureUrl(assistantLens as Profile) || ""
       : "";
     ipfsLinks.push(pictureUrl);
-    const coverUrl = operatorLens
-      ? getLensCoverPictureUrl(operatorLens as Profile) || ""
+    const coverUrl = assistantLens
+      ? getLensCoverPictureUrl(assistantLens as Profile) || ""
       : "";
     ipfsLinks.push(coverUrl);
     const [pictureBase64, coverBase64] = await fetchIpfsBase64Media(
@@ -156,15 +158,15 @@ async function getProductV1Metadata({
     ]);
     sellerImages = [
       {
-        url: operatorLens
-          ? getLensProfilePictureUrl(operatorLens as Profile) || ""
+        url: assistantLens
+          ? getLensProfilePictureUrl(assistantLens as Profile) || ""
           : "",
         tag: "profile",
         ...pictureMetadata
       },
       {
-        url: operatorLens
-          ? getLensCoverPictureUrl(operatorLens as Profile) || ""
+        url: assistantLens
+          ? getLensCoverPictureUrl(assistantLens as Profile) || ""
           : "",
         tag: "cover",
         ...coverMetadata
@@ -257,8 +259,8 @@ async function getProductV1Metadata({
 type GetOfferDataFromMetadataProps = {
   coreSDK: CoreSDK;
   priceBN: BigNumber;
-  sellerDeposit: BigNumber;
-  buyerCancellationPenaltyValue: BigNumber;
+  sellerDeposit: BigNumber | string;
+  buyerCancellationPenaltyValue: BigNumber | string;
   quantityAvailable: number;
   voucherRedeemableFromDateInMS: number;
   voucherRedeemableUntilDateInMS: number;
@@ -417,15 +419,15 @@ function CreateProductInner({
 
   const hasSellerAccount = !!sellers?.length;
 
-  const currentOperator = sellers.find((seller) => {
-    return seller?.operator.toLowerCase() === address?.toLowerCase();
+  const currentAssistant = sellers.find((seller) => {
+    return seller?.assistant.toLowerCase() === address?.toLowerCase();
   });
   // lens profile of the current user
-  const operatorLens: Profile | null =
+  const assistantLens: Profile | null =
     lensProfiles.find((lensProfile) => {
       return (
         getLensTokenIdDecimal(lensProfile.id).toString() ===
-        currentOperator?.authTokenId
+        currentAssistant?.authTokenId
       );
     }) || null;
 
@@ -650,10 +652,10 @@ function CreateProductInner({
         display_type: "date"
       });
       if (CONFIG.lens.enabled) {
-        if (operatorLens?.name || operatorLens?.handle) {
+        if (assistantLens?.name || assistantLens?.handle) {
           nftAttributes.push({
             trait_type: "Seller",
-            value: operatorLens?.name || operatorLens?.handle
+            value: assistantLens?.name || assistantLens?.handle
           });
         }
       } else {
@@ -734,7 +736,7 @@ function CreateProductInner({
           productType,
           visualImages,
           shippingInfo,
-          operatorLens,
+          assistantLens,
           profileImage,
           termsOfExchange,
           supportedJurisdictions,
@@ -745,6 +747,7 @@ function CreateProductInner({
           productV1Metadata,
           variantsForMetadataCreation
         );
+
         if (!isOneSetOfImages) {
           // fix main variant image as it should be the variant's thumbnail
           metadatas.forEach((variantMetadata, index) => {
@@ -770,21 +773,28 @@ function CreateProductInner({
             const exchangeToken = CONFIG.defaultTokens.find(
               (n: Token) => n.symbol === variants[index].currency.label
             );
+            const decimals = Number(exchangeToken?.decimals || 18);
             const price = variants[index].price;
             const priceBN = parseUnits(
               price < 0.1 ? fixformattedString(price) : price.toString(),
-              Number(exchangeToken?.decimals || 18)
+              decimals
             );
 
-            // TODO: change when more than percentage unit
-            const buyerCancellationPenaltyValue = priceBN
-              .mul(parseFloat(termsOfExchange.buyerCancellationPenalty) * 1000)
-              .div(100 * 1000);
+            const buyerCancellationPenaltyValue = getFixedOrPercentageVal(
+              priceBN,
+              termsOfExchange.buyerCancellationPenalty,
+              termsOfExchange.buyerCancellationPenaltyUnit
+                .value as keyof typeof optionUnitKeys,
+              decimals
+            );
 
-            // TODO: change when more than percentage unit
-            const sellerDeposit = priceBN
-              .mul(parseFloat(termsOfExchange.sellerDeposit) * 1000)
-              .div(100 * 1000);
+            const sellerDeposit = getFixedOrPercentageVal(
+              priceBN,
+              termsOfExchange.sellerDeposit,
+              termsOfExchange.sellerDepositUnit
+                .value as keyof typeof optionUnitKeys,
+              decimals
+            );
             return getOfferDataFromMetadata(metadata, {
               coreSDK,
               priceBN,
@@ -816,7 +826,7 @@ function CreateProductInner({
           productType,
           visualImages,
           shippingInfo,
-          operatorLens,
+          assistantLens,
           profileImage,
           termsOfExchange,
           supportedJurisdictions,
@@ -824,24 +834,27 @@ function CreateProductInner({
           ipfsMetadataStorage
         });
         const price = coreTermsOfSale.price;
+        const decimals = Number(exchangeToken?.decimals || 18);
         const priceBN = parseUnits(
           price < 0.1 ? fixformattedString(price) : price.toString(),
-          Number(exchangeToken?.decimals || 18)
+          decimals
         );
 
-        // TODO: change when more than percentage unit
-        const buyerCancellationPenaltyValue = priceBN
-          .mul(
-            Math.round(
-              parseFloat(termsOfExchange.buyerCancellationPenalty) * 1000
-            )
-          )
-          .div(100 * 1000);
+        const buyerCancellationPenaltyValue = getFixedOrPercentageVal(
+          priceBN,
+          termsOfExchange.buyerCancellationPenalty,
+          termsOfExchange.buyerCancellationPenaltyUnit
+            .value as keyof typeof optionUnitKeys,
+          decimals
+        );
 
-        // TODO: change when more than percentage unit
-        const sellerDeposit = priceBN
-          .mul(Math.round(parseFloat(termsOfExchange.sellerDeposit) * 1000))
-          .div(100 * 1000);
+        const sellerDeposit = getFixedOrPercentageVal(
+          priceBN,
+          termsOfExchange.sellerDeposit,
+          termsOfExchange.sellerDepositUnit
+            .value as keyof typeof optionUnitKeys,
+          decimals
+        );
 
         const offerData = await getOfferDataFromMetadata(productV1Metadata, {
           coreSDK,
@@ -864,7 +877,7 @@ function CreateProductInner({
       const isMetaTx = Boolean(coreSDK.isMetaTxConfigSet && address);
       const seller = address
         ? {
-            operator: address,
+            assistant: address,
             admin: address,
             treasury: address,
             clerk: address,
@@ -1281,7 +1294,7 @@ function CreateProductInner({
                 {isPreviewVisible ? (
                   <Preview
                     togglePreview={setIsPreviewVisible}
-                    seller={currentOperator as any}
+                    seller={currentAssistant as any}
                     isMultiVariant={isMultiVariant}
                     isOneSetOfImages={isOneSetOfImages}
                     hasMultipleVariants={

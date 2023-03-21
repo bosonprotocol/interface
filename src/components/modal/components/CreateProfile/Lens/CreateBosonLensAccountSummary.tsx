@@ -87,7 +87,7 @@ export default function CreateBosonLensAccountSummary({
     {
       admin: address || "",
       clerk: seller?.clerk || "",
-      operator: seller?.operator || "",
+      assistant: seller?.assistant || "",
       treasury: seller?.treasury || "",
       authTokenId: lensProfileToSubmit?.id,
       authTokenType: authTokenTypes.LENS,
