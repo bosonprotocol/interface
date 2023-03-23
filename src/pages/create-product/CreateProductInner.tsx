@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   CoreSDK,
+  IpfsMetadataStorage,
   MetadataType,
   offers,
   productV1,
@@ -25,6 +26,7 @@ import { BigNumber, ethers } from "ethers";
 import { useEffect } from "react";
 
 import { Token } from "../../components/convertion-rate/ConvertionRateContext";
+import { FileProps } from "../../components/form/Upload/WithUploadToIpfs";
 import { authTokenTypes } from "../../components/modal/components/CreateProfile/Lens/const";
 import {
   getLensCoverPictureUrl,
@@ -37,19 +39,24 @@ import Preview from "../../components/product/Preview";
 import {
   CREATE_PRODUCT_STEPS,
   CreateProductForm,
+  optionUnitKeys,
   TOKEN_TYPES
 } from "../../components/product/utils";
+import { getFixedOrPercentageVal } from "../../components/product/utils/termsOfExchange";
 import MultiSteps from "../../components/step/MultiSteps";
 import SuccessTransactionToast from "../../components/toasts/SuccessTransactionToast";
 import { CONFIG } from "../../lib/config";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { ProductRoutes } from "../../lib/routing/routes";
+import { fetchIpfsBase64Media } from "../../lib/utils/base64";
 import { useChatStatus } from "../../lib/utils/hooks/chat/useChatStatus";
 import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
 import { useAddPendingTransaction } from "../../lib/utils/hooks/transactions/usePendingTransactions";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
+import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { saveItemInStorage } from "../../lib/utils/hooks/useLocalStorage";
+import { getImageMetadata } from "../../lib/utils/images";
 import { getIpfsGatewayUrl } from "../../lib/utils/ipfs";
 import { fixformattedString } from "../../lib/utils/number";
 import { useCoreSDK } from "../../lib/utils/useCoreSdk";
@@ -75,7 +82,7 @@ function onKeyPress(event: React.KeyboardEvent<HTMLFormElement>) {
 type GetProductV1MetadataProps = {
   offerUuid: string;
   productInformation: CreateProductForm["productInformation"];
-  animationUrl: string;
+  productAnimation: FileProps | undefined;
   externalUrl: string;
   licenseUrl: string;
   productMainImageLink: string | undefined;
@@ -94,17 +101,18 @@ type GetProductV1MetadataProps = {
   visualImages: productV1.ProductBase["visuals_images"];
   shippingInfo: CreateProductForm["shippingInfo"];
   operatorLens: Profile | null;
-  profileImageLink: string | undefined;
+  profileImage: FileProps | undefined;
   termsOfExchange: CreateProductForm["termsOfExchange"];
   supportedJurisdictions: Array<SupportedJuridiction>;
   commonTermsOfSale:
     | CreateProductForm["coreTermsOfSale"]
     | CreateProductForm["variantsCoreTermsOfSale"];
+  ipfsMetadataStorage: IpfsMetadataStorage;
 };
-function getProductV1Metadata({
+async function getProductV1Metadata({
   offerUuid,
   productInformation,
-  animationUrl,
+  productAnimation,
   externalUrl,
   licenseUrl,
   productMainImageLink,
@@ -115,17 +123,69 @@ function getProductV1Metadata({
   visualImages,
   shippingInfo,
   operatorLens,
-  profileImageLink,
+  profileImage,
   termsOfExchange,
   supportedJurisdictions,
-  commonTermsOfSale
-}: GetProductV1MetadataProps): productV1.ProductV1Metadata {
+  commonTermsOfSale,
+  ipfsMetadataStorage
+}: GetProductV1MetadataProps): Promise<productV1.ProductV1Metadata> {
+  let sellerImages: productV1.ProductV1Metadata["seller"]["images"] = [
+    {
+      url: profileImage?.src || "",
+      tag: "profile",
+      height: profileImage?.height,
+      width: profileImage?.width,
+      type: profileImage?.type
+    }
+  ];
+  if (CONFIG.lens.enabled) {
+    const ipfsLinks = [];
+    const pictureUrl = operatorLens
+      ? getLensProfilePictureUrl(operatorLens as Profile) || ""
+      : "";
+    ipfsLinks.push(pictureUrl);
+    const coverUrl = operatorLens
+      ? getLensCoverPictureUrl(operatorLens as Profile) || ""
+      : "";
+    ipfsLinks.push(coverUrl);
+    const [pictureBase64, coverBase64] = await fetchIpfsBase64Media(
+      ipfsLinks,
+      ipfsMetadataStorage
+    );
+    const [pictureMetadata, coverMetadata] = await Promise.all([
+      getImageMetadata(pictureBase64),
+      getImageMetadata(coverBase64)
+    ]);
+    sellerImages = [
+      {
+        url: operatorLens
+          ? getLensProfilePictureUrl(operatorLens as Profile) || ""
+          : "",
+        tag: "profile",
+        ...pictureMetadata
+      },
+      {
+        url: operatorLens
+          ? getLensCoverPictureUrl(operatorLens as Profile) || ""
+          : "",
+        tag: "cover",
+        ...coverMetadata
+      }
+    ];
+  }
   return {
     schemaUrl: "https://schema.org/",
     uuid: offerUuid,
     name: productInformation.productTitle,
     description: `${productInformation.description}\n\nTerms for the Boson rNFT Voucher: ${licenseUrl}`,
-    animationUrl: getIpfsGatewayUrl(animationUrl),
+    animationUrl: getIpfsGatewayUrl(productAnimation?.src || ""),
+    animationMetadata: productAnimation
+      ? {
+          height: productAnimation.height,
+          width: productAnimation.width,
+          type: productAnimation.type
+        }
+      : undefined,
     externalUrl,
     licenseUrl,
     image: productMainImageLink ? productMainImageLink : "",
@@ -176,27 +236,7 @@ function getProductV1Metadata({
           tag: "email"
         }
       ],
-      images: CONFIG.lens.enabled
-        ? [
-            {
-              url: operatorLens
-                ? getLensProfilePictureUrl(operatorLens as Profile) || ""
-                : "",
-              tag: "profile"
-            },
-            {
-              url: operatorLens
-                ? getLensCoverPictureUrl(operatorLens as Profile) || ""
-                : "",
-              tag: "cover"
-            }
-          ]
-        : [
-            {
-              url: profileImageLink || "",
-              tag: "profile"
-            }
-          ]
+      images: sellerImages
     },
     exchangePolicy: {
       uuid: Date.now().toString(),
@@ -219,8 +259,8 @@ function getProductV1Metadata({
 type GetOfferDataFromMetadataProps = {
   coreSDK: CoreSDK;
   priceBN: BigNumber;
-  sellerDeposit: BigNumber;
-  buyerCancellationPenaltyValue: BigNumber;
+  sellerDeposit: BigNumber | string;
+  buyerCancellationPenaltyValue: BigNumber | string;
   quantityAvailable: number;
   voucherRedeemableFromDateInMS: number;
   voucherRedeemableUntilDateInMS: number;
@@ -278,18 +318,16 @@ function extractVisualImages(
       map(
         productImages,
         (v) =>
-          v?.[0]?.src && {
+          v?.[0]?.src &&
+          ({
             url: v?.[0]?.src,
-            tag: "product_image"
-          }
-      ).filter(
-        (
-          n
-        ): n is {
-          url: string;
-          tag: string;
-        } => !!n
-      )
+            tag: "product_image",
+            height: v?.[0]?.height,
+            width: v?.[0]?.width,
+            type: v?.[0]?.type,
+            name: v?.[0]?.name
+          } as productV1.ProductBase["visuals_images"][number])
+      ).filter((n): n is productV1.ProductBase["visuals_images"][number] => !!n)
     ).values()
   );
   return visualImages;
@@ -451,7 +489,7 @@ function CreateProductInner({
     );
   };
   const formikRef = useRef<FormikProps<CreateProductForm>>(null);
-
+  const ipfsMetadataStorage = useIpfsStorage();
   const wizardStep = useMemo(() => {
     const wizard = createProductSteps({
       setIsPreviewVisible,
@@ -517,7 +555,7 @@ function CreateProductInner({
       shippingInfo
     } = values;
 
-    const profileImageLink = createYourProfile?.logo?.[0]?.src;
+    const profileImage = createYourProfile?.logo?.[0];
     const productMainImageLink: string | undefined =
       isMultiVariant && !isOneSetOfImages
         ? productVariantsImages?.find((variant) => {
@@ -635,9 +673,7 @@ function CreateProductInner({
       const licenseUrl = `${window.origin}/#/license/${offerUuid}`;
 
       const offersToCreate: offers.CreateOfferArgs[] = [];
-      const animationUrl = values.productAnimation
-        ? values.productAnimation[0]?.src || ""
-        : "";
+      const productAnimation = values.productAnimation?.[0];
       if (isMultiVariant) {
         const { variants = [] } = values.productVariants;
         const variantsForMetadataCreation: Parameters<
@@ -687,10 +723,10 @@ function CreateProductInner({
             });
           }
         }
-        const productV1Metadata = getProductV1Metadata({
+        const productV1Metadata = await getProductV1Metadata({
           offerUuid,
           productInformation,
-          animationUrl,
+          productAnimation,
           externalUrl,
           licenseUrl,
           productMainImageLink,
@@ -701,15 +737,17 @@ function CreateProductInner({
           visualImages,
           shippingInfo,
           operatorLens,
-          profileImageLink,
+          profileImage,
           termsOfExchange,
           supportedJurisdictions,
-          commonTermsOfSale
+          commonTermsOfSale,
+          ipfsMetadataStorage
         });
         const metadatas = productV1.createVariantProductMetadata(
           productV1Metadata,
           variantsForMetadataCreation
         );
+
         if (!isOneSetOfImages) {
           // fix main variant image as it should be the variant's thumbnail
           metadatas.forEach((variantMetadata, index) => {
@@ -735,21 +773,28 @@ function CreateProductInner({
             const exchangeToken = CONFIG.defaultTokens.find(
               (n: Token) => n.symbol === variants[index].currency.label
             );
+            const decimals = Number(exchangeToken?.decimals || 18);
             const price = variants[index].price;
             const priceBN = parseUnits(
               price < 0.1 ? fixformattedString(price) : price.toString(),
-              Number(exchangeToken?.decimals || 18)
+              decimals
             );
 
-            // TODO: change when more than percentage unit
-            const buyerCancellationPenaltyValue = priceBN
-              .mul(parseFloat(termsOfExchange.buyerCancellationPenalty) * 1000)
-              .div(100 * 1000);
+            const buyerCancellationPenaltyValue = getFixedOrPercentageVal(
+              priceBN,
+              termsOfExchange.buyerCancellationPenalty,
+              termsOfExchange.buyerCancellationPenaltyUnit
+                .value as keyof typeof optionUnitKeys,
+              decimals
+            );
 
-            // TODO: change when more than percentage unit
-            const sellerDeposit = priceBN
-              .mul(parseFloat(termsOfExchange.sellerDeposit) * 1000)
-              .div(100 * 1000);
+            const sellerDeposit = getFixedOrPercentageVal(
+              priceBN,
+              termsOfExchange.sellerDeposit,
+              termsOfExchange.sellerDepositUnit
+                .value as keyof typeof optionUnitKeys,
+              decimals
+            );
             return getOfferDataFromMetadata(metadata, {
               coreSDK,
               priceBN,
@@ -768,10 +813,10 @@ function CreateProductInner({
         offersToCreate.push(...(await Promise.all(offerDataPromises)));
       } else {
         const visualImages = extractVisualImages(productImages);
-        const productV1Metadata = getProductV1Metadata({
+        const productV1Metadata = await getProductV1Metadata({
           offerUuid,
           productInformation,
-          animationUrl,
+          productAnimation,
           externalUrl,
           licenseUrl,
           productMainImageLink,
@@ -782,30 +827,34 @@ function CreateProductInner({
           visualImages,
           shippingInfo,
           operatorLens,
-          profileImageLink,
+          profileImage,
           termsOfExchange,
           supportedJurisdictions,
-          commonTermsOfSale
+          commonTermsOfSale,
+          ipfsMetadataStorage
         });
         const price = coreTermsOfSale.price;
+        const decimals = Number(exchangeToken?.decimals || 18);
         const priceBN = parseUnits(
           price < 0.1 ? fixformattedString(price) : price.toString(),
-          Number(exchangeToken?.decimals || 18)
+          decimals
         );
 
-        // TODO: change when more than percentage unit
-        const buyerCancellationPenaltyValue = priceBN
-          .mul(
-            Math.round(
-              parseFloat(termsOfExchange.buyerCancellationPenalty) * 1000
-            )
-          )
-          .div(100 * 1000);
+        const buyerCancellationPenaltyValue = getFixedOrPercentageVal(
+          priceBN,
+          termsOfExchange.buyerCancellationPenalty,
+          termsOfExchange.buyerCancellationPenaltyUnit
+            .value as keyof typeof optionUnitKeys,
+          decimals
+        );
 
-        // TODO: change when more than percentage unit
-        const sellerDeposit = priceBN
-          .mul(Math.round(parseFloat(termsOfExchange.sellerDeposit) * 1000))
-          .div(100 * 1000);
+        const sellerDeposit = getFixedOrPercentageVal(
+          priceBN,
+          termsOfExchange.sellerDeposit,
+          termsOfExchange.sellerDepositUnit
+            .value as keyof typeof optionUnitKeys,
+          decimals
+        );
 
         const offerData = await getOfferDataFromMetadata(productV1Metadata, {
           coreSDK,

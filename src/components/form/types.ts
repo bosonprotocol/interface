@@ -82,7 +82,7 @@ export interface SelectProps extends BaseProps {
   disabled?: boolean;
   isClearable?: boolean;
   isSearchable?: boolean;
-  options: Array<SelectDataProps>;
+  options: Array<SelectDataProps> | Readonly<Array<SelectDataProps>>;
   errorMessage?: string;
   onChange?: (option: SelectDataProps<string>) => void;
   label?: string;

@@ -14,7 +14,9 @@ export default function LensFormFields({ disable, onBlurName, mode }: Props) {
       <FormField
         title="Logo / profile picture"
         subTitle={
-          isEdit ? "Upload a profile image with a max. size of 300Kb" : ""
+          isEdit
+            ? "Please choose an image that is no larger than 300KB to ensure it can be uploaded."
+            : ""
         }
         required
       >
@@ -23,7 +25,9 @@ export default function LensFormFields({ disable, onBlurName, mode }: Props) {
       <FormField
         title="Cover picture"
         subTitle={
-          isEdit ? "Upload a profile image with a max. size of 300Kb" : ""
+          isEdit
+            ? "Please choose an image that is no larger than 300KB to ensure it can be uploaded."
+            : ""
         }
         required
       >
