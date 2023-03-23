@@ -679,7 +679,6 @@ function CreateProductInner({
         const variantsForMetadataCreation: Parameters<
           typeof productV1["createVariantProductMetadata"]
         >[1] = [];
-        const variations: productV1.ProductV1Variant = [];
         const visualImages: productV1.ProductBase["visuals_images"] = [];
         const allVariationsWithSameImages =
           values.imagesSpecificOrAll?.value === "all";
@@ -702,7 +701,6 @@ function CreateProductInner({
               option: color || "-"
             }
           ];
-          variations.push(...typeOptions);
 
           if (!allVariationsWithSameImages && productImages) {
             const variantVisualImages = extractVisualImages(productImages);
