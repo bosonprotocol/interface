@@ -205,7 +205,7 @@ export default function CancelExchangeModal({
                 (error as unknown as { code: string }).code ===
                   "ACTION_REJECTED";
               if (hasUserRejectedTx) {
-                showModal("CONFIRMATION_FAILED");
+                showModal("TRANSACTION_FAILED");
               } else {
                 showModal(modalTypes.DETAIL_WIDGET, {
                   title: "An error occurred",

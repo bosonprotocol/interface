@@ -24,8 +24,8 @@ import RetractDisputeModal from "./components/RetractDisputeModal";
 import RevokeProduct from "./components/RevokeProduct";
 import FinanceDeposit from "./components/SellerFinance/FinanceDeposit";
 import FinanceWithdraw from "./components/SellerFinance/FinanceWithdraw";
-import ConfirmationFailedModal from "./components/Transactions/ConfirmationFailedModal/ConfirmationFailedModal";
 import RecentTransactionsModal from "./components/Transactions/RecentTransactionsModal/RecentTransactionsModal";
+import TransactionFailedModal from "./components/Transactions/TransactionFailedModal/TransactionFailedModal";
 import TransactionSubmittedModal from "./components/Transactions/TransactionSubmittedModal/TransactionSubmittedModal";
 import WaitingForConfirmationModal from "./components/Transactions/WaitingForConfirmationModal/WaitingForConfirmationModal";
 import Upload from "./components/Upload";
@@ -35,7 +35,7 @@ import WhatIsRedeem from "./components/WhatIsRedeem";
 export const MODAL_TYPES = {
   CANCEL_EXCHANGE: "CANCEL_EXCHANGE",
   COMPLETE_EXCHANGE: "COMPLETE_EXCHANGE",
-  CONFIRMATION_FAILED: "CONFIRMATION_FAILED",
+  TRANSACTION_FAILED: "TRANSACTION_FAILED",
   CREATE_PRODUCT_DRAFT: "CREATE_PRODUCT_DRAFT",
   CREATE_PROFILE: "CREATE_PROFILE",
   CUSTOM_STORE: "CUSTOM_STORE",
@@ -70,7 +70,7 @@ export const MODAL_TYPES = {
 export const MODAL_COMPONENTS = {
   [MODAL_TYPES.CANCEL_EXCHANGE]: CancelExchangeModal,
   [MODAL_TYPES.COMPLETE_EXCHANGE]: CompleteExchange,
-  [MODAL_TYPES.CONFIRMATION_FAILED]: ConfirmationFailedModal,
+  [MODAL_TYPES.TRANSACTION_FAILED]: TransactionFailedModal,
   [MODAL_TYPES.CREATE_PRODUCT_DRAFT]: CreateProductDraft,
   [MODAL_TYPES.CREATE_PROFILE]: CreateProfileModal,
   [MODAL_TYPES.CUSTOM_STORE]: CustomStore,
