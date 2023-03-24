@@ -62,9 +62,14 @@ function DisputeList() {
   const { showModal, modalTypes } = useModal();
   const { isLteS } = useBreakpoints();
   const { address } = useAccount();
-  const { data: buyers = [] } = useBuyers({
-    wallet: address
-  });
+  const { data: buyers = [] } = useBuyers(
+    {
+      wallet: address
+    },
+    {
+      enabled: !!address
+    }
+  );
   const myBuyerId = buyers[0]?.id;
   const { data: exchanges = [] } = useExchanges(
     {
@@ -75,7 +80,6 @@ function DisputeList() {
       enabled: !!myBuyerId
     }
   );
-
   return (
     <>
       <DisputeListHeader isLteS={isLteS}>

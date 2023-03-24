@@ -63,8 +63,8 @@ export const useSellerCurationListFn = () => {
 export function useSellers(
   props: Props = {},
   options: {
-    enabled?: boolean;
-  } = {}
+    enabled: boolean;
+  }
 ) {
   const enableCurationList =
     props.enableCurationList === undefined ? true : props.enableCurationList;
