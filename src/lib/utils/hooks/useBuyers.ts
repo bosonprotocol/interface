@@ -10,8 +10,8 @@ interface Props {
 export function useBuyers(
   props: Props,
   options: {
-    enabled?: boolean;
-  } = {}
+    enabled: boolean;
+  }
 ) {
   return useQuery(
     ["buyers", props],
