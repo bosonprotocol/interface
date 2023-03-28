@@ -26,6 +26,7 @@ import { zIndex } from "../../../lib/styles/zIndex";
 import { Offer } from "../../../lib/types/offer";
 import { calcPercentage } from "../../../lib/utils/calcPrice";
 import {
+  getHasExchangeDisputeResolutionElapsed,
   isExchangeCompletableByBuyer,
   isExchangeCompletableBySeller
 } from "../../../lib/utils/exchange";
@@ -358,6 +359,8 @@ export default function ExchangeSidePreview({
     new Date().getTime(),
     "day"
   );
+  const hasDisputePeriodElapsed: boolean =
+    getHasExchangeDisputeResolutionElapsed(exchange, offer);
   const animationUrl = exchange?.offer.metadata.animationUrl || "";
   return (
     <Container $disputeOpen={disputeOpen}>
@@ -461,6 +464,7 @@ export default function ExchangeSidePreview({
         <CTASection>
           <BosonButton
             variant="primaryFill"
+            disabled={hasDisputePeriodElapsed}
             onClick={() =>
               showModal(
                 "RAISE_DISPUTE",
