@@ -355,9 +355,9 @@ export default function ExchangeSidePreview({
     raisedDisputeAt,
     "day"
   );
-  const daysLeftToResolveDispute = dayjs(lastDayToResolveDispute).diff(
-    new Date().getTime(),
-    "day"
+  const daysLeftToResolveDispute = Math.max(
+    0,
+    dayjs(lastDayToResolveDispute).diff(new Date().getTime(), "day")
   );
   const hasDisputePeriodElapsed: boolean =
     getHasExchangeDisputeResolutionElapsed(exchange, offer);
