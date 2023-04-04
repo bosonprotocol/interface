@@ -1,5 +1,3 @@
-import "../../assets/fonts/neuropolitical_rg.ttf";
-
 import { createGlobalStyle } from "styled-components";
 
 import barlowRegular from "../../assets/fonts/Barlow-Regular.ttf";
