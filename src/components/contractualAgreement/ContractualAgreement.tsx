@@ -15,16 +15,24 @@ interface Props {
   offerData: subgraph.OfferFieldsFragment | undefined;
 }
 
+const getTemplate = (
+  offer: subgraph.OfferFieldsFragment | undefined
+): string | undefined => {
+  return (offer?.metadata as subgraph.ProductV1MetadataEntity)?.exchangePolicy
+    ?.template;
+};
+
 export default function ContractualAgreement({ offerId, offerData }: Props) {
   const { data: offerFetched, isFetching } = useOffer(
     {
       offerId: offerId || ""
     },
-    { enabled: !!offerId }
+    {
+      enabled: !!offerId && !getTemplate(offerData)
+    }
   );
   const offer = offerFetched || offerData;
-  const template = (offer?.metadata as subgraph.ProductV1MetadataEntity)
-    ?.exchangePolicy.template;
+  const template = getTemplate(offer);
   const templateUrl =
     !template || template === "fairExchangePolicy"
       ? (CONFIG.buyerSellerAgreementTemplate as string)
