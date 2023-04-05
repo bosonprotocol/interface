@@ -1,10 +1,15 @@
+import { ReactNode } from "react";
+
 import { websitePattern } from "../../../../../lib/validation/regex/url";
 import { FormField, Input, Textarea, Upload } from "../../../../form";
 import { useCreateForm } from "../../../../product/utils/useCreateForm";
 import BosonButton from "../../../../ui/BosonButton";
 import Grid from "../../../../ui/Grid";
 
-export default function CreateYourProfileForm() {
+type Props = {
+  children: ReactNode;
+};
+export default function CreateYourProfileForm({ children }: Props) {
   const { nextIsDisabled } = useCreateForm();
   return (
     <>
@@ -42,6 +47,7 @@ export default function CreateYourProfileForm() {
           pattern={websitePattern}
         />
       </FormField>
+      {children}
       <Grid margin="2rem 0 0 0">
         <BosonButton
           variant="primaryFill"

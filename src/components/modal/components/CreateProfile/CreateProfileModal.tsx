@@ -1,6 +1,6 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useAccount } from "wagmi";
 
 import { BosonRoutes } from "../../../../lib/routing/routes";
@@ -12,6 +12,7 @@ import BosonButton from "../../../ui/BosonButton";
 import Grid from "../../../ui/Grid";
 import Typography from "../../../ui/Typography";
 import { useModal } from "../../useModal";
+import { ChooseProfileType } from "./ChooseProfileType";
 import LensProfile from "./Lens/LensProfile";
 import { getLensProfileInfo } from "./Lens/utils";
 import { LensProfileType } from "./Lens/validationSchema";
@@ -20,7 +21,7 @@ import CreateYourProfile from "./Regular/CreateYourProfile";
 interface Props {
   initialRegularCreateProfile: CreateYourProfileType;
   onRegularProfileCreated: (createValues: CreateYourProfileType) => void;
-  useLens: boolean;
+  // useLens: boolean;
   seller?: subgraph.SellerFieldsFragment;
   lensProfile?: Profile;
 }
@@ -28,12 +29,15 @@ interface Props {
 export default function CreateProfileModal({
   initialRegularCreateProfile,
   onRegularProfileCreated,
-  useLens,
+  // useLens,
   seller,
   lensProfile: selectedProfile
 }: Props) {
   const navigate = useKeepQueryParamsNavigate();
   const { hideModal } = useModal();
+  const [profileType, setProfileType] = useState<
+    undefined | "lens" | "regular"
+  >(undefined);
   const { address = "" } = useAccount();
   const checkIfSellerIsInCurationList = useSellerCurationListFn();
 
@@ -50,7 +54,7 @@ export default function CreateProfileModal({
   );
 
   const Component = useCallback(() => {
-    return useLens ? (
+    return profileType === "lens" ? (
       <LensProfile
         onSubmit={(id, lensProfile, overrides?: LensProfileType) => {
           hideModal(lensProfile);
@@ -69,6 +73,7 @@ export default function CreateProfileModal({
         }}
         seller={seller || null}
         lensProfile={selectedProfile}
+        changeToRegularProfile={() => setProfileType("regular")}
       />
     ) : (
       <CreateYourProfile
@@ -77,10 +82,11 @@ export default function CreateProfileModal({
           onRegularProfileCreated(regularProfile);
           hideModal();
         }}
+        changeToLensProfile={() => setProfileType("lens")}
       />
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialRegularCreateProfile, onRegularProfileCreated]);
+  }, [initialRegularCreateProfile, onRegularProfileCreated, profileType]);
 
   if (!address) {
     return (
@@ -100,6 +106,9 @@ export default function CreateProfileModal({
         </Grid>
       </>
     );
+  }
+  if (profileType === undefined) {
+    return <ChooseProfileType setProfileType={setProfileType} />;
   }
 
   return <Component />;

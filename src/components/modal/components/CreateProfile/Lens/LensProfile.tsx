@@ -20,6 +20,7 @@ interface Props {
   ) => void;
   seller: subgraph.SellerFieldsFragment | null;
   lensProfile?: Profile;
+  changeToRegularProfile: () => void;
 }
 
 const steps = {
@@ -34,7 +35,8 @@ type Step = typeof steps[keyof typeof steps];
 export default function LensProfile({
   onSubmit,
   seller,
-  lensProfile: selectedProfile
+  lensProfile: selectedProfile,
+  changeToRegularProfile
 }: Props) {
   const [step, setStep] = useState<Step>(steps.CREATE_OR_CHOOSE);
   const [isEditViewOnly, setIsEditView] = useState<boolean>(false);

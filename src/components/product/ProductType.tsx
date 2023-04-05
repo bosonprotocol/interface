@@ -281,7 +281,7 @@ export default function ProductType({
                 }
               : { title: "Create Profile" }),
             initialRegularCreateProfile: values,
-            useLens: CONFIG.lens.enabled && !isRegularSeller,
+            // useLens: CONFIG.lens.enabled && !isRegularSeller,
             seller: currentSellers?.length ? currentSellers[0] : undefined,
             lensProfile: lens?.length ? lens[0] : undefined,
             onRegularProfileCreated,
