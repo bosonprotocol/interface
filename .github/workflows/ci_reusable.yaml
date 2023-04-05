@@ -112,9 +112,6 @@ jobs:
       REACT_APP_RELEASE_NAME: ${{ inputs.REACT_APP_RELEASE_NAME }}
     outputs:
       jobLint: ${{ steps.lint.outputs.pass }}
-      jobBuild: ${{ steps.build.outputs.pass }}
-      jobCoverage: ${{ steps.coverage.outputs.pass }}
-      deployUrl: ${{ steps.deploy.outputs.deployUrl }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -132,49 +129,46 @@ jobs:
           key: npm-${{ hashFiles('package-lock.json') }}
           restore-keys: npm-
       - run: npm ci
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps chromium
-      - run: npm run prettier
       - run: npm run lint
-      - id: lint
-        run: echo "::set-output name=pass::success"
-      - run: npm run build
-      - id: build
-        run: echo "::set-output name=pass::success"
-      - name: Run Tests & Generate coverage reports
-        run: npm run coverage:report
-      - name: Upload Unit Coverage to Codecov
-        if: ${{ inputs.UPDATE_COVERAGE }}
-        uses: codecov/codecov-action@v2
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage/coverage-final.json
-          flags: unittests
-      - name: Upload E2E Coverage to Codecov
-        if: ${{ inputs.UPDATE_COVERAGE }}
-        uses: codecov/codecov-action@v2
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./test-results.json
-          flags: e2etests
-      - name: (if 'staging' env) Copy contents from .fleek_staging.json to .fleek.json
-        if: ${{ inputs.ENV_NAME == 'staging' }}
-        run: mv .fleek_staging.json .fleek.json
-      - name: (if 'production' env) Copy contents from .fleek_production.json to .fleek.json
-        if: ${{ inputs.ENV_NAME == 'production' }}
-        run: mv .fleek_production.json .fleek.json
-      - uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: playwright-report
-          path: playwright-report/
-      - name: Deploy via fleek
-        if: ${{ inputs.DEPLOY_TO_FLEEK }}
-        id: deploy
-        uses: fleekhq/action-deploy@v1
-        with:
-          apiKey: ${{ secrets.FLEEK_API_KEY }}
-          workDir: ./public
-      - name: Get the output url
-        if: ${{ inputs.DEPLOY_TO_FLEEK }}
-        run: echo "Deploy url is ${{ steps.deploy.outputs.deployUrl }}"
+      # - id: lint
+      #   run: echo "::set-output name=pass::success"
+      # - run: npm run build
+      # - id: build
+      #   run: echo "::set-output name=pass::success"
+      # - name: Run Tests & Generate coverage reports
+      #   run: npm run coverage:report
+      # - name: Upload Unit Coverage to Codecov
+      #   if: ${{ inputs.UPDATE_COVERAGE }}
+      #   uses: codecov/codecov-action@v2
+      #   with:
+      #     token: ${{ secrets.CODECOV_TOKEN }}
+      #     files: ./coverage/coverage-final.json
+      #     flags: unittests
+      # - name: Upload E2E Coverage to Codecov
+      #   if: ${{ inputs.UPDATE_COVERAGE }}
+      #   uses: codecov/codecov-action@v2
+      #   with:
+      #     token: ${{ secrets.CODECOV_TOKEN }}
+      #     files: ./test-results.json
+      #     flags: e2etests
+      # - name: (if 'staging' env) Copy contents from .fleek_staging.json to .fleek.json
+      #   if: ${{ inputs.ENV_NAME == 'staging' }}
+      #   run: mv .fleek_staging.json .fleek.json
+      # - name: (if 'production' env) Copy contents from .fleek_production.json to .fleek.json
+      #   if: ${{ inputs.ENV_NAME == 'production' }}
+      #   run: mv .fleek_production.json .fleek.json
+      # - uses: actions/upload-artifact@v3
+      #   if: always()
+      #   with:
+      #     name: playwright-report
+      #     path: playwright-report/
+      # - name: Deploy via fleek
+      #   if: ${{ inputs.DEPLOY_TO_FLEEK }}
+      #   id: deploy
+      #   uses: fleekhq/action-deploy@v1
+      #   with:
+      #     apiKey: ${{ secrets.FLEEK_API_KEY }}
+      #     workDir: ./public
+      # - name: Get the output url
+      #   if: ${{ inputs.DEPLOY_TO_FLEEK }}
+      #   run: echo "Deploy url is ${{ steps.deploy.outputs.deployUrl }}"

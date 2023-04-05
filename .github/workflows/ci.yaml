@@ -36,7 +36,7 @@ jobs:
         id: name
 
   call-reusable-workflow-PR:
-    uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
+    uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@fix-github-action
     if: github.event_name == 'pull_request'
     needs: prejob
     with:
@@ -60,7 +60,7 @@ jobs:
       REACT_APP_META_TX_API_IDS: ${{ secrets.REACT_APP_META_TX_API_IDS_TESTING }}
 
   call-reusable-workflow-testing:
-    uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
+    uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@fix-github-action
     if: github.event_name == 'push'
     needs: prejob
     with:
@@ -90,7 +90,7 @@ jobs:
       REACT_APP_META_TX_API_IDS: ${{ secrets.REACT_APP_META_TX_API_IDS_TESTING }}
 
   call-reusable-workflow-staging:
-    uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
+    uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@fix-github-action
     if: github.event_name == 'release' && github.event.action == 'created'
     needs: prejob
     with:
@@ -121,7 +121,7 @@ jobs:
       REACT_APP_ELIGIBLE_SELLER_WALLET_ADDRESSES: ${{ secrets.REACT_APP_ELIGIBLE_SELLER_WALLET_ADDRESSES }}
 
   call-reusable-workflow-production:
-    uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@main
+    uses: bosonprotocol/interface/.github/workflows/ci_reusable.yaml@fix-github-action
     if: github.event_name == 'workflow_dispatch'
     needs: prejob
     with:
