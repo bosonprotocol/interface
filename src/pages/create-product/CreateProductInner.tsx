@@ -39,6 +39,7 @@ import Preview from "../../components/product/Preview";
 import {
   CREATE_PRODUCT_STEPS,
   CreateProductForm,
+  OPTIONS_EXCHANGE_POLICY,
   optionUnitKeys,
   TOKEN_TYPES
 } from "../../components/product/utils";
@@ -241,8 +242,11 @@ async function getProductV1Metadata({
     exchangePolicy: {
       uuid: Date.now().toString(),
       version: 1,
-      label: termsOfExchange.exchangePolicy.value,
-      template: termsOfExchange.exchangePolicy.value,
+      label: termsOfExchange.exchangePolicy.label,
+      template:
+        termsOfExchange.exchangePolicy.value === "fairExchangePolicy" // if there is data in localstorage, the exchangePolicy.value might be the old 'fairExchangePolicy'
+          ? OPTIONS_EXCHANGE_POLICY[0].value
+          : termsOfExchange.exchangePolicy.value,
       sellerContactMethod: CONFIG.defaultSellerContactMethod,
       disputeResolverContactMethod: `email to: ${CONFIG.defaultDisputeResolverContactMethod}`
     },

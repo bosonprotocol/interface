@@ -22,13 +22,11 @@ export default function ExchangePolicyDetails({ offerId, offerData }: Props) {
     escalationPeriod: CONFIG.defaultDisputeResolutionPeriodDays,
     contractualAgreement: {
       title: "Commerce Agreement",
-      version: "v1",
-      templateUri: CONFIG.buyerSellerAgreementTemplate
+      version: "v1"
     },
     rNFTLicense: {
       title: "License Agreement",
-      version: "v1",
-      templateUri: CONFIG.rNFTLicenseTemplate
+      version: "v1"
     }
   };
   const [contractualAgreementVisible, setContractualAgreementVisible] =
