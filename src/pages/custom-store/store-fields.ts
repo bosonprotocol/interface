@@ -190,6 +190,10 @@ export const formModel = {
         {
           label: "Barlow",
           value: "barlow" // defined in src/lib/styles/GlobalStyle.tsx
+        },
+        {
+          label: "Neuropolitical",
+          value: "neuropolitical_rg" // defined in src/lib/styles/GlobalStyle.tsx
         }
       ]
     },
