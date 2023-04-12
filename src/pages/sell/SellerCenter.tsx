@@ -23,7 +23,7 @@ import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { isInEligibleWalletList } from "../../lib/utils/isInEligibleWalletList";
 
-export const Wrapper = styled.div`
+const Wrapper = styled.div`
   text-align: center;
 `;
 const GridWrapper = styled.div`

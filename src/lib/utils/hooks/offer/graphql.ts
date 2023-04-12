@@ -2,7 +2,7 @@ import { gql } from "graphql-request";
 
 import { CONFIG } from "../../../config";
 
-export const offerGraphQl = gql`
+const offerGraphQl = gql`
   {
     id
     createdAt

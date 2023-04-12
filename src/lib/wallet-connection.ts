@@ -72,11 +72,12 @@ function getChainForEnvironment(): Array<Chain> {
   return [chain];
 }
 
-export const { provider, chains } = configureChains(getChainForEnvironment(), [
+const { provider, chains } = configureChains(getChainForEnvironment(), [
   jsonRpcProvider({
     rpc: (chain: Chain) => ({ http: chain.rpcUrls.default })
   })
 ]);
+export { chains };
 
 const connectors = connectorsForWallets([
   {
