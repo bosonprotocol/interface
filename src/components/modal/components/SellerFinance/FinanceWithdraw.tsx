@@ -189,12 +189,13 @@ export default function FinanceWithdraw({
           }}
           onError={(error) => {
             console.error("onError", error);
-            Sentry.captureException(error);
             const hasUserRejectedTx =
               "code" in error &&
               (error as unknown as { code: string }).code === "ACTION_REJECTED";
             if (hasUserRejectedTx) {
               showModal("CONFIRMATION_FAILED");
+            } else {
+              Sentry.captureException(error);
             }
             setWithdrawError(error);
             reload();

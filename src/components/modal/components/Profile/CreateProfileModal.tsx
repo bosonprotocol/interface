@@ -4,24 +4,29 @@ import { useCallback, useState } from "react";
 import { useAccount } from "wagmi";
 
 import { BosonRoutes } from "../../../../lib/routing/routes";
+import { getFixedBase64FromUrl } from "../../../../lib/utils/base64";
 import { Profile } from "../../../../lib/utils/hooks/lens/graphql/generated";
+import { useIpfsStorage } from "../../../../lib/utils/hooks/useIpfsStorage";
 import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useSellerCurationListFn } from "../../../../lib/utils/hooks/useSellers";
-import { CreateYourProfile as CreateYourProfileType } from "../../../product/utils";
+import { CreateProfile } from "../../../product/utils";
 import BosonButton from "../../../ui/BosonButton";
 import Grid from "../../../ui/Grid";
 import Typography from "../../../ui/Typography";
 import { useModal } from "../../useModal";
 import { ChooseProfileType } from "./ChooseProfileType";
-import LensProfile from "./Lens/LensProfile";
-import { getLensProfileInfo } from "./Lens/utils";
+import LensProfileFlow from "./Lens/LensProfileFlow";
+import {
+  getLensCoverPictureUrl,
+  getLensProfileInfo,
+  getLensProfilePictureUrl
+} from "./Lens/utils";
 import { LensProfileType } from "./Lens/validationSchema";
-import CreateYourProfile from "./Regular/CreateYourProfile";
+import { CreateRegularProfileFlow } from "./Regular/CreateRegularProfileFlow";
 
 interface Props {
-  initialRegularCreateProfile: CreateYourProfileType;
-  onRegularProfileCreated: (createValues: CreateYourProfileType) => void;
-  // useLens: boolean;
+  initialRegularCreateProfile: CreateProfile;
+  onRegularProfileCreated?: (createValues: CreateProfile) => void;
   seller?: subgraph.SellerFieldsFragment;
   lensProfile?: Profile;
 }
@@ -29,11 +34,11 @@ interface Props {
 export default function CreateProfileModal({
   initialRegularCreateProfile,
   onRegularProfileCreated,
-  // useLens,
   seller,
   lensProfile: selectedProfile
 }: Props) {
   const navigate = useKeepQueryParamsNavigate();
+  const ipfsMetadataStorage = useIpfsStorage();
   const { hideModal } = useModal();
   const [profileType, setProfileType] = useState<
     undefined | "lens" | "regular"
@@ -55,31 +60,52 @@ export default function CreateProfileModal({
 
   const Component = useCallback(() => {
     return profileType === "lens" ? (
-      <LensProfile
-        onSubmit={(id, lensProfile, overrides?: LensProfileType) => {
+      <LensProfileFlow
+        onSubmit={async (id, lensProfile, overrides?: LensProfileType) => {
           hideModal(lensProfile);
           if (lensProfile) {
-            onRegularProfileCreated({
-              createYourProfile: {
-                ...getLensProfileInfo(lensProfile),
-                ...overrides,
-                logo: undefined
-              }
-            });
+            const coverPictureUrl = getLensCoverPictureUrl(lensProfile);
+            const coverPictureBase64 = await getFixedBase64FromUrl(
+              coverPictureUrl,
+              ipfsMetadataStorage
+            );
+            if (!coverPictureBase64) {
+              return;
+            }
+            const profilePictureUrl = getLensProfilePictureUrl(lensProfile);
+            const profilePictureBase64 = await getFixedBase64FromUrl(
+              profilePictureUrl,
+              ipfsMetadataStorage
+            );
+            if (!profilePictureBase64) {
+              return;
+            }
+            const createProfile: CreateProfile = {
+              ...getLensProfileInfo(lensProfile),
+              logo: [{ src: profilePictureBase64 }],
+              coverPicture: [
+                {
+                  src: coverPictureBase64
+                }
+              ],
+              ...overrides
+            };
+            onRegularProfileCreated?.(createProfile);
           }
           if (id !== "") {
             shouldRedirectToCustomBetaPage(id);
           }
         }}
+        isEdit={false}
         seller={seller || null}
         lensProfile={selectedProfile}
         changeToRegularProfile={() => setProfileType("regular")}
       />
     ) : (
-      <CreateYourProfile
-        initial={initialRegularCreateProfile}
+      <CreateRegularProfileFlow
+        initialData={initialRegularCreateProfile}
         onSubmit={(regularProfile) => {
-          onRegularProfileCreated(regularProfile);
+          onRegularProfileCreated?.(regularProfile);
           hideModal();
         }}
         changeToLensProfile={() => setProfileType("lens")}

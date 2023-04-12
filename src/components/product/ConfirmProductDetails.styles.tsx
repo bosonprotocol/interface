@@ -74,9 +74,6 @@ export const CollapseContent = styled.div`
 
 export const GridBox = styled.div<{ $minWidth?: string }>`
   min-width: ${({ $minWidth }) => ($minWidth ? $minWidth : "auto")};
-  &:not(:last-child) {
-    padding-right: 3.25rem;
-  }
 `;
 
 export const ProductTypeBox = styled(GridBox)`

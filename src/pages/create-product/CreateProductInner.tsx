@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   CoreSDK,
-  IpfsMetadataStorage,
   MetadataType,
   offers,
   productV1,
@@ -27,12 +26,8 @@ import { useEffect } from "react";
 
 import { Token } from "../../components/convertion-rate/ConvertionRateContext";
 import { FileProps } from "../../components/form/Upload/WithUploadToIpfs";
-import { authTokenTypes } from "../../components/modal/components/CreateProfile/Lens/const";
-import {
-  getLensCoverPictureUrl,
-  getLensProfilePictureUrl,
-  getLensTokenIdDecimal
-} from "../../components/modal/components/CreateProfile/Lens/utils";
+import { authTokenTypes } from "../../components/modal/components/Profile/Lens/const";
+import { getLensTokenIdDecimal } from "../../components/modal/components/Profile/Lens/utils";
 import { useModal } from "../../components/modal/useModal";
 import Help from "../../components/product/Help";
 import Preview from "../../components/product/Preview";
@@ -48,7 +43,6 @@ import SuccessTransactionToast from "../../components/toasts/SuccessTransactionT
 import { CONFIG } from "../../lib/config";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { ProductRoutes } from "../../lib/routing/routes";
-import { fetchIpfsBase64Media } from "../../lib/utils/base64";
 import { useChatStatus } from "../../lib/utils/hooks/chat/useChatStatus";
 import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
 import { useAddPendingTransaction } from "../../lib/utils/hooks/transactions/usePendingTransactions";
@@ -56,7 +50,6 @@ import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { saveItemInStorage } from "../../lib/utils/hooks/useLocalStorage";
-import { getImageMetadata } from "../../lib/utils/images";
 import { getIpfsGatewayUrl } from "../../lib/utils/ipfs";
 import { fixformattedString } from "../../lib/utils/number";
 import { useCoreSDK } from "../../lib/utils/useCoreSdk";
@@ -100,14 +93,11 @@ type GetProductV1MetadataProps = {
   productType: CreateProductForm["productType"];
   visualImages: productV1.ProductBase["visuals_images"];
   shippingInfo: CreateProductForm["shippingInfo"];
-  assistantLens: Profile | null;
-  profileImage: FileProps | undefined;
   termsOfExchange: CreateProductForm["termsOfExchange"];
   supportedJurisdictions: Array<SupportedJuridiction>;
   commonTermsOfSale:
     | CreateProductForm["coreTermsOfSale"]
     | CreateProductForm["variantsCoreTermsOfSale"];
-  ipfsMetadataStorage: IpfsMetadataStorage;
 };
 async function getProductV1Metadata({
   offerUuid,
@@ -122,57 +112,30 @@ async function getProductV1Metadata({
   productType,
   visualImages,
   shippingInfo,
-  assistantLens,
-  profileImage,
   termsOfExchange,
   supportedJurisdictions,
-  commonTermsOfSale,
-  ipfsMetadataStorage
+  commonTermsOfSale
 }: GetProductV1MetadataProps): Promise<productV1.ProductV1Metadata> {
-  let sellerImages: productV1.ProductV1Metadata["seller"]["images"] = [
+  const profileImage = createYourProfile?.logo?.[0];
+  const coverImage = createYourProfile?.coverPicture?.[0];
+
+  const sellerImages: productV1.ProductV1Metadata["seller"]["images"] = [
     {
       url: profileImage?.src || "",
       tag: "profile",
       height: profileImage?.height,
       width: profileImage?.width,
       type: profileImage?.type
+    },
+    {
+      url: coverImage?.src || "",
+      tag: "cover",
+      height: coverImage?.height,
+      width: coverImage?.width,
+      type: coverImage?.type
     }
   ];
-  if (CONFIG.lens.enabled) {
-    const ipfsLinks = [];
-    const pictureUrl = assistantLens
-      ? getLensProfilePictureUrl(assistantLens as Profile) || ""
-      : "";
-    ipfsLinks.push(pictureUrl);
-    const coverUrl = assistantLens
-      ? getLensCoverPictureUrl(assistantLens as Profile) || ""
-      : "";
-    ipfsLinks.push(coverUrl);
-    const [pictureBase64, coverBase64] = await fetchIpfsBase64Media(
-      ipfsLinks,
-      ipfsMetadataStorage
-    );
-    const [pictureMetadata, coverMetadata] = await Promise.all([
-      getImageMetadata(pictureBase64),
-      getImageMetadata(coverBase64)
-    ]);
-    sellerImages = [
-      {
-        url: assistantLens
-          ? getLensProfilePictureUrl(assistantLens as Profile) || ""
-          : "",
-        tag: "profile",
-        ...pictureMetadata
-      },
-      {
-        url: assistantLens
-          ? getLensCoverPictureUrl(assistantLens as Profile) || ""
-          : "",
-        tag: "cover",
-        ...coverMetadata
-      }
-    ];
-  }
+
   return {
     schemaUrl: "https://schema.org/",
     uuid: offerUuid,
@@ -736,12 +699,9 @@ function CreateProductInner({
           productType,
           visualImages,
           shippingInfo,
-          assistantLens,
-          profileImage,
           termsOfExchange,
           supportedJurisdictions,
-          commonTermsOfSale,
-          ipfsMetadataStorage
+          commonTermsOfSale
         });
         const metadatas = productV1.createVariantProductMetadata(
           productV1Metadata,
@@ -826,12 +786,9 @@ function CreateProductInner({
           productType,
           visualImages,
           shippingInfo,
-          assistantLens,
-          profileImage,
           termsOfExchange,
           supportedJurisdictions,
-          commonTermsOfSale,
-          ipfsMetadataStorage
+          commonTermsOfSale
         });
         const price = coreTermsOfSale.price;
         const decimals = Number(exchangeToken?.decimals || 18);

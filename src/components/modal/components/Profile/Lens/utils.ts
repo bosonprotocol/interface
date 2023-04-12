@@ -5,22 +5,34 @@ import {
 } from "../../../../../lib/utils/hooks/lens/graphql/generated";
 import { LensProfileType } from "./validationSchema";
 
-export const getLensEmail = (profile: Profile): string | undefined => {
-  return profile.attributes?.find((attribute) => attribute.key === "email")
-    ?.value;
+export const getLensEmail = (profile: Profile): string => {
+  return (
+    profile.attributes?.find((attribute) => attribute.key === "email")?.value ??
+    ""
+  );
 };
 
-export const getLensWebsite = (profile: Profile): string | undefined => {
-  return profile.attributes?.find((attribute) => attribute.key === "website")
-    ?.value;
+export const getLensWebsite = (profile: Profile): string => {
+  return (
+    profile.attributes?.find((attribute) => attribute.key === "website")
+      ?.value ?? ""
+  );
 };
 
-export const getLensLegalTradingName = (
-  profile: Profile
-): string | undefined => {
-  return profile.attributes?.find(
-    (attribute) => attribute.key === "legalTradingName"
-  )?.value;
+export const getLensName = (profile: Profile): string => {
+  return profile.name ?? "";
+};
+
+export const getLensDescription = (profile: Profile): string => {
+  return profile.bio ?? "";
+};
+
+export const getLensLegalTradingName = (profile: Profile): string => {
+  return (
+    profile.attributes?.find(
+      (attribute) => attribute.key === "legalTradingName"
+    )?.value ?? ""
+  );
 };
 
 export const getLensProfilePictureUrl = (profile: Profile): string => {

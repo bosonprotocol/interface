@@ -14,15 +14,17 @@ import {
   TOKEN_GATED_VARIANTS,
   TOKEN_TYPES
 } from "./const";
-import { CreateProductForm } from "./types";
+import { CreateProductForm, CreateYourProfile } from "./types";
 
-export const createYourProfileInitialValues = {
+export const createYourProfileInitialValues: CreateYourProfile = {
   createYourProfile: {
     logo: undefined,
+    coverPicture: undefined,
     name: "",
     email: "",
     description: "",
-    website: ""
+    website: "",
+    legalTradingName: ""
   }
 } as const;
 

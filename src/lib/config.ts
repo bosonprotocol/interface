@@ -1,4 +1,5 @@
 import { getDefaultConfig } from "@bosonprotocol/react-kit";
+import * as Sentry from "@sentry/browser";
 
 import { Token } from "../components/convertion-rate/ConvertionRateContext";
 import lensFollowNftContractAbi from "../lib/utils/hooks/lens/abis/lens-follow-nft-contract-abi.json";
@@ -26,8 +27,9 @@ export function getDefaultTokens(): Token[] {
         process.env.REACT_APP_DEFAULT_TOKENS_LIST_PRODUCTION ||
         "[]"
     );
-  } catch (e) {
-    console.error(e);
+  } catch (error) {
+    console.error(error);
+    Sentry.captureException(error);
   }
   return tokens;
 }
@@ -56,8 +58,9 @@ function getMetaTxApiIds(protocolAddress: string) {
         }
       }
     });
-  } catch (e) {
-    console.error(e);
+  } catch (error) {
+    console.error(error);
+    Sentry.captureException(error);
   }
   return apiIds;
 }

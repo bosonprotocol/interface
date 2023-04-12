@@ -3,7 +3,7 @@ import { IpfsMetadataStorage } from "@bosonprotocol/react-kit";
 export async function fetchImageAsBase64(imageUrl: string) {
   const response = await fetch(imageUrl);
   const blob = await response.blob();
-  return blobToBase64(blob);
+  return { base64: await blobToBase64(blob), blob };
 }
 
 export function fromBase64ToBinary(base64: string): Buffer {
@@ -59,6 +59,24 @@ export const fetchIpfsBase64Media = async (
   });
   const base64strList = await Promise.all(fetchPromises);
   return base64strList;
+};
+
+export const getFixedBase64FromUrl = async (
+  url: string,
+  ipfsMetadataStorage: IpfsMetadataStorage
+): Promise<string | undefined> => {
+  const [logoBase64] = await fetchIpfsBase64Media([url], ipfsMetadataStorage);
+  if (!logoBase64) {
+    return; // should never happen
+  }
+  const wrongDataFormat = "data:application/octet-stream;base64,";
+  const indexWrongDataFormat = logoBase64.indexOf(wrongDataFormat);
+  const fixedBase64 =
+    indexWrongDataFormat === -1
+      ? logoBase64
+      : "data:image/jpeg;base64," +
+        logoBase64.substring(indexWrongDataFormat + wrongDataFormat.length);
+  return fixedBase64;
 };
 
 export function dataURItoBlob(dataURI: string) {

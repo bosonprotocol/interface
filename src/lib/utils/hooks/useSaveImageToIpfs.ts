@@ -22,6 +22,10 @@ export function useSaveImageToIpfs() {
       if (!image && !ipfsMetadataStorage) {
         return;
       }
+      const alreadyBase64 = image.includes(";base64");
+      if (alreadyBase64) {
+        return image;
+      }
       const [loadPromise] = await fetchIpfsBase64Media(
         [image],
         ipfsMetadataStorage

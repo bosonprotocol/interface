@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/browser";
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Signer, utils } from "ethers";
@@ -180,7 +181,9 @@ const setProfileImage = async (
         "set profile image url via dispatcher: failed",
         dispatcherResult
       );
-      throw new Error("set profile image url via dispatcher: failed");
+      const error = new Error("set profile image url via dispatcher: failed");
+      Sentry.captureException(error);
+      throw error;
     }
 
     return { txHash: dispatcherResult.txHash, txId: dispatcherResult.txId };
@@ -203,7 +206,9 @@ const setProfileImage = async (
         "set profile image url via broadcast: failed",
         broadcastResult
       );
-      throw new Error("set profile image url via broadcast: failed");
+      const error = new Error("set profile image url via broadcast: failed");
+      Sentry.captureException(error);
+      throw error;
     }
 
     return { txHash: broadcastResult.txHash, txId: broadcastResult.txId };
@@ -235,6 +240,7 @@ async function setProfileImageUri(
     await pollUntilIndexed({ txId: result.txId }, { accessToken });
   } catch (error) {
     console.error("useSetProfileImageUri error", error);
+    Sentry.captureException(error);
     const signedResult = await signCreateSetProfileImageUriTypedData(
       setProfileImageUriRequestPayload,
       {

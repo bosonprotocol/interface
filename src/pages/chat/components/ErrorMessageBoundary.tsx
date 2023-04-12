@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/browser";
 import React, { ReactNode } from "react";
 
 interface Props {
@@ -23,6 +24,7 @@ export default class ErrorMessageBoundary extends React.Component<
 
   componentDidCatch(error: unknown, errorInfo: unknown) {
     console.error("Caught error in ErrorMessageBoundary", error, errorInfo);
+    Sentry.captureException(error);
   }
 
   render() {

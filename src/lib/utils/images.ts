@@ -80,6 +80,11 @@ export function getImageMetadata(image: File | string): Promise<ImageMetadata> {
       reject(errorArgs);
     };
     if (typeof image === "string") {
+      if (image.startsWith("ipfs://")) {
+        return reject(
+          "Image starts with ipfs:// instead of using a gateway or base64"
+        );
+      }
       img.src = image;
     } else {
       const base64 = await blobToBase64(image);

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { BaseIpfsStorage } from "@bosonprotocol/react-kit";
+import * as Sentry from "@sentry/browser";
 import { Signer, utils } from "ethers";
 import { gql } from "graphql-request";
 import { useMutation } from "react-query";
@@ -153,7 +154,9 @@ const setMetadata = async (
         "create profile metadata via dispatcher: failed",
         dispatcherResult
       );
-      throw new Error("create profile metadata via dispatcher: failed");
+      const error = new Error("create profile metadata via dispatcher: failed");
+      Sentry.captureException(error);
+      throw error;
     }
 
     return { txHash: dispatcherResult.txHash, txId: dispatcherResult.txId };
@@ -177,7 +180,9 @@ const setMetadata = async (
         "create profile metadata via broadcast: failed",
         broadcastResult
       );
-      throw new Error("create profile metadata via broadcast: failed");
+      const error = new Error("create profile metadata via broadcast: failed");
+      Sentry.captureException(error);
+      throw error;
     }
 
     return { txHash: broadcastResult.txHash, txId: broadcastResult.txId };
@@ -227,6 +232,7 @@ const setProfileMetadata = async (
     return result;
   } catch (error) {
     console.error("useSetLensProfileMetadata error", error);
+    Sentry.captureException(error);
     const signedResult = await signCreateSetProfileMetadataTypedData(
       createProfileMetadataRequest,
       signTypedDataAsync,

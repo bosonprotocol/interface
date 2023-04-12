@@ -11,6 +11,7 @@ import { IPricePassedAsAProp } from "../../../lib/utils/convertPrice";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { EditProfile } from "../../detail/EditProfile";
 import { useConvertedPriceFunction } from "../../price/useConvertedPriceFunction";
 import BosonButton from "../../ui/BosonButton";
 import Grid from "../../ui/Grid";
@@ -141,92 +142,100 @@ export default function SellerDashboard({
   }
 
   return (
-    <Grid gap="2rem" flexDirection="column" alignItems="stretch">
-      {offersBacked?.displayWarning && (
-        <SellerInner
-          padding="1.5rem"
-          background={colors.black}
-          color={colors.white}
-        >
-          <Grid justifyContent="space-between" alignItems="center">
-            <div>
-              <Typography tag="h4" padding="0">
-                You need to top up your seller deposit pool
-              </Typography>
-              <Typography tag="p" padding="0">
-                Currently, your product can’t be bought becasue the balance in
-                your seller deposit pool is not sufficient enough.
-              </Typography>
-            </div>
-            <Grid justifyContent="flex-end" alignItems="center">
-              <BosonButton
-                variant="primaryFill"
-                onClick={() => {
-                  const pathname = generatePath(
-                    SellerCenterRoutes.SellerCenter,
-                    {
-                      [UrlParameters.sellerPage]: "finances"
-                    }
-                  );
-                  navigate({ pathname });
-                }}
-              >
-                Deposit funds
-              </BosonButton>
+    <>
+      <div style={{ marginTop: "1rem", marginBottom: "1rem" }}>
+        <EditProfile />
+      </div>
+      <Grid gap="2rem" flexDirection="column" alignItems="stretch">
+        {offersBacked?.displayWarning && (
+          <SellerInner
+            padding="1.5rem"
+            background={colors.black}
+            color={colors.white}
+          >
+            <Grid justifyContent="space-between" alignItems="center">
+              <div>
+                <Typography tag="h4" padding="0">
+                  You need to top up your seller deposit pool
+                </Typography>
+                <Typography tag="p" padding="0">
+                  Currently, your product can’t be bought becasue the balance in
+                  your seller deposit pool is not sufficient enough.
+                </Typography>
+              </div>
+              <Grid justifyContent="flex-end" alignItems="center">
+                <BosonButton
+                  variant="primaryFill"
+                  onClick={() => {
+                    const pathname = generatePath(
+                      SellerCenterRoutes.SellerCenter,
+                      {
+                        [UrlParameters.sellerPage]: "finances"
+                      }
+                    );
+                    navigate({ pathname });
+                  }}
+                >
+                  Deposit funds
+                </BosonButton>
+              </Grid>
             </Grid>
-          </Grid>
+          </SellerInner>
+        )}
+        <SellerInner padding="0">
+          <SellerDashboardInfo {...sellerDashboardProps} />
         </SellerInner>
-      )}
-      <SellerInner padding="0">
-        <SellerDashboardInfo {...sellerDashboardProps} />
-      </SellerInner>
-      <GridContainer
-        itemsPerRow={{
-          xs: 1,
-          s: 1,
-          m: 3,
-          l: 3,
-          xl: 3
-        }}
-        style={{ alignItems: "flex-start" }}
-      >
-        <SellerInner>
-          <SellerDashboardItems
-            name="Commits"
-            items={commits.slice(0, 3)}
-            onClick={() => {
-              const pathname = generatePath(SellerCenterRoutes.SellerCenter, {
-                [UrlParameters.sellerPage]: "exchanges"
-              });
-              navigate({ pathname }, { state: { currentTag: "live-rnfts" } });
-            }}
-          />
-        </SellerInner>
-        <SellerInner>
-          <SellerDashboardItems
-            name="Redemptions"
-            items={redemptions.slice(0, 3)}
-            onClick={() => {
-              const pathname = generatePath(SellerCenterRoutes.SellerCenter, {
-                [UrlParameters.sellerPage]: "exchanges"
-              });
-              navigate({ pathname }, { state: { currentTag: "redemptions" } });
-            }}
-          />
-        </SellerInner>
-        <SellerInner>
-          <SellerDashboardItems
-            name="Disputes"
-            items={disputes.slice(0, 3)}
-            onClick={() => {
-              const pathname = generatePath(SellerCenterRoutes.SellerCenter, {
-                [UrlParameters.sellerPage]: "exchanges"
-              });
-              navigate({ pathname }, { state: { currentTag: "disputes" } });
-            }}
-          />
-        </SellerInner>
-      </GridContainer>
-    </Grid>
+        <GridContainer
+          itemsPerRow={{
+            xs: 1,
+            s: 1,
+            m: 3,
+            l: 3,
+            xl: 3
+          }}
+          style={{ alignItems: "flex-start" }}
+        >
+          <SellerInner>
+            <SellerDashboardItems
+              name="Commits"
+              items={commits.slice(0, 3)}
+              onClick={() => {
+                const pathname = generatePath(SellerCenterRoutes.SellerCenter, {
+                  [UrlParameters.sellerPage]: "exchanges"
+                });
+                navigate({ pathname }, { state: { currentTag: "live-rnfts" } });
+              }}
+            />
+          </SellerInner>
+          <SellerInner>
+            <SellerDashboardItems
+              name="Redemptions"
+              items={redemptions.slice(0, 3)}
+              onClick={() => {
+                const pathname = generatePath(SellerCenterRoutes.SellerCenter, {
+                  [UrlParameters.sellerPage]: "exchanges"
+                });
+                navigate(
+                  { pathname },
+                  { state: { currentTag: "redemptions" } }
+                );
+              }}
+            />
+          </SellerInner>
+          <SellerInner>
+            <SellerDashboardItems
+              name="Disputes"
+              items={disputes.slice(0, 3)}
+              onClick={() => {
+                const pathname = generatePath(SellerCenterRoutes.SellerCenter, {
+                  [UrlParameters.sellerPage]: "exchanges"
+                });
+                navigate({ pathname }, { state: { currentTag: "disputes" } });
+              }}
+            />
+          </SellerInner>
+        </GridContainer>
+      </Grid>
+    </>
   );
 }

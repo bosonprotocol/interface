@@ -9,7 +9,7 @@ import {
   getLensCoverPictureUrl,
   getLensProfilePictureUrl,
   isMatchingLensHandle
-} from "../../../components/modal/components/CreateProfile/Lens/utils";
+} from "../../../components/modal/components/Profile/Lens/utils";
 import AddressText from "../../../components/offer/AddressText";
 import Grid from "../../../components/ui/Grid";
 import Image from "../../../components/ui/Image";

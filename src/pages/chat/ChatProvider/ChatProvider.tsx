@@ -1,4 +1,5 @@
 import { BosonXmtpClient } from "@bosonprotocol/chat-sdk";
+import * as Sentry from "@sentry/browser";
 import { ReactNode, useEffect, useState } from "react";
 import { useSigner } from "wagmi";
 
@@ -26,7 +27,10 @@ export default function ChatProvider({ children }: Props) {
         .then((bosonClient) => {
           setBosonXmtp(bosonClient);
         })
-        .catch(console.error)
+        .catch((error) => {
+          console.error(error);
+          Sentry.captureException(error);
+        })
         .finally(() => setLoading(false));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

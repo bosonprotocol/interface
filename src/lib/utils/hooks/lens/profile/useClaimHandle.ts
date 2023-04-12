@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/browser";
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Provider } from "@wagmi/core";
@@ -9,7 +10,7 @@ import { useAccount, useProvider } from "wagmi";
 import {
   getLensTokenIdDecimal,
   getLensTokenIdHex
-} from "../../../../../components/modal/components/CreateProfile/Lens/utils";
+} from "../../../../../components/modal/components/Profile/Lens/utils";
 import { poll } from "../../../../../pages/create-product/utils";
 import { CONFIG } from "../../../../config";
 import { fetchRawLens } from "../fetchLens";
@@ -135,6 +136,7 @@ async function claimHandle(
           return profile;
         } catch (error) {
           console.error("error while polling in useClaimHandle", error);
+          Sentry.captureException(error);
           return true;
         }
       },
@@ -148,10 +150,12 @@ async function claimHandle(
     const claimHandleResult = (data as any)?.claim;
     if (claimHandleResult.__typename === "RelayError") {
       console.error("claim handle: failed", claimHandleResult);
-      throw new Error(
+      const error = new Error(
         claimHandleResult.reason ||
           "There has been an error while claiming your handle"
       );
+      Sentry.captureException(error);
+      throw error;
     }
 
     await pollUntilIndexed(

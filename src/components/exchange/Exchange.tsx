@@ -28,7 +28,7 @@ import {
 } from "../../lib/utils/images";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import { getOfferDetailData } from "../detail/DetailWidget/DetailWidget";
-import { getLensProfilePictureUrl } from "../modal/components/CreateProfile/Lens/utils";
+import { getLensProfilePictureUrl } from "../modal/components/Profile/Lens/utils";
 import { useModal } from "../modal/useModal";
 import { useConvertedPrice } from "../price/useConvertedPrice";
 

@@ -1,3 +1,5 @@
+import * as Sentry from "@sentry/browser";
+
 function fallback(text: string) {
   const input = document.createElement("input");
   input.value = text;
@@ -10,6 +12,7 @@ function fallback(text: string) {
     document.execCommand("copy");
   } catch (error) {
     console.error("Unable to copy", error);
+    Sentry.captureException(error);
   }
   document.body.removeChild(input);
 }

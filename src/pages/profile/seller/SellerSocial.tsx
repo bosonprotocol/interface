@@ -2,7 +2,7 @@ import { Globe } from "phosphor-react";
 import { useEffect, useState } from "react";
 
 import DetailShare from "../../../components/detail/DetailShare";
-import { getLensWebsite } from "../../../components/modal/components/CreateProfile/Lens/utils";
+import { getLensWebsite } from "../../../components/modal/components/Profile/Lens/utils";
 import {
   Profile,
   ProfileFieldsFragment

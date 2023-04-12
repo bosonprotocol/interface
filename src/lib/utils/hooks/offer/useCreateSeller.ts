@@ -1,30 +1,22 @@
 import { TransactionResponse } from "@bosonprotocol/common";
 import { CoreSDK, IpfsMetadataStorage } from "@bosonprotocol/react-kit";
 import { ethers } from "ethers";
-import { useQuery } from "react-query";
+import { useMutation } from "react-query";
 
-import { authTokenTypes } from "../../../../components/modal/components/CreateProfile/Lens/const";
-import { getLensTokenIdDecimal } from "../../../../components/modal/components/CreateProfile/Lens/utils";
-import { LensProfileType } from "../../../../components/modal/components/CreateProfile/Lens/validationSchema";
+import { authTokenTypes } from "../../../../components/modal/components/Profile/Lens/const";
+import { getLensTokenIdDecimal } from "../../../../components/modal/components/Profile/Lens/utils";
 import { useCoreSDK } from "../../useCoreSdk";
 import { useIpfsStorage } from "../useIpfsStorage";
 
 type Props = Parameters<typeof createSellerAccount>[1];
 
-export default function useCreateSeller(
-  props: Props,
-  options: Parameters<typeof useQuery>[2] = {}
-) {
+export default function useCreateSeller() {
   const coreSDK = useCoreSDK();
   const storage = useIpfsStorage();
 
-  return useQuery(
-    ["create-seller", props],
-    () => {
-      return createSellerAccount(coreSDK, props, storage);
-    },
-    options
-  );
+  return useMutation((props: Props) => {
+    return createSellerAccount(coreSDK, props, storage);
+  });
 }
 
 async function createSellerAccount(
@@ -33,7 +25,8 @@ async function createSellerAccount(
     address,
     addressForRoyaltyPayment,
     royaltyPercentage,
-    lensValues,
+    name,
+    description,
     authTokenId,
     authTokenType,
     profileLogoUrl
@@ -41,7 +34,8 @@ async function createSellerAccount(
     address: string;
     addressForRoyaltyPayment: string;
     royaltyPercentage: number;
-    lensValues: LensProfileType;
+    name: string;
+    description: string;
     authTokenId: string | null;
     authTokenType: typeof authTokenTypes[keyof typeof authTokenTypes];
     profileLogoUrl: string;
@@ -59,8 +53,8 @@ async function createSellerAccount(
   // https://docs.opensea.io/docs/contract-level-metadata
   const cid = await storage.add(
     JSON.stringify({
-      name: lensValues.name,
-      description: lensValues.description,
+      name: name,
+      description: description,
       image: profileLogoUrl,
       external_link: window.origin,
       seller_fee_basis_points: royaltyPercentageTimes100,

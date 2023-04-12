@@ -5,7 +5,6 @@ import MakeProposalModal from "./components/Chat/MakeProposal/MakeProposalModal"
 import ResolveDisputeModal from "./components/Chat/ResolveDisputeModal";
 import CompleteExchange from "./components/CompleteExchange";
 import CreateProductDraft from "./components/CreateProductDraft";
-import CreateProfileModal from "./components/CreateProfile/CreateProfileModal";
 import CustomStore from "./components/CustomStore";
 import DetailWidget from "./components/DetailWidget";
 import DisputeModal from "./components/DisputeModal/DisputeModal";
@@ -17,6 +16,8 @@ import ExportExchangesWithDeliveryModal from "./components/ExportExchangesWithDe
 import InvalidRoleModal from "./components/InvalidRoleModal";
 import ManageFunds from "./components/ManageFunds";
 import ProductCreateSuccess from "./components/ProductCreateSuccess";
+import CreateProfileModal from "./components/Profile/CreateProfileModal";
+import EditProfileModal from "./components/Profile/EditProfileModal";
 import ProgressBarModal from "./components/ProgressBarModal";
 import RedeemModal from "./components/RedeemModal/RedeemModal";
 import RedeemSuccessModal from "./components/RedeemModal/RedeemSuccessModal";
@@ -38,6 +39,7 @@ export const MODAL_TYPES = {
   CONFIRMATION_FAILED: "CONFIRMATION_FAILED",
   CREATE_PRODUCT_DRAFT: "CREATE_PRODUCT_DRAFT",
   CREATE_PROFILE: "CREATE_PROFILE",
+  EDIT_PROFILE: "EDIT_PROFILE",
   CUSTOM_STORE: "CUSTOM_STORE",
   DETAIL_WIDGET: "DETAIL_WIDGET",
   DISPUTE_RESOLUTION_DECIDE_MODAL: "DISPUTE_RESOLUTION_DECIDE_MODAL",
@@ -73,6 +75,7 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.CONFIRMATION_FAILED]: ConfirmationFailedModal,
   [MODAL_TYPES.CREATE_PRODUCT_DRAFT]: CreateProductDraft,
   [MODAL_TYPES.CREATE_PROFILE]: CreateProfileModal,
+  [MODAL_TYPES.EDIT_PROFILE]: EditProfileModal,
   [MODAL_TYPES.CUSTOM_STORE]: CustomStore,
   [MODAL_TYPES.DETAIL_WIDGET]: DetailWidget,
   [MODAL_TYPES.DISPUTE_RESOLUTION_DECIDE_MODAL]: DisputeResolverDecideModal,

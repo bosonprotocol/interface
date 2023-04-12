@@ -2,9 +2,8 @@
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
-import { LensProfileType } from "../../../../../components/modal/components/CreateProfile/Lens/validationSchema";
+import { LensProfileType } from "../../../../../components/modal/components/Profile/Lens/validationSchema";
 import { CONFIG } from "../../../../config";
-import { useIpfsStorage } from "../../useIpfsStorage";
 import { useLensLogin } from "../authentication/useLensLogin";
 import { Profile } from "../graphql/generated";
 import useClaimHandle from "./useClaimHandle";
@@ -16,24 +15,20 @@ type Props = {
   values: LensProfileType;
   onCreatedProfile: (profile: Profile) => void;
   enabled: boolean;
-  onSetProfileLogoIpfsLink?: (ipfsLink: string) => void;
-  onSetCoverLogoIpfsLink?: (ipfsLink: string) => void;
 };
 
 export default function useCustomCreateLensProfile({
   values,
   onCreatedProfile,
-  enabled: enableCreation,
-  onSetProfileLogoIpfsLink,
-  onSetCoverLogoIpfsLink
+  enabled: enableCreation
 }: Props) {
   const [triggerClaimHandle, setTriggerClaimHandle] = useState<
     "start" | "fetch" | "triggered"
   >("start");
   const { address } = useAccount();
-  const storage = useIpfsStorage();
-  const [profileImageUrl, setProfileImageUrl] = useState<string>("");
-  const [coverPictureUrl, setCoverPictureUrl] = useState<string>("");
+  const logoImage = values?.logo?.[0]?.src || "";
+  const coverPicture = values?.coverPicture?.[0]?.src || "";
+  const profileImageUrl = logoImage;
   const {
     data,
     mutate: loginWithLens,
@@ -42,37 +37,6 @@ export default function useCustomCreateLensProfile({
     isError: isLoginError
   } = useLensLogin();
   const { accessToken } = data || {};
-
-  useEffect(() => {
-    if (!enableCreation) {
-      return;
-    }
-    if (values.logo?.length) {
-      const [image] = values.logo;
-      (async () => {
-        const cid = await storage.add(image);
-        const ipfsLink = "ipfs://" + cid;
-        setProfileImageUrl(ipfsLink);
-        onSetProfileLogoIpfsLink?.(ipfsLink);
-      })();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [enableCreation, storage, values.logo]);
-  useEffect(() => {
-    if (!enableCreation) {
-      return;
-    }
-    if (values.coverPicture?.length) {
-      const [image] = values.coverPicture;
-      (async () => {
-        const cid = await storage.add(image);
-        const ipfsLink = "ipfs://" + cid;
-        setCoverPictureUrl(ipfsLink);
-        onSetCoverLogoIpfsLink?.(ipfsLink);
-      })();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [enableCreation, storage, values.coverPicture]);
 
   const {
     data: createdProfileId,
@@ -153,7 +117,7 @@ export default function useCustomCreateLensProfile({
         profileId: createdProfileId || "",
         name: values.name,
         bio: values.description,
-        cover_picture: coverPictureUrl,
+        cover_picture: coverPicture,
         attributes: [
           {
             traitType: "string",

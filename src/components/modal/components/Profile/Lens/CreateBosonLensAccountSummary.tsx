@@ -5,7 +5,6 @@ import { useAccount } from "wagmi";
 
 import { CONFIG } from "../../../../../lib/config";
 import { colors } from "../../../../../lib/styles/colors";
-import { loadAndSetMedia } from "../../../../../lib/utils/base64";
 import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
 import useCustomCreateLensProfileMumbai from "../../../../../lib/utils/hooks/lens/profile/useCustomCreateLensProfileMumbai";
 import useCustomCreateLensProfilePolygon from "../../../../../lib/utils/hooks/lens/profile/useCustomCreateLensProfilePolygon";
@@ -20,9 +19,10 @@ import BosonButton from "../../../../ui/BosonButton";
 import Grid from "../../../../ui/Grid";
 import Typography from "../../../../ui/Typography";
 import { useModal } from "../../../useModal";
+import { BosonAccount } from "../bosonAccount/validationSchema";
 import { authTokenTypes } from "./const";
 import ProfileMultiSteps from "./ProfileMultiSteps";
-import { BosonAccount, LensProfileType } from "./validationSchema";
+import { LensProfileType } from "./validationSchema";
 
 interface Props {
   profile?: Profile | null;
@@ -39,13 +39,12 @@ export default function CreateBosonLensAccountSummary({
   onSubmit,
   setStepBasedOnIndex
 }: Props) {
+  const logoImage = values?.logo?.[0]?.src || "";
+  const coverPicture = values?.coverPicture?.[0]?.src || "";
   const isExistingLensAccount = !!profile;
   const [lensProfileToSubmit, setLensProfileToSubmit] = useState<
     Profile | null | undefined
   >(profile);
-  const [logoImage, setLogoImage] = useState<string>("");
-  const [profileImageUrl, setProfileImageUrl] = useState<string>("");
-  const [coverPicture, setCoverPicture] = useState<string>("");
   const [isCreatedLensProfile, setCreatedLensProfile] =
     useState<boolean>(false);
 
@@ -61,43 +60,15 @@ export default function CreateBosonLensAccountSummary({
   const {
     isSuccess: isCreatedSellerAccount,
     isLoading: isCreatingSellerAccount,
-    refetch: createSellerAccountWithArgs,
+    mutateAsync: createSellerAccount,
     isError: isCreateSellerError
-  } = useCreateSeller(
-    {
-      address: address || "",
-      royaltyPercentage: bosonAccount.secondaryRoyalties || 0,
-      addressForRoyaltyPayment: bosonAccount.addressForRoyaltyPayment || "",
-      lensValues: values,
-      authTokenId: lensProfileToSubmit?.id,
-      authTokenType: authTokenTypes.LENS,
-      profileLogoUrl: profileImageUrl
-    },
-    {
-      enabled: false,
-      retry: false
-    }
-  );
+  } = useCreateSeller();
   const {
     isSuccess: isUpdatedSellerAccount,
     isLoading: isUpdatingSellerAccount,
-    refetch: updateSellerAccountWithArgs,
+    mutateAsync: updateSeller,
     isError: isUpdateSellerError
-  } = useUpdateSeller(
-    {
-      admin: address || "",
-      clerk: seller?.clerk || "",
-      assistant: seller?.assistant || "",
-      treasury: seller?.treasury || "",
-      authTokenId: lensProfileToSubmit?.id,
-      authTokenType: authTokenTypes.LENS,
-      sellerId: seller?.id || "0"
-    },
-    {
-      enabled: false,
-      retry: false
-    }
-  );
+  } = useUpdateSeller();
   const { updateProps, store } = useModal();
   useEffect(() => {
     updateProps<"CREATE_PROFILE">({
@@ -137,21 +108,8 @@ export default function CreateBosonLensAccountSummary({
       setLensProfileToSubmit(profile);
       setCreatedLensProfile(true);
     },
-    onSetProfileLogoIpfsLink: (profileIpfsLink) => {
-      setProfileImageUrl(profileIpfsLink);
-    },
     enabled: !usingExistingLensProfile && !!values
   });
-  useEffect(() => {
-    if (values.logo?.length) {
-      loadAndSetMedia(values.logo[0], setLogoImage);
-    }
-  }, [values.logo]);
-  useEffect(() => {
-    if (values.coverPicture?.length) {
-      loadAndSetMedia(values.coverPicture[0], setCoverPicture);
-    }
-  }, [values.coverPicture]);
 
   const onSubmitWithArgs = useCallback(
     (action: string, id?: string) => {
@@ -492,9 +450,31 @@ export default function CreateBosonLensAccountSummary({
           hasLensHandle={!!lensProfileToSubmit}
           hasAdminSellerAccount={hasAdminSellerAccount}
           hasLensHandleLinked={hasLensHandleLinked}
-          createSellerAccount={createSellerAccountWithArgs}
+          createSellerAccount={() =>
+            createSellerAccount({
+              address: address || "",
+              royaltyPercentage: bosonAccount.secondaryRoyalties || 0,
+              addressForRoyaltyPayment:
+                bosonAccount.addressForRoyaltyPayment || "",
+              name: values.name,
+              description: values.description,
+              authTokenId: lensProfileToSubmit?.id,
+              authTokenType: authTokenTypes.LENS,
+              profileLogoUrl: logoImage
+            })
+          }
           createLensProfile={createLensProfile}
-          updateSellerAccount={updateSellerAccountWithArgs}
+          updateSellerAccount={() =>
+            updateSeller({
+              admin: address || "",
+              clerk: seller?.clerk || "",
+              assistant: seller?.assistant || "",
+              treasury: seller?.treasury || "",
+              authTokenId: lensProfileToSubmit?.id,
+              authTokenType: authTokenTypes.LENS,
+              sellerId: seller?.id || "0"
+            })
+          }
           isCreatedSellerAccount={isCreatedSellerAccount}
           isCreatingSellerAccount={isCreatingSellerAccount}
           isCreatingLensProfile={isCreatingLensProfile}
@@ -512,9 +492,13 @@ interface CTAsProps {
   hasLensHandle: boolean;
   hasAdminSellerAccount: boolean;
   hasLensHandleLinked: boolean;
-  createSellerAccount: ReturnType<typeof useCreateSeller>["refetch"];
+  createSellerAccount: () => ReturnType<
+    ReturnType<typeof useCreateSeller>["mutateAsync"]
+  >;
   createLensProfile: () => void;
-  updateSellerAccount: ReturnType<typeof useUpdateSeller>["refetch"];
+  updateSellerAccount: () => ReturnType<
+    ReturnType<typeof useUpdateSeller>["mutateAsync"]
+  >;
   isCreatedSellerAccount: boolean;
   isCreatingSellerAccount: boolean;
   isCreatingLensProfile: boolean;
@@ -546,11 +530,9 @@ function CTAs({
           <BosonButton
             variant="primaryFill"
             onClick={async () => {
-              const { isSuccess, data } = await createSellerAccount();
-              if (isSuccess) {
-                const createdSellerId = (data || "") as string;
-                onSubmit("Create Seller Account", createdSellerId);
-              }
+              const data = await createSellerAccount();
+              const createdSellerId = (data || "") as string;
+              onSubmit("Create Seller Account", createdSellerId);
             }}
             disabled={isCreatingSellerAccount || isCreatedSellerAccount}
           >
@@ -594,11 +576,9 @@ function CTAs({
           <BosonButton
             variant="primaryFill"
             onClick={async () => {
-              const { isSuccess, data } = await createSellerAccount();
-              if (isSuccess) {
-                const createdSellerId = (data || "") as string;
-                onSubmit("Create Seller Account", createdSellerId);
-              }
+              const data = await createSellerAccount();
+              const createdSellerId = (data || "") as string;
+              onSubmit("Create Seller Account", createdSellerId);
             }}
             disabled={
               isCreatingSellerAccount ||
@@ -663,10 +643,8 @@ function CTAs({
               !isCreatedLensProfile
             }
             onClick={async () => {
-              const { isSuccess } = await updateSellerAccount();
-              if (isSuccess) {
-                onSubmit("Update Seller Account");
-              }
+              await updateSellerAccount();
+              onSubmit("Update Seller Account");
             }}
           >
             <Grid gap="1.0625rem">
@@ -695,10 +673,8 @@ function CTAs({
           <BosonButton
             variant="primaryFill"
             onClick={async () => {
-              const { isSuccess } = await updateSellerAccount();
-              if (isSuccess) {
-                onSubmit("Update Seller Account");
-              }
+              await updateSellerAccount();
+              onSubmit("Update Seller Account");
             }}
             disabled={isUpdatingSellerAccount}
           >

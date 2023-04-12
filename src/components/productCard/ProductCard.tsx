@@ -27,7 +27,7 @@ import {
   ExtendedOffer,
   FilterOptions
 } from "../../pages/explore/WithAllOffers";
-import { getLensProfilePictureUrl } from "../modal/components/CreateProfile/Lens/utils";
+import { getLensProfilePictureUrl } from "../modal/components/Profile/Lens/utils";
 import { useConvertedPrice } from "../price/useConvertedPrice";
 
 interface Props {

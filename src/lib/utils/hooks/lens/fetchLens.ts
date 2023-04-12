@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/browser";
 import { GraphQLError } from "graphql";
 import request, { rawRequest, RequestDocument } from "graphql-request";
 import { Headers } from "graphql-request/dist/types.dom";
@@ -21,9 +22,10 @@ export async function fetchLens<T, V = Record<string, unknown>>(
       }
     );
     return data;
-  } catch (err) {
-    console.error(err);
-    throw err;
+  } catch (error) {
+    console.error(error);
+    Sentry.captureException(error);
+    throw error;
   }
 }
 
@@ -50,8 +52,9 @@ export async function fetchRawLens<T, V = Record<string, unknown>>(
       }
     );
     return response;
-  } catch (err) {
-    console.error(err);
-    throw err;
+  } catch (error) {
+    console.error(error);
+    Sentry.captureException(error);
+    throw error;
   }
 }

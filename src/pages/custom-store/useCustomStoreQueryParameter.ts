@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/browser";
 import { useSearchParams } from "react-router-dom";
 
 import { StoreFields } from "./store-fields";
@@ -20,6 +21,7 @@ export function useCustomStoreQueryParameter<T = string>(
       return JSON.parse(jsonValue);
     } catch (error) {
       console.error(error);
+      Sentry.captureException(error);
       return "";
     }
   }

@@ -4,6 +4,7 @@ import {
   Provider,
   subgraph
 } from "@bosonprotocol/react-kit";
+import * as Sentry from "@sentry/browser";
 import { BigNumberish } from "ethers";
 import { useCallback, useMemo } from "react";
 import toast from "react-hot-toast";
@@ -230,6 +231,8 @@ export default function CompleteExchange({
                   "ACTION_REJECTED";
               if (hasUserRejectedTx) {
                 showModal("CONFIRMATION_FAILED");
+              } else {
+                Sentry.captureException(error);
               }
             }}
             onPendingSignature={() => {
@@ -279,6 +282,8 @@ export default function CompleteExchange({
                   "ACTION_REJECTED";
               if (hasUserRejectedTx) {
                 showModal("CONFIRMATION_FAILED");
+              } else {
+                Sentry.captureException(error);
               }
             }}
             onPendingSignature={() => {

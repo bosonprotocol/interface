@@ -9,6 +9,7 @@ import { Token } from "../../convertion-rate/ConvertionRateContext";
 import { MIN_VALUE } from "../../modal/components/Chat/const";
 import { FormModel } from "../../modal/components/Chat/MakeProposal/MakeProposalFormModel";
 import { DisputeFormModel } from "../../modal/components/DisputeModal/DisputeModalFormModel";
+import { commonFieldsValidation } from "../../modal/components/Profile/valitationSchema";
 import { CONFIG } from "./../../../lib/config";
 import { SelectDataProps } from "./../../form/types";
 import {
@@ -23,13 +24,11 @@ import {
   validationOfRequiredIpfsImage
 } from "./validationUtils";
 
-export const createYourProfileValidationSchema = Yup.object({
+export const regularProfileValidationSchema = Yup.object({
   createYourProfile: Yup.object({
     logo: validationOfRequiredIpfsImage(),
-    name: Yup.string().trim().required(validationMessage.required),
-    email: Yup.string().trim().required(validationMessage.required),
-    description: Yup.string().trim().required(validationMessage.required),
-    website: Yup.string().trim().required(validationMessage.required)
+    coverPicture: validationOfRequiredIpfsImage(),
+    ...commonFieldsValidation
   })
 });
 

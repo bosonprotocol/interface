@@ -5,12 +5,13 @@ import toast from "react-hot-toast";
 import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
 import useSetLensProfileMetadata from "../../../../../lib/utils/hooks/lens/profile/useSetLensProfileMetadata";
 import SuccessToast from "../../../../toasts/common/SuccessToast";
-import BosonAccountForm from "./BosonAccountForm";
+import { BosonAccount } from "../bosonAccount/validationSchema";
 import CreateBosonLensAccountSummary from "./CreateBosonLensAccountSummary";
 import CreateOrChoose from "./CreateOrChoose";
+import LensBosonAccountForm from "./LensBosonAccountForm";
 import LensForm from "./LensForm";
 import { getLensCoverPictureUrl } from "./utils";
-import { BosonAccount, LensProfileType } from "./validationSchema";
+import { LensProfileType } from "./validationSchema";
 
 interface Props {
   onSubmit: (
@@ -21,24 +22,25 @@ interface Props {
   seller: subgraph.SellerFieldsFragment | null;
   lensProfile?: Profile;
   changeToRegularProfile: () => void;
+  isEdit: boolean;
 }
 
-const steps = {
-  CREATE_OR_CHOOSE: 0,
-  CREATE: 1,
-  USE: 2,
-  BOSON_ACCOUNT: 3,
-  SUMMARY: 4
-} as const;
-type Step = typeof steps[keyof typeof steps];
+enum Step {
+  CREATE_OR_CHOOSE,
+  CREATE,
+  USE,
+  BOSON_ACCOUNT,
+  SUMMARY
+}
 
-export default function LensProfile({
+export default function LensProfileFlow({
   onSubmit,
   seller,
   lensProfile: selectedProfile,
-  changeToRegularProfile
+  changeToRegularProfile,
+  isEdit
 }: Props) {
-  const [step, setStep] = useState<Step>(steps.CREATE_OR_CHOOSE);
+  const [step, setStep] = useState<Step>(Step.CREATE_OR_CHOOSE);
   const [isEditViewOnly, setIsEditView] = useState<boolean>(false);
 
   const [lensProfile, setLensProfile] = useState<Profile | null>(null);
@@ -47,61 +49,69 @@ export default function LensProfile({
   );
   const [bosonAccount, setBosonAccount] = useState<BosonAccount | null>(null);
   const handleOnBackClick = useCallback(() => {
-    setStep(steps.CREATE_OR_CHOOSE);
+    setStep(Step.CREATE_OR_CHOOSE);
   }, [setStep]);
   const setStepBasedOnIndex = useCallback(
     (index: number) => {
       if (index === 0) {
-        setStep(steps.CREATE_OR_CHOOSE);
+        setStep(Step.CREATE_OR_CHOOSE);
       } else if (index === 1) {
         if (lensProfile) {
-          setStep(steps.USE);
+          setStep(Step.USE);
         } else {
-          setStep(steps.CREATE);
+          setStep(Step.CREATE);
         }
       } else if (index === 2) {
-        setStep(steps.BOSON_ACCOUNT);
+        setStep(Step.BOSON_ACCOUNT);
       } else if (index === 3) {
-        setStep(steps.SUMMARY);
+        setStep(Step.SUMMARY);
       }
     },
     [lensProfile, setStep]
   );
   const { mutateAsync: setMetadata } = useSetLensProfileMetadata();
 
-  if ((step === steps.CREATE_OR_CHOOSE || !lensProfile) && selectedProfile) {
+  if (
+    isEdit &&
+    (step === Step.CREATE_OR_CHOOSE || !lensProfile) &&
+    selectedProfile
+  ) {
     setLensProfile(selectedProfile);
-    setStep(steps.USE);
+    setStep(Step.USE);
     setIsEditView(true);
   }
+
   return (
     <>
-      {step === steps.CREATE_OR_CHOOSE ? (
+      {step === Step.CREATE_OR_CHOOSE ? (
         <CreateOrChoose
+          changeToRegularProfile={changeToRegularProfile}
           onChooseCreateNew={() => {
             setLensProfile(null);
-            setStep(steps.CREATE);
+            setStep(Step.CREATE);
           }}
           onChooseUseExisting={(profile) => {
             setLensProfile(profile);
-            setStep(steps.USE);
+            setStep(Step.USE);
           }}
         />
-      ) : step === steps.CREATE ? (
+      ) : step === Step.CREATE ? (
         <LensForm
+          changeToRegularProfile={changeToRegularProfile}
           profile={null}
           seller={seller}
           formValues={lensFormValues}
           isEditViewOnly={false}
           onSubmit={(formValues) => {
             setLensFormValues(formValues);
-            setStep(steps.BOSON_ACCOUNT);
+            setStep(Step.BOSON_ACCOUNT);
           }}
           onBackClick={handleOnBackClick}
           setStepBasedOnIndex={setStepBasedOnIndex}
         />
-      ) : step === steps.USE ? (
+      ) : step === Step.USE ? (
         <LensForm
+          changeToRegularProfile={changeToRegularProfile}
           profile={lensProfile}
           seller={seller}
           formValues={null}
@@ -142,26 +152,26 @@ export default function LensProfile({
               // In case the boson seller already exists, go next
               onSubmit("", lensProfile, formValues);
             } else {
-              setStep(steps.BOSON_ACCOUNT);
+              setStep(Step.BOSON_ACCOUNT);
             }
           }}
           onBackClick={handleOnBackClick}
           setStepBasedOnIndex={setStepBasedOnIndex}
         />
-      ) : step === steps.BOSON_ACCOUNT ? (
-        <BosonAccountForm
+      ) : step === Step.BOSON_ACCOUNT ? (
+        <LensBosonAccountForm
           isExistingProfile={!!lensProfile}
           formValues={bosonAccount}
           onSubmit={(values) => {
             setBosonAccount(values);
-            setStep(steps.SUMMARY);
+            setStep(Step.SUMMARY);
           }}
           onBackClick={() => {
             setStepBasedOnIndex(1);
           }}
           setStepBasedOnIndex={setStepBasedOnIndex}
         />
-      ) : step === steps.SUMMARY && lensFormValues && bosonAccount ? (
+      ) : step === Step.SUMMARY && lensFormValues && bosonAccount ? (
         <CreateBosonLensAccountSummary
           profile={lensProfile}
           values={lensFormValues}

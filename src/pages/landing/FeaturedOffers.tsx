@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/browser";
 import { CaretRight } from "phosphor-react";
 import { useMemo } from "react";
 import styled from "styled-components";
@@ -81,6 +82,7 @@ const FeaturedOffers: React.FC<IFeaturedOffers> = ({
       });
     } catch (error) {
       console.error(error);
+      Sentry.captureException(error);
       return products;
     }
   }, [products, isLteXS]);

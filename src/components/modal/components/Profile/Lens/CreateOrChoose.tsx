@@ -15,9 +15,11 @@ import ProfileMultiSteps from "./ProfileMultiSteps";
 interface Props {
   onChooseCreateNew: () => void;
   onChooseUseExisting: (profile: Profile) => void;
+  changeToRegularProfile: () => void;
 }
 
 export default function CreateOrChoose({
+  changeToRegularProfile,
   onChooseCreateNew,
   onChooseUseExisting
 }: Props) {
@@ -78,6 +80,9 @@ export default function CreateOrChoose({
         For your journey as a seller reputation is key. Boson Protocol allows
         sellers to directly link their Lens profile to their Boson account.{" "}
       </Typography>
+      <Button onClick={changeToRegularProfile} theme="blankSecondary">
+        <small>Use regular account instead</small>
+      </Button>
       <GridContainer
         itemsPerRow={{
           xs: 2,

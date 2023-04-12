@@ -1,12 +1,10 @@
 import { subgraph } from "@bosonprotocol/react-kit";
+import * as Sentry from "@sentry/browser";
 import { useFormikContext } from "formik";
 import { Dispatch, ReactNode, SetStateAction, useEffect, useMemo } from "react";
 
 import { CONFIG } from "../../../../../lib/config";
-import {
-  dataURItoBlob,
-  fetchImageAsBase64
-} from "../../../../../lib/utils/base64";
+import { fetchImageAsBase64 } from "../../../../../lib/utils/base64";
 import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
 import { getLensImageUrl } from "../../../../../lib/utils/images";
 import { Spinner } from "../../../../loading/Spinner";
@@ -44,7 +42,6 @@ export default function ViewOrEditLensProfile({
 }: Props) {
   const { setValues, setTouched, initialValues, values, isSubmitting } =
     useFormikContext<LensProfileType>();
-
   const profilePictureUrl = getLensImageUrl(getLensProfilePictureUrl(profile));
   const coverPictureUrl = getLensImageUrl(getLensCoverPictureUrl(profile));
 
@@ -81,6 +78,9 @@ export default function ViewOrEditLensProfile({
   }, [setTouched, changedFields]);
 
   useEffect(() => {
+    if (isEditViewOnly) {
+      return;
+    }
     updateProps<"CREATE_PROFILE">({
       ...store,
       modalProps: {
@@ -97,43 +97,31 @@ export default function ViewOrEditLensProfile({
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isEditViewOnly]);
 
   useEffect(() => {
     Promise.all([
       fetchImageAsBase64(profilePictureUrl),
       fetchImageAsBase64(coverPictureUrl)
     ])
-      .then(([profilePictureBase64, coverPictureBase64]) => {
-        const profileType = profilePictureBase64
-          ? profilePictureBase64.split(";")[0].split(":")[1]
-          : "";
-        const profileFileType = profileType.includes("image")
-          ? profileType
-          : "image/jpg";
-        const coverType = coverPictureBase64
-          ? coverPictureBase64.split(";")[0].split(":")[1]
-          : "";
-        const coverFileType = coverType.includes("image")
-          ? coverType
-          : "image/jpg";
+      .then(([profilePicture, coverPicture]) => {
         setValues({
-          logo: profilePictureBase64
+          logo: profilePicture
             ? [
-                new File(
-                  [dataURItoBlob(profilePictureBase64)],
-                  "profilePicture",
-                  {
-                    type: profileFileType
-                  }
-                )
+                {
+                  src: profilePicture.base64,
+                  type: profilePicture.blob.type,
+                  size: profilePicture.blob.size
+                }
               ]
             : [],
-          coverPicture: coverPictureBase64
+          coverPicture: coverPicture
             ? [
-                new File([dataURItoBlob(coverPictureBase64)], "coverPicture", {
-                  type: coverFileType
-                })
+                {
+                  src: coverPicture.base64,
+                  type: coverPicture.blob.type,
+                  size: coverPicture.blob.size
+                }
               ]
             : [],
           name: profile.name || "",
@@ -150,13 +138,16 @@ export default function ViewOrEditLensProfile({
           legalTradingName: getLensLegalTradingName(profile) || ""
         });
       })
-      .catch((e) => console.error(e));
+      .catch((error) => {
+        console.error(error);
+        Sentry.captureException(error);
+      });
   }, [profile, profilePictureUrl, coverPictureUrl, setValues]);
 
   return (
     <div>
       {children}
-      <Grid justifyContent="flex-start" gap="2rem">
+      <Grid margin="2rem 0 0 0" justifyContent="flex-start" gap="2rem">
         {!isEditViewOnly && (
           <BosonButton
             variant="accentInverted"

@@ -190,14 +190,10 @@ const getOfferDetailData = (
   const { deposit, formatted } = calcPercentage(offer, "sellerDeposit");
 
   const handleShowExchangePolicy = () => {
-    if (modalTypes && showModal) {
-      showModal(modalTypes.EXCHANGE_POLICY_DETAILS, {
-        title: "Exchange Policy Details",
-        offerId: offer.id
-      });
-    } else {
-      console.error("modalTypes and/or showModal undefined");
-    }
+    showModal(modalTypes.EXCHANGE_POLICY_DETAILS, {
+      title: "Exchange Policy Details",
+      offerId: offer.id
+    });
   };
 
   return [

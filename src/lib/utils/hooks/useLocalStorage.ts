@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/browser";
 // extracted from https://usehooks.com/useLocalStorage/
 import { useState } from "react";
 
@@ -40,6 +41,7 @@ export function getItemFromStorage<T>(
     return item ? JSON.parse(item) : initialValue;
   } catch (error) {
     console.error(error);
+    Sentry.captureException(error);
     return initialValue;
   }
 }
@@ -50,6 +52,7 @@ export function saveItemInStorage<T>(key: string, value: T) {
       window.localStorage.setItem(key, JSON.stringify(value));
     } catch (error) {
       console.error(error);
+      Sentry.captureException(error);
     }
   }
 }
@@ -62,6 +65,7 @@ export function removeItemInStorage(key: string) {
         .map((finalKey) => localStorage.removeItem(finalKey));
     } catch (error) {
       console.error(error);
+      Sentry.captureException(error);
     }
   }
 }
@@ -72,6 +76,7 @@ export const clearLocalStorage = () => {
       window.localStorage.clear();
     } catch (error) {
       console.error(error);
+      Sentry.captureException(error);
     }
   }
 };
@@ -92,6 +97,7 @@ export function useLocalStorage<T>(
       saveItemInStorage(key, valueToStore);
     } catch (error) {
       console.error(error);
+      Sentry.captureException(error);
     }
   };
   return [storedValue, setValue, removeItemInStorage] as const;

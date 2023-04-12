@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/browser";
 import { Form, Formik, FormikProps } from "formik";
 import styled from "styled-components";
 import * as Yup from "yup";
@@ -51,6 +52,7 @@ export default function Upload({
             onUploadedFilesWithData?.(filesWithData);
           } catch (error) {
             onError?.(error as Error);
+            Sentry.captureException(error);
           }
         } else {
           onUploadedFiles?.(files);

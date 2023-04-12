@@ -5,6 +5,7 @@ import {
   subgraph,
   VoidButton
 } from "@bosonprotocol/react-kit";
+import * as Sentry from "@sentry/browser";
 import { BigNumberish } from "ethers";
 import { useCallback, useState } from "react";
 import toast from "react-hot-toast";
@@ -298,6 +299,7 @@ export default function VoidProduct({
       );
     } catch (error) {
       console.error("onError", error);
+      Sentry.captureException(error);
     }
   }, [offers, coreSdk, signer, handleSuccess]);
 
@@ -341,6 +343,8 @@ export default function VoidProduct({
                     "ACTION_REJECTED";
                 if (hasUserRejectedTx) {
                   showModal("CONFIRMATION_FAILED");
+                } else {
+                  Sentry.captureException(error);
                 }
               }}
               onPendingSignature={() => {

@@ -28,15 +28,14 @@ export const validationOfRequiredImage = (size: number) =>
       (value) =>
         !value || (value && value.length !== 0 && value[0].size <= size)
     )
-    .test(
-      "FILE_FORMAT",
-      "Image has unsupported format!",
-      (value) =>
+    .test("FILE_FORMAT", "Image has unsupported format!", (value) => {
+      return (
         !value ||
         (value &&
           value.length !== 0 &&
           SUPPORTED_FILE_FORMATS.includes(value[0].type))
-    );
+      );
+    });
 
 export const validationOfImageFormatIfPresent = () =>
   Yup.mixed<File[]>()

@@ -1,9 +1,10 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import { Form, Formik } from "formik";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
 import { preAppendHttps } from "../../../../../lib/validation/regex/url";
+import Button from "../../../../ui/Button";
 import CreateLensProfile from "./CreateLensProfile";
 import LensFormFields from "./LensFormFields";
 import {
@@ -26,6 +27,7 @@ interface Props {
   onBackClick: () => void;
   setStepBasedOnIndex: (index: number) => void;
   isEditViewOnly: boolean;
+  changeToRegularProfile: () => void;
 }
 
 export default function LensForm({
@@ -35,25 +37,34 @@ export default function LensForm({
   onBackClick,
   formValues,
   setStepBasedOnIndex,
-  isEditViewOnly
+  isEditViewOnly,
+  changeToRegularProfile
 }: Props) {
   const [formTouched, setFormChanged] = useState<boolean>(false);
+  const defaultInitialValues: LensProfileType = {
+    logo: [],
+    coverPicture: [],
+    name: "",
+    handle: "",
+    email: "",
+    description: "",
+    website: "",
+    legalTradingName: ""
+  };
+  const UseRegularProfile = useCallback(() => {
+    return (
+      <Button
+        onClick={changeToRegularProfile}
+        theme="blankSecondary"
+        style={{ marginTop: "1rem" }}
+      >
+        <small>Use regular profile instead</small>
+      </Button>
+    );
+  }, [changeToRegularProfile]);
   return (
     <Formik<LensProfileType>
-      initialValues={
-        formValues
-          ? formValues
-          : ({
-              logo: [],
-              coverPicture: [],
-              name: "",
-              handle: "",
-              email: "",
-              description: "",
-              website: "",
-              legalTradingName: ""
-            } as LensProfileType)
-      }
+      initialValues={formValues ? formValues : defaultInitialValues}
       onSubmit={(values) => {
         if (profile) {
           onSubmit(values, { touched: formTouched });
@@ -78,14 +89,21 @@ export default function LensForm({
             setFormChanged={setFormChanged}
             isEditViewOnly={isEditViewOnly}
           >
-            <LensFormFields disable={false} mode="view" />
+            <LensFormFields disableCover disableHandle disableLogo />
+            {isEditViewOnly && <UseRegularProfile />}
           </ViewOrEditLensProfile>
         ) : (
           <CreateLensProfile
             onBackClick={onBackClick}
             setStepBasedOnIndex={setStepBasedOnIndex}
           >
-            <LensFormFields disable={false} mode="edit" />
+            <>
+              <LensFormFields
+                logoSubtitle="Please choose an image that is no larger than 300KB to ensure it can be uploaded."
+                coverSubtitle="Please choose an image that is no larger than 300KB to ensure it can be uploaded."
+              />
+              <UseRegularProfile />
+            </>
           </CreateLensProfile>
         )}
       </Form>

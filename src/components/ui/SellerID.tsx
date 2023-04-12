@@ -14,7 +14,7 @@ import { MediaSet } from "../../lib/utils/hooks/lens/graphql/generated";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { getLensImageUrl } from "../../lib/utils/images";
-import { getLensProfilePictureUrl } from "../modal/components/CreateProfile/Lens/utils";
+import { getLensProfilePictureUrl } from "../modal/components/Profile/Lens/utils";
 import Image from "./Image";
 
 const AddressContainer = styled(Grid)`

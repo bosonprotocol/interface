@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/browser";
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { BigNumber, utils } from "ethers";
@@ -57,10 +58,12 @@ async function createProfile(
 
   if (createProfileResult.__typename === "RelayError") {
     console.error("create profile: failed", createProfileResult);
-    throw new Error(
+    const error = new Error(
       createProfileResult.reason ||
         "There has been an error while creating your profile"
     );
+    Sentry.captureException(error);
+    throw error;
   }
 
   const result = await pollUntilIndexed(

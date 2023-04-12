@@ -1,5 +1,6 @@
 import { TransactionResponse } from "@bosonprotocol/common";
 import { CoreSDK, subgraph } from "@bosonprotocol/react-kit";
+import * as Sentry from "@sentry/browser";
 import { BigNumber, BigNumberish, ethers } from "ethers";
 import { Form, Formik, FormikProps, FormikState } from "formik";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -250,6 +251,7 @@ function EscalateStepTwo({ exchange, refetch }: Props) {
       refetch();
     } catch (error) {
       console.error(error);
+      Sentry.captureException(error);
       const message = (error as unknown as { message: string }).message;
       toast((t) => (
         <ErrorToast t={t}>

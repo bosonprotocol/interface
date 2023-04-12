@@ -1,5 +1,6 @@
 import { TransactionResponse } from "@bosonprotocol/common";
 import { CoreSDK, subgraph } from "@bosonprotocol/react-kit";
+import * as Sentry from "@sentry/browser";
 import { BigNumberish } from "ethers";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -127,6 +128,8 @@ export default function RetractDisputeModal({
                 "ACTION_REJECTED";
               if (hasUserRejectedTx) {
                 showModal("CONFIRMATION_FAILED");
+              } else {
+                Sentry.captureException(error);
               }
               setRetractDisputeError(error as Error);
             }

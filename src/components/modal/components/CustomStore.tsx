@@ -1,4 +1,5 @@
 import * as Tooltip from "@radix-ui/react-tooltip";
+import * as Sentry from "@sentry/browser";
 import { Copy, CopySimple, Info } from "phosphor-react";
 import * as pretty from "pretty";
 import { useState } from "react";
@@ -116,6 +117,7 @@ export default function CustomStore({
                 }, 3000);
               } catch (error) {
                 console.error(error);
+                Sentry.captureException(error);
               }
             }}
           />
@@ -194,6 +196,7 @@ export default function CustomStore({
                           toast(() => "Text has been copied to clipboard");
                         } catch (error) {
                           console.error(error);
+                          Sentry.captureException(error);
                           return false;
                         }
                       }}

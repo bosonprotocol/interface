@@ -1,26 +1,19 @@
 import { CoreSDK } from "@bosonprotocol/react-kit";
 import { ethers } from "ethers";
-import { useQuery } from "react-query";
+import { useMutation } from "react-query";
 
-import { authTokenTypes } from "../../../../components/modal/components/CreateProfile/Lens/const";
-import { getLensTokenIdDecimal } from "../../../../components/modal/components/CreateProfile/Lens/utils";
+import { authTokenTypes } from "../../../../components/modal/components/Profile/Lens/const";
+import { getLensTokenIdDecimal } from "../../../../components/modal/components/Profile/Lens/utils";
 import { useCoreSDK } from "../../useCoreSdk";
 
 type Props = Parameters<typeof updateSellerAccount>[1];
 
-export default function useUpdateSeller(
-  props: Props,
-  options: Parameters<typeof useQuery>[2] = {}
-) {
+export default function useUpdateSeller() {
   const coreSDK = useCoreSDK();
 
-  return useQuery(
-    ["update-seller", props],
-    async () => {
-      return await updateSellerAccount(coreSDK, props);
-    },
-    options
-  );
+  return useMutation(async (props: Props) => {
+    return await updateSellerAccount(coreSDK, props);
+  });
 }
 
 async function updateSellerAccount(
