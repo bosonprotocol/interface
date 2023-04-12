@@ -125,7 +125,13 @@ const handleCountry = () => {
   return undefined;
 };
 
-export default function Phone({ name, ...props }: InputProps) {
+export { CountryCode };
+
+type Props = InputProps & {
+  countries?: CountryCode[];
+};
+
+export default function Phone({ name, countries, ...props }: Props) {
   const [initialized, setInitialized] = useState<boolean>(false);
   const [phone, setPhone] = useState<string | undefined>(undefined);
   const [countryCode, setCountryCode] = useState<CountryCode | undefined>(
@@ -187,6 +193,7 @@ export default function Phone({ name, ...props }: InputProps) {
           country={countryCode}
           value={phone}
           onChange={(value) => setPhone((value || "").replace(/\+/g, ""))}
+          countries={countries}
           countrySelectComponent={({ iconComponent: Icon, ...props }) => (
             <>
               <div>
