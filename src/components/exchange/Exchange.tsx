@@ -145,7 +145,7 @@ export default function Exchange({ offer, exchange, reload }: Props) {
       case "REDEEMED": {
         const handleDispute = () => {
           showModal(modalTypes.RAISE_DISPUTE, {
-            title: "Raise a problem",
+            title: "Raise a dispute",
             exchangeId: exchange?.id || ""
           });
         };

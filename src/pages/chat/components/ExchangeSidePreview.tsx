@@ -469,7 +469,7 @@ export default function ExchangeSidePreview({
               showModal(
                 "RAISE_DISPUTE",
                 {
-                  title: "Raise a problem",
+                  title: "Raise a dispute",
                   exchangeId: exchange.id
                 },
                 "auto",
@@ -482,7 +482,7 @@ export default function ExchangeSidePreview({
               )
             }
           >
-            Raise a Problem
+            Raise a dispute
           </BosonButton>
           <CompleteExchangeButton />
         </CTASection>
