@@ -23,7 +23,7 @@ import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryPa
 const DisputeListContainer = styled.div`
   background: ${colors.lightGrey};
   min-height: calc(100vh - 489px);
-  padding-bottom: 3.125rem;
+  padding: 2rem 0;
 `;
 
 const DisputeListHeader = styled.div<{ isLteS: boolean }>`
@@ -34,7 +34,7 @@ const DisputeListHeader = styled.div<{ isLteS: boolean }>`
   max-width: ${({ isLteS }) => (isLteS ? "100%" : "65.625rem")};
   display: ${({ isLteS }) => isLteS && "block"};
   background: ${({ isLteS }) => isLteS && colors.lightGrey};
-  span {
+  :first-child {
     max-width: ${({ isLteS }) => isLteS && "25rem"};
     background: ${({ isLteS }) => isLteS && colors.white};
     display: ${({ isLteS }) => isLteS && "block"};
@@ -62,16 +62,24 @@ function DisputeList() {
   const { showModal, modalTypes } = useModal();
   const { isLteS } = useBreakpoints();
   const { address } = useAccount();
-  const { data: buyers = [] } = useBuyers({
-    wallet: address
-  });
+  const { data: buyers = [] } = useBuyers(
+    {
+      wallet: address
+    },
+    {
+      enabled: !!address
+    }
+  );
   const myBuyerId = buyers[0]?.id;
-
-  const { data: exchanges = [] } = useExchanges({
-    disputed: true,
-    buyerId: myBuyerId
-  });
-
+  const { data: exchanges = [] } = useExchanges(
+    {
+      disputed: true,
+      buyerId: myBuyerId
+    },
+    {
+      enabled: !!myBuyerId
+    }
+  );
   return (
     <>
       <DisputeListHeader isLteS={isLteS}>

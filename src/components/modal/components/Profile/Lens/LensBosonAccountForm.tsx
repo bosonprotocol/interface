@@ -23,9 +23,14 @@ export default function LensBosonAccountForm({
   isExistingProfile
 }: Props) {
   const { address } = useAccount();
-  const { data: admins } = useSellers({
-    admin: address
-  });
+  const { data: admins } = useSellers(
+    {
+      admin: address
+    },
+    {
+      enabled: !!address
+    }
+  );
   const seller = admins?.[0];
   const { contractURI } = seller || {};
   const alreadyHasRoyaltiesDefined = !!contractURI;

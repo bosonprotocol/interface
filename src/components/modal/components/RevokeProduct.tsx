@@ -142,9 +142,12 @@ export default function RevokeProduct({
                 (error as unknown as { code: string }).code ===
                   "ACTION_REJECTED";
               if (hasUserRejectedTx) {
-                showModal("CONFIRMATION_FAILED");
+                showModal("TRANSACTION_FAILED");
               } else {
                 Sentry.captureException(error);
+                showModal("TRANSACTION_FAILED", {
+                  errorMessage: "Something went wrong"
+                });
               }
             }}
             onPendingSignature={() => {

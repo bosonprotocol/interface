@@ -29,6 +29,7 @@ import { isTruthy } from "../../../lib/types/helpers";
 import { Offer } from "../../../lib/types/offer";
 import { calcPercentage, displayFloat } from "../../../lib/utils/calcPrice";
 import { IPrice } from "../../../lib/utils/convertPrice";
+import { getHasExchangeDisputeResolutionElapsed } from "../../../lib/utils/exchange";
 import { titleCase } from "../../../lib/utils/formatText";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import useCheckTokenGatedOffer from "../../../lib/utils/hooks/offer/useCheckTokenGatedOffer";
@@ -367,6 +368,9 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   const isBeforeRedeem =
     !exchangeStatus || NOT_REDEEMED_YET.includes(exchangeStatus);
 
+  const hasDisputePeriodElapsed: boolean =
+    getHasExchangeDisputeResolutionElapsed(exchange, offer);
+
   const isExchangeExpired =
     exchangeStatus &&
     [exchanges.ExtendedExchangeState.Expired].includes(
@@ -670,7 +674,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
       "code" in error &&
       (error as unknown as { code: string }).code === "ACTION_REJECTED";
     if (hasUserRejectedTx) {
-      showModal("CONFIRMATION_FAILED");
+      showModal("TRANSACTION_FAILED");
     } else {
       Sentry.captureException(error);
       showModal(modalTypes.DETAIL_WIDGET, {
@@ -1007,7 +1011,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                   {![
                     exchanges.ExtendedExchangeState.Expired,
                     subgraph.ExchangeState.Cancelled,
-                    subgraph.ExchangeState.Revoked
+                    subgraph.ExchangeState.Revoked,
+                    subgraph.ExchangeState.Completed
                   ].includes(
                     exchangeStatus as
                       | exchanges.ExtendedExchangeState
@@ -1036,7 +1041,11 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                       }}
                       theme="blank"
                       style={{ fontSize: "0.875rem" }}
-                      disabled={exchange?.state !== "REDEEMED" || !isBuyer}
+                      disabled={
+                        exchange?.state !== "REDEEMED" ||
+                        !isBuyer ||
+                        hasDisputePeriodElapsed
+                      }
                     >
                       Raise a problem
                       <Question size={18} />

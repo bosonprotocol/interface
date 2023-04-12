@@ -43,9 +43,14 @@ export default function MakeProposalModal({
   const [submitError, setSubmitError] = useState<Error | null>(null);
   const coreSDK = useCoreSDK();
   const { address } = useAccount();
-  const { data: sellers = [] } = useSellers({
-    assistant: address
-  });
+  const { data: sellers = [] } = useSellers(
+    {
+      assistant: address
+    },
+    {
+      enabled: !!address
+    }
+  );
 
   const mySellerId = sellers[0]?.id || "";
   const iAmTheSeller = mySellerId === exchange.seller.id;

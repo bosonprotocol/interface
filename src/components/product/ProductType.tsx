@@ -78,6 +78,8 @@ const Box = styled.div`
   width: 100%;
   p {
     display: block;
+  }
+  p:first {
     margin: 0.938rem 0 0 0;
   }
 `;
@@ -302,8 +304,10 @@ export default function ProductType({
                 />
                 <Box>
                   <ProductImage src={phygitalProduct} />
-                  <Typography tag="p">Phygital</Typography>
-                  <Typography tag="p" $fontSize="0.7rem">
+                  <Typography tag="p" margin="1rem 0 0 0">
+                    Phygital
+                  </Typography>
+                  <Typography tag="p" $fontSize="0.7rem" margin="0.3rem 0 0 0">
                     COMING SOON
                   </Typography>
                 </Box>

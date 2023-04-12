@@ -118,9 +118,14 @@ function DisputeCentre() {
   const { [UrlParameters.exchangeId]: exchangeId } = useParams();
   const navigate = useKeepQueryParamsNavigate();
   const { isLteS } = useBreakpoints();
-  const { data: buyers } = useBuyers({
-    wallet: address
-  });
+  const { data: buyers } = useBuyers(
+    {
+      wallet: address
+    },
+    {
+      enabled: !!address
+    }
+  );
   const buyerId = buyers?.[0]?.id || "";
   const {
     data: exchanges = [],
@@ -305,9 +310,12 @@ function DisputeCentre() {
                     (error as unknown as { code: string }).code ===
                     "ACTION_REJECTED";
                   if (hasUserRejectedTx) {
-                    showModal("CONFIRMATION_FAILED");
+                    showModal("TRANSACTION_FAILED");
                   } else {
                     Sentry.captureException(error);
+                    showModal("TRANSACTION_FAILED", {
+                      errorMessage: "Something went wrong"
+                    });
                   }
 
                   setSubmitError(error as Error);

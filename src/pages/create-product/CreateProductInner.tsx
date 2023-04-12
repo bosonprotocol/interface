@@ -34,6 +34,7 @@ import Preview from "../../components/product/Preview";
 import {
   CREATE_PRODUCT_STEPS,
   CreateProductForm,
+  OPTIONS_EXCHANGE_POLICY,
   optionUnitKeys,
   TOKEN_TYPES
 } from "../../components/product/utils";
@@ -204,8 +205,11 @@ async function getProductV1Metadata({
     exchangePolicy: {
       uuid: Date.now().toString(),
       version: 1,
-      label: termsOfExchange.exchangePolicy.value,
-      template: termsOfExchange.exchangePolicy.value,
+      label: termsOfExchange.exchangePolicy.label,
+      template:
+        termsOfExchange.exchangePolicy.value === "fairExchangePolicy" // if there is data in localstorage, the exchangePolicy.value might be the old 'fairExchangePolicy'
+          ? OPTIONS_EXCHANGE_POLICY[0].value
+          : termsOfExchange.exchangePolicy.value,
       sellerContactMethod: CONFIG.defaultSellerContactMethod,
       disputeResolverContactMethod: `email to: ${CONFIG.defaultDisputeResolverContactMethod}`
     },
@@ -642,7 +646,6 @@ function CreateProductInner({
         const variantsForMetadataCreation: Parameters<
           typeof productV1["createVariantProductMetadata"]
         >[1] = [];
-        const variations: productV1.ProductV1Variant = [];
         const visualImages: productV1.ProductBase["visuals_images"] = [];
         const allVariationsWithSameImages =
           values.imagesSpecificOrAll?.value === "all";
@@ -665,7 +668,6 @@ function CreateProductInner({
               option: color || "-"
             }
           ];
-          variations.push(...typeOptions);
 
           if (!allVariationsWithSameImages && productImages) {
             const variantVisualImages = extractVisualImages(productImages);
@@ -1152,7 +1154,16 @@ function CreateProductInner({
     } catch (error: any) {
       // TODO: FAILURE MODAL
       console.error("error->", error.errors ?? error);
-      showModal("CONFIRMATION_FAILED");
+      const hasUserRejectedTx =
+        "code" in error &&
+        (error as unknown as { code: string })?.code === "ACTION_REJECTED";
+      if (hasUserRejectedTx) {
+        showModal("TRANSACTION_FAILED");
+      } else {
+        showModal("TRANSACTION_FAILED", {
+          errorMessage: "Something went wrong"
+        });
+      }
     }
   };
 

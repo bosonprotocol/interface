@@ -116,7 +116,7 @@ export const TOKEN_CRITERIA = [
 
 export const OPTIONS_EXCHANGE_POLICY = [
   {
-    value: "fairExchangePolicy",
+    value: CONFIG.buyerSellerAgreementTemplate as string,
     label: "Fair Exchange Policy"
   }
 ];
