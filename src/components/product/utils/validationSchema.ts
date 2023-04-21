@@ -227,11 +227,6 @@ export const commonCoreTermsOfSaleValidationSchema = {
       tokenGated?.value === OPTIONS_TOKEN_GATED[1].value,
     then: (schema) => schema.required(validationMessage.required)
   }),
-  // .shape({
-  //   value: Yup.string(),
-  //   label: Yup.string()
-  // }),
-  // .default([{ value: "", label: "" }]),
   minBalance: Yup.string().when(
     ["tokenGatedOffer", "tokenType", "tokenCriteria"],
     {
