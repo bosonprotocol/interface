@@ -5,7 +5,7 @@ import DatePicker from "../datepicker/DatePicker";
 import Error from "./Error";
 import type { DatepickerProps } from "./types";
 
-export default function DatepickerComponent({
+export default function Datepicker({
   name,
   period = false,
   selectTime = false,
@@ -17,7 +17,7 @@ export default function DatepickerComponent({
   const displayError =
     typeof errorMessage === typeof "string" && errorMessage !== "";
 
-  const handleChange = (date: Dayjs | Array<Dayjs | null>) => {
+  const handleChange = (date: Dayjs | Array<Dayjs | null> | null) => {
     if (!meta.touched) {
       helpers.setTouched(true);
     }

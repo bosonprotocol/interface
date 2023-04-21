@@ -175,30 +175,23 @@ export const productInformationValidationSchema = Yup.object({
   })
 });
 
-const commonCoreTermsOfSaleValidationSchema = {
+export const commonCoreTermsOfSaleValidationSchema = {
   tokenGatedOffer: Yup.object()
     .shape({
       value: Yup.string(),
       label: Yup.string()
     })
     .default([{ value: "", label: "" }]),
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  offerValidityPeriod: Yup.mixed().isItBeforeNow().isOfferValidityDatesValid(), // prettier-ignore
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  redemptionPeriod: Yup.mixed().isItBeforeNow().isRedemptionDatesValid(), // prettier-ignore
-  tokenGatedVariants: Yup.object()
-    .when(["tokenGatedOffer"], {
-      is: (tokenGated: SelectDataProps) =>
-        tokenGated?.value === OPTIONS_TOKEN_GATED[1].value,
-      then: (schema) => schema.required(validationMessage.required)
-    })
-    .shape({
-      value: Yup.string(),
-      label: Yup.string()
-    })
-    .default([{ value: "", label: "" }]),
+  offerValidityPeriod: Yup.array()
+    .required(validationMessage.required)
+    .min(2, validationMessage.required)
+    .isItBeforeNow()
+    .isOfferValidityDatesValid(),
+  redemptionPeriod: Yup.array()
+    .required(validationMessage.required)
+    .min(2, validationMessage.required)
+    .isItBeforeNow()
+    .isRedemptionDatesValid(),
   tokenContract: Yup.string()
     .when(["tokenGatedOffer"], {
       is: (tokenGated: SelectDataProps) =>
@@ -226,17 +219,19 @@ const commonCoreTermsOfSaleValidationSchema = {
       label: Yup.string()
     })
     .default([{ value: "", label: "" }]),
-  tokenCriteria: Yup.object()
-    .when(["tokenGatedOffer"], {
-      is: (tokenGated: SelectDataProps) =>
-        tokenGated?.value === OPTIONS_TOKEN_GATED[1].value,
-      then: (schema) => schema.required(validationMessage.required)
-    })
-    .shape({
-      value: Yup.string(),
-      label: Yup.string()
-    })
-    .default([{ value: "", label: "" }]),
+  tokenCriteria: Yup.object({
+    value: Yup.string(),
+    label: Yup.string()
+  }).when(["tokenGatedOffer"], {
+    is: (tokenGated: SelectDataProps) =>
+      tokenGated?.value === OPTIONS_TOKEN_GATED[1].value,
+    then: (schema) => schema.required(validationMessage.required)
+  }),
+  // .shape({
+  //   value: Yup.string(),
+  //   label: Yup.string()
+  // }),
+  // .default([{ value: "", label: "" }]),
   minBalance: Yup.string().when(
     ["tokenGatedOffer", "tokenType", "tokenCriteria"],
     {

@@ -15,8 +15,7 @@ import {
   Break,
   ModalGrid,
   ModalImageWrapper,
-  Widget,
-  WidgetButtonWrapper
+  Widget
 } from "../../detail/Detail.style";
 import DetailTable from "../../detail/DetailTable";
 import TokenGated from "../../detail/DetailWidget/TokenGated";
@@ -31,7 +30,7 @@ interface Props {
   name: string;
   image: string;
   offer: any;
-  onCreateNewProject: () => void;
+  onCreateNew?: () => void;
   onViewMyItem: () => void;
   hasMultipleVariants: boolean;
 }
@@ -82,11 +81,6 @@ const StyledIndicator = styled(ProgressPrimitive.Indicator)`
   height: 100%;
   transition: transform 660ms cubic-bezier(0.65, 0, 0.35, 1);
 `;
-const StyledWidgetButtonWrapper = styled(WidgetButtonWrapper)`
-  button {
-    width: 50%;
-  }
-`;
 
 const FundTile = styled(Typography)`
   font-weight: 600;
@@ -114,7 +108,7 @@ export default function ProductCreateSuccess({
   name,
   image,
   offer,
-  onCreateNewProject,
+  onCreateNew,
   onViewMyItem,
   hasMultipleVariants
 }: Props) {
@@ -132,10 +126,6 @@ export default function ProductCreateSuccess({
     () => getOfferDetailData(offer, convertedPrice, false),
     [convertedPrice, offer]
   );
-
-  const handleCreateNew = () => {
-    onCreateNewProject();
-  };
 
   const suggestedAmount = FixedNumber.fromString(
     formatUnits(
@@ -199,14 +189,16 @@ export default function ProductCreateSuccess({
               />
             </Grid>
             <Break />
-            <TokenGated
-              offer={offer}
-              commitProxyAddress={commitProxyAddress}
-              openseaLinkToOriginalMainnetCollection={
-                openseaLinkToOriginalMainnetCollection
-              }
-              isConditionMet={false}
-            />
+            {offer.condition && (
+              <TokenGated
+                offer={offer}
+                commitProxyAddress={commitProxyAddress}
+                openseaLinkToOriginalMainnetCollection={
+                  openseaLinkToOriginalMainnetCollection
+                }
+                isConditionMet={false}
+              />
+            )}
             <div style={{ paddingTop: "2rem" }}>
               <DetailTable align noBorder data={OFFER_DETAIL_DATA} />
             </div>
@@ -254,7 +246,7 @@ export default function ProductCreateSuccess({
               </StyledProgress>
             </Funds>
           )}
-          <StyledWidgetButtonWrapper>
+          <Grid flex="1 1" gap="1rem" margin="1rem 0 0 0">
             <BosonButton
               type="button"
               variant="primaryFill"
@@ -262,15 +254,17 @@ export default function ProductCreateSuccess({
             >
               View my item
             </BosonButton>
-            <BosonButton
-              type="button"
-              variant="accentInverted"
-              onClick={handleCreateNew}
-            >
-              Create new
-              <Plus size={14} />
-            </BosonButton>
-          </StyledWidgetButtonWrapper>
+            {onCreateNew && (
+              <BosonButton
+                type="button"
+                variant="accentInverted"
+                onClick={onCreateNew}
+              >
+                Create new
+                <Plus size={14} />
+              </BosonButton>
+            )}
+          </Grid>
         </div>
       </ModalGrid>
     </>

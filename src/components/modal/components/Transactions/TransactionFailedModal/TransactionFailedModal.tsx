@@ -7,9 +7,11 @@ import Typography from "../../../../ui/Typography";
 import { useModal } from "../../../useModal";
 
 export default function TransactionFailedModal({
-  errorMessage
+  errorMessage,
+  detailedErrorMessage
 }: {
   errorMessage: string;
+  detailedErrorMessage?: string;
 }) {
   const { updateProps, store } = useModal();
   useEffect(() => {
@@ -38,7 +40,7 @@ export default function TransactionFailedModal({
         lineHeight="150%"
         margin="0.5rem 0 1.5rem 0"
       >
-        Please retry this action
+        {detailedErrorMessage || "Please retry this action"}
       </Typography>
     </Grid>
   );

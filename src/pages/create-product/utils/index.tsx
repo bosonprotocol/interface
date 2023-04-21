@@ -1,7 +1,7 @@
 import React from "react";
 
 import ConfirmProductDetails from "../../../components/product/ConfirmProductDetails";
-import CoreTermsOfSale from "../../../components/product/CoreTermsOfSale";
+import CoreTermsOfSale from "../../../components/product/coreTermsOfSale/CoreTermsOfSale";
 import ProductImages from "../../../components/product/ProductImages";
 import ProductInformation from "../../../components/product/ProductInformation";
 import ProductType from "../../../components/product/ProductType";
