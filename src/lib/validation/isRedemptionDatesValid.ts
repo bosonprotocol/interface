@@ -3,8 +3,11 @@ import dayjs from "dayjs";
 
 function isRedemptionDatesValid() {
   return this.test(
-    "isOfferValidityDatesValid",
+    "isRedemptionDatesValid",
     function (value: (Dayjs | null)[]) {
+      if (!value) {
+        return false;
+      }
       const ovValue = this.parent.offerValidityPeriod;
       const doesItEndBefore =
         value[1] instanceof dayjs

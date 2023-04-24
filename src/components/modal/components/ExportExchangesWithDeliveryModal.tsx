@@ -1,5 +1,5 @@
 import dayjs, { Dayjs } from "dayjs";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import DatePicker from "../../datepicker/DatePicker";
 import BosonButton from "../../ui/BosonButton";
@@ -11,14 +11,11 @@ export default function ExportExchangesWithDeliveryModal({
 }: {
   onExport: (from?: Dayjs) => void;
 }) {
-  const [from, setFrom] = useState<Dayjs | null>(dayjs());
+  const today = useMemo(() => dayjs(), []);
+  const [from, setFrom] = useState<Dayjs | null>(today);
+  const initialDate = useMemo(() => dayjs().startOf("month"), []);
   return (
-    <Grid
-      flexDirection="column"
-      alignItems="flex-start"
-      gap="0.5rem"
-      $height="550px"
-    >
+    <Grid flexDirection="column" alignItems="flex-start" gap="5rem">
       <Grid flexDirection="column" alignItems="flex-start" gap="0.5rem">
         <Typography tag="h4">Option 1</Typography>
         <p>
@@ -34,8 +31,8 @@ export default function ExportExchangesWithDeliveryModal({
               period={false}
               selectTime
               minDate={null}
-              maxDate={dayjs()}
-              initialValue={dayjs()}
+              maxDate={today}
+              initialValue={initialDate}
               onChange={(date) => {
                 setFrom(date as Dayjs);
               }}
@@ -57,9 +54,7 @@ export default function ExportExchangesWithDeliveryModal({
           delivery information.This option will always include, if it exists in
           the chat conversation, the delivery information.
         </p>
-        <BosonButton disabled={!from} onClick={() => onExport()}>
-          Export
-        </BosonButton>
+        <BosonButton onClick={() => onExport()}>Export</BosonButton>
       </Grid>
     </Grid>
   );
