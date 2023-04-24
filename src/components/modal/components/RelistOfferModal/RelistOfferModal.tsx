@@ -73,6 +73,7 @@ export const RelistOfferModal: React.FC<RelistOfferModalProps> = ({
           const offersToCreate: offers.CreateOfferArgs[] = [];
           const productUuid = uuid();
           for (const variant of offer.additional?.variants ?? []) {
+            const metadataUuid = uuid();
             const originalMetadata = (await coreSDK.getMetadata(
               variant.metadataHash
             )) as productV1.ProductV1Metadata;
@@ -84,16 +85,21 @@ export const RelistOfferModal: React.FC<RelistOfferModalProps> = ({
             const metadata = JSON.parse(
               metadataAsString
                 .replaceAll(
-                  `${origin}/#/license/${originalMetadata.product.uuid}`,
-                  `${origin}/#/license/${productUuid}`
+                  `${origin}/#/license/${originalMetadata.uuid}`,
+                  `${origin}/#/license/${metadataUuid}`
                 )
                 .replaceAll(
-                  `${origin}/#/variant-uuid/${originalMetadata.product.uuid}`,
-                  `${origin}/#/variant-uuid/${productUuid}`
+                  `${origin}/#/variant-uuid/${originalMetadata.uuid}`,
+                  `${origin}/#/variant-uuid/${metadataUuid}`
+                )
+                .replaceAll(
+                  `${origin}/#/offer-uuid/${originalMetadata.uuid}`,
+                  `${origin}/#/offer-uuid/${metadataUuid}`
                 )
             ) as productV1.ProductV1Metadata;
             const metadataHash = await coreSDK.storeMetadata({
               ...metadata,
+              uuid: metadataUuid,
               attributes: [
                 ...metadata.attributes.filter(
                   (attribute) =>
