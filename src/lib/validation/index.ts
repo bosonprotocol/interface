@@ -1,5 +1,4 @@
-// eslint-disable-next-line
-// @ts-nocheck
+import type { Dayjs } from "dayjs";
 import * as Yup from "yup";
 
 import disputePeriodValue from "./disputePeriodValue";
@@ -9,17 +8,21 @@ import isOfferValidityDatesValid from "./isOfferValidityDatesValid";
 import isRedemptionDatesValid from "./isRedemptionDatesValid";
 import returnPeriodValue from "./returnPeriodValue";
 
-Yup.addMethod<Yup.MixedSchema>(
-  Yup.mixed,
+Yup.addMethod<Yup.ArraySchema<Yup.BaseSchema<Dayjs>>>(
+  Yup.array<Dayjs>,
   "isRedemptionDatesValid",
   isRedemptionDatesValid
 );
-Yup.addMethod<Yup.MixedSchema>(
-  Yup.mixed,
+Yup.addMethod<Yup.ArraySchema<Yup.BaseSchema<Dayjs>>>(
+  Yup.array<Dayjs>,
   "isOfferValidityDatesValid",
   isOfferValidityDatesValid
 );
-Yup.addMethod<Yup.MixedSchema>(Yup.mixed, "isItBeforeNow", isItBeforeNow);
+Yup.addMethod<Yup.ArraySchema<Yup.BaseSchema<Dayjs>>>(
+  Yup.array<Dayjs>,
+  "isItBeforeNow",
+  isItBeforeNow
+);
 Yup.addMethod<Yup.StringSchema>(
   Yup.string,
   "disputePeriodValue",

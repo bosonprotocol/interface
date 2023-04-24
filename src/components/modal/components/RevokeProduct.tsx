@@ -141,7 +141,7 @@ export default function RevokeProduct({
                 (error as unknown as { code: string }).code ===
                   "ACTION_REJECTED";
               if (hasUserRejectedTx) {
-                showModal("CONFIRMATION_FAILED");
+                showModal("TRANSACTION_FAILED");
               }
             }}
             onPendingSignature={() => {

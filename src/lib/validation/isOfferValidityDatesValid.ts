@@ -5,6 +5,9 @@ function isOfferValidityDatesValid() {
   return this.test(
     "isOfferValidityDatesValid",
     function (value: (Dayjs | null)[]) {
+      if (!value) {
+        return false;
+      }
       const rpValue: (Dayjs | null)[] = this.parent.redemptionPeriod;
       const doesItEndBefore =
         rpValue[1] instanceof dayjs

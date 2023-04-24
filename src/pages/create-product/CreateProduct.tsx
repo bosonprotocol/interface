@@ -24,12 +24,21 @@ function CreateProduct() {
 
   const showCreateProductDraftModal = useCallback(() => {
     if (store.shouldDisplayModal) {
-      showModal(modalTypes.CREATE_PRODUCT_DRAFT, {
-        title: "Draft",
-        chooseNew,
-        chooseDraft,
-        closable: false
-      });
+      showModal(
+        modalTypes.CREATE_PRODUCT_DRAFT,
+        {
+          title: "Draft",
+          chooseNew,
+          chooseDraft,
+          closable: false
+        },
+        "auto",
+        undefined,
+        {
+          xs: "100%",
+          s: "31.25rem"
+        }
+      );
     } else {
       setDraftModalClosed(true);
     }

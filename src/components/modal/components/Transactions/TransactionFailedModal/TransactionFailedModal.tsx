@@ -6,10 +6,16 @@ import Grid from "../../../../ui/Grid";
 import Typography from "../../../../ui/Typography";
 import { useModal } from "../../../useModal";
 
-export default function ConfirmationFailedModal() {
+export default function TransactionFailedModal({
+  errorMessage,
+  detailedErrorMessage
+}: {
+  errorMessage: string;
+  detailedErrorMessage?: string;
+}) {
   const { updateProps, store } = useModal();
   useEffect(() => {
-    updateProps<"CONFIRMATION_FAILED">({
+    updateProps<"TRANSACTION_FAILED">({
       ...store,
       modalProps: {
         ...store.modalProps
@@ -26,7 +32,7 @@ export default function ConfirmationFailedModal() {
       <WarningCircle size={128} color={colors.orange} />
 
       <Typography fontWeight="600" $fontSize="1.5rem" lineHeight="150%">
-        Confirmation Failed
+        {errorMessage || "Confirmation Failed"}
       </Typography>
       <Typography
         fontWeight="400"
@@ -34,7 +40,7 @@ export default function ConfirmationFailedModal() {
         lineHeight="150%"
         margin="0.5rem 0 1.5rem 0"
       >
-        Please retry this action
+        {detailedErrorMessage || "Please retry this action"}
       </Typography>
     </Grid>
   );

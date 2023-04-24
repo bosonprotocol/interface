@@ -8,7 +8,6 @@ import {
   subgraph
 } from "@bosonprotocol/react-kit";
 import { parseUnits } from "@ethersproject/units";
-import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import { Form, Formik, FormikHelpers, FormikProps } from "formik";
@@ -21,13 +20,11 @@ import { generatePath, useLocation, useNavigate } from "react-router-dom";
 import uuid from "react-uuid";
 import { useAccount } from "wagmi";
 dayjs.extend(localizedFormat);
-
 import { BigNumber, ethers } from "ethers";
 import { useEffect } from "react";
 
 import { Token } from "../../components/convertion-rate/ConvertionRateContext";
 import { FileProps } from "../../components/form/Upload/WithUploadToIpfs";
-import { authTokenTypes } from "../../components/modal/components/CreateProfile/Lens/const";
 import {
   getLensCoverPictureUrl,
   getLensProfilePictureUrl,
@@ -51,7 +48,7 @@ import { ProductRoutes } from "../../lib/routing/routes";
 import { fetchIpfsBase64Media } from "../../lib/utils/base64";
 import { useChatStatus } from "../../lib/utils/hooks/chat/useChatStatus";
 import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
-import { useAddPendingTransaction } from "../../lib/utils/hooks/transactions/usePendingTransactions";
+import { useCreateOffers } from "../../lib/utils/hooks/offer/useCreateOffers";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
@@ -66,8 +63,7 @@ import {
   MultiStepsContainer,
   ProductLayoutContainer
 } from "./CreateProductInner.styles";
-import { createProductSteps, FIRST_STEP, poll } from "./utils";
-import { buildCondition } from "./utils/buildCondition";
+import { createProductSteps, FIRST_STEP } from "./utils";
 import { validateDates } from "./utils/dataValidator";
 import { CreateProductSteps } from "./utils/index";
 
@@ -394,7 +390,7 @@ function CreateProductInner({
     [history, location, setCurrentStep]
   );
 
-  const onCreateNewProject = () => {
+  const onCreateNew = () => {
     hideModal();
     setCurrentStepWithHistory(FIRST_STEP);
     setIsPreviewVisible(false);
@@ -415,10 +411,7 @@ function CreateProductInner({
   const { address } = useAccount();
 
   const { sellers, lens: lensProfiles } = useCurrentSellers();
-  const addPendingTransaction = useAddPendingTransaction();
-
-  const hasSellerAccount = !!sellers?.length;
-
+  const { mutateAsync: createOffers } = useCreateOffers();
   const currentOperator = sellers.find((seller) => {
     return seller?.operator.toLowerCase() === address?.toLowerCase();
   });
@@ -482,7 +475,7 @@ function CreateProductInner({
         },
         hasMultipleVariants: !!values.productVariants.variants.length,
         // these are the ones that we already had before
-        onCreateNewProject: onCreateNewProject,
+        onCreateNew: onCreateNew,
         onViewMyItem: () => onViewMyItem(metadataInfo.product?.uuid)
       },
       "auto"
@@ -872,330 +865,47 @@ function CreateProductInner({
         });
         offersToCreate.push(offerData);
       }
-
-      showModal("WAITING_FOR_CONFIRMATION");
-      const isMetaTx = Boolean(coreSDK.isMetaTxConfigSet && address);
-      const seller = address
-        ? {
-            operator: address,
-            admin: address,
-            treasury: address,
-            clerk: address,
-            contractUri: "ipfs://sample",
-            royaltyPercentage: "0",
-            authTokenId: "0",
-            authTokenType: authTokenTypes.NONE
-          }
-        : null;
       const isTokenGated = commonTermsOfSale.tokenGatedOffer.value === "true";
-      let txResponse;
-      if (isMultiVariant) {
-        if (!hasSellerAccount && seller) {
-          if (isMetaTx) {
-            // createSeller with meta-transaction
-            const nonce = Date.now();
-            const { r, s, v, functionName, functionSignature } =
-              await coreSDK.signMetaTxCreateSeller({
-                createSellerArgs: seller,
-                nonce
-              });
-            txResponse = await coreSDK.relayMetaTransaction({
-              functionName,
-              functionSignature,
-              sigR: r,
-              sigS: s,
-              sigV: v,
-              nonce
-            });
-          } else {
-            txResponse = await coreSDK.createSeller(seller);
-          }
-          showModal("TRANSACTION_SUBMITTED", {
-            action: "Create seller",
-            txHash: txResponse.hash
-          });
-          addPendingTransaction({
-            type: subgraph.EventType.SellerCreated,
-            hash: txResponse.hash,
-            isMetaTx,
-            accountType: "Seller"
-          });
-          await txResponse.wait();
-          showModal("WAITING_FOR_CONFIRMATION");
+      await createOffers({
+        isMultiVariant,
+        offersToCreate,
+        tokenGatedInfo: isTokenGated ? commonTermsOfSale : null,
+        conditionDecimals: decimals,
+        onGetExchangeTokenDecimals: setDecimals,
+        onCreatedOffersWithVariants: ({ firstOffer }) => {
+          toast((t) => (
+            <SuccessTransactionToast
+              t={t}
+              action={`Created offer with variants: ${firstOffer?.metadata?.name}`}
+              onViewDetails={() => {
+                handleOpenSuccessModal({
+                  offerInfo: firstOffer || ({} as subgraph.OfferFieldsFragment),
+                  values
+                });
+              }}
+            />
+          ));
+        },
+        onCreatedSingleOffers: ({ offer: createdOffer }) => {
+          toast((t) => (
+            <SuccessTransactionToast
+              t={t}
+              action={`Created offer: ${createdOffer?.metadata?.name}`}
+              onViewDetails={() => {
+                handleOpenSuccessModal({
+                  offerInfo:
+                    createdOffer || ({} as subgraph.OfferFieldsFragment),
+                  values
+                });
+              }}
+            />
+          ));
         }
-        if (isMetaTx) {
-          // createOfferBatch with meta-transaction
-          const nonce = Date.now();
-          const { r, s, v, functionName, functionSignature } =
-            await coreSDK.signMetaTxCreateOfferBatch({
-              createOffersArgs: offersToCreate,
-              nonce
-            });
-          txResponse = await coreSDK.relayMetaTransaction({
-            functionName,
-            functionSignature,
-            sigR: r,
-            sigS: s,
-            sigV: v,
-            nonce
-          });
-        } else {
-          txResponse = await coreSDK.createOfferBatch(offersToCreate);
-        }
-        showModal("TRANSACTION_SUBMITTED", {
-          action: "Create offer with variants",
-          txHash: txResponse.hash
-        });
-        addPendingTransaction({
-          type: subgraph.EventType.OfferCreated,
-          hash: txResponse.hash,
-          isMetaTx,
-          accountType: "Seller"
-        });
-        const txReceipt = await txResponse.wait();
-        const offerIds = coreSDK.getCreatedOfferIdsFromLogs(txReceipt.logs);
-
-        if (isTokenGated) {
-          showModal("WAITING_FOR_CONFIRMATION");
-          if (
-            commonTermsOfSale?.tokenContract &&
-            commonTermsOfSale.tokenType?.value === TOKEN_TYPES[0].value
-          ) {
-            try {
-              const { decimals: decimalsLocal } =
-                await coreSDK.getExchangeTokenInfo(
-                  commonTermsOfSale.tokenContract
-                );
-              setDecimals(decimalsLocal);
-            } catch (error) {
-              setDecimals(undefined);
-            }
-          }
-          const condition = buildCondition(commonTermsOfSale, decimals);
-
-          if (isMetaTx) {
-            const nonce = Date.now();
-            const { r, s, v, functionName, functionSignature } =
-              await coreSDK.signMetaTxCreateGroup({
-                createGroupArgs: { offerIds, ...condition },
-                nonce
-              });
-            txResponse = await coreSDK.relayMetaTransaction({
-              functionName,
-              functionSignature,
-              sigR: r,
-              sigS: s,
-              sigV: v,
-              nonce
-            });
-          } else {
-            txResponse = await coreSDK.createGroup({ offerIds, ...condition });
-          }
-          showModal("TRANSACTION_SUBMITTED", {
-            action: "Create condition group for offers",
-            txHash: txResponse.hash
-          });
-          await txResponse.wait();
-        }
-        let createdOffers: OfferFieldsFragment[] | null = null;
-        await poll(
-          async () => {
-            createdOffers = (
-              await Promise.all(
-                offerIds.map((offerId) =>
-                  coreSDK.getOfferById(offerId as string)
-                )
-              )
-            ).filter((offer) => !!offer);
-            return createdOffers;
-          },
-          (offers) => {
-            return offers.length !== offerIds.length;
-          },
-          500
-        );
-        const [firstOffer] = createdOffers as unknown as OfferFieldsFragment[];
-        toast((t) => (
-          <SuccessTransactionToast
-            t={t}
-            action={`Created offer with variants: ${firstOffer?.metadata?.name}`}
-            onViewDetails={() => {
-              handleOpenSuccessModal({
-                offerInfo: firstOffer || ({} as subgraph.OfferFieldsFragment),
-                values
-              });
-            }}
-          />
-        ));
-      } else {
-        const [offerData] = offersToCreate;
-        if (isMetaTx) {
-          // meta-transaction
-          if (!hasSellerAccount && seller) {
-            // createSeller with meta-transaction
-            const nonce = Date.now();
-            const { r, s, v, functionName, functionSignature } =
-              await coreSDK.signMetaTxCreateSeller({
-                createSellerArgs: seller,
-                nonce
-              });
-            const createSellerResponse = await coreSDK.relayMetaTransaction({
-              functionName,
-              functionSignature,
-              sigR: r,
-              sigS: s,
-              sigV: v,
-              nonce
-            });
-            showModal("TRANSACTION_SUBMITTED", {
-              action: "Create seller",
-              txHash: createSellerResponse.hash
-            });
-            addPendingTransaction({
-              type: subgraph.EventType.SellerCreated,
-              hash: createSellerResponse.hash,
-              isMetaTx,
-              accountType: "Seller"
-            });
-            await createSellerResponse.wait();
-            showModal("WAITING_FOR_CONFIRMATION");
-          }
-          // createOffer with meta-transaction
-          const nonce = Date.now();
-          if (!isTokenGated) {
-            const { r, s, v, functionName, functionSignature } =
-              await coreSDK.signMetaTxCreateOffer({
-                createOfferArgs: offerData,
-                nonce
-              });
-            txResponse = await coreSDK.relayMetaTransaction({
-              functionName,
-              functionSignature,
-              sigR: r,
-              sigS: s,
-              sigV: v,
-              nonce
-            });
-          } else {
-            if (
-              commonTermsOfSale?.tokenContract &&
-              commonTermsOfSale.tokenType?.value === TOKEN_TYPES[0].value
-            ) {
-              try {
-                const { decimals: decimalsLocal } =
-                  await coreSDK.getExchangeTokenInfo(
-                    commonTermsOfSale.tokenContract
-                  );
-                setDecimals(decimalsLocal);
-              } catch (error) {
-                setDecimals(undefined);
-              }
-            }
-            const condition = buildCondition(commonTermsOfSale, decimals);
-            const { r, s, v, functionName, functionSignature } =
-              await coreSDK.signMetaTxCreateOfferWithCondition({
-                offerToCreate: offerData,
-                condition,
-                nonce
-              });
-            txResponse = await coreSDK.relayMetaTransaction({
-              functionName,
-              functionSignature,
-              sigR: r,
-              sigS: s,
-              sigV: v,
-              nonce
-            });
-          }
-        } else {
-          if (isTokenGated) {
-            if (
-              commonTermsOfSale?.tokenContract &&
-              commonTermsOfSale.tokenType?.value === TOKEN_TYPES[0].value
-            ) {
-              try {
-                const { decimals: decimalsLocal } =
-                  await coreSDK.getExchangeTokenInfo(
-                    commonTermsOfSale.tokenContract
-                  );
-
-                setDecimals(decimalsLocal);
-              } catch (error) {
-                setDecimals(undefined);
-              }
-            }
-            const condition = buildCondition(commonTermsOfSale, decimals);
-            txResponse =
-              !hasSellerAccount && seller
-                ? await coreSDK.createSellerAndOfferWithCondition(
-                    seller,
-                    offerData,
-                    condition
-                  )
-                : await coreSDK.createOfferWithCondition(offerData, condition);
-          } else {
-            txResponse =
-              !hasSellerAccount && seller
-                ? await coreSDK.createSellerAndOffer(seller, offerData)
-                : await coreSDK.createOffer(offerData);
-          }
-        }
-        showModal("TRANSACTION_SUBMITTED", {
-          action: "Create offer",
-          txHash: txResponse.hash
-        });
-
-        addPendingTransaction({
-          type: subgraph.EventType.OfferCreated,
-          hash: txResponse.hash,
-          isMetaTx,
-          accountType: "Seller"
-        });
-
-        if (!hasSellerAccount && seller) {
-          addPendingTransaction({
-            type: subgraph.EventType.SellerCreated,
-            hash: txResponse.hash,
-            isMetaTx,
-            accountType: "Seller"
-          });
-        }
-
-        const txReceipt = await txResponse.wait();
-        const offerId = coreSDK.getCreatedOfferIdFromLogs(txReceipt.logs);
-        let createdOffer: OfferFieldsFragment | null = null;
-        await poll(
-          async () => {
-            createdOffer = await coreSDK.getOfferById(offerId as string);
-            return createdOffer;
-          },
-          (offer) => {
-            return !offer;
-          },
-          500
-        );
-        if (!createdOffer) {
-          return;
-        }
-        toast((t) => (
-          <SuccessTransactionToast
-            t={t}
-            action={`Created offer: ${createdOffer?.metadata?.name}`}
-            onViewDetails={() => {
-              handleOpenSuccessModal({
-                offerInfo: createdOffer || ({} as subgraph.OfferFieldsFragment),
-                values
-              });
-            }}
-          />
-        ));
-      }
-
-      hideModal();
+      });
     } catch (error: any) {
       // TODO: FAILURE MODAL
       console.error("error->", error.errors ?? error);
-      showModal("CONFIRMATION_FAILED");
+      showModal("TRANSACTION_FAILED");
     }
   };
 
@@ -1221,11 +931,11 @@ function CreateProductInner({
         [coreTermsOfSaleKey]: {
           ...values[coreTermsOfSaleKey],
           redemptionPeriod:
-            values?.[coreTermsOfSaleKey]?.redemptionPeriod?.map((d: Dayjs) =>
+            values?.[coreTermsOfSaleKey]?.redemptionPeriod?.map((d) =>
               dayjs(d).format()
             ) ?? [],
           offerValidityPeriod:
-            values?.[coreTermsOfSaleKey]?.offerValidityPeriod?.map((d: Dayjs) =>
+            values?.[coreTermsOfSaleKey]?.offerValidityPeriod?.map((d) =>
               dayjs(d).format()
             ) ?? []
         }
