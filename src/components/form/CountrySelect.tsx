@@ -1,22 +1,15 @@
 /* eslint @typescript-eslint/no-explicit-any: "off" */
 import { useField, useFormikContext } from "formik";
 import { GlobeHemisphereWest } from "phosphor-react";
-import { useCallback, useEffect, useState } from "react";
+import { forwardRef, useState } from "react";
 import type { Country as CountryCode } from "react-phone-number-input";
-import PhoneInput, {
-  formatPhoneNumberIntl,
-  getCountryCallingCode,
-  isSupportedCountry,
-  isValidPhoneNumber,
-  parsePhoneNumber
-} from "react-phone-number-input";
+import PhoneInput from "react-phone-number-input";
 import Select, { components } from "react-select";
 import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import Error from "./Error";
-import { FieldInput } from "./Field.styles";
 import type { InputProps } from "./types";
 import { SelectDataProps } from "./types";
 const customStyles = {
@@ -70,7 +63,7 @@ const customStyles = {
   })
 };
 
-export const ControlGrid = styled.div`
+const ControlGrid = styled.div`
   display: flex;
   width: 100%;
   gap: 0.25rem;
@@ -85,7 +78,7 @@ export const ControlGrid = styled.div`
     }
   }
 `;
-export const OptionGrid = styled.div`
+const OptionGrid = styled.div`
   display: grid;
   grid-auto-columns: 1fr;
   grid-template-columns: 2em 1fr;
@@ -96,17 +89,9 @@ export const OptionGrid = styled.div`
   }
 `;
 
-export const PhoneWrapper = styled.div`
+const PhoneWrapper = styled.div`
   width: 100%;
   padding-bottom: 0.5rem;
-  .PhoneInput {
-    width: 100%;
-    display: grid;
-    grid-auto-columns: 1fr;
-    grid-template-columns: 14em 1fr;
-    gap: 0.5rem;
-    align-items: center;
-  }
   input {
     width: 100%;
     padding: 1rem;
@@ -120,75 +105,28 @@ export const PhoneWrapper = styled.div`
   }
 `;
 
-const handleCountry = () => {
-  const countryCode = (navigator?.language || "")?.toUpperCase() as CountryCode;
-  if (isSupportedCountry(countryCode as CountryCode)) return countryCode;
-  return undefined;
-};
-
-export { CountryCode };
-
 type Props = InputProps & {
   countries?: CountryCode[];
 };
 
-export default function Phone({ name, countries, ...props }: Props) {
-  const [initialized, setInitialized] = useState<boolean>(false);
-  const [phone, setPhone] = useState<string | undefined>(undefined);
-  const [countryCode, setCountryCode] = useState<CountryCode | undefined>(
-    handleCountry()
-  );
+export function CountrySelect({ name, countries, ...props }: Props) {
   const { status } = useFormikContext();
-  const [field, meta, helpers] = useField(name);
+  const [, meta, helpers] = useField(name);
   const errorText = meta.error || status?.[name];
   const errorMessage = errorText && meta.touched ? errorText : "";
   const displayError =
     typeof errorMessage === typeof "string" && errorMessage !== "";
-
-  const handlePhoneChange = useCallback(
-    (value: string) => {
-      const callingCode = countryCode
-        ? getCountryCallingCode(countryCode as CountryCode)
-        : false;
-      const newValue = formatPhoneNumberIntl(
-        `${callingCode ? `+${callingCode}` : ""}${value}`
-      );
-
-      if (!isValidPhoneNumber(newValue)) {
-        if (!meta.touched) {
-          helpers.setTouched(true);
-        }
-        helpers.setError(
-          newValue === ""
-            ? "Phone number is required"
-            : "Wrong phone number format"
-        );
-      }
-      helpers.setValue(newValue);
-    },
-    [helpers, countryCode, meta.touched]
-  );
-
-  useEffect(() => {
-    if (phone !== undefined) {
-      handlePhoneChange(phone);
-    }
-  }, [countryCode, phone]); // eslint-disable-line
-
-  useEffect(() => {
-    if (!initialized && field.value) {
-      const parsed = parsePhoneNumber(field.value);
-      setInitialized(true);
-      setPhone(parsed?.nationalNumber || "");
-      if (parsed?.country) {
-        setCountryCode(parsed?.country as CountryCode);
-      }
-    }
-  }, [field.value, initialized]); // eslint-disable-line
+  const [phone, setPhone] = useState<string | undefined>(undefined);
+  const [countryCode, setCountryCode] = useState<CountryCode | undefined>();
   return (
     <>
       <PhoneWrapper>
         <PhoneInput
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          inputComponent={forwardRef((props, ref) => (
+            <div></div>
+          ))}
+          addInternationalOption={false}
           country={countryCode}
           value={phone}
           onChange={(value) => setPhone((value || "").replace(/\+/g, ""))}
@@ -199,13 +137,14 @@ export default function Phone({ name, countries, ...props }: Props) {
                 <Select
                   {...props}
                   styles={customStyles}
-                  name="phoneCountry"
+                  name="countrySelect"
                   value={(props?.options || []).find(
                     (o: SelectDataProps) => o.value === countryCode
                   )}
-                  onChange={(o: SelectDataProps) =>
-                    setCountryCode(o.value as CountryCode)
-                  }
+                  onChange={(o: SelectDataProps) => {
+                    setCountryCode(o.value as CountryCode);
+                    helpers.setValue(o.label);
+                  }}
                   components={{
                     Control: (props) => {
                       const country =
@@ -246,16 +185,8 @@ export default function Phone({ name, countries, ...props }: Props) {
               </div>
             </>
           )}
-          placeholder="Phone number"
         />
       </PhoneWrapper>
-      <FieldInput
-        type="hidden"
-        error={errorMessage}
-        disabled
-        {...field}
-        {...props}
-      />
       <Error
         display={!props.hideError && displayError}
         message={errorMessage}

@@ -1,5 +1,6 @@
 import { useBreakpoints } from "../../../../../lib/utils/hooks/useBreakpoints";
 import { CountryCode, Input, Phone } from "../../../../form";
+import { CountrySelect } from "../../../../form/CountrySelect";
 import BosonButton from "../../../../ui/BosonButton";
 import Button from "../../../../ui/Button";
 import Grid from "../../../../ui/Grid";
@@ -127,9 +128,10 @@ export default function RedeemForm({
           </Grid>
         )}
         <Grid flexDirection="column" alignItems="flex-start">
-          <Input
+          <CountrySelect
             name={FormModel.formFields.country.name}
             placeholder={FormModel.formFields.country.placeholder}
+            countries={fatfMemberCountries}
           />
         </Grid>
         <Grid flexDirection="column" alignItems="flex-start">
@@ -142,7 +144,6 @@ export default function RedeemForm({
           <Phone
             name={FormModel.formFields.phone.name}
             placeholder={FormModel.formFields.phone.placeholder}
-            countries={fatfMemberCountries}
           />
         </Grid>
       </Grid>
