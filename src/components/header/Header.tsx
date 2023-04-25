@@ -22,40 +22,6 @@ const smallWidth = "180px";
 const mediumWidth = "225px";
 const sideMargin = "1rem";
 const closedHeaderWidth = "75px";
-const SideBannerContainer = styled.div<{
-  $navigationBarPosition: string;
-  $isSideBarOpen: boolean;
-}>`
-  ${({ $navigationBarPosition, $isSideBarOpen }) => {
-    if ("left" === $navigationBarPosition) {
-      return css`
-        ${$isSideBarOpen
-          ? css`
-              margin-left: ${smallWidth};
-              ${breakpoint.m} {
-                margin-left: ${mediumWidth};
-              }
-            `
-          : css`
-              margin-left: ${closedHeaderWidth};
-            `}
-      `;
-    } else if ("right" === $navigationBarPosition) {
-      return css`
-        ${$isSideBarOpen
-          ? css`
-              margin-right: ${smallWidth};
-              ${breakpoint.m} {
-                margin-right: ${mediumWidth};
-              }
-            `
-          : css`
-              margin-right: ${closedHeaderWidth};
-            `}
-      `;
-    }
-  }}
-`;
 
 const Header = styled.header<{
   $navigationBarPosition: string;
