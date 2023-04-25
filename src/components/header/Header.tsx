@@ -11,7 +11,6 @@ import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
-import Banner from "../banner/Banner";
 import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
 import Layout from "../Layout";
 import ViewTxButton from "../transactions/ViewTxButton";
@@ -312,20 +311,11 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
 
     return (
       <>
-        {withBanner && isSideNavBar && (
-          <SideBannerContainer
-            $navigationBarPosition={navigationBarPosition}
-            $isSideBarOpen={isOpen}
-          >
-            <Banner />
-          </SideBannerContainer>
-        )}
         <Header
           $navigationBarPosition={navigationBarPosition}
           $isSideBarOpen={isOpen}
           ref={ref}
         >
-          {withBanner && !isSideNavBar && <Banner />}
           <HeaderContainer
             fluidHeader={fluidHeader}
             $navigationBarPosition={navigationBarPosition}
