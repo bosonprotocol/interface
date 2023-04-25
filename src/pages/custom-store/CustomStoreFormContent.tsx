@@ -889,7 +889,16 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
           </CollapseWithTrigger>
         </Grid>
         {hasSubmitError && <SimpleError />}
-        <BosonButton type="submit" variant="primaryFill" disabled={!isValid}>
+        <BosonButton
+          type="submit"
+          variant="primaryFill"
+          disabled={!isValid || !sellerIds || sellerIds.length === 0}
+          tooltip={
+            !sellerIds || sellerIds.length === 0
+              ? "Please connect a seller wallet"
+              : undefined
+          }
+        >
           Create
         </BosonButton>
       </Grid>
