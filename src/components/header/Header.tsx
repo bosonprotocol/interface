@@ -11,7 +11,6 @@ import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
-import Banner from "../banner/Banner";
 import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
 import Layout from "../Layout";
 import ViewTxButton from "../transactions/ViewTxButton";
@@ -23,40 +22,6 @@ const smallWidth = "180px";
 const mediumWidth = "225px";
 const sideMargin = "1rem";
 const closedHeaderWidth = "75px";
-const SideBannerContainer = styled.div<{
-  $navigationBarPosition: string;
-  $isSideBarOpen: boolean;
-}>`
-  ${({ $navigationBarPosition, $isSideBarOpen }) => {
-    if ("left" === $navigationBarPosition) {
-      return css`
-        ${$isSideBarOpen
-          ? css`
-              margin-left: ${smallWidth};
-              ${breakpoint.m} {
-                margin-left: ${mediumWidth};
-              }
-            `
-          : css`
-              margin-left: ${closedHeaderWidth};
-            `}
-      `;
-    } else if ("right" === $navigationBarPosition) {
-      return css`
-        ${$isSideBarOpen
-          ? css`
-              margin-right: ${smallWidth};
-              ${breakpoint.m} {
-                margin-right: ${mediumWidth};
-              }
-            `
-          : css`
-              margin-right: ${closedHeaderWidth};
-            `}
-      `;
-    }
-  }}
-`;
 
 const Header = styled.header<{
   $navigationBarPosition: string;
@@ -312,20 +277,11 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
 
     return (
       <>
-        {withBanner && isSideNavBar && (
-          <SideBannerContainer
-            $navigationBarPosition={navigationBarPosition}
-            $isSideBarOpen={isOpen}
-          >
-            <Banner />
-          </SideBannerContainer>
-        )}
         <Header
           $navigationBarPosition={navigationBarPosition}
           $isSideBarOpen={isOpen}
           ref={ref}
         >
-          {withBanner && !isSideNavBar && <Banner />}
           <HeaderContainer
             fluidHeader={fluidHeader}
             $navigationBarPosition={navigationBarPosition}
