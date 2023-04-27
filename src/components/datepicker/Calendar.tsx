@@ -69,9 +69,13 @@ export default function Calendar({
       </CalendarHeader>
       <CalendarRow>
         {rows.map(({ text, value, current }: ICalendarCell, i: number) => {
-          const disabled: boolean = period
+          const isBeforeMinDate = minDate
             ? value?.isBefore(minDate, "day")
             : false;
+          const isAfterMaxDate = maxDate
+            ? value?.isAfter(maxDate, "day")
+            : false;
+          const disabled: boolean = isBeforeMinDate || isAfterMaxDate;
 
           return (
             <CalendarDay

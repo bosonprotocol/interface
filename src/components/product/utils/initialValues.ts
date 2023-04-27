@@ -11,7 +11,6 @@ import {
   OPTIONS_UNIT,
   OPTIONS_WEIGHT,
   TOKEN_CRITERIA,
-  TOKEN_GATED_VARIANTS,
   TOKEN_TYPES
 } from "./const";
 import { CreateProductForm } from "./types";
@@ -89,7 +88,6 @@ export const coreTermsOfSaleInitialValues = {
     currency: OPTIONS_CURRENCIES[0],
     quantity: 1,
     tokenGatedOffer: OPTIONS_TOKEN_GATED[0],
-    tokenGatedVariants: TOKEN_GATED_VARIANTS[0],
     tokenContract: "",
     tokenType: TOKEN_TYPES[0],
     minBalance: undefined,
@@ -105,7 +103,6 @@ export const coreTermsOfSaleInitialValues = {
 export const variantsCoreTermsOfSaleInitialValues = {
   variantsCoreTermsOfSale: {
     tokenGatedOffer: OPTIONS_TOKEN_GATED[0],
-    tokenGatedVariants: TOKEN_GATED_VARIANTS[0],
     tokenContract: "",
     tokenType: TOKEN_TYPES[0],
     minBalance: undefined,

@@ -186,7 +186,7 @@ export default function FinanceDeposit({
               "code" in error &&
               (error as unknown as { code: string }).code === "ACTION_REJECTED";
             if (hasUserRejectedTx) {
-              showModal("CONFIRMATION_FAILED");
+              showModal("TRANSACTION_FAILED");
             }
             setDepositError(error);
             reload();

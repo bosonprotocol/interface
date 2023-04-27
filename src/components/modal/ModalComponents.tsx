@@ -20,12 +20,13 @@ import ProductCreateSuccess from "./components/ProductCreateSuccess";
 import ProgressBarModal from "./components/ProgressBarModal";
 import RedeemModal from "./components/RedeemModal/RedeemModal";
 import RedeemSuccessModal from "./components/RedeemModal/RedeemSuccessModal";
+import { RelistOfferModal } from "./components/RelistOfferModal/RelistOfferModal";
 import RetractDisputeModal from "./components/RetractDisputeModal";
 import RevokeProduct from "./components/RevokeProduct";
 import FinanceDeposit from "./components/SellerFinance/FinanceDeposit";
 import FinanceWithdraw from "./components/SellerFinance/FinanceWithdraw";
-import ConfirmationFailedModal from "./components/Transactions/ConfirmationFailedModal/ConfirmationFailedModal";
 import RecentTransactionsModal from "./components/Transactions/RecentTransactionsModal/RecentTransactionsModal";
+import TransactionFailedModal from "./components/Transactions/TransactionFailedModal/TransactionFailedModal";
 import TransactionSubmittedModal from "./components/Transactions/TransactionSubmittedModal/TransactionSubmittedModal";
 import WaitingForConfirmationModal from "./components/Transactions/WaitingForConfirmationModal/WaitingForConfirmationModal";
 import Upload from "./components/Upload";
@@ -35,7 +36,7 @@ import WhatIsRedeem from "./components/WhatIsRedeem";
 export const MODAL_TYPES = {
   CANCEL_EXCHANGE: "CANCEL_EXCHANGE",
   COMPLETE_EXCHANGE: "COMPLETE_EXCHANGE",
-  CONFIRMATION_FAILED: "CONFIRMATION_FAILED",
+  TRANSACTION_FAILED: "TRANSACTION_FAILED",
   CREATE_PRODUCT_DRAFT: "CREATE_PRODUCT_DRAFT",
   CREATE_PROFILE: "CREATE_PROFILE",
   CUSTOM_STORE: "CUSTOM_STORE",
@@ -64,13 +65,14 @@ export const MODAL_TYPES = {
   WAITING_FOR_CONFIRMATION: "WAITING_FOR_CONFIRMATION",
   WHAT_IS_REDEEM: "WHAT_IS_REDEEM",
   PROGRESS_BAR: "PROGRESS_BAR",
-  EXPORT_EXCHANGES_WITH_DELIVERY: "EXPORT_EXCHANGES_WITH_DELIVERY"
+  EXPORT_EXCHANGES_WITH_DELIVERY: "EXPORT_EXCHANGES_WITH_DELIVERY",
+  RELIST_OFFER: "RELIST_OFFER"
 } as const;
 
 export const MODAL_COMPONENTS = {
   [MODAL_TYPES.CANCEL_EXCHANGE]: CancelExchangeModal,
   [MODAL_TYPES.COMPLETE_EXCHANGE]: CompleteExchange,
-  [MODAL_TYPES.CONFIRMATION_FAILED]: ConfirmationFailedModal,
+  [MODAL_TYPES.TRANSACTION_FAILED]: TransactionFailedModal,
   [MODAL_TYPES.CREATE_PRODUCT_DRAFT]: CreateProductDraft,
   [MODAL_TYPES.CREATE_PROFILE]: CreateProfileModal,
   [MODAL_TYPES.CUSTOM_STORE]: CustomStore,
@@ -99,5 +101,7 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.WAITING_FOR_CONFIRMATION]: WaitingForConfirmationModal,
   [MODAL_TYPES.WHAT_IS_REDEEM]: WhatIsRedeem,
   [MODAL_TYPES.PROGRESS_BAR]: ProgressBarModal,
-  [MODAL_TYPES.EXPORT_EXCHANGES_WITH_DELIVERY]: ExportExchangesWithDeliveryModal
+  [MODAL_TYPES.EXPORT_EXCHANGES_WITH_DELIVERY]:
+    ExportExchangesWithDeliveryModal,
+  [MODAL_TYPES.RELIST_OFFER]: RelistOfferModal
 } as const;
