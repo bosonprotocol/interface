@@ -12,7 +12,10 @@ import { DisputeFormModel } from "../../modal/components/DisputeModal/DisputeMod
 import { CONFIG } from "./../../../lib/config";
 import { SelectDataProps } from "./../../form/types";
 import {
+  OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE,
+  OPTIONS_DISPUTE_RESOLVER,
   OPTIONS_EXCHANGE_POLICY,
+  OPTIONS_PERIOD,
   OPTIONS_TOKEN_GATED,
   OPTIONS_UNIT,
   TOKEN_CRITERIA,
@@ -336,7 +339,12 @@ export const termsOfExchangeValidationSchema = Yup.object({
       value: Yup.string(),
       label: Yup.string()
     }),
-    // disputeResolver: Yup.string().required(validationMessage.required),
+    disputeResolver: Yup.object({
+      value: Yup.string().oneOf(
+        OPTIONS_DISPUTE_RESOLVER.map(({ value }) => value)
+      ),
+      label: Yup.string()
+    }),
     disputePeriod: Yup.string()
       .matches(/^[0-9]+$/, "Must be only digits")
       .required(validationMessage.required)
@@ -348,8 +356,17 @@ export const termsOfExchangeValidationSchema = Yup.object({
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           schema.disputePeriodValue(`The Dispute Period must be in line with the selected exchange policy (>=${CONFIG.minimumDisputePeriodInDays} days)` ) // prettier-ignore
-      })
-    // disputePeriodUnit: Yup.string().required(validationMessage.required)
+      }),
+    disputePeriodUnit: Yup.object({
+      value: Yup.string().oneOf(OPTIONS_PERIOD.map(({ value }) => value)),
+      label: Yup.string()
+    }),
+    contactPreference: Yup.object({
+      value: Yup.string().oneOf(
+        OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE.map(({ value }) => value)
+      ),
+      label: Yup.string()
+    })
   })
 });
 

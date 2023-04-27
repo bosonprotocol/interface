@@ -119,7 +119,18 @@ export const OPTIONS_DISPUTE_RESOLVER = [
     value: "redeemeum",
     label: "Redeemeum"
   }
-];
+] as const;
+
+export const OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE = [
+  {
+    value: "xmtp",
+    label: "XMTP Chat"
+  },
+  {
+    value: "email",
+    label: "Email"
+  }
+] as const;
 
 type Entries<T> = {
   [K in keyof T]: [K, T[K]];

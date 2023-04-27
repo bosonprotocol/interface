@@ -232,7 +232,8 @@ async function getProductV1Metadata({
           tag: "email"
         }
       ],
-      images: sellerImages
+      images: sellerImages,
+      contactPreference: termsOfExchange.contactPreference.value
     },
     exchangePolicy: {
       uuid: Date.now().toString(),

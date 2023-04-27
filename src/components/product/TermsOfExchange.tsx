@@ -16,6 +16,7 @@ import {
 } from "./Product.styles";
 import type { CreateProductForm } from "./utils";
 import {
+  OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE,
   OPTIONS_DISPUTE_RESOLVER,
   OPTIONS_EXCHANGE_POLICY,
   OPTIONS_PERIOD,
@@ -291,6 +292,19 @@ export default function TermsOfExchange() {
                   options={OPTIONS_PERIOD}
                 />
               </div>
+            </FieldContainer>
+          </FormField>
+          <FormField
+            title="Communication Channel Preference"
+            required
+            subTitle="Set up how you want to communicate with the buyer after redemption"
+          >
+            <FieldContainer>
+              <Select
+                placeholder="Choose a communication channel..."
+                name="termsOfExchange.contactPreference"
+                options={OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE}
+              />
             </FieldContainer>
           </FormField>
           <ProductInformationButtonGroup>

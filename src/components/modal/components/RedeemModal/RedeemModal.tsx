@@ -1,45 +1,12 @@
 import { Form, Formik, FormikProps } from "formik";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import * as Yup from "yup";
 
-import { ModalProps } from "../../ModalContext";
+import useOffer from "../../../../lib/utils/hooks/offer/useOffer";
 import Confirmation from "./Confirmation/Confirmation";
 import RedeemForm from "./RedeemForm/RedeemForm";
 import { FormModel } from "./RedeemModalFormModel";
 import StepsOverview from "./StepsOverview/StepsOverview";
-
-const validationSchemaPerStep = [
-  Yup.object({}),
-  Yup.object({
-    [FormModel.formFields.name.name]: Yup.string()
-      .trim()
-      .required(FormModel.formFields.name.requiredErrorMessage),
-    [FormModel.formFields.streetNameAndNumber.name]: Yup.string()
-      .trim()
-      .required(FormModel.formFields.streetNameAndNumber.requiredErrorMessage),
-    [FormModel.formFields.city.name]: Yup.string()
-      .trim()
-      .required(FormModel.formFields.city.requiredErrorMessage),
-    [FormModel.formFields.state.name]: Yup.string()
-      .trim()
-      .required(FormModel.formFields.state.requiredErrorMessage),
-    [FormModel.formFields.zip.name]: Yup.string()
-      .trim()
-      .required(FormModel.formFields.zip.requiredErrorMessage),
-    [FormModel.formFields.country.name]: Yup.string()
-      .trim()
-      .required(FormModel.formFields.country.requiredErrorMessage),
-    [FormModel.formFields.email.name]: Yup.string()
-      .trim()
-      .required(FormModel.formFields.email.requiredErrorMessage)
-      .email(FormModel.formFields.email.mustBeEmail),
-    [FormModel.formFields.phone.name]: Yup.string()
-      .trim()
-      .required(FormModel.formFields.phone.requiredErrorMessage)
-  }),
-  Yup.object({}),
-  Yup.object({})
-];
 
 interface Props {
   exchangeId: string;
@@ -49,9 +16,13 @@ interface Props {
   sellerId: string;
   sellerAddress: string;
   setIsLoading?: React.Dispatch<React.SetStateAction<boolean>>;
-  // modal props
-  hideModal: NonNullable<ModalProps["hideModal"]>;
   reload?: () => void;
+}
+
+enum Step {
+  OVERVIEW,
+  FORM,
+  CONFIRMATION
 }
 
 export default function RedeemModal({
@@ -64,10 +35,54 @@ export default function RedeemModal({
   reload,
   setIsLoading
 }: Props) {
-  const [activeStep, setActiveStep] = useState<number>(0);
-  const validationSchema = validationSchemaPerStep[activeStep];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const formRef = useRef<FormikProps<any> | null>(null);
+  const [activeStep, setActiveStep] = useState<Step>(Step.OVERVIEW);
+  const { data: offer } = useOffer(
+    {
+      offerId
+    },
+    {
+      enabled: !!offerId
+    }
+  );
+  const emailPreference =
+    offer?.metadata.productV1Seller.contactPreference === "email";
+  const validationSchema = useMemo(() => {
+    return activeStep === Step.FORM
+      ? Yup.object({
+          [FormModel.formFields.name.name]: Yup.string()
+            .trim()
+            .required(FormModel.formFields.name.requiredErrorMessage),
+          [FormModel.formFields.streetNameAndNumber.name]: Yup.string()
+            .trim()
+            .required(
+              FormModel.formFields.streetNameAndNumber.requiredErrorMessage
+            ),
+          [FormModel.formFields.city.name]: Yup.string()
+            .trim()
+            .required(FormModel.formFields.city.requiredErrorMessage),
+          [FormModel.formFields.state.name]: Yup.string()
+            .trim()
+            .required(FormModel.formFields.state.requiredErrorMessage),
+          [FormModel.formFields.zip.name]: Yup.string()
+            .trim()
+            .required(FormModel.formFields.zip.requiredErrorMessage),
+          [FormModel.formFields.country.name]: Yup.string()
+            .trim()
+            .required(FormModel.formFields.country.requiredErrorMessage),
+          [FormModel.formFields.email.name]: emailPreference
+            ? Yup.string()
+                .trim()
+                .required(FormModel.formFields.email.requiredErrorMessage)
+                .email(FormModel.formFields.email.mustBeEmail)
+            : Yup.string().trim().email(FormModel.formFields.email.mustBeEmail),
+          [FormModel.formFields.phone.name]: Yup.string()
+            .trim()
+            .required(FormModel.formFields.phone.requiredErrorMessage)
+        })
+      : Yup.object({});
+  }, [activeStep, emailPreference]);
+  type FormType = Yup.InferType<typeof validationSchema>;
+  const formRef = useRef<FormikProps<FormType> | null>(null);
 
   useEffect(() => {
     // TODO: this should not be necessary as validateOnMount should handle that
@@ -77,7 +92,7 @@ export default function RedeemModal({
   }, [activeStep]);
   return (
     <>
-      <Formik
+      <Formik<FormType>
         innerRef={formRef}
         validationSchema={validationSchema}
         onSubmit={() => {}} // eslint-disable-line @typescript-eslint/no-empty-function
@@ -93,10 +108,7 @@ export default function RedeemModal({
         }}
         validateOnMount
       >
-        {(
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          props: FormikProps<any>
-        ) => {
+        {(props: FormikProps<FormType>) => {
           const isRedeemFormOK =
             !props.errors[FormModel.formFields.name.name] &&
             !props.errors[FormModel.formFields.streetNameAndNumber.name] &&
@@ -108,12 +120,12 @@ export default function RedeemModal({
             !props.errors[FormModel.formFields.phone.name];
           return (
             <Form>
-              {activeStep === 0 ? (
-                <StepsOverview onNextClick={() => setActiveStep(1)} />
-              ) : activeStep === 1 ? (
+              {activeStep === Step.OVERVIEW ? (
+                <StepsOverview onNextClick={() => setActiveStep(Step.FORM)} />
+              ) : activeStep === Step.FORM ? (
                 <RedeemForm
-                  onBackClick={() => setActiveStep(0)}
-                  onNextClick={() => setActiveStep(2)}
+                  onBackClick={() => setActiveStep(Step.OVERVIEW)}
+                  onNextClick={() => setActiveStep(Step.CONFIRMATION)}
                   isValid={isRedeemFormOK}
                 />
               ) : (
@@ -124,7 +136,7 @@ export default function RedeemModal({
                   buyerId={buyerId}
                   sellerId={sellerId}
                   sellerAddress={sellerAddress}
-                  onBackClick={() => setActiveStep(1)}
+                  onBackClick={() => setActiveStep(Step.FORM)}
                   reload={reload}
                   setIsLoading={setIsLoading}
                 />

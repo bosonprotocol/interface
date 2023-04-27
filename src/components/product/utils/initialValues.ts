@@ -2,6 +2,7 @@ import { CONFIG } from "../../../lib/config";
 import { FormModel } from "../../modal/components/Chat/MakeProposal/MakeProposalFormModel";
 import { DisputeFormModel } from "../../modal/components/DisputeModal/DisputeModalFormModel";
 import {
+  OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE,
   OPTIONS_CURRENCIES,
   OPTIONS_DISPUTE_RESOLVER,
   OPTIONS_EXCHANGE_POLICY,
@@ -115,7 +116,10 @@ export const variantsCoreTermsOfSaleInitialValues = {
   }
 };
 
-export const termsOfExchangeInitialValues = {
+export const termsOfExchangeInitialValues: Pick<
+  CreateProductForm,
+  "termsOfExchange"
+> = {
   termsOfExchange: {
     exchangePolicy: OPTIONS_EXCHANGE_POLICY[0],
     buyerCancellationPenalty: "",
@@ -124,7 +128,8 @@ export const termsOfExchangeInitialValues = {
     sellerDepositUnit: OPTIONS_UNIT[0],
     disputeResolver: OPTIONS_DISPUTE_RESOLVER[0],
     disputePeriod: "",
-    disputePeriodUnit: OPTIONS_PERIOD[0]
+    disputePeriodUnit: OPTIONS_PERIOD[0],
+    contactPreference: OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE[0]
   }
 } as const;
 
