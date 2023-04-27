@@ -418,7 +418,7 @@ export default function ExchangeSidePreview({
       <Section>
         <DetailTable align noBorder data={OFFER_DETAIL_DATA ?? ({} as never)} />
       </Section>
-      {isInDispute && iAmTheBuyer && !isEscalated && !isRetracted ? (
+      {isInDispute && iAmTheBuyer && !isRetracted ? (
         <CTASection>
           <BosonButton
             variant="accentInverted"
@@ -438,23 +438,27 @@ export default function ExchangeSidePreview({
           >
             Retract
           </BosonButton>
-          <BosonButton
-            variant="secondaryInverted"
-            showBorder={false}
-            onClick={() =>
-              showModal(
-                "ESCALATE_MODAL",
-                {
-                  title: "Escalate",
-                  exchange: exchange,
-                  refetch: refetchItAll
-                },
-                "l"
-              )
-            }
-          >
-            Escalate
-          </BosonButton>
+          {!isEscalated ? (
+            <BosonButton
+              variant="secondaryInverted"
+              showBorder={false}
+              onClick={() =>
+                showModal(
+                  "ESCALATE_MODAL",
+                  {
+                    title: "Escalate",
+                    exchange: exchange,
+                    refetch: refetchItAll
+                  },
+                  "l"
+                )
+              }
+            >
+              Escalate
+            </BosonButton>
+          ) : (
+            <></>
+          )}
           <CompleteExchangeButton />
         </CTASection>
       ) : isInRedeemed && iAmTheBuyer ? (
