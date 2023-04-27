@@ -709,7 +709,8 @@ export default function SellerProductsTable({
                       padding: "0.25rem 1rem",
                       margin: "1px"
                     }}
-                    disabled={!offer}
+                    tooltip="This action is restricted to only the operator wallet"
+                    disabled={!offer || !sellerRoles?.isOperator}
                     onClick={async (
                       event: Parameters<
                         NonNullable<Parameters<typeof Button>[0]["onClick"]>
