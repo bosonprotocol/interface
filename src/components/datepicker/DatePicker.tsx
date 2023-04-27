@@ -8,6 +8,7 @@ dayjs.extend(timezone);
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { useDidMountEffect } from "../../lib/utils/hooks/useDidMountEffect";
 import { FieldInput } from "../form/Field.styles";
 import Calendar from "./Calendar";
 import { DatePickerWrapper, Picker, PickerGrid } from "./DatePicker.style";
@@ -16,7 +17,7 @@ import SelectTime from "./SelectTime";
 
 interface Props {
   initialValue?: Dayjs | Array<Dayjs> | null;
-  onChange?: (selected: Dayjs | Array<Dayjs | null>) => void;
+  onChange?: (selected: Dayjs | Array<Dayjs | null> | null) => void;
   error?: string;
   period: boolean;
   selectTime: boolean;
@@ -37,8 +38,10 @@ const handleInitialDates = (
   let endDate: Dayjs | null = null;
 
   if (Array.isArray(initialValue)) {
-    startDate = dayjs(initialValue[0]);
-    endDate = dayjs(initialValue[1]);
+    if (initialValue.length) {
+      startDate = dayjs(initialValue[0]);
+      endDate = dayjs(initialValue[1]);
+    }
   } else {
     startDate = dayjs(initialValue);
   }
@@ -109,7 +112,7 @@ export default function DatePicker({
     }
   };
 
-  useEffect(() => {
+  useDidMountEffect(() => {
     if (
       (!period && date !== null) ||
       (period && date !== null && secondDate !== null)
@@ -122,7 +125,13 @@ export default function DatePicker({
       (period && date === null && secondDate === null)
     ) {
       setShownDate("Choose dates...");
+      if (period) {
+        onChange?.([]);
+      } else {
+        onChange?.(null);
+      }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [date, secondDate, period]);
 
   useEffect(() => {

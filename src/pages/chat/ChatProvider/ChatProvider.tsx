@@ -15,6 +15,7 @@ export default function ChatProvider({ children }: Props) {
   const { data: signer } = useSigner();
   const [initialize, setInitialized] = useState<number>(0);
   const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<unknown>();
   const [bosonXmtp, setBosonXmtp] = useState<BosonXmtpClient>();
   useEffect(() => {
     if (signer && initialize && !bosonXmtp) {
@@ -26,9 +27,11 @@ export default function ChatProvider({ children }: Props) {
       )
         .then((bosonClient) => {
           setBosonXmtp(bosonClient);
+          setError(null);
         })
         .catch((error) => {
           console.error(error);
+          setError(error);
           Sentry.captureException(error);
         })
         .finally(() => setLoading(false));
@@ -42,6 +45,7 @@ export default function ChatProvider({ children }: Props) {
         initialize: () => {
           setInitialized((prev) => prev + 1);
         },
+        error,
         envName,
         isInitializing: isLoading
       }}

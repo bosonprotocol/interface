@@ -1,21 +1,22 @@
 import { useState } from "react";
 import styled from "styled-components";
 
-import { useCoreSDK } from "../../lib/utils/useCoreSdk";
-import { Datepicker, FormField, Input, Select, Textarea } from "../form";
-import BosonButton from "../ui/BosonButton";
+import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
+import { FormField, Input, Select, Textarea } from "../../form";
+import BosonButton from "../../ui/BosonButton";
 import {
   ContainerProductPage,
   ProductButtonGroup,
   SectionTitle
-} from "./Product.styles";
+} from "../Product.styles";
 import {
   OPTIONS_CURRENCIES,
   OPTIONS_TOKEN_GATED,
   TOKEN_CRITERIA,
   TOKEN_TYPES
-} from "./utils";
-import { useCreateForm } from "./utils/useCreateForm";
+} from "../utils";
+import { useCreateForm } from "../utils/useCreateForm";
+import { CoreTermsOfSaleDates } from "./CoreTermsOfSaleDates";
 
 const PriceContainer = styled.div`
   display: grid;
@@ -97,16 +98,6 @@ export default function CoreTermsOfSale({ isMultiVariant }: Props) {
 
         {values[prefix].tokenGatedOffer.value === "true" && (
           <>
-            {/* TODO: enable once we have more than one variant */}
-            {/* <TokengatedInfoWrapper>
-              <FormField title="Variant" style={{ margin: "1rem 0 0 0" }}>
-                <Select
-                  name="coreTermsOfSale.tokenGatedVariants"
-                  options={TOKEN_GATED_VARIANTS}
-                />
-              </FormField>
-            </TokengatedInfoWrapper> */}
-
             <FormField title="Token Contract" style={{ margin: "1rem 0 0 0" }}>
               <Input
                 name={`${prefix}.tokenContract`}
@@ -207,20 +198,7 @@ export default function CoreTermsOfSale({ isMultiVariant }: Props) {
           </>
         )}
       </FormField>
-      <FormField
-        title="Offer Validity period"
-        required
-        subTitle="The Offer validity period is the time in which buyers can commit to your offer."
-      >
-        <Datepicker name={`${prefix}.offerValidityPeriod`} period selectTime />
-      </FormField>
-      <FormField
-        title="Redemption period"
-        required
-        subTitle="Redemption period is the time in which buyers can redeem the rNFT for the physical item."
-      >
-        <Datepicker name={`${prefix}.redemptionPeriod`} period selectTime />
-      </FormField>
+      <CoreTermsOfSaleDates prefix={prefix} />
       <ProductInformationButtonGroup>
         <BosonButton
           variant="primaryFill"

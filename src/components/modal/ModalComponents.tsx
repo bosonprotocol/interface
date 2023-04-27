@@ -21,6 +21,7 @@ import EditProfileModal from "./components/Profile/EditProfileModal";
 import ProgressBarModal from "./components/ProgressBarModal";
 import RedeemModal from "./components/RedeemModal/RedeemModal";
 import RedeemSuccessModal from "./components/RedeemModal/RedeemSuccessModal";
+import { RelistOfferModal } from "./components/RelistOfferModal/RelistOfferModal";
 import RetractDisputeModal from "./components/RetractDisputeModal";
 import RevokeProduct from "./components/RevokeProduct";
 import FinanceDeposit from "./components/SellerFinance/FinanceDeposit";
@@ -66,7 +67,8 @@ export const MODAL_TYPES = {
   WAITING_FOR_CONFIRMATION: "WAITING_FOR_CONFIRMATION",
   WHAT_IS_REDEEM: "WHAT_IS_REDEEM",
   PROGRESS_BAR: "PROGRESS_BAR",
-  EXPORT_EXCHANGES_WITH_DELIVERY: "EXPORT_EXCHANGES_WITH_DELIVERY"
+  EXPORT_EXCHANGES_WITH_DELIVERY: "EXPORT_EXCHANGES_WITH_DELIVERY",
+  RELIST_OFFER: "RELIST_OFFER"
 } as const;
 
 export const MODAL_COMPONENTS = {
@@ -102,5 +104,7 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.WAITING_FOR_CONFIRMATION]: WaitingForConfirmationModal,
   [MODAL_TYPES.WHAT_IS_REDEEM]: WhatIsRedeem,
   [MODAL_TYPES.PROGRESS_BAR]: ProgressBarModal,
-  [MODAL_TYPES.EXPORT_EXCHANGES_WITH_DELIVERY]: ExportExchangesWithDeliveryModal
+  [MODAL_TYPES.EXPORT_EXCHANGES_WITH_DELIVERY]:
+    ExportExchangesWithDeliveryModal,
+  [MODAL_TYPES.RELIST_OFFER]: RelistOfferModal
 } as const;

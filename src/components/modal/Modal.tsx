@@ -239,6 +239,8 @@ const Content = styled.div<{
   `};
   ${({ $modalType }) => {
     switch ($modalType) {
+      case "RELIST_OFFER":
+      case "EXPORT_EXCHANGES_WITH_DELIVERY":
       case "REDEEM":
         return css`
           overflow: visible;

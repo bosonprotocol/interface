@@ -244,6 +244,11 @@ const Span = styled.span`
     margin-right: 1rem;
   }
 `;
+const RelistButton = styled(Button)`
+  * {
+    line-height: 21px;
+  }
+`;
 
 const statusOrder = [
   OffersKit.OfferState.NOT_YET_VALID,
@@ -623,7 +628,7 @@ export default function SellerProductsTable({
               />
             ),
             quantity: (
-              <Typography>
+              <Typography justifyContent="center">
                 {offer?.quantityAvailable}/{offer?.quantityInitial}
               </Typography>
             ),
@@ -644,56 +649,88 @@ export default function SellerProductsTable({
                 </span>
               </Typography>
             ),
-            action: !(
-              status === OffersKit.OfferState.EXPIRED ||
-              status === OffersKit.OfferState.VOIDED ||
-              offer?.quantityAvailable === "0"
-            ) && (
-              <VoidButton
-                variant="secondaryInverted"
-                size={ButtonSize.Small}
-                disabled={!sellerRoles?.isAssistant}
-                tooltip="This action is restricted to only the assistant wallet"
-                onClick={() => {
-                  if (offer) {
-                    if (showVariant) {
-                      showModal(
-                        modalTypes.VOID_PRODUCT,
-                        {
-                          title: "Void Confirmation",
-                          offers: offer.additional?.variants.filter(
-                            (variant) => {
-                              variant.validUntilDate;
-                              return (
-                                !variant.voided &&
-                                !dayjs(
-                                  getDateTimestamp(offer?.validUntilDate)
-                                ).isBefore(dayjs())
-                              );
-                            }
-                          ) as Offer[],
-                          refetch
-                        },
-                        "s"
-                      );
-                    } else {
-                      showModal(
-                        modalTypes.VOID_PRODUCT,
-                        {
-                          title: "Void Confirmation",
-                          offerId: offer.id,
-                          offer,
-                          refetch
-                        },
-                        "xs"
-                      );
-                    }
-                  }
-                }}
-              >
-                Void
-              </VoidButton>
-            )
+            action: (() => {
+              const withVoidButton = !(
+                status === OffersKit.OfferState.EXPIRED ||
+                status === OffersKit.OfferState.VOIDED ||
+                offer?.quantityAvailable === "0"
+              );
+              return (
+                <Grid gap="1rem">
+                  {withVoidButton && (
+                    <VoidButton
+                      variant="secondaryInverted"
+                      size={ButtonSize.Small}
+                      disabled={!sellerRoles?.isAssistant}
+                      tooltip="This action is restricted to only the assistant wallet"
+                      onClick={() => {
+                        if (offer) {
+                          if (showVariant) {
+                            showModal(
+                              modalTypes.VOID_PRODUCT,
+                              {
+                                title: "Void Confirmation",
+                                offers: offer.additional?.variants.filter(
+                                  (variant) => {
+                                    variant.validUntilDate;
+                                    return (
+                                      !variant.voided &&
+                                      !dayjs(
+                                        getDateTimestamp(offer?.validUntilDate)
+                                      ).isBefore(dayjs())
+                                    );
+                                  }
+                                ) as Offer[],
+                                refetch
+                              },
+                              "s"
+                            );
+                          } else {
+                            showModal(
+                              modalTypes.VOID_PRODUCT,
+                              {
+                                title: "Void Confirmation",
+                                offerId: offer.id,
+                                offer,
+                                refetch
+                              },
+                              "xs"
+                            );
+                          }
+                        }
+                      }}
+                    >
+                      Void
+                    </VoidButton>
+                  )}
+                  <RelistButton
+                    theme="orangeInverse"
+                    style={{
+                      padding: "0.25rem 1rem",
+                      margin: "1px"
+                    }}
+                    disabled={!offer}
+                    onClick={async (
+                      event: Parameters<
+                        NonNullable<Parameters<typeof Button>[0]["onClick"]>
+                      >[0]
+                    ) => {
+                      event.stopPropagation();
+                      if (!offer) {
+                        return;
+                      }
+                      showModal(modalTypes.RELIST_OFFER, {
+                        title: `Relist Offer "${offer.metadata.name}"`,
+                        offer,
+                        onRelistedSuccessfully: refetch
+                      });
+                    }}
+                  >
+                    Relist
+                  </RelistButton>
+                </Grid>
+              );
+            })()
           };
         })
         .sort(compareOffersSortByStatus),

@@ -79,14 +79,7 @@ export const OPTIONS_TOKEN_GATED = [
     value: "true",
     label: "Yes"
   }
-];
-
-export const TOKEN_GATED_VARIANTS = [
-  {
-    value: "all",
-    label: "All"
-  }
-];
+] as const;
 
 export const TOKEN_TYPES = [
   {
@@ -101,7 +94,7 @@ export const TOKEN_TYPES = [
     value: "erc1155",
     label: "ERC1155"
   }
-];
+] as const;
 
 export const TOKEN_CRITERIA = [
   {
@@ -112,7 +105,7 @@ export const TOKEN_CRITERIA = [
     value: "tokenid",
     label: "tokenId"
   }
-];
+] as const;
 
 export const OPTIONS_EXCHANGE_POLICY = [
   {
