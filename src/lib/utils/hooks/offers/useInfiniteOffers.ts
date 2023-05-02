@@ -1,6 +1,8 @@
 import { useInfiniteQuery } from "react-query";
 
+import { CONFIG } from "../../../config";
 import { useCurationLists } from "../useCurationLists";
+import { useSellerWhitelist } from "../useSellerWhitelist";
 import { getOffers } from "./getOffers";
 import { UseOffersProps } from "./types";
 
@@ -12,11 +14,15 @@ export function useInfiniteOffers(
     refetchOnMount?: boolean;
   } = {}
 ) {
+  const sellerWhitelist = useSellerWhitelist({
+    sellerWhitelistUrl: CONFIG.sellerWhitelistUrl
+  });
   const curationLists = useCurationLists();
 
   props = {
     ...props,
-    ...curationLists
+    ...curationLists,
+    sellerCurationList: sellerWhitelist.isSuccess ? sellerWhitelist.data : []
   };
 
   return useInfiniteQuery(

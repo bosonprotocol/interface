@@ -100,6 +100,7 @@ export const CONFIG = {
   sellerCurationList: parseCurationList(
     process.env.REACT_APP_SELLER_CURATION_LIST
   ),
+  sellerWhitelistUrl: process.env.REACT_APP_SELLER_WHITELIST_URL,
   offerCurationList: parseCurationList(
     process.env.REACT_APP_OFFER_CURATION_LIST
   ),

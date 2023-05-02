@@ -1,6 +1,7 @@
 import { BigNumber } from "ethers";
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useAccount } from "wagmi";
 
 import {
   DarkerBackground,
@@ -27,8 +28,13 @@ import {
   getOfferDetails
 } from "../../lib/utils/getOfferDetails";
 import useProductByUuid from "../../lib/utils/hooks/product/useProductByUuid";
+import { useCurationLists } from "../../lib/utils/hooks/useCurationLists";
+import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
-import { useSellers } from "../../lib/utils/hooks/useSellers";
+import {
+  useSellerCurationListFn,
+  useSellers
+} from "../../lib/utils/hooks/useSellers";
 import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
 import { VariantV1 } from "./types";
 import VariationSelects from "./VariationSelects";
@@ -72,6 +78,23 @@ export default function ProductDetail() {
 
   const seller = product?.productV1Seller?.seller;
   const sellerId = seller?.id;
+
+  const curationLists = useCurationLists();
+  const checkIfSellerIsInCurationList = useSellerCurationListFn();
+  const { address } = useAccount();
+  const currentSeller = useCurrentSellers({ address });
+
+  const isSellerCuratedOrConnected = useMemo(() => {
+    const isSellerInCurationList =
+      !curationLists.enableCurationLists ||
+      (sellerId && checkIfSellerIsInCurationList(sellerId));
+    const isSellerConnected =
+      currentSeller?.isSuccess &&
+      currentSeller.sellerIds.length > 0 &&
+      currentSeller.sellerIds[0] === sellerId;
+    console.log({ isSellerInCurationList, isSellerConnected });
+    return isSellerInCurationList || isSellerConnected;
+  }, [sellerId, checkIfSellerIsInCurationList, curationLists, currentSeller]);
 
   const { data: exchanges } = useExchanges(
     {
@@ -140,44 +163,54 @@ export default function ProductDetail() {
     <DetailWrapper>
       <LightBackground>
         <MainDetailGrid>
-          <ImageWrapper>
-            {animationUrl ? (
-              <Video
-                src={animationUrl}
-                videoProps={{
-                  muted: true,
-                  loop: true,
-                  autoPlay: true
-                }}
-                componentWhileLoading={() => (
-                  <Image src={offerImg} alt="Offer image" />
-                )}
-              />
-            ) : (
-              <Image src={offerImg} dataTestId="offerImage" />
-            )}
-          </ImageWrapper>
+          {isSellerCuratedOrConnected ? (
+            <ImageWrapper>
+              {animationUrl ? (
+                <Video
+                  src={animationUrl}
+                  videoProps={{
+                    muted: true,
+                    loop: true,
+                    autoPlay: true
+                  }}
+                  componentWhileLoading={() => (
+                    <Image src={offerImg} alt="Offer image" />
+                  )}
+                />
+              ) : (
+                <Image src={offerImg} dataTestId="offerImage" />
+              )}
+            </ImageWrapper>
+          ) : (
+            <></>
+          )}
           <div>
-            <SellerID
-              offer={selectedOffer}
-              buyerOrSeller={selectedOffer?.seller}
-              justifyContent="flex-start"
-              withProfileImage
-            />
-            <Typography
-              tag="h1"
-              data-testid="name"
-              style={{ fontSize: "2rem", marginBottom: "2rem" }}
-            >
-              {name}
-            </Typography>
+            {isSellerCuratedOrConnected ? (
+              <>
+                <SellerID
+                  offer={selectedOffer}
+                  buyerOrSeller={selectedOffer?.seller}
+                  justifyContent="flex-start"
+                  withProfileImage
+                />
+                <Typography
+                  tag="h1"
+                  data-testid="name"
+                  style={{ fontSize: "2rem", marginBottom: "2rem" }}
+                >
+                  {name}
+                </Typography>
 
-            {hasVariants && (
-              <VariationSelects
-                selectedVariant={selectedVariant}
-                setSelectedVariant={setSelectedVariant}
-                variants={variantsWithV1}
-              />
+                {hasVariants && (
+                  <VariationSelects
+                    selectedVariant={selectedVariant}
+                    setSelectedVariant={setSelectedVariant}
+                    variants={variantsWithV1}
+                  />
+                )}
+              </>
+            ) : (
+              <></>
             )}
 
             <DetailWidget
@@ -191,46 +224,50 @@ export default function ProductDetail() {
           <DetailShare />
         </MainDetailGrid>
       </LightBackground>
-      <DarkerBackground>
-        <DetailGrid>
-          <div>
-            <Typography tag="h3">Product description</Typography>
-            <Typography
-              tag="p"
-              data-testid="description"
-              style={{ whiteSpace: "pre-wrap" }}
-            >
-              {description}
-            </Typography>
-            {/* TODO: hidden for now */}
-            {/* <DetailTable data={productData} tag="strong" inheritColor /> */}
-          </div>
-          <div>
-            <Typography tag="h3">About the creator</Typography>
-            <Typography tag="p" style={{ whiteSpace: "pre-wrap" }}>
-              {artistDescription}
-            </Typography>
-          </div>
-        </DetailGrid>
-        {images.length > 0 && <DetailSlider images={images} />}
-        <DetailGrid>
-          <DetailChart offer={selectedOffer} title="Inventory graph" />
-          {(shippingInfo.returnPeriodInDays !== undefined ||
-            !!shippingInfo.shippingTable.length) && (
+      {isSellerCuratedOrConnected ? (
+        <DarkerBackground>
+          <DetailGrid>
             <div>
-              <Typography tag="h3">Shipping information</Typography>
+              <Typography tag="h3">Product description</Typography>
               <Typography
                 tag="p"
-                style={{ color: textColor || colors.darkGrey }}
+                data-testid="description"
+                style={{ whiteSpace: "pre-wrap" }}
               >
-                Return period: {shippingInfo.returnPeriodInDays}{" "}
-                {shippingInfo.returnPeriodInDays === 1 ? "day" : "days"}
+                {description}
               </Typography>
-              <DetailTable data={shippingInfo.shippingTable} inheritColor />
+              {/* TODO: hidden for now */}
+              {/* <DetailTable data={productData} tag="strong" inheritColor /> */}
             </div>
-          )}
-        </DetailGrid>
-      </DarkerBackground>
+            <div>
+              <Typography tag="h3">About the creator</Typography>
+              <Typography tag="p" style={{ whiteSpace: "pre-wrap" }}>
+                {artistDescription}
+              </Typography>
+            </div>
+          </DetailGrid>
+          {images.length > 0 && <DetailSlider images={images} />}
+          <DetailGrid>
+            <DetailChart offer={selectedOffer} title="Inventory graph" />
+            {(shippingInfo.returnPeriodInDays !== undefined ||
+              !!shippingInfo.shippingTable.length) && (
+              <div>
+                <Typography tag="h3">Shipping information</Typography>
+                <Typography
+                  tag="p"
+                  style={{ color: textColor || colors.darkGrey }}
+                >
+                  Return period: {shippingInfo.returnPeriodInDays}{" "}
+                  {shippingInfo.returnPeriodInDays === 1 ? "day" : "days"}
+                </Typography>
+                <DetailTable data={shippingInfo.shippingTable} inheritColor />
+              </div>
+            )}
+          </DetailGrid>
+        </DarkerBackground>
+      ) : (
+        <></>
+      )}
     </DetailWrapper>
   );
 }

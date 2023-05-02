@@ -1,7 +1,9 @@
 import { useQuery } from "react-query";
 
 import { useConvertedPriceFunction } from "../../../../components/price/useConvertedPriceFunction";
+import { CONFIG } from "../../../config";
 import { useCurationLists } from "../useCurationLists";
+import { useSellerWhitelist } from "../useSellerWhitelist";
 import { getOffers } from "./getOffers";
 import { UseOffersProps } from "./types";
 
@@ -11,12 +13,16 @@ export function useOffers(
     enabled?: boolean;
   } = {}
 ) {
+  const sellerWhitelist = useSellerWhitelist({
+    sellerWhitelistUrl: CONFIG.sellerWhitelistUrl
+  });
   const curationLists = useCurationLists();
   const convertPrice = useConvertedPriceFunction();
 
   props = {
     ...props,
-    ...curationLists
+    ...curationLists,
+    sellerCurationList: sellerWhitelist.isSuccess ? sellerWhitelist.data : []
   };
   return useQuery(
     ["offers", props],

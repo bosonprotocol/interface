@@ -41,6 +41,7 @@ export default function CreateProfileModal({
     (sellerId: string) => {
       const isAccountSeller = !!sellerId;
       const isSellerInCurationList = checkIfSellerIsInCurationList(sellerId);
+      console.log({ isSellerInCurationList });
 
       if (isAccountSeller && !isSellerInCurationList) {
         return navigate({ pathname: BosonRoutes.ClosedBeta });

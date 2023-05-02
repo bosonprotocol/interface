@@ -1,4 +1,6 @@
+import { useMemo } from "react";
 import { useParams } from "react-router-dom";
+import { useAccount } from "wagmi";
 
 import {
   DarkerBackground,
@@ -22,7 +24,12 @@ import { UrlParameters } from "../../lib/routing/parameters";
 import { colors } from "../../lib/styles/colors";
 import { getOfferDetails } from "../../lib/utils/getOfferDetails";
 import useOffer from "../../lib/utils/hooks/offer/useOffer";
-import { useSellers } from "../../lib/utils/hooks/useSellers";
+import { useCurationLists } from "../../lib/utils/hooks/useCurationLists";
+import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
+import {
+  useSellerCurationListFn,
+  useSellers
+} from "../../lib/utils/hooks/useSellers";
 import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
 
 export default function OfferDetail() {
@@ -56,6 +63,24 @@ export default function OfferDetail() {
     offerRequiredDeposit > 0
       ? Number(sellerAvailableDeposit) >= offerRequiredDeposit
       : true;
+
+  const sellerId = offer?.seller.id;
+  const curationLists = useCurationLists();
+  const checkIfSellerIsInCurationList = useSellerCurationListFn();
+  const { address } = useAccount();
+  const currentSeller = useCurrentSellers({ address });
+
+  const isSellerCuratedOrConnected = useMemo(() => {
+    const isSellerInCurationList =
+      !curationLists.enableCurationLists ||
+      (sellerId && checkIfSellerIsInCurationList(sellerId));
+    const isSellerConnected =
+      currentSeller?.isSuccess &&
+      currentSeller.sellerIds.length > 0 &&
+      currentSeller.sellerIds[0] === sellerId;
+    console.log({ isSellerInCurationList, isSellerConnected });
+    return isSellerInCurationList || isSellerConnected;
+  }, [sellerId, checkIfSellerIsInCurationList, curationLists, currentSeller]);
 
   if (!offerId) {
     return null;
@@ -101,34 +126,44 @@ export default function OfferDetail() {
     <DetailWrapper>
       <LightBackground>
         <MainDetailGrid>
-          <ImageWrapper>
-            {animationUrl ? (
-              <Video
-                src={animationUrl}
-                dataTestId="offerAnimationUrl"
-                videoProps={{ muted: true, loop: true, autoPlay: true }}
-                componentWhileLoading={() => (
-                  <Image src={offerImg} dataTestId="offerImage" />
-                )}
-              />
-            ) : (
-              <Image src={offerImg} dataTestId="offerImage" />
-            )}
-          </ImageWrapper>
+          {isSellerCuratedOrConnected ? (
+            <ImageWrapper>
+              {animationUrl ? (
+                <Video
+                  src={animationUrl}
+                  dataTestId="offerAnimationUrl"
+                  videoProps={{ muted: true, loop: true, autoPlay: true }}
+                  componentWhileLoading={() => (
+                    <Image src={offerImg} dataTestId="offerImage" />
+                  )}
+                />
+              ) : (
+                <Image src={offerImg} dataTestId="offerImage" />
+              )}
+            </ImageWrapper>
+          ) : (
+            <></>
+          )}
           <div>
-            <SellerID
-              offer={offer}
-              buyerOrSeller={offer?.seller}
-              justifyContent="flex-start"
-              withProfileImage
-            />
-            <Typography
-              tag="h1"
-              data-testid="name"
-              style={{ fontSize: "2rem", marginBottom: "2rem" }}
-            >
-              {name}
-            </Typography>
+            {isSellerCuratedOrConnected ? (
+              <>
+                <SellerID
+                  offer={offer}
+                  buyerOrSeller={offer?.seller}
+                  justifyContent="flex-start"
+                  withProfileImage
+                />
+                <Typography
+                  tag="h1"
+                  data-testid="name"
+                  style={{ fontSize: "2rem", marginBottom: "2rem" }}
+                >
+                  {name}
+                </Typography>
+              </>
+            ) : (
+              <></>
+            )}
 
             <DetailWidget
               pageType="offer"
@@ -141,46 +176,50 @@ export default function OfferDetail() {
           <DetailShare />
         </MainDetailGrid>
       </LightBackground>
-      <DarkerBackground>
-        <DetailGrid>
-          <div>
-            <Typography tag="h3">Product description</Typography>
-            <Typography
-              tag="p"
-              data-testid="description"
-              style={{ whiteSpace: "pre-wrap" }}
-            >
-              {description}
-            </Typography>
-            {/* TODO: hidden for now */}
-            {/* <DetailTable data={productData} tag="strong" inheritColor /> */}
-          </div>
-          <div>
-            <Typography tag="h3">About the creator</Typography>
-            <Typography tag="p" style={{ whiteSpace: "pre-wrap" }}>
-              {artistDescription}
-            </Typography>
-          </div>
-        </DetailGrid>
-        {images.length > 0 && <DetailSlider images={images} />}
-        <DetailGrid>
-          <DetailChart offer={offer} title="Inventory graph" />
-          {(shippingInfo.returnPeriodInDays !== undefined ||
-            !!shippingInfo.shippingTable.length) && (
+      {isSellerCuratedOrConnected ? (
+        <DarkerBackground>
+          <DetailGrid>
             <div>
-              <Typography tag="h3">Shipping information</Typography>
+              <Typography tag="h3">Product description</Typography>
               <Typography
                 tag="p"
-                style={{ color: textColor || colors.darkGrey }}
+                data-testid="description"
+                style={{ whiteSpace: "pre-wrap" }}
               >
-                Return period: {shippingInfo.returnPeriodInDays}{" "}
-                {shippingInfo.returnPeriodInDays === 1 ? "day" : "days"}
+                {description}
               </Typography>
-              <DetailTable data={shippingInfo.shippingTable} inheritColor />
+              {/* TODO: hidden for now */}
+              {/* <DetailTable data={productData} tag="strong" inheritColor /> */}
             </div>
-          )}
-        </DetailGrid>
-      </DarkerBackground>
+            <div>
+              <Typography tag="h3">About the creator</Typography>
+              <Typography tag="p" style={{ whiteSpace: "pre-wrap" }}>
+                {artistDescription}
+              </Typography>
+            </div>
+          </DetailGrid>
+          {images.length > 0 && <DetailSlider images={images} />}
+          <DetailGrid>
+            <DetailChart offer={offer} title="Inventory graph" />
+            {(shippingInfo.returnPeriodInDays !== undefined ||
+              !!shippingInfo.shippingTable.length) && (
+              <div>
+                <Typography tag="h3">Shipping information</Typography>
+                <Typography
+                  tag="p"
+                  style={{ color: textColor || colors.darkGrey }}
+                >
+                  Return period: {shippingInfo.returnPeriodInDays}{" "}
+                  {shippingInfo.returnPeriodInDays === 1 ? "day" : "days"}
+                </Typography>
+                <DetailTable data={shippingInfo.shippingTable} inheritColor />
+              </div>
+            )}
+          </DetailGrid>
+        </DarkerBackground>
+      ) : (
+        <></>
+      )}
     </DetailWrapper>
   );
 }
