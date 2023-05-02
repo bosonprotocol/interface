@@ -14,7 +14,7 @@ export const config = getDefaultConfig(REACT_APP_ENV_NAME as EnvironmentType);
 
 const REACT_APP_ENABLE_SENTRY_LOGGING =
   process.env.NODE_ENV === "development"
-    ? stringToBoolean(process.env.REACT_APP_ENABLE_SENTRY_LOGGING)
+    ? stringToBoolean(process.env.REACT_APP_ENABLE_SENTRY_LOGGING, false)
     : ["local", "testing"].includes(config.envName);
 
 export function getDefaultTokens(): Token[] {
@@ -108,7 +108,8 @@ export const CONFIG = {
   buyerSellerAgreementTemplate:
     process.env.REACT_APP_BUYER_SELLER_AGREEMENT_TEMPLATE,
   enableCurationLists: stringToBoolean(
-    process.env.REACT_APP_ENABLE_CURATION_LISTS
+    process.env.REACT_APP_ENABLE_CURATION_LISTS,
+    true
   ),
   defaultTokens: getDefaultTokens(),
   mockSellerId: process.env.REACT_APP_MOCK_SELLER_ID,
@@ -151,9 +152,18 @@ export const CONFIG = {
   )
 };
 
-function stringToBoolean(value?: string) {
+function stringToBoolean(value: unknown | undefined, defaultValue: boolean) {
+  if (value === undefined || value === null) {
+    return defaultValue;
+  }
   if (typeof value === "string") {
-    return ["1", "true"].includes(value);
+    if (defaultValue) {
+      // return true except if value is "0" or "false"
+      return !["0", "false"].includes(value);
+    } else {
+      // return false except if value is "1" or "true"
+      return ["1", "true"].includes(value);
+    }
   }
 
   return Boolean(value);
