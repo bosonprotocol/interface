@@ -15,7 +15,8 @@ export function useInfiniteOffers(
   } = {}
 ) {
   const sellerWhitelist = useSellerWhitelist({
-    sellerWhitelistUrl: CONFIG.sellerWhitelistUrl
+    sellerWhitelistUrl: CONFIG.sellerWhitelistUrl,
+    allowConnectedSeller: true
   });
   const curationLists = useCurationLists();
 

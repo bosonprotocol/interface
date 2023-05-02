@@ -14,7 +14,8 @@ export function useOffers(
   } = {}
 ) {
   const sellerWhitelist = useSellerWhitelist({
-    sellerWhitelistUrl: CONFIG.sellerWhitelistUrl
+    sellerWhitelistUrl: CONFIG.sellerWhitelistUrl,
+    allowConnectedSeller: true
   });
   const curationLists = useCurationLists();
   const convertPrice = useConvertedPriceFunction();

@@ -43,7 +43,8 @@ export default function useProducts(
   }
 ) {
   const sellerWhitelist = useSellerWhitelist({
-    sellerWhitelistUrl: CONFIG.sellerWhitelistUrl
+    sellerWhitelistUrl: CONFIG.sellerWhitelistUrl,
+    allowConnectedSeller: true
   });
   const curationLists = useCurationLists();
   const now = Math.floor(Date.now() / 1000);

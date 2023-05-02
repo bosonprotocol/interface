@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
-import { useAccount } from "wagmi";
 
 import {
   DarkerBackground,
@@ -28,7 +27,6 @@ import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { getOfferDetails } from "../../lib/utils/getOfferDetails";
 import { useCurationLists } from "../../lib/utils/hooks/useCurationLists";
-import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import {
   useSellerCurationListFn,
@@ -69,20 +67,13 @@ export default function Exchange() {
   const sellerId = exchange?.seller.id;
   const curationLists = useCurationLists();
   const checkIfSellerIsInCurationList = useSellerCurationListFn();
-  const { address } = useAccount();
-  const currentSeller = useCurrentSellers({ address });
 
   const isSellerCuratedOrConnected = useMemo(() => {
     const isSellerInCurationList =
       !curationLists.enableCurationLists ||
       (sellerId && checkIfSellerIsInCurationList(sellerId));
-    const isSellerConnected =
-      currentSeller?.isSuccess &&
-      currentSeller.sellerIds.length > 0 &&
-      currentSeller.sellerIds[0] === sellerId;
-    console.log({ isSellerInCurationList, isSellerConnected });
-    return isSellerInCurationList || isSellerConnected;
-  }, [sellerId, checkIfSellerIsInCurationList, curationLists, currentSeller]);
+    return isSellerInCurationList;
+  }, [sellerId, checkIfSellerIsInCurationList, curationLists]);
 
   const variant = {
     offer,

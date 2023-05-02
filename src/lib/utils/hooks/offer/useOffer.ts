@@ -13,7 +13,8 @@ export default function useOffer(
   } = {}
 ) {
   const sellerWhitelist = useSellerWhitelist({
-    sellerWhitelistUrl: CONFIG.sellerWhitelistUrl
+    sellerWhitelistUrl: CONFIG.sellerWhitelistUrl,
+    allowConnectedSeller: true
   });
   const curationLists = useCurationLists();
 

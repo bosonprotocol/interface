@@ -167,7 +167,8 @@ export function WithAllOffers<P>(
     }, [location.pathname]); // eslint-disable-line
 
     const sellerWhitelist = useSellerWhitelist({
-      sellerWhitelistUrl: CONFIG.sellerWhitelistUrl
+      sellerWhitelistUrl: CONFIG.sellerWhitelistUrl,
+      allowConnectedSeller: true
     });
 
     const filterOptions = useMemo(() => {
