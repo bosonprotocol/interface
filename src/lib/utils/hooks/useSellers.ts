@@ -1,12 +1,9 @@
 import { accounts, subgraph } from "@bosonprotocol/react-kit";
 import { useCallback } from "react";
 import { useQuery } from "react-query";
-import { useAccount } from "wagmi";
 
 import { CONFIG } from "../../../lib/config";
 import { useCurationLists } from "./useCurationLists";
-import { useCurrentSellers } from "./useCurrentSellers";
-import { useSellerWhitelist } from "./useSellerWhitelist";
 
 interface Props {
   admin?: string;
@@ -23,18 +20,13 @@ interface Props {
 export const useSellerCurationListFn = () => {
   const curationLists = useCurationLists();
 
-  const sellerWhitelist = useSellerWhitelist({
-    sellerWhitelistUrl: CONFIG.sellerWhitelistUrl,
-    allowConnectedSeller: true
-  });
-  console.log({ sellerWhitelist });
-
   const isSellerInCurationList = useCallback(
     (sellerID: string) => {
       if (curationLists?.enableCurationLists && sellerID !== "") {
         if (
-          sellerWhitelist.isSuccess &&
-          sellerWhitelist.data.indexOf(sellerID as string) > -1
+          (curationLists.sellerCurationList as string[]).indexOf(
+            sellerID as string
+          ) > -1
         ) {
           return true;
         }
@@ -44,7 +36,7 @@ export const useSellerCurationListFn = () => {
 
       return false;
     },
-    [curationLists, sellerWhitelist]
+    [curationLists]
   );
 
   return isSellerInCurationList;
@@ -56,12 +48,6 @@ export function useSellers(
     enabled: boolean;
   }
 ) {
-  const { address } = useAccount();
-  const currentSeller = useCurrentSellers({ address });
-  const sellerWhitelist = useSellerWhitelist({
-    sellerWhitelistUrl: CONFIG.sellerWhitelistUrl,
-    allowConnectedSeller: true
-  });
   const curationLists = useCurationLists();
   const filter = {
     ...(props.admin && { admin: props.admin }),
@@ -74,13 +60,11 @@ export function useSellers(
   return useQuery(
     ["sellers", props],
     async () => {
-      console.log("currentSeller", currentSeller);
-      console.log("sellerWhitelist", sellerWhitelist);
       return accounts.subgraph.getSellers(CONFIG.subgraphUrl, {
         sellersFilter: {
           ...filter,
           id_in: curationLists.enableCurationLists
-            ? sellerWhitelist.data || []
+            ? curationLists.sellerCurationList
             : undefined
         },
         sellersOrderBy: subgraph.Seller_OrderBy.SellerId,

@@ -9,15 +9,13 @@ import { LayoutRoot } from "../../components/Layout";
 import Grid from "../../components/ui/Grid";
 import Loading from "../../components/ui/Loading";
 import Typography from "../../components/ui/Typography";
-import { CONFIG } from "../../lib/config";
 import { ExploreQueryParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import type { Offer } from "../../lib/types/offer";
 import useProducts from "../../lib/utils/hooks/product/useProducts";
-import { useSellerWhitelist } from "../../lib/utils/hooks/useSellerWhitelist";
-import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
+import { useCurationLists } from "../../lib/utils/hooks/useCurationLists";
 import { useIsCustomStoreValueChanged } from "../custom-store/useIsCustomStoreValueChanged";
 import ExploreSelect from "./ExploreSelect";
 import useSearchParams from "./useSearchParams";
@@ -134,8 +132,6 @@ export function WithAllOffers<P>(
 
     const isPrimaryBgColorChanged =
       useIsCustomStoreValueChanged("primaryBgColor");
-    const sellerCurationListString =
-      useCustomStoreQueryParameter("sellerCurationList");
 
     const pageOptions = useMemo(() => {
       let options = {
@@ -166,16 +162,10 @@ export function WithAllOffers<P>(
       return options;
     }, [location.pathname]); // eslint-disable-line
 
-    const sellerWhitelist = useSellerWhitelist({
-      sellerWhitelistUrl: CONFIG.sellerWhitelistUrl,
-      allowConnectedSeller: true
-    });
+    const curationLists = useCurationLists();
 
     const filterOptions = useMemo(() => {
       const filterByName = params?.[ExploreQueryParameters.name] || false;
-      const sellerCurationList = sellerWhitelist.isSuccess
-        ? sellerWhitelist.data
-        : [];
 
       const sortByParam =
         params?.[ExploreQueryParameters.sortBy]?.includes("price:asc") ||
@@ -193,7 +183,7 @@ export function WithAllOffers<P>(
 
       let payload = {
         name: "",
-        sellerCurationList,
+        sellerCurationList: curationLists.sellerCurationList,
         orderDirection: "",
         exchangeOrderBy: "",
         orderBy: ""
@@ -205,10 +195,10 @@ export function WithAllOffers<P>(
           name: filterByName as string
         };
       }
-      if (sellerCurationList) {
+      if (curationLists.sellerCurationList) {
         payload = {
           ...payload,
-          sellerCurationList
+          sellerCurationList: curationLists.sellerCurationList
         };
       }
       if (sortByParam !== false) {
@@ -228,7 +218,7 @@ export function WithAllOffers<P>(
         "validFromDate_lte",
         "sellerCurationList"
       ]) as FilterOptions;
-    }, [params, sellerWhitelist]);
+    }, [params, curationLists]);
 
     const products = useProducts(
       {

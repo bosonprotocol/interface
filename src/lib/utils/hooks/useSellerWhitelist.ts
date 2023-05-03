@@ -12,7 +12,7 @@ interface Props {
 export function useSellerWhitelist(
   props: Props,
   options: { enabled: boolean } = { enabled: true }
-) {
+): { isSuccess: boolean; data: string[] | undefined } {
   const currentSeller = useCurrentSellers();
   const whitelist = useQuery(
     "seller-whitelist",
@@ -27,17 +27,25 @@ export function useSellerWhitelist(
     }
   );
   return useMemo(() => {
-    console.log("currentSeller", currentSeller);
+    const sellerIdList = whitelist.data || [];
     if (
       props.allowConnectedSeller &&
       currentSeller.isSuccess &&
       currentSeller.sellerIds.length > 0 &&
-      whitelist.isSuccess &&
-      !whitelist.data?.includes(currentSeller.sellerIds[0])
+      !sellerIdList?.includes(currentSeller.sellerIds[0])
     ) {
-      console.log("Add current seller in whitelist");
-      (whitelist.data as string[]).push(currentSeller.sellerIds[0]);
+      (sellerIdList as string[]).push(currentSeller.sellerIds[0]);
     }
-    return whitelist;
-  }, [currentSeller, whitelist, props.allowConnectedSeller]);
+    return {
+      isSuccess: whitelist.isSuccess || whitelist.isError,
+      data: sellerIdList
+    };
+  }, [
+    currentSeller.isSuccess,
+    currentSeller.sellerIds,
+    whitelist.isSuccess,
+    whitelist.isError,
+    whitelist.data,
+    props.allowConnectedSeller
+  ]);
 }

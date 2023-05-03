@@ -20,7 +20,6 @@ import { fetchSubgraph } from "../../core-components/subgraph";
 import { useCoreSDK } from "../../useCoreSdk";
 import { useCurationLists } from "../useCurationLists";
 import { Exchange } from "../useExchanges";
-import { useSellerWhitelist } from "../useSellerWhitelist";
 
 const OFFERS_PER_PAGE = 1000;
 
@@ -42,10 +41,6 @@ export default function useProducts(
     withNumExchanges?: boolean;
   }
 ) {
-  const sellerWhitelist = useSellerWhitelist({
-    sellerWhitelistUrl: CONFIG.sellerWhitelistUrl,
-    allowConnectedSeller: true
-  });
   const curationLists = useCurationLists();
   const now = Math.floor(Date.now() / 1000);
   const validityFilter = props.onlyValid
@@ -62,15 +57,13 @@ export default function useProducts(
         uuid_in: props?.productsIds || undefined,
         disputeResolverId: CONFIG.defaultDisputeResolverId,
         sellerId_in:
-          options.enableCurationList &&
-          curationLists.enableCurationLists &&
-          !!sellerWhitelist.data?.length
-            ? sellerWhitelist.data
+          options.enableCurationList && curationLists.enableCurationLists
+            ? curationLists.sellerCurationList
             : undefined,
         ...props.productsFilter
       }
     }),
-    [props, options, curationLists, sellerWhitelist]
+    [props, options, curationLists]
   );
 
   const coreSDK = useCoreSDK();

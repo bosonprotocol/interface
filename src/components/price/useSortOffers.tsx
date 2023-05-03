@@ -38,7 +38,7 @@ export const useSortOffers = ({
         data = (filteredByName || []) as ExtendedOffer[] | ExtendedSeller[];
       }
     }
-    if (sellerCurationList && sellerCurationList.length > 0) {
+    if (sellerCurationList) {
       if (type === "products") {
         data = (filter(data, (n: ExtendedOffer) => {
           return n.seller?.id && sellerCurationList.includes(n.seller.id);
