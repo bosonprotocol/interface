@@ -97,9 +97,6 @@ export const CONFIG = {
     apiKey: process.env.REACT_APP_META_TX_API_KEY,
     apiIds: getMetaTxApiIds(config.contracts.protocolDiamond)
   },
-  sellerCurationList: parseCurationList(
-    process.env.REACT_APP_SELLER_CURATION_LIST
-  ),
   sellerWhitelistUrl: process.env.REACT_APP_SELLER_WHITELIST_URL,
   offerCurationList: parseCurationList(
     process.env.REACT_APP_OFFER_CURATION_LIST
