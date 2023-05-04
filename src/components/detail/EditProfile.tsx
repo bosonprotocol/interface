@@ -11,8 +11,6 @@ export const EditProfile: React.FC = () => {
     showModal(
       "EDIT_PROFILE",
       {
-        headerComponent: null,
-        title: "Edit Profile",
         closable: true
       },
       "auto",

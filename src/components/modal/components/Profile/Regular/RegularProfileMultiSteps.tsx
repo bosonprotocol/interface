@@ -2,11 +2,12 @@ import { useState } from "react";
 
 import MultiSteps from "../../../../step/MultiSteps";
 import Grid from "../../../../ui/Grid";
+import { RegularStep } from "./const";
 
 interface Props {
   isCreate: boolean;
-  activeStep: number;
-  setStepBasedOnIndex?: (index: number) => void;
+  activeStep: RegularStep;
+  setStepBasedOnIndex?: (step: RegularStep) => void;
 }
 
 export function RegularProfileMultiSteps({
@@ -14,31 +15,38 @@ export function RegularProfileMultiSteps({
   activeStep: initialActiveStep,
   setStepBasedOnIndex
 }: Props) {
-  const [activeStep, setActiveStep] = useState<number>(initialActiveStep);
+  const steps = isCreate
+    ? [
+        {
+          steps: 1,
+          name: "Create Profile",
+          step: RegularStep.CREATE
+        },
+        {
+          steps: 1,
+          name: "Create Royalties",
+          step: RegularStep.BOSON_ACCOUNT
+        },
+        { steps: 1, name: "Confirmation", step: RegularStep.SUMMARY }
+      ]
+    : [
+        { steps: 1, name: "Edit Profile", step: RegularStep.CREATE },
+        {
+          steps: 1,
+          name: "View Royalties",
+          step: RegularStep.BOSON_ACCOUNT
+        }
+      ];
+  const [activeStep, setActiveStep] = useState<number>(
+    steps.findIndex((step) => step.step === initialActiveStep)
+  );
   return (
     <Grid justifyContent="space-evently">
       <MultiSteps
-        data={
-          isCreate
-            ? [
-                {
-                  steps: 1,
-                  name: "Create Profile"
-                },
-                {
-                  steps: 1,
-                  name: "Create Royalties"
-                },
-                { steps: 1, name: "Confirmation" }
-              ]
-            : [
-                { steps: 1, name: "Edit Profile" },
-                { steps: 1, name: "View Royalties" }
-              ]
-        }
+        data={steps}
         active={activeStep}
         callback={(step) => {
-          setStepBasedOnIndex?.(step);
+          setStepBasedOnIndex?.(steps[step].step);
           setActiveStep(step);
         }}
         disableInactiveSteps

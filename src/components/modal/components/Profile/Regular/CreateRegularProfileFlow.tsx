@@ -4,6 +4,7 @@ import { CreateProfile } from "../../../../product/utils";
 import { useModal } from "../../../useModal";
 import BosonAccountForm from "../bosonAccount/BosonAccountForm";
 import { BosonAccount } from "../bosonAccount/validationSchema";
+import { RegularStep } from "./const";
 import CreateYourRegularProfile from "./CreateYourRegularProfile";
 import { RegularProfileMultiSteps } from "./RegularProfileMultiSteps";
 import RegularProfileSummary from "./RegularProfileSummary";
@@ -14,16 +15,10 @@ interface CreateRegularProfileFlowProps {
   changeToLensProfile: () => void;
 }
 
-enum Step {
-  CREATE,
-  BOSON_ACCOUNT,
-  SUMMARY
-}
-
 export const CreateRegularProfileFlow: React.FC<
   CreateRegularProfileFlowProps
 > = ({ onSubmit, initialData, changeToLensProfile }) => {
-  const [step, setStep] = useState<Step>(Step.CREATE);
+  const [step, setStep] = useState<RegularStep>(RegularStep.CREATE);
   const [regularProfile, setRegularProfile] = useState<CreateProfile | null>(
     null
   );
@@ -47,28 +42,29 @@ export const CreateRegularProfileFlow: React.FC<
   }, []);
   return (
     <>
-      {step === Step.CREATE ? (
+      {step === RegularStep.CREATE ? (
         <CreateYourRegularProfile
+          forceDirty={false}
           initial={initialData}
-          onSubmit={(profile) => {
+          onSubmit={async (profile) => {
             setRegularProfile(profile);
-            setStep(Step.BOSON_ACCOUNT);
+            setStep(RegularStep.BOSON_ACCOUNT);
           }}
           isEdit={false}
           changeToLensProfile={changeToLensProfile}
         />
-      ) : step === Step.BOSON_ACCOUNT ? (
+      ) : step === RegularStep.BOSON_ACCOUNT ? (
         <BosonAccountForm
           formValues={null}
           onSubmit={(values) => {
             setBosonAccount(values);
-            setStep(Step.SUMMARY);
+            setStep(RegularStep.SUMMARY);
           }}
           onBackClick={() => {
-            setStep(Step.CREATE);
+            setStep(RegularStep.CREATE);
           }}
         />
-      ) : step === Step.SUMMARY && regularProfile && bosonAccount ? (
+      ) : step === RegularStep.SUMMARY && regularProfile && bosonAccount ? (
         <RegularProfileSummary
           bosonAccount={bosonAccount}
           values={regularProfile}

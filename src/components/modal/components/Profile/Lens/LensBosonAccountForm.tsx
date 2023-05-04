@@ -72,6 +72,7 @@ export default function LensBosonAccountForm({
       formValues={formValues}
       onBackClick={onBackClick}
       onSubmit={onSubmit}
+      submitButtonText={isExistingProfile ? "Close" : "Next"}
     />
   );
 }

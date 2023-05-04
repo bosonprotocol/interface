@@ -1,10 +1,9 @@
 import * as Sentry from "@sentry/browser";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
-import { useAccount } from "wagmi";
 
+import { useCurrentSellers } from "../../../../../lib/utils/hooks/useCurrentSellers";
 import { useIpfsStorage } from "../../../../../lib/utils/hooks/useIpfsStorage";
-import { useSellers } from "../../../../../lib/utils/hooks/useSellers";
 import Grid from "../../../../ui/Grid";
 import Typography from "../../../../ui/Typography";
 import BosonAccountFormFields from "./BosonAccountFormFields";
@@ -31,16 +30,8 @@ export default function BosonAccountForm({
       addressForRoyaltyPayment: ""
     }
   );
-  const { address } = useAccount();
-  const { data: admins } = useSellers(
-    {
-      admin: address
-    },
-    {
-      enabled: !!address
-    }
-  );
-  const seller = admins?.[0];
+  const { sellers } = useCurrentSellers();
+  const seller = sellers?.[0];
   const { contractURI } = seller || {};
   const alreadyHasRoyaltiesDefined = !!contractURI;
   useEffect(() => {
@@ -57,9 +48,8 @@ export default function BosonAccountForm({
           }>(contractURI, true);
           if (typeof openSeaMetadata !== "string") {
             setInitialValues({
-              secondaryRoyalties: Number(
-                openSeaMetadata.seller_fee_basis_points
-              ),
+              secondaryRoyalties:
+                Number(openSeaMetadata.seller_fee_basis_points) / 100,
               addressForRoyaltyPayment: openSeaMetadata.fee_recipient
             });
           }

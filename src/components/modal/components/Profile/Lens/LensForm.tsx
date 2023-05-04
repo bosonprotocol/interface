@@ -23,7 +23,7 @@ interface Props {
   onSubmit: (
     createValues: LensProfileType,
     opts: {
-      dirty: boolean;
+      dirtyFields: Record<keyof LensProfileType, boolean>;
     }
   ) => Promise<void>;
   profile: Profile | null;
@@ -47,7 +47,19 @@ export default function LensForm({
   changeToRegularProfile,
   forceDirty
 }: Props) {
-  const [formChanged, setFormChanged] = useState<boolean>(false);
+  const [changedFields, setFormChanged] = useState<
+    Record<keyof LensProfileType, boolean>
+  >({
+    coverPicture: false,
+    description: false,
+    email: false,
+    handle: false,
+    legalTradingName: false,
+    logo: false,
+    name: false,
+    website: false,
+    contactPreference: false
+  });
   const [error, setError] = useState<Error | null>(null);
   const defaultInitialValues: LensProfileType = {
     logo: [],
@@ -78,11 +90,11 @@ export default function LensForm({
         try {
           setError(null);
           if (profile) {
-            await onSubmit(values, { dirty: formChanged });
+            await onSubmit(values, { dirtyFields: changedFields });
           } else {
             await onSubmit(
               { ...values, website: preAppendHttps(values.website) },
-              { dirty: formChanged }
+              { dirtyFields: changedFields }
             );
           }
         } catch (err) {
@@ -95,41 +107,45 @@ export default function LensForm({
         profile ? viewLensProfileValidationSchema : lensProfileValidationSchema
       }
     >
-      <Form>
-        {profile ? (
-          <ViewOrEditLensProfile
-            profile={profile}
-            seller={seller as subgraph.SellerFieldsFragment}
-            onBackClick={onBackClick}
-            setStepBasedOnIndex={setStepBasedOnIndex}
-            setFormChanged={setFormChanged}
-            isEditViewOnly={isEditViewOnly}
-            forceDirty={forceDirty}
-          >
-            <LensFormFields
-              disableCover={!isEditViewOnly}
-              disableHandle
-              disableLogo={!isEditViewOnly}
-            />
-            {isEditViewOnly && <UseRegularProfile />}
-            {error && <SimpleError />}
-          </ViewOrEditLensProfile>
-        ) : (
-          <CreateLensProfile
-            onBackClick={onBackClick}
-            setStepBasedOnIndex={setStepBasedOnIndex}
-          >
-            <PassDownProps>
-              <LensFormFields
-                logoSubtitle="Please choose an image that is no larger than 300KB to ensure it can be uploaded."
-                coverSubtitle="Please choose an image that is no larger than 300KB to ensure it can be uploaded."
-              />
-              <UseRegularProfile />
-              {error ? <SimpleError /> : <></>}
-            </PassDownProps>
-          </CreateLensProfile>
-        )}
-      </Form>
+      {() => {
+        return (
+          <Form>
+            {profile ? (
+              <ViewOrEditLensProfile
+                profile={profile}
+                seller={seller as subgraph.SellerFieldsFragment}
+                onBackClick={onBackClick}
+                setStepBasedOnIndex={setStepBasedOnIndex}
+                setFormChanged={setFormChanged}
+                isEditViewOnly={isEditViewOnly}
+                forceDirty={forceDirty}
+              >
+                <LensFormFields
+                  disableCover={!isEditViewOnly}
+                  disableHandle
+                  disableLogo={!isEditViewOnly}
+                />
+                {isEditViewOnly && <UseRegularProfile />}
+                {error && <SimpleError />}
+              </ViewOrEditLensProfile>
+            ) : (
+              <CreateLensProfile
+                onBackClick={onBackClick}
+                setStepBasedOnIndex={setStepBasedOnIndex}
+              >
+                <PassDownProps>
+                  <LensFormFields
+                    logoSubtitle="Please choose an image that is no larger than 300KB to ensure it can be uploaded."
+                    coverSubtitle="Please choose an image that is no larger than 300KB to ensure it can be uploaded."
+                  />
+                  <UseRegularProfile />
+                  {error ? <SimpleError /> : <></>}
+                </PassDownProps>
+              </CreateLensProfile>
+            )}
+          </Form>
+        );
+      }}
     </Formik>
   );
 }

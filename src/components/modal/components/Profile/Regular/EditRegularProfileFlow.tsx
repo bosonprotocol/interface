@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
+import useUpdateSellerMetadata from "../../../../../lib/utils/hooks/seller/useUpdateSellerMetadata";
 import { CreateProfile } from "../../../../product/utils";
+import SuccessToast from "../../../../toasts/common/SuccessToast";
 import { useModal } from "../../../useModal";
 import BosonAccountForm from "../bosonAccount/BosonAccountForm";
+import { ProfileType } from "../const";
+import { RegularStep } from "./const";
 import CreateYourRegularProfile from "./CreateYourRegularProfile";
 import { RegularProfileMultiSteps } from "./RegularProfileMultiSteps";
 
@@ -10,21 +15,20 @@ interface EditRegularProfileFlowProps {
   onSubmit: (data: CreateProfile, dirty: boolean) => void;
   profileInitialData: CreateProfile;
   changeToLensProfile: () => void;
-  forceDirty?: boolean;
-}
-
-enum Step {
-  CREATE,
-  BOSON_ACCOUNT
+  updateSellerMetadata: ReturnType<
+    typeof useUpdateSellerMetadata
+  >["mutateAsync"];
+  forceDirty: boolean;
 }
 
 export const EditRegularProfileFlow: React.FC<EditRegularProfileFlowProps> = ({
   onSubmit,
   profileInitialData,
   changeToLensProfile,
-  forceDirty
+  forceDirty,
+  updateSellerMetadata
 }) => {
-  const [step, setStep] = useState<Step>(Step.CREATE);
+  const [step, setStep] = useState<RegularStep>(RegularStep.CREATE);
   const [regularProfile, setRegularProfile] = useState<CreateProfile | null>(
     null
   );
@@ -39,36 +43,51 @@ export const EditRegularProfileFlow: React.FC<EditRegularProfileFlowProps> = ({
           <RegularProfileMultiSteps
             isCreate={false}
             activeStep={step}
+            key={step}
             setStepBasedOnIndex={setStep}
           />
         )
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [step]);
+  console.log({ step, profileInitialData, forceDirty });
   return (
     <>
-      {step === Step.CREATE ? (
+      {step === RegularStep.CREATE ? (
         <CreateYourRegularProfile
+          forceDirty={forceDirty}
           initial={profileInitialData}
-          onSubmit={(profile, formDirty) => {
+          onSubmit={async (profile, formDirty, resetDirty) => {
             setRegularProfile(profile);
             setDirty(formDirty);
-            setStep(Step.BOSON_ACCOUNT);
+            if (formDirty || forceDirty) {
+              await updateSellerMetadata({
+                values: profile,
+                kind: ProfileType.REGULAR
+              });
+              toast((t) => (
+                <SuccessToast t={t}>
+                  Seller profile has been updated
+                </SuccessToast>
+              ));
+              resetDirty?.();
+            }
+            setStep(RegularStep.BOSON_ACCOUNT);
           }}
           isEdit={true}
           changeToLensProfile={changeToLensProfile}
         />
-      ) : step === Step.BOSON_ACCOUNT && regularProfile ? (
+      ) : step === RegularStep.BOSON_ACCOUNT && regularProfile ? (
         <BosonAccountForm
           formValues={null}
           onSubmit={() => {
             onSubmit(regularProfile, dirty);
           }}
           onBackClick={() => {
-            setStep(Step.CREATE);
+            setStep(RegularStep.CREATE);
           }}
-          submitButtonText={dirty || forceDirty ? "Save & close" : "Close"}
+          submitButtonText={"Close"}
         />
       ) : (
         <p>There has been an error, please try again...</p>

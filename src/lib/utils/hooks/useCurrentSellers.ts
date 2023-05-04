@@ -1,4 +1,5 @@
 import { subgraph } from "@bosonprotocol/core-sdk";
+import { SellerFieldsFragment } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
 import { AuthTokenType } from "@bosonprotocol/react-kit";
 import { gql } from "graphql-request";
 import { useMemo } from "react";
@@ -36,6 +37,7 @@ const getSellersByIds = () => (sellerIds: string[], isSellerId: boolean) => {
           voucherCloneAddress: string;
           active: boolean;
           sellerId: string;
+          metadata: SellerFieldsFragment["metadata"];
         }[];
       }>(
         gql`
@@ -51,6 +53,35 @@ const getSellersByIds = () => (sellerIds: string[], isSellerId: boolean) => {
               voucherCloneAddress
               active
               sellerId
+              metadata {
+                id
+                type
+                createdAt
+                name
+                description
+                legalTradingName
+                kind
+                website
+                images {
+                  id
+                  url
+                  tag
+                  type
+                  width
+                  height
+                }
+                contactLinks {
+                  id
+                  url
+                  tag
+                }
+                contactPreference
+                socialLinks {
+                  id
+                  url
+                  tag
+                }
+              }
             }
           }
         `,
@@ -231,8 +262,9 @@ export function useCurrentSellers({
       : [];
   const enableSellerById = !!sellerIdsToQuery?.length;
   const { data: sellers2 } = fetchSellers(sellerIdsToQuery, enableSellerById);
+  console.log({ sellers2 });
   const sellerById = useQuery(
-    ["current-seller-by-id", { sellerIds: sellerIdsToQuery }],
+    ["current-seller-by-id", { sellerIds: sellerIdsToQuery, sellers2 }],
     async () => {
       const currentSeller = sellers2?.[0] || null;
 

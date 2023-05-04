@@ -38,6 +38,22 @@ async function updateSellerAccount(
     metadataUri: string;
   }
 ) {
+  console.log("call to updateSellerAndOptIn", {
+    id: sellerId,
+    admin:
+      authTokenType === authTokenTypes.LENS
+        ? ethers.constants.AddressZero
+        : admin,
+    authTokenId:
+      authTokenType === authTokenTypes.LENS
+        ? getLensTokenIdDecimal(authTokenId || "0x0")
+        : "0",
+    authTokenType,
+    clerk,
+    assistant,
+    treasury,
+    metadataUri
+  });
   await coreSDK.updateSellerAndOptIn({
     id: sellerId,
     admin:

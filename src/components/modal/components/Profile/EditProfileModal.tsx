@@ -1,6 +1,5 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useCallback, useState } from "react";
-import toast from "react-hot-toast";
 import { useAccount } from "wagmi";
 
 import { BosonRoutes } from "../../../../lib/routing/routes";
@@ -11,7 +10,6 @@ import {
   CreateProfile,
   OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE
 } from "../../../product/utils";
-import SuccessToast from "../../../toasts/common/SuccessToast";
 import BosonButton from "../../../ui/BosonButton";
 import Grid from "../../../ui/Grid";
 import Loading from "../../../ui/Loading";
@@ -19,20 +17,12 @@ import Typography from "../../../ui/Typography";
 import { useModal } from "../../useModal";
 import { ProfileType } from "./const";
 import LensProfileFlow from "./Lens/LensProfileFlow";
-import {
-  getLensCoverPictureUrl,
-  getLensDescription,
-  getLensEmail,
-  getLensLegalTradingName,
-  getLensName,
-  getLensProfilePictureUrl,
-  getLensWebsite
-} from "./Lens/utils";
 import { EditRegularProfileFlow } from "./Regular/EditRegularProfileFlow";
 
 export default function EditProfileModal() {
-  const { sellers: currentSellers, lens, isFetching } = useCurrentSellers();
+  const { sellers: currentSellers, lens, isLoading } = useCurrentSellers();
   const seller = currentSellers?.length ? currentSellers[0] : undefined;
+  console.log("seller", seller);
   const lensProfile = lens?.length ? lens[0] : undefined;
   const hasMetadata = !!seller?.metadata;
   const metadata = seller?.metadata;
@@ -80,33 +70,12 @@ export default function EditProfileModal() {
         changeToRegularProfile={() => setProfileType(ProfileType.REGULAR)}
         updateSellerMetadata={updateSellerMetadata}
       />
-    ) : seller && ((useLens && lensProfile) || metadata) ? (
+    ) : seller ? (
       <EditRegularProfileFlow
-        profileInitialData={
-          useLens && lensProfile
-            ? {
-                name: getLensName(lensProfile),
-                description: getLensDescription(lensProfile),
-                email: getLensEmail(lensProfile),
-                legalTradingName: getLensLegalTradingName(lensProfile),
-                website: getLensWebsite(lensProfile),
-                coverPicture: [{ src: getLensCoverPictureUrl(lensProfile) }],
-                logo: [{ src: getLensProfilePictureUrl(lensProfile) }],
-                contactPreference:
-                  OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE.find(
-                    (obj) => obj.value === seller.metadata?.contactPreference
-                  ) ?? OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE[0]
-              }
-            : profileDataFromMetadata
-        }
+        profileInitialData={profileDataFromMetadata}
         forceDirty={!hasMetadata}
-        onSubmit={async (values, dirty) => {
-          if (dirty || !seller?.metadata) {
-            await updateSellerMetadata({ values, kind: ProfileType.REGULAR });
-            toast((t) => (
-              <SuccessToast t={t}>Seller profile has been updated</SuccessToast>
-            ));
-          }
+        updateSellerMetadata={updateSellerMetadata}
+        onSubmit={async () => {
           hideModal();
         }}
         changeToLensProfile={() => setProfileType(ProfileType.LENS)}
@@ -137,7 +106,7 @@ export default function EditProfileModal() {
     );
   }
 
-  if (isFetching) {
+  if (isLoading) {
     return <Loading />;
   }
 

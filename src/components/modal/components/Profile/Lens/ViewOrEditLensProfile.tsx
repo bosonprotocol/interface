@@ -1,7 +1,7 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { useFormikContext } from "formik";
-import { Dispatch, ReactNode, SetStateAction, useEffect, useMemo } from "react";
+import { ReactNode, useEffect, useMemo } from "react";
 
 import { CONFIG } from "../../../../../lib/config";
 import { fetchImageAsBase64 } from "../../../../../lib/utils/base64";
@@ -29,11 +29,10 @@ interface Props {
   children: ReactNode;
   onBackClick: () => void;
   setStepBasedOnIndex: (lensStep: LensStep) => void;
-  setFormChanged: Dispatch<SetStateAction<boolean>>;
+  setFormChanged: (changed: Record<keyof LensProfileType, boolean>) => void;
   isEditViewOnly: boolean;
   forceDirty?: boolean;
 }
-const disabledFields = ["handle"];
 export default function ViewOrEditLensProfile({
   profile,
   seller,
@@ -50,9 +49,19 @@ export default function ViewOrEditLensProfile({
   const coverPictureUrl = getLensImageUrl(getLensCoverPictureUrl(profile));
 
   const { updateProps, store } = useModal();
-  const changedFields = useMemo(() => {
+  const changedFields: Record<keyof LensProfileType, boolean> = useMemo(() => {
     if (!profile || values === initialValues) {
-      return {};
+      return {
+        coverPicture: false,
+        description: false,
+        email: false,
+        handle: false,
+        legalTradingName: false,
+        logo: false,
+        name: false,
+        website: false,
+        contactPreference: false
+      };
     }
     const changedValues: Record<keyof typeof values, boolean> = {
       coverPicture: values.coverPicture?.[0]?.src !== coverPictureUrl,
@@ -77,15 +86,19 @@ export default function ViewOrEditLensProfile({
     profilePictureUrl,
     seller?.metadata
   ]);
-  const hasChanged = !!Object.entries(changedFields).filter(
-    ([key, value]) => !disabledFields.includes(key) && value
-  ).length;
+  const hasChanged = Object.values(changedFields).some((value) => value);
   useEffect(() => {
-    setFormChanged(hasChanged);
-  }, [setFormChanged, hasChanged]);
+    setFormChanged(changedFields);
+  }, [setFormChanged, changedFields]);
   useEffect(() => {
     if (changedFields) {
-      setTouched(changedFields);
+      setTouched({
+        ...changedFields,
+        contactPreference: {
+          value: changedFields.contactPreference,
+          label: changedFields.contactPreference
+        }
+      });
     }
   }, [setTouched, changedFields]);
 

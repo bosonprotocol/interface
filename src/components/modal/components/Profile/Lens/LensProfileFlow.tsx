@@ -81,7 +81,6 @@ export default function LensProfileFlow({
     setLensProfile(selectedProfile);
     setStep(LensStep.USE);
   }
-  console.log({ step });
   return (
     <>
       {step === LensStep.CREATE_OR_CHOOSE ? (
@@ -119,42 +118,60 @@ export default function LensProfileFlow({
           formValues={null}
           isEditViewOnly={true}
           forceDirty={forceDirty}
-          onSubmit={async (formValues, { dirty }) => {
+          onSubmit={async (formValues, { dirtyFields }) => {
             setLensFormValues(formValues);
+            const dirty = Object.values(dirtyFields).some((value) => value);
             if (dirty && lensProfile) {
               const profileId = lensProfile.id || "";
-              await setMetadata({
-                profileId,
-                name: formValues.name,
-                bio: formValues.description,
-                cover_picture: formValues.coverPicture?.[0].src ?? "",
-                attributes: [
-                  {
-                    traitType: "string",
-                    value: formValues.email || "",
-                    key: "email"
-                  },
-                  {
-                    traitType: "string",
-                    value: formValues.website || "",
-                    key: "website"
-                  },
-                  {
-                    traitType: "string",
-                    value: formValues.legalTradingName || "",
-                    key: "legalTradingName"
-                  }
-                ],
-                version: "1.0.0",
-                metadata_id: window.crypto.randomUUID()
-              });
-              await setProfileImage({
-                profileId,
-                url: formValues.logo?.[0].src ?? ""
-              });
+              if (
+                (
+                  [
+                    "name",
+                    "description",
+                    "coverPicture",
+                    "email",
+                    "website",
+                    "legalTradingName"
+                  ] as (keyof typeof dirtyFields)[]
+                ).some((key) => dirtyFields[key])
+              ) {
+                await setMetadata({
+                  profileId,
+                  name: formValues.name,
+                  bio: formValues.description,
+                  cover_picture: formValues.coverPicture?.[0].src ?? "",
+                  attributes: [
+                    {
+                      traitType: "string",
+                      value: formValues.email || "",
+                      key: "email"
+                    },
+                    {
+                      traitType: "string",
+                      value: formValues.website || "",
+                      key: "website"
+                    },
+                    {
+                      traitType: "string",
+                      value: formValues.legalTradingName || "",
+                      key: "legalTradingName"
+                    }
+                  ],
+                  version: "1.0.0",
+                  metadata_id: window.crypto.randomUUID()
+                });
+              }
+
+              if (dirtyFields.logo) {
+                await setProfileImage({
+                  profileId,
+                  url: formValues.logo?.[0].src ?? ""
+                });
+              }
               toast((t) => (
                 <SuccessToast t={t}>Lens profile has been updated</SuccessToast>
               ));
+
               if (updateSellerMetadata) {
                 await updateSellerMetadata({
                   values: formValues,
