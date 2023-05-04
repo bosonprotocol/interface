@@ -8,10 +8,12 @@ import { fetchImageAsBase64 } from "../../../../../lib/utils/base64";
 import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
 import { getLensImageUrl } from "../../../../../lib/utils/images";
 import { Spinner } from "../../../../loading/Spinner";
+import { OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE } from "../../../../product/utils";
 import BosonButton from "../../../../ui/BosonButton";
 import Grid from "../../../../ui/Grid";
 import { useModal } from "../../../useModal";
-import ProfileMultiSteps from "./ProfileMultiSteps";
+import { LensStep } from "./const";
+import LensProfileMultiSteps from "./LensProfileMultiSteps";
 import {
   getLensCoverPictureUrl,
   getLensEmail,
@@ -26,11 +28,12 @@ interface Props {
   seller: subgraph.SellerFieldsFragment;
   children: ReactNode;
   onBackClick: () => void;
-  setStepBasedOnIndex: (index: number) => void;
+  setStepBasedOnIndex: (lensStep: LensStep) => void;
   setFormChanged: Dispatch<SetStateAction<boolean>>;
   isEditViewOnly: boolean;
+  forceDirty?: boolean;
 }
-const disabledFields = ["coverPicture", "handle", "logo"];
+const disabledFields = ["handle"];
 export default function ViewOrEditLensProfile({
   profile,
   seller,
@@ -38,7 +41,8 @@ export default function ViewOrEditLensProfile({
   onBackClick,
   setStepBasedOnIndex,
   setFormChanged,
-  isEditViewOnly
+  isEditViewOnly,
+  forceDirty
 }: Props) {
   const { setValues, setTouched, initialValues, values, isSubmitting } =
     useFormikContext<LensProfileType>();
@@ -46,25 +50,33 @@ export default function ViewOrEditLensProfile({
   const coverPictureUrl = getLensImageUrl(getLensCoverPictureUrl(profile));
 
   const { updateProps, store } = useModal();
-  const bosonSellerExists = !!seller;
   const changedFields = useMemo(() => {
     if (!profile || values === initialValues) {
       return {};
     }
-    // all undefined fields are disabled fields also found in 'disabledFields' array
-    const t = {
-      coverPicture: undefined,
+    const changedValues: Record<keyof typeof values, boolean> = {
+      coverPicture: values.coverPicture?.[0]?.src !== coverPictureUrl,
       description: values.description !== profile.bio,
       email: values.email !== getLensEmail(profile),
-      handle: undefined,
+      handle: false,
       legalTradingName:
         values.legalTradingName !== getLensLegalTradingName(profile),
-      logo: undefined,
+      logo: values.logo?.[0]?.src !== profilePictureUrl,
       name: values.name !== profile.name,
-      website: values.website !== getLensWebsite(profile)
+      website: values.website !== getLensWebsite(profile),
+      contactPreference:
+        !seller?.metadata ||
+        values.contactPreference.value !== seller?.metadata?.contactPreference
     };
-    return t;
-  }, [values, profile, initialValues]);
+    return changedValues;
+  }, [
+    profile,
+    values,
+    initialValues,
+    coverPictureUrl,
+    profilePictureUrl,
+    seller?.metadata
+  ]);
   const hasChanged = !!Object.entries(changedFields).filter(
     ([key, value]) => !disabledFields.includes(key) && value
   ).length;
@@ -78,26 +90,23 @@ export default function ViewOrEditLensProfile({
   }, [setTouched, changedFields]);
 
   useEffect(() => {
-    if (isEditViewOnly) {
-      return;
-    }
-    updateProps<"CREATE_PROFILE">({
+    updateProps<"EDIT_PROFILE">({
       ...store,
       modalProps: {
         ...store.modalProps,
         headerComponent: (
-          <ProfileMultiSteps
-            createOrSelect="select"
-            activeStep={1}
-            createOrViewRoyalties={bosonSellerExists ? "view" : "create"}
-            key="ViewLensProfile"
+          <LensProfileMultiSteps
+            profileOption="edit"
+            activeStep={LensStep.USE}
+            createOrViewRoyalties="view"
+            key="EditLensProfile"
             setStepBasedOnIndex={setStepBasedOnIndex}
           />
         )
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isEditViewOnly]);
+  }, []);
 
   useEffect(() => {
     Promise.all([
@@ -109,7 +118,7 @@ export default function ViewOrEditLensProfile({
           logo: profilePicture
             ? [
                 {
-                  src: profilePicture.base64,
+                  src: profilePictureUrl,
                   type: profilePicture.blob.type,
                   size: profilePicture.blob.size
                 }
@@ -118,7 +127,7 @@ export default function ViewOrEditLensProfile({
           coverPicture: coverPicture
             ? [
                 {
-                  src: coverPicture.base64,
+                  src: coverPictureUrl,
                   type: coverPicture.blob.type,
                   size: coverPicture.blob.size
                 }
@@ -135,14 +144,24 @@ export default function ViewOrEditLensProfile({
           email: getLensEmail(profile) || "",
           description: profile.bio || "",
           website: getLensWebsite(profile) || "",
-          legalTradingName: getLensLegalTradingName(profile) || ""
+          legalTradingName: getLensLegalTradingName(profile) || "",
+          contactPreference:
+            OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE.find(
+              (obj) => obj.value === seller?.metadata?.contactPreference
+            ) ?? OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE[0]
         });
       })
       .catch((error) => {
         console.error(error);
         Sentry.captureException(error);
       });
-  }, [profile, profilePictureUrl, coverPictureUrl, setValues]);
+  }, [
+    profile,
+    profilePictureUrl,
+    coverPictureUrl,
+    setValues,
+    seller?.metadata?.contactPreference
+  ]);
 
   return (
     <div>
@@ -162,13 +181,7 @@ export default function ViewOrEditLensProfile({
           type="submit"
           disabled={isSubmitting}
         >
-          {isEditViewOnly
-            ? hasChanged
-              ? "Save & close"
-              : "Close"
-            : hasChanged
-            ? "Save & continue"
-            : "Next"}
+          {hasChanged || forceDirty ? "Save & continue" : "Next"}
           {isSubmitting && <Spinner size="20" />}
         </BosonButton>
       </Grid>

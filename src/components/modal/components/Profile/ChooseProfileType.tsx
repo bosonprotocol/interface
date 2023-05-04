@@ -4,9 +4,10 @@ import { ReactComponent as LensLogo } from "../../../../assets/lens.svg";
 import Button from "../../../ui/Button";
 import Grid from "../../../ui/Grid";
 import Typography from "../../../ui/Typography";
+import { ProfileType } from "./const";
 
 type Props = {
-  setProfileType: Dispatch<SetStateAction<"lens" | "regular" | undefined>>;
+  setProfileType: Dispatch<SetStateAction<ProfileType | undefined>>;
 };
 export function ChooseProfileType({ setProfileType }: Props) {
   return (
@@ -16,13 +17,16 @@ export function ChooseProfileType({ setProfileType }: Props) {
         account
       </Typography>
       <Grid flexDirection="column" gap="1rem" margin="1.5rem 0 0 0">
-        <Button onClick={() => setProfileType("lens")}>
+        <Button onClick={() => setProfileType(ProfileType.LENS)}>
           Sign up with <LensLogo />
         </Button>
         <Typography>
           <small>or</small>
         </Typography>
-        <Button onClick={() => setProfileType("regular")} theme="blankOutline">
+        <Button
+          onClick={() => setProfileType(ProfileType.REGULAR)}
+          theme="blankOutline"
+        >
           Sign up without Lens
         </Button>
       </Grid>

@@ -2,6 +2,7 @@ import { CONFIG } from "../../../lib/config";
 import { FormModel } from "../../modal/components/Chat/MakeProposal/MakeProposalFormModel";
 import { DisputeFormModel } from "../../modal/components/DisputeModal/DisputeModalFormModel";
 import {
+  OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE,
   OPTIONS_CURRENCIES,
   OPTIONS_DISPUTE_RESOLVER,
   OPTIONS_EXCHANGE_POLICY,
@@ -23,7 +24,8 @@ export const createYourProfileInitialValues: CreateYourProfile = {
     email: "",
     description: "",
     website: "",
-    legalTradingName: ""
+    legalTradingName: "",
+    contactPreference: OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE[0]
   }
 } as const;
 

@@ -1,6 +1,7 @@
 import { CONFIG } from "../../../lib/config";
 import countries from "../../../lib/const/countries.json";
 import { Token } from "../../convertion-rate/ConvertionRateContext";
+import { ContactPreference } from "../../modal/components/Profile/const";
 
 export const MAX_LOGO_SIZE = 600 * 1024;
 export const MAX_IMAGE_SIZE = 600 * 1024;
@@ -120,6 +121,17 @@ export const OPTIONS_DISPUTE_RESOLVER = [
     label: "Redeemeum"
   }
 ];
+
+export const OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE = [
+  {
+    value: ContactPreference.XMTP,
+    label: "XMTP Chat"
+  },
+  {
+    value: ContactPreference.EMAIL,
+    label: "Email"
+  }
+] as const;
 
 type Entries<T> = {
   [K in keyof T]: [K, T[K]];

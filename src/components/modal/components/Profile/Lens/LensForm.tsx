@@ -1,12 +1,17 @@
 import { subgraph } from "@bosonprotocol/react-kit";
+import * as Sentry from "@sentry/browser";
 import { Form, Formik } from "formik";
 import { useCallback, useState } from "react";
 
 import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
 import { preAppendHttps } from "../../../../../lib/validation/regex/url";
+import SimpleError from "../../../../error/SimpleError";
+import { OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE } from "../../../../product/utils";
 import Button from "../../../../ui/Button";
+import { LensStep } from "./const";
 import CreateLensProfile from "./CreateLensProfile";
 import LensFormFields from "./LensFormFields";
+import PassDownProps from "./PassDownProps";
 import {
   LensProfileType,
   lensProfileValidationSchema,
@@ -18,16 +23,17 @@ interface Props {
   onSubmit: (
     createValues: LensProfileType,
     opts: {
-      touched: boolean;
+      dirty: boolean;
     }
-  ) => void;
+  ) => Promise<void>;
   profile: Profile | null;
   seller: subgraph.SellerFieldsFragment | null;
   formValues: LensProfileType | null | undefined;
   onBackClick: () => void;
-  setStepBasedOnIndex: (index: number) => void;
+  setStepBasedOnIndex: (lensStep: LensStep) => void;
   isEditViewOnly: boolean;
   changeToRegularProfile: () => void;
+  forceDirty?: boolean;
 }
 
 export default function LensForm({
@@ -38,9 +44,11 @@ export default function LensForm({
   formValues,
   setStepBasedOnIndex,
   isEditViewOnly,
-  changeToRegularProfile
+  changeToRegularProfile,
+  forceDirty
 }: Props) {
-  const [formTouched, setFormChanged] = useState<boolean>(false);
+  const [formChanged, setFormChanged] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
   const defaultInitialValues: LensProfileType = {
     logo: [],
     coverPicture: [],
@@ -49,7 +57,8 @@ export default function LensForm({
     email: "",
     description: "",
     website: "",
-    legalTradingName: ""
+    legalTradingName: "",
+    contactPreference: OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE[0]
   };
   const UseRegularProfile = useCallback(() => {
     return (
@@ -65,14 +74,21 @@ export default function LensForm({
   return (
     <Formik<LensProfileType>
       initialValues={formValues ? formValues : defaultInitialValues}
-      onSubmit={(values) => {
-        if (profile) {
-          onSubmit(values, { touched: formTouched });
-        } else {
-          onSubmit(
-            { ...values, website: preAppendHttps(values.website) },
-            { touched: formTouched }
-          );
+      onSubmit={async (values) => {
+        try {
+          setError(null);
+          if (profile) {
+            await onSubmit(values, { dirty: formChanged });
+          } else {
+            await onSubmit(
+              { ...values, website: preAppendHttps(values.website) },
+              { dirty: formChanged }
+            );
+          }
+        } catch (err) {
+          console.error(err);
+          Sentry.captureException(error);
+          setError(err as Error);
         }
       }}
       validationSchema={
@@ -88,22 +104,29 @@ export default function LensForm({
             setStepBasedOnIndex={setStepBasedOnIndex}
             setFormChanged={setFormChanged}
             isEditViewOnly={isEditViewOnly}
+            forceDirty={forceDirty}
           >
-            <LensFormFields disableCover disableHandle disableLogo />
+            <LensFormFields
+              disableCover={!isEditViewOnly}
+              disableHandle
+              disableLogo={!isEditViewOnly}
+            />
             {isEditViewOnly && <UseRegularProfile />}
+            {error && <SimpleError />}
           </ViewOrEditLensProfile>
         ) : (
           <CreateLensProfile
             onBackClick={onBackClick}
             setStepBasedOnIndex={setStepBasedOnIndex}
           >
-            <>
+            <PassDownProps>
               <LensFormFields
                 logoSubtitle="Please choose an image that is no larger than 300KB to ensure it can be uploaded."
                 coverSubtitle="Please choose an image that is no larger than 300KB to ensure it can be uploaded."
               />
               <UseRegularProfile />
-            </>
+              {error ? <SimpleError /> : <></>}
+            </PassDownProps>
           </CreateLensProfile>
         )}
       </Form>

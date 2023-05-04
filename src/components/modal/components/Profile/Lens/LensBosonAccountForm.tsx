@@ -1,17 +1,17 @@
 import { useEffect } from "react";
-import { useAccount } from "wagmi";
 
-import { useSellers } from "../../../../../lib/utils/hooks/useSellers";
+import { useCurrentSellers } from "../../../../../lib/utils/hooks/useCurrentSellers";
 import { useModal } from "../../../useModal";
 import BosonAccountForm from "../bosonAccount/BosonAccountForm";
 import { BosonAccount } from "../bosonAccount/validationSchema";
-import ProfileMultiSteps from "./ProfileMultiSteps";
+import { LensStep } from "./const";
+import LensProfileMultiSteps from "./LensProfileMultiSteps";
 
 interface Props {
   onSubmit: (createValues: BosonAccount) => void;
   onBackClick: () => void;
   isExistingProfile: boolean;
-  setStepBasedOnIndex: (index: number) => void;
+  setStepBasedOnIndex: (lensStep: LensStep) => void;
   formValues: BosonAccount | null;
 }
 
@@ -22,29 +22,40 @@ export default function LensBosonAccountForm({
   formValues,
   isExistingProfile
 }: Props) {
-  const { address } = useAccount();
-  const { data: admins } = useSellers(
-    {
-      admin: address
-    },
-    {
-      enabled: !!address
-    }
-  );
-  const seller = admins?.[0];
+  const { sellers } = useCurrentSellers();
+  const seller = sellers?.[0];
   const { contractURI } = seller || {};
   const alreadyHasRoyaltiesDefined = !!contractURI;
-
   const { updateProps, store } = useModal();
   useEffect(() => {
+    if (isExistingProfile) {
+      updateProps<"EDIT_PROFILE">({
+        ...store,
+        modalProps: {
+          ...store.modalProps,
+          headerComponent: (
+            <LensProfileMultiSteps
+              profileOption={"edit"}
+              activeStep={LensStep.BOSON_ACCOUNT}
+              createOrViewRoyalties={
+                alreadyHasRoyaltiesDefined ? "view" : "create"
+              }
+              key="BosonAccountFormFields"
+              setStepBasedOnIndex={setStepBasedOnIndex}
+            />
+          )
+        }
+      });
+      return;
+    }
     updateProps<"CREATE_PROFILE">({
       ...store,
       modalProps: {
         ...store.modalProps,
         headerComponent: (
-          <ProfileMultiSteps
-            createOrSelect={isExistingProfile ? "select" : "create"}
-            activeStep={2}
+          <LensProfileMultiSteps
+            profileOption={"create"}
+            activeStep={LensStep.BOSON_ACCOUNT}
             createOrViewRoyalties={
               alreadyHasRoyaltiesDefined ? "view" : "create"
             }

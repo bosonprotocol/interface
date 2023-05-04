@@ -23,8 +23,8 @@ export interface FileProps {
   name?: string; // for example: "redeemeum.png"
   size?: number;
   type?: string; // for example: "image/png"
-  width?: number;
-  height?: number;
+  width?: number | null;
+  height?: number | null;
 }
 type UseSaveImageToIpfs = ReturnType<typeof useSaveImageToIpfs>;
 export interface WithUploadToIpfsProps {

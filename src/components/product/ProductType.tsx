@@ -217,20 +217,7 @@ export default function ProductType({
         showModal(
           "CREATE_PROFILE",
           {
-            // ...(CONFIG.lens.enabled && !isRegularSeller
-            //   ? {
-            //       headerComponent: (
-            //         <ProfileMultiSteps
-            //           createOrSelect={null}
-            //           activeStep={0}
-            //           createOrViewRoyalties={null}
-            //           key="ProductType"
-            //         />
-            //       )
-            //     }
-            //   : {
             title: "Create Profile",
-            //  }),
             initialRegularCreateProfile: values["createYourProfile"],
             seller: currentSellers?.length ? currentSellers[0] : undefined,
             lensProfile: lens?.length ? lens[0] : undefined,

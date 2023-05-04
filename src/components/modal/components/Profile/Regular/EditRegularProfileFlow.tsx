@@ -3,40 +3,41 @@ import React, { useEffect, useState } from "react";
 import { CreateProfile } from "../../../../product/utils";
 import { useModal } from "../../../useModal";
 import BosonAccountForm from "../bosonAccount/BosonAccountForm";
-import { BosonAccount } from "../bosonAccount/validationSchema";
 import CreateYourRegularProfile from "./CreateYourRegularProfile";
 import { RegularProfileMultiSteps } from "./RegularProfileMultiSteps";
-import RegularProfileSummary from "./RegularProfileSummary";
 
-interface CreateRegularProfileFlowProps {
-  onSubmit: (data: CreateProfile) => void;
-  initialData?: CreateProfile;
+interface EditRegularProfileFlowProps {
+  onSubmit: (data: CreateProfile, dirty: boolean) => void;
+  profileInitialData: CreateProfile;
   changeToLensProfile: () => void;
+  forceDirty?: boolean;
 }
 
 enum Step {
   CREATE,
-  BOSON_ACCOUNT,
-  SUMMARY
+  BOSON_ACCOUNT
 }
 
-export const CreateRegularProfileFlow: React.FC<
-  CreateRegularProfileFlowProps
-> = ({ onSubmit, initialData, changeToLensProfile }) => {
+export const EditRegularProfileFlow: React.FC<EditRegularProfileFlowProps> = ({
+  onSubmit,
+  profileInitialData,
+  changeToLensProfile,
+  forceDirty
+}) => {
   const [step, setStep] = useState<Step>(Step.CREATE);
   const [regularProfile, setRegularProfile] = useState<CreateProfile | null>(
     null
   );
-  const [bosonAccount, setBosonAccount] = useState<BosonAccount | null>(null);
+  const [dirty, setDirty] = useState<boolean>(false);
   const { updateProps, store } = useModal();
   useEffect(() => {
-    updateProps<"CREATE_PROFILE">({
+    updateProps<"EDIT_PROFILE">({
       ...store,
       modalProps: {
         ...store.modalProps,
         headerComponent: (
           <RegularProfileMultiSteps
-            isCreate
+            isCreate={false}
             activeStep={step}
             setStepBasedOnIndex={setStep}
           />
@@ -49,32 +50,25 @@ export const CreateRegularProfileFlow: React.FC<
     <>
       {step === Step.CREATE ? (
         <CreateYourRegularProfile
-          initial={initialData}
-          onSubmit={(profile) => {
+          initial={profileInitialData}
+          onSubmit={(profile, formDirty) => {
             setRegularProfile(profile);
+            setDirty(formDirty);
             setStep(Step.BOSON_ACCOUNT);
           }}
-          isEdit={false}
+          isEdit={true}
           changeToLensProfile={changeToLensProfile}
         />
-      ) : step === Step.BOSON_ACCOUNT ? (
+      ) : step === Step.BOSON_ACCOUNT && regularProfile ? (
         <BosonAccountForm
           formValues={null}
-          onSubmit={(values) => {
-            setBosonAccount(values);
-            setStep(Step.SUMMARY);
+          onSubmit={() => {
+            onSubmit(regularProfile, dirty);
           }}
           onBackClick={() => {
             setStep(Step.CREATE);
           }}
-        />
-      ) : step === Step.SUMMARY && regularProfile && bosonAccount ? (
-        <RegularProfileSummary
-          bosonAccount={bosonAccount}
-          values={regularProfile}
-          onSubmit={() => {
-            onSubmit(regularProfile);
-          }}
+          submitButtonText={dirty || forceDirty ? "Save & close" : "Close"}
         />
       ) : (
         <p>There has been an error, please try again...</p>

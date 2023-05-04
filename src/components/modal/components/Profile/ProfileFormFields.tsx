@@ -1,7 +1,8 @@
 import { ReactNode } from "react";
 
 import { websitePattern } from "../../../../lib/validation/regex/url";
-import { FormField, Input, Textarea, Upload } from "../../../form";
+import { FormField, Input, Select, Textarea, Upload } from "../../../form";
+import { OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE } from "../../../product/utils";
 
 interface Props {
   onBlurName?: () => void;
@@ -72,6 +73,17 @@ export function ProfileFormFields({
         subTitle="Input your legal trading name under which you will be selling items. This information is used for the contractual agreement underlying your exchanges."
       >
         <Input name="legalTradingName" placeholder="Polly Seller UK ltd." />
+      </FormField>
+      <FormField
+        title="Communication Channel Preference"
+        required
+        subTitle="Set up how you want to communicate with the buyer after redemption"
+      >
+        <Select
+          placeholder="Choose a communication channel..."
+          name="contactPreference"
+          options={OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE}
+        />
       </FormField>
     </>
   );

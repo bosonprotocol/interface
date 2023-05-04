@@ -69,7 +69,7 @@ export const isMatchingLensHandle = (handle: string): boolean => {
 
 export const getLensProfileInfo = (
   profile: Profile
-): Omit<LensProfileType, "logo" | "coverPicture"> => {
+): Omit<LensProfileType, "logo" | "coverPicture" | "contactPreference"> => {
   return {
     name: profile.name || "",
     handle: String(profile.handle),

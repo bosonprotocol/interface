@@ -25,7 +25,8 @@ async function updateSellerAccount(
     assistant,
     treasury,
     authTokenId,
-    authTokenType
+    authTokenType,
+    metadataUri
   }: {
     sellerId: string;
     admin: string;
@@ -34,6 +35,7 @@ async function updateSellerAccount(
     treasury: string;
     authTokenId: string | null;
     authTokenType: typeof authTokenTypes[keyof typeof authTokenTypes];
+    metadataUri: string;
   }
 ) {
   await coreSDK.updateSellerAndOptIn({
@@ -49,6 +51,7 @@ async function updateSellerAccount(
     authTokenType,
     clerk,
     assistant,
-    treasury
+    treasury,
+    metadataUri
   });
 }

@@ -136,8 +136,10 @@ export const productVariantsImagesValidationSchema = Yup.object({
 
 export const imagesSpecificOrAllValidationSchema = Yup.object({
   imagesSpecificOrAll: Yup.object({
-    label: Yup.string().required(),
-    value: Yup.string().oneOf(["all", "specific"]).required()
+    label: Yup.string().required(validationMessage.required),
+    value: Yup.string()
+      .oneOf(["all", "specific"])
+      .required(validationMessage.required)
   }).nullable()
 });
 
@@ -406,8 +408,8 @@ export const disputeCentreValidationSchemaAdditionalInformation = Yup.object({
 
 export const disputeCentreValidationSchemaMakeProposal = Yup.object({
   [FormModel.formFields.proposalType.name]: Yup.object({
-    label: Yup.string().required(),
-    value: Yup.string().required()
+    label: Yup.string().required(validationMessage.required),
+    value: Yup.string().required(validationMessage.required)
   }).nullable(),
   [FormModel.formFields.refundPercentage.name]: Yup.number().when(
     FormModel.formFields.proposalType.name,

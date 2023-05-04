@@ -26,6 +26,11 @@ export function useSaveImageToIpfs() {
       if (alreadyBase64) {
         return image;
       }
+      const isHttpUrl =
+        image.startsWith("https://") || image.startsWith("http://");
+      if (isHttpUrl) {
+        return image;
+      }
       const [loadPromise] = await fetchIpfsBase64Media(
         [image],
         ipfsMetadataStorage

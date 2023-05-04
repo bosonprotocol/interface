@@ -69,6 +69,7 @@ function onKeyPress(event: React.KeyboardEvent<HTMLFormElement>) {
   }
 }
 type GetProductV1MetadataProps = {
+  contactPreference: string;
   offerUuid: string;
   productInformation: CreateProductForm["productInformation"];
   productAnimation: FileProps | undefined;
@@ -96,6 +97,7 @@ type GetProductV1MetadataProps = {
     | CreateProductForm["variantsCoreTermsOfSale"];
 };
 async function getProductV1Metadata({
+  contactPreference,
   offerUuid,
   productInformation,
   productAnimation,
@@ -119,15 +121,15 @@ async function getProductV1Metadata({
     {
       url: profileImage?.src || "",
       tag: "profile",
-      height: profileImage?.height,
-      width: profileImage?.width,
+      height: profileImage?.height ?? undefined,
+      width: profileImage?.width ?? undefined,
       type: profileImage?.type
     },
     {
       url: coverImage?.src || "",
       tag: "cover",
-      height: coverImage?.height,
-      width: coverImage?.width,
+      height: coverImage?.height ?? undefined,
+      width: coverImage?.width ?? undefined,
       type: coverImage?.type
     }
   ];
@@ -140,8 +142,8 @@ async function getProductV1Metadata({
     animationUrl: getIpfsGatewayUrl(productAnimation?.src || ""),
     animationMetadata: productAnimation
       ? {
-          height: productAnimation.height,
-          width: productAnimation.width,
+          height: productAnimation.height ?? undefined,
+          width: productAnimation.width ?? undefined,
           type: productAnimation.type
         }
       : undefined,
@@ -195,7 +197,8 @@ async function getProductV1Metadata({
           tag: "email"
         }
       ],
-      images: sellerImages
+      images: sellerImages,
+      contactPreference
     },
     exchangePolicy: {
       uuid: Date.now().toString(),
@@ -381,6 +384,7 @@ function CreateProductInner({
   const currentAssistant = sellers.find((seller) => {
     return seller?.assistant.toLowerCase() === address?.toLowerCase();
   });
+  const contactPreference = currentAssistant?.metadata?.contactPreference ?? "";
   // lens profile of the current user
   const assistantLens: Profile | null =
     lensProfiles.find((lensProfile) => {
@@ -679,6 +683,7 @@ function CreateProductInner({
           }
         }
         const productV1Metadata = await getProductV1Metadata({
+          contactPreference,
           offerUuid,
           productInformation,
           productAnimation,
@@ -766,6 +771,7 @@ function CreateProductInner({
       } else {
         const visualImages = extractVisualImages(productImages);
         const productV1Metadata = await getProductV1Metadata({
+          contactPreference,
           offerUuid,
           productInformation,
           productAnimation,
@@ -823,6 +829,7 @@ function CreateProductInner({
       }
       const isTokenGated = commonTermsOfSale.tokenGatedOffer.value === "true";
       await createOffers({
+        sellerToCreate: null,
         isMultiVariant,
         offersToCreate,
         tokenGatedInfo: isTokenGated ? commonTermsOfSale : null,

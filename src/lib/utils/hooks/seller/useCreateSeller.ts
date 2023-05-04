@@ -1,5 +1,9 @@
 import { TransactionResponse } from "@bosonprotocol/common";
-import { CoreSDK, IpfsMetadataStorage } from "@bosonprotocol/react-kit";
+import {
+  accounts,
+  CoreSDK,
+  IpfsMetadataStorage
+} from "@bosonprotocol/react-kit";
 import { ethers } from "ethers";
 import { useMutation } from "react-query";
 
@@ -29,7 +33,8 @@ async function createSellerAccount(
     description,
     authTokenId,
     authTokenType,
-    profileLogoUrl
+    profileLogoUrl,
+    metadataUri
   }: {
     address: string;
     addressForRoyaltyPayment: string;
@@ -39,6 +44,7 @@ async function createSellerAccount(
     authTokenId: string | null;
     authTokenType: typeof authTokenTypes[keyof typeof authTokenTypes];
     profileLogoUrl: string;
+    metadataUri: string;
   },
   storage: IpfsMetadataStorage
 ) {
@@ -63,7 +69,7 @@ async function createSellerAccount(
   );
 
   const contractUri = `ipfs://${cid}`;
-  const sellerData = {
+  const sellerData: accounts.CreateSellerArgs = {
     admin:
       authTokenType === authTokenTypes.LENS
         ? ethers.constants.AddressZero
@@ -77,7 +83,8 @@ async function createSellerAccount(
     contractUri,
     assistant: address,
     royaltyPercentage: royaltyPercentageTimes100.toString(),
-    treasury: address
+    treasury: address,
+    metadataUri
   };
   let tx: TransactionResponse;
   if (coreSDK.isMetaTxConfigSet) {

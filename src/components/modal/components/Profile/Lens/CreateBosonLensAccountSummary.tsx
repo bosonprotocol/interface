@@ -8,9 +8,10 @@ import { colors } from "../../../../../lib/styles/colors";
 import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
 import useCustomCreateLensProfileMumbai from "../../../../../lib/utils/hooks/lens/profile/useCustomCreateLensProfileMumbai";
 import useCustomCreateLensProfilePolygon from "../../../../../lib/utils/hooks/lens/profile/useCustomCreateLensProfilePolygon";
-import useCreateSeller from "../../../../../lib/utils/hooks/offer/useCreateSeller";
-import useUpdateSeller from "../../../../../lib/utils/hooks/offer/useUpdateSeller";
+import useCreateSellerFromValues from "../../../../../lib/utils/hooks/seller/useCreateSellerFromValues";
+import useUpdateSeller from "../../../../../lib/utils/hooks/seller/useUpdateSeller";
 import { useSellers } from "../../../../../lib/utils/hooks/useSellers";
+import { getIpfsGatewayUrl } from "../../../../../lib/utils/ipfs";
 import Collapse from "../../../../collapse/Collapse";
 import SimpleError from "../../../../error/SimpleError";
 import { Spinner } from "../../../../loading/Spinner";
@@ -20,16 +21,21 @@ import Grid from "../../../../ui/Grid";
 import Typography from "../../../../ui/Typography";
 import { useModal } from "../../../useModal";
 import { BosonAccount } from "../bosonAccount/validationSchema";
-import { authTokenTypes } from "./const";
-import ProfileMultiSteps from "./ProfileMultiSteps";
+import { ProfileType } from "../const";
+import { authTokenTypes, LensStep } from "./const";
+import LensProfileMultiSteps from "./LensProfileMultiSteps";
 import { LensProfileType } from "./validationSchema";
 
 interface Props {
   profile?: Profile | null;
   values: LensProfileType;
   bosonAccount: BosonAccount;
-  onSubmit: (id: string, lensProfile: Profile | null | undefined) => void;
-  setStepBasedOnIndex: (index: number) => void;
+  onSubmit: (
+    id: string,
+    lensProfile: Profile | null | undefined,
+    values: LensProfileType
+  ) => void;
+  setStepBasedOnIndex: (lensStep: LensStep) => void;
 }
 
 export default function CreateBosonLensAccountSummary({
@@ -39,8 +45,10 @@ export default function CreateBosonLensAccountSummary({
   onSubmit,
   setStepBasedOnIndex
 }: Props) {
-  const logoImage = values?.logo?.[0]?.src || "";
-  const coverPicture = values?.coverPicture?.[0]?.src || "";
+  const logo = values?.logo?.[0];
+  const cover = values?.coverPicture?.[0];
+  const logoImage = getIpfsGatewayUrl(logo?.src || "");
+  const coverPicture = getIpfsGatewayUrl(cover?.src || "");
   const isExistingLensAccount = !!profile;
   const [lensProfileToSubmit, setLensProfileToSubmit] = useState<
     Profile | null | undefined
@@ -67,7 +75,7 @@ export default function CreateBosonLensAccountSummary({
     isLoading: isCreatingSellerAccount,
     mutateAsync: createSellerAccount,
     isError: isCreateSellerError
-  } = useCreateSeller();
+  } = useCreateSellerFromValues();
   const {
     isSuccess: isUpdatedSellerAccount,
     isLoading: isUpdatingSellerAccount,
@@ -76,14 +84,33 @@ export default function CreateBosonLensAccountSummary({
   } = useUpdateSeller();
   const { updateProps, store } = useModal();
   useEffect(() => {
+    if (isExistingLensAccount) {
+      updateProps<"EDIT_PROFILE">({
+        ...store,
+        modalProps: {
+          ...store.modalProps,
+          headerComponent: (
+            <LensProfileMultiSteps
+              profileOption={"edit"}
+              activeStep={LensStep.SUMMARY}
+              createOrViewRoyalties={
+                alreadyHasRoyaltiesDefined ? "view" : "create"
+              }
+              setStepBasedOnIndex={setStepBasedOnIndex}
+            />
+          )
+        }
+      });
+      return;
+    }
     updateProps<"CREATE_PROFILE">({
       ...store,
       modalProps: {
         ...store.modalProps,
         headerComponent: (
-          <ProfileMultiSteps
-            createOrSelect={isExistingLensAccount ? "select" : "create"}
-            activeStep={3}
+          <LensProfileMultiSteps
+            profileOption={"create"}
+            activeStep={LensStep.SUMMARY}
             createOrViewRoyalties={
               alreadyHasRoyaltiesDefined ? "view" : "create"
             }
@@ -119,9 +146,9 @@ export default function CreateBosonLensAccountSummary({
   const onSubmitWithArgs = useCallback(
     (action: string, id?: string) => {
       toast((t) => <SuccessTransactionToast t={t} action={action} />);
-      onSubmit(id || "", lensProfileToSubmit);
+      onSubmit(id || "", lensProfileToSubmit, values);
     },
-    [onSubmit, lensProfileToSubmit]
+    [onSubmit, lensProfileToSubmit, values]
   );
   return (
     <>
@@ -457,19 +484,15 @@ export default function CreateBosonLensAccountSummary({
           hasLensHandleLinked={hasLensHandleLinked}
           createSellerAccount={() =>
             createSellerAccount({
-              address: address || "",
-              royaltyPercentage: bosonAccount.secondaryRoyalties || 0,
-              addressForRoyaltyPayment:
-                bosonAccount.addressForRoyaltyPayment || "",
-              name: values.name,
-              description: values.description,
+              values,
+              bosonAccount,
               authTokenId: lensProfileToSubmit?.id,
               authTokenType: authTokenTypes.LENS,
-              profileLogoUrl: logoImage
+              kind: ProfileType.LENS
             })
           }
           createLensProfile={createLensProfile}
-          updateSellerAccount={() =>
+          updateSellerAccount={async () =>
             updateSeller({
               admin: address || "",
               clerk: seller?.clerk || "",
@@ -477,7 +500,8 @@ export default function CreateBosonLensAccountSummary({
               treasury: seller?.treasury || "",
               authTokenId: lensProfileToSubmit?.id,
               authTokenType: authTokenTypes.LENS,
-              sellerId: seller?.id || "0"
+              sellerId: seller?.id || "0",
+              metadataUri: seller?.metadataUri || ""
             })
           }
           isCreatedSellerAccount={isCreatedSellerAccount}
@@ -498,7 +522,7 @@ interface CTAsProps {
   hasAdminSellerAccount: boolean;
   hasLensHandleLinked: boolean;
   createSellerAccount: () => ReturnType<
-    ReturnType<typeof useCreateSeller>["mutateAsync"]
+    ReturnType<typeof useCreateSellerFromValues>["mutateAsync"]
   >;
   createLensProfile: () => void;
   updateSellerAccount: () => ReturnType<

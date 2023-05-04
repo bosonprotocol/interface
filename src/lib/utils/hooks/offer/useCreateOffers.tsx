@@ -1,4 +1,4 @@
-import { AuthTokenType, offers, subgraph } from "@bosonprotocol/react-kit";
+import { accounts, offers, subgraph } from "@bosonprotocol/react-kit";
 import { useMutation } from "react-query";
 import { useAccount } from "wagmi";
 
@@ -11,11 +11,11 @@ import {
 } from "../../../../pages/create-product/utils/buildCondition";
 import { useCoreSDK } from "../../useCoreSdk";
 import { useAddPendingTransaction } from "../transactions/usePendingTransactions";
-import { useCurrentSellers } from "../useCurrentSellers";
 
 type OfferFieldsFragment = subgraph.OfferFieldsFragment;
 
 type UseCreateOffersProps = {
+  sellerToCreate: accounts.CreateSellerArgs | null;
   offersToCreate: offers.CreateOfferArgs[];
   isMultiVariant: boolean;
   tokenGatedInfo?: CommonTermsOfSale | null;
@@ -29,13 +29,13 @@ type UseCreateOffersProps = {
 
 export function useCreateOffers() {
   const coreSDK = useCoreSDK();
-  const { sellers } = useCurrentSellers();
   const { address } = useAccount();
   const { showModal, hideModal } = useModal();
   const addPendingTransaction = useAddPendingTransaction();
   const isMetaTx = Boolean(coreSDK.isMetaTxConfigSet && address);
   return useMutation(
     async ({
+      sellerToCreate,
       offersToCreate,
       isMultiVariant,
       tokenGatedInfo,
@@ -44,6 +44,7 @@ export function useCreateOffers() {
       onCreatedOffersWithVariants,
       onCreatedSingleOffers
     }: UseCreateOffersProps) => {
+      const hasSellerAccount = !sellerToCreate;
       const isTokenGated = !!tokenGatedInfo;
       const onBeforeBuildCondition = async () => {
         let decimalsLocal: number | undefined = conditionDecimals;
@@ -64,19 +65,15 @@ export function useCreateOffers() {
         return decimalsLocal;
       };
       showModal("WAITING_FOR_CONFIRMATION");
-      const hasSellerAccount = !!sellers?.length;
-      const seller = address
-        ? {
-            assistant: address,
-            admin: address,
-            treasury: address,
-            clerk: address,
-            contractUri: "ipfs://sample",
-            royaltyPercentage: "0",
-            authTokenId: "0",
-            authTokenType: AuthTokenType.NONE
-          }
-        : null;
+      if (!sellerToCreate && !hasSellerAccount) {
+        return showModal("TRANSACTION_FAILED", {
+          errorMessage: "Can't create seller",
+          detailedErrorMessage:
+            "No seller data was provided to create a seller account"
+        });
+      }
+      // seller should always exist at this point as it should have been created in the modal at the beginning of the offer creation flow
+      const seller: accounts.CreateSellerArgs | null = sellerToCreate;
       let txResponse;
       if (isMultiVariant) {
         if (!hasSellerAccount && seller) {

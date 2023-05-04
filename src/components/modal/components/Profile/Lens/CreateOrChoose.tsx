@@ -8,9 +8,11 @@ import { useSellers } from "../../../../../lib/utils/hooks/useSellers";
 import Button from "../../../../ui/Button";
 import Grid from "../../../../ui/Grid";
 import GridContainer from "../../../../ui/GridContainer";
+import Loading from "../../../../ui/Loading";
 import Typography from "../../../../ui/Typography";
 import { useModal } from "../../../useModal";
-import ProfileMultiSteps from "./ProfileMultiSteps";
+import { LensStep } from "./const";
+import LensProfileMultiSteps from "./LensProfileMultiSteps";
 
 interface Props {
   onChooseCreateNew: () => void;
@@ -41,9 +43,9 @@ export default function CreateOrChoose({
       modalProps: {
         ...store.modalProps,
         headerComponent: (
-          <ProfileMultiSteps
-            createOrSelect={null}
-            activeStep={0}
+          <LensProfileMultiSteps
+            profileOption={null}
+            activeStep={LensStep.CREATE_OR_CHOOSE}
             createOrViewRoyalties={
               alreadyHasRoyaltiesDefined ? "view" : "create"
             }
@@ -55,7 +57,11 @@ export default function CreateOrChoose({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const [cursor, setCursor] = useState<string>();
-  const { data: profileData, isSuccess } = useGetLensProfiles(
+  const {
+    data: profileData,
+    isSuccess,
+    isFetching
+  } = useGetLensProfiles(
     {
       ownedBy: [address],
       limit: 50,
@@ -104,29 +110,37 @@ export default function CreateOrChoose({
             <Typography>Create new Profile</Typography>
           </Grid>
         </Button>
-        {lensProfiles.map((profile, index) => {
-          return (
-            <Button
-              theme="white"
-              onClick={() => onChooseUseExisting(profile as Profile)}
-              key={`lens_profile_${profile.id}_${index}`}
-            >
-              <Grid flexDirection="column" gap="1rem" padding="1rem">
-                <Typography
-                  fontWeight="600"
-                  $fontSize="1.25rem"
-                  lineHeight="150%"
-                  style={{
-                    wordBreak: "break-all"
-                  }}
+        {isFetching ? (
+          <Grid>
+            <Loading />
+          </Grid>
+        ) : (
+          <>
+            {lensProfiles.map((profile, index) => {
+              return (
+                <Button
+                  theme="white"
+                  onClick={() => onChooseUseExisting(profile as Profile)}
+                  key={`lens_profile_${profile.id}_${index}`}
                 >
-                  {profile.handle}
-                </Typography>
-                <Typography>Use existing Lens Profile</Typography>
-              </Grid>
-            </Button>
-          );
-        })}
+                  <Grid flexDirection="column" gap="1rem" padding="1rem">
+                    <Typography
+                      fontWeight="600"
+                      $fontSize="1.25rem"
+                      lineHeight="150%"
+                      style={{
+                        wordBreak: "break-all"
+                      }}
+                    >
+                      {profile.handle}
+                    </Typography>
+                    <Typography>Use existing Lens Profile</Typography>
+                  </Grid>
+                </Button>
+              );
+            })}
+          </>
+        )}
       </GridContainer>
     </Grid>
   );

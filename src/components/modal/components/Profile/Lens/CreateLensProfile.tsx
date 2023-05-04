@@ -6,13 +6,14 @@ import useGetLensProfile from "../../../../../lib/utils/hooks/lens/profile/useGe
 import BosonButton from "../../../../ui/BosonButton";
 import Grid from "../../../../ui/Grid";
 import { useModal } from "../../../useModal";
-import ProfileMultiSteps from "./ProfileMultiSteps";
+import { LensStep } from "./const";
+import LensProfileMultiSteps from "./LensProfileMultiSteps";
 import { LensProfileType } from "./validationSchema";
 
 interface Props {
   children: ReactElement;
   onBackClick: () => void;
-  setStepBasedOnIndex: (index: number) => void;
+  setStepBasedOnIndex: (lensStep: LensStep) => void;
 }
 
 export default function CreateLensProfile({
@@ -28,9 +29,9 @@ export default function CreateLensProfile({
       modalProps: {
         ...store.modalProps,
         headerComponent: (
-          <ProfileMultiSteps
-            createOrSelect="create"
-            activeStep={1}
+          <LensProfileMultiSteps
+            profileOption="create"
+            activeStep={LensStep.CREATE}
             createOrViewRoyalties="create"
             key="CreateLensProfile"
             setStepBasedOnIndex={setStepBasedOnIndex}

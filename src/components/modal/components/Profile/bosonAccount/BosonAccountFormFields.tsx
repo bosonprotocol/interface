@@ -14,12 +14,14 @@ interface Props {
   onBackClick: () => void;
   alreadyHasRoyaltiesDefined: boolean;
   isError: boolean;
+  submitButtonText?: string;
 }
 
 export default function BosonAccountFormFields({
   onBackClick,
   alreadyHasRoyaltiesDefined,
-  isError
+  isError,
+  submitButtonText
 }: Props) {
   const [
     fieldSecondaryRoyalties,
@@ -122,7 +124,7 @@ export default function BosonAccountFormFields({
             !alreadyHasRoyaltiesDefined
           }
         >
-          Next
+          {submitButtonText ?? "Next"}
         </BosonButton>
       </Grid>
     </>

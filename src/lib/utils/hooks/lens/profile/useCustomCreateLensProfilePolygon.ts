@@ -76,16 +76,7 @@ export default function useCustomCreateLensProfile({
       enabled: false
     }
   );
-  const { isSuccess: isUriSuccess, refetch: setUri } = useSetProfileImageUri(
-    {
-      profileId: createdProfileId,
-      url: profileImageUrl
-    },
-    {
-      accessToken: accessToken || "",
-      enabled: false
-    }
-  );
+  const { isSuccess: isUriSuccess, mutate: setUri } = useSetProfileImageUri();
   const {
     data: profileMetadataData,
     mutate: setMetadata,
@@ -103,7 +94,11 @@ export default function useCustomCreateLensProfile({
     }
     const isClaimedHandle = isFetched && createdProfileId;
     if (isClaimedHandle) {
-      setUri();
+      setUri({
+        profileId: createdProfileId,
+        url: profileImageUrl,
+        accessToken: accessToken ?? ""
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createdProfileId, enableCreation, isFetched]);

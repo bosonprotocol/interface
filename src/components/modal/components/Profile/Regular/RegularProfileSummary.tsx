@@ -1,10 +1,8 @@
-import { AuthTokenType } from "@bosonprotocol/react-kit";
 import { Warning } from "phosphor-react";
-import { useAccount } from "wagmi";
 
 import { CONFIG } from "../../../../../lib/config";
 import { colors } from "../../../../../lib/styles/colors";
-import useCreateSeller from "../../../../../lib/utils/hooks/offer/useCreateSeller";
+import useCreateSellerFromValues from "../../../../../lib/utils/hooks/seller/useCreateSellerFromValues";
 import { getIpfsGatewayUrl } from "../../../../../lib/utils/ipfs";
 import Collapse from "../../../../collapse/Collapse";
 import SimpleError from "../../../../error/SimpleError";
@@ -14,6 +12,7 @@ import BosonButton from "../../../../ui/BosonButton";
 import Grid from "../../../../ui/Grid";
 import Typography from "../../../../ui/Typography";
 import { BosonAccount } from "../bosonAccount/validationSchema";
+import { ProfileType } from "../const";
 
 interface Props {
   values: CreateProfile;
@@ -26,15 +25,16 @@ export default function RegularProfileSummary({
   bosonAccount,
   onSubmit
 }: Props) {
-  const logoImage = getIpfsGatewayUrl(values?.logo?.[0]?.src || "");
-  const coverPicture = getIpfsGatewayUrl(values?.coverPicture?.[0]?.src || "");
-  const { address } = useAccount();
+  const logo = values?.logo?.[0];
+  const cover = values?.coverPicture?.[0];
+  const logoImage = getIpfsGatewayUrl(logo?.src || "");
+  const coverPicture = getIpfsGatewayUrl(cover?.src || "");
   const {
     isSuccess: isCreatedSellerAccount,
     isLoading: isCreatingSellerAccount,
     isError: isCreateSellerError,
     mutateAsync: createSeller
-  } = useCreateSeller();
+  } = useCreateSellerFromValues();
   // const { updateProps, store } = useModal();
   // useEffect(() => {
   //   updateProps<"CREATE_PROFILE">({
@@ -43,7 +43,7 @@ export default function RegularProfileSummary({
   //       ...store.modalProps,
   //       headerComponent: (
   //         <ProfileMultiSteps
-  //           createOrSelect={isExistingLensAccount ? "select" : "create"}
+  //           profileOption={isExistingLensAccount ? "select" : "create"}
   //           activeStep={3}
   //           createOrViewRoyalties={
   //             alreadyHasRoyaltiesDefined ? "view" : "create"
@@ -336,15 +336,9 @@ export default function RegularProfileSummary({
             variant="primaryFill"
             onClick={async () => {
               const data = await createSeller({
-                address: address || "",
-                royaltyPercentage: bosonAccount.secondaryRoyalties || 0,
-                addressForRoyaltyPayment:
-                  bosonAccount.addressForRoyaltyPayment || "",
-                name: values.name,
-                description: values.description,
-                authTokenId: "0",
-                authTokenType: AuthTokenType.NONE,
-                profileLogoUrl: logoImage
+                values,
+                bosonAccount,
+                kind: ProfileType.REGULAR
               });
 
               const createdSellerId = (data || "") as string;

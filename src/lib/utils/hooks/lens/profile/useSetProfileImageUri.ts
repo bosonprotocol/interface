@@ -2,10 +2,11 @@ import * as Sentry from "@sentry/browser";
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Signer, utils } from "ethers";
-import { useQuery } from "react-query";
+import { useMutation } from "react-query";
 import { useSigner, useSignTypedData } from "wagmi";
 
 import { WithRequired } from "../../../../types/helpers";
+import { useLensLogin } from "../authentication/useLensLogin";
 import { broadcastRequest } from "../broadcast/broadcast";
 import { signedTypeData, SignTypedDataAsync } from "../ethers";
 import { fetchLens } from "../fetchLens";
@@ -20,31 +21,31 @@ import { pollUntilIndexed } from "../indexer/has-transaction-been-indexed";
 import { getLensHub } from "../lens-hub";
 import { getLensProfile } from "./useGetLensProfile";
 
-type Props = Parameters<typeof setProfileImageUri>[0];
+type Props = Parameters<typeof setProfileImageUri>[0] & {
+  accessToken?: string;
+};
 
-export default function useSetProfileImageUri(
-  props: Props,
-  options: {
-    enabled?: boolean;
-    accessToken: string;
-  }
-) {
+export default function useSetProfileImageUri() {
   const { signTypedDataAsync } = useSignTypedData();
   const { data: signer } = useSigner();
-  const { enabled, accessToken } = options;
-  return useQuery(
-    ["set-profile-image-uri", props],
-    async () => {
-      return await setProfileImageUri(props, {
-        accessToken,
-        signTypedDataAsync,
-        signer: signer!
-      });
-    },
-    {
-      enabled: enabled && !!signer
+  const { mutateAsync: lensLogin } = useLensLogin();
+  return useMutation(async (props: Props) => {
+    if (!signer) {
+      throw new Error("[useSetProfileImageUri] signer is falsy");
     }
-  );
+    const accessToken = props.accessToken
+      ? props.accessToken
+      : (
+          await lensLogin({
+            address: await signer.getAddress()
+          })
+        ).accessToken;
+    return await setProfileImageUri(props, {
+      accessToken,
+      signTypedDataAsync,
+      signer: signer!
+    });
+  });
 }
 
 async function createSetProfileUriViaDispatcherRequest(

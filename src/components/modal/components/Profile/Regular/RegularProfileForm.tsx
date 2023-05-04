@@ -7,32 +7,21 @@ import { ProfileFormFields } from "../ProfileFormFields";
 
 type Props = {
   children: ReactNode;
-  isEdit: boolean;
 };
-export default function RegularProfileForm({ children, isEdit }: Props) {
+export default function RegularProfileForm({ children }: Props) {
   const { nextIsDisabled } = useCreateForm();
   return (
     <>
       <ProfileFormFields />
       {children}
       <Grid margin="2rem 0 0 0">
-        {isEdit ? (
-          <BosonButton
-            variant="primaryFill"
-            type="submit"
-            disabled={nextIsDisabled}
-          >
-            Save & close
-          </BosonButton>
-        ) : (
-          <BosonButton
-            variant="primaryFill"
-            type="submit"
-            disabled={nextIsDisabled}
-          >
-            Next
-          </BosonButton>
-        )}
+        <BosonButton
+          variant="primaryFill"
+          type="submit"
+          disabled={nextIsDisabled}
+        >
+          Next
+        </BosonButton>
       </Grid>
     </>
   );

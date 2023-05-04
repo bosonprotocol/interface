@@ -14,12 +14,14 @@ interface Props {
   onSubmit: (createValues: BosonAccount) => void;
   onBackClick: () => void;
   formValues: BosonAccount | null;
+  submitButtonText?: string;
 }
 
 export default function BosonAccountForm({
   onSubmit,
   onBackClick,
-  formValues
+  formValues,
+  submitButtonText
 }: Props) {
   const ipfsMetadataStorage = useIpfsStorage();
   const [isError, setIsError] = useState<boolean>(false);
@@ -96,6 +98,7 @@ export default function BosonAccountForm({
             onBackClick={onBackClick}
             alreadyHasRoyaltiesDefined={alreadyHasRoyaltiesDefined}
             isError={isError}
+            submitButtonText={submitButtonText}
           />
         </Form>
       </Formik>
