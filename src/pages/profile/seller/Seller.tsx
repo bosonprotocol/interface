@@ -140,14 +140,22 @@ export default function Seller() {
   const lensCoverImage = getLensImageUrl(getLensCoverPictureUrl(sellerLens));
   const avatar = getLensImageUrl(getLensProfilePictureUrl(sellerLens));
 
-  const name = useLens ? sellerLens?.name : metadata?.name;
-  const description = (useLens ? sellerLens?.bio : metadata?.description) ?? "";
-  const coverImage = useLens
-    ? lensCoverImage
-    : metadata?.images?.find((img) => img.tag === "cover")?.url;
-  const profileImage = useLens
-    ? avatar
-    : metadata?.images?.find((img) => img.tag === "profile")?.url;
+  const name =
+    (useLens ? sellerLens?.name : metadata?.name) ?? metadata?.name ?? "";
+  const description =
+    (useLens ? sellerLens?.bio : metadata?.description) ??
+    metadata?.description ??
+    "";
+  const regularCoverImage = metadata?.images?.find(
+    (img) => img.tag === "cover"
+  )?.url;
+  const coverImage =
+    (useLens ? lensCoverImage : regularCoverImage) ?? regularCoverImage;
+  const regularProfileImage = metadata?.images?.find(
+    (img) => img.tag === "profile"
+  )?.url;
+  const profileImage =
+    (useLens ? avatar : regularProfileImage) ?? regularProfileImage;
 
   const {
     data: sellers = [],

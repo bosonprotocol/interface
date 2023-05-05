@@ -83,9 +83,10 @@ export default function ProductCard({
   const regularProfilePicture =
     metadata?.images?.find((img) => img.tag === "profile")?.url ?? "";
   const [lens] = lensProfiles;
-  const avatar = useLens
-    ? getLensImageUrl(getLensProfilePictureUrl(lens))
-    : regularProfilePicture;
+  const avatar =
+    (useLens
+      ? getLensImageUrl(getLensProfilePictureUrl(lens))
+      : regularProfilePicture) ?? regularProfilePicture;
   const [avatarObj, setAvatarObj] = useState<{
     avatarUrl: string | null | undefined;
     status: "lens" | "fallback" | "mocked";
@@ -169,7 +170,7 @@ export default function ProductCard({
     offer?.additional?.variants?.length > 1 &&
     !allVariantsHaveSamePrice;
 
-  const name = useLens ? lens?.name : metadata?.name;
+  const name = (useLens ? lens?.name : metadata?.name) ?? metadata?.name ?? "";
 
   return (
     <ProductCardWrapper $isCustomStoreFront={!!isCustomStoreFront}>

@@ -114,7 +114,7 @@ const SellerID: React.FC<
   const profilePictureToShow = useLens
     ? getLensImageUrl(profilePicture)
     : regularProfilePicture;
-  const name = useLens ? lens?.name : metadata?.name;
+  const name = (useLens ? lens?.name : metadata?.name) ?? metadata?.name;
   return (
     <AddressContainer {...rest} data-address-container>
       <SellerContainer
