@@ -299,7 +299,11 @@ export default function Seller() {
                     </a>
                   </FollowLens>
                 )}
-                {isMySeller && <EditProfile onClose={refetch} />}
+                {isMySeller && (
+                  <div style={{ marginLeft: "1.5rem" }}>
+                    <EditProfile onClose={refetch} />
+                  </div>
+                )}
                 <SellerSocial
                   seller={seller}
                   sellerLens={sellerLens as ProfileFieldsFragment}
