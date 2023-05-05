@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
+import { EditProfile } from "../../../components/detail/EditProfile";
 import { ProfileType } from "../../../components/modal/components/Profile/const";
 import {
   getLensCoverPictureUrl,
@@ -297,6 +298,7 @@ export default function Seller() {
                     </a>
                   </FollowLens>
                 )}
+                {isMySeller && <EditProfile />}
                 <SellerSocial
                   seller={seller}
                   sellerLens={sellerLens as ProfileFieldsFragment}
