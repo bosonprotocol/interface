@@ -121,8 +121,9 @@ export default function LensProfileFlow({
           onSubmit={async (formValues, { dirtyFields }) => {
             setLensFormValues(formValues);
             const dirty = Object.values(dirtyFields).some((value) => value);
-            if (dirty && lensProfile) {
+            if ((forceDirty || dirty) && lensProfile) {
               const profileId = lensProfile.id || "";
+              let lensHasBeenUpdated = false;
               if (
                 (
                   [
@@ -160,6 +161,7 @@ export default function LensProfileFlow({
                   version: "1.0.0",
                   metadata_id: window.crypto.randomUUID()
                 });
+                lensHasBeenUpdated = true;
               }
 
               if (dirtyFields.logo) {
@@ -167,10 +169,15 @@ export default function LensProfileFlow({
                   profileId,
                   url: formValues.logo?.[0].src ?? ""
                 });
+                lensHasBeenUpdated = true;
               }
-              toast((t) => (
-                <SuccessToast t={t}>Lens profile has been updated</SuccessToast>
-              ));
+              if (lensHasBeenUpdated) {
+                toast((t) => (
+                  <SuccessToast t={t}>
+                    Lens profile has been updated
+                  </SuccessToast>
+                ));
+              }
 
               if (updateSellerMetadata) {
                 await updateSellerMetadata({

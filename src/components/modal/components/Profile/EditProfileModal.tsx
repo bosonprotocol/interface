@@ -57,13 +57,14 @@ export default function EditProfileModal() {
           (obj) => obj.value === metadata?.contactPreference
         ) ?? OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE[0]
     };
+    const forceDirty = !hasMetadata || metadata?.kind !== profileType;
     return profileType === ProfileType.LENS ? (
       <LensProfileFlow
         onSubmit={async () => {
           hideModal();
         }}
         isEdit
-        forceDirty={!hasMetadata}
+        forceDirty={forceDirty}
         seller={seller || null}
         lensProfile={lensProfile}
         changeToRegularProfile={() => setProfileType(ProfileType.REGULAR)}
@@ -72,7 +73,7 @@ export default function EditProfileModal() {
     ) : seller ? (
       <EditRegularProfileFlow
         profileInitialData={profileDataFromMetadata}
-        forceDirty={!hasMetadata}
+        forceDirty={forceDirty}
         updateSellerMetadata={updateSellerMetadata}
         onSubmit={async () => {
           hideModal();
