@@ -10,7 +10,7 @@ import LensProfileMultiSteps from "./LensProfileMultiSteps";
 interface Props {
   onSubmit: (createValues: BosonAccount) => void;
   onBackClick: () => void;
-  isExistingProfile: boolean;
+  isEdit: boolean;
   setStepBasedOnIndex: (lensStep: LensStep) => void;
   formValues: BosonAccount | null;
 }
@@ -20,7 +20,7 @@ export default function LensBosonAccountForm({
   onBackClick,
   setStepBasedOnIndex,
   formValues,
-  isExistingProfile
+  isEdit
 }: Props) {
   const { sellers } = useCurrentSellers();
   const seller = sellers?.[0];
@@ -28,7 +28,7 @@ export default function LensBosonAccountForm({
   const alreadyHasRoyaltiesDefined = !!contractURI;
   const { updateProps, store } = useModal();
   useEffect(() => {
-    if (isExistingProfile) {
+    if (isEdit) {
       updateProps<"EDIT_PROFILE">({
         ...store,
         modalProps: {
@@ -72,7 +72,7 @@ export default function LensBosonAccountForm({
       formValues={formValues}
       onBackClick={onBackClick}
       onSubmit={onSubmit}
-      submitButtonText={isExistingProfile ? "Close" : "Next"}
+      submitButtonText={isEdit ? "Close" : "Next"}
     />
   );
 }

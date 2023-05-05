@@ -9,9 +9,7 @@ import SimpleError from "../../../../error/SimpleError";
 import { OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE } from "../../../../product/utils";
 import Button from "../../../../ui/Button";
 import { LensStep } from "./const";
-import CreateLensProfile from "./CreateLensProfile";
 import LensFormFields from "./LensFormFields";
-import PassDownProps from "./PassDownProps";
 import {
   LensProfileType,
   lensProfileValidationSchema,
@@ -26,12 +24,12 @@ interface Props {
       dirtyFields: Record<keyof LensProfileType, boolean>;
     }
   ) => Promise<void>;
-  profile: Profile | null;
+  profile: Profile;
   seller: subgraph.SellerFieldsFragment | null;
   formValues: LensProfileType | null | undefined;
   onBackClick: () => void;
   setStepBasedOnIndex: (lensStep: LensStep) => void;
-  isEditViewOnly: boolean;
+  isEdit: boolean;
   changeToRegularProfile: () => void;
   forceDirty?: boolean;
 }
@@ -43,7 +41,7 @@ export default function LensForm({
   onBackClick,
   formValues,
   setStepBasedOnIndex,
-  isEditViewOnly,
+  isEdit,
   changeToRegularProfile,
   forceDirty
 }: Props) {
@@ -110,39 +108,25 @@ export default function LensForm({
       {() => {
         return (
           <Form>
-            {profile ? (
-              <ViewOrEditLensProfile
-                profile={profile}
-                seller={seller as subgraph.SellerFieldsFragment}
-                onBackClick={onBackClick}
-                setStepBasedOnIndex={setStepBasedOnIndex}
-                setFormChanged={setFormChanged}
-                isEditViewOnly={isEditViewOnly}
-                forceDirty={forceDirty}
-              >
-                <LensFormFields
-                  disableCover={!isEditViewOnly}
-                  disableHandle
-                  disableLogo={!isEditViewOnly}
-                />
-                {isEditViewOnly && <UseRegularProfile />}
-                {error && <SimpleError />}
-              </ViewOrEditLensProfile>
-            ) : (
-              <CreateLensProfile
-                onBackClick={onBackClick}
-                setStepBasedOnIndex={setStepBasedOnIndex}
-              >
-                <PassDownProps>
-                  <LensFormFields
-                    logoSubtitle="Please choose an image that is no larger than 300KB to ensure it can be uploaded."
-                    coverSubtitle="Please choose an image that is no larger than 300KB to ensure it can be uploaded."
-                  />
-                  <UseRegularProfile />
-                  {error ? <SimpleError /> : <></>}
-                </PassDownProps>
-              </CreateLensProfile>
-            )}
+            <ViewOrEditLensProfile
+              profile={profile}
+              seller={seller}
+              onBackClick={onBackClick}
+              setStepBasedOnIndex={setStepBasedOnIndex}
+              setFormChanged={setFormChanged}
+              isEdit={isEdit}
+              forceDirty={forceDirty}
+            >
+              <LensFormFields
+                disableCover
+                disableHandle
+                disableLogo
+                disableName
+                disableDescription
+              />
+              {isEdit && <UseRegularProfile />}
+              {error && <SimpleError />}
+            </ViewOrEditLensProfile>
           </Form>
         );
       }}

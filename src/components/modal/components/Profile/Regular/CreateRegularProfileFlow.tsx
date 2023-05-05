@@ -39,7 +39,7 @@ export const CreateRegularProfileFlow: React.FC<
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [step]);
   return (
     <>
       {step === RegularStep.CREATE ? (

@@ -1,13 +1,11 @@
 import { Warning } from "phosphor-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useAccount } from "wagmi";
 
 import { CONFIG } from "../../../../../lib/config";
 import { colors } from "../../../../../lib/styles/colors";
 import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
-import useCustomCreateLensProfileMumbai from "../../../../../lib/utils/hooks/lens/profile/useCustomCreateLensProfileMumbai";
-import useCustomCreateLensProfilePolygon from "../../../../../lib/utils/hooks/lens/profile/useCustomCreateLensProfilePolygon";
 import useCreateSellerFromValues from "../../../../../lib/utils/hooks/seller/useCreateSellerFromValues";
 import useUpdateSeller from "../../../../../lib/utils/hooks/seller/useUpdateSeller";
 import { useSellers } from "../../../../../lib/utils/hooks/useSellers";
@@ -30,11 +28,8 @@ interface Props {
   profile?: Profile | null;
   values: LensProfileType;
   bosonAccount: BosonAccount;
-  onSubmit: (
-    id: string,
-    lensProfile: Profile | null | undefined,
-    values: LensProfileType
-  ) => void;
+  isEdit: boolean;
+  onSubmit: (id: string) => void;
   setStepBasedOnIndex: (lensStep: LensStep) => void;
 }
 
@@ -42,6 +37,7 @@ export default function CreateBosonLensAccountSummary({
   profile,
   values,
   bosonAccount,
+  isEdit,
   onSubmit,
   setStepBasedOnIndex
 }: Props) {
@@ -49,14 +45,7 @@ export default function CreateBosonLensAccountSummary({
   const cover = values?.coverPicture?.[0];
   const logoImage = getIpfsGatewayUrl(logo?.src || "");
   const coverPicture = getIpfsGatewayUrl(cover?.src || "");
-  const isExistingLensAccount = !!profile;
-  const [lensProfileToSubmit, setLensProfileToSubmit] = useState<
-    Profile | null | undefined
-  >(profile);
-  const [isCreatedLensProfile, setCreatedLensProfile] =
-    useState<boolean>(false);
 
-  const usingExistingLensProfile = !!profile;
   const { address } = useAccount();
   const { data: admins } = useSellers(
     {
@@ -77,14 +66,13 @@ export default function CreateBosonLensAccountSummary({
     isError: isCreateSellerError
   } = useCreateSellerFromValues();
   const {
-    isSuccess: isUpdatedSellerAccount,
     isLoading: isUpdatingSellerAccount,
     mutateAsync: updateSeller,
     isError: isUpdateSellerError
   } = useUpdateSeller();
   const { updateProps, store } = useModal();
   useEffect(() => {
-    if (isExistingLensAccount) {
+    if (isEdit) {
       updateProps<"EDIT_PROFILE">({
         ...store,
         modalProps: {
@@ -122,33 +110,12 @@ export default function CreateBosonLensAccountSummary({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const useCreateFunc =
-    CONFIG.chainId === 137
-      ? useCustomCreateLensProfilePolygon
-      : useCustomCreateLensProfileMumbai;
-
-  const {
-    create: createLensProfile,
-    isLoading: isCreatingLensProfile,
-    isError: isCreateLensError,
-
-    isHandleTakenError,
-    isSetLensProfileMetadataError
-  } = useCreateFunc({
-    values: values,
-    onCreatedProfile: (profile: Profile) => {
-      setLensProfileToSubmit(profile);
-      setCreatedLensProfile(true);
-    },
-    enabled: !usingExistingLensProfile && !!values
-  });
-
   const onSubmitWithArgs = useCallback(
     (action: string, id?: string) => {
       toast((t) => <SuccessTransactionToast t={t} action={action} />);
-      onSubmit(id || "", lensProfileToSubmit, values);
+      onSubmit(id || "");
     },
-    [onSubmit, lensProfileToSubmit, values]
+    [onSubmit]
   );
   return (
     <>
@@ -425,80 +392,51 @@ export default function CreateBosonLensAccountSummary({
             </Typography>
           </Grid>
         </Grid>
-        <>
-          {isHandleTakenError && (
-            <SimpleError
-              errorMessage={`The handle you chose before has just been taken, please go back and select another one`}
-            ></SimpleError>
-          )}
-          {isSetLensProfileMetadataError && (
-            <SimpleError>
-              <Typography
-                fontWeight="600"
-                $fontSize="1rem"
-                lineHeight="1.5rem"
-                style={{ display: "inline-block" }}
-              >
-                There has been an error while setting the metadata to your Lens
-                profile, please edit via the Lens application on{" "}
-                <a
-                  href={`https://www.lensfrens.xyz/${values.handle}/edit`}
-                  target="_blank"
-                >
-                  https://www.lensfrens.xyz/{values.handle}/edit
-                </a>
-              </Typography>
-            </SimpleError>
-          )}
-          {(isCreateLensError || isUpdateSellerError || isCreateSellerError) &&
-            !isHandleTakenError &&
-            !isSetLensProfileMetadataError && (
-              <SimpleError>
-                <Typography
-                  fontWeight="600"
-                  $fontSize="1rem"
-                  lineHeight="1.5rem"
-                  style={{ display: "inline-block" }}
-                >
-                  There has been an error{" "}
-                  {isCreateLensError
-                    ? "while creating your Lens profile"
-                    : isUpdateSellerError
-                    ? "while updating your seller account"
-                    : isCreateSellerError
-                    ? "while creating your seller account"
-                    : ""}
-                  , please contact us on
-                  <a href={`mailto:${CONFIG.defaultSupportEmail}`}>
-                    {" "}
-                    {CONFIG.defaultSupportEmail}{" "}
-                  </a>
-                  to explain your issue
-                </Typography>
-              </SimpleError>
-            )}
-        </>
+
+        {(isUpdateSellerError || isCreateSellerError) && (
+          <SimpleError>
+            <Typography
+              fontWeight="600"
+              $fontSize="1rem"
+              lineHeight="1.5rem"
+              style={{ display: "inline-block" }}
+            >
+              There has been an error{" "}
+              {isUpdateSellerError
+                ? "while updating your seller account"
+                : isCreateSellerError
+                ? "while creating your seller account"
+                : ""}
+              , please contact us on
+              <a href={`mailto:${CONFIG.defaultSupportEmail}`}>
+                {" "}
+                {CONFIG.defaultSupportEmail}{" "}
+              </a>
+              to explain your issue
+            </Typography>
+          </SimpleError>
+        )}
+
         <CTAs
-          hasLensHandle={!!lensProfileToSubmit}
+          hasLensHandle={!!profile}
           hasAdminSellerAccount={hasAdminSellerAccount}
           hasLensHandleLinked={hasLensHandleLinked}
           createSellerAccount={() =>
             createSellerAccount({
               values,
               bosonAccount,
-              authTokenId: lensProfileToSubmit?.id,
+              authTokenId: profile?.id,
               authTokenType: authTokenTypes.LENS,
               kind: ProfileType.LENS
             })
           }
-          createLensProfile={createLensProfile}
           updateSellerAccount={async () =>
             updateSeller({
               admin: address || "",
               clerk: seller?.clerk || "",
               assistant: seller?.assistant || "",
               treasury: seller?.treasury || "",
-              authTokenId: lensProfileToSubmit?.id,
+              authTokenId: profile?.id,
               authTokenType: authTokenTypes.LENS,
               sellerId: seller?.id || "0",
               metadataUri: seller?.metadataUri || ""
@@ -506,10 +444,7 @@ export default function CreateBosonLensAccountSummary({
           }
           isCreatedSellerAccount={isCreatedSellerAccount}
           isCreatingSellerAccount={isCreatingSellerAccount}
-          isCreatingLensProfile={isCreatingLensProfile}
-          isCreatedLensProfile={isCreatedLensProfile}
           isUpdatingSellerAccount={isUpdatingSellerAccount}
-          isUpdatedSellerAccount={isUpdatedSellerAccount}
           onSubmit={onSubmitWithArgs}
         />
       </Grid>
@@ -524,16 +459,12 @@ interface CTAsProps {
   createSellerAccount: () => ReturnType<
     ReturnType<typeof useCreateSellerFromValues>["mutateAsync"]
   >;
-  createLensProfile: () => void;
   updateSellerAccount: () => ReturnType<
     ReturnType<typeof useUpdateSeller>["mutateAsync"]
   >;
   isCreatedSellerAccount: boolean;
   isCreatingSellerAccount: boolean;
-  isCreatingLensProfile: boolean;
-  isCreatedLensProfile: boolean;
   isUpdatingSellerAccount: boolean;
-  isUpdatedSellerAccount: boolean;
   onSubmit: (action: string, id?: string) => void;
 }
 
@@ -542,14 +473,10 @@ function CTAs({
   hasAdminSellerAccount,
   hasLensHandleLinked,
   createSellerAccount,
-  createLensProfile,
   updateSellerAccount,
   isCreatedSellerAccount,
   isCreatingSellerAccount,
-  isCreatingLensProfile,
-  isCreatedLensProfile,
   isUpdatingSellerAccount,
-  isUpdatedSellerAccount,
   onSubmit
 }: CTAsProps) {
   switch (true) {
@@ -570,128 +497,6 @@ function CTAs({
                 Create Seller Account
               </Typography>
               {isCreatingSellerAccount && <Spinner size={15} />}
-            </Grid>
-          </BosonButton>
-        </Grid>
-      );
-    case !hasLensHandle && !hasAdminSellerAccount:
-      return (
-        <Grid justifyContent="center" gap="2.5rem">
-          <BosonButton
-            variant="primaryFill"
-            onClick={() => {
-              createLensProfile();
-            }}
-            disabled={isCreatingLensProfile || isCreatedLensProfile}
-          >
-            <Grid gap="1.0625rem">
-              <Typography fontWeight="600" $fontSize="1rem" lineHeight="1.5rem">
-                Create Lens Profile
-              </Typography>
-              {isCreatingLensProfile ? (
-                <Spinner size={15} />
-              ) : (
-                <Typography
-                  fontWeight="600"
-                  $fontSize="0.75rem"
-                  lineHeight="1.125rem"
-                  opacity="0.5"
-                >
-                  Step 1/2
-                </Typography>
-              )}
-            </Grid>
-          </BosonButton>
-          <BosonButton
-            variant="primaryFill"
-            onClick={async () => {
-              const data = await createSellerAccount();
-              const createdSellerId = (data || "") as string;
-              onSubmit("Create Seller Account", createdSellerId);
-            }}
-            disabled={
-              isCreatingSellerAccount ||
-              isCreatedSellerAccount ||
-              isCreatingLensProfile ||
-              !isCreatedLensProfile
-            }
-          >
-            <Grid gap="1.0625rem">
-              <Typography fontWeight="600" $fontSize="1rem" lineHeight="1.5rem">
-                Create Seller Account
-              </Typography>
-              {isCreatingSellerAccount ? (
-                <Spinner size={15} />
-              ) : (
-                <Typography
-                  fontWeight="600"
-                  $fontSize="0.75rem"
-                  lineHeight="1.125rem"
-                  opacity="0.5"
-                >
-                  Step 2/2
-                </Typography>
-              )}
-            </Grid>
-          </BosonButton>
-        </Grid>
-      );
-    case !hasLensHandle && hasAdminSellerAccount:
-      return (
-        <Grid justifyContent="center" gap="2.5rem">
-          <BosonButton
-            variant="primaryFill"
-            onClick={() => {
-              createLensProfile();
-            }}
-            disabled={isCreatingLensProfile || isCreatedLensProfile}
-          >
-            <Grid gap="1.0625rem">
-              <Typography fontWeight="600" $fontSize="1rem" lineHeight="1.5rem">
-                Create Lens Profile
-              </Typography>
-              {isCreatingLensProfile ? (
-                <Spinner size={15} />
-              ) : (
-                <Typography
-                  fontWeight="600"
-                  $fontSize="0.75rem"
-                  lineHeight="1.125rem"
-                  opacity="0.5"
-                >
-                  Step 1/2
-                </Typography>
-              )}
-            </Grid>
-          </BosonButton>
-          <BosonButton
-            variant="primaryFill"
-            disabled={
-              isUpdatingSellerAccount ||
-              isUpdatedSellerAccount ||
-              !isCreatedLensProfile
-            }
-            onClick={async () => {
-              await updateSellerAccount();
-              onSubmit("Update Seller Account");
-            }}
-          >
-            <Grid gap="1.0625rem">
-              <Typography fontWeight="600" $fontSize="1rem" lineHeight="1.5rem">
-                Update Seller Account
-              </Typography>
-              {isUpdatingSellerAccount ? (
-                <Spinner size={15} />
-              ) : (
-                <Typography
-                  fontWeight="600"
-                  $fontSize="0.75rem"
-                  lineHeight="1.125rem"
-                  opacity="0.5"
-                >
-                  Step 2/2
-                </Typography>
-              )}
             </Grid>
           </BosonButton>
         </Grid>

@@ -44,7 +44,7 @@ async function updateSellerMedatata(
     values,
     kind
   }: {
-    values: CreateProfile;
+    values: Partial<CreateProfile> & Pick<CreateProfile, "contactPreference">;
     kind: ProfileType;
   },
   { seller }: { seller: SellerFieldsFragment },
@@ -63,10 +63,10 @@ async function updateSellerMedatata(
   const { metadataUri } = await storeSellerMetadata({
     name: values.name,
     description: values.description,
-    contactLinks: [{ url: values.email, tag: "email" }],
+    contactLinks: values.email ? [{ url: values.email, tag: "email" }] : [],
     contactPreference: values.contactPreference.value,
     kind,
-    legalTradingName: values.legalTradingName ?? "",
+    legalTradingName: values.legalTradingName,
     socialLinks: [],
     website: values.website,
     images: [

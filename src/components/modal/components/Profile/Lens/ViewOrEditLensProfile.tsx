@@ -25,12 +25,12 @@ import { LensProfileType } from "./validationSchema";
 
 interface Props {
   profile: Profile;
-  seller: subgraph.SellerFieldsFragment;
+  seller: subgraph.SellerFieldsFragment | null;
   children: ReactNode;
   onBackClick: () => void;
   setStepBasedOnIndex: (lensStep: LensStep) => void;
   setFormChanged: (changed: Record<keyof LensProfileType, boolean>) => void;
-  isEditViewOnly: boolean;
+  isEdit: boolean;
   forceDirty?: boolean;
 }
 export default function ViewOrEditLensProfile({
@@ -40,14 +40,14 @@ export default function ViewOrEditLensProfile({
   onBackClick,
   setStepBasedOnIndex,
   setFormChanged,
-  isEditViewOnly,
+  isEdit,
   forceDirty
 }: Props) {
   const { setValues, setTouched, initialValues, values, isSubmitting } =
     useFormikContext<LensProfileType>();
   const profilePictureUrl = getLensImageUrl(getLensProfilePictureUrl(profile));
   const coverPictureUrl = getLensImageUrl(getLensCoverPictureUrl(profile));
-
+  const metadata = seller?.metadata;
   const { updateProps, store } = useModal();
   const changedFields: Record<keyof LensProfileType, boolean> = useMemo(() => {
     if (!profile || values === initialValues) {
@@ -64,28 +64,22 @@ export default function ViewOrEditLensProfile({
       };
     }
     const changedValues: Record<keyof typeof values, boolean> = {
-      coverPicture: values.coverPicture?.[0]?.src !== coverPictureUrl,
-      description: values.description !== profile.bio,
+      // false values are disabled inputs that have to be edited in lens website
+      coverPicture: false,
+      description: false,
       email: values.email !== getLensEmail(profile),
       handle: false,
       legalTradingName:
         values.legalTradingName !== getLensLegalTradingName(profile),
-      logo: values.logo?.[0]?.src !== profilePictureUrl,
-      name: values.name !== profile.name,
+      logo: false,
+      name: false,
       website: values.website !== getLensWebsite(profile),
       contactPreference:
         !seller?.metadata ||
         values.contactPreference.value !== seller?.metadata?.contactPreference
     };
     return changedValues;
-  }, [
-    profile,
-    values,
-    initialValues,
-    coverPictureUrl,
-    profilePictureUrl,
-    seller?.metadata
-  ]);
+  }, [profile, values, initialValues, seller?.metadata]);
   const hasChanged = Object.values(changedFields).some((value) => value);
   useEffect(() => {
     setFormChanged(changedFields);
@@ -103,16 +97,33 @@ export default function ViewOrEditLensProfile({
   }, [setTouched, changedFields]);
 
   useEffect(() => {
-    updateProps<"EDIT_PROFILE">({
+    if (isEdit) {
+      updateProps<"EDIT_PROFILE">({
+        ...store,
+        modalProps: {
+          ...store.modalProps,
+          headerComponent: (
+            <LensProfileMultiSteps
+              profileOption="edit"
+              activeStep={LensStep.USE}
+              createOrViewRoyalties="view"
+              key="EditLensProfile"
+              setStepBasedOnIndex={setStepBasedOnIndex}
+            />
+          )
+        }
+      });
+      return;
+    }
+    updateProps<"CREATE_PROFILE">({
       ...store,
       modalProps: {
         ...store.modalProps,
         headerComponent: (
           <LensProfileMultiSteps
-            profileOption="edit"
+            profileOption={"create"}
             activeStep={LensStep.USE}
-            createOrViewRoyalties="view"
-            key="EditLensProfile"
+            createOrViewRoyalties={"create"}
             setStepBasedOnIndex={setStepBasedOnIndex}
           />
         )
@@ -154,10 +165,16 @@ export default function ViewOrEditLensProfile({
                 ? profile.handle.lastIndexOf(CONFIG.lens.lensHandleExtension)
                 : profile.handle.lastIndexOf(".")
             ) || "",
-          email: getLensEmail(profile) || "",
+          email:
+            metadata?.contactLinks?.find((cl) => cl.tag === "email")?.url ||
+            getLensEmail(profile) ||
+            "",
           description: profile.bio || "",
-          website: getLensWebsite(profile) || "",
-          legalTradingName: getLensLegalTradingName(profile) || "",
+          website: metadata?.website || getLensWebsite(profile) || "",
+          legalTradingName:
+            metadata?.legalTradingName ||
+            getLensLegalTradingName(profile) ||
+            "",
           contactPreference:
             OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE.find(
               (obj) => obj.value === seller?.metadata?.contactPreference
@@ -173,14 +190,17 @@ export default function ViewOrEditLensProfile({
     profilePictureUrl,
     coverPictureUrl,
     setValues,
-    seller?.metadata?.contactPreference
+    seller?.metadata?.contactPreference,
+    metadata?.contactLinks,
+    metadata?.website,
+    metadata?.legalTradingName
   ]);
 
   return (
     <div>
       {children}
       <Grid margin="2rem 0 0 0" justifyContent="flex-start" gap="2rem">
-        {!isEditViewOnly && (
+        {!isEdit && (
           <BosonButton
             variant="accentInverted"
             type="button"
@@ -194,7 +214,7 @@ export default function ViewOrEditLensProfile({
           type="submit"
           disabled={isSubmitting}
         >
-          {hasChanged || forceDirty ? "Save & continue" : "Next"}
+          {isEdit && (hasChanged || forceDirty) ? "Save & continue" : "Next"}
           {isSubmitting && <Spinner size="20" />}
         </BosonButton>
       </Grid>

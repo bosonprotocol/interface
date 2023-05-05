@@ -3,29 +3,23 @@ import { useCallback, useState } from "react";
 import toast from "react-hot-toast";
 
 import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
-import useSetLensProfileMetadata from "../../../../../lib/utils/hooks/lens/profile/useSetLensProfileMetadata";
-import useSetProfileImageUri from "../../../../../lib/utils/hooks/lens/profile/useSetProfileImageUri";
 import useUpdateSellerMetadata from "../../../../../lib/utils/hooks/seller/useUpdateSellerMetadata";
 import SuccessToast from "../../../../toasts/common/SuccessToast";
 import { BosonAccount } from "../bosonAccount/validationSchema";
 import { ProfileType } from "../const";
+import ChooseLensProfile from "./ChooseLensProfile";
 import { LensStep } from "./const";
 import CreateBosonLensAccountSummary from "./CreateBosonLensAccountSummary";
-import CreateOrChoose from "./CreateOrChoose";
 import LensBosonAccountForm from "./LensBosonAccountForm";
 import LensForm from "./LensForm";
 import { LensProfileType } from "./validationSchema";
 
 interface Props {
-  onSubmit: (
-    id: string,
-    lensProfile: Profile | null | undefined,
-    values: LensProfileType
-  ) => Promise<void>;
+  onSubmit: (id: string, values: LensProfileType) => Promise<void>;
   seller: subgraph.SellerFieldsFragment | null;
   lensProfile?: Profile;
   changeToRegularProfile: () => void;
-  updateSellerMetadata?: ReturnType<
+  updateSellerMetadata: ReturnType<
     typeof useUpdateSellerMetadata
   >["mutateAsync"];
   isEdit: boolean;
@@ -44,7 +38,7 @@ export default function LensProfileFlow({
   const [steps, setSteps] = useState<{
     current: null | LensStep;
     previous: null | LensStep;
-  }>({ current: LensStep.CREATE_OR_CHOOSE, previous: null });
+  }>({ current: LensStep.CHOOSE, previous: null });
   const step = steps.current;
   const [lensProfile, setLensProfile] = useState<Profile | null>(null);
   const [lensFormValues, setLensFormValues] = useState<LensProfileType | null>(
@@ -68,128 +62,61 @@ export default function LensProfileFlow({
     });
   }, []);
   const handleOnBackClick = useCallback(() => {
-    setStep(LensStep.CREATE_OR_CHOOSE);
+    setStep(LensStep.CHOOSE);
   }, [setStep]);
-  const { mutateAsync: setProfileImage } = useSetProfileImageUri();
-  const { mutateAsync: setMetadata } = useSetLensProfileMetadata();
 
-  if (
-    isEdit &&
-    (step === LensStep.CREATE_OR_CHOOSE || !lensProfile) &&
-    selectedProfile
-  ) {
+  if (isEdit && (step === LensStep.CHOOSE || !lensProfile) && selectedProfile) {
     setLensProfile(selectedProfile);
     setStep(LensStep.USE);
   }
   return (
     <>
-      {step === LensStep.CREATE_OR_CHOOSE ? (
-        <CreateOrChoose
+      {step === LensStep.CHOOSE ? (
+        <ChooseLensProfile
           changeToRegularProfile={changeToRegularProfile}
-          onChooseCreateNew={() => {
-            setLensProfile(null);
-            setStep(LensStep.CREATE);
-          }}
           onChooseUseExisting={(profile) => {
             setLensProfile(profile);
             setStep(LensStep.USE);
           }}
         />
-      ) : step === LensStep.CREATE ? (
-        <LensForm
-          changeToRegularProfile={changeToRegularProfile}
-          profile={null}
-          seller={seller}
-          formValues={lensFormValues}
-          isEditViewOnly={false}
-          onSubmit={async (formValues) => {
-            setLensFormValues(formValues);
-            setStep(LensStep.BOSON_ACCOUNT);
-          }}
-          onBackClick={handleOnBackClick}
-          setStepBasedOnIndex={setStep}
-          forceDirty={forceDirty}
-        />
-      ) : step === LensStep.USE ? (
+      ) : step === LensStep.USE && lensProfile ? (
         <LensForm
           changeToRegularProfile={changeToRegularProfile}
           profile={lensProfile}
           seller={seller}
           formValues={null}
-          isEditViewOnly={true}
+          isEdit={isEdit}
           forceDirty={forceDirty}
           onSubmit={async (formValues, { dirtyFields }) => {
             setLensFormValues(formValues);
-            const dirty = Object.values(dirtyFields).some((value) => value);
-            if ((forceDirty || dirty) && lensProfile) {
-              const profileId = lensProfile.id || "";
-              let lensHasBeenUpdated = false;
-              if (
+
+            if (
+              isEdit &&
+              (forceDirty ||
                 (
                   [
-                    "name",
-                    "description",
-                    "coverPicture",
+                    "legalTradingName",
+                    "contactPreference",
                     "email",
-                    "website",
-                    "legalTradingName"
+                    "website"
                   ] as (keyof typeof dirtyFields)[]
-                ).some((key) => dirtyFields[key])
-              ) {
-                await setMetadata({
-                  profileId,
-                  name: formValues.name,
-                  bio: formValues.description,
-                  cover_picture: formValues.coverPicture?.[0].src ?? "",
-                  attributes: [
-                    {
-                      traitType: "string",
-                      value: formValues.email || "",
-                      key: "email"
-                    },
-                    {
-                      traitType: "string",
-                      value: formValues.website || "",
-                      key: "website"
-                    },
-                    {
-                      traitType: "string",
-                      value: formValues.legalTradingName || "",
-                      key: "legalTradingName"
-                    }
-                  ],
-                  version: "1.0.0",
-                  metadata_id: window.crypto.randomUUID()
-                });
-                lensHasBeenUpdated = true;
-              }
-
-              if (dirtyFields.logo) {
-                await setProfileImage({
-                  profileId,
-                  url: formValues.logo?.[0].src ?? ""
-                });
-                lensHasBeenUpdated = true;
-              }
-              if (lensHasBeenUpdated) {
-                toast((t) => (
-                  <SuccessToast t={t}>
-                    Lens profile has been updated
-                  </SuccessToast>
-                ));
-              }
-
-              if (updateSellerMetadata) {
-                await updateSellerMetadata({
-                  values: formValues,
-                  kind: ProfileType.LENS
-                });
-                toast((t) => (
-                  <SuccessToast t={t}>
-                    Seller profile has been updated
-                  </SuccessToast>
-                ));
-              }
+                ).some((key) => dirtyFields[key]))
+            ) {
+              await updateSellerMetadata({
+                // update fields that are not saved in lens
+                values: {
+                  legalTradingName: formValues.legalTradingName,
+                  contactPreference: formValues.contactPreference,
+                  email: formValues.email,
+                  website: formValues.website
+                },
+                kind: ProfileType.LENS
+              });
+              toast((t) => (
+                <SuccessToast t={t}>
+                  Seller profile has been updated
+                </SuccessToast>
+              ));
             }
             setStep(LensStep.BOSON_ACCOUNT);
           }}
@@ -198,13 +125,13 @@ export default function LensProfileFlow({
         />
       ) : step === LensStep.BOSON_ACCOUNT && lensFormValues ? (
         <LensBosonAccountForm
-          isExistingProfile={!!lensProfile}
+          isEdit={isEdit}
           formValues={bosonAccount}
           onSubmit={(values) => {
             setBosonAccount(values);
             if (seller) {
               // In case the boson seller already exists, we wont show the summary page
-              onSubmit("", lensProfile, lensFormValues);
+              onSubmit("", lensFormValues);
             } else {
               setStep(LensStep.SUMMARY);
             }
@@ -216,12 +143,13 @@ export default function LensProfileFlow({
         />
       ) : step === LensStep.SUMMARY && lensFormValues && bosonAccount ? (
         <CreateBosonLensAccountSummary
+          isEdit={isEdit}
           profile={lensProfile}
           values={lensFormValues}
           bosonAccount={bosonAccount}
           setStepBasedOnIndex={setStep}
-          onSubmit={async (...args) => {
-            await onSubmit(...args);
+          onSubmit={async (id) => {
+            await onSubmit(id, lensFormValues);
           }}
         />
       ) : (

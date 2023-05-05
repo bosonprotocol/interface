@@ -8,6 +8,8 @@ interface Props {
   disableHandle?: boolean;
   disableLogo?: boolean;
   disableCover?: boolean;
+  disableName?: boolean;
+  disableDescription?: boolean;
 }
 
 export default function LensFormFields({
@@ -16,7 +18,9 @@ export default function LensFormFields({
   coverSubtitle,
   disableHandle,
   disableLogo,
-  disableCover
+  disableCover,
+  disableName,
+  disableDescription
 }: Props) {
   return (
     <ProfileFormFields
@@ -30,6 +34,8 @@ export default function LensFormFields({
       }
       disableCover={disableCover}
       disableLogo={disableLogo}
+      disableDescription={disableDescription}
+      disableName={disableName}
     />
   );
 }

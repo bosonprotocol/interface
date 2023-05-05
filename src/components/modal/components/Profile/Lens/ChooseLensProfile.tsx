@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
-import { ReactComponent as LensLogo } from "../../../../../../src/assets/lens-logo.svg";
 import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
 import useGetLensProfiles from "../../../../../lib/utils/hooks/lens/profile/useGetLensProfiles";
 import { useSellers } from "../../../../../lib/utils/hooks/useSellers";
@@ -15,14 +14,12 @@ import { LensStep } from "./const";
 import LensProfileMultiSteps from "./LensProfileMultiSteps";
 
 interface Props {
-  onChooseCreateNew: () => void;
   onChooseUseExisting: (profile: Profile) => void;
   changeToRegularProfile: () => void;
 }
 
-export default function CreateOrChoose({
+export default function ChooseLensProfile({
   changeToRegularProfile,
-  onChooseCreateNew,
   onChooseUseExisting
 }: Props) {
   const { address = "" } = useAccount();
@@ -44,12 +41,12 @@ export default function CreateOrChoose({
         ...store.modalProps,
         headerComponent: (
           <LensProfileMultiSteps
-            profileOption={null}
-            activeStep={LensStep.CREATE_OR_CHOOSE}
+            profileOption={"create"}
+            activeStep={LensStep.CHOOSE}
             createOrViewRoyalties={
               alreadyHasRoyaltiesDefined ? "view" : "create"
             }
-            key="CreateOrChoose"
+            key="ChooseLensProfile"
           />
         )
       }
@@ -88,8 +85,14 @@ export default function CreateOrChoose({
   return (
     <Grid flexDirection="column">
       <Typography>
-        For your journey as a seller reputation is key. Boson Protocol allows
-        sellers to directly link their Lens profile to their Boson account.{" "}
+        <div>
+          For your journey as a seller reputation is key. Boson Protocol allows
+          sellers to directly link their Lens profile to their Boson account. If
+          you wish to create a Lens profile, please go to{" "}
+          <a href="https://claim.lens.xyz/" target="_blank" rel="noopener">
+            https://claim.lens.xyz/
+          </a>{" "}
+        </div>
       </Typography>
       <Button onClick={changeToRegularProfile} theme="blankSecondary">
         <small>Use regular account instead</small>
@@ -104,12 +107,6 @@ export default function CreateOrChoose({
         }}
         style={{ width: "100%", margin: "1rem 0" }}
       >
-        <Button theme="white" onClick={() => onChooseCreateNew()}>
-          <Grid flexDirection="column" gap="1rem" padding="1rem">
-            <LensLogo />
-            <Typography>Create new Profile</Typography>
-          </Grid>
-        </Button>
         {isFetching ? (
           <Grid>
             <Loading />

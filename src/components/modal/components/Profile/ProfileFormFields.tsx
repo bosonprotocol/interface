@@ -11,6 +11,8 @@ interface Props {
   handleComponent?: ReactNode;
   disableLogo?: boolean;
   disableCover?: boolean;
+  disableName?: boolean;
+  disableDescription?: boolean;
 }
 
 export function ProfileFormFields({
@@ -19,7 +21,9 @@ export function ProfileFormFields({
   coverSubtitle,
   handleComponent: HandleComponent,
   disableLogo,
-  disableCover
+  disableCover,
+  disableName,
+  disableDescription
 }: Props) {
   return (
     <>
@@ -44,18 +48,27 @@ export function ProfileFormFields({
         />
       </FormField>
       <FormField title="Your brand / name" required>
-        <Input name="name" placeholder="Name" onBlur={onBlurName} />
+        <Input
+          name="name"
+          placeholder="Name"
+          onBlur={onBlurName}
+          disabled={disableName}
+        />
       </FormField>
       {HandleComponent}
+      <FormField title="Description" required>
+        <Textarea
+          name="description"
+          placeholder="Describe"
+          disabled={disableDescription}
+        />
+      </FormField>
       <FormField title="Contact E-Mail" required>
         <Input
           name="email"
           placeholder="e-Mail"
           pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
         />
-      </FormField>
-      <FormField title="Description" required>
-        <Textarea name="description" placeholder="Describe" />
       </FormField>
       <FormField
         title="Website / Social media link"

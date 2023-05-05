@@ -5,7 +5,7 @@ import Grid from "../../../../ui/Grid";
 import { LensStep } from "./const";
 
 interface Props {
-  profileOption: "create" | "edit" | null;
+  profileOption: "create" | "edit";
   createOrViewRoyalties: "create" | "view" | null;
   activeStep: LensStep;
   setStepBasedOnIndex?: (lensStep: LensStep) => void;
@@ -23,14 +23,14 @@ export default function LensProfileMultiSteps({
       : [
           {
             steps: 1,
-            name: "Create or Select Profile",
-            step: LensStep.CREATE_OR_CHOOSE
+            name: "Select Profile",
+            step: LensStep.CHOOSE
           }
         ]),
     {
       steps: 1,
-      name: `${profileOption === "create" ? "Create Profile" : "Edit Profile"}`,
-      step: profileOption === "create" ? LensStep.CREATE : LensStep.USE
+      name: `Edit Profile`,
+      step: LensStep.USE
     },
     {
       steps: 1,

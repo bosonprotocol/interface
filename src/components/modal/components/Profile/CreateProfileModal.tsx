@@ -1,15 +1,18 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
 import { BosonRoutes } from "../../../../lib/routing/routes";
 import { Profile } from "../../../../lib/utils/hooks/lens/graphql/generated";
+import useGetLensProfiles from "../../../../lib/utils/hooks/lens/profile/useGetLensProfiles";
+import useUpdateSellerMetadata from "../../../../lib/utils/hooks/seller/useUpdateSellerMetadata";
 import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useSellerCurationListFn } from "../../../../lib/utils/hooks/useSellers";
 import { CreateProfile } from "../../../product/utils";
 import BosonButton from "../../../ui/BosonButton";
 import Grid from "../../../ui/Grid";
+import Loading from "../../../ui/Loading";
 import Typography from "../../../ui/Typography";
 import { useModal } from "../../useModal";
 import { ChooseProfileType } from "./ChooseProfileType";
@@ -32,11 +35,32 @@ export default function CreateProfileModal({
   lensProfile: selectedProfile
 }: Props) {
   const navigate = useKeepQueryParamsNavigate();
+  const { mutateAsync: updateSellerMetadata } = useUpdateSellerMetadata();
+  const { address = "" } = useAccount();
+
+  const {
+    data: lensData,
+    isLoading,
+    isSuccess
+  } = useGetLensProfiles(
+    {
+      ownedBy: [address],
+      limit: 50
+    },
+    {
+      enabled: !!address
+    }
+  );
+  const hasLensProfile = !!lensData?.items.length;
+  useEffect(() => {
+    if (isSuccess && !hasLensProfile) {
+      setProfileType(ProfileType.REGULAR); // no need to see lens step as you dont have any profile
+    }
+  }, [isSuccess, hasLensProfile]);
   const { hideModal } = useModal();
   const [profileType, setProfileType] = useState<ProfileType | undefined>(
     undefined
   );
-  const { address = "" } = useAccount();
   const checkIfSellerIsInCurationList = useSellerCurationListFn();
 
   const shouldRedirectToCustomBetaPage = useCallback(
@@ -54,9 +78,9 @@ export default function CreateProfileModal({
   const Component = useCallback(() => {
     return profileType === ProfileType.LENS ? (
       <LensProfileFlow
-        onSubmit={async (id, lensProfile, overrides: LensProfileType) => {
-          hideModal(lensProfile);
-          if (lensProfile) {
+        onSubmit={async (id, overrides: LensProfileType) => {
+          hideModal(selectedProfile);
+          if (selectedProfile) {
             onRegularProfileCreated?.(overrides);
           }
           if (id !== "") {
@@ -67,6 +91,7 @@ export default function CreateProfileModal({
         seller={seller || null}
         lensProfile={selectedProfile}
         changeToRegularProfile={() => setProfileType(ProfileType.REGULAR)}
+        updateSellerMetadata={updateSellerMetadata}
       />
     ) : (
       <CreateRegularProfileFlow
@@ -100,6 +125,10 @@ export default function CreateProfileModal({
       </>
     );
   }
+  if (isLoading) {
+    return <Loading />;
+  }
+
   if (profileType === undefined) {
     return <ChooseProfileType setProfileType={setProfileType} />;
   }
