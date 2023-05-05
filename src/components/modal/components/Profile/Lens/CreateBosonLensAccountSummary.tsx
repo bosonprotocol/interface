@@ -177,7 +177,7 @@ export default function CreateBosonLensAccountSummary({
                   </Grid>
                 </Grid>
 
-                <Grid gap="1rem">
+                <Grid gap="1rem" justifyContent="flex-start">
                   <Grid
                     flexDirection="column"
                     alignItems="flex-start"
@@ -228,7 +228,27 @@ export default function CreateBosonLensAccountSummary({
                       $fontSize="0.75rem"
                       lineHeight="1.125rem"
                     >
-                      Contact E-Mail
+                      Description *
+                    </Typography>
+                    <Typography
+                      fontWeight="400"
+                      $fontSize="0.75rem"
+                      lineHeight="1.125rem"
+                    >
+                      {values.description}
+                    </Typography>
+                  </Grid>
+                  <Grid
+                    flexDirection="column"
+                    alignItems="flex-start"
+                    gap="0.25rem"
+                  >
+                    <Typography
+                      fontWeight="600"
+                      $fontSize="0.75rem"
+                      lineHeight="1.125rem"
+                    >
+                      Contact E-Mail *
                     </Typography>
                     <Typography
                       fontWeight="400"
@@ -238,6 +258,8 @@ export default function CreateBosonLensAccountSummary({
                       {values.email}
                     </Typography>
                   </Grid>
+                </Grid>
+                <Grid gap="1rem" justifyContent="flex-start">
                   <Grid
                     flexDirection="column"
                     alignItems="flex-start"
@@ -278,26 +300,26 @@ export default function CreateBosonLensAccountSummary({
                       {values.legalTradingName}
                     </Typography>
                   </Grid>
-                </Grid>
-                <Grid
-                  flexDirection="column"
-                  alignItems="flex-start"
-                  gap="0.25rem"
-                >
-                  <Typography
-                    fontWeight="600"
-                    $fontSize="0.75rem"
-                    lineHeight="1.125rem"
+                  <Grid
+                    flexDirection="column"
+                    alignItems="flex-start"
+                    gap="0.25rem"
                   >
-                    Description *
-                  </Typography>
-                  <Typography
-                    fontWeight="400"
-                    $fontSize="0.75rem"
-                    lineHeight="1.125rem"
-                  >
-                    {values.description}
-                  </Typography>
+                    <Typography
+                      fontWeight="600"
+                      $fontSize="0.75rem"
+                      lineHeight="1.125rem"
+                    >
+                      Choose a communication channel *
+                    </Typography>
+                    <Typography
+                      fontWeight="400"
+                      $fontSize="0.75rem"
+                      lineHeight="1.125rem"
+                    >
+                      {values.contactPreference.label}
+                    </Typography>
+                  </Grid>
                 </Grid>
               </Grid>
             </Collapse>
