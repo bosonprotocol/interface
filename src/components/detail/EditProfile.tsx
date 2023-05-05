@@ -4,14 +4,19 @@ import { breakpointNumbers } from "../../lib/styles/breakpoint";
 import { useModal } from "../modal/useModal";
 import Button from "../ui/Button";
 
-export const EditProfile: React.FC = () => {
+export const EditProfile: React.FC<{
+  onClose?: () => void | Promise<void>;
+}> = ({ onClose }) => {
   const { showModal } = useModal();
 
   const openEditModal = () => {
     showModal(
       "EDIT_PROFILE",
       {
-        closable: true
+        closable: true,
+        onClose: async () => {
+          await onClose?.();
+        }
       },
       "auto",
       undefined,

@@ -129,7 +129,8 @@ export default function Seller() {
     isLoading,
     isError,
     lens: sellersLens,
-    sellers: sellersData
+    sellers: sellersData,
+    refetch
   } = useCurrentSellers(lensTokenId ? { lensTokenId } : { sellerId });
   const seller = sellersData[0];
   const metadata = seller?.metadata;
@@ -298,7 +299,7 @@ export default function Seller() {
                     </a>
                   </FollowLens>
                 )}
-                {isMySeller && <EditProfile />}
+                {isMySeller && <EditProfile onClose={refetch} />}
                 <SellerSocial
                   seller={seller}
                   sellerLens={sellerLens as ProfileFieldsFragment}
