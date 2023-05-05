@@ -27,6 +27,7 @@ import {
   ExtendedOffer,
   FilterOptions
 } from "../../pages/explore/WithAllOffers";
+import { ProfileType } from "../modal/components/Profile/const";
 import { getLensProfilePictureUrl } from "../modal/components/Profile/Lens/utils";
 import { useConvertedPrice } from "../price/useConvertedPrice";
 
@@ -76,8 +77,15 @@ export default function ProductCard({
   const { lens: lensProfiles } = useCurrentSellers({
     sellerId: offer?.seller?.id
   });
+  const seller = offer?.seller;
+  const metadata = seller?.metadata;
+  const useLens = !metadata || metadata.kind === ProfileType.LENS;
+  const regularProfilePicture =
+    metadata?.images?.find((img) => img.tag === "profile")?.url ?? "";
   const [lens] = lensProfiles;
-  const avatar = getLensImageUrl(getLensProfilePictureUrl(lens));
+  const avatar = useLens
+    ? getLensImageUrl(getLensProfilePictureUrl(lens))
+    : regularProfilePicture;
   const [avatarObj, setAvatarObj] = useState<{
     avatarUrl: string | null | undefined;
     status: "lens" | "fallback" | "mocked";
@@ -85,12 +93,9 @@ export default function ProductCard({
     avatarUrl: avatar,
     status: "lens"
   });
-  const fallbackSellerAvatar: string | undefined | null = // TODO: fix types
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    offer.additional?.product.productV1Seller.images.find(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (img: any) => img.tag === "profile"
+  const fallbackSellerAvatar =
+    offer.additional?.product?.productV1Seller?.images?.find(
+      (img) => img.tag === "profile"
     )?.url;
   const fallbackSellerAvatarUrl = fallbackSellerAvatar
     ? getLensImageUrl(fallbackSellerAvatar)
@@ -164,6 +169,8 @@ export default function ProductCard({
     offer?.additional?.variants?.length > 1 &&
     !allVariantsHaveSamePrice;
 
+  const name = useLens ? lens?.name : metadata?.name;
+
   return (
     <ProductCardWrapper $isCustomStoreFront={!!isCustomStoreFront}>
       {isTokenGated && (
@@ -177,7 +184,7 @@ export default function ProductCard({
         productId={offer?.id}
         onCardClick={handleOnCardClick}
         title={offer?.metadata?.name}
-        avatarName={lens?.name ? lens?.name : `Seller ID: ${offer.seller.id}`}
+        avatarName={name ? name : `Seller ID: ${offer.seller.id}`}
         avatar={avatarObj.avatarUrl || fallbackSellerAvatarUrl || mockedAvatar}
         onAvatarError={() => {
           // to avoid infinite loop

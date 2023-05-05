@@ -51,7 +51,6 @@ export const EditRegularProfileFlow: React.FC<EditRegularProfileFlowProps> = ({
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step]);
-  console.log({ step, profileInitialData, forceDirty });
   return (
     <>
       {step === RegularStep.CREATE ? (

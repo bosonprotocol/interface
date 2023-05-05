@@ -132,22 +132,20 @@ export default function Seller() {
   } = useCurrentSellers(lensTokenId ? { lensTokenId } : { sellerId });
   const seller = sellersData[0];
   const metadata = seller?.metadata;
-  const useLens = metadata?.kind === ProfileType.LENS;
-  sellerId = sellersData?.length ? sellersData[0].id : sellerId;
   const [sellerLens] = sellersLens;
+  const useLens = !metadata || metadata?.kind === ProfileType.LENS;
+  sellerId = sellersData?.length ? sellersData[0].id : sellerId;
   const lensCoverImage = getLensImageUrl(getLensCoverPictureUrl(sellerLens));
   const avatar = getLensImageUrl(getLensProfilePictureUrl(sellerLens));
 
   const name = useLens ? sellerLens?.name : metadata?.name;
-  const description = useLens ? sellerLens?.bio : metadata?.description;
+  const description = (useLens ? sellerLens?.bio : metadata?.description) ?? "";
   const coverImage = useLens
     ? lensCoverImage
     : metadata?.images?.find((img) => img.tag === "cover")?.url;
   const profileImage = useLens
     ? avatar
     : metadata?.images?.find((img) => img.tag === "profile")?.url;
-  // TODO: website, follow i provar perq falla el edit lens (conversa amb ludo)
-  console.log({ name, useLens, sellersData, metadata });
 
   const {
     data: sellers = [],
@@ -287,8 +285,8 @@ export default function Seller() {
               $width="auto"
               margin="1.25rem 0 0 0"
             >
-              {sellerLens && (
-                <>
+              <>
+                {sellerLens && useLens && (
                   <FollowLens>
                     <a
                       href={`https://lenster.xyz/u/${sellerLens?.handle}`}
@@ -298,17 +296,18 @@ export default function Seller() {
                       Follow
                     </a>
                   </FollowLens>
-                  <SellerSocial
-                    sellerLens={sellerLens as ProfileFieldsFragment}
-                    voucherCloneAddress={sellersData?.[0]?.voucherCloneAddress}
-                  />
-                </>
-              )}
+                )}
+                <SellerSocial
+                  seller={seller}
+                  sellerLens={sellerLens as ProfileFieldsFragment}
+                  voucherCloneAddress={sellersData?.[0]?.voucherCloneAddress}
+                />
+              </>
             </Grid>
           </Grid>
         </ProfileSectionWrapper>
         <ProfileSectionWrapper>
-          {description && <ReadMore text={description} />}
+          <ReadMore text={description} />
         </ProfileSectionWrapper>
       </BasicInfo>
       <ProfileSectionWrapper>

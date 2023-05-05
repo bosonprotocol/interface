@@ -22,7 +22,6 @@ import { EditRegularProfileFlow } from "./Regular/EditRegularProfileFlow";
 export default function EditProfileModal() {
   const { sellers: currentSellers, lens, isLoading } = useCurrentSellers();
   const seller = currentSellers?.length ? currentSellers[0] : undefined;
-  console.log("seller", seller);
   const lensProfile = lens?.length ? lens[0] : undefined;
   const hasMetadata = !!seller?.metadata;
   const metadata = seller?.metadata;

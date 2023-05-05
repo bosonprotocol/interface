@@ -262,7 +262,6 @@ export function useCurrentSellers({
       : [];
   const enableSellerById = !!sellerIdsToQuery?.length;
   const { data: sellers2 } = fetchSellers(sellerIdsToQuery, enableSellerById);
-  console.log({ sellers2 });
   const sellerById = useQuery(
     ["current-seller-by-id", { sellerIds: sellerIdsToQuery, sellers2 }],
     async () => {
