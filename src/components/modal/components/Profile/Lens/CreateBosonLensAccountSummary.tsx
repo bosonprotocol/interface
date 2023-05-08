@@ -32,7 +32,6 @@ interface Props {
   onSubmit: (id: string) => void;
   setStepBasedOnIndex: (lensStep: LensStep) => void;
 }
-
 export default function CreateBosonLensAccountSummary({
   profile,
   values,

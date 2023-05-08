@@ -24,7 +24,7 @@ export default function useUpdateSellerMetadata() {
   return useMutation((props: Props) => {
     if (!seller) {
       const error = new Error(
-        "cannot update a seller if the seller doesnt exist"
+        "[useUpdateSellerMetadata] cannot update a seller if the seller doesnt exist"
       );
       console.error(error);
       throw error;
@@ -70,20 +70,28 @@ async function updateSellerMedatata(
     socialLinks: [],
     website: values.website,
     images: [
-      {
-        url: logoImage,
-        tag: "profile",
-        height: logo?.height ?? undefined,
-        type: "IMAGE",
-        width: logo?.width ?? undefined
-      },
-      {
-        url: coverPicture,
-        tag: "cover",
-        height: cover?.height ?? undefined,
-        type: "IMAGE",
-        width: cover?.width ?? undefined
-      }
+      ...(logoImage
+        ? [
+            {
+              url: logoImage,
+              tag: "profile",
+              height: logo?.height ?? undefined,
+              type: "IMAGE",
+              width: logo?.width ?? undefined
+            }
+          ]
+        : []),
+      ...(coverPicture
+        ? [
+            {
+              url: coverPicture,
+              tag: "cover",
+              height: cover?.height ?? undefined,
+              type: "IMAGE",
+              width: cover?.width ?? undefined
+            }
+          ]
+        : [])
     ]
   });
   await updateSeller({

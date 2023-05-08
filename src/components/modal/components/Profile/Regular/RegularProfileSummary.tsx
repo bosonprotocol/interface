@@ -35,26 +35,6 @@ export default function RegularProfileSummary({
     isError: isCreateSellerError,
     mutateAsync: createSeller
   } = useCreateSellerFromValues();
-  // const { updateProps, store } = useModal();
-  // useEffect(() => {
-  //   updateProps<"CREATE_PROFILE">({
-  //     ...store,
-  //     modalProps: {
-  //       ...store.modalProps,
-  //       headerComponent: (
-  //         <ProfileMultiSteps
-  //           profileOption={isExistingLensAccount ? "select" : "create"}
-  //           activeStep={3}
-  //           createOrViewRoyalties={
-  //             alreadyHasRoyaltiesDefined ? "view" : "create"
-  //           }
-  //           setStepBasedOnIndex={setStepBasedOnIndex}
-  //         />
-  //       )
-  //     }
-  //   });
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
 
   return (
     <>

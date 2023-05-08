@@ -1,5 +1,7 @@
 import { ReactNode } from "react";
 
+import { BosonRoutes } from "../../../../../lib/routing/routes";
+import { useKeepQueryParamsNavigate } from "../../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { Spinner } from "../../../../loading/Spinner";
 import { useCreateForm } from "../../../../product/utils/useCreateForm";
 import BosonButton from "../../../../ui/BosonButton";
@@ -17,11 +19,13 @@ export default function RegularProfileForm({
   forceDirty
 }: Props) {
   const { nextIsDisabled, dirty, isSubmitting } = useCreateForm();
+  const navigate = useKeepQueryParamsNavigate();
+
   return (
     <>
       <ProfileFormFields />
       {children}
-      <Grid margin="2rem 0 0 0">
+      <Grid margin="2rem 0 0 0" justifyContent="flex-start" gap="2rem">
         {isEdit ? (
           <BosonButton
             variant="primaryFill"
@@ -32,13 +36,22 @@ export default function RegularProfileForm({
             {isSubmitting && <Spinner size="20" />}
           </BosonButton>
         ) : (
-          <BosonButton
-            variant="primaryFill"
-            type="submit"
-            disabled={nextIsDisabled}
-          >
-            Next
-          </BosonButton>
+          <>
+            <BosonButton
+              variant="secondaryInverted"
+              type="button"
+              onClick={() => navigate({ pathname: BosonRoutes.Root })}
+            >
+              Back to home page
+            </BosonButton>
+            <BosonButton
+              variant="primaryFill"
+              type="submit"
+              disabled={nextIsDisabled}
+            >
+              Next
+            </BosonButton>
+          </>
         )}
       </Grid>
     </>

@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
+import { BosonRoutes } from "../../../../../lib/routing/routes";
 import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
 import useGetLensProfiles from "../../../../../lib/utils/hooks/lens/profile/useGetLensProfiles";
+import { useKeepQueryParamsNavigate } from "../../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useSellers } from "../../../../../lib/utils/hooks/useSellers";
+import BosonButton from "../../../../ui/BosonButton";
 import Button from "../../../../ui/Button";
 import Grid from "../../../../ui/Grid";
 import GridContainer from "../../../../ui/GridContainer";
@@ -16,13 +19,16 @@ import LensProfileMultiSteps from "./LensProfileMultiSteps";
 interface Props {
   onChooseUseExisting: (profile: Profile) => void;
   changeToRegularProfile: () => void;
+  isEdit: boolean;
 }
 
 export default function ChooseLensProfile({
   changeToRegularProfile,
-  onChooseUseExisting
+  onChooseUseExisting,
+  isEdit
 }: Props) {
   const { address = "" } = useAccount();
+  const navigate = useKeepQueryParamsNavigate();
   const { data: admins } = useSellers(
     {
       admin: address
@@ -83,62 +89,76 @@ export default function ChooseLensProfile({
     }
   }, [profileData?.items]);
   return (
-    <Grid flexDirection="column">
-      <Typography>
-        <div>
-          For your journey as a seller reputation is key. Boson Protocol allows
-          sellers to directly link their Lens profile to their Boson account. If
-          you wish to create a Lens profile, please go to{" "}
-          <a href="https://claim.lens.xyz/" target="_blank" rel="noopener">
-            https://claim.lens.xyz/
-          </a>{" "}
-        </div>
-      </Typography>
-      <Button onClick={changeToRegularProfile} theme="blankSecondary">
-        <small>Use regular account instead</small>
-      </Button>
-      <GridContainer
-        itemsPerRow={{
-          xs: 2,
-          s: 2,
-          m: 2,
-          l: 2,
-          xl: 2
-        }}
-        style={{ width: "100%", margin: "1rem 0" }}
-      >
-        {isFetching ? (
-          <Grid>
-            <Loading />
-          </Grid>
-        ) : (
-          <>
-            {lensProfiles.map((profile, index) => {
-              return (
-                <Button
-                  theme="white"
-                  onClick={() => onChooseUseExisting(profile as Profile)}
-                  key={`lens_profile_${profile.id}_${index}`}
-                >
-                  <Grid flexDirection="column" gap="1rem" padding="1rem">
-                    <Typography
-                      fontWeight="600"
-                      $fontSize="1.25rem"
-                      lineHeight="150%"
-                      style={{
-                        wordBreak: "break-all"
-                      }}
-                    >
-                      {profile.handle}
-                    </Typography>
-                    <Typography>Use existing Lens Profile</Typography>
-                  </Grid>
-                </Button>
-              );
-            })}
-          </>
+    <>
+      <Grid flexDirection="column">
+        <Typography>
+          <div>
+            For your journey as a seller reputation is key. Boson Protocol
+            allows sellers to directly link their Lens profile to their Boson
+            account. If you wish to create a Lens profile, please go to{" "}
+            <a href="https://claim.lens.xyz/" target="_blank" rel="noopener">
+              https://claim.lens.xyz/
+            </a>{" "}
+          </div>
+        </Typography>
+        <Button onClick={changeToRegularProfile} theme="blankSecondary">
+          <small>Use regular account instead</small>
+        </Button>
+        <GridContainer
+          itemsPerRow={{
+            xs: 2,
+            s: 2,
+            m: 2,
+            l: 2,
+            xl: 2
+          }}
+          style={{ width: "100%", margin: "1rem 0" }}
+        >
+          {isFetching ? (
+            <Grid>
+              <Loading />
+            </Grid>
+          ) : (
+            <>
+              {lensProfiles.map((profile, index) => {
+                return (
+                  <Button
+                    theme="white"
+                    onClick={() => onChooseUseExisting(profile as Profile)}
+                    key={`lens_profile_${profile.id}_${index}`}
+                  >
+                    <Grid flexDirection="column" gap="1rem" padding="1rem">
+                      <Typography
+                        fontWeight="600"
+                        $fontSize="1.25rem"
+                        lineHeight="150%"
+                        style={{
+                          wordBreak: "break-all"
+                        }}
+                      >
+                        {profile.handle}
+                      </Typography>
+                      <Typography>Use existing Lens Profile</Typography>
+                    </Grid>
+                  </Button>
+                );
+              })}
+            </>
+          )}
+        </GridContainer>
+        {!isFetching && !lensProfiles.length && (
+          <Grid justifyContent="center">No lens profiles found</Grid>
         )}
-      </GridContainer>
-    </Grid>
+      </Grid>
+      {!isEdit && (
+        <BosonButton
+          variant="secondaryInverted"
+          type="button"
+          onClick={() => navigate({ pathname: BosonRoutes.Root })}
+        >
+          Back to home page
+        </BosonButton>
+      )}
+    </>
   );
 }

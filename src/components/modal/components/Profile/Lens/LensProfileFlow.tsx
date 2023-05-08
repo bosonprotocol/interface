@@ -78,6 +78,7 @@ export default function LensProfileFlow({
             setLensProfile(profile);
             setStep(LensStep.USE);
           }}
+          isEdit={isEdit}
         />
       ) : step === LensStep.USE && lensProfile ? (
         <LensForm

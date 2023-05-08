@@ -1,3 +1,4 @@
+import { AuthTokenType } from "@bosonprotocol/react-kit";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useCallback, useState } from "react";
 import { useAccount } from "wagmi";
@@ -26,7 +27,8 @@ export default function EditProfileModal() {
   const hasMetadata = !!seller?.metadata;
   const metadata = seller?.metadata;
   const useLens = seller?.metadata?.kind
-    ? seller?.metadata?.kind === ProfileType.LENS
+    ? seller?.metadata?.kind === ProfileType.LENS &&
+      seller.authTokenType === AuthTokenType.LENS
     : !!lensProfile;
   const navigate = useKeepQueryParamsNavigate();
   const { mutateAsync: updateSellerMetadata } = useUpdateSellerMetadata();

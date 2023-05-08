@@ -33,6 +33,7 @@ export const CreateRegularProfileFlow: React.FC<
           <RegularProfileMultiSteps
             isCreate
             activeStep={step}
+            key={step}
             setStepBasedOnIndex={setStep}
           />
         )
