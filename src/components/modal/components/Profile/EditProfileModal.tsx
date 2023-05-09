@@ -86,7 +86,7 @@ export default function EditProfileModal() {
       <p>There has been an error, please try again...</p>
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hasMetadata, lensProfile, metadata, profileType, seller, useLens]);
+  }, [profileType]);
 
   if (!address) {
     return (
