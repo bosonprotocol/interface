@@ -1,4 +1,5 @@
 import { SellerFieldsFragment } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
+import { AuthTokenType } from "@bosonprotocol/react-kit";
 import { useMutation } from "react-query";
 
 import { ProfileType } from "../../../../components/modal/components/Profile/const";
@@ -44,7 +45,8 @@ async function updateSellerMedatata(
     values,
     kind
   }: {
-    values: Partial<CreateProfile> & Pick<CreateProfile, "contactPreference">;
+    values: Partial<CreateProfile> &
+      Pick<CreateProfile, "contactPreference"> & { authTokenId: string };
     kind: ProfileType;
   },
   { seller }: { seller: SellerFieldsFragment },
@@ -96,6 +98,9 @@ async function updateSellerMedatata(
   });
   await updateSeller({
     ...seller,
+    authTokenId: values.authTokenId,
+    authTokenType:
+      kind === ProfileType.LENS ? AuthTokenType.LENS : AuthTokenType.NONE,
     sellerId: seller.id,
     metadataUri
   });

@@ -129,7 +129,7 @@ export default function CreateProfileModal({
     return <Loading />;
   }
 
-  if (profileType === undefined) {
+  if (profileType === undefined && hasLensProfile) {
     return <ChooseProfileType setProfileType={setProfileType} />;
   }
 

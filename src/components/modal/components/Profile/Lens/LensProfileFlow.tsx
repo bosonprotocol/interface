@@ -109,7 +109,8 @@ export default function LensProfileFlow({
                   legalTradingName: formValues.legalTradingName,
                   contactPreference: formValues.contactPreference,
                   email: formValues.email,
-                  website: formValues.website
+                  website: formValues.website,
+                  authTokenId: lensProfile.id
                 },
                 kind: ProfileType.LENS
               });

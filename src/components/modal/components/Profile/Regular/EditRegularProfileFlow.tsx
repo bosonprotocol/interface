@@ -62,7 +62,7 @@ export const EditRegularProfileFlow: React.FC<EditRegularProfileFlowProps> = ({
             setDirty(formDirty);
             if (formDirty || forceDirty) {
               await updateSellerMetadata({
-                values: profile,
+                values: { ...profile, authTokenId: "0" },
                 kind: ProfileType.REGULAR
               });
               toast((t) => (

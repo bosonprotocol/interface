@@ -9,7 +9,8 @@ export const SUPPORTED_FILE_FORMATS = [
   "image/jpg",
   "image/jpeg",
   "image/gif",
-  "image/png"
+  "image/png",
+  "image/webp"
 ];
 
 export const CREATE_PRODUCT_STEPS = (isMultiVariant: boolean) => [
