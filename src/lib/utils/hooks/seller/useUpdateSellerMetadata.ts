@@ -1,6 +1,8 @@
 import { SellerFieldsFragment } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
 import { AuthTokenType } from "@bosonprotocol/react-kit";
+import { ethers } from "ethers";
 import { useMutation } from "react-query";
+import { useAccount } from "wagmi";
 
 import { ProfileType } from "../../../../components/modal/components/Profile/const";
 import { CreateProfile } from "../../../../components/product/utils";
@@ -18,6 +20,7 @@ type StoreSellerMetadataFn = ReturnType<
 
 export default function useUpdateSellerMetadata() {
   const { sellers: currentSellers } = useCurrentSellers();
+  const { address = "" } = useAccount();
   const seller = currentSellers?.length ? currentSellers[0] : undefined;
   const { mutateAsync: updateSeller } = useUpdateSeller();
   const { mutateAsync: storeSellerMetadata } = useStoreSellerMetadata();
@@ -30,9 +33,16 @@ export default function useUpdateSellerMetadata() {
       console.error(error);
       throw error;
     }
+    if (!address) {
+      const error = new Error(
+        "[useUpdateSellerMetadata] cannot update a seller if the address is falsy"
+      );
+      console.error(error);
+      throw error;
+    }
     return updateSellerMedatata(
       props,
-      { seller },
+      { seller, address },
       {
         updateSeller,
         storeSellerMetadata
@@ -49,7 +59,7 @@ async function updateSellerMedatata(
       Pick<CreateProfile, "contactPreference"> & { authTokenId: string };
     kind: ProfileType;
   },
-  { seller }: { seller: SellerFieldsFragment },
+  { seller, address }: { seller: SellerFieldsFragment; address: string },
   {
     updateSeller,
     storeSellerMetadata
@@ -98,6 +108,7 @@ async function updateSellerMedatata(
   });
   await updateSeller({
     ...seller,
+    admin: kind === ProfileType.LENS ? ethers.constants.AddressZero : address,
     authTokenId: values.authTokenId,
     authTokenType:
       kind === ProfileType.LENS ? AuthTokenType.LENS : AuthTokenType.NONE,
