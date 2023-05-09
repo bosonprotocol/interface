@@ -1,6 +1,7 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useCallback, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useAccount } from "wagmi";
 
 import { BosonRoutes } from "../../../../lib/routing/routes";
@@ -10,6 +11,7 @@ import useUpdateSellerMetadata from "../../../../lib/utils/hooks/seller/useUpdat
 import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useSellerCurationListFn } from "../../../../lib/utils/hooks/useSellers";
 import { CreateProfile } from "../../../product/utils";
+import SuccessTransactionToast from "../../../toasts/SuccessTransactionToast";
 import BosonButton from "../../../ui/BosonButton";
 import Grid from "../../../ui/Grid";
 import Loading from "../../../ui/Loading";
@@ -97,6 +99,9 @@ export default function CreateProfileModal({
       <CreateRegularProfileFlow
         initialData={initialRegularCreateProfile}
         onSubmit={(regularProfile) => {
+          toast((t) => (
+            <SuccessTransactionToast t={t} action="Create Seller Account" />
+          ));
           onRegularProfileCreated?.(regularProfile);
           hideModal();
         }}
