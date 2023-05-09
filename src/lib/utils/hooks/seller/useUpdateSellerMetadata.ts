@@ -1,6 +1,5 @@
 import { SellerFieldsFragment } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
 import { AuthTokenType } from "@bosonprotocol/react-kit";
-import { ethers } from "ethers";
 import { useMutation } from "react-query";
 import { useAccount } from "wagmi";
 
@@ -108,7 +107,7 @@ async function updateSellerMedatata(
   });
   await updateSeller({
     ...seller,
-    admin: kind === ProfileType.LENS ? ethers.constants.AddressZero : address,
+    admin: address,
     authTokenId: values.authTokenId,
     authTokenType:
       kind === ProfileType.LENS ? AuthTokenType.LENS : AuthTokenType.NONE,
