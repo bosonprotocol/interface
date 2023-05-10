@@ -1,4 +1,8 @@
+import { ReactNode } from "react";
+
 import { FormField, Input } from "../../../../form";
+import Grid from "../../../../ui/Grid";
+import Typography from "../../../../ui/Typography";
 import { ProfileFormFields } from "../ProfileFormFields";
 
 interface Props {
@@ -10,6 +14,7 @@ interface Props {
   disableCover?: boolean;
   disableName?: boolean;
   disableDescription?: boolean;
+  children?: ReactNode;
 }
 
 export default function LensFormFields({
@@ -20,22 +25,33 @@ export default function LensFormFields({
   disableLogo,
   disableCover,
   disableName,
-  disableDescription
+  disableDescription,
+  children
 }: Props) {
   return (
-    <ProfileFormFields
-      onBlurName={onBlurName}
-      logoSubtitle={logoSubtitle}
-      coverSubtitle={coverSubtitle}
-      handleComponent={
-        <FormField title="Lens Handle" required>
-          <Input name="handle" placeholder="Handle" disabled={disableHandle} />
-        </FormField>
-      }
-      disableCover={disableCover}
-      disableLogo={disableLogo}
-      disableDescription={disableDescription}
-      disableName={disableName}
-    />
+    <>
+      <Grid justifyContent="flex-start" alignItems="center" margin="0 0 2rem 0">
+        <Typography $fontSize="2rem">Lens profile</Typography>
+        {children}
+      </Grid>
+      <ProfileFormFields
+        onBlurName={onBlurName}
+        logoSubtitle={logoSubtitle}
+        coverSubtitle={coverSubtitle}
+        handleComponent={
+          <FormField title="Lens Handle" required>
+            <Input
+              name="handle"
+              placeholder="Handle"
+              disabled={disableHandle}
+            />
+          </FormField>
+        }
+        disableCover={disableCover}
+        disableLogo={disableLogo}
+        disableDescription={disableDescription}
+        disableName={disableName}
+      />
+    </>
   );
 }

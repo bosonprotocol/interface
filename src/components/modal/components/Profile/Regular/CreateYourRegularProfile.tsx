@@ -63,14 +63,15 @@ export default function CreateYourRegularProfile({
         }
         return (
           <Form>
-            <RegularProfileForm isEdit={isEdit} forceDirty={forceDirty}>
-              <Button
-                onClick={changeToLensProfile}
-                theme="blankSecondary"
-                style={{ marginTop: "1rem" }}
-              >
-                <small>Use Lens instead</small>
-              </Button>
+            <RegularProfileForm
+              isEdit={isEdit}
+              forceDirty={forceDirty}
+              switchButton={() => (
+                <Button onClick={changeToLensProfile} theme="blankSecondary">
+                  <small>Use Lens instead</small>
+                </Button>
+              )}
+            >
               {error ? <SimpleError /> : <></>}
             </RegularProfileForm>
           </Form>

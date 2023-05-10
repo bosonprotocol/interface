@@ -11,7 +11,6 @@ import { IPricePassedAsAProp } from "../../../lib/utils/convertPrice";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import { Exchange } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import { EditProfile } from "../../detail/EditProfile";
 import { useConvertedPriceFunction } from "../../price/useConvertedPriceFunction";
 import BosonButton from "../../ui/BosonButton";
 import Grid from "../../ui/Grid";
@@ -143,9 +142,6 @@ export default function SellerDashboard({
 
   return (
     <>
-      <div style={{ marginTop: "1rem", marginBottom: "1rem" }}>
-        <EditProfile />
-      </div>
       <Grid gap="2rem" flexDirection="column" alignItems="stretch">
         {offersBacked?.displayWarning && (
           <SellerInner

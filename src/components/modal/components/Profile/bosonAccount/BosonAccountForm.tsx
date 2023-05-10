@@ -68,8 +68,8 @@ export default function BosonAccountForm({
         Boson Account
       </Typography>
       <Typography>
-        You are creating a seller account in Boson Protocol. Input the relevant
-        information relating to your secondary royalty
+        You are creating a seller account on Boson Protocol. Input the relevant
+        information relating to your secondary royalties.
       </Typography>
       <Formik<BosonAccount>
         initialValues={initialValues}

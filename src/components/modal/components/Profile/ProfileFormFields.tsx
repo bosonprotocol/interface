@@ -63,7 +63,7 @@ export function ProfileFormFields({
           disabled={disableDescription}
         />
       </FormField>
-      <FormField title="Contact E-Mail" required>
+      <FormField title="Contact e-mail" required>
         <Input
           name="email"
           placeholder="e-Mail"
@@ -72,7 +72,7 @@ export function ProfileFormFields({
       </FormField>
       <FormField
         title="Website / Social media link"
-        subTitle="Put your most frequently used online channel in here. Use the URL for Social media."
+        subTitle="Add a website or your most frequently used social media link here."
         required
       >
         <Input
@@ -88,7 +88,7 @@ export function ProfileFormFields({
         <Input name="legalTradingName" placeholder="Polly Seller UK ltd." />
       </FormField>
       <FormField
-        title="Communication Channel Preference"
+        title="Communication channel preference"
         required
         subTitle="Set up how you want to communicate with the buyer after redemption"
       >

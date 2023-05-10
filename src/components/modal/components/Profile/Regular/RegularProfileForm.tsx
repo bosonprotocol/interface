@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactElement, ReactNode } from "react";
 
 import { BosonRoutes } from "../../../../../lib/routing/routes";
 import { useKeepQueryParamsNavigate } from "../../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
@@ -6,23 +6,30 @@ import { Spinner } from "../../../../loading/Spinner";
 import { useCreateForm } from "../../../../product/utils/useCreateForm";
 import BosonButton from "../../../../ui/BosonButton";
 import Grid from "../../../../ui/Grid";
+import Typography from "../../../../ui/Typography";
 import { ProfileFormFields } from "../ProfileFormFields";
 
 type Props = {
   children: ReactNode;
   isEdit: boolean;
   forceDirty?: boolean;
+  switchButton: () => ReactElement;
 };
 export default function RegularProfileForm({
   children,
   isEdit,
-  forceDirty
+  forceDirty,
+  switchButton: SwitchButton
 }: Props) {
   const { nextIsDisabled, dirty, isSubmitting } = useCreateForm();
   const navigate = useKeepQueryParamsNavigate();
 
   return (
     <>
+      <Grid justifyContent="flex-start" alignItems="center" margin="0 0 2rem 0">
+        <Typography $fontSize="2rem">Regular profile</Typography>
+        <SwitchButton />
+      </Grid>
       <ProfileFormFields />
       {children}
       <Grid margin="2rem 0 0 0" justifyContent="flex-start" gap="2rem">

@@ -82,7 +82,7 @@ export default function BosonAccountFormFields({
         </Grid>
       </FormField>
       <FormField
-        title="Address for Royalty payment"
+        title="Address for royalty payments"
         subTitle="This address will receive royalty payments"
       >
         <Input

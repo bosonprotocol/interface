@@ -72,11 +72,7 @@ export default function LensForm({
   };
   const UseRegularProfile = useCallback(() => {
     return (
-      <Button
-        onClick={changeToRegularProfile}
-        theme="blankSecondary"
-        style={{ marginTop: "1rem" }}
-      >
+      <Button onClick={changeToRegularProfile} theme="blankSecondary">
         <small>Use regular profile instead</small>
       </Button>
     );
@@ -123,8 +119,10 @@ export default function LensForm({
                 disableLogo
                 disableName
                 disableDescription
-              />
-              {isEdit && <UseRegularProfile />}
+              >
+                {isEdit && <UseRegularProfile />}
+              </LensFormFields>
+
               {error && <SimpleError />}
             </ViewOrEditLensProfile>
           </Form>
