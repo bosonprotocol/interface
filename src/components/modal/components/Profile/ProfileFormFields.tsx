@@ -28,7 +28,7 @@ export function ProfileFormFields({
   return (
     <>
       <FormField
-        title="Logo / profile picture"
+        title="Logo / Profile picture"
         subTitle={logoSubtitle}
         required
       >
@@ -47,7 +47,7 @@ export function ProfileFormFields({
           withUpload
         />
       </FormField>
-      <FormField title="Your brand / name" required>
+      <FormField title="Your brand / Name" required>
         <Input
           name="name"
           placeholder="Name"

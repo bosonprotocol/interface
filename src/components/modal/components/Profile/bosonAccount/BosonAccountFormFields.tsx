@@ -35,7 +35,7 @@ export default function BosonAccountFormFields({
   return (
     <>
       <FormField
-        title="Secondary Royalties"
+        title="Secondary royalties"
         subTitle="Boson Protocol implements EIP-2981 which enables secondary royalties across NFT marketplaces."
         required
       >
