@@ -6,7 +6,8 @@ import { useSellerWhitelist } from "./useSellerWhitelist";
 export function useCurationLists() {
   const sellerWhitelist = useSellerWhitelist({
     sellerWhitelistUrl: CONFIG.sellerWhitelistUrl,
-    allowConnectedSeller: true
+    sellerBlacklistUrl: CONFIG.sellerBlacklistUrl,
+    allowConnectedSeller: false
   });
   const sellerCurationList = sellerWhitelist.isSuccess
     ? (sellerWhitelist.data as string[])

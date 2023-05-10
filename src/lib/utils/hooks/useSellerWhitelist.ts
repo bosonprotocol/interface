@@ -6,6 +6,7 @@ import { useCurrentSellers } from "./useCurrentSellers";
 
 interface Props {
   sellerWhitelistUrl?: string;
+  sellerBlacklistUrl?: string;
   allowConnectedSeller?: boolean;
 }
 
@@ -18,7 +19,7 @@ export function useSellerWhitelist(
     "seller-whitelist",
     async () => {
       const whitelistStr = props.sellerWhitelistUrl
-        ? await fetchTextFile(props.sellerWhitelistUrl)
+        ? await fetchTextFile(props.sellerWhitelistUrl, false)
         : "";
       return whitelistStr.split("\n")[0].split(",") || [];
     },
@@ -26,8 +27,22 @@ export function useSellerWhitelist(
       ...options
     }
   );
+  const blacklist = useQuery(
+    "seller-blacklist",
+    async () => {
+      const blacklistStr = props.sellerBlacklistUrl
+        ? await fetchTextFile(props.sellerBlacklistUrl, false)
+        : "";
+      return blacklistStr.split("\n")[0].split(",") || [];
+    },
+    {
+      ...options
+    }
+  );
   return useMemo(() => {
-    const sellerIdList = whitelist.data || [];
+    const sellerIdList = (whitelist.data || []).filter(
+      (id) => !(blacklist.data || []).includes(id)
+    );
     if (
       props.allowConnectedSeller &&
       currentSeller.isSuccess &&
@@ -37,7 +52,9 @@ export function useSellerWhitelist(
       (sellerIdList as string[]).push(currentSeller.sellerIds[0]);
     }
     return {
-      isSuccess: whitelist.isSuccess || whitelist.isError,
+      isSuccess:
+        (whitelist.isSuccess || whitelist.isError) &&
+        (blacklist.isSuccess || blacklist.isError),
       data: sellerIdList
     };
   }, [
@@ -46,6 +63,9 @@ export function useSellerWhitelist(
     whitelist.isSuccess,
     whitelist.isError,
     whitelist.data,
+    blacklist.isSuccess,
+    blacklist.isError,
+    blacklist.data,
     props.allowConnectedSeller
   ]);
 }

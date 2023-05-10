@@ -14,7 +14,6 @@ interface Props {
   id?: string;
   includeFunds?: boolean;
   enableCurationList?: boolean;
-  allowConnectedSeller?: boolean;
 }
 
 export const useSellerCurationListFn = () => {
