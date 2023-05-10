@@ -38,7 +38,7 @@ async function updateSellerAccount(
     metadataUri: string;
   }
 ) {
-  await coreSDK.updateSellerAndOptIn({
+  await coreSDK.signMetaTxUpdateSellerAndOptIn({
     id: sellerId,
     admin:
       authTokenType === authTokenTypes.LENS
