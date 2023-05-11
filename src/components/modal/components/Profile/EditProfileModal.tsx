@@ -7,6 +7,7 @@ import { BosonRoutes } from "../../../../lib/routing/routes";
 import useUpdateSellerMetadata from "../../../../lib/utils/hooks/seller/useUpdateSellerMetadata";
 import { useCurrentSellers } from "../../../../lib/utils/hooks/useCurrentSellers";
 import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import Switch from "../../../form/Switch";
 import {
   CreateProfile,
   OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE
@@ -37,7 +38,28 @@ export default function EditProfileModal() {
     useLens ? ProfileType.LENS : ProfileType.REGULAR
   );
   const { address = "" } = useAccount();
-
+  const [switchChecked, setSwitchChecked] = useState<boolean>(
+    profileType === ProfileType.LENS
+  );
+  const setSwitchAndProfileType = useCallback((switchToLens: boolean) => {
+    setSwitchChecked(switchToLens);
+    setProfileType(switchToLens ? ProfileType.LENS : ProfileType.REGULAR);
+  }, []);
+  const SwitchButton = useCallback(
+    () => (
+      <Switch
+        onCheckedChange={(checked) => {
+          setSwitchAndProfileType(checked);
+        }}
+        gridProps={{
+          justifyContent: "flex-end"
+        }}
+        checked={switchChecked}
+        label={<>Link Lens profile</>}
+      />
+    ),
+    [switchChecked, setSwitchAndProfileType]
+  );
   const Component = useCallback(() => {
     const profileImage = metadata?.images?.find((img) => img.tag === "profile");
     const coverPicture = metadata?.images?.find((img) => img.tag === "cover");
@@ -69,7 +91,8 @@ export default function EditProfileModal() {
         forceDirty={forceDirty}
         seller={seller || null}
         lensProfile={lensProfile}
-        changeToRegularProfile={() => setProfileType(ProfileType.REGULAR)}
+        changeToRegularProfile={() => setSwitchAndProfileType(false)}
+        switchButton={SwitchButton}
         updateSellerMetadata={updateSellerMetadata}
       />
     ) : seller ? (
@@ -80,7 +103,7 @@ export default function EditProfileModal() {
         onSubmit={async () => {
           hideModal();
         }}
-        changeToLensProfile={() => setProfileType(ProfileType.LENS)}
+        switchButton={SwitchButton}
       />
     ) : (
       <p>There has been an error, please try again...</p>

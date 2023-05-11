@@ -118,10 +118,7 @@ export default function CreateBosonLensAccountSummary({
   );
   return (
     <>
-      <div>
-        For your journey as a seller reputation is key. Boson Protocol allows
-        sellers to directly link their Lens profile to their Boson account.
-      </div>
+      <Typography $fontSize="2rem">Confirm Profile Information</Typography>
       <Grid flexDirection="column" gap="2.625rem">
         <Grid flexDirection="column" gap="1rem">
           <Grid

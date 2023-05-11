@@ -30,9 +30,14 @@ export default function LensFormFields({
 }: Props) {
   return (
     <>
-      <Grid justifyContent="flex-start" alignItems="center" margin="0 0 2rem 0">
+      <Grid
+        justifyContent="space-between"
+        alignItems="center"
+        margin="0 0 2rem 0"
+        flex="1"
+      >
         <Typography $fontSize="2rem">Lens profile</Typography>
-        {children}
+        <div>{children}</div>
       </Grid>
       <ProfileFormFields
         onBlurName={onBlurName}

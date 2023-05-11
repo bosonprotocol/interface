@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 
 import { CreateProfile } from "../../../../product/utils";
 import { useModal } from "../../../useModal";
@@ -12,12 +12,12 @@ import RegularProfileSummary from "./RegularProfileSummary";
 interface CreateRegularProfileFlowProps {
   onSubmit: (data: CreateProfile) => void;
   initialData?: CreateProfile;
-  changeToLensProfile: () => void;
+  switchButton: () => ReactElement;
 }
 
 export const CreateRegularProfileFlow: React.FC<
   CreateRegularProfileFlowProps
-> = ({ onSubmit, initialData, changeToLensProfile }) => {
+> = ({ onSubmit, initialData, switchButton }) => {
   const [step, setStep] = useState<RegularStep>(RegularStep.CREATE);
   const [regularProfile, setRegularProfile] = useState<CreateProfile | null>(
     null
@@ -52,7 +52,7 @@ export const CreateRegularProfileFlow: React.FC<
             setStep(RegularStep.BOSON_ACCOUNT);
           }}
           isEdit={false}
-          changeToLensProfile={changeToLensProfile}
+          switchButton={switchButton}
         />
       ) : step === RegularStep.BOSON_ACCOUNT ? (
         <BosonAccountForm

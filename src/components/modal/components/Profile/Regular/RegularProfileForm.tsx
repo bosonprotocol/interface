@@ -26,9 +26,18 @@ export default function RegularProfileForm({
 
   return (
     <>
-      <Grid justifyContent="flex-start" alignItems="center" margin="0 0 2rem 0">
-        <Typography $fontSize="2rem">Regular profile</Typography>
-        <SwitchButton />
+      <Grid
+        justifyContent="space-between"
+        alignItems="center"
+        margin="0 0 2rem 0"
+        flex="1"
+      >
+        <Typography $fontSize="2rem">
+          {isEdit ? "Regular profile" : "Create your profile"}
+        </Typography>
+        <div>
+          <SwitchButton />
+        </div>
       </Grid>
       <ProfileFormFields />
       {children}

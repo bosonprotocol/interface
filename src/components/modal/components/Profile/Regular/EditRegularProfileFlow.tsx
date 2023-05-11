@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 import useUpdateSellerMetadata from "../../../../../lib/utils/hooks/seller/useUpdateSellerMetadata";
@@ -14,7 +14,7 @@ import { RegularProfileMultiSteps } from "./RegularProfileMultiSteps";
 interface EditRegularProfileFlowProps {
   onSubmit: (data: CreateProfile, dirty: boolean) => void;
   profileInitialData: CreateProfile;
-  changeToLensProfile: () => void;
+  switchButton: () => ReactElement;
   updateSellerMetadata: ReturnType<
     typeof useUpdateSellerMetadata
   >["mutateAsync"];
@@ -24,7 +24,7 @@ interface EditRegularProfileFlowProps {
 export const EditRegularProfileFlow: React.FC<EditRegularProfileFlowProps> = ({
   onSubmit,
   profileInitialData,
-  changeToLensProfile,
+  switchButton,
   forceDirty,
   updateSellerMetadata
 }) => {
@@ -75,7 +75,7 @@ export const EditRegularProfileFlow: React.FC<EditRegularProfileFlowProps> = ({
             setStep(RegularStep.BOSON_ACCOUNT);
           }}
           isEdit={true}
-          changeToLensProfile={changeToLensProfile}
+          switchButton={switchButton}
         />
       ) : step === RegularStep.BOSON_ACCOUNT && regularProfile ? (
         <BosonAccountForm

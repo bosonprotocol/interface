@@ -10,6 +10,7 @@ import useGetLensProfiles from "../../../../lib/utils/hooks/lens/profile/useGetL
 import useUpdateSellerMetadata from "../../../../lib/utils/hooks/seller/useUpdateSellerMetadata";
 import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useSellerCurationListFn } from "../../../../lib/utils/hooks/useSellers";
+import Switch from "../../../form/Switch";
 import { CreateProfile } from "../../../product/utils";
 import SuccessTransactionToast from "../../../toasts/SuccessTransactionToast";
 import BosonButton from "../../../ui/BosonButton";
@@ -76,7 +77,28 @@ export default function CreateProfileModal({
     },
     [checkIfSellerIsInCurationList, navigate]
   );
-
+  const [switchChecked, setSwitchChecked] = useState<boolean>(
+    profileType === ProfileType.LENS
+  );
+  const setSwitchAndProfileType = useCallback((switchToLens: boolean) => {
+    setSwitchChecked(switchToLens);
+    setProfileType(switchToLens ? ProfileType.LENS : ProfileType.REGULAR);
+  }, []);
+  const SwitchButton = useCallback(
+    () => (
+      <Switch
+        onCheckedChange={(checked) => {
+          setSwitchAndProfileType(checked);
+        }}
+        gridProps={{
+          justifyContent: "flex-end"
+        }}
+        checked={switchChecked}
+        label={<>Link Lens profile</>}
+      />
+    ),
+    [switchChecked, setSwitchAndProfileType]
+  );
   const Component = useCallback(() => {
     return profileType === ProfileType.LENS ? (
       <LensProfileFlow
@@ -92,7 +114,8 @@ export default function CreateProfileModal({
         isEdit={false}
         seller={seller || null}
         lensProfile={selectedProfile}
-        changeToRegularProfile={() => setProfileType(ProfileType.REGULAR)}
+        changeToRegularProfile={() => setSwitchAndProfileType(false)}
+        switchButton={SwitchButton}
         updateSellerMetadata={updateSellerMetadata}
       />
     ) : (
@@ -105,7 +128,7 @@ export default function CreateProfileModal({
           onRegularProfileCreated?.(regularProfile);
           hideModal();
         }}
-        changeToLensProfile={() => setProfileType(ProfileType.LENS)}
+        switchButton={SwitchButton}
       />
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps

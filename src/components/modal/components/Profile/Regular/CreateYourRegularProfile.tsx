@@ -1,13 +1,12 @@
 import * as Sentry from "@sentry/browser";
 import { Form, Formik } from "formik";
-import { useState } from "react";
+import { ReactElement, useState } from "react";
 
 import SimpleError from "../../../../error/SimpleError";
 import {
   CreateProfile,
   OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE
 } from "../../../../product/utils";
-import Button from "../../../../ui/Button";
 import RegularProfileForm from "./RegularProfileForm";
 import { createYourProfileSchema } from "./validationSchema";
 
@@ -18,15 +17,15 @@ interface Props {
     dirty: boolean,
     resetDirty?: () => void
   ) => Promise<void>;
-  changeToLensProfile: () => void;
   isEdit: boolean;
   forceDirty: boolean;
+  switchButton: () => ReactElement;
 }
 
 export default function CreateYourRegularProfile({
   initial,
   onSubmit,
-  changeToLensProfile,
+  switchButton,
   isEdit,
   forceDirty
 }: Props) {
@@ -66,11 +65,7 @@ export default function CreateYourRegularProfile({
             <RegularProfileForm
               isEdit={isEdit}
               forceDirty={forceDirty}
-              switchButton={() => (
-                <Button onClick={changeToLensProfile} theme="blankSecondary">
-                  <small>Use Lens instead</small>
-                </Button>
-              )}
+              switchButton={switchButton}
             >
               {error ? <SimpleError /> : <></>}
             </RegularProfileForm>

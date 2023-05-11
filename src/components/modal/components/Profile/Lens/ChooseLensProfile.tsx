@@ -93,17 +93,16 @@ export default function ChooseLensProfile({
       <Grid flexDirection="column">
         <Typography>
           <div>
-            For your journey as a seller reputation is key. Boson Protocol
-            allows sellers to directly link their Lens profile to their Boson
-            account. If you wish to create a Lens profile, please go to{" "}
+            Boson Protocol allows sellers to directly link their Lens profile to
+            their Boson account. If you wish to create a Lens profile, please go
+            to{" "}
             <a href="https://claim.lens.xyz/" target="_blank" rel="noopener">
               https://claim.lens.xyz/
             </a>{" "}
+            If you already have a Lens profile, they will be shown below.
           </div>
         </Typography>
-        <Button onClick={changeToRegularProfile} theme="blankSecondary">
-          <small>Use regular account instead</small>
-        </Button>
+
         <GridContainer
           itemsPerRow={{
             xs: 2,
@@ -150,15 +149,20 @@ export default function ChooseLensProfile({
           <Grid justifyContent="center">No lens profiles found</Grid>
         )}
       </Grid>
-      {!isEdit && (
-        <BosonButton
-          variant="secondaryInverted"
-          type="button"
-          onClick={() => navigate({ pathname: BosonRoutes.Root })}
-        >
-          Back to home page
-        </BosonButton>
-      )}
+      <Grid justifyContent="flex-start" gap="2rem" margin="2rem 0 0 0">
+        {!isEdit && (
+          <BosonButton
+            variant="secondaryInverted"
+            type="button"
+            onClick={() => navigate({ pathname: BosonRoutes.Root })}
+          >
+            Back to home page
+          </BosonButton>
+        )}
+        <Button onClick={changeToRegularProfile} theme="blankSecondary">
+          Proceed without Lens
+        </Button>
+      </Grid>
     </>
   );
 }

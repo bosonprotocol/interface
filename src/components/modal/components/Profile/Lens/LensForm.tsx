@@ -1,13 +1,12 @@
 import { subgraph } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 import { Form, Formik } from "formik";
-import { useCallback, useState } from "react";
+import { ReactElement, useState } from "react";
 
 import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
 import { preAppendHttps } from "../../../../../lib/validation/regex/url";
 import SimpleError from "../../../../error/SimpleError";
 import { OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE } from "../../../../product/utils";
-import Button from "../../../../ui/Button";
 import { LensStep } from "./const";
 import LensFormFields from "./LensFormFields";
 import {
@@ -30,7 +29,7 @@ interface Props {
   onBackClick: () => void;
   setStepBasedOnIndex: (lensStep: LensStep) => void;
   isEdit: boolean;
-  changeToRegularProfile: () => void;
+  switchButton: () => ReactElement;
   forceDirty?: boolean;
 }
 
@@ -42,7 +41,7 @@ export default function LensForm({
   formValues,
   setStepBasedOnIndex,
   isEdit,
-  changeToRegularProfile,
+  switchButton: SwitchButton,
   forceDirty
 }: Props) {
   const [changedFields, setFormChanged] = useState<
@@ -70,13 +69,6 @@ export default function LensForm({
     legalTradingName: "",
     contactPreference: OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE[0]
   };
-  const UseRegularProfile = useCallback(() => {
-    return (
-      <Button onClick={changeToRegularProfile} theme="blankSecondary">
-        <small>Use regular profile instead</small>
-      </Button>
-    );
-  }, [changeToRegularProfile]);
   return (
     <Formik<LensProfileType>
       initialValues={formValues ? formValues : defaultInitialValues}
@@ -120,7 +112,7 @@ export default function LensForm({
                 disableName
                 disableDescription
               >
-                {isEdit && <UseRegularProfile />}
+                {isEdit && <SwitchButton />}
               </LensFormFields>
 
               {error && <SimpleError />}

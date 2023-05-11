@@ -1,5 +1,5 @@
 import { subgraph } from "@bosonprotocol/react-kit";
-import { useCallback, useState } from "react";
+import { ReactElement, useCallback, useState } from "react";
 import toast from "react-hot-toast";
 
 import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
@@ -19,6 +19,7 @@ interface Props {
   seller: subgraph.SellerFieldsFragment | null;
   lensProfile?: Profile;
   changeToRegularProfile: () => void;
+  switchButton: () => ReactElement;
   updateSellerMetadata: ReturnType<
     typeof useUpdateSellerMetadata
   >["mutateAsync"];
@@ -31,6 +32,7 @@ export default function LensProfileFlow({
   seller,
   lensProfile: selectedProfile,
   changeToRegularProfile,
+  switchButton,
   updateSellerMetadata,
   isEdit,
   forceDirty
@@ -82,7 +84,7 @@ export default function LensProfileFlow({
         />
       ) : step === LensStep.USE && lensProfile ? (
         <LensForm
-          changeToRegularProfile={changeToRegularProfile}
+          switchButton={switchButton}
           profile={lensProfile}
           seller={seller}
           formValues={null}
