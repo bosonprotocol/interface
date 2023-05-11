@@ -90,6 +90,8 @@ const Box = styled.div`
   width: 100%;
   p {
     display: block;
+  }
+  p:first {
     margin: 0.938rem 0 0 0;
   }
 `;
@@ -143,10 +145,10 @@ export default function ProductType({
   const [shownDraftModal, setShowDraftModal] = useState<boolean>(false);
 
   const [isRegularSellerSet, setIsRegularSeller] = useState<boolean>(false);
-  const isOperator = currentRoles?.find((role) => role === "operator");
+  const isAssistant = currentRoles?.find((role) => role === "assistant");
   const isClerk = currentRoles?.find((role) => role === "clerk");
   const isAdmin = currentRoles?.find((role) => role === "admin");
-  const isSellerNotOperator = (isClerk || isAdmin) && !isOperator;
+  const isSellerNotAssistant = (isClerk || isAdmin) && !isAssistant;
 
   // If the seller exists but no LENS profile attached to it, it's a regular seller
   const isRegularSeller =
@@ -165,17 +167,17 @@ export default function ProductType({
   const hasValidAdminAccount =
     (CONFIG.lens.enabled && isAdminLinkedToLens) || !CONFIG.lens.enabled;
   const isSeller = !!currentSellers.length;
-  const currentOperator = currentSellers.find((seller) => {
-    return seller.operator.toLowerCase() === address?.toLowerCase();
+  const currentAssistant = currentSellers.find((seller) => {
+    return seller.assistant.toLowerCase() === address?.toLowerCase();
   }); // lens profile of the current user
-  const operatorLens: Profile | null = useMemo(
+  const assistantLens: Profile | null = useMemo(
     () =>
       lens.find((lensProfile) => {
         const lensIdDecimal = getLensTokenIdDecimal(lensProfile.id).toString();
-        const authTokenId = currentOperator?.authTokenId;
+        const authTokenId = currentAssistant?.authTokenId;
         return lensIdDecimal === authTokenId;
       }) || null,
-    [currentOperator?.authTokenId, lens]
+    [currentAssistant?.authTokenId, lens]
   );
   const onRegularProfileCreated = useCallback(
     (regularProfile: CreateYourProfile) => {
@@ -197,10 +199,10 @@ export default function ProductType({
     []
   );
   useEffect(() => {
-    if (CONFIG.lens.enabled && operatorLens) {
+    if (CONFIG.lens.enabled && assistantLens) {
       (async () => {
         try {
-          const logoUrl = getLensProfilePictureUrl(operatorLens as Profile);
+          const logoUrl = getLensProfilePictureUrl(assistantLens as Profile);
           const [logoBase64] = await fetchIpfsBase64Media(
             [logoUrl],
             ipfsMetadataStorage
@@ -224,10 +226,10 @@ export default function ProductType({
                 src: fixedBase64
               }
             ],
-            name: operatorLens.name || "",
-            email: getLensEmail(operatorLens as Profile) || "",
-            description: operatorLens.bio || "",
-            website: getLensWebsite(operatorLens as Profile) || ""
+            name: assistantLens.name || "",
+            email: getLensEmail(assistantLens as Profile) || "",
+            description: assistantLens.bio || "",
+            website: getLensWebsite(assistantLens as Profile) || ""
           };
           helpersCreateYourProfile.setValue(createYourProfile);
         } catch (error) {
@@ -236,15 +238,15 @@ export default function ProductType({
       })();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ipfsMetadataStorage, operatorLens]);
+  }, [ipfsMetadataStorage, assistantLens]);
 
   useEffect(() => {
     if (!(isSuccess && !isRefetching && !isLoading && !isFetching)) {
       return;
     }
 
-    if (isSellerNotOperator) {
-      // The current wallet is not the operator of the seller
+    if (isSellerNotAssistant) {
+      // The current wallet is not the assistant of the seller
       showInvalidRoleModal();
     } else if (!shownDraftModal) {
       // Show the draft modal to let the user choosing if they wants to use Draft
@@ -301,7 +303,7 @@ export default function ProductType({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     hasValidAdminAccount,
-    isSellerNotOperator,
+    isSellerNotAssistant,
     isSeller,
     isRegularSellerSet,
     isDraftModalClosed,
@@ -354,8 +356,10 @@ export default function ProductType({
                 />
                 <Box>
                   <ProductImage src={phygitalProduct} />
-                  <Typography tag="p">Phygital</Typography>
-                  <Typography tag="p" $fontSize="0.7rem">
+                  <Typography tag="p" margin="1rem 0 0 0">
+                    Phygital
+                  </Typography>
+                  <Typography tag="p" $fontSize="0.7rem" margin="0.3rem 0 0 0">
                     COMING SOON
                   </Typography>
                 </Box>

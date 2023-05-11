@@ -86,6 +86,8 @@ export interface SelectProps extends BaseProps {
   errorMessage?: string;
   onChange?: (option: SelectDataProps<string>) => void;
   label?: string;
+  className?: string;
+  classNamePrefix?: string;
 }
 
 export interface UploadProps extends BaseProps {

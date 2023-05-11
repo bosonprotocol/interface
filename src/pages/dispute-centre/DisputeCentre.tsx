@@ -117,9 +117,14 @@ function DisputeCentre() {
   const { [UrlParameters.exchangeId]: exchangeId } = useParams();
   const navigate = useKeepQueryParamsNavigate();
   const { isLteS } = useBreakpoints();
-  const { data: buyers } = useBuyers({
-    wallet: address
-  });
+  const { data: buyers } = useBuyers(
+    {
+      wallet: address
+    },
+    {
+      enabled: !!address
+    }
+  );
   const buyerId = buyers?.[0]?.id || "";
   const {
     data: exchanges = [],
@@ -242,7 +247,7 @@ function DisputeCentre() {
                       bosonXmtp,
                       proposal,
                       files: filesWithData,
-                      destinationAddress: exchange.seller.operator,
+                      destinationAddress: exchange.seller.assistant,
                       threadId: {
                         buyerId: exchange.buyer.id,
                         sellerId: exchange.seller.id,
@@ -304,6 +309,10 @@ function DisputeCentre() {
                     "ACTION_REJECTED";
                   if (hasUserRejectedTx) {
                     showModal("TRANSACTION_FAILED");
+                  } else {
+                    showModal("TRANSACTION_FAILED", {
+                      errorMessage: "Something went wrong"
+                    });
                   }
 
                   setSubmitError(error as Error);

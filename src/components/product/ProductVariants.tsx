@@ -36,12 +36,41 @@ const ProductInformationButtonGroup = styled(ProductButtonGroup)`
 `;
 
 const Table = styled.table`
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  [data-price],
-  [data-quantity] {
-    width: 80px;
+  flex: 1 1;
+`;
+const THead = styled.thead`
+  display: flex;
+  tr {
+    width: 100%;
+    display: flex;
+    th {
+      flex: 1 1;
+    }
   }
 `;
+const TBody = styled.tbody`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  tr {
+    width: 100%;
+    display: flex;
+    td {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1;
+      .react-select__control,
+      > input {
+        height: 50px;
+      }
+    }
+  }
+`;
+
 const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 const capitalizeAll = (str: string) => str.toUpperCase();
 const getColorSizeKey = (color: string, size?: string) =>
@@ -248,7 +277,7 @@ export default function ProductVariants() {
         the relevant row.
       </SectionTitle>
       <Table>
-        <thead>
+        <THead>
           <tr>
             <th data-name>Variant name</th>
             <th data-price>Price</th>
@@ -256,8 +285,8 @@ export default function ProductVariants() {
             <th data-quantity>Quantity</th>
             <th data-action>Action</th>
           </tr>
-        </thead>
-        <tbody>
+        </THead>
+        <TBody>
           {variants?.map((variant, idx) => {
             return (
               <tr key={variant.name}>
@@ -273,6 +302,7 @@ export default function ProductVariants() {
                   <Select
                     name={`${variantsKey}[${idx}].currency`}
                     options={OPTIONS_CURRENCIES}
+                    classNamePrefix="react-select"
                   />
                 </TdFlex>
                 <td data-quantity>
@@ -307,7 +337,7 @@ export default function ProductVariants() {
               </tr>
             );
           })}
-        </tbody>
+        </TBody>
       </Table>
       {metaVariants.error && typeof metaVariants.error === "string" && (
         <Error display message={metaVariants.error} />

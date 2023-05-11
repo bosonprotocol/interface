@@ -36,6 +36,7 @@ import Preview from "../../components/product/Preview";
 import {
   CREATE_PRODUCT_STEPS,
   CreateProductForm,
+  OPTIONS_EXCHANGE_POLICY,
   optionUnitKeys,
   TOKEN_TYPES
 } from "../../components/product/utils";
@@ -96,7 +97,7 @@ type GetProductV1MetadataProps = {
   productType: CreateProductForm["productType"];
   visualImages: productV1.ProductBase["visuals_images"];
   shippingInfo: CreateProductForm["shippingInfo"];
-  operatorLens: Profile | null;
+  assistantLens: Profile | null;
   profileImage: FileProps | undefined;
   termsOfExchange: CreateProductForm["termsOfExchange"];
   supportedJurisdictions: Array<SupportedJuridiction>;
@@ -118,7 +119,7 @@ async function getProductV1Metadata({
   productType,
   visualImages,
   shippingInfo,
-  operatorLens,
+  assistantLens,
   profileImage,
   termsOfExchange,
   supportedJurisdictions,
@@ -136,12 +137,12 @@ async function getProductV1Metadata({
   ];
   if (CONFIG.lens.enabled) {
     const ipfsLinks = [];
-    const pictureUrl = operatorLens
-      ? getLensProfilePictureUrl(operatorLens as Profile) || ""
+    const pictureUrl = assistantLens
+      ? getLensProfilePictureUrl(assistantLens as Profile) || ""
       : "";
     ipfsLinks.push(pictureUrl);
-    const coverUrl = operatorLens
-      ? getLensCoverPictureUrl(operatorLens as Profile) || ""
+    const coverUrl = assistantLens
+      ? getLensCoverPictureUrl(assistantLens as Profile) || ""
       : "";
     ipfsLinks.push(coverUrl);
     const [pictureBase64, coverBase64] = await fetchIpfsBase64Media(
@@ -154,15 +155,15 @@ async function getProductV1Metadata({
     ]);
     sellerImages = [
       {
-        url: operatorLens
-          ? getLensProfilePictureUrl(operatorLens as Profile) || ""
+        url: assistantLens
+          ? getLensProfilePictureUrl(assistantLens as Profile) || ""
           : "",
         tag: "profile",
         ...pictureMetadata
       },
       {
-        url: operatorLens
-          ? getLensCoverPictureUrl(operatorLens as Profile) || ""
+        url: assistantLens
+          ? getLensCoverPictureUrl(assistantLens as Profile) || ""
           : "",
         tag: "cover",
         ...coverMetadata
@@ -237,8 +238,11 @@ async function getProductV1Metadata({
     exchangePolicy: {
       uuid: Date.now().toString(),
       version: 1,
-      label: termsOfExchange.exchangePolicy.value,
-      template: termsOfExchange.exchangePolicy.value,
+      label: termsOfExchange.exchangePolicy.label,
+      template:
+        termsOfExchange.exchangePolicy.value === "fairExchangePolicy" // if there is data in localstorage, the exchangePolicy.value might be the old 'fairExchangePolicy'
+          ? OPTIONS_EXCHANGE_POLICY[0].value
+          : termsOfExchange.exchangePolicy.value,
       sellerContactMethod: CONFIG.defaultSellerContactMethod,
       disputeResolverContactMethod: `email to: ${CONFIG.defaultDisputeResolverContactMethod}`
     },
@@ -412,15 +416,15 @@ function CreateProductInner({
 
   const { sellers, lens: lensProfiles } = useCurrentSellers();
   const { mutateAsync: createOffers } = useCreateOffers();
-  const currentOperator = sellers.find((seller) => {
-    return seller?.operator.toLowerCase() === address?.toLowerCase();
+  const currentAssistant = sellers.find((seller) => {
+    return seller?.assistant.toLowerCase() === address?.toLowerCase();
   });
   // lens profile of the current user
-  const operatorLens: Profile | null =
+  const assistantLens: Profile | null =
     lensProfiles.find((lensProfile) => {
       return (
         getLensTokenIdDecimal(lensProfile.id).toString() ===
-        currentOperator?.authTokenId
+        currentAssistant?.authTokenId
       );
     }) || null;
 
@@ -645,10 +649,10 @@ function CreateProductInner({
         display_type: "date"
       });
       if (CONFIG.lens.enabled) {
-        if (operatorLens?.name || operatorLens?.handle) {
+        if (assistantLens?.name || assistantLens?.handle) {
           nftAttributes.push({
             trait_type: "Seller",
-            value: operatorLens?.name || operatorLens?.handle
+            value: assistantLens?.name || assistantLens?.handle
           });
         }
       } else {
@@ -672,7 +676,6 @@ function CreateProductInner({
         const variantsForMetadataCreation: Parameters<
           typeof productV1["createVariantProductMetadata"]
         >[1] = [];
-        const variations: productV1.ProductV1Variant = [];
         const visualImages: productV1.ProductBase["visuals_images"] = [];
         const allVariationsWithSameImages =
           values.imagesSpecificOrAll?.value === "all";
@@ -695,7 +698,6 @@ function CreateProductInner({
               option: color || "-"
             }
           ];
-          variations.push(...typeOptions);
 
           if (!allVariationsWithSameImages && productImages) {
             const variantVisualImages = extractVisualImages(productImages);
@@ -729,7 +731,7 @@ function CreateProductInner({
           productType,
           visualImages,
           shippingInfo,
-          operatorLens,
+          assistantLens,
           profileImage,
           termsOfExchange,
           supportedJurisdictions,
@@ -819,7 +821,7 @@ function CreateProductInner({
           productType,
           visualImages,
           shippingInfo,
-          operatorLens,
+          assistantLens,
           profileImage,
           termsOfExchange,
           supportedJurisdictions,
@@ -905,7 +907,16 @@ function CreateProductInner({
     } catch (error: any) {
       // TODO: FAILURE MODAL
       console.error("error->", error.errors ?? error);
-      showModal("TRANSACTION_FAILED");
+      const hasUserRejectedTx =
+        "code" in error &&
+        (error as unknown as { code: string })?.code === "ACTION_REJECTED";
+      if (hasUserRejectedTx) {
+        showModal("TRANSACTION_FAILED");
+      } else {
+        showModal("TRANSACTION_FAILED", {
+          errorMessage: "Something went wrong"
+        });
+      }
     }
   };
 
@@ -1004,7 +1015,7 @@ function CreateProductInner({
                 {isPreviewVisible ? (
                   <Preview
                     togglePreview={setIsPreviewVisible}
-                    seller={currentOperator as any}
+                    seller={currentAssistant as any}
                     isMultiVariant={isMultiVariant}
                     isOneSetOfImages={isOneSetOfImages}
                     hasMultipleVariants={

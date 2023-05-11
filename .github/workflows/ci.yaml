@@ -166,7 +166,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Install JQ
-        uses: sergeysova/jq-action@v2
+        uses: r26d/jq-action@master
         with:
           cmd: jq -n env
       - name: Get job outputs

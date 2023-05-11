@@ -67,7 +67,7 @@ export function useCurrentSellers({
           { admin: seller.admin },
           { clerk: seller.clerk },
           { treasury: seller.treasury },
-          { operator: seller.operator }
+          { assistant: seller.assistant }
         ])
         .filter((role) => {
           return (
@@ -77,7 +77,7 @@ export function useCurrentSellers({
         })
         .map(
           (role) =>
-            Object.keys(role)[0] as "admin" | "clerk" | "treasury" | "operator"
+            Object.keys(role)[0] as "admin" | "clerk" | "treasury" | "assistant"
         );
       const isLensSeller = sellers.find(
         (seller) => seller.authTokenType === authTokenTypes.LENS
@@ -102,7 +102,7 @@ export function useCurrentSellers({
           sellerId: string;
           admin: string;
           clerk: string;
-          operator: string;
+          assistant: string;
           treasury: string;
         }[];
       }>(
@@ -112,7 +112,7 @@ export function useCurrentSellers({
               sellerId
               admin
               clerk
-              operator
+              assistant
               treasury
             }
           }
@@ -122,7 +122,7 @@ export function useCurrentSellers({
       const allProps = {
         admin: result?.sellers[0]?.admin || null,
         clerk: result?.sellers[0]?.clerk || null,
-        operator: result?.sellers[0]?.operator || null,
+        assistant: result?.sellers[0]?.assistant || null,
         treasury: result?.sellers[0]?.treasury || null
       };
       return Object.fromEntries(
@@ -150,7 +150,7 @@ export function useCurrentSellers({
           sellerId: string;
           admin: string;
           clerk: string;
-          operator: string;
+          assistant: string;
           treasury: string;
         }[];
       }>(
@@ -165,7 +165,7 @@ export function useCurrentSellers({
               sellerId
               admin
               clerk
-              operator
+              assistant
               treasury
             }
           }
@@ -176,7 +176,7 @@ export function useCurrentSellers({
         sellerId: result?.sellers[0]?.sellerId || null,
         admin: result?.sellers[0]?.admin || null,
         clerk: result?.sellers[0]?.clerk || null,
-        operator: result?.sellers[0]?.operator || null,
+        assistant: result?.sellers[0]?.assistant || null,
         treasury: result?.sellers[0]?.treasury || null
       };
       return Object.fromEntries(
@@ -211,7 +211,7 @@ export function useCurrentSellers({
           admin: string;
           clerk: string;
           treasury: string;
-          operator: string;
+          assistant: string;
           id: string;
           voucherCloneAddress: string;
           active: boolean;
@@ -225,7 +225,7 @@ export function useCurrentSellers({
               admin
               clerk
               treasury
-              operator
+              assistant
               id
               voucherCloneAddress
               active
@@ -240,7 +240,7 @@ export function useCurrentSellers({
       const currentSellerRoles = {
         admin: currentSeller?.admin || null,
         clerk: currentSeller?.clerk || null,
-        operator: currentSeller?.operator || null,
+        assistant: currentSeller?.assistant || null,
         treasury: currentSeller?.treasury || null
       };
       const currentSellerRolesWithoutNull = Object.fromEntries(

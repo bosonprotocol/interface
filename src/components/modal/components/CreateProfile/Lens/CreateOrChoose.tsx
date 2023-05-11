@@ -22,9 +22,14 @@ export default function CreateOrChoose({
   onChooseUseExisting
 }: Props) {
   const { address = "" } = useAccount();
-  const { data: admins } = useSellers({
-    admin: address
-  });
+  const { data: admins } = useSellers(
+    {
+      admin: address
+    },
+    {
+      enabled: !!address
+    }
+  );
   const seller = admins?.[0];
   const alreadyHasRoyaltiesDefined = !!seller?.royaltyPercentage;
   const { updateProps, store } = useModal();

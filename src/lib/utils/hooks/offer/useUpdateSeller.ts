@@ -29,7 +29,7 @@ async function updateSellerAccount(
     sellerId,
     admin,
     clerk,
-    operator,
+    assistant,
     treasury,
     authTokenId,
     authTokenType
@@ -37,7 +37,7 @@ async function updateSellerAccount(
     sellerId: string;
     admin: string;
     clerk: string;
-    operator: string;
+    assistant: string;
     treasury: string;
     authTokenId: string | null;
     authTokenType: typeof authTokenTypes[keyof typeof authTokenTypes];
@@ -55,7 +55,7 @@ async function updateSellerAccount(
         : "0",
     authTokenType,
     clerk,
-    operator,
+    assistant,
     treasury
   });
 }

@@ -51,9 +51,14 @@ export default function CreateBosonLensAccountSummary({
 
   const usingExistingLensProfile = !!profile;
   const { address } = useAccount();
-  const { data: admins } = useSellers({
-    admin: address
-  });
+  const { data: admins } = useSellers(
+    {
+      admin: address
+    },
+    {
+      enabled: !!address
+    }
+  );
   const seller = admins?.[0];
   const hasAdminSellerAccount = !!seller;
   const hasLensHandleLinked = seller?.authTokenType === authTokenTypes.LENS;
@@ -87,7 +92,7 @@ export default function CreateBosonLensAccountSummary({
     {
       admin: address || "",
       clerk: seller?.clerk || "",
-      operator: seller?.operator || "",
+      assistant: seller?.assistant || "",
       treasury: seller?.treasury || "",
       authTokenId: lensProfileToSubmit?.id,
       authTokenType: authTokenTypes.LENS,

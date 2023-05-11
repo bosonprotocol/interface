@@ -120,7 +120,7 @@ export default function OfferCard({
   const isSellerVisible = showSeller === undefined ? true : showSeller;
   const offerImg = offer.metadata.imageUrl;
   const name = offer.metadata?.name || "Untitled";
-  const sellerAddress = offer.seller?.operator;
+  const sellerAddress = offer.seller?.assistant;
 
   const location = useLocation();
   const navigate = useKeepQueryParamsNavigate();

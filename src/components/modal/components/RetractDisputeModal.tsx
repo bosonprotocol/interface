@@ -127,6 +127,10 @@ export default function RetractDisputeModal({
                 "ACTION_REJECTED";
               if (hasUserRejectedTx) {
                 showModal("TRANSACTION_FAILED");
+              } else {
+                showModal("TRANSACTION_FAILED", {
+                  errorMessage: "Something went wrong"
+                });
               }
               setRetractDisputeError(error as Error);
             }

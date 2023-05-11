@@ -39,10 +39,15 @@ export default function OfferDetail() {
     { enabled: !!offerId }
   );
   const textColor = useCustomStoreQueryParameter("textColor");
-  const { data: sellers } = useSellers({
-    id: offer?.seller.id,
-    includeFunds: true
-  });
+  const { data: sellers } = useSellers(
+    {
+      id: offer?.seller.id,
+      includeFunds: true
+    },
+    {
+      enabled: !!offer?.seller.id
+    }
+  );
   const sellerAvailableDeposit = sellers?.[0]?.funds?.find(
     (fund) => fund.token.address === offer?.exchangeToken.address
   )?.availableAmount;

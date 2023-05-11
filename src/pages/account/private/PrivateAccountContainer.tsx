@@ -20,9 +20,14 @@ export default function PrivateAccountContainer() {
     useAccount();
 
   const navigate = useKeepQueryParamsNavigate();
-  const { data: buyers, isLoading } = useBuyers({
-    wallet: address
-  });
+  const { data: buyers, isLoading } = useBuyers(
+    {
+      wallet: address
+    },
+    {
+      enabled: !!address
+    }
+  );
 
   const buyerId = buyers?.[0]?.id || "";
 

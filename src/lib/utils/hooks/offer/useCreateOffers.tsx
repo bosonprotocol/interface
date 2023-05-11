@@ -68,7 +68,7 @@ export function useCreateOffers() {
       const hasSellerAccount = !!sellers?.length;
       const seller = address
         ? {
-            operator: address,
+            assistant: address,
             admin: address,
             treasury: address,
             clerk: address,

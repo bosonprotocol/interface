@@ -230,6 +230,10 @@ export default function CompleteExchange({
                   "ACTION_REJECTED";
               if (hasUserRejectedTx) {
                 showModal("TRANSACTION_FAILED");
+              } else {
+                showModal("TRANSACTION_FAILED", {
+                  errorMessage: "Something went wrong"
+                });
               }
             }}
             onPendingSignature={() => {
@@ -279,6 +283,10 @@ export default function CompleteExchange({
                   "ACTION_REJECTED";
               if (hasUserRejectedTx) {
                 showModal("TRANSACTION_FAILED");
+              } else {
+                showModal("TRANSACTION_FAILED", {
+                  errorMessage: "Something went wrong"
+                });
               }
             }}
             onPendingSignature={() => {
