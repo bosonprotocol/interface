@@ -65,10 +65,6 @@ function getMetaTxApiIds(protocolAddress: string) {
   return apiIds;
 }
 
-const createProfileConfiguration: "LENS" | "NO_TOKEN" =
-  (process.env.REACT_APP_CREATE_PROFILE_CONFIGURATION as "LENS" | "NO_TOKEN") ??
-  "NO_TOKEN";
-
 const availableOnNetwork = [80001, 137].includes(config.chainId);
 
 export const CONFIG = {
@@ -127,14 +123,12 @@ export const CONFIG = {
   minimumReturnPeriodInDays: 1,
   defaultReturnPeriodInDays: 15,
   minimumDisputePeriodInDays: 30,
-  createProfileConfiguration,
   ipfsGateway: process.env.REACT_APP_IPFS_GATEWAY || "https://ipfs.io/ipfs",
   ipfsImageGateway:
     process.env.REACT_APP_IPFS_IMAGE_GATEWAY ||
     process.env.REACT_APP_IPFS_GATEWAY ||
     "https://ipfs.io/ipfs",
   lens: {
-    enabled: createProfileConfiguration === "LENS" && availableOnNetwork,
     lensHandleExtension: config.chainId === 137 ? ".lens" : ".test",
     availableOnNetwork,
     apiLink: config.lens.apiLink,

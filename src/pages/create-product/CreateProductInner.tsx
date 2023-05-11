@@ -612,13 +612,11 @@ function CreateProductInner({
         value: voucherRedeemableUntilDateInMS.toString(),
         display_type: "date"
       });
-      if (CONFIG.lens.enabled) {
-        if (assistantLens?.name || assistantLens?.handle) {
-          nftAttributes.push({
-            trait_type: "Seller",
-            value: assistantLens?.name || assistantLens?.handle
-          });
-        }
+      if (assistantLens?.name || assistantLens?.handle) {
+        nftAttributes.push({
+          trait_type: "Seller",
+          value: assistantLens?.name || assistantLens?.handle
+        });
       } else {
         nftAttributes.push({
           trait_type: "Seller",

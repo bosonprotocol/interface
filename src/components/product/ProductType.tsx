@@ -4,7 +4,6 @@ import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
-import { CONFIG } from "../../lib/config";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpointNumbers } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
@@ -152,8 +151,7 @@ export default function ProductType({
       );
     });
 
-  const hasValidAdminAccount =
-    (CONFIG.lens.enabled && isAdminLinkedToLens) || !CONFIG.lens.enabled;
+  const hasValidAdminAccount = isAdminLinkedToLens;
   const isSeller = !!currentSellers.length;
   // const currentAssistant = currentSellers.find((seller) => {
   //   return seller.assistant.toLowerCase() === address?.toLowerCase();
@@ -201,18 +199,7 @@ export default function ProductType({
       showCreateProductDraftModal();
     } else if (!isRegularSellerSet && !isSeller && isDraftModalClosed) {
       // Seller needs to set their profile
-      if (store.modalType) {
-        if (!CONFIG.lens.enabled) {
-          updateProps<"CREATE_PROFILE">({
-            ...store,
-            modalProps: {
-              ...store.modalProps,
-              initialRegularCreateProfile: values["createYourProfile"],
-              isSeller: !!isSeller
-            }
-          });
-        }
-      } else {
+      if (!store.modalType) {
         // Show create profile popup
         showModal(
           "CREATE_PROFILE",
