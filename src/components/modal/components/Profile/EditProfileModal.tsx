@@ -9,10 +9,7 @@ import useUpdateSellerMetadata from "../../../../lib/utils/hooks/seller/useUpdat
 import { useCurrentSellers } from "../../../../lib/utils/hooks/useCurrentSellers";
 import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import Switch from "../../../form/Switch";
-import {
-  CreateProfile,
-  OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE
-} from "../../../product/utils";
+import { CreateProfile } from "../../../product/utils";
 import BosonButton from "../../../ui/BosonButton";
 import Grid from "../../../ui/Grid";
 import Loading from "../../../ui/Loading";
@@ -21,6 +18,7 @@ import { useModal } from "../../useModal";
 import { ProfileType } from "./const";
 import LensProfileFlow from "./Lens/LensProfileFlow";
 import { EditRegularProfileFlow } from "./Regular/EditRegularProfileFlow";
+import { buildProfileFromMetadata } from "./utils";
 
 export default function EditProfileModal() {
   const { sellers: currentSellers, lens, isLoading } = useCurrentSellers();
@@ -71,26 +69,8 @@ export default function EditProfileModal() {
     [switchChecked, setSwitchAndProfileType]
   );
   const Component = useCallback(() => {
-    const profileImage = metadata?.images?.find((img) => img.tag === "profile");
-    const coverPicture = metadata?.images?.find((img) => img.tag === "cover");
-    const profileDataFromMetadata: CreateProfile = {
-      name: metadata?.name ?? "",
-      description: metadata?.description ?? "",
-      email:
-        metadata?.contactLinks?.find((cl) => cl.tag === "email")?.url ?? "",
-      legalTradingName: metadata?.legalTradingName ?? undefined,
-      website: metadata?.website ?? "",
-      coverPicture: coverPicture
-        ? [{ ...coverPicture, src: coverPicture.url }] ?? []
-        : [],
-      logo: profileImage
-        ? [{ ...profileImage, src: profileImage.url }] ?? []
-        : [],
-      contactPreference:
-        OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE.find(
-          (obj) => obj.value === metadata?.contactPreference
-        ) ?? OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE[0]
-    };
+    const profileDataFromMetadata: CreateProfile =
+      buildProfileFromMetadata(metadata);
     const forceDirty = !hasMetadata || metadata?.kind !== profileType;
     return profileType === ProfileType.LENS ? (
       <LensProfileFlow

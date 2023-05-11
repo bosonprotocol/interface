@@ -16,6 +16,7 @@ import Navigate from "../customNavigation/Navigate";
 import { FormField } from "../form";
 import { authTokenTypes } from "../modal/components/Profile/Lens/const";
 import { getLensTokenIdDecimal } from "../modal/components/Profile/Lens/utils";
+import { buildProfileFromMetadata } from "../modal/components/Profile/utils";
 import { useModal } from "../modal/useModal";
 import BosonButton from "../ui/BosonButton";
 import Grid from "../ui/Grid";
@@ -31,7 +32,12 @@ import {
   ProductButtonGroup,
   SectionTitle
 } from "./Product.styles";
-import { CreateProductForm, CreateYourProfile, initialValues } from "./utils";
+import {
+  CreateProductForm,
+  CreateProfile,
+  CreateYourProfile,
+  initialValues
+} from "./utils";
 import { useCreateForm } from "./utils/useCreateForm";
 
 const productTypeItemsPerRow = {
@@ -106,10 +112,30 @@ export default function ProductType({
 }: Props) {
   const { address } = useAccount();
   const { handleChange, values, nextIsDisabled } = useCreateForm();
-  const [, , helpersCreateYourProfile] =
+  const [createYourProfile, metaCreateYourProfile, helpersCreateYourProfile] =
     useField<CreateYourProfile["createYourProfile"]>("createYourProfile");
-  // const ipfsMetadataStorage = useIpfsStorage();
-  const { showModal, store, updateProps } = useModal();
+  const isProfileSetFromForm = (
+    Object.keys(createYourProfile.value) as Array<
+      keyof typeof createYourProfile.value
+    >
+  ).some((key) => {
+    if (key === "contactPreference") {
+      return (
+        createYourProfile.value[key].value !==
+        metaCreateYourProfile.initialValue?.[key].value
+      );
+    }
+    if (key === "coverPicture" || key === "logo") {
+      return (
+        createYourProfile.value[key]?.[0]?.src !==
+        metaCreateYourProfile.initialValue?.[key]?.[0]?.src
+      );
+    }
+    return (
+      createYourProfile.value[key] !== metaCreateYourProfile.initialValue?.[key]
+    );
+  });
+  const { showModal, store } = useModal();
   // const fileName = useMemo<CreateProductImageCreteYourProfileLogo>(
   //   () => `create-product-image_createYourProfile.logo`,
   //   []
@@ -128,7 +154,6 @@ export default function ProductType({
     isFetching,
     refetch
   } = useCurrentSellers();
-
   const [shownDraftModal, setShowDraftModal] = useState<boolean>(false);
 
   const [isRegularSellerSet, setIsRegularSeller] = useState<boolean>(false);
@@ -153,6 +178,7 @@ export default function ProductType({
 
   const hasValidAdminAccount = isAdminLinkedToLens;
   const isSeller = !!currentSellers.length;
+  const seller = currentSellers?.[0];
   // const currentAssistant = currentSellers.find((seller) => {
   //   return seller.assistant.toLowerCase() === address?.toLowerCase();
   // }); // lens profile of the current user
@@ -184,6 +210,15 @@ export default function ProductType({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
+  useEffect(() => {
+    const metadata = seller?.metadata;
+
+    if (!isProfileSetFromForm && metadata) {
+      const profileDataFromMetadata: CreateProfile =
+        buildProfileFromMetadata(metadata);
+      setProfileInForm(profileDataFromMetadata);
+    }
+  }, [isProfileSetFromForm, seller?.metadata, setProfileInForm]);
 
   useEffect(() => {
     if (!(isSuccess && !isRefetching && !isLoading && !isFetching)) {
