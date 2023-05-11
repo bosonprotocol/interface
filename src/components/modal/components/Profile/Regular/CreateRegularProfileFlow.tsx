@@ -20,7 +20,7 @@ export const CreateRegularProfileFlow: React.FC<
 > = ({ onSubmit, initialData, switchButton }) => {
   const [step, setStep] = useState<RegularStep>(RegularStep.CREATE);
   const [regularProfile, setRegularProfile] = useState<CreateProfile | null>(
-    null
+    initialData ?? null
   );
   const [bosonAccount, setBosonAccount] = useState<BosonAccount | null>(null);
   const { updateProps, store } = useModal();
@@ -46,7 +46,7 @@ export const CreateRegularProfileFlow: React.FC<
       {step === RegularStep.CREATE ? (
         <CreateYourRegularProfile
           forceDirty={false}
-          initial={initialData}
+          initial={regularProfile ?? undefined}
           onSubmit={async (profile) => {
             setRegularProfile(profile);
             setStep(RegularStep.BOSON_ACCOUNT);
@@ -56,7 +56,7 @@ export const CreateRegularProfileFlow: React.FC<
         />
       ) : step === RegularStep.BOSON_ACCOUNT ? (
         <BosonAccountForm
-          formValues={null}
+          formValues={bosonAccount}
           onSubmit={(values) => {
             setBosonAccount(values);
             setStep(RegularStep.SUMMARY);
