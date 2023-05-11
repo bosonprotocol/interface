@@ -9,6 +9,7 @@ import {
   Profile,
   ProfileFieldsFragment
 } from "../../../lib/utils/hooks/lens/graphql/generated";
+import { sanitizeUrl } from "../../../lib/utils/url";
 import { preAppendHttps } from "../../../lib/validation/regex/url";
 import {
   DetailShareWrapper,
@@ -32,7 +33,7 @@ function RenderSocial({
       href={href}
       $isDisabled={disabled}
       target="_blank"
-      rel="noopener"
+      rel="noopener noreferrer"
     >
       {Icon ? Icon : <Globe size={24} />}
     </SocialIcon>
@@ -74,7 +75,10 @@ export default function SellerSocial({
       {/* TODO: Removed as we don't have discord in lens profile */}
       {/* <RenderSocial icon={DiscordLogo} href={""} /> */}
       {websiteToShow !== false && (
-        <RenderSocial icon={<Globe size={24} />} href={websiteToShow} />
+        <RenderSocial
+          icon={<Globe size={24} />}
+          href={sanitizeUrl(websiteToShow)}
+        />
       )}
       <DetailShareWrapper>
         <DetailShare />

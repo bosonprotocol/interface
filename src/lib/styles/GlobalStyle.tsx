@@ -1,5 +1,7 @@
 import { createGlobalStyle } from "styled-components";
 
+import barlowRegular from "../../assets/fonts/Barlow-Regular.ttf";
+import neuropolitical_rg from "../../assets/fonts/neuropolitical_rg.ttf";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 
@@ -19,7 +21,12 @@ const GlobalStyle = createGlobalStyle<{
 }>`
   @font-face {
     font-family: barlow;
-    src: url(src/assets/fonts/Barlow-Regular.ttf);
+    src: url(${barlowRegular});
+    font-weight: normal;
+  }
+  @font-face {
+    font-family: neuropolitical_rg;
+    src: url(${neuropolitical_rg});
     font-weight: normal;
   }
   * {
