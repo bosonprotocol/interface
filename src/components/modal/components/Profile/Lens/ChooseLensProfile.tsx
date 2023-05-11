@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
 import { BosonRoutes } from "../../../../../lib/routing/routes";
+import { colors } from "../../../../../lib/styles/colors";
 import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
 import useGetLensProfiles from "../../../../../lib/utils/hooks/lens/profile/useGetLensProfiles";
 import { useKeepQueryParamsNavigate } from "../../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useSellers } from "../../../../../lib/utils/hooks/useSellers";
-import BosonButton from "../../../../ui/BosonButton";
 import Button from "../../../../ui/Button";
 import Grid from "../../../../ui/Grid";
 import GridContainer from "../../../../ui/GridContainer";
@@ -93,9 +93,8 @@ export default function ChooseLensProfile({
       <Grid flexDirection="column">
         <Typography>
           <div>
-            Boson Protocol allows sellers to directly link their Lens profile to
-            their Boson account. If you wish to create a Lens profile, please go
-            to{" "}
+            You can directly link your Lens profile to your Boson account. If
+            you wish to create a Lens profile, please go to{" "}
             <a href="https://claim.lens.xyz/" target="_blank" rel="noopener">
               https://claim.lens.xyz/
             </a>{" "}
@@ -146,20 +145,24 @@ export default function ChooseLensProfile({
           )}
         </GridContainer>
         {!isFetching && !lensProfiles.length && (
-          <Grid justifyContent="center">No lens profiles found</Grid>
+          <Grid justifyContent="center">
+            <Typography $fontSize="0.8rem" color={colors.grey}>
+              No Lens profiles found
+            </Typography>
+          </Grid>
         )}
       </Grid>
       <Grid justifyContent="flex-start" gap="2rem" margin="2rem 0 0 0">
         {!isEdit && (
-          <BosonButton
-            variant="secondaryInverted"
+          <Button
+            theme="orangeInverse"
             type="button"
             onClick={() => navigate({ pathname: BosonRoutes.Root })}
           >
             Back to home page
-          </BosonButton>
+          </Button>
         )}
-        <Button onClick={changeToRegularProfile} theme="blankSecondary">
+        <Button onClick={changeToRegularProfile} theme="blankSecondaryOutline">
           Proceed without Lens
         </Button>
       </Grid>

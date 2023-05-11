@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { useAccount } from "wagmi";
 
 import { BosonRoutes } from "../../../../lib/routing/routes";
+import { colors } from "../../../../lib/styles/colors";
 import { Profile } from "../../../../lib/utils/hooks/lens/graphql/generated";
 import useGetLensProfiles from "../../../../lib/utils/hooks/lens/profile/useGetLensProfiles";
 import useUpdateSellerMetadata from "../../../../lib/utils/hooks/seller/useUpdateSellerMetadata";
@@ -94,7 +95,16 @@ export default function CreateProfileModal({
           justifyContent: "flex-end"
         }}
         checked={switchChecked}
-        label={<>Link Lens profile</>}
+        label={
+          <Typography
+            color={colors.secondary}
+            $fontSize="0.8rem"
+            onClick={() => setSwitchAndProfileType(!switchChecked)}
+            cursor="pointer"
+          >
+            Link Lens Profile
+          </Typography>
+        }
       />
     ),
     [switchChecked, setSwitchAndProfileType]

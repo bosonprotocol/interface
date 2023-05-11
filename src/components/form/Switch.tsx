@@ -5,9 +5,10 @@ import styled from "styled-components";
 import { colors } from "../../lib/styles/colors";
 import Grid from "../ui/Grid";
 
+const height = "20px";
 const StyledSwitchRoot = styled(ReactSwitch.Root)`
-  width: 42px;
-  height: 25px;
+  width: calc(${height} * 1.68);
+  height: ${height};
   background-color: hsl(0 0% 0% / 0.439);
   border-radius: 9999px;
   position: relative;
@@ -23,8 +24,8 @@ const StyledSwitchRoot = styled(ReactSwitch.Root)`
 
 const StyledSwitchThumb = styled(ReactSwitch.Thumb)`
   display: block;
-  width: 21px;
-  height: 21px;
+  width: calc(${height} - 4px);
+  height: calc(${height} - 4px);
   background-color: white;
   border-radius: 9999px;
   box-shadow: 0 2px 2px hsl(0 0% 0% / 0.141);
@@ -33,7 +34,7 @@ const StyledSwitchThumb = styled(ReactSwitch.Thumb)`
   will-change: transform;
 
   &[data-state="checked"] {
-    transform: translateX(19px);
+    transform: translateX(calc(${height} - 6px));
   }
 `;
 

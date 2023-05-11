@@ -176,7 +176,7 @@ export default function CreateBosonLensAccountSummary({
                       $fontSize="1rem"
                       lineHeight="1.5rem"
                     >
-                      Cover Picture *
+                      Cover picture *
                     </Typography>
                     <img
                       src={coverPicture}
@@ -260,7 +260,7 @@ export default function CreateBosonLensAccountSummary({
                       $fontSize="0.75rem"
                       lineHeight="1.125rem"
                     >
-                      Contact E-Mail *
+                      Contact e-mail *
                     </Typography>
                     <Typography
                       fontWeight="400"
@@ -363,7 +363,7 @@ export default function CreateBosonLensAccountSummary({
                     $fontSize="0.75rem"
                     lineHeight="1.125rem"
                   >
-                    Secondary Royalties
+                    Secondary royalties
                   </Typography>
                   <Typography
                     fontWeight="400"

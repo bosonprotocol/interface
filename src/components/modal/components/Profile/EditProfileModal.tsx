@@ -4,6 +4,7 @@ import { useCallback, useState } from "react";
 import { useAccount } from "wagmi";
 
 import { BosonRoutes } from "../../../../lib/routing/routes";
+import { colors } from "../../../../lib/styles/colors";
 import useUpdateSellerMetadata from "../../../../lib/utils/hooks/seller/useUpdateSellerMetadata";
 import { useCurrentSellers } from "../../../../lib/utils/hooks/useCurrentSellers";
 import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
@@ -55,7 +56,16 @@ export default function EditProfileModal() {
           justifyContent: "flex-end"
         }}
         checked={switchChecked}
-        label={<>Link Lens profile</>}
+        label={
+          <Typography
+            color={colors.secondary}
+            $fontSize="0.8rem"
+            onClick={() => setSwitchAndProfileType(!switchChecked)}
+            cursor="pointer"
+          >
+            Link Lens Profile
+          </Typography>
+        }
       />
     ),
     [switchChecked, setSwitchAndProfileType]

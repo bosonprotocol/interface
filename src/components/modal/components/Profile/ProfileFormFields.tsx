@@ -47,7 +47,7 @@ export function ProfileFormFields({
           withUpload
         />
       </FormField>
-      <FormField title="Your brand / Name" required>
+      <FormField title="Your brand / name" required>
         <Input
           name="name"
           placeholder="Name"
@@ -72,7 +72,7 @@ export function ProfileFormFields({
       </FormField>
       <FormField
         title="Website / Social media link"
-        subTitle="Add a website or your most frequently used social media link here."
+        subTitle="Add a website or the link to your most frequently used social media here."
         required
       >
         <Input
@@ -88,7 +88,7 @@ export function ProfileFormFields({
         <Input name="legalTradingName" placeholder="Polly Seller UK ltd." />
       </FormField>
       <FormField
-        title="Communication channel preference"
+        title="Communication Method"
         required
         subTitle="Set up how you want to communicate with the buyer after redemption"
       >
