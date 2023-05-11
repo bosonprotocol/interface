@@ -1,6 +1,7 @@
 import { Toast } from "react-hot-toast";
 
 import { colors } from "../../lib/styles/colors";
+import { sanitizeUrl } from "../../lib/utils/url";
 import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
 import SuccessToast from "./common/SuccessToast";
@@ -33,7 +34,7 @@ export default function SuccessTransactionToast({
             View details
           </Typography>
         ) : url ? (
-          <a href={url} target="_blank">
+          <a href={sanitizeUrl(url)} target="_blank" rel="noopener noreferrer">
             <Typography color={colors.secondary}>View details</Typography>
           </a>
         ) : null}

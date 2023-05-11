@@ -7,6 +7,7 @@ import { CONFIG } from "../../../lib/config";
 import { colors } from "../../../lib/styles/colors";
 import { Offer } from "../../../lib/types/offer";
 import { IPrice } from "../../../lib/utils/convertPrice";
+import { sanitizeUrl } from "../../../lib/utils/url";
 import { useCoreSDK } from "../../../lib/utils/useCoreSdk";
 import { useConvertedPrice } from "../../price/useConvertedPrice";
 import Grid from "../../ui/Grid";
@@ -176,8 +177,9 @@ const TokenGated = ({
               </LockInfoDesc>
               <LockInfoDesc>
                 <a
-                  href={openseaLinkToOriginalMainnetCollection}
+                  href={sanitizeUrl(openseaLinkToOriginalMainnetCollection)}
                   target="_blank"
+                  rel="noopener noreferrer"
                 >
                   {openseaLinkToOriginalMainnetCollection}
                 </a>
