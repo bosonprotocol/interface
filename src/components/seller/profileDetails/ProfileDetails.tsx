@@ -1,29 +1,51 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { generatePath } from "react-router-dom";
 
 import { UrlParameters } from "../../../lib/routing/parameters";
-import { BosonRoutes } from "../../../lib/routing/routes";
-import { LinkWithQuery } from "../../customNavigation/LinkWithQuery";
-import { EditProfile } from "../../detail/EditProfile";
-import Button from "../../ui/Button";
-import Grid from "../../ui/Grid";
+import { SellerCenterRoutes } from "../../../lib/routing/routes";
+import { breakpointNumbers } from "../../../lib/styles/breakpoint";
+import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { useModal } from "../../modal/useModal";
 import { WithSellerDataProps } from "../common/WithSellerData";
 import { SellerInsideProps } from "../SellerInside";
+import { DEFAULT_SELLER_PAGE } from "../SellerPages";
 
 export const ProfileDetails: React.FC<
   SellerInsideProps & WithSellerDataProps
 > = ({ sellerId }) => {
-  const sellerUrl = generatePath(BosonRoutes.SellerPage, {
-    [UrlParameters.sellerId]: sellerId
-  });
-  return (
-    <Grid justifyContent="center" gap="2rem">
-      <EditProfile />
-      <Button as="div" theme="secondary" type={null as never}>
-        <LinkWithQuery to={sellerUrl} style={{ all: "unset" }}>
-          View profile
-        </LinkWithQuery>
-      </Button>
-    </Grid>
-  );
+  const navigate = useKeepQueryParamsNavigate();
+  const redirect = useCallback(() => {
+    navigate({
+      pathname: generatePath(SellerCenterRoutes.SellerCenter, {
+        [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
+      })
+    });
+  }, [navigate]);
+  const { showModal, store } = useModal();
+  const [wasModalOpen, setWasModalOpen] = useState(false);
+  useEffect(() => {
+    setWasModalOpen(true);
+    showModal(
+      "PROFILE_DETAILS",
+      {
+        sellerId,
+        title: "Profile Details",
+        onClose: () => {
+          redirect();
+        }
+      },
+      "auto",
+      undefined,
+      {
+        xs: `${breakpointNumbers.m + 1}px`
+      }
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [redirect]);
+  useEffect(() => {
+    if (!store.modalType && wasModalOpen) {
+      redirect();
+    }
+  }, [store.modalType, redirect, wasModalOpen]);
+  return <></>;
 };

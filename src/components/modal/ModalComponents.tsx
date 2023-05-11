@@ -18,6 +18,7 @@ import ManageFunds from "./components/ManageFunds";
 import ProductCreateSuccess from "./components/ProductCreateSuccess";
 import CreateProfileModal from "./components/Profile/CreateProfileModal";
 import EditProfileModal from "./components/Profile/EditProfileModal";
+import { ProfileDetailsModal } from "./components/ProfileDetails/ProfileDetailsModal";
 import ProgressBarModal from "./components/ProgressBarModal";
 import RedeemModal from "./components/RedeemModal/RedeemModal";
 import RedeemSuccessModal from "./components/RedeemModal/RedeemSuccessModal";
@@ -68,7 +69,8 @@ export const MODAL_TYPES = {
   WHAT_IS_REDEEM: "WHAT_IS_REDEEM",
   PROGRESS_BAR: "PROGRESS_BAR",
   EXPORT_EXCHANGES_WITH_DELIVERY: "EXPORT_EXCHANGES_WITH_DELIVERY",
-  RELIST_OFFER: "RELIST_OFFER"
+  RELIST_OFFER: "RELIST_OFFER",
+  PROFILE_DETAILS: "PROFILE_DETAILS"
 } as const;
 
 export const MODAL_COMPONENTS = {
@@ -106,5 +108,6 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.PROGRESS_BAR]: ProgressBarModal,
   [MODAL_TYPES.EXPORT_EXCHANGES_WITH_DELIVERY]:
     ExportExchangesWithDeliveryModal,
-  [MODAL_TYPES.RELIST_OFFER]: RelistOfferModal
+  [MODAL_TYPES.RELIST_OFFER]: RelistOfferModal,
+  [MODAL_TYPES.PROFILE_DETAILS]: ProfileDetailsModal
 } as const;
