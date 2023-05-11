@@ -47,14 +47,16 @@ export default function ViewOrEditLensProfile({
   isEdit,
   forceDirty
 }: Props) {
-  const { setValues, setTouched, initialValues, values, isSubmitting } =
+  const { setValues, setTouched, values, isSubmitting } =
     useFormikContext<LensProfileType>();
   const profilePictureUrl = getLensImageUrl(getLensProfilePictureUrl(profile));
   const coverPictureUrl = getLensImageUrl(getLensCoverPictureUrl(profile));
   const metadata = seller?.metadata;
   const { updateProps, store } = useModal();
+  const hasMetadata = !!seller?.metadata;
+  const contactPreference = seller?.metadata?.contactPreference;
   const changedFields: Record<keyof LensProfileType, boolean> = useMemo(() => {
-    if (!profile || values === initialValues) {
+    if (!profile) {
       return {
         coverPicture: false,
         description: false,
@@ -79,11 +81,18 @@ export default function ViewOrEditLensProfile({
       name: false,
       website: values.website !== getLensWebsite(profile),
       contactPreference:
-        !seller?.metadata ||
-        values.contactPreference.value !== seller?.metadata?.contactPreference
+        !hasMetadata || values.contactPreference.value !== contactPreference
     };
     return changedValues;
-  }, [profile, values, initialValues, seller?.metadata]);
+  }, [
+    profile,
+    values.email,
+    values.legalTradingName,
+    values.website,
+    values.contactPreference.value,
+    hasMetadata,
+    contactPreference
+  ]);
   const hasChanged = Object.values(changedFields).some((value) => value);
   useEffect(() => {
     setFormChanged(changedFields);

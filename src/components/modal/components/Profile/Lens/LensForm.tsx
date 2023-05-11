@@ -93,7 +93,8 @@ export default function LensForm({
         profile ? viewLensProfileValidationSchema : lensProfileValidationSchema
       }
     >
-      {() => {
+      {(...rest) => {
+        console.log({ ...rest });
         return (
           <Form>
             <ViewOrEditLensProfile
