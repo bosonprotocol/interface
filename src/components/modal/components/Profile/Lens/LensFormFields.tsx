@@ -36,7 +36,9 @@ export default function LensFormFields({
         margin="0 0 2rem 0"
         flex="1"
       >
-        <Typography $fontSize="2rem">Lens profile</Typography>
+        <Typography $fontSize="2rem" fontWeight="600">
+          Lens profile
+        </Typography>
         <div>{children}</div>
       </Grid>
       <ProfileFormFields

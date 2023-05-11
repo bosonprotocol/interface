@@ -32,7 +32,7 @@ export default function RegularProfileForm({
         margin="0 0 2rem 0"
         flex="1"
       >
-        <Typography $fontSize="2rem">
+        <Typography $fontSize="2rem" fontWeight="600">
           {isEdit ? "Regular profile" : "Create your profile"}
         </Typography>
         <div>

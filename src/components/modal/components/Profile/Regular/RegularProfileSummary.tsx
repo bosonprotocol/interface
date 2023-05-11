@@ -38,7 +38,9 @@ export default function RegularProfileSummary({
 
   return (
     <>
-      <Typography $fontSize="2rem">Confirm Profile Information</Typography>
+      <Typography $fontSize="2rem" fontWeight="600">
+        Confirm Profile Information
+      </Typography>
       <Grid flexDirection="column" gap="2.625rem">
         <Grid flexDirection="column" gap="1rem">
           <Grid
@@ -75,7 +77,14 @@ export default function RegularProfileSummary({
                     >
                       Logo / profile picture *
                     </Typography>
-                    <img src={logoImage} height="50px" />
+                    <img
+                      src={logoImage}
+                      style={{
+                        maxHeight: "80px",
+                        maxWidth: "80px",
+                        objectFit: "contain"
+                      }}
+                    />
                   </Grid>
                   <Grid
                     flexDirection="column"
@@ -89,7 +98,14 @@ export default function RegularProfileSummary({
                     >
                       Cover Picture *
                     </Typography>
-                    <img src={coverPicture} height="50px" />
+                    <img
+                      src={coverPicture}
+                      style={{
+                        maxHeight: "80px",
+                        maxWidth: "80px",
+                        objectFit: "contain"
+                      }}
+                    />
                   </Grid>
                 </Grid>
 
