@@ -224,7 +224,7 @@ export default function TermsOfExchange() {
           <FormField
             title="Seller deposit"
             required
-            subTitle="The seller deposit is charged when a buyers commits to the offer and is used to hold the seller accountable to follow through with their commitment to deliver the physical item. If you break your commitment as a seller, then your deposit will be transferred to the buyer."
+            subTitle="The seller deposit is charged when a buyer commits to the offer and is used to hold the seller accountable to follow through with their commitment to deliver the physical item. If you break your commitment as a seller, then your deposit will be transferred to the buyer. A deposit value is required to be set below, but it is up to you as the seller to choose the value or set it to 0."
           >
             <FieldContainer>
               <div>
