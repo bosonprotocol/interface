@@ -90,7 +90,7 @@ export function ProfileFormFields({
       <FormField
         title="Communication Method"
         required
-        subTitle="Set up how you want to communicate with the buyer after redemption"
+        subTitle="Specify how you would like to communicate with your buyers after they redeem their item. Initial communication along with a buyer's delivery address will be sent via XMTP."
       >
         <Select
           placeholder="Choose a communication channel..."
