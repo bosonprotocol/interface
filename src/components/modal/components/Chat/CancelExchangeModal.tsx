@@ -1,4 +1,5 @@
 import { CancelButton, Provider, subgraph } from "@bosonprotocol/react-kit";
+import * as Sentry from "@sentry/browser";
 import { Info as InfoComponent } from "phosphor-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -207,6 +208,7 @@ export default function CancelExchangeModal({
               if (hasUserRejectedTx) {
                 showModal("TRANSACTION_FAILED");
               } else {
+                Sentry.captureException(error);
                 showModal(modalTypes.DETAIL_WIDGET, {
                   title: "An error occurred",
                   message: "An error occurred when trying to cancel!",

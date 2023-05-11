@@ -197,10 +197,30 @@ export default function ConfirmProductDetails({
                 />
               )}
             </FormField>
+            <FormField
+              title="Cover picture"
+              required
+              style={{
+                marginBottom: "2rem"
+              }}
+            >
+              {values?.createYourProfile?.coverPicture?.[0]?.src && (
+                <Image
+                  src={values?.createYourProfile?.coverPicture?.[0]?.src || ""}
+                  style={{
+                    width: "80px",
+                    height: "80px",
+                    paddingTop: "0"
+                  }}
+                  alt="cover picture"
+                />
+              )}
+            </FormField>
             <Grid
               justifyContent="flex-start"
               alignItems="flex-start"
               flexWrap="wrap"
+              gap="3.5rem"
             >
               <GridBox $minWidth="7.1rem">
                 <FormFieldContainer>
@@ -230,17 +250,31 @@ export default function ConfirmProductDetails({
                 </FormFieldContainer>
               </GridBox>
             </Grid>
-            <FormFieldContainer
-              style={{
-                marginBottom: 0
-              }}
+            <Grid
+              justifyContent="flex-start"
+              alignItems="flex-start"
+              flexWrap="wrap"
+              gap="3.5rem"
             >
-              <FormField title="Description" required>
-                <ContentValue tag="p">
-                  {values.createYourProfile.description}
-                </ContentValue>
-              </FormField>
-            </FormFieldContainer>
+              <FormFieldContainer>
+                <FormField title="Description" required>
+                  <ContentValue tag="p">
+                    {values.createYourProfile.description}
+                  </ContentValue>
+                </FormField>
+              </FormFieldContainer>
+              <FormFieldContainer
+                style={{
+                  marginBottom: 0
+                }}
+              >
+                <FormField title="Legal trading name">
+                  <ContentValue tag="p">
+                    {values.createYourProfile.legalTradingName}
+                  </ContentValue>
+                </FormField>
+              </FormFieldContainer>
+            </Grid>
           </CollapseContent>
         </Collapse>
       </CollapseContainer>

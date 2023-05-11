@@ -18,7 +18,7 @@ export type EventLog = Omit<subgraph.BaseEventLogFieldsFragment, "account"> & {
   };
 };
 
-export const buildTransactionLabelAndPath = (
+const buildTransactionLabelAndPath = (
   eventLog: EventLog
 ): { label: string; pathname?: string } => {
   const offerId = eventLog.offer?.id || eventLog.exchange?.offer?.id;

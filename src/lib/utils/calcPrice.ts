@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/browser";
 import { BigNumber, utils } from "ethers";
 
 import { CONFIG } from "../config";
@@ -46,8 +47,9 @@ export const displayFloat = (
         : addSymbol(valueToDisplay + "");
     }
     return "0";
-  } catch (e) {
-    console.error(e);
+  } catch (error) {
+    console.error(error);
+    Sentry.captureException(error);
     return "0";
   }
 };
@@ -55,8 +57,9 @@ export const displayFloat = (
 export const calcPrice = (value: string, decimals: string): string => {
   try {
     return utils.formatUnits(value, decimals);
-  } catch (e) {
-    console.error(e);
+  } catch (error) {
+    console.error(error);
+    Sentry.captureException(error);
     return "";
   }
 };
@@ -89,8 +92,9 @@ export const calcPercentage = (offer: Offer, key: string): CalcPercentage => {
       deposit: displayFloat(percentage || 0),
       formatted
     };
-  } catch (e) {
-    console.error(e);
+  } catch (error) {
+    console.error(error);
+    Sentry.captureException(error);
     return {
       percentage: 0,
       deposit: "0",

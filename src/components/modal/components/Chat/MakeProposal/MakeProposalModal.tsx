@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/browser";
 import { Form, Formik, FormikProps } from "formik";
 import { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
@@ -113,6 +114,7 @@ export default function MakeProposalModal({
             hideModal();
           } catch (error) {
             console.error(error);
+            Sentry.captureException(error);
             setSubmitError(error as Error);
           }
         }}

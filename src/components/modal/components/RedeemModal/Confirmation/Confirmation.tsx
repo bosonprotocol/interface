@@ -220,6 +220,7 @@ ${FormModel.formFields.phone.placeholder}: ${phoneField.value}`;
               if (hasUserRejectedTx) {
                 showModal("TRANSACTION_FAILED");
               } else {
+                Sentry.captureException(error);
                 showModal("TRANSACTION_FAILED", {
                   errorMessage: "Something went wrong"
                 });

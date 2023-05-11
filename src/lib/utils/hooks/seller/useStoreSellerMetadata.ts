@@ -1,0 +1,31 @@
+import { CoreSDK, OfferOrSellerMetadata } from "@bosonprotocol/react-kit";
+import { useMutation } from "react-query";
+
+import { useCoreSDK } from "../../useCoreSdk";
+
+export type CreateSellerMetadata = Omit<
+  Extract<OfferOrSellerMetadata, { type: "SELLER" }>,
+  "__typename" | "id" | "createdAt" | "type" | "contactPreference"
+> & { contactPreference: "xmtp" | "email" };
+type Props = Parameters<typeof storeSellerMetadata>[1];
+
+export default function useStoreSellerMetadata() {
+  const coreSDK = useCoreSDK();
+
+  return useMutation(async (props: Props) => {
+    return await storeSellerMetadata(coreSDK, props);
+  });
+}
+
+async function storeSellerMetadata(
+  coreSDK: CoreSDK,
+  metadata: CreateSellerMetadata
+) {
+  const metadataHash = await coreSDK.storeMetadata({
+    type: "SELLER",
+    ...metadata
+  });
+  return {
+    metadataUri: `ipfs://${metadataHash}`
+  };
+}

@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/browser";
 import { Form, Formik } from "formik";
 import { useState } from "react";
 import styled from "styled-components";
@@ -86,6 +87,7 @@ export default function CustomStore() {
             });
           } catch (error) {
             console.error(error);
+            Sentry.captureException(error);
             setHasSubmitError(true);
           }
         }}

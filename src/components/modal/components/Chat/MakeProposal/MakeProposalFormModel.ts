@@ -1,5 +1,6 @@
 import * as Yup from "yup";
 
+import { validationMessage } from "../../../../../lib/const/validationMessage";
 import { validationOfFile } from "../../../../../pages/chat/components/UploadForm/const";
 import { MIN_VALUE } from "../const";
 
@@ -40,8 +41,8 @@ export const validationSchemaPerStep = [
   }),
   Yup.object({
     [FormModel.formFields.proposalType.name]: Yup.object({
-      label: Yup.string().required(),
-      value: Yup.string().required()
+      label: Yup.string().required(validationMessage.required),
+      value: Yup.string().required(validationMessage.required)
     })
       .nullable()
       .default({ label: "", value: "" }),

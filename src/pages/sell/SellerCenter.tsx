@@ -23,7 +23,7 @@ import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { isInEligibleWalletList } from "../../lib/utils/isInEligibleWalletList";
 
-export const Wrapper = styled.div`
+const Wrapper = styled.div`
   text-align: center;
 `;
 const GridWrapper = styled.div`
@@ -85,12 +85,13 @@ function SellerCenterWrapper() {
   if (
     !CONFIG.enableCurationLists &&
     !isAccountSeller &&
+    !sellerIds.length &&
     !isInEligibleWalletList(address ?? "")
   ) {
     return <Navigate replace to={{ pathname: BosonRoutes.ClosedBeta }} />;
   }
 
-  if (!sellerIds.length) {
+  if (!sellerIds.length || !address) {
     return (
       <Wrapper>
         <Grid
@@ -101,7 +102,9 @@ function SellerCenterWrapper() {
         >
           <WarningCircle size={112} color={colors.red} weight="thin" />
           <Typography tag="h5">
-            The seller with that ID doesn't exist!
+            {address
+              ? "The seller with that ID doesn't exist!"
+              : "Please connect your wallet"}
           </Typography>
           <Button
             variant="accentInverted"

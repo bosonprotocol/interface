@@ -1,4 +1,5 @@
 import { BosonXmtpClient } from "@bosonprotocol/chat-sdk";
+import * as Sentry from "@sentry/browser";
 import { ReactNode, useEffect, useState } from "react";
 import { useSigner } from "wagmi";
 
@@ -31,6 +32,7 @@ export default function ChatProvider({ children }: Props) {
         .catch((error) => {
           console.error(error);
           setError(error);
+          Sentry.captureException(error);
         })
         .finally(() => setLoading(false));
     }

@@ -2,6 +2,7 @@ import { CONFIG } from "../../../lib/config";
 import { FormModel } from "../../modal/components/Chat/MakeProposal/MakeProposalFormModel";
 import { DisputeFormModel } from "../../modal/components/DisputeModal/DisputeModalFormModel";
 import {
+  OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE,
   OPTIONS_CURRENCIES,
   OPTIONS_DISPUTE_RESOLVER,
   OPTIONS_EXCHANGE_POLICY,
@@ -13,15 +14,18 @@ import {
   TOKEN_CRITERIA,
   TOKEN_TYPES
 } from "./const";
-import { CreateProductForm } from "./types";
+import { CreateProductForm, CreateYourProfile } from "./types";
 
-export const createYourProfileInitialValues = {
+export const createYourProfileInitialValues: CreateYourProfile = {
   createYourProfile: {
     logo: undefined,
+    coverPicture: undefined,
     name: "",
     email: "",
     description: "",
-    website: ""
+    website: "",
+    legalTradingName: "",
+    contactPreference: OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE[0]
   }
 } as const;
 

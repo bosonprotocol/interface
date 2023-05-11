@@ -4,6 +4,7 @@ import {
   Provider,
   subgraph
 } from "@bosonprotocol/react-kit";
+import * as Sentry from "@sentry/browser";
 import { BigNumberish } from "ethers";
 import { useCallback, useMemo } from "react";
 import toast from "react-hot-toast";
@@ -231,6 +232,7 @@ export default function CompleteExchange({
               if (hasUserRejectedTx) {
                 showModal("TRANSACTION_FAILED");
               } else {
+                Sentry.captureException(error);
                 showModal("TRANSACTION_FAILED", {
                   errorMessage: "Something went wrong"
                 });
@@ -284,6 +286,7 @@ export default function CompleteExchange({
               if (hasUserRejectedTx) {
                 showModal("TRANSACTION_FAILED");
               } else {
+                Sentry.captureException(error);
                 showModal("TRANSACTION_FAILED", {
                   errorMessage: "Something went wrong"
                 });

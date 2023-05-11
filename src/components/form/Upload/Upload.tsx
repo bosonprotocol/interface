@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/browser";
 import { useField } from "formik";
 import { Image, Trash, VideoCamera } from "phosphor-react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -109,10 +110,17 @@ function Upload({
     }
     handleLoading(true);
     try {
-      const imagePreview: string = await loadMedia(fileSrc || "");
-      setPreview(imagePreview);
+      const imagePreview = await loadMedia(fileSrc || "");
+      if (imagePreview) {
+        setPreview(imagePreview);
+      } else {
+        console.warn(
+          `imagePreview ${imagePreview} is falsy in loadIpfsImagePreview`
+        );
+      }
     } catch (error) {
       console.error(error);
+      Sentry.captureException(error);
     } finally {
       handleLoading(false);
     }
@@ -125,11 +133,18 @@ function Upload({
     }
     try {
       handleLoading(true);
-      const imagePreview: string = await loadMedia(fileSrc || "");
-      setPreview(imagePreview);
-      onLoadSinglePreviewImage?.(imagePreview);
+      const imagePreview = await loadMedia(fileSrc || "");
+      if (imagePreview) {
+        setPreview(imagePreview);
+        onLoadSinglePreviewImage?.(imagePreview);
+      } else {
+        console.warn(
+          `imagePreview ${imagePreview} is falsy in loadIpfsImagePreview`
+        );
+      }
     } catch (error) {
       console.error(error);
+      Sentry.captureException(error);
     } finally {
       handleLoading(false);
     }
@@ -184,8 +199,12 @@ function Upload({
   const handleSave = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
       handleLoading(true);
-      const files: FileProps[] = await saveToIpfs(e);
-      setFiles(files);
+      const files = await saveToIpfs(e);
+      if (files) {
+        setFiles(files);
+      } else {
+        console.warn(`files ${files} is falsy in handleSave`);
+      }
     },
     [saveToIpfs, setFiles, handleLoading]
   );

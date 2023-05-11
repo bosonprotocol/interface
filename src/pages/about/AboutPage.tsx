@@ -120,10 +120,6 @@ function AboutPage() {
         </>
       )}
       <Text margin="0 0 0.5rem 0">
-        <span>Create Profile Configuration:</span>
-        <span>{CONFIG.createProfileConfiguration || "-"}</span>
-      </Text>
-      <Text margin="0 0 0.5rem 0">
         <span>Link to Buyer/Seller Agreement Template:</span>
         <span>{CONFIG.buyerSellerAgreementTemplate || "-"}</span>
       </Text>

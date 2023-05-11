@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/browser";
 import { request } from "graphql-request";
 
 import { CONFIG } from "../../../lib/config";
@@ -20,8 +21,9 @@ export async function fetchSubgraph<T>(
       }
     );
     return data as T;
-  } catch (err) {
-    console.error(err);
-    throw err;
+  } catch (error) {
+    console.error(error);
+    Sentry.captureException(error);
+    throw error;
   }
 }
