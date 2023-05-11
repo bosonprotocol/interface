@@ -21,7 +21,14 @@ export function useSellerWhitelist(
       const whitelistStr = props.sellerWhitelistUrl
         ? await fetchTextFile(props.sellerWhitelistUrl, false)
         : "";
-      return whitelistStr.split("\n")[0].split(",") || [];
+      try {
+        return JSON.parse(whitelistStr).sellers.map((id: unknown) =>
+          String(id)
+        ) as string[];
+      } catch (e) {
+        console.error(e);
+        return [];
+      }
     },
     {
       ...options
@@ -33,7 +40,14 @@ export function useSellerWhitelist(
       const blacklistStr = props.sellerBlacklistUrl
         ? await fetchTextFile(props.sellerBlacklistUrl, false)
         : "";
-      return blacklistStr.split("\n")[0].split(",") || [];
+      try {
+        return JSON.parse(blacklistStr).map((id: unknown) =>
+          String(id)
+        ) as string[];
+      } catch (e) {
+        console.error(e);
+        return [];
+      }
     },
     {
       ...options
@@ -41,7 +55,7 @@ export function useSellerWhitelist(
   );
   return useMemo(() => {
     const sellerIdList = (whitelist.data || []).filter(
-      (id) => !(blacklist.data || []).includes(id)
+      (id: string) => !(blacklist.data || []).includes(id)
     );
     if (
       props.allowConnectedSeller &&
