@@ -4,7 +4,11 @@ import { useFormikContext } from "formik";
 import { ReactNode, useEffect, useMemo } from "react";
 
 import { CONFIG } from "../../../../../lib/config";
-import { fetchImageAsBase64 } from "../../../../../lib/utils/base64";
+import {
+  dataURItoBlob,
+  fetchImageAsBase64,
+  isDataUri
+} from "../../../../../lib/utils/base64";
 import { Profile } from "../../../../../lib/utils/hooks/lens/graphql/generated";
 import { getLensImageUrl } from "../../../../../lib/utils/images";
 import { Spinner } from "../../../../loading/Spinner";
@@ -134,17 +138,25 @@ export default function ViewOrEditLensProfile({
 
   useEffect(() => {
     Promise.all([
-      fetchImageAsBase64(profilePictureUrl),
-      fetchImageAsBase64(coverPictureUrl)
+      isDataUri(profilePictureUrl)
+        ? dataURItoBlob(profilePictureUrl)
+        : fetchImageAsBase64(profilePictureUrl),
+      isDataUri(coverPictureUrl)
+        ? dataURItoBlob(coverPictureUrl)
+        : fetchImageAsBase64(coverPictureUrl)
     ])
       .then(([profilePicture, coverPicture]) => {
+        const profilePictureBlob =
+          profilePicture instanceof Blob ? profilePicture : profilePicture.blob;
+        const coverPictureBlob =
+          coverPicture instanceof Blob ? coverPicture : coverPicture.blob;
         setValues({
           logo: profilePicture
             ? [
                 {
                   src: profilePictureUrl,
-                  type: profilePicture.blob.type,
-                  size: profilePicture.blob.size
+                  type: profilePictureBlob.type,
+                  size: profilePictureBlob.size
                 }
               ]
             : [],
@@ -152,8 +164,8 @@ export default function ViewOrEditLensProfile({
             ? [
                 {
                   src: coverPictureUrl,
-                  type: coverPicture.blob.type,
-                  size: coverPicture.blob.size
+                  type: coverPictureBlob.type,
+                  size: coverPictureBlob.size
                 }
               ]
             : [],

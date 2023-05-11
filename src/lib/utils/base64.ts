@@ -79,7 +79,7 @@ export const getFixedBase64FromUrl = async (
   return fixedBase64;
 };
 
-export function dataURItoBlob(dataURI: string) {
+export function dataURItoBlob(dataURI: string): Blob {
   // convert base64 to raw binary data held in a string
   // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
   const byteString = window.atob(dataURI.split(",")[1]);
@@ -101,4 +101,8 @@ export function dataURItoBlob(dataURI: string) {
   // write the ArrayBuffer to a blob, and you're done
   const blob = new Blob([ab], { type: mimeString });
   return blob;
+}
+
+export function isDataUri(dataURI: string): boolean {
+  return dataURI.startsWith("data:") || dataURI.startsWith("unsafe:data:");
 }
