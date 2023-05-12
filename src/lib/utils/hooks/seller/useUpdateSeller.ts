@@ -1,4 +1,5 @@
-import { CoreSDK } from "@bosonprotocol/react-kit";
+import { SellerFieldsFragment } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
+import { accounts, CoreSDK } from "@bosonprotocol/react-kit";
 import { ethers } from "ethers";
 import { useMutation } from "react-query";
 
@@ -38,7 +39,7 @@ async function updateSellerAccount(
     metadataUri: string;
   }
 ) {
-  await coreSDK.signMetaTxUpdateSellerAndOptIn({
+  const newSeller: accounts.UpdateSellerArgs = {
     id: sellerId,
     admin:
       authTokenType === authTokenTypes.LENS
@@ -46,12 +47,23 @@ async function updateSellerAccount(
         : admin,
     authTokenId:
       authTokenType === authTokenTypes.LENS
-        ? getLensTokenIdDecimal(authTokenId || "0x0")
+        ? getLensTokenIdDecimal(authTokenId || "0x0").toString()
         : "0",
     authTokenType,
     clerk,
     assistant,
     treasury,
     metadataUri
+  };
+  const seller = await coreSDK.getSellerById(sellerId);
+  const thereAreChanges = Object.entries(newSeller).some(([key, value]) => {
+    const oldSellerValue = seller[key as keyof SellerFieldsFragment];
+    if (typeof value === "string" && typeof oldSellerValue === "string") {
+      return value.toLowerCase() !== oldSellerValue.toLowerCase();
+    }
+    return value !== oldSellerValue;
   });
+  if (thereAreChanges) {
+    await coreSDK.signMetaTxUpdateSellerAndOptIn(newSeller);
+  }
 }
