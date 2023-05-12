@@ -9,7 +9,7 @@ import { Token } from "../../convertion-rate/ConvertionRateContext";
 import { MIN_VALUE } from "../../modal/components/Chat/const";
 import { FormModel } from "../../modal/components/Chat/MakeProposal/MakeProposalFormModel";
 import { DisputeFormModel } from "../../modal/components/DisputeModal/DisputeModalFormModel";
-import { commonFieldsValidation } from "../../modal/components/Profile/valitationSchema";
+import { getCommonFieldsValidation } from "../../modal/components/Profile/valitationSchema";
 import { CONFIG } from "./../../../lib/config";
 import { SelectDataProps } from "./../../form/types";
 import {
@@ -30,7 +30,7 @@ export const regularProfileValidationSchema = Yup.object({
   createYourProfile: Yup.object({
     logo: validationOfRequiredIpfsImage(),
     coverPicture: validationOfRequiredIpfsImage(),
-    ...commonFieldsValidation
+    ...getCommonFieldsValidation({ withMaxLengthValidation: false })
   })
 });
 

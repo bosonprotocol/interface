@@ -11,7 +11,6 @@ import { LensStep } from "./const";
 import LensFormFields from "./LensFormFields";
 import {
   LensProfileType,
-  lensProfileValidationSchema,
   viewLensProfileValidationSchema
 } from "./validationSchema";
 import ViewOrEditLensProfile from "./ViewOrEditLensProfile";
@@ -89,12 +88,9 @@ export default function LensForm({
           setError(err as Error);
         }
       }}
-      validationSchema={
-        profile ? viewLensProfileValidationSchema : lensProfileValidationSchema
-      }
+      validationSchema={viewLensProfileValidationSchema}
     >
-      {(...rest) => {
-        console.log({ ...rest });
+      {() => {
         return (
           <Form>
             <ViewOrEditLensProfile

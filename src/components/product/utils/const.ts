@@ -126,12 +126,12 @@ export const OPTIONS_DISPUTE_RESOLVER = [
 export const OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE = [
   {
     // default option
-    value: ContactPreference.XMTP,
-    label: "XMTP Chat"
+    value: ContactPreference.XMTP_AND_EMAIL,
+    label: "XMTP initialisation + e-mail"
   },
   {
-    value: ContactPreference.EMAIL,
-    label: "Email"
+    value: ContactPreference.XMTP,
+    label: "XMTP end-to-end"
   }
 ] as const;
 

@@ -52,9 +52,9 @@ export default function RedeemModal({
   });
   const seller = sellers?.[0];
   const emailPreference =
-    seller.metadata?.contactPreference === ContactPreference.EMAIL ||
+    seller.metadata?.contactPreference === ContactPreference.XMTP_AND_EMAIL ||
     offer?.metadata.productV1Seller.contactPreference ===
-      ContactPreference.EMAIL;
+      ContactPreference.XMTP_AND_EMAIL;
   const validationSchema = useMemo(() => {
     return Yup.object({
       [FormModel.formFields.name.name]: Yup.string()

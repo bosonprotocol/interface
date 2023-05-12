@@ -13,7 +13,7 @@ export function buildProfileFromMetadata(
   const profileDataFromMetadata: CreateProfile = {
     name: metadata?.name ?? "",
     description: metadata?.description ?? "",
-    email: metadata?.contactLinks?.find((cl) => cl.tag === "email")?.url ?? "",
+    email: getMetadataEmail(metadata),
     legalTradingName: metadata?.legalTradingName ?? undefined,
     website: metadata?.website ?? "",
     coverPicture: coverPicture
@@ -28,4 +28,8 @@ export function buildProfileFromMetadata(
       ) ?? OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE[0]
   };
   return profileDataFromMetadata;
+}
+
+export function getMetadataEmail(metadata: SellerFieldsFragment["metadata"]) {
+  return metadata?.contactLinks?.find((cl) => cl.tag === "email")?.url ?? "";
 }

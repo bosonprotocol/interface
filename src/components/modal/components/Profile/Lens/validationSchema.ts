@@ -2,11 +2,8 @@ import * as Yup from "yup";
 
 import { CONFIG } from "../../../../../lib/config";
 import { validationMessage } from "../../../../../lib/const/validationMessage";
-import {
-  validationOfImageFormatIfPresent,
-  validationOfRequiredIpfsImage
-} from "../../../../product/utils/validationUtils";
-import { commonFieldsValidation } from "../valitationSchema";
+import { validationOfRequiredIpfsImage } from "../../../../product/utils/validationUtils";
+import { getCommonFieldsValidation } from "../valitationSchema";
 
 // const MAX_LOGO_SIZE = 300 * 1024; // 300 KB
 const maxLensHandleLength = 31 - CONFIG.lens.lensHandleExtension.length;
@@ -21,18 +18,13 @@ const commonLensValidationSchema = {
     )
 };
 
-export const lensProfileValidationSchema = Yup.object({
+export const viewLensProfileValidationSchema = Yup.object({
   logo: validationOfRequiredIpfsImage(),
   coverPicture: validationOfRequiredIpfsImage(),
-  ...commonFieldsValidation,
+  ...getCommonFieldsValidation({ withMaxLengthValidation: true }),
   ...commonLensValidationSchema
 });
 
-export const viewLensProfileValidationSchema = Yup.object({
-  logo: validationOfImageFormatIfPresent(),
-  coverPicture: validationOfImageFormatIfPresent(),
-  ...commonFieldsValidation,
-  ...commonLensValidationSchema
-});
-
-export type LensProfileType = Yup.InferType<typeof lensProfileValidationSchema>;
+export type LensProfileType = Yup.InferType<
+  typeof viewLensProfileValidationSchema
+>;

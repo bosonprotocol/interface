@@ -5,13 +5,18 @@ import { FileProps } from "../../form/Upload/WithUploadToIpfs";
 import { SUPPORTED_FILE_FORMATS } from "./const";
 
 export const validationOfRequiredIpfsImage = () =>
-  Yup.mixed<FileProps[]>().test(
-    "fileUploaded",
-    "You need to upload an image",
-    function (value) {
+  Yup.mixed<FileProps[]>()
+    .test("fileUploaded", "You need to upload an image", function (value) {
       return !!(value && value?.[0]?.src);
-    }
-  );
+    })
+    .test("FILE_FORMAT", "Image has unsupported format!", (value) => {
+      return (
+        !(value && value.length > 0) ||
+        (value &&
+          value.length !== 0 &&
+          SUPPORTED_FILE_FORMATS.includes(value[0].type))
+      );
+    });
 
 export const validationOfIpfsImage = () => Yup.mixed<FileProps[]>();
 

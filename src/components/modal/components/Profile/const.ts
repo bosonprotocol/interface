@@ -5,5 +5,5 @@ export enum ProfileType {
 
 export enum ContactPreference {
   XMTP = "xmtp",
-  EMAIL = "email"
+  XMTP_AND_EMAIL = "xmtp_and_email"
 }
