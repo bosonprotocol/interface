@@ -73,14 +73,14 @@ async function createSellerFromValues(
         url: logoImage,
         tag: "profile",
         height: logo?.height ?? undefined,
-        type: "IMAGE",
+        type: logo?.type,
         width: logo?.width ?? undefined
       },
       {
         url: coverPicture,
         tag: "cover",
         height: cover?.height ?? undefined,
-        type: "IMAGE",
+        type: cover?.type,
         width: cover?.width ?? undefined
       }
     ]
