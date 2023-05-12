@@ -56,7 +56,8 @@ export default function Exchange() {
       disputed: null
     },
     {
-      enabled: !!exchangeId
+      enabled: !!exchangeId,
+      onlyCuratedSeller: false // fetch the exchange in any ase, page will be filtered later
     }
   );
   const exchange = exchanges?.[0];
@@ -68,7 +69,7 @@ export default function Exchange() {
   const curationLists = useCurationLists();
   const checkIfSellerIsInCurationList = useSellerCurationListFn();
 
-  const isSellerCuratedOrConnected = useMemo(() => {
+  const isSellerCurated = useMemo(() => {
     const isSellerInCurationList =
       !curationLists.enableCurationLists ||
       (sellerId && checkIfSellerIsInCurationList(sellerId));
@@ -123,6 +124,10 @@ export default function Exchange() {
       </div>
     );
   }
+
+  if (!isSellerCurated) {
+    return <div data-testid="notCuratedSeller">Seller is not whitelisted</div>;
+  }
   const buyerAddress = exchange.buyer.wallet;
 
   const {
@@ -141,48 +146,40 @@ export default function Exchange() {
       <DetailWrapper>
         <LightBackground>
           <MainDetailGrid>
-            {isSellerCuratedOrConnected ? (
-              <ImageWrapper>
-                <DetailOpenSea exchange={exchange} />
-                {animationUrl ? (
-                  <Video
-                    src={animationUrl}
-                    dataTestId="offerAnimationUrl"
-                    videoProps={{ muted: true, loop: true, autoPlay: true }}
-                    componentWhileLoading={() => (
-                      <Image src={offerImg} dataTestId="offerImage" />
-                    )}
-                  />
-                ) : (
-                  <Image src={offerImg} dataTestId="offerImage" />
-                )}
-              </ImageWrapper>
-            ) : (
-              <></>
-            )}
-            <div>
-              {isSellerCuratedOrConnected ? (
-                <>
-                  <SellerID
-                    offer={offer}
-                    buyerOrSeller={offer?.seller}
-                    justifyContent="flex-start"
-                    withProfileImage
-                  />
-                  <Typography
-                    tag="h1"
-                    data-testid="name"
-                    style={{
-                      fontSize: "2rem",
-                      ...(!hasVariations && { marginBottom })
-                    }}
-                  >
-                    {name}
-                  </Typography>
-                </>
+            <ImageWrapper>
+              <DetailOpenSea exchange={exchange} />
+              {animationUrl ? (
+                <Video
+                  src={animationUrl}
+                  dataTestId="offerAnimationUrl"
+                  videoProps={{ muted: true, loop: true, autoPlay: true }}
+                  componentWhileLoading={() => (
+                    <Image src={offerImg} dataTestId="offerImage" />
+                  )}
+                />
               ) : (
-                <></>
+                <Image src={offerImg} dataTestId="offerImage" />
               )}
+            </ImageWrapper>
+            <div>
+              <>
+                <SellerID
+                  offer={offer}
+                  buyerOrSeller={offer?.seller}
+                  justifyContent="flex-start"
+                  withProfileImage
+                />
+                <Typography
+                  tag="h1"
+                  data-testid="name"
+                  style={{
+                    fontSize: "2rem",
+                    ...(!hasVariations && { marginBottom })
+                  }}
+                >
+                  {name}
+                </Typography>
+              </>
               {hasVariations && (
                 <StyledVariationSelects
                   selectedVariant={variant as VariantV1}
@@ -204,55 +201,51 @@ export default function Exchange() {
             <DetailShare />
           </MainDetailGrid>
         </LightBackground>
-        {isSellerCuratedOrConnected ? (
-          <DarkerBackground>
-            <DetailGrid>
+        <DarkerBackground>
+          <DetailGrid>
+            <div>
+              <Typography tag="h3">Product description</Typography>
+              <Typography
+                tag="p"
+                data-testid="description"
+                style={{ whiteSpace: "pre-wrap" }}
+              >
+                {description}
+              </Typography>
+              {/* TODO: hidden for now */}
+              {/* <DetailTable data={productData} tag="strong" inheritColor /> */}
+            </div>
+            <div>
+              <Typography tag="h3">About the creator</Typography>
+              <Typography tag="p" style={{ whiteSpace: "pre-wrap" }}>
+                {artistDescription}
+              </Typography>
+            </div>
+          </DetailGrid>
+          {images.length > 0 && <DetailSlider images={images} />}
+          <DetailGrid>
+            <DetailTransactions
+              title="Transaction History (this item)"
+              exchange={exchange as NonNullable<Offer["exchanges"]>[number]}
+              offer={offer}
+              buyerAddress={buyerAddress}
+            />
+            {(shippingInfo.returnPeriodInDays !== undefined ||
+              !!shippingInfo.shippingTable.length) && (
               <div>
-                <Typography tag="h3">Product description</Typography>
+                <Typography tag="h3">Shipping information</Typography>
                 <Typography
                   tag="p"
-                  data-testid="description"
-                  style={{ whiteSpace: "pre-wrap" }}
+                  style={{ color: textColor || colors.darkGrey }}
                 >
-                  {description}
+                  Return period: {shippingInfo.returnPeriodInDays}{" "}
+                  {shippingInfo.returnPeriodInDays === 1 ? "day" : "days"}
                 </Typography>
-                {/* TODO: hidden for now */}
-                {/* <DetailTable data={productData} tag="strong" inheritColor /> */}
+                <DetailTable data={shippingInfo.shippingTable} inheritColor />
               </div>
-              <div>
-                <Typography tag="h3">About the creator</Typography>
-                <Typography tag="p" style={{ whiteSpace: "pre-wrap" }}>
-                  {artistDescription}
-                </Typography>
-              </div>
-            </DetailGrid>
-            {images.length > 0 && <DetailSlider images={images} />}
-            <DetailGrid>
-              <DetailTransactions
-                title="Transaction History (this item)"
-                exchange={exchange as NonNullable<Offer["exchanges"]>[number]}
-                offer={offer}
-                buyerAddress={buyerAddress}
-              />
-              {(shippingInfo.returnPeriodInDays !== undefined ||
-                !!shippingInfo.shippingTable.length) && (
-                <div>
-                  <Typography tag="h3">Shipping information</Typography>
-                  <Typography
-                    tag="p"
-                    style={{ color: textColor || colors.darkGrey }}
-                  >
-                    Return period: {shippingInfo.returnPeriodInDays}{" "}
-                    {shippingInfo.returnPeriodInDays === 1 ? "day" : "days"}
-                  </Typography>
-                  <DetailTable data={shippingInfo.shippingTable} inheritColor />
-                </div>
-              )}
-            </DetailGrid>
-          </DarkerBackground>
-        ) : (
-          <></>
-        )}
+            )}
+          </DetailGrid>
+        </DarkerBackground>
       </DetailWrapper>
     </>
   );

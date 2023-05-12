@@ -23,6 +23,9 @@ export function getImageUrl(
     }
   > = {}
 ) {
+  if (!uri) {
+    return "";
+  }
   if (uri.startsWith("data:")) {
     return uri;
   }

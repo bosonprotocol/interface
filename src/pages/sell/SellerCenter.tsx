@@ -37,6 +37,9 @@ const GridWrapper = styled.div`
 `;
 
 function SellerCenter(props: SellerInsideProps & WithSellerDataProps) {
+  if (!props.isSellerCurated) {
+    return <div data-testid="notCuratedSeller">Seller is not whitelisted</div>;
+  }
   return (
     <GridWrapper>
       <SellerAside {...props} />
@@ -131,6 +134,10 @@ function SellerCenterWrapper() {
         </option>
       ))}
     </select>;
+  }
+
+  if (!selectedSellerId) {
+    return <div data-testid="notCuratedSeller">Seller is not whitelisted</div>;
   }
 
   return <SellerCenterWithData sellerId={selectedSellerId} />;

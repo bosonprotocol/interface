@@ -80,7 +80,7 @@ export default function ProductDetail() {
   const curationLists = useCurationLists();
   const checkIfSellerIsInCurationList = useSellerCurationListFn();
 
-  const isSellerCuratedOrConnected = useMemo(() => {
+  const isSellerCurated = useMemo(() => {
     const isSellerInCurationList =
       !curationLists.enableCurationLists ||
       (sellerId && checkIfSellerIsInCurationList(sellerId));
@@ -142,6 +142,10 @@ export default function ProductDetail() {
     return <div data-testid="notFound">This product does not exist</div>;
   }
 
+  if (!isSellerCurated) {
+    return <div data-testid="notCuratedSeller">Seller is not whitelisted</div>;
+  }
+
   const {
     name,
     offerImg,
@@ -154,55 +158,47 @@ export default function ProductDetail() {
     <DetailWrapper>
       <LightBackground>
         <MainDetailGrid>
-          {isSellerCuratedOrConnected ? (
-            <ImageWrapper>
-              {animationUrl ? (
-                <Video
-                  src={animationUrl}
-                  videoProps={{
-                    muted: true,
-                    loop: true,
-                    autoPlay: true
-                  }}
-                  componentWhileLoading={() => (
-                    <Image src={offerImg} alt="Offer image" />
-                  )}
-                />
-              ) : (
-                <Image src={offerImg} dataTestId="offerImage" />
-              )}
-            </ImageWrapper>
-          ) : (
-            <></>
-          )}
-          <div>
-            {isSellerCuratedOrConnected ? (
-              <>
-                <SellerID
-                  offer={selectedOffer}
-                  buyerOrSeller={selectedOffer?.seller}
-                  justifyContent="flex-start"
-                  withProfileImage
-                />
-                <Typography
-                  tag="h1"
-                  data-testid="name"
-                  style={{ fontSize: "2rem", marginBottom: "2rem" }}
-                >
-                  {name}
-                </Typography>
-
-                {hasVariants && (
-                  <VariationSelects
-                    selectedVariant={selectedVariant}
-                    setSelectedVariant={setSelectedVariant}
-                    variants={variantsWithV1}
-                  />
+          <ImageWrapper>
+            {animationUrl ? (
+              <Video
+                src={animationUrl}
+                videoProps={{
+                  muted: true,
+                  loop: true,
+                  autoPlay: true
+                }}
+                componentWhileLoading={() => (
+                  <Image src={offerImg} alt="Offer image" />
                 )}
-              </>
+              />
             ) : (
-              <></>
+              <Image src={offerImg} dataTestId="offerImage" />
             )}
+          </ImageWrapper>
+          <div>
+            <>
+              <SellerID
+                offer={selectedOffer}
+                buyerOrSeller={selectedOffer?.seller}
+                justifyContent="flex-start"
+                withProfileImage
+              />
+              <Typography
+                tag="h1"
+                data-testid="name"
+                style={{ fontSize: "2rem", marginBottom: "2rem" }}
+              >
+                {name}
+              </Typography>
+
+              {hasVariants && (
+                <VariationSelects
+                  selectedVariant={selectedVariant}
+                  setSelectedVariant={setSelectedVariant}
+                  variants={variantsWithV1}
+                />
+              )}
+            </>
 
             <DetailWidget
               pageType="offer"
@@ -215,50 +211,46 @@ export default function ProductDetail() {
           <DetailShare />
         </MainDetailGrid>
       </LightBackground>
-      {isSellerCuratedOrConnected ? (
-        <DarkerBackground>
-          <DetailGrid>
+      <DarkerBackground>
+        <DetailGrid>
+          <div>
+            <Typography tag="h3">Product description</Typography>
+            <Typography
+              tag="p"
+              data-testid="description"
+              style={{ whiteSpace: "pre-wrap" }}
+            >
+              {description}
+            </Typography>
+            {/* TODO: hidden for now */}
+            {/* <DetailTable data={productData} tag="strong" inheritColor /> */}
+          </div>
+          <div>
+            <Typography tag="h3">About the creator</Typography>
+            <Typography tag="p" style={{ whiteSpace: "pre-wrap" }}>
+              {artistDescription}
+            </Typography>
+          </div>
+        </DetailGrid>
+        {images.length > 0 && <DetailSlider images={images} />}
+        <DetailGrid>
+          <DetailChart offer={selectedOffer} title="Inventory graph" />
+          {(shippingInfo.returnPeriodInDays !== undefined ||
+            !!shippingInfo.shippingTable.length) && (
             <div>
-              <Typography tag="h3">Product description</Typography>
+              <Typography tag="h3">Shipping information</Typography>
               <Typography
                 tag="p"
-                data-testid="description"
-                style={{ whiteSpace: "pre-wrap" }}
+                style={{ color: textColor || colors.darkGrey }}
               >
-                {description}
+                Return period: {shippingInfo.returnPeriodInDays}{" "}
+                {shippingInfo.returnPeriodInDays === 1 ? "day" : "days"}
               </Typography>
-              {/* TODO: hidden for now */}
-              {/* <DetailTable data={productData} tag="strong" inheritColor /> */}
+              <DetailTable data={shippingInfo.shippingTable} inheritColor />
             </div>
-            <div>
-              <Typography tag="h3">About the creator</Typography>
-              <Typography tag="p" style={{ whiteSpace: "pre-wrap" }}>
-                {artistDescription}
-              </Typography>
-            </div>
-          </DetailGrid>
-          {images.length > 0 && <DetailSlider images={images} />}
-          <DetailGrid>
-            <DetailChart offer={selectedOffer} title="Inventory graph" />
-            {(shippingInfo.returnPeriodInDays !== undefined ||
-              !!shippingInfo.shippingTable.length) && (
-              <div>
-                <Typography tag="h3">Shipping information</Typography>
-                <Typography
-                  tag="p"
-                  style={{ color: textColor || colors.darkGrey }}
-                >
-                  Return period: {shippingInfo.returnPeriodInDays}{" "}
-                  {shippingInfo.returnPeriodInDays === 1 ? "day" : "days"}
-                </Typography>
-                <DetailTable data={shippingInfo.shippingTable} inheritColor />
-              </div>
-            )}
-          </DetailGrid>
-        </DarkerBackground>
-      ) : (
-        <></>
-      )}
+          )}
+        </DetailGrid>
+      </DarkerBackground>
     </DetailWrapper>
   );
 }
