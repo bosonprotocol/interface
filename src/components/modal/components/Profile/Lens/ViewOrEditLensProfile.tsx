@@ -16,6 +16,7 @@ import { OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE } from "../../../../product/u
 import BosonButton from "../../../../ui/BosonButton";
 import Grid from "../../../../ui/Grid";
 import { useModal } from "../../../useModal";
+import { getMetadataEmail } from "../utils";
 import { LensStep } from "./const";
 import LensProfileMultiSteps from "./LensProfileMultiSteps";
 import {
@@ -47,7 +48,7 @@ export default function ViewOrEditLensProfile({
   isEdit,
   forceDirty
 }: Props) {
-  const { setValues, setTouched, values, isSubmitting } =
+  const { setValues, setTouched, values, isSubmitting, initialValues } =
     useFormikContext<LensProfileType>();
   const profilePictureUrl = getLensImageUrl(getLensProfilePictureUrl(profile));
   const coverPictureUrl = getLensImageUrl(getLensCoverPictureUrl(profile));
@@ -55,8 +56,10 @@ export default function ViewOrEditLensProfile({
   const { updateProps, store } = useModal();
   const hasMetadata = !!seller?.metadata;
   const contactPreference = seller?.metadata?.contactPreference;
+  const valuesSameAsInitial = values === initialValues;
+  const metadataEmail = getMetadataEmail(metadata);
   const changedFields: Record<keyof LensProfileType, boolean> = useMemo(() => {
-    if (!profile) {
+    if (!profile || valuesSameAsInitial) {
       return {
         coverPicture: false,
         description: false,
@@ -73,23 +76,26 @@ export default function ViewOrEditLensProfile({
       // false values are disabled inputs that have to be edited in lens website
       coverPicture: false,
       description: false,
-      email: values.email !== getLensEmail(profile),
+      email: values.email !== metadataEmail,
       handle: false,
-      legalTradingName:
-        values.legalTradingName !== getLensLegalTradingName(profile),
+      legalTradingName: values.legalTradingName !== metadata?.legalTradingName,
       logo: false,
       name: false,
-      website: values.website !== getLensWebsite(profile),
+      website: values.website !== metadata?.website,
       contactPreference:
         !hasMetadata || values.contactPreference.value !== contactPreference
     };
     return changedValues;
   }, [
     profile,
+    valuesSameAsInitial,
     values.email,
     values.legalTradingName,
     values.website,
     values.contactPreference.value,
+    metadataEmail,
+    metadata?.legalTradingName,
+    metadata?.website,
     hasMetadata,
     contactPreference
   ]);
