@@ -99,6 +99,7 @@ export function WithSellerData(
         }
       },
       {
+        enabled: !!sellerId,
         enableCurationList: false,
         refetchOnMount: true
       }

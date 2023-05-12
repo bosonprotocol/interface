@@ -1,5 +1,5 @@
+import * as Sentry from "@sentry/browser";
 // inspired by https://3dtransforms.desandro.com/carousel
-
 import { CaretLeft, CaretRight } from "phosphor-react";
 import { useMemo, useRef, useState } from "react";
 import styled, { css } from "styled-components";
@@ -209,6 +209,7 @@ export default function Carousel() {
         });
       } catch (error) {
         console.error(error);
+        Sentry.captureException(error);
       }
       const numOffersToAdd = numCells - uiOffers.length;
       let offerIdx = 0;

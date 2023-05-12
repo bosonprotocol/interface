@@ -14,6 +14,7 @@ import copyToClipboard from "../../../lib/utils/copyToClipboard";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import { Disputes } from "../../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { sanitizeUrl } from "../../../lib/utils/url";
 import { useModal } from "../../modal/useModal";
 import Price from "../../price";
 import PaginationPages from "../../seller/common/PaginationPages";
@@ -175,7 +176,7 @@ export default function DisputesTable({ disputes }: Props) {
                     whiteSpace: "pre"
                   }}
                   onClick={() => {
-                    copyToClipboard(emailAddress).then(() => {
+                    copyToClipboard(sanitizeUrl(emailAddress)).then(() => {
                       toast(() => "Seller e-mail has been copied to clipboard");
                     });
                   }}

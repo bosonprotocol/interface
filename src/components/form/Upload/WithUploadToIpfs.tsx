@@ -22,14 +22,17 @@ export interface FileProps {
   src: string;
   name?: string; // for example: "redeemeum.png"
   size?: number;
-  type?: string; // for example: "image/png"
-  width?: number;
-  height?: number;
+  type: string; // for example: "image/png"
+  width?: number | null;
+  height?: number | null;
 }
+type UseSaveImageToIpfs = ReturnType<typeof useSaveImageToIpfs>;
 export interface WithUploadToIpfsProps {
-  saveToIpfs: (e: React.ChangeEvent<HTMLInputElement>) => FileProps[];
-  loadMedia: (src: string) => string;
-  removeFile: (src: string) => void;
+  saveToIpfs: (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => Promise<false | FileProps[] | undefined>;
+  loadMedia: UseSaveImageToIpfs["loadMedia"];
+  removeFile: UseSaveImageToIpfs["removeFile"];
 }
 export function WithUploadToIpfs<P extends WithUploadToIpfsProps>(
   WrappedComponent: React.ComponentType<P>
@@ -41,7 +44,7 @@ export function WithUploadToIpfs<P extends WithUploadToIpfsProps>(
 
     const { saveFile, loadMedia, removeFile } = useSaveImageToIpfs();
 
-    const saveToIpfs = useCallback(
+    const saveToIpfs: WithUploadToIpfsProps["saveToIpfs"] = useCallback(
       async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files) {
           return;

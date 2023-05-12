@@ -102,7 +102,7 @@ export default function useProducts(
     },
     {
       ...options,
-      enabled: !!coreSDK,
+      enabled: options.enabled && !!coreSDK,
       refetchOnWindowFocus: false,
       refetchOnMount: options.refetchOnMount || false
     }

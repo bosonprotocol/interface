@@ -1,34 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useField } from "formik";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
-import { CONFIG } from "../../lib/config";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpointNumbers } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
-import { fetchIpfsBase64Media } from "../../lib/utils/base64";
-import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
-import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
 import {
-  CreateProductImageCreteYourProfileLogo,
   getItemFromStorage,
-  GetItemFromStorageKey,
-  saveItemInStorage,
-  useLocalStorage
+  saveItemInStorage
 } from "../../lib/utils/hooks/useLocalStorage";
 import Navigate from "../customNavigation/Navigate";
 import { FormField } from "../form";
-import { authTokenTypes } from "../modal/components/CreateProfile/Lens/const";
-import ProfileMultiSteps from "../modal/components/CreateProfile/Lens/ProfileMultiSteps";
-import {
-  getLensEmail,
-  getLensProfilePictureUrl,
-  getLensTokenIdDecimal,
-  getLensWebsite
-} from "../modal/components/CreateProfile/Lens/utils";
+import { authTokenTypes } from "../modal/components/Profile/Lens/const";
+import { getLensTokenIdDecimal } from "../modal/components/Profile/Lens/utils";
+import { buildProfileFromMetadata } from "../modal/components/Profile/utils";
 import { useModal } from "../modal/useModal";
 import BosonButton from "../ui/BosonButton";
 import Grid from "../ui/Grid";
@@ -44,7 +32,12 @@ import {
   ProductButtonGroup,
   SectionTitle
 } from "./Product.styles";
-import { CreateProductForm, CreateYourProfile, initialValues } from "./utils";
+import {
+  CreateProductForm,
+  CreateProfile,
+  CreateYourProfile,
+  initialValues
+} from "./utils";
 import { useCreateForm } from "./utils/useCreateForm";
 
 const productTypeItemsPerRow = {
@@ -119,18 +112,38 @@ export default function ProductType({
 }: Props) {
   const { address } = useAccount();
   const { handleChange, values, nextIsDisabled } = useCreateForm();
-  const [, , helpersCreateYourProfile] =
+  const [createYourProfile, metaCreateYourProfile, helpersCreateYourProfile] =
     useField<CreateYourProfile["createYourProfile"]>("createYourProfile");
-  const ipfsMetadataStorage = useIpfsStorage();
-  const { showModal, store, updateProps } = useModal();
-  const fileName = useMemo<CreateProductImageCreteYourProfileLogo>(
-    () => `create-product-image_createYourProfile.logo`,
-    []
-  );
-  const [, setBase64] = useLocalStorage<GetItemFromStorageKey | null>(
-    fileName as GetItemFromStorageKey,
-    null
-  );
+  const isProfileSetFromForm = (
+    Object.keys(createYourProfile.value) as Array<
+      keyof typeof createYourProfile.value
+    >
+  ).some((key) => {
+    if (key === "contactPreference") {
+      return (
+        createYourProfile.value[key].value !==
+        metaCreateYourProfile.initialValue?.[key].value
+      );
+    }
+    if (key === "coverPicture" || key === "logo") {
+      return (
+        createYourProfile.value[key]?.[0]?.src !==
+        metaCreateYourProfile.initialValue?.[key]?.[0]?.src
+      );
+    }
+    return (
+      createYourProfile.value[key] !== metaCreateYourProfile.initialValue?.[key]
+    );
+  });
+  const { showModal, store } = useModal();
+  // const fileName = useMemo<CreateProductImageCreteYourProfileLogo>(
+  //   () => `create-product-image_createYourProfile.logo`,
+  //   []
+  // );
+  // const [, setBase64] = useLocalStorage<GetItemFromStorageKey | null>(
+  //   fileName as GetItemFromStorageKey,
+  //   null
+  // );
   const {
     sellers: currentSellers,
     sellerType: currentRoles,
@@ -141,7 +154,6 @@ export default function ProductType({
     isFetching,
     refetch
   } = useCurrentSellers();
-
   const [shownDraftModal, setShowDraftModal] = useState<boolean>(false);
 
   const [isRegularSellerSet, setIsRegularSeller] = useState<boolean>(false);
@@ -151,8 +163,8 @@ export default function ProductType({
   const isSellerNotAssistant = (isClerk || isAdmin) && !isAssistant;
 
   // If the seller exists but no LENS profile attached to it, it's a regular seller
-  const isRegularSeller =
-    currentSellers && currentSellers?.length > 0 && !lens?.length;
+  // const isRegularSeller =
+  //   currentSellers && currentSellers?.length > 0 && !lens?.length;
 
   const isAdminLinkedToLens =
     !isLoading &&
@@ -164,24 +176,24 @@ export default function ProductType({
       );
     });
 
-  const hasValidAdminAccount =
-    (CONFIG.lens.enabled && isAdminLinkedToLens) || !CONFIG.lens.enabled;
+  const hasValidAdminAccount = isAdminLinkedToLens;
   const isSeller = !!currentSellers.length;
-  const currentAssistant = currentSellers.find((seller) => {
-    return seller.assistant.toLowerCase() === address?.toLowerCase();
-  }); // lens profile of the current user
-  const assistantLens: Profile | null = useMemo(
-    () =>
-      lens.find((lensProfile) => {
-        const lensIdDecimal = getLensTokenIdDecimal(lensProfile.id).toString();
-        const authTokenId = currentAssistant?.authTokenId;
-        return lensIdDecimal === authTokenId;
-      }) || null,
-    [currentAssistant?.authTokenId, lens]
-  );
-  const onRegularProfileCreated = useCallback(
-    (regularProfile: CreateYourProfile) => {
-      helpersCreateYourProfile.setValue(regularProfile.createYourProfile);
+  const seller = currentSellers?.[0];
+  // const currentAssistant = currentSellers.find((seller) => {
+  //   return seller.assistant.toLowerCase() === address?.toLowerCase();
+  // }); // lens profile of the current user
+  // const assistantLens: Profile | null = useMemo(
+  //   () =>
+  //     lens.find((lensProfile) => {
+  //       const lensIdDecimal = getLensTokenIdDecimal(lensProfile.id).toString();
+  //       const authTokenId = currentAssistant?.authTokenId;
+  //       return lensIdDecimal === authTokenId;
+  //     }) || null,
+  //   [currentAssistant?.authTokenId, lens]
+  // );
+  const setProfileInForm = useCallback(
+    (regularProfile: CreateYourProfile["createYourProfile"]) => {
+      helpersCreateYourProfile.setValue(regularProfile);
       // Save values in local storage in case Edit draft is chosen in the next step
       const currentValues = getItemFromStorage<CreateProductForm | null>(
         "create-product",
@@ -190,7 +202,7 @@ export default function ProductType({
       const newValues: CreateProductForm = {
         ...initialValues,
         ...currentValues,
-        createYourProfile: regularProfile.createYourProfile
+        createYourProfile: regularProfile
       };
       saveItemInStorage("create-product", newValues);
       setIsRegularSeller(true);
@@ -199,46 +211,14 @@ export default function ProductType({
     []
   );
   useEffect(() => {
-    if (CONFIG.lens.enabled && assistantLens) {
-      (async () => {
-        try {
-          const logoUrl = getLensProfilePictureUrl(assistantLens as Profile);
-          const [logoBase64] = await fetchIpfsBase64Media(
-            [logoUrl],
-            ipfsMetadataStorage
-          );
-          if (!logoBase64) {
-            return; // should never happen
-          }
-          const wrongDataFormat = "data:application/octet-stream;base64,";
-          const indexWrongDataFormat = logoBase64.indexOf(wrongDataFormat);
-          const fixedBase64 =
-            indexWrongDataFormat === -1
-              ? logoBase64
-              : "data:image/jpeg;base64," +
-                logoBase64.substring(
-                  indexWrongDataFormat + wrongDataFormat.length
-                );
-          setBase64(fixedBase64 as any);
-          const createYourProfile = {
-            logo: [
-              {
-                src: fixedBase64
-              }
-            ],
-            name: assistantLens.name || "",
-            email: getLensEmail(assistantLens as Profile) || "",
-            description: assistantLens.bio || "",
-            website: getLensWebsite(assistantLens as Profile) || ""
-          };
-          helpersCreateYourProfile.setValue(createYourProfile);
-        } catch (error) {
-          console.error(error);
-        }
-      })();
+    const metadata = seller?.metadata;
+
+    if (!isProfileSetFromForm && metadata) {
+      const profileDataFromMetadata: CreateProfile =
+        buildProfileFromMetadata(metadata);
+      setProfileInForm(profileDataFromMetadata);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ipfsMetadataStorage, assistantLens]);
+  }, [isProfileSetFromForm, seller?.metadata, setProfileInForm]);
 
   useEffect(() => {
     if (!(isSuccess && !isRefetching && !isLoading && !isFetching)) {
@@ -252,41 +232,18 @@ export default function ProductType({
       // Show the draft modal to let the user choosing if they wants to use Draft
       setShowDraftModal(true);
       showCreateProductDraftModal();
-    } else if (!isRegularSellerSet && isDraftModalClosed) {
+    } else if (!isRegularSellerSet && !isSeller && isDraftModalClosed) {
       // Seller needs to set their profile
-      if (store.modalType) {
-        if (!CONFIG.lens.enabled) {
-          updateProps<"CREATE_PROFILE">({
-            ...store,
-            modalProps: {
-              ...store.modalProps,
-              initialRegularCreateProfile: values,
-              isSeller: !!isSeller
-            }
-          });
-        }
-      } else {
+      if (!store.modalType) {
         // Show create profile popup
         showModal(
           "CREATE_PROFILE",
           {
-            ...(CONFIG.lens.enabled && !isRegularSeller
-              ? {
-                  headerComponent: (
-                    <ProfileMultiSteps
-                      createOrSelect={null}
-                      activeStep={0}
-                      createOrViewRoyalties={null}
-                      key="ProductType"
-                    />
-                  )
-                }
-              : { title: "Create Profile" }),
-            initialRegularCreateProfile: values,
-            useLens: CONFIG.lens.enabled && !isRegularSeller,
+            title: "Create Profile",
+            initialRegularCreateProfile: values["createYourProfile"],
             seller: currentSellers?.length ? currentSellers[0] : undefined,
             lensProfile: lens?.length ? lens[0] : undefined,
-            onRegularProfileCreated,
+            onRegularProfileCreated: setProfileInForm,
             closable: false,
             onClose: async () => {
               await refetch();

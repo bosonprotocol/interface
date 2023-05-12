@@ -44,18 +44,13 @@ export const poll = async function <T>(
   return result;
 };
 
-export const wait = async (ms: number) => {
+const wait = async (ms: number) => {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);
   });
 };
 
 export type CreateProductSteps = {
-  // 0: {
-  //   ui: JSX.Element;
-  //   validation: typeof createYourProfileValidationSchema;
-  //   helpSection: typeof createYourProfileHelp;
-  // };
   0: {
     ui: JSX.Element;
     validation: typeof productTypeValidationSchema;
@@ -93,7 +88,7 @@ export type CreateProductSteps = {
   };
 };
 
-export type CreateProductStepsParams = {
+type CreateProductStepsParams = {
   setIsPreviewVisible: React.Dispatch<React.SetStateAction<boolean>>;
   chatInitializationStatus: ChatInitializationStatus;
   showCreateProductDraftModal: () => void;

@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/browser";
 import { useFormikContext } from "formik";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import styled from "styled-components";
@@ -336,6 +337,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
             }
           } catch (error) {
             console.error(error);
+            Sentry.captureException(error);
           }
         }
         url = new URL(iframeSrc.replace("/#/", "/"));
@@ -406,6 +408,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
               }
             } catch (error) {
               console.error(error);
+              Sentry.captureException(error);
               return null;
             }
 
@@ -415,6 +418,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
         setValues({ ...values, ...Object.fromEntries(cleanedEntries) }, true);
       } catch (error) {
         console.error(error);
+        Sentry.captureException(error);
       }
     })();
 

@@ -1,4 +1,5 @@
 import { CoreSDK, subgraph } from "@bosonprotocol/react-kit";
+import * as Sentry from "@sentry/browser";
 import { useCallback } from "react";
 import { useAccount } from "wagmi";
 import create from "zustand";
@@ -144,6 +145,7 @@ async function getReconciledPendingTransactions(
     return pendingTransactions.filter((tx) => !completedTxHashes.has(tx.hash));
   } catch (error) {
     console.error(error);
+    Sentry.captureException(error);
     return pendingTransactions;
   }
 }
@@ -179,6 +181,7 @@ async function getReconciledPendingMetaTransactions(
       });
   } catch (error) {
     console.error(error);
+    Sentry.captureException(error);
     return pendingTransactions;
   }
 }

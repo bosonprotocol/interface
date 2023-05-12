@@ -1,3 +1,5 @@
+import * as Sentry from "@sentry/browser";
+
 import { CONFIG } from "../../../lib/config";
 import { colors } from "../../../lib/styles/colors";
 
@@ -23,7 +25,10 @@ export async function getOpenSeaUrl(address: string) {
             : false
         )
       )
-      .catch((err) => console.error(err));
+      .catch((error) => {
+        console.error(error);
+        Sentry.captureException(error);
+      });
   });
 }
 

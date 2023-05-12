@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/browser";
 import isObject from "lodash/isObject";
 import mapValues from "lodash/mapValues";
 import { Copy } from "phosphor-react";
@@ -52,6 +53,7 @@ export default function FormField({
                   toast(() => "Text has been copied to clipboard");
                 } catch (error) {
                   console.error(error);
+                  Sentry.captureException(error);
                   return false;
                 }
               }}
