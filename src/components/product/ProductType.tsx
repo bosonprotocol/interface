@@ -210,15 +210,26 @@ export default function ProductType({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
+  const [firstLensProfile] = lens;
   useEffect(() => {
     const metadata = seller?.metadata;
+    const authTokenType = seller?.authTokenType;
 
-    if (!isProfileSetFromForm && metadata) {
-      const profileDataFromMetadata: CreateProfile =
-        buildProfileFromMetadata(metadata);
+    if (!isProfileSetFromForm && metadata && authTokenType !== undefined) {
+      const profileDataFromMetadata: CreateProfile = buildProfileFromMetadata(
+        metadata,
+        authTokenType,
+        firstLensProfile
+      );
       setProfileInForm(profileDataFromMetadata);
     }
-  }, [isProfileSetFromForm, seller?.metadata, setProfileInForm]);
+  }, [
+    isProfileSetFromForm,
+    seller?.metadata,
+    setProfileInForm,
+    firstLensProfile,
+    seller?.authTokenType
+  ]);
 
   useEffect(() => {
     if (!(isSuccess && !isRefetching && !isLoading && !isFetching)) {
