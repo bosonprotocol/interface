@@ -1035,7 +1035,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                     <RaiseProblemButton
                       onClick={() => {
                         showModal(modalTypes.RAISE_DISPUTE, {
-                          title: "Raise a problem",
+                          title: "Raise a dispute",
                           exchangeId: exchange?.id || ""
                         });
                       }}
@@ -1047,7 +1047,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                         hasDisputePeriodElapsed
                       }
                     >
-                      Raise a problem
+                      Raise a dispute
                       <Question size={18} />
                     </RaiseProblemButton>
                   )}
