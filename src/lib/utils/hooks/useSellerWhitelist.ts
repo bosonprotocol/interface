@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/browser";
 import { useMemo } from "react";
 import { useQuery } from "react-query";
 
@@ -26,6 +27,7 @@ export function useSellerWhitelist(
           String(id)
         ) as string[];
       } catch (e) {
+        Sentry.captureException(e);
         console.error(e);
         return [];
       }
