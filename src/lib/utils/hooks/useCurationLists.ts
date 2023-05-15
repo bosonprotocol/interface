@@ -20,7 +20,7 @@ export function useCurationLists() {
     useCustomStoreQueryParameter("offerCurationList");
 
   return {
-    enableCurationLists: CONFIG.enableCurationLists, // curation list is always enabled except if env var is used to disable it
+    enableCurationLists: CONFIG.enableCurationLists,
     sellerCurationList: sellerCurationListFromUrlParam
       ? sellerCurationList.filter((sellerId) =>
           sellerCurationListFromUrl?.includes(sellerId)
