@@ -180,7 +180,7 @@ export default function SellerExchanges({
   const [csvData, setCsvData] = useState<CSVData[]>([] as CSVData[]);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const { initialize, bosonXmtp, isInitializing } = useChatContext();
+  const { initialize, bosonXmtp, isInitializing, error } = useChatContext();
   const worker = useWorker(createWorker);
 
   const location = useLocation();
@@ -567,6 +567,12 @@ export default function SellerExchanges({
         xl: "700px"
       }
     );
+
+  useEffect(() => {
+    if ((bosonXmtp && loading) || error) {
+      setLoading(false);
+    }
+  }, [bosonXmtp, loading, error]);
 
   useEffect(() => {
     if (bosonXmtp && loading && csvData.length === 0) {

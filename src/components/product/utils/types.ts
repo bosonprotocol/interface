@@ -2,7 +2,6 @@ import * as Yup from "yup";
 
 import {
   coreTermsOfSaleValidationSchema,
-  createYourProfileValidationSchema,
   disputeCentreValidationSchemaAdditionalInformation,
   disputeCentreValidationSchemaGetStarted,
   disputeCentreValidationSchemaMakeProposal,
@@ -14,14 +13,17 @@ import {
   productTypeValidationSchema,
   productVariantsImagesValidationSchema,
   productVariantsValidationSchema,
+  regularProfileValidationSchema,
   shippingInfoValidationSchema,
   termsOfExchangeValidationSchema,
   variantsCoreTermsOfSaleValidationSchema
 } from "./validationSchema";
 
 export type CreateYourProfile = Yup.InferType<
-  typeof createYourProfileValidationSchema
+  typeof regularProfileValidationSchema
 >;
+
+export type CreateProfile = CreateYourProfile["createYourProfile"];
 
 export type ProductType = Yup.InferType<typeof productTypeValidationSchema>;
 

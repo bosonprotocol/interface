@@ -1,5 +1,6 @@
 import { CreateOfferArgs } from "@bosonprotocol/common";
 import { offers, subgraph } from "@bosonprotocol/react-kit";
+import * as Sentry from "@sentry/browser";
 import { BigNumber } from "ethers";
 import { useEffect, useState } from "react";
 
@@ -53,8 +54,9 @@ export function useRenderTemplate(
           );
           setRenderResult(result);
           setRenderStatus(ProgressStatus.SUCCESS);
-        } catch (e) {
-          console.error(e);
+        } catch (error) {
+          console.error(error);
+          Sentry.captureException(error);
           setRenderStatus(ProgressStatus.ERROR);
         }
       }

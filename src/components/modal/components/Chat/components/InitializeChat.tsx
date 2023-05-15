@@ -1,6 +1,6 @@
 import { ChatDots, Warning } from "phosphor-react";
 import styled from "styled-components";
-import { useAccount } from "wagmi";
+import { useAccount, useSigner } from "wagmi";
 
 import { colors } from "../../../../../lib/styles/colors";
 import { useChatContext } from "../../../../../pages/chat/ChatProvider/ChatContext";
@@ -32,12 +32,14 @@ interface Props {
   isError?: boolean;
 }
 export default function InitializeChat({ isError = false }: Props) {
+  const { data: signer } = useSigner();
   const { initialize, bosonXmtp, isInitializing } = useChatContext();
   const { address } = useAccount();
 
   const isInitializeButtonVisible =
     (address && !bosonXmtp) || (isError && address && !bosonXmtp);
 
+  const isDisabled = isInitializing || !signer;
   return (
     <Info justifyContent="space-between" gap="2rem">
       <Grid justifyContent="flex-start" gap="1rem">
@@ -60,10 +62,14 @@ export default function InitializeChat({ isError = false }: Props) {
           <BosonButton
             type="button"
             variant="accentFill"
-            style={{
-              color: colors.white
-            }}
-            disabled={isInitializing}
+            style={
+              isDisabled
+                ? {}
+                : {
+                    color: colors.white
+                  }
+            }
+            disabled={isDisabled}
             onClick={() => {
               initialize();
             }}

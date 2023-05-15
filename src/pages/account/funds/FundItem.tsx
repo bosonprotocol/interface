@@ -1,4 +1,5 @@
 import { ButtonSize, CoreSDK, subgraph } from "@bosonprotocol/react-kit";
+import * as Sentry from "@sentry/browser";
 import { BigNumber, constants, utils } from "ethers";
 import { CircleNotch } from "phosphor-react";
 import { useState } from "react";
@@ -304,6 +305,7 @@ export default function FundItem({
               setIsWithdrawInvalid(true);
             } catch (error) {
               console.error(error);
+              Sentry.captureException(error);
               setWithdrawError(error);
             } finally {
               setIsBeingWithdrawn(false);
@@ -349,6 +351,7 @@ export default function FundItem({
                 setIsDepositInvalid(true);
               } catch (error) {
                 console.error(error);
+                Sentry.captureException(error);
                 setDepositError(error);
               } finally {
                 setIsBeingDeposit(false);

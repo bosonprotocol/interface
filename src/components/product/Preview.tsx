@@ -126,18 +126,18 @@ export default function Preview({
   const commonTermsOfSale = isMultiVariant
     ? values.variantsCoreTermsOfSale
     : values.coreTermsOfSale;
-  const validFromDateInMS = Date.parse(
-    commonTermsOfSale.offerValidityPeriod[0]
-  );
-  const validUntilDateInMS = Date.parse(
-    commonTermsOfSale.offerValidityPeriod[1]
-  );
-  const voucherRedeemableFromDateInMS = Date.parse(
-    commonTermsOfSale.redemptionPeriod[0]
-  );
-  const voucherRedeemableUntilDateInMS = Date.parse(
-    commonTermsOfSale.redemptionPeriod[1]
-  );
+  const validFromDateInMS = commonTermsOfSale.offerValidityPeriod[0]
+    .toDate()
+    .getTime();
+  const validUntilDateInMS = commonTermsOfSale.offerValidityPeriod[1]
+    .toDate()
+    .getTime();
+  const voucherRedeemableFromDateInMS = commonTermsOfSale.redemptionPeriod[0]
+    .toDate()
+    .getTime();
+  const voucherRedeemableUntilDateInMS = commonTermsOfSale.redemptionPeriod[1]
+    .toDate()
+    .getTime();
   const quantityAvailable = isMultiVariant
     ? firstVariant.quantity
     : values.coreTermsOfSale.quantity;

@@ -2,6 +2,7 @@ import { CONFIG } from "../../../lib/config";
 import { FormModel } from "../../modal/components/Chat/MakeProposal/MakeProposalFormModel";
 import { DisputeFormModel } from "../../modal/components/DisputeModal/DisputeModalFormModel";
 import {
+  OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE,
   OPTIONS_CURRENCIES,
   OPTIONS_DISPUTE_RESOLVER,
   OPTIONS_EXCHANGE_POLICY,
@@ -11,18 +12,20 @@ import {
   OPTIONS_UNIT,
   OPTIONS_WEIGHT,
   TOKEN_CRITERIA,
-  TOKEN_GATED_VARIANTS,
   TOKEN_TYPES
 } from "./const";
-import { CreateProductForm } from "./types";
+import { CreateProductForm, CreateYourProfile } from "./types";
 
-export const createYourProfileInitialValues = {
+export const createYourProfileInitialValues: CreateYourProfile = {
   createYourProfile: {
     logo: undefined,
+    coverPicture: undefined,
     name: "",
     email: "",
     description: "",
-    website: ""
+    website: "",
+    legalTradingName: "",
+    contactPreference: OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE[0]
   }
 } as const;
 
@@ -89,7 +92,6 @@ export const coreTermsOfSaleInitialValues = {
     currency: OPTIONS_CURRENCIES[0],
     quantity: 1,
     tokenGatedOffer: OPTIONS_TOKEN_GATED[0],
-    tokenGatedVariants: TOKEN_GATED_VARIANTS[0],
     tokenContract: "",
     tokenType: TOKEN_TYPES[0],
     minBalance: undefined,
@@ -105,7 +107,6 @@ export const coreTermsOfSaleInitialValues = {
 export const variantsCoreTermsOfSaleInitialValues = {
   variantsCoreTermsOfSale: {
     tokenGatedOffer: OPTIONS_TOKEN_GATED[0],
-    tokenGatedVariants: TOKEN_GATED_VARIANTS[0],
     tokenContract: "",
     tokenType: TOKEN_TYPES[0],
     minBalance: undefined,

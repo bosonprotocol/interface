@@ -6,6 +6,7 @@ import {
   subgraph
 } from "@bosonprotocol/react-kit";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import * as Sentry from "@sentry/browser";
 import dayjs from "dayjs";
 import {
   BigNumber,
@@ -675,6 +676,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     if (hasUserRejectedTx) {
       showModal("TRANSACTION_FAILED");
     } else {
+      Sentry.captureException(error);
       showModal(modalTypes.DETAIL_WIDGET, {
         title: "An error occurred",
         message: "An error occurred when trying to commit!",

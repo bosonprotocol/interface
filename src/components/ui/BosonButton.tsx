@@ -46,7 +46,6 @@ const StyledBosonButton = styled(Button)`
         `;
     }
   }}
-  height: auto;
 `;
 
 const ChildWrapperButton = styled.div`

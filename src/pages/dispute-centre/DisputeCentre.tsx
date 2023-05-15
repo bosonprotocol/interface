@@ -1,5 +1,6 @@
 import { TransactionResponse } from "@bosonprotocol/common";
 import { CoreSDK, subgraph } from "@bosonprotocol/react-kit";
+import * as Sentry from "@sentry/browser";
 import { BigNumberish } from "ethers";
 import { Formik } from "formik";
 import { ArrowLeft } from "phosphor-react";
@@ -226,6 +227,7 @@ function DisputeCentre() {
                     );
                     setSubmitError(err);
                     console.error(err.message);
+                    Sentry.captureException(err);
                     return;
                   }
                   if (bosonXmtp) {
@@ -310,6 +312,7 @@ function DisputeCentre() {
                   if (hasUserRejectedTx) {
                     showModal("TRANSACTION_FAILED");
                   } else {
+                    Sentry.captureException(error);
                     showModal("TRANSACTION_FAILED", {
                       errorMessage: "Something went wrong"
                     });

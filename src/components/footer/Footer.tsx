@@ -5,6 +5,7 @@ import logo from "../../../src/assets/logo-white.svg";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
+import { sanitizeUrl } from "../../lib/utils/url";
 import SocialLogo, {
   SocialLogoValues
 } from "../../pages/custom-store/SocialLogo";
@@ -112,9 +113,9 @@ function Socials() {
       return socialMediaLinks.map(({ url, value }) => {
         return (
           <a
-            href={url}
+            href={sanitizeUrl(url)}
             target="_blank"
-            rel="noopener"
+            rel="noopener noreferrer"
             key={`social_nav_${value}_${url}`}
           >
             <SocialLogo logo={value} />
@@ -241,9 +242,10 @@ export default function FooterComponent() {
                   return (
                     <a
                       key={`${footerLink.label}-${footerLink.value}-${index}`}
-                      href={footerLink.value}
+                      href={sanitizeUrl(footerLink.value)}
                       target="_blank"
                       style={{ textAlign: "center" }}
+                      rel="noopener noreferrer"
                     >
                       {footerLink.label}
                     </a>

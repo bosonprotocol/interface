@@ -173,7 +173,6 @@ const allThemes = ({ withBosonStyle }: { withBosonStyle?: boolean }) => {
         background: colors.border
       }
     },
-
     blank: {
       color: `${colors.black}4d`,
       padding: "0.75rem 0.5rem",
@@ -187,6 +186,17 @@ const allThemes = ({ withBosonStyle }: { withBosonStyle?: boolean }) => {
     blankSecondary: {
       color: "var(--accent)",
       padding: "0.75rem 0.5rem",
+      hover: {
+        borderColor: colors.secondary,
+        background: colors.border,
+        color: colors.black
+      }
+    },
+    blankSecondaryOutline: {
+      color: "var(--accent)",
+      padding: "0.75rem 0.5rem",
+      borderWidth: 1,
+      borderColor: colors.secondary,
       hover: {
         borderColor: colors.secondary,
         background: colors.border,

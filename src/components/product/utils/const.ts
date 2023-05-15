@@ -1,6 +1,7 @@
 import { CONFIG } from "../../../lib/config";
 import countries from "../../../lib/const/countries.json";
 import { Token } from "../../convertion-rate/ConvertionRateContext";
+import { ContactPreference } from "../../modal/components/Profile/const";
 
 export const MAX_LOGO_SIZE = 600 * 1024;
 export const MAX_IMAGE_SIZE = 600 * 1024;
@@ -8,7 +9,8 @@ export const SUPPORTED_FILE_FORMATS = [
   "image/jpg",
   "image/jpeg",
   "image/gif",
-  "image/png"
+  "image/png",
+  "image/webp"
 ];
 
 export const CREATE_PRODUCT_STEPS = (isMultiVariant: boolean) => [
@@ -79,14 +81,7 @@ export const OPTIONS_TOKEN_GATED = [
     value: "true",
     label: "Yes"
   }
-];
-
-export const TOKEN_GATED_VARIANTS = [
-  {
-    value: "all",
-    label: "All"
-  }
-];
+] as const;
 
 export const TOKEN_TYPES = [
   {
@@ -101,7 +96,7 @@ export const TOKEN_TYPES = [
     value: "erc1155",
     label: "ERC1155"
   }
-];
+] as const;
 
 export const TOKEN_CRITERIA = [
   {
@@ -112,7 +107,7 @@ export const TOKEN_CRITERIA = [
     value: "tokenid",
     label: "tokenId"
   }
-];
+] as const;
 
 export const OPTIONS_EXCHANGE_POLICY = [
   {
@@ -127,6 +122,18 @@ export const OPTIONS_DISPUTE_RESOLVER = [
     label: "Redeemeum"
   }
 ];
+
+export const OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE = [
+  {
+    // default option
+    value: ContactPreference.XMTP_AND_EMAIL,
+    label: "XMTP initialisation + e-mail"
+  },
+  {
+    value: ContactPreference.XMTP,
+    label: "XMTP end-to-end"
+  }
+] as const;
 
 type Entries<T> = {
   [K in keyof T]: [K, T[K]];

@@ -1,41 +1,15 @@
 import { Form, Formik, FormikProps } from "formik";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import * as Yup from "yup";
 
+import useOffer from "../../../../lib/utils/hooks/offer/useOffer";
+import { useCurrentSellers } from "../../../../lib/utils/hooks/useCurrentSellers";
+import Loading from "../../../ui/Loading";
+import { ContactPreference } from "../Profile/const";
 import Confirmation from "./Confirmation/Confirmation";
 import RedeemForm from "./RedeemForm/RedeemForm";
 import { FormModel } from "./RedeemModalFormModel";
 import StepsOverview from "./StepsOverview/StepsOverview";
-
-const formValidationSchema = Yup.object({
-  [FormModel.formFields.name.name]: Yup.string()
-    .trim()
-    .required(FormModel.formFields.name.requiredErrorMessage),
-  [FormModel.formFields.streetNameAndNumber.name]: Yup.string()
-    .trim()
-    .required(FormModel.formFields.streetNameAndNumber.requiredErrorMessage),
-  [FormModel.formFields.city.name]: Yup.string()
-    .trim()
-    .required(FormModel.formFields.city.requiredErrorMessage),
-  [FormModel.formFields.state.name]: Yup.string()
-    .trim()
-    .required(FormModel.formFields.state.requiredErrorMessage),
-  [FormModel.formFields.zip.name]: Yup.string()
-    .trim()
-    .required(FormModel.formFields.zip.requiredErrorMessage),
-  [FormModel.formFields.country.name]: Yup.string()
-    .trim()
-    .required(FormModel.formFields.country.requiredErrorMessage),
-  [FormModel.formFields.email.name]: Yup.string()
-    .trim()
-    .required(FormModel.formFields.email.requiredErrorMessage)
-    .email(FormModel.formFields.email.mustBeEmail),
-  [FormModel.formFields.phone.name]: Yup.string()
-    .trim()
-    .required(FormModel.formFields.phone.requiredErrorMessage)
-});
-
-type FormType = Yup.InferType<typeof formValidationSchema>;
 
 interface Props {
   exchangeId: string;
@@ -65,8 +39,56 @@ export default function RedeemModal({
   setIsLoading
 }: Props) {
   const [activeStep, setActiveStep] = useState<Step>(Step.OVERVIEW);
-  const validationSchema =
-    activeStep === Step.FORM ? formValidationSchema : Yup.object({});
+  const { data: offer } = useOffer(
+    {
+      offerId
+    },
+    {
+      enabled: !!offerId
+    }
+  );
+  const { sellers, isLoading } = useCurrentSellers({
+    sellerId: offer?.seller.id
+  });
+  const seller = sellers?.[0];
+  const emailPreference =
+    seller.metadata?.contactPreference === ContactPreference.XMTP_AND_EMAIL ||
+    offer?.metadata.productV1Seller.contactPreference ===
+      ContactPreference.XMTP_AND_EMAIL;
+  const validationSchema = useMemo(() => {
+    return Yup.object({
+      [FormModel.formFields.name.name]: Yup.string()
+        .trim()
+        .required(FormModel.formFields.name.requiredErrorMessage),
+      [FormModel.formFields.streetNameAndNumber.name]: Yup.string()
+        .trim()
+        .required(
+          FormModel.formFields.streetNameAndNumber.requiredErrorMessage
+        ),
+      [FormModel.formFields.city.name]: Yup.string()
+        .trim()
+        .required(FormModel.formFields.city.requiredErrorMessage),
+      [FormModel.formFields.state.name]: Yup.string()
+        .trim()
+        .required(FormModel.formFields.state.requiredErrorMessage),
+      [FormModel.formFields.zip.name]: Yup.string()
+        .trim()
+        .required(FormModel.formFields.zip.requiredErrorMessage),
+      [FormModel.formFields.country.name]: Yup.string()
+        .trim()
+        .required(FormModel.formFields.country.requiredErrorMessage),
+      [FormModel.formFields.email.name]: emailPreference
+        ? Yup.string()
+            .trim()
+            .required(FormModel.formFields.email.requiredErrorMessage)
+            .email(FormModel.formFields.email.mustBeEmail)
+        : Yup.string().trim().email(FormModel.formFields.email.mustBeEmail),
+      [FormModel.formFields.phone.name]: Yup.string()
+        .trim()
+        .required(FormModel.formFields.phone.requiredErrorMessage)
+    });
+  }, [emailPreference]);
+  type FormType = Yup.InferType<typeof validationSchema>;
   const formRef = useRef<FormikProps<FormType> | null>(null);
 
   useEffect(() => {
@@ -75,6 +97,11 @@ export default function RedeemModal({
       formRef.current.validateForm();
     }
   }, [activeStep]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
     <>
       <Formik<FormType>
@@ -93,7 +120,7 @@ export default function RedeemModal({
         }}
         validateOnMount
       >
-        {(props: FormikProps<FormType>) => {
+        {(props) => {
           const isRedeemFormOK =
             !props.errors[FormModel.formFields.name.name] &&
             !props.errors[FormModel.formFields.streetNameAndNumber.name] &&
@@ -105,9 +132,9 @@ export default function RedeemModal({
             !props.errors[FormModel.formFields.phone.name];
           return (
             <Form>
-              {activeStep === 0 ? (
+              {activeStep === Step.OVERVIEW ? (
                 <StepsOverview onNextClick={() => setActiveStep(Step.FORM)} />
-              ) : activeStep === 1 ? (
+              ) : activeStep === Step.FORM ? (
                 <RedeemForm
                   onBackClick={() => setActiveStep(Step.OVERVIEW)}
                   onNextClick={() => setActiveStep(Step.CONFIRMATION)}

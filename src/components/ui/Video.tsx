@@ -1,4 +1,5 @@
 import { Loading } from "@bosonprotocol/react-kit";
+import * as Sentry from "@sentry/browser";
 import { VideoCamera as VideoIcon, VideoCameraSlash } from "phosphor-react";
 import React, {
   ReactElement,
@@ -113,6 +114,7 @@ const Video: React.FC<IVideo & React.HTMLAttributes<HTMLDivElement>> = ({
           setVideoSrc(base64str as string);
         } catch (error) {
           console.error("error in Video", error);
+          Sentry.captureException(error);
           setIsLoaded(true);
           setIsError(true);
         }

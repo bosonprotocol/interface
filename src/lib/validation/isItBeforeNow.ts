@@ -3,6 +3,9 @@ import dayjs from "dayjs";
 
 function isItBeforeNow() {
   return this.test("isItBeforeNow", function (value: (Dayjs | null)[]) {
+    if (!value) {
+      return false;
+    }
     const startBeforeNow =
       value[0] instanceof dayjs
         ? value[0]?.isBefore(dayjs())

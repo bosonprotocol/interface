@@ -1,4 +1,5 @@
 import { Provider, RevokeButton, subgraph } from "@bosonprotocol/react-kit";
+import * as Sentry from "@sentry/browser";
 import toast from "react-hot-toast";
 import styled from "styled-components";
 import { useSigner } from "wagmi";
@@ -143,6 +144,7 @@ export default function RevokeProduct({
               if (hasUserRejectedTx) {
                 showModal("TRANSACTION_FAILED");
               } else {
+                Sentry.captureException(error);
                 showModal("TRANSACTION_FAILED", {
                   errorMessage: "Something went wrong"
                 });

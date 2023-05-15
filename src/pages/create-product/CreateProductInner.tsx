@@ -1,14 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   CoreSDK,
-  IpfsMetadataStorage,
   MetadataType,
   offers,
   productV1,
   subgraph
 } from "@bosonprotocol/react-kit";
 import { parseUnits } from "@ethersproject/units";
-import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import { Form, Formik, FormikHelpers, FormikProps } from "formik";
@@ -21,18 +19,12 @@ import { generatePath, useLocation, useNavigate } from "react-router-dom";
 import uuid from "react-uuid";
 import { useAccount } from "wagmi";
 dayjs.extend(localizedFormat);
-
 import { BigNumber, ethers } from "ethers";
 import { useEffect } from "react";
 
 import { Token } from "../../components/convertion-rate/ConvertionRateContext";
 import { FileProps } from "../../components/form/Upload/WithUploadToIpfs";
-import { authTokenTypes } from "../../components/modal/components/CreateProfile/Lens/const";
-import {
-  getLensCoverPictureUrl,
-  getLensProfilePictureUrl,
-  getLensTokenIdDecimal
-} from "../../components/modal/components/CreateProfile/Lens/utils";
+import { getLensTokenIdDecimal } from "../../components/modal/components/Profile/Lens/utils";
 import { useModal } from "../../components/modal/useModal";
 import Help from "../../components/product/Help";
 import Preview from "../../components/product/Preview";
@@ -49,15 +41,12 @@ import SuccessTransactionToast from "../../components/toasts/SuccessTransactionT
 import { CONFIG } from "../../lib/config";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { ProductRoutes } from "../../lib/routing/routes";
-import { fetchIpfsBase64Media } from "../../lib/utils/base64";
 import { useChatStatus } from "../../lib/utils/hooks/chat/useChatStatus";
 import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
-import { useAddPendingTransaction } from "../../lib/utils/hooks/transactions/usePendingTransactions";
+import { useCreateOffers } from "../../lib/utils/hooks/offer/useCreateOffers";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
-import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { saveItemInStorage } from "../../lib/utils/hooks/useLocalStorage";
-import { getImageMetadata } from "../../lib/utils/images";
 import { getIpfsGatewayUrl } from "../../lib/utils/ipfs";
 import { fixformattedString } from "../../lib/utils/number";
 import { useCoreSDK } from "../../lib/utils/useCoreSdk";
@@ -67,8 +56,7 @@ import {
   MultiStepsContainer,
   ProductLayoutContainer
 } from "./CreateProductInner.styles";
-import { createProductSteps, FIRST_STEP, poll } from "./utils";
-import { buildCondition } from "./utils/buildCondition";
+import { createProductSteps, FIRST_STEP } from "./utils";
 import { validateDates } from "./utils/dataValidator";
 import { CreateProductSteps } from "./utils/index";
 
@@ -81,6 +69,7 @@ function onKeyPress(event: React.KeyboardEvent<HTMLFormElement>) {
   }
 }
 type GetProductV1MetadataProps = {
+  contactPreference: string;
   offerUuid: string;
   productInformation: CreateProductForm["productInformation"];
   productAnimation: FileProps | undefined;
@@ -101,16 +90,14 @@ type GetProductV1MetadataProps = {
   productType: CreateProductForm["productType"];
   visualImages: productV1.ProductBase["visuals_images"];
   shippingInfo: CreateProductForm["shippingInfo"];
-  assistantLens: Profile | null;
-  profileImage: FileProps | undefined;
   termsOfExchange: CreateProductForm["termsOfExchange"];
   supportedJurisdictions: Array<SupportedJuridiction>;
   commonTermsOfSale:
     | CreateProductForm["coreTermsOfSale"]
     | CreateProductForm["variantsCoreTermsOfSale"];
-  ipfsMetadataStorage: IpfsMetadataStorage;
 };
 async function getProductV1Metadata({
+  contactPreference,
   offerUuid,
   productInformation,
   productAnimation,
@@ -123,57 +110,30 @@ async function getProductV1Metadata({
   productType,
   visualImages,
   shippingInfo,
-  assistantLens,
-  profileImage,
   termsOfExchange,
   supportedJurisdictions,
-  commonTermsOfSale,
-  ipfsMetadataStorage
+  commonTermsOfSale
 }: GetProductV1MetadataProps): Promise<productV1.ProductV1Metadata> {
-  let sellerImages: productV1.ProductV1Metadata["seller"]["images"] = [
+  const profileImage = createYourProfile?.logo?.[0];
+  const coverImage = createYourProfile?.coverPicture?.[0];
+
+  const sellerImages: productV1.ProductV1Metadata["seller"]["images"] = [
     {
       url: profileImage?.src || "",
       tag: "profile",
-      height: profileImage?.height,
-      width: profileImage?.width,
+      height: profileImage?.height ?? undefined,
+      width: profileImage?.width ?? undefined,
       type: profileImage?.type
+    },
+    {
+      url: coverImage?.src || "",
+      tag: "cover",
+      height: coverImage?.height ?? undefined,
+      width: coverImage?.width ?? undefined,
+      type: coverImage?.type
     }
   ];
-  if (CONFIG.lens.enabled) {
-    const ipfsLinks = [];
-    const pictureUrl = assistantLens
-      ? getLensProfilePictureUrl(assistantLens as Profile) || ""
-      : "";
-    ipfsLinks.push(pictureUrl);
-    const coverUrl = assistantLens
-      ? getLensCoverPictureUrl(assistantLens as Profile) || ""
-      : "";
-    ipfsLinks.push(coverUrl);
-    const [pictureBase64, coverBase64] = await fetchIpfsBase64Media(
-      ipfsLinks,
-      ipfsMetadataStorage
-    );
-    const [pictureMetadata, coverMetadata] = await Promise.all([
-      getImageMetadata(pictureBase64),
-      getImageMetadata(coverBase64)
-    ]);
-    sellerImages = [
-      {
-        url: assistantLens
-          ? getLensProfilePictureUrl(assistantLens as Profile) || ""
-          : "",
-        tag: "profile",
-        ...pictureMetadata
-      },
-      {
-        url: assistantLens
-          ? getLensCoverPictureUrl(assistantLens as Profile) || ""
-          : "",
-        tag: "cover",
-        ...coverMetadata
-      }
-    ];
-  }
+
   return {
     schemaUrl: "https://schema.org/",
     uuid: offerUuid,
@@ -182,8 +142,8 @@ async function getProductV1Metadata({
     animationUrl: getIpfsGatewayUrl(productAnimation?.src || ""),
     animationMetadata: productAnimation
       ? {
-          height: productAnimation.height,
-          width: productAnimation.width,
+          height: productAnimation.height ?? undefined,
+          width: productAnimation.width ?? undefined,
           type: productAnimation.type
         }
       : undefined,
@@ -237,7 +197,8 @@ async function getProductV1Metadata({
           tag: "email"
         }
       ],
-      images: sellerImages
+      images: sellerImages,
+      contactPreference
     },
     exchangePolicy: {
       uuid: Date.now().toString(),
@@ -398,7 +359,7 @@ function CreateProductInner({
     [history, location, setCurrentStep]
   );
 
-  const onCreateNewProject = () => {
+  const onCreateNew = () => {
     hideModal();
     setCurrentStepWithHistory(FIRST_STEP);
     setIsPreviewVisible(false);
@@ -419,13 +380,11 @@ function CreateProductInner({
   const { address } = useAccount();
 
   const { sellers, lens: lensProfiles } = useCurrentSellers();
-  const addPendingTransaction = useAddPendingTransaction();
-
-  const hasSellerAccount = !!sellers?.length;
-
+  const { mutateAsync: createOffers } = useCreateOffers();
   const currentAssistant = sellers.find((seller) => {
     return seller?.assistant.toLowerCase() === address?.toLowerCase();
   });
+  const contactPreference = currentAssistant?.metadata?.contactPreference ?? "";
   // lens profile of the current user
   const assistantLens: Profile | null =
     lensProfiles.find((lensProfile) => {
@@ -486,14 +445,13 @@ function CreateProductInner({
         },
         hasMultipleVariants: !!values.productVariants.variants.length,
         // these are the ones that we already had before
-        onCreateNewProject: onCreateNewProject,
+        onCreateNew: onCreateNew,
         onViewMyItem: () => onViewMyItem(metadataInfo.product?.uuid)
       },
       "auto"
     );
   };
   const formikRef = useRef<FormikProps<CreateProductForm>>(null);
-  const ipfsMetadataStorage = useIpfsStorage();
   const wizardStep = useMemo(() => {
     const wizard = createProductSteps({
       setIsPreviewVisible,
@@ -559,7 +517,6 @@ function CreateProductInner({
       shippingInfo
     } = values;
 
-    const profileImage = createYourProfile?.logo?.[0];
     const productMainImageLink: string | undefined =
       isMultiVariant && !isOneSetOfImages
         ? productVariantsImages?.find((variant) => {
@@ -655,13 +612,11 @@ function CreateProductInner({
         value: voucherRedeemableUntilDateInMS.toString(),
         display_type: "date"
       });
-      if (CONFIG.lens.enabled) {
-        if (assistantLens?.name || assistantLens?.handle) {
-          nftAttributes.push({
-            trait_type: "Seller",
-            value: assistantLens?.name || assistantLens?.handle
-          });
-        }
+      if (assistantLens?.name || assistantLens?.handle) {
+        nftAttributes.push({
+          trait_type: "Seller",
+          value: assistantLens?.name || assistantLens?.handle
+        });
       } else {
         nftAttributes.push({
           trait_type: "Seller",
@@ -726,6 +681,7 @@ function CreateProductInner({
           }
         }
         const productV1Metadata = await getProductV1Metadata({
+          contactPreference,
           offerUuid,
           productInformation,
           productAnimation,
@@ -738,12 +694,9 @@ function CreateProductInner({
           productType,
           visualImages,
           shippingInfo,
-          assistantLens,
-          profileImage,
           termsOfExchange,
           supportedJurisdictions,
-          commonTermsOfSale,
-          ipfsMetadataStorage
+          commonTermsOfSale
         });
         const metadatas = productV1.createVariantProductMetadata(
           productV1Metadata,
@@ -816,6 +769,7 @@ function CreateProductInner({
       } else {
         const visualImages = extractVisualImages(productImages);
         const productV1Metadata = await getProductV1Metadata({
+          contactPreference,
           offerUuid,
           productInformation,
           productAnimation,
@@ -828,12 +782,9 @@ function CreateProductInner({
           productType,
           visualImages,
           shippingInfo,
-          assistantLens,
-          profileImage,
           termsOfExchange,
           supportedJurisdictions,
-          commonTermsOfSale,
-          ipfsMetadataStorage
+          commonTermsOfSale
         });
         const price = coreTermsOfSale.price;
         const decimals = Number(exchangeToken?.decimals || 18);
@@ -874,326 +825,44 @@ function CreateProductInner({
         });
         offersToCreate.push(offerData);
       }
-
-      showModal("WAITING_FOR_CONFIRMATION");
-      const isMetaTx = Boolean(coreSDK.isMetaTxConfigSet && address);
-      const seller = address
-        ? {
-            assistant: address,
-            admin: address,
-            treasury: address,
-            clerk: address,
-            contractUri: "ipfs://sample",
-            royaltyPercentage: "0",
-            authTokenId: "0",
-            authTokenType: authTokenTypes.NONE
-          }
-        : null;
       const isTokenGated = commonTermsOfSale.tokenGatedOffer.value === "true";
-      let txResponse;
-      if (isMultiVariant) {
-        if (!hasSellerAccount && seller) {
-          if (isMetaTx) {
-            // createSeller with meta-transaction
-            const nonce = Date.now();
-            const { r, s, v, functionName, functionSignature } =
-              await coreSDK.signMetaTxCreateSeller({
-                createSellerArgs: seller,
-                nonce
-              });
-            txResponse = await coreSDK.relayMetaTransaction({
-              functionName,
-              functionSignature,
-              sigR: r,
-              sigS: s,
-              sigV: v,
-              nonce
-            });
-          } else {
-            txResponse = await coreSDK.createSeller(seller);
-          }
-          showModal("TRANSACTION_SUBMITTED", {
-            action: "Create seller",
-            txHash: txResponse.hash
-          });
-          addPendingTransaction({
-            type: subgraph.EventType.SellerCreated,
-            hash: txResponse.hash,
-            isMetaTx,
-            accountType: "Seller"
-          });
-          await txResponse.wait();
-          showModal("WAITING_FOR_CONFIRMATION");
+      await createOffers({
+        sellerToCreate: null,
+        isMultiVariant,
+        offersToCreate,
+        tokenGatedInfo: isTokenGated ? commonTermsOfSale : null,
+        conditionDecimals: decimals,
+        onGetExchangeTokenDecimals: setDecimals,
+        onCreatedOffersWithVariants: ({ firstOffer }) => {
+          toast((t) => (
+            <SuccessTransactionToast
+              t={t}
+              action={`Created offer with variants: ${firstOffer?.metadata?.name}`}
+              onViewDetails={() => {
+                handleOpenSuccessModal({
+                  offerInfo: firstOffer || ({} as subgraph.OfferFieldsFragment),
+                  values
+                });
+              }}
+            />
+          ));
+        },
+        onCreatedSingleOffers: ({ offer: createdOffer }) => {
+          toast((t) => (
+            <SuccessTransactionToast
+              t={t}
+              action={`Created offer: ${createdOffer?.metadata?.name}`}
+              onViewDetails={() => {
+                handleOpenSuccessModal({
+                  offerInfo:
+                    createdOffer || ({} as subgraph.OfferFieldsFragment),
+                  values
+                });
+              }}
+            />
+          ));
         }
-        if (isMetaTx) {
-          // createOfferBatch with meta-transaction
-          const nonce = Date.now();
-          const { r, s, v, functionName, functionSignature } =
-            await coreSDK.signMetaTxCreateOfferBatch({
-              createOffersArgs: offersToCreate,
-              nonce
-            });
-          txResponse = await coreSDK.relayMetaTransaction({
-            functionName,
-            functionSignature,
-            sigR: r,
-            sigS: s,
-            sigV: v,
-            nonce
-          });
-        } else {
-          txResponse = await coreSDK.createOfferBatch(offersToCreate);
-        }
-        showModal("TRANSACTION_SUBMITTED", {
-          action: "Create offer with variants",
-          txHash: txResponse.hash
-        });
-        addPendingTransaction({
-          type: subgraph.EventType.OfferCreated,
-          hash: txResponse.hash,
-          isMetaTx,
-          accountType: "Seller"
-        });
-        const txReceipt = await txResponse.wait();
-        const offerIds = coreSDK.getCreatedOfferIdsFromLogs(txReceipt.logs);
-
-        if (isTokenGated) {
-          showModal("WAITING_FOR_CONFIRMATION");
-          if (
-            commonTermsOfSale?.tokenContract &&
-            commonTermsOfSale.tokenType?.value === TOKEN_TYPES[0].value
-          ) {
-            try {
-              const { decimals: decimalsLocal } =
-                await coreSDK.getExchangeTokenInfo(
-                  commonTermsOfSale.tokenContract
-                );
-              setDecimals(decimalsLocal);
-            } catch (error) {
-              setDecimals(undefined);
-            }
-          }
-          const condition = buildCondition(commonTermsOfSale, decimals);
-
-          if (isMetaTx) {
-            const nonce = Date.now();
-            const { r, s, v, functionName, functionSignature } =
-              await coreSDK.signMetaTxCreateGroup({
-                createGroupArgs: { offerIds, ...condition },
-                nonce
-              });
-            txResponse = await coreSDK.relayMetaTransaction({
-              functionName,
-              functionSignature,
-              sigR: r,
-              sigS: s,
-              sigV: v,
-              nonce
-            });
-          } else {
-            txResponse = await coreSDK.createGroup({ offerIds, ...condition });
-          }
-          showModal("TRANSACTION_SUBMITTED", {
-            action: "Create condition group for offers",
-            txHash: txResponse.hash
-          });
-          await txResponse.wait();
-        }
-        let createdOffers: OfferFieldsFragment[] | null = null;
-        await poll(
-          async () => {
-            createdOffers = (
-              await Promise.all(
-                offerIds.map((offerId) =>
-                  coreSDK.getOfferById(offerId as string)
-                )
-              )
-            ).filter((offer) => !!offer);
-            return createdOffers;
-          },
-          (offers) => {
-            return offers.length !== offerIds.length;
-          },
-          500
-        );
-        const [firstOffer] = createdOffers as unknown as OfferFieldsFragment[];
-        toast((t) => (
-          <SuccessTransactionToast
-            t={t}
-            action={`Created offer with variants: ${firstOffer?.metadata?.name}`}
-            onViewDetails={() => {
-              handleOpenSuccessModal({
-                offerInfo: firstOffer || ({} as subgraph.OfferFieldsFragment),
-                values
-              });
-            }}
-          />
-        ));
-      } else {
-        const [offerData] = offersToCreate;
-        if (isMetaTx) {
-          // meta-transaction
-          if (!hasSellerAccount && seller) {
-            // createSeller with meta-transaction
-            const nonce = Date.now();
-            const { r, s, v, functionName, functionSignature } =
-              await coreSDK.signMetaTxCreateSeller({
-                createSellerArgs: seller,
-                nonce
-              });
-            const createSellerResponse = await coreSDK.relayMetaTransaction({
-              functionName,
-              functionSignature,
-              sigR: r,
-              sigS: s,
-              sigV: v,
-              nonce
-            });
-            showModal("TRANSACTION_SUBMITTED", {
-              action: "Create seller",
-              txHash: createSellerResponse.hash
-            });
-            addPendingTransaction({
-              type: subgraph.EventType.SellerCreated,
-              hash: createSellerResponse.hash,
-              isMetaTx,
-              accountType: "Seller"
-            });
-            await createSellerResponse.wait();
-            showModal("WAITING_FOR_CONFIRMATION");
-          }
-          // createOffer with meta-transaction
-          const nonce = Date.now();
-          if (!isTokenGated) {
-            const { r, s, v, functionName, functionSignature } =
-              await coreSDK.signMetaTxCreateOffer({
-                createOfferArgs: offerData,
-                nonce
-              });
-            txResponse = await coreSDK.relayMetaTransaction({
-              functionName,
-              functionSignature,
-              sigR: r,
-              sigS: s,
-              sigV: v,
-              nonce
-            });
-          } else {
-            if (
-              commonTermsOfSale?.tokenContract &&
-              commonTermsOfSale.tokenType?.value === TOKEN_TYPES[0].value
-            ) {
-              try {
-                const { decimals: decimalsLocal } =
-                  await coreSDK.getExchangeTokenInfo(
-                    commonTermsOfSale.tokenContract
-                  );
-                setDecimals(decimalsLocal);
-              } catch (error) {
-                setDecimals(undefined);
-              }
-            }
-            const condition = buildCondition(commonTermsOfSale, decimals);
-            const { r, s, v, functionName, functionSignature } =
-              await coreSDK.signMetaTxCreateOfferWithCondition({
-                offerToCreate: offerData,
-                condition,
-                nonce
-              });
-            txResponse = await coreSDK.relayMetaTransaction({
-              functionName,
-              functionSignature,
-              sigR: r,
-              sigS: s,
-              sigV: v,
-              nonce
-            });
-          }
-        } else {
-          if (isTokenGated) {
-            if (
-              commonTermsOfSale?.tokenContract &&
-              commonTermsOfSale.tokenType?.value === TOKEN_TYPES[0].value
-            ) {
-              try {
-                const { decimals: decimalsLocal } =
-                  await coreSDK.getExchangeTokenInfo(
-                    commonTermsOfSale.tokenContract
-                  );
-
-                setDecimals(decimalsLocal);
-              } catch (error) {
-                setDecimals(undefined);
-              }
-            }
-            const condition = buildCondition(commonTermsOfSale, decimals);
-            txResponse =
-              !hasSellerAccount && seller
-                ? await coreSDK.createSellerAndOfferWithCondition(
-                    seller,
-                    offerData,
-                    condition
-                  )
-                : await coreSDK.createOfferWithCondition(offerData, condition);
-          } else {
-            txResponse =
-              !hasSellerAccount && seller
-                ? await coreSDK.createSellerAndOffer(seller, offerData)
-                : await coreSDK.createOffer(offerData);
-          }
-        }
-        showModal("TRANSACTION_SUBMITTED", {
-          action: "Create offer",
-          txHash: txResponse.hash
-        });
-
-        addPendingTransaction({
-          type: subgraph.EventType.OfferCreated,
-          hash: txResponse.hash,
-          isMetaTx,
-          accountType: "Seller"
-        });
-
-        if (!hasSellerAccount && seller) {
-          addPendingTransaction({
-            type: subgraph.EventType.SellerCreated,
-            hash: txResponse.hash,
-            isMetaTx,
-            accountType: "Seller"
-          });
-        }
-
-        const txReceipt = await txResponse.wait();
-        const offerId = coreSDK.getCreatedOfferIdFromLogs(txReceipt.logs);
-        let createdOffer: OfferFieldsFragment | null = null;
-        await poll(
-          async () => {
-            createdOffer = await coreSDK.getOfferById(offerId as string);
-            return createdOffer;
-          },
-          (offer) => {
-            return !offer;
-          },
-          500
-        );
-        if (!createdOffer) {
-          return;
-        }
-        toast((t) => (
-          <SuccessTransactionToast
-            t={t}
-            action={`Created offer: ${createdOffer?.metadata?.name}`}
-            onViewDetails={() => {
-              handleOpenSuccessModal({
-                offerInfo: createdOffer || ({} as subgraph.OfferFieldsFragment),
-                values
-              });
-            }}
-          />
-        ));
-      }
-
-      hideModal();
+      });
     } catch (error: any) {
       // TODO: FAILURE MODAL
       console.error("error->", error.errors ?? error);
@@ -1232,11 +901,11 @@ function CreateProductInner({
         [coreTermsOfSaleKey]: {
           ...values[coreTermsOfSaleKey],
           redemptionPeriod:
-            values?.[coreTermsOfSaleKey]?.redemptionPeriod?.map((d: Dayjs) =>
+            values?.[coreTermsOfSaleKey]?.redemptionPeriod?.map((d) =>
               dayjs(d).format()
             ) ?? [],
           offerValidityPeriod:
-            values?.[coreTermsOfSaleKey]?.offerValidityPeriod?.map((d: Dayjs) =>
+            values?.[coreTermsOfSaleKey]?.offerValidityPeriod?.map((d) =>
               dayjs(d).format()
             ) ?? []
         }

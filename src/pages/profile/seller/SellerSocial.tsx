@@ -1,12 +1,15 @@
+import { SellerFieldsFragment } from "@bosonprotocol/core-sdk/dist/cjs/subgraph";
 import { Globe } from "phosphor-react";
 import { useEffect, useState } from "react";
 
 import DetailShare from "../../../components/detail/DetailShare";
-import { getLensWebsite } from "../../../components/modal/components/CreateProfile/Lens/utils";
+import { ProfileType } from "../../../components/modal/components/Profile/const";
+import { getLensWebsite } from "../../../components/modal/components/Profile/Lens/utils";
 import {
   Profile,
   ProfileFieldsFragment
 } from "../../../lib/utils/hooks/lens/graphql/generated";
+import { sanitizeUrl } from "../../../lib/utils/url";
 import { preAppendHttps } from "../../../lib/validation/regex/url";
 import {
   DetailShareWrapper,
@@ -26,23 +29,35 @@ function RenderSocial({
   icon: Icon
 }: RenderSocialProps) {
   return (
-    <SocialIcon href={href} $isDisabled={disabled} target="_blank">
+    <SocialIcon
+      href={href}
+      $isDisabled={disabled}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
       {Icon ? Icon : <Globe size={24} />}
     </SocialIcon>
   );
 }
 
 interface Props {
-  sellerLens: ProfileFieldsFragment;
+  sellerLens?: ProfileFieldsFragment;
+  seller: SellerFieldsFragment;
   voucherCloneAddress?: string;
 }
 export default function SellerSocial({
   sellerLens,
+  seller,
   voucherCloneAddress
 }: Props) {
   const [openSeaUrl, setOpenSeaUrl] = useState<string | null>(null);
-  const website = getLensWebsite(sellerLens as Profile);
-  const lensUrl = website ? preAppendHttps(website) || false : false;
+  const useLens =
+    (!seller.metadata || seller.metadata?.kind === ProfileType.LENS) &&
+    sellerLens;
+  const website = useLens
+    ? getLensWebsite(sellerLens as Profile)
+    : seller.metadata?.website;
+  const websiteToShow = website ? preAppendHttps(website) || false : false;
 
   useEffect(() => {
     if (openSeaUrl === null && voucherCloneAddress) {
@@ -59,8 +74,11 @@ export default function SellerSocial({
       {openSeaUrl && <RenderSocial icon={<OpenSeaLogo />} href={openSeaUrl} />}
       {/* TODO: Removed as we don't have discord in lens profile */}
       {/* <RenderSocial icon={DiscordLogo} href={""} /> */}
-      {lensUrl !== false && (
-        <RenderSocial icon={<Globe size={24} />} href={lensUrl} />
+      {websiteToShow !== false && (
+        <RenderSocial
+          icon={<Globe size={24} />}
+          href={sanitizeUrl(websiteToShow)}
+        />
       )}
       <DetailShareWrapper>
         <DetailShare />

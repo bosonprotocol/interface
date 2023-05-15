@@ -4,7 +4,8 @@ import {
   Chats,
   GridFour,
   Megaphone,
-  Storefront
+  Storefront,
+  User
 } from "phosphor-react";
 import React from "react";
 
@@ -15,13 +16,14 @@ import SellerDashboard from "./dashboard/SellerDashboard";
 import SellerExchanges from "./exchanges/SellerExchanges";
 import SellerFinances from "./finances/SellerFinances";
 import SellerProducts from "./products/SellerProducts";
+import { ProfileDetails } from "./profileDetails/ProfileDetails";
 import { SellerInsideProps } from "./SellerInside";
 
 export const DEFAULT_SELLER_PAGE = "dashboard";
 
 export const sellerPageTypes = {
   dashboard: {
-    url: "dashboard",
+    url: DEFAULT_SELLER_PAGE,
     label: "Dashboard",
     icon: GridFour,
     externalPath: null,
@@ -72,6 +74,16 @@ export const sellerPageTypes = {
     component: () => (
       <Navigate replace to={{ pathname: BosonRoutes.CreateStorefront }} />
     )
+  },
+  profileDetails: {
+    url: "profileDetails",
+    label: "Profile Details",
+    icon: User,
+    externalPath: null,
+    component: (props: SellerInsideProps & WithSellerDataProps) => (
+      <ProfileDetails {...props} />
+    ),
+    withoutWrapper: true
   }
 };
 

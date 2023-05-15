@@ -5,7 +5,6 @@ import MakeProposalModal from "./components/Chat/MakeProposal/MakeProposalModal"
 import ResolveDisputeModal from "./components/Chat/ResolveDisputeModal";
 import CompleteExchange from "./components/CompleteExchange";
 import CreateProductDraft from "./components/CreateProductDraft";
-import CreateProfileModal from "./components/CreateProfile/CreateProfileModal";
 import CustomStore from "./components/CustomStore";
 import DetailWidget from "./components/DetailWidget";
 import DisputeModal from "./components/DisputeModal/DisputeModal";
@@ -17,9 +16,13 @@ import ExportExchangesWithDeliveryModal from "./components/ExportExchangesWithDe
 import InvalidRoleModal from "./components/InvalidRoleModal";
 import ManageFunds from "./components/ManageFunds";
 import ProductCreateSuccess from "./components/ProductCreateSuccess";
+import CreateProfileModal from "./components/Profile/CreateProfileModal";
+import EditProfileModal from "./components/Profile/EditProfileModal";
+import { ProfileDetailsModal } from "./components/ProfileDetails/ProfileDetailsModal";
 import ProgressBarModal from "./components/ProgressBarModal";
 import RedeemModal from "./components/RedeemModal/RedeemModal";
 import RedeemSuccessModal from "./components/RedeemModal/RedeemSuccessModal";
+import { RelistOfferModal } from "./components/RelistOfferModal/RelistOfferModal";
 import RetractDisputeModal from "./components/RetractDisputeModal";
 import RevokeProduct from "./components/RevokeProduct";
 import FinanceDeposit from "./components/SellerFinance/FinanceDeposit";
@@ -38,6 +41,7 @@ export const MODAL_TYPES = {
   TRANSACTION_FAILED: "TRANSACTION_FAILED",
   CREATE_PRODUCT_DRAFT: "CREATE_PRODUCT_DRAFT",
   CREATE_PROFILE: "CREATE_PROFILE",
+  EDIT_PROFILE: "EDIT_PROFILE",
   CUSTOM_STORE: "CUSTOM_STORE",
   DETAIL_WIDGET: "DETAIL_WIDGET",
   DISPUTE_RESOLUTION_DECIDE_MODAL: "DISPUTE_RESOLUTION_DECIDE_MODAL",
@@ -64,7 +68,9 @@ export const MODAL_TYPES = {
   WAITING_FOR_CONFIRMATION: "WAITING_FOR_CONFIRMATION",
   WHAT_IS_REDEEM: "WHAT_IS_REDEEM",
   PROGRESS_BAR: "PROGRESS_BAR",
-  EXPORT_EXCHANGES_WITH_DELIVERY: "EXPORT_EXCHANGES_WITH_DELIVERY"
+  EXPORT_EXCHANGES_WITH_DELIVERY: "EXPORT_EXCHANGES_WITH_DELIVERY",
+  RELIST_OFFER: "RELIST_OFFER",
+  PROFILE_DETAILS: "PROFILE_DETAILS"
 } as const;
 
 export const MODAL_COMPONENTS = {
@@ -73,6 +79,7 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.TRANSACTION_FAILED]: TransactionFailedModal,
   [MODAL_TYPES.CREATE_PRODUCT_DRAFT]: CreateProductDraft,
   [MODAL_TYPES.CREATE_PROFILE]: CreateProfileModal,
+  [MODAL_TYPES.EDIT_PROFILE]: EditProfileModal,
   [MODAL_TYPES.CUSTOM_STORE]: CustomStore,
   [MODAL_TYPES.DETAIL_WIDGET]: DetailWidget,
   [MODAL_TYPES.DISPUTE_RESOLUTION_DECIDE_MODAL]: DisputeResolverDecideModal,
@@ -99,5 +106,8 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.WAITING_FOR_CONFIRMATION]: WaitingForConfirmationModal,
   [MODAL_TYPES.WHAT_IS_REDEEM]: WhatIsRedeem,
   [MODAL_TYPES.PROGRESS_BAR]: ProgressBarModal,
-  [MODAL_TYPES.EXPORT_EXCHANGES_WITH_DELIVERY]: ExportExchangesWithDeliveryModal
+  [MODAL_TYPES.EXPORT_EXCHANGES_WITH_DELIVERY]:
+    ExportExchangesWithDeliveryModal,
+  [MODAL_TYPES.RELIST_OFFER]: RelistOfferModal,
+  [MODAL_TYPES.PROFILE_DETAILS]: ProfileDetailsModal
 } as const;

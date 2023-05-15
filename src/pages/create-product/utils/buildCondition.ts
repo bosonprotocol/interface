@@ -7,10 +7,22 @@ import { utils } from "ethers";
 
 import { CreateProductForm } from "../../../components/product/utils";
 
+type JointTermsOfSale =
+  | CreateProductForm["coreTermsOfSale"]
+  | CreateProductForm["variantsCoreTermsOfSale"];
+
+export type CommonTermsOfSale = Pick<
+  JointTermsOfSale,
+  | "tokenId"
+  | "minBalance"
+  | "tokenType"
+  | "tokenCriteria"
+  | "tokenContract"
+  | "maxCommits"
+>;
+
 export const buildCondition = (
-  commonTermsOfSale:
-    | CreateProductForm["coreTermsOfSale"]
-    | CreateProductForm["variantsCoreTermsOfSale"],
+  commonTermsOfSale: CommonTermsOfSale,
   decimals?: number
 ): ConditionStruct => {
   let tokenType: TokenType = TokenType.FungibleToken;
