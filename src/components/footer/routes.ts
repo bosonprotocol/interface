@@ -93,11 +93,13 @@ export const getProductRoutes = ({
 export const getNavigationRoutes = ({
   roles,
   isSupportFunctionalityDefined,
-  onlySeller
+  onlySeller,
+  isSellerCurated
 }: {
   roles: string[];
   isSupportFunctionalityDefined: boolean;
   onlySeller: boolean;
+  isSellerCurated: boolean;
 }) => {
   if (isSupportFunctionalityDefined && onlySeller) {
     return [
@@ -121,10 +123,11 @@ export const getNavigationRoutes = ({
       name: "Profile",
       url: BosonRoutes.YourAccount
     },
-    {
-      name: "Custom Storefront",
-      url: BosonRoutes.CreateStorefront
-    },
+    checkIfUserHaveRole(roles, [UserRoles.Seller], false) &&
+      isSellerCurated && {
+        name: "Custom Storefront",
+        url: BosonRoutes.CreateStorefront
+      },
     checkIfUserHaveRole(
       roles,
       [UserRoles.Buyer, UserRoles.Seller, UserRoles.DisputeResolver],

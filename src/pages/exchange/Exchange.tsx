@@ -126,7 +126,11 @@ export default function Exchange() {
   }
 
   if (!isSellerCurated) {
-    return <div data-testid="notCuratedSeller">Seller is not whitelisted</div>;
+    return (
+      <div data-testid="notCuratedSeller">
+        Seller account {sellerId} has been banned.
+      </div>
+    );
   }
   const buyerAddress = exchange.buyer.wallet;
 
