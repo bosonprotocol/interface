@@ -22,7 +22,6 @@ import { useModal } from "../../useModal";
 import { ChooseProfileType } from "./ChooseProfileType";
 import { ProfileType } from "./const";
 import LensProfileFlow from "./Lens/LensProfileFlow";
-import { LensProfileType } from "./Lens/validationSchema";
 import { CreateRegularProfileFlow } from "./Regular/CreateRegularProfileFlow";
 
 interface Props {
@@ -112,7 +111,7 @@ export default function CreateProfileModal({
   const Component = useCallback(() => {
     return profileType === ProfileType.LENS ? (
       <LensProfileFlow
-        onSubmit={async (id, overrides: LensProfileType) => {
+        onSubmit={async (id, overrides) => {
           hideModal(selectedProfile);
           if (selectedProfile) {
             onRegularProfileCreated?.(overrides);
