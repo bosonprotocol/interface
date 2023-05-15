@@ -144,7 +144,7 @@ function SellerCenterWrapper() {
   }
 
   if (!selectedSellerId) {
-    return <div data-testid="notCuratedSeller">Not found Seller.</div>;
+    return <div data-testid="notCuratedSeller">Seller not found.</div>;
   }
 
   return <SellerCenterWithData sellerId={selectedSellerId} />;
