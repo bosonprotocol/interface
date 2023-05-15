@@ -71,16 +71,18 @@ function AboutPage() {
           <Text margin="0 0 0.5rem 0">
             <span>Seller Curation List:</span>
             <span>
-              {(curationLists.sellerCurationList || []).map((s, i) => {
-                const lastElem =
-                  i === (curationLists.sellerCurationList || []).length - 1;
-                return (
-                  <span key={`sellerCurationList_${s}_${i}`}>
-                    {s}
-                    {!lastElem ? "," : ""}
-                  </span>
-                );
-              })}
+              {curationLists.isError
+                ? "- ERROR -"
+                : (curationLists.sellerCurationList || []).map((s, i) => {
+                    const lastElem =
+                      i === (curationLists.sellerCurationList || []).length - 1;
+                    return (
+                      <span key={`sellerCurationList_${s}_${i}`}>
+                        {s}
+                        {!lastElem ? "," : ""}
+                      </span>
+                    );
+                  })}
             </span>
           </Text>
           <Text margin="0 0 0.5rem 0">

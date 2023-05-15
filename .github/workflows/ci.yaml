@@ -67,7 +67,8 @@ jobs:
       DEPLOY_TO_FLEEK: true
       ENV_NAME: "testing"
       UPDATE_COVERAGE: true
-      REACT_APP_ENABLE_CURATION_LISTS: false
+      REACT_APP_ENABLE_CURATION_LISTS: true
+      REACT_APP_SELLER_BLACKLIST_URL: "https://raw.githubusercontent.com/BAppLimited/curationLists/main/bosonApp.io/testing/sellers/blacklist.json"
       REACT_APP_IPFS_GATEWAY: "https://bosonprotocol.infura-ipfs.io/ipfs"
       REACT_APP_IPFS_IMAGE_GATEWAY: "https://test-permanent-fly-490.mypinata.cloud/ipfs"
       REACT_APP_RELEASE_TAG: ${{ needs.prejob.outputs.releaseTag }}
@@ -96,7 +97,8 @@ jobs:
       DEPLOY_TO_FLEEK: true
       ENV_NAME: "staging"
       UPDATE_COVERAGE: false
-      REACT_APP_ENABLE_CURATION_LISTS: false
+      REACT_APP_ENABLE_CURATION_LISTS: true
+      REACT_APP_SELLER_BLACKLIST_URL: "https://raw.githubusercontent.com/BAppLimited/curationLists/main/bosonApp.io/staging/sellers/blacklist.json"
       REACT_APP_IPFS_GATEWAY: "https://bosonprotocol.infura-ipfs.io/ipfs"
       REACT_APP_IPFS_IMAGE_GATEWAY: "https://test-permanent-fly-490.mypinata.cloud/ipfs"
       REACT_APP_RELEASE_TAG: ${{ needs.prejob.outputs.releaseTag }}
@@ -127,7 +129,6 @@ jobs:
       ENV_NAME: "production"
       UPDATE_COVERAGE: false
       REACT_APP_ENABLE_CURATION_LISTS: true
-      REACT_APP_SELLER_WHITELIST_URL: "https://raw.githubusercontent.com/BAppLimited/curationLists/main/bosonApp.io/production/sellers/whitelist.json"
       REACT_APP_SELLER_BLACKLIST_URL: "https://raw.githubusercontent.com/BAppLimited/curationLists/main/bosonApp.io/production/sellers/blacklist.json"
       REACT_APP_CREATE_PROFILE_CONFIGURATION: "LENS"
       REACT_APP_IPFS_GATEWAY: "https://bosonprotocol.infura-ipfs.io/ipfs"

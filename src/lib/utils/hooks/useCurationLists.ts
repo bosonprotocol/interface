@@ -1,16 +1,15 @@
 import { useCustomStoreQueryParameter } from "../../../pages/custom-store/useCustomStoreQueryParameter";
 import { CONFIG } from "../../config";
 import { parseCurationList } from "../curationList";
-import { useSellerWhitelist } from "./useSellerWhitelist";
+import { useSellerBlacklist } from "./useSellerBlacklist";
 
 export function useCurationLists() {
-  const sellerWhitelist = useSellerWhitelist({
-    sellerWhitelistUrl: CONFIG.sellerWhitelistUrl,
+  const sellerBlacklist = useSellerBlacklist({
     sellerBlacklistUrl: CONFIG.sellerBlacklistUrl,
     allowConnectedSeller: false
   });
-  const sellerCurationList = sellerWhitelist.isSuccess
-    ? (sellerWhitelist.data as string[])
+  const sellerCurationList = sellerBlacklist.isSuccess
+    ? (sellerBlacklist.curatedSellerIds as string[])
     : [];
   const sellerCurationListFromUrlParam =
     useCustomStoreQueryParameter("sellerCurationList");
@@ -29,6 +28,7 @@ export function useCurationLists() {
       : sellerCurationList,
     offerCurationList: offerCurationListFromUrl
       ? parseCurationList(offerCurationListFromUrl)
-      : CONFIG.offerCurationList
+      : CONFIG.offerCurationList,
+    isError: sellerBlacklist.isError
   };
 }

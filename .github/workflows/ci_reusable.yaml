@@ -18,9 +18,6 @@ on:
       REACT_APP_ENABLE_CURATION_LISTS:
         required: true
         type: boolean
-      REACT_APP_SELLER_WHITELIST_URL:
-        required: false
-        type: string
       REACT_APP_SELLER_BLACKLIST_URL:
         required: false
         type: string
@@ -90,7 +87,6 @@ jobs:
       REACT_APP_ENV_NAME: ${{ inputs.REACT_APP_ENV_NAME }}
       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       REACT_APP_ENABLE_CURATION_LISTS: ${{ inputs.REACT_APP_ENABLE_CURATION_LISTS }}
-      REACT_APP_SELLER_WHITELIST_URL: ${{ inputs.REACT_APP_SELLER_WHITELIST_URL }}
       REACT_APP_SELLER_BLACKLIST_URL: ${{ inputs.REACT_APP_SELLER_BLACKLIST_URL }}
       REACT_APP_OFFER_CURATION_LIST: ${{ inputs.REACT_APP_OFFER_CURATION_LIST }}
       REACT_APP_IPFS_GATEWAY: ${{ inputs.REACT_APP_IPFS_GATEWAY }}
