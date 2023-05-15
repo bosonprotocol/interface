@@ -59,7 +59,6 @@ const getExchangesFunction = async (props: Props) => {
       $offerId: String
       ${first ? "$first: Int" : ""}
       ${skip ? "$skip: Int" : ""}
-      ${seller_in ? "$seller_in: String" : ""}
     ) {
       exchanges(
         ${orderBy ? `orderBy: "${orderBy}"` : ""}
