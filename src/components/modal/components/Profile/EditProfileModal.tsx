@@ -18,7 +18,7 @@ import { useModal } from "../../useModal";
 import { ProfileType } from "./const";
 import LensProfileFlow from "./Lens/LensProfileFlow";
 import { EditRegularProfileFlow } from "./Regular/EditRegularProfileFlow";
-import { buildProfileFromMetadata } from "./utils";
+import { buildRegularProfileFromMetadata } from "./utils";
 
 export default function EditProfileModal() {
   const { sellers: currentSellers, lens, isLoading } = useCurrentSellers();
@@ -70,7 +70,7 @@ export default function EditProfileModal() {
   );
   const Component = useCallback(() => {
     const profileDataFromMetadata: CreateProfile =
-      buildProfileFromMetadata(metadata);
+      buildRegularProfileFromMetadata(metadata);
     const forceDirty = !hasMetadata || metadata?.kind !== profileType;
     return profileType === ProfileType.LENS ? (
       <LensProfileFlow
