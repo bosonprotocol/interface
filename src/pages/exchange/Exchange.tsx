@@ -57,7 +57,7 @@ export default function Exchange() {
     },
     {
       enabled: !!exchangeId,
-      onlyCuratedSeller: false // fetch the exchange in any ase, page will be filtered later
+      onlyCuratedSeller: false // fetch the exchange in any case, page will be filtered later
     }
   );
   const exchange = exchanges?.[0];
