@@ -12,6 +12,7 @@ import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustom
 import { UserRoles } from "../../router/routes";
 import useUserRoles, { checkIfUserHaveRole } from "../../router/useUserRoles";
 import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
+import ViewTxButton from "../transactions/ViewTxButton";
 import Search from "./Search";
 
 export const HEADER_HEIGHT = "5.4rem";
@@ -28,7 +29,8 @@ const NavigationLinks = styled.div<{
     flex: 1;
   }
   height: 100%;
-  a {
+  a,
+  [data-anchor] {
     color: var(--headerTextColor, ${colors.black});
     :hover {
       background-color: ${colors.border};
@@ -55,7 +57,8 @@ const NavigationLinks = styled.div<{
           bottom: 0;
           height: 100vh;
           transform: ${isOpen ? "translateX(0%)" : "translateX(100%)"};
-          a {
+          a,
+          [data-anchor] {
             display: flex;
             align-items: center;
             cursor: pointer;
@@ -109,13 +112,14 @@ const NavigationLinks = styled.div<{
               width: 100%;
               align-items: stretch;
               justify-content: space-between;
-              a {
+              a,
+              [data-anchor] {
                 justify-content: center;
                 padding: 1rem;
               }
             `;
           }}
-          a {
+          a, [data-anchor] {
             display: flex;
             align-items: center;
             cursor: pointer;
@@ -198,16 +202,6 @@ export default function HeaderLinks({
         navigationBarPosition={navigationBarPosition}
       />
       <Links isMobile={isMobile} $navigationBarPosition={navigationBarPosition}>
-        {((isSupportFunctionalityDefined && !onlyBuyer) ||
-          !isSupportFunctionalityDefined) &&
-          checkIfUserHaveRole(
-            roles,
-            [UserRoles.Guest, UserRoles.Seller],
-            false
-          ) &&
-          !isCustomStoreFront && (
-            <LinkWithQuery to={sellUrl}>Sell</LinkWithQuery>
-          )}
         {!onlySeller && (
           <LinkWithQuery to={BosonRoutes.Explore}>
             Explore Products
@@ -225,6 +219,7 @@ export default function HeaderLinks({
               Dispute Admin
             </LinkWithQuery>
           )}
+        {address && <ViewTxButton />}
       </Links>
     </NavigationLinks>
   );

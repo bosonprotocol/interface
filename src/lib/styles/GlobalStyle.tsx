@@ -134,7 +134,7 @@ const GlobalStyle = createGlobalStyle<{
   button,
   input,
   select,
-  textarea {
+  textarea, [data-anchor] {
     text-decoration: none;
     &:focus,
     &:hover {
@@ -178,7 +178,7 @@ const GlobalStyle = createGlobalStyle<{
     line-height: 1.5;
     margin: 0 0 1rem 0;
   }
-  a, p, span, div {
+  a, p, span, div, [data-anchor] {
     font-size: 1rem;
     line-height: 1.5;
   }

@@ -72,7 +72,6 @@ const TBody = styled.tbody`
 `;
 
 const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
-const capitalizeAll = (str: string) => str.toUpperCase();
 const getColorSizeKey = (color: string, size?: string) =>
   size ? `${color}_${size}` : color;
 
@@ -264,7 +263,7 @@ export default function ProductVariants() {
               name={variantsSizesKey}
               onAddTag={(tag) => onAddTagType("size", [tag])}
               onRemoveTag={(tag) => onRemoveTagType("size", tag)}
-              transform={capitalizeAll}
+              transform={capitalize}
               label="Size:"
             />
           </Grid>

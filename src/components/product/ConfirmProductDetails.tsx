@@ -458,6 +458,7 @@ export default function ConfirmProductDetails({
               justifyContent="flex-start"
               alignItems="flex-start"
               flexWrap="wrap"
+              flex="1 1"
             >
               {!isMultiVariant && (
                 <>
@@ -509,7 +510,11 @@ export default function ConfirmProductDetails({
                 </>
               )}
             </Grid>
-            <Grid justifyContent="flex-start" alignItems="flex-start">
+            <Grid
+              justifyContent="flex-start"
+              alignItems="flex-start"
+              flex="1 1"
+            >
               <GridBox $minWidth="16rem">
                 <FormFieldContainer
                   style={{

@@ -4,7 +4,6 @@ import { usePendingTransactionsStore } from "../../lib/utils/hooks/transactions/
 import { useCoreSDK } from "../../lib/utils/useCoreSdk";
 import { Spinner } from "../loading/Spinner";
 import { useModal } from "../modal/useModal";
-import BosonButton from "../ui/BosonButton";
 import Grid from "../ui/Grid";
 
 export default function ViewTxButton() {
@@ -36,35 +35,29 @@ export default function ViewTxButton() {
   const numPendingTx = transactions.length;
 
   return (
-    <>
-      <BosonButton
-        variant="accentInverted"
-        onClick={(e) => {
-          e.stopPropagation();
-          showModal(
-            "RECENT_TRANSACTIONS",
-            {
-              title: "Recent Transactions"
-            },
-            "m"
-          );
-        }}
-      >
-        <Grid
-          $width="initial"
-          gap="0.5rem"
-          alignItems="center"
-          flexWrap="nowrap"
-        >
-          {numPendingTx ? (
-            <>
-              <span>{numPendingTx}</span> Pending <Spinner size={15} />
-            </>
-          ) : (
-            <>Transactions</>
-          )}
-        </Grid>
-      </BosonButton>
-    </>
+    <Grid
+      $width="initial"
+      gap="0.5rem"
+      alignItems="center"
+      flexWrap="nowrap"
+      data-anchor
+      onClick={() => {
+        showModal(
+          "RECENT_TRANSACTIONS",
+          {
+            title: "Recent Transactions"
+          },
+          "m"
+        );
+      }}
+    >
+      {numPendingTx ? (
+        <>
+          <span>{numPendingTx}</span> Pending <Spinner size={15} />
+        </>
+      ) : (
+        <>My Transactions</>
+      )}
+    </Grid>
   );
 }
