@@ -241,7 +241,7 @@ export default function ProductVariants() {
   }, [fieldVariants.value]);
   return (
     <ContainerProductPage>
-      <SectionTitle tag="h2">Product Variants</SectionTitle>
+      <SectionTitle tag="h2">Product variants</SectionTitle>
       <FormField
         title="Create new variants"
         required
