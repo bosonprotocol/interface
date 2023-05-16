@@ -23,8 +23,7 @@ export const useSellerCurationListFn = () => {
     (sellerID: string) => {
       if (curationLists?.enableCurationLists && sellerID !== "") {
         if (
-          (curationLists?.sellerCurationList || [])?.length > 0 &&
-          (curationLists?.sellerCurationList || [])?.indexOf(
+          (curationLists.sellerCurationList as string[]).indexOf(
             sellerID as string
           ) > -1
         ) {
@@ -48,8 +47,6 @@ export function useSellers(
     enabled: boolean;
   }
 ) {
-  const enableCurationList =
-    props.enableCurationList === undefined ? true : props.enableCurationList;
   const curationLists = useCurationLists();
   const filter = {
     ...(props.admin && { admin: props.admin }),
@@ -65,10 +62,9 @@ export function useSellers(
       return accounts.subgraph.getSellers(CONFIG.subgraphUrl, {
         sellersFilter: {
           ...filter,
-          id_in:
-            enableCurationList && curationLists.enableCurationLists
-              ? curationLists.sellerCurationList
-              : undefined
+          id_in: curationLists.enableCurationLists
+            ? curationLists.sellerCurationList
+            : undefined
         },
         sellersOrderBy: subgraph.Seller_OrderBy.SellerId,
         sellersOrderDirection: subgraph.OrderDirection.Asc,

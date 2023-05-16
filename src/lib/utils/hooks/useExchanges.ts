@@ -5,6 +5,7 @@ import { useQuery } from "react-query";
 import { Offer } from "../../types/offer";
 import { fetchSubgraph } from "../core-components/subgraph";
 import { offerGraphQl } from "./offers/graphql";
+import { useCurationLists } from "./useCurationLists";
 
 export type Exchange = subgraph.ExchangeFieldsFragment & {
   offer: Offer;
@@ -26,6 +27,7 @@ interface Props {
   offerId?: string;
   first?: number;
   skip?: number;
+  seller_in?: string[];
 }
 
 const getExchangesFunction = async (props: Props) => {
@@ -40,7 +42,8 @@ const getExchangesFunction = async (props: Props) => {
     orderDirection = "desc",
     offerId,
     first,
-    skip
+    skip,
+    seller_in
   } = props;
 
   return await fetchSubgraph<{
@@ -66,6 +69,11 @@ const getExchangesFunction = async (props: Props) => {
         ${id ? `id: "${id}"` : ""}
         ${state ? `state: "${state}"` : ""}
         ${id_in ? `id_in: [${id_in.join(",")}]` : ""}
+        ${
+          seller_in
+            ? `seller_in: [${seller_in.map((id) => `"${id}"`).join(",")}]`
+            : ""
+        }
         ${sellerId !== undefined ? "seller: $sellerId" : ""}
         ${buyerId !== undefined ? "buyer: $buyerId" : ""}
         ${
@@ -128,14 +136,22 @@ export function useExchanges(
   props: Props,
   options: {
     enabled?: boolean;
+    onlyCuratedSeller?: boolean;
   } = {}
 ) {
+  const curationLists = useCurationLists();
+  const onlyCuratedSeller =
+    options.onlyCuratedSeller === undefined || options.onlyCuratedSeller;
   return useQuery(
     ["exchanges", props],
     async () => {
       const result = await getExchangesFunction({
         ...props,
-        first: OFFERS_PER_PAGE
+        first: OFFERS_PER_PAGE,
+        seller_in:
+          onlyCuratedSeller && curationLists.enableCurationLists
+            ? curationLists.sellerCurationList
+            : undefined
       });
       const data = result?.exchanges;
       let loop = data?.length === OFFERS_PER_PAGE;
@@ -144,7 +160,11 @@ export function useExchanges(
         const newResults = await getExchangesFunction({
           ...props,
           first: OFFERS_PER_PAGE,
-          skip: productsSkip
+          skip: productsSkip,
+          seller_in:
+            onlyCuratedSeller && curationLists.enableCurationLists
+              ? curationLists.sellerCurationList
+              : undefined
         });
         const dataToAdd = newResults?.exchanges || [];
         data.push(...dataToAdd);
@@ -153,14 +173,22 @@ export function useExchanges(
       }
       return (
         data?.map((exchange) => {
+          const isCuratedSeller =
+            !curationLists.enableCurationLists ||
+            curationLists.sellerCurationList.includes(exchange.seller.id);
           return {
             ...exchange,
             offer: {
               ...exchange.offer,
-              metadata: {
-                ...exchange.offer.metadata,
-                imageUrl: exchange.offer.metadata.image
-              },
+              metadata: isCuratedSeller
+                ? {
+                    ...exchange.offer.metadata,
+                    imageUrl: exchange.offer.metadata.image
+                  }
+                : {
+                    name: `${exchange.offer.id}`,
+                    imageUrl: "../../assets/placeholder-thumbnail.png"
+                  },
               isValid: true
             } as Offer
           };

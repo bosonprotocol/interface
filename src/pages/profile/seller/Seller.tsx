@@ -164,7 +164,7 @@ export default function Seller() {
   } = useSellers(
     {
       id: sellerId,
-      enableCurationList: false
+      enableCurationList: true
     },
     {
       enabled: !!sellerId

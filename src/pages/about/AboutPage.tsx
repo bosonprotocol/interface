@@ -6,6 +6,7 @@ import Typography from "../../components/ui/Typography";
 import { CONFIG } from "../../lib/config";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
+import { useCurationLists } from "../../lib/utils/hooks/useCurationLists";
 
 const Wrapper = styled(Grid)`
   padding: 4rem 0;
@@ -37,6 +38,7 @@ const Text = styled(Typography)`
 `;
 
 function AboutPage() {
+  const curationLists = useCurationLists();
   return (
     <Wrapper
       flexDirection="column"
@@ -64,23 +66,23 @@ function AboutPage() {
           <XCircle size={20} color={colors.red} />
         )}
       </Text>
-      {CONFIG.enableCurationLists && (
+      {curationLists.enableCurationLists && (
         <>
           <Text margin="0 0 0.5rem 0">
             <span>Seller Curation List:</span>
             <span>
-              {CONFIG.sellerCurationList && CONFIG.sellerCurationList.length
-                ? (CONFIG.sellerCurationList || []).map((s, i) => {
+              {curationLists.isError
+                ? "- ERROR -"
+                : (curationLists.sellerCurationList || []).map((s, i) => {
                     const lastElem =
-                      i === (CONFIG.sellerCurationList || []).length - 1;
+                      i === (curationLists.sellerCurationList || []).length - 1;
                     return (
                       <span key={`sellerCurationList_${s}_${i}`}>
                         {s}
                         {!lastElem ? "," : ""}
                       </span>
                     );
-                  })
-                : "-"}
+                  })}
             </span>
           </Text>
           <Text margin="0 0 0.5rem 0">

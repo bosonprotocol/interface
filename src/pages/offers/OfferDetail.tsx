@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 
 import {
@@ -22,7 +23,11 @@ import { UrlParameters } from "../../lib/routing/parameters";
 import { colors } from "../../lib/styles/colors";
 import { getOfferDetails } from "../../lib/utils/getOfferDetails";
 import useOffer from "../../lib/utils/hooks/offer/useOffer";
-import { useSellers } from "../../lib/utils/hooks/useSellers";
+import { useCurationLists } from "../../lib/utils/hooks/useCurationLists";
+import {
+  useSellerCurationListFn,
+  useSellers
+} from "../../lib/utils/hooks/useSellers";
 import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
 
 export default function OfferDetail() {
@@ -57,6 +62,17 @@ export default function OfferDetail() {
       ? Number(sellerAvailableDeposit) >= offerRequiredDeposit
       : true;
 
+  const sellerId = offer?.seller.id;
+  const curationLists = useCurationLists();
+  const checkIfSellerIsInCurationList = useSellerCurationListFn();
+
+  const isSellerCurated = useMemo(() => {
+    const isSellerInCurationList =
+      !curationLists.enableCurationLists ||
+      (sellerId && checkIfSellerIsInCurationList(sellerId));
+    return isSellerInCurationList;
+  }, [sellerId, checkIfSellerIsInCurationList, curationLists]);
+
   if (!offerId) {
     return null;
   }
@@ -82,6 +98,14 @@ export default function OfferDetail() {
       <div data-testid="invalidMetadata">
         This offer does not match the expected metadata standard this
         application enforces
+      </div>
+    );
+  }
+
+  if (!isSellerCurated) {
+    return (
+      <div data-testid="notCuratedSeller">
+        Seller account {sellerId} has been banned.
       </div>
     );
   }
@@ -116,19 +140,21 @@ export default function OfferDetail() {
             )}
           </ImageWrapper>
           <div>
-            <SellerID
-              offer={offer}
-              buyerOrSeller={offer?.seller}
-              justifyContent="flex-start"
-              withProfileImage
-            />
-            <Typography
-              tag="h1"
-              data-testid="name"
-              style={{ fontSize: "2rem", marginBottom: "2rem" }}
-            >
-              {name}
-            </Typography>
+            <>
+              <SellerID
+                offer={offer}
+                buyerOrSeller={offer?.seller}
+                justifyContent="flex-start"
+                withProfileImage
+              />
+              <Typography
+                tag="h1"
+                data-testid="name"
+                style={{ fontSize: "2rem", marginBottom: "2rem" }}
+              >
+                {name}
+              </Typography>
+            </>
 
             <DetailWidget
               pageType="offer"

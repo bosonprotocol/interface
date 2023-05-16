@@ -5,6 +5,7 @@ import logo from "../../../src/assets/logo-white.svg";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
+import { useSellerCurationListFn } from "../../lib/utils/hooks/useSellers";
 import { sanitizeUrl } from "../../lib/utils/url";
 import SocialLogo, {
   SocialLogoValues
@@ -139,7 +140,7 @@ function Socials() {
 }
 
 export default function FooterComponent() {
-  const { roles, address } = useUserRoles({ role: [] });
+  const { roles, address, sellerId } = useUserRoles({ role: [] });
   const { isXXS } = useBreakpoints();
   const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
   const [year] = useState<number>(new Date().getFullYear());
@@ -160,6 +161,8 @@ export default function FooterComponent() {
     typeof supportFunctionality != "string" &&
     supportFunctionality?.length === 1 &&
     supportFunctionality?.[0] === "seller";
+  const checkIfSellerIsInCurationList = useSellerCurationListFn();
+  const isSellerCurated = checkIfSellerIsInCurationList(sellerId);
   return (
     <Footer>
       <Layout>
@@ -209,7 +212,8 @@ export default function FooterComponent() {
                 {getNavigationRoutes({
                   roles,
                   isSupportFunctionalityDefined,
-                  onlySeller
+                  onlySeller,
+                  isSellerCurated
                 }).map(
                   (nav) =>
                     nav && (

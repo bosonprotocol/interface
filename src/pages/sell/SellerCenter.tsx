@@ -37,6 +37,13 @@ const GridWrapper = styled.div`
 `;
 
 function SellerCenter(props: SellerInsideProps & WithSellerDataProps) {
+  if (!props.isSellerCurated) {
+    return (
+      <div data-testid="notCuratedSeller">
+        Seller account {props.sellerId} has been banned.
+      </div>
+    );
+  }
   return (
     <GridWrapper>
       <SellerAside {...props} />
@@ -134,6 +141,10 @@ function SellerCenterWrapper() {
         </option>
       ))}
     </select>;
+  }
+
+  if (!selectedSellerId) {
+    return <div data-testid="notCuratedSeller">Seller not found.</div>;
   }
 
   return <SellerCenterWithData sellerId={selectedSellerId} />;

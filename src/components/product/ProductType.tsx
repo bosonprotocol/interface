@@ -17,6 +17,7 @@ import { FormField } from "../form";
 import { authTokenTypes } from "../modal/components/Profile/Lens/const";
 import { getLensTokenIdDecimal } from "../modal/components/Profile/Lens/utils";
 import { buildProfileFromMetadata } from "../modal/components/Profile/utils";
+import { MODAL_TYPES } from "../modal/ModalComponents";
 import { useModal } from "../modal/useModal";
 import BosonButton from "../ui/BosonButton";
 import Grid from "../ui/Grid";
@@ -248,7 +249,7 @@ export default function ProductType({
       if (!store.modalType) {
         // Show create profile popup
         showModal(
-          "CREATE_PROFILE",
+          MODAL_TYPES.CREATE_PROFILE,
           {
             title: "Create Profile",
             initialRegularCreateProfile: values["createYourProfile"],
