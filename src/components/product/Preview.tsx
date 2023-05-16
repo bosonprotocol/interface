@@ -9,10 +9,13 @@ import Image from "../../components/ui/Image";
 import SellerID from "../../components/ui/SellerID";
 import { CONFIG } from "../../lib/config";
 import { colors } from "../../lib/styles/colors";
+import { isTruthy } from "../../lib/types/helpers";
 import { Offer } from "../../lib/types/offer";
 import { useDisputeResolver } from "../../lib/utils/hooks/useDisputeResolver";
 import { fixformattedString } from "../../lib/utils/number";
 import { buildCondition } from "../../pages/create-product/utils/buildCondition";
+import { VariantV1 } from "../../pages/products/types";
+import VariationSelects from "../../pages/products/VariationSelects";
 import { Token } from "../convertion-rate/ConvertionRateContext";
 import {
   DarkerBackground,
@@ -252,7 +255,21 @@ export default function Preview({
     value: values.productType?.productType?.toUpperCase() || ""
   });
   const animationUrl = values.productAnimation?.[0]?.src;
-
+  const variant: VariantV1 = {
+    offer,
+    variations: [
+      ...(values.productVariants?.colors?.filter(isTruthy).map((color) => ({
+        id: color,
+        option: color,
+        type: "Color" as const
+      })) ?? []),
+      ...(values.productVariants?.sizes?.filter(isTruthy).map((size) => ({
+        id: size,
+        option: size,
+        type: "Size" as const
+      })) ?? [])
+    ]
+  };
   return (
     <PreviewWrapper>
       <PreviewWrapperContent>
@@ -289,6 +306,13 @@ export default function Preview({
                 >
                   {name}
                 </Typography>
+                {isMultiVariant && (
+                  <VariationSelects
+                    selectedVariant={variant as VariantV1}
+                    variants={[variant] as VariantV1[]}
+                    disabled
+                  />
+                )}
                 <DetailWidget
                   isPreview={true}
                   pageType="offer"
