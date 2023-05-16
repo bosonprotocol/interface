@@ -75,7 +75,7 @@ export default function CoreTermsOfSale({ isMultiVariant }: Props) {
           <FormField
             title="Quantity"
             required
-            subTitle="How many products do you want to sell?"
+            subTitle="How many units do you want to sell?"
           >
             <Input
               placeholder="Input the amount"

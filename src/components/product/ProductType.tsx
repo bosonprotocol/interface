@@ -336,7 +336,7 @@ export default function ProductType({
             </Grid>
           </FormField>
           <FormField
-            title="Product Variants"
+            title="Product variants"
             required
             style={{
               marginBottom: 0

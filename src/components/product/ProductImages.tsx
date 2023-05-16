@@ -166,9 +166,7 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
       </Grid>
       <FormField
         title="Upload your product images"
-        subTitle={`You can disable images for variants that shouldn't be shown. Use a max. size of ${bytesToSize(
-          MAX_FILE_SIZE
-        )} per image`}
+        subTitle={`Use a max. size of ${bytesToSize(MAX_FILE_SIZE)} per image`}
       >
         {oneSetOfImages ? (
           <UploadImages prefix={productImagesPrefix} />
@@ -187,9 +185,9 @@ export default function ProductImages({ onChangeOneSetOfImages }: Props) {
         // )} for the video`}
         subTitle={`${
           hasVariants
-            ? "This will apply across all variants of your product"
+            ? "This will apply across all variants of your product. "
             : ""
-        }. Only MP4 is supported. Use a max. size of ${bytesToSize(
+        }Only MP4 is supported. Use a max. size of ${bytesToSize(
           MAX_VIDEO_FILE_SIZE
         )} for the video`}
         style={{

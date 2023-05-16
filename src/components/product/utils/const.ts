@@ -127,11 +127,11 @@ export const OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE = [
   {
     // default option
     value: ContactPreference.XMTP_AND_EMAIL,
-    label: "XMTP initialisation + e-mail"
+    label: "Chat (XMTP) for delivery information; e-mail after"
   },
   {
     value: ContactPreference.XMTP,
-    label: "XMTP end-to-end"
+    label: "Chat (XMTP) for all buyer communication"
   }
 ] as const;
 
