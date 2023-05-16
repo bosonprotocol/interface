@@ -101,8 +101,8 @@ const SellerID: React.FC<
     : address;
   const hasCursorPointer = !!onClick || onClick === undefined;
   const seller = sellers[0] ?? offer?.seller;
-  const metadata = seller.metadata;
-  const useLens = !metadata || metadata.kind === ProfileType.LENS;
+  const metadata = seller?.metadata;
+  const useLens = !metadata || metadata?.kind === ProfileType.LENS;
   const regularProfilePicture =
     metadata?.images?.find((img) => img.tag === "profile")?.url ?? "";
   const lensProfilePicture = getLensProfilePictureUrl(lens);
