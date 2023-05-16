@@ -32,9 +32,17 @@ export default function RegularProfileForm({
         margin="0 0 2rem 0"
         flex="1"
       >
-        <Typography $fontSize="2rem" fontWeight="600">
-          {isEdit ? "Regular profile" : "Create your profile"}
-        </Typography>
+        <Grid flexDirection="column" alignItems="flex-start">
+          <Typography $fontSize="2rem" fontWeight="600">
+            {isEdit ? "Regular profile" : "Create your profile"}
+          </Typography>
+          {!isEdit && (
+            <Typography>
+              To begin selling on the BosonApp, start by creating a profile and
+              seller account
+            </Typography>
+          )}
+        </Grid>
         <div>
           <SwitchButton />
         </div>
