@@ -28,6 +28,7 @@ import {
   useSellers
 } from "../../lib/utils/hooks/useSellers";
 import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
+import NotFound from "../not-found/NotFound";
 
 export default function OfferDetail() {
   const { [UrlParameters.offerId]: offerId } = useParams();
@@ -100,11 +101,7 @@ export default function OfferDetail() {
   }
 
   if (!isSellerCurated) {
-    return (
-      <div data-testid="notCuratedSeller">
-        Seller account {sellerId} is not curated.
-      </div>
-    );
+    return <NotFound />;
   }
 
   const {

@@ -5,6 +5,7 @@ import { CreateProductForm } from "../../components/product/utils/types";
 import { useInitialValues } from "../../components/product/utils/useInitialValues";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useSellerCurationListFn } from "../../lib/utils/hooks/useSellers";
+import NotFound from "../not-found/NotFound";
 import CreateProductInner from "./CreateProductInner";
 
 function CreateProduct() {
@@ -63,11 +64,7 @@ function CreateProduct() {
   }, []);
 
   if (!!seller && !isSellerCurated) {
-    return (
-      <div data-testid="notFound">
-        Product creation denied for seller account {seller.id}.
-      </div>
-    );
+    return <NotFound />;
   }
   return (
     <CreateProductInner

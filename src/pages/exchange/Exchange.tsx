@@ -32,6 +32,7 @@ import {
   useSellers
 } from "../../lib/utils/hooks/useSellers";
 import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
+import NotFound from "../not-found/NotFound";
 import { VariantV1 } from "../products/types";
 import VariationSelects from "../products/VariationSelects";
 
@@ -123,11 +124,7 @@ export default function Exchange() {
   }
 
   if (!isSellerCurated) {
-    return (
-      <div data-testid="notCuratedSeller">
-        Seller account {sellerId} is not curated.
-      </div>
-    );
+    return <NotFound />;
   }
   const buyerAddress = exchange.buyer.wallet;
 

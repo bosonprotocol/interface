@@ -11,6 +11,7 @@ import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
 import { useSellerCurationListFn } from "../../lib/utils/hooks/useSellers";
 import { getIpfsGatewayUrl } from "../../lib/utils/ipfs";
+import NotFound from "../not-found/NotFound";
 import CustomStoreFormContent, {
   formValuesWithOneLogoUrl
 } from "./CustomStoreFormContent";
@@ -46,11 +47,7 @@ export default function CustomStore() {
   }
 
   if (!isSellerCurated) {
-    return (
-      <div data-testid="notCuratedSeller">
-        Seller account {seller.id} is not curated.
-      </div>
-    );
+    return <NotFound />;
   }
 
   return (
