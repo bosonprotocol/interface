@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
-import Navigate from "../../components/customNavigation/Navigate";
 import {
   WithSellerData,
   WithSellerDataProps
@@ -21,7 +20,6 @@ import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import { isInEligibleWalletList } from "../../lib/utils/isInEligibleWalletList";
 
 const Wrapper = styled.div`
   text-align: center;
@@ -79,23 +77,12 @@ function SellerCenterWrapper() {
     }
   }, [isSuccess, sellerIds]);
 
-  const isAccountSeller = !!selectedSellerId;
-
   if (isLoading) {
     return (
       <Wrapper>
         <Loading />
       </Wrapper>
     );
-  }
-
-  if (
-    !CONFIG.enableCurationLists &&
-    !isAccountSeller &&
-    !sellerIds.length &&
-    !isInEligibleWalletList(address ?? "")
-  ) {
-    return <Navigate replace to={{ pathname: BosonRoutes.ClosedBeta }} />;
   }
 
   if (!sellerIds.length || !address) {
