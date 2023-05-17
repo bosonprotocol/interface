@@ -1,16 +1,18 @@
 import dayjs from "dayjs";
+import advancedFormat from "dayjs/plugin/advancedFormat";
 import isToday from "dayjs/plugin/isToday";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 dayjs.extend(utc);
 dayjs.extend(timezone);
+dayjs.extend(advancedFormat);
 dayjs.extend(isToday);
 
 import type { Dayjs } from "dayjs";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { CONFIG } from "../../lib/config";
 import timezones from "../../lib/const/timezones.json";
+import { isTruthy } from "../../lib/types/helpers";
 import BaseSelect from "../form/BaseSelect";
 import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
@@ -32,7 +34,20 @@ const BASE_MINUTES = Array.from(Array(60).keys()).map((v) => ({
   label: ("0" + v).slice(-2).toString(),
   value: ("0" + v).slice(-2).toString()
 }));
-const OPTIONS_TIMEZONES = timezones;
+const OPTIONS_TIMEZONES = timezones
+  .map((timezone) => {
+    try {
+      return {
+        ...timezone,
+        label: `${timezone.value} (GMT${dayjs()
+          .tz(timezone.value)
+          .format("Z")})`
+      };
+    } catch (error) {
+      return false;
+    }
+  })
+  .filter(isTruthy);
 
 export default function SelectTime({
   setTime,
@@ -118,7 +133,7 @@ export default function SelectTime({
         />
         {period && (
           <Typography tag="p" margin="0">
-            Select time for {date?.format(CONFIG.dateFormat)}
+            Select time for {date?.format("MMMM D, YYYY")}
           </Typography>
         )}
         <Grid justifyContent="space-around" gap="0.5rem">
@@ -145,7 +160,7 @@ export default function SelectTime({
         {period && (
           <>
             <Typography tag="p" margin="0">
-              Select time for {secondDate?.format(CONFIG.dateFormat)}
+              Select time for {secondDate?.format("MMMM D, YYYY")}
             </Typography>
             <Grid justifyContent="space-around" gap="0.5rem">
               <BaseSelect
