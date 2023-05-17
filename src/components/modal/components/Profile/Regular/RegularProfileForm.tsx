@@ -38,8 +38,8 @@ export default function RegularProfileForm({
           </Typography>
           {!isEdit && (
             <Typography>
-              To begin selling on the BosonApp, start by creating a profile and
-              seller account
+              To begin selling on Boson, create a profile and a seller account
+              in the steps below.
             </Typography>
           )}
         </Grid>
