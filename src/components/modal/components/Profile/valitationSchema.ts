@@ -31,7 +31,7 @@ export const getCommonFieldsValidation = ({
     const validation = Yup.string()
       .trim()
       .required(validationMessage.required)
-      .email("Must be an e-mail");
+      .email("Must be an email");
     return withMaxLengthValidation
       ? validation.max(METADATA_LENGTH_LIMIT, maxLengthErrorMessage)
       : validation;

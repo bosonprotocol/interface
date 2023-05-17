@@ -30,7 +30,7 @@ export const createYourProfileHelp = [
   {
     title: "Where will this information be displayed?",
     description:
-      "Your description and external URLs are shown on the product details page for any offer you create. Your email is visible on your profile and offers you create, buyers will contact you via this e-mail to ask questions and resolve problems."
+      "Your description and external URLs are shown on the product details page for any offer you create. Your email is visible on your profile and offers you create, buyers will contact you via this email to ask questions and resolve problems."
   } as const,
   {
     title: "What if I don't have a Website/Twitter/Instagram?",

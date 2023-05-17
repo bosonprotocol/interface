@@ -140,7 +140,7 @@ export default function RegularProfileSummary({
                       $fontSize="0.75rem"
                       lineHeight="1.125rem"
                     >
-                      Contact e-mail
+                      Contact email
                     </Typography>
                     <Typography
                       fontWeight="400"
