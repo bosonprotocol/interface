@@ -181,10 +181,8 @@ export function WithAllOffers<P>(
           ? params?.[ExploreQueryParameters.sortBy]
           : false;
 
-      let payload = {
+      let payload: FilterOptions = {
         name: "",
-        sellerCurationList: curationLists.sellerCurationList,
-        orderDirection: "",
         exchangeOrderBy: "",
         orderBy: ""
       };
@@ -196,10 +194,7 @@ export function WithAllOffers<P>(
         };
       }
       if (curationLists.sellerCurationList) {
-        payload = {
-          ...payload,
-          sellerCurationList: curationLists.sellerCurationList
-        };
+        payload.sellerCurationList = curationLists.sellerCurationList;
       }
       if (sortByParam !== false) {
         const [orderBy, orderDirection] = (sortByParam as string).split(":");
@@ -207,7 +202,10 @@ export function WithAllOffers<P>(
           ...payload,
           orderBy,
           exchangeOrderBy: orderBy as string,
-          orderDirection
+          orderDirection:
+            orderDirection === "asc" || orderDirection === "desc"
+              ? orderDirection
+              : undefined
         };
       }
       return pick(payload, [

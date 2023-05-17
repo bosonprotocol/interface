@@ -40,7 +40,7 @@ function SellerCenter(props: SellerInsideProps & WithSellerDataProps) {
   if (!props.isSellerCurated) {
     return (
       <div data-testid="notCuratedSeller">
-        Seller account {props.sellerId} has been banned.
+        Seller account {props.sellerId} is not curated.
       </div>
     );
   }

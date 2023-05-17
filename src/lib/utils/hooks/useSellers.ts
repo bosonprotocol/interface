@@ -21,14 +21,8 @@ export const useSellerCurationListFn = () => {
 
   const isSellerInCurationList = useCallback(
     (sellerID: string) => {
-      if (curationLists?.enableCurationLists && sellerID !== "") {
-        if (
-          (curationLists.sellerCurationList as string[]).indexOf(
-            sellerID as string
-          ) > -1
-        ) {
-          return true;
-        }
+      if (curationLists?.sellerCurationList && sellerID !== "") {
+        return curationLists.sellerCurationList.includes(sellerID as string);
       } else if (!curationLists?.enableCurationLists) {
         return true;
       }
@@ -62,9 +56,7 @@ export function useSellers(
       return accounts.subgraph.getSellers(CONFIG.subgraphUrl, {
         sellersFilter: {
           ...filter,
-          id_in: curationLists.enableCurationLists
-            ? curationLists.sellerCurationList
-            : undefined
+          id_in: curationLists.sellerCurationList
         },
         sellersOrderBy: subgraph.Seller_OrderBy.SellerId,
         sellersOrderDirection: subgraph.OrderDirection.Asc,

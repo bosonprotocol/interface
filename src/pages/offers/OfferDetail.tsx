@@ -23,7 +23,6 @@ import { UrlParameters } from "../../lib/routing/parameters";
 import { colors } from "../../lib/styles/colors";
 import { getOfferDetails } from "../../lib/utils/getOfferDetails";
 import useOffer from "../../lib/utils/hooks/offer/useOffer";
-import { useCurationLists } from "../../lib/utils/hooks/useCurationLists";
 import {
   useSellerCurationListFn,
   useSellers
@@ -63,15 +62,13 @@ export default function OfferDetail() {
       : true;
 
   const sellerId = offer?.seller.id;
-  const curationLists = useCurationLists();
   const checkIfSellerIsInCurationList = useSellerCurationListFn();
 
   const isSellerCurated = useMemo(() => {
     const isSellerInCurationList =
-      !curationLists.enableCurationLists ||
-      (sellerId && checkIfSellerIsInCurationList(sellerId));
+      sellerId && checkIfSellerIsInCurationList(sellerId);
     return isSellerInCurationList;
-  }, [sellerId, checkIfSellerIsInCurationList, curationLists]);
+  }, [sellerId, checkIfSellerIsInCurationList]);
 
   if (!offerId) {
     return null;
@@ -105,7 +102,7 @@ export default function OfferDetail() {
   if (!isSellerCurated) {
     return (
       <div data-testid="notCuratedSeller">
-        Seller account {sellerId} has been banned.
+        Seller account {sellerId} is not curated.
       </div>
     );
   }
