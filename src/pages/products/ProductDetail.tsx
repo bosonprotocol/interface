@@ -33,6 +33,7 @@ import {
   useSellers
 } from "../../lib/utils/hooks/useSellers";
 import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
+import NotFound from "../not-found/NotFound";
 import { VariantV1 } from "./types";
 import VariationSelects from "./VariationSelects";
 
@@ -140,11 +141,7 @@ export default function ProductDetail() {
   }
 
   if (!isSellerCurated) {
-    return (
-      <div data-testid="notCuratedSeller">
-        Seller account {sellerId} is not curated.
-      </div>
-    );
+    return <NotFound />;
   }
 
   const {

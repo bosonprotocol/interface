@@ -20,6 +20,7 @@ import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import NotFound from "../not-found/NotFound";
 
 const Wrapper = styled.div`
   text-align: center;
@@ -36,11 +37,7 @@ const GridWrapper = styled.div`
 
 function SellerCenter(props: SellerInsideProps & WithSellerDataProps) {
   if (!props.isSellerCurated) {
-    return (
-      <div data-testid="notCuratedSeller">
-        Seller account {props.sellerId} is not curated.
-      </div>
-    );
+    return <NotFound />;
   }
   return (
     <GridWrapper>
@@ -131,7 +128,7 @@ function SellerCenterWrapper() {
   }
 
   if (!selectedSellerId) {
-    return <div data-testid="notCuratedSeller">Seller not found.</div>;
+    return <NotFound />;
   }
 
   return <SellerCenterWithData sellerId={selectedSellerId} />;
