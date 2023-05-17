@@ -188,12 +188,10 @@ export const commonCoreTermsOfSaleValidationSchema = {
   offerValidityPeriod: Yup.array()
     .required(validationMessage.required)
     .min(2, validationMessage.required)
-    .isItBeforeNow()
     .isOfferValidityDatesValid(),
   redemptionPeriod: Yup.array()
     .required(validationMessage.required)
     .min(2, validationMessage.required)
-    .isItBeforeNow()
     .isRedemptionDatesValid(),
   tokenContract: Yup.string()
     .when(["tokenGatedOffer"], {

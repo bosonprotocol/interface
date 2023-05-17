@@ -52,13 +52,11 @@ export const ADDITIONAL_LINKS: Array<{ label: string; value: string }> = [
 
 export const getProductRoutes = ({
   roles,
-  address,
   isSupportFunctionalityDefined,
   onlyBuyer,
   onlySeller
 }: {
   roles: (keyof typeof UserRoles)[];
-  address: string | undefined;
   isSupportFunctionalityDefined: boolean;
   onlyBuyer: boolean;
   onlySeller: boolean;
@@ -80,8 +78,7 @@ export const getProductRoutes = ({
     (isSupportFunctionalityDefined && (!onlyBuyer || onlySeller))
   ) {
     const sellLink = getSellLink({
-      isAccountSeller,
-      address
+      isAccountSeller
     });
     productRoutes.push({
       name: "Sell",
