@@ -102,23 +102,6 @@ function AboutPage() {
                 : "-"}
             </span>
           </Text>
-          <Text margin="0 0 0.5rem 0">
-            <span>Eligible Wallets List:</span>
-            {CONFIG.eligibleSellerWalletAddresses &&
-            CONFIG.eligibleSellerWalletAddresses.length ? (
-              <ul>
-                {(CONFIG.eligibleSellerWalletAddresses || []).map((s, i) => {
-                  return (
-                    <li key={`eligibleSellerWalletAddresses_${s}_${i}`}>
-                      <b>{s}</b>
-                    </li>
-                  );
-                })}
-              </ul>
-            ) : (
-              <span>{"-"}</span>
-            )}
-          </Text>
         </>
       )}
       <Text margin="0 0 0.5rem 0">

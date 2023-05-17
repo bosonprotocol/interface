@@ -10,7 +10,6 @@ import { Profile } from "../../../../lib/utils/hooks/lens/graphql/generated";
 import useGetLensProfiles from "../../../../lib/utils/hooks/lens/profile/useGetLensProfiles";
 import useUpdateSellerMetadata from "../../../../lib/utils/hooks/seller/useUpdateSellerMetadata";
 import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import { useSellerCurationListFn } from "../../../../lib/utils/hooks/useSellers";
 import Switch from "../../../form/Switch";
 import { CreateProfile } from "../../../product/utils";
 import SuccessTransactionToast from "../../../toasts/SuccessTransactionToast";
@@ -64,19 +63,7 @@ export default function CreateProfileModal({
   const [profileType, setProfileType] = useState<ProfileType | undefined>(
     undefined
   );
-  const checkIfSellerIsInCurationList = useSellerCurationListFn();
 
-  const shouldRedirectToCustomBetaPage = useCallback(
-    (sellerId: string) => {
-      const isAccountSeller = !!sellerId;
-      const isSellerInCurationList = checkIfSellerIsInCurationList(sellerId);
-
-      if (isAccountSeller && !isSellerInCurationList) {
-        return navigate({ pathname: BosonRoutes.ClosedBeta });
-      }
-    },
-    [checkIfSellerIsInCurationList, navigate]
-  );
   const [switchChecked, setSwitchChecked] = useState<boolean>(
     profileType === ProfileType.LENS
   );
@@ -115,9 +102,6 @@ export default function CreateProfileModal({
           hideModal(selectedProfile);
           if (selectedProfile) {
             onRegularProfileCreated?.(overrides);
-          }
-          if (id !== "") {
-            shouldRedirectToCustomBetaPage(id);
           }
         }}
         isEdit={false}

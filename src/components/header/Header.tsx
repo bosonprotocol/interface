@@ -281,10 +281,9 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
 
     const sellUrl = useMemo(() => {
       return getSellLink({
-        isAccountSeller: isSeller,
-        address
+        isAccountSeller: isSeller
       });
-    }, [address, isSeller]);
+    }, [isSeller]);
     const Connect = useCallback(
       (props: Parameters<typeof ConnectButton>[0]) => {
         return (
