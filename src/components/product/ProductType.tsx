@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import * as Sentry from "@sentry/browser";
 import { useField } from "formik";
 import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
@@ -7,6 +8,7 @@ import { useAccount } from "wagmi";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpointNumbers } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
+import { useGetSellerMetadata } from "../../lib/utils/hooks/seller/useGetSellerMetadata";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import {
   getItemFromStorage,
@@ -180,6 +182,14 @@ export default function ProductType({
   const hasValidAdminAccount = isAdminLinkedToLens;
   const isSeller = !!currentSellers.length;
   const seller = currentSellers?.[0];
+  const { refetch: fetchSellerMetadata } = useGetSellerMetadata(
+    {
+      seller
+    },
+    {
+      enabled: false
+    }
+  );
   // const currentAssistant = currentSellers.find((seller) => {
   //   return seller.assistant.toLowerCase() === address?.toLowerCase();
   // }); // lens profile of the current user
@@ -215,18 +225,47 @@ export default function ProductType({
   useEffect(() => {
     const metadata = seller?.metadata;
     const authTokenType = seller?.authTokenType;
+    const metadataUri = seller?.metadataUri;
 
-    if (!isProfileSetFromForm && metadata && authTokenType !== undefined) {
-      const profileDataFromMetadata: CreateProfile = buildProfileFromMetadata(
-        metadata,
-        authTokenType,
-        firstLensProfile
-      );
-      setProfileInForm(profileDataFromMetadata);
+    if (
+      !isProfileSetFromForm &&
+      (metadata || metadataUri) &&
+      authTokenType !== undefined
+    ) {
+      if (metadata) {
+        const profileDataFromMetadata: CreateProfile = buildProfileFromMetadata(
+          metadata,
+          authTokenType,
+          firstLensProfile
+        );
+        setProfileInForm(profileDataFromMetadata);
+      } else {
+        (async () => {
+          const { data: metadataToUse } = await fetchSellerMetadata();
+          if (!metadataToUse) {
+            const error = new Error(
+              `There was a problem while getting the seller metadata of ${seller.id}`
+            );
+            console.error(error);
+            Sentry.captureException(error);
+            return;
+          }
+          const profileDataFromMetadata: CreateProfile =
+            buildProfileFromMetadata(
+              metadataToUse,
+              authTokenType,
+              firstLensProfile
+            );
+          setProfileInForm(profileDataFromMetadata);
+        })();
+      }
     }
   }, [
     isProfileSetFromForm,
+    fetchSellerMetadata,
     seller?.metadata,
+    seller?.id,
+    seller?.metadataUri,
     setProfileInForm,
     firstLensProfile,
     seller?.authTokenType
