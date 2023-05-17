@@ -23,7 +23,6 @@ import {
   ChatDotsIcon,
   CheckIcon,
   CollapseContainer,
-  CollapseContent,
   ConfirmationAlert,
   ConfirmationContent,
   ConfirmProductDetailsButtonGroup,
@@ -164,120 +163,6 @@ export default function ConfirmProductDetails({
   return (
     <ConfirmProductDetailsContainer>
       <SectionTitle tag="h2">Confirm Product Details</SectionTitle>
-      <CollapseContainer>
-        <Collapse
-          title={
-            <Typography
-              tag="h3"
-              style={{
-                fontSize: "1.5rem"
-              }}
-            >
-              Profile Info
-            </Typography>
-          }
-        >
-          <CollapseContent>
-            <FormField
-              title="Logo / profile picture"
-              required
-              style={{
-                marginBottom: "2rem"
-              }}
-            >
-              {values?.createYourProfile?.logo?.[0]?.src && (
-                <Image
-                  src={values?.createYourProfile?.logo?.[0]?.src || ""}
-                  style={{
-                    width: "80px",
-                    height: "80px",
-                    paddingTop: "0"
-                  }}
-                  alt="logo/ profile picture"
-                />
-              )}
-            </FormField>
-            <FormField
-              title="Cover picture"
-              required
-              style={{
-                marginBottom: "2rem"
-              }}
-            >
-              {values?.createYourProfile?.coverPicture?.[0]?.src && (
-                <Image
-                  src={values?.createYourProfile?.coverPicture?.[0]?.src || ""}
-                  style={{
-                    width: "80px",
-                    height: "80px",
-                    paddingTop: "0"
-                  }}
-                  alt="cover picture"
-                />
-              )}
-            </FormField>
-            <Grid
-              justifyContent="flex-start"
-              alignItems="flex-start"
-              flexWrap="wrap"
-              gap="3.5rem"
-            >
-              <GridBox $minWidth="7.1rem">
-                <FormFieldContainer>
-                  <FormField title="Your brand / name" required>
-                    <ContentValue tag="p">
-                      {values.createYourProfile.name}
-                    </ContentValue>
-                  </FormField>
-                </FormFieldContainer>
-              </GridBox>
-              <GridBox $minWidth="6rem">
-                <FormFieldContainer>
-                  <FormField title="Contact email" required>
-                    <ContentValue tag="p">
-                      {values.createYourProfile.email}
-                    </ContentValue>
-                  </FormField>
-                </FormFieldContainer>
-              </GridBox>
-              <GridBox $minWidth="9.75rem">
-                <FormFieldContainer>
-                  <FormField title="Website / Social media link">
-                    <ContentValue tag="p">
-                      {values.createYourProfile.website}
-                    </ContentValue>
-                  </FormField>
-                </FormFieldContainer>
-              </GridBox>
-            </Grid>
-            <Grid
-              justifyContent="flex-start"
-              alignItems="flex-start"
-              flexWrap="wrap"
-              gap="3.5rem"
-            >
-              <FormFieldContainer>
-                <FormField title="Description" required>
-                  <ContentValue tag="p">
-                    {values.createYourProfile.description}
-                  </ContentValue>
-                </FormField>
-              </FormFieldContainer>
-              <FormFieldContainer
-                style={{
-                  marginBottom: 0
-                }}
-              >
-                <FormField title="Legal trading name">
-                  <ContentValue tag="p">
-                    {values.createYourProfile.legalTradingName}
-                  </ContentValue>
-                </FormField>
-              </FormFieldContainer>
-            </Grid>
-          </CollapseContent>
-        </Collapse>
-      </CollapseContainer>
       <CollapseContainer>
         <Collapse title={<Typography tag="h3">Product Data</Typography>}>
           <ProductInformationContent>
