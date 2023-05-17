@@ -67,7 +67,7 @@ export default function BosonAccountForm({
       <Typography fontWeight="600" $fontSize="2rem" lineHeight="2.4rem">
         Boson Account
       </Typography>
-      <Typography>
+      <Typography margin="0 0 1rem 0">
         You are creating a seller account on Boson Protocol. Input the relevant
         information relating to your secondary royalties.
       </Typography>

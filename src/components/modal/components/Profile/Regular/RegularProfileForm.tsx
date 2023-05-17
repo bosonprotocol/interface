@@ -32,7 +32,13 @@ export default function RegularProfileForm({
         margin="0 0 2rem 0"
         flex="1"
       >
-        <Grid flexDirection="column" alignItems="flex-start">
+        <Grid
+          flexDirection="column"
+          alignItems="flex-start"
+          flexGrow="1"
+          flexShrink="1"
+          flexBasis="0"
+        >
           <Typography $fontSize="2rem" fontWeight="600">
             {isEdit ? "Regular profile" : "Create your profile"}
           </Typography>

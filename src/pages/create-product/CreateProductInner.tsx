@@ -489,6 +489,7 @@ function CreateProductInner({
       const nextStep = currentStep + 1;
       setCurrentStepWithHistory(nextStep);
     }
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, [
     isPreviewVisible,
     wizardStep.wizardLength,

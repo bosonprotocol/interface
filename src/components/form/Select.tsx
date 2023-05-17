@@ -1,12 +1,19 @@
 /* eslint @typescript-eslint/no-explicit-any: "off" */
 import { useField } from "formik";
 import Select from "react-select";
+import styled from "styled-components";
 
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import { checkIfValueIsEmpty } from "../../lib/utils/checkIfValueIsEmpty";
 import Error from "./Error";
 import type { SelectDataProps, SelectProps } from "./types";
+
+const StyledSelect = styled(Select)`
+  * {
+    font-size: 13.33px;
+  }
+` as Select;
 
 const customStyles = (error: any) => ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -106,7 +113,7 @@ export default function SelectComponent({
 
   return (
     <>
-      <Select
+      <StyledSelect
         styles={customStyles(displayErrorMessage)}
         {...field}
         {...props}

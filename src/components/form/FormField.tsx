@@ -19,7 +19,8 @@ export default function FormField({
   children,
   style = {},
   theme = "",
-  valueToCopy
+  valueToCopy,
+  ...rest
 }: FormFieldProps) {
   return (
     <FormFieldWrapper
@@ -29,6 +30,7 @@ export default function FormField({
       flexGrow="1"
       style={style}
       theme={theme}
+      {...rest}
     >
       <Grid justifyContent="flex-start" margin="0 0 0.375rem 0">
         <Typography data-header tag="p">
