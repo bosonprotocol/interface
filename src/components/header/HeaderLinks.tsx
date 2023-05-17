@@ -6,8 +6,6 @@ import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { useBuyerSellerAccounts } from "../../lib/utils/hooks/useBuyerSellerAccounts";
 import { useCurrentDisputeResolverId } from "../../lib/utils/hooks/useCurrentDisputeResolverId";
-import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
-import { getSellLink } from "../../lib/utils/link";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import { UserRoles } from "../../router/routes";
 import useUserRoles, { checkIfUserHaveRole } from "../../router/useUserRoles";
@@ -160,30 +158,13 @@ export default function HeaderLinks({
   const supportFunctionality = useCustomStoreQueryParameter<
     ("buyer" | "seller" | "dr")[]
   >("supportFunctionality", { parseJson: true });
-  const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
 
   const {
     buyer: { buyerId }
   } = useBuyerSellerAccounts(address || "");
 
-  const { sellerIds } = useCurrentSellers();
-  const isAccountSeller = useMemo(() => !!sellerIds?.[0], [sellerIds]);
   const isAccountBuyer = useMemo(() => !!buyerId, [buyerId]);
   const { disputeResolverId } = useCurrentDisputeResolverId();
-
-  const sellUrl = useMemo(() => {
-    return getSellLink({
-      isAccountSeller,
-      address
-    });
-  }, [address, isAccountSeller]);
-
-  const isSupportFunctionalityDefined = supportFunctionality !== "";
-
-  const onlyBuyer =
-    typeof supportFunctionality != "string" &&
-    supportFunctionality?.length === 1 &&
-    supportFunctionality?.[0] === "buyer";
 
   const onlySeller =
     typeof supportFunctionality != "string" &&
