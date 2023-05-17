@@ -488,12 +488,6 @@ export default function ConfirmProductDetails({
           <Typography tag="p">
             You wont be able to make changes after confirming
           </Typography>
-          <Typography tag="p">
-            By selecting confirm, you agree to pay the above fees, accept Boson
-            seller agreement and Payments Terms of Use, acknowledge reading the
-            User Privacy Notice and assume full responsibility for the item
-            offered and the content of your listing.
-          </Typography>
         </ConfirmationContent>
       </ConfirmationAlert>
       {showInitializeChat && (
