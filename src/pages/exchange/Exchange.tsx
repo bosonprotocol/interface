@@ -26,7 +26,6 @@ import { UrlParameters } from "../../lib/routing/parameters";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { getOfferDetails } from "../../lib/utils/getOfferDetails";
-import { useCurationLists } from "../../lib/utils/hooks/useCurationLists";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import {
   useSellerCurationListFn,
@@ -66,15 +65,13 @@ export default function Exchange() {
   const variations = metadata?.variations;
   const hasVariations = !!variations?.length;
   const sellerId = exchange?.seller.id;
-  const curationLists = useCurationLists();
   const checkIfSellerIsInCurationList = useSellerCurationListFn();
 
   const isSellerCurated = useMemo(() => {
     const isSellerInCurationList =
-      !curationLists.enableCurationLists ||
-      (sellerId && checkIfSellerIsInCurationList(sellerId));
+      sellerId && checkIfSellerIsInCurationList(sellerId);
     return isSellerInCurationList;
-  }, [sellerId, checkIfSellerIsInCurationList, curationLists]);
+  }, [sellerId, checkIfSellerIsInCurationList]);
 
   const variant = {
     offer,
@@ -128,7 +125,7 @@ export default function Exchange() {
   if (!isSellerCurated) {
     return (
       <div data-testid="notCuratedSeller">
-        Seller account {sellerId} has been banned.
+        Seller account {sellerId} is not curated.
       </div>
     );
   }

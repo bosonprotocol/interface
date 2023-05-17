@@ -66,44 +66,42 @@ function AboutPage() {
           <XCircle size={20} color={colors.red} />
         )}
       </Text>
-      {curationLists.enableCurationLists && (
-        <>
-          <Text margin="0 0 0.5rem 0">
-            <span>Seller Curation List:</span>
-            <span>
-              {curationLists.isError
-                ? "- ERROR -"
-                : (curationLists.sellerCurationList || []).map((s, i) => {
-                    const lastElem =
-                      i === (curationLists.sellerCurationList || []).length - 1;
-                    return (
-                      <span key={`sellerCurationList_${s}_${i}`}>
-                        {s}
-                        {!lastElem ? "," : ""}
-                      </span>
-                    );
-                  })}
-            </span>
-          </Text>
-          <Text margin="0 0 0.5rem 0">
-            <span>Offer Curation List:</span>
-            <span>
-              {CONFIG.offerCurationList && CONFIG.offerCurationList.length
-                ? (CONFIG.offerCurationList || []).map((s, i) => {
-                    const lastElem =
-                      i === (CONFIG.offerCurationList || []).length - 1;
-                    return (
-                      <span key={`offerCurationList_${s}_${i}`}>
-                        {s}
-                        {!lastElem ? "," : ""}
-                      </span>
-                    );
-                  })
-                : "-"}
-            </span>
-          </Text>
-        </>
-      )}
+      <Text margin="0 0 0.5rem 0">
+        <span>Seller Curation List:</span>
+        <span>
+          {curationLists.isError
+            ? "- ERROR -"
+            : curationLists.sellerCurationList
+            ? (curationLists.sellerCurationList || []).map((s, i) => {
+                const lastElem =
+                  i === (curationLists.sellerCurationList || []).length - 1;
+                return (
+                  <span key={`sellerCurationList_${s}_${i}`}>
+                    {s}
+                    {!lastElem ? "," : ""}
+                  </span>
+                );
+              })
+            : "undefined"}
+        </span>
+      </Text>
+      <Text margin="0 0 0.5rem 0">
+        <span>Offer Curation List:</span>
+        <span>
+          {CONFIG.offerCurationList && CONFIG.offerCurationList.length
+            ? (CONFIG.offerCurationList || []).map((s, i) => {
+                const lastElem =
+                  i === (CONFIG.offerCurationList || []).length - 1;
+                return (
+                  <span key={`offerCurationList_${s}_${i}`}>
+                    {s}
+                    {!lastElem ? "," : ""}
+                  </span>
+                );
+              })
+            : "-"}
+        </span>
+      </Text>
       <Text margin="0 0 0.5rem 0">
         <span>Link to Buyer/Seller Agreement Template:</span>
         <span>{CONFIG.buyerSellerAgreementTemplate || "-"}</span>

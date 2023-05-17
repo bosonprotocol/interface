@@ -48,7 +48,7 @@ export default function CustomStore() {
   if (!isSellerCurated) {
     return (
       <div data-testid="notCuratedSeller">
-        Seller account {seller.id} has been banned.
+        Seller account {seller.id} is not curated.
       </div>
     );
   }

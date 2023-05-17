@@ -56,10 +56,9 @@ export default function useProducts(
       productsFilter: {
         uuid_in: props?.productsIds || undefined,
         disputeResolverId: CONFIG.defaultDisputeResolverId,
-        sellerId_in:
-          options.enableCurationList && curationLists.enableCurationLists
-            ? curationLists.sellerCurationList
-            : undefined,
+        sellerId_in: options.enableCurationList
+          ? curationLists.sellerCurationList
+          : undefined,
         ...props.productsFilter
       }
     }),

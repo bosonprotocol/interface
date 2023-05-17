@@ -21,14 +21,28 @@ export function useCurationLists() {
 
   return {
     enableCurationLists: CONFIG.enableCurationLists,
-    sellerCurationList: sellerCurationListFromUrlParam
-      ? sellerCurationList.filter((sellerId) =>
-          sellerCurationListFromUrl?.includes(sellerId)
-        )
-      : sellerCurationList,
+    // if enableCurationLists and a custom curation list is defined,
+    // --> intersection between sellerCurationList and sellerCurationListFromUrl
+    // if enableCurationLists and no custom curation list
+    // --> sellerCurationList
+    // if !enableCurationLists and a custom curation list is defined,
+    // --> sellerCurationListFromUrl
+    // if !enableCurationLists and no custom curation list
+    // --> undefined (= no curation list = all sellers)
+    sellerCurationList: CONFIG.enableCurationLists
+      ? sellerCurationListFromUrlParam
+        ? sellerCurationList.filter((sellerId) =>
+            sellerCurationListFromUrl?.includes(sellerId)
+          )
+        : sellerCurationList
+      : sellerCurationListFromUrlParam
+      ? sellerCurationListFromUrl
+      : undefined,
     offerCurationList: offerCurationListFromUrl
       ? parseCurationList(offerCurationListFromUrl)
-      : CONFIG.offerCurationList,
+      : CONFIG.enableCurationLists
+      ? CONFIG.offerCurationList
+      : undefined,
     isError: sellerBlacklist.isError
   };
 }

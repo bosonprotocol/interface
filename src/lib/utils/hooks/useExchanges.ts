@@ -148,10 +148,9 @@ export function useExchanges(
       const result = await getExchangesFunction({
         ...props,
         first: OFFERS_PER_PAGE,
-        seller_in:
-          onlyCuratedSeller && curationLists.enableCurationLists
-            ? curationLists.sellerCurationList
-            : undefined
+        seller_in: onlyCuratedSeller
+          ? curationLists.sellerCurationList
+          : undefined
       });
       const data = result?.exchanges;
       let loop = data?.length === OFFERS_PER_PAGE;
@@ -161,10 +160,9 @@ export function useExchanges(
           ...props,
           first: OFFERS_PER_PAGE,
           skip: productsSkip,
-          seller_in:
-            onlyCuratedSeller && curationLists.enableCurationLists
-              ? curationLists.sellerCurationList
-              : undefined
+          seller_in: onlyCuratedSeller
+            ? curationLists.sellerCurationList
+            : undefined
         });
         const dataToAdd = newResults?.exchanges || [];
         data.push(...dataToAdd);
@@ -174,8 +172,8 @@ export function useExchanges(
       return (
         data?.map((exchange) => {
           const isCuratedSeller =
-            !curationLists.enableCurationLists ||
-            curationLists.sellerCurationList.includes(exchange.seller.id);
+            !curationLists.sellerCurationList ||
+            curationLists.sellerCurationList?.includes(exchange.seller.id);
           return {
             ...exchange,
             offer: {

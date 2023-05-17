@@ -27,7 +27,6 @@ import {
   getOfferDetails
 } from "../../lib/utils/getOfferDetails";
 import useProductByUuid from "../../lib/utils/hooks/product/useProductByUuid";
-import { useCurationLists } from "../../lib/utils/hooks/useCurationLists";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import {
   useSellerCurationListFn,
@@ -77,15 +76,13 @@ export default function ProductDetail() {
   const seller = product?.productV1Seller?.seller;
   const sellerId = seller?.id;
 
-  const curationLists = useCurationLists();
   const checkIfSellerIsInCurationList = useSellerCurationListFn();
 
   const isSellerCurated = useMemo(() => {
     const isSellerInCurationList =
-      !curationLists.enableCurationLists ||
-      (sellerId && checkIfSellerIsInCurationList(sellerId));
+      sellerId && checkIfSellerIsInCurationList(sellerId);
     return isSellerInCurationList;
-  }, [sellerId, checkIfSellerIsInCurationList, curationLists]);
+  }, [sellerId, checkIfSellerIsInCurationList]);
 
   const { data: exchanges } = useExchanges(
     {
@@ -145,7 +142,7 @@ export default function ProductDetail() {
   if (!isSellerCurated) {
     return (
       <div data-testid="notCuratedSeller">
-        Seller account {sellerId} has been banned.
+        Seller account {sellerId} is not curated.
       </div>
     );
   }
