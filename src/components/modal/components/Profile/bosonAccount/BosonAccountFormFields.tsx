@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useField } from "formik";
+import styled from "styled-components";
 
 import { colors } from "../../../../../lib/styles/colors";
 import SimpleError from "../../../../error/SimpleError";
 import { FormField, Input } from "../../../../form";
 import Error from "../../../../form/Error";
-import Tooltip from "../../../../tooltip/Tooltip";
 import BosonButton from "../../../../ui/BosonButton";
 import Grid from "../../../../ui/Grid";
+import GridContainer from "../../../../ui/GridContainer";
 import Typography from "../../../../ui/Typography";
 
 interface Props {
@@ -16,7 +17,13 @@ interface Props {
   isError: boolean;
   submitButtonText?: string;
 }
+const StyledFormField = styled(FormField)`
+  [data-subheader] {
+    height: 30px;
+  }
+`;
 
+const inputHeight = "51px";
 export default function BosonAccountFormFields({
   onBackClick,
   alreadyHasRoyaltiesDefined,
@@ -34,65 +41,81 @@ export default function BosonAccountFormFields({
 
   return (
     <>
-      <FormField
-        title="Secondary royalties"
-        subTitle="Boson Protocol implements EIP-2981 which enables secondary royalties across NFT marketplaces."
-        required
+      <GridContainer
+        itemsPerRow={{
+          xs: 1,
+          s: 2,
+          m: 2,
+          l: 2,
+          xl: 2
+        }}
       >
-        <Grid flexDirection="column" alignItems="flex-start">
-          <Grid>
-            <Grid
-              style={{
-                background: colors.lightGrey,
-                border: `1px solid ${colors.border}`
-              }}
-              gap="0.5rem"
-              justifyContent="space-between"
-            >
-              <Grid flexDirection="column">
-                <Input
-                  name="secondaryRoyalties"
-                  placeholder=""
-                  disabled={alreadyHasRoyaltiesDefined}
-                  style={{
-                    border: "none",
-                    textAlign: "right"
-                  }}
-                  hideError
-                  type="number"
-                  step="0.01"
-                  onChange={(event) => {
-                    if (!event.target.valueAsNumber) {
-                      helpersAddressForRoyaltyPayment.setValue("");
-                    }
-                    helpersSecondaryRoyalties.setValue(
-                      event.target.valueAsNumber
-                    );
-                  }}
-                />
+        <StyledFormField
+          title="Secondary royalties"
+          subTitle="Boson Protocol implements EIP-2981 which enables secondary royalties across NFT marketplaces."
+          required
+          style={{
+            justifyContent: "space-between"
+          }}
+        >
+          <Grid flexDirection="column" alignItems="flex-start">
+            <Grid>
+              <Grid
+                style={{
+                  background: colors.lightGrey,
+                  border: `1px solid ${colors.border}`,
+                  height: inputHeight
+                }}
+                gap="0.5rem"
+                justifyContent="space-between"
+              >
+                <Grid flexDirection="column">
+                  <Input
+                    name="secondaryRoyalties"
+                    placeholder=""
+                    disabled={alreadyHasRoyaltiesDefined}
+                    style={{
+                      border: "none",
+                      textAlign: "right"
+                    }}
+                    hideError
+                    type="number"
+                    step="0.01"
+                    onChange={(event) => {
+                      if (!event.target.valueAsNumber) {
+                        helpersAddressForRoyaltyPayment.setValue("");
+                      }
+                      helpersSecondaryRoyalties.setValue(
+                        event.target.valueAsNumber
+                      );
+                    }}
+                  />
+                </Grid>
+                <div style={{ padding: "1rem" }}>%</div>
               </Grid>
-              <div style={{ padding: "1rem" }}>%</div>
             </Grid>
-            <Tooltip content="Royalties are limited to 10%" size={16} />
+            <Error
+              display={!!metaSecondaryRoyalties.error}
+              message={metaSecondaryRoyalties.error}
+            />
           </Grid>
-          <Error
-            display={!!metaSecondaryRoyalties.error}
-            message={metaSecondaryRoyalties.error}
-          />
-        </Grid>
-      </FormField>
-      <FormField
-        title="Address for royalty payments"
-        subTitle="This address will receive royalty payments"
-      >
-        <Input
-          name="addressForRoyaltyPayment"
-          placeholder="f.e. 0x930fn3jr9dnW..."
-          disabled={
-            !fieldSecondaryRoyalties.value || alreadyHasRoyaltiesDefined
-          }
-        />
-      </FormField>
+        </StyledFormField>
+        <StyledFormField
+          title="Address for royalty payments"
+          subTitle="This address will receive royalty payments"
+        >
+          <>
+            <Input
+              name="addressForRoyaltyPayment"
+              placeholder="f.e. 0x930fn3jr9dnW..."
+              style={{ height: inputHeight }}
+              disabled={
+                !fieldSecondaryRoyalties.value || alreadyHasRoyaltiesDefined
+              }
+            />
+          </>
+        </StyledFormField>
+      </GridContainer>
       {isError && (
         <Grid margin="0 0 2rem 0">
           <SimpleError>

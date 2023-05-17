@@ -60,7 +60,6 @@ export const ConfirmationContent = styled.div`
   }
   p:first-child {
     font-weight: 600;
-    margin-bottom: 0.5rem;
   }
 `;
 
@@ -104,7 +103,10 @@ export const FormFieldContainer = styled.div`
 `;
 
 export const ProductInformationContent = styled.div`
-  padding: 1rem 0.75rem 0 0.75rem;
+  padding: 1rem 0 0 0;
+  display: flex;
+  gap: 1rem;
+  flex-direction: column;
 `;
 
 export const TermsOfSaleContent = styled.div`

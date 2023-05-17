@@ -72,7 +72,7 @@ export default function RegularProfileSummary({
                   >
                     <Typography
                       fontWeight="600"
-                      $fontSize="1rem"
+                      $fontSize="0.75rem"
                       lineHeight="1.5rem"
                     >
                       Logo / profile picture *
@@ -93,7 +93,7 @@ export default function RegularProfileSummary({
                   >
                     <Typography
                       fontWeight="600"
-                      $fontSize="1rem"
+                      $fontSize="0.75rem"
                       lineHeight="1.5rem"
                     >
                       Cover picture *

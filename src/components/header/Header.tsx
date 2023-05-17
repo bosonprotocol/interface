@@ -297,7 +297,7 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
               >
                 <BosonButton
                   variant="accentInverted"
-                  style={{ height: "auto" }}
+                  style={{ height: "auto", minWidth: "200px" }}
                   onClick={() => {
                     navigate({ pathname: sellUrl });
                   }}
