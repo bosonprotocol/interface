@@ -63,10 +63,10 @@ export function ProfileFormFields({
           disabled={disableDescription}
         />
       </FormField>
-      <FormField title="Contact e-mail" required>
+      <FormField title="Contact email" required>
         <Input
           name="email"
-          placeholder="e-Mail"
+          placeholder="email"
           pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
         />
       </FormField>
@@ -90,7 +90,7 @@ export function ProfileFormFields({
       <FormField
         title="Communication method"
         required
-        subTitle="The buyer's delivery address will be sent to you via the dApp's chat function (XMTP). For further communication, like sending tracking IDs or receiving inquiries from buyers about their order status, specify your preference: continuing on XMTP (chat) or switching to e-mail."
+        subTitle="The buyer's delivery address will be sent to you via the dApp's chat function (XMTP). For further communication, like sending tracking IDs or receiving inquiries from buyers about their order status, specify your preference: continuing on XMTP (chat) or switching to email."
       >
         <Select
           placeholder="Choose a communication channel..."

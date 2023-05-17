@@ -233,7 +233,7 @@ export default function ConfirmProductDetails({
               </GridBox>
               <GridBox $minWidth="6rem">
                 <FormFieldContainer>
-                  <FormField title="Contact E-Mail" required>
+                  <FormField title="Contact email" required>
                     <ContentValue tag="p">
                       {values.createYourProfile.email}
                     </ContentValue>

@@ -140,7 +140,7 @@ export default function RegularProfileSummary({
                       $fontSize="0.75rem"
                       lineHeight="1.125rem"
                     >
-                      Contact e-mail
+                      Contact email
                     </Typography>
                     <Typography
                       fontWeight="400"
@@ -289,18 +289,9 @@ export default function RegularProfileSummary({
               lineHeight="1.5rem"
               color={colors.white}
             >
-              You wont be able to make changes after confirming
-            </Typography>
-            <Typography
-              fontWeight="400"
-              $fontSize="1rem"
-              lineHeight="1.5rem"
-              color={colors.lightGrey}
-            >
-              By selecting confirm, you agree to pay the above fees, accept the
-              Boson seller agreement and Payments Terms of Use, acknowledge
-              reading the User Privacy Notice and assume full responsibility for
-              the item offered and the content of your listing.
+              Royalty share and payment information cannot be changed after
+              creating your seller account. Profile information can be edited or
+              changed at anytime.
             </Typography>
           </Grid>
         </Grid>

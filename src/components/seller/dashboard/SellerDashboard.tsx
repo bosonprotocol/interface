@@ -152,11 +152,11 @@ export default function SellerDashboard({
             <Grid justifyContent="space-between" alignItems="center">
               <div>
                 <Typography tag="h4" padding="0">
-                  You need to top up your seller deposit pool
+                  Top up your seller deposit pool!
                 </Typography>
                 <Typography tag="p" padding="0">
-                  Currently, your product can’t be bought becasue the balance in
-                  your seller deposit pool is not sufficient enough.
+                  Currently, your product can't be purchased because the funds
+                  in your seller deposit pool is insufficient.
                 </Typography>
               </div>
               <Grid justifyContent="flex-end" alignItems="center">

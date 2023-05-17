@@ -177,11 +177,11 @@ export default function DisputesTable({ disputes }: Props) {
                   }}
                   onClick={() => {
                     copyToClipboard(sanitizeUrl(emailAddress)).then(() => {
-                      toast(() => "Seller e-mail has been copied to clipboard");
+                      toast(() => "Seller email has been copied to clipboard");
                     });
                   }}
                 >
-                  Copy E-Mail
+                  Copy email
                 </BosonButton>
               )}
               {dispute.state === subgraph.DisputeState.Escalated && (
