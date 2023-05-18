@@ -94,7 +94,7 @@ export function ProfileFormFields({
             First-time Communication: Initially, the buyer's delivery address
             will always be sent to you via the dApp's chat function (XMTP).
             <br></br>
-            Ongoing communication: please choose between - continuing on chat
+            Ongoing communication: Please choose between - continuing on chat
             (XMTP) or switching to email. (Used for sending tracking IDs or
             receiving inquiries from buyers about their order status.)
           </>
