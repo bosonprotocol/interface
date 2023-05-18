@@ -143,11 +143,11 @@ export default function ProductInformation() {
       <FormField
         title="Description"
         required
-        subTitle="Describe your product. Provide as much detail as possible."
+        subTitle="Describe your product with as much detail as possible."
       >
         <Textarea
           name="productInformation.description"
-          placeholder="Describe"
+          placeholder="Include information like shipping is included, or whether duties/taxes are covered."
         />
       </FormField>
       <FormField

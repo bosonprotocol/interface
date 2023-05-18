@@ -88,9 +88,17 @@ export function ProfileFormFields({
         <Input name="legalTradingName" placeholder="Polly Seller UK ltd." />
       </FormField>
       <FormField
-        title="Communication method"
-        required
-        subTitle="The buyer's delivery address will be sent to you via the dApp's chat function (XMTP). For further communication, like sending tracking IDs or receiving inquiries from buyers about their order status, specify your preference: continuing on XMTP (chat) or switching to email."
+        title="Ongoing communication method"
+        subTitle={
+          <>
+            First-time Communication: Initially, the buyer's delivery address
+            will always be sent to you via the dApp's chat function (XMTP).
+            <br></br>
+            Ongoing communication: Please choose between - continuing on chat
+            (XMTP) or switching to email. (Used for sending tracking IDs or
+            receiving inquiries from buyers about their order status.)
+          </>
+        }
       >
         <Select
           placeholder="Choose a communication channel..."

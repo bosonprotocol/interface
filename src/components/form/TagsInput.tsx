@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useField, useFormikContext } from "formik";
 import { KeyReturn } from "phosphor-react";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
@@ -69,10 +69,15 @@ const TagsInput = ({
     validateForm();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [field.value]);
+  const labelRef = useRef<HTMLElement>(null);
   return (
     <>
       <Grid gap="0.5rem" alignItems="center">
-        {label && <Typography>{label}</Typography>}
+        {label && (
+          <Typography data-label ref={labelRef}>
+            {label}
+          </Typography>
+        )}
         <TagContainer>
           <FieldInput
             onKeyDown={handleKeyDown}
@@ -83,17 +88,22 @@ const TagsInput = ({
             error={errorMessage}
           />
           <Helper>
-            Hit Enter <KeyReturn size={16} />
+            Hit Enter <KeyReturn size={13} />
           </Helper>
         </TagContainer>
       </Grid>
       <TagContainer style={{ marginTop: "1em" }}>
         {label && (
-          <Typography style={{ visibility: "hidden" }}>{label}</Typography>
+          <div
+            style={{
+              visibility: "hidden",
+              width: labelRef.current?.clientWidth
+            }}
+          />
         )}
         {tags.map((tag: string, index: number) => (
           <TagWrapper key={`tags-wrapper_${tag}`}>
-            <span className="text">{tag}</span>
+            <span className="text tag">{tag}</span>
             <Close onClick={() => removeTag(index)}>&times;</Close>
           </TagWrapper>
         ))}

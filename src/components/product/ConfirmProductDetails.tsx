@@ -182,7 +182,11 @@ export default function ConfirmProductDetails({
                 <ProductTypeBox>{renderProductType}</ProductTypeBox>
                 <ProductTypeBox>{renderProductVariant}</ProductTypeBox>
               </Grid>
-              <Grid justifyContent="flex-start" alignItems="flex-start">
+              <Grid
+                justifyContent="flex-start"
+                alignItems="flex-start"
+                gap="1rem"
+              >
                 <GridBox $minWidth="5.625rem">
                   <FormFieldContainer>
                     <FormField title="Product Title" required>

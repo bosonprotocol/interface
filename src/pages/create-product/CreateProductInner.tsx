@@ -982,14 +982,14 @@ function CreateProductInner({
                     FallbackComponent={({ resetErrorBoundary }) => (
                       <Grid flexDirection="column" gap="1rem">
                         <Typography fontWeight="600">
-                          Sorry, right now the preview is not available, please
-                          try again later...
+                          Sorry, the preview is unavailable right now, please
+                          try again later.
                         </Typography>
                         <BosonButton
                           onClick={() => resetErrorBoundary()}
-                          variant="secondaryFill"
+                          variant="accentInverted"
                         >
-                          Go back
+                          Back
                         </BosonButton>
                       </Grid>
                     )}

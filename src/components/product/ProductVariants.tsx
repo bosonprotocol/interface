@@ -24,7 +24,7 @@ import { useCreateForm } from "./utils/useCreateForm";
 const variantsColorsKey = "productVariants.colors";
 const variantsSizesKey = "productVariants.sizes";
 const variantsKey = `productVariants.variants`;
-
+const variantFontSize = "0.8125rem";
 const TdFlex = styled("td")`
   display: flex;
   flex-direction: column;
@@ -62,11 +62,26 @@ const TBody = styled.tbody`
       display: flex;
       flex-direction: column;
       flex: 1 1;
+      &[data-name] {
+        font-size: ${variantFontSize};
+        height: 50px;
+        display: flex;
+        justify-content: center;
+      }
       .react-select__control,
       > input {
         height: 50px;
       }
     }
+  }
+`;
+
+const StyledFormField = styled(FormField)`
+  [data-label] {
+    min-width: 40px;
+  }
+  .tag {
+    font-size: ${variantFontSize};
   }
 `;
 
@@ -240,7 +255,7 @@ export default function ProductVariants() {
   return (
     <ContainerProductPage>
       <SectionTitle tag="h2">Product variants</SectionTitle>
-      <FormField
+      <StyledFormField
         title="Create new variants"
         required
         subTitle="Add color & size variants to your product."
@@ -267,87 +282,92 @@ export default function ProductVariants() {
             />
           </Grid>
         </Grid>
-      </FormField>
-      <SectionTitle tag="h2">Define Variants</SectionTitle>
-      <SectionTitle tag="p">
-        The table below shows each possible variant combination given the inputs
+      </StyledFormField>
+      <StyledFormField
+        title="Define Variants"
+        required
+        subTitle="The table below shows each possible variant combination given the inputs
         above. You can remove a combination by selecting the rightmost button on
-        the relevant row.
-      </SectionTitle>
-      <Table>
-        <THead>
-          <tr>
-            <Grid
-              data-name
-              as="th"
-              flexDirection="row"
-              justifyContent="flex-start"
-              alignItems="flex-start"
-            >
-              Variant name
-            </Grid>
-            <th data-price>Price</th>
-            <th data-currency>Currency</th>
-            <th data-quantity>Quantity</th>
-            <th data-action>Action</th>
-          </tr>
-        </THead>
-        <TBody>
-          {variants?.map((variant, idx) => {
-            return (
-              <tr key={variant.name}>
-                <Grid
-                  data-name
-                  as="td"
-                  flexDirection="row"
-                  alignItems="flex-start"
-                >
-                  {variant.name}
-                </Grid>
-                <td data-price>
-                  <Input name={`${variantsKey}[${idx}].price`} type="number" />
-                </td>
-                <TdFlex data-currency>
-                  <Select
-                    name={`${variantsKey}[${idx}].currency`}
-                    options={OPTIONS_CURRENCIES}
-                    classNamePrefix="react-select"
-                  />
-                </TdFlex>
-                <td data-quantity>
-                  <Input
-                    name={`${variantsKey}[${idx}].quantity`}
-                    type="number"
-                  />
-                </td>
-                <td data-action>
-                  <Grid justifyContent="center">
-                    <BosonButton
-                      variant="secondaryInverted"
-                      size={ButtonSize.Small}
-                      onClick={() => {
-                        deleteTagsIfNoVariants(
-                          variant,
-                          variants,
-                          fieldColors.value,
-                          helpersColors.setValue,
-                          fieldSizes.value,
-                          helpersSizes.setValue
-                        );
-                        helpersVariants.setValue([
-                          ...variants.filter((_, index) => index !== idx)
-                        ]);
-                      }}
-                    >
-                      Remove
-                    </BosonButton>
+        the relevant row."
+      >
+        <Table>
+          <THead>
+            <tr>
+              <Grid
+                data-name
+                as="th"
+                flexDirection="row"
+                justifyContent="flex-start"
+                alignItems="flex-start"
+              >
+                Variant name
+              </Grid>
+              <th data-price>Price</th>
+              <th data-currency>Currency</th>
+              <th data-quantity>Quantity</th>
+              <th data-action>Action</th>
+            </tr>
+          </THead>
+          <TBody>
+            {variants?.map((variant, idx) => {
+              return (
+                <tr key={variant.name}>
+                  <Grid
+                    data-name
+                    as="td"
+                    flexDirection="row"
+                    alignItems="flex-start"
+                  >
+                    {variant.name}
                   </Grid>
-                </td>
-              </tr>
-            );
-          })}
-        </TBody>
-      </Table>
+                  <td data-price>
+                    <Input
+                      name={`${variantsKey}[${idx}].price`}
+                      type="number"
+                    />
+                  </td>
+                  <TdFlex data-currency>
+                    <Select
+                      name={`${variantsKey}[${idx}].currency`}
+                      options={OPTIONS_CURRENCIES}
+                      classNamePrefix="react-select"
+                    />
+                  </TdFlex>
+                  <td data-quantity>
+                    <Input
+                      name={`${variantsKey}[${idx}].quantity`}
+                      type="number"
+                    />
+                  </td>
+                  <td data-action>
+                    <Grid justifyContent="center">
+                      <BosonButton
+                        variant="secondaryInverted"
+                        size={ButtonSize.Small}
+                        onClick={() => {
+                          deleteTagsIfNoVariants(
+                            variant,
+                            variants,
+                            fieldColors.value,
+                            helpersColors.setValue,
+                            fieldSizes.value,
+                            helpersSizes.setValue
+                          );
+                          helpersVariants.setValue([
+                            ...variants.filter((_, index) => index !== idx)
+                          ]);
+                        }}
+                      >
+                        Remove
+                      </BosonButton>
+                    </Grid>
+                  </td>
+                </tr>
+              );
+            })}
+          </TBody>
+        </Table>
+      </StyledFormField>
       {metaVariants.error && typeof metaVariants.error === "string" && (
         <Error display message={metaVariants.error} />
       )}
