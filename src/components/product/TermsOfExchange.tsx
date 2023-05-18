@@ -280,7 +280,7 @@ export default function TermsOfExchange() {
                   placeholder="Dispute Period"
                   name="termsOfExchange.disputePeriod"
                   type="number"
-                  min="0"
+                  min={CONFIG.minimumDisputePeriodInDays}
                   step="1"
                 />
               </div>

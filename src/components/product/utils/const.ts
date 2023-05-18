@@ -1,6 +1,7 @@
 import { CONFIG } from "../../../lib/config";
 import countries from "../../../lib/const/countries.json";
 import { Token } from "../../convertion-rate/ConvertionRateContext";
+import { ContactPreference } from "../../modal/components/Profile/const";
 
 export const MAX_LOGO_SIZE = 600 * 1024;
 export const MAX_IMAGE_SIZE = 600 * 1024;
@@ -8,7 +9,8 @@ export const SUPPORTED_FILE_FORMATS = [
   "image/jpg",
   "image/jpeg",
   "image/gif",
-  "image/png"
+  "image/png",
+  "image/webp"
 ];
 
 export const CREATE_PRODUCT_STEPS = (isMultiVariant: boolean) => [
@@ -109,7 +111,7 @@ export const TOKEN_CRITERIA = [
 
 export const OPTIONS_EXCHANGE_POLICY = [
   {
-    value: "fairExchangePolicy",
+    value: CONFIG.buyerSellerAgreementTemplate as string,
     label: "Fair Exchange Policy"
   }
 ];
@@ -121,13 +123,25 @@ export const OPTIONS_DISPUTE_RESOLVER = [
   }
 ];
 
+export const OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE = [
+  {
+    // default option
+    value: ContactPreference.XMTP_AND_EMAIL,
+    label: "Chat (XMTP) for delivery information; email after"
+  },
+  {
+    value: ContactPreference.XMTP,
+    label: "Chat (XMTP) for all buyer communication"
+  }
+] as const;
+
 type Entries<T> = {
   [K in keyof T]: [K, T[K]];
 }[keyof T][];
 
 export const optionUnitValues = {
-  "%": "Percent",
-  fixed: "Fixed"
+  fixed: "Fixed",
+  "%": "Percent"
 } as const;
 export const optionUnitKeys = (
   Object.keys(optionUnitValues) as Array<keyof typeof optionUnitValues>
@@ -145,7 +159,7 @@ export const OPTIONS_UNIT = (
 export const PERCENT_OPTIONS_UNIT = [
   {
     value: "%",
-    label: "%"
+    label: "Percent"
   }
 ] as const;
 export const OPTIONS_PERIOD = [

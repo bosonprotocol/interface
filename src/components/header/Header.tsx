@@ -1,5 +1,5 @@
 import { X } from "phosphor-react";
-import { forwardRef, useCallback, useEffect, useState } from "react";
+import { forwardRef, useCallback, useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 import styled, { css } from "styled-components";
 import { useAccount } from "wagmi";
@@ -10,11 +10,16 @@ import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
+import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
+import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { getSellLink } from "../../lib/utils/link";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
+import { UserRoles } from "../../router/routes";
+import useUserRoles, { checkIfUserHaveRole } from "../../router/useUserRoles";
 import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
 import Layout from "../Layout";
 import { useModal } from "../modal/useModal";
-import ViewTxButton from "../transactions/ViewTxButton";
+import BosonButton from "../ui/BosonButton";
 import Grid from "../ui/Grid";
 import ConnectButton from "./ConnectButton";
 import HeaderLinks, { HEADER_HEIGHT } from "./HeaderLinks";
@@ -228,6 +233,9 @@ interface Props {
 const HeaderComponent = forwardRef<HTMLElement, Props>(
   ({ fluidHeader = false, withBanner = false }, ref) => {
     const { address } = useAccount();
+    const { sellers } = useCurrentSellers();
+    const navigate = useKeepQueryParamsNavigate();
+    const isSeller = !!sellers.length;
     const [isOpen, setOpen] = useState(false);
     const { pathname, search } = useLocation();
     const { isLteS, isLteM, isM } = useBreakpoints();
@@ -255,9 +263,30 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
         setOpen(true);
       }
     }, [isLteM, isM, isOpen, setOpen, isSideNavBar]);
+    const { roles } = useUserRoles({ role: [] });
+    const supportFunctionality = useCustomStoreQueryParameter<
+      ("buyer" | "seller" | "dr")[]
+    >("supportFunctionality", { parseJson: true });
+    const isCustomStoreFront =
+      useCustomStoreQueryParameter("isCustomStoreFront");
+    const onlyBuyer =
+      typeof supportFunctionality != "string" &&
+      supportFunctionality?.length === 1 &&
+      supportFunctionality?.[0] === "buyer";
+    const isSupportFunctionalityDefined = supportFunctionality !== "";
+    const showSellButton =
+      ((isSupportFunctionalityDefined && !onlyBuyer) ||
+        !isSupportFunctionalityDefined) &&
+      checkIfUserHaveRole(roles, [UserRoles.Guest, UserRoles.Seller], false) &&
+      !isCustomStoreFront;
 
     const { showModal, modalTypes } = useModal();
 
+    const sellUrl = useMemo(() => {
+      return getSellLink({
+        isAccountSeller: isSeller
+      });
+    }, [isSeller]);
     const Connect = useCallback(
       (props: Parameters<typeof ConnectButton>[0]) => {
         const setShowNotifiModal = () => {
@@ -276,19 +305,36 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
               {...props}
               showAddress={!address}
             />
-            {address && (
+            {address && showSellButton && (
               <Grid
                 flexBasis="content"
                 margin={isSideNavBar ? "0" : "0 0 0 1rem"}
                 {...(isSideNavBar && { justifyContent: "center" })}
               >
-                <ViewTxButton />
+                <BosonButton
+                  variant="accentInverted"
+                  style={{ height: "auto", minWidth: "200px" }}
+                  onClick={() => {
+                    navigate({ pathname: sellUrl });
+                  }}
+                >
+                  {isSeller ? "Create products" : "Sell on Boson"}
+                </BosonButton>
               </Grid>
             )}
           </>
         );
       },
-      [address, isSideNavBar, modalTypes.NOTIFI, showModal]
+      [
+        address,
+        isSideNavBar,
+        modalTypes.NOTIFI,
+        showModal,
+        isSeller,
+        showSellButton,
+        navigate,
+        sellUrl
+      ]
     );
 
     return (

@@ -13,10 +13,9 @@ import { ExploreQueryParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
-import { isTruthy } from "../../lib/types/helpers";
 import type { Offer } from "../../lib/types/offer";
 import useProducts from "../../lib/utils/hooks/product/useProducts";
-import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
+import { useCurationLists } from "../../lib/utils/hooks/useCurationLists";
 import { useIsCustomStoreValueChanged } from "../custom-store/useIsCustomStoreValueChanged";
 import ExploreSelect from "./ExploreSelect";
 import useSearchParams from "./useSearchParams";
@@ -133,8 +132,6 @@ export function WithAllOffers<P>(
 
     const isPrimaryBgColorChanged =
       useIsCustomStoreValueChanged("primaryBgColor");
-    const sellerCurationListString =
-      useCustomStoreQueryParameter("sellerCurationList");
 
     const pageOptions = useMemo(() => {
       let options = {
@@ -165,11 +162,10 @@ export function WithAllOffers<P>(
       return options;
     }, [location.pathname]); // eslint-disable-line
 
+    const curationLists = useCurationLists();
+
     const filterOptions = useMemo(() => {
       const filterByName = params?.[ExploreQueryParameters.name] || false;
-      const sellerCurationList = sellerCurationListString
-        .split(",")
-        .filter(isTruthy);
 
       const sortByParam =
         params?.[ExploreQueryParameters.sortBy]?.includes("price:asc") ||
@@ -185,10 +181,8 @@ export function WithAllOffers<P>(
           ? params?.[ExploreQueryParameters.sortBy]
           : false;
 
-      let payload = {
+      let payload: FilterOptions = {
         name: "",
-        sellerCurationList,
-        orderDirection: "",
         exchangeOrderBy: "",
         orderBy: ""
       };
@@ -199,11 +193,8 @@ export function WithAllOffers<P>(
           name: filterByName as string
         };
       }
-      if (sellerCurationList) {
-        payload = {
-          ...payload,
-          sellerCurationList
-        };
+      if (curationLists.sellerCurationList) {
+        payload.sellerCurationList = curationLists.sellerCurationList;
       }
       if (sortByParam !== false) {
         const [orderBy, orderDirection] = (sortByParam as string).split(":");
@@ -211,7 +202,10 @@ export function WithAllOffers<P>(
           ...payload,
           orderBy,
           exchangeOrderBy: orderBy as string,
-          orderDirection
+          orderDirection:
+            orderDirection === "asc" || orderDirection === "desc"
+              ? orderDirection
+              : undefined
         };
       }
       return pick(payload, [
@@ -222,7 +216,7 @@ export function WithAllOffers<P>(
         "validFromDate_lte",
         "sellerCurationList"
       ]) as FilterOptions;
-    }, [params, sellerCurationListString]);
+    }, [params, curationLists]);
 
     const products = useProducts(
       {

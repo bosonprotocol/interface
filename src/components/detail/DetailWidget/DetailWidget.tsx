@@ -6,6 +6,7 @@ import {
   subgraph
 } from "@bosonprotocol/react-kit";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import * as Sentry from "@sentry/browser";
 import dayjs from "dayjs";
 import {
   BigNumber,
@@ -28,6 +29,7 @@ import { isTruthy } from "../../../lib/types/helpers";
 import { Offer } from "../../../lib/types/offer";
 import { calcPercentage, displayFloat } from "../../../lib/utils/calcPrice";
 import { IPrice } from "../../../lib/utils/convertPrice";
+import { getHasExchangeDisputeResolutionElapsed } from "../../../lib/utils/exchange";
 import { titleCase } from "../../../lib/utils/formatText";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
 import useCheckTokenGatedOffer from "../../../lib/utils/hooks/offer/useCheckTokenGatedOffer";
@@ -366,6 +368,9 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   const isBeforeRedeem =
     !exchangeStatus || NOT_REDEEMED_YET.includes(exchangeStatus);
 
+  const hasDisputePeriodElapsed: boolean =
+    getHasExchangeDisputeResolutionElapsed(exchange, offer);
+
   const isExchangeExpired =
     exchangeStatus &&
     [exchanges.ExtendedExchangeState.Expired].includes(
@@ -671,6 +676,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
     if (hasUserRejectedTx) {
       showModal("TRANSACTION_FAILED");
     } else {
+      Sentry.captureException(error);
       showModal(modalTypes.DETAIL_WIDGET, {
         title: "An error occurred",
         message: "An error occurred when trying to commit!",
@@ -908,7 +914,7 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                       exchangeId: exchange?.id || "",
                       buyerId: exchange?.buyer.id || "",
                       sellerId: exchange?.seller.id || "",
-                      sellerAddress: exchange?.seller.operator || "",
+                      sellerAddress: exchange?.seller.assistant || "",
                       setIsLoading: setIsLoading,
                       reload
                     },
@@ -1005,7 +1011,8 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                   {![
                     exchanges.ExtendedExchangeState.Expired,
                     subgraph.ExchangeState.Cancelled,
-                    subgraph.ExchangeState.Revoked
+                    subgraph.ExchangeState.Revoked,
+                    subgraph.ExchangeState.Completed
                   ].includes(
                     exchangeStatus as
                       | exchanges.ExtendedExchangeState
@@ -1028,15 +1035,19 @@ const DetailWidget: React.FC<IDetailWidget> = ({
                     <RaiseProblemButton
                       onClick={() => {
                         showModal(modalTypes.RAISE_DISPUTE, {
-                          title: "Raise a problem",
+                          title: "Raise a dispute",
                           exchangeId: exchange?.id || ""
                         });
                       }}
                       theme="blank"
                       style={{ fontSize: "0.875rem" }}
-                      disabled={exchange?.state !== "REDEEMED" || !isBuyer}
+                      disabled={
+                        exchange?.state !== "REDEEMED" ||
+                        !isBuyer ||
+                        hasDisputePeriodElapsed
+                      }
                     >
-                      Raise a problem
+                      Raise a dispute
                       <Question size={18} />
                     </RaiseProblemButton>
                   )}

@@ -28,7 +28,7 @@ import {
 } from "../../lib/utils/images";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import { getOfferDetailData } from "../detail/DetailWidget/DetailWidget";
-import { getLensProfilePictureUrl } from "../modal/components/CreateProfile/Lens/utils";
+import { getLensProfilePictureUrl } from "../modal/components/Profile/Lens/utils";
 import { useModal } from "../modal/useModal";
 import { useConvertedPrice } from "../price/useConvertedPrice";
 
@@ -145,7 +145,7 @@ export default function Exchange({ offer, exchange, reload }: Props) {
       case "REDEEMED": {
         const handleDispute = () => {
           showModal(modalTypes.RAISE_DISPUTE, {
-            title: "Raise a problem",
+            title: "Raise a dispute",
             exchangeId: exchange?.id || ""
           });
         };
@@ -175,7 +175,7 @@ export default function Exchange({ offer, exchange, reload }: Props) {
               offerId: offer.id,
               buyerId: exchange?.buyer.id || "",
               sellerId: exchange?.seller.id || "",
-              sellerAddress: exchange?.seller.operator || "",
+              sellerAddress: exchange?.seller.assistant || "",
               reload
             },
             "s"

@@ -30,7 +30,7 @@ export const createYourProfileHelp = [
   {
     title: "Where will this information be displayed?",
     description:
-      "Your description and external URLs are shown on the product details page for any offer you create. Your email is visible on your profile and offers you create, buyers will contact you via this e-mail to ask questions and resolve problems."
+      "Your description and external URLs are shown on the product details page for any offer you create. Your email is visible on your profile and offers you create, buyers will contact you via this email to ask questions and resolve problems."
   } as const,
   {
     title: "What if I don't have a Website/Twitter/Instagram?",
@@ -72,7 +72,7 @@ export const createYourProfileHelp = [
 
 export const productTypeHelp = [
   {
-    title: "What is phygital?",
+    title: "What is a phygital?",
     description:
       "A Phygital item is one that exists both digitally (in the form of an NFT) and also in a physical form. The digital item must be a visual representation of the physical."
   } as const,
@@ -123,7 +123,7 @@ export const productTypeHelp = [
   {
     title: "Why would I sell a phygital item?",
     description:
-      "This new asset form bridges the physical and digital world, allowing your products to hit new levels of utility and reach an evergrowing new audience."
+      "This new asset form bridges the physical and digital world, allowing your products to hit new levels of utility and reach an ever-growing new audience."
   } as const,
   {
     title: "How many images do I need?",
@@ -147,16 +147,16 @@ export const productVariantsHelp = [...productTypeHelp];
 export const productImagesHelp = [...productTypeHelp];
 export const coreTermsOfSaleHelp = [
   {
-    title: "What is a Token gated Offer?",
+    title: "What is a token gated offer?",
     description:
       "Make your offer exclusive by limiting the ability to purchase your item to users holding a specific token."
   } as const,
   {
-    title: "What is a Dispute Resolver?",
+    title: "What is a dispute resolver?",
     description: (
       <>
         <Typography tag="p" style={{ margin: "0" }}>
-          If a buyer raises and escalates a dispute, the dispute resolver step
+          If a buyer raises and escalates a dispute, the dispute resolver steps
           in to resolve the dispute.
         </Typography>
         <Typography tag="p" style={{ margin: "0" }}>
@@ -167,15 +167,15 @@ export const coreTermsOfSaleHelp = [
     )
   } as const,
   {
-    title: "What is an Exchange Policy?",
+    title: "What is an exchange policy?",
     description: (
       <>
         <Typography tag="p" style={{ margin: "0 0 10px 0" }}>
-          The exchange policy covers contractual and protocol terms of the
-          exchange to protect buyer and seller.
+          The exchange policy covers both the contractual and the protocol terms
+          of the exchange to protect buyer and seller.
         </Typography>
         <Typography tag="p" style={{ margin: "0 0 10px 0" }}>
-          This includes obligations of both parties to follow thru with their
+          This includes obligations of both parties to follow through with their
           commitment, and evidence requirements in case there is a dispute.
         </Typography>
         <Typography tag="p" style={{ margin: "0" }}>
@@ -186,7 +186,7 @@ export const coreTermsOfSaleHelp = [
     )
   } as const,
   {
-    title: "How long should the Redemption period be?",
+    title: "How long should the redemption period be?",
     description: (
       <>
         <Typography tag="p" style={{ margin: "0 0 10px 0" }}>
@@ -202,12 +202,12 @@ export const coreTermsOfSaleHelp = [
     )
   } as const,
   {
-    title: "What Happens when the Offer Ends?",
+    title: "What happens when the offer ends?",
     description:
       "When your offer period expires, buyers are no longer able to make a commitment."
   } as const,
   {
-    title: "What is buyer cancel penalty?",
+    title: "What is the buyer cancel penalty?",
     description:
       "If the buyer fails to redeem the item within the redemption period they will receive back the payment minus the cancellation penalty.This penalty is to cover the inconvenience caused to the seller."
   } as const,

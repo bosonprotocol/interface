@@ -1,5 +1,6 @@
 import { useBreakpoints } from "../../../../../lib/utils/hooks/useBreakpoints";
-import { Input, Phone } from "../../../../form";
+import { CountryCode, Input, Phone } from "../../../../form";
+import { CountrySelect } from "../../../../form/CountrySelect";
 import BosonButton from "../../../../ui/BosonButton";
 import Button from "../../../../ui/Button";
 import Grid from "../../../../ui/Grid";
@@ -11,6 +12,45 @@ interface Props {
   onNextClick: () => void;
   onBackClick: () => void;
 }
+// https://www.fatf-gafi.org/en/countries.html
+const fatfMemberCountries: CountryCode[] = [
+  "AR",
+  "AU",
+  "AT",
+  "BE",
+  "BR",
+  "CA",
+  "CN",
+  "DK",
+  "FI",
+  "FR",
+  "DE",
+  "GR",
+  "HK",
+  "IS",
+  "IN",
+  "IE",
+  "IL",
+  "IT",
+  "JP",
+  "KR",
+  "LU",
+  "MY",
+  "MX",
+  "NE",
+  "NZ",
+  "PT",
+  "NO",
+  "SA",
+  "SG",
+  "ZA",
+  "ES",
+  "SE",
+  "CH",
+  "TR",
+  "GB",
+  "US"
+];
 
 export default function RedeemForm({
   isValid,
@@ -88,9 +128,10 @@ export default function RedeemForm({
           </Grid>
         )}
         <Grid flexDirection="column" alignItems="flex-start">
-          <Input
+          <CountrySelect
             name={FormModel.formFields.country.name}
             placeholder={FormModel.formFields.country.placeholder}
+            countries={fatfMemberCountries}
           />
         </Grid>
         <Grid flexDirection="column" alignItems="flex-start">

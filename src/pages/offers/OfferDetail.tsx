@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 
 import {
@@ -22,8 +23,12 @@ import { UrlParameters } from "../../lib/routing/parameters";
 import { colors } from "../../lib/styles/colors";
 import { getOfferDetails } from "../../lib/utils/getOfferDetails";
 import useOffer from "../../lib/utils/hooks/offer/useOffer";
-import { useSellers } from "../../lib/utils/hooks/useSellers";
+import {
+  useSellerCurationListFn,
+  useSellers
+} from "../../lib/utils/hooks/useSellers";
 import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
+import NotFound from "../not-found/NotFound";
 
 export default function OfferDetail() {
   const { [UrlParameters.offerId]: offerId } = useParams();
@@ -39,10 +44,15 @@ export default function OfferDetail() {
     { enabled: !!offerId }
   );
   const textColor = useCustomStoreQueryParameter("textColor");
-  const { data: sellers } = useSellers({
-    id: offer?.seller.id,
-    includeFunds: true
-  });
+  const { data: sellers } = useSellers(
+    {
+      id: offer?.seller.id,
+      includeFunds: true
+    },
+    {
+      enabled: !!offer?.seller.id
+    }
+  );
   const sellerAvailableDeposit = sellers?.[0]?.funds?.find(
     (fund) => fund.token.address === offer?.exchangeToken.address
   )?.availableAmount;
@@ -51,6 +61,15 @@ export default function OfferDetail() {
     offerRequiredDeposit > 0
       ? Number(sellerAvailableDeposit) >= offerRequiredDeposit
       : true;
+
+  const sellerId = offer?.seller.id;
+  const checkIfSellerIsInCurationList = useSellerCurationListFn();
+
+  const isSellerCurated = useMemo(() => {
+    const isSellerInCurationList =
+      sellerId && checkIfSellerIsInCurationList(sellerId);
+    return isSellerInCurationList;
+  }, [sellerId, checkIfSellerIsInCurationList]);
 
   if (!offerId) {
     return null;
@@ -79,6 +98,10 @@ export default function OfferDetail() {
         application enforces
       </div>
     );
+  }
+
+  if (!isSellerCurated) {
+    return <NotFound />;
   }
 
   const {
@@ -111,19 +134,21 @@ export default function OfferDetail() {
             )}
           </ImageWrapper>
           <div>
-            <SellerID
-              offer={offer}
-              buyerOrSeller={offer?.seller}
-              justifyContent="flex-start"
-              withProfileImage
-            />
-            <Typography
-              tag="h1"
-              data-testid="name"
-              style={{ fontSize: "2rem", marginBottom: "2rem" }}
-            >
-              {name}
-            </Typography>
+            <>
+              <SellerID
+                offer={offer}
+                buyerOrSeller={offer?.seller}
+                justifyContent="flex-start"
+                withProfileImage
+              />
+              <Typography
+                tag="h1"
+                data-testid="name"
+                style={{ fontSize: "2rem", marginBottom: "2rem" }}
+              >
+                {name}
+              </Typography>
+            </>
 
             <DetailWidget
               pageType="offer"

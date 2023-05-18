@@ -10,11 +10,11 @@ import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { getOfferDetails } from "../../lib/utils/getOfferDetails";
-import { MediaSet } from "../../lib/utils/hooks/lens/graphql/generated";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { getLensImageUrl } from "../../lib/utils/images";
-import { getLensProfilePictureUrl } from "../modal/components/CreateProfile/Lens/utils";
+import { ProfileType } from "../modal/components/Profile/const";
+import { getLensProfilePictureUrl } from "../modal/components/Profile/Lens/utils";
 import Image from "./Image";
 
 const AddressContainer = styled(Grid)`
@@ -59,7 +59,7 @@ const ImageContainer = styled.div`
 `;
 
 type Buyer = Pick<subgraph.Buyer, "id" | "wallet">;
-type Seller = Pick<subgraph.Seller, "id" | "operator">;
+type Seller = Pick<subgraph.Seller, "id" | "assistant">;
 
 const SellerID: React.FC<
   {
@@ -85,7 +85,7 @@ const SellerID: React.FC<
   ...rest
 }) => {
   const { address } = useAccount();
-  const { lens: lensProfiles } = useCurrentSellers({
+  const { lens: lensProfiles, sellers } = useCurrentSellers({
     sellerId: offer?.seller?.id
   });
   const [lens] = lensProfiles;
@@ -93,14 +93,28 @@ const SellerID: React.FC<
   const { artist } = getOfferDetails(offer);
 
   const userId = buyerOrSeller?.id;
-  const isSeller = buyerOrSeller ? "operator" in buyerOrSeller : false;
+  const isSeller = buyerOrSeller ? "assistant" in buyerOrSeller : false;
   const userAddress = buyerOrSeller
     ? isSeller
-      ? (buyerOrSeller as Seller).operator
+      ? (buyerOrSeller as Seller).assistant
       : (buyerOrSeller as Buyer).wallet
     : address;
   const hasCursorPointer = !!onClick || onClick === undefined;
-
+  const seller = sellers[0] ?? offer?.seller;
+  const metadata = seller?.metadata;
+  const useLens = !metadata || metadata?.kind === ProfileType.LENS;
+  const regularProfilePicture =
+    metadata?.images?.find((img) => img.tag === "profile")?.url ?? "";
+  const lensProfilePicture = getLensProfilePictureUrl(lens);
+  const productV1SellerProfileImage =
+    artist.images?.find((img) => img.tag === "profile")?.url ?? "";
+  const profilePicture =
+    (useLens ? lensProfilePicture : regularProfilePicture) ??
+    productV1SellerProfileImage;
+  const profilePictureToShow = useLens
+    ? getLensImageUrl(profilePicture)
+    : regularProfilePicture;
+  const name = (useLens ? lens?.name : metadata?.name) ?? metadata?.name;
   return (
     <AddressContainer {...rest} data-address-container>
       <SellerContainer
@@ -129,13 +143,9 @@ const SellerID: React.FC<
       >
         {withProfileImage && userId && (
           <ImageContainer>
-            {(lens?.picture as MediaSet) ||
-            (artist?.images && artist?.images.length > 0) ? (
+            {profilePicture ? (
               <Image
-                src={getLensImageUrl(
-                  getLensProfilePictureUrl(lens) ||
-                    ((artist?.images?.[0]?.url || "") as string)
-                )}
+                src={profilePictureToShow}
                 style={{
                   height: "1rem",
                   width: "1rem",
@@ -157,8 +167,8 @@ const SellerID: React.FC<
             $withBosonStyles={withBosonStyles}
           >
             {isSeller
-              ? lens?.name
-                ? lens?.name
+              ? name
+                ? name
                 : `Seller ID: ${userId}`
               : `Buyer ID: ${userId}`}
           </SellerInfo>

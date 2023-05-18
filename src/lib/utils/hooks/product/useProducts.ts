@@ -56,12 +56,9 @@ export default function useProducts(
       productsFilter: {
         uuid_in: props?.productsIds || undefined,
         disputeResolverId: CONFIG.defaultDisputeResolverId,
-        sellerId_in:
-          options.enableCurationList &&
-          curationLists.enableCurationLists &&
-          !!curationLists.sellerCurationList?.length
-            ? curationLists.sellerCurationList
-            : undefined,
+        sellerId_in: options.enableCurationList
+          ? curationLists.sellerCurationList
+          : undefined,
         ...props.productsFilter
       }
     }),
@@ -104,7 +101,7 @@ export default function useProducts(
     },
     {
       ...options,
-      enabled: !!coreSDK,
+      enabled: options.enabled && !!coreSDK,
       refetchOnWindowFocus: false,
       refetchOnMount: options.refetchOnMount || false
     }

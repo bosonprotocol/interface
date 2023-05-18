@@ -10,7 +10,7 @@ export const useBuyerSellerAccounts = (address: string) => {
     ...restSellers
   } = useSellers(
     {
-      operator: address
+      assistant: address
     },
     {
       enabled: !!address

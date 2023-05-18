@@ -526,8 +526,8 @@ export default function SellerProductsTable({
                         <VoidButton
                           variant="secondaryInverted"
                           size={ButtonSize.Small}
-                          disabled={!sellerRoles?.isOperator}
-                          tooltip="This action is restricted to only the operator wallet"
+                          disabled={!sellerRoles?.isAssistant}
+                          tooltip="This action is restricted to only the assistant wallet"
                           onClick={() => {
                             if (variant) {
                               showModal(
@@ -661,8 +661,8 @@ export default function SellerProductsTable({
                     <VoidButton
                       variant="secondaryInverted"
                       size={ButtonSize.Small}
-                      disabled={!sellerRoles?.isOperator}
-                      tooltip="This action is restricted to only the operator wallet"
+                      disabled={!sellerRoles?.isAssistant}
+                      tooltip="This action is restricted to only the assistant wallet"
                       onClick={() => {
                         if (offer) {
                           if (showVariant) {
@@ -709,8 +709,8 @@ export default function SellerProductsTable({
                       padding: "0.25rem 1rem",
                       margin: "1px"
                     }}
-                    tooltip="This action is restricted to only the operator wallet"
-                    disabled={!offer || !sellerRoles?.isOperator}
+                    tooltip="This action is restricted to only the assistant wallet"
+                    disabled={!offer || !sellerRoles?.isAssistant}
                     onClick={async (
                       event: Parameters<
                         NonNullable<Parameters<typeof Button>[0]["onClick"]>

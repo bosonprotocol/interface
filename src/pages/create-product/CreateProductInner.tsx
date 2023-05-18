@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   CoreSDK,
-  IpfsMetadataStorage,
   MetadataType,
   offers,
   productV1,
@@ -25,17 +24,14 @@ import { useEffect } from "react";
 
 import { Token } from "../../components/convertion-rate/ConvertionRateContext";
 import { FileProps } from "../../components/form/Upload/WithUploadToIpfs";
-import {
-  getLensCoverPictureUrl,
-  getLensProfilePictureUrl,
-  getLensTokenIdDecimal
-} from "../../components/modal/components/CreateProfile/Lens/utils";
+import { getLensTokenIdDecimal } from "../../components/modal/components/Profile/Lens/utils";
 import { useModal } from "../../components/modal/useModal";
 import Help from "../../components/product/Help";
 import Preview from "../../components/product/Preview";
 import {
   CREATE_PRODUCT_STEPS,
   CreateProductForm,
+  OPTIONS_EXCHANGE_POLICY,
   optionUnitKeys,
   TOKEN_TYPES
 } from "../../components/product/utils";
@@ -45,15 +41,12 @@ import SuccessTransactionToast from "../../components/toasts/SuccessTransactionT
 import { CONFIG } from "../../lib/config";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { ProductRoutes } from "../../lib/routing/routes";
-import { fetchIpfsBase64Media } from "../../lib/utils/base64";
 import { useChatStatus } from "../../lib/utils/hooks/chat/useChatStatus";
 import { Profile } from "../../lib/utils/hooks/lens/graphql/generated";
 import { useCreateOffers } from "../../lib/utils/hooks/offer/useCreateOffers";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
-import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { saveItemInStorage } from "../../lib/utils/hooks/useLocalStorage";
-import { getImageMetadata } from "../../lib/utils/images";
 import { getIpfsGatewayUrl } from "../../lib/utils/ipfs";
 import { fixformattedString } from "../../lib/utils/number";
 import { useCoreSDK } from "../../lib/utils/useCoreSdk";
@@ -76,6 +69,7 @@ function onKeyPress(event: React.KeyboardEvent<HTMLFormElement>) {
   }
 }
 type GetProductV1MetadataProps = {
+  contactPreference: string;
   offerUuid: string;
   productInformation: CreateProductForm["productInformation"];
   productAnimation: FileProps | undefined;
@@ -96,16 +90,14 @@ type GetProductV1MetadataProps = {
   productType: CreateProductForm["productType"];
   visualImages: productV1.ProductBase["visuals_images"];
   shippingInfo: CreateProductForm["shippingInfo"];
-  operatorLens: Profile | null;
-  profileImage: FileProps | undefined;
   termsOfExchange: CreateProductForm["termsOfExchange"];
   supportedJurisdictions: Array<SupportedJuridiction>;
   commonTermsOfSale:
     | CreateProductForm["coreTermsOfSale"]
     | CreateProductForm["variantsCoreTermsOfSale"];
-  ipfsMetadataStorage: IpfsMetadataStorage;
 };
 async function getProductV1Metadata({
+  contactPreference,
   offerUuid,
   productInformation,
   productAnimation,
@@ -118,57 +110,30 @@ async function getProductV1Metadata({
   productType,
   visualImages,
   shippingInfo,
-  operatorLens,
-  profileImage,
   termsOfExchange,
   supportedJurisdictions,
-  commonTermsOfSale,
-  ipfsMetadataStorage
+  commonTermsOfSale
 }: GetProductV1MetadataProps): Promise<productV1.ProductV1Metadata> {
-  let sellerImages: productV1.ProductV1Metadata["seller"]["images"] = [
+  const profileImage = createYourProfile?.logo?.[0];
+  const coverImage = createYourProfile?.coverPicture?.[0];
+
+  const sellerImages: productV1.ProductV1Metadata["seller"]["images"] = [
     {
       url: profileImage?.src || "",
       tag: "profile",
-      height: profileImage?.height,
-      width: profileImage?.width,
+      height: profileImage?.height ?? undefined,
+      width: profileImage?.width ?? undefined,
       type: profileImage?.type
+    },
+    {
+      url: coverImage?.src || "",
+      tag: "cover",
+      height: coverImage?.height ?? undefined,
+      width: coverImage?.width ?? undefined,
+      type: coverImage?.type
     }
   ];
-  if (CONFIG.lens.enabled) {
-    const ipfsLinks = [];
-    const pictureUrl = operatorLens
-      ? getLensProfilePictureUrl(operatorLens as Profile) || ""
-      : "";
-    ipfsLinks.push(pictureUrl);
-    const coverUrl = operatorLens
-      ? getLensCoverPictureUrl(operatorLens as Profile) || ""
-      : "";
-    ipfsLinks.push(coverUrl);
-    const [pictureBase64, coverBase64] = await fetchIpfsBase64Media(
-      ipfsLinks,
-      ipfsMetadataStorage
-    );
-    const [pictureMetadata, coverMetadata] = await Promise.all([
-      getImageMetadata(pictureBase64),
-      getImageMetadata(coverBase64)
-    ]);
-    sellerImages = [
-      {
-        url: operatorLens
-          ? getLensProfilePictureUrl(operatorLens as Profile) || ""
-          : "",
-        tag: "profile",
-        ...pictureMetadata
-      },
-      {
-        url: operatorLens
-          ? getLensCoverPictureUrl(operatorLens as Profile) || ""
-          : "",
-        tag: "cover",
-        ...coverMetadata
-      }
-    ];
-  }
+
   return {
     schemaUrl: "https://schema.org/",
     uuid: offerUuid,
@@ -177,8 +142,8 @@ async function getProductV1Metadata({
     animationUrl: getIpfsGatewayUrl(productAnimation?.src || ""),
     animationMetadata: productAnimation
       ? {
-          height: productAnimation.height,
-          width: productAnimation.width,
+          height: productAnimation.height ?? undefined,
+          width: productAnimation.width ?? undefined,
           type: productAnimation.type
         }
       : undefined,
@@ -232,13 +197,17 @@ async function getProductV1Metadata({
           tag: "email"
         }
       ],
-      images: sellerImages
+      images: sellerImages,
+      contactPreference
     },
     exchangePolicy: {
       uuid: Date.now().toString(),
       version: 1,
-      label: termsOfExchange.exchangePolicy.value,
-      template: termsOfExchange.exchangePolicy.value,
+      label: termsOfExchange.exchangePolicy.label,
+      template:
+        termsOfExchange.exchangePolicy.value === "fairExchangePolicy" // if there is data in localstorage, the exchangePolicy.value might be the old 'fairExchangePolicy'
+          ? OPTIONS_EXCHANGE_POLICY[0].value
+          : termsOfExchange.exchangePolicy.value,
       sellerContactMethod: CONFIG.defaultSellerContactMethod,
       disputeResolverContactMethod: `email to: ${CONFIG.defaultDisputeResolverContactMethod}`
     },
@@ -412,15 +381,16 @@ function CreateProductInner({
 
   const { sellers, lens: lensProfiles } = useCurrentSellers();
   const { mutateAsync: createOffers } = useCreateOffers();
-  const currentOperator = sellers.find((seller) => {
-    return seller?.operator.toLowerCase() === address?.toLowerCase();
+  const currentAssistant = sellers.find((seller) => {
+    return seller?.assistant.toLowerCase() === address?.toLowerCase();
   });
+  const contactPreference = currentAssistant?.metadata?.contactPreference ?? "";
   // lens profile of the current user
-  const operatorLens: Profile | null =
+  const assistantLens: Profile | null =
     lensProfiles.find((lensProfile) => {
       return (
         getLensTokenIdDecimal(lensProfile.id).toString() ===
-        currentOperator?.authTokenId
+        currentAssistant?.authTokenId
       );
     }) || null;
 
@@ -482,7 +452,6 @@ function CreateProductInner({
     );
   };
   const formikRef = useRef<FormikProps<CreateProductForm>>(null);
-  const ipfsMetadataStorage = useIpfsStorage();
   const wizardStep = useMemo(() => {
     const wizard = createProductSteps({
       setIsPreviewVisible,
@@ -520,6 +489,7 @@ function CreateProductInner({
       const nextStep = currentStep + 1;
       setCurrentStepWithHistory(nextStep);
     }
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, [
     isPreviewVisible,
     wizardStep.wizardLength,
@@ -548,7 +518,6 @@ function CreateProductInner({
       shippingInfo
     } = values;
 
-    const profileImage = createYourProfile?.logo?.[0];
     const productMainImageLink: string | undefined =
       isMultiVariant && !isOneSetOfImages
         ? productVariantsImages?.find((variant) => {
@@ -644,13 +613,11 @@ function CreateProductInner({
         value: voucherRedeemableUntilDateInMS.toString(),
         display_type: "date"
       });
-      if (CONFIG.lens.enabled) {
-        if (operatorLens?.name || operatorLens?.handle) {
-          nftAttributes.push({
-            trait_type: "Seller",
-            value: operatorLens?.name || operatorLens?.handle
-          });
-        }
+      if (assistantLens?.name || assistantLens?.handle) {
+        nftAttributes.push({
+          trait_type: "Seller",
+          value: assistantLens?.name || assistantLens?.handle
+        });
       } else {
         nftAttributes.push({
           trait_type: "Seller",
@@ -672,7 +639,6 @@ function CreateProductInner({
         const variantsForMetadataCreation: Parameters<
           typeof productV1["createVariantProductMetadata"]
         >[1] = [];
-        const variations: productV1.ProductV1Variant = [];
         const visualImages: productV1.ProductBase["visuals_images"] = [];
         const allVariationsWithSameImages =
           values.imagesSpecificOrAll?.value === "all";
@@ -695,7 +661,6 @@ function CreateProductInner({
               option: color || "-"
             }
           ];
-          variations.push(...typeOptions);
 
           if (!allVariationsWithSameImages && productImages) {
             const variantVisualImages = extractVisualImages(productImages);
@@ -717,6 +682,7 @@ function CreateProductInner({
           }
         }
         const productV1Metadata = await getProductV1Metadata({
+          contactPreference,
           offerUuid,
           productInformation,
           productAnimation,
@@ -729,12 +695,9 @@ function CreateProductInner({
           productType,
           visualImages,
           shippingInfo,
-          operatorLens,
-          profileImage,
           termsOfExchange,
           supportedJurisdictions,
-          commonTermsOfSale,
-          ipfsMetadataStorage
+          commonTermsOfSale
         });
         const metadatas = productV1.createVariantProductMetadata(
           productV1Metadata,
@@ -807,6 +770,7 @@ function CreateProductInner({
       } else {
         const visualImages = extractVisualImages(productImages);
         const productV1Metadata = await getProductV1Metadata({
+          contactPreference,
           offerUuid,
           productInformation,
           productAnimation,
@@ -819,12 +783,9 @@ function CreateProductInner({
           productType,
           visualImages,
           shippingInfo,
-          operatorLens,
-          profileImage,
           termsOfExchange,
           supportedJurisdictions,
-          commonTermsOfSale,
-          ipfsMetadataStorage
+          commonTermsOfSale
         });
         const price = coreTermsOfSale.price;
         const decimals = Number(exchangeToken?.decimals || 18);
@@ -867,6 +828,7 @@ function CreateProductInner({
       }
       const isTokenGated = commonTermsOfSale.tokenGatedOffer.value === "true";
       await createOffers({
+        sellerToCreate: null,
         isMultiVariant,
         offersToCreate,
         tokenGatedInfo: isTokenGated ? commonTermsOfSale : null,
@@ -905,7 +867,16 @@ function CreateProductInner({
     } catch (error: any) {
       // TODO: FAILURE MODAL
       console.error("error->", error.errors ?? error);
-      showModal("TRANSACTION_FAILED");
+      const hasUserRejectedTx =
+        "code" in error &&
+        (error as unknown as { code: string })?.code === "ACTION_REJECTED";
+      if (hasUserRejectedTx) {
+        showModal("TRANSACTION_FAILED");
+      } else {
+        showModal("TRANSACTION_FAILED", {
+          errorMessage: "Something went wrong"
+        });
+      }
     }
   };
 
@@ -1004,7 +975,7 @@ function CreateProductInner({
                 {isPreviewVisible ? (
                   <Preview
                     togglePreview={setIsPreviewVisible}
-                    seller={currentOperator as any}
+                    seller={currentAssistant as any}
                     isMultiVariant={isMultiVariant}
                     isOneSetOfImages={isOneSetOfImages}
                     hasMultipleVariants={

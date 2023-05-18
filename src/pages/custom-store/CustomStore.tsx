@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/browser";
 import { Form, Formik } from "formik";
 import { useState } from "react";
 import styled from "styled-components";
@@ -6,8 +7,11 @@ import Layout from "../../components/Layout";
 import { useModal } from "../../components/modal/useModal";
 import Typography from "../../components/ui/Typography";
 import { useCSSVariable } from "../../lib/utils/hooks/useCSSVariable";
+import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useIpfsStorage } from "../../lib/utils/hooks/useIpfsStorage";
+import { useSellerCurationListFn } from "../../lib/utils/hooks/useSellers";
 import { getIpfsGatewayUrl } from "../../lib/utils/ipfs";
+import NotFound from "../not-found/NotFound";
 import CustomStoreFormContent, {
   formValuesWithOneLogoUrl
 } from "./CustomStoreFormContent";
@@ -29,6 +33,23 @@ export default function CustomStore() {
   const [hasSubmitError, setHasSubmitError] = useState<boolean>(false);
   const primaryColor = useCSSVariable("--primary");
   const storage = useIpfsStorage();
+  const { sellers } = useCurrentSellers();
+  const seller = sellers?.[0];
+  const checkIfSellerIsInCurationList = useSellerCurationListFn();
+  const isSellerCurated = !!seller && checkIfSellerIsInCurationList(seller.id);
+
+  if (!seller) {
+    return (
+      <div data-testid="notFound">
+        No seller account found for the current wallet.
+      </div>
+    );
+  }
+
+  if (!isSellerCurated) {
+    return <NotFound />;
+  }
+
   return (
     <Root>
       <Typography
@@ -86,6 +107,7 @@ export default function CustomStore() {
             });
           } catch (error) {
             console.error(error);
+            Sentry.captureException(error);
             setHasSubmitError(true);
           }
         }}

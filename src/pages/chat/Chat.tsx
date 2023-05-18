@@ -72,15 +72,25 @@ export default function Chat() {
   } = useBuyerSellerAccounts(address || "");
 
   const { data: exchangesAsTheBuyer, refetch: refetchExchangesAsTheBuyer } =
-    useExchanges({
-      buyerId: buyerId,
-      disputed: null
-    });
+    useExchanges(
+      {
+        buyerId: buyerId,
+        disputed: null
+      },
+      {
+        enabled: !!buyerId
+      }
+    );
   const { data: exchangesAsTheSeller, refetch: refetchExchangesAsTheSeller } =
-    useExchanges({
-      sellerId: sellerId,
-      disputed: null
-    });
+    useExchanges(
+      {
+        sellerId: sellerId,
+        disputed: null
+      },
+      {
+        enabled: !!sellerId
+      }
+    );
 
   const exchanges = useMemo(() => {
     return Array.from(

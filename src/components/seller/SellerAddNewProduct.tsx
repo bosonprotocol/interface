@@ -15,8 +15,8 @@ function SellerAddNewProduct({ sellerRoles }: Props) {
     <BosonButton
       variant="primaryFill"
       size={ButtonSize.Small}
-      disabled={!sellerRoles?.isOperator}
-      tooltip="This action is restricted to only the operator wallet"
+      disabled={!sellerRoles?.isAssistant}
+      tooltip="This action is restricted to only the assistant wallet"
       onClick={() => {
         navigate({ pathname: SellerCenterRoutes.CreateProduct });
       }}

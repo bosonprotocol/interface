@@ -9,10 +9,13 @@ import { Token } from "../../convertion-rate/ConvertionRateContext";
 import { MIN_VALUE } from "../../modal/components/Chat/const";
 import { FormModel } from "../../modal/components/Chat/MakeProposal/MakeProposalFormModel";
 import { DisputeFormModel } from "../../modal/components/DisputeModal/DisputeModalFormModel";
+import { getCommonFieldsValidation } from "../../modal/components/Profile/valitationSchema";
 import { CONFIG } from "./../../../lib/config";
 import { SelectDataProps } from "./../../form/types";
 import {
+  OPTIONS_DISPUTE_RESOLVER,
   OPTIONS_EXCHANGE_POLICY,
+  OPTIONS_PERIOD,
   OPTIONS_TOKEN_GATED,
   OPTIONS_UNIT,
   TOKEN_CRITERIA,
@@ -23,13 +26,11 @@ import {
   validationOfRequiredIpfsImage
 } from "./validationUtils";
 
-export const createYourProfileValidationSchema = Yup.object({
+export const regularProfileValidationSchema = Yup.object({
   createYourProfile: Yup.object({
     logo: validationOfRequiredIpfsImage(),
-    name: Yup.string().trim().required(validationMessage.required),
-    email: Yup.string().trim().required(validationMessage.required),
-    description: Yup.string().trim().required(validationMessage.required),
-    website: Yup.string().trim().required(validationMessage.required)
+    coverPicture: validationOfRequiredIpfsImage(),
+    ...getCommonFieldsValidation({ withMaxLengthValidation: false })
   })
 });
 
@@ -137,8 +138,10 @@ export const productVariantsImagesValidationSchema = Yup.object({
 
 export const imagesSpecificOrAllValidationSchema = Yup.object({
   imagesSpecificOrAll: Yup.object({
-    label: Yup.string().required(),
-    value: Yup.string().oneOf(["all", "specific"]).required()
+    label: Yup.string().required(validationMessage.required),
+    value: Yup.string()
+      .oneOf(["all", "specific"])
+      .required(validationMessage.required)
   }).nullable()
 });
 
@@ -185,12 +188,10 @@ export const commonCoreTermsOfSaleValidationSchema = {
   offerValidityPeriod: Yup.array()
     .required(validationMessage.required)
     .min(2, validationMessage.required)
-    .isItBeforeNow()
     .isOfferValidityDatesValid(),
   redemptionPeriod: Yup.array()
     .required(validationMessage.required)
     .min(2, validationMessage.required)
-    .isItBeforeNow()
     .isRedemptionDatesValid(),
   tokenContract: Yup.string()
     .when(["tokenGatedOffer"], {
@@ -336,7 +337,12 @@ export const termsOfExchangeValidationSchema = Yup.object({
       value: Yup.string(),
       label: Yup.string()
     }),
-    // disputeResolver: Yup.string().required(validationMessage.required),
+    disputeResolver: Yup.object({
+      value: Yup.string().oneOf(
+        OPTIONS_DISPUTE_RESOLVER.map(({ value }) => value)
+      ),
+      label: Yup.string()
+    }),
     disputePeriod: Yup.string()
       .matches(/^[0-9]+$/, "Must be only digits")
       .required(validationMessage.required)
@@ -348,8 +354,11 @@ export const termsOfExchangeValidationSchema = Yup.object({
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           schema.disputePeriodValue(`The Dispute Period must be in line with the selected exchange policy (>=${CONFIG.minimumDisputePeriodInDays} days)` ) // prettier-ignore
-      })
-    // disputePeriodUnit: Yup.string().required(validationMessage.required)
+      }),
+    disputePeriodUnit: Yup.object({
+      value: Yup.string().oneOf(OPTIONS_PERIOD.map(({ value }) => value)),
+      label: Yup.string()
+    })
   })
 });
 
@@ -407,8 +416,8 @@ export const disputeCentreValidationSchemaAdditionalInformation = Yup.object({
 
 export const disputeCentreValidationSchemaMakeProposal = Yup.object({
   [FormModel.formFields.proposalType.name]: Yup.object({
-    label: Yup.string().required(),
-    value: Yup.string().required()
+    label: Yup.string().required(validationMessage.required),
+    value: Yup.string().required(validationMessage.required)
   }).nullable(),
   [FormModel.formFields.refundPercentage.name]: Yup.number().when(
     FormModel.formFields.proposalType.name,

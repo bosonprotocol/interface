@@ -28,8 +28,12 @@ import {
 } from "../../lib/utils/getOfferDetails";
 import useProductByUuid from "../../lib/utils/hooks/product/useProductByUuid";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
-import { useSellers } from "../../lib/utils/hooks/useSellers";
+import {
+  useSellerCurationListFn,
+  useSellers
+} from "../../lib/utils/hooks/useSellers";
 import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
+import NotFound from "../not-found/NotFound";
 import { VariantV1 } from "./types";
 import VariationSelects from "./VariationSelects";
 
@@ -72,6 +76,14 @@ export default function ProductDetail() {
 
   const seller = product?.productV1Seller?.seller;
   const sellerId = seller?.id;
+
+  const checkIfSellerIsInCurationList = useSellerCurationListFn();
+
+  const isSellerCurated = useMemo(() => {
+    const isSellerInCurationList =
+      sellerId && checkIfSellerIsInCurationList(sellerId);
+    return isSellerInCurationList;
+  }, [sellerId, checkIfSellerIsInCurationList]);
 
   const { data: exchanges } = useExchanges(
     {
@@ -128,6 +140,10 @@ export default function ProductDetail() {
     return <div data-testid="notFound">This product does not exist</div>;
   }
 
+  if (!isSellerCurated) {
+    return <NotFound />;
+  }
+
   const {
     name,
     offerImg,
@@ -158,27 +174,29 @@ export default function ProductDetail() {
             )}
           </ImageWrapper>
           <div>
-            <SellerID
-              offer={selectedOffer}
-              buyerOrSeller={selectedOffer?.seller}
-              justifyContent="flex-start"
-              withProfileImage
-            />
-            <Typography
-              tag="h1"
-              data-testid="name"
-              style={{ fontSize: "2rem", marginBottom: "2rem" }}
-            >
-              {name}
-            </Typography>
-
-            {hasVariants && (
-              <VariationSelects
-                selectedVariant={selectedVariant}
-                setSelectedVariant={setSelectedVariant}
-                variants={variantsWithV1}
+            <>
+              <SellerID
+                offer={selectedOffer}
+                buyerOrSeller={selectedOffer?.seller}
+                justifyContent="flex-start"
+                withProfileImage
               />
-            )}
+              <Typography
+                tag="h1"
+                data-testid="name"
+                style={{ fontSize: "2rem", marginBottom: "2rem" }}
+              >
+                {name}
+              </Typography>
+
+              {hasVariants && (
+                <VariationSelects
+                  selectedVariant={selectedVariant}
+                  setSelectedVariant={setSelectedVariant}
+                  variants={variantsWithV1}
+                />
+              )}
+            </>
 
             <DetailWidget
               pageType="offer"

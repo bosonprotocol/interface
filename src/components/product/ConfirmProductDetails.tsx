@@ -23,7 +23,6 @@ import {
   ChatDotsIcon,
   CheckIcon,
   CollapseContainer,
-  CollapseContent,
   ConfirmationAlert,
   ConfirmationContent,
   ConfirmProductDetailsButtonGroup,
@@ -58,6 +57,12 @@ const VariantsTable = styled.table`
   }
   th[data-images] {
     text-align: left;
+  }
+  * {
+    font-size: 0.75rem;
+  }
+  th {
+    font-weight: 600;
   }
 `;
 
@@ -165,153 +170,75 @@ export default function ConfirmProductDetails({
     <ConfirmProductDetailsContainer>
       <SectionTitle tag="h2">Confirm Product Details</SectionTitle>
       <CollapseContainer>
-        <Collapse
-          title={
-            <Typography
-              tag="h3"
-              style={{
-                fontSize: "1.5rem"
-              }}
-            >
-              Profile Info
-            </Typography>
-          }
-        >
-          <CollapseContent>
-            <FormField
-              title="Logo / profile picture"
-              required
-              style={{
-                marginBottom: "2rem"
-              }}
-            >
-              {values?.createYourProfile?.logo?.[0]?.src && (
-                <Image
-                  src={values?.createYourProfile?.logo?.[0]?.src || ""}
-                  style={{
-                    width: "80px",
-                    height: "80px",
-                    paddingTop: "0"
-                  }}
-                  alt="logo/ profile picture"
-                />
-              )}
-            </FormField>
-            <Grid
-              justifyContent="flex-start"
-              alignItems="flex-start"
-              flexWrap="wrap"
-            >
-              <GridBox $minWidth="7.1rem">
-                <FormFieldContainer>
-                  <FormField title="Your brand / name" required>
-                    <ContentValue tag="p">
-                      {values.createYourProfile.name}
-                    </ContentValue>
-                  </FormField>
-                </FormFieldContainer>
-              </GridBox>
-              <GridBox $minWidth="6rem">
-                <FormFieldContainer>
-                  <FormField title="Contact E-Mail" required>
-                    <ContentValue tag="p">
-                      {values.createYourProfile.email}
-                    </ContentValue>
-                  </FormField>
-                </FormFieldContainer>
-              </GridBox>
-              <GridBox $minWidth="9.75rem">
-                <FormFieldContainer>
-                  <FormField title="Website / Social media link">
-                    <ContentValue tag="p">
-                      {values.createYourProfile.website}
-                    </ContentValue>
-                  </FormField>
-                </FormFieldContainer>
-              </GridBox>
-            </Grid>
-            <FormFieldContainer
-              style={{
-                marginBottom: 0
-              }}
-            >
-              <FormField title="Description" required>
-                <ContentValue tag="p">
-                  {values.createYourProfile.description}
-                </ContentValue>
-              </FormField>
-            </FormFieldContainer>
-          </CollapseContent>
-        </Collapse>
-      </CollapseContainer>
-      <CollapseContainer>
         <Collapse title={<Typography tag="h3">Product Data</Typography>}>
           <ProductInformationContent>
-            <ProductSubtitle tag="h4">Product Information</ProductSubtitle>
-            <Grid
-              justifyContent="flex-start"
-              alignItems="flex-start"
-              flexWrap="wrap"
-            >
-              <ProductTypeBox>{renderProductType}</ProductTypeBox>
-              <ProductTypeBox>{renderProductVariant}</ProductTypeBox>
-            </Grid>
-            <Grid justifyContent="flex-start" alignItems="flex-start">
-              <GridBox $minWidth="5.625rem">
-                <FormFieldContainer>
-                  <FormField title="Product Title" required>
-                    <ContentValue tag="p">
-                      {values.productInformation.productTitle}
-                    </ContentValue>
-                  </FormField>
-                </FormFieldContainer>
-              </GridBox>
-              <GridBox $minWidth="4.1rem">
-                <FormFieldContainer>
-                  <FormField title="Category" required>
-                    <ContentValue tag="p">
-                      {values.productInformation.category?.label}
-                    </ContentValue>
-                  </FormField>
-                </FormFieldContainer>
-              </GridBox>
-              {values.productInformation.attributes &&
-                values.productInformation.attributes.length &&
-                values.productInformation.attributes[0].name !== "" && (
-                  <GridBox $minWidth="6.9rem">
-                    <FormFieldContainer>
-                      <FormField title="Product Attribute">
-                        <ContentValue tag="p">
-                          {map(
-                            values.productInformation.attributes,
-                            (elem) => elem.name
-                          ).join(", ")}
-                        </ContentValue>
-                      </FormField>
-                    </FormFieldContainer>
-                  </GridBox>
-                )}
-            </Grid>
-            <FormFieldContainer>
-              <FormField title="Description" required>
-                <ContentValue tag="p">
-                  {values.productInformation.description}
-                </ContentValue>
-              </FormField>
-            </FormFieldContainer>
-            <FormFieldContainer>
-              <FormField title="Search Tags" required>
-                <TagsWrapper>
-                  {map(values.productInformation.tags, (tag, index) => {
-                    return (
-                      <Tag key={`productInformation_tags${index}`}>
-                        <span className="text">{tag}</span>
-                      </Tag>
-                    );
-                  })}
-                </TagsWrapper>
-              </FormField>
-            </FormFieldContainer>
+            <div>
+              <ProductSubtitle tag="h4">Product Information</ProductSubtitle>
+              <Grid
+                justifyContent="flex-start"
+                alignItems="flex-start"
+                flexWrap="wrap"
+              >
+                <ProductTypeBox>{renderProductType}</ProductTypeBox>
+                <ProductTypeBox>{renderProductVariant}</ProductTypeBox>
+              </Grid>
+              <Grid justifyContent="flex-start" alignItems="flex-start">
+                <GridBox $minWidth="5.625rem">
+                  <FormFieldContainer>
+                    <FormField title="Product Title" required>
+                      <ContentValue tag="p">
+                        {values.productInformation.productTitle}
+                      </ContentValue>
+                    </FormField>
+                  </FormFieldContainer>
+                </GridBox>
+                <GridBox $minWidth="4.1rem">
+                  <FormFieldContainer>
+                    <FormField title="Category" required>
+                      <ContentValue tag="p">
+                        {values.productInformation.category?.label}
+                      </ContentValue>
+                    </FormField>
+                  </FormFieldContainer>
+                </GridBox>
+                {values.productInformation.attributes &&
+                  values.productInformation.attributes.length &&
+                  values.productInformation.attributes[0].name !== "" && (
+                    <GridBox $minWidth="6.9rem">
+                      <FormFieldContainer>
+                        <FormField title="Product Attribute">
+                          <ContentValue tag="p">
+                            {map(
+                              values.productInformation.attributes,
+                              (elem) => elem.name
+                            ).join(", ")}
+                          </ContentValue>
+                        </FormField>
+                      </FormFieldContainer>
+                    </GridBox>
+                  )}
+              </Grid>
+              <FormFieldContainer>
+                <FormField title="Description" required>
+                  <ContentValue tag="p">
+                    {values.productInformation.description}
+                  </ContentValue>
+                </FormField>
+              </FormFieldContainer>
+              <FormFieldContainer style={{ margin: 0 }}>
+                <FormField title="Search Tags" required>
+                  <TagsWrapper>
+                    {map(values.productInformation.tags, (tag, index) => {
+                      return (
+                        <Tag key={`productInformation_tags${index}`}>
+                          <span className="text">{tag}</span>
+                        </Tag>
+                      );
+                    })}
+                  </TagsWrapper>
+                </FormField>
+              </FormFieldContainer>
+            </div>
             {isMultiVariant && (
               <div>
                 <ProductSubtitle tag="h4">Variants</ProductSubtitle>
@@ -424,6 +351,7 @@ export default function ConfirmProductDetails({
               justifyContent="flex-start"
               alignItems="flex-start"
               flexWrap="wrap"
+              flex="1 1"
             >
               {!isMultiVariant && (
                 <>
@@ -475,7 +403,11 @@ export default function ConfirmProductDetails({
                 </>
               )}
             </Grid>
-            <Grid justifyContent="flex-start" alignItems="flex-start">
+            <Grid
+              justifyContent="flex-start"
+              alignItems="flex-start"
+              flex="1 1"
+            >
               <GridBox $minWidth="16rem">
                 <FormFieldContainer
                   style={{
@@ -563,12 +495,6 @@ export default function ConfirmProductDetails({
         <ConfirmationContent>
           <Typography tag="p">
             You wont be able to make changes after confirming
-          </Typography>
-          <Typography tag="p">
-            By selecting confirm, you agree to pay the above fees, accept Boson
-            seller agreement and Payments Terms of Use, acknowledge reading the
-            User Privacy Notice and assume full responsibility for the item
-            offered and the content of your listing.
           </Typography>
         </ConfirmationContent>
       </ConfirmationAlert>

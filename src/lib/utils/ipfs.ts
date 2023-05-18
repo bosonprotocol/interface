@@ -3,6 +3,8 @@ import { CID } from "multiformats/cid";
 import { CONFIG } from "../config";
 import { sanitizeUrl } from "./url";
 
+const lensIpfs = "https://lens.infura-ipfs.io/ipfs/";
+
 export function getIpfsGatewayUrl(
   uri: string,
   opts: Partial<{
@@ -10,6 +12,9 @@ export function getIpfsGatewayUrl(
   }> = {}
 ): string {
   if (!uri) {
+    return uri;
+  }
+  if (uri.startsWith(lensIpfs)) {
     return uri;
   }
   const { gateway = CONFIG.ipfsGateway } = opts;

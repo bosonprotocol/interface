@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
-import Navigate from "../../components/customNavigation/Navigate";
 import {
   WithSellerData,
   WithSellerDataProps
@@ -21,9 +20,9 @@ import { BosonRoutes } from "../../lib/routing/routes";
 import { colors } from "../../lib/styles/colors";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import { isInEligibleWalletList } from "../../lib/utils/isInEligibleWalletList";
+import NotFound from "../not-found/NotFound";
 
-export const Wrapper = styled.div`
+const Wrapper = styled.div`
   text-align: center;
 `;
 const GridWrapper = styled.div`
@@ -37,6 +36,9 @@ const GridWrapper = styled.div`
 `;
 
 function SellerCenter(props: SellerInsideProps & WithSellerDataProps) {
+  if (!props.isSellerCurated) {
+    return <NotFound />;
+  }
   return (
     <GridWrapper>
       <SellerAside {...props} />
@@ -72,8 +74,6 @@ function SellerCenterWrapper() {
     }
   }, [isSuccess, sellerIds]);
 
-  const isAccountSeller = !!selectedSellerId;
-
   if (isLoading) {
     return (
       <Wrapper>
@@ -82,15 +82,7 @@ function SellerCenterWrapper() {
     );
   }
 
-  if (
-    !CONFIG.enableCurationLists &&
-    !isAccountSeller &&
-    !isInEligibleWalletList(address ?? "")
-  ) {
-    return <Navigate replace to={{ pathname: BosonRoutes.ClosedBeta }} />;
-  }
-
-  if (!sellerIds.length) {
+  if (!sellerIds.length || !address) {
     return (
       <Wrapper>
         <Grid
@@ -101,7 +93,9 @@ function SellerCenterWrapper() {
         >
           <WarningCircle size={112} color={colors.red} weight="thin" />
           <Typography tag="h5">
-            The seller with that ID doesn't exist!
+            {address
+              ? "The seller with that ID doesn't exist!"
+              : "Please connect your wallet"}
           </Typography>
           <Button
             variant="accentInverted"
@@ -131,6 +125,10 @@ function SellerCenterWrapper() {
         </option>
       ))}
     </select>;
+  }
+
+  if (!selectedSellerId) {
+    return <NotFound />;
   }
 
   return <SellerCenterWithData sellerId={selectedSellerId} />;

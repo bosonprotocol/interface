@@ -39,9 +39,14 @@ export default function MakeAProposalStep({
   isModal = false
 }: Props) {
   const { address } = useAccount();
-  const { data: buyers = [] } = useBuyers({
-    wallet: address
-  });
+  const { data: buyers = [] } = useBuyers(
+    {
+      wallet: address
+    },
+    {
+      enabled: !!address
+    }
+  );
   const myBuyerId = buyers[0]?.id;
   const iAmTheBuyer = myBuyerId === exchange?.buyer.id;
   const counterPartyText = iAmTheBuyer ? "seller" : "buyer";

@@ -219,6 +219,11 @@ ${FormModel.formFields.phone.placeholder}: ${phoneField.value}`;
                   "ACTION_REJECTED";
               if (hasUserRejectedTx) {
                 showModal("TRANSACTION_FAILED");
+              } else {
+                Sentry.captureException(error);
+                showModal("TRANSACTION_FAILED", {
+                  errorMessage: "Something went wrong"
+                });
               }
             }}
             onPendingSignature={async () => {

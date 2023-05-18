@@ -400,7 +400,7 @@ export default function PrivacyPolicy() {
                 </li>
                 <li>
                   <Text>
-                    you request or agree to be included in an e-mail, marketing
+                    you request or agree to be included in an email, marketing
                     or other mailing list;
                   </Text>
                 </li>
@@ -789,7 +789,7 @@ export default function PrivacyPolicy() {
               <Text>
                 <b>Contacting you.</b> When we contact or send you information
                 for the above purposes and purposes for which you have
-                consented, we may do so by post, e-mail, SMS, telephone or such
+                consented, we may do so by post, email, SMS, telephone or such
                 other means provided by you. If you do not wish to receive any
                 communication or information from us, or wish to restrict the
                 manner by which we may contact or send you information, you may

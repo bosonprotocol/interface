@@ -1,4 +1,5 @@
 import { ButtonSize, subgraph } from "@bosonprotocol/react-kit";
+import * as Sentry from "@sentry/browser";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
@@ -161,6 +162,7 @@ export default function Funds({ sellerId, buyerId }: Props) {
       }
     } catch (error) {
       console.error(error);
+      Sentry.captureException(error);
       setErrorTokenInput(true);
     }
   };
@@ -172,6 +174,7 @@ export default function Funds({ sellerId, buyerId }: Props) {
       reload();
     } catch (error) {
       console.error(error);
+      Sentry.captureException(error);
     } finally {
       setIsAllFundsBeingWithdrawn(false);
     }

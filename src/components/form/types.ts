@@ -1,3 +1,4 @@
+import { Dayjs } from "dayjs";
 import { SingleValue } from "react-select";
 
 import { UploadFileType } from "./Upload/Upload";
@@ -14,6 +15,7 @@ export interface DatepickerProps extends BaseProps {
   period?: boolean;
   selectTime?: boolean;
   setIsFormValid?: (isValid: boolean) => void;
+  minDate?: Dayjs | null;
 }
 
 export interface CheckboxProps extends BaseProps {
@@ -86,6 +88,8 @@ export interface SelectProps extends BaseProps {
   errorMessage?: string;
   onChange?: (option: SelectDataProps<string>) => void;
   label?: string;
+  className?: string;
+  classNamePrefix?: string;
 }
 
 export interface UploadProps extends BaseProps {

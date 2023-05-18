@@ -1,10 +1,12 @@
 /* eslint @typescript-eslint/no-explicit-any: "off" */
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
+import advancedFormat from "dayjs/plugin/advancedFormat";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 dayjs.extend(utc);
 dayjs.extend(timezone);
+dayjs.extend(advancedFormat);
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -51,7 +53,7 @@ const handleInitialDates = (
     endDate
   };
 };
-const dateTimeFormat = "LLL";
+const dateTimeFormat = "MMMM D, YYYY HH:mm";
 export default function DatePicker({
   initialValue,
   onChange,
@@ -141,19 +143,23 @@ export default function DatePicker({
         let newSecondDate = secondDate;
 
         if (time !== null) {
+          const prevDay = date.get("day");
           newDate = date
             .tz(time.timezone)
+            .set("day", prevDay)
             .set("hour", Number(time.hour[0]))
             .set("minute", Number(time.minute[0]));
+          const prevSecondDay = secondDate.get("day");
           newSecondDate = secondDate
             .tz(time.timezone)
+            .set("day", prevSecondDay)
             .set("hour", Number(time.hour[1]))
             .set("minute", Number(time.minute[1]));
         }
         setShownDate(
           `${newDate?.format(dateTimeFormat)} - ${newSecondDate?.format(
             dateTimeFormat
-          )}`
+          )} ${time ? `(${time.timezone} GMT${newDate?.format("Z")})` : ""}`
         );
         onChange?.([newDate, newSecondDate]);
       }
@@ -161,12 +167,18 @@ export default function DatePicker({
       if (date instanceof dayjs) {
         let newDate = date;
         if (time !== null) {
+          const prevDay = date.get("day");
           newDate = date
             .tz(time.timezone)
+            .set("day", prevDay)
             .set("hour", Number(time.hour))
             .set("minute", Number(time.minute));
         }
-        setShownDate(newDate?.format(dateTimeFormat));
+        setShownDate(
+          `${newDate?.format(dateTimeFormat)} ${
+            time ? `(${time.timezone} GMT${newDate?.format("Z")})` : ""
+          }`
+        );
         onChange?.(newDate);
       }
     }

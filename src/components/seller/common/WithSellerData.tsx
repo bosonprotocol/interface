@@ -23,6 +23,7 @@ import {
   SellerRolesProps,
   useSellerRoles
 } from "../../../lib/utils/hooks/useSellerRoles";
+import { useSellerCurationListFn } from "../../../lib/utils/hooks/useSellers";
 import useFunds, { FundsProps } from "../../../pages/account/funds/useFunds";
 import { useConvertionRate } from "../../convertion-rate/useConvertionRate";
 import Loading from "../../ui/Loading";
@@ -76,6 +77,7 @@ export interface WithSellerDataProps {
   sellerDeposit: SellerDepositProps;
   offersBacked: OffersBackedProps;
   sellerRoles: SellerRolesProps;
+  isSellerCurated: boolean;
 }
 export function WithSellerData(
   WrappedComponent: React.ComponentType<SellerInsideProps & WithSellerDataProps>
@@ -83,6 +85,9 @@ export function WithSellerData(
   const ComponentWithSellerData = (props: SellerInsideProps) => {
     const sellerId = CONFIG.mockSellerId || props.sellerId;
     const sellerRoles = useSellerRoles(sellerId);
+    const checkIfSellerIsInCurationList = useSellerCurationListFn();
+    const isSellerCurated = checkIfSellerIsInCurationList(sellerId);
+
     const {
       store: { tokens }
     } = useConvertionRate();
@@ -94,6 +99,7 @@ export function WithSellerData(
         }
       },
       {
+        enabled: !!sellerId,
         enableCurationList: false,
         refetchOnMount: true
       }
@@ -134,7 +140,8 @@ export function WithSellerData(
         exchangesTokens,
         sellerDeposit,
         funds,
-        sellerRoles
+        sellerRoles,
+        isSellerCurated
       }),
       [
         sellerId,
@@ -144,7 +151,8 @@ export function WithSellerData(
         exchangesTokens,
         sellerDeposit,
         funds,
-        sellerRoles
+        sellerRoles,
+        isSellerCurated
       ]
     );
 

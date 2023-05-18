@@ -1,5 +1,6 @@
 import styled from "styled-components";
 
+import { breakpoint } from "../../lib/styles/breakpoint";
 import Image from "../ui/Image";
 import Typography from "../ui/Typography";
 
@@ -14,10 +15,12 @@ export const ProductButtonGroup = styled.div`
 `;
 
 export const ContainerProductPage = styled.div`
-  max-width: 31.625rem;
   width: 100%;
   .inputGroup:not(:last-of-type) {
     margin-bottom: 2rem;
+  }
+  ${breakpoint.m} {
+    max-width: 37rem;
   }
 `;
 

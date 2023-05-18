@@ -32,7 +32,7 @@ export function useDisputeResolvers() {
               tokenAddress
               tokenName
             }
-            operator
+            assistant
             treasury
             sellerAllowList
           }

@@ -5,11 +5,13 @@ import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
+import { EditProfile } from "../../../components/detail/EditProfile";
+import { ProfileType } from "../../../components/modal/components/Profile/const";
 import {
   getLensCoverPictureUrl,
   getLensProfilePictureUrl,
   isMatchingLensHandle
-} from "../../../components/modal/components/CreateProfile/Lens/utils";
+} from "../../../components/modal/components/Profile/Lens/utils";
 import AddressText from "../../../components/offer/AddressText";
 import Grid from "../../../components/ui/Grid";
 import Image from "../../../components/ui/Image";
@@ -19,7 +21,6 @@ import { UrlParameters } from "../../../lib/routing/parameters";
 import { breakpoint } from "../../../lib/styles/breakpoint";
 import { colors } from "../../../lib/styles/colors";
 import {
-  MediaSet,
   Profile,
   ProfileFieldsFragment
 } from "../../../lib/utils/hooks/lens/graphql/generated";
@@ -128,11 +129,33 @@ export default function Seller() {
     isLoading,
     isError,
     lens: sellersLens,
-    sellers: sellersData
+    sellers: sellersData,
+    refetch
   } = useCurrentSellers(lensTokenId ? { lensTokenId } : { sellerId });
-  sellerId = sellersData?.length ? sellersData[0].id : sellerId;
+  const seller = sellersData[0];
+  const metadata = seller?.metadata;
   const [sellerLens] = sellersLens;
-  const coverImage = getLensImageUrl(getLensCoverPictureUrl(sellerLens));
+  const useLens = !metadata || metadata?.kind === ProfileType.LENS;
+  sellerId = sellersData?.length ? sellersData[0].id : sellerId;
+  const lensCoverImage = getLensImageUrl(getLensCoverPictureUrl(sellerLens));
+  const avatar = getLensImageUrl(getLensProfilePictureUrl(sellerLens));
+
+  const name =
+    (useLens ? sellerLens?.name : metadata?.name) ?? metadata?.name ?? "";
+  const description =
+    (useLens ? sellerLens?.bio : metadata?.description) ??
+    metadata?.description ??
+    "";
+  const regularCoverImage = metadata?.images?.find(
+    (img) => img.tag === "cover"
+  )?.url;
+  const coverImage =
+    (useLens ? lensCoverImage : regularCoverImage) ?? regularCoverImage;
+  const regularProfileImage = metadata?.images?.find(
+    (img) => img.tag === "profile"
+  )?.url;
+  const profileImage =
+    (useLens ? avatar : regularProfileImage) ?? regularProfileImage;
 
   const {
     data: sellers = [],
@@ -141,7 +164,7 @@ export default function Seller() {
   } = useSellers(
     {
       id: sellerId,
-      enableCurationList: false
+      enableCurationList: true
     },
     {
       enabled: !!sellerId
@@ -167,11 +190,10 @@ export default function Seller() {
     isError: isErrorProducts,
     isLoading: isLoadingProducts
   } = useSellerNumbers(sellerId);
-
-  const isSellerExists = !!sellers?.length;
-  const currentSellerAddress = sellers[0]?.operator || "";
+  const currentSellerAddress = sellers[0]?.assistant || "";
   const isMySeller =
     currentSellerAddress.toLowerCase() === currentWalletAddress.toLowerCase();
+  const isSellerExists = isMySeller ? !!sellersData.length : !!sellers?.length;
 
   const owners = useMemo(() => {
     return [
@@ -209,7 +231,6 @@ export default function Seller() {
   if (!isSellerExists) {
     return <NotFound />;
   }
-  const avatar = getLensImageUrl(getLensProfilePictureUrl(sellerLens));
   return (
     <>
       <BasicInfo>
@@ -217,9 +238,9 @@ export default function Seller() {
           <BannerImage src={coverImage || backgroundFluid} />
           <BannerImageLayer>
             <AvatarContainer>
-              {(sellerLens?.picture as MediaSet) ? (
+              {profileImage ? (
                 <StyledImage
-                  src={avatar}
+                  src={profileImage}
                   style={{
                     width: "160px !important",
                     height: "160px !important",
@@ -253,14 +274,16 @@ export default function Seller() {
                   margin={!isLteXS ? "1rem 0 0 0" : "0.25rem 0 0.25rem 0"}
                   $fontSize={!isLteXS ? "2rem" : "1.675rem"}
                 >
-                  {sellerLens?.name}
+                  {name}
                 </Typography>
                 <Grid
                   alignItems={!isLteXS ? "center" : "flex-start"}
                   justifyContent="flex-start"
                   flexDirection={!isLteXS ? "row" : "column"}
                 >
-                  <LensTitle tag="p">{sellerLens?.handle}</LensTitle>
+                  {useLens && (
+                    <LensTitle tag="p">{sellerLens?.handle}</LensTitle>
+                  )}
                   <AddressContainer>
                     <AddressText address={currentSellerAddress} />
                   </AddressContainer>
@@ -272,8 +295,8 @@ export default function Seller() {
               $width="auto"
               margin="1.25rem 0 0 0"
             >
-              {sellerLens && (
-                <>
+              <>
+                {sellerLens && useLens && (
                   <FollowLens>
                     <a
                       href={`https://lenster.xyz/u/${sellerLens?.handle}`}
@@ -283,17 +306,23 @@ export default function Seller() {
                       Follow
                     </a>
                   </FollowLens>
-                  <SellerSocial
-                    sellerLens={sellerLens as ProfileFieldsFragment}
-                    voucherCloneAddress={sellersData?.[0]?.voucherCloneAddress}
-                  />
-                </>
-              )}
+                )}
+                {isMySeller && (
+                  <div style={{ marginLeft: "1.5rem" }}>
+                    <EditProfile onClose={refetch} />
+                  </div>
+                )}
+                <SellerSocial
+                  seller={seller}
+                  sellerLens={sellerLens as ProfileFieldsFragment}
+                  voucherCloneAddress={sellersData?.[0]?.voucherCloneAddress}
+                />
+              </>
             </Grid>
           </Grid>
         </ProfileSectionWrapper>
         <ProfileSectionWrapper>
-          {sellerLens?.bio && <ReadMore text={sellerLens?.bio} />}
+          <ReadMore text={description} />
         </ProfileSectionWrapper>
       </BasicInfo>
       <ProfileSectionWrapper>

@@ -1,4 +1,5 @@
 import { ExpireButton, Provider, subgraph } from "@bosonprotocol/react-kit";
+import * as Sentry from "@sentry/browser";
 import qs from "query-string";
 import { useState } from "react";
 import styled from "styled-components";
@@ -190,6 +191,11 @@ export default function ExpireVoucherModal({ exchange }: Props) {
                   "ACTION_REJECTED";
               if (hasUserRejectedTx) {
                 showModal("TRANSACTION_FAILED");
+              } else {
+                Sentry.captureException(error);
+                showModal("TRANSACTION_FAILED", {
+                  errorMessage: "Something went wrong"
+                });
               }
             }}
             onPendingSignature={() => {

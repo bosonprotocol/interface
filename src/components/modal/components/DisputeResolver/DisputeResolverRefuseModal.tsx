@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/browser";
 import { useState } from "react";
 import styled from "styled-components";
 
@@ -27,6 +28,7 @@ export default function DisputeResolverRefuseModal({ exchangeId }: Props) {
       setIsSubmitingDispute(false);
       hideModal();
     } catch (error) {
+      Sentry.captureException(error);
       setDisputeError("Error refusing the dispute.");
       console.error("error", error);
     }

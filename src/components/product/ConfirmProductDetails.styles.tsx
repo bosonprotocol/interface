@@ -60,7 +60,6 @@ export const ConfirmationContent = styled.div`
   }
   p:first-child {
     font-weight: 600;
-    margin-bottom: 0.5rem;
   }
 `;
 
@@ -74,9 +73,6 @@ export const CollapseContent = styled.div`
 
 export const GridBox = styled.div<{ $minWidth?: string }>`
   min-width: ${({ $minWidth }) => ($minWidth ? $minWidth : "auto")};
-  &:not(:last-child) {
-    padding-right: 3.25rem;
-  }
 `;
 
 export const ProductTypeBox = styled(GridBox)`
@@ -107,7 +103,10 @@ export const FormFieldContainer = styled.div`
 `;
 
 export const ProductInformationContent = styled.div`
-  padding: 1rem 0.75rem 0 0.75rem;
+  padding: 1rem 0 0 0;
+  display: flex;
+  gap: 1rem;
+  flex-direction: column;
 `;
 
 export const TermsOfSaleContent = styled.div`

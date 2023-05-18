@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/browser";
 import { Form, Formik, FormikProps } from "formik";
 import { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
@@ -42,9 +43,14 @@ export default function MakeProposalModal({
   const [submitError, setSubmitError] = useState<Error | null>(null);
   const coreSDK = useCoreSDK();
   const { address } = useAccount();
-  const { data: sellers = [] } = useSellers({
-    operator: address
-  });
+  const { data: sellers = [] } = useSellers(
+    {
+      assistant: address
+    },
+    {
+      enabled: !!address
+    }
+  );
 
   const mySellerId = sellers[0]?.id || "";
   const iAmTheSeller = mySellerId === exchange.seller.id;
@@ -108,6 +114,7 @@ export default function MakeProposalModal({
             hideModal();
           } catch (error) {
             console.error(error);
+            Sentry.captureException(error);
             setSubmitError(error as Error);
           }
         }}

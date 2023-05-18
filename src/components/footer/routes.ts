@@ -52,13 +52,11 @@ export const ADDITIONAL_LINKS: Array<{ label: string; value: string }> = [
 
 export const getProductRoutes = ({
   roles,
-  address,
   isSupportFunctionalityDefined,
   onlyBuyer,
   onlySeller
 }: {
   roles: (keyof typeof UserRoles)[];
-  address: string | undefined;
   isSupportFunctionalityDefined: boolean;
   onlyBuyer: boolean;
   onlySeller: boolean;
@@ -80,8 +78,7 @@ export const getProductRoutes = ({
     (isSupportFunctionalityDefined && (!onlyBuyer || onlySeller))
   ) {
     const sellLink = getSellLink({
-      isAccountSeller,
-      address
+      isAccountSeller
     });
     productRoutes.push({
       name: "Sell",
@@ -93,11 +90,13 @@ export const getProductRoutes = ({
 export const getNavigationRoutes = ({
   roles,
   isSupportFunctionalityDefined,
-  onlySeller
+  onlySeller,
+  isSellerCurated
 }: {
   roles: string[];
   isSupportFunctionalityDefined: boolean;
   onlySeller: boolean;
+  isSellerCurated: boolean;
 }) => {
   if (isSupportFunctionalityDefined && onlySeller) {
     return [
@@ -121,10 +120,11 @@ export const getNavigationRoutes = ({
       name: "Profile",
       url: BosonRoutes.YourAccount
     },
-    {
-      name: "Custom Storefront",
-      url: BosonRoutes.CreateStorefront
-    },
+    checkIfUserHaveRole(roles, [UserRoles.Seller], false) &&
+      isSellerCurated && {
+        name: "Custom Storefront",
+        url: BosonRoutes.CreateStorefront
+      },
     checkIfUserHaveRole(
       roles,
       [UserRoles.Buyer, UserRoles.Seller, UserRoles.DisputeResolver],

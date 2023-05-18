@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/browser";
 import { useFormikContext } from "formik";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import styled from "styled-components";
@@ -306,40 +307,6 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
     values.withOwnProducts?.value
   ]);
 
-  const CommitProxyField = useCallback(() => {
-    if (!renderCommitProxyField) {
-      return null;
-    }
-    return (
-      <>
-        <Grid flexDirection="column" alignItems="flex-start">
-          <FieldTitle>Commit Proxy Address</FieldTitle>
-          <FieldDescription>
-            Careful: This will override the commit function for your buyers.
-          </FieldDescription>
-          <Input
-            name={storeFields.commitProxyAddress}
-            placeholder={formModel.formFields.commitProxyAddress.placeholder}
-          />
-        </Grid>
-        <Grid flexDirection="column" alignItems="flex-start">
-          <FieldTitle>Link to collection/contract</FieldTitle>
-          <FieldDescription>
-            Users who view your product are shown a message which will include
-            this link
-          </FieldDescription>
-          <Input
-            name={storeFields.openseaLinkToOriginalMainnetCollection}
-            placeholder={
-              formModel.formFields.openseaLinkToOriginalMainnetCollection
-                .placeholder
-            }
-          />
-        </Grid>
-      </>
-    );
-  }, [renderCommitProxyField]);
-
   useEffect(() => {
     if (!renderCommitProxyField) {
       setFieldValue(storeFields.commitProxyAddress, "");
@@ -370,6 +337,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
             }
           } catch (error) {
             console.error(error);
+            Sentry.captureException(error);
           }
         }
         url = new URL(iframeSrc.replace("/#/", "/"));
@@ -440,6 +408,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
               }
             } catch (error) {
               console.error(error);
+              Sentry.captureException(error);
               return null;
             }
 
@@ -449,6 +418,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
         setValues({ ...values, ...Object.fromEntries(cleanedEntries) }, true);
       } catch (error) {
         console.error(error);
+        Sentry.captureException(error);
       }
     })();
 
@@ -898,16 +868,6 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                       }
                     />
                   </Grid>
-                  <CommitProxyField />
-                </Grid>
-              ) : ["mine"].includes(values.withOwnProducts?.value || "") ? (
-                <Grid
-                  flexDirection="column"
-                  margin={`0 0 0 ${subFieldsMarginLeft}`}
-                  $width={`calc(100% - ${subFieldsMarginLeft})`}
-                  gap={gapBetweenInputs}
-                >
-                  <CommitProxyField />
                 </Grid>
               ) : null}
               {/* <Grid flexDirection="column" alignItems="flex-start">

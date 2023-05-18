@@ -89,7 +89,8 @@ export const OptionGrid = styled.div`
   display: grid;
   grid-auto-columns: 1fr;
   grid-template-columns: 2em 1fr;
-  gap: 0.5rem;
+  gap: 1rem;
+  align-items: center;
   .PhoneInputCountryIcon img {
     max-width: 30px;
   }
@@ -125,13 +126,18 @@ const handleCountry = () => {
   return undefined;
 };
 
-export default function Phone({ name, ...props }: InputProps) {
+export { CountryCode };
+
+type Props = InputProps & {
+  countries?: CountryCode[];
+};
+
+export default function Phone({ name, countries, ...props }: Props) {
   const [initialized, setInitialized] = useState<boolean>(false);
   const [phone, setPhone] = useState<string | undefined>(undefined);
   const [countryCode, setCountryCode] = useState<CountryCode | undefined>(
     handleCountry()
   );
-
   const { status } = useFormikContext();
   const [field, meta, helpers] = useField(name);
   const errorText = meta.error || status?.[name];
@@ -179,7 +185,6 @@ export default function Phone({ name, ...props }: InputProps) {
       }
     }
   }, [field.value, initialized]); // eslint-disable-line
-
   return (
     <>
       <PhoneWrapper>
@@ -187,6 +192,7 @@ export default function Phone({ name, ...props }: InputProps) {
           country={countryCode}
           value={phone}
           onChange={(value) => setPhone((value || "").replace(/\+/g, ""))}
+          countries={countries}
           countrySelectComponent={({ iconComponent: Icon, ...props }) => (
             <>
               <div>
@@ -240,6 +246,7 @@ export default function Phone({ name, ...props }: InputProps) {
               </div>
             </>
           )}
+          placeholder="Phone number"
         />
       </PhoneWrapper>
       <FieldInput

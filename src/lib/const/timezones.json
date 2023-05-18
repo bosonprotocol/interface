@@ -540,12 +540,6 @@
     "utc": "-05:00"
   },
   {
-    "label": "America/AnguillaSandy Hill (GMT-04:00)",
-    "value": "America/AnguillaSandy Hill",
-    "name": "(GMT-04:00) The Valley, Blowing Point Village, Sandy Ground Village, The Quarter, Sandy Hill",
-    "utc": "-04:00"
-  },
-  {
     "label": "America/Antigua (GMT-04:00)",
     "value": "America/Antigua",
     "name": "(GMT-04:00) Saint John’s, Piggotts, Bolands, Codrington, Parham",
@@ -2343,12 +2337,6 @@
     "label": "Pacific/Chuuk (GMT+10:00)",
     "value": "Pacific/Chuuk",
     "name": "(GMT+10:00) Weno, Colonia",
-    "utc": "+10:00"
-  },
-  {
-    "label": "Pacific/GuamVillage (GMT+10:00)",
-    "value": "Pacific/GuamVillage",
-    "name": "(GMT+10:00) Dededo Village, Yigo Village, Tamuning, Tamuning-Tumon-Harmon Village, Mangilao Village",
     "utc": "+10:00"
   },
   {

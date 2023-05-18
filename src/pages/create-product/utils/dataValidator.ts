@@ -16,10 +16,7 @@ export const validateDates = ({
   const now = Date.now();
   const numberMinutesAdd = 5;
 
-  let validFromDateInMS = offerValidityPeriod[0].toDate().getTime();
-  if (validFromDateInMS < now) {
-    validFromDateInMS = new Date(now + numberMinutesAdd * 60000).getTime();
-  }
+  const validFromDateInMS = offerValidityPeriod[0].toDate().getTime();
 
   let validUntilDateInMS = offerValidityPeriod[1].toDate().getTime();
   if (validUntilDateInMS < now) {

@@ -1,4 +1,5 @@
 import { Currencies, CurrencyLogo } from "@bosonprotocol/react-kit";
+import * as Sentry from "@sentry/browser";
 import { useState } from "react";
 
 import { CONFIG } from "../../lib/config";
@@ -55,6 +56,7 @@ export default function CurrencyIcon({
     return <CurrencyLogo currency={usedCurrency} />;
   } catch (error) {
     setError(true);
+    Sentry.captureException(error);
     onError?.();
     return null;
   }

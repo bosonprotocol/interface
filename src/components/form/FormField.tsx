@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/browser";
 import isObject from "lodash/isObject";
 import mapValues from "lodash/mapValues";
 import { Copy } from "phosphor-react";
@@ -18,7 +19,8 @@ export default function FormField({
   children,
   style = {},
   theme = "",
-  valueToCopy
+  valueToCopy,
+  ...rest
 }: FormFieldProps) {
   return (
     <FormFieldWrapper
@@ -28,6 +30,7 @@ export default function FormField({
       flexGrow="1"
       style={style}
       theme={theme}
+      {...rest}
     >
       <Grid justifyContent="flex-start" margin="0 0 0.375rem 0">
         <Typography data-header tag="p">
@@ -52,6 +55,7 @@ export default function FormField({
                   toast(() => "Text has been copied to clipboard");
                 } catch (error) {
                   console.error(error);
+                  Sentry.captureException(error);
                   return false;
                 }
               }}

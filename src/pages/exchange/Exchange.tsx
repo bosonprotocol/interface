@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
@@ -26,8 +27,12 @@ import { colors } from "../../lib/styles/colors";
 import { Offer } from "../../lib/types/offer";
 import { getOfferDetails } from "../../lib/utils/getOfferDetails";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
-import { useSellers } from "../../lib/utils/hooks/useSellers";
+import {
+  useSellerCurationListFn,
+  useSellers
+} from "../../lib/utils/hooks/useSellers";
 import { useCustomStoreQueryParameter } from "../custom-store/useCustomStoreQueryParameter";
+import NotFound from "../not-found/NotFound";
 import { VariantV1 } from "../products/types";
 import VariationSelects from "../products/VariationSelects";
 
@@ -51,7 +56,8 @@ export default function Exchange() {
       disputed: null
     },
     {
-      enabled: !!exchangeId
+      enabled: !!exchangeId,
+      onlyCuratedSeller: false // fetch the exchange in any case, page will be filtered later
     }
   );
   const exchange = exchanges?.[0];
@@ -59,6 +65,14 @@ export default function Exchange() {
   const metadata = offer?.metadata;
   const variations = metadata?.variations;
   const hasVariations = !!variations?.length;
+  const sellerId = exchange?.seller.id;
+  const checkIfSellerIsInCurationList = useSellerCurationListFn();
+
+  const isSellerCurated = useMemo(() => {
+    const isSellerInCurationList =
+      sellerId && checkIfSellerIsInCurationList(sellerId);
+    return isSellerInCurationList;
+  }, [sellerId, checkIfSellerIsInCurationList]);
 
   const variant = {
     offer,
@@ -66,10 +80,15 @@ export default function Exchange() {
   };
   const textColor = useCustomStoreQueryParameter("textColor");
 
-  const { data: sellers } = useSellers({
-    id: offer?.seller.id,
-    includeFunds: true
-  });
+  const { data: sellers } = useSellers(
+    {
+      id: offer?.seller.id,
+      includeFunds: true
+    },
+    {
+      enabled: !!offer?.seller.id
+    }
+  );
   const sellerAvailableDeposit = sellers?.[0]?.funds?.find(
     (fund) => fund.token.address === offer?.exchangeToken.address
   )?.availableAmount;
@@ -102,6 +121,10 @@ export default function Exchange() {
         application enforces
       </div>
     );
+  }
+
+  if (!isSellerCurated) {
+    return <NotFound />;
   }
   const buyerAddress = exchange.buyer.wallet;
 
@@ -137,23 +160,24 @@ export default function Exchange() {
               )}
             </ImageWrapper>
             <div>
-              <SellerID
-                offer={offer}
-                buyerOrSeller={offer?.seller}
-                justifyContent="flex-start"
-                withProfileImage
-              />
-              <Typography
-                tag="h1"
-                data-testid="name"
-                style={{
-                  fontSize: "2rem",
-                  ...(!hasVariations && { marginBottom })
-                }}
-              >
-                {name}
-              </Typography>
-
+              <>
+                <SellerID
+                  offer={offer}
+                  buyerOrSeller={offer?.seller}
+                  justifyContent="flex-start"
+                  withProfileImage
+                />
+                <Typography
+                  tag="h1"
+                  data-testid="name"
+                  style={{
+                    fontSize: "2rem",
+                    ...(!hasVariations && { marginBottom })
+                  }}
+                >
+                  {name}
+                </Typography>
+              </>
               {hasVariations && (
                 <StyledVariationSelects
                   selectedVariant={variant as VariantV1}

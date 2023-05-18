@@ -26,6 +26,7 @@ import { zIndex } from "../../../lib/styles/zIndex";
 import { Offer } from "../../../lib/types/offer";
 import { calcPercentage } from "../../../lib/utils/calcPrice";
 import {
+  getHasExchangeDisputeResolutionElapsed,
   isExchangeCompletableByBuyer,
   isExchangeCompletableBySeller
 } from "../../../lib/utils/exchange";
@@ -190,14 +191,10 @@ const getOfferDetailData = (
   const { deposit, formatted } = calcPercentage(offer, "sellerDeposit");
 
   const handleShowExchangePolicy = () => {
-    if (modalTypes && showModal) {
-      showModal(modalTypes.EXCHANGE_POLICY_DETAILS, {
-        title: "Exchange Policy Details",
-        offerId: offer.id
-      });
-    } else {
-      console.error("modalTypes and/or showModal undefined");
-    }
+    showModal(modalTypes.EXCHANGE_POLICY_DETAILS, {
+      title: "Exchange Policy Details",
+      offerId: offer.id
+    });
   };
 
   return [
@@ -315,7 +312,7 @@ export default function ExchangeSidePreview({
     if (!isVisible) {
       return null;
     }
-    const isDisabled = iAmTheBuyer ? false : sellerRoles.isOperator;
+    const isDisabled = iAmTheBuyer ? false : sellerRoles.isAssistant;
     return (
       <BosonButton
         variant="primaryFill"
@@ -336,7 +333,7 @@ export default function ExchangeSidePreview({
       </BosonButton>
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [exchange, iAmTheBuyer, sellerRoles.isOperator]);
+  }, [exchange, iAmTheBuyer, sellerRoles.isAssistant]);
   if (!exchange || !offer) {
     return null;
   }
@@ -354,10 +351,12 @@ export default function ExchangeSidePreview({
     raisedDisputeAt,
     "day"
   );
-  const daysLeftToResolveDispute = dayjs(lastDayToResolveDispute).diff(
-    new Date().getTime(),
-    "day"
+  const daysLeftToResolveDispute = Math.max(
+    0,
+    dayjs(lastDayToResolveDispute).diff(new Date().getTime(), "day")
   );
+  const hasDisputePeriodElapsed: boolean =
+    getHasExchangeDisputeResolutionElapsed(exchange, offer);
   const animationUrl = exchange?.offer.metadata.animationUrl || "";
   return (
     <Container $disputeOpen={disputeOpen}>
@@ -461,11 +460,12 @@ export default function ExchangeSidePreview({
         <CTASection>
           <BosonButton
             variant="primaryFill"
+            disabled={hasDisputePeriodElapsed}
             onClick={() =>
               showModal(
                 "RAISE_DISPUTE",
                 {
-                  title: "Raise a problem",
+                  title: "Raise a dispute",
                   exchangeId: exchange.id
                 },
                 "auto",
@@ -478,7 +478,7 @@ export default function ExchangeSidePreview({
               )
             }
           >
-            Raise a Problem
+            Raise a dispute
           </BosonButton>
           <CompleteExchangeButton />
         </CTASection>

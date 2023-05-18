@@ -51,6 +51,8 @@ export default function useUserRoles({ role }: Props) {
   return {
     roles: userRoles,
     address,
-    isAuth
+    isAuth,
+    sellerId,
+    buyerId
   };
 }

@@ -1,11 +1,11 @@
 import { getDefaultConfig } from "@bosonprotocol/react-kit";
+import * as Sentry from "@sentry/browser";
 
 import { Token } from "../components/convertion-rate/ConvertionRateContext";
 import lensFollowNftContractAbi from "../lib/utils/hooks/lens/abis/lens-follow-nft-contract-abi.json";
 import lensHubContractAbi from "../lib/utils/hooks/lens/abis/lens-hub-contract-abi.json";
 import lensPeripheryDataProvider from "../lib/utils/hooks/lens/abis/lens-periphery-data-provider.json";
 import { parseCurationList } from "./utils/curationList";
-import { parseEligibleSellerWalletAddress } from "./utils/eligibleSellerWalletAddress";
 
 type EnvironmentType = "local" | "testing" | "staging" | "production"; // TODO: export EnvironmentType in react-kit
 
@@ -14,7 +14,7 @@ export const config = getDefaultConfig(REACT_APP_ENV_NAME as EnvironmentType);
 
 const REACT_APP_ENABLE_SENTRY_LOGGING =
   process.env.NODE_ENV === "development"
-    ? stringToBoolean(process.env.REACT_APP_ENABLE_SENTRY_LOGGING)
+    ? stringToBoolean(process.env.REACT_APP_ENABLE_SENTRY_LOGGING, false)
     : ["local", "testing"].includes(config.envName);
 
 export function getDefaultTokens(): Token[] {
@@ -26,8 +26,9 @@ export function getDefaultTokens(): Token[] {
         process.env.REACT_APP_DEFAULT_TOKENS_LIST_PRODUCTION ||
         "[]"
     );
-  } catch (e) {
-    console.error(e);
+  } catch (error) {
+    console.error(error);
+    Sentry.captureException(error);
   }
   return tokens;
 }
@@ -56,15 +57,12 @@ function getMetaTxApiIds(protocolAddress: string) {
         }
       }
     });
-  } catch (e) {
-    console.error(e);
+  } catch (error) {
+    console.error(error);
+    Sentry.captureException(error);
   }
   return apiIds;
 }
-
-const createProfileConfiguration: "LENS" | "NO_TOKEN" =
-  (process.env.REACT_APP_CREATE_PROFILE_CONFIGURATION as "LENS" | "NO_TOKEN") ??
-  "NO_TOKEN";
 
 const availableOnNetwork = [80001, 137].includes(config.chainId);
 
@@ -97,9 +95,7 @@ export const CONFIG = {
     apiKey: process.env.REACT_APP_META_TX_API_KEY,
     apiIds: getMetaTxApiIds(config.contracts.protocolDiamond)
   },
-  sellerCurationList: parseCurationList(
-    process.env.REACT_APP_SELLER_CURATION_LIST
-  ),
+  sellerBlacklistUrl: process.env.REACT_APP_SELLER_BLACKLIST_URL,
   offerCurationList: parseCurationList(
     process.env.REACT_APP_OFFER_CURATION_LIST
   ),
@@ -107,7 +103,8 @@ export const CONFIG = {
   buyerSellerAgreementTemplate:
     process.env.REACT_APP_BUYER_SELLER_AGREEMENT_TEMPLATE,
   enableCurationLists: stringToBoolean(
-    process.env.REACT_APP_ENABLE_CURATION_LISTS
+    process.env.REACT_APP_ENABLE_CURATION_LISTS,
+    true
   ),
   defaultTokens: getDefaultTokens(),
   mockSellerId: process.env.REACT_APP_MOCK_SELLER_ID,
@@ -124,14 +121,12 @@ export const CONFIG = {
   minimumReturnPeriodInDays: 1,
   defaultReturnPeriodInDays: 15,
   minimumDisputePeriodInDays: 30,
-  createProfileConfiguration,
   ipfsGateway: process.env.REACT_APP_IPFS_GATEWAY || "https://ipfs.io/ipfs",
   ipfsImageGateway:
     process.env.REACT_APP_IPFS_IMAGE_GATEWAY ||
     process.env.REACT_APP_IPFS_GATEWAY ||
     "https://ipfs.io/ipfs",
   lens: {
-    enabled: createProfileConfiguration === "LENS" && availableOnNetwork,
     lensHandleExtension: config.chainId === 137 ? ".lens" : ".test",
     availableOnNetwork,
     apiLink: config.lens.apiLink,
@@ -144,15 +139,21 @@ export const CONFIG = {
     LENS_PROFILES_CONTRACT_PARTIAL_ABI:
       config.lens.LENS_PROFILES_CONTRACT_PARTIAL_ABI,
     LENS_FOLLOW_NFT_ABI: lensFollowNftContractAbi
-  },
-  eligibleSellerWalletAddresses: parseEligibleSellerWalletAddress(
-    process.env.REACT_APP_ELIGIBLE_SELLER_WALLET_ADDRESSES
-  )
+  }
 };
 
-function stringToBoolean(value?: string) {
+function stringToBoolean(value: unknown | undefined, defaultValue: boolean) {
+  if (value === undefined || value === null) {
+    return defaultValue;
+  }
   if (typeof value === "string") {
-    return ["1", "true"].includes(value);
+    if (defaultValue) {
+      // return true except if value is "0" or "false"
+      return !["0", "false"].includes(value);
+    } else {
+      // return false except if value is "1" or "true"
+      return ["1", "true"].includes(value);
+    }
   }
 
   return Boolean(value);

@@ -34,7 +34,7 @@ export const FormModel = {
       name: "email",
       requiredErrorMessage: "This field is required",
       placeholder: "Email",
-      mustBeEmail: "This is not an e-mail"
+      mustBeEmail: "This is not an email"
     },
     phone: {
       name: "phone",
