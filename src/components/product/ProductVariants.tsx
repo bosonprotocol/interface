@@ -24,7 +24,7 @@ import { useCreateForm } from "./utils/useCreateForm";
 const variantsColorsKey = "productVariants.colors";
 const variantsSizesKey = "productVariants.sizes";
 const variantsKey = `productVariants.variants`;
-
+const variantFontSize = "0.8125rem";
 const TdFlex = styled("td")`
   display: flex;
   flex-direction: column;
@@ -62,9 +62,12 @@ const TBody = styled.tbody`
       display: flex;
       flex-direction: column;
       flex: 1 1;
-      /* &[data-name] {
-        font-size: 0.8125rem;
-      } */
+      &[data-name] {
+        font-size: ${variantFontSize};
+        height: 50px;
+        display: flex;
+        justify-content: center;
+      }
       .react-select__control,
       > input {
         height: 50px;
@@ -76,6 +79,9 @@ const TBody = styled.tbody`
 const StyledFormField = styled(FormField)`
   [data-label] {
     min-width: 40px;
+  }
+  .tag {
+    font-size: ${variantFontSize};
   }
 `;
 

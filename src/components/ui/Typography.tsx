@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import styled from "styled-components";
 
 import { IGrid } from "./Grid";
@@ -51,17 +51,14 @@ interface ITypography extends WrapperProps {
   onClick?: () => void;
 }
 
-const Typography: React.FC<ITypography> = ({
-  tag = "div",
-  children,
-  style = {},
-  ...props
-}) => {
-  return (
-    <Wrapper style={style} {...props} as={tag}>
-      {children}
-    </Wrapper>
-  );
-};
+const Typography = forwardRef<HTMLElement, ITypography>(
+  ({ tag = "div", children, style = {}, ...props }, ref) => {
+    return (
+      <Wrapper style={style} {...props} as={tag} ref={ref}>
+        {children}
+      </Wrapper>
+    );
+  }
+);
 
 export default Typography;
