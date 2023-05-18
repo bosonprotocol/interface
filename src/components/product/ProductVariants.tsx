@@ -10,7 +10,6 @@ import TagsInput from "../form/TagsInput";
 import BosonButton from "../ui/BosonButton";
 import Button from "../ui/Button";
 import Grid from "../ui/Grid";
-import Typography from "../ui/Typography";
 import {
   ContainerProductPage,
   ProductButtonGroup,
@@ -278,7 +277,15 @@ export default function ProductVariants() {
       <Table>
         <THead>
           <tr>
-            <th data-name>Variant name</th>
+            <Grid
+              data-name
+              as="th"
+              flexDirection="row"
+              justifyContent="flex-start"
+              alignItems="flex-start"
+            >
+              Variant name
+            </Grid>
             <th data-price>Price</th>
             <th data-currency>Currency</th>
             <th data-quantity>Quantity</th>
@@ -289,11 +296,14 @@ export default function ProductVariants() {
           {variants?.map((variant, idx) => {
             return (
               <tr key={variant.name}>
-                <td data-name>
-                  <Typography justifyContent="center">
-                    {variant.name}
-                  </Typography>
-                </td>
+                <Grid
+                  data-name
+                  as="td"
+                  flexDirection="row"
+                  alignItems="flex-start"
+                >
+                  {variant.name}
+                </Grid>
                 <td data-price>
                   <Input name={`${variantsKey}[${idx}].price`} type="number" />
                 </td>
