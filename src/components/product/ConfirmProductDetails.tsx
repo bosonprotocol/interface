@@ -117,7 +117,7 @@ export default function ConfirmProductDetails({
     return (
       <>
         <Typography tag="p" $fontSize="0.75rem" fontWeight="600">
-          Product Type*
+          Product type*
         </Typography>
         <ProductBox>
           <img src={src} alt={description} height="41" />
@@ -132,10 +132,10 @@ export default function ConfirmProductDetails({
     let description = "";
     if (values.productType.productVariant === "oneItemType") {
       src = oneItemTypeProductSmall;
-      description = "One Item Type";
+      description = "One item type";
     } else if (values.productType.productVariant === "differentVariants") {
       src = differentVariantsProduct;
-      description = "Different Variants";
+      description = "Different variants";
     }
     return (
       <>
@@ -146,7 +146,7 @@ export default function ConfirmProductDetails({
             fontWeight: "600"
           }}
         >
-          Product Variant*
+          Product variant*
         </Typography>
         <ProductBox>
           <img src={src} alt={description} height="41" />
@@ -503,11 +503,10 @@ export default function ConfirmProductDetails({
       </ConfirmationAlert>
       {showInitializeChat && (
         <InitializeChatContainer>
-          <Typography tag={"p"}>
-            Allow 2-way communication with buyers via a chat with you and get
-            delivery details.
-          </Typography>
-          <InitializeChat isError={chatInitializationStatus === "ERROR"} />
+          <InitializeChat
+            isError={chatInitializationStatus === "ERROR"}
+            message="To proceed, first initialize your chat client that enables two way communication with buyers and receiving delivery details."
+          />
         </InitializeChatContainer>
       )}
       {showSuccessInitialization && (

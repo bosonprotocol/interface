@@ -329,11 +329,11 @@ export default function ProductType({
 
   return (
     <ContainerProductPage>
-      <SectionTitle tag="h2">Product Type</SectionTitle>
+      <SectionTitle tag="h2">Product type</SectionTitle>
       <Container>
         <GridContainer itemsPerRow={productTypeItemsPerRow}>
           <FormField
-            title="Select Product Type"
+            title="Select product type"
             required
             style={{
               marginBottom: 0
@@ -423,7 +423,7 @@ export default function ProductType({
                       margin: "auto"
                     }}
                   />
-                  <Typography tag="p">Different Variants</Typography>
+                  <Typography tag="p">Different variants</Typography>
                 </Box>
               </Label>
             </Grid>

@@ -178,6 +178,55 @@ export default function FooterComponent() {
   const hasExchangesAsASeller = !!sellerExchanges?.length;
   const hasExchangesAsBuyerOrSeller =
     hasExchangesAsABuyer || hasExchangesAsASeller;
+  const shopLinks = getShopRoutes({
+    roles,
+    isSupportFunctionalityDefined,
+    onlySeller,
+    hasExchangesAsABuyer
+  }).reduce<JSX.Element[]>((acc, nav) => {
+    if (nav) {
+      if ("url" in nav && nav.url && nav.name) {
+        acc.push(
+          <LinkWithQuery to={nav.url} key={`shop_nav_${nav.name}`}>
+            {nav.name}
+          </LinkWithQuery>
+        );
+      } else if ("component" in nav && nav.component) {
+        acc.push(nav.component());
+      }
+    }
+    return acc;
+  }, []);
+  const sellLinks = getSellRoutes({
+    roles,
+    sellerId,
+    isSupportFunctionalityDefined,
+    onlyBuyer,
+    onlySeller
+  }).reduce<JSX.Element[]>((acc, nav) => {
+    if (
+      nav &&
+      ((isCustomStoreFront && nav.name !== "Sell") || !isCustomStoreFront)
+    ) {
+      acc.push(
+        <LinkWithQuery to={nav.url} key={`sell_nav_${nav.name}`}>
+          {nav.name}
+        </LinkWithQuery>
+      );
+    }
+    return acc;
+  }, []);
+  const helpLinks = getHelpLinks({
+    roles,
+    hasExchangesAsBuyerOrSeller
+  }).map(
+    (nav) =>
+      nav && (
+        <LinkWithQuery to={nav.url} key={`navigation_nav_${nav.name}`}>
+          {nav.name}
+        </LinkWithQuery>
+      )
+  );
   return (
     <Footer>
       <Layout>
@@ -193,77 +242,30 @@ export default function FooterComponent() {
             justifyContent={isXXS ? "flex-start" : "flex-end"}
             alignItems="flex-start"
           >
-            <div>
-              <Typography tag="h5">Shop</Typography>
-              <NavigationLinks flexDirection="column">
-                {getShopRoutes({
-                  roles,
-                  isSupportFunctionalityDefined,
-                  onlySeller,
-                  hasExchangesAsABuyer
-                }).reduce<JSX.Element[]>((acc, nav) => {
-                  if (nav) {
-                    if ("url" in nav && nav.url && nav.name) {
-                      acc.push(
-                        <LinkWithQuery
-                          to={nav.url}
-                          key={`shop_nav_${nav.name}`}
-                        >
-                          {nav.name}
-                        </LinkWithQuery>
-                      );
-                    } else if ("component" in nav && nav.component) {
-                      acc.push(nav.component());
-                    }
-                  }
-                  return acc;
-                }, [])}
-              </NavigationLinks>
-            </div>
-            <div>
-              <Typography tag="h5">Sell</Typography>
-              <NavigationLinks flexDirection="column">
-                {getSellRoutes({
-                  roles,
-                  sellerId,
-                  isSupportFunctionalityDefined,
-                  onlyBuyer,
-                  onlySeller
-                }).reduce<JSX.Element[]>((acc, nav) => {
-                  if (
-                    nav &&
-                    ((isCustomStoreFront && nav.name !== "Sell") ||
-                      !isCustomStoreFront)
-                  ) {
-                    acc.push(
-                      <LinkWithQuery to={nav.url} key={`sell_nav_${nav.name}`}>
-                        {nav.name}
-                      </LinkWithQuery>
-                    );
-                  }
-                  return acc;
-                }, [])}
-              </NavigationLinks>
-            </div>
-            <div>
-              <Typography tag="h5">Help</Typography>
-              <NavigationLinks flexDirection="column">
-                {getHelpLinks({
-                  roles,
-                  hasExchangesAsBuyerOrSeller
-                }).map(
-                  (nav) =>
-                    nav && (
-                      <LinkWithQuery
-                        to={nav.url}
-                        key={`navigation_nav_${nav.name}`}
-                      >
-                        {nav.name}
-                      </LinkWithQuery>
-                    )
-                )}
-              </NavigationLinks>
-            </div>
+            {!!shopLinks.length && (
+              <div>
+                <Typography tag="h5">Shop</Typography>
+                <NavigationLinks flexDirection="column">
+                  {shopLinks}
+                </NavigationLinks>
+              </div>
+            )}
+            {!!sellLinks.length && (
+              <div>
+                <Typography tag="h5">Sell</Typography>
+                <NavigationLinks flexDirection="column">
+                  {sellLinks}
+                </NavigationLinks>
+              </div>
+            )}
+            {!!helpLinks.length && (
+              <div>
+                <Typography tag="h5">Help</Typography>
+                <NavigationLinks flexDirection="column">
+                  {helpLinks}
+                </NavigationLinks>
+              </div>
+            )}
           </NavigationGrid>
         </LogoGrid>
         <Grid justifyContent="flex-end">
