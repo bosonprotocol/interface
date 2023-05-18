@@ -13,6 +13,7 @@ import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
 import Layout from "../Layout";
+import { useModal } from "../modal/useModal";
 import ViewTxButton from "../transactions/ViewTxButton";
 import Grid from "../ui/Grid";
 import ConnectButton from "./ConnectButton";
@@ -255,11 +256,26 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
       }
     }, [isLteM, isM, isOpen, setOpen, isSideNavBar]);
 
+    const { showModal, modalTypes } = useModal();
+
     const Connect = useCallback(
       (props: Parameters<typeof ConnectButton>[0]) => {
+        const setShowNotifiModal = () => {
+          showModal(
+            modalTypes.NOTIFI,
+            {
+              title: `Notifi`
+            },
+            "auto"
+          );
+        };
         return (
           <>
-            <ConnectButton {...props} showAddress={!address} />
+            <ConnectButton
+              setShowNotifiModal={setShowNotifiModal}
+              {...props}
+              showAddress={!address}
+            />
             {address && (
               <Grid
                 flexBasis="content"
@@ -272,7 +288,7 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
           </>
         );
       },
-      [address, isSideNavBar]
+      [address, isSideNavBar, modalTypes.NOTIFI, showModal]
     );
 
     return (

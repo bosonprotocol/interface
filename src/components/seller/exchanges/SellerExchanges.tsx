@@ -252,6 +252,7 @@ export default function SellerExchanges({
     async (exchange: Exchange, from?: Dayjs) => {
       try {
         const threadId: ThreadId = {
+          // TODO: add chainId + protocolAddress?
           exchangeId: exchange.id,
           buyerId: exchange.buyer.id,
           sellerId: exchange.seller.id

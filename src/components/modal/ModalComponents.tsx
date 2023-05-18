@@ -16,6 +16,7 @@ import ExpireVoucherModal from "./components/ExpireVoucherModal";
 import ExportExchangesWithDeliveryModal from "./components/ExportExchangesWithDeliveryModal";
 import InvalidRoleModal from "./components/InvalidRoleModal";
 import ManageFunds from "./components/ManageFunds";
+import NotifiModal from "./components/NotifiModal";
 import ProductCreateSuccess from "./components/ProductCreateSuccess";
 import ProgressBarModal from "./components/ProgressBarModal";
 import RedeemModal from "./components/RedeemModal/RedeemModal";
@@ -66,7 +67,8 @@ export const MODAL_TYPES = {
   WHAT_IS_REDEEM: "WHAT_IS_REDEEM",
   PROGRESS_BAR: "PROGRESS_BAR",
   EXPORT_EXCHANGES_WITH_DELIVERY: "EXPORT_EXCHANGES_WITH_DELIVERY",
-  RELIST_OFFER: "RELIST_OFFER"
+  RELIST_OFFER: "RELIST_OFFER",
+  NOTIFI: "NOTIFI"
 } as const;
 
 export const MODAL_COMPONENTS = {
@@ -103,5 +105,6 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.PROGRESS_BAR]: ProgressBarModal,
   [MODAL_TYPES.EXPORT_EXCHANGES_WITH_DELIVERY]:
     ExportExchangesWithDeliveryModal,
-  [MODAL_TYPES.RELIST_OFFER]: RelistOfferModal
+  [MODAL_TYPES.RELIST_OFFER]: RelistOfferModal,
+  [MODAL_TYPES.NOTIFI]: NotifiModal
 } as const;
