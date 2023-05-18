@@ -258,11 +258,14 @@ export default function ConfirmProductDetails({
                         values.productVariantsImages?.[idx]?.productImages;
                       return (
                         <tr key={variant.name}>
-                          <td data-name>
-                            <Typography justifyContent="center">
-                              {variant.name}
-                            </Typography>
-                          </td>
+                          <Grid
+                            data-name
+                            as="td"
+                            flexDirection="row"
+                            alignItems="flex-start"
+                          >
+                            {variant.name}
+                          </Grid>
                           <td data-price>
                             <Typography justifyContent="center">
                               {variant.price}
