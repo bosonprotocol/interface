@@ -30,8 +30,9 @@ const IconError = styled(Warning)`
 
 interface Props {
   isError?: boolean;
+  message?: string;
 }
-export default function InitializeChat({ isError = false }: Props) {
+export default function InitializeChat({ isError = false, message }: Props) {
   const { data: signer } = useSigner();
   const { initialize, bosonXmtp, isInitializing } = useChatContext();
   const { address } = useAccount();
@@ -54,7 +55,8 @@ export default function InitializeChat({ isError = false }: Props) {
         >
           {isError
             ? `Chat initialization failed, please try again`
-            : `To proceed you must first initialize your chat client`}
+            : message ??
+              `To proceed you must first initialize your chat client`}
         </Typography>
       </Grid>
       <div>

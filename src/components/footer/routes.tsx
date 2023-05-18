@@ -124,7 +124,6 @@ export const getSellRoutes = ({
 }) => {
   const isAccountSeller = roles.some((role) => role === UserRoles.Seller);
   const productRoutes: { name: string; url: string }[] = [];
-
   if (
     (!isSupportFunctionalityDefined ||
       (isSupportFunctionalityDefined && (!onlyBuyer || onlySeller))) &&
@@ -136,10 +135,9 @@ export const getSellRoutes = ({
     });
   }
   if (
-    !isSupportFunctionalityDefined ||
-    (isSupportFunctionalityDefined &&
-      (!onlyBuyer || onlySeller) &&
-      isAccountSeller)
+    (!isSupportFunctionalityDefined ||
+      (isSupportFunctionalityDefined && (!onlyBuyer || onlySeller))) &&
+    isAccountSeller
   ) {
     productRoutes.push({
       name: "Seller Dashboard",

@@ -59,7 +59,7 @@ export function ProfileFormFields({
       <FormField title="Description" required>
         <Textarea
           name="description"
-          placeholder="Describe"
+          placeholder="Tell people more about your brand"
           disabled={disableDescription}
         />
       </FormField>
