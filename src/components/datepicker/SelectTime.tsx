@@ -157,7 +157,7 @@ export default function SelectTime({
             }
           />
         </Grid>
-        {period && (
+        {period && secondDate && (
           <>
             <Typography tag="p" margin="0">
               Select time for {secondDate?.format("MMMM D, YYYY")}

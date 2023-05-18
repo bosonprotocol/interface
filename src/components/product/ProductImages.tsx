@@ -55,6 +55,7 @@ const StyledSelect = styled(Select)`
 const StyledTabs = styled(Tabs)`
   [data-tab-title] {
     padding-right: 2rem;
+    font-size: 0.8063rem;
   }
 `;
 

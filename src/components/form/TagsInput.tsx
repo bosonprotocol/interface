@@ -72,7 +72,7 @@ const TagsInput = ({
   return (
     <>
       <Grid gap="0.5rem" alignItems="center">
-        {label && <Typography>{label}</Typography>}
+        {label && <Typography data-label>{label}</Typography>}
         <TagContainer>
           <FieldInput
             onKeyDown={handleKeyDown}
@@ -83,13 +83,15 @@ const TagsInput = ({
             error={errorMessage}
           />
           <Helper>
-            Hit Enter <KeyReturn size={16} />
+            Hit Enter <KeyReturn size={13} />
           </Helper>
         </TagContainer>
       </Grid>
       <TagContainer style={{ marginTop: "1em" }}>
         {label && (
-          <Typography style={{ visibility: "hidden" }}>{label}</Typography>
+          <Typography style={{ visibility: "hidden" }} data-label>
+            {label}
+          </Typography>
         )}
         {tags.map((tag: string, index: number) => (
           <TagWrapper key={`tags-wrapper_${tag}`}>
