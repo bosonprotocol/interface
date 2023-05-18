@@ -117,9 +117,8 @@ export default function Preview({
   };
   const name = values.productInformation.productTitle || "Untitled";
 
-  const price = isMultiVariant
-    ? firstVariant.price
-    : values.coreTermsOfSale.price;
+  const price =
+    (isMultiVariant ? firstVariant.price : values.coreTermsOfSale.price) || 0;
   const exchangeTokenDecimals = Number(exchangeToken?.decimals || 18);
   const priceBN = parseUnits(
     price < 0.1 ? fixformattedString(price) : price.toString(),
