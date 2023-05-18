@@ -27,32 +27,30 @@ export default function RegularProfileForm({
   return (
     <>
       <Grid
-        justifyContent="space-between"
-        alignItems="center"
+        flexDirection="column"
+        alignItems="flex-start"
+        flexGrow="1"
+        flexShrink="1"
+        flexBasis="0"
         margin="0 0 2rem 0"
-        flex="1"
       >
-        <Grid
-          flexDirection="column"
-          alignItems="flex-start"
-          flexGrow="1"
-          flexShrink="1"
-          flexBasis="0"
-        >
+        <Grid justifyContent="space-between" alignItems="center" flex="1">
           <Typography $fontSize="2rem" fontWeight="600">
             {isEdit ? "Regular profile" : "Create your profile"}
           </Typography>
-          {!isEdit && (
-            <Typography>
-              To begin selling on Boson, create a profile and a seller account
-              in the steps below.
-            </Typography>
-          )}
+
+          <div>
+            <SwitchButton />
+          </div>
         </Grid>
-        <div>
-          <SwitchButton />
-        </div>
+        {!isEdit && (
+          <Typography>
+            To begin selling on Boson, create a profile and a seller account in
+            the steps below.
+          </Typography>
+        )}
       </Grid>
+
       <ProfileFormFields />
       {children}
       <Grid margin="2rem 0 0 0" justifyContent="flex-start" gap="2rem">
