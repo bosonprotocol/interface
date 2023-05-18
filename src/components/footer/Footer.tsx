@@ -5,7 +5,7 @@ import logo from "../../../src/assets/logo-white.svg";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
-import { useSellerCurationListFn } from "../../lib/utils/hooks/useSellers";
+import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { sanitizeUrl } from "../../lib/utils/url";
 import SocialLogo, {
   SocialLogoValues
@@ -18,8 +18,9 @@ import Grid from "../ui/Grid";
 import Typography from "../ui/Typography";
 import {
   ADDITIONAL_LINKS,
-  getNavigationRoutes,
-  getProductRoutes,
+  getHelpLinks,
+  getSellRoutes,
+  getShopRoutes,
   SOCIAL_ROUTES
 } from "./routes";
 
@@ -140,7 +141,19 @@ function Socials() {
 }
 
 export default function FooterComponent() {
-  const { roles, sellerId } = useUserRoles({ role: [] });
+  const { roles, sellerId, buyerId } = useUserRoles({ role: [] });
+  const { data: sellerExchanges } = useExchanges(
+    { sellerId, disputed: null },
+    {
+      enabled: !!sellerId
+    }
+  );
+  const { data: buyerExchanges } = useExchanges(
+    { buyerId, disputed: null },
+    {
+      enabled: !!buyerId
+    }
+  );
   const { isXXS } = useBreakpoints();
   const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
   const [year] = useState<number>(new Date().getFullYear());
@@ -161,8 +174,10 @@ export default function FooterComponent() {
     typeof supportFunctionality != "string" &&
     supportFunctionality?.length === 1 &&
     supportFunctionality?.[0] === "seller";
-  const checkIfSellerIsInCurationList = useSellerCurationListFn();
-  const isSellerCurated = checkIfSellerIsInCurationList(sellerId);
+  const hasExchangesAsABuyer = !!buyerExchanges?.length;
+  const hasExchangesAsASeller = !!sellerExchanges?.length;
+  const hasExchangesAsBuyerOrSeller =
+    hasExchangesAsABuyer || hasExchangesAsASeller;
   return (
     <Footer>
       <Layout>
@@ -179,10 +194,38 @@ export default function FooterComponent() {
             alignItems="flex-start"
           >
             <div>
-              <Typography tag="h5">Product</Typography>
+              <Typography tag="h5">Shop</Typography>
               <NavigationLinks flexDirection="column">
-                {getProductRoutes({
+                {getShopRoutes({
                   roles,
+                  isSupportFunctionalityDefined,
+                  onlySeller,
+                  hasExchangesAsABuyer
+                }).reduce<JSX.Element[]>((acc, nav) => {
+                  if (nav) {
+                    if ("url" in nav && nav.url && nav.name) {
+                      acc.push(
+                        <LinkWithQuery
+                          to={nav.url}
+                          key={`shop_nav_${nav.name}`}
+                        >
+                          {nav.name}
+                        </LinkWithQuery>
+                      );
+                    } else if ("component" in nav && nav.component) {
+                      acc.push(nav.component());
+                    }
+                  }
+                  return acc;
+                }, [])}
+              </NavigationLinks>
+            </div>
+            <div>
+              <Typography tag="h5">Sell</Typography>
+              <NavigationLinks flexDirection="column">
+                {getSellRoutes({
+                  roles,
+                  sellerId,
                   isSupportFunctionalityDefined,
                   onlyBuyer,
                   onlySeller
@@ -193,10 +236,7 @@ export default function FooterComponent() {
                       !isCustomStoreFront)
                   ) {
                     acc.push(
-                      <LinkWithQuery
-                        to={nav.url}
-                        key={`product_nav_${nav.name}`}
-                      >
+                      <LinkWithQuery to={nav.url} key={`sell_nav_${nav.name}`}>
                         {nav.name}
                       </LinkWithQuery>
                     );
@@ -206,13 +246,11 @@ export default function FooterComponent() {
               </NavigationLinks>
             </div>
             <div>
-              <Typography tag="h5">Navigation</Typography>
+              <Typography tag="h5">Help</Typography>
               <NavigationLinks flexDirection="column">
-                {getNavigationRoutes({
+                {getHelpLinks({
                   roles,
-                  isSupportFunctionalityDefined,
-                  onlySeller,
-                  isSellerCurated
+                  hasExchangesAsBuyerOrSeller
                 }).map(
                   (nav) =>
                     nav && (
@@ -228,16 +266,14 @@ export default function FooterComponent() {
             </div>
           </NavigationGrid>
         </LogoGrid>
-        {isXXS && (
-          <Grid justifyContent="center">
-            <Socials />
-          </Grid>
-        )}
-        <Grid padding="2rem 0 0 0">
+        <Grid justifyContent="flex-end">
+          <Socials />
+        </Grid>
+        <Grid padding="2rem 0 0 0" justifyContent="flex-end" gap="1rem">
           <Typography tag="p">
             {isCustomStoreFront ? copyright : `© ${year} Bosonapp.io`}
           </Typography>
-          {!isXXS && <Socials />}
+
           <>
             {isCustomStoreFront && typeof additionalFooterLinks !== "string" ? (
               <NavigationLinks>
