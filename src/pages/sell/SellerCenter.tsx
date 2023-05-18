@@ -94,7 +94,7 @@ function SellerCenterWrapper() {
           <WarningCircle size={112} color={colors.red} weight="thin" />
           <Typography tag="h5">
             {address
-              ? "The seller with that ID doesn't exist!"
+              ? "Please create a seller account first"
               : "Please connect your wallet"}
           </Typography>
           <Button

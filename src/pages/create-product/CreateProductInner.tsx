@@ -7,6 +7,7 @@ import {
   subgraph
 } from "@bosonprotocol/react-kit";
 import { parseUnits } from "@ethersproject/units";
+import * as Sentry from "@sentry/browser";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import { Form, Formik, FormikHelpers, FormikProps } from "formik";
@@ -14,6 +15,7 @@ import isArray from "lodash/isArray";
 import keys from "lodash/keys";
 import map from "lodash/map";
 import { useCallback, useMemo, useRef, useState } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import toast from "react-hot-toast";
 import { generatePath, useLocation, useNavigate } from "react-router-dom";
 import uuid from "react-uuid";
@@ -38,6 +40,9 @@ import {
 import { getFixedOrPercentageVal } from "../../components/product/utils/termsOfExchange";
 import MultiSteps from "../../components/step/MultiSteps";
 import SuccessTransactionToast from "../../components/toasts/SuccessTransactionToast";
+import BosonButton from "../../components/ui/BosonButton";
+import Grid from "../../components/ui/Grid";
+import Typography from "../../components/ui/Typography";
 import { CONFIG } from "../../lib/config";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { ProductRoutes } from "../../lib/routing/routes";
@@ -973,16 +978,39 @@ function CreateProductInner({
             return (
               <Form onKeyPress={onKeyPress}>
                 {isPreviewVisible ? (
-                  <Preview
-                    togglePreview={setIsPreviewVisible}
-                    seller={currentAssistant as any}
-                    isMultiVariant={isMultiVariant}
-                    isOneSetOfImages={isOneSetOfImages}
-                    hasMultipleVariants={
-                      !!values.productVariants.variants.length
-                    }
-                    decimals={decimals}
-                  />
+                  <ErrorBoundary
+                    FallbackComponent={({ resetErrorBoundary }) => (
+                      <Grid flexDirection="column" gap="1rem">
+                        <Typography fontWeight="600">
+                          Sorry, right now the preview is not available, please
+                          try again later...
+                        </Typography>
+                        <BosonButton
+                          onClick={() => resetErrorBoundary()}
+                          variant="secondaryFill"
+                        >
+                          Go back
+                        </BosonButton>
+                      </Grid>
+                    )}
+                    onError={(error) => {
+                      Sentry.captureException(error);
+                    }}
+                    onReset={() => {
+                      setIsPreviewVisible(false);
+                    }}
+                  >
+                    <Preview
+                      togglePreview={setIsPreviewVisible}
+                      seller={currentAssistant as any}
+                      isMultiVariant={isMultiVariant}
+                      isOneSetOfImages={isOneSetOfImages}
+                      hasMultipleVariants={
+                        !!values.productVariants.variants.length
+                      }
+                      decimals={decimals}
+                    />
+                  </ErrorBoundary>
                 ) : (
                   wizardStep.currentStep
                 )}

@@ -1,23 +1,24 @@
 import { X } from "phosphor-react";
 import { forwardRef, useCallback, useEffect, useMemo, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { generatePath, useLocation } from "react-router-dom";
 import styled, { css } from "styled-components";
 import { useAccount } from "wagmi";
 
 import logo from "../../../src/assets/logo.svg";
-import { BosonRoutes } from "../../lib/routing/routes";
+import { UrlParameters } from "../../lib/routing/parameters";
+import { BosonRoutes, SellerCenterRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
+import { useOffers } from "../../lib/utils/hooks/offers";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
-import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import { getSellLink } from "../../lib/utils/link";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import { UserRoles } from "../../router/routes";
 import useUserRoles, { checkIfUserHaveRole } from "../../router/useUserRoles";
 import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
 import Layout from "../Layout";
+import { DEFAULT_SELLER_PAGE } from "../seller/SellerPages";
 import BosonButton from "../ui/BosonButton";
 import Grid from "../ui/Grid";
 import ConnectButton from "./ConnectButton";
@@ -232,9 +233,7 @@ interface Props {
 const HeaderComponent = forwardRef<HTMLElement, Props>(
   ({ fluidHeader = false, withBanner = false }, ref) => {
     const { address } = useAccount();
-    const { sellers } = useCurrentSellers();
     const navigate = useKeepQueryParamsNavigate();
-    const isSeller = !!sellers.length;
     const [isOpen, setOpen] = useState(false);
     const { pathname, search } = useLocation();
     const { isLteS, isLteM, isM } = useBreakpoints();
@@ -262,7 +261,15 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
         setOpen(true);
       }
     }, [isLteM, isM, isOpen, setOpen, isSideNavBar]);
-    const { roles } = useUserRoles({ role: [] });
+    const { roles, sellerId } = useUserRoles({ role: [] });
+    const isSeller = !!sellerId;
+    const { data: sellerOffers } = useOffers(
+      { sellerId },
+      {
+        enabled: !!sellerId
+      }
+    );
+    const hasSellerOffers = !!sellerOffers?.length;
     const supportFunctionality = useCustomStoreQueryParameter<
       ("buyer" | "seller" | "dr")[]
     >("supportFunctionality", { parseJson: true });
@@ -280,10 +287,13 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
       !isCustomStoreFront;
 
     const sellUrl = useMemo(() => {
-      return getSellLink({
-        isAccountSeller: isSeller
-      });
-    }, [isSeller]);
+      if (isSeller && hasSellerOffers) {
+        return generatePath(SellerCenterRoutes.SellerCenter, {
+          [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
+        });
+      }
+      return SellerCenterRoutes.CreateProduct;
+    }, [isSeller, hasSellerOffers]);
     const Connect = useCallback(
       (props: Parameters<typeof ConnectButton>[0]) => {
         return (
@@ -302,14 +312,26 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
                     navigate({ pathname: sellUrl });
                   }}
                 >
-                  {isSeller ? "Create products" : "Sell on Boson"}
+                  {isSeller
+                    ? hasSellerOffers
+                      ? "Seller Center"
+                      : "Create Products"
+                    : "Sell on Boson"}
                 </BosonButton>
               </Grid>
             )}
           </>
         );
       },
-      [address, isSideNavBar, isSeller, showSellButton, navigate, sellUrl]
+      [
+        address,
+        isSideNavBar,
+        isSeller,
+        showSellButton,
+        navigate,
+        sellUrl,
+        hasSellerOffers
+      ]
     );
 
     return (
