@@ -233,7 +233,7 @@ interface Props {
 }
 const HeaderComponent = forwardRef<HTMLElement, Props>(
   ({ fluidHeader = false, withBanner = false }, ref) => {
-    const { address, isConnecting } = useAccount();
+    const { address } = useAccount();
     const navigate = useKeepQueryParamsNavigate();
     const [isOpen, setOpen] = useState(false);
     const { pathname, search } = useLocation();
