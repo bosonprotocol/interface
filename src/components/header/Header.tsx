@@ -18,6 +18,7 @@ import { UserRoles } from "../../router/routes";
 import useUserRoles, { checkIfUserHaveRole } from "../../router/useUserRoles";
 import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
 import Layout from "../Layout";
+import { Spinner } from "../loading/Spinner";
 import { DEFAULT_SELLER_PAGE } from "../seller/SellerPages";
 import BosonButton from "../ui/BosonButton";
 import Grid from "../ui/Grid";
@@ -232,7 +233,7 @@ interface Props {
 }
 const HeaderComponent = forwardRef<HTMLElement, Props>(
   ({ fluidHeader = false, withBanner = false }, ref) => {
-    const { address } = useAccount();
+    const { address, isConnecting } = useAccount();
     const navigate = useKeepQueryParamsNavigate();
     const [isOpen, setOpen] = useState(false);
     const { pathname, search } = useLocation();
@@ -261,7 +262,9 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
         setOpen(true);
       }
     }, [isLteM, isM, isOpen, setOpen, isSideNavBar]);
-    const { roles, sellerId } = useUserRoles({ role: [] });
+    const { roles, sellerId, isFetched, isFetching } = useUserRoles({
+      role: []
+    });
     const isSeller = !!sellerId;
     const { data: sellerOffers } = useOffers(
       { sellerId },
@@ -284,7 +287,8 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
       ((isSupportFunctionalityDefined && !onlyBuyer) ||
         !isSupportFunctionalityDefined) &&
       checkIfUserHaveRole(roles, [UserRoles.Guest, UserRoles.Seller], false) &&
-      !isCustomStoreFront;
+      !isCustomStoreFront &&
+      isFetched;
 
     const sellUrl = useMemo(() => {
       if (isSeller && hasSellerOffers) {
@@ -294,12 +298,19 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
       }
       return SellerCenterRoutes.CreateProduct;
     }, [isSeller, hasSellerOffers]);
-    const Connect = useCallback(
-      (props: Parameters<typeof ConnectButton>[0]) => {
-        return (
-          <>
-            <ConnectButton {...props} showAddress={!address} />
-            {address && showSellButton && (
+    const CTA = useCallback(() => {
+      return (
+        <>
+          {isFetching ? (
+            <BosonButton
+              variant="accentInverted"
+              style={{ height: "auto", minWidth: "200px" }}
+            >
+              <Spinner />
+            </BosonButton>
+          ) : (
+            address &&
+            showSellButton && (
               <Grid
                 flexBasis="content"
                 margin={isSideNavBar ? "0" : "0 0 0 1rem"}
@@ -319,20 +330,21 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
                     : "Sell on Boson"}
                 </BosonButton>
               </Grid>
-            )}
-          </>
-        );
-      },
+            )
+          )}
+        </>
+      );
       // eslint-disable-next-line react-hooks/exhaustive-deps
-      [
-        address,
-        isSideNavBar,
-        isSeller,
-        showSellButton,
-        sellUrl,
-        hasSellerOffers
-      ]
-    );
+    }, [
+      address,
+      isSideNavBar,
+      isSeller,
+      showSellButton,
+      hasSellerOffers,
+      sellUrl,
+      isFetching
+    ]);
+
     return (
       <>
         <Header
@@ -373,7 +385,8 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
                 >
                   {burgerMenuBreakpoint && (
                     <>
-                      <Connect />
+                      <ConnectButton showAddress={!address} />
+                      <CTA />
                       <Burger onClick={toggleMenu} />
                     </>
                   )}
@@ -384,7 +397,13 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
                     hasTopBanner={withBanner}
                   />
                   {!burgerMenuBreakpoint && (
-                    <Connect navigationBarPosition={navigationBarPosition} />
+                    <>
+                      <ConnectButton
+                        navigationBarPosition={navigationBarPosition}
+                        showAddress={!address}
+                      />
+                      <CTA />
+                    </>
                   )}
                 </HeaderItems>
               </>
