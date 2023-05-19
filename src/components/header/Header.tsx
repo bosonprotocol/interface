@@ -323,17 +323,16 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
           </>
         );
       },
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       [
         address,
         isSideNavBar,
         isSeller,
         showSellButton,
-        navigate,
         sellUrl,
         hasSellerOffers
       ]
     );
-
     return (
       <>
         <Header
