@@ -164,9 +164,10 @@ export const FieldFileUploadWrapper = styled.div<{ $disabled: boolean }>`
     width: 8rem;
     height: 8rem;
     position: absolute;
-    top: 50%;
+    top: 0;
+    /* top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%); */
     transition: all 300ms ease-in-out;
 
     background: ${colors.black}80;

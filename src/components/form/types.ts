@@ -104,4 +104,8 @@ export interface UploadProps extends BaseProps {
   onLoadSinglePreviewImage?: (base64Uri: string) => void;
   withUpload?: boolean;
   onLoading?: (loading: boolean) => void;
+  withEditor?: boolean;
+  borderRadius?: number;
+  width?: number;
+  height?: number;
 }

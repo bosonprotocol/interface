@@ -6,17 +6,12 @@ import bytesToSize from "../../../lib/utils/bytesToSize";
 import { useSaveImageToIpfs } from "../../../lib/utils/hooks/useSaveImageToIpfs";
 import { getImageMetadata } from "../../../lib/utils/images";
 import { getVideoMetadata } from "../../../lib/utils/videos";
+import { SUPPORTED_FILE_FORMATS } from "../../product/utils";
 import ErrorToast from "../../toasts/common/ErrorToast";
 import Typography from "../../ui/Typography";
 import { UploadProps } from "../types";
 
 export const MAX_FILE_SIZE = 20 * 1024 * 1024;
-export const SUPPORTED_FORMATS = [
-  "image/jpg",
-  "image/jpeg",
-  "image/gif",
-  "image/png"
-];
 
 export interface FileProps {
   src: string;
@@ -29,7 +24,7 @@ export interface FileProps {
 type UseSaveImageToIpfs = ReturnType<typeof useSaveImageToIpfs>;
 export interface WithUploadToIpfsProps {
   saveToIpfs: (
-    e: React.ChangeEvent<HTMLInputElement>
+    files: File[] | null
   ) => Promise<false | FileProps[] | undefined>;
   loadMedia: UseSaveImageToIpfs["loadMedia"];
   removeFile: UseSaveImageToIpfs["removeFile"];
@@ -45,19 +40,17 @@ export function WithUploadToIpfs<P extends WithUploadToIpfsProps>(
     const { saveFile, loadMedia, removeFile } = useSaveImageToIpfs();
 
     const saveToIpfs: WithUploadToIpfsProps["saveToIpfs"] = useCallback(
-      async (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (!e.target.files) {
+      async (filesArray: File[] | null) => {
+        if (!filesArray) {
           return;
         }
-        const { files } = e.target;
-        const filesArray = Object.values(files);
         const filesErrors: string[] = [];
 
         for (const file of filesArray) {
           const sizeValidation = Number(props.maxSize) || MAX_FILE_SIZE;
           const formatValidation = props.accept
             ? props.accept.split(",").map((acc) => acc.trim())
-            : SUPPORTED_FORMATS;
+            : SUPPORTED_FILE_FORMATS;
 
           if (file?.size > sizeValidation) {
             const err = `File ${
@@ -114,7 +107,7 @@ export function WithUploadToIpfs<P extends WithUploadToIpfsProps>(
     const newProps = useMemo(
       () => ({
         maxSize: MAX_FILE_SIZE,
-        supportFormats: SUPPORTED_FORMATS,
+        supportFormats: SUPPORTED_FILE_FORMATS,
         saveToIpfs,
         loadMedia,
         removeFile

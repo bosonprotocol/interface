@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 import { websitePattern } from "../../../../lib/validation/regex/url";
 import { FormField, Input, Select, Textarea, Upload } from "../../../form";
 import { OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE } from "../../../product/utils";
+import Grid from "../../../ui/Grid";
 
 interface Props {
   onBlurName?: () => void;
@@ -27,26 +28,33 @@ export function ProfileFormFields({
 }: Props) {
   return (
     <>
-      <FormField
-        title="Logo / Profile picture"
-        subTitle={logoSubtitle}
-        required
-      >
-        <Upload
-          name="logo"
-          multiple={false}
-          disabled={disableLogo}
-          withUpload
-        />
-      </FormField>
-      <FormField title="Cover picture" subTitle={coverSubtitle} required>
-        <Upload
-          name="coverPicture"
-          multiple={false}
-          disabled={disableCover}
-          withUpload
-        />
-      </FormField>
+      <Grid alignItems="flex-start">
+        <FormField
+          title="Logo / Profile picture"
+          subTitle={logoSubtitle}
+          required
+        >
+          <Upload
+            name="logo"
+            multiple={false}
+            disabled={disableLogo}
+            withUpload
+            withEditor
+            borderRadius={100}
+          />
+        </FormField>
+        <FormField title="Cover picture" subTitle={coverSubtitle} required>
+          <Upload
+            name="coverPicture"
+            multiple={false}
+            disabled={disableCover}
+            withUpload
+            withEditor
+            width={400}
+            height={200}
+          />
+        </FormField>
+      </Grid>
       <FormField title="Your brand / name" required>
         <Input
           name="name"

@@ -6,6 +6,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { colors } from "../../../lib/styles/colors";
 import { loadAndSetMedia } from "../../../lib/utils/base64";
 import bytesToSize from "../../../lib/utils/bytesToSize";
+import { ImageEditorModal } from "../../modal/components/ImageEditorModal/ImageEditorModal";
+import { useModal } from "../../modal/useModal";
 import BosonButton from "../../ui/BosonButton";
 import Loading from "../../ui/Loading";
 import Typography from "../../ui/Typography";
@@ -42,8 +44,14 @@ function Upload({
   saveToIpfs,
   loadMedia,
   onLoading,
+  withEditor,
+  borderRadius,
+  width,
+  height,
   ...props
 }: UploadProps & WithUploadToIpfsProps) {
+  const { updateProps, store } = useModal();
+  const [showEditor, setShowEditor] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [preview, setPreview] = useState<string | null>();
   const [field, meta, helpers] = useField(name);
@@ -61,6 +69,7 @@ function Upload({
     typeof errorMessage === typeof "string" && errorMessage !== "";
 
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const [nativeFiles, setNativeFiles] = useState<File[] | null>(null);
   const setFiles = useCallback(
     (value: unknown) => {
       helpers.setValue(value);
@@ -172,34 +181,35 @@ function Upload({
     setFiles(newArray);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!meta.touched) {
-      helpers.setTouched(true);
-    }
+  const handleChange = useCallback(
+    async (filesArray: File[] | null) => {
+      if (!meta.touched) {
+        helpers.setTouched(true);
+      }
 
-    if (!e.target.files) {
-      return;
-    }
-    const { files } = e.target;
-    const filesArray = Object.values(files);
-    for (const file of filesArray) {
-      if (maxSize) {
-        if (file.size > maxSize) {
-          const error = `File size cannot exceed more than ${bytesToSize(
-            maxSize
-          )}`;
-          // TODO: change to notification
-          console.error(error);
+      if (!filesArray) {
+        return;
+      }
+      for (const file of filesArray) {
+        if (maxSize) {
+          if (file.size > maxSize) {
+            const error = `File size cannot exceed more than ${bytesToSize(
+              maxSize
+            )}`;
+            // TODO: change to notification
+            console.error(error);
+          }
         }
       }
-    }
-    setFiles(filesArray);
-  };
+      setFiles(filesArray);
+    },
+    [helpers, maxSize, meta.touched, setFiles]
+  );
 
   const handleSave = useCallback(
-    async (e: React.ChangeEvent<HTMLInputElement>) => {
+    async (efiles: File[] | null) => {
       handleLoading(true);
-      const files = await saveToIpfs(e);
+      const files = await saveToIpfs(efiles);
       if (files) {
         setFiles(files);
       } else {
@@ -208,9 +218,36 @@ function Upload({
     },
     [saveToIpfs, setFiles, handleLoading]
   );
-
+  const saveFn = withUpload ? handleSave : handleChange;
+  const style = {
+    borderRadius: borderRadius ? `${borderRadius}%` : "",
+    width: width ? `${width}px` : "",
+    height: height ? `${height}px` : ""
+  };
   return (
     <>
+      {withEditor && showEditor && (
+        <ImageEditorModal
+          files={nativeFiles}
+          borderRadius={borderRadius}
+          width={width}
+          height={height}
+          hideModal={async (fileList) => {
+            if (fileList) {
+              await saveFn(fileList);
+            }
+
+            setShowEditor(false);
+            updateProps({
+              ...store,
+              modalType: store.modalType,
+              modalProps: {
+                hidden: false
+              }
+            });
+          }}
+        />
+      )}
       <FieldFileUploadWrapper {...wrapperProps} $disabled={!!disabled}>
         <FieldInput
           {...props}
@@ -218,7 +255,25 @@ function Upload({
           type="file"
           accept={accept}
           multiple={multiple}
-          onChange={withUpload ? handleSave : handleChange}
+          onChange={async (e) => {
+            const files = e.target.files
+              ? Object.values(e.target.files)
+              : e.target.files;
+
+            if (files && withEditor) {
+              setNativeFiles(files);
+              updateProps({
+                ...store,
+                modalType: store.modalType,
+                modalProps: {
+                  hidden: true
+                }
+              });
+              setShowEditor(true);
+            } else {
+              await saveFn(files);
+            }
+          }}
           ref={(ref) => {
             inputRef.current = ref;
           }}
@@ -238,6 +293,7 @@ function Upload({
             data-disabled={disabled}
             onClick={handleChooseFile}
             error={errorMessage}
+            style={style}
           >
             {isLoading ? (
               <Loading size={2} />
@@ -276,7 +332,7 @@ function Upload({
           </FileUploadWrapper>
         )}
         {!disabled && field.value && field.value?.length !== 0 && preview && (
-          <div onClick={handleRemoveAllFiles} data-remove>
+          <div onClick={handleRemoveAllFiles} data-remove style={style}>
             <Trash size={24} color={colors.white} />
           </div>
         )}

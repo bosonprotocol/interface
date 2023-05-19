@@ -15,6 +15,7 @@ export type ModalProps = {
   headerComponent?: ReactNode;
   hideModal?: () => void;
   closable?: boolean;
+  hidden?: boolean;
 };
 export type ModalType = keyof typeof MODAL_TYPES | null;
 type ModalSize = "xxs" | "xs" | "s" | "m" | "l" | "xl";
