@@ -34,8 +34,8 @@ export default function NotifiModal() {
   };
 
   const notifiConfig = {
-    // dappId: "junitest.xyz",
-    dappId: "testludobosondapp",
+    // dappId: "testludobosondapp",
+    dappId: "junitest.xyz",
     // cardId: "db7bdfd7b72d427ea2c8840785cfa0b4"
     cardId: "f94c8ab903d849e2b70204c4357372cc"
   };
