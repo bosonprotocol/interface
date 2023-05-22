@@ -1,4 +1,3 @@
-import Avatar from "@davatar/react";
 import { BigNumber } from "ethers";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
@@ -32,17 +31,14 @@ import useSellerNumbers from "../../../lib/utils/hooks/useSellerNumbers";
 import { useSellers } from "../../../lib/utils/hooks/useSellers";
 import { getLensImageUrl } from "../../../lib/utils/images";
 import NotFound from "../../not-found/NotFound";
-import backgroundFluid from "../common/background-img.png";
 import ReadMore from "../common/ReadMore";
 import {
   AddressContainer,
-  AvatarContainer,
   AvatarEmptySpace,
-  BannerImage,
-  BannerImageLayer,
   BasicInfo,
   ProfileSectionWrapper
 } from "../ProfilePage.styles";
+import SellerImagesSection from "./SellerImagesSection";
 import SellerSocial from "./SellerSocial";
 import Tabs from "./Tabs";
 
@@ -234,30 +230,11 @@ export default function Seller() {
   return (
     <>
       <BasicInfo>
-        <ProfileSectionWrapper>
-          <BannerImage src={coverImage || backgroundFluid} />
-          <BannerImageLayer>
-            <AvatarContainer>
-              {profileImage ? (
-                <StyledImage
-                  src={profileImage}
-                  style={{
-                    width: "160px !important",
-                    height: "160px !important",
-                    paddingTop: "0",
-                    borderRadius: "50%",
-                    backgroundColor: "var(--primaryBgColor)"
-                  }}
-                />
-              ) : (
-                <Avatar
-                  address={currentSellerAddress}
-                  size={!isLteXS ? 160 : 80}
-                />
-              )}
-            </AvatarContainer>
-          </BannerImageLayer>
-        </ProfileSectionWrapper>
+        <SellerImagesSection
+          coverImage={coverImage}
+          profileImage={profileImage}
+          address={currentSellerAddress}
+        />
 
         <ProfileSectionWrapper>
           <Grid justifyContent="space-between" alignItems="flex-start">

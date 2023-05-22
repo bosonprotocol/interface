@@ -3,6 +3,7 @@ import AvatarEditor, { AvatarEditorProps } from "react-avatar-editor";
 import Dropzone from "react-dropzone";
 
 import { useIpfsImage } from "../../../lib/utils/hooks/images/useIpfsImage";
+import Grid from "../../ui/Grid";
 
 export type ImageEditorProps = Pick<
   AvatarEditorProps,
@@ -20,18 +21,23 @@ export const ImageEditor = forwardRef<AvatarEditor, ImageEditorProps>(
     };
     const { data } = useIpfsImage({ url: url ?? "" }, { enabled: !!url });
     const image = data?.base64;
+    const w = borderRadius
+      ? undefined
+      : Math.min(width || Number.MAX_SAFE_INTEGER, window.innerWidth);
     return (
       <>
         {image && (
-          <>
+          <div style={{ margin: "2rem 0" }}>
             <Dropzone
+              data-dropzone
               noClick
               noKeyboard
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               // @ts-ignore
               style={{
-                width: width ? width + "px" : "250px",
-                height: height ? height + "px" : "250px",
+                // width: w ? w + "px" : "250px",
+                // width: "100%",
+                // height: height ? height + "px" : "250px",
                 borderRadius: borderRadius ? `${borderRadius}%` : ""
               }}
             >
@@ -40,7 +46,7 @@ export const ImageEditor = forwardRef<AvatarEditor, ImageEditorProps>(
                   <AvatarEditor
                     image={image}
                     ref={editorRef}
-                    width={width}
+                    width={w}
                     height={height}
                     scale={scale}
                     borderRadius={borderRadius}
@@ -49,19 +55,19 @@ export const ImageEditor = forwardRef<AvatarEditor, ImageEditorProps>(
                 </div>
               )}
             </Dropzone>
-            <div>
-              Zoom:{" "}
+            <Grid alignItems="center" justifyContent="center">
+              Zoom:
               <input
                 name="scale"
                 type="range"
                 onChange={handleScale}
-                min={"1"}
+                min={"0.1"}
                 max="2"
                 step="0.01"
                 defaultValue="1"
               />
-            </div>
-          </>
+            </Grid>
+          </div>
         )}
       </>
     );

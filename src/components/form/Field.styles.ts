@@ -149,9 +149,7 @@ export const FieldFileUploadWrapper = styled.div<{ $disabled: boolean }>`
       : css`
           cursor: pointer;
         `}
-
-  width: 8rem;
-
+  width: 100%;
   :hover {
     [data-remove] {
       display: flex;

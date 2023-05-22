@@ -1,5 +1,5 @@
 import { Dayjs } from "dayjs";
-import { ReactNode } from "react";
+import { CSSProperties, ReactNode } from "react";
 import { SingleValue } from "react-select";
 
 import { UploadFileType } from "./Upload/Upload";
@@ -108,4 +108,5 @@ export interface UploadProps extends BaseProps {
   borderRadius?: number;
   width?: number;
   height?: number;
+  imgPreviewStyle?: Pick<CSSProperties, "objectFit">;
 }

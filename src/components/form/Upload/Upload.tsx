@@ -48,6 +48,7 @@ function Upload({
   borderRadius,
   width,
   height,
+  imgPreviewStyle,
   ...props
 }: UploadProps & WithUploadToIpfsProps) {
   const { updateProps, store } = useModal();
@@ -221,8 +222,7 @@ function Upload({
   const saveFn = withUpload ? handleSave : handleChange;
   const style = {
     borderRadius: borderRadius ? `${borderRadius}%` : "",
-    width: width ? `${width}px` : "",
-    height: height ? `${height}px` : ""
+    width: width ? `100%` : ""
   };
   return (
     <>
@@ -314,7 +314,10 @@ function Upload({
                         loop
                       />
                     ) : (
-                      <ImagePreview src={preview} />
+                      <ImagePreview
+                        style={{ ...imgPreviewStyle }}
+                        src={preview}
+                      />
                     )}
                   </>
                 ) : isVideoOnly ? (

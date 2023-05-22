@@ -1,9 +1,27 @@
+import { useFormikContext } from "formik";
 import { ReactNode } from "react";
+import styled from "styled-components";
+import { useAccount } from "wagmi";
 
+import { getIpfsGatewayUrl } from "../../../../lib/utils/ipfs";
 import { websitePattern } from "../../../../lib/validation/regex/url";
+import SellerImagesSection from "../../../../pages/profile/seller/SellerImagesSection";
 import { FormField, Input, Select, Textarea, Upload } from "../../../form";
-import { OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE } from "../../../product/utils";
+import {
+  CreateProfile,
+  OPTIONS_CHANNEL_COMMUNICATIONS_PREFERENCE
+} from "../../../product/utils";
 import Grid from "../../../ui/Grid";
+import GridContainer from "../../../ui/GridContainer";
+
+const SellerImagesSectionContainer = styled.div`
+  position: relative;
+  width: 100%;
+  margin-bottom: 4.5rem;
+  [data-cover-img] {
+    object-fit: contain;
+  }
+`;
 
 interface Props {
   onBlurName?: () => void;
@@ -26,9 +44,21 @@ export function ProfileFormFields({
   disableName,
   disableDescription
 }: Props) {
+  const { address = "" } = useAccount();
+  const { values } = useFormikContext<CreateProfile>();
+  const profileImage = getIpfsGatewayUrl(values.logo?.[0]?.src ?? "");
+  const coverPicture = getIpfsGatewayUrl(values.coverPicture?.[0]?.src ?? "");
   return (
     <>
-      <Grid alignItems="flex-start">
+      <GridContainer
+        itemsPerRow={{
+          xs: 1,
+          s: 2,
+          m: 2,
+          l: 2,
+          xl: 2
+        }}
+      >
         <FormField
           title="Logo / Profile picture"
           subTitle={logoSubtitle}
@@ -50,9 +80,21 @@ export function ProfileFormFields({
             disabled={disableCover}
             withUpload
             withEditor
-            width={400}
-            height={200}
+            width={1531}
+            height={190}
+            imgPreviewStyle={{ objectFit: "contain" }}
           />
+        </FormField>
+      </GridContainer>
+      <Grid>
+        <FormField title="Preview">
+          <SellerImagesSectionContainer>
+            <SellerImagesSection
+              address={address}
+              profileImage={profileImage}
+              coverImage={coverPicture}
+            />
+          </SellerImagesSectionContainer>
         </FormField>
       </Grid>
       <FormField title="Your brand / name" required>
