@@ -133,6 +133,7 @@ const NavigationLinks = styled.div<{
 const Links = styled.div<{ isMobile: boolean; $navigationBarPosition: string }>`
   display: flex;
   justify-content: end;
+  gap: 1rem;
   flex-direction: ${({ isMobile, $navigationBarPosition }) =>
     isMobile || ["left", "right"].includes($navigationBarPosition)
       ? "column"

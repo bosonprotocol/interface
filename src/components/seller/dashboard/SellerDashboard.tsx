@@ -143,7 +143,7 @@ export default function SellerDashboard({
   return (
     <>
       <Grid gap="2rem" flexDirection="column" alignItems="stretch">
-        {offersBacked?.displayWarning && (
+        {(offersBacked?.displayWarning || true) && (
           <SellerInner
             padding="1.5rem"
             background={colors.black}
@@ -162,6 +162,7 @@ export default function SellerDashboard({
               <Grid justifyContent="flex-end" alignItems="center">
                 <BosonButton
                   variant="primaryFill"
+                  style={{ whiteSpace: "pre" }}
                   onClick={() => {
                     const pathname = generatePath(
                       SellerCenterRoutes.SellerCenter,

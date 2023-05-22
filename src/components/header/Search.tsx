@@ -97,6 +97,7 @@ export default function Search({ isMobile, navigationBarPosition }: Props) {
         onKeyDown={handleKeyDown}
         value={name}
         placeholder="Search"
+        style={{ flex: "1" }}
       />
       {isMobile && (
         <BosonButton onClick={navigateToExplore} variant="primaryFill">
