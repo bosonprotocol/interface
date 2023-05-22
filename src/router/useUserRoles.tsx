@@ -22,7 +22,15 @@ export default function useUserRoles({ role }: Props) {
     refetch,
     buyer: { buyerId }
   } = useBuyerSellerAccounts(address || "");
-  const { sellerIds, isFetched, isFetching } = useCurrentSellers();
+  const {
+    sellerIds,
+    isFetched,
+    isFetching,
+    isError,
+    isLoading,
+    isRefetching,
+    isSuccess
+  } = useCurrentSellers();
   const sellerId = useMemo(() => sellerIds?.[0], [sellerIds]);
 
   useEffect(() => {
@@ -55,6 +63,10 @@ export default function useUserRoles({ role }: Props) {
     sellerId,
     buyerId,
     isFetched,
-    isFetching
+    isFetching,
+    isError,
+    isLoading,
+    isRefetching,
+    isSuccess
   };
 }

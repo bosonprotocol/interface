@@ -113,7 +113,7 @@ const NavigationLinks = styled.div<{
               a,
               [data-anchor] {
                 justify-content: center;
-                padding: 1rem;
+                padding: 1rem 0;
               }
             `;
           }}
