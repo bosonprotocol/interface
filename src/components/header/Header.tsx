@@ -18,7 +18,6 @@ import { UserRoles } from "../../router/routes";
 import useUserRoles, { checkIfUserHaveRole } from "../../router/useUserRoles";
 import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
 import Layout from "../Layout";
-import { useModal } from "../modal/useModal";
 import BosonButton from "../ui/BosonButton";
 import Grid from "../ui/Grid";
 import ConnectButton from "./ConnectButton";
@@ -280,8 +279,6 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
       checkIfUserHaveRole(roles, [UserRoles.Guest, UserRoles.Seller], false) &&
       !isCustomStoreFront;
 
-    const { showModal, modalTypes } = useModal();
-
     const sellUrl = useMemo(() => {
       return getSellLink({
         isAccountSeller: isSeller
@@ -289,22 +286,9 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
     }, [isSeller]);
     const Connect = useCallback(
       (props: Parameters<typeof ConnectButton>[0]) => {
-        const setShowNotifiModal = () => {
-          showModal(
-            modalTypes.NOTIFI,
-            {
-              title: `Notifi`
-            },
-            "auto"
-          );
-        };
         return (
           <>
-            <ConnectButton
-              setShowNotifiModal={setShowNotifiModal}
-              {...props}
-              showAddress={!address}
-            />
+            <ConnectButton {...props} showAddress={!address} />
             {address && showSellButton && (
               <Grid
                 flexBasis="content"
@@ -325,16 +309,7 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
           </>
         );
       },
-      [
-        address,
-        isSideNavBar,
-        modalTypes.NOTIFI,
-        showModal,
-        isSeller,
-        showSellButton,
-        navigate,
-        sellUrl
-      ]
+      [address, isSideNavBar, isSeller, showSellButton, navigate, sellUrl]
     );
 
     return (

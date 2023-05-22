@@ -3,6 +3,7 @@ import { Route, Routes, useLocation, useParams } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
 import { useAccount } from "wagmi";
 
+import { useModal } from "../../components/modal/useModal";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
@@ -128,6 +129,17 @@ export default function Chat() {
   const [previousPath, setPreviousPath] = useState<string>("");
   const navigate = useKeepQueryParamsNavigate();
   const { isXXS, isXS, isS } = useBreakpoints();
+  const { showModal, modalTypes } = useModal();
+
+  const setShowNotifiModal = () => {
+    showModal(
+      modalTypes.NOTIFI,
+      {
+        title: `Notifi`
+      },
+      "auto"
+    );
+  };
 
   // select thread based on url /exchangeId
   useEffect(() => {
@@ -207,6 +219,8 @@ export default function Chat() {
           chatListOpen={chatListOpen}
           setChatListOpen={setChatListOpen}
           currentExchange={selectedExchange}
+          address={address}
+          setShowNotifiModal={setShowNotifiModal}
         />
 
         {exchangeIdNotOwned ? (

@@ -1,7 +1,6 @@
 import { ButtonSize } from "@bosonprotocol/react-kit";
 import { ConnectButton as RainbowConnectButton } from "@rainbow-me/rainbowkit";
 import * as Sentry from "@sentry/browser";
-import { BellRinging } from "phosphor-react";
 import styled from "styled-components";
 
 import metamaskLogo from "../../../src/assets/metamask-logo.svg";
@@ -25,15 +24,11 @@ const ENSAvatar = styled.img`
 interface Props {
   navigationBarPosition?: string;
   showAddress?: boolean;
-  setShowNotifiModal?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function ConnectButton({
   navigationBarPosition = "",
   showAddress = true,
-  setShowNotifiModal = () => {
-    console.log("click Notifi");
-  },
   ...rest
 }: Props) {
   const { isLteXS } = useBreakpoints();
@@ -144,16 +139,6 @@ export default function ConnectButton({
                     )}
                     {showAddress && account.displayName}
                   </Button>
-                  <BellRinging
-                    onClick={() => setShowNotifiModal(true)}
-                    style={{
-                      cursor: "pointer",
-                      whiteSpace: "pre",
-                      ...buttonPropsWhenSideBar,
-                      color: "inherit",
-                      ...(!showAddress && { borderColor: "transparent" })
-                    }}
-                  ></BellRinging>
                 </div>
               );
             })()}

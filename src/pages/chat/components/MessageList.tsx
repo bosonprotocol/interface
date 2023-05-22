@@ -1,4 +1,4 @@
-import { ArrowLeft } from "phosphor-react";
+import { ArrowLeft, BellRinging } from "phosphor-react";
 import { useEffect, useState } from "react";
 import { generatePath } from "react-router-dom";
 import styled from "styled-components";
@@ -133,6 +133,25 @@ const MessageInfo = styled.div`
   }
 `;
 
+const PageTitle = styled.div`
+  display: flex;
+  flex-direction: row;
+  column-gap: 0.5rem;
+  ${breakpoint.xxs} {
+    font-size: 1rem;
+  }
+  ${breakpoint.l} {
+    font-size: 1rem;
+  }
+  ${breakpoint.xl} {
+    font-size: 1.5rem;
+  }
+`;
+
+const NotifiIcon = styled.div`
+  cursor: pointer;
+`;
+
 interface Props {
   myBuyerId: string;
   mySellerId: string;
@@ -143,6 +162,8 @@ interface Props {
   isConversationOpened: boolean;
   setChatListOpen: (p: boolean) => void;
   prevPath: string;
+  address?: string;
+  setShowNotifiModal?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const getMessageItemKey = (exchange: Exchange) => exchange.id;
@@ -156,7 +177,11 @@ export default function MessageList({
   currentExchange,
   isConversationOpened,
   setChatListOpen,
-  prevPath
+  prevPath,
+  address,
+  setShowNotifiModal = () => {
+    console.log("click Notifi");
+  }
 }: Props) {
   const [activeMessageKey, setActiveMessageKey] = useState<string>(
     currentExchange ? getMessageItemKey(currentExchange) : ""
@@ -204,7 +229,16 @@ export default function MessageList({
             </div>
           </BackToSellerCenterButton>
         )}
-        Messages
+        <PageTitle>
+          Messages
+          {address && (
+            <NotifiIcon>
+              <BellRinging
+                onClick={() => setShowNotifiModal(true)}
+              ></BellRinging>
+            </NotifiIcon>
+          )}
+        </PageTitle>
       </Header>
       <ExchangesThreads>
         {exchanges
