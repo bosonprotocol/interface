@@ -143,14 +143,14 @@ export default function SellerDashboard({
   return (
     <>
       <Grid gap="2rem" flexDirection="column" alignItems="stretch">
-        {(offersBacked?.displayWarning || true) && (
+        {offersBacked?.displayWarning && (
           <SellerInner
             padding="1.5rem"
             background={colors.black}
             color={colors.white}
           >
             <Grid justifyContent="space-between" alignItems="center">
-              <div>
+              <div style={{ flex: "1 1 100%" }}>
                 <Typography tag="h4" padding="0">
                   Top up your seller deposit pool!
                 </Typography>
@@ -159,7 +159,13 @@ export default function SellerDashboard({
                   are insufficient funds in your seller pool.
                 </Typography>
               </div>
-              <Grid justifyContent="flex-end" alignItems="center">
+              <Grid
+                justifyContent="flex-end"
+                alignItems="center"
+                flexGrow="0"
+                flexShrink="1"
+                flexBasis="0%"
+              >
                 <BosonButton
                   variant="primaryFill"
                   style={{ whiteSpace: "pre" }}
