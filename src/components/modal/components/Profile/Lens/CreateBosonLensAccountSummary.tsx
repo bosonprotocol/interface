@@ -282,7 +282,7 @@ export default function CreateBosonLensAccountSummary({
                       $fontSize="0.75rem"
                       lineHeight="1.125rem"
                     >
-                      Website / Social media link
+                      Website / Social media link *
                     </Typography>
                     <Typography
                       fontWeight="400"

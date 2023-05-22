@@ -140,7 +140,7 @@ export const getSellRoutes = ({
     isAccountSeller
   ) {
     productRoutes.push({
-      name: "Seller Dashboard",
+      name: "Seller Center",
       url: generatePath(SellerCenterRoutes.SellerCenter, {
         [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
       })

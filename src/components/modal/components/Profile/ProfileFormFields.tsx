@@ -99,6 +99,7 @@ export function ProfileFormFields({
             receiving inquiries from buyers about their order status.)
           </>
         }
+        required
       >
         <Select
           placeholder="Choose a communication channel..."
