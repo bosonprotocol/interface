@@ -1,3 +1,4 @@
+import { ButtonSize } from "@bosonprotocol/react-kit";
 import { X } from "phosphor-react";
 import { forwardRef, useCallback, useEffect, useMemo, useState } from "react";
 import { generatePath, useLocation } from "react-router-dom";
@@ -14,8 +15,7 @@ import { useOffers } from "../../lib/utils/hooks/offers";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
-import { UserRoles } from "../../router/routes";
-import useUserRoles, { checkIfUserHaveRole } from "../../router/useUserRoles";
+import useUserRoles from "../../router/useUserRoles";
 import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
 import Layout from "../Layout";
 import { Spinner } from "../loading/Spinner";
@@ -192,6 +192,7 @@ const HeaderItems = styled.nav<{
   fluidHeader?: boolean;
   $navigationBarPosition: string;
 }>`
+  gap: 1rem;
   ${({ $navigationBarPosition, fluidHeader }) => {
     if (["left", "right"].includes($navigationBarPosition)) {
       return css`
@@ -237,7 +238,7 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
     const navigate = useKeepQueryParamsNavigate();
     const [isOpen, setOpen] = useState(false);
     const { pathname, search } = useLocation();
-    const { isLteS, isLteM, isM } = useBreakpoints();
+    const { isLteS, isLteM, isM, isLteXS } = useBreakpoints();
     const logoUrl = useCustomStoreQueryParameter("logoUrl");
     const navigationBarPosition = useCustomStoreQueryParameter(
       "navigationBarPosition"
@@ -262,7 +263,7 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
         setOpen(true);
       }
     }, [isLteM, isM, isOpen, setOpen, isSideNavBar]);
-    const { roles, sellerId, isFetched, isFetching } = useUserRoles({
+    const { sellerId, isFetching } = useUserRoles({
       role: []
     });
     const isSeller = !!sellerId;
@@ -273,22 +274,9 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
       }
     );
     const hasSellerOffers = !!sellerOffers?.length;
-    const supportFunctionality = useCustomStoreQueryParameter<
-      ("buyer" | "seller" | "dr")[]
-    >("supportFunctionality", { parseJson: true });
     const isCustomStoreFront =
       useCustomStoreQueryParameter("isCustomStoreFront");
-    const onlyBuyer =
-      typeof supportFunctionality != "string" &&
-      supportFunctionality?.length === 1 &&
-      supportFunctionality?.[0] === "buyer";
-    const isSupportFunctionalityDefined = supportFunctionality !== "";
-    const showSellButton =
-      ((isSupportFunctionalityDefined && !onlyBuyer) ||
-        !isSupportFunctionalityDefined) &&
-      checkIfUserHaveRole(roles, [UserRoles.Guest, UserRoles.Seller], false) &&
-      !isCustomStoreFront &&
-      isFetched;
+    const showSellButton = !isCustomStoreFront;
 
     const sellUrl = useMemo(() => {
       if (isSeller && hasSellerOffers) {
@@ -302,23 +290,22 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
       return (
         <>
           {isFetching ? (
-            <BosonButton
-              variant="accentInverted"
-              style={{ height: "auto", minWidth: "200px" }}
-            >
+            <BosonButton variant="accentInverted">
               <Spinner />
             </BosonButton>
           ) : (
-            address &&
             showSellButton && (
               <Grid
                 flexBasis="content"
-                margin={isSideNavBar ? "0" : "0 0 0 1rem"}
                 {...(isSideNavBar && { justifyContent: "center" })}
               >
                 <BosonButton
                   variant="accentInverted"
-                  style={{ height: "auto", minWidth: "200px" }}
+                  style={{
+                    whiteSpace: "pre",
+                    marginLeft: isLteXS ? "1rem" : ""
+                  }}
+                  size={isLteXS ? ButtonSize.Small : ButtonSize.Medium}
                   onClick={() => {
                     navigate({ pathname: sellUrl });
                   }}
@@ -336,13 +323,13 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
       );
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
-      address,
       isSideNavBar,
       isSeller,
       showSellButton,
       hasSellerOffers,
       sellUrl,
-      isFetching
+      isFetching,
+      isLteXS
     ]);
 
     return (
@@ -385,8 +372,8 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
                 >
                   {burgerMenuBreakpoint && (
                     <>
-                      <ConnectButton showAddress={!address} />
                       <CTA />
+                      <ConnectButton showAddress={!address} />
                       <Burger onClick={toggleMenu} />
                     </>
                   )}
@@ -398,11 +385,11 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
                   />
                   {!burgerMenuBreakpoint && (
                     <>
+                      <CTA />
                       <ConnectButton
                         navigationBarPosition={navigationBarPosition}
                         showAddress={!address}
                       />
-                      <CTA />
                     </>
                   )}
                 </HeaderItems>

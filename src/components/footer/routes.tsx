@@ -124,23 +124,18 @@ export const getSellRoutes = ({
 }) => {
   const isAccountSeller = roles.some((role) => role === UserRoles.Seller);
   const productRoutes: { name: string; url: string }[] = [];
+
+  productRoutes.push({
+    name: "Create Products",
+    url: SellerCenterRoutes.CreateProduct
+  });
   if (
     (!isSupportFunctionalityDefined ||
       (isSupportFunctionalityDefined && (!onlyBuyer || onlySeller))) &&
     isAccountSeller
   ) {
     productRoutes.push({
-      name: "Create Products",
-      url: SellerCenterRoutes.CreateProduct
-    });
-  }
-  if (
-    (!isSupportFunctionalityDefined ||
-      (isSupportFunctionalityDefined && (!onlyBuyer || onlySeller))) &&
-    isAccountSeller
-  ) {
-    productRoutes.push({
-      name: "Seller Dashboard",
+      name: "Seller Center",
       url: generatePath(SellerCenterRoutes.SellerCenter, {
         [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
       })

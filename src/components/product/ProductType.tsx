@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { ConnectButton as RainbowConnectButton } from "@rainbow-me/rainbowkit";
 import * as Sentry from "@sentry/browser";
 import { useField } from "formik";
 import { useCallback, useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
@@ -113,6 +116,7 @@ export default function ProductType({
   showInvalidRoleModal,
   isDraftModalClosed
 }: Props) {
+  const { openConnectModal } = useConnectModal();
   const { address } = useAccount();
   const { handleChange, values, nextIsDisabled } = useCreateForm();
   const [createYourProfile, metaCreateYourProfile, helpersCreateYourProfile] =
@@ -322,9 +326,36 @@ export default function ProductType({
     isSuccess,
     values.createYourProfile
   ]);
-
+  const [wasConnectModalOpen, setWasConnectModalOpen] =
+    useState<boolean>(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { state } = location;
+  const prevPath = (state as { prevPath: string })?.prevPath;
+  useEffect(() => {
+    if (!address && openConnectModal) {
+      openConnectModal();
+      setWasConnectModalOpen(true);
+    }
+  }, [address, openConnectModal]);
   if (!address) {
-    return <Navigate to={{ pathname: BosonRoutes.Root }} />;
+    return (
+      <>
+        <Typography>Please connect your wallet</Typography>
+        <RainbowConnectButton.Custom>
+          {({ connectModalOpen }) => {
+            if (wasConnectModalOpen && !connectModalOpen) {
+              if (prevPath && prevPath !== "/sell/create-product") {
+                navigate(-1);
+              } else {
+                return <Navigate to={{ pathname: BosonRoutes.Root }} />;
+              }
+            }
+            return <></>;
+          }}
+        </RainbowConnectButton.Custom>
+      </>
+    );
   }
 
   return (

@@ -13,9 +13,9 @@ export const CoreTermsOfSaleDates: React.FC<CoreTermsOfSaleDatesProps> = ({
   return (
     <>
       <FormField
-        title="Offer Validity period"
+        title="Offer validity period"
         required
-        subTitle="The Offer validity period is the time in which buyers can commit to your offer."
+        subTitle="The offer validity period is the time in which buyers can commit to your offer."
       >
         <Datepicker
           name={`${fixedPrefix}offerValidityPeriod`}
@@ -27,7 +27,7 @@ export const CoreTermsOfSaleDates: React.FC<CoreTermsOfSaleDatesProps> = ({
       <FormField
         title="Redemption period"
         required
-        subTitle="Redemption period is the time in which buyers can redeem the rNFT for the physical item."
+        subTitle="The redemption period is the time in which buyers can redeem the rNFT for the physical item."
       >
         <Datepicker
           name={`${fixedPrefix}redemptionPeriod`}

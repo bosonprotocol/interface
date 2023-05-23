@@ -92,7 +92,7 @@ const AddAttributesContainer = ({
                       </div>
                       <div>
                         <Input
-                          placeholder="Attribute Value"
+                          placeholder="Attribute value"
                           name={`productInformation.attributes[${key}].value`}
                         />
                       </div>
@@ -103,7 +103,7 @@ const AddAttributesContainer = ({
 
               <Error
                 display={hasDuplicated}
-                message={"You can’t have duplicate attributes!"}
+                message={"You can't have duplicate attributes!"}
               />
               {!checkLastElementIsPristine(elements) && (
                 <Button
@@ -131,7 +131,7 @@ export default function ProductInformation() {
     <ContainerProductPage>
       <SectionTitle tag="h2">Product Information</SectionTitle>
       <FormField
-        title="Product Title"
+        title="Product title"
         required
         subTitle="Use words people would search for when looking for your item."
       >
@@ -164,7 +164,7 @@ export default function ProductInformation() {
         />
       </FormField>
       <FormField
-        title="Search Tags"
+        title="Search tags"
         required
         subTitle="Input any relevant tags to make your offer stand out."
       >
