@@ -23,6 +23,7 @@ export interface FileProps {
 }
 type UseSaveImageToIpfs = ReturnType<typeof useSaveImageToIpfs>;
 export interface WithUploadToIpfsProps {
+  supportFormats: string[];
   saveToIpfs: (
     files: File[] | null
   ) => Promise<false | FileProps[] | undefined>;

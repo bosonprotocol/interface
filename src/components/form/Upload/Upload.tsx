@@ -49,6 +49,7 @@ function Upload({
   width,
   height,
   imgPreviewStyle,
+  supportFormats,
   ...props
 }: UploadProps & WithUploadToIpfsProps) {
   const { updateProps, store } = useModal();
@@ -214,8 +215,12 @@ function Upload({
       if (files) {
         setFiles(files);
       } else {
-        console.warn(`files ${files} is falsy in handleSave`);
+        setFiles([]);
+        console.warn(
+          `There has been an error because 'files' ${files} is falsy in handleSave`
+        );
       }
+      handleLoading(false);
     },
     [saveToIpfs, setFiles, handleLoading]
   );
@@ -253,7 +258,7 @@ function Upload({
           {...props}
           hidden
           type="file"
-          accept={accept}
+          accept={supportFormats.length ? supportFormats.join(",") : accept}
           multiple={multiple}
           onChange={async (e) => {
             const files = e.target.files
