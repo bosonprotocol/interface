@@ -263,6 +263,7 @@ interface Props {
   size: NonNullable<Store["modalSize"]>;
   maxWidths: Store["modalMaxWidth"];
   theme: NonNullable<Store["theme"]>;
+  hidden?: boolean;
   closable?: boolean;
 }
 
@@ -275,6 +276,7 @@ export default function Modal({
   maxWidths,
   theme,
   closable = true,
+  hidden,
   modalType
 }: Props) {
   const handleOnClose = () => {
@@ -283,7 +285,7 @@ export default function Modal({
     }
   };
   return createPortal(
-    <Root data-testid="modal">
+    <Root data-testid="modal" style={{ display: hidden ? "none" : "" }}>
       <Wrapper
         $size={size}
         $modalType={modalType}

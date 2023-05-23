@@ -13,6 +13,7 @@ import DisputeResolverRefuseModal from "./components/DisputeResolver/DisputeReso
 import ExchangePolicyDetailsModal from "./components/ExchangePolicyDetails";
 import ExpireVoucherModal from "./components/ExpireVoucherModal";
 import ExportExchangesWithDeliveryModal from "./components/ExportExchangesWithDeliveryModal";
+import { ImageEditorModal } from "./components/ImageEditorModal/ImageEditorModal";
 import InvalidRoleModal from "./components/InvalidRoleModal";
 import ManageFunds from "./components/ManageFunds";
 import ProductCreateSuccess from "./components/ProductCreateSuccess";
@@ -70,7 +71,8 @@ export const MODAL_TYPES = {
   PROGRESS_BAR: "PROGRESS_BAR",
   EXPORT_EXCHANGES_WITH_DELIVERY: "EXPORT_EXCHANGES_WITH_DELIVERY",
   RELIST_OFFER: "RELIST_OFFER",
-  PROFILE_DETAILS: "PROFILE_DETAILS"
+  PROFILE_DETAILS: "PROFILE_DETAILS",
+  IMAGE_EDITOR: "IMAGE_EDITOR"
 } as const;
 
 export const MODAL_COMPONENTS = {
@@ -109,5 +111,6 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.EXPORT_EXCHANGES_WITH_DELIVERY]:
     ExportExchangesWithDeliveryModal,
   [MODAL_TYPES.RELIST_OFFER]: RelistOfferModal,
-  [MODAL_TYPES.PROFILE_DETAILS]: ProfileDetailsModal
+  [MODAL_TYPES.PROFILE_DETAILS]: ProfileDetailsModal,
+  [MODAL_TYPES.IMAGE_EDITOR]: ImageEditorModal
 } as const;
