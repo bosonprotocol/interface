@@ -258,7 +258,7 @@ function Upload({
           {...props}
           hidden
           type="file"
-          accept={supportFormats.length ? supportFormats.join(",") : accept}
+          accept={supportFormats?.length ? supportFormats?.join(",") : accept}
           multiple={multiple}
           onChange={async (e) => {
             const files = e.target.files
