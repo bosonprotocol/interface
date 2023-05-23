@@ -41,7 +41,7 @@ function NotFound() {
           Go to Homepage
         </BosonButton>
       </Grid>
-      <img src={frame404} alt="404 - Page doesn’t exist" />
+      <img src={frame404} alt="404 - Page doesn't exist" />
     </GridContainer>
   );
 }
