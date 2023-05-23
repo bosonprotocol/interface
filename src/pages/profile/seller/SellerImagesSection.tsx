@@ -2,9 +2,10 @@ import Avatar from "@davatar/react";
 import React from "react";
 import styled from "styled-components";
 
+import whiteImg from "../../../assets/white.jpeg";
 import Image from "../../../components/ui/Image";
+import { colors } from "../../../lib/styles/colors";
 import { useBreakpoints } from "../../../lib/utils/hooks/useBreakpoints";
-import backgroundFluid from "../common/background-img.png";
 import {
   AvatarContainer,
   BannerImage,
@@ -40,7 +41,11 @@ const SellerImagesSection: React.FC<SellerImagesSectionProps> = ({
   const { isLteXS } = useBreakpoints();
   return (
     <ProfileSectionWrapper>
-      <StyledBannerImage src={coverImage || backgroundFluid} data-cover-img />
+      <StyledBannerImage
+        src={coverImage || whiteImg}
+        data-cover-img
+        style={{ border: `1px solid ${colors.lightGrey}` }}
+      />
       <BannerImageLayer>
         <AvatarContainer>
           {profileImage ? (
