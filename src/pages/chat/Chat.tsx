@@ -1,8 +1,13 @@
+import { WarningCircle } from "phosphor-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Route, Routes, useLocation, useParams } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
 import { useAccount } from "wagmi";
 
+import frame from "../../assets/frame.png";
+import Grid from "../../components/ui/Grid";
+import Loading from "../../components/ui/Loading";
+import Typography from "../../components/ui/Typography";
 import { UrlParameters } from "../../lib/routing/parameters";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
@@ -71,26 +76,34 @@ export default function Chat() {
     buyer: { buyerId, isError: isErrorBuyers, isLoading: isLoadingBuyer }
   } = useBuyerSellerAccounts(address || "");
 
-  const { data: exchangesAsTheBuyer, refetch: refetchExchangesAsTheBuyer } =
-    useExchanges(
-      {
-        buyerId: buyerId,
-        disputed: null
-      },
-      {
-        enabled: !!buyerId
-      }
-    );
-  const { data: exchangesAsTheSeller, refetch: refetchExchangesAsTheSeller } =
-    useExchanges(
-      {
-        sellerId: sellerId,
-        disputed: null
-      },
-      {
-        enabled: !!sellerId
-      }
-    );
+  const {
+    data: exchangesAsTheBuyer,
+    refetch: refetchExchangesAsTheBuyer,
+    isLoading: isBuyerExchangesLoading,
+    isError: isBuyerExchangesError
+  } = useExchanges(
+    {
+      buyerId: buyerId,
+      disputed: null
+    },
+    {
+      enabled: !!buyerId
+    }
+  );
+  const {
+    data: exchangesAsTheSeller,
+    refetch: refetchExchangesAsTheSeller,
+    isLoading: isSellerExchangesLoading,
+    isError: isSellerExchangesError
+  } = useExchanges(
+    {
+      sellerId: sellerId,
+      disputed: null
+    },
+    {
+      enabled: !!sellerId
+    }
+  );
 
   const exchanges = useMemo(() => {
     return Array.from(
@@ -193,58 +206,94 @@ export default function Chat() {
     <>
       <Container>
         <GlobalStyle />
-
-        <MessageList
-          myBuyerId={buyerId}
-          mySellerId={sellerId}
-          exchanges={exchanges}
-          prevPath={previousPath}
-          isConversationOpened={
-            location.pathname !== `${BosonRoutes.Chat}/` &&
-            location.pathname !== `${BosonRoutes.Chat}`
-          }
-          onChangeConversation={onChangeConversation}
-          chatListOpen={chatListOpen}
-          setChatListOpen={setChatListOpen}
-          currentExchange={selectedExchange}
-        />
-
-        {exchangeIdNotOwned ? (
+        {isBuyerExchangesLoading ||
+        isSellerExchangesLoading ||
+        isLoadingSeller ||
+        isLoadingBuyer ? (
+          <Grid justifyContent="center" alignItems="center">
+            <Loading />
+          </Grid>
+        ) : isErrorBuyers ||
+          isErrorSellers ||
+          isSellerExchangesError ||
+          isBuyerExchangesError ? (
+          <Grid
+            justifyContent="center"
+            alignItems="center"
+            flexDirection="column"
+            gap="1rem"
+          >
+            <WarningCircle size="40" color={colors.red} />
+            <Typography $fontSize="2rem">
+              Something went wrong, please try again...
+            </Typography>
+          </Grid>
+        ) : exchanges.length ? (
           <>
-            {(location.pathname === `${BosonRoutes.Chat}/` ||
-              location.pathname === `${BosonRoutes.Chat}` ||
-              !isSellerOrBuyer) && (
-              <SelectMessageContainer>
-                <SimpleMessage>
-                  {exchangeIdNotOwned
-                    ? "You don't have this exchange"
-                    : isSellerOrBuyer && exchanges.length
-                    ? "Select a message"
-                    : "You need to have an exchange to chat"}
-                </SimpleMessage>
-              </SelectMessageContainer>
+            <MessageList
+              myBuyerId={buyerId}
+              mySellerId={sellerId}
+              exchanges={exchanges}
+              prevPath={previousPath}
+              isConversationOpened={
+                location.pathname !== `${BosonRoutes.Chat}/` &&
+                location.pathname !== `${BosonRoutes.Chat}`
+              }
+              onChangeConversation={onChangeConversation}
+              chatListOpen={chatListOpen}
+              setChatListOpen={setChatListOpen}
+              currentExchange={selectedExchange}
+            />
+
+            {exchangeIdNotOwned ? (
+              <>
+                {(location.pathname === `${BosonRoutes.Chat}/` ||
+                  location.pathname === `${BosonRoutes.Chat}` ||
+                  !isSellerOrBuyer) && (
+                  <SelectMessageContainer>
+                    <SimpleMessage>
+                      {exchangeIdNotOwned
+                        ? "You don't have this exchange"
+                        : isSellerOrBuyer && exchanges.length
+                        ? "Select a message"
+                        : "You need to have an exchange to chat"}
+                    </SimpleMessage>
+                  </SelectMessageContainer>
+                )}
+              </>
+            ) : (
+              <Routes>
+                <Route
+                  path={`:${UrlParameters.exchangeId}`}
+                  element={
+                    <ChatConversation
+                      myBuyerId={buyerId}
+                      mySellerId={sellerId}
+                      key={selectedExchange?.id || ""}
+                      exchange={selectedExchange}
+                      refetchExchanges={refetchExchanges}
+                      setChatListOpen={setChatListOpen}
+                      chatListOpen={chatListOpen}
+                      prevPath={previousPath}
+                      onTextAreaChange={onTextAreaChange}
+                      textAreaValue={parseInputValue}
+                    />
+                  }
+                />
+              </Routes>
             )}
           </>
         ) : (
-          <Routes>
-            <Route
-              path={`:${UrlParameters.exchangeId}`}
-              element={
-                <ChatConversation
-                  myBuyerId={buyerId}
-                  mySellerId={sellerId}
-                  key={selectedExchange?.id || ""}
-                  exchange={selectedExchange}
-                  refetchExchanges={refetchExchanges}
-                  setChatListOpen={setChatListOpen}
-                  chatListOpen={chatListOpen}
-                  prevPath={previousPath}
-                  onTextAreaChange={onTextAreaChange}
-                  textAreaValue={parseInputValue}
-                />
-              }
-            />
-          </Routes>
+          <Grid
+            justifyContent="center"
+            alignItems="center"
+            flexDirection="column"
+            gap="1rem"
+          >
+            <Typography $fontSize="2rem">You have no exchanges yet</Typography>
+
+            <img src={frame} alt="no exchanges images" />
+          </Grid>
         )}
       </Container>
     </>
