@@ -15,12 +15,9 @@ import Grid from "../../../ui/Grid";
 import GridContainer from "../../../ui/GridContainer";
 
 const SellerImagesSectionContainer = styled.div`
-  position: relative;
   width: 100%;
   margin-bottom: 4.5rem;
-  [data-cover-img] {
-    object-fit: contain;
-  }
+  display: flex;
 `;
 
 interface Props {
