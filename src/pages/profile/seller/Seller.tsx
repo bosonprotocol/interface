@@ -13,7 +13,6 @@ import {
 } from "../../../components/modal/components/Profile/Lens/utils";
 import AddressText from "../../../components/offer/AddressText";
 import Grid from "../../../components/ui/Grid";
-import Image from "../../../components/ui/Image";
 import Loading from "../../../components/ui/Loading";
 import Typography from "../../../components/ui/Typography";
 import { UrlParameters } from "../../../lib/routing/parameters";
@@ -54,16 +53,6 @@ const LensTitle = styled(Typography)`
   ${breakpoint.s} {
     margin: 0 0.5rem 0 0;
     font-size: 1rem;
-  }
-`;
-
-const StyledImage = styled(Image)`
-  img {
-    object-fit: contain;
-    width: auto;
-    max-width: 100%;
-    height: auto;
-    max-height: 100%;
   }
 `;
 
