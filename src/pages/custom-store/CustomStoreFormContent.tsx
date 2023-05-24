@@ -122,7 +122,8 @@ export const formValuesWithOneLogoUrl = (values: StoreFormFields) => {
               }
               return {
                 value: val.value.trim(),
-                url: preAppendHttps((val.url as string)?.trim())
+                url: preAppendHttps((val.url as string)?.trim()),
+                label: val.label.trim()
               };
             }
             if ("label" in val && "value" in val && "text" in val) {
@@ -822,6 +823,60 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                         </BosonButton>
                       </>
                     )}
+                  </Grid>
+                  <Grid flexDirection="column" alignItems="flex-start">
+                    <FieldTitle>Other footer links</FieldTitle>
+                    <FieldDescription>
+                      Other links to add to your footer (e.g. "Home, FAQs, etc")
+                    </FieldDescription>
+                    <Select
+                      options={
+                        formModel.formFields.otherFooterLinks
+                          .options as unknown as SelectDataProps<string>[]
+                      }
+                      name={storeFields.otherFooterLinks}
+                      placeholder={
+                        formModel.formFields.otherFooterLinks.placeholder
+                      }
+                      isMulti
+                      isClearable
+                      isSearchable
+                    />
+                  </Grid>
+                  <Grid
+                    flexDirection="column"
+                    alignItems="flex-start"
+                    gap="0.5rem"
+                  >
+                    {!!values.otherFooterLinks?.length && (
+                      <Grid gap={gap} key="header">
+                        <Grid flexBasis={firstSubFieldBasis}>
+                          <Typography>Label</Typography>
+                        </Grid>
+                        <Grid flexBasis={secondSubFieldBasis}>
+                          <Typography>URL</Typography>
+                        </Grid>
+                      </Grid>
+                    )}
+                    {(values.otherFooterLinks || []).map((selection, index) => {
+                      const { label } = selection || {};
+
+                      return (
+                        <Grid key={label} gap={gap}>
+                          <Grid flexBasis={firstSubFieldBasis}>{label}</Grid>
+                          <Grid
+                            flexBasis={secondSubFieldBasis}
+                            flexDirection="column"
+                            alignItems="flex-start"
+                          >
+                            <Input
+                              name={`${storeFields.otherFooterLinks}[${index}].url`}
+                              placeholder={`${label} URL`}
+                            />
+                          </Grid>
+                        </Grid>
+                      );
+                    })}
                   </Grid>
                 </Grid>
               )}

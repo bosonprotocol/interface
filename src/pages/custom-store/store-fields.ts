@@ -9,6 +9,7 @@ import {
 } from "../../lib/validation/regex/url";
 import { validationOfFile } from "../chat/components/UploadForm/const";
 import { ContactInfoLinkIconValues } from "./ContactInfoLinkIcon";
+import { OtherFooterLinksValues } from "./OtherFooterLinks";
 import { SocialLogoValues } from "./SocialLogo";
 
 export type SelectType<Value extends string = string> =
@@ -38,6 +39,7 @@ export type StoreFields = {
   socialMediaLinks: SelectType<SocialLogoValues>[];
   contactInfoLinks: SelectType<ContactInfoLinkIconValues>[];
   additionalFooterLinks: SelectType[];
+  otherFooterLinks: SelectType[];
   withOwnProducts: SelectType;
   sellerCurationList: string;
   offerCurationList: string;
@@ -85,6 +87,7 @@ export const storeFields = {
   contactInfoLinks: "contactInfoLinks",
   withAdditionalFooterLinks: "withAdditionalFooterLinks",
   additionalFooterLinks: "additionalFooterLinks",
+  otherFooterLinks: "otherFooterLinks",
   withOwnProducts: "withOwnProducts",
   sellerCurationList: "sellerCurationList",
   offerCurationList: "offerCurationList",
@@ -272,6 +275,20 @@ export const formModel = {
       requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: ""
     },
+    [storeFields.otherFooterLinks]: {
+      name: storeFields.otherFooterLinks,
+      requiredErrorMessage: standardRequiredErrorMessage,
+      placeholder: "",
+      options: [
+        { label: "Home", value: "home", url: "" },
+        { label: "FAQs", value: "email", url: "" },
+        { label: "Contact Us", value: "contact_us", url: "" },
+        { label: "How Boson Works", value: "how_boson_works", url: "" },
+        { label: "Terms of Service", value: "terms_of_service", url: "" },
+        { label: "Privacy Policy", value: "privacy_policy", url: "" },
+        { label: "Custom", value: "custom", url: "" }
+      ] as { label: string; value: OtherFooterLinksValues; url: string }[]
+    },
     [storeFields.navigationBarPosition]: {
       name: storeFields.navigationBarPosition,
       requiredErrorMessage: standardRequiredErrorMessage,
@@ -395,6 +412,13 @@ export const validationSchema = Yup.object({
         .required(standardRequiredErrorMessage)
     })
   ),
+  [storeFields.contactInfoLinks]: Yup.array(
+    Yup.object({
+      label: Yup.string().required(standardRequiredErrorMessage),
+      value: Yup.string().required(standardRequiredErrorMessage),
+      text: Yup.string().required(standardRequiredErrorMessage)
+    })
+  ),
   [storeFields.withAdditionalFooterLinks]: Yup.object({
     label: Yup.string().required(standardRequiredErrorMessage),
     value: Yup.string().required(standardRequiredErrorMessage)
@@ -403,6 +427,22 @@ export const validationSchema = Yup.object({
     Yup.object({
       label: Yup.string(),
       value: Yup.string()
+        .matches(new RegExp(websitePattern), notUrlErrorMessage)
+        .when("label", (label) => {
+          if (label) {
+            return Yup.string()
+              .matches(new RegExp(websitePattern), notUrlErrorMessage)
+              .required(standardRequiredErrorMessage);
+          }
+          return Yup.string();
+        })
+    })
+  ),
+  [storeFields.otherFooterLinks]: Yup.array(
+    Yup.object({
+      label: Yup.string(),
+      value: Yup.string(),
+      url: Yup.string()
         .matches(new RegExp(websitePattern), notUrlErrorMessage)
         .when("label", (label) => {
           if (label) {
@@ -480,6 +520,7 @@ export const initialValues = {
   [storeFields.contactInfoLinks]: [] as (SelectDataProps & { text: string })[],
   [storeFields.withAdditionalFooterLinks]: null as unknown as SelectDataProps,
   [storeFields.additionalFooterLinks]: [] as SelectDataProps[],
+  [storeFields.otherFooterLinks]: [] as (SelectDataProps & { url: string })[],
   [storeFields.copyright]: "",
   [storeFields.withOwnProducts]:
     formModel.formFields.withOwnProducts.options.find(
