@@ -233,10 +233,9 @@ const Burger = ({ onClick }: { onClick: () => void }) => {
 
 interface Props {
   fluidHeader: boolean;
-  withBanner: boolean;
 }
 const HeaderComponent = forwardRef<HTMLElement, Props>(
-  ({ fluidHeader = false, withBanner = false }, ref) => {
+  ({ fluidHeader = false }, ref) => {
     const { address } = useAccount();
     const navigate = useKeepQueryParamsNavigate();
     const [isOpen, setOpen] = useState(false);
@@ -387,7 +386,6 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
                     isMobile={burgerMenuBreakpoint}
                     isOpen={isOpen}
                     navigationBarPosition={navigationBarPosition}
-                    hasTopBanner={withBanner}
                   />
                   {!burgerMenuBreakpoint && (
                     <>

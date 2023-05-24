@@ -29,14 +29,12 @@ interface Props {
   withFooter?: boolean;
   fluidHeader?: boolean;
   withBosonStyles?: boolean;
-  withBanner?: boolean;
 }
 export default function App({
   withLayout = true,
   withFooter = true,
   fluidHeader = false,
   withBosonStyles = true,
-  withBanner = false,
   children
 }: Props) {
   const headerBgColor = useCustomStoreQueryParameter("headerBgColor");
@@ -80,7 +78,7 @@ export default function App({
                   $buttonBgColor={buttonBgColor}
                   $buttonTextColor={buttonTextColor}
                 />
-                <Header fluidHeader={fluidHeader} withBanner={withBanner} />
+                <Header fluidHeader={fluidHeader} />
                 <Wrapper>{children}</Wrapper>
                 {showFooter && <Footer />}
               </Container>
