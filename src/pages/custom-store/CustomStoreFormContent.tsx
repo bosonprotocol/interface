@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/browser";
 import { useFormikContext } from "formik";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import styled from "styled-components";
@@ -161,7 +162,7 @@ export const formValuesWithOneLogoUrl = (values: StoreFormFields) => {
 };
 
 export default function CustomStoreFormContent({ hasSubmitError }: Props) {
-  const { setFieldValue, values, isValid, setFieldTouched } =
+  const { setFieldValue, values, isValid, setFieldTouched, setValues } =
     useFormikContext<StoreFormFields>();
 
   const { sellerIds } = useCurrentSellers();
@@ -277,21 +278,14 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
   };
 
   useEffect(() => {
-    if (
-      values.withAdditionalFooterLinks?.value &&
-      !values.additionalFooterLinks?.length
-    ) {
+    if (!values.additionalFooterLinks?.length) {
       setFieldValue(
         storeFields.additionalFooterLinks,
         [{ label: "", value: "" }],
         true
       );
     }
-  }, [
-    values.withAdditionalFooterLinks?.value,
-    setFieldValue,
-    values.additionalFooterLinks?.length
-  ]);
+  }, [setFieldValue, values.additionalFooterLinks?.length]);
 
   const disableCurationLists = ["mine"].includes(
     values.withOwnProducts?.value || ""
@@ -376,6 +370,116 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [renderCommitProxyField]);
 
+  useEffect(() => {
+    if (!values.customStoreUrl) {
+      return;
+    }
+    (async () => {
+      try {
+        let iframeSrc = values.customStoreUrl.replace("/#/", "/");
+        let url = new URL(iframeSrc);
+        if (!url.searchParams.has(storeFields.isCustomStoreFront)) {
+          try {
+            const response = await fetch(iframeSrc);
+            const html = await response.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, "text/html");
+            const src = Array.from(doc.querySelectorAll("iframe"))
+              .filter(isTruthy)
+              .map((iframe) => iframe.getAttribute("src"))
+              .find((src) => src?.includes(storeFields.isCustomStoreFront));
+            if (src) {
+              iframeSrc = src;
+            }
+          } catch (error) {
+            console.error(error);
+            Sentry.captureException(error);
+          }
+        }
+        url = new URL(iframeSrc.replace("/#/", "/"));
+        const entries = Array.from(url.searchParams.entries());
+
+        const allKeys = Object.keys(storeFields);
+        const cleanedEntries = entries
+          .filter(([key]) => {
+            return (
+              key !== storeFields.isCustomStoreFront &&
+              allKeys.includes(key) &&
+              !ignoreStoreFields.includes(key)
+            );
+          })
+          .map(([keyWithMaybeAmp, value]) => {
+            const key = keyWithMaybeAmp.replace("amp;", "");
+            try {
+              switch (key) {
+                case storeFields.fontFamily:
+                case storeFields.navigationBarPosition:
+                case storeFields.showFooter:
+                case storeFields.withOwnProducts: {
+                  const options = formModel.formFields[key]
+                    .options as unknown as {
+                    value: typeof value;
+                  }[];
+                  const option = options.find(
+                    (option) => option.value === value
+                  );
+                  if (option) {
+                    return [key, option];
+                  }
+                  return null;
+                }
+                case storeFields.socialMediaLinks: {
+                  const socialMediaLinks = JSON.parse(value) as {
+                    value: string;
+                    url: string;
+                  }[];
+                  const values = socialMediaLinks
+                    .map((socialMediaObject) => {
+                      const option =
+                        formModel.formFields.socialMediaLinks.options.find(
+                          (opt) => {
+                            return opt.value === socialMediaObject.value;
+                          }
+                        );
+                      if (option) {
+                        return {
+                          ...option,
+                          url: socialMediaObject.url
+                        };
+                      }
+                      return null;
+                    })
+                    .filter(isTruthy);
+                  if (values?.length) {
+                    return [key, values];
+                  }
+                  return null;
+                }
+
+                case storeFields.additionalFooterLinks:
+                  return [key, JSON.parse(value)];
+                case storeFields.logoUrl:
+                  return [storeFields.logoUrlText, value];
+              }
+            } catch (error) {
+              console.error(error);
+              Sentry.captureException(error);
+              return null;
+            }
+
+            return [key, value];
+          })
+          .filter(isTruthy);
+        setValues({ ...values, ...Object.fromEntries(cleanedEntries) }, true);
+      } catch (error) {
+        console.error(error);
+        Sentry.captureException(error);
+      }
+    })();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values.customStoreUrl]);
+
   const AdvancedTrigger = useCallback(() => {
     return <Section>Advanced</Section>;
   }, []);
@@ -392,6 +496,16 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
         flex="1 1 50%"
         gap="2rem"
       >
+        <Grid flexDirection="column" alignItems="flex-start">
+          <FieldTitle>Load data from an existing storefront</FieldTitle>
+          <FieldDescription>
+            Paste the URL of an existing custom storefront here
+          </FieldDescription>
+          <Input
+            name={storeFields.customStoreUrl}
+            placeholder={formModel.formFields.customStoreUrl.placeholder}
+          />
+        </Grid>
         <Grid flexDirection="column" alignItems="flex-start">
           <Section>General</Section>
           <Grid
@@ -761,13 +875,12 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                     </FieldDescription>
                     <Select
                       options={
-                        formModel.formFields.withAdditionalFooterLinks
+                        formModel.formFields.additionalFooterLinks
                           .options as unknown as SelectDataProps<string>[]
                       }
-                      name={storeFields.withAdditionalFooterLinks}
+                      name={storeFields.additionalFooterLinks}
                       placeholder={
-                        formModel.formFields.withAdditionalFooterLinks
-                          .placeholder
+                        formModel.formFields.additionalFooterLinks.placeholder
                       }
                       isClearable
                     />
@@ -777,7 +890,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                     alignItems="flex-start"
                     gap="0.5rem"
                   >
-                    {values.withAdditionalFooterLinks?.value === "true" && (
+                    {values.additionalFooterLinks.length && (
                       <>
                         <Grid gap={gap}>
                           <Grid flexBasis="50%">
@@ -823,60 +936,6 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                         </BosonButton>
                       </>
                     )}
-                  </Grid>
-                  <Grid flexDirection="column" alignItems="flex-start">
-                    <FieldTitle>Other footer links</FieldTitle>
-                    <FieldDescription>
-                      Other links to add to your footer (e.g. "Home, FAQs, etc")
-                    </FieldDescription>
-                    <Select
-                      options={
-                        formModel.formFields.otherFooterLinks
-                          .options as unknown as SelectDataProps<string>[]
-                      }
-                      name={storeFields.otherFooterLinks}
-                      placeholder={
-                        formModel.formFields.otherFooterLinks.placeholder
-                      }
-                      isMulti
-                      isClearable
-                      isSearchable
-                    />
-                  </Grid>
-                  <Grid
-                    flexDirection="column"
-                    alignItems="flex-start"
-                    gap="0.5rem"
-                  >
-                    {!!values.otherFooterLinks?.length && (
-                      <Grid gap={gap} key="header">
-                        <Grid flexBasis={firstSubFieldBasis}>
-                          <Typography>Label</Typography>
-                        </Grid>
-                        <Grid flexBasis={secondSubFieldBasis}>
-                          <Typography>URL</Typography>
-                        </Grid>
-                      </Grid>
-                    )}
-                    {(values.otherFooterLinks || []).map((selection, index) => {
-                      const { label } = selection || {};
-
-                      return (
-                        <Grid key={label} gap={gap}>
-                          <Grid flexBasis={firstSubFieldBasis}>{label}</Grid>
-                          <Grid
-                            flexBasis={secondSubFieldBasis}
-                            flexDirection="column"
-                            alignItems="flex-start"
-                          >
-                            <Input
-                              name={`${storeFields.otherFooterLinks}[${index}].url`}
-                              placeholder={`${label} URL`}
-                            />
-                          </Grid>
-                        </Grid>
-                      );
-                    })}
                   </Grid>
                 </Grid>
               )}

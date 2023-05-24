@@ -39,7 +39,6 @@ export type StoreFields = {
   socialMediaLinks: SelectType<SocialLogoValues>[];
   contactInfoLinks: SelectType<ContactInfoLinkIconValues>[];
   additionalFooterLinks: SelectType[];
-  otherFooterLinks: SelectType[];
   withOwnProducts: SelectType;
   sellerCurationList: string;
   offerCurationList: string;
@@ -54,7 +53,6 @@ export type StoreFormFields = StoreFields & {
   bannerUpload: { name: string; size: number; src: string; type: string }[];
   logoUrlText: string;
   logoUpload: { name: string; size: number; src: string; type: string }[];
-  withAdditionalFooterLinks: SelectType;
   withMetaTx: SelectType;
   customStoreUrl: string;
 };
@@ -85,9 +83,7 @@ export const storeFields = {
   copyright: "copyright",
   socialMediaLinks: "socialMediaLinks",
   contactInfoLinks: "contactInfoLinks",
-  withAdditionalFooterLinks: "withAdditionalFooterLinks",
   additionalFooterLinks: "additionalFooterLinks",
-  otherFooterLinks: "otherFooterLinks",
   withOwnProducts: "withOwnProducts",
   sellerCurationList: "sellerCurationList",
   offerCurationList: "offerCurationList",
@@ -264,19 +260,8 @@ export const formModel = {
         { label: "Address", value: "address", text: "" }
       ]
     },
-    [storeFields.withAdditionalFooterLinks]: {
-      name: storeFields.withAdditionalFooterLinks,
-      requiredErrorMessage: standardRequiredErrorMessage,
-      placeholder: "",
-      options: getYesNoOptions("no")
-    },
     [storeFields.additionalFooterLinks]: {
       name: storeFields.additionalFooterLinks,
-      requiredErrorMessage: standardRequiredErrorMessage,
-      placeholder: ""
-    },
-    [storeFields.otherFooterLinks]: {
-      name: storeFields.otherFooterLinks,
       requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: "",
       options: [
@@ -419,30 +404,10 @@ export const validationSchema = Yup.object({
       text: Yup.string().required(standardRequiredErrorMessage)
     })
   ),
-  [storeFields.withAdditionalFooterLinks]: Yup.object({
-    label: Yup.string().required(standardRequiredErrorMessage),
-    value: Yup.string().required(standardRequiredErrorMessage)
-  }).nullable(),
   [storeFields.additionalFooterLinks]: Yup.array(
     Yup.object({
       label: Yup.string(),
       value: Yup.string()
-        .matches(new RegExp(websitePattern), notUrlErrorMessage)
-        .when("label", (label) => {
-          if (label) {
-            return Yup.string()
-              .matches(new RegExp(websitePattern), notUrlErrorMessage)
-              .required(standardRequiredErrorMessage);
-          }
-          return Yup.string();
-        })
-    })
-  ),
-  [storeFields.otherFooterLinks]: Yup.array(
-    Yup.object({
-      label: Yup.string(),
-      value: Yup.string(),
-      url: Yup.string()
         .matches(new RegExp(websitePattern), notUrlErrorMessage)
         .when("label", (label) => {
           if (label) {
@@ -518,9 +483,9 @@ export const initialValues = {
   ) as SelectDataProps,
   [storeFields.socialMediaLinks]: [] as (SelectDataProps & { url: string })[],
   [storeFields.contactInfoLinks]: [] as (SelectDataProps & { text: string })[],
-  [storeFields.withAdditionalFooterLinks]: null as unknown as SelectDataProps,
-  [storeFields.additionalFooterLinks]: [] as SelectDataProps[],
-  [storeFields.otherFooterLinks]: [] as (SelectDataProps & { url: string })[],
+  [storeFields.additionalFooterLinks]: [] as (SelectDataProps & {
+    url: string;
+  })[],
   [storeFields.copyright]: "",
   [storeFields.withOwnProducts]:
     formModel.formFields.withOwnProducts.options.find(
