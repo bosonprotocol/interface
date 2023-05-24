@@ -271,21 +271,18 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
     if (allFilledOut) {
       setFieldValue(
         storeFields.additionalFooterLinks,
-        [...values.additionalFooterLinks, { label: "", value: "" }],
+        [
+          ...values.additionalFooterLinks,
+          {
+            label: "Custom",
+            value: `custom_${values.additionalFooterLinks.length}`,
+            url: ""
+          }
+        ],
         true
       );
     }
   };
-
-  useEffect(() => {
-    if (!values.additionalFooterLinks?.length) {
-      setFieldValue(
-        storeFields.additionalFooterLinks,
-        [{ label: "", value: "" }],
-        true
-      );
-    }
-  }, [setFieldValue, values.additionalFooterLinks?.length]);
 
   const disableCurationLists = ["mine"].includes(
     values.withOwnProducts?.value || ""
@@ -487,7 +484,6 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
   const StyleTrigger = useCallback(() => {
     return <Section>Style</Section>;
   }, []);
-
   return (
     <Grid alignItems="flex-start" gap="2.875rem">
       <Grid
@@ -816,6 +812,9 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                   </Grid>
                   <Grid flexDirection="column" alignItems="flex-start">
                     <FieldTitle>Contact info links</FieldTitle>
+                    <FieldDescription>
+                      Add your phone number, email and address here.
+                    </FieldDescription>
                     <Select
                       options={
                         formModel.formFields.contactInfoLinks
@@ -883,6 +882,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                         formModel.formFields.additionalFooterLinks.placeholder
                       }
                       isClearable
+                      isMulti
                     />
                   </Grid>
                   <Grid
@@ -890,7 +890,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                     alignItems="flex-start"
                     gap="0.5rem"
                   >
-                    {values.additionalFooterLinks.length && (
+                    {!!values.additionalFooterLinks.length && (
                       <>
                         <Grid gap={gap}>
                           <Grid flexBasis="50%">
@@ -918,7 +918,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                                   alignItems="flex-start"
                                 >
                                   <Input
-                                    name={`${storeFields.additionalFooterLinks}[${index}].value`}
+                                    name={`${storeFields.additionalFooterLinks}[${index}].url`}
                                     placeholder={`URL`}
                                     onBlur={() => removeEmptyRowsExceptOne()}
                                   />

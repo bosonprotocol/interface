@@ -407,7 +407,8 @@ export const validationSchema = Yup.object({
   [storeFields.additionalFooterLinks]: Yup.array(
     Yup.object({
       label: Yup.string(),
-      value: Yup.string()
+      value: Yup.string(),
+      url: Yup.string()
         .matches(new RegExp(websitePattern), notUrlErrorMessage)
         .when("label", (label) => {
           if (label) {
