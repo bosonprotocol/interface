@@ -286,7 +286,7 @@ export default function ProductVariants() {
       <StyledFormField
         title="Define variants"
         required
-        subTitle="Shown below are the variant combinations using the inputs above. Remove a specific combination but selecting the 'Remove' button against it."
+        subTitle="Shown below are the variant combinations using the inputs above. Remove a specific combination by selecting the 'Remove button against it."
       >
         <Table>
           <THead>
