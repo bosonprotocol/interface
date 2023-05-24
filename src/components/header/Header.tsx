@@ -216,6 +216,9 @@ const HeaderItems = styled.nav<{
 const LogoImg = styled.img`
   height: 24px;
   cursor: pointer;
+  ${breakpoint.s} {
+    height: 47px;
+  }
 `;
 
 const Burger = ({ onClick }: { onClick: () => void }) => {
@@ -350,7 +353,10 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
             ) : (
               <>
                 <Grid flexDirection="row" alignItems="center" $width="initial">
-                  <LinkWithQuery to={BosonRoutes.Root}>
+                  <LinkWithQuery
+                    to={BosonRoutes.Root}
+                    style={{ display: "flex" }}
+                  >
                     <LogoImg
                       src={logoUrl || logo}
                       alt="logo image"

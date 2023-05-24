@@ -1,18 +1,13 @@
 import { ReactNode } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import { breakpoint } from "../lib/styles/breakpoint";
 
-export const LayoutRoot = styled.div`
-  margin: 0 auto;
+export const LayoutPadding = css`
   padding: 0 1rem;
-
-  width: 100%;
-  max-width: 100vw;
 
   ${breakpoint.xs} {
     padding: 0 1.5rem;
-    max-width: 93.75rem;
   }
   ${breakpoint.s} {
     padding: 0 1.75rem;
@@ -22,6 +17,18 @@ export const LayoutRoot = styled.div`
   }
   ${breakpoint.xl} {
     padding: 0 2.25rem;
+  }
+`;
+
+export const LayoutRoot = styled.div.attrs({ "data-layout-root": true })`
+  margin: 0 auto;
+  ${LayoutPadding};
+
+  width: 100%;
+  max-width: 100vw;
+
+  ${breakpoint.xs} {
+    max-width: 93.75rem;
   }
 `;
 

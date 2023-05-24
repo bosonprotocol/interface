@@ -8,6 +8,7 @@ import {
   websitePattern
 } from "../../lib/validation/regex/url";
 import { validationOfFile } from "../chat/components/UploadForm/const";
+import { ContactInfoLinkIconValues } from "./ContactInfoLinkIcon";
 import { SocialLogoValues } from "./SocialLogo";
 
 export type SelectType<Value extends string = string> =
@@ -18,6 +19,7 @@ export type StoreFields = {
   storeName: string;
   title: string;
   description: string;
+  bannerUrl: string;
   logoUrl: string;
   headerBgColor: string;
   headerTextColor: string;
@@ -34,6 +36,7 @@ export type StoreFields = {
   copyright: string;
   showFooter: SelectType;
   socialMediaLinks: SelectType<SocialLogoValues>[];
+  contactInfoLinks: SelectType<ContactInfoLinkIconValues>[];
   additionalFooterLinks: SelectType[];
   withOwnProducts: SelectType;
   sellerCurationList: string;
@@ -45,6 +48,8 @@ export type StoreFields = {
 };
 
 export type StoreFormFields = StoreFields & {
+  bannerUrlText: string;
+  bannerUpload: { name: string; size: number; src: string; type: string }[];
   logoUrlText: string;
   logoUpload: { name: string; size: number; src: string; type: string }[];
   withAdditionalFooterLinks: SelectType;
@@ -58,6 +63,9 @@ export const storeFields = {
   storeName: "storeName",
   title: "title",
   description: "description",
+  bannerUrl: "bannerUrl",
+  bannerUrlText: "bannerUrlText",
+  bannerUpload: "bannerUpload",
   logoUrl: "logoUrl",
   logoUrlText: "logoUrlText",
   logoUpload: "logoUpload",
@@ -74,6 +82,7 @@ export const storeFields = {
   showFooter: "showFooter",
   copyright: "copyright",
   socialMediaLinks: "socialMediaLinks",
+  contactInfoLinks: "contactInfoLinks",
   withAdditionalFooterLinks: "withAdditionalFooterLinks",
   additionalFooterLinks: "additionalFooterLinks",
   withOwnProducts: "withOwnProducts",
@@ -119,6 +128,19 @@ export const formModel = {
       name: storeFields.description,
       requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: ""
+    },
+    [storeFields.bannerUrl]: {
+      name: storeFields.bannerUrl
+    },
+    [storeFields.bannerUrlText]: {
+      name: storeFields.bannerUrlText,
+      requiredErrorMessage: standardRequiredErrorMessage,
+      placeholder: ""
+    },
+    [storeFields.bannerUpload]: {
+      name: storeFields.bannerUpload,
+      requiredErrorMessage: standardRequiredErrorMessage,
+      placeholder: "Banner Image"
     },
     [storeFields.logoUrl]: {
       name: storeFields.logoUrl
@@ -227,6 +249,16 @@ export const formModel = {
         { label: "Twitch", value: "twitch", url: "" },
         { label: "Twitter", value: "twitter", url: "" },
         { label: "Youtube", value: "youtube", url: "" }
+      ]
+    },
+    [storeFields.contactInfoLinks]: {
+      name: storeFields.contactInfoLinks,
+      requiredErrorMessage: standardRequiredErrorMessage,
+      placeholder: "",
+      options: [
+        { label: "Phone", value: "phone", text: "" },
+        { label: "Email", value: "email", text: "" },
+        { label: "Address", value: "address", text: "" }
       ]
     },
     [storeFields.withAdditionalFooterLinks]: {
@@ -418,6 +450,9 @@ export const initialValues = {
   [storeFields.storeName]: "",
   [storeFields.title]: "",
   [storeFields.description]: "",
+  [storeFields.bannerUrl]: "",
+  [storeFields.bannerUrlText]: "",
+  [storeFields.bannerUpload]: [],
   [storeFields.logoUrl]: "",
   [storeFields.logoUrlText]: "",
   [storeFields.logoUpload]: [],
@@ -442,6 +477,7 @@ export const initialValues = {
     (option) => "default" in option && option.default
   ) as SelectDataProps,
   [storeFields.socialMediaLinks]: [] as (SelectDataProps & { url: string })[],
+  [storeFields.contactInfoLinks]: [] as (SelectDataProps & { text: string })[],
   [storeFields.withAdditionalFooterLinks]: null as unknown as SelectDataProps,
   [storeFields.additionalFooterLinks]: [] as SelectDataProps[],
   [storeFields.copyright]: "",

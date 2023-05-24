@@ -7,6 +7,10 @@ import { breakpoint } from "../../lib/styles/breakpoint";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { sanitizeUrl } from "../../lib/utils/url";
+import {
+  ContactInfoLinkIcon,
+  ContactInfoLinkIconValues
+} from "../../pages/custom-store/ContactInfoLinkIcon";
 import SocialLogo, {
   SocialLogoValues
 } from "../../pages/custom-store/SocialLogo";
@@ -15,6 +19,7 @@ import useUserRoles from "../../router/useUserRoles";
 import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
 import Layout from "../Layout";
 import Grid from "../ui/Grid";
+import GridContainer from "../ui/GridContainer";
 import Typography from "../ui/Typography";
 import {
   ADDITIONAL_LINKS,
@@ -133,10 +138,83 @@ function Socials() {
     }
     return null;
   }, [isCustomStoreFront, isLteS, isXXS, socialMediaLinks]);
+  return renderSocialLinks?.length ? (
+    <div>
+      <Typography $fontSize="1rem" fontWeight="600" tag="p">
+        FOLLOW US
+      </Typography>
+      <NavigationLinks
+        gap={isLteS && !isXXS ? "16px" : "32px"}
+        style={{ justifyContent: "flex-start" }}
+      >
+        {renderSocialLinks}
+      </NavigationLinks>
+    </div>
+  ) : null;
+}
+
+function ContactInfoLinks() {
+  const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
+  const contactInfoLinks = useCustomStoreQueryParameter<
+    { value: ContactInfoLinkIconValues; text: string }[]
+  >("contactInfoLinks", { parseJson: true });
+  const renderContactInfoLinks = useMemo(() => {
+    if (isCustomStoreFront && typeof contactInfoLinks !== "string") {
+      return contactInfoLinks.map(({ text, value }) => {
+        if (value === "address") {
+          return (
+            <Grid justifyContent="flex-start" gap="1rem">
+              <ContactInfoLinkIcon icon={value} size={15} /> {text}
+            </Grid>
+          );
+        }
+        if (value === "email") {
+          return (
+            <Grid justifyContent="flex-start" gap="1rem">
+              <ContactInfoLinkIcon icon={value} size={15} />
+              <a
+                href={"mailto:" + sanitizeUrl(text)}
+                target="_blank"
+                rel="noopener noreferrer"
+                key={`contact_info_link_${value}_${text}`}
+              >
+                {text}
+              </a>
+            </Grid>
+          );
+        }
+        if (value === "phone") {
+          return (
+            <Grid justifyContent="flex-start" gap="1rem">
+              <ContactInfoLinkIcon icon={value} size={15} />
+              <a
+                href={"tel:" + sanitizeUrl(text)}
+                target="_blank"
+                rel="noopener noreferrer"
+                key={`contact_info_link_${value}_${text}`}
+              >
+                {text}
+              </a>
+            </Grid>
+          );
+        }
+        return null;
+      });
+    }
+    return null;
+  }, [isCustomStoreFront, contactInfoLinks]);
   return (
-    <NavigationLinks gap={isLteS && !isXXS ? "16px" : "32px"}>
-      {renderSocialLinks}
-    </NavigationLinks>
+    <div>
+      <Typography $fontSize="1rem" fontWeight="600" tag="p">
+        GET IN TOUCH
+      </Typography>
+      <NavigationLinks
+        flexDirection="column"
+        style={{ alignItems: "center", justifyContent: "flex-end" }}
+      >
+        {renderContactInfoLinks}
+      </NavigationLinks>
+    </div>
   );
 }
 
@@ -238,39 +316,65 @@ export default function FooterComponent() {
               data-testid="logo"
             />
           </LinkWithQuery>
-          <NavigationGrid
-            justifyContent={isXXS ? "flex-start" : "flex-end"}
-            alignItems="flex-start"
-          >
-            {!!shopLinks.length && (
+          {isCustomStoreFront ? (
+            <GridContainer
+              itemsPerRow={{
+                xs: 1,
+                s: 1,
+                m: 1,
+                l: 1,
+                xl: 1
+              }}
+            >
               <div>
-                <Typography tag="h5">Shop</Typography>
-                <NavigationLinks flexDirection="column">
-                  {shopLinks}
-                </NavigationLinks>
+                <Grid justifyContent="flex-start">
+                  <ContactInfoLinks />
+                </Grid>
               </div>
-            )}
-            {!!sellLinks.length && (
               <div>
-                <Typography tag="h5">Sell</Typography>
-                <NavigationLinks flexDirection="column">
-                  {sellLinks}
-                </NavigationLinks>
+                <Grid justifyContent="flex-start">
+                  <Socials />
+                </Grid>
               </div>
-            )}
-            {!!helpLinks.length && (
-              <div>
-                <Typography tag="h5">Help</Typography>
-                <NavigationLinks flexDirection="column">
-                  {helpLinks}
-                </NavigationLinks>
-              </div>
-            )}
-          </NavigationGrid>
+            </GridContainer>
+          ) : (
+            <>
+              <NavigationGrid
+                justifyContent={isXXS ? "flex-start" : "flex-end"}
+                alignItems="flex-start"
+              >
+                {!!shopLinks.length && (
+                  <div>
+                    <Typography tag="h5">Shop</Typography>
+                    <NavigationLinks flexDirection="column">
+                      {shopLinks}
+                    </NavigationLinks>
+                  </div>
+                )}
+                {!!sellLinks.length && (
+                  <div>
+                    <Typography tag="h5">Sell</Typography>
+                    <NavigationLinks flexDirection="column">
+                      {sellLinks}
+                    </NavigationLinks>
+                  </div>
+                )}
+                {!!helpLinks.length && (
+                  <div>
+                    <Typography tag="h5">Help</Typography>
+                    <NavigationLinks flexDirection="column">
+                      {helpLinks}
+                    </NavigationLinks>
+                  </div>
+                )}
+              </NavigationGrid>
+              <Grid justifyContent="flex-end">
+                <Socials />
+              </Grid>
+            </>
+          )}
         </LogoGrid>
-        <Grid justifyContent="flex-end">
-          <Socials />
-        </Grid>
+
         <Grid padding="2rem 0 0 0" justifyContent="flex-end" gap="1rem">
           <Typography tag="p">
             {isCustomStoreFront ? copyright : `© ${year} Bosonapp.io`}

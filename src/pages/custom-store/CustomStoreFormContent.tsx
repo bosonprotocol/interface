@@ -1,4 +1,3 @@
-import * as Sentry from "@sentry/browser";
 import { useFormikContext } from "formik";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import styled from "styled-components";
@@ -16,6 +15,7 @@ import { isTruthy } from "../../lib/types/helpers";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { getIpfsGatewayUrl } from "../../lib/utils/ipfs";
 import { preAppendHttps } from "../../lib/validation/regex/url";
+import { ContactInfoLinkIcon } from "./ContactInfoLinkIcon";
 import SocialLogo from "./SocialLogo";
 import {
   formModel,
@@ -61,6 +61,8 @@ interface Props {
 }
 
 const ignoreStoreFields = [
+  storeFields.bannerUrlText,
+  storeFields.bannerUpload,
   storeFields.logoUrlText,
   storeFields.logoUpload,
   storeFields.customStoreUrl
@@ -123,6 +125,16 @@ export const formValuesWithOneLogoUrl = (values: StoreFormFields) => {
                 url: preAppendHttps((val.url as string)?.trim())
               };
             }
+            if ("label" in val && "value" in val && "text" in val) {
+              // contactInfoLinks
+              if (!val.value || !val.text) {
+                return null;
+              }
+              return {
+                value: val.value.trim(),
+                text: (val.text as string)?.trim()
+              };
+            }
             if (
               "label" in val &&
               "value" in val &&
@@ -148,7 +160,7 @@ export const formValuesWithOneLogoUrl = (values: StoreFormFields) => {
 };
 
 export default function CustomStoreFormContent({ hasSubmitError }: Props) {
-  const { setFieldValue, values, isValid, setFieldTouched, setValues } =
+  const { setFieldValue, values, isValid, setFieldTouched } =
     useFormikContext<StoreFormFields>();
 
   const { sellerIds } = useCurrentSellers();
@@ -199,6 +211,55 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values.logoUpload]);
+  const lastBannerUpdated = useRef<"bannerUrlText" | "bannerUpload" | null>(
+    null
+  );
+  useEffect(() => {
+    const bannerUploadWasUpdated = lastBannerUpdated.current === "bannerUpload";
+    if (bannerUploadWasUpdated) {
+      lastBannerUpdated.current = null;
+      return;
+    }
+    lastBannerUpdated.current = "bannerUrlText";
+    setFieldValue(storeFields.bannerUrl, "", true);
+    if (values.bannerUrlText) {
+      if (Array.isArray(values.bannerUpload) && !values.bannerUpload.length) {
+        lastBannerUpdated.current = null;
+      } else {
+        setFieldValue(storeFields.bannerUpload, [], true);
+      }
+      setFieldValue(storeFields.bannerUrl, values.bannerUrlText, true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values.bannerUrlText]);
+
+  useEffect(() => {
+    const bannerUrlTextWasUpdated =
+      lastBannerUpdated.current === "bannerUrlText";
+    if (bannerUrlTextWasUpdated) {
+      lastBannerUpdated.current = null;
+      return;
+    }
+    lastBannerUpdated.current = "bannerUpload";
+    setFieldValue(storeFields.bannerUrl, "", true);
+    if (values.bannerUpload?.length) {
+      if (values.bannerUrlText === "") {
+        lastBannerUpdated.current = null;
+      } else {
+        setFieldValue(storeFields.bannerUrlText, "", true);
+      }
+      const ipfsWithoutPrefix = values.bannerUpload[0].src.replace(
+        "ipfs://",
+        ""
+      );
+      setFieldValue(
+        storeFields.bannerUrl,
+        getIpfsGatewayUrl(ipfsWithoutPrefix),
+        true
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values.bannerUpload]);
 
   const allFilledOut = values.additionalFooterLinks?.every((footerLink) => {
     const { label, value } = footerLink || {};
@@ -314,117 +375,6 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [renderCommitProxyField]);
 
-  useEffect(() => {
-    if (!values.customStoreUrl) {
-      return;
-    }
-    (async () => {
-      try {
-        let iframeSrc = values.customStoreUrl.replace("/#/", "/");
-        let url = new URL(iframeSrc);
-        if (!url.searchParams.has(storeFields.isCustomStoreFront)) {
-          try {
-            const response = await fetch(iframeSrc);
-            const html = await response.text();
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, "text/html");
-            const src = Array.from(doc.querySelectorAll("iframe"))
-              .filter(isTruthy)
-              .map((iframe) => iframe.getAttribute("src"))
-              .find((src) => src?.includes(storeFields.isCustomStoreFront));
-            if (src) {
-              iframeSrc = src;
-            }
-          } catch (error) {
-            console.error(error);
-            Sentry.captureException(error);
-          }
-        }
-        url = new URL(iframeSrc.replace("/#/", "/"));
-        const entries = Array.from(url.searchParams.entries());
-
-        const allKeys = Object.keys(storeFields);
-        const cleanedEntries = entries
-          .filter(([key]) => {
-            return (
-              key !== storeFields.isCustomStoreFront &&
-              allKeys.includes(key) &&
-              !ignoreStoreFields.includes(key)
-            );
-          })
-          .map(([keyWithMaybeAmp, value]) => {
-            const key = keyWithMaybeAmp.replace("amp;", "");
-            try {
-              switch (key) {
-                case storeFields.fontFamily:
-                case storeFields.navigationBarPosition:
-                case storeFields.showFooter:
-                case storeFields.withAdditionalFooterLinks:
-                case storeFields.withOwnProducts: {
-                  const options = formModel.formFields[key]
-                    .options as unknown as {
-                    value: typeof value;
-                  }[];
-                  const option = options.find(
-                    (option) => option.value === value
-                  );
-                  if (option) {
-                    return [key, option];
-                  }
-                  return null;
-                }
-                case storeFields.socialMediaLinks: {
-                  const socialMediaLinks = JSON.parse(value) as {
-                    value: string;
-                    url: string;
-                  }[];
-                  const values = socialMediaLinks
-                    .map((socialMediaObject) => {
-                      const option =
-                        formModel.formFields.socialMediaLinks.options.find(
-                          (opt) => {
-                            return opt.value === socialMediaObject.value;
-                          }
-                        );
-                      if (option) {
-                        return {
-                          ...option,
-                          url: socialMediaObject.url
-                        };
-                      }
-                      return null;
-                    })
-                    .filter(isTruthy);
-                  if (values?.length) {
-                    return [key, values];
-                  }
-                  return null;
-                }
-
-                case storeFields.additionalFooterLinks:
-                  return [key, JSON.parse(value)];
-                case storeFields.logoUrl:
-                  return [storeFields.logoUrlText, value];
-              }
-            } catch (error) {
-              console.error(error);
-              Sentry.captureException(error);
-              return null;
-            }
-
-            return [key, value];
-          })
-          .filter(isTruthy);
-        setValues({ ...values, ...Object.fromEntries(cleanedEntries) }, true);
-      } catch (error) {
-        console.error(error);
-        Sentry.captureException(error);
-      }
-    })();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [values.customStoreUrl]);
-
   const AdvancedTrigger = useCallback(() => {
     return <Section>Advanced</Section>;
   }, []);
@@ -441,16 +391,6 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
         flex="1 1 50%"
         gap="2rem"
       >
-        <Grid flexDirection="column" alignItems="flex-start">
-          <FieldTitle>Load data from an existing storefront</FieldTitle>
-          <FieldDescription>
-            Paste the URL of an existing custom storefront here
-          </FieldDescription>
-          <Input
-            name={storeFields.customStoreUrl}
-            placeholder={formModel.formFields.customStoreUrl.placeholder}
-          />
-        </Grid>
         <Grid flexDirection="column" alignItems="flex-start">
           <Section>General</Section>
           <Grid
@@ -490,6 +430,28 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
               />
             </Grid>
             <Grid flexDirection="column" alignItems="flex-start">
+              <FieldTitle>Banner URL</FieldTitle>
+              <FieldDescription>
+                Paste the link of your banner here
+              </FieldDescription>
+              <Input
+                name={storeFields.bannerUrlText}
+                placeholder={formModel.formFields.bannerUrlText.placeholder}
+              />
+              <FieldDescription margin="0.5rem 0 0 0">
+                or upload the image here (max. size {uploadMaxMB}MB)
+              </FieldDescription>
+              <Upload
+                name={storeFields.bannerUpload}
+                placeholder={formModel.formFields.bannerUpload.placeholder}
+                withUpload
+                withEditor
+                width={1531}
+                height={190}
+                imgPreviewStyle={{ objectFit: "contain" }}
+              />
+            </Grid>
+            <Grid flexDirection="column" alignItems="flex-start">
               <FieldTitle>Logo URL</FieldTitle>
               <FieldDescription>
                 Paste the link of your logo here
@@ -505,6 +467,10 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                 name={storeFields.logoUpload}
                 placeholder={formModel.formFields.logoUpload.placeholder}
                 withUpload
+                withEditor
+                width={1531}
+                height={190}
+                imgPreviewStyle={{ objectFit: "contain" }}
               />
             </Grid>
           </Grid>
@@ -650,20 +616,6 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
               gap={gapBetweenInputs}
             >
               <Grid flexDirection="column" alignItems="flex-start">
-                <FieldTitle>Toggle between Header or Side Bar Nav</FieldTitle>
-
-                <Select
-                  options={
-                    formModel.formFields.navigationBarPosition
-                      .options as unknown as SelectDataProps<string>[]
-                  }
-                  name={storeFields.navigationBarPosition}
-                  placeholder={
-                    formModel.formFields.navigationBarPosition.placeholder
-                  }
-                />
-              </Grid>
-              <Grid flexDirection="column" alignItems="flex-start">
                 <FieldTitle>Toggle footer (show/hide)</FieldTitle>
                 <Select
                   options={
@@ -748,6 +700,59 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                     })}
                   </Grid>
                   <Grid flexDirection="column" alignItems="flex-start">
+                    <FieldTitle>Contact info links</FieldTitle>
+                    <Select
+                      options={
+                        formModel.formFields.contactInfoLinks
+                          .options as unknown as SelectDataProps<string>[]
+                      }
+                      name={storeFields.contactInfoLinks}
+                      placeholder={
+                        formModel.formFields.contactInfoLinks.placeholder
+                      }
+                      isMulti
+                      isClearable
+                      isSearchable
+                    />
+                  </Grid>
+                  <Grid
+                    flexDirection="column"
+                    alignItems="flex-start"
+                    gap="0.5rem"
+                  >
+                    {!!values.contactInfoLinks?.length && (
+                      <Grid gap={gap}>
+                        <Grid flexBasis={firstSubFieldBasis}>
+                          <Typography>Icon</Typography>
+                        </Grid>
+                        <Grid flexBasis={secondSubFieldBasis}>
+                          <Typography>Text</Typography>
+                        </Grid>
+                      </Grid>
+                    )}
+                    {(values.contactInfoLinks || []).map((selection, index) => {
+                      const { label, value } = selection || {};
+
+                      return (
+                        <Grid key={label} gap={gap}>
+                          <Grid flexBasis={firstSubFieldBasis}>
+                            <ContactInfoLinkIcon icon={value} />
+                          </Grid>
+                          <Grid
+                            flexBasis={secondSubFieldBasis}
+                            flexDirection="column"
+                            alignItems="flex-start"
+                          >
+                            <Input
+                              name={`${storeFields.contactInfoLinks}[${index}].text`}
+                              placeholder={`${label}`}
+                            />
+                          </Grid>
+                        </Grid>
+                      );
+                    })}
+                  </Grid>
+                  <Grid flexDirection="column" alignItems="flex-start">
                     <FieldTitle>Additional footer links</FieldTitle>
                     <FieldDescription>
                       Further links to add to your footer (e.g. "Terms &
@@ -811,7 +816,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                         <BosonButton
                           disabled={!allFilledOut}
                           onClick={addFooterLink}
-                          variant="primaryFill"
+                          variant="secondaryFill"
                         >
                           + Add
                         </BosonButton>
