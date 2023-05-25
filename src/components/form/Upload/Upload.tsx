@@ -247,6 +247,7 @@ function Upload({
               ...store,
               modalType: store.modalType,
               modalProps: {
+                ...store.modalProps,
                 hidden: false
               }
             });
@@ -267,14 +268,15 @@ function Upload({
 
             if (files && withEditor) {
               setNativeFiles(files);
+              setShowEditor(true);
               updateProps({
                 ...store,
                 modalType: store.modalType,
                 modalProps: {
+                  ...store.modalProps,
                   hidden: true
                 }
               });
-              setShowEditor(true);
             } else {
               await saveFn(files);
             }

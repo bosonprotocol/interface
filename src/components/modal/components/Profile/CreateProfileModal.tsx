@@ -95,37 +95,6 @@ export default function CreateProfileModal({
     ),
     [switchChecked, setSwitchAndProfileType]
   );
-  const Component = useCallback(() => {
-    return profileType === ProfileType.LENS ? (
-      <LensProfileFlow
-        onSubmit={async (id, overrides) => {
-          hideModal(selectedProfile);
-          if (selectedProfile) {
-            onRegularProfileCreated?.(overrides);
-          }
-        }}
-        isEdit={false}
-        seller={seller || null}
-        lensProfile={selectedProfile}
-        changeToRegularProfile={() => setSwitchAndProfileType(false)}
-        switchButton={SwitchButton}
-        updateSellerMetadata={updateSellerMetadata}
-      />
-    ) : (
-      <CreateRegularProfileFlow
-        initialData={initialRegularCreateProfile}
-        onSubmit={(regularProfile) => {
-          toast((t) => (
-            <SuccessTransactionToast t={t} action="Create Seller Account" />
-          ));
-          onRegularProfileCreated?.(regularProfile);
-          hideModal();
-        }}
-        switchButton={SwitchButton}
-      />
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialRegularCreateProfile, onRegularProfileCreated, profileType]);
 
   if (!address) {
     return (
@@ -154,5 +123,32 @@ export default function CreateProfileModal({
     return <ChooseProfileType setProfileType={setProfileType} />;
   }
 
-  return <Component />;
+  return profileType === ProfileType.LENS ? (
+    <LensProfileFlow
+      onSubmit={async (id, overrides) => {
+        hideModal(selectedProfile);
+        if (selectedProfile) {
+          onRegularProfileCreated?.(overrides);
+        }
+      }}
+      isEdit={false}
+      seller={seller || null}
+      lensProfile={selectedProfile}
+      changeToRegularProfile={() => setSwitchAndProfileType(false)}
+      switchButton={SwitchButton}
+      updateSellerMetadata={updateSellerMetadata}
+    />
+  ) : (
+    <CreateRegularProfileFlow
+      initialData={initialRegularCreateProfile}
+      onSubmit={(regularProfile) => {
+        toast((t) => (
+          <SuccessTransactionToast t={t} action="Create Seller Account" />
+        ));
+        onRegularProfileCreated?.(regularProfile);
+        hideModal();
+      }}
+      switchButton={SwitchButton}
+    />
+  );
 }
