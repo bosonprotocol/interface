@@ -76,7 +76,7 @@ export const getShopRoutes = ({
         name: string;
         url: string;
       }
-    | { component: () => ReactElement }
+    | { component: (props?: Record<string, unknown>) => ReactElement }
   )[] = [];
   if (
     !isSupportFunctionalityDefined ||
@@ -103,7 +103,9 @@ export const getShopRoutes = ({
     (isSupportFunctionalityDefined && !onlySeller)
   ) {
     productRoutes.push({
-      component: () => <ViewTxButton>View Transactions</ViewTxButton>
+      component: (props) => (
+        <ViewTxButton {...props}>View Transactions</ViewTxButton>
+      )
     });
   }
   return productRoutes;
