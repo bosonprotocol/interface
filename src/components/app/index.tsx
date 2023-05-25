@@ -45,11 +45,9 @@ export default function App({
   const textColor = useCustomStoreQueryParameter("textColor");
   const footerBgColor = useCustomStoreQueryParameter("footerBgColor");
   const footerTextColor = useCustomStoreQueryParameter("footerTextColor");
-  const showFooterValue = useCustomStoreQueryParameter("showFooter");
   const fontFamily = useCustomStoreQueryParameter("fontFamily");
   const buttonBgColor = useCustomStoreQueryParameter("buttonBgColor");
   const buttonTextColor = useCustomStoreQueryParameter("buttonTextColor");
-  const showFooter = ["", "true"].includes(showFooterValue) && withFooter;
   const Wrapper = withLayout ? Layout : Fragment;
 
   return (
@@ -80,7 +78,7 @@ export default function App({
                 />
                 <Header fluidHeader={fluidHeader} />
                 <Wrapper>{children}</Wrapper>
-                {showFooter && <Footer />}
+                <Footer withFooter={withFooter} />
               </Container>
               <CookieBanner />
             </>

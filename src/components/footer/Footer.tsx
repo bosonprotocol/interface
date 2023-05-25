@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { CSSProperties, useMemo, useState } from "react";
 import styled from "styled-components";
 
 import logo from "../../../src/assets/logo-white.svg";
@@ -7,6 +7,7 @@ import { breakpoint } from "../../lib/styles/breakpoint";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { sanitizeUrl } from "../../lib/utils/url";
+import { AdditionalFooterLinksValues } from "../../pages/custom-store/AdditionalFooterLinks";
 import {
   ContactInfoLinkIcon,
   ContactInfoLinkIconValues
@@ -29,12 +30,12 @@ import {
   SOCIAL_ROUTES
 } from "./routes";
 
-const Footer = styled.footer`
+const Footer = styled.footer<{ padding?: CSSProperties["padding"] }>`
   width: 100%;
   background-color: var(--footerBgColor);
   color: var(--footerTextColor);
 
-  padding: 4rem 1rem 2rem 1rem;
+  padding: ${({ padding }) => padding || "4rem 1rem 2rem 1rem"};
   margin-top: auto;
 `;
 
@@ -218,7 +219,64 @@ function ContactInfoLinks() {
   ) : null;
 }
 
-export default function FooterComponent() {
+function CustomStoreAdditionalLinks() {
+  const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
+  const additionalFooterLinks = useCustomStoreQueryParameter<
+    { value: AdditionalFooterLinksValues; label: string; url: string }[]
+  >("additionalFooterLinks", { parseJson: true });
+  const renderAdditionalLinks = useMemo(() => {
+    if (isCustomStoreFront && typeof additionalFooterLinks !== "string") {
+      return additionalFooterLinks.map(({ label, value, url }, index) => {
+        return (
+          <a
+            key={`${label}-${value}-${index}`}
+            href={sanitizeUrl(url)}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {label}
+          </a>
+        );
+      });
+    }
+    return null;
+  }, [isCustomStoreFront, additionalFooterLinks]);
+  return renderAdditionalLinks?.length ? (
+    <div>
+      <Typography $fontSize="1rem" fontWeight="600" tag="p">
+        CLIENT SERVICE
+      </Typography>
+      <NavigationLinks
+        flexDirection="column"
+        style={{ alignItems: "flex-start", justifyContent: "flex-end" }}
+      >
+        {renderAdditionalLinks}
+      </NavigationLinks>
+    </div>
+  ) : null;
+}
+
+function ByBoson() {
+  return (
+    <Grid justifyContent="center">
+      <Typography $fontSize="0.8rem">Powered by Boson</Typography>
+    </Grid>
+  );
+}
+
+export default function ({ withFooter }: { withFooter: boolean }) {
+  const showFooterValue = useCustomStoreQueryParameter("showFooter");
+  const showFooter = ["", "true"].includes(showFooterValue) && withFooter;
+  return showFooter ? (
+    <FullFooter />
+  ) : (
+    <Footer padding="2rem 1rem">
+      <ByBoson />
+    </Footer>
+  );
+}
+
+export function FullFooter() {
   const { roles, sellerId, buyerId } = useUserRoles({ role: [] });
   const { data: sellerExchanges } = useExchanges(
     { sellerId, disputed: null },
@@ -237,9 +295,6 @@ export default function FooterComponent() {
   const [year] = useState<number>(new Date().getFullYear());
   const logoUrl = useCustomStoreQueryParameter("logoUrl");
   const copyright = useCustomStoreQueryParameter("copyright");
-  const additionalFooterLinks = useCustomStoreQueryParameter<
-    { label: string; value: string }[]
-  >("additionalFooterLinks", { parseJson: true });
   const supportFunctionality = useCustomStoreQueryParameter<
     ("buyer" | "seller" | "dr")[]
   >("supportFunctionality", { parseJson: true });
@@ -328,23 +383,7 @@ export default function FooterComponent() {
               columnGap="4rem"
               rowGap="4rem"
             >
-              {typeof additionalFooterLinks !== "string" && (
-                <NavigationLinks>
-                  {additionalFooterLinks.map((footerLink, index) => {
-                    return (
-                      <a
-                        key={`${footerLink.label}-${footerLink.value}-${index}`}
-                        href={sanitizeUrl(footerLink.value)}
-                        target="_blank"
-                        style={{ textAlign: "center" }}
-                        rel="noopener noreferrer"
-                      >
-                        {footerLink.label}
-                      </a>
-                    );
-                  })}
-                </NavigationLinks>
-              )}
+              <CustomStoreAdditionalLinks />
               <GridContainer
                 itemsPerRow={{
                   xs: 1,
@@ -406,9 +445,7 @@ export default function FooterComponent() {
 
         <Grid padding="2rem 0 0 0" justifyContent="flex-end" gap="1rem">
           <>
-            {!(
-              isCustomStoreFront && typeof additionalFooterLinks !== "string"
-            ) && (
+            {!isCustomStoreFront && (
               <NavigationLinks>
                 {ADDITIONAL_LINKS.map((footerLink, index) => {
                   return (
@@ -429,11 +466,7 @@ export default function FooterComponent() {
             {isCustomStoreFront ? copyright : `© ${year} Bosonapp.io`}
           </Typography>
         </Grid>
-        {isCustomStoreFront && (
-          <Grid justifyContent="center">
-            <Typography $fontSize="0.8rem">Powered by Boson</Typography>
-          </Grid>
-        )}
+        {isCustomStoreFront && <ByBoson />}
       </Layout>
     </Footer>
   );

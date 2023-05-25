@@ -8,8 +8,8 @@ import {
   websitePattern
 } from "../../lib/validation/regex/url";
 import { validationOfFile } from "../chat/components/UploadForm/const";
+import { AdditionalFooterLinksValues } from "./AdditionalFooterLinks";
 import { ContactInfoLinkIconValues } from "./ContactInfoLinkIcon";
-import { OtherFooterLinksValues } from "./OtherFooterLinks";
 import { SocialLogoValues } from "./SocialLogo";
 
 export type SelectType<Value extends string = string> =
@@ -272,7 +272,7 @@ export const formModel = {
         { label: "Terms of Service", value: "terms_of_service", url: "" },
         { label: "Privacy Policy", value: "privacy_policy", url: "" },
         { label: "Custom", value: "custom", url: "" }
-      ] as { label: string; value: OtherFooterLinksValues; url: string }[]
+      ] as { label: string; value: AdditionalFooterLinksValues; url: string }[]
     },
     [storeFields.navigationBarPosition]: {
       name: storeFields.navigationBarPosition,
