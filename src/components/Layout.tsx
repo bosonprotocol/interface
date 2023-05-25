@@ -3,7 +3,7 @@ import styled, { css } from "styled-components";
 
 import { breakpoint } from "../lib/styles/breakpoint";
 
-export const LayoutPadding = css`
+export const layoutPadding = css`
   padding: 0 1rem;
 
   ${breakpoint.xs} {
@@ -22,7 +22,7 @@ export const LayoutPadding = css`
 
 export const LayoutRoot = styled.div`
   margin: 0 auto;
-  ${LayoutPadding};
+  ${layoutPadding};
 
   width: 100%;
   max-width: 100vw;
