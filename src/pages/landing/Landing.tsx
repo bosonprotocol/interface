@@ -2,7 +2,7 @@ import { useState } from "react";
 import styled, { css } from "styled-components";
 import useResizeObserver from "use-resize-observer";
 
-import { LayoutPadding } from "../../components/Layout";
+import { layoutPadding } from "../../components/Layout";
 import BosonButton from "../../components/ui/BosonButton";
 import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
@@ -44,7 +44,7 @@ const StyledGridWithZindex = styled(GridWithZindex)`
   width: 100vw;
   margin-left: 50%;
   transform: translateX(-50%);
-  ${LayoutPadding};
+  ${layoutPadding};
 `;
 
 const Title = styled(Typography)`
