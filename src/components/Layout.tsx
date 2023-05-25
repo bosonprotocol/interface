@@ -20,7 +20,7 @@ export const LayoutPadding = css`
   }
 `;
 
-export const LayoutRoot = styled.div.attrs({ "data-layout-root": true })`
+export const LayoutRoot = styled.div`
   margin: 0 auto;
   ${LayoutPadding};
 
