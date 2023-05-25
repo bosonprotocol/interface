@@ -2,7 +2,6 @@ import { useState } from "react";
 import styled, { css } from "styled-components";
 import useResizeObserver from "use-resize-observer";
 
-import { layoutPadding } from "../../components/Layout";
 import BosonButton from "../../components/ui/BosonButton";
 import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
@@ -40,11 +39,6 @@ const GridWithZindex = styled(Grid)`
 
 const StyledGridWithZindex = styled(GridWithZindex)`
   pointer-events: none;
-  position: relative;
-  width: 100vw;
-  margin-left: 50%;
-  transform: translateX(-50%);
-  ${layoutPadding};
 `;
 
 const Title = styled(Typography)`
@@ -101,31 +95,27 @@ export default function Landing() {
   return (
     <LandingPage ref={ref} isCustomStoreFront={isCustomStoreFront}>
       {isCustomStoreFront ? (
-        <StyledGridWithZindex
-          alignItems="flex-start"
-          flexDirection="column"
-          style={{
-            backgroundImage: `url(${bannerUrl})`,
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-            backgroundSize: "cover"
-          }}
-        >
-          <Title tag="h1" fontWeight="600">
-            {title ? (
-              title
-            ) : (
-              <>
-                Tokenize, transfer and trade any physical asset
-                as&nbsp;an&nbsp;NFT
-              </>
-            )}
-          </Title>
-          <SubTitle tag="h4" fontWeight="400">
-            {description ||
-              "The first decentralized marketplace built on Boson Protocol"}
-          </SubTitle>
-        </StyledGridWithZindex>
+        <div>
+          {bannerUrl && (
+            <div
+              style={{
+                backgroundImage: `url(${bannerUrl})`,
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
+                backgroundSize: "cover",
+                height: "6.25rem"
+              }}
+            />
+          )}
+          <StyledGridWithZindex alignItems="flex-start" flexDirection="column">
+            <Title tag="h1" fontWeight="600">
+              {title}
+            </Title>
+            <SubTitle tag="h4" fontWeight="400">
+              {description}
+            </SubTitle>
+          </StyledGridWithZindex>
+        </div>
       ) : (
         <>
           <Grid
@@ -136,18 +126,11 @@ export default function Landing() {
           >
             <GridWithZindex alignItems="flex-start" flexDirection="column">
               <Title tag="h1" fontWeight="600">
-                {title ? (
-                  title
-                ) : (
-                  <>
-                    Tokenize, transfer and trade any physical asset
-                    as&nbsp;an&nbsp;NFT
-                  </>
-                )}
+                Tokenize, transfer and trade any physical asset
+                as&nbsp;an&nbsp;NFT
               </Title>
               <SubTitle tag="h4" fontWeight="400">
-                {description ||
-                  "The first decentralized marketplace built on Boson Protocol"}
+                The first decentralized marketplace built on Boson Protocol
               </SubTitle>
               <ExploreContainer>
                 <ExploreProductsButton
