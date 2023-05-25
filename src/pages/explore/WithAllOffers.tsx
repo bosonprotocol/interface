@@ -43,7 +43,7 @@ const ExploreOffersContainer = styled.div<{ $isPrimaryBgChanged: boolean }>`
   padding: 3rem 0 4rem 0;
   min-height: 55.5vh;
 `;
-export const Wrapper = styled.div`
+const Wrapper = styled.div`
   text-align: center;
 `;
 interface PriceDetails {
@@ -53,7 +53,7 @@ interface PriceDetails {
     symbol: string;
   };
 }
-export interface OfferAdditional {
+interface OfferAdditional {
   isValid?: boolean;
   status?: string;
   uuid?: string;
@@ -74,7 +74,7 @@ export interface OfferAdditional {
   };
 }
 export type ExtendedOffer = OfferAdditional & Offer;
-export interface SellerAdditional {
+interface SellerAdditional {
   title?: string;
   brandName?: string;
   createdAt?: string;
@@ -101,7 +101,7 @@ export interface FilterOptions {
   exchangeOrderBy?: string;
   validFromDate_lte?: string;
 }
-export interface ExtendedProducts {
+interface ExtendedProducts {
   products?: ExtendedOffer[];
   sellers?: ExtendedSeller[];
   isLoading?: boolean;

@@ -9,15 +9,6 @@ export const ExploreQueryParameters = {
   sellerCurationList: "sellerCurationList"
 } as const;
 
-export const CollectionsQueryParameters = {
-  value: "value",
-  orderDirection: "orderDirection",
-  orderBy: "orderBy",
-  exchangeOrderBy: "exchangeOrderBy",
-  validFromDate_lte: "validFromDate_lte",
-  disputeResolver: "dr-admin"
-} as const;
-
 export const AccountQueryParameters = {
   tab: "tab",
   manageFunds: "manageFunds"

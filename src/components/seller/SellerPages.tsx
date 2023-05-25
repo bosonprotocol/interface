@@ -86,25 +86,3 @@ export const sellerPageTypes = {
     withoutWrapper: true
   }
 };
-
-export type SellerPageTypes = keyof typeof sellerPageTypes;
-
-export type SellerPage = {
-  url: string;
-  externalPath: string;
-  label: string;
-  icon: React.ReactNode | JSX.Element;
-  component: React.ReactNode | JSX.Element;
-  withoutWrapper?: boolean;
-};
-
-export type SellerPages = {
-  [x in keyof SellerPageTypes]: SellerPage;
-};
-
-export const SellerPages = (type: string | undefined) => {
-  return () =>
-    sellerPageTypes[
-      (type || DEFAULT_SELLER_PAGE) as keyof typeof sellerPageTypes
-    ];
-};
