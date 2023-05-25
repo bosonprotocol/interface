@@ -8,9 +8,10 @@ import Grid from "../ui/Grid";
 
 type ViewTxButtonProps = {
   children?: ReactNode;
+  [x: string]: unknown;
 };
 
-export default function ViewTxButton({ children }: ViewTxButtonProps) {
+export default function ViewTxButton({ children, ...rest }: ViewTxButtonProps) {
   const { showModal } = useModal();
   const coreSDK = useCoreSDK();
   const {
@@ -54,6 +55,7 @@ export default function ViewTxButton({ children }: ViewTxButtonProps) {
           "m"
         );
       }}
+      {...rest}
     >
       {children ? (
         children

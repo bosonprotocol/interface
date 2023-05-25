@@ -276,7 +276,7 @@ export default function ({ withFooter }: { withFooter: boolean }) {
   );
 }
 
-export function FullFooter() {
+function FullFooter() {
   const { roles, sellerId, buyerId } = useUserRoles({ role: [] });
   const { data: sellerExchanges } = useExchanges(
     { sellerId, disputed: null },
@@ -325,7 +325,11 @@ export function FullFooter() {
           </LinkWithQuery>
         );
       } else if ("component" in nav && nav.component) {
-        acc.push(nav.component());
+        acc.push(
+          nav.component({
+            key: "view-transactions"
+          })
+        );
       }
     }
     return acc;

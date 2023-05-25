@@ -4,11 +4,12 @@ import { ConnectButton as RainbowConnectButton } from "@rainbow-me/rainbowkit";
 import * as Sentry from "@sentry/browser";
 import { useField } from "formik";
 import { useCallback, useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { generatePath, useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
-import { BosonRoutes } from "../../lib/routing/routes";
+import { UrlParameters } from "../../lib/routing/parameters";
+import { BosonRoutes, SellerCenterRoutes } from "../../lib/routing/routes";
 import { breakpointNumbers } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { useGetSellerMetadata } from "../../lib/utils/hooks/seller/useGetSellerMetadata";
@@ -24,6 +25,7 @@ import { getLensTokenIdDecimal } from "../modal/components/Profile/Lens/utils";
 import { buildProfileFromMetadata } from "../modal/components/Profile/utils";
 import { MODAL_TYPES } from "../modal/ModalComponents";
 import { useModal } from "../modal/useModal";
+import { DEFAULT_SELLER_PAGE } from "../seller/SellerPages";
 import BosonButton from "../ui/BosonButton";
 import Grid from "../ui/Grid";
 import GridContainer from "../ui/GridContainer";
@@ -461,6 +463,22 @@ export default function ProductType({
           </FormField>
         </GridContainer>
         <ProductButtonGroup>
+          <BosonButton
+            variant="accentInverted"
+            type="button"
+            style={{
+              whiteSpace: "pre"
+            }}
+            onClick={() => {
+              navigate({
+                pathname: generatePath(SellerCenterRoutes.SellerCenter, {
+                  [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
+                })
+              });
+            }}
+          >
+            Seller Center
+          </BosonButton>
           <BosonButton
             variant="primaryFill"
             type="submit"
