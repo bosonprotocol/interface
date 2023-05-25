@@ -76,7 +76,6 @@ export interface IRoutes extends RouteProps {
     withLayout?: boolean;
     withFooter?: boolean;
     fluidHeader?: boolean;
-    withBanner?: boolean;
   };
 }
 export default [
@@ -87,8 +86,7 @@ export default [
     component: LandingPage,
     app: {
       ...base.app,
-      withBosonStyles: false,
-      withBanner: true
+      withBosonStyles: false
     }
   },
   {

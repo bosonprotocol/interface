@@ -13,13 +13,6 @@ export const ConfirmProductDetailsContainer = styled(ContainerProductPage)`
   padding-bottom: 10.875rem;
 `;
 
-export const CurrencyIconWrapper = styled.div`
-  svg {
-    width: 1.125rem;
-    height: 1.125rem;
-  }
-`;
-
 export const CollapseContainer = styled.div`
   padding: 1.5rem 2rem;
   background: ${colors.lightGrey};
@@ -65,10 +58,6 @@ export const ConfirmationContent = styled.div`
 
 export const ConfirmProductDetailsButtonGroup = styled(ProductButtonGroup)`
   margin: 5rem 0 0 0;
-`;
-
-export const CollapseContent = styled.div`
-  margin-top: 1.719rem;
 `;
 
 export const GridBox = styled.div<{ $minWidth?: string }>`
@@ -166,16 +155,6 @@ export const SpaceContainer = styled.div`
 
 export const InitializeChatContainer = styled.div`
   margin-top: 2rem;
-`;
-
-export const RenderProductImageWrapper = styled.div`
-  height: 9.375rem;
-  width: 9.375rem;
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
 `;
 
 export const Info = styled(Grid)`

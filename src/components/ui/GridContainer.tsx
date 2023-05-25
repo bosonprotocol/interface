@@ -1,3 +1,4 @@
+import { CSSProperties } from "react";
 import styled from "styled-components";
 
 import { breakpoint } from "../../lib/styles/breakpoint";
@@ -10,10 +11,14 @@ export interface ItemsPerRow {
   xl: number;
 }
 
-const GridContainer = styled.div<{ itemsPerRow?: Partial<ItemsPerRow> }>`
+const GridContainer = styled.div<{
+  itemsPerRow?: Partial<ItemsPerRow>;
+  columnGap?: CSSProperties["columnGap"];
+  rowGap?: CSSProperties["rowGap"];
+}>`
   display: grid;
-  grid-column-gap: 2rem;
-  grid-row-gap: 2rem;
+  grid-column-gap: ${({ columnGap }) => columnGap || "2rem"};
+  grid-row-gap: ${({ rowGap }) => rowGap || "2rem"};
 
   grid-template-columns: repeat(1, minmax(0, 1fr));
   ${breakpoint.xs} {

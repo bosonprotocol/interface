@@ -8,6 +8,8 @@ import {
   websitePattern
 } from "../../lib/validation/regex/url";
 import { validationOfFile } from "../chat/components/UploadForm/const";
+import { AdditionalFooterLinksValues } from "./AdditionalFooterLinks";
+import { ContactInfoLinkIconValues } from "./ContactInfoLinkIcon";
 import { SocialLogoValues } from "./SocialLogo";
 
 export type SelectType<Value extends string = string> =
@@ -18,6 +20,7 @@ export type StoreFields = {
   storeName: string;
   title: string;
   description: string;
+  bannerUrl: string;
   logoUrl: string;
   headerBgColor: string;
   headerTextColor: string;
@@ -34,6 +37,7 @@ export type StoreFields = {
   copyright: string;
   showFooter: SelectType;
   socialMediaLinks: SelectType<SocialLogoValues>[];
+  contactInfoLinks: SelectType<ContactInfoLinkIconValues>[];
   additionalFooterLinks: SelectType[];
   withOwnProducts: SelectType;
   sellerCurationList: string;
@@ -45,9 +49,10 @@ export type StoreFields = {
 };
 
 export type StoreFormFields = StoreFields & {
+  bannerUrlText: string;
+  bannerUpload: { name: string; size: number; src: string; type: string }[];
   logoUrlText: string;
   logoUpload: { name: string; size: number; src: string; type: string }[];
-  withAdditionalFooterLinks: SelectType;
   withMetaTx: SelectType;
   customStoreUrl: string;
 };
@@ -58,6 +63,9 @@ export const storeFields = {
   storeName: "storeName",
   title: "title",
   description: "description",
+  bannerUrl: "bannerUrl",
+  bannerUrlText: "bannerUrlText",
+  bannerUpload: "bannerUpload",
   logoUrl: "logoUrl",
   logoUrlText: "logoUrlText",
   logoUpload: "logoUpload",
@@ -74,7 +82,7 @@ export const storeFields = {
   showFooter: "showFooter",
   copyright: "copyright",
   socialMediaLinks: "socialMediaLinks",
-  withAdditionalFooterLinks: "withAdditionalFooterLinks",
+  contactInfoLinks: "contactInfoLinks",
   additionalFooterLinks: "additionalFooterLinks",
   withOwnProducts: "withOwnProducts",
   sellerCurationList: "sellerCurationList",
@@ -119,6 +127,19 @@ export const formModel = {
       name: storeFields.description,
       requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: ""
+    },
+    [storeFields.bannerUrl]: {
+      name: storeFields.bannerUrl
+    },
+    [storeFields.bannerUrlText]: {
+      name: storeFields.bannerUrlText,
+      requiredErrorMessage: standardRequiredErrorMessage,
+      placeholder: ""
+    },
+    [storeFields.bannerUpload]: {
+      name: storeFields.bannerUpload,
+      requiredErrorMessage: standardRequiredErrorMessage,
+      placeholder: "Banner Image"
     },
     [storeFields.logoUrl]: {
       name: storeFields.logoUrl
@@ -229,16 +250,29 @@ export const formModel = {
         { label: "Youtube", value: "youtube", url: "" }
       ]
     },
-    [storeFields.withAdditionalFooterLinks]: {
-      name: storeFields.withAdditionalFooterLinks,
+    [storeFields.contactInfoLinks]: {
+      name: storeFields.contactInfoLinks,
       requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: "",
-      options: getYesNoOptions("no")
+      options: [
+        { label: "Phone", value: "phone", text: "" },
+        { label: "Email", value: "email", text: "" },
+        { label: "Address", value: "address", text: "" }
+      ]
     },
     [storeFields.additionalFooterLinks]: {
       name: storeFields.additionalFooterLinks,
       requiredErrorMessage: standardRequiredErrorMessage,
-      placeholder: ""
+      placeholder: "",
+      options: [
+        { label: "Home", value: "home", url: "" },
+        { label: "FAQs", value: "email", url: "" },
+        { label: "Contact Us", value: "contact_us", url: "" },
+        { label: "How Boson Works", value: "how_boson_works", url: "" },
+        { label: "Terms of Service", value: "terms_of_service", url: "" },
+        { label: "Privacy Policy", value: "privacy_policy", url: "" },
+        { label: "Custom", value: "custom", url: "" }
+      ] as { label: string; value: AdditionalFooterLinksValues; url: string }[]
     },
     [storeFields.navigationBarPosition]: {
       name: storeFields.navigationBarPosition,
@@ -363,14 +397,18 @@ export const validationSchema = Yup.object({
         .required(standardRequiredErrorMessage)
     })
   ),
-  [storeFields.withAdditionalFooterLinks]: Yup.object({
-    label: Yup.string().required(standardRequiredErrorMessage),
-    value: Yup.string().required(standardRequiredErrorMessage)
-  }).nullable(),
+  [storeFields.contactInfoLinks]: Yup.array(
+    Yup.object({
+      label: Yup.string().required(standardRequiredErrorMessage),
+      value: Yup.string().required(standardRequiredErrorMessage),
+      text: Yup.string().required(standardRequiredErrorMessage)
+    })
+  ),
   [storeFields.additionalFooterLinks]: Yup.array(
     Yup.object({
       label: Yup.string(),
-      value: Yup.string()
+      value: Yup.string(),
+      url: Yup.string()
         .matches(new RegExp(websitePattern), notUrlErrorMessage)
         .when("label", (label) => {
           if (label) {
@@ -418,6 +456,9 @@ export const initialValues = {
   [storeFields.storeName]: "",
   [storeFields.title]: "",
   [storeFields.description]: "",
+  [storeFields.bannerUrl]: "",
+  [storeFields.bannerUrlText]: "",
+  [storeFields.bannerUpload]: [],
   [storeFields.logoUrl]: "",
   [storeFields.logoUrlText]: "",
   [storeFields.logoUpload]: [],
@@ -442,8 +483,10 @@ export const initialValues = {
     (option) => "default" in option && option.default
   ) as SelectDataProps,
   [storeFields.socialMediaLinks]: [] as (SelectDataProps & { url: string })[],
-  [storeFields.withAdditionalFooterLinks]: null as unknown as SelectDataProps,
-  [storeFields.additionalFooterLinks]: [] as SelectDataProps[],
+  [storeFields.contactInfoLinks]: [] as (SelectDataProps & { text: string })[],
+  [storeFields.additionalFooterLinks]: [] as (SelectDataProps & {
+    url: string;
+  })[],
   [storeFields.copyright]: "",
   [storeFields.withOwnProducts]:
     formModel.formFields.withOwnProducts.options.find(

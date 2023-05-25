@@ -134,10 +134,6 @@ export const FileUploadWrapper = styled.div.attrs(
   }
 `;
 
-export const FieldFileUpload = styled(FieldInput)`
-  display: none;
-`;
-
 export const FieldFileUploadWrapper = styled.div<{ $disabled: boolean }>`
   position: relative;
   display: inline-block;

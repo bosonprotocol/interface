@@ -55,7 +55,7 @@ const UnsignedMessageWrapper = styled.div`
   }
 `;
 
-export const FormModel = {
+const FormModel = {
   formFields: {
     message: {
       name: "message",

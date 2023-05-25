@@ -216,6 +216,9 @@ const HeaderItems = styled.nav<{
 const LogoImg = styled.img`
   height: 24px;
   cursor: pointer;
+  ${breakpoint.s} {
+    height: 47px;
+  }
 `;
 
 const Burger = ({ onClick }: { onClick: () => void }) => {
@@ -230,10 +233,9 @@ const Burger = ({ onClick }: { onClick: () => void }) => {
 
 interface Props {
   fluidHeader: boolean;
-  withBanner: boolean;
 }
 const HeaderComponent = forwardRef<HTMLElement, Props>(
-  ({ fluidHeader = false, withBanner = false }, ref) => {
+  ({ fluidHeader = false }, ref) => {
     const { address } = useAccount();
     const navigate = useKeepQueryParamsNavigate();
     const [isOpen, setOpen] = useState(false);
@@ -350,7 +352,10 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
             ) : (
               <>
                 <Grid flexDirection="row" alignItems="center" $width="initial">
-                  <LinkWithQuery to={BosonRoutes.Root}>
+                  <LinkWithQuery
+                    to={BosonRoutes.Root}
+                    style={{ display: "flex" }}
+                  >
                     <LogoImg
                       src={logoUrl || logo}
                       alt="logo image"
@@ -381,7 +386,6 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
                     isMobile={burgerMenuBreakpoint}
                     isOpen={isOpen}
                     navigationBarPosition={navigationBarPosition}
-                    hasTopBanner={withBanner}
                   />
                   {!burgerMenuBreakpoint && (
                     <>

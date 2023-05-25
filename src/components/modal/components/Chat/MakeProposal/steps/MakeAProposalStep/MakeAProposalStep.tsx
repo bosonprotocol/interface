@@ -29,7 +29,7 @@ interface Props {
 }
 
 export const RefundLabel = "Refund";
-export const proposals = [{ label: RefundLabel, value: "refund" }];
+const proposals = [{ label: RefundLabel, value: "refund" }];
 
 export default function MakeAProposalStep({
   exchange,

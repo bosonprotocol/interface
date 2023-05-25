@@ -29,14 +29,12 @@ interface Props {
   withFooter?: boolean;
   fluidHeader?: boolean;
   withBosonStyles?: boolean;
-  withBanner?: boolean;
 }
 export default function App({
   withLayout = true,
   withFooter = true,
   fluidHeader = false,
   withBosonStyles = true,
-  withBanner = false,
   children
 }: Props) {
   const headerBgColor = useCustomStoreQueryParameter("headerBgColor");
@@ -47,11 +45,9 @@ export default function App({
   const textColor = useCustomStoreQueryParameter("textColor");
   const footerBgColor = useCustomStoreQueryParameter("footerBgColor");
   const footerTextColor = useCustomStoreQueryParameter("footerTextColor");
-  const showFooterValue = useCustomStoreQueryParameter("showFooter");
   const fontFamily = useCustomStoreQueryParameter("fontFamily");
   const buttonBgColor = useCustomStoreQueryParameter("buttonBgColor");
   const buttonTextColor = useCustomStoreQueryParameter("buttonTextColor");
-  const showFooter = ["", "true"].includes(showFooterValue) && withFooter;
   const Wrapper = withLayout ? Layout : Fragment;
 
   return (
@@ -80,9 +76,9 @@ export default function App({
                   $buttonBgColor={buttonBgColor}
                   $buttonTextColor={buttonTextColor}
                 />
-                <Header fluidHeader={fluidHeader} withBanner={withBanner} />
+                <Header fluidHeader={fluidHeader} />
                 <Wrapper>{children}</Wrapper>
-                {showFooter && <Footer />}
+                <Footer withFooter={withFooter} />
               </Container>
               <CookieBanner />
             </>
