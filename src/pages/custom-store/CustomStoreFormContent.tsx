@@ -1,5 +1,5 @@
 import * as Sentry from "@sentry/browser";
-import { useFormikContext } from "formik";
+import { useField, useFormikContext } from "formik";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import styled from "styled-components";
 
@@ -7,9 +7,11 @@ import CollapseWithTrigger from "../../components/collapse/CollapseWithTrigger";
 import SimpleError from "../../components/error/SimpleError";
 import { Input, Select, Upload } from "../../components/form";
 import InputColor from "../../components/form/InputColor";
+import { SwitchForm } from "../../components/form/Switch";
 import { SelectDataProps } from "../../components/form/types";
 import BosonButton from "../../components/ui/BosonButton";
 import Grid from "../../components/ui/Grid";
+import GridContainer from "../../components/ui/GridContainer";
 import Typography from "../../components/ui/Typography";
 import { colors } from "../../lib/styles/colors";
 import { isTruthy } from "../../lib/types/helpers";
@@ -21,6 +23,7 @@ import SocialLogo from "./SocialLogo";
 import {
   formModel,
   initialValues,
+  InternalOnlyStoreFields,
   SelectType,
   storeFields,
   StoreFormFields,
@@ -61,17 +64,19 @@ interface Props {
   hasSubmitError: boolean;
 }
 
-const ignoreStoreFields = [
+const ignoreStoreFields: ReadonlyArray<keyof InternalOnlyStoreFields> = [
+  storeFields.bannerSwitch,
   storeFields.bannerUrlText,
   storeFields.bannerUpload,
   storeFields.logoUrlText,
   storeFields.logoUpload,
   storeFields.customStoreUrl
-] as string[];
+] as const;
 
 export const formValuesWithOneLogoUrl = (values: StoreFormFields) => {
-  return Object.entries(values)
-    .filter(([key]) => !ignoreStoreFields.includes(key))
+  const entries = Object.entries(values)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    .filter(([key]) => !ignoreStoreFields.includes(key as any))
     .map(([key, value]) => {
       if (typeof value === "string") {
         let val = value.trim();
@@ -155,10 +160,14 @@ export const formValuesWithOneLogoUrl = (values: StoreFormFields) => {
         }
         return [[key, JSON.stringify(valueListWithoutExtraKeys)]];
       }
+      if (typeof value === "boolean") {
+        return [[key, value ? "1" : ""]];
+      }
       return [[key, value?.value?.trim() || ""]];
     })
     .filter((v) => !!v && !!v[0] && !!v[0][0] && !!v[0][1])
     .flat();
+  return entries;
 };
 
 export default function CustomStoreFormContent({ hasSubmitError }: Props) {
@@ -371,6 +380,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
     if (!values.customStoreUrl) {
       return;
     }
+    // load data from an existing storefront
     (async () => {
       try {
         let iframeSrc = values.customStoreUrl.replace("/#/", "/");
@@ -402,7 +412,8 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
             return (
               key !== storeFields.isCustomStoreFront &&
               allKeys.includes(key) &&
-              !ignoreStoreFields.includes(key)
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              !ignoreStoreFields.includes(key as any)
             );
           })
           .map(([keyWithMaybeAmp, value]) => {
@@ -484,8 +495,20 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
   const StyleTrigger = useCallback(() => {
     return <Section>Style</Section>;
   }, []);
+  const [switchField] = useField(storeFields.bannerSwitch);
+  const [, , bannerImgPositionHelpers] = useField(
+    storeFields.bannerImgPosition
+  );
+  useEffect(() => {
+    bannerImgPositionHelpers.setValue(switchField.value ? "under" : "over");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [switchField.value]);
   return (
-    <Grid alignItems="flex-start" gap="2.875rem">
+    <GridContainer
+      columnGap="2.875rem"
+      rowGap="2.875rem"
+      itemsPerRow={{ xs: 1, s: 2, m: 2, l: 2, xl: 2 }}
+    >
       <Grid
         flexDirection="column"
         alignItems="flex-start"
@@ -541,7 +564,31 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
               />
             </Grid>
             <Grid flexDirection="column" alignItems="flex-start">
-              <FieldTitle>Banner URL</FieldTitle>
+              <Grid>
+                <FieldTitle style={{ whiteSpace: "pre" }}>
+                  Banner URL
+                </FieldTitle>
+
+                <SwitchForm
+                  gridProps={{
+                    justifyContent: "flex-end",
+                    style: {
+                      display: values.title || values.description ? "" : "none"
+                    }
+                  }}
+                  name={storeFields.bannerSwitch}
+                  label={({ toggleFormValue, checked }) => (
+                    <Typography
+                      color={colors.secondary}
+                      $fontSize="0.8rem"
+                      onClick={() => toggleFormValue?.()}
+                      cursor="pointer"
+                    >
+                      {checked ? "Position: under" : "Position: over"}
+                    </Typography>
+                  )}
+                />
+              </Grid>
               <FieldDescription>
                 Paste the link of your banner here
               </FieldDescription>
@@ -1021,9 +1068,10 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
         style={{
           alignSelf: "stretch",
           width: "100%",
+          minHeight: "50rem",
           display: "flex"
         }}
       ></iframe>
-    </Grid>
+    </GridContainer>
   );
 }

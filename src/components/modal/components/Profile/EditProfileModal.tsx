@@ -8,7 +8,7 @@ import { colors } from "../../../../lib/styles/colors";
 import useUpdateSellerMetadata from "../../../../lib/utils/hooks/seller/useUpdateSellerMetadata";
 import { useCurrentSellers } from "../../../../lib/utils/hooks/useCurrentSellers";
 import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import Switch from "../../../form/Switch";
+import { Switch } from "../../../form/Switch";
 import { CreateProfile } from "../../../product/utils";
 import BosonButton from "../../../ui/BosonButton";
 import Grid from "../../../ui/Grid";
@@ -54,7 +54,7 @@ export default function EditProfileModal() {
           justifyContent: "flex-end"
         }}
         checked={switchChecked}
-        label={
+        label={() => (
           <Typography
             color={colors.secondary}
             $fontSize="0.8rem"
@@ -63,7 +63,7 @@ export default function EditProfileModal() {
           >
             Link Lens Profile
           </Typography>
-        }
+        )}
       />
     ),
     [switchChecked, setSwitchAndProfileType]
