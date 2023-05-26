@@ -167,8 +167,9 @@ const Wrapper = styled.div<{
   }
   ${({ $size }) =>
     $size === "fullscreen" &&
-    `
+    css`
       min-height: 100vh;
+      height: 100%;
     `};
 `;
 
@@ -214,29 +215,6 @@ const Content = styled.div<{
         return "2rem";
     }
   }};
-
-  ${({ $size }) =>
-    $size === "fullscreen"
-      ? `
-  max-height: calc(100vh - 4.25rem);
-
-  ${breakpoint.s} {
-    max-height: calc(100vh - 4.25rem);
-  }
-  ${breakpoint.m} {
-    max-height: calc(100vh - 4.25rem);
-  }
-  `
-      : `
-  max-height: calc(100vh - 4.25rem);
-
-  ${breakpoint.s} {
-    max-height: calc(100vh - 4rem - 4.25rem);
-  }
-  ${breakpoint.m} {
-    max-height: calc(100vh - 8rem - 4.25rem);
-  }
-  `};
   ${({ $modalType }) => {
     switch ($modalType) {
       case "RELIST_OFFER":
@@ -251,6 +229,30 @@ const Content = styled.div<{
         `;
     }
   }};
+  ${({ $size }) =>
+    $size === "fullscreen"
+      ? css`
+          height: 100%;
+          overflow: hidden;
+          max-height: calc(100vh - 4.25rem);
+
+          ${breakpoint.s} {
+            max-height: calc(100vh - 4.25rem);
+          }
+          ${breakpoint.m} {
+            max-height: calc(100vh - 4.25rem);
+          }
+        `
+      : css`
+          max-height: calc(100vh - 4.25rem);
+
+          ${breakpoint.s} {
+            max-height: calc(100vh - 4rem - 4.25rem);
+          }
+          ${breakpoint.m} {
+            max-height: calc(100vh - 8rem - 4.25rem);
+          }
+        `};
 `;
 
 interface Props {

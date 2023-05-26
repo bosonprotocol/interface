@@ -1,5 +1,6 @@
 import * as Sentry from "@sentry/browser";
 import { useField, useFormikContext } from "formik";
+import { ArrowsOut } from "phosphor-react";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import styled from "styled-components";
 
@@ -9,6 +10,7 @@ import { Input, Select, Upload } from "../../components/form";
 import InputColor from "../../components/form/InputColor";
 import { SwitchForm } from "../../components/form/Switch";
 import { SelectDataProps } from "../../components/form/types";
+import { useModal } from "../../components/modal/useModal";
 import BosonButton from "../../components/ui/BosonButton";
 import Grid from "../../components/ui/Grid";
 import GridContainer from "../../components/ui/GridContainer";
@@ -171,6 +173,7 @@ export const formValuesWithOneLogoUrl = (values: StoreFormFields) => {
 };
 
 export default function CustomStoreFormContent({ hasSubmitError }: Props) {
+  const { showModal } = useModal();
   const { setFieldValue, values, isValid, setFieldTouched, setValues } =
     useFormikContext<StoreFormFields>();
 
@@ -1063,15 +1066,53 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
           Create
         </BosonButton>
       </Grid>
-      <iframe
-        src={`${window.location.origin}/#/?${queryParams}`}
-        style={{
-          alignSelf: "stretch",
-          width: "100%",
-          minHeight: "50rem",
-          display: "flex"
-        }}
-      ></iframe>
+      <div>
+        <Grid
+          justifyContent="flex-end"
+          gap="0.5rem"
+          alignItems="center"
+          margin="0 0 0.5rem 0"
+        >
+          <Typography
+            cursor="pointer"
+            onClick={() => {
+              showModal(
+                "IFRAME_MODAL",
+                {
+                  title: "Preview",
+                  src: `${window.location.origin}/#/?${queryParams}`
+                },
+                "fullscreen"
+              );
+            }}
+          >
+            Preview in full screen
+          </Typography>
+          <ArrowsOut
+            size={20}
+            cursor="pointer"
+            onClick={() => {
+              showModal(
+                "IFRAME_MODAL",
+                {
+                  title: "Preview",
+                  src: `${window.location.origin}/#/?${queryParams}`
+                },
+                "fullscreen"
+              );
+            }}
+          />
+        </Grid>
+        <iframe
+          src={`${window.location.origin}/#/?${queryParams}`}
+          style={{
+            alignSelf: "stretch",
+            width: "100%",
+            minHeight: "50rem",
+            display: "flex"
+          }}
+        ></iframe>
+      </div>
     </GridContainer>
   );
 }
