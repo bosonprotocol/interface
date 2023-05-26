@@ -19,6 +19,9 @@ const GlobalStyle = createGlobalStyle<{
   $buttonBgColor: string;
   $buttonTextColor: string;
 }>`
+  img {
+    pointer-events: none;
+  }
   @font-face {
     font-family: barlow;
     src: url(${barlowRegular});
