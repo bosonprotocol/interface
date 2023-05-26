@@ -133,7 +133,8 @@ export default [
     component: ExplorePage,
     app: {
       ...base.app,
-      withLayout: false
+      withLayout: false,
+      withBosonStyles: false
     }
   },
   {

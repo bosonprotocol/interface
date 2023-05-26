@@ -126,7 +126,7 @@ function Socials() {
             rel="noopener noreferrer"
             key={`social_nav_${value}_${url}`}
           >
-            <SocialLogo logo={value} />
+            <SocialLogo logo={value} size={15} />
           </a>
         );
       });

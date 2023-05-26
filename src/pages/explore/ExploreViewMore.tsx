@@ -5,13 +5,12 @@ import Breadcrumbs from "../../components/breadcrumbs/Breadcrumbs";
 import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
 import { BosonRoutes } from "../../lib/routing/routes";
-import { colors } from "../../lib/styles/colors";
 
 const ViewMoreButton = styled.button`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: ${colors.secondary};
+  color: var(--accent);
   width: 6.875rem;
   font-size: 1rem;
   font-weight: 600;

@@ -280,6 +280,7 @@ function Upload({
             } else {
               await saveFn(files);
             }
+            e.target.value = ""; // allow user to select the same file again
           }}
           ref={(ref) => {
             inputRef.current = ref;

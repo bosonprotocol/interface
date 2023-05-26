@@ -12,6 +12,7 @@ import { SwitchForm } from "../../components/form/Switch";
 import { SelectDataProps } from "../../components/form/types";
 import { useModal } from "../../components/modal/useModal";
 import BosonButton from "../../components/ui/BosonButton";
+import Button from "../../components/ui/Button";
 import Grid from "../../components/ui/Grid";
 import GridContainer from "../../components/ui/GridContainer";
 import Typography from "../../components/ui/Typography";
@@ -171,7 +172,7 @@ export const formValuesWithOneLogoUrl = (values: StoreFormFields) => {
     .flat();
   return entries;
 };
-
+const logoSize = 15;
 export default function CustomStoreFormContent({ hasSubmitError }: Props) {
   const { showModal } = useModal();
   const { setFieldValue, values, isValid, setFieldTouched, setValues } =
@@ -629,8 +630,8 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                 placeholder={formModel.formFields.logoUpload.placeholder}
                 withUpload
                 withEditor
-                width={1531}
-                height={190}
+                width={947}
+                height={218}
                 imgPreviewStyle={{ objectFit: "contain" }}
               />
             </Grid>
@@ -844,7 +845,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                       return (
                         <Grid key={label} gap={gap}>
                           <Grid flexBasis={firstSubFieldBasis}>
-                            <SocialLogo logo={value} />
+                            <SocialLogo logo={value} size={logoSize} />
                           </Grid>
                           <Grid
                             flexBasis={secondSubFieldBasis}
@@ -900,7 +901,7 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                       return (
                         <Grid key={label} gap={gap}>
                           <Grid flexBasis={firstSubFieldBasis}>
-                            <ContactInfoLinkIcon icon={value} />
+                            <ContactInfoLinkIcon icon={value} size={logoSize} />
                           </Grid>
                           <Grid
                             flexBasis={secondSubFieldBasis}
@@ -977,13 +978,13 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                             );
                           }
                         )}
-                        <BosonButton
+                        <Button
                           disabled={!allFilledOut}
                           onClick={addFooterLink}
-                          variant="secondaryFill"
+                          theme="secondary"
                         >
                           + Add
-                        </BosonButton>
+                        </Button>
                       </>
                     )}
                   </Grid>
