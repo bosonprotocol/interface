@@ -10,7 +10,7 @@ import { Profile } from "../../../../lib/utils/hooks/lens/graphql/generated";
 import useGetLensProfiles from "../../../../lib/utils/hooks/lens/profile/useGetLensProfiles";
 import useUpdateSellerMetadata from "../../../../lib/utils/hooks/seller/useUpdateSellerMetadata";
 import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
-import Switch from "../../../form/Switch";
+import { Switch } from "../../../form/Switch";
 import { CreateProfile } from "../../../product/utils";
 import SuccessTransactionToast from "../../../toasts/SuccessTransactionToast";
 import BosonButton from "../../../ui/BosonButton";
@@ -81,7 +81,7 @@ export default function CreateProfileModal({
           justifyContent: "flex-end"
         }}
         checked={switchChecked}
-        label={
+        label={() => (
           <Typography
             color={colors.secondary}
             $fontSize="0.8rem"
@@ -90,7 +90,7 @@ export default function CreateProfileModal({
           >
             Link Lens Profile
           </Typography>
-        }
+        )}
       />
     ),
     [switchChecked, setSwitchAndProfileType]

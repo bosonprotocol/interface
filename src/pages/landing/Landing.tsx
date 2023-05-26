@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import styled, { css } from "styled-components";
 import useResizeObserver from "use-resize-observer";
 
+import Layout from "../../components/Layout";
 import BosonButton from "../../components/ui/BosonButton";
 import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";
@@ -77,10 +78,16 @@ const ExploreProductsButton = styled(BosonButton)`
   color: var(--buttonTextColor);
 `;
 
+const Div = ({ children }: { children: ReactNode }) => {
+  return <div>{children}</div>;
+};
 export default function Landing() {
   const { isLteS } = useBreakpoints();
   const navigate = useKeepQueryParamsNavigate();
   const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
+  const bannerImgPosition = useCustomStoreQueryParameter(
+    "bannerImgPosition"
+  ) as unknown as "under" | "over" | "";
   const title = useCustomStoreQueryParameter("title");
   const description = useCustomStoreQueryParameter("description");
   const bannerUrl = useCustomStoreQueryParameter("bannerUrl");
@@ -91,30 +98,61 @@ export default function Landing() {
       pathname: BosonRoutes.Explore,
       search: name ? `${ExploreQueryParameters.name}=${name}` : ""
     });
-
+  const withUnderBanner = bannerUrl && bannerImgPosition === "under";
+  const TitleAndDescriptionWrapper = withUnderBanner ? Layout : Div;
   return (
     <LandingPage ref={ref} isCustomStoreFront={isCustomStoreFront}>
       {isCustomStoreFront ? (
         <div>
-          {bannerUrl && (
+          {bannerUrl && bannerImgPosition === "over" && (
             <div
               style={{
                 backgroundImage: `url(${bannerUrl})`,
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
                 backgroundSize: "cover",
-                height: "6.25rem"
+                translate: "-50%",
+                marginLeft: "50%",
+                height: "14rem",
+                width: "100vw"
               }}
             />
           )}
-          <StyledGridWithZindex alignItems="flex-start" flexDirection="column">
-            <Title tag="h1" fontWeight="600">
-              {title}
-            </Title>
-            <SubTitle tag="h4" fontWeight="400">
-              {description}
-            </SubTitle>
-          </StyledGridWithZindex>
+
+          <div
+            style={{
+              ...(withUnderBanner && {
+                backgroundImage: `url(${bannerUrl})`,
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
+                backgroundSize: "cover",
+                translate: "-50%",
+                marginLeft: "50%",
+                minHeight: "14rem",
+                width: "100vw"
+              })
+            }}
+          >
+            {(title || description) && (
+              <TitleAndDescriptionWrapper>
+                <StyledGridWithZindex
+                  alignItems="flex-start"
+                  flexDirection="column"
+                >
+                  {title && (
+                    <Title tag="h1" fontWeight="600">
+                      {title}
+                    </Title>
+                  )}
+                  {description && (
+                    <SubTitle tag="h4" fontWeight="400">
+                      {description}
+                    </SubTitle>
+                  )}
+                </StyledGridWithZindex>
+              </TitleAndDescriptionWrapper>
+            )}
+          </div>
         </div>
       ) : (
         <>

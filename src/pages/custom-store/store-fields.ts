@@ -20,6 +20,7 @@ export type StoreFields = {
   storeName: string;
   title: string;
   description: string;
+  bannerImgPosition: string;
   bannerUrl: string;
   logoUrl: string;
   headerBgColor: string;
@@ -28,7 +29,7 @@ export type StoreFields = {
   secondaryBgColor: string;
   accentColor: string;
   textColor: string;
-  footerBgColor: string;
+  footerBgColor: string; // deleted but kept for backwards compatibility
   footerTextColor: string;
   buttonBgColor: string;
   buttonTextColor: string;
@@ -45,17 +46,19 @@ export type StoreFields = {
   commitProxyAddress: string;
   openseaLinkToOriginalMainnetCollection: string;
   metaTransactionsApiKey: string;
-  supportFunctionality: SelectType[];
+  supportFunctionality: SelectType[]; // deleted but kept for backwards compatibility
 };
-
-export type StoreFormFields = StoreFields & {
+export type InternalOnlyStoreFields = {
+  // fields that must not be saved in the generated url, for this page use only
+  bannerSwitch: boolean;
   bannerUrlText: string;
   bannerUpload: { name: string; size: number; src: string; type: string }[];
   logoUrlText: string;
   logoUpload: { name: string; size: number; src: string; type: string }[];
-  withMetaTx: SelectType;
   customStoreUrl: string;
 };
+
+export type StoreFormFields = StoreFields & InternalOnlyStoreFields;
 
 export const storeFields = {
   isCustomStoreFront: "isCustomStoreFront",
@@ -63,6 +66,8 @@ export const storeFields = {
   storeName: "storeName",
   title: "title",
   description: "description",
+  bannerSwitch: "bannerSwitch",
+  bannerImgPosition: "bannerImgPosition",
   bannerUrl: "bannerUrl",
   bannerUrlText: "bannerUrlText",
   bannerUpload: "bannerUpload",
@@ -125,6 +130,11 @@ export const formModel = {
     },
     [storeFields.description]: {
       name: storeFields.description,
+      requiredErrorMessage: standardRequiredErrorMessage,
+      placeholder: ""
+    },
+    [storeFields.bannerImgPosition]: {
+      name: storeFields.bannerImgPosition,
       requiredErrorMessage: standardRequiredErrorMessage,
       placeholder: ""
     },
@@ -352,11 +362,26 @@ export const uploadMaxMB = 5;
 const MAX_FILE_SIZE = uploadMaxMB * 1024 * 1024; // 5 MB
 const SUPPORTED_FILE_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
 
-export const validationSchema = Yup.object({
+type KeysToValidate = keyof Omit<
+  StoreFormFields,
+  "supportFunctionality" | "footerBgColor"
+>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const validationSchema = Yup.object<Record<KeysToValidate, any>>({
+  [storeFields.isCustomStoreFront]: Yup.string().oneOf(["true"]),
   [storeFields.customStoreUrl]: Yup.string(),
   [storeFields.storeName]: Yup.string(),
   [storeFields.title]: Yup.string(),
   [storeFields.description]: Yup.string(),
+  [storeFields.bannerSwitch]: Yup.boolean(),
+  [storeFields.bannerImgPosition]: Yup.string(),
+  [storeFields.bannerUrl]: Yup.string(),
+  [storeFields.bannerUrlText]: Yup.string(),
+  [storeFields.bannerUpload]: validationOfFile({
+    isOptional: true,
+    maxFileSizeInB: MAX_FILE_SIZE,
+    supportedFormats: SUPPORTED_FILE_FORMATS
+  }),
   [storeFields.logoUrl]: Yup.string(),
   [storeFields.logoUrlText]: Yup.string(),
   [storeFields.logoUpload]: validationOfFile({
@@ -436,10 +461,6 @@ export const validationSchema = Yup.object({
     new RegExp(websitePattern),
     notUrlErrorMessage
   ),
-  [storeFields.withMetaTx]: Yup.object({
-    label: Yup.string().required(standardRequiredErrorMessage),
-    value: Yup.string().required(standardRequiredErrorMessage)
-  }).nullable(),
   [storeFields.metaTransactionsApiKey]: Yup.string()
   // NOTE: we may wish to show it again in the future
   // [storeFields.supportFunctionality]: Yup.array(
@@ -450,12 +471,14 @@ export const validationSchema = Yup.object({
   // )
 });
 
-export const initialValues = {
+export const initialValues: Yup.InferType<typeof validationSchema> = {
   [storeFields.isCustomStoreFront]: "true",
   [storeFields.customStoreUrl]: "",
   [storeFields.storeName]: "",
   [storeFields.title]: "",
   [storeFields.description]: "",
+  [storeFields.bannerSwitch]: false,
+  [storeFields.bannerImgPosition]: "",
   [storeFields.bannerUrl]: "",
   [storeFields.bannerUrlText]: "",
   [storeFields.bannerUpload]: [],
@@ -468,7 +491,7 @@ export const initialValues = {
   [storeFields.secondaryBgColor]: colors.lightGrey,
   [storeFields.accentColor]: "",
   [storeFields.textColor]: colors.black,
-  [storeFields.footerBgColor]: colors.black,
+  // [storeFields.footerBgColor]: colors.black,
   [storeFields.buttonBgColor]: colors.primary,
   [storeFields.buttonTextColor]: colors.black,
   [storeFields.footerTextColor]: colors.white,
@@ -496,9 +519,6 @@ export const initialValues = {
   [storeFields.offerCurationList]: "",
   [storeFields.commitProxyAddress]: "",
   [storeFields.openseaLinkToOriginalMainnetCollection]: "",
-  [storeFields.withMetaTx]: formModel.formFields.withMetaTx.options.find(
-    (option) => "default" in option && option.default
-  ) as SelectDataProps,
-  [storeFields.metaTransactionsApiKey]: "",
-  [storeFields.supportFunctionality]: [] as SelectDataProps[]
+  [storeFields.metaTransactionsApiKey]: ""
+  // [storeFields.supportFunctionality]: [] as SelectDataProps[]
 } as const;
