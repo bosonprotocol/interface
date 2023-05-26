@@ -1106,10 +1106,9 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
         <iframe
           src={`${window.location.origin}/#/?${queryParams}`}
           style={{
-            alignSelf: "stretch",
             width: "100%",
             minHeight: "50rem",
-            display: "flex"
+            height: "100%"
           }}
         ></iframe>
       </div>
