@@ -1,4 +1,4 @@
-import React, { ChangeEvent, forwardRef, useState } from "react";
+import { ChangeEvent, forwardRef, useState } from "react";
 import AvatarEditor, { AvatarEditorProps } from "react-avatar-editor";
 import Dropzone from "react-dropzone";
 
