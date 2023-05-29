@@ -8,57 +8,8 @@ import {
   websitePattern
 } from "../../lib/validation/regex/url";
 import { validationOfFile } from "../chat/components/UploadForm/const";
-import { AdditionalFooterLinksValues } from "./AdditionalFooterLinks";
-import { ContactInfoLinkIconValues } from "./ContactInfoLinkIcon";
-import { SocialLogoValues } from "./SocialLogo";
-
-export type SelectType<Value extends string = string> =
-  SelectDataProps<Value> | null;
-
-export type StoreFields = {
-  isCustomStoreFront: string;
-  storeName: string;
-  title: string;
-  description: string;
-  bannerImgPosition: string;
-  bannerUrl: string;
-  logoUrl: string;
-  headerBgColor: string;
-  headerTextColor: string;
-  primaryBgColor: string;
-  secondaryBgColor: string;
-  accentColor: string;
-  textColor: string;
-  footerBgColor: string; // deleted but kept for backwards compatibility
-  footerTextColor: string;
-  buttonBgColor: string;
-  buttonTextColor: string;
-  fontFamily: string;
-  navigationBarPosition: SelectType;
-  copyright: string;
-  showFooter: SelectType;
-  socialMediaLinks: SelectType<SocialLogoValues>[];
-  contactInfoLinks: SelectType<ContactInfoLinkIconValues>[];
-  additionalFooterLinks: SelectType[];
-  withOwnProducts: SelectType;
-  sellerCurationList: string;
-  offerCurationList: string;
-  commitProxyAddress: string;
-  openseaLinkToOriginalMainnetCollection: string;
-  metaTransactionsApiKey: string;
-  supportFunctionality: SelectType[]; // deleted but kept for backwards compatibility
-};
-export type InternalOnlyStoreFields = {
-  // fields that must not be saved in the generated url, for this page use only
-  bannerSwitch: boolean;
-  bannerUrlText: string;
-  bannerUpload: { name: string; size: number; src: string; type: string }[];
-  logoUrlText: string;
-  logoUpload: { name: string; size: number; src: string; type: string }[];
-  customStoreUrl: string;
-};
-
-export type StoreFormFields = StoreFields & InternalOnlyStoreFields;
+import { AdditionalFooterLink } from "./AdditionalFooterLinksTypes";
+import { StoreFormFields } from "./store-fields-types";
 
 export const storeFields = {
   isCustomStoreFront: "isCustomStoreFront",
@@ -280,9 +231,8 @@ export const formModel = {
         { label: "Contact Us", value: "contact_us", url: "" },
         { label: "How Boson Works", value: "how_boson_works", url: "" },
         { label: "Terms of Service", value: "terms_of_service", url: "" },
-        { label: "Privacy Policy", value: "privacy_policy", url: "" },
-        { label: "Custom", value: "custom", url: "" }
-      ] as { label: string; value: AdditionalFooterLinksValues; url: string }[]
+        { label: "Privacy Policy", value: "privacy_policy", url: "" }
+      ] as AdditionalFooterLink[]
     },
     [storeFields.navigationBarPosition]: {
       name: storeFields.navigationBarPosition,
@@ -431,7 +381,7 @@ export const validationSchema = Yup.object<Record<KeysToValidate, any>>({
   ),
   [storeFields.additionalFooterLinks]: Yup.array(
     Yup.object({
-      label: Yup.string(),
+      label: Yup.string().required(standardRequiredErrorMessage),
       value: Yup.string(),
       url: Yup.string()
         .matches(new RegExp(websitePattern), notUrlErrorMessage)
@@ -507,9 +457,7 @@ export const initialValues: Yup.InferType<typeof validationSchema> = {
   ) as SelectDataProps,
   [storeFields.socialMediaLinks]: [] as (SelectDataProps & { url: string })[],
   [storeFields.contactInfoLinks]: [] as (SelectDataProps & { text: string })[],
-  [storeFields.additionalFooterLinks]: [] as (SelectDataProps & {
-    url: string;
-  })[],
+  [storeFields.additionalFooterLinks]: [] as AdditionalFooterLink[],
   [storeFields.copyright]: "",
   [storeFields.withOwnProducts]:
     formModel.formFields.withOwnProducts.options.find(

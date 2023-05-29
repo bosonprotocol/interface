@@ -15,11 +15,8 @@ import NotFound from "../not-found/NotFound";
 import CustomStoreFormContent, {
   formValuesWithOneLogoUrl
 } from "./CustomStoreFormContent";
-import {
-  initialValues,
-  StoreFormFields,
-  validationSchema
-} from "./store-fields";
+import { initialValues, validationSchema } from "./store-fields";
+import { StoreFormFields } from "./store-fields-types";
 
 const Root = styled(Layout)`
   display: flex;

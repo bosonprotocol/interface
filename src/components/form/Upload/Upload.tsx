@@ -20,14 +20,10 @@ import {
   VideoPreview
 } from "../Field.styles";
 import type { UploadProps } from "../types";
+import { UploadFileType } from "./types";
+import { FileProps } from "./types";
 import UploadedFiles from "./UploadedFiles";
-import {
-  FileProps,
-  WithUploadToIpfs,
-  WithUploadToIpfsProps
-} from "./WithUploadToIpfs";
-
-export type UploadFileType = File | FileProps;
+import { WithUploadToIpfs, WithUploadToIpfsProps } from "./WithUploadToIpfs";
 
 function Upload({
   name,

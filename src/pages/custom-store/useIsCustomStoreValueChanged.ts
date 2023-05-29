@@ -1,4 +1,5 @@
-import { initialValues, StoreFields } from "./store-fields";
+import { initialValues } from "./store-fields";
+import { StoreFields } from "./store-fields-types";
 import { useCustomStoreQueryParameter } from "./useCustomStoreQueryParameter";
 
 export const useIsCustomStoreValueChanged = (key: keyof StoreFields) => {

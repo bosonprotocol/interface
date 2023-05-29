@@ -7,7 +7,7 @@ import { breakpoint } from "../../lib/styles/breakpoint";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { sanitizeUrl } from "../../lib/utils/url";
-import { AdditionalFooterLinksValues } from "../../pages/custom-store/AdditionalFooterLinks";
+import { AdditionalFooterLink } from "../../pages/custom-store/AdditionalFooterLinksTypes";
 import {
   ContactInfoLinkIcon,
   ContactInfoLinkIconValues
@@ -222,7 +222,7 @@ function ContactInfoLinks() {
 function CustomStoreAdditionalLinks() {
   const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
   const additionalFooterLinks = useCustomStoreQueryParameter<
-    { value: AdditionalFooterLinksValues; label: string; url: string }[]
+    AdditionalFooterLink[]
   >("additionalFooterLinks", { parseJson: true });
   const renderAdditionalLinks = useMemo(() => {
     if (isCustomStoreFront && typeof additionalFooterLinks !== "string") {
