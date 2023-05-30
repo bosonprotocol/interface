@@ -53,27 +53,6 @@ const LogoGrid = styled(Grid)`
     flex-direction: row;
   }
 `;
-const NavigationGrid = styled(Grid)`
-  gap: 5rem;
-  padding: 0 2rem 2rem 2rem;
-
-  ${breakpoint.s} {
-    gap: 5rem;
-    padding: 0 0rem 2rem 2rem;
-  }
-  ${breakpoint.m} {
-    gap: 10rem;
-    padding: 0 6rem 2rem 2rem;
-  }
-  ${breakpoint.l} {
-    gap: 15rem;
-    padding: 0 8rem 2rem 2rem;
-  }
-  ${breakpoint.xl} {
-    gap: 15rem;
-    padding: 0 10rem 2rem 2rem;
-  }
-`;
 
 interface INavigationLinks {
   flexDirection?: "row" | "column";
@@ -290,7 +269,6 @@ function FullFooter() {
       enabled: !!buyerId
     }
   );
-  const { isXXS } = useBreakpoints();
   const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
   const [year] = useState<number>(new Date().getFullYear());
   const logoUrl = useCustomStoreQueryParameter("logoUrl");
