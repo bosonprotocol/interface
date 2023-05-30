@@ -13,6 +13,7 @@ import { ExtendedSeller } from "../../../../../pages/explore/WithAllOffers";
 import Grid from "../../../../ui/Grid";
 import Image from "../../../../ui/Image";
 import Typography from "../../../../ui/Typography";
+import { ProfileType } from "../../Profile/const";
 
 const CardContainer = styled.div`
   position: relative;
@@ -64,10 +65,19 @@ export default function CollectionsCard({ collection }: Props) {
     numbers: { exchanges: numExchanges, products: numProducts }
   } = useSellerNumbers(sellerId);
 
-  const { lens: lensProfiles } = useCurrentSellers({
+  const { lens: lensProfiles, sellers: sellersData } = useCurrentSellers({
     sellerId
   });
+  const seller = sellersData[0];
+  const metadata = seller?.metadata;
   const [lens] = lensProfiles;
+
+  const useLens = !metadata || metadata?.kind === ProfileType.LENS;
+
+  const name =
+    (useLens ? lens?.name : metadata?.name) ??
+    metadata?.name ??
+    `Seller ID: ${collection.id}`;
   const navigate = useKeepQueryParamsNavigate();
 
   const images = useMemo(() => {
@@ -111,7 +121,7 @@ export default function CollectionsCard({ collection }: Props) {
             fontWeight="600"
             margin="0 0 0.625rem 0"
           >
-            {lens?.name ? lens?.name : `Seller ID: ${collection.id}`}
+            {name}
           </Typography>
           <StyledGrid alignItems="flex-start" margin="0 0 0.3125rem 0">
             <Typography
