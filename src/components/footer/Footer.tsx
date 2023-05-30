@@ -85,6 +85,28 @@ const CustomGridContainer = styled.div`
   }
 `;
 
+const StyledGridContainer = styled(GridContainer)`
+  ${breakpoint.xxs} {
+    width: 100%;
+    margin: 0 !important;
+  }
+
+  ${breakpoint.xs} {
+    margin-left: auto !important;
+    width: auto;
+  }
+  ${breakpoint.s} {
+    margin-left: auto !important;
+    width: 80%;
+  }
+  ${breakpoint.l} {
+    width: 68%;
+  }
+  ${breakpoint.xl} {
+    width: 62%;
+  }
+`;
+
 interface INavigationLinks {
   flexDirection?: "row" | "column";
   gap?: string;
