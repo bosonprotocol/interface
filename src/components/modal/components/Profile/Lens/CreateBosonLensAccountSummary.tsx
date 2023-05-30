@@ -144,7 +144,7 @@ export default function CreateBosonLensAccountSummary({
                 alignItems="flex-start"
                 gap="1.625rem"
               >
-                <Grid>
+                <Grid alignItems="flex-start">
                   <Grid
                     flexDirection="column"
                     alignItems="flex-start"
@@ -182,7 +182,7 @@ export default function CreateBosonLensAccountSummary({
                       src={coverPicture}
                       style={{
                         maxHeight: "80px",
-                        maxWidth: "80px",
+                        maxWidth: "300px",
                         objectFit: "contain"
                       }}
                     />
@@ -363,7 +363,7 @@ export default function CreateBosonLensAccountSummary({
                     $fontSize="0.75rem"
                     lineHeight="1.125rem"
                   >
-                    Secondary royalties
+                    Secondary royalties *
                   </Typography>
                   <Typography
                     fontWeight="400"
@@ -383,7 +383,8 @@ export default function CreateBosonLensAccountSummary({
                     $fontSize="0.75rem"
                     lineHeight="1.125rem"
                   >
-                    Address for royalty payments
+                    Address for royalty payments{" "}
+                    {(bosonAccount.secondaryRoyalties || 0) > 0 ? "*" : ""}
                   </Typography>
                   <Typography
                     fontWeight="400"

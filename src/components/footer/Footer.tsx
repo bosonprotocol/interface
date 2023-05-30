@@ -4,6 +4,7 @@ import styled from "styled-components";
 import logo from "../../../src/assets/logo-white.svg";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
+import { isTruthy } from "../../lib/types/helpers";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { sanitizeUrl } from "../../lib/utils/url";
@@ -53,25 +54,34 @@ const LogoGrid = styled(Grid)`
     flex-direction: row;
   }
 `;
-const NavigationGrid = styled(Grid)`
-  gap: 5rem;
-  padding: 0 2rem 2rem 2rem;
+const CustomGridContainer = styled.div`
+  display: grid;
+  white-space: pre;
 
+  grid-column-gap: 1rem;
+  grid-row-gap: 1rem;
+
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  ${breakpoint.xs} {
+    margin-left: auto;
+    grid-template-columns: repeat(2, max-content);
+    grid-column-gap: 4rem;
+  }
   ${breakpoint.s} {
-    gap: 5rem;
-    padding: 0 0rem 2rem 2rem;
+    grid-template-columns: repeat(3, max-content);
+    grid-column-gap: 4rem;
   }
   ${breakpoint.m} {
-    gap: 10rem;
-    padding: 0 6rem 2rem 2rem;
+    grid-template-columns: repeat(3, max-content);
+    grid-column-gap: 4rem;
   }
   ${breakpoint.l} {
-    gap: 15rem;
-    padding: 0 8rem 2rem 2rem;
+    grid-template-columns: repeat(3, max-content);
+    grid-column-gap: 4rem;
   }
   ${breakpoint.xl} {
-    gap: 15rem;
-    padding: 0 10rem 2rem 2rem;
+    grid-template-columns: repeat(3, max-content);
+    grid-column-gap: 4rem;
   }
 `;
 
@@ -211,6 +221,7 @@ function ContactInfoLinks() {
       </Typography>
       <NavigationLinks
         flexDirection="column"
+        gap={"0"}
         style={{ alignItems: "center", justifyContent: "flex-end" }}
       >
         {renderContactInfoLinks}
@@ -248,6 +259,7 @@ function CustomStoreAdditionalLinks() {
       </Typography>
       <NavigationLinks
         flexDirection="column"
+        gap={"0"}
         style={{ alignItems: "flex-start", justifyContent: "flex-end" }}
       >
         {renderAdditionalLinks}
@@ -290,7 +302,6 @@ function FullFooter() {
       enabled: !!buyerId
     }
   );
-  const { isXXS } = useBreakpoints();
   const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
   const [year] = useState<number>(new Date().getFullYear());
   const logoUrl = useCustomStoreQueryParameter("logoUrl");
@@ -356,14 +367,31 @@ function FullFooter() {
   const helpLinks = getHelpLinks({
     roles,
     hasExchangesAsBuyerOrSeller
-  }).map(
-    (nav) =>
-      nav && (
-        <LinkWithQuery to={nav.url} key={`navigation_nav_${nav.name}`}>
-          {nav.name}
-        </LinkWithQuery>
-      )
-  );
+  })
+    .map((nav) => {
+      if (nav) {
+        if (nav.url) {
+          return (
+            <LinkWithQuery to={nav.url} key={`navigation_nav_${nav.name}`}>
+              {nav.name}
+            </LinkWithQuery>
+          );
+        }
+        if (nav.email) {
+          return (
+            <a
+              href={"mailto:" + sanitizeUrl(nav.email)}
+              target="_blank"
+              rel="noopener noreferrer"
+              key={`help_email`}
+            >
+              {nav.name}
+            </a>
+          );
+        }
+      }
+    })
+    .filter(isTruthy);
   return (
     <Footer>
       <Layout>
@@ -384,8 +412,8 @@ function FullFooter() {
                 l: 2,
                 xl: 2
               }}
-              columnGap="4rem"
-              rowGap="4rem"
+              columnGap="12rem"
+              rowGap="2rem"
             >
               <CustomStoreAdditionalLinks />
               <GridContainer
@@ -410,15 +438,25 @@ function FullFooter() {
               </GridContainer>
             </GridContainer>
           ) : (
-            <>
-              <NavigationGrid
-                justifyContent={isXXS ? "flex-start" : "flex-end"}
-                alignItems="flex-start"
-              >
+            <GridContainer
+              itemsPerRow={{
+                xs: 1,
+                s: 1,
+                m: 1,
+                l: 1,
+                xl: 1
+              }}
+              style={{ width: "100%" }}
+            >
+              <CustomGridContainer>
                 {!!shopLinks.length && (
                   <div>
                     <Typography tag="h5">Shop</Typography>
-                    <NavigationLinks flexDirection="column">
+                    <NavigationLinks
+                      flexDirection="column"
+                      gap={"0"}
+                      style={{ width: "fit-content" }}
+                    >
                       {shopLinks}
                     </NavigationLinks>
                   </div>
@@ -426,7 +464,11 @@ function FullFooter() {
                 {!!sellLinks.length && (
                   <div>
                     <Typography tag="h5">Sell</Typography>
-                    <NavigationLinks flexDirection="column">
+                    <NavigationLinks
+                      flexDirection="column"
+                      gap={"0"}
+                      style={{ width: "fit-content" }}
+                    >
                       {sellLinks}
                     </NavigationLinks>
                   </div>
@@ -434,16 +476,20 @@ function FullFooter() {
                 {!!helpLinks.length && (
                   <div>
                     <Typography tag="h5">Help</Typography>
-                    <NavigationLinks flexDirection="column">
+                    <NavigationLinks
+                      flexDirection="column"
+                      gap={"0"}
+                      style={{ width: "fit-content" }}
+                    >
                       {helpLinks}
                     </NavigationLinks>
                   </div>
                 )}
-              </NavigationGrid>
+              </CustomGridContainer>
               <Grid justifyContent="flex-end">
                 <Socials />
               </Grid>
-            </>
+            </GridContainer>
           )}
         </LogoGrid>
 
