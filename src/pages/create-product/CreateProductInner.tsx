@@ -331,6 +331,7 @@ function CreateProductInner({
     () => productVariant === "differentVariants" || false,
     [productVariant]
   );
+  const [isTokenGated, setIsTokenGated] = useState<boolean>(false);
   const [currentStep, setCurrentStep] = useState<number>(
     location?.state?.step || FIRST_STEP
   );
@@ -464,6 +465,7 @@ function CreateProductInner({
       isDraftModalClosed,
       showInvalidRoleModal,
       isMultiVariant,
+      isTokenGated,
       onChangeOneSetOfImages: setIsOneSetOfImages,
       isOneSetOfImages
     });
@@ -482,6 +484,7 @@ function CreateProductInner({
     isDraftModalClosed,
     showInvalidRoleModal,
     isMultiVariant,
+    isTokenGated,
     isOneSetOfImages,
     currentStep
   ]);
@@ -947,7 +950,7 @@ function CreateProductInner({
     <CreateProductWrapper>
       <MultiStepsContainer>
         <MultiSteps
-          data={CREATE_PRODUCT_STEPS(isMultiVariant)}
+          data={CREATE_PRODUCT_STEPS(isMultiVariant, isTokenGated)}
           active={currentStep}
           callback={handleClickStep}
           disableInactiveSteps
@@ -969,6 +972,11 @@ function CreateProductInner({
           {({ values }) => {
             if (productVariant !== values?.productType?.productVariant) {
               setProductVariant(values?.productType?.productVariant);
+            }
+            const formTokenGated =
+              values.productType.tokenGatedOffer === "true";
+            if (isTokenGated !== formTokenGated) {
+              setIsTokenGated(formTokenGated);
             }
             getDecimalOnPreview(values);
 

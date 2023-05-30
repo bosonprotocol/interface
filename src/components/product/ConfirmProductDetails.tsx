@@ -401,7 +401,9 @@ export default function ConfirmProductDetails({
                     <FormFieldContainer>
                       <FormField title="Token Gated Offer" required>
                         <ContentValue tag="p">
-                          {/* {tokenGatedOffer?.label} TODO: */}
+                          {values.productType.tokenGatedOffer === "true"
+                            ? "Yes"
+                            : "No"}
                         </ContentValue>
                       </FormField>
                     </FormFieldContainer>

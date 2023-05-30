@@ -19,15 +19,31 @@ const ProductInformationButtonGroup = styled(ProductButtonGroup)`
 
 const TokengatedTextarea = styled(Textarea)`
   padding: 0.5rem;
+  min-width: 100%;
+  max-width: 100%;
+  min-height: 54px;
+  max-height: 500px;
+`;
+
+const TokengatedInfoWrapper = styled.div`
+  display: grid;
+  grid-template-columns: minmax(8.75rem, 1fr) 4fr;
+  grid-gap: 1rem;
+`;
+
+const SymbolInput = styled(Input)`
+  width: 20%;
+  height: 100%;
+  margin-top: 20px;
 `;
 
 const prefix = "tokenGating.";
 
-const [{ value: minBalance }, { value: tokenId }] = TOKEN_CRITERIA;
+const [{ value: minBalance }] = TOKEN_CRITERIA;
 const [{ value: erc20 }, { value: erc721 }, { value: erc1155 }] = TOKEN_TYPES;
 
 export default function TokenGating() {
-  const { nextIsDisabled, values } = useCreateForm();
+  const { nextIsDisabled, values, handleBlur } = useCreateForm();
   const { tokenGating } = values;
   const core = useCoreSDK();
   const [symbol, setSymbol] = useState<string | undefined>(undefined);
@@ -50,7 +66,8 @@ export default function TokenGating() {
               <Input
                 name={`${prefix}tokenContract`}
                 type="string"
-                onBlur={async () => {
+                onBlur={async (e) => {
+                  handleBlur(e);
                   const tokenContract = tokenGating.tokenContract;
                   const tokenType = tokenGating.tokenType;
                   if (
@@ -158,15 +175,3 @@ export default function TokenGating() {
     </ContainerProductPage>
   );
 }
-
-const TokengatedInfoWrapper = styled.div`
-  display: grid;
-  grid-template-columns: minmax(8.75rem, 1fr) 4fr;
-  grid-gap: 1rem;
-`;
-
-const SymbolInput = styled(Input)`
-  width: 20%;
-  height: 100%;
-  margin-top: 20px;
-`;

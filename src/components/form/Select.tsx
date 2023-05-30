@@ -13,6 +13,9 @@ const StyledSelect = styled(Select)`
   * {
     font-size: 13.33px;
   }
+  [class*="-indicatorContainer"] {
+    padding: 6.92px; // to make selects less tall but as tall as inputs
+  }
 ` as Select;
 
 const customStyles = (error: any) => ({
@@ -55,7 +58,8 @@ const customStyles = (error: any) => ({
     ...provided,
     zIndex: state.isFocused ? zIndex.Select + 1 : zIndex.Select,
     position: "relative",
-    width: "100%"
+    width: "100%",
+    height: "25px"
   }),
   option: (provided: any, state: any) => ({
     ...provided,
@@ -72,9 +76,6 @@ const customStyles = (error: any) => ({
   }),
   indicatorSeparator: () => ({
     display: "none"
-  }),
-  indicatorsContainer: () => ({
-    margin: "-0.079rem 0" // to make selects less tall but as tall as inputs
   })
 });
 

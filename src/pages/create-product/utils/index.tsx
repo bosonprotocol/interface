@@ -98,6 +98,7 @@ type CreateProductStepsParams = {
   showInvalidRoleModal: () => void;
   isDraftModalClosed: boolean;
   isMultiVariant: boolean;
+  isTokenGated: boolean;
   onChangeOneSetOfImages: (oneSetOfImages: boolean) => void;
   isOneSetOfImages: boolean;
 };
@@ -109,6 +110,7 @@ export const createProductSteps = ({
   showInvalidRoleModal,
   isDraftModalClosed,
   isMultiVariant,
+  isTokenGated,
   onChangeOneSetOfImages,
   isOneSetOfImages
 }: CreateProductStepsParams) => {
@@ -206,7 +208,6 @@ export const createProductSteps = ({
     helpSection: null
   };
 
-  const isTokenGated = true; // TODO: set and use here
   const defaultSteps = Object.fromEntries(
     Object.entries(
       [
