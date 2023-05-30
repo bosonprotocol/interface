@@ -359,7 +359,10 @@ export default function ProductType({
       </>
     );
   }
-
+  console.log(
+    "values.productType.tokenGatedOffer",
+    values.productType.tokenGatedOffer
+  );
   return (
     <ContainerProductPage>
       <SectionTitle tag="h2">Product type</SectionTitle>
@@ -457,6 +460,58 @@ export default function ProductType({
                     }}
                   />
                   <Typography tag="p">Different variants</Typography>
+                </Box>
+              </Label>
+            </Grid>
+          </FormField>
+          <FormField
+            title="Token Gating"
+            required
+            style={{
+              marginBottom: 0
+            }}
+          >
+            <Grid>
+              <Label>
+                <RadioButton
+                  type="radio"
+                  name="productType.tokenGatedOffer"
+                  value="false"
+                  checked={values.productType.tokenGatedOffer === "false"}
+                  onChange={handleChange}
+                />
+                <Box>
+                  <ProductImage
+                    src={oneItemTypeProduct}
+                    style={{
+                      width: "62px",
+                      height: "100px",
+                      paddingTop: "0px",
+                      margin: "auto"
+                    }}
+                  />
+                  <Typography tag="p">Open access</Typography>
+                </Box>
+              </Label>
+              <Label>
+                <RadioButton
+                  type="radio"
+                  name="productType.tokenGatedOffer"
+                  value="true"
+                  checked={values.productType.tokenGatedOffer === "true"}
+                  onChange={handleChange}
+                />
+                <Box>
+                  <ProductImage
+                    src={differentVariantsProduct}
+                    style={{
+                      width: "54px",
+                      height: "100px",
+                      paddingTop: "0px",
+                      margin: "auto"
+                    }}
+                  />
+                  <Typography tag="p">Token gated</Typography>
                 </Box>
               </Label>
             </Grid>

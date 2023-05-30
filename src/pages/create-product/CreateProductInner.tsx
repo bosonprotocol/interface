@@ -35,7 +35,8 @@ import {
   CreateProductForm,
   OPTIONS_EXCHANGE_POLICY,
   optionUnitKeys,
-  TOKEN_TYPES
+  TOKEN_TYPES,
+  TokenGating
 } from "../../components/product/utils";
 import { getFixedOrPercentageVal } from "../../components/product/utils/termsOfExchange";
 import MultiSteps from "../../components/step/MultiSteps";
@@ -97,9 +98,7 @@ type GetProductV1MetadataProps = {
   shippingInfo: CreateProductForm["shippingInfo"];
   termsOfExchange: CreateProductForm["termsOfExchange"];
   supportedJurisdictions: Array<SupportedJuridiction>;
-  commonTermsOfSale:
-    | CreateProductForm["coreTermsOfSale"]
-    | CreateProductForm["variantsCoreTermsOfSale"];
+  tokenGating: TokenGating["tokenGating"];
 };
 async function getProductV1Metadata({
   contactPreference,
@@ -117,7 +116,7 @@ async function getProductV1Metadata({
   shippingInfo,
   termsOfExchange,
   supportedJurisdictions,
-  commonTermsOfSale
+  tokenGating
 }: GetProductV1MetadataProps): Promise<productV1.ProductV1Metadata> {
   const profileImage = createYourProfile?.logo?.[0];
   const coverImage = createYourProfile?.coverPicture?.[0];
@@ -157,7 +156,7 @@ async function getProductV1Metadata({
     image: productMainImageLink ? productMainImageLink : "",
     type: MetadataType.PRODUCT_V1,
     attributes: [...nftAttributes, ...additionalAttributes],
-    condition: commonTermsOfSale?.tokenGatingDesc || undefined,
+    condition: tokenGating?.tokenGatingDesc || undefined,
     product: {
       uuid: uuid(),
       version: 1,
@@ -520,7 +519,8 @@ function CreateProductInner({
       productVariantsImages,
       productType,
       termsOfExchange,
-      shippingInfo
+      shippingInfo,
+      tokenGating
     } = values;
 
     const productMainImageLink: string | undefined =
@@ -702,7 +702,7 @@ function CreateProductInner({
           shippingInfo,
           termsOfExchange,
           supportedJurisdictions,
-          commonTermsOfSale
+          tokenGating
         });
         const metadatas = productV1.createVariantProductMetadata(
           productV1Metadata,
@@ -790,7 +790,7 @@ function CreateProductInner({
           shippingInfo,
           termsOfExchange,
           supportedJurisdictions,
-          commonTermsOfSale
+          tokenGating
         });
         const price = coreTermsOfSale.price;
         const decimals = Number(exchangeToken?.decimals || 18);
@@ -831,12 +831,12 @@ function CreateProductInner({
         });
         offersToCreate.push(offerData);
       }
-      const isTokenGated = commonTermsOfSale.tokenGatedOffer.value === "true";
+      const isTokenGated = productType.tokenGatedOffer === "true";
       await createOffers({
         sellerToCreate: null,
         isMultiVariant,
         offersToCreate,
-        tokenGatedInfo: isTokenGated ? commonTermsOfSale : null,
+        tokenGatedInfo: isTokenGated ? values.tokenGating : null,
         conditionDecimals: decimals,
         onGetExchangeTokenDecimals: setDecimals,
         onCreatedOffersWithVariants: ({ firstOffer }) => {
@@ -926,11 +926,8 @@ function CreateProductInner({
   }, [isOneSetOfImages]);
 
   const getDecimalOnPreview = async (values: CreateProductForm) => {
-    const coreTermsOfSaleKey = isMultiVariant
-      ? "variantsCoreTermsOfSale"
-      : "coreTermsOfSale";
-    const tokenContract = values?.[coreTermsOfSaleKey]?.tokenContract;
-    const tokenType = values?.[coreTermsOfSaleKey]?.tokenType;
+    const tokenContract = values.tokenGating?.tokenContract;
+    const tokenType = values.tokenGating?.tokenType;
 
     if (
       tokenContract &&

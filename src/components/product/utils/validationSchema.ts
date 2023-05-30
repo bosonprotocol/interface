@@ -16,7 +16,6 @@ import {
   OPTIONS_DISPUTE_RESOLVER,
   OPTIONS_EXCHANGE_POLICY,
   OPTIONS_PERIOD,
-  OPTIONS_TOKEN_GATED,
   OPTIONS_UNIT,
   TOKEN_CRITERIA,
   TOKEN_TYPES
@@ -40,7 +39,11 @@ export const productTypeValidationSchema = Yup.object({
       .min(1)
       .oneOf(["physical", "phygital"])
       .required(validationMessage.required),
-    productVariant: Yup.string().min(1).required(validationMessage.required)
+    productVariant: Yup.string().min(1).required(validationMessage.required),
+    tokenGatedOffer: Yup.string()
+      .min(1)
+      .oneOf(["true", "false"])
+      .required(validationMessage.required)
   })
 });
 
@@ -179,12 +182,6 @@ export const productInformationValidationSchema = Yup.object({
 });
 
 export const commonCoreTermsOfSaleValidationSchema = {
-  tokenGatedOffer: Yup.object()
-    .shape({
-      value: Yup.string(),
-      label: Yup.string()
-    })
-    .default([{ value: "", label: "" }]),
   offerValidityPeriod: Yup.array()
     .required(validationMessage.required)
     .min(2, validationMessage.required)
@@ -192,56 +189,35 @@ export const commonCoreTermsOfSaleValidationSchema = {
   redemptionPeriod: Yup.array()
     .required(validationMessage.required)
     .min(2, validationMessage.required)
-    .isRedemptionDatesValid(),
-  tokenContract: Yup.string()
-    .when(["tokenGatedOffer"], {
-      is: (tokenGated: SelectDataProps) =>
-        tokenGated?.value === OPTIONS_TOKEN_GATED[1].value,
-      then: (schema) => schema.required(validationMessage.required)
-    })
-    .test("FORMAT", "Must be a valid address", (value) =>
-      value ? ethers.utils.isAddress(value) : true
-    ),
-  maxCommits: Yup.string()
-    .when(["tokenGatedOffer"], {
-      is: (tokenGated: SelectDataProps) =>
-        tokenGated?.value === OPTIONS_TOKEN_GATED[1].value,
-      then: (schema) => schema.required(validationMessage.required)
-    })
-    .matches(/^\+?[1-9]\d*$/, "Value must greater than or equal to 0"),
-  tokenType: Yup.object()
-    .when(["tokenGatedOffer"], {
-      is: (tokenGated: SelectDataProps) =>
-        tokenGated?.value === OPTIONS_TOKEN_GATED[1].value,
-      then: (schema) => schema.required(validationMessage.required)
-    })
-    .shape({
+    .isRedemptionDatesValid()
+};
+
+export const tokenGatingValidationSchema = Yup.object({
+  tokenGating: Yup.object({
+    tokenContract: Yup.string()
+      .required(validationMessage.required)
+      .test("FORMAT", "Must be a valid address", (value) =>
+        value ? ethers.utils.isAddress(value) : true
+      ),
+    maxCommits: Yup.string()
+      .required(validationMessage.required)
+      .matches(/^\+?[1-9]\d*$/, "Value must greater than or equal to 0"),
+    tokenType: Yup.object()
+      .required(validationMessage.required)
+      .shape({
+        value: Yup.string(),
+        label: Yup.string()
+      })
+      .default([{ value: "", label: "" }]),
+    tokenCriteria: Yup.object({
       value: Yup.string(),
       label: Yup.string()
-    })
-    .default([{ value: "", label: "" }]),
-  tokenCriteria: Yup.object({
-    value: Yup.string(),
-    label: Yup.string()
-  }).when(["tokenGatedOffer"], {
-    is: (tokenGated: SelectDataProps) =>
-      tokenGated?.value === OPTIONS_TOKEN_GATED[1].value,
-    then: (schema) => schema.required(validationMessage.required)
-  }),
-  minBalance: Yup.string().when(
-    ["tokenGatedOffer", "tokenType", "tokenCriteria"],
-    {
-      is: (
-        tokenGated: SelectDataProps,
-        tokenType: SelectDataProps,
-        tokenCriteria: SelectDataProps
-      ) =>
-        (tokenGated?.value === OPTIONS_TOKEN_GATED[1].value &&
-          tokenType?.value === TOKEN_TYPES[0].value) ||
-        (tokenGated?.value === OPTIONS_TOKEN_GATED[1].value &&
-          tokenType?.value === TOKEN_TYPES[2].value) ||
-        (tokenGated?.value === OPTIONS_TOKEN_GATED[1].value &&
-          tokenType?.value === TOKEN_TYPES[1].value &&
+    }).required(validationMessage.required),
+    minBalance: Yup.string().when(["tokenType", "tokenCriteria"], {
+      is: (tokenType: SelectDataProps, tokenCriteria: SelectDataProps) =>
+        tokenType?.value === TOKEN_TYPES[0].value ||
+        tokenType?.value === TOKEN_TYPES[2].value ||
+        (tokenType?.value === TOKEN_TYPES[1].value &&
           tokenCriteria?.value === TOKEN_CRITERIA[0].value),
       then: (schema) =>
         schema
@@ -251,20 +227,11 @@ export const commonCoreTermsOfSaleValidationSchema = {
             "Min balance must be greater than or equal to 1"
           )
           .typeError("Value must be an integer greater than or equal to 1")
-    }
-  ),
-  tokenId: Yup.string().when(
-    ["tokenGatedOffer", "tokenType", "tokenCriteria"],
-    {
-      is: (
-        tokenGated: SelectDataProps,
-        tokenType: SelectDataProps,
-        tokenCriteria: SelectDataProps
-      ) =>
-        (tokenGated?.value === OPTIONS_TOKEN_GATED[1].value &&
-          tokenType?.value === TOKEN_TYPES[2].value) ||
-        (tokenGated?.value === OPTIONS_TOKEN_GATED[1].value &&
-          tokenType?.value === TOKEN_TYPES[1].value &&
+    }),
+    tokenId: Yup.string().when(["tokenType", "tokenCriteria"], {
+      is: (tokenType: SelectDataProps, tokenCriteria: SelectDataProps) =>
+        tokenType?.value === TOKEN_TYPES[2].value ||
+        (tokenType?.value === TOKEN_TYPES[1].value &&
           tokenCriteria?.value === TOKEN_CRITERIA[1].value),
       then: (schema) =>
         schema
@@ -283,15 +250,11 @@ export const commonCoreTermsOfSaleValidationSchema = {
           )
           .typeError("Value must be an integer greater than or equal to 0")
           .required(validationMessage.required)
-    }
-  ),
+    }),
 
-  tokenGatingDesc: Yup.string().when(["tokenGatedOffer"], {
-    is: (tokenGated: SelectDataProps) =>
-      tokenGated?.value === OPTIONS_TOKEN_GATED[1].value,
-    then: (schema) => schema.required(validationMessage.required)
+    tokenGatingDesc: Yup.string().required(validationMessage.required)
   })
-};
+});
 
 export const coreTermsOfSaleValidationSchema = Yup.object({
   coreTermsOfSale: Yup.object({

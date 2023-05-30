@@ -8,13 +8,18 @@ import {
   OPTIONS_EXCHANGE_POLICY,
   OPTIONS_LENGTH,
   OPTIONS_PERIOD,
-  OPTIONS_TOKEN_GATED,
   OPTIONS_UNIT,
   OPTIONS_WEIGHT,
   TOKEN_CRITERIA,
   TOKEN_TYPES
 } from "./const";
-import { CreateProductForm, CreateYourProfile } from "./types";
+import {
+  CoreTermsOfSale,
+  CreateProductForm,
+  CreateYourProfile,
+  TokenGating,
+  VariantsCoreTermsOfSale
+} from "./types";
 
 export const createYourProfileInitialValues: CreateYourProfile = {
   createYourProfile: {
@@ -32,7 +37,8 @@ export const createYourProfileInitialValues: CreateYourProfile = {
 export const productTypeInitialValues = {
   productType: {
     productType: "",
-    productVariant: ""
+    productVariant: "",
+    tokenGatedOffer: ""
   }
 } as const;
 
@@ -86,36 +92,32 @@ export const productImagesInitialValues = {
   productAnimation: []
 } as const;
 
-export const coreTermsOfSaleInitialValues = {
+export const coreTermsOfSaleInitialValues: CoreTermsOfSale = {
   coreTermsOfSale: {
     price: null as unknown as number,
     currency: OPTIONS_CURRENCIES[0],
     quantity: 1,
-    tokenGatedOffer: OPTIONS_TOKEN_GATED[0],
-    tokenContract: "",
-    tokenType: TOKEN_TYPES[0],
-    minBalance: undefined,
-    tokenId: undefined,
-    maxCommits: undefined,
-    tokenGatingDesc: "",
-    tokenCriteria: TOKEN_CRITERIA[0],
     redemptionPeriod: [],
     offerValidityPeriod: []
   }
 };
 
-export const variantsCoreTermsOfSaleInitialValues = {
+export const variantsCoreTermsOfSaleInitialValues: VariantsCoreTermsOfSale = {
   variantsCoreTermsOfSale: {
-    tokenGatedOffer: OPTIONS_TOKEN_GATED[0],
+    redemptionPeriod: [],
+    offerValidityPeriod: []
+  }
+};
+
+export const tokenGatingInitialValues: TokenGating = {
+  tokenGating: {
     tokenContract: "",
     tokenType: TOKEN_TYPES[0],
     minBalance: undefined,
     tokenId: undefined,
-    maxCommits: undefined,
+    maxCommits: "",
     tokenGatingDesc: "",
-    tokenCriteria: TOKEN_CRITERIA[0],
-    redemptionPeriod: [],
-    offerValidityPeriod: []
+    tokenCriteria: TOKEN_CRITERIA[0]
   }
 };
 
@@ -187,5 +189,6 @@ export const initialValues: CreateProductForm = {
   ...termsOfExchangeInitialValues,
   ...shippingInfoInitialValues,
   ...disputeCentreInitialValues,
-  ...imagesSpecificOrAllInitialValues
+  ...imagesSpecificOrAllInitialValues,
+  ...tokenGatingInitialValues
 } as const;

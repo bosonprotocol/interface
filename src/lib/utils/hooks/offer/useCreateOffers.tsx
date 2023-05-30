@@ -7,7 +7,7 @@ import { TOKEN_TYPES } from "../../../../components/product/utils";
 import { poll } from "../../../../pages/create-product/utils";
 import {
   buildCondition,
-  CommonTermsOfSale
+  PartialTokenGating
 } from "../../../../pages/create-product/utils/buildCondition";
 import { useCoreSDK } from "../../useCoreSdk";
 import { useAddPendingTransaction } from "../transactions/usePendingTransactions";
@@ -18,7 +18,7 @@ type UseCreateOffersProps = {
   sellerToCreate: accounts.CreateSellerArgs | null;
   offersToCreate: offers.CreateOfferArgs[];
   isMultiVariant: boolean;
-  tokenGatedInfo?: CommonTermsOfSale | null;
+  tokenGatedInfo?: PartialTokenGating | null;
   conditionDecimals?: number;
   onGetExchangeTokenDecimals?: (decimals: number | undefined) => unknown;
   onCreatedOffersWithVariants?: (arg0: {

@@ -72,6 +72,9 @@ const customStyles = (error: any) => ({
   }),
   indicatorSeparator: () => ({
     display: "none"
+  }),
+  indicatorsContainer: () => ({
+    margin: "-0.079rem 0" // to make selects less tall but as tall as inputs
   })
 });
 

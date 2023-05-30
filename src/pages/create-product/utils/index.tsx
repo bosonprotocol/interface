@@ -8,6 +8,7 @@ import ProductType from "../../../components/product/ProductType";
 import ProductVariants from "../../../components/product/ProductVariants";
 import ShippingInfo from "../../../components/product/ShippingInfo";
 import TermsOfExchange from "../../../components/product/TermsOfExchange";
+import TokenGating from "../../../components/product/tokenGating/TokenGating";
 import {
   coreTermsOfSaleValidationSchema,
   productImagesValidationSchema,
@@ -17,6 +18,7 @@ import {
   productVariantsValidationSchema,
   shippingInfoValidationSchema,
   termsOfExchangeValidationSchema,
+  tokenGatingValidationSchema,
   variantsCoreTermsOfSaleValidationSchema
 } from "../../../components/product/utils";
 import {
@@ -29,6 +31,7 @@ import {
   termsOfExchangeHelp
 } from "../../../components/product/utils/productHelpOptions";
 import { ScroolToID } from "../../../components/utils/Scroll";
+import { isTruthy } from "../../../lib/types/helpers";
 import { ChatInitializationStatus } from "../../../lib/utils/hooks/chat/useChatStatus";
 
 export const poll = async function <T>(
@@ -157,6 +160,16 @@ export const createProductSteps = ({
       : coreTermsOfSaleValidationSchema,
     helpSection: coreTermsOfSaleHelp
   };
+  const tokenGating = {
+    ui: (
+      <>
+        <ScroolToID id="multisteps_wrapper" />
+        <TokenGating />
+      </>
+    ),
+    validation: tokenGatingValidationSchema,
+    helpSection: coreTermsOfSaleHelp
+  };
   const termsOfExchange = {
     ui: (
       <>
@@ -193,15 +206,21 @@ export const createProductSteps = ({
     helpSection: null
   };
 
-  const defaultSteps = {
-    0: productType,
-    1: productInformation,
-    2: productImages,
-    3: coreTermsOfSale,
-    4: termsOfExchange,
-    5: shippingInfo,
-    6: preview
-  } as const;
+  const isTokenGated = true; // TODO: set and use here
+  const defaultSteps = Object.fromEntries(
+    Object.entries(
+      [
+        productType,
+        productInformation,
+        productImages,
+        coreTermsOfSale,
+        isTokenGated && tokenGating,
+        termsOfExchange,
+        shippingInfo,
+        preview
+      ].filter(isTruthy)
+    )
+  );
 
   if (isMultiVariant) {
     const productVariants = {
@@ -215,16 +234,21 @@ export const createProductSteps = ({
       helpSection: productVariantsHelp,
       stepNo: "productVariants"
     };
-    return {
-      0: productType,
-      1: productInformation,
-      2: productVariants,
-      3: productImages,
-      4: coreTermsOfSale,
-      5: termsOfExchange,
-      6: shippingInfo,
-      7: preview
-    };
+    return Object.fromEntries(
+      Object.entries(
+        [
+          productType,
+          productInformation,
+          productVariants,
+          productImages,
+          coreTermsOfSale,
+          isTokenGated && tokenGating,
+          termsOfExchange,
+          shippingInfo,
+          preview
+        ].filter(isTruthy)
+      )
+    );
   }
 
   return defaultSteps;
