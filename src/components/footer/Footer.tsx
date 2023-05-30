@@ -55,6 +55,28 @@ const LogoGrid = styled(Grid)`
   }
 `;
 
+const StyledGridContainer = styled(GridContainer)`
+  ${breakpoint.xxs} {
+    width: 100%;
+    margin: 0 !important;
+  }
+
+  ${breakpoint.xs} {
+    margin-left: auto !important;
+    width: auto;
+  }
+  ${breakpoint.s} {
+    margin-left: auto !important;
+    width: 80%;
+  }
+  ${breakpoint.l} {
+    width: 68%;
+  }
+  ${breakpoint.xl} {
+    width: 62%;
+  }
+`;
+
 interface INavigationLinks {
   flexDirection?: "row" | "column";
   gap?: string;
@@ -418,9 +440,9 @@ function FullFooter() {
               }}
               style={{ width: "100%" }}
             >
-              <GridContainer
+              <StyledGridContainer
                 itemsPerRow={{
-                  xs: 1,
+                  xs: 2,
                   s: 2,
                   m: 3,
                   l: 3,
@@ -429,7 +451,6 @@ function FullFooter() {
                 rowGap="1rem"
                 columnGap="1rem"
                 style={{
-                  width: "100%",
                   whiteSpace: "pre",
                   margin: "0 2rem"
                 }}
@@ -458,7 +479,7 @@ function FullFooter() {
                     </NavigationLinks>
                   </div>
                 )}
-              </GridContainer>
+              </StyledGridContainer>
               <Grid justifyContent="flex-end">
                 <Socials />
               </Grid>
