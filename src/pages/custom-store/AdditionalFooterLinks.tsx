@@ -107,6 +107,7 @@ const AdditionalFooterLinks: React.FC<AdditionalFooterLinksProps> = ({
           values.additionalFooterLinks.length
       );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values.additionalFooterLinks.length]);
   return (
     <Grid flexDirection="column" alignItems="flex-start" gap={gap}>

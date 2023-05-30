@@ -411,14 +411,26 @@ function FullFooter() {
             </GridContainer>
           ) : (
             <>
-              <NavigationGrid
-                justifyContent={isXXS ? "flex-start" : "flex-end"}
-                alignItems="flex-start"
+              <GridContainer
+                itemsPerRow={{
+                  xs: 1,
+                  s: 2,
+                  m: 3,
+                  l: 3,
+                  xl: 3
+                }}
+                rowGap="1rem"
+                columnGap="1rem"
+                style={{
+                  width: "100%",
+                  whiteSpace: "pre",
+                  margin: "0 2rem"
+                }}
               >
                 {!!shopLinks.length && (
                   <div>
                     <Typography tag="h5">Shop</Typography>
-                    <NavigationLinks flexDirection="column">
+                    <NavigationLinks flexDirection="column" gap={"0"}>
                       {shopLinks}
                     </NavigationLinks>
                   </div>
@@ -426,7 +438,7 @@ function FullFooter() {
                 {!!sellLinks.length && (
                   <div>
                     <Typography tag="h5">Sell</Typography>
-                    <NavigationLinks flexDirection="column">
+                    <NavigationLinks flexDirection="column" gap={"0"}>
                       {sellLinks}
                     </NavigationLinks>
                   </div>
@@ -434,12 +446,12 @@ function FullFooter() {
                 {!!helpLinks.length && (
                   <div>
                     <Typography tag="h5">Help</Typography>
-                    <NavigationLinks flexDirection="column">
+                    <NavigationLinks flexDirection="column" gap={"0"}>
                       {helpLinks}
                     </NavigationLinks>
                   </div>
                 )}
-              </NavigationGrid>
+              </GridContainer>
               <Grid justifyContent="flex-end">
                 <Socials />
               </Grid>
