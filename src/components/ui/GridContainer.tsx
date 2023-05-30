@@ -11,7 +11,7 @@ export interface ItemsPerRow {
   xl: number;
 }
 
-interface ColumnGapPerRow {
+export interface ColumnGapPerRow {
   xs: CSSProperties["columnGap"];
   s: CSSProperties["columnGap"];
   m: CSSProperties["columnGap"];
@@ -19,7 +19,7 @@ interface ColumnGapPerRow {
   xl: CSSProperties["columnGap"];
 }
 
-interface RowGapPerRow {
+export interface RowGapPerRow {
   xs: CSSProperties["rowGap"];
   s: CSSProperties["rowGap"];
   m: CSSProperties["rowGap"];
