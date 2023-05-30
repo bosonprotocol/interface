@@ -54,26 +54,34 @@ const LogoGrid = styled(Grid)`
     flex-direction: row;
   }
 `;
+const CustomGridContainer = styled.div`
+  display: grid;
+  white-space: pre;
 
-const StyledGridContainer = styled(GridContainer)`
-  ${breakpoint.xxs} {
-    width: 100%;
-    margin: 0 !important;
-  }
+  grid-column-gap: 1rem;
+  grid-row-gap: 1rem;
 
+  grid-template-columns: repeat(1, minmax(0, 1fr));
   ${breakpoint.xs} {
-    margin-left: auto !important;
-    width: auto;
+    margin-left: auto;
+    grid-template-columns: repeat(2, max-content);
+    grid-column-gap: 4rem;
   }
   ${breakpoint.s} {
-    margin-left: auto !important;
-    width: 80%;
+    grid-template-columns: repeat(3, max-content);
+    grid-column-gap: 4rem;
+  }
+  ${breakpoint.m} {
+    grid-template-columns: repeat(3, max-content);
+    grid-column-gap: 4rem;
   }
   ${breakpoint.l} {
-    width: 68%;
+    grid-template-columns: repeat(3, max-content);
+    grid-column-gap: 4rem;
   }
   ${breakpoint.xl} {
-    width: 62%;
+    grid-template-columns: repeat(3, max-content);
+    grid-column-gap: 4rem;
   }
 `;
 
@@ -440,25 +448,15 @@ function FullFooter() {
               }}
               style={{ width: "100%" }}
             >
-              <StyledGridContainer
-                itemsPerRow={{
-                  xs: 2,
-                  s: 2,
-                  m: 3,
-                  l: 3,
-                  xl: 3
-                }}
-                rowGap="1rem"
-                columnGap="1rem"
-                style={{
-                  whiteSpace: "pre",
-                  margin: "0 2rem"
-                }}
-              >
+              <CustomGridContainer>
                 {!!shopLinks.length && (
                   <div>
                     <Typography tag="h5">Shop</Typography>
-                    <NavigationLinks flexDirection="column" gap={"0"}>
+                    <NavigationLinks
+                      flexDirection="column"
+                      gap={"0"}
+                      style={{ width: "fit-content" }}
+                    >
                       {shopLinks}
                     </NavigationLinks>
                   </div>
@@ -466,7 +464,11 @@ function FullFooter() {
                 {!!sellLinks.length && (
                   <div>
                     <Typography tag="h5">Sell</Typography>
-                    <NavigationLinks flexDirection="column" gap={"0"}>
+                    <NavigationLinks
+                      flexDirection="column"
+                      gap={"0"}
+                      style={{ width: "fit-content" }}
+                    >
                       {sellLinks}
                     </NavigationLinks>
                   </div>
@@ -474,12 +476,16 @@ function FullFooter() {
                 {!!helpLinks.length && (
                   <div>
                     <Typography tag="h5">Help</Typography>
-                    <NavigationLinks flexDirection="column" gap={"0"}>
+                    <NavigationLinks
+                      flexDirection="column"
+                      gap={"0"}
+                      style={{ width: "fit-content" }}
+                    >
                       {helpLinks}
                     </NavigationLinks>
                   </div>
                 )}
-              </StyledGridContainer>
+              </CustomGridContainer>
               <Grid justifyContent="flex-end">
                 <Socials />
               </Grid>
