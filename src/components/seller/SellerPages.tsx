@@ -17,6 +17,7 @@ import SellerExchanges from "./exchanges/SellerExchanges";
 import SellerFinances from "./finances/SellerFinances";
 import SellerProducts from "./products/SellerProducts";
 import { ProfileDetails } from "./profileDetails/ProfileDetails";
+import { SalesChannels } from "./salesChannels/SalesChannels";
 import { SellerInsideProps } from "./SellerInside";
 
 export const DEFAULT_SELLER_PAGE = "dashboard";
@@ -66,14 +67,13 @@ export const sellerPageTypes = {
       <SellerFinances {...props} />
     )
   },
-  customStoreFront: {
-    url: "customStoreFront",
-    label: "Custom Storefront",
+  salesChannels: {
+    url: "salesChannels",
+    label: "Sales Channels",
     icon: Megaphone,
-    externalPath: BosonRoutes.CreateStorefront,
-    component: () => (
-      <Navigate replace to={{ pathname: BosonRoutes.CreateStorefront }} />
-    )
+    externalPath: null,
+    component: () => <SalesChannels />,
+    withoutWrapper: true
   },
   profileDetails: {
     url: "profileDetails",

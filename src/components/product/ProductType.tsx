@@ -359,10 +359,6 @@ export default function ProductType({
       </>
     );
   }
-  console.log(
-    "values.productType.tokenGatedOffer",
-    values.productType.tokenGatedOffer
-  );
   return (
     <ContainerProductPage>
       <SectionTitle tag="h2">Product type</SectionTitle>

@@ -10,6 +10,7 @@ export const BosonRoutes = {
   YourAccount: `/account`,
   Account: `/account/:${UrlParameters.accountId}`,
   CreateStorefront: "/custom-store",
+  DCL: "/dcl",
   PrivacyPolicy: "/privacy-policy",
   TermsAndConditions: "/terms-and-conditions",
   LearnMore: "https://www.bosonprotocol.io/technology",
