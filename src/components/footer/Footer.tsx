@@ -4,6 +4,7 @@ import styled from "styled-components";
 import logo from "../../../src/assets/logo-white.svg";
 import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpoint } from "../../lib/styles/breakpoint";
+import { isTruthy } from "../../lib/types/helpers";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { sanitizeUrl } from "../../lib/utils/url";
@@ -190,6 +191,7 @@ function ContactInfoLinks() {
       </Typography>
       <NavigationLinks
         flexDirection="column"
+        gap={"0"}
         style={{ alignItems: "center", justifyContent: "flex-end" }}
       >
         {renderContactInfoLinks}
@@ -227,6 +229,7 @@ function CustomStoreAdditionalLinks() {
       </Typography>
       <NavigationLinks
         flexDirection="column"
+        gap={"0"}
         style={{ alignItems: "flex-start", justifyContent: "flex-end" }}
       >
         {renderAdditionalLinks}
@@ -334,14 +337,31 @@ function FullFooter() {
   const helpLinks = getHelpLinks({
     roles,
     hasExchangesAsBuyerOrSeller
-  }).map(
-    (nav) =>
-      nav && (
-        <LinkWithQuery to={nav.url} key={`navigation_nav_${nav.name}`}>
-          {nav.name}
-        </LinkWithQuery>
-      )
-  );
+  })
+    .map((nav) => {
+      if (nav) {
+        if (nav.url) {
+          return (
+            <LinkWithQuery to={nav.url} key={`navigation_nav_${nav.name}`}>
+              {nav.name}
+            </LinkWithQuery>
+          );
+        }
+        if (nav.email) {
+          return (
+            <a
+              href={"mailto:" + sanitizeUrl(nav.email)}
+              target="_blank"
+              rel="noopener noreferrer"
+              key={`help_email`}
+            >
+              {nav.name}
+            </a>
+          );
+        }
+      }
+    })
+    .filter(isTruthy);
   return (
     <Footer>
       <Layout>
@@ -362,8 +382,8 @@ function FullFooter() {
                 l: 2,
                 xl: 2
               }}
-              columnGap="4rem"
-              rowGap="4rem"
+              columnGap="12rem"
+              rowGap="2rem"
             >
               <CustomStoreAdditionalLinks />
               <GridContainer
@@ -388,7 +408,16 @@ function FullFooter() {
               </GridContainer>
             </GridContainer>
           ) : (
-            <>
+            <GridContainer
+              itemsPerRow={{
+                xs: 1,
+                s: 1,
+                m: 1,
+                l: 1,
+                xl: 1
+              }}
+              style={{ width: "100%" }}
+            >
               <GridContainer
                 itemsPerRow={{
                   xs: 1,
@@ -433,7 +462,7 @@ function FullFooter() {
               <Grid justifyContent="flex-end">
                 <Socials />
               </Grid>
-            </>
+            </GridContainer>
           )}
         </LogoGrid>
 
