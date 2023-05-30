@@ -178,6 +178,10 @@ export const getHelpLinks = ({
     ) && {
       name: "Dispute Center",
       url: BosonRoutes.DisputeCenter
+    },
+    {
+      name: "Email",
+      email: "info@bosonapp.io"
     }
   ].filter(isTruthy);
 };
