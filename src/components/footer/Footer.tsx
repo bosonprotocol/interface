@@ -151,9 +151,11 @@ function Socials() {
   }, [isCustomStoreFront, isLteS, isXXS, socialMediaLinks]);
   return renderSocialLinks?.length ? (
     <div>
-      <Typography $fontSize="1rem" fontWeight="600" tag="p">
-        FOLLOW US
-      </Typography>
+      {isCustomStoreFront && (
+        <Typography $fontSize="1rem" fontWeight="600" tag="p">
+          FOLLOW US
+        </Typography>
+      )}
       <NavigationLinks
         gap={isLteS && !isXXS ? "16px" : "32px"}
         style={{ justifyContent: "flex-start" }}
