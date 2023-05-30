@@ -2,7 +2,6 @@ import * as Sentry from "@sentry/browser";
 import { useField, useFormikContext } from "formik";
 import { ArrowsOut } from "phosphor-react";
 import { useCallback, useEffect, useMemo, useRef } from "react";
-import styled from "styled-components";
 
 import CollapseWithTrigger from "../../components/collapse/CollapseWithTrigger";
 import SimpleError from "../../components/error/SimpleError";
@@ -20,48 +19,25 @@ import { isTruthy } from "../../lib/types/helpers";
 import { useCurrentSellers } from "../../lib/utils/hooks/useCurrentSellers";
 import { getIpfsGatewayUrl } from "../../lib/utils/ipfs";
 import { preAppendHttps } from "../../lib/validation/regex/url";
-import { ContactInfoLinkIcon } from "./ContactInfoLinkIcon";
-import SocialLogo from "./SocialLogo";
+import AdditionalFooterLinks from "./AdditionalFooterLinks";
+import ContactInfoLinks from "./ContactInfoLinks";
+import SocialMediaLinks from "./SocialMediaLinks";
 import {
   formModel,
   initialValues,
-  InternalOnlyStoreFields,
-  SelectType,
   storeFields,
-  StoreFormFields,
   uploadMaxMB
 } from "./store-fields";
+import { InternalOnlyStoreFields, StoreFormFields } from "./store-fields-types";
+import {
+  FieldDescription,
+  FieldTitle,
+  gapBetweenInputs,
+  Section,
+  subFieldsMarginLeft
+} from "./styles";
+import { SelectType } from "./types";
 
-const Section = styled.div`
-  font-weight: 400;
-  font-size: 0.75rem;
-  line-height: 0.945rem;
-  text-transform: uppercase;
-  padding: 0.8125rem 0;
-  color: ${colors.grey3};
-`;
-
-const FieldTitle = styled.div`
-  font-style: normal;
-  font-weight: 600;
-  font-size: 1rem;
-  line-height: 150%;
-  font-feature-settings: "zero" on, "ordn" on;
-`;
-
-const FieldDescription = styled(Typography)`
-  font-style: normal;
-  font-weight: 400;
-  font-size: 0.75rem;
-  line-height: 150%;
-  font-feature-settings: "zero" on;
-  color: ${colors.darkGrey};
-`;
-const gapBetweenInputs = "2rem";
-const subFieldsMarginLeft = "4rem";
-const gap = "0.5rem";
-const firstSubFieldBasis = "15%";
-const secondSubFieldBasis = "85%";
 interface Props {
   hasSubmitError: boolean;
 }
@@ -174,9 +150,8 @@ export const formValuesWithOneLogoUrl = (values: StoreFormFields) => {
 
 export default function CustomStoreFormContent({ hasSubmitError }: Props) {
   const { showModal } = useModal();
-  const { setFieldValue, values, isValid, setFieldTouched, setValues } =
+  const { setFieldValue, values, isValid, setValues } =
     useFormikContext<StoreFormFields>();
-
   const { sellerIds } = useCurrentSellers();
 
   const queryParams = new URLSearchParams(
@@ -275,27 +250,6 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values.bannerUpload]);
 
-  const allFilledOut = values.additionalFooterLinks?.every((footerLink) => {
-    const { label, value } = footerLink || {};
-    return !!label && !!value;
-  });
-  const addFooterLink = () => {
-    if (allFilledOut) {
-      setFieldValue(
-        storeFields.additionalFooterLinks,
-        [
-          ...values.additionalFooterLinks,
-          {
-            label: "Custom",
-            value: `custom_${values.additionalFooterLinks.length}`,
-            url: ""
-          }
-        ],
-        true
-      );
-    }
-  };
-
   const disableCurationLists = ["mine"].includes(
     values.withOwnProducts?.value || ""
   );
@@ -319,32 +273,6 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
       setFieldValue(storeFields.footerTextColor, values.headerTextColor, true);
     }
   }, [setFieldValue, values.headerTextColor]);
-
-  const removeEmptyRowsExceptOne = () => {
-    const value = values.additionalFooterLinks;
-    const onlyFilledValues = value.filter((v) => !!v?.label || !!v?.value);
-    const valueToSet =
-      onlyFilledValues?.length !== value?.length
-        ? onlyFilledValues.length - 1 < value?.length
-          ? [...onlyFilledValues, { label: "", value: "" }]
-          : onlyFilledValues
-        : value;
-    setFieldValue(storeFields.additionalFooterLinks, valueToSet, true);
-    valueToSet.forEach((val, index) => {
-      if (val?.value) {
-        setFieldTouched(
-          `${storeFields.additionalFooterLinks}[${index}].label`,
-          true
-        );
-      }
-      if (val?.label) {
-        setFieldTouched(
-          `${storeFields.additionalFooterLinks}[${index}].value`,
-          true
-        );
-      }
-    });
-  };
 
   const renderCommitProxyField = useMemo(() => {
     const numSellers = new Set(
@@ -629,8 +557,8 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                 placeholder={formModel.formFields.logoUpload.placeholder}
                 withUpload
                 withEditor
-                width={1531}
-                height={190}
+                width={947}
+                height={218}
                 imgPreviewStyle={{ objectFit: "contain" }}
               />
             </Grid>
@@ -823,43 +751,12 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                       isSearchable
                     />
                   </Grid>
-                  <Grid
-                    flexDirection="column"
-                    alignItems="flex-start"
-                    gap="0.5rem"
-                  >
-                    {!!values.socialMediaLinks?.length && (
-                      <Grid gap={gap}>
-                        <Grid flexBasis={firstSubFieldBasis}>
-                          <Typography>Logo</Typography>
-                        </Grid>
-                        <Grid flexBasis={secondSubFieldBasis}>
-                          <Typography>URL</Typography>
-                        </Grid>
-                      </Grid>
-                    )}
-                    {(values.socialMediaLinks || []).map((selection, index) => {
-                      const { label, value } = selection || {};
-
-                      return (
-                        <Grid key={label} gap={gap}>
-                          <Grid flexBasis={firstSubFieldBasis}>
-                            <SocialLogo logo={value} />
-                          </Grid>
-                          <Grid
-                            flexBasis={secondSubFieldBasis}
-                            flexDirection="column"
-                            alignItems="flex-start"
-                          >
-                            <Input
-                              name={`${storeFields.socialMediaLinks}[${index}].url`}
-                              placeholder={`${label} URL`}
-                            />
-                          </Grid>
-                        </Grid>
-                      );
-                    })}
-                  </Grid>
+                  <SocialMediaLinks
+                    links={values.socialMediaLinks}
+                    setLinks={(links) =>
+                      setFieldValue(storeFields.socialMediaLinks, links)
+                    }
+                  />
                   <Grid flexDirection="column" alignItems="flex-start">
                     <FieldTitle>Contact info links</FieldTitle>
                     <FieldDescription>
@@ -879,43 +776,12 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                       isSearchable
                     />
                   </Grid>
-                  <Grid
-                    flexDirection="column"
-                    alignItems="flex-start"
-                    gap="0.5rem"
-                  >
-                    {!!values.contactInfoLinks?.length && (
-                      <Grid gap={gap}>
-                        <Grid flexBasis={firstSubFieldBasis}>
-                          <Typography>Icon</Typography>
-                        </Grid>
-                        <Grid flexBasis={secondSubFieldBasis}>
-                          <Typography>Text</Typography>
-                        </Grid>
-                      </Grid>
-                    )}
-                    {(values.contactInfoLinks || []).map((selection, index) => {
-                      const { label, value } = selection || {};
-
-                      return (
-                        <Grid key={label} gap={gap}>
-                          <Grid flexBasis={firstSubFieldBasis}>
-                            <ContactInfoLinkIcon icon={value} />
-                          </Grid>
-                          <Grid
-                            flexBasis={secondSubFieldBasis}
-                            flexDirection="column"
-                            alignItems="flex-start"
-                          >
-                            <Input
-                              name={`${storeFields.contactInfoLinks}[${index}].text`}
-                              placeholder={`${label}`}
-                            />
-                          </Grid>
-                        </Grid>
-                      );
-                    })}
-                  </Grid>
+                  <ContactInfoLinks
+                    links={values.contactInfoLinks}
+                    setLinks={(links) =>
+                      setFieldValue(storeFields.contactInfoLinks, links)
+                    }
+                  />
                   <Grid flexDirection="column" alignItems="flex-start">
                     <FieldTitle>Additional footer links</FieldTitle>
                     <FieldDescription>
@@ -935,58 +801,12 @@ export default function CustomStoreFormContent({ hasSubmitError }: Props) {
                       isMulti
                     />
                   </Grid>
-                  <Grid
-                    flexDirection="column"
-                    alignItems="flex-start"
-                    gap="0.5rem"
-                  >
-                    {!!values.additionalFooterLinks.length && (
-                      <>
-                        <Grid gap={gap}>
-                          <Grid flexBasis="50%">
-                            <Typography>Label</Typography>
-                          </Grid>
-                          <Grid flexBasis="50%">
-                            <Typography>URL</Typography>
-                          </Grid>
-                        </Grid>
-
-                        {(values.additionalFooterLinks || []).map(
-                          (_, index) => {
-                            return (
-                              <Grid key={`${index}`} gap={gap}>
-                                <Grid flexBasis="50%" flexDirection="column">
-                                  <Input
-                                    name={`${storeFields.additionalFooterLinks}[${index}].label`}
-                                    placeholder={`Label`}
-                                    onBlur={() => removeEmptyRowsExceptOne()}
-                                  />
-                                </Grid>
-                                <Grid
-                                  flexBasis="50%"
-                                  flexDirection="column"
-                                  alignItems="flex-start"
-                                >
-                                  <Input
-                                    name={`${storeFields.additionalFooterLinks}[${index}].url`}
-                                    placeholder={`URL`}
-                                    onBlur={() => removeEmptyRowsExceptOne()}
-                                  />
-                                </Grid>
-                              </Grid>
-                            );
-                          }
-                        )}
-                        <BosonButton
-                          disabled={!allFilledOut}
-                          onClick={addFooterLink}
-                          variant="secondaryFill"
-                        >
-                          + Add
-                        </BosonButton>
-                      </>
-                    )}
-                  </Grid>
+                  <AdditionalFooterLinks
+                    links={values.additionalFooterLinks}
+                    setLinks={(...args) =>
+                      setFieldValue(storeFields.additionalFooterLinks, ...args)
+                    }
+                  />
                 </Grid>
               )}
               <Grid flexDirection="column" alignItems="flex-start">

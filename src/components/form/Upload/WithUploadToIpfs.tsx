@@ -10,17 +10,10 @@ import { SUPPORTED_FILE_FORMATS } from "../../product/utils";
 import ErrorToast from "../../toasts/common/ErrorToast";
 import Typography from "../../ui/Typography";
 import { UploadProps } from "../types";
+import { FileProps } from "./types";
 
 export const MAX_FILE_SIZE = 20 * 1024 * 1024;
 
-export interface FileProps {
-  src: string;
-  name?: string; // for example: "redeemeum.png"
-  size?: number;
-  type: string; // for example: "image/png"
-  width?: number | null;
-  height?: number | null;
-}
 type UseSaveImageToIpfs = ReturnType<typeof useSaveImageToIpfs>;
 export interface WithUploadToIpfsProps {
   supportFormats?: string[];

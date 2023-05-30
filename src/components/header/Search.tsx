@@ -34,8 +34,8 @@ const InputWrapper = styled(Grid)<{
       : css`
           max-width: 487px;
           border-bottom: none;
-          margin: 1.25rem 0;
-          padding: 0.25rem 1rem;
+          margin: 1.25rem 0.5rem 1.25rem 0;
+          padding: 0.25rem 1rem 0.25rem 1rem;
           min-width: 20vw;
           background: ${colors.lightGrey};
         `}

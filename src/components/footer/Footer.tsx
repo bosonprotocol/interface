@@ -7,7 +7,7 @@ import { breakpoint } from "../../lib/styles/breakpoint";
 import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { sanitizeUrl } from "../../lib/utils/url";
-import { AdditionalFooterLinksValues } from "../../pages/custom-store/AdditionalFooterLinks";
+import { AdditionalFooterLink } from "../../pages/custom-store/AdditionalFooterLinksTypes";
 import {
   ContactInfoLinkIcon,
   ContactInfoLinkIconValues
@@ -126,7 +126,7 @@ function Socials() {
             rel="noopener noreferrer"
             key={`social_nav_${value}_${url}`}
           >
-            <SocialLogo logo={value} />
+            <SocialLogo logo={value} size={15} />
           </a>
         );
       });
@@ -222,7 +222,7 @@ function ContactInfoLinks() {
 function CustomStoreAdditionalLinks() {
   const isCustomStoreFront = useCustomStoreQueryParameter("isCustomStoreFront");
   const additionalFooterLinks = useCustomStoreQueryParameter<
-    { value: AdditionalFooterLinksValues; label: string; url: string }[]
+    AdditionalFooterLink[]
   >("additionalFooterLinks", { parseJson: true });
   const renderAdditionalLinks = useMemo(() => {
     if (isCustomStoreFront && typeof additionalFooterLinks !== "string") {
@@ -411,14 +411,26 @@ function FullFooter() {
             </GridContainer>
           ) : (
             <>
-              <NavigationGrid
-                justifyContent={isXXS ? "flex-start" : "flex-end"}
-                alignItems="flex-start"
+              <GridContainer
+                itemsPerRow={{
+                  xs: 1,
+                  s: 2,
+                  m: 3,
+                  l: 3,
+                  xl: 3
+                }}
+                rowGap="1rem"
+                columnGap="1rem"
+                style={{
+                  width: "100%",
+                  whiteSpace: "pre",
+                  margin: "0 2rem"
+                }}
               >
                 {!!shopLinks.length && (
                   <div>
                     <Typography tag="h5">Shop</Typography>
-                    <NavigationLinks flexDirection="column">
+                    <NavigationLinks flexDirection="column" gap={"0"}>
                       {shopLinks}
                     </NavigationLinks>
                   </div>
@@ -426,7 +438,7 @@ function FullFooter() {
                 {!!sellLinks.length && (
                   <div>
                     <Typography tag="h5">Sell</Typography>
-                    <NavigationLinks flexDirection="column">
+                    <NavigationLinks flexDirection="column" gap={"0"}>
                       {sellLinks}
                     </NavigationLinks>
                   </div>
@@ -434,12 +446,12 @@ function FullFooter() {
                 {!!helpLinks.length && (
                   <div>
                     <Typography tag="h5">Help</Typography>
-                    <NavigationLinks flexDirection="column">
+                    <NavigationLinks flexDirection="column" gap={"0"}>
                       {helpLinks}
                     </NavigationLinks>
                   </div>
                 )}
-              </NavigationGrid>
+              </GridContainer>
               <Grid justifyContent="flex-end">
                 <Socials />
               </Grid>

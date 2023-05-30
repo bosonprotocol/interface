@@ -25,7 +25,7 @@ import { BigNumber, ethers } from "ethers";
 import { useEffect } from "react";
 
 import { Token } from "../../components/convertion-rate/ConvertionRateContext";
-import { FileProps } from "../../components/form/Upload/WithUploadToIpfs";
+import { FileProps } from "../../components/form/Upload/types";
 import { getLensTokenIdDecimal } from "../../components/modal/components/Profile/Lens/utils";
 import { useModal } from "../../components/modal/useModal";
 import Help from "../../components/product/Help";

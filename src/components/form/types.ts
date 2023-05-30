@@ -2,7 +2,7 @@ import { Dayjs } from "dayjs";
 import { CSSProperties, ReactNode } from "react";
 import { SingleValue } from "react-select";
 
-import { UploadFileType } from "./Upload/Upload";
+import { UploadFileType } from "./Upload/types";
 
 export interface BaseProps {
   name: string;
