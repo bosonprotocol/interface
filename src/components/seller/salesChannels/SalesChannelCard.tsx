@@ -1,4 +1,4 @@
-import { ArrowRight } from "phosphor-react";
+import { ArrowRight, Clock } from "phosphor-react";
 import React from "react";
 import styled from "styled-components";
 
@@ -13,20 +13,42 @@ type SalesChannelCardProps = {
   title: string;
   text: string;
   to: keyof typeof BosonRoutes;
+  time: string;
 };
 
 const StyledGrid = styled(Grid)`
   background: ${colors.white};
+  position: relative;
+`;
+
+const Time = styled(Grid)`
+  width: initial;
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: ${colors.lightGrey};
+  padding: 0.25rem 0.5rem;
 `;
 
 export const SalesChannelCard: React.FC<SalesChannelCardProps> = ({
   title,
   text,
-  to: BosonRoutesKey
+  to: BosonRoutesKey,
+  time
 }) => {
   const navigate = useKeepQueryParamsNavigate();
   return (
     <StyledGrid flexDirection="column" alignItems="flex-start" padding="1.5rem">
+      <Time gap="0.25rem">
+        <Clock size={16} color={colors.secondary} />
+        <Typography
+          fontWeight="600"
+          $fontSize="0.75rem"
+          color={colors.darkGrey}
+        >
+          {time}
+        </Typography>
+      </Time>
       <Typography fontWeight="600" $fontSize="1.25rem">
         {title}
       </Typography>
