@@ -38,7 +38,7 @@ export const poll = async function <T>(
   fn: () => Promise<T>,
   fnConditionToKeepPolling: (arg: T) => boolean,
   ms: number
-) {
+): Promise<T> {
   let result = await fn();
   while (fnConditionToKeepPolling(result)) {
     await wait(ms);

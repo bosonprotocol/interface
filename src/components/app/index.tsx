@@ -1,8 +1,7 @@
 import { IconContext } from "phosphor-react";
-import { Fragment } from "react";
+import { Fragment, ReactNode } from "react";
 import styled, { ThemeProvider } from "styled-components";
 
-import Layout from "../../components/Layout";
 import ModalProvider from "../../components/modal/ModalProvider";
 import GlobalStyle from "../../lib/styles/GlobalStyle";
 import ChatProvider from "../../pages/chat/ChatProvider/ChatProvider";
@@ -11,6 +10,7 @@ import theme from "../../theme";
 import CookieBanner from "../cookie/CookieBanner";
 import Footer from "../footer/Footer";
 import Header from "../header/Header";
+import Layout from "../layout/Layout";
 
 const Container = styled.div`
   width: 100%;
@@ -30,6 +30,11 @@ interface Props {
   fluidHeader?: boolean;
   withBosonStyles?: boolean;
 }
+
+const LayoutWrapper = ({ children }: { children: ReactNode }) => (
+  <Layout style={{ display: "flex", flex: "1" }}>{children}</Layout>
+);
+
 export default function App({
   withLayout = true,
   withFooter = true,
@@ -48,7 +53,7 @@ export default function App({
   const fontFamily = useCustomStoreQueryParameter("fontFamily");
   const buttonBgColor = useCustomStoreQueryParameter("buttonBgColor");
   const buttonTextColor = useCustomStoreQueryParameter("buttonTextColor");
-  const Wrapper = withLayout ? Layout : Fragment;
+  const Wrapper = withLayout ? LayoutWrapper : Fragment;
 
   return (
     <ThemeProvider theme={theme}>

@@ -3,7 +3,7 @@ import { Form, Formik } from "formik";
 import { useState } from "react";
 import styled from "styled-components";
 
-import Layout from "../../components/Layout";
+import Layout from "../../components/layout/Layout";
 import { useModal } from "../../components/modal/useModal";
 import Typography from "../../components/ui/Typography";
 import { useCSSVariable } from "../../lib/utils/hooks/useCSSVariable";

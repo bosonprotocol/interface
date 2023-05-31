@@ -23,6 +23,7 @@ type UseCreateOffersProps = {
   onGetExchangeTokenDecimals?: (decimals: number | undefined) => unknown;
   onCreatedOffersWithVariants?: (arg0: {
     firstOffer: OfferFieldsFragment;
+    createdOffers: OfferFieldsFragment[];
   }) => void;
   onCreatedSingleOffers?: (arg0: { offer: OfferFieldsFragment }) => void;
 };
@@ -187,9 +188,12 @@ export function useCreateOffers() {
           },
           500
         );
-        const [firstOffer] = createdOffers as unknown as OfferFieldsFragment[];
+        const allCreatedOffers =
+          createdOffers as unknown as OfferFieldsFragment[];
+        const [firstOffer] = allCreatedOffers;
         onCreatedOffersWithVariants?.({
-          firstOffer
+          firstOffer,
+          createdOffers: allCreatedOffers
         });
       } else {
         // no variants

@@ -2,7 +2,7 @@ import { ReactNode, useState } from "react";
 import styled, { css } from "styled-components";
 import useResizeObserver from "use-resize-observer";
 
-import Layout from "../../components/Layout";
+import Layout from "../../components/layout/Layout";
 import BosonButton from "../../components/ui/BosonButton";
 import Grid from "../../components/ui/Grid";
 import Typography from "../../components/ui/Typography";

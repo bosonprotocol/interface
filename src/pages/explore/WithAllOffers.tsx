@@ -5,7 +5,7 @@ import React, { useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 
-import { LayoutRoot } from "../../components/Layout";
+import { LayoutRoot } from "../../components/layout/Layout";
 import Grid from "../../components/ui/Grid";
 import Loading from "../../components/ui/Loading";
 import Typography from "../../components/ui/Typography";

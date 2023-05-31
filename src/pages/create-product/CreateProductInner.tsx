@@ -14,7 +14,14 @@ import { Form, Formik, FormikHelpers, FormikProps } from "formik";
 import isArray from "lodash/isArray";
 import keys from "lodash/keys";
 import map from "lodash/map";
-import { useCallback, useMemo, useRef, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useMemo,
+  useRef,
+  useState
+} from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import toast from "react-hot-toast";
 import { generatePath, useLocation, useNavigate } from "react-router-dom";
@@ -305,7 +312,7 @@ function extractVisualImages(
 interface Props {
   initial: CreateProductForm;
   showCreateProductDraftModal: () => void;
-  showInvalidRoleModal: () => void;
+  setCreatedOffersIds: Dispatch<SetStateAction<string[]>>;
   isDraftModalClosed: boolean;
 }
 interface SupportedJuridiction {
@@ -316,7 +323,7 @@ interface SupportedJuridiction {
 function CreateProductInner({
   initial,
   showCreateProductDraftModal,
-  showInvalidRoleModal,
+  setCreatedOffersIds,
   isDraftModalClosed
 }: Props) {
   const history = useNavigate();
@@ -340,7 +347,16 @@ function CreateProductInner({
   const [isPreviewVisible, setIsPreviewVisible] = useState<boolean>(false);
   const { showModal, modalTypes, hideModal } = useModal();
   const coreSDK = useCoreSDK();
+  const showInvalidRoleModal = useCallback(() => {
+    showModal<"INVALID_ROLE">(modalTypes.INVALID_ROLE, {
+      title: "Invalid Role",
+      action: "create a product",
+      requiredRole: "assistant",
+      closable: false
+    });
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   useEffect(() => {
     function onBackButtonEvent(e: any) {
       const currentStep = e.state?.usr?.step || 0;
@@ -842,7 +858,10 @@ function CreateProductInner({
         tokenGatedInfo: isTokenGated ? values.tokenGating : null,
         conditionDecimals: decimals,
         onGetExchangeTokenDecimals: setDecimals,
-        onCreatedOffersWithVariants: ({ firstOffer }) => {
+        onCreatedOffersWithVariants: ({ firstOffer, createdOffers }) => {
+          createdOffers.length &&
+            setCreatedOffersIds(createdOffers.map((offer) => offer.id));
+
           toast((t) => (
             <SuccessTransactionToast
               t={t}
@@ -857,6 +876,7 @@ function CreateProductInner({
           ));
         },
         onCreatedSingleOffers: ({ offer: createdOffer }) => {
+          createdOffer && setCreatedOffersIds([createdOffer.id]);
           toast((t) => (
             <SuccessTransactionToast
               t={t}

@@ -6,8 +6,9 @@ import styled, { css } from "styled-components";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
-import Button from "../ui/Button";
 import Typography from "../ui/Typography";
+import { ModalHeader } from "./header/ModalHeader";
+import { ModalHeaderTitle } from "./header/ModalHeaderTitle";
 import { ModalType, Store } from "./ModalContext";
 
 const Root = styled.div`
@@ -295,23 +296,17 @@ export default function Modal({
         $maxWidths={maxWidths}
       >
         {HeaderComponent ? (
-          <Header tag="div" margin="0">
-            {HeaderComponent}
-            {closable && (
-              <Button data-close theme="blank" onClick={handleOnClose}>
-                <Close />
-              </Button>
-            )}
-          </Header>
+          <ModalHeader
+            headerComponent={HeaderComponent}
+            closable={closable}
+            handleOnClose={handleOnClose}
+          />
         ) : (
-          <HeaderWithTitle tag="h3" $title={title} margin="0">
-            {title}
-            {closable && (
-              <Button data-close theme="blank" onClick={handleOnClose}>
-                <Close />
-              </Button>
-            )}
-          </HeaderWithTitle>
+          <ModalHeaderTitle
+            title={title}
+            closable={closable}
+            handleOnClose={handleOnClose}
+          />
         )}
         <Content $size={size} $modalType={modalType}>
           {children}

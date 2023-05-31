@@ -18,7 +18,7 @@ export const SalesChannels: React.FC = () => {
         title="Custom Storefront"
         text="Create your custom storefront in the seller dApp and tweak it to match your company's identity."
         to="CreateStorefront"
-        time="60 min"
+        time="15 min"
       />
       <SalesChannelCard
         title="DCL"

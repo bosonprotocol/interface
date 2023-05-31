@@ -19,7 +19,7 @@ import SocialLogo, {
 import { useCustomStoreQueryParameter } from "../../pages/custom-store/useCustomStoreQueryParameter";
 import useUserRoles from "../../router/useUserRoles";
 import { LinkWithQuery } from "../customNavigation/LinkWithQuery";
-import Layout from "../Layout";
+import Layout from "../layout/Layout";
 import Grid from "../ui/Grid";
 import GridContainer from "../ui/GridContainer";
 import Typography from "../ui/Typography";

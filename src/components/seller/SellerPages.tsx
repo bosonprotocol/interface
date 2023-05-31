@@ -3,13 +3,13 @@ import {
   Bank,
   Chats,
   GridFour,
+  IconProps,
   Megaphone,
   Storefront,
   User
 } from "phosphor-react";
-import React from "react";
 
-import { BosonRoutes } from "../../lib/routing/routes";
+import { BosonRoutes, SellerCenterSubRoutes } from "../../lib/routing/routes";
 import Navigate from "../customNavigation/Navigate";
 import { WithSellerDataProps } from "./common/WithSellerData";
 import SellerDashboard from "./dashboard/SellerDashboard";
@@ -20,11 +20,27 @@ import { ProfileDetails } from "./profileDetails/ProfileDetails";
 import { SalesChannels } from "./salesChannels/SalesChannels";
 import { SellerInsideProps } from "./SellerInside";
 
-export const DEFAULT_SELLER_PAGE = "dashboard";
+export const DEFAULT_SELLER_PAGE = SellerCenterSubRoutes.Dashboard;
 
-export const sellerPageTypes = {
+type Label = keyof typeof SellerCenterSubRoutes;
+type Url = typeof SellerCenterSubRoutes[Label];
+type SellerPageTypes = Record<
+  Url,
+  {
+    url: Url;
+    label: Label;
+    icon: React.ForwardRefExoticComponent<
+      IconProps & React.RefAttributes<SVGSVGElement>
+    >;
+    externalPath: string | null;
+    component: (props: SellerInsideProps & WithSellerDataProps) => JSX.Element;
+    withoutWrapper?: boolean;
+  }
+>;
+
+export const sellerPageTypes: SellerPageTypes = {
   dashboard: {
-    url: DEFAULT_SELLER_PAGE,
+    url: SellerCenterSubRoutes.Dashboard,
     label: "Dashboard",
     icon: GridFour,
     externalPath: null,
@@ -34,7 +50,7 @@ export const sellerPageTypes = {
     withoutWrapper: true
   },
   products: {
-    url: "products",
+    url: SellerCenterSubRoutes.Products,
     label: "Products",
     icon: Storefront,
     externalPath: null,
@@ -43,7 +59,7 @@ export const sellerPageTypes = {
     )
   },
   exchanges: {
-    url: "exchanges",
+    url: SellerCenterSubRoutes.Exchanges,
     label: "Exchanges",
     icon: ArrowsLeftRight,
     externalPath: null,
@@ -52,14 +68,14 @@ export const sellerPageTypes = {
     )
   },
   messages: {
-    url: "messages",
+    url: SellerCenterSubRoutes.Messages,
     label: "Messages",
     icon: Chats,
     externalPath: BosonRoutes.Chat,
     component: () => <Navigate replace to={{ pathname: BosonRoutes.Chat }} />
   },
   finances: {
-    url: "finances",
+    url: SellerCenterSubRoutes.Finances,
     label: "Finances",
     icon: Bank,
     externalPath: null,
@@ -68,7 +84,7 @@ export const sellerPageTypes = {
     )
   },
   salesChannels: {
-    url: "salesChannels",
+    url: SellerCenterSubRoutes["Sales Channels"],
     label: "Sales Channels",
     icon: Megaphone,
     externalPath: null,
@@ -76,7 +92,7 @@ export const sellerPageTypes = {
     withoutWrapper: true
   },
   profileDetails: {
-    url: "profileDetails",
+    url: SellerCenterSubRoutes["Profile Details"],
     label: "Profile Details",
     icon: User,
     externalPath: null,
