@@ -163,6 +163,7 @@ interface Props {
   setChatListOpen: (p: boolean) => void;
   prevPath: string;
   address?: string;
+  isChatInitialized: boolean;
   setShowNotifiModal?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -179,6 +180,7 @@ export default function MessageList({
   setChatListOpen,
   prevPath,
   address,
+  isChatInitialized,
   setShowNotifiModal = () => {
     console.log("click Notifi");
   }
@@ -231,7 +233,7 @@ export default function MessageList({
         )}
         <PageTitle>
           Messages
-          {address && (
+          {address && isChatInitialized && (
             <NotifiIcon>
               <BellRinging
                 onClick={() => setShowNotifiModal(true)}

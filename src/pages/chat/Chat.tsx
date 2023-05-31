@@ -12,6 +12,7 @@ import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useBuyerSellerAccounts } from "../../lib/utils/hooks/useBuyerSellerAccounts";
 import { Exchange, useExchanges } from "../../lib/utils/hooks/useExchanges";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
+import { useChatContext } from "./ChatProvider/ChatContext";
 import ChatConversation from "./components/ChatConversation";
 import MessageList from "./components/MessageList";
 
@@ -130,6 +131,7 @@ export default function Chat() {
   const navigate = useKeepQueryParamsNavigate();
   const { isXXS, isXS, isS } = useBreakpoints();
   const { showModal, modalTypes } = useModal();
+  const { bosonXmtp } = useChatContext();
 
   const setShowNotifiModal = () => {
     showModal(
@@ -201,6 +203,7 @@ export default function Chat() {
     !isLoadingBuyer &&
     (isErrorSellers || isErrorBuyers || (!sellerId && !buyerId))
   );
+  const isChatInitialized = !!bosonXmtp;
   return (
     <>
       <Container>
@@ -220,6 +223,7 @@ export default function Chat() {
           setChatListOpen={setChatListOpen}
           currentExchange={selectedExchange}
           address={address}
+          isChatInitialized={isChatInitialized}
           setShowNotifiModal={setShowNotifiModal}
         />
 
