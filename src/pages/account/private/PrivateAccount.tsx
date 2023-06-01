@@ -52,7 +52,7 @@ const SettingsWrapper = styled.div`
 
 export default function PrivateAccount({ account }: { account: string }) {
   const { data: ensName } = useEnsName({
-    address: account
+    address: account as `0x${string}`
   });
   const [isTabSellerSelected, setTabSellerSelected] = useState<boolean>(false);
 

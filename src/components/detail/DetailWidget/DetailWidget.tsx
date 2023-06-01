@@ -352,10 +352,10 @@ const DetailWidget: React.FC<IDetailWidget> = ({
   const { data: dataBalance } = useBalance(
     offer.exchangeToken.address !== ethers.constants.AddressZero
       ? {
-          addressOrName: address,
-          token: offer.exchangeToken.address
+          addressOrName: address as `0x${string}`,
+          token: offer.exchangeToken.address as `0x${string}`
         }
-      : { addressOrName: address }
+      : { addressOrName: address as `0x${string}` }
   );
 
   const {

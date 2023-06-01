@@ -40,7 +40,7 @@ export default function PublicAccount() {
   const { [UrlParameters.accountId]: accountParameter } = useParams();
   const address = accountParameter || "";
   const { data: ensName } = useEnsName({
-    address: address
+    address: address as `0x${string}`
   });
 
   if (!address) {

@@ -49,10 +49,10 @@ export default function FinanceDeposit({
   const { data: dataBalance, refetch } = useBalance(
     exchangeToken !== ethers.constants.AddressZero
       ? {
-          addressOrName: address,
-          token: exchangeToken
+          addressOrName: address as `0x${string}`,
+          token: exchangeToken as `0x${string}`
         }
-      : { addressOrName: address }
+      : { addressOrName: address as `0x${string}` }
   );
 
   const { showModal, hideModal } = useModal();

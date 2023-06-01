@@ -52,6 +52,10 @@ export default function ConnectButton({
       }) => {
         account && Sentry.setTag("wallet_address", account?.address);
 
+        console.log("account", account);
+        console.log("chain", chain);
+        console.log("mounted", mounted);
+
         return (
           <div
             style={{ display: "flex", gap: 12, padding: "10px 0" }}

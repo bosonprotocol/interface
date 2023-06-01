@@ -1,5 +1,10 @@
-import { Chain, connectorsForWallets, wallet } from "@rainbow-me/rainbowkit";
-import { chain, configureChains, createClient } from "wagmi";
+import { Chain, connectorsForWallets } from "@rainbow-me/rainbowkit";
+import {
+  metaMaskWallet,
+  walletConnectWallet
+} from "@rainbow-me/rainbowkit/wallets";
+import { configureChains, createClient } from "wagmi";
+import { polygon, polygonMumbai } from "wagmi/chains";
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 
 import ethIcon from "./assets/ethereum-chain-icon.svg";
@@ -9,9 +14,9 @@ type EnvironmentType = "local" | "testing" | "staging" | "production"; // TODO: 
 
 const chainPerEnviromnent: Record<EnvironmentType, Chain> = {
   local: getLocalNetworkChainConfig(),
-  testing: chain.polygonMumbai,
-  staging: chain.polygonMumbai,
-  production: chain.polygon
+  testing: polygonMumbai,
+  staging: polygonMumbai,
+  production: polygon
 };
 
 function getBosonTestNetworkChainConfig(): Chain {
@@ -82,7 +87,7 @@ export { chains };
 const connectors = connectorsForWallets([
   {
     groupName: "Popular",
-    wallets: [wallet.metaMask({ chains }), wallet.walletConnect({ chains })]
+    wallets: [metaMaskWallet({ chains }), walletConnectWallet({ chains })]
   }
 ]);
 

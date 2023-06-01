@@ -334,6 +334,14 @@ const HeaderComponent = forwardRef<HTMLElement, Props>(
       ]
     );
 
+    console.log("navigationBarPosition", navigationBarPosition);
+    console.log("burgerMenuBreakpoint", burgerMenuBreakpoint);
+    console.log("fluidHeader", fluidHeader);
+    console.log("sellerId", sellerId);
+    console.log("hasSellerOffers", hasSellerOffers);
+    console.log("address", address);
+    console.log("sellerOffers?.length", sellerOffers?.length);
+
     return (
       <>
         <Header
