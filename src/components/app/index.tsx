@@ -43,6 +43,8 @@ export default function App({
   const secondaryBgColor = useCustomStoreQueryParameter("secondaryBgColor");
   const accentColor = useCustomStoreQueryParameter("accentColor");
   const textColor = useCustomStoreQueryParameter("textColor");
+  const showFooterValue = useCustomStoreQueryParameter("showFooter");
+  const showFooter = ["", "true"].includes(showFooterValue);
   const footerBgColor = useCustomStoreQueryParameter("footerBgColor");
   const footerTextColor = useCustomStoreQueryParameter("footerTextColor");
   const fontFamily = useCustomStoreQueryParameter("fontFamily");
@@ -70,8 +72,8 @@ export default function App({
                   $secondaryBgColor={secondaryBgColor}
                   $accentColor={accentColor}
                   $textColor={textColor}
-                  $footerBgColor={footerBgColor}
-                  $footerTextColor={footerTextColor}
+                  $footerBgColor={showFooter ? footerBgColor : ""}
+                  $footerTextColor={showFooter ? footerTextColor : ""}
                   $fontFamily={fontFamily}
                   $buttonBgColor={buttonBgColor}
                   $buttonTextColor={buttonTextColor}
