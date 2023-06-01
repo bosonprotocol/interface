@@ -3,6 +3,7 @@ import { ArrowSquareOut } from "phosphor-react";
 import { useMemo } from "react";
 
 import { CONFIG } from "../../lib/config";
+import { getExchangeTokenId } from "../../lib/utils/exchange";
 import { Exchange } from "../../lib/utils/hooks/useExchanges";
 import { OpenSeaButton } from "./Detail.style";
 
@@ -13,18 +14,18 @@ interface Props {
 const openSeaUrlMap = new Map([
   [
     "testing", // Mumbai
-    (exchangeId: string, contractAddress: string) =>
-      `https://testnets.opensea.io/assets/mumbai/${contractAddress}/${exchangeId}`
+    (tokenId: string, contractAddress: string) =>
+      `https://testnets.opensea.io/assets/mumbai/${contractAddress}/${tokenId}`
   ],
   [
     "staging", // Mumbai
-    (exchangeId: string, contractAddress: string) =>
-      `https://testnets.opensea.io/assets/mumbai/${contractAddress}/${exchangeId}`
+    (tokenId: string, contractAddress: string) =>
+      `https://testnets.opensea.io/assets/mumbai/${contractAddress}/${tokenId}`
   ],
   [
     "production", // Polygon
-    (exchangeId: string, contractAddress: string) =>
-      `https://opensea.io/assets/matic/${contractAddress}/${exchangeId}`
+    (tokenId: string, contractAddress: string) =>
+      `https://opensea.io/assets/matic/${contractAddress}/${tokenId}`
   ]
 ]);
 
@@ -44,7 +45,9 @@ export default function DetailOpenSea({ exchange }: Props) {
 
     const urlFn = openSeaUrlMap.get(CONFIG.envName);
 
-    return urlFn?.(exchange.id, exchange.seller.voucherCloneAddress) || "";
+    const tokenId = getExchangeTokenId(exchange, CONFIG.envName);
+
+    return urlFn?.(tokenId, exchange.seller.voucherCloneAddress) || "";
   }, [exchange]);
 
   if (!isToRedeem) {
