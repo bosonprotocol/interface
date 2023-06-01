@@ -1,11 +1,10 @@
+import { EnvironmentType } from "@bosonprotocol/react-kit";
 import { Chain, connectorsForWallets, wallet } from "@rainbow-me/rainbowkit";
 import { chain, configureChains, createClient } from "wagmi";
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 
 import ethIcon from "./assets/ethereum-chain-icon.svg";
 import { CONFIG } from "./config";
-
-type EnvironmentType = "local" | "testing" | "staging" | "production"; // TODO: export EnvironmentType in react-kit
 
 const chainPerEnviromnent: Record<EnvironmentType, Chain> = {
   local: getLocalNetworkChainConfig(),

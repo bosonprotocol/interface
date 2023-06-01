@@ -1,4 +1,4 @@
-import { getDefaultConfig } from "@bosonprotocol/react-kit";
+import { EnvironmentType, getDefaultConfig } from "@bosonprotocol/react-kit";
 import * as Sentry from "@sentry/browser";
 
 import { Token } from "../components/convertion-rate/ConvertionRateContext";
@@ -6,8 +6,6 @@ import lensFollowNftContractAbi from "../lib/utils/hooks/lens/abis/lens-follow-n
 import lensHubContractAbi from "../lib/utils/hooks/lens/abis/lens-hub-contract-abi.json";
 import lensPeripheryDataProvider from "../lib/utils/hooks/lens/abis/lens-periphery-data-provider.json";
 import { parseCurationList } from "./utils/curationList";
-
-type EnvironmentType = "local" | "testing" | "staging" | "production"; // TODO: export EnvironmentType in react-kit
 
 const REACT_APP_ENV_NAME = process.env.REACT_APP_ENV_NAME;
 export const config = getDefaultConfig(REACT_APP_ENV_NAME as EnvironmentType);
