@@ -280,14 +280,16 @@ function ByBoson() {
 
 export default function ({ withFooter }: { withFooter: boolean }) {
   const showFooterValue = useCustomStoreQueryParameter("showFooter");
-  const showFooter = ["", "true"].includes(showFooterValue) && withFooter;
-  return showFooter ? (
-    <FullFooter />
-  ) : (
-    <Footer padding="2rem 1rem">
-      <ByBoson />
-    </Footer>
-  );
+  const showFooter = ["", "true"].includes(showFooterValue);
+  return withFooter ? (
+    showFooter ? (
+      <FullFooter />
+    ) : (
+      <Footer padding="2rem 1rem">
+        <ByBoson />
+      </Footer>
+    )
+  ) : null;
 }
 
 function FullFooter() {
