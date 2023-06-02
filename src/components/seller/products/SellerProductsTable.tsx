@@ -878,104 +878,107 @@ export default function SellerProductsTable({
 
   return (
     <>
-      <Table {...getTableProps()}>
-        <div className="thead">
-          {headerGroups.map((headerGroup, key) => (
-            <div
-              {...headerGroup.getHeaderGroupProps()}
-              key={`seller_table_thead_tr_${key}`}
-              className="tr"
-            >
-              {headerGroup.headers.map((column, i) => {
+      <div style={{ width: "100%", overflow: "auto" }}>
+        <Table {...getTableProps()}>
+          <div className="thead">
+            {headerGroups.map((headerGroup, key) => (
+              <div
+                {...headerGroup.getHeaderGroupProps()}
+                key={`seller_table_thead_tr_${key}`}
+                className="tr"
+              >
+                {headerGroup.headers.map((column, i) => {
+                  return (
+                    <div
+                      data-sortable={column.disableSortBy}
+                      {...column.getHeaderProps(column.getSortByToggleProps())}
+                      key={`seller_table_thead_th_${i}`}
+                      className="th"
+                    >
+                      {column.render("Header")}
+                      {i > 0 && !column.disableSortBy && (
+                        <HeaderSorter>
+                          {column?.isSorted ? (
+                            column?.isSortedDesc ? (
+                              <CaretDown size={14} />
+                            ) : (
+                              <CaretUp size={14} />
+                            )
+                          ) : (
+                            ""
+                          )}
+                        </HeaderSorter>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+          <div {...getTableBodyProps()} className="tbody">
+            {(page.length > 0 &&
+              page.map((row, index) => {
+                prepareRow(row);
                 return (
                   <div
-                    data-sortable={column.disableSortBy}
-                    {...column.getHeaderProps(column.getSortByToggleProps())}
-                    key={`seller_table_thead_th_${i}`}
-                    className="th"
+                    {...row.getRowProps()}
+                    key={`seller_table_tbody_tr_${row.original.offerId}-${index}`}
+                    className="row"
                   >
-                    {column.render("Header")}
-                    {i > 0 && !column.disableSortBy && (
-                      <HeaderSorter>
-                        {column?.isSorted ? (
-                          column?.isSortedDesc ? (
-                            <CaretDown size={14} />
-                          ) : (
-                            <CaretUp size={14} />
-                          )
-                        ) : (
-                          ""
-                        )}
-                      </HeaderSorter>
-                    )}
+                    {row.cells.map((cell) => {
+                      const hasSubRows = cell.row.subRows.length > 1;
+                      return (
+                        <div
+                          {...cell.getCellProps()}
+                          key={`seller_table_tbody_td_${row.original.offerId}-${cell.column.id}`}
+                          onClick={() => {
+                            if (hasSubRows) {
+                              if (
+                                (!cell.row.isExpanded &&
+                                  cell.column.id === "action") ||
+                                cell.column.id === "productName"
+                              ) {
+                                cell.row.toggleRowExpanded();
+                              }
+                            } else if (
+                              cell.column.id !== "action" &&
+                              cell.column.id !== "selection" &&
+                              cell.column.id !== "status"
+                            ) {
+                              const pathname = generatePath(
+                                ProductRoutes.ProductDetail,
+                                {
+                                  [UrlParameters.uuid]:
+                                    row?.original?.uuid ?? ""
+                                }
+                              );
+                              navigate({ pathname });
+                            }
+                          }}
+                        >
+                          {cell.render("Cell")}
+                        </div>
+                      );
+                    })}
                   </div>
                 );
-              })}
-            </div>
-          ))}
-        </div>
-        <div {...getTableBodyProps()} className="tbody">
-          {(page.length > 0 &&
-            page.map((row, index) => {
-              prepareRow(row);
-              return (
-                <div
-                  {...row.getRowProps()}
-                  key={`seller_table_tbody_tr_${row.original.offerId}-${index}`}
-                  className="row"
-                >
-                  {row.cells.map((cell) => {
-                    const hasSubRows = cell.row.subRows.length > 1;
-                    return (
-                      <div
-                        {...cell.getCellProps()}
-                        key={`seller_table_tbody_td_${row.original.offerId}-${cell.column.id}`}
-                        onClick={() => {
-                          if (hasSubRows) {
-                            if (
-                              (!cell.row.isExpanded &&
-                                cell.column.id === "action") ||
-                              cell.column.id === "productName"
-                            ) {
-                              cell.row.toggleRowExpanded();
-                            }
-                          } else if (
-                            cell.column.id !== "action" &&
-                            cell.column.id !== "selection" &&
-                            cell.column.id !== "status"
-                          ) {
-                            const pathname = generatePath(
-                              ProductRoutes.ProductDetail,
-                              {
-                                [UrlParameters.uuid]: row?.original?.uuid ?? ""
-                              }
-                            );
-                            navigate({ pathname });
-                          }
-                        }}
-                      >
-                        {cell.render("Cell")}
-                      </div>
-                    );
-                  })}
-                </div>
-              );
-            })) || (
-            <div>
+              })) || (
               <div>
-                <Typography
-                  tag="h6"
-                  justifyContent="center"
-                  padding="1rem 0"
-                  margin="0"
-                >
-                  No data to display
-                </Typography>
+                <div>
+                  <Typography
+                    tag="h6"
+                    justifyContent="center"
+                    padding="1rem 0"
+                    margin="0"
+                  >
+                    No data to display
+                  </Typography>
+                </div>
               </div>
-            </div>
-          )}
-        </div>
-      </Table>
+            )}
+          </div>
+        </Table>
+      </div>
       <Pagination>
         <Grid>
           <Grid justifyContent="flex-start" gap="1rem">

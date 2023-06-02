@@ -130,7 +130,8 @@ export default [
       withFullLayout: true,
       withFooter: false,
       fluidHeader: false
-    }
+    },
+    role: [UserRoles.Seller]
   },
   {
     ...base,

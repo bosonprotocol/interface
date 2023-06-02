@@ -9,7 +9,6 @@ import { getSellerCenterPath } from "../../components/seller/paths";
 import MultiSteps from "../../components/step/MultiSteps";
 import Grid from "../../components/ui/Grid";
 import { colors } from "../../lib/styles/colors";
-import { useBreakpoints } from "../../lib/utils/hooks/useBreakpoints";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { DetailsStep } from "./steps/details/DetailsStep";
 import { ExecuteStep } from "./steps/execute/ExecuteStep";
@@ -91,14 +90,14 @@ const iconStyle: CSSProperties = {
   cursor: "pointer",
   margin: "1.1875rem",
   position: "absolute",
-  top: 0
+  top: 0,
+  color: colors.darkGrey
 };
-const iconSize = 48;
+const iconSize = 32;
 
 export const DCLPage: React.FC<DCLPageProps> = ({ offerIds }) => {
   const navigate = useKeepQueryParamsNavigate();
-  const { isLteS } = useBreakpoints();
-  const [currentStep, setCurrentStep] = useState<Step>(Step._1_DETAILS);
+  const [currentStep, setCurrentStep] = useState<Step>(Step._0_SELECT_PRODUCT);
   const stepNumber = stepToNumber[currentStep];
   const validationSchema = validationSchemas[stepNumber];
   const goToNextStep = () => {
@@ -116,6 +115,7 @@ export const DCLPage: React.FC<DCLPageProps> = ({ offerIds }) => {
     navigate({
       pathname: getSellerCenterPath("Sales Channels")
     });
+
   return (
     <Background
       style={{
@@ -147,31 +147,31 @@ export const DCLPage: React.FC<DCLPageProps> = ({ offerIds }) => {
           return (
             <Form style={{ height: "100%" }}>
               <StyledGrid>
-                {!isLteS && (
-                  <ArrowLeft
-                    style={{ ...iconStyle, position: "absolute" }}
-                    size={iconSize}
-                    onClick={() => {
-                      if (currentStep === Step._0_SELECT_PRODUCT) {
-                        navigate({
-                          pathname: getSellerCenterPath("Sales Channels")
-                        });
-                      } else {
-                        setCurrentStep((prev) => {
-                          if (prev === Step._2_EXECUTE) {
-                            return Step._1_DETAILS;
-                          }
-                          if (prev === Step._1_DETAILS) {
-                            return Step._0_SELECT_PRODUCT;
-                          }
-                          return prev;
-                        });
-                      }
-                    }}
-                  />
-                )}
+                <ArrowLeft
+                  style={{ ...iconStyle }}
+                  size={iconSize}
+                  onClick={() => {
+                    if (currentStep === Step._0_SELECT_PRODUCT) {
+                      navigate({
+                        pathname: getSellerCenterPath("Sales Channels")
+                      });
+                    } else {
+                      setCurrentStep((prev) => {
+                        if (prev === Step._2_EXECUTE) {
+                          return Step._1_DETAILS;
+                        }
+                        if (prev === Step._1_DETAILS) {
+                          return Step._0_SELECT_PRODUCT;
+                        }
+                        return prev;
+                      });
+                    }
+                  }}
+                />
+
                 <DCLLayout width="100%">
                   <MultiSteps
+                    hideArrows
                     data={STEPS}
                     active={stepToNumber[currentStep]}
                     callback={(stepInNumber) => {
@@ -185,7 +185,6 @@ export const DCLPage: React.FC<DCLPageProps> = ({ offerIds }) => {
                 <Close
                   style={{
                     ...iconStyle,
-                    position: "absolute",
                     right: 0
                   }}
                   size={iconSize}
