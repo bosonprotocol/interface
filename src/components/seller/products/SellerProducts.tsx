@@ -17,7 +17,9 @@ import SellerExport from "../SellerExport";
 import SellerFilters from "../SellerFilters";
 import { SellerInsideProps } from "../SellerInside";
 import SellerTags from "../SellerTags";
-import SellerProductsTable from "./SellerProductsTable";
+import SellerProductsTable, {
+  SellerProductsTableProps
+} from "./SellerProductsTable";
 
 const productTags = [
   {
@@ -51,8 +53,11 @@ export default function SellerProducts({
   products: productsData,
   sellerRoles,
   sellerId,
-  offersBacked
-}: SellerInsideProps & WithSellerDataProps) {
+  offersBacked,
+  columnsToShow
+}: SellerInsideProps &
+  WithSellerDataProps &
+  Pick<SellerProductsTableProps, "columnsToShow">) {
   const [currentTag, setCurrentTag] = useState(productTags[0].value);
   const [search, setSearch] = useState<string>("");
   const [filter, setFilter] = useState<FilterValue | null>(null);
@@ -186,6 +191,7 @@ export default function SellerProducts({
         setSelected={setSelected}
         sellerRoles={sellerRoles}
         offersBacked={offersBacked}
+        columnsToShow={columnsToShow}
       />
     </>
   );

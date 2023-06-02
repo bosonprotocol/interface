@@ -97,7 +97,7 @@ const iconSize = 32;
 
 export const DCLPage: React.FC<DCLPageProps> = ({ offerIds }) => {
   const navigate = useKeepQueryParamsNavigate();
-  const [currentStep, setCurrentStep] = useState<Step>(Step._0_SELECT_PRODUCT);
+  const [currentStep, setCurrentStep] = useState<Step>(Step._1_DETAILS);
   const stepNumber = stepToNumber[currentStep];
   const validationSchema = validationSchemas[stepNumber];
   const goToNextStep = () => {

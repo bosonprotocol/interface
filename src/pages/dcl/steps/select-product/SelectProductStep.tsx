@@ -1,7 +1,7 @@
 import React from "react";
-import styled from "styled-components";
 
 import { WithSellerData } from "../../../../components/seller/common/WithSellerData";
+import { ProductsTableColumnId } from "../../../../components/seller/products/SellerProductsTable";
 import { sellerPageTypes } from "../../../../components/seller/SellerPages";
 import Grid from "../../../../components/ui/Grid";
 import Loading from "../../../../components/ui/Loading";
@@ -10,16 +10,23 @@ import { colors } from "../../../../lib/styles/colors";
 import { useCurrentSellers } from "../../../../lib/utils/hooks/useCurrentSellers";
 import { DCLLayout } from "../../styles";
 
-const StyledGrid = styled(Grid)`
-  background: ${colors.white};
-`;
-
 type SelectProductStepProps = {
   goToNextStep: () => void;
 };
 
 const Products = WithSellerData(sellerPageTypes.products.component);
 
+const columnsToShow: Readonly<ProductsTableColumnId[]> = [
+  ProductsTableColumnId.offerId,
+  ProductsTableColumnId.warningIcon,
+  ProductsTableColumnId.image,
+  ProductsTableColumnId.sku,
+  ProductsTableColumnId.productName,
+  ProductsTableColumnId.status,
+  ProductsTableColumnId.quantity,
+  ProductsTableColumnId.salesChannels,
+  ProductsTableColumnId.action
+] as const;
 export const SelectProductStep: React.FC<SelectProductStepProps> = ({
   goToNextStep
 }) => {
@@ -43,7 +50,7 @@ export const SelectProductStep: React.FC<SelectProductStepProps> = ({
             width: "inherit"
           }}
         >
-          <Products sellerId={sellerId} />
+          <Products sellerId={sellerId} columnsToShow={columnsToShow} />
         </div>
       </Grid>
     </DCLLayout>

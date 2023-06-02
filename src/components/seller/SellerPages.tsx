@@ -3,7 +3,6 @@ import {
   Bank,
   Chats,
   GridFour,
-  IconProps,
   Megaphone,
   Storefront,
   User
@@ -22,23 +21,23 @@ import { SellerInsideProps } from "./SellerInside";
 
 export const DEFAULT_SELLER_PAGE = SellerCenterSubRoutes.Dashboard;
 
-type Label = keyof typeof SellerCenterSubRoutes;
-type Url = typeof SellerCenterSubRoutes[Label];
-type SellerPageTypes = Record<
-  Url,
-  {
-    url: Url;
-    label: Label;
-    icon: React.ForwardRefExoticComponent<
-      IconProps & React.RefAttributes<SVGSVGElement>
-    >;
-    externalPath: string | null;
-    component: (props: SellerInsideProps & WithSellerDataProps) => JSX.Element;
-    withoutWrapper?: boolean;
-  }
->;
+// type Label = keyof typeof SellerCenterSubRoutes;
+// type Url = typeof SellerCenterSubRoutes[Label];
+// type SellerPageTypes = Record<
+//   Url,
+//   {
+//     url: Url;
+//     label: Label;
+//     icon: React.ForwardRefExoticComponent<
+//       IconProps & React.RefAttributes<SVGSVGElement>
+//     >;
+//     externalPath: string | null;
+//     component: (props: SellerInsideProps & WithSellerDataProps) => JSX.Element;
+//     withoutWrapper?: boolean;
+//   }
+// >;
 
-export const sellerPageTypes: SellerPageTypes = {
+export const sellerPageTypes = {
   dashboard: {
     url: SellerCenterSubRoutes.Dashboard,
     label: "Dashboard",
@@ -54,9 +53,7 @@ export const sellerPageTypes: SellerPageTypes = {
     label: "Products",
     icon: Storefront,
     externalPath: null,
-    component: (props: SellerInsideProps & WithSellerDataProps) => (
-      <SellerProducts {...props} />
-    )
+    component: SellerProducts
   },
   exchanges: {
     url: SellerCenterSubRoutes.Exchanges,

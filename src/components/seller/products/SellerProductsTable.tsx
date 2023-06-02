@@ -48,6 +48,14 @@ import PaginationPages from "../common/PaginationPages";
 import { BackedProps, OffersBackedProps } from "../common/WithSellerData";
 import OfferVariation from "./OfferVariation";
 
+const TagWrapper = styled.div`
+  background-color: ${colors.lightGrey};
+  display: inline-block;
+  padding: 0.5em 0.75em;
+  font-size: 0.75rem;
+  font-weight: 600;
+`;
+
 const VoidButton = styled(BosonButton)`
   background: transparent;
   border-color: ${colors.orange};
@@ -61,7 +69,7 @@ const VoidButton = styled(BosonButton)`
 
 const StyledCheckboxWrapper = styled(CheckboxWrapper)``;
 
-interface Props {
+export interface SellerProductsTableProps {
   offers: (ExtendedOffer | null)[];
   isError: boolean;
   isLoading?: boolean;
@@ -70,6 +78,7 @@ interface Props {
   sellerRoles: SellerRolesProps;
   currentTag: string;
   offersBacked: OffersBackedProps;
+  columnsToShow?: ProductsTableColumnId[] | Readonly<ProductsTableColumnId[]>;
 }
 
 interface IIndeterminateInputProps {
@@ -273,72 +282,105 @@ const compareOffersSortByStatus = (
   );
 };
 
+export enum ProductsTableColumnId {
+  offerId = "offerId",
+  warningIcon = "warningIcon",
+  image = "image",
+  sku = "sku",
+  productName = "productName",
+  status = "status",
+  quantity = "quantity",
+  price = "price",
+  offerValidity = "offerValidity",
+  salesChannels = "salesChannels",
+  action = "action"
+}
+const defaultColumnsToShow = Object.values(ProductsTableColumnId);
+
 export default function SellerProductsTable({
   offers,
   refetch,
   setSelected,
   sellerRoles,
   currentTag,
-  offersBacked
-}: Props) {
+  offersBacked,
+  columnsToShow = defaultColumnsToShow
+}: SellerProductsTableProps) {
   const { showModal, modalTypes } = useModal();
   const navigate = useKeepQueryParamsNavigate();
   const columns = useMemo(
-    () => [
-      {
-        Header: "Offer ID",
-        accessor: "offerId"
-      } as const,
-      {
-        Header: "",
-        accessor: "warningIcon",
-        disableSortBy: true,
-        maxWidth: 30
-      } as const,
-      {
-        Header: "",
-        accessor: "image",
-        disableSortBy: true,
-        maxWidth: 50
-      } as const,
-      {
-        Header: "ID/SKU",
-        accessor: "sku",
-        maxWidth: 80
-      } as const,
-      {
-        Header: "Product name",
-        accessor: "productName",
-        maxWidth: 200
-      } as const,
-      {
-        Header: "Status",
-        accessor: "status",
-        disableSortBy: true,
-        maxWidth: 100
-      } as const,
-      {
-        Header: "Quantity (available/total)",
-        accessor: "quantity",
-        disableSortBy: true
-      } as const,
-      {
-        Header: "Price",
-        accessor: "price",
-        disableSortBy: true
-      } as const,
-      {
-        Header: "Offer validity",
-        accessor: "offerValidity",
-        disableSortBy: true
-      } as const,
-      {
-        Header: "Action",
-        accessor: "action",
-        disableSortBy: true
-      } as const
-    ],
-    []
+    () =>
+      [
+        {
+          id: ProductsTableColumnId.offerId,
+          Header: "Offer ID",
+          accessor: "offerId"
+        } as const,
+        {
+          id: ProductsTableColumnId.warningIcon,
+          Header: "",
+          accessor: "warningIcon",
+          disableSortBy: true,
+          maxWidth: 30
+        } as const,
+        {
+          id: ProductsTableColumnId.image,
+          Header: "",
+          accessor: "image",
+          disableSortBy: true,
+          maxWidth: 50
+        } as const,
+        {
+          id: ProductsTableColumnId.sku,
+          Header: "ID/SKU",
+          accessor: "sku",
+          maxWidth: 80
+        } as const,
+        {
+          id: ProductsTableColumnId.productName,
+          Header: "Product name",
+          accessor: "productName",
+          maxWidth: 200
+        } as const,
+        {
+          id: ProductsTableColumnId.status,
+          Header: "Status",
+          accessor: "status",
+          disableSortBy: true,
+          maxWidth: 100
+        } as const,
+        {
+          id: ProductsTableColumnId.quantity,
+          Header: "Quantity (available/total)",
+          accessor: "quantity",
+          disableSortBy: true
+        } as const,
+        {
+          id: ProductsTableColumnId.price,
+          Header: "Price",
+          accessor: "price",
+          disableSortBy: true
+        } as const,
+        {
+          id: ProductsTableColumnId.offerValidity,
+          Header: "Offer validity",
+          accessor: "offerValidity",
+          disableSortBy: true
+        } as const,
+        {
+          id: ProductsTableColumnId.salesChannels,
+          Header: "Sales channels",
+          accessor: "salesChannels", // TODO: not valid for now
+          disableSortBy: true
+        } as const,
+        {
+          id: ProductsTableColumnId.action,
+          Header: "Action",
+          accessor: "action",
+          disableSortBy: true
+        } as const
+      ].filter((col) => columnsToShow.includes(col.id)),
+    [columnsToShow]
   );
 
   const shouldDisplayFundWarning = useCallback(
@@ -649,6 +691,16 @@ export default function SellerProductsTable({
                 </span>
               </Typography>
             ),
+            salesChannels: (() => {
+              const channels = ["dApp", "DCL"]; // TODO: read from seller metadata
+              return (
+                <Grid gap="1rem" justifyContent="flex-start">
+                  {channels.map((channel) => {
+                    return <TagWrapper key={channel}>{channel}</TagWrapper>;
+                  })}
+                </Grid>
+              );
+            })(),
             action: (() => {
               const withVoidButton = !(
                 status === OffersKit.OfferState.EXPIRED ||
