@@ -17,7 +17,7 @@ import {
 import { isTruthy } from "../../lib/types/helpers";
 import { UserRoles } from "../../router/routes";
 import { checkIfUserHaveRole } from "../../router/useUserRoles";
-import { DEFAULT_SELLER_PAGE } from "../seller/SellerPages";
+import { getSellerCenterPath } from "../seller/paths";
 import ViewTxButton from "../transactions/ViewTxButton";
 
 export const SOCIAL_ROUTES = [
@@ -138,9 +138,7 @@ export const getSellRoutes = ({
   ) {
     productRoutes.push({
       name: "Seller Center",
-      url: generatePath(SellerCenterRoutes.SellerCenter, {
-        [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
-      })
+      url: getSellerCenterPath("Dashboard")
     });
   }
   if (

@@ -1,5 +1,6 @@
 import React from "react";
 
+import { BosonRoutes, SellerCenterRoutes } from "../../../lib/routing/routes";
 import GridContainer from "../../ui/GridContainer";
 import { SalesChannelCard } from "./SalesChannelCard";
 
@@ -17,13 +18,13 @@ export const SalesChannels: React.FC = () => {
       <SalesChannelCard
         title="Custom Storefront"
         text="Create your custom storefront in the seller dApp and tweak it to match your company's identity."
-        to="CreateStorefront"
+        to={BosonRoutes.CreateStorefront}
         time="15 min"
       />
       <SalesChannelCard
         title="DCL"
         text="Setup your store and sell on your own land in DCL or send a request to sell on BOSON's land."
-        to="DCL"
+        to={SellerCenterRoutes.DCL}
         time="2 - 4 days"
       />
     </GridContainer>

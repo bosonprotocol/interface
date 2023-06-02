@@ -40,16 +40,21 @@ export const LayoutRoot = styled.div<{ fullWidth?: boolean }>`
   }}
 `;
 
-interface IProps {
+export interface LayoutProps {
   children: ReactNode;
+  fullWidth?: boolean;
   style?: CSSProperties;
 }
 
-export default function Layout({ children, ...props }: IProps) {
-  const [fullWidth, setFullWidth] = useState<boolean>(false);
+export default function Layout({
+  children,
+  fullWidth: initialFullWidth,
+  ...props
+}: LayoutProps) {
+  const [fullWidth, setFullWidth] = useState<boolean>(!!initialFullWidth);
   return (
     <LayoutContext.Provider value={{ fullWidth: fullWidth, setFullWidth }}>
-      <LayoutRoot {...props} fullWidth={fullWidth}>
+      <LayoutRoot {...props} fullWidth={fullWidth} data-layout>
         {children}
       </LayoutRoot>
     </LayoutContext.Provider>

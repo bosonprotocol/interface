@@ -2,7 +2,6 @@ import { ArrowRight, Clock } from "phosphor-react";
 import React from "react";
 import styled from "styled-components";
 
-import { BosonRoutes } from "../../../lib/routing/routes";
 import { colors } from "../../../lib/styles/colors";
 import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import Button from "../../ui/Button";
@@ -12,7 +11,7 @@ import Typography from "../../ui/Typography";
 type SalesChannelCardProps = {
   title: string;
   text: string;
-  to: keyof typeof BosonRoutes;
+  to: string;
   time: string;
 };
 
@@ -33,7 +32,7 @@ const Time = styled(Grid)`
 export const SalesChannelCard: React.FC<SalesChannelCardProps> = ({
   title,
   text,
-  to: BosonRoutesKey,
+  to,
   time
 }) => {
   const navigate = useKeepQueryParamsNavigate();
@@ -57,7 +56,9 @@ export const SalesChannelCard: React.FC<SalesChannelCardProps> = ({
         theme="secondary"
         size="small"
         onClick={() => {
-          navigate({ pathname: BosonRoutes[BosonRoutesKey] });
+          navigate({
+            pathname: to
+          });
         }}
       >
         Setup <ArrowRight size={24} />

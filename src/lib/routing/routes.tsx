@@ -10,7 +10,6 @@ export const BosonRoutes = {
   YourAccount: `/account`,
   Account: `/account/:${UrlParameters.accountId}`,
   CreateStorefront: "/custom-store",
-  DCL: "/dcl",
   PrivacyPolicy: "/privacy-policy",
   TermsAndConditions: "/terms-and-conditions",
   LearnMore: "https://www.bosonprotocol.io/technology",
@@ -29,8 +28,10 @@ export const BosonRoutes = {
 } as const;
 
 export const SellerCenterRoutes = {
+  // these keys cannot be the same as any in BosonRoutes so that there is no clash in SalesChannelCardProps['to']
   SellerCenter: `${BosonRoutes.Sell}/:${UrlParameters.sellerPage}`,
-  CreateProduct: `${BosonRoutes.Sell}/create-product`
+  CreateProduct: `${BosonRoutes.Sell}/create-product`,
+  DCL: `${BosonRoutes.Sell}/dcl`
 } as const;
 
 export const SellerCenterSubRoutes = {

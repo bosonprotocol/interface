@@ -4,12 +4,11 @@ import { ConnectButton as RainbowConnectButton } from "@rainbow-me/rainbowkit";
 import * as Sentry from "@sentry/browser";
 import { useField } from "formik";
 import { useCallback, useEffect, useState } from "react";
-import { generatePath, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 
-import { UrlParameters } from "../../lib/routing/parameters";
-import { BosonRoutes, SellerCenterRoutes } from "../../lib/routing/routes";
+import { BosonRoutes } from "../../lib/routing/routes";
 import { breakpointNumbers } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { useGetSellerMetadata } from "../../lib/utils/hooks/seller/useGetSellerMetadata";
@@ -25,7 +24,7 @@ import { getLensTokenIdDecimal } from "../modal/components/Profile/Lens/utils";
 import { buildProfileFromMetadata } from "../modal/components/Profile/utils";
 import { MODAL_TYPES } from "../modal/ModalComponents";
 import { useModal } from "../modal/useModal";
-import { DEFAULT_SELLER_PAGE } from "../seller/SellerPages";
+import { getSellerCenterPath } from "../seller/paths";
 import BosonButton from "../ui/BosonButton";
 import Grid from "../ui/Grid";
 import GridContainer from "../ui/GridContainer";
@@ -55,7 +54,7 @@ const productTypeItemsPerRow = {
   l: 1,
   xl: 1
 };
-const Label = styled.label`
+export const Label = styled.label`
   max-width: 12.5rem;
   align-items: center;
   border: 1px solid ${colors.lightGrey};
@@ -66,7 +65,7 @@ const Label = styled.label`
   height: 197px;
   cursor: pointer;
 `;
-const RadioButton = styled.input`
+export const RadioButton = styled.input`
   position: absolute;
   opacity: 0;
   width: 0;
@@ -85,7 +84,7 @@ const RadioButton = styled.input`
   }
 `;
 
-const Box = styled.div`
+export const Box = styled.div`
   padding: 1.75rem;
   height: 100%;
   width: 100%;
@@ -100,7 +99,7 @@ const Container = styled.div`
   max-width: 26.5rem;
 `;
 
-const ProductImage = styled(Image)`
+export const ProductImage = styled(Image)`
   width: 6.25rem;
   height: 6.25rem;
   padding-top: 0;
@@ -522,9 +521,7 @@ export default function ProductType({
             }}
             onClick={() => {
               navigate({
-                pathname: generatePath(SellerCenterRoutes.SellerCenter, {
-                  [UrlParameters.sellerPage]: DEFAULT_SELLER_PAGE
-                })
+                pathname: getSellerCenterPath("Dashboard")
               });
             }}
           >

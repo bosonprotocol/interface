@@ -14,6 +14,7 @@ import { useConvertionRate } from "../../../components/convertion-rate/useConver
 import { useLayoutContext } from "../../../components/layout/Context";
 import { ModalHeaderTitle } from "../../../components/modal/header/ModalHeaderTitle";
 import useOffersBacked from "../../../components/seller/common/useOffersBacked";
+import { getSellerCenterPath } from "../../../components/seller/paths";
 import Button from "../../../components/ui/Button";
 import Grid from "../../../components/ui/Grid";
 import GridContainer from "../../../components/ui/GridContainer";
@@ -228,10 +229,7 @@ export const CreateProductCongratulations: React.FC<
                   theme="bosonPrimary"
                   onClick={() => {
                     navigateTo({
-                      pathname: generatePath(SellerCenterRoutes.SellerCenter, {
-                        [UrlParameters.sellerPage]:
-                          SellerCenterSubRoutes.Finances
-                      })
+                      pathname: getSellerCenterPath("Finances")
                     });
                   }}
                 >

@@ -1,4 +1,3 @@
-import { X } from "phosphor-react";
 import { ReactNode } from "react";
 import { createPortal } from "react-dom";
 import styled, { css } from "styled-components";
@@ -6,7 +5,6 @@ import styled, { css } from "styled-components";
 import { breakpoint } from "../../lib/styles/breakpoint";
 import { colors } from "../../lib/styles/colors";
 import { zIndex } from "../../lib/styles/zIndex";
-import Typography from "../ui/Typography";
 import { ModalHeader } from "./header/ModalHeader";
 import { ModalHeaderTitle } from "./header/ModalHeaderTitle";
 import { ModalType, Store } from "./ModalContext";
@@ -172,30 +170,6 @@ const Wrapper = styled.div<{
       min-height: 100vh;
       height: 100%;
     `};
-`;
-
-const Header = styled(Typography)<{ $title?: string }>`
-  position: relative;
-
-  text-align: left;
-  padding: 1rem 2rem;
-  display: flex;
-  border-bottom: 2px solid ${colors.border};
-  align-items: center;
-  justify-content: ${(props) => {
-    return props.$title ? "space-between" : "flex-end";
-  }};
-  gap: 0.5rem;
-`;
-
-const HeaderWithTitle = styled(Header)`
-  height: 4.25rem;
-`;
-
-const Close = styled(X)`
-  line {
-    stroke: ${colors.darkGrey};
-  }
 `;
 
 const Content = styled.div<{

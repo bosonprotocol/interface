@@ -10,6 +10,7 @@ import {
 import PrivacyPolicyPage from "../pages/common/PrivacyPolicy";
 import TermsAndConditionsPage from "../pages/common/TermsAndConditions";
 import CreateProductPage from "../pages/create-product/CreateProduct";
+import { DCLPage } from "../pages/dcl/DCLPage";
 import ExplorePage from "../pages/explore/Explore";
 import LandingPage from "../pages/landing/Landing";
 import OfferUuidReroute from "../pages/offers/OfferUuidReroute";
@@ -74,6 +75,7 @@ export interface IRoutes extends RouteProps {
   };
   app?: {
     withLayout?: boolean;
+    withFullLayout?: boolean;
     withFooter?: boolean;
     fluidHeader?: boolean;
   };
@@ -116,6 +118,19 @@ export default [
     ...base,
     path: SellerCenterRoutes.CreateProduct,
     component: CreateProductPage
+  },
+  {
+    ...base,
+    path: SellerCenterRoutes.DCL,
+    component: DCLPage,
+    app: {
+      ...base.app,
+      withHeader: false,
+      withLayout: true,
+      withFullLayout: true,
+      withFooter: false,
+      fluidHeader: false
+    }
   },
   {
     ...base,
@@ -307,4 +322,4 @@ export default [
     path: BosonRoutes.Error404,
     component: NotFoundPage
   }
-];
+] as IRoutes[];

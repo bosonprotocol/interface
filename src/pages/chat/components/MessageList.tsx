@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { generatePath } from "react-router-dom";
 import styled from "styled-components";
 
+import { getSellerCenterPath } from "../../../components/seller/paths";
 import { sellerPageTypes } from "../../../components/seller/SellerPages";
 import Image from "../../../components/ui/Image";
 import SellerID from "../../../components/ui/SellerID";
@@ -188,10 +189,7 @@ export default function MessageList({
               navigate({
                 pathname:
                   sellerCenterMessagesUrl === prevPath
-                    ? generatePath(SellerCenterRoutes.SellerCenter, {
-                        [UrlParameters.sellerPage]:
-                          sellerPageTypes.dashboard.url
-                      })
+                    ? getSellerCenterPath("Dashboard")
                     : prevPath
               });
             }}
