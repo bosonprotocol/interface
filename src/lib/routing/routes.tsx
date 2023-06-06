@@ -28,7 +28,6 @@ export const BosonRoutes = {
 } as const;
 
 export const SellerCenterRoutes = {
-  // these keys cannot be the same as any in BosonRoutes so that there is no clash in SalesChannelCardProps['to']
   SellerCenter: `${BosonRoutes.Sell}/:${UrlParameters.sellerPage}`,
   CreateProduct: `${BosonRoutes.Sell}/create-product`,
   DCL: `${BosonRoutes.Sell}/dcl`

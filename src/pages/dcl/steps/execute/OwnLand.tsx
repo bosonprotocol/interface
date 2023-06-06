@@ -6,6 +6,7 @@ import BosonButton from "../../../../components/ui/BosonButton";
 import Button from "../../../../components/ui/Button";
 import Grid from "../../../../components/ui/Grid";
 import Typography from "../../../../components/ui/Typography";
+import { useKeepQueryParamsNavigate } from "../../../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { DCLLayout } from "../../styles";
 
 interface OwnLandProps {
@@ -13,6 +14,7 @@ interface OwnLandProps {
 }
 
 export const OwnLand: React.FC<OwnLandProps> = ({ setSuccess }) => {
+  const navigate = useKeepQueryParamsNavigate();
   return (
     <DCLLayout width="auto">
       <Grid flexDirection="column" alignItems="flex-start">
@@ -36,12 +38,24 @@ export const OwnLand: React.FC<OwnLandProps> = ({ setSuccess }) => {
           Do not hesitate to get in touch in case you need any help!
         </Typography>
         <Grid justifyContent="flex-start" gap="1.25rem">
-          <Button theme="secondary">
-            Documentation <ArrowSquareOut size={24} />
-          </Button>
-          <Button theme="secondary">
-            GitHub <GithubLogo size={24} />
-          </Button>
+          <a
+            href="https://docs.bosonprotocol.io/docs/quick_start/metaverse_tutorial/selling_in_dcl/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Button theme="secondary">
+              Documentation <ArrowSquareOut size={24} />
+            </Button>
+          </a>
+          <a
+            href="https://github.com/bosonprotocol/boson-dcl"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Button theme="secondary">
+              GitHub <GithubLogo size={24} />
+            </Button>
+          </a>
         </Grid>
         <Typography margin="3.5rem 0 0 0" fontWeight="600" $fontSize="1.25rem">
           Link product
