@@ -10,14 +10,12 @@ import {
 
 import { BosonRoutes, SellerCenterSubRoutes } from "../../lib/routing/routes";
 import Navigate from "../customNavigation/Navigate";
-import { WithSellerDataProps } from "./common/WithSellerData";
 import SellerDashboard from "./dashboard/SellerDashboard";
 import SellerExchanges from "./exchanges/SellerExchanges";
 import SellerFinances from "./finances/SellerFinances";
 import SellerProducts from "./products/SellerProducts";
 import { ProfileDetails } from "./profileDetails/ProfileDetails";
 import { SalesChannels } from "./salesChannels/SalesChannels";
-import { SellerInsideProps } from "./SellerInside";
 
 export const DEFAULT_SELLER_PAGE = SellerCenterSubRoutes.Dashboard;
 
@@ -43,7 +41,7 @@ export const sellerPageTypes = {
     label: "Dashboard",
     icon: GridFour,
     externalPath: null,
-    component: (props: SellerInsideProps & WithSellerDataProps) => (
+    component: (props: Parameters<typeof SellerDashboard>[0]) => (
       <SellerDashboard {...props} />
     ),
     withoutWrapper: true
@@ -53,14 +51,16 @@ export const sellerPageTypes = {
     label: "Products",
     icon: Storefront,
     externalPath: null,
-    component: SellerProducts
+    component: (props: Parameters<typeof SellerProducts>[0]) => (
+      <SellerProducts {...props} />
+    )
   },
   exchanges: {
     url: SellerCenterSubRoutes.Exchanges,
     label: "Exchanges",
     icon: ArrowsLeftRight,
     externalPath: null,
-    component: (props: SellerInsideProps & WithSellerDataProps) => (
+    component: (props: Parameters<typeof SellerExchanges>[0]) => (
       <SellerExchanges {...props} />
     )
   },
@@ -76,7 +76,7 @@ export const sellerPageTypes = {
     label: "Finances",
     icon: Bank,
     externalPath: null,
-    component: (props: SellerInsideProps & WithSellerDataProps) => (
+    component: (props: Parameters<typeof SellerFinances>[0]) => (
       <SellerFinances {...props} />
     )
   },
@@ -85,7 +85,9 @@ export const sellerPageTypes = {
     label: "Sales Channels",
     icon: Megaphone,
     externalPath: null,
-    component: () => <SalesChannels />,
+    component: (props: Parameters<typeof SalesChannels>[0]) => (
+      <SalesChannels {...props} />
+    ),
     withoutWrapper: true
   },
   profileDetails: {
@@ -93,7 +95,7 @@ export const sellerPageTypes = {
     label: "Profile Details",
     icon: User,
     externalPath: null,
-    component: (props: SellerInsideProps & WithSellerDataProps) => (
+    component: (props: Parameters<typeof ProfileDetails>[0]) => (
       <ProfileDetails {...props} />
     ),
     withoutWrapper: true
