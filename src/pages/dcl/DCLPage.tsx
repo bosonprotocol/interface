@@ -89,9 +89,7 @@ export const DCLPage: React.FC<DCLPageProps> = () => {
     >
       <Formik<FormType>
         initialValues={{
-          step0: {
-            location: undefined
-          }
+          location: ""
         }}
         validationSchema={validationSchema}
         onSubmit={() => {

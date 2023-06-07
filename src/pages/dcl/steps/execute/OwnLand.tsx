@@ -8,7 +8,7 @@ import Button from "../../../../components/ui/Button";
 import Grid from "../../../../components/ui/Grid";
 import Typography from "../../../../components/ui/Typography";
 import { breakpoint } from "../../../../lib/styles/breakpoint";
-import { DCLLayout } from "../../styles";
+import { StyledDCLLayout } from "../../styles";
 
 const StyledGrid = styled(Grid)`
   ${breakpoint.m} {
@@ -21,7 +21,7 @@ interface OwnLandProps {
 
 export const OwnLand: React.FC<OwnLandProps> = ({ setSuccess }) => {
   return (
-    <DCLLayout width="auto">
+    <StyledDCLLayout width="auto">
       <Grid
         justifyContent="space-between"
         alignItems="flex-start"
@@ -77,6 +77,6 @@ export const OwnLand: React.FC<OwnLandProps> = ({ setSuccess }) => {
         </StyledGrid>
         <Help data={[{ title: "hola", description: "desc" }]} />
       </Grid>
-    </DCLLayout>
+    </StyledDCLLayout>
   );
 };

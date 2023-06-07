@@ -6,12 +6,9 @@ export enum LocationValues {
 }
 
 export const validationSchema = Yup.object({
-  step0: Yup.object({
-    location: Yup.string().oneOf([
-      LocationValues.OwnLand,
-      LocationValues.BosonLand
-    ])
-  })
+  location: Yup.string()
+    .oneOf([LocationValues.OwnLand, LocationValues.BosonLand])
+    .required()
 });
 
 export type FormType = Yup.InferType<typeof validationSchema>;

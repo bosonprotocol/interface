@@ -17,3 +17,11 @@ export const DCLLayout = styled.div<{
     max-width: 93.75rem;
   }
 `;
+
+export const StyledDCLLayout = styled(DCLLayout)`
+  padding-right: 0;
+
+  ${breakpoint.xl} {
+    padding-right: 4rem;
+  }
+`;

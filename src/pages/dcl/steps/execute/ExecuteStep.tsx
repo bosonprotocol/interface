@@ -14,7 +14,7 @@ type ExecuteStepProps = {
 export const ExecuteStep: React.FC<ExecuteStepProps> = ({ handleOnClose }) => {
   const [isSuccess, setSuccess] = useState<boolean>(false);
   const { values } = useFormikContext<FormType>();
-  const location = values.step0.location;
+  const location = values.location;
   return isSuccess ? (
     <DCLSuccess handleOnClose={handleOnClose} />
   ) : location === LocationValues.OwnLand ? (

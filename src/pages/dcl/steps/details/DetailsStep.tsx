@@ -1,8 +1,7 @@
 import { useFormikContext } from "formik";
 import React from "react";
-import styled from "styled-components";
 
-import { FormField } from "../../../../components/form";
+import { Error, FormField } from "../../../../components/form";
 import Help from "../../../../components/product/Help";
 import differentVariantsProduct from "../../../../components/product/img/different-variants-product.png";
 import oneItemTypeProduct from "../../../../components/product/img/one-item-product.png";
@@ -16,23 +15,15 @@ import BosonButton from "../../../../components/ui/BosonButton";
 import Grid from "../../../../components/ui/Grid";
 import GridContainer from "../../../../components/ui/GridContainer";
 import Typography from "../../../../components/ui/Typography";
-import { breakpoint } from "../../../../lib/styles/breakpoint";
-import { DCLLayout } from "../../styles";
+import { StyledDCLLayout } from "../../styles";
 import { FormType, LocationValues } from "../../validationSchema";
-
-const StyledDCLLayout = styled(DCLLayout)`
-  padding-right: 0;
-
-  ${breakpoint.xl} {
-    padding-right: 4rem;
-  }
-`;
 
 type DetailsStepProps = {
   goToNextStep: () => void;
 };
 export const DetailsStep: React.FC<DetailsStepProps> = ({ goToNextStep }) => {
-  const { values, handleChange } = useFormikContext<FormType>();
+  const { values, handleChange, isValid, touched, setFieldTouched, errors } =
+    useFormikContext<FormType>();
   return (
     <StyledDCLLayout width="auto">
       <Grid
@@ -67,9 +58,9 @@ export const DetailsStep: React.FC<DetailsStepProps> = ({ goToNextStep }) => {
               <Label>
                 <RadioButton
                   type="radio"
-                  name="step0.location"
+                  name="location"
                   value={LocationValues.OwnLand}
-                  checked={values.step0.location === LocationValues.OwnLand}
+                  checked={values.location === LocationValues.OwnLand}
                   onChange={handleChange}
                 />
                 <Box>
@@ -88,9 +79,9 @@ export const DetailsStep: React.FC<DetailsStepProps> = ({ goToNextStep }) => {
               <Label>
                 <RadioButton
                   type="radio"
-                  name="step0.location"
+                  name="location"
                   value={LocationValues.BosonLand}
-                  checked={values.step0.location === LocationValues.BosonLand}
+                  checked={values.location === LocationValues.BosonLand}
                   onChange={handleChange}
                 />
                 <Box>
@@ -107,9 +98,18 @@ export const DetailsStep: React.FC<DetailsStepProps> = ({ goToNextStep }) => {
                 </Box>
               </Label>
             </GridContainer>
+            <Error display={!!errors.location} message={errors.location} />
           </FormField>
           <BosonButton
-            onClick={() => goToNextStep()}
+            onClick={() => {
+              if (!touched.location) {
+                setFieldTouched("location", true);
+                return;
+              }
+              if (isValid) {
+                goToNextStep();
+              }
+            }}
             style={{ marginTop: "3.5rem" }}
           >
             Next
