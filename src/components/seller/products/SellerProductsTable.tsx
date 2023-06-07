@@ -44,8 +44,10 @@ import Button from "../../ui/Button";
 import Grid from "../../ui/Grid";
 import Image from "../../ui/Image";
 import Typography from "../../ui/Typography";
+import { UnthemedButton } from "../../ui/UnthemedButton";
 import PaginationPages from "../common/PaginationPages";
 import { BackedProps, OffersBackedProps } from "../common/WithSellerData";
+import Actions from "./Actions";
 import OfferVariation from "./OfferVariation";
 
 const TagWrapper = styled.div`
@@ -251,11 +253,6 @@ const Span = styled.span`
   color: ${colors.darkGrey};
   &:not(:last-of-type) {
     margin-right: 1rem;
-  }
-`;
-const RelistButton = styled(Button)`
-  * {
-    line-height: 21px;
   }
 `;
 
@@ -708,79 +705,116 @@ export default function SellerProductsTable({
                 offer?.quantityAvailable === "0"
               );
               return (
-                <Grid gap="1rem">
-                  {withVoidButton && (
-                    <VoidButton
-                      variant="secondaryInverted"
-                      size={ButtonSize.Small}
-                      disabled={!sellerRoles?.isAssistant}
-                      tooltip="This action is restricted to only the assistant wallet"
-                      onClick={() => {
-                        if (offer) {
-                          if (showVariant) {
-                            showModal(
-                              modalTypes.VOID_PRODUCT,
-                              {
-                                title: "Void Confirmation",
-                                offers: offer.additional?.variants.filter(
-                                  (variant) => {
-                                    variant.validUntilDate;
-                                    return (
-                                      !variant.voided &&
-                                      !dayjs(
-                                        getDateTimestamp(offer?.validUntilDate)
-                                      ).isBefore(dayjs())
-                                    );
-                                  }
-                                ) as Offer[],
-                                refetch
-                              },
-                              "s"
-                            );
-                          } else {
-                            showModal(
-                              modalTypes.VOID_PRODUCT,
-                              {
-                                title: "Void Confirmation",
-                                offerId: offer.id,
+                <Grid gap="1rem" justifyContent="flex-end">
+                  <Actions
+                    label="Actions"
+                    items={[
+                      ...(withVoidButton
+                        ? [
+                            {
+                              key: "void",
+                              content: (
+                                <UnthemedButton
+                                  style={{ width: "100%" }}
+                                  disabled={!sellerRoles?.isAssistant}
+                                  tooltip="This action is restricted to only the assistant wallet"
+                                  onClick={() => {
+                                    if (offer) {
+                                      if (showVariant) {
+                                        showModal(
+                                          modalTypes.VOID_PRODUCT,
+                                          {
+                                            title: "Void Confirmation",
+                                            offers:
+                                              offer.additional?.variants.filter(
+                                                (variant) => {
+                                                  variant.validUntilDate;
+                                                  return (
+                                                    !variant.voided &&
+                                                    !dayjs(
+                                                      getDateTimestamp(
+                                                        offer?.validUntilDate
+                                                      )
+                                                    ).isBefore(dayjs())
+                                                  );
+                                                }
+                                              ) as Offer[],
+                                            refetch
+                                          },
+                                          "s"
+                                        );
+                                      } else {
+                                        showModal(
+                                          modalTypes.VOID_PRODUCT,
+                                          {
+                                            title: "Void Confirmation",
+                                            offerId: offer.id,
+                                            offer,
+                                            refetch
+                                          },
+                                          "xs"
+                                        );
+                                      }
+                                    }
+                                  }}
+                                >
+                                  Void
+                                </UnthemedButton>
+                              )
+                            }
+                          ]
+                        : []),
+                      {
+                        key: "relist",
+                        content: (
+                          <UnthemedButton
+                            style={{ width: "100%" }}
+                            tooltip="This action is restricted to only the assistant wallet"
+                            disabled={!offer || !sellerRoles?.isAssistant}
+                            onClick={async (
+                              event: Parameters<
+                                NonNullable<
+                                  Parameters<typeof Button>[0]["onClick"]
+                                >
+                              >[0]
+                            ) => {
+                              event.stopPropagation();
+                              if (!offer) {
+                                return;
+                              }
+                              showModal(modalTypes.RELIST_OFFER, {
+                                title: `Relist Offer "${offer.metadata.name}"`,
                                 offer,
-                                refetch
-                              },
-                              "xs"
-                            );
-                          }
-                        }
-                      }}
-                    >
-                      Void
-                    </VoidButton>
-                  )}
-                  <RelistButton
-                    theme="orangeInverse"
-                    style={{
-                      padding: "0.25rem 1rem",
-                      margin: "1px"
-                    }}
-                    tooltip="This action is restricted to only the assistant wallet"
-                    disabled={!offer || !sellerRoles?.isAssistant}
-                    onClick={async (
-                      event: Parameters<
-                        NonNullable<Parameters<typeof Button>[0]["onClick"]>
-                      >[0]
-                    ) => {
-                      event.stopPropagation();
-                      if (!offer) {
-                        return;
+                                onRelistedSuccessfully: refetch
+                              });
+                            }}
+                          >
+                            Relist
+                          </UnthemedButton>
+                        )
+                      },
+                      {
+                        key: "update-sales-channels",
+                        content: (
+                          <UnthemedButton
+                            style={{ width: "100%" }}
+                            onClick={() => {
+                              if (!offer) {
+                                return;
+                              }
+                              showModal(modalTypes.SALES_CHANNELS, {
+                                title: "Update sales channels",
+                                productUuid: offer.additional?.product.uuid,
+                                version: offer.additional?.product.version
+                              });
+                            }}
+                          >
+                            Update sales channels
+                          </UnthemedButton>
+                        )
                       }
-                      showModal(modalTypes.RELIST_OFFER, {
-                        title: `Relist Offer "${offer.metadata.name}"`,
-                        offer,
-                        onRelistedSuccessfully: refetch
-                      });
-                    }}
-                  >
-                    Relist
-                  </RelistButton>
+                    ].filter(isTruthy)}
+                  />
                 </Grid>
               );
             })()

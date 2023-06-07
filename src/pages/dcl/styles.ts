@@ -9,9 +9,11 @@ export const DCLLayout = styled.div<{
   display: flex;
   align-items: center;
   margin: 0 1rem;
+  padding-right: 4rem;
+  padding-left: 4rem;
   width: ${({ width }) => width};
-
-  ${breakpoint.s} {
-    margin: 0 9.6875rem;
+  margin: 0 auto;
+  ${breakpoint.xs} {
+    max-width: 93.75rem;
   }
 `;

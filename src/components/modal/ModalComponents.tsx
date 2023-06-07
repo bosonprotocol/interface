@@ -27,6 +27,7 @@ import RedeemSuccessModal from "./components/RedeemModal/RedeemSuccessModal";
 import { RelistOfferModal } from "./components/RelistOfferModal/RelistOfferModal";
 import RetractDisputeModal from "./components/RetractDisputeModal";
 import RevokeProduct from "./components/RevokeProduct";
+import { SalesChannelsModal } from "./components/SalesChannelsModal/SalesChannelsModal";
 import FinanceDeposit from "./components/SellerFinance/FinanceDeposit";
 import FinanceWithdraw from "./components/SellerFinance/FinanceWithdraw";
 import RecentTransactionsModal from "./components/Transactions/RecentTransactionsModal/RecentTransactionsModal";
@@ -74,7 +75,8 @@ export const MODAL_TYPES = {
   RELIST_OFFER: "RELIST_OFFER",
   PROFILE_DETAILS: "PROFILE_DETAILS",
   IMAGE_EDITOR: "IMAGE_EDITOR",
-  IFRAME_MODAL: "IFRAME_MODAL"
+  IFRAME_MODAL: "IFRAME_MODAL",
+  SALES_CHANNELS: "SALES_CHANNELS"
 } as const;
 
 export const MODAL_COMPONENTS = {
@@ -115,5 +117,6 @@ export const MODAL_COMPONENTS = {
   [MODAL_TYPES.RELIST_OFFER]: RelistOfferModal,
   [MODAL_TYPES.PROFILE_DETAILS]: ProfileDetailsModal,
   [MODAL_TYPES.IMAGE_EDITOR]: ImageEditorModal,
-  [MODAL_TYPES.IFRAME_MODAL]: IframeModal
+  [MODAL_TYPES.IFRAME_MODAL]: IframeModal,
+  [MODAL_TYPES.SALES_CHANNELS]: SalesChannelsModal
 } as const;

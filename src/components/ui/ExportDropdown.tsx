@@ -160,7 +160,7 @@ function ExportDropdown({ buttonProps = {}, children }: Props) {
           }
           key={children[0].id}
         >
-          <ExportButton theme="outline" size="small" {...buttonProps}>
+          <ExportButton theme="secondary" size="small" {...buttonProps}>
             Export <DownloadSimple size={16} />
           </ExportButton>
         </CSVLink>

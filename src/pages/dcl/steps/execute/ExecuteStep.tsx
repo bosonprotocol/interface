@@ -2,6 +2,7 @@ import { useFormikContext } from "formik";
 import React, { useState } from "react";
 
 import { DCLLayout } from "../../styles";
+import { FormType, LocationValues } from "../../validationSchema";
 import { BosonLand } from "./BosonLand";
 import { DCLSuccess } from "./DCLSuccess";
 import { OwnLand } from "./OwnLand";
@@ -12,13 +13,13 @@ type ExecuteStepProps = {
 
 export const ExecuteStep: React.FC<ExecuteStepProps> = ({ handleOnClose }) => {
   const [isSuccess, setSuccess] = useState<boolean>(false);
-  const { values } = useFormikContext<any>();
-  const location = values.step1.location;
+  const { values } = useFormikContext<FormType>();
+  const location = values.step0.location;
   return isSuccess ? (
     <DCLSuccess handleOnClose={handleOnClose} />
-  ) : location === "own-land" ? (
+  ) : location === LocationValues.OwnLand ? (
     <OwnLand setSuccess={() => setSuccess(true)} />
-  ) : location === "boson-land" ? (
+  ) : location === LocationValues.BosonLand ? (
     <BosonLand setSuccess={() => setSuccess(true)} />
   ) : (
     <DCLLayout width="auto">

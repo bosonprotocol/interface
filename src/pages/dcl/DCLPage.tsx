@@ -2,7 +2,6 @@ import { Form, Formik } from "formik";
 import { ArrowLeft } from "phosphor-react";
 import React, { CSSProperties, useState } from "react";
 import styled from "styled-components";
-import * as Yup from "yup";
 
 import { Close } from "../../components/modal/header/styles";
 import { getSellerCenterPath } from "../../components/seller/paths";
@@ -12,8 +11,8 @@ import { colors } from "../../lib/styles/colors";
 import { useKeepQueryParamsNavigate } from "../../lib/utils/hooks/useKeepQueryParamsNavigate";
 import { DetailsStep } from "./steps/details/DetailsStep";
 import { ExecuteStep } from "./steps/execute/ExecuteStep";
-import { SelectProductStep } from "./steps/select-product/SelectProductStep";
 import { DCLLayout } from "./styles";
+import { FormType, validationSchema } from "./validationSchema";
 const Background = styled.div`
   width: 100%;
 `;
@@ -22,17 +21,12 @@ const StyledGrid = styled(Grid)`
   height: calc(48px + 1.1875rem * 2);
   position: relative;
   background: ${colors.white};
-  border: 2px solid ${colors.border};
   + * {
-    padding: 1.75rem 0 0 0;
+    padding-top: 1.75rem;
   }
 `;
 
 const STEPS = [
-  {
-    name: "Select Product",
-    steps: 1
-  } as const,
   {
     name: "Details",
     steps: 1
@@ -48,43 +42,19 @@ interface DCLPageProps {
 }
 
 enum Step {
-  _0_SELECT_PRODUCT = "_0_SELECT_PRODUCT",
-  _1_DETAILS = "_1_DETAILS",
-  _2_EXECUTE = "_2_EXECUTE"
+  _0_DETAILS = "_0_DETAILS",
+  _1_EXECUTE = "_1_EXECUTE"
 }
 
 const stepToNumber = {
-  [Step._0_SELECT_PRODUCT]: 0,
-  [Step._1_DETAILS]: 1,
-  [Step._2_EXECUTE]: 2
+  [Step._0_DETAILS]: 0,
+  [Step._1_EXECUTE]: 1
 } as const;
 
 const numberToStep = {
-  0: Step._0_SELECT_PRODUCT,
-  1: Step._1_DETAILS,
-  2: Step._2_EXECUTE
+  0: Step._0_DETAILS,
+  1: Step._1_EXECUTE
 } as const;
-
-const validationSchemas = [
-  Yup.object({
-    step0: Yup.object({
-      offerIds: Yup.array(Yup.string()).optional()
-    })
-  }),
-  Yup.object({
-    step1: Yup.object({
-      location: Yup.string().oneOf(["own-land", "boson-land"])
-    })
-  }),
-  Yup.object({
-    step1: Yup.object({
-      location: Yup.string().oneOf(["own-land", "boson-land"])
-    }),
-    step2: Yup.object({
-      locationUrl: Yup.string()
-    })
-  })
-];
 
 const iconStyle: CSSProperties = {
   cursor: "pointer",
@@ -95,55 +65,40 @@ const iconStyle: CSSProperties = {
 };
 const iconSize = 32;
 
-export const DCLPage: React.FC<DCLPageProps> = ({ offerIds }) => {
+export const DCLPage: React.FC<DCLPageProps> = () => {
   const navigate = useKeepQueryParamsNavigate();
-  const [currentStep, setCurrentStep] = useState<Step>(Step._1_DETAILS);
-  const stepNumber = stepToNumber[currentStep];
-  const validationSchema = validationSchemas[stepNumber];
+  const [currentStep, setCurrentStep] = useState<Step>(Step._0_DETAILS);
   const goToNextStep = () => {
     setCurrentStep((prev) => {
-      if (prev === Step._0_SELECT_PRODUCT) {
-        return Step._1_DETAILS;
-      }
-      if (prev === Step._1_DETAILS) {
-        return Step._2_EXECUTE;
+      if (prev === Step._0_DETAILS) {
+        return Step._1_EXECUTE;
       }
       return prev;
     });
   };
+
   const onClose = () =>
     navigate({
       pathname: getSellerCenterPath("Sales Channels")
     });
-
   return (
     <Background
       style={{
-        background:
-          Step._0_SELECT_PRODUCT === currentStep
-            ? colors.lightGrey
-            : colors.white
+        background: colors.white
       }}
     >
-      <Formik
+      <Formik<FormType>
         initialValues={{
           step0: {
-            offerIds: offerIds
-          },
-          step1: {
             location: undefined
-          },
-          step2: {
-            locationUrl: undefined
           }
         }}
         validationSchema={validationSchema}
-        onSubmit={(...args) => {
-          console.log("onSubmit", { ...args });
+        onSubmit={() => {
+          //
         }}
       >
-        {({ ...rest }) => {
-          console.log("form", { ...rest });
+        {() => {
           return (
             <Form style={{ height: "100%" }}>
               <StyledGrid>
@@ -151,17 +106,14 @@ export const DCLPage: React.FC<DCLPageProps> = ({ offerIds }) => {
                   style={{ ...iconStyle }}
                   size={iconSize}
                   onClick={() => {
-                    if (currentStep === Step._0_SELECT_PRODUCT) {
+                    if (currentStep === Step._0_DETAILS) {
                       navigate({
-                        pathname: getSellerCenterPath("Sales Channels")
+                        pathname: getSellerCenterPath("Products")
                       });
                     } else {
                       setCurrentStep((prev) => {
-                        if (prev === Step._2_EXECUTE) {
-                          return Step._1_DETAILS;
-                        }
-                        if (prev === Step._1_DETAILS) {
-                          return Step._0_SELECT_PRODUCT;
+                        if (prev === Step._1_EXECUTE) {
+                          return Step._0_DETAILS;
                         }
                         return prev;
                       });
@@ -193,11 +145,9 @@ export const DCLPage: React.FC<DCLPageProps> = ({ offerIds }) => {
                   }}
                 />
               </StyledGrid>
-              {currentStep === Step._0_SELECT_PRODUCT ? (
-                <SelectProductStep goToNextStep={goToNextStep} />
-              ) : currentStep === Step._1_DETAILS ? (
+              {currentStep === Step._0_DETAILS ? (
                 <DetailsStep goToNextStep={goToNextStep} />
-              ) : currentStep === Step._2_EXECUTE ? (
+              ) : currentStep === Step._1_EXECUTE ? (
                 <ExecuteStep handleOnClose={onClose} />
               ) : (
                 <div>Something went wrong, please try again...</div>
