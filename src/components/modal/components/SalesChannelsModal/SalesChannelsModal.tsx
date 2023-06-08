@@ -1,8 +1,8 @@
 import { Form, Formik } from "formik";
 import React from "react";
 
-import { FormField, Select } from "../../../form";
-import Grid from "../../../ui/Grid";
+import { Channels, FormType, validationSchema } from "./form";
+import { SalesChannelsForm } from "./SalesChannelsForm";
 
 interface SalesChannelsModalProps {
   productUuid: string | undefined;
@@ -11,26 +11,17 @@ interface SalesChannelsModalProps {
 
 export const SalesChannelsModal: React.FC<SalesChannelsModalProps> = () => {
   return (
-    <Formik
-      initialValues={{}}
-      onSubmit={() => {
-        //
+    <Formik<FormType>
+      initialValues={{
+        channels: [{ value: Channels.dApp, label: "dApp", disabled: true }]
       }}
+      onSubmit={(...rest) => {
+        console.log("onSubmit", { ...rest });
+      }}
+      validationSchema={validationSchema}
     >
       <Form>
-        <Grid flexDirection="column">
-          <FormField title="Current channels">
-            <Select
-              name="channels"
-              options={[
-                {
-                  label: "BOSON DCL",
-                  value: "DCL-PORTAL"
-                }
-              ]}
-            />
-          </FormField>
-        </Grid>
+        <SalesChannelsForm />
       </Form>
     </Formik>
   );

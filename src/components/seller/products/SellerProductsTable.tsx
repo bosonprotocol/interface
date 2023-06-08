@@ -802,11 +802,19 @@ export default function SellerProductsTable({
                               if (!offer) {
                                 return;
                               }
-                              showModal(modalTypes.SALES_CHANNELS, {
-                                title: "Update sales channels",
-                                productUuid: offer.additional?.product.uuid,
-                                version: offer.additional?.product.version
-                              });
+                              showModal(
+                                modalTypes.SALES_CHANNELS,
+                                {
+                                  title: "Update sales channels",
+                                  productUuid: offer.additional?.product.uuid,
+                                  version: offer.additional?.product.version
+                                },
+                                "auto",
+                                undefined,
+                                {
+                                  m: "35rem"
+                                }
+                              );
                             }}
                           >
                             Update sales channels
