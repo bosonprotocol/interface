@@ -33,11 +33,19 @@ export const BosonLand: React.FC<BosonLandProps> = ({ setSuccess }) => {
           <Typography fontWeight="600" $fontSize="2rem">
             Add product to your Boson Land
           </Typography>
-          <Typography tag="p">
+          <p>
             To get access and sell on Boson Land you need to apply through the
             Typeform link below. We will get in touch with you within 1-3
-            business days. If any questions arise do not hesitate to contact us.
-          </Typography>
+            business days. If any questions arise do not hesitate to{" "}
+            <a
+              href="mailto:info@bosonapp.io"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              contact
+            </a>{" "}
+            us.
+          </p>
           <Button theme="secondary">
             Apply <ArrowSquareOut size={24} />
           </Button>

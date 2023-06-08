@@ -18,6 +18,7 @@ import Carousel from "./Carousel";
 import Step from "./Step";
 
 const LandingPage = styled.div<{ isCustomStoreFront: string }>`
+  width: 100%;
   ${({ isCustomStoreFront }) => {
     if (isCustomStoreFront) {
       return;

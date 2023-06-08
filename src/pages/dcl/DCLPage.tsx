@@ -1,8 +1,9 @@
 import { Form, Formik } from "formik";
 import { ArrowLeft } from "phosphor-react";
-import React, { CSSProperties, useState } from "react";
+import React, { CSSProperties, useEffect, useState } from "react";
 import styled from "styled-components";
 
+import { useLayoutContext } from "../../components/layout/Context";
 import { Close } from "../../components/modal/header/styles";
 import { getSellerCenterPath } from "../../components/seller/paths";
 import MultiSteps from "../../components/step/MultiSteps";
@@ -66,6 +67,7 @@ const iconStyle: CSSProperties = {
 const iconSize = 32;
 
 export const DCLPage: React.FC<DCLPageProps> = () => {
+  const { setFullWidth, fullWidth } = useLayoutContext();
   const navigate = useKeepQueryParamsNavigate();
   const [currentStep, setCurrentStep] = useState<Step>(Step._0_DETAILS);
   const goToNextStep = () => {
@@ -81,6 +83,12 @@ export const DCLPage: React.FC<DCLPageProps> = () => {
     navigate({
       pathname: getSellerCenterPath("Sales Channels")
     });
+  useEffect(() => {
+    return () => {
+      fullWidth && setFullWidth(false);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <Background
       style={{
@@ -105,9 +113,7 @@ export const DCLPage: React.FC<DCLPageProps> = () => {
                   size={iconSize}
                   onClick={() => {
                     if (currentStep === Step._0_DETAILS) {
-                      navigate({
-                        pathname: getSellerCenterPath("Products")
-                      });
+                      onClose();
                     } else {
                       setCurrentStep((prev) => {
                         if (prev === Step._1_EXECUTE) {

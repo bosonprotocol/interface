@@ -35,6 +35,7 @@ import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQuer
 import { SellerRolesProps } from "../../../lib/utils/hooks/useSellerRoles";
 import { ExtendedOffer } from "../../../pages/explore/WithAllOffers";
 import { CheckboxWrapper } from "../../form/Field.styles";
+import { Channels } from "../../modal/components/SalesChannelsModal/form";
 import { useModal } from "../../modal/useModal";
 import OfferStatuses from "../../offer/OfferStatuses";
 import Price from "../../price/index";
@@ -49,6 +50,7 @@ import PaginationPages from "../common/PaginationPages";
 import { BackedProps, OffersBackedProps } from "../common/WithSellerData";
 import Actions from "./Actions";
 import OfferVariation from "./OfferVariation";
+import { SalesChannels } from "./types";
 
 const TagWrapper = styled.div`
   background-color: ${colors.lightGrey};
@@ -81,6 +83,8 @@ export interface SellerProductsTableProps {
   currentTag: string;
   offersBacked: OffersBackedProps;
   columnsToShow?: ProductsTableColumnId[] | Readonly<ProductsTableColumnId[]>;
+  salesChannels: SalesChannels;
+  refetchSellers: () => void;
 }
 
 interface IIndeterminateInputProps {
@@ -301,8 +305,14 @@ export default function SellerProductsTable({
   sellerRoles,
   currentTag,
   offersBacked,
-  columnsToShow = defaultColumnsToShow
+  columnsToShow = defaultColumnsToShow,
+  salesChannels: salesChannelsWithoutdApp,
+  refetchSellers
 }: SellerProductsTableProps) {
+  const salesChannels: SalesChannels = [
+    { tag: Channels.dApp } as SalesChannels[number],
+    ...salesChannelsWithoutdApp
+  ];
   const { showModal, modalTypes } = useModal();
   const navigate = useKeepQueryParamsNavigate();
   const columns = useMemo(
@@ -367,7 +377,7 @@ export default function SellerProductsTable({
         {
           id: ProductsTableColumnId.salesChannels,
           Header: "Sales channels",
-          accessor: "salesChannels", // TODO: not valid for now
+          accessor: "salesChannels", // it doesnt matter
           disableSortBy: true
         } as const,
         {
@@ -689,11 +699,14 @@ export default function SellerProductsTable({
               </Typography>
             ),
             salesChannels: (() => {
-              const channels = ["dApp", "DCL"]; // TODO: read from seller metadata
               return (
                 <Grid gap="1rem" justifyContent="flex-start">
-                  {channels.map((channel) => {
-                    return <TagWrapper key={channel}>{channel}</TagWrapper>;
+                  {salesChannels.map((channel) => {
+                    return (
+                      <TagWrapper key={channel.tag + "-" + channel.link}>
+                        {channel.tag}
+                      </TagWrapper>
+                    );
                   })}
                 </Grid>
               );
@@ -807,7 +820,9 @@ export default function SellerProductsTable({
                                 {
                                   title: "Update sales channels",
                                   productUuid: offer.additional?.product.uuid,
-                                  version: offer.additional?.product.version
+                                  version: offer.additional?.product.version,
+                                  salesChannels,
+                                  onClose: refetchSellers
                                 },
                                 "auto",
                                 undefined,

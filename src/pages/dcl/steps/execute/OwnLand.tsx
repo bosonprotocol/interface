@@ -45,9 +45,17 @@ export const OwnLand: React.FC<OwnLandProps> = ({ setSuccess }) => {
             within the Metaverse. This is achieved through direct interaction
             with the Boson Protocol on the Polygon platform.
           </Typography>
-          <Typography tag="p">
-            Do not hesitate to get in touch in case you need any help!
-          </Typography>
+          <p>
+            Do not hesitate to{" "}
+            <a
+              href="mailto:info@bosonapp.io"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              get in touch
+            </a>{" "}
+            in case you need any help!
+          </p>
           <Grid justifyContent="flex-start" gap="1.25rem">
             <a
               href="https://docs.bosonprotocol.io/docs/quick_start/metaverse_tutorial/selling_in_dcl/"

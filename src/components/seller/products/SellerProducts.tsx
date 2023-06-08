@@ -8,6 +8,7 @@ import { CONFIG } from "../../../lib/config";
 import { Offer } from "../../../lib/types/offer";
 import { calcPrice } from "../../../lib/utils/calcPrice";
 import { getDateTimestamp } from "../../../lib/utils/getDateTimestamp";
+import { useSellers } from "../../../lib/utils/hooks/useSellers";
 import { ExtendedOffer } from "../../../pages/explore/WithAllOffers";
 import Loading from "../../ui/Loading";
 import { WithSellerDataProps } from "../common/WithSellerData";
@@ -58,6 +59,17 @@ export default function SellerProducts({
 }: SellerInsideProps &
   WithSellerDataProps &
   Pick<SellerProductsTableProps, "columnsToShow">) {
+  const {
+    data: sellers,
+    isLoading: isLoadingSellers,
+    refetch: refetchSellers
+  } = useSellers(
+    {
+      id: sellerId
+    },
+    { enabled: !!sellerId }
+  );
+  const salesChannels = sellers?.[0]?.metadata?.salesChannels ?? [];
   const [currentTag, setCurrentTag] = useState(productTags[0].value);
   const [search, setSearch] = useState<string>("");
   const [filter, setFilter] = useState<FilterValue | null>(null);
@@ -164,7 +176,7 @@ export default function SellerProducts({
     );
   }, [prepareCSVData, selected, refetch, sellerRoles]);
 
-  if (isLoading) {
+  if (isLoading || isLoadingSellers) {
     return <Loading />;
   }
 
@@ -192,6 +204,8 @@ export default function SellerProducts({
         sellerRoles={sellerRoles}
         offersBacked={offersBacked}
         columnsToShow={columnsToShow}
+        salesChannels={salesChannels}
+        refetchSellers={refetchSellers}
       />
     </>
   );

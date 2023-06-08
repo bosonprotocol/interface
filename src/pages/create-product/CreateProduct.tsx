@@ -59,7 +59,6 @@ export default function CreateProduct() {
   }
   return createdOffersIds.length ? (
     <CreateProductCongratulationsPage
-      offersIds={createdOffersIds}
       reset={() => setCreatedOffersIds([])}
       sellerId={seller.id}
     />

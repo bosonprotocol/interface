@@ -7,7 +7,6 @@ import { colors } from "../../../lib/styles/colors";
 import { CreateProductCongratulations } from "./CreateProductCongratulations";
 
 type CreateProductCongratulationsPageProps = {
-  offersIds: string[];
   reset: () => void;
   sellerId: string;
 };
@@ -19,7 +18,7 @@ const Background = styled.div`
 
 export const CreateProductCongratulationsPage: React.FC<
   CreateProductCongratulationsPageProps
-> = ({ offersIds, reset, sellerId }) => {
+> = ({ reset, sellerId }) => {
   const { setFullWidth } = useLayoutContext();
   useEffect(() => {
     setFullWidth(true);
@@ -31,11 +30,7 @@ export const CreateProductCongratulationsPage: React.FC<
   return (
     <Background>
       <LayoutRoot fullWidth={false}>
-        <CreateProductCongratulations
-          offersIds={offersIds}
-          reset={reset}
-          sellerId={sellerId}
-        />
+        <CreateProductCongratulations reset={reset} sellerId={sellerId} />
       </LayoutRoot>
     </Background>
   );

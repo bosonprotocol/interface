@@ -58,7 +58,6 @@ const Container = styled.div`
 `;
 
 type CreateProductCongratulationsProps = {
-  offersIds: string[];
   reset: () => void;
   sellerId: string;
 };
@@ -141,7 +140,7 @@ const useDepositWarning = (sellerId: string) => {
 
 export const CreateProductCongratulations: React.FC<
   CreateProductCongratulationsProps
-> = ({ offersIds, reset, sellerId }) => {
+> = ({ reset, sellerId }) => {
   const navigate = useKeepQueryParamsNavigate();
   const { setFullWidth } = useLayoutContext();
   const displayDepositWarning = useDepositWarning(sellerId);
