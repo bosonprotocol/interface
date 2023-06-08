@@ -16,7 +16,6 @@ export const MAX_FILE_SIZE = 20 * 1024 * 1024;
 
 type UseSaveImageToIpfs = ReturnType<typeof useSaveImageToIpfs>;
 export interface WithUploadToIpfsProps {
-  supportFormats?: string[];
   saveToIpfs: (
     files: File[] | null
   ) => Promise<false | FileProps[] | undefined>;
@@ -30,7 +29,9 @@ export function WithUploadToIpfs<P extends WithUploadToIpfsProps>(
     props: Omit<P & UploadProps, keyof WithUploadToIpfsProps>
   ) => {
     const withUpload = props?.withUpload || false;
-
+    const accept: string = props.accept
+      ? props.accept
+      : SUPPORTED_FILE_FORMATS.join(",");
     const { saveFile, loadMedia, removeFile } = useSaveImageToIpfs();
 
     const saveToIpfs: WithUploadToIpfsProps["saveToIpfs"] = useCallback(
@@ -101,12 +102,12 @@ export function WithUploadToIpfs<P extends WithUploadToIpfsProps>(
     const newProps = useMemo(
       () => ({
         maxSize: MAX_FILE_SIZE,
-        supportFormats: SUPPORTED_FILE_FORMATS,
+        accept,
         saveToIpfs,
         loadMedia,
         removeFile
       }),
-      [saveToIpfs, loadMedia, removeFile]
+      [saveToIpfs, loadMedia, removeFile, accept]
     );
 
     if (withUpload) {
