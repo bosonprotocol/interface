@@ -3,10 +3,9 @@ import React from "react";
 
 import { Error, FormField } from "../../../../components/form";
 import Help from "../../../../components/product/Help";
-import differentVariantsProduct from "../../../../components/product/img/different-variants-product.png";
 import oneItemTypeProduct from "../../../../components/product/img/one-item-product.png";
+import phygitalProduct from "../../../../components/product/img/phygital-product.png";
 import {
-  Box,
   Label,
   ProductImage,
   RadioButton
@@ -15,6 +14,7 @@ import BosonButton from "../../../../components/ui/BosonButton";
 import Grid from "../../../../components/ui/Grid";
 import GridContainer from "../../../../components/ui/GridContainer";
 import Typography from "../../../../components/ui/Typography";
+import { colors } from "../../../../lib/styles/colors";
 import { StyledDCLLayout } from "../../styles";
 import { FormType, LocationValues } from "../../validationSchema";
 
@@ -22,7 +22,7 @@ type DetailsStepProps = {
   goToNextStep: () => void;
 };
 export const DetailsStep: React.FC<DetailsStepProps> = ({ goToNextStep }) => {
-  const { values, handleChange, isValid, touched, setFieldTouched, errors } =
+  const { values, handleChange, handleBlur, isValid, touched, errors } =
     useFormikContext<FormType>();
   return (
     <StyledDCLLayout width="auto">
@@ -55,55 +55,83 @@ export const DetailsStep: React.FC<DetailsStepProps> = ({ goToNextStep }) => {
                 xl: 2
               }}
             >
-              <Label>
+              <Label style={{ minWidth: "200px" }}>
                 <RadioButton
                   type="radio"
                   name="location"
                   value={LocationValues.OwnLand}
                   checked={values.location === LocationValues.OwnLand}
                   onChange={handleChange}
+                  onBlur={handleBlur}
                 />
-                <Box>
+                <Grid
+                  justifyContent="center"
+                  alignItems="center"
+                  flexDirection="column"
+                  style={{ height: "100%" }}
+                >
                   <ProductImage
                     src={oneItemTypeProduct}
                     style={{
-                      width: "62px",
-                      height: "100px",
-                      paddingTop: "0px",
+                      width: "54px",
+                      height: "102px",
+                      padding: "1.5rem",
                       margin: "auto"
                     }}
                   />
-                  <Typography tag="p">Your own Land</Typography>
-                </Box>
+                  <Typography
+                    tag="p"
+                    fontWeight="600"
+                    $fontSize="1rem"
+                    margin="1.5rem 0"
+                    color={colors.darkGrey}
+                  >
+                    Your own environment
+                  </Typography>
+                </Grid>
               </Label>
-              <Label>
+              <Label style={{ minWidth: "200px" }}>
                 <RadioButton
                   type="radio"
                   name="location"
                   value={LocationValues.BosonLand}
                   checked={values.location === LocationValues.BosonLand}
                   onChange={handleChange}
+                  onBlur={handleBlur}
                 />
-                <Box>
+                <Grid
+                  justifyContent="center"
+                  alignItems="center"
+                  flexDirection="column"
+                  style={{ height: "100%" }}
+                >
                   <ProductImage
-                    src={differentVariantsProduct}
+                    src={phygitalProduct}
                     style={{
-                      width: "54px",
+                      width: "100px",
                       height: "100px",
-                      paddingTop: "0px",
+                      padding: "1.5rem",
                       margin: "auto"
                     }}
                   />
-                  <Typography tag="p">BOSON Land</Typography>
-                </Box>
+                  <Typography
+                    tag="p"
+                    fontWeight="600"
+                    $fontSize="1rem"
+                    margin="1.5rem 0"
+                    color={colors.darkGrey}
+                  >
+                    Boson Boulevard
+                  </Typography>
+                </Grid>
               </Label>
             </GridContainer>
             <Error display={!!errors.location} message={errors.location} />
           </FormField>
           <BosonButton
+            type="button"
             onClick={() => {
               if (!touched.location) {
-                setFieldTouched("location", true);
                 return;
               }
               if (isValid) {

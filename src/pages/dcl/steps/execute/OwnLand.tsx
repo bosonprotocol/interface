@@ -30,20 +30,20 @@ export const OwnLand: React.FC<OwnLandProps> = ({ setSuccess }) => {
       >
         <StyledGrid flexDirection="column" alignItems="flex-start">
           <Typography fontWeight="600" $fontSize="2rem">
-            Add product to your land
+            Add product to your own environment{" "}
           </Typography>
           <Typography tag="p">
             The developer documentation provides comprehensive guidance on
-            integrating the Boson Kiosk into your virtual property in
-            Decentraland. This capability will enable scene builders in
-            Decentraland to incorporate a Boson Kiosk into their virtual
+            integrating the Boson Metaverse Commerce Toolkit into your virtual
+            property in Decentraland. This capability will enable scene builders
+            in Decentraland to incorporate a Boson Kiosk into their virtual
             environments.
           </Typography>
           <Typography tag="p">
-            The integration of a Boson Kiosk enables potential buyers to
-            purchase Boson rNFTs (redeemable Non-Fungible Tokens) directly
-            within the Metaverse. This is achieved through direct interaction
-            with the Boson Protocol on the Polygon platform.
+            The integration of the Boson Metaverse Commerce Toolkit enables
+            potential buyers to purchase physical NFTs directly within the
+            Metaverse. This is achieved through direct interaction with the
+            Boson Protocol on the Polygon platform.
           </Typography>
           <p>
             Do not hesitate to{" "}

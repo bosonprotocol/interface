@@ -180,7 +180,7 @@ export const CreateProductCongratulations: React.FC<
             s: 1,
             m: 2,
             l: 2,
-            xl: 3
+            xl: displayDepositWarning ? 3 : 2
           }}
         >
           <CardCTA

@@ -16,14 +16,14 @@ export const SalesChannels: React.FC = () => {
       }}
     >
       <SalesChannelCard
-        title="Custom Storefront"
-        text="Create your custom storefront in the seller dApp and tweak it to match your company's identity."
+        title="Web3 Commerce Store"
+        text="Create your decentralized Web3 commerce store and customise it match your brand's identity."
         to={BosonRoutes.CreateStorefront}
         time="15 min"
       />
       <SalesChannelCard
-        title="DCL"
-        text="Setup your store and sell on your own land in DCL or send a request to sell on BOSON's land."
+        title="Metaverse Store"
+        text="Easily create your own decentralized Metaverse store in DCL. Set up your store on your own DCL space or on Boson Boulevard."
         to={SellerCenterRoutes.DCL}
         time="2 - 4 days"
       />

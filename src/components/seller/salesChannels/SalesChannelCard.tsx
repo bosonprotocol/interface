@@ -48,7 +48,7 @@ export const SalesChannelCard: React.FC<SalesChannelCardProps> = ({
           {time}
         </Typography>
       </Time>
-      <Typography fontWeight="600" $fontSize="1.25rem" margin="0.5rem 0 0 0">
+      <Typography fontWeight="600" $fontSize="1.25rem" margin="0.8rem 0 0 0">
         {title}
       </Typography>
       <Typography tag="p">{text}</Typography>

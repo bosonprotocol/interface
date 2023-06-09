@@ -85,7 +85,7 @@ export const RadioButton = styled.input`
 `;
 
 export const Box = styled.div`
-  padding: 1.75rem;
+  padding: 0.875rem;
   height: 100%;
   width: 100%;
   p {

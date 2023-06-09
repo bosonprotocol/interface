@@ -129,12 +129,18 @@ export default function TokenGating() {
                   <Input name={`${prefix}minBalance`} type="string" />
                 </FormField>
                 {symbol && tokenGating.tokenType?.value === erc20 && (
-                  <SymbolInput
-                    type="string"
-                    name={`${prefix}symbol`}
-                    value={symbol}
-                    disabled
-                  />
+                  <FormField
+                    title=""
+                    style={{ margin: "1rem 0 0 0", flex: "0" }}
+                  >
+                    <SymbolInput
+                      type="string"
+                      name={`${prefix}symbol`}
+                      value={symbol}
+                      disabled
+                      style={{ width: "initial" }}
+                    />
+                  </FormField>
                 )}
                 {tokenGating.tokenType?.value === erc1155 && (
                   <FormField title="TokenId:" style={{ margin: "1rem 0 0 0" }}>

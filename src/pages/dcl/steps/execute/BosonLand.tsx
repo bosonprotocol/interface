@@ -31,11 +31,11 @@ export const BosonLand: React.FC<BosonLandProps> = ({ setSuccess }) => {
       >
         <StyledGrid flexDirection="column" alignItems="flex-start">
           <Typography fontWeight="600" $fontSize="2rem">
-            Add product to your Boson Land
+            Add your products to Boson Boulevard
           </Typography>
           <p>
-            To get access and sell on Boson Land you need to apply through the
-            Typeform link below. We will get in touch with you within 1-3
+            To get access and sell on Boson Boulevard, get in touch with us
+            through the Typeform link below. We will get back to you within 1-3
             business days. If any questions arise do not hesitate to{" "}
             <a
               href="mailto:info@bosonapp.io"
@@ -47,6 +47,9 @@ export const BosonLand: React.FC<BosonLandProps> = ({ setSuccess }) => {
             us.
           </p>
           <Button theme="secondary">
+            {
+              // TODO: add typeform link
+            }
             Apply <ArrowSquareOut size={24} />
           </Button>
           <BosonButton
