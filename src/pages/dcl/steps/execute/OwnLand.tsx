@@ -83,7 +83,58 @@ export const OwnLand: React.FC<OwnLandProps> = ({ setSuccess }) => {
             Done
           </BosonButton>
         </StyledGrid>
-        <Help data={[{ title: "hola", description: "desc" }]} />
+        <Help
+          data={[
+            {
+              title: "Can I sell on my own virtual land in DCL?",
+              description:
+                "Yes. The Boson Metaverse Commerce Toolkit can be used across any virtual environment or land in DCL."
+            },
+            {
+              title:
+                "Do I need a developer to integrate the Metaverse Commerce Toolkit into my DCL land?",
+              description: ""
+            },
+            {
+              title:
+                "How long does it take to integrate the Metaverse Commerce Toolkit into my DCL land?",
+              description: ""
+            },
+            {
+              title:
+                "I have questions about the Metaverse Commerce Toolkit, how do I get help?",
+              description: (
+                <p>
+                  For questions, please contact us at{" "}
+                  <a
+                    href="mailto:info@bosonapp.io"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    info@bosonapp.io
+                  </a>{" "}
+                  or via{" "}
+                  <a
+                    href="https://discord.com/invite/5dRV7fWet2"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Discord
+                  </a>{" "}
+                  or{" "}
+                  <a
+                    href="https://t.me/bosonprotocol"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Telegram
+                  </a>
+                  .
+                </p>
+              )
+            }
+          ]}
+        />
       </Grid>
     </StyledDCLLayout>
   );

@@ -116,7 +116,30 @@ export const DetailsStep: React.FC<DetailsStepProps> = ({ goToNextStep }) => {
           </BosonButton>
         </Grid>
 
-        <Help data={[{ title: "hola", description: "desc" }]} />
+        <Help
+          data={[
+            {
+              title: "Which Metaverses can I set up a store in?",
+              description:
+                "Currently, our Metaverse Commerce Toolkit supports setting up a store in Decentraland (DCL). We are expanding into other Metaverse and will be supporting setting up stores in many more places. "
+            },
+            {
+              title: "What is Boson Boulevard?",
+              description:
+                "Boson Boulevard is a dcommerce district that has been created in the Boson virtual environment in DCL. "
+            },
+            {
+              title: "Can anyone sell on Boson Boulevard?",
+              description:
+                "Boson Boulevard is a curated dcommerce experience. Brands need to meet certain criteria to sell on that virtual experience."
+            },
+            {
+              title: "Can I sell on my own virtual land in DCL?",
+              description:
+                "Yes. The Boson Metaverse Commerce Toolkit can be used across any virtual environment or land in DCL."
+            }
+          ]}
+        />
       </Grid>
     </StyledDCLLayout>
   );

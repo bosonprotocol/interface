@@ -56,7 +56,26 @@ export const BosonLand: React.FC<BosonLandProps> = ({ setSuccess }) => {
             Done
           </BosonButton>
         </StyledGrid>
-        <Help data={[{ title: "hola", description: "desc" }]} />
+        <Help
+          data={[
+            {
+              title: "What is Boson Boulevard?",
+              description:
+                "Boson Boulevard is a dcommerce district that has been created in the Boson virtual environment in DCL."
+            },
+            {
+              title: "Can anyone sell on Boson Boulevard?",
+              description:
+                "Boson Boulevard is a curated dcommerce experience. Brands meeting a certain criteria can sell on that virtual experience."
+            },
+            {
+              title:
+                "How long does it take to have my products live on Boson Boulevard?",
+              description:
+                "Once we receive your information, products can go live within 2-4 business days"
+            }
+          ]}
+        />
       </Grid>
     </StyledDCLLayout>
   );
