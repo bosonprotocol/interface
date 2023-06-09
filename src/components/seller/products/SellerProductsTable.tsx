@@ -35,6 +35,7 @@ import { useKeepQueryParamsNavigate } from "../../../lib/utils/hooks/useKeepQuer
 import { SellerRolesProps } from "../../../lib/utils/hooks/useSellerRoles";
 import { ExtendedOffer } from "../../../pages/explore/WithAllOffers";
 import { CheckboxWrapper } from "../../form/Field.styles";
+import { Spinner } from "../../loading/Spinner";
 import { Channels } from "../../modal/components/SalesChannelsModal/form";
 import { useModal } from "../../modal/useModal";
 import OfferStatuses from "../../offer/OfferStatuses";
@@ -85,6 +86,8 @@ export interface SellerProductsTableProps {
   columnsToShow?: ProductsTableColumnId[] | Readonly<ProductsTableColumnId[]>;
   salesChannels: SalesChannels;
   refetchSellers: () => void;
+  isSellersRefetching: boolean;
+  sellerId: string;
 }
 
 interface IIndeterminateInputProps {
@@ -307,12 +310,20 @@ export default function SellerProductsTable({
   offersBacked,
   columnsToShow = defaultColumnsToShow,
   salesChannels: salesChannelsWithoutdApp,
-  refetchSellers
+  refetchSellers,
+  isSellersRefetching,
+  sellerId
 }: SellerProductsTableProps) {
-  const salesChannels: SalesChannels = [
-    { tag: Channels.dApp } as SalesChannels[number],
-    ...salesChannelsWithoutdApp
-  ];
+  const salesChannels: SalesChannels = useMemo(
+    () => [
+      {
+        tag: Channels.dApp,
+        id: `${sellerId}-${Channels.dApp.toLowerCase()}-sale-channel`
+      } as SalesChannels[number],
+      ...salesChannelsWithoutdApp
+    ],
+    [salesChannelsWithoutdApp, sellerId]
+  );
   const { showModal, modalTypes } = useModal();
   const navigate = useKeepQueryParamsNavigate();
   const columns = useMemo(
@@ -377,8 +388,9 @@ export default function SellerProductsTable({
         {
           id: ProductsTableColumnId.salesChannels,
           Header: "Sales channels",
-          accessor: "salesChannels", // it doesnt matter
-          disableSortBy: true
+          accessor: "salesChannels",
+          disableSortBy: true,
+          width: 200
         } as const,
         {
           id: ProductsTableColumnId.action,
@@ -703,11 +715,16 @@ export default function SellerProductsTable({
                 <Grid gap="1rem" justifyContent="flex-start">
                   {salesChannels.map((channel) => {
                     return (
-                      <TagWrapper key={channel.tag + "-" + channel.link}>
+                      <TagWrapper
+                        key={
+                          channel.tag + "-" + channel.link + "-" + channel.id
+                        }
+                      >
                         {channel.tag}
                       </TagWrapper>
                     );
                   })}
+                  {isSellersRefetching && <Spinner />}
                 </Grid>
               );
             })(),
@@ -822,7 +839,11 @@ export default function SellerProductsTable({
                                   productUuid: offer.additional?.product.uuid,
                                   version: offer.additional?.product.version,
                                   salesChannels,
-                                  onClose: refetchSellers
+                                  onClose: () => {
+                                    setTimeout(() => {
+                                      refetchSellers();
+                                    }, 10000); // give enough time to the subgraph to reindex
+                                  }
                                 },
                                 "auto",
                                 undefined,
@@ -844,7 +865,7 @@ export default function SellerProductsTable({
           };
         })
         .sort(compareOffersSortByStatus),
-    [offers] // eslint-disable-line
+    [offers, salesChannels] // eslint-disable-line
   );
 
   const tableProps = useTable(

@@ -11,6 +11,7 @@ import { CreateProfile } from "../../../../components/product/utils";
 import { getIpfsGatewayUrl } from "../../ipfs";
 import { removeEmpty } from "../../objects";
 import { useCurrentSellers } from "../useCurrentSellers";
+import { useSellers } from "../useSellers";
 import useStoreSellerMetadata from "./useStoreSellerMetadata";
 import useUpdateSeller from "./useUpdateSeller";
 
@@ -26,10 +27,15 @@ export default function useUpdateSellerMetadata() {
   const { sellers: currentSellers, lens } = useCurrentSellers();
   const { address = "" } = useAccount();
   const seller = currentSellers?.length ? currentSellers[0] : undefined;
+  const sellerId = seller?.id;
+  const { refetch: refetchSeller } = useSellers(
+    { id: sellerId },
+    { enabled: !!sellerId }
+  );
   const { mutateAsync: updateSeller } = useUpdateSeller();
   const { mutateAsync: storeSellerMetadata } = useStoreSellerMetadata();
 
-  return useMutation((props: Props) => {
+  return useMutation(async (props: Props) => {
     if (!seller) {
       const error = new Error(
         "[useUpdateSellerMetadata] cannot update a seller if the seller doesnt exist"
@@ -44,19 +50,21 @@ export default function useUpdateSellerMetadata() {
       console.error(error);
       throw error;
     }
+    const { data: sellersToUse } = await refetchSeller();
+    const sellerToUse = sellersToUse?.length ? sellersToUse[0] : seller;
     const lensProfile = lens?.length ? lens[0] : undefined;
-    const useLens = seller.metadata?.kind
-      ? seller.metadata?.kind === ProfileType.LENS &&
-        seller.authTokenType === AuthTokenType.LENS
+    const useLens = sellerToUse.metadata?.kind
+      ? sellerToUse.metadata?.kind === ProfileType.LENS &&
+        sellerToUse.authTokenType === AuthTokenType.LENS
       : !!lensProfile;
     const currentKind = useLens ? ProfileType.LENS : ProfileType.REGULAR;
     return updateSellerMedatata(
       {
         kind: currentKind,
         ...props,
-        values: { authTokenId: seller.authTokenId, ...props.values }
+        values: { authTokenId: sellerToUse.authTokenId, ...props.values }
       },
-      { seller, address },
+      { seller: sellerToUse, address },
       {
         updateSeller,
         storeSellerMetadata
@@ -143,12 +151,13 @@ async function updateSellerMedatata(
     socialLinks: [],
     ...(values.website && { website: values.website }),
     images: metadataImagesToSave,
-    salesChannels:
-      values.salesChannels ?? seller.metadata?.salesChannels
-        ? (seller.metadata?.salesChannels?.map((saleChannel) =>
-            removeEmpty(saleChannel)
-          ) as SalesChannels)
-        : undefined
+    salesChannels: values.salesChannels
+      ? values.salesChannels
+      : seller.metadata?.salesChannels
+      ? (seller.metadata?.salesChannels?.map((saleChannel) =>
+          removeEmpty(saleChannel)
+        ) as SalesChannels)
+      : undefined
   };
   const { metadataUri } = await storeSellerMetadata(meta);
   await updateSeller({

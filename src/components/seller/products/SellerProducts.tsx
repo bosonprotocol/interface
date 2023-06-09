@@ -49,7 +49,8 @@ interface FilterValue {
   value: string;
   label: string;
 }
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const emptyArray: any[] = [];
 export default function SellerProducts({
   products: productsData,
   sellerRoles,
@@ -62,14 +63,15 @@ export default function SellerProducts({
   const {
     data: sellers,
     isLoading: isLoadingSellers,
-    refetch: refetchSellers
+    refetch: refetchSellers,
+    isRefetching: isSellersRefetching
   } = useSellers(
     {
       id: sellerId
     },
     { enabled: !!sellerId }
   );
-  const salesChannels = sellers?.[0]?.metadata?.salesChannels ?? [];
+  const salesChannels = sellers?.[0]?.metadata?.salesChannels ?? emptyArray;
   const [currentTag, setCurrentTag] = useState(productTags[0].value);
   const [search, setSearch] = useState<string>("");
   const [filter, setFilter] = useState<FilterValue | null>(null);
@@ -175,8 +177,8 @@ export default function SellerProducts({
       </>
     );
   }, [prepareCSVData, selected, refetch, sellerRoles]);
-
-  if (isLoading || isLoadingSellers) {
+  const anyLoading = isLoading || isLoadingSellers;
+  if (anyLoading) {
     return <Loading />;
   }
 
@@ -197,7 +199,8 @@ export default function SellerProducts({
       <SellerProductsTable
         currentTag={currentTag}
         offers={allOffers}
-        isLoading={isLoading}
+        isLoading={anyLoading}
+        isSellersRefetching={isSellersRefetching}
         isError={isError}
         refetch={refetch}
         setSelected={setSelected}
@@ -206,6 +209,7 @@ export default function SellerProducts({
         columnsToShow={columnsToShow}
         salesChannels={salesChannels}
         refetchSellers={refetchSellers}
+        sellerId={sellerId}
       />
     </>
   );
