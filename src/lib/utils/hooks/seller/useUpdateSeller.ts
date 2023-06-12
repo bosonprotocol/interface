@@ -64,6 +64,10 @@ async function updateSellerAccount(
     return value !== oldSellerValue;
   });
   if (thereAreChanges) {
-    await coreSDK.signMetaTxUpdateSellerAndOptIn(newSeller);
+    if (coreSDK.isMetaTxConfigSet) {
+      await coreSDK.signMetaTxUpdateSellerAndOptIn(newSeller);
+    } else {
+      await coreSDK.updateSellerAndOptIn(newSeller);
+    }
   }
 }
