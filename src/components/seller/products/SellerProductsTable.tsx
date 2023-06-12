@@ -713,17 +713,28 @@ export default function SellerProductsTable({
             salesChannels: (() => {
               return (
                 <Grid gap="1rem" justifyContent="flex-start">
-                  {salesChannels.map((channel) => {
-                    return (
-                      <TagWrapper
-                        key={
-                          channel.tag + "-" + channel.link + "-" + channel.id
-                        }
-                      >
-                        {channel.tag}
-                      </TagWrapper>
-                    );
-                  })}
+                  {salesChannels
+                    .filter(
+                      (ch) =>
+                        ch.tag === Channels.dApp ||
+                        ch.deployments?.some(
+                          (deployment) =>
+                            deployment.product.uuid ===
+                              offer?.additional?.product.uuid &&
+                            offer?.additional?.product.uuid
+                        )
+                    )
+                    .map((channel) => {
+                      return (
+                        <TagWrapper
+                          key={
+                            channel.tag + "-" + channel.link + "-" + channel.id
+                          }
+                        >
+                          {channel.tag}
+                        </TagWrapper>
+                      );
+                    })}
                   {isSellersRefetching && <Spinner size={10} />}
                 </Grid>
               );
@@ -829,7 +840,11 @@ export default function SellerProductsTable({
                           <UnthemedButton
                             style={{ width: "100%" }}
                             onClick={() => {
-                              if (!offer) {
+                              if (
+                                !offer ||
+                                !offer.additional?.product.uuid ||
+                                !offer.additional?.product.version
+                              ) {
                                 return;
                               }
                               showModal(
@@ -838,7 +853,7 @@ export default function SellerProductsTable({
                                   title: "Update sales channels",
                                   productUuid: offer.additional?.product.uuid,
                                   version: offer.additional?.product.version,
-                                  salesChannels,
+                                  sellerSalesChannels: salesChannels,
                                   onClose: () => {
                                     setTimeout(() => {
                                       refetchSellers();

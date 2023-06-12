@@ -12,13 +12,15 @@ import { Channels, FormType, validationSchema } from "./form";
 import { SalesChannelsForm } from "./SalesChannelsForm";
 
 interface SalesChannelsModalProps {
-  productUuid: string | undefined;
-  version: number | undefined;
-  salesChannels: SalesChannels;
+  productUuid: string;
+  version: number;
+  sellerSalesChannels: SalesChannels;
 }
 
 export const SalesChannelsModal: React.FC<SalesChannelsModalProps> = ({
-  salesChannels
+  sellerSalesChannels,
+  productUuid,
+  version
 }) => {
   const [hasError, setError] = useState<boolean>(false);
   const { hideModal } = useModal();
@@ -27,25 +29,79 @@ export const SalesChannelsModal: React.FC<SalesChannelsModalProps> = ({
     <Formik<FormType>
       initialValues={{
         channels: [
-          ...salesChannels.map((saleChannel) => ({
-            value: saleChannel.tag,
-            label: saleChannel.tag,
-            disabled: false,
-            isFixed: saleChannel.tag === Channels.dApp
-          }))
+          ...sellerSalesChannels
+            .filter((ch) => {
+              return (
+                ch.tag === Channels.dApp ||
+                ch.deployments?.some((ch) => ch.product.uuid === productUuid)
+              );
+            })
+            .map((saleChannel) => ({
+              value: saleChannel.tag,
+              label: saleChannel.tag,
+              disabled: false,
+              isFixed: saleChannel.tag === Channels.dApp
+            }))
         ]
       }}
       onSubmit={async ({ channels }) => {
         try {
           setError(false);
+
           await updateSellerMetadata({
             values: {
-              salesChannels:
-                channels
-                  ?.filter((channel) => channel.value !== Channels.dApp)
-                  .map((channel) => ({
-                    tag: channel.value
-                  })) ?? []
+              salesChannels: Object.keys(Channels)
+                .filter(
+                  (chKey) =>
+                    channels?.some((ch) => ch.value === chKey) ||
+                    sellerSalesChannels.some((slch) => slch.tag === chKey)
+                )
+                .map((chKey) => {
+                  const sl = sellerSalesChannels.find(
+                    (slch) => slch.tag === chKey
+                  );
+                  const channel = channels?.find((ch) => ch.value === chKey);
+                  const isProductInChannel = !!channels?.some(
+                    (ch) => ch.value === chKey
+                  );
+                  return {
+                    ...sl,
+                    tag: sl?.tag || channel?.value || "",
+                    link: sl?.link || undefined,
+                    settingsEditor: sl?.settingsEditor || undefined,
+                    settingsUri: sl?.settingsUri || undefined,
+                    deployments: [
+                      ...(sl?.deployments
+                        ?.filter(
+                          (deployment) =>
+                            deployment.product.uuid !== productUuid
+                        )
+                        .map((d) => ({
+                          ...d,
+                          status: d.status || undefined,
+                          link: d.link || undefined,
+                          lastUpdated: d.lastUpdated || undefined
+                        })) ?? []),
+                      ...(isProductInChannel
+                        ? [
+                            {
+                              product: {
+                                uuid: productUuid,
+                                version
+                              },
+                              lastUpdated: Date.now()
+                            }
+                          ]
+                        : [])
+                    ]
+                  };
+                })
+                ?.filter(
+                  (channel) =>
+                    channel.tag &&
+                    channel.tag !== Channels.dApp &&
+                    channel.deployments.length // no products in deployments means we can delete the channel
+                )
             }
           });
           hideModal();
