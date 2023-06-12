@@ -95,6 +95,15 @@ export const Box = styled.div`
     margin: 0.938rem 0 0 0;
   }
 `;
+
+export const RadioButtonText = styled(Typography).attrs({
+  tag: "p",
+  fontWeight: "600",
+  $fontSize: "1rem",
+  margin: "1.5rem 0",
+  color: colors.darkGrey
+})``;
+
 const Container = styled.div`
   max-width: 26.5rem;
 `;
@@ -379,10 +388,23 @@ export default function ProductType({
                   checked={values.productType.productType === "physical"}
                   onChange={handleChange}
                 />
-                <Box>
+                <Grid
+                  justifyContent="center"
+                  alignItems="center"
+                  flexDirection="column"
+                  style={{ height: "100%" }}
+                >
                   <ProductImage src={physicalProduct} />
-                  <Typography tag="p">Physical</Typography>
-                </Box>
+                  <Typography
+                    tag="p"
+                    fontWeight="600"
+                    $fontSize="1rem"
+                    margin="1.5rem 0"
+                    color={colors.darkGrey}
+                  >
+                    Physical
+                  </Typography>
+                </Grid>
               </Label>
               <Label>
                 <RadioButton
@@ -393,15 +415,32 @@ export default function ProductType({
                   onChange={handleChange}
                   disabled
                 />
-                <Box>
+                <Grid
+                  justifyContent="center"
+                  alignItems="center"
+                  flexDirection="column"
+                  style={{ height: "100%" }}
+                >
                   <ProductImage src={phygitalProduct} />
-                  <Typography tag="p" margin="1rem 0 0 0">
-                    Phygital
+                  <Typography
+                    tag="p"
+                    fontWeight="600"
+                    $fontSize="1rem"
+                    margin="1rem 0 0 0"
+                    color={colors.darkGrey}
+                  >
+                    Physical
                   </Typography>
-                  <Typography tag="p" $fontSize="0.7rem" margin="0.3rem 0 0 0">
+                  <Typography
+                    tag="p"
+                    fontWeight="600"
+                    $fontSize="0.7rem"
+                    margin="0.3rem 0 1.3125rem 0"
+                    color={colors.darkGrey}
+                  >
                     COMING SOON
                   </Typography>
-                </Box>
+                </Grid>
               </Label>
             </Grid>
           </FormField>
@@ -421,7 +460,12 @@ export default function ProductType({
                   checked={values.productType.productVariant === "oneItemType"}
                   onChange={handleChange}
                 />
-                <Box>
+                <Grid
+                  justifyContent="center"
+                  alignItems="center"
+                  flexDirection="column"
+                  style={{ height: "100%" }}
+                >
                   <ProductImage
                     src={oneItemTypeProduct}
                     style={{
@@ -431,8 +475,8 @@ export default function ProductType({
                       margin: "auto"
                     }}
                   />
-                  <Typography tag="p">One item type</Typography>
-                </Box>
+                  <RadioButtonText>One item type</RadioButtonText>
+                </Grid>
               </Label>
               <Label>
                 <RadioButton
@@ -444,7 +488,12 @@ export default function ProductType({
                   }
                   onChange={handleChange}
                 />
-                <Box>
+                <Grid
+                  justifyContent="center"
+                  alignItems="center"
+                  flexDirection="column"
+                  style={{ height: "100%" }}
+                >
                   <ProductImage
                     src={differentVariantsProduct}
                     style={{
@@ -454,8 +503,8 @@ export default function ProductType({
                       margin: "auto"
                     }}
                   />
-                  <Typography tag="p">Different variants</Typography>
-                </Box>
+                  <RadioButtonText>Different variants</RadioButtonText>
+                </Grid>
               </Label>
             </Grid>
           </FormField>
@@ -475,7 +524,12 @@ export default function ProductType({
                   checked={values.productType.tokenGatedOffer === "false"}
                   onChange={handleChange}
                 />
-                <Box>
+                <Grid
+                  justifyContent="center"
+                  alignItems="center"
+                  flexDirection="column"
+                  style={{ height: "100%" }}
+                >
                   <ProductImage
                     src={oneItemTypeProduct}
                     style={{
@@ -485,8 +539,8 @@ export default function ProductType({
                       margin: "auto"
                     }}
                   />
-                  <Typography tag="p">Open access</Typography>
-                </Box>
+                  <RadioButtonText>Open access</RadioButtonText>
+                </Grid>
               </Label>
               <Label>
                 <RadioButton
@@ -496,7 +550,12 @@ export default function ProductType({
                   checked={values.productType.tokenGatedOffer === "true"}
                   onChange={handleChange}
                 />
-                <Box>
+                <Grid
+                  justifyContent="center"
+                  alignItems="center"
+                  flexDirection="column"
+                  style={{ height: "100%" }}
+                >
                   <ProductImage
                     src={differentVariantsProduct}
                     style={{
@@ -506,8 +565,8 @@ export default function ProductType({
                       margin: "auto"
                     }}
                   />
-                  <Typography tag="p">Token gated</Typography>
-                </Box>
+                  <RadioButtonText>Token gated</RadioButtonText>
+                </Grid>
               </Label>
             </Grid>
           </FormField>
