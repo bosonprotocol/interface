@@ -14,8 +14,8 @@ import { DCLPage } from "../pages/dcl/DCLPage";
 import ExplorePage from "../pages/explore/Explore";
 import LandingPage from "../pages/landing/Landing";
 import OfferUuidReroute from "../pages/offers/OfferUuidReroute";
+import SellerLandingPage from "../pages/sell/landing/SellerLandingPage";
 import SellerCenterPage from "../pages/sell/SellerCenter";
-import SellerLandingPage from "../pages/sell/SellerLandingPage";
 
 const AboutPage = lazy(() => import("../pages/about/AboutPage"));
 const ChatPage = lazy(() => import("../pages/chat/Chat"));

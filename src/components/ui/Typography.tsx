@@ -1,18 +1,18 @@
-import React, { forwardRef } from "react";
+import React, { CSSProperties, forwardRef } from "react";
 import styled from "styled-components";
 
 import { IGrid } from "./Grid";
 
 interface WrapperProps extends IGrid {
-  $fontSize?: string;
-  fontWeight?: string;
-  lineHeight?: string;
-  color?: string;
-  background?: string;
-  cursor?: string;
-  letterSpacing?: string;
-  textAlign?: string;
-  opacity?: string;
+  $fontSize?: CSSProperties["fontSize"];
+  fontWeight?: CSSProperties["fontWeight"];
+  lineHeight?: CSSProperties["lineHeight"];
+  color?: CSSProperties["color"];
+  background?: CSSProperties["background"];
+  cursor?: CSSProperties["cursor"];
+  letterSpacing?: CSSProperties["letterSpacing"];
+  textAlign?: CSSProperties["textAlign"];
+  opacity?: CSSProperties["opacity"];
 }
 
 const Wrapper = styled.div<WrapperProps>`
@@ -30,7 +30,11 @@ const Wrapper = styled.div<WrapperProps>`
   ${({ flex }) => (flex ? `> * { flex: ${flex}; }` : "")}
   ${({ padding }) => (padding ? `padding:${padding};` : "")}
   ${({ margin }) => (margin ? `margin:${margin};` : "")}
-
+  ${({ marginTop }) => (marginTop ? `margin-top:${marginTop};` : "")}
+  ${({ marginRight }) => (marginRight ? `margin-right:${marginRight};` : "")}
+  ${({ marginBottom }) =>
+    marginBottom ? `margin-bottom:${marginBottom};` : ""}
+  ${({ marginLeft }) => (marginLeft ? `margin-left:${marginLeft};` : "")}
 
   ${({ $fontSize }) => ($fontSize ? `font-size:${$fontSize};` : "")}
   ${({ fontWeight }) => (fontWeight ? `font-weight:${fontWeight};` : "")}
