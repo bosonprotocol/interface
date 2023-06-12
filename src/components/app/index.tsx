@@ -37,7 +37,10 @@ const getLayoutWrapper =
   (fullWidth: LayoutProps["fullWidth"]) =>
   ({ children }: { children: ReactNode }) =>
     (
-      <Layout style={{ display: "flex", flex: "1" }} fullWidth={fullWidth}>
+      <Layout
+        style={{ display: "flex", flex: "1", flexDirection: "column" }}
+        fullWidth={fullWidth}
+      >
         {children}
       </Layout>
     );
