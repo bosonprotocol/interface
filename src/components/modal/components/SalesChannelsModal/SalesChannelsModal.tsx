@@ -89,7 +89,9 @@ export const SalesChannelsModal: React.FC<SalesChannelsModalProps> = ({
                                 uuid: productUuid,
                                 version
                               },
-                              lastUpdated: Date.now() / 1000
+                              lastUpdated: Math.floor(
+                                Date.now() / 1000
+                              ).toString()
                             }
                           ]
                         : [])
