@@ -47,7 +47,7 @@ export const getLensCoverPictureUrl = (profile: Profile): string => {
 };
 
 export const getLensTokenIdDecimal = (lenseProfileId: Profile["id"]) => {
-  return parseInt(lenseProfileId, 16);
+  return parseInt(lenseProfileId, 16); // hex to decimal
 };
 
 export const getLensTokenIdHex = (lenseProfileIdDecimal: Profile["id"]) => {

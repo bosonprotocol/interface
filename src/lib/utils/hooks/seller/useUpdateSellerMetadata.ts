@@ -9,6 +9,7 @@ import {
 } from "../../../../components/modal/components/Profile/const";
 import { CreateProfile } from "../../../../components/product/utils";
 import { getIpfsGatewayUrl } from "../../ipfs";
+import { decimalToHex } from "../../number";
 import { removeEmpty } from "../../objects";
 import { useCurrentSellers } from "../useCurrentSellers";
 import { useSellers } from "../useSellers";
@@ -61,8 +62,7 @@ export default function useUpdateSellerMetadata() {
     return updateSellerMedatata(
       {
         kind: currentKind,
-        ...props,
-        values: { authTokenId: sellerToUse.authTokenId, ...props.values }
+        ...props
       },
       { seller: sellerToUse, address },
       {
@@ -163,7 +163,9 @@ async function updateSellerMedatata(
   await updateSeller({
     ...seller,
     admin: address,
-    authTokenId: values.authTokenId ?? "0",
+    authTokenId: values.authTokenId // it's assumed to be in hexadecimal
+      ? values.authTokenId ?? "0"
+      : decimalToHex(+seller.authTokenId) ?? "0",
     authTokenType:
       kindUsed === ProfileType.LENS ? AuthTokenType.LENS : AuthTokenType.NONE,
     sellerId: seller.id,

@@ -26,10 +26,7 @@ export default function EditProfileModal() {
   const lensProfile = lens?.length ? lens[0] : undefined;
   const hasMetadata = !!seller?.metadata;
   const metadata = seller?.metadata;
-  const useLens = seller?.metadata?.kind
-    ? seller?.metadata?.kind === ProfileType.LENS &&
-      seller.authTokenType === AuthTokenType.LENS
-    : !!lensProfile;
+  const useLens = seller?.authTokenType === AuthTokenType.LENS;
   const navigate = useKeepQueryParamsNavigate();
   const { mutateAsync: updateSellerMetadata } = useUpdateSellerMetadata();
   const { hideModal } = useModal();

@@ -390,7 +390,7 @@ export default function SellerProductsTable({
           Header: "Sales channels",
           accessor: "salesChannels",
           disableSortBy: true,
-          width: 200
+          width: 280
         } as const,
         {
           id: ProductsTableColumnId.action,
@@ -724,7 +724,7 @@ export default function SellerProductsTable({
                       </TagWrapper>
                     );
                   })}
-                  {isSellersRefetching && <Spinner />}
+                  {isSellersRefetching && <Spinner size={10} />}
                 </Grid>
               );
             })(),

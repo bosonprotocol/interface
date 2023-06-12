@@ -27,3 +27,5 @@ export const isNumeric = (strNumber: string) => {
     !isNaN(parseFloat(strNumber))
   ); // ...and ensure strings of whitespace fail
 };
+
+export const decimalToHex = (decimal: number): string => decimal.toString(16);
