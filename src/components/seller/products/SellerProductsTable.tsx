@@ -719,7 +719,7 @@ export default function SellerProductsTable({
                         ch.tag === Channels.dApp ||
                         ch.deployments?.some(
                           (deployment) =>
-                            deployment.product.uuid ===
+                            deployment?.product?.uuid ===
                               offer?.additional?.product.uuid &&
                             offer?.additional?.product.uuid
                         )

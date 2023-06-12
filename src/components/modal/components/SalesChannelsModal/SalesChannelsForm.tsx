@@ -22,7 +22,7 @@ export const SalesChannelsForm: React.FC<SalesChannelsFormProps> = ({
           name="channels"
           options={[
             {
-              label: "BOSON DCL",
+              label: "Boson DCL",
               value: Channels.BosonDCL
             },
             {
