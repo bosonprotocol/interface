@@ -45,7 +45,6 @@ function Upload({
   width,
   height,
   imgPreviewStyle,
-  supportFormats,
   ...props
 }: UploadProps & WithUploadToIpfsProps) {
   const { updateProps, store } = useModal();
@@ -255,7 +254,7 @@ function Upload({
           {...props}
           hidden
           type="file"
-          accept={supportFormats?.length ? supportFormats?.join(",") : accept}
+          accept={accept}
           multiple={multiple}
           onChange={async (e) => {
             const files = e.target.files
