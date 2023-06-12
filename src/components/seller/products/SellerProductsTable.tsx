@@ -865,7 +865,7 @@ export default function SellerProductsTable({
           };
         })
         .sort(compareOffersSortByStatus),
-    [offers, salesChannels] // eslint-disable-line
+    [offers, salesChannels, isSellersRefetching] // eslint-disable-line
   );
 
   const tableProps = useTable(
