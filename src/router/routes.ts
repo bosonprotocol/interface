@@ -15,6 +15,7 @@ import ExplorePage from "../pages/explore/Explore";
 import LandingPage from "../pages/landing/Landing";
 import OfferUuidReroute from "../pages/offers/OfferUuidReroute";
 import SellerCenterPage from "../pages/sell/SellerCenter";
+import SellerLandingPage from "../pages/sell/SellerLandingPage";
 
 const AboutPage = lazy(() => import("../pages/about/AboutPage"));
 const ChatPage = lazy(() => import("../pages/chat/Chat"));
@@ -101,6 +102,17 @@ export default [
       withFooter: false
     },
     role: [UserRoles.Buyer, UserRoles.Seller, UserRoles.DisputeResolver]
+  },
+  {
+    ...base,
+    path: BosonRoutes.Sell,
+    component: SellerLandingPage,
+    app: {
+      ...base.app,
+      withLayout: false,
+      withFooter: false,
+      fluidHeader: true
+    }
   },
   {
     ...base,
